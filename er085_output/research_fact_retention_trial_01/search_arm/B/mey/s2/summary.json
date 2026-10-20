@@ -1,0 +1,117 @@
+{
+  "variant": "B",
+  "topic": "mey",
+  "sample": 2,
+  "dry_run": false,
+  "n_facts_draft": 6,
+  "ledger_is_post_verification": false,
+  "verdict_counts": {
+    "VERIFIED": 6,
+    "AMBIGUOUS": 0,
+    "REJECTED": 0
+  },
+  "n_kept": 6,
+  "schema_errors": [],
+  "stages": [
+    {
+      "model_returned": "gpt-6-luna",
+      "response_id": "resp_081d67ddeaae8036006ad6daba447087d09ac7e6d97ae49957",
+      "latency_seconds": 127.38,
+      "usage": {
+        "input_tokens": 79748,
+        "output_tokens": 9320,
+        "reasoning_tokens": 6009,
+        "cached_input_tokens": 5530
+      },
+      "web_search_call_count": 10,
+      "cost_jpy": 18.0216,
+      "url_citations": [
+        {
+          "title": "GACA: Two Attacks Target King Khalid International Airport Facilities and a Saudia Aircraft",
+          "url": "https://www.spa.gov.sa/en/w2697151?utm_source=openai"
+        },
+        {
+          "title": "Statement by UN Special Envoy for Yemen, Hans Grundberg, on latest attacks against Saudi Arabia | OSESGY",
+          "url": "https://osesgy.unmissions.org/en/news/statement-by-un-special-envoy-for-yemen-hans-grundberg-on-latest-attacks-against-saudi?utm_source=openai"
+        },
+        {
+          "title": "عام / الهيئة العامة للطيران المدني: اعتداء يستهدف مطار الملك خالد الدولي بالرياض",
+          "url": "https://www.spa.gov.sa/N2698672?utm_source=openai"
+        },
+        {
+          "title": "Coalition: 136 Military Targets Destroyed in Areas Controlled by Terrorist Houthi Militia",
+          "url": "https://spa.gov.sa/en/N2697547?type=news&uuid=N2697547&utm_source=openai"
+        },
+        {
+          "title": "عام / مصدر مسؤول في وزارة الطاقة: استهداف مبنى إداري تابع لشركة أرامكو السعودية في الظهران دون إصابات",
+          "url": "https://www.spa.gov.sa/en/N2700899?utm_source=openai"
+        },
+        {
+          "title": "السلطة المحلية بشبوة تعلن استشهاد 53 مجنداً في الهجوم الارهابي الحوثي",
+          "url": "https://www.sabanew.net/story/ar/154267"
+        }
+      ],
+      "tools": [
+        "web_search"
+      ],
+      "schema_name": "verified_fact_ledger_draft_trial_b",
+      "stage": "research"
+    }
+  ],
+  "research_web_search_calls": 10,
+  "verification_web_search_calls": null,
+  "research_cost_jpy": 18.0216,
+  "total_cost_jpy": 18.0216,
+  "research_latency_s": 127.38,
+  "total_latency_s": 127.38,
+  "research_input_tokens": 79748,
+  "research_output_tokens": 9320,
+  "research_search_queries": [
+    "October 2026 Yemen Saudi attacks latest Houthi Saudi Arabia attacks",
+    "October 2026 attacks Yemen Saudi Arabia Middle East escalation Reuters",
+    "site:spa.gov.sa Yemen attack Saudi Arabia October 2026",
+    "site:centcom.mil Yemen Saudi Arabia attack October 2026",
+    "site:spa.gov.sa/en October 2026 King Khalid International Airport attack October 10 casualties GACA Houthis",
+    "site:osesgy.unmissions.org \"11 October 2026\" Saudi Arabia Ansar Allah attacks",
+    "site:un.org Yemen October 2026 Saudi attacks Security Council October 16 2026",
+    "Saudi Ministry Defense October 19 2026 Houthi attack Saudi Arabia official statement",
+    "Yemen Shabwa government official statement October 19 2026 53 killed Houthis military camp",
+    "site:sabanew.net 19 October 2026 Shabwa Houthis camp 53",
+    "site:spa.gov.sa/en 10 October 2026 King Khalid airport attack 12 killed 300 injured",
+    "site:spa.gov.sa/en 11 October 2026 Riyadh airport one killed 11 injured attack",
+    "site:spa.gov.sa/en \"October 10, 2026\" \"King Khalid International Airport\" 12 killed",
+    "site:spa.gov.sa \"12\" \"300\" \"King Khalid\" October 10 2026",
+    "Saudi GACA October 10 attack airport 12 killed 300 injured SPA October 11 2026",
+    "site:spa.gov.sa/en airport \"injured\" \"October 10, 2026\" Riyadh",
+    "\"53\" \"200\" \"Shabwa Governorate Media Office\" October 19 2026 official",
+    "\"مكتب إعلام محافظة شبوة\" 53 200 19 أكتوبر 2026 الحوثي",
+    "site:sabanew.net \"53\" شبوة الحوثي 19 أكتوبر 2026",
+    "Saudi Ministry Energy \"limited fire\" Aramco building October 13 2026 official",
+    "site:spa.gov.sa \"حريق محدود\" أرامكو الظهران 14 أكتوبر 2026",
+    "site:spa.gov.sa/en \"Aramco\" \"limited fire\" Dhahran October 14 2026",
+    "site:spa.gov.sa \"مبنى إداري\" أرامكو الظهران الثلاثاء 13 أكتوبر 2026",
+    "Saudi SPA October 14 2026 official Ministry Energy Aramco Dhahran targeted fire",
+    "site:spa.gov.sa/en Yemen Saudi coalition airstrikes Sana'a October 13 2026 coalition spokesman",
+    "site:spa.gov.sa \"صنعاء\" \"13 أكتوبر 2026\" تحالف غارات",
+    "site:spa.gov.sa/en October 2026 coalition operations Yemen Houthi Sana'a airstrikes",
+    "October 13 2026 Saudi-led coalition airstrikes Yemen official spokesman statement SPA"
+  ],
+  "cited_urls_draft": [
+    "https://osesgy.unmissions.org/en/news/statement-by-un-special-envoy-for-yemen-hans-grundberg-on-latest-attacks-against-saudi",
+    "https://spa.gov.sa/en/N2697547?type=news&uuid=N2697547",
+    "https://www.sabanew.net/story/ar/154267",
+    "https://www.spa.gov.sa/N2698672",
+    "https://www.spa.gov.sa/en/N2700899",
+    "https://www.spa.gov.sa/en/w2697151"
+  ],
+  "cited_urls_annotations": [
+    "https://www.spa.gov.sa/en/w2697151?utm_source=openai",
+    "https://osesgy.unmissions.org/en/news/statement-by-un-special-envoy-for-yemen-hans-grundberg-on-latest-attacks-against-saudi?utm_source=openai",
+    "https://www.spa.gov.sa/N2698672?utm_source=openai",
+    "https://spa.gov.sa/en/N2697547?type=news&uuid=N2697547&utm_source=openai",
+    "https://www.spa.gov.sa/en/N2700899?utm_source=openai",
+    "https://www.sabanew.net/story/ar/154267"
+  ],
+  "model_returned": "gpt-6-luna",
+  "wall_s": 127.4
+}

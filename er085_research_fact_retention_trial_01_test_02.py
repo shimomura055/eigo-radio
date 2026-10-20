@@ -141,3 +141,18 @@ def test_source_extractors_ap_and_nextdata():
           '"other":{"x":"UNRELATED site-wide story text that must not be mixed into the article body at all ok"}}}}</script></html>')
     t2 = sa.nextdata_text(nd)
     assert "cruise missile" in t2 and "UNRELATED" not in t2
+
+
+def test_patched_prompts_B_diff_schema_and_restore():
+    v = lib._vfl01()
+    o_r, o_s = v.build_researcher_prompt, v.FACT_LEDGER_JSON_SCHEMA
+    topic = "中東情勢が悪化、イエメン・サウジ周辺で攻撃続く"
+    base = o_r(topic=topic)
+    with sa.patched_prompts("B") as vv:
+        b = vv.build_researcher_prompt(topic=topic)
+        assert b != base and b.replace(lib.B_PROMPT_ADD, "", 1) == base          # 差分=B_PROMPT_ADD挿入のみ
+        props = vv.FACT_LEDGER_JSON_SCHEMA["schema"]["properties"]["facts"]["items"]["properties"]
+        assert "actor" in props and "context" in props                           # Trial schemaのみ
+    assert v.build_researcher_prompt is o_r and v.FACT_LEDGER_JSON_SCHEMA is o_s  # 復元
+    assert "actor" not in o_s["schema"]["properties"]["facts"]["items"]["properties"]  # Production schema不変
+    assert "B" not in sa.SEARCH_ARM_DEFAULT                                       # 既定runに含まれない

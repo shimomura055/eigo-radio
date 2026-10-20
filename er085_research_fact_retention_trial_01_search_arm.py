@@ -37,8 +37,9 @@ from types import SimpleNamespace
 import er085_research_fact_retention_trial_01_lib as lib
 
 STOP_WS = 40                      # 1 runの検索回数がこれを超えたら異常STOP(Production実績20の2倍)
-SEARCH_ARM_VARIANTS = ("E0", "A", "D")
-EST_RUN_JPY = {"E0": 30.0, "A": 30.0, "D": 40.0}   # BudgetGuard用の次呼出見込み(Researcher ~27、D=+検証~9)
+SEARCH_ARM_DEFAULT = ("E0", "A", "D")
+SEARCH_ARM_VARIANTS = SEARCH_ARM_DEFAULT + ("B",)   # B=委任_03で追加(検索込み追加検証)
+EST_RUN_JPY = {"E0": 30.0, "A": 30.0, "D": 40.0, "B": 30.0}   # BudgetGuard用の次呼出見込み(Researcher ~27、D=+検証~9)
 
 # ---------------------------------------------------------------------------
 # Prompt差分(context manager。Production moduleのprocess内差し替え→復元)
@@ -64,7 +65,16 @@ def patched_prompts(variant: str):
     """E0: 差し替えなし。A: researcher promptのみ。D: researcher(A)+verification(VC)。終了時に必ず復元。"""
     v = lib._vfl01()
     orig_r, orig_v = v.build_researcher_prompt, v.build_verification_prompt
+    orig_schema = v.FACT_LEDGER_JSON_SCHEMA
     try:
+        if variant == "B":                       # B: Prompt挿入(B_PROMPT_ADD)+Trial schema(actor/context)。process内のみ
+            def _b_prompt(topic=v.TOPIC):
+                base = orig_r(topic=topic)
+                if lib.B_ANCHOR not in base:
+                    raise RuntimeError("B_ANCHOR not found in Production researcher prompt")
+                return base.replace(lib.B_ANCHOR, lib.B_PROMPT_ADD + lib.B_ANCHOR, 1)
+            v.build_researcher_prompt = _b_prompt
+            v.FACT_LEDGER_JSON_SCHEMA = lib.trial_schema_b()
         if variant in ("A", "D"):
             v.build_researcher_prompt = lambda topic=v.TOPIC: a_prompt(orig_r(topic=topic))
         if variant == "D":
@@ -72,6 +82,7 @@ def patched_prompts(variant: str):
         yield v
     finally:
         v.build_researcher_prompt, v.build_verification_prompt = orig_r, orig_v
+        v.FACT_LEDGER_JSON_SCHEMA = orig_schema
 
 
 # ---------------------------------------------------------------------------
@@ -179,6 +190,10 @@ def run_one(client_raw, efam, variant: str, topic_text: str, topic: str, sample:
     # 描画: Dは検証後のLedger(Production関数build_verified_ledger_text)。E0/Aは検証を走らせないため
     # draft全Factを仮に全VERIFIEDとみなした『draft view』(採点・比較用。Production Ledgerではない)
     draft = research["parsed"]
+    if variant == "B":                           # actor/contextをLedger既存欄へ決定論で畳込み(LLM 0)。生出力は別保存
+        lib.write_json(os.path.join(cell, "draft_b_raw.json"), draft)
+        draft = lib.fold_b_to_ledger(draft)
+        lib.write_json(os.path.join(cell, "draft.json"), draft)
     ver_parsed = verification["parsed"] if verification else {"verifications": [
         {"fact_id": f["fact_id"], "verdict": "VERIFIED", "verification_notes": "(draft view)"} for f in draft["facts"]]}
     ledger_text, counts, kept = v.build_verified_ledger_text(draft, ver_parsed)
@@ -501,7 +516,7 @@ def search_md(cells: list, agg: dict, manifest: dict) -> str:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--variants", nargs="*", default=list(SEARCH_ARM_VARIANTS))
+    ap.add_argument("--variants", nargs="*", default=list(SEARCH_ARM_DEFAULT))
     ap.add_argument("--topic", default="mey")
     ap.add_argument("--samples", type=int, default=2)
     ap.add_argument("--out", default=os.path.join(lib.OUT_ROOT, "search_arm"))
