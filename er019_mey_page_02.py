@@ -44,7 +44,12 @@ def seg_html(res, parts, part, kp_items, kp_expl, level):
     m = re.match(r"comment (\d)", pl)
     if m:
         s = "comment_" + m.group(1)
-        return "<div class='script'>" + esc(segs[s]["text"]) + "</div><div class='sec'>" + esc(style(s)) + "</div>"
+        txt = segs[s].get("text")
+        note = style(s)
+        if not txt:  # HR承認済みsegment(結果entryはSTOPPED/HUMAN_REVIEW_LOCKEDでtext無し)は台本ファイルから取得
+            txt = rj(os.path.join(RUN, level, ("a2_support_texts.json" if level == "a2" else "b1_support_texts.json")))[s]
+            note = "ユーザーHuman Review承認済み(2026-10-21、REGISTER #128)。音声=canonical comment_2.wav(attempt3)"
+        return "<div class='script'>" + esc(txt) + "</div><div class='sec'>" + esc(note) + "</div>"
     if pl.startswith("preview (") or pl == "preview":
         return "<div class='script'>" + esc(segs["preview"]["text"]) + "</div><div class='sec'>" + esc(style("preview")) + "</div>"
     if pl.startswith("topic intro"):
@@ -120,7 +125,9 @@ def main():
     meta = (f"<div class='note'><b>タイトル</b>: {esc(pb.get('title') or '')}<br><b>In one line (Adv)</b>: {esc(pb['in_one_line'])}<br>"
             f"<b>In one line (Std)</b>: {esc(pa['in_one_line'])}<br><b>Key Phrases</b><ul>{''.join(kpl)}</ul>"
             "費用・Style適用表: <code>audit/cost_by_stage_e2e_02.json</code> / <code>audit/e2e_segment_style_table_mey_02.json</code>(リポジトリ内)。"
-            "確認項目: 攻撃主体(フーシ派)が「サウジ主導連合軍報道官の発表」として帰属付きで述べられているか。</div>")
+            "確認項目: 攻撃主体(フーシ派)が「サウジ主導連合軍報道官の発表」として帰属付きで述べられているか。<br>"
+            "<b>Standard Comment 2</b>: ASR(自動判定)では「タイフーン機」を「台風機/台風期」と認識したためHuman Review対象でしたが、ユーザーが実際に試聴して正しく発音されていることを確認し、2026-10-21に承認(PASS)済みです(REGISTER #128)。"
+            "試聴に使った3テイク比較ページ: <a href='hr_comment_2/index.html'>hr_comment_2/index.html</a>(採用はStandard通し音声内のcanonical take=attempt3)。</div>")
     css = ("<style>body{font-family:sans-serif;max-width:1100px;margin:1em auto;padding:0 1em;line-height:1.5}table{border-collapse:collapse;width:100%;margin-bottom:1.5em}"
            "th,td{border:1px solid #ccc;padding:6px;vertical-align:top;text-align:left}td.play{min-width:340px}td.play audio,audio{width:100%}.sec{color:#666;font-size:.85em}"
            ".script{background:#f6f6f6;padding:4px;margin:3px 0;font-size:.95em}.kp td,.kp th{border:1px solid #ccc;padding:4px 10px;width:50%}"
