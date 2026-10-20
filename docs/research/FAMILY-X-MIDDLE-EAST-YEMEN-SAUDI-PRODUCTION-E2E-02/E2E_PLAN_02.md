@@ -94,3 +94,9 @@ URL=https://shimomura055.github.io/eigo-radio/user_test/middle_east_yemen_saudi_
 - 費用(15節5区分): 本記事総コスト(E2E-02新規支出合計)=委任_04のぶんJPY0を加え55.87(text 32.514+audio 23.36)/Standard同期(Batch未使用)/Batch換算=Standard基準で同額換算(Batch未使用)/異常retry由来=Std comment_2再試行分(TTS3+ASR3+Azure3、audio 23.36の内数)/Trial特有=なし。案件累計=E2E-01 text 79.881+E2E-02 55.87=135.75。本日(2026-10-21)の`daily_dev_cost_01.py`=JPY0.0(委任_04の新規API 0)。
 - 所要: 約20分(承認記録→resume→assemble→player→ページ→push→Playwright)。追加再生成=なし。
 - runtime evidence: 音声model=gemini-3.8-flash-lite-tts(`tts_generation_results.json`、backend=speech_metadata_flash_lite)、style profile=fx_20261017(`audit/style_profile.json` sha256先頭16=1e99836f8664a636)、`a2/audit/human_approved_segments.json`、`a2/audit/style_profile_gate.json`、`audit/stop_scope_hr_resume.json`(rc=0)、console_*_04.txt、`pages_play_evidence_04.json`。
+
+## §11 ユーザー受入記録(2026-10-21)
+- ユーザーがStandard/Advanced両方の試聴PASSを正式確定(USER_ACCEPTED_FINAL、完成版=run_mey_02)。USER_LISTENING_PENDING解消、OPEN-416 CLOSED。
+- 再生成・再組立なし、費用JPY0。E2E-02実費JPY55.87、案件累計約JPY135.75。
+- 「Detective」表現は受入を妨げず、別Trial(FAMILY-X-WRITER-DETECTIVE-WORD-AVOIDANCE-TRIAL-01)へ切り分け。
+- 原文=docs/pm/delegation_log/2026-10-21_FAMILY-X-MIDDLE-EAST-YEMEN-SAUDI-PRODUCTION-E2E-02_ACCEPTANCE_USER.md。
