@@ -49,7 +49,7 @@ def test_perturbation_confusable_word_is_target_for_negatives():
 def test_phase_a_raw_perturbation_by_condition():
     if not os.path.exists(RAW_A):
         pytest.skip("Phase A raw無し")
-    rows = L.read_raw(RAW_A)
+    rows = [r for r in L.read_raw(RAW_A) if r.get("phase") == "A"]  # 委任_02b以降はPhase Bの行も同一rawに追記される
     assert len(rows) == 15
     d = json.load(open(DESIGN, encoding="utf-8"))
     a = d["phases"]["A"]["audio"][0]

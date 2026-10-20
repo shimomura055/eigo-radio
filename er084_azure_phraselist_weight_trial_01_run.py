@@ -193,7 +193,7 @@ def main_phase_b_v02(a, design) -> int:
     raw = os.path.join(out, "raw", "azure_calls.jsonl")
     cl.init_logger(os.path.join(out, "cost_log_phase_B.jsonl"))
     done = done_keys(raw)
-    spent, consecutive_err, kept_cond = 0.0, 0, set()
+    spent, consecutive_err, kept_cond, kept_files = 0.0, 0, set(), set()
     todo = [c for c in calls if (c["audio_id"], c["cond"], c["rep"]) not in done]
     print(f"todo={len(todo)} skipped_existing={len(calls) - len(todo)}")
     for i, c in enumerate(todo, 1):
@@ -220,15 +220,27 @@ def main_phase_b_v02(a, design) -> int:
                "elapsed_s": r["elapsed_s"], "wire_evidence": ev, "sdk_log": os.path.relpath(log_path, ROOT)}
         L.append_raw(raw, row)
         # SDK診断ログは約800KB/件のため、条件ごと最初の1件のみ保持(wire evidenceは各raw行に保存済み)
-        if c["cond"] in kept_cond and os.path.exists(log_path):
-            os.remove(log_path)
+        if c["cond"] in kept_cond:
+            try:
+                if os.path.exists(log_path):
+                    os.remove(log_path)
+            except OSError:  # SDKがハンドルを保持している場合は残し、終了時に再度掃除する(run継続を妨げない)
+                pass
         else:
             kept_cond.add(c["cond"])
+            kept_files.add(os.path.abspath(log_path))
         print(f"[{i}/{len(todo)}] {c['audio_id']} {c['cond']} r{c['rep']} err={r['err']} melos={row['cls']['melos']} spent={spent:.3f}", flush=True)
         consecutive_err = 0 if ok else consecutive_err + 1
         if consecutive_err >= 2:
             print("2連続error -> STOP", file=sys.stderr)
             return 5
+    for f in os.listdir(os.path.join(out, "sdk_logs")):
+        fp = os.path.abspath(os.path.join(out, "sdk_logs", f))
+        if f.startswith("B_") and fp not in kept_files:
+            try:
+                os.remove(fp)
+            except OSError:
+                pass
     print(json.dumps({"done": True, "spent_jpy_est": round(spent, 3), "n_calls": len(todo)}))
     return 0
 

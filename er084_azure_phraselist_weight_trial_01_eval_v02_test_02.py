@@ -291,3 +291,24 @@ def test_manifest_02_fixed_wavs_sha_and_reclassification():
     for a in m["audio"]:
         assert L.wav_info(os.path.join(L.ROOT, a["path"]))["sha256"] == a["sha256"]
         assert a["label"] == "negative" and a["negative_kind"] == "minimal_pair" and a["canonical_text"].count("Melos") == 1
+
+
+def test_diagnosis_e_flag_uses_R_denominator_as_preregistered():
+    # R=8でw2.0でも全部NGのまま -> 残差/R=1.0 >= 0.7 かつ R>=6 -> e=True(事前登録文「R大かつw2.0でもNGが大半」)
+    ev, ov, ex = run(*scenario(n_pos=8, up=0))
+    d = ex["diagnosis"]
+    assert d["residual_ng_after_w2.0"] == {"n": 8, "of_R": 8, "fraction": 1.0}
+    assert d["flags"]["e_重みでは解決できない"] is True
+    # R<6(識別不能)のときは「R大」を満たさずeを立てない
+    ev2, ov2, ex2 = run(*scenario(n_pos=5, up=0))
+    assert ex2["diagnosis"]["flags"]["e_重みでは解決できない"] is False
+
+
+def test_new_false_pass_and_pl_value_extras():
+    meta, rows = scenario(n_pos=8, up=6, neg_fp_w15=2)
+    ev, ov, ex = run(meta, rows)
+    nf = ex["new_false_pass"]["pl_w1.5"]["full_story"]
+    assert [r["audio_id"] for r in nf] == ["N0", "N1"] and nf[0]["w_azure"].startswith("Then Melos")
+    assert ex["new_false_pass"]["pl_w2.0"]["full_story"] == []
+    # no_pl -> pl_unspecified のflip(参考): scenarioではno_pl=NG, unspecified=NG(down=0) -> up 0
+    assert ex["pl_value_no_pl_to_unspecified"]["full_story"]["up"] == 0

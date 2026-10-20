@@ -1,0 +1,16 @@
+{"phase": "B(v02)", "dry_run": false, "n_calls": 410, "audio_seconds": 2073.82, "est_jpy": 92.17, "by_set": {"POS_SYN": {"n_calls": 144, "seconds": 682.23, "est_jpy": 30.32}, "NEG_VALID": {"n_calls": 24, "seconds": 83.03, "est_jpy": 3.69}, "NEG_BOUNDARY": {"n_calls": 24, "seconds": 72.32, "est_jpy": 3.21}, "NEG_MP": {"n_calls": 120, "seconds": 339.5, "est_jpy": 15.09}, "POS_PROD": {"n_calls": 98, "seconds": 896.78, "est_jpy": 39.86}}, "n_spot_wavs": 9, "budget_jpy": 130.0}
+todo=410 skipped_existing=0
+[1/410] P1_nonsib_Aoede_take1 no_pl r1 err=None melos=False spent=0.135
+[2/410] P1_nonsib_Aoede_take1 pl_unspecified r1 err=None melos=False spent=0.270
+[3/410] P1_nonsib_Aoede_take1 pl_w1.5 r1 err=None melos=False spent=0.405
+[4/410] P1_nonsib_Aoede_take1 pl_w2.0 r1 err=None melos=False spent=0.540
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er084_azure_phraselist_weight_trial_01_run.py", line 310, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er084_azure_phraselist_weight_trial_01_run.py", line 262, in main
+    return main_phase_b_v02(a, design)
+  File "C:\Users\tensh\eigo-radio\er084_azure_phraselist_weight_trial_01_run.py", line 224, in main_phase_b_v02
+    os.remove(log_path)
+    ~~~~~~~~~^^^^^^^^^^
+PermissionError: [WinError 32] プロセスはファイルにアクセスできません。別のプロセスが使用中です。: 'C:\\Users\\tensh\\eigo-radio\\er084_output\\azure_phraselist_weight_trial_01\\sdk_logs\\B_P1_nonsib_Aoede_take2_no_pl_r1.log'

@@ -205,18 +205,19 @@ class Evaluator:
         return sorted(a for a, m in self.meta.items() if m["set"] in set_names)
 
     # ---- flip(主要指標) ----
-    def flips(self, role, w, sets=("POS_SYN", "POS_PROD")):
+    def flips(self, role, w, sets=("POS_SYN", "POS_PROD"), base=None):
+        base = base or self.base
         up, down, unst, same_ng, same_pass, skipped_pass = [], [], [], [], [], []
         for aid in self.ids(sets):
-            if not (self.has(aid, self.base) and self.has(aid, w)):
+            if not (self.has(aid, base) and self.has(aid, w)):
                 continue
             if not self.primary_ng(aid, role):
                 skipped_pass.append(aid)
                 continue
-            if self.unstable(aid, self.base, role) or self.unstable(aid, w, role):
+            if self.unstable(aid, base, role) or self.unstable(aid, w, role):
                 unst.append(aid)
                 continue
-            sb, sw = self.state(aid, self.base, role), self.state(aid, w, role)
+            sb, sw = self.state(aid, base, role), self.state(aid, w, role)
             pb, pw = is_pass(sb, self.pf), is_pass(sw, self.pf)
             if not pb and pw:
                 up.append(aid)
@@ -349,6 +350,31 @@ class Evaluator:
                 out[(label, c)] = {"n": n, "melos_ok": k, "rate": (k / n) if n else None}
         return out
 
+    def melos_breakdown(self):
+        """文脈別・Voice/話速別・文長別のMelos正認識率(副指標、rep1、正例のみ)。"""
+        conds = ("no_pl", "pl_unspecified", "pl_w1.5", "pl_w2.0")
+        groups = collections.OrderedDict()
+
+        def add(label, aid):
+            groups.setdefault(label, []).append(aid)
+
+        for aid in self.ids(("POS_SYN",)):
+            m = self.meta[aid]
+            add("合成/文脈=" + str(m["sentence_id"]), aid)
+            add("合成/Voice話速=" + f"{m['voice']}{'+減速' if m['slow6'] else ''}", aid)
+        for aid in self.ids(("POS_PROD",)):
+            m = self.meta[aid]
+            add("本番take/長さ=" + ("≤5秒" if m["duration_s"] <= 5 else "5〜15秒" if m["duration_s"] <= 15 else ">15秒"), aid)
+            add("本番take/segment=" + str(m["segment_id"]).split("_c")[0], aid)
+        out = collections.OrderedDict()
+        for label, ids in groups.items():
+            row = {"n": len(ids)}
+            for c in conds:
+                have = [a for a in ids if self.has(a, c)]
+                row[c] = sum(1 for a in have if self.melos_ok(a, c))
+            out[label] = row
+        return out
+
     def determinism(self):
         """抜き打ち: rep2とrep1のAzure転写一致率(条件別)。pl_unspecified vs pl_w1.0(送信同一)の転写一致率。"""
         det = collections.OrderedDict()
@@ -362,9 +388,10 @@ class Evaluator:
                 eq.append((a, d[1]["text"] == self.cells[(a, "pl_unspecified")][1]["text"]))
         return det, {"n": len(eq), "identical": sum(1 for _, ok in eq if ok), "differing": [a for a, ok in eq if not ok]}
 
-    def transcript_change_rate(self, w, sets=("POS_SYN", "POS_PROD", "NEG_VALID", "NEG_MP")):
-        ids = [a for a in self.ids(sets) if self.has(a, w) and self.has(a, self.base)]
-        ch = [a for a in ids if self.cells[(a, w)][1]["text"] != self.cells[(a, self.base)][1]["text"]]
+    def transcript_change_rate(self, w, sets=("POS_SYN", "POS_PROD", "NEG_VALID", "NEG_MP"), base_cond=None):
+        b = base_cond or self.base
+        ids = [a for a in self.ids(sets) if self.has(a, w) and self.has(a, b)]
+        ch = [a for a in ids if self.cells[(a, w)][1]["text"] != self.cells[(a, b)][1]["text"]]
         return {"n": len(ids), "changed": len(ch), "rate": (len(ch) / len(ids)) if ids else None}
 
     def boundary(self):
@@ -388,9 +415,12 @@ class Evaluator:
                "no_pl_pass": len(nopl_pass), "pl_unspecified_pass": len(base_pass)}
         w15, w20 = ov["weights"]["pl_w1.5"], ov["weights"]["pl_w2.0"]
         tc15, tc20 = self.transcript_change_rate("pl_w1.5"), self.transcript_change_rate("pl_w2.0")
-        resid = [a for a in pos if self.has(a, "pl_w2.0") and not is_pass(self.state(a, "pl_w2.0", role), self.pf)]
+        Rn_, Rids_ = self.R(role)
+        # 事前登録文(設計書§3-v02 S-8 e)「R大かつw2.0でもNGが大半」= R(ベースラインNGのPrimary-NG正例)のうちw2.0でもNGのままの割合
+        resid = [a for a in Rids_ if self.has(a, "pl_w2.0") and not is_pass(self.state(a, "pl_w2.0", role), self.pf)]
         out["transcript_change_rate_w1.5"], out["transcript_change_rate_w2.0"] = tc15, tc20
-        out["residual_ng_after_w2.0"] = {"n": len(resid), "of": len(pos), "fraction": (len(resid) / len(pos)) if pos else None}
+        out["residual_ng_after_w2.0"] = {"n": len(resid), "of_R": len(Rids_), "fraction": (len(resid) / len(Rids_)) if Rids_ else None}
+        out["transcript_change_rate_pl_unspecified_vs_no_pl"] = self.transcript_change_rate(self.base, base_cond="no_pl")
         # 上位cluster集中(w1.5 up)
         upc = collections.Counter(self.cluster(a) for a in w15["roles"][role]["up_ids"])
         top_share = (upc.most_common(1)[0][1] / sum(upc.values())) if upc else None
@@ -442,6 +472,10 @@ def render_md(ev: Evaluator, ov: dict, extra: dict) -> str:
     L_ += ["", "## 3 副指標: Melos正認識率(wav単位、rep1)", "", "| 集合 | 条件 | Melos正認識/n | 率 |", "|---|---|---|---|"]
     for (lab, c), v in extra["melos_rates"].items():
         L_.append(f"| {lab} | {c} | {v['melos_ok']}/{v['n']} | {pct(v['rate'])} |")
+    L_ += ["", "### 3b 文脈別・Voice/話速別・長さ別のMelos正認識数(rep1。n中の正認識wav数)", "",
+           "| グループ | n | no_pl | pl_unspecified | pl_w1.5 | pl_w2.0 |", "|---|---|---|---|---|---|"]
+    for lab, v in extra["melos_breakdown"].items():
+        L_.append(f"| {lab} | {v['n']} | {v['no_pl']} | {v['pl_unspecified']} | {v['pl_w1.5']} | {v['pl_w2.0']} |")
     L_ += ["", "## 4 負例(誤PASS・誤Melos)と境界例", "",
            f"有効負例=N1・N3の6wav+minimal pair 27wav={len(ev.ids(('NEG_VALID','NEG_MP')))}wav。rule of three(0件のとき95%上限≈3/n)を併記。", "",
            "| 条件 | role | n | 誤PASS(canonical=Melos文を注入した本番判定がPASS系) | 誤PASS率 | 0件のとき95%上限(3/n) |", "|---|---|---|---|---|---|"]
@@ -458,6 +492,16 @@ def render_md(ev: Evaluator, ov: dict, extra: dict) -> str:
     L_ += ["", "### 境界例(N2 mellows / N4 Milos。判定には使わず別枠)", "", "| role | 条件 | n | 本番判定PASS系 | Azureが`Melos`と出力 |", "|---|---|---|---|---|"]
     for (role, c), v in extra["boundary"].items():
         L_.append(f"| {role} | {c} | {v['n']} | {v['pass']} | {v['melos']} |")
+    L_ += ["", "### 重みが新たに作った誤PASS(ベースラインNG→重みwでPASS系、有効負例。FULL_STORY role)", "",
+           "| 重み | wav | TTSに渡した文 | Primary転写 | ベースラインAzure | 重みwのAzure |", "|---|---|---|---|---|---|"]
+    for w, d_ in extra["new_false_pass"].items():
+        for r in d_["full_story"]:
+            L_.append(f"| {w} | {r['audio_id']} | {r['spoken_text']} | {r['primary']} | {r['baseline_azure']} | {r['w_azure']} |")
+    L_ += ["", "### 参考: PhraseList自体(現行の重み未指定)の価値 = no_pl → pl_unspecified の本番判定flip", "",
+           "| role | up(NG→PASS系) | down | 変化なしNG | 変化なしPASS | 不安定 | Primary PASS(除外) |", "|---|---|---|---|---|---|---|"]
+    for role, v in extra["pl_value_no_pl_to_unspecified"].items():
+        L_.append(f"| {role} | {v['up']} | {v['down']} | {v['same_ng']} | {v['same_pass']} | {v['unstable']} | {v['primary_pass_excluded']} |")
+    L_.append(f"有効負例の誤PASS(no_pl→pl_unspecified): {extra['neg_false_pass_no_pl_vs_unspecified']}")
     L_ += ["", "## 5 他語perturbation(副作用、M-5)", "", "| 重み | 比較wav数 | 新規誤り語数合計 | うち保護対象diff数 | 保護種別 | Melosからの平均語距離 |", "|---|---|---|---|---|---|"]
     for w, rows_ in extra["perturbation"].items():
         n_new = sum(r["n_new_error_words"] for r in rows_)
@@ -480,12 +524,31 @@ def render_md(ev: Evaluator, ov: dict, extra: dict) -> str:
     return "\n".join(L_) + "\n"
 
 
+def new_false_pass(ev: "Evaluator", w: str, role: str) -> list:
+    """有効負例(NEG_VALID+NEG_MP)のうち、ベースラインNG→重みwでPASS系になった(=重みが新たに作った誤PASS)wavと転写。"""
+    out = []
+    for a in ev.ids(("NEG_VALID", "NEG_MP")):
+        if ev.has(a, ev.base) and ev.has(a, w) and not is_pass(ev.state(a, ev.base, role), ev.pf) and is_pass(ev.state(a, w, role), ev.pf):
+            out.append({"audio_id": a, "primary": ev.meta[a]["primary_text"], "baseline_azure": ev.cells[(a, ev.base)][1]["text"],
+                        "w_azure": ev.cells[(a, w)][1]["text"], "spoken_text": ev.meta[a]["text"]})
+    return out
+
+
 def run_eval(rows, meta, criteria, judge_fn=None):
     ev = Evaluator(rows, meta, criteria, judge_fn)
     ov = ev.overall()
+    pl_value = {}
+    for role in ROLES:
+        f = ev.flips(role, ev.base, base="no_pl")
+        pl_value[role] = {k: (len(v) if isinstance(v, list) else v) for k, v in f.items()}
+        pl_value[role]["up_ids"] = f["up"]
+    negs_pl, fm_pl = ev.negatives(("NEG_VALID", "NEG_MP"), ["no_pl", ev.base])
     extra = {"melos_rates": ev.melos_rates(), "boundary": ev.boundary(),
+             "pl_value_no_pl_to_unspecified": pl_value,
+             "neg_false_pass_no_pl_vs_unspecified": {f"{k[0]}|{k[1]}": v["false_pass"] for k, v in negs_pl.items()},
+             "new_false_pass": {w: {role: new_false_pass(ev, w, role) for role in ROLES} for w in ("pl_w1.5", "pl_w2.0")},
              "perturbation": {w: ev.perturbation(w) for w in ("pl_w1.5", "pl_w2.0", "no_pl")},
-             "determinism": ev.determinism(), "diagnosis": ev.diagnosis(ov)}
+             "determinism": ev.determinism(), "diagnosis": ev.diagnosis(ov), "melos_breakdown": ev.melos_breakdown()}
     return ev, ov, extra
 
 
