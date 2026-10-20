@@ -1,0 +1,144 @@
+{
+  "variant": "D",
+  "topic": "mey",
+  "sample": 1,
+  "dry_run": false,
+  "n_facts_draft": 9,
+  "ledger_is_post_verification": true,
+  "verdict_counts": {
+    "VERIFIED": 6,
+    "AMBIGUOUS": 3,
+    "REJECTED": 0
+  },
+  "n_kept": 9,
+  "schema_errors": [],
+  "stages": [
+    {
+      "model_returned": "gpt-6-luna",
+      "response_id": "resp_0289e80790a2c3c3006ad6d11b01b487d0abd58668115d9c3c",
+      "latency_seconds": 108.7,
+      "usage": {
+        "input_tokens": 65923,
+        "output_tokens": 9155,
+        "reasoning_tokens": 5216,
+        "cached_input_tokens": 5600
+      },
+      "web_search_call_count": 9,
+      "cost_jpy": 16.1872,
+      "url_citations": [],
+      "tools": [
+        "web_search"
+      ],
+      "schema_name": "verified_fact_ledger_draft",
+      "stage": "research"
+    },
+    {
+      "model_returned": "gpt-6-luna",
+      "response_id": "resp_0a2f0c950eae0d2d006ad6d187832087d09740f7c9dace58e8",
+      "latency_seconds": 74.72,
+      "usage": {
+        "input_tokens": 50830,
+        "output_tokens": 5881,
+        "reasoning_tokens": 4388,
+        "cached_input_tokens": 0
+      },
+      "web_search_call_count": 5,
+      "cost_jpy": 9.2838,
+      "url_citations": [
+        {
+          "title": "Special Envoy for Yemen's remarks to the Security Council [as delivered] | DPPA",
+          "url": "https://dppa.un.org/en/node/136980?utm_source=openai"
+        },
+        {
+          "title": "GACA: Two Attacks Target King Khalid International Airport Facilities and a Saudia Aircraft",
+          "url": "https://www.spa.gov.sa/en/w2697151?utm_source=openai"
+        },
+        {
+          "title": "Statement by UN Special Envoy for Yemen, Hans Grundberg, on latest attacks against Saudi Arabia | OSESGY",
+          "url": "https://osesgy.unmissions.org/en/news/statement-by-un-special-envoy-for-yemen-hans-grundberg-on-latest-attacks-against-saudi?utm_source=openai"
+        },
+        {
+          "title": "عام / الهيئة العامة للطيران المدني: اعتداء يستهدف مطار الملك خالد الدولي بالرياض",
+          "url": "https://www.spa.gov.sa/N2698672?utm_source=openai"
+        },
+        {
+          "title": "Saudi-led coalition stops missile attack on Medina | AP News",
+          "url": "https://apnews.com/article/ffa2a29fe8f91f400b0b75067d269ad3"
+        },
+        {
+          "title": "2 missiles strike the airport in Yemen's port city of Aden, officials say - AOL",
+          "url": "https://www.aol.com/articles/2-projectiles-strike-airport-yemens-194701000.html"
+        },
+        {
+          "title": "Airstrike kills at least 9 in Yemen and other Middle East developments | AP News",
+          "url": "https://apnews.com/article/793087dde3cb4435c6b771bae28faff3"
+        },
+        {
+          "title": "Houthis strike military camp in Yemen, killing at least 53 | AP News",
+          "url": "https://apnews.com/article/6afad4ec4c22dcccd379152ea87cb0e2"
+        },
+        {
+          "title": "Foreign Minister, UAE Counterpart Condemn Continuation of Terrorist Houthi Attacks on Saudi Arabia",
+          "url": "https://www.spa.gov.sa/en/N2705390?utm_source=openai"
+        }
+      ],
+      "tools": [
+        "web_search"
+      ],
+      "schema_name": "fact_ledger_verification",
+      "stage": "verification"
+    }
+  ],
+  "research_web_search_calls": 9,
+  "verification_web_search_calls": 5,
+  "research_cost_jpy": 16.1872,
+  "total_cost_jpy": 25.471,
+  "research_latency_s": 108.7,
+  "total_latency_s": 183.42,
+  "research_input_tokens": 65923,
+  "research_output_tokens": 9155,
+  "research_search_queries": [
+    "October 2026 Yemen Saudi attacks latest official statement",
+    "Yemen Saudi Arabia attack October 2026 Reuters",
+    "site:spa.gov.sa Yemen attack Saudi October 2026",
+    "site:un.org Yemen Saudi attacks October 2026",
+    "site:osesgy.unmissions.org \"11 October 2026\" attacks Saudi Arabia Ansar Allah statement",
+    "site:un.org \"9 October 2026\" Yemen returned to full-scale war Special Envoy attacks Saudi",
+    "site:press.un.org October 2026 Security Council Houthi attacks Saudi Arabia statement October 15",
+    "site:spa.gov.sa/en October 19 2026 Houthi attacks Saudi Arabia Shabwa",
+    "\"Statement by UN Special Envoy for Yemen, Hans Grundberg, on latest attacks against Saudi Arabia\" October 11 2026",
+    "site:un.org/press/en/2026 October 11 Riyadh Houthi attack 12 killed Saudi Arabia",
+    "site:digitallibrary.un.org Yemen October 2026 attacks Saudi Arabia 12 killed Riyadh airport",
+    "site:spa.gov.sa/en October 10 2026 Riyadh airport attack 12 killed 300 injured GACA",
+    "site:spa.gov.sa/en \"October 13, 2026\" Aramco attack Energy Ministry",
+    "site:spa.gov.sa \"limited fire\" Aramco October 13 2026 Ministry of Energy",
+    "site:spa.gov.sa/en October 2026 \"Aramco\" \"attack\" Saudi Houthi",
+    "site:spa.gov.sa/en October 19 2026 Shabwa Houthi military camp attack casualties",
+    "\"GACA\" \"309\" \"October 10, 2026\" Riyadh airport Saudi SPA",
+    "site:spa.gov.sa \"309\" \"King Khalid\" October 2026",
+    "site:spa.gov.sa/en \"12\" \"King Khalid International Airport\" October 10 2026 attack",
+    "site:spa.gov.sa \"تعليق العمليات التشغيلية مؤقتًا\" مطار الملك خالد 2026 أكتوبر 10",
+    "site:spa.gov.sa/N269 \"12\" \"309\" \"مطار الملك خالد\" 2026",
+    "site:spa.gov.sa \"12 وفاة\" \"309\" مطار الملك خالد 2026",
+    "site:spa.gov.sa \"309\" \"الهيئة العامة للطيران المدني\" \"مطار الملك خالد\"",
+    "site:spa.gov.sa/en \"attack targeted King Khalid International Airport\" \"12 fatalities\"",
+    "\"continuing attacks against civilian infrastructure\" \"Ansar Allah\" \"10 October\" Saudi Hans Grundberg URL",
+    "\"I strongly condemn the continuing attacks\" \"Ansar Allah\" October 2026 Saudi statement",
+    "\"Statement by UN Special Envoy for Yemen\" \"latest attacks against Saudi Arabia\" October 2026 url",
+    "\"Yemen has returned to full-scale war\" October 9 2026 Grundberg direct UN URL"
+  ],
+  "cited_urls_draft": [
+    "https://apnews.com/article/mideast-israel-palestinians-houthis-october-18-2026-793087dde3cb4435c6b771bae28faff3",
+    "https://apnews.com/article/mideast-saudi-medina-houthis-october-15-2026-ffa2a29fe8f91f400b0b75067d269ad3",
+    "https://apnews.com/article/yemen-houthis-saudi-arabia-aden-attacks-c39ea48032c0e8a76558b0296bb25244",
+    "https://apnews.com/article/yemen-houthis-saudi-fighting-6afad4ec4c22dcccd379152ea87cb0e2",
+    "https://dppa.un.org/en/news/yemen-has-returned-to-full-scale-war-special-envoy-warns",
+    "https://osesgy.unmissions.org/en/news/statement-by-un-special-envoy-for-yemen-hans-grundberg-on-latest-attacks-against-saudi",
+    "https://www.spa.gov.sa/N2698672",
+    "https://www.spa.gov.sa/en/N2705390",
+    "https://www.spa.gov.sa/en/w2697151"
+  ],
+  "cited_urls_annotations": [],
+  "model_returned": "gpt-6-luna",
+  "wall_s": 183.4
+}

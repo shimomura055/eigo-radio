@@ -1,0 +1,38 @@
+{
+  "trial_id": "FAMILY-X-RESEARCH-FACT-RETENTION-TRIAL-01/B3_LINK",
+  "design_doc": "docs/research/FAMILY-X-RESEARCH-FACT-RETENTION-TRIAL-01/TRIAL_DESIGN_01.md §6 / §9 v02(W4)",
+  "theme_tag": "XRFR_B3_LINK_01",
+  "conditions": ["baseline"],
+  "samples": [1],
+  "est_b3_call_jpy": {"lib_estimate": 7.6, "previous_trial_actual_mean": 8.67, "source": "TRIAL_CLOSEOUT_01.md R1 7 call=60.722円"},
+  "est_w1_chain_jpy": {"lib_estimate": 14.6, "previous_trial_actual": [11.951, 10.957]},
+  "ledgers": [
+    {
+      "id": "XRFR_E0_mey_s1",
+      "role": "control",
+      "is_test_ledger": true,
+      "ledger_path": "er085_output/research_fact_retention_trial_01/mey/s1/E0/verified_fact_ledger.txt",
+      "topic": "中東情勢が悪化、イエメン・サウジ周辺で攻撃続く",
+      "expected_core": [],
+      "expected_ok": [],
+      "prior_baseline_selection": [],
+      "prior_baseline_runs": 0,
+      "usage_keywords": {},
+      "why": "現行E0(検索なし)のmey s1 Ledger。M-A1(10/11声明の攻撃主体Ansar Allah)はdraft段階で脱落(absent_in_draft)=B3が選べる主体Factが存在しない対照"
+    },
+    {
+      "id": "XRFR_B_mey_s1",
+      "role": "positive",
+      "is_test_ledger": true,
+      "ledger_path": "er085_output/research_fact_retention_trial_01/mey/s1/B/verified_fact_ledger.txt",
+      "topic": "中東情勢が悪化、イエメン・サウジ周辺で攻撃続く",
+      "expected_core": ["F7"],
+      "expected_ok": ["F4"],
+      "prior_baseline_selection": [],
+      "prior_baseline_runs": 0,
+      "usage_keywords": {"F7": ["Ansar Allah"]},
+      "why": "方式B(actor/context畳み込み)のmey s1 Ledger。M-A1=F7、M-A2=F4が主体を保持。現行B3(baseline、Production同一Prompt)がこの主体Factを採用するか"
+    }
+  ],
+  "writer_probe_rule": "本Trialでは実施しない(B3の採用確認のみ、LLM 1 call x 2)"
+}

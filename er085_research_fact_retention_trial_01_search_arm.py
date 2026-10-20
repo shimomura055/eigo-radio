@@ -274,6 +274,68 @@ def collect_cited_urls(out: str) -> dict:
     return urls
 
 
+BROWSER_UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36")
+
+
+def nextdata_text(raw: str) -> str:
+    """JS描画ページ(SPA等)用: og:description + __NEXT_DATA__ JSON内の長い文字列を本文代わりに連結(無料HTTP取得済みHTMLからの抽出のみ)。"""
+    parts = []
+    m = re.search(r'og:description" content="([^"]{20,})"', raw)
+    if m:
+        parts.append(htmllib.unescape(m.group(1)))
+    m = re.search(r'<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)</script>', raw)
+    if m:
+        try:
+            obj = json.loads(m.group(1))
+            # サイト全体のデータ(他記事・ナビ)を避け、記事本体(pageProps.newsDetails)のみを使う。無ければ使わない
+            nd = ((obj.get("props") or {}).get("pageProps") or {}).get("newsDetails")
+            stack = [nd] if nd else []
+            while stack:
+                x = stack.pop()
+                if isinstance(x, dict):
+                    stack.extend(x.values())
+                elif isinstance(x, list):
+                    stack.extend(x)
+                elif isinstance(x, str) and len(x) > 60 and not x.startswith(("http", "/_next")):
+                    parts.append(html_to_text(x) if "<" in x else x)
+        except ValueError:
+            pass
+    return "\n".join(parts)
+
+
+def ap_body(raw: str) -> str:
+    """AP記事: RichTextStoryBody以降を本文とみなす(関連記事・ナビを避ける。見つからなければ空)。"""
+    i = raw.find("RichTextStoryBody")
+    if i < 0:
+        return ""
+    j = raw.find("Page-actions-bottom", i)
+    seg = raw[i:j] if j > 0 else raw[i:i + 40000]
+    return html_to_text(seg)
+
+
+def fetch_one(u: str, sdir: str) -> dict:
+    k = url_key(u)
+    rawp = os.path.join(sdir, k + ".raw")
+    r = subprocess.run(["curl.exe", "-L", "-s", "-m", "30", "-A", BROWSER_UA, "-H", "Accept-Language: en-US,en;q=0.9",
+                        "-w", "%{http_code}", "-o", rawp, u], capture_output=True, text=True)
+    code = r.stdout.strip()
+    text, method = "", "none"
+    if os.path.exists(rawp):
+        with open(rawp, "rb") as f:
+            raw = f.read().decode("utf-8", errors="replace")
+        if "RichTextStoryBody" in raw and "apnews.com" in u:
+            text, method = ap_body(raw), "ap_body"
+        if len(text) < 500 and ("<" in raw[:5000] or "<html" in raw.lower()):
+            text, method = html_to_text(raw), "html_to_text"
+        if len(text) < 500 and "__NEXT_DATA__" in raw:
+            text, method = nextdata_text(raw), "nextdata"
+        if "<" not in raw[:5000] and "<html" not in raw.lower():
+            text, method = raw, "plain"
+    lib.write_text(os.path.join(sdir, k + ".txt"), text)
+    return {"key": k, "http": code, "chars": len(text), "method": method, "fetched_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+            "available": code.startswith("2") and len(text) >= 500, "sha256": lib.sha256_text(text)}
+
+
 def cmd_fetch(a) -> int:
     out = os.path.abspath(a.out)
     lib.assert_under_out_root(out)
@@ -283,23 +345,13 @@ def cmd_fetch(a) -> int:
     manifest_p = os.path.join(sdir, "fetch_manifest.json")
     manifest = lib.read_json(manifest_p) if os.path.exists(manifest_p) else {}
     for u in urls:
-        if u in manifest:
+        if u in manifest and (manifest[u]["available"] or not a.refetch_unavailable):
+            manifest[u]["cells"] = urls[u]
             continue
-        k = url_key(u)
-        rawp = os.path.join(sdir, k + ".raw")
-        r = subprocess.run(["curl.exe", "-L", "-s", "-m", "30", "-A", "Mozilla/5.0", "-w", "%{http_code}", "-o", rawp, u],
-                           capture_output=True, text=True)
-        code = r.stdout.strip()
-        text = ""
-        if os.path.exists(rawp):
-            with open(rawp, "rb") as f:
-                b = f.read()
-            raw = b.decode("utf-8", errors="replace")
-            text = html_to_text(raw) if "<" in raw[:5000] or "<html" in raw.lower() else raw
-        lib.write_text(os.path.join(sdir, k + ".txt"), text)
-        manifest[u] = {"key": k, "http": code, "chars": len(text), "cells": urls[u], "fetched_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
-                       "available": code.startswith("2") and len(text) >= 500, "sha256": lib.sha256_text(text)}
-        print(f"[fetch] {code} chars={len(text)} {u[:110]}", flush=True)
+        m = fetch_one(u, sdir)
+        m["cells"] = urls[u]
+        manifest[u] = m
+        print(f"[fetch] {m['http']} chars={m['chars']} {m['method']} avail={m['available']} {u[:110]}", flush=True)
     lib.write_json(manifest_p, manifest)
     return 0
 
@@ -456,6 +508,7 @@ def main(argv=None) -> int:
     ap.add_argument("--budget-jpy", type=float, default=60.0)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--fetch-sources", action="store_true")
+    ap.add_argument("--refetch-unavailable", action="store_true", help="取得不能(本文500字未満)の出典を、ブラウザUA・本文抽出規則(AP本文/SPA __NEXT_DATA__)で再取得")
     ap.add_argument("--score", action="store_true")
     ap.add_argument("--report", default=None)
     a = ap.parse_args(argv)

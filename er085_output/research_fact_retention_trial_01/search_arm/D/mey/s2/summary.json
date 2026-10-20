@@ -1,0 +1,128 @@
+{
+  "variant": "D",
+  "topic": "mey",
+  "sample": 2,
+  "dry_run": false,
+  "n_facts_draft": 8,
+  "ledger_is_post_verification": true,
+  "verdict_counts": {
+    "VERIFIED": 8,
+    "AMBIGUOUS": 0,
+    "REJECTED": 0
+  },
+  "n_kept": 8,
+  "schema_errors": [],
+  "stages": [
+    {
+      "model_returned": "gpt-6-luna",
+      "response_id": "resp_02208be4505667d2006ad6d1d23cf087d0ae3028f3d67963f8",
+      "latency_seconds": 124.03,
+      "usage": {
+        "input_tokens": 79134,
+        "output_tokens": 8572,
+        "reasoning_tokens": 5125,
+        "cached_input_tokens": 5600
+      },
+      "web_search_call_count": 10,
+      "cost_jpy": 17.9519,
+      "url_citations": [],
+      "tools": [
+        "web_search"
+      ],
+      "schema_name": "verified_fact_ledger_draft",
+      "stage": "research"
+    },
+    {
+      "model_returned": "gpt-6-luna",
+      "response_id": "resp_0757d94a6101c196006ad6d24e818887d08f5bf69ff7cad2e7",
+      "latency_seconds": 62.89,
+      "usage": {
+        "input_tokens": 52413,
+        "output_tokens": 5106,
+        "reasoning_tokens": 3594,
+        "cached_input_tokens": 4542
+      },
+      "web_search_call_count": 5,
+      "cost_jpy": 9.2471,
+      "url_citations": [
+        {
+          "title": "GACA: Two Attacks Target King Khalid International Airport Facilities and a Saudia Aircraft",
+          "url": "https://www.spa.gov.sa/en/w2697151?utm_source=openai"
+        },
+        {
+          "title": "Statement by UN Special Envoy for Yemen, Hans Grundberg, on latest attacks against Saudi Arabia | OSESGY",
+          "url": "https://osesgy.unmissions.org/en/news/statement-by-un-special-envoy-for-yemen-hans-grundberg-on-latest-attacks-against-saudi?utm_source=openai"
+        },
+        {
+          "title": "Coalition: Air Defense Intercepts and Destroys Cruise Missile in Vicinity of King Khalid International Airport",
+          "url": "https://www.spa.gov.sa/en/N2698603?utm_source=openai"
+        },
+        {
+          "title": "Saudi Civil Defense: Six injured by projectile launched from Yemen toward Najran",
+          "url": "https://org.petra.gov.jo/Include/InnerPage.jsp?ID=91288&lang=en&name=en_news&utm_source=openai"
+        },
+        {
+          "title": "Houthis strike military camp in Yemen, killing at least 53 | AP News",
+          "url": "https://apnews.com/article/6afad4ec4c22dcccd379152ea87cb0e2"
+        },
+        {
+          "title": "Airstrike kills at least 9 in Yemen and other Middle East developments | AP News",
+          "url": "https://apnews.com/article/793087dde3cb4435c6b771bae28faff3"
+        }
+      ],
+      "tools": [
+        "web_search"
+      ],
+      "schema_name": "fact_ledger_verification",
+      "stage": "verification"
+    }
+  ],
+  "research_web_search_calls": 10,
+  "verification_web_search_calls": 5,
+  "research_cost_jpy": 17.9519,
+  "total_cost_jpy": 27.199,
+  "research_latency_s": 124.03,
+  "total_latency_s": 186.92,
+  "research_input_tokens": 79134,
+  "research_output_tokens": 8572,
+  "research_search_queries": [
+    "October 2026 Yemen Saudi attacks latest Houthi Saudi Arabia attacks",
+    "site:spa.gov.sa Yemen attack Saudi October 2026 Houthi",
+    "Yemen Saudi attacks October 2026 Reuters",
+    "Yemen attacks Saudi Arabia October 2026 UN",
+    "site:spa.gov.sa/en \"October 19, 2026\" Shabwa Houthi attack Saudi",
+    "site:spa.gov.sa/en \"October 11, 2026\" King Khalid airport 309",
+    "site:osesgy.unmissions.org \"11 October 2026\" attacks Saudi Arabia Ansar Allah",
+    "site:un.org Yemen October 2026 Saudi attacks 12 309 airport",
+    "site:spa.gov.sa/en \"October 10, 2026\" \"309\" airport GACA Riyadh",
+    "site:spa.gov.sa/en \"12 people\" \"309\" King Khalid International Airport October 2026",
+    "site:spa.gov.sa/en \"13\" \"airport\" \"October 10, 2026\" Houthi attack",
+    "Saudi General Authority Civil Aviation October 10 2026 airport 12 309 statement official",
+    "October 19 2026 Houthi attack Saudi Najran projectile injured 6 homes vehicles official",
+    "site:spa.gov.sa/en Houthi projectile Najran October 19 2026 injured six",
+    "site:spa.gov.sa \"19 October 2026\" Houthi projectile Najran",
+    "October 18 19 2026 Yemen Saudi attack latest missile drone official coalition",
+    "site:spa.gov.sa/N270 \"الدفاع المدني\" \"نجران\" \"18 أكتوبر 2026\" مقذوف",
+    "site:spa.gov.sa/en \"six citizens\" Najran \"October 18, 2026\"",
+    "site:spa.gov.sa \"إصابة ستة مواطنين\" \"نجران\" \"1448\"",
+    "الدفاع المدني سقوط مقذوف نجران 6 مواطنين 3 منازل 3 مركبات 18 أكتوبر 2026 واس",
+    "\"إصابة (6) مواطنين\" نجران 2026 واس مقذوف",
+    "\"الدفاع المدني\" \"ثلاثة منازل\" \"ثلاث مركبات\" نجران 2026",
+    "site:spa.gov.sa \"3 منازل\" \"3 مركبات\" نجران \"مقذوف\"",
+    "Yemen SABA official October 19 2026 Shabwa camp 53 killed 200 Houthi missile",
+    "site:sabanew.net October 19 2026 Shabwa Houthi attack 53 200",
+    "site:gov.ye Shabwa October 19 2026 Houthis 53 soldiers camp attack",
+    "official Yemen news agency 19 October 2026 Shabwa attack casualties Houthi"
+  ],
+  "cited_urls_draft": [
+    "https://apnews.com/article/mideast-israel-palestinians-houthis-october-18-2026-793087dde3cb4435c6b771bae28faff3",
+    "https://apnews.com/article/yemen-houthis-saudi-fighting-6afad4ec4c22dcccd379152ea87cb0e2",
+    "https://org.petra.gov.jo/Include/InnerPage.jsp?ID=91288&lang=en&name=en_news",
+    "https://osesgy.unmissions.org/en/news/statement-by-un-special-envoy-for-yemen-hans-grundberg-on-latest-attacks-against-saudi",
+    "https://www.spa.gov.sa/en/N2698603",
+    "https://www.spa.gov.sa/en/w2697151"
+  ],
+  "cited_urls_annotations": [],
+  "model_returned": "gpt-6-luna",
+  "wall_s": 186.9
+}
