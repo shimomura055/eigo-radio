@@ -1,0 +1,24 @@
+{
+  "trial_id": "FAMILY-Z-AZURE-PHRASELIST-WEIGHT-TRIAL-01",
+  "note": "TRIAL_DESIGN_01.md §2-C/§3 の事前固定数値の機械可読な転記(委任_02aで新規追加。設計書・design_matrix_01.jsonは編集していない)。値を変えるときは設計書§9改訂履歴が先。eval_extはこのファイルから閾値を読み、ハードコードしない。転記元との一致はtestで検査。",
+  "source": "docs/research/FAMILY-Z-AZURE-PHRASELIST-WEIGHT-TRIAL-01/TRIAL_DESIGN_01.md §2-C(R>=6) / §3(判定基準)",
+  "baseline_cond": "pl_unspecified",
+  "candidate_conds": ["pl_w1.5", "pl_w2.0"],
+  "min_R_for_identifiability": 6,
+  "fixed_min_abs": 3,
+  "fixed_min_fraction_of_R": 0.30,
+  "negative_false_melos_increase_max": 0,
+  "degraded_max_abs": 1,
+  "degraded_fraction_of_fixed_exclusive_upper": 0.3333333333333333,
+  "min_contexts_sentences": 2,
+  "min_voice_speed_conditions": 2,
+  "negative_canonical_false_pass_max": 0,
+  "pass_family_prefix": "PASS",
+  "interpretations": {
+    "R": "ベースライン(pl_unspecified)で全repがMelos正認識でない正例wav(全rep誤認識)。repが揺れるwavは不安定として別枠(R・fixedに数えない)",
+    "fixed": "R内で、重みwの全repが正認識になったwav数",
+    "degraded": "ベースラインで全rep正認識だが、重みwで全rep正認識でなくなったwav数(1repでも誤認識なら悪化に数える保守解釈)",
+    "voice_speed_condition": "(voice, slow6)の組。Aoede通常/Aoede減速/Charon",
+    "criterion5": "fixed wavの各repで、重みw=PASS系かつベースライン=非PASS系。かつ負例canonical注入のw条件の誤PASS=0"
+  }
+}

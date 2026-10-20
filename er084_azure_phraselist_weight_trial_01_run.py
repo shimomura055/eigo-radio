@@ -45,15 +45,71 @@ def estimate(calls: list) -> dict:
     return {"n_calls": len(calls), "audio_seconds": round(secs, 2), "est_jpy": round(L.est_jpy(secs), 3)}
 
 
+PRIMARY_USD_PER_MIN, JPY_PER_USD = 0.003, 160.0  # gpt-4o-mini-transcribe概算(pricing_snapshot準拠の見積。実費はcost log)
+
+
+def run_primary(manifest: dict, out: str, budget_jpy: float, transcribe_fn=None, max_workers: int = 4) -> dict:
+    """委任_02a: manifest記載の各wavをProduction Primary(OpenAI)でTrial用に1回ずつ転写(Azureは呼ばない)。
+    既に記録済みのidは再呼出しない(費用二重化防止)。raw/primary_calls.jsonlへ追記。"""
+    from concurrent.futures import ThreadPoolExecutor
+    if transcribe_fn is None:
+        import er006_asr_provider_routing_01 as asr
+        transcribe_fn = lambda wav: asr.transcribe(wav, "en-US")  # noqa: E731
+    raw = os.path.join(out, "raw", "primary_calls.jsonl")
+    done = {r["audio_id"] for r in L.read_raw(raw)}
+    todo = []
+    for a in manifest["audio"]:
+        if a["id"] in done:
+            continue
+        wav_abs = os.path.join(ROOT, a["path"])
+        info = L.wav_info(wav_abs)
+        if a.get("sha256") and info["sha256"] != a["sha256"]:
+            raise SystemExit(f"sha256不一致: {a['path']} -> 中止")
+        todo.append((a, wav_abs, info))
+    est = sum(i["duration_s"] / 60.0 * PRIMARY_USD_PER_MIN * JPY_PER_USD for _, _, i in todo)
+    if est > budget_jpy:
+        raise SystemExit(f"Primary見積{est:.3f}JPYがbudget{budget_jpy}を超過 -> 実行しない")
+
+    def one(t):
+        a, wav_abs, info = t
+        t0 = time.time()
+        text, err = transcribe_fn(wav_abs)
+        return {"ts": time.strftime("%Y-%m-%dT%H:%M:%S"), "phase": "PRIMARY", "audio_id": a["id"], "wav_path": a["path"],
+                "wav_sha256": info["sha256"], "duration_s": info["duration_s"], "provider": "openai_asr(Production Primary)",
+                "text": text, "err": err, "elapsed_s": round(time.time() - t0, 3),
+                "est_jpy": round(info["duration_s"] / 60.0 * PRIMARY_USD_PER_MIN * JPY_PER_USD, 4)}
+
+    n_err = 0
+    with ThreadPoolExecutor(max_workers=max_workers) as ex:
+        for row in ex.map(one, todo):
+            L.append_raw(raw, row)
+            n_err += 1 if row["err"] else 0
+            print(f"[PRIMARY] {row['audio_id']} err={row['err']} text={(row['text'] or '')[:60]!r}")
+    return {"n_called": len(todo), "n_skipped_existing": len(done), "n_err": n_err, "est_jpy": round(est, 3)}
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
-    ap.add_argument("--design", required=True)
-    ap.add_argument("--phase", required=True, choices=["A", "B", "C"])
+    ap.add_argument("--design", default=None, help="A/B/Cで必須。PRIMARYでは不要")
+    ap.add_argument("--manifest", default=None, help="PRIMARY用wav manifest_01.json")
+    ap.add_argument("--phase", required=True, choices=["A", "B", "C", "PRIMARY"])
     ap.add_argument("--out", required=True)
     ap.add_argument("--budget-jpy", type=float, required=True)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--wav-manifest", default=None)
     a = ap.parse_args(argv)
+    if a.phase == "PRIMARY":
+        # Azure phaseは一切呼ばれない構造(azure_transcribeを参照しない)
+        if not a.manifest:
+            raise SystemExit("--phase PRIMARY は --manifest が必要")
+        out = os.path.abspath(a.out)
+        cl.install(os.path.join(out, "cost_log_phase_B_primary.jsonl"))
+        with cl.logging_context(L.THEME_TAG, "phase_B_primary"):
+            res = run_primary(json.load(open(a.manifest, encoding="utf-8")), out, a.budget_jpy)
+        print(json.dumps({"done": True, **res}))
+        return 0 if res["n_err"] == 0 else 5
+    if not a.design:
+        raise SystemExit("--design が必要(phase A/B/C)")
     design = json.load(open(a.design, encoding="utf-8"))
     manifest = json.load(open(a.wav_manifest, encoding="utf-8")) if a.wav_manifest else None
     calls = build_calls(design, a.phase, manifest)
