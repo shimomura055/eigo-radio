@@ -65,8 +65,8 @@ Status管理ラベル: `PLAN_DRAFT_PENDING_FABLE_REVIEW`(VALIDATED/APPROVED_FOR_
 - ガード無効化のablation(`PNMH_NO_GUARDS=1`、`replay_result_01_noguard.json`と、空白差spanを除いた再集計): 音韻列一致のspanは全体で15→25種に増えるが、増えた7種(`us→u s`[257回]、`a m→am`[13]、`am→a m`[31]等)は**全て空白除去で綴りが一致する**ため、提案ルールに到達する前に既存の空白差規則(全文`despaced()`と`_is_compound_spacing_only_span`)が吸収する(=提案の有無と無関係。ガードの効果ではない)。**提案ルールに実際に到達するspanに限ると、ガードの限界効果は G5(canonical側token 3字以上)による`ai phone→iphone`の1件のみ**、G4(複数語側の1文字token禁止)の限界効果は保存データ上0件(`a count→account`はG5でも防がれる)。→ G4は『効果の実証がない防御』として任意(Opus/Fableが過剰と判断すれば削除可)。
 - **既存の穴(今回の対象外、判断候補)**: 上記の吸収により、canonical `us`(代名詞)をTTSが文字読み`U S`した誤りは、**現行でも**全文despace規則でPASSする(`He told us the plan.`/`He told u s the plan.`→`NORMALIZED_MATCH`、`am`→`a m`も同様)。国名`US`・時刻`a.m.`では正読なので承認済みの空白差吸収の副作用として許容されてきた可能性が高いが、略語/代名詞の区別はしていない。AI→eye(§2-追加5)と同種の『期待発音を綴りだけで決める限界』であり、L2(期待発音源)の改善で扱う対象。
 - **ラベル付きデータでの副作用確認**: ASR-THREE-WAY-COMPARISON-TRIAL-01の保存転写(`er091_output/asr_three_way_trial_01/results/asr_raw.jsonl`、**読み取り専用**・そのTrialの設定/出力は無変更)544転写・91音声(正常/HR承認難例/既知問題[take part]/構成問題[TTS文面変更・splice]、Whisper small/medium・Azure・OpenAI)に現行/提案を再適用(`replay_asr3way_cache_01.py`→`replay_asr3way_cache_result_01.json`): **判定変化 0件、問題ラベル音声の新規PASS 0件**。この集合に1語⇔複数語の正例は含まれない(救済力ではなく『副作用なし・誤PASSなし』の確認)。
-- 発生頻度は低い(判定が変わるペア4/3,493=0.11%。多語化した実転写6ペアは全てrun_byus_01の1記事由来で、一般化の根拠は薄い)。**この拡張の主な価値は予防(Family Yを含む将来の造語・ブランド名)であり、既存runの再試行削減は小さい**。
-- 適用域(`rule_domain_result_01.json`): 保存原稿の語彙3,725語(CMU収録)について「canonical単語X＝連続2語(w1 w2)」で綴りが異なる音韻一致は461組(`already=all ready`、`also=all so`、`bias=buy us`、`changes=change is`等)。通常語にも**理論上は**広く及ぶ(音が同じなら期待どおりPASSだが、適用域が「固有名詞に限らない」ことの定量根拠)。実運用では通常語がASRで2語に割れることは稀(実ペアでの発火はbyusのみ)。スコープを固有名詞/造語に絞る案は`DESIGN_OPTIONS_01.md`で比較。
+- 発生頻度は低い(判定が変わるペア4/3,493=0.11%[v2: pairs_02で4/4,032=0.10%]。多語化した実転写6ペアは全てrun_byus_01の1記事由来で、一般化の根拠は薄い)。**この拡張の主な価値は予防(Family Yを含む将来の造語・ブランド名)であり、既存runの再試行削減は小さい**。
+- 適用域(`rule_domain_result_01.json`): 保存原稿の語彙3,725語(CMU収録)について「canonical単語X＝連続2語(w1 w2)」で綴りが異なる音韻一致は461組[v2訂正: distinctは456組、§8-2](`already=all ready`、`also=all so`、`bias=buy us`、`changes=change is`等)。通常語にも**理論上は**広く及ぶ(音が同じなら期待どおりPASSだが、適用域が「固有名詞に限らない」ことの定量根拠)。実運用では通常語がASRで2語に割れることは稀(実ペアでの発火はbyusのみ)。スコープを固有名詞/造語に絞る案は`DESIGN_OPTIONS_01.md`で比較。
 
 ### 5-2. 発音供給(#133)の需要(`demand_oov_result_01.json`)
 非PASSペア1,048件の内容語差のうち、canonicalがCMU辞書外(OOV)の語: 実run由来はTriangeln(10)・Ottoni(10)・AKB48(9)・Seishiro(7)・Sukisshu(7)・Torai(5)等、**外国語・日本語由来の人名/地名が中心**(telemetryのmelos 132、khaite 56、mimoun 43、toteme 34等はTrial/合成由来を含む)。byUs型(辞書収録の英語造語)は別分類(CMUに収録されているため供給不要)。つまり#133の供給は「**CMU辞書外の外国由来名**」に効く機能であり、byUsの多語化問題(L1)とは対象が異なる。
@@ -80,5 +80,25 @@ Status管理ラベル: `PLAN_DRAFT_PENDING_FABLE_REVIEW`(VALIDATED/APPROVED_FOR_
 ## 7. 設計の肝(次書への入力)
 
 1. **byUs救済の失敗は2つの別レイヤーが重なっている**: (L1) **判定レイヤー**: 「1語⇔複数語・綴り違い・同音」が候補判定に入らない(R1-R2)。(L2) **供給レイヤー**: 「そもそも正しい発音をシステムが知らない」(R7)。L1はCMUの綴りベース発音で閉じて解ける(L2を待たない)。L2は「正解発音の確定」の問題。
-2. 提案するL1拡張の**信頼の土台は既存の1語⇔1語同音(Bias/Byus/wait-weight)と同一**(canonical側の期待発音=CMU収録綴りの発音)。これ以上の確認(公式発音)を要求するのはL2。したがって「ByUsの公式発音が未確認でも、CMU上の期待発音を土台にしている現行の1:1救済と同水準でn:mを救う」は**新しい信頼リスクを持ち込まない**が、「現行の土台自体が偶然」という既存リスクは**そのまま残る**(§2-追加確認1)。この区別を計画の前提として明記し、公式発音の確定(L2)は別建てで管理する。
+2. 提案するL1拡張の**信頼の土台(期待発音=CMU収録綴りの発音)は既存の1語⇔1語同音(Bias/Byus/wait-weight)と同じ**(ただしストレスの扱いは同一でない・v2 §8-4)(canonical側の期待発音=CMU収録綴りの発音)。これ以上の確認(公式発音)を要求するのはL2。したがって「ByUsの公式発音が未確認でも、CMU上の期待発音を土台にしている現行の1:1救済と同水準でn:mを救う」は**新しい信頼リスクを持ち込まない**が、「現行の土台自体が偶然」という既存リスクは**そのまま残る**(§2-追加確認1)。この区別を計画の前提として明記し、公式発音の確定(L2)は別建てで管理する。
 3. **特定のASR構成(Primary/Secondary)に依存しない**: L1は転写テキスト→判定の純関数であり、Primary/Secondaryの組合せが変わっても成立する(ただし「どのエンジンが多語化しやすいか」で効果の大きさは変わる=再評価対象)。
+
+## 8. v2追補(委任_02、Opus OF-PNMH-R-01〜13の調査項目。API 0・JPY 0)
+
+### 8-1. R-10: CURRENT_SPEC:1839とコードの不一致(Primary単独PASS)の事実確認
+- **仕様の文言**: CURRENT_SPEC.md:1839「英語homophone(同音異義語)のCascade内自動PASS条件」=「単一語置換差について、…ARPAbet音素列が完全一致する場合のみ**cascade対象**とする(即blind TTS retryしない)。**Secondary(または2回目のASR)側の結果が**、(a)canonical文字一致、または(b)同じくARPAbet完全一致のいずれかを満たした場合のみPASSする」。同タスクのDECISION_LOG記録(`DECISION_LOG_HISTORY.md:5736`、ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15)も「Secondary側は…ARPAbet完全一致を要求し、消極的PASSは禁止」とだけ書き、Primary単独PASSの可否は書いていない。一方、固有名詞Case Aは同じ記録(`:5734`)とCURRENT_SPEC.md:1837(A)に「代表発音が完全一致する場合のみ自動PASS(…コストゼロ)」とあり、Primary単独のPASSが明記されている。
+- **コード**: `sec:937-951`(`evaluate_attempt_with_cascade_detail`)は、Primaryが`should_pass`でなくても`is_entity_like_mismatch||is_homophone_candidate_mismatch`なら`_step_alternate_pass`(CMU Case A/homophone)が成立した時点で**追加ASRなしに即PASS**(`layers=["cmu_alternate"]`)。この挙動は**同一タスクの実装commit `2b40165dc`(2026-08-28)で既に存在**(当時のコメント「Primary#1の時点で既にhomophone/固有名詞Case Aが判定できる場合、追加のASR呼び出し無しでPASSする…コストゼロ」)。EN統一judge配線(`cc01cd8f3`、2026-10-15)後も同じ位置。
+- **後続の置換決定**: `CURRENT_SPEC.md`/`DECISION_LOG.md`/`DECISION_LOG_HISTORY.md`を`cmu_alternate|HOMOPHONE_EQUIVALENT|Primary単独|追加ASR無し|このステップ単独`でGrepし、1839を置換した決定は**見つからなかった**。一方でPRODUCTION_WIRED記録CURRENT_SPEC.md:453(FAMILY-XZ-ASR-MULTI-DIFF-JUDGE-FIX-01)は「保存済み**Primary転写**が`HOMOPHONE_EQUIVALENT`でPASS」を期待成果として記載しており、運用上はPrimary単独PASSが前提になっている。
+- **結論: (ii) 仕様文言とコードの不一致(PM_GOVERNANCE 11-8の不具合/整合性候補)**。(i)「後続決定で置換済み」は出典を特定できず、(iii)の要素(ユーザーが承認した意図がPrimary単独を含むかは文言から断定できない)もある。**判定はFable**。コードは変更しない。**新ルールの方針**: Primary単独PASSの是非は本計画で決めず、新ルールで救済した判定も既存1:1と同じ`_step_alternate_pass`経路に載せるだけで、既存のズレを拡大も是正もしない。
+
+### 8-2. R-05: 再適用対象の拡張結果(pairs_02、`collect_pairs_02.py`/`measure_v2_01.py`)
+- 対象: pairs_01(3,493)＋MDJF golden 193行(191ユニーク、`golden_rejudge.py`と同じ走査)＋`human_review_queue.jsonl`全件の`steps[*].text`(235ペア)＋`runtime_evidence_{x,z}.json`/fixtures(7ペア)＋tts_results追加形式 → **計4,032ペア**(origin別延べ: pairs_01 3,493 / tts_results_ext 3,212 / human_review_queue 235 / golden 191 / runtime_fixture 7、重複あり)。
+- **`Bi-us`を含むペアが対象に含まれることを確認**(runtime_evidence_x.json、Primary転写`BAUS`と`"Bi-us."`)。そのペアは現行・V1とも`TRUE_CONTENT_MISMATCH`のまま(`byus→baus`のOOV diffが残るため)。`bias→bi us`のdiffだけはV1で`homophone_candidate`=Trueになる(V8でFalse)。
+- 変化したペア: V1で**4ペア**(全て`byus→buy us`、run_byus_01由来、NG→`PASS:HOMOPHONE_EQUIVALENT`)、PASS→NG **0**、新規誤PASS **0**(ガード無しの最も緩い構成でも追加は`AI Phone→iPhone`の1件のみで、G5が防ぐ)。human_review_queueの235ペアでは変化0。V2(ストレス込み)・V5(2字以下禁止)は4ペアとも救済不能(変化0)、V3/V4/V6/V8は4/4維持。
+- 理論域の数字訂正: 委任_01の「461組」は`rule_domain_enum_01.py`が(X,w1,w2,only_primary)の4タプルを集合化していたため、primary/非primaryの両方で成立する組を2回数えていた。distinctは**456組**(同一語彙、`measure_v2_result_01_vocab01.json`)。pairs_02の語彙では473組。
+
+### 8-3. R-03: 既存の穴 `Tse`→`sea`の実測(是正しない)
+現行コードで`Kristie Tse spoke first.`→`Kristie Sea spoke first.`(`Sea`/`See`/`C`とも)は`ASR_VALIDATION_UNCERTAIN`→`PASS:HOMOPHONE_EQUIVALENT`。原因: `Tse`はentity_likeかつ`homophone_candidate`(any-variant一致、`S IY1`)=Trueで、`_step_alternate_pass`の1番目の分岐(Case A=代表発音のみ)は不成立だが2番目(homophone)が成立するため。固有名詞に「代表発音のみ」としたD-2'(`DECISION_LOG_HISTORY.md:5728-`の『実装中に発見した事実』、Tse/Sea)の意図は、多語span・1:1のhomophone経路でも貫かれていない。規模: 保存canonical中の文中大文字語621語のうちCMUに複数variantを持つ116語、**非代表variantでのみ他語と同音になる組は5組(4語)**: `loewe→low`(46回)、`tse→sea/see`(12回)、`are→or`(6回)、`when→win`(7回)。是正は本計画の範囲外(判断候補U5・R-13)。
+
+### 8-4. v1記述の訂正
+- 本書§2「追加確認1」・§3表(CMU同音の再利用)・末尾の結論2にある『既存の1語⇔1語同音と同一』は、**信頼の土台(期待発音=CMU収録綴りの発音)が同じ**という意味に限る。ストレスの扱いは同一でない(既存1:1はストレス込みの完全一致、連結比較はストレス無視。DESIGN_OPTIONS_01.md §4-1 G7)。

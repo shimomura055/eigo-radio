@@ -1,0 +1,731 @@
+{
+ "R05_pairs02_replay": {
+  "n_pairs": 4032,
+  "origin_totals": {
+   "pairs_01": 3493,
+   "tts_results_ext": 3212,
+   "human_review_queue": 235,
+   "golden_mdjf": 191,
+   "runtime_fixture": 7
+  },
+  "permissive_n_changed": 5,
+  "permissive_changed_by_origin": {
+   "golden_mdjf": 2,
+   "pairs_01": 5,
+   "tts_results_ext": 2,
+   "runtime_fixture": 1
+  },
+  "permissive_changed_list": [
+   {
+    "idx": 2338,
+    "c": "Today's topic is “Can’t Wait for the Next Episode”? Make One Yourself?",
+    "a": "Today's topic is, can't wait for the next episode? Make one yourself? ",
+    "b": [
+     "ASR_VALIDATION_UNCERTAIN",
+     "PASS:HOMOPHONE_EQUIVALENT"
+    ],
+    "origins": [
+     "golden_mdjf",
+     "pairs_01",
+     "tts_results_ext"
+    ]
+   },
+   {
+    "idx": 2370,
+    "c": "“Wait, it ends here!?” Have you ever blurted that out when a manga end",
+    "a": "Wait, it ends here? Have you ever blurted that out? When a manga ends ",
+    "b": [
+     "ASR_VALIDATION_UNCERTAIN",
+     "PASS:HOMOPHONE_EQUIVALENT"
+    ],
+    "origins": [
+     "golden_mdjf",
+     "pairs_01",
+     "runtime_fixture",
+     "tts_results_ext"
+    ]
+   },
+   {
+    "idx": 2936,
+    "c": "Today's topic is Some AI Phone Calls Had Humans Behind the Scenes.",
+    "a": "Today's topic is, some iPhone calls had humans behind the scenes.",
+    "b": [
+     "ASR_VALIDATION_UNCERTAIN",
+     "PASS:HOMOPHONE_EQUIVALENT"
+    ],
+    "origins": [
+     "pairs_01"
+    ]
+   },
+   {
+    "idx": 3463,
+    "c": "Today's topic is Can't Wait for the Next Episode? Make One Yourself? b",
+    "a": "Today's topic is, can't wait for the next episode? Make one yourself? ",
+    "b": [
+     "ASR_VALIDATION_UNCERTAIN",
+     "PASS:HOMOPHONE_EQUIVALENT"
+    ],
+    "origins": [
+     "pairs_01"
+    ]
+   },
+   {
+    "idx": 3474,
+    "c": "Wait, it ends here!? Have you ever blurted that out when a manga ends ",
+    "a": "Wait, it ends here? Have you ever blurted that out? When a manga ends ",
+    "b": [
+     "ASR_VALIDATION_UNCERTAIN",
+     "PASS:HOMOPHONE_EQUIVALENT"
+    ],
+    "origins": [
+     "pairs_01"
+    ]
+   }
+  ],
+  "configs": {
+   "V1_base(ストレス無視,全variant,G4=1字,G5)": {
+    "n_changed": 4,
+    "pass_to_ng": 0,
+    "ng_to_pass": 4,
+    "items": [
+     {
+      "idx": 2338,
+      "canonical": "Today's topic is “Can’t Wait for the Next Episode”? Make One Yourself? “byUs” Lets You Mak",
+      "asr": "Today's topic is, can't wait for the next episode? Make one yourself? Buy us lets you make",
+      "before": [
+       "TRUE_CONTENT_MISMATCH",
+       "NOT_PASS"
+      ],
+      "after": [
+       "ASR_VALIDATION_UNCERTAIN",
+       "PASS:HOMOPHONE_EQUIVALENT"
+      ],
+      "origins": [
+       "golden_mdjf",
+       "pairs_01",
+       "tts_results_ext"
+      ],
+      "src": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/audit/tts_genera"
+     },
+     {
+      "idx": 2370,
+      "canonical": "“Wait, it ends here!?” Have you ever blurted that out when a manga ends at an exciting mom",
+      "asr": "Wait, it ends here? Have you ever blurted that out? When a manga ends at an exciting momen",
+      "before": [
+       "TRUE_CONTENT_MISMATCH",
+       "NOT_PASS"
+      ],
+      "after": [
+       "ASR_VALIDATION_UNCERTAIN",
+       "PASS:HOMOPHONE_EQUIVALENT"
+      ],
+      "origins": [
+       "golden_mdjf",
+       "pairs_01",
+       "runtime_fixture",
+       "tts_results_ext"
+      ],
+      "src": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/b1b/audit/tts_gener"
+     },
+     {
+      "idx": 3463,
+      "canonical": "Today's topic is Can't Wait for the Next Episode? Make One Yourself? byUs Lets You Make St",
+      "asr": "Today's topic is, can't wait for the next episode? Make one yourself? Buy us lets you make",
+      "before": [
+       "TRUE_CONTENT_MISMATCH",
+       "NOT_PASS"
+      ],
+      "after": [
+       "ASR_VALIDATION_UNCERTAIN",
+       "PASS:HOMOPHONE_EQUIVALENT"
+      ],
+      "origins": [
+       "pairs_01"
+      ],
+      "src": "er021_output/en_asr_semantic_equivalence_production_wiring_01/telemetry.jsonl:L9732"
+     },
+     {
+      "idx": 3474,
+      "canonical": "Wait, it ends here!? Have you ever blurted that out when a manga ends at an exciting momen",
+      "asr": "Wait, it ends here? Have you ever blurted that out? When a manga ends at an exciting momen",
+      "before": [
+       "TRUE_CONTENT_MISMATCH",
+       "NOT_PASS"
+      ],
+      "after": [
+       "ASR_VALIDATION_UNCERTAIN",
+       "PASS:HOMOPHONE_EQUIVALENT"
+      ],
+      "origins": [
+       "pairs_01"
+      ],
+      "src": "er021_output/en_asr_semantic_equivalence_production_wiring_01/telemetry.jsonl:L9745"
+     }
+    ]
+   },
+   "V2_stress込み": {
+    "n_changed": 0,
+    "pass_to_ng": 0,
+    "ng_to_pass": 0,
+    "items": []
+   },
+   "V3_entity_likeのみ代表variant限定": {
+    "n_changed": 4,
+    "pass_to_ng": 0,
+    "ng_to_pass": 4,
+    "items": [
+     [
+      2338,
+      "NOT_PASS",
+      "PASS:HOMOPHONE_EQUIVALENT"
+     ],
+     [
+      2370,
+      "NOT_PASS",
+      "PASS:HOMOPHONE_EQUIVALENT"
+     ],
+     [
+      3463,
+      "NOT_PASS",
+      "PASS:HOMOPHONE_EQUIVALENT"
+     ],
+     [
+      3474,
+      "NOT_PASS",
+      "PASS:HOMOPHONE_EQUIVALENT"
+     ]
+    ]
+   },
+   "V4_常に代表variant限定": {
+    "n_changed": 4,
+    "pass_to_ng": 0,
+    "ng_to_pass": 4,
+    "items": [
+     [
+      2338,
+      "NOT_PASS",
+      "PASS:HOMOPHONE_EQUIVALENT"
+     ],
+     [
+      2370,
+      "NOT_PASS",
+      "PASS:HOMOPHONE_EQUIVALENT"
+     ],
+     [
+      3463,
+      "NOT_PASS",
+      "PASS:HOMOPHONE_EQUIVALENT"
+     ],
+     [
+      3474,
+      "NOT_PASS",
+      "PASS:HOMOPHONE_EQUIVALENT"
+     ]
+    ]
+   },
+   "V5_G4を2字以下に強化": {
+    "n_changed": 0,
+    "pass_to_ng": 0,
+    "ng_to_pass": 0,
+    "items": []
+   },
+   "V6_G4:2字tokenはzipf>=5.0のみ": {
+    "n_changed": 4,
+    "pass_to_ng": 0,
+    "ng_to_pass": 4,
+    "items": [
+     [
+      2338,
+      "NOT_PASS",
+      "PASS:HOMOPHONE_EQUIVALENT"
+     ],
+     [
+      2370,
+      "NOT_PASS",
+      "PASS:HOMOPHONE_EQUIVALENT"
+     ],
+     [
+      3463,
+      "NOT_PASS",
+      "PASS:HOMOPHONE_EQUIVALENT"
+     ],
+     [
+      3474,
+      "NOT_PASS",
+      "PASS:HOMOPHONE_EQUIVALENT"
+     ]
+    ]
+   },
+   "V7_stress込み+entity代表限定": {
+    "n_changed": 0,
+    "pass_to_ng": 0,
+    "ng_to_pass": 0,
+    "items": []
+   },
+   "V8_G4:2字tokenは機能語集合のみ": {
+    "n_changed": 4,
+    "pass_to_ng": 0,
+    "ng_to_pass": 4,
+    "items": [
+     [
+      2338,
+      "NOT_PASS",
+      "PASS:HOMOPHONE_EQUIVALENT"
+     ],
+     [
+      2370,
+      "NOT_PASS",
+      "PASS:HOMOPHONE_EQUIVALENT"
+     ],
+     [
+      3463,
+      "NOT_PASS",
+      "PASS:HOMOPHONE_EQUIVALENT"
+     ],
+     [
+      3474,
+      "NOT_PASS",
+      "PASS:HOMOPHONE_EQUIVALENT"
+     ]
+    ]
+   }
+  }
+ },
+ "R01_R03_R07_triples461": {
+  "n_triples": 473,
+  "stress_exact": 291,
+  "stress_removed_only": 182,
+  "rep_all(X代表=w1代表+w2代表)": 132,
+  "rep_X_any_w": 380,
+  "rep_w_any_X": 198,
+  "only_nonrep(代表以外のvariantでのみ一致)": 27,
+  "stopword_pair": 324,
+  "stopword_pair_and_only_nonrep": 19,
+  "stress_exact_and_rep_all": 19,
+  "stress_removed_only_and_only_nonrep": 11,
+  "guarded": {
+   "V1_base(ストレス無視,全variant,G4=1字,G5)": {
+    "canonX_asr_multi": 472,
+    "canonMulti_asrX": 185
+   },
+   "V2_stress込み": {
+    "canonX_asr_multi": 291,
+    "canonMulti_asrX": 95
+   },
+   "V3_entity_likeのみ代表variant限定": {
+    "canonX_asr_multi": 472,
+    "canonMulti_asrX": 185
+   },
+   "V4_常に代表variant限定": {
+    "canonX_asr_multi": 131,
+    "canonMulti_asrX": 59
+   },
+   "V5_G4を2字以下に強化": {
+    "canonX_asr_multi": 185,
+    "canonMulti_asrX": 185
+   },
+   "V6_G4:2字tokenはzipf>=5.0のみ": {
+    "canonX_asr_multi": 433,
+    "canonMulti_asrX": 185
+   },
+   "V7_stress込み+entity代表限定": {
+    "canonX_asr_multi": 291,
+    "canonMulti_asrX": 95
+   },
+   "V8_G4:2字tokenは機能語集合のみ": {
+    "canonX_asr_multi": 423,
+    "canonMulti_asrX": 185
+   }
+  },
+  "permissive(ガード無)": {
+   "canonX_asr_multi": 472,
+   "canonMulti_asrX": 472
+  }
+ },
+ "R02_bius_countermeasures_span_level": {
+  "V1_base(ストレス無視,全variant,G4=1字,G5)": {
+   "bias->bi us": true,
+   "bias->by us": true,
+   "byus->bi us": true,
+   "byus->buy us": true,
+   "byus->by us": true,
+   "onto->on to": true,
+   "already->all ready": true,
+   "melos->mellow s": false
+  },
+  "V2_stress込み": {
+   "bias->bi us": false,
+   "bias->by us": false,
+   "byus->bi us": false,
+   "byus->buy us": false,
+   "byus->by us": false,
+   "onto->on to": false,
+   "already->all ready": false,
+   "melos->mellow s": false
+  },
+  "V3_entity_likeのみ代表variant限定": {
+   "bias->bi us": true,
+   "bias->by us": true,
+   "byus->bi us": true,
+   "byus->buy us": true,
+   "byus->by us": true,
+   "onto->on to": true,
+   "already->all ready": true,
+   "melos->mellow s": false
+  },
+  "V4_常に代表variant限定": {
+   "bias->bi us": true,
+   "bias->by us": true,
+   "byus->bi us": true,
+   "byus->buy us": true,
+   "byus->by us": true,
+   "onto->on to": true,
+   "already->all ready": true,
+   "melos->mellow s": false
+  },
+  "V5_G4を2字以下に強化": {
+   "bias->bi us": false,
+   "bias->by us": false,
+   "byus->bi us": false,
+   "byus->buy us": false,
+   "byus->by us": false,
+   "onto->on to": false,
+   "already->all ready": true,
+   "melos->mellow s": false
+  },
+  "V6_G4:2字tokenはzipf>=5.0のみ": {
+   "bias->bi us": false,
+   "bias->by us": true,
+   "byus->bi us": false,
+   "byus->buy us": true,
+   "byus->by us": true,
+   "onto->on to": true,
+   "already->all ready": true,
+   "melos->mellow s": false
+  },
+  "V7_stress込み+entity代表限定": {
+   "bias->bi us": false,
+   "bias->by us": false,
+   "byus->bi us": false,
+   "byus->buy us": false,
+   "byus->by us": false,
+   "onto->on to": false,
+   "already->all ready": false,
+   "melos->mellow s": false
+  },
+  "V8_G4:2字tokenは機能語集合のみ": {
+   "bias->bi us": false,
+   "bias->by us": true,
+   "byus->bi us": false,
+   "byus->buy us": true,
+   "byus->by us": true,
+   "onto->on to": true,
+   "already->all ready": true,
+   "melos->mellow s": false
+  }
+ },
+ "R02_bius_sentence_current_code": [
+  "TRUE_CONTENT_MISMATCH",
+  "NOT_PASS"
+ ],
+ "R02_bius_sentence_after_V1": [
+  "ASR_VALIDATION_UNCERTAIN",
+  "PASS:HOMOPHONE_EQUIVALENT"
+ ],
+ "R02_bius_sentence_after_V5": [
+  "TRUE_CONTENT_MISMATCH",
+  "NOT_PASS"
+ ],
+ "R02_bius_sentence_after_V6": [
+  "TRUE_CONTENT_MISMATCH",
+  "NOT_PASS"
+ ],
+ "R02_bius_sentence_after_V8": [
+  "TRUE_CONTENT_MISMATCH",
+  "NOT_PASS"
+ ],
+ "R02_tokenize_Bi-us": [
+  "bi",
+  "us"
+ ],
+ "R03_tse_sea_current_code": {
+  "Kristie Tse spoke first. -> Kristie Sea spoke first.": {
+   "cls": "ASR_VALIDATION_UNCERTAIN",
+   "final": "PASS:HOMOPHONE_EQUIVALENT",
+   "diffs": [
+    [
+     "tse",
+     "sea",
+     true,
+     true
+    ]
+   ]
+  },
+  "Tse spoke first. -> Sea spoke first.": {
+   "cls": "ASR_VALIDATION_UNCERTAIN",
+   "final": "PASS:HOMOPHONE_EQUIVALENT",
+   "diffs": [
+    [
+     "tse",
+     "sea",
+     true,
+     true
+    ]
+   ]
+  },
+  "Tse spoke first. -> See spoke first.": {
+   "cls": "ASR_VALIDATION_UNCERTAIN",
+   "final": "PASS:HOMOPHONE_EQUIVALENT",
+   "diffs": [
+    [
+     "tse",
+     "see",
+     true,
+     true
+    ]
+   ]
+  },
+  "Tse spoke first. -> C spoke first.": {
+   "cls": "ASR_VALIDATION_UNCERTAIN",
+   "final": "PASS:HOMOPHONE_EQUIVALENT",
+   "diffs": [
+    [
+     "tse",
+     "c",
+     true,
+     true
+    ]
+   ]
+  },
+  "Kristie spoke first. -> Christie spoke first.": {
+   "cls": "ASR_VALIDATION_UNCERTAIN",
+   "final": "PASS:PROPER_NOUN_ENTITY_ARPABET_CONFIRMED",
+   "diffs": [
+    [
+     "kristie",
+     "christie",
+     true,
+     true
+    ]
+   ]
+  }
+ },
+ "R03_entity_hole_scan": {
+  "n_midsentence_capitalized_words": 621,
+  "n_in_cmu_with_multi_variant": 116,
+  "n_hole_pairs(canonical大文字語の非代表variantでのみ同音になる語)": 5,
+  "n_distinct_canonical_words_in_holes": 4,
+  "examples": [
+   [
+    "are",
+    "or",
+    6
+   ],
+   [
+    "loewe",
+    "low",
+    46
+   ],
+   [
+    "tse",
+    "sea",
+    12
+   ],
+   [
+    "tse",
+    "see",
+    12
+   ],
+   [
+    "when",
+    "win",
+    7
+   ]
+  ]
+ },
+ "R04_behavior_change_points": {
+  "a_number_exception": {
+   "canonical": "byUs has two apps.",
+   "asr": "Buy us has to apps.",
+   "before": [
+    "TRUE_CONTENT_MISMATCH",
+    "NOT_PASS"
+   ],
+   "after": [
+    "HOMOPHONE_MATCH_NUMBER_EXCEPTION",
+    "PASS"
+   ],
+   "diffs_after": [
+    [
+     "byus",
+     "buy us",
+     false,
+     true
+    ]
+   ]
+  },
+  "a_number_exception_control_1to1": {
+   "canonical": "Bias has two apps.",
+   "asr": "Buys has to apps.",
+   "before": [
+    "HOMOPHONE_MATCH_NUMBER_EXCEPTION",
+    "PASS"
+   ],
+   "after": [
+    "HOMOPHONE_MATCH_NUMBER_EXCEPTION",
+    "PASS"
+   ],
+   "diffs_after": [
+    [
+     "bias",
+     "buys",
+     true,
+     false
+    ]
+   ]
+  },
+  "a_number_exception_control_1to1_homophone": {
+   "canonical": "Bias has two apps.",
+   "asr": "Byus has to apps.",
+   "before": [
+    "HOMOPHONE_MATCH_NUMBER_EXCEPTION",
+    "PASS"
+   ],
+   "after": [
+    "HOMOPHONE_MATCH_NUMBER_EXCEPTION",
+    "PASS"
+   ],
+   "diffs_after": [
+    [
+     "bias",
+     "byus",
+     true,
+     true
+    ]
+   ]
+  },
+  "c_connected_speech_mix": {
+   "canonical": "Please check this stuff with byUs now.",
+   "asr": "Please check this tough with buy us now.",
+   "before": [
+    "TRUE_CONTENT_MISMATCH",
+    "NOT_PASS"
+   ],
+   "after": [
+    "TRUE_CONTENT_MISMATCH",
+    "NOT_PASS"
+   ],
+   "diffs_after": [
+    [
+     "stuff",
+     "tough",
+     false,
+     false
+    ],
+    [
+     "byus",
+     "buy us",
+     false,
+     true
+    ]
+   ]
+  },
+  "c_other_content_diff_mix": {
+   "canonical": "Walk uphill slowly with byUs.",
+   "asr": "Walk a pill slowly with buy us.",
+   "before": [
+    "TRUE_CONTENT_MISMATCH",
+    "NOT_PASS"
+   ],
+   "after": [
+    "TRUE_CONTENT_MISMATCH",
+    "NOT_PASS"
+   ],
+   "diffs_after": [
+    [
+     "uphill",
+     "pill",
+     false,
+     false
+    ],
+    [
+     "byus",
+     "buy us",
+     false,
+     true
+    ]
+   ]
+  },
+  "c_proper_noun_diff_mix": {
+   "canonical": "Melos met byUs today.",
+   "asr": "Mellow s met buy us today.",
+   "before": [
+    "TRUE_CONTENT_MISMATCH",
+    "NOT_PASS"
+   ],
+   "after": [
+    "ASR_VALIDATION_UNCERTAIN",
+    "NOT_PASS"
+   ],
+   "diffs_after": [
+    [
+     "melos",
+     "mellow s",
+     true,
+     false
+    ],
+    [
+     "byus",
+     "buy us",
+     false,
+     true
+    ]
+   ]
+  },
+  "d_f1_residual": {
+   "canonical": "He said the byUs team won the match.",
+   "asr": "He said the buy us team won the match.",
+   "before": [
+    "TRUE_CONTENT_MISMATCH",
+    "NOT_PASS"
+   ],
+   "after": [
+    "ASR_VALIDATION_UNCERTAIN",
+    "PASS:HOMOPHONE_EQUIVALENT"
+   ],
+   "diffs_after": [
+    [
+     "byus",
+     "buy us",
+     false,
+     true
+    ]
+   ]
+  },
+  "base_positive": {
+   "canonical": "The service is called byUs now.",
+   "asr": "The service is called buy us now.",
+   "before": [
+    "TRUE_CONTENT_MISMATCH",
+    "NOT_PASS"
+   ],
+   "after": [
+    "ASR_VALIDATION_UNCERTAIN",
+    "PASS:HOMOPHONE_EQUIVALENT"
+   ],
+   "diffs_after": [
+    [
+     "byus",
+     "buy us",
+     false,
+     true
+    ]
+   ]
+  }
+ },
+ "R04_b_m1_secondary_contradiction_input": {
+  "secondary_text": "Melos met buy us today.",
+  "before": "TRUE_CONTENT_MISMATCH",
+  "after": "ASR_VALIDATION_UNCERTAIN"
+ }
+}
