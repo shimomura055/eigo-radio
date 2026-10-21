@@ -25,6 +25,15 @@ PRODUCTION_KEYS_EXPECTED = {
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
+# 委任_02より後に、別の承認済み委任で追加されたProduction key(追加のみ。既存keyの値は不変=上のEXPECTEDで固定)。閉集合の更新として列挙:
+#  - FAMILY_Z_*: FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01 委任_03(2026-10-12、routing contract内コメント参照)。C-1時点から既知FAILだった。
+#  - FAMILY_X_B3_CORE_NUMBER_ROUNDING: FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01 委任_06 C-2(2026-10-22、gpt-6-luna固定。値は下で固定)
+LATER_APPROVED_PRODUCTION_KEYS = {
+    "FAMILY_Z_WRITER_ADV_R0", "FAMILY_Z_WRITER_ADV_R1", "FAMILY_Z_WRITER_ADV_R2", "FAMILY_Z_STD_ADJUST", "FAMILY_Z_SEMANTIC_JUDGE",
+    "FAMILY_Z_STORY_SPLIT", "FAMILY_Z_DIALOGUE_ATTRIBUTION", "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+}
+
+
 class T(unittest.TestCase):
     def test_trial_keys_are_luna(self):
         for k in common.TRIAL_KEYS:
@@ -37,8 +46,11 @@ class T(unittest.TestCase):
     def test_production_keys_unchanged(self):
         for k, v in PRODUCTION_KEYS_EXPECTED.items():
             self.assertEqual(routing.PROCESS_MODEL_MAP[k], v, k)
-        extra = set(routing.PROCESS_MODEL_MAP) - set(PRODUCTION_KEYS_EXPECTED) - set(common.TRIAL_KEYS)
+        extra = set(routing.PROCESS_MODEL_MAP) - set(PRODUCTION_KEYS_EXPECTED) - set(common.TRIAL_KEYS) - LATER_APPROVED_PRODUCTION_KEYS
         self.assertFalse(extra, f"想定外のkey追加: {extra}")
+
+    def test_core_number_rounding_key_is_luna_literal(self):
+        self.assertEqual(routing.PROCESS_MODEL_MAP["FAMILY_X_B3_CORE_NUMBER_ROUNDING"], "gpt-6-luna")
 
     def test_non_trial_key_rejected(self):
         with self.assertRaises(routing.ModelContractViolation):

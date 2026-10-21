@@ -1,0 +1,36 @@
+FABLE-DELEGATION-MARKER: B3RD-PROD-C2-委任_06-20261022
+
+# 委任(FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01 委任_06 [C-2]: Family X中核数値丸めのProduction実装(Opus条件反映)+Regression+記事A「給料が上がると、性格も変わる？」のtext工程再制作(B3→Writer R0/R1/R2→Std/Adv本文・解説・Key Phrases等のtext)+text段の品質検査。**TTS・組立・試聴ページ更新はC-3**(多語同音救済とKey Phrase両方PASSの配線完了後に音声化するため)。費用Guardrail=本委任JPY60以内(text工程約25〜40円+judge)、案件全体300円以内)
+
+## 0. 運用ルール・並列注意
+- 他agent稼働中: (A-2)多語同音救済配線=`er006_preprod_hardening_01_validation.py`・`er006_secondary_asr_01.py`・`er094_*`・PNMH docs・CURRENT_SPEC(1839注記+新節)。(D-2予定)KP両方PASS=`er078_asr_unified_judge_01.py`・`er003_v1_repro01_main_generate.py`・`er019_family_x_kp_en_k2_store_01.py`・`er063_family_z_audio_01.py`。**あなたが編集してよいProduction .py**: `er019_family_x_entertainment_production_runner_01.py`、`er053_family_x_factlock_ja_writer_01.py`、`er006_model_routing_contract_01.py`(role 1行追加)、`er095_*`、および関連test(`er053_*_test_01.py`、`er054_family_z_story_pool_trial_02_test_01.py`、`er053_cost_aggregate_01_test_01.py`の閉集合更新、`er053_c4_wiring_test_01.py`)。それ以外のProduction .pyは編集しない。共有ファイル(`OPEN_ITEMS.md`/`DECISION_LOG.md`/`CURRENT_SPEC.md`/`docs/pm/REPORT_LEDGER.md`/`docs/pm/OPUS_FINDINGS_LEDGER.md`)編集前に `git status` → 該当行を再Grep → 自分の行だけ編集 → 即 `git add <file>` + commit。`index.lock`は30秒待って再試行。
+- `git add -A/-u/-f`、amend、rebase、force push、stash、clean、reset --hard、checkout -f 禁止。secret_scan `--staged` hits=0。push=`git push origin HEAD:main`。一時ファイルはforce-add禁止。SSOT全文読込禁止。他人の未commit差分(`er0XX_output/*`)を混ぜない。有料runの再起動禁止(26節)、各有料工程前にSTOPセンチネル確認。日次累計を`docs/pm/tools/daily_dev_cost_01.py --date 2026-10-22`で開始前に確認(1,000円以内)。
+
+## 1. 前提
+- 承認: `APPROVED_FOR_PRODUCTION`(ユーザー原文=`docs/pm/delegation_log/2026-10-22_FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01_APPROVAL-AND-ARTICLE-A-REMAKE_USER.md`、DECISION_LOG記録済み)。Family Xのみ。Luna low。規則5例外はB3正式指定概数のみ。小数%は既存原則。既概数再丸めなし。V8(10%)。S5条件付き(Trial環境PASS済み→実装可)。
+- C-1成果物: `docs/research/FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01/IMPLEMENTATION_DESIGN_01.md`、`er095_b3_core_number_rounding_01.py`(+test 47)、`S5_TRIAL_RESULT_01.md`、`v8_regression_90.json`、commit 9e0610199。
+- Opusレビュー(OF-B3RD-P-01〜13、`docs/pm/OPUS_FINDINGS_LEDGER.md`へ登録しFable採否を付す): **着手=条件付き可**。Fable採否:
+  - P-01 [Major] **採用**: 同一B3版(`annotated_md_sha256`一致)のoverlayはstatusに関わらず確定値として再利用。再判断はoverlay無し/破損/stale/`--regenerate-stage writer`のみ。W5照合対象=現在のoverlayファイルの`overlay_sha256`(status不問)。記録時・現在とも`enabled=True`のときだけ照合(flag切替rollback時はSTOPせずログ)。test化。
+  - P-02 [Minor] **採用**: JA再利用経路(`--stage advanced/standard`等)では新規判断をしない(既存overlayの検証のみ)。
+  - P-03 [Major] **採用**: `require_model(ROLE_KEY)`をtry外へ(設定ミスはSTOP可)。routing登録を無条件assertするtest。捕捉対象をAPI/通信・JSON解析・model不一致・構造不正に絞り、status=`JUDGE_API_ERROR`/`INTERNAL_ERROR`を分離。runnerに`[WARN]`出力、`cost.json`/実行サマリに記録、記事ごとのstatus集計可能に。
+  - P-04 [Info] **採用(仕様明記)**: 「V8は小数%にも適用。10%以内に丸められない小さい小数%は厳密値のまま」をCURRENT_SPEC/OPEN-437に明記。既存原則(evidence_compression_editor:108-131)と矛盾しない。V8 fixtureの事前ラベルE(5.98%→約6%等)は「承認前の事前ラベル」と注記し、testは項目ごとの期待PASS/REJECTを正とする。
+  - P-05 [Minor] **採用(記録のみ)**: 既概数=ヘッジ語判定の線引きをCURRENT_SPECに明記。`date_time`種別の常時厳密値はSpoken-first Number Treatment(CURRENT_SPEC:1730)の既存仕様の機械化として**採用**(V9: `kind=date_time`は丸め不可。既存仕様の遵守であり新基準ではない。`v8_regression_90.json`で影響0件であることを確認し、1件でもラベルAを阻止するなら実装せず報告)。「50%/100%境界をまたぐ丸めの降格」は新基準候補として**実装せず**、記事AのBefore/Afterで該当有無を報告(ユーザー判断事項へ)。
+  - P-06 [Major] **採用**: W1は1行helperで呼ぶ(c4構造test維持)。`er053_family_x_factlock_ja_writer_01_test_01.py:124-134`の固定値(MARK_RE/TAG_LEAK_RE sha)は「承認済みS5による許容差」として理由+承認原文pathを明記して更新。routing閉集合test(`er054_…_test_01.py:37-41`、`er053_cost_aggregate_01_test_01.py:91-98`)更新。`er053_b3_annotation_contract_01`のtestを回帰対象に。E5 golden(overlay無し時のPrompt一致)維持。既知FAIL(`test_w1_rf_queue_contract_…` er090 import許可)も是正。
+  - P-07 [Minor] **採用**: overlay 0件なら`annotated.news_field_text`をそのまま使う(バイト一致)。W4に丸め指定追加後の`news_field_sha256`も記録。
+  - P-08 [Minor] **採用**: S5は「除去して記録」。`approx_marks_echoed`を別カウンタ+WARN。
+  - P-09 [Info] **採用(確認)**: Trial harnessのoverlay pathがProductionと別であることを確認。
+  - P-10 [Major] **採用**: 記事Aの最終JA/Adv/Std本文に決定論の数値監査(Trial_02のもの、API 0)をかけ「各数値が台帳の厳密値かoverlay指定概数のいずれか」を確認。丸め数値を含む文へのRisk Flagger flagの有無を記録。
+  - P-11 [Major] **採用**: PRODUCTION_WIRED証拠条件=(1)overlay `status=OK`、`judge.model_returned`がgpt-6-luna始まり・`effort=low`/(2)`n_approximate_ok≥1`かつR0 Promptに規則8と`【概数表記】`行(Prompt sha・`rounding.applied=true`)/(3)resume経路の実走(`--stage writer --stop-after writer`相当で既存revisionありの状態、`api_calls=0`、W5 PASS)/(4)P-10数値監査PASS。(2)が0件なら「何もしない経路のみ実証」と明記し、実artifactでのPrompt組立offline test(API 0)で補う。
+  - P-12/P-13 [Info] 了承。
+
+## 2. 作業
+**Phase 1 実装(API 0)**: 設計書(a)〜(h)+Opus条件を実装。W1(runner helper 1行)、W2(Writer入力: overlay 0件は素通し)、W3(Prompt規則8+【概数表記】行、overlay無し時はbyte一致)、W4(provenance)、W5(resume来歴照合、P-01条件)、W6(S5: MARK_RE/TAG_LEAK_RE、`approx_marks_echoed`)、W7(routing role `FAMILY_X_B3_CORE_NUMBER_ROUNDING`=gpt-6-luna/low)、W8(test更新)、V9(date_time厳密、条件付き)。rollback定数`B3_CORE_NUMBER_ROUNDING_ENABLED`。Family Zから到達しないこと(Isolation test)。
+**Phase 2 Regression(API 0)**: er095 test全件/V8回帰90件(+V9影響0確認)/S5 test/`er053_*`全test(固定値更新込み)/`er053_c4_wiring_test_01`/`er053_b3_annotation_contract_01`test/routing閉集合test/Family X integration test/既知FAIL是正。全PASSを記録(FAILは原因究明→修正→再実行。承認仕様外の変更が必要ならSTOP報告)。
+**Phase 3 記事A text再制作(有料・最小)**: 対象run=`er019_output/family_x_audio_production_wiring_01/paycheck_personality__run_pp_01/`。**旧完成候補は一切上書きしない**: 新run_id(例: `paycheck_personality__run_pp_02`)を作り、Research成果物・Verified Fact Ledger・必要なResearch段artifactを新runへ複製(Research再実行禁止、research/ledger費用0)。B3(既存正式処理)→丸め判断(Luna low)→Writer R0→R1→R2→Standard/Advanced(英語本文・解説・Key Phrases等のtext全部)を正式Production runnerで実行(`--stage`等の正式オプションを使用、TTSは実行しない=textまでで停止できるオプションがあればそれを使う。無ければTTS段直前で停止する正式な方法を確認し、無理に改造しない。どうしてもtextだけで止められない場合はその旨を報告し、TTSを含めた一括実行はC-3でFableが判断する)。provenanceに実model_id・effort・Prompt sha・routingを残す。
+**Phase 4 text段の検査(API 0)**: P-10数値監査(JA/Adv/Std)、Risk Flagger結果(丸め数値文のflag有無)、Fact Lock(規則5例外が指定概数のみ)、タグ漏れ0(S5)、Before/After(記事Aで**実際に使われた**丸めのみ: 旧完成候補 vs 新text。例: 134,515人→約13万5千人等)、P-11(1)(2)(3)の証拠(resume経路の実走はAPI 0)。
+**SSOT**: CURRENT_SPECへ新節「Family X 中核数値丸め(Luna low、規則5例外、小数%・既概数・V8・V9・S5、配線点、rollback、provenance、証跡キー、Status=`WIRED_PENDING_FABLE`[記事A音声化前])」+P-04/P-05の明記。DECISION_LOG(実装記録)。OPEN-437→`WIRED_PENDING_FABLE`、OPEN-442(記事A再制作)→`TEXT_DONE_AUDIO_PENDING`。Opus台帳。REPORT_LEDGER。
+**T-0保存**: `.venv\Scripts\python.exe docs/pm/tools/extract_delegation_from_jsonl_01.py --jsonl C:\Users\tensh\.claude\projects\C--Users-tensh-eigo-radio\a66c19e8-1d31-4bc4-b0cb-f15b29248dc1.jsonl --role assistant --tool-use-name Agent --tool-input-field prompt --index N --out docs/pm/delegation_log/2026-10-22_FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01_委任_06.md`(Nは jsonl 内で `FABLE-DELEGATION-MARKER: B3RD-PROD-C2-委任_06-20261022` を含むAgent tool_useの0始まり通番、250前後)。`check_delegation_prompt.py`(見出し不一致FAILは既知の偽陽性)。
+**commit/push**: Phase 1+2完了時点で1回、Phase 3+4完了時点で1回(大きな成果物dirは必要なもののみ)。`docs/pm/ACTIVE_TASK.md`先頭に固定ヘッダ。`docs/pm/RESULT_PACKET_B3RD6.md`へ報告: Opus条件5点+推奨の充足表/Regression結果/記事A text Before-After(使われた丸めのみ)/P-10・P-11証拠/費用実測(出典・日次累計)/使用model_id・effort/新run path/残課題(C-3: TTS・組立・試聴ページ)/RESULT_PACKET 4行/raw URL(CURRENT_SPEC新節は行番号、IMPLEMENTATION_DESIGN_01.md)。
+
+## 3. 禁止
+B3 Fact選定・機械的中核数値選定・Ledger数値・Fact Safety基準の変更、Family Z適用、承認仕様外の新基準(50%/100%境界ゲート等)の実装、Checker緩和、旧完成候補・旧試聴ページの上書き、TTS実行、他agent担当ファイルの編集、費用Guardrail超過。

@@ -347,21 +347,121 @@ class TestPersistenceAndResume(unittest.TestCase):
         self.assertIsNone(o)
         self.assertEqual(ev["reason"], "overlay_sha_mismatch")
 
-    def test_judge_exception_fail_closed_continues(self):
+    def test_judge_api_error_fail_closed_continues(self):
         def boom(*a, **k):
-            raise RuntimeError("api down")
+            raise OSError("api down")
         r = self.run_it(judge=boom)
-        self.assertEqual((r["status"], r["n_approximate_ok"]), ("JUDGE_FAILED_FAILCLOSED", 0))
+        self.assertEqual((r["status"], r["n_approximate_ok"]), (m.STATUS_API_ERROR, 0))
         o, ev = m.load_overlay_for_writer(self.d, "SHA_A")
         self.assertIsNone(o)           # 丸めなし=従来と同一出力
         self.assertTrue(ev["reason"].startswith("status_"))
+
+    def test_json_parse_error_is_api_error_status(self):
+        def bad_json(*a, **k):
+            json.loads("not json")
+        self.assertEqual(self.run_it(judge=bad_json)["status"], m.STATUS_API_ERROR)
+
+    def test_structure_error_is_internal_error_status_separate_from_api_error(self):
+        def keyerr(*a, **k):
+            raise KeyError("decisions")
+        r = self.run_it(judge=keyerr)
+        self.assertEqual(r["status"], m.STATUS_INTERNAL_ERROR)
+        self.assertNotEqual(m.STATUS_INTERNAL_ERROR, m.STATUS_API_ERROR)
+
+    def test_unexpected_exception_types_are_not_swallowed(self):
+        """P-03: 捕捉対象はAPI/通信・JSON・model不一致・構造不正に絞る。想定外の例外型(例: RuntimeError)は握りつぶさず伝播。"""
+        def boom(*a, **k):
+            raise RuntimeError("something else")
+        with self.assertRaises(RuntimeError):
+            self.run_it(judge=boom)
+        self.assertFalse(os.path.exists(m.overlay_path(self.d)))
+
+    def test_routing_misconfiguration_stops_before_api_and_is_not_swallowed(self):
+        """P-03: require_model(ROLE_KEY)はtryの外。設定ミス(ModelContractViolation)はAPI call前にSTOPし、overlayも書かない。"""
+        import er006_model_routing_contract_01 as routing
+        calls = []
+
+        def bad_require(role, model):
+            raise routing.ModelContractViolation("unregistered")
+        with self.assertRaises(routing.ModelContractViolation):
+            m.run_core_number_rounding(None, self.d, self.ann, self.parse, "[VERIFIED] F04: x\n",
+                                       judge=lambda *a, **k: calls.append(1), require_model=bad_require)
+        self.assertEqual(calls, [])
+        self.assertFalse(os.path.exists(m.overlay_path(self.d)))
+
+    def test_api_error_overlay_is_final_for_same_b3_version_and_reused(self):
+        """P-01: 同一B3版のoverlayはstatusに関わらず確定値。JUDGE_API_ERRORでも再実行時にAPI call 0で再利用(再judgeしない)。"""
+        def boom(*a, **k):
+            raise OSError("down")
+        self.run_it(judge=boom)
+        calls = []
+        r2 = self.run_it(judge=lambda *a, **k: calls.append(1) or _judge_ok(*a))
+        self.assertEqual((r2["reused"], r2["api_calls"], r2["status"], calls), (True, 0, m.STATUS_API_ERROR, []))
+
+    def test_force_rejudge_for_regenerate_writer(self):
+        """P-01: --regenerate-stage writer は再判断する(force_rejudge=True)。"""
+        self.run_it()
+        calls = []
+        r2 = m.run_core_number_rounding(None, self.d, self.ann, self.parse, "[VERIFIED] F04: x\n",
+                                        judge=lambda *a, **k: calls.append(1) or _judge_ok(*a), force_rejudge=True)
+        self.assertEqual((r2["reused"], r2["api_calls"], calls), (False, 1, [1]))
+
+    def test_reuse_path_never_judges_new(self):
+        """P-02: JA再利用経路(allow_judge=False)は新規判断をしない。overlay不在でもAPI 0・overlay書込0。有効な既存overlayは検査のみ。"""
+        calls = []
+        r = m.run_core_number_rounding(None, self.d, self.ann, self.parse, "[VERIFIED] F04: x\n",
+                                       judge=lambda *a, **k: calls.append(1), allow_judge=False)
+        self.assertEqual((r["status"], r["api_calls"], calls), ("NOT_JUDGED_REUSE_PATH", 0, []))
+        self.assertFalse(os.path.exists(m.overlay_path(self.d)))
+        self.run_it()
+        r2 = m.run_core_number_rounding(None, self.d, self.ann, self.parse, "[VERIFIED] F04: x\n",
+                                        judge=lambda *a, **k: calls.append(1), allow_judge=False)
+        self.assertEqual((r2["status"], r2["reused"], r2["api_calls"], calls), ("OK", True, 0, []))
+
+    def test_summarize_for_run_statuses(self):
+        self.assertEqual(m.summarize_for_run(self.d)["status"], "OVERLAY_ABSENT")
+        self.run_it()
+        s = m.summarize_for_run(self.d)
+        self.assertEqual((s["status"], s["n_approximate_ok"], s["warn"], s["effort"]), ("OK", 1, False, "low"))
+        self.assertTrue(s["model_returned"].startswith("gpt-6-luna"))
+        os.remove(m.overlay_path(self.d))
+        self.run_it(judge=lambda *a, **k: (_ for _ in ()).throw(OSError("x")))
+        s2 = m.summarize_for_run(self.d)
+        self.assertEqual((s2["status"], s2["warn"]), (m.STATUS_API_ERROR, True))
+
+    def test_check_resume_provenance_cases(self):
+        """W5/P-01: legacy(キー無し)許容 / 一致OK(status不問) / 不一致STOP / 両方有効でない(flag切替)はSTOPせず記録のみ。"""
+        self.assertEqual(m.check_resume_provenance(self.d, None)["mode"], "legacy_no_rounding_key")
+        self.run_it()
+        cur = m.current_overlay_sha(self.d)
+        self.assertTrue(m.check_resume_provenance(self.d, {"enabled": True, "overlay_sha256": cur})["ok"])
+        bad = m.check_resume_provenance(self.d, {"enabled": True, "overlay_sha256": "deadbeef"})
+        self.assertEqual((bad["ok"], bad["mode"]), (False, "overlay_sha_mismatch"))
+        sw = m.check_resume_provenance(self.d, {"enabled": False, "overlay_sha256": "deadbeef"})
+        self.assertEqual((sw["ok"], sw["mode"]), (True, "flag_switch_not_compared"))
+        m.B3_CORE_NUMBER_ROUNDING_ENABLED = False
+        try:
+            self.assertTrue(m.check_resume_provenance(self.d, {"enabled": True, "overlay_sha256": "deadbeef"})["ok"])   # rollback時はSTOPしない
+        finally:
+            m.B3_CORE_NUMBER_ROUNDING_ENABLED = True
+        # status!=OK のoverlayでも照合対象(status不問)
+        os.remove(m.overlay_path(self.d))
+        self.run_it(judge=lambda *a, **k: (_ for _ in ()).throw(OSError("x")))
+        cur2 = m.current_overlay_sha(self.d)
+        self.assertTrue(m.check_resume_provenance(self.d, {"enabled": True, "overlay_sha256": cur2})["ok"])
+        # overlay改ざんは INVALID: として検出(記録値と一致しない)
+        p = m.overlay_path(self.d)
+        ov = json.load(open(p, encoding="utf-8"))
+        ov["note"] = "tampered"
+        json.dump(ov, open(p, "w", encoding="utf-8"), ensure_ascii=False)
+        self.assertFalse(m.check_resume_provenance(self.d, {"enabled": True, "overlay_sha256": cur2})["ok"])
 
     def test_model_mismatch_fail_closed(self):
         def wrong(*a, **k):
             r = _judge_ok(*a)
             r["model_returned"] = "gpt-6.1-sol"
             return r
-        self.assertEqual(self.run_it(judge=wrong)["status"], "JUDGE_FAILED_FAILCLOSED")
+        self.assertEqual(self.run_it(judge=wrong)["status"], m.STATUS_API_ERROR)
 
     def test_no_core_numbers_no_api_call(self):
         sc = {"facts": [], "numbers": [{"surface": "x", "kind": "magnitude", "class": "peripheral", "concept": "P", "ledger_ids": ["F01"], "role": ""}]}
@@ -414,14 +514,13 @@ class TestJudgeCallMock(unittest.TestCase):
         self.assertEqual(seen["input"][1]["content"], "PROMPT")
         self.assertEqual((r["model_returned"], r["effort"], r["usage"]["reasoning_tokens"]), ("gpt-6-luna-2026-10-01", "low", 2))
 
-    def test_routing_role_registration_status(self):
-        """C-1時点: routing contractに新role未登録(Production未編集)。C-2で登録後は登録済み=gpt-6-lunaであること。"""
+    def test_routing_role_registration_is_unconditionally_asserted(self):
+        """C-2 P-03: routing contractへの新role登録を無条件にassert(未登録なら即FAIL=設定ミスを黙認しない)。"""
         import er006_model_routing_contract_01 as routing
-        if m.ROLE_KEY in routing.PROCESS_MODEL_MAP:
-            self.assertEqual(routing.PROCESS_MODEL_MAP[m.ROLE_KEY], "gpt-6-luna")
-        else:
-            with self.assertRaises(routing.ModelContractViolation):
-                routing.require_model(m.ROLE_KEY, "gpt-6-luna")
+        self.assertEqual(routing.PROCESS_MODEL_MAP[m.ROLE_KEY], "gpt-6-luna")
+        self.assertEqual(routing.require_model(m.ROLE_KEY, "gpt-6-luna"), "gpt-6-luna")
+        with self.assertRaises(routing.ModelContractViolation):
+            routing.require_model(m.ROLE_KEY, "gpt-6.1-sol")
 
 
 # ===================== (E) DefaultOffIsolation(C-1: 未配線) =====================
@@ -436,8 +535,8 @@ class TestIsolation(unittest.TestCase):
                 continue
             if "er095_b3_core_number_rounding_01" in open(p, encoding="utf-8", errors="replace").read():
                 hits.append(b)
-        # C-1では0件(未配線)。C-2配線後は Family X runner と Writer のみ許可(Family Z・他Familyのrunnerは不許可)。
-        self.assertTrue(set(hits) <= self.PROD_ALLOWED_C2, hits)
+        # C-2配線後: importするProductionファイルは Family X runner と Writer(w1)のみ(Family Z・他Familyのrunnerは不許可)。
+        self.assertEqual(set(hits), self.PROD_ALLOWED_C2, hits)
 
     def test_family_z_runners_never_reference_module(self):
         for p in glob.glob(os.path.join(HERE, "er02[6-9]*.py")) + glob.glob(os.path.join(HERE, "*family_z*.py")):

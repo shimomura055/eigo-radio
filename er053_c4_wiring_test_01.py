@@ -59,6 +59,7 @@ class Harness:
     def __init__(self, out, theme="central_bank_mortgage"):
         self.out, self.theme = out, theme
         self.events = []
+        self.rounding_calls = []
         self.client = Client(self.events)
 
     # ---- stubs ----
@@ -71,6 +72,10 @@ class Harness:
         self.events.append("storyline")
         adapter.copy_inputs(self.theme, out_dir)             # B3出力(台帳・selected_brief.md・evidence)の複製のみ。注記は作らない
         return {}
+
+    def rounding(self, client, out_dir, ledger_text, args, stage):
+        self.rounding_calls.append((stage, args.regenerate_stage))
+        return {"status": "OK", "api_calls": 0}
 
     def writer_stage(self, client, theme, ja_text, ledger_text, budget_jpy, only=None, **kw):
         self.events.append(only)
@@ -101,6 +106,7 @@ class Harness:
             mock.patch.object(runner.vfl01, "get_client", return_value=self.client),
             mock.patch.object(runner, "run_research_and_ledger", side_effect=self.research),
             mock.patch.object(runner, "run_storyline_b3", side_effect=self.storyline),
+            mock.patch.object(runner, "run_core_number_rounding", side_effect=self.rounding),   # 委任_06 C-2 W1: events順序には含めない(実配線は er095..._wiring_test_01)
             mock.patch.object(runner.efam, "run_writer_stage", side_effect=self.writer_stage),
             mock.patch.object(runner, "run_post_en_risk_flag", side_effect=self.rf),
             mock.patch.object(runner.efam, "assert_budget_ok", return_value=0.0),

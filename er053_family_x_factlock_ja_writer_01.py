@@ -31,6 +31,7 @@ import er003_audio_tts_asr_safety as safety
 import er005_cost_logger as cl
 import er006_model_routing_contract_01 as routing
 import er019_family_x_ja_writer_o_r1_r2_01 as jaw
+import er095_b3_core_number_rounding_01 as rounding   # 委任_06 C-2: Family X中核数値丸め(overlay無し/None時は従来とバイト一致)
 
 THEME_TAG = "FAMILY_X_FACTLOCK_W1_PRODUCTION_01"
 CHAIN_METHOD = "W-1"
@@ -95,11 +96,13 @@ FACTLOCK_R0_BLOCK_HEAD = (
 FACTLOCK_R0_BLOCK_TAIL = "\n7. " + MUSTFIX_PRIORITY
 TAG_RE = re.compile(r"【事実\s*\d+(?:\s*[,、，・]\s*(?:事実\s*)?\d+)*】")
 BROAD_TAG_RE = re.compile(r"【\s*[FＦ事実][^】\n]{0,30}】")
-MARK_RE = re.compile(r"【(?:中核数値|周辺数値)】")
+# S5(2026-10-22ユーザー条件付き採用・Trial環境PASS=S5_TRIAL_RESULT_01.md): 【概数表記】(空白入り含む)も除去対象に追加
+MARK_RE = re.compile(r"【(?:中核数値|周辺数値|\s*概数表記\s*)】")
+APPROX_MARK_RE = re.compile(r"【\s*概数表記\s*】")        # marks_echoedから分離して計上(P-08)
 FACT_LINE_RE = re.compile(r"^\s*(?:-|・)\s*【事実(\d+)】\s*(.*)$")
 
 # ---- 移植元: er052_factlock_astra_e2e_runner_01.py (タグ残存・R0復唱の検出regex) ----
-TAG_LEAK_RE = re.compile(r"【\s*(?:事実|[FＦ]|中核数値|周辺数値)[^】\n]{0,30}】")
+TAG_LEAK_RE = re.compile(r"【\s*(?:事実|[FＦ]|中核数値|周辺数値|概数表記)[^】\n]{0,30}】")   # S5: 概数表記を追加
 ECHO_RE = re.compile(r"これ[、,]?\s*ちょっと\s*面白くない[？?]")
 
 # ---- 移植元: er052_factlock_writer_trial_01_run.py ----
@@ -259,7 +262,7 @@ def extract_title(article_text: str) -> str:
     return lines[0].strip() if lines else ""
 
 
-def build_r0_prompt(storyline_line: str, brief_facts_text: str) -> str:
+def build_r0_prompt(storyline_line: str, brief_facts_text: str, rounding_overlay=None) -> str:
     """R0 user prompt(純関数)。Trialの `fl.apply_factlock_patches()` 適用下の `jaw.build_original_prompt(storyline, facts)` と
     文字列完全一致(test: golden fixture)。構成: R0_PROMPT([テーマ]行差替) + [ニュース] + 記号予防ブロック + Fact Lockブロック
     (AN3第1文を数字規則5で置換、第2文[固有名詞]は逐語保持)。must-fix引数は持たない(Checker起点要素は撤去)。"""
@@ -269,12 +272,12 @@ def build_r0_prompt(storyline_line: str, brief_facts_text: str) -> str:
     prompt += "\n\n[ニュース]\n" + brief_facts_text
     prompt += jaw.SYMBOL_PREVENTION_BLOCK_JA
     prompt += build_r0_block(jaw.CONCRETENESS_CONTROL_AN3_BLOCK)
-    return prompt
+    return rounding.apply_rule8(prompt, rounding_overlay)      # C-2 W3: 概数可0件/None=従来とバイト一致。1件以上なら規則8を追加
 
 
-def build_r0_symbol_regen_prompt(storyline_line: str, brief_facts_text: str, findings: list) -> str:
+def build_r0_symbol_regen_prompt(storyline_line: str, brief_facts_text: str, findings: list, rounding_overlay=None) -> str:
     """R0の記号QA再生成Prompt = build_r0_prompt() + "\\n\\n" + 既存violation note(新規文言なし)。"""
-    return build_r0_prompt(storyline_line, brief_facts_text) + "\n\n" + safety.build_symbol_violation_prompt_note(findings)
+    return build_r0_prompt(storyline_line, brief_facts_text, rounding_overlay) + "\n\n" + safety.build_symbol_violation_prompt_note(findings)
 
 
 def call_luna_r0(client, user: str, stage: str):
@@ -328,7 +331,11 @@ def run_w1_writer(out_dir: str, client=None, budget_check=None) -> dict:
     annotated = validate_annotated_b3(out_dir)                          # 失敗なら課金前にSTOP
     storyline, facts_text = parse_brief_md(annotated.annotated_md_text)   # 入力は注記済みmdをparse_brief_mdした結果に限定
     # C4: R0 [ニュース]欄 = 注記済みFacts + 制約ブロック(契約検証済みの別欄。制約が空ならFactsのみ=従来と文字列同一)。R0 Prompt本体は不変。
-    news_text = annotated.news_field_text
+    # 委任_06 C-2 W2: 中核数値丸め(overlay読込は load_overlay_for_writer の1か所のみ。概数可0件/None=契約検証済みnews_field_textをそのまま使う=P-07)
+    from er053_b3_deterministic_producer_01 import CONS_HEADING, compose_news_field   # 遅延import(契約moduleと同じ連結関数・見出し)
+    rounding_overlay, rounding_ev = rounding.load_overlay_for_writer(out_dir, annotated.annotated_md_sha256)
+    news_text = rounding.news_field_for_writer(annotated.news_field_text, facts_text, annotated.constraints_text, rounding_overlay,
+                                               CONS_HEADING, compose_news_field)
     budget_check = budget_check or _noop
     # model contractはAPI call前に確認(R0/Astra共に)
     routing.require_model("FAMILY_X_FACTLOCK_R0", R0_MODEL)
@@ -343,11 +350,17 @@ def run_w1_writer(out_dir: str, client=None, budget_check=None) -> dict:
           "writer_constraints_sha256": sha_text(annotated.constraints_text), "news_field_sha256": sha_text(news_text),
           "annotation_rule_version": annotated.manifest.get("rule_version"), "annotation_rules_sha256": annotated.manifest.get("rules_sha256"),
           "annotation_input_shas": annotated.manifest.get("input_shas"), "symbol_qa": {},
+          "rounding": None,           # W4: R0 Prompt生成後に確定(下記)。再利用時の来歴照合(runner W5)が読む
           "started": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")}
 
     # ---------------- R0 (Luna, Fact Lock) ----------------
     budget_check()
-    prompt0 = build_r0_prompt(storyline, news_text)
+    prompt0 = build_r0_prompt(storyline, news_text, rounding_overlay)
+    _rs = rounding.summarize_for_run(out_dir)
+    ev["rounding"] = {**rounding_ev, "overlay_status": _rs["status"], "judge_model_returned": _rs["model_returned"], "judge_effort": _rs["effort"],
+                      "rule8_in_prompt": prompt0.endswith(rounding.RULE8_TEXT), "rule8_text_sha256": sha_text(rounding.RULE8_TEXT),
+                      "news_field_sha256_before": sha_text(annotated.news_field_text), "news_field_sha256_after": sha_text(news_text),
+                      "r0_prompt_sha256": sha_text(prompt0), "role_key": rounding.ROLE_KEY}
     resp0 = call_luna_r0(client, prompt0, "w1_r0")
     text0 = resp0.output_text.strip()
     r0_calls = [{"stage": "w1_r0", **_resp_meta(resp0), "prompt_sha256": sha_text(prompt0)}]
@@ -357,7 +370,7 @@ def run_w1_writer(out_dir: str, client=None, budget_check=None) -> dict:
     if safety.symbol_gate_requires_stop(f0):
         print(f"[W1][r0] 音声化禁止記号を検出。1回だけ再生成します(count={len(f0)})...")
         budget_check()
-        prompt0b = build_r0_symbol_regen_prompt(storyline, news_text, f0)
+        prompt0b = build_r0_symbol_regen_prompt(storyline, news_text, f0, rounding_overlay)
         resp0b = call_luna_r0(client, prompt0b, "w1_r0_symbol_regen")
         text0b = resp0b.output_text.strip()
         r0_calls.append({"stage": "w1_r0_symbol_regen", **_resp_meta(resp0b), "prompt_sha256": sha_text(prompt0b)})
@@ -375,11 +388,14 @@ def run_w1_writer(out_dir: str, client=None, budget_check=None) -> dict:
     wt(os.path.join(fdir, "r0_with_tags.md"), text0)
     wt(os.path.join(fdir, "r0.md"), clean0)
     tags_used = sorted({t for m in TAG_RE.finditer(text0) for t in tag_ids(m.group(0))})
-    r0_meta = {"writer_calls": r0_calls, "tags_used": tags_used, "marks_echoed": len(MARK_RE.findall(text0)),
+    r0_meta = {"writer_calls": r0_calls, "tags_used": tags_used, "marks_echoed": len(MARK_RE.findall(text0)) - len(APPROX_MARK_RE.findall(text0)),
+               "approx_marks_echoed": len(APPROX_MARK_RE.findall(text0)),
                "facts_in_brief": list(parse_annotated_facts(annotated.annotated_md_text)), "r0_echo": detect_r0_echo(clean0),
                "r0_sha256": sha_text(clean0), "factlock_r0_block_sha256": sha_text(build_r0_block(jaw.CONCRETENESS_CONTROL_AN3_BLOCK)),
                "r0_prompt_sha256": sha_text(prompt0)}
     wj(os.path.join(fdir, "r0_meta.json"), r0_meta)
+    if r0_meta["approx_marks_echoed"]:        # S5/P-08: 【概数表記】の書き写しは除去して続行(STOPしない)。件数を可視化
+        print(f"[WARN][W1][r0] 【概数表記】の印をR0が本文へ書き写しました(除去して続行、count={r0_meta['approx_marks_echoed']})")
 
     # ---------------- R1 / R2 (Astra) ----------------
     def astra_stage(which: str, src_path: str, stage_tag: str):

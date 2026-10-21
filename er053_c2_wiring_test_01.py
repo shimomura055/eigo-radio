@@ -100,6 +100,7 @@ def run_main(out_dir, argv_extra, rec, pre=None):
         mock.patch.object(runner, "run_research_and_ledger", side_effect=rec.research),
         mock.patch.object(runner, "run_storyline_b3", side_effect=rec.storyline),
         mock.patch.object(runner, "run_annotation_producer", side_effect=rec.annotation),
+        mock.patch.object(runner, "run_core_number_rounding", return_value={"status": "OK", "api_calls": 0}),   # 委任_06 C-2 W1: 丸め判断は本testの対象外(実配線は er095..._wiring_test_01)
         mock.patch.object(runner, "run_ja_writer", side_effect=rec.writer),
         mock.patch.object(runner.efam, "run_writer_stage", side_effect=rec.writer_stage),
         mock.patch.object(runner, "run_post_en_risk_flag", side_effect=rec.risk_flag),

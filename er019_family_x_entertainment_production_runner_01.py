@@ -51,6 +51,7 @@ import er053_b3_deterministic_producer_01 as annot
 import er053_cost_aggregate_01 as ca
 import er053_family_x_factlock_ja_writer_01 as w1
 import er053_review_queue_01 as rq
+import er095_b3_core_number_rounding_01 as rounding   # 委任_06 C-2: Family X中核数値丸め(Family Zのrunnerからは参照しない)
 import er053_risk_flagger_production_01 as rf
 
 MANAGEMENT_ID = "NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01"
@@ -260,6 +261,25 @@ def run_annotation_producer(out_dir: str) -> dict:
     return result
 
 
+def run_core_number_rounding(client, out_dir: str, ledger_text: str, args, stage: str) -> dict:
+    """委任_06 C-2 W1(1行helper): B3確定・注記producer直後に中核数値丸め(overlay)を作る/再利用する。
+    新規判断を許すのは JA Writerが実際に走る経路のみ(JA再利用経路=既存revision2.mdあり かつ stage!=writer かつ regenerate!=writerでは
+    既存overlayの検査だけ。Opus P-02)。--regenerate-stage writer/storyline_b3 は再判断(P-01)。routing未登録等の設定ミスはSTOP可(P-03)。
+    judge失敗(API/JSON/model不一致/構造不正)は丸めなしoverlayを書いて続行し、[WARN]を出す。"""
+    ja_reuse_path = (os.path.exists(f"{out_dir}/ja_writer/revision2.md")
+                     and args.regenerate_stage != "writer" and stage != "writer")
+    r = rounding.run_core_number_rounding(
+        client, out_dir, contract.validate_annotated_b3(out_dir), w1.parse_brief_md, ledger_text,
+        allow_judge=not ja_reuse_path, force_rejudge=args.regenerate_stage in ("writer", "storyline_b3"))
+    efam.assert_budget_ok(out_dir, args.budget_jpy, "after core_number_rounding")
+    print(f"[B3-RUNNER][core_number_rounding] status={r['status']} api_calls={r['api_calls']} reused={r.get('reused')} "
+          f"n_approximate_ok={r.get('n_approximate_ok')}")
+    if r["status"] in rounding.FAILED_STATUSES:
+        print(f"[WARN][core_number_rounding] 丸め判断が失敗しました(status={r['status']}, error={r.get('error')})。"
+              "丸めなし(従来と同一出力)で続行します。cost.jsonのb3_core_number_roundingに記録。")
+    return r
+
+
 def run_ja_writer(client, out_dir: str, budget_jpy: float) -> dict:
     """W-1を実行する。入力は out_dir/storyline_b3 の注記済みB3 artifact(契約検証V1-V10、課金前fail-closed)
     のみで、注記済みmdを parse_brief_md した結果がR0 Promptの素材になる。
@@ -298,6 +318,15 @@ def load_reused_ja_text(out_dir: str) -> str:
             "B3を再生成した場合は、続けて `--regenerate-stage writer` を実行してJA記事を新しい注記版から作り直してください"
             "(下流の自動再生成は行いません=安全側)。"
             f"(evidence={ev.get('annotated_md_sha256')}, contract={annotated.annotated_md_sha256})")
+    # 委任_06 C-2 W5(Opus P-01): 中核数値丸めoverlayの来歴照合。記録時・現在とも有効(enabled)のときだけ、記録された overlay_sha256 と
+    # 現在のoverlayファイル(status不問)を照合する。キー無し=旧記事=legacy許容。flag切替(rollback)時はSTOPせず記録のみ。
+    prov = rounding.check_resume_provenance(out_dir, ev.get("rounding"))
+    print(f"[B3-RUNNER][writer] rounding provenance: mode={prov['mode']} ok={prov['ok']}")
+    if not prov["ok"]:
+        raise LegacyWriterProvenanceStop(
+            "[STOP] U-1 PROVENANCE_MISMATCH: ja_writer/runtime_evidence.json の rounding.overlay_sha256 が現在の"
+            "storyline_b3/rounding_overlay.json と一致しません(JA記事は別の丸め指定から生成されたか、overlayが差し替わっています)。"
+            "続けて `--regenerate-stage writer` でJA記事を作り直してください。" + f"({prov['detail']})")
     return load_text(f"{out_dir}/ja_writer/revision2.md")
 
 
@@ -431,6 +460,7 @@ def main() -> None:
         "annotation_producer_module_sha256": self_sha256(annot.__file__),
         "risk_flagger_module_sha256": self_sha256(rf.__file__),
         "review_queue_module_sha256": self_sha256(rq.__file__),
+        "core_number_rounding_module_sha256": self_sha256(rounding.__file__),
         "args": vars(args),
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
     })
@@ -464,6 +494,7 @@ def main() -> None:
             efam.assert_budget_ok(out_dir, args.budget_jpy, "after storyline_b3")
         assert_b3_min_verified(out_dir)     # FAMILY-X-B3-FACT-MIN2-PRODUCTION-01 M2: 全経路の合流点(producer/契約の手前)で採用VERIFIED>=2を確認
         run_annotation_producer(out_dir)    # C4: 初回・regeneration・resume・再利用のすべてで storyline_b3 確定直後(Writer/契約検証の前)に呼ぶ
+        run_core_number_rounding(client, out_dir, ledger_text, args, stage)   # 委任_06 C-2 W1: 中核数値丸め判断(Luna low、失敗=丸めなしで続行)
         if stage == "storyline_b3" or args.stop_after == "storyline_b3":
             print("[B3-RUNNER] stage=storyline_b3で停止(--stop-after storyline_b3)。")
             _write_cost_json(out_dir)
@@ -522,6 +553,7 @@ def _write_cost_json(out_dir: str) -> None:
     # by_stage_jpy/total_jpyの形式は旧cost.jsonと互換、by_provider_jpyとRF Level別内訳を追加。
     breakdown = ca.compute_stage_cost_breakdown_multi(f"{out_dir}/raw_usage_log.jsonl")
     breakdown["risk_flag_by_level_model_condition_jpy"] = ca.rf_stage_summary(breakdown["by_stage_jpy"])
+    breakdown["b3_core_number_rounding"] = rounding.summarize_for_run(out_dir)     # C-2 P-03: status集計(OK/JUDGE_API_ERROR/INTERNAL_ERROR...)
     save_json(f"{out_dir}/cost.json", breakdown)
     print(f"[B3-RUNNER][cost] {breakdown}")
 

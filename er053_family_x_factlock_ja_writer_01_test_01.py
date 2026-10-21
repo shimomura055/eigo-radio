@@ -57,6 +57,10 @@ PINNED = {
 }
 
 
+S5_MARK_RE_PATTERN = r"【(?:中核数値|周辺数値|\s*概数表記\s*)】"
+S5_TAG_LEAK_RE_PATTERN = r"【\s*(?:事実|[FＦ]|中核数値|周辺数値|概数表記)[^】\n]{0,30}】"
+
+
 class Identity(unittest.TestCase):
     """Trial版との同一性(Trial moduleはここでだけimport)。"""
 
@@ -121,17 +125,28 @@ class Identity(unittest.TestCase):
         self.assertEqual(w1.USER_TMPL, e2e.USER_TMPL)
         for n in ("FACTLOCK_R0_BLOCK_HEAD", "FACTLOCK_R0_BLOCK_TAIL", "MUSTFIX_PRIORITY"):
             self.assertEqual(getattr(w1, n), getattr(fl, n), n)
-        for n in ("TAG_RE", "BROAD_TAG_RE", "MARK_RE", "FACT_LINE_RE"):
+        for n in ("TAG_RE", "BROAD_TAG_RE", "FACT_LINE_RE"):
             self.assertEqual(getattr(w1, n).pattern, getattr(fl, n).pattern, n)
-        self.assertEqual(w1.TAG_LEAK_RE.pattern, e2e.TAG_LEAK_RE.pattern)
+        # 許容差(S5、委任_06 C-2): MARK_RE / TAG_LEAK_RE は【概数表記】を追加した承認済みS5版。Trial版との差分は「概数表記」の追加のみ。
+        # 承認根拠=docs/pm/delegation_log/2026-10-22_FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01_APPROVAL-AND-ARTICLE-A-REMAKE_USER.md
+        # (S5条件付き採用)+ S5_TRIAL_RESULT_01.md(Trial環境PASS: 253ファイルで検知結果の変化0)。
+        self.assertEqual(w1.MARK_RE.pattern, S5_MARK_RE_PATTERN)
+        self.assertEqual(w1.TAG_LEAK_RE.pattern, S5_TAG_LEAK_RE_PATTERN)
+        self.assertEqual(w1.MARK_RE.pattern.replace(r"|\s*概数表記\s*", ""), fl.MARK_RE.pattern)
+        self.assertEqual(w1.TAG_LEAK_RE.pattern.replace("|概数表記", ""), e2e.TAG_LEAK_RE.pattern)
         self.assertEqual(w1.ECHO_RE.pattern, e2e.ECHO_RE.pattern)
         self.assertEqual(sh(w1.USER_TMPL), PINNED["P1"])
         self.assertEqual(sh(w1.FACTLOCK_R0_BLOCK_HEAD), PINNED["P2"])
         self.assertEqual(sh(w1.FACTLOCK_R0_BLOCK_TAIL), PINNED["P3"])
         self.assertEqual(sh(w1.MUSTFIX_PRIORITY), PINNED["P4"])
         self.assertEqual(sh(w1.build_r0_block(jaw.CONCRETENESS_CONTROL_AN3_BLOCK)), PINNED["P5"])
-        for n, k in (("TAG_RE", "X1"), ("BROAD_TAG_RE", "X2"), ("MARK_RE", "X3"), ("TAG_LEAK_RE", "X4"), ("ECHO_RE", "X5")):
+        for n, k in (("TAG_RE", "X1"), ("BROAD_TAG_RE", "X2"), ("ECHO_RE", "X5")):
             self.assertEqual(sh(getattr(w1, n).pattern), PINNED[k], n)
+        # X3/X4 は S5許容差(上記)により PINNED(Trial版sha)と異なる。S5版を別定数で固定
+        self.assertEqual(sh(w1.MARK_RE.pattern), sh(S5_MARK_RE_PATTERN))
+        self.assertEqual(sh(w1.TAG_LEAK_RE.pattern), sh(S5_TAG_LEAK_RE_PATTERN))
+        self.assertNotEqual(sh(w1.MARK_RE.pattern), PINNED["X3"])
+        self.assertNotEqual(sh(w1.TAG_LEAK_RE.pattern), PINNED["X4"])
 
     def test_production_functions_byte_identical(self):
         for name, key in (("strip_tags", "F1"), ("parse_annotated_facts", "F2"), ("build_r0_block", "F3"), ("strip_markdown", "F4"),
@@ -574,7 +589,9 @@ class StaticTests(unittest.TestCase):
         例外(C3): audio runnerはTTS直前保険のためRF module・Review Queue moduleだけを参照してよい
         (W-1・契約moduleは不可)。er012_e・jaw・その他のrunnerは参照しない。"""
         allowed = {"er019_family_x_entertainment_production_runner_01.py"}
-        TRIAL_HARNESS_PREFIXES = ("er082_", "er083_", "er086_", "er087_")
+        # 委任_06 C-2: er090_(中核数値丸めTrial harness群、Trial_01の er090_*_evidence.py が w1 を読み取りimportする。C-1時点から既知FAILだった)と
+        # er095_(中核数値丸めmodule/testはw1と相互に参照する)を同型の許容に追加(test側のみ。Production runnerへの新規配線の許可ではない)
+        TRIAL_HARNESS_PREFIXES = ("er082_", "er083_", "er086_", "er087_", "er090_", "er095_")
         audio_allowed = {"er053_risk_flagger_production_01", "er053_review_queue_01"}
         for f in self._root_py_files():
             b = os.path.basename(f)

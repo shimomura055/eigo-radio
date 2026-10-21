@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01 委任_05 C-1(2026-10-22)。Family X 中核数値丸め仕様(APPROVED_FOR_PRODUCTION 2026-10-22)の
-Production実装module(**未配線**: C-1時点ではどのProduction fileからもimportされない。配線はOpus独立レビュー後のC-2)。
+Production実装module。委任_06 C-2(2026-10-22)で配線済み(Family X runner の W1 helper と Writer w1 からのみimport。Family Zは到達しない。
+詳細=docs/research/FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01/IMPLEMENTATION_DESIGN_01.md、CURRENT_SPEC新節)。
 
 機能: B3(決定論producer)が選定済みの【中核数値】について、gpt-6-luna(reasoning effort=low)が「EXACT_REQUIRED / APPROXIMATE_OK」を
 1記事1callで判断し、決定論検証V1〜V8(V8=相対誤差10%以内・既概数の再丸め禁止)を通った概数だけを
@@ -27,7 +28,12 @@ from er003_v1_n3_01_evidence_compression_editor import (
 
 # ---------------- 切替・識別子 ----------------
 B3_CORE_NUMBER_ROUNDING_ENABLED = True          # rollback: False で judge call 0・overlay無視(従来と完全同一)
-ROLE_KEY = "FAMILY_X_B3_CORE_NUMBER_ROUNDING"   # routing contract新role(C-2で er006_model_routing_contract_01.PROCESS_MODEL_MAP へ追加)
+ROLE_KEY = "FAMILY_X_B3_CORE_NUMBER_ROUNDING"   # routing contract新role(C-2で er006_model_routing_contract_01.PROCESS_MODEL_MAP へ追加済み)
+# status(overlay.status / 実行サマリ)。OK以外は「丸めなし」で続行(従来と同一出力)。API/通信系とコード内部系を分離して可視化する(Opus P-03)
+STATUS_OK = "OK"
+STATUS_API_ERROR = "JUDGE_API_ERROR"      # API/通信/応答JSON解析/返却model不一致(judge側の問題)
+STATUS_INTERNAL_ERROR = "INTERNAL_ERROR"  # 構造不正・想定外のデータ形(本module/入力側の問題)
+FAILED_STATUSES = (STATUS_API_ERROR, STATUS_INTERNAL_ERROR)
 JUDGE_MODEL = "gpt-6-luna"
 JUDGE_EFFORT = "low"
 OVERLAY_SCHEMA = "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1"
@@ -41,6 +47,9 @@ SPOKEN_FIRST_NUMBER_TREATMENT_TEXT = (
     "分類は2軸: Importance(`ANCHOR`/`SUPPORTING`/`DISPENSABLE`)、Exactness(`EXACT_REQUIRED`/`APPROXIMATE_OK`/`DIRECTION_ONLY`)。"
     "スコア・日付・記録・健康研究の結果・安全閾値など、精度そのものが意味を持つ数字はEXACT_REQUIREDのまま維持する"
 )
+
+# V9(Opus P-05。CURRENT_SPEC:1730 Spoken-first Number Treatment「日付...精度そのものが意味を持つ数字はEXACT_REQUIREDのまま維持」の機械化=既存仕様の遵守。新基準ではない)
+EXACT_ALWAYS_KINDS = ("date_time",)
 
 DECISION_EXACT = "EXACT_REQUIRED"
 DECISION_APPROX = "APPROXIMATE_OK"
@@ -333,7 +342,9 @@ def build_overlay(sidecar: dict, judge_json: dict) -> dict:
         d = by_id.get(c["concept"]) if structural_ok else None
         llm_decision = d.get("decision") if d else None
         final, downgrade, surf_out = DECISION_EXACT, [], []
-        if d and llm_decision == DECISION_APPROX:
+        if d and llm_decision == DECISION_APPROX and c["kind"] in EXACT_ALWAYS_KINDS:
+            downgrade.append(f"V9_exact_always_kind({c['kind']})")
+        elif d and llm_decision == DECISION_APPROX:
             smap = {s.get("surface"): s.get("approx_surface") for s in d.get("surfaces", [])}
             if list(smap.keys()) != c["surfaces"] and sorted(smap.keys()) != sorted(c["surfaces"]):
                 downgrade.append(f"V2_surface_set_mismatch(expected={c['surfaces']},got={list(smap.keys())})")
@@ -365,7 +376,7 @@ def build_overlay(sidecar: dict, judge_json: dict) -> dict:
 
 
 def empty_overlay(sidecar, status: str, error=None) -> dict:
-    """丸めなし(no-op)のoverlay本体。status: OK(核数値なし) / JUDGE_FAILED_FAILCLOSED。"""
+    """丸めなし(no-op)のoverlay本体。status: OK(核数値なし) / JUDGE_API_ERROR / INTERNAL_ERROR。"""
     ids = [c["concept"] for c in core_concepts(sidecar)] if sidecar else []
     return {"entries": [], "violations": [], "core_concept_order": ids, "n_approximate_ok": 0, "status": status, "error": error}
 
@@ -400,6 +411,14 @@ def apply_to_news_field(facts_text: str, constraints_text: str, overlay, heading
     return compose(facts_text, apply_to_constraints(constraints_text, overlay, heading))
 
 
+def news_field_for_writer(base_news_field: str, facts_text: str, constraints_text: str, overlay, heading: str, compose) -> str:
+    """Writer R0 [ニュース]欄の唯一の文字列。概数可0件(overlay None含む)なら契約検証済みの news_field_text をそのまま返す
+    (バイト一致。再合成しない=Opus P-07)。1件以上なら【概数表記】行を制約ブロック末尾へ追記して再合成。"""
+    if not constraint_lines(overlay):
+        return base_news_field
+    return apply_to_news_field(facts_text, constraints_text, overlay, heading, compose)
+
+
 def apply_rule8(prompt: str, overlay) -> str:
     return prompt + RULE8_TEXT if constraint_lines(overlay) else prompt
 
@@ -424,35 +443,55 @@ def overlay_path(out_dir: str) -> str:
     return os.path.join(out_dir, OVERLAY_REL_PATH)
 
 
+def inspect_overlay(out_dir: str, annotated_md_sha256: str):
+    """既存overlayの検査(status不問)。(overlay|None, info)。info: exists / valid(schema・overlay_sha・annotated_md_sha256が整合) /
+    reason / overlay_sha256(ファイル内の値。改ざん時は'INVALID:<実sha>') / status。
+    valid=True は「同一B3版(annotated_md_sha256一致)の確定済み判断」を意味し、statusがOK以外(JUDGE_API_ERROR等)でも確定値として扱う(Opus P-01)。"""
+    info = {"exists": False, "valid": False, "reason": None, "overlay_sha256": None, "status": None}
+    p = overlay_path(out_dir)
+    if not os.path.exists(p):
+        info["reason"] = "overlay_absent"
+        return None, info
+    info["exists"] = True
+    try:
+        with open(p, encoding="utf-8") as f:
+            ov = json.load(f)
+        if not isinstance(ov, dict):
+            raise ValueError("overlay is not an object")
+    except (OSError, ValueError):
+        info["reason"] = "overlay_unreadable"
+        return None, info
+    canon = overlay_canonical_sha(ov)
+    info["overlay_sha256"] = ov.get("overlay_sha256") if ov.get("overlay_sha256") == canon else f"INVALID:{canon}"
+    info["status"] = ov.get("status")
+    if ov.get("schema") != OVERLAY_SCHEMA:
+        info["reason"] = "schema_mismatch"
+    elif ov.get("overlay_sha256") != canon:
+        info["reason"] = "overlay_sha_mismatch"
+    elif ov.get("annotated_md_sha256") != annotated_md_sha256:
+        info["reason"] = "stale_annotated_md_sha_mismatch"
+    else:
+        info["valid"] = True
+        info["reason"] = "valid"
+    return (ov if info["valid"] else None), info
+
+
 def load_overlay_for_writer(out_dir: str, annotated_md_sha256: str):
     """Writer(初回・regeneration・symbol再生成・resume)が丸め指定を読む唯一の入口。(overlay|None, evidence) を返す。
     None=丸めなし(従来と同一)。以下はすべてNone(fail-closed、STOPしない): flag OFF / overlay不在 / schema不一致 / overlay_sha不一致(改ざん・破損) /
     annotated_md_sha256不一致(stale: B3が再生成された) / status!=OK。理由はevidenceに記録(provenanceへ)。"""
     ev = {"enabled": bool(B3_CORE_NUMBER_ROUNDING_ENABLED), "overlay_path": OVERLAY_REL_PATH, "applied": False, "reason": None,
-          "overlay_sha256": None, "n_approximate_ok": 0}
+          "overlay_sha256": None, "n_approximate_ok": 0, "status": None}
     if not B3_CORE_NUMBER_ROUNDING_ENABLED:
         ev["reason"] = "flag_off"
         return None, ev
-    p = overlay_path(out_dir)
-    if not os.path.exists(p):
-        ev["reason"] = "overlay_absent"
+    ov, info = inspect_overlay(out_dir, annotated_md_sha256)
+    ev["overlay_sha256"], ev["status"] = info["overlay_sha256"], info["status"]
+    if not info["valid"]:
+        ev["reason"] = info["reason"]
         return None, ev
-    try:
-        with open(p, encoding="utf-8") as f:
-            ov = json.load(f)
-    except (OSError, ValueError):
-        ev["reason"] = "overlay_unreadable"
-        return None, ev
-    ev["overlay_sha256"] = ov.get("overlay_sha256")
-    if ov.get("schema") != OVERLAY_SCHEMA:
-        ev["reason"] = "schema_mismatch"
-    elif ov.get("overlay_sha256") != overlay_canonical_sha(ov):
-        ev["reason"] = "overlay_sha_mismatch"
-    elif ov.get("annotated_md_sha256") != annotated_md_sha256:
-        ev["reason"] = "stale_annotated_md_sha_mismatch"
-    elif ov.get("status") != "OK":
+    if ov.get("status") != STATUS_OK:
         ev["reason"] = f"status_{ov.get('status')}"
-    if ev["reason"]:
         return None, ev
     ev["n_approximate_ok"] = ov.get("n_approximate_ok", 0)
     ev["applied"] = ev["n_approximate_ok"] > 0
@@ -460,9 +499,76 @@ def load_overlay_for_writer(out_dir: str, annotated_md_sha256: str):
     return ov, ev
 
 
+def current_overlay_sha(out_dir: str):
+    """現在のoverlayファイルのoverlay_sha256(status不問・annotated版不問)。不在=None。改ざん=INVALID:...。"""
+    if not os.path.exists(overlay_path(out_dir)):
+        return None
+    _, info = inspect_overlay(out_dir, "")
+    return info["overlay_sha256"]
+
+
+def check_resume_provenance(out_dir: str, recorded):
+    """W5(runner load_reused_ja_text用): 再利用するJA記事のruntime_evidence["rounding"]と現在のoverlayを照合する(Opus P-01)。
+    recorded: runtime_evidence.json の "rounding" 値(キー無し=None=旧記事=legacy許容)。
+    記録時・現在とも enabled=True のときだけ overlay_sha256 を照合(status不問)。flag切替(rollback)時はSTOPせず mode に記録。
+    戻り値: {"ok": bool, "mode": str, "detail": str}"""
+    if recorded is None:
+        return {"ok": True, "mode": "legacy_no_rounding_key", "detail": ""}
+    if not (recorded.get("enabled") and B3_CORE_NUMBER_ROUNDING_ENABLED):
+        return {"ok": True, "mode": "flag_switch_not_compared",
+                "detail": f"recorded_enabled={recorded.get('enabled')} current_enabled={B3_CORE_NUMBER_ROUNDING_ENABLED}"}
+    cur = current_overlay_sha(out_dir)
+    if recorded.get("overlay_sha256") != cur:
+        return {"ok": False, "mode": "overlay_sha_mismatch", "detail": f"recorded={recorded.get('overlay_sha256')} current={cur}"}
+    return {"ok": True, "mode": "overlay_sha_match", "detail": cur or ""}
+
+
+def summarize_for_run(out_dir: str) -> dict:
+    """cost.json/実行サマリ用(API 0): 現在のoverlayの状態を記事ごとに1オブジェクトで返す。status集計・WARN判定に使う。"""
+    s = {"enabled": bool(B3_CORE_NUMBER_ROUNDING_ENABLED), "status": None, "n_approximate_ok": 0, "overlay_sha256": None,
+         "error": None, "model_returned": None, "effort": None, "warn": False}
+    if not B3_CORE_NUMBER_ROUNDING_ENABLED:
+        s["status"] = "DISABLED"
+        return s
+    p = overlay_path(out_dir)
+    if not os.path.exists(p):
+        s["status"] = "OVERLAY_ABSENT"
+        return s
+    try:
+        with open(p, encoding="utf-8") as f:
+            ov = json.load(f)
+    except (OSError, ValueError):
+        s["status"], s["warn"] = "OVERLAY_UNREADABLE", True
+        return s
+    j = ov.get("judge") or {}
+    s.update({"status": ov.get("status"), "n_approximate_ok": ov.get("n_approximate_ok", 0), "overlay_sha256": ov.get("overlay_sha256"),
+              "error": ov.get("error"), "model_returned": j.get("model_returned"), "effort": j.get("effort")})
+    s["warn"] = s["status"] in FAILED_STATUSES
+    return s
+
+
 # ============================================================
 # 判定call(Luna low、routing contract経由)と、runnerから呼ぶ単一関数
 # ============================================================
+class JudgeModelMismatch(RuntimeError):
+    """judgeの返却modelが gpt-6-luna で始まらない(fail-closed: 丸めなしで続行)。"""
+
+
+def _api_error_types() -> tuple:
+    """API/通信/応答解析の失敗として捕捉する型(STATUS_API_ERROR)。設定ミス・予算超過・BaseException系は含めない(伝播させる)。"""
+    types_ = [OSError, TimeoutError, json.JSONDecodeError, JudgeModelMismatch]
+    try:
+        import openai
+        types_.append(openai.OpenAIError)
+    except Exception:                                          # noqa: BLE001 openai未導入環境(test)では省略
+        pass
+    return tuple(types_)
+
+
+# 構造不正・想定外のデータ形(STATUS_INTERNAL_ERROR)。ModelContractViolation(設定ミス)・予算超過・PricingNotFound等は含めない
+_INTERNAL_ERROR_TYPES = (KeyError, TypeError, AttributeError, IndexError, ValueError)
+
+
 def judge_call(client, user_prompt: str, tag: str, *, cost_logging_context=None, require_model=None):
     """gpt-6-luna / effort=low を routing contract(ROLE_KEY)経由で1回呼ぶ。実model_id・effort・usage・response_idを返す。
     require_model/cost_logging_context は注入可(test用)。既定はProduction正本(er006 routing / er005 cost logger)。"""
@@ -486,44 +592,58 @@ def judge_call(client, user_prompt: str, tag: str, *, cost_logging_context=None,
             "sec": round(time.time() - t0, 1), "effort": JUDGE_EFFORT, "usage": usage}
 
 
-def run_core_number_rounding(client, out_dir: str, annotated, parse_brief_md, ledger_text: str, *, judge=None) -> dict:
+def run_core_number_rounding(client, out_dir: str, annotated, parse_brief_md, ledger_text: str, *, judge=None, require_model=None,
+                             allow_judge: bool = True, force_rejudge: bool = False) -> dict:
     """B3確定後・Writer前に1回呼ぶ(Family X runnerのみ。run_annotation_producerの直後)。決定論・冪等:
-    既存overlayが現在のannotated_md_sha256に対して有効ならAPI call 0で再利用(resume/--regenerate-stage writer)。
-    B3が再生成されていれば(sha不一致)新しく判断する。どの失敗も丸めなしoverlayを書いて続行(STOP/retry/Human Reviewを増やさない)。
-    annotated: contract.validate_annotated_b3() の戻り(.sidecar/.annotated_md_text/.annotated_md_sha256/.constraints_text)。
-    parse_brief_md: w1.parse_brief_md(循環import回避のため注入)。judge: 注入可(test)。"""
+    * 同一B3版(annotated_md_sha256一致)の既存overlayは、statusに関わらず確定値として再利用(API 0。Opus P-01)。
+    * 再判断するのは overlay無し/破損/stale(B3再生成)/force_rejudge(--regenerate-stage writer・storyline_b3)のみ。
+    * allow_judge=False(JA記事の再利用経路 --stage advanced/standard 等)では新規判断をせず、既存overlayの検査結果だけ返す(Opus P-02)。
+    * routing未登録/model不一致(設定ミス)は try の外で発生し、API call前にSTOPできる(Opus P-03)。
+    * 失敗は 丸めなしoverlay(status=JUDGE_API_ERROR / INTERNAL_ERROR)を書いて続行(STOP・retry・Human Reviewを増やさない)。
+    annotated: contract.validate_annotated_b3() の戻り。parse_brief_md: w1.parse_brief_md(循環import回避のため注入)。judge/require_model: 注入可(test)。"""
     sha_md = annotated.annotated_md_sha256
     if not B3_CORE_NUMBER_ROUNDING_ENABLED:
         return {"status": "DISABLED", "api_calls": 0, "reused": False}
-    _, ev0 = load_overlay_for_writer(out_dir, sha_md)
-    if ev0["reason"] in ("applied", "no_approximate_ok"):
-        return {"status": "OK", "api_calls": 0, "reused": True, "overlay_sha256": ev0["overlay_sha256"],
-                "n_approximate_ok": ev0["n_approximate_ok"]}
+    ov0, info0 = inspect_overlay(out_dir, sha_md)
+    if info0["valid"] and not force_rejudge:
+        return {"status": ov0.get("status"), "api_calls": 0, "reused": True, "overlay_sha256": info0["overlay_sha256"],
+                "n_approximate_ok": ov0.get("n_approximate_ok", 0), "error": ov0.get("error")}
+    if not allow_judge:
+        return {"status": "NOT_JUDGED_REUSE_PATH", "api_calls": 0, "reused": False, "overlay_sha256": info0["overlay_sha256"],
+                "n_approximate_ok": 0, "reason": info0["reason"]}
+    if require_model is None:
+        import er006_model_routing_contract_01 as routing
+        require_model = routing.require_model
+    require_model(ROLE_KEY, JUDGE_MODEL)                      # 設定ミス(未登録/不一致)は握りつぶさずSTOP(API call前、tryの外)
     sidecar = annotated.sidecar
     base = {"schema": OVERLAY_SCHEMA, "annotated_md_sha256": sha_md,
             "sidecar_sha256": sha_text(json.dumps(sidecar, ensure_ascii=False, sort_keys=True)),
             "role_key": ROLE_KEY, "requested_model": JUDGE_MODEL, "requested_effort": JUDGE_EFFORT,
             "v8_max_relative_error": str(V8_MAX_REL_ERROR), "judge": None}
+    api_attempted = False
     try:
         cores = core_concepts(sidecar)
         if not cores:
-            ov = {**base, **empty_overlay(sidecar, "OK"), "note": "NO_CORE_NUMBERS"}
+            ov = {**base, **empty_overlay(sidecar, STATUS_OK), "note": "NO_CORE_NUMBERS"}
         else:
             story, facts_text = parse_brief_md(annotated.annotated_md_text)
             prompt = build_judge_user_prompt(storyline=story, facts_text=facts_text, constraints_text=annotated.constraints_text,
                                              sidecar=sidecar, ledger_records=parse_ledger_records(ledger_text))
+            api_attempted = True
             r = (judge or judge_call)(client, prompt, "b3_core_number_rounding")
             if not str(r.get("model_returned") or "").startswith(JUDGE_MODEL):
-                raise RuntimeError(f"judge返却model不一致: {r.get('model_returned')!r}")
+                raise JudgeModelMismatch(f"judge返却model不一致: {r.get('model_returned')!r}")
             core = build_overlay(sidecar, r["parsed"])
-            ov = {**base, **core, "status": "OK",
+            ov = {**base, **core, "status": STATUS_OK,
                   "judge": {"model_requested": r["model_requested"], "model_returned": r["model_returned"], "effort": r["effort"],
                             "response_id": r["response_id"], "usage": r["usage"], "sec": r["sec"],
                             "user_prompt_sha256": sha_text(prompt), "developer_message_sha256": sha_text(JUDGE_DEVELOPER_MESSAGE),
                             "json_schema_sha256": sha_text(json.dumps(JUDGE_JSON_SCHEMA, sort_keys=True))}}
-    except Exception as exc:                                  # noqa: BLE001 fail-closed: 丸めなしで続行(従来と同一出力)
-        ov = {**base, **empty_overlay(sidecar, "JUDGE_FAILED_FAILCLOSED", f"{type(exc).__name__}: {exc}"[:300])}
+    except _api_error_types() as exc:                         # API/通信/JSON解析/model不一致 -> 丸めなしで続行
+        ov = {**base, **empty_overlay(sidecar, STATUS_API_ERROR, f"{type(exc).__name__}: {exc}"[:300])}
+    except _INTERNAL_ERROR_TYPES as exc:                      # 構造不正 -> 丸めなしで続行(INTERNAL_ERRORとして分離記録)
+        ov = {**base, **empty_overlay(sidecar, STATUS_INTERNAL_ERROR, f"{type(exc).__name__}: {exc}"[:300])}
     ov["overlay_sha256"] = overlay_canonical_sha(ov)
     _write_json(overlay_path(out_dir), ov)
-    return {"status": ov["status"], "api_calls": 1 if ov.get("judge") else 0, "reused": False,
+    return {"status": ov["status"], "api_calls": 1 if (ov.get("judge") or api_attempted) else 0, "reused": False,
             "overlay_sha256": ov["overlay_sha256"], "n_approximate_ok": ov["n_approximate_ok"], "error": ov.get("error")}

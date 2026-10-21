@@ -136,6 +136,9 @@ PROCESS_MODEL_MAP = {
     "FAMILY_X_RF_GEMINI": "gemini-3.5-flash-lite",
     "FAMILY_X_FACTLOCK_R0": "gpt-6.1-sol",
     "FAMILY_X_FACTLOCK_REVISE": "gpt-6.1-sol",
+    # FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01 委任_06 C-2(2026-10-22、ユーザー正式採用APPROVED_FOR_PRODUCTION): Family X中核数値の
+    # 概数可否判断(1記事1call、reasoning effort=low)。追加のみ・既存キー不変・リテラル固定・環境変数上書きなし。Family Zは参照しない。
+    "FAMILY_X_B3_CORE_NUMBER_ROUNDING": "gpt-6-luna",
     # FAMILY-Z-STORY-POOL-SCREENING-TRIAL-01 委任_02(2026-10-11、ユーザー指示: Trial基本モデルをgpt-6-lunaへ固定)で
     # 追加(追加のみ、既存Production keyは不変)。**Trial専用**(er054 family_z story pool trial driverのみが参照)。
     # Production採用を意味しない。リテラル固定(他定数に連動しない)。Astra/Sol等は提案候補でありここへは入れない。
