@@ -105,9 +105,13 @@ def cmd_manifest():
                      "problem_type": f"proper_noun_misreading({a['confusable']})" if isneg else None,
                      "spoken_text_requested": a["text"], "label_basis": f"{pw}manifest_0{'2' if a['id'].startswith('NM_') else '1'}.json id={a['id']}",
                      "tags": ["synthetic_tts", "proper_noun", "plw_trial_reuse"]})
-    spl = os.path.join(OUT, "splice_log.json")
-    if os.path.exists(spl):
-        for s in json.load(open(spl, encoding="utf-8")):
+    spl_all = []
+    for nm in ("splice_log.json", "splice_log_v2.json"):
+        pth = os.path.join(OUT, nm)
+        if os.path.exists(pth):
+            spl_all += json.load(open(pth, encoding="utf-8"))
+    if True:
+        for s in spl_all:
             rows.append({"id": s["id"], "wav": s["wav"], "wav_sha256": s["wav_sha256"], "duration_s": s["duration_s"], "kind": s["kind"],
                          "canonical": s["canonical"], "family": s["family"], "level": s["level"], "article": "splice_from_" + s["source_id"],
                          "segment": s["source_id"], "label": "problem", "label_class": "problem_constructed_splice",
@@ -227,6 +231,28 @@ def cmd_whisper_par(n):
     with open(os.path.join(RES, "whisper_parallel.jsonl"), "a", encoding="utf-8") as f:
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
     print(rec)
+
+
+def cmd_whisper_medium():
+    """smallの誤りがモデル容量由来かの確認(委任文: 実測で示された場合に限り1サイズ追加)。small単独verdictがNGの正常音声+全KPのみ(無料・ローカル)。"""
+    import er008_disfluency_qa_18 as dq18
+    import er091_asr_three_way_trial_01_analyze as an
+    res = json.load(open(os.path.join(RES, "phase12_item_results.json"), encoding="utf-8"))
+    bad = {r["id"] for r in res if r["method"] == "whisper" and r["cond"] == "prod" and not r["verdict_pass"]}
+    rows = [r for r in active_rows() if os.environ.get("MEDIUM_ALL") or r["kind"] == "kp" or r["id"] in bad]
+    done = load_done()
+    dq18._get_model("medium")
+    for r in rows:
+        if (r["id"], "whisper_medium", "prod", 1) in done:
+            continue
+        t = time.time()
+        c = time.process_time()
+        words = dq18.transcribe_verbatim(r["wav"], language="en", model_size="medium")
+        append({"ts": now(), "id": r["id"], "method": "whisper_medium", "cond": "prod", "rep": 1,
+                "text": " ".join(w["text"] for w in words).strip(), "error": None, "wall_s": round(time.time() - t, 3),
+                "cpu_s": round(time.process_time() - c, 3), "audio_s": round(wav_sec(r["wav"]), 3),
+                "config": "faster_whisper medium cpu int8 language=en (dq18.transcribe_verbatim model_size=medium)"})
+    print("whisper medium done", len(rows))
 
 
 # ---------------------------------------------------------------- API
@@ -364,6 +390,8 @@ if __name__ == "__main__":
         cmd_manifest()
     elif c == "whisper":
         cmd_whisper()
+    elif c == "whisper_medium":
+        cmd_whisper_medium()
     elif c == "whisper_par":
         cmd_whisper_par(int(a[1]))
     elif c == "whisper_worker":
