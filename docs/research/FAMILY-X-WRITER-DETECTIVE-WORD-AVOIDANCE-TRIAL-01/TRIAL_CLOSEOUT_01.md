@@ -29,3 +29,12 @@
 - 既存sha固定(`verbatim_shas`、STANDARD_A2_PROMPT_SHA256等)・golden fixture・DefaultOffテストの更新が必要。Opus条件C(重要変更のProduction採用提案前)該当の可能性あり=Fable判断。
 - 量産単価: 追加API呼出0、入力token微増のみ(C案で数十token/呼出×6、実費差は誤差)。今回の実費差(C 11.85〜B 14.09)はPattern起因ではなく生成のばらつき。
 - 禁止語リストは新設していない。類似語(investigat/clue/mystery/magnifying glass/推理/虫眼鏡)はBaselineにのみ出現し、A/B/CのAdvanced/Standardでは0件(観測のみ)。
+
+## 最終ラベル・ユーザー決定(2026-10-21、委任_02)
+- Status: **CLOSED**(Trial終了・Production採用見送り・将来再検討は保存済み結果から)。ユーザー指示原文=`docs/pm/delegation_log/2026-10-21_FAMILY-X-WRITER-DETECTIVE-WORD-AVOIDANCE-TRIAL-01_CLOSEOUT_USER.md`。
+- Fable最終ラベル(試験評価。消さずに保持): **Pattern C = `VALIDATED`**(n=1/Pattern、過去R2の『探偵』出現率約8%[2/24]のため抑制効果の統計的証明ではない。機械判定CANDIDATE_MACHINE:Cと一致)、**Pattern B = `NOT_VALIDATED`**(Entertainmentは高いが、Ledgerにない因果関係の創作1件[『In response to these threats』]を観測。追加指示との因果は未確定)、**Pattern A = `REJECTED`**(発射主体の帰属欠落1件を観測、初回はJA記号QA STOP。追加指示との因果は未確定)。
+- ユーザー正式決定(2026-10-21): (1)Pattern A/B/Cすべて、今回のProduction採用を見送る。(2)A:不採用。(3)B:不採用。(4)C:VALIDATED評価は試験結果として保持するが、Production採用は見送り。(5)現行Writer Prompt・Production経路は変更しない。追加Trial・再生成は実施しない。ユーザーはDetectiveという単語を避けたい意向自体を撤回していない(今回の比較結果だけでは改善効果と副作用を十分に評価できないため、現行仕様を維持)。
+- 結果の解釈(ユーザー原文§2、観測として記録・相関を因果として扱わない): ①Detective出現はA/B/Cとも0件。ただし各Patternの生成は1回のみで、追加指示による安定的な抑制効果が実証されたとは言えない。②事実面の観測: Aは攻撃主体の帰属欠落、BはLedgerにない因果関係の創作、Cは重大誤り0件・軽微な懸念3件。A/Bの重大誤りが追加指示によって発生したかどうかは未確定。③文章品質の観測: CはLLM評価が最も高かったが、人間の通読では説明的・反復的な文章になっていた。この特徴がPattern Cの指示が原因かどうかは未確定。
+- A/Bの品質不合格は、今回の観測結果として保持する。
+- Production Writer非変更の確認(委任_02 S2、API 0): 対象5file(`er053_family_x_factlock_ja_writer_01.py`・`er003_v1_n3_01_advanced_adaptation_generate.py`・`er003_v1_n3_01_standard_a2_generate.py`・`er019_family_x_entertainment_production_runner_01.py`・`er003_v1_en_direct_vfl_01_generate.py`)について、`git log 65a1080d5^..HEAD`空・`git diff --stat 65a1080d5^ HEAD`空・作業tree `git status --porcelain`空。Prompt sha固定を含む既存test3本(er003 standard、er053、er019 an3 wiring)を実行: 81 PASS・1 FAIL(`test_w1_rf_queue_contract_referenced_only_by_entertainment_runner_after_c2`。Trial harness群[er082/er083/er086]がProduction moduleをimportすることに対する静的参照検査で、Production Prompt/コード変更によるものではない。本Closeoutでは未修正、判断はFable)。
+- 再利用索引: `REUSE_INDEX_01.md`(入力・Prompt・出力・評価の対応表)。
