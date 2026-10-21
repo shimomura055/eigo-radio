@@ -1,0 +1,141 @@
+{
+  "entries": [
+    {
+      "concept": "C1",
+      "kind": "date_time",
+      "ledger_ids": [
+        "F02"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "2025年2月",
+          "approx": null
+        }
+      ],
+      "reason": "史上最高値を記録した時期を特定する日付であり、年月を正確に維持する必要がある。",
+      "basis_fact_ids": [
+        "F02"
+      ],
+      "approved_condition": "日付など、精度そのものが意味を持つ数字は厳密値を維持する。"
+    },
+    {
+      "concept": "C3",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F02"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "4.30",
+          "approx": null
+        }
+      ],
+      "reason": "史上最高値として報じられた先物価格であり、「4.30米ドル超」という記録の水準を維持する必要がある。",
+      "basis_fact_ids": [
+        "F02"
+      ],
+      "approved_condition": "記録など、精度そのものが意味を持つ数字は厳密値を維持する。"
+    },
+    {
+      "concept": "C7",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F11"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "9.14:V3_not_ordinary_rounding(exact=9.14,approx=1)",
+        "9.14:V4_unit_tail_changed(''->'ポンド当たり約9.1米ドル')"
+      ],
+      "surfaces": [
+        {
+          "surface": "9.14",
+          "approx": null
+        }
+      ],
+      "reason": "前月の8.87米ドルとの差を残すため9米ドルまでは丸めず、約9.1米ドルとする。小数第2位を省いても、値上がりの方向や規模の理解は損なわれない。",
+      "basis_fact_ids": [
+        "F11"
+      ],
+      "approved_condition": "比較の方向・重要な規模・意味ある差を損なわない範囲で概数化する。"
+    },
+    {
+      "concept": "C10",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F11"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "3%",
+          "approx": null
+        }
+      ],
+      "reason": "前月比の小幅な上昇を示す、すでに有効数字1桁の値である。さらに精度を落とすと、上昇幅の意味を維持できない。",
+      "basis_fact_ids": [
+        "F11"
+      ],
+      "approved_condition": "丸めによって小さな差の規模や解釈が変わる場合は精度を維持する。"
+    },
+    {
+      "concept": "C12",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F11"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "41%:V4_unit_tail_changed('%'->'%上昇')"
+      ],
+      "surfaces": [
+        {
+          "surface": "41%",
+          "approx": null
+        }
+      ],
+      "reason": "約40%としても、前年同月からの大幅な上昇という規模は変わらない。前月比3%とは比較期間を明示して区別し、別の数値として保持する。",
+      "basis_fact_ids": [
+        "F11"
+      ],
+      "approved_condition": "重要な規模や解釈を損なわない範囲では概数を基本とし、異なる比較期間の数値は統合しない。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C1",
+    "C3",
+    "C7",
+    "C10",
+    "C12"
+  ],
+  "n_approximate_ok": 0,
+  "source": "coffee",
+  "judge_model": "gpt-6.1-sol",
+  "judge_response_id": "resp_06f3cc4ed3b5c447006ad8a53efe4c87d0ade971d761a94b52"
+}

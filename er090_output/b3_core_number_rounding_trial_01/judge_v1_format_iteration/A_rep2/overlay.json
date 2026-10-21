@@ -1,0 +1,118 @@
+{
+  "entries": [
+    {
+      "concept": "C1",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F04"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "11件",
+          "approx": null
+        }
+      ],
+      "reason": "統合した研究数は証拠の構成を示す数であり、10件への丸めが証拠の解釈に影響しないとは確信できないため、11件を維持する。",
+      "basis_fact_ids": [
+        "F04"
+      ],
+      "approved_condition": "証拠の解釈に関わる精度を保持し、判断が不確かな場合は厳密値を維持する。"
+    },
+    {
+      "concept": "C2",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F04"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "最大134,515人:V4_unit_tail_changed('人'->'人（解析ごとに参加者数は異なる）')",
+        "134,515人:V4_unit_tail_changed('人'->'人（最大解析標本数で、解析ごとに参加者数は異なる）')"
+      ],
+      "surfaces": [
+        {
+          "surface": "最大134,515人",
+          "approx": null
+        },
+        {
+          "surface": "134,515人",
+          "approx": null
+        }
+      ],
+      "reason": "最大解析標本のおおよその規模が重要であり、千人単位への四捨五入でも大規模なデータであるという意味は変わらない。最大値であることと、解析ごとに参加者数が異なることは保持する。",
+      "basis_fact_ids": [
+        "F04"
+      ],
+      "approved_condition": "物語に重要な規模や証拠の解釈を変えない範囲では、聞き取りやすい概数を優先する。"
+    },
+    {
+      "concept": "C4",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F07"
+      ],
+      "fact_ns": [
+        3
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "3回以上",
+          "approx": null
+        }
+      ],
+      "reason": "最低3回の測定は、研究を統合対象に含めるための適格条件である。概数化すると、対象となる研究を区切る閾値が曖昧になる。",
+      "basis_fact_ids": [
+        "F07"
+      ],
+      "approved_condition": "重要な閾値を曖昧にする丸めは行わない。"
+    },
+    {
+      "concept": "C5",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F08"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "0.0630",
+          "approx": null
+        }
+      ],
+      "reason": "小さな標準化交差遅延効果の推定値であり、0.06への丸めでは逆方向の0.0589との数値的な区別が曖昧になる。結果の解釈に影響しないとは確信できないため、厳密値を維持する。",
+      "basis_fact_ids": [
+        "F08"
+      ],
+      "approved_condition": "小規模な測定値や異なる値の区別を損なう丸めを避け、判断が不確かな場合は厳密値を維持する。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C1",
+    "C2",
+    "C4",
+    "C5"
+  ],
+  "n_approximate_ok": 0,
+  "source": "A",
+  "judge_model": "gpt-6.1-sol",
+  "judge_response_id": "resp_0f3615f28a31b0d5006ad8a5188ca087d0b0b0e8e1a386ec87"
+}

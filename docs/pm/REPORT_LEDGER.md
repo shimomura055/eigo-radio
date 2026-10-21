@@ -441,3 +441,4 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-21 | PRONUNCIATION-LEDGER-INVALID-ENTRY-REMEDIATION-01 委任_02(Fable判定PRODUCTION_WIRED記録、API 0・JPY0・コード変更なし、OPEN-436) | 報告=docs/pm/RESULT_PACKET_PLIR2.md
 - 2026-10-21 | PM-GIT-ACTIVE-TASK-UNTRACK-01 委任_01(逸脱是正: PLIR 委任_02で.gitignore対象のdocs/pm/ACTIVE_TASK.mdをgit add -fで追跡させた[commit 9665101b3]ため、新commitでgit rm --cached追跡解除、履歴書換えなし。再発防止=委任文の禁止事項[git add -f禁止]を遵守。API 0・JPY0) | 報告=docs/pm/RESULT_PACKET_GITFIX2.md
 - 2026-10-21 | FAMILY-X-MANGA-AI-CHAT-BYUS-KP4-TAKE-PART-REMEDIATION-01 委任_01(Std KP4 take part問題音声をreuse_blocked markで無効化・Production KP経路で再生成・差替え・再assemble・観測3方式全て「take part」・Regression PASS・実費約0.4円、OPEN-431) | 報告=docs/pm/RESULT_PACKET_KP4R1.md
+- 2026-10-21 | FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01 委任_01(B3後の中核数値丸め判断Trial: 事前Gate否定的結果なし、記事Aで最大134,515人→最大約13万人がWriter/EN全段維持、構造不変証拠・LDC changed_number=false 7/7、判断LLM原価JPY2.95〜4.30/記事[見積超過]、規則(5)例外化は要承認、Trial費用JPY80.76、OPEN-437) | 報告=docs/pm/RESULT_PACKET_B3RD1.md

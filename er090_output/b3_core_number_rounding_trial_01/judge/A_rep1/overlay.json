@@ -1,0 +1,118 @@
+{
+  "entries": [
+    {
+      "concept": "C1",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F04"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "11件",
+          "approx": null
+        }
+      ],
+      "reason": "統合した研究の具体的な件数を示す小さな離散値であり、10件などへの丸めは分析対象の範囲を不正確に伝えるおそれがある。",
+      "basis_fact_ids": [
+        "F04"
+      ],
+      "approved_condition": "丸めが聞き手に関係する事実忠実性を損なう場合は厳密値を維持する。"
+    },
+    {
+      "concept": "C2",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F04"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "最大134,515人",
+          "approx": "最大約13万人"
+        },
+        {
+          "surface": "134,515人",
+          "approx": "約13万人"
+        }
+      ],
+      "reason": "重要なのは大規模な解析標本であることで、1人単位の精度は結論や証拠の解釈を左右しない。最大という限定と、解析ごとに参加者数が異なる条件は維持する。",
+      "basis_fact_ids": [
+        "F04"
+      ],
+      "approved_condition": "追加の精度が重要な規模や証拠の解釈に影響しない場合は、聞き取りやすい概数を優先する。"
+    },
+    {
+      "concept": "C4",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F07"
+      ],
+      "fact_ns": [
+        3
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "3回以上",
+          "approx": null
+        }
+      ],
+      "reason": "3回以上は研究を組み入れるための最低測定回数であり、概数化すると適格条件の境界が曖昧になる。",
+      "basis_fact_ids": [
+        "F07"
+      ],
+      "approved_condition": "重要な閾値を越えたり曖昧にしたりする丸めは行わない。"
+    },
+    {
+      "concept": "C5",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F08"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "0.0630:V3_not_ordinary_rounding(exact=0.0630,approx=0.063)"
+      ],
+      "surfaces": [
+        {
+          "surface": "0.0630",
+          "approx": null
+        }
+      ],
+      "reason": "末尾の0を落として有効数字を減らしても、関連の方向、小さな効果量、逆方向の0.0589との区別は保たれる。逆方向の結果と一つの概数にまとめず、この関連だけの値として扱う。",
+      "basis_fact_ids": [
+        "F08"
+      ],
+      "approved_condition": "余分な小数精度が方向・規模・証拠の解釈・値の区別に影響しない場合は概数化できるが、別の結果は統合しない。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C1",
+    "C2",
+    "C4",
+    "C5"
+  ],
+  "n_approximate_ok": 1,
+  "source": "A",
+  "judge_model": "gpt-6.1-sol",
+  "judge_response_id": "resp_004c0ef60fa574e4006ad8a5e12ce487d0b1524ff3133431a7",
+  "effort": "high"
+}

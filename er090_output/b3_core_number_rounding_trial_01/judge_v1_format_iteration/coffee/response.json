@@ -1,0 +1,85 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2025年2月",
+            "approx_surface": null
+          }
+        ],
+        "reason": "史上最高値を記録した時期を特定する日付であり、年月を正確に維持する必要がある。",
+        "basis_fact_ids": [
+          "F02"
+        ],
+        "approved_condition": "日付など、精度そのものが意味を持つ数字は厳密値を維持する。"
+      },
+      {
+        "concept": "C3",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "4.30",
+            "approx_surface": null
+          }
+        ],
+        "reason": "史上最高値として報じられた先物価格であり、「4.30米ドル超」という記録の水準を維持する必要がある。",
+        "basis_fact_ids": [
+          "F02"
+        ],
+        "approved_condition": "記録など、精度そのものが意味を持つ数字は厳密値を維持する。"
+      },
+      {
+        "concept": "C7",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "9.14",
+            "approx_surface": "1ポンド当たり約9.1米ドル"
+          }
+        ],
+        "reason": "前月の8.87米ドルとの差を残すため9米ドルまでは丸めず、約9.1米ドルとする。小数第2位を省いても、値上がりの方向や規模の理解は損なわれない。",
+        "basis_fact_ids": [
+          "F11"
+        ],
+        "approved_condition": "比較の方向・重要な規模・意味ある差を損なわない範囲で概数化する。"
+      },
+      {
+        "concept": "C10",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "3%",
+            "approx_surface": null
+          }
+        ],
+        "reason": "前月比の小幅な上昇を示す、すでに有効数字1桁の値である。さらに精度を落とすと、上昇幅の意味を維持できない。",
+        "basis_fact_ids": [
+          "F11"
+        ],
+        "approved_condition": "丸めによって小さな差の規模や解釈が変わる場合は精度を維持する。"
+      },
+      {
+        "concept": "C12",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "41%",
+            "approx_surface": "前年同月比で約40%上昇"
+          }
+        ],
+        "reason": "約40%としても、前年同月からの大幅な上昇という規模は変わらない。前月比3%とは比較期間を明示して区別し、別の数値として保持する。",
+        "basis_fact_ids": [
+          "F11"
+        ],
+        "approved_condition": "重要な規模や解釈を損なわない範囲では概数を基本とし、異なる比較期間の数値は統合しない。"
+      }
+    ]
+  },
+  "raw_text": "{\n  \"decisions\": [\n    {\n      \"concept\": \"C1\",\n      \"decision\": \"EXACT_REQUIRED\",\n      \"surfaces\": [\n        {\n          \"surface\": \"2025年2月\",\n          \"approx_surface\": null\n        }\n      ],\n      \"reason\": \"史上最高値を記録した時期を特定する日付であり、年月を正確に維持する必要がある。\",\n      \"basis_fact_ids\": [\"F02\"],\n      \"approved_condition\": \"日付など、精度そのものが意味を持つ数字は厳密値を維持する。\"\n    },\n    {\n      \"concept\": \"C3\",\n      \"decision\": \"EXACT_REQUIRED\",\n      \"surfaces\": [\n        {\n          \"surface\": \"4.30\",\n          \"approx_surface\": null\n        }\n      ],\n      \"reason\": \"史上最高値として報じられた先物価格であり、「4.30米ドル超」という記録の水準を維持する必要がある。\",\n      \"basis_fact_ids\": [\"F02\"],\n      \"approved_condition\": \"記録など、精度そのものが意味を持つ数字は厳密値を維持する。\"\n    },\n    {\n      \"concept\": \"C7\",\n      \"decision\": \"APPROXIMATE_OK\",\n      \"surfaces\": [\n        {\n          \"surface\": \"9.14\",\n          \"approx_surface\": \"1ポンド当たり約9.1米ドル\"\n        }\n      ],\n      \"reason\": \"前月の8.87米ドルとの差を残すため9米ドルまでは丸めず、約9.1米ドルとする。小数第2位を省いても、値上がりの方向や規模の理解は損なわれない。\",\n      \"basis_fact_ids\": [\"F11\"],\n      \"approved_condition\": \"比較の方向・重要な規模・意味ある差を損なわない範囲で概数化する。\"\n    },\n    {\n      \"concept\": \"C10\",\n      \"decision\": \"EXACT_REQUIRED\",\n      \"surfaces\": [\n        {\n          \"surface\": \"3%\",\n          \"approx_surface\": null\n        }\n      ],\n      \"reason\": \"前月比の小幅な上昇を示す、すでに有効数字1桁の値である。さらに精度を落とすと、上昇幅の意味を維持できない。\",\n      \"basis_fact_ids\": [\"F11\"],\n      \"approved_condition\": \"丸めによって小さな差の規模や解釈が変わる場合は精度を維持する。\"\n    },\n    {\n      \"concept\": \"C12\",\n      \"decision\": \"APPROXIMATE_OK\",\n      \"surfaces\": [\n        {\n          \"surface\": \"41%\",\n          \"approx_surface\": \"前年同月比で約40%上昇\"\n        }\n      ],\n      \"reason\": \"約40%としても、前年同月からの大幅な上昇という規模は変わらない。前月比3%とは比較期間を明示して区別し、別の数値として保持する。\",\n      \"basis_fact_ids\": [\"F11\"],\n      \"approved_condition\": \"重要な規模や解釈を損なわない範囲では概数を基本とし、異なる比較期間の数値は統合しない。\"\n    }\n  ]\n}",
+  "model": "gpt-6.1-sol",
+  "response_id": "resp_06f3cc4ed3b5c447006ad8a53efe4c87d0ade971d761a94b52",
+  "sec": 25.9
+}

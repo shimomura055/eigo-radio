@@ -1,0 +1,149 @@
+{
+  "entries": [
+    {
+      "concept": "C2",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F05"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "634:V4_unit_tail_changed(''->'人')"
+      ],
+      "surfaces": [
+        {
+          "surface": "634",
+          "approx": null
+        }
+      ],
+      "reason": "Study 7の参加者数は実験規模を伝える数字であり、1人単位の精度は結果の解釈に必要ない。約630人としても規模や他の実験との区別は保たれる。",
+      "basis_fact_ids": [
+        "F05"
+      ],
+      "approved_condition": "丸めても重要な規模・比較・証拠の解釈が変わらない"
+    },
+    {
+      "concept": "C5",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F05",
+        "F06"
+      ],
+      "fact_ns": [
+        1,
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "5分",
+          "approx": null
+        }
+      ],
+      "reason": "各動画の5分という長さは、短時間の退屈を扱った実験条件を示す。すでに簡潔な値であり、さらに有効数字を減らす丸めは介入時間を歪めるため維持する。",
+      "basis_fact_ids": [
+        "F05",
+        "F06"
+      ],
+      "approved_condition": "丸めによって測定の意味や解釈を変えない"
+    },
+    {
+      "concept": "C6",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F05",
+        "F06"
+      ],
+      "fact_ns": [
+        1,
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "10",
+          "approx": null
+        }
+      ],
+      "reason": "10セント刻みは、参加者が選べた報酬変更の単位を定める実験条件である。すでに簡潔であり、概数化すると選択肢の刻み幅が不明確になる。",
+      "basis_fact_ids": [
+        "F05",
+        "F06"
+      ],
+      "approved_condition": "数値の精度が選択肢の区別と解釈に必要"
+    },
+    {
+      "concept": "C7",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F05",
+        "F06"
+      ],
+      "fact_ns": [
+        1,
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "最大50",
+          "approx": null
+        }
+      ],
+      "reason": "最大50セントは、実験で許された報酬変更の上限を示す。概数化すると課題の金額範囲を曖昧にするため、限定語と厳密値を維持する。",
+      "basis_fact_ids": [
+        "F05",
+        "F06"
+      ],
+      "approved_condition": "重要な上限を曖昧にする丸めを避ける"
+    },
+    {
+      "concept": "C9",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F06"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "1,332:V4_unit_tail_changed(''->'人')"
+      ],
+      "surfaces": [
+        {
+          "surface": "1,332",
+          "approx": null
+        }
+      ],
+      "reason": "Study 8の参加者数は実験規模を伝える数字であり、1人単位の精度は結果の解釈に必要ない。約1300人としてもStudy 7との規模の違いは保たれ、各実験の人数を別々に示せる。",
+      "basis_fact_ids": [
+        "F06"
+      ],
+      "approved_condition": "丸めても重要な規模・比較・証拠の解釈が変わらない"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C2",
+    "C5",
+    "C6",
+    "C7",
+    "C9"
+  ],
+  "n_approximate_ok": 0,
+  "source": "boredom",
+  "judge_model": "gpt-6.1-sol",
+  "judge_response_id": "resp_094f96873d1cae51006ad8a558ea0887d09edc57517c272629"
+}

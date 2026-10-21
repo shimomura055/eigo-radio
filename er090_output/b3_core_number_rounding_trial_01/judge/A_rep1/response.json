@@ -1,0 +1,75 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "11件",
+            "approx_surface": null
+          }
+        ],
+        "reason": "統合した研究の具体的な件数を示す小さな離散値であり、10件などへの丸めは分析対象の範囲を不正確に伝えるおそれがある。",
+        "basis_fact_ids": [
+          "F04"
+        ],
+        "approved_condition": "丸めが聞き手に関係する事実忠実性を損なう場合は厳密値を維持する。"
+      },
+      {
+        "concept": "C2",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "最大134,515人",
+            "approx_surface": "最大約13万人"
+          },
+          {
+            "surface": "134,515人",
+            "approx_surface": "約13万人"
+          }
+        ],
+        "reason": "重要なのは大規模な解析標本であることで、1人単位の精度は結論や証拠の解釈を左右しない。最大という限定と、解析ごとに参加者数が異なる条件は維持する。",
+        "basis_fact_ids": [
+          "F04"
+        ],
+        "approved_condition": "追加の精度が重要な規模や証拠の解釈に影響しない場合は、聞き取りやすい概数を優先する。"
+      },
+      {
+        "concept": "C4",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "3回以上",
+            "approx_surface": null
+          }
+        ],
+        "reason": "3回以上は研究を組み入れるための最低測定回数であり、概数化すると適格条件の境界が曖昧になる。",
+        "basis_fact_ids": [
+          "F07"
+        ],
+        "approved_condition": "重要な閾値を越えたり曖昧にしたりする丸めは行わない。"
+      },
+      {
+        "concept": "C5",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "0.0630",
+            "approx_surface": "約0.063"
+          }
+        ],
+        "reason": "末尾の0を落として有効数字を減らしても、関連の方向、小さな効果量、逆方向の0.0589との区別は保たれる。逆方向の結果と一つの概数にまとめず、この関連だけの値として扱う。",
+        "basis_fact_ids": [
+          "F08"
+        ],
+        "approved_condition": "余分な小数精度が方向・規模・証拠の解釈・値の区別に影響しない場合は概数化できるが、別の結果は統合しない。"
+      }
+    ]
+  },
+  "raw_text": "{\n  \"decisions\": [\n    {\n      \"concept\": \"C1\",\n      \"decision\": \"EXACT_REQUIRED\",\n      \"surfaces\": [\n        {\n          \"surface\": \"11件\",\n          \"approx_surface\": null\n        }\n      ],\n      \"reason\": \"統合した研究の具体的な件数を示す小さな離散値であり、10件などへの丸めは分析対象の範囲を不正確に伝えるおそれがある。\",\n      \"basis_fact_ids\": [\"F04\"],\n      \"approved_condition\": \"丸めが聞き手に関係する事実忠実性を損なう場合は厳密値を維持する。\"\n    },\n    {\n      \"concept\": \"C2\",\n      \"decision\": \"APPROXIMATE_OK\",\n      \"surfaces\": [\n        {\n          \"surface\": \"最大134,515人\",\n          \"approx_surface\": \"最大約13万人\"\n        },\n        {\n          \"surface\": \"134,515人\",\n          \"approx_surface\": \"約13万人\"\n        }\n      ],\n      \"reason\": \"重要なのは大規模な解析標本であることで、1人単位の精度は結論や証拠の解釈を左右しない。最大という限定と、解析ごとに参加者数が異なる条件は維持する。\",\n      \"basis_fact_ids\": [\"F04\"],\n      \"approved_condition\": \"追加の精度が重要な規模や証拠の解釈に影響しない場合は、聞き取りやすい概数を優先する。\"\n    },\n    {\n      \"concept\": \"C4\",\n      \"decision\": \"EXACT_REQUIRED\",\n      \"surfaces\": [\n        {\n          \"surface\": \"3回以上\",\n          \"approx_surface\": null\n        }\n      ],\n      \"reason\": \"3回以上は研究を組み入れるための最低測定回数であり、概数化すると適格条件の境界が曖昧になる。\",\n      \"basis_fact_ids\": [\"F07\"],\n      \"approved_condition\": \"重要な閾値を越えたり曖昧にしたりする丸めは行わない。\"\n    },\n    {\n      \"concept\": \"C5\",\n      \"decision\": \"APPROXIMATE_OK\",\n      \"surfaces\": [\n        {\n          \"surface\": \"0.0630\",\n          \"approx_surface\": \"約0.063\"\n        }\n      ],\n      \"reason\": \"末尾の0を落として有効数字を減らしても、関連の方向、小さな効果量、逆方向の0.0589との区別は保たれる。逆方向の結果と一つの概数にまとめず、この関連だけの値として扱う。\",\n      \"basis_fact_ids\": [\"F08\"],\n      \"approved_condition\": \"余分な小数精度が方向・規模・証拠の解釈・値の区別に影響しない場合は概数化できるが、別の結果は統合しない。\"\n    }\n  ]\n}",
+  "model": "gpt-6.1-sol",
+  "response_id": "resp_004c0ef60fa574e4006ad8a5e12ce487d0b1524ff3133431a7",
+  "sec": 36.4,
+  "effort": "high"
+}

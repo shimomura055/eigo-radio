@@ -1,0 +1,137 @@
+{
+  "entries": [
+    {
+      "concept": "C1",
+      "kind": "date_time",
+      "ledger_ids": [
+        "F02"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "2025年2月",
+          "approx": null
+        }
+      ],
+      "reason": "史上最高値を記録した時期を特定する日付であり、年月を厳密に維持する。",
+      "basis_fact_ids": [
+        "F02"
+      ],
+      "approved_condition": "日付など、精度そのものが意味を持つ数字は維持する。"
+    },
+    {
+      "concept": "C3",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F02"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "4.30",
+          "approx": null
+        }
+      ],
+      "reason": "史上最高値として報じられた先物価格であり、記録を表す数値の精度を維持する。",
+      "basis_fact_ids": [
+        "F02"
+      ],
+      "approved_condition": "記録など、精度そのものが意味を持つ数字は維持する。"
+    },
+    {
+      "concept": "C7",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F11"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "9.14",
+          "approx": "約9.1"
+        }
+      ],
+      "reason": "小数第2位は価格水準の理解に必須ではない。8月の8.87米ドルとの小幅な差を隠さないよう、約9.1までの丸めにとどめる。",
+      "basis_fact_ids": [
+        "F11"
+      ],
+      "approved_condition": "比較方向や重要な差を保ち、理解に必要な最小限の精度に丸める。"
+    },
+    {
+      "concept": "C10",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F11"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "3%",
+          "approx": null
+        }
+      ],
+      "reason": "既に有効数字1桁の簡潔な値であり、さらに丸めると前月からの小幅な上昇を正しく伝えられない。",
+      "basis_fact_ids": [
+        "F11"
+      ],
+      "approved_condition": "丸めによって比較方向や小さな差の意味が損なわれる場合は維持する。"
+    },
+    {
+      "concept": "C12",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F11"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "41%",
+          "approx": "約40%"
+        }
+      ],
+      "reason": "前年同月からの大幅な上昇という意味は約40%でも保たれ、1ポイントの精度は重要な閾値や結論に関わらない。",
+      "basis_fact_ids": [
+        "F11"
+      ],
+      "approved_condition": "比較方向・重要な規模・証拠の解釈を変えない場合は、聞き取りやすい概数を優先する。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C1",
+    "C3",
+    "C7",
+    "C10",
+    "C12"
+  ],
+  "n_approximate_ok": 2,
+  "source": "coffee",
+  "judge_model": "gpt-6.1-sol",
+  "judge_response_id": "resp_0c78e7a03dba038e006ad8a60551c087d0a0bf1e6cf445e071",
+  "effort": "high"
+}

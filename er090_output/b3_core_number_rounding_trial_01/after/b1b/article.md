@@ -1,0 +1,22 @@
+# As Income Rises, Do We Become More Hardworking? Compare Yourself with Your “Usual Self”
+
+If you hear that “more hardworking people earn more” and think of a coworker who is good at their job, let that person step offstage for a moment. The star of this study is not the high earner next to you. It is none other than “your usual self.”
+
+“Earning more than other people” and “earning more than you usually do” may sound similar, but they are different things. They are about as different as a height ranking in class and marks on a door frame at home that track your height. The researchers looked separately at differences between people that do not change much and changes within the same person.
+
+The researchers analyzed 11 studies that followed people at work. The studies included up to about 130,000 people, though the number varied depending on which personality trait was being studied. Every study measured personality and income from work at least three times. Instead of looking at one group photo, the researchers lined up photos taken again and again to follow what happened next.
+
+What they found was a small, two-way link between income and “being hardworking.” This means a personality trait of taking things seriously and working hard at them.
+
+After periods when a person’s income was higher than usual, they tended to be more hardworking than usual. And after periods when they were more hardworking than usual, their income also tended to be higher than usual. The link went both ways, not just one.
+
+“So if my pay goes up, I’ll become more hardworking too!” But it’s too soon to use this as a reason to ask your boss for a raise. The study found a link, but it did not show that one thing caused the other. Just because income went up first does not mean it caused a later change in personality.
+
+Even after taking age into account, the main conclusion did not change much. But it is still possible that something besides age affected both income and being hardworking. There is a gap we must not jump over between “happened first” and “caused it.”
+
+And the link was small. This is not a guide that guarantees you’ll earn more if you become more hardworking, nor a claim that money changes your personality. Let’s not make the story bigger than it is.
+
+Still, there is something interesting about changing how we compare. For a moment, set aside the question of how you rank against the person in the next seat, and ask, “How are my usual self and my present self different?” The story of income and personality may show a different side when we follow changes in ourselves over time, instead of comparing wins and losses with other people.
+
+## In one line
+People tended to be more hardworking after earning more than usual, and to earn more after being more hardworking than usual. The link was small and does not prove cause and effect, but following our own changes over time may reveal a different side of the story.

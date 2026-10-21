@@ -1,0 +1,78 @@
+{
+  "pair": "P3_b1b_after_vs_before",
+  "X_is": "new",
+  "Y_is": "base(Before)",
+  "new_path": "C:\\Users\\tensh\\eigo-radio\\er090_output\\b3_core_number_rounding_trial_01\\after\\b1b\\article.md",
+  "base_path": "C:\\Users\\tensh\\eigo-radio\\er019_output\\paycheck_personality\\run_pp_01\\b1b\\article.md",
+  "model": "gpt-6.1-sol",
+  "response_id": "resp_0098249ba8223990006ad8aa9e324c87d083c2dfb08ca34025",
+  "result": {
+    "differences": [
+      {
+        "category": "NUMBER_EXPRESSION",
+        "x_text": "The studies included up to about 130,000 people",
+        "y_text": "the researchers used data from as many as 134,515 people",
+        "comment": "Xは最大解析標本数134,515人を「最大約13万人」と丸め、Yは正確な人数を示している。最大値であるという意味は共通し、Xも概数として採用Factと整合する。",
+        "severity": "minor"
+      },
+      {
+        "category": "FACT_CONTENT",
+        "x_text": "the number varied depending on which personality trait was being studied",
+        "y_text": "The number of people varied by analysis",
+        "comment": "Xは人数が異なる条件を性格特性の違いとして説明し、Yは解析ごとと広く表現している。採用Factでは各特性と収入の解析ごとに人数が異なるため、Yの方が条件を包括的に表しているが、Xも矛盾はしていない。",
+        "severity": "minor"
+      },
+      {
+        "category": "FACT_CONTENT",
+        "x_text": "11 studies that followed people at work",
+        "y_text": "11 large studies. They looked at people who were working and had reported on their personality and income from work.",
+        "comment": "Yは研究が大規模であることと、就労中で性格・仕事からの収入を報告した参加者が対象だったことを明示する。Xも仕事からの収入の反復測定には言及するが、参加者の条件としては簡略化している。Yの追加情報はいずれも採用Factに沿う。",
+        "severity": "minor"
+      },
+      {
+        "category": "FACT_CONTENT",
+        "x_text": "Even after taking age into account, the main conclusion did not change much. But it is still possible that something besides age affected both income and being hardworking.",
+        "y_text": "Something else may have played a part in both.",
+        "comment": "Xには、年齢調整後も主要な結論が大きく変わらなかったという追加解析の結果がある。Yはこの結果を省略し、第三変数の可能性だけを一般的に述べている。Xの記述は採用Fact5に合致し、因果を確定できないという結論は両文書で保たれている。",
+        "severity": "minor"
+      },
+      {
+        "category": "STRUCTURE_TONE",
+        "x_text": "Compare Yourself with Your “Usual Self”／income was higher than usual／more hardworking than usual",
+        "y_text": "Your Former Self／your former self and your later self／changes in a person’s income and later changes in their diligence",
+        "comment": "Xは「普段の自分からの上下」を繰り返して個人内の関連を説明する。Yは「以前の自分とその後の自分」という時間的変化を中心に説明する。個人間の差と個人内の変化を分けたという内容は共通するが、Xの方が個人の通常水準との比較を明示的に伝えている。",
+        "severity": "minor"
+      },
+      {
+        "category": "STRUCTURE_TONE",
+        "x_text": "“being hardworking.” This means a personality trait of taking things seriously and working hard at them.",
+        "y_text": "“diligence.” Think of it as a personality that takes things seriously and works hard.",
+        "comment": "勤勉性の呼び方が、Xでは日常的な「hardworking」、Yでは「diligence」を中心としている。直後の説明はほぼ同じで、対象特性の意味は保たれている。",
+        "severity": "minor"
+      },
+      {
+        "category": "STRUCTURE_TONE",
+        "x_text": "冒頭で同僚との比較を退け、身長の順位と自宅の柱の成長記録を対比してから、研究規模と測定方法を説明する。",
+        "y_text": "収入と性格の関係について二つの問いを置き、研究規模と測定方法を説明してから、他人との比較と自分の変化の追跡を対比する。",
+        "comment": "Xは比較方法の説明を先行させ、Yは双方向性への問いと研究概要を先行させている。説明の順序と導入の組み立ての差である。",
+        "severity": "minor"
+      },
+      {
+        "category": "STRUCTURE_TONE",
+        "x_text": "a height ranking in class and marks on a door frame at home／one group photo／ask your boss for a raise／a gap we must not jump over",
+        "y_text": "binoculars for looking at your neighbor’s greener grass／turning the pages of your own records／the sequel to your own story",
+        "comment": "Xは身長・写真・昇給交渉などの具体例で分析方法と因果解釈への注意を説明する。Yは隣人への羨望や本・物語の比喩を用い、自己理解への関心を強める。比喩と語り口の違いであり、研究結果の違いではない。",
+        "severity": "minor"
+      },
+      {
+        "category": "STRUCTURE_TONE",
+        "x_text": "This is not a guide that guarantees you’ll earn more if you become more hardworking, nor a claim that money changes your personality. Let’s not make the story bigger than it is.",
+        "y_text": "It is a study that can give you a reason to reopen the book you were about to close, thinking, “This is just the kind of person I am.”",
+        "comment": "Xは効果の小ささと過大解釈の抑制を終盤でも強調する。Yも小さな関連と因果推論の限界を述べるが、結びでは固定的な自己像を見直すという内省的な意義を強調する。Yの表現は研究で測定された効果の追加ではなく、記事としての示唆である。",
+        "severity": "minor"
+      }
+    ],
+    "facts_preserved_in_both": true,
+    "summary": "主な違いは、最大参加者数の丸め、対象者・解析条件の説明の詳しさ、年齢調整結果の有無、および個人内変化を伝える比喩と構成である。両文書とも小さな双方向の関連と因果を確定できない点を保ち、採用Factに反する記述は見当たらない。ただし、双方とも採用Factの全情報を網羅しているわけではない。"
+  }
+}

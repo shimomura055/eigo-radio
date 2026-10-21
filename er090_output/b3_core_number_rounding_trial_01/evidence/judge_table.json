@@ -1,0 +1,514 @@
+{
+  "rows": [
+    {
+      "run": "A_rep1",
+      "source": "A",
+      "concept": "C1",
+      "surfaces": [
+        "11件"
+      ],
+      "expected": "EXACT_REQUIRED",
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade": [],
+      "final_approx": null,
+      "llm_approx": [
+        null
+      ],
+      "match_expected_final": true,
+      "match_expected_llm": true,
+      "boundary": false,
+      "reason": "統合した研究の具体的な件数を示す小さな離散値であり、10件などへの丸めは分析対象の範囲を不正確に伝えるおそれがある。"
+    },
+    {
+      "run": "A_rep1",
+      "source": "A",
+      "concept": "C2",
+      "surfaces": [
+        "最大134,515人",
+        "134,515人"
+      ],
+      "expected": "APPROXIMATE_OK",
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade": [],
+      "final_approx": [
+        "最大約13万人",
+        "約13万人"
+      ],
+      "llm_approx": [
+        "最大約13万人",
+        "約13万人"
+      ],
+      "match_expected_final": true,
+      "match_expected_llm": true,
+      "boundary": false,
+      "reason": "重要なのは大規模な解析標本であることで、1人単位の精度は結論や証拠の解釈を左右しない。最大という限定と、解析ごとに参加者数が異なる条件は維持する。"
+    },
+    {
+      "run": "A_rep1",
+      "source": "A",
+      "concept": "C4",
+      "surfaces": [
+        "3回以上"
+      ],
+      "expected": "EXACT_REQUIRED",
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade": [],
+      "final_approx": null,
+      "llm_approx": [
+        null
+      ],
+      "match_expected_final": true,
+      "match_expected_llm": true,
+      "boundary": false,
+      "reason": "3回以上は研究を組み入れるための最低測定回数であり、概数化すると適格条件の境界が曖昧になる。"
+    },
+    {
+      "run": "A_rep1",
+      "source": "A",
+      "concept": "C5",
+      "surfaces": [
+        "0.0630"
+      ],
+      "expected": "EXACT_REQUIRED",
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade": [
+        "0.0630:V3_not_ordinary_rounding(exact=0.0630,approx=0.063)"
+      ],
+      "final_approx": null,
+      "llm_approx": [
+        "約0.063"
+      ],
+      "match_expected_final": true,
+      "match_expected_llm": false,
+      "boundary": false,
+      "reason": "末尾の0を落として有効数字を減らしても、関連の方向、小さな効果量、逆方向の0.0589との区別は保たれる。逆方向の結果と一つの概数にまとめず、この関連だけの値として扱う。"
+    },
+    {
+      "run": "A_med",
+      "source": "A",
+      "concept": "C1",
+      "surfaces": [
+        "11件"
+      ],
+      "expected": "EXACT_REQUIRED",
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade": [],
+      "final_approx": null,
+      "llm_approx": [
+        null
+      ],
+      "match_expected_final": true,
+      "match_expected_llm": true,
+      "boundary": false,
+      "reason": "統合した研究の具体的な件数であり、10件などに丸めると研究構成の把握が不正確になる。11件のままでも聞き取り上の負担は小さい。"
+    },
+    {
+      "run": "A_med",
+      "source": "A",
+      "concept": "C2",
+      "surfaces": [
+        "最大134,515人",
+        "134,515人"
+      ],
+      "expected": "APPROXIMATE_OK",
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade": [],
+      "final_approx": [
+        "最大約13万5千人",
+        "約13万5千人"
+      ],
+      "llm_approx": [
+        "最大約13万5千人",
+        "約13万5千人"
+      ],
+      "match_expected_final": true,
+      "match_expected_llm": true,
+      "boundary": false,
+      "reason": "参加者数は研究規模を示す数字であり、千人単位への四捨五入でも大規模な解析であるという意味は変わらない。最大解析標本数であり解析ごとに人数が異なるという条件も維持できる。"
+    },
+    {
+      "run": "A_med",
+      "source": "A",
+      "concept": "C4",
+      "surfaces": [
+        "3回以上"
+      ],
+      "expected": "EXACT_REQUIRED",
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade": [],
+      "final_approx": null,
+      "llm_approx": [
+        null
+      ],
+      "match_expected_final": true,
+      "match_expected_llm": true,
+      "boundary": false,
+      "reason": "3回以上は研究を採用するための最低測定回数という適格条件であり、正確な閾値に意味がある。"
+    },
+    {
+      "run": "A_med",
+      "source": "A",
+      "concept": "C5",
+      "surfaces": [
+        "0.0630"
+      ],
+      "expected": "EXACT_REQUIRED",
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade": [],
+      "final_approx": null,
+      "llm_approx": [
+        null
+      ],
+      "match_expected_final": true,
+      "match_expected_llm": true,
+      "boundary": false,
+      "reason": "小さい標準化係数であり、0.06への丸めでは逆方向の係数0.0589も同じ値に見えるおそれがある。差を省いてよいと確定できないため、安全側で厳密値を維持する。"
+    },
+    {
+      "run": "coffee",
+      "source": "coffee",
+      "concept": "C1",
+      "surfaces": [
+        "2025年2月"
+      ],
+      "expected": "EXACT_REQUIRED",
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade": [],
+      "final_approx": null,
+      "llm_approx": [
+        null
+      ],
+      "match_expected_final": true,
+      "match_expected_llm": true,
+      "boundary": false,
+      "reason": "史上最高値を記録した時期を特定する日付であり、年月を厳密に維持する。"
+    },
+    {
+      "run": "coffee",
+      "source": "coffee",
+      "concept": "C3",
+      "surfaces": [
+        "4.30"
+      ],
+      "expected": "EXACT_REQUIRED",
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade": [],
+      "final_approx": null,
+      "llm_approx": [
+        null
+      ],
+      "match_expected_final": true,
+      "match_expected_llm": true,
+      "boundary": false,
+      "reason": "史上最高値として報じられた先物価格であり、記録を表す数値の精度を維持する。"
+    },
+    {
+      "run": "coffee",
+      "source": "coffee",
+      "concept": "C7",
+      "surfaces": [
+        "9.14"
+      ],
+      "expected": null,
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade": [],
+      "final_approx": [
+        "約9.1"
+      ],
+      "llm_approx": [
+        "約9.1"
+      ],
+      "match_expected_final": null,
+      "match_expected_llm": null,
+      "boundary": false,
+      "reason": "小数第2位は価格水準の理解に必須ではない。8月の8.87米ドルとの小幅な差を隠さないよう、約9.1までの丸めにとどめる。"
+    },
+    {
+      "run": "coffee",
+      "source": "coffee",
+      "concept": "C10",
+      "surfaces": [
+        "3%"
+      ],
+      "expected": null,
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade": [],
+      "final_approx": null,
+      "llm_approx": [
+        null
+      ],
+      "match_expected_final": null,
+      "match_expected_llm": null,
+      "boundary": false,
+      "reason": "既に有効数字1桁の簡潔な値であり、さらに丸めると前月からの小幅な上昇を正しく伝えられない。"
+    },
+    {
+      "run": "coffee",
+      "source": "coffee",
+      "concept": "C12",
+      "surfaces": [
+        "41%"
+      ],
+      "expected": null,
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade": [],
+      "final_approx": [
+        "約40%"
+      ],
+      "llm_approx": [
+        "約40%"
+      ],
+      "match_expected_final": null,
+      "match_expected_llm": null,
+      "boundary": false,
+      "reason": "前年同月からの大幅な上昇という意味は約40%でも保たれ、1ポイントの精度は重要な閾値や結論に関わらない。"
+    },
+    {
+      "run": "boredom",
+      "source": "boredom",
+      "concept": "C2",
+      "surfaces": [
+        "634"
+      ],
+      "expected": null,
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade": [],
+      "final_approx": [
+        "約600"
+      ],
+      "llm_approx": [
+        "約600"
+      ],
+      "match_expected_final": null,
+      "match_expected_llm": null,
+      "boundary": false,
+      "reason": "参加者数は実験の規模を示す数値であり、人数の細部を丸めても結果の解釈や比較の方向は変わらない。F05の参加者数として独立して扱う。"
+    },
+    {
+      "run": "boredom",
+      "source": "boredom",
+      "concept": "C5",
+      "surfaces": [
+        "5分"
+      ],
+      "expected": "EXACT_REQUIRED",
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade": [],
+      "final_approx": null,
+      "llm_approx": [
+        null
+      ],
+      "match_expected_final": true,
+      "match_expected_llm": true,
+      "boundary": false,
+      "reason": "動画時間は短時間の退屈を扱った実験の解釈に関わり、5分は既に簡潔な値である。さらに有効数字を減らす丸めは、時間尺度を歪める。"
+    },
+    {
+      "run": "boredom",
+      "source": "boredom",
+      "concept": "C6",
+      "surfaces": [
+        "10"
+      ],
+      "expected": null,
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade": [],
+      "final_approx": null,
+      "llm_approx": [
+        null
+      ],
+      "match_expected_final": null,
+      "match_expected_llm": null,
+      "boundary": false,
+      "reason": "10セントは選択できる報酬変更の刻み幅そのものであり、既に簡潔な値である。概数化すると、課題で可能だった選択の区別を不明確にする。"
+    },
+    {
+      "run": "boredom",
+      "source": "boredom",
+      "concept": "C7",
+      "surfaces": [
+        "最大50"
+      ],
+      "expected": "EXACT_REQUIRED",
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade": [],
+      "final_approx": null,
+      "llm_approx": [
+        null
+      ],
+      "match_expected_final": true,
+      "match_expected_llm": true,
+      "boundary": false,
+      "reason": "50セントは実験で許された報酬変更の上限であり、行動の金額規模を定めている。既に簡潔な値であり、さらに丸めると上限を不明確にする。"
+    },
+    {
+      "run": "boredom",
+      "source": "boredom",
+      "concept": "C9",
+      "surfaces": [
+        "1,332"
+      ],
+      "expected": "APPROXIMATE_OK",
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade": [],
+      "final_approx": [
+        "約1,300"
+      ],
+      "llm_approx": [
+        "約1,300"
+      ],
+      "match_expected_final": true,
+      "match_expected_llm": true,
+      "boundary": false,
+      "reason": "参加者数の細部を丸めても実験の規模や結果の解釈は変わらず、F05との規模の違いも保たれる。F06の参加者数として独立して扱う。"
+    },
+    {
+      "run": "semi",
+      "source": "semi",
+      "concept": "C4",
+      "surfaces": [
+        "295億9,100万ドル"
+      ],
+      "expected": "APPROXIMATE_OK",
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade": [],
+      "final_approx": [
+        "約300億ドル"
+      ],
+      "llm_approx": [
+        "約300億ドル"
+      ],
+      "match_expected_final": true,
+      "match_expected_llm": true,
+      "boundary": true,
+      "reason": "連結純売上高の規模が要点であり、下位桁の精度は記事の判断に必要ではない。約300億ドルとしても、AI半導体売上高や次四半期見通しとの違いは保たれる。"
+    },
+    {
+      "run": "semi",
+      "source": "semi",
+      "concept": "C5",
+      "surfaces": [
+        "167億ドル"
+      ],
+      "expected": null,
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade": [],
+      "final_approx": [
+        "約170億ドル"
+      ],
+      "llm_approx": [
+        "約170億ドル"
+      ],
+      "match_expected_final": null,
+      "match_expected_llm": null,
+      "boundary": false,
+      "reason": "AI半導体売上高の規模を伝えるうえで、167億ドルと約170億ドルの差は解釈を変えない。連結純売上高とは別の指標として帰属を維持する。"
+    },
+    {
+      "run": "semi",
+      "source": "semi",
+      "concept": "C6",
+      "surfaces": [
+        "221％"
+      ],
+      "expected": null,
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade": [],
+      "final_approx": [
+        "約220％"
+      ],
+      "llm_approx": [
+        "約220％"
+      ],
+      "match_expected_final": null,
+      "match_expected_llm": null,
+      "boundary": false,
+      "reason": "前年同期比の大幅な増加という意味は、約220％に丸めても変わらない。前四半期比の伸び率とは別の数値として扱う。"
+    },
+    {
+      "run": "semi",
+      "source": "semi",
+      "concept": "C7",
+      "surfaces": [
+        "54％"
+      ],
+      "expected": null,
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade": [],
+      "final_approx": [
+        "約50％"
+      ],
+      "llm_approx": [
+        "約50％"
+      ],
+      "match_expected_final": null,
+      "match_expected_llm": null,
+      "boundary": false,
+      "reason": "前四半期からおよそ半分増えたという規模が要点で、54％の精度を必要とする閾値判断や僅差の比較は示されていない。前年同期比とは区別して伝える。"
+    },
+    {
+      "run": "semi",
+      "source": "semi",
+      "concept": "C9",
+      "surfaces": [
+        "約348億ドル"
+      ],
+      "expected": null,
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade": [],
+      "final_approx": [
+        "約350億ドル"
+      ],
+      "llm_approx": [
+        "約350億ドル"
+      ],
+      "match_expected_final": null,
+      "match_expected_llm": null,
+      "boundary": false,
+      "reason": "会社による次四半期の売上高見通しであり、約350億ドルとしても見込まれる規模や解釈は変わらない。推定値であることと、実績ではなく会社見通しであることを維持する。"
+    }
+  ],
+  "v1_prompt_A_decisions": [
+    {
+      "run": "v1_A_rep1",
+      "decisions": {
+        "C1": "EXACT_REQUIRED",
+        "C2": "APPROXIMATE_OK",
+        "C4": "EXACT_REQUIRED",
+        "C5": "EXACT_REQUIRED"
+      }
+    },
+    {
+      "run": "v1_A_rep2",
+      "decisions": {
+        "C1": "EXACT_REQUIRED",
+        "C2": "APPROXIMATE_OK",
+        "C4": "EXACT_REQUIRED",
+        "C5": "EXACT_REQUIRED"
+      }
+    }
+  ]
+}
