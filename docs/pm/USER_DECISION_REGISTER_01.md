@@ -307,3 +307,8 @@
 ### 2026-10-21 FXPP 委任_04追記(`FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01`。既存行は書き換えず追記のみ)
 
 - #132(UDR-blocking・未回答、2026-10-21 登録、FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01 委任_04、OPEN-432、Fable分類B) Family X Std Full Story fallback take(FALLBACK[0] Style)の処置: (ア)人間試聴承認で採用 (イ)承認Style(PD06)で再生成[Fable推奨、Coffee前例=明示無効化CLI er019_family_x_segment_invalidate_01.py→--stage tts --level a2 --only-segments full_story_part2] (ウ)その他。付随: Style逸脱takeを人間承認で採用してよいかの一般規則(REGISTER #5と統合可、#5は2026-10-21に#132で再燃・同根)。調査書=docs/research/FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01/FALLBACK_INVESTIGATION_01.md、報告=docs/pm/RESULT_PACKET_FXPP4.md。それまでfallback take採用保留・record_human_approval/再生成は未実行。
+
+### 2026-10-21 FXPP 委任_06追記(`FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01`。既存行は書き換えず追記のみ)
+
+- #132(**判断済み 2026-10-21**、FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01 委任_06、OPEN-432): 選択=(ア)個別承認。記事A Standard Full Story第2部のfallback takeを、ユーザーが試聴のうえStyle差許容と明示判断して採用。**共通仕様変更ではない**(今後のfallback音声を無条件に自動採用する意味ではない)。Fallback機構は現行仕様維持(Minimal Fallback・既存ENGLISH_LOCK経路を廃止せず、Prompt・Style・発動条件・再試行回数は不変、Family X/Z共通。従前の廃止方針は撤回)。記事全体の試聴PASSは未取得。反映=`record_human_approval`(approved_by=user)でM3 Gate正規承認→正式組立。原文=docs/pm/delegation_log/2026-10-21_FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01_FALLBACK-APPROVAL-FINAL-ASSEMBLY_USER.md(本文sha256 ae95c3dc3fa4b0bd989652029907d5acd338531e5e074e9790d22179e133aa44)。
+- #5注記(2026-10-21ユーザー決定): Fallback機構は現行仕様維持(#132参照)。fallback takeの処置は記事A Std第2部の個別承認(今回)で、共通ルール化はしない(#5行は書き換えず)。

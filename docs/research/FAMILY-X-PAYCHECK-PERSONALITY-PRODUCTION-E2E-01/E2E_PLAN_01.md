@@ -58,3 +58,19 @@
 4. `--stage assemble --level both`(Adv再組立含む、API 0、見積JPY0)→`--stage player`(JPY0)。Std assembleは6%減速実測・Audio Validation Gate・M3 Gate・key_phrase_source_gate(5-2のとおりPASS見込み)を通る。
 5. `.venv\Scripts\python.exe er019_pp_page_01.py`(正式試聴ページ、`user_test/paycheck_personality_e2e_01/index.html`、JPY0)→`er019_pp_play_verify_01.py --url <正式URL> --out docs/research/FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01/pages_play_evidence_01.json --expect-adv 321.2 --expect-std <assemble実測秒>`(JPY0)。合計見積JPY0〜数円、所要約20分(MEY委任_04実績)。
 6. 代替案(B)=新audio run(Std再生成、text再利用・text費用0)。見積audio約JPY25〜30(本runのaudio実費29.92=Adv+Std合算の実績、Std単独はそれ以下の見込み)。fallbackを再び使う確率は不明(part2のみ承認Styleで2回NG_BOTH=差は句読点・助詞揺れ、再生成で同様に落ちる可能性あり)。新run名/Scope判断はFable。
+
+## §6 委任_06(Fallback現行維持決定+第2部個別承認[ユーザー2026-10-21]→正式組立→最終試聴ページ、費用JPY0)
+- ユーザー原文=`docs/pm/delegation_log/2026-10-21_FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01_FALLBACK-APPROVAL-FINAL-ASSEMBLY_USER.md`(本文2405字、sha256 ae95c3dc3fa4b0bd989652029907d5acd338531e5e074e9790d22179e133aa44)。T-0委任文sha256=067750c5…(check_delegation_prompt=FAIL[見出し名不一致、既知の偽陽性])。
+- S0: stop_scope_check rc=0。承認前snapshot=`pre_approval_snapshot_01.json`(a2 11 seg/b1b 10 seg の wav sha256・status、Adv assembled wav sha b770a96c…)。当日累計275.85(開始時・終了時とも同値=本委任の課金0)。raw_usage_log 109行(前後同一)。
+- S1: `record_human_approval(a2, "full_story_part2", canonical_text, approved_by="user")`。canonical sha a8c9329a…=M3 `_approved`照合shaと一致(承認前False→承認後True)。`a2/audit/human_approved_segments.json`。理由=FALLBACK-APPROVAL-FINAL-ASSEMBLY_USER.md §1②(今回の音声への個別承認、共通仕様変更ではない)※関数はreason引数を持たないため本節と証跡で記録。
+- S2: `--stage tts --level a2`(STANDARD、rc=0、raw_usage_log行数109→109、cost 29.92不変、API 0)。S3: `--stage assemble --level both`(rc=0、console=`console_assemble_fxpp6.txt`)→`--stage player`(rc=0)。
+- 結果: Std 342.556秒・peak 0.96054・clipping無・48kHz stereo、M3 style_profile_gate PASS(part2のみhuman_approved)、key_phrase_source_gate 5/5、headroom valve未発動。Adv 321.2秒・peak 0.88534、M3 PASS、KP 5/5、wav sha256は再組立前後で同一(b770a96c…)。
+- S4(他パート未変更): `formal_assembly_verify_01.json` unchanged_check=a2 11 seg/b1b 10 seg全てwav sha256・status同一(changed=[])。part2: 組立wav内Full Story Part 2区間とfallback take wavの正規化相互相関=1.0(lag 0.0003秒、Part 1/3も1.0)=assembledに当該takeが使われている。
+- S5: `er019_pp_final_page_01.py`(`er019_pp_page_01.py`のlevel_block流用、開発者向けStyle情報除去、Std/Advタブ切替)で`user_test/paycheck_personality_e2e_01/index.html`+audio/(通し128k mp3 + パート別)。std_preview/・hr_full_story_part2/ 冒頭に「確認用。正式完成候補は ../index.html」を追記。
+- 費用: 本委任JPY0。記事A累計=87.73(text 57.807 + audio 29.92)。
+
+## §7 公開・再生evidence(委任_06)
+- URL=https://shimomura055.github.io/eigo-radio/user_test/paycheck_personality_e2e_01/index.html(push後約5分で反映)。`pages_play_evidence_01.json`: HTTP 200、audio 51本(Std25+Adv24+通し2)全て再生OK・seek OK、通しStd 342.56秒/Adv 321.2秒(組立wav duration一致)、KP表10、file:///なし、HTTP>=400なし、console error無し。
+- Std PASS_WITH_WARNING 2件(comment_4=JA_NUMERIC_IRREGULAR_READING[2つ/二つ読み一致、primary_pass_approved_equivalence]、in_one_line=SECONDARY_CONFIRMED)、Adv 0件(非ブロッキング、事後試聴参考)。
+## §8 所要時間
+- S0〜S6(承認記録→組立→ページ→push→Pages再生verify)約30分(Pages反映待ち約5分含む)。API 0。
