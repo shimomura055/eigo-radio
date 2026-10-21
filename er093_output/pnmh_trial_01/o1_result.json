@@ -1,0 +1,1049 @@
+{
+ "cases": [
+  {
+   "id": "M1",
+   "kind": "1語⇔複数語(正例)",
+   "expect": "PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "PASS:HOMOPHONE_EQUIVALENT",
+   "v3_entity_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_flat": "PASS:HOMOPHONE_EQUIVALENT",
+   "plan_after_v3": "PASS(HOMOPHONE_EQUIVALENT)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "M2",
+   "kind": "1語⇔複数語(正例)",
+   "expect": "PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "PASS:HOMOPHONE_EQUIVALENT",
+   "v3_entity_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_flat": "PASS:HOMOPHONE_EQUIVALENT",
+   "plan_after_v3": "PASS(HOMOPHONE_EQUIVALENT)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "M3",
+   "kind": "1語⇔複数語+他差分(Azure by us)",
+   "expect": "KEEP",
+   "current": "NOT_PASS",
+   "current_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(ASR_VALIDATION_UNCERTAIN)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "M4",
+   "kind": "1語⇔複数語(正例・一般語、綴り違い)",
+   "expect": "PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "PASS:HOMOPHONE_EQUIVALENT",
+   "v3_entity_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_flat": "PASS:HOMOPHONE_EQUIVALENT",
+   "plan_after_v3": "PASS(HOMOPHONE_EQUIVALENT)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "M7",
+   "kind": "1語⇔複数語(正例・同一spanが他の1:1同音差分と共存)",
+   "expect": "PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "PASS:HOMOPHONE_EQUIVALENT",
+   "v3_entity_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_flat": "PASS:HOMOPHONE_EQUIVALENT",
+   "plan_after_v3": "PASS(HOMOPHONE_EQUIVALENT)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "EX1",
+   "kind": "既存の穴(AI→eye、悪化させない)",
+   "expect": "KEEP",
+   "current": "PASS:PROPER_NOUN_ENTITY_ARPABET_CONFIRMED",
+   "current_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_entity": "PASS:PROPER_NOUN_ENTITY_ARPABET_CONFIRMED",
+   "v3_entity_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_flat": "PASS:PROPER_NOUN_ENTITY_ARPABET_CONFIRMED",
+   "plan_after_v3": "PASS(PROPER_NOUN_ENTITY_ARPABET_CONFIRMED)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "EX2",
+   "kind": "既存の穴(us→u s、despace吸収、悪化させない)",
+   "expect": "KEEP",
+   "current": "PASS",
+   "current_cls": "NORMALIZED_MATCH",
+   "v3_entity": "PASS",
+   "v3_entity_cls": "NORMALIZED_MATCH",
+   "v3_flat": "PASS",
+   "plan_after_v3": "PASS(NORMALIZED_MATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "M6",
+   "kind": "略語+多語(負例)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(ASR_VALIDATION_UNCERTAIN)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "N1",
+   "kind": "近音/脱落/追加/文字読み(負例)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(TRUE_CONTENT_MISMATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "N2",
+   "kind": "近音/脱落/追加/文字読み(負例)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(TRUE_CONTENT_MISMATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "N3",
+   "kind": "近音/脱落/追加/文字読み(負例)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(TRUE_CONTENT_MISMATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "N4",
+   "kind": "近音/脱落/追加/文字読み(負例)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(TRUE_CONTENT_MISMATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "N5",
+   "kind": "近音/脱落/追加/文字読み(負例)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(TRUE_CONTENT_MISMATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "N6",
+   "kind": "近音/脱落/追加/文字読み(負例)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(TRUE_CONTENT_MISMATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "N7",
+   "kind": "近音/脱落/追加/文字読み(負例)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(TRUE_CONTENT_MISMATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "N10",
+   "kind": "近音/脱落/追加/文字読み(負例)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(ASR_VALIDATION_UNCERTAIN)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "N11",
+   "kind": "近音/脱落/追加/文字読み(負例)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(TRUE_CONTENT_MISMATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "N12",
+   "kind": "近音/脱落/追加/文字読み(負例)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(TRUE_CONTENT_MISMATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "N13",
+   "kind": "近音/脱落/追加/文字読み(負例)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(TRUE_CONTENT_MISMATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "N14",
+   "kind": "近音/脱落/追加/文字読み(負例)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(TRUE_CONTENT_MISMATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "N15",
+   "kind": "実ASR出力・CMU辞書外(負例/判定不能)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(TRUE_CONTENT_MISMATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "R1",
+   "kind": "既存1語⇔1語同音(Regression)",
+   "expect": "KEEP",
+   "current": "PASS:HOMOPHONE_EQUIVALENT",
+   "current_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_entity": "PASS:HOMOPHONE_EQUIVALENT",
+   "v3_entity_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_flat": "PASS:HOMOPHONE_EQUIVALENT",
+   "plan_after_v3": "PASS(HOMOPHONE_EQUIVALENT)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "R2",
+   "kind": "既存1語⇔1語同音(Regression)",
+   "expect": "KEEP",
+   "current": "PASS:HOMOPHONE_EQUIVALENT",
+   "current_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_entity": "PASS:HOMOPHONE_EQUIVALENT",
+   "v3_entity_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_flat": "PASS:HOMOPHONE_EQUIVALENT",
+   "plan_after_v3": "PASS(HOMOPHONE_EQUIVALENT)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "R3",
+   "kind": "story-making(Regression)",
+   "expect": "KEEP",
+   "current": "PASS:HOMOPHONE_EQUIVALENT",
+   "current_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_entity": "PASS:HOMOPHONE_EQUIVALENT",
+   "v3_entity_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_flat": "PASS:HOMOPHONE_EQUIVALENT",
+   "plan_after_v3": "PASS(HOMOPHONE_EQUIVALENT)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "EX3",
+   "kind": "既存の穴(am→a m、despace吸収、悪化させない)",
+   "expect": "KEEP",
+   "current": "PASS:HOMOPHONE_EQUIVALENT",
+   "current_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_entity": "PASS:HOMOPHONE_EQUIVALENT",
+   "v3_entity_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_flat": "PASS:HOMOPHONE_EQUIVALENT",
+   "plan_after_v3": "PASS(HOMOPHONE_EQUIVALENT)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "R4",
+   "kind": "既存1語⇔1語同音(Regression)",
+   "expect": "KEEP",
+   "current": "PASS:HOMOPHONE_EQUIVALENT",
+   "current_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_entity": "PASS:HOMOPHONE_EQUIVALENT",
+   "v3_entity_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_flat": "PASS:HOMOPHONE_EQUIVALENT",
+   "plan_after_v3": "PASS(HOMOPHONE_EQUIVALENT)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "R5",
+   "kind": "固有名詞Case A(Regression)",
+   "expect": "KEEP",
+   "current": "PASS:PROPER_NOUN_ENTITY_ARPABET_CONFIRMED",
+   "current_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_entity": "PASS:PROPER_NOUN_ENTITY_ARPABET_CONFIRMED",
+   "v3_entity_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_flat": "PASS:PROPER_NOUN_ENTITY_ARPABET_CONFIRMED",
+   "plan_after_v3": "PASS(PROPER_NOUN_ENTITY_ARPABET_CONFIRMED)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "R6",
+   "kind": "空白差(Regression)",
+   "expect": "KEEP",
+   "current": "PASS",
+   "current_cls": "NORMALIZED_MATCH",
+   "v3_entity": "PASS",
+   "v3_entity_cls": "NORMALIZED_MATCH",
+   "v3_flat": "PASS",
+   "plan_after_v3": "PASS(NORMALIZED_MATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "R7",
+   "kind": "空白差(Regression)",
+   "expect": "KEEP",
+   "current": "PASS",
+   "current_cls": "NORMALIZED_MATCH",
+   "v3_entity": "PASS",
+   "v3_entity_cls": "NORMALIZED_MATCH",
+   "v3_flat": "PASS",
+   "plan_after_v3": "PASS(NORMALIZED_MATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "R8",
+   "kind": "複合語(Regression)",
+   "expect": "KEEP",
+   "current": "PASS",
+   "current_cls": "NORMALIZED_MATCH",
+   "v3_entity": "PASS",
+   "v3_entity_cls": "NORMALIZED_MATCH",
+   "v3_flat": "PASS",
+   "plan_after_v3": "PASS(NORMALIZED_MATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "BI1",
+   "kind": "Bi-us型(ユーザー判断: NG維持)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(TRUE_CONTENT_MISMATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "BI2",
+   "kind": "実データ(runtime evidence: 実音声の誤発音)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(TRUE_CONTENT_MISMATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "NX1",
+   "kind": "数字ゲート例外の共存(要審査)",
+   "expect": "REVIEW",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "PASS",
+   "v3_entity_cls": "HOMOPHONE_MATCH_NUMBER_EXCEPTION",
+   "v3_flat": "PASS",
+   "plan_after_v3": "PASS(HOMOPHONE_MATCH_NUMBER_EXCEPTION)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": false
+  },
+  {
+   "id": "CS1",
+   "kind": "connected-speech迂回(他の内容語差が残る)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(TRUE_CONTENT_MISMATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "CS2",
+   "kind": "connected-speech迂回(K7実例型)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(TRUE_CONTENT_MISMATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "CS3",
+   "kind": "固有名詞差混在",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(ASR_VALIDATION_UNCERTAIN)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "RS1",
+   "kind": "単純n:m正例の周辺文",
+   "expect": "PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "PASS:HOMOPHONE_EQUIVALENT",
+   "v3_entity_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_flat": "PASS:HOMOPHONE_EQUIVALENT",
+   "plan_after_v3": "PASS(HOMOPHONE_EQUIVALENT)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "H1",
+   "kind": "既存の穴(Tse→sea。U5未決: 悪化させない・是正しない)",
+   "expect": "KEEP",
+   "current": "PASS:HOMOPHONE_EQUIVALENT",
+   "current_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_entity": "PASS:HOMOPHONE_EQUIVALENT",
+   "v3_entity_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_flat": "PASS:HOMOPHONE_EQUIVALENT",
+   "plan_after_v3": "PASS(HOMOPHONE_EQUIVALENT)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "BI3",
+   "kind": "既知の残存(機能語by: bias⇔by us)",
+   "expect": "PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "PASS:HOMOPHONE_EQUIVALENT",
+   "v3_entity_cls": "ASR_VALIDATION_UNCERTAIN",
+   "v3_flat": "PASS:HOMOPHONE_EQUIVALENT",
+   "plan_after_v3": "PASS(HOMOPHONE_EQUIVALENT)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "PH1",
+   "kind": "音素相違=NG(ユーザー判断)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(TRUE_CONTENT_MISMATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  },
+  {
+   "id": "PH2",
+   "kind": "音素相違=NG(ストレス差ではなく音素差)",
+   "expect": "NOT_PASS",
+   "current": "NOT_PASS",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_entity": "NOT_PASS",
+   "v3_entity_cls": "TRUE_CONTENT_MISMATCH",
+   "v3_flat": "NOT_PASS",
+   "plan_after_v3": "NOT_PASS(TRUE_CONTENT_MISMATCH)",
+   "ok": true,
+   "entity_vs_flat_same": true,
+   "matches_plan_json": true
+  }
+ ],
+ "off_invariance": {
+  "n": 4032,
+  "byte_identical": true,
+  "sha256_unpatched": "2e8f1d8dd9855f1815b4ea268eaba427a5dc53f46d02be6344cc3faf5eab1475",
+  "sha256_patched_off": "2e8f1d8dd9855f1815b4ea268eaba427a5dc53f46d02be6344cc3faf5eab1475"
+ },
+ "timing": {
+  "n_pairs": 4032,
+  "v3_total_s": 5.619,
+  "current_total_s": 5.543,
+  "v3_per_pair_ms": 1.394,
+  "current_per_pair_ms": 1.375,
+  "note": "classify_asr_match+_step_alternate_pass 1回あたり。差分=救済関数のオーバーヘッド(API 0)"
+ },
+ "pairs02": {
+  "n_pairs": 4032,
+  "n_changed": 4,
+  "pass_to_ng": 0,
+  "ng_to_pass": 4,
+  "classification_only_change": 0,
+  "flat_vs_entity_diff": 0,
+  "ng_to_pass_all_phoneme_equal": false,
+  "ng_to_pass_list": [
+   {
+    "idx": 2338,
+    "canonical": "Today's topic is “Can’t Wait for the Next Episode”? Make One Yourself? “byUs” Lets You Make Stories with Chara",
+    "asr": "Today's topic is, can't wait for the next episode? Make one yourself? Buy us lets you make stories with charac",
+    "origins": [
+     "golden_mdjf",
+     "pairs_01",
+     "tts_results_ext"
+    ],
+    "engines": null,
+    "n_src": null,
+    "before": [
+     "TRUE_CONTENT_MISMATCH",
+     "NOT_PASS"
+    ],
+    "after": [
+     "ASR_VALIDATION_UNCERTAIN",
+     "PASS:HOMOPHONE_EQUIVALENT"
+    ],
+    "spans": [
+     {
+      "canon": "byus",
+      "asr": "buy us",
+      "phoneme_intersect": true
+     }
+    ],
+    "src": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/audit/tts_generation_resul"
+   },
+   {
+    "idx": 2370,
+    "canonical": "“Wait, it ends here!?” Have you ever blurted that out when a manga ends at an exciting moment and says the sto",
+    "asr": "Wait, it ends here? Have you ever blurted that out? When a manga ends at an exciting moment and says the story",
+    "origins": [
+     "golden_mdjf",
+     "pairs_01",
+     "runtime_fixture",
+     "tts_results_ext"
+    ],
+    "engines": null,
+    "n_src": null,
+    "before": [
+     "TRUE_CONTENT_MISMATCH",
+     "NOT_PASS"
+    ],
+    "after": [
+     "ASR_VALIDATION_UNCERTAIN",
+     "PASS:HOMOPHONE_EQUIVALENT"
+    ],
+    "spans": [
+     {
+      "canon": "byus",
+      "asr": "buy us",
+      "phoneme_intersect": true
+     },
+     {
+      "canon": "story making",
+      "asr": "storymaking",
+      "phoneme_intersect": false
+     }
+    ],
+    "src": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/b1b/audit/tts_generation_resu"
+   },
+   {
+    "idx": 3463,
+    "canonical": "Today's topic is Can't Wait for the Next Episode? Make One Yourself? byUs Lets You Make Stories with Character",
+    "asr": "Today's topic is, can't wait for the next episode? Make one yourself? Buy us lets you make stories with charac",
+    "origins": [
+     "pairs_01"
+    ],
+    "engines": null,
+    "n_src": null,
+    "before": [
+     "TRUE_CONTENT_MISMATCH",
+     "NOT_PASS"
+    ],
+    "after": [
+     "ASR_VALIDATION_UNCERTAIN",
+     "PASS:HOMOPHONE_EQUIVALENT"
+    ],
+    "spans": [
+     {
+      "canon": "byus",
+      "asr": "buy us",
+      "phoneme_intersect": true
+     }
+    ],
+    "src": "er021_output/en_asr_semantic_equivalence_production_wiring_01/telemetry.jsonl:L9732"
+   },
+   {
+    "idx": 3474,
+    "canonical": "Wait, it ends here!? Have you ever blurted that out when a manga ends at an exciting moment and says the story",
+    "asr": "Wait, it ends here? Have you ever blurted that out? When a manga ends at an exciting moment and says the story",
+    "origins": [
+     "pairs_01"
+    ],
+    "engines": null,
+    "n_src": null,
+    "before": [
+     "TRUE_CONTENT_MISMATCH",
+     "NOT_PASS"
+    ],
+    "after": [
+     "ASR_VALIDATION_UNCERTAIN",
+     "PASS:HOMOPHONE_EQUIVALENT"
+    ],
+    "spans": [
+     {
+      "canon": "byus",
+      "asr": "buy us",
+      "phoneme_intersect": true
+     },
+     {
+      "canon": "story making",
+      "asr": "storymaking",
+      "phoneme_intersect": false
+     }
+    ],
+    "src": "er021_output/en_asr_semantic_equivalence_production_wiring_01/telemetry.jsonl:L9745"
+   }
+  ],
+  "classification_only_list": [],
+  "pass_to_ng_list": []
+ },
+ "risk_lists": {
+  "n_triples": 456,
+  "only_nonrep": 27,
+  "stress_removed_only": 172,
+  "stopword_in_pair": 317,
+  "stopword_and_only_nonrep": 19,
+  "canonX_asr_multi_pass_v3(all)": 407,
+  "canonX_asr_multi_pass_v3(entity,rep only)": 89,
+  "canonMulti_asrX_pass_v3": 173,
+  "only_nonrep_items": [
+   [
+    "baton",
+    "bat",
+    "an",
+    true,
+    false,
+    false
+   ],
+   [
+    "below",
+    "be",
+    "loewe",
+    true,
+    false,
+    false
+   ],
+   [
+    "businesses",
+    "business",
+    "is",
+    true,
+    false,
+    false
+   ],
+   [
+    "causes",
+    "cause",
+    "is",
+    true,
+    false,
+    false
+   ],
+   [
+    "closer",
+    "clothes",
+    "are",
+    true,
+    false,
+    true
+   ],
+   [
+    "closer",
+    "clothes",
+    "or",
+    true,
+    false,
+    false
+   ],
+   [
+    "contest",
+    "can",
+    "test",
+    true,
+    false,
+    true
+   ],
+   [
+    "contests",
+    "can",
+    "tests",
+    true,
+    false,
+    true
+   ],
+   [
+    "images",
+    "image",
+    "is",
+    true,
+    false,
+    false
+   ],
+   [
+    "interfaces",
+    "inner",
+    "faces",
+    true,
+    false,
+    true
+   ],
+   [
+    "languages",
+    "language",
+    "is",
+    true,
+    false,
+    false
+   ],
+   [
+    "losses",
+    "law",
+    "says",
+    true,
+    false,
+    true
+   ],
+   [
+    "messages",
+    "message",
+    "is",
+    true,
+    false,
+    false
+   ],
+   [
+    "notices",
+    "notice",
+    "is",
+    true,
+    false,
+    false
+   ],
+   [
+    "places",
+    "play",
+    "says",
+    true,
+    false,
+    true
+   ],
+   [
+    "races",
+    "ray",
+    "says",
+    true,
+    false,
+    true
+   ],
+   [
+    "races",
+    "re",
+    "says",
+    false,
+    false,
+    false
+   ],
+   [
+    "reduces",
+    "reduce",
+    "is",
+    true,
+    false,
+    false
+   ],
+   [
+    "refuses",
+    "refuse",
+    "is",
+    true,
+    false,
+    false
+   ],
+   [
+    "relax",
+    "real",
+    "acts",
+    true,
+    false,
+    true
+   ],
+   [
+    "rely",
+    "re",
+    "lie",
+    false,
+    false,
+    false
+   ],
+   [
+    "repairs",
+    "re",
+    "pears",
+    false,
+    false,
+    false
+   ],
+   [
+    "resumes",
+    "re",
+    "zooms",
+    false,
+    false,
+    false
+   ],
+   [
+    "services",
+    "service",
+    "is",
+    true,
+    false,
+    false
+   ],
+   [
+    "shortages",
+    "shortage",
+    "is",
+    true,
+    false,
+    false
+   ],
+   [
+    "ticket",
+    "to",
+    "kit",
+    true,
+    false,
+    false
+   ],
+   [
+    "uses",
+    "you",
+    "says",
+    true,
+    false,
+    true
+   ]
+  ],
+  "stopword_nonrep_items": [
+   [
+    "baton",
+    "bat",
+    "an"
+   ],
+   [
+    "below",
+    "be",
+    "loewe"
+   ],
+   [
+    "businesses",
+    "business",
+    "is"
+   ],
+   [
+    "causes",
+    "cause",
+    "is"
+   ],
+   [
+    "closer",
+    "clothes",
+    "are"
+   ],
+   [
+    "closer",
+    "clothes",
+    "or"
+   ],
+   [
+    "images",
+    "image",
+    "is"
+   ],
+   [
+    "languages",
+    "language",
+    "is"
+   ],
+   [
+    "messages",
+    "message",
+    "is"
+   ],
+   [
+    "notices",
+    "notice",
+    "is"
+   ],
+   [
+    "races",
+    "re",
+    "says"
+   ],
+   [
+    "reduces",
+    "reduce",
+    "is"
+   ],
+   [
+    "refuses",
+    "refuse",
+    "is"
+   ],
+   [
+    "rely",
+    "re",
+    "lie"
+   ],
+   [
+    "repairs",
+    "re",
+    "pears"
+   ],
+   [
+    "resumes",
+    "re",
+    "zooms"
+   ],
+   [
+    "services",
+    "service",
+    "is"
+   ],
+   [
+    "shortages",
+    "shortage",
+    "is"
+   ],
+   [
+    "ticket",
+    "to",
+    "kit"
+   ]
+  ]
+ }
+}
