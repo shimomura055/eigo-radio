@@ -416,3 +416,4 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-21 | FAMILY-Z-AUDIO-QA-DEFECT-RESOLUTION-01 委任_09(メロス最終Closeout: Std/Adv試聴PASS記録・USER_LISTENING_PENDING解消・PL2.0 PRODUCTION_WIRED確定・OPEN-422/424/426 Close、記録のみ・JPY0): 報告=docs/pm/RESULT_PACKET_FZAQ9.md
 - 2026-10-21 | FAMILY-X-MIDDLE-EAST-YEMEN-SAUDI-PRODUCTION-E2E-02 委任_05(ユーザー最終受入: Std/Adv試聴PASS・OPEN-416 CLOSED・REGISTER #112/#128・DECISION_LOG、記録のみ・JPY0): 報告=docs/pm/RESULT_PACKET_MEY6.md
 - 2026-10-21 | FAMILY-Z-THE-OPEN-WINDOW-PRODUCTION-E2E-01 委任_01(Phase 1: 原作Seed[Gutenberg #269]・日本国内権利Gate[1977-05-21満了計算]・STORY_REGISTRY登録+Melos固有値パラメータ化[Melos不変]・mock/dry-run E2E通過・E2E_PLAN、JPY0、`--mode real`未起動): 報告=docs/pm/RESULT_PACKET_OW1.md
+- 2026-10-21 | FAMILY-X-WRITER-DETECTIVE-WORD-AVOIDANCE-TRIAL-01 委任_01(Writer追加指示A/B/C比較Trial: detective 0化・Entertainment/事実/QCD比較・比較ページ、機械判定CANDIDATE_MACHINE:C、実費JPY55.7、Production変更0): 報告=docs/pm/RESULT_PACKET_DWA1.md
