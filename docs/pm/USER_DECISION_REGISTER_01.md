@@ -321,3 +321,7 @@
 ### 2026-10-21 B3 中核数値丸め Fable判定追記(`FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01` 委任_02、OPEN-437。既存行は書き換えず追記のみ)
 
 - #135(UDR・未決・非blocking[記事制作を止めない]、2026-10-21 登録、B3-ROUNDING 委任_02、OPEN-437) 件名=B3 中核数値 丸め判断(FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01)のProduction採用可否。判断事項: D1 Fact Lock Writer数字規則(5)『丸め・「約」追加禁止』への【概数表記】例外の承認 / D2 原価+JPY2.95〜4.30/記事(70円比+4.2〜6.1%)の許容 or 削減Trial(effort low・出力削減)先行 / D3 粒度規定[有効2桁=13万 か 期待例の13万5千 か/既に概数のFactの再丸め可否] / D4 価値判断(効果は記事A 1箇所、音声聞き取り評価未実施)。Fable推奨=(ア)今は採用せず保留。理由: 効果が記事A 1箇所の聞き取りやすさに限られる一方、承認済み規則(5)の例外化+単価+4〜6%+粒度未規定の3つの新判断を要し、Q>D>Cの観点で費用対効果が現時点では低い。採用するなら先にD3粒度規定とD2削減Trial(effort low・出力削減)を条件にする。Status=未決。出典=docs/research/FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01/TRIAL_RESULT_01.md。
+
+### 2026-10-21 ASR 3方式総合比較 Fable判定追記(`ASR-THREE-WAY-COMPARISON-TRIAL-01` 委任_02、OPEN-438。既存行は書き換えず追記のみ)
+
+- #136(UDR・未決・非blocking[記事制作を止めない]、2026-10-21 登録、ASR3W 委任_02、OPEN-438) 件名=ASR構成(KP限定Azure拒否権 C1dK/C5K)のOffline Trial次段階化と、その前段検証(過去KP全件再評価 約JPY30)の実施可否。選択肢=(ア)前段検証①″(約JPY30)+聴取②を実施してからC1dK Offline Trial可否を再判断[Fable推奨: 理由=誤PASSを増やさない構造が確実な一方、過剰NG/HR到達/Azure障害結合の量が未確定で、約30円で実分布が測れる] / (イ)前段検証を省きC1dK Offline Trialへ / (ウ)現行維持(KP4是正で個別対処)。付記: (1)Primary/Secondary入替(Azure/Whisper Primary化)は進めない推奨(現行を上回る証拠なし・Azure Primaryは原価約3倍)。(2)Mullos→Melos型(OPEN-426、安全網=PASS_WITH_WARNING+事後試聴リスト)の事後試聴リストの運用実態の確認は別件として提示(KP限定案では本文のこのリスクは解消しない)。根拠=`docs/research/ASR-THREE-WAY-COMPARISON-TRIAL-01/TRIAL_RESULT_01.md` §1・§8-§10、①′結果=`OFFLINE_C5K_TRIGGER_RATE_01.md`(発動率8.4%)。分類=27-3 D(新仕様・Production挙動の意味的変更、CURRENT_SPEC.md:2818のKP例外)。Status=未決。

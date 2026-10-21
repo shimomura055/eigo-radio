@@ -13,5 +13,5 @@
 | ER-008吃音QA教材(`er008_output/n7_*`)、`er006_output/pool_pilot_01/`、`er020/er021`のequivalence検証セット | 不使用 | 時間対効果。ラベルの出所確認(telemetry等)は未実施 |
 
 ## 既存仕様との整合(照合箇所)
-- Primary PASSならSecondary不要・force_secondaryはfallback音声限定(CURRENT_SPEC.md:2808,2055: KP_TAKE_PART_INVESTIGATION_01.md §1が引用。本Trialでは再Grepせず二次引用)。Production判定関数は`er006_secondary_asr_01.py:730-`(`evaluate_attempt_with_cascade_detail`)、Secondary許容集合は`:993-1010`(`classify_asr_match`+`_step_alternate_pass`+M1)、統一judgeは`er078_asr_unified_judge_01.py:352-`(`unified_judge`、純関数でSecondaryは注入)。
+- Primary PASSならSecondary不要・force_secondaryはfallback音声限定(CURRENT_SPEC.md:2818,2055: KP_TAKE_PART_INVESTIGATION_01.md §1が引用。本Trialでは再Grepせず二次引用)。Production判定関数は`er006_secondary_asr_01.py:730-`(`evaluate_attempt_with_cascade_detail`)、Secondary許容集合は`:993-1010`(`classify_asr_match`+`_step_alternate_pass`+M1)、統一judgeは`er078_asr_unified_judge_01.py:352-`(`unified_judge`、純関数でSecondaryは注入)。
 - Azure Phrase List重み2.0は`er006_secondary_asr_01.py:75,106-111`(PL空なら未送信)。KP全て(`get_hint_for_text(min_confidence="low")`)でPL空であることを本Trialのmanifestで確認(KP 0件にLedger hint)。

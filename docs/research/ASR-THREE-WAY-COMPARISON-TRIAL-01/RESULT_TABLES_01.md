@@ -324,13 +324,15 @@ Whisper同時実行(別process、同一24音声[各8秒以下]、モデルロー
 | C3 Whisper→OpenAI | 0.14 (Secondary率 KP7%/本文21%) | 95 | 590 | 0.00/1.25 | 0.777 | 0.009〜1.25 |
 | C4 Whisper→Azure | 3.70 (Secondary率 KP7%/本文21%) | 125 | 590 | 0.36/0.00 | 0.010 | 0.000〜0.36 |
 | C5 現行+Whisper不一致時のみSecondary必須 | 7.45 (Secondary率 KP7%/本文38%) | 185 | 590 | 0.36/0.00 | 0.010 | 0.000〜0.36 |
-| C5K KPのみWhisper不一致時Secondary必須(本文は現行) | 6.24 (Secondary率 KP7%/本文31%) | 101 | 17 | 0.36/0.00 | 0.010 | 0.000〜0.36 |
+| C5K KPのみWhisper不一致時Secondary必須(本文は現行)【委任_02再計算】 | 6.26 (Secondary率 KP8.4%[Store 333件実測、OFFLINE_C5K_TRIGGER_RATE_01.md]/本文31%) | 約85 (C1 84+Azure約0.6) | 0 (Whisperは既存の吃音QAで実行済み=追加なし。旧値17は追加費用ではない) | 0.36/0.00 | 0.010 | 0.000〜0.36(再生成ループ込みの上限側は未評価) |
 | C3m Whisper medium→OpenAI | 0.11 (Secondary率 KP0%/本文17%) | 266 | 1694 | 0.00/0.00 | 0.000 | 0.000〜0.00 |
 | C4m Whisper medium→Azure | 3.03 (Secondary率 KP0%/本文17%) | 292 | 1694 | 0.00/0.62 | 0.389 | 0.001〜0.62 |
 | C5m 現行+Whisper medium不一致時Secondary必須 | 8.00 (Secondary率 KP0%/本文41%) | 364 | 1694 | 0.00/0.62 | 0.389 | 0.001〜0.62 |
 
 注: 時間は『各音声を1件ずつ直列に検査した場合の合計』(Productionは音声生成と検査が交互のため近似)。API方式は並列化可能(本Trialの221呼出を6スレッドで69秒=1呼出あたり実効0.31秒)。Whisperは別process同時実行でも約1.2倍の短縮に留まる(smallが自身で複数CPUスレッドを使うため)。
 
+
+委任_02注: C5K行は`OFFLINE_C5K_TRIGGER_RATE_01.md`の発動率8.4%で再計算(旧: 101秒/CPU17秒/KP7%。R-08)。本文列(Phase 3本文)は`segment_id=None`等の条件差により参考値(R-06)。HR到達期待の上限は再生成ループ込みで未実測(R-05)。
 ## I. 『take part』旧NG音声(ユーザー聴感tart)×10回独立実行(旧Trial FAMILY-X-KP-ASR-DUAL-PASS-TRIAL-01の保存転写)にPhase 3構成を適用(同一音声の反復=安定性の証拠、独立10音声ではない)
 
 OpenAI Primaryの転写分布(旧Trial 10回): 『Take part.』x3, 『Take tart.』x6, 『Take heart.』x1。Azure 10/10『Take Tart.』、Whisper small 10/10『Take Tarte.』。本Trial今回の再測定(OpenAI x4=『Take tart.』4/4、Azure x3、Whisper x3 同様)も整合。
