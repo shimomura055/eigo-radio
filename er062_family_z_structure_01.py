@@ -18,14 +18,104 @@ import time
 
 import er013_family_c_production_01 as fam_c
 
-SPEAKERS = ("melos", "king", "friend", "other", "narrator")
-# Family C keyword窓判定用(挿入順に判定、最初に一致したvoice)。keywordに無い語(he/she等)は
-# default=narrator(=「決定論は判定不能」)になり、LLM判定のみで確定する(llm_only)。
-Z_VOICE_KEYWORDS = {
-    "melos": ["melos"],
-    "king": ["ruler", "king", "tyrant"],
-    "friend": ["friend"],
+# ------------------------------------------------------------
+# story別の話者roster / 決定論話者判定keyword / Voice表 / alias(FAMILY-Z-THE-OPEN-WINDOW-PRODUCTION-E2E-01 委任_01b、
+# Fable判定=11-8是正[Family Z仕様は一般仕様なのに実装がMelos固定だった乖離])。
+# 値の出所はこのdict一箇所。er026 STORY_REGISTRY[story]の"speaker_config"はここを参照し(二重定義しない)、
+# er062 writer(ATTR prompt/schema enum)・er063(Voice表/alias)はstory_keyで解決する。引数省略=Melos(従来値とバイト同一、
+# testで逐語固定)。new Gate/閾値/Prompt構造の追加ではなく、roster名列挙と{main_character}等の値差替えのみ。
+# dialogue_voice_tts_namesの値None=未割当(ユーザー判断待ち)。resolve時にfail-closedで明示エラー(値欠落の検出)。
+# ------------------------------------------------------------
+_MELOS_ATTR_ROSTER = (
+    "- \"melos\": the main character, Melos (including when he speaks to the king or to his friend)\n"
+    "- \"king\": the ruler / tyrant / king\n"
+    "- \"friend\": Melos's friend\n"
+    "- \"other\": any other speaker (a guard, bandits, a sister, a crowd, etc.)\n"
+    "- \"narrator\": the line is not spoken by a character (e.g. a quoted phrase used by the narrator)")
+_MELOS_ATTR_CAUTION = (
+    "Be careful: a name or role that appears NEAR a quote is not always the speaker (for example, in "
+    "'\"I will return,\" Melos told the king.' the speaker is melos, not king; in '\"I am here,\" he said to his friend.' "
+    "decide who \"he\" is from the story).")
+
+STORY_SPEAKER_CONFIG = {
+    "melos": {
+        "speakers": ("melos", "king", "friend", "other", "narrator"),
+        # Family C keyword窓判定用(挿入順に判定、最初に一致したvoice)。keywordに無い語(he/she等)は
+        # default=narrator(=「決定論は判定不能」)になり、LLM判定のみで確定する(llm_only)。
+        "z_voice_keywords": {
+            "melos": ["melos"],
+            "king": ["ruler", "king", "tyrant"],
+            "friend": ["friend"],
+        },
+        "attr_roster_text": _MELOS_ATTR_ROSTER,
+        "attr_caution_text": _MELOS_ATTR_CAUTION,
+        # er063 Voice表(挿入順=判定優先順。Melos台詞を王/友への言及より優先する)。
+        "dialogue_voice_keywords": {
+            "melos": ["melos"],
+            "selinuntius": ["selinuntius", "friend"],
+            "dionysius": ["dionysius", "ruler", "king", "tyrant"],
+        },
+        "dialogue_voice_tts_names": {
+            "narrator": "Aoede",
+            "melos": "Algieba",        # PROVISIONAL_UNAPPROVED(新規割当、要ユーザー承認)
+            "selinuntius": "Erinome",
+            "dionysius": "Charon",
+        },
+        "speaker_aliases": {"king": "dionysius", "friend": "selinuntius", "melos": "melos", "narrator": "narrator",
+                            "dionysius": "dionysius", "selinuntius": "selinuntius"},
+    },
+    # 『開いた窓』(Saki)。主人公Framton Nuttel(Algieba)、姪Vera(Erinome)、叔母Mrs. Sappleton(Voice未割当=ユーザー判断待ち、
+    # plan/TTS以降でfail-closed)、男性端役[叔母の夫・弟Ronnie等、歌声含む](men=Charon)。"other"は想定外話者(Melos同様STOP)。
+    "the_open_window": {
+        "speakers": ("framton", "vera", "mrs_sappleton", "men", "other", "narrator"),
+        "z_voice_keywords": {
+            "framton": ["framton", "nuttel", "visitor"],
+            "vera": ["vera", "niece", "girl"],
+            "mrs_sappleton": ["sappleton", "aunt"],
+            "men": ["ronnie", "brother", "husband"],
+        },
+        "attr_roster_text": (
+            "- \"framton\": the main character, Framton Nuttel, the nervous visitor\n"
+            "- \"vera\": Vera, the fifteen-year-old niece of Mrs. Sappleton (\"the girl\", \"the niece\")\n"
+            "- \"mrs_sappleton\": Mrs. Sappleton, Vera's aunt, the lady of the house\n"
+            "- \"men\": the men of the house: Mrs. Sappleton's husband and her brothers (including Ronnie), including the song one of them sings\n"
+            "- \"other\": any other speaker (a servant, a stranger, a crowd, etc.)\n"
+            "- \"narrator\": the line is not spoken by a character (e.g. a quoted phrase used by the narrator)"),
+        "attr_caution_text": (
+            "Be careful: a name or role that appears NEAR a quote is not always the speaker (for example, in "
+            "'\"My aunt will be down presently,\" said Vera to Framton.' the speaker is vera, not framton; in "
+            "'\"I hope Vera has been amusing you,\" she said to the visitor.' decide who \"she\" is from the story)."),
+        "dialogue_voice_keywords": {
+            "framton": ["framton", "nuttel", "visitor"],
+            "vera": ["vera", "niece", "girl"],
+            "mrs_sappleton": ["sappleton", "aunt"],
+            "men": ["ronnie", "brother", "husband"],
+        },
+        "dialogue_voice_tts_names": {
+            "narrator": "Aoede",
+            "framton": "Algieba",
+            "vera": "Erinome",
+            "mrs_sappleton": None,     # 未割当(ユーザー判断待ち、Voice poolで第2女性Voiceを賄えない)。plan/TTSでfail-closed
+            "men": "Charon",
+        },
+        "speaker_aliases": {"framton": "framton", "vera": "vera", "mrs_sappleton": "mrs_sappleton", "men": "men",
+                            "narrator": "narrator"},
+    },
 }
+
+
+def speaker_config(story_key: str = "melos") -> dict:
+    """story別roster設定(未登録story_keyはKeyError=fail-closed)。"""
+    return STORY_SPEAKER_CONFIG[story_key]
+
+
+def speakers_for(story_key: str = "melos") -> tuple:
+    return STORY_SPEAKER_CONFIG[story_key]["speakers"]
+
+
+# 互換alias(Melos値。二重定義ではなくSTORY_SPEAKER_CONFIG["melos"]の同一オブジェクトを参照)
+SPEAKERS = STORY_SPEAKER_CONFIG["melos"]["speakers"]
+Z_VOICE_KEYWORDS = STORY_SPEAKER_CONFIG["melos"]["z_voice_keywords"]
 PART_RATIO_RANGE = (0.20, 0.45)
 QUOTE_RE = fam_c.DEFAULT_QUOTE_RE
 _EPS = 1e-9
@@ -482,9 +572,9 @@ def extract_quotes(paragraphs) -> list:
     return quotes
 
 
-def deterministic_attribution(paragraphs, quotes, voice_keywords=None) -> dict:
+def deterministic_attribution(paragraphs, quotes, voice_keywords=None, story_key: str = "melos") -> dict:
     """Family C keyword窓判定。{quote_id: speaker or None}。None=キーワード該当なし(判定不能)。"""
-    kw = voice_keywords or Z_VOICE_KEYWORDS
+    kw = voice_keywords or STORY_SPEAKER_CONFIG[story_key]["z_voice_keywords"]
     out = {}
     for q in quotes:
         v = fam_c.classify_quote_voice_window(paragraphs[q["paragraph_index"]], q["start"], q["end"], kw,
@@ -493,7 +583,7 @@ def deterministic_attribution(paragraphs, quotes, voice_keywords=None) -> dict:
     return out
 
 
-def reconcile_attribution(paragraphs, quotes, det: dict, llm: dict) -> dict:
+def reconcile_attribution(paragraphs, quotes, det: dict, llm: dict, story_key: str = "melos") -> dict:
     """全引用の突合。LLM結果が全quote_idを過不足なく含むこと、speakerがSPEAKERSであること。
     status: agree / llm_only(決定論=判定不能) / mismatch(決定論とLLMが異なる)。
     mismatchが1件でもあれば呼出側でSTOP(自動採用しない)。"""
@@ -502,7 +592,7 @@ def reconcile_attribution(paragraphs, quotes, det: dict, llm: dict) -> dict:
     if set(llm) != set(ids):
         problems.append({"missing": sorted(set(ids) - set(llm)), "extra": sorted(set(llm) - set(ids))})
     for k, v in llm.items():
-        if v not in SPEAKERS:
+        if v not in STORY_SPEAKER_CONFIG[story_key]["speakers"]:
             problems.append({"invalid_speaker": {k: v}})
     rows, final, mismatches = [], {}, []
     for q in quotes:
@@ -635,9 +725,10 @@ STORY_LINT_CONFIG = {
     # spoiler_*=結末(少女の作り話・種明かし)を先回りする語。ユーザー2026-10-21指示「結末の意外性を損なう先回りの説明を入れない」に対応。
     "the_open_window": {
         "forbidden_names": ["Sappleton", "Ronnie", "サプルトン", "サップルトン", "ロニー", "ヴェラ"],
-        "spoiler_ja": ["作り話", "でっち上げ", "嘘", "うそ", "偽り", "種明かし", "ハッタリ", "結末", "最後には", "最後に"],
+        # 結末(少女の作り話・種明かし・叔母の夫と弟の帰還後の展開)の先回りに必要な最小限の語のみ(Fable判定2026-10-21、一般語は入れない)。
+        "spoiler_ja": ["作り話", "でっち上げ", "嘘", "うそ", "偽り", "種明かし", "ハッタリ"],
         "spoiler_en": ["made up", "made-up", "invented", "a lie", "was lying", "lied", "tall tale", "the truth is",
-                       "turns out", "in the end", "the trick", "a prank", "a hoax"],
+                       "romance at short notice", "a hoax"],
     },
 }
 

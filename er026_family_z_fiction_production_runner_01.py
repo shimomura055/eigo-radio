@@ -66,6 +66,7 @@ import er003_v1_n3_01_scaffold_generate as scaffold
 import er006_model_routing_contract_01 as routing
 import er013_family_c_production_01 as fam_c
 import er018_fiction_external_seed_selection_criteria_trial_02 as trial02
+import er062_family_z_structure_01 as _st062   # story別roster(STORY_SPEAKER_CONFIG)の出所。LLM呼出なし・純粋関数module(軽量)
 import er020_tts_retry_local_rewrite_01 as tts_role  # read-only参照のみ
 
 MANAGEMENT_ID = "FICTION-FAMILY-Z-PRODUCTION-E2E-01"
@@ -245,6 +246,9 @@ STORY_REGISTRY = {
         "japanese_title_tts": "走れメロス",
         "trial_seed_dir": TRIAL_SEED_DIR,
         "rights_block": MELOS_RIGHTS_BLOCK,
+        # 話者roster/Voice表(FAMILY-Z-THE-OPEN-WINDOW-PRODUCTION-E2E-01 委任_01b)。値の出所はer062 structure STORY_SPEAKER_CONFIG
+        # 一箇所(参照のみ。二重定義しない)。E2E経路のER062 ATTR prompt/enum・er063 Voice表/aliasはstory_keyでここを解決する。
+        "speaker_config": _st062.STORY_SPEAKER_CONFIG["melos"],
         # Z-4 Dialogue Voice適用計画(plan only、TTS未実行)。narrator=Aoede、
         # 登場人物台詞=Erinome/Charon等というCURRENT_SPEC.md「Family Z
         # (Fiction)」節 Z-4追記の参照先をそのまま採用(新しいVoice仕様を
@@ -270,11 +274,12 @@ STORY_REGISTRY = {
         "japanese_title_text": "開いた窓(The Open Window)",
         "japanese_title_tts": "開いた窓",
         "trial_seed_dir": "er026_seeds/the_open_window",
-        # Voice割当案(plan only)。E2E経路のspeaker/Voice表(er062 SPEAKERS・er063 FAMILY_Z_DIALOGUE_VOICE_*)は
-        # 現状Melos固定のため、本registry値だけでは実走に反映されない(設計案=E2E_PLAN_01.md §3-C/§4)。
+        # Voice割当案(plan only の voice_tts_names_plan)。E2E経路の実走用speaker/Voice表は上記"speaker_config"
+        # (委任_01b: story別化済み)。ここのvoice_keywords/voice_tts_names_planはFamily C型segment計画(plan only)用。
         # 承認pool(Aoede/Erinome/Charon/Algieba[Melos run_e2e_02で21/21使用])の範囲内。Mrs. Sappleton用の
         # 第2女性Voiceは承認pool内で賄えないため未割当(判断候補、E2E_PLAN_01.md §4)。
         "rights_block": OPEN_WINDOW_RIGHTS_BLOCK,
+        "speaker_config": _st062.STORY_SPEAKER_CONFIG["the_open_window"],
         "voice_keywords": {
             "vera": ["vera", "niece", "girl"],
             "framton": ["framton", "nuttel", "visitor"],
@@ -1107,7 +1112,7 @@ def stage_seed_check(ctx) -> dict:
     return {"seed_files": seed_files, "routing_models": models,
             "style_table_keys": sorted(style), "melos_voice": melos_voice["melos_voice"],
             "melos_voice_status": melos_voice["status"], "er020_full_story_clip_pattern": role_ok,
-            "dialogue_voices": m.a63.FAMILY_Z_DIALOGUE_VOICE_TTS_NAMES}
+            "dialogue_voices": m.st.STORY_SPEAKER_CONFIG[ctx.story_key]["dialogue_voice_tts_names"]}
 
 
 def stage_writer(ctx) -> dict:
@@ -1162,7 +1167,7 @@ def write_speaker_table(ctx) -> str:
         for c in plan["clips"]:
             if c.get("speaker") != "narrator":
                 try:
-                    voice = m.a63.resolve_dialogue_voice(m.a63.normalize_speaker(c["speaker"]))
+                    voice = m.a63.resolve_dialogue_voice(m.a63.normalize_speaker(c["speaker"], ctx.story_key), ctx.story_key)
                 except Exception as e:  # noqa: BLE001
                     voice = f"UNMAPPED({e.__class__.__name__})"
                 lines.append(f"| {c['id']} | {c['speaker']} | {voice} | {(c['text'] or '').replace('|', '/')[:90]} |")
@@ -1198,7 +1203,8 @@ def stage_plan(ctx) -> dict:
             # 2026-10-12決定: Adv境界を写像できる場合のみ写像し、できなければ04B独自分割へフォールバック
             # (w62.stage_plan/run_planの既存動作。STOP・再生成しない。WARNは_check_plan_afterで出力)。
             pass
-        r = w62.stage_plan(llm, ctx.out_dir, ctx.slug, ctx.run, lv, prov, ctx.regenerate_stage == f"plan_{lv}")
+        r = w62.stage_plan(llm, ctx.out_dir, ctx.slug, ctx.run, lv, prov, ctx.regenerate_stage == f"plan_{lv}",
+                         story_key=ctx.story_key)
         plan = _check_plan_after(ctx, lv)
         summary[lv] = {"status": r["status"], "boundaries": plan["boundaries"], "clips": len(plan["clips"]),
                        "split_origin": plan.get("split_origin"), "dialogue_summary": plan.get("dialogue_summary")}
@@ -1579,7 +1585,7 @@ def load_level_inputs(ctx, level: str) -> dict:
     story_clips = plan["clips"]
     spec_plan = a63.build_level_plan(
         level, story_clips, support["preview"], comments, kp_items, cfg["topic_title"],
-        cfg.get("japanese_title_tts") if level == "a2" else None, kp_explanations=expl)
+        cfg.get("japanese_title_tts") if level == "a2" else None, kp_explanations=expl, story_key=ctx.story_key)
     return {"plan": spec_plan, "story_clips": story_clips, "kp_items": kp_items, "kp_explanations": expl,
             "article_text": canonical_article_text(text),
             "shell_names": list(a63.SHELL_ASSET_SOURCES) + [f"kp{it['rank']}_number" for it in kp_items]}
@@ -1830,7 +1836,7 @@ def _mock_std_text(adv_text: str, n_paragraphs: int) -> str:
     return f"# {title or 'Mock'} (easy)\n\n" + "\n\n".join(out) + "\n"
 
 
-def _mock_attribution(user_message: str) -> str:
+def _mock_attribution(user_message: str, story_key: str = "melos") -> str:
     """mock LLM話者判定: 決定論で判定可能な引用は決定論と同じ、判定不能は melos(実LLMの代用。agree/llm_onlyのみ生成)。"""
     st = _m().st
     story = user_message.split("[Story]" + chr(10), 1)[1]
@@ -1838,12 +1844,13 @@ def _mock_attribution(user_message: str) -> str:
     ids = tag.findall(story)
     paras = [tag.sub("", p) for p in story.split(chr(10) * 2)]
     quotes = st.extract_quotes(paras)
-    det = st.deterministic_attribution(paras, quotes)
-    items = [{"quote_id": i, "speaker": det.get(i) or "melos", "basis": "mock"} for i in ids]
+    det = st.deterministic_attribution(paras, quotes, story_key=story_key)
+    fallback = st.STORY_SPEAKER_CONFIG[story_key]["speakers"][0]   # Melos="melos"(従来どおり)。主人公rosterの先頭
+    items = [{"quote_id": i, "speaker": det.get(i) or fallback, "basis": "mock"} for i in ids]
     return json.dumps({"attributions": items})
 
 
-def mock_writer_hook(std_override=None):
+def mock_writer_hook(std_override=None, story_key: str = "melos"):
     """er062.MockClient用hook。R0/R1/R2はAdv固定文(F1)、Std調整は別文のStd。split/attributionは既定MockResponses。"""
     with open(MOCK_ADV_SOURCE, encoding="utf-8") as f:
         adv = f.read()
@@ -1852,7 +1859,7 @@ def mock_writer_hook(std_override=None):
         user = kw["input"][-1]["content"]
         fmt = (kw.get("text") or {}).get("format", {})
         if fmt.get("name") == "z_dialogue_attribution":
-            return _mock_attribution(user)
+            return _mock_attribution(user, story_key)
         if fmt.get("name"):
             return None
         if "Rewrite this entire story for CEFR A2" in user:
@@ -1973,7 +1980,7 @@ def build_mock_context(run_root: str, run: str = "run_mock", pages_dir: str | No
     ctx = E2EContext(story_key=story_key, slug=slug, mode="mock", run=run, run_root=run_root,
                      pages_dir=pages_dir or f"{run_root}/{slug}/{run}/pages_mock")
     ctx.mock_api = api = MockApi(ctx.out_dir)
-    ctx.llm_client = m.w62.MockClient(api.wrap("llm", writer_hook or mock_writer_hook()))
+    ctx.llm_client = m.w62.MockClient(api.wrap("llm", writer_hook or mock_writer_hook(story_key=story_key)))
     gens = tts_generators or mock_tts_generators()
     ctx.hooks = {"ja_support_fn": api.wrap("support_ja", mock_ja_support_fn),
                  "en_support_fn": api.wrap("support_en", mock_en_support_fn), "kp_fn": api.wrap("kp", mock_kp_fn),

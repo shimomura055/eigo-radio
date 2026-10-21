@@ -202,16 +202,29 @@ ATTR_DEVELOPER = ("You identify who speaks each quoted line in a short English s
                   "not just which name is nearby.")
 ATTR_USER_TMPL = """Below is a short story. Every quoted line is marked with a tag of the form [[Q:id]] right before the opening quotation mark.
 For EVERY tagged quote, decide the speaker:
-- "melos": the main character, Melos (including when he speaks to the king or to his friend)
-- "king": the ruler / tyrant / king
-- "friend": Melos's friend
-- "other": any other speaker (a guard, bandits, a sister, a crowd, etc.)
-- "narrator": the line is not spoken by a character (e.g. a quoted phrase used by the narrator)
-Be careful: a name or role that appears NEAR a quote is not always the speaker (for example, in '"I will return," Melos told the king.' the speaker is melos, not king; in '"I am here," he said to his friend.' decide who "he" is from the story).
+{roster_text}
+{caution_text}
 Return one entry per tag, exactly once, using exactly the id written inside the tag.
 
 [Story]
 {tagged_story}"""
+
+
+def build_attr_user_prompt(tagged_story: str, story_key: str = "melos") -> str:
+    """ATTR_USER_TMPLのstory別展開(roster行・注意例文はst.STORY_SPEAKER_CONFIG[story_key]から。Melosは従来文面とバイト同一)。"""
+    cfg = st.STORY_SPEAKER_CONFIG[story_key]
+    return ATTR_USER_TMPL.format(roster_text=cfg["attr_roster_text"], caution_text=cfg["attr_caution_text"],
+                                 tagged_story=tagged_story)
+
+
+def build_attr_schema(story_key: str = "melos") -> dict:
+    """ATTR_SCHEMAのstory別版(speaker enum=そのstoryのroster)。Melosは従来のATTR_SCHEMAと等価。"""
+    sch = json.loads(json.dumps(ATTR_SCHEMA))
+    sch["schema"]["properties"]["attributions"]["items"]["properties"]["speaker"]["enum"] = list(
+        st.STORY_SPEAKER_CONFIG[story_key]["speakers"])
+    return sch
+
+
 ATTR_SCHEMA = {
     "name": "z_dialogue_attribution",
     "schema": {"type": "object",
@@ -672,15 +685,16 @@ def tag_story_with_quotes(paragraphs, quotes) -> str:
     return "\n\n".join(out)
 
 
-def llm_attribute_quotes(llm: LLM, paragraphs, quotes, *, label="z_dialogue_attr") -> dict:
+def llm_attribute_quotes(llm: LLM, paragraphs, quotes, *, label="z_dialogue_attr", story_key: str = "melos") -> dict:
     """全引用を1callでLLM判定。{quote_id: speaker}とmeta。形式不正は1回retry、なお不正は返してreconcileに任せる。"""
     if not quotes:
         return {"llm": {}, "calls": [], "prompt_sha256": ""}
-    user = ATTR_USER_TMPL.format(tagged_story=tag_story_with_quotes(paragraphs, quotes))
+    user = build_attr_user_prompt(tag_story_with_quotes(paragraphs, quotes), story_key)
+    schema = ATTR_SCHEMA if story_key == "melos" else build_attr_schema(story_key)
     calls, mapping = [], {}
     for n in (1, 2):
         res = llm.call("FAMILY_Z_DIALOGUE_ATTRIBUTION", f"{label}_{n}", user, developer=ATTR_DEVELOPER,
-                       effort=ATTRIBUTION_EFFORT, schema=ATTR_SCHEMA)
+                       effort=ATTRIBUTION_EFFORT, schema=schema)
         calls.append(res["meta"])
         try:
             arr = json.loads(res["text"])["attributions"]
@@ -694,11 +708,11 @@ def llm_attribute_quotes(llm: LLM, paragraphs, quotes, *, label="z_dialogue_attr
 
 
 def attribute_dialogue(llm: LLM, paragraphs, *, voice_keywords=None, label="z_dialogue_attr",
-                       raise_on_mismatch=True) -> dict:
+                       raise_on_mismatch=True, story_key: str = "melos") -> dict:
     quotes = st.extract_quotes(paragraphs)
-    det = st.deterministic_attribution(paragraphs, quotes, voice_keywords)
-    la = llm_attribute_quotes(llm, paragraphs, quotes, label=label)
-    rec = st.reconcile_attribution(paragraphs, quotes, det, la["llm"])
+    det = st.deterministic_attribution(paragraphs, quotes, voice_keywords, story_key)
+    la = llm_attribute_quotes(llm, paragraphs, quotes, label=label, story_key=story_key)
+    rec = st.reconcile_attribution(paragraphs, quotes, det, la["llm"], story_key)
     for row in rec["rows"]:
         row["basis"] = la.get("bases", {}).get(row["quote_id"], "")
     rec["calls"] = la["calls"]
@@ -714,7 +728,7 @@ def attribute_dialogue(llm: LLM, paragraphs, *, voice_keywords=None, label="z_di
 # ------------------------------------------------------------
 # plan(分割+話者+clip計画)
 # ------------------------------------------------------------
-def apply_human_confirmed_override(att: dict, out_dir: str, level: str) -> dict:
+def apply_human_confirmed_override(att: dict, out_dir: str, level: str, story_key: str = "melos") -> dict:
     """人間(PM)が確定したmismatch解決を適用する(委任_07)。決定論/LLM判定ロジックは変更しない。
     {out_dir}/dialogue_override.json の "human_confirmed"[level][quote_id] = {"speaker","text",...} を読み、
     status==mismatch かつ quote_id・引用textが完全一致する行だけ final に採用する(status=human_override)。
@@ -728,7 +742,7 @@ def apply_human_confirmed_override(att: dict, out_dir: str, level: str) -> dict:
     remaining, applied = [], []
     for row in att["rows"]:
         c = conf.get(row["quote_id"])
-        if row["status"] == "mismatch" and c and c.get("text") == row["text"] and c.get("speaker") in st.SPEAKERS:
+        if row["status"] == "mismatch" and c and c.get("text") == row["text"] and c.get("speaker") in st.STORY_SPEAKER_CONFIG[story_key]["speakers"]:
             row["status"] = "human_override"
             row["human_speaker"] = c["speaker"]
             att["final"][row["quote_id"]] = c["speaker"]
@@ -766,8 +780,8 @@ def run_plan(llm: LLM, level: str, text: str, out_dir: str, slug: str, run: str,
     if split_info is None:
         split_info = select_split(llm, paras, label=f"z_split_{level}")
     b1, b2 = split_info["boundaries"]
-    att = attribute_dialogue(llm, paras, label=f"z_dialogue_attr_{level}", raise_on_mismatch=False)
-    att = apply_human_confirmed_override(att, out_dir, level)
+    att = attribute_dialogue(llm, paras, label=f"z_dialogue_attr_{level}", raise_on_mismatch=False, story_key=story_key)
+    att = apply_human_confirmed_override(att, out_dir, level, story_key)
     wj(f"{out_dir}/dialogue_attribution_{level}.json", {k: v for k, v in att.items() if k != "quotes"})
     if not att["ok"]:
         _ovp = f"{out_dir}/dialogue_override.json"
@@ -1252,7 +1266,7 @@ def level_text_path(out_dir, level):
     return f"{out_dir}/writer/{'r2.md' if level == 'b1b' else 'std.md'}"
 
 
-def stage_plan(llm, out_dir, slug, run, level, prov, regenerate):
+def stage_plan(llm, out_dir, slug, run, level, prov, regenerate, story_key: str = "melos"):
     text = rd(level_text_path(out_dir, level))
     adv_plan = None
     if level == "a2":
@@ -1263,7 +1277,7 @@ def stage_plan(llm, out_dir, slug, run, level, prov, regenerate):
     path = f"{out_dir}/segment_plan_{level}.json"
 
     def runner():
-        plan = run_plan(llm, level, text, out_dir, slug, run, adv_plan=adv_plan)
+        plan = run_plan(llm, level, text, out_dir, slug, run, adv_plan=adv_plan, story_key=story_key)
         return st.dumps(plan), {"routing_keys": ["FAMILY_Z_STORY_SPLIT", "FAMILY_Z_DIALOGUE_ATTRIBUTION"],
                                 "cost_jpy": round(sum(c["cost_jpy"] for c in plan["llm_calls"]), 4)}
 
@@ -1326,7 +1340,7 @@ def main(argv=None):
             prov = Provenance(f"{out_dir}/writer/provenance.json", a.story, seed_sha)
             if a.stage == "plan":
                 for lv in levels:
-                    r = stage_plan(llm, out_dir, a.story, a.run, lv, prov, a.regenerate_stage == f"plan_{lv}")
+                    r = stage_plan(llm, out_dir, a.story, a.run, lv, prov, a.regenerate_stage == f"plan_{lv}", story_key=a.story)
                     print(lv, r["status"])
             else:
                 for lv in levels:

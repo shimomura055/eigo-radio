@@ -31,6 +31,7 @@ import er078_secondary_run_scope_01 as secondary_run_scope  # AUW 委任_05
 # 2026-10-17 委任_15: Xの承認済みStyle定数を**定数として**参照する(コピーしない)。DEFAULT_NEW_RUN_PROFILE・profile解決関数は
 # 参照しない(X既定の変更がZへ無言で波及しない。Opus R-C1)。er019のimportは標準ライブラリ+er002_commonのみで循環しない。
 import er019_family_x_style_profile_01 as _xs
+import er062_family_z_structure_01 as _st   # story別roster/Voice表の出所(LLM呼出なし・純粋関数module)
 
 MANAGEMENT_ID = "FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01"
 SUB_TASK_ID = "04C"
@@ -339,39 +340,35 @@ def verify_styles_against_origin(repo_root: str = ".") -> dict:
 #    melos用の値のみ未定義だったため追加する。PROVISIONAL_UNAPPROVED: Voice選定は
 #    ユーザー/Fable承認事項(Family C 'brother'の運用実績Voice Algieba を暫定値とする)。
 # ============================================================
-FAMILY_Z_DIALOGUE_VOICE_KEYWORDS = {
-    # 挿入順=判定優先順(最初に一致したvoiceを採用)。Melos台詞を王/友への言及より優先する。
-    "melos": ["melos"],
-    "selinuntius": ["selinuntius", "friend"],
-    "dionysius": ["dionysius", "ruler", "king", "tyrant"],
-}
-FAMILY_Z_DIALOGUE_VOICE_TTS_NAMES = {
-    "narrator": "Aoede",
-    "melos": "Algieba",        # PROVISIONAL_UNAPPROVED(新規割当、要ユーザー承認)
-    "selinuntius": "Erinome",
-    "dionysius": "Charon",
-}
+# 値の出所は er062_family_z_structure_01.STORY_SPEAKER_CONFIG(story別、Melos=従来値。二重定義せず同一objectを参照)。
+FAMILY_Z_DIALOGUE_VOICE_KEYWORDS = _st.STORY_SPEAKER_CONFIG["melos"]["dialogue_voice_keywords"]
+FAMILY_Z_DIALOGUE_VOICE_TTS_NAMES = _st.STORY_SPEAKER_CONFIG["melos"]["dialogue_voice_tts_names"]
 MELOS_VOICE_STATUS = "PROVISIONAL_UNAPPROVED"
 
 
 # er062(04B)のsegment_planは speaker=melos/king/friend/other、voice_role=dialogue:<speaker> を出す。
 # er063のVoice割当(Z-4: dionysius=Charon / selinuntius=Erinome)へ写像する。other等は未対応でSTOP。
-SPEAKER_ALIASES = {"king": "dionysius", "friend": "selinuntius", "melos": "melos", "narrator": "narrator",
-                   "dionysius": "dionysius", "selinuntius": "selinuntius"}
+SPEAKER_ALIASES = _st.STORY_SPEAKER_CONFIG["melos"]["speaker_aliases"]
 
 
-def normalize_speaker(raw: str) -> str:
+def normalize_speaker(raw: str, story_key: str = "melos") -> str:
     key = (raw or "narrator").split(":")[-1]
-    if key not in SPEAKER_ALIASES:
-        raise FamilyZVoiceMappingStop(f"未対応のspeaker {raw!r}(対応: {sorted(SPEAKER_ALIASES)})")
-    return SPEAKER_ALIASES[key]
+    aliases = _st.STORY_SPEAKER_CONFIG[story_key]["speaker_aliases"]
+    if key not in aliases:
+        raise FamilyZVoiceMappingStop(f"未対応のspeaker {raw!r}(対応: {sorted(aliases)})")
+    return aliases[key]
 
 
-def resolve_dialogue_voice(speaker: str) -> str:
+def resolve_dialogue_voice(speaker: str, story_key: str = "melos") -> str:
+    names = _st.STORY_SPEAKER_CONFIG[story_key]["dialogue_voice_tts_names"]
     try:
-        return FAMILY_Z_DIALOGUE_VOICE_TTS_NAMES[speaker]
+        voice = names[speaker]
     except KeyError:
         raise FamilyZVoiceMappingStop(f"speaker={speaker!r} に対応するVoiceがFAMILY_Z_DIALOGUE_VOICE_TTS_NAMESにありません")
+    if voice is None:   # 値欠落(未割当=ユーザー判断待ち)の検出。fail-closed(新Gateではない)
+        raise FamilyZVoiceMappingStop(
+            f"VOICE_UNASSIGNED: story={story_key!r} speaker={speaker!r} のVoiceが未割当です(ユーザー判断待ち。自動割当しない)")
+    return voice
 
 
 def check_melos_voice_mechanism() -> dict:
@@ -515,7 +512,7 @@ def role_key_for(kind: str, level: str, speaker: str = "narrator") -> str:
 
 def build_level_plan(level: str, story_clips: list, preview_text: str, comments: dict, kp_items: list,
                      topic_title: str, japanese_title_text: str | None = None,
-                     kp_explanations: dict | None = None) -> list:
+                     kp_explanations: dict | None = None, story_key: str = "melos") -> list:
     """生成が必要なClipSpec列を組む。story_clips=[{id,part,voice(speaker key or 'narrator'),text}]。
     shell/番号(welcome等)は provision_shell_assets で別途コピー(TTSなし)。"""
     plan = []
@@ -550,9 +547,9 @@ def build_level_plan(level: str, story_clips: list, preview_text: str, comments:
         m = _CLIP_ID_RE.fullmatch(c["id"])
         if not m:
             raise FamilyZAudioStop(f"story clip id {c['id']!r} が full_story_part[1-3]_c[0-9]+ に一致しません")
-        speaker = normalize_speaker(c.get("speaker") or c.get("voice_role") or c.get("voice") or "narrator")
+        speaker = normalize_speaker(c.get("speaker") or c.get("voice_role") or c.get("voice") or "narrator", story_key)
         kind = "narrator" if speaker == "narrator" else "dialogue"
-        voice = resolve_dialogue_voice(speaker)
+        voice = resolve_dialogue_voice(speaker, story_key)
         plan.append(ClipSpec(c["id"], level, kind, c["text"], voice=voice, speaker=speaker,
                              role_key=role_key_for(kind, level, speaker), part=int(m.group(1)), language="en"))
     return plan
@@ -1417,12 +1414,13 @@ def comment_after_segment_ids(story_clips: list) -> dict:
 
 
 def build_z_sequence(narr_dir: str, *, level: str, story_clips: list, kp_items: list, target_rms, gs, gs_already_stereo,
-                     intro_gained, notification_gained, outro_gained, kp_third: str = "japanese") -> list:
+                     intro_gained, notification_gained, outro_gained, kp_third: str = "japanese",
+                     story_key: str = "melos") -> list:
     """Z sequence: Intro(Literature導入なし)->Welcome->Topic->(Std: JA title)->Preview->KP->Comment1->
     Story Part1(clips)->Comment2->Part2->Comment3->Part3->Outro(In One Lineなし)。Family Cのbuilderをそのまま利用。"""
     import er013_family_c_production_runner_01 as runner_c
     story_segments = [{"id": c["id"], "audio_path": f"{narr_dir}/{c['id']}.wav",
-                       "voice": normalize_speaker(c.get("speaker") or c.get("voice_role") or c.get("voice") or "narrator")}
+                       "voice": normalize_speaker(c.get("speaker") or c.get("voice_role") or c.get("voice") or "narrator", story_key)}
                       for c in story_clips]
     third = "explanation_en" if kp_third == "explanation" else "ja"  # 委任_05: Adv=英語解説(Coffee最終v3 Adv構成)
     kp_blocks = [(it["rank"], f"{narr_dir}/kp{it['rank']}_number.wav", f"{narr_dir}/kp{it['rank']}_en.wav",
@@ -1475,7 +1473,7 @@ def run_assembly(run_dir: str, level: str, story_clips: list, kp_items: list, *,
     outro_g = outro_m * asm.OUTRO_EXTRA_GAIN_LINEAR
     seq = build_z_sequence(narr, level=level, story_clips=story_clips, kp_items=kp_items, target_rms=target_rms, gs=gs,
                            gs_already_stereo=gs_stereo, intro_gained=intro_g, notification_gained=notif_g, outro_gained=outro_g,
-                           kp_third=kp_third)
+                           kp_third=kp_third, story_key=story_key)
     res = asm.assemble_with_timeline(seq)
     safety = asm.apply_headroom_safety_valve(res["assembled"], seq)
     os.makedirs(f"{level_dir}/assembly", exist_ok=True)

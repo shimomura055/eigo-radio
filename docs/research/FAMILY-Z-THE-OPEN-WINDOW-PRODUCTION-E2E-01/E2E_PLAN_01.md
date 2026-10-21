@@ -65,20 +65,20 @@ Status: `PHASE1_SEED_RIGHTS_REGISTRY_DRYRUN_READY_PENDING_FABLE`。性質=既存
 | er026:1788,1799 | B | dry-run `pages`行の表示文字列 | ✓(`ctx.pages_dir`から生成。Melosは従来表記と同一) |
 | er026:~1568 | B | `stage_pages` → `a63.build_pages(..., page_title, audio_file_prefix)` | ✓ |
 | er026:1761 | B | `run_stages`が`a63.MANAGEMENT_ID`をctxの値に設定(監査記録用) | ✓ |
-| er026:1834,1842 | T | mock話者判定が判定不能時`melos`を返す | D(mock用。§3-C) |
+| er026:1834,1842 | T | mock話者判定が判定不能時`melos`を返す | ✓(委任_01b: story別fallback) |
 | er026:~1970,2045 | B | `build_mock_context(story_key, slug)`、`--story`既定 | ✓(mockが`--story`を無視してmelosのrun dirに書く不具合=**11-8修正**。下記) |
 | er062 writer:43 | K | `THEME_TAG`(smoke/CLI用) | -(real runはrunnerの`ctx.theme_tag`でcost loggingを包む) |
 | er062 writer:141 | P | `REVISE_USER_TMPL`「only Melos may have a personal name」 | ✓(Story名差替えのみ`{main_character}`化。Melosは**バイト同一**をtestで固定) |
-| er062 writer:199-212 | P | `ATTR_USER_TMPL`(話者roster: melos/king/friend/other/narrator+例文) | **D**(実装せず。§3-C) |
-| er062 writer:221 | B | `ATTR_SCHEMA` speaker enum=`st.SPEAKERS` | **D** |
+| er062 writer:199-212 | P | `ATTR_USER_TMPL`(話者roster: melos/king/friend/other/narrator+例文) | ✓(委任_01b: story別化。§3-C) |
+| er062 writer:221 | B | `ATTR_SCHEMA` speaker enum=`st.SPEAKERS` | ✓(委任_01b: `build_attr_schema(story_key)`) |
 | er062 writer:387-388,596 | K/B | `check_adv_guardrails`の禁止名(WARNのみ)が`STORY_LINT_CONFIG["melos"]`固定 | ✓(`story_key`引数追加。Melos既定は同一) |
 | er062 writer:869,1143,1161-1164 | C/T | カタカナ除外コメント・mock・smoke文言 | -(Melos用smoke/mockはtest fixture) |
 | er062 writer:1283 | B | CLI `--story` 既定melos | - |
-| er062 structure:21,24-28 | K/B | `SPEAKERS`/`Z_VOICE_KEYWORDS`(melos/king/friend固定) | **D** |
+| er062 structure:21,24-28 | K/B | `SPEAKERS`/`Z_VOICE_KEYWORDS`(melos/king/friend固定) | ✓(委任_01b: `STORY_SPEAKER_CONFIG`) |
 | er062 structure:622-639 | K | `STORY_LINT_CONFIG`(story_key別、Preview/Commentのforbidden_names・spoiler語) | ✓(`the_open_window`のentry追加。既存機構の値) |
 | er063 audio:35 | K | `MANAGEMENT_ID`(監査記録2箇所) | ✓(runnerが実行時にstory別へ設定) |
 | er063 audio:42,1089,1439 | K | `DEFAULT_SLUG="melos"`(`story_key`既定。runnerは`ctx.slug`を渡す) | - |
-| er063 audio:333-360 | K/B | `FAMILY_Z_DIALOGUE_VOICE_KEYWORDS/TTS_NAMES`・`SPEAKER_ALIASES`・`MELOS_VOICE_STATUS` | **D** |
+| er063 audio:333-360 | K/B | `FAMILY_Z_DIALOGUE_VOICE_KEYWORDS/TTS_NAMES`・`SPEAKER_ALIASES`・`MELOS_VOICE_STATUS` | ✓(委任_01b。`MELOS_VOICE_STATUS`はMelos用のまま) |
 | er063 audio:377-384 | B | `check_melos_voice_mechanism` | - |
 | er063 audio:1492-1495 | K | `PAGES_DIR`(= `build_pages`既定) | -(Melos既定のまま。runnerは`ctx.pages_dir`を渡す) |
 | er063 audio:1506,1556,1680,1734 | P/K | 試聴ページのタイトル`走れメロス`・音声ファイル名`Melos_*_full.mp3` | ✓(`page_title`/`audio_file_prefix`引数、既定=Melos従来値、test固定) |
@@ -92,12 +92,16 @@ Status: `PHASE1_SEED_RIGHTS_REGISTRY_DRYRUN_READY_PENDING_FABLE`。性質=既存
 - `er062_family_z_structure_01.py`: `STORY_LINT_CONFIG["the_open_window"]`追加(同一機構のstory別値)。
 - `er063_family_z_audio_01.py`: `build_pages`/`build_page_rows`/`build_listening_page_html`/`build_index_html`に`page_title`/`audio_file_prefix`(既定=Melos従来値)。
 - **Melos不変の根拠(test)**: 新規`er026_family_z_story_registry_open_window_test_01.py`の`MelosUnchangedSnapshotTest`がパラメータ化前(HEAD dc0e40811)の値(管理ID・theme tag・pages dir・registry・voice表・`STORY_LINT_CONFIG["melos"]`・`REVISE_USER_TMPL`整形結果・ページタイトル・`E2EContext`既定のout/seed dir)を逐語固定。既存`er026*`/`er062*`/`er063*` test全PASS(§8)。
-### 3-C 実装せず設計案に留めた箇所(Fable条件A判定用)
-**事実**: E2E経路の話者(speaker)機構がMelosの登場人物(melos/king/friend)に固定されている。『開いた窓』のreal runは、このままでは`plan` stageの話者判定で少女・叔母・訪問客が`other`/誤判定になり、`FAMILY_Z_DIALOGUE_SPEAKER_OTHER`でSTOP(`_check_plan_after`)するか、Melosの声に割当てられる。`seed_check`/mock/dry-runは通る(話者機構を実際には使わないため)。
-**固定箇所**: ①`er062_family_z_structure_01.py:21,24-28` `SPEAKERS`/`Z_VOICE_KEYWORDS`(決定論話者判定の語彙・enum検証) ②`er062_family_z_writer_01.py:199-212` `ATTR_USER_TMPL`のroster文+例文、`:221` schema enum ③`er063_family_z_audio_01.py:343-360` `FAMILY_Z_DIALOGUE_VOICE_KEYWORDS`/`TTS_NAMES`/`SPEAKER_ALIASES` ④runner mock(`:1842`)。
-**設計案(story別roster化。実装せず)**: `STORY_REGISTRY[story]`に`speakers`(順序付きtuple、末尾に共通`other`/`narrator`)、`speaker_prompt_lines`(ATTR roster行)、`speaker_keywords`、`voice_tts_names`、`speaker_aliases`を持たせ、①〜③をstory_key引数で解決する(Melos値は現行と**バイト同一**を前提。ATTR promptはMelos用に現行文字列をそのままregistryへ移し、test固定)。『開いた窓』用の案: speakers=`framton`(訪問客)/`vera`(姪)/`aunt`(Sappleton夫人)/`men`(叔母の夫と弟たち、歌う声を含む)/`other`/`narrator`。
-**なぜ実装しなかったか**: 委任文の線引き(「story別の値をSTORY_REGISTRYへ移す」以上の構造変更=Prompt文[ATTR roster]・Voice割当ロジック[module global→story別解決]の変更)に該当するため。Fableが条件A該当を判定する。実装規模の見込み: 変更4ファイル、Melos不変testを含め概算1時間、費用JPY0(mock+Melos既存mock fixtureで検証可能)。
-**暫定の影響(未実装のままの場合)**: real run前に必ずこの設計を実装しないと`plan`でSTOPする。委任_02の前に「委任_01b(話者roster story別化、JPY0)」の追加を推奨。
+### 3-C 話者roster/Voice表のstory別化(委任_01b、Fable判定=11-8是正[Family Z仕様は一般仕様なのにMelos固定だった乖離]・Opus条件A非該当で実装)
+**委任_01では設計案に留めた(§3-A表のD行)が、委任_01bでFableの判定を受け実装した。**
+- **値の出所(一箇所)**: `er062_family_z_structure_01.py` `STORY_SPEAKER_CONFIG[story_key]`(speakers / z_voice_keywords / attr_roster_text / attr_caution_text / dialogue_voice_keywords / dialogue_voice_tts_names / speaker_aliases)。`er026 STORY_REGISTRY[story]["speaker_config"]`は同一objectの参照(二重定義なし)。er062 structureはer013のみimportの純粋関数moduleのため、er026⇄er062の循環importを避けるため出所をstructure側に置いた(registryが参照)。旧定数`SPEAKERS`/`Z_VOICE_KEYWORDS`/`FAMILY_Z_DIALOGUE_VOICE_KEYWORDS`/`FAMILY_Z_DIALOGUE_VOICE_TTS_NAMES`/`SPEAKER_ALIASES`はMelos値を指す互換aliasとして残置(testで`assertIs`固定)。
+- **差分**: `er062_family_z_structure_01.py` L21-110(STORY_SPEAKER_CONFIG・`speaker_config()`・`speakers_for()`・互換alias)、`deterministic_attribution`/`reconcile_attribution`に`story_key`(既定melos)。`er062_family_z_writer_01.py` `ATTR_USER_TMPL`を`{roster_text}/{caution_text}/{tagged_story}`化+`build_attr_user_prompt`/`build_attr_schema`(L203-232)、`llm_attribute_quotes`/`attribute_dialogue`/`apply_human_confirmed_override`/`run_plan`/`stage_plan`に`story_key`(既定melos。従来`run_plan`のplan jsonの`story_key`は呼出側未指定のため常に"melos"だった不整合も是正)。`er063_family_z_audio_01.py` `normalize_speaker`/`resolve_dialogue_voice`/`build_level_plan`/`build_z_sequence`に`story_key`(既定melos)、Voice値`None`=未割当は`VOICE_UNASSIGNED`で`FamilyZVoiceMappingStop`(fail-closed、新Gateではなく値欠落の検出)。`er026`runner: registryに`speaker_config`、`stage_plan`/`write_speaker_table`/`stage_seed_check`(dialogue_voices)/`build_level_plan`呼出/mock attribution・`mock_writer_hook`が`ctx.story_key`で解決。
+- **『開いた窓』roster**: `framton`(Algieba)/`vera`(Erinome)/`mrs_sappleton`(**None=未割当、ユーザー判断待ち**)/`men`(叔母の夫・弟Ronnie等+歌声、Charon)/`other`(想定外話者=Melos同様`FAMILY_Z_DIALOGUE_SPEAKER_OTHER`でSTOP、既存Gate不変)/`narrator`(Aoede)。委任文では「other=男性端役=Charon」とあったが、`_check_plan_after`の`other`→STOP Gate(判定ロジック不変の条件)と衝突するため、本設計案どおりkey名を`men`とし`other`は想定外話者のまま(判断候補ではなく委任文の条件「Gate・判定ロジックは変えない」を優先した実装判断)。
+- **Lint config(承認済)**: `STORY_LINT_CONFIG["the_open_window"]`のspoiler語を結末先回りの最小限に縮小(ja: 作り話/でっち上げ/嘘/うそ/偽り/種明かし/ハッタリ、en: made up/made-up/invented/a lie/was lying/lied/tall tale/the truth is/romance at short notice/a hoax)。一般語(最後に/結末/turns out/in the end/the trick/a prank)は除外。forbidden_names=Sappleton/Ronnie/サプルトン/サップルトン/ロニー/ヴェラ(不変)。
+- **Melos不変の根拠**: 新規`er062_family_z_speaker_roster_story_test_01.py`(16件)=旧`ATTR_USER_TMPL`展開結果・旧`ATTR_SCHEMA`・SPEAKERS・keywords(挿入順)・Voice表・aliasesを逐語固定。さらに**HEAD(65a1080d5)の4 moduleで`--story melos --mode mock --stage all`を実行した出力と、変更後の同mock出力を比較**: 314ファイル中、差は時刻・port・pid・run名のみ(wav/mp3/plan/attribution/speaker_table等すべてバイト同一)。
+- **test結果(逐次)**: `er062*_test*.py` 95件(既存79+新規16)PASS / `er063*_test*.py` 84件PASS / `er026*_test_*.py` 129件PASS(失敗0)。
+- **mock**: `--story the_open_window --run run_mock_02 --mode mock --stage all` rc=0 / `--story melos --run run_mock_02 --mode mock --stage all` rc=0(mockのWriter fixtureはMelos文なので『開いた窓』mockは配管確認のみ。speaker_tableはframton/vera等のroster語彙で出力)。
+- **residual risk(委任_02 plan stage)**: 決定論話者判定はFamily Cのkeyword窓判定(substring一致、挿入順優先)のため、Framton/Veraが同一窓に現れる場合や`aunt`が`haunt`等に部分一致する場合にdeterministic≠LLMのmismatch→`FamilyZDialogueMismatchStop`(dialogue_override.json、人間確認)になり得る。既存機構の挙動でありMelosでも同様。
 
 ## §4 Voice割当案(『開いた窓』)
 - 参照: CURRENT_SPEC Z-4(L1539-1553)=narrator=Aoede・登場人物=Erinome/Charon等。Melos run_e2e_02で実使用された承認済みVoiceは`Aoede`(narrator)・`Algieba`(Melos、`PROVISIONAL_UNAPPROVED`表記のまま21/21使用[CURRENT_SPEC L1694])・`Erinome`・`Charon`。
