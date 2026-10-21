@@ -1,0 +1,18 @@
+[B3-RUNNER][research] Researcher呼び出し開始(topic='ITmedia NEWS(2026-10-20)が報じた、LINEマンガが2026年10月19日に発表したAIチャットサ'...)...
+[B3-RUNNER][research] facts=14 web_search_calls=5
+[B3-RUNNER][ledger] Verification呼び出し開始...
+[B3-RUNNER][ledger] Ledger確定。verdict_counts={'VERIFIED': 13, 'AMBIGUOUS': 1, 'REJECTED': 0} kept_facts=14
+[E-FAMILY-RUNNER][cost] so far=16.66 JPY by_provider={'openai': 16.66} (after research_ledger)
+[E-FAMILY-RUNNER][cost] so far=26.05 JPY by_provider={'openai': 26.05} (after storyline_b3)
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er019_family_x_entertainment_production_runner_01.py", line 530, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_entertainment_production_runner_01.py", line 466, in main
+    run_annotation_producer(out_dir)    # C4: 初回・regeneration・resume・再利用のすべてで storyline_b3 確定直後(Writer/契約検証の前)に呼ぶ
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_entertainment_production_runner_01.py", line 250, in run_annotation_producer
+    result = annot.produce_annotated_b3(out_dir)
+  File "C:\Users\tensh\eigo-radio\er053_b3_deterministic_producer_01.py", line 890, in produce_annotated_b3
+    raise AnnotationProducerError([f"internal check {k}: {p[:3]}" for k, p in failed.items()])
+er053_b3_deterministic_producer_01.AnnotationProducerError: [STOP] ANNOTATION_PRODUCER_FAILED: internal check b_numbers: ["extracted number '26.10' (F14) has no mark in the annotated text", "extracted number '10以上' (F14) has no mark in the annotated text"]; internal check e_sidecar: ["sidecar number '26.10' has no marked occurrence", "sidecar number '10以上' has no marked occurrence"]
