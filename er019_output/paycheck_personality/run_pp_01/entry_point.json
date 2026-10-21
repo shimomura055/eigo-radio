@@ -1,0 +1,117 @@
+{
+  "runner": "er019_family_x_entertainment_production_runner_01.py",
+  "management_id": "NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01",
+  "runner_sha256": "757f24034f262efe0a6cbf208cc18038898e7bcd8f3c1be30b0ce01c7baa691c",
+  "b3_module_sha256": "338e8e145adce9e5b195d0263160020023026998bb33533f83b0742b56991468",
+  "ja_writer_module_sha256": "a81bf9ae1a20214bb50bcbbac8619fe4aa8c05520d83add13113752dcc36944e",
+  "annotation_contract_module_sha256": "5f4c725e0b332e028b8285389532dedc28e067f29caf6c63863b0be4f0017885",
+  "annotation_producer_module_sha256": "8899d0fa4a9b2274fcd79165b447ab02988d40f799cbca01e06df51a6f7155f2",
+  "risk_flagger_module_sha256": "ed3555c9da56ed651892858bdddef3624dd375bf9f0035bc1e10996604784810",
+  "review_queue_module_sha256": "ebe746f11181888ed286f05db17d40141c60aa6fca0b163f47fcd60c0aa3f7ed",
+  "args": {
+    "theme": "PsyPost(2026-10-20)が報じた、収入の変化と性格特性(ビッグファイブ等)の関係を扱った大規模分析(心理学研究の統合分析)。一次研究の掲載誌・著者・研究対象・手法・効果の大きさ・双方向の関連・限界を確認する。",
+    "slug": "paycheck_personality",
+    "out_dir": "er019_output/paycheck_personality/run_pp_01",
+    "source_note": "PsyPost 2026-10-20 https://www.psypost.org/a-bigger-paycheck-tends-to-come-with-personality-changes-according-to-a-large-scale-analysis-of-psychology-research/",
+    "run_label": "FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01",
+    "budget_jpy": 120.0,
+    "stage": "all",
+    "regenerate_stage": null,
+    "stop_after": "standard"
+  },
+  "timestamp": "2026-10-21T12:40:52",
+  "risk_flagger": {
+    "b1b": {
+      "status": "OK",
+      "reason": null,
+      "rf_run_id": "rf20261021T034829Z-e230",
+      "article_sha256": "7004b24076d6994ab68813041308ee22272b91f32bf8873b89f017e53bf1e829",
+      "ledger_sha256": "a31992b53082d2f143f9b32949dbb926d353c1034a04e2fad666cceca21b0980",
+      "splitter_version": "en_split_v1",
+      "timestamp": "2026-10-21T03:48:29+00:00",
+      "producer": "deterministic_v2",
+      "run_label": "FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01",
+      "issue_count": 1,
+      "conditions": [
+        {
+          "model_key": "luna",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.128512
+        },
+        {
+          "model_key": "luna",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.135552
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.349024
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.281584
+        }
+      ]
+    },
+    "a2": {
+      "status": "OK",
+      "reason": null,
+      "rf_run_id": "rf20261021T034913Z-d5eb",
+      "article_sha256": "8b000a58f424cb10bce87db533f7a47ee2c1cd1d5a1546dadc925ded693aadef",
+      "ledger_sha256": "a31992b53082d2f143f9b32949dbb926d353c1034a04e2fad666cceca21b0980",
+      "splitter_version": "en_split_v1",
+      "timestamp": "2026-10-21T03:49:13+00:00",
+      "producer": "deterministic_v2",
+      "run_label": "FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01",
+      "issue_count": 4,
+      "conditions": [
+        {
+          "model_key": "luna",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.189808
+        },
+        {
+          "model_key": "luna",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 3,
+          "cost_jpy": 0.255808
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.17013
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.204424
+        }
+      ]
+    }
+  }
+}

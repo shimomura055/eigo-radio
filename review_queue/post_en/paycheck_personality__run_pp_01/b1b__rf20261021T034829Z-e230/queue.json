@@ -1,0 +1,193 @@
+{
+  "schema_version": "review_queue_post_en_v1",
+  "article_id": "paycheck_personality__run_pp_01",
+  "article_level": "b1b",
+  "article_sha256": "7004b24076d6994ab68813041308ee22272b91f32bf8873b89f017e53bf1e829",
+  "ledger_sha256": "a31992b53082d2f143f9b32949dbb926d353c1034a04e2fad666cceca21b0980",
+  "run_id": "rf20261021T034829Z-e230",
+  "timestamp": "2026-10-21T03:48:29+00:00",
+  "status": "OK",
+  "reason": null,
+  "splitter_version": "en_split_v1",
+  "producer": "deterministic_v2",
+  "run_label": "FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01",
+  "sentence_count": 36,
+  "fact_count": 19,
+  "conditions": [
+    {
+      "model_key": "luna",
+      "condition": "A3",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6317,
+      "output_tokens": 343,
+      "cached_tokens": 0,
+      "cost_jpy": 0.128512,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "luna",
+      "condition": "A4",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6467,
+      "output_tokens": 401,
+      "cached_tokens": 0,
+      "cost_jpy": 0.135552,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A3",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5713,
+      "output_tokens": 187,
+      "cached_tokens": 0,
+      "cost_jpy": 0.349024,
+      "flag_count": 1,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A4",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5833,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.281584,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "paycheck_personality__run_pp_01__b1b__7004b240__rf20261021T034829Z-e230__s11",
+      "article_id": "paycheck_personality__run_pp_01",
+      "article_level": "b1b",
+      "article_sha256": "7004b24076d6994ab68813041308ee22272b91f32bf8873b89f017e53bf1e829",
+      "run_id": "rf20261021T034829Z-e230",
+      "timestamp": "2026-10-21T03:48:29+00:00",
+      "sentence_id": "s11",
+      "sentence_text": "In every study, the same people’s income and personality were measured at least three times.",
+      "context": {
+        "before": [
+          "They looked at people who were working and had reported on their personality and income from work.",
+          "The number of people varied by analysis, but the researchers used data from as many as 134,515 people."
+        ],
+        "after": [
+          "The key was how the researchers compared people.",
+          "They analyzed separately the differences between people that tend not to change and changes that happen within each person."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F04",
+        "F06",
+        "F07"
+      ],
+      "facts": [
+        {
+          "fact_id": "F04",
+          "text": "研究は事前登録された連続時間メタ分析で、11件の大規模な縦断パネル研究の個人レベルデータを統合した。解析に含まれた参加者数は最大134,515人で、解析ごとに参加者数は異なる。\n  scope: 11件の全国または地域代表性を持つ縦断研究。最大解析標本数は134,515人\n  conditions: 参加者数はBig Five各特性と収入の解析ごとに異なる。研究者は就労中で、性格と仕事からの収入の情報を報告した参加者を解析対象とした。\n  numeric_value: 11研究; 最大134,515人 (numeric_scope: 統合した縦断研究数と解析に含まれた最大参加者数。全モデルで同一のNではない。)\n  date_or_period: 一次研究で利用可能なデータの最終リリースは2022年11月時点\n  notes_for_writer: 「134,515人がすべてのモデルに参加した」とは書かない。"
+        },
+        {
+          "fact_id": "F06",
+          "text": "各研究の観測期間は4～20年で、測定波は3～18回、隣り合う測定波の間隔は1～12年だった。\n  scope: 統合対象11研究\n  conditions: 研究ごとに期間、測定波数、測定間隔が異なる。\n  numeric_value: 観測期間4～20年; 3～18測定波; 波間隔1～12年 (numeric_scope: 各研究の範囲。単一の参加者全員に共通する期間・測定スケジュールではない。)\n  date_or_period: 各一次研究の縦断観測期間"
+        },
+        {
+          "fact_id": "F07",
+          "text": "対象研究は、収入とBig Fiveの少なくとも1特性を縦断的に3回以上測定することなどを適格条件とし、解析には個人レベルの変化を扱うランダム切片交差遅延パネルモデルを用いた連続時間メタ分析を行った。\n  scope: メタ分析に含めた縦断研究と、統合個人レベルデータの解析\n  conditions: 個人レベルデータまたは必要な同時・自己回帰・交差遅延相関情報が得られ、標本数や測定間隔などの記述情報が利用可能であることも条件とした。\n  numeric_value: 最低3測定波 (numeric_scope: 一次研究の縦断研究としての適格条件)\n  notes_for_writer: モデルは安定した個人間差と個人内の変化を分けて推定する。縦断的な交差遅延関係の推定だけで因果効果が確定するわけではない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "数量時系列",
+          "question": "s11の「In every study, the same people’s income and personality were measured at least three times」は、11件の研究すべてで同一の参加者が3回以上測定されたと読めますが、台帳F04では「11件の大規模な縦断パネル研究の個人レベルデータを統合した。解析に含まれた参加者数は最大134,515人で、解析ごとに参加者数は異なる」、F06・F07では各研究の測定波数が3～18回とされています。『各研究内で3回以上測定された』ではなく『すべての研究で同一の人が3回以上』という意味になっていませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "gemini35fl",
+          "model_id": "gemini-3.5-flash-lite",
+          "condition": "A3",
+          "confidence": 0.7,
+          "type": "数量時系列",
+          "fact_ids": [
+            "F04",
+            "F06",
+            "F07"
+          ],
+          "question": "s11の「In every study, the same people’s income and personality were measured at least three times」は、11件の研究すべてで同一の参加者が3回以上測定されたと読めますが、台帳F04では「11件の大規模な縦断パネル研究の個人レベルデータを統合した。解析に含まれた参加者数は最大134,515人で、解析ごとに参加者数は異なる」、F06・F07では各研究の測定波数が3～18回とされています。『各研究内で3回以上測定された』ではなく『すべての研究で同一の人が3回以上』という意味になっていませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/gemini35fl_A3.jsonl"
+        }
+      ],
+      "confidence": 0.7
+    }
+  ],
+  "unlocated_flags": [],
+  "model_stats": {
+    "luna": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 12784,
+      "output_tokens": 744,
+      "cost_jpy": 0.264064,
+      "a3_flag_count": 0,
+      "a4_flag_count": 0,
+      "unique_issue": 0,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 1
+    },
+    "gemini35fl": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 11546,
+      "output_tokens": 191,
+      "cost_jpy": 0.630608,
+      "a3_flag_count": 1,
+      "a4_flag_count": 0,
+      "unique_issue": 1,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 0
+    },
+    "_all": {
+      "article_level": "b1b",
+      "article_status": "OK",
+      "unique_issue": 1,
+      "cost_jpy": 0.894672,
+      "issues_by_both_models": 0
+    }
+  },
+  "warnings": []
+}

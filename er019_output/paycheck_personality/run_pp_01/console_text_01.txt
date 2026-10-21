@@ -1,0 +1,33 @@
+[B3-RUNNER][research] Researcher呼び出し開始(topic='PsyPost(2026-10-20)が報じた、収入の変化と性格特性(ビッグファイブ等)の関係を扱った大規模分析(心理学'...)...
+[B3-RUNNER][research] facts=19 web_search_calls=8
+[B3-RUNNER][ledger] Verification呼び出し開始...
+[B3-RUNNER][ledger] Ledger確定。verdict_counts={'VERIFIED': 19, 'AMBIGUOUS': 0, 'REJECTED': 0} kept_facts=19
+[E-FAMILY-RUNNER][cost] so far=32.74 JPY by_provider={'openai': 32.74} (after research_ledger)
+[E-FAMILY-RUNNER][cost] so far=42.27 JPY by_provider={'openai': 42.27} (after storyline_b3)
+[B3-RUNNER][annotation] producer=deterministic_v2 rules_sha=525f2309b521 facts=5 annotated_sha=a7c1bcfa248f(LLM 0 call)
+[E-FAMILY-RUNNER][cost] so far=42.27 JPY by_provider={'openai': 42.27} (w1 writer)
+[E-FAMILY-RUNNER][cost] so far=49.00 JPY by_provider={'openai': 49.0} (w1 writer)
+[E-FAMILY-RUNNER][cost] so far=51.13 JPY by_provider={'openai': 51.13} (w1 writer)
+[E-FAMILY-RUNNER][cost] so far=55.21 JPY by_provider={'openai': 55.21} (after ja_writer)
+[E-FAMILY-RUNNER][writer/paycheck_personality] Advanced(Family X忠実英訳)生成開始...
+[E-FAMILY-RUNNER][cost] so far=55.53 JPY by_provider={'openai': 55.53} (after advanced writer)
+[E-FAMILY-RUNNER][cost] so far=55.53 JPY by_provider={'openai': 55.53} (after advanced)
+[B3-RUNNER][risk_flag/b1b] Risk Flagger開始(非Blocking、4条件逐次)...
+[E-FAMILY-RUNNER][cost] so far=55.53 JPY by_provider={'openai': 55.53} (risk_flag b1b)
+[E-FAMILY-RUNNER][cost] so far=55.66 JPY by_provider={'openai': 55.66} (risk_flag b1b)
+[E-FAMILY-RUNNER][cost] so far=55.79 JPY by_provider={'openai': 55.79} (risk_flag b1b)
+[E-FAMILY-RUNNER][cost] so far=56.14 JPY by_provider={'openai': 55.79, 'gemini': 0.35} (risk_flag b1b)
+[B3-RUNNER][risk_flag/b1b] status=OK issues=1 queue_saved=True
+[E-FAMILY-RUNNER][cost] so far=56.42 JPY by_provider={'openai': 55.79, 'gemini': 0.63} (after risk_flag b1b)
+[E-FAMILY-RUNNER][writer/paycheck_personality] Standard(Family X見出し廃止A2)生成開始...
+[E-FAMILY-RUNNER][cost] so far=56.74 JPY by_provider={'openai': 56.11, 'gemini': 0.63} (after standard writer)
+[E-FAMILY-RUNNER][cost] so far=56.74 JPY by_provider={'openai': 56.11, 'gemini': 0.63} (after standard)
+[B3-RUNNER][risk_flag/a2] Risk Flagger開始(非Blocking、4条件逐次)...
+[E-FAMILY-RUNNER][cost] so far=56.74 JPY by_provider={'openai': 56.11, 'gemini': 0.63} (risk_flag a2)
+[E-FAMILY-RUNNER][cost] so far=56.93 JPY by_provider={'openai': 56.3, 'gemini': 0.63} (risk_flag a2)
+[E-FAMILY-RUNNER][cost] so far=57.19 JPY by_provider={'openai': 56.56, 'gemini': 0.63} (risk_flag a2)
+[E-FAMILY-RUNNER][cost] so far=57.52 JPY by_provider={'openai': 56.56, 'gemini': 0.96} (risk_flag a2)
+[B3-RUNNER][risk_flag/a2] status=OK issues=4 queue_saved=True
+[E-FAMILY-RUNNER][cost] so far=57.81 JPY by_provider={'openai': 56.56, 'gemini': 1.25} (after risk_flag a2)
+[B3-RUNNER] Standardまで完了。Mandatory STOP(ユーザー確認前に後工程[scaffold/tts/assemble/player]へは進みません。本runnerにはそれらのstage自体が実装されていません)。
+[B3-RUNNER][cost] {'by_stage_jpy': {'research': 14.781, 'ledger': 17.963, 'storyline_b3': 9.528, 'w1_r0': 6.727, 'w1_astra_r1': 2.136, 'w1_astra_r2': 4.075, 'advanced': 0.32, 'risk_flag.luna.A3.b1b': 0.129, 'risk_flag.luna.A4.b1b': 0.136, 'risk_flag.gemini35fl.A3.b1b': 0.349, 'risk_flag.gemini35fl.A4.b1b': 0.282, 'standard': 0.316, 'risk_flag.luna.A3.a2': 0.19, 'risk_flag.luna.A4.a2': 0.256, 'risk_flag.gemini35fl.A3.a2': 0.329, 'risk_flag.gemini35fl.A4.a2': 0.292}, 'total_jpy': 57.807, 'by_provider_jpy': {'openai': 56.556, 'gemini': 1.252}, 'risk_flag_by_level_model_condition_jpy': {'b1b': {'luna': {'A3': 0.129, 'A4': 0.136}, 'gemini35fl': {'A3': 0.349, 'A4': 0.282}}, 'a2': {'luna': {'A3': 0.19, 'A4': 0.256}, 'gemini35fl': {'A3': 0.329, 'A4': 0.292}}}}
