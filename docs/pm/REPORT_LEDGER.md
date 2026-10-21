@@ -421,3 +421,4 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-21 | FAMILY-X-WRITER-DETECTIVE-WORD-AVOIDANCE-TRIAL-01 委任_02(Trial最終Closeout: ユーザー決定でA/B/C全てProduction採用見送り・C=VALIDATED試験評価保持・再利用索引REUSE_INDEX_01・Production Writer 5file変更0確認・OPEN-429 CLOSED・REGISTER #129登録/#130判断済み、費用JPY0): 報告=docs/pm/RESULT_PACKET_DWA2.md
 - 2026-10-21 | FAMILY-Z-COMMON-DIALOGUE-VOICE-SELECTION-TRIAL-01 委任_01(Family Z共通Voice候補 男性的5+女性的5の同一条件比較音声20 clip+試聴ページ、差し替え0、Production変更0、OPEN-430/REGISTER #131、実費JPY17.08): 報告=docs/pm/RESULT_PACKET_FZVS1.md
 - 2026-10-21 | FAMILY-X-MANGA-AI-CHAT-BYUS-PRODUCTION-E2E-01 委任_01(記事B byUs: Research/Ledger/B3完了後、er053 annotation producerがバージョン表記26.10.10以上で停止rc=1、text実費約JPY26.05、OPEN-431): 報告=docs/pm/RESULT_PACKET_FXBY1.md
+- 2026-10-21 | FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01 委任_01(記事A 給料と性格: text完了[一次研究到達・因果断定なし・実費57.81]+Adv音声完成、Std full_story_part2がfallback使用でM3 Gate BLOCK→STOP、audio実費29.92、OPEN-432): 報告=docs/pm/RESULT_PACKET_FXPP1.md

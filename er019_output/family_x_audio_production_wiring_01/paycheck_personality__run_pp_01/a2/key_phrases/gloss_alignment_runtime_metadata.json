@@ -1,0 +1,101 @@
+{
+  "article_id": "FAMILY_X_AUDIO_paycheck_personality__run_pp_01_a2",
+  "version": "ER-003-KP-GLOSS-ALIGN-02",
+  "final_status": "ALIGN_PASS",
+  "targets": [
+    2,
+    5
+  ],
+  "unresolved_ranks": [],
+  "mapping_gate": false,
+  "rules_sha256": "447e07cb8b9a30850a8dc75b6c3cce48c53d99b5f1fafa88d19b778d9155949b",
+  "cost_jpy": 0.1356,
+  "attempts_detail": [
+    {
+      "attempt": 1,
+      "target_ranks": [
+        2,
+        5
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_04c7da97220570f0006ad8370bbf0487d09f07611dd26ce3c7",
+      "usage": {
+        "input_tokens": 1988,
+        "output_tokens": 1298,
+        "cached_input_tokens": 0
+      },
+      "cost_jpy": 0.1356,
+      "status": "ALIGN_PASS",
+      "n_valid": 2,
+      "n_items": 2
+    }
+  ],
+  "item_log": {
+    "2": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "その結論に早まって飛びつく",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "「結論に飛びつく」は表れていますが、current glossには「that」に当たる「その」がありません。",
+        "added_word_mappings": [
+          {
+            "english_word": "conclusion",
+            "japanese_span": "結論"
+          }
+        ],
+        "machine_check": {
+          "required_words": [
+            "conclusion"
+          ],
+          "covered": {
+            "conclusion": "結論"
+          },
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.1356,
+        "model": "gpt-6-luna"
+      }
+    ],
+    "5": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "もっと青々とした芝生",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "current glossは「隣の芝生は青く見える」ということわざで、key phraseにない「隣」や「見える」も含みます。key phraseの「より青い芝生」を表すグロスにします。",
+        "added_word_mappings": [
+          {
+            "english_word": "grass",
+            "japanese_span": "芝生"
+          }
+        ],
+        "machine_check": {
+          "required_words": [
+            "grass"
+          ],
+          "covered": {
+            "grass": "芝生"
+          },
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.1356,
+        "model": "gpt-6-luna"
+      }
+    ]
+  }
+}
