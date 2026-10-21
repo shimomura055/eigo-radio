@@ -1,0 +1,167 @@
+【承認済みルール(原文。新しい基準は追加しない)】
+
+■ Spoken-first Number Treatment(承認済み仕様)
+Verified Fact Ledgerは常にexact factを保持する。spoken narrative側は、精度自体に意味がない数字を、丸め(round)・概数化(approximate)・方向化(directionalize)してListening easeを優先してよい。分類は2軸: Importance(`ANCHOR`/`SUPPORTING`/`DISPENSABLE`)、Exactness(`EXACT_REQUIRED`/`APPROXIMATE_OK`/`DIRECTION_ONLY`)。スコア・日付・記録・健康研究の結果・安全閾値など、精度そのものが意味を持つ数字はEXACT_REQUIREDのまま維持する
+
+■ 【追加ルール: 全Pattern共通 - Listener-Friendly Numeric Precision】
+
+This rule applies AFTER each Pattern's own rule above has already decided which
+numeric Facts to keep. First, decide whether a numeric value is worth retaining at
+all, following the Pattern-specific rule above. Then, for values you keep, decide how
+much precision the listener actually needs, following this rule. Do not conflate the
+two decisions.
+
+When a numeric value is worth keeping, preserve only as much precision as the
+listener needs to understand its meaning.
+
+Prefer simpler rounded values when extra decimal precision does not materially
+affect:
+- the direction of the comparison
+- the magnitude that matters to the story
+- an important threshold
+- the interpretation of the evidence
+- the distinction between materially different values
+
+Do not remove decimals mechanically.
+
+Keep decimal precision when rounding would:
+- hide a meaningful difference
+- cross or obscure an important threshold
+- distort a small-scale measurement
+- change the interpretation
+- make two meaningfully different values appear equivalent
+- reduce factual fidelity in a way relevant to the listener
+
+When rounding is appropriate, use listener-friendly expressions such as "about",
+"roughly", "nearly", etc. where suitable.
+
+Most important: Rounding is NOT permission to merge separate facts, metrics,
+groups, time points, survey questions, or experimental outcomes. Each retained
+numeric expression must remain attributable to its original Fact / metric in the
+Fact Ledger. Never combine separate Facts merely because their rounded values
+become numerically similar. Before rounding, verify that each numeric expression
+can still be traced to a single, specific Fact / metric / group / time point /
+survey question. Do not combine numbers from different Facts or different
+metrics (for example, an attention-score value and a processing-speed value)
+into a single shared rounded expression, even if their rounded values happen to
+look similar or identical.
+
+The goal is not to remove decimal places. The goal is to use the least precision
+necessary for accurate spoken understanding.
+
+This is a judgment rule, not a mechanical one. Do NOT apply any fixed rule such as
+"always drop decimals," "always round to a whole number," "always keep one decimal
+place," or "always use two significant figures." Decide based on what each specific
+number means in context.
+
+For general guidance only (not a fixed instruction for this specific article):
+decimal precision is more likely to matter for values such as small percentages
+(for example 1.2% vs 1.8%), small absolute differences (for example 4.8 vs 5.2),
+sub-one units (for example 0.3 seconds), multipliers (for example 1.5 times),
+values near a meaningful threshold, or small differences that are themselves the
+finding. These are illustrative examples of the general principle only, not
+article-specific instructions.
+
+■ 【追加ルール: 全Pattern共通・全CEFRレベル共通 - Numeric Precisionの既定】
+上記Listener-Friendly Numeric Precisionルールを補強する原則であり、置き換えではない。
+
+原則: 聞き取りやすさを優先し、意味を損なわない範囲では概数を基本とする。小数点
+以下を保持するのは、その精度自体が記事の意味・比較・判断に必要な場合に限る。
+通常は次のように概数化することが既定である: 25.2% → about 25%、44.7% → about
+45%、89.6% → about 90%。
+
+小数点以下を保持してよい例: 閾値の前後が論点になっている場合(例えば49.5%と
+50.5%のように、僅差自体が意味を持つ場合)、年次変化・比較差を精密に扱う必要が
+ある場合、小数を落とすと記事の意味・結論が変わってしまう場合。
+
+This default applies equally regardless of CEFR level (A2/B1/B2). There is no
+level-specific numeric precision rule: the same judgment (round by default, keep
+precision only when the precision itself matters) applies to every level's
+spoken layer.
+
+【今回の判定の進め方(出力形式と安全側の指示のみ)】
+- 判定するのは、下の「判定対象の中核数値」の各conceptだけです。conceptの追加・削除・並べ替えはしません。
+- 周辺数値は判定対象ではありません。丸めると値同士が同一視されないか等の確認にだけ使ってください。
+- 各conceptについて decision を EXACT_REQUIRED(厳密値を維持)か APPROXIMATE_OK(聞き取りやすい概数にしてよい)のどちらかで答えます。
+- 判断が不確かな場合は無理に丸めず EXACT_REQUIRED にしてください。
+- APPROXIMATE_OK の場合のみ、surfaces の各surface(判定対象に示された表記そのまま)に対し approx_surface を日本語で書きます。approx_surface は、surface文字列の**数字部分だけ**を、元の数値を通常の四捨五入(有効数字を減らす)で丸めた値に置き換え、「約」「およそ」等のヘッジ語を付けただけの表記にします。surfaceにある限定語(「最大」「以上」「超」「未満」等)と単位・接尾辞はそのまま残し、surfaceにない語句(説明・括弧書き・「前年同月比」等の補足)は一切足しません。surfaceに単位が無ければ単位も足しません。Factの意味(例: 解析ごとに人数が異なる等)はFact本文に残っており、Writerは別途Factを読みます。数字は算用数字と「万」「億」「千」で書いてください。形式の例(別の数字): surface「最大52,300人」→「最大約5万2千人」、surface「7.26」→「約7.3」。EXACT_REQUIRED の場合 approx_surface は null にします。
+- reason は1〜2文、basis_fact_ids は根拠にしたFact ID(Ledgerの記録ID)、approved_condition は上の承認済みルールのどの条件に当たるかを短く書きます。
+
+【Storyline(確定済み)】
+2026年10月8日【周辺数値】時点で直近の完了済みFOMCは、インフレ高止まりへの対応として9月16日【周辺数値】に25ベーシスポイント【中核数値】利上げした一方、住宅ローン金利は政策金利に自動連動せず、複数の市場要因で上昇しており、固定ローンの借り手には月額負担増が示されている。
+
+【採用Fact(確定済み。【中核数値】【周辺数値】は決定論の機械印)】
+- 【事実1】米国の直近の完了済みFOMC金利決定は2026年9月16日【周辺数値】。2026年10月8日【周辺数値】時点で、Federal Reserveの政策ページには次回会合が10月27～28日【周辺数値】と掲載されている。（範囲：米国の金融政策決定。条件：「直近」は2026年10月8日【周辺数値】時点で確認できる完了済み会合を指す）
+- 【事実2】FOMCは2026年9月16日【周辺数値】、フェデラルファンド金利の目標レンジを0.25パーセントポイント【中核数値】引き上げ、3.75～4.00％【中核数値】とした。声明は12対0【中核数値】で承認された。（範囲：米国のフェデラルファンド金利目標レンジ。住宅ローン金利そのものではない。条件：Fedの声明に記載された目標レンジの変更）
+- 【事実3】FOMC声明は、経済活動が堅調に拡大し、国内支出が底堅く、生産性の伸びと設備投資が強い一方、雇用増は労働力の伸びに見合い、失業率は大きく変わらず、インフレは高止まりしていると説明した。委員会は利上げがインフレを2％【中核数値】目標へより早く戻す助けになると述べた。（範囲：FOMCが米国経済と物価について示した評価。条件：「2％【中核数値】」はFOMCの長期インフレ目標）
+- 【事実4】APは2026年10月8日【周辺数値】、30年【中核数値】固定の全米平均金利が7週【周辺数値】連続で上昇し、2023年11月16日【周辺数値】以来の高水準になったと報じた。30年【中核数値】金利が2月【周辺数値】下旬の5.98％【中核数値】から10月8日【周辺数値】の7.40％【周辺数値】へ上がった場合、40万ドル【周辺数値】の住宅ローンを組む借り手では月額費用が概算376ドル【周辺数値】増えるとの試算も掲載した。（範囲：APが示した40万ドル【周辺数値】借入の例。金利は全米平均30年【中核数値】固定の比較値であり、全借り手の実際の支払額ではない。条件：金利差に基づく概算。借入額・ローン条件・実際の提示金利などにより支払額は異なる）
+- 【事実5】米連邦準備制度理事会の消費者向け説明によると、フェデラルファンド金利は住宅ローン金利を直接決めない。住宅ローン金利は貸し手と契約条件によって定まり、固定金利型は契約期間中に金利が固定され、変動・調整金利型は契約条件に応じて金利が変わり得る。（範囲：米国の住宅ローン一般。条件：固定・変動の扱いは個別ローン契約の条件に従う）
+- 【事実6】APは、2026年【周辺数値】秋の住宅ローン金利上昇について、インフレ、Fed政策、債券市場投資家の経済見通しが影響要因であり、住宅ローン金利は一般に10年【周辺数値】米国債利回りの動きに沿うと報じた。同記事は、直近の上昇に債券市場の変動や原油高によるインフレ懸念も関わったと報じている。（範囲：米国の住宅ローン金利市場についてのAP報道。条件：複数要因の報道であり、特定要因が上昇全体を単独で説明するとはしていない）
+
+【Writerへの注意(確定済み)】
+Writerへの注意(事実ではありません)：
+- 事実1について：政策ページの直近文書一覧と次回会合日程を基にした、米国に対象を限定した最新決定の確認。
+- 事実2について：住宅ローン金利が同じ幅だけ上がったという意味ではない。
+- 事実3について：2％への回帰は政策の目標・期待として記載されたものであり、利上げの効果が既に実現したという確認ではない。
+- 事実4について：この比較は2月下旬から10月8日までの金利差による試算で、9月のFed利上げだけに帰属させない。
+- 事実5について：固定金利型の契約金利はFed決定だけで自動的に変わらない。変動金利型も、改定時期や指標など具体的な条件を契約書で確認する必要がある。
+- 事実6について：観測された金利上昇をFedの9月決定だけの効果として説明しない。APは複数の要因を挙げている。
+
+【参照Ledger記録(正確な値。変更しない)】
+[VERIFIED] F002: FOMCは2026年9月16日、フェデラルファンド金利の目標レンジを0.25パーセントポイント引き上げ、3.75～4.00％とした。声明は12対0で承認された。
+  scope: 米国のフェデラルファンド金利目標レンジ。住宅ローン金利そのものではない。
+  conditions: Fedの声明に記載された目標レンジの変更。
+  numeric_value: 25ベーシスポイント引き上げ。新レンジは3.75～4.00％。採決は12対0。 (numeric_scope: 政策金利目標レンジとFOMCの採決)
+  date_or_period: 2026-09-16の発表。実施日は2026-09-17。
+  notes_for_writer: 住宅ローン金利が同じ幅だけ上がったという意味ではない。
+
+[VERIFIED] F003: FOMC声明は、経済活動が堅調に拡大し、国内支出が底堅く、生産性の伸びと設備投資が強い一方、雇用増は労働力の伸びに見合い、失業率は大きく変わらず、インフレは高止まりしていると説明した。委員会は利上げがインフレを2％目標へより早く戻す助けになると述べた。
+  scope: FOMCが米国経済と物価について示した評価
+  conditions: 「2％」はFOMCの長期インフレ目標。
+  numeric_value: インフレ目標：2％。 (numeric_scope: FOMCの長期インフレ目標)
+  date_or_period: 2026-09-16の声明
+  causal_strength: CAUSAL_STATED_BY_SOURCE
+  notes_for_writer: 2％への回帰は政策の目標・期待として記載されたものであり、利上げの効果が既に実現したという確認ではない。
+
+[VERIFIED] F007: APは2026年10月8日、30年固定の全米平均金利が7週連続で上昇し、2023年11月16日以来の高水準になったと報じた。30年金利が2月下旬の5.98％から10月8日の7.40％へ上がった場合、40万ドルの住宅ローンを組む借り手では月額費用が概算376ドル増えるとの試算も掲載した。
+  scope: APが示した40万ドル借入の例。金利は全米平均30年固定の比較値であり、全借り手の実際の支払額ではない。
+  conditions: 金利差に基づく概算。借入額・ローン条件・実際の提示金利などにより支払額は異なる。
+  numeric_value: 月額費用の概算増：376ドル。30年固定平均金利：5.98％から7.40％へ上昇。 (numeric_scope: 40万ドルを借りる例に関するAPの試算。7.40％は2026-10-08週の平均。)
+  date_or_period: 金利比較：2026年2月下旬～2026-10-08。報道日：2026-10-08。
+  causal_strength: CAUSAL_STATED_BY_SOURCE
+  notes_for_writer: この比較は2月下旬から10月8日までの金利差による試算で、9月のFed利上げだけに帰属させない。
+
+[VERIFIED] F001: 米国の直近の完了済みFOMC金利決定は2026年9月16日。2026年10月8日時点で、Federal Reserveの政策ページには次回会合が10月27～28日と掲載されている。
+  scope: 米国の金融政策決定
+  conditions: 「直近」は2026年10月8日時点で確認できる完了済み会合を指す。
+  date_or_period: 直近決定：2026-09-16。確認時点：2026-10-08。次回会合予定：2026-10-27～28。
+  notes_for_writer: 政策ページの直近文書一覧と次回会合日程を基にした、米国に対象を限定した最新決定の確認。
+
+[VERIFIED] F010: APは、2026年秋の住宅ローン金利上昇について、インフレ、Fed政策、債券市場投資家の経済見通しが影響要因であり、住宅ローン金利は一般に10年米国債利回りの動きに沿うと報じた。同記事は、直近の上昇に債券市場の変動や原油高によるインフレ懸念も関わったと報じている。
+  scope: 米国の住宅ローン金利市場についてのAP報道
+  conditions: 複数要因の報道であり、特定要因が上昇全体を単独で説明するとはしていない。
+  date_or_period: 2026年2月下旬以降の上昇について。報道日：2026-10-08。
+  causal_strength: CAUSAL_STATED_BY_SOURCE
+  notes_for_writer: 観測された金利上昇をFedの9月決定だけの効果として説明しない。APは複数の要因を挙げている。
+
+【判定対象の中核数値(この順序・この表記のまま判定)】
+- concept=C4 kind=magnitude ledger_ids=['F002'] surfaces=["0.25パーセントポイント", "25ベーシスポイント"]
+- concept=C5 kind=range ledger_ids=['F002'] surfaces=["3.75～4.00％"]
+- concept=C6 kind=magnitude ledger_ids=['F002'] surfaces=["12対0"]
+- concept=C7 kind=magnitude ledger_ids=['F003'] surfaces=["2％"]
+- concept=C8 kind=magnitude ledger_ids=['F007'] surfaces=["30年"]
+- concept=C12 kind=magnitude ledger_ids=['F007'] surfaces=["5.98％"]
+【周辺数値(参考。判定対象外)】
+- 2026年9月16日 (concept=C1, ledger_ids=['F001', 'F002'])
+- 2026年10月8日 (concept=C2, ledger_ids=['F001', 'F007'])
+- 10月27～28日 (concept=C3, ledger_ids=['F001'])
+- 7週 (concept=C9, ledger_ids=['F007'])
+- 2023年11月16日 (concept=C10, ledger_ids=['F007'])
+- 2月 (concept=C11, ledger_ids=['F007'])
+- 10月8日 (concept=C2, ledger_ids=['F007'])
+- 7.40％ (concept=C13, ledger_ids=['F007'])
+- 40万ドル (concept=C14, ledger_ids=['F007'])
+- 376ドル (concept=C15, ledger_ids=['F007'])
+- 2026年 (concept=C16, ledger_ids=['F010'])
+- 10年 (concept=C17, ledger_ids=['F010'])
+- 9月16日 (concept=C18, ledger_ids=['_STORY'])

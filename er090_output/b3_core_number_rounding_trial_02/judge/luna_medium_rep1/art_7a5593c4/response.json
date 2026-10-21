@@ -1,0 +1,110 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C4",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "0.25パーセントポイント",
+            "approx_surface": null
+          },
+          {
+            "surface": "25ベーシスポイント",
+            "approx_surface": null
+          }
+        ],
+        "reason": "FOMCが決定した利上げ幅そのものを示す政策数値で、正確さが意味を持ちます。",
+        "basis_fact_ids": [
+          "F002"
+        ],
+        "approved_condition": "政策決定の数値は厳密値を維持する。"
+      },
+      {
+        "concept": "C5",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "3.75～4.00％",
+            "approx_surface": null
+          }
+        ],
+        "reason": "政策金利の目標レンジそのものなので、丸めると決定内容を変えてしまいます。",
+        "basis_fact_ids": [
+          "F002"
+        ],
+        "approved_condition": "政策金利の具体的な目標値は厳密値を維持する。"
+      },
+      {
+        "concept": "C6",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "12対0",
+            "approx_surface": null
+          }
+        ],
+        "reason": "これはFOMC声明の採決結果という記録であり、正確な票数が必要です。",
+        "basis_fact_ids": [
+          "F002"
+        ],
+        "approved_condition": "記録は厳密値を維持する。"
+      },
+      {
+        "concept": "C7",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2％",
+            "approx_surface": null
+          }
+        ],
+        "reason": "FOMCの長期インフレ目標を示す値であり、丸めると目標の意味が変わります。",
+        "basis_fact_ids": [
+          "F003"
+        ],
+        "approved_condition": "重要な目標値は厳密値を維持する。"
+      },
+      {
+        "concept": "C8",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "30年",
+            "approx_surface": null
+          }
+        ],
+        "reason": "住宅ローン商品の固定期間を示す値で、期間の精度が商品の意味を区別します。",
+        "basis_fact_ids": [
+          "F007"
+        ],
+        "approved_condition": "丸めると意味や重要な区別が変わる値は厳密値を維持する。"
+      },
+      {
+        "concept": "C12",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "5.98％",
+            "approx_surface": "約6％"
+          }
+        ],
+        "reason": "比較の基準となる平均金利は約6％とすれば上昇の規模を理解でき、小数点以下の精度は結論を実質的に変えません。",
+        "basis_fact_ids": [
+          "F007"
+        ],
+        "approved_condition": "精度自体に意味がなく、丸めても比較の方向や重要な規模が変わらない値は概数化できる。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C4\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"0.25パーセントポイント\",\"approx_surface\":null},{\"surface\":\"25ベーシスポイント\",\"approx_surface\":null}],\"reason\":\"FOMCが決定した利上げ幅そのものを示す政策数値で、正確さが意味を持ちます。\",\"basis_fact_ids\":[\"F002\"],\"approved_condition\":\"政策決定の数値は厳密値を維持する。\"},{\"concept\":\"C5\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"3.75～4.00％\",\"approx_surface\":null}],\"reason\":\"政策金利の目標レンジそのものなので、丸めると決定内容を変えてしまいます。\",\"basis_fact_ids\":[\"F002\"],\"approved_condition\":\"政策金利の具体的な目標値は厳密値を維持する。\"},{\"concept\":\"C6\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"12対0\",\"approx_surface\":null}],\"reason\":\"これはFOMC声明の採決結果という記録であり、正確な票数が必要です。\",\"basis_fact_ids\":[\"F002\"],\"approved_condition\":\"記録は厳密値を維持する。\"},{\"concept\":\"C7\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"2％\",\"approx_surface\":null}],\"reason\":\"FOMCの長期インフレ目標を示す値であり、丸めると目標の意味が変わります。\",\"basis_fact_ids\":[\"F003\"],\"approved_condition\":\"重要な目標値は厳密値を維持する。\"},{\"concept\":\"C8\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"30年\",\"approx_surface\":null}],\"reason\":\"住宅ローン商品の固定期間を示す値で、期間の精度が商品の意味を区別します。\",\"basis_fact_ids\":[\"F007\"],\"approved_condition\":\"丸めると意味や重要な区別が変わる値は厳密値を維持する。\"},{\"concept\":\"C12\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"5.98％\",\"approx_surface\":\"約6％\"}],\"reason\":\"比較の基準となる平均金利は約6％とすれば上昇の規模を理解でき、小数点以下の精度は結論を実質的に変えません。\",\"basis_fact_ids\":[\"F007\"],\"approved_condition\":\"精度自体に意味がなく、丸めても比較の方向や重要な規模が変わらない値は概数化できる。\"}] }",
+  "model": "gpt-6-luna",
+  "response_id": "resp_04449d483b39beef006ad93c0da07c87d0b70ddc74f5c95041",
+  "sec": 9.2,
+  "effort": "medium",
+  "usage": {
+    "input_tokens": 5001,
+    "output_tokens": 1034,
+    "reasoning_tokens": 434
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "entries": [
+    {
+      "concept": "C1",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F04"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "11件",
+          "approx": null
+        }
+      ],
+      "reason": "統合した研究数そのものを示す確定した件数であり、概数化する根拠はありません。",
+      "basis_fact_ids": [
+        "F04"
+      ],
+      "approved_condition": "研究数など、記録された事実の正確な件数を維持する。"
+    },
+    {
+      "concept": "C2",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F04"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "最大134,515人",
+          "approx": "最大約13万5千人"
+        },
+        {
+          "surface": "134,515人",
+          "approx": "約13万5千人"
+        }
+      ],
+      "reason": "最大解析標本数の規模を伝える数値であり、1人単位の精度は聞き手の理解に重要ではありません。概数化しても「最大」の限定は保たれます。",
+      "basis_fact_ids": [
+        "F04"
+      ],
+      "approved_condition": "余分な精度が意味や重要な閾値に影響しない場合、聞き取りやすい概数にする。"
+    },
+    {
+      "concept": "C4",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F07"
+      ],
+      "fact_ns": [
+        3
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "3回以上",
+          "approx": null
+        }
+      ],
+      "reason": "適格条件としての最低測定回数を示す閾値です。概数化すると条件の意味が変わるおそれがあります。",
+      "basis_fact_ids": [
+        "F07"
+      ],
+      "approved_condition": "重要な閾値は、丸めで隠したり曖昧にしたりせず維持する。"
+    },
+    {
+      "concept": "C5",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F08"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "0.0630:V7_collides_with_other_number_in_same_fact(['0.0589'])"
+      ],
+      "surfaces": [
+        {
+          "surface": "0.0630",
+          "approx": null
+        }
+      ],
+      "reason": "標準化された関連の大きさを示す値で、0.0630の追加桁は聞き手に必要な解釈を変えません。概数化しても小さな効果という大きさは伝わります。",
+      "basis_fact_ids": [
+        "F08"
+      ],
+      "approved_condition": "余分な小数精度が、重要な比較・閾値・証拠の解釈に実質的な影響を与えない場合は概数化できる。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C1",
+    "C2",
+    "C4",
+    "C5"
+  ],
+  "n_approximate_ok": 1,
+  "article_id": "art_a31992b5",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_0f6d240f4d7c5453006ad93b3e66e487d0b1967b2bc70d3239",
+  "effort": "low",
+  "variant": "luna_low"
+}

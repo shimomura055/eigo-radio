@@ -1,0 +1,143 @@
+【承認済みルール(原文。新しい基準は追加しない)】
+
+■ Spoken-first Number Treatment(承認済み仕様)
+Verified Fact Ledgerは常にexact factを保持する。spoken narrative側は、精度自体に意味がない数字を、丸め(round)・概数化(approximate)・方向化(directionalize)してListening easeを優先してよい。分類は2軸: Importance(`ANCHOR`/`SUPPORTING`/`DISPENSABLE`)、Exactness(`EXACT_REQUIRED`/`APPROXIMATE_OK`/`DIRECTION_ONLY`)。スコア・日付・記録・健康研究の結果・安全閾値など、精度そのものが意味を持つ数字はEXACT_REQUIREDのまま維持する
+
+■ 【追加ルール: 全Pattern共通 - Listener-Friendly Numeric Precision】
+
+This rule applies AFTER each Pattern's own rule above has already decided which
+numeric Facts to keep. First, decide whether a numeric value is worth retaining at
+all, following the Pattern-specific rule above. Then, for values you keep, decide how
+much precision the listener actually needs, following this rule. Do not conflate the
+two decisions.
+
+When a numeric value is worth keeping, preserve only as much precision as the
+listener needs to understand its meaning.
+
+Prefer simpler rounded values when extra decimal precision does not materially
+affect:
+- the direction of the comparison
+- the magnitude that matters to the story
+- an important threshold
+- the interpretation of the evidence
+- the distinction between materially different values
+
+Do not remove decimals mechanically.
+
+Keep decimal precision when rounding would:
+- hide a meaningful difference
+- cross or obscure an important threshold
+- distort a small-scale measurement
+- change the interpretation
+- make two meaningfully different values appear equivalent
+- reduce factual fidelity in a way relevant to the listener
+
+When rounding is appropriate, use listener-friendly expressions such as "about",
+"roughly", "nearly", etc. where suitable.
+
+Most important: Rounding is NOT permission to merge separate facts, metrics,
+groups, time points, survey questions, or experimental outcomes. Each retained
+numeric expression must remain attributable to its original Fact / metric in the
+Fact Ledger. Never combine separate Facts merely because their rounded values
+become numerically similar. Before rounding, verify that each numeric expression
+can still be traced to a single, specific Fact / metric / group / time point /
+survey question. Do not combine numbers from different Facts or different
+metrics (for example, an attention-score value and a processing-speed value)
+into a single shared rounded expression, even if their rounded values happen to
+look similar or identical.
+
+The goal is not to remove decimal places. The goal is to use the least precision
+necessary for accurate spoken understanding.
+
+This is a judgment rule, not a mechanical one. Do NOT apply any fixed rule such as
+"always drop decimals," "always round to a whole number," "always keep one decimal
+place," or "always use two significant figures." Decide based on what each specific
+number means in context.
+
+For general guidance only (not a fixed instruction for this specific article):
+decimal precision is more likely to matter for values such as small percentages
+(for example 1.2% vs 1.8%), small absolute differences (for example 4.8 vs 5.2),
+sub-one units (for example 0.3 seconds), multipliers (for example 1.5 times),
+values near a meaningful threshold, or small differences that are themselves the
+finding. These are illustrative examples of the general principle only, not
+article-specific instructions.
+
+■ 【追加ルール: 全Pattern共通・全CEFRレベル共通 - Numeric Precisionの既定】
+上記Listener-Friendly Numeric Precisionルールを補強する原則であり、置き換えではない。
+
+原則: 聞き取りやすさを優先し、意味を損なわない範囲では概数を基本とする。小数点
+以下を保持するのは、その精度自体が記事の意味・比較・判断に必要な場合に限る。
+通常は次のように概数化することが既定である: 25.2% → about 25%、44.7% → about
+45%、89.6% → about 90%。
+
+小数点以下を保持してよい例: 閾値の前後が論点になっている場合(例えば49.5%と
+50.5%のように、僅差自体が意味を持つ場合)、年次変化・比較差を精密に扱う必要が
+ある場合、小数を落とすと記事の意味・結論が変わってしまう場合。
+
+This default applies equally regardless of CEFR level (A2/B1/B2). There is no
+level-specific numeric precision rule: the same judgment (round by default, keep
+precision only when the precision itself matters) applies to every level's
+spoken layer.
+
+【今回の判定の進め方(出力形式と安全側の指示のみ)】
+- 判定するのは、下の「判定対象の中核数値」の各conceptだけです。conceptの追加・削除・並べ替えはしません。
+- 周辺数値は判定対象ではありません。丸めると値同士が同一視されないか等の確認にだけ使ってください。
+- 各conceptについて decision を EXACT_REQUIRED(厳密値を維持)か APPROXIMATE_OK(聞き取りやすい概数にしてよい)のどちらかで答えます。
+- 判断が不確かな場合は無理に丸めず EXACT_REQUIRED にしてください。
+- APPROXIMATE_OK の場合のみ、surfaces の各surface(判定対象に示された表記そのまま)に対し approx_surface を日本語で書きます。approx_surface は、surface文字列の**数字部分だけ**を、元の数値を通常の四捨五入(有効数字を減らす)で丸めた値に置き換え、「約」「およそ」等のヘッジ語を付けただけの表記にします。surfaceにある限定語(「最大」「以上」「超」「未満」等)と単位・接尾辞はそのまま残し、surfaceにない語句(説明・括弧書き・「前年同月比」等の補足)は一切足しません。surfaceに単位が無ければ単位も足しません。Factの意味(例: 解析ごとに人数が異なる等)はFact本文に残っており、Writerは別途Factを読みます。数字は算用数字と「万」「億」「千」で書いてください。形式の例(別の数字): surface「最大52,300人」→「最大約5万2千人」、surface「7.26」→「約7.3」。EXACT_REQUIRED の場合 approx_surface は null にします。
+- reason は1〜2文、basis_fact_ids は根拠にしたFact ID(Ledgerの記録ID)、approved_condition は上の承認済みルールのどの条件に当たるかを短く書きます。
+
+【Storyline(確定済み)】
+米国が軌道上の「space control weapons」配備を初めて公に認めた発言を起点に、従来の地上発射ASATや通常の衛星任務、広義のcounterspaceと区別し、既存条約が禁じる範囲を誇張せず整理する。
+
+【採用Fact(確定済み。【中核数値】【周辺数値】は決定論の機械印)】
+- 【事実1】2026年9月14日【中核数値】、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。（範囲：米空軍・米宇宙軍。条件：敵対的な相手の行動から統合軍を防護する用途と説明）
+- 【事実2】ロシアは2021年11月15日【中核数値】、地上発射型の直接上昇式ASATミサイルでロシアの衛星COSMOS 1408【周辺数値】を破壊し、1,500個超【中核数値】の追跡可能な軌道デブリを発生させた。（範囲：低軌道、COSMOS 1408【周辺数値】および発生デブリ。条件：米宇宙軍による公式発表）
+- 【事実3】米宇宙軍の2025年【周辺数値】Space Warfighting frameworkは、counterspace operationsを軌道、リンク、地上の各セグメントで行う攻撃・防御行動の総称と定義している。（範囲：軌道、通信リンク、地上セグメント。条件：米宇宙軍の作戦用語・計画枠組み）
+- 【事実4】米宇宙軍は、GPS機能、ミサイル追跡、宇宙領域認識、衛星アーキテクチャのレジリエンスを継続的な任務・優先事項として説明している。これらは衛星を軍事・社会インフラとして運用・保護する活動であり、任務説明だけから攻撃兵器の軌道上配備を意味するとは確認できない。（範囲：GPS、ミサイル追跡、宇宙領域認識、レジリエント衛星アーキテクチャ。条件：米宇宙軍の公式説明に基づく分類）
+- 【事実5】Outer Space Treaty第4条【周辺数値】は、地球周回軌道に核兵器その他の大量破壊兵器を搭載した物体を置くこと、月その他の天体にその兵器を設置すること、宇宙空間にその他の方法で配備することを禁止している。また、天体上での軍事基地、要塞、兵器の試験、軍事演習を禁止している。（範囲：条約締約国、地球周回軌道、宇宙空間、月その他の天体。条件：核兵器・その他の大量破壊兵器、および天体上の軍事活動に関する規定）
+
+【Writerへの注意(確定済み)】
+Writerへの注意(事実ではありません)：
+- 事実1について：『米国が軌道上兵器の配備を公式に認めた』までは使用可能。具体的なシステム名・攻撃能力・標的は推測で補わない。
+- 事実2について：地上から発射したASATミサイルによる破壊試験であり、兵器を軌道上に恒久配備した事例とは区別する。
+- 事実3について：counterspaceは宇宙空間に置かれた兵器だけを意味せず、地上・通信リンク・サイバー・電子戦を含み得る。
+- 事実4について：監視、測位、通信、ミサイル警戒、宇宙状況把握は、長年存在する宇宙安全保障活動として、兵器配備とは分けて整理する。
+- 事実5について：『宇宙兵器を全面禁止する条約』とは書かない。大量破壊兵器の軌道上配備禁止と、天体の平和利用義務を区別する。
+
+【参照Ledger記録(正確な値。変更しない)】
+[VERIFIED] F-001: 2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。([vandenberg.spaceforce.mil](https://www.vandenberg.spaceforce.mil/News/Article-Display/Article/4601219/secaf-announces-on-orbit-space-control-weapons/))
+  scope: 米空軍・米宇宙軍
+  conditions: 敵対的な相手の行動から統合軍を防護する用途と説明
+  date_or_period: 2026年9月14日発言、2026年9月15日公式掲載
+  causal_strength: OBSERVED_REPORTED
+  notes_for_writer: 『米国が軌道上兵器の配備を公式に認めた』までは使用可能。具体的なシステム名・攻撃能力・標的は推測で補わない。
+
+[VERIFIED] F-003: ロシアは2021年11月15日、地上発射型の直接上昇式ASATミサイルでロシアの衛星COSMOS 1408を破壊し、1,500個超の追跡可能な軌道デブリを発生させた。([spacecom.mil](https://www.spacecom.mil/Newsroom/News/Article-Display/Article/2842957/russian-direct-ascent-anti-satellite-missile-test-creates-significant-long-last/?utm_source=openai))
+  scope: 低軌道、COSMOS 1408および発生デブリ
+  conditions: 米宇宙軍による公式発表
+  numeric_value: >1,500個 (numeric_scope: 追跡可能な軌道デブリ)
+  date_or_period: 2021年11月15日
+  causal_strength: CAUSAL_STATED_BY_SOURCE
+  notes_for_writer: 地上から発射したASATミサイルによる破壊試験であり、兵器を軌道上に恒久配備した事例とは区別する。
+
+[VERIFIED] F-011: 米宇宙軍の2025年Space Warfighting frameworkは、counterspace operationsを軌道、リンク、地上の各セグメントで行う攻撃・防御行動の総称と定義している。([spaceforce.mil](https://www.spaceforce.mil/Portals/2/Documents/SAF%202025/Space_Warfighting_A_Framework%20_for_Planners%20_WTE3.pdf))
+  scope: 軌道、通信リンク、地上セグメント
+  conditions: 米宇宙軍の作戦用語・計画枠組み
+  date_or_period: 2025年公表の米宇宙軍framework
+  notes_for_writer: counterspaceは宇宙空間に置かれた兵器だけを意味せず、地上・通信リンク・サイバー・電子戦を含み得る。
+
+[VERIFIED] F-016: Outer Space Treaty第4条は、地球周回軌道に核兵器その他の大量破壊兵器を搭載した物体を置くこと、月その他の天体にその兵器を設置すること、宇宙空間にその他の方法で配備することを禁止している。また、天体上での軍事基地、要塞、兵器の試験、軍事演習を禁止している。([unoosa.org](https://www.unoosa.org/oosa/en/ourwork/spacelaw/treaties/outerspacetreaty.html?stream=science&utm_source=openai))
+  scope: 条約締約国、地球周回軌道、宇宙空間、月その他の天体
+  conditions: 核兵器・その他の大量破壊兵器、および天体上の軍事活動に関する規定
+  date_or_period: 1967年発効の条約規定
+  notes_for_writer: 『宇宙兵器を全面禁止する条約』とは書かない。大量破壊兵器の軌道上配備禁止と、天体の平和利用義務を区別する。
+
+【判定対象の中核数値(この順序・この表記のまま判定)】
+- concept=C1 kind=date_time ledger_ids=['F-001'] surfaces=["2026年9月14日"]
+- concept=C2 kind=date_time ledger_ids=['F-003'] surfaces=["2021年11月15日"]
+- concept=C4 kind=magnitude ledger_ids=['F-003'] surfaces=["1,500個超"]
+【周辺数値(参考。判定対象外)】
+- COSMOS 1408 (concept=C3, ledger_ids=['F-003'])
+- 2025年 (concept=C5, ledger_ids=['F-011'])
+- 第4条 (concept=C6, ledger_ids=['F-016'])

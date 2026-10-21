@@ -1,0 +1,179 @@
+{
+  "entries": [
+    {
+      "concept": "C2",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "COFFEE-001"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "262.18",
+          "approx": "約260"
+        }
+      ],
+      "reason": "月平均価格の細かな小数精度は、相場の水準を伝えるうえで重要ではありません。",
+      "basis_fact_ids": [
+        "COFFEE-001"
+      ],
+      "approved_condition": "追加の小数精度がストーリー上の重要な規模や解釈に影響しない場合は、聞き取りやすい概数にできる。"
+    },
+    {
+      "concept": "C4",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "COFFEE-001"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "8.7%",
+          "approx": "約9%"
+        }
+      ],
+      "reason": "下落の方向と規模は約9%で伝わり、小数点以下の精度が結論を変えるものではありません。",
+      "basis_fact_ids": [
+        "COFFEE-001"
+      ],
+      "approved_condition": "比較の方向や重要な規模に実質的な影響がなければ、より簡単な概数を優先できる。"
+    },
+    {
+      "concept": "C8",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "COFFEE-014"
+      ],
+      "fact_ns": [
+        3
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "約9か月:V3_approx_equals_exact",
+        "約9か月:V3_not_ordinary_rounding(exact=9,approx=9)"
+      ],
+      "surfaces": [
+        {
+          "surface": "約9か月",
+          "approx": null
+        }
+      ],
+      "reason": "これは市場関係者・専門家の推定であり、月単位の見積もりとして既に概数です。",
+      "basis_fact_ids": [
+        "COFFEE-014"
+      ],
+      "approved_condition": "精度自体に意味がない数字は概数化でき、推定値はその性質を保って表現する。"
+    },
+    {
+      "concept": "C9",
+      "kind": "range",
+      "ledger_ids": [
+        "COFFEE-014"
+      ],
+      "fact_ns": [
+        3
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "約2～3か月分:V3_approx_equals_exact",
+        "約2～3か月分:V3_not_ordinary_rounding(exact=2,approx=2)",
+        "約2～3か月:V3_approx_equals_exact",
+        "約2～3か月:V3_not_ordinary_rounding(exact=2,approx=2)"
+      ],
+      "surfaces": [
+        {
+          "surface": "約2～3か月分",
+          "approx": null
+        },
+        {
+          "surface": "約2～3か月",
+          "approx": null
+        }
+      ],
+      "reason": "在庫期間と焙煎・包装期間は別々の項目で、いずれも既に幅を持つ概数です。各表記を個別のFactに対応させたまま、この精度を維持できます。",
+      "basis_fact_ids": [
+        "COFFEE-014"
+      ],
+      "approved_condition": "概数化しても別々の指標や期間を統合せず、それぞれ元のFactに追跡できること。"
+    },
+    {
+      "concept": "C10",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "COFFEE-015"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "6.1%",
+          "approx": "約6%"
+        }
+      ],
+      "reason": "前年同月比の上昇という意味は約6%でも保たれ、小数点以下が閾値や解釈上の区別を左右しません。",
+      "basis_fact_ids": [
+        "COFFEE-015"
+      ],
+      "approved_condition": "小数精度が重要な閾値や解釈に影響しない場合は、聞き取りやすい概数にできる。"
+    },
+    {
+      "concept": "C13",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "COFFEE-018"
+      ],
+      "fact_ns": [
+        5
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "約15%",
+          "approx": null
+        },
+        {
+          "surface": "15%",
+          "approx": null
+        }
+      ],
+      "reason": "飲料価格の値上げ率と豆の購入費の上昇率は別の指標です。双方が15%という比較自体を保つため、さらに丸めて区別を弱めないようにします。",
+      "basis_fact_ids": [
+        "COFFEE-018"
+      ],
+      "approved_condition": "別々の指標を統合せず、意味のある比較や区別が損なわれる丸めは行わない。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C2",
+    "C4",
+    "C8",
+    "C9",
+    "C10",
+    "C13"
+  ],
+  "n_approximate_ok": 3,
+  "article_id": "art_e94a50c1",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_0347355936b54f53006ad93be47b7c87d0b2c2b111db983448",
+  "effort": "low",
+  "variant": "luna_low"
+}

@@ -1,0 +1,138 @@
+{
+  "entries": [
+    {
+      "concept": "C4",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F2"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "295億9,100万ドル",
+          "approx": null
+        }
+      ],
+      "reason": "連結売上高として百万ドル単位で報告された決算数値であり、報告された精度を維持します。",
+      "basis_fact_ids": [
+        "F2"
+      ],
+      "approved_condition": "財務結果の報告値の精度を損なわず、厳密値を維持する。"
+    },
+    {
+      "concept": "C5",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F3"
+      ],
+      "fact_ns": [
+        3
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "167億ドル",
+          "approx": "約170億ドル"
+        }
+      ],
+      "reason": "AI半導体売上高の規模を示す値で、167億ドルから約170億ドルへの丸めは意味のある規模を保ちます。",
+      "basis_fact_ids": [
+        "F3"
+      ],
+      "approved_condition": "追加の精度がストーリー上の重要な規模や解釈に影響しない場合は、聞き取りやすい概数を用いる。"
+    },
+    {
+      "concept": "C6",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F3"
+      ],
+      "fact_ns": [
+        3
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "221％",
+          "approx": "約220％"
+        }
+      ],
+      "reason": "前年同期比の増加率は、221％から約220％に丸めても比較の方向や大きさの理解を実質的に変えません。",
+      "basis_fact_ids": [
+        "F3"
+      ],
+      "approved_condition": "丸めても比較の方向、重要な規模、証拠の解釈に実質的な影響がない場合は概数化する。"
+    },
+    {
+      "concept": "C7",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F3"
+      ],
+      "fact_ns": [
+        3
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "54％",
+          "approx": null
+        }
+      ],
+      "reason": "前四半期比の増加率を50％に丸めると差が無視できず、増加幅の理解を変える可能性があるため、報告値を維持します。",
+      "basis_fact_ids": [
+        "F3"
+      ],
+      "approved_condition": "丸めが重要な規模や解釈を変える可能性がある場合は厳密値を維持する。"
+    },
+    {
+      "concept": "C9",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F4"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "約348億ドル",
+          "approx": "約350億ドル"
+        }
+      ],
+      "reason": "会社見通しであることを示す「約」を保ったまま約350億ドルに丸めても、見通しの規模は変わりません。",
+      "basis_fact_ids": [
+        "F4"
+      ],
+      "approved_condition": "見通しとしての性質を保ち、精度が意味に影響しない範囲で概数化する。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C4",
+    "C5",
+    "C6",
+    "C7",
+    "C9"
+  ],
+  "n_approximate_ok": 3,
+  "article_id": "art_36b2c87d",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_03dbe80009cbab87006ad93b674b0887d097ee29e737de102b",
+  "effort": "medium",
+  "variant": "luna_medium"
+}

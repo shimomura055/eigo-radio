@@ -1,0 +1,183 @@
+{
+  "entries": [
+    {
+      "concept": "C2",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "COFFEE-001"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "262.18",
+          "approx": "約262"
+        }
+      ],
+      "reason": "小数以下の精度は相場の大きさや下落の解釈を左右しないため、概数にできます。",
+      "basis_fact_ids": [
+        "COFFEE-001"
+      ],
+      "approved_condition": "追加の小数精度が物語上重要な大きさの理解に影響しない場合は、聞き取りやすい概数を優先する。"
+    },
+    {
+      "concept": "C4",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "COFFEE-001"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "8.7%",
+          "approx": "約9%"
+        }
+      ],
+      "reason": "月間の下落幅を示す数値であり、8.7%を約9%としても比較の方向や重要な大きさは変わりません。",
+      "basis_fact_ids": [
+        "COFFEE-001"
+      ],
+      "approved_condition": "精度を減らしても比較の方向や物語上重要な大きさが変わらない場合は丸めてよい。"
+    },
+    {
+      "concept": "C8",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "COFFEE-014"
+      ],
+      "fact_ns": [
+        3
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "約9か月:V3_approx_equals_exact",
+        "約9か月:V3_not_ordinary_rounding(exact=9,approx=9)"
+      ],
+      "surfaces": [
+        {
+          "surface": "約9か月",
+          "approx": null
+        }
+      ],
+      "reason": "市場関係者らの見積もりであり、すでに概数として示された期間をそのまま使えます。",
+      "basis_fact_ids": [
+        "COFFEE-014"
+      ],
+      "approved_condition": "精度自体に意味がない数値は概数化してよく、見積もりの精度を不必要に細かくしない。"
+    },
+    {
+      "concept": "C9",
+      "kind": "range",
+      "ledger_ids": [
+        "COFFEE-014"
+      ],
+      "fact_ns": [
+        3
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "約2～3か月分:V3_approx_equals_exact",
+        "約2～3か月分:V3_not_ordinary_rounding(exact=2,approx=2)",
+        "約2～3か月:V3_approx_equals_exact",
+        "約2～3か月:V3_not_ordinary_rounding(exact=2,approx=2)"
+      ],
+      "surfaces": [
+        {
+          "surface": "約2～3か月分",
+          "approx": null
+        },
+        {
+          "surface": "約2～3か月",
+          "approx": null
+        }
+      ],
+      "reason": "どちらも記事内で示された概数の範囲であり、範囲を保てば在庫期間と焙煎・包装期間をそれぞれ区別できます。",
+      "basis_fact_ids": [
+        "COFFEE-014"
+      ],
+      "approved_condition": "概数は許容されるが、別のFactや指標を統合せず、それぞれの数値を元の指標に対応させる。"
+    },
+    {
+      "concept": "C10",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "COFFEE-015"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "6.1%",
+          "approx": "約6%"
+        }
+      ],
+      "reason": "前年比で高いという解釈は約6%としても変わらず、小数第1位の精度はこの説明に必要ありません。",
+      "basis_fact_ids": [
+        "COFFEE-015"
+      ],
+      "approved_condition": "意味・比較・判断に精度が必要でない場合は、聞き取りやすさを優先して概数にする。"
+    },
+    {
+      "concept": "C13",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "COFFEE-018"
+      ],
+      "fact_ns": [
+        5
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "約15%:V3_approx_equals_exact",
+        "約15%:V3_not_ordinary_rounding(exact=15,approx=15)",
+        "15%:V3_not_ordinary_rounding(exact=15,approx=15)"
+      ],
+      "surfaces": [
+        {
+          "surface": "約15%",
+          "approx": null
+        },
+        {
+          "surface": "15%",
+          "approx": null
+        }
+      ],
+      "reason": "一事業者の事例における飲料価格と豆購入費の各数値は、いずれも15%の概数で示せます。二つは別の指標なので、それぞれ別個の表現として保ちます。",
+      "basis_fact_ids": [
+        "COFFEE-018"
+      ],
+      "approved_condition": "精度が意味を損なわない範囲では概数を基本とするが、異なる指標の数値を統合しない。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C2",
+    "C4",
+    "C8",
+    "C9",
+    "C10",
+    "C13"
+  ],
+  "n_approximate_ok": 3,
+  "article_id": "art_e94a50c1",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_017bb1cab8354fd3006ad93bf00e2c87d0b24b52e89ffb36df",
+  "effort": "medium",
+  "variant": "luna_medium"
+}

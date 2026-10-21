@@ -1,0 +1,80 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "11件",
+            "approx_surface": null
+          }
+        ],
+        "reason": "統合した研究の件数そのものを示すため、概数にすると事実の正確さが損なわれます。",
+        "basis_fact_ids": [
+          "F04"
+        ],
+        "approved_condition": "研究数など、正確な件数を示す数値は厳密値を維持する。"
+      },
+      {
+        "concept": "C2",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "最大134,515人",
+            "approx_surface": "最大約13万5千人"
+          },
+          {
+            "surface": "134,515人",
+            "approx_surface": "約13万5千人"
+          }
+        ],
+        "reason": "大規模な解析標本の規模を伝える数値であり、千人単位に丸めても意味や最大値という限定は保たれます。",
+        "basis_fact_ids": [
+          "F04"
+        ],
+        "approved_condition": "精度が意味に影響しない数値は、聞き取りやすさを優先して概数化してよい。"
+      },
+      {
+        "concept": "C4",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "3回以上",
+            "approx_surface": null
+          }
+        ],
+        "reason": "対象研究の適格条件となる最低測定回数を示すため、丸めると基準が変わります。",
+        "basis_fact_ids": [
+          "F07"
+        ],
+        "approved_condition": "重要な閾値は、丸めによって不明瞭にせず厳密値を維持する。"
+      },
+      {
+        "concept": "C5",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "0.0630",
+            "approx_surface": "約0.06"
+          }
+        ],
+        "reason": "効果の小ささを示す係数であり、0.06への丸めでその大きさの理解は損なわれません。これは収入から勤勉性への係数単独の表記で、別方向の係数と統合しません。",
+        "basis_fact_ids": [
+          "F08"
+        ],
+        "approved_condition": "余分な小数精度が解釈に影響しない場合は、意味を損なわない範囲で概数を基本とする。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C1\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"11件\",\"approx_surface\":null}],\"reason\":\"統合した研究の件数そのものを示すため、概数にすると事実の正確さが損なわれます。\",\"basis_fact_ids\":[\"F04\"],\"approved_condition\":\"研究数など、正確な件数を示す数値は厳密値を維持する。\"},{\"concept\":\"C2\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"最大134,515人\",\"approx_surface\":\"最大約13万5千人\"},{\"surface\":\"134,515人\",\"approx_surface\":\"約13万5千人\"}],\"reason\":\"大規模な解析標本の規模を伝える数値であり、千人単位に丸めても意味や最大値という限定は保たれます。\",\"basis_fact_ids\":[\"F04\"],\"approved_condition\":\"精度が意味に影響しない数値は、聞き取りやすさを優先して概数化してよい。\"},{\"concept\":\"C4\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"3回以上\",\"approx_surface\":null}],\"reason\":\"対象研究の適格条件となる最低測定回数を示すため、丸めると基準が変わります。\",\"basis_fact_ids\":[\"F07\"],\"approved_condition\":\"重要な閾値は、丸めによって不明瞭にせず厳密値を維持する。\"},{\"concept\":\"C5\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"0.0630\",\"approx_surface\":\"約0.06\"}],\"reason\":\"効果の小ささを示す係数であり、0.06への丸めでその大きさの理解は損なわれません。これは収入から勤勉性への係数単独の表記で、別方向の係数と統合しません。\",\"basis_fact_ids\":[\"F08\"],\"approved_condition\":\"余分な小数精度が解釈に影響しない場合は、意味を損なわない範囲で概数を基本とする。\"}] }",
+  "model": "gpt-6-luna",
+  "response_id": "resp_0e84dc77d2597936006ad93c02305487d0ac71aca69b2c2aee",
+  "sec": 6.8,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 3869,
+    "output_tokens": 681,
+    "reasoning_tokens": 181
+  }
+}

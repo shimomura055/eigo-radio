@@ -1,0 +1,63 @@
+{
+  "entries": [
+    {
+      "concept": "C1",
+      "kind": "date_time",
+      "ledger_ids": [
+        "MB-01"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "2026年9月8日",
+          "approx": null
+        }
+      ],
+      "reason": "記事の掲載日を示す日付であり、丸めると特定の日付の情報が失われます。",
+      "basis_fact_ids": [
+        "MB-01"
+      ],
+      "approved_condition": "日付は精度自体が意味を持つ数値として厳密値を維持する。"
+    },
+    {
+      "concept": "C3",
+      "kind": "date_time",
+      "ledger_ids": [
+        "MB-06"
+      ],
+      "fact_ns": [
+        3
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "2026年10月",
+          "approx": null
+        }
+      ],
+      "reason": "記事の掲載時期を示す年月であり、月を丸めたり概数化したりすると時期の情報が変わります。",
+      "basis_fact_ids": [
+        "MB-06"
+      ],
+      "approved_condition": "日付・時期は精度自体が意味を持つ数値として厳密値を維持する。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C1",
+    "C3"
+  ],
+  "n_approximate_ok": 0,
+  "article_id": "art_0cc8ca3f",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_0e96fcdb8c63204f006ad93c14818087d08d8b3601f09b39e3",
+  "effort": "low",
+  "variant": "luna_low"
+}

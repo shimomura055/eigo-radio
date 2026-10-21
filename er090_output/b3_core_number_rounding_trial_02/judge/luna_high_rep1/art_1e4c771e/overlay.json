@@ -1,0 +1,140 @@
+{
+  "entries": [
+    {
+      "concept": "C1",
+      "kind": "date_time",
+      "ledger_ids": [
+        "F02"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "2025年2月",
+          "approx": null
+        }
+      ],
+      "reason": "史上最高値を記録した時期を特定する日付であり、記録の事実として維持します。",
+      "basis_fact_ids": [
+        "F02"
+      ],
+      "approved_condition": "記録に関わる日付は厳密値を維持する。"
+    },
+    {
+      "concept": "C3",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F02"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "4.30",
+          "approx": null
+        }
+      ],
+      "reason": "史上最高値として示された先物価格で、「4.30米ドル超」という水準自体が重要です。丸めると記録された価格水準を変えてしまいます。",
+      "basis_fact_ids": [
+        "F02"
+      ],
+      "approved_condition": "記録および重要な水準に関わる精度は維持する。"
+    },
+    {
+      "concept": "C7",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F11"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "9.14",
+          "approx": "約9.1"
+        }
+      ],
+      "reason": "米国の平均小売価格の大きさを伝えるうえで、セント単位の精度は解釈に大きく影響しません。",
+      "basis_fact_ids": [
+        "F11"
+      ],
+      "approved_condition": "意味や比較を損なわない範囲で、聞き取りやすい概数を優先する。"
+    },
+    {
+      "concept": "C10",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F11"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "3%:V3_not_ordinary_rounding(exact=3,approx=3)"
+      ],
+      "surfaces": [
+        {
+          "surface": "3%",
+          "approx": null
+        }
+      ],
+      "reason": "前月からの上昇幅は約3%と示しても、変化の大きさの解釈は変わりません。",
+      "basis_fact_ids": [
+        "F11"
+      ],
+      "approved_condition": "重要な差や解釈を損なわない範囲では、概数化してよい。"
+    },
+    {
+      "concept": "C12",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F11"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "41%",
+          "approx": "約40%"
+        }
+      ],
+      "reason": "前年同月からの大幅な上昇という意味は、約40%としても保たれます。",
+      "basis_fact_ids": [
+        "F11"
+      ],
+      "approved_condition": "意味や比較を損なわない範囲で、聞き取りやすい概数を優先する。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C1",
+    "C3",
+    "C7",
+    "C10",
+    "C12"
+  ],
+  "n_approximate_ok": 2,
+  "article_id": "art_1e4c771e",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_04c4906c7778c963006ad93b5f473487d0bddec1fa569807c8",
+  "effort": "high",
+  "variant": "luna_high"
+}

@@ -204,9 +204,105 @@ def step_coverage():
     print(json.dumps({k: v for k, v in out.items() if k != "category_members"}, ensure_ascii=False, indent=1))
 
 
+# ------------------------------------------------------------------ evaluate (API 0)
+def _judge_rows(overlay_path, aid, runlabel):
+    o = load_json(overlay_path)
+    rows = []
+    for e in o["entries"]:
+        s0 = e["surfaces"][0]["surface"] if e["surfaces"] else None
+        key = (aid, s0)
+        rows.append({"run": runlabel, "article": aid, "concept": e["concept"], "surface": s0, "label": lab.LABELS.get(key),
+                     "llm": e["llm_decision"], "final": e["final_decision"], "downgrade": e["downgrade_reasons"],
+                     "approx": [x.get("approx") for x in e["surfaces"]] if e["final_decision"] == ov.DECISION_APPROX else None,
+                     "llm_approx_raw": None})
+    return o, rows
+
+
+def _stage_cost(log_path, stage):
+    r = ca.compute_stage_cost_breakdown_multi(log_path)["by_stage_jpy"]
+    return r.get(stage)
+
+
+def _score(rows):
+    """label A/E のみ。raw=LLM素の判断、final=V1〜V7後。"""
+    sc = {"n_A": 0, "n_E": 0, "n_B": 0, "raw_correct": 0, "final_correct": 0, "over_round_final": 0, "over_round_raw": 0,
+          "missed_round_final": 0, "boundary_final_approx": 0, "downgrades": 0, "downgrade_wrongly_blocked_A": 0}
+    for r in rows:
+        L = r["label"]
+        if L is None:
+            continue
+        if r["llm"] != r["final"]:
+            sc["downgrades"] += 1
+        if L == "B":
+            sc["n_B"] += 1
+            if r["final"] == ov.DECISION_APPROX:
+                sc["boundary_final_approx"] += 1
+            continue
+        want = ov.DECISION_APPROX if L == "A" else ov.DECISION_EXACT
+        sc["n_" + L] += 1
+        sc["raw_correct"] += int(r["llm"] == want)
+        sc["final_correct"] += int(r["final"] == want)
+        if L == "E":
+            sc["over_round_final"] += int(r["final"] == ov.DECISION_APPROX)
+            sc["over_round_raw"] += int(r["llm"] == ov.DECISION_APPROX)
+        if L == "A":
+            sc["missed_round_final"] += int(r["final"] == ov.DECISION_EXACT)
+            if r["llm"] == ov.DECISION_APPROX and r["final"] == ov.DECISION_EXACT:
+                sc["downgrade_wrongly_blocked_A"] += 1
+    return sc
+
+
+def step_evaluate():
+    out = {"variants": {}, "rows": []}
+    # Sol基準(Trial_01 v2 Prompt: A_rep1(high)/coffee/boredom、semiはv1 Prompt) + sol_high(v2, semi)
+    sol_rows, sol_cost, sol_sec = [], 0.0, 0.0
+    t1log = os.path.join(T1, "judge", "raw_usage_log.jsonl")
+    for tag, aid in (("A_rep1", "art_a31992b5"), ("coffee", "art_1e4c771e"), ("boredom", "art_701612d8")):
+        o, rows = _judge_rows(os.path.join(T1, "judge", tag, "overlay.json"), aid, "sol_t1_" + tag)
+        sol_rows += rows
+        sol_cost += _stage_cost(t1log, "judge_" + tag) or 0
+        sol_sec += load_json(os.path.join(T1, "judge", tag, "response.json"))["sec"]
+    sol_semi_v2 = os.path.join(ROOT, "judge", "sol_high_rep1", "art_36b2c87d", "overlay.json")
+    if os.path.exists(sol_semi_v2):
+        o, rows = _judge_rows(sol_semi_v2, "art_36b2c87d", "sol_v2_semi")
+        sol_rows += rows
+        sol_cost += _stage_cost(os.path.join(ROOT, "judge", "sol_high_rep1", "raw_usage_log.jsonl"), "judge_sol_high_r1_art_36b2c87d") or 0
+        sol_sec += load_json(os.path.join(ROOT, "judge", "sol_high_rep1", "art_36b2c87d", "response.json"))["sec"]
+    out["variants"]["sol_high(Trial_01 v2 Prompt、4記事)"] = {"score": _score(sol_rows), "cost_jpy": round(sol_cost, 3), "sec_sum": round(sol_sec, 1), "n_calls": 4}
+    out["rows"] += sol_rows
+    # Luna各variant(全rep)
+    jd = os.path.join(ROOT, "judge")
+    for name in sorted(os.listdir(jd)):
+        d = os.path.join(jd, name)
+        if not os.path.isdir(d) or not name.startswith("luna_"):
+            continue
+        rows, cost, sec, n, models, usage = [], 0.0, 0.0, 0, set(), {"in": 0, "out": 0, "reasoning": 0}
+        for aid in sorted(os.listdir(d)):
+            op = os.path.join(d, aid, "overlay.json")
+            if not os.path.exists(op):
+                continue
+            o, rr = _judge_rows(op, aid, name)
+            rows += rr
+            r = load_json(os.path.join(d, aid, "response.json"))
+            sec += r["sec"]
+            n += 1
+            models.add(r["model"])
+            u = r.get("usage") or {}
+            usage["in"] += u.get("input_tokens") or 0
+            usage["out"] += u.get("output_tokens") or 0
+            usage["reasoning"] += u.get("reasoning_tokens") or 0
+            cost += _stage_cost(os.path.join(d, "raw_usage_log.jsonl"), "judge_" + name.replace("_rep", "_r") + "_" + aid) or 0
+        out["variants"][name] = {"score": _score(rows), "cost_jpy": round(cost, 3), "sec_sum": round(sec, 1), "n_calls": n,
+                                 "models": sorted(models), "usage": usage}
+        out["rows"] += rows
+    save_json(os.path.join(ROOT, "evidence", "judge_eval.json"), out)
+    for k, v in out["variants"].items():
+        print(k, json.dumps(v, ensure_ascii=False))
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--step", required=True, choices=("build_prompts", "judge", "coverage"))
+    ap.add_argument("--step", required=True, choices=("build_prompts", "judge", "coverage", "evaluate"))
     ap.add_argument("--variant", choices=tuple(VARIANTS))
     ap.add_argument("--articles", default="")
     ap.add_argument("--rep", type=int, default=1)
@@ -214,6 +310,8 @@ def main():
     os.makedirs(ROOT, exist_ok=True)
     if a.step == "build_prompts":
         step_build_prompts()
+    elif a.step == "evaluate":
+        step_evaluate()
     elif a.step == "coverage":
         step_coverage()
     elif a.step == "judge":

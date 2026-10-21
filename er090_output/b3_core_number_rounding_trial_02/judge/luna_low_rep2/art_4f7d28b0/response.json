@@ -1,0 +1,62 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C2",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "12人",
+            "approx_surface": null
+          }
+        ],
+        "reason": "これは空港攻撃による死亡者数として報告された具体的な人数であり、別のFactでも同じ数値が示されています。丸めると報告内容の正確さが失われます。",
+        "basis_fact_ids": [
+          "F04",
+          "F11"
+        ],
+        "approved_condition": "記録・報告された具体的な人数は、精度自体が意味を持つため厳密値を維持する。"
+      },
+      {
+        "concept": "C3",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "309人",
+            "approx_surface": null
+          }
+        ],
+        "reason": "これはGACAの特定時点の続報における負傷者数です。別Factの「300人超」と混同せず、続報の報告値を維持する必要があります。",
+        "basis_fact_ids": [
+          "F04"
+        ],
+        "approved_condition": "特定の報告時点に結びついた具体的な人数は厳密値を維持し、別Factと統合しない。"
+      },
+      {
+        "concept": "C5",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "300人超",
+            "approx_surface": null
+          }
+        ],
+        "reason": "「300人超」は国連特使がサウジ当局の報告として示した人数表現で、下限を示す限定も内容の一部です。丸めて別の数値表現に置き換えると、報告された表現の意味が変わるおそれがあります。",
+        "basis_fact_ids": [
+          "F11"
+        ],
+        "approved_condition": "報告された具体的な人数とその限定表現を維持し、別Factの数値と統合しない。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C2\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"12人\",\"approx_surface\":null}],\"reason\":\"これは空港攻撃による死亡者数として報告された具体的な人数であり、別のFactでも同じ数値が示されています。丸めると報告内容の正確さが失われます。\",\"basis_fact_ids\":[\"F04\",\"F11\"],\"approved_condition\":\"記録・報告された具体的な人数は、精度自体が意味を持つため厳密値を維持する。\"},{\"concept\":\"C3\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"309人\",\"approx_surface\":null}],\"reason\":\"これはGACAの特定時点の続報における負傷者数です。別Factの「300人超」と混同せず、続報の報告値を維持する必要があります。\",\"basis_fact_ids\":[\"F04\"],\"approved_condition\":\"特定の報告時点に結びついた具体的な人数は厳密値を維持し、別Factと統合しない。\"},{\"concept\":\"C5\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"300人超\",\"approx_surface\":null}],\"reason\":\"「300人超」は国連特使がサウジ当局の報告として示した人数表現で、下限を示す限定も内容の一部です。丸めて別の数値表現に置き換えると、報告された表現の意味が変わるおそれがあります。\",\"basis_fact_ids\":[\"F11\"],\"approved_condition\":\"報告された具体的な人数とその限定表現を維持し、別Factの数値と統合しない。\"}] }",
+  "model": "gpt-6-luna",
+  "response_id": "resp_0a0fd1217893f3f9006ad93bfb1e1487d0b2829e67a9e3da72",
+  "sec": 4.5,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 3215,
+    "output_tokens": 492,
+    "reasoning_tokens": 85
+  }
+}

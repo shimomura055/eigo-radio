@@ -1,0 +1,106 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約50万",
+            "approx_surface": "約50万"
+          }
+        ],
+        "reason": "全国の管路総延長の規模を示す値で、万単位の概数で意味を理解できる。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "精度自体が意味を持たず、聞き取りやすさを優先できる場合"
+      },
+      {
+        "concept": "C2",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "数50年",
+            "approx_surface": null
+          }
+        ],
+        "reason": "標準耐用年数を超えた管路の集計条件を定める閾値であり、精度を変えると対象の意味が変わる。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "重要な閾値など、精度そのものが意味を持つ数字は厳密値を維持"
+      },
+      {
+        "concept": "C3",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約4万",
+            "approx_surface": "約4万"
+          }
+        ],
+        "reason": "老朽管路の規模を示す概数で、万単位より細かな精度は記事の理解に必要ない。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "精度自体が意味を持たず、聞き取りやすさを優先できる場合"
+      },
+      {
+        "concept": "C4",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約7%",
+            "approx_surface": "約7%"
+          }
+        ],
+        "reason": "割合はすでに概数で示されており、小数精度を加えても記事の意味や比較は変わらない。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "意味を損なわない範囲で概数を基本とする"
+      },
+      {
+        "concept": "C5",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "10年",
+            "approx_surface": null
+          }
+        ],
+        "reason": "将来推計の時点を定める期間であり、丸めると別の時間軸を示すことになる。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "数値の意味や解釈を変える丸めは行わない"
+      },
+      {
+        "concept": "C6",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約11万",
+            "approx_surface": "約11万"
+          }
+        ],
+        "reason": "将来の老朽管路の規模を示す推計値で、万単位の概数で規模を理解できる。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "精度自体が意味を持たず、聞き取りやすさを優先できる場合"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C1\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約50万\",\"approx_surface\":\"約50万\"}],\"reason\":\"全国の管路総延長の規模を示す値で、万単位の概数で意味を理解できる。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"精度自体が意味を持たず、聞き取りやすさを優先できる場合\"},{\"concept\":\"C2\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"数50年\",\"approx_surface\":null}],\"reason\":\"標準耐用年数を超えた管路の集計条件を定める閾値であり、精度を変えると対象の意味が変わる。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"重要な閾値など、精度そのものが意味を持つ数字は厳密値を維持\"},{\"concept\":\"C3\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約4万\",\"approx_surface\":\"約4万\"}],\"reason\":\"老朽管路の規模を示す概数で、万単位より細かな精度は記事の理解に必要ない。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"精度自体が意味を持たず、聞き取りやすさを優先できる場合\"},{\"concept\":\"C4\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約7%\",\"approx_surface\":\"約7%\"}],\"reason\":\"割合はすでに概数で示されており、小数精度を加えても記事の意味や比較は変わらない。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"意味を損なわない範囲で概数を基本とする\"},{\"concept\":\"C5\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"10年\",\"approx_surface\":null}],\"reason\":\"将来推計の時点を定める期間であり、丸めると別の時間軸を示すことになる。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"数値の意味や解釈を変える丸めは行わない\"},{\"concept\":\"C6\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約11万\",\"approx_surface\":\"約11万\"}],\"reason\":\"将来の老朽管路の規模を示す推計値で、万単位の概数で規模を理解できる。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"精度自体が意味を持たず、聞き取りやすさを優先できる場合\"}] }",
+  "model": "gpt-6-luna",
+  "response_id": "resp_0600376e4ef77490006ad93c35a90087d082b677a2b685830b",
+  "sec": 6.7,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 4122,
+    "output_tokens": 800,
+    "reasoning_tokens": 183
+  }
+}

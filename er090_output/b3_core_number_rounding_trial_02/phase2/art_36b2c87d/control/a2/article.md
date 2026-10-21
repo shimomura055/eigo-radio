@@ -1,0 +1,22 @@
+# AI Sales Theater: First, “It Sold!” Then, “It Looks Like It Will Sell!”
+
+When you hear news about AI, do you think, “How many fewer minutes of overtime will I have to work?” This time, let’s not look at useful ways to use AI. Let’s look behind the scenes at what is being sold. The star is Broadcom. It sells chips and other products that help AI work. With a calculator, let’s open the curtain on its earnings show.
+
+First onstage is the company’s total sales: $29.591 billion. AI chip sales made up $16.7 billion of that. The numbers are so huge that the points card in your wallet suddenly has nothing to say. But today’s main event is more than, “That’s a lot of money.”
+
+The CEO said AI chip sales rose 54% from the previous quarter. This is not just, “We sold some.” It is, “We sold much more than last time.” It feels like getting your report card and finding a big gold star on the back.
+
+The seller also has good reason to feel encouraged. The CEO said demand is still very strong for AI chips made to fit each customer’s needs. Demand is also strong for network products. At this point, you may want to shout, “The whole AI market is doing great!” But let’s put down the microphone for a moment. This is only a statement about the company’s own products.
+
+Now, the second act begins. The company expects total sales to be about $34.8 billion next quarter. So far, we have looked at “what sold”—the real results. From here, we look at “what seems likely to sell”—the estimate. They look alike as they come onstage, but they have different jobs.
+
+That $34.8 billion is not just sales of AI chips. It is the expected total sales for the whole company. Mixing this up would be like thinking all the supporting actors are stars. Before you feel amazed by the number, check its name tag.
+
+Also, this estimate is not a real result yet. The company says real sales could be very different from the estimate. No matter how exciting the preview is, ticket sales for the full show are not decided yet. Time still has to pass between “it looks good” and “we achieved it.”
+
+That is what makes this interesting. Numbers for products already sold carry the weight of real results. But how much the company thinks it will sell next shows the seller’s hopes. Read both. Then an earnings report becomes a report card for the past. It also becomes a window into a meeting about future plans. But keep them in separate seats.
+
+When you look at AI, ask, “What can it do?” Also ask, “Are the things that support it selling?” This is not a way to tell the future. Nod at the real results. Lean in a little when you read the estimate. With that kind of distance, even huge numbers show a very human drama.
+
+## In one line
+Broadcom’s AI chip sales rose 54% from the previous quarter, and it expects about $34.8 billion in total sales next quarter. This is an estimate, not a result; actual sales may differ, so read them separately.

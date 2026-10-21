@@ -1,0 +1,88 @@
+{
+  "entries": [
+    {
+      "concept": "C1",
+      "kind": "date_time",
+      "ledger_ids": [
+        "F-001"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "2026年9月14日",
+          "approx": null
+        }
+      ],
+      "reason": "発言日を特定する日付であり、日付の精度を保つ必要があります。",
+      "basis_fact_ids": [
+        "F-001"
+      ],
+      "approved_condition": "日付・記録など、精度そのものが意味を持つ数値は厳密値を維持する。"
+    },
+    {
+      "concept": "C2",
+      "kind": "date_time",
+      "ledger_ids": [
+        "F-003"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "2021年11月15日",
+          "approx": null
+        }
+      ],
+      "reason": "ASAT試験の実施日を特定する日付であり、日付の精度を保つ必要があります。",
+      "basis_fact_ids": [
+        "F-003"
+      ],
+      "approved_condition": "日付・記録など、精度そのものが意味を持つ数値は厳密値を維持する。"
+    },
+    {
+      "concept": "C4",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F-003"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "1,500個超",
+          "approx": null
+        }
+      ],
+      "reason": "追跡可能なデブリが1,500個を超えたという境界が情報の一部です。概数化すると「超」の意味や記録された値の忠実性を損なうおそれがあります。",
+      "basis_fact_ids": [
+        "F-003"
+      ],
+      "approved_condition": "丸めで重要な閾値を隠したり、証拠の解釈を変えたりする場合は精度を維持する。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C1",
+    "C2",
+    "C4"
+  ],
+  "n_approximate_ok": 0,
+  "article_id": "art_f172a253",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_04c6d37472aa7c18006ad93c13cee087d0a352c8cfb366f3b8",
+  "effort": "low",
+  "variant": "luna_low"
+}

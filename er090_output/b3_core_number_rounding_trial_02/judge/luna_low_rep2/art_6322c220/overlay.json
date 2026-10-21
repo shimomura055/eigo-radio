@@ -1,0 +1,175 @@
+{
+  "entries": [
+    {
+      "concept": "C1",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F-001"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "約50万:V3_approx_equals_exact",
+        "約50万:V3_not_ordinary_rounding(exact=500000,approx=500000)"
+      ],
+      "surfaces": [
+        {
+          "surface": "約50万",
+          "approx": null
+        }
+      ],
+      "reason": "全国の管路総延長の規模を示す値で、万単位の概数で意味を理解できる。",
+      "basis_fact_ids": [
+        "F-001"
+      ],
+      "approved_condition": "精度自体が意味を持たず、聞き取りやすさを優先できる場合"
+    },
+    {
+      "concept": "C2",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F-001"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "数50年",
+          "approx": null
+        }
+      ],
+      "reason": "標準耐用年数を超えた管路の集計条件を定める閾値であり、精度を変えると対象の意味が変わる。",
+      "basis_fact_ids": [
+        "F-001"
+      ],
+      "approved_condition": "重要な閾値など、精度そのものが意味を持つ数字は厳密値を維持"
+    },
+    {
+      "concept": "C3",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F-001"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "約4万:V3_approx_equals_exact",
+        "約4万:V3_not_ordinary_rounding(exact=40000,approx=40000)"
+      ],
+      "surfaces": [
+        {
+          "surface": "約4万",
+          "approx": null
+        }
+      ],
+      "reason": "老朽管路の規模を示す概数で、万単位より細かな精度は記事の理解に必要ない。",
+      "basis_fact_ids": [
+        "F-001"
+      ],
+      "approved_condition": "精度自体が意味を持たず、聞き取りやすさを優先できる場合"
+    },
+    {
+      "concept": "C4",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F-001"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "約7%:V3_approx_equals_exact",
+        "約7%:V3_not_ordinary_rounding(exact=7,approx=7)"
+      ],
+      "surfaces": [
+        {
+          "surface": "約7%",
+          "approx": null
+        }
+      ],
+      "reason": "割合はすでに概数で示されており、小数精度を加えても記事の意味や比較は変わらない。",
+      "basis_fact_ids": [
+        "F-001"
+      ],
+      "approved_condition": "意味を損なわない範囲で概数を基本とする"
+    },
+    {
+      "concept": "C5",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F-001"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "10年",
+          "approx": null
+        }
+      ],
+      "reason": "将来推計の時点を定める期間であり、丸めると別の時間軸を示すことになる。",
+      "basis_fact_ids": [
+        "F-001"
+      ],
+      "approved_condition": "数値の意味や解釈を変える丸めは行わない"
+    },
+    {
+      "concept": "C6",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F-001"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "約11万:V3_approx_equals_exact",
+        "約11万:V3_not_ordinary_rounding(exact=110000,approx=110000)"
+      ],
+      "surfaces": [
+        {
+          "surface": "約11万",
+          "approx": null
+        }
+      ],
+      "reason": "将来の老朽管路の規模を示す推計値で、万単位の概数で規模を理解できる。",
+      "basis_fact_ids": [
+        "F-001"
+      ],
+      "approved_condition": "精度自体が意味を持たず、聞き取りやすさを優先できる場合"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C1",
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "C6"
+  ],
+  "n_approximate_ok": 0,
+  "article_id": "art_6322c220",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_0600376e4ef77490006ad93c35a90087d082b677a2b685830b",
+  "effort": "low",
+  "variant": "luna_low"
+}

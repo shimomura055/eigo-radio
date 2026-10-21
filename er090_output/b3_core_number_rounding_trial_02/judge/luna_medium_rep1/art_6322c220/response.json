@@ -1,0 +1,106 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約50万",
+            "approx_surface": "約50万"
+          }
+        ],
+        "reason": "全国の管路総延長の規模を示す値で、これ以上の精度は意味の理解に必要ありません。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "追加の精度が重要な規模や解釈に影響しない場合は、聞き取りやすい概数を優先する。"
+      },
+      {
+        "concept": "C2",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "数50年",
+            "approx_surface": null
+          }
+        ],
+        "reason": "標準耐用年数は老朽管路の集計条件となる基準値です。丸めると基準の意味が変わるおそれがあります。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "重要な基準値は厳密値を維持する。"
+      },
+      {
+        "concept": "C3",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約4万",
+            "approx_surface": "約4万"
+          }
+        ],
+        "reason": "老朽管路の規模を示す概数であり、この精度を超える細かさは記事の意味に必要ありません。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "精度自体に意味がない規模の数値は、意味を損なわない範囲で概数にできる。"
+      },
+      {
+        "concept": "C4",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約7%",
+            "approx_surface": "約7%"
+          }
+        ],
+        "reason": "割合はすでに概数として示されており、小数精度を加えても聞き手に必要な意味は変わりません。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "重要な閾値や僅差が論点でない場合、意味を損なわない範囲で概数を優先する。"
+      },
+      {
+        "concept": "C5",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "10年",
+            "approx_surface": null
+          }
+        ],
+        "reason": "将来推計の時点を定める期間であり、20年後との区別にも関わるため維持します。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "比較や解釈に必要な時点・期間の区別は維持する。"
+      },
+      {
+        "concept": "C6",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約11万",
+            "approx_surface": "約11万"
+          }
+        ],
+        "reason": "将来推計の管路延長の規模を示す概数であり、より細かな精度は聞き手の理解に必要ありません。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "推計値の精度が重要な閾値や解釈に影響しない場合は、聞き取りやすい概数にできる。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C1\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約50万\",\"approx_surface\":\"約50万\"}],\"reason\":\"全国の管路総延長の規模を示す値で、これ以上の精度は意味の理解に必要ありません。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"追加の精度が重要な規模や解釈に影響しない場合は、聞き取りやすい概数を優先する。\"},{\"concept\":\"C2\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"数50年\",\"approx_surface\":null}],\"reason\":\"標準耐用年数は老朽管路の集計条件となる基準値です。丸めると基準の意味が変わるおそれがあります。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"重要な基準値は厳密値を維持する。\"},{\"concept\":\"C3\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約4万\",\"approx_surface\":\"約4万\"}],\"reason\":\"老朽管路の規模を示す概数であり、この精度を超える細かさは記事の意味に必要ありません。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"精度自体に意味がない規模の数値は、意味を損なわない範囲で概数にできる。\"},{\"concept\":\"C4\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約7%\",\"approx_surface\":\"約7%\"}],\"reason\":\"割合はすでに概数として示されており、小数精度を加えても聞き手に必要な意味は変わりません。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"重要な閾値や僅差が論点でない場合、意味を損なわない範囲で概数を優先する。\"},{\"concept\":\"C5\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"10年\",\"approx_surface\":null}],\"reason\":\"将来推計の時点を定める期間であり、20年後との区別にも関わるため維持します。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"比較や解釈に必要な時点・期間の区別は維持する。\"},{\"concept\":\"C6\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約11万\",\"approx_surface\":\"約11万\"}],\"reason\":\"将来推計の管路延長の規模を示す概数であり、より細かな精度は聞き手の理解に必要ありません。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"推計値の精度が重要な閾値や解釈に影響しない場合は、聞き取りやすい概数にできる。\"}] }",
+  "model": "gpt-6-luna",
+  "response_id": "resp_0ca5490c9ead7cf0006ad93c29b3f887d08c686f2cc6e12cbe",
+  "sec": 15.3,
+  "effort": "medium",
+  "usage": {
+    "input_tokens": 4122,
+    "output_tokens": 1393,
+    "reasoning_tokens": 729
+  }
+}

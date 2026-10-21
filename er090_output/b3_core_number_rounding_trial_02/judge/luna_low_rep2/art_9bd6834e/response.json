@@ -1,0 +1,107 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C2",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "20％",
+            "approx_surface": null
+          }
+        ],
+        "reason": "償還率そのものが提案の内容を示すため、率の精度を維持します。",
+        "basis_fact_ids": [
+          "HF-002",
+          "HF-007"
+        ],
+        "approved_condition": "提案された具体的な率であり、数値の精度自体が意味を持つ場合。"
+      },
+      {
+        "concept": "C4",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "7.29ドル",
+            "approx_surface": "約7.3ドル"
+          }
+        ],
+        "reason": "上昇額の大きさを伝えるには小数第2位までの精度は不要で、丸めても意味は変わりません。",
+        "basis_fact_ids": [
+          "HF-006"
+        ],
+        "approved_condition": "余分な小数精度が、重要な差や解釈に影響しない場合。"
+      },
+      {
+        "concept": "C5",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "9.59％",
+            "approx_surface": "約10％"
+          }
+        ],
+        "reason": "上昇率の規模を示す数字であり、約10％としても市場の動きの解釈は変わりません。",
+        "basis_fact_ids": [
+          "HF-006"
+        ],
+        "approved_condition": "意味を損なわない範囲では概数を基本とする場合。"
+      },
+      {
+        "concept": "C7",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "83.30ドル",
+            "approx_surface": "約83ドル"
+          }
+        ],
+        "reason": "清算価格の大まかな水準を伝える用途では、小数以下を丸めても重要な解釈は変わりません。",
+        "basis_fact_ids": [
+          "HF-006"
+        ],
+        "approved_condition": "余分な小数精度が、重要な差や解釈に影響しない場合。"
+      },
+      {
+        "concept": "C10",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約2.6％",
+            "approx_surface": "約3％"
+          }
+        ],
+        "reason": "記事掲載時点の上昇率は概数で示されており、約3％としてもその規模を理解できます。",
+        "basis_fact_ids": [
+          "HF-009"
+        ],
+        "approved_condition": "意味を損なわない範囲では概数を基本とする場合。"
+      },
+      {
+        "concept": "C11",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "85ドル",
+            "approx_surface": null
+          }
+        ],
+        "reason": "85ドル超という記述は価格水準の境界を示しており、丸めるとその閾値が曖昧になるおそれがあります。",
+        "basis_fact_ids": [
+          "HF-009"
+        ],
+        "approved_condition": "重要な閾値を隠したり曖昧にしたりする丸めはしない場合。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C2\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"20％\",\"approx_surface\":null}],\"reason\":\"償還率そのものが提案の内容を示すため、率の精度を維持します。\",\"basis_fact_ids\":[\"HF-002\",\"HF-007\"],\"approved_condition\":\"提案された具体的な率であり、数値の精度自体が意味を持つ場合。\"},{\"concept\":\"C4\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"7.29ドル\",\"approx_surface\":\"約7.3ドル\"}],\"reason\":\"上昇額の大きさを伝えるには小数第2位までの精度は不要で、丸めても意味は変わりません。\",\"basis_fact_ids\":[\"HF-006\"],\"approved_condition\":\"余分な小数精度が、重要な差や解釈に影響しない場合。\"},{\"concept\":\"C5\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"9.59％\",\"approx_surface\":\"約10％\"}],\"reason\":\"上昇率の規模を示す数字であり、約10％としても市場の動きの解釈は変わりません。\",\"basis_fact_ids\":[\"HF-006\"],\"approved_condition\":\"意味を損なわない範囲では概数を基本とする場合。\"},{\"concept\":\"C7\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"83.30ドル\",\"approx_surface\":\"約83ドル\"}],\"reason\":\"清算価格の大まかな水準を伝える用途では、小数以下を丸めても重要な解釈は変わりません。\",\"basis_fact_ids\":[\"HF-006\"],\"approved_condition\":\"余分な小数精度が、重要な差や解釈に影響しない場合。\"},{\"concept\":\"C10\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約2.6％\",\"approx_surface\":\"約3％\"}],\"reason\":\"記事掲載時点の上昇率は概数で示されており、約3％としてもその規模を理解できます。\",\"basis_fact_ids\":[\"HF-009\"],\"approved_condition\":\"意味を損なわない範囲では概数を基本とする場合。\"},{\"concept\":\"C11\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"85ドル\",\"approx_surface\":null}],\"reason\":\"85ドル超という記述は価格水準の境界を示しており、丸めるとその閾値が曖昧になるおそれがあります。\",\"basis_fact_ids\":[\"HF-009\"],\"approved_condition\":\"重要な閾値を隠したり曖昧にしたりする丸めはしない場合。\"}]}",
+  "model": "gpt-6-luna",
+  "response_id": "resp_072ae82e05501c92006ad93bedc4f887d088dc5d8c141e0302",
+  "sec": 9.6,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 4308,
+    "output_tokens": 1034,
+    "reasoning_tokens": 405
+  }
+}

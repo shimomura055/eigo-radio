@@ -1,0 +1,62 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "14",
+            "approx_surface": null
+          }
+        ],
+        "reason": "原告として訴状に記載された法人・事業体の正確な数が意味を持ち、概数化すると事実の内容が変わるためです。",
+        "basis_fact_ids": [
+          "F2"
+        ],
+        "approved_condition": "記載された当事者数そのものが重要な数値であり、精度を維持する。"
+      },
+      {
+        "concept": "C2",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2億5,000万ドル",
+            "approx_surface": null
+          }
+        ],
+        "reason": "訴状に記載された損害賠償請求の金額であり、「超える」という条件を含む金額の基準を概数化すると請求内容を変えるおそれがあります。",
+        "basis_fact_ids": [
+          "F6"
+        ],
+        "approved_condition": "請求額の基準となる数値であり、重要な閾値を曖昧にしない。"
+      },
+      {
+        "concept": "C3",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2026-10-08",
+            "approx_surface": null
+          }
+        ],
+        "reason": "提訴日およびReuters報道時点を示す具体的な日付です。日付は概数化せず正確に維持します。",
+        "basis_fact_ids": [
+          "F7",
+          "F8"
+        ],
+        "approved_condition": "具体的な日付は精度自体が意味を持つ数値として維持する。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C1\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"14\",\"approx_surface\":null}],\"reason\":\"原告として訴状に記載された法人・事業体の正確な数が意味を持ち、概数化すると事実の内容が変わるためです。\",\"basis_fact_ids\":[\"F2\"],\"approved_condition\":\"記載された当事者数そのものが重要な数値であり、精度を維持する。\"},{\"concept\":\"C2\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"2億5,000万ドル\",\"approx_surface\":null}],\"reason\":\"訴状に記載された損害賠償請求の金額であり、「超える」という条件を含む金額の基準を概数化すると請求内容を変えるおそれがあります。\",\"basis_fact_ids\":[\"F6\"],\"approved_condition\":\"請求額の基準となる数値であり、重要な閾値を曖昧にしない。\"},{\"concept\":\"C3\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"2026-10-08\",\"approx_surface\":null}],\"reason\":\"提訴日およびReuters報道時点を示す具体的な日付です。日付は概数化せず正確に維持します。\",\"basis_fact_ids\":[\"F7\",\"F8\"],\"approved_condition\":\"具体的な日付は精度自体が意味を持つ数値として維持する。\"}]}",
+  "model": "gpt-6-luna",
+  "response_id": "resp_07fe5df0b8891e63006ad93c17068487d0af34b06e621d345e",
+  "sec": 5.1,
+  "effort": "medium",
+  "usage": {
+    "input_tokens": 4256,
+    "output_tokens": 448,
+    "reasoning_tokens": 94
+  }
+}

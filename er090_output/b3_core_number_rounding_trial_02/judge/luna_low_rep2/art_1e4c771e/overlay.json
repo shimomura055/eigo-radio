@@ -1,0 +1,138 @@
+{
+  "entries": [
+    {
+      "concept": "C1",
+      "kind": "date_time",
+      "ledger_ids": [
+        "F02"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "2025年2月",
+          "approx": null
+        }
+      ],
+      "reason": "記録的高値がいつ起きたかを示す日付であり、時期の精度を維持する。",
+      "basis_fact_ids": [
+        "F02"
+      ],
+      "approved_condition": "日付・記録など精度自体が意味を持つ数値は厳密値を維持する。"
+    },
+    {
+      "concept": "C3",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F02"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "4.30",
+          "approx": null
+        }
+      ],
+      "reason": "史上最高値の記録を示す先物価格の閾値であり、丸めると記録の意味を変えるおそれがある。",
+      "basis_fact_ids": [
+        "F02"
+      ],
+      "approved_condition": "記録や重要な閾値など、精度自体が意味を持つ数値は厳密値を維持する。"
+    },
+    {
+      "concept": "C7",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F11"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "9.14",
+          "approx": "約9.1"
+        }
+      ],
+      "reason": "平均価格の大きさを伝える数値であり、小数第2位までの精度は聞き手の理解に大きく影響しない。",
+      "basis_fact_ids": [
+        "F11"
+      ],
+      "approved_condition": "余分な小数精度が意味や比較を実質的に変えない場合は、聞き取りやすい概数を優先する。"
+    },
+    {
+      "concept": "C10",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F11"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "3%",
+          "approx": null
+        }
+      ],
+      "reason": "前月比の上昇率として報じられた変化そのものが根拠となる数値であり、概数化せず維持する。",
+      "basis_fact_ids": [
+        "F11"
+      ],
+      "approved_condition": "研究結果や比較の解釈に関わる数値は、精度が意味を持つ場合に厳密値を維持する。"
+    },
+    {
+      "concept": "C12",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F11"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "41%",
+          "approx": null
+        }
+      ],
+      "reason": "前年同月比の上昇率として報じられた変化そのものが根拠となる数値であり、概数化せず維持する。",
+      "basis_fact_ids": [
+        "F11"
+      ],
+      "approved_condition": "比較の解釈に関わる数値は、精度が意味を持つ場合に厳密値を維持する。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C1",
+    "C3",
+    "C7",
+    "C10",
+    "C12"
+  ],
+  "n_approximate_ok": 1,
+  "article_id": "art_1e4c771e",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_08ded17c4de99a90006ad93bdcbd8887d093ad3b1654e7c5e8",
+  "effort": "low",
+  "variant": "luna_low"
+}

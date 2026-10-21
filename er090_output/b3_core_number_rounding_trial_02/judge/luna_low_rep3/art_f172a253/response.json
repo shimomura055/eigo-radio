@@ -1,0 +1,61 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2026年9月14日",
+            "approx_surface": null
+          }
+        ],
+        "reason": "発言日を特定する日付であり、日付の精度を保つ必要があります。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "日付・記録など、精度そのものが意味を持つ数値は厳密値を維持する。"
+      },
+      {
+        "concept": "C2",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2021年11月15日",
+            "approx_surface": null
+          }
+        ],
+        "reason": "ASAT試験の実施日を特定する日付であり、日付の精度を保つ必要があります。",
+        "basis_fact_ids": [
+          "F-003"
+        ],
+        "approved_condition": "日付・記録など、精度そのものが意味を持つ数値は厳密値を維持する。"
+      },
+      {
+        "concept": "C4",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "1,500個超",
+            "approx_surface": null
+          }
+        ],
+        "reason": "追跡可能なデブリが1,500個を超えたという境界が情報の一部です。概数化すると「超」の意味や記録された値の忠実性を損なうおそれがあります。",
+        "basis_fact_ids": [
+          "F-003"
+        ],
+        "approved_condition": "丸めで重要な閾値を隠したり、証拠の解釈を変えたりする場合は精度を維持する。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C1\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"2026年9月14日\",\"approx_surface\":null}],\"reason\":\"発言日を特定する日付であり、日付の精度を保つ必要があります。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"日付・記録など、精度そのものが意味を持つ数値は厳密値を維持する。\"},{\"concept\":\"C2\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"2021年11月15日\",\"approx_surface\":null}],\"reason\":\"ASAT試験の実施日を特定する日付であり、日付の精度を保つ必要があります。\",\"basis_fact_ids\":[\"F-003\"],\"approved_condition\":\"日付・記録など、精度そのものが意味を持つ数値は厳密値を維持する。\"},{\"concept\":\"C4\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"1,500個超\",\"approx_surface\":null}],\"reason\":\"追跡可能なデブリが1,500個を超えたという境界が情報の一部です。概数化すると「超」の意味や記録された値の忠実性を損なうおそれがあります。\",\"basis_fact_ids\":[\"F-003\"],\"approved_condition\":\"丸めで重要な閾値を隠したり、証拠の解釈を変えたりする場合は精度を維持する。\"}]}",
+  "model": "gpt-6-luna",
+  "response_id": "resp_04c6d37472aa7c18006ad93c13cee087d0a352c8cfb366f3b8",
+  "sec": 4.0,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 4144,
+    "output_tokens": 436,
+    "reasoning_tokens": 82
+  }
+}

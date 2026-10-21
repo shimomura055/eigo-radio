@@ -1,0 +1,107 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C2",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "20％",
+            "approx_surface": null
+          }
+        ],
+        "reason": "償還率そのものが提案の内容を示すため、数値の精度を維持します。",
+        "basis_fact_ids": [
+          "HF-002",
+          "HF-007"
+        ],
+        "approved_condition": "料率など、精度自体が意味を持つ数字は厳密値を維持する。"
+      },
+      {
+        "concept": "C4",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "7.29ドル",
+            "approx_surface": "約7ドル"
+          }
+        ],
+        "reason": "上昇幅の大きさを伝える値であり、ドル単位に丸めても記事の意味や比較を損ないません。",
+        "basis_fact_ids": [
+          "HF-006"
+        ],
+        "approved_condition": "余分な小数精度が重要な差や解釈に影響しない場合、聞き取りやすい概数を優先する。"
+      },
+      {
+        "concept": "C5",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "9.59％",
+            "approx_surface": "約10％"
+          }
+        ],
+        "reason": "上昇率の規模を伝える値で、小数点以下を丸めても上昇の大きさの理解は変わりません。",
+        "basis_fact_ids": [
+          "HF-006"
+        ],
+        "approved_condition": "精度自体が意味を持たず、丸めても重要な差や解釈を損なわない場合は概数化する。"
+      },
+      {
+        "concept": "C7",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "83.30ドル",
+            "approx_surface": "約83ドル"
+          }
+        ],
+        "reason": "清算価格の水準を示す値で、ドル単位に丸めても後の85ドル超という水準との違いは保たれます。",
+        "basis_fact_ids": [
+          "HF-006"
+        ],
+        "approved_condition": "余分な小数精度が比較や解釈に materially 影響しない場合、必要な精度だけを残す。"
+      },
+      {
+        "concept": "C10",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約2.6％",
+            "approx_surface": "約3％"
+          }
+        ],
+        "reason": "記事掲載時点の上昇率の規模を伝える値で、約3％としても値動きの解釈を変えません。",
+        "basis_fact_ids": [
+          "HF-009"
+        ],
+        "approved_condition": "意味を損なわない範囲で概数を基本とし、余分な小数精度を省く。"
+      },
+      {
+        "concept": "C11",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "85ドル",
+            "approx_surface": null
+          }
+        ],
+        "reason": "「85ドルを上回る」という価格水準が比較上の基準となっているため、値を丸めたり置き換えたりしません。",
+        "basis_fact_ids": [
+          "HF-009"
+        ],
+        "approved_condition": "重要な比較や解釈に関わる水準は、丸めで曖昧にしない。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C2\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"20％\",\"approx_surface\":null}],\"reason\":\"償還率そのものが提案の内容を示すため、数値の精度を維持します。\",\"basis_fact_ids\":[\"HF-002\",\"HF-007\"],\"approved_condition\":\"料率など、精度自体が意味を持つ数字は厳密値を維持する。\"},{\"concept\":\"C4\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"7.29ドル\",\"approx_surface\":\"約7ドル\"}],\"reason\":\"上昇幅の大きさを伝える値であり、ドル単位に丸めても記事の意味や比較を損ないません。\",\"basis_fact_ids\":[\"HF-006\"],\"approved_condition\":\"余分な小数精度が重要な差や解釈に影響しない場合、聞き取りやすい概数を優先する。\"},{\"concept\":\"C5\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"9.59％\",\"approx_surface\":\"約10％\"}],\"reason\":\"上昇率の規模を伝える値で、小数点以下を丸めても上昇の大きさの理解は変わりません。\",\"basis_fact_ids\":[\"HF-006\"],\"approved_condition\":\"精度自体が意味を持たず、丸めても重要な差や解釈を損なわない場合は概数化する。\"},{\"concept\":\"C7\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"83.30ドル\",\"approx_surface\":\"約83ドル\"}],\"reason\":\"清算価格の水準を示す値で、ドル単位に丸めても後の85ドル超という水準との違いは保たれます。\",\"basis_fact_ids\":[\"HF-006\"],\"approved_condition\":\"余分な小数精度が比較や解釈に materially 影響しない場合、必要な精度だけを残す。\"},{\"concept\":\"C10\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約2.6％\",\"approx_surface\":\"約3％\"}],\"reason\":\"記事掲載時点の上昇率の規模を伝える値で、約3％としても値動きの解釈を変えません。\",\"basis_fact_ids\":[\"HF-009\"],\"approved_condition\":\"意味を損なわない範囲で概数を基本とし、余分な小数精度を省く。\"},{\"concept\":\"C11\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"85ドル\",\"approx_surface\":null}],\"reason\":\"「85ドルを上回る」という価格水準が比較上の基準となっているため、値を丸めたり置き換えたりしません。\",\"basis_fact_ids\":[\"HF-009\"],\"approved_condition\":\"重要な比較や解釈に関わる水準は、丸めで曖昧にしない。\"}] }",
+  "model": "gpt-6-luna",
+  "response_id": "resp_0196d77091d55d32006ad93be0b5c887d0b3d116829274ea14",
+  "sec": 8.7,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 4308,
+    "output_tokens": 1034,
+    "reasoning_tokens": 353
+  }
+}

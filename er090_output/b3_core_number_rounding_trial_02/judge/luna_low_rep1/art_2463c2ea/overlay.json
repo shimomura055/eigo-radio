@@ -1,0 +1,91 @@
+{
+  "entries": [
+    {
+      "concept": "C1",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F2"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "14",
+          "approx": null
+        }
+      ],
+      "reason": "訴状に記載された法人・事業体の正確な数であり、出版物数との区別にも関わります。",
+      "basis_fact_ids": [
+        "F2"
+      ],
+      "approved_condition": "事実関係を正確に伝える必要がある数は厳密値を維持する。"
+    },
+    {
+      "concept": "C2",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F6"
+      ],
+      "fact_ns": [
+        3
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "2億5,000万ドル",
+          "approx": null
+        }
+      ],
+      "reason": "原告側の損害賠償請求額がこの金額を超えるという境界が重要です。概数化すると請求額の境界や「超える」という意味を曖昧にするおそれがあります。",
+      "basis_fact_ids": [
+        "F6"
+      ],
+      "approved_condition": "重要な閾値や証拠の解釈に関わる精度は維持する。"
+    },
+    {
+      "concept": "C3",
+      "kind": "date_time",
+      "ledger_ids": [
+        "F7",
+        "F8"
+      ],
+      "fact_ns": [
+        4,
+        5
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "2026-10-08",
+          "approx": null
+        }
+      ],
+      "reason": "提訴日およびReuters報道時点を示す具体的な日付であり、概数化できません。",
+      "basis_fact_ids": [
+        "F7",
+        "F8"
+      ],
+      "approved_condition": "日付など、精度自体に意味がある数字は厳密値を維持する。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C1",
+    "C2",
+    "C3"
+  ],
+  "n_approximate_ok": 0,
+  "article_id": "art_2463c2ea",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_0bfc5ca28316232c006ad93c06061c87d0a2a55314332fd0eb",
+  "effort": "low",
+  "variant": "luna_low"
+}

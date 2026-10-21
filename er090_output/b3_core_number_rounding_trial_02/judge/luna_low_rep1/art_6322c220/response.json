@@ -1,0 +1,106 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約50万",
+            "approx_surface": "約50万"
+          }
+        ],
+        "reason": "全国の管路総延長の規模を示す値で、より細かな精度は話の理解に必要ありません。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "余分な精度が話の規模感を変えない場合は、聞き取りやすい概数を優先する。"
+      },
+      {
+        "concept": "C2",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "数50年",
+            "approx_surface": null
+          }
+        ],
+        "reason": "標準耐用年数は老朽管路の集計条件となる基準値であり、丸めると基準の意味が変わります。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "重要な閾値・判断基準として意味を持つ数値は厳密値を維持する。"
+      },
+      {
+        "concept": "C3",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約4万",
+            "approx_surface": "約4万"
+          }
+        ],
+        "reason": "老朽管路の規模を示す概数であり、さらに細かな精度は記事の意味に影響しません。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "余分な精度が話の規模感や解釈を変えない場合は概数化してよい。"
+      },
+      {
+        "concept": "C4",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約7%",
+            "approx_surface": "約7%"
+          }
+        ],
+        "reason": "値はすでに概数で示されており、割合の細かな精度が記事の結論を左右する状況ではありません。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "意味を損なわない範囲で、聞き取りやすい概数を用いてよい。"
+      },
+      {
+        "concept": "C5",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "10年",
+            "approx_surface": null
+          }
+        ],
+        "reason": "将来推計の時点を特定する期間です。丸めると推計の時間軸が変わるため維持します。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "期間や比較時点の精度が解釈に必要な場合は厳密値を維持する。"
+      },
+      {
+        "concept": "C6",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約11万",
+            "approx_surface": "約11万"
+          }
+        ],
+        "reason": "将来の管路延長を示す推計上の概数であり、提示された精度以上の細かさは理解に必要ありません。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "余分な精度が推計値の規模や解釈を変えない場合は概数化してよい。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C1\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約50万\",\"approx_surface\":\"約50万\"}],\"reason\":\"全国の管路総延長の規模を示す値で、より細かな精度は話の理解に必要ありません。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"余分な精度が話の規模感を変えない場合は、聞き取りやすい概数を優先する。\"},{\"concept\":\"C2\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"数50年\",\"approx_surface\":null}],\"reason\":\"標準耐用年数は老朽管路の集計条件となる基準値であり、丸めると基準の意味が変わります。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"重要な閾値・判断基準として意味を持つ数値は厳密値を維持する。\"},{\"concept\":\"C3\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約4万\",\"approx_surface\":\"約4万\"}],\"reason\":\"老朽管路の規模を示す概数であり、さらに細かな精度は記事の意味に影響しません。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"余分な精度が話の規模感や解釈を変えない場合は概数化してよい。\"},{\"concept\":\"C4\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約7%\",\"approx_surface\":\"約7%\"}],\"reason\":\"値はすでに概数で示されており、割合の細かな精度が記事の結論を左右する状況ではありません。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"意味を損なわない範囲で、聞き取りやすい概数を用いてよい。\"},{\"concept\":\"C5\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"10年\",\"approx_surface\":null}],\"reason\":\"将来推計の時点を特定する期間です。丸めると推計の時間軸が変わるため維持します。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"期間や比較時点の精度が解釈に必要な場合は厳密値を維持する。\"},{\"concept\":\"C6\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約11万\",\"approx_surface\":\"約11万\"}],\"reason\":\"将来の管路延長を示す推計上の概数であり、提示された精度以上の細かさは理解に必要ありません。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"余分な精度が推計値の規模や解釈を変えない場合は概数化してよい。\"}] }",
+  "model": "gpt-6-luna",
+  "response_id": "resp_09442d71fca4d5a9006ad93c13789487d0bf70e1be6e41257d",
+  "sec": 7.2,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 4122,
+    "output_tokens": 883,
+    "reasoning_tokens": 226
+  }
+}

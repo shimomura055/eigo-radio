@@ -1,0 +1,147 @@
+{
+  "entries": [
+    {
+      "concept": "C2",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F05"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "634",
+          "approx": "約630"
+        }
+      ],
+      "reason": "参加者数は研究規模を伝えるための数値で、正確な人数まで示さなくても意味は保たれます。約630人としてもStudy 8の規模とは区別できます。",
+      "basis_fact_ids": [
+        "F05"
+      ],
+      "approved_condition": "精度が物語上の意味や比較に影響しない数値は、意味を保つ範囲で概数化する。"
+    },
+    {
+      "concept": "C5",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F05",
+        "F06"
+      ],
+      "fact_ns": [
+        1,
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "5分",
+          "approx": null
+        }
+      ],
+      "reason": "動画時間は実験条件の一部で、短時間の退屈を扱ったという解釈に関わります。概数化しても数値を簡潔にできないため、記載どおり維持します。",
+      "basis_fact_ids": [
+        "F05",
+        "F06"
+      ],
+      "approved_condition": "精度を落とすと実験条件や結果の解釈に関わる場合は、厳密値を維持する。"
+    },
+    {
+      "concept": "C6",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F05",
+        "F06"
+      ],
+      "fact_ns": [
+        1,
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "10",
+          "approx": null
+        }
+      ],
+      "reason": "10セント刻みは参加者が選べる金額単位を表す実験条件です。丸めると選択肢の内容が変わるため、厳密値を維持します。",
+      "basis_fact_ids": [
+        "F05",
+        "F06"
+      ],
+      "approved_condition": "精度を落とすと実験条件や結果の解釈に関わる場合は、厳密値を維持する。"
+    },
+    {
+      "concept": "C7",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F05",
+        "F06"
+      ],
+      "fact_ns": [
+        1,
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "最大50",
+          "approx": null
+        }
+      ],
+      "reason": "最大50セントは選択可能な金額の上限を示す実験条件です。概数化すると上限の意味が変わり得るため、厳密値を維持します。",
+      "basis_fact_ids": [
+        "F05",
+        "F06"
+      ],
+      "approved_condition": "重要な閾値や条件を曖昧にする丸めは行わず、厳密値を維持する。"
+    },
+    {
+      "concept": "C9",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F06"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "1,332",
+          "approx": "約1,300"
+        }
+      ],
+      "reason": "参加者数は研究規模を伝えるための数値で、正確な人数まで示さなくても意味は保たれます。約1,300人としてもStudy 7の規模とは区別できます。",
+      "basis_fact_ids": [
+        "F06"
+      ],
+      "approved_condition": "精度が物語上の意味や比較に影響しない数値は、意味を保つ範囲で概数化する。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C2",
+    "C5",
+    "C6",
+    "C7",
+    "C9"
+  ],
+  "n_approximate_ok": 2,
+  "article_id": "art_701612d8",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_0d9f15286f3d75fa006ad93b7162f087d0acf2303d592b8028",
+  "effort": "high",
+  "variant": "luna_high"
+}

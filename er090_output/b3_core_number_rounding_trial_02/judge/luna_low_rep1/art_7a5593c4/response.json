@@ -1,0 +1,110 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C4",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "0.25パーセントポイント",
+            "approx_surface": null
+          },
+          {
+            "surface": "25ベーシスポイント",
+            "approx_surface": null
+          }
+        ],
+        "reason": "政策金利の引き上げ幅そのものを示す決定値であり、精度が事実の意味に関わります。",
+        "basis_fact_ids": [
+          "F002"
+        ],
+        "approved_condition": "スコア・記録などと同様に、精度自体に意味を持つ政策決定の数値は厳密値を維持する。"
+      },
+      {
+        "concept": "C5",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "3.75～4.00％",
+            "approx_surface": null
+          }
+        ],
+        "reason": "政策金利の目標レンジとして示された値であり、レンジの境界を丸めると政策決定の内容が変わります。",
+        "basis_fact_ids": [
+          "F002"
+        ],
+        "approved_condition": "重要な閾値や解釈に関わる数値は、丸めで意味を変えず厳密値を維持する。"
+      },
+      {
+        "concept": "C6",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "12対0",
+            "approx_surface": null
+          }
+        ],
+        "reason": "声明の採決結果を表す記録値であり、厳密な票数が事実の内容です。",
+        "basis_fact_ids": [
+          "F002"
+        ],
+        "approved_condition": "記録など、精度そのものが意味を持つ数字は厳密値を維持する。"
+      },
+      {
+        "concept": "C7",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2％",
+            "approx_surface": null
+          }
+        ],
+        "reason": "FOMCの長期インフレ目標として明示された基準値であり、丸めの対象ではありません。",
+        "basis_fact_ids": [
+          "F003"
+        ],
+        "approved_condition": "重要な閾値や政策目標の解釈に関わる数値は厳密値を維持する。"
+      },
+      {
+        "concept": "C8",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "30年",
+            "approx_surface": null
+          }
+        ],
+        "reason": "比較対象となるローン商品の期間を示し、丸めると商品条件が変わります。",
+        "basis_fact_ids": [
+          "F007"
+        ],
+        "approved_condition": "数値の精度を落とすことで意味や解釈が変わる場合は厳密値を維持する。"
+      },
+      {
+        "concept": "C12",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "5.98％",
+            "approx_surface": "約6％"
+          }
+        ],
+        "reason": "この比較で重要なのは金利が約6％から上昇したという規模であり、5.98％の小数精度は聞き手の理解に必要ありません。別の金利値とは統合せず、この表記はF007の開始時点の金利に対応します。",
+        "basis_fact_ids": [
+          "F007"
+        ],
+        "approved_condition": "精度が意味に影響しない場合は、聞き取りやすさを優先して概数化する。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C4\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"0.25パーセントポイント\",\"approx_surface\":null},{\"surface\":\"25ベーシスポイント\",\"approx_surface\":null}],\"reason\":\"政策金利の引き上げ幅そのものを示す決定値であり、精度が事実の意味に関わります。\",\"basis_fact_ids\":[\"F002\"],\"approved_condition\":\"スコア・記録などと同様に、精度自体に意味を持つ政策決定の数値は厳密値を維持する。\"},{\"concept\":\"C5\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"3.75～4.00％\",\"approx_surface\":null}],\"reason\":\"政策金利の目標レンジとして示された値であり、レンジの境界を丸めると政策決定の内容が変わります。\",\"basis_fact_ids\":[\"F002\"],\"approved_condition\":\"重要な閾値や解釈に関わる数値は、丸めで意味を変えず厳密値を維持する。\"},{\"concept\":\"C6\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"12対0\",\"approx_surface\":null}],\"reason\":\"声明の採決結果を表す記録値であり、厳密な票数が事実の内容です。\",\"basis_fact_ids\":[\"F002\"],\"approved_condition\":\"記録など、精度そのものが意味を持つ数字は厳密値を維持する。\"},{\"concept\":\"C7\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"2％\",\"approx_surface\":null}],\"reason\":\"FOMCの長期インフレ目標として明示された基準値であり、丸めの対象ではありません。\",\"basis_fact_ids\":[\"F003\"],\"approved_condition\":\"重要な閾値や政策目標の解釈に関わる数値は厳密値を維持する。\"},{\"concept\":\"C8\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"30年\",\"approx_surface\":null}],\"reason\":\"比較対象となるローン商品の期間を示し、丸めると商品条件が変わります。\",\"basis_fact_ids\":[\"F007\"],\"approved_condition\":\"数値の精度を落とすことで意味や解釈が変わる場合は厳密値を維持する。\"},{\"concept\":\"C12\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"5.98％\",\"approx_surface\":\"約6％\"}],\"reason\":\"この比較で重要なのは金利が約6％から上昇したという規模であり、5.98％の小数精度は聞き手の理解に必要ありません。別の金利値とは統合せず、この表記はF007の開始時点の金利に対応します。\",\"basis_fact_ids\":[\"F007\"],\"approved_condition\":\"精度が意味に影響しない場合は、聞き取りやすさを優先して概数化する。\"}] }",
+  "model": "gpt-6-luna",
+  "response_id": "resp_0b8bd018350a2bda006ad93bfe401c87d0ba09bb25b5706203",
+  "sec": 7.7,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 5001,
+    "output_tokens": 952,
+    "reasoning_tokens": 257
+  }
+}

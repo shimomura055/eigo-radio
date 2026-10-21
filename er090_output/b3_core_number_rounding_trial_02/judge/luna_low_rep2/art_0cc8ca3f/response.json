@@ -1,0 +1,46 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2026年9月8日",
+            "approx_surface": null
+          }
+        ],
+        "reason": "記事の掲載日を示す日付であり、丸めると特定の日付の情報が失われます。",
+        "basis_fact_ids": [
+          "MB-01"
+        ],
+        "approved_condition": "日付は精度自体が意味を持つ数値として厳密値を維持する。"
+      },
+      {
+        "concept": "C3",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2026年10月",
+            "approx_surface": null
+          }
+        ],
+        "reason": "記事の掲載時期を示す年月であり、月を丸めたり概数化したりすると時期の情報が変わります。",
+        "basis_fact_ids": [
+          "MB-06"
+        ],
+        "approved_condition": "日付・時期は精度自体が意味を持つ数値として厳密値を維持する。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C1\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"2026年9月8日\",\"approx_surface\":null}],\"reason\":\"記事の掲載日を示す日付であり、丸めると特定の日付の情報が失われます。\",\"basis_fact_ids\":[\"MB-01\"],\"approved_condition\":\"日付は精度自体が意味を持つ数値として厳密値を維持する。\"},{\"concept\":\"C3\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"2026年10月\",\"approx_surface\":null}],\"reason\":\"記事の掲載時期を示す年月であり、月を丸めたり概数化したりすると時期の情報が変わります。\",\"basis_fact_ids\":[\"MB-06\"],\"approved_condition\":\"日付・時期は精度自体が意味を持つ数値として厳密値を維持する。\"}]}",
+  "model": "gpt-6-luna",
+  "response_id": "resp_0e96fcdb8c63204f006ad93c14818087d08d8b3601f09b39e3",
+  "sec": 2.8,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 3384,
+    "output_tokens": 266,
+    "reasoning_tokens": 44
+  }
+}

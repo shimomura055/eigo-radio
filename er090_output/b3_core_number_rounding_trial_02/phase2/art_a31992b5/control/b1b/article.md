@@ -1,0 +1,20 @@
+# The “Money-Making Personality” Contest Is on Hold for Now! The Star Is “Your Past Self”
+
+“What kind of personality do people who make money actually have?” A serious, hardworking person, or a sociable person with lots of connections? Here begins the “money-making personality” contest in your head! But before we get too excited, one thing: This time, the spotlight is not on the successful person next to you. It is on “your past self.”
+
+The research team compiled data from 11 studies that followed the same people. The people in the studies were working and answered questions about their personality and income from work. The analysis included up to 134,515 people. The number varied depending on what was being studied.
+
+The camera in this study points in a slightly different direction. The researchers looked separately at stable differences between people, like “That person has a high income,” and changes within the same person, like “My income has gone up since before.” In other words, they did not just compare where people stand in a group photo. They also looked at a series of photos of each person.
+
+That brings us to “conscientiousness”—being serious about what you do and working hard. Within the same person, there was a small link between an increase in income and a later rise in conscientiousness. And in the other direction, there was also a small link between becoming more conscientious and a later increase in income.
+
+Oops, the arrows point both ways! So, does becoming more serious make your wallet grow? It is too soon to call this a rule for success. The links were small, and this does not prove cause and effect.
+
+We cannot say for sure that “income went up, so the person became more serious,” or that “the person became more serious, so their income went up.” Something else may be connected to both. There is a gap we must not jump over between “it happened afterward” and “it happened because of that.”
+
+Still, this way of looking at things is interesting. Instead of ending the discussion with “That’s just the kind of person I am,” we can see income and personality as things that change within the same person. This gives us a different view from searching for other people’s “money-making type.”
+
+The thing to take away this time is not a guaranteed guide to increasing your income, but a switch that changes the camera angle you use to look at yourself. Take a break from asking, “How much does that person make?” and ask, “How am I different from the person I was back then?” So, what changes show up in your series of photos?
+
+## In one line
+Across 11 studies, income and conscientiousness showed small links in both directions within the same person. The findings do not prove cause and effect, but offer a new way to think about how income and personality change over time.

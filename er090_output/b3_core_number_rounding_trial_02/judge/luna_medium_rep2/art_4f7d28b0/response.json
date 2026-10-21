@@ -1,0 +1,62 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C2",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "12人",
+            "approx_surface": null
+          }
+        ],
+        "reason": "死亡者数は当該攻撃についての報告人数であり、正確な人数を維持する。",
+        "basis_fact_ids": [
+          "F04",
+          "F11"
+        ],
+        "approved_condition": "記録・報告された死傷者数は、精度自体に意味があるため厳密値を維持する。"
+      },
+      {
+        "concept": "C3",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "309人",
+            "approx_surface": null
+          }
+        ],
+        "reason": "309人はGACAの10月11日続報時点の負傷者数であり、後日の別時点の更新値と区別して維持する。",
+        "basis_fact_ids": [
+          "F04"
+        ],
+        "approved_condition": "記録・報告された死傷者数は、精度自体に意味があるため厳密値を維持する。"
+      },
+      {
+        "concept": "C5",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "300人超",
+            "approx_surface": null
+          }
+        ],
+        "reason": "「300人超」は報告された下限を示す表現であり、丸めるとその範囲の意味を変えるおそれがある。",
+        "basis_fact_ids": [
+          "F11"
+        ],
+        "approved_condition": "重要な閾値・範囲を曖昧にせず、報告された表現を維持する。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C2\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"12人\",\"approx_surface\":null}],\"reason\":\"死亡者数は当該攻撃についての報告人数であり、正確な人数を維持する。\",\"basis_fact_ids\":[\"F04\",\"F11\"],\"approved_condition\":\"記録・報告された死傷者数は、精度自体に意味があるため厳密値を維持する。\"},{\"concept\":\"C3\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"309人\",\"approx_surface\":null}],\"reason\":\"309人はGACAの10月11日続報時点の負傷者数であり、後日の別時点の更新値と区別して維持する。\",\"basis_fact_ids\":[\"F04\"],\"approved_condition\":\"記録・報告された死傷者数は、精度自体に意味があるため厳密値を維持する。\"},{\"concept\":\"C5\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"300人超\",\"approx_surface\":null}],\"reason\":\"「300人超」は報告された下限を示す表現であり、丸めるとその範囲の意味を変えるおそれがある。\",\"basis_fact_ids\":[\"F11\"],\"approved_condition\":\"重要な閾値・範囲を曖昧にせず、報告された表現を維持する。\"}]}",
+  "model": "gpt-6-luna",
+  "response_id": "resp_06ba56f7f669725e006ad93c0ff45c87d08a1914da14e05ca8",
+  "sec": 5.2,
+  "effort": "medium",
+  "usage": {
+    "input_tokens": 3215,
+    "output_tokens": 486,
+    "reasoning_tokens": 151
+  }
+}

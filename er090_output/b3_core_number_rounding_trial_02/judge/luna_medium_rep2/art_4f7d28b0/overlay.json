@@ -1,0 +1,91 @@
+{
+  "entries": [
+    {
+      "concept": "C2",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F04",
+        "F11"
+      ],
+      "fact_ns": [
+        1,
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "12人",
+          "approx": null
+        }
+      ],
+      "reason": "死亡者数は当該攻撃についての報告人数であり、正確な人数を維持する。",
+      "basis_fact_ids": [
+        "F04",
+        "F11"
+      ],
+      "approved_condition": "記録・報告された死傷者数は、精度自体に意味があるため厳密値を維持する。"
+    },
+    {
+      "concept": "C3",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F04"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "309人",
+          "approx": null
+        }
+      ],
+      "reason": "309人はGACAの10月11日続報時点の負傷者数であり、後日の別時点の更新値と区別して維持する。",
+      "basis_fact_ids": [
+        "F04"
+      ],
+      "approved_condition": "記録・報告された死傷者数は、精度自体に意味があるため厳密値を維持する。"
+    },
+    {
+      "concept": "C5",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F11"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "300人超",
+          "approx": null
+        }
+      ],
+      "reason": "「300人超」は報告された下限を示す表現であり、丸めるとその範囲の意味を変えるおそれがある。",
+      "basis_fact_ids": [
+        "F11"
+      ],
+      "approved_condition": "重要な閾値・範囲を曖昧にせず、報告された表現を維持する。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C2",
+    "C3",
+    "C5"
+  ],
+  "n_approximate_ok": 0,
+  "article_id": "art_4f7d28b0",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_06ba56f7f669725e006ad93c0ff45c87d08a1914da14e05ca8",
+  "effort": "medium",
+  "variant": "luna_medium"
+}

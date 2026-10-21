@@ -1,0 +1,26 @@
+# If You Look at a Stone for Five Minutes, Is Someone Else’s 50 Cents at Risk?
+
+A stone is on the screen. It does not speak. Nothing happens. No magician appears and pulls out a pigeon. You watch the stone for five minutes. “Will something happen soon?” No. It’s a stone.
+
+This scene comes from an online study with people in the United States. The people were put into groups at random. For example, one group watched a video of a stone for five minutes. This was the boredom group. Another group watched a video of a magician. This was the comparison group.
+
+The study asked, “Does being bored make people mean?” But the hidden main character is not the stone or anyone’s personality. It is the “menu of choices” in front of them.
+
+In one experiment, people could make a choice while watching a video. They could lower another person’s reward, raise it, or do nothing. They could change it by 10 cents at a time, up to 50 cents. So they had three choices: “be a little mean,” “be a little kind,” or “leave things as they are.” The stone does nothing, but the people watching had something they could do.
+
+What mattered here was “sadism”—the tendency to enjoy making other people suffer. The researchers found that people with more of this tendency chose to lower the reward more often when bored. But this increase did not happen among people with less of this tendency.
+
+So it seemed that personality was the reason. Just as we began to think this, the story took another turn.
+
+In a second experiment, people could not choose to raise the reward. They could only lower it or leave it as it was. This time, bored people chose to lower the reward more often. This was true whether they had more or less of the tendency.
+
+So personality is not the whole story. We start to ask not only, “Who got bored?” but also, “What could a bored person do?”
+
+But it is too soon to rush off and say, “Add a kindness button, and the world will be at peace!” The two results came from separate experiments. So we cannot say that the choices alone caused the different results. The study looked only at short times of being bored and at lowering another person’s reward online. We cannot use these results as they are for all kinds of everyday meanness or for boredom that lasts a long time.
+
+Even so, this may change how we think about what people do when bored. Before ending the talk with “That person is mean,” look at the menu in that situation. What choices can a bored person make?
+
+The stone does nothing until the very end. And yet, people have raised a tricky and interesting question.
+
+## In one line
+Bored people more often cut another person’s online reward, but results changed with sadism and the choices they had. The study says we should ask what choices bored people have, but its short, separate tests may not fit daily meanness or long boredom.

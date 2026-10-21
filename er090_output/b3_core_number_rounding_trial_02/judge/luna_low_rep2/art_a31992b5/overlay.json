@@ -1,0 +1,119 @@
+{
+  "entries": [
+    {
+      "concept": "C1",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F04"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "11件",
+          "approx": null
+        }
+      ],
+      "reason": "統合した研究の件数そのものを示すため、概数にすると事実の正確さが損なわれます。",
+      "basis_fact_ids": [
+        "F04"
+      ],
+      "approved_condition": "研究数など、正確な件数を示す数値は厳密値を維持する。"
+    },
+    {
+      "concept": "C2",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F04"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "最大134,515人",
+          "approx": "最大約13万5千人"
+        },
+        {
+          "surface": "134,515人",
+          "approx": "約13万5千人"
+        }
+      ],
+      "reason": "大規模な解析標本の規模を伝える数値であり、千人単位に丸めても意味や最大値という限定は保たれます。",
+      "basis_fact_ids": [
+        "F04"
+      ],
+      "approved_condition": "精度が意味に影響しない数値は、聞き取りやすさを優先して概数化してよい。"
+    },
+    {
+      "concept": "C4",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F07"
+      ],
+      "fact_ns": [
+        3
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "3回以上",
+          "approx": null
+        }
+      ],
+      "reason": "対象研究の適格条件となる最低測定回数を示すため、丸めると基準が変わります。",
+      "basis_fact_ids": [
+        "F07"
+      ],
+      "approved_condition": "重要な閾値は、丸めによって不明瞭にせず厳密値を維持する。"
+    },
+    {
+      "concept": "C5",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F08"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "0.0630:V7_collides_with_other_number_in_same_fact(['0.0589'])"
+      ],
+      "surfaces": [
+        {
+          "surface": "0.0630",
+          "approx": null
+        }
+      ],
+      "reason": "効果の小ささを示す係数であり、0.06への丸めでその大きさの理解は損なわれません。これは収入から勤勉性への係数単独の表記で、別方向の係数と統合しません。",
+      "basis_fact_ids": [
+        "F08"
+      ],
+      "approved_condition": "余分な小数精度が解釈に影響しない場合は、意味を損なわない範囲で概数を基本とする。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C1",
+    "C2",
+    "C4",
+    "C5"
+  ],
+  "n_approximate_ok": 1,
+  "article_id": "art_a31992b5",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_0e84dc77d2597936006ad93c02305487d0ac71aca69b2c2aee",
+  "effort": "low",
+  "variant": "luna_low"
+}

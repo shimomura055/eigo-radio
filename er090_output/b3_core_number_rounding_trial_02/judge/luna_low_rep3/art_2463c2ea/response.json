@@ -1,0 +1,62 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "14",
+            "approx_surface": "約10"
+          }
+        ],
+        "reason": "原告の正確な数はLedgerに維持されるが、概数にしても訴訟の規模感は伝わり、意味のある閾値や比較を損なわない。",
+        "basis_fact_ids": [
+          "F2"
+        ],
+        "approved_condition": "精度自体が意味を持たない数値は、意味を損なわない範囲で概数化してよい。"
+      },
+      {
+        "concept": "C2",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2億5,000万ドル",
+            "approx_surface": null
+          }
+        ],
+        "reason": "請求額の下限を示す金額であり、概数化すると請求規模や「超える」という条件の意味を変えかねない。",
+        "basis_fact_ids": [
+          "F6"
+        ],
+        "approved_condition": "重要な閾値や証拠の解釈を曖昧にする丸めは避ける。"
+      },
+      {
+        "concept": "C3",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2026-10-08",
+            "approx_surface": null
+          }
+        ],
+        "reason": "提訴日と報道時点を特定する日付であり、概数化できない。",
+        "basis_fact_ids": [
+          "F7",
+          "F8"
+        ],
+        "approved_condition": "日付など精度そのものが意味を持つ数字は厳密値を維持する。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C1\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"14\",\"approx_surface\":\"約10\"}],\"reason\":\"原告の正確な数はLedgerに維持されるが、概数にしても訴訟の規模感は伝わり、意味のある閾値や比較を損なわない。\",\"basis_fact_ids\":[\"F2\"],\"approved_condition\":\"精度自体が意味を持たない数値は、意味を損なわない範囲で概数化してよい。\"},{\"concept\":\"C2\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"2億5,000万ドル\",\"approx_surface\":null}],\"reason\":\"請求額の下限を示す金額であり、概数化すると請求規模や「超える」という条件の意味を変えかねない。\",\"basis_fact_ids\":[\"F6\"],\"approved_condition\":\"重要な閾値や証拠の解釈を曖昧にする丸めは避ける。\"},{\"concept\":\"C3\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"2026-10-08\",\"approx_surface\":null}],\"reason\":\"提訴日と報道時点を特定する日付であり、概数化できない。\",\"basis_fact_ids\":[\"F7\",\"F8\"],\"approved_condition\":\"日付など精度そのものが意味を持つ数字は厳密値を維持する。\"}]}",
+  "model": "gpt-6-luna",
+  "response_id": "resp_013900a690b42eb5006ad93c28f5a087d0b6a969e1d3500e45",
+  "sec": 3.1,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 4256,
+    "output_tokens": 347,
+    "reasoning_tokens": 0
+  }
+}

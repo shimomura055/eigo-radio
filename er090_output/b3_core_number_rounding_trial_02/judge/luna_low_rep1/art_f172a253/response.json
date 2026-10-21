@@ -1,0 +1,61 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2026年9月14日",
+            "approx_surface": null
+          }
+        ],
+        "reason": "発言の正確な日付が出来事の特定に必要です。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "日付など、精度自体に意味がある数値は厳密値を維持する。"
+      },
+      {
+        "concept": "C2",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2021年11月15日",
+            "approx_surface": null
+          }
+        ],
+        "reason": "破壊試験が行われた正確な日付が出来事の特定に必要です。",
+        "basis_fact_ids": [
+          "F-003"
+        ],
+        "approved_condition": "日付など、精度自体に意味がある数値は厳密値を維持する。"
+      },
+      {
+        "concept": "C4",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "1,500個超",
+            "approx_surface": "約1,500個超"
+          }
+        ],
+        "reason": "追跡可能なデブリの規模を示す数値で、追加の精度は聞き手の理解に大きく影響しません。元の「超」という限定は維持します。",
+        "basis_fact_ids": [
+          "F-003"
+        ],
+        "approved_condition": "精度が記事の意味や判断に必要でない場合、意味を損なわない範囲で概数化してよい。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C1\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"2026年9月14日\",\"approx_surface\":null}],\"reason\":\"発言の正確な日付が出来事の特定に必要です。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"日付など、精度自体に意味がある数値は厳密値を維持する。\"},{\"concept\":\"C2\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"2021年11月15日\",\"approx_surface\":null}],\"reason\":\"破壊試験が行われた正確な日付が出来事の特定に必要です。\",\"basis_fact_ids\":[\"F-003\"],\"approved_condition\":\"日付など、精度自体に意味がある数値は厳密値を維持する。\"},{\"concept\":\"C4\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"1,500個超\",\"approx_surface\":\"約1,500個超\"}],\"reason\":\"追跡可能なデブリの規模を示す数値で、追加の精度は聞き手の理解に大きく影響しません。元の「超」という限定は維持します。\",\"basis_fact_ids\":[\"F-003\"],\"approved_condition\":\"精度が記事の意味や判断に必要でない場合、意味を損なわない範囲で概数化してよい。\"}]}",
+  "model": "gpt-6-luna",
+  "response_id": "resp_07502b1a42721241006ad93bf35bb087d0b870472917777871",
+  "sec": 3.2,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 4144,
+    "output_tokens": 334,
+    "reasoning_tokens": 0
+  }
+}

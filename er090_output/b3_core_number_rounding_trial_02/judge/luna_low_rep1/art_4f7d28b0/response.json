@@ -1,0 +1,62 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C2",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "12人",
+            "approx_surface": null
+          }
+        ],
+        "reason": "報告された死者数そのものが事実の内容であり、丸めると人数の正確さを損ないます。",
+        "basis_fact_ids": [
+          "F04",
+          "F11"
+        ],
+        "approved_condition": "記録・結果として意味を持つ人数は厳密値を維持する。"
+      },
+      {
+        "concept": "C3",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "309人",
+            "approx_surface": null
+          }
+        ],
+        "reason": "GACAの特定時点の続報における負傷者数であり、後日の別時点の数値とも区別する必要があります。",
+        "basis_fact_ids": [
+          "F04"
+        ],
+        "approved_condition": "報告時点に結び付いた結果の人数は、精度が意味を持つため厳密値を維持する。"
+      },
+      {
+        "concept": "C5",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "300人超",
+            "approx_surface": null
+          }
+        ],
+        "reason": "「300人超」は引用された報告の下限を示す表現です。丸めるとこの限定された意味を変えるおそれがあります。",
+        "basis_fact_ids": [
+          "F11"
+        ],
+        "approved_condition": "意味のある閾値・限定を曖昧にする丸めは行わない。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C2\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"12人\",\"approx_surface\":null}],\"reason\":\"報告された死者数そのものが事実の内容であり、丸めると人数の正確さを損ないます。\",\"basis_fact_ids\":[\"F04\",\"F11\"],\"approved_condition\":\"記録・結果として意味を持つ人数は厳密値を維持する。\"},{\"concept\":\"C3\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"309人\",\"approx_surface\":null}],\"reason\":\"GACAの特定時点の続報における負傷者数であり、後日の別時点の数値とも区別する必要があります。\",\"basis_fact_ids\":[\"F04\"],\"approved_condition\":\"報告時点に結び付いた結果の人数は、精度が意味を持つため厳密値を維持する。\"},{\"concept\":\"C5\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"300人超\",\"approx_surface\":null}],\"reason\":\"「300人超」は引用された報告の下限を示す表現です。丸めるとこの限定された意味を変えるおそれがあります。\",\"basis_fact_ids\":[\"F11\"],\"approved_condition\":\"意味のある閾値・限定を曖昧にする丸めは行わない。\"}]}",
+  "model": "gpt-6-luna",
+  "response_id": "resp_0ddbdb632f1a4154006ad93becd5d487d0a3bb0d0f1b95670f",
+  "sec": 4.1,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 3215,
+    "output_tokens": 409,
+    "reasoning_tokens": 88
+  }
+}

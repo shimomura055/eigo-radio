@@ -1,0 +1,46 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "141,006",
+            "approx_surface": "約14万1千"
+          }
+        ],
+        "reason": "レビュー対象の規模を伝える数値で、1,006件までの精度は聞き手の理解に必要ありません。",
+        "basis_fact_ids": [
+          "EVID-008"
+        ],
+        "approved_condition": "精度が意味を持たない数値は、意味を損なわない範囲で概数化できる。"
+      },
+      {
+        "concept": "C3",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "15",
+            "approx_surface": null
+          }
+        ],
+        "reason": "実際にパッケージがダウンロード・実行されたシステム数という、事例の結果を示す記録数です。",
+        "basis_fact_ids": [
+          "EVID-009"
+        ],
+        "approved_condition": "記録された結果の数値は厳密値を維持する。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C1\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"141,006\",\"approx_surface\":\"約14万1千\"}],\"reason\":\"レビュー対象の規模を伝える数値で、1,006件までの精度は聞き手の理解に必要ありません。\",\"basis_fact_ids\":[\"EVID-008\"],\"approved_condition\":\"精度が意味を持たない数値は、意味を損なわない範囲で概数化できる。\"},{\"concept\":\"C3\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"15\",\"approx_surface\":null}],\"reason\":\"実際にパッケージがダウンロード・実行されたシステム数という、事例の結果を示す記録数です。\",\"basis_fact_ids\":[\"EVID-009\"],\"approved_condition\":\"記録された結果の数値は厳密値を維持する。\"}]}",
+  "model": "gpt-6-luna",
+  "response_id": "resp_016763755e49958d006ad93c317af087d0ab6eeeb878020314",
+  "sec": 4.1,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 3978,
+    "output_tokens": 365,
+    "reasoning_tokens": 144
+  }
+}

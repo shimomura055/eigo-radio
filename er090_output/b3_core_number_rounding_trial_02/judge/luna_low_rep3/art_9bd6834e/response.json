@@ -1,0 +1,107 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C2",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "20％",
+            "approx_surface": null
+          }
+        ],
+        "reason": "償還率そのものが提案内容を定義する数値で、置換対象の率との対応も重要です。",
+        "basis_fact_ids": [
+          "HF-002",
+          "HF-007"
+        ],
+        "approved_condition": "重要な数値の精度を維持し、異なる値を同一視させない。"
+      },
+      {
+        "concept": "C4",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "7.29ドル",
+            "approx_surface": null
+          }
+        ],
+        "reason": "当日のBrent先物の前日比として記録された市場結果であり、精度を落とすと記録値の忠実性が損なわれます。",
+        "basis_fact_ids": [
+          "HF-006"
+        ],
+        "approved_condition": "記録や証拠の解釈に精度が意味を持つ場合は厳密値を維持する。"
+      },
+      {
+        "concept": "C5",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "9.59％",
+            "approx_surface": null
+          }
+        ],
+        "reason": "当日の上昇率として記録された市場結果であり、数値の精度が証拠の解釈に関わります。",
+        "basis_fact_ids": [
+          "HF-006"
+        ],
+        "approved_condition": "記録や証拠の解釈に精度が意味を持つ場合は厳密値を維持する。"
+      },
+      {
+        "concept": "C7",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "83.30ドル",
+            "approx_surface": null
+          }
+        ],
+        "reason": "清算価格として記録された値です。小数を丸めると清算値の正確な記録ではなくなります。",
+        "basis_fact_ids": [
+          "HF-006"
+        ],
+        "approved_condition": "記録として精度が意味を持つ数値は厳密値を維持する。"
+      },
+      {
+        "concept": "C10",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約2.6％",
+            "approx_surface": "約3％"
+          }
+        ],
+        "reason": "記事掲載時点の価格スナップショットの概数で、約3％としても上昇幅の意味を損ないません。",
+        "basis_fact_ids": [
+          "HF-009"
+        ],
+        "approved_condition": "余分な小数精度が話の意味や比較を実質的に変えない場合は、聞き取りやすい概数を優先する。"
+      },
+      {
+        "concept": "C11",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "85ドル",
+            "approx_surface": null
+          }
+        ],
+        "reason": "「85ドルを上回る」という境界が価格水準を示すため、丸めて境界を曖昧にしません。",
+        "basis_fact_ids": [
+          "HF-009"
+        ],
+        "approved_condition": "重要な閾値を隠したり曖昧にしたりする丸めはしない。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C2\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"20％\",\"approx_surface\":null}],\"reason\":\"償還率そのものが提案内容を定義する数値で、置換対象の率との対応も重要です。\",\"basis_fact_ids\":[\"HF-002\",\"HF-007\"],\"approved_condition\":\"重要な数値の精度を維持し、異なる値を同一視させない。\"},{\"concept\":\"C4\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"7.29ドル\",\"approx_surface\":null}],\"reason\":\"当日のBrent先物の前日比として記録された市場結果であり、精度を落とすと記録値の忠実性が損なわれます。\",\"basis_fact_ids\":[\"HF-006\"],\"approved_condition\":\"記録や証拠の解釈に精度が意味を持つ場合は厳密値を維持する。\"},{\"concept\":\"C5\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"9.59％\",\"approx_surface\":null}],\"reason\":\"当日の上昇率として記録された市場結果であり、数値の精度が証拠の解釈に関わります。\",\"basis_fact_ids\":[\"HF-006\"],\"approved_condition\":\"記録や証拠の解釈に精度が意味を持つ場合は厳密値を維持する。\"},{\"concept\":\"C7\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"83.30ドル\",\"approx_surface\":null}],\"reason\":\"清算価格として記録された値です。小数を丸めると清算値の正確な記録ではなくなります。\",\"basis_fact_ids\":[\"HF-006\"],\"approved_condition\":\"記録として精度が意味を持つ数値は厳密値を維持する。\"},{\"concept\":\"C10\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約2.6％\",\"approx_surface\":\"約3％\"}],\"reason\":\"記事掲載時点の価格スナップショットの概数で、約3％としても上昇幅の意味を損ないません。\",\"basis_fact_ids\":[\"HF-009\"],\"approved_condition\":\"余分な小数精度が話の意味や比較を実質的に変えない場合は、聞き取りやすい概数を優先する。\"},{\"concept\":\"C11\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"85ドル\",\"approx_surface\":null}],\"reason\":\"「85ドルを上回る」という境界が価格水準を示すため、丸めて境界を曖昧にしません。\",\"basis_fact_ids\":[\"HF-009\"],\"approved_condition\":\"重要な閾値を隠したり曖昧にしたりする丸めはしない。\"}] }",
+  "model": "gpt-6-luna",
+  "response_id": "resp_07a2c93dea088a35006ad93bee1d8887d0a3ce0d8f6030b186",
+  "sec": 7.9,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 4308,
+    "output_tokens": 846,
+    "reasoning_tokens": 193
+  }
+}

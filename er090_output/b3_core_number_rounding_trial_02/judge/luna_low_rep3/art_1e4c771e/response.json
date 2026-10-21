@@ -1,0 +1,91 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2025年2月",
+            "approx_surface": null
+          }
+        ],
+        "reason": "先物価格の記録がいつ起きたかを示す日付であり、記録の特定に必要です。",
+        "basis_fact_ids": [
+          "F02"
+        ],
+        "approved_condition": "記録の日付は精度自体が意味を持つため、厳密値を維持する。"
+      },
+      {
+        "concept": "C3",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "4.30",
+            "approx_surface": null
+          }
+        ],
+        "reason": "史上最高値として報じられた先物価格の基準を示す値であり、丸めると記録の意味が変わり得ます。",
+        "basis_fact_ids": [
+          "F02"
+        ],
+        "approved_condition": "価格記録の精度が意味を持つ数値は厳密値を維持する。"
+      },
+      {
+        "concept": "C7",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "9.14",
+            "approx_surface": "約9.1"
+          }
+        ],
+        "reason": "平均小売価格の大きさを伝える値で、小数第2位までの精度は聞き手の理解に必須ではありません。概数化しても周辺の8.87とは区別できます。",
+        "basis_fact_ids": [
+          "F11"
+        ],
+        "approved_condition": "余分な小数精度が重要な比較や解釈に影響しない場合は、聞き取りやすい概数を優先する。"
+      },
+      {
+        "concept": "C10",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "3%",
+            "approx_surface": null
+          }
+        ],
+        "reason": "前月からの上昇率として報じられた変化そのものを示すため、数値を別の概数に置き換えません。",
+        "basis_fact_ids": [
+          "F11"
+        ],
+        "approved_condition": "比較の結果として示された変化率は、丸めで意味を変えないよう報告値を維持する。"
+      },
+      {
+        "concept": "C12",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "41%",
+            "approx_surface": null
+          }
+        ],
+        "reason": "前年同月からの上昇率として報じられた変化そのものを示すため、数値を別の概数に置き換えません。",
+        "basis_fact_ids": [
+          "F11"
+        ],
+        "approved_condition": "比較の結果として示された変化率は、丸めで意味を変えないよう報告値を維持する。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C1\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"2025年2月\",\"approx_surface\":null}],\"reason\":\"先物価格の記録がいつ起きたかを示す日付であり、記録の特定に必要です。\",\"basis_fact_ids\":[\"F02\"],\"approved_condition\":\"記録の日付は精度自体が意味を持つため、厳密値を維持する。\"},{\"concept\":\"C3\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"4.30\",\"approx_surface\":null}],\"reason\":\"史上最高値として報じられた先物価格の基準を示す値であり、丸めると記録の意味が変わり得ます。\",\"basis_fact_ids\":[\"F02\"],\"approved_condition\":\"価格記録の精度が意味を持つ数値は厳密値を維持する。\"},{\"concept\":\"C7\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"9.14\",\"approx_surface\":\"約9.1\"}],\"reason\":\"平均小売価格の大きさを伝える値で、小数第2位までの精度は聞き手の理解に必須ではありません。概数化しても周辺の8.87とは区別できます。\",\"basis_fact_ids\":[\"F11\"],\"approved_condition\":\"余分な小数精度が重要な比較や解釈に影響しない場合は、聞き取りやすい概数を優先する。\"},{\"concept\":\"C10\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"3%\",\"approx_surface\":null}],\"reason\":\"前月からの上昇率として報じられた変化そのものを示すため、数値を別の概数に置き換えません。\",\"basis_fact_ids\":[\"F11\"],\"approved_condition\":\"比較の結果として示された変化率は、丸めで意味を変えないよう報告値を維持する。\"},{\"concept\":\"C12\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"41%\",\"approx_surface\":null}],\"reason\":\"前年同月からの上昇率として報じられた変化そのものを示すため、数値を別の概数に置き換えません。\",\"basis_fact_ids\":[\"F11\"],\"approved_condition\":\"比較の結果として示された変化率は、丸めで意味を変えないよう報告値を維持する。\"}] }",
+  "model": "gpt-6-luna",
+  "response_id": "resp_09390d667e9a627c006ad93bdd88d487d0b356b5872aa51b39",
+  "sec": 6.9,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 3785,
+    "output_tokens": 758,
+    "reasoning_tokens": 190
+  }
+}

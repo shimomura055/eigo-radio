@@ -1,0 +1,114 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C2",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "262.18",
+            "approx_surface": "約260"
+          }
+        ],
+        "reason": "国際指標価格の月平均であり、追加の小数精度はストーリー上の意味や比較を大きく変えないため、聞き取りやすく概数化できます。",
+        "basis_fact_ids": [
+          "COFFEE-001"
+        ],
+        "approved_condition": "追加精度が重要な意味・比較・閾値に影響しない場合は、聞き手に必要な精度だけを残す。"
+      },
+      {
+        "concept": "C4",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "8.7%",
+            "approx_surface": "約9%"
+          }
+        ],
+        "reason": "下落の規模を示す値で、小数点以下の精度が解釈に不可欠ではないため、約9%としても方向や大きさの理解は損なわれません。",
+        "basis_fact_ids": [
+          "COFFEE-001"
+        ],
+        "approved_condition": "精度自体に意味がない範囲では、聞き取りやすい概数を基本とする。"
+      },
+      {
+        "concept": "C8",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約9か月",
+            "approx_surface": "約9か月"
+          }
+        ],
+        "reason": "これは市場関係者・専門家による推定で、すでに概数として示されています。月単位より細かい精度は必要ありません。",
+        "basis_fact_ids": [
+          "COFFEE-014"
+        ],
+        "approved_condition": "精度自体に意味がない場合は概数化でき、推定値の精密さを過度に示さない。"
+      },
+      {
+        "concept": "C9",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約2～3か月分",
+            "approx_surface": "約2～3か月分"
+          },
+          {
+            "surface": "約2～3か月",
+            "approx_surface": "約2～3か月"
+          }
+        ],
+        "reason": "在庫期間と焙煎・包装期間は別の事実・指標です。それぞれ元の範囲を保ち、統合せずに概数として維持できます。",
+        "basis_fact_ids": [
+          "COFFEE-014"
+        ],
+        "approved_condition": "範囲の意味を保ち、別々の事実・指標を統合しないことを条件に、必要な精度だけを残す。"
+      },
+      {
+        "concept": "C10",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "6.1%",
+            "approx_surface": "約6%"
+          }
+        ],
+        "reason": "前年同月比で上昇したという方向と規模を伝えるには約6%で足り、小数点以下を残す必要がある閾値や僅差は示されていません。",
+        "basis_fact_ids": [
+          "COFFEE-015"
+        ],
+        "approved_condition": "小数精度が記事の意味・比較・判断に必要でない場合は、聞き取りやすい概数を基本とする。"
+      },
+      {
+        "concept": "C13",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約15%",
+            "approx_surface": "約15%"
+          },
+          {
+            "surface": "15%",
+            "approx_surface": "約15%"
+          }
+        ],
+        "reason": "どちらも一事業者の説明にある概数で、小数精度はありません。飲料価格の値上げ率と豆購入費の上昇率は別々の指標として、それぞれの表記に留めます。",
+        "basis_fact_ids": [
+          "COFFEE-018"
+        ],
+        "approved_condition": "概数化しても各数値を元のFact・指標に帰属させ、別々の事実を統合しない。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C2\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"262.18\",\"approx_surface\":\"約260\"}],\"reason\":\"国際指標価格の月平均であり、追加の小数精度はストーリー上の意味や比較を大きく変えないため、聞き取りやすく概数化できます。\",\"basis_fact_ids\":[\"COFFEE-001\"],\"approved_condition\":\"追加精度が重要な意味・比較・閾値に影響しない場合は、聞き手に必要な精度だけを残す。\"},{\"concept\":\"C4\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"8.7%\",\"approx_surface\":\"約9%\"}],\"reason\":\"下落の規模を示す値で、小数点以下の精度が解釈に不可欠ではないため、約9%としても方向や大きさの理解は損なわれません。\",\"basis_fact_ids\":[\"COFFEE-001\"],\"approved_condition\":\"精度自体に意味がない範囲では、聞き取りやすい概数を基本とする。\"},{\"concept\":\"C8\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約9か月\",\"approx_surface\":\"約9か月\"}],\"reason\":\"これは市場関係者・専門家による推定で、すでに概数として示されています。月単位より細かい精度は必要ありません。\",\"basis_fact_ids\":[\"COFFEE-014\"],\"approved_condition\":\"精度自体に意味がない場合は概数化でき、推定値の精密さを過度に示さない。\"},{\"concept\":\"C9\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約2～3か月分\",\"approx_surface\":\"約2～3か月分\"},{\"surface\":\"約2～3か月\",\"approx_surface\":\"約2～3か月\"}],\"reason\":\"在庫期間と焙煎・包装期間は別の事実・指標です。それぞれ元の範囲を保ち、統合せずに概数として維持できます。\",\"basis_fact_ids\":[\"COFFEE-014\"],\"approved_condition\":\"範囲の意味を保ち、別々の事実・指標を統合しないことを条件に、必要な精度だけを残す。\"},{\"concept\":\"C10\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"6.1%\",\"approx_surface\":\"約6%\"}],\"reason\":\"前年同月比で上昇したという方向と規模を伝えるには約6%で足り、小数点以下を残す必要がある閾値や僅差は示されていません。\",\"basis_fact_ids\":[\"COFFEE-015\"],\"approved_condition\":\"小数精度が記事の意味・比較・判断に必要でない場合は、聞き取りやすい概数を基本とする。\"},{\"concept\":\"C13\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約15%\",\"approx_surface\":\"約15%\"},{\"surface\":\"15%\",\"approx_surface\":\"約15%\"}],\"reason\":\"どちらも一事業者の説明にある概数で、小数精度はありません。飲料価格の値上げ率と豆購入費の上昇率は別々の指標として、それぞれの表記に留めます。\",\"basis_fact_ids\":[\"COFFEE-018\"],\"approved_condition\":\"概数化しても各数値を元のFact・指標に帰属させ、別々の事実を統合しない。\"}] }",
+  "model": "gpt-6-luna",
+  "response_id": "resp_0eadb4faa6d408db006ad93be4483887d096fb06c6f6eca0a6",
+  "sec": 9.5,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 4643,
+    "output_tokens": 1130,
+    "reasoning_tokens": 306
+  }
+}

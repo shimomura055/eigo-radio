@@ -1,0 +1,119 @@
+{
+  "entries": [
+    {
+      "concept": "C1",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F04"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "11件",
+          "approx": null
+        }
+      ],
+      "reason": "研究数は統合された研究の正確な件数を示すため、概数化しません。",
+      "basis_fact_ids": [
+        "F04"
+      ],
+      "approved_condition": "記録された件数の精度を維持する。"
+    },
+    {
+      "concept": "C2",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F04"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "最大134,515人",
+          "approx": "最大約13万5千人"
+        },
+        {
+          "surface": "134,515人",
+          "approx": "約13万5千人"
+        }
+      ],
+      "reason": "最大解析標本数の規模を伝える数値であり、丸めても意味は損なわれません。限定語「最大」は維持し、全解析で参加者数が同じだとは示しません。",
+      "basis_fact_ids": [
+        "F04"
+      ],
+      "approved_condition": "余分な桁が物語上の重要な規模や解釈に影響しない場合は、聞き取りやすい概数にできる。"
+    },
+    {
+      "concept": "C4",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F07"
+      ],
+      "fact_ns": [
+        3
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "3回以上",
+          "approx": null
+        }
+      ],
+      "reason": "「3回以上」は研究の適格条件を示す閾値であり、丸めると条件の意味が変わるおそれがあります。",
+      "basis_fact_ids": [
+        "F07"
+      ],
+      "approved_condition": "重要な閾値は、丸めによって曖昧にしない。"
+    },
+    {
+      "concept": "C5",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F08"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "0.0630:V7_collides_with_other_number_in_same_fact(['0.0589'])"
+      ],
+      "surfaces": [
+        {
+          "surface": "0.0630",
+          "approx": null
+        }
+      ],
+      "reason": "この係数は関連の小さな規模を示し、0.0630から約0.06への丸めで解釈は変わりません。別方向の係数とは統合せず、この値単独の表現として扱います。",
+      "basis_fact_ids": [
+        "F08"
+      ],
+      "approved_condition": "精度を落としても重要な比較・閾値・証拠の解釈に実質的な影響がない場合は、必要な精度まで概数化できる。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C1",
+    "C2",
+    "C4",
+    "C5"
+  ],
+  "n_approximate_ok": 1,
+  "article_id": "art_a31992b5",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_0301e7e2fcb23a61006ad93c046b0c87d0b8fe0b6f1f720332",
+  "effort": "low",
+  "variant": "luna_low"
+}

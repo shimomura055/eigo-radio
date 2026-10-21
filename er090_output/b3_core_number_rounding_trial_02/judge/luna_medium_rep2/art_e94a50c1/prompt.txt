@@ -1,0 +1,162 @@
+【承認済みルール(原文。新しい基準は追加しない)】
+
+■ Spoken-first Number Treatment(承認済み仕様)
+Verified Fact Ledgerは常にexact factを保持する。spoken narrative側は、精度自体に意味がない数字を、丸め(round)・概数化(approximate)・方向化(directionalize)してListening easeを優先してよい。分類は2軸: Importance(`ANCHOR`/`SUPPORTING`/`DISPENSABLE`)、Exactness(`EXACT_REQUIRED`/`APPROXIMATE_OK`/`DIRECTION_ONLY`)。スコア・日付・記録・健康研究の結果・安全閾値など、精度そのものが意味を持つ数字はEXACT_REQUIREDのまま維持する
+
+■ 【追加ルール: 全Pattern共通 - Listener-Friendly Numeric Precision】
+
+This rule applies AFTER each Pattern's own rule above has already decided which
+numeric Facts to keep. First, decide whether a numeric value is worth retaining at
+all, following the Pattern-specific rule above. Then, for values you keep, decide how
+much precision the listener actually needs, following this rule. Do not conflate the
+two decisions.
+
+When a numeric value is worth keeping, preserve only as much precision as the
+listener needs to understand its meaning.
+
+Prefer simpler rounded values when extra decimal precision does not materially
+affect:
+- the direction of the comparison
+- the magnitude that matters to the story
+- an important threshold
+- the interpretation of the evidence
+- the distinction between materially different values
+
+Do not remove decimals mechanically.
+
+Keep decimal precision when rounding would:
+- hide a meaningful difference
+- cross or obscure an important threshold
+- distort a small-scale measurement
+- change the interpretation
+- make two meaningfully different values appear equivalent
+- reduce factual fidelity in a way relevant to the listener
+
+When rounding is appropriate, use listener-friendly expressions such as "about",
+"roughly", "nearly", etc. where suitable.
+
+Most important: Rounding is NOT permission to merge separate facts, metrics,
+groups, time points, survey questions, or experimental outcomes. Each retained
+numeric expression must remain attributable to its original Fact / metric in the
+Fact Ledger. Never combine separate Facts merely because their rounded values
+become numerically similar. Before rounding, verify that each numeric expression
+can still be traced to a single, specific Fact / metric / group / time point /
+survey question. Do not combine numbers from different Facts or different
+metrics (for example, an attention-score value and a processing-speed value)
+into a single shared rounded expression, even if their rounded values happen to
+look similar or identical.
+
+The goal is not to remove decimal places. The goal is to use the least precision
+necessary for accurate spoken understanding.
+
+This is a judgment rule, not a mechanical one. Do NOT apply any fixed rule such as
+"always drop decimals," "always round to a whole number," "always keep one decimal
+place," or "always use two significant figures." Decide based on what each specific
+number means in context.
+
+For general guidance only (not a fixed instruction for this specific article):
+decimal precision is more likely to matter for values such as small percentages
+(for example 1.2% vs 1.8%), small absolute differences (for example 4.8 vs 5.2),
+sub-one units (for example 0.3 seconds), multipliers (for example 1.5 times),
+values near a meaningful threshold, or small differences that are themselves the
+finding. These are illustrative examples of the general principle only, not
+article-specific instructions.
+
+■ 【追加ルール: 全Pattern共通・全CEFRレベル共通 - Numeric Precisionの既定】
+上記Listener-Friendly Numeric Precisionルールを補強する原則であり、置き換えではない。
+
+原則: 聞き取りやすさを優先し、意味を損なわない範囲では概数を基本とする。小数点
+以下を保持するのは、その精度自体が記事の意味・比較・判断に必要な場合に限る。
+通常は次のように概数化することが既定である: 25.2% → about 25%、44.7% → about
+45%、89.6% → about 90%。
+
+小数点以下を保持してよい例: 閾値の前後が論点になっている場合(例えば49.5%と
+50.5%のように、僅差自体が意味を持つ場合)、年次変化・比較差を精密に扱う必要が
+ある場合、小数を落とすと記事の意味・結論が変わってしまう場合。
+
+This default applies equally regardless of CEFR level (A2/B1/B2). There is no
+level-specific numeric precision rule: the same judgment (round by default, keep
+precision only when the precision itself matters) applies to every level's
+spoken layer.
+
+【今回の判定の進め方(出力形式と安全側の指示のみ)】
+- 判定するのは、下の「判定対象の中核数値」の各conceptだけです。conceptの追加・削除・並べ替えはしません。
+- 周辺数値は判定対象ではありません。丸めると値同士が同一視されないか等の確認にだけ使ってください。
+- 各conceptについて decision を EXACT_REQUIRED(厳密値を維持)か APPROXIMATE_OK(聞き取りやすい概数にしてよい)のどちらかで答えます。
+- 判断が不確かな場合は無理に丸めず EXACT_REQUIRED にしてください。
+- APPROXIMATE_OK の場合のみ、surfaces の各surface(判定対象に示された表記そのまま)に対し approx_surface を日本語で書きます。approx_surface は、surface文字列の**数字部分だけ**を、元の数値を通常の四捨五入(有効数字を減らす)で丸めた値に置き換え、「約」「およそ」等のヘッジ語を付けただけの表記にします。surfaceにある限定語(「最大」「以上」「超」「未満」等)と単位・接尾辞はそのまま残し、surfaceにない語句(説明・括弧書き・「前年同月比」等の補足)は一切足しません。surfaceに単位が無ければ単位も足しません。Factの意味(例: 解析ごとに人数が異なる等)はFact本文に残っており、Writerは別途Factを読みます。数字は算用数字と「万」「億」「千」で書いてください。形式の例(別の数字): surface「最大52,300人」→「最大約5万2千人」、surface「7.26」→「約7.3」。EXACT_REQUIRED の場合 approx_surface は null にします。
+- reason は1〜2文、basis_fact_ids は根拠にしたFact ID(Ledgerの記録ID)、approved_condition は上の承認済みルールのどの条件に当たるかを短く書きます。
+
+【Storyline(確定済み)】
+悪天候と需給逼迫で高騰したコーヒー相場は供給増で下落する一方、米国の小売価格はなお前年比で高く、価格転嫁の遅れやカフェの豆以外の費用も消費者負担を説明する手掛かりとなる。
+
+【採用Fact(確定済み。【中核数値】【周辺数値】は決定論の機械印)】
+- 【事実1】ICO Composite Indicator Price（I-CIP）は2026年9月【周辺数値】に平均262.18【中核数値】米セント／ポンドとなり、2026年8月【周辺数値】比で8.7%【中核数値】下落した。ICOは、ブラジルの収穫物の供給増加と潤沢な供給見通しが価格を押し下げた一方、認証済みアラビカ在庫の少なさとエルニーニョをめぐる不確実性が下支えしたと報告した。（範囲：国際的なICO Composite Indicator Price。コーヒー4【周辺数値】グループの指標を含む。条件：ICOの2026年9月【周辺数値】市場報告。値下がり要因と下支え要因の双方を記録）
+- 【事実2】USDAのブラジル現地報告は、2025年【周辺数値】初頭の高価格について、ブラジルとベトナムの悪天候による供給混乱、販売可能な豆の限定、低在庫、強い国際需要を要因として列挙した。（範囲：国際コーヒー市場および主要生産国ブラジル・ベトナム。条件：USDAブラジル現地報告における市場説明）
+- 【事実3】Reutersが2025年12月【周辺数値】に取材した市場関係者・専門家は、生豆価格が小売に反映されるまで少なくとも約9か月【中核数値】かかるとの見積もりを示した。記事は、米国ロースターが平均で生豆在庫を約2～3か月分【中核数値】保有し、その後の焙煎・包装にも約2～3か月【中核数値】かかり、小売業者との価格交渉は四半期ごとに行われることが多いと報じた。（範囲：米国のロースターと小売価格への価格転嫁。条件：市場関係者・専門家の推定およびReutersの取材報告であり、すべての企業の標準期間を示すものではない）
+- 【事実4】BLSの2026年8月【周辺数値】CPIでは、米国の「Coffee」項目の指数は前年同月比6.1%【中核数値】上昇だった。（範囲：米都市消費者（CPI-U）におけるコーヒー項目。条件：BLSの前年同月比指数。特定ブランドの価格やカフェの一杯の価格ではない）
+- 【事実5】APが2025年10月【周辺数値】に取材したシカゴのカフェ運営者は、4店【周辺数値】舗でラテ、カプチーノなどの価格を約15%【中核数値】引き上げたと述べた。同運営者は、前年より豆の購入費が15%【中核数値】高くなり、カップやスリーブ、人件費も費用要因になったと説明した。（範囲：シカゴのMomentum Coffee 4【周辺数値】店舗の事例。条件：一事業者への取材事例。全米カフェの平均的な値上げ率ではない）
+
+【Writerへの注意(確定済み)】
+Writerへの注意(事実ではありません)：
+- 事実1について：ICOの報告する市場要因。これだけで消費者価格が同月に下がったとは言えない。報告ページは2026年10月9日時点で9月報告を掲載。
+- 事実2について：天候だけを唯一の原因としない。
+- 事実3について：相場下落や関税撤廃の後も消費者価格がすぐ下がらない理由の一つとして、推定・報道の帰属を付けて記載する。
+- 事実4について：2026年8月時点では前年より高い一方、過去のピーク時の上昇率と同一視しない。
+- 事実5について：豆価格だけが値上げを引き起こしたと断定しない。事業者の説明として限定して記載する。
+
+【参照Ledger記録(正確な値。変更しない)】
+[VERIFIED] COFFEE-001: ICO Composite Indicator Price（I-CIP）は2026年9月に平均262.18米セント／ポンドとなり、2026年8月比で8.7%下落した。ICOは、ブラジルの収穫物の供給増加と潤沢な供給見通しが価格を押し下げた一方、認証済みアラビカ在庫の少なさとエルニーニョをめぐる不確実性が下支えしたと報告した。
+  scope: 国際的なICO Composite Indicator Price。コーヒー4グループの指標を含む
+  conditions: ICOの2026年9月市場報告。値下がり要因と下支え要因の双方を記録
+  numeric_value: 平均262.18米セント／ポンド、前月比-8.7% (numeric_scope: 世界のコーヒー指標価格の月平均。特定の小売商品価格ではない)
+  date_or_period: 2026年9月（8月比）
+  causal_strength: CAUSAL_STATED_BY_SOURCE
+  notes_for_writer: ICOの報告する市場要因。これだけで消費者価格が同月に下がったとは言えない。報告ページは2026年10月9日時点で9月報告を掲載。
+
+[VERIFIED] COFFEE-014: Reutersが2025年12月に取材した市場関係者・専門家は、生豆価格が小売に反映されるまで少なくとも約9か月かかるとの見積もりを示した。記事は、米国ロースターが平均で生豆在庫を約2～3か月分保有し、その後の焙煎・包装にも約2～3か月かかり、小売業者との価格交渉は四半期ごとに行われることが多いと報じた。
+  scope: 米国のロースターと小売価格への価格転嫁
+  conditions: 市場関係者・専門家の推定およびReutersの取材報告であり、すべての企業の標準期間を示すものではない
+  numeric_value: 転嫁まで少なくとも約9か月との見積もり。在庫約2～3か月分、焙煎・包装約2～3か月 (numeric_scope: 米国のロースターの平均的な在庫・製造過程についての記事内説明)
+  date_or_period: 2025年12月時点の業界関係者の説明
+  causal_strength: CORRELATIONAL
+  notes_for_writer: 相場下落や関税撤廃の後も消費者価格がすぐ下がらない理由の一つとして、推定・報道の帰属を付けて記載する。
+
+[VERIFIED] COFFEE-015: BLSの2026年8月CPIでは、米国の「Coffee」項目の指数は前年同月比6.1%上昇だった。
+  scope: 米都市消費者（CPI-U）におけるコーヒー項目
+  conditions: BLSの前年同月比指数。特定ブランドの価格やカフェの一杯の価格ではない
+  numeric_value: 前年同月比+6.1% (numeric_scope: 米国CPI-Uの「Coffee」項目の価格指数)
+  date_or_period: 2026年8月のCPI。公表日は2026年9月11日
+  notes_for_writer: 2026年8月時点では前年より高い一方、過去のピーク時の上昇率と同一視しない。
+
+[VERIFIED] COFFEE-018: APが2025年10月に取材したシカゴのカフェ運営者は、4店舗でラテ、カプチーノなどの価格を約15%引き上げたと述べた。同運営者は、前年より豆の購入費が15%高くなり、カップやスリーブ、人件費も費用要因になったと説明した。
+  scope: シカゴのMomentum Coffee 4店舗の事例
+  conditions: 一事業者への取材事例。全米カフェの平均的な値上げ率ではない
+  numeric_value: 飲料価格約+15%、運営者による豆購入費前年同期比+15% (numeric_scope: 同社のラテ、カプチーノ等の価格、および同社の仕入れ費用)
+  date_or_period: 2025年10月の報道時点
+  causal_strength: CAUSAL_STATED_BY_SOURCE
+  notes_for_writer: 豆価格だけが値上げを引き起こしたと断定しない。事業者の説明として限定して記載する。
+
+[VERIFIED] COFFEE-010: USDAのブラジル現地報告は、2025年初頭の高価格について、ブラジルとベトナムの悪天候による供給混乱、販売可能な豆の限定、低在庫、強い国際需要を要因として列挙した。
+  scope: 国際コーヒー市場および主要生産国ブラジル・ベトナム
+  conditions: USDAブラジル現地報告における市場説明
+  date_or_period: 2025年初頭。USDA報告は2025年
+  causal_strength: CAUSAL_STATED_BY_SOURCE
+  notes_for_writer: 天候だけを唯一の原因としない。
+
+【判定対象の中核数値(この順序・この表記のまま判定)】
+- concept=C2 kind=magnitude ledger_ids=['COFFEE-001'] surfaces=["262.18"]
+- concept=C4 kind=magnitude ledger_ids=['COFFEE-001'] surfaces=["8.7%"]
+- concept=C8 kind=magnitude ledger_ids=['COFFEE-014'] surfaces=["約9か月"]
+- concept=C9 kind=range ledger_ids=['COFFEE-014'] surfaces=["約2～3か月分", "約2～3か月"]
+- concept=C10 kind=magnitude ledger_ids=['COFFEE-015'] surfaces=["6.1%"]
+- concept=C13 kind=magnitude ledger_ids=['COFFEE-018'] surfaces=["約15%", "15%"]
+【周辺数値(参考。判定対象外)】
+- 2026年9月 (concept=C1, ledger_ids=['COFFEE-001'])
+- 2026年8月 (concept=C3, ledger_ids=['COFFEE-001', 'COFFEE-015'])
+- 4 (concept=C5, ledger_ids=['COFFEE-001'])
+- 2025年 (concept=C6, ledger_ids=['COFFEE-010'])
+- 2025年12月 (concept=C7, ledger_ids=['COFFEE-014'])
+- 2025年10月 (concept=C11, ledger_ids=['COFFEE-018'])
+- 4店 (concept=C12, ledger_ids=['COFFEE-018'])
+- Coffee 4 (concept=C14, ledger_ids=['COFFEE-018'])

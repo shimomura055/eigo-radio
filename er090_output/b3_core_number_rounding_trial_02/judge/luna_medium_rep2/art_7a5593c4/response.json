@@ -1,0 +1,110 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C4",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "0.25パーセントポイント",
+            "approx_surface": null
+          },
+          {
+            "surface": "25ベーシスポイント",
+            "approx_surface": null
+          }
+        ],
+        "reason": "政策金利の引き上げ幅そのものを示す数値で、正確な幅が事実の意味に関わります。",
+        "basis_fact_ids": [
+          "F002"
+        ],
+        "approved_condition": "政策金利の決定内容として、精度自体が意味を持つ数値は厳密値を維持する。"
+      },
+      {
+        "concept": "C5",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "3.75～4.00％",
+            "approx_surface": null
+          }
+        ],
+        "reason": "FOMCが決定した目標レンジそのものであり、丸めると政策決定の正確な内容が変わります。",
+        "basis_fact_ids": [
+          "F002"
+        ],
+        "approved_condition": "政策金利の目標レンジとして、精度自体が意味を持つ数値は厳密値を維持する。"
+      },
+      {
+        "concept": "C6",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "12対0",
+            "approx_surface": null
+          }
+        ],
+        "reason": "声明の採決結果を示す記録上の数値であり、厳密な票数を維持します。",
+        "basis_fact_ids": [
+          "F002"
+        ],
+        "approved_condition": "記録として意味を持つ数値は厳密値を維持する。"
+      },
+      {
+        "concept": "C7",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2％",
+            "approx_surface": null
+          }
+        ],
+        "reason": "FOMCの長期インフレ目標を示す数値で、政策上の目標値として厳密さが必要です。",
+        "basis_fact_ids": [
+          "F003"
+        ],
+        "approved_condition": "重要な目標値や閾値は、意味を変える丸めをせず厳密値を維持する。"
+      },
+      {
+        "concept": "C8",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "30年",
+            "approx_surface": null
+          }
+        ],
+        "reason": "固定ローンの契約期間を表す数値で、期間を概数化すると商品条件の意味が変わります。",
+        "basis_fact_ids": [
+          "F007"
+        ],
+        "approved_condition": "数値の精度が条件の解釈に関わる場合は厳密値を維持する。"
+      },
+      {
+        "concept": "C12",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "5.98％",
+            "approx_surface": "約6％"
+          }
+        ],
+        "reason": "比較の起点となる金利は、概数でも上昇の方向と大きさを理解でき、小数点以下の精度は聞き手の理解に必要ではありません。",
+        "basis_fact_ids": [
+          "F007"
+        ],
+        "approved_condition": "精度の追加が比較の方向・物語上重要な大きさ・証拠の解釈に実質的な影響を与えない場合は、聞き取りやすい概数にできる。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C4\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"0.25パーセントポイント\",\"approx_surface\":null},{\"surface\":\"25ベーシスポイント\",\"approx_surface\":null}],\"reason\":\"政策金利の引き上げ幅そのものを示す数値で、正確な幅が事実の意味に関わります。\",\"basis_fact_ids\":[\"F002\"],\"approved_condition\":\"政策金利の決定内容として、精度自体が意味を持つ数値は厳密値を維持する。\"},{\"concept\":\"C5\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"3.75～4.00％\",\"approx_surface\":null}],\"reason\":\"FOMCが決定した目標レンジそのものであり、丸めると政策決定の正確な内容が変わります。\",\"basis_fact_ids\":[\"F002\"],\"approved_condition\":\"政策金利の目標レンジとして、精度自体が意味を持つ数値は厳密値を維持する。\"},{\"concept\":\"C6\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"12対0\",\"approx_surface\":null}],\"reason\":\"声明の採決結果を示す記録上の数値であり、厳密な票数を維持します。\",\"basis_fact_ids\":[\"F002\"],\"approved_condition\":\"記録として意味を持つ数値は厳密値を維持する。\"},{\"concept\":\"C7\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"2％\",\"approx_surface\":null}],\"reason\":\"FOMCの長期インフレ目標を示す数値で、政策上の目標値として厳密さが必要です。\",\"basis_fact_ids\":[\"F003\"],\"approved_condition\":\"重要な目標値や閾値は、意味を変える丸めをせず厳密値を維持する。\"},{\"concept\":\"C8\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"30年\",\"approx_surface\":null}],\"reason\":\"固定ローンの契約期間を表す数値で、期間を概数化すると商品条件の意味が変わります。\",\"basis_fact_ids\":[\"F007\"],\"approved_condition\":\"数値の精度が条件の解釈に関わる場合は厳密値を維持する。\"},{\"concept\":\"C12\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"5.98％\",\"approx_surface\":\"約6％\"}],\"reason\":\"比較の起点となる金利は、概数でも上昇の方向と大きさを理解でき、小数点以下の精度は聞き手の理解に必要ではありません。\",\"basis_fact_ids\":[\"F007\"],\"approved_condition\":\"精度の追加が比較の方向・物語上重要な大きさ・証拠の解釈に実質的な影響を与えない場合は、聞き取りやすい概数にできる。\"}]}",
+  "model": "gpt-6-luna",
+  "response_id": "resp_048846c7cc0e23b9006ad93c4d09ac87d088addfb0acfab313",
+  "sec": 10.3,
+  "effort": "medium",
+  "usage": {
+    "input_tokens": 5001,
+    "output_tokens": 1066,
+    "reasoning_tokens": 383
+  }
+}

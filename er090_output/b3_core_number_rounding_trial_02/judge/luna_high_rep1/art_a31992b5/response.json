@@ -1,0 +1,80 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "11件",
+            "approx_surface": null
+          }
+        ],
+        "reason": "統合した研究の正確な件数であり、研究の規模・範囲を示す数なので維持します。",
+        "basis_fact_ids": [
+          "F04"
+        ],
+        "approved_condition": "研究件数の精度が研究の範囲を示すため、厳密値を維持する。"
+      },
+      {
+        "concept": "C2",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "最大134,515人",
+            "approx_surface": "最大約13万5千人"
+          },
+          {
+            "surface": "134,515人",
+            "approx_surface": "約13万5千人"
+          }
+        ],
+        "reason": "参加者数の規模は約13万5千人でも伝わり、端数は聞き取りやすさに対して重要ではありません。最大値であることは表記に残します。",
+        "basis_fact_ids": [
+          "F04"
+        ],
+        "approved_condition": "精度が意味に大きく影響しない数値は、最大などの限定を保ったまま聞き取りやすく概数化できる。"
+      },
+      {
+        "concept": "C4",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "3回以上",
+            "approx_surface": null
+          }
+        ],
+        "reason": "研究の適格条件となる測定回数の下限なので、丸めると基準が変わり得ます。",
+        "basis_fact_ids": [
+          "F07"
+        ],
+        "approved_condition": "重要な閾値は、丸めで隠したり変えたりしない。"
+      },
+      {
+        "concept": "C5",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "0.0630",
+            "approx_surface": "約0.06"
+          }
+        ],
+        "reason": "約0.06でも標準化された関連の小ささは伝わり、末尾の桁は聞き手の解釈に大きく影響しません。この値は収入から勤勉性への係数として個別に扱い、別方向の係数と一つにまとめません。",
+        "basis_fact_ids": [
+          "F08"
+        ],
+        "approved_condition": "余分な小数精度が解釈に実質的な影響を与えない場合は概数化できるが、別々の指標・方向の数値は個別に帰属させる。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C1\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"11件\",\"approx_surface\":null}],\"reason\":\"統合した研究の正確な件数であり、研究の規模・範囲を示す数なので維持します。\",\"basis_fact_ids\":[\"F04\"],\"approved_condition\":\"研究件数の精度が研究の範囲を示すため、厳密値を維持する。\"},{\"concept\":\"C2\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"最大134,515人\",\"approx_surface\":\"最大約13万5千人\"},{\"surface\":\"134,515人\",\"approx_surface\":\"約13万5千人\"}],\"reason\":\"参加者数の規模は約13万5千人でも伝わり、端数は聞き取りやすさに対して重要ではありません。最大値であることは表記に残します。\",\"basis_fact_ids\":[\"F04\"],\"approved_condition\":\"精度が意味に大きく影響しない数値は、最大などの限定を保ったまま聞き取りやすく概数化できる。\"},{\"concept\":\"C4\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"3回以上\",\"approx_surface\":null}],\"reason\":\"研究の適格条件となる測定回数の下限なので、丸めると基準が変わり得ます。\",\"basis_fact_ids\":[\"F07\"],\"approved_condition\":\"重要な閾値は、丸めで隠したり変えたりしない。\"},{\"concept\":\"C5\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"0.0630\",\"approx_surface\":\"約0.06\"}],\"reason\":\"約0.06でも標準化された関連の小ささは伝わり、末尾の桁は聞き手の解釈に大きく影響しません。この値は収入から勤勉性への係数として個別に扱い、別方向の係数と一つにまとめません。\",\"basis_fact_ids\":[\"F08\"],\"approved_condition\":\"余分な小数精度が解釈に実質的な影響を与えない場合は概数化できるが、別々の指標・方向の数値は個別に帰属させる。\"}]}",
+  "model": "gpt-6-luna",
+  "response_id": "resp_053b0ffa34a0507b006ad93b3e617c87d0aa34b4518c704f12",
+  "sec": 33.2,
+  "effort": "high",
+  "usage": {
+    "input_tokens": 3869,
+    "output_tokens": 2935,
+    "reasoning_tokens": 2404
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "141,006",
+            "approx_surface": "約14万1千"
+          }
+        ],
+        "reason": "レビュー対象の規模を伝える数であり、6件の差は聞き手の理解に実質的な影響を与えないため、概数化できます。",
+        "basis_fact_ids": [
+          "EVID-008"
+        ],
+        "approved_condition": "余分な桁の精度がストーリー上の意味や解釈に影響しない場合は、聞き取りやすい概数を優先する。"
+      },
+      {
+        "concept": "C3",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "15",
+            "approx_surface": null
+          }
+        ],
+        "reason": "実際にパッケージがダウンロード・実行されたシステム数であり、具体的な影響の規模を示す数なので維持します。",
+        "basis_fact_ids": [
+          "EVID-009"
+        ],
+        "approved_condition": "実際に確認された結果の数で、概数化すると事実の忠実性に関わる場合は厳密値を維持する。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C1\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"141,006\",\"approx_surface\":\"約14万1千\"}],\"reason\":\"レビュー対象の規模を伝える数であり、6件の差は聞き手の理解に実質的な影響を与えないため、概数化できます。\",\"basis_fact_ids\":[\"EVID-008\"],\"approved_condition\":\"余分な桁の精度がストーリー上の意味や解釈に影響しない場合は、聞き取りやすい概数を優先する。\"},{\"concept\":\"C3\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"15\",\"approx_surface\":null}],\"reason\":\"実際にパッケージがダウンロード・実行されたシステム数であり、具体的な影響の規模を示す数なので維持します。\",\"basis_fact_ids\":[\"EVID-009\"],\"approved_condition\":\"実際に確認された結果の数で、概数化すると事実の忠実性に関わる場合は厳密値を維持する。\"}]}",
+  "model": "gpt-6-luna",
+  "response_id": "resp_000453f39cec1f4f006ad93c23a92887d09906e59a52e74147",
+  "sec": 6.0,
+  "effort": "medium",
+  "usage": {
+    "input_tokens": 3978,
+    "output_tokens": 545,
+    "reasoning_tokens": 279
+  }
+}

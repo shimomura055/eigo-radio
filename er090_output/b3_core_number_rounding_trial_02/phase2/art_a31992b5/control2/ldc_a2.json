@@ -1,0 +1,44 @@
+{
+  "article_sha256": "345aa457b127409a485f670ecfc3345dd1dc0be1394f6ed81458b10642aeca92",
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“When Your Pay Goes Up, Does Your Careful Side Switch On, Too?”",
+        "issue": "「switch on」は、収入の増加が勤勉性を変化させる因果作用を示唆する。Ledgerが確認しているのは時間的な関連であり、因果関係は確定できない。疑問形ではあるが、因果の示唆はHookによる緩和対象ではない。",
+        "severity": "MINOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": true,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "Hookとして扱ったが、因果の判定は緩和されない。疑問形による示唆にとどまるものの、因果作用を連想させる表現になっている。",
+        "treated_as_hook": true,
+        "auto_downgraded": false
+      },
+      {
+        "claim_in_article": "“The number of people was different in each study. The largest study included 134,515 people.”",
+        "issue": "Ledgerが保証するのは、参加者数が解析ごとに異なり、最大解析標本数が134,515人だったこと。記事は参加者数の違いを研究ごとの違いとして述べ、さらに最大解析標本数を「最大の研究」の参加者数として扱っている。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "数値自体は同じだが、その対象を解析標本から個別の研究標本へ移している。また、参加者数が異なる単位も解析ごとから研究ごとへ変わっている。",
+        "treated_as_hook": false,
+        "auto_downgraded": false
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION"
+  }
+}

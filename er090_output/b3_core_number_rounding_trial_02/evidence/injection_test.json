@@ -1,0 +1,290 @@
+{
+  "mutations": [
+    {
+      "id": "M1_pay_value_drift",
+      "article": "art_a31992b5",
+      "category": "丸め値ずれ(+11%)",
+      "find": "up to about 135,000 people",
+      "replace": "up to about 150,000 people",
+      "rf_status": "OK",
+      "rf_total_issues": 2,
+      "rf_detected_injected_sentence": true,
+      "rf_flag_on_injected_sentence_already_in_baseline": false,
+      "rf_hits": [
+        {
+          "sid": "s9",
+          "text": "The studies included up to about 150,000 people, though the number varied depending on the personality trait being studied.",
+          "conf": 0.98,
+          "question": [
+            "「about 150,000 people」という概数は、最大解析標本数の「134,515人」と比べて大きめの表現ではありませんか。",
+            "「about 150,000 people」と台帳の最大解析標本数「134,515人」は一致していないのではありませんか。"
+          ]
+        }
+      ],
+      "ldc_overall": "LEDGER_DEVIATION",
+      "ldc_n_dev": 1,
+      "ldc_detected_injected_sentence": true,
+      "ldc_changed_number_any": true,
+      "ldc_devs": [
+        {
+          "claim": "The studies included up to about 150,000 people, though the number varied depending on the personality trait being studied.",
+          "sev": "MAJOR",
+          "changed_number": true
+        }
+      ]
+    },
+    {
+      "id": "M2_pay_qualifier_drop",
+      "article": "art_a31992b5",
+      "category": "限定語・変動の欠落(最大/解析ごとに異なる)",
+      "find": "up to about 135,000 people, though the number varied depending on the personality trait being studied",
+      "replace": "about 135,000 people in every analysis",
+      "rf_status": "OK",
+      "rf_total_issues": 1,
+      "rf_detected_injected_sentence": true,
+      "rf_flag_on_injected_sentence_already_in_baseline": false,
+      "rf_hits": [
+        {
+          "sid": "s9",
+          "text": "The studies included about 135,000 people in every analysis.",
+          "conf": 0.99,
+          "question": [
+            "「約135,000人がすべての分析に含まれた」としていますが、台帳では最大134,515人で、解析ごとに参加者数は異なるのではありませんか。",
+            "「about 135,000 people in every analysis」は、最大解析標本数が134,515人で解析ごとに参加者数が異なるというFactと食い違っているのではありませんか。"
+          ]
+        }
+      ],
+      "ldc_overall": "LEDGER_DEVIATION",
+      "ldc_n_dev": 1,
+      "ldc_detected_injected_sentence": true,
+      "ldc_changed_number_any": true,
+      "ldc_devs": [
+        {
+          "claim": "The studies included about 135,000 people in every analysis.",
+          "sev": "MAJOR",
+          "changed_number": true
+        }
+      ]
+    },
+    {
+      "id": "M3_pay_count_rounded",
+      "article": "art_a31992b5",
+      "category": "指定外丸め(厳密な件数)",
+      "find": "data from 11 studies",
+      "replace": "data from about 10 studies",
+      "rf_status": "OK",
+      "rf_total_issues": 2,
+      "rf_detected_injected_sentence": true,
+      "rf_flag_on_injected_sentence_already_in_baseline": false,
+      "rf_hits": [
+        {
+          "sid": "s8",
+          "text": "A research team brought together data from about 10 studies that tracked workers’ personalities and income from work.",
+          "conf": 0.3,
+          "question": [
+            "s8の「about 10 studies」は、F04およびF16の「11件」の縦断研究と一致しているか確認しなくてよいでしょうか？"
+          ]
+        }
+      ],
+      "ldc_overall": "LEDGER_COMPLIANT",
+      "ldc_n_dev": 0,
+      "ldc_detected_injected_sentence": false,
+      "ldc_changed_number_any": false,
+      "ldc_devs": []
+    },
+    {
+      "id": "M4_pay_threshold_flip",
+      "article": "art_a31992b5",
+      "category": "閾値方向反転",
+      "find": "at least three times",
+      "replace": "at most three times",
+      "rf_status": "OK",
+      "rf_total_issues": 1,
+      "rf_detected_injected_sentence": true,
+      "rf_flag_on_injected_sentence_already_in_baseline": false,
+      "rf_hits": [
+        {
+          "sid": "s10",
+          "text": "Each study measured the same people’s income and personality at most three times.",
+          "conf": 0.99,
+          "question": [
+            "「at most three times」は、Factの「各研究で3～18回測定」と食い違っていませんか。",
+            "「at most three times」は測定回数が最大3回という意味ですが、台帳では3～18回とされており、食い違っていませんか。"
+          ]
+        }
+      ],
+      "ldc_overall": "LEDGER_DEVIATION",
+      "ldc_n_dev": 1,
+      "ldc_detected_injected_sentence": true,
+      "ldc_changed_number_any": true,
+      "ldc_devs": [
+        {
+          "claim": "Each study measured the same people’s income and personality at most three times.",
+          "sev": "MAJOR",
+          "changed_number": true
+        }
+      ]
+    },
+    {
+      "id": "M5_hormuz_value_drift",
+      "article": "art_9bd6834e",
+      "category": "丸め値ずれ(約2倍、20%料と混同)",
+      "find": "rose about 10%",
+      "replace": "rose about 20%",
+      "rf_status": "OK",
+      "rf_total_issues": 3,
+      "rf_detected_injected_sentence": true,
+      "rf_flag_on_injected_sentence_already_in_baseline": false,
+      "rf_hits": [
+        {
+          "sid": "s10",
+          "text": "That day, Brent futures, a benchmark for oil prices, rose about 20%.",
+          "conf": 0.99,
+          "question": [
+            "「about 20%」という上昇率は、台帳にある7月13日の前日比9.59％と食い違っているのではありませんか。",
+            "「about 20%」という上昇率は、台帳の「9.59%」と食い違っているのではありませんか。"
+          ]
+        }
+      ],
+      "ldc_overall": "LEDGER_DEVIATION",
+      "ldc_n_dev": 3,
+      "ldc_detected_injected_sentence": true,
+      "ldc_changed_number_any": true,
+      "ldc_devs": [
+        {
+          "claim": "“That day, Brent futures, a benchmark for oil prices, rose about 20%.”",
+          "sev": "MAJOR",
+          "changed_number": true
+        },
+        {
+          "claim": "“Even a distant strait connects to our wallets through gasoline prices.”",
+          "sev": "MAJOR",
+          "changed_number": false
+        },
+        {
+          "claim": "“Even after the bill leaves the scene, tankers are still making their journeys.”",
+          "sev": "MAJOR",
+          "changed_number": false
+        }
+      ]
+    },
+    {
+      "id": "M6_hormuz_direction_flip",
+      "article": "art_9bd6834e",
+      "category": "方向反転",
+      "find": "rose about 10%",
+      "replace": "fell about 10%",
+      "rf_status": "PARTIAL",
+      "rf_total_issues": 7,
+      "rf_detected_injected_sentence": true,
+      "rf_flag_on_injected_sentence_already_in_baseline": false,
+      "rf_hits": [
+        {
+          "sid": "s10",
+          "text": "That day, Brent futures, a benchmark for oil prices, fell about 10%.",
+          "conf": 1.0,
+          "question": [
+            "「fell about 10%」は、台帳の「7.29ドル、9.59％上昇」と値動きの向きが逆ではありませんか？",
+            "「fell about 10%」は、7月13日にBrent先物が9.59％上昇したという台帳の数値と逆ではありませんか。"
+          ]
+        }
+      ],
+      "ldc_overall": "LEDGER_DEVIATION",
+      "ldc_n_dev": 4,
+      "ldc_detected_injected_sentence": true,
+      "ldc_changed_number_any": true,
+      "ldc_devs": [
+        {
+          "claim": "“That day, Brent futures, a benchmark for oil prices, fell about 10%.”",
+          "sev": "MAJOR",
+          "changed_number": true
+        },
+        {
+          "claim": "“The bill was not the only thing driving the story.”",
+          "sev": "MAJOR",
+          "changed_number": false
+        },
+        {
+          "claim": "“Even a distant strait connects to our wallets through gasoline prices.”",
+          "sev": "MAJOR",
+          "changed_number": false
+        },
+        {
+          "claim": "“Even after the bill leaves the scene, tankers are still making their journeys.”",
+          "sev": "MAJOR",
+          "changed_number": false
+        }
+      ]
+    },
+    {
+      "id": "M7_hormuz_exact_changed",
+      "article": "art_9bd6834e",
+      "category": "厳密値の変更",
+      "find": "the 20% bill",
+      "replace": "the 30% bill",
+      "rf_status": "PARTIAL",
+      "rf_total_issues": 5,
+      "rf_detected_injected_sentence": true,
+      "rf_flag_on_injected_sentence_already_in_baseline": false,
+      "rf_hits": [
+        {
+          "sid": "s12",
+          "text": "The market was shocked by the 30% bill!”",
+          "conf": 1.0,
+          "question": [
+            "“30% bill”という記述は、台帳の提案率「20%」と食い違い、「20% bill」ではありませんか。",
+            "「30% bill」は台帳の「20% payment」と食い違い、「市場が衝撃を受けた」という因果も台帳では確認できないのではありませんか。"
+          ]
+        }
+      ],
+      "ldc_overall": "LEDGER_DEVIATION",
+      "ldc_n_dev": 5,
+      "ldc_detected_injected_sentence": true,
+      "ldc_changed_number_any": true,
+      "ldc_devs": [
+        {
+          "claim": "“I see! The market was shocked by the 30% bill!”",
+          "sev": "MAJOR",
+          "changed_number": true
+        },
+        {
+          "claim": "“The bill was not the only thing driving the story.”",
+          "sev": "MAJOR",
+          "changed_number": false
+        },
+        {
+          "claim": "“as if someone had suddenly held out a bill at one of the world’s most important sea routes”",
+          "sev": "MAJOR",
+          "changed_number": false
+        },
+        {
+          "claim": "“Even a distant strait connects to our wallets through gasoline prices.”",
+          "sev": "MAJOR",
+          "changed_number": false
+        },
+        {
+          "claim": "“Even after the bill leaves the scene, tankers are still making their journeys.”",
+          "sev": "MAJOR",
+          "changed_number": false
+        }
+      ]
+    }
+  ],
+  "baseline": {
+    "art_a31992b5": [],
+    "art_9bd6834e": [
+      {
+        "sid": "s8",
+        "text": "The idea was that the U.S. would get back the money it spent to keep the strait safe."
+      },
+      {
+        "sid": "s29",
+        "text": "Even a distant strait connects to our wallets through gasoline prices."
+      },
+      {
+        "sid": "s31",
+        "text": "Even after the bill leaves the scene, tankers are still making their journeys."
+      }
+    ]
+  }
+}

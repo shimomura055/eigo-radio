@@ -1,0 +1,90 @@
+{
+  "entries": [
+    {
+      "concept": "C1",
+      "kind": "date_time",
+      "ledger_ids": [
+        "F-001"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "2026年9月14日",
+          "approx": null
+        }
+      ],
+      "reason": "発言の正確な日付が出来事の特定に必要です。",
+      "basis_fact_ids": [
+        "F-001"
+      ],
+      "approved_condition": "日付など、精度自体に意味がある数値は厳密値を維持する。"
+    },
+    {
+      "concept": "C2",
+      "kind": "date_time",
+      "ledger_ids": [
+        "F-003"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "2021年11月15日",
+          "approx": null
+        }
+      ],
+      "reason": "破壊試験が行われた正確な日付が出来事の特定に必要です。",
+      "basis_fact_ids": [
+        "F-003"
+      ],
+      "approved_condition": "日付など、精度自体に意味がある数値は厳密値を維持する。"
+    },
+    {
+      "concept": "C4",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F-003"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "1,500個超:V3_not_ordinary_rounding(exact=1500,approx=1500)"
+      ],
+      "surfaces": [
+        {
+          "surface": "1,500個超",
+          "approx": null
+        }
+      ],
+      "reason": "追跡可能なデブリの規模を示す数値で、追加の精度は聞き手の理解に大きく影響しません。元の「超」という限定は維持します。",
+      "basis_fact_ids": [
+        "F-003"
+      ],
+      "approved_condition": "精度が記事の意味や判断に必要でない場合、意味を損なわない範囲で概数化してよい。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C1",
+    "C2",
+    "C4"
+  ],
+  "n_approximate_ok": 0,
+  "article_id": "art_f172a253",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_07502b1a42721241006ad93bf35bb087d0b870472917777871",
+  "effort": "low",
+  "variant": "luna_low"
+}

@@ -1,0 +1,117 @@
+{
+  "entries": [
+    {
+      "concept": "C1",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F04"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "11件",
+          "approx": null
+        }
+      ],
+      "reason": "統合対象となった研究数そのものを示すため、概数化せず維持します。",
+      "basis_fact_ids": [
+        "F04"
+      ],
+      "approved_condition": "研究数の正確な件数を維持する。"
+    },
+    {
+      "concept": "C2",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F04"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "最大134,515人",
+          "approx": "最大約13万5千人"
+        },
+        {
+          "surface": "134,515人",
+          "approx": "約13万5千人"
+        }
+      ],
+      "reason": "最大解析標本数は聞き手に規模が伝わればよく、丸めても大規模な標本であるという意味は変わりません。最大という限定は維持します。",
+      "basis_fact_ids": [
+        "F04"
+      ],
+      "approved_condition": "精度が意味に影響しない数値は、意味を損なわない範囲で聞き取りやすく概数化する。"
+    },
+    {
+      "concept": "C4",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F07"
+      ],
+      "fact_ns": [
+        3
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "3回以上",
+          "approx": null
+        }
+      ],
+      "reason": "対象研究の適格条件を示す基準値なので、丸めると条件の意味が変わり得ます。",
+      "basis_fact_ids": [
+        "F07"
+      ],
+      "approved_condition": "重要な基準・閾値は厳密値を維持する。"
+    },
+    {
+      "concept": "C5",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F08"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "0.0630",
+          "approx": null
+        }
+      ],
+      "reason": "報告された最大の標準化交差遅延効果の数値です。丸めると別方向の効果値と同じ表記になり、両者の区別を弱めるため厳密値を維持します。",
+      "basis_fact_ids": [
+        "F08"
+      ],
+      "approved_condition": "丸めると意味のある値の区別が失われる場合は精度を維持し、別々のFact・指標を同一視しない。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C1",
+    "C2",
+    "C4",
+    "C5"
+  ],
+  "n_approximate_ok": 1,
+  "article_id": "art_a31992b5",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_0f97c7d0d8c7f22d006ad93b3e63b487d0a9849ba071893f81",
+  "effort": "medium",
+  "variant": "luna_medium"
+}

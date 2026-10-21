@@ -1,0 +1,110 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C4",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "0.25パーセントポイント",
+            "approx_surface": null
+          },
+          {
+            "surface": "25ベーシスポイント",
+            "approx_surface": null
+          }
+        ],
+        "reason": "政策金利目標の変更幅そのものを示す数値であり、変更幅の正確さが事実の意味に関わります。",
+        "basis_fact_ids": [
+          "F002"
+        ],
+        "approved_condition": "政策金利の変更幅は精度自体が意味を持つ数値として維持する。"
+      },
+      {
+        "concept": "C5",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "3.75～4.00％",
+            "approx_surface": null
+          }
+        ],
+        "reason": "FOMCが設定した目標レンジそのものなので、丸めると政策上の正確な水準が変わります。",
+        "basis_fact_ids": [
+          "F002"
+        ],
+        "approved_condition": "政策金利の目標レンジは精度自体が意味を持つ数値として維持する。"
+      },
+      {
+        "concept": "C6",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "12対0",
+            "approx_surface": null
+          }
+        ],
+        "reason": "採決結果を示す記録上の数値であり、正確な賛否数が意味を持ちます。",
+        "basis_fact_ids": [
+          "F002"
+        ],
+        "approved_condition": "記録に当たる数値は厳密値を維持する。"
+      },
+      {
+        "concept": "C7",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2％",
+            "approx_surface": null
+          }
+        ],
+        "reason": "FOMCの長期インフレ目標として示された数値であり、政策上の基準値を丸めるべきではありません。",
+        "basis_fact_ids": [
+          "F003"
+        ],
+        "approved_condition": "重要な目標・閾値は意味を損なわないよう厳密値を維持する。"
+      },
+      {
+        "concept": "C8",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "30年",
+            "approx_surface": null
+          }
+        ],
+        "reason": "比較対象の住宅ローン商品を特定する契約期間であり、丸めると商品の意味が変わります。",
+        "basis_fact_ids": [
+          "F007"
+        ],
+        "approved_condition": "意味の解釈に必要な精度・区別は維持する。"
+      },
+      {
+        "concept": "C12",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "5.98％",
+            "approx_surface": "約6％"
+          }
+        ],
+        "reason": "この平均金利の値は、概数にしても比較の方向や話の要点を損ないません。別の時点の7.40％とは個別の値として扱い、統合しません。",
+        "basis_fact_ids": [
+          "F007"
+        ],
+        "approved_condition": "精度が意味に実質的な影響を与えない場合は、聞き取りやすさを優先して概数化する。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C4\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"0.25パーセントポイント\",\"approx_surface\":null},{\"surface\":\"25ベーシスポイント\",\"approx_surface\":null}],\"reason\":\"政策金利目標の変更幅そのものを示す数値であり、変更幅の正確さが事実の意味に関わります。\",\"basis_fact_ids\":[\"F002\"],\"approved_condition\":\"政策金利の変更幅は精度自体が意味を持つ数値として維持する。\"},{\"concept\":\"C5\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"3.75～4.00％\",\"approx_surface\":null}],\"reason\":\"FOMCが設定した目標レンジそのものなので、丸めると政策上の正確な水準が変わります。\",\"basis_fact_ids\":[\"F002\"],\"approved_condition\":\"政策金利の目標レンジは精度自体が意味を持つ数値として維持する。\"},{\"concept\":\"C6\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"12対0\",\"approx_surface\":null}],\"reason\":\"採決結果を示す記録上の数値であり、正確な賛否数が意味を持ちます。\",\"basis_fact_ids\":[\"F002\"],\"approved_condition\":\"記録に当たる数値は厳密値を維持する。\"},{\"concept\":\"C7\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"2％\",\"approx_surface\":null}],\"reason\":\"FOMCの長期インフレ目標として示された数値であり、政策上の基準値を丸めるべきではありません。\",\"basis_fact_ids\":[\"F003\"],\"approved_condition\":\"重要な目標・閾値は意味を損なわないよう厳密値を維持する。\"},{\"concept\":\"C8\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"30年\",\"approx_surface\":null}],\"reason\":\"比較対象の住宅ローン商品を特定する契約期間であり、丸めると商品の意味が変わります。\",\"basis_fact_ids\":[\"F007\"],\"approved_condition\":\"意味の解釈に必要な精度・区別は維持する。\"},{\"concept\":\"C12\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"5.98％\",\"approx_surface\":\"約6％\"}],\"reason\":\"この平均金利の値は、概数にしても比較の方向や話の要点を損ないません。別の時点の7.40％とは個別の値として扱い、統合しません。\",\"basis_fact_ids\":[\"F007\"],\"approved_condition\":\"精度が意味に実質的な影響を与えない場合は、聞き取りやすさを優先して概数化する。\"}] }",
+  "model": "gpt-6-luna",
+  "response_id": "resp_04027b67eb256c53006ad93c21021887d09388df15189b7e73",
+  "sec": 7.9,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 5001,
+    "output_tokens": 863,
+    "reasoning_tokens": 214
+  }
+}

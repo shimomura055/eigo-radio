@@ -1,0 +1,91 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C4",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "295億9,100万ドル",
+            "approx_surface": "約296億ドル"
+          }
+        ],
+        "reason": "財務ハイライトでは百万ドル単位の値ですが、話し言葉では約296億ドルとしても売上高の規模は正確に伝わります。",
+        "basis_fact_ids": [
+          "F2"
+        ],
+        "approved_condition": "余分な精度を落としても、重要な規模や解釈に実質的な影響がない場合は概数化できる。"
+      },
+      {
+        "concept": "C5",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "167億ドル",
+            "approx_surface": "約170億ドル"
+          }
+        ],
+        "reason": "元の金額自体がCEO発言で10億ドル単位に丸められており、約170億ドルとしてもAI半導体売上高の規模を理解するうえで意味は変わりません。",
+        "basis_fact_ids": [
+          "F3"
+        ],
+        "approved_condition": "意味を損なわない範囲で、聞き取りやすさを優先した概数化ができる。"
+      },
+      {
+        "concept": "C6",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "221％",
+            "approx_surface": "約220％"
+          }
+        ],
+        "reason": "前年同期比の増加率は約220％としても、成長の大きさや他の数値との区別を損ないません。",
+        "basis_fact_ids": [
+          "F3"
+        ],
+        "approved_condition": "余分な小数・桁の精度が比較や証拠の解釈に実質的な影響を与えない場合は丸められる。"
+      },
+      {
+        "concept": "C7",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "54％",
+            "approx_surface": "約50％"
+          }
+        ],
+        "reason": "前四半期比の増加率は約50％としても、増加の規模を示す意味は保たれます。前年同期比の増加率とは別の指標として扱います。",
+        "basis_fact_ids": [
+          "F3"
+        ],
+        "approved_condition": "各数値を元の指標に個別に結び付けたまま、意味を損なわない範囲で概数化できる。"
+      },
+      {
+        "concept": "C9",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約348億ドル",
+            "approx_surface": "約350億ドル"
+          }
+        ],
+        "reason": "これは会社の見通しであり、約350億ドルとしても予測値の規模を伝えるうえで解釈は変わりません。",
+        "basis_fact_ids": [
+          "F4"
+        ],
+        "approved_condition": "見通しの不確実性を保ちつつ、重要な規模や解釈に影響しない精度は丸められる。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C4\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"295億9,100万ドル\",\"approx_surface\":\"約296億ドル\"}],\"reason\":\"財務ハイライトでは百万ドル単位の値ですが、話し言葉では約296億ドルとしても売上高の規模は正確に伝わります。\",\"basis_fact_ids\":[\"F2\"],\"approved_condition\":\"余分な精度を落としても、重要な規模や解釈に実質的な影響がない場合は概数化できる。\"},{\"concept\":\"C5\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"167億ドル\",\"approx_surface\":\"約170億ドル\"}],\"reason\":\"元の金額自体がCEO発言で10億ドル単位に丸められており、約170億ドルとしてもAI半導体売上高の規模を理解するうえで意味は変わりません。\",\"basis_fact_ids\":[\"F3\"],\"approved_condition\":\"意味を損なわない範囲で、聞き取りやすさを優先した概数化ができる。\"},{\"concept\":\"C6\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"221％\",\"approx_surface\":\"約220％\"}],\"reason\":\"前年同期比の増加率は約220％としても、成長の大きさや他の数値との区別を損ないません。\",\"basis_fact_ids\":[\"F3\"],\"approved_condition\":\"余分な小数・桁の精度が比較や証拠の解釈に実質的な影響を与えない場合は丸められる。\"},{\"concept\":\"C7\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"54％\",\"approx_surface\":\"約50％\"}],\"reason\":\"前四半期比の増加率は約50％としても、増加の規模を示す意味は保たれます。前年同期比の増加率とは別の指標として扱います。\",\"basis_fact_ids\":[\"F3\"],\"approved_condition\":\"各数値を元の指標に個別に結び付けたまま、意味を損なわない範囲で概数化できる。\"},{\"concept\":\"C9\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約348億ドル\",\"approx_surface\":\"約350億ドル\"}],\"reason\":\"これは会社の見通しであり、約350億ドルとしても予測値の規模を伝えるうえで解釈は変わりません。\",\"basis_fact_ids\":[\"F4\"],\"approved_condition\":\"見通しの不確実性を保ちつつ、重要な規模や解釈に影響しない精度は丸められる。\"}]}",
+  "model": "gpt-6-luna",
+  "response_id": "resp_0e0c987c28388d86006ad93b8133b487d0b788f02ca383cce4",
+  "sec": 27.7,
+  "effort": "high",
+  "usage": {
+    "input_tokens": 3597,
+    "output_tokens": 2552,
+    "reasoning_tokens": 1912
+  }
+}

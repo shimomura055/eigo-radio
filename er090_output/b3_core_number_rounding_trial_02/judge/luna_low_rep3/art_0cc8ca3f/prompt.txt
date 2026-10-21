@@ -1,0 +1,131 @@
+【承認済みルール(原文。新しい基準は追加しない)】
+
+■ Spoken-first Number Treatment(承認済み仕様)
+Verified Fact Ledgerは常にexact factを保持する。spoken narrative側は、精度自体に意味がない数字を、丸め(round)・概数化(approximate)・方向化(directionalize)してListening easeを優先してよい。分類は2軸: Importance(`ANCHOR`/`SUPPORTING`/`DISPENSABLE`)、Exactness(`EXACT_REQUIRED`/`APPROXIMATE_OK`/`DIRECTION_ONLY`)。スコア・日付・記録・健康研究の結果・安全閾値など、精度そのものが意味を持つ数字はEXACT_REQUIREDのまま維持する
+
+■ 【追加ルール: 全Pattern共通 - Listener-Friendly Numeric Precision】
+
+This rule applies AFTER each Pattern's own rule above has already decided which
+numeric Facts to keep. First, decide whether a numeric value is worth retaining at
+all, following the Pattern-specific rule above. Then, for values you keep, decide how
+much precision the listener actually needs, following this rule. Do not conflate the
+two decisions.
+
+When a numeric value is worth keeping, preserve only as much precision as the
+listener needs to understand its meaning.
+
+Prefer simpler rounded values when extra decimal precision does not materially
+affect:
+- the direction of the comparison
+- the magnitude that matters to the story
+- an important threshold
+- the interpretation of the evidence
+- the distinction between materially different values
+
+Do not remove decimals mechanically.
+
+Keep decimal precision when rounding would:
+- hide a meaningful difference
+- cross or obscure an important threshold
+- distort a small-scale measurement
+- change the interpretation
+- make two meaningfully different values appear equivalent
+- reduce factual fidelity in a way relevant to the listener
+
+When rounding is appropriate, use listener-friendly expressions such as "about",
+"roughly", "nearly", etc. where suitable.
+
+Most important: Rounding is NOT permission to merge separate facts, metrics,
+groups, time points, survey questions, or experimental outcomes. Each retained
+numeric expression must remain attributable to its original Fact / metric in the
+Fact Ledger. Never combine separate Facts merely because their rounded values
+become numerically similar. Before rounding, verify that each numeric expression
+can still be traced to a single, specific Fact / metric / group / time point /
+survey question. Do not combine numbers from different Facts or different
+metrics (for example, an attention-score value and a processing-speed value)
+into a single shared rounded expression, even if their rounded values happen to
+look similar or identical.
+
+The goal is not to remove decimal places. The goal is to use the least precision
+necessary for accurate spoken understanding.
+
+This is a judgment rule, not a mechanical one. Do NOT apply any fixed rule such as
+"always drop decimals," "always round to a whole number," "always keep one decimal
+place," or "always use two significant figures." Decide based on what each specific
+number means in context.
+
+For general guidance only (not a fixed instruction for this specific article):
+decimal precision is more likely to matter for values such as small percentages
+(for example 1.2% vs 1.8%), small absolute differences (for example 4.8 vs 5.2),
+sub-one units (for example 0.3 seconds), multipliers (for example 1.5 times),
+values near a meaningful threshold, or small differences that are themselves the
+finding. These are illustrative examples of the general principle only, not
+article-specific instructions.
+
+■ 【追加ルール: 全Pattern共通・全CEFRレベル共通 - Numeric Precisionの既定】
+上記Listener-Friendly Numeric Precisionルールを補強する原則であり、置き換えではない。
+
+原則: 聞き取りやすさを優先し、意味を損なわない範囲では概数を基本とする。小数点
+以下を保持するのは、その精度自体が記事の意味・比較・判断に必要な場合に限る。
+通常は次のように概数化することが既定である: 25.2% → about 25%、44.7% → about
+45%、89.6% → about 90%。
+
+小数点以下を保持してよい例: 閾値の前後が論点になっている場合(例えば49.5%と
+50.5%のように、僅差自体が意味を持つ場合)、年次変化・比較差を精密に扱う必要が
+ある場合、小数を落とすと記事の意味・結論が変わってしまう場合。
+
+This default applies equally regardless of CEFR level (A2/B1/B2). There is no
+level-specific numeric precision rule: the same judgment (round by default, keep
+precision only when the precision itself matters) applies to every level's
+spoken layer.
+
+【今回の判定の進め方(出力形式と安全側の指示のみ)】
+- 判定するのは、下の「判定対象の中核数値」の各conceptだけです。conceptの追加・削除・並べ替えはしません。
+- 周辺数値は判定対象ではありません。丸めると値同士が同一視されないか等の確認にだけ使ってください。
+- 各conceptについて decision を EXACT_REQUIRED(厳密値を維持)か APPROXIMATE_OK(聞き取りやすい概数にしてよい)のどちらかで答えます。
+- 判断が不確かな場合は無理に丸めず EXACT_REQUIRED にしてください。
+- APPROXIMATE_OK の場合のみ、surfaces の各surface(判定対象に示された表記そのまま)に対し approx_surface を日本語で書きます。approx_surface は、surface文字列の**数字部分だけ**を、元の数値を通常の四捨五入(有効数字を減らす)で丸めた値に置き換え、「約」「およそ」等のヘッジ語を付けただけの表記にします。surfaceにある限定語(「最大」「以上」「超」「未満」等)と単位・接尾辞はそのまま残し、surfaceにない語句(説明・括弧書き・「前年同月比」等の補足)は一切足しません。surfaceに単位が無ければ単位も足しません。Factの意味(例: 解析ごとに人数が異なる等)はFact本文に残っており、Writerは別途Factを読みます。数字は算用数字と「万」「億」「千」で書いてください。形式の例(別の数字): surface「最大52,300人」→「最大約5万2千人」、surface「7.26」→「約7.3」。EXACT_REQUIRED の場合 approx_surface は null にします。
+- reason は1〜2文、basis_fact_ids は根拠にしたFact ID(Ledgerの記録ID)、approved_condition は上の承認済みルールのどの条件に当たるかを短く書きます。
+
+【Storyline(確定済み)】
+2026年【周辺数値】、ミニバッグはファッション媒体やFallランウェイで再び注目されているが、その注目は装飾的な小型アイテムを含む限定的なもので、大型バッグとも併存し、microバッグ全般の需要復活を示すものではない。
+
+【採用Fact(確定済み。【中核数値】【周辺数値】は決定論の機械印)】
+- 【事実1】ELLEの2026年9月8日【中核数値】付記事は、ミニバッグをFall 2026【周辺数値】のトレンドとして紹介し、Khaiteの手のひらサイズのイブニングバッグや、複数ブランドの小型バッグを取り上げた。（範囲：ELLEの米国向けファッション・ショッピング記事。掲載商品およびFall 2026【周辺数値】コレクションの紹介範囲。条件：編集部によるトレンド／商品紹介であり、消費者の購買数や市場シェアの調査ではない）
+- 【事実2】Who What WearのFall 2026【周辺数値】ランウェイまとめは、Dior、Chanel、Chloéに小さなミノディエールが登場したと報じる一方、それらを実用性より芸術性の強い小型クラッチとして説明した。同まとめでは大型・ゆったりした形も複数の主要傾向として扱っている。（範囲：Who What Wearが取り上げた複数ブランドのランウェイ。条件：ファッション編集者によるコレクションの観察と解釈）
+- 【事実3】Who What Wearの2026年10月【中核数値】掲載ショッピング記事は、「極小（micro）バッグのトレンドは短期間で終わった」とする編集者の見解を示し、代わりにmicroより大きくトートより小さいバッグを紹介した。（範囲：Who What Wearのショッピング記事内の編集者コメント。条件：記事内の一編集者による評価。販売・検索・消費者意識データに基づく結論とは明示されていない）
+
+【Writerへの注意(確定済み)】
+Writerへの注意(事実ではありません)：
+- 事実1について：Fall 2026の編集上の注目を示す根拠として使用可能。消費者全体での再流行や販売増の証拠とは区別する。
+- 事実2について：小型バッグは装飾的・コレクション上のアクセントとして存在するが、日常使い向けの主流形状と同一視しない。
+- 事実3について：「mini」と「micro」を同じ傾向としてまとめない。現時点の情報は、ミニバッグの一部に編集上の再注目がある一方、microバッグ全般の消費者需要の再上昇までは立証しない。
+
+【参照Ledger記録(正確な値。変更しない)】
+[VERIFIED] MB-01: ELLEの2026年9月8日付記事は、ミニバッグをFall 2026のトレンドとして紹介し、Khaiteの手のひらサイズのイブニングバッグや、複数ブランドの小型バッグを取り上げた。([elle.com](https://www.elle.com/fashion/a73435817/mini-bag-trend-fall-2026/))
+  scope: ELLEの米国向けファッション・ショッピング記事。掲載商品およびFall 2026コレクションの紹介範囲。
+  conditions: 編集部によるトレンド／商品紹介であり、消費者の購買数や市場シェアの調査ではない。
+  date_or_period: 2026年9月8日（Fall 2026向け）
+  causal_strength: OBSERVED_REPORTED
+  notes_for_writer: Fall 2026の編集上の注目を示す根拠として使用可能。消費者全体での再流行や販売増の証拠とは区別する。
+
+[VERIFIED] MB-06: Who What Wearの2026年10月掲載ショッピング記事は、「極小（micro）バッグのトレンドは短期間で終わった」とする編集者の見解を示し、代わりにmicroより大きくトートより小さいバッグを紹介した。([whowhatwear.com](https://www.whowhatwear.com/what-to-buy-now))
+  scope: Who What Wearのショッピング記事内の編集者コメント。
+  conditions: 記事内の一編集者による評価。販売・検索・消費者意識データに基づく結論とは明示されていない。
+  date_or_period: 2026年10月
+  causal_strength: OBSERVED_REPORTED
+  notes_for_writer: 「mini」と「micro」を同じ傾向としてまとめない。現時点の情報は、ミニバッグの一部に編集上の再注目がある一方、microバッグ全般の消費者需要の再上昇までは立証しない。
+
+[VERIFIED] MB-05: Who What WearのFall 2026ランウェイまとめは、Dior、Chanel、Chloéに小さなミノディエールが登場したと報じる一方、それらを実用性より芸術性の強い小型クラッチとして説明した。同まとめでは大型・ゆったりした形も複数の主要傾向として扱っている。([whowhatwear.com](https://www.whowhatwear.com/fashion/runway/fall-winter-bag-trends-2026))
+  scope: Who What Wearが取り上げた複数ブランドのランウェイ。
+  conditions: ファッション編集者によるコレクションの観察と解釈。
+  date_or_period: Fall 2026コレクション
+  causal_strength: OBSERVED_REPORTED
+  notes_for_writer: 小型バッグは装飾的・コレクション上のアクセントとして存在するが、日常使い向けの主流形状と同一視しない。
+
+【判定対象の中核数値(この順序・この表記のまま判定)】
+- concept=C1 kind=date_time ledger_ids=['MB-01'] surfaces=["2026年9月8日"]
+- concept=C3 kind=date_time ledger_ids=['MB-06'] surfaces=["2026年10月"]
+【周辺数値(参考。判定対象外)】
+- Fall 2026 (concept=C2, ledger_ids=['MB-01', 'MB-05'])
+- 2026年 (concept=C4, ledger_ids=['_STORY'])

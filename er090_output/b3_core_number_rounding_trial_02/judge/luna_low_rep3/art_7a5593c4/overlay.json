@@ -1,0 +1,167 @@
+{
+  "entries": [
+    {
+      "concept": "C4",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F002"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "0.25パーセントポイント",
+          "approx": null
+        },
+        {
+          "surface": "25ベーシスポイント",
+          "approx": null
+        }
+      ],
+      "reason": "政策金利目標の変更幅そのものを示す数値であり、変更幅の正確さが事実の意味に関わります。",
+      "basis_fact_ids": [
+        "F002"
+      ],
+      "approved_condition": "政策金利の変更幅は精度自体が意味を持つ数値として維持する。"
+    },
+    {
+      "concept": "C5",
+      "kind": "range",
+      "ledger_ids": [
+        "F002"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "3.75～4.00％",
+          "approx": null
+        }
+      ],
+      "reason": "FOMCが設定した目標レンジそのものなので、丸めると政策上の正確な水準が変わります。",
+      "basis_fact_ids": [
+        "F002"
+      ],
+      "approved_condition": "政策金利の目標レンジは精度自体が意味を持つ数値として維持する。"
+    },
+    {
+      "concept": "C6",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F002"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "12対0",
+          "approx": null
+        }
+      ],
+      "reason": "採決結果を示す記録上の数値であり、正確な賛否数が意味を持ちます。",
+      "basis_fact_ids": [
+        "F002"
+      ],
+      "approved_condition": "記録に当たる数値は厳密値を維持する。"
+    },
+    {
+      "concept": "C7",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F003"
+      ],
+      "fact_ns": [
+        3
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "2％",
+          "approx": null
+        }
+      ],
+      "reason": "FOMCの長期インフレ目標として示された数値であり、政策上の基準値を丸めるべきではありません。",
+      "basis_fact_ids": [
+        "F003"
+      ],
+      "approved_condition": "重要な目標・閾値は意味を損なわないよう厳密値を維持する。"
+    },
+    {
+      "concept": "C8",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F007"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "30年",
+          "approx": null
+        }
+      ],
+      "reason": "比較対象の住宅ローン商品を特定する契約期間であり、丸めると商品の意味が変わります。",
+      "basis_fact_ids": [
+        "F007"
+      ],
+      "approved_condition": "意味の解釈に必要な精度・区別は維持する。"
+    },
+    {
+      "concept": "C12",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F007"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "5.98％",
+          "approx": "約6％"
+        }
+      ],
+      "reason": "この平均金利の値は、概数にしても比較の方向や話の要点を損ないません。別の時点の7.40％とは個別の値として扱い、統合しません。",
+      "basis_fact_ids": [
+        "F007"
+      ],
+      "approved_condition": "精度が意味に実質的な影響を与えない場合は、聞き取りやすさを優先して概数化する。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C4",
+    "C5",
+    "C6",
+    "C7",
+    "C8",
+    "C12"
+  ],
+  "n_approximate_ok": 1,
+  "article_id": "art_7a5593c4",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_04027b67eb256c53006ad93c21021887d09388df15189b7e73",
+  "effort": "low",
+  "variant": "luna_low"
+}

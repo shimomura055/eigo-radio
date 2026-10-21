@@ -1,0 +1,117 @@
+{
+  "entries": [
+    {
+      "concept": "C1",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F04"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "11件",
+          "approx": null
+        }
+      ],
+      "reason": "統合した研究の件数そのものを示す離散的な値であり、概数にすると対象範囲が変わります。",
+      "basis_fact_ids": [
+        "F04"
+      ],
+      "approved_condition": "研究数など、意味のある件数は厳密値を維持する。"
+    },
+    {
+      "concept": "C2",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F04"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "最大134,515人",
+          "approx": "最大約13万5千人"
+        },
+        {
+          "surface": "134,515人",
+          "approx": "約13万5千人"
+        }
+      ],
+      "reason": "最大解析標本数の規模を伝える値で、千人単位に丸めても大きさの理解は損なわれません。最大値であることは表記に残します。",
+      "basis_fact_ids": [
+        "F04"
+      ],
+      "approved_condition": "精度の細かさが意味に影響しない場合、聞き取りやすさを優先して概数にできる。"
+    },
+    {
+      "concept": "C4",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F07"
+      ],
+      "fact_ns": [
+        3
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "3回以上",
+          "approx": null
+        }
+      ],
+      "reason": "適格条件の測定回数の閾値を示しており、丸めると条件の意味が変わります。",
+      "basis_fact_ids": [
+        "F07"
+      ],
+      "approved_condition": "重要な閾値は、丸めて意味を変えたり曖昧にしたりしない。"
+    },
+    {
+      "concept": "C5",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F08"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "0.0630",
+          "approx": null
+        }
+      ],
+      "reason": "標準化された効果係数は研究結果の大きさを表す値です。丸めると別方向の係数0.0589と同じ0.06になり、区別が失われるおそれがあります。",
+      "basis_fact_ids": [
+        "F08"
+      ],
+      "approved_condition": "小規模な測定値や、丸めることで意味のある差が同一視される値は精度を保つ。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C1",
+    "C2",
+    "C4",
+    "C5"
+  ],
+  "n_approximate_ok": 1,
+  "article_id": "art_a31992b5",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_01c00ddb02dcae57006ad93c17dec087d090bb8b1ff040fae6",
+  "effort": "medium",
+  "variant": "luna_medium"
+}

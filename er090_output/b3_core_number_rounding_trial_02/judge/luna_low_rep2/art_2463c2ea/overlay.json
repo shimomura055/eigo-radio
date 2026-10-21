@@ -1,0 +1,91 @@
+{
+  "entries": [
+    {
+      "concept": "C1",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F2"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "14",
+          "approx": null
+        }
+      ],
+      "reason": "原告となった法人・事業体の正確な数が事実の内容であり、出版物数との区別にも関わるため、厳密値を維持します。",
+      "basis_fact_ids": [
+        "F2"
+      ],
+      "approved_condition": "数そのものが事実の意味を持つ場合はEXACT_REQUIREDのまま維持する。"
+    },
+    {
+      "concept": "C2",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F6"
+      ],
+      "fact_ns": [
+        3
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "2億5,000万ドル",
+          "approx": null
+        }
+      ],
+      "reason": "訴状に記載された損害賠償請求の金額と「超える」という条件が重要で、概数化すると請求内容の精度を損なうため、厳密値を維持します。",
+      "basis_fact_ids": [
+        "F6"
+      ],
+      "approved_condition": "重要な閾値や証拠の解釈を曖昧にする丸めは行わない。"
+    },
+    {
+      "concept": "C3",
+      "kind": "date_time",
+      "ledger_ids": [
+        "F7",
+        "F8"
+      ],
+      "fact_ns": [
+        4,
+        5
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "2026-10-08",
+          "approx": null
+        }
+      ],
+      "reason": "提訴日およびReutersの報道時点を示す日付であり、正確さ自体が意味を持つため、厳密値を維持します。",
+      "basis_fact_ids": [
+        "F7",
+        "F8"
+      ],
+      "approved_condition": "日付など精度そのものが意味を持つ数字はEXACT_REQUIREDのまま維持する。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C1",
+    "C2",
+    "C3"
+  ],
+  "n_approximate_ok": 0,
+  "article_id": "art_2463c2ea",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_0a74271870bf86c8006ad93c2363d487d099c11ea99ab74c99",
+  "effort": "low",
+  "variant": "luna_low"
+}

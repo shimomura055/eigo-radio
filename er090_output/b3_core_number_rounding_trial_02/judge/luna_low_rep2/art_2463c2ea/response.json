@@ -1,0 +1,62 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "14",
+            "approx_surface": null
+          }
+        ],
+        "reason": "原告となった法人・事業体の正確な数が事実の内容であり、出版物数との区別にも関わるため、厳密値を維持します。",
+        "basis_fact_ids": [
+          "F2"
+        ],
+        "approved_condition": "数そのものが事実の意味を持つ場合はEXACT_REQUIREDのまま維持する。"
+      },
+      {
+        "concept": "C2",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2億5,000万ドル",
+            "approx_surface": null
+          }
+        ],
+        "reason": "訴状に記載された損害賠償請求の金額と「超える」という条件が重要で、概数化すると請求内容の精度を損なうため、厳密値を維持します。",
+        "basis_fact_ids": [
+          "F6"
+        ],
+        "approved_condition": "重要な閾値や証拠の解釈を曖昧にする丸めは行わない。"
+      },
+      {
+        "concept": "C3",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2026-10-08",
+            "approx_surface": null
+          }
+        ],
+        "reason": "提訴日およびReutersの報道時点を示す日付であり、正確さ自体が意味を持つため、厳密値を維持します。",
+        "basis_fact_ids": [
+          "F7",
+          "F8"
+        ],
+        "approved_condition": "日付など精度そのものが意味を持つ数字はEXACT_REQUIREDのまま維持する。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C1\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"14\",\"approx_surface\":null}],\"reason\":\"原告となった法人・事業体の正確な数が事実の内容であり、出版物数との区別にも関わるため、厳密値を維持します。\",\"basis_fact_ids\":[\"F2\"],\"approved_condition\":\"数そのものが事実の意味を持つ場合はEXACT_REQUIREDのまま維持する。\"},{\"concept\":\"C2\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"2億5,000万ドル\",\"approx_surface\":null}],\"reason\":\"訴状に記載された損害賠償請求の金額と「超える」という条件が重要で、概数化すると請求内容の精度を損なうため、厳密値を維持します。\",\"basis_fact_ids\":[\"F6\"],\"approved_condition\":\"重要な閾値や証拠の解釈を曖昧にする丸めは行わない。\"},{\"concept\":\"C3\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"2026-10-08\",\"approx_surface\":null}],\"reason\":\"提訴日およびReutersの報道時点を示す日付であり、正確さ自体が意味を持つため、厳密値を維持します。\",\"basis_fact_ids\":[\"F7\",\"F8\"],\"approved_condition\":\"日付など精度そのものが意味を持つ数字はEXACT_REQUIREDのまま維持する。\"}]}",
+  "model": "gpt-6-luna",
+  "response_id": "resp_0a74271870bf86c8006ad93c2363d487d099c11ea99ab74c99",
+  "sec": 4.1,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 4256,
+    "output_tokens": 435,
+    "reasoning_tokens": 67
+  }
+}

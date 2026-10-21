@@ -1,0 +1,106 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約50万",
+            "approx_surface": "約50万"
+          }
+        ],
+        "reason": "全国の管路総延長の規模を示す値で、これ以上の精度は聞き手の理解に必要ありません。Ledger上も概数として示されています。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "追加の精度がストーリーの規模感や解釈を実質的に変えない場合は、聞き取りやすい概数を使える。"
+      },
+      {
+        "concept": "C2",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "数50年",
+            "approx_surface": null
+          }
+        ],
+        "reason": "標準耐用年数という基準値であり、老朽管路の集計条件を定めるため、厳密値を維持します。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "重要な閾値や集計条件を示す数値は、丸めで意味を損なわないよう厳密値を維持する。"
+      },
+      {
+        "concept": "C3",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約4万",
+            "approx_surface": "約4万"
+          }
+        ],
+        "reason": "老朽管路の規模を示す値で、Ledger上すでに概数として示されており、追加の精度は理解に必要ありません。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "意味を損なわず、追加の精度が規模感に実質的な差を与えない場合は概数を使える。"
+      },
+      {
+        "concept": "C4",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約7%",
+            "approx_surface": "約7%"
+          }
+        ],
+        "reason": "老朽管路の割合はすでに概数で示されており、小数精度が比較や解釈に必要とは読み取れません。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "小数精度が重要な閾値や差を示さない場合は、聞き取りやすい概数を使える。"
+      },
+      {
+        "concept": "C5",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "10年",
+            "approx_surface": null
+          }
+        ],
+        "reason": "老朽管路の将来推計における特定の時間点を示します。周辺の20年後の推計と区別するため、10年を維持します。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "異なる時間点の推計を区別する必要がある場合は、その時間点を厳密に維持する。"
+      },
+      {
+        "concept": "C6",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約11万",
+            "approx_surface": "約11万"
+          }
+        ],
+        "reason": "10年後の老朽管路の推計規模で、Ledger上すでに概数として示されています。さらに細かな精度は推計の理解に必要ありません。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "推計の規模感を損なわず、追加の精度が解釈を変えない場合は概数を使える。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C1\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約50万\",\"approx_surface\":\"約50万\"}],\"reason\":\"全国の管路総延長の規模を示す値で、これ以上の精度は聞き手の理解に必要ありません。Ledger上も概数として示されています。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"追加の精度がストーリーの規模感や解釈を実質的に変えない場合は、聞き取りやすい概数を使える。\"},{\"concept\":\"C2\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"数50年\",\"approx_surface\":null}],\"reason\":\"標準耐用年数という基準値であり、老朽管路の集計条件を定めるため、厳密値を維持します。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"重要な閾値や集計条件を示す数値は、丸めで意味を損なわないよう厳密値を維持する。\"},{\"concept\":\"C3\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約4万\",\"approx_surface\":\"約4万\"}],\"reason\":\"老朽管路の規模を示す値で、Ledger上すでに概数として示されており、追加の精度は理解に必要ありません。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"意味を損なわず、追加の精度が規模感に実質的な差を与えない場合は概数を使える。\"},{\"concept\":\"C4\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約7%\",\"approx_surface\":\"約7%\"}],\"reason\":\"老朽管路の割合はすでに概数で示されており、小数精度が比較や解釈に必要とは読み取れません。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"小数精度が重要な閾値や差を示さない場合は、聞き取りやすい概数を使える。\"},{\"concept\":\"C5\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"10年\",\"approx_surface\":null}],\"reason\":\"老朽管路の将来推計における特定の時間点を示します。周辺の20年後の推計と区別するため、10年を維持します。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"異なる時間点の推計を区別する必要がある場合は、その時間点を厳密に維持する。\"},{\"concept\":\"C6\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約11万\",\"approx_surface\":\"約11万\"}],\"reason\":\"10年後の老朽管路の推計規模で、Ledger上すでに概数として示されています。さらに細かな精度は推計の理解に必要ありません。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"推計の規模感を損なわず、追加の精度が解釈を変えない場合は概数を使える。\"}]}",
+  "model": "gpt-6-luna",
+  "response_id": "resp_01962f7a0b425ce9006ad93c6fb9fc87d0a378f816b14a75cd",
+  "sec": 11.2,
+  "effort": "medium",
+  "usage": {
+    "input_tokens": 4122,
+    "output_tokens": 1149,
+    "reasoning_tokens": 417
+  }
+}

@@ -1,0 +1,151 @@
+【承認済みルール(原文。新しい基準は追加しない)】
+
+■ Spoken-first Number Treatment(承認済み仕様)
+Verified Fact Ledgerは常にexact factを保持する。spoken narrative側は、精度自体に意味がない数字を、丸め(round)・概数化(approximate)・方向化(directionalize)してListening easeを優先してよい。分類は2軸: Importance(`ANCHOR`/`SUPPORTING`/`DISPENSABLE`)、Exactness(`EXACT_REQUIRED`/`APPROXIMATE_OK`/`DIRECTION_ONLY`)。スコア・日付・記録・健康研究の結果・安全閾値など、精度そのものが意味を持つ数字はEXACT_REQUIREDのまま維持する
+
+■ 【追加ルール: 全Pattern共通 - Listener-Friendly Numeric Precision】
+
+This rule applies AFTER each Pattern's own rule above has already decided which
+numeric Facts to keep. First, decide whether a numeric value is worth retaining at
+all, following the Pattern-specific rule above. Then, for values you keep, decide how
+much precision the listener actually needs, following this rule. Do not conflate the
+two decisions.
+
+When a numeric value is worth keeping, preserve only as much precision as the
+listener needs to understand its meaning.
+
+Prefer simpler rounded values when extra decimal precision does not materially
+affect:
+- the direction of the comparison
+- the magnitude that matters to the story
+- an important threshold
+- the interpretation of the evidence
+- the distinction between materially different values
+
+Do not remove decimals mechanically.
+
+Keep decimal precision when rounding would:
+- hide a meaningful difference
+- cross or obscure an important threshold
+- distort a small-scale measurement
+- change the interpretation
+- make two meaningfully different values appear equivalent
+- reduce factual fidelity in a way relevant to the listener
+
+When rounding is appropriate, use listener-friendly expressions such as "about",
+"roughly", "nearly", etc. where suitable.
+
+Most important: Rounding is NOT permission to merge separate facts, metrics,
+groups, time points, survey questions, or experimental outcomes. Each retained
+numeric expression must remain attributable to its original Fact / metric in the
+Fact Ledger. Never combine separate Facts merely because their rounded values
+become numerically similar. Before rounding, verify that each numeric expression
+can still be traced to a single, specific Fact / metric / group / time point /
+survey question. Do not combine numbers from different Facts or different
+metrics (for example, an attention-score value and a processing-speed value)
+into a single shared rounded expression, even if their rounded values happen to
+look similar or identical.
+
+The goal is not to remove decimal places. The goal is to use the least precision
+necessary for accurate spoken understanding.
+
+This is a judgment rule, not a mechanical one. Do NOT apply any fixed rule such as
+"always drop decimals," "always round to a whole number," "always keep one decimal
+place," or "always use two significant figures." Decide based on what each specific
+number means in context.
+
+For general guidance only (not a fixed instruction for this specific article):
+decimal precision is more likely to matter for values such as small percentages
+(for example 1.2% vs 1.8%), small absolute differences (for example 4.8 vs 5.2),
+sub-one units (for example 0.3 seconds), multipliers (for example 1.5 times),
+values near a meaningful threshold, or small differences that are themselves the
+finding. These are illustrative examples of the general principle only, not
+article-specific instructions.
+
+■ 【追加ルール: 全Pattern共通・全CEFRレベル共通 - Numeric Precisionの既定】
+上記Listener-Friendly Numeric Precisionルールを補強する原則であり、置き換えではない。
+
+原則: 聞き取りやすさを優先し、意味を損なわない範囲では概数を基本とする。小数点
+以下を保持するのは、その精度自体が記事の意味・比較・判断に必要な場合に限る。
+通常は次のように概数化することが既定である: 25.2% → about 25%、44.7% → about
+45%、89.6% → about 90%。
+
+小数点以下を保持してよい例: 閾値の前後が論点になっている場合(例えば49.5%と
+50.5%のように、僅差自体が意味を持つ場合)、年次変化・比較差を精密に扱う必要が
+ある場合、小数を落とすと記事の意味・結論が変わってしまう場合。
+
+This default applies equally regardless of CEFR level (A2/B1/B2). There is no
+level-specific numeric precision rule: the same judgment (round by default, keep
+precision only when the precision itself matters) applies to every level's
+spoken layer.
+
+【今回の判定の進め方(出力形式と安全側の指示のみ)】
+- 判定するのは、下の「判定対象の中核数値」の各conceptだけです。conceptの追加・削除・並べ替えはしません。
+- 周辺数値は判定対象ではありません。丸めると値同士が同一視されないか等の確認にだけ使ってください。
+- 各conceptについて decision を EXACT_REQUIRED(厳密値を維持)か APPROXIMATE_OK(聞き取りやすい概数にしてよい)のどちらかで答えます。
+- 判断が不確かな場合は無理に丸めず EXACT_REQUIRED にしてください。
+- APPROXIMATE_OK の場合のみ、surfaces の各surface(判定対象に示された表記そのまま)に対し approx_surface を日本語で書きます。approx_surface は、surface文字列の**数字部分だけ**を、元の数値を通常の四捨五入(有効数字を減らす)で丸めた値に置き換え、「約」「およそ」等のヘッジ語を付けただけの表記にします。surfaceにある限定語(「最大」「以上」「超」「未満」等)と単位・接尾辞はそのまま残し、surfaceにない語句(説明・括弧書き・「前年同月比」等の補足)は一切足しません。surfaceに単位が無ければ単位も足しません。Factの意味(例: 解析ごとに人数が異なる等)はFact本文に残っており、Writerは別途Factを読みます。数字は算用数字と「万」「億」「千」で書いてください。形式の例(別の数字): surface「最大52,300人」→「最大約5万2千人」、surface「7.26」→「約7.3」。EXACT_REQUIRED の場合 approx_surface は null にします。
+- reason は1〜2文、basis_fact_ids は根拠にしたFact ID(Ledgerの記録ID)、approved_condition は上の承認済みルールのどの条件に当たるかを短く書きます。
+
+【Storyline(確定済み)】
+トランプ大統領がホルムズ海峡を通るすべての貨物への20％【中核数値】償還を提案した後、7月13日【周辺数値】のBrent上昇は米国の対イラン海上封鎖とホルムズ海峡のエネルギー輸送懸念に関連付けられ、翌14日【周辺数値】の置換発表後も価格は一時的に上げ幅を縮めただけで、攻撃・封鎖・タンカー安全上の懸念が続く中、発表前に近い高い水準へ戻った。
+
+【採用Fact(確定済み。【中核数値】【周辺数値】は決定論の機械印)】
+- 【事実1】ドナルド・トランプ米大統領は7月13日午前10時16分【周辺数値】（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％【中核数値】の率で償還を求めると投稿した。（範囲：ホルムズ海峡を通じて輸送される「すべての貨物」。条件：米国が海峡の安全と警備を提供するための費用の償還として提示。投稿は手続きと体制づくりを直ちに開始するとした）
+- 【事実2】Brent原油先物は7月13日【周辺数値】に7.29ドル【中核数値】、9.59％【中核数値】上昇し、1バレル【周辺数値】83.30ドル【中核数値】で清算された。Reutersはこの上昇を、翌日に始まる予定とされた米国の対イラン海上封鎖と、ホルムズ海峡を通るエネルギー輸送への懸念に関連付けた。（範囲：Brent原油先物の当日清算値と前日比。条件：米国とイランの軍事的緊張、海上封鎖方針、ホルムズ海峡の供給懸念が同時に存在した市場環境）
+- 【事実3】トランプ大統領は7月14日午前11時4分【周辺数値】（米東部夏時間）、20％【中核数値】の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。（範囲：7月13日【周辺数値】に提案したホルムズ海峡通航貨物への20％【中核数値】償還料。条件：トランプ氏は、中東指導者との「非常に生産的な協議」に基づく決定だと説明した）
+- 【事実4】Yahoo Financeは、7月14日【周辺数値】の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％【中核数値】高で、1バレル【周辺数値】85ドル【中核数値】を上回っていた。（範囲：国際指標Brent原油先物の短時間の値動き。条件：撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた）
+
+【Writerへの注意(確定済み)】
+Writerへの注意(事実ではありません)：
+- 事実1について：7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。
+- 事実2について：7月13日の上昇全体を「20％料だけが原因」と断定しない。7月14日の撤回はこの清算値より後の出来事。
+- 事実3について：この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。
+- 事実4について：撤回後に原油価格が全面的に下落したとは書かない。観測されたのは一時的な上げ幅縮小と、その後の回復。
+
+【参照Ledger記録(正確な値。変更しない)】
+[VERIFIED] HF-002: ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。
+  scope: ホルムズ海峡を通じて輸送される「すべての貨物」
+  conditions: 米国が海峡の安全と警備を提供するための費用の償還として提示。投稿は手続きと体制づくりを直ちに開始するとした。
+  numeric_value: 20% (numeric_scope: 投稿上の償還率。課税標準または算定基礎は明記されていない。)
+  date_or_period: 2026-07-13 10:16 EDT
+  notes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。
+
+[VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。
+  scope: 7月13日に提案したホルムズ海峡通航貨物への20％償還料
+  conditions: トランプ氏は、中東指導者との「非常に生産的な協議」に基づく決定だと説明した。
+  numeric_value: 20% (numeric_scope: 撤回・置換対象となった償還率)
+  date_or_period: 2026-07-14 11:04 EDT
+  causal_strength: CAUSAL_STATED_BY_SOURCE
+  notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。
+
+[VERIFIED] HF-006: Brent原油先物は7月13日に7.29ドル、9.59％上昇し、1バレル83.30ドルで清算された。Reutersはこの上昇を、翌日に始まる予定とされた米国の対イラン海上封鎖と、ホルムズ海峡を通るエネルギー輸送への懸念に関連付けた。
+  scope: Brent原油先物の当日清算値と前日比
+  conditions: 米国とイランの軍事的緊張、海上封鎖方針、ホルムズ海峡の供給懸念が同時に存在した市場環境
+  numeric_value: $83.30/バレル、前日比 +$7.29、+9.59% (numeric_scope: 7月13日のBrent原油先物清算値。日中高値ではない)
+  date_or_period: 2026-07-13清算時点
+  causal_strength: CAUSAL_STATED_BY_SOURCE
+  notes_for_writer: 7月13日の上昇全体を「20％料だけが原因」と断定しない。7月14日の撤回はこの清算値より後の出来事。
+
+[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。
+  scope: 国際指標Brent原油先物の短時間の値動き
+  conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。
+  numeric_value: 約 +2.6%、$85/バレル超 (numeric_scope: 記事掲載時点のリアルタイムに近い価格スナップショット。日中高値でも終値でもない)
+  date_or_period: 2026-07-14、撤回発表後の取引時間中
+  causal_strength: CAUSAL_STATED_BY_SOURCE
+  notes_for_writer: 撤回後に原油価格が全面的に下落したとは書かない。観測されたのは一時的な上げ幅縮小と、その後の回復。
+
+【判定対象の中核数値(この順序・この表記のまま判定)】
+- concept=C2 kind=magnitude ledger_ids=['HF-002', 'HF-007'] surfaces=["20％"]
+- concept=C4 kind=magnitude ledger_ids=['HF-006'] surfaces=["7.29ドル"]
+- concept=C5 kind=magnitude ledger_ids=['HF-006'] surfaces=["9.59％"]
+- concept=C7 kind=magnitude ledger_ids=['HF-006'] surfaces=["83.30ドル"]
+- concept=C10 kind=magnitude ledger_ids=['HF-009'] surfaces=["約2.6％"]
+- concept=C11 kind=magnitude ledger_ids=['HF-009'] surfaces=["85ドル"]
+【周辺数値(参考。判定対象外)】
+- 7月13日午前10時16分 (concept=C1, ledger_ids=['HF-002'])
+- 7月13日 (concept=C3, ledger_ids=['HF-006', 'HF-007'])
+- 1バレル (concept=C6, ledger_ids=['HF-006', 'HF-009'])
+- 7月14日午前11時4分 (concept=C8, ledger_ids=['HF-007'])
+- 7月14日 (concept=C9, ledger_ids=['HF-009'])
+- 14日 (concept=C12, ledger_ids=['_STORY'])

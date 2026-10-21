@@ -1,0 +1,91 @@
+{
+  "entries": [
+    {
+      "concept": "C2",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F04",
+        "F11"
+      ],
+      "fact_ns": [
+        1,
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "12人",
+          "approx": null
+        }
+      ],
+      "reason": "死者数として報告された具体的な人数であり、別Factの負傷者数や発表時点の違いと混同しないため、厳密値を維持する。",
+      "basis_fact_ids": [
+        "F04",
+        "F11"
+      ],
+      "approved_condition": "記録・報告された人数は、精度が意味を持つ数値として維持する。"
+    },
+    {
+      "concept": "C3",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F04"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "309人",
+          "approx": null
+        }
+      ],
+      "reason": "GACAの続報時点における負傷者数であり、別のFactにある「300人超」との差や発表時点を曖昧にしないため、厳密値を維持する。",
+      "basis_fact_ids": [
+        "F04"
+      ],
+      "approved_condition": "報告値の精度がFactの識別と解釈に関わる場合は、丸めず維持する。"
+    },
+    {
+      "concept": "C5",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F11"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "300人超",
+          "approx": null
+        }
+      ],
+      "reason": "これは国連特使が紹介した報告の「300人を超える」という限定付きの値であり、丸めると下限の意味が変わり得るため、表記を維持する。",
+      "basis_fact_ids": [
+        "F11"
+      ],
+      "approved_condition": "重要な閾値や限定の意味を曖昧にする丸めはしない。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C2",
+    "C3",
+    "C5"
+  ],
+  "n_approximate_ok": 0,
+  "article_id": "art_4f7d28b0",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_08e37fd1b2680c19006ad93bf9d56c87d0869ad0c5f63f4bdc",
+  "effort": "low",
+  "variant": "luna_low"
+}

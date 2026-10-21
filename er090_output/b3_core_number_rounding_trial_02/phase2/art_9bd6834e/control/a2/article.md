@@ -1,0 +1,22 @@
+# The Fee Plan Was Dropped, but Worries at Sea Remained
+
+A plan to ask for a 20% payment was withdrawn. So it is tempting to hope, “Could crude oil get cheaper too?” But the market did not agree so quickly. Prices first lost some of their gains, then returned to a high level. Another problem was still hidden behind the price tag.
+
+It all began with a post by President Trump. He said all cargo going through the Strait of Hormuz should pay a 20% fee. The idea was to get back the money the US spent keeping the strait safe. In other words, he wanted others to “pay for security.”
+
+That same day, Brent futures, a key world measure of crude oil prices, rose 9.59%. It might be tempting to write a headline saying, “The market is shocked by the 20% fee!” But wait a moment. A number that stands out does not always tell the whole story.
+
+Reuters linked the rise to a US naval blockade of Iran. The blockade was planned for the next day. Reuters also linked it to worries about energy shipments through the Strait of Hormuz. The hard question was not just, “How much will it cost?” It was also, “Can the goods be sent safely at all?”
+
+The next day, Trump changed his plan. He said the 20% fee would be replaced by deals about trade between Gulf states and the US, and investment in the US. The plan to charge for cargo was withdrawn. The “20%” was gone from the bill.
+
+But the market did not cheer and send oil prices straight down. After the announcement, Brent futures first lost some of their gains. Soon, though, they returned to a high level, close to where they had been before the announcement. Taking away the fee alone did not keep prices falling.
+
+Worries about attacks between the US and Iran, a naval blockade, and tanker safety remained after the announcement. Talk of a fee left the scene, but worries at sea stayed.
+
+If this were online shopping, it might go like this: “The shipping fee problem is settled. But we are worried whether your package will arrive safely.” Then you would want to check its delivery status again and again before you could relax. The payment problem and the shipping problem are separate.
+
+This time, “20%” looked like the big star of the story. But what may have stayed in the market’s mind was what would happen to ships as they continued their journeys. A bill can be changed. But that alone cannot put up a sign at sea saying, “It’s safe.”
+
+## In one line
+Trump dropped his plan for a 20% fee on cargo going through the Strait of Hormuz, but oil prices soon returned to a high level. Worries about attacks, the naval blockade, and tanker safety remained.

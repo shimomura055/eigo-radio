@@ -1,0 +1,138 @@
+{
+  "entries": [
+    {
+      "concept": "C1",
+      "kind": "date_time",
+      "ledger_ids": [
+        "F02"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "2025年2月",
+          "approx": null
+        }
+      ],
+      "reason": "記録的高値が記録された時期を示す日付であり、時期を概数化すると事実の特定性が損なわれます。",
+      "basis_fact_ids": [
+        "F02"
+      ],
+      "approved_condition": "日付は厳密値を維持する。"
+    },
+    {
+      "concept": "C3",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F02"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "4.30",
+          "approx": null
+        }
+      ],
+      "reason": "先物価格の史上最高値として示された数値で、価格記録の精度が重要です。",
+      "basis_fact_ids": [
+        "F02"
+      ],
+      "approved_condition": "記録や精度自体に意味がある数値は厳密値を維持する。"
+    },
+    {
+      "concept": "C7",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F11"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "9.14",
+          "approx": null
+        }
+      ],
+      "reason": "米国の平均小売価格の数値であり、前月の価格との差を示す文脈では丸めると比較の精度が損なわれます。",
+      "basis_fact_ids": [
+        "F11"
+      ],
+      "approved_condition": "丸めると意味のある差や比較の解釈を損なう場合は精度を維持する。"
+    },
+    {
+      "concept": "C10",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F11"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "3%",
+          "approx": null
+        }
+      ],
+      "reason": "前月比の価格上昇率として報じられた比較結果であり、概数化せず報告値を維持します。",
+      "basis_fact_ids": [
+        "F11"
+      ],
+      "approved_condition": "比較結果の解釈に関わる数値は厳密値を維持する。"
+    },
+    {
+      "concept": "C12",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F11"
+      ],
+      "fact_ns": [
+        4
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "41%",
+          "approx": null
+        }
+      ],
+      "reason": "前年同月比の価格上昇率として報じられた比較結果であり、概数化せず報告値を維持します。",
+      "basis_fact_ids": [
+        "F11"
+      ],
+      "approved_condition": "比較結果の解釈に関わる数値は厳密値を維持する。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C1",
+    "C3",
+    "C7",
+    "C10",
+    "C12"
+  ],
+  "n_approximate_ok": 0,
+  "article_id": "art_1e4c771e",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_0caf62ad3fa97231006ad93be32c5c87d0a872c1fe355a946b",
+  "effort": "medium",
+  "variant": "luna_medium"
+}

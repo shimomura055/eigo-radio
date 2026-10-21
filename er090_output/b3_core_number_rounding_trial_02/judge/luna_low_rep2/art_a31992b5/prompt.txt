@@ -1,0 +1,139 @@
+【承認済みルール(原文。新しい基準は追加しない)】
+
+■ Spoken-first Number Treatment(承認済み仕様)
+Verified Fact Ledgerは常にexact factを保持する。spoken narrative側は、精度自体に意味がない数字を、丸め(round)・概数化(approximate)・方向化(directionalize)してListening easeを優先してよい。分類は2軸: Importance(`ANCHOR`/`SUPPORTING`/`DISPENSABLE`)、Exactness(`EXACT_REQUIRED`/`APPROXIMATE_OK`/`DIRECTION_ONLY`)。スコア・日付・記録・健康研究の結果・安全閾値など、精度そのものが意味を持つ数字はEXACT_REQUIREDのまま維持する
+
+■ 【追加ルール: 全Pattern共通 - Listener-Friendly Numeric Precision】
+
+This rule applies AFTER each Pattern's own rule above has already decided which
+numeric Facts to keep. First, decide whether a numeric value is worth retaining at
+all, following the Pattern-specific rule above. Then, for values you keep, decide how
+much precision the listener actually needs, following this rule. Do not conflate the
+two decisions.
+
+When a numeric value is worth keeping, preserve only as much precision as the
+listener needs to understand its meaning.
+
+Prefer simpler rounded values when extra decimal precision does not materially
+affect:
+- the direction of the comparison
+- the magnitude that matters to the story
+- an important threshold
+- the interpretation of the evidence
+- the distinction between materially different values
+
+Do not remove decimals mechanically.
+
+Keep decimal precision when rounding would:
+- hide a meaningful difference
+- cross or obscure an important threshold
+- distort a small-scale measurement
+- change the interpretation
+- make two meaningfully different values appear equivalent
+- reduce factual fidelity in a way relevant to the listener
+
+When rounding is appropriate, use listener-friendly expressions such as "about",
+"roughly", "nearly", etc. where suitable.
+
+Most important: Rounding is NOT permission to merge separate facts, metrics,
+groups, time points, survey questions, or experimental outcomes. Each retained
+numeric expression must remain attributable to its original Fact / metric in the
+Fact Ledger. Never combine separate Facts merely because their rounded values
+become numerically similar. Before rounding, verify that each numeric expression
+can still be traced to a single, specific Fact / metric / group / time point /
+survey question. Do not combine numbers from different Facts or different
+metrics (for example, an attention-score value and a processing-speed value)
+into a single shared rounded expression, even if their rounded values happen to
+look similar or identical.
+
+The goal is not to remove decimal places. The goal is to use the least precision
+necessary for accurate spoken understanding.
+
+This is a judgment rule, not a mechanical one. Do NOT apply any fixed rule such as
+"always drop decimals," "always round to a whole number," "always keep one decimal
+place," or "always use two significant figures." Decide based on what each specific
+number means in context.
+
+For general guidance only (not a fixed instruction for this specific article):
+decimal precision is more likely to matter for values such as small percentages
+(for example 1.2% vs 1.8%), small absolute differences (for example 4.8 vs 5.2),
+sub-one units (for example 0.3 seconds), multipliers (for example 1.5 times),
+values near a meaningful threshold, or small differences that are themselves the
+finding. These are illustrative examples of the general principle only, not
+article-specific instructions.
+
+■ 【追加ルール: 全Pattern共通・全CEFRレベル共通 - Numeric Precisionの既定】
+上記Listener-Friendly Numeric Precisionルールを補強する原則であり、置き換えではない。
+
+原則: 聞き取りやすさを優先し、意味を損なわない範囲では概数を基本とする。小数点
+以下を保持するのは、その精度自体が記事の意味・比較・判断に必要な場合に限る。
+通常は次のように概数化することが既定である: 25.2% → about 25%、44.7% → about
+45%、89.6% → about 90%。
+
+小数点以下を保持してよい例: 閾値の前後が論点になっている場合(例えば49.5%と
+50.5%のように、僅差自体が意味を持つ場合)、年次変化・比較差を精密に扱う必要が
+ある場合、小数を落とすと記事の意味・結論が変わってしまう場合。
+
+This default applies equally regardless of CEFR level (A2/B1/B2). There is no
+level-specific numeric precision rule: the same judgment (round by default, keep
+precision only when the precision itself matters) applies to every level's
+spoken layer.
+
+【今回の判定の進め方(出力形式と安全側の指示のみ)】
+- 判定するのは、下の「判定対象の中核数値」の各conceptだけです。conceptの追加・削除・並べ替えはしません。
+- 周辺数値は判定対象ではありません。丸めると値同士が同一視されないか等の確認にだけ使ってください。
+- 各conceptについて decision を EXACT_REQUIRED(厳密値を維持)か APPROXIMATE_OK(聞き取りやすい概数にしてよい)のどちらかで答えます。
+- 判断が不確かな場合は無理に丸めず EXACT_REQUIRED にしてください。
+- APPROXIMATE_OK の場合のみ、surfaces の各surface(判定対象に示された表記そのまま)に対し approx_surface を日本語で書きます。approx_surface は、surface文字列の**数字部分だけ**を、元の数値を通常の四捨五入(有効数字を減らす)で丸めた値に置き換え、「約」「およそ」等のヘッジ語を付けただけの表記にします。surfaceにある限定語(「最大」「以上」「超」「未満」等)と単位・接尾辞はそのまま残し、surfaceにない語句(説明・括弧書き・「前年同月比」等の補足)は一切足しません。surfaceに単位が無ければ単位も足しません。Factの意味(例: 解析ごとに人数が異なる等)はFact本文に残っており、Writerは別途Factを読みます。数字は算用数字と「万」「億」「千」で書いてください。形式の例(別の数字): surface「最大52,300人」→「最大約5万2千人」、surface「7.26」→「約7.3」。EXACT_REQUIRED の場合 approx_surface は null にします。
+- reason は1〜2文、basis_fact_ids は根拠にしたFact ID(Ledgerの記録ID)、approved_condition は上の承認済みルールのどの条件に当たるかを短く書きます。
+
+【Storyline(確定済み)】
+大規模な縦断データで安定した個人差と個人内の変化を分けて分析すると、収入と勤勉性には小さな双方向の関連が見られたが、因果関係までは確定できない。
+
+【採用Fact(確定済み。【中核数値】【周辺数値】は決定論の機械印)】
+- 【事実1】一次研究はWen-Dong Li、Kaili Yu、Weiwen Yang、Zhen Zhang、Xin Zhang、Christian Dormann、Huanxi Zhang、Yanglei Zhengによる、収入と性格特性の双方向関係を扱った連続時間メタ分析である。（範囲：Psychological Bulletin掲載論文）
+- 【事実2】研究は事前登録された連続時間メタ分析で、11件【中核数値】の大規模な縦断パネル研究の個人レベルデータを統合した。解析に含まれた参加者数は最大134,515人【中核数値】で、解析ごとに参加者数は異なる。（範囲：11件【中核数値】の全国または地域代表性を持つ縦断研究。最大解析標本数は134,515人【中核数値】。条件：参加者数はBig Five各特性と収入の解析ごとに異なる。研究者は就労中で、性格と仕事からの収入の情報を報告した参加者を解析対象とした）
+- 【事実3】対象研究は、収入とBig Fiveの少なくとも1【周辺数値】特性を縦断的に3回以上【中核数値】測定することなどを適格条件とし、解析には個人レベルの変化を扱うランダム切片交差遅延パネルモデルを用いた連続時間メタ分析を行った。（範囲：メタ分析に含めた縦断研究と、統合個人レベルデータの解析。条件：個人レベルデータまたは必要な同時・自己回帰・交差遅延相関情報が得られ、標本数や測定間隔などの記述情報が利用可能であることも条件とした）
+- 【事実4】最大標準化交差遅延効果では、収入から勤勉性への関連は+0.0630【中核数値】、勤勉性から後の収入への関連は+0.0589【周辺数値】で、いずれも約1.30年【周辺数値】の間隔で最大だった。（範囲：11【周辺数値】研究の統合個人内モデル。特性別解析のNは異なる。条件：報告値は複数の測定間隔にわたる最大の標準化離散時間交差遅延効果）
+- 【事実5】著者らは、観察された関係から因果関係を確定できないと明記した。年齢を調整した追加解析では主要な結果・結論は大きく変わらなかったが、年齢以外の第三変数の可能性がなくなるわけではない。（範囲：一次研究の全縦断分析。条件：追加解析では年齢を統制した。著者らは、因果関係のより強い根拠を得るため、可能であればフィールド実験を提案した）
+
+【Writerへの注意(確定済み)】
+Writerへの注意(事実ではありません)：
+- 事実1について：論文のオンライン先行公開日は2026年7月16日。巻号は152巻5–6号、頁は509–543。
+- 事実2について：「134,515人がすべてのモデルに参加した」とは書かない。
+- 事実3について：モデルは安定した個人間差と個人内の変化を分けて推定する。縦断的な交差遅延関係の推定だけで因果効果が確定するわけではない。
+- 事実4について：観察された縦断的関連であり、因果効果として表現しない。最大値は該当する時間間隔での推定値。
+- 事実5について：「収入が性格を変えた」「性格が収入を増減させた」と因果を断定しない。
+
+【参照Ledger記録(正確な値。変更しない)】
+[VERIFIED] F04: 研究は事前登録された連続時間メタ分析で、11件の大規模な縦断パネル研究の個人レベルデータを統合した。解析に含まれた参加者数は最大134,515人で、解析ごとに参加者数は異なる。
+  scope: 11件の全国または地域代表性を持つ縦断研究。最大解析標本数は134,515人
+  conditions: 参加者数はBig Five各特性と収入の解析ごとに異なる。研究者は就労中で、性格と仕事からの収入の情報を報告した参加者を解析対象とした。
+  numeric_value: 11研究; 最大134,515人 (numeric_scope: 統合した縦断研究数と解析に含まれた最大参加者数。全モデルで同一のNではない。)
+  date_or_period: 一次研究で利用可能なデータの最終リリースは2022年11月時点
+  notes_for_writer: 「134,515人がすべてのモデルに参加した」とは書かない。
+
+[VERIFIED] F07: 対象研究は、収入とBig Fiveの少なくとも1特性を縦断的に3回以上測定することなどを適格条件とし、解析には個人レベルの変化を扱うランダム切片交差遅延パネルモデルを用いた連続時間メタ分析を行った。
+  scope: メタ分析に含めた縦断研究と、統合個人レベルデータの解析
+  conditions: 個人レベルデータまたは必要な同時・自己回帰・交差遅延相関情報が得られ、標本数や測定間隔などの記述情報が利用可能であることも条件とした。
+  numeric_value: 最低3測定波 (numeric_scope: 一次研究の縦断研究としての適格条件)
+  notes_for_writer: モデルは安定した個人間差と個人内の変化を分けて推定する。縦断的な交差遅延関係の推定だけで因果効果が確定するわけではない。
+
+[VERIFIED] F08: 最大標準化交差遅延効果では、収入から勤勉性への関連は+0.0630、勤勉性から後の収入への関連は+0.0589で、いずれも約1.30年の間隔で最大だった。
+  scope: 11研究の統合個人内モデル。特性別解析のNは異なる。
+  conditions: 報告値は複数の測定間隔にわたる最大の標準化離散時間交差遅延効果。
+  numeric_value: 収入→勤勉性 +0.0630; 勤勉性→収入 +0.0589 (numeric_scope: それぞれの方向の最大標準化交差遅延効果。単位は標準化されたモデル係数。)
+  date_or_period: 最も大きい推定効果は約1.30年の時間間隔
+  causal_strength: OBSERVED_REPORTED
+  notes_for_writer: 観察された縦断的関連であり、因果効果として表現しない。最大値は該当する時間間隔での推定値。
+
+【判定対象の中核数値(この順序・この表記のまま判定)】
+- concept=C1 kind=magnitude ledger_ids=['F04'] surfaces=["11件"]
+- concept=C2 kind=magnitude ledger_ids=['F04'] surfaces=["最大134,515人", "134,515人"]
+- concept=C4 kind=magnitude ledger_ids=['F07'] surfaces=["3回以上"]
+- concept=C5 kind=magnitude ledger_ids=['F08'] surfaces=["0.0630"]
+【周辺数値(参考。判定対象外)】
+- 少なくとも1 (concept=C3, ledger_ids=['F07'])
+- 0.0589 (concept=C6, ledger_ids=['F08'])
+- 約1.30年 (concept=C7, ledger_ids=['F08'])
+- 11 (concept=C8, ledger_ids=['F08'])

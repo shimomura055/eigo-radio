@@ -1,0 +1,147 @@
+{
+  "entries": [
+    {
+      "concept": "C2",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F05"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "634",
+          "approx": "約630"
+        }
+      ],
+      "reason": "参加者総数の概数でも実験の規模を伝えられ、十人単位の精度は意味の理解に必要ありません。",
+      "basis_fact_ids": [
+        "F05"
+      ],
+      "approved_condition": "追加の小数・細かな桁が重要な閾値や比較に影響しない場合は、聞き取りやすい概数を優先する。"
+    },
+    {
+      "concept": "C5",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F05",
+        "F06"
+      ],
+      "fact_ns": [
+        1,
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "5分",
+          "approx": null
+        }
+      ],
+      "reason": "動画の長さは実験条件を特定する値で、短時間の退屈という文脈にも関わります。丸めると実験条件の正確さを損なうため、維持します。",
+      "basis_fact_ids": [
+        "F05",
+        "F06"
+      ],
+      "approved_condition": "実験条件の解釈に関わり、丸めが重要な文脈を損なう場合は厳密値を維持する。"
+    },
+    {
+      "concept": "C6",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F05",
+        "F06"
+      ],
+      "fact_ns": [
+        1,
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "10",
+          "approx": null
+        }
+      ],
+      "reason": "報酬変更の刻み幅を示す値であり、選択肢の粒度を理解するために正確さが必要です。",
+      "basis_fact_ids": [
+        "F05",
+        "F06"
+      ],
+      "approved_condition": "実験の測定・選択条件の解釈に必要な精度は維持する。"
+    },
+    {
+      "concept": "C7",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F05",
+        "F06"
+      ],
+      "fact_ns": [
+        1,
+        2
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "最大50",
+          "approx": null
+        }
+      ],
+      "reason": "選択可能な報酬減額・増額の上限を示す実験条件であり、丸めると選択範囲の正確さが変わります。",
+      "basis_fact_ids": [
+        "F05",
+        "F06"
+      ],
+      "approved_condition": "実験条件の重要な上限は、丸めで解釈を変えないよう厳密値を維持する。"
+    },
+    {
+      "concept": "C9",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F06"
+      ],
+      "fact_ns": [
+        2
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "APPROXIMATE_OK",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "1,332",
+          "approx": "約1,300"
+        }
+      ],
+      "reason": "参加者総数は実験規模を示す値であり、数十人単位の差はここで伝える意味を実質的に変えません。",
+      "basis_fact_ids": [
+        "F06"
+      ],
+      "approved_condition": "細かな桁が重要な閾値や比較に影響しない場合は、聞き取りやすい概数を優先する。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C2",
+    "C5",
+    "C6",
+    "C7",
+    "C9"
+  ],
+  "n_approximate_ok": 2,
+  "article_id": "art_701612d8",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_0cce951c9ff49a34006ad93bd79cbc87d087c08093b0c339ca",
+  "effort": "low",
+  "variant": "luna_low"
+}

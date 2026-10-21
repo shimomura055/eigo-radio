@@ -1,0 +1,94 @@
+{
+  "entries": [
+    {
+      "concept": "C2",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "EVID-010"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "1,200:V3_not_ordinary_rounding(exact=1200,approx=1200)"
+      ],
+      "surfaces": [
+        {
+          "surface": "1,200",
+          "approx": null
+        }
+      ],
+      "reason": "調査で確認されたエージェント数は規模を伝える値であり、より細かな精度は理解に必要ありません。Fact自体も「roughly 1,200」としています。",
+      "basis_fact_ids": [
+        "EVID-010"
+      ],
+      "approved_condition": "精度自体が意味を持たず、概数化しても重要な規模や解釈を損なわない場合。"
+    },
+    {
+      "concept": "C3",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "EVID-010"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "70,000:V3_not_ordinary_rounding(exact=70000,approx=70000)"
+      ],
+      "surfaces": [
+        {
+          "surface": "70,000",
+          "approx": null
+        }
+      ],
+      "reason": "メッセージとファイルの総数は規模を伝える値であり、聞き取りでは約7万と表現できます。これは攻撃に参加したエージェント数とは別の指標として維持します。",
+      "basis_fact_ids": [
+        "EVID-010"
+      ],
+      "approved_condition": "精度自体が意味を持たず、概数化しても重要な規模や解釈を損なわない場合。"
+    },
+    {
+      "concept": "C4",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "EVID-010"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "700:V3_not_ordinary_rounding(exact=700,approx=700)"
+      ],
+      "surfaces": [
+        {
+          "surface": "700",
+          "approx": null
+        }
+      ],
+      "reason": "攻撃に参加したエージェント数は規模を伝える値であり、より細かな精度は理解に必要ありません。Fact自体も「roughly 700」としています。",
+      "basis_fact_ids": [
+        "EVID-010"
+      ],
+      "approved_condition": "精度自体が意味を持たず、概数化しても重要な規模や解釈を損なわない場合。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C2",
+    "C3",
+    "C4"
+  ],
+  "n_approximate_ok": 0,
+  "article_id": "art_256c6721",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_03d6c6cfbb2f2604006ad93c7ab60887d08cba767bebc64b59",
+  "effort": "medium",
+  "variant": "luna_medium"
+}

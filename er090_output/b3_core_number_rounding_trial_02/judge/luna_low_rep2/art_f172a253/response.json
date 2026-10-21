@@ -1,0 +1,61 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2026年9月14日",
+            "approx_surface": null
+          }
+        ],
+        "reason": "発言の日付を特定する数値であり、日付の精度そのものが事実の意味に関わるため、厳密値を維持します。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "日付・記録など精度自体が意味を持つ数値はEXACT_REQUIRED"
+      },
+      {
+        "concept": "C2",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "2021年11月15日",
+            "approx_surface": null
+          }
+        ],
+        "reason": "破壊試験が行われた日付を特定する数値であり、厳密値を維持します。",
+        "basis_fact_ids": [
+          "F-003"
+        ],
+        "approved_condition": "日付・記録など精度自体が意味を持つ数値はEXACT_REQUIRED"
+      },
+      {
+        "concept": "C4",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "1,500個超",
+            "approx_surface": "約1,500個超"
+          }
+        ],
+        "reason": "追跡可能なデブリの規模を示す値で、概数にしても記事上の規模の理解を損ないません。元の「超」という限定は維持します。",
+        "basis_fact_ids": [
+          "F-003"
+        ],
+        "approved_condition": "精度が記事の意味や重要な比較・閾値に影響しない場合、聞き取りやすさを優先して概数化できる"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C1\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"2026年9月14日\",\"approx_surface\":null}],\"reason\":\"発言の日付を特定する数値であり、日付の精度そのものが事実の意味に関わるため、厳密値を維持します。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"日付・記録など精度自体が意味を持つ数値はEXACT_REQUIRED\"},{\"concept\":\"C2\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"2021年11月15日\",\"approx_surface\":null}],\"reason\":\"破壊試験が行われた日付を特定する数値であり、厳密値を維持します。\",\"basis_fact_ids\":[\"F-003\"],\"approved_condition\":\"日付・記録など精度自体が意味を持つ数値はEXACT_REQUIRED\"},{\"concept\":\"C4\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"1,500個超\",\"approx_surface\":\"約1,500個超\"}],\"reason\":\"追跡可能なデブリの規模を示す値で、概数にしても記事上の規模の理解を損ないません。元の「超」という限定は維持します。\",\"basis_fact_ids\":[\"F-003\"],\"approved_condition\":\"精度が記事の意味や重要な比較・閾値に影響しない場合、聞き取りやすさを優先して概数化できる\"}] }",
+  "model": "gpt-6-luna",
+  "response_id": "resp_013e6c113cc3d26c006ad93c10d32087d095087f62ea423605",
+  "sec": 3.7,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 4144,
+    "output_tokens": 358,
+    "reasoning_tokens": 0
+  }
+}

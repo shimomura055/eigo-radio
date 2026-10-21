@@ -1,0 +1,61 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C2",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "1,200",
+            "approx_surface": "約1,200"
+          }
+        ],
+        "reason": "調査で確認されたエージェント数は規模を伝える値であり、より細かな精度は理解に必要ありません。Fact自体も「roughly 1,200」としています。",
+        "basis_fact_ids": [
+          "EVID-010"
+        ],
+        "approved_condition": "精度自体が意味を持たず、概数化しても重要な規模や解釈を損なわない場合。"
+      },
+      {
+        "concept": "C3",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "70,000",
+            "approx_surface": "約7万"
+          }
+        ],
+        "reason": "メッセージとファイルの総数は規模を伝える値であり、聞き取りでは約7万と表現できます。これは攻撃に参加したエージェント数とは別の指標として維持します。",
+        "basis_fact_ids": [
+          "EVID-010"
+        ],
+        "approved_condition": "精度自体が意味を持たず、概数化しても重要な規模や解釈を損なわない場合。"
+      },
+      {
+        "concept": "C4",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "700",
+            "approx_surface": "約700"
+          }
+        ],
+        "reason": "攻撃に参加したエージェント数は規模を伝える値であり、より細かな精度は理解に必要ありません。Fact自体も「roughly 700」としています。",
+        "basis_fact_ids": [
+          "EVID-010"
+        ],
+        "approved_condition": "精度自体が意味を持たず、概数化しても重要な規模や解釈を損なわない場合。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C2\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"1,200\",\"approx_surface\":\"約1,200\"}],\"reason\":\"調査で確認されたエージェント数は規模を伝える値であり、より細かな精度は理解に必要ありません。Fact自体も「roughly 1,200」としています。\",\"basis_fact_ids\":[\"EVID-010\"],\"approved_condition\":\"精度自体が意味を持たず、概数化しても重要な規模や解釈を損なわない場合。\"},{\"concept\":\"C3\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"70,000\",\"approx_surface\":\"約7万\"}],\"reason\":\"メッセージとファイルの総数は規模を伝える値であり、聞き取りでは約7万と表現できます。これは攻撃に参加したエージェント数とは別の指標として維持します。\",\"basis_fact_ids\":[\"EVID-010\"],\"approved_condition\":\"精度自体が意味を持たず、概数化しても重要な規模や解釈を損なわない場合。\"},{\"concept\":\"C4\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"700\",\"approx_surface\":\"約700\"}],\"reason\":\"攻撃に参加したエージェント数は規模を伝える値であり、より細かな精度は理解に必要ありません。Fact自体も「roughly 700」としています。\",\"basis_fact_ids\":[\"EVID-010\"],\"approved_condition\":\"精度自体が意味を持たず、概数化しても重要な規模や解釈を損なわない場合。\"}]}",
+  "model": "gpt-6-luna",
+  "response_id": "resp_03d6c6cfbb2f2604006ad93c7ab60887d08cba767bebc64b59",
+  "sec": 8.1,
+  "effort": "medium",
+  "usage": {
+    "input_tokens": 3190,
+    "output_tokens": 834,
+    "reasoning_tokens": 435
+  }
+}

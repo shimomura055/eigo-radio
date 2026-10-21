@@ -1,0 +1,107 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C2",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "20％",
+            "approx_surface": null
+          }
+        ],
+        "reason": "償還率そのものが提案の中心的な条件であり、丸めると提示された率の事実が変わります。",
+        "basis_fact_ids": [
+          "HF-002",
+          "HF-007"
+        ],
+        "approved_condition": "精度自体に意味がある数値は厳密値を維持する。"
+      },
+      {
+        "concept": "C4",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "7.29ドル",
+            "approx_surface": "約7.3ドル"
+          }
+        ],
+        "reason": "上昇額の大きさを伝えるには小数第2位までの精度は必要なく、約7.3ドルでも意味を損ないません。",
+        "basis_fact_ids": [
+          "HF-006"
+        ],
+        "approved_condition": "余分な小数精度がストーリー上の重要な大きさや解釈に影響しない場合は、聞き取りやすい概数にできる。"
+      },
+      {
+        "concept": "C5",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "9.59％",
+            "approx_surface": "約10％"
+          }
+        ],
+        "reason": "上昇率の規模を理解するうえで小数第2位の精度は必要なく、約10％としても比較や解釈を変えません。",
+        "basis_fact_ids": [
+          "HF-006"
+        ],
+        "approved_condition": "意味を損なわない範囲では概数を基本とし、精度が必要な場合に限って小数を保持する。"
+      },
+      {
+        "concept": "C7",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "83.30ドル",
+            "approx_surface": "約83ドル"
+          }
+        ],
+        "reason": "清算価格の水準を示す用途では、30セントまでの精度は聞き手の理解に必要ありません。",
+        "basis_fact_ids": [
+          "HF-006"
+        ],
+        "approved_condition": "余分な小数精度が重要な閾値や解釈に影響しない場合は、聞き取りやすい概数にできる。"
+      },
+      {
+        "concept": "C10",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約2.6％",
+            "approx_surface": "約3％"
+          }
+        ],
+        "reason": "記事掲載時点の上昇幅の規模を示すには、約3％で十分であり、2.6％の小数精度は結論を変えません。",
+        "basis_fact_ids": [
+          "HF-009"
+        ],
+        "approved_condition": "精度自体が意味を持たない数値は、意味を損なわない範囲で概数にできる。"
+      },
+      {
+        "concept": "C11",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "85ドル",
+            "approx_surface": null
+          }
+        ],
+        "reason": "「85ドルを上回る」という境界が価格の説明に使われているため、丸めると閾値を曖昧にするおそれがあります。",
+        "basis_fact_ids": [
+          "HF-009"
+        ],
+        "approved_condition": "重要な閾値を隠したり曖昧にしたりする丸めはしない。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C2\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"20％\",\"approx_surface\":null}],\"reason\":\"償還率そのものが提案の中心的な条件であり、丸めると提示された率の事実が変わります。\",\"basis_fact_ids\":[\"HF-002\",\"HF-007\"],\"approved_condition\":\"精度自体に意味がある数値は厳密値を維持する。\"},{\"concept\":\"C4\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"7.29ドル\",\"approx_surface\":\"約7.3ドル\"}],\"reason\":\"上昇額の大きさを伝えるには小数第2位までの精度は必要なく、約7.3ドルでも意味を損ないません。\",\"basis_fact_ids\":[\"HF-006\"],\"approved_condition\":\"余分な小数精度がストーリー上の重要な大きさや解釈に影響しない場合は、聞き取りやすい概数にできる。\"},{\"concept\":\"C5\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"9.59％\",\"approx_surface\":\"約10％\"}],\"reason\":\"上昇率の規模を理解するうえで小数第2位の精度は必要なく、約10％としても比較や解釈を変えません。\",\"basis_fact_ids\":[\"HF-006\"],\"approved_condition\":\"意味を損なわない範囲では概数を基本とし、精度が必要な場合に限って小数を保持する。\"},{\"concept\":\"C7\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"83.30ドル\",\"approx_surface\":\"約83ドル\"}],\"reason\":\"清算価格の水準を示す用途では、30セントまでの精度は聞き手の理解に必要ありません。\",\"basis_fact_ids\":[\"HF-006\"],\"approved_condition\":\"余分な小数精度が重要な閾値や解釈に影響しない場合は、聞き取りやすい概数にできる。\"},{\"concept\":\"C10\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約2.6％\",\"approx_surface\":\"約3％\"}],\"reason\":\"記事掲載時点の上昇幅の規模を示すには、約3％で十分であり、2.6％の小数精度は結論を変えません。\",\"basis_fact_ids\":[\"HF-009\"],\"approved_condition\":\"精度自体が意味を持たない数値は、意味を損なわない範囲で概数にできる。\"},{\"concept\":\"C11\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"85ドル\",\"approx_surface\":null}],\"reason\":\"「85ドルを上回る」という境界が価格の説明に使われているため、丸めると閾値を曖昧にするおそれがあります。\",\"basis_fact_ids\":[\"HF-009\"],\"approved_condition\":\"重要な閾値を隠したり曖昧にしたりする丸めはしない。\"}]}",
+  "model": "gpt-6-luna",
+  "response_id": "resp_036eacdffcf4beea006ad93bfe830887d084afdf279d447e2d",
+  "sec": 13.0,
+  "effort": "medium",
+  "usage": {
+    "input_tokens": 4308,
+    "output_tokens": 1331,
+    "reasoning_tokens": 621
+  }
+}

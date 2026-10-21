@@ -1,0 +1,175 @@
+{
+  "entries": [
+    {
+      "concept": "C1",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F-001"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "約50万:V3_approx_equals_exact",
+        "約50万:V3_not_ordinary_rounding(exact=500000,approx=500000)"
+      ],
+      "surfaces": [
+        {
+          "surface": "約50万",
+          "approx": null
+        }
+      ],
+      "reason": "全国の管路総延長の規模を示す値で、これ以上の精度は聞き手の理解に必要ありません。Ledger上も概数として示されています。",
+      "basis_fact_ids": [
+        "F-001"
+      ],
+      "approved_condition": "追加の精度がストーリーの規模感や解釈を実質的に変えない場合は、聞き取りやすい概数を使える。"
+    },
+    {
+      "concept": "C2",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F-001"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "数50年",
+          "approx": null
+        }
+      ],
+      "reason": "標準耐用年数という基準値であり、老朽管路の集計条件を定めるため、厳密値を維持します。",
+      "basis_fact_ids": [
+        "F-001"
+      ],
+      "approved_condition": "重要な閾値や集計条件を示す数値は、丸めで意味を損なわないよう厳密値を維持する。"
+    },
+    {
+      "concept": "C3",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F-001"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "約4万:V3_approx_equals_exact",
+        "約4万:V3_not_ordinary_rounding(exact=40000,approx=40000)"
+      ],
+      "surfaces": [
+        {
+          "surface": "約4万",
+          "approx": null
+        }
+      ],
+      "reason": "老朽管路の規模を示す値で、Ledger上すでに概数として示されており、追加の精度は理解に必要ありません。",
+      "basis_fact_ids": [
+        "F-001"
+      ],
+      "approved_condition": "意味を損なわず、追加の精度が規模感に実質的な差を与えない場合は概数を使える。"
+    },
+    {
+      "concept": "C4",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F-001"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "約7%:V3_approx_equals_exact",
+        "約7%:V3_not_ordinary_rounding(exact=7,approx=7)"
+      ],
+      "surfaces": [
+        {
+          "surface": "約7%",
+          "approx": null
+        }
+      ],
+      "reason": "老朽管路の割合はすでに概数で示されており、小数精度が比較や解釈に必要とは読み取れません。",
+      "basis_fact_ids": [
+        "F-001"
+      ],
+      "approved_condition": "小数精度が重要な閾値や差を示さない場合は、聞き取りやすい概数を使える。"
+    },
+    {
+      "concept": "C5",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F-001"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "EXACT_REQUIRED",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [],
+      "surfaces": [
+        {
+          "surface": "10年",
+          "approx": null
+        }
+      ],
+      "reason": "老朽管路の将来推計における特定の時間点を示します。周辺の20年後の推計と区別するため、10年を維持します。",
+      "basis_fact_ids": [
+        "F-001"
+      ],
+      "approved_condition": "異なる時間点の推計を区別する必要がある場合は、その時間点を厳密に維持する。"
+    },
+    {
+      "concept": "C6",
+      "kind": "magnitude",
+      "ledger_ids": [
+        "F-001"
+      ],
+      "fact_ns": [
+        1
+      ],
+      "llm_decision": "APPROXIMATE_OK",
+      "final_decision": "EXACT_REQUIRED",
+      "downgrade_reasons": [
+        "約11万:V3_approx_equals_exact",
+        "約11万:V3_not_ordinary_rounding(exact=110000,approx=110000)"
+      ],
+      "surfaces": [
+        {
+          "surface": "約11万",
+          "approx": null
+        }
+      ],
+      "reason": "10年後の老朽管路の推計規模で、Ledger上すでに概数として示されています。さらに細かな精度は推計の理解に必要ありません。",
+      "basis_fact_ids": [
+        "F-001"
+      ],
+      "approved_condition": "推計の規模感を損なわず、追加の精度が解釈を変えない場合は概数を使える。"
+    }
+  ],
+  "violations": [],
+  "core_concept_order": [
+    "C1",
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "C6"
+  ],
+  "n_approximate_ok": 0,
+  "article_id": "art_6322c220",
+  "judge_model": "gpt-6-luna",
+  "judge_response_id": "resp_01962f7a0b425ce9006ad93c6fb9fc87d0a378f816b14a75cd",
+  "effort": "medium",
+  "variant": "luna_medium"
+}

@@ -1,0 +1,106 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約50万",
+            "approx_surface": "約50万"
+          }
+        ],
+        "reason": "全国の管路総延長を示す概数であり、さらに細かな精度は聞き手の理解に必要ありません。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "精度自体が意味を持たない数値は、意味を損なわない範囲で概数化できる。"
+      },
+      {
+        "concept": "C2",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "数50年",
+            "approx_surface": null
+          }
+        ],
+        "reason": "標準耐用年数は老朽管路の集計条件を定める閾値なので、数値を維持します。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "重要な閾値など、精度自体が意味を持つ数値は厳密値を維持する。"
+      },
+      {
+        "concept": "C3",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約4万",
+            "approx_surface": "約4万"
+          }
+        ],
+        "reason": "老朽管路の延長はすでに概数で示されており、追加の精度は聞き手の理解に必要ありません。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "精度自体が意味を持たない数値は、意味を損なわない範囲で概数化できる。"
+      },
+      {
+        "concept": "C4",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約7%",
+            "approx_surface": "約7%"
+          }
+        ],
+        "reason": "構成比は概数として示されており、これ以上の精度が比較や解釈に必要とはいえません。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "精度自体が意味を持たない数値は、意味を損なわない範囲で概数化できる。"
+      },
+      {
+        "concept": "C5",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "10年",
+            "approx_surface": null
+          }
+        ],
+        "reason": "老朽管路の将来推計における期間を定めているため、期間の数値は維持します。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "数値を丸めることで重要な期間や比較の解釈を変えないようにする。"
+      },
+      {
+        "concept": "C6",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "約11万",
+            "approx_surface": "約11万"
+          }
+        ],
+        "reason": "将来推計の延長は概数で示されており、さらに細かな精度は見込みの規模を理解するうえで必要ありません。",
+        "basis_fact_ids": [
+          "F-001"
+        ],
+        "approved_condition": "精度自体が意味を持たない数値は、意味を損なわない範囲で概数化できる。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C1\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約50万\",\"approx_surface\":\"約50万\"}],\"reason\":\"全国の管路総延長を示す概数であり、さらに細かな精度は聞き手の理解に必要ありません。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"精度自体が意味を持たない数値は、意味を損なわない範囲で概数化できる。\"},{\"concept\":\"C2\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"数50年\",\"approx_surface\":null}],\"reason\":\"標準耐用年数は老朽管路の集計条件を定める閾値なので、数値を維持します。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"重要な閾値など、精度自体が意味を持つ数値は厳密値を維持する。\"},{\"concept\":\"C3\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約4万\",\"approx_surface\":\"約4万\"}],\"reason\":\"老朽管路の延長はすでに概数で示されており、追加の精度は聞き手の理解に必要ありません。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"精度自体が意味を持たない数値は、意味を損なわない範囲で概数化できる。\"},{\"concept\":\"C4\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約7%\",\"approx_surface\":\"約7%\"}],\"reason\":\"構成比は概数として示されており、これ以上の精度が比較や解釈に必要とはいえません。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"精度自体が意味を持たない数値は、意味を損なわない範囲で概数化できる。\"},{\"concept\":\"C5\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"10年\",\"approx_surface\":null}],\"reason\":\"老朽管路の将来推計における期間を定めているため、期間の数値は維持します。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"数値を丸めることで重要な期間や比較の解釈を変えないようにする。\"},{\"concept\":\"C6\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"約11万\",\"approx_surface\":\"約11万\"}],\"reason\":\"将来推計の延長は概数で示されており、さらに細かな精度は見込みの規模を理解するうえで必要ありません。\",\"basis_fact_ids\":[\"F-001\"],\"approved_condition\":\"精度自体が意味を持たない数値は、意味を損なわない範囲で概数化できる。\"}] }",
+  "model": "gpt-6-luna",
+  "response_id": "resp_013dbea016f05cd4006ad93c35f54087d0bfc3a78349792ce6",
+  "sec": 8.0,
+  "effort": "low",
+  "usage": {
+    "input_tokens": 4122,
+    "output_tokens": 931,
+    "reasoning_tokens": 265
+  }
+}

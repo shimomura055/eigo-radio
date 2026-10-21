@@ -1,0 +1,80 @@
+{
+  "parsed": {
+    "decisions": [
+      {
+        "concept": "C1",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "11件",
+            "approx_surface": null
+          }
+        ],
+        "reason": "統合した研究の件数そのものを示す離散的な値であり、概数にすると対象範囲が変わります。",
+        "basis_fact_ids": [
+          "F04"
+        ],
+        "approved_condition": "研究数など、意味のある件数は厳密値を維持する。"
+      },
+      {
+        "concept": "C2",
+        "decision": "APPROXIMATE_OK",
+        "surfaces": [
+          {
+            "surface": "最大134,515人",
+            "approx_surface": "最大約13万5千人"
+          },
+          {
+            "surface": "134,515人",
+            "approx_surface": "約13万5千人"
+          }
+        ],
+        "reason": "最大解析標本数の規模を伝える値で、千人単位に丸めても大きさの理解は損なわれません。最大値であることは表記に残します。",
+        "basis_fact_ids": [
+          "F04"
+        ],
+        "approved_condition": "精度の細かさが意味に影響しない場合、聞き取りやすさを優先して概数にできる。"
+      },
+      {
+        "concept": "C4",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "3回以上",
+            "approx_surface": null
+          }
+        ],
+        "reason": "適格条件の測定回数の閾値を示しており、丸めると条件の意味が変わります。",
+        "basis_fact_ids": [
+          "F07"
+        ],
+        "approved_condition": "重要な閾値は、丸めて意味を変えたり曖昧にしたりしない。"
+      },
+      {
+        "concept": "C5",
+        "decision": "EXACT_REQUIRED",
+        "surfaces": [
+          {
+            "surface": "0.0630",
+            "approx_surface": null
+          }
+        ],
+        "reason": "標準化された効果係数は研究結果の大きさを表す値です。丸めると別方向の係数0.0589と同じ0.06になり、区別が失われるおそれがあります。",
+        "basis_fact_ids": [
+          "F08"
+        ],
+        "approved_condition": "小規模な測定値や、丸めることで意味のある差が同一視される値は精度を保つ。"
+      }
+    ]
+  },
+  "raw_text": "{\"decisions\":[{\"concept\":\"C1\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"11件\",\"approx_surface\":null}],\"reason\":\"統合した研究の件数そのものを示す離散的な値であり、概数にすると対象範囲が変わります。\",\"basis_fact_ids\":[\"F04\"],\"approved_condition\":\"研究数など、意味のある件数は厳密値を維持する。\"},{\"concept\":\"C2\",\"decision\":\"APPROXIMATE_OK\",\"surfaces\":[{\"surface\":\"最大134,515人\",\"approx_surface\":\"最大約13万5千人\"},{\"surface\":\"134,515人\",\"approx_surface\":\"約13万5千人\"}],\"reason\":\"最大解析標本数の規模を伝える値で、千人単位に丸めても大きさの理解は損なわれません。最大値であることは表記に残します。\",\"basis_fact_ids\":[\"F04\"],\"approved_condition\":\"精度の細かさが意味に影響しない場合、聞き取りやすさを優先して概数にできる。\"},{\"concept\":\"C4\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"3回以上\",\"approx_surface\":null}],\"reason\":\"適格条件の測定回数の閾値を示しており、丸めると条件の意味が変わります。\",\"basis_fact_ids\":[\"F07\"],\"approved_condition\":\"重要な閾値は、丸めて意味を変えたり曖昧にしたりしない。\"},{\"concept\":\"C5\",\"decision\":\"EXACT_REQUIRED\",\"surfaces\":[{\"surface\":\"0.0630\",\"approx_surface\":null}],\"reason\":\"標準化された効果係数は研究結果の大きさを表す値です。丸めると別方向の係数0.0589と同じ0.06になり、区別が失われるおそれがあります。\",\"basis_fact_ids\":[\"F08\"],\"approved_condition\":\"小規模な測定値や、丸めることで意味のある差が同一視される値は精度を保つ。\"}]}",
+  "model": "gpt-6-luna",
+  "response_id": "resp_01c00ddb02dcae57006ad93c17dec087d090bb8b1ff040fae6",
+  "sec": 15.0,
+  "effort": "medium",
+  "usage": {
+    "input_tokens": 3869,
+    "output_tokens": 1486,
+    "reasoning_tokens": 1003
+  }
+}
