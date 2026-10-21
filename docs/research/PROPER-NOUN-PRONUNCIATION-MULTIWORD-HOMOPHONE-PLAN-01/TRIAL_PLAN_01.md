@@ -164,3 +164,15 @@ TTS入力文を意図的に変えた音声で、(a)ASRの生認識、(b)救済�
 ## 10. 成果物（Trial実行時）
 
 `TRIAL_RESULT_01.md`(層A/B/C表、ケース別現行/提案判定、新規PASS/NG一覧、費用実測、使用モデル名・最新か・最新でない場合の理由[25節]、ASR構成)、`results_*.json`、test。保存先は本dir（新規の証跡置き場を作らない）。
+
+
+---
+## v3 Fix(2026-10-22ユーザー判断反映、委任_03。Status=`PLAN_FIXED_WAITING_ASR_SELECTION`。上のv2本文は履歴として保持し、矛盾時は本節が優先)
+出典: `docs/pm/delegation_log/2026-10-22_PNMH-PLAN-FIX-AND-ASR-PASS-CONDITION-AUDIT-01_USER.md` §2。承認されたのは『計画v2の基本方針とTrial計画』であり、Production採用ではない(VALIDATED≠APPROVED_FOR_PRODUCTION≠PRODUCTION_WIRED)。
+
+1. **ラベル確定**: `Bi-us`型(BI1/BI2)=**NOT_PASS**(U-BI=NG維持、V8有効)。v2の『U-BI待ち・両ラベル併記』『A9のB0/B1併記』は**B0のみ**に確定(A9: 層CでPASS 0)。`bias`⇔`by us`(BI3)は音素同一のため期待=PASS(既知の残存、層Cで要審査)。
+2. **合格基準A1〜A9へのv3追加**: ストレス差のみの正例は救済100%、音素相違(PH1/PH2/N1〜N7)は誤PASS 0、entity_likeは代表発音のみで比較(`today→to day`は全variantならPASS・代表発音ならNG、unit testで固定)。
+3. **ケース表**: `TRIAL_CASES_01.json`は41件(+BI1/BI2/NX1/CS1-3/RS1/H1/BI3/PH1/PH2)。v3判定は全件期待どおり(`update_cases_v3_01_result.txt`)。
+4. **実行条件**: P1は『新Primary/Secondary確定のユーザー通知』をトリガーとし、Cap案JPY50(見積18〜28円)。**現時点では実行しない**。確定前は有料API/TTS/ASRを使わない。§8チェックリストはそのまま使う。
+5. **O1実施済み(0円)**: `test_proto_multiword_span_v3_01.py` 20件PASS。O0(4,032ペア)は再実行で保存結果とバイト一致(前提不変)。
+6. **U5**: 既存の穴(EX1〜EX3・H1)はユーザー未回答のためKEEP(悪化させない・是正しない)のまま。

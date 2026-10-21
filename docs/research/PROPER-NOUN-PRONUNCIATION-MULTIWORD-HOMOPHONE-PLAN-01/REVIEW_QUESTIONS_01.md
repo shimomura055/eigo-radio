@@ -37,3 +37,20 @@ v1のU3(J7)・U4(#133)・U6(#134)・U8(Issue #133本文)は『未回答のまま
 
 ## 4. Opus指摘(OF-PNMH-R-01〜13)の反映先
 `docs/pm/OPUS_FINDINGS_LEDGER.md`のOF-PNMH-R-01〜13に処置と変更箇所を登録。
+
+
+---
+## v3 Fix(2026-10-22ユーザー判断反映、委任_03。Status=`PLAN_FIXED_WAITING_ASR_SELECTION`。上のv2本文は履歴として保持し、矛盾時は本節が優先)
+出典: `docs/pm/delegation_log/2026-10-22_PNMH-PLAN-FIX-AND-ASR-PASS-CONDITION-AUDIT-01_USER.md` §2。承認されたのは『計画v2の基本方針とTrial計画』であり、Production採用ではない(VALIDATED≠APPROVED_FOR_PRODUCTION≠PRODUCTION_WIRED)。
+
+## v3: ユーザー判断との対応(#137)
+| 論点 | 判断 | 状態 |
+|---|---|---|
+| U2 案A採否 | 採用(Trial計画として。ストレス無視・1語⇔2〜3語) | 判断済み |
+| U-BI | NG維持(V8) | 判断済み |
+| U1 適用範囲 | 原則全語+entity_likeは代表発音限定 | 判断済み |
+| U7 有料Trial | ASR確定後に実施、Cap案JPY50(実行しない) | 判断済み(Cap最終形はFable確認) |
+| U5 既存の穴 | 原文は『既存の誤PASS防止条件を維持』のみ。是正可否は回答なし | **未決** |
+| J7 公式JA読み | 未回答。ただし『同綴りの別人名だけでは公式発音確定とみなさない』と明示 | **未決** |
+| GitHub Issue #133本文 | 未確認 | 未決 |
+| #133 L2 | 反応的調査を継続検討(採用でない)、全固有名詞毎回調査は不採用、Status維持 | 継続検討 |

@@ -154,3 +154,13 @@ v1では情報源Tier表(T0〜T4)、negative cacheのTTL(90日)、T2b(Wikipedia/
 - 量産単価: 案Aは実行時 0円/記事。期待値は再試行削減(byUs型1件約5円＋10分)×発生率(保存4,032ペア中4=0.10%、全て1記事由来)で記事あたり0〜0.1円オーダーの**微減**。価値は予防が中心。B1は11〜16円/記事の悪化見込み(非推奨)、B2は別計画。
 - 納期: オフライン検証は3方式ASR比較の完了を待たず進められる。有料Trialは**約18〜28円・数時間規模、Cap JPY50**(`TRIAL_PLAN_01.md` §7、v1の25〜60円/Cap100から縮小・R-06)。
 - 不確実性: 発生率は保存データ上の値(Azureが主因)で、新Primary/Secondaryで変わり得る。
+
+
+---
+## v3 Fix(2026-10-22ユーザー判断反映、委任_03。Status=`PLAN_FIXED_WAITING_ASR_SELECTION`。上のv2本文は履歴として保持し、矛盾時は本節が優先)
+出典: `docs/pm/delegation_log/2026-10-22_PNMH-PLAN-FIX-AND-ASR-PASS-CONDITION-AUDIT-01_USER.md` §2。承認されたのは『計画v2の基本方針とTrial計画』であり、Production採用ではない(VALIDATED≠APPROVED_FOR_PRODUCTION≠PRODUCTION_WIRED)。
+
+- **案Aの確定仕様(Trial計画として)**: 1語⇔連続2〜3語・ストレス無視・CMU全variant・ガードG1〜G9+**V8(2字tokenは閉じた機能語集合のみ=`Bi-us`型NG維持)**・entity_likeは代表発音のみ。試作=`proto_multiword_span_01.py`の`multiword_span_equivalent_v3`(v2既定の`multiword_span_equivalent`は不変)。
+- **§4-3の『U-BIで決める』は決着**: ユーザーは『現行仕様に従いNG維持』を選択→V8採用(B0)。残る限界=`bias`⇔`by us`(機能語by)は救済される。
+- **#133/L2**: 『辞書外・未解決の実際の不一致が発生した場合に調査する方式』(B2縮小=反応的調査)を**継続検討の候補**として残す。全固有名詞を毎回調査する方式(B1)は不採用(ユーザー判断)。#133のStatusは不変、未承認事項は正式採用しない。
+- **リスク欄**: 現行の`Bias`救済と案Aの`buy us`救済は、CMU辞書が姓等として収録する`byus`(=`B AY1 AH0 S`)の綴り依存。ブランドの公式英語発音の確認ではない。『同綴りの別人名があるだけでは公式発音は確定しない』ため、byUsの英語発音は**未確定**(J7未回答)。

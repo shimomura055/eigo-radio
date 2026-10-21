@@ -1,3 +1,42 @@
+# PLAN_SUMMARY_01(v3 Fix): 固有名詞発音供給#133 ＋ 1語⇔複数語の同音救済 改善計画
+
+管理ID: PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01 委任_03(2026-10-22) / **Status管理ラベル: `PLAN_FIXED_WAITING_ASR_SELECTION`**(計画Fix済み・Trial未実行・Production無変更・API 0・JPY0。ユーザーが承認したのは『計画v2の基本方針とTrial計画』であり、VALIDATED / APPROVED_FOR_PRODUCTION / PRODUCTION_WIREDではない。案Aの**Production採用は未承認**)。ユーザー原文の出典=`docs/pm/delegation_log/2026-10-22_PNMH-PLAN-FIX-AND-ASR-PASS-CONDITION-AUDIT-01_USER.md`(§2・§5・§6A。B側workerが保存)。
+
+## v3-1. 反映したユーザー判断(2026-10-22、原文に基づく範囲のみ)
+| 判断(原文の要旨) | 計画への反映 |
+|---|---|
+| 計画v2の基本方針を承認 | Trial計画として案Aを採用(Production採用ではない) |
+| 『ByUs ⇔ buy us / by us のように発音が同じなら、単語数・綴り・辞書上のストレス記号の違いでNGにしない』『ストレス記号を無視した音素列比較をTrial計画に採用』 | U2=採用(Trial計画)。ストレス無視・1語⇔連続2〜3語の音素列連結比較(CURRENT_SPEC:1839の拡張はTrialで検証する新仕様) |
+| 『音素が異なる実際の誤発音はNG』『既存の誤PASS防止条件を維持』 | 近音/脱落/追加/OOV/数値否定/文字読み/略語ガードを全て維持(ケースN1〜N15・PH1・PH2、unit test 20件で固定) |
+| 『`Bi-us`型は現行仕様に従いNG維持』 | U-BI=NG維持(CURRENT_SPEC:454整合)。V8ガード(2字tokenは閉じた機能語集合のみ)をTrial仕様に採用。ケースBI1/BI2=期待NOT_PASS |
+| 『対象は原則全語、固有名詞らしい語は代表発音限定などv2の安全条件を維持』 | U1=全語+entity_likeは代表発音のみ。G5・V8・隣接spanのみ・辞書外=判定不能・数値/否定ガード先行を維持 |
+| #133: 『辞書外・未解決の実際の不一致が発生した場合に調査する方式を継続検討』『全固有名詞を毎回調査する高コスト方式は採用しない』『CMU辞書に同綴りの別人名があることだけで公式発音が確定したと判断しない』『#133の既存Statusを維持し未承認事項を正式採用しない』 | L2縮小案(反応的調査)は**継続検討の候補**であり採用ではない。#133のStatus(UDR #133未回答)は変更しない。byUsの英語発音は**未確定**(下記リスク) |
+| Trial: 『現在のASR比較結果を待つ』『新Primary/Secondary確定後に実施』『費用上限案50円』『現時点では実行・Production採用・配線は行わない』『無料の準備は先行可』 | U7=ASR確定後に実施する計画、Cap案JPY50。Trial実行はしない。無料準備(ケース表・unit test)を実施済み(v3-4) |
+
+## v3-2. 残る未決事項(判断候補。ラベルはFable付与)
+- **U5 既存の穴**(`AI→eye`・`us→u s`・`am→a m`・`Tse→sea`[現行でPASS]): 原文は『既存の誤PASS防止条件を維持する』とのみで、**是正可否には回答なし**。計画は『悪化させない』のみ(ケースEX1〜EX3・H1=KEEP)。是正は別判断事項として残す。
+- **J7**: 権利者の公式日本語読み『バイアス』を英語の期待発音の根拠にしてよいか(未回答)。
+- **GitHub Issue #133本文**: 取得不能(404)のまま未確認。
+- **#133(UDR #133)のア/イ/ウ**: 未回答のまま(L2は別計画)。#134(Perplexity枠切れ)も未回答。
+- **Trial Cap JPY50の最終確定**: 原文は『費用上限案は50円』。計画値としてCap JPY50で記載するが、実行直前の承認形態(7-7: 新仕様Trialは金額によらず承認)はFableが確認する。
+- **リスク(byUsの英語発音は未確定)**: 現行の`Bias`救済は、CMU辞書に姓等として`byus`が収録され`bias`と同じ`B AY1 AH0 S`であることに依存しており、ブランド`byUs`の公式発音の確認ではない。案Aの`buy us`救済も同じ綴り辞書基盤に乗る。『CMU辞書に同綴りの別人名があることだけで公式発音が確定したとは判断しない』(ユーザー原文)に従い、byUsの英語発音は未確定とし、実際の発音が`bias`系でないと判明した場合は救済の根拠が変わる(Trial結果の解釈に反映)。
+
+## v3-3. Trial実行条件(実施しない。ASR確定後の手順)
+- **トリガー**: ASR 3方式比較(OPEN-438・UDR #136)に基づき、ユーザーが新Primary/Secondaryを確定して通知した時点(自動移行しない。確定前に有料APIを使わない)。
+- **内容(P1)**: 構成音声**13本**(正例/近音/脱落/文字読み/`bi-us`型)のTTS生成+新Primary/Secondaryで再ASR、run_byus_01等の**既存wav約5本の再ASR**(TTS 0円)、層A(ASR生認識)・層B(救済)・層C(最終判定)を分離して集計。
+- **費用**: 見積**約18〜28円**、**Cap案JPY50**(日次1,000円内)。上限のステータスはVALIDATED、Production採用は人間ユーザーのみ。
+- **ASR確定時に差し替える条件チェックリスト**: `TRIAL_PLAN_01.md` §8(v2既存の7項目+再評価6点)をそのまま使用。v3追加の合格条件: Bi-us型(BI1/BI2/実音声`bi-us`)は層CでPASS 0、音素相違の実音声負例は誤PASS 0、ストレス差のみの正例は救済100%。
+- 無料の先行分(O1): unit test(実施済)・目視レビュー用リスト(v2作成済)。
+
+## v3-4. 無料先行準備の結果(API 0・JPY0)
+- `test_proto_multiword_span_v3_01.py`: **20件PASS**(span 15件+文単位in-memory 5件、Production経路無変更・ファイル出力なし)。結果=`test_proto_multiword_span_v3_01_result.txt`。
+- `TRIAL_CASES_01.json`: 30→**41件**(v2計画書にのみあったBI1/BI2/NX1/CS1-3/RS1/H1と、v3のBI3/PH1/PH2を追加)。v3方針での判定(`after_v3`)で**全41件が期待どおり**(NX1は『要審査』で、v2事前測定どおり`HOMOPHONE_MATCH_NUMBER_EXCEPTION`のPASS=目視審査項目として維持)。結果=`update_cases_v3_01_result.txt`。
+- O0再適用(4,032ペア)は前提不変: `measure_v2_01.py`を再実行し`measure_v2_result_01.json`が保存済みと**バイト一致**(git差分0)。変化4ペア(`byus→buy us`)・PASS→NG 0。
+- 既知の残存: `bias`⇔`by us`(機能語`by`)は音素が同一のため救済される(BI3)。区切って読まれた場合との区別は音素列だけでは不可。Trial層Cで要審査(DESIGN_OPTIONS §4-3)。
+
+---
+# 以下はv2本文(2026-10-21。履歴として保持。上のv3 Fixが優先)
+
 # PLAN_SUMMARY_01(v2): 固有名詞発音供給#133 ＋ 1語⇔複数語の同音救済 改善計画(ユーザー指示§7の1〜11の順)
 
 管理ID: PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01 委任_02 / Status管理ラベル: `PLAN_V2_PENDING_USER_FIX`(計画のみ・API 0・JPY0・Trial未実行・Production無変更。VALIDATED/APPROVED_FOR_PRODUCTIONではない)。詳細は同dirの`DESIGN_OPTIONS_01.md`/`TRIAL_PLAN_01.md`/`INVESTIGATION_01.md`/`REVIEW_QUESTIONS_01.md`。

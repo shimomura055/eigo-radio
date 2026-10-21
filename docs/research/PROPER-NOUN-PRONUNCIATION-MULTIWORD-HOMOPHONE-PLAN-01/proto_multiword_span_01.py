@@ -14,15 +14,16 @@ MAX_JOINT = 64        # 発音variant直積の上限(超過は判定不能=安�
 
 def _strip(ph): return re.sub(r"\d", "", ph)
 
-def _variants_nostress(tok):
+def _variants_nostress(tok, representative_only=False):
     ps = pronouncing.phones_for_word(tok)
     if not ps: return None
+    if representative_only: ps = ps[:1]   # v3: 固有名詞らしい語(entity_like)は代表発音(CMU先頭variant)のみ。measure_v2_01.py の rep と同一
     return sorted({tuple(_strip(p).split()) for p in ps})
 
-def joint_variants(tokens):
+def joint_variants(tokens, representative_only=False):
     vs = []
     for t in tokens:
-        v = _variants_nostress(t)
+        v = _variants_nostress(t, representative_only)
         if v is None: return None
         vs.append(v)
     n = 1
@@ -56,6 +57,24 @@ def multiword_span_equivalent(canon_span, asr_span, *, detail=None):
     ok = bool(vc & va)
     d["why"] = "phoneme_equal" if ok else "phoneme_differs"
     return ok
+
+# --- v3 Fix(2026-10-22ユーザー判断反映): V8(2字tokenは閉じた機能語集合のみ=`Bi-us`型NG維持) + entity_like代表発音限定 ---
+# 既定のv2挙動(multiword_span_equivalent)は変更しない(再現性)。v3方針は下記のwrapper経由のみ(Trial専用・Production未配線)。
+FW2 = {"us", "on", "to", "in", "of", "by", "at", "it", "is", "as", "or", "an", "my", "me", "he", "we", "be", "do", "go", "up", "so", "no", "if", "am", "ok"}
+
+def multiword_span_equivalent_v3(canon_span, asr_span, entity_like=False, *, detail=None):
+    d = detail if detail is not None else {}
+    c, a = list(canon_span), list(asr_span)
+    multi = c if len(c) > 1 else a
+    if len(multi) > 1 and any(len(t) == 2 and t not in FW2 for t in multi):
+        d["why"] = "two_letter_non_function_word(V8_bius_guard)"; return False
+    if entity_like:
+        # 代表発音のみで比較(multiword_span_equivalent と同じガード列を通した後、代表発音で再判定)
+        if not multiword_span_equivalent(c, a, detail=d): return False
+        vc, va = joint_variants(c, True), joint_variants(a, True)
+        if vc is None or va is None: d["why"] = "OOV_or_too_many_variants"; return False
+        ok = bool(vc & va); d["why"] = "phoneme_equal_representative" if ok else "differs_in_representative_only"; return ok
+    return multiword_span_equivalent(c, a, detail=d)
 
 _src = inspect.getsource(val.protected_check)
 _OLD = "                    homophone_candidate = bool(result_h)\n"

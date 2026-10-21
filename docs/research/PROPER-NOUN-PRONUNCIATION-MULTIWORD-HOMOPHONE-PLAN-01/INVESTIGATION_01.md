@@ -102,3 +102,12 @@ Status管理ラベル: `PLAN_DRAFT_PENDING_FABLE_REVIEW`(VALIDATED/APPROVED_FOR_
 
 ### 8-4. v1記述の訂正
 - 本書§2「追加確認1」・§3表(CMU同音の再利用)・末尾の結論2にある『既存の1語⇔1語同音と同一』は、**信頼の土台(期待発音=CMU収録綴りの発音)が同じ**という意味に限る。ストレスの扱いは同一でない(既存1:1はストレス込みの完全一致、連結比較はストレス無視。DESIGN_OPTIONS_01.md §4-1 G7)。
+
+
+---
+## v3 Fix(2026-10-22ユーザー判断反映、委任_03。Status=`PLAN_FIXED_WAITING_ASR_SELECTION`。上のv2本文は履歴として保持し、矛盾時は本節が優先)
+出典: `docs/pm/delegation_log/2026-10-22_PNMH-PLAN-FIX-AND-ASR-PASS-CONDITION-AUDIT-01_USER.md` §2。承認されたのは『計画v2の基本方針とTrial計画』であり、Production採用ではない(VALIDATED≠APPROVED_FOR_PRODUCTION≠PRODUCTION_WIRED)。
+
+- ユーザー判断により、§2-33『CMU辞書は`byus`を収録しているがブランドの公式発音ではない』の扱いが確定した: **CMUに同綴りの別人名(姓)があることは、対象ブランドの公式発音の根拠にならない**。byUsの英語発音は未確定のまま(J7未回答)。現行`Bias`救済の依存と、案Aの`buy us`救済の依存を、計画のリスクとして明記する(`DESIGN_OPTIONS_01.md` v3節)。
+- GitHub Issue #133本文は未確認のまま(変更なし)。
+- 調査結果(§1〜§8)の事実関係はv3で変更なし。O0再適用は前提不変(`measure_v2_result_01.json`がバイト一致)。

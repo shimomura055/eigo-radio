@@ -21897,3 +21897,13 @@ Fable決定: F1 STOP_NOTICE(2026-10-12)をrun_e2e_03限定で解除(run_e2e_01/0
 - 決定: Fable判定=PRODUCTION_WIRED(承認済み仕様の遵守是正、新仕様なし。API 0・JPY0・コード変更なし)。
 - 根拠: OPEN-436の根拠(1)〜(8)(不正5件隔離・原因特定・再発防止・供給前後比較unknown 7->0/Melos 16維持・golden121 attempt変化0・Azure実呼出悪化なし・retry/fallback/resume整合・重み2.0/ASR判定/閾値不変)。
 - 付帯: 研究応答不正時の自動隔離のProduction実発火はPerplexity 401(#134)のためtest evidenceのみ、復旧後の初回発火を監視。疑義6 entryは報告のみ・未是正。原文: docs/pm/delegation_log/2026-10-21_PRONUNCIATION-LEDGER-INVALID-ENTRY-REMEDIATION-01_委任_02.md
+
+
+## 2026-10-22 PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01 委任_03: ユーザー判断(計画v2基本方針の承認・Trial計画としてのFix)
+- 管理ID: PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01(OPEN-439、UDR #137)。出典(原文全文): `docs/pm/delegation_log/2026-10-22_PNMH-PLAN-FIX-AND-ASR-PASS-CONDITION-AUDIT-01_USER.md` §2。本記録は§2のうち本計画に関する部分の逐語引用。
+- 逐語(§2): 「改善計画v2の基本方針を承認する。」「`ByUs` ⇔ `buy us` / `by us` のように、発音が同じなら単語数・綴り・辞書上のストレス記号の違いによってNGにしない。」「ストレス記号を無視した音素列比較をTrial計画に採用する。」「ただし、音素が異なる実際の誤発音はNG。」「既存の誤PASS防止条件を維持する。」「`Bi-us`型については、現行仕様に従いNGを維持する。」「対象は原則全語とし、固有名詞らしい語は代表発音限定など、v2の安全条件を維持する。」
+- 逐語(#133との関係): 「固有名詞の正しい発音供給については、辞書外・未解決の実際の不一致が発生した場合に調査する方式を継続検討する。」「全固有名詞を毎回調査する高コスト方式は採用しない。」「CMU辞書に同綴りの別人名があることだけで、対象ブランドの公式発音が確定したと判断しない。」「#133の既存ユーザー判断Statusを維持し、未承認事項を正式採用しない。」
+- 逐語(Trial): 「現在進行中のOpenAI／Azure／ローカルWhisper精度比較の結果を待つ。」「新Primary／Secondary確定後にTrialを実施する計画とする。」「Trial費用上限案は50円。」「現時点ではTrial実行・Production採用・配線は行わない。」「無料の準備・テストケース整備・計画更新は先行可能。」
+- 決定: (1)計画v2の基本方針の承認 (2)品質判断4点[発音が同じならNGにしない/ストレス無視の音素列比較をTrial計画に採用/音素相違の誤発音はNG/既存の誤PASS防止条件維持]+`Bi-us`型NG維持+対象は原則全語(固有名詞らしい語は代表発音限定) (3)#133関係3点[反応的調査方式の継続検討/全固有名詞毎回調査は不採用/同綴りの別人名だけでは公式発音確定としない/#133 Status維持・未承認事項は正式採用しない] (4)Trial条件[新Primary/Secondary確定後に実施・費用上限案JPY50・現時点で実行しない・無料準備は先行可]。
+- **明記: 本決定は『Trial計画としての承認』であり、Production採用(APPROVED_FOR_PRODUCTION)でも新仕様の正式採用でもない。** 案Aはストレス無視・1語⇔複数語でCURRENT_SPEC:1839を拡張する新仕様であり、Trial結果(上限VALIDATED)を経てユーザーが別途正式採用を判断するまでProduction不変。
+- 未決(本決定で回答なし): U5既存の穴の是正可否・J7・GitHub Issue #133本文・UDR #133ア/イ/ウ・#134。Status=PLAN_FIXED_WAITING_ASR_SELECTION。成果物=`docs/research/PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01/`(要約`PLAN_SUMMARY_01.md`)。API 0・JPY0・Production無変更。
