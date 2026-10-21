@@ -317,3 +317,7 @@
 
 - #133(UDR・未回答・非blocking[記事制作を止めない]、2026-10-21 登録、PNEP 委任_03、OPEN-434) 固有名詞英語発音供給の扱い: (ア)J7を認めて再Trial[byUs登録→PL供給の実証] (イ)現状維持(CMU層+人間承認)で採用見送り(Fable推奨) (ウ)綴りのみPL供給(J2)の限定採用Trial。根拠=Trial結果で必須要件K1未達(英語公式発音なし→安全終了)・効果限定・原価悪化寄り(結果=docs/research/FAMILY-XZ-PROPER-NOUN-EN-PRONUNCIATION-SUPPLY-TRIAL-01/TRIAL_RESULT_01.md)。
 - #134(UDR・未回答・非blocking・外部課金、2026-10-21 登録、PNEP 委任_03、OPEN-434) Perplexity API利用枠切れ(HTTP 401 insufficient_quota)の復旧要否。Production `research_pronunciations`が動作しない可能性。選択肢=OpenAI web_search代替[高コスト]/Perplexity復旧[ユーザー側課金]/固有名詞HRパッケージの縮退許容。
+
+### 2026-10-21 B3 中核数値丸め Fable判定追記(`FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01` 委任_02、OPEN-437。既存行は書き換えず追記のみ)
+
+- #135(UDR・未決・非blocking[記事制作を止めない]、2026-10-21 登録、B3-ROUNDING 委任_02、OPEN-437) 件名=B3 中核数値 丸め判断(FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01)のProduction採用可否。判断事項: D1 Fact Lock Writer数字規則(5)『丸め・「約」追加禁止』への【概数表記】例外の承認 / D2 原価+JPY2.95〜4.30/記事(70円比+4.2〜6.1%)の許容 or 削減Trial(effort low・出力削減)先行 / D3 粒度規定[有効2桁=13万 か 期待例の13万5千 か/既に概数のFactの再丸め可否] / D4 価値判断(効果は記事A 1箇所、音声聞き取り評価未実施)。Fable推奨=(ア)今は採用せず保留。理由: 効果が記事A 1箇所の聞き取りやすさに限られる一方、承認済み規則(5)の例外化+単価+4〜6%+粒度未規定の3つの新判断を要し、Q>D>Cの観点で費用対効果が現時点では低い。採用するなら先にD3粒度規定とD2削減Trial(effort low・出力削減)を条件にする。Status=未決。出典=docs/research/FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01/TRIAL_RESULT_01.md。
