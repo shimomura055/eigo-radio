@@ -97,3 +97,18 @@ Production code・Prompt・閾値・Ledger・Master Store・記事成果物・�
 - 判断候補A(**UDR #136**): KP限定Azure拒否権(C1dK/C5K)を、(ア)前段検証①″(約JPY30)+聴取②を実施してからC1dK Offline Trial可否を再判断[Fable推奨]/(イ)前段検証を省きC1dK Offline Trialへ/(ウ)現行維持(KP4是正で個別対処)、のどれで進めるか。新仕様・Production挙動の意味的変更のため`27-3 D`相当。『OpenAI Primary → Azure Secondary』『既存Validator』のProduction実装は本Trialで変更していない。
 - 判断候補B: ASR Primary/Secondaryの入替(Azure/Whisper Primary化)は、本Trialでは現行を上回る証拠が得られていない(原価・見逃し・HRの観点)。**進めない推奨**。進める場合は規則側の再較正と、別Trial(追加の聴取ラベル付き音声と費用承認)が前提。
 - 判断候補C: Whisper(small/medium)を『独立した第3の意見』として常時走らせる運用(CPU負荷・モデル管理)を許容するか。
+
+## 11. ユーザー正式決定(2026-10-22、UDR #136。委任_03で追記。既存§9/§10の番号衝突を避け§11とした)
+出典(逐語・本文751文字・sha256 810d3c74…1e0b1)=`docs/pm/delegation_log/2026-10-22_ASR-THREE-WAY-COMPARISON-TRIAL-01_DECISION_USER.md`。
+
+**逐語(§1 正式決定)**: 1. Primary：OpenAI `gpt-4o-mini-transcribe` を維持。 2. Secondary：Azure Speech STTを維持。 3. ローカルWhisperのProduction導入は不採用。運用複雑化を避ける。 4. Primary／Secondaryの入替は行わない。 5. 今回の比較Trialに基づく追加精度検証（Store 333件へのAzure追加検証等）は実施しない。
+**逐語(§2)**: Key PhraseはPrimary／Secondaryの両方PASSを必須とする方針。ただし、この仕様の実装状況・Production整合性については別指示系統で確認中。今回の指示では調査・実装・追加Trialを行わない。重複作業を禁止する。
+**逐語(§3)**: 既存Productionコード・モデル構成は変更しない。
+
+**採否整理**:
+- 採用(判断済み)=現行構成の維持(Primary OpenAI gpt-4o-mini-transcribe / Secondary Azure Speech STT)。これは現行維持の再確認であり、新規採用・配線・Production変更ではない。
+- 不採用=ローカルWhisperのProduction導入、Primary/Secondary入替(§10の判断候補B・Cは本決定で決着)。
+- 実施しない=追加精度検証(§9の①″[Azure 333件、約JPY30]を含む)。§9の②(聴取)・③(C1dK Offline Trial)・5〜7は本決定で個別の指示なし(KP両方PASSの扱いと一体のためOPEN-440側で扱う)。
+- Trial自体のStatus=`VALIDATED`(検出方向の有効性。Production採用ではない)のまま。
+- KP限定Azure拒否権(C1dK/C5K)=§2の「方針表明」あり。正式採用・実装指示は未。承認済み仕様は`CURRENT_SPEC.md:2818`(Primary PASSならSecondary不要)のまま。実装・Production整合は`FAMILY-XZ-ASR-PASS-CONDITION-SPEC-AUDIT-01`(OPEN-440)で確認中。判断候補A(#136)の採否はOPEN-440報告への回答で確定。
+- Production無変更・API 0・JPY0。

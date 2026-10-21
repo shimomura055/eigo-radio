@@ -21907,3 +21907,13 @@ Fable決定: F1 STOP_NOTICE(2026-10-12)をrun_e2e_03限定で解除(run_e2e_01/0
 - 決定: (1)計画v2の基本方針の承認 (2)品質判断4点[発音が同じならNGにしない/ストレス無視の音素列比較をTrial計画に採用/音素相違の誤発音はNG/既存の誤PASS防止条件維持]+`Bi-us`型NG維持+対象は原則全語(固有名詞らしい語は代表発音限定) (3)#133関係3点[反応的調査方式の継続検討/全固有名詞毎回調査は不採用/同綴りの別人名だけでは公式発音確定としない/#133 Status維持・未承認事項は正式採用しない] (4)Trial条件[新Primary/Secondary確定後に実施・費用上限案JPY50・現時点で実行しない・無料準備は先行可]。
 - **明記: 本決定は『Trial計画としての承認』であり、Production採用(APPROVED_FOR_PRODUCTION)でも新仕様の正式採用でもない。** 案Aはストレス無視・1語⇔複数語でCURRENT_SPEC:1839を拡張する新仕様であり、Trial結果(上限VALIDATED)を経てユーザーが別途正式採用を判断するまでProduction不変。
 - 未決(本決定で回答なし): U5既存の穴の是正可否・J7・GitHub Issue #133本文・UDR #133ア/イ/ウ・#134。Status=PLAN_FIXED_WAITING_ASR_SELECTION。成果物=`docs/research/PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01/`(要約`PLAN_SUMMARY_01.md`)。API 0・JPY0・Production無変更。
+
+## ASR-THREE-WAY-COMPARISON-TRIAL-01: ユーザー正式決定(2026-10-22、委任_03、UDR #136、OPEN-438)
+- 管理ID: ASR-THREE-WAY-COMPARISON-TRIAL-01。出典(逐語保存・751文字・sha256 810d3c7479e8f9964b9a328d2fb0727c8d7cd83d36018da824ad77554087e1b0)=`docs/pm/delegation_log/2026-10-22_ASR-THREE-WAY-COMPARISON-TRIAL-01_DECISION_USER.md`。
+- 逐語§1: 「1. Primary：OpenAI `gpt-4o-mini-transcribe` を維持。 2. Secondary：Azure Speech STTを維持。 3. ローカルWhisperのProduction導入は不採用。運用複雑化を避ける。 4. Primary／Secondaryの入替は行わない。 5. 今回の比較Trialに基づく追加精度検証（Store 333件へのAzure追加検証等）は実施しない。」
+- 逐語§2: 「Key PhraseはPrimary／Secondaryの両方PASSを必須とする方針。ただし、この仕様の実装状況・Production整合性については別指示系統で確認中。今回の指示では調査・実装・追加Trialを行わない。重複作業を禁止する。」
+- 逐語§3: 「既存Productionコード・モデル構成は変更しない。」
+- 決定内容: 現行ASR構成(Primary OpenAI/Secondary Azure)維持、Whisper不採用、入替なし、追加精度検証なし。Trial自体はVALIDATED(検出方向の有効性)のまま。OPEN-438=DECIDED_CLOSED。
+- 明記: KP両方PASSは方針表明のみで、正式採用・実装指示ではない。承認済み仕様はCURRENT_SPEC.md:2818(Primary PASSならSecondary不要)のまま。実装・採用判断はOPEN-440(FAMILY-XZ-ASR-PASS-CONDITION-SPEC-AUDIT-01)のユーザー回答待ち。
+- 副次: OPEN-439(PNMH)のTrialトリガー(新Primary/Secondary確定)は充足、Trial開始はOPEN-440決着後(Fable判断)。
+- Production無変更・API 0・JPY0・モデル構成/Prompt/flag無変更。
