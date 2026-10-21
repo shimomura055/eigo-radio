@@ -21934,3 +21934,18 @@ Fable決定: F1 STOP_NOTICE(2026-10-12)をrun_e2e_03限定で解除(run_e2e_01/0
 - 記事A再制作(原文§2): 対象=「給料が上がると、性格も変わる？」。Research工程は再実行しない(既存Research成果物・Verified Fact Ledger再利用)。B3から全面再制作(B3->JA Writer R0/R1/R2->Standard/Advanced英語記事・解説・Key Phrases->TTS->ASR・Fact Safety・各Validator->最終組立->ユーザー試聴ページ更新)。既存の完成候補・音声・試聴ページは比較・ロールバック可能に保持。数値丸め以外の承認済みFamily X仕様を全適用しASR・TTS・Key Phrase品質対策を後退させない。記事Aはユーザー最終試聴PASSまで「完成候補」(OPEN-442)。
 - 範囲外: Family Zへの展開、粒度方針の独自追加、B3 Fact選定・Fact Safety基準の変更、Checker緩和。承認済み品質を満たしたら追加Trial・磨き込みはしない。
 - API 0・JPY0(C-1)。CURRENT_SPECはPRODUCTION_WIRED到達時(C-2)に更新(C-1時点でProduction挙動は未変更のため)。
+
+## FAMILY-XZ-ASR-PASS-CONDITION-SPEC-AUDIT-01: KP英語phrase「Primary・Secondary両方PASS必須」Family X/Z正式採用(2026-10-22、APPROVED_FOR_PRODUCTION)
+
+- ユーザー原文§1(逐語、全文=`docs/pm/delegation_log/2026-10-22_FAMILY-XZ-ASR-PASS-CONDITION-SPEC-AUDIT-01_KP-DUAL-PASS-APPROVAL_USER.md`、本文3081文字・sha256=55830753ba0c9f19e0f459592be559fbf912614a51e21961638aa9f1911cc2c0):
+
+  | 対象 | 正式PASS条件 |
+  |---|---|
+  | ① Key Phraseの英語フレーズ | **Primary（OpenAI）とSecondary（Azure）の両方PASSが必須** |
+  | ② Key Phraseの英語解説文 | 現行維持。Primary PASSで合格、Secondary不要 |
+  | ③ その他すべての音声 | 現行維持。Primary PASSで合格、Secondary不要 |
+
+  「②③についても、Primary NG時のSecondary判定、承認済み例外、retry／fallback等の既存仕様を維持する。①は、Primary単独PASSやSecondary単独PASSでは最終合格としない。同音・表記揺れの救済を行う場合も、両Providerそれぞれが承認済み判定基準を満たすこと。対象Family：X/Z両方。片方だけの実装完了をもってCloseしない。」
+- Status: `APPROVED_FOR_PRODUCTION`。目標=`PRODUCTION_WIRED`(Family X・Z双方の正式Production経路で実際に発火した証拠が確認できた場合のみ)。経緯: 2026-10-21 FAMILY-X-KP-ASR-DUAL-PASS-TRIAL-01(検証同意のみ)・OPEN-438(#136)・OPEN-440(仕様/実装対応表: 承認記録なし)の後、本日ユーザーが正式採用。OPEN-440のケース1(承認済み仕様=Primaryのみ)をユーザー決定で上書き。
+- 現状(委任_02 D-1): Production実装設計書(`docs/research/FAMILY-XZ-ASR-PASS-CONDITION-SPEC-AUDIT-01/IMPLEMENTATION_DESIGN_01.md`)+未配線test(`er096_kp_dual_pass_01_test_01.py`)まで。Production既存ファイル・CURRENT_SPEC未編集=PRODUCTION_WIREDではない。Status=APPROVED_FOR_PRODUCTION_WIRING_IN_PROGRESS。次=Opus独立レビュー(11-3条件A/C)->A-2(多語同音救済配線)完了後にD-2(配線・X/Z正式経路runtime evidence)。
+- 多語同音救済(OPEN-439、UDR #138)の既存承認内容・範囲は本決定で変更しない。API 0・JPY0。
