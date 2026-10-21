@@ -453,6 +453,8 @@ Gate 3の13項目チェックリストが全て充足したため、対称正規
 (3)改善: 許容できる差分(同音等価+分かち書き差)が複数共存する場合に本来PASSすべき音声が不要retryになる問題が解消(第1部attempt1の保存済み転写は`HOMOPHONE_EQUIVALENT`でPASS)。`two works->20 works`・`LINE->Lion`・`part->tart`・語の脱落は他の許容差分が併存してもNG維持。golden再判定(既存run 4件+byUs参考の保存済み転写193件): 判定が変わったのは5件、うち実効NG->PASSは1件(byUs第1部attempt1 Primary[byus->bias同音+story making->storymaking])、PASS->NGは0件。
 (4)リスク/注意: 全文規則と同じ基準を個別spanへ適用するため`a way`->`away`、`by us`->`byus`、`neighbor's`->`neighbors`のspan自体も分かち書き差として吸収される(単独diffなら従来から`NORMALIZED_MATCH`だった同基準)。それでも他にNG差分があれば全体はNGのまま。実音声が誤発音している場合(runtime evidenceのPrimary転写`BAUS`/`Bi-us`)は引き続きNG。証跡=`docs/research/FAMILY-XZ-ASR-MULTI-DIFF-JUDGE-FIX-01/`、test=`er006_multi_diff_judge_fix_test_01.py`(18件)、報告=`docs/pm/RESULT_PACKET_MDJF1.md`。PRODUCTION_WIRED判定はFable。
 
+【Fable判定 2026-10-21】`PRODUCTION_WIRED`(根拠=OPEN-435、証跡=docs/research/FAMILY-XZ-ASR-MULTI-DIFF-JUDGE-FIX-01/)。既存6test失敗は是正前から同一で無関係。
+
 **2026-09-06(KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01、ユーザーが
 2026-09-06に`APPROVED_FOR_PRODUCTION`と正式決定した2件をProduction正式
 初回経路へ`PRODUCTION_WIRED`まで配線した。**(1) Key Phrase日本語gloss

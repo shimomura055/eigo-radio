@@ -21878,3 +21878,6 @@ Fable決定: F1 STOP_NOTICE(2026-10-12)をrun_e2e_03限定で解除(run_e2e_01/0
 - 位置づけ: ユーザー指示(2026-10-21、原文=docs/pm/delegation_log/2026-10-21_FAMILY-XZ-ASR-MULTI-DIFF-FIX-AND-PROPER-NOUN-EN-PRONUNCIATION_USER.md)の①。承認済みの表記揺れ・同音等価判定の不具合是正であり新仕様ではない(PM_GOVERNANCE 11-8)。②(固有名詞英語発音供給)は別管理ID(OPEN-434)。
 - 決定内容: `er006_preprod_hardening_01_validation.protected_check()`で、複合語分かち書き差のみのdiff span(既存の全文規則=despace一致・冠詞除外despace一致と同基準、数値/否定/脱落は対象外)を内容語差分に計上しない。判定基準の緩和・新許容規則・閾値/辞書追加なし。
 - 結果: 記事B第1部attempt1の保存済み転写(byUs->Bias+story-making->storymaking)が既存の同音等価層(HOMOPHONE_EQUIVALENT)でPASS。two works->20 works/LINE->Lion/part->tart/脱落はNG維持。golden再判定193件で変化5件(実効NG->PASS 1件、PASS->NG 0件)。test=er006_multi_diff_judge_fix_test_01.py 18件PASS(是正前コードで4件FAIL/ERRORを確認)。runtime evidence実費約JPY3。Status=MULTI_DIFF_JUDGE_FIX_WIRED_PENDING_FABLE(OPEN-435)、PRODUCTION_WIRED判定はFable。報告=docs/pm/RESULT_PACKET_MDJF1.md。
+
+## 2026-10-21 FAMILY-XZ-ASR-MULTI-DIFF-JUDGE-FIX-01 委任_02: Fable判定 PRODUCTION_WIRED(記録のみ)
+- Fable判定(2026-10-21): PRODUCTION_WIRED。根拠(1)実ログ再現・新コードPASS (2)最小修正+27行・新ルール/flagなし (3)必須ケース18件PASS・旧コード4件FAIL (4)golden193件でPASS->NG 0・NG->PASS 1 (5)X/Z同一関数・同一val通過をtest固定 (6)契約不変test (7)runtime evidence(Z=メロス整合、X=storymaking吸収) (8)既存test非回帰(失敗6件は是正前から同一・無関係)。付帯=新規Production runでの自然発火をmonitor(専用有料E2Eなし)。API 0・JPY0・コード変更なし。詳細=OPEN-435。
