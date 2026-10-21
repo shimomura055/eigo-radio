@@ -1,0 +1,92 @@
+{
+ "leak_fixtures": [
+  {
+   "name": "sentence_head",
+   "before_regex_detects_概数表記": false,
+   "before_assert_on_raw_without_fact_tags": "PASS(未検知)",
+   "after_regex_detects_概数表記": true,
+   "after_assert_on_raw_without_fact_tags": "TagLeak(検出)",
+   "after_clean_residue_概数表記": false,
+   "marks_echoed_counted": 1
+  },
+  {
+   "name": "after_number",
+   "before_regex_detects_概数表記": false,
+   "before_assert_on_raw_without_fact_tags": "PASS(未検知)",
+   "after_regex_detects_概数表記": true,
+   "after_assert_on_raw_without_fact_tags": "TagLeak(検出)",
+   "after_clean_residue_概数表記": false,
+   "marks_echoed_counted": 1
+  },
+  {
+   "name": "multi",
+   "before_regex_detects_概数表記": false,
+   "before_assert_on_raw_without_fact_tags": "PASS(未検知)",
+   "after_regex_detects_概数表記": true,
+   "after_assert_on_raw_without_fact_tags": "TagLeak(検出)",
+   "after_clean_residue_概数表記": false,
+   "marks_echoed_counted": 2
+  },
+  {
+   "name": "with_space",
+   "before_regex_detects_概数表記": false,
+   "before_assert_on_raw_without_fact_tags": "PASS(未検知)",
+   "after_regex_detects_概数表記": true,
+   "after_assert_on_raw_without_fact_tags": "TagLeak(検出)",
+   "after_clean_residue_概数表記": false,
+   "marks_echoed_counted": 1
+  },
+  {
+   "name": "alone_line",
+   "before_regex_detects_概数表記": false,
+   "before_assert_on_raw_without_fact_tags": "PASS(未検知)",
+   "after_regex_detects_概数表記": true,
+   "after_assert_on_raw_without_fact_tags": "TagLeak(検出)",
+   "after_clean_residue_概数表記": false,
+   "marks_echoed_counted": 1
+  }
+ ],
+ "clean_samples": [
+  {
+   "text": "約13万5千人が参加しました。",
+   "old_matches": [],
+   "new_matches": [],
+   "same": true
+  },
+  {
+   "text": "【速報】最大約13万5千人が対象になりました。",
+   "old_matches": [],
+   "new_matches": [],
+   "same": true
+  },
+  {
+   "text": "概数表記という言葉自体は、タグではなくただの語句です。",
+   "old_matches": [],
+   "new_matches": [],
+   "same": true
+  },
+  {
+   "text": "「概数表記」の説明をしました。",
+   "old_matches": [],
+   "new_matches": [],
+   "same": true
+  },
+  {
+   "text": "【注目】数字の話です【事実3】。",
+   "old_matches": [
+    "【事実3】"
+   ],
+   "new_matches": [
+    "【事実3】"
+   ],
+   "same": true
+  }
+ ],
+ "corpus": {
+  "n_files": 253,
+  "n_files_with_概数表記_substring": 0,
+  "n_files_where_S5_changes_detection": 0,
+  "changed_files": []
+ },
+ "PASS": true
+}
