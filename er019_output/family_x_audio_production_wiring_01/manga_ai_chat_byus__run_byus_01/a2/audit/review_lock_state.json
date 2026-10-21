@@ -1,0 +1,3203 @@
+{
+  "topic_intro": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "cecc0c95222a446645e4e6a6592586980cdb0beb5a1a88091c6a38969bca0b88",
+    "language": "en",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "topic_intro",
+    "updated_at": "2026-10-21T13:11:15",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/topic_intro.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 7.39,
+        "asr_text": "Today's topic is, can't wait for the next episode? Make one yourself? Buy us lets you make stories with characters you love.",
+        "asr_text_length": 124,
+        "max_len": 151,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 96,
+          "sha256": "d16e099cb4f6fd7f87826e48f636c143c31f3c7ad4aaeea13dd3c9ae4a3f724b",
+          "head200": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic."
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Today's topic is, can't wait for the next episode? Make one yourself? Buy us lets you make stories with characters you love.",
+            "classification": "TRUE_CONTENT_MISMATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Today's topic is Can't wait for the next episode. Make One Yourself by Us let's you make stories with characters you love.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS_WITH_WARNING",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "secondary_confirmed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": "TOPIC_INTRO",
+          "lang": "en",
+          "segment_key": "topic_intro",
+          "audio_sha256": "24d12045b077b92f9112dea5d48541636dc8c54a232a608590b1458acaa06bdd",
+          "primary": {
+            "text": "Today's topic is, can't wait for the next episode? Make one yourself? Buy us lets you make stories with characters you love.",
+            "passed": false,
+            "label": "TRUE_CONTENT_MISMATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Today's topic is Can't wait for the next episode. Make One Yourself by Us let's you make stories with characters you love.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "EQUAL",
+            "negation_diff": false
+          },
+          "warnings": [
+            "SECONDARY_CONFIRMED"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 7.39,
+            "est_jpy": 0.3556,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 1663,
+            "secondary_ms": 1661
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 124,
+            "secondary_len": 122,
+            "max_len": 151,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 96,
+            "primary_ok": true
+          },
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "topic_intro",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/topic_intro_attempt1_custom60a24f1e.wav"
+      }
+    ]
+  },
+  "japanese_title": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "cb60842e3504d9dd02c6ec8a8bcf2fecd1c7ad4ec6f7345ebdb939f04e567797",
+    "language": "ja",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "japanese_title",
+    "updated_at": "2026-10-21T13:11:28",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/japanese_title.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 6.88,
+        "asr_text": "次回が待てない、なら自分で作る? 好きなキャラと物語を動かすバイアス",
+        "asr_text_length": 34,
+        "max_len": 68,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "PHONETIC_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass_approved_equivalence:READING_MATCH",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "49a5433e7e2897b384d33913071afed8d7d2fbb185b996f0a65b94e42b1e7953",
+          "primary": {
+            "text": "次回が待てない、なら自分で作る? 好きなキャラと物語を動かすバイアス",
+            "passed": true,
+            "label": "PHONETIC_MATCH",
+            "equivalence_basis": "READING_MATCH",
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": false,
+            "skipped": "approved_equivalence:READING_MATCH"
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 34,
+            "secondary_len": null,
+            "max_len": 68,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/japanese_title_attempt1_customb8f0ff16.wav"
+      }
+    ]
+  },
+  "preview": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "242cfac7acecc433dab7cdc7a831880f333ac3e5af6b6815d781df33b6638cbe",
+    "language": "ja",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "preview",
+    "updated_at": "2026-10-21T13:11:32",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/preview.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 14.19,
+        "asr_text": "好きな漫画のキャラクターと関われる新しいAIサービスが登場しました。作品を使うときのルールにも注目し、どの作品が対象になるのか、利用を支える仕組みを見ていきます。",
+        "asr_text_length": 81,
+        "max_len": 121,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "7ce711a40cf7fedca2e11b7e42c3b4e3f8b90163d1229bd3e76a0f89a00bc32d",
+          "primary": {
+            "text": "好きな漫画のキャラクターと関われる新しいAIサービスが登場しました。作品を使うときのルールにも注目し、どの作品が対象になるのか、利用を支える仕組みを見ていきます。",
+            "passed": true,
+            "label": "EXACT_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 81,
+            "secondary_len": null,
+            "max_len": 121,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/preview_attempt1_custom06ec49ff.wav"
+      }
+    ]
+  },
+  "comment_1": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "83faabf486d4fccfc07253aab08aed1d6414468e07cb17d2e5ba1e8dea27f996",
+    "language": "ja",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "comment_1",
+    "updated_at": "2026-10-21T13:11:35",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/comment_1.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 6.83,
+        "asr_text": "これからは、これまでのキャラクターチャットと新しいサービスの違いに注目してください。",
+        "asr_text_length": 42,
+        "max_len": 82,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "ae1ca5d7e6b136390b194d1beb42469dd6ae020a8c075c72a3dfa3eaff51f713",
+          "primary": {
+            "text": "これからは、これまでのキャラクターチャットと新しいサービスの違いに注目してください。",
+            "passed": true,
+            "label": "EXACT_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 42,
+            "secondary_len": null,
+            "max_len": 82,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/comment_1_attempt1_custom06ec49ff.wav"
+      }
+    ]
+  },
+  "comment_2": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "93a46ff3c5dedb3366337609bb9db99f623c08faf2699a85edba2a902497da13",
+    "language": "ja",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "comment_2",
+    "updated_at": "2026-10-21T13:11:39",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/comment_2.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 11.04,
+        "asr_text": "バイアスでは、キャラクターと話すだけでなく、自分で物語を作ることもできます。では、作った物語をどのように楽しめるのでしょうか?",
+        "asr_text_length": 63,
+        "max_len": 103,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "PHONETIC_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass_approved_equivalence:READING_MATCH",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "50a3efdcfab04104b2715aecd0852442653a39eee045ae9f1b43f2ca04afc44a",
+          "primary": {
+            "text": "バイアスでは、キャラクターと話すだけでなく、自分で物語を作ることもできます。では、作った物語をどのように楽しめるのでしょうか?",
+            "passed": true,
+            "label": "PHONETIC_MATCH",
+            "equivalence_basis": "READING_MATCH",
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": false,
+            "skipped": "approved_equivalence:READING_MATCH"
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 63,
+            "secondary_len": null,
+            "max_len": 103,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/comment_2_attempt1_custom06ec49ff.wav"
+      }
+    ]
+  },
+  "comment_3": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "40099e7ffb1861e907161091cf2610bd085d4ced3d6f3690129a253e441dc513",
+    "language": "ja",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "comment_3",
+    "updated_at": "2026-10-21T13:11:48",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/comment_3.wav",
+    "cumulative_tts_attempts": 2,
+    "cumulative_asr_calls": 2,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 17.43,
+        "asr_text": "ここまでバイユースでは、キャラクターと話すだけでなく、自分の物語を作り、公開するかどうかも選べると紹介されました。 続いて、このサービスについて、さらにどんなことが語られるのかに注目して聞いてください。",
+        "asr_text_length": 101,
+        "max_len": 138,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": {
+          "scg_applied": false,
+          "scg_result": "NOT_APPLIED",
+          "exclusion_reason": "reading_dictionary_mismatch:byus",
+          "primary_text": "ここまでバイユースでは、キャラクターと話すだけでなく、自分の物語を作り、公開するかどうかも選べると紹介されました。 続いて、このサービスについて、さらにどんなことが語られるのかに注目して聞いてください。",
+          "unified_judge_state": "NG_EXCLUDED",
+          "unified_reason_code": "p2_exclusion:A7_READING_DICT_MISMATCH",
+          "scg_info_source": "AUW_unified_judge"
+        },
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "NG_EXCLUDED",
+          "reason_code": "p2_exclusion:A7_READING_DICT_MISMATCH",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "93bc50b500cfb497cc8bc012dc4e571e8cd236eec4e2e20664442d5c48be4ba7",
+          "primary": {
+            "text": "ここまでバイユースでは、キャラクターと話すだけでなく、自分の物語を作り、公開するかどうかも選べると紹介されました。 続いて、このサービスについて、さらにどんなことが語られるのかに注目して聞いてください。",
+            "passed": false,
+            "label": "TRUE_CONTENT_MISMATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": "A7_READING_DICT_MISMATCH",
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 101,
+            "secondary_len": null,
+            "max_len": 138,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/comment_3_attempt1_custom06ec49ff.wav"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "duration_seconds": 16.68,
+        "asr_text": "ここまで、バイアスではキャラクターと話すだけでなく、自分の物語を作り、公開するかどうかも選べると紹介されました。 続いて、このサービスについて、さらにどんなことが語られるのかに注目して聞いてください。",
+        "asr_text_length": 100,
+        "max_len": 138,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "PHONETIC_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass_approved_equivalence:READING_MATCH",
+          "slot": 2,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "bf72976a6037aa0bc90ece58000ab7d6a29877368fb8597d2b73e8b2d583fdcf",
+          "primary": {
+            "text": "ここまで、バイアスではキャラクターと話すだけでなく、自分の物語を作り、公開するかどうかも選べると紹介されました。 続いて、このサービスについて、さらにどんなことが語られるのかに注目して聞いてください。",
+            "passed": true,
+            "label": "PHONETIC_MATCH",
+            "equivalence_basis": "READING_MATCH",
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": false,
+            "skipped": "approved_equivalence:READING_MATCH"
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 100,
+            "secondary_len": null,
+            "max_len": 138,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/comment_3_attempt2_custom06ec49ff.wav"
+      }
+    ]
+  },
+  "comment_4": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "8f98da8b31eba465f08e89b62732632972bc5cab1f39887e75b7908e6104acec",
+    "language": "ja",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "comment_4",
+    "updated_at": "2026-10-21T13:11:53",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/comment_4.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 15.56,
+        "asr_text": "好きな作品の登場人物と話し、自分なりの物語を作る楽しみが紹介されました。 利用できるのは、作り手の許可がある作品や登場人物です。最後に、英語で内容を振り返ります。",
+        "asr_text_length": 81,
+        "max_len": 120,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "e3a464663e2d5324fe415981780a3463e7135cf7531be88c6152cd3055efed13",
+          "primary": {
+            "text": "好きな作品の登場人物と話し、自分なりの物語を作る楽しみが紹介されました。 利用できるのは、作り手の許可がある作品や登場人物です。最後に、英語で内容を振り返ります。",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 81,
+            "secondary_len": null,
+            "max_len": 120,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/comment_4_attempt1_custom06ec49ff.wav"
+      }
+    ]
+  },
+  "full_story_part1": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "ee800326b456420378fd9207b9fe5a8447682c0a147821d58324d253ea9a71af",
+    "language": "en",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "full_story_part1",
+    "updated_at": "2026-10-21T13:12:38",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/full_story_part1.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 50.4,
+        "asr_text": "Wait, it ends here? Have you ever shouted that when a manga ends at an exciting moment? It says the story will continue next time. What will that character say next? What will happen to the two of them? It may be a shame to keep those ideas only in your head. The company that runs LINE Manga has announced a new service. It is called ByUs, an AI chat service for stories. It is pronounced ByUs. You can talk with characters you love. You can also make your own stories based on their works. You can leave the reader's seat and step onto the stage of making stories. If you thought, can't you already talk with characters? you noticed something important. LINE Manga already has a service called Character Chat. The company says ByUs lets you do more than chat. You can also make stories more freely. So you can ask not only what should we talk about next, but also what should happen next.",
+        "asr_text_length": 890,
+        "max_len": 952,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": false,
+          "duration_seconds": 50.4,
+          "method_a_ngram": {
+            "matches": [
+              {
+                "span_text": " talk  with  characters  you",
+                "n_words": 4,
+                "category": "phrase",
+                "first_start_s": 24.32,
+                "first_end_s": 25.24,
+                "second_start_s": 34.3,
+                "second_end_s": 35.84,
+                "gap_seconds": 9.06,
+                "canonical_repeat_count": 2,
+                "intentional": true,
+                "flagged": false
+              },
+              {
+                "span_text": " You  can  also  make",
+                "n_words": 4,
+                "category": "phrase",
+                "first_start_s": 25.84,
+                "first_end_s": 26.72,
+                "second_start_s": 43.26,
+                "second_end_s": 43.94,
+                "gap_seconds": 16.54,
+                "canonical_repeat_count": 2,
+                "intentional": true,
+                "flagged": false
+              }
+            ],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 165,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.9971,
+                "time_a_seconds": 7.78,
+                "time_b_seconds": 23.99,
+                "lag_seconds": 16.21,
+                "run_length_seconds_at_thresh_0.85": 0.05
+              },
+              {
+                "similarity": 0.9969,
+                "time_a_seconds": 32.69,
+                "time_b_seconds": 50.37,
+                "lag_seconds": 17.68,
+                "run_length_seconds_at_thresh_0.85": 0.01
+              },
+              {
+                "similarity": 0.9961,
+                "time_a_seconds": 17.42,
+                "time_b_seconds": 31.5,
+                "lag_seconds": 14.08,
+                "run_length_seconds_at_thresh_0.85": 0.04
+              },
+              {
+                "similarity": 0.9957,
+                "time_a_seconds": 11.83,
+                "time_b_seconds": 23.77,
+                "lag_seconds": 11.94
+              },
+              {
+                "similarity": 0.9956,
+                "time_a_seconds": 15.86,
+                "time_b_seconds": 30.22,
+                "lag_seconds": 14.36
+              }
+            ],
+            "best_run_length_seconds": 0.05,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.42,
+            "time_a": 3.31,
+            "lag": 1.31,
+            "similarity_at_start": 0.7458,
+            "best_run_length_seconds": 0.42,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": false
+          },
+          "method_c_v2_window_check": null
+        },
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 177,
+          "sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
+          "head200": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible."
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Wait, it ends here? Have you ever shouted that when a manga ends at an exciting moment? It says the story will continue next time. What will that character say next? What will happen to the two of them? It may be a shame to keep those ideas only in your head. The company that runs LINE Manga has announced a new service. It is called ByUs, an AI chat service for stories. It is pronounced ByUs. You can talk with characters you love. You can also make your own stories based on their works. You can leave the reader's seat and step onto the stage of making stories. If you thought, can't you already talk with characters? you noticed something important. LINE Manga already has a service called Character Chat. The company says ByUs lets you do more than chat. You can also make stories more freely. So you can ask not only what should we talk about next, but also what should happen next.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "full_story_part1",
+          "audio_sha256": "19c41363dcae4a88d52ca6f217fdae2484f3fc6c0912bcdbf14bb8c4b3b0da96",
+          "primary": {
+            "text": "Wait, it ends here? Have you ever shouted that when a manga ends at an exciting moment? It says the story will continue next time. What will that character say next? What will happen to the two of them? It may be a shame to keep those ideas only in your head. The company that runs LINE Manga has announced a new service. It is called ByUs, an AI chat service for stories. It is pronounced ByUs. You can talk with characters you love. You can also make your own stories based on their works. You can leave the reader's seat and step onto the stage of making stories. If you thought, can't you already talk with characters? you noticed something important. LINE Manga already has a service called Character Chat. The company says ByUs lets you do more than chat. You can also make stories more freely. So you can ask not only what should we talk about next, but also what should happen next.",
+            "passed": true,
+            "label": "HOMOPHONE_EQUIVALENT",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "2",
+                  "hyp": "2",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "EQUAL",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 2,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 890,
+            "secondary_len": null,
+            "max_len": 952,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [
+              "cmu_alternate"
+            ],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "full_story_part1",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/full_story_part1_attempt1_customa3c4625e.wav"
+      }
+    ]
+  },
+  "full_story_part2": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "fa362fc30336a347b5ae3775620503b943a0f06af2643c5b88123d775467432c",
+    "language": "en",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "full_story_part2",
+    "updated_at": "2026-10-21T13:13:25",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/full_story_part2.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 39.54,
+        "asr_text": "For example, you can continue an official story on the service, or you can make your own story as a fan. What if that person came here? If it were me, I'd want to see this happen. The ideas that grew as you turned each page can now start your own stories. You may wait to see what happens next, or you may use that time to think up what happens next. You can also publish your fan stories, if you want to. You can keep them private, or let someone else read them. But things change when you make a story public. Will people understand the story? I wanna think a little more about what happens next. Before you know it, you may think like a story maker, though you began as a reader.",
+        "asr_text_length": 682,
+        "max_len": 745,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": false,
+          "duration_seconds": 39.54,
+          "method_a_ngram": {
+            "matches": [
+              {
+                "span_text": " what  happens  next,",
+                "n_words": 3,
+                "category": "phrase",
+                "first_start_s": 16.58,
+                "first_end_s": 17.4,
+                "second_start_s": 19.5,
+                "second_end_s": 20.34,
+                "gap_seconds": 2.1,
+                "canonical_repeat_count": 3,
+                "intentional": true,
+                "flagged": false
+              }
+            ],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 136,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.9961,
+                "time_a_seconds": 19.3,
+                "time_b_seconds": 36.47,
+                "lag_seconds": 17.17,
+                "run_length_seconds_at_thresh_0.85": 0.02
+              },
+              {
+                "similarity": 0.9949,
+                "time_a_seconds": 4.71,
+                "time_b_seconds": 11.5,
+                "lag_seconds": 6.79,
+                "run_length_seconds_at_thresh_0.85": 0.03
+              },
+              {
+                "similarity": 0.9947,
+                "time_a_seconds": 16.99,
+                "time_b_seconds": 33.6,
+                "lag_seconds": 16.61,
+                "run_length_seconds_at_thresh_0.85": 0.03
+              },
+              {
+                "similarity": 0.9928,
+                "time_a_seconds": 31.54,
+                "time_b_seconds": 37.62,
+                "lag_seconds": 6.08
+              },
+              {
+                "similarity": 0.9919,
+                "time_a_seconds": 9.33,
+                "time_b_seconds": 20.98,
+                "lag_seconds": 11.65
+              }
+            ],
+            "best_run_length_seconds": 0.03,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.29,
+            "time_a": 30.46,
+            "lag": 1.85,
+            "similarity_at_start": 0.8896,
+            "best_run_length_seconds": 0.29,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": false
+          },
+          "method_c_v2_window_check": null
+        },
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 177,
+          "sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
+          "head200": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible."
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "For example, you can continue an official story on the service, or you can make your own story as a fan. What if that person came here? If it were me, I'd want to see this happen. The ideas that grew as you turned each page can now start your own stories. You may wait to see what happens next, or you may use that time to think up what happens next. You can also publish your fan stories, if you want to. You can keep them private, or let someone else read them. But things change when you make a story public. Will people understand the story? I wanna think a little more about what happens next. Before you know it, you may think like a story maker, though you began as a reader.",
+            "classification": "TRUE_CONTENT_MISMATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "For example, you can continue an official story on the service, or you can make your own story as a fan. What if that person came here?If it were me, I'd want to see this happen. The ideas that grew as you turned each page can now start your own stories. You may wait to see what happens next, or you may use that time to think up what happens next. You can also publish your fan stories if you want to. You can keep them private or let someone else read them. But things change when you make a story public. Will people understand this story? I want to think a little more about what happens next.Before you know it, you may think like a story maker, though you began as a reader.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS_WITH_WARNING",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "secondary_confirmed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "full_story_part2",
+          "audio_sha256": "d017cbbd14d1ea6a8eccda33237b2cd0011587fc222ea5d141f2dfc6261c151e",
+          "primary": {
+            "text": "For example, you can continue an official story on the service, or you can make your own story as a fan. What if that person came here? If it were me, I'd want to see this happen. The ideas that grew as you turned each page can now start your own stories. You may wait to see what happens next, or you may use that time to think up what happens next. You can also publish your fan stories, if you want to. You can keep them private, or let someone else read them. But things change when you make a story public. Will people understand the story? I wanna think a little more about what happens next. Before you know it, you may think like a story maker, though you began as a reader.",
+            "passed": false,
+            "label": "TRUE_CONTENT_MISMATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "For example, you can continue an official story on the service, or you can make your own story as a fan. What if that person came here?If it were me, I'd want to see this happen. The ideas that grew as you turned each page can now start your own stories. You may wait to see what happens next, or you may use that time to think up what happens next. You can also publish your fan stories if you want to. You can keep them private or let someone else read them. But things change when you make a story public. Will people understand this story? I want to think a little more about what happens next.Before you know it, you may think like a story maker, though you began as a reader.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [
+            "SECONDARY_CONFIRMED"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 39.54,
+            "est_jpy": 1.7778,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 17574,
+            "secondary_ms": 17569
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 682,
+            "secondary_len": 681,
+            "max_len": 745,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 530,
+            "primary_ok": true
+          },
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "full_story_part2",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 4,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/full_story_part2_attempt1_customa3c4625e.wav"
+      }
+    ]
+  },
+  "full_story_part3": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "de4c5d76b79b9fd3a922d2f4965ec35c323ef624e1703d5c2bd465d6d0c0c1cb",
+    "language": "en",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "full_story_part3",
+    "updated_at": "2026-10-21T13:14:25",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/full_story_part3.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 51.16,
+        "asr_text": "Of course, you cannot use just anything you like: only works and characters approved by their original creators are allowed. The help page also says the service has permission to use the original works it features. It has this permission through official agreements with their creators. This is the base that lets you enjoy asking “what if?”. The service first offered two works and four characters in Japan. Here, taking part in a story means moving the story forward through conversations. It also means making a story as a fan. Reading a work is fun. Now, it is also fun to think up what happens next. Until now, you could only say “if it were me, I’d do it this way” to yourself. With Vias, those words can help you start making a story. What will you say to a character you love? What will happen next in the story? So, where will your next part begin?",
+        "asr_text_length": 857,
+        "max_len": 910,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": false,
+          "duration_seconds": 51.16,
+          "method_a_ngram": {
+            "matches": [
+              {
+                "span_text": " making  a  story",
+                "n_words": 3,
+                "category": "phrase",
+                "first_start_s": 29.12,
+                "first_end_s": 29.96,
+                "second_start_s": 43.24,
+                "second_end_s": 44.12,
+                "gap_seconds": 13.28,
+                "canonical_repeat_count": 2,
+                "intentional": true,
+                "flagged": false
+              }
+            ],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 157,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.9969,
+                "time_a_seconds": 4.18,
+                "time_b_seconds": 20.63,
+                "lag_seconds": 16.45,
+                "run_length_seconds_at_thresh_0.85": 0.01
+              },
+              {
+                "similarity": 0.9959,
+                "time_a_seconds": 9.8,
+                "time_b_seconds": 25.29,
+                "lag_seconds": 15.49,
+                "run_length_seconds_at_thresh_0.85": 0.02
+              },
+              {
+                "similarity": 0.9954,
+                "time_a_seconds": 29.22,
+                "time_b_seconds": 49.84,
+                "lag_seconds": 20.62,
+                "run_length_seconds_at_thresh_0.85": 0.07
+              },
+              {
+                "similarity": 0.9953,
+                "time_a_seconds": 0.98,
+                "time_b_seconds": 20.63,
+                "lag_seconds": 19.65
+              },
+              {
+                "similarity": 0.9951,
+                "time_a_seconds": 0.98,
+                "time_b_seconds": 4.18,
+                "lag_seconds": 3.2
+              }
+            ],
+            "best_run_length_seconds": 0.07,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.34,
+            "time_a": 30.61,
+            "lag": 1.64,
+            "similarity_at_start": 0.764,
+            "best_run_length_seconds": 0.34,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": false
+          },
+          "method_c_v2_window_check": null
+        },
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 177,
+          "sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
+          "head200": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible."
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Of course, you cannot use just anything you like: only works and characters approved by their original creators are allowed. The help page also says the service has permission to use the original works it features. It has this permission through official agreements with their creators. This is the base that lets you enjoy asking “what if?”. The service first offered two works and four characters in Japan. Here, taking part in a story means moving the story forward through conversations. It also means making a story as a fan. Reading a work is fun. Now, it is also fun to think up what happens next. Until now, you could only say “if it were me, I’d do it this way” to yourself. With Vias, those words can help you start making a story. What will you say to a character you love? What will happen next in the story? So, where will your next part begin?",
+            "classification": "TRUE_CONTENT_MISMATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Of course, you cannot use just anything you like. Only works and characters approved by their original creators are allowed. The help page also says the service has permission to use the original works it features. It has this permission through official agreements with their creators. This is the base that lets you enjoy asking what if.The service first offered two works and four characters in Japan. Here, taking part in a story means moving the story forward through conversations. It also means making a story as a fan. Reading a work is fun now. It is also fun to think up what happens next. Until now, you could only say, if it were me, I'd do it this way to yourself with bias. Those words can help you start making a story. What will you say to a character you love? What will happen next in the story?So where will your next part begin?",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS_WITH_WARNING",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "secondary_confirmed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "full_story_part3",
+          "audio_sha256": "2adbd4352503f069243d479762e34e077a2cdaa21e5a6db936467b19587487a3",
+          "primary": {
+            "text": "Of course, you cannot use just anything you like: only works and characters approved by their original creators are allowed. The help page also says the service has permission to use the original works it features. It has this permission through official agreements with their creators. This is the base that lets you enjoy asking “what if?”. The service first offered two works and four characters in Japan. Here, taking part in a story means moving the story forward through conversations. It also means making a story as a fan. Reading a work is fun. Now, it is also fun to think up what happens next. Until now, you could only say “if it were me, I’d do it this way” to yourself. With Vias, those words can help you start making a story. What will you say to a character you love? What will happen next in the story? So, where will your next part begin?",
+            "passed": false,
+            "label": "TRUE_CONTENT_MISMATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Of course, you cannot use just anything you like. Only works and characters approved by their original creators are allowed. The help page also says the service has permission to use the original works it features. It has this permission through official agreements with their creators. This is the base that lets you enjoy asking what if.The service first offered two works and four characters in Japan. Here, taking part in a story means moving the story forward through conversations. It also means making a story as a fan. Reading a work is fun now. It is also fun to think up what happens next. Until now, you could only say, if it were me, I'd do it this way to yourself with bias. Those words can help you start making a story. What will you say to a character you love? What will happen next in the story?So where will your next part begin?",
+            "label": "HOMOPHONE_EQUIVALENT",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "2",
+                  "hyp": "2",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                },
+                {
+                  "src": "4",
+                  "hyp": "4",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "2",
+                  "hyp": "2",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                },
+                {
+                  "src": "4",
+                  "hyp": "4",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "EQUAL",
+            "negation_diff": false
+          },
+          "warnings": [
+            "SECONDARY_CONFIRMED"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 51.16,
+            "est_jpy": 2.3111,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 23076,
+            "secondary_ms": 23059
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 857,
+            "secondary_len": 848,
+            "max_len": 910,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 673,
+            "primary_ok": true
+          },
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "full_story_part3",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 6,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/full_story_part3_attempt1_customa3c4625e.wav"
+      }
+    ]
+  },
+  "in_one_line": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "f6125753608440cc0a6736d2a6cfa6c540754bbe2dfab281feff8cab14610210",
+    "language": "en",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "in_one_line",
+    "updated_at": "2026-10-21T13:14:39",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/in_one_line.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 12.85,
+        "asr_text": "LINE Manga has launched BAIAS, an AI service for chatting with approved characters and making stories from their works. Readers can imagine what happens next and make fan stories to keep private or share.",
+        "asr_text_length": 204,
+        "max_len": 263,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 34,
+          "transcript": "LineManga  has  launched  By  Us,  an  AI  service  for  chatting  with  approved  characters  and  making  stories  from  their  works.  Readers  can  imagine  what  happens  next  and  make  fan  stories  to  keep  private  or  share.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 266,
+          "sha256": "10e21170b1b13b9f577f1642a987511eaa68eed7334aeb6807ecc2fb4f01b860",
+          "head200": "concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.\nSpeak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversatio"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "LINE Manga has launched BAIAS, an AI service for chatting with approved characters and making stories from their works. Readers can imagine what happens next and make fan stories to keep private or share.",
+            "classification": "TRUE_CONTENT_MISMATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Line Manga has launched by US, an AI service for chatting with approved characters and making stories from their works. Readers can imagine what happens next and make fan stories to keep private or share.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS_WITH_WARNING",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "secondary_confirmed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": "IN_ONE_LINE",
+          "lang": "en",
+          "segment_key": "in_one_line",
+          "audio_sha256": "dc1ff2022b155cfe9c5c5de09385bdda19e4696b2a4b072bde12cb857cfef963",
+          "primary": {
+            "text": "LINE Manga has launched BAIAS, an AI service for chatting with approved characters and making stories from their works. Readers can imagine what happens next and make fan stories to keep private or share.",
+            "passed": false,
+            "label": "TRUE_CONTENT_MISMATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Line Manga has launched by US, an AI service for chatting with approved characters and making stories from their works. Readers can imagine what happens next and make fan stories to keep private or share.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [
+            "SECONDARY_CONFIRMED"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 12.85,
+            "est_jpy": 0.5778,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 4564,
+            "secondary_ms": 4562
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 204,
+            "secondary_len": 204,
+            "max_len": 263,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 167,
+            "primary_ok": true
+          },
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "in_one_line",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 8,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/in_one_line_attempt1_custom78daa961.wav"
+      }
+    ]
+  },
+  "kp1_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "4b739e17156c33161aaea78aeafba7fe7dc5158edfd8919927789787861e3281",
+    "language": "en",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "kp1_en",
+    "updated_at": "2026-10-21T13:14:50",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/kp1_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.0,
+        "asr_text": "ThinkUp.",
+        "asr_text_length": 8,
+        "max_len": 18,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 2,
+          "transcript": "Think  up.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "ThinkUp.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "694c0962ea1bb641731c9312fa4dbcd24f2876dc17be892e87ae32e24b6f48e9",
+          "primary": {
+            "text": "ThinkUp.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 8,
+            "secondary_len": null,
+            "max_len": 18,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 10,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/kp1_en_attempt1_custom60ebc452.wav"
+      }
+    ]
+  },
+  "meaning_1": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "e3567a77814cb34d203338f22be97368a18e279e53cf00df52b2fa969d7597e9",
+    "language": "ja",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "meaning_1",
+    "updated_at": "2026-10-21T13:14:53",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/meaning_1.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.56,
+        "asr_text": "考え出す",
+        "asr_text_length": 4,
+        "max_len": 34,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "9ee4f9d8d8c68a0564b8c7263cca61aaa2a21d423f2241be36f6765fa66cda30",
+          "primary": {
+            "text": "考え出す",
+            "passed": true,
+            "label": "EXACT_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 4,
+            "secondary_len": null,
+            "max_len": 34,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 10,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/meaning_1_attempt1_customa6dd8324.wav"
+      }
+    ]
+  },
+  "kp2_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "dda32086da6f42dd6c32fa7aea84383dbca0aa30f5a2c6a161fdb19144334104",
+    "language": "en",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "kp2_en",
+    "updated_at": "2026-10-21T13:14:58",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/kp2_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.12,
+        "asr_text": "Can't wait!",
+        "asr_text_length": 11,
+        "max_len": 20,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 2,
+          "transcript": "Can't  wait!",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Can't wait!",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "097729e537f36e48236f6aa5a67fc19cf4ebe1031e96a49d399a68959568399e",
+          "primary": {
+            "text": "Can't wait!",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 11,
+            "secondary_len": null,
+            "max_len": 20,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 10,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/kp2_en_attempt1_custom60ebc452.wav"
+      }
+    ]
+  },
+  "meaning_2": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "d1cbb7829262cf4d857fc896f4390c5fdfc3e44847d5de790f49ea1301f4a427",
+    "language": "ja",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "meaning_2",
+    "updated_at": "2026-10-21T13:15:00",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/meaning_2.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.49,
+        "asr_text": "待ちきれない",
+        "asr_text_length": 6,
+        "max_len": 36,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "e6d84378835d1269019a32f52edd85dfd246917670d9d11f58adeb562312c1f1",
+          "primary": {
+            "text": "待ちきれない",
+            "passed": true,
+            "label": "EXACT_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 6,
+            "secondary_len": null,
+            "max_len": 36,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 10,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/meaning_2_attempt1_customa6dd8324.wav"
+      }
+    ]
+  },
+  "kp3_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "e9f4ab039dc3e9a2f880f2bac99e51cc7db63090864465902601f0903574ad17",
+    "language": "en",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "kp3_en",
+    "updated_at": "2026-10-21T13:15:04",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/kp3_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.28,
+        "asr_text": "Fan stories",
+        "asr_text_length": 11,
+        "max_len": 21,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 2,
+          "transcript": "fan  stories.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Fan stories",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "fb49694beddb12fdd0153520929eca36c95491f2a464f70b8d9cb221db9b19d9",
+          "primary": {
+            "text": "Fan stories",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 11,
+            "secondary_len": null,
+            "max_len": 21,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 10,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/kp3_en_attempt1_custom60ebc452.wav"
+      }
+    ]
+  },
+  "meaning_3": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "d4f344adbc2bcbb2a6bdcab34c467f882dbd7a353cc8139c4cfb12ed40f01a40",
+    "language": "ja",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "meaning_3",
+    "updated_at": "2026-10-21T13:15:07",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/meaning_3.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 3.53,
+        "asr_text": "ファンが好きな作品をもとに作る物語。",
+        "asr_text_length": 18,
+        "max_len": 47,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "ccd3e3aa7f403bdb958b645804c351d8092697f0e8fc302b2f3590985ef2026b",
+          "primary": {
+            "text": "ファンが好きな作品をもとに作る物語。",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 18,
+            "secondary_len": null,
+            "max_len": 47,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 10,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/meaning_3_attempt1_customa6dd8324.wav"
+      }
+    ]
+  },
+  "kp4_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "5f75a09f209bbc04eb484562dc0b64ddd9de6248c3afab3c1553a681b160313f",
+    "language": "en",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "kp4_en",
+    "updated_at": "2026-10-21T13:15:12",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/kp4_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.3,
+        "asr_text": "Take part.",
+        "asr_text_length": 10,
+        "max_len": 19,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 2,
+          "transcript": "Take  Tarte.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Take part.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "675cd6b1aec9865acbdb411b588672d9cc963b936bb4a35bb2d8158cb4172186",
+          "primary": {
+            "text": "Take part.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 10,
+            "secondary_len": null,
+            "max_len": 19,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 10,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/kp4_en_attempt1_custom60ebc452.wav"
+      }
+    ]
+  },
+  "meaning_4": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "d73150de71b7bafb7be7e761c8a396c22b3137dc60348ad0df05e5d6f100da41",
+    "language": "ja",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "meaning_4",
+    "updated_at": "2026-10-21T13:15:14",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/meaning_4.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.32,
+        "asr_text": "参加する",
+        "asr_text_length": 4,
+        "max_len": 34,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "f32203f8e3d9baccbb5672121c4fe5b158a605bf05dc35da92190e98c959dcb2",
+          "primary": {
+            "text": "参加する",
+            "passed": true,
+            "label": "EXACT_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 4,
+            "secondary_len": null,
+            "max_len": 34,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 10,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/meaning_4_attempt1_customa6dd8324.wav"
+      }
+    ]
+  },
+  "kp5_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "05764af609889c61cba7ae9388b6ee00f0e7922264357eb38a986ba1770024de",
+    "language": "en",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "kp5_en",
+    "updated_at": "2026-10-21T13:15:18",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/kp5_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.5,
+        "asr_text": "StoryMaker",
+        "asr_text_length": 10,
+        "max_len": 21,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 1,
+          "transcript": "StoryMaker",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "StoryMaker",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "fa9f7dda9e35018abd235c4017c01b77f1e24f56e91baa49e142081c8d1802f6",
+          "primary": {
+            "text": "StoryMaker",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 10,
+            "secondary_len": null,
+            "max_len": 21,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 10,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/kp5_en_attempt1_custom60ebc452.wav"
+      }
+    ]
+  },
+  "meaning_5": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "7d48b5165e7bbf4822f1a3d14bc99b601d190b8ba7aa3fbe86bbe0c4a564e0ed",
+    "language": "ja",
+    "theme_id": "manga_ai_chat_byus__run_byus_01",
+    "level": "a2",
+    "segment_id": "meaning_5",
+    "updated_at": "2026-10-21T13:15:21",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/meaning_5.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 2.31,
+        "asr_text": "物語をつくる人。",
+        "asr_text_length": 8,
+        "max_len": 36,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "PHONETIC_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass_approved_equivalence:READING_MATCH",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "b116c204c7bcd11a9e88f295d6f515116a548e1b7684034a9048dababfd09187",
+          "primary": {
+            "text": "物語をつくる人。",
+            "passed": true,
+            "label": "PHONETIC_MATCH",
+            "equivalence_basis": "READING_MATCH",
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": false,
+            "skipped": "approved_equivalence:READING_MATCH"
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 8,
+            "secondary_len": null,
+            "max_len": 36,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 10,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/attempts/meaning_5_attempt1_customa6dd8324.wav"
+      }
+    ]
+  }
+}

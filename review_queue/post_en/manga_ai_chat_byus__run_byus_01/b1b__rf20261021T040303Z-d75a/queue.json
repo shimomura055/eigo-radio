@@ -1,0 +1,256 @@
+{
+  "schema_version": "review_queue_post_en_v1",
+  "article_id": "manga_ai_chat_byus__run_byus_01",
+  "article_level": "b1b",
+  "article_sha256": "fb37a0913ef48c45b2dc0a310ba601ca9b0c996e395742244aef3390f163a6a6",
+  "ledger_sha256": "bd7114bc10c27923e75389cadb8ab82ee51f7a3cdd97266e452a0e0a39c910a3",
+  "run_id": "rf20261021T040303Z-d75a",
+  "timestamp": "2026-10-21T04:03:03+00:00",
+  "status": "OK",
+  "reason": null,
+  "splitter_version": "en_split_v1",
+  "producer": "deterministic_v2",
+  "run_label": "FAMILY-X-MANGA-AI-CHAT-BYUS-PRODUCTION-E2E-01",
+  "sentence_count": 45,
+  "fact_count": 14,
+  "conditions": [
+    {
+      "model_key": "luna",
+      "condition": "A3",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5112,
+      "output_tokens": 754,
+      "cached_tokens": 0,
+      "cost_jpy": 0.142112,
+      "flag_count": 1,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "luna",
+      "condition": "A4",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5262,
+      "output_tokens": 1071,
+      "cached_tokens": 0,
+      "cost_jpy": 0.169872,
+      "flag_count": 2,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A3",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 4636,
+      "output_tokens": 5,
+      "cached_tokens": 0,
+      "cost_jpy": 0.224528,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A4",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 4756,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.229888,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "manga_ai_chat_byus__run_byus_01__b1b__fb37a091__rf20261021T040303Z-d75a__s19",
+      "article_id": "manga_ai_chat_byus__run_byus_01",
+      "article_level": "b1b",
+      "article_sha256": "fb37a0913ef48c45b2dc0a310ba601ca9b0c996e395742244aef3390f163a6a6",
+      "run_id": "rf20261021T040303Z-d75a",
+      "timestamp": "2026-10-21T04:03:03+00:00",
+      "sentence_id": "s19",
+      "sentence_text": "For example, you can continue an official story in the service.",
+      "context": {
+        "before": [
+          "In other words, you can enjoy not only asking, “What should we talk about next?”",
+          "but also, “What should happen next?”"
+        ],
+        "after": [
+          "Or you can make your own story as a fan.",
+          "“What if that person showed up here?”"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F05",
+        "F14"
+      ],
+      "facts": [
+        {
+          "fact_id": "F05",
+          "text": "Official Storyは、原作の世界観・キャラクター設定に沿った導入部分から、ユーザーがキャラクターと会話して新しい物語を展開する形式として説明されている。\n  scope: byUsの公式提供ストーリー\n  conditions: 原作の世界観とキャラクター設定を基礎とする\n  date_or_period: 2026年10月19日時点の発表内容\n  notes_for_writer: 会話後の展開をユーザーが楽しめる説明だが、公式作品の正史・原作設定が変更されるとは述べられていない。"
+        },
+        {
+          "fact_id": "F14",
+          "text": "発表時点で読者が実際に物語へ参加できる範囲として、日本向け第1弾では実装済みの2作品・4キャラクターを使った会話展開が案内され、Official Storyの続きの展開やファンストーリーの創作・任意公開が提供機能として説明されている。\n  scope: LINEマンガ版byUsの第1弾実装作品・キャラクター、および発表されたストーリー機能\n  conditions: 利用にはLINEマンガアプリ、LINEログイン、アプリバージョン26.10.10以上が必要\n  numeric_value: 2作品、4キャラクター (numeric_scope: 発表時点の第1弾実装範囲)\n  date_or_period: 2026年10月19日発表時点\n  notes_for_writer: 「読者が物語に参加」は会話を通じた展開やファンストーリーの創作として範囲を限定する。すべてのLINEマンガ作品で利用可能、または原作の正史を変更できるとは述べない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「continue an official story」は、原作の導入から新たな物語を展開するという説明を超えて、公式ストーリー自体の続編を提供する意味に読めるのではありませんか。"
+        },
+        {
+          "type": "その他",
+          "question": "「continue an official story」は公式ストーリー自体を続編として展開できる意味ではありませんか。Factでは会話を通じて新たな物語を展開するとされ、公式の正史が変更されるとは確認されていません。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.58,
+          "type": "その他",
+          "fact_ids": [
+            "F05"
+          ],
+          "question": "「continue an official story」は、原作の導入から新たな物語を展開するという説明を超えて、公式ストーリー自体の続編を提供する意味に読めるのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        },
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.87,
+          "type": "その他",
+          "fact_ids": [
+            "F05",
+            "F14"
+          ],
+          "question": "「continue an official story」は公式ストーリー自体を続編として展開できる意味ではありませんか。Factでは会話を通じて新たな物語を展開するとされ、公式の正史が変更されるとは確認されていません。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.87
+    },
+    {
+      "issue_id": "manga_ai_chat_byus__run_byus_01__b1b__fb37a091__rf20261021T040303Z-d75a__s38",
+      "article_id": "manga_ai_chat_byus__run_byus_01",
+      "article_level": "b1b",
+      "article_sha256": "fb37a0913ef48c45b2dc0a310ba601ca9b0c996e395742244aef3390f163a6a6",
+      "run_id": "rf20261021T040303Z-d75a",
+      "timestamp": "2026-10-21T04:03:03+00:00",
+      "sentence_id": "s38",
+      "sentence_text": "Until now, “If it were me, I’d do it this way” was something you could only say to yourself.",
+      "context": {
+        "before": [
+          "“Taking part in a story” here means moving the story forward through conversation or making a story as a fan.",
+          "The fun of reading a work is joined by the fun of thinking up what happens next."
+        ],
+        "after": [
+          "With byUs, those words become a way into making a story.",
+          "What will you say to a character you love?"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F07"
+      ],
+      "facts": [
+        {
+          "fact_id": "F07",
+          "text": "既存の「キャラチャット」はキャラクターとの会話を楽しむ機能としてすでに提供されており、byUsは会話に加えて、より自由度の高い二次創作ストーリーを作れる点が異なると会社は説明している。\n  scope: LINEマンガ内の既存機能と新サービスの機能差\n  conditions: 会社発表は機能上の差異を説明している\n  date_or_period: 2026年10月19日時点\n  notes_for_writer: 「置き換え」ではなく、会社が発表した機能上の違いとして扱う。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "不在断定",
+          "question": "「could only say to yourself」はbyUs以前には自分の物語を作る手段がなかったという断定ではありませんか。Factでは既存のCharacter Chatがあり、byUsとの機能差として説明されているのは二次創作ストーリーの作りやすさです。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.31,
+          "type": "不在断定",
+          "fact_ids": [
+            "F07"
+          ],
+          "question": "「could only say to yourself」はbyUs以前には自分の物語を作る手段がなかったという断定ではありませんか。Factでは既存のCharacter Chatがあり、byUsとの機能差として説明されているのは二次創作ストーリーの作りやすさです。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.31
+    }
+  ],
+  "unlocated_flags": [],
+  "model_stats": {
+    "luna": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 10374,
+      "output_tokens": 1825,
+      "cost_jpy": 0.311984,
+      "a3_flag_count": 1,
+      "a4_flag_count": 2,
+      "unique_issue": 2,
+      "overlap_a3_a4": 1,
+      "zero_flag_article": 0
+    },
+    "gemini35fl": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 9392,
+      "output_tokens": 9,
+      "cost_jpy": 0.454416,
+      "a3_flag_count": 0,
+      "a4_flag_count": 0,
+      "unique_issue": 0,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 1
+    },
+    "_all": {
+      "article_level": "b1b",
+      "article_status": "OK",
+      "unique_issue": 2,
+      "cost_jpy": 0.7664,
+      "issues_by_both_models": 0
+    }
+  },
+  "warnings": []
+}

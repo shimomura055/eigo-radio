@@ -5,7 +5,7 @@
   "b3_module_sha256": "338e8e145adce9e5b195d0263160020023026998bb33533f83b0742b56991468",
   "ja_writer_module_sha256": "a81bf9ae1a20214bb50bcbbac8619fe4aa8c05520d83add13113752dcc36944e",
   "annotation_contract_module_sha256": "5f4c725e0b332e028b8285389532dedc28e067f29caf6c63863b0be4f0017885",
-  "annotation_producer_module_sha256": "8899d0fa4a9b2274fcd79165b447ab02988d40f799cbca01e06df51a6f7155f2",
+  "annotation_producer_module_sha256": "ce7f9895535110893112d79aeac0fd226bceb69b2d3f92f458fd33db88770cf5",
   "risk_flagger_module_sha256": "ed3555c9da56ed651892858bdddef3624dd375bf9f0035bc1e10996604784810",
   "review_queue_module_sha256": "ebe746f11181888ed286f05db17d40141c60aa6fca0b163f47fcd60c0aa3f7ed",
   "args": {
@@ -19,5 +19,99 @@
     "regenerate_stage": null,
     "stop_after": "standard"
   },
-  "timestamp": "2026-10-21T12:41:00"
+  "timestamp": "2026-10-21T12:59:37",
+  "risk_flagger": {
+    "b1b": {
+      "status": "OK",
+      "reason": null,
+      "rf_run_id": "rf20261021T040303Z-d75a",
+      "article_sha256": "fb37a0913ef48c45b2dc0a310ba601ca9b0c996e395742244aef3390f163a6a6",
+      "ledger_sha256": "bd7114bc10c27923e75389cadb8ab82ee51f7a3cdd97266e452a0e0a39c910a3",
+      "splitter_version": "en_split_v1",
+      "timestamp": "2026-10-21T04:03:03+00:00",
+      "producer": "deterministic_v2",
+      "run_label": "FAMILY-X-MANGA-AI-CHAT-BYUS-PRODUCTION-E2E-01",
+      "issue_count": 2,
+      "conditions": [
+        {
+          "model_key": "luna",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.142112
+        },
+        {
+          "model_key": "luna",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 2,
+          "cost_jpy": 0.169872
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.224528
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.229888
+        }
+      ]
+    },
+    "a2": {
+      "status": "OK",
+      "reason": null,
+      "rf_run_id": "rf20261021T040409Z-3a77",
+      "article_sha256": "50e75d8e2a892dbe0583616ddd8e72432771d941846099dcccfd87f250c52fb7",
+      "ledger_sha256": "bd7114bc10c27923e75389cadb8ab82ee51f7a3cdd97266e452a0e0a39c910a3",
+      "splitter_version": "en_split_v1",
+      "timestamp": "2026-10-21T04:04:09+00:00",
+      "producer": "deterministic_v2",
+      "run_label": "FAMILY-X-MANGA-AI-CHAT-BYUS-PRODUCTION-E2E-01",
+      "issue_count": 4,
+      "conditions": [
+        {
+          "model_key": "luna",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.143936
+        },
+        {
+          "model_key": "luna",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 4,
+          "cost_jpy": 0.228656
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.231472
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.237232
+        }
+      ]
+    }
+  }
 }

@@ -1,0 +1,355 @@
+{
+  "schema_version": "review_queue_post_en_v1",
+  "article_id": "manga_ai_chat_byus__run_byus_01",
+  "article_level": "a2",
+  "article_sha256": "50e75d8e2a892dbe0583616ddd8e72432771d941846099dcccfd87f250c52fb7",
+  "ledger_sha256": "bd7114bc10c27923e75389cadb8ab82ee51f7a3cdd97266e452a0e0a39c910a3",
+  "run_id": "rf20261021T040409Z-3a77",
+  "timestamp": "2026-10-21T04:04:09+00:00",
+  "status": "OK",
+  "reason": null,
+  "splitter_version": "en_split_v1",
+  "producer": "deterministic_v2",
+  "run_label": "FAMILY-X-MANGA-AI-CHAT-BYUS-PRODUCTION-E2E-01",
+  "sentence_count": 53,
+  "fact_count": 14,
+  "conditions": [
+    {
+      "model_key": "luna",
+      "condition": "A3",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5261,
+      "output_tokens": 747,
+      "cached_tokens": 0,
+      "cost_jpy": 0.143936,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "luna",
+      "condition": "A4",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5411,
+      "output_tokens": 1776,
+      "cached_tokens": 0,
+      "cost_jpy": 0.228656,
+      "flag_count": 4,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A3",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 4789,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.231472,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A4",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 4909,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.237232,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "manga_ai_chat_byus__run_byus_01__a2__50e75d8e__rf20261021T040409Z-3a77__s10",
+      "article_id": "manga_ai_chat_byus__run_byus_01",
+      "article_level": "a2",
+      "article_sha256": "50e75d8e2a892dbe0583616ddd8e72432771d941846099dcccfd87f250c52fb7",
+      "run_id": "rf20261021T040409Z-3a77",
+      "timestamp": "2026-10-21T04:04:09+00:00",
+      "sentence_id": "s10",
+      "sentence_text": "The company that runs LINE Manga has announced a new service.",
+      "context": {
+        "before": [
+          "What will happen to the two of them?",
+          "It may be a shame to keep those ideas only in your head."
+        ],
+        "after": [
+          "It is called “byUs,” an AI chat service for stories.",
+          "It is pronounced “bias.”"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F01"
+      ],
+      "facts": [
+        {
+          "fact_id": "F01",
+          "text": "LINE Digital Frontierは、LINEマンガでAIストーリーチャットサービス「byUs（バイアス）」をリリースしたと発表した。\n  scope: LINEマンガ上のサービス\n  date_or_period: 2026年10月19日\n  notes_for_writer: 会社による一次発表。発表日とリリース日を区別する必要がある場合は、発表文が「リリースしました」としている点を明記する。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「the company that runs LINE Manga」という運営主体の説明は、台帳の「LINE Digital FrontierがLINEマンガ上のサービスを発表した」という記載だけでは確認できないのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.35,
+          "type": "その他",
+          "fact_ids": [
+            "F01"
+          ],
+          "question": "「the company that runs LINE Manga」という運営主体の説明は、台帳の「LINE Digital FrontierがLINEマンガ上のサービスを発表した」という記載だけでは確認できないのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.35
+    },
+    {
+      "issue_id": "manga_ai_chat_byus__run_byus_01__a2__50e75d8e__rf20261021T040409Z-3a77__s14",
+      "article_id": "manga_ai_chat_byus__run_byus_01",
+      "article_level": "a2",
+      "article_sha256": "50e75d8e2a892dbe0583616ddd8e72432771d941846099dcccfd87f250c52fb7",
+      "run_id": "rf20261021T040409Z-3a77",
+      "timestamp": "2026-10-21T04:04:09+00:00",
+      "sentence_id": "s14",
+      "sentence_text": "You can also make your own stories based on their works.",
+      "context": {
+        "before": [
+          "It is pronounced “bias.”",
+          "You can talk with characters you love."
+        ],
+        "after": [
+          "You can leave the reader’s seat and step onto the stage of making stories.",
+          "If you thought, “Can’t you already talk with characters?”"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F02",
+        "F03",
+        "F06"
+      ],
+      "facts": [
+        {
+          "fact_id": "F02",
+          "text": "byUsは、ユーザーが原作ストーリーの主人公となり、作品キャラクターとのAI会話を通じて新たなストーリーを作るサービスとして説明されている。\n  scope: byUsのサービス説明\n  conditions: 原作者が承認した公式IPを取り扱う\n  date_or_period: 2026年10月19日時点の発表内容\n  notes_for_writer: 「ユーザーが主人公となる」はサービスの説明。原作の公式ストーリーそのものを書き換える機能とは確認されていない。"
+        },
+        {
+          "fact_id": "F03",
+          "text": "LINE Digital Frontierは、byUsで扱うIPを原作者が承認した公式IPに限定すると説明している。LINEマンガのヘルプも、byUsに登場するオリジナル作品は原作作家との正式契約を通じ使用許可を得ているとしている。\n  scope: byUsで扱う作品・キャラクター\n  conditions: 原作者の承認が必要。ヘルプ記載では、登場するオリジナル作品は原作作家との正式契約による使用許可を取得\n  date_or_period: 2026年10月19日発表および確認できたヘルプ記載\n  notes_for_writer: 権利者の承認・許諾を前提とする事実として記述できる。"
+        },
+        {
+          "fact_id": "F06",
+          "text": "ファンストーリーでは、原作キャラクターを基盤にユーザーが新たな状況や関係性を設定して創作でき、作成したストーリーを他ユーザーに公開することも可能とされている。\n  scope: byUsのユーザー創作機能\n  conditions: 他ユーザーへの公開は可能とされるが、公開が必須とはされていない\n  date_or_period: 2026年10月19日時点の発表内容\n  notes_for_writer: ユーザーが設定できる範囲は発表文に記載された状況・関係性の設定。原作の公式展開への反映や、必ず公開される機能とは書かれていない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「their works」をもとに物語を作れるという範囲は、台帳が示す承認済み公式IPや原作キャラクターを基盤とした設定・関係性の創作より広く読めるのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.38,
+          "type": "その他",
+          "fact_ids": [
+            "F02",
+            "F03",
+            "F06"
+          ],
+          "question": "「their works」をもとに物語を作れるという範囲は、台帳が示す承認済み公式IPや原作キャラクターを基盤とした設定・関係性の創作より広く読めるのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.38
+    },
+    {
+      "issue_id": "manga_ai_chat_byus__run_byus_01__a2__50e75d8e__rf20261021T040409Z-3a77__s23",
+      "article_id": "manga_ai_chat_byus__run_byus_01",
+      "article_level": "a2",
+      "article_sha256": "50e75d8e2a892dbe0583616ddd8e72432771d941846099dcccfd87f250c52fb7",
+      "run_id": "rf20261021T040409Z-3a77",
+      "timestamp": "2026-10-21T04:04:09+00:00",
+      "sentence_id": "s23",
+      "sentence_text": "For example, you can continue an official story on the service.",
+      "context": {
+        "before": [
+          "So, you can ask not only, “What should we talk about next?”",
+          "but also, “What should happen next?”"
+        ],
+        "after": [
+          "Or you can make your own story as a fan.",
+          "“What if that person came here?”"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F05",
+        "F14"
+      ],
+      "facts": [
+        {
+          "fact_id": "F05",
+          "text": "Official Storyは、原作の世界観・キャラクター設定に沿った導入部分から、ユーザーがキャラクターと会話して新しい物語を展開する形式として説明されている。\n  scope: byUsの公式提供ストーリー\n  conditions: 原作の世界観とキャラクター設定を基礎とする\n  date_or_period: 2026年10月19日時点の発表内容\n  notes_for_writer: 会話後の展開をユーザーが楽しめる説明だが、公式作品の正史・原作設定が変更されるとは述べられていない。"
+        },
+        {
+          "fact_id": "F14",
+          "text": "発表時点で読者が実際に物語へ参加できる範囲として、日本向け第1弾では実装済みの2作品・4キャラクターを使った会話展開が案内され、Official Storyの続きの展開やファンストーリーの創作・任意公開が提供機能として説明されている。\n  scope: LINEマンガ版byUsの第1弾実装作品・キャラクター、および発表されたストーリー機能\n  conditions: 利用にはLINEマンガアプリ、LINEログイン、アプリバージョン26.10.10以上が必要\n  numeric_value: 2作品、4キャラクター (numeric_scope: 発表時点の第1弾実装範囲)\n  date_or_period: 2026年10月19日発表時点\n  notes_for_writer: 「読者が物語に参加」は会話を通じた展開やファンストーリーの創作として範囲を限定する。すべてのLINEマンガ作品で利用可能、または原作の正史を変更できるとは述べない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「continue an official story」は、公式ストーリーそのものを続けたり正史を変更したりできる意味に読めますが、台帳の「会話を通じた新たな展開」とは異なるのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.78,
+          "type": "その他",
+          "fact_ids": [
+            "F05",
+            "F14"
+          ],
+          "question": "「continue an official story」は、公式ストーリーそのものを続けたり正史を変更したりできる意味に読めますが、台帳の「会話を通じた新たな展開」とは異なるのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.78
+    },
+    {
+      "issue_id": "manga_ai_chat_byus__run_byus_01__a2__50e75d8e__rf20261021T040409Z-3a77__s31",
+      "article_id": "manga_ai_chat_byus__run_byus_01",
+      "article_level": "a2",
+      "article_sha256": "50e75d8e2a892dbe0583616ddd8e72432771d941846099dcccfd87f250c52fb7",
+      "run_id": "rf20261021T040409Z-3a77",
+      "timestamp": "2026-10-21T04:04:09+00:00",
+      "sentence_id": "s31",
+      "sentence_text": "You can keep them private, or let someone else read them.",
+      "context": {
+        "before": [
+          "Or you may use that time to think up what happens next.",
+          "You can also publish your fan stories, if you want to."
+        ],
+        "after": [
+          "But things change when you make a story public.",
+          "“Will people understand this story?”"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F06"
+      ],
+      "facts": [
+        {
+          "fact_id": "F06",
+          "text": "ファンストーリーでは、原作キャラクターを基盤にユーザーが新たな状況や関係性を設定して創作でき、作成したストーリーを他ユーザーに公開することも可能とされている。\n  scope: byUsのユーザー創作機能\n  conditions: 他ユーザーへの公開は可能とされるが、公開が必須とはされていない\n  date_or_period: 2026年10月19日時点の発表内容\n  notes_for_writer: ユーザーが設定できる範囲は発表文に記載された状況・関係性の設定。原作の公式展開への反映や、必ず公開される機能とは書かれていない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「keep them private」という非公開機能は、台帳にある「他ユーザーへの公開は必須ではない」という説明だけでは確認できないのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.34,
+          "type": "その他",
+          "fact_ids": [
+            "F06"
+          ],
+          "question": "「keep them private」という非公開機能は、台帳にある「他ユーザーへの公開は必須ではない」という説明だけでは確認できないのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.34
+    }
+  ],
+  "unlocated_flags": [],
+  "model_stats": {
+    "luna": {
+      "article_level": "a2",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 10672,
+      "output_tokens": 2523,
+      "cost_jpy": 0.372592,
+      "a3_flag_count": 0,
+      "a4_flag_count": 4,
+      "unique_issue": 4,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 0
+    },
+    "gemini35fl": {
+      "article_level": "a2",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 9698,
+      "output_tokens": 8,
+      "cost_jpy": 0.468704,
+      "a3_flag_count": 0,
+      "a4_flag_count": 0,
+      "unique_issue": 0,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 1
+    },
+    "_all": {
+      "article_level": "a2",
+      "article_status": "OK",
+      "unique_issue": 4,
+      "cost_jpy": 0.841296,
+      "issues_by_both_models": 0
+    }
+  },
+  "warnings": []
+}
