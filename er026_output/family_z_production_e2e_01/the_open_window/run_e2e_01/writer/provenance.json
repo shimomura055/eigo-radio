@@ -1,0 +1,110 @@
+{
+  "story_key": "the_open_window",
+  "seed_sha256": "9abe50b85551afa9b97544d30d164933bb6fb91a7822c49c96b3b93d307ecfa7",
+  "chain": [
+    {
+      "stage": "r0",
+      "input_sha256": "9abe50b85551afa9b97544d30d164933bb6fb91a7822c49c96b3b93d307ecfa7",
+      "output_sha256": "b69289973f53ade1b87e2f8732b784a17adfdef95f26e0717891fdf6de118e81",
+      "generated_at": "2026-10-21T00:07:14+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R0",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_0f3d206120e1aa6f006ad80212620487d0bd7210cc660c2c09",
+      "attempts": 1,
+      "cost_jpy": 2.1738,
+      "prompt_sha256": "141b7c4d193353cf04d2be541e4bad5f948d6ea18475829e179e4fcd4dbed37f",
+      "input_tokens": 1373,
+      "output_tokens": 1084,
+      "reasoning_tokens": 511,
+      "conversion_substitutions": [
+        "override_appended"
+      ],
+      "guardrails": {
+        "word_count": 431
+      }
+    },
+    {
+      "stage": "r1",
+      "input_sha256": "b69289973f53ade1b87e2f8732b784a17adfdef95f26e0717891fdf6de118e81",
+      "output_sha256": "54ad54ecf40a74778922374df32365032f74176c0c3c35260d99e3937d337fa2",
+      "generated_at": "2026-10-21T00:07:36+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R1",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_0dec91d92891df63006ad802329eb487d0b43e822e88f5b0c5",
+      "attempts": 1,
+      "cost_jpy": 1.8131,
+      "prompt_sha256": "0c81d688a03162377cec83782ad3b83c60c84323451b1ef1b9ac884dd71140b0",
+      "input_tokens": 651,
+      "output_tokens": 1003,
+      "reasoning_tokens": 417,
+      "guardrails": {
+        "word_count": 445
+      }
+    },
+    {
+      "stage": "r2",
+      "input_sha256": "54ad54ecf40a74778922374df32365032f74176c0c3c35260d99e3937d337fa2",
+      "output_sha256": "9d1558ffe430a329d6290f500c6b9da8cdfff49e53b3c94f196cb774cf3af355",
+      "generated_at": "2026-10-21T00:08:15+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R2",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_0f3febc3d3647329006ad802490fd087d0bb6e1200c738a3ad",
+      "attempts": 1,
+      "cost_jpy": 4.2333,
+      "prompt_sha256": "12ebae3e8534f968e30b34549ca70eb31ddcccf82a1205e220ec39ba56f4e2ff",
+      "input_tokens": 664,
+      "output_tokens": 2513,
+      "reasoning_tokens": 1953,
+      "guardrails": {
+        "word_count": 431,
+        "warnings": [],
+        "failures": []
+      }
+    },
+    {
+      "stage": "std_adjust",
+      "input_sha256": "9d1558ffe430a329d6290f500c6b9da8cdfff49e53b3c94f196cb774cf3af355",
+      "output_sha256": "2ff34b1022ef89e5dc90c305991014acff2818212c4b1765fab37ff078d39e1c",
+      "generated_at": "2026-10-21T00:10:14+00:00",
+      "routing_key": "FAMILY_Z_STD_ADJUST",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_081633dc34616366006ad8026f47a887d0abb92a2d24341e24",
+      "attempts": 1,
+      "cost_jpy": 9.5421,
+      "prompt_sha256": "554737d55df745c0d755918001e1e0318902322bf9c465dd00e91500948d5caf",
+      "input_tokens": 1309,
+      "output_tokens": 5702,
+      "reasoning_tokens": 5118,
+      "guardrails": {
+        "std_words": 455,
+        "adv_words": 431,
+        "ratio": 1.0557,
+        "identical_sentence_ratio": 0.0189,
+        "avg_sentence_len_std": 8.58,
+        "avg_sentence_len_adv": 7.7,
+        "paragraph_count_std": 30,
+        "paragraph_count_adv": 30,
+        "std_adv_paragraph_count_match": true,
+        "warnings": [
+          "STD_AVG_SENT_LEN_NOT_SHORTER:8.58 vs adv 7.70x0.85 (soft gate)"
+        ],
+        "failures": []
+      }
+    }
+  ],
+  "downstream_stale": [],
+  "downstream_stages": {},
+  "regenerations": [],
+  "audio_text_deviations": [],
+  "reference_only": {},
+  "adv_final_sha256": "9d1558ffe430a329d6290f500c6b9da8cdfff49e53b3c94f196cb774cf3af355",
+  "std_sha256": "2ff34b1022ef89e5dc90c305991014acff2818212c4b1765fab37ff078d39e1c"
+}
