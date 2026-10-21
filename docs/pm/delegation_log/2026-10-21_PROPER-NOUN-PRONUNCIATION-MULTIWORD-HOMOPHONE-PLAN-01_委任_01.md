@@ -1,0 +1,205 @@
+# 委任文(Fable→sonnet-worker)
+
+## 管理ID
+PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01 委任_01(調査→方式比較→改善計画案v1→Trial計画案。**計画策定のみ。Trial実行・有料API・TTS/ASR・Production変更・SSOT正本(CURRENT_SPEC/DECISION_LOG)変更は禁止**。計画v1はFable独立レビュー(+Opus技術レビュー)を経て委任_02で改訂する。Status管理ラベル=`PLAN_DRAFT_PENDING_FABLE_REVIEW`。VALIDATED/APPROVED_FOR_PRODUCTIONと混同しない)。
+並行agent: `ASR-THREE-WAY-COMPARISON-TRIAL-01`(実行中。`er091_*`/`er091_output/`/`docs/research/ASR-THREE-WAY-COMPARISON-TRIAL-01/`に触らない。その設定・評価・進行を変更しない)。SSOT共有プロトコル: OPEN_ITEMS新規行/REPORT_LEDGER編集直前に`git status --porcelain`+再Grep→自分の行だけ→即add/commit、index.lock 30秒待ち。`git add -f`/`-A`/`-u`禁止。作業領域: `docs/research/PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01/`。
+
+## 固定ブロック
+E-1/D-1/G-1/F-1: 標準(SSOT全文読込禁止)。T-0: 本委任文を`docs/pm/delegation_log/2026-10-21_PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01_委任_01.md`へ逐語保存(`.venv\Scripts\python.exe docs/pm/tools/extract_delegation_from_jsonl_01.py --jsonl C:\Users\tensh\.claude\projects\C--Users-tensh-eigo-radio\a66c19e8-1d31-4bc4-b0cb-f15b29248dc1.jsonl --role assistant --tool-use-name Agent --tool-input-field prompt --index N --out <path>`、N=「MULTIWORD-HOMOPHONE-PLAN-01 委任_01」を含む最新index)。check結果1行。T-2: TTSなし。費用: API 0(Guardrail JPY0。ローカルCMU/pronouncing/既存telemetryのオフライン解析のみ可)。
+
+## ユーザー指示原文(2026-10-21、全文)
+`docs/pm/delegation_log/2026-10-21_PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01_USER.md`へ逐語保存(先頭に`# ユーザー指示原文(2026-10-21)`と`管理ID: PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01`の2行、以降一字一句変えない。文字数・sha256[本文のみ]を報告)。
+--- 原文ここから ---
+# Claude Codeへの指示
+## #133 固有名詞発音供給＋1語⇔複数語の同音救済改善 — 計画策定・Fableレビュー
+
+### 1. 目的
+
+現行Validatorでは、`ByUs` → `by us` / `buy us` のような「1語⇔複数語」の同音表記を正しく救済できない。
+
+本件のゴールは、**正しい発音を表記差によってNGにする問題を汎用的に解消し、本当の誤発音を誤PASSさせない仕組みを構築すること**。
+
+GitHub Issue #133「固有名詞の英語発音供給」と統合して検討する。
+
+今回は設計・レビュー段階とし、**Trial実行・Production変更は行わない**。
+
+### 2. 作業方針
+
+以下を実施する。
+
+**① 既存仕様・実装・過去Trialの調査**
+
+- Issue #133の正確な内容・Statusを確認する。
+- CURRENT_SPEC、DECISION_LOG、OPEN_ITEMS、関連する過去Trialを確認する。
+- 現行の発音Ledger、同音判定Validator、辞書、Primary/Secondaryの判定経路を確認する。
+- `ByUs` が救済されない根本原因と、既存機構で再利用できる部分を特定する。
+- `story-making` / `storymaking` の既存修正との整合を確認する。
+- Family X/Zおよび将来のFamily Yに適用すべき共通仕様か検討する。
+
+**② 固有名詞の正しい発音を取得する仕組み**
+
+以下を検討する。
+
+- 公式発音情報、信頼できる辞書、公式音声等の優先順位。
+- 情報源が複数ある場合の判断方法。
+- IPA等の音韻情報への変換・正規化。
+- Ledgerへの登録方法、情報源・信頼度の管理。
+- 同一固有名詞の発音情報の再利用・キャッシュ。
+- 発音情報が見つからない場合の自律的な解決方法。
+
+AIの推測だけで正しい発音を確定しないこと。
+
+また、毎回Web検索する方式は避け、量産費用を抑える設計とする。
+
+**③ 1語⇔複数語の同音判定**
+
+以下の方式を出発点として検討する。
+
+- 表記上の単語数に依存せず、連続した音韻列を比較する。
+- 比較範囲は該当する固有名詞・フレーズの周辺に限定する。
+- 離れた単語を恣意的に結合しない。
+- 既存の1語⇔1語救済機能を維持する。
+- 明確な発音差、単語の脱落・追加等を誤PASSしない。
+- 不確実な判定を安易にPASSせず、既存のSecondary・retry等の経路と整合させる。
+
+`ByUs`専用の例外処理ではなく、汎用的な解決策とする。
+
+ただし、上記方式に固執せず、より安全・簡潔・低コストな方式があれば積極的に提案すること。
+
+**④ 誤PASS防止とTrial設計**
+
+以下を含む検証計画を策定する。
+
+- `ByUs` / `by us` / `buy us`（発音の正式確認後）。
+- 1語⇔複数語で発音が同一となるケース。
+- 綴りは近いが発音は異なるケース。
+- 実際に発音を間違えたTTS。
+- 単語の脱落・追加・音素差があるケース。
+- 既存の1語⇔1語の同音救済ケース。
+- `story-making` / `storymaking` 等のRegression。
+- 固有名詞以外への適用可能性とリスク。
+
+**既知の正例を救済し、既知の負例を新たに誤PASSしないこと**を基本受入条件とする。
+
+ASRの生認識精度とValidatorによる救済後の判定品質を分離して評価すること。
+
+### 3. ASR精度比較Trialとの依存関係
+
+現在、以下3方式の精度比較Trialが別途進行中。
+
+- OpenAI（現Primary）
+- Azure（現Secondary）
+- ローカルWhisper
+
+本文とKey Phraseの双方について精度を評価し、新Primary／Secondaryを確定する予定。
+
+**本改善Trialは、その結果を受けて実施する。**
+
+したがって、今回の作業では以下を守ること。
+
+- 設計調査・計画策定・Fableレビューは直ちに進めてよい。
+- ASR選定に依存しない部分は先行して完成させる。
+- 特定のPrimary／Secondary構成を前提に設計を固定しない。
+- 新Primary／Secondary確定までは本改善Trialを開始しない。
+- ASR構成が確定した後、必要な条件だけ計画に反映してTrialを実施する。
+- ASR精度比較Trial自体の設定・評価・進行を変更しない。
+
+今回の承認範囲は**計画策定とレビューまで**。将来のTrial実行については、計画Fix後の承認境界を維持すること。
+
+### 4. Fableによる独立レビュー
+
+Claudeが改善計画案を作成した後、Fableに独立レビューさせる。
+
+特に以下を評価する。
+
+1. 正しい同音表記を十分に救済できるか。
+2. 誤PASSの見逃しリスクを最小化できるか。
+3. #133との統合が合理的か。
+4. 既存Validator・Ledger・retry/fallbackとの整合性。
+5. 発音情報の取得・正規化・管理の信頼性。
+6. より単純で効果的な代替案の有無。
+7. Trialケースの網羅性と検証効率。
+8. 量産単価70円／記事セットへの影響。
+9. Family間の共通仕様・既存Production経路との整合。
+10. 過剰な仕組み・検査・追加費用がないか。
+
+Fableから改善案が出た場合、Claudeが合理性とQCDを評価し、有効な案は計画に反映する。
+
+技術的な軽微な修正についてユーザー判断を求めず、レビューを踏まえた完成度の高い計画を提出すること。
+
+ただし、品質基準や承認済み仕様の変更が必要な場合は、独断で採用しない。
+
+### 5. QCD原則
+
+優先順位は以下。
+
+**品質（Q）＞速度（D）＞量産単価（C）≫開発費用**
+
+- 品質基準を独断で緩和・強化しない。
+- 既存機能を再利用し、不要な新規実装を避ける。
+- 独立した調査・レビューは可能な限り並列化する。
+- 無用な待機・日付分割・Trial反復を避ける。
+- 量産時に発生する検索費用、追加API費用、判定費用、retry費用を考慮する。
+- 正確な発音情報をキャッシュ・再利用して量産単価を抑える。
+- 解決できる技術課題を安易にHuman Reviewへ転送しない。
+- 開発費は既存の日次予算・承認範囲・STOP条件を遵守する。
+
+### 6. 今回の到達範囲・Status
+
+今回実施するもの：
+
+- 既存仕様・実装・Issue #133の調査
+- 改善方式の比較・選定
+- Trial計画の設計
+- Fable独立レビュー
+- レビュー結果を反映した改善計画の完成
+- 必要な計画・未決事項の記録
+
+今回実施しないもの：
+
+- 改善Trialの実行
+- TTS/ASRの有料生成・追加実験
+- 正式Productionへの配線・判定仕様変更
+- ユーザー未承認仕様の正式採用
+
+Statusは計画策定段階として管理し、Trial成功の `VALIDATED` や正式採用済みの `APPROVED_FOR_PRODUCTION` と混同しないこと。
+
+ASR選定待ちは明確な依存事項として管理する。
+
+### 7. 最終報告
+
+ClaudeとFableで検討した結果、以下を簡潔に報告すること。
+
+1. **結論：推奨する改善方式と理由**
+2. #133の現状および今回の改善との統合方針
+3. ByUsの正しい発音をどう取得・確定するか
+4. 1語⇔複数語をどう判定するか（具体例付き）
+5. 誤PASSをどう防止するか
+6. 比較した代替案と採否理由
+7. Fableの評価・指摘・反映結果
+8. Trial計画と合格基準
+9. QCDへの影響（概算と不確実性）
+10. 未解決事項・ユーザー判断が必要な事項
+11. ASR選定後に着手するTrialの準備状況
+
+**まず計画を十分に練り、Fableレビューで改善した完成案を報告すること。**
+
+ユーザーが改善計画を確認・Fixした後、新Primary／Secondary確定を受けてTrialを実施する。
+
+計画完成を理由にTrialへ自動移行しないこと。
+--- 原文ここまで ---
+
+## 手がかり(鵜呑みにせず原文で確認)
+- #133: 本リポジトリでは`docs/pm/USER_DECISION_REGISTER_01.md`の#133「固有名詞英語発音供給」(Fable推奨(イ)見送り)。GitHub Issue #133が別に存在するかは `gh issue view 133`(可能なら)または過去のcommitメッセージ/REGISTERの対応関係で確認し、両者の関係を明記。
+- 直近の原因調査(最重要の前提): `docs/research/FAMILY-X-MANGA-AI-CHAT-BYUS-PRODUCTION-E2E-01/BYUS_EQUIVALENCE_INVESTIGATION_01.md`(1対1置換限定=`er006_preprod_hardening_01_validation.py:750`、入口でTRUE_CONTENT_MISMATCH、Primary/Secondary独立照合=`er078_asr_unified_judge_01.py:551`、27種の1→多語span計測[連結CMU一致6種、うち`a m`/`a i`/`u s`の文字読み3種は誤PASS候補]、(a)〜(d)案)、`PROPER_NOUN_PHRASELIST_INVESTIGATION_01.md`、`docs/research/FAMILY-XZ-PROPER-NOUN-EN-PRONUNCIATION-SUPPLY-TRIAL-01/{TRIAL_DESIGN_01.md,TRIAL_RESULT_01.md}`(PNEP Trial: 機構は動くがbyUsは公式英語発音なし→K1未成立で安全非登録、Perplexity 401、Opus指摘OF-PNEP-R-01〜12は`docs/pm/OPUS_FINDINGS_LEDGER.md`)、`docs/research/FAMILY-XZ-ASR-MULTI-DIFF-JUDGE-FIX-01/`(story-making是正、`_is_compound_spacing_only_span` L654)、`docs/research/PRONUNCIATION-LEDGER-INVALID-ENTRY-REMEDIATION-01/`(Ledger validator・`ledger_disabled`)。
+- 既存機構: CMU同音層`er008_asr_variant_hardening_15_homophone_en.py:73-100,138-148`、`cmu_alternate`、M1多候補`er006_m1_multi_candidate_01.py`(CMU-OOV限定・UNCERTAIN限定)、entity_like(先頭大文字)、Case A、Connected Speech/CS Equivalence/Semantic Equivalence(`er021`)、Ledger `er006_pronunciation_ledger_01.py`(`get_hint_for_text`, `entry_invalid_reason`, `ledger_health_check`)、Phrase List `er006_secondary_asr_01.py:75,106-111`、JA読み(バイアス)。承認済み仕様: CURRENT_SPEC:452,1837,1839(単一語置換差)、2808。
+- G2P: ローカル候補(`pronouncing`/CMUdict、`g2p_en`があるか`pip list`で確認。無ければ導入候補として記載のみ、インストールしない)。
+
+## 成果物(`docs/research/PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01/`)
+1. `INVESTIGATION_01.md`(ユーザー§2①: #133現状、既存機構の再利用可能部分、ByUs根本原因[既調査の引用+追加確認]、story-making是正との整合、X/Z/Y共通化の可否と各Familyの呼出点)。
+2. `DESIGN_OPTIONS_01.md`: 方式比較表(最低4案+ユーザー出発点案)。例: (A)span限定の音韻列連結比較[canonical 1語⇔ASR連続n語、n≤3、隣接spanのみ、CMU/G2Pで音素列化しストレス無視、文字読み(単字母 a/i/u/s/m 等)ガード、entity_like/Ledger登録語に限定するか全語か]、(B)Ledger EN hint→Phrase List/Primary promptへの供給強化(#133統合、公式発音の取得優先順位: 公式サイト/公式動画の書き起こし・信頼辞書[Wiktionary/Oxford等]・JA公式読み→英語音素推定は「推定」ラベル、Perplexity依存を外す案、キャッシュ=Ledger自体、見つからない時=`EXACT`不登録+Writer側の読み併記[記事Bで実施済みの "It is pronounced bias" 型]+HRに回さない条件)、(C)Writer側で固有名詞に読みを併記する運用の標準化(原稿仕様、費用0)、(D)Primary/Secondary不一致時の統合判定(両転写の同一spanで片方が一致なら…の扱い=仕様変更リスク大、慎重に)、(E)その他 より単純な案。各案に: 救済力/誤PASSリスク/既存Validator・Ledger・retry・fallbackとの整合/実装量/量産単価影響(検索・API・判定・retry)/ASR選定依存の有無(依存部分を明示し、構成が変わっても成立する部分と、再評価が必要な部分を分ける)。**推奨案と理由**(複数案の組合せ可、過剰な仕組みを避ける)。
+3. `TRIAL_PLAN_01.md`: ユーザー§2④の全ケース種別を含むケース表(既存telemetry/Store/過去Trialの実例を優先し、各ケースのラベル根拠を記載。正例=救済すべき/負例=誤PASSしてはならない)、ASR生精度と救済後判定の分離評価、合格基準(「既知の正例を救済し、既知の負例を新たに誤PASSしない」+Regression全PASS+誤PASS 0)、オフライン先行可能な部分(保存済み転写への再適用=API 0)と有料部分の切り分け、費用見積、ASR選定確定後に差し替える条件のリスト、Status遷移(PLAN_FIXED→[ASR確定]→TRIAL→VALIDATED/REJECTED/UDR)。
+4. `REVIEW_QUESTIONS_01.md`: Fable/Opusレビューに判断を仰ぎたい論点(ユーザー§4の10項目に対応するSonnet自己評価+未確定点)。
+5. OPEN_ITEMS新規行(Status `PLAN_DRAFT_PENDING_FABLE_REVIEW`、依存: ASR-THREE-WAY-COMPARISON-TRIAL-01の結果とユーザーによるPrimary/Secondary確定)、REPORT_LEDGER、ACTIVE_TASK(ローカル)。secret scan→明示add→commit→`git push origin HEAD:main`。
+
+## 報告(docs/pm/RESULT_PACKET_PNMH1.md 上書き。ユーザー§7の1〜11の順[7はFableレビュー前なので「Sonnet自己評価と未確定点」]、各項目は要点のみ[詳細はmd参照]。Statusラベルは付けず「判断候補」表記)
