@@ -425,3 +425,4 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-21 | FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01 委任_02(Std full_story_part2 fallback takeのHR試聴ページ公開+Adv先行試聴+次Gate[key_phrase_source_gate]先読み[BLOCKなし見込み]+承認後手順書、費用JPY0、OPEN-432 Status=HUMAN_REVIEW_PENDING): 報告=docs/pm/RESULT_PACKET_FXPP2.md
 
 - 2026-10-21 | FAMILY-X-MANGA-AI-CHAT-BYUS-PRODUCTION-E2E-01 委任_02(記事B byUs: er053 producerのドット区切りバージョン表記是正[11-8、rules_sha256更新、出力不変証明3 run]→既存Research/Ledger/B3再利用で再開→text+音声完成+試聴ページ公開[Pages再生51/51]、本記事実費93.94円、OPEN-431 Status=PRODUCTION_TECH_COMPLETE_USER_LISTENING_PENDING): 報告=docs/pm/RESULT_PACKET_FXBY2.md
+- 2026-10-21 | FAMILY-X-MANGA-AI-CHAT-BYUS-PRODUCTION-E2E-01 委任_03(er053 NUM量化子是正のSSOT整合: CURRENT_SPEC.md:1169/1171新sha注記+DECISION_LOG是正エントリ+静的参照test許可リストにTrial harness群追加、API 0・JPY0、OPEN-431 Status変更なし): 報告=docs/pm/RESULT_PACKET_FXBY3.md

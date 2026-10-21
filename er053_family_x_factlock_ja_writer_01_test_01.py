@@ -574,6 +574,7 @@ class StaticTests(unittest.TestCase):
         例外(C3): audio runnerはTTS直前保険のためRF module・Review Queue moduleだけを参照してよい
         (W-1・契約moduleは不可)。er012_e・jaw・その他のrunnerは参照しない。"""
         allowed = {"er019_family_x_entertainment_production_runner_01.py"}
+        TRIAL_HARNESS_PREFIXES = ("er082_", "er083_", "er086_", "er087_")
         audio_allowed = {"er053_risk_flagger_production_01", "er053_review_queue_01"}
         for f in self._root_py_files():
             b = os.path.basename(f)
@@ -581,6 +582,12 @@ class StaticTests(unittest.TestCase):
             for m in ("er053_family_x_factlock_ja_writer_01", "er053_risk_flagger_production_01", "er053_review_queue_01",
                       "er053_b3_annotation_contract_01"):
                 if b in allowed:
+                    continue
+                # FAMILY-X-MANGA-AI-CHAT-BYUS-PRODUCTION-E2E-01 委任_03: Trial harness群(er082_/er083_/er086_/er087_)は
+                # Production moduleを読み取り専用importとして参照してよい(allowlist: TRIAL_HARNESS_PREFIXES)。
+                # 許可はimport参照のみで、Production module内の書込経路・Production runnerへの配線の新設を許すものではない
+                # (Production runner/その他のrunnerからの参照禁止は従来どおり)。
+                if b.startswith(TRIAL_HARNESS_PREFIXES):
                     continue
                 if b == "er019_family_x_audio_production_runner_01.py" and m in audio_allowed:
                     continue
