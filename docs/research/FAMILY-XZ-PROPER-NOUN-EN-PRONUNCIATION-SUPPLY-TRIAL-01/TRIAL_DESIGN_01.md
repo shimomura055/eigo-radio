@@ -255,3 +255,54 @@ K1が`UNCONFIRMED_SAFE`でも、PLへ`["byUs"]`を入れた場合のAzure認識�
 | J3 | 判定基準の拡張(多語→1語、辞書外綴り、Ledger許容集合のCMU収録語判定への利用) | D(新判断・必要性次第) | §6「独断で拡張しない」、2026-09-28 OPEN-208、CURRENT_SPEC.md:1829 |
 | J4 | 委任_02のScope/Cap(JPY 250案)・TTS極小使用(腕N)の許可 | Fable確定事項(7-7、新仕様Trial) | 7-7 |
 | J5 | 既存Ledgerの汚染entry(`us`、`melos`cascade)の是正 | B(承認範囲内・不具合調査。Fable判断) | 2-2の2、BLOCKER-1同種 |
+
+---
+
+# v02(Opus条件Aレビュー反映、委任_02 S0で追記。本文v01は書き換えず、変更点をID付きで記す)
+
+追記日: 2026-10-21。管理: 委任_02(Fable照合結果=修正後Go)。Opus所見R-01〜R-12のFable照合(ADOPTED/DEFERRED)は委任文(`docs/pm/delegation_log/2026-10-21_FAMILY-XZ-PROPER-NOUN-EN-PRONUNCIATION-SUPPLY-TRIAL-01_委任_02.md`)に逐語保存。Opus台帳=`docs/pm/OPUS_FINDINGS_LEDGER.md`(OF-PNEP-R-01〜12)。
+
+## v02-0. S0確認結果(2026-10-21、実測)
+| 項目 | 結果 | 根拠 |
+|---|---|---|
+| stop check | rc=0(非停止) | `tools/stop_scope_check_01.py --managed-id FAMILY-XZ-PROPER-NOUN-EN-PRONUNCIATION-SUPPLY-TRIAL-01` |
+| 当日dev費(開始時) | JPY303.75/1,000(本Trial上限JPY200を足しても504、日次超過見込みなし) | `docs/pm/tools/daily_dev_cost_01.py`(adopted=max(log,ledger)) |
+| ①到達 | **未到達**(S0時点: origin/mainのMULTI-DIFFは`c223d6e09`[T-0のみ]。`er006_preprod_hardening_01_validation.py`は作業ツリー上で①が編集中=未commit)。K3/有料のK3判定はcommit到達後。到達時のshaは`results/trial_meta.json`と`TRIAL_RESULT_01.md`へ固定記録 | `git log origin/main`、`git status --porcelain` |
+| `gpt-6.1-sol`単価 | `er005_output/cost_baseline_01/pricing_snapshot.json`に**登録済み**(input $2.0/cached $0.1/output $10.0、出典=OpenAI pricing page、WRITER-DEV-RISK-FLAGGER-DESIGN-01 委任_01B 2026-10-09)。本S0で公式ページを再取得し(HTTP 200)`gpt-6.1-sol 2 / 0.1 / 2.5 / 10`と一致を確認 → 追加登録不要 | `pricing_snapshot.json:457-510`、`https://developers.openai.com/api/docs/pricing`(取得2026-10-21) |
+| `gpt-6-luna`単価 | 登録済み($0.1/0.01/0.5)、公式と一致 | 同 |
+| Perplexity最新世代 | 公式docs(`https://docs.perplexity.ai/docs/agent-api/migrate-from-sonar/overview.md`、取得2026-10-21)に「Sonar Chat Completions support ended on September 27, 2026。同期・streamは動作継続だがAgent API requestとして再構成され段階的にrollout」「新規はAgent APIを使うこと」と明記。**現行Production資産`research_pronunciations`(model=`sonar`のchat/completions)は腕B=現行資産ベースライン**として無改変で1回だけ呼ぶ(動作は呼出で確認)。Agent API版の腕は本Trialに追加しない(Scope外、判断候補として報告)。Perplexity単価はsnapshot未登録 → 呼出ごとに`usage`(あれば`usage.cost`)を記録し、無ければ旧Sonar公開単価の保守的上限(入出力$1/M+$0.012/request)で見積計上(実測値として偽装しない) | 同URL、`er006_pronunciation_research_01.py:92-140` |
+| Z人名のCMU収録(`pronouncing`) | **収録**: dionysius(`D AY2 AH0 N IH1 S IY0 AH0 S`)、vera(`V EH1 R AH0`)、byus(`B AY1 AH0 S`=bias)、line、lion、bias。**未収録**: melos、selinuntius、framton、nuttel、sappleton、storymaking、zorbleflux。→ M1のC2(CMU未収録語のみ)の対象になり得るのはmelos/selinuntius/framton/nuttel/sappleton | `pronouncing.phones_for_word`(R-11b) |
+| Research Ledger(Fact)の格納場所 | `er019_output/manga_ai_chat_byus/run_byus_01/research_ledger/verified_fact_ledger.txt`(+`fact_ledger_draft.json`/`fact_ledger_verification.json`)。Z: `er026_output/family_z_production_e2e_01/<work>/seed/seed.json` | Glob |
+| 既存ASR転写(Primary/Azure) | 記事B: `b1b/audit/tts_generation_results.json` `segments.<seg>.attempts_log[].asr_judgement.{primary,secondary}.text`(全attempt分あり) | 同ファイル |
+| 作業ツリー | `git status --porcelain` 1,139件(他agent・既存run由来。本Trialは自ファイルのみ明示add) | `git status` |
+
+## v02-1. 変更点(ID付き)
+- **[R-01 ADOPTED] 研究API stub化+副作用隔離**: harness冒頭の`TrialIsolation`が(a)`pronun_research.research_pronunciations`を、腕B呼出コンテキスト(`allow_research_arm('B')`)以外ではstubへ差替え(呼ばれたら`unexpected_calls.jsonl`へ記録しFAILEDを返す)、(b)`secondary_asr.get_full_text_via_azure_stt_with_phrase_list`を既存転写注入stubへ差替え(同一性検証時。有料Azure工程では`allow_azure()`コンテキスト内のみ実関数)、(c)`secondary_asr.HUMAN_REVIEW_LOG_PATH`・`review_lock.ATTEMPT_HISTORY_PATH`・`er025.TELEMETRY_PATH`・`semantic_equivalence.append_telemetry_log`(default引数が束縛済みのためwrapperで`path`強制)・`er005_cost_logger`のlog先をTrial dir(`er089_output/proper_noun_en_pronunciation_trial_01/isolated/`)へ。testで固定(API 0)。`unexpected_calls.jsonl`が0行であることをresultsへ記録。
+- **[R-02 ADOPTED] 同一性検証の経路**: Ledger有/無の比較は`evaluate_attempt_with_cascade`(M1有効)経由、既存Primary/Azure転写をstub注入(実ASRなし)、**条件切替ごとに**`_reset_m1_freeze_cache()`+`LEDGER_PATH`切替、`candidate_set_hash`を記録(M1候補集合が変わった場合は差分として別集計)。Z1(Ledger有で判定が変わる可能性のあるケース)は「判定変化の集計」へ分離し、K2/K5/K6/Z2の「同一であるべきケース」と混ぜない。
+- **[R-04 ADOPTED] V1'(出典の実在性・quote本文一致)**: source URLをHTTP取得(UA付き、timeout15s)してHTML→テキスト化し、`quote`が(空白・大小・引用符正規化後に)本文に含まれることを確認。取得失敗/quote不一致/音声・動画のみで本文確認不能 → `UNCONFIRMED_SAFE[source_unverifiable]`(登録しない)。擬似造語Zorbleflux(架空URL・架空quote)が落ちることをtestで固定。
+- **[R-06 ADOPTED] V5拒否権の限定**: 拒否権(競合時に新規登録を止める)を持つ既存entryは「EN発音情報あり(hint非空)∧ sources非空 ∧ confidence≥medium ∧ V3形式適合 ∧ entity_type≠ja_reading_katakana」のみ。low/汚染(括弧別案等)/ja_reading_katakana/cascade_unresolved_entityは拒否権なし(新規登録は可、既存は変更しない)。共存時のM1候補集合(ledger_key別・candidate_set_hash)を記録。
+- **[R-05 ADOPTED] 漏れ測定(費用0)**: 過去run全EN segment本文にTrial Ledgerで`get_hint_for_text(min_confidence="low")`を再計算し、新規entryごとの「本来の記事以外での発火件数」を集計。CMU収録一般語で公式発音=CMU代表発音の語(LINE)は「登録不要(CMU層で足りる)」を本命とし、登録した場合の漏れ件数も併記。
+- **[R-08 ADOPTED] 効果仮説の絞り込み(§5-2置換)**: 効果仮説=「Azureの多語化(`Buy Us`/`by us`)をbyUs(1語)へ寄せられるか」。PLはcanonical spellingのみ送るので発音は供給されない。腕M(綴りのみ直接供給)は「Production関数経由ではない」ラベルで区別して報告(本Trialでは実Azure呼出は全てProduction関数`get_full_text_via_azure_stt_with_phrase_list`経由であり、腕Mは"EN発音情報の有無に依らず綴りだけをPLへ入れた条件"として別集計)。
+- **[R-09 ADOPTED] K5投票者の独立性**: 投票者=Primary(既存転写)/Azure PL無/faster-whisper medium の3つ。**Azure PL有は投票から除外**。同系統ASRの一致は独立証拠と呼ばない。AMBIGUOUS(割れる)はPASS扱いにせず、試聴要否として報告。
+- **[R-10 ADOPTED] Azure呼出削減**: 各条件1回+差異があったwavと決定性確認2本のみ2回目。腕N(TTS極小)は実施しない(TTS生成禁止)。er084負例は新PL語を含むものだけ再実行し見積に計上。
+- **[R-11 ADOPTED]** (a)複数語surface(`Framton Nuttel`)はPL=句全体、M1=語ごと(M1はsurfaceに空白を含むentryをC2から除外=`er006_m1_multi_candidate_01.py:_c2_candidates`)の扱いを明記し、単語entry(`Nuttel`/`Framton`)併載の影響を測る (b)Z人名のCMU収録はv02-0表のとおり確認済み (c)Family横断漏れはR-05で測定 (d)所有格(`Melos's`)をZ1に1件含める。
+- **[R-12 ADOPTED] 検出器**: D1に「Ledgerにja_reading_katakana entryのあるLatin語」「JA側Gate検出の未知Latin語(Gate検出語リストがあれば)」規則を追加。D2(LLM文脈抽出)は**記事単位1回**を本命(gpt-6.1-sol)、gpt-6-lunaは同入力1回の比較。
+- **[DEFERRED] J6/J7**: Trialでは適用しない。J6=PL/M1用の取り消し手段+自動/人手entry区別(OPEN-339)は採用前提条件。J7=権利者の公式な日本語読みが英単語と一意対応する場合の登録可否は、K1がbyUsで`UNCONFIRMED_SAFE`になった場合に「安全終了・要件未達」として記録し、証拠(PR TIMES等の原文該当箇所・英語情報源の有無)を集める。
+- **[R-07の別件]** 記事B本文"It is pronounced 'bias.'"がWriterのカタカナ由来推定である可能性は、Research Ledgerの該当Factを引用して事実関係のみ記録(本Trial範囲外、Fableへ報告)。
+
+## v02-2. 費用・実行計画(Cap=JPY200、承認区分C)
+| 工程 | 呼出 | 見積(JPY) |
+|---|---|---|
+| D2検出 | gpt-6.1-sol 3記事×1 + gpt-6-luna 3記事×1 | 8〜15 |
+| 研究 腕A | gpt-6.1-sol web_search 1呼出(≤8語) | 15〜30 |
+| 研究 腕B | Perplexity sonar 1呼出 | 1〜3 |
+| Azure A/B | 既存wav(X7+Z4=11本)×(baseline[実Ledger PL]/trial[Trial Ledger PL])。PL内容が両条件で同一のwavは2回目を省略。+差異wav・決定性2本の2回目 | 約22〜26呼出≒55〜60 |
+| K3実ASR | part1 att1 wav Primary(gpt-4o-mini-transcribe)1回 | 約1 |
+| 合計中央 | | ≈100〜125(Cap 200) |
+
+条件定義(v01の`pl_off`=空PLを置換): **baseline=実Ledger(Production現行)由来のPL、treatment=Trial Ledger由来のPL**。Xは実LedgerでPL空、Zは実Ledgerの既存entry(例: `melos`[cascade_unresolved_entity,low])由来のPLがbaselineに入る=Production現行挙動との差分を測るため。両条件のPLリストが完全一致するwavは2回目を省略して費用を節約する(同一入力のため)。
+
+## v02-3. 事前固定ラベル(v01 5-6を維持。追加)
+- 「設計外API呼出0」: `isolated/unexpected_calls.jsonl`が0行 ∧ `paid_calls.jsonl`の呼出が本計画(D2/研究A/B/Azure/K3 ASR)のみ。
+- 「Production code差分0」: `git diff --stat`でProduction `.py`の本Trial起因の差分0(他agent①は別)。
+- K3は①のcommitがorigin/mainに到達してから判定(未到達=`BLOCKED_BY_FIX01`。最大60分待機後STOP)。
