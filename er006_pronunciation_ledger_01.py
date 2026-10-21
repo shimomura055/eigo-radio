@@ -55,6 +55,54 @@ def _surface_matches_text(surface: str, text_lower: str) -> bool:
     return s in text_lower
 
 
+# PRONUNCIATION-LEDGER-INVALID-ENTRY-REMEDIATION-01(2026-10-21、承認済み仕様の遵守是正=PM_GOVERNANCE 11-8):
+# 研究(Perplexity)結果が「surface自体と無関係なcanonical_spelling」(例: surface="us"→"unknown"、"plus"→"cascade"、
+# "one voice"→"one voice unknown")のまま登録され、ASR Phrase List(canonical_spellingを供給)へ誤った語句が
+# 渡っていた。原因は(b)研究結果の検証が無いまま登録(c)LLMが研究依頼のfield値[entity_type="unknown"・risk_reasonの
+# "ASR Cascade"]をcanonicalへ混入。登録時に不正と判定したentryは削除せず`ledger_disabled=True`で隔離する
+# (Human Review用の記録は残す=CURRENT_SPEC ER-23「研究失敗時もunconfirmed entryを残す」と整合、
+# Phrase List/M1 C2候補/TTS注入/再research対象のいずれにも供給しない)。
+_PLACEHOLDER_CANONICALS = {"", "unknown", "n/a", "na", "none", "null", "tbd", "unresolved", "unconfirmed", "unspecified"}
+_LEAK_TOKENS = {"unknown", "cascade", "asr", "unconfirmed", "unresolved"}
+
+
+def _fold(s: str) -> str:
+    """アクセント除去+小文字化+空白正規化(canelé≒canele)。"""
+    import unicodedata
+    t = unicodedata.normalize("NFKD", s or "")
+    t = "".join(c for c in t if not unicodedata.combining(c))
+    return re.sub(r"\s+", " ", t.strip().lower())
+
+
+def entry_invalid_reason(surface: str, entity_type: str, entry: dict) -> Optional[str]:
+    """Phrase List/TTS/M1へ供給してはいけない不正entryなら理由文字列、正当ならNone(純粋関数・読取専用)。
+    - 全entity_type: canonical_spellingがプレースホルダ("unknown"等)。
+    - cascade_unresolved_entity: canonicalがsurfaceと無関係(互いの部分文字列でない)、または
+      surfaceに無い余計なtoken[unknown/cascade/asr等]を含む(研究依頼field値の混入)。
+    canonical_spellingが未指定(空)のentryはupsertが surfaceで補完するため対象外。"""
+    canon = entry.get("canonical_spelling")
+    if canon is None:
+        return None
+    c = _fold(canon)
+    if c in _PLACEHOLDER_CANONICALS and (entry.get("canonical_spelling") or "").strip() != "":
+        return f"canonical_spelling_placeholder:{canon!r}"
+    if entity_type == CASCADE_UNRESOLVED_ENTITY_TYPE and c:
+        s = _fold(surface)
+        if s and s not in c and c not in s:
+            return f"canonical_spelling_unrelated_to_surface:{canon!r}"
+        extra = (set(re.findall(r"[a-z0-9]+", c)) - set(re.findall(r"[a-z0-9]+", s))) & _LEAK_TOKENS
+        if extra:
+            return f"canonical_spelling_contains_leaked_token:{sorted(extra)}"
+    return None
+
+
+def _clean_hint(hint: str) -> str:
+    """括弧(全角/半角)以降の別案・注記を除去(hintは1案のみ。例: "MEE-lahs（英国寄りなら MEE-loss）"→"MEE-lahs")。"""
+    h = hint or ""
+    cut = min([i for i in (h.find("（"), h.find("(")) if i >= 0] or [len(h)])
+    return h[:cut].strip()
+
+
 @dataclass
 class LedgerKey:
     surface: str
@@ -100,15 +148,25 @@ def upsert(key: LedgerKey, entry: dict) -> str:
     ledger = _load()
     ledger_id = key.ledger_id()
     existing = ledger.get(ledger_id, {})
+    # PRONUNCIATION-LEDGER-INVALID-ENTRY-REMEDIATION-01: 登録時validator(不正entryは隔離、既存の隔離は引き継ぐ)。
+    hint = entry.get("pronunciation_hint", "")
+    note = entry.get("ambiguity_note", "")
+    if key.entity_type == CASCADE_UNRESOLVED_ENTITY_TYPE and hint and _clean_hint(hint) != hint:
+        note = (note + " " if note else "") + f"[hint原文(括弧別案混入のため先頭案のみ採用): {hint}]"
+        hint = _clean_hint(hint)
+    auto_reason = entry_invalid_reason(key.surface, key.entity_type, entry)
+    disabled = bool(entry.get("ledger_disabled", existing.get("ledger_disabled", False))) or bool(auto_reason)
+    disabled_reason = entry.get("ledger_disabled_reason") or (
+        ("auto:" + auto_reason) if auto_reason else existing.get("ledger_disabled_reason", ""))
     ledger[ledger_id] = {
         "surface": key.surface, "entity_type": key.entity_type, "source_context": key.source_context,
         "canonical_spelling": entry.get("canonical_spelling", key.surface),
         "language_origin": entry.get("language_origin", ""),
         "expected_pronunciation_ipa": entry.get("expected_pronunciation_ipa", ""),
-        "pronunciation_hint": entry.get("pronunciation_hint", ""),
+        "pronunciation_hint": hint,
         "alternate_pronunciations": entry.get("alternate_pronunciations", []),
         "confidence": entry.get("confidence", "low"),
-        "ambiguity_note": entry.get("ambiguity_note", ""),
+        "ambiguity_note": note,
         "sources": entry.get("sources", []),
         "updated_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
         # 以下、Phase 2新規フィールド(既定値で後方互換)
@@ -124,9 +182,24 @@ def upsert(key: LedgerKey, entry: dict) -> str:
         "tts_injection_disabled": entry.get("tts_injection_disabled", existing.get("tts_injection_disabled", False)),
         "tts_injection_disabled_reason": entry.get(
             "tts_injection_disabled_reason", existing.get("tts_injection_disabled_reason", "")),
+        # PRONUNCIATION-LEDGER-INVALID-ENTRY-REMEDIATION-01: 全用途隔離フラグ(Phrase List/M1/TTS/再research)。
+        # tts_injection_disabledと違いTTSだけでなくASR Phrase Listも止める。既存storeの値は引き継ぐ。
+        "ledger_disabled": disabled,
+        "ledger_disabled_reason": disabled_reason,
     }
     _save(ledger)
     return ledger_id
+
+
+def set_ledger_disabled(ledger_id: str, reason: str) -> None:
+    """不正entryを削除せず全用途(Phrase List/M1 C2/TTS/再research)から隔離する(履歴保持)。
+    該当entryの2フィールドだけを直接更新し、他フィールドは一切変更しない。"""
+    ledger = _load()
+    if ledger_id not in ledger:
+        raise KeyError(f"ledger_id not found in ledger: {ledger_id}")
+    ledger[ledger_id]["ledger_disabled"] = True
+    ledger[ledger_id]["ledger_disabled_reason"] = reason
+    _save(ledger)
 
 
 def set_tts_injection_disabled(ledger_id: str, reason: str) -> None:
@@ -198,6 +271,8 @@ def get_hint_for_text(text: str, min_confidence: str = "medium",
     for entry in ledger.values():
         if entry.get("entity_type") in exclude_entity_types:
             continue
+        if entry.get("ledger_disabled"):  # PLIR1: 不正entryは全用途(Phrase List含む)で供給しない
+            continue
         if apply_tts_injection_filter and entry.get("tts_injection_disabled"):
             continue
         if _surface_matches_text(entry["surface"], text_lower) and conf_rank.get(entry["confidence"], 0) >= min_rank:
@@ -224,6 +299,7 @@ def get_low_confidence_entries_for_text(text: str, exclude_entity_types: Optiona
     text_lower = (text or "").lower()
     return [entry for entry in ledger.values()
             if entry.get("entity_type") not in exclude_entity_types
+            and not entry.get("ledger_disabled")
             and entry["surface"] and _surface_matches_text(entry["surface"], text_lower)]
 
 
@@ -263,7 +339,14 @@ def ledger_health_check() -> dict:
     - `tts_injection_disabled`が真のentry(隔離済み一覧、参考情報)。"""
     ledger = _load()
     canonical_mismatch, confidence_mismatch, empty_hint, disabled = [], [], [], []
+    invalid_but_active, ledger_disabled = [], []
     for ledger_id, entry in ledger.items():
+        reason = entry_invalid_reason(entry.get("surface", ""), entry.get("entity_type", ""), entry)
+        if entry.get("ledger_disabled"):
+            ledger_disabled.append({"ledger_id": ledger_id, "surface": entry.get("surface"),
+                                    "reason": entry.get("ledger_disabled_reason")})
+        elif reason:
+            invalid_but_active.append({"ledger_id": ledger_id, "surface": entry.get("surface"), "reason": reason})
         surface = (entry.get("surface") or "").strip().lower()
         canonical = (entry.get("canonical_spelling") or "").strip().lower()
         if entry.get("entity_type") == CASCADE_UNRESOLVED_ENTITY_TYPE and surface and canonical:
@@ -288,4 +371,6 @@ def ledger_health_check() -> dict:
         "confidence_mirror_mismatch": confidence_mismatch,
         "empty_pronunciation_hint": empty_hint,
         "tts_injection_disabled": disabled,
+        "ledger_disabled": ledger_disabled,
+        "invalid_but_still_active": invalid_but_active,
     }

@@ -358,7 +358,9 @@ def _resolve_unresolved_entity_for_review(canonical_span: str) -> dict | None:
     key = pronun_ledger.LedgerKey(surface=canonical_span, entity_type=_UNRESOLVED_ENTITY_TYPE, source_context="")
     entry = pronun_ledger.lookup(key)
     if entry is not None:
-        return entry
+        # PRONUNCIATION-LEDGER-INVALID-ENTRY-REMEDIATION-01: 隔離済み(不正)entryはHuman Reviewへも誤情報として
+        # 載せない(None=unconfirmed扱い)。再research(Perplexity課金)も起こさない。
+        return None if entry.get("ledger_disabled") else entry
     try:
         research = pronun_research.research_pronunciations([{
             "surface": canonical_span, "entity_type": "unknown",
@@ -376,7 +378,10 @@ def _resolve_unresolved_entity_for_review(canonical_span: str) -> dict | None:
     item = dict(research["items"][0])
     item["sources"] = research.get("citations", [])
     pronun_ledger.upsert(key, item)
-    return pronun_ledger.lookup(key)
+    saved = pronun_ledger.lookup(key)
+    # PRONUNCIATION-LEDGER-INVALID-ENTRY-REMEDIATION-01: 研究結果が不正(canonical="unknown"等)ならupsertが隔離済み。
+    # 記録はLedgerに残すが、Human Reviewパッケージへ誤情報(unknown)は載せない(None=unconfirmed扱い)。
+    return None if (saved or {}).get("ledger_disabled") else saved
 
 
 HUMAN_REVIEW_LOG_PATH = "er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl"

@@ -217,6 +217,9 @@ def _c2_candidates(w: str, ledger: dict, started):
         if e.get("entity_type") == "ja_reading_katakana":
             excluded.append({"ledger_key": key, "reason": "ja_reading_katakana"})
             continue
+        if e.get("ledger_disabled"):  # PRONUNCIATION-LEDGER-INVALID-ENTRY-REMEDIATION-01: 不正entryの隔離フラグ
+            excluded.append({"ledger_key": key, "reason": "ledger_disabled", "detail": e.get("ledger_disabled_reason", "")})
+            continue
         canon_sp = _norm_surface(e.get("canonical_spelling", ""))
         if canon_sp and canon_sp != surf:  # OF-181(a): us→unknown / plus→cascade 型
             excluded.append({"ledger_key": key, "reason": "canonical_spelling_differs_from_surface", "canonical_spelling": canon_sp})

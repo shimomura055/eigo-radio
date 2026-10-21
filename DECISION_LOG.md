@@ -21887,3 +21887,8 @@ Fable決定: F1 STOP_NOTICE(2026-10-12)をrun_e2e_03限定で解除(run_e2e_01/0
 - 費用: 実費JPY113.10(Cap200内)。Opus Go条件4点(OF-PNEP-R-01/02ほか)を反映済み。OF-PNEP-R-03は要旨補完(ADOPTED/RESOLVED_FOR_TRIAL、J6へDEFERRED)。
 - 別件事実: Perplexity API HTTP 401 insufficient_quota(利用枠切れ)。UDR #134。判断は UDR #133。
 - 原文: docs/pm/delegation_log/2026-10-21_FAMILY-XZ-PROPER-NOUN-EN-PRONUNCIATION-SUPPLY-TRIAL-01_委任_03.md(ファイルsha256=38d3a730745fb08d9cdcfc0b991f4fd95c31991732093462eef7764eb129e05f。委任文記載の7da03fa5…[本文のみ]は抽出文との一致を再現できず未検証)。API 0・JPY0・コード変更なし。
+
+## 2026-10-21 PRONUNCIATION-LEDGER-INVALID-ENTRY-REMEDIATION-01 委任_01: Pronunciation Ledger不正データ是正+登録時validator(承認済み仕様の遵守是正、OPEN-436)
+- 決定(ユーザー指示2026-10-21の実行、新仕様なし): (1) Ledger不正5件(us/plus/main story/another voice/one voice)を`ledger_disabled=true`で隔離(削除せず履歴保持、Phrase List/M1 C2/TTS/再researchの全用途から除外)、melos cascade entryのhintを括弧別案除去(原文はambiguity_noteへ)。(2) 再発防止=`upsert()`に登録時validator(`entry_invalid_reason`、placeholder/surface無関係/漏洩tokenを自動隔離)を追加。既存の「研究失敗時もunconfirmed entryを残す」(CURRENT_SPEC ER-23)と整合(記録は残し供給しない)。(3) `AZURE_PHRASE_LIST_WEIGHT=2.0`・ASR判定ロジック・閾値・品質基準は無変更。
+- 根拠: 原因=研究応答のcanonicalを検証せず登録(研究依頼のfield値混入)。是正前後でPhrase List供給は"unknown"7 segment->0、Z"Melos"16 segment維持、golden再判定121 attempt PASS/NG変化0(API 0)、既存wav 2本のAzure実呼出JPY約2.6。ledger.json sha256=6bc3c45f9190944b697726aefc6e8513a4c61abadc35aca7b8cace5881f2f857(是正前バックアップ`er006_output/pronunciation_ledger_01/backup/ledger_before_PLIR1_20261021.json` sha256=e2df6393509b28d2d1b9a59924ca858603f3481b264e343317eb22d21acb9c80)。
+- 状態: LEDGER_REMEDIATION_DONE_PENDING_FABLE(PRODUCTION_WIRED判定はFable)。原文: docs/pm/delegation_log/2026-10-21_PRONUNCIATION-LEDGER-INVALID-ENTRY-REMEDIATION-01_委任_01.md
