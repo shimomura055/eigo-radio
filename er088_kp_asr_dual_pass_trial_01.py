@@ -19,11 +19,11 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 
-OUT = "er088_output/kp_asr_dual_pass_trial_01"
-SRC_WAV = "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/kp4_en.wav"
-EXPECTED_SHA = "675cd6b1aec9865acbdb411b588672d9cc963b936bb4a35bb2d8158cb4172186"
+OUT = os.environ.get("ER088_OUT", "er088_output/kp_asr_dual_pass_trial_01")  # 委任KP4R1: env上書き(既定=従来値)
+SRC_WAV = os.environ.get("ER088_SRC_WAV") or "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/a2/narration/kp4_en.wav"
+EXPECTED_SHA = os.environ.get("ER088_EXPECTED_SHA", "675cd6b1aec9865acbdb411b588672d9cc963b936bb4a35bb2d8158cb4172186")
 CANON = "take part"
-N_TRIALS = 10
+N_TRIALS = int(os.environ.get("ER088_N_TRIALS", "10"))
 PARALLEL = 3
 JPY_PER_USD = 160.0
 OPENAI_IN_PER_M, OPENAI_OUT_PER_M = 1.25, 5.0   # pricing_snapshot.json (gpt-4o-mini-transcribe)
