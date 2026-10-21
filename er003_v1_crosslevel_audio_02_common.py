@@ -49,6 +49,20 @@ generate_key_phrase_component_verified = repro01.generate_key_phrase_component_v
 generate_key_phrase_trial_clarity = audio02.generate_key_phrase_trial_clarity
 tail_energy_profile = audio02._tail_energy_profile
 
+
+def _fallback_sidecar_model_fields(tts_backend: str) -> dict:
+    """FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01 委任_04(記録是正のみ、Gate/retry/
+    fallback/音声生成は無変更): fallback attempt sidecarの"model"/"tts_backend"。
+    既定backend(structured_separation、Family A/B/C経路)は従来どおり
+    {"model": p9a.ENGLISH_MODEL_NAME}のみ(キー追加なし=バイト同一)。非既定backend
+    (speech_metadata_flash_lite)は実モデル名と"tts_backend"を記録する。"""
+    import er033_tts_flash_lite_backend_wiring_01 as flw
+    if tts_backend == flw.DEFAULT_TTS_BACKEND:
+        return {"model": p9a.ENGLISH_MODEL_NAME}
+    return {"model": flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend),
+            "tts_backend": tts_backend}
+
+
 # 2026-08-09(ER-003-CROSSLEVEL-AUDIO-02)発見: ADD03のPoint One("$30
 # million"等の金額表現を含む)で、標準経路(ENGLISH_STYLE_PREFIX)が6回とも
 # 同一の400 INVALID_ARGUMENT("Model tried to generate text, but it
@@ -230,7 +244,9 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
         # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する。
         _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, "minimal_fallback", {
             "loop_attempt_index": attempt, "max_attempts": max_attempts, "language": "en",
-            "model": p9a.ENGLISH_MODEL_NAME, "voice": p9a.VOICE_NAME,
+            # FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01 委任_04: sidecarのmodel/
+            # tts_backend記録是正(既定backendでは従来とバイト同一)。
+            **_fallback_sidecar_model_fields(tts_backend), "voice": p9a.VOICE_NAME,
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(),
             "asr_text": asr_text, "audio_classification": cls.classification,
             "length_ok": outcome["length_ok"], "final_length_ok": outcome.get("final_length_ok"), "verified": verified,

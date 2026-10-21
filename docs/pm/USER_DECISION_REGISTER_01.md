@@ -20,6 +20,7 @@
 | 3 | Adv KP英英解説Style = P3 | **判断済み**(2026-10-12記録) | いいえ(反映作業のみ) | OPEN-317(L820、更新済み)、DECISION_LOG「PM-COFFEE-REASSEMBLY...」。推薦P5/P8は無効 【2026-10-16 09:00更新】Adv KP英英解説Styleは**P7が旧P3を置換**(ユーザー最終判断、原文=`docs/pm/delegation_log/2026-10-16_FAMILY-X-20261016-0900-USER-DECISION-RECORD-01_USER.md`。判断済み、Status=`APPROVED_FOR_PRODUCTION`・未配線、旧P3は履歴)。P7の同名別Trial(P2+P5)との取違えはFable確認要 |
 | 4 | Coffee原稿正本 U1/U2 | **UDR(暫定)** | 要確認(原稿確定はAssemblyの前提になりうる) | **SSOT根拠行を特定できず**(Grep 0件)。直近報告由来の項目名。Fableが原典を指定するまで再提示しない |
 | 5 | P8のfallback / Local Rewrite扱い・`PRODUCTION_WIRED`判定 | **UDR**(判定はFable/ユーザー確認待ち) | Production反映完了判定のみ(再Assembly作業自体は止めない) | OPEN-300(L803)。未実測=内側標準retry、fallback/LR時BLOCK実動作 |
+| 5注記 | 2026-10-21: #132(記事A、FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01)で再燃、同根(#5行は書き換えず) | 同#5 | 同#5 | #132参照 | - |
 | 6 | Adv/Std Local Rewriteでrole Styleが落ちる既存の穴 | **Deferred**(M3 GateでBLOCK済み) | 部分的(Gate 3のLR項目) | OPEN-312(L815) |
 | 7 | Rule7(所有格を含むphrase)頻発リスク | **UDR**(Fable/ユーザー判断) | Melos E2E継続に影響 | OPEN-310(L813)、OPEN-308関連 |
 | 8 | ASR統一 U5(Local Rewrite)/U7(6%減速)/U9 | **UDR**(統一フロー導入前の判断) | いいえ(既存経路は稼働中) | DECISION_LOG「ASR-TTS-CROSS-LANGUAGE-RECONCILIATION-01 委任_06」、OPEN-286〜291、`RECONCILIATION_REPORT_01.md` 9章 U-0〜U-16(U-9の内容は同章を参照) |
@@ -302,3 +303,7 @@
 
 - 注記(#129): 2026-10-21ユーザー指示§7により#131の選定結果を待つ(Sulafat等の先行採用禁止)。
 - #131(UDR-blocking・未回答、2026-10-21 登録、FAMILY-Z-COMMON-DIALOGUE-VOICE-SELECTION-TRIAL-01 委任_01、OPEN-430) Family Z共通Voice 男性1〜3/女性1〜3の選定: 試聴URL=https://shimomura055.github.io/eigo-radio/user_test/family_z_voice_candidates_01/index.html。男性的5(Algieba/Schedar/Fenrir/Orus/Puck)・女性的5(Erinome/Sulafat/Kore/Leda/Zephyr)から各3名を決定。割当方針(登場順・独立循環)は決定済み、Voice名のみ未決。決定後に別委任でSTORY_SPEAKER_CONFIG反映・開いた窓(#129)へ適用。詳細=docs/pm/RESULT_PACKET_FZVS1.md。
+
+### 2026-10-21 FXPP 委任_04追記(`FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01`。既存行は書き換えず追記のみ)
+
+- #132(UDR-blocking・未回答、2026-10-21 登録、FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01 委任_04、OPEN-432、Fable分類B) Family X Std Full Story fallback take(FALLBACK[0] Style)の処置: (ア)人間試聴承認で採用 (イ)承認Style(PD06)で再生成[Fable推奨、Coffee前例=明示無効化CLI er019_family_x_segment_invalidate_01.py→--stage tts --level a2 --only-segments full_story_part2] (ウ)その他。付随: Style逸脱takeを人間承認で採用してよいかの一般規則(REGISTER #5と統合可、#5は2026-10-21に#132で再燃・同根)。調査書=docs/research/FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01/FALLBACK_INVESTIGATION_01.md、報告=docs/pm/RESULT_PACKET_FXPP4.md。それまでfallback take採用保留・record_human_approval/再生成は未実行。

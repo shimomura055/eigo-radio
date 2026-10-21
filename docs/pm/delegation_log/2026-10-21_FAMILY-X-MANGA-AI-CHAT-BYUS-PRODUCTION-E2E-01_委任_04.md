@@ -22,5 +22,3 @@ FAMILY-X-MANGA-AI-CHAT-BYUS-PRODUCTION-E2E-01 委任_04(読み取りのみ: Adva
 
 ## 報告(docs/pm/RESULT_PACKET_FXBY4.md 上書き、簡潔に)
 part1/part3それぞれ: 表(attempt×項目1-5)+差分語の要約3〜5点+分類+採用attempt。末尾に「ユーザーが聞きどころを把握するための要約(日本語3〜6行)」と、判断候補があれば「判断候補」表記(なければ「なし」)。
-
-(注: 保存はworkerが手動で転記。extract toolはtools/配下に見当たらず未使用。)
