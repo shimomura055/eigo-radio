@@ -312,3 +312,8 @@
 
 - #132(**判断済み 2026-10-21**、FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01 委任_06、OPEN-432): 選択=(ア)個別承認。記事A Standard Full Story第2部のfallback takeを、ユーザーが試聴のうえStyle差許容と明示判断して採用。**共通仕様変更ではない**(今後のfallback音声を無条件に自動採用する意味ではない)。Fallback機構は現行仕様維持(Minimal Fallback・既存ENGLISH_LOCK経路を廃止せず、Prompt・Style・発動条件・再試行回数は不変、Family X/Z共通。従前の廃止方針は撤回)。記事全体の試聴PASSは未取得。反映=`record_human_approval`(approved_by=user)でM3 Gate正規承認→正式組立。原文=docs/pm/delegation_log/2026-10-21_FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01_FALLBACK-APPROVAL-FINAL-ASSEMBLY_USER.md(本文sha256 ae95c3dc3fa4b0bd989652029907d5acd338531e5e074e9790d22179e133aa44)。
 - #5注記(2026-10-21ユーザー決定): Fallback機構は現行仕様維持(#132参照)。fallback takeの処置は記事A Std第2部の個別承認(今回)で、共通ルール化はしない(#5行は書き換えず)。
+
+### 2026-10-21 PNEP 委任_03追記(`FAMILY-XZ-PROPER-NOUN-EN-PRONUNCIATION-SUPPLY-TRIAL-01`、OPEN-434。既存行は書き換えず追記のみ)
+
+- #133(UDR・未回答・非blocking[記事制作を止めない]、2026-10-21 登録、PNEP 委任_03、OPEN-434) 固有名詞英語発音供給の扱い: (ア)J7を認めて再Trial[byUs登録→PL供給の実証] (イ)現状維持(CMU層+人間承認)で採用見送り(Fable推奨) (ウ)綴りのみPL供給(J2)の限定採用Trial。根拠=Trial結果で必須要件K1未達(英語公式発音なし→安全終了)・効果限定・原価悪化寄り(結果=docs/research/FAMILY-XZ-PROPER-NOUN-EN-PRONUNCIATION-SUPPLY-TRIAL-01/TRIAL_RESULT_01.md)。
+- #134(UDR・未回答・非blocking・外部課金、2026-10-21 登録、PNEP 委任_03、OPEN-434) Perplexity API利用枠切れ(HTTP 401 insufficient_quota)の復旧要否。Production `research_pronunciations`が動作しない可能性。選択肢=OpenAI web_search代替[高コスト]/Perplexity復旧[ユーザー側課金]/固有名詞HRパッケージの縮退許容。

@@ -21881,3 +21881,9 @@ Fable決定: F1 STOP_NOTICE(2026-10-12)をrun_e2e_03限定で解除(run_e2e_01/0
 
 ## 2026-10-21 FAMILY-XZ-ASR-MULTI-DIFF-JUDGE-FIX-01 委任_02: Fable判定 PRODUCTION_WIRED(記録のみ)
 - Fable判定(2026-10-21): PRODUCTION_WIRED。根拠(1)実ログ再現・新コードPASS (2)最小修正+27行・新ルール/flagなし (3)必須ケース18件PASS・旧コード4件FAIL (4)golden193件でPASS->NG 0・NG->PASS 1 (5)X/Z同一関数・同一val通過をtest固定 (6)契約不変test (7)runtime evidence(Z=メロス整合、X=storymaking吸収) (8)既存test非回帰(失敗6件は是正前から同一・無関係)。付帯=新規Production runでの自然発火をmonitor(専用有料E2Eなし)。API 0・JPY0・コード変更なし。詳細=OPEN-435。
+
+## 2026-10-21 FAMILY-XZ-PROPER-NOUN-EN-PRONUNCIATION-SUPPLY-TRIAL-01 委任_03: Trial終了・Fable最終ラベル USER_DECISION_REQUIRED(記録のみ)
+- 決定(2026-10-21 Fable): Trial終了、Status=USER_DECISION_REQUIRED(OPEN-434)。根拠(a)機構動作確認済(設計外API 0・誤登録0・実Ledger不変・Production diff 0) (b)必須要件K1(byUs)未達=英語公式発音なし→安全終了、達成にはJ7のユーザー判断 (c)効果限定(腕Mで3例中1例)・原価悪化寄り(約5〜16円/名) (d)PLがLion誤発音を隠す経路が実在。REJECTEDではない。Production採用は未承認・Production未変更。
+- 費用: 実費JPY113.10(Cap200内)。Opus Go条件4点(OF-PNEP-R-01/02ほか)を反映済み。OF-PNEP-R-03は要旨補完(ADOPTED/RESOLVED_FOR_TRIAL、J6へDEFERRED)。
+- 別件事実: Perplexity API HTTP 401 insufficient_quota(利用枠切れ)。UDR #134。判断は UDR #133。
+- 原文: docs/pm/delegation_log/2026-10-21_FAMILY-XZ-PROPER-NOUN-EN-PRONUNCIATION-SUPPLY-TRIAL-01_委任_03.md(ファイルsha256=38d3a730745fb08d9cdcfc0b991f4fd95c31991732093462eef7764eb129e05f。委任文記載の7da03fa5…[本文のみ]は抽出文との一致を再現できず未検証)。API 0・JPY0・コード変更なし。
