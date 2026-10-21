@@ -1,0 +1,1151 @@
+{
+ "cost": {
+  "by_kind": {
+   "d2_detect": {
+    "calls": 6,
+    "jpy": 1.8201
+   },
+   "research_arm_a": {
+    "calls": 2,
+    "jpy": 70.4476
+   },
+   "research_arm_b": {
+    "calls": 1,
+    "jpy": 0.2
+   },
+   "azure_stt": {
+    "calls": 18,
+    "jpy": 40.2236
+   },
+   "primary_asr_k3": {
+    "calls": 1,
+    "jpy": 0.4055
+   }
+  },
+  "total_jpy": 113.0968,
+  "cap_jpy": 200.0,
+  "n_paid_calls": 28,
+  "planned_kinds_only": [
+   "azure_stt",
+   "d2_detect",
+   "primary_asr_k3",
+   "research_arm_a",
+   "research_arm_b"
+  ]
+ },
+ "unexpected_calls": {
+  "count": 0,
+  "items": [],
+  "isolated_unexpected_file_lines": 0
+ },
+ "detection": {
+  "d1": {
+   "B": {
+    "n_candidates": 37,
+    "recall": 1.0,
+    "per_word": {
+     "byUs": "found",
+     "LINE": "found"
+    }
+   },
+   "Melos": {
+    "n_candidates": 10,
+    "recall": 1.0,
+    "per_word": {
+     "Melos": "found"
+    }
+   },
+   "OW": {
+    "n_candidates": 22,
+    "recall": 1.0,
+    "per_word": {
+     "Framton Nuttel": "found"
+    }
+   },
+   "OW_seed": {
+    "n_candidates": 13,
+    "recall": 1.0,
+    "per_word": {
+     "Framton Nuttel": "found",
+     "Sappleton": "found",
+     "Vera": "found"
+    }
+   }
+  },
+  "d1_notes": {
+   "Dionysius": "not in run_e2e_06 EN narration (speaker id / JA only)",
+   "Selinuntius": "not in run_e2e_06 EN narration (speaker id / JA only)",
+   "Sappleton,Vera": "not in OW std.md narration; present only in seed.json original_summary"
+  },
+  "d2": {
+   "B": {
+    "gpt-6.1-sol": {
+     "n_items": 5,
+     "jpy": 0.5283,
+     "items": [
+      "byUs",
+      "ByUs",
+      "LINE Manga",
+      "Character Chat",
+      "Japan"
+     ],
+     "only_in_d2_vs_d1": [
+      "japan"
+     ]
+    },
+    "gpt-6-luna": {
+     "n_items": 4,
+     "jpy": 0.0961,
+     "items": [
+      "LINE Manga",
+      "byUs",
+      "Character Chat",
+      "Japan"
+     ],
+     "only_in_d2_vs_d1": [
+      "japan"
+     ]
+    }
+   },
+   "Melos": {
+    "gpt-6.1-sol": {
+     "n_items": 2,
+     "jpy": 0.5504,
+     "items": [
+      "The Three-Day Promise",
+      "Melos"
+     ],
+     "only_in_d2_vs_d1": [
+      "the three-day promise"
+     ]
+    },
+    "gpt-6-luna": {
+     "n_items": 4,
+     "jpy": 0.0644,
+     "items": [
+      "The Three-Day Promise",
+      "Melos",
+      "Run, Melos!",
+      "Osamu Dazai"
+     ],
+     "only_in_d2_vs_d1": [
+      "osamu dazai",
+      "run, melos!",
+      "the three-day promise"
+     ]
+    }
+   },
+   "OW": {
+    "gpt-6.1-sol": {
+     "n_items": 3,
+     "jpy": 0.489,
+     "items": [
+      "The Open Window",
+      "Framton Nuttel",
+      "Framton"
+     ],
+     "only_in_d2_vs_d1": [
+      "the open window"
+     ]
+    },
+    "gpt-6-luna": {
+     "n_items": 1,
+     "jpy": 0.0919,
+     "items": [
+      "Framton Nuttel"
+     ],
+     "only_in_d2_vs_d1": []
+    }
+   }
+  },
+  "d1_union_d2": {
+   "B": {
+    "gpt-6.1-sol": {
+     "byUs": "D1+D2",
+     "LINE": "D1+D2(in phrase)"
+    },
+    "gpt-6-luna": {
+     "byUs": "D1+D2",
+     "LINE": "D1+D2(in phrase)"
+    }
+   },
+   "Melos": {
+    "gpt-6.1-sol": {
+     "Melos": "D1+D2"
+    },
+    "gpt-6-luna": {
+     "Melos": "D1+D2"
+    }
+   },
+   "OW": {
+    "gpt-6.1-sol": {
+     "Framton Nuttel": "D1+D2"
+    },
+    "gpt-6-luna": {
+     "Framton Nuttel": "D1+D2"
+    }
+   }
+  }
+ },
+ "registration": {
+  "registered": [
+   {
+    "surface": "Vera",
+    "ledger_id": "3cb900277100c578",
+    "arm": "A",
+    "hint": "VEER-uh",
+    "confidence": "medium",
+    "sources": [
+     "https://www.oxfordlearnersdictionaries.com/us/definition/english/vera"
+    ]
+   }
+  ],
+  "unconfirmed_safe": [
+   "byUs",
+   "LINE",
+   "Melos",
+   "Framton Nuttel",
+   "Sappleton",
+   "Zorbleflux"
+  ],
+  "reasons": {
+   "byUs": {
+    "A": [
+     "research_status_unconfirmed:The official announcement supplies only a Japanese katakana reading. No official",
+     "V1_no_valid_source_or_quote",
+     "V2_japanese_only_or_katakana_inference",
+     "V3_format_or_canonical_mismatch"
+    ],
+    "A2": [
+     "research_status_unconfirmed:Official English material identifies the service but does not state its pronunci",
+     "V1_no_valid_source_or_quote",
+     "V3_format_or_canonical_mismatch",
+     "V4_confidence_low"
+    ],
+    "B": [
+     "no_item_returned"
+    ]
+   },
+   "LINE": {
+    "A": [
+     "research_status_unconfirmed:Official English announcements were found, but no explicit English pronunciation",
+     "V1_no_valid_source_or_quote",
+     "V3_format_or_canonical_mismatch",
+     "V4_confidence_low"
+    ],
+    "A2": [
+     "research_status_unconfirmed:No explicit official English pronunciation statement or verifiable official Engl",
+     "V1_no_valid_source_or_quote",
+     "V3_format_or_canonical_mismatch",
+     "V4_confidence_low"
+    ],
+    "B": [
+     "no_item_returned"
+    ]
+   },
+   "Melos": {
+    "A": [
+     "research_status_unconfirmed:NHK Publishing lists an official English audiobook, but its audio requires a pur",
+     "V1_no_valid_source_or_quote",
+     "V3_format_or_canonical_mismatch",
+     "V4_confidence_low"
+    ],
+    "A2": [
+     "no_item_returned"
+    ],
+    "B": [
+     "no_item_returned"
+    ]
+   },
+   "Framton Nuttel": {
+    "A": [
+     "research_status_unconfirmed:No qualifying pronunciation evidence for the complete character name was verifie",
+     "V1_no_valid_source_or_quote",
+     "V3_format_or_canonical_mismatch",
+     "V4_confidence_low"
+    ],
+    "A2": [
+     "no_item_returned"
+    ],
+    "B": [
+     "no_item_returned"
+    ]
+   },
+   "Sappleton": {
+    "A": [
+     "research_status_unconfirmed:A Forvo English recording entry was found, but its audio could not be verified a",
+     "V1_no_valid_source_or_quote",
+     "V3_format_or_canonical_mismatch",
+     "V4_confidence_low"
+    ],
+    "A2": [
+     "no_item_returned"
+    ],
+    "B": [
+     "no_item_returned"
+    ]
+   },
+   "Vera": {
+    "A": [],
+    "A2": [
+     "no_item_returned"
+    ],
+    "B": [
+     "no_item_returned"
+    ]
+   },
+   "Zorbleflux": {
+    "A": [
+     "research_status_unconfirmed:No identifiable official product or brand source, announcement, or pronunciation",
+     "V1_no_valid_source_or_quote",
+     "V3_format_or_canonical_mismatch",
+     "V4_confidence_low"
+    ],
+    "A2": [
+     "no_item_returned"
+    ],
+    "B": [
+     "no_item_returned"
+    ]
+   }
+  },
+  "existing_entries_unchanged": true,
+  "real_ledger_unchanged": true,
+  "n_baseline_entries": 38,
+  "n_trial_entries": 39,
+  "trial_ledger_sha256": "a2ff74906ff0ffb29f315989291863db7c0254d990441bf27be564a1906f289b",
+  "baseline_copy_sha256": "e2df6393509b28d2d1b9a59924ca858603f3481b264e343317eb22d21acb9c80"
+ },
+ "identity": {
+  "X_cases": 10,
+  "X_trial_diffs": 0,
+  "X_hypo_diffs": 0,
+  "Z1_cases": 16,
+  "Z1_trial_changes": 0,
+  "Z1_hypo_changes": 0,
+  "Z1_candidate_pron_set_changed_hypo": 15,
+  "errors": [],
+  "K3_existing_primary": "HOMOPHONE_EQUIVALENT",
+  "key_cases": {
+   "K2:byUs->Bias(only)": {
+    "base": {
+     "verified": true,
+     "final_status": "HOMOPHONE_EQUIVALENT",
+     "layers": [
+      "cmu_alternate"
+     ]
+    },
+    "trial": {
+     "verified": true,
+     "final_status": "HOMOPHONE_EQUIVALENT",
+     "layers": [
+      "cmu_alternate"
+     ]
+    },
+    "hypo": {
+     "verified": true,
+     "final_status": "HOMOPHONE_EQUIVALENT",
+     "layers": [
+      "cmu_alternate"
+     ]
+    }
+   },
+   "K5ii:LINE->Lion(only)": {
+    "base": {
+     "verified": false,
+     "final_status": "ASR_VALIDATION_UNCERTAIN",
+     "layers": []
+    },
+    "trial": {
+     "verified": false,
+     "final_status": "ASR_VALIDATION_UNCERTAIN",
+     "layers": []
+    },
+    "hypo": {
+     "verified": false,
+     "final_status": "ASR_VALIDATION_UNCERTAIN",
+     "layers": []
+    }
+   },
+   "K5ii-short:LINE Manga->Lion Manga": {
+    "base": {
+     "verified": false,
+     "final_status": "ASR_VALIDATION_UNCERTAIN",
+     "layers": [
+      "tier3"
+     ]
+    },
+    "trial": {
+     "verified": false,
+     "final_status": "ASR_VALIDATION_UNCERTAIN",
+     "layers": [
+      "tier3"
+     ]
+    },
+    "hypo": {
+     "verified": false,
+     "final_status": "ASR_VALIDATION_UNCERTAIN",
+     "layers": [
+      "tier3"
+     ]
+    }
+   },
+   "B:full_story_part1:att1": {
+    "base": {
+     "verified": true,
+     "final_status": "HOMOPHONE_EQUIVALENT",
+     "layers": [
+      "cmu_alternate"
+     ]
+    },
+    "trial": {
+     "verified": true,
+     "final_status": "HOMOPHONE_EQUIVALENT",
+     "layers": [
+      "cmu_alternate"
+     ]
+    },
+    "hypo": {
+     "verified": true,
+     "final_status": "HOMOPHONE_EQUIVALENT",
+     "layers": [
+      "cmu_alternate"
+     ]
+    }
+   },
+   "B:full_story_part3:att2": {
+    "base": {
+     "verified": false,
+     "final_status": "TRUE_CONTENT_MISMATCH",
+     "layers": []
+    },
+    "trial": {
+     "verified": false,
+     "final_status": "TRUE_CONTENT_MISMATCH",
+     "layers": []
+    },
+    "hypo": {
+     "verified": false,
+     "final_status": "TRUE_CONTENT_MISMATCH",
+     "layers": []
+    }
+   }
+  },
+  "K6": {
+   "primary_has_20_works": true,
+   "verified": {
+    "base": false,
+    "trial": false,
+    "hypo": false
+   }
+  }
+ },
+ "K3": {
+  "existing_primary_eval": {
+   "base": {
+    "id": "B:full_story_part1:att1",
+    "verified": true,
+    "final_status": "HOMOPHONE_EQUIVALENT",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "judge_state": "PASS",
+    "layers": [
+     "cmu_alternate"
+    ],
+    "pl": [],
+    "m1_candidate_set_hash": null,
+    "m1_accepted": false,
+    "m1_reject_reasons": [],
+    "secondary_called": false,
+    "azure_stub_used": true
+   },
+   "trial": {
+    "id": "B:full_story_part1:att1",
+    "verified": true,
+    "final_status": "HOMOPHONE_EQUIVALENT",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "judge_state": "PASS",
+    "layers": [
+     "cmu_alternate"
+    ],
+    "pl": [],
+    "m1_candidate_set_hash": null,
+    "m1_accepted": false,
+    "m1_reject_reasons": [],
+    "secondary_called": false,
+    "azure_stub_used": true
+   }
+  },
+  "fresh_asr_text_head": "Wait, it ends here? Have you ever blurted that out when a manga ends at an exciting moment and says the story will continue next time? What will that character ",
+  "fresh_eval": {
+   "base": {
+    "id": "B:full_story_part1:att1",
+    "verified": true,
+    "final_status": "NORMALIZED_MATCH",
+    "classification": "NORMALIZED_MATCH",
+    "judge_state": "PASS",
+    "layers": [],
+    "pl": [],
+    "m1_candidate_set_hash": null,
+    "m1_accepted": false,
+    "m1_reject_reasons": [],
+    "secondary_called": false,
+    "azure_stub_used": true
+   },
+   "trial": {
+    "id": "B:full_story_part1:att1",
+    "verified": true,
+    "final_status": "NORMALIZED_MATCH",
+    "classification": "NORMALIZED_MATCH",
+    "judge_state": "PASS",
+    "layers": [],
+    "pl": [],
+    "m1_candidate_set_hash": null,
+    "m1_accepted": false,
+    "m1_reject_reasons": [],
+    "secondary_called": false,
+    "azure_stub_used": true
+   }
+  }
+ },
+ "K5": {
+  "per_attempt": [
+   {
+    "id": "B:full_story_part1:att1",
+    "votes": {
+     "primary": [
+      "line",
+      "line"
+     ],
+     "azure_no_pl": [
+      "line",
+      "line"
+     ],
+     "whisper_medium": [
+      "line",
+      "line"
+     ]
+    },
+    "per_occurrence": [
+     {
+      "occurrence": 1,
+      "cast": [
+       "line",
+       "line",
+       "line"
+      ],
+      "verdict": "AUDIO_LIKELY_CORRECT"
+     },
+     {
+      "occurrence": 2,
+      "cast": [
+       "line",
+       "line",
+       "line"
+      ],
+      "verdict": "AUDIO_LIKELY_CORRECT"
+     }
+    ],
+    "verdict": "AUDIO_LIKELY_CORRECT",
+    "listening_needed": false
+   },
+   {
+    "id": "B:full_story_part1:att2",
+    "votes": {
+     "primary": [
+      "line",
+      "line"
+     ],
+     "azure_no_pl": [
+      "line",
+      "lion"
+     ],
+     "whisper_medium": [
+      "line",
+      "lion"
+     ]
+    },
+    "per_occurrence": [
+     {
+      "occurrence": 1,
+      "cast": [
+       "line",
+       "line",
+       "line"
+      ],
+      "verdict": "AUDIO_LIKELY_CORRECT"
+     },
+     {
+      "occurrence": 2,
+      "cast": [
+       "line",
+       "lion",
+       "lion"
+      ],
+      "verdict": "AUDIO_LIKELY_MISPRONOUNCED"
+     }
+    ],
+    "verdict": "AUDIO_LIKELY_MISPRONOUNCED",
+    "listening_needed": true
+   },
+   {
+    "id": "B:full_story_part1:att3",
+    "votes": {
+     "primary": [
+      "line",
+      "line"
+     ],
+     "azure_no_pl": null,
+     "whisper_medium": [
+      "line",
+      "line"
+     ]
+    },
+    "per_occurrence": [
+     {
+      "occurrence": 1,
+      "cast": [
+       "line",
+       "line"
+      ],
+      "verdict": "AUDIO_LIKELY_CORRECT"
+     },
+     {
+      "occurrence": 2,
+      "cast": [
+       "line",
+       "line"
+      ],
+      "verdict": "AUDIO_LIKELY_CORRECT"
+     }
+    ],
+    "verdict": "AUDIO_LIKELY_CORRECT",
+    "listening_needed": false
+   }
+  ]
+ },
+ "phrase_list_evidence": {
+  "n_calls": 18,
+  "n_pl_calls": 8,
+  "pl_calls_match_all": true,
+  "examples": [
+   {
+    "wav": "er019_output\\family_x_audio_production_wiring_01\\manga_ai_chat_byus__run_byus_01\\b1b\\narration\\attempts\\full_story_part1_attempt1_englishstyleprefixwidemargin.wav",
+    "phrases": [
+     "byUs",
+     "LINE"
+    ],
+    "dgi_items": [
+     "byUs",
+     "LINE"
+    ],
+    "bias": [
+     2.0
+    ],
+    "match": true
+   },
+   {
+    "wav": "er019_output\\family_x_audio_production_wiring_01\\manga_ai_chat_byus__run_byus_01\\b1b\\narration\\attempts\\full_story_part1_attempt2_englishstyleprefixwidemargin.wav",
+    "phrases": [
+     "byUs",
+     "LINE"
+    ],
+    "dgi_items": [
+     "byUs",
+     "LINE"
+    ],
+    "bias": [
+     2.0
+    ],
+    "match": true
+   },
+   {
+    "wav": "er019_output\\family_x_audio_production_wiring_01\\manga_ai_chat_byus__run_byus_01\\b1b\\narration\\attempts\\full_story_part1_attempt3_englishstyleprefixwidemargin.wav",
+    "phrases": [
+     "byUs",
+     "LINE"
+    ],
+    "dgi_items": [
+     "byUs",
+     "LINE"
+    ],
+    "bias": [
+     2.0
+    ],
+    "match": true
+   }
+  ],
+  "no_pl_calls_have_no_dgi": true
+ },
+ "azure_effect": {
+  "pairs": [
+   {
+    "id": "B:full_story_part1:att1",
+    "pass": "pass1",
+    "baseline_accepted": false,
+    "armM_accepted": true,
+    "baseline_variants": {
+     "multiword": [
+      "buy us"
+     ],
+     "single": [
+      "bias"
+     ],
+     "line_manga": [
+      "line",
+      "line"
+     ]
+    },
+    "armM_variants": {
+     "multiword": [],
+     "single": [
+      "byus",
+      "bias"
+     ],
+     "line_manga": [
+      "line",
+      "line"
+     ]
+    },
+    "flip": "NG->PASS",
+    "multiword_removed": true,
+    "lion_to_line": false
+   },
+   {
+    "id": "B:full_story_part1:att1",
+    "pass": "pass2",
+    "baseline_accepted": false,
+    "armM_accepted": true,
+    "baseline_variants": {
+     "multiword": [
+      "buy us"
+     ],
+     "single": [
+      "bias"
+     ],
+     "line_manga": [
+      "line",
+      "line"
+     ]
+    },
+    "armM_variants": {
+     "multiword": [],
+     "single": [
+      "byus",
+      "bias"
+     ],
+     "line_manga": [
+      "line",
+      "line"
+     ]
+    },
+    "flip": "NG->PASS",
+    "multiword_removed": true,
+    "lion_to_line": false
+   },
+   {
+    "id": "B:full_story_part1:att2",
+    "pass": "pass1",
+    "baseline_accepted": false,
+    "armM_accepted": false,
+    "baseline_variants": {
+     "multiword": [],
+     "single": [
+      "bias",
+      "bias"
+     ],
+     "line_manga": [
+      "line",
+      "lion"
+     ]
+    },
+    "armM_variants": {
+     "multiword": [],
+     "single": [
+      "bias",
+      "bias"
+     ],
+     "line_manga": [
+      "line",
+      "line"
+     ]
+    },
+    "flip": "no_change",
+    "multiword_removed": false,
+    "lion_to_line": true
+   },
+   {
+    "id": "B:full_story_part1:att2",
+    "pass": "pass2",
+    "baseline_accepted": false,
+    "armM_accepted": false,
+    "baseline_variants": {
+     "multiword": [],
+     "single": [
+      "bias",
+      "bias"
+     ],
+     "line_manga": [
+      "line",
+      "lion"
+     ]
+    },
+    "armM_variants": {
+     "multiword": [],
+     "single": [
+      "bias",
+      "bias"
+     ],
+     "line_manga": [
+      "line",
+      "line"
+     ]
+    },
+    "flip": "no_change",
+    "multiword_removed": false,
+    "lion_to_line": true
+   },
+   {
+    "id": "B:full_story_part1:att3",
+    "pass": "pass1",
+    "baseline_accepted": false,
+    "armM_accepted": false,
+    "baseline_variants": {
+     "multiword": [],
+     "single": [
+      "bias",
+      "bias"
+     ],
+     "line_manga": [
+      "line",
+      "line"
+     ]
+    },
+    "armM_variants": {
+     "multiword": [],
+     "single": [
+      "bias",
+      "bias"
+     ],
+     "line_manga": [
+      "line",
+      "line"
+     ]
+    },
+    "flip": "no_change",
+    "multiword_removed": false,
+    "lion_to_line": false
+   },
+   {
+    "id": "B:full_story_part3:att1",
+    "pass": "pass1",
+    "baseline_accepted": false,
+    "armM_accepted": false,
+    "baseline_variants": {
+     "multiword": [
+      "by us"
+     ],
+     "single": [],
+     "line_manga": []
+    },
+    "armM_variants": {
+     "multiword": [
+      "by us"
+     ],
+     "single": [],
+     "line_manga": []
+    },
+    "flip": "no_change",
+    "multiword_removed": false,
+    "lion_to_line": false
+   },
+   {
+    "id": "B:full_story_part3:att2",
+    "pass": "pass1",
+    "baseline_accepted": false,
+    "armM_accepted": false,
+    "baseline_variants": {
+     "multiword": [
+      "by us"
+     ],
+     "single": [],
+     "line_manga": []
+    },
+    "armM_variants": {
+     "multiword": [
+      "by us"
+     ],
+     "single": [],
+     "line_manga": []
+    },
+    "flip": "no_change",
+    "multiword_removed": false,
+    "lion_to_line": false
+   },
+   {
+    "id": "B:full_story_part3:att3",
+    "pass": "pass1",
+    "baseline_accepted": true,
+    "armM_accepted": true,
+    "baseline_variants": {
+     "multiword": [],
+     "single": [
+      "bias"
+     ],
+     "line_manga": []
+    },
+    "armM_variants": {
+     "multiword": [],
+     "single": [
+      "bias"
+     ],
+     "line_manga": []
+    },
+    "flip": "no_change",
+    "multiword_removed": false,
+    "lion_to_line": false
+   }
+  ],
+  "flips": {
+   "NG->PASS": 1,
+   "no_change": 5
+  },
+  "multiword_removed_pass1": 1,
+  "lion_to_line_pass1": 1,
+  "pass2_targets": {
+   "differing": [
+    "B:full_story_part1:att1",
+    "B:full_story_part1:att2"
+   ],
+   "determinism_baseline_only": [
+    "B:full_story_part1:att3",
+    "B:full_story_part3:att1"
+   ]
+  },
+  "z_skipped_identical_pl": {
+   "Z:a2/full_story_part1_c1:att1": true,
+   "Z:a2/full_story_part1_c5:att1": true,
+   "Z:a2/full_story_part1_c9:att1": true,
+   "Z:a2/full_story_part1_c11:att1": true,
+   "Z:a2/full_story_part3_c1:att1": true,
+   "Z:a2/full_story_part3_c3:att1": true
+  }
+ },
+ "azure_determinism": [
+  {
+   "id": "B:full_story_part1:att1",
+   "cond": "baseline",
+   "identical_transcript": true,
+   "same_variants": true
+  },
+  {
+   "id": "B:full_story_part1:att1",
+   "cond": "armM",
+   "identical_transcript": true,
+   "same_variants": true
+  },
+  {
+   "id": "B:full_story_part1:att2",
+   "cond": "baseline",
+   "identical_transcript": true,
+   "same_variants": true
+  },
+  {
+   "id": "B:full_story_part1:att2",
+   "cond": "armM",
+   "identical_transcript": true,
+   "same_variants": true
+  },
+  {
+   "id": "B:full_story_part1:att3",
+   "cond": "baseline",
+   "identical_transcript": true,
+   "same_variants": true
+  },
+  {
+   "id": "B:full_story_part3:att1",
+   "cond": "baseline",
+   "identical_transcript": true,
+   "same_variants": true
+  }
+ ],
+ "leak_actual_trial_ledger": {
+  "n_unique_texts": 1406,
+  "per_surface": {
+   "Vera": {
+    "home": 0,
+    "outside": 0,
+    "outside_examples": []
+   }
+  },
+  "real_ledger_entries": 38
+ },
+ "leak_hypothetical_if_registered": {
+  "byUs": {
+   "home": 11,
+   "outside": 0
+  },
+  "LINE": {
+   "home": 6,
+   "outside": 34
+  },
+  "Melos": {
+   "home": 45,
+   "outside": 2
+  },
+  "Dionysius": {
+   "home": 0,
+   "outside": 0
+  },
+  "Selinuntius": {
+   "home": 0,
+   "outside": 0
+  },
+  "Framton Nuttel": {
+   "home": 0,
+   "outside": 0
+  },
+  "Nuttel": {
+   "home": 0,
+   "outside": 0
+  },
+  "Framton": {
+   "home": 0,
+   "outside": 0
+  },
+  "Sappleton": {
+   "home": 0,
+   "outside": 0
+  },
+  "Vera": {
+   "home": 0,
+   "outside": 0
+  }
+ },
+ "leak_hypothetical_n_unique_texts": 1406,
+ "leak_line_outside_examples": [
+  {
+   "text": "The early home run gave Hanshin control, and the later hits made the lead even bigger. Now, let’s bring these main ideas together in In One ",
+   "src": [
+    "er003_output/n3_01/hanshin/b1b/audit/tts_generation_results.json",
+    "er011_output/open129_production_wiring_evidence_01/reproduction_cases/A_FAMILY_B1/_gate_tmp_baseline/audit/tts_generation_results.json"
+   ]
+  },
+  {
+   "text": "Compared with the lowest levels, five more minutes of sleep each day were combined with about two extra minutes of moderate-to-vigorous acti",
+   "src": [
+    "er003_output/n3_01/health/b1b/audit/tts_generation_results.json"
+   ]
+  },
+  {
+   "text": "The official record shows why Ito’s center position stands out, and the song title fits this moment for both Ito and Kondo. Now, let’s bring",
+   "src": [
+    "er005_output/cost_baseline_01/akb48/b1b/audit/tts_generation_results.json"
+   ]
+  }
+ ],
+ "existing_contamination_us_entry": {
+  "home": 0,
+  "outside": 76,
+  "outside_examples": [
+   {
+    "text": "Small differences in daily habits were linked with longer life and more years without major disease. But the study found a link; it did not ",
+    "src": [
+     "er003_output/n3_01/health/b1b/audit/tts_generation_results.json"
+    ]
+   },
+   {
+    "text": "Moving up was linked to higher parenting scores than staying low, but the parents’ own childhood was also part of the pattern. Next, we will",
+    "src": [
+     "er005_output/cost_baseline_01/parenting/b1b/audit/tts_generation_results.json",
+     "er005_output/cost_baseline_01/parenting/b1b/audit/tts_generation_results_QUOTA_FAILED_discarded.json"
+    ]
+   },
+   {
+    "text": "The study shows links among the relationship between children and their mothers, screen time, and behavior problems. Next, we will look more",
+    "src": [
+     "er005_output/e2e_tts_cost_quality_01/b1b/audit/tts_generation_results.json"
+    ]
+   },
+   {
+    "text": "So, these two points remind us to be careful about what the evidence shows. The study describes people’s experiences, and the famous bench c",
+    "src": [
+     "er006_output/pool_pilot_01/pool_benches/b1b/audit/tts_generation_results.json"
+    ]
+   },
+   {
+    "text": "The review says design should be tested with users, not only judged from a plan. Interviews, group talks, observation, and comfort checks ca",
+    "src": [
+     "er006_output/pool_pilot_01/pool_benches_luna/a2/audit/tts_generation_results.json",
+     "er006_output/pool_pilot_01/pool_benches_pilot_02/a2/audit/tts_generation_results.json"
+    ]
+   }
+  ]
+ },
+ "Z2": {
+  "pl_for_std_narration_text": [],
+  "pl_for_seed_summary": [
+   "Vera"
+  ]
+ },
+ "J3_counterfactual_multiword": {
+  "cases": [
+   {
+    "id": "B:full_story_part1:att1",
+    "orig_label": "TRUE_CONTENT_MISMATCH",
+    "orig_pass": false,
+    "counterfactual_label": "ASR_VALIDATION_UNCERTAIN",
+    "counterfactual_pass": true,
+    "remaining_diffs": [
+     [
+      "byus",
+      "bias"
+     ]
+    ]
+   },
+   {
+    "id": "B:full_story_part3:att1",
+    "orig_label": "ASR_VALIDATION_UNCERTAIN",
+    "orig_pass": false,
+    "counterfactual_label": "ASR_VALIDATION_UNCERTAIN",
+    "counterfactual_pass": true,
+    "remaining_diffs": [
+     [
+      "byus",
+      "bias"
+     ]
+    ]
+   },
+   {
+    "id": "B:full_story_part3:att2",
+    "orig_label": "TRUE_CONTENT_MISMATCH",
+    "orig_pass": false,
+    "counterfactual_label": "TRUE_CONTENT_MISMATCH",
+    "counterfactual_pass": false,
+    "remaining_diffs": [
+     [
+      "byus",
+      "bias"
+     ]
+    ]
+   }
+  ],
+  "would_pass": 2,
+  "n": 3,
+  "note": "測定のみ。判定関数は変更していない(転写テキスト側を置換した反実仮想)。"
+ },
+ "isolated_dir_files": {
+  "azure_stub_calls.jsonl": {
+   "bytes": 68725,
+   "lines": 351
+  },
+  "production_cost_log_isolated.jsonl": {
+   "bytes": 7158,
+   "lines": 18
+  },
+  "semantic_equivalence_telemetry.jsonl": {
+   "bytes": 511359,
+   "lines": 499
+  }
+ },
+ "production_py_diff_vs_HEAD": []
+}
