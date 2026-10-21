@@ -21917,3 +21917,12 @@ Fable決定: F1 STOP_NOTICE(2026-10-12)をrun_e2e_03限定で解除(run_e2e_01/0
 - 明記: KP両方PASSは方針表明のみで、正式採用・実装指示ではない。承認済み仕様はCURRENT_SPEC.md:2818(Primary PASSならSecondary不要)のまま。実装・採用判断はOPEN-440(FAMILY-XZ-ASR-PASS-CONDITION-SPEC-AUDIT-01)のユーザー回答待ち。
 - 副次: OPEN-439(PNMH)のTrialトリガー(新Primary/Secondary確定)は充足、Trial開始はOPEN-440決着後(Fable判断)。
 - Production無変更・API 0・JPY0・モデル構成/Prompt/flag無変更。
+
+## PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01: 多語同音救済(L1判定層)`APPROVED_FOR_PRODUCTION`(2026-10-22、委任_06 A-1、OPEN-439、UDR #138)
+- 管理ID: PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01。出典(ユーザー原文逐語・4315文字・sha256[本文のみ]=eca81b0c1cd0f98adfb710eabe3ada4f28a09426a3bb144bcbddca8026df944c): `docs/pm/delegation_log/2026-10-22_PNMH-PRODUCTION-WIRING-AND-PRONUNCIATION-SUPPLY-PLAN-02_USER.md`。
+- 決定(原文§1・§2): 多語同音救済(`ByUs`⇔`buy us`/`by us`の1語⇔複数語同音、ストレス記号差でNGにしない、音素が異なる誤発音はNG、隣接spanのみ、Trial v3の安全条件[固有名詞らしい語の代表発音限定・短語/機能語制限・数値否定保護・`Bi-us`型NG]維持、既存1:1同音を壊さない)をFamily X/Z双方の正式Production経路へ配線する。Status=`APPROVED_FOR_PRODUCTION`、目標=`PRODUCTION_WIRED`(X/Z各々の必須Gate充足で初めて)。未承認の機能拡張・品質基準変更は不可。
+- 現状: 委任_06 [A-1] = 設計書+未配線module(`er094_multiword_homophone_01.py`)+test(24 PASS)まで。Production既存ファイル未編集=PRODUCTION_WIREDではない。Status=APPROVED_FOR_PRODUCTION_WIRING_IN_PROGRESS。次=Opus独立レビュー(11-3条件A/C)->A-2(配線・4,032ペア再適用・X/Z発火証拠・`Bi-us`実音声負例)。
+- KP両方PASS条件(Primary・Secondary両方PASS)はユーザー認識だが承認済み正式仕様はCURRENT_SPEC.md:2818(Primary PASSならSecondary不要)で食い違い。原文§2により勝手に変更せず、本配線は現行判定順序のまま・KP両方PASSは不実装(OPEN-440ユーザー回答待ち)。
+- 範囲外(混同禁止): 固有名詞の正しい発音取得(L2、UDR #133本体)は計画策定段階(別管理ID PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02)。Trial・実装・Production採用は未承認。
+- Scope台帳: Scope台帳(2026-10-22 委任_06、ユーザー§4再発防止): (1)L1多語同音判定層=採用済み・Production配線中(A-1設計+未配線module完了、次=Opus条件A/Cレビュー後A-2配線、担当=Sonnet/Fable、次の判断点=Opusレビュー結果・X/Z別PRODUCTION_WIRED判定) / (2)L2固有名詞発音取得(UDR #133の本体)=計画策定中(別agent B-1、新管理ID PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02、`docs/research/PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02/`、次=Fable独立レビュー後ユーザー提出。Trial/実装は未承認) / (3)KP両方PASS=OPEN-440ユーザー回答待ち(未承認・本配線では不実装) / (4)U5既存の穴(AI->eye・us->u s・am->a m・Tse->sea)=ユーザー未回答(是正せず悪化させない) / (5)J7(公式日本語読み『バイアス』を英語期待発音の根拠にしてよいか)=ユーザー未回答 / (6)GitHub Issue #133本文=取得不能(404)・未確認。
+- API 0・JPY0・CURRENT_SPECはPRODUCTION_WIRED到達時(A-2)に更新(A-1時点でProduction挙動は未変更のため)。

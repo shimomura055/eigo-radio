@@ -2,6 +2,19 @@
 
 管理ID: PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01 委任_03(2026-10-22) / **Status管理ラベル: `PLAN_FIXED_WAITING_ASR_SELECTION`**(計画Fix済み・Trial未実行・Production無変更・API 0・JPY0。ユーザーが承認したのは『計画v2の基本方針とTrial計画』であり、VALIDATED / APPROVED_FOR_PRODUCTION / PRODUCTION_WIREDではない。案Aの**Production採用は未承認**)。ユーザー原文の出典=`docs/pm/delegation_log/2026-10-22_PNMH-PLAN-FIX-AND-ASR-PASS-CONDITION-AUDIT-01_USER.md`(§2・§5・§6A。B側workerが保存)。
 
+
+## Scope台帳(2026-10-22 委任_06追記、ユーザー§4再発防止)
+**更新**: L1は2026-10-22にユーザーが`APPROVED_FOR_PRODUCTION`と正式採用(Status=APPROVED_FOR_PRODUCTION_WIRING_IN_PROGRESS、PRODUCTION_WIREDではない)。設計=`IMPLEMENTATION_DESIGN_01.md`。
+
+| 課題 | Status | 担当工程 | 次の判断点 |
+|---|---|---|---|
+| L1 多語同音判定層 | 採用・配線中(A-1完了) | Sonnet(A-2)/Opus条件A/Cレビュー/Fable | Opusレビュー結果、X/Z別PRODUCTION_WIRED判定 |
+| L2 固有名詞発音取得(UDR #133本体) | 計画策定中(PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02) | 別agent B-1->Fable独立レビュー | ユーザー提出後の採否。Trial/実装は未承認 |
+| KP両方PASS条件 | OPEN-440ユーザー回答待ち(未承認) | Fable(回答待ち) | ユーザー回答。本配線では不実装 |
+| U5 既存の穴(AI->eye等) | ユーザー未回答 | Fable | 是正可否 |
+| J7 公式日本語読み | ユーザー未回答 | Fable | 英語期待発音の根拠にしてよいか |
+| GitHub Issue #133本文 | 取得不能(404)・未確認 | Fable | 取得手段/不要判断 |
+
 ## v3-1. 反映したユーザー判断(2026-10-22、原文に基づく範囲のみ)
 | 判断(原文の要旨) | 計画への反映 |
 |---|---|
