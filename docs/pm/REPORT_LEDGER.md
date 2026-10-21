@@ -423,3 +423,5 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-21 | FAMILY-X-MANGA-AI-CHAT-BYUS-PRODUCTION-E2E-01 委任_01(記事B byUs: Research/Ledger/B3完了後、er053 annotation producerがバージョン表記26.10.10以上で停止rc=1、text実費約JPY26.05、OPEN-431): 報告=docs/pm/RESULT_PACKET_FXBY1.md
 - 2026-10-21 | FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01 委任_01(記事A 給料と性格: text完了[一次研究到達・因果断定なし・実費57.81]+Adv音声完成、Std full_story_part2がfallback使用でM3 Gate BLOCK→STOP、audio実費29.92、OPEN-432): 報告=docs/pm/RESULT_PACKET_FXPP1.md
 - 2026-10-21 | FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01 委任_02(Std full_story_part2 fallback takeのHR試聴ページ公開+Adv先行試聴+次Gate[key_phrase_source_gate]先読み[BLOCKなし見込み]+承認後手順書、費用JPY0、OPEN-432 Status=HUMAN_REVIEW_PENDING): 報告=docs/pm/RESULT_PACKET_FXPP2.md
+
+- 2026-10-21 | FAMILY-X-MANGA-AI-CHAT-BYUS-PRODUCTION-E2E-01 委任_02(記事B byUs: er053 producerのドット区切りバージョン表記是正[11-8、rules_sha256更新、出力不変証明3 run]→既存Research/Ledger/B3再利用で再開→text+音声完成+試聴ページ公開[Pages再生51/51]、本記事実費93.94円、OPEN-431 Status=PRODUCTION_TECH_COMPLETE_USER_LISTENING_PENDING): 報告=docs/pm/RESULT_PACKET_FXBY2.md
