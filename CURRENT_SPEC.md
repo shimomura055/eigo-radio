@@ -447,6 +447,12 @@ Gate 3の13項目チェックリストが全て充足したため、対称正規
 **`PRODUCTION_WIRED`**とする。詳細はOPEN_ITEMS.md OPEN-121行、DECISION_LOG.md
 `PM-CLOSEOUT-CONSOLIDATION-96`エントリ参照。
 
+**是正注記(2026-10-21、FAMILY-XZ-ASR-MULTI-DIFF-JUDGE-FIX-01 委任_01、承認済み仕様の不具合是正[PM_GOVERNANCE 11-8]、新仕様ではない)**:
+(1)問題: 本節の対称正規化(ハイフン境界)・複合語分かち書き差の吸収は、ASR照合の全文規則(`_classify_asr_match_core`の`despaced()`一致・冠詞除外despace一致)としては「全差分が分かち書き差のみ」の場合にしか効かなかった。同一音声内に`byUs→Bias`(CMU同音等価で救える差)と`story-making→storymaking`(表記差)が共存すると、後者が`protected_check()`のcontent_word_diffs(非entity・非homophone)に計上されて全体が`TRUE_CONTENT_MISMATCH`になり、前者の同音等価が適用されなかった(記事B Advanced Full Story第1部attempt1の実ログで再現、`er019_output/.../manga_ai_chat_byus__run_byus_01/b1b/audit/tts_generation_results.json` segments.full_story_part1.attempts_log[0])。
+(2)変更: `er006_preprod_hardening_01_validation.py`に`_is_compound_spacing_only_span()`を追加し(同:`protected_check`直前)、`protected_check()`のdiff span評価で、**既存の全文規則と同じ2基準**(span内tokenのdespace一致、冠詞a/an/theのみ除いたdespace一致)に該当するspanを内容語差分として計上しない。数値token・否定語を含むspan、片側が空のspan(脱落/追加)には適用しない。新しい許容規則・閾値・辞書の追加なし。分類ラベル・戻り値契約・CMU同音等価・保護数値判定・固有名詞自動PASS条件(本ファイル:1829)・Azure Phrase List重み2.0・TTS Fallback仕様は無変更。Family X(er003 repro01/er019 runner)とFamily Z(er063->er012)は同一の`er006_secondary_asr_01.evaluate_attempt_with_cascade`->`val.classify_asr_match`を通るため両Familyへ同時に反映される。
+(3)改善: 許容できる差分(同音等価+分かち書き差)が複数共存する場合に本来PASSすべき音声が不要retryになる問題が解消(第1部attempt1の保存済み転写は`HOMOPHONE_EQUIVALENT`でPASS)。`two works->20 works`・`LINE->Lion`・`part->tart`・語の脱落は他の許容差分が併存してもNG維持。golden再判定(既存run 4件+byUs参考の保存済み転写193件): 判定が変わったのは5件、うち実効NG->PASSは1件(byUs第1部attempt1 Primary[byus->bias同音+story making->storymaking])、PASS->NGは0件。
+(4)リスク/注意: 全文規則と同じ基準を個別spanへ適用するため`a way`->`away`、`by us`->`byus`、`neighbor's`->`neighbors`のspan自体も分かち書き差として吸収される(単独diffなら従来から`NORMALIZED_MATCH`だった同基準)。それでも他にNG差分があれば全体はNGのまま。実音声が誤発音している場合(runtime evidenceのPrimary転写`BAUS`/`Bi-us`)は引き続きNG。証跡=`docs/research/FAMILY-XZ-ASR-MULTI-DIFF-JUDGE-FIX-01/`、test=`er006_multi_diff_judge_fix_test_01.py`(18件)、報告=`docs/pm/RESULT_PACKET_MDJF1.md`。PRODUCTION_WIRED判定はFable。
+
 **2026-09-06(KEYPHRASE-DISPLAY-TTS-SEPARATION-PROD-WIRING-01、ユーザーが
 2026-09-06に`APPROVED_FOR_PRODUCTION`と正式決定した2件をProduction正式
 初回経路へ`PRODUCTION_WIRED`まで配線した。**(1) Key Phrase日本語gloss

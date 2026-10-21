@@ -651,6 +651,29 @@ def _is_benign_plural_pair(a: str, b: str) -> bool:
     return _singularize_simple(a) == b or _singularize_simple(b) == a
 
 
+def _is_compound_spacing_only_span(canon_span: list[str], asr_span: list[str]) -> bool:
+    """FAMILY-XZ-ASR-MULTI-DIFF-JUDGE-FIX-01 委任_01(既存承認仕様の不具合是正、新規許容規則ではない):
+    1つのdiff span(SequenceMatcherのopcode単位)が「複合語の分かち書き・ハイフン位置の差のみ」
+    (story-making/storymaking等)かを判定する。_classify_asr_match_core()が全文に対して既に適用している
+    2つの既存規則(despaced()一致、冠詞a/an/theのみを除いた内容語のdespace一致)を、同じ基準のまま
+    **個々のdiff spanにも**適用するだけであり、新しい許容条件・辞書・閾値は追加しない。
+    根本原因: 全文規則は「全差分が分かち書き差のみ」の場合にしか効かず、同一音声内にbyUs→Bias等の
+    別差分が1つでもあると、story making/storymakingのspanがprotected_check()でcontent_word_diffsに
+    計上され(非entity・非homophone)、全体がTRUE_CONTENT_MISMATCHになっていた。
+    安全側の限定: 数値token・否定語を含むspanには適用しない(それらは従来どおりprotected_check()の
+    数値/否定ガードが独立に扱う)。片側が空のspan(語の脱落/追加)にも適用しない。"""
+    if not canon_span or not asr_span:
+        return False
+    if any(_is_number(t) or t in _NEGATION_WORDS for t in list(canon_span) + list(asr_span)):
+        return False
+    if "".join(canon_span) == "".join(asr_span):
+        return True
+    articles_only = {"a", "an", "the"}
+    c = "".join(t for t in canon_span if t not in articles_only)
+    a = "".join(t for t in asr_span if t not in articles_only)
+    return bool(c) and c == a
+
+
 def protected_check(canonical_tokens: list[str], asr_tokens: list[str],
                      entity_tokens: set[str] | None = None,
                      entity_tokens_by_source: dict[str, set[str]] | None = None) -> ProtectedCheckResult:
@@ -687,6 +710,10 @@ def protected_check(canonical_tokens: list[str], asr_tokens: list[str],
         canon_content = [t for t in canon_span if t not in _STOPWORDS and not _is_number(t) and t not in _NEGATION_WORDS]
         asr_content = [t for t in asr_span if t not in _STOPWORDS and not _is_number(t) and t not in _NEGATION_WORDS]
         if canon_content or asr_content:
+            if _is_compound_spacing_only_span(canon_span, asr_span):
+                # FAMILY-XZ-ASR-MULTI-DIFF-JUDGE-FIX-01 委任_01: 複合語の分かち書き差のみのspanは
+                # 内容語差分として計上しない(全文規則を個別diffにも適用。他のdiffは通常どおり評価される)。
+                continue
             if (len(canon_content) == len(asr_content)
                     and all(_is_benign_plural_pair(c, a) for c, a in zip(canon_content, asr_content))):
                 # 規則的な単数形/複数形の揺れのみ(例: "result"/"results")。

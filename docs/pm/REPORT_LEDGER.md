@@ -432,3 +432,5 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-21 | FAMILY-X-KP-ASR-DUAL-PASS-TRIAL-01 委任_01(Key Phrase音声QA Primary+Secondary両方PASS方式の限定Trial、既存kp4_en.wav[take part]に対しPrimary/Azure/Whisper各10回、実費JPY1.04、OPEN-433 KP_ASR_DUAL_PASS_TRIAL_DONE_PENDING_FABLE): 報告=docs/pm/RESULT_PACKET_KPDP1.md
 - 2026-10-21 | FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01 委任_06(Fallback現行維持+記事A Std第2部fallback take個別承認[record_human_approval]→正式組立Std/Adv[M3 Gate PASS]→最終試聴ページ公開、JPY0、OPEN-432 PRODUCTION_TECH_COMPLETE_USER_LISTENING_PENDING): 報告=docs/pm/RESULT_PACKET_FXPP6.md
 - 2026-10-21 | FAMILY-XZ-PROPER-NOUN-EN-PRONUNCIATION-SUPPLY-TRIAL-01 委任_01(Family X/Z共通・固有名詞の英語発音供給Offline Trialの設計書のみ、API 0・JPY0、OPEN-434 DESIGN_READY_PENDING_OPUS_REVIEW): 報告=docs/pm/RESULT_PACKET_PNEP1.md
+
+- 2026-10-21 | FAMILY-XZ-ASR-MULTI-DIFF-JUDGE-FIX-01 委任_01(Family X/Z共通ASR判定の複数差分時個別許容判定の是正・回帰test18件・golden再判定193件[実効NG->PASS 1/PASS->NG 0]・runtime evidence約JPY3、OPEN-435 MULTI_DIFF_JUDGE_FIX_WIRED_PENDING_FABLE): 報告=docs/pm/RESULT_PACKET_MDJF1.md

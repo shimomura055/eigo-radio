@@ -1,0 +1,109 @@
+{
+ "path": "z",
+ "segment": "full_story_part1_c1",
+ "src_wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_06/b1b/narration/full_story_part1_c1.wav",
+ "force_secondary": false,
+ "cascade_enabled": true,
+ "connected_speech_enabled": true,
+ "primary_asr_error": null,
+ "primary_transcript": "Mello's voice rang through the hall.",
+ "verified_content": true,
+ "stop_retrying": false,
+ "classification": "EXACT_MATCH",
+ "content_word_diffs": [],
+ "asr_judgement": {
+  "state": "PASS_WITH_WARNING",
+  "reason_code": "secondary_confirmed",
+  "slot": 1,
+  "script_version": "v0",
+  "role": null,
+  "lang": "en",
+  "segment_key": "",
+  "audio_sha256": "48e345ff061aa5a0a5dd9c8dea79d41ca46b7cb02192f6105744d40acbd5a3be",
+  "primary": {
+   "text": "Mello's voice rang through the hall.",
+   "passed": false,
+   "label": "ASR_VALIDATION_UNCERTAIN",
+   "equivalence_basis": null,
+   "warning_labels": []
+  },
+  "secondary": {
+   "called": true,
+   "cached": false,
+   "engine": "azure",
+   "text": "Melos's voice rang through the hall.",
+   "label": "EXACT_MATCH",
+   "accepted": true,
+   "error": null,
+   "unavailable": false
+  },
+  "value_guard": {
+   "primary": {
+    "kind": "NO_VALUES",
+    "pairs": [],
+    "reasons": [],
+    "warnings": []
+   },
+   "secondary": {
+    "kind": "NO_VALUES",
+    "pairs": [],
+    "reasons": [],
+    "warnings": []
+   }
+  },
+  "negation_guard": {
+   "primary": false,
+   "secondary": false
+  },
+  "final_gate": {
+   "applied": true,
+   "target": "secondary",
+   "value_guard": "NO_VALUES",
+   "negation_diff": false
+  },
+  "warnings": [
+   "SECONDARY_CONFIRMED"
+  ],
+  "exclusion_rule": null,
+  "cost": {
+   "azure_calls": 1,
+   "azure_seconds": 2.83,
+   "est_jpy": 0.1333,
+   "est_jpy_known": true
+  },
+  "timing": {
+   "total_ms": 1113,
+   "secondary_ms": 1112
+  },
+  "technical_stop": null,
+  "length": {
+   "applied": true,
+   "primary_len": 36,
+   "secondary_len": 36,
+   "max_len": 51,
+   "adopted_from": "secondary",
+   "adopted_ok": true,
+   "surface_len": 29,
+   "primary_ok": true
+  },
+  "p3_entry": "p3_primary_ng",
+  "adapter": {
+   "layers": [],
+   "azure_real_calls": 1,
+   "cost_guard_triggered": false,
+   "language": "en-US",
+   "segment_id": null,
+   "asr_text_present": true,
+   "cache": {
+    "calls": 2,
+    "hits": 0
+   }
+  }
+ },
+ "cascade_layers": [],
+ "ledger_phrases": [
+  "Melos"
+ ],
+ "elapsed_s": 2.9,
+ "telemetry_records": 0
+}
