@@ -1,0 +1,159 @@
+{
+  "full_story_part1": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "43e61ec678c328a0c6d9ba2e11ce2f927be9a17dc38e308918ae0c8ca070a40f",
+    "language": "en",
+    "theme_id": "run_full_story_part1",
+    "level": "a2",
+    "segment_id": "full_story_part1",
+    "updated_at": "2026-10-22T08:40:18",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er094_output/pnmh_prod_wiring_01/runtime_paid/run_full_story_part1/a2/narration/full_story_part1.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 5.71,
+        "asr_text": "LINE Manga has launched BAIUS, an AI service that lets you shape stories.",
+        "asr_text_length": 73,
+        "max_len": 102,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 1842,
+          "sha256": "add26d27a79c2cbee982eb5ddc32616b8294494a316b973215c94cccc76ede26",
+          "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "LINE Manga has launched BAIUS, an AI service that lets you shape stories.",
+            "classification": "TRUE_CONTENT_MISMATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Line Manga has launched by US, an AI service that lets you shape stories.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS_WITH_WARNING",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "secondary_confirmed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "full_story_part1",
+          "audio_sha256": "e101cf6f4e20ae993c681c699e16760b2a717091ad1d3c0a159d39d49a77f4c0",
+          "primary": {
+            "text": "LINE Manga has launched BAIUS, an AI service that lets you shape stories.",
+            "passed": false,
+            "label": "TRUE_CONTENT_MISMATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Line Manga has launched by US, an AI service that lets you shape stories.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [
+            "SECONDARY_CONFIRMED"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 5.71,
+            "est_jpy": 0.2667,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 1743,
+            "secondary_ms": 1742
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 73,
+            "secondary_len": 73,
+            "max_len": 102,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 58,
+            "primary_ok": true
+          },
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "full_story_part1",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er094_output/pnmh_prod_wiring_01/runtime_paid/run_full_story_part1/a2/narration/attempts/full_story_part1_attempt1_standard.wav"
+      }
+    ]
+  }
+}

@@ -98,9 +98,19 @@ class RequiredCases(_NoTelemetry):
         self.assertFalse(ok)
 
     def test_f_buy_us_two_word_form_current_behaviour_recorded(self):
-        # 拡張しない: "Buy Us"はCMU単語対単語の同音等価に該当せず従来どおりNG(multi-diffでも同じ)。
+        # PNMH-01(2026-10-22ユーザー承認APPROVED_FOR_PRODUCTION)で期待値を更新: 多語同音救済ON(既定)では
+        # "Buy Us"はbyUsと発音一致(CMU)のため同音候補としてPASS。rollback定数OFFでは従来どおりNG(旧記録を保持)。
+        import er094_multiword_homophone_01 as _mw
         r1, ok1, _ = judge("It is byUs. Go.", "It is Buy Us. Go.")
         r2, ok2, _ = judge("A stage of story-making. It is byUs.", "A stage of storymaking. It is Buy Us.")
+        self.assertTrue(ok1)
+        self.assertTrue(ok2)
+        _mw.MULTIWORD_HOMOPHONE_ENABLED = False
+        try:
+            r1, ok1, _ = judge("It is byUs. Go.", "It is Buy Us. Go.")
+            r2, ok2, _ = judge("A stage of story-making. It is byUs.", "A stage of storymaking. It is Buy Us.")
+        finally:
+            _mw.MULTIWORD_HOMOPHONE_ENABLED = True
         self.assertFalse(ok1)
         self.assertFalse(ok2)
         self.assertEqual(r1.classification, "TRUE_CONTENT_MISMATCH")

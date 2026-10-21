@@ -37,6 +37,7 @@ from dataclasses import dataclass, field
 # importは発生しない。
 import er006_pronunciation_ledger_01 as pronun_ledger
 import er008_asr_variant_hardening_15_homophone_en as homophone_en
+import er094_multiword_homophone_01 as _mw_homophone   # PNMH-01 多語同音救済(純関数module)
 import er011_b1_connected_speech_validator_01 as connected_speech
 # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(Phase A+B、ユーザー
 # 正式承認済みAPPROVED_FOR_PRODUCTION 2026-09-27): Tier 1(数値/通貨/%/
@@ -750,12 +751,35 @@ def protected_check(canonical_tokens: list[str], asr_tokens: list[str],
                 if len(canon_content) == 1 and len(asr_content) == 1:
                     result_h = homophone_en.homophone_arpabet_equivalent(canon_content[0], asr_content[0])
                     homophone_candidate = bool(result_h)
-                result.content_word_diffs.append({
+                # PNMH-01 多語同音救済(L1、2026-10-22ユーザー承認APPROVED_FOR_PRODUCTION): 1語<->連続2〜3語の
+                # 発音(CMU)一致のみ。1:1判定の後に1回だけ呼ぶ(判定不能・例外は非救済=fail-closed)。
+                # ロールバック=er094_multiword_homophone_01.MULTIWORD_HOMOPHONE_ENABLED=False(現行とバイト一致)。
+                _mw_hit = False
+                if not homophone_candidate and _mw_homophone.multiword_homophone_candidate(canon_span, asr_span, entity_like):
+                    homophone_candidate = True
+                    _mw_hit = True
+                _diff_entry = {
                     "type": tag, "canonical": " ".join(canon_content), "asr": " ".join(asr_content),
                     "entity_like": entity_like, "homophone_candidate": homophone_candidate,
                     "entity_like_source": entity_like_source,
-                })
+                }
+                if _mw_hit:
+                    # additive(一致時のみ付与。非一致/OFF時はキー無し=既存dictとバイト一致)
+                    _diff_entry["multiword_homophone"] = {"canonical_span": list(canon_span), "asr_span": list(asr_span)}
+                result.content_word_diffs.append(_diff_entry)
     return result
+
+
+def aggregate_multiword_homophone_spans(content_word_diffs: list[dict]) -> list[dict]:
+    """PNMH-01(observability専用・判定不変): 多語同音救済で同音候補になったspanの一覧。
+    該当なし(OFF時含む)は空list。steps側は空のときキー自体を付与しない(バイト一致維持)。"""
+    return [dict(d["multiword_homophone"]) for d in (content_word_diffs or []) if d.get("multiword_homophone")]
+
+
+def multiword_steps_extra(content_word_diffs: list[dict]) -> dict:
+    """steps[*]へ `**` で展開するadditive dict。多語同音一致が無ければ{}(既存stepsと同一)。"""
+    spans = aggregate_multiword_homophone_spans(content_word_diffs)
+    return {"multiword_homophone_spans": spans} if spans else {}
 
 
 def aggregate_entity_like_sources(content_word_diffs: list[dict]) -> list[str]:

@@ -11,7 +11,7 @@ A-1の成果=本設計書+未配線module(`er094_multiword_homophone_01.py`)+tes
 - Trialからの差分は(1)hp._phone_variants経由、(2)ガード判定のまとめ方のみ(判定結果同一。41ケースとTrial `after_v3`の全件一致をtestで固定)。
 
 ## (b) 配線点(最小diff案。A-2で実施、Opusレビュー後)
-**事実(コード確認)**: Primary転写もSecondary転写も、判定は`val.classify_asr_match`→`val.protected_check`(`er006_preprod_hardening_01_validation.py` 1:1 homophone入口 L750付近、`homophone_candidate = bool(result_h)`の直後)に集約される。Secondary側(`er006_secondary_asr_01.py` `_step_alternate_pass` L571、受理判定 L993付近)は`is_homophone_candidate_mismatch(cls)`=`content_word_diffs[].homophone_candidate`を読むだけで、Secondary転写の分類自体も同じ`classify_asr_match`を通る。したがって**配線点は`protected_check`の1箇所**で、Primary/Secondary両転写に同一関数が効く(Trialのpatch点も同箇所。委任文の「2箇所」はこの1箇所から両経路へ伝播する)。Secondary側コードの編集は不要=将来KPに`force_secondary`が入っても自動で同一関数を通る。
+**事実(コード確認)**: Primary転写もSecondary転写も、判定は`val.classify_asr_match`→`val.protected_check`(`er006_preprod_hardening_01_validation.py` 1:1 homophone入口 L750付近、`homophone_candidate = bool(result_h)`の直後)に集約される。Secondary側(`er006_secondary_asr_01.py` `_step_alternate_pass` L571、受理判定 L993付近)は`is_homophone_candidate_mismatch(cls)`=`content_word_diffs[].homophone_candidate`を読むだけで、Secondary転写の分類自体も同じ`classify_asr_match`を通る。したがって**配線点は`protected_check`の1箇所**で、Primary/Secondary両転写に同一関数が効く(Trialのpatch点も同箇所。委任文の「2箇所」はこの1箇所から両経路へ伝播する)。Secondary側の**判定ロジック**の編集は不要=将来KPに`force_secondary`が入っても自動で同一関数を通る。ただし**証跡のみ**`er006_secondary_asr_01.py`のsteps(primary_1/secondary_*)へ`multiword_homophone_spans`を判定不変のadditiveとして追加する(`entity_like_source`と同方式。一致時のみキー付与、OFF/非一致時はキー無し=既存stepsとバイト一致。Opus P-03、2026-10-22訂正)。
 
 ```
 # val.protected_check 内、L750付近(既存2行の直後に追加。条件は既存と同階層)
@@ -20,7 +20,7 @@ A-1の成果=本設計書+未配線module(`er094_multiword_homophone_01.py`)+tes
                     multiword_hit = True       # additive根拠(下記)
 ```
 
-+ ファイル冒頭近傍に`import er094_multiword_homophone_01 as _mw`(er094は import 時に val を参照しないため循環なし)。`result.content_word_diffs.append({...})`へ`"multiword_homophone": multiword_hit`をadditiveキーで追加(`entity_like_source`と同方式。既存キー・分類ロジックは無変更)。**1:1経路・既存`homophone_arpabet_equivalent`は無変更**。n:m一致時の戻り値ラベルは既存`HOMOPHONE_EQUIVALENT`系(Trial実測どおり)。
++ ファイル冒頭近傍に`import er094_multiword_homophone_01 as _mw`(er094は import 時に val を参照しないため循環なし)。`content_word_diffs`の該当エントリへ、**一致時のみ**additiveキー`"multiword_homophone": {"canonical_span": [...], "asr_span": [...]}`を付与(値=stopword含む元span。非一致/OFF時はキー無し。`er006_multi_diff_judge_fix_test_01.py:153`のkey集合完全一致testと整合。Opus P-02)(`entity_like_source`と同方式。既存キー・分類ロジックは無変更)。**1:1経路・既存`homophone_arpabet_equivalent`は無変更**。n:m一致時の戻り値ラベルは既存`HOMOPHONE_EQUIVALENT`系(Trial実測どおり)。
 - 他の`protected_check`呼出: L1090(classify本体)、L1292(否定のみ確認)。その他の直接呼出はTrial/評価script(Production経路外)。Store再判定(`rejudge_with_current_judge`)等も`classify_asr_match`経由で同じ関数を通る。
 - A-2の静的testで「`protected_check`が`_mw.multiword_homophone_candidate`を1回だけ呼ぶ」「他のProduction .pyが`er094`を直接importしない」を固定。
 
@@ -38,9 +38,10 @@ A-1の成果=本設計書+未配線module(`er094_multiword_homophone_01.py`)+tes
 | 6%減速後再検証 | `er003_v1_n3_01_tts_generate.py:144` `evaluate_attempt_with_cascade_detail` | X | `er063:778/788` | |
 | Charon英語/Voice | `er003_v1_sing01_voice01_generate.py:246` | X | `er063:795` | |
 | News narration | `er003_v1_sing01_news_tail_fix.py:209` | X | `er063:774` | |
-| B Family voices | `er012_b_family_voices_production_01.py:553` | (B系) | - | 開発対象外Familyだが同関数 |
+| Z Dialogue(A2/B1b) | `er063_family_z_audio_01.py:788-792` -> `n3_tts.generate_with_a2_slowdown_outer_loop`(A2減速外側ループ) -> `bvoices.generate_voice_body_wide_margin` -> `er012_b_family_voices_production_01.py:553` | - | **Zの主要経路** | 旧表の『(B系)/Z=-』は誤り(Opus P-04で訂正)。減速後再検証は`n3_01:144` |
+| Point見出し | `er003_v1_sing01_point_headings_aoede.py:129` | X | - | 旧表で漏れ(P-04で追加) |
 | resume(N8 A2/B1) | `er008_n8_a2_resume_01.py:41` / `er008_n8_b1_resume_01.py:47` `classify_asr_match`直接 | X | - | |
-| Store/継承再判定(J11/K2) | `er019_family_x_validation_inheritance_01.py:233` `rejudge_with_current_judge`(L284/295/302→`unified_judge` L307) | X継承 | Z継承(`er063:726` `guard_entry`は値ガードのみ=本機能に無関係) | 過去NGの保存転写が再判定でPASSになりうる(1:1 F1と同方針) |
+| Store/継承再判定(J11/K2) | `er019_family_x_validation_inheritance_01.py:233` `rejudge_with_current_judge`(L284/295/302→`unified_judge` L307) | X継承 | Z継承(`er063:726` `guard_entry`は値ガードのみ=本機能に無関係) | **再判定経路はshould_passのみで判定し`_step_alternate_pass`を通らない**ため、多語同音PASS(ASR_VALIDATION_UNCERTAIN系)の音声は継承時に`F1_REJUDGE_NG`->再生成(安全側。既存1:1同音/Case Aと同じ既存挙動で新規欠陥ではない)。過去NG->PASSになりうるのはNX1型(`HOMOPHONE_MATCH_NUMBER_EXCEPTION`のshould_pass化)のみ。実挙動はtestで固定(`er094_multiword_homophone_01_test_01.py` J11RejudgeActualBehavior、`er094_pnmh_runtime_evidence_01.py` X_STORE_rejudge_J11/X_RESUME_n8_a2_and_b1)。J11/resumeの許容集合を現行判定へ揃える変更は**別管理ID**(OPEN新規起票のみ、本件で実装しない) |
 | 日本語 | `er007_*`/ja_secondary | 対象外 | 対象外 | EN専用 |
 
 A-2で**配線表のgrep検証(全呼出行が`classify_asr_match`に到達)**と、各行を実際に通す統合testを行う。共通関数を直しただけで配線完了とはせず、X/Z各々の正式関数で発火証拠を取ってから、Family別に`PRODUCTION_WIRED`とする(一方のみなら他方は未完了として追跡)。
@@ -84,3 +85,15 @@ Trialは構成失敗(TTSが`bias`と読んだ)。A-2で以下を行う。
 3. 再判定(Store/K2/resume)で過去NGの保存転写がPASSに変わる挙動の許容(1:1 F1と同方針とみなしてよいか、HR Lock済みentryの扱い)。
 4. additiveキー`multiword_homophone`が既存telemetry/HR queueスキーマ・`content_word_diffs`を読む集計を壊さないか。
 5. `Bi-us`負例の成立条件(ASRが`by us`へ正規化する限界)の扱い、`bias`⇔`by us`許容(BI3)を含むリスク受容。
+
+## (h) A-2 実施記録(2026-10-22 委任_07、Opusレビュー OF-PNMH-P-01〜13 反映)
+Status: 配線済み(`val.protected_check`の1箇所+steps証跡additive)。**PRODUCTION_WIREDの判定はFable**。Opus所見の採否と反映先は`docs/pm/OPUS_FINDINGS_LEDGER.md`のOF-PNMH-P-01〜13。
+- **P-01** 再判定(J11/resume)の訂正は(d)表直下の記述と上表の訂正どおり。J11許容集合の整合は別管理ID候補(`OPEN_ITEMS.md`新OPEN)。
+- **P-02/P-03** 上記(b)のとおり(diffsキー=一致時のみ・値=元span、stepsキー=`multiword_homophone_spans`一致時のみ)。
+- **P-04** 配線表にZ Dialogue(`er063:788-792`->`er012:553`、A2減速外側ループ含む)とPoint見出し(`sing01_point_headings:129`)を追加。API 0発火証拠は`er094_output/pnmh_prod_wiring_01/runtime_api0/runner_api0.json`。
+- **P-05** 4,032ペア(pairs_02、golden_mdjf 191+runtime fixture 7を含む)のshould_pass/classification before/after差分表=`er094_output/pnmh_prod_wiring_01/pairs_before_after_diff.json`(True->False 0、変化=`byus->buy us` 4件のみ)。
+- **P-06** 配線後は実コード直呼びへ切替(exec差替えpatch廃止、`protected_check`内の呼出が1回であることをtestで固定、OFF比較は`MULTIWORD_HOMOPHONE_ENABLED`定数切替)。
+- **P-07** `Bi-us`負例: (i)canonicalは記事実テキスト`byUs`、(ii)adapter全体(Primary->Secondary->最終ANDゲート)で判定、(iii)合格=NOT_PASS+理由(`why`)記録(V8限定でない)、(iv)ASRが`bias`/`by us`へ寄せた場合は『ASR照合では検出不能=既知の限界』(BI3)と分類し、`bias`転写PASSは既存挙動(1:1同音/despace、新規則が原因でない)。
+- **P-08〜P-12** Secondary経路は同一動作、安全条件(V8/G5/数値否定ガード/OOV/直積上限)移植、挙動変化4点、Store/K2/resume、rollback(`MULTIWORD_HOMOPHONE_ENABLED=False`)は設計どおり。追加のstatic test: Production .pyが`MULTIWORD_HOMOPHONE_ENABLED`へ代入しない/er094をimportするProduction .pyは`val`のみ/`rejudge_with_current_judge`にHR Lock自動解除経路が無い。
+- **P-12 entity_like適用範囲(明記)**: `entity_like`は`val.protected_check`の既存変数(canonical側内容語が『原文で大文字始まりだった語』の集合に含まれる場合にTrue)。**小文字始まりのcamelCase(`byUs`)は対象外**=全variant比較。文頭の一般語(大文字始まり)は`entity_like`扱いになり代表発音(CMU先頭variant)限定で比較される。camelCase固有名詞を`entity_like`に含める拡張は**範囲外**(ユーザー判断事項、本件で実装しない)。
+- **P-13** CURRENT_SPEC:1839の照合記録はCURRENT_SPEC側の注記(行末)と`DECISION_LOG.md`に逐語で記録。

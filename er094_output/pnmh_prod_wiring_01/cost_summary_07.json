@@ -1,0 +1,27 @@
+{
+ "total_jpy": 1.6084,
+ "cap_jpy": 30,
+ "estimate_jpy": 5,
+ "by_api": {
+  "gemini|generate_content(TTS)|gemini-3.8-flash-lite-tts|basis=token_actual": {
+   "calls": 8,
+   "jpy": 0.565
+  },
+  "openai_asr|audio.transcriptions.create|gpt-4o-mini-transcribe|basis=token_actual": {
+   "calls": 9,
+   "jpy": 0.1204
+  },
+  "azure|stt_phrase_list|None|basis=None": {
+   "calls": 7,
+   "jpy": 0.9231
+  }
+ },
+ "source": "er094_output/pnmh_prod_wiring_01/runtime_paid/usage_log.jsonl (SDKレベルMeter: Gemini/OpenAIはusage token実測x正式単価[_load_pricing、USD_JPY=160]、Azureは音声秒x0.0444円/秒[er069 cost_02実績])",
+ "models": {
+  "tts": "gemini-3.8-flash-lite-tts (Production Family X/Z量産TTS、TTS_EXECUTION_MODE=STANDARD、voice Aoede)",
+  "asr_primary": "OpenAI gpt-4o-mini-transcribe (Production routing)",
+  "asr_secondary": "Azure Speech STT en-US (Production routing)",
+  "local_check": "faster-whisper small (local, JPY0)"
+ },
+ "latest_model_note": "25節: Production条件での検証が目的のためProduction採用済みモデルを使用(最新世代モデルとの比較は本件の目的外)"
+}

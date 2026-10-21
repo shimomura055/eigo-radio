@@ -1,0 +1,3207 @@
+{
+ "mode": "api0",
+ "isolation": {
+  "human_review_queue": "er094_output/pnmh_prod_wiring_01/runtime_api0/human_review_queue.jsonl",
+  "attempt_history": "er094_output/pnmh_prod_wiring_01/runtime_api0/attempt_history.jsonl",
+  "master_audio_store": "er094_output/pnmh_prod_wiring_01/runtime_api0/master_audio_store",
+  "reuse_telemetry": "er094_output/pnmh_prod_wiring_01/runtime_api0/master_audio_store/reuse_telemetry.jsonl",
+  "er021_telemetry": "er094_output/pnmh_prod_wiring_01/runtime_api0/er021_telemetry.jsonl",
+  "er025_telemetry": "er094_output/pnmh_prod_wiring_01/runtime_api0/er025_telemetry.jsonl",
+  "cost_log": "er094_output/pnmh_prod_wiring_01/runtime_api0/cost_log.jsonl",
+  "ledger_snapshot": "er094_output/pnmh_prod_wiring_01/runtime_api0/ledger_snapshot.json",
+  "tier3_research": "disabled(stub)",
+  "ledger_upsert": "disabled(no-op)"
+ },
+ "scenarios": [
+  {
+   "scenario": "X_KP_repro01",
+   "family": "X",
+   "entrypoint": "er003_v1_repro01_main_generate.generate_key_phrase_component_verified -> generate_narration_snippet_verified_strict (:356)",
+   "expect": "PASS_WITH_SPANS",
+   "note": "",
+   "primary_script": [
+    "Make one yourself with buy us."
+   ],
+   "secondary_script": [
+    "unused"
+   ],
+   "result_brief": {
+    "status": "OK",
+    "asr_text": "Make one yourself with buy us.",
+    "fallback_used": false,
+    "asr_verified": true,
+    "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+    "attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "asr_text": "Make one yourself with buy us.",
+      "verified": true,
+      "audio_classification": "ASR_VALIDATION_UNCERTAIN"
+     }
+    ]
+   },
+   "scan": {
+    "has_multiword_homophone_spans": true,
+    "n_spans_keys": 3,
+    "has_multiword_in_diffs": true
+   },
+   "spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    },
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    },
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    }
+   ],
+   "judgement_states": [
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    },
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    }
+   ],
+   "status": "OK",
+   "custom_result": null,
+   "primary_calls": [
+    {
+     "wav": "kp1_english.wav",
+     "text": "Make one yourself with buy us."
+    }
+   ],
+   "secondary_calls": [],
+   "tts_stub_calls": 1,
+   "observed_adapter_calls": [
+    {
+     "wav": "kp1_english.wav",
+     "force_secondary": false,
+     "primary_text": "Make one yourself with buy us.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Make one yourself with buy us.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "observed_spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    }
+   ],
+   "network_attempts": [],
+   "ok": true
+  },
+  {
+   "scenario": "X_BODY_crosslevel_std",
+   "family": "X",
+   "entrypoint": "er003_v1_crosslevel_audio_02_common.generate_english_segment_with_fallback (標準経路 attempt1 -> repro01:356)",
+   "expect": "PASS_WITH_SPANS",
+   "note": "",
+   "primary_script": [
+    "LINE Manga has launched buy us, an AI service that lets you shape stories."
+   ],
+   "secondary_script": [
+    "unused"
+   ],
+   "result_brief": {
+    "status": "OK",
+    "asr_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+    "fallback_used": false,
+    "asr_verified": true,
+    "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+    "attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "asr_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+      "verified": true,
+      "audio_classification": "ASR_VALIDATION_UNCERTAIN"
+     }
+    ]
+   },
+   "scan": {
+    "has_multiword_homophone_spans": true,
+    "n_spans_keys": 3,
+    "has_multiword_in_diffs": true
+   },
+   "spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    },
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    },
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    }
+   ],
+   "judgement_states": [
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    },
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    }
+   ],
+   "status": "OK",
+   "custom_result": null,
+   "primary_calls": [
+    {
+     "wav": "full_story_part1.wav",
+     "text": "LINE Manga has launched buy us, an AI service that lets you shape stories."
+    }
+   ],
+   "secondary_calls": [],
+   "tts_stub_calls": 1,
+   "observed_adapter_calls": [
+    {
+     "wav": "full_story_part1.wav",
+     "force_secondary": false,
+     "primary_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "observed_spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    }
+   ],
+   "network_attempts": [],
+   "ok": true
+  },
+  {
+   "scenario": "X_FALLBACK_force_secondary_by_us",
+   "family": "X",
+   "entrypoint": "er003_v1_crosslevel_audio_02_common.generate_english_segment_with_fallback -> _run_a2_minimal_fallback_attempt (:378, force_secondary=True)",
+   "expect": "PASS_WITH_SPANS",
+   "note": "標準2回NG後のminimal fallback。Primary=buy us / Secondary='LINE Manga has launched by us, an AI service that lets you shape stories.'",
+   "primary_script": [
+    "Completely unrelated sentence about weather today.",
+    "Completely unrelated sentence about weather today.",
+    "LINE Manga has launched buy us, an AI service that lets you shape stories."
+   ],
+   "secondary_script": [
+    "Completely unrelated sentence about weather today.",
+    "Completely unrelated sentence about weather today.",
+    "LINE Manga has launched by us, an AI service that lets you shape stories."
+   ],
+   "result_brief": {
+    "status": "OK",
+    "asr_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+    "fallback_used": true,
+    "asr_verified": true,
+    "standard_attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "asr_text": "Completely unrelated sentence about weather today.",
+      "verified": false,
+      "audio_classification": "TTS_FAILURE"
+     },
+     {
+      "attempt": 2,
+      "status": "OK",
+      "asr_text": "Completely unrelated sentence about weather today.",
+      "verified": false,
+      "audio_classification": "TTS_FAILURE"
+     }
+    ],
+    "fallback_attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "asr_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+      "verified": true,
+      "audio_classification": "ASR_VALIDATION_UNCERTAIN"
+     }
+    ]
+   },
+   "scan": {
+    "has_multiword_homophone_spans": true,
+    "n_spans_keys": 3,
+    "has_multiword_in_diffs": true
+   },
+   "spans": [
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    },
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    },
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    }
+   ],
+   "judgement_states": [
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": true,
+     "secondary_text": "LINE Manga has launched by us, an AI service that lets you shape stories."
+    },
+    {
+     "state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "secondary_called": true,
+     "secondary_text": "Completely unrelated sentence about weather today."
+    },
+    {
+     "state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "secondary_called": true,
+     "secondary_text": "Completely unrelated sentence about weather today."
+    },
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": true,
+     "secondary_text": "LINE Manga has launched by us, an AI service that lets you shape stories."
+    }
+   ],
+   "status": "OK",
+   "custom_result": null,
+   "primary_calls": [
+    {
+     "wav": "fb_by_us.wav",
+     "text": "Completely unrelated sentence about weather today."
+    },
+    {
+     "wav": "fb_by_us.wav",
+     "text": "Completely unrelated sentence about weather today."
+    },
+    {
+     "wav": "fb_by_us.wav",
+     "text": "LINE Manga has launched buy us, an AI service that lets you shape stories."
+    }
+   ],
+   "secondary_calls": [
+    {
+     "wav": "fb_by_us.wav",
+     "text": "Completely unrelated sentence about weather today."
+    },
+    {
+     "wav": "fb_by_us.wav",
+     "text": "Completely unrelated sentence about weather today."
+    },
+    {
+     "wav": "fb_by_us.wav",
+     "text": "LINE Manga has launched by us, an AI service that lets you shape stories."
+    }
+   ],
+   "tts_stub_calls": 3,
+   "observed_adapter_calls": [
+    {
+     "wav": "fb_by_us.wav",
+     "force_secondary": false,
+     "primary_text": "Completely unrelated sentence about weather today.",
+     "verified": false,
+     "classification": "TTS_FAILURE",
+     "judge_state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Completely unrelated sentence about weather today.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      },
+      {
+       "step": "secondary_1",
+       "text": "Completely unrelated sentence about weather today.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      }
+     ]
+    },
+    {
+     "wav": "fb_by_us.wav",
+     "force_secondary": false,
+     "primary_text": "Completely unrelated sentence about weather today.",
+     "verified": false,
+     "classification": "TTS_FAILURE",
+     "judge_state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Completely unrelated sentence about weather today.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      },
+      {
+       "step": "secondary_1",
+       "text": "Completely unrelated sentence about weather today.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      }
+     ]
+    },
+    {
+     "wav": "fb_by_us.wav",
+     "force_secondary": true,
+     "primary_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      },
+      {
+       "step": "secondary_forced",
+       "text": "LINE Manga has launched by us, an AI service that lets you shape stories.",
+       "classification": "NORMALIZED_MATCH",
+       "multiword_homophone_spans": null
+      }
+     ]
+    }
+   ],
+   "observed_spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    }
+   ],
+   "network_attempts": [],
+   "ok": true
+  },
+  {
+   "scenario": "X_FALLBACK_force_secondary_bias",
+   "family": "X",
+   "entrypoint": "er003_v1_crosslevel_audio_02_common.generate_english_segment_with_fallback -> _run_a2_minimal_fallback_attempt (:378, force_secondary=True)",
+   "expect": "PASS_WITH_SPANS",
+   "note": "標準2回NG後のminimal fallback。Primary=buy us / Secondary='LINE Manga has launched bias, an AI service that lets you shape stories.'",
+   "primary_script": [
+    "Completely unrelated sentence about weather today.",
+    "Completely unrelated sentence about weather today.",
+    "LINE Manga has launched buy us, an AI service that lets you shape stories."
+   ],
+   "secondary_script": [
+    "Completely unrelated sentence about weather today.",
+    "Completely unrelated sentence about weather today.",
+    "LINE Manga has launched bias, an AI service that lets you shape stories."
+   ],
+   "result_brief": {
+    "status": "OK",
+    "asr_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+    "fallback_used": true,
+    "asr_verified": true,
+    "standard_attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "asr_text": "Completely unrelated sentence about weather today.",
+      "verified": false,
+      "audio_classification": "TTS_FAILURE"
+     },
+     {
+      "attempt": 2,
+      "status": "OK",
+      "asr_text": "Completely unrelated sentence about weather today.",
+      "verified": false,
+      "audio_classification": "TTS_FAILURE"
+     }
+    ],
+    "fallback_attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "asr_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+      "verified": true,
+      "audio_classification": "ASR_VALIDATION_UNCERTAIN"
+     }
+    ]
+   },
+   "scan": {
+    "has_multiword_homophone_spans": true,
+    "n_spans_keys": 3,
+    "has_multiword_in_diffs": true
+   },
+   "spans": [
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    },
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    },
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    }
+   ],
+   "judgement_states": [
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": true,
+     "secondary_text": "LINE Manga has launched bias, an AI service that lets you shape stories."
+    },
+    {
+     "state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "secondary_called": true,
+     "secondary_text": "Completely unrelated sentence about weather today."
+    },
+    {
+     "state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "secondary_called": true,
+     "secondary_text": "Completely unrelated sentence about weather today."
+    },
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": true,
+     "secondary_text": "LINE Manga has launched bias, an AI service that lets you shape stories."
+    }
+   ],
+   "status": "OK",
+   "custom_result": null,
+   "primary_calls": [
+    {
+     "wav": "fb_bias.wav",
+     "text": "Completely unrelated sentence about weather today."
+    },
+    {
+     "wav": "fb_bias.wav",
+     "text": "Completely unrelated sentence about weather today."
+    },
+    {
+     "wav": "fb_bias.wav",
+     "text": "LINE Manga has launched buy us, an AI service that lets you shape stories."
+    }
+   ],
+   "secondary_calls": [
+    {
+     "wav": "fb_bias.wav",
+     "text": "Completely unrelated sentence about weather today."
+    },
+    {
+     "wav": "fb_bias.wav",
+     "text": "Completely unrelated sentence about weather today."
+    },
+    {
+     "wav": "fb_bias.wav",
+     "text": "LINE Manga has launched bias, an AI service that lets you shape stories."
+    }
+   ],
+   "tts_stub_calls": 3,
+   "observed_adapter_calls": [
+    {
+     "wav": "fb_bias.wav",
+     "force_secondary": false,
+     "primary_text": "Completely unrelated sentence about weather today.",
+     "verified": false,
+     "classification": "TTS_FAILURE",
+     "judge_state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Completely unrelated sentence about weather today.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      },
+      {
+       "step": "secondary_1",
+       "text": "Completely unrelated sentence about weather today.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      }
+     ]
+    },
+    {
+     "wav": "fb_bias.wav",
+     "force_secondary": false,
+     "primary_text": "Completely unrelated sentence about weather today.",
+     "verified": false,
+     "classification": "TTS_FAILURE",
+     "judge_state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Completely unrelated sentence about weather today.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      },
+      {
+       "step": "secondary_1",
+       "text": "Completely unrelated sentence about weather today.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      }
+     ]
+    },
+    {
+     "wav": "fb_bias.wav",
+     "force_secondary": true,
+     "primary_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      },
+      {
+       "step": "secondary_forced",
+       "text": "LINE Manga has launched bias, an AI service that lets you shape stories.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": null
+      }
+     ]
+    }
+   ],
+   "observed_spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    }
+   ],
+   "network_attempts": [],
+   "ok": true
+  },
+  {
+   "scenario": "X_FALLBACK_force_secondary_bi_us",
+   "family": "X",
+   "entrypoint": "er003_v1_crosslevel_audio_02_common.generate_english_segment_with_fallback -> _run_a2_minimal_fallback_attempt (:378, force_secondary=True)",
+   "expect": "NOT_PASS",
+   "note": "標準2回NG後のminimal fallback。Primary=buy us / Secondary='LINE Manga has launched bi us, an AI service that lets you shape stories.'",
+   "primary_script": [
+    "Completely unrelated sentence about weather today.",
+    "Completely unrelated sentence about weather today.",
+    "LINE Manga has launched buy us, an AI service that lets you shape stories."
+   ],
+   "secondary_script": [
+    "Completely unrelated sentence about weather today.",
+    "Completely unrelated sentence about weather today.",
+    "LINE Manga has launched bi us, an AI service that lets you shape stories."
+   ],
+   "result_brief": {
+    "status": "STOPPED",
+    "reason": "標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+    "standard_attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "asr_text": "Completely unrelated sentence about weather today.",
+      "verified": false,
+      "audio_classification": "TTS_FAILURE"
+     },
+     {
+      "attempt": 2,
+      "status": "OK",
+      "asr_text": "Completely unrelated sentence about weather today.",
+      "verified": false,
+      "audio_classification": "TTS_FAILURE"
+     }
+    ],
+    "fallback_attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "asr_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+      "verified": false,
+      "audio_classification": "ASR_VALIDATION_UNCERTAIN"
+     }
+    ]
+   },
+   "scan": {
+    "has_multiword_homophone_spans": true,
+    "n_spans_keys": 2,
+    "has_multiword_in_diffs": true
+   },
+   "spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    },
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    }
+   ],
+   "judgement_states": [
+    {
+     "state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "secondary_called": true,
+     "secondary_text": "Completely unrelated sentence about weather today."
+    },
+    {
+     "state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "secondary_called": true,
+     "secondary_text": "Completely unrelated sentence about weather today."
+    },
+    {
+     "state": "NG_BOTH",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": true,
+     "secondary_text": "LINE Manga has launched bi us, an AI service that lets you shape stories."
+    }
+   ],
+   "status": "STOPPED",
+   "custom_result": null,
+   "primary_calls": [
+    {
+     "wav": "fb_bi_us.wav",
+     "text": "Completely unrelated sentence about weather today."
+    },
+    {
+     "wav": "fb_bi_us.wav",
+     "text": "Completely unrelated sentence about weather today."
+    },
+    {
+     "wav": "fb_bi_us.wav",
+     "text": "LINE Manga has launched buy us, an AI service that lets you shape stories."
+    }
+   ],
+   "secondary_calls": [
+    {
+     "wav": "fb_bi_us.wav",
+     "text": "Completely unrelated sentence about weather today."
+    },
+    {
+     "wav": "fb_bi_us.wav",
+     "text": "Completely unrelated sentence about weather today."
+    },
+    {
+     "wav": "fb_bi_us.wav",
+     "text": "LINE Manga has launched bi us, an AI service that lets you shape stories."
+    }
+   ],
+   "tts_stub_calls": 3,
+   "observed_adapter_calls": [
+    {
+     "wav": "fb_bi_us.wav",
+     "force_secondary": false,
+     "primary_text": "Completely unrelated sentence about weather today.",
+     "verified": false,
+     "classification": "TTS_FAILURE",
+     "judge_state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Completely unrelated sentence about weather today.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      },
+      {
+       "step": "secondary_1",
+       "text": "Completely unrelated sentence about weather today.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      }
+     ]
+    },
+    {
+     "wav": "fb_bi_us.wav",
+     "force_secondary": false,
+     "primary_text": "Completely unrelated sentence about weather today.",
+     "verified": false,
+     "classification": "TTS_FAILURE",
+     "judge_state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Completely unrelated sentence about weather today.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      },
+      {
+       "step": "secondary_1",
+       "text": "Completely unrelated sentence about weather today.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      }
+     ]
+    },
+    {
+     "wav": "fb_bi_us.wav",
+     "force_secondary": true,
+     "primary_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+     "verified": false,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "NG_BOTH",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      },
+      {
+       "step": "secondary_forced",
+       "text": "LINE Manga has launched bi us, an AI service that lets you shape stories.",
+       "classification": "TRUE_CONTENT_MISMATCH",
+       "multiword_homophone_spans": null
+      }
+     ]
+    }
+   ],
+   "observed_spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "NG_BOTH"
+    }
+   ],
+   "network_attempts": [],
+   "ok": true
+  },
+  {
+   "scenario": "X_SLOWDOWN_a2_body",
+   "family": "X",
+   "entrypoint": "er003_v1_n3_01_tts_generate.generate_a2_segment_with_slowdown (減速前=標準経路 + 減速後再検証 :144)",
+   "expect": "PASS_WITH_SPANS",
+   "note": "",
+   "primary_script": [
+    "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+    "LINE Manga has launched buy us, an AI service that lets you shape stories."
+   ],
+   "secondary_script": [
+    "unused"
+   ],
+   "result_brief": {
+    "status": "OK",
+    "asr_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+    "fallback_used": false,
+    "asr_verified": true,
+    "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+    "slowdown_applied": true,
+    "post_slowdown_classification": "ASR_VALIDATION_UNCERTAIN",
+    "tts_generations_used": 1,
+    "attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "asr_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+      "verified": true,
+      "audio_classification": "ASR_VALIDATION_UNCERTAIN"
+     }
+    ],
+    "slowdown_attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "post_slowdown_classification": "ASR_VALIDATION_UNCERTAIN"
+     }
+    ]
+   },
+   "scan": {
+    "has_multiword_homophone_spans": true,
+    "n_spans_keys": 4,
+    "has_multiword_in_diffs": true
+   },
+   "spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    },
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    },
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    },
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    }
+   ],
+   "judgement_states": [
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    },
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    },
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    }
+   ],
+   "status": "OK",
+   "custom_result": null,
+   "primary_calls": [
+    {
+     "wav": "full_story_part2.wav",
+     "text": "LINE Manga has launched buy us, an AI service that lets you shape stories."
+    },
+    {
+     "wav": "full_story_part2.wav",
+     "text": "LINE Manga has launched buy us, an AI service that lets you shape stories."
+    }
+   ],
+   "secondary_calls": [],
+   "tts_stub_calls": 1,
+   "observed_adapter_calls": [
+    {
+     "wav": "full_story_part2.wav",
+     "force_secondary": false,
+     "primary_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "wav": "full_story_part2.wav",
+     "force_secondary": false,
+     "primary_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "observed_spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    },
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    }
+   ],
+   "network_attempts": [],
+   "ok": true
+  },
+  {
+   "scenario": "X_HEADING_sing01",
+   "family": "X",
+   "entrypoint": "er003_v1_sing01_point_headings_aoede.generate (:129)",
+   "expect": "PASS_WITH_SPANS",
+   "note": "",
+   "primary_script": [
+    "Make one yourself with buy us."
+   ],
+   "secondary_script": [
+    "unused"
+   ],
+   "result_brief": {
+    "status": "OK",
+    "asr_text": "Make one yourself with buy us.",
+    "asr_verified": true,
+    "instruction_type": "english_style_prefix",
+    "attempts_log": [
+     {
+      "attempt": 1,
+      "asr_text": "Make one yourself with buy us.",
+      "verified": true,
+      "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+      "instruction_type": "english_style_prefix"
+     }
+    ]
+   },
+   "scan": {
+    "has_multiword_homophone_spans": true,
+    "n_spans_keys": 2,
+    "has_multiword_in_diffs": true
+   },
+   "spans": [
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    },
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    }
+   ],
+   "judgement_states": [
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    },
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    }
+   ],
+   "status": "OK",
+   "custom_result": null,
+   "primary_calls": [
+    {
+     "wav": "point_one_heading.wav",
+     "text": "Make one yourself with buy us."
+    }
+   ],
+   "secondary_calls": [],
+   "tts_stub_calls": 1,
+   "observed_adapter_calls": [
+    {
+     "wav": "point_one_heading.wav",
+     "force_secondary": false,
+     "primary_text": "Make one yourself with buy us.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Make one yourself with buy us.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "observed_spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    }
+   ],
+   "network_attempts": [],
+   "ok": true
+  },
+  {
+   "scenario": "X_CHARON_voice01",
+   "family": "X",
+   "entrypoint": "er003_v1_sing01_voice01_generate.generate_charon_english (:246)",
+   "expect": "PASS_WITH_SPANS",
+   "note": "",
+   "primary_script": [
+    "LINE Manga has launched buy us, an AI service that lets you shape stories."
+   ],
+   "secondary_script": [
+    "unused"
+   ],
+   "result_brief": {
+    "status": "OK",
+    "asr_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+    "asr_verified": true,
+    "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+    "instruction_type": "english_style_prefix",
+    "attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "asr_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+      "verified": true,
+      "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+      "instruction_type": "english_style_prefix"
+     }
+    ]
+   },
+   "scan": {
+    "has_multiword_homophone_spans": true,
+    "n_spans_keys": 2,
+    "has_multiword_in_diffs": true
+   },
+   "spans": [
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    },
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    }
+   ],
+   "judgement_states": [
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    },
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    }
+   ],
+   "status": "OK",
+   "custom_result": null,
+   "primary_calls": [
+    {
+     "wav": "topic_intro.wav",
+     "text": "LINE Manga has launched buy us, an AI service that lets you shape stories."
+    }
+   ],
+   "secondary_calls": [],
+   "tts_stub_calls": 1,
+   "observed_adapter_calls": [
+    {
+     "wav": "topic_intro.wav",
+     "force_secondary": false,
+     "primary_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "observed_spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    }
+   ],
+   "network_attempts": [],
+   "ok": true
+  },
+  {
+   "scenario": "X_NEWS_tail_fix",
+   "family": "X",
+   "entrypoint": "er003_v1_sing01_news_tail_fix.generate_news_narration_wide_margin (:209)",
+   "expect": "PASS_WITH_SPANS",
+   "note": "",
+   "primary_script": [
+    "LINE Manga has launched buy us, an AI service that lets you shape stories."
+   ],
+   "secondary_script": [
+    "unused"
+   ],
+   "result_brief": {
+    "status": "OK",
+    "asr_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+    "asr_verified": true,
+    "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+    "instruction_type": "english_style_prefix_wide_margin",
+    "attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "asr_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+      "verified": true,
+      "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+      "instruction_type": "english_style_prefix_wide_margin"
+     }
+    ]
+   },
+   "scan": {
+    "has_multiword_homophone_spans": true,
+    "n_spans_keys": 2,
+    "has_multiword_in_diffs": true
+   },
+   "spans": [
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    },
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    }
+   ],
+   "judgement_states": [
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    },
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    }
+   ],
+   "status": "OK",
+   "custom_result": null,
+   "primary_calls": [
+    {
+     "wav": "full_story_part1.wav",
+     "text": "LINE Manga has launched buy us, an AI service that lets you shape stories."
+    }
+   ],
+   "secondary_calls": [],
+   "tts_stub_calls": 1,
+   "observed_adapter_calls": [
+    {
+     "wav": "full_story_part1.wav",
+     "force_secondary": false,
+     "primary_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "observed_spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    }
+   ],
+   "network_attempts": [],
+   "ok": true
+  },
+  {
+   "scenario": "X_KP_english_lock_fallback",
+   "family": "X",
+   "entrypoint": "repro01.generate_key_phrase_component_verified: MINIMAL x2 NG -> ENGLISH_LOCK fallback attempt (:356)",
+   "expect": "PASS_WITH_SPANS",
+   "note": "",
+   "primary_script": [
+    "Completely unrelated words here.",
+    "Completely unrelated words here.",
+    "Make one yourself with buy us."
+   ],
+   "secondary_script": [
+    "Completely unrelated words here."
+   ],
+   "result_brief": {
+    "status": "OK",
+    "asr_text": "Make one yourself with buy us.",
+    "fallback_used": true,
+    "asr_verified": true,
+    "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+    "attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "asr_text": "Make one yourself with buy us.",
+      "verified": true,
+      "audio_classification": "ASR_VALIDATION_UNCERTAIN"
+     }
+    ],
+    "fallback_attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "asr_text": "Completely unrelated words here.",
+      "verified": false,
+      "audio_classification": "TTS_FAILURE"
+     },
+     {
+      "attempt": 2,
+      "status": "OK",
+      "asr_text": "Completely unrelated words here.",
+      "verified": false,
+      "audio_classification": "TTS_FAILURE"
+     }
+    ]
+   },
+   "scan": {
+    "has_multiword_homophone_spans": true,
+    "n_spans_keys": 5,
+    "has_multiword_in_diffs": true
+   },
+   "spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    },
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    },
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    },
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    },
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    }
+   ],
+   "judgement_states": [
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    },
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    },
+    {
+     "state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "secondary_called": true,
+     "secondary_text": "Completely unrelated words here."
+    },
+    {
+     "state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "secondary_called": true,
+     "secondary_text": "Completely unrelated words here."
+    },
+    {
+     "state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "secondary_called": true,
+     "secondary_text": "Completely unrelated words here."
+    },
+    {
+     "state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "secondary_called": true,
+     "secondary_text": "Completely unrelated words here."
+    },
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    }
+   ],
+   "status": "OK",
+   "custom_result": null,
+   "primary_calls": [
+    {
+     "wav": "kp3_english.wav",
+     "text": "Completely unrelated words here."
+    },
+    {
+     "wav": "kp3_english.wav",
+     "text": "Completely unrelated words here."
+    },
+    {
+     "wav": "kp3_english.wav",
+     "text": "Make one yourself with buy us."
+    }
+   ],
+   "secondary_calls": [
+    {
+     "wav": "kp3_english.wav",
+     "text": "Completely unrelated words here."
+    },
+    {
+     "wav": "kp3_english.wav",
+     "text": "Completely unrelated words here."
+    }
+   ],
+   "tts_stub_calls": 3,
+   "observed_adapter_calls": [
+    {
+     "wav": "kp3_english.wav",
+     "force_secondary": false,
+     "primary_text": "Completely unrelated words here.",
+     "verified": false,
+     "classification": "TTS_FAILURE",
+     "judge_state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Completely unrelated words here.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      },
+      {
+       "step": "secondary_1",
+       "text": "Completely unrelated words here.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      }
+     ]
+    },
+    {
+     "wav": "kp3_english.wav",
+     "force_secondary": false,
+     "primary_text": "Completely unrelated words here.",
+     "verified": false,
+     "classification": "TTS_FAILURE",
+     "judge_state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Completely unrelated words here.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      },
+      {
+       "step": "secondary_1",
+       "text": "Completely unrelated words here.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      }
+     ]
+    },
+    {
+     "wav": "kp3_english.wav",
+     "force_secondary": false,
+     "primary_text": "Make one yourself with buy us.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Make one yourself with buy us.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "observed_spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    }
+   ],
+   "network_attempts": [],
+   "ok": true
+  },
+  {
+   "scenario": "X_RESUME_n8_a2_and_b1",
+   "family": "X",
+   "entrypoint": "er008_n8_a2_resume_01._verify_existing:41 / er008_n8_b1_resume_01._verify_existing:47 (classify_asr_match直接=should_passのみ)",
+   "expect": "CUSTOM",
+   "note": "P-01実挙動: 多語同音はshould_pass=False -> 再利用せず再生成(安全側。既存1:1同音と同じ)",
+   "primary_script": [
+    "LINE Manga has launched buy us, an AI service that lets you shape stories."
+   ],
+   "secondary_script": [
+    "unused"
+   ],
+   "result_brief": {},
+   "scan": {
+    "has_multiword_homophone_spans": false,
+    "n_spans_keys": 0,
+    "has_multiword_in_diffs": false
+   },
+   "spans": [],
+   "judgement_states": [],
+   "status": null,
+   "custom_result": {
+    "a2_verify_existing": null,
+    "b1_verify_existing": null
+   },
+   "primary_calls": [
+    {
+     "wav": "resume_probe.wav",
+     "text": "LINE Manga has launched buy us, an AI service that lets you shape stories."
+    },
+    {
+     "wav": "resume_probe.wav",
+     "text": "LINE Manga has launched buy us, an AI service that lets you shape stories."
+    }
+   ],
+   "secondary_calls": [],
+   "tts_stub_calls": 0,
+   "observed_adapter_calls": [],
+   "observed_spans": [],
+   "network_attempts": [],
+   "ok": true
+  },
+  {
+   "scenario": "X_STORE_rejudge_J11",
+   "family": "X",
+   "entrypoint": "er019_family_x_validation_inheritance_01.rejudge_with_current_judge (:284-303 -> unified_judge)",
+   "expect": "CUSTOM",
+   "note": "P-01実挙動: 保存転写のみ+Secondary保存なし -> REJUDGE_NG。保存Secondaryがshould_pass可なら継承可(既存1:1と同じ)",
+   "primary_script": [
+    "unused"
+   ],
+   "secondary_script": [
+    "unused"
+   ],
+   "result_brief": {},
+   "scan": {
+    "has_multiword_homophone_spans": false,
+    "n_spans_keys": 0,
+    "has_multiword_in_diffs": false
+   },
+   "spans": [],
+   "judgement_states": [
+    {
+     "state": "NG_SECONDARY_UNAVAILABLE",
+     "primary_label": "ASR_VALIDATION_UNCERTAIN",
+     "secondary_called": true,
+     "secondary_text": null
+    },
+    {
+     "state": "PASS_WITH_WARNING",
+     "primary_label": null,
+     "secondary_called": true,
+     "secondary_text": "LINE Manga has launched by us, an AI service that lets you shape stories."
+    }
+   ],
+   "status": null,
+   "custom_result": {
+    "no_secondary": {
+     "applicable": true,
+     "secondary_new_calls": 0,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "f1_version": "F1-2026-10-13",
+     "judge_module_f1_version": "F1-2026-10-13",
+     "tts_input": "LINE Manga has launched byUs, an AI service that lets you shape stories.",
+     "ok": false,
+     "unified_state": "NG_SECONDARY_UNAVAILABLE",
+     "unified_reason_code": "secondary_unavailable",
+     "reason": "REJUDGE_NG(ASR_VALIDATION_UNCERTAIN:secondary_unavailable)",
+     "asr_judgement_inherited": {
+      "state": "NG_SECONDARY_UNAVAILABLE",
+      "reason_code": "secondary_unavailable",
+      "slot": 1,
+      "script_version": "v0",
+      "role": null,
+      "lang": "en",
+      "segment_key": "full_story_part1",
+      "audio_sha256": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "primary": {
+       "text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+       "passed": false,
+       "label": "ASR_VALIDATION_UNCERTAIN",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": true,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": "j11_no_new_secondary_call",
+       "unavailable": true
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 1,
+       "azure_seconds": null,
+       "est_jpy": 0.0,
+       "est_jpy_known": false
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": {
+       "type": "SECONDARY_UNAVAILABLE",
+       "error": "j11_no_new_secondary_call",
+       "restartable": true,
+       "approval_required": false
+      },
+      "length": {
+       "applied": false,
+       "primary_len": null,
+       "secondary_len": null,
+       "max_len": null,
+       "adopted_from": "primary",
+       "adopted_ok": null,
+       "surface_len": null,
+       "primary_ok": null
+      },
+      "p3_entry": "p3_primary_ng",
+      "inherited": {
+       "via": "J11_rejudge_with_current_judge",
+       "api_calls": 0,
+       "secondary_new_calls": 0,
+       "rejudged_state": "NG_SECONDARY_UNAVAILABLE",
+       "rejudged_reason_code": "secondary_unavailable",
+       "lang": "en",
+       "had_original_asr_judgement": false,
+       "stored_secondary_used": false,
+       "rejudged_at": "2026-10-22T08:43:56"
+      }
+     }
+    },
+    "with_stored_secondary_by_us": {
+     "applicable": true,
+     "secondary_new_calls": 0,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "f1_version": "F1-2026-10-13",
+     "judge_module_f1_version": "F1-2026-10-13",
+     "tts_input": "LINE Manga has launched byUs, an AI service that lets you shape stories.",
+     "ok": true,
+     "unified_state": "PASS_WITH_WARNING",
+     "unified_reason_code": "secondary_confirmed",
+     "reason": "OK",
+     "asr_judgement_inherited": {
+      "state": "PASS_WITH_WARNING",
+      "primary": {
+       "passed": false,
+       "text": "LINE Manga has launched buy us, an AI service that lets you shape stories."
+      },
+      "secondary": {
+       "called": true,
+       "text": "LINE Manga has launched by us, an AI service that lets you shape stories."
+      },
+      "warnings": [
+       "SECONDARY_CONFIRMED"
+      ],
+      "inherited": {
+       "via": "J11_rejudge_with_current_judge",
+       "api_calls": 0,
+       "secondary_new_calls": 0,
+       "rejudged_state": "PASS_WITH_WARNING",
+       "rejudged_reason_code": "secondary_confirmed",
+       "lang": "en",
+       "had_original_asr_judgement": true,
+       "stored_secondary_used": true,
+       "rejudged_at": "2026-10-22T08:43:56"
+      }
+     }
+    }
+   },
+   "primary_calls": [],
+   "secondary_calls": [],
+   "tts_stub_calls": 0,
+   "observed_adapter_calls": [],
+   "observed_spans": [],
+   "network_attempts": [],
+   "ok": true
+  },
+  {
+   "scenario": "Z_KP_english_lock_fallback",
+   "family": "Z",
+   "entrypoint": "er063.run_tts_stage kp_en -> _kp_en_two_stage: minimal x2 NG -> ENGLISH_LOCK (er063:836 -> repro01:356)",
+   "expect": "PASS_WITH_SPANS",
+   "note": "",
+   "primary_script": [
+    "Completely unrelated words here.",
+    "Completely unrelated words here.",
+    "Make one yourself with buy us."
+   ],
+   "secondary_script": [
+    "Completely unrelated words here."
+   ],
+   "result_brief": {
+    "status": "OK"
+   },
+   "scan": {
+    "has_multiword_homophone_spans": true,
+    "n_spans_keys": 1,
+    "has_multiword_in_diffs": true
+   },
+   "spans": [
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    }
+   ],
+   "judgement_states": [
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    }
+   ],
+   "status": "OK",
+   "custom_result": null,
+   "primary_calls": [
+    {
+     "wav": "kp3_en.wav",
+     "text": "Completely unrelated words here."
+    },
+    {
+     "wav": "kp3_en.wav",
+     "text": "Completely unrelated words here."
+    },
+    {
+     "wav": "kp3_en.wav",
+     "text": "Make one yourself with buy us."
+    }
+   ],
+   "secondary_calls": [
+    {
+     "wav": "kp3_en.wav",
+     "text": "Completely unrelated words here."
+    }
+   ],
+   "tts_stub_calls": 3,
+   "observed_adapter_calls": [
+    {
+     "wav": "kp3_en.wav",
+     "force_secondary": false,
+     "primary_text": "Completely unrelated words here.",
+     "verified": false,
+     "classification": "TTS_FAILURE",
+     "judge_state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Completely unrelated words here.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      },
+      {
+       "step": "secondary_1",
+       "text": "Completely unrelated words here.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      }
+     ]
+    },
+    {
+     "wav": "kp3_en.wav",
+     "force_secondary": false,
+     "primary_text": "Completely unrelated words here.",
+     "verified": false,
+     "classification": "TTS_FAILURE",
+     "judge_state": "NG_BOTH",
+     "primary_label": "TTS_FAILURE",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Completely unrelated words here.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      },
+      {
+       "step": "secondary_1",
+       "text": "Completely unrelated words here.",
+       "classification": "TTS_FAILURE",
+       "multiword_homophone_spans": null
+      }
+     ]
+    },
+    {
+     "wav": "kp3_en.wav",
+     "force_secondary": false,
+     "primary_text": "Make one yourself with buy us.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Make one yourself with buy us.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "observed_spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    }
+   ],
+   "network_attempts": [],
+   "ok": true
+  },
+  {
+   "scenario": "Z_KP_en",
+   "family": "Z",
+   "entrypoint": "er063.run_tts_stage kp_en -> _kp_en_two_stage -> repro01.generate_narration_snippet_verified_strict (er063:827/836 -> repro01:356)",
+   "expect": "PASS_WITH_SPANS",
+   "note": "",
+   "primary_script": [
+    "Make one yourself with buy us."
+   ],
+   "secondary_script": [
+    "unused"
+   ],
+   "result_brief": {
+    "status": "OK"
+   },
+   "scan": {
+    "has_multiword_homophone_spans": true,
+    "n_spans_keys": 1,
+    "has_multiword_in_diffs": true
+   },
+   "spans": [
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    }
+   ],
+   "judgement_states": [
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    }
+   ],
+   "status": "OK",
+   "custom_result": null,
+   "primary_calls": [
+    {
+     "wav": "kp1_en.wav",
+     "text": "Make one yourself with buy us."
+    }
+   ],
+   "secondary_calls": [],
+   "tts_stub_calls": 1,
+   "observed_adapter_calls": [
+    {
+     "wav": "kp1_en.wav",
+     "force_secondary": false,
+     "primary_text": "Make one yourself with buy us.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Make one yourself with buy us.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "observed_spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    }
+   ],
+   "network_attempts": [],
+   "ok": true
+  },
+  {
+   "scenario": "Z_NARRATOR_a2",
+   "family": "Z",
+   "entrypoint": "er063 narrator(a2) -> n3_tts.generate_a2_segment_with_slowdown (er063:778/788 -> n3_01:144)",
+   "expect": "PASS_WITH_SPANS",
+   "note": "",
+   "primary_script": [
+    "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+    "LINE Manga has launched buy us, an AI service that lets you shape stories."
+   ],
+   "secondary_script": [
+    "unused"
+   ],
+   "result_brief": {
+    "status": "OK"
+   },
+   "scan": {
+    "has_multiword_homophone_spans": true,
+    "n_spans_keys": 1,
+    "has_multiword_in_diffs": true
+   },
+   "spans": [
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    }
+   ],
+   "judgement_states": [
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    }
+   ],
+   "status": "OK",
+   "custom_result": null,
+   "primary_calls": [
+    {
+     "wav": "full_story_part1_c1.wav",
+     "text": "LINE Manga has launched buy us, an AI service that lets you shape stories."
+    },
+    {
+     "wav": "full_story_part1_c1.wav",
+     "text": "LINE Manga has launched buy us, an AI service that lets you shape stories."
+    }
+   ],
+   "secondary_calls": [],
+   "tts_stub_calls": 1,
+   "observed_adapter_calls": [
+    {
+     "wav": "full_story_part1_c1.wav",
+     "force_secondary": false,
+     "primary_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "wav": "full_story_part1_c1.wav",
+     "force_secondary": false,
+     "primary_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "observed_spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    },
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    }
+   ],
+   "network_attempts": [],
+   "ok": true
+  },
+  {
+   "scenario": "Z_NARRATOR_b1b",
+   "family": "Z",
+   "entrypoint": "er063 narrator(b1b) -> news_tail_fix.generate_news_narration_wide_margin (er063:774 -> news_tail:209)",
+   "expect": "PASS_WITH_SPANS",
+   "note": "",
+   "primary_script": [
+    "LINE Manga has launched buy us, an AI service that lets you shape stories."
+   ],
+   "secondary_script": [
+    "unused"
+   ],
+   "result_brief": {
+    "status": "OK"
+   },
+   "scan": {
+    "has_multiword_homophone_spans": true,
+    "n_spans_keys": 1,
+    "has_multiword_in_diffs": true
+   },
+   "spans": [
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    }
+   ],
+   "judgement_states": [
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    }
+   ],
+   "status": "OK",
+   "custom_result": null,
+   "primary_calls": [
+    {
+     "wav": "full_story_part1_c1.wav",
+     "text": "LINE Manga has launched buy us, an AI service that lets you shape stories."
+    }
+   ],
+   "secondary_calls": [],
+   "tts_stub_calls": 1,
+   "observed_adapter_calls": [
+    {
+     "wav": "full_story_part1_c1.wav",
+     "force_secondary": false,
+     "primary_text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "LINE Manga has launched buy us, an AI service that lets you shape stories.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "observed_spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    }
+   ],
+   "network_attempts": [],
+   "ok": true
+  },
+  {
+   "scenario": "Z_DIALOGUE_a2",
+   "family": "Z",
+   "entrypoint": "er063 dialogue(a2) -> n3_tts.generate_with_a2_slowdown_outer_loop -> bvoices.generate_voice_body_wide_margin (er063:788-792 -> er012:553; 減速後再検証=n3_01:144)",
+   "expect": "PASS_WITH_SPANS",
+   "note": "",
+   "primary_script": [
+    "I will try buy us today.",
+    "I will try buy us today.",
+    "I will try buy us today."
+   ],
+   "secondary_script": [
+    "unused"
+   ],
+   "result_brief": {
+    "status": "OK"
+   },
+   "scan": {
+    "has_multiword_homophone_spans": true,
+    "n_spans_keys": 1,
+    "has_multiword_in_diffs": true
+   },
+   "spans": [
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    }
+   ],
+   "judgement_states": [
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    }
+   ],
+   "status": "OK",
+   "custom_result": null,
+   "primary_calls": [
+    {
+     "wav": "full_story_part1_c2.wav",
+     "text": "I will try buy us today."
+    },
+    {
+     "wav": "full_story_part1_c2.wav",
+     "text": "I will try buy us today."
+    }
+   ],
+   "secondary_calls": [],
+   "tts_stub_calls": 1,
+   "observed_adapter_calls": [
+    {
+     "wav": "full_story_part1_c2.wav",
+     "force_secondary": false,
+     "primary_text": "I will try buy us today.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "I will try buy us today.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "wav": "full_story_part1_c2.wav",
+     "force_secondary": false,
+     "primary_text": "I will try buy us today.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "I will try buy us today.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "observed_spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    },
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    }
+   ],
+   "network_attempts": [],
+   "ok": true
+  },
+  {
+   "scenario": "Z_TOPIC_INTRO_a2",
+   "family": "Z",
+   "entrypoint": "er063 topic_intro(a2) -> crosslevel.generate_english_segment_with_fallback (er063:804 -> crosslevel:378前段)",
+   "expect": "PASS_WITH_SPANS",
+   "note": "",
+   "primary_script": [
+    "Today's topic is buy us."
+   ],
+   "secondary_script": [
+    "unused"
+   ],
+   "result_brief": {
+    "status": "OK"
+   },
+   "scan": {
+    "has_multiword_homophone_spans": true,
+    "n_spans_keys": 1,
+    "has_multiword_in_diffs": true
+   },
+   "spans": [
+    {
+     "step": null,
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    }
+   ],
+   "judgement_states": [
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    }
+   ],
+   "status": "OK",
+   "custom_result": null,
+   "primary_calls": [
+    {
+     "wav": "topic_intro_en.wav",
+     "text": "Today's topic is buy us."
+    }
+   ],
+   "secondary_calls": [],
+   "tts_stub_calls": 1,
+   "observed_adapter_calls": [
+    {
+     "wav": "topic_intro_en.wav",
+     "force_secondary": false,
+     "primary_text": "Today's topic is buy us.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Today's topic is buy us.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "observed_spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    }
+   ],
+   "network_attempts": [],
+   "ok": true
+  },
+  {
+   "scenario": "Z_BI_US_NG_kp_en",
+   "family": "Z",
+   "entrypoint": "er063.run_tts_stage kp_en 負例: Primary/Secondary=bi us(4回構成) -> 全NG(V8でNG維持、Secondary=Azure NG_BOTH)",
+   "expect": "NOT_PASS",
+   "note": "",
+   "primary_script": [
+    "Make one yourself with bi us.",
+    "Make one yourself with bi us.",
+    "Make one yourself with bi us.",
+    "Make one yourself with bi us."
+   ],
+   "secondary_script": [
+    "Make one yourself with bi us.",
+    "Make one yourself with bi us.",
+    "Make one yourself with bi us.",
+    "Make one yourself with bi us."
+   ],
+   "result_brief": {
+    "status": "STOPPED"
+   },
+   "scan": {
+    "has_multiword_homophone_spans": false,
+    "n_spans_keys": 0,
+    "has_multiword_in_diffs": false
+   },
+   "spans": [],
+   "judgement_states": [],
+   "status": "STOPPED",
+   "custom_result": null,
+   "primary_calls": [
+    {
+     "wav": "kp2_en.wav",
+     "text": "Make one yourself with bi us."
+    },
+    {
+     "wav": "kp2_en.wav",
+     "text": "Make one yourself with bi us."
+    },
+    {
+     "wav": "kp2_en.wav",
+     "text": "Make one yourself with bi us."
+    },
+    {
+     "wav": "kp2_en.wav",
+     "text": "Make one yourself with bi us."
+    }
+   ],
+   "secondary_calls": [
+    {
+     "wav": "kp2_en.wav",
+     "text": "Make one yourself with bi us."
+    }
+   ],
+   "tts_stub_calls": 4,
+   "observed_adapter_calls": [
+    {
+     "wav": "kp2_en.wav",
+     "force_secondary": false,
+     "primary_text": "Make one yourself with bi us.",
+     "verified": false,
+     "classification": "TRUE_CONTENT_MISMATCH",
+     "judge_state": "NG_BOTH",
+     "primary_label": "TRUE_CONTENT_MISMATCH",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Make one yourself with bi us.",
+       "classification": "TRUE_CONTENT_MISMATCH",
+       "multiword_homophone_spans": null
+      },
+      {
+       "step": "secondary_1",
+       "text": "Make one yourself with bi us.",
+       "classification": "TRUE_CONTENT_MISMATCH",
+       "multiword_homophone_spans": null
+      }
+     ]
+    },
+    {
+     "wav": "kp2_en.wav",
+     "force_secondary": false,
+     "primary_text": "Make one yourself with bi us.",
+     "verified": false,
+     "classification": "TRUE_CONTENT_MISMATCH",
+     "judge_state": "NG_BOTH",
+     "primary_label": "TRUE_CONTENT_MISMATCH",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Make one yourself with bi us.",
+       "classification": "TRUE_CONTENT_MISMATCH",
+       "multiword_homophone_spans": null
+      },
+      {
+       "step": "secondary_1",
+       "text": "Make one yourself with bi us.",
+       "classification": "TRUE_CONTENT_MISMATCH",
+       "multiword_homophone_spans": null
+      }
+     ]
+    },
+    {
+     "wav": "kp2_en.wav",
+     "force_secondary": false,
+     "primary_text": "Make one yourself with bi us.",
+     "verified": false,
+     "classification": "TRUE_CONTENT_MISMATCH",
+     "judge_state": "NG_BOTH",
+     "primary_label": "TRUE_CONTENT_MISMATCH",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Make one yourself with bi us.",
+       "classification": "TRUE_CONTENT_MISMATCH",
+       "multiword_homophone_spans": null
+      },
+      {
+       "step": "secondary_1",
+       "text": "Make one yourself with bi us.",
+       "classification": "TRUE_CONTENT_MISMATCH",
+       "multiword_homophone_spans": null
+      }
+     ]
+    },
+    {
+     "wav": "kp2_en.wav",
+     "force_secondary": false,
+     "primary_text": "Make one yourself with bi us.",
+     "verified": false,
+     "classification": "TRUE_CONTENT_MISMATCH",
+     "judge_state": "NG_BOTH",
+     "primary_label": "TRUE_CONTENT_MISMATCH",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Make one yourself with bi us.",
+       "classification": "TRUE_CONTENT_MISMATCH",
+       "multiword_homophone_spans": null
+      },
+      {
+       "step": "secondary_1",
+       "text": "Make one yourself with bi us.",
+       "classification": "TRUE_CONTENT_MISMATCH",
+       "multiword_homophone_spans": null
+      }
+     ]
+    }
+   ],
+   "observed_spans": [],
+   "network_attempts": [],
+   "ok": true
+  }
+ ],
+ "shared_state_unchanged": true,
+ "shared_files_changed_outside_evidence": [
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/attempt_history.jsonl",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/er021_telemetry.jsonl",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/human_review_queue.jsonl",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_BI_US_NG_kp_en/a2/audit/pass_with_warning_listening_list.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_BI_US_NG_kp_en/a2/audit/review_lock_state.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_BI_US_NG_kp_en/a2/audit/runtime_evidence_04C.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_BI_US_NG_kp_en/a2/audit/style_record.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_BI_US_NG_kp_en/a2/audit/tts_generation_results.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_BI_US_NG_kp_en/a2/narration/attempts/kp2_en_attempt1_custom60ebc452.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_BI_US_NG_kp_en/a2/narration/attempts/kp2_en_attempt2_custom60ebc452.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_BI_US_NG_kp_en/a2/narration/attempts/kp2_en_attempt3_custom31eb2f72.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_BI_US_NG_kp_en/a2/narration/attempts/kp2_en_attempt4_custom31eb2f72.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_DIALOGUE_a2/a2/audit/pass_with_warning_listening_list.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_DIALOGUE_a2/a2/audit/review_lock_state.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_DIALOGUE_a2/a2/audit/runtime_evidence_04C.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_DIALOGUE_a2/a2/audit/style_record.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_DIALOGUE_a2/a2/audit/tts_generation_results.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_DIALOGUE_a2/a2/narration/attempts/full_story_part1_c2_attempt1_englishstyleprefixwidemargin.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_KP_en/a2/audit/pass_with_warning_listening_list.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_KP_en/a2/audit/review_lock_state.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_KP_en/a2/audit/runtime_evidence_04C.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_KP_en/a2/audit/style_record.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_KP_en/a2/audit/tts_generation_results.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_KP_en/a2/narration/attempts/kp1_en_attempt1_custom60ebc452.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_KP_english_lock_fallback/a2/audit/pass_with_warning_listening_list.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_KP_english_lock_fallback/a2/audit/review_lock_state.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_KP_english_lock_fallback/a2/audit/runtime_evidence_04C.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_KP_english_lock_fallback/a2/audit/style_record.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_KP_english_lock_fallback/a2/audit/tts_generation_results.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_KP_english_lock_fallback/a2/narration/attempts/kp3_en_attempt1_custom60ebc452.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_KP_english_lock_fallback/a2/narration/attempts/kp3_en_attempt2_custom60ebc452.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_KP_english_lock_fallback/a2/narration/attempts/kp3_en_attempt3_custom31eb2f72.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_NARRATOR_a2/a2/audit/pass_with_warning_listening_list.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_NARRATOR_a2/a2/audit/review_lock_state.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_NARRATOR_a2/a2/audit/runtime_evidence_04C.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_NARRATOR_a2/a2/audit/style_record.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_NARRATOR_a2/a2/audit/tts_generation_results.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_NARRATOR_a2/a2/narration/attempts/full_story_part1_c1_attempt1_customa3c4625e.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_NARRATOR_b1b/b1b/audit/pass_with_warning_listening_list.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_NARRATOR_b1b/b1b/audit/review_lock_state.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_NARRATOR_b1b/b1b/audit/runtime_evidence_04C.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_NARRATOR_b1b/b1b/audit/style_record.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_NARRATOR_b1b/b1b/audit/tts_generation_results.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_NARRATOR_b1b/b1b/narration/attempts/full_story_part1_c1_attempt1_englishstyleprefixwidemargin.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_TOPIC_INTRO_a2/a2/audit/pass_with_warning_listening_list.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_TOPIC_INTRO_a2/a2/audit/review_lock_state.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_TOPIC_INTRO_a2/a2/audit/runtime_evidence_04C.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_TOPIC_INTRO_a2/a2/audit/style_record.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_TOPIC_INTRO_a2/a2/audit/tts_generation_results.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_TOPIC_INTRO_a2/a2/narration/attempts/topic_intro_en_attempt1_custom60a24f1e.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_fb_bi_us/a2/audit/review_lock_state.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_fb_bi_us/a2/narration/attempts/fb_bi_us_attempt1_standard.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_fb_bi_us/a2/narration/attempts/fb_bi_us_attempt2_standard.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_fb_bi_us/a2/narration/attempts/fb_bi_us_attempt3_minimalfallback.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_fb_bias/a2/audit/review_lock_state.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_fb_bias/a2/narration/attempts/fb_bias_attempt1_standard.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_fb_bias/a2/narration/attempts/fb_bias_attempt2_standard.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_fb_bias/a2/narration/attempts/fb_bias_attempt3_minimalfallback.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_fb_by_us/a2/audit/review_lock_state.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_fb_by_us/a2/narration/attempts/fb_by_us_attempt1_standard.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_fb_by_us/a2/narration/attempts/fb_by_us_attempt2_standard.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_fb_by_us/a2/narration/attempts/fb_by_us_attempt3_minimalfallback.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_full_story_part1/a2/audit/review_lock_state.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_full_story_part1/a2/narration/attempts/full_story_part1_attempt1_standard.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_full_story_part1/b1b/audit/review_lock_state.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_full_story_part1/b1b/narration/attempts/full_story_part1_attempt1_englishstyleprefixwidemargin.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_full_story_part2/a2/audit/review_lock_state.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_full_story_part2/a2/narration/attempts/full_story_part2_attempt1_standard.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_kp1_english/a2/audit/review_lock_state.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_kp1_english/a2/narration/attempts/kp1_english_attempt1_custombd5c8f46.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_kp3_english/a2/audit/review_lock_state.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_kp3_english/a2/narration/attempts/kp3_english_attempt1_custombd5c8f46.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_kp3_english/a2/narration/attempts/kp3_english_attempt2_custombd5c8f46.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_kp3_english/a2/narration/attempts/kp3_english_attempt3_custom31eb2f72.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_point_one_heading/a2/audit/review_lock_state.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_point_one_heading/a2/narration/attempts/point_one_heading_attempt1_englishstyleprefix.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_topic_intro/b1b/audit/review_lock_state.json",
+  "er094_output/pnmh_prod_wiring_01/runtime_api0/run_topic_intro/b1b/narration/attempts/topic_intro_attempt1_englishstyleprefix.json"
+ ],
+ "network_attempts_total": 0
+}

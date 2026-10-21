@@ -8,9 +8,9 @@
 
 | 課題 | Status | 担当工程 | 次の判断点 |
 |---|---|---|---|
-| L1 多語同音判定層 | 採用・配線中(A-1完了) | Sonnet(A-2)/Opus条件A/Cレビュー/Fable | Opusレビュー結果、X/Z別PRODUCTION_WIRED判定 |
+| L1 多語同音判定層 | 配線済み・Fable判定待ち(A-2完了、2026-10-22 委任_07。`WIRED_PENDING_FABLE`、PRODUCTION_WIREDではない) | Fable(X/Z別PRODUCTION_WIRED判定) | X/Z各々の必須Gate充足(`docs/pm/RESULT_PACKET_PNMH7.md`)。範囲外のユーザー判断=warningラベル付与/camelCase entity_like化/J11許容集合整合[OPEN-443] |
 | L2 固有名詞発音取得(UDR #133本体) | 計画策定中(PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02) | 別agent B-1->Fable独立レビュー | ユーザー提出後の採否。Trial/実装は未承認 |
-| KP両方PASS条件 | OPEN-440ユーザー回答待ち(未承認) | Fable(回答待ち) | ユーザー回答。本配線では不実装 |
+| KP両方PASS条件 | 本配線(A-2)では不実装。OPEN-440は後続でX/Z正式採用の記録あり(DECISION_LOG、UDR #139)=別管理(D-1)で実装 | Fable | OPEN-440側の実装・本配線との合同レビュー/Regression |
 | U5 既存の穴(AI->eye等) | ユーザー未回答 | Fable | 是正可否 |
 | J7 公式日本語読み | ユーザー未回答 | Fable | 英語期待発音の根拠にしてよいか |
 | GitHub Issue #133本文 | 取得不能(404)・未確認 | Fable | 取得手段/不要判断 |

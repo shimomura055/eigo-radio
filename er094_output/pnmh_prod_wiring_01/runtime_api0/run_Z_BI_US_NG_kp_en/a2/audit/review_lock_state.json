@@ -1,0 +1,315 @@
+{
+  "kp2_en": {
+    "state": "HUMAN_REVIEW_REQUIRED",
+    "canonical_text_sha256": "3c873c008116866d8dacf95ff713cf2ad0f8b94030ead68cb408dc0c4742cb38",
+    "language": "en",
+    "theme_id": "run_Z_BI_US_NG_kp_en",
+    "level": "a2",
+    "segment_id": "kp2_en",
+    "updated_at": "2026-10-22T08:43:57",
+    "reason": "最終status=STOPPED。2回試行してもASR検証(内容+長さ)に合格しませんでした",
+    "final_status": "STOPPED",
+    "wav_path": "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_BI_US_NG_kp_en/a2/narration/kp2_en.wav",
+    "cumulative_tts_attempts": 4,
+    "cumulative_asr_calls": 4,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 2.8,
+        "asr_text": "Make one yourself with bi us.",
+        "asr_text_length": 29,
+        "max_len": 38,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 1246,
+          "sha256": "dcd08dcae5b0ce13fd35da0980d4cf021e0b2c0a33db0cec6c8377444b3bbf30",
+          "head200": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not add explanations, examples, introductions, or any other com"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Make one yourself with bi us.",
+            "classification": "TRUE_CONTENT_MISMATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Make one yourself with bi us.",
+            "classification": "TRUE_CONTENT_MISMATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": true,
+            "unified_judge_state": "NG_BOTH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 3,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "255f779e73722ebf47262ac8f12c7273d5ac27035ecebbc6343be2d689e1d14d",
+          "primary": {
+            "text": "Make one yourself with bi us.",
+            "passed": false,
+            "label": "TRUE_CONTENT_MISMATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": true,
+            "engine": "azure",
+            "text": "Make one yourself with bi us.",
+            "label": "TRUE_CONTENT_MISMATCH",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 29,
+            "secondary_len": 29,
+            "max_len": 38,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": 23,
+            "primary_ok": true
+          },
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 2
+            }
+          }
+        },
+        "attempt_audio_path": "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_BI_US_NG_kp_en/a2/narration/attempts/kp2_en_attempt3_custom31eb2f72.wav"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "duration_seconds": 2.8,
+        "asr_text": "Make one yourself with bi us.",
+        "asr_text_length": 29,
+        "max_len": 38,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 1246,
+          "sha256": "dcd08dcae5b0ce13fd35da0980d4cf021e0b2c0a33db0cec6c8377444b3bbf30",
+          "head200": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not add explanations, examples, introductions, or any other com"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Make one yourself with bi us.",
+            "classification": "TRUE_CONTENT_MISMATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Make one yourself with bi us.",
+            "classification": "TRUE_CONTENT_MISMATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": true,
+            "unified_judge_state": "NG_BOTH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 4,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "255f779e73722ebf47262ac8f12c7273d5ac27035ecebbc6343be2d689e1d14d",
+          "primary": {
+            "text": "Make one yourself with bi us.",
+            "passed": false,
+            "label": "TRUE_CONTENT_MISMATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": true,
+            "engine": "azure",
+            "text": "Make one yourself with bi us.",
+            "label": "TRUE_CONTENT_MISMATCH",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 29,
+            "secondary_len": 29,
+            "max_len": 38,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": 23,
+            "primary_ok": true
+          },
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 3
+            }
+          }
+        },
+        "attempt_audio_path": "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_BI_US_NG_kp_en/a2/narration/attempts/kp2_en_attempt4_custom31eb2f72.wav"
+      }
+    ]
+  }
+}

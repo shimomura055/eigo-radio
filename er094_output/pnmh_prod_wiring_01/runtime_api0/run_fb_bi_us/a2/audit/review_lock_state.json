@@ -1,0 +1,289 @@
+{
+  "fb_bi_us": {
+    "state": "HUMAN_REVIEW_REQUIRED",
+    "canonical_text_sha256": "43e61ec678c328a0c6d9ba2e11ce2f927be9a17dc38e308918ae0c8ca070a40f",
+    "language": "en",
+    "theme_id": "run_fb_bi_us",
+    "level": "a2",
+    "segment_id": "fb_bi_us",
+    "updated_at": "2026-10-22T08:43:56",
+    "reason": "最終status=STOPPED。標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+    "final_status": "STOPPED",
+    "wav_path": "er094_output/pnmh_prod_wiring_01/runtime_api0/run_fb_bi_us/a2/narration/fb_bi_us.wav",
+    "cumulative_tts_attempts": 3,
+    "cumulative_asr_calls": 3,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 2.9,
+        "asr_text": "Completely unrelated sentence about weather today.",
+        "asr_text_length": 50,
+        "max_len": 102,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "TTS_FAILURE",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 1842,
+          "sha256": "add26d27a79c2cbee982eb5ddc32616b8294494a316b973215c94cccc76ede26",
+          "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Completely unrelated sentence about weather today.",
+            "classification": "TTS_FAILURE",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Completely unrelated sentence about weather today.",
+            "classification": "TTS_FAILURE",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "NG_BOTH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "fb_bi_us",
+          "audio_sha256": "03c88d505dffc11d51b1d8a30594f6bf8f8b6208ee27d624e6be24d0428d3f52",
+          "primary": {
+            "text": "Completely unrelated sentence about weather today.",
+            "passed": false,
+            "label": "TTS_FAILURE",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Completely unrelated sentence about weather today.",
+            "label": "TTS_FAILURE",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 2.9,
+            "est_jpy": 0.1333,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 50,
+            "secondary_len": 50,
+            "max_len": 102,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": 44,
+            "primary_ok": true
+          },
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "fb_bi_us",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er094_output/pnmh_prod_wiring_01/runtime_api0/run_fb_bi_us/a2/narration/attempts/fb_bi_us_attempt1_standard.wav"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "duration_seconds": 2.9,
+        "asr_text": "Completely unrelated sentence about weather today.",
+        "asr_text_length": 50,
+        "max_len": 102,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "TTS_FAILURE",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 1842,
+          "sha256": "add26d27a79c2cbee982eb5ddc32616b8294494a316b973215c94cccc76ede26",
+          "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Completely unrelated sentence about weather today.",
+            "classification": "TTS_FAILURE",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Completely unrelated sentence about weather today.",
+            "classification": "TTS_FAILURE",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "NG_BOTH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 2,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "fb_bi_us",
+          "audio_sha256": "03c88d505dffc11d51b1d8a30594f6bf8f8b6208ee27d624e6be24d0428d3f52",
+          "primary": {
+            "text": "Completely unrelated sentence about weather today.",
+            "passed": false,
+            "label": "TTS_FAILURE",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Completely unrelated sentence about weather today.",
+            "label": "TTS_FAILURE",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 2.9,
+            "est_jpy": 0.1333,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 50,
+            "secondary_len": 50,
+            "max_len": 102,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": 44,
+            "primary_ok": true
+          },
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "fb_bi_us",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er094_output/pnmh_prod_wiring_01/runtime_api0/run_fb_bi_us/a2/narration/attempts/fb_bi_us_attempt2_standard.wav"
+      }
+    ]
+  }
+}

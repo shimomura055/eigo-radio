@@ -1,0 +1,913 @@
+{
+ "mode": "paid",
+ "isolation": {
+  "human_review_queue": "er094_output/pnmh_prod_wiring_01/runtime_paid/human_review_queue.jsonl",
+  "attempt_history": "er094_output/pnmh_prod_wiring_01/runtime_paid/attempt_history.jsonl",
+  "master_audio_store": "er094_output/pnmh_prod_wiring_01/runtime_paid/master_audio_store",
+  "reuse_telemetry": "er094_output/pnmh_prod_wiring_01/runtime_paid/master_audio_store/reuse_telemetry.jsonl",
+  "er021_telemetry": "er094_output/pnmh_prod_wiring_01/runtime_paid/er021_telemetry.jsonl",
+  "er025_telemetry": "er094_output/pnmh_prod_wiring_01/runtime_paid/er025_telemetry.jsonl",
+  "cost_log": "er094_output/pnmh_prod_wiring_01/runtime_paid/cost_log.jsonl",
+  "ledger_snapshot": "er094_output/pnmh_prod_wiring_01/runtime_paid/ledger_snapshot.json",
+  "tier3_research": "disabled(stub)",
+  "ledger_upsert": "disabled(no-op)"
+ },
+ "hard_stop_jpy": 20.0,
+ "scenarios": [
+  {
+   "scenario": "PAID_X_body_byUs",
+   "family": "X",
+   "entrypoint": "crosslevel.generate_english_segment_with_fallback (Family X 英語segmentの正式関数、実TTS+実Primary+(NG時)実Secondary)",
+   "expect": "CUSTOM",
+   "note": "",
+   "primary_script": [],
+   "secondary_script": [],
+   "result_brief": {
+    "status": "OK",
+    "asr_text": "LINE Manga has launched BAIUS, an AI service that lets you shape stories.",
+    "fallback_used": false,
+    "asr_verified": true,
+    "audio_classification": "NORMALIZED_MATCH",
+    "attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "asr_text": "LINE Manga has launched BAIUS, an AI service that lets you shape stories.",
+      "verified": true,
+      "audio_classification": "NORMALIZED_MATCH"
+     }
+    ]
+   },
+   "scan": {
+    "has_multiword_homophone_spans": false,
+    "n_spans_keys": 0,
+    "has_multiword_in_diffs": false
+   },
+   "spans": [],
+   "judgement_states": [
+    {
+     "state": "PASS_WITH_WARNING",
+     "primary_label": "TRUE_CONTENT_MISMATCH",
+     "secondary_called": true,
+     "secondary_text": "Line Manga has launched by US, an AI service that lets you shape stories."
+    },
+    {
+     "state": "PASS_WITH_WARNING",
+     "primary_label": "TRUE_CONTENT_MISMATCH",
+     "secondary_called": true,
+     "secondary_text": "Line Manga has launched by US, an AI service that lets you shape stories."
+    }
+   ],
+   "status": "OK",
+   "custom_result": {
+    "status": "OK",
+    "text": "LINE Manga has launched byUs, an AI service that lets you shape stories.",
+    "language": "en",
+    "path": "er094_output/pnmh_prod_wiring_01/runtime_paid/run_full_story_part1/a2/narration/full_story_part1.wav",
+    "model": "gemini-3.8-flash-lite-tts",
+    "voice": "Aoede",
+    "call_count": 1,
+    "retry_count": 0,
+    "sha256": "e101cf6f4e20ae993c681c699e16760b2a717091ad1d3c0a159d39d49a77f4c0",
+    "duration_seconds": 5.71,
+    "trim_info": {
+     "raw_duration_seconds": 5.8,
+     "raw_leading_silence_seconds": 0.34,
+     "raw_trailing_silence_seconds": 0.44,
+     "trimmed_duration_seconds": 5.71,
+     "leading_margin_retained_seconds": 0.34,
+     "trailing_margin_retained_seconds": 0.35
+    },
+    "clipping_detected": false,
+    "tts_backend": "speech_metadata_flash_lite",
+    "style_prefix": "<default:ENGLISH_STYLE_PREFIX>",
+    "asr_verified": true,
+    "asr_text": "LINE Manga has launched BAIUS, an AI service that lets you shape stories.",
+    "attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "duration_seconds": 5.71,
+      "asr_text": "LINE Manga has launched BAIUS, an AI service that lets you shape stories.",
+      "asr_text_length": 73,
+      "max_len": 102,
+      "substring_ok": null,
+      "length_ok": true,
+      "final_length_ok": true,
+      "phonetic_verdict": null,
+      "audio_classification": "NORMALIZED_MATCH",
+      "connected_speech_info": null,
+      "reading_resolver_info": null,
+      "scg_info": null,
+      "verified": true,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "repetition_qa_checked": false,
+      "repetition_qa_evidence": null,
+      "asr_prompt_applied": false,
+      "non_latin_cascade_enabled": false,
+      "non_latin_cascade_invoked": false,
+      "style_prefix": {
+       "len": 1842,
+       "sha256": "add26d27a79c2cbee982eb5ddc32616b8294494a316b973215c94cccc76ede26",
+       "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
+      },
+      "cascade_steps": [
+       {
+        "step": "primary_1",
+        "provider": "openai_asr",
+        "text": "LINE Manga has launched BAIUS, an AI service that lets you shape stories.",
+        "classification": "TRUE_CONTENT_MISMATCH",
+        "entity_like_source": []
+       },
+       {
+        "step": "secondary_1",
+        "provider": "azure",
+        "text": "Line Manga has launched by US, an AI service that lets you shape stories.",
+        "classification": "NORMALIZED_MATCH",
+        "phrase_list_used": false,
+        "azure_phrase_list_weight": null,
+        "azure_phrase_list": [],
+        "cached": false,
+        "unified_judge_state": "PASS_WITH_WARNING",
+        "entity_like_source": []
+       }
+      ],
+      "asr_judgement": {
+       "state": "PASS_WITH_WARNING",
+       "reason_code": "secondary_confirmed",
+       "slot": 1,
+       "script_version": "v0",
+       "role": "FULL_STORY",
+       "lang": "en",
+       "segment_key": "full_story_part1",
+       "audio_sha256": "e101cf6f4e20ae993c681c699e16760b2a717091ad1d3c0a159d39d49a77f4c0",
+       "primary": {
+        "text": "LINE Manga has launched BAIUS, an AI service that lets you shape stories.",
+        "passed": false,
+        "label": "TRUE_CONTENT_MISMATCH",
+        "equivalence_basis": null,
+        "warning_labels": []
+       },
+       "secondary": {
+        "called": true,
+        "cached": false,
+        "engine": "azure",
+        "text": "Line Manga has launched by US, an AI service that lets you shape stories.",
+        "label": "NORMALIZED_MATCH",
+        "accepted": true,
+        "error": null,
+        "unavailable": false
+       },
+       "value_guard": {
+        "primary": {
+         "kind": "NO_VALUES",
+         "pairs": [],
+         "reasons": [],
+         "warnings": []
+        },
+        "secondary": {
+         "kind": "NO_VALUES",
+         "pairs": [],
+         "reasons": [],
+         "warnings": []
+        }
+       },
+       "negation_guard": {
+        "primary": false,
+        "secondary": false
+       },
+       "final_gate": {
+        "applied": true,
+        "target": "secondary",
+        "value_guard": "NO_VALUES",
+        "negation_diff": false
+       },
+       "warnings": [
+        "SECONDARY_CONFIRMED"
+       ],
+       "exclusion_rule": null,
+       "cost": {
+        "azure_calls": 1,
+        "azure_seconds": 5.71,
+        "est_jpy": 0.2667,
+        "est_jpy_known": true
+       },
+       "timing": {
+        "total_ms": 1743,
+        "secondary_ms": 1742
+       },
+       "technical_stop": null,
+       "length": {
+        "applied": true,
+        "primary_len": 73,
+        "secondary_len": 73,
+        "max_len": 102,
+        "adopted_from": "secondary",
+        "adopted_ok": true,
+        "surface_len": 58,
+        "primary_ok": true
+       },
+       "p3_entry": "p3_primary_ng",
+       "adapter": {
+        "layers": [],
+        "azure_real_calls": 1,
+        "cost_guard_triggered": false,
+        "language": "en-US",
+        "segment_id": "full_story_part1",
+        "asr_text_present": true,
+        "cache": {
+         "calls": 2,
+         "hits": 0
+        }
+       }
+      },
+      "attempt_audio_path": "er094_output/pnmh_prod_wiring_01/runtime_paid/run_full_story_part1/a2/narration/attempts/full_story_part1_attempt1_standard.wav"
+     }
+    ],
+    "audio_classification": "NORMALIZED_MATCH",
+    "connected_speech_info": null,
+    "reading_resolver_info": null,
+    "scg_info": null,
+    "en_pronunciation_resolver_info": {
+     "hints_applied": false,
+     "cache_hits": [],
+     "low_confidence_retry_attempted": false,
+     "low_confidence_retry_improved": false,
+     "research_meta": null
+    },
+    "disfluency_checked": false,
+    "disfluency_evidence": null,
+    "repetition_qa_checked": false,
+    "repetition_qa_evidence": null,
+    "asr_judgement": {
+     "state": "PASS_WITH_WARNING",
+     "reason_code": "secondary_confirmed",
+     "slot": 1,
+     "script_version": "v0",
+     "role": "FULL_STORY",
+     "lang": "en",
+     "segment_key": "full_story_part1",
+     "audio_sha256": "e101cf6f4e20ae993c681c699e16760b2a717091ad1d3c0a159d39d49a77f4c0",
+     "primary": {
+      "text": "LINE Manga has launched BAIUS, an AI service that lets you shape stories.",
+      "passed": false,
+      "label": "TRUE_CONTENT_MISMATCH",
+      "equivalence_basis": null,
+      "warning_labels": []
+     },
+     "secondary": {
+      "called": true,
+      "cached": false,
+      "engine": "azure",
+      "text": "Line Manga has launched by US, an AI service that lets you shape stories.",
+      "label": "NORMALIZED_MATCH",
+      "accepted": true,
+      "error": null,
+      "unavailable": false
+     },
+     "value_guard": {
+      "primary": {
+       "kind": "NO_VALUES",
+       "pairs": [],
+       "reasons": [],
+       "warnings": []
+      },
+      "secondary": {
+       "kind": "NO_VALUES",
+       "pairs": [],
+       "reasons": [],
+       "warnings": []
+      }
+     },
+     "negation_guard": {
+      "primary": false,
+      "secondary": false
+     },
+     "final_gate": {
+      "applied": true,
+      "target": "secondary",
+      "value_guard": "NO_VALUES",
+      "negation_diff": false
+     },
+     "warnings": [
+      "SECONDARY_CONFIRMED"
+     ],
+     "exclusion_rule": null,
+     "cost": {
+      "azure_calls": 1,
+      "azure_seconds": 5.71,
+      "est_jpy": 0.2667,
+      "est_jpy_known": true
+     },
+     "timing": {
+      "total_ms": 1743,
+      "secondary_ms": 1742
+     },
+     "technical_stop": null,
+     "length": {
+      "applied": true,
+      "primary_len": 73,
+      "secondary_len": 73,
+      "max_len": 102,
+      "adopted_from": "secondary",
+      "adopted_ok": true,
+      "surface_len": 58,
+      "primary_ok": true
+     },
+     "p3_entry": "p3_primary_ng",
+     "adapter": {
+      "layers": [],
+      "azure_real_calls": 1,
+      "cost_guard_triggered": false,
+      "language": "en-US",
+      "segment_id": "full_story_part1",
+      "asr_text_present": true,
+      "cache": {
+       "calls": 2,
+       "hits": 0
+      }
+     }
+    },
+    "fallback_used": false
+   },
+   "primary_calls": [],
+   "secondary_calls": [],
+   "tts_stub_calls": 0,
+   "observed_adapter_calls": [
+    {
+     "wav": "full_story_part1.wav",
+     "force_secondary": false,
+     "primary_text": "LINE Manga has launched BAIUS, an AI service that lets you shape stories.",
+     "verified": true,
+     "classification": "NORMALIZED_MATCH",
+     "judge_state": "PASS_WITH_WARNING",
+     "primary_label": "TRUE_CONTENT_MISMATCH",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "LINE Manga has launched BAIUS, an AI service that lets you shape stories.",
+       "classification": "TRUE_CONTENT_MISMATCH",
+       "multiword_homophone_spans": null
+      },
+      {
+       "step": "secondary_1",
+       "text": "Line Manga has launched by US, an AI service that lets you shape stories.",
+       "classification": "NORMALIZED_MATCH",
+       "multiword_homophone_spans": null
+      }
+     ]
+    }
+   ],
+   "observed_spans": [],
+   "network_attempts": [],
+   "ok": null
+  },
+  {
+   "scenario": "PAID_Z_narrator_byUs",
+   "family": "Z",
+   "entrypoint": "er063.run_tts_stage narrator(a2) -> n3_tts.generate_a2_segment_with_slowdown (実TTS+実ASR+6%減速+再検証)",
+   "expect": "CUSTOM",
+   "note": "",
+   "primary_script": [],
+   "secondary_script": [],
+   "result_brief": {
+    "status": "OK"
+   },
+   "scan": {
+    "has_multiword_homophone_spans": false,
+    "n_spans_keys": 0,
+    "has_multiword_in_diffs": false
+   },
+   "spans": [],
+   "judgement_states": [
+    {
+     "state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "secondary_called": false,
+     "secondary_text": null
+    }
+   ],
+   "status": "OK",
+   "custom_result": null,
+   "primary_calls": [],
+   "secondary_calls": [],
+   "tts_stub_calls": 0,
+   "observed_adapter_calls": [
+    {
+     "wav": "full_story_part1_c1.wav",
+     "force_secondary": false,
+     "primary_text": "Make one yourself with Buy Us.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Make one yourself with Buy Us.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "wav": "full_story_part1_c1.wav",
+     "force_secondary": false,
+     "primary_text": "Make one yourself with Buy Us.",
+     "verified": true,
+     "classification": "ASR_VALIDATION_UNCERTAIN",
+     "judge_state": "PASS",
+     "primary_label": "HOMOPHONE_EQUIVALENT",
+     "steps": [
+      {
+       "step": "primary_1",
+       "text": "Make one yourself with Buy Us.",
+       "classification": "ASR_VALIDATION_UNCERTAIN",
+       "multiword_homophone_spans": [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "observed_spans": [
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    },
+    {
+     "step": "primary_1",
+     "spans": [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ],
+     "judge_state": "PASS"
+    }
+   ],
+   "network_attempts": [],
+   "ok": false
+  },
+  {
+   "status": "DONE",
+   "rows": [
+    {
+     "cand": "c1_Bi-us",
+     "tts_input": "Make one yourself with Bi-us.",
+     "tts_status": "OK",
+     "tts_model": "gemini-3.8-flash-lite-tts",
+     "primary_openai": "Make one yourself with BIOS.",
+     "azure": "Make one yourself with BIOS.",
+     "local_whisper_small_words": [
+      [
+       "Make",
+       0.0,
+       0.36
+      ],
+      [
+       "one",
+       0.36,
+       0.56
+      ],
+      [
+       "yourself",
+       0.56,
+       0.94
+      ],
+      [
+       "with",
+       0.94,
+       1.24
+      ],
+      [
+       "BIOS.",
+       1.24,
+       1.74
+      ]
+     ],
+     "local_text": "Make one yourself with BIOS.",
+     "focal": {
+      "primary_openai": "bios",
+      "azure": "bios",
+      "local_text": "bios"
+     },
+     "adapter_normal": {
+      "verified": false,
+      "state": "NG_BOTH",
+      "primary_label": "TRUE_CONTENT_MISMATCH",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "secondary_text": "Make one yourself with BIOS.",
+      "multiword_spans": []
+     },
+     "adapter_force_secondary": {
+      "verified": false,
+      "state": "NG_BOTH",
+      "primary_label": "TRUE_CONTENT_MISMATCH",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "secondary_text": "Make one yourself with BIOS.",
+      "multiword_spans": []
+     },
+     "why_primary_focal": [
+      null,
+      null
+     ],
+     "intent_split_confirmed": false
+    },
+    {
+     "cand": "c2_Bi_us",
+     "tts_input": "Make one yourself with Bi us.",
+     "tts_status": "OK",
+     "tts_model": "gemini-3.8-flash-lite-tts",
+     "primary_openai": "Make one yourself with bias.",
+     "azure": "Make one yourself with by us.",
+     "local_whisper_small_words": [
+      [
+       "Make",
+       0.0,
+       0.48
+      ],
+      [
+       "one",
+       0.48,
+       0.68
+      ],
+      [
+       "yourself",
+       0.68,
+       1.14
+      ],
+      [
+       "with",
+       1.14,
+       1.5
+      ],
+      [
+       "Bias.",
+       1.5,
+       2.12
+      ]
+     ],
+     "local_text": "Make one yourself with Bias.",
+     "focal": {
+      "primary_openai": "bias",
+      "azure": "by us",
+      "local_text": "bias"
+     },
+     "adapter_normal": {
+      "verified": true,
+      "state": "PASS",
+      "primary_label": "HOMOPHONE_EQUIVALENT",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "secondary_text": null,
+      "multiword_spans": []
+     },
+     "adapter_force_secondary": {
+      "verified": true,
+      "state": "PASS",
+      "primary_label": "HOMOPHONE_EQUIVALENT",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "secondary_text": "Make one yourself with by us.",
+      "multiword_spans": []
+     },
+     "why_primary_focal": [
+      null,
+      null
+     ],
+     "intent_split_confirmed": false
+    },
+    {
+     "cand": "c3_Bi,_us",
+     "tts_input": "Make one yourself with Bi, us.",
+     "tts_status": "OK",
+     "tts_model": "gemini-3.8-flash-lite-tts",
+     "primary_openai": "Make one yourself with Buy Us.",
+     "azure": "Make one yourself with by us.",
+     "local_whisper_small_words": [
+      [
+       "Make",
+       0.0,
+       0.46
+      ],
+      [
+       "one",
+       0.46,
+       0.7
+      ],
+      [
+       "yourself",
+       0.7,
+       1.12
+      ],
+      [
+       "with",
+       1.12,
+       1.5
+      ],
+      [
+       "by",
+       1.5,
+       2.18
+      ],
+      [
+       "us.",
+       2.18,
+       2.76
+      ]
+     ],
+     "local_text": "Make one yourself with by us.",
+     "focal": {
+      "primary_openai": "buy us",
+      "azure": "by us",
+      "local_text": "by us"
+     },
+     "adapter_normal": {
+      "verified": true,
+      "state": "PASS",
+      "primary_label": "HOMOPHONE_EQUIVALENT",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "secondary_text": null,
+      "multiword_spans": [
+       [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      ]
+     },
+     "adapter_force_secondary": {
+      "verified": true,
+      "state": "PASS",
+      "primary_label": "HOMOPHONE_EQUIVALENT",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "secondary_text": "Make one yourself with by us.",
+      "multiword_spans": [
+       [
+        {
+         "canonical_span": [
+          "byus"
+         ],
+         "asr_span": [
+          "buy",
+          "us"
+         ]
+        }
+       ]
+      ]
+     },
+     "why_primary_focal": [
+      true,
+      "phoneme_equal"
+     ],
+     "intent_split_confirmed": false
+    },
+    {
+     "cand": "c4_Bye-us(control)",
+     "tts_input": "Make one yourself with Bye-us.",
+     "tts_status": "OK",
+     "tts_model": "gemini-3.8-flash-lite-tts",
+     "primary_openai": "Make one yourself with bias.",
+     "azure": "Make one yourself with bias.",
+     "local_whisper_small_words": [
+      [
+       "Make",
+       0.0,
+       0.44
+      ],
+      [
+       "one",
+       0.44,
+       0.64
+      ],
+      [
+       "yourself",
+       0.64,
+       0.98
+      ],
+      [
+       "with",
+       0.98,
+       1.22
+      ],
+      [
+       "bias.",
+       1.22,
+       1.54
+      ]
+     ],
+     "local_text": "Make one yourself with bias.",
+     "focal": {
+      "primary_openai": "bias",
+      "azure": "bias",
+      "local_text": "bias"
+     },
+     "adapter_normal": {
+      "verified": true,
+      "state": "PASS",
+      "primary_label": "HOMOPHONE_EQUIVALENT",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "secondary_text": null,
+      "multiword_spans": []
+     },
+     "adapter_force_secondary": {
+      "verified": true,
+      "state": "PASS",
+      "primary_label": "HOMOPHONE_EQUIVALENT",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "secondary_text": "Make one yourself with bias.",
+      "multiword_spans": []
+     },
+     "why_primary_focal": [
+      null,
+      null
+     ],
+     "intent_split_confirmed": false
+    },
+    {
+     "cand": "c5_B_I_us",
+     "tts_input": "Make one yourself with B I us.",
+     "tts_status": "OK",
+     "tts_model": "gemini-3.8-flash-lite-tts",
+     "primary_openai": "Make one yourself with BIS.",
+     "azure": "Make one yourself with Bis.",
+     "local_whisper_small_words": [
+      [
+       "Make",
+       0.0,
+       0.44
+      ],
+      [
+       "one",
+       0.44,
+       0.64
+      ],
+      [
+       "yourself",
+       0.64,
+       1.02
+      ],
+      [
+       "with",
+       1.02,
+       1.36
+      ],
+      [
+       "BIS.",
+       1.36,
+       1.92
+      ]
+     ],
+     "local_text": "Make one yourself with BIS.",
+     "focal": {
+      "primary_openai": "bis",
+      "azure": "bis",
+      "local_text": "bis"
+     },
+     "adapter_normal": {
+      "verified": false,
+      "state": "NG_BOTH",
+      "primary_label": "TRUE_CONTENT_MISMATCH",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "secondary_text": "Make one yourself with Bis.",
+      "multiword_spans": []
+     },
+     "adapter_force_secondary": {
+      "verified": false,
+      "state": "NG_BOTH",
+      "primary_label": "TRUE_CONTENT_MISMATCH",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "secondary_text": "Make one yourself with Bis.",
+      "multiword_spans": []
+     },
+     "why_primary_focal": [
+      null,
+      null
+     ],
+     "intent_split_confirmed": false
+    },
+    {
+     "cand": "c6_be-us",
+     "tts_input": "Make one yourself with be-us.",
+     "tts_status": "OK",
+     "tts_model": "gemini-3.8-flash-lite-tts",
+     "primary_openai": "Make one yourself, with BS.",
+     "azure": "Make one yourself with be us.",
+     "local_whisper_small_words": [
+      [
+       "Make",
+       0.0,
+       0.32
+      ],
+      [
+       "one",
+       0.32,
+       0.52
+      ],
+      [
+       "yourself,",
+       0.52,
+       0.94
+      ],
+      [
+       "with",
+       1.4,
+       1.5
+      ],
+      [
+       "be",
+       1.5,
+       1.7
+      ],
+      [
+       "us.",
+       1.7,
+       1.9
+      ]
+     ],
+     "local_text": "Make one yourself, with be us.",
+     "focal": {
+      "primary_openai": "bs",
+      "azure": "be us",
+      "local_text": "be us"
+     },
+     "adapter_normal": {
+      "verified": false,
+      "state": "NG_BOTH",
+      "primary_label": "TRUE_CONTENT_MISMATCH",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "secondary_text": "Make one yourself with be us.",
+      "multiword_spans": []
+     },
+     "adapter_force_secondary": {
+      "verified": false,
+      "state": "NG_BOTH",
+      "primary_label": "TRUE_CONTENT_MISMATCH",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "secondary_text": "Make one yourself with be us.",
+      "multiword_spans": []
+     },
+     "why_primary_focal": [
+      null,
+      null
+     ],
+     "intent_split_confirmed": true
+    }
+   ]
+  }
+ ],
+ "shared_state_unchanged": true,
+ "shared_files_changed_outside_evidence": [
+  "docs/pm/delegation_log/2026-10-22_B3RD6_stop_check.json",
+  "docs/research/PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01/IMPLEMENTATION_DESIGN_01.md"
+ ],
+ "cost": {
+  "est_total_jpy": 1.6084,
+  "n_tts": 8,
+  "n_openai_asr": 9,
+  "n_azure": 7,
+  "azure_seconds": 20.79,
+  "n_text_llm": 0,
+  "usage_log": "er094_output/pnmh_prod_wiring_01/runtime_paid/usage_log.jsonl"
+ }
+}

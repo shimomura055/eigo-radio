@@ -86,7 +86,13 @@ def mw(c, a, entity_like=False, detail=None, cfg=None):
     return ok
 
 
+# A-2(2026-10-22): 本scriptは配線前の測定再現用(メモリ上source patch)。配線後のProduction実コードは同じ位置に `er094` 呼出を持つため、
+# 二重適用を避けて「配線前と同一の土台」にするよう、実コード側の多語同音をrollback定数でOFFにしてからpatchする(判定は配線前とバイト一致)。
+# 配線後の実コードの検証は er094_pnmh_regression_01.py(実コード直呼び・定数切替)を使う。
+import er094_multiword_homophone_01 as _er094
+_er094.MULTIWORD_HOMOPHONE_ENABLED = False
 _src = inspect.getsource(val.protected_check)
+assert _src.count("_mw_homophone.multiword_homophone_candidate(") <= 1   # 実コード側の呼出は最大1回(二重適用の検知)
 _OLD = "                    homophone_candidate = bool(result_h)\n"
 _NEW = _OLD + ("                if not homophone_candidate and PROTO_MULTIWORD(canon_span, asr_span, entity_like):\n"
                "                    homophone_candidate = True\n")

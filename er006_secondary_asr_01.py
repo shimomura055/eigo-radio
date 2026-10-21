@@ -769,7 +769,8 @@ def evaluate_attempt_with_cascade_detail(
             "cascade_invoked": False,
             "steps": [{"step": "primary_1", "provider": "openai_asr", "text": asr_text,
                        "classification": cls.classification,
-                       "entity_like_source": val.aggregate_entity_like_sources(cls.protected.content_word_diffs)}],
+                       "entity_like_source": val.aggregate_entity_like_sources(cls.protected.content_word_diffs),
+                       **val.multiword_steps_extra(cls.protected.content_word_diffs)}],
             "final_status": cls.classification, "human_review_required": False, "canonical_text": canonical_text,
             "wav_path": wav_path, "cost_guard_triggered": False, "non_latin_cascade_invoked": False,
             "connected_speech_equivalence_layer_invoked": False}
@@ -783,7 +784,9 @@ def evaluate_attempt_with_cascade_detail(
     steps = [{"step": "primary_1", "provider": "openai_asr", "text": asr_text,
               "classification": cls.classification,
               # S3(additive、修正1回目): entity_like判定の根拠カテゴリ。
-              "entity_like_source": val.aggregate_entity_like_sources(cls.protected.content_word_diffs)}]
+              "entity_like_source": val.aggregate_entity_like_sources(cls.protected.content_word_diffs),
+              # PNMH-01(additive・判定不変・多語同音一致時のみキー付与): 多語同音救済で同音候補になったspan。
+              **val.multiword_steps_extra(cls.protected.content_word_diffs)}]
     # M1: segment単位の凍結(最初の呼出時のみ生成、以降は再利用)。en-US以外は不発。
     # 委任_03(Opus_H条件1): LR後の再TTS/減速後再検証はattempt_ctx["m1_anchor_text"](=元原稿)を渡し、元segment開始時刻で凍結する。
     # 未指定時は従来の呼出(引数1つ)のまま=挙動不変。
@@ -929,7 +932,8 @@ def evaluate_attempt_with_cascade_detail(
                        "azure_phrase_list": list(ledger_phrases or []),
                        "non_latin_info": non_latin_dominance_info(asr_text),
                        "entity_like_source": (val.aggregate_entity_like_sources(cls_nl.protected.content_word_diffs)
-                                               if cls_nl else [])})
+                                               if cls_nl else []),
+                       **(val.multiword_steps_extra(cls_nl.protected.content_word_diffs) if cls_nl else {})})
         if cls_nl is not None and cls_nl.should_pass:
             result["verified"] = True
             result["final_status"] = cls_nl.classification
@@ -1024,7 +1028,8 @@ def evaluate_attempt_with_cascade_detail(
                        "azure_phrase_list_weight": (AZURE_PHRASE_LIST_WEIGHT if ledger_phrases else None),
                        "azure_phrase_list": list(ledger_phrases or []), "cached": bool(sec.get("cached")),
                        "unified_judge_state": jr.state,
-                       "entity_like_source": (val.aggregate_entity_like_sources(cls_s.protected.content_word_diffs) if cls_s else [])})
+                       "entity_like_source": (val.aggregate_entity_like_sources(cls_s.protected.content_word_diffs) if cls_s else []),
+                       **(val.multiword_steps_extra(cls_s.protected.content_word_diffs) if cls_s else {})})
     if az.cost_guard_triggered:
         result["cost_guard_triggered"] = True
 
@@ -1071,6 +1076,10 @@ def evaluate_attempt_with_cascade_detail(
                 result["pronunciation_lookups"] = pronunciation_lookups
     audit["adapter"] = {"layers": layers, "azure_real_calls": az.real_calls, "cost_guard_triggered": az.cost_guard_triggered,
                         "language": language, "segment_id": segment_id, "asr_text_present": asr_text is not None,
-                        "cache": {"calls": cache.calls, "hits": cache.hits}}
+                        "cache": {"calls": cache.calls, "hits": cache.hits},
+                        # PNMH-01(additive・判定不変・多語同音一致時のみキー付与): 保存されるasr_judgement(Z/Xのtts_generation_results)にも
+                        # 多語同音で同音候補になったspanを残す(steps[*]と同じ内容の要約)。非一致/OFF時はキー無し。
+                        **({"multiword_homophone_spans": [sp for st in steps for sp in (st.get("multiword_homophone_spans") or [])]}
+                           if any(st.get("multiword_homophone_spans") for st in steps) else {})}
     result["asr_judgement"] = audit
     return result

@@ -1,0 +1,191 @@
+{
+ "canonical": "Make one yourself with byUs.",
+ "candidates": [
+  {
+   "cand": "c1_Bi-us",
+   "tts_input": "Make one yourself with Bi-us.",
+   "openai": "Make one yourself with BIOS.",
+   "azure": "Make one yourself with BIOS.",
+   "local_whisper_small": "Make one yourself with BIOS.",
+   "intent_split_confirmed_auto": false,
+   "adapter_normal": {
+    "verified": false,
+    "state": "NG_BOTH",
+    "primary_label": "TRUE_CONTENT_MISMATCH",
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "secondary_text": "Make one yourself with BIOS.",
+    "multiword_spans": []
+   },
+   "adapter_force_secondary": {
+    "verified": false,
+    "state": "NG_BOTH",
+    "primary_label": "TRUE_CONTENT_MISMATCH",
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "secondary_text": "Make one yourself with BIOS.",
+    "multiword_spans": []
+   },
+   "classification": "構成失敗(意図した区切り発音でない)",
+   "note": "TTSが『BIOS』と読み、3エンジン一致でbios。意図した2語区切りではない。adapterはNOT_PASS(Primary TRUE_CONTENT_MISMATCH/Secondary BIOS)だが、負例PASSの証拠にもNG維持の証拠にも使わない"
+  },
+  {
+   "cand": "c2_Bi_us",
+   "tts_input": "Make one yourself with Bi us.",
+   "openai": "Make one yourself with bias.",
+   "azure": "Make one yourself with by us.",
+   "local_whisper_small": "Make one yourself with Bias.",
+   "intent_split_confirmed_auto": false,
+   "adapter_normal": {
+    "verified": true,
+    "state": "PASS",
+    "primary_label": "HOMOPHONE_EQUIVALENT",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "secondary_text": null,
+    "multiword_spans": []
+   },
+   "adapter_force_secondary": {
+    "verified": true,
+    "state": "PASS",
+    "primary_label": "HOMOPHONE_EQUIVALENT",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "secondary_text": "Make one yourself with by us.",
+    "multiword_spans": []
+   },
+   "classification": "既知の限界BI3(ASR照合では検出不能)",
+   "note": "ASRがbias/by usへ寄せた(OpenAI=bias、Azure=by us、local=Bias)。adapterはPASS=既存1:1同音/despaceの既存挙動で、新規則(multiword)は寄与していない(multiword_spans空)"
+  },
+  {
+   "cand": "c3_Bi,_us",
+   "tts_input": "Make one yourself with Bi, us.",
+   "openai": "Make one yourself with Buy Us.",
+   "azure": "Make one yourself with by us.",
+   "local_whisper_small": "Make one yourself with by us.",
+   "intent_split_confirmed_auto": false,
+   "adapter_normal": {
+    "verified": true,
+    "state": "PASS",
+    "primary_label": "HOMOPHONE_EQUIVALENT",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "secondary_text": null,
+    "multiword_spans": [
+     [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    ]
+   },
+   "adapter_force_secondary": {
+    "verified": true,
+    "state": "PASS",
+    "primary_label": "HOMOPHONE_EQUIVALENT",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "secondary_text": "Make one yourself with by us.",
+    "multiword_spans": [
+     [
+      {
+       "canonical_span": [
+        "byus"
+       ],
+       "asr_span": [
+        "buy",
+        "us"
+       ]
+      }
+     ]
+    ]
+   },
+   "classification": "構成失敗(TTSが『by us』と読んだ)",
+   "note": "Azure/local=by us、OpenAI=Buy Us。意図した区切りでなく通常のby us。新規則でPASS(正しい救済、Primary buy usでmultiword span記録)"
+  },
+  {
+   "cand": "c4_Bye-us(control)",
+   "tts_input": "Make one yourself with Bye-us.",
+   "openai": "Make one yourself with bias.",
+   "azure": "Make one yourself with bias.",
+   "local_whisper_small": "Make one yourself with bias.",
+   "intent_split_confirmed_auto": false,
+   "adapter_normal": {
+    "verified": true,
+    "state": "PASS",
+    "primary_label": "HOMOPHONE_EQUIVALENT",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "secondary_text": null,
+    "multiword_spans": []
+   },
+   "adapter_force_secondary": {
+    "verified": true,
+    "state": "PASS",
+    "primary_label": "HOMOPHONE_EQUIVALENT",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "secondary_text": "Make one yourself with bias.",
+    "multiword_spans": []
+   },
+   "classification": "対照(bye-usがbiasに寄った)",
+   "note": "3エンジンbias。既存1:1同音でPASS(新規則は寄与なし)"
+  },
+  {
+   "cand": "c5_B_I_us",
+   "tts_input": "Make one yourself with B I us.",
+   "openai": "Make one yourself with BIS.",
+   "azure": "Make one yourself with Bis.",
+   "local_whisper_small": "Make one yourself with BIS.",
+   "intent_split_confirmed_auto": false,
+   "adapter_normal": {
+    "verified": false,
+    "state": "NG_BOTH",
+    "primary_label": "TRUE_CONTENT_MISMATCH",
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "secondary_text": "Make one yourself with Bis.",
+    "multiword_spans": []
+   },
+   "adapter_force_secondary": {
+    "verified": false,
+    "state": "NG_BOTH",
+    "primary_label": "TRUE_CONTENT_MISMATCH",
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "secondary_text": "Make one yourself with Bis.",
+    "multiword_spans": []
+   },
+   "classification": "構成失敗(文字読みがbisに寄った)",
+   "note": "3エンジンbis。adapter NOT_PASS(TRUE_CONTENT_MISMATCH)だが意図区切りの確認なし"
+  },
+  {
+   "cand": "c6_be-us",
+   "tts_input": "Make one yourself with be-us.",
+   "openai": "Make one yourself, with BS.",
+   "azure": "Make one yourself with be us.",
+   "local_whisper_small": "Make one yourself, with be us.",
+   "intent_split_confirmed_auto": true,
+   "adapter_normal": {
+    "verified": false,
+    "state": "NG_BOTH",
+    "primary_label": "TRUE_CONTENT_MISMATCH",
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "secondary_text": "Make one yourself with be us.",
+    "multiword_spans": []
+   },
+   "adapter_force_secondary": {
+    "verified": false,
+    "state": "NG_BOTH",
+    "primary_label": "TRUE_CONTENT_MISMATCH",
+    "classification": "TRUE_CONTENT_MISMATCH",
+    "secondary_text": "Make one yourself with be us.",
+    "multiword_spans": []
+   },
+   "classification": "負例として採用(意図した区切りを確認)",
+   "note": "Azure=『be us』・local whisper=『be us』(語境界 be 1.50-1.70s / us 1.70-1.90s)、OpenAIは『BS』。canonical=記事実テキストbyUs。adapter全体(Primary->Secondary->最終ANDゲート)でNOT_PASS(state=NG_BOTH)。理由: Primary focal『bs』はOOV/非救済、Secondary focal『be us』はmultiword規則でphoneme_differs(byus=B AY AH S / be us=B IY AH S)。force_secondary有無とも同じ"
+  }
+ ],
+ "adopted_negative": "c6_be-us",
+ "adopted_negative_judgement": "NOT_PASS (NG_BOTH)",
+ "adopted_negative_why": {
+  "primary_focal": "bs (OOV/非救済)",
+  "secondary_focal": "be us -> multiword phoneme_differs (B IY AH S != B AY AH S)"
+ }
+}

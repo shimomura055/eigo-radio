@@ -1,0 +1,169 @@
+{
+  "kp3_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "3c873c008116866d8dacf95ff713cf2ad0f8b94030ead68cb408dc0c4742cb38",
+    "language": "en",
+    "theme_id": "run_Z_KP_english_lock_fallback",
+    "level": "a2",
+    "segment_id": "kp3_en",
+    "updated_at": "2026-10-22T08:43:56",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_KP_english_lock_fallback/a2/narration/kp3_en.wav",
+    "cumulative_tts_attempts": 3,
+    "cumulative_asr_calls": 3,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 2.8,
+        "asr_text": "Make one yourself with buy us.",
+        "asr_text_length": 30,
+        "max_len": 38,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "stub": "api0_not_under_test"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 1246,
+          "sha256": "dcd08dcae5b0ce13fd35da0980d4cf021e0b2c0a33db0cec6c8377444b3bbf30",
+          "head200": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not add explanations, examples, introductions, or any other com"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Make one yourself with buy us.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": [],
+            "multiword_homophone_spans": [
+              {
+                "canonical_span": [
+                  "byus"
+                ],
+                "asr_span": [
+                  "buy",
+                  "us"
+                ]
+              }
+            ]
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 3,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "255f779e73722ebf47262ac8f12c7273d5ac27035ecebbc6343be2d689e1d14d",
+          "primary": {
+            "text": "Make one yourself with buy us.",
+            "passed": true,
+            "label": "HOMOPHONE_EQUIVALENT",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "EQUAL",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 30,
+            "secondary_len": null,
+            "max_len": 38,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [
+              "cmu_alternate"
+            ],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 1
+            },
+            "multiword_homophone_spans": [
+              {
+                "canonical_span": [
+                  "byus"
+                ],
+                "asr_span": [
+                  "buy",
+                  "us"
+                ]
+              }
+            ]
+          }
+        },
+        "attempt_audio_path": "er094_output/pnmh_prod_wiring_01/runtime_api0/run_Z_KP_english_lock_fallback/a2/narration/attempts/kp3_en_attempt3_custom31eb2f72.wav"
+      }
+    ]
+  }
+}

@@ -1,8 +1,8 @@
-"""er094_multiword_homophone_01 のunit test(API 0・未配線module・ファイル出力なし)。
+"""er094_multiword_homophone_01 のunit test(API 0・ファイル出力なし)。
 実行: .venv/Scripts/python.exe -m unittest er094_multiword_homophone_01_test_01 -v
-文単位テストは val.protected_check のソースを「メモリ上でのみ」patch(A-2で入れる予定の2行と同一)して検証する。
-Production既存ファイルは編集しない(A-1)。"""
-import importlib, inspect, json, os, sys, unittest
+A-2(配線後): 文単位テストは実コード(val.protected_checkの配線済み呼出)を直接叩く。exec差替えpatchは廃止(P-06、二重適用防止)。
+before=MULTIWORD_HOMOPHONE_ENABLED=False(rollback定数=現行挙動)、after=True(既定)。"""
+import inspect, json, os, re, sys, unittest
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, ROOT)
@@ -11,21 +11,6 @@ import er006_preprod_hardening_01_validation as val
 import er006_secondary_asr_01 as sec
 
 CASES = os.path.join(ROOT, "docs", "research", "PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01", "TRIAL_CASES_01.json")
-_OLD = "                    homophone_candidate = bool(result_h)\n"
-_NEW = _OLD + ("                if not homophone_candidate and _MW_CAND(canon_span, asr_span, entity_like):\n"
-               "                    homophone_candidate = True\n")
-
-
-def _patch_val():
-    src = inspect.getsource(val.protected_check)
-    assert _OLD in src
-    val.__dict__["_MW_CAND"] = mw.multiword_homophone_candidate
-    exec(compile(src.replace(_OLD, _NEW), "<er094_patched_protected_check>", "exec"), val.__dict__)
-
-
-def _unpatch_val():
-    importlib.reload(val)
-    importlib.reload(sec)
 
 
 def judge(c, a):
@@ -106,21 +91,26 @@ class SpanLevel(unittest.TestCase):
         self.assertIs(mw.MULTIWORD_HOMOPHONE_ENABLED, True)
 
 
-class SentenceLevelInMemory(unittest.TestCase):
+class SentenceLevelRealCode(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        _unpatch_val()
         cases = json.load(open(CASES, encoding="utf-8"))
         cls.cases = cases
-        cls.before = {c["id"]: judge(c["canonical"], c["asr"]) for c in cases}   # 未patch=現行
-        _patch_val()
+        mw.MULTIWORD_HOMOPHONE_ENABLED = False
+        try:
+            cls.before = {c["id"]: judge(c["canonical"], c["asr"]) for c in cases}   # 定数OFF=現行
+        finally:
+            mw.MULTIWORD_HOMOPHONE_ENABLED = True
         cls.after = {c["id"]: judge(c["canonical"], c["asr"]) for c in cases}
         mw.MULTIWORD_HOMOPHONE_ENABLED = False
-        cls.after_off = {c["id"]: judge(c["canonical"], c["asr"]) for c in cases}   # rollback時
-        mw.MULTIWORD_HOMOPHONE_ENABLED = True
-    @classmethod
-    def tearDownClass(cls):
-        _unpatch_val()
+        try:
+            cls.after_off = {c["id"]: judge(c["canonical"], c["asr"]) for c in cases}
+        finally:
+            mw.MULTIWORD_HOMOPHONE_ENABLED = True
+    def test_wired_real_code_no_exec_patch(self):
+        src = inspect.getsource(val.protected_check)
+        self.assertEqual(src.count("_mw_homophone.multiword_homophone_candidate("), 1)   # 呼出1回(二重適用なし)
+        self.assertNotIn("_MW_CAND", src)
     def test_41_cases_count(self):
         self.assertEqual(len(self.cases), 41)
     def test_41_cases_expectations(self):
@@ -144,9 +134,124 @@ class SentenceLevelInMemory(unittest.TestCase):
             if c["expect"] == "NOT_PASS": self.assertTrue(a.startswith("NOT_PASS"), c["id"])  # 新規誤PASS 0
     def test_rollback_flag_off_is_identical_to_current(self):
         self.assertEqual(self.before, self.after_off)
+    def test_off_dicts_byte_identical(self):
+        # OFF(定数False)時: 判定dict(content_word_diffs)にadditiveキーが現れない
+        mw.MULTIWORD_HOMOPHONE_ENABLED = False
+        try:
+            r = val.classify_asr_match("The service is called byUs now.", "The service is called buy us now.")
+            for d in r.protected.content_word_diffs:
+                self.assertNotIn("multiword_homophone", d)
+            self.assertEqual(val.multiword_steps_extra(r.protected.content_word_diffs), {})
+        finally:
+            mw.MULTIWORD_HOMOPHONE_ENABLED = True
+    def test_additive_key_only_on_hit_with_original_spans(self):
+        r = val.classify_asr_match("Try byUs now.", "Try buy us now.")
+        hits = [d for d in r.protected.content_word_diffs if d.get("multiword_homophone")]
+        self.assertEqual(len(hits), 1)
+        self.assertEqual(hits[0]["multiword_homophone"], {"canonical_span": ["byus"], "asr_span": ["buy", "us"]})
+        self.assertEqual(val.multiword_steps_extra(r.protected.content_word_diffs)["multiword_homophone_spans"],
+                         [{"canonical_span": ["byus"], "asr_span": ["buy", "us"]}])
+        # 1:1同音(既存経路)にはキーが付かない
+        r2 = val.classify_asr_match("We wait here.", "We weight here.")
+        self.assertFalse([d for d in r2.protected.content_word_diffs if "multiword_homophone" in d])
+    def test_bius_negative_article_text_byUs(self):
+        # P-07: canonicalは記事実テキスト byUs。adapter(Primary->Secondary->最終)での判定はruntime evidenceで別途記録
+        S = "The service is called %s now."
+        j = judge(S % "byUs", S % "Bi-us")
+        self.assertTrue(j.startswith("NOT_PASS"), j)
+        d = {}
+        self.assertFalse(mw.multiword_span_equivalent_v3(["byus"], ["bi", "us"], detail=d))
+        self.assertIn("V8", d["why"])
+
+
     def test_bius_sentence_ng(self):
         S = "The service is called %s now."
         self.assertTrue(judge(S % "bias", S % "Bi-us").startswith("NOT_PASS"))
+
+
+class StaticChecks(unittest.TestCase):
+    PROD = [f for f in os.listdir(ROOT) if f.endswith(".py") and f.startswith("er") and "_test" not in f
+            and "validation_test" not in f]
+    def test_no_production_py_assigns_flag(self):
+        pat = re.compile(r"^[ 	]*[\w.]*MULTIWORD_HOMOPHONE_ENABLED[ 	]*=(?!=)|setattr\([^)]*MULTIWORD_HOMOPHONE_ENABLED", re.M)
+        bad = []
+        for f in self.PROD:
+            if f == "er094_multiword_homophone_01.py":
+                continue
+            with open(os.path.join(ROOT, f), encoding="utf-8", errors="ignore") as fh:
+                t = fh.read()
+            if pat.search(t):
+                bad.append(f)
+        # 代入してよいのはtest/measure/run系のみ(Productionではない)。ここでは tools/trial/測定系の命名を除外
+        bad = [f for f in bad if not re.search(r"(test|measure|trial|probe|evidence|regression)", f)]
+        self.assertEqual(bad, [])
+    def test_only_val_imports_er094(self):
+        users = []
+        for f in self.PROD:
+            if f == "er094_multiword_homophone_01.py":
+                continue
+            with open(os.path.join(ROOT, f), encoding="utf-8", errors="ignore") as fh:
+                t = fh.read()
+            if re.search(r"^\s*(import|from)\s+er094_multiword_homophone_01", t, re.M):
+                users.append(f)
+        users = [f for f in users if not re.search(r"(test|measure|trial|probe|evidence|regression)", f)]
+        self.assertEqual(users, ["er006_preprod_hardening_01_validation.py"])
+    def test_hr_lock_has_no_rejudge_auto_unlock(self):
+        t = open(os.path.join(ROOT, "er019_family_x_validation_inheritance_01.py"), encoding="utf-8").read()
+        i = t.index("def rejudge_with_current_judge")
+        body = t[i:i + 2500]
+        self.assertNotRegex(body, r"(?i)unlock|hr_lock|release_lock|clear_lock")
+
+
+class J11RejudgeActualBehavior(unittest.TestCase):
+    """P-01: 再判定経路(rejudge_with_current_judge)はshould_passのみで判定し_step_alternate_passを通らない。
+    多語同音一致(ASR_VALIDATION_UNCERTAIN系)は再判定でshould_pass=False=従来どおり再生成(安全側。既存1:1同音と同じ)。"""
+    def test_rejudge_path_uses_should_pass_only(self):
+        import er019_family_x_validation_inheritance_01 as inh
+        src = inspect.getsource(inh.rejudge_with_current_judge)
+        self.assertIn("should_pass", src)
+        self.assertNotIn("_step_alternate_pass", src)
+    def test_multiword_homophone_is_not_should_pass_on_plain_classify(self):
+        S = "The service is called %s now."
+        r = val.classify_asr_match(S % "byUs", S % "buy us")
+        self.assertFalse(r.should_pass)                       # 再判定はF1_REJUDGE_NG側(安全側。1:1同音と同挙動)
+        r11 = val.classify_asr_match("We wait here.", "We weight here.")
+        self.assertFalse(r11.should_pass)                     # 既存1:1同音も同じ
+        self.assertTrue(sec.is_homophone_candidate_mismatch(r))   # 通常cascade入口(_step_alternate_pass)でのみ救済
+
+
+class AdapterEvidenceKeys(unittest.TestCase):
+    """P-03: 証跡(steps[*]とasr_judgement.adapter)は一致時のみ付与・判定不変・OFF時はキー無し。"""
+    @classmethod
+    def setUpClass(cls):
+        import tempfile, wave
+        cls.d = tempfile.mkdtemp()
+        cls.wav = os.path.join(cls.d, "x.wav")
+        with wave.open(cls.wav, "wb") as f:
+            f.setnchannels(1); f.setsampwidth(2); f.setframerate(16000); f.writeframes(b"\0\0" * 16000)
+        cls._orig_az = sec.get_full_text_via_azure_stt_with_phrase_list
+        sec.get_full_text_via_azure_stt_with_phrase_list = lambda *a, **k: (_ for _ in ()).throw(AssertionError("Secondary must not be called"))
+    @classmethod
+    def tearDownClass(cls):
+        sec.get_full_text_via_azure_stt_with_phrase_list = cls._orig_az
+    def _run(self, canon, asr):
+        return sec.evaluate_attempt_with_cascade_detail(canon, asr, [], self.wav, language="en-US", ledger_phrases=[])
+    def test_keys_on_hit_only(self):
+        d = self._run("The service is called byUs now.", "The service is called buy us now.")
+        self.assertTrue(d["verified"])
+        self.assertEqual(d["steps"][0]["multiword_homophone_spans"], [{"canonical_span": ["byus"], "asr_span": ["buy", "us"]}])
+        self.assertEqual(d["asr_judgement"]["adapter"]["multiword_homophone_spans"], d["steps"][0]["multiword_homophone_spans"])
+        d2 = self._run("We wait here.", "We wait here.")
+        self.assertNotIn("multiword_homophone_spans", d2["steps"][0])
+        self.assertNotIn("multiword_homophone_spans", d2["asr_judgement"]["adapter"])
+    def test_off_has_no_keys_and_not_verified(self):
+        mw.MULTIWORD_HOMOPHONE_ENABLED = False
+        try:
+            d = sec.evaluate_attempt_with_cascade_detail("The service is called byUs now.", "The service is called buy us now.", [], self.wav,
+                                                          language="en-US", ledger_phrases=[], cascade_enabled=False)
+            self.assertNotIn("multiword_homophone_spans", d["steps"][0])
+        finally:
+            mw.MULTIWORD_HOMOPHONE_ENABLED = True
 
 
 if __name__ == "__main__":
