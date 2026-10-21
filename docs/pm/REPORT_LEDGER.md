@@ -451,3 +451,5 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-22 | FAMILY-XZ-ASR-PASS-CONDITION-SPEC-AUDIT-01 委任_01(Family X/Z ASR PASS条件の仕様/実装対応表・調査のみ・OPEN-440・API 0・JPY0): ユーザー初回報告=未(Fable判定待ち)、Feedback=未
 - 2026-10-22 | ASR-THREE-WAY-COMPARISON-TRIAL-01 委任_03(ユーザー正式決定#136のCloseout記録のみ・API 0・JPY0: Primary OpenAI/Secondary Azure維持・Whisper不採用・入替なし・追加検証なし、KP両方PASSは方針表明のみ[OPEN-440へ]、OPEN-438=DECIDED_CLOSED・OPEN-439=PLAN_FIXED_ASR_CONFIRMED_WAITING_OPEN440、Production無変更): ユーザー初回報告=未(Fable判定待ち)、Feedback=未
 - 2026-10-22 | PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01 委任_04(ユーザーGOによる計画v3 Trial実行[O1→P1]: ケース表41件全件期待どおり・4,032ペア再適用変化4件[byus→buy us]・PASS→NG 0・新規誤PASS 0・提案無効時バイト一致・構成音声13本[Production TTS/ASR、層B=C一致・実音声負例PASS 0・A5反転0]、実測費用JPY6.32[Cap 50]、分類案=VALIDATED条件付き[最終=Fable]、供給層L2は範囲外、Production無変更・Production採用/配線なし、OPEN-439=TRIAL_DONE_PENDING_FABLE) | 報告=docs/pm/RESULT_PACKET_PNMH4.md
+
+- 2026-10-22 | PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01 委任_05(Fable独立評価・最終分類の記録のみ・API 0・JPY0: 最終分類=VALIDATED[Trial。Production採用未承認]、条件=採用時Bi-us型実音声負例再取得、UDR #138登録[非blocking・推奨=OPEN-440実装と束ねて採用]、OPEN-439=VALIDATED) | 報告=docs/pm/RESULT_PACKET_PNMH5.md
