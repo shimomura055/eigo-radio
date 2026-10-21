@@ -320,7 +320,7 @@
 
 ### 2026-10-21 B3 中核数値丸め Fable判定追記(`FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01` 委任_02、OPEN-437。既存行は書き換えず追記のみ)
 
-- #135(UDR・未決・非blocking[記事制作を止めない]、2026-10-21 登録、B3-ROUNDING 委任_02、OPEN-437) 件名=B3 中核数値 丸め判断(FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01)のProduction採用可否。判断事項: D1 Fact Lock Writer数字規則(5)『丸め・「約」追加禁止』への【概数表記】例外の承認 / D2 原価+JPY2.95〜4.30/記事(70円比+4.2〜6.1%)の許容 or 削減Trial(effort low・出力削減)先行 / D3 粒度規定[有効2桁=13万 か 期待例の13万5千 か/既に概数のFactの再丸め可否] / D4 価値判断(効果は記事A 1箇所、音声聞き取り評価未実施)。Fable推奨=(ア)今は採用せず保留。理由: 効果が記事A 1箇所の聞き取りやすさに限られる一方、承認済み規則(5)の例外化+単価+4〜6%+粒度未規定の3つの新判断を要し、Q>D>Cの観点で費用対効果が現時点では低い。採用するなら先にD3粒度規定とD2削減Trial(effort low・出力削減)を条件にする。Status=未決。出典=docs/research/FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01/TRIAL_RESULT_01.md。
+- #135(UDR・未決・非blocking[記事制作を止めない]、2026-10-21 登録、2026-10-22更新[委任_04 Fable判定]、OPEN-437) 件名=B3 中核数値 丸め判断(FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01)のProduction採用可否。Trial2=VALIDATED条件付き(Luna low化で判断原価JPY3.65→0.12/件・品質Sol同等、停止0/12、原価+0.17%/記事)。選択肢=(ア)採用方向で最小仕様確定(条件: V8[相対誤差10%上限]必須・S5[MARK_RE/TAG_LEAK_RE追加]必須・粒度方針固定[小数%は概数=承認済み既定、相対誤差10%以内、既に概数の値は再丸めしない]・judge=Luna low、Production実装前にOpus条件Cレビュー)/(イ)保留。Fable推奨=(ア)(前回(ア)保留からの更新。理由=原価+4〜6%→+0.17%、量産停止の兆候なし。ただし価値は限定的[指定概数の使用2/7・聞き取り未評価]で(イ)も合理的)。付随判断=D1 Fact Lock規則(5)の【概数表記】例外化 / D3 粒度方針 / D5 タグガード / V8採否 / D4 価値判断。Status=未決。出典=docs/research/FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01/TRIAL_RESULT_02.md §10。
 
 ### 2026-10-21 ASR 3方式総合比較 Fable判定追記(`ASR-THREE-WAY-COMPARISON-TRIAL-01` 委任_02、OPEN-438。既存行は書き換えず追記のみ)
 
