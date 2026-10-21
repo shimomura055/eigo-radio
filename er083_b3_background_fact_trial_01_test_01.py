@@ -75,7 +75,11 @@ def test_baseline_dry_run_reproduces_production_selection_and_artifacts(tmp_path
     cdir = os.path.join(out_root, "art", "baseline", "s1", "storyline_b3")
     for name in ("selected_brief.md", "selected_brief_annotated.md", "annotation.json", "writer_constraints.txt", "full_ledger.json"):
         with open(os.path.join(cdir, name), "rb") as a, open(os.path.join(RUN, "storyline_b3", name), "rb") as b:
-            assert a.read() == b.read(), name       # Production producer出力とbyte同一
+            ra, rb = a.read(), b.read()
+            # 委任_02(FAMILY-X-MANGA-AI-CHAT-BYUS-PRODUCTION-E2E-01): 履歴run(run_mey_01)は旧rules_sha256で生成済み。producerの
+            # NUMドット区切り対応でrules_sha256のみ変わるため、旧値を現行値へ置換して比較(それ以外はbyte同一を要求)。
+            rb = rb.replace(b"525f2309b5212e68a5891794e7fa6194fb25cbf92f1954727c286796597910d8", __import__("er053_b3_deterministic_producer_01").rules_sha256().encode())
+            assert ra == rb, name       # Production producer出力とbyte同一(rules_sha256除く)
 
 
 # ---- (2) 候補=Promptへの追記のみ ---------------------------------------------------

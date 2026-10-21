@@ -205,6 +205,11 @@ class GoldenTests(unittest.TestCase):
         self.assertEqual(ev1, ev2)
 
 
+# FAMILY-X-MANGA-AI-CHAT-BYUS-PRODUCTION-E2E-01 委任_02: Trial原文からの唯一の意図的差分(NUMのドット区切り数値列 26.10.10 対応)。
+# 値 = (Trial原文, 本module期待コード部)。差分は (?:\.\d+)? -> (?:\.\d+)* のみ。
+DOCUMENTED_DIVERGENCE = {"NUM": ('NUM = r"\\d[\\d,]*(?:\\.\\d+)?"', 'NUM = r"\\d[\\d,]*(?:\\.\\d+)*"')}
+
+
 class PortFidelityTests(unittest.TestCase):
     """移植元Trial 3ファイルの constant/regex/関数が**ソース逐語**で本moduleに存在する(byte-identical)。"""
 
@@ -216,6 +221,10 @@ class PortFidelityTests(unittest.TestCase):
         ours = _segments(PRODUCER_PY)
         for name in prod._PORTED_NAMES:
             self.assertIn(name, ours, name)
+            if name in DOCUMENTED_DIVERGENCE:    # 委任_02: 承認済み設計内の整合是正1件のみ。コード部は期待値と完全一致を要求
+                self.assertEqual(ours[name].split("   #")[0], DOCUMENTED_DIVERGENCE[name][1], name)
+                self.assertIn(DOCUMENTED_DIVERGENCE[name][0], trial.get(name, []), name)
+                continue
             self.assertIn(ours[name], trial.get(name, []), f"{name}: producer source differs from every Trial source")
         self.assertEqual(len(prod._PORTED_NAMES), len(set(prod._PORTED_NAMES)))
 
