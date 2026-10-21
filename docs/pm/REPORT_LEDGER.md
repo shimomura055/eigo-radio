@@ -429,3 +429,4 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-21 | FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01 委任_03(記事A Std Full Story part2 Fallback仕様・承認・実行証拠の調査のみ、API 0・JPY0、採用保留、OPEN-432 Status変更なし): 報告=docs/pm/RESULT_PACKET_FXPP3.md
 - 2026-10-21 | FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01 委任_04(Fallback調査Fable分類B反映[OPEN-432 Status/REGISTER #132/CURRENT_SPEC注記/DECISION_LOG]+sidecar model/tts_backend記録是正+記事B 委任_04 T-0逐語再保存、API 0・JPY0、fallback take採用保留): 報告=docs/pm/RESULT_PACKET_FXPP4.md
 - 2026-10-21 | FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01 委任_05(Std試聴確認ページ[通し再生プレビュー+第2部ハイライト/単独再生]公開、API 0・JPY0、採用保留、OPEN-432 Status変更なし): 報告=docs/pm/RESULT_PACKET_FXPP5.md
+- 2026-10-21 | FAMILY-X-KP-ASR-DUAL-PASS-TRIAL-01 委任_01(Key Phrase音声QA Primary+Secondary両方PASS方式の限定Trial、既存kp4_en.wav[take part]に対しPrimary/Azure/Whisper各10回、実費JPY1.04、OPEN-433 KP_ASR_DUAL_PASS_TRIAL_DONE_PENDING_FABLE): 報告=docs/pm/RESULT_PACKET_KPDP1.md
