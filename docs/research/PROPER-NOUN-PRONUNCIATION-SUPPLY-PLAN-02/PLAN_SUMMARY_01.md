@@ -1,6 +1,43 @@
+# PLAN_SUMMARY_01: 固有名詞の正しい発音情報を「必要なときだけ」取得・登録・再利用する仕組み(改善計画 v2 要約)
+
+管理ID: PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02 委任_02 / 2026-10-22 / Status管理ラベル: `PLAN_V2_PENDING_USER`(計画のみ。API 0・JPY0・Trial未実行・Production/Ledger/Validator/Prompt無変更。VALIDATED / APPROVED_FOR_PRODUCTION / PRODUCTION_WIREDではない)。Fable独立レビュー所見FR-01〜11を反映済み(対応表=`REVIEW_POINTS_01.md` §3)。詳細=`PLAN_01.md`(末尾v2-0〜v2-9)、`DESIGN_OPTIONS_01.md`(v2節)、`INVESTIGATION_01.md`(定量)。この下の「v1要約」は履歴で、矛盾する場合はv2が優先。
+
+## v2-A. 全体像: 2段階で進める(FR-01・FR-11)
+- **Stage 1(PASS/NG判定を変えない改善。先行)**: 否定記録(調べて見つからなかった語を一定期間再調査しない)/Ledger照合を語の種類(entity_type)に依存させない/辞書収録の一般語(`main story`、`one voice`、`us`等)で調査を発火させない/Human Reviewの表示に階層と「調査済み・未取得」を出す/Ledger登録時に出典引用の実在確認(V1')を行う。判定基準・Gateは不変。ユーザーへは軽い承認事項として提示(承認済み原則「AI推測のみで確定しない・余計な調査をしない」の内側)。
+- **Stage 2(判定基準の変更=新仕様。Trial後)**: 引用確認済みの公式発音を同音判定(L1)の基準に供給/決定不要判定(全ての合理的な読みの共通部分だけを警告付きで受理)/人間確認の語単位再利用/M1の階層連動(提案のみ)。CURRENT_SPEC.md:1837(B)「Ledger情報は自動PASSの根拠にしない」の**例外**=ユーザー正式承認+Offline Trialが必要。
+- 推奨=Stage 1を先行し、Stage 2はTrialで取得率・誤登録0を確認してから。縮小案(Stage 1のみ)は誤PASS・費用とも最小だが、byUs型(同綴り衝突で公式発音が確定できない語)とHR再発は解決しない。
+
+## v2-B. Stage別の費用・効果・リスク
+| | Stage 1 | Stage 2 |
+|---|---|---|
+| 費用 | 開発のみ・量産単価は下がる。保存データ試算で調査が走る24ペアのうち11ペア(46%)が省ける(調査単価の代理値5.4円で約59円相当。現行の最終slot調査単価は未確認) | Trial約70〜115円(P1約54〜87円+P2約17〜26円、Cap案JPY150)。量産期待原価は中央値約0.9円/記事セット(範囲約0.16〜8.2円、70円目標の約1.3%) |
+| 効果 | 不要なWeb検索・LLM呼出の削減、同語の再調査防止、HRの明確化、誤登録の機械検出 | byUs型・Human Review再発(Kristie Tse型)の解消、辞書外語の取得→PASS |
+| リスク | Ledger追加キー(既存entry無改変)、lookup統一時の別語取り違え(test+replayで確認) | 誤PASS(出典の質・変換・共通読みの残留リスク)。誤登録は1件でもSTOP |
+
+## v2-C. v1要約の補正点
+- **出典の質(FR-02)**: A階層(PASS根拠)=公式ドメイン(本人・所属組織・権利者・公式イベント)または信頼できる辞書(allowlist、拡張は人間)+引用実在確認。個人ブログ等は引用が実在してもB階層(HR表示用)。CURRENT_SPEC:1837の優先順位(1)〜(4)と対応付け済み。
+- **IPA変換(FR-10)**: M1既存の決定論変換器で全記号が1:1対応する場合のみ。1つでも対応しない記号を含むIPAは階層外。近似はしない。
+- **トリガー時期(FR-04)**: 「最終slotまで」の根拠OF-179はM1候補の凍結の話で、調査・Ledger lookupの早期化を妨げない。0円試算では初回NG時調査は損益分岐の取得率が56%(PNEP実績14%では不利)で、現段階は最終slot維持。取得率56%以上が示された場合のみ比較armをTrialに追加。
+- **決定不要判定(FR-05)**: 候補集合=CMU同綴り全variant+綴り規則の合理的読み(分割語連結)+LedgerのB階層候補。共通部分が空/1候補のみなら不発。受理=PASS_WITH_WARNING+事後試聴リスト+「公式発音未確認・共通読み受理」。残留リスク=公式読みが共通読みと異なりTTSも共通読みのとき検出不能。Stage 2。
+- **否定記録(FR-06)**: key=正規化token(entity_type非依存)、TTL60日は暫定、人間承認・A階層登録で即無効化、一時失敗は保存しない、HRには「調査済み・未取得」を表示。
+- **外部URL取得(FR-07)**: 読み取り専用・サイズ上限・タイムアウト・テキスト抽出のみ・実行なし・専用dir分離・公式ドメイン優先(Trial O1で確認)。
+- **M1整合(FR-03)**: M1はconfidenceで絞らずlow候補も使う。M1候補を階層でB以上に限定した場合の影響を、保存M1記録のオフラインreplay(0円)でTrial O0に追加。実装は提案のみ・別判断。
+- **単価(FR-09)**: Perplexity sonar・`gpt-6-luna`+web_search・現行最終slot調査は未確認(見積に含めない)。PNEP実測(5.4円/語、追加検索16.3円/語、再試行5.16円/組)のみ使用。
+
+## v2-D. Trial計画(実行は未承認)
+- **Stage 1検証(0円オフライン)**: 保存HR queue/attempt_historyで調査呼出の減少を再現、lookup統一の誤命中0、HR階層表示でPASS/NG判定の差分0(保存転写4,032ペア+544転写)、既存Ledger 38件が無効化されないこと、FR-03のM1 replay、FR-04の試算(実施済み)。
+- **Stage 2 Trial(有料、約10語、Cap案JPY150)**: O0→O1(HTTPのみ、FR-07確認)→P1→P2(任意)→R。合格基準は既存のハード6条件(誤登録0・引用未確認のA階層0・既存判定の悪化0・Production/実Ledger無変更・不要な調査呼出0・一時失敗の否定保存0)を維持。
+
+## v2-E. ユーザー判断が必要な事項(判断候補。ラベルはFableが付与)
+- **Stage 1**: 実施承認(軽。PASS/NG不変)。
+- **Stage 2**: Trial GO+Cap(案JPY150) / J7(公式日本語読みを英語期待発音の根拠にしてよいか、未回答) / 判断3(1837(B)の例外=A階層をL1の基準に使う) / 判断4(決定不要判定のPASS_WITH_WARNING受理) / 判断5(人間確認の語単位再利用=A1) / M1階層連動の実装可否。
+- **共通**: #134(調査バックエンド。Perplexity枠切れは未回答) / #133(第4案(エ)「反応的・階層付きLedger(Stage 1先行、Stage 2はTrial後)」として併記、Statusは未回答のまま)。
+
+---
+# 以下はv1要約(履歴。2026-10-22 委任_01時点。Fable所見反映前)
 # PLAN_SUMMARY_01: 固有名詞の正しい発音情報を「必要なときだけ」取得・登録・再利用する仕組み(改善計画の要約)
 
-管理ID: PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02 委任_01 / 2026-10-22 / Status管理ラベル: `PLAN_DRAFT_PENDING_FABLE_REVIEW`(計画のみ。API 0・JPY0・Trial/Production/Ledger無変更。Fable独立レビューは未実施。VALIDATED / APPROVED_FOR_PRODUCTION / PRODUCTION_WIREDではない)。詳細=同dirの`PLAN_01.md`(設計・Trial・費用)、`DESIGN_OPTIONS_01.md`(比較)、`INVESTIGATION_01.md`(調査・定量)、`REVIEW_POINTS_01.md`(レビュー論点)。
+管理ID: PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02 委任_01 / 2026-10-22 / (旧Status: PLAN_DRAFT_PENDING_FABLE_REVIEW)(計画のみ。API 0・JPY0・Trial/Production/Ledger無変更。Fable独立レビューは未実施。VALIDATED / APPROVED_FOR_PRODUCTION / PRODUCTION_WIREDではない)。詳細=同dirの`PLAN_01.md`(設計・Trial・費用)、`DESIGN_OPTIONS_01.md`(比較)、`INVESTIGATION_01.md`(調査・定量)、`REVIEW_POINTS_01.md`(レビュー論点)。
 
 ## 1. 推奨する方式と理由(ユーザー原文§5 B の順)
 - 方式=「階層付きLedger+決定不要判定+反応的な1回限りの調査」。既存の最終slot調査(Case B)・Ledger・M1の変換器・前回Trialの検証部品を再利用し、新規は小関数4つ。

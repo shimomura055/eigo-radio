@@ -315,7 +315,7 @@
 
 ### 2026-10-21 PNEP 委任_03追記(`FAMILY-XZ-PROPER-NOUN-EN-PRONUNCIATION-SUPPLY-TRIAL-01`、OPEN-434。既存行は書き換えず追記のみ)
 
-- #133(UDR・未回答・非blocking[記事制作を止めない]、2026-10-21 登録、PNEP 委任_03、OPEN-434) 固有名詞英語発音供給の扱い: (ア)J7を認めて再Trial[byUs登録→PL供給の実証] (イ)現状維持(CMU層+人間承認)で採用見送り(Fable推奨) (ウ)綴りのみPL供給(J2)の限定採用Trial。根拠=Trial結果で必須要件K1未達(英語公式発音なし→安全終了)・効果限定・原価悪化寄り(結果=docs/research/FAMILY-XZ-PROPER-NOUN-EN-PRONUNCIATION-SUPPLY-TRIAL-01/TRIAL_RESULT_01.md)。
+- #133(UDR・未回答・非blocking[記事制作を止めない]、2026-10-21 登録、PNEP 委任_03、OPEN-434) 固有名詞英語発音供給の扱い: (ア)J7を認めて再Trial[byUs登録→PL供給の実証] (イ)現状維持(CMU層+人間承認)で採用見送り(Fable推奨) (ウ)綴りのみPL供給(J2)の限定採用Trial。根拠=Trial結果で必須要件K1未達(英語公式発音なし→安全終了)・効果限定・原価悪化寄り(結果=docs/research/FAMILY-XZ-PROPER-NOUN-EN-PRONUNCIATION-SUPPLY-TRIAL-01/TRIAL_RESULT_01.md)。 **選択肢追加(PNPS-PLAN-02 委任_02、2026-10-22。Statusは未回答のまま)**: (エ)反応的・階層付きLedger[Stage 1(PASS/NG不変の改善)先行、Stage 2(判定基準の変更)はTrial後](計画=docs/research/PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02/PLAN_SUMMARY_01.md、OPEN-441)。Fable推奨を従来の(イ)見送りから(エ)へ更新(Fable独立レビュー所見FR-08)。
 - #134(UDR・未回答・非blocking・外部課金、2026-10-21 登録、PNEP 委任_03、OPEN-434) Perplexity API利用枠切れ(HTTP 401 insufficient_quota)の復旧要否。Production `research_pronunciations`が動作しない可能性。選択肢=OpenAI web_search代替[高コスト]/Perplexity復旧[ユーザー側課金]/固有名詞HRパッケージの縮退許容。
 
 ### 2026-10-21 B3 中核数値丸め Fable判定追記(`FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01` 委任_02、OPEN-437。既存行は書き換えず追記のみ)

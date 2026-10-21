@@ -1,6 +1,6 @@
 # REVIEW_POINTS_01: Fable独立レビュー用の論点(自己評価と残論点)
 
-管理ID: PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02 委任_01 / 2026-10-22 / Status管理ラベル: `PLAN_DRAFT_PENDING_FABLE_REVIEW`。**Fable独立レビューは未実施**(本書はレビューを受けるための材料。Sonnetの自己評価であり、レビュー結果ではない)。
+管理ID: PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02 委任_01 / 2026-10-22 / Status管理ラベル: `PLAN_V2_PENDING_USER`(旧: PLAN_DRAFT_PENDING_FABLE_REVIEW。Fable独立レビュー所見FR-01〜11を§3に反映済み)。**以下§1〜§2はv1時点のSonnet自己評価(履歴)**(本書はレビューを受けるための材料。Sonnetの自己評価であり、レビュー結果ではない)。
 参考: CLAUDE.mdのOpus独立技術レビューGate(条件A=新しい構造・処理フローの設計)に該当し得る(階層付きLedger+供給口+決定不要判定は新しい処理フロー)。要否の判断はFable(PM_GOVERNANCE 11-3)。
 
 ## 1. ユーザーの11観点に沿った自己評価(評価欄はSonnet所見: 十分/条件付き/要レビュー)
@@ -28,6 +28,16 @@
 7. **#133との関係**: 本計画は#133の(ア)(イ)(ウ)とは別の第4の道。#133のStatusは変えていない。Fableが#133への反映方法(第4案として併記/UDRの選択肢更新)を判断。
 
 ## 3. レビューで見つかった問題の反映欄(Fableレビュー後に記入。過剰な再レビューはしない)
-| 指摘ID | 指摘 | 重要度 | 処置(計画への反映箇所) | 状態 |
+| 指摘ID | 指摘(Fable所見の見出し。全文は`docs/pm/delegation_log/2026-10-22_PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02_委任_02.md` §1) | 重要度 | 処置(計画への反映箇所) | 状態 |
 |---|---|---|---|---|
-| (未レビュー) | | | | |
+| FR-01 | 段階分割を計画の骨格にする(Stage 1=PASS/NG不変、Stage 2=判定基準変更・新仕様。Stage 1は軽い承認事項として提示) | Major | `PLAN_01.md` v2-1(Stage別の内容・費用・効果・リスク表)、`PLAN_SUMMARY_01.md`冒頭を2段構成に再編 | 反映済み |
+| FR-02 | 出典の質をA階層条件に含める(公式ドメインまたはallowlist辞書+引用実在。それ以外はB階層。1837の優先順位(1)〜(4)と対応) | Major | `PLAN_01.md` v2-2 | 反映済み |
+| FR-03 | M1との整合をStage 2に含める(M1はconfidenceで絞らない=`er006_m1_multi_candidate_01.py:235`。M1候補をB以上に限定した場合の影響を保存M1記録のオフラインreplay[0円]で測る。実装は提案のみ) | Major | `PLAN_01.md` v2-4、Trial O0へreplay項目追加(v2-8) | 反映済み(replayはTrial O0で実施) |
+| FR-04 | トリガー時期の根拠を分離して試算(OF-179はM1 anchor凍結の話。初回NG時調査のTTS再試行削減 vs 調査費を0円試算し、比較armの要否を出す) | Minor | `PLAN_01.md` v2-3、`fr04_early_trigger_estimate_01.py`・`_result.txt`(損益分岐の取得率56%) | 反映済み(試算実施) |
+| FR-05 | 決定不要判定の受理条件を明文化(候補集合の定義・不発条件・PASS_WITH_WARNING+事後試聴+Ledger記録・残留リスク1行・Stage 2) | Minor | `PLAN_01.md` v2-6、`DESIGN_OPTIONS_01.md` v2 | 反映済み |
+| FR-06 | 否定記録の仕様(key=正規化token・TTL60日暫定・即無効化・一時失敗は保存しない・HRに調査済み未取得を表示) | Minor | `PLAN_01.md` v2-5 | 反映済み |
+| FR-07 | 外部URL取得の安全条件(読み取り専用・サイズ上限・タイムアウト・テキスト抽出のみ・実行なし・専用dir分離・公式ドメイン優先。Trial O1で確認) | Minor | `PLAN_01.md` v2-7、v2-8(O1に追加) | 反映済み |
+| FR-08 | #133への反映(第4案(エ)併記。Fable推奨を(イ)→(エ)へ更新。Statusは未回答のまま) | Info | `docs/pm/USER_DECISION_REGISTER_01.md` #133行に追記、`DESIGN_OPTIONS_01.md` v2 | 反映済み |
+| FR-09 | 未確認単価(Perplexity sonar・gpt-6-luna+web_search・現行最終slot調査)はTrial GO前に確定、確定不能は未確認のまま見積に含めない | Info | `PLAN_01.md` v2-8(費用の整理) | 反映済み |
+| FR-10 | 用語・仕様位置づけ(PASS根拠階層は1837(B)の例外=新仕様。IPA→ARPAbetはM1既存の決定論変換器で1:1の場合のみ、他は階層外) | Info | `PLAN_01.md` v2-0 | 反映済み |
+| FR-11 | 代替案の結論(縮小案=Stage 1のみは誤PASS・費用最小だがbyUs型・HR再発は未解決。Stage 1を先行、Stage 2はTrial後。推奨もこの順) | Info | `PLAN_01.md` v2-1末尾、`PLAN_SUMMARY_01.md` | 反映済み |

@@ -1,6 +1,6 @@
 # PLAN_01: 固有名詞の正しい発音情報を「必要時のみ」取得・登録・再利用する仕組み(統合設計+Trial計画+費用)
 
-管理ID: PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02 委任_01(B-1) / 2026-10-22 / Status管理ラベル: `PLAN_DRAFT_PENDING_FABLE_REVIEW`(計画のみ。API 0・JPY0・Trial未実行・Production/Ledger/Validator/Prompt無変更)。
+管理ID: PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02 委任_01(B-1) / 2026-10-22 / Status管理ラベル: `PLAN_V2_PENDING_USER`(v2追記済み・末尾参照。旧: PLAN_DRAFT_PENDING_FABLE_REVIEW)(計画のみ。API 0・JPY0・Trial未実行・Production/Ledger/Validator/Prompt無変更)。
 本計画の「採用」は計画上の採用であり、VALIDATED / APPROVED_FOR_PRODUCTION / PRODUCTION_WIREDではない。UDR #133(固有名詞英語発音供給の扱い)・#134(Perplexity利用枠切れ)・J7(公式日本語読みを英語期待発音の根拠にしてよいか)は未回答のままStatusを変えず、分岐として扱う。調査・比較の根拠は`INVESTIGATION_01.md`、案の比較は`DESIGN_OPTIONS_01.md`。
 
 ## 1. 結論と方式の要約
@@ -195,3 +195,83 @@ Offline Trial→VALIDATED(Fable最終分類)→ユーザーの正式採用→Pro
 | 6 | 調査バックエンド(Perplexity継続/代替)と#134 | B/C境界(外部課金の復旧はユーザー側) | UDR #134は未回答。本計画はバックエンド非依存 |
 | 7 | UDR #133との関係: 本計画は(ア)J7再Trial/(イ)現状維持/(ウ)綴りのみPLのいずれとも異なる第4の道(反応的調査の具体化)。#133のStatusは変更しない | 情報(Fable判断) | OPEN-434 |
 | 8 | 既存の不足点(M1がconfidenceで絞らない、negative cache無し、Ledger重複)の是正を本計画と別に行うか | C(現タスクと独立の既存課題) | `INVESTIGATION_01.md` §6 |
+
+---
+# v2(委任_02 / 2026-10-22。Fable独立レビュー所見FR-01〜FR-11の反映。上のv1本文は履歴として残し、矛盾する場合はv2が優先)
+Status管理ラベル: `PLAN_V2_PENDING_USER`(計画のみ。API 0・JPY0・Trial未実行・Production/Ledger/Validator/Prompt無変更。VALIDATED / APPROVED_FOR_PRODUCTION / PRODUCTION_WIREDではない)。所見の原文は`docs/pm/delegation_log/2026-10-22_PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02_委任_02.md`、反映対応表は`REVIEW_POINTS_01.md` §3。
+
+## v2-0. 位置づけ(FR-10)
+- **「PASS根拠階層」(A階層)は新仕様**である。CURRENT_SPEC.md:1837(B)「Ledger情報は自動PASSの根拠にしない」「IPA→ARPAbet変換による近似自動PASSは行わない」の**例外**を作るため、承認済み仕様の変更にあたり、ユーザー正式承認とOffline Trialを要する(Stage 2)。
+- IPA→ARPAbet変換の定義: **M1既存の決定論変換器`ipa_to_arpa`(`er006_m1_multi_candidate_01.py:91`)で、全記号が1:1対応する場合に限り**音素列を作る。対応しない記号を1つでも含むIPAは変換せず階層外(B階層)とする。1837が禁じる「近似による自動PASS」とは、記号を近い音に丸めたり推測で補ったりすることであり、本計画は機械的に1:1で閉じた変換だけを許し、近似・推測を一切含まない(それでも1837(B)の例外であることに変わりはなく、ユーザー承認の対象)。現行Ledger 38件で全記号が変換不能のentryは3件(Ottoni、Boavida、khaite。`ipa_convertibility_01_result.txt`)で、これらは階層外のまま。
+- Stage 1は判定(PASS/NG)基準を変えない。Stage 2のみがPASS基準に触れる。
+
+## v2-1. 段階分割(FR-01・FR-11)
+| | Stage 1: PASS/NG判定を変えない改善 | Stage 2: 判定基準の変更(新仕様) |
+|---|---|---|
+| 内容 | (a)否定記録(v2-5)、(b)Ledger lookupの`entity_type`非依存化(同綴りは最上位を採用)、(c)一般語の誤トリガー除外(辞書収録の一般語・句=`main story`/`one voice`/`us`/`plus`等は調査しない)、(d)Human Reviewパッケージの階層表示(階層名・出典種別・調査済み/未取得)、(e)Ledger登録validatorへ「出典引用の実在確認(V1')」を追加(未検証のAI出力は`unverified`として区別。PASS根拠にはしない) | (a)A階層音素列のL1(`er094`)canonical側への供給(`expected_phoneme_provider`)、(b)決定不要判定のPASS_WITH_WARNING受理(v2-6)、(c)人間確認の語単位再利用(A1)、(d)M1の階層連動(v2-4。提案のみ・別判断) |
+| PASS/NG | **変えない**(不要な有料再調査と誤トリガーを止めるだけ) | 変える(1837(B)の例外=新仕様、ユーザー承認+Trial必須) |
+| Production変更 | 有り(Ledger/HR表示/validator/調査の発火条件)。**ユーザーへ軽い承認事項として提示**。承認済み原則(AI推測のみで確定しない・余計な調査をしない)の内側であり、新しい品質基準・Gateは作らない | 有り(判定経路)。Stage 1とTrial完了後 |
+| 費用 | 開発のみ。量産単価は**下がる**。保存データ試算: 調査が走る(記事群,語)24ペアのうち、一般語の誤トリガー9ペア+同一語の再調査2ペア=11ペア(46%)が省ける(`fr04_early_trigger_estimate_01_result.txt`)。調査単価の代理値5.4円で約59円相当(現行の最終slot調査の単価は未確認=あくまで代理値) | Trial P1約54〜87円+P2約17〜26円(v2-8。Cap案JPY150)。量産期待原価は中央値約0.9円/記事セット(範囲約0.16〜8.2円) |
+| 効果 | 不要なWeb検索・LLM呼出の削減、同じ語の再調査防止、HR担当への「調査済み・未取得」明示、誤登録の機械検出 | byUs型(公式英語発音が確定できない語)とHuman Review再発(Kristie Tse型)の解消、辞書外語の取得→PASS |
+| リスク | Ledger entryの追加キー(既存entry無改変)。lookup統一で別語を拾う(同綴り衝突)=単体test+replayで確認 | 誤PASS(出典の質・変換・共通読みの残留リスク)。**誤登録は1件でもSTOP** |
+- **縮小案(Stage 1のみ)の評価(FR-11)**: 誤PASS・費用とも最小で、承認済み原則の内側に収まる。ただしbyUs型(同綴り衝突で公式発音が確定できない語)とHuman Review再発は解決しない。**Fable見解=Stage 1を先行し、Stage 2はTrialで取得率・誤登録0を確認してから**。本計画の推奨もこの順に揃える。Stage 1単独でも価値(量産費の純減、HR品質)があるため、Stage 2の可否に関わらず先行できる。
+
+## v2-2. A階層の条件に「出典の質」を含める(FR-02)
+「引用がページに実在する」だけでは不十分(個人ブログの誤記でも引用は実在する)。A2(`OFFICIAL_TEXT_VERIFIED`)は次を**全て**満たす場合のみ:
+1. 出典が(a)**公式ドメイン**(本人・所属組織・権利者・公式イベントのドメイン)または(b)**信頼できる辞書**(allowlistで定義。初期案はTrial前にユーザー/Fableが確認し、allowlistの拡張は人間のみ)。
+2. 出典URLを実際に取得し、引用(`quote`)が本文に実在(V1')。
+3. 構造化形式(PNEP V3)・同綴りの既存entryと矛盾しない(V5)・IPAは1:1変換可(v2-0)。
+**それ以外は、引用が実在してもB階層(Human Review表示用)**。
+CURRENT_SPEC.md:1837の判定優先順位との対応: (1)本人自身の英語発音=音声は自動確認不可(出典が本人公式の**テキスト**でA2条件1(a)を満たす場合のみA2、音声のみは試聴リンクとしてHR表示)/(2)公式プロフィール・所属組織・公式イベントの英語発音=A2条件1(a)/(3)信頼できる情報源の一般的な英語圏発音=A2条件1(b)(allowlistの辞書に限る)/(4)複数の英語圏発音が認められる場合=許容発音集合として保持(受理は集合のいずれか)。(1)〜(4)に該当しない出典(個人ブログ・SNS・AI要約・転載サイト)は全てB階層。
+- 現行Ledger 38件はquote欄0・human_approved欄0のため、新基準でA階層に該当するentryは0件(v1の測定どおり)。既存entryはB階層(`unverified`)として扱い、無改変。
+
+## v2-3. トリガー時期の根拠分離と0円試算(FR-04)
+- **根拠の分離**: v1の「最終slotまで不一致が残ったとき」に限る根拠はOF-179(`er006_m1_multi_candidate_01.py:7-9`「候補集合はsegmentの最初の試行前に1回だけfreeze」)だが、これは**M1のcanonical側候補集合の凍結**の話である。Ledger lookup・調査・L1の`expected_phoneme_provider`は凍結対象ではないため、**調査の早期化自体はOF-179に妨げられない**。ただし(i)M1側は同一segment内では新しいLedger登録を使えない(凍結のため)、(ii)L1側の供給が試行ごとに再評価される配線になるかはA側(A-2)の実装次第で**未確認**。`DESIGN_OPTIONS_01.md` §4-1のP1b「OF-179により効かない」はこの範囲に限定して読み替える。
+- **0円試算**(`fr04_early_trigger_estimate_01.py`、保存データのみ、API 0): 実path HR到達segmentのうち調査対象語があり`attempt_history`に結合できた36行で、TTS試行は生108回、現行上限3で打切ると81回、初回を除く再試行45回(×5.16円=232円が上限削減額)。調査が走る(記事群,語)は24ペア。1ペア当たり平均再試行1.88回(=9.7円が上限)。取得率qでの1ペア期待削減: q=14%(PNEP実績1/7)で1.35円、q=50%で4.84円、q=100%で9.68円。調査費は5.4円/語(PNEP実測)〜16.3円/語。**損益分岐の取得率は56%(調査費5.4円)、16.3円では168%=成立しない**。
+- **解釈**: (1)取得率が14%程度なら初回NG時の早期調査は費用面で不利(1ペア当たり約-4円)。(2)この36行は「結局HRに到達したsegment」に偏り、再試行で自然に解決したsegmentは含まない(早期調査はそこでも費用が出る=さらに不利)。(3)取得率56%以上が示されない限り早期トリガーは採らない。**比較arm(最終slot vs 初回NG)をTrialに置く条件**: O1/P1で取得率が56%以上と確認された場合のみStage 2 Trialへ追加。現段階の推奨=最終slot維持。
+- 付記(提案・未確認): 最終slotで調査が成功した場合、**同一転写の再判定**(TTS再生成なし・ASR再呼出なし=追加API 0)でHR→PASS_WITH_WARNINGに変えられる可能性がある。既存コードがこの再判定を許すかは未確認で、Stage 2の設計課題として残す。
+
+## v2-4. M1との整合(FR-03)
+- M1は`confidence`で絞らずlowのAI出力も候補に使う(`er006_m1_multi_candidate_01.py:235`)。OPEN-426(Mullos→Melos)の既知リスクと同根。階層導入後は「M1候補(C2)をB階層以上=出典付き・引用確認済みに限定する」ことが論理的な整合になり得る。
+- **Trial O0へ追加(0円)**: 保存済みM1記録(M1_MULTI_CANDIDATE_ACCEPT/不受理のaudit、Ledger snapshot)に対し「C2候補をA階層のみ/B階層以上に限定した場合」のオフラインreplay。測定=受理が減る件数、誤PASS(負例ラベル)除去数、過剰NG増。結果をStage 2(d)の判断材料にする。**M1の変更実装は提案のみ・別判断**(承認済みM1の挙動変更になるため)。
+
+## v2-5. 否定記録の仕様(FR-06)
+- key=正規化token(**entity_type非依存**)。TTL 60日は**暫定**(Trialの再取得データで見直し)。
+- 人間承認、またはA階層登録で**即無効化**。
+- **一時失敗は保存しない**(枠切れ・HTTP失敗・タイムアウト・研究応答不正)。「調べて、見つからなかった」場合のみ保存。
+- 否定記録中でもHRパッケージには「調査済み・未取得」と表示(HR担当に再調査の要否を誤認させない)。
+
+## v2-6. 決定不要判定の受理条件(FR-05。新仕様=Stage 2)
+- **候補集合の定義**: (a)CMU同綴りの全variant、(b)綴り規則からの合理的読み(生成方法を明記: 分割語のCMU音素の連結、CamelCase境界で分割した各語のCMU全variantの連結、の2種のみ。ASR転写・AI推測は入れない。実装時は生成ログを残す)、(c)LedgerのB階層候補(参考)。
+- **成立条件**: 共通部分(ストレス除去後)が**空または1候補のみなら不発**(従来どおり調査→HR)。受理は共通部分に限る。
+- **受理時の扱い**: `PASS_WITH_WARNING`、事後試聴リスト登録、Ledgerに「公式発音未確認・共通読み受理」(`EN_UNCONFIRMED`)を記録。人間承認またはA階層登録で上書き。
+- **残留リスク(1行)**: 公式の読みが共通読みと異なり、かつTTSも共通読みで発話した場合は検出できない。
+- 保存データでの適用可否(`class_collapse_check_01_result.txt`): byUs・YouTube・KitchenAidは共通読みあり、McCartney・iCapital・FamilyMartは辞書外を含み判定不能(不発)。
+
+## v2-7. 外部URL取得の安全条件(FR-07)
+読み取り専用(GETのみ)・応答サイズ上限・タイムアウト・HTMLテキスト抽出のみ・スクリプト/ファイルの実行なし・取得物は**専用ディレクトリ**に保存し解析scriptと分離(環境ルール: 取得物は別dir、解析は`python -I`)・公式ドメイン優先。Trial O1で上限値・隔離・抽出の動作を確認する。
+
+## v2-8. Trial計画のStage別再構成(FR-03・04・09)
+**Stage 1検証(0円、オフライン。Stage 2の可否と独立に実行できる)**
+| 項目 | 内容 | 合格(ハード) |
+|---|---|---|
+| S1-O0a | 否定記録・lookup統一・誤トリガー除外を保存HR queue 105行/attempt_historyに適用した場合の調査呼出の減少数(v2-1の試算の再現) | 設計外のAPI呼出0。減少は報告のみ |
+| S1-O0b | lookup統一による**誤命中**(同綴り別物の取り違え)の有無を保存Ledger 38件+原稿1,889種で検査 | 誤命中0 |
+| S1-O0c | HRパッケージの階層表示の描画test(表示のみ。判定不変) | PASS/NG判定の差分0(保存転写4,032ペア+544転写で全件同一) |
+| S1-O0d | validator(V1')追加で既存entryが無効扱いにならないこと(`unverified`として残る) | 既存38件の既存挙動を変えない |
+| 共通 | FR-03のM1 replay(v2-4)、FR-04の試算(v2-3、実施済み) | - |
+**Stage 2 Trial(有料。P1約10語、Cap案JPY150。新仕様のためユーザー承認後)**: v1 §11-1のO0(a)(b)・O1・P1・P2・Rを維持。O1にFR-07の安全条件確認を追加。合格基準=v1 §11-2のハード6条件+ソフトS1〜S5を**維持**(基準は変えない)。比較armの追加条件はv2-3。
+**費用の整理(FR-09)**: 単価は`TRIAL_RESULT_01.md`(PNEP)の実測のみを見積に使う(5.4円/語、追加検索16.3円/語、再試行5.16円/組)。**Perplexity sonar単価・`gpt-6-luna`+web_search単価・現行最終slot調査の単価は未確認**(見積に含めない)。Stage 2 TrialのGO前にrepo正式定義で確定し、確定できないものは未確認のまま扱う。
+
+## v2-9. ユーザー判断事項のStage別整理(`判断候補`。ラベルはFableが付与。分類案はSonnet所見)
+| Stage | 事項 | 分類案 |
+|---|---|---|
+| Stage 1 | **Stage 1の実施承認(軽)**: 否定記録・lookup統一・誤トリガー除外・HR階層表示・validator V1'追加(PASS/NG判定は変えない、承認済み原則の内側) | B/D境界(Production Ledger/HR表示を変えるため通知+承認。判定基準は不変) |
+| Stage 2 | Trial GO+費用Cap(案JPY150) | D(新仕様のTrial。7-7) |
+| Stage 2 | J7: 公式日本語読みを英語期待発音の根拠にしてよいか(未回答。両分岐を用意) | D |
+| Stage 2 | 判断3: CURRENT_SPEC.md:1837(B)の例外(A階層をL1の辞書外canonical側の基準に使う) | D |
+| Stage 2 | 判断4: 決定不要判定をPASS_WITH_WARNINGで受理 | D |
+| Stage 2 | 判断5: 人間確認の語単位再利用(A1) | D |
+| 共通 | #134: 調査バックエンド(Perplexity枠切れ。未回答、計画はバックエンド非依存) | B/C境界 |
+| 共通 | #133: 第4案(エ)「反応的・階層付きLedger(Stage 1先行、Stage 2はTrial後)」の併記(Statusは未回答のまま、選択肢追加のみ) | 情報(Fable判断) |
+| 別判断 | M1の階層連動(Stage 2(d)の実装可否) | D(M1承認の挙動変更) |
