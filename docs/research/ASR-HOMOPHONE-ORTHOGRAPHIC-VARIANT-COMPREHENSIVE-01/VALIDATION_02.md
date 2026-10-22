@@ -45,7 +45,7 @@
 - **PASS→NG: 0件**。OFF合格3,831→ON合格3,850(+19)。
 - NG→PASS 19行(distinct 13組・15 segment、HR/STOPPED到達 3 segment)。Family別: **X 10行(5組)**、**A/B/C 9行(8組)**、Z 0行(Zの`seize`/`sees`はB修正で既に救済済み)。内訳: `Pump 1's fist`(Azure、X coffee kp1 4行)、`Act 1 was 20%`(X hormuz 3行)、`point to`↔`Point 2.`/`brace oneself for`↔`Brace oneself 4.`(to/2, for/4。X 3行)、A/B/C 9行: `study's`↔`studies`型の同音(2行)・複合語spacing+同音/数(4行)・`third places`↔`third place is`(er094経路、2行)・`“slow”`の引用符+数(1行)。一覧は`new_pass_listen_list_02.json`。
 - **ローカルWhisper再転写(API 0、保存wav10本)**: 6本はWhisperも期待文と同値/合格(pump one's fist 4本・brace oneself for・A/B/C `slow` 1本)。**4本はWhisper転写自体が期待文と同値でない**: `point to`の1本は Whisper=`Hold on.`(**裏付けなし**、Primary `Point 2.`のみ。KPならP単独=票は割れる)、hormuz `Act 1 was 20%`の3本はWhisper転写が`10.16`/`straits`/`numbers`等で別の差を持つ(er109が同値とした`Act 1`等のspanは一致しているが、Whisper自身のITN差でWhisper判定は不合格)。wav無し(古い実行で音声が残っていない)のA/B/C 8行と X 1行(`point to`の別attempt)は再転写不可。
-- 試聴リスト: `user_test/aho_new_pass_listen_01/index.html`(B修正由来5行+er109由来19行=24行、wavありの14本を再生可能。ローカル再生検証14/14=`pages_play_evidence_local_02.json`)。
+- 試聴リスト: `user_test/aho_new_pass_listen_01/index.html`(B修正由来5行+er109由来19行=24行、wavありの14本を再生可能。ローカル再生検証14/14=`pages_play_evidence_local_02.json`、公開Pages上の実再生14/14・http>=400 0・console error 0=`pages_play_evidence_public_02.json`、URL=https://shimomura055.github.io/eigo-radio/user_test/aho_new_pass_listen_01/)。
 
 ## 5. ユーザー指摘NG音声(`known_ng_recheck_02.json`、`er109_known_ng_recheck_01.py`)
 - 問題音声21件(take_part_problem_13 + er091 problem 8)の転写45件: **新規PASS 0**。take part A(正常)・byUs presumed_normal 7・ng3 12 を含む203転写で新規PASSは`ng3_case`の`Pump 1's fist.`(Azure、本来の偽NG)7件のみ。
