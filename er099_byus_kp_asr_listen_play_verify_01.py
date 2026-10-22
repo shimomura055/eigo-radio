@@ -33,7 +33,7 @@ with sync_playwright() as p:
             await new Promise(r => { if (a.readyState >= 1) r(); else { a.addEventListener('loadedmetadata', r, {once:true}); a.addEventListener('error', r, {once:true}); a.load(); } });
             const d = a.duration; if (a.error) return {duration: d, error: a.error.code};
             try { await a.play(); } catch (e) { return {duration: d, error: 'play:' + e.message}; }
-            await new Promise(r => setTimeout(r, 500)); const t1 = a.currentTime;
+            await new Promise(r => setTimeout(r, 1500)); const t1 = a.currentTime;
             a.currentTime = Math.min(0.3, d / 2); await new Promise(r => setTimeout(r, 200));
             const seekOk = a.currentTime > 0.1 || a.ended;
             a.pause(); return {duration: d, advanced: t1 > 0.1 || a.ended, error: null, seekOk};
