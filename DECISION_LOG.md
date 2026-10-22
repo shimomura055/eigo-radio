@@ -22104,3 +22104,8 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 ## FAMILY-X-BYUS-KP-ASR-LISTENING-PAGE-01 ユーザー耳確認結果(2026-10-22、OPEN-444 CLOSED_USER_EAR_CHECK_DONE / UDR #148回答済)
 - ユーザー試聴: think up=PASS、take part A(現行採用音声 sha e4405501)=PASS、take part B(旧問題音声 sha 675cd6b1)=NG、blurt=語末t音が聞こえず発音に懸念(ASR 2/3 PASSでも人間は聞こえなかった事例=3-ASR多数決方式の限界を示す品質知見)。
 - 承認済み3-ASR多数決方式・Family X/Z Production配線は変更なし(仕様変更・新Trial・品質基準変更・追加ユーザー判断は不要とユーザー明示)。記録のみ・費用0円。証跡=docs/research/FAMILY-X-BYUS-KP-ASR-LISTENING-PAGE-01/USER_EAR_CHECK_RESULT_01.md。
+
+## 2026-10-22 ユーザー決定: 日次開発費上限の例外引上げ(PM-BUDGET-EXCEPTION-20261022-01)
+- ユーザー正式承認: 2026-10-22(JST)の開発費上限を1,000円→1,500円(累計)に引き上げ(+500円)。明日以降は1,000円のまま。既存の個別Trial予算・承認Scope・STOP条件は維持(PM_GOVERNANCE 7-9の例外、他規定は変更なし)。
+- 方針: PNAP・KP3V・KPFTの3件(すべてユーザー承認済みProduction実装)を本日中のPRODUCTION_WIRED到達最優先。日付分割なし・合同runtime検証を優先。PRODUCTION_WIRED判定はタスク別・Family別。品質基準・Gate・受入条件は緩和しない。累計1,500円超見込み・承認仕様変更・重大品質安全問題・自律解決不能blockerは即報告。
+- 本日実支出集計(記録時点)=約887円(出典=docs/pm/RESULT_PACKET_BUD1.md)。原文=docs/pm/delegation_log/2026-10-22_PM-BUDGET-EXCEPTION-20261022-01_USER.md。記録のみ・費用0円。
