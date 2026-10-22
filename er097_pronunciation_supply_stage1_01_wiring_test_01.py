@@ -19,6 +19,7 @@ import er006_asr_provider_routing_01 as routing
 import er006_pronunciation_ledger_01 as L
 import er006_secondary_asr_01 as sec
 
+PRE_STAGE1_COMMIT = "3bb71e186"   # Stage 1配線(cb12e2ecd)の直前commit。upsert素通し3キー追加前のLedger moduleを比較基準にする
 CAS = "cascade_unresolved_entity"
 CANON = "Ottoni and colleagues published a study."
 ASR_P = "A Tony and colleagues published a study."
@@ -220,9 +221,9 @@ def test_isolated_entry_still_no_info_no_research(env):
 
 
 def _legacy_ledger_module():
-    src = subprocess.run(["git", "show", "HEAD:er006_pronunciation_ledger_01.py"], capture_output=True, check=True).stdout.decode("utf-8")
+    src = subprocess.run(["git", "show", PRE_STAGE1_COMMIT + ":er006_pronunciation_ledger_01.py"], capture_output=True, check=True).stdout.decode("utf-8")
     if "source_page_check_v1" in src:
-        pytest.skip("HEAD already contains Stage 1 passthrough (post-commit)")
+        pytest.skip("pre-Stage1 commit unexpectedly contains Stage 1 passthrough")
     spec = importlib.util.spec_from_loader("ledger_legacy_head", loader=None)
     m = importlib.util.module_from_spec(spec)
     sys.modules["ledger_legacy_head"] = m
@@ -230,7 +231,7 @@ def _legacy_ledger_module():
     return m
 
 
-def test_ledger_upsert_without_new_keys_is_byte_identical_to_head(tmp_path, monkeypatch):
+def test_ledger_upsert_without_new_keys_is_byte_identical_to_pre_stage1(tmp_path, monkeypatch):
     legacy = _legacy_ledger_module()
     monkeypatch.setattr(L.time, "strftime", lambda *a, **k: "2026-10-22T00:00:00")
     calls = [("Ottoni", "person", ITEM), ("Zzqv", CAS, dict(ITEM, canonical_spelling="unknown")),

@@ -1,0 +1,708 @@
+{
+  "kp9_en": {
+    "state": "HUMAN_REVIEW_REQUIRED",
+    "canonical_text_sha256": "71fee30085d278f71321bf7ce05d965c3d93a134f85c8f26155949064ec1592b",
+    "language": "en",
+    "theme_id": "run_Z_ENTITY_NG_kp_en",
+    "level": "a2",
+    "segment_id": "kp9_en",
+    "updated_at": "2026-10-22T10:16:05",
+    "reason": "最終status=STOPPED。2回試行してもASR検証(内容+長さ)に合格しませんでした",
+    "final_status": "STOPPED",
+    "wav_path": "er097_output/pnps_stage1_wiring_01/runtime_api0/run_Z_ENTITY_NG_kp_en/a2/narration/kp9_en.wav",
+    "cumulative_tts_attempts": 4,
+    "cumulative_asr_calls": 4,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 2.8,
+        "asr_text": "Make one yourself with A Tony.",
+        "asr_text_length": 30,
+        "max_len": 40,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 1246,
+          "sha256": "dcd08dcae5b0ce13fd35da0980d4cf021e0b2c0a33db0cec6c8377444b3bbf30",
+          "head200": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not add explanations, examples, introductions, or any other com"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Make one yourself with A Tony.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "secondary_dual",
+            "provider": "azure",
+            "text": "Make one yourself with A Tony.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "phrase_list_used": true,
+            "azure_phrase_list_weight": 2.0,
+            "azure_phrase_list": [
+              "Ottoni"
+            ],
+            "cached": true,
+            "unified_judge_state": "NG_BOTH",
+            "dual_required": true,
+            "entity_like_source": [
+              "capitalized"
+            ]
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 3,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "255f779e73722ebf47262ac8f12c7273d5ac27035ecebbc6343be2d689e1d14d",
+          "primary": {
+            "text": "Make one yourself with A Tony.",
+            "passed": false,
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": true,
+            "engine": "azure",
+            "text": "Make one yourself with A Tony.",
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 30,
+            "secondary_len": 30,
+            "max_len": 40,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": 24,
+            "primary_ok": true
+          },
+          "dual": {
+            "required": true,
+            "primary_provider": "openai",
+            "secondary_provider": "azure",
+            "primary_pass": false,
+            "primary_text": "Make one yourself with A Tony.",
+            "primary_rescued_by_secondary": false,
+            "primary_rescue_layers": [],
+            "primary_not_pass_reason": "p3_primary_ng",
+            "secondary_called": true,
+            "secondary_pass": false,
+            "secondary_text": "Make one yourself with A Tony.",
+            "outcome": "NG_BOTH"
+          },
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 2
+            }
+          }
+        },
+        "attempt_audio_path": "er097_output/pnps_stage1_wiring_01/runtime_api0/run_Z_ENTITY_NG_kp_en/a2/narration/attempts/kp9_en_attempt3_custom31eb2f72.wav"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "duration_seconds": 2.8,
+        "asr_text": "Make one yourself with A Tony.",
+        "asr_text_length": 30,
+        "max_len": 40,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 1246,
+          "sha256": "dcd08dcae5b0ce13fd35da0980d4cf021e0b2c0a33db0cec6c8377444b3bbf30",
+          "head200": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not add explanations, examples, introductions, or any other com"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Make one yourself with A Tony.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "secondary_dual",
+            "provider": "azure",
+            "text": "Make one yourself with A Tony.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "phrase_list_used": true,
+            "azure_phrase_list_weight": 2.0,
+            "azure_phrase_list": [
+              "Ottoni"
+            ],
+            "cached": true,
+            "unified_judge_state": "NG_BOTH",
+            "dual_required": true,
+            "entity_like_source": [
+              "capitalized"
+            ]
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 4,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "255f779e73722ebf47262ac8f12c7273d5ac27035ecebbc6343be2d689e1d14d",
+          "primary": {
+            "text": "Make one yourself with A Tony.",
+            "passed": false,
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": true,
+            "engine": "azure",
+            "text": "Make one yourself with A Tony.",
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 30,
+            "secondary_len": 30,
+            "max_len": 40,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": 24,
+            "primary_ok": true
+          },
+          "dual": {
+            "required": true,
+            "primary_provider": "openai",
+            "secondary_provider": "azure",
+            "primary_pass": false,
+            "primary_text": "Make one yourself with A Tony.",
+            "primary_rescued_by_secondary": false,
+            "primary_rescue_layers": [],
+            "primary_not_pass_reason": "p3_primary_ng",
+            "secondary_called": true,
+            "secondary_pass": false,
+            "secondary_text": "Make one yourself with A Tony.",
+            "outcome": "NG_BOTH"
+          },
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 3
+            }
+          }
+        },
+        "attempt_audio_path": "er097_output/pnps_stage1_wiring_01/runtime_api0/run_Z_ENTITY_NG_kp_en/a2/narration/attempts/kp9_en_attempt4_custom31eb2f72.wav"
+      }
+    ]
+  },
+  "kp9_en_b": {
+    "state": "HUMAN_REVIEW_REQUIRED",
+    "canonical_text_sha256": "71fee30085d278f71321bf7ce05d965c3d93a134f85c8f26155949064ec1592b",
+    "language": "en",
+    "theme_id": "run_Z_ENTITY_NG_kp_en",
+    "level": "a2",
+    "segment_id": "kp9_en_b",
+    "updated_at": "2026-10-22T10:16:06",
+    "reason": "最終status=STOPPED。2回試行してもASR検証(内容+長さ)に合格しませんでした",
+    "final_status": "STOPPED",
+    "wav_path": "er097_output/pnps_stage1_wiring_01/runtime_api0/run_Z_ENTITY_NG_kp_en/a2/narration/kp9_en_b.wav",
+    "cumulative_tts_attempts": 4,
+    "cumulative_asr_calls": 4,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 2.8,
+        "asr_text": "Make one yourself with A Tony.",
+        "asr_text_length": 30,
+        "max_len": 40,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 1246,
+          "sha256": "dcd08dcae5b0ce13fd35da0980d4cf021e0b2c0a33db0cec6c8377444b3bbf30",
+          "head200": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not add explanations, examples, introductions, or any other com"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Make one yourself with A Tony.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "secondary_dual",
+            "provider": "azure",
+            "text": "Make one yourself with A Tony.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": true,
+            "unified_judge_state": "NG_BOTH",
+            "dual_required": true,
+            "entity_like_source": [
+              "capitalized"
+            ]
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 3,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "255f779e73722ebf47262ac8f12c7273d5ac27035ecebbc6343be2d689e1d14d",
+          "primary": {
+            "text": "Make one yourself with A Tony.",
+            "passed": false,
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": true,
+            "engine": "azure",
+            "text": "Make one yourself with A Tony.",
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 30,
+            "secondary_len": 30,
+            "max_len": 40,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": 24,
+            "primary_ok": true
+          },
+          "dual": {
+            "required": true,
+            "primary_provider": "openai",
+            "secondary_provider": "azure",
+            "primary_pass": false,
+            "primary_text": "Make one yourself with A Tony.",
+            "primary_rescued_by_secondary": false,
+            "primary_rescue_layers": [],
+            "primary_not_pass_reason": "p3_primary_ng",
+            "secondary_called": true,
+            "secondary_pass": false,
+            "secondary_text": "Make one yourself with A Tony.",
+            "outcome": "NG_BOTH"
+          },
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 2
+            }
+          }
+        },
+        "attempt_audio_path": "er097_output/pnps_stage1_wiring_01/runtime_api0/run_Z_ENTITY_NG_kp_en/a2/narration/attempts/kp9_en_b_attempt3_custom31eb2f72.wav"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "duration_seconds": 2.8,
+        "asr_text": "Make one yourself with A Tony.",
+        "asr_text_length": 30,
+        "max_len": 40,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 1246,
+          "sha256": "dcd08dcae5b0ce13fd35da0980d4cf021e0b2c0a33db0cec6c8377444b3bbf30",
+          "head200": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not add explanations, examples, introductions, or any other com"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Make one yourself with A Tony.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "secondary_dual",
+            "provider": "azure",
+            "text": "Make one yourself with A Tony.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": true,
+            "unified_judge_state": "NG_BOTH",
+            "dual_required": true,
+            "entity_like_source": [
+              "capitalized"
+            ]
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 4,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "255f779e73722ebf47262ac8f12c7273d5ac27035ecebbc6343be2d689e1d14d",
+          "primary": {
+            "text": "Make one yourself with A Tony.",
+            "passed": false,
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": true,
+            "engine": "azure",
+            "text": "Make one yourself with A Tony.",
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 30,
+            "secondary_len": 30,
+            "max_len": 40,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": 24,
+            "primary_ok": true
+          },
+          "dual": {
+            "required": true,
+            "primary_provider": "openai",
+            "secondary_provider": "azure",
+            "primary_pass": false,
+            "primary_text": "Make one yourself with A Tony.",
+            "primary_rescued_by_secondary": false,
+            "primary_rescue_layers": [],
+            "primary_not_pass_reason": "p3_primary_ng",
+            "secondary_called": true,
+            "secondary_pass": false,
+            "secondary_text": "Make one yourself with A Tony.",
+            "outcome": "NG_BOTH"
+          },
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 3
+            }
+          }
+        },
+        "attempt_audio_path": "er097_output/pnps_stage1_wiring_01/runtime_api0/run_Z_ENTITY_NG_kp_en/a2/narration/attempts/kp9_en_b_attempt4_custom31eb2f72.wav"
+      }
+    ]
+  }
+}

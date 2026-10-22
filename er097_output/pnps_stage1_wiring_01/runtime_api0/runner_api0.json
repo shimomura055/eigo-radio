@@ -1,0 +1,242 @@
+{
+ "isolation": {
+  "human_review_queue": "er097_output/pnps_stage1_wiring_01/runtime_api0/human_review_queue.jsonl",
+  "attempt_history": "er097_output/pnps_stage1_wiring_01/runtime_api0/attempt_history.jsonl",
+  "master_audio_store": "er097_output/pnps_stage1_wiring_01/runtime_api0/master_audio_store",
+  "reuse_telemetry": "er097_output/pnps_stage1_wiring_01/runtime_api0/master_audio_store/reuse_telemetry.jsonl",
+  "er021_telemetry": "er097_output/pnps_stage1_wiring_01/runtime_api0/er021_telemetry.jsonl",
+  "er025_telemetry": "er097_output/pnps_stage1_wiring_01/runtime_api0/er025_telemetry.jsonl",
+  "cost_log": "er097_output/pnps_stage1_wiring_01/runtime_api0/cost_log.jsonl",
+  "ledger_snapshot": "er097_output/pnps_stage1_wiring_01/runtime_api0/ledger_snapshot.json",
+  "tier3_research": "disabled(stub)",
+  "ledger_upsert": "disabled(no-op)"
+ },
+ "sidecar": "er097_output/pnps_stage1_wiring_01/runtime_api0\\negative_cache.json",
+ "runs": [
+  {
+   "phase": "A1_found_first_X",
+   "scenario": "X_ENTITY_NG_final_slot",
+   "family": "X",
+   "entrypoint": "er003_v1_crosslevel_audio_02_common.generate_english_segment_with_fallback (標準2回NG後 minimal fallback, force_secondary=True, 最終slot)",
+   "status": "STOPPED",
+   "exception": null,
+   "network_attempts": [],
+   "research_calls": [
+    "ottoni"
+   ],
+   "fetch_calls": [
+    "https://example.test/ottoni"
+   ],
+   "lookups": [
+    {
+     "wav": "ent_body.wav",
+     "final_status": "ASR_VALIDATION_UNCERTAIN",
+     "human_review_required": true,
+     "verified": false,
+     "lookups": {
+      "ottoni": {
+       "surface": "ottoni",
+       "entity_type": "cascade_unresolved_entity",
+       "source_context": "",
+       "canonical_spelling": "Ottoni",
+       "language_origin": "Japanese-English",
+       "expected_pronunciation_ipa": "/oʊˈtoʊni/",
+       "pronunciation_hint": "oh-TOH-nee",
+       "alternate_pronunciations": [],
+       "confidence": "medium",
+       "ambiguity_note": "api0 mock",
+       "sources": [
+        "https://example.test/ottoni"
+       ],
+       "updated_at": "2026-10-22T10:16:05",
+       "ja_reading_katakana": "",
+       "ja_reading_confidence": "",
+       "ja_reading_sources": [],
+       "resolution_method": "",
+       "resolved_at_stage": "",
+       "tts_injection_disabled": false,
+       "tts_injection_disabled_reason": "",
+       "ledger_disabled": false,
+       "ledger_disabled_reason": "",
+       "evidence_tier": "PRON_IN_CITED_PAGE",
+       "source_page_check_v1": {
+        "tier": "PRON_IN_CITED_PAGE",
+        "checked": 1,
+        "at": "2026-10-22T10:16:05"
+       },
+       "evidence_tier_label_ja": "出典ページに発音表記あり(公式/実使用の区別は未判定)",
+       "lookup_action": "RESEARCH",
+       "lookup_entity_type": null,
+       "source_urls": [
+        "https://example.test/ottoni"
+       ],
+       "display_lines_ja": [
+        "根拠階層: 出典ページに発音表記あり(公式/実使用の区別は未判定)",
+        "出典: https://example.test/ottoni",
+        "AI報告の確信度(参考): medium"
+       ],
+       "citation_check": {
+        "tier": "PRON_IN_CITED_PAGE",
+        "checked": 1
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "phase": "A2_ledger_hit_Z",
+   "scenario": "Z_ENTITY_NG_kp_en",
+   "family": "Z",
+   "entrypoint": "er063.run_tts_stage kp_en -> _kp_en_two_stage -> repro01(最終slot NG)",
+   "status": "STOPPED",
+   "exception": null,
+   "network_attempts": [],
+   "research_calls": [],
+   "fetch_calls": [],
+   "lookups": [
+    {
+     "wav": "kp9_en.wav",
+     "final_status": "ASR_VALIDATION_UNCERTAIN",
+     "human_review_required": true,
+     "verified": false,
+     "lookups": {
+      "ottoni": {
+       "surface": "ottoni",
+       "entity_type": "cascade_unresolved_entity",
+       "source_context": "",
+       "canonical_spelling": "Ottoni",
+       "language_origin": "Japanese-English",
+       "expected_pronunciation_ipa": "/oʊˈtoʊni/",
+       "pronunciation_hint": "oh-TOH-nee",
+       "alternate_pronunciations": [],
+       "confidence": "medium",
+       "ambiguity_note": "api0 mock",
+       "sources": [
+        "https://example.test/ottoni"
+       ],
+       "updated_at": "2026-10-22T10:16:05",
+       "ja_reading_katakana": "",
+       "ja_reading_confidence": "",
+       "ja_reading_sources": [],
+       "resolution_method": "",
+       "resolved_at_stage": "",
+       "tts_injection_disabled": false,
+       "tts_injection_disabled_reason": "",
+       "ledger_disabled": false,
+       "ledger_disabled_reason": "",
+       "evidence_tier": "PRON_IN_CITED_PAGE",
+       "source_page_check_v1": {
+        "tier": "PRON_IN_CITED_PAGE",
+        "checked": 1,
+        "at": "2026-10-22T10:16:05"
+       },
+       "evidence_tier_label_ja": "出典ページに発音表記あり(公式/実使用の区別は未判定)",
+       "lookup_action": "USE_LEDGER",
+       "lookup_entity_type": "cascade_unresolved_entity",
+       "source_urls": [
+        "https://example.test/ottoni"
+       ],
+       "display_lines_ja": [
+        "根拠階層: 出典ページに発音表記あり(公式/実使用の区別は未判定)",
+        "出典: https://example.test/ottoni",
+        "AI報告の確信度(参考): medium"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "phase": "B1_empty_first_Z",
+   "scenario": "Z_ENTITY_NG_kp_en",
+   "family": "Z",
+   "entrypoint": "er063.run_tts_stage kp_en -> _kp_en_two_stage -> repro01(最終slot NG)",
+   "status": "STOPPED",
+   "exception": null,
+   "network_attempts": [],
+   "research_calls": [
+    "ottoni"
+   ],
+   "fetch_calls": [],
+   "lookups": [
+    {
+     "wav": "kp9_en_b.wav",
+     "final_status": "ASR_VALIDATION_UNCERTAIN",
+     "human_review_required": true,
+     "verified": false,
+     "lookups": {
+      "ottoni": {
+       "expected_pronunciation_ipa": "",
+       "pronunciation_hint": "",
+       "confidence": "unconfirmed",
+       "ambiguity_note": "Pronunciation Ledger lookupおよびresearch_pronunciations()がいずれも情報を返さなかった(ネットワーク不可またはresearch結果0件)。IPA/pronunciation guideは確定できていません。",
+       "sources": [],
+       "evidence_tier": "NO_SOURCE",
+       "evidence_tier_label_ja": "出典なし",
+       "lookup_action": "RESEARCH",
+       "lookup_entity_type": null,
+       "source_urls": [],
+       "display_lines_ja": [
+        "根拠階層: 出典なし"
+       ],
+       "negative_searched_at": "2026-10-22T10:16:06",
+       "negative_until": "2026-12-21T10:16:06"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "phase": "B2_negative_hit_X",
+   "scenario": "X_ENTITY_NG_final_slot",
+   "family": "X",
+   "entrypoint": "er003_v1_crosslevel_audio_02_common.generate_english_segment_with_fallback (標準2回NG後 minimal fallback, force_secondary=True, 最終slot)",
+   "status": "STOPPED",
+   "exception": null,
+   "network_attempts": [],
+   "research_calls": [],
+   "fetch_calls": [],
+   "lookups": [
+    {
+     "wav": "ent_body_b.wav",
+     "final_status": "ASR_VALIDATION_UNCERTAIN",
+     "human_review_required": true,
+     "verified": false,
+     "lookups": {
+      "ottoni": {
+       "expected_pronunciation_ipa": "",
+       "pronunciation_hint": "",
+       "confidence": "unconfirmed",
+       "ambiguity_note": "過去に調査したが発音情報は得られなかった(2026-10-22調査、2026-12-21まで再調査しない)。IPA/pronunciation guideは確定できていません。",
+       "sources": [],
+       "evidence_tier": "NEGATIVE_SEARCHED_NOT_FOUND",
+       "evidence_tier_label_ja": "調査済み・未取得",
+       "lookup_action": "SKIP_NEGATIVE_CACHE",
+       "lookup_entity_type": null,
+       "source_urls": [],
+       "display_lines_ja": [
+        "根拠階層: 調査済み・未取得",
+        "調査済み・未取得(2026-10-22調査、2026-12-21まで再調査しない)"
+       ],
+       "negative_searched_at": "2026-10-22T10:16:06",
+       "negative_until": "2026-12-21T10:16:06"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "sidecar_after_B1": {
+  "ottoni": {
+   "key": "ottoni",
+   "negative_until": "2026-12-21T10:16:06",
+   "reason": "research_ok_no_pronunciation_info",
+   "searched_at": "2026-10-22T10:16:06",
+   "surface": "ottoni",
+   "ttl_days": 60
+  }
+ },
+ "network_attempts_total": 0,
+ "shared_state_unchanged": true
+}

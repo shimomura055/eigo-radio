@@ -1,5 +1,9 @@
 # PLAN_SUMMARY_01: 固有名詞の正しい発音情報を「必要なときだけ」取得・登録・再利用する仕組み(改善計画 v4 要約が最新)
 
+
+## Stage 1 配線済み(2026-10-22 委任_05 [E-2]。Status=`STAGE1_WIRED_PENDING_FABLE`、`PRODUCTION_WIRED`の判定はFable)
+Production配線(commit `cb12e2ecd`)・Regression・runtime evidence・`mini`隔離まで完了。判定基準・自動PASS条件は不変。Scope台帳: 配線=`er006_secondary_asr_01.py`(最終slot調査の内側)/`er006_pronunciation_ledger_01.py`(任意3キー素通し)/Ledger data(`mini`隔離のみ)/sidecar `er006_output/pronunciation_ledger_01/negative_cache.json`(初回は実走で自然生成)。実Perplexityは401(UDR #134)で実調査成立せず(JPY0)、出典ページ照合は保存結果replay+実HTTPで確認。Stage 2は未承認のまま。
+
 ## v4(2026-10-22 委任_04 [E-1b]。Opus独立レビューOF-PNPS-S2-01〜09のFable採否を反映。v3以前と矛盾する場合はv4が優先。Trial・Production採用は未承認)
 Status管理ラベル: Stage 1=`STAGE1_DESIGN_REVIEWED_WIRING_PENDING_D2`(Production未編集。配線はD-2完了後のE-2)/Stage 2=`STAGE2_PLAN_V4_PENDING_FABLE`。詳細=`PLAN_01.md` v4-0〜v4-11、`STAGE1_IMPLEMENTATION_DESIGN_01.md`。API 0・JPY0。
 
