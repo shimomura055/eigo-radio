@@ -22100,3 +22100,7 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 ## FAMILY-X-KP-MINIMIZATION-PRODUCTION-PATH-TRIAL-03 Fable分類 REJECTED(2026-10-22)
 - 現行Production経路のKP選定Promptへの最小化条件(第3条)追加は不採用。根拠=現行経路は元々平均2.17語で短縮-0.13語と小さく、短縮圧力で代名詞断片が選ばれcanonicalization 2/14失敗(現行14/14)、評価V/E低下、費用差+0.036円/セットで利点なし。先行Trialの長いKP問題は現行方式では元々ほぼ発生しない。
 - Production/Prompt/Validator無変更。ユーザー判断不要(別案を望む場合のみ指示)。手順逸脱(STOP確認前の有料process起動、<=約3円)は記録。副次発見: B1=Family XでRedundancy retry後INVALID時に旧KPファイルが残る経路あり(修正せず選択肢提示、推奨=scaffoldでkp_status非PASSならstop)、B2=実パスSTOP_ALLを作るtestをopt-in化(OPEN-449)。証跡=docs/research/FAMILY-X-KP-MINIMIZATION-PRODUCTION-PATH-TRIAL-03/(TRIAL_RESULT_03.md §7・§8、FOLLOWUPS_01.md)。
+
+## FAMILY-X-BYUS-KP-ASR-LISTENING-PAGE-01 ユーザー耳確認結果(2026-10-22、OPEN-444 CLOSED_USER_EAR_CHECK_DONE / UDR #148回答済)
+- ユーザー試聴: think up=PASS、take part A(現行採用音声 sha e4405501)=PASS、take part B(旧問題音声 sha 675cd6b1)=NG、blurt=語末t音が聞こえず発音に懸念(ASR 2/3 PASSでも人間は聞こえなかった事例=3-ASR多数決方式の限界を示す品質知見)。
+- 承認済み3-ASR多数決方式・Family X/Z Production配線は変更なし(仕様変更・新Trial・品質基準変更・追加ユーザー判断は不要とユーザー明示)。記録のみ・費用0円。証跡=docs/research/FAMILY-X-BYUS-KP-ASR-LISTENING-PAGE-01/USER_EAR_CHECK_RESULT_01.md。
