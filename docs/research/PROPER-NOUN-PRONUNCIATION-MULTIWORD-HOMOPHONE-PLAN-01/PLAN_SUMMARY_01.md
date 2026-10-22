@@ -8,16 +8,16 @@
 
 | 課題 | Status | 担当工程 | 次の判断点 |
 |---|---|---|---|
-| L1 多語同音判定層 | 配線済み・Fable判定待ち(A-2完了、2026-10-22 委任_07。`WIRED_PENDING_FABLE`、PRODUCTION_WIREDではない) | Fable(X/Z別PRODUCTION_WIRED判定) | X/Z各々の必須Gate充足(`docs/pm/RESULT_PACKET_PNMH7.md`)。範囲外のユーザー判断=warningラベル付与/camelCase entity_like化/J11許容集合整合[OPEN-443] |
+| L1 多語同音判定層 | **Closeout完了**(2026-10-22 委任_09。`CLOSED_PRODUCTION_WIRED`、F-2内部警告記録実装済み。旧: 配線済み・Fable判定待ち) | Fable(X/Z別PRODUCTION_WIRED判定) | X/Z各々の必須Gate充足(`docs/pm/RESULT_PACKET_PNMH7.md`)。範囲外のユーザー判断=warningラベル付与/camelCase entity_like化/J11許容集合整合[OPEN-443] |
 | L2 固有名詞発音取得(UDR #133本体) | 計画策定中(PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02) | 別agent B-1->Fable独立レビュー | ユーザー提出後の採否。Trial/実装は未承認 |
 | KP両方PASS条件 | 本配線(A-2)では不実装。OPEN-440は後続でX/Z正式採用の記録あり(DECISION_LOG、UDR #139)=別管理(D-1)で実装 | Fable | OPEN-440側の実装・本配線との合同レビュー/Regression |
 | U5 既存の穴(AI->eye等) | ユーザー未回答 | Fable | 是正可否 |
 | J7 公式日本語読み | ユーザー未回答 | Fable | 英語期待発音の根拠にしてよいか |
 | GitHub Issue #133本文 | 取得不能(404)・未確認 | Fable | 取得手段/不要判断 |
-| (追加提案①) 同音救済PASS音声への内部警告記録 | ユーザー承認済み(2026-10-22 委任_08)・実装待ち | F-2(D-2=KP両方PASS配線完了後) | なし(内部記録のみ・試聴義務/HR転送/停止なし・追加API 0) |
+| (追加提案①) 同音救済PASS音声への内部警告記録 | ユーザー承認済み(2026-10-22 委任_08)・**実装済み**(委任_09、`internal_flags=MULTIWORD_HOMOPHONE_PASS`) | 完了 | なし(内部記録のみ・試聴義務/HR転送/停止なし・追加API 0) |
 | (追加提案②) camelCase等の大文字小文字による固有名詞判定拡張 | 不採用(ユーザー2026-10-22。再提案禁止) | - | なし |
 | (追加提案③) 中断後の再判定・再生成の追加対策(旧OPEN-443) | 対応不要(ユーザー2026-10-22。CLOSED_NO_ACTION_USER_DECISION) | - | 重大影響が確認された場合のみ通常の不具合管理 |
-| L1 多語同音判定層 ユーザー受入 | ユーザー受入済み(2026-10-22 委任_08。Fable判定X/Z PRODUCTION_WIRED。Closeout待ち=F-2) | Fable/F-2 | - |
+| L1 多語同音判定層 ユーザー受入 | ユーザー受入済み(2026-10-22 委任_08。Fable判定X/Z PRODUCTION_WIRED。F-2実装済み・L1 Closeout完了。残=L2 Stage 1/2・U5既存の穴[未回答・悪化させないのみ]・J7[未回答]) | Fable | - |
 
 ## v3-1. 反映したユーザー判断(2026-10-22、原文に基づく範囲のみ)
 | 判断(原文の要旨) | 計画への反映 |

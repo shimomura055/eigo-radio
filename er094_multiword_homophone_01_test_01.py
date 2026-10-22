@@ -244,6 +244,28 @@ class AdapterEvidenceKeys(unittest.TestCase):
         d2 = self._run("We wait here.", "We wait here.")
         self.assertNotIn("multiword_homophone_spans", d2["steps"][0])
         self.assertNotIn("multiword_homophone_spans", d2["asr_judgement"]["adapter"])
+    def test_internal_flag_pnmh_f2(self):
+        """PNMH-F2(ユーザー承認①): 多語同音PASSは内部記録フラグのみ。warnings/HR/停止不変、1:1同音・通常PASSでは立たない。"""
+        d = self._run("The service is called byUs now.", "The service is called buy us now.")
+        self.assertTrue(d["verified"])
+        self.assertEqual(d["asr_judgement"].get("internal_flags"), ["MULTIWORD_HOMOPHONE_PASS"])
+        self.assertFalse(d.get("human_review_required"))
+        self.assertFalse(d.get("technical_stop"))
+        self.assertNotIn("MULTIWORD_HOMOPHONE_PASS", json.dumps(d.get("warnings") or []))
+        self.assertNotIn("MULTIWORD_HOMOPHONE_PASS", json.dumps({k: v for k, v in d.items() if k != "asr_judgement"}, default=str))
+        d2 = self._run("We wait here.", "We wait here.")
+        self.assertNotIn("internal_flags", d2["asr_judgement"])
+        d3 = self._run("We wait here.", "We weight here.")   # 1:1同音
+        self.assertNotIn("internal_flags", d3["asr_judgement"])
+    def test_off_no_internal_flag(self):
+        mw.MULTIWORD_HOMOPHONE_ENABLED = False
+        try:
+            d = sec.evaluate_attempt_with_cascade_detail("The service is called byUs now.", "The service is called buy us now.", [], self.wav,
+                                                          language="en-US", ledger_phrases=[], cascade_enabled=False)
+            self.assertNotIn("internal_flags", d.get("asr_judgement") or {})
+            self.assertNotIn("MULTIWORD_HOMOPHONE_PASS", json.dumps(d, default=str))
+        finally:
+            mw.MULTIWORD_HOMOPHONE_ENABLED = True
     def test_off_has_no_keys_and_not_verified(self):
         mw.MULTIWORD_HOMOPHONE_ENABLED = False
         try:

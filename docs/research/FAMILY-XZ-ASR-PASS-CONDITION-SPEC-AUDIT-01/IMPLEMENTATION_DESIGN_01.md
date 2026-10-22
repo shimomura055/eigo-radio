@@ -111,3 +111,10 @@ module定数`KP_EN_PHRASE_DUAL_REQUIRED = True`(新規`er096_kp_dual_pass_01.py`
 | 範囲外 | - | 組立時のdual証跡欠落blockingゲート(ユーザー判断)、Store全件事前確認(ユーザー決定済み)、同一wavのAzure再試行(P-11)。**非blockingの監査**(組立時にKP英語のdual証跡欠落を警告ログ+summary記録)はFable判断で採用 |
 
 実装ファイル: `er078_asr_unified_judge_01.py`(`dual_required`、`NG_DUAL_PRIMARY_NOT_PASS`)・`er006_secondary_asr_01.py`(救済フラグ全層・step名・classification非上書き・cascade OFF時fail-closed)・`er078_asr_unified_attempt_ctx_01.py`・`er003_v1_repro01_main_generate.py`(kwarg・circuit確認)・`er006_master_audio_store_01.py`(`reuse_gate`)・`er096_kp_dual_pass_01.py`(新)・`er019_family_x_kp_en_k2_store_01.py`・`er019_family_x_audio_production_runner_01.py`・`er019_family_x_validation_inheritance_01.py`・`er063_family_z_audio_01.py`。test=`er096_kp_dual_pass_01_test_01.py`(判定層)+`er096_kp_dual_pass_01_wiring_test_01.py`(配線)。rollback=`er096_kp_dual_pass_01.KP_EN_PHRASE_DUAL_REQUIRED`(既定True)。
+
+## Fable判定(2026-10-22、PNMH委任_09で記録)
+
+---
+Fable判定(2026-10-22): `PRODUCTION_WIRED`。根拠=Family X(K2 profile・default `+dual1` profile)とFamily Zの正式初回経路で、KP英語フレーズの両Provider判定・呼出・採否・model_id・routingが記録され、初回dual PASSと、旧Store entry(Primary PASS/Azure NG)のS1不成立→再生成→dual PASSを観測。take part型(保存Azure転写10件)はdual PASS 0/10、実呼出でもNG_BOTH。KP英語解説・その他音声のAzure呼出0。再利用6点はfail-closed helper経由(test固定)。4,032ペア配線前後バイト一致、回帰2,339件PASS(既存失敗5件は無関係と分類)。量産影響(24 KP実測)=初回dual PASS 23/24、HR +約4%/KP(小標本)、追加原価+約JPY0.65〜0.89/10 KP音声、+0.5〜1.0秒/KP。Azure障害時に最終slotの技術STOPがHR Lockへ入る現行挙動(OPEN-371、2026-10-16 #86で当面許容)はdual化で露出が増えるが、障害時限定・実害未観測のため変更せず監視(OPEN-371へ追記)。手順逸脱の自己申告(`git add -f er096_output`、ignored混入0・実害なし)は記録のみ。
+---
+- OPEN-440=`CLOSED_PRODUCTION_WIRED`。

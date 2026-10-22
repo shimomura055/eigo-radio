@@ -1110,5 +1110,10 @@ def evaluate_attempt_with_cascade_detail(
                         # 多語同音で同音候補になったspanを残す(steps[*]と同じ内容の要約)。非一致/OFF時はキー無し。
                         **({"multiword_homophone_spans": [sp for st in steps for sp in (st.get("multiword_homophone_spans") or [])]}
                            if any(st.get("multiword_homophone_spans") for st in steps) else {})}
+    # PNMH-F2(ユーザー承認①、2026-10-22): 多語同音救済でPASSした音声に**内部記録のみ**のフラグを残す(集計用の単一フラグ)。
+    # warningsへは入れない(done()がPASS_WITH_WARNING化し事後試聴リストに載るため)。state/試聴リスト/HR/停止条件は不変、追加API 0。
+    # 多語同音spanが無い(1:1同音・通常PASS・NG)場合はキー自体を付けない(OFF時バイト一致)。
+    if result.get("verified") and any(st.get("multiword_homophone_spans") for st in steps):
+        audit["internal_flags"] = list(audit.get("internal_flags") or []) + ["MULTIWORD_HOMOPHONE_PASS"]
     result["asr_judgement"] = audit
     return result

@@ -2847,7 +2847,7 @@ OPEN-178/179・既存Topic Discovery Trial結果を上書きしない。
 
 ## 多語同音救済(1語⇔連続2〜3語の発音一致、L1判定層。2026-10-22ユーザー正式採用`APPROVED_FOR_PRODUCTION`、`PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01` 委任_06/07)
 
-- **Status**: 配線済み(Family X・Z共通判定関数)。**`PRODUCTION_WIRED`の判定はFable**(本節は判定前の記録)。Opus独立レビュー(OF-PNMH-P-01〜13)の条件は反映済み。出典=`docs/research/PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01/IMPLEMENTATION_DESIGN_01.md`(特に(h))、承認原文=`docs/pm/delegation_log/2026-10-22_PNMH-PRODUCTION-WIRING-AND-PRONUNCIATION-SUPPLY-PLAN-02_USER.md`§1・§2。**【Fable判定2026-10-22: `PRODUCTION_WIRED`】** 逐語: 「Family X/Z双方で配線・API 0の全入口発火・Regression全PASS・正式関数の実走を確認。実ASRでの多語一致はZで観測、XはASRが`buy us`を返さず未観測だが判定経路は同一関数で、X正式関数の実走はPASS_WITH_WARNING経路で正常。`Bi-us`実音声負例は`be-us`1本でNOT_PASSを確認、`Bi us`/`Bye-us`はASRが`bias`/`by us`へ寄せ既存1:1同音でPASS=既知の限界BI3。費用JPY1.61。」(D-2 KPDUAL-PROD 委任_03で記録)
+- **Status**: `PRODUCTION_WIRED`(Fable判定2026-10-22、X/Z。ユーザー受入済み、OPEN-439=CLOSED_PRODUCTION_WIRED)。配線済み(Family X・Z共通判定関数)。Opus独立レビュー(OF-PNMH-P-01〜13)の条件は反映済み。出典=`docs/research/PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01/IMPLEMENTATION_DESIGN_01.md`(特に(h))、承認原文=`docs/pm/delegation_log/2026-10-22_PNMH-PRODUCTION-WIRING-AND-PRONUNCIATION-SUPPLY-PLAN-02_USER.md`§1・§2。**【Fable判定2026-10-22: `PRODUCTION_WIRED`】** 逐語: 「Family X/Z双方で配線・API 0の全入口発火・Regression全PASS・正式関数の実走を確認。実ASRでの多語一致はZで観測、XはASRが`buy us`を返さず未観測だが判定経路は同一関数で、X正式関数の実走はPASS_WITH_WARNING経路で正常。`Bi-us`実音声負例は`be-us`1本でNOT_PASSを確認、`Bi us`/`Bye-us`はASRが`bias`/`by us`へ寄せ既存1:1同音でPASS=既知の限界BI3。費用JPY1.61。」(D-2 KPDUAL-PROD 委任_03で記録)
 - **仕様**: 隣接span(`difflib`のopcode)内の『1語⇔連続2〜3語』で、CMU辞書の音素列(ストレス記号無視・全variant連結)が一致する場合のみ`homophone_candidate`(`byUs`⇔`buy us`型)。安全条件(拡張禁止): 片側は1語のみ・最大3語・全token小文字英字・数値/否定語は対象外・複数語側1文字token禁止(文字読み対策)・canonical側3字未満token禁止(略語G5)・複数語側2字tokenは閉じた機能語集合のみ(V8、`Bi-us`型の誤発音をNG維持)・`entity_like`は代表発音(CMU先頭variant)のみ(小文字始まりcamelCase`byUs`は`entity_like`対象外=全variant比較)・CMU辞書外/variant直積>64は判定不能=非救済・例外はfail-closed(非救済)。
 - **配線点**: `er006_preprod_hardening_01_validation.py` `protected_check`(1:1 homophone判定の直後、1箇所)。Primary/Secondary転写・X/Z全経路は`classify_asr_match`→`protected_check`を通る(配線表=設計書(d))。判定順序(Primary PASSならSecondary不要=CURRENT_SPEC:2818)・1:1経路・既存閾値/Prompt/正規表現は無変更。KP両方PASS(OPEN-440)は未実装。
 - **rollback定数**: `er094_multiword_homophone_01.MULTIWORD_HOMOPHONE_ENABLED`(module定数、既定True)。Falseで現行とバイト一致(4,032ペアで確認)。env/flag読取・mode引数・設定dict経由のON/OFFは設けない。
@@ -2855,6 +2855,7 @@ OPEN-178/179・既存Topic Discovery Trial結果を上書きしない。
 - **挙動変化4点**: NX1(`two->to`数値ゲート例外と多語同音の共存で新規PASS、1:1でも既にPASS=許容)/M1(他の内容語差が残ればNG)/CS・F1迂回(他差分残存時NG維持)/F1残差は1:1限定のまま。
 - **既知の限界**: BI3(`bias`⇔`by us`は音素列で区別不能。ASRが`bias`/`by us`へ寄せた転写は既存1:1同音/despaceで従来どおりPASS=新規則が原因でない)・NX1。再判定経路(J11/resume)はshould_passのみで判定するため多語同音PASS音声は継承時`F1_REJUDGE_NG`→再生成(安全側、既存1:1同音/Case Aと同じ。許容集合の整合は別管理ID候補=OPEN_ITEMSの新OPEN)。
 - **範囲外(ユーザー判断事項、未実装)**: 多語同音PASSへのwarningラベル付与(事後試聴リスト登録)・camelCase固有名詞の`entity_like`化・J11/resume許容集合の現行判定への整合。
+- **内部警告記録(2026-10-22ユーザー承認①、F-2実装済み)**: 多語同音span付きでPASSした音声には`asr_judgement.internal_flags=["MULTIWORD_HOMOPHONE_PASS"]`(内部記録のみ・集計用の単一フラグ、`er006_secondary_asr_01.py`)を残す。`warnings`配列には入れない。人間による試聴義務・Human Reviewへの自動転送・量産停止は追加しない(state/事後試聴リスト/HR queue/停止条件不変)。追加API 0。多語span無し・OFF時はキー無し。camelCase拡張=不採用、再判定・再生成追加対策=対応不要。上の範囲外のうち「warningラベル(事後試聴リスト登録)」は不採用で、内部記録のみ採用。
 
 
 ## Family X 中核数値丸め(Luna low判断、規則5の限定例外。2026-10-22ユーザー正式採用`APPROVED_FOR_PRODUCTION`、`FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01` 委任_06 C-2)
@@ -2911,7 +2912,8 @@ ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01完了報告(Gemini TTS Batch API実配線
 
 ## Key Phrase英語phraseのPrimary・Secondary両方PASS必須(Family X・Z共通。2026-10-22ユーザー正式採用`APPROVED_FOR_PRODUCTION`、UDR #139、`FAMILY-XZ-ASR-PASS-CONDITION-SPEC-AUDIT-01` 委任_03 [D-2])
 
-- **Status**: `WIRED_PENDING_FABLE`(Family X・Z配線・API 0 Regression・最小実音声evidence完了)。**`PRODUCTION_WIRED`の判定はFable**(本節は判定前の記録)。出典=`docs/research/FAMILY-XZ-ASR-PASS-CONDITION-SPEC-AUDIT-01/IMPLEMENTATION_DESIGN_01.md`(D-2訂正表)、Opus独立レビュー=`docs/pm/OPUS_FINDINGS_LEDGER.md` OF-KPD-P-01〜12、証跡=`er096_output/kp_dual_prod_01/`。
+- **Status**: `PRODUCTION_WIRED`(Fable判定2026-10-22、下記逐語。旧Status=WIRED_PENDING_FABLE[Family X・Z配線・API 0 Regression・最小実音声evidence完了])。出典=`docs/research/FAMILY-XZ-ASR-PASS-CONDITION-SPEC-AUDIT-01/IMPLEMENTATION_DESIGN_01.md`(D-2訂正表)、Opus独立レビュー=`docs/pm/OPUS_FINDINGS_LEDGER.md` OF-KPD-P-01〜12、証跡=`er096_output/kp_dual_prod_01/`。
+- **Fable判定(2026-10-22、逐語)**: `PRODUCTION_WIRED`。根拠=Family X(K2 profile・default `+dual1` profile)とFamily Zの正式初回経路で、KP英語フレーズの両Provider判定・呼出・採否・model_id・routingが記録され、初回dual PASSと、旧Store entry(Primary PASS/Azure NG)のS1不成立→再生成→dual PASSを観測。take part型(保存Azure転写10件)はdual PASS 0/10、実呼出でもNG_BOTH。KP英語解説・その他音声のAzure呼出0。再利用6点はfail-closed helper経由(test固定)。4,032ペア配線前後バイト一致、回帰2,339件PASS(既存失敗5件は無関係と分類)。量産影響(24 KP実測)=初回dual PASS 23/24、HR +約4%/KP(小標本)、追加原価+約JPY0.65〜0.89/10 KP音声、+0.5〜1.0秒/KP。Azure障害時に最終slotの技術STOPがHR Lockへ入る現行挙動(OPEN-371、2026-10-16 #86で当面許容)はdual化で露出が増えるが、障害時限定・実害未観測のため変更せず監視(OPEN-371へ追記)。手順逸脱の自己申告(`git add -f er096_output`、ignored混入0・実害なし)は記録のみ。
 - **適用範囲(3区分)**:
 
 | 区分 | 対象 | 仕様 |
