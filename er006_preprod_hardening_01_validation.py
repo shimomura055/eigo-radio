@@ -1036,6 +1036,39 @@ def _f1_refine_residual_kind(cs: dict, protected) -> str:
     return kind
 
 
+def _homophone_swap_only_bypass_ratio_gate(canon_tokens: list, asr_tokens: list, protected: "ProtectedCheckResult") -> bool:
+    """B-2(ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01 委任_02、既存承認仕様の不具合修正)。
+    承認済みの同音語救済(単一語の置換差、CMU辞書で発音完全一致=homophone_candidate)は、本来ratioゲート(幻聴検出)より
+    前に効くべきだが、1語・短文ではratio<0.4が常に先に成立してTTS_FAILURE(blind retry)になり、救済へ到達できなかった
+    (実害: Z kp3_en `seize`/`sees` が TTS_FAILURE->HUMAN_REVIEW_LOCKED)。
+    ratioゲートを迂回してよいのは、次をすべて満たす場合だけ(それ以外のratio<0.4は従来どおりTTS_FAILURE):
+      (1) token数が同じ (2) 差のある全位置が1:1置換で、承認済みの既存判定(homophone_candidate: CMU辞書で発音完全一致)が成立
+      (3) どの差もentity_likeでなく、多語同音(PNMH)経由でもない (4) 同形異音語・弱形のみ一致・強勢差でない
+      (er008 homophone_en.strict_homophone_pair: canonicalの強勢読みが1つで、ASR語の代表強勢読みと一致=Opus P-01/P-02/P-03)
+      (5) 差のある位置が、content_word_diffsで説明される位置と過不足なく一致(stopword/数/否定の残差が無い)。
+    迂回後の流れは既存の同音語経路(ASR_VALIDATION_UNCERTAIN -> _step_alternate_pass が HOMOPHONE_EQUIVALENT)で、
+    hallucination(別の語への置換)は(2)(4)を満たさないため従来どおり。挙動変化は『不合格->合格』方向のみ。"""
+    if not canon_tokens or len(canon_tokens) != len(asr_tokens):
+        return False
+    diffs = protected.content_word_diffs
+    if not diffs:
+        return False
+    n_diff_positions = sum(1 for c, a in zip(canon_tokens, asr_tokens) if c != a)
+    if n_diff_positions != len(diffs):
+        return False
+    for d in diffs:
+        if d.get("entity_like") or not d.get("homophone_candidate") or d.get("multiword_homophone"):
+            return False
+        c_t, a_t = str(d.get("canonical", "")).split(), str(d.get("asr", "")).split()
+        if len(c_t) != 1 or len(a_t) != 1:
+            return False
+        if homophone_en.homophone_arpabet_equivalent(c_t[0], a_t[0]) is not True:
+            return False
+        if homophone_en.strict_homophone_pair(c_t[0], a_t[0]) is not True:
+            return False
+    return True
+
+
 def _classify_asr_match_core(canonical_text: str, asr_text: str,
                               high_similarity_threshold: float = 0.98,
                               uncertain_threshold: float = 0.85,
@@ -1130,7 +1163,7 @@ def _classify_asr_match_core(canonical_text: str, asr_text: str,
                                      should_pass=False, should_retry=True,
                                      reason=f"数字/否定の不一致を検出: numbers={protected.number_mismatches} negation={protected.negation_mismatches}")
 
-    if ratio < tts_failure_threshold:
+    if ratio < tts_failure_threshold and not _homophone_swap_only_bypass_ratio_gate(canon_tokens, asr_tokens, protected):
         return ClassificationResult("TTS_FAILURE", ratio, protected,
                                      should_pass=False, should_retry=True,
                                      reason="全体類似度が著しく低く、TTS生成自体の異常(hallucination/missing speech)が疑われる")

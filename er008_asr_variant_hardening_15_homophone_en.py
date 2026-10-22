@@ -156,3 +156,59 @@ def entity_span_arpabet_match(canonical_span: str, candidate_span: str) -> Entit
             all_match = False
     resolved = not unresolved
     return EntitySpanMatchResult(resolved=resolved, matched=(resolved and all_match), unresolved_words=unresolved)
+
+
+# ------------------------------------------------------------
+# ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01 委任_02 (2026-10-22, Opus P-01/P-02/P-03):
+# 追加のみ(既存関数は無変更)。『強勢2値・弱形のみ一致不可・同形異音語保護』つきの厳格な1語同音判定。
+# 用途: (1)B-2(1語/短文のratioゲートより先の承認済み同音救済、er006 validation)の安全条件
+#       (2)er109(未配線の表記同値層)の語unit判定。既存homophone_arpabet_equivalent()の承認済み挙動は変えない。
+import re as _re_strict
+
+
+def _stress2_tokens(ph: str) -> tuple:
+    """ARPAbet文字列 -> 強勢を2値(1=主/副強勢, 0=無強勢)にした音素tuple。"""
+    return tuple(_re_strict.sub(r"([A-Z]+)[12]$", r"\g<1>1", t) for t in ph.split())
+
+
+def _has_stressed_vowel(reading: tuple) -> bool:
+    return any(len(t) > 1 and t[-1] == "1" and t[:-1].isalpha() for t in reading)
+
+
+def representative_strong_reading(word: str):
+    """語の代表発音(CMU先頭の強勢読み。2値強勢)。無ければNone。"""
+    for v in _phone_variants(word) or []:
+        r = _stress2_tokens(v)
+        if _has_stressed_vowel(r):
+            return r
+    return None
+
+
+def strong_readings(word: str) -> frozenset | None:
+    """語の『強勢母音を含む読み』(2値強勢)の集合。弱形のみの読み(are=ER0等)は含めない。
+    CMU未登録 または 強勢読みが無い場合はNone(判定不能=安全側)。"""
+    vs = _phone_variants(word)
+    if not vs:
+        return None
+    out = frozenset(r for r in (_stress2_tokens(v) for v in vs) if _has_stressed_vowel(r))
+    return out or None
+
+
+def strict_homophone_pair(canonical_word: str, asr_word: str) -> bool | None:
+    """P-01/P-02/P-03を満たす1語同音判定(第1引数=canonical=TTSが読むべき語、第2引数=ASR転写語)。
+    True : (1)canonicalの強勢読み(2値強勢・弱形のみの読みを除く)が『ただ1つ』で、
+           (2)ASR語の代表(先頭)強勢読みがそれと一致する。
+           (=canonicalが同形異音語[lead/desert/won/read/our等]なら不可。ASR語の少数派読みでしか一致しない場合
+              [our<->are, we're<->were]も不可。弱形のみの一致[are<->or]・強勢差[billow<->below]も不可。
+              canonicalが単一読みでASR語が複数読みを持つのは(2)を満たす限り可=綴りの違いだけ)
+    False: 両語ともCMUで解決でき、上記を満たさない
+    None : 判定不能(未登録/強勢読み無し)。呼出側は同音として扱わない。綴りが同じ場合はTrue。"""
+    wa, wb = _normalize_word(canonical_word), _normalize_word(asr_word)
+    if not wa or not wb:
+        return None
+    if wa == wb:
+        return True
+    rc, ra = strong_readings(wa), strong_readings(wb)
+    if rc is None or ra is None:
+        return None
+    return len(rc) == 1 and representative_strong_reading(wb) in rc

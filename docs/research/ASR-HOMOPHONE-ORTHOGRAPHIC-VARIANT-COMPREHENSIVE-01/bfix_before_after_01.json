@@ -1,0 +1,566 @@
+{
+ "items": 12342,
+ "unchanged": 12316,
+ "PASS_to_NG": 0,
+ "NG_to_PASS": 26,
+ "by_set": {
+  "stored_primary": {
+   "n": 2212,
+   "NG_to_PASS": 4
+  },
+  "stored_azure": {
+   "n": 88,
+   "NG_to_PASS": 1
+  },
+  "machine_kp_pos": {
+   "n": 1130,
+   "NG_to_PASS": 11
+  },
+  "machine_kp_neg": {
+   "n": 3057
+  },
+  "machine_body_pos": {
+   "n": 2099,
+   "NG_to_PASS": 4
+  },
+  "machine_body_neg": {
+   "n": 3745
+  },
+  "fixture": {
+   "n": 11,
+   "NG_to_PASS": 6
+  }
+ },
+ "PASS_to_NG_items": [],
+ "NG_to_PASS_items": [
+  {
+   "set": "stored_primary",
+   "c": "The other response is restriction. In a report published by *Coffee Intelligence* on April twenty eighth, 2026, The Barn introduced a one-hour laptop limit, or a full laptop ban on certain busy days. At its Neukölln store in Berlin, the café reported that laptop users occupied more than 70 percent of seats for long periods. It also reported a 25 percent loss in sales before the policy change.\n\nThe Barn’s founder, Ralf Rüller, said the business wants to offer an excellent coffee experience. At the same time, he recognizes the demand from remote workers who want to work in cafés.\n\nSo the debate is not simply about laptops. It is about whether a café treats work as a problem, a compromise, or a planned part of its identity.",
+   "a": "The other response is restriction. In a report published by Coffee Intelligence on April 28th, 2026, The Barn introduced a one-hour laptop limit, or a full laptop ban on certain busy days. At its Neukölln store in Berlin, the cafe reported that laptop users occupied more than 70% of seats for long periods. It also reported a 25% loss in sales before the policy change. The Barn's founder, Ralf Ruller, said the business wants to offer an excellent coffee experience. At the same time, he recognizes the demand from remote workers who want to work in cafes. So, the debate is not simply about laptops. It is about whether a cafe treats work as a problem, a compromise, or a planned part of its identity.",
+   "seg": "full_story_part2",
+   "kp": false,
+   "src": "er006_output/pool_pilot_01/pool_n5_cafes/b1b/audit/tts_generation_results.json",
+   "attempt": 6,
+   "stored_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "OK",
+   "result": {
+    "label": "NORMALIZED_MATCH",
+    "classify_pass": true,
+    "final_ok": false,
+    "gate": "value_diff"
+   },
+   "after": {
+    "label": "NORMALIZED_MATCH",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "stored_primary",
+   "c": "seize",
+   "a": "Seas",
+   "seg": "kp4_en",
+   "kp": true,
+   "src": "er026_output/family_z_production_e2e_01/melos/run_e2e_04/b1b/audit/tts_generation_results.json",
+   "attempt": 1,
+   "stored_cls": "TTS_FAILURE",
+   "final_status": "OK",
+   "result": {
+    "label": "TTS_FAILURE",
+    "classify_pass": false,
+    "final_ok": false,
+    "gate": null
+   },
+   "after": {
+    "label": "HOMOPHONE_EQUIVALENT",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "stored_primary",
+   "c": "seize",
+   "a": "sees",
+   "seg": "kp4_en",
+   "kp": true,
+   "src": "er026_output/family_z_production_e2e_01/melos/run_e2e_04/b1b/audit/tts_generation_results.json",
+   "attempt": 2,
+   "stored_cls": "NORMALIZED_MATCH",
+   "final_status": "OK",
+   "result": {
+    "label": "TTS_FAILURE",
+    "classify_pass": false,
+    "final_ok": false,
+    "gate": null
+   },
+   "after": {
+    "label": "HOMOPHONE_EQUIVALENT",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "stored_primary",
+   "c": "seize",
+   "a": "sees",
+   "seg": "kp3_en",
+   "kp": true,
+   "src": "er026_output/family_z_production_e2e_01/melos/run_kgcpw_z_e2e_01/b1b/audit/tts_generation_results.json",
+   "attempt": 1,
+   "stored_cls": "TTS_FAILURE",
+   "final_status": "HUMAN_REVIEW_LOCKED",
+   "result": {
+    "label": "TTS_FAILURE",
+    "classify_pass": false,
+    "final_ok": false,
+    "gate": null
+   },
+   "after": {
+    "label": "HOMOPHONE_EQUIVALENT",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "stored_azure",
+   "c": "seize",
+   "a": "Sees.",
+   "seg": "kp4_en",
+   "kp": true,
+   "src": "er104_output/kp3v_runtime_evidence_01/z_s1/b1b/audit/tts_generation_results.json",
+   "attempt": 1,
+   "stored_cls": "EXACT_MATCH",
+   "final_status": "OK",
+   "result": {
+    "label": "TTS_FAILURE",
+    "classify_pass": false,
+    "final_ok": false,
+    "gate": null
+   },
+   "after": {
+    "label": "HOMOPHONE_EQUIVALENT",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "machine_kp_pos",
+   "c": "acknowledgment",
+   "a": "acknowledgement",
+   "seg": "kp1_en",
+   "kp": true,
+   "cat": "cmu_homophone_swap",
+   "result": {
+    "label": "TTS_FAILURE",
+    "classify_pass": false,
+    "final_ok": false,
+    "gate": null
+   },
+   "after": {
+    "label": "HOMOPHONE_EQUIVALENT",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "machine_kp_pos",
+   "c": "burst",
+   "a": "berst",
+   "seg": "kp1_en",
+   "kp": true,
+   "cat": "cmu_homophone_swap",
+   "result": {
+    "label": "TTS_FAILURE",
+    "classify_pass": false,
+    "final_ok": false,
+    "gate": null
+   },
+   "after": {
+    "label": "HOMOPHONE_EQUIVALENT",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "machine_kp_pos",
+   "c": "confectionery",
+   "a": "confectionary",
+   "seg": "kp1_en",
+   "kp": true,
+   "cat": "cmu_homophone_swap",
+   "result": {
+    "label": "TTS_FAILURE",
+    "classify_pass": false,
+    "final_ok": false,
+    "gate": null
+   },
+   "after": {
+    "label": "HOMOPHONE_EQUIVALENT",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "machine_kp_pos",
+   "c": "lean",
+   "a": "lein",
+   "seg": "kp1_en",
+   "kp": true,
+   "cat": "cmu_homophone_swap",
+   "result": {
+    "label": "TTS_FAILURE",
+    "classify_pass": false,
+    "final_ok": false,
+    "gate": null
+   },
+   "after": {
+    "label": "HOMOPHONE_EQUIVALENT",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "machine_kp_pos",
+   "c": "mixed",
+   "a": "mixte",
+   "seg": "kp1_en",
+   "kp": true,
+   "cat": "cmu_homophone_swap",
+   "result": {
+    "label": "TTS_FAILURE",
+    "classify_pass": false,
+    "final_ok": false,
+    "gate": null
+   },
+   "after": {
+    "label": "HOMOPHONE_EQUIVALENT",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "machine_kp_pos",
+   "c": "pairing",
+   "a": "paring",
+   "seg": "kp1_en",
+   "kp": true,
+   "cat": "cmu_homophone_swap",
+   "result": {
+    "label": "TTS_FAILURE",
+    "classify_pass": false,
+    "final_ok": false,
+    "gate": null
+   },
+   "after": {
+    "label": "HOMOPHONE_EQUIVALENT",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "machine_kp_pos",
+   "c": "seize",
+   "a": "seese",
+   "seg": "kp1_en",
+   "kp": true,
+   "cat": "cmu_homophone_swap",
+   "result": {
+    "label": "TTS_FAILURE",
+    "classify_pass": false,
+    "final_ok": false,
+    "gate": null
+   },
+   "after": {
+    "label": "HOMOPHONE_EQUIVALENT",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "machine_kp_pos",
+   "c": "single",
+   "a": "singel",
+   "seg": "kp1_en",
+   "kp": true,
+   "cat": "cmu_homophone_swap",
+   "result": {
+    "label": "TTS_FAILURE",
+    "classify_pass": false,
+    "final_ok": false,
+    "gate": null
+   },
+   "after": {
+    "label": "HOMOPHONE_EQUIVALENT",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "machine_kp_pos",
+   "c": "stakes",
+   "a": "steaks",
+   "seg": "kp1_en",
+   "kp": true,
+   "cat": "cmu_homophone_swap",
+   "result": {
+    "label": "TTS_FAILURE",
+    "classify_pass": false,
+    "final_ok": false,
+    "gate": null
+   },
+   "after": {
+    "label": "HOMOPHONE_EQUIVALENT",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "machine_kp_pos",
+   "c": "strait",
+   "a": "streight",
+   "seg": "kp1_en",
+   "kp": true,
+   "cat": "cmu_homophone_swap",
+   "result": {
+    "label": "TTS_FAILURE",
+    "classify_pass": false,
+    "final_ok": false,
+    "gate": null
+   },
+   "after": {
+    "label": "HOMOPHONE_EQUIVALENT",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "machine_kp_pos",
+   "c": "wilt",
+   "a": "wildt",
+   "seg": "kp1_en",
+   "kp": true,
+   "cat": "cmu_homophone_swap",
+   "result": {
+    "label": "TTS_FAILURE",
+    "classify_pass": false,
+    "final_ok": false,
+    "gate": null
+   },
+   "after": {
+    "label": "HOMOPHONE_EQUIVALENT",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "machine_body_pos",
+   "c": "In the United States, about 60 percent of people in one survey worried about missing different views.",
+   "a": "In the United States, about 60 % of people in one survey worried about missing different views.",
+   "seg": "full_story_part1",
+   "kp": false,
+   "cat": "symbol_sym",
+   "result": {
+    "label": "NORMALIZED_MATCH",
+    "classify_pass": true,
+    "final_ok": false,
+    "gate": "value_diff"
+   },
+   "after": {
+    "label": "NORMALIZED_MATCH",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "machine_body_pos",
+   "c": "A survey cited in one report found that only 9 percent of companies were already using highly independent robots or machines.",
+   "a": "A survey cited in one report found that only 9 % of companies were already using highly independent robots or machines.",
+   "seg": "full_story_part1",
+   "kp": false,
+   "cat": "symbol_sym",
+   "result": {
+    "label": "NORMALIZED_MATCH",
+    "classify_pass": true,
+    "final_ok": false,
+    "gate": "value_diff"
+   },
+   "after": {
+    "label": "NORMALIZED_MATCH",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "machine_body_pos",
+   "c": "In the United States, food-industry installations rose 30 percent, while automotive installations fell 1 percent.",
+   "a": "In the United States, food-industry installations rose 30 %, while automotive installations fell 1 percent.",
+   "seg": "full_story_part1",
+   "kp": false,
+   "cat": "symbol_sym",
+   "result": {
+    "label": "NORMALIZED_MATCH",
+    "classify_pass": true,
+    "final_ok": false,
+    "gate": "value_diff"
+   },
+   "after": {
+    "label": "NORMALIZED_MATCH",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "machine_body_pos",
+   "c": "The group's 68th single is called Suki-ish.",
+   "a": "The group's sixty eighth single is called Suki-ish.",
+   "seg": "full_story_part1",
+   "kp": false,
+   "cat": "num_digits_to_words",
+   "result": {
+    "label": "NORMALIZED_MATCH",
+    "classify_pass": true,
+    "final_ok": false,
+    "gate": "value_diff"
+   },
+   "after": {
+    "label": "NORMALIZED_MATCH",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "fixture",
+   "c": "the twenty first century",
+   "a": "the 21st century",
+   "seg": "full_story_part1",
+   "kp": false,
+   "result": {
+    "label": "NORMALIZED_MATCH",
+    "classify_pass": true,
+    "final_ok": false,
+    "gate": "value_diff"
+   },
+   "after": {
+    "label": "NORMALIZED_MATCH",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "fixture",
+   "c": "the sixty eighth day",
+   "a": "the 68th day",
+   "seg": "full_story_part1",
+   "kp": false,
+   "result": {
+    "label": "NORMALIZED_MATCH",
+    "classify_pass": true,
+    "final_ok": false,
+    "gate": "value_diff"
+   },
+   "after": {
+    "label": "NORMALIZED_MATCH",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "fixture",
+   "c": "sixty percent of them",
+   "a": "60 % of them",
+   "seg": "full_story_part1",
+   "kp": false,
+   "result": {
+    "label": "NORMALIZED_MATCH",
+    "classify_pass": true,
+    "final_ok": false,
+    "gate": "value_diff"
+   },
+   "after": {
+    "label": "NORMALIZED_MATCH",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "fixture",
+   "c": "seize",
+   "a": "sees",
+   "seg": "kp3_en",
+   "kp": true,
+   "result": {
+    "label": "TTS_FAILURE",
+    "classify_pass": false,
+    "final_ok": false,
+    "gate": null
+   },
+   "after": {
+    "label": "HOMOPHONE_EQUIVALENT",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "fixture",
+   "c": "wait",
+   "a": "weight",
+   "seg": "kp1_en",
+   "kp": true,
+   "result": {
+    "label": "TTS_FAILURE",
+    "classify_pass": false,
+    "final_ok": false,
+    "gate": null
+   },
+   "after": {
+    "label": "HOMOPHONE_EQUIVALENT",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  },
+  {
+   "set": "fixture",
+   "c": "one",
+   "a": "won",
+   "seg": "kp1_en",
+   "kp": true,
+   "result": {
+    "label": "TTS_FAILURE",
+    "classify_pass": false,
+    "final_ok": false,
+    "gate": null
+   },
+   "after": {
+    "label": "HOMOPHONE_EQUIVALENT",
+    "classify_pass": true,
+    "final_ok": true,
+    "gate": null
+   }
+  }
+ ]
+}

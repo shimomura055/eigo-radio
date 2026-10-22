@@ -336,8 +336,21 @@ def extract_atoms_en(text: str) -> list:
     return [a for a in _en_sequence(text) if a.kind in ("num", "time")]
 
 
+def _en_atom_text(text: str) -> str:
+    """B-1/B-3(ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01 委任_02、既存承認仕様の不具合修正)。
+    値atomを作る前に、分類側(val.normalize_numeric)が既に同値と扱っている2つの表記差を同じ関数で揃える:
+      B-1 複合序数 `twenty first`/`sixty eighth` -> `21st`/`68th` (valの単一関数 _convert_compound_ordinal_words を再利用。再実装しない。
+          未対応だとatomが20+literal`first`に分裂し、`21st`との値DIFFで最終ゲートがPASS済みの分類を再否定していた)
+      B-3 数字と%の間の空白 `60 %` -> `60%` (`60 percent`/`60%`と同じatom形へ)
+    値が異なるもの(twenty first と 22nd 等)は従来どおりDIFF。"""
+    t = text or ""
+    import er006_preprod_hardening_01_validation as _val   # 遅延import(循環回避。純関数のみ使用)
+    t = _val._convert_compound_ordinal_words(t)
+    return re.sub(r"(?<=\d) +%", "%", t)
+
+
 def _en_sequence(text: str) -> list:
-    raw = _tier1._tier1_atoms(text or "")
+    raw = _tier1._tier1_atoms(_en_atom_text(text))
     has_one_word = bool(re.search(r"\bone\b", text or "", re.I))
     seq: list[Atom] = []
     for i, a in enumerate(raw):
