@@ -757,12 +757,20 @@ def generate_or_reuse_z(cached_entry: dict | None, spec: ClipSpec, wav_path: str
 # ============================================================
 # 5. 実TTS generator(遅延import、testではgeneratorsを差し替える)
 # ============================================================
+def _pnap_supply(original: str, shaped: str) -> str:
+    """PNAP 委任_02(5-4): 固有名詞の発音供給(綴り置換)をtext整形点の直後に1回挟む。flag OFF・run scope外・KPでは恒等(shapedをそのまま返す)。
+    共有`er003_v1_n3_01_tts_generate`は編集しない(27-7)。"""
+    import er103_pronunciation_tts_supply_01 as _sup
+    import er003_v1_n3_01_tts_generate as _n3
+    return _sup.supply_for_tts(original, shaped, static_overrides=getattr(_n3, "_EN_NAME_PRONUNCIATION_OVERRIDES", None))
+
+
 def _norm_for_tts(spec: ClipSpec) -> str:
     import er003_v1_n3_01_tts_generate as n3_tts
     if spec.kind in ("narrator", "dialogue"):
-        return n3_tts.tts_safe_news_en(spec.text)
+        return _pnap_supply(spec.text, n3_tts.tts_safe_news_en(spec.text))
     if spec.kind in ("topic_intro", "preview", "comment") and spec.language == "en":
-        return n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(spec.text))
+        return _pnap_supply(spec.text, n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(spec.text)))
     if spec.kind == "kp_en":
         return n3_tts.tts_safe_kp_en(spec.text)
     return spec.text
@@ -1110,6 +1118,20 @@ def _cached_entry(cached: dict | None, spec: ClipSpec):
 def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | None = None, dry_run: bool = False,
                   only_clips: set | None = None, revalidate_fn=None, article_text: str | None = None,
                   story_key: str = DEFAULT_SLUG) -> dict:
+    """PNAP 委任_02(5-3/5-6/5-7): 固有名詞アラーム方針のrun scope(Z)とfinallyの完成報告hookで`_run_tts_stage_impl`を包む。
+    flag(PROPER_NOUN_ALARM_POLICY_ENABLED)がOFF・dry_runのときは従来どおり(scope/hook無し)。"""
+    if dry_run:
+        return _run_tts_stage_impl(run_dir, level, plan, generators=generators, dry_run=dry_run, only_clips=only_clips,
+                                   revalidate_fn=revalidate_fn, article_text=article_text, story_key=story_key)
+    import er103_pnap_runner_hooks_01 as _pnap_hooks
+    return _pnap_hooks.run_with_alarm_hook(
+        "Z", f"{run_dir}/{level}", _run_tts_stage_impl, run_dir, level, plan, generators=generators, dry_run=dry_run,
+        only_clips=only_clips, revalidate_fn=revalidate_fn, article_text=article_text, story_key=story_key)
+
+
+def _run_tts_stage_impl(run_dir: str, level: str, plan: list, *, generators: dict | None = None, dry_run: bool = False,
+                        only_clips: set | None = None, revalidate_fn=None, article_text: str | None = None,
+                        story_key: str = DEFAULT_SLUG) -> dict:
     """plan(ClipSpec列)をTTS生成し audit/tts_generation_results.json(+Z拡張)を書く。
     dry_run=Trueはファイル・Master Store・telemetry・queueへ一切書かず、計画のみ返す。
     Local Rewrite発火clipは audio_text_deviation をprovenanceへ監査記録する(2026-10-12ユーザー決定: er061再検証フックは撤去。

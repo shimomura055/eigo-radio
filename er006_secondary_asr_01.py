@@ -195,6 +195,10 @@ import er021_en_asr_semantic_equivalence_production_01 as semantic_equivalence
 # ASR-M1-OOV-MULTI-PRONUNCIATION-PRODUCTION-01(APPROVED_FOR_PRODUCTION 2026-10-13):
 # CMU未収録語の複数発音候補(Ledger由来、segment開始前に凍結)によるM1判定。
 import er006_m1_multi_candidate_01 as m1_multi
+# PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01(ユーザー承認APPROVED_FOR_PRODUCTION 2026-10-22、委任_02で配線):
+# 固有名詞の発音不一致だけが原因のNG_BOTHをアラーム受理する最終救済。単一読取関数pnap.is_active_for_run()(flag∧Family X/Z run scope)。
+import er103_proper_noun_alarm_policy_01 as pnap
+import er103_pronunciation_tts_supply_01 as pnap_supply
 
 
 # --- M1 複数発音候補(ASR-M1-OOV-MULTI-PRONUNCIATION-PRODUCTION-01) -------------
@@ -813,6 +817,56 @@ class _AzureShared:
         return out.text, out.error
 
 
+def _pnap_try_accept(*, result: dict, audit: dict, jr, cls, captured: dict, sec: dict, canonical_text: str, asr_text,
+                     wav_path: str, sha, role, lang: str, segment_id, actx: dict) -> bool:
+    """PNAP: アラーム受理を評価し、受理ならresult/auditを「アラーム付き完成」に書換えてTrueを返す(呼出前にpnap.is_active_for_run()確認済み)。"""
+    lk = pnap_supply.lookup_supply(canonical_text)
+    dec = pnap.evaluate_for_adapter(
+        canonical_text=canonical_text, primary_cls=cls, secondary_cls=captured.get("cls_s"), primary_text=asr_text,
+        secondary_text=sec.get("text"), judge_state=jr.state, judge_reason_code=jr.reason_code, p3_entry=audit.get("p3_entry"),
+        role=role, lang=("en" if str(lang).lower().startswith("en") else str(lang)), dual_required=False, lookup=lk,
+        slot=int(actx.get("slot", 1)))
+    audit["pronunciation_alarm_eval"] = {"accepted": dec.accept, "reason": dec.reason, "detail": dec.detail if not dec.accept else {}}
+    if not dec.accept:
+        return False
+    smap = lk.get("supply_map") or {}
+    ledger_basis = {}
+    for d in dec.diffs:
+        noun = " ".join(smap.get(t, t) for t in d.canonical.split())
+        _stage1_clear()
+        info = _resolve_unresolved_entity_for_review(noun)
+        _s1 = _stage1_take()
+        li = dict(info) if isinstance(info, dict) else {}
+        for _k, _v in (_s1.get("extra") or {}).items():
+            li.setdefault(_k, _v)
+        if not li:
+            li = {"note": _stage1_stub_note(_s1.get("action"), _s1.get("negative"))}
+        ledger_basis[noun] = li
+    # build_alarm_recordsはdiffごとにledger_infoを1つ取るため、noun別に分けて作る
+    recs = []
+    models = {"primary_asr": dict(routing.ASR_ROUTING.get("en", {})), "secondary_asr": "azure-speech-stt",
+              "secondary_azure_calls": audit.get("cost", {}).get("azure_calls")}
+    for d in dec.diffs:
+        noun = " ".join(smap.get(t, t) for t in d.canonical.split())
+        one = pnap.AlarmDecision(True, dec.reason, diffs=[d], detail=dec.detail)
+        recs += pnap.build_alarm_records(
+            one, canonical_text=canonical_text, segment_id=segment_id or "", wav_path=wav_path or "", wav_sha256=sha or "",
+            audio_seconds=audit.get("audio_seconds") or _wav_duration_seconds(wav_path), primary_text=asr_text,
+            secondary_text=sec.get("text"), supply_info=pnap_supply.supply_info_for(noun, lk), ledger_info=ledger_basis.get(noun),
+            slot=int(actx.get("slot", 1)), models=models, supply_map=smap, role=role or "",
+            family=pnap.current_scope() or "", level=str(actx.get("level") or ""), article_id=str(actx.get("article_id") or ""))
+    audit["state"] = pnap.STATE_ALARM
+    audit["reason_code"] = "pronunciation_alarm_accept"
+    audit["pronunciation_alarm_records"] = recs
+    audit["pronunciation_alarm"] = pnap.build_audit_block(dec, recs, tts_input_text=canonical_text, lookup=lk)
+    result["verified"] = True
+    result["final_status"] = pnap.STATE_ALARM
+    result["classification"] = val.ClassificationResult(
+        "PASS_WITH_PRONUNCIATION_ALARM", cls.normalized_ratio, cls.protected, should_pass=True, should_retry=False,
+        reason="固有名詞の発音不一致のみ(アラーム受理)")
+    return True
+
+
 def evaluate_attempt_with_cascade_detail(
     canonical_text: str, asr_text: Optional[str], prior_results: list,
     wav_path: str, language: str = "en-US", ledger_phrases: Optional[list[str]] = None,
@@ -1168,12 +1222,24 @@ def evaluate_attempt_with_cascade_detail(
         # 品質問題ではなく技術障害のため、Human Review(Lock/queue)へ投入しない。`technical_stop`(truthy dict)+status名で
         # 技術STOP(承認不要・再実行で再開可)として返し、runnerがcircuit_open/technical_stopを読んで残りclipを停止・報告する。
         _tech_only = jr.state == unified_judge_mod.NG_SECONDARY_UNAVAILABLE
+        # PNAP(ユーザー承認2026-10-22): 全救済層・統一judgeを通ってNG_BOTH/secondary_not_acceptedで終わった「固有名詞の発音不一致だけ」の
+        # attemptを、アラーム記録のみで受理する(HR queue/HR Lock/再生成/approve_regenerateを経由しない)。Family A/B/C・KP・JAは
+        # pnap.is_active_for_run()がFalse/dual_required/role不一致でfail-closed=従来どおり。追加API呼出0(Stage 1調査は従来のHR投入と同じ条件・回数)。
+        _alarm_accepted = False
+        if (not _tech_only) and (not _dual) and pnap.is_active_for_run():
+            try:
+                _alarm_accepted = _pnap_try_accept(
+                    result=result, audit=audit, jr=jr, cls=cls, captured=captured, sec=sec, canonical_text=canonical_text,
+                    asr_text=asr_text, wav_path=wav_path, sha=az.sha, role=judge_role, lang=lang, segment_id=segment_id, actx=actx)
+            except Exception as _pnap_exc:  # noqa: BLE001  受理判定の失敗は従来どおり(HR側)。監査にだけ残す
+                audit["pronunciation_alarm_error"] = f"{type(_pnap_exc).__name__}: {_pnap_exc}"
+                _alarm_accepted = False
         if _tech_only:
             result["human_review_required"] = False
             result["technical_stop"] = audit.get("technical_stop") or {"type": "SECONDARY_UNAVAILABLE", "restartable": True,
                                                                         "approval_required": False}
             result["technical_stop_status"] = "TECHNICAL_STOP_SECONDARY_UNAVAILABLE"
-        if bool(actx.get("is_last_slot", False)) and not _tech_only:
+        if bool(actx.get("is_last_slot", False)) and not _tech_only and not _alarm_accepted:
             result["human_review_required"] = True
             if is_entity_like_mismatch(cls):
                 pronunciation_lookups = {}

@@ -192,6 +192,14 @@ def upsert(key: LedgerKey, entry: dict) -> str:
     for _k in ("evidence_tier", "source_page_check_v1", "evidence"):
         if _k in entry:
             ledger[ledger_id][_k] = entry[_k]
+    # PNAP 委任_02(5-8、additive): TTS発音供給用の人承認キー。承認は人の明示操作[er103_pronunciation_approve_cli_01]でのみ付与する。
+    # 今回渡されたentryにあればそれを書き、無ければ**既存entryの値を引き継ぐ**(低confidence再research等の無関係なupsertで人承認が黙って消えない
+    # ようにする=tts_injection_disabledと同じ扱い)。どちらにも無い旧entry・キー無しの既存全呼出は従来とバイト一致(キーを書かない)。
+    for _k in ("human_approved", "human_approved_by", "human_approved_at", "tts_respelling"):
+        if _k in entry:
+            ledger[ledger_id][_k] = entry[_k]
+        elif _k in existing:
+            ledger[ledger_id][_k] = existing[_k]
     _save(ledger)
     return ledger_id
 

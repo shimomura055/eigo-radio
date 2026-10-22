@@ -41,6 +41,14 @@ def guard_entry(entry, *, label: str = "", canonical_text: str | None = None, le
     if mark:
         out.update(blocked=True, applicable=True, reason="REUSE_BLOCKED_MARK", reuse_blocked_mark=mark)
         return out
+    # PNAP 委任_02(OF-PNAP-P-05(ii)): 固有名詞アラーム受理音声(state=PASS_WITH_PRONUNCIATION_ALARM)は、承認範囲(Family X/Z run scope内∧flag有効)の
+    # 外では再利用しない(Master Audio StoreはA/B/Cとも共有のため、X/Zで受理した音声がA/B/CやDefault OFF時に流入しないようにする)。再生成へ回す。
+    _aj0 = entry.get("asr_judgement") or entry.get("asr_judgement_inherited")
+    if isinstance(_aj0, dict) and _aj0.get("state") == "PASS_WITH_PRONUNCIATION_ALARM":
+        import er103_proper_noun_alarm_policy_01 as _pnap
+        if not _pnap.is_active_for_run():
+            out.update(blocked=True, applicable=True, reason="PRONUNCIATION_ALARM_AUDIO_OUT_OF_SCOPE")
+            return out
     asr_text = entry.get("asr_text")
     if not asr_text:  # C `.ok.meta.json`等、asr_textを持たず統一judge recordだけを保存している資産
         _aj = entry.get("asr_judgement") or entry.get("asr_judgement_inherited") or {}

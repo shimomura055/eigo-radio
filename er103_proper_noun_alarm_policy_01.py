@@ -29,8 +29,8 @@ from typing import Callable, Optional
 
 POLICY_ID = "PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01"
 
-# ---- 単一flag(読取は is_enabled() のみ)。未配線の間は False。配線委任でTrue(ユーザー承認済み仕様のため)。 ----
-PROPER_NOUN_ALARM_POLICY_ENABLED = False
+# ---- 単一flag(読取は is_enabled() のみ)。ユーザー承認(APPROVED_FOR_PRODUCTION 2026-10-22)により委任_02で既定True(配線済み)。X/Z run scope外では不活性。 ----
+PROPER_NOUN_ALARM_POLICY_ENABLED = True
 
 
 def is_enabled() -> bool:

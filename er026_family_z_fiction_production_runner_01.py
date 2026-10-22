@@ -1630,7 +1630,11 @@ def stage_tts(ctx, level: str) -> dict:
         raise FamilyZTtsClipFailedStop(
             f"FAMILY_Z_TTS_CLIPS_NOT_OK({level}): {failed}。human_review_queue/attempts を確認し、"
             "承認または --only-clips で当該clipのみ再実行(全体の自動再生成はしない)")
-    return {"level": level, "clips": len(out["statuses"]), "results_path": out["results_path"]}
+    ret = {"level": level, "clips": len(out["statuses"]), "results_path": out["results_path"]}
+    # PNAP 委任_02: 固有名詞アラーム要約をstage結果(run summaryの元)へ機械的に埋め込む(非blocking・flag OFFは何も付かない)。
+    import er103_pnap_runner_hooks_01 as _pnap_hooks
+    _pnap_hooks.attach_alarm_audit(ret, f"{ctx.out_dir}/{level}", level)
+    return ret
 
 
 def stage_provision_shell(ctx) -> dict:

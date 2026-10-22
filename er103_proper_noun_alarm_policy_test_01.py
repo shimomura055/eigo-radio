@@ -28,11 +28,13 @@ def decide(canon, prim, sec, **kw):
 
 
 class DefaultOffIsolationTest(unittest.TestCase):
-    def test_flags_default_false(self):
-        self.assertIs(pol.PROPER_NOUN_ALARM_POLICY_ENABLED, False)
-        self.assertIs(pol.is_enabled(), False)
-        self.assertIs(sup.TTS_SUPPLY_ENABLED, False)
-        self.assertIs(sup.is_enabled(), False)
+    def test_flags_default_on_but_inactive_without_runner_scope(self):
+        # 委任_02: ユーザー承認(APPROVED_FOR_PRODUCTION)により既定ON(配線済み)。ただしFamily X/Z runnerのrun scope外
+        # (A/B/C・単体呼出)では不活性=従来どおり。起動script/.envでの暗黙ONはしない(単一定数のみ)。
+        self.assertIs(pol.PROPER_NOUN_ALARM_POLICY_ENABLED, True)
+        self.assertIs(sup.TTS_SUPPLY_ENABLED, True)
+        self.assertIsNone(pol.current_scope())
+        self.assertIs(pol.is_active_for_run(), False)
 
     def test_disabled_never_accepts_and_does_no_io(self):
         before = set(os.listdir("."))
@@ -47,7 +49,7 @@ class DefaultOffIsolationTest(unittest.TestCase):
     def test_supply_disabled_returns_unchanged_text(self):
         led = {"x": {"surface": "Khaite", "entity_type": "brand", "evidence_tier": "QUOTE_VERIFIED", "human_approved": True,
                      "pronunciation_hint": "kate", "sources": ["https://www.nylon.com/x"]}}
-        decs = sup.plan_supply("Khaite showed bags.", led)
+        decs = sup.plan_supply("Khaite showed bags.", led, enabled=False)
         text, smap = sup.apply_supply("Khaite showed bags.", decs)
         self.assertEqual(text, "Khaite showed bags.")
         self.assertEqual(smap, {})

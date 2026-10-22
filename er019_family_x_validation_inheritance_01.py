@@ -233,12 +233,20 @@ def _j11_adopted_judgement(entry: dict):
     aj = entry.get("asr_judgement") or entry.get("asr_judgement_inherited")
     if not isinstance(aj, dict):
         return None, None
+    if aj.get("state") == "PASS_WITH_PRONUNCIATION_ALARM":
+        # PNAP 委任_02(OF-PNAP-P-05(i)): アラーム受理音声のPrimary自身はNG(固有名詞の発音不一致)。採用転写=Primary転写
+        # (Secondary転写は固有名詞不一致を含む別judge対象)。最終ANDゲートはPrimary転写へ適用する。
+        return aj, (aj.get("primary") or {}).get("text")
     if aj.get("state") not in ("PASS", "PASS_WITH_WARNING"):
         return aj, None
     prim, sec = aj.get("primary") or {}, aj.get("secondary") or {}
     if prim.get("passed"):
         return aj, prim.get("text")
     return aj, sec.get("text")
+
+
+def _norm(x) -> str:
+    return " ".join(str(x or "").lower().split())
 
 
 def rejudge_with_current_judge(entry: dict, level: str, label: str, force_lang: Optional[str] = None) -> dict:
@@ -316,6 +324,51 @@ def rejudge_with_current_judge(entry: dict, level: str, label: str, force_lang: 
     ctx = uj.AttemptCtx(canonical_text=tts_input, wav_sha256=sha or f"j11:{label}", segment_key=label, engine="azure",
                         length_ok=True, script_version=(aj or {}).get("script_version", "v0"))
     jr = uj.unified_judge(ctx, primary, _no_new_secondary, lang=lang, role=None, secondary_accept_fn=accept_fn)
+    # PNAP 委任_02(OF-PNAP-P-05(i)/(iii)): 元がアラーム受理(state=PASS_WITH_PRONUNCIATION_ALARM)の英語音声は、保存転写でNG_BOTHに戻る。
+    # 現行定数・現行Ledgerで`evaluate_alarm_eligibility`を**再評価**し(API 0)、受理できる場合のみ継承する(境界を厳しくした後に古い受理を
+    # 黙って通さない/承認範囲外[scope未設定・flag OFF]では継承しない=再判定NG)。供給後のTTS入力textは保存blockから使う(元綴りと不一致を避ける)。
+    if (not ja) and isinstance(aj, dict) and aj.get("state") == "PASS_WITH_PRONUNCIATION_ALARM" and not jr.verified:
+        import er103_proper_noun_alarm_policy_01 as pnap
+        ab = aj.get("pronunciation_alarm") or {}
+        if pnap.is_active_for_run() and jr.state == "NG_BOTH" and jr.reason_code == pnap.JUDGE_REASON_ELIGIBLE and stored_secondary:
+            canon = tts_input
+            lookup = {"supply_map": {}, "decisions": []}
+            if ab.get("tts_input_text") and ab.get("pre_supply_text") == tts_input:
+                canon = ab["tts_input_text"]
+                lookup = {"supply_map": ab.get("supply_map") or {}, "decisions": ab.get("supply_decisions") or [],
+                          "pre_supply_text": ab.get("pre_supply_text")}
+            import er020_tts_retry_local_rewrite_01 as _rg
+            cls_p = en_validator.classify_asr_match(canon, asr_text)
+            cls_s = en_validator.classify_asr_match(canon, stored_secondary)
+            dec = pnap.evaluate_for_adapter(
+                canonical_text=canon, primary_cls=cls_p, secondary_cls=cls_s, primary_text=asr_text, secondary_text=stored_secondary,
+                judge_state=jr.state, judge_reason_code=jr.reason_code, p3_entry=jr.audit_record.get("p3_entry"),
+                role=_rg.resolve_narrative_role(label), lang="en", dual_required=False, lookup=lookup)
+            out["alarm_rejudge"] = {"accepted": dec.accept, "reason": dec.reason}
+            if dec.accept:
+                rec = copy.deepcopy(aj)
+                old = rec.get("pronunciation_alarm_records") or []
+                smap = lookup.get("supply_map") or {}
+                new_recs = []
+                for d in dec.diffs:
+                    noun = " ".join(smap.get(t, t) for t in d.canonical.split())
+                    base = next((r for r in old if _norm(r.get("proper_noun")) == _norm(noun)), {})
+                    new_recs += pnap.build_alarm_records(
+                        pnap.AlarmDecision(True, dec.reason, diffs=[d], detail=dec.detail), canonical_text=canon,
+                        segment_id=label, wav_path=str(entry.get("path") or entry.get("wav_path") or ""), wav_sha256=sha,
+                        family=base.get("family") or pnap.current_scope() or "", article_id=base.get("article_id") or "", level=level,
+                        role=base.get("role") or "", primary_text=asr_text, secondary_text=stored_secondary,
+                        supply_info=base.get("tts_supply_result"),
+                        ledger_info=({**(base.get("pronunciation_basis") or {}), "expected_pronunciation_ipa": (base.get("pronunciation_basis") or {}).get("ipa")} if base else None),
+                        slot=base.get("slot"), models=base.get("models"), supply_map=smap)
+                rec["pronunciation_alarm_records"] = new_recs
+                rec["inherited"] = {"via": "J11_rejudge_with_current_judge", "api_calls": 0, "secondary_new_calls": 0,
+                                    "rejudged_state": pnap.STATE_ALARM, "rejudged_reason_code": "pronunciation_alarm_reevaluated", "lang": lang,
+                                    "had_original_asr_judgement": True, "stored_secondary_used": True,
+                                    "rejudged_at": time.strftime("%Y-%m-%dT%H:%M:%S")}
+                out.update(ok=True, unified_state=pnap.STATE_ALARM, unified_reason_code="pronunciation_alarm_reevaluated",
+                           reason="OK", asr_judgement_inherited=rec)
+                return out
     rec = copy.deepcopy(aj) if isinstance(aj, dict) else jr.audit_record
     if isinstance(aj, dict):
         # 元のWARNING(元のSecondary確認等)を失わない: 再導出したWARNINGを合成し、最終ANDゲートの結果でstateを更新する。

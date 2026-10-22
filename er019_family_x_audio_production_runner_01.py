@@ -53,6 +53,8 @@ import er003_v1_sing01_voice01_generate as voice01
 import er005_cost_logger as cl
 import er011_human_review_lock_01 as review_lock
 import er078_pass_with_warning_registry_01 as pww_registry  # AUW 委任_03: PASS_WITH_WARNING 事後試聴リスト
+import er103_pnap_runner_hooks_01 as pnap_hooks  # PNAP 委任_02: 固有名詞アラーム方針のrun scope+完成報告hook(flag OFFなら素通し)
+import er103_pronunciation_tts_supply_01 as pnap_supply  # PNAP 委任_02: 固有名詞の発音供給(flag OFF/scope外は恒等)
 import er006_audio_cost_pilot_02_shared_narration as shared_narration
 import er006_model_routing_contract_01 as routing
 import er019_family_x_audio_plan_01 as plan
@@ -879,8 +881,15 @@ def _shared_narration_gate_blocked_summary(out_dir: str) -> dict | None:
     }
 
 
+def _pnap_supply(original: str, shaped: str) -> str:
+    """PNAP 委任_02(5-4): 固有名詞の発音供給(綴り置換)をtext整形点の直後に1回挟む。flag OFF・run scope外・KPでは恒等(shapedをそのまま返す)。
+    共有`er003_v1_n3_01_tts_generate`は編集しない(27-7)。"""
+    return pnap_supply.supply_for_tts(original, shaped, static_overrides=getattr(n3_tts, "_EN_NAME_PRONUNCIATION_OVERRIDES", None))
+
+
 @secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
 @fx_iol.family_x_in_one_line_scope()  # FXPW 委任_04: LR gate 8_sentence_count_unchanged をFamily X TTS段のみで有効化
+@pnap_hooks.family_scope("X", "b1b")  # PNAP 委任_02: 固有名詞アラーム方針のrun scope(X)+finallyの完成報告hook。flag OFFなら素通し
 def generate_family_x_b1_segments(
         theme_out_dir: str,
         # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(2026-09-27、
@@ -949,7 +958,7 @@ def generate_family_x_b1_segments(
     with cl.segment_context("topic_intro"):
         results["topic_intro"] = _generate_or_reuse(
             _cached, "topic_intro", f"{narration_dir}/topic_intro.wav", lambda: voice01.generate_charon_english(
-                n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(topic_intro_text)),
+                _pnap_supply(topic_intro_text, n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(topic_intro_text))),
                 f"{narration_dir}/topic_intro.wav",
                 enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(
                     "topic_intro"),
@@ -966,7 +975,7 @@ def generate_family_x_b1_segments(
         with cl.segment_context(name):
             results[name] = _generate_or_reuse(
                 _cached, name, f"{narration_dir}/{name}.wav", lambda text=text, name=name: voice01.generate_charon_english(
-                    n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(text)), f"{narration_dir}/{name}.wav",
+                    _pnap_supply(text, n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(text))), f"{narration_dir}/{name}.wav",
                     # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01: 既定
                     # backendでは_role_style()がNoneを返すため、既存のB1_PREVIEW_
                     # STYLE_PREFIX_CALMのまま(byte-identical)。flash-lite backend
@@ -1001,7 +1010,7 @@ def generate_family_x_b1_segments(
             results[name] = _generate_or_reuse(
                 _cached, name, f"{narration_dir}/{name}.wav",
                 lambda text=text, name=name: news_tail_fix.generate_news_narration_wide_margin(
-                    n3_tts.tts_safe_news_en(text), f"{narration_dir}/{name}.wav",
+                    _pnap_supply(text, n3_tts.tts_safe_news_en(text)), f"{narration_dir}/{name}.wav",
                     disfluency_qa=(name == "in_one_line"),
                     enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name),
                     enable_repetition_qa=(name in _BODY_SEGMENT_NAMES),
@@ -1224,6 +1233,7 @@ def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict 
 
 @secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
 @fx_iol.family_x_in_one_line_scope()  # FXPW 委任_04: LR gate 8_sentence_count_unchanged をFamily X TTS段のみで有効化
+@pnap_hooks.family_scope("X", "a2")  # PNAP 委任_02: 固有名詞アラーム方針のrun scope(X)+finallyの完成報告hook。flag OFFなら素通し
 def generate_family_x_a2_segments(
         theme_out_dir: str, japanese_title: str,
         # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01/02
@@ -1353,7 +1363,7 @@ def generate_family_x_a2_segments(
         results["topic_intro"] = _generate_or_reuse(
             _cached, "topic_intro", f"{narration_dir}/topic_intro.wav",
             lambda: crosslevel_common.generate_english_segment_with_fallback(
-                n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(topic_intro_tts_text)),
+                _pnap_supply(topic_intro_tts_text, n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(topic_intro_tts_text))),
                 f"{narration_dir}/topic_intro.wav", n3_tts.first_words(parts["title"], 3), max_extra_chars=30,
                 style_prefix_override=_role_style("TOPIC_INTRO"),
                 enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(
@@ -1400,7 +1410,7 @@ def generate_family_x_a2_segments(
         ("full_story_part1", parts["part1"]), ("full_story_part2", parts["part2"]),
         ("full_story_part3", parts["part3"]), ("in_one_line", parts["in_one_line"]),
     ):
-        tts_input = n3_tts.tts_safe_news_en(text)
+        tts_input = _pnap_supply(text, n3_tts.tts_safe_news_en(text))
         sub = n3_tts.first_words(text)
         with cl.segment_context(name):
             results[name] = _generate_or_reuse(
@@ -1831,6 +1841,7 @@ def stage_assemble_family_x_b1(theme_out_dir: str, theme_id: str, source_dir: st
         "sample_rate": SR, "channels": 2, "headroom_safety_valve": headroom["report"],
     }
     _attach_kp_dual_audit(summary, out_dir, "b1b")   # KPDUAL-PROD-D2: 非blocking監査(KP英語phraseのdual証跡欠落を警告+summary記録)
+    pnap_hooks.attach_alarm_audit(summary, out_dir, "b1b")   # PNAP 委任_02: 固有名詞アラーム要約を組立summaryへ埋め込み(非blocking・flag OFFは何も付けない)
     save_json(f"{out_dir}/run_summary_assemble.json", summary)
     return summary
 
@@ -2037,6 +2048,7 @@ def stage_assemble_family_x_a2(theme_out_dir: str, theme_id: str, source_dir: st
         "sample_rate": SR, "channels": 2, "headroom_safety_valve": headroom["report"],
     }
     _attach_kp_dual_audit(summary, out_dir, "a2")   # KPDUAL-PROD-D2: 非blocking監査(KP英語phraseのdual証跡欠落を警告+summary記録)
+    pnap_hooks.attach_alarm_audit(summary, out_dir, "a2")   # PNAP 委任_02: 固有名詞アラーム要約を組立summaryへ埋め込み(非blocking・flag OFFは何も付けない)
     save_json(f"{out_dir}/run_summary_assemble.json", summary)
     return summary
 

@@ -44,8 +44,8 @@ R_CONFLICT = "CONFLICTING_ENTRIES"
 R_ALREADY_STATIC = "HANDLED_BY_STATIC_OVERRIDE"
 R_DISABLED_FLAG = "SUPPLY_DISABLED"
 
-# 単独フラグ(未配線の間はFalse、配線委任でTrue)。読取は is_enabled() のみ
-TTS_SUPPLY_ENABLED = False
+# 単独フラグ(ユーザー承認により委任_02で既定True。run scope外は恒等)。読取は is_enabled() のみ
+TTS_SUPPLY_ENABLED = True
 
 
 def is_enabled() -> bool:
