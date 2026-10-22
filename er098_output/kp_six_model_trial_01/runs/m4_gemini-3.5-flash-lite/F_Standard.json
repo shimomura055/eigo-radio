@@ -1,0 +1,83 @@
+{
+ "model_key": "m4_gemini-3.5-flash-lite",
+ "requested_model_id": "gemini-3.5-flash-lite",
+ "provider": "gemini",
+ "unit_id": "F_Standard",
+ "article_id": "F",
+ "level": "Standard",
+ "article_sha256": "c270df8bcd2842917fbe58c02c254bc1086a6a6f2088296c7cfc62c09e381689",
+ "prompt_sha256": "4360c9cccee8765543b7ecc8d7e9dc60f73754951803e86383e24ac286b6921d",
+ "user_message_sha256": "0f04e6a1cef93456f4da0e1cac0feff1c5f47c4040c0b1849771f7f090d7d375",
+ "request_body": {
+  "contents": [
+   {
+    "role": "user",
+    "parts": [
+     {
+      "text": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。一般化以外の変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：一般化後の語数をスペース区切りで正確に数える。6語以上は出力禁止。\n3. **一般化**：固有名詞や特定の人物・物事を指す部分は、意味と文法を保って `~`、`A/B/someone/something` 等に置き換える。一般化できる場合は必ず行う。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、一般化以外の改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# Who Says “We Won’t Attack”? A Warning About Mixing Up British Support\n\n“Won’t attack.” When you hear those words, you may already be ending the meeting in your mind. You may think, “So Britain will only defend.” But wait! One important detail is missing from the meeting notes: who will not attack? This time, the news detective must find the subject.\n\nFirst, let’s look at the announcement. A spokesperson for the Saudi-led coalition forces in Yemen said they had stopped and destroyed one ballistic missile. The Houthis had fired it toward Riyadh.\n\nIn this case, the UK Ministry of Defence announced an air-defense mission for Royal Air Force Typhoon fighter jets. They will protect Saudi cities and important sites from air attacks. Their mission is only to defend. The jets will not attack the Houthis.\n\nNow you may want to say, “Right, they will only defend!” But the announcement also mentions another task: refueling in the air.\n\nBritain also said it would continue refueling support for Saudi air-defense work. This support also helps operations to weaken Houthi military targets in Yemen. Britain says these targets threaten people in Saudi Arabia and Yemen.\n\n“Wait! You just said they wouldn’t attack, right?”\n\nHere, the detective looks closely at the name tag. “Won’t attack” means the Typhoon mission. At the same time, refueling support also helps operations to weaken Houthi military targets. Both are in the same box called “British support.” But they are not all the same kind of activity.\n\nIt is like someone saying, “I won’t drive,” but helping to put fuel in a car. Not driving is not the same as not helping the trip. But this example cannot tell us who is responsible for military support. We need to check what the words include.\n\nSo, if you say, “Britain won’t attack,” you take what was said about the Typhoon mission too far. You make it sound like it covers all British support. But if you look at the refueling support and say, “Then the Typhoons will attack too,” you claim more than the facts show.\n\nThe tools for reading news are not a magnifying glass. They are three questions: “Who?” “For which mission?” “Doing what?” Don’t stop after seeing the big sign that says “to protect.” Look at the name tag under it too. Putting one subject back in place can change how the news looks.\n\n## In one line\nBritain said its Typhoon jets would defend Saudi cities and key sites, not attack the Houthis. Its refueling support also helps weaken Houthi military targets, so “won’t attack” means the Typhoon mission, not all British support."
+     }
+    ]
+   }
+  ],
+  "generationConfig": {
+   "maxOutputTokens": 16000
+  }
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 1.8
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 1.8,
+ "response_text": "ご提示いただいた条件に基づき、記事の本文から上級者向けの表現を5つ選定しました。一般化の適用と5語以内の制限を確認済みです。\n\n1. **mixing up ~** (2語)\n   * 本文中の「Mixing Up British Support」から抽出。混同する、取り違えるという意味の上級者向けの句動詞。\n\n2. **air-defense mission** (2語)\n   * 本文中の「air-defense mission」から抽出。防空任務を表す専門的で学習価値の高い複合名詞。\n\n3. **weaken A** (2語)\n   * 本文中の「weaken Houthi military targets」などから抽出。（勢力を）弱める、減殺するという文脈で使われる上級語彙。\n\n4. **takes A too far** (4語)\n   * 本文中の「take what was said about the Typhoon mission too far」から抽出。〜を言い過ぎる、過度に解釈するという意味のイディオム的表現。\n\n5. **magnifying glass** (2語)\n   * 本文中の「a magnifying glass」から抽出。虫眼鏡を意味し、比喩表現としても学習価値のある語句。",
+ "usage": {
+  "input_tokens": 895,
+  "output_tokens": 268,
+  "reasoning_tokens": 0,
+  "cached_tokens": 0
+ },
+ "response_id": "2HrZarukILWy9tMPyarSiQ8",
+ "model_returned": "gemini-3.5-flash-lite",
+ "finish": "STOP",
+ "cost_jpy": 0.15016,
+ "raw_response": {
+  "candidates": [
+   {
+    "content": {
+     "parts": [
+      {
+       "text": "ご提示いただいた条件に基づき、記事の本文から上級者向けの表現を5つ選定しました。一般化の適用と5語以内の制限を確認済みです。\n\n1. **mixing up ~** (2語)\n   * 本文中の「Mixing Up British Support」から抽出。混同する、取り違えるという意味の上級者向けの句動詞。\n\n2. **air-defense mission** (2語)\n   * 本文中の「air-defense mission」から抽出。防空任務を表す専門的で学習価値の高い複合名詞。\n\n3. **weaken A** (2語)\n   * 本文中の「weaken Houthi military targets」などから抽出。（勢力を）弱める、減殺するという文脈で使われる上級語彙。\n\n4. **takes A too far** (4語)\n   * 本文中の「take what was said about the Typhoon mission too far」から抽出。〜を言い過ぎる、過度に解釈するという意味のイディオム的表現。\n\n5. **magnifying glass** (2語)\n   * 本文中の「a magnifying glass」から抽出。虫眼鏡を意味し、比喩表現としても学習価値のある語句。",
+       "thoughtSignature": "EmAKXgFpFH0T6lgOfIWG2rRDZkxfOOuUxcqYgm853WWWKcIdCT9peWpJuoSnytAGDK/Fkv1sZC8jPZ1U3N67Fq6Ry9m5dN5eUzAqJEkEqxIupWMqptSjVRd8q9Le/7hpxrs="
+      }
+     ],
+     "role": "model"
+    },
+    "finishReason": "STOP",
+    "index": 0
+   }
+  ],
+  "usageMetadata": {
+   "promptTokenCount": 895,
+   "candidatesTokenCount": 268,
+   "totalTokenCount": 1163,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 895
+    }
+   ],
+   "serviceTier": "standard"
+  },
+  "modelVersion": "gemini-3.5-flash-lite",
+  "responseId": "2HrZarukILWy9tMPyarSiQ8"
+ }
+}

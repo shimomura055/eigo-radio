@@ -1,0 +1,87 @@
+{
+ "model_key": "m6_claude-sonnet-5-5",
+ "requested_model_id": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "unit_id": "G_Standard",
+ "article_id": "G",
+ "level": "Standard",
+ "article_sha256": "3bc4f4a1e09b11a06a02498f9207fe6e642889f96db194212ea8b46bd89e4c83",
+ "prompt_sha256": "4360c9cccee8765543b7ecc8d7e9dc60f73754951803e86383e24ac286b6921d",
+ "user_message_sha256": "9e0231edbdbf63dc881b3071af50ecce42c5229860169c6ac48647a2acbbd5cf",
+ "request_body": {
+  "model": "claude-sonnet-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。一般化以外の変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：一般化後の語数をスペース区切りで正確に数える。6語以上は出力禁止。\n3. **一般化**：固有名詞や特定の人物・物事を指す部分は、意味と文法を保って `~`、`A/B/someone/something` 等に置き換える。一般化できる場合は必ず行う。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、一般化以外の改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# 20% Plan Taken Back—but the Oil Chart Was Not Done Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought a surprise. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. At 10:16 a.m., Trump posted about a US plan. The United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay. It did not say how the money would be collected. It did not say what law would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nAbout 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump made another post. He said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the Strait. He said he disliked fees.\n\nThe change was sudden. But the dates must stay separate to understand the oil move. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a US sea blockade of Iran. The blockade was planned for the next day. Reuters also linked it to energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nAfter the withdrawal and replacement announcement, Brent crude futures briefly gave back some gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14. So the flashy 20% plan left the stage. But the chart pulled back only briefly before recovering. The policy turn and the oil chart’s “not over yet” move happened that same day."
+   }
+  ]
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 15.16
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 15.16,
+ "response_text": "## 選定結果(5件)\n\n| # | 表現(一般化後) | 語数 | 本文での元の箇所 | 意味・学習ポイント |\n|---|---|---|---|---|\n| 1 | **gave back some gains** | 4語 | Brent crude futures briefly **gave back some gains** | 相場が上昇分の一部を吐き出す、という市場報道の定番表現 |\n| 2 | **pulled back only briefly** | 4語 | the chart **pulled back only briefly** before recovering | 相場が一時的に反落する。`pull back` は「後退する・反落する」の意味 |\n| 3 | **settled at ~** | 3語 | Brent rose 9.59% and **settled at $83.30** | 終値が~で引ける。`settle at` は市場用語。`~` には価格が入る |\n| 4 | **took a sharp turn** | 4語 | Then the story **took a sharp turn** | 状況が急変する。`take a turn` の比喩的用法で、`sharp` が変化の急激さを表す |\n| 5 | **recover the cost of** | 4語 | to **recover the cost of** US efforts | ~にかかった費用を回収する。政策や経済の文脈で使う `recover` のコロケーション |\n\n## 照合結果\n- 5件とも本文中の連続した語句です。一般化以外の改変はしていません。\n- 3 は `$83.30` を `~` に置き換えただけです。\n- 5件とも5語以内です。",
+ "usage": {
+  "input_tokens": 1199,
+  "output_tokens": 1812,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGXBLF4E13T34tLWiAuc",
+ "model_returned": "claude-sonnet-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 3.28288,
+ "raw_response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgGXBLF4E13T34tLWiAuc",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "## 選定結果(5件)\n\n| # | 表現(一般化後) | 語数 | 本文での元の箇所 | 意味・学習ポイント |\n|---|---|---|---|---|\n| 1 | **gave back some gains** | 4語 | Brent crude futures briefly **gave back some gains** | 相場が上昇分の一部を吐き出す、という市場報道の定番表現 |\n| 2 | **pulled back only briefly** | 4語 | the chart **pulled back only briefly** before recovering | 相場が一時的に反落する。`pull back` は「後退する・反落する」の意味 |\n| 3 | **settled at ~** | 3語 | Brent rose 9.59% and **settled at $83.30** | 終値が~で引ける。`settle at` は市場用語。`~` には価格が入る |\n| 4 | **took a sharp turn** | 4語 | Then the story **took a sharp turn** | 状況が急変する。`take a turn` の比喩的用法で、`sharp` が変化の急激さを表す |\n| 5 | **recover the cost of** | 4語 | to **recover the cost of** US efforts | ~にかかった費用を回収する。政策や経済の文脈で使う `recover` のコロケーション |\n\n## 照合結果\n- 5件とも本文中の連続した語句です。一般化以外の改変はしていません。\n- 3 は `$83.30` を `~` に置き換えただけです。\n- 5件とも5語以内です。"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 1199,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 1812,
+   "output_tokens_details": {
+    "thinking_tokens": 1315
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

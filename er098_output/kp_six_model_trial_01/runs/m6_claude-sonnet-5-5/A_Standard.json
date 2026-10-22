@@ -1,0 +1,87 @@
+{
+ "model_key": "m6_claude-sonnet-5-5",
+ "requested_model_id": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "unit_id": "A_Standard",
+ "article_id": "A",
+ "level": "Standard",
+ "article_sha256": "4e7cd0b120266057697e08d29b3aab8459cff0d67241d6e4ed28c5192d439260",
+ "prompt_sha256": "4360c9cccee8765543b7ecc8d7e9dc60f73754951803e86383e24ac286b6921d",
+ "user_message_sha256": "a20ff1ff313d7e6775dd9d7e9b84fc495ac1687344dd6c2158e16fe59318569e",
+ "request_body": {
+  "model": "claude-sonnet-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。一般化以外の変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：一般化後の語数をスペース区切りで正確に数える。6語以上は出力禁止。\n3. **一般化**：固有名詞や特定の人物・物事を指す部分は、意味と文法を保って `~`、`A/B/someone/something` 等に置き換える。一般化できる場合は必ず行う。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、一般化以外の改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# Coffee Bean Prices Fall. Are Price Tags Still on a Journey?\n\n“Beans cost less now!” When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less, too. But a shop’s price may not change right away. When a price tag makes you ask, “Haven’t you heard the news?”, it feels like there is a delay.\n\nThe International Coffee Organization shared a measure of coffee prices. It fell 8.7% from the month before. The group said more beans picked in Brazil had reached the market. It also expected a good supply to continue.\n\nThe US Department of Agriculture said several things had raised prices at once. There was bad weather in Brazil and Vietnam. Fewer beans were for sale. Demand was also strong.\n\nAt the same time, US data on what people pay showed coffee cost 6.1% more than in the same month a year earlier. You might wonder, “Did prices fall or rise?” But this data was for a different month than the bean price measure. It also does not show the price of coffee at a cafe. Don’t put the two numbers in the ring just yet.\n\nSo, how long does it take for bean prices to reach a price tag?\n\nPeople in the market and experts spoke with Reuters. They estimate raw-bean prices take at least about nine months to appear in US shop prices. The road to a price tag is quite a long journey.\n\nThe article says US companies that roast coffee keep raw beans in stock. Roasting and packing the beans also take time. These companies often talk with stores about prices on a regular basis. A shop’s price tag does not change the moment the market moves.\n\nHowever, “about nine months” is an estimate based on interviews. It is not a rule for every company. And it is not a promise that “prices will fall in nine months.” It is too soon to mark the date on your calendar.\n\nA cafe cup also costs money for more than just beans. A person who runs a cafe in Chicago said three costs had pushed prices up. These were cups, workers’ pay, and buying beans. Even if bean prices fall, other costs do not always fall with them.\n\nIf you are waiting for your usual cup to get cheaper, ask more than, “How much do beans cost now?” Also ask, “When does the bean price reach here?” A coffee price tag may have its own hidden clock, separate from the latest market news.\n\n## In one line\nFalling coffee bean prices may take at least nine months to affect US shop prices."
+   }
+  ]
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 16.71
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 16.71,
+ "response_text": "## 選定結果(5件)\n\n1. **pumps its fist**(3語)\n   - 意味:ガッツポーズをする。喜びを体の動きで表す生き生きした表現です。ここでは財布を擬人化しています。\n\n2. **keep something in stock**(4語)\n   - 原文:keep raw beans in stock\n   - 意味:~を在庫として持っている。ビジネスで頻出の定型表現です。\n\n3. **on a regular basis**(4語)\n   - 意味:定期的に。frequently や regularly よりフォーマルで、ビジネス文書で使われます。\n\n4. **the moment ~ moves**(4語)\n   - 原文:the moment the market moves\n   - 意味:~が動いた瞬間に。the moment が接続詞として「~するとすぐ」の意味で働いています。\n\n5. **just yet**(2語)\n   - 意味:(否定文で)今はまだ~ない。Don't ... just yet の形で、「まだ早い」と軽く制止するニュアンスを出します。\n\n**照合結果**:いずれも本文中の連続した語句です。一般化(raw beans → something、the market → ~)以外の改変はなく、すべて5語以内です。",
+ "usage": {
+  "input_tokens": 1255,
+  "output_tokens": 2018,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGX2bhEmLpHeypcdoLy5",
+ "model_returned": "claude-sonnet-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 3.6304,
+ "raw_response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgGX2bhEmLpHeypcdoLy5",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "## 選定結果(5件)\n\n1. **pumps its fist**(3語)\n   - 意味:ガッツポーズをする。喜びを体の動きで表す生き生きした表現です。ここでは財布を擬人化しています。\n\n2. **keep something in stock**(4語)\n   - 原文:keep raw beans in stock\n   - 意味:~を在庫として持っている。ビジネスで頻出の定型表現です。\n\n3. **on a regular basis**(4語)\n   - 意味:定期的に。frequently や regularly よりフォーマルで、ビジネス文書で使われます。\n\n4. **the moment ~ moves**(4語)\n   - 原文:the moment the market moves\n   - 意味:~が動いた瞬間に。the moment が接続詞として「~するとすぐ」の意味で働いています。\n\n5. **just yet**(2語)\n   - 意味:(否定文で)今はまだ~ない。Don't ... just yet の形で、「まだ早い」と軽く制止するニュアンスを出します。\n\n**照合結果**:いずれも本文中の連続した語句です。一般化(raw beans → something、the market → ~)以外の改変はなく、すべて5語以内です。"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 1255,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 2018,
+   "output_tokens_details": {
+    "thinking_tokens": 1619
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

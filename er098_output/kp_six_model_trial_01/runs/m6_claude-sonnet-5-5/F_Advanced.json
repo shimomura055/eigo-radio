@@ -1,0 +1,87 @@
+{
+ "model_key": "m6_claude-sonnet-5-5",
+ "requested_model_id": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "unit_id": "F_Advanced",
+ "article_id": "F",
+ "level": "Advanced",
+ "article_sha256": "4d9ac5a20200351c9a25ebe0b640d301b6f7613ac8a897c0b2aab6a9f76860d7",
+ "prompt_sha256": "4360c9cccee8765543b7ecc8d7e9dc60f73754951803e86383e24ac286b6921d",
+ "user_message_sha256": "00555c42a338e4f1d7e8a16191517978adef0b23b0703f086a39f9ff11476836",
+ "request_body": {
+  "model": "claude-sonnet-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。一般化以外の変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：一般化後の語数をスペース区切りで正確に数える。6語以上は出力禁止。\n3. **一般化**：固有名詞や特定の人物・物事を指す部分は、意味と文法を保って `~`、`A/B/someone/something` 等に置き換える。一般化できる場合は必ず行う。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、一般化以外の改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# Who Says “We Won’t Attack”? A Warning About Mixing Up the Subject of British Support\n\n“Won’t attack.” At that one line, you were about to end the meeting in your head with the conclusion, “So Britain will only defend.” Wait a minute! An important detail is missing from the minutes: who won’t attack? This time, it’s the news detective’s turn to track down the subject.\n\nFirst, let’s check the announcement. A spokesperson for the Saudi-led coalition forces in Yemen said they had intercepted and destroyed one ballistic missile fired toward Riyadh by the Houthis.\n\nIn this context, the UK Ministry of Defence announced an air-defense mission for the Royal Air Force’s Typhoon fighter jets. They will protect Saudi cities and important facilities from air attacks. The mission is limited to defense, and the jets will not attack the Houthis.\n\nAt this point, you might want to say, “Right, they’re only on defense!” But the announcement mentions another task too: refueling in the air.\n\nBritain also said it would extend refueling support for Saudi air-defense operations. That support also covers operations to weaken Houthi military targets in Yemen. According to Britain, those targets threaten people in Saudi Arabia and Yemen.\n\n“Wait! You just said they wouldn’t attack, right?”\n\nHere, the detective zooms in on the name tag. The phrase “won’t attack” refers to the Typhoon mission. Meanwhile, refueling support also backs operations to weaken Houthi military targets. Even though both are put in the same box marked “British support,” they are not all the same kind of activity.\n\nIt is like someone saying, “I won’t drive,” while helping put fuel in a car. Not taking the wheel is different from not supporting the journey. But this comparison cannot settle who is responsible for military support. What we need to check is what the words cover.\n\nSo if you sum it up as “Britain won’t attack,” you stretch what was said about the Typhoon mission too far, making it cover all support. On the other hand, looking at what the refueling support covers and saying, “Then the Typhoons will attack too,” goes beyond the evidence.\n\nThe tools you need to read news are not a magnifying glass, but three questions: “Who?” “For which mission?” “Doing what?” Don’t leave after seeing only the big sign that says “to protect”; check the name tag underneath it too. Just putting one subject back can change how the news looks.\n\n## In one line\nBritain said its Typhoon jets would defend Saudi cities and key facilities, not attack the Houthis, while its refueling support also backs operations to weaken Houthi military targets. So the no-attack statement applies to the Typhoon mission, not all British support."
+   }
+  ]
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 11.73
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 11.73,
+ "response_text": "以下の5件を選びました。\n\n1. **zooms in on something**(4語)\n   - 元の語句は「zooms in on the name tag」で、「the name tag」を something に一般化しました。\n   - 意味:〜に焦点を絞る、〜を拡大して注目する\n\n2. **goes beyond the evidence**(4語)\n   - 意味:証拠で裏づけられる範囲を超える、根拠を越えて言いすぎる\n\n3. **stretch what was said**(4語)\n   - 意味:発言の内容を拡大解釈する、言われたことを実際より広げて受け取る\n\n4. **settle who is responsible**(4語)\n   - 意味:誰に責任があるかに決着をつける\n\n5. **put in the same box**(5語)\n   - 意味:同じ枠にまとめる、一括りにする\n\n**照合結果**\n- 5件とも本文中の連続した語句です。変更は1の一般化だけで、それ以外は本文のままです。\n- 語数はスペース区切りで数え、すべて5語以内です。",
+ "usage": {
+  "input_tokens": 1371,
+  "output_tokens": 1392,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGXAkRLLn2McNuWu78LA",
+ "model_returned": "claude-sonnet-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 2.66592,
+ "raw_response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgGXAkRLLn2McNuWu78LA",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "以下の5件を選びました。\n\n1. **zooms in on something**(4語)\n   - 元の語句は「zooms in on the name tag」で、「the name tag」を something に一般化しました。\n   - 意味:〜に焦点を絞る、〜を拡大して注目する\n\n2. **goes beyond the evidence**(4語)\n   - 意味:証拠で裏づけられる範囲を超える、根拠を越えて言いすぎる\n\n3. **stretch what was said**(4語)\n   - 意味:発言の内容を拡大解釈する、言われたことを実際より広げて受け取る\n\n4. **settle who is responsible**(4語)\n   - 意味:誰に責任があるかに決着をつける\n\n5. **put in the same box**(5語)\n   - 意味:同じ枠にまとめる、一括りにする\n\n**照合結果**\n- 5件とも本文中の連続した語句です。変更は1の一般化だけで、それ以外は本文のままです。\n- 語数はスペース区切りで数え、すべて5語以内です。"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 1371,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 1392,
+   "output_tokens_details": {
+    "thinking_tokens": 1047
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

@@ -1,0 +1,87 @@
+{
+ "model_key": "m6_claude-sonnet-5-5",
+ "requested_model_id": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "unit_id": "C_Advanced",
+ "article_id": "C",
+ "level": "Advanced",
+ "article_sha256": "c25e7779d1d0740b97182bf469eeb5de701dbcff512c04efcf3d513957db546c",
+ "prompt_sha256": "4360c9cccee8765543b7ecc8d7e9dc60f73754951803e86383e24ac286b6921d",
+ "user_message_sha256": "f4c728cf9ab27c1011900233880f451a43259dfd3b029c5f41a65b50e06f7633",
+ "request_body": {
+  "model": "claude-sonnet-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。一般化以外の変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：一般化後の語数をスペース区切りで正確に数える。6語以上は出力禁止。\n3. **一般化**：固有名詞や特定の人物・物事を指す部分は、意味と文法を保って `~`、`A/B/someone/something` 等に置き換える。一般化できる場合は必ず行う。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、一般化以外の改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# “Can’t Wait for the Next Episode”? Make One Yourself? “byUs” Lets You Shape Stories with Characters You Love\n\n“Wait, it ends here!?” Have you ever blurted that out when a manga ends at an exciting moment and says the story will continue next time? What will that character say next? What will happen to the two of them? It might be a shame to let those ideas stay only in your head.\n\nThe company that runs LINE Manga has announced the launch of “byUs,” an AI story chat service. It is pronounced “bias.” You can enjoy talking with your favorite characters and make your own stories based on the works. You can take a step from the reader’s seat onto the stage of story-making.\n\nIf you thought, “Can’t you already talk with characters?” you’ve noticed something important. LINE Manga already has “Character Chat.” The company says the difference is that, as well as having conversations, you can make stories more freely. In other words, you can enjoy not only asking, “What should we talk about next?” but also, “What should happen next?”\n\nFor example, you can continue an official story in the service. Or you can make your own story as a fan. “What if that person showed up here?” “If it were me, I’d want to see this happen.” The ideas that grew with every turn of the page can now become a starting point for your own stories. The time spent waiting for what happens next may become time spent thinking up what happens next.\n\nWhat’s more, you can publish the fan stories you make if you want to. You can enjoy them privately, or let someone else read them. But things change when you make a story public. “Will people understand this plot?” “I want to work on what happens next a little more.” You may find yourself thinking like a story-maker before you know it, even though you started out as a reader.\n\nOf course, you can’t bring in just anything you like. Only works and characters approved by their original creators can be used. The Help page also explains that the service has permission to use the original works it features through formal agreements with their creators. This is the foundation that lets you enjoy freely imagining “what if.”\n\nThe service first offered two works and four characters in Japan. “Taking part in a story” here means moving the story forward through conversation or making a story as a fan. The fun of reading a work is joined by the fun of thinking up what happens next.\n\nUntil now, “If it were me, I’d do it this way” was something you could only say to yourself. With byUs, those words become a way into making a story. What will you say to a character you love? What will happen next in the story? So, where will your “next part” begin?\n\n## In one line\nLINE Manga has launched byUs, an AI service that lets readers chat with approved characters and create stories based on their works. It gives readers a way to imagine what happens next and make fan stories they can keep private or share."
+   }
+  ]
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 11.9
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 11.9,
+ "response_text": "## 選定結果(5件)\n\n| # | 表現(本文一致・一般化済み) | 語数 | 意味・学習ポイント |\n|---|---|---|---|\n| 1 | **blurted that out** | 3語 | 「思わず口走った」。深く考えずに言葉が飛び出す場面で使う。`blurt out ~` は「~を不意に口にする」 |\n| 2 | **thinking up what happens next** | 5語 | 「次に何が起こるかを考え出す」。`think up ~` は「~を考案する、思いつく」で、創作・アイデア出しの文脈に合う |\n| 3 | **before you know it** | 4語 | 「気づかないうちに、あっという間に」。時間や状況が知らぬ間に進む様子を表す定番の慣用句 |\n| 4 | **find yourself thinking** | 3語 | 「気づくと~と考えている」。`find oneself -ing` は、意図せずある状態になっていることを表す |\n| 5 | **bring in just anything** | 4語 | 「何でも持ち込む」。`bring in ~` は「~を取り入れる、持ち込む」で、`just anything` が「手当たり次第に何でも」の強調になる |\n\n## 照合結果\n- すべて本文中の連続した語句で、一般化以外の改変はありません。今回は固有名詞を含む候補がなく、一般化の必要はありませんでした。\n- 語数はすべて5語以内です。",
+ "usage": {
+  "input_tokens": 1343,
+  "output_tokens": 1557,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGX8FKovkPLv9LebwpLZ",
+ "model_returned": "claude-sonnet-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 2.92096,
+ "raw_response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgGX8FKovkPLv9LebwpLZ",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "## 選定結果(5件)\n\n| # | 表現(本文一致・一般化済み) | 語数 | 意味・学習ポイント |\n|---|---|---|---|\n| 1 | **blurted that out** | 3語 | 「思わず口走った」。深く考えずに言葉が飛び出す場面で使う。`blurt out ~` は「~を不意に口にする」 |\n| 2 | **thinking up what happens next** | 5語 | 「次に何が起こるかを考え出す」。`think up ~` は「~を考案する、思いつく」で、創作・アイデア出しの文脈に合う |\n| 3 | **before you know it** | 4語 | 「気づかないうちに、あっという間に」。時間や状況が知らぬ間に進む様子を表す定番の慣用句 |\n| 4 | **find yourself thinking** | 3語 | 「気づくと~と考えている」。`find oneself -ing` は、意図せずある状態になっていることを表す |\n| 5 | **bring in just anything** | 4語 | 「何でも持ち込む」。`bring in ~` は「~を取り入れる、持ち込む」で、`just anything` が「手当たり次第に何でも」の強調になる |\n\n## 照合結果\n- すべて本文中の連続した語句で、一般化以外の改変はありません。今回は固有名詞を含む候補がなく、一般化の必要はありませんでした。\n- 語数はすべて5語以内です。"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 1343,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 1557,
+   "output_tokens_details": {
+    "thinking_tokens": 1066
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

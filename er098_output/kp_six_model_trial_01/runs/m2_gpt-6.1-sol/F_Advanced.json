@@ -1,0 +1,149 @@
+{
+ "model_key": "m2_gpt-6.1-sol",
+ "requested_model_id": "gpt-6.1-sol",
+ "provider": "openai",
+ "unit_id": "F_Advanced",
+ "article_id": "F",
+ "level": "Advanced",
+ "article_sha256": "4d9ac5a20200351c9a25ebe0b640d301b6f7613ac8a897c0b2aab6a9f76860d7",
+ "prompt_sha256": "4360c9cccee8765543b7ecc8d7e9dc60f73754951803e86383e24ac286b6921d",
+ "user_message_sha256": "00555c42a338e4f1d7e8a16191517978adef0b23b0703f086a39f9ff11476836",
+ "request_body": {
+  "model": "gpt-6.1-sol",
+  "input": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。一般化以外の変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：一般化後の語数をスペース区切りで正確に数える。6語以上は出力禁止。\n3. **一般化**：固有名詞や特定の人物・物事を指す部分は、意味と文法を保って `~`、`A/B/someone/something` 等に置き換える。一般化できる場合は必ず行う。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、一般化以外の改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# Who Says “We Won’t Attack”? A Warning About Mixing Up the Subject of British Support\n\n“Won’t attack.” At that one line, you were about to end the meeting in your head with the conclusion, “So Britain will only defend.” Wait a minute! An important detail is missing from the minutes: who won’t attack? This time, it’s the news detective’s turn to track down the subject.\n\nFirst, let’s check the announcement. A spokesperson for the Saudi-led coalition forces in Yemen said they had intercepted and destroyed one ballistic missile fired toward Riyadh by the Houthis.\n\nIn this context, the UK Ministry of Defence announced an air-defense mission for the Royal Air Force’s Typhoon fighter jets. They will protect Saudi cities and important facilities from air attacks. The mission is limited to defense, and the jets will not attack the Houthis.\n\nAt this point, you might want to say, “Right, they’re only on defense!” But the announcement mentions another task too: refueling in the air.\n\nBritain also said it would extend refueling support for Saudi air-defense operations. That support also covers operations to weaken Houthi military targets in Yemen. According to Britain, those targets threaten people in Saudi Arabia and Yemen.\n\n“Wait! You just said they wouldn’t attack, right?”\n\nHere, the detective zooms in on the name tag. The phrase “won’t attack” refers to the Typhoon mission. Meanwhile, refueling support also backs operations to weaken Houthi military targets. Even though both are put in the same box marked “British support,” they are not all the same kind of activity.\n\nIt is like someone saying, “I won’t drive,” while helping put fuel in a car. Not taking the wheel is different from not supporting the journey. But this comparison cannot settle who is responsible for military support. What we need to check is what the words cover.\n\nSo if you sum it up as “Britain won’t attack,” you stretch what was said about the Typhoon mission too far, making it cover all support. On the other hand, looking at what the refueling support covers and saying, “Then the Typhoons will attack too,” goes beyond the evidence.\n\nThe tools you need to read news are not a magnifying glass, but three questions: “Who?” “For which mission?” “Doing what?” Don’t leave after seeing only the big sign that says “to protect”; check the name tag underneath it too. Just putting one subject back can change how the news looks.\n\n## In one line\nBritain said its Typhoon jets would defend Saudi cities and key facilities, not attack the Houthis, while its refueling support also backs operations to weaken Houthi military targets. So the no-attack statement applies to the Typhoon mission, not all British support.",
+  "max_output_tokens": 16000
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 18.88
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 18.88,
+ "response_text": "本文は平易な表現が中心のため、上級者向けの学習価値を優先し、数合わせをせず**3件**を選びました。いずれも本文と照合済みで、連続した語句をそのまま抜き出しています。一般化が必要な固有名詞などは含みません。\n\n| 表現 | 語数 | 意味・学習ポイント |\n|---|---:|---|\n| **intercepted** | 1語 | 「迎撃した」。本文では、飛来するミサイルを途中で捕捉・阻止する意味。単なる「攻撃する」とは異なり、**到達前に阻止する**ことが核となる軍事・報道語彙。 |\n| **ballistic missile** | 2語 | 「弾道ミサイル」。主に弾道軌道を飛ぶミサイルを指す専門用語。国際情勢・安全保障の記事を読む際に有用。 |\n| **stretch** | 1語 | 本文では「発言の意味・適用範囲を無理に広げる」。物理的な「伸ばす」ではなく、**限定的な発言を過度に拡大解釈する**という比喩的用法が学習ポイント。 |",
+ "usage": {
+  "input_tokens": 979,
+  "output_tokens": 644,
+  "reasoning_tokens": 330,
+  "cached_tokens": 0
+ },
+ "response_id": "resp_08208513e1718543006ad97add6fb487d081e2405d49ffd49c",
+ "model_returned": "gpt-6.1-sol",
+ "finish": "completed",
+ "cost_jpy": 1.34368,
+ "raw_response": {
+  "id": "resp_08208513e1718543006ad97add6fb487d081e2405d49ffd49c",
+  "created_at": 1792637661.0,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": null,
+  "metadata": {},
+  "model": "gpt-6.1-sol",
+  "object": "response",
+  "output": [
+   {
+    "id": "rs_08208513e1718543006ad97ade85b487d0b670138c178c933b",
+    "summary": [],
+    "type": "reasoning",
+    "content": [],
+    "encrypted_content": "gAAAAABq2XrwVxZ11c-uHr_ZmwHMGUB4MU64V7XOqxlVIqu-FwVESzrFtKDFFjIBCXsiutNP_6hm_m__f9mK7KNwMI_Q-ZMuOK_l8Yjac5MCC8l3p8n_MJgRG5iMl5u_zIuFHuDttzk6_4pqm0F1kksfQ_7zRHC8FE8oxUSuIVt0uQgNm3d8jWqgWpFtMnrBHXSTApwti5fKP5HvEv6c1FsqtRma7hn8q6lwsrCFb5xZdCxLGnBeUUkM23ttGYoikH5ex2-9FP4bXsbO0QItc2gA-q14qnYZaqLaG-_NvO3ngvdyIHyLD2b0Kf8Uq1mup6gWhig1Bf_li47kBuwkKfkzz-f2kHtUOBc4euPhIzIIWGFkcJ-1Kcc2R6bR6RwtDwLqcIC2GPktBdUEmgUyEphno7QzGAjI0d67Eqlb1WmmlFtULAjF4G_pWkvtPoq-p6pv88qQawmh7KXZp2iFFPGoHKsHpsLSaM_3Kpc42ODjNDxkXMPyIWav3JzZEOibPHOy37ghUpc2nikxkMsCUs-K0Vtma6AwUBJqZFiLpwR3kUuty1ofBD9_5oRNOzzHnwHiTbxbI5-8s2uAJpTU2nhiaivSFwlA9eTYrOzzvliOAyzoulVC9nrcZW5EdfJgNTv9YvRKC27iP1_SxRJHZ6aU9D-2J0u_SRERhXFoSSOtqstr2V2VkkTODPDZ2hXaVWfQ5T-wrENdIT8T2GBVDxbvXftM6jnDWUY4JmqnYexD-FGljvwkPw3WyDnx9Ega8XyC_H04jJ7dYwomHkXxYURs2gD9uR1t0RVsalzKIA1sjQ9wAxtktN58GcBbgsdhuj6am9Mm-0Hal_ESwJGHGiAV5oT4QRyjHsQJbfmCw3sEQAxYRNEe2bWIjfL7Ae9GLwYryEr_CT8uUbQZ4zpBA7dRvbIYY1DyiG9flQHfdyJYS-dCbbC7guB7ImaF43-VU6_wwPpRZ6S3eYU1er0n447jQ0jU1JuTWSyqQOnfTG-Pw2PYGaGkNi4hTygvjFdakoZE3yzubHXRSYbFPlgxGgavlWheA5f5bWvVEIj-i_iEW7Z3HbgM1etmmhXv3qoPK-jyY8GwiXrtDBZpAfw5jQemTmSSg7IqvqmmncfD0blYqZFQZ6948nBJZlwycG0cPViEBQI6-YUpWzzxYQ4kV3ldWeS4jWUNxnPldL8dFzT63nWZ-bw1ZB3enaBn3OJBDMEAz0IUBeWTVuBnMJvqXyA5js6zFet3oBaCTwp_b0oy8wqS2M3e0xAl7OrIYarPCuHzXvW2qv-O6bCfRU9xzzR-s_VsJraaAzKDauTG5bdOpAyawTxQGccqUC9YkB0cB6w2Q6uzkHMjf2GxNV28UWzx2ZRZnxgt9WK70DmPqOoz8foVvESgDpf2Lt1v0SJfuYfQF4KKm5uLr106f5fWYJ8DSQutZtB3IRm4ofgNYMMb-BCdO08o_ABu1LD8Ovscbf3OT3Rcf5uiwkjQtRjVnmESNSln5uzEhKcd93uoYg-Pte9HMATE37CBIpLGUvQBUNRl9md_flk1FMqj3qFYHNy-yrJDM5WWUXZJsPv1vsE7EwCMd6JFDEca7pDCWEbPmtURjdH-h3IZrY0oH1HhK8tat7j-RR8teCroV60druGsdTFiGTFfZ2QPcDbYjDTB9ENV7RbwouAOzQYzHG-MKT8RaG05lgD-QKZCMCpjN_8pZTswGr8wOvAj2jUR1fkuzWKVctWRm6E7kzjMRfVOdKsUUkdz1icaUfb7dLWtaz8Nj3pTCo2hT1lIh_89oHfBjPtG-mmHdbUVQBjzHNrNTfk2iawvTGg30z_3vZZe98sKkUDbrmsjL1xtYwfScnGxrtnso_LLVuMCXCFJjSoXd1dYpZtVijptnTlMRQYzebPUk29m21NoNP0EtcDQ_ukVjiJK8VEJ7Q0xqcM3DYnW_3AZYp7O0Z8eqERtmyB7B4atZhki7HNdpgAumZQCsy93bBsnB2uiGZ9tK9HuKHWJuxEdRxQcEkwW4inZUPrSSTRBD2SaIwNLtP5CeOVPzSnXLi2BTei7HYZzKHOxxvgryYmj-qwZwD8jSPGwMkgg3FpZ0XT-Puq29-gh5xYwWRUO1LrYhy_UBGw7P57843nJ6x4w8WY5zTCY6ChZQHm7M0UVw7qDjECj7_NbKptDad_UBTn9HYretzwjIeZnn330VHbN9aKoe8czC1yct8ZfP03GQQzt3-WAHNKaVt-P3laljTHJkqYosDdy9SW41k4c52L0S-OeaG8Aj_on0uusUcgcUmnN0UkaaF4M0NzehZ0Tz7MfgBCszHA4dv4SpFGk5x3jj-Di1KBGgmPD9IGmHo4y_L7L3uidzjXZnSN0NX93Xj4d88FvoKNB6GAy6meuD48LJVZ1CMS4brvi_30e0MN9WPNKERnOGIpro79ThCO9L6iD8nEnDxO_0FllHBSjzbiksOWkqtig1m04vOIY6GEtHnHAPpxo1ohcMI-20XvxMtuInXGISiBUzfHTVlGy8HP1SxtsfxQ9NgUZ5vtY-yEBIdoGoRqKm9dkUNh7wHpXW5tp3vX81ybMzEY4Jv_rW9V3AFOQqBQ_lf_1wrD8I_xmAwtcMP9BHQ12Tdhtgmw8pc16d2vRhbV5Hk7kUzfF17GkTzrIZwyfbX9MnOum4BOPWqvv-Empvmfl0UnQkDUhHyAnTH0lJXwtLeeaRSCM0oXzrvjS3PTMoI4Y-D1alLVofdSDQ7c7TT6KlX0i_-uJ1iMrnwwTdmvP0kCNeWGjYrY3AQzPC-eR-uto7LNZagvKhmMh5xcbdJ12EVCLoy-Tpqqpnvw5c8zOI8S1zrWestvTe7nROjG75NeqwgtPgKKUCsFc6y47mxk4RMuRFUhcm7QiBQp6zPGNPxP3SNFwCC0-S7t6Ee1k1FOqq2pRr2xNer1m61NlP0thGeH1RM1d_ZPecULqWllCIa9UCaiBEta6-oeSqph5x5rWOwgxtoncEtOA7iquu4vTGprnnfET6lo8XKE5Kl0hMfMPYheNVsGIlTpeHN69JJDFX_9SxYU0owaArLhYTw7TNmroQKL3DmwPp9Oc_R-gjXX4UZcR2YPVxUpVeAR8NOJoO9K5raNTLtqv94VEkwVOLKCRVbmpzJ3kWUCDferctpOkFOFRxNBULYD0CW0dgkIfy3K1p-zqk1VN-NJqcVznFLmo8Dcr1f_uy4c751Rm7vBJAXB0RopkRqAhgKbVzmOU18Nwt9vYoU2nk_Y4N6qEbIrkFJPa2RmqHWg-LWgvrVwsMv6jN1svE9fyPZoz0fnl7kq8IKan3tHLOeASsnH5w6H_8ClH3pRnQiYwNvj9--YBPckJ92Z4nGKn3wEHUwXfdVUrB-Y2mMRprUOg2aWh4I01b98IEP3wfhj5_u9FPpQrFKxUwV_ILoQpIFaJgmDlyxb8OfPWVbTjRN_wpF4TsSlI2WhvMAVCtEtXKNPbm7jFdDvJ6lQar01_ncoqFpmkLN85S3A12uR1XYFV2pqwD9qmeGi_VIQBYOspKuG04XxjTAu9SSjw19LjJhW1lwoZZba7jBRZXY_4qJZFJxGhEtkJCKsl9chKT2-m9YTv_eu0mRZ4UMwkhxvF0YZ2XQEZdZEkyZQsyj4O1ASaTmSvf8GiCObUTw_qSRtu07L6TGWcBt_kwqo4cJj7qyAuNpw5rQ2Ku8VgZzenYlaJvDcGeLM_k79TwxNze1ASICOz8LGJIJP4dVPDDupp5XcUvDdBp-UOnfXr1Uiu2DflrhXDw1YLD34ZOZmS9gurHWhNn7LyAV5BtmHSBJbDHe6zdRcY_GRce5Yg0X8YyalnNRVDcBcjGuPt7WG6cZ5H1jdSSDCdnt-ASiaDhNNRNfAIJ1plIr6xFldUwtpS7huJbFRCcViUpZbTpezEM8D4Zxc9s5_9ZePQ3ESg8KCqd_hqA9oq0JpkoU2UtsDQ4MV9YqNGmM4Nd_rbRRNal9jImmx5NjKp8_TJlb0Gm8DH1oL9yQ5-q_hGBglAycYxTZ_yRMreDi47yo2k7cMASpvyXV9ub6BFBg2_V2cmmL6y9CI4PPtMtL4ChqCpFH4TSwQEyJ2COS3ND49Mrz5mdYOkcZuS3HwVVbXKt7h2Pum2RBIdisLNuRkQFcfk9nYb6G3v5R1Mv3h-qFE8MCsYkvVYyjsBA4NZZAg4o1CArYvKceuUQlINWDcORK7BRhFolBTi00VeAI4O3GqV52ydvIz8fTHXFqQr5BvQAC03K81UqVyRZmv6RoqU_GC5wnTZQ5v037EpvPGCeCndcN4mYL_loYIl7Es9YvH44uyqwxVfQhPwTjGrMDLtP6rFtUDyMYO1D5YQcEEqupFOjlCGGC8plcSD2-ZSxCCHrYTpjd3fpYIu_LsWZqiW-OTdoXjbTEKLo9T_lN6b-QGK4j7LY7z5w9Ag3RhdMvsN_0wsGF0CbggZzw4GcQowqPCU7k739MfmD_41zwW55WkGMjtZsbbBv1b8ycgiwpQVmIiE_r1nEGld8rlm-J3Y6FrvAdTnyyqtS_FOhJ9vg6LjYecimIRAi0QkMWrR-oEtDq5_cT4MGlCsZTyzgj_Wjtmni8kgf35LJLW2WPOB60eZMNh-WiUQ22jn1x8HlHqypGi4AudJZqK9NoSNU2sPgGY9akRPMW9tWLawLLsCh0F6gGJZRZZjpu58HHBAeb4ZtOCUa7t0Y-940ldmKCiBCTGzKtc8PMNVPQAX8pxt5XNULmDmTFnk1GmUoYY7_Ty8eorbANMsiP52gUyu7kYzW7AmmYQsWTyEngyumPf3oyFyKfrHbeUUQnl5362Omzo4hw0Zsov3GWucLoyU4SioUuLqnaMrbVvp6JP83atRFbTnx3cVZOwkXqOVw0Qc_hr-nrj70lNv0_VxPV6AME7NZgL4lmkR-Z3LhBuFktcRuiLFLbkZhMrtIT_5TnrHIIoixUICI6Wg3dPn7luqVxD-DrE-UHh0Cwqz6ybBe-n8KxfK756tFsUhyayMX2LKLHdDrDGkxnoRa90mzedAKHAWerq0E-SbB-h09NDxM2cfCOxstvKMQwljUAwiUQEs6wIK7rwDx2FzV9yvUYI8PjontZeg3LNTEIfXBmY0vUbrPFReAzk-L-8zYA1c5XJMBy6kUqfYE3Z4DONAo2GbVuqr4HQ2cA9Es1KhJM1uSS0Abw4YYML1Rm12aOpT2NSI303pieRui-VvUD0qzlq1Hv_AgDbW0R3DOtT2OA5FdxBA3Tx53rqNkh8zxViOPfb7nHkwu78rrrUpD1-m8vSh71L7Mui0D2EJqULWSbluZe8CVeafSX_LgLtgwleP43TR9NUj4FGiieR_UI8fHXYvf0jJUkvZvS3QWFJUhjYrNqn4-0JB-mzO61LBvFc0mz_61R3Qbk9-i7O_b_z8_m5Ynyh0TVpNeDW9uxRNhgFYuA56DjlR0KsW3LWickAYxLmiXV0UeSwJNynbcCL0uV83_uuZruv33qPBX9x1tj14lo5sdh24kDw0DiTi0H9_YUEtdmZDoM-KaSCM8lRQjI59gFI5KpsDuF2WGVyYXCHfn4gPDhCbSzl4qFsQOCegw6o5T31gYm3zASP-OtMhlcTXg-li_odAmUNA0R0kCbK3Xdvcji8PskhTdZlM8flVUGwTfeGjouzoG6xtrA1K40K2xfvzJ0SesLhfbhiXly1xmYxp8ZJKAZyzbgYaUgVHLN4jFGBefBdFt49UxJ505TgYFqHiJqeDJw3Yn0MwQJ0xbB5oaQ16XWo1BmCgKblDsaFWPCIYDpMFv5_Z4S_7XXuo4W5ogALvUR-hD3pm87PI1KEoXVTSrkVkJ7di3u9aCNyq3wOnCeoUcQNVDcHJgYpM2GstFBrfE8HTGWQlDsR09AkDQEe8LYOcGHODNb-5PRcIjfZ_MRTa3MLKyQWyJeFcwXYm5ho-Q5uQNMjFXaW7-7H3qoA_y9R6u_I7_MCmT73gyUgNDFIuR9ZAD1cuKpwxgXD_1WJspXhuGvHh9Isehw5Zm-Zk-Bs0EcJVja0g",
+    "status": null
+   },
+   {
+    "id": "msg_08208513e1718543006ad97ae8dbc887d0aad00a69c5b7049d",
+    "content": [
+     {
+      "annotations": [],
+      "text": "本文は平易な表現が中心のため、上級者向けの学習価値を優先し、数合わせをせず**3件**を選びました。いずれも本文と照合済みで、連続した語句をそのまま抜き出しています。一般化が必要な固有名詞などは含みません。\n\n| 表現 | 語数 | 意味・学習ポイント |\n|---|---:|---|\n| **intercepted** | 1語 | 「迎撃した」。本文では、飛来するミサイルを途中で捕捉・阻止する意味。単なる「攻撃する」とは異なり、**到達前に阻止する**ことが核となる軍事・報道語彙。 |\n| **ballistic missile** | 2語 | 「弾道ミサイル」。主に弾道軌道を飛ぶミサイルを指す専門用語。国際情勢・安全保障の記事を読む際に有用。 |\n| **stretch** | 1語 | 本文では「発言の意味・適用範囲を無理に広げる」。物理的な「伸ばす」ではなく、**限定的な発言を過度に拡大解釈する**という比喩的用法が学習ポイント。 |",
+      "type": "output_text",
+      "logprobs": []
+     }
+    ],
+    "role": "assistant",
+    "status": "completed",
+    "type": "message",
+    "phase": "final_answer"
+   }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1.0,
+  "tool_choice": "auto",
+  "tools": [],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": 1792637679.0,
+  "conversation": null,
+  "max_output_tokens": 16000,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": null,
+  "prompt": null,
+  "prompt_cache_key": null,
+  "prompt_cache_options": null,
+  "prompt_cache_retention": "24h",
+  "reasoning": {
+   "context": "all_turns",
+   "effort": "medium",
+   "generate_summary": null,
+   "mode": "standard",
+   "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+   "format": {
+    "type": "text"
+   },
+   "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+   "input_tokens": 979,
+   "input_tokens_details": {
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "output_tokens": 644,
+   "output_tokens_details": {
+    "reasoning_tokens": 330
+   },
+   "total_tokens": 1623
+  },
+  "user": null,
+  "access_programs": null,
+  "billing": {
+   "payer": "developer"
+  },
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "store": true,
+  "tool_usage": {
+   "image_gen": {
+    "input_tokens": 0,
+    "input_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "output_tokens": 0,
+    "output_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "total_tokens": 0
+   },
+   "web_search": {
+    "num_requests": 0
+   }
+  }
+ }
+}

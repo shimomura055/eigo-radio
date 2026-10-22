@@ -1,0 +1,157 @@
+{
+ "model_key": "m1_gpt-6-luna",
+ "requested_model_id": "gpt-6-luna",
+ "provider": "openai",
+ "unit_id": "B_Standard",
+ "article_id": "B",
+ "level": "Standard",
+ "article_sha256": "45988779521655cf4fb1a3f3a5892b85d298ee2aeddeb0fab5eec3374e401aae",
+ "prompt_sha256": "4360c9cccee8765543b7ecc8d7e9dc60f73754951803e86383e24ac286b6921d",
+ "user_message_sha256": "c7c379003108fbd6c81d6fbcdc5e3ba5de2fdec87b5065ca9500a0a4a5fa0f1c",
+ "request_body": {
+  "model": "gpt-6-luna",
+  "input": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。一般化以外の変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：一般化後の語数をスペース区切りで正確に数える。6語以上は出力禁止。\n3. **一般化**：固有名詞や特定の人物・物事を指す部分は、意味と文法を保って `~`、`A/B/someone/something` 等に置き換える。一般化できる場合は必ず行う。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、一般化以外の改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# Does Earning More Make You Work Harder? Compare Yourself with Who You Were Yesterday\n\n“Are people who earn more always more hardworking?” When people discuss income and personality, they often look for “things successful people have in common.” But this time, let’s ask the high earner next door to step away from the stage for a moment. The person in the spotlight is none other than you.\n\nThe research team gathered information from 11 studies and studied it. The studies followed the same people over time. The people in them had jobs. They reported their personalities and income from work. Researchers asked about both at least three times. So this was not one picture, but a set of pictures showing changes over time.\n\nThe way researchers looked at the data matters. They separated differences between people from changes within one person. One example is: “That person works harder than I do and earns more.” Another question is: “How did my personality change after my income changed?” They moved from ranking people by yearly income to following one person over time. It was a different contest altogether.\n\nThe trait they focused on was conscientiousness: the habit of working seriously and steadily. Their study found that, within the same person, higher income was linked to greater conscientiousness later on.\n\nWait—we thought personality affected income. But income had a part too!\n\nBut the arrow does not point only one way. A rise in conscientiousness was also weakly linked to higher income later. They found a weak link in both directions: personality with later income, and income with later personality.\n\nAfter hearing this, you may want to ask, “Does a pay raise change your personality too?” But wait before you decide that is true. The team studied data that tracked changes over time. This cannot prove that income changed personality, or that personality increased income. Something else may have affected both.\n\n“Coming first” and “being the cause” are two different things. In a drama, the person we see first at the scene is not always the criminal. The order of events can give us a clue, but it cannot solve the case by itself.\n\nSo when you look back at your income or the way you work, you do not have to end with, “That’s just my personality.” Ask instead, “What has changed in me lately?” Then look more closely. Instead of judging other people, look for changes in yourself. With income and personality, changing who you compare yourself with can show a very different picture.\n\n## In one line\nFor one person, higher income was linked to later conscientiousness, and higher conscientiousness was weakly linked to later income. These links do not prove cause and effect, but your own changes can show a different picture.",
+  "max_output_tokens": 16000
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 22.64
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 22.64,
+ "response_text": "| 表現（本文からの抜き出し） | 語数 | 意味・使い方 |\n|---|---:|---|\n| **conscientiousness** | 1語 | 誠実さ、勤勉さ。責任感を持って着実に取り組む性質を表す心理学用語。 |\n| **changes within one person** | 4語 | 一人の人の中での変化。集団間の違いと個人内の変化を区別する文脈で使われています。 |\n| **weakly linked to higher income** | 5語 | 所得の高さと弱い関連がある。研究結果の関連の強さを慎重に述べる表現です。 |\n| **prove cause and effect** | 4語 | 因果関係を証明する。相関と因果を区別する際に使える表現です。 |\n| **in the spotlight** | 3語 | 注目の的になって、脚光を浴びて。 |\n\nいずれも本文中の連続した語句で、一般化以外の変更はありません。",
+ "usage": {
+  "input_tokens": 955,
+  "output_tokens": 1141,
+  "reasoning_tokens": 876,
+  "cached_tokens": 0
+ },
+ "response_id": "resp_0ab046db25934987006ad97aacdb3487d09e49481131e9a2c5",
+ "model_returned": "gpt-6-luna",
+ "finish": "completed",
+ "cost_jpy": 0.10656,
+ "raw_response": {
+  "id": "resp_0ab046db25934987006ad97aacdb3487d09e49481131e9a2c5",
+  "created_at": 1792637613.0,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": null,
+  "metadata": {},
+  "model": "gpt-6-luna",
+  "object": "response",
+  "output": [
+   {
+    "id": "rs_0ab046db25934987006ad97aadc26087d0a06fbc36c268cc6b",
+    "summary": [],
+    "type": "reasoning",
+    "content": [],
+    "encrypted_content": "gAAAAABq2XrAMBjE1GkVsZ37lb8XAx4Q4yP9kPioxSnDJptByQ3LgUzw8VeCRLP0sz2dIjs2uuOrl8bJfPpCVr_yF4rde6V3fAMHx3BhcnwinLlH9lY5ygNqc7FTEz0I5gs5ryGF84hFA1yDLcTTDm5h-AH2sPYx4Rxw8jpFPeCgO6LXe6VpkrFb-h3kKwnrajJlJtRAbhOFKjYd-whltWVohaX6VMpzNw6ZpxD3t91LwO7bl91rYXN01NOHa1AVSn0sN-5kJ2UDlkqIU2WbKtU926aff_IrMB02iEVoVbkSr0TOCFSJc3HXAJEZrJrQRGc_z6FowRK3g-xNXBg8vpGF8TpPCAyiuYSnSqEIBlL0JVrV20_dP5cPZEs_zqy_-tMRznqHYXgT-hTAm4DGxmU9dzGMtPK-xa4h4sgNUCLgNiC1IjTm1RgqkZxoYCk5txt52Rcdu0JQoo5wcz8L66lmyqhzDtyHN0989pAlfw9LFdkIG74VkHFzmdzHdAhW-a4l8R2iE-rOH_xPyMqH2tPgQHrxSTtooOHi1472fH2YKHmyek8CST1WzCKlQuNXr5lEFm8UavRuWyATbtHyoa7ZmM1wPpZf24fi2Ij8SF66sXEn8dQ-g6ys3ngbLpxl0zQ6sxaMRXVOH7MouvZ14ia4aB9hVtiRZntbeuF8pfrruL7wmUPanxFslPwbXuL_UuuNeKxPnL_5o3YoqavLUf5h8pWbd4lTf5UN-0aPqbRkTfYJj7FRcS72He0ZwAOgFRxH8XENHA2LS2VIUosprzEVRLBp8zDH2B-krBDbW4H5U1jk8i6C7jFa7JJcmmgjIapJ2TTIFrv0xJerAlgQAypp6inX7j_FZfmhiTsVVcOb55Y100eTtkVBmKhRTkmSVqqfUTe6aDTk6YBz03WEP_5vEQ3GTAZFXW9Q3FX_CjQgLfyFNOHGrc8AWUmxtONbrpsCQX5mOjXcaKKwoKUSCWpWKpVXX_asKM_GbjxpC874XWJvhzPHGi-OEtyy7JnMhc8vCPxcdy3LcnqDPYfgqwdOJzny-Q-x2mduUkA9NyYQQlD9h9ZTq5muyPK_H1PuuylKDA_Ce1V_9RQ7GD96JM5ts09hVTZptKiQAyUZQ4fSF7_-i37avw2kSKyGg5dZQ5LA4d6draBJ2GoPWEj8LXbBaYI4BZzkkQqBxuLE7xftW8dx56e19b-hZocFB1yHq0TsXSeu6mQL3Mwh8uoFJiqmH2JvIGdu0KYO6-m-z8t6Pd6ubWzraWkLLTdfLMWcuQpfGgXnFwQqDwautIWc977vwhZOcbwPtJJwTbtCUJOM80-pPq59wuM5RuVEMkwGw-xu8D3wfNaAZz8pfLBejyNYuxxfAhsMAEKLc2GPHt6WZTlWB9oQRB8nbNMV5wp303z3YO05PnE_0eOArZAQl_9n7akztT8LGwxgbmnZtN2fKnP7Lhdqsl-MPjBAohkpmUjCFESwV6dht0lal9bbBGx7JDa8wB2BRd_b_DpEHFhY3wNPmzatIiqzk2hAw9rWjXNxkQMO7Zprh6U5ZD9KCZand2n0hVwECLv1Xd-CO-tMOQyX51Haiu5Cg2K85IqDInKS9EEA5IuDbwHigGj58PH7JNqTzxT7LJn7826I9Jz7OXh13aTI-xu-0WXkZw1fAfq629Zhta6vBwNM397LfKwKoYfyLQkH8IwNVYMlpT8Z3vIvQaZYBTEynuEMbxf8J-R-DNLrOl6oBxSesW5AXP5DbxFapbEzONjqaOb2-jhiG1rqXIZB2HoXzx_jcWDt5krAO5M6VVAaDy89409tVJ8WBZ_xq2llBuRLaXJMtIvARovMXjfrxofqyx0JnXph6z9WCCxFET4zqrO5N4I1KqMOqHyzyc3lFarYF0zM_rgj-x7neM54NuC0GC3NwG7H38YJkLVnCBzsrE0cgiwjT2YML2o40z-mwfDUvUFVsMLZ5X2gC61zBYkiB8C6BfkoE7h0W9zIm0BYAYZbCLCQwaQytgmjSeMt6YaSANBSpYRc16-nBieK3DZZ7McoN8r9Wqwj0i1ZgTWHefNDkPwrFPqEsCr40c7oe7Z9xnBiOQQIr_Yur0HfxdMh9GfdO2hn44Lb160QJ67fi7KBTNNRN3LHb4FpSo3UE-4sCtPL-jiOyG_ud5Yep8DcMCiEKzLMUNQ1jtWwAfFGvD5CuvN64RPIvwkJ4XYAJJhucu_GxfbGVhs4emh1NY4uXfqw5d67p43xwJ8MP16DKIU2--jKbXiTeSDNlTppsXHyQ-m0CA9Z-NRmJlejTJwmc-X23D_GGIVRhlDqF9DcDXweBE6wbSwu8gbCn9FQiONjgfEjjSLwt7WBRVfE1-Hlo4GKOBdCQN1V4_vD0393Wvjg0m22kMAG3bqdSWLhbMM-2MEVM2xQcx9XUOhevpxxWEqANMXJ06dK4Snd-kzsUEBllWi0NPiiUKq-HUfPBtawQ5YMfJ5xtELGEJTWqLYomu5KuperqZg7Z9MCbkxKK5fZa6AD7d2sm86yllQ_C7n2Q9hqV4NVhfaseOV6M9MDEBi14FefEPu3EruPNcuF6UdZ1tGlR1_cBwYzHqkQc-aHGwuV-N4vbgE0kBpLTBepwr18JfOVSGaHePhAbyb3kekUYN3nCmdepUTJLZEelVeMAu5nML43bxYgYqWtnMBZXBP4DAp9VUBX6nINw_nXHAlCV_FBltcY0vjdkgGOymHkEZ-3lcC1Xr7uV_guPaqxc-dXTKRd76ol3vDRl4rF6B67DMYIkrsD2JC4t4Vy8KgwwCIQx3Lu53FygC3WIdFjPVyBe8rUZ9r0tKHONSkuL8tUebfxiA9uw2VmKbAUW_2D-5BOAtYmCnfP7ARXudwYT17zUdry8KuKZhbImmwLSZoLSjBeTpQcOGasECUNTLjm4riovECnW1TarRKY96PG-6Hy990PPcPlMgH3rKYlJIrGYOOwmZPAYO-zbx1oO-qZHE-x2k60CFQEbMyBAFaI3lXUt-FUFurNzkqwcBA1QU8-7gkKpOavMthxZQfDZhcuA9sP1ALLn17e58OtmSitk1URK9EkpTl0gZep8BaJyrE9IWD8gFb0kbOcYPnZeS2vbCmxEMSxcoySGcj1Qe1Ko8TiDS1htKhfj-q5Zgu4Y_U6FbOu48XPVh5sbaMeDiSRj4fy5A18A2FdpQnSJTHsJh-7eOq0w8NbQCFBXNyqn68tGui6PD-UEHQHSZGJHZGV7g9sLx-snSMdHRryAePHwJT6H71FVzahQiGbTjY3wEW6p94KjZwWJEtHgE564ge-p1U87ivlpADnNm6dqjd4a-2RBMYIg4tXgvHAyUdz2YT-3MmNMjZqcRpACiWVgjO9Lhe8OQSa4Hq4XRypDzJEhOslUkyIcowwjBHZWGnvnVpJAYuMtiLHM-0T8ZWGyJs2MFbPEBgPPzL4HjFY4ZmxkiQzoR_O3_2Hav6EvthJCkpseFBEgBYwjaTlVXC-Fo28gyuBFwtCQkh1aNot8tJyx4JVWuVoN-AXHj1zmrQyHvfqj0jME4DyAejFslnP386rnmYo6QneOji_jTT7FeWj6mVNAmKD6aDpTX5OVlKTSRXnDk70JRXWv5kS6opbUmw8JcJvDEngn6HF2mn_GE2zwX0SJGAoHkR_0TRCaTbFBP1cQGfX6pGU4oOmbL45xNU06xoGskeeXNw39DYx0XqhPnWZpce5dKJUo-HTA3HwGz1pwRBfJww6VXYm2mASd66FRaw5I7fiUBDClGef7k-vzaoJIywZ4Aa2XwcDogrA2dTu54AIsVYok0W104Vyw0IjjuOorRLQLbfVStFS3pv8N2YAEziuvcXqwGxsE4qcRzp-ENza1jAKdkSm1NngWdHDudu8AEgIznXPEnxBjWL2zjONf1b9eBIA0iyyNhRqAm-MrVgduVdj4vKds_iFdg84L7eQ_Kh6zA5MI5NFTXvmFLLAEt7eO1LmQrYe2BDKC-d5Zbz3zgUBZKifIkVH5iJobk-cpZ9YCD1uu0Pl1wzxpzRuHOWCaVXBH_RKop8Ra0wwXIIGGiQUWmZ1-hkqwAy1WCxITsjamx7KaLM3QKCMOKHIHsHqHtO8iki0AOtY8TG_FQzPNY0xy8WDxw07dchFd5OkQDRbeeq4vWRDqCZtWJH9merh59hWTRuUexSzOhrhxwEPl1vBmfDxJL1RCB4EnXv4VhKh5NQULOCXjkXj-72sS-1VaYWxrU7mGyvMkd548ELKjhU2VXEBOEYB464AiGAC2ucJpSNZJJIUIfOXImSnqeRoD3qFvdOy3Ubc3TEXyBkfRozP4qHawZ0-BJzLYNmONFYSet1ltP_uinGR0wnUbq0ML2lMtnN4Pkclbr-lxeGZT10p7Lkta-3jNOWbQ_UyFNm1YMzLziN1ddtfEOXgicph0LzyMJ8dGionDqbLdMDVorQRrIaVviBad3ivwXtNsFIlL2M58SkGER3zbCeUNkvcoGZm1TiTj9StqZM5INmHL_jEqXk-p5uGHgzDyPMvtsHRonsGZUZq5448_pZPA23WQ0PIIQNNp7gYjvn-QC_4YbDXQlROf1JglmB0TG-zXB2ulAt1r3vRTcCBMNur81yZ0cScHwxOyz51sKzyrUhpM8y9SohQr5P1PIOdzIBmDLtHAEij0pS8QH-lZGuD4a57lTsu56vuumiZQTnYfY6lI4sVpyuUDYdIM6d4IujyHf0a1SiLi8lR3XYOvC8-m321WvNfT2arxD6XVPcNFhtBKM_xZoxMd-djT3lvg9-LKzkOa3oEHe_nJimTr8YDqolNbBfE1YnfQ-e6LADVG_y2C043BsYH4x6NWiT1HKeyFH-KoI8ps4NgWlmF8KfDqqcafW8p9pJLOXuNPzRD3L1BQLq-hYZDHuolJLhWzPQiW3x6Uvht-ZmyWmeH6Obv8ZK310StvxaVMvIE2fMmbXPGkgiO6b-NYWIXPrJZOQ2N9ZjjIBaC2si3_CZcjX0inemTV5PA_Ixam4hvT0tWrAf0q773H6thUqM3uTKx6gnVRQkaH_gmLE-8ERNA3C-t7nDHCpIIP8JTJ2Y2T-PduOjo033m1ybQqLEnUBR89vrSz4HeXxgGHYBi7c6Mg6g_OtaMpnSWvwXaH3V9t445Ds9tLR4XX3Nx4ZOmgSCXm6Nm8B5Zo93MQMEf2tp2iR4WapUHC7RMSJ-E-2SPiXs77mLENZrn4jf0Ho_IEwxrR6-g1N542k1soWPT_TkfFP1OKuTJo85AN-abBQekZfsjlx87J2IKyg9of4ZehCLoumUYiPuQgsXeePDGpDx56jKXzAsLl_KauJdVBmBMOIh7WeHbFg5188A4W6M3f40lfCu5IM4FmfOG4wzDsUKlH2e_O4r4vMHth-okZxtIy_QeSbAWa9Os3SLaXQQfxrTs3UUJYoQfZvdsSixJfukzJusGe21bY7Fpmcu2W5KNOkoHxWSPsBJ_70YVLeakuKlT92AIxcUFPOZOWvxLCcFKIkSzO_iwnVxNtuRGFTvfIk8yNXfdIND7Gh0ONAf4fYvoY25U1yCciBV3tSq6YO6BfC5Upq4M-HqGrUc6xto1ru7-kVALxQXaGrzODZcOKb4OJuwHL1dM5Qmq2PXi8Zqp1lSLPl2ZzGmZrNfMrwoylqADFa0bmKhwuyYN_A030MhM2tMQoGJOK6D1IEM9OfM6r6YNtHzb2qEakWTUG-uuOKF0U6Tkhx1rSxneSZLN9o3K-VK8i_CCrV9oJqXCWXW993F6giutzV0T-WjEdZKmxty97WM-FILmiohflEe_ZbxqiPqeWj2CUZyPnmGzTAQRvnEyNDrlC_vbwxlGQnWG8KKW5BoMExkntzliUy200ekAJDDLBsJMoSIcb4y90oh_T4X_zH40Xy70l4iN8N9EPmElCiI4quc-wdoe_6IvuVh_7p_gn5wuVmhpg9jy2pWQwAYaUZr5cGWotE7kXATtp_-2NnkIkHk_m3Xc3LTR71YR4F3soW_gwsg0xIhw5AQwdl3RZTquDSgAqId3ASzN-YLcxFCx2ed7JWfMOCd1cOKVTNHPRkbPOpImKr4KAGMMZNfTg-mrVdBUzIJMWQjaqdusZbclaFWdVlyvPt-PGPFwVCznRz1q0yePZsG9qKURgpsDTf8UrfN17Bt1Atsm6gXK1AZLaxALdpZb67jr5j87LQNfgtKfsll7C_NnKSFQ1BVfTbt2vWZeRGjdFIu-q_yf1H_fy6q4lfy0yweE3VGBsplQqhCyIa-qbdlRZeVfPmGvSi9F5qINmIqivgEDkVSdOZszSupiiB1R2QLV90ygq7yx5C_7RTZKf7NvPlS7Q7FRQ7vmDHCe8rF9ob_VBrFrbAXajTVxrk4vVDBB_fb5sz9d6_-l0W9ER8Qu2E5usgDiO9-qzy4jZWK11vBe1f8rGCkEY_UtSO93GliKWfXSp6QI9Okn-0ulTRsYQGM5RPwXB3iwKCeA58DIJdOmNZ27_1DX5iH-3WcRlXP02IC5x_gV76DL-Cq1OL8A466rFzJXltO0a6zmvkOJ2Pf9hOE56XnBh4YoE7TKD44AyPgW3lWLbzGrSHRf79L6I7_n52jbj7NNSrpEyiVqtcFsl4dgH2yhMs3ca5yR3afJjjp7Vh6ZNPh7obd9tbATDSz46PsPt68DOERbpTtXvW4tqFZpcNTEoopieFv6BVw03A6sK1Q3gm6DYeJS_0a3YdC0wUZ88L_bvJXtMl9CIkuxpREIkI83OcDKhFS7f9OhyxVQY2ISWbcwZ_BW6fwX_UnzXwk_3bhG9CgOYIYYzu7Id_piDRtQYNXxX-ILNBWWqAXSSlFT79sLKNVqCSikgMvihH63z_QccwN0ZnF7tnOjZB0-jQBS2LUDBN95FlzQ8CY89UqVqHlLc8K2bZT-fyqSfuYiYudpnXzxvfTBpXAi9j6wYvExQa1JpNSxa-V0ZHlOhCkvRmqQIHXTHG8dsbF7mI0HT4jUTszViK1TVnPj7ZISuPMmA53EH1OJFILpA6y7aAwCuAUtuG4K9n6Ah1jFefg-YXIfJJnuoNLe2fdGuszpkC_ZcXamtWZvVademJY1ezLapQVHM8dzQ0imGjinZrOEfKtJICA2fK1QEAXRF0DrOqQDroWDc6M3WgSVDmx3kFMovlJzgGzoex6zucf9MN0vCoiHQv62NL1-qcFQdowbfascu0690vPuKkVG6f2dkTwV_mngTKXRhMJ8DqHPonHRS_vwjJELTug8Plqtw7Y-i51hGSlOm7ymPlbyzW857I_KK5ztbzFsAqZ28SyqpgpGYRsniHj8tqWNf0vB43kS5-QLQ95uk_TmuL8lkG-ErfgFjg2LiZkzUA_JdzFAPcZbgSUYUxU5EEtpcNGgnm2x9FOpiapITKt6SO231cb2P72XAYsMIx9V3wTA8qHc6mEqCAqxRlHmMooxCiFz_lWHxpbUqicMTUvhfw8vOG6CwfUEXEFeE4LuISVFb2z8DPV1O-denjIVnO7bIKZhAJZXMAv1nXbxqGdNx1-XNRF5mLU7_IHkQHSDZSwyva8nkSd7A6_CAuumq8Z7AHUp9PfghXpZzhZnbwPpRb88ofvyrNu_pr8QpNjdsXjQMS25r-oMlzTZVFqqoiCz7EsVWV8Wlv4EZXNs2IyLRJRCPg==",
+    "status": null
+   },
+   {
+    "id": "rs_0ab046db25934987006ad97ab64da087d0854272b4076cd671",
+    "summary": [],
+    "type": "reasoning",
+    "content": [],
+    "encrypted_content": "gAAAAABq2XrA2PDtd3qkqBcyzvvQQ0hyMrySPWsafmxAevMCe2T51t_e43GHLwnrbSCcjl5o0VzeX_o3QD2fXuLoT3YytAM10HcrdeH5kfK9N6szGkf5mXh0f8YqqLG_02jQ4bhtX8huI7gd-H4niWWXQKfvKUxGFrDRq161L0NOWHVsih814uN4I6TybVat0UiPp4yxISDszL7w38e2yv1PF3FQUiqm43IUzkj2jKkqirQdFjmEQfKYRbwa72m0gbuu5wGGhVEzDyegZrOgcq7lKgcoqYSnD_uSBbuaCf_O9tCIEH2x-DEzZIAaxTJMfRFaKgJtAb2WNibbl5W6lop9fclve1xJeRtNFAXadircZgpxI_jBS71_R8fDCzF5X-RRzG16gH_K_QcJHqDcSrxytYqw7nbHnhBAjFUAk0RhB2m2gL9xivp9WhsXTkMTLYv2UVLLKlOSGSX8lT3t3-f-Sra-EWjch89pPEBfUHSKuPTKFihrrxooaN4jBNjjJ0gXtfs1i9TnfPDkGHxRP4ldjFuBuG8mnppO313FBD6AuJEElMARia3VmSkXSD-Ufhzm-GhTfac57tVpWouWtq8twAKHipg4mJofW1gOthYlMB1UMf9ElGxpWsXxLli7CeSEPvhWtaSOKoX2e-Edpgy573_ouaVcVzCTyYi_kwI8l7H69Hw5Xy42OVHW3myVQ_Lmc6zbtzkxgugeb-CnxQeBD8x2VypH5nod3qygGJC-OswkBB-B3g8oEO2yJclOTaOyMf6m37B1FFmjVisqqcKmRzg_X_mcGY47jelauKm1bWSGGuEcA8rJeHNWWAtqSdoNWzaQ03RYkq-sfTO5afkz7_e0aUVoW4_z73SSvyLbiJ3w36exzE-RRcgtceMagp48sxg88tWLEGyAOZzUXn_8gwusmfFWQMD_68KIJlD0-6PAsjbdFiMAXUwzjigORQrtWdxEaFIJLC88bZCpKhGiMyLX782GMRcR5W192AU5f0pbCxiOYcUT_3M8tnNZe4rRjxy9bZHprVUg87IAJFOcBIlktT6Ya-gjX9cP4cxQNIe0x9kkV85Y4MnR1tOaXBqR-yAyAOvT4TLMqwJfZXKk6KSeynbNo4oi6buPPUtLLbQoBzmivLU_QAP9xa2H36x2E-1h6uF8HmLCG0T-GsmmmNtmDvOuHDijxd7gC1zC0APEdJGuIdRfFuqqNhMGQYIfSI97CDXp4m4fnXkSt5EHN0fFRNA_EIsK3FsIZaDwxV_5rn3gDm4oeuIKeO0lgouPZ1ILZqFt2PvWQXqrg9BN5vif4wnjQSc5RjFw3CnzwzmgZBMbtETmPer_M0-k-bHazKzrJQW3Hch2b3XrkrynIkPduSKfcQcndreXwnzG_0vtqRphMWXfklqharn-H_8uMRKgJU8TPe4kvSADLhqTP3VC93tHgEwhX9MBvycCP5GEfxv3I96G6PRzrhXrW84cS6_YuEs06XezGq-EfKYBdAXBI81OHORyilGAqodkhmCP1PMoqyOzjA56PWGF9KGW-01BM3QzFUJa_sR_BZ0yE2vYWD9BoEYHHwDry30t1tPII4UTVNMTcpfhU6F2Oy77oR5ObkYuiq3zuTqRxr3oindmbAgzVGDOsWA6n0J5SOc6SW1QvjhE47ma6x1HgbNDjJ4MCU7BmzXdw4_xTisM55vYtC87B2-eyxn_qKm3bDPv53qUa5j9L923Hqo-JIz8RNYLH2woxrulWIZgSLB70egnTMvUBPn1Z24paSAOk9JAsLAo_AmFd2yUun9rzo8zrU_xC_nzAyc5zTQaoATxW_DOshJrn0p0sVmuqetJRJMShMSDSoaaeEQeDrisDHJPOVXhnAGAN3lpUNgKpAKjNl4opSLf8WPLIVY3CZa2_wZtTy-U_o6M1EVd_FftH4lcyze30yILu26-xkzWQYKf4om13N-pDguf-47WMI1CAcL3QKfW-O8hQKWEaE2w8uZRQ5hYX0x_rXPV8ypsfzYNLi1RpDf9MiY4rSJ0Tqfx-XiGYOzHwD0iT06dIqWsLXhoSVsv3G0M7KDwTEJsDmw0FQoucjdpUs12kRsJGWviUCJQ9rvSUSA1HGnZm_pwIUg3JuBxVcfsSvz2gCPJqwLT7Pkcyc-XbOcFvVL3v9VcHTR64f8-AK46HB0THU6AOV78NTBNeS4RBBcb06qZ6uEKMdjRIQ2kpojFFWb8s_u-hbq3zUvsqp5L1KhtUTmmzWM18YzVfQrN6SqwckAGPd-6WiKpMoKEXewtOwthPfySiPBm4QpLXcCNUGi8u_XuVOk30jJGVcGpyHz-vp6yfEJYg4UVxl0gO2fQWX4Pjh3nAp7PYFxmekr9GvtUo6BadFVo-APSjPBSAJVkRA00p2R9kDuS01zao1tqrJJa6db8LhRPkHk5JUcrnVZq2FoXnriYpddrjfd54N7E6aFhN_4t4xmYSLBjQqQwUrOzr5p6QC-ZGs6-4aKYFsBD2tpKWDHWbxVppIGw2PEVGl_lg3HgGbroBWJOkfuTyMsBUWEcaC80Uh7k_ySniKOnOxyYENm3T0TuIzRGAdo6CI8JujvYfQjntvxDRN6TRw3OuPemMeGljEzzYudYkXWaFHNDiv_VYLp0-gb0RKHQsDoqOz-hr6olX-VlaCKp946HvTgTa6aLXK7-UFyg_V1zP3clFVQkMLpK2vhdAcu_buFt6NTjhVm6TaLt612tDluQF2wCnTsoMM5TFIpID35RKozGWpGWM1w15GH-PS-H8T9iL__bsPJ_wHbhvq_nC6AyTcQeel9o4-Tpouys79LaOgjbWBgIlwVyj54V779Y5R2q3MQF4ulAZX6i3f4wwlDusnLDo7XfKosTRfZYxduOa3bLoLm7WsSbfv08EqAYuNkUTNZ5CLjhUjEm87PmffqByC_jKAaJkHJUImUO9SSuOiJQMsZ8w4VwVDex4Gdeg_VQhUDifJuqOQ5VGPoACzKdxSzaNFSz9pTOC6lna58V0IHet8Q0PNsQ0Md0NQHF1uu-dwIgMT1ZxssyQU6NINb9Coub1dULkM69CalbeFPhjtxgonyKohlowYIzS4MaYRH7Ut_nqHDBF3dcB20A6ltIqkZ5B1PZv-tLZWMl_2JVzrqPh-5RO4j4lZS3Mp-Y5W1CYIIvQIEJInt_W9YzOE-eDzshqmS8RK0ztGPL_6dTw9bcCcTDk6J9QiHEN_GsrR6fP5V38i5INQgQXEHpbDDCrPgjum6rGxkVtMKe_tegQAMuERB_qsVpT62vZwqFKa6O4vWvIyXfEnpg5pn8sc1j1OtLs7DzSlyTrFzAem5YeFQ5JXv_WDV9RacNBaJBUBLqj-AaMCyngD3uSzP5ccygkLjV_G-8aGjWZ2m7xwnZjW30p7YwP-8Z6KapElMEhuvqJi5YjSn0LYdOPTCyyeoLtDVXs9cNM4WGcUgkMevs2WcE58lyPuvmUOKOhvvHEIQWlgioeDLdZ-s5he1hKYLhMQOA8SeBM-Px-aibreytL2FLoTdCxXYTPgTQ9fy_vvbXW9XWXv6TvQrilNyL1a8QRDb77g0D_WC9MnMb9mo2JRTK44UyMcrysmkT0veaiBM7Mw90_TTH-ogDx7Irdp8plB3veN8A2VPlcw09WA2T6ekkmV4Qm1-BsCEEck2uG7E_8i3x9NwuR00dI74sri9SNat1HXuKC5tOk_wpIeFFkTazA6r1lH5LwmqcvgCyWgcAkM6BBOkG5cmzEYaEh-2a0_EJ0rLrOxISDauZkGCUsDOLjm9W8qmZDekE87AgwkLdTXIFcmhoJIz99lJRzGlwAiR6DL1cUWW4SL4OdvTXAd1vyMd092mMHt4Oq87Mu9MXNMus3jAQvtsovvP-FlqfS72SM6CRMN1fvsKmMKT9K1R1fLom636qwKRHW4-V0PZELtpKNwT5b_yPqwa1O5_i136NmdVemtof0RaEJRd6tukilWPcalxas3nDyowXYXHNUyoT0T_ZWUt8c_J9sY3eZbW1llKBbIchawhNkw0uNMYnnSFvNhlLoUnCNCZJwmqbaEMgdQ5RmRqbQllhSO3jt-ldudpz-nECumADfHib4-Strzzfp2tRRFaTNVhIftT5PiWllen4anAHvVg-vN_oWFl3wL4yjQV5mWL6j-ivG3SsuOGsGb7FXIcid2VY8SJzNRZtsYzpLrxEdB4ZitjWzTQ4vqwv6rlO_OtTYjqseulDW7s4S6uPWc1sUFETVF3TIoT-yD-AM2isHRRezzP4-BKQWZq_7Oi1f2cEH5SwlqhDFECYFF5mp0yX-56EENKFCn028qJ1XlI4NIygFHUCXVDdUmBV4uNt-MsIGBpPw3ztFqqzWorDQY0O8ZMqlfZqAPgNOJlsiYIuHhkTppZVlW_vh-IeDZfkvgVuc5O_4eRICM3GSZm12YU6d0ULke3C4O-C19YzZln66vxIiWpNqZmSqeli0vyb3h09nTErDgG9Ovu0ypYm-C3jEjOOlZf6ZSi_Vn46hf86wT9AwYOOskv40ARemQP3zihpkJiQOV_6Pb0O3AtSC16tttf3jx--MyHUr7D-YS1pmtdw_s48faU8NSjDbopDDhSqeoaLYhI_ZnEx6DVX_np8MNV-NSlLbtywKE8lFv4tKlN5sqZz_uFL4q4-X09dFUh0LVWpUuue3LZPOia-BsiF4C_lGouI9SEbnpgJh6AMDcXapztOIgYC4X9PaPBINHpX20nQcwACkWmibUqoL4UIlS9c2bEi7uY0Z6m0r-e4H-N-nUaYTDLySCFcFxH2uGPTZ4DlS5giqWq51fE4xXarCJ5nXypsD0WWyx7Xr9RZCgwcOERikQZM0nUzPEBhAhNba9xGIyY5yBGCQMPq_E0265WE_szaHxBhbCyi5SpGxlpRzCnHk_jcnRqMJ-8TNXzWsfplrioaGQrIY3XBgl5YRtI2oTUMmTxN2jjwh9jGU7DIrVY5U8n8X1M4I_seYaYCZ3cfNqN60QqI4R6A_QSPfxywGpQd0lM4dSuSursTQvFtOt7sEemw1gce4cGDnaGv_xIXVuMozuS-Yob5qPr4kaaGrbsUhkg5PWvEuHHLglgKurEPSeR-zhiSKYK_rT6ss0bDch6bLa-MbCW_Q5sXSiEZwhrrt_irugqYD88KaReuj7U7-XhFd_lJToB24SS65iLZLj7m92C-VIlqGe4Yj4HNHb7zSlalnQYcTLEOtUuLwyfhMs8PfiObLQfZ40I5XUrv4xwiXL_9CRwjselWMXdCoEk1IO0rAbLlkExkb34nAen7bCuPS5OJwhpBA7f9THimVJtTWijLSzb_phgdPr5NRCNqlXPJKuhl4Jut2P0ujC4bOORG2EgoLfX8rFFGfgInTidMrscYxuaX1D2LpvhQOqX9XpaelX69OZO66x6oiCm3K985md9qRfPWkqahKOhH5x_cx_5oWOZDCHrtMjPPQC9oqNG2XWzWnR6pmTnjDoj9XtoJCJfTfbJ9t2otDDPT4sRDpb76N6la7EEbHR9PEiFJOWncl64M_vCVMvsiWFxsEfDku1T-DnQFcKiOSk49GJ6k1taAYP_AKpjoGLw02XLxO6p6E_t7U8Q7UklxAQmrHw2LeZKWNbqJWjZz88lPYIkuMmPh6wHLY3_t9N1D4HQ8_HAVt9Tw8DysolVaIvDnBo-F-R8FqgYTlxAFynQoEaN7H7UarY3TLW2aDO9j5ch-XrmrGzvpLguqahSP0KJbumWLCDndP-udV0oXZ7hHmYI_z6kxsdGSavkoXbgwrq56ZJ6KK7FO5vCMmA==",
+    "status": null
+   },
+   {
+    "id": "msg_0ab046db25934987006ad97abc8d7087d090d44e11396b2fce",
+    "content": [
+     {
+      "annotations": [],
+      "text": "| 表現（本文からの抜き出し） | 語数 | 意味・使い方 |\n|---|---:|---|\n| **conscientiousness** | 1語 | 誠実さ、勤勉さ。責任感を持って着実に取り組む性質を表す心理学用語。 |\n| **changes within one person** | 4語 | 一人の人の中での変化。集団間の違いと個人内の変化を区別する文脈で使われています。 |\n| **weakly linked to higher income** | 5語 | 所得の高さと弱い関連がある。研究結果の関連の強さを慎重に述べる表現です。 |\n| **prove cause and effect** | 4語 | 因果関係を証明する。相関と因果を区別する際に使える表現です。 |\n| **in the spotlight** | 3語 | 注目の的になって、脚光を浴びて。 |\n\nいずれも本文中の連続した語句で、一般化以外の変更はありません。",
+      "type": "output_text",
+      "logprobs": []
+     }
+    ],
+    "role": "assistant",
+    "status": "completed",
+    "type": "message",
+    "phase": "final_answer"
+   }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1.0,
+  "tool_choice": "auto",
+  "tools": [],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": 1792637632.0,
+  "conversation": null,
+  "max_output_tokens": 16000,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": null,
+  "prompt": null,
+  "prompt_cache_key": null,
+  "prompt_cache_options": null,
+  "prompt_cache_retention": "24h",
+  "reasoning": {
+   "context": "all_turns",
+   "effort": "medium",
+   "generate_summary": null,
+   "mode": "standard",
+   "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+   "format": {
+    "type": "text"
+   },
+   "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+   "input_tokens": 955,
+   "input_tokens_details": {
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "output_tokens": 1141,
+   "output_tokens_details": {
+    "reasoning_tokens": 876
+   },
+   "total_tokens": 2096
+  },
+  "user": null,
+  "access_programs": null,
+  "billing": {
+   "payer": "developer"
+  },
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "store": true,
+  "tool_usage": {
+   "image_gen": {
+    "input_tokens": 0,
+    "input_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "output_tokens": 0,
+    "output_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "total_tokens": 0
+   },
+   "web_search": {
+    "num_requests": 0
+   }
+  }
+ }
+}

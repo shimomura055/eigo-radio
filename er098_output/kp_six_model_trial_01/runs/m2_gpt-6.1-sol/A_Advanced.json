@@ -1,0 +1,149 @@
+{
+ "model_key": "m2_gpt-6.1-sol",
+ "requested_model_id": "gpt-6.1-sol",
+ "provider": "openai",
+ "unit_id": "A_Advanced",
+ "article_id": "A",
+ "level": "Advanced",
+ "article_sha256": "53415cc07f9e5104a982c84980d674fd4cc22496baf4e17d2f0309ebf5848cdc",
+ "prompt_sha256": "4360c9cccee8765543b7ecc8d7e9dc60f73754951803e86383e24ac286b6921d",
+ "user_message_sha256": "0a15c1f35d401144b8a0185b51e0eed3961ad4370349f0fdf05befc48fa0e471",
+ "request_body": {
+  "model": "gpt-6.1-sol",
+  "input": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。一般化以外の変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：一般化後の語数をスペース区切りで正確に数える。6語以上は出力禁止。\n3. **一般化**：固有名詞や特定の人物・物事を指す部分は、意味と文法を保って `~`、`A/B/someone/something` 等に置き換える。一般化できる場合は必ず行う。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、一般化以外の改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# Coffee Bean Prices Fall. Are Price Tags Still on a Journey?\n\n“Beans have gotten cheaper!” At that news, your wallet pumps its fist. In your mind, the price of your usual cup has already come down, too. But the price tag in a shop may not change right away. When you see a price tag that makes you want to say, “Haven’t you heard the news?”, it seems there is a time lag.\n\nThe price measure reported by the International Coffee Organization fell 8.7% from the previous month. The reason, it said, was that more beans harvested in Brazil had entered the market, and a good supply was expected to continue.\n\nThe US Department of Agriculture said that earlier high prices came from several factors happening at once: bad weather in Brazil and Vietnam, fewer beans available for sale, and strong demand.\n\nMeanwhile, US consumer price data showed that the price of coffee was 6.1% higher than in the same month a year earlier. It may leave you wondering, “Did prices go down or up?” But the data covers a different month from the bean price measure. And it does not show the price of a cup at a cafe. Hold on before putting the two figures in the ring.\n\nSo, how long does it take for the price of beans to reach a price tag?\n\nAccording to estimates from market insiders and experts interviewed by Reuters, it takes at least about nine months for the price of raw beans to show up in US retail prices. The road to a price tag is quite a long journey.\n\nThe article says that companies in the US that roast coffee keep raw beans in stock. Roasting and packing the beans also take time. They also often negotiate prices with retailers on a regular basis. The price tag in a shop does not flash to a new price the moment the market moves.\n\nHowever, the “about nine months” figure is an estimate based on interviews. It is not a rule that applies to every company, and it is not a promise that “prices will fall in nine months.” It is too soon to mark the date on your calendar.\n\nAnd a cup at a cafe comes with costs besides the beans. One cafe operator in Chicago said that the cost of cups and labor, as well as the cost of buying beans, had been behind price increases. Even if bean prices fall, other costs do not always fall along with them.\n\nIf you are waiting for the price of your usual cup to come down, think not only, “How much do beans cost now?” but also, “When does the price of the beans reach here?” A coffee price tag may have an unseen clock of its own, separate from the latest news about the market.\n\n## In one line\nFalling coffee bean prices may take at least nine months to affect US retail prices.",
+  "max_output_tokens": 16000
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 22.94
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 22.94,
+ "response_text": "上級者向けという条件を厳しく適用すると、候補は限られます。基本的な表現による数合わせは避け、次の**2件**を選びました。\n\n| 表現 | 語数 | 意味・学習ポイント |\n|---|---:|---|\n| **putting A in the ring** | 5語 | 「Aをリングに上げる」、比喩的に「Aを対決させる」。本文では、集計時期も対象も異なる二つの数値を直接比較することを、ボクシングになぞらえています。**定型イディオムではなく、文脈に応じた比喩表現**として学ぶのが適切です。 |\n| **market insiders** | 2語 | 「市場の内情に詳しい関係者」。単なる市場参加者ではなく、業界内部の事情や情報に通じた人々を指します。経済報道で使える語の組み合わせです。 |\n\n**本文との照合**\n- `putting the two figures in the ring` → `putting A in the ring`：特定の二つの数値を指す `the two figures` のみを一般化。\n- `market insiders`：本文の連続した語句をそのまま抜粋。\n\nいずれも一般化以外の改変はなく、スペース区切りで5語以内です。",
+ "usage": {
+  "input_tokens": 973,
+  "output_tokens": 770,
+  "reasoning_tokens": 433,
+  "cached_tokens": 0
+ },
+ "response_id": "resp_02fa45cdc4764a0d006ad97aadc8f887d0b0c777984e44a825",
+ "model_returned": "gpt-6.1-sol",
+ "finish": "completed",
+ "cost_jpy": 1.54336,
+ "raw_response": {
+  "id": "resp_02fa45cdc4764a0d006ad97aadc8f887d0b0c777984e44a825",
+  "created_at": 1792637613.0,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": null,
+  "metadata": {},
+  "model": "gpt-6.1-sol",
+  "object": "response",
+  "output": [
+   {
+    "id": "rs_02fa45cdc4764a0d006ad97ab001fc87d08de89a5a6e3a50e6",
+    "summary": [],
+    "type": "reasoning",
+    "content": [],
+    "encrypted_content": "gAAAAABq2XrBwhzDLMYn7_oC3TkQOGkEaHw_3fRkL265I2e9IO44XmSjtm2AqoFCHMyYF2xuQWQzhbgPJ1xfItetyLW4-UxQNa_KVxukCw5sbI-OZAqbxxa6WZbWyK0zhSOMElPSzqxqEb86O1vYTP0zzdvi3Md93dmnHWRgQ9RN-7bkRRxiFBoMDNsXBVaqEjBRS6PkLcz4y9MrXyJDTX6h7j5BNluC_bm4CiJmt1kErTy-8qspZZPLNR1KuCCxVsi-ssB18ReYrghdSjaBIlO8HJjGAkMnJNdMhHQ90BURBABQUTVqts7lLhLzjLf4mSvxGDwEr7RUM3DlDNLxyew3KSL7n3kOoykWCkkWJKS8o01JvjVq6Y-eWOC8nvddlFMPzEddVosf9P1R6hBPyoMySjiJWnqbBxnEcGRIJIlVSJUZZ6OYRXOrjr4RqJ9RCfRCerk6PvBP53RcFSzvx0SlDg-bb6KL6lJD23nH4z08Rw2Z54AHx2HbxpPRWQP--P7Fd-DHDerur_NPWyzuUDmsgLaeGSkzIN-ItaETYeaXbEjimXRB6bHnYrVaBK_lyR-2ygDOQZUF6d_t6uBSPRnw68Pg3S_2UPRMWCCySYBPDAt3JycYDNqwVwfi1MPPGntUgc2VuchU50nHkT9MPGKhnrBo6YqPi3ptSCoe-SVgJ5HmHCTSNG1HHcAV6JsI3nHbbkx72W0sq7DZf1JfbAIdDFcksb2h4mAfsQIjqu3mLRBWPDQtN5ikj_Z3gJSgKlVJUGqzAkFaO0KekT0A4B4Bam_vblQdA6AMwqo88E4PscWUg6pkM-qGsmphv-AW2NYSwEu0hnLOg-dMInRAyg8hzOoCgzcodVeeBKQLZ-NrP2qZkZuqqp-uHhIXPm8MIdFlFrSXtqL2t-XE_K8KXJdPCRlsKG7uZBoaLIIpxzfLQxwQEqwatQxZGcaOfheJHuhhBnZB5zlc1AIVo3vGx-O8ptzO1klh59K-R_1_GcG2iKMnJUr4s5GbLudt9rt37OcaXVfSnFCJ_fYCazMc_1FYlIV3gQeRHUiDJdA5Qy1uikZ4NQDRMFtT8z4UHDMj88Wxt8i_u9xxJIySlpH_M8aQwfkUW0jSHU1OwVLaQL3mv8ucCXrhubkhvJIRkwUFPzSml05-Q_1CJdI2rOcW791hV4bP4jvDmxu0YyCoeXYpYxpCycrBgd34tdVcXDeGP1J0eY3EaMVaSQin5wzgU2bIkkht-AZ3vv_Isa8onvGOd-4c09NXsvKKn-wExfs1kkYzyltX2uTgE6tYglefglmjd-VX5N3c2BWsfen-KCJILdRDPdqECIVQToIa8wqZFFeEfVGaKJZJVyd7C3hHQ0XnKnq9tzB3QwjVQpqZDUKmBgvWs8car41SPnAUvV2urJjG9p_uwNbmmH7OzB3j5mvMG1AQRar-wSqTbRXWVknLce8Tjq9l-nIuuyLAYLN0rR07AxEdV2X2xU4v5-Pxf7Gf2V7QMmhtA-uiYRpnAq_G8F4PPl2EK3jOlKm7bUBpQMQoE8dkVR0Ai9zRKokFzWb0uJvI7oKFNJ1gmT_Ip0eE710EPrWmtTDGFJDDUkGbuWUnB9wn6qyrDNC4X-bAzT0-0q5Dt-7Iw_C_e4UUhiU6MpoxHv1oQbQd442hHx69QCKDpODF9NyIDABHqI6uD4l7DYOhsKBLmYf_VHOmBvIzaImHU8MD1ITToMMoM8jvcKcD-Y5EyJzDEThW1n50-um42urPHKnaznURuTrqUJMiNlcGhlrpdfnF-XsxMXasI4r3elASdyW7JURMWcEBseRXOjFouu4nh7Qtqn8c7cWzXCC1DDTbUV23DPchzXVXFoi3tFyliH6RclX4TjX3b5x1s2Kln_Peklchwm6kjafA5Y0pmWV2wLm1IzGtOzpdBuJPp7KuifDl42P_SwQK4uknDqRFRCOQE_czHsb5PJ8CPXU3KtuBoab2GEUrZ4YylHTK1LaIT11Smtc9aV1NPoSbkVqp0FIeTNdmBoqfHyPBY3QiOKRomeruHTzqohnSFhkg1qtBj0PlJqGfHvL7SNLcxSwVm_L5FwEsL24kCt_qVDcGidRKlcxZU1ewpcEATa7wDGW7fGRryXAxRYy_ScchyTDWXm_iEE3doDAzEwbio25AtRzCR6MEUq9DLurqxcGrJgK3EkKEDcRcFgOoHv3A6_dTHBExVMRotvhSgRiOmSNN5Am1zNWDfAVZ1N1R8Rc0fHa4TJg9McaUsng0nU5GNYihF1xhPdkAFAFRcP-aiWNjTz9_dktPxIE3C26zNSsmYkOPiX-dtH_psZIi4VzqY6FMxQJ3ZFCNV8hB1RexKJV0PxymiMXDxwo4sXTFrONgI-EthNGu_ZEMjapCxorUYdWLwStnxcxC0e1QvSTm_kVn7cs06XI8zW68Ht0AvEexUL8wIcy-C8g_QLT-mqgEZIp3ogKceo9HV0rO3TtfxviltSW-JzfDxWLM4X4wlMTuK8lrIY2WhxaUBPpTE_Rhh8mE3pvfLloOeBFzz7qrKQjshSKf-V1-gkbgWfWA49xtjvOBYYcp9JPBR0Hky_qUTdq4zn6CobdkN_0dvxjpFjWUfn1RDjZzKWrjWxaiL78u066yf2NzQrnSqDEMRzDG7iIJrexNd5HHkp95i-J0bre3JynG0tRNUmKXU550rmS4EJETBWd7FNohaI4gudSEr_buiDVDcakJyUTYYldqRpjuWgFf0K0aFjidNkoEH2kSdR88SLqDIty4934XpzcHziaNSHJWnSgVZVZzKTpaJdgckzA67sXEUGJF7y7C7ADYWZeMHCtLY1dwZje0lrFuvjVB_Rq58QoZXjb0VErl0FP0Ak-ENuPV7qeC-jIq9VShFPPqTsiYTCeeIQc068islHX06CTfLmTnn9rIT3WBQOUID_PkDSGfCo_VD9NpDi0IXQgkGzDJrQcahOoPmN5O_nT1l5G4cC7UdnIWaJEQ1sXCO2tE1QWPEZiOONXiZjpdpUJQkM-lfiPJmtImh8v4E2-Opb4DulVa_OA-1G6M5yi6Me8kPLLYx_yC0O1wqB3oMGvIhihoZMMPqa0ZeDGY7kcABYYdapO9Ce1IBbP7D_N-DhDyOGJuOBwrfQ7R91oC83kQUOTfJtm36T9EVFDZg7VLDRj_vQjoazDqqGR3d7xH-xlNEWu4-2f6T28ZR7U1jslEZdVM6rP3fvhQP__OT1WQhBbdiXEOy4pNUsIX-qnnk8ctT_58ck4FcOyyQhPXkUfeo-9QfYc2_G0WqveSoD0ynCkZBG7zZYZgwS6Kt3ygmxLmHyWiSJTp1i7tZ64QjsqTwzQTQxwA4XSGiOQkQqXMb6aQmwFixu5-sQt3nkEnOWUXswpbhUEsmloFzfhrXR0d0X31JWxj4E0q648VupBNWF7W6hXH9EdL_NDGI_E08mW0f5g8-pXhtXaEnwwm-Xkj3XIdwJIpfhJSKr756dFH6C-DWe-9MarvwyObKpoyu49O8_Bn7A7t9-uV5bHHCFPBKdruhYPZVIACT-PvCNYqCtQ4zKh5K2JhRCatTp7JKxf75t9_Yc5yudHVLCKNPzgV0nWdm-sk3Svgq3DslBMVs7rCXVsYoWGSmLZywPZYPYkUOsy4famZI9_oB09PwS21hxLsukbqEUcuZj9Pztttsq4aXDg_gAnbGqCvrOX-CDsaA0kQlkrtJUz9FkxzCf0X6frSFzAOWYZKLpkyppDKUlRmXzyONPzFAUhem_4PqBMlPH4vSFZwfGiNGacV74zzGQGFQZ0_1bwefE0rGtonRR6haf8662UP6M68gmXjr7NJIUi3b4xyQ2B4PLkXHf0gYCSMh0M5JoBEAWMkuu5n7q5Bsev0HDh0lFy-gV_YXlbBRNZ0xVIPYOhi1YfKM1lD5qP1ueouVvwd8XVbWVcNUtIpCSB6WiyrgvqMDEft1VgeZUv7NPI4ytyW8o3RBLO0wvHrZTGILJVrp8DPmU_LkmgLOzWYDLvSQYFVOKvDCPMZsY-T9O2mBw0Xa0le2oseh3SZ1ihum8EvPKw1K-5P6pjrjqA-8ewNHlaI5gY5tb9aV5GQQmrZSCV0c-bW7236eZEjxYxIf8zynSXtL0xgrqNW-hvI0v-oZagGEYRkA_NtdLQwGO8bnIfu7zNm_WrPOY0OTazn_98dD4QSgOQQj4FsYzd6e-qjNJNOWK6lQwPKG7Lb0sRZRHJ7ZntWacVZzbovIGtxGT1vwQsjc0vp1-u3a06DYq3Dh8PiVsNprcI8knuN22HdMgw4bb4R-D6a30osj4xFc0dF-uyLoxbfSoBfAXQ23asnca1e6huCiCKhLLU380bBFtXRBxHBF0bJfIncXeFOyE_LwlV7e-XzhcHyiywlwvppfYiCkavGRwkVb0AUOy2EkmPBRLfD87DoTaq1WmqhQnSW9DKohXTTlUbZOn3Ltv2S_Njwtlh-INI8-YP5EPYHyes-G3zPk0KptRvOpnkGhOFl1fWpYsDdSR_y5Zj31M5iKwFzZ5eAbIBog_9XtZCLeM9fxpmOGb2rU9URGQUFvxFWLsmu3cCFLCSnJXXfBrksLqh4fYbz6PsQRPmcIGUmpCEsz1deZ0e5F23tTXiL4jHw0AoLtsh06m3-HOJdroDMBZOEGLCzPUjYNmzLUQ8wDltFvyLIyT72-Rm-xId0VHyDAT30mHb8ouoD0dNGh4E54zqY6f8U25rJOWPMX65gtoDXVROHvstzwIZi1KdDs31tNEm1RYoAOxKe70q3uvjwH_RzneJeYN2ZKH5Q8w5n-jcbG1KjJsjPMTDD0rI1zHehqbMPEZDsfkB5UJY8rjhv2qcO7vRI7i4YO9QhiWrH1x2DpEl56ZI_8l3HSrelZBJ3guAPRNRRDsvy98wOWPWa4Kh8kt-THs5CvPmQ6sC1Pl-ak2w17vBADTBG3BPdQbZilbmH5BaUObreoRVVa6TQnhU_ZTq8QQQb-xiAAGMluUCXbficXMiYjf8Prw9FZlPsym_WZAoTu1V1u8r_yiamTNa4J7tLtOq-qnDQZRdFxZqOzITFWSn24KbRx-IeAWn_Vaz1dtIGn-IhiFH6ZsHXopHdrax-oec54CReA7K0DVFKqtmaSsQHKs018HvmDCVuHd3Oc_TN807XVVCAwkMEc8r9gAOqQAwbu0o-1wUq6hm1izGkikLfdm3nJaMlzsAkB2fxd4B3-9pbKUHHuNBNLfxA7qNAGlI0tBYYUPjd1WJ2fGRQdIyzeaa_t1TjI9gME2IjT_wi7FiMWDWi9AIFbZRubU-VTV4_xCtkEMq7aFlmTr67tXsnZm89ABeiVXp8zbUrAKSW3B5r6FPFrvLhQ7Kqx3TpNnojCpwYwiMCBJJJZpmHQD-gtbVPzDKJamf6CLmrggEFUM7FTOOPlCf1KvZU6Ze8yvioHQlzCVpl-itDOEaMHhcHxwTuMENV_Jh3g9Ujbx4hZtdxIdwoHkM0_6uffm0YDYCVxQaH4-5RWe8ahNmRvne4OZGIFCdIwyOUtBJ0cKSDrV5KJT3Q8bZDno6h_Y2vqoZ0CSFP9p_KxGCKKJnWq21XhDhVlu9SktqoxP2YgGRwvnbnf4lDDakmRFROfkcaVDNg2qtGBYDh5zU5EVFDuE_a0qAJap7Vt_5p40GWP-zIqM_QtvEyIpFE-6tBgDnRg-feGHi2iG-OLWxyxCUVKZuU9o6vq0K6UmIabYPfSjUKZU1M2xhDJS1UVvR6Fi3Aala-gFJ3coKP1EjeWLnxAhy7uFF4Hm6LZWzjxpRFc7KyzdGYsNWUUhwiMntCMEksdTLAQN9F01DK5sQdp2ylv3czbGlUIO51OBIW2HbdPXJpnQKt8dyFk_G-DyvaXaB2HXypavEsU42AnbZqAp4XE2C48ODKUiyUewbfsrwAiI1Pz2OeNJN1IDCOUypfi_aHdJgLzIOfjvaN8oTxSrP5dP5rihtFTXK3EYJdlwvbJqY-VDSzbTgFd01tl13PiMalgV3r4pFfMQLytZII06yl6jSTIMsxnmCkPrIprEp9cMoyUI5-sWKct9UhMrZWhVdzLuda8Xa1EhDmrto_EFv7Zo035T2UKTBlg-IgeD7of6WXIHw_hLKtL4mIMqXcMTcubXeZBZ3mhdjGDdInjjxxlj2pSQW8Ee6o92kCK3z-dNDvYFrGbC0LpeCnrJxNECqoQsepPKmFlveNx1lRa-8DsG8spw7Lxk2689G5sd7kfAXnmR2iqPtSeu7TsTy42IapmcDr3q6Qi7C1SuFMCTmV9bb_8RJrjsWYFr8R_yOKOESOha-fwtvlnPuySfjDBkXz8vQQWr4-uRxn2NNpy7X6DV4CqAVB4QZWyhZ0l8faN-CLTX4mNrAtFB4UJeIxOosDbECStTlIICKM0_t3EN_pzy2__Cab7mzKgEAKkVKOla62haezoueQ9dhU3fEB5KuWW7fzzAsctg9K0GEQcTMG8sCiJsxrzDNf70T3HHmspTqfdD761fJfPXWKeSTyElBsALNzTcIkZ1q9u_K8QNyiYI2PMdKuavjpSmpFDYo7c4jpUbjbpnft55X5GV-rVaBPtkQm1mlaKqmGu0RvyeEAOglP85lOE5yV6EHTExnNLxOYMzrA_30NIf9zAqKvsNRtblwG8tuHXUq0MEsyV22wq2JkxcsoyuRk6AAyq-uo5u1LHAjsxliDwdFa7vbabZkFWqKgGRuXoh4zJsXdZH8zcjxIaBb6sA7puYPzGsvWCvsBEBEf1dd4B7ypdX-yyB2iOzx4eEWaaxTXA25KYCinvdQ4LZ6V7nUv6yf-OA43lnn3MJnm1wY5j8nCJqJSAtNdf5eJPok=",
+    "status": null
+   },
+   {
+    "id": "msg_02fa45cdc4764a0d006ad97abb170887d0b58073ceead10887",
+    "content": [
+     {
+      "annotations": [],
+      "text": "上級者向けという条件を厳しく適用すると、候補は限られます。基本的な表現による数合わせは避け、次の**2件**を選びました。\n\n| 表現 | 語数 | 意味・学習ポイント |\n|---|---:|---|\n| **putting A in the ring** | 5語 | 「Aをリングに上げる」、比喩的に「Aを対決させる」。本文では、集計時期も対象も異なる二つの数値を直接比較することを、ボクシングになぞらえています。**定型イディオムではなく、文脈に応じた比喩表現**として学ぶのが適切です。 |\n| **market insiders** | 2語 | 「市場の内情に詳しい関係者」。単なる市場参加者ではなく、業界内部の事情や情報に通じた人々を指します。経済報道で使える語の組み合わせです。 |\n\n**本文との照合**\n- `putting the two figures in the ring` → `putting A in the ring`：特定の二つの数値を指す `the two figures` のみを一般化。\n- `market insiders`：本文の連続した語句をそのまま抜粋。\n\nいずれも一般化以外の改変はなく、スペース区切りで5語以内です。",
+      "type": "output_text",
+      "logprobs": []
+     }
+    ],
+    "role": "assistant",
+    "status": "completed",
+    "type": "message",
+    "phase": "final_answer"
+   }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1.0,
+  "tool_choice": "auto",
+  "tools": [],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": 1792637633.0,
+  "conversation": null,
+  "max_output_tokens": 16000,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": null,
+  "prompt": null,
+  "prompt_cache_key": null,
+  "prompt_cache_options": null,
+  "prompt_cache_retention": "24h",
+  "reasoning": {
+   "context": "all_turns",
+   "effort": "medium",
+   "generate_summary": null,
+   "mode": "standard",
+   "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+   "format": {
+    "type": "text"
+   },
+   "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+   "input_tokens": 973,
+   "input_tokens_details": {
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "output_tokens": 770,
+   "output_tokens_details": {
+    "reasoning_tokens": 433
+   },
+   "total_tokens": 1743
+  },
+  "user": null,
+  "access_programs": null,
+  "billing": {
+   "payer": "developer"
+  },
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "store": true,
+  "tool_usage": {
+   "image_gen": {
+    "input_tokens": 0,
+    "input_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "output_tokens": 0,
+    "output_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "total_tokens": 0
+   },
+   "web_search": {
+    "num_requests": 0
+   }
+  }
+ }
+}

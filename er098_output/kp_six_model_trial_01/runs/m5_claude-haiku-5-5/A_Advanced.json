@@ -1,0 +1,87 @@
+{
+ "model_key": "m5_claude-haiku-5-5",
+ "requested_model_id": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "unit_id": "A_Advanced",
+ "article_id": "A",
+ "level": "Advanced",
+ "article_sha256": "53415cc07f9e5104a982c84980d674fd4cc22496baf4e17d2f0309ebf5848cdc",
+ "prompt_sha256": "4360c9cccee8765543b7ecc8d7e9dc60f73754951803e86383e24ac286b6921d",
+ "user_message_sha256": "0a15c1f35d401144b8a0185b51e0eed3961ad4370349f0fdf05befc48fa0e471",
+ "request_body": {
+  "model": "claude-haiku-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。一般化以外の変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：一般化後の語数をスペース区切りで正確に数える。6語以上は出力禁止。\n3. **一般化**：固有名詞や特定の人物・物事を指す部分は、意味と文法を保って `~`、`A/B/someone/something` 等に置き換える。一般化できる場合は必ず行う。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、一般化以外の改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# Coffee Bean Prices Fall. Are Price Tags Still on a Journey?\n\n“Beans have gotten cheaper!” At that news, your wallet pumps its fist. In your mind, the price of your usual cup has already come down, too. But the price tag in a shop may not change right away. When you see a price tag that makes you want to say, “Haven’t you heard the news?”, it seems there is a time lag.\n\nThe price measure reported by the International Coffee Organization fell 8.7% from the previous month. The reason, it said, was that more beans harvested in Brazil had entered the market, and a good supply was expected to continue.\n\nThe US Department of Agriculture said that earlier high prices came from several factors happening at once: bad weather in Brazil and Vietnam, fewer beans available for sale, and strong demand.\n\nMeanwhile, US consumer price data showed that the price of coffee was 6.1% higher than in the same month a year earlier. It may leave you wondering, “Did prices go down or up?” But the data covers a different month from the bean price measure. And it does not show the price of a cup at a cafe. Hold on before putting the two figures in the ring.\n\nSo, how long does it take for the price of beans to reach a price tag?\n\nAccording to estimates from market insiders and experts interviewed by Reuters, it takes at least about nine months for the price of raw beans to show up in US retail prices. The road to a price tag is quite a long journey.\n\nThe article says that companies in the US that roast coffee keep raw beans in stock. Roasting and packing the beans also take time. They also often negotiate prices with retailers on a regular basis. The price tag in a shop does not flash to a new price the moment the market moves.\n\nHowever, the “about nine months” figure is an estimate based on interviews. It is not a rule that applies to every company, and it is not a promise that “prices will fall in nine months.” It is too soon to mark the date on your calendar.\n\nAnd a cup at a cafe comes with costs besides the beans. One cafe operator in Chicago said that the cost of cups and labor, as well as the cost of buying beans, had been behind price increases. Even if bean prices fall, other costs do not always fall along with them.\n\nIf you are waiting for the price of your usual cup to come down, think not only, “How much do beans cost now?” but also, “When does the price of the beans reach here?” A coffee price tag may have an unseen clock of its own, separate from the latest news about the market.\n\n## In one line\nFalling coffee bean prices may take at least nine months to affect US retail prices."
+   }
+  ]
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 9.49
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 9.49,
+ "response_text": "以下の5件を選びました。いずれも本文中の連続した語句をそのまま抜き出しており、一般化が必要な固有名詞や特定の対象を含まないため、置き換えは行っていません。\n\n| # | 表現（本文どおり） | 語数 | 意味・学習ポイント |\n|---|---|---|---|\n| 1 | keep raw beans in stock | 5 | 「生豆を在庫として持っておく」。keep A in stock の形で、ビジネス文脈で使われる。 |\n| 2 | had been behind price increases | 5 | 「値上げの原因となっていた」。be behind ～ で「～の背後にある・～の原因である」。 |\n| 3 | negotiate prices with retailers | 4 | 「小売業者と価格を交渉する」。negotiate はビジネス英語で頻出の動詞。 |\n| 4 | your wallet pumps its fist | 5 | 「財布がガッツポーズをする（喜ぶ）」。擬人化された比喩表現。 |\n| 5 | a time lag | 3 | 「時間差・タイムラグ」。ニュース・経済記事で頻出の名詞句。 |\n\n**照合結果**\n- すべて本文中の連続した語句と一致していることを確認しました。\n- すべて5語以内です（1: 5語、2: 5語、3: 4語、4: 5語、5: 3語）。",
+ "usage": {
+  "input_tokens": 1304,
+  "output_tokens": 1993,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGX6mVxhpEpLgK2GhUbC",
+ "model_returned": "claude-haiku-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 0.1803,
+ "raw_response": {
+  "model": "claude-haiku-5-5",
+  "id": "msg_011CgGX6mVxhpEpLgK2GhUbC",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "以下の5件を選びました。いずれも本文中の連続した語句をそのまま抜き出しており、一般化が必要な固有名詞や特定の対象を含まないため、置き換えは行っていません。\n\n| # | 表現（本文どおり） | 語数 | 意味・学習ポイント |\n|---|---|---|---|\n| 1 | keep raw beans in stock | 5 | 「生豆を在庫として持っておく」。keep A in stock の形で、ビジネス文脈で使われる。 |\n| 2 | had been behind price increases | 5 | 「値上げの原因となっていた」。be behind ～ で「～の背後にある・～の原因である」。 |\n| 3 | negotiate prices with retailers | 4 | 「小売業者と価格を交渉する」。negotiate はビジネス英語で頻出の動詞。 |\n| 4 | your wallet pumps its fist | 5 | 「財布がガッツポーズをする（喜ぶ）」。擬人化された比喩表現。 |\n| 5 | a time lag | 3 | 「時間差・タイムラグ」。ニュース・経済記事で頻出の名詞句。 |\n\n**照合結果**\n- すべて本文中の連続した語句と一致していることを確認しました。\n- すべて5語以内です（1: 5語、2: 5語、3: 4語、4: 5語、5: 3語）。"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 1304,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 1993,
+   "output_tokens_details": {
+    "thinking_tokens": 1524
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

@@ -1,0 +1,149 @@
+{
+ "model_key": "m2_gpt-6.1-sol",
+ "requested_model_id": "gpt-6.1-sol",
+ "provider": "openai",
+ "unit_id": "C_Advanced",
+ "article_id": "C",
+ "level": "Advanced",
+ "article_sha256": "c25e7779d1d0740b97182bf469eeb5de701dbcff512c04efcf3d513957db546c",
+ "prompt_sha256": "4360c9cccee8765543b7ecc8d7e9dc60f73754951803e86383e24ac286b6921d",
+ "user_message_sha256": "f4c728cf9ab27c1011900233880f451a43259dfd3b029c5f41a65b50e06f7633",
+ "request_body": {
+  "model": "gpt-6.1-sol",
+  "input": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。一般化以外の変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：一般化後の語数をスペース区切りで正確に数える。6語以上は出力禁止。\n3. **一般化**：固有名詞や特定の人物・物事を指す部分は、意味と文法を保って `~`、`A/B/someone/something` 等に置き換える。一般化できる場合は必ず行う。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、一般化以外の改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# “Can’t Wait for the Next Episode”? Make One Yourself? “byUs” Lets You Shape Stories with Characters You Love\n\n“Wait, it ends here!?” Have you ever blurted that out when a manga ends at an exciting moment and says the story will continue next time? What will that character say next? What will happen to the two of them? It might be a shame to let those ideas stay only in your head.\n\nThe company that runs LINE Manga has announced the launch of “byUs,” an AI story chat service. It is pronounced “bias.” You can enjoy talking with your favorite characters and make your own stories based on the works. You can take a step from the reader’s seat onto the stage of story-making.\n\nIf you thought, “Can’t you already talk with characters?” you’ve noticed something important. LINE Manga already has “Character Chat.” The company says the difference is that, as well as having conversations, you can make stories more freely. In other words, you can enjoy not only asking, “What should we talk about next?” but also, “What should happen next?”\n\nFor example, you can continue an official story in the service. Or you can make your own story as a fan. “What if that person showed up here?” “If it were me, I’d want to see this happen.” The ideas that grew with every turn of the page can now become a starting point for your own stories. The time spent waiting for what happens next may become time spent thinking up what happens next.\n\nWhat’s more, you can publish the fan stories you make if you want to. You can enjoy them privately, or let someone else read them. But things change when you make a story public. “Will people understand this plot?” “I want to work on what happens next a little more.” You may find yourself thinking like a story-maker before you know it, even though you started out as a reader.\n\nOf course, you can’t bring in just anything you like. Only works and characters approved by their original creators can be used. The Help page also explains that the service has permission to use the original works it features through formal agreements with their creators. This is the foundation that lets you enjoy freely imagining “what if.”\n\nThe service first offered two works and four characters in Japan. “Taking part in a story” here means moving the story forward through conversation or making a story as a fan. The fun of reading a work is joined by the fun of thinking up what happens next.\n\nUntil now, “If it were me, I’d do it this way” was something you could only say to yourself. With byUs, those words become a way into making a story. What will you say to a character you love? What will happen next in the story? So, where will your “next part” begin?\n\n## In one line\nLINE Manga has launched byUs, an AI service that lets readers chat with approved characters and create stories based on their works. It gives readers a way to imagine what happens next and make fan stories they can keep private or share.",
+  "max_output_tokens": 16000
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 11.7
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 11.7,
+ "response_text": "本文は平易な表現が中心のため、数合わせを避け、学習価値のある候補を**1件**に絞りました。\n\n| 表現 | 語数 | 意味・学習ポイント | 本文の該当箇所 |\n|---|---:|---|---|\n| **blurted ~ out** | 3語 | 「〜を思わず口走った」。考えたり抑えたりする前に、言葉が不意に口をついて出るニュアンス。単なる *said* との使い分けに学習価値がある。 | “Have you ever **blurted that out** …” |\n\n**照合結果：** 本文の連続した語句 *blurted that out* のうち、特定の発言を指す *that* だけを `~` に一般化しています。それ以外の変更はなく、スペース区切りで3語です。\n\n※ *before you know it* や *thinking up* なども本文にありますが、上級者向けとしては易しいため除外しました。",
+ "usage": {
+  "input_tokens": 1037,
+  "output_tokens": 442,
+  "reasoning_tokens": 182,
+  "cached_tokens": 0
+ },
+ "response_id": "resp_057d99427df678a3006ad97aba7d5c87d098f36e0c73720397",
+ "model_returned": "gpt-6.1-sol",
+ "finish": "completed",
+ "cost_jpy": 1.03904,
+ "raw_response": {
+  "id": "resp_057d99427df678a3006ad97aba7d5c87d098f36e0c73720397",
+  "created_at": 1792637626.0,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": null,
+  "metadata": {},
+  "model": "gpt-6.1-sol",
+  "object": "response",
+  "output": [
+   {
+    "id": "rs_057d99427df678a3006ad97abb84e087d09a49f842ae6e3e38",
+    "summary": [],
+    "type": "reasoning",
+    "content": [],
+    "encrypted_content": "gAAAAABq2XrFwUGX6FVWk8PUGR_l91IObJAfEDoqmch2nLisuYvjVTP089vf25r-kiL1kQhmb_FRkRNDpESdY82dzZmdsS4UzWpFuWk7WjyHt0KjpLQTr6tAsI1jl8B9jBijukJGhErQtkeCIar6wN_iL2iTZqncZVK1ibFzo7F3TP1U29EGZPgmUdIXcKTRzXaRTJTionB-uc1CRffrTVZMr1TS3oxk9mBEp_clj7oISb5eAugRWtB5OpzYAAcYuvSPZWpFxPv2rE6fSoVORl10Y3lSFjhRkX7hOjiG5VF79ebjcy6HXZcKXz1NovqXcTmDM9Z1q4FdIH0lm5Ea3UEKdWay6TfjA_Y4Bn2jW1NLE21fx-xeGQqegwx0Okdz2XcexOPd5Rz4L165lVJv5NujVm2jkSOzCl9loYvqHoYTcAsPwLeAOH32EcOBHl2dFdUnVKSOzi8GpMTqBm9t_f2mopkDn0kNI7JC-TAGMDKlhHA1k4QW5AyO6Ed9olnDsxAp5y3aqpTp-BEprol72b9cfHal1vvktmck2F6eBrUMBbqRaGLVX13Y84A6Rz6mSytaCZCrggrf9VFhpfzi15CAyIgVG7V5mhgWXXY8U2tl4grLCTX6M0TitfhfyoXYQiZ4RNpGK5bmtsczk5FvJP7mvk3STa2XOaIM-zZhKyNS7OArB46R1Smu_2d9oozjmHNvrH8jdbKgFueYn-LWFqVZJ0l8FAW_AeMUCLfs-VPVwMsGTMlQhfpfinH-NMimKWlBpe_Blla_IHW6m0Gn11azeZxg7vSRRuOBBTKg5bq2IL__fu7478tyIzFi8RNpTlYlcEx1zhkLfi_3_zWIS7_lZHlu4Gw1SpmeQ9PpT9gq2nfAwSTyhFJfbp5hG3zcPkQL1bhLV5bvJN85jm1gRLIfz-IxOsjU1AljPqiWfoMHO-4zVjNxVluJ8gfehOeTg72avmBvaszIq5--jHSPEZd-CVeIkFNZK4GuBzRCGNNi7eJTl2hZBazAWWoohW1mBt6gWz1r38KKFGmaex1M_6YJh0DZd_fQhQCs8R_gDnCbsnyZqufclhw7iv254DCa-S1s7JC-o-ZowQaWX8OK7lJDlQYOiaYp46N87AEGZ4pOnARnapzJlRMXU28dV7I7XbErYzaviUDHOCfXNGaAMrIEL5RO3tOhWzaY52CzN0ozo2JxBezghKt3EcO235Caq9N60I5i6-sNU65uASsfCqmPX9I6RIq7djkWKv6044bDrTGbcMI4EbrgMATnmILko67rn2rDeSVrxTHiwW3TeQcypoE7OVeOzmnFv8SLnF2JBKFd6DpVLDLkkA_AncNPSuGLDpWbGK-sliz7T8YEpBF9bqiYYSSJuvMVPYPDXa5PPJPXBALvKtuXBHgU313NFXQW9G22K7bW5hG4Cff2Z65Y--ynmHsUfBgmABMvDTFig5GY9yYtGwPoIhAv9Hrlyimf0mhGj3iblkXci2YmmA4_fPud779ekl43WSchH2PEWnsmwuf5Soo-PutT7mi71cRCrGOKyW9ngFJ_yXi9LP7ofDmWwwEjIVWHYbtytYyMcAjvo2oYhfG0tRRmD_0_VkMrn5owTtkuUmMJxgzCACzwXIDbwDZajO_j2zWfSKot9NXHuCJnBxsgx0nVtDAz1njfjcfR1F_8fFLDaF4tklfMUdzo5nuqzH5M1BNkv5JYad0JtoaOLwv0ihAWwX4ckg3Rw7eee03KzUA0WJHA7XKDR8z-P1uwVuLe473dQraOjR006iTBCDbMyntPoFiKv1Yg5fxb1jKXQfSdpZPQ18eKL-M4aByuAU1oRh6kOUL9NSPEIx9ueHml2DUlGoYqbTP0fY-BRDBWfjpBUdFUWRVuU9YopSGKY-ROgDvxQY7iQZjicUot_CDmkNsWJweorLfnfHlGrvjwMX11xlLJIvQyzatVjMw4tT4jaIGVRqMke71j1G-ZmBFZGqTjaG2WjHlayVElZ1C5g6q-vJmDS8DIZqkBbW_CF_s2Jzy09eTZXMIHPNA6Y7RCSnVXNsmJ64sR2lGPxvvjkWltfbgMdw8FGmnpYKhGVX-xe7IFtPkQsz6tNwZrQUVAvmyaImqhOAEUqLwXDHHGaOMyiJh6JU22ZwCuo3DEvvnnyVzQzyV_2x9FIV6tvmLP1yGrKaW4txl4YDpig8vqRJI8wNcR2wGTKn7uu-uUV7J4oN7wPUTuMI39QkOxQLsFgBcVk8ec-SqD2waweousXWs9ClOnkhmPDElXhrpsbmkTRHS8BISjYVkoGLd1B10E4WR-PmouMoMemdZhWgSmT7PS6Hmr1zqnPzW3Nu5exLPufoT4qZ-0Yp2zgW-ljGsEsaWnRei_04miC-HFG4-NnS_4CbV-5hSnrlm4KLYhQQYKKN8YbQgrWLloREZygQeU-9ADYpGKNhMs6exLSwsyjRqqAj1ydowdc39AM0ZZciZ-45_1BXPHWZowmSWT6uq6UvGWip9Ws5e79Mb05_PMxcJ41OjG15VaW1JbaKGx4fjEUgqkV_0f3sRwCa8qF2cwuw95l9Vu1FzGuKYgbAaRNwAD1aDjUiv0atMVwvNPUFchQ2ang2dj5sbc1NbsfomN5aPg9a8eM42B7v4KViZHnk2SErsB04SeRzwjo1NEedvnYXyI1poxy8tiZzUgGubTCbJ0JRdH7mL2BV3Fc5pQLO3tC9U7hPbws-_GFK4G9aWF36dQnvrAC5Eka5U7NuBwkMzCbzDzwXbVWfnxoEtWRGalFyYjlOi2R35JfDFFB-fYBCr2PXSNCHg7eWY4GN5rYgsWdiGoNr0K75tWPxyVZftuKOpaDgzgiPmSjMv-W8SDjs7SocIIdNwFc2VQsM0m2M5kEwVURYTBn_G6WRw2kjwAMQDtf1HiPasb3d4xMRZHE2842mm20qDOeWVezOynraWoOYCPmkW76bxMC51XR9iTAwvaTVawvCagkqZPRPSsm613NhaWp9x5CgCdX-uNWrEGwVM7iB9VfYqf3lKNhpz343BbyV4bEY_uDEmZHG1AFcXNvsE6pLFs84Qtp2hjw0LCxE3w-z6-3_w0jQ0KiO99KD2w_q5RdJIuA9BA6-9YJoRsncwL-7hZh39v86je0ALmHqSE7ScWEvY0R_v3g07EYL-_8b-DPBvSiMgmkvm7ebYcOcJzwguFbg2l2qYa3CnKSInDyw19eHZGzyfqJM0sayAY9HyRxysYynASG49qNJ9vHAd9YZrNrF1yrM0YGJFbOUMAvZhfXmBBg2owb7nVW1QCBw9lj3h_P7gqfFF0kXH46XAuctwToBCoXopuwSo_OtmnSySjy2_am1Nk4NupVzH1leOVRgE5AZv2HMxsdfDJQ0fOXUlhoRPa9h3Jii55GJ8PhPBITDxqXmwnOpeusMhbDm2QoaAWnX86k0_lDk9eyQhfMII2cH3FG5ZKZ2Us-NtcWsO1FaQrw0RbDBf3j37VBTDWzhUZ-ETtrWGY6tqKBT-xSy0l2gpoF3_QaVlpJDblFVOdZwppN7-swCihMQDE9UH3nVxqYWEt9nXgjjOd6UrujnG2MWypJ2CN2oGrjddpAzBj-p1cJgchT0v2PD4fNJJYlcIR5P2uPxG9NQCUSYpWNlJCXOJGGtg=",
+    "status": null
+   },
+   {
+    "id": "msg_057d99427df678a3006ad97ac0982887d09f41fb3cfb287e3c",
+    "content": [
+     {
+      "annotations": [],
+      "text": "本文は平易な表現が中心のため、数合わせを避け、学習価値のある候補を**1件**に絞りました。\n\n| 表現 | 語数 | 意味・学習ポイント | 本文の該当箇所 |\n|---|---:|---|---|\n| **blurted ~ out** | 3語 | 「〜を思わず口走った」。考えたり抑えたりする前に、言葉が不意に口をついて出るニュアンス。単なる *said* との使い分けに学習価値がある。 | “Have you ever **blurted that out** …” |\n\n**照合結果：** 本文の連続した語句 *blurted that out* のうち、特定の発言を指す *that* だけを `~` に一般化しています。それ以外の変更はなく、スペース区切りで3語です。\n\n※ *before you know it* や *thinking up* なども本文にありますが、上級者向けとしては易しいため除外しました。",
+      "type": "output_text",
+      "logprobs": []
+     }
+    ],
+    "role": "assistant",
+    "status": "completed",
+    "type": "message",
+    "phase": "final_answer"
+   }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1.0,
+  "tool_choice": "auto",
+  "tools": [],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": 1792637637.0,
+  "conversation": null,
+  "max_output_tokens": 16000,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": null,
+  "prompt": null,
+  "prompt_cache_key": null,
+  "prompt_cache_options": null,
+  "prompt_cache_retention": "24h",
+  "reasoning": {
+   "context": "all_turns",
+   "effort": "medium",
+   "generate_summary": null,
+   "mode": "standard",
+   "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+   "format": {
+    "type": "text"
+   },
+   "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+   "input_tokens": 1037,
+   "input_tokens_details": {
+    "cache_write_tokens": 1034,
+    "cached_tokens": 0
+   },
+   "output_tokens": 442,
+   "output_tokens_details": {
+    "reasoning_tokens": 182
+   },
+   "total_tokens": 1479
+  },
+  "user": null,
+  "access_programs": null,
+  "billing": {
+   "payer": "developer"
+  },
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "store": true,
+  "tool_usage": {
+   "image_gen": {
+    "input_tokens": 0,
+    "input_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "output_tokens": 0,
+    "output_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "total_tokens": 0
+   },
+   "web_search": {
+    "num_requests": 0
+   }
+  }
+ }
+}

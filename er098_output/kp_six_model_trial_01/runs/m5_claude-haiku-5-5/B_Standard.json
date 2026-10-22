@@ -1,0 +1,87 @@
+{
+ "model_key": "m5_claude-haiku-5-5",
+ "requested_model_id": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "unit_id": "B_Standard",
+ "article_id": "B",
+ "level": "Standard",
+ "article_sha256": "45988779521655cf4fb1a3f3a5892b85d298ee2aeddeb0fab5eec3374e401aae",
+ "prompt_sha256": "4360c9cccee8765543b7ecc8d7e9dc60f73754951803e86383e24ac286b6921d",
+ "user_message_sha256": "c7c379003108fbd6c81d6fbcdc5e3ba5de2fdec87b5065ca9500a0a4a5fa0f1c",
+ "request_body": {
+  "model": "claude-haiku-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。一般化以外の変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：一般化後の語数をスペース区切りで正確に数える。6語以上は出力禁止。\n3. **一般化**：固有名詞や特定の人物・物事を指す部分は、意味と文法を保って `~`、`A/B/someone/something` 等に置き換える。一般化できる場合は必ず行う。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、一般化以外の改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# Does Earning More Make You Work Harder? Compare Yourself with Who You Were Yesterday\n\n“Are people who earn more always more hardworking?” When people discuss income and personality, they often look for “things successful people have in common.” But this time, let’s ask the high earner next door to step away from the stage for a moment. The person in the spotlight is none other than you.\n\nThe research team gathered information from 11 studies and studied it. The studies followed the same people over time. The people in them had jobs. They reported their personalities and income from work. Researchers asked about both at least three times. So this was not one picture, but a set of pictures showing changes over time.\n\nThe way researchers looked at the data matters. They separated differences between people from changes within one person. One example is: “That person works harder than I do and earns more.” Another question is: “How did my personality change after my income changed?” They moved from ranking people by yearly income to following one person over time. It was a different contest altogether.\n\nThe trait they focused on was conscientiousness: the habit of working seriously and steadily. Their study found that, within the same person, higher income was linked to greater conscientiousness later on.\n\nWait—we thought personality affected income. But income had a part too!\n\nBut the arrow does not point only one way. A rise in conscientiousness was also weakly linked to higher income later. They found a weak link in both directions: personality with later income, and income with later personality.\n\nAfter hearing this, you may want to ask, “Does a pay raise change your personality too?” But wait before you decide that is true. The team studied data that tracked changes over time. This cannot prove that income changed personality, or that personality increased income. Something else may have affected both.\n\n“Coming first” and “being the cause” are two different things. In a drama, the person we see first at the scene is not always the criminal. The order of events can give us a clue, but it cannot solve the case by itself.\n\nSo when you look back at your income or the way you work, you do not have to end with, “That’s just my personality.” Ask instead, “What has changed in me lately?” Then look more closely. Instead of judging other people, look for changes in yourself. With income and personality, changing who you compare yourself with can show a very different picture.\n\n## In one line\nFor one person, higher income was linked to later conscientiousness, and higher conscientiousness was weakly linked to later income. These links do not prove cause and effect, but your own changes can show a different picture."
+   }
+  ]
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 10.0
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 10.0,
+ "response_text": "## 選定結果（5件）\n\n| # | 表現（本文どおり） | 語数 | 意味・学習ポイント |\n|---|---|---|---|\n| 1 | the person in the spotlight | 5 | **in the spotlight**「注目の的になっている」。比喩的に「主役・注目される立場」を表す。 |\n| 2 | none other than you | 4 | **none other than ~**「まさに～である」。人を強調して示す定型表現。 |\n| 3 | weakly linked to higher income | 4 | **be linked to ~**「～と関連している」＋**weakly**「弱く」。研究・統計記事で頻出のコロケーション。 |\n| 4 | a different contest altogether | 4 | **altogether**「まったく、全く別物として」。「a different ~ altogether」で「全く別の～」と強調する。 |\n| 5 | show a very different picture | 5 | **show a different picture**「異なる構図・様相を示す」。データや状況の見え方が変わることを比喩的に言う表現。 |\n\n## 照合・再確認\n\n- **本文一致**：5件すべて本文中の連続した語句をそのまま抜き出しています（例：「The person in the spotlight is none other than you.」「a rise in conscientiousness was also weakly linked to higher income later」「It was a different contest altogether.」「changing who you compare yourself with can show a very different picture」）。\n- **一般化**：固有名詞や特定の人物・物事を指す語句がないため、一般化は不要で、語句は改変していません。\n- **語数**：すべて5語以内です（5 / 4 / 4 / 4 / 5語）。",
+ "usage": {
+  "input_tokens": 1239,
+  "output_tokens": 2178,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGX6mTUx1hHuZ6Nvxvi8",
+ "model_returned": "claude-haiku-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 0.19406,
+ "raw_response": {
+  "model": "claude-haiku-5-5",
+  "id": "msg_011CgGX6mTUx1hHuZ6Nvxvi8",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "## 選定結果（5件）\n\n| # | 表現（本文どおり） | 語数 | 意味・学習ポイント |\n|---|---|---|---|\n| 1 | the person in the spotlight | 5 | **in the spotlight**「注目の的になっている」。比喩的に「主役・注目される立場」を表す。 |\n| 2 | none other than you | 4 | **none other than ~**「まさに～である」。人を強調して示す定型表現。 |\n| 3 | weakly linked to higher income | 4 | **be linked to ~**「～と関連している」＋**weakly**「弱く」。研究・統計記事で頻出のコロケーション。 |\n| 4 | a different contest altogether | 4 | **altogether**「まったく、全く別物として」。「a different ~ altogether」で「全く別の～」と強調する。 |\n| 5 | show a very different picture | 5 | **show a different picture**「異なる構図・様相を示す」。データや状況の見え方が変わることを比喩的に言う表現。 |\n\n## 照合・再確認\n\n- **本文一致**：5件すべて本文中の連続した語句をそのまま抜き出しています（例：「The person in the spotlight is none other than you.」「a rise in conscientiousness was also weakly linked to higher income later」「It was a different contest altogether.」「changing who you compare yourself with can show a very different picture」）。\n- **一般化**：固有名詞や特定の人物・物事を指す語句がないため、一般化は不要で、語句は改変していません。\n- **語数**：すべて5語以内です（5 / 4 / 4 / 4 / 5語）。"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 1239,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 2178,
+   "output_tokens_details": {
+    "thinking_tokens": 1630
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

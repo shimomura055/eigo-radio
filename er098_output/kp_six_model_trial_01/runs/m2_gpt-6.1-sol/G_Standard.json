@@ -1,0 +1,149 @@
+{
+ "model_key": "m2_gpt-6.1-sol",
+ "requested_model_id": "gpt-6.1-sol",
+ "provider": "openai",
+ "unit_id": "G_Standard",
+ "article_id": "G",
+ "level": "Standard",
+ "article_sha256": "3bc4f4a1e09b11a06a02498f9207fe6e642889f96db194212ea8b46bd89e4c83",
+ "prompt_sha256": "4360c9cccee8765543b7ecc8d7e9dc60f73754951803e86383e24ac286b6921d",
+ "user_message_sha256": "9e0231edbdbf63dc881b3071af50ecce42c5229860169c6ac48647a2acbbd5cf",
+ "request_body": {
+  "model": "gpt-6.1-sol",
+  "input": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。一般化以外の変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：一般化後の語数をスペース区切りで正確に数える。6語以上は出力禁止。\n3. **一般化**：固有名詞や特定の人物・物事を指す部分は、意味と文法を保って `~`、`A/B/someone/something` 等に置き換える。一般化できる場合は必ず行う。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、一般化以外の改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# 20% Plan Taken Back—but the Oil Chart Was Not Done Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought a surprise. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. At 10:16 a.m., Trump posted about a US plan. The United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay. It did not say how the money would be collected. It did not say what law would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nAbout 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump made another post. He said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the Strait. He said he disliked fees.\n\nThe change was sudden. But the dates must stay separate to understand the oil move. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a US sea blockade of Iran. The blockade was planned for the next day. Reuters also linked it to energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nAfter the withdrawal and replacement announcement, Brent crude futures briefly gave back some gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14. So the flashy 20% plan left the stage. But the chart pulled back only briefly before recovering. The policy turn and the oil chart’s “not over yet” move happened that same day.",
+  "max_output_tokens": 16000
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 18.37
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 18.37,
+ "response_text": "| 本文中の語句 | 語数 | 意味・学習ポイント |\n|---|---:|---|\n| **blockade** | 1語 | **封鎖**。軍事・外交上の目的で、人や物資の出入りを実力で阻止すること。本文では海上封鎖を指す。 |\n| **crude futures** | 2語 | **原油先物**。将来の決められた時期に取引する原油の契約。*futures* は金融用語で「先物」を意味する。 |\n| **gave back some gains** | 4語 | **上昇分の一部を失った**。相場が上昇した後に反落すること。*give back* を「返す」と直訳しない金融特有の表現。 |\n| **settlement price** | 2語 | **清算値・決済価格**。先物市場などで、その日の損益計算や値洗いの基準となる価格。 |\n| **pulled back** | 2語 | **反落した・一時的に値を下げた**。本文では、上昇していた原油相場が一時的に下落したことを表す。 |\n\n※すべて本文中の連続した語句と照合済みで、改変はありません。固有名詞など一般化が必要な部分は含まず、語数はスペース区切りで数えています。",
+ "usage": {
+  "input_tokens": 895,
+  "output_tokens": 730,
+  "reasoning_tokens": 380,
+  "cached_tokens": 0
+ },
+ "response_id": "resp_06476028aadfd6fb006ad97ae2718c87d0bacc56047683b328",
+ "model_returned": "gpt-6.1-sol",
+ "finish": "completed",
+ "cost_jpy": 1.4544,
+ "raw_response": {
+  "id": "resp_06476028aadfd6fb006ad97ae2718c87d0bacc56047683b328",
+  "created_at": 1792637666.0,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": null,
+  "metadata": {},
+  "model": "gpt-6.1-sol",
+  "object": "response",
+  "output": [
+   {
+    "id": "rs_06476028aadfd6fb006ad97ae36c8887d0a9d6ee85ca3b443c",
+    "summary": [],
+    "type": "reasoning",
+    "content": [],
+    "encrypted_content": "gAAAAABq2Xr0Vuq7ZQ5C8pPcvdX51Om3bFXtBtW1UkLJpv68NG-c0QYZRRFt14jk6RsVvCkJWMY3CdgJJu59Kkb3N5wS8Z2CfnyOppD7IZ1OZRzzBi_MSmUN4MUN6gfWIiVjTaDXUxPqNLaPzeq4-dKViL0Rhv2yYRVsm6DR9QD7ynH8Lv7a0lXx3z6w3GRyiik9NFFtITyjQny9R38zu5hK09kDmOmsp7N3Aec6q4n2eBvUzk-RGzY7cF23mxQzNJgmRxxK9u3wjaCI8yDLEitZPZufjmNzAUQALxsjGhQUe_k_6wGgG1pICbLMQtWlgv2NgH_1Z4fiRjeic295D-_vH_f0CWL9A0l6K4u2r4jMH6yA_V0vSFbcpkXujl3coK_glt-b4xX6q5dJs9EG1JwXS3KsRFCivlzngZnD43Q7ktFb4ErJOtdxIZYamRLOerXzff8IYLhFADNJzdGrhnZMgtSVPvF0GilEPZC3m4XN4A0czEipfmSD0blHCc-nyxytu6wkTX3W130dgJqE4P7qeDfsWyvwNKIp1FXqq4BUMcMgXv3nDE2t5wCKn0a8A67TBmpmQeCQmWesh4piQIorxQ_nuQRzsoyg_UlCSO2hszqOGa8QoKMR8mi9f2Zln-EZDbyPaVAkNS5JxH_Q_1Y87x6nrxxTDiKcFcF5Na9OOhBlTRnmOgffE8NJ4h2OUuaUZDsu2nItO_2QfbQhtrHUcXghSXhJBMINlx7FBCHbvb0KWlJSTh4uRhkrMSIMfNC9C75UbnYk3ajjInIYUvrp88GP6rZ0FreRV0VB1_s6sfHBjxtHmSXEr9F0LVx4LpSjvRqIAbGG0Qu-EI73D_pblkbpqpwGzZ2XVV2Baq9k4MbucxKbto0o8gzxPQz31y52E38a2yBbDnso2uVbZvCBR6U1U1hzj2Jmvf71_mUTlF16Z8sB9MXQZ6PooyuloZU-Ra4usDBmNioHjMDbXIl-bBMQbY7x7N0TgtzDLNRDjPUQXfq9lzQSE8ewBUpJulAXfp1cueFRPyoz2NNS1CSht5qlBWoy8E_xpXqJo_vgR8N2XLmMI2eEQNqyLqFqZkZvwUwZCnXUHGtSSxUHf0cR6jERABRodxKkRNv-yPwXhUl8k3P7usCPX9vT5xDHe2RiCj6gHrQ6Mb48uHAUexqzBKtfE0kgIpGiC5I1t4e_R8XgE2w3C7Vwg9DhOwg0OCxIS6DXBTnoGmLmqOTO8iIloB-30WhC8II9dd02ik06zdBFKnxRYL7mxQkwBvszQFOJqPC3e7F67tVbnlwU7CUacmLsu6jczahF8ic70NvmiX-XvWH-Zj9SKRZw7moiREB1mwKJU7B52q4gHWgBufdVVCEcYU_VfmxEeLBHbhGlei1EQVongYIZ8zXeOnwolR4_lVlUV40dd7dUxZSWN_XqBv2o8s8MFl_cElrJnrGtKi2DgrSpL5GhXlINQj4JMM2m8fFr6I8KajS4pYmotHtVCh8bzNmeOuUAPfrsp75alQYBz8wK7WJE7tXvbqMSnZcLF6Rrw9zYNTaaNetW6TIP0HgS8E1dhs1DgdekFAqLzkZKp-RU27fOacEjjPw01O2WCXL2sZslHijmCEv-srLeMBTQpbZ04EQoFGl8imH75DciQBQh4kExkLViWGFiKTmByXdPu234XmgunoqmoY8sVhyVP7hzZnk6Z8QRa-qoaHZwCYWVEDDnh9kNmIsSH78bJx-0d7ZSmAMD9yrM0uwSumXMcAdKqzwzz_7Qc3XvUuvnSnbLMjhZNiieyLjEX8ZGxFtGGjqrwCQGknkCYe-i47fl3mt3MaqVxF8pjse_pnDyWWRqVex_fVfBRD9melS2-GMHenL6lTn7iwJv8SCFFk4Rou3T8pfVbwjJVunYaG0ONg99V3umiGK5bDH0nONPBoSkseB2ijUhzvSSB-bLYIFpTpwmgz0E7ARi3aKi8wv_1_5IPJtiy8yWvAJh7Pwys1E_oyOINAGhWlogbSXxfKr9zBRqRPerAkGc5Ouv6X1C7g4DS-z0naS1lYXZTMC5CHvMfsaJkexRFgxPzRfysqF00S1GgsBpDyknmUs_HHrKdq2Rl6IxDABPZCetOqJys2dSFWrAQhYCQu8HT2FIYnD4s9YZLvIBak_6-75oy8I-xDfRDUvewSgQoi-rrpIzLuCvwwKZr0c2EUZC-dulG0x4S96JsmoEJjjrFZJKGh_wyO9DMZ9B9_PphAziuvO9v9YBoRnppEGm04bD1vWsS4cRkpTUTaHJMO9EN6m_sTzuk1TwvvxGqUapVxTUgPIEJ8MQ-bHe04KX1GXWwZBC2nQtpGR4jg0ROvx1yLObCQR81ibIHoa2miPsWCmtqZPcV5tZP6Cy7Cppj7X501psl_gs7nlEL1oyPFi5cMVPPBSL_ATnCiKd8SYuEucVW2mwsZKfx2bpg15V9oU5vEJ3lOyYLRR1pBIjEETjEvzyfz1Zn4UHtiQkv5BLC7LGKxeKcTko5m5Ipeedvso3C9fioC6QS_4SbCKmk4AoTFsSVX9q2q9PFwYlS0lf4F4Ky7izrvOX229J91XJWxbzygIA33c8uWr18JrAg8JYleZ-aawwW7yqVLrVk-mF0XtDf4fv3mx8VgZi37X91tZ6jeZfpXy8A1W70IKs5f4j_vadg_Y_6tKu_fFWYr3nyDBO_cNQzks0vqWK9UIhE8GFCclmY5sUhNuXC9-qu1Il_u3GKuHolPHuyVIrhtlzD1JflT7hfCbxGSkIpaYp9Wj8IgxuODwC_2zC30eYdyQPwso2eA_mc0mrKxzSb7N7JciKeiF6JjmeS8NvgC8UXuAEOuG1GFoolgTfxcsZJO9I-8kP-21KXwPgW0KgkhDIWUciiY5kcO_rvl3LPpnnCR1YNAJJcY7WYHKoy8UQKxqULJrUmCycjmtKJ7zHnhsauzXiDzCZFS5TwyEjvqAOB5LOHow287vknip1cexr10x0WtF2TOJLSRFI8dyhu3ppQct0aGgv5RrNqRw8cA-jyGG45Z2XVtaQ9k-BUhQLFDvoxPWStwb8U_HfOAph-pbgRDG7yhz-oa67FSB2aTTclaNc-mO87PA4H1VVwuvx7VcCNIpL4-b8HAmhnltrb7jNODuUy7-Ff9o3RvwwOypDL2ihyBPk4UFxrQcdILwVNO3zPi0MUmPKRMJuacfjtyKosUbEh9NMtdjpu3yVBcsUcm3jAabcj4YX-id0v3oXNX41_SsWfxpNPCa66W90JVqTCG1C5joXpm6NNGZKRNkq6eHujSmIrjc5uc1yyTHNpMdZJWsw4hs16ZOCKBpU9kSgjw4g5CWMPOBx6lSJ20c60tq4uIFMOwecNtb04HQ74c-hB9r5A8A5CLEUEnk7o_67emtHuMLpPXOmVisB7HE09aTQn73JIgXaMHMWU9jFtK8WbXGWQJVU6tp5Qya65XzWcxVCIIzHNxDuEXucAi84c5m7HmUVMDYteg-FPA1-bIDmxLnjXuZGME0zePIej4ze6v79nVzoou-o6FC_TbateIKsX2pjYi9pa7Q4vQwVTgjCVh6qXyXSUUJn8jR6UqnA6_rUfGdO3MYoCEp1WnKyNfnX4DxfEnoRaFXTCFltRbMeuxBT6pIUqB5vYTxG1DObR4XjW-jRkiDTXDPkRsjimmD8H0ATePNlrm84QMOK49oiyVAjP5oH0uV1coS2-yiv2TUGCOxNG-JApuB6RLBeLGpShSHhpOp8h7WU-PYa4QRtwpbb_mf1e7RuxyVpCu4_eAdpcRMMsryiloUHk5A9-2oBKjSdFOn-SLFph9Vgfaf2AWHumkkCVz6Ps46o2Ir2PKiE0L66t0Iyte_K0bBI42FFO8WPP2Ncj4NvIxs9nSN7eA7zbIKTcW7Ccs9_wcga_v_IKurS6yQQM5_hMMSvQYgaltgy8GVxAZZiE4_HL6YK6LTARHg8h0Fqrd7NPm4k8xrPOYHg4RrXgCkGWPsDl2ENFtCcQtznJJB9wwZl_ZlSHgBXpC8ORMaGvwbvSwhtA3NhLnsrHxH-AxQ8TFADXd85Syu5syNOfP3OfimN0p2r-6y-Ew0_mVWs9u_7JNsm4y0e98_axZ6DCZ64vBmeGz2B2oxyHg7LhZtGIi79IzMFihRr3uZzl1HNiaHwDZGyrNbdobEJxUJ6-JJ0Ie_T8qUj0MlOyftOR9rbDtX20ssgejgrJh31Y-xlhZA0GnmqnomIEU8sETPyQV37F_AIORbFFtuSFJgSEm2GQd3t2p3B6QJpI2Tz8ZuYYdJL15r9-vh7tExa6kz4n3O9XozvasiaiXNOB0Buf6v9W-DOyITpBCYIPRC6rojgeoBgSMj5R1xt3lOv9l-7wZzH0uE5xN67qh56tIjUdxt-DE3XzBwSESAxxp4mVatbOZded-_92HXPB12rnZiQQGMtqx9a4RgGZL71IPW_xznLB_CCw9G-tWPhvrIBWccjPE7AVIJmL0Ghj6vIAv8CtpLZWVjRxXiZLMTm-d788lLCVyenmeJnDqov_G--72vRyZPtyvUOaxvH61KulmCWtGtiASjli2C8hcCWkZ3PDGp0n3J8MGMVRLeuArHbRQGd3eMPfvr0llx10qn7CWSlo-FfjToxFqPpEljbXTs4tczPUdaRV46O2fSCqIigLEQOji9UbFJvhIsXduM_jCEKB-JOCSYoLa3Vo4RWVN0zCeFb8bRMXOv3ZSnVMaQsR-jAnecOwH5e_lsFXVBftoYZCJ39RogE4uiTs6uTbDmuq6D6ZeXDfSiR4AgtElCbuOhZ70f6XmNU89kyIRpZhvJnZ5yuSnGCnS5VHIoUjG0bSCCsQyyq8Hfd6iZFilqNLMlIb5OFUb1MwlPLzLFBiQwgBim8HCAmYb7k8lvEMtEeeC_AYy8JwBr1JwRlUGCq4fIBbIvDrOdEeLDcZf4CEp44mNoMyRlK3ph1IKY7o_7J5WQK46vopmXhgmblYVQ9szJUx-kt0ZG93DBwujkIyqgYbDvIUpCBlMdB3NGp0moJpDfBbxSeRMhCwTq3FqePOranpPNvB6NO_T4h7pDidizQLErBmcEb88SU_ZoXN7gy8KlqSiioa7-AUytLp-RAsR6CPVLHPDSi6jvuN_rjMcGvsoaVM2IaUL37n21SzLe2UvGpTl2isgUgvqGOVTl1LFl1lMFwcto0xHaaGIoZDgKNM5WzlX2es56U8y8HP0JeCWEuqrVrHBrN1rbvtsy3AvzFgDc0snEXR5Er6KklnlaVTCMKflLax921No8UAKNo7kguzN0-slhTxmVWqOqZ18e-w7hRPBcqsVPaY1uJ4mThBxeJuWjyrnMnLh5qHjlUUeDnK0J6VjF8qh4_NG-P9MaVmBWJzI62avp5KM7nn8TrxPXmj6oJiu5H2DZPquok4Rz9BpjnjPDcsijeNv9jjFc9PZ9hEL7oZCcoQx1mIzdjl89yMwOKnukcBs35GBXeHyu718Y6JlscjsudQmERGVO7ewSIvWcItCS0AfWAT5Ecoz602A191ctkyQPnosylYlZPx-YIE3ml0BU8BbugC_hFUUTgPM7nZ3xDCR52fNGiUBx1zR2ttUF2XB1qqqgfS5VSmPte2GLVS6rm8AnVOfGoF6aZFhlY7SamnJB-yy9mbTdwHiWHF0fqlmGGn2PGULv65kZHzRaVUizgbUgfDWNG0Fo0dwvIVF3tR2A05DuJrbqFlS0cxsvi8m5KRt1uZePJzENN9Ht9KCe0HBQMuurIw6HEN83odIImOgNhtMRWMeFCFyhS9YOLKXEGxgWgXGxRHmIoMB8h8mMfs9RXX4wuwuOVn7BPdCKQHgKUNUwwRUDAUKd3G7DDfXmI_hDPjZZhbW2166Tvlimg4kXf-aye-bPP24VHPI86SevX4NNv2C0qF8AYE4eySriLmeUCIs0rtRHbF5-Ruk7mkCXP1xr2cv6z14Xdl2oqCSJcC0R9xlQ4gqFFgTT371-Zvu7MyFBnHeoSwGg_ZOuNFSS71WZygHxHnTVOVJ3GVOD3T-nuRDE2m0EDjEDhzhv9-vkdi-m7tcKVAYIKDE037WGBLAE9rKou1xVGvq3VQVxJ2v8F_D2fE4nEYHH7sWq4u9cYrqDGOQkybiAKHZba_cbvCB4nEF4pdzHMhy3OJTFyfzgdXxQPk0WY3AEDO1O11XxxgWmO8ER1TeKqaNyFIwvhzS-W8NtRWD_G4tOqn59Y2WDse17V",
+    "status": null
+   },
+   {
+    "id": "msg_06476028aadfd6fb006ad97aeca03887d0ba5db6d516dcb3df",
+    "content": [
+     {
+      "annotations": [],
+      "text": "| 本文中の語句 | 語数 | 意味・学習ポイント |\n|---|---:|---|\n| **blockade** | 1語 | **封鎖**。軍事・外交上の目的で、人や物資の出入りを実力で阻止すること。本文では海上封鎖を指す。 |\n| **crude futures** | 2語 | **原油先物**。将来の決められた時期に取引する原油の契約。*futures* は金融用語で「先物」を意味する。 |\n| **gave back some gains** | 4語 | **上昇分の一部を失った**。相場が上昇した後に反落すること。*give back* を「返す」と直訳しない金融特有の表現。 |\n| **settlement price** | 2語 | **清算値・決済価格**。先物市場などで、その日の損益計算や値洗いの基準となる価格。 |\n| **pulled back** | 2語 | **反落した・一時的に値を下げた**。本文では、上昇していた原油相場が一時的に下落したことを表す。 |\n\n※すべて本文中の連続した語句と照合済みで、改変はありません。固有名詞など一般化が必要な部分は含まず、語数はスペース区切りで数えています。",
+      "type": "output_text",
+      "logprobs": []
+     }
+    ],
+    "role": "assistant",
+    "status": "completed",
+    "type": "message",
+    "phase": "final_answer"
+   }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1.0,
+  "tool_choice": "auto",
+  "tools": [],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": 1792637684.0,
+  "conversation": null,
+  "max_output_tokens": 16000,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": null,
+  "prompt": null,
+  "prompt_cache_key": null,
+  "prompt_cache_options": null,
+  "prompt_cache_retention": "24h",
+  "reasoning": {
+   "context": "all_turns",
+   "effort": "medium",
+   "generate_summary": null,
+   "mode": "standard",
+   "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+   "format": {
+    "type": "text"
+   },
+   "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+   "input_tokens": 895,
+   "input_tokens_details": {
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "output_tokens": 730,
+   "output_tokens_details": {
+    "reasoning_tokens": 380
+   },
+   "total_tokens": 1625
+  },
+  "user": null,
+  "access_programs": null,
+  "billing": {
+   "payer": "developer"
+  },
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "store": true,
+  "tool_usage": {
+   "image_gen": {
+    "input_tokens": 0,
+    "input_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "output_tokens": 0,
+    "output_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "total_tokens": 0
+   },
+   "web_search": {
+    "num_requests": 0
+   }
+  }
+ }
+}

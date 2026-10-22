@@ -1,0 +1,149 @@
+{
+ "model_key": "m2_gpt-6.1-sol",
+ "requested_model_id": "gpt-6.1-sol",
+ "provider": "openai",
+ "unit_id": "E_Advanced",
+ "article_id": "E",
+ "level": "Advanced",
+ "article_sha256": "8bd506a65fee8a3c143d761524208b4b0a669234b522999f311cbb67e0421376",
+ "prompt_sha256": "4360c9cccee8765543b7ecc8d7e9dc60f73754951803e86383e24ac286b6921d",
+ "user_message_sha256": "84a26a79525ddeffe219f887359efb04647ddc4c9b27ed36e606472c474d9fd4",
+ "request_body": {
+  "model": "gpt-6.1-sol",
+  "input": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。一般化以外の変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：一般化後の語数をスペース区切りで正確に数える。6語以上は出力禁止。\n3. **一般化**：固有名詞や特定の人物・物事を指す部分は、意味と文法を保って `~`、`A/B/someone/something` 等に置き換える。一般化できる場合は必ず行う。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、一般化以外の改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# A Human Joined an AI Phone Call. The Problem Was the “Cast Change” Notice\n\nI was impressed: “AI can even make phone calls. The future is here!” But the person handling the request on the other end of the line was human. Wait—what a sudden change of genre, from science fiction to a workplace drama. Still, the heart of this story is not “So it was a human after all!” It is whether people were properly told about the change in who was taking part.\n\nMeta was testing some calls made through Muse in which trained contract workers made the calls and completed the conversations with the other person. They tested a setup where Muse handed the work over to a human agent. Not all calls were handled by humans. It’s too soon to put up a caption saying, “Actually, it was all done by people!”\n\nBut one important notice was missing from this test. The vice president of Meta’s Superintelligence Labs division admitted in an internal post that starting a test in which contract workers made calls without proper disclosure was a “mistake.” The vice president also said that Meta had rolled back its human concierge feature for now.\n\nLet’s check the breaking-news caption once more. What they pulled back was the human concierge feature. They did not stop all calls through Muse. Canceling an entire show and pausing one segment are two different things.\n\nSo, is it bad in itself to bring in a human helper? There may be times when handing things to a person helps move the conversation forward. But there is a big difference between telling someone, “A person will take over from here,” and quietly changing the cast backstage. In a movie, you might clap and say, “Ah, so that’s who it is!” when a mysterious person is revealed. But you may not want a surprise reveal in a conversation you are part of.\n\nSome people may choose their words or feel differently when they think they are talking to AI than when they know they are talking to a person. Even if the request is handled without a problem, that does not mean the disclosure issue can be brushed aside with “it all worked out in the end.” That was exactly the point Meta itself admitted it had got wrong.\n\nConvenience matters. But for some people, knowing who they are talking to matters just as much. If AI hands the baton to a person, that one line saying so is part of the service, too. The person taking over does not have to be a secret guest.\n\n## In one line\nMeta admitted it was a mistake to have contractors handle some Muse calls without telling the people they called.",
+  "max_output_tokens": 16000
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 17.35
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 17.35,
+ "response_text": "| 表現 | 語数 | 意味・学習ポイント |\n|---|---:|---|\n| **concierge** | 1語 | コンシェルジュ、各種の手配や依頼に対応する係。ホテル以外でも、個別の用事を代行・支援するサービスについて使われる。 |\n| **proper disclosure** | 2語 | 適切な情報開示。判断に必要な事実を、相手にきちんと知らせること。企業倫理や説明責任に関する文脈で重要な表現。 |\n| **rolled back** | 2語 | 撤回した、元の状態に戻した。導入した機能・施策などを取り消す意味で使われる句動詞。本文では機能をいったん取り下げたことを指す。 |\n| **brushed aside** | 2語 | 軽くあしらわれた、重要でないとして退けられた。本文では、問題が解決したという理由で情報開示の問題を軽視することを表す。 |\n| **hands the baton to someone** | 5語 | 誰かに役割や責任を引き継ぐ。リレーのバトンを渡す動作に由来する比喩表現。 |\n\n※本文との一致と語数を確認済みです。最後の表現のみ、本文の **“hands the baton to a person”** の **“a person”** を **“someone”** に一般化しています。",
+ "usage": {
+  "input_tokens": 932,
+  "output_tokens": 624,
+  "reasoning_tokens": 268,
+  "cached_tokens": 0
+ },
+ "response_id": "resp_0f36c425b2da98a7006ad97acf1cb487d083b0d24c89330d58",
+ "model_returned": "gpt-6.1-sol",
+ "finish": "completed",
+ "cost_jpy": 1.29664,
+ "raw_response": {
+  "id": "resp_0f36c425b2da98a7006ad97acf1cb487d083b0d24c89330d58",
+  "created_at": 1792637647.0,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": null,
+  "metadata": {},
+  "model": "gpt-6.1-sol",
+  "object": "response",
+  "output": [
+   {
+    "id": "rs_0f36c425b2da98a7006ad97ad0231c87d08e5253a92cf335e6",
+    "summary": [],
+    "type": "reasoning",
+    "content": [],
+    "encrypted_content": "gAAAAABq2XrgLsHDepTg8OK0Iy3FXrm1Xmx0LrAY0dRvA0Sf5SZiJ6RHf-pRA8wAWNwKp1bV6elVGmcjCqMH5nCrQJrOEuufEM9SF2BC5b9tOUpvq6EZfAu7BM-BFrptezZccUuUszpj7eYJA_CiBk9TpGVet0IA3QUYTMy6NiKJ4sKXMlI114vcyDFasx-akskIMxFbOc2ybJMimZUlipqGtNk1gvPNk2jhFEkZNgeteRuUwNcC2bfcj39NZTc2dqpJVULxffnIkiYcOS92R9JbsEqfuW9BRA44fG4ukIs0hO5MQFemgZUNdf2_R7vVe_c1noAUcRrpqzGQeNV7N2FZACrpydKPQesJY3uwJzxkbziMI_4z4HefAcr97qd1KuHRKVp2rC4d3C4h2Z-3lt97IBEhB4SN9dsHbEV_Dx9pirHR5ey6p7-ayNRrK0qJse68Us97vlxZDBW2xzv6ZyFABXnFGRYRWle99WxvKpVqa607mlEG9zRHWIPGIDc2jnWybKzueT9Ojv0CsNc_Uh6bp3sAavjSkG3zgKvhosMvrXucUXj_Gg9j0u3SqnionjM8ZZ8PLZV7OIz1PIas2_CxYO5cTEtJK07GAGXXZCsx2cQb6KDqOiIlfTVCEsIFiGG0wivhuFmJyCT8ZDs7GmVbWEyr575zk-Yp419WuTeQGHVFsF58JaUOnJJGgsVE268WiCCs8XcwbQp5lbo6JcMigrfuBjFuUdgf1m2v0OT90uzSFqB9R77YPbhr9yPAn4PggZmjRpWOCNJTB1wFdPxN64L0ur98LcZBeetONTepVRd9qZ8T6HxUum_9cRz3wCuajJFgtZ8Bx6-WUXQBy141sz69SOFD2WPsu7hzzz2qU7ULOuQyBfMUJPhLoDUwro_4cumiwE9Wh33FsV6fY8XCoWo63AkVVBRWCulDGV4Wa-aL-UWwB4BnshlmGynkV8RohgUMnQeBbJt_Kqzf11Z3JLG6K88Q8pT53U6BumDWO5CLAA5mKC-eI2Zf3L-LMBrloSsum3IlgesJ5_9u8Tm_UKX0s24M_dXjDNyczr_v5ok4tthchhvekWSLjXAnW6RYiGopPQYgvpfrKeYZV41Ttseu3TisagFDRreFTCJ3c8ivFZ3N_nhICN7TGBAkOa-PabbbL2AIeAD71nyIOZUnLUWdYcTlyali1z0EKrm0ZZWC_UXadMwf0sVl_0F1vVDh5vRF40eYVhoM2OFzJ5GteHNONxWOM2lTOxr3KfHo91f3u9gLYLCRBQBS-zx6TwuW4f1zp3tVY_TkkaAtElxcN4rs5TA1DqGmhI_CwM98dR1hF4E4guatI8_yEvh6_BqQnnJacvRyIuci6ysu_jsIFBuvRfzi4brfBzRDQFGc2QrA1d5y-7vjYImuJLl2pgCp7WhnS-q_yXoM-cnOUhvwIqy_mBbYhhWv42vbn9v423pf3sS-mhC1dIg4Oi0E8rloY6GVyOvpIAt6IV2M5FIogBVh4mFVFXrPN-vFvl8KnV6RJN4XV6q0uJMzNagCOqILVhVAs_GyOSkwrllhZCMRNcVYrBuQglQf-20i0GKTQZzCjnN6Drthqk6J56lNoa2FVR1YLsmQnQStQrFAVXWYWYco9l1yk_nbjBBopxhPuNH5V7wu20QLw-wbknl-zmz6A5hIZwcSbxtHE4-smYFud5avfUP1ZjXt-qTAqlyi53bu3QrOtL-AIZfz26fvwL42eSfukOSYBMKm2cFbJYqc3ZVkiF6HsQIJcnfqVv4BkFyK3jXRezncNYLbM59CoqJqPYLgeOB0Og8u0eJ_mSQXlupgBbbpvwFeJkRs6gaNmtuAnPl6x0Qn_nzlATf92ILJ6MuZ4fOLj2upRBLWb3raXwgvh7HHSeP4kxlgS1KB1EzK1wA5LjLYTDxVNjqs5xY4GXQQ9wOOB2Hw17mkm8QrMlp9hpltHP_w0z9VQgugo6g2u4VLKVoSGCdTyvGLAUcJl8x3gcpBR6tq8pFoOozWBs6ufhKPQtoNNR2m7Csj2Uf5DC_2MIcSSENQo0tOBEM7IkYb7FAoXrkiQ8JG95yHF9Qw2p6oaBuV1oaxs7P_VP2MknmgLquDS6-3kNKo1Z3xeOdS1OgwyozeqnDc0nlj4w0Bi9HrOkkK3xEvWilv1WyWcLzpj6uSy-LanpXKOwe8of39DuYVI-iMts8i1uU1ycMkLvE2-N6Pjf_AtQWYElbiRUjZ_razaxBqMeKcwrTBHrqh5eHnF93SK4eNnyFNSZZIiTXa01v_q65N5HauUW2AsNlwMBcKn6voNIzsGruipz3MCq-HPfmqHybCk1XxHR89KSEuP4VGsq3vP4wVOY0WkK7X0cN-IyPLZOTuCocC_QxraictrEeIqE_GmmZ7GGEDX72Wc5O9Qpe8PrSjDcxac1bwS2t0wJbsXPRMto2o5aVTpa8vGIqosnD-uBCZl9FsTYHUKhfa92CwP1CtwRb-4fohMEMQGzTnJrwohMqVbeF0SBLZA_5cFkbIUzE55J53hr_c6EFDNcMmuQt3zl_6DB5qS18EwF2ZRWxl3MplsScUenoi5JvJIRKYnQFg5a0L-xeyB5ylSbQGGvkOCsiMASJQkv-j9QBJfi_N3xfpjVMdFpYIjfPytLBDsfhfsn2pTj7wCtxZDTdbh1lUGuSe0JQ0YopGyb_Lbxeb84NiEER1kjj_JISNsLm-KZMCzpvbQz-Hu2EIT5ttL0D8CMkLWa8qAS3NGjxkTUgaGj3jcV0S0tIHUv0vP9QsOs_k8HlDirBDFlBexWigyHNxvIxy0jXld0S6OkVvcPTCT4SdYlD90HVAEBTaOyK31maRQA8RnEaA95c-v4M9R9VQblhbNrAvJL7rDNKuiM14yHFpFKVSz0yC5Tisz0padNW2m2tO5iK62qf6znixANsOeBwkgnRYzYwrj5ZgjppDpnLENckAmaCAqGYcWqZnwXXGytITikroyozlbsjMySYj5rSmpsH6ObCZyOyRTbH0Gll10YWJsdUwWJyLsKei_4M3JZzgypOS6W8GdmeBbg7hz3l82jDMhNE0sKFXsuV9aqeUUntVwwqfSQXMcVYjy0xNMeUeQVt9pm7FZ0YpYXyPFSI7Q0IHuGAq61qdo7KCVxQZ8Y5AIg8KN1fQLRljZi7XiZ1qdn-sWEfhrktNjViHMGxb7cQH9nXFTP-5JWiOiulR-iuIGSIbUGMQNO6PSjVRELzsxBrzBy_OBE0nZocgDqg3ItkcBERj5cipbl4vzLk4F2Hmh1jrzXmvu60JLUnsfemQghbCfuSEWr1e0SqlA6xCY-fdVKTrc1nQ2reRbun90FI20OZJTaSc_hFVI742TP7Fb8Lzkv3NBUdp4Gb2DYP7txQuYA06qkfeBeJWfLYKGMgEjli62AvLPcB3LOC4yGdW87ZsxhPJJkuKZxOo3tnh5fp_D1oYDxB88kFJtx_7-ep1w8ZNWgmt554bCQBisiu9Lyc1Bfo7YA_ki2uYKMcdAsyK-lGlygY8dczBVcw1b7aMxyZTMf9LD4JyG5vt4EvmBDK3p00Avi9e9qxsRq2nIXEjfhK08lgA7tqsaEtX0Gym1Jc69wckbVEqUSxa-vdU6dHjOTk0JcG8HQVCRdLH8AZY-Kywm9vGeyHI2kMZpsKDLFGCE_qVBO1ZSShfOv0mUO96VIaDYzHQher0Y15bvxq4bbjv3TOtY8_ieGEUWllN5fX8F7yrzCcNFrzKfrPJaXtgFmKtqzX0iwcQZKGM1vXOkkAqtE2D655fZgQigtBOtlO0fpOPA-sfh-qh9CMBMe5owmrGx5roFKVjX2lMfJ2yc9DclfR6X7_8AxkM5SPqQPK88ogScbqxDy9REEV12xwQ9X7ZyjtkZ5n_MO0rdR8EQ8IupTsa9-HgZ7JTtRNGhpjcLhaN93yoHE25l3NyXIrHYI9qjgEOI0-tFkRmJZhrBYOMm63B_wRiRyCh-FFKKhv5eqvIA1l_73HQ5ays2_7xq0YJf3MPjA7dhNIk9ZhwDdBw841Y9E5JlKHFSt6BQXt4Ugu2kdAWVNnfX6fjojTcCwu3ZwzNAoy4LKQbkn8lspPp8BiNgBaJcC0yzWIPX16y59L_fAVeWfBPUz17xbJxpglAioxJEY9y4OJ765zQB6WA5fnerVeCsjGcYGl1wMNc-3xWDcOZ_SHqdMyV1LPv1PVcb52d7GP8CJ8DFZh-AlgQgOaG2dVLbAKHEc0pAbDdowRE1OGzxg7Zz18ayUeMHR3ZOx8x_qldl2aN1i4oAeL6fN9jdciAnK-rjbjZLd2V5HDVmWUaaW-W_ex-pwV8i_8ZQKvjxgF69d_OSdE3wrNzbqrGP42CD5bEaXExChrupqRBSjcD9SjUehrtxqO4C9YXzON0Yw8R_aCjZoBNwrE9XGiVOI9gqfigdNUzOJEkmUOQdu1pVmxZDWXbLDvL25rwAkdtaVZpvRM9cXP1bIlNcoO5PR4Izwsm1El3mSo1rjhCJWiCZp2OFs-JCJtsgOt5GMUmBWbI8TDFKM2wecf3kur4jeWzNGo7tCF9BjPR9GzcEUJPwCzIuiC4G0MbsCmD9amWT7nrDoC7dNiil3d4M8sA7RE-Fz2zZwD_Ap47Lr9rpYXHqZjXU9kSRJP-fU_Unde_MxxJ3lLmXe14xYeJdDqIrXgVK7UInY5TAoNbiH3xdAt_kRN08DkHv1q27En-qfrn1Rcks9K_H6mBWx2VqD7qWShjvmbrvmvEN_JkCXFtDah7vbYRn2vg_CG4a5_Ya_ww0Sfk1U27kfwIY4Thj1G3Y2S0j2nU0NLAD301cXxvyfDDHfsYiQl8w_a4g1buwFFvKz0FYtUmIwEHQQvEgi-q-AKmafeHmnCuoMGB0haiMTVhySy4DZE7X7TsCK6odPvq9S1uAFh6Jmki-JKa4EqseSM3FBR1IyZ0n_jaagj7kTupkf-9mDRX6wda6Hbdm2tELSZZIOLPsdj2ofAMdWIXg-C5nlZEP3I9vfjKzqpbyB69a29R4wjd9p4_1tw_z5KFP-_EXgkmeuAzyzwqA_wkWL5xl-3nGFnzZLd7xj9xigDykZxoqdMaUDmx35Vm3LBn2b9-yLcnH501pXW9DwbUIsqNuWPo5o_3zTmPv9jeboTCSjuqcb7CG421YBw2WtApaeDH8Rvkn6Wtl3_B3fYXrLLw0-hKqWBVNQ55",
+    "status": null
+   },
+   {
+    "id": "msg_0f36c425b2da98a7006ad97ad8991c87d09beeffb034e3bc44",
+    "content": [
+     {
+      "annotations": [],
+      "text": "| 表現 | 語数 | 意味・学習ポイント |\n|---|---:|---|\n| **concierge** | 1語 | コンシェルジュ、各種の手配や依頼に対応する係。ホテル以外でも、個別の用事を代行・支援するサービスについて使われる。 |\n| **proper disclosure** | 2語 | 適切な情報開示。判断に必要な事実を、相手にきちんと知らせること。企業倫理や説明責任に関する文脈で重要な表現。 |\n| **rolled back** | 2語 | 撤回した、元の状態に戻した。導入した機能・施策などを取り消す意味で使われる句動詞。本文では機能をいったん取り下げたことを指す。 |\n| **brushed aside** | 2語 | 軽くあしらわれた、重要でないとして退けられた。本文では、問題が解決したという理由で情報開示の問題を軽視することを表す。 |\n| **hands the baton to someone** | 5語 | 誰かに役割や責任を引き継ぐ。リレーのバトンを渡す動作に由来する比喩表現。 |\n\n※本文との一致と語数を確認済みです。最後の表現のみ、本文の **“hands the baton to a person”** の **“a person”** を **“someone”** に一般化しています。",
+      "type": "output_text",
+      "logprobs": []
+     }
+    ],
+    "role": "assistant",
+    "status": "completed",
+    "type": "message",
+    "phase": "final_answer"
+   }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1.0,
+  "tool_choice": "auto",
+  "tools": [],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": 1792637664.0,
+  "conversation": null,
+  "max_output_tokens": 16000,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": null,
+  "prompt": null,
+  "prompt_cache_key": null,
+  "prompt_cache_options": null,
+  "prompt_cache_retention": "24h",
+  "reasoning": {
+   "context": "all_turns",
+   "effort": "medium",
+   "generate_summary": null,
+   "mode": "standard",
+   "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+   "format": {
+    "type": "text"
+   },
+   "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+   "input_tokens": 932,
+   "input_tokens_details": {
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "output_tokens": 624,
+   "output_tokens_details": {
+    "reasoning_tokens": 268
+   },
+   "total_tokens": 1556
+  },
+  "user": null,
+  "access_programs": null,
+  "billing": {
+   "payer": "developer"
+  },
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "store": true,
+  "tool_usage": {
+   "image_gen": {
+    "input_tokens": 0,
+    "input_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "output_tokens": 0,
+    "output_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "total_tokens": 0
+   },
+   "web_search": {
+    "num_requests": 0
+   }
+  }
+ }
+}

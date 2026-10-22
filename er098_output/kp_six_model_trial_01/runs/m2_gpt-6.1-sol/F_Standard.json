@@ -1,0 +1,149 @@
+{
+ "model_key": "m2_gpt-6.1-sol",
+ "requested_model_id": "gpt-6.1-sol",
+ "provider": "openai",
+ "unit_id": "F_Standard",
+ "article_id": "F",
+ "level": "Standard",
+ "article_sha256": "c270df8bcd2842917fbe58c02c254bc1086a6a6f2088296c7cfc62c09e381689",
+ "prompt_sha256": "4360c9cccee8765543b7ecc8d7e9dc60f73754951803e86383e24ac286b6921d",
+ "user_message_sha256": "0f04e6a1cef93456f4da0e1cac0feff1c5f47c4040c0b1849771f7f090d7d375",
+ "request_body": {
+  "model": "gpt-6.1-sol",
+  "input": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。一般化以外の変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：一般化後の語数をスペース区切りで正確に数える。6語以上は出力禁止。\n3. **一般化**：固有名詞や特定の人物・物事を指す部分は、意味と文法を保って `~`、`A/B/someone/something` 等に置き換える。一般化できる場合は必ず行う。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、一般化以外の改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# Who Says “We Won’t Attack”? A Warning About Mixing Up British Support\n\n“Won’t attack.” When you hear those words, you may already be ending the meeting in your mind. You may think, “So Britain will only defend.” But wait! One important detail is missing from the meeting notes: who will not attack? This time, the news detective must find the subject.\n\nFirst, let’s look at the announcement. A spokesperson for the Saudi-led coalition forces in Yemen said they had stopped and destroyed one ballistic missile. The Houthis had fired it toward Riyadh.\n\nIn this case, the UK Ministry of Defence announced an air-defense mission for Royal Air Force Typhoon fighter jets. They will protect Saudi cities and important sites from air attacks. Their mission is only to defend. The jets will not attack the Houthis.\n\nNow you may want to say, “Right, they will only defend!” But the announcement also mentions another task: refueling in the air.\n\nBritain also said it would continue refueling support for Saudi air-defense work. This support also helps operations to weaken Houthi military targets in Yemen. Britain says these targets threaten people in Saudi Arabia and Yemen.\n\n“Wait! You just said they wouldn’t attack, right?”\n\nHere, the detective looks closely at the name tag. “Won’t attack” means the Typhoon mission. At the same time, refueling support also helps operations to weaken Houthi military targets. Both are in the same box called “British support.” But they are not all the same kind of activity.\n\nIt is like someone saying, “I won’t drive,” but helping to put fuel in a car. Not driving is not the same as not helping the trip. But this example cannot tell us who is responsible for military support. We need to check what the words include.\n\nSo, if you say, “Britain won’t attack,” you take what was said about the Typhoon mission too far. You make it sound like it covers all British support. But if you look at the refueling support and say, “Then the Typhoons will attack too,” you claim more than the facts show.\n\nThe tools for reading news are not a magnifying glass. They are three questions: “Who?” “For which mission?” “Doing what?” Don’t stop after seeing the big sign that says “to protect.” Look at the name tag under it too. Putting one subject back in place can change how the news looks.\n\n## In one line\nBritain said its Typhoon jets would defend Saudi cities and key sites, not attack the Houthis. Its refueling support also helps weaken Houthi military targets, so “won’t attack” means the Typhoon mission, not all British support.",
+  "max_output_tokens": 16000
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 14.14
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 14.14,
+ "response_text": "本文は平易な表現が中心のため、数合わせを避け、専門語として学習価値のある **3件**に絞りました。\n\n| 本文からの抜き出し | 語数 | 意味・学習ポイント |\n|---|---:|---|\n| **ballistic missile** | 2語 | **弾道ミサイル**。*ballistic* は弾道に関する専門的な形容詞。国際・安全保障ニュースで重要な語。 |\n| **coalition forces** | 2語 | **連合軍**。複数の国・勢力が共同で編成する軍を指す。*coalition* は政治分野では「連立」の意味でも使われる。 |\n| **refueling support** | 2語 | **給油支援**。本文では空中給油による支援を指す。攻撃や防衛そのものとは区別される、軍事・航空分野の表現。 |\n\nいずれも本文中の連続した語句と照合済みです。固有名詞や特定対象を示す部分は含まれないため、一般化による変更は不要です。",
+ "usage": {
+  "input_tokens": 963,
+  "output_tokens": 557,
+  "reasoning_tokens": 277,
+  "cached_tokens": 0
+ },
+ "response_id": "resp_00518df09c981d23006ad97ad4444487d0a28d32cd62c01749",
+ "model_returned": "gpt-6.1-sol",
+ "finish": "completed",
+ "cost_jpy": 1.19936,
+ "raw_response": {
+  "id": "resp_00518df09c981d23006ad97ad4444487d0a28d32cd62c01749",
+  "created_at": 1792637652.0,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": null,
+  "metadata": {},
+  "model": "gpt-6.1-sol",
+  "object": "response",
+  "output": [
+   {
+    "id": "rs_00518df09c981d23006ad97ad5d8ec87d0a3477fc1d4fbe51f",
+    "summary": [],
+    "type": "reasoning",
+    "content": [],
+    "encrypted_content": "gAAAAABq2Xrizn3M4-NwKZKtCNUiBuKu4SUy2Hqy-9UsxQHsdyRRFXAzYGE3WFR7zJxzMsg2-boMutHx2Xw2tPFuy6BpoYnXGMSdrBZkdxPIhlm3yLdf-XA1EQ5gfU15WSibeKpNLKeA88OkphZSKaNZ8DyyWpzl_b5QQhRRdt1kB0ki5HbvJWm5pZbtBykSeLqxIVi1xaT693PjadoO5hw6mGGqGEatluQBSOGpR5vQTjyiuqGdWd2_7fnP6RMmj3jsCjAUWRWrSrsFwGJNq15FDPRrvHNk4QjuyGiBLt2-An6u2p94bQULWP1CkWYhFlHeOt9VgFkwZLbALerZcY2b7O14VfypqU8LabyrwPVChQuunzQAufHlpgqEqIbzapdGLRjTzIajtur_7C9z0ffvmDfDY1mzpsPPwDPtUBDy6Voc82FpxIf7hLr-HGv6ta8krx6fmFMSUVzi2prVAxR1K2R341YHt6VM-TmnruspcJmFWWF4M2eWAmi00OgzpuDyuxnWxc026PNITVQ_UqrTjtsO-BgGW7UQFnf7pY0qNbjUOZZc4dLDxnveIpdh2afEX55TL5JWQ-MXB_TEvn0gNtuV3ParKPFc9XUXOY1WZWtT3kWpUsqaVFxgX34rPnHCObPy0-1aeJ5LGm6AEoEmzK-MiRfZ7V4d_R2O2wwbUXYlUuqoet-e_Dd8FsvuhIuOPD-l9ITs_a8UxW0na9kU9l4jkVvCGfD077mP4T4RXYUXXXMZWjkOg6T45fqtF1otNQrXfOuAN2d-_b31RCTWPT0uuj1coBAuQfpQexwROvrihZjonv62ANT6tBLXA7IOvbHypHuJc2I9r4lWNWSzSJTL10qbYa57IHlI5xQl-HjkTu1sKs8iQApz2BJCECWNrkOvRKvGKv09cEzYrKTJrEUXzUPJE03eTooMWRPkGh7-qg3eFxZ_lgdLk4plj_y9R398gvDuh-KQ9D2y8w-lYoZEcKPKypxXkz7XIfRgu72foMLbYa2X2jBjVsqv-jI87demgXpn6C0YgphDlvc8qzHhv012_f8VyGoHpbW6gRzRY54hH4vJT7ztK-sJojp8TBLdb7G2HWmOGDMQls2F9F0z7hOJiSb5iHtRSR9uFyWlDYa4h2oEmLEE5kDz4zvScq179pQrD_OfzNGUjB7F1ABZ9jsGKkIc59NXgI1ixRRRywelA_wqD2KkTGYWhhTTulcxUuALadxrH0iSi9UPsUuSAJcJogoGQqXewPaOOTCvWOsvxOmk9KcPce-ffqd617_6GyzAYHT25HMuC3t3QZCvDCuBncPYp6y6CzWQXiz_OUB6hvhNZ1KFpipqWr_6TAGNtsKsX0wo28Iiwd29FAbqF_oOqzZGoiHQyyx3jmDbapi2kn8oNNTM2ZaNgKCfEEYbdFGQuVDI7jgQZhhWmVQTyQvf_CxeomGFhcuR0Ut19TxbMxCd1XPoJbNELUibUO5XSrg9B2XtlMgzYJOQBslu6lHWgyNaBm4hyvEpeE29GgQMc4WEmVWjnK5PDC9N9Np_lAUeVRjVyC8eNCClUXQhJ2F-7dhFqOwk-mKI9nE3glUAXkRkOEyjiBpH-wNtUyIp2WFKFnUYx_016viXqeR94lX1CY3UctKXwsIqLcTy-3_kXMRv72x9Ju7uu2PsBRVqbCKRcoBaf76uYTkLLBFaTb62p_QQy1w6-9yUOnPfZW6rSwyFFKjdqyD7k8i_Z8sH5x6IrFoskrAqHcdU9yLscs_pzx0uXD3OwOAdi8tGChSmOdB1JJepQAvdq2i-wxMYsW6C9ai3ZacEa59NL1_CafXEUQA1Ti_qgx4pivWZs1LNg94JV2ButHT7ptFNdgjQoQ7-SinnvLB8t1GygsXsNrPvxwFyW5quHy1gWSpTgHS30nN6aAWC-fstDfBOkT2pR4S1hKkomWDZfsUpTYLFJoBQDoQsdl736KJ3HgJtf5F-1xJxRZ0NMh1TsNvmz1eWjOCdAVRNyvlhWytA1DqY2NEMBdEBRPUyrl02gbcSewUYUn2k3Bl5b9TBvkjsdHPkMnURuJnZYAcrROVIWp7IdHHPd81h0CbI6JdTMfckU_CklBkvhX9Y9gsbd7zWdrs3-m-SWWBvM3Rskw-P0d6eRg5t2YiPDDaccoFVeqKikDWOhEM4-YeJuQ3CW6MD7wVt5Nd3OkVRCvhsNdMqznBL70ugy8TWFCAjyRblvheHfgGErEDY0OnlrTFce-z47raOqGNqjj3QCILvOl-zAM3e_tICyWsbQ1Z52phKXYjm6W93MAj_ZJXuPBa_FnhmRhbFcB6e9vOLXiV5tHS4CgD2tLFBYiFVRhHB9GUTOobBNupq7eW5dfSZ2CxpwhIiJuMnAbit2I3c1H3RXgAgtcrfWo6Ts6yIO5EJLSBTg8zvdT75mxzHFIYLBx34v-a21f1XyNHRLtx3f3ix1lQ5izXKN4i0RjRZZcBAkX_YdnBf3dviijnKyPiE-4xwqkhlZ1lTcCS6ovhXgp-rL2APSgNim_m7Pz_aywO5SgQru0CKbfj3wQcwYghq36DyMRSHBYrh5IGLDbJuWCPU_gG6d7v5SFVMDL5y5hT0x3-lp6oNZLapyuFS7Jqq6KHs_KavWpFboCu2TnfBDv1jGfTe2ZjJfFI7xnR3CMFDdoXpOFrxdwceNawKIS2V5JG_GBDwm02ZXSD_ped8jPmM4gqnREvq5CJT69au3p3LI_XBipExrMPiHAsZnCZhR7P5WVancFnrX9q0z6daaZG3-eKIIPMJBbcJR8SXqIbCC0qJgHYpChP5hVkGcT-JjA07JtvhrsLjVIk_T2EzHHlaxvWEHII7W3iH5Zu1ftzZ3L6CVu3VvPmZt7leC1VhLJTfAtVSyWai_b0OgBRfAPdmA8ciTFKdFyyYTqfjvqPozUBqV4pjoaZDJNVNDWNWqZhfNiHswv_NnTE1C_8Pk5c6lFJIt2F2IiyiMFM6Y8kZSICqpullsxYq-Hx4SnkgU9dYXO5sWZVSOm0bDeAt3zWueM_0I1h5cDZEqdxP86K9NUXPXSoUKv0fQg_oOWfHVWEfBP0TG4keSPrJUPJ71NyADZwyagYXfyzunqX0ROqnNGXYS2GkYZb3gbFNCFKE-tC7o2vqX7X1Dz8v5rRfUCv4tTc9lkniBo3GDJw0aLCp0Jt_5az3-f9BjGWTk03O7rlKsbO_STocBNgl_eze_3uDOT0luMS-6QZScyh-89oYbfh0zL4E0c0y5UZDvv_mtL0kuZnaykiffe2eUJrezmWc3XyUEPZ9H6xLtIzfmwd9oGqo0PErXBRhyGHe0bjlLw0bhyeKkboZoOIb8O0Od4xvPt_dAtRLNHhs4gxme9yaMbOSNHqWdMoGaN9hYdntkOijfhRiNgqc6Op1-tuGSKkbNHOerhdLNgnoLkwdp9_cMaft0l-5PqpdmCexASwFRyothuVaXX02GwvyQbDfejPLbSFeJoyinlG2PFzUcSBx-oEfOpwh8OwtRn_-qM4q0lp-VNalQkfQE4_f_V_716vcVLBMweANO_85PMpAsnXtwPjsmck6PJJnsX7eC-yBfyDdAe5H3KqKb49HSsgE9W0MED_JXabpTM6aoKdJ0jJSTW85_UPfg2rA-kXdlN-fmSh0b8OTxfxnfwZB2SLX0jbAwowBn1oQhLucTbCcSX9NRZFtW4uAO-g6zdanHZ8lj404sRvMFEgZdal8COH6wFGXScXpqMdoUd221xK5aOZX69cd1m68WuY8naogov9fV7OjDML6bwxW6xPz2u5RqP2j9GGO6nGRvAePHnUtwQE8NtIJp1_Fty5jRWEDuX4vl6aQWJbE44dtHY0MpwDABOyRstRU2fSRCqq0wcmolpBjHkeCR5dPG61n0d3Np2i0yA1OROa9kSn68VvEf9ZqYOadLliGz3msw1WWJg96v_5GfdcYT0jDoZuqoAUW_ofDFY3fA6tPOZcA5-7qK2llOY_VjxggEMbZV9pYzoB6QsbT9L3ycSfm07UfBYlry0owiPf9_rG3kwDqLcIeDaj45yzpYBuiusnsya7Oi_J_msKT-CKctXgUGL2jM2PdCXdh0nh3FADl_tj_Utdo6d58PiKGE9eaZg8tvOqlC_Ioep9-qcbpfYEP9duRJ-8unCXcHBhNTso6ZAIvQNjzy17TWcNl8FaRJ9t-2GiABw41uH0lAkUp9C0Cp9s4XfHSGd4oDoRK3YeDd_ijea8UALQqfdKJf1IND05szmq7CEokEwRB48FX3appCujTuGUkle9QqCOSrp6I5iMS-nbYXiL4aWbE-pKT9nbH_ECa3N7RGIq_AK7CgvdiGalmeglCN9VEcruAK36XN_z-DznDWP0pj-mSFb72MWcc5GN6jmIHwIdnHeNypTY-zIuTpfxWkEwwpBpyR-e6g-CVkHGULNrXUKzl82YbL_13FS8YBmWFfO2yswQ_-51AfzgfZaid9sLbxQi_oGobhsRYJUurXE5fNus8qrdpBss0bGCVPUAFuw8KVYkGhbTeq_aLoxyLYsclaFYEbPChodqTomZTyZi5-VfomCUs_0nyvwcZb_gB8bPNuEpDozmcWagnB86ec4ldz-BH2YU0ZknS5LK_N89xeV-WMb-6s8tRj_glOdaOAIiErSkp1uwDuuOrAvdEUXed3NVsTYQAJuPKnzlEKPteucfHUPg0-8YFXhM5R30DTNecFTUk_ht5VsDhiNzUooEfFjDmPHI2a3Ldy-sgQvPuntorAVq_C9JNWHcKJ-R4ta7Q6RNjE0uJZzBp_0WF9isdPAIyN8kXeg3cp6Llhd1c5FjRos7dm-9M5_XGb_9VyUzXV2NVbTanUhISxDHljwL9C6HNMo_X-8UBzRicafNBhEQDd3V8lSnBvNGZb63SNQgghvsytFBl5d4bT0HoFJnLGVHjHHN-AWNdgOGNE1N2HXPKsolq_kA19N3rt0WibsQ-c14zF_kShzCBuyLTFUtyyypfogaOBBzjTFZsmEAxN-W3wNGEPTBHC_Nx-w-URGWoc3eBDfIXL2fzvC6jinFp5a3l2b-1p0-5WxRTQ7L--gpMRkeukbck38gjsQ==",
+    "status": null
+   },
+   {
+    "id": "msg_00518df09c981d23006ad97adcc51487d0b2bf07dc6ddf170f",
+    "content": [
+     {
+      "annotations": [],
+      "text": "本文は平易な表現が中心のため、数合わせを避け、専門語として学習価値のある **3件**に絞りました。\n\n| 本文からの抜き出し | 語数 | 意味・学習ポイント |\n|---|---:|---|\n| **ballistic missile** | 2語 | **弾道ミサイル**。*ballistic* は弾道に関する専門的な形容詞。国際・安全保障ニュースで重要な語。 |\n| **coalition forces** | 2語 | **連合軍**。複数の国・勢力が共同で編成する軍を指す。*coalition* は政治分野では「連立」の意味でも使われる。 |\n| **refueling support** | 2語 | **給油支援**。本文では空中給油による支援を指す。攻撃や防衛そのものとは区別される、軍事・航空分野の表現。 |\n\nいずれも本文中の連続した語句と照合済みです。固有名詞や特定対象を示す部分は含まれないため、一般化による変更は不要です。",
+      "type": "output_text",
+      "logprobs": []
+     }
+    ],
+    "role": "assistant",
+    "status": "completed",
+    "type": "message",
+    "phase": "final_answer"
+   }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1.0,
+  "tool_choice": "auto",
+  "tools": [],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": 1792637666.0,
+  "conversation": null,
+  "max_output_tokens": 16000,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": null,
+  "prompt": null,
+  "prompt_cache_key": null,
+  "prompt_cache_options": null,
+  "prompt_cache_retention": "24h",
+  "reasoning": {
+   "context": "all_turns",
+   "effort": "medium",
+   "generate_summary": null,
+   "mode": "standard",
+   "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+   "format": {
+    "type": "text"
+   },
+   "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+   "input_tokens": 963,
+   "input_tokens_details": {
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "output_tokens": 557,
+   "output_tokens_details": {
+    "reasoning_tokens": 277
+   },
+   "total_tokens": 1520
+  },
+  "user": null,
+  "access_programs": null,
+  "billing": {
+   "payer": "developer"
+  },
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "store": true,
+  "tool_usage": {
+   "image_gen": {
+    "input_tokens": 0,
+    "input_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "output_tokens": 0,
+    "output_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "total_tokens": 0
+   },
+   "web_search": {
+    "num_requests": 0
+   }
+  }
+ }
+}

@@ -1,0 +1,87 @@
+{
+ "model_key": "m5_claude-haiku-5-5",
+ "requested_model_id": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "unit_id": "F_Advanced",
+ "article_id": "F",
+ "level": "Advanced",
+ "article_sha256": "4d9ac5a20200351c9a25ebe0b640d301b6f7613ac8a897c0b2aab6a9f76860d7",
+ "prompt_sha256": "4360c9cccee8765543b7ecc8d7e9dc60f73754951803e86383e24ac286b6921d",
+ "user_message_sha256": "00555c42a338e4f1d7e8a16191517978adef0b23b0703f086a39f9ff11476836",
+ "request_body": {
+  "model": "claude-haiku-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。一般化以外の変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：一般化後の語数をスペース区切りで正確に数える。6語以上は出力禁止。\n3. **一般化**：固有名詞や特定の人物・物事を指す部分は、意味と文法を保って `~`、`A/B/someone/something` 等に置き換える。一般化できる場合は必ず行う。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、一般化以外の改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# Who Says “We Won’t Attack”? A Warning About Mixing Up the Subject of British Support\n\n“Won’t attack.” At that one line, you were about to end the meeting in your head with the conclusion, “So Britain will only defend.” Wait a minute! An important detail is missing from the minutes: who won’t attack? This time, it’s the news detective’s turn to track down the subject.\n\nFirst, let’s check the announcement. A spokesperson for the Saudi-led coalition forces in Yemen said they had intercepted and destroyed one ballistic missile fired toward Riyadh by the Houthis.\n\nIn this context, the UK Ministry of Defence announced an air-defense mission for the Royal Air Force’s Typhoon fighter jets. They will protect Saudi cities and important facilities from air attacks. The mission is limited to defense, and the jets will not attack the Houthis.\n\nAt this point, you might want to say, “Right, they’re only on defense!” But the announcement mentions another task too: refueling in the air.\n\nBritain also said it would extend refueling support for Saudi air-defense operations. That support also covers operations to weaken Houthi military targets in Yemen. According to Britain, those targets threaten people in Saudi Arabia and Yemen.\n\n“Wait! You just said they wouldn’t attack, right?”\n\nHere, the detective zooms in on the name tag. The phrase “won’t attack” refers to the Typhoon mission. Meanwhile, refueling support also backs operations to weaken Houthi military targets. Even though both are put in the same box marked “British support,” they are not all the same kind of activity.\n\nIt is like someone saying, “I won’t drive,” while helping put fuel in a car. Not taking the wheel is different from not supporting the journey. But this comparison cannot settle who is responsible for military support. What we need to check is what the words cover.\n\nSo if you sum it up as “Britain won’t attack,” you stretch what was said about the Typhoon mission too far, making it cover all support. On the other hand, looking at what the refueling support covers and saying, “Then the Typhoons will attack too,” goes beyond the evidence.\n\nThe tools you need to read news are not a magnifying glass, but three questions: “Who?” “For which mission?” “Doing what?” Don’t leave after seeing only the big sign that says “to protect”; check the name tag underneath it too. Just putting one subject back can change how the news looks.\n\n## In one line\nBritain said its Typhoon jets would defend Saudi cities and key facilities, not attack the Houthis, while its refueling support also backs operations to weaken Houthi military targets. So the no-attack statement applies to the Typhoon mission, not all British support."
+   }
+  ]
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 8.8
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 8.8,
+ "response_text": "## 選定結果（5件）\n\n| No. | 表現 | 語数 | 本文中の出典 | 学習価値 |\n|---|---|---|---|---|\n| 1 | track down the subject | 4 | \"this time, it's the news detective's turn to **track down the subject**.\" | 「~を突き止める」の句動詞 |\n| 2 | missing from the minutes | 4 | \"An important detail is **missing from the minutes**\" | 「記録(議事録)に欠けている」という比喩的用法 |\n| 3 | zooms in on | 3 | \"the detective **zooms in on** the name tag.\" | 「~に焦点を絞って詳しく見る」の句動詞 |\n| 4 | settle who is responsible for | 5 | \"But this comparison cannot **settle who is responsible for** military support.\" | 「~を決着させる、はっきりさせる」の用法 |\n| 5 | goes beyond the evidence | 4 | \"...goes **beyond the evidence**.\" | 「証拠の範囲を超える」という論理的な表現 |\n\n## 照合・確認\n\n- **本文一致**：5件すべて本文中の連続した語句をそのまま抜き出しており、語の変更・追加はありません。\n- **一般化**：本文中の固有名詞や特定の対象を含む部分を選ばなかったため、置き換えは不要でした。\n- **語数**：すべて5語以内です（4・4・3・5・4語）。\n- **易しさ**：基本語のみで字面どおりに理解できる表現は避けました。",
+ "usage": {
+  "input_tokens": 1371,
+  "output_tokens": 1811,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGXAk21jDrvvtNfYwUu3",
+ "model_returned": "claude-haiku-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 0.16682,
+ "raw_response": {
+  "model": "claude-haiku-5-5",
+  "id": "msg_011CgGXAk21jDrvvtNfYwUu3",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "## 選定結果（5件）\n\n| No. | 表現 | 語数 | 本文中の出典 | 学習価値 |\n|---|---|---|---|---|\n| 1 | track down the subject | 4 | \"this time, it's the news detective's turn to **track down the subject**.\" | 「~を突き止める」の句動詞 |\n| 2 | missing from the minutes | 4 | \"An important detail is **missing from the minutes**\" | 「記録(議事録)に欠けている」という比喩的用法 |\n| 3 | zooms in on | 3 | \"the detective **zooms in on** the name tag.\" | 「~に焦点を絞って詳しく見る」の句動詞 |\n| 4 | settle who is responsible for | 5 | \"But this comparison cannot **settle who is responsible for** military support.\" | 「~を決着させる、はっきりさせる」の用法 |\n| 5 | goes beyond the evidence | 4 | \"...goes **beyond the evidence**.\" | 「証拠の範囲を超える」という論理的な表現 |\n\n## 照合・確認\n\n- **本文一致**：5件すべて本文中の連続した語句をそのまま抜き出しており、語の変更・追加はありません。\n- **一般化**：本文中の固有名詞や特定の対象を含む部分を選ばなかったため、置き換えは不要でした。\n- **語数**：すべて5語以内です（4・4・3・5・4語）。\n- **易しさ**：基本語のみで字面どおりに理解できる表現は避けました。"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 1371,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 1811,
+   "output_tokens_details": {
+    "thinking_tokens": 1302
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

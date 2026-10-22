@@ -1,0 +1,87 @@
+{
+ "model_key": "m6_claude-sonnet-5-5",
+ "requested_model_id": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "unit_id": "F_Standard",
+ "article_id": "F",
+ "level": "Standard",
+ "article_sha256": "c270df8bcd2842917fbe58c02c254bc1086a6a6f2088296c7cfc62c09e381689",
+ "prompt_sha256": "4360c9cccee8765543b7ecc8d7e9dc60f73754951803e86383e24ac286b6921d",
+ "user_message_sha256": "0f04e6a1cef93456f4da0e1cac0feff1c5f47c4040c0b1849771f7f090d7d375",
+ "request_body": {
+  "model": "claude-sonnet-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。一般化以外の変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：一般化後の語数をスペース区切りで正確に数える。6語以上は出力禁止。\n3. **一般化**：固有名詞や特定の人物・物事を指す部分は、意味と文法を保って `~`、`A/B/someone/something` 等に置き換える。一般化できる場合は必ず行う。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、一般化以外の改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# Who Says “We Won’t Attack”? A Warning About Mixing Up British Support\n\n“Won’t attack.” When you hear those words, you may already be ending the meeting in your mind. You may think, “So Britain will only defend.” But wait! One important detail is missing from the meeting notes: who will not attack? This time, the news detective must find the subject.\n\nFirst, let’s look at the announcement. A spokesperson for the Saudi-led coalition forces in Yemen said they had stopped and destroyed one ballistic missile. The Houthis had fired it toward Riyadh.\n\nIn this case, the UK Ministry of Defence announced an air-defense mission for Royal Air Force Typhoon fighter jets. They will protect Saudi cities and important sites from air attacks. Their mission is only to defend. The jets will not attack the Houthis.\n\nNow you may want to say, “Right, they will only defend!” But the announcement also mentions another task: refueling in the air.\n\nBritain also said it would continue refueling support for Saudi air-defense work. This support also helps operations to weaken Houthi military targets in Yemen. Britain says these targets threaten people in Saudi Arabia and Yemen.\n\n“Wait! You just said they wouldn’t attack, right?”\n\nHere, the detective looks closely at the name tag. “Won’t attack” means the Typhoon mission. At the same time, refueling support also helps operations to weaken Houthi military targets. Both are in the same box called “British support.” But they are not all the same kind of activity.\n\nIt is like someone saying, “I won’t drive,” but helping to put fuel in a car. Not driving is not the same as not helping the trip. But this example cannot tell us who is responsible for military support. We need to check what the words include.\n\nSo, if you say, “Britain won’t attack,” you take what was said about the Typhoon mission too far. You make it sound like it covers all British support. But if you look at the refueling support and say, “Then the Typhoons will attack too,” you claim more than the facts show.\n\nThe tools for reading news are not a magnifying glass. They are three questions: “Who?” “For which mission?” “Doing what?” Don’t stop after seeing the big sign that says “to protect.” Look at the name tag under it too. Putting one subject back in place can change how the news looks.\n\n## In one line\nBritain said its Typhoon jets would defend Saudi cities and key sites, not attack the Houthis. Its refueling support also helps weaken Houthi military targets, so “won’t attack” means the Typhoon mission, not all British support."
+   }
+  ]
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 13.54
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 13.54,
+ "response_text": "以下の5件を選びました。\n\n1. **ballistic missile**(2語)\n   - 本文:「one ballistic missile」\n   - 軍事・ニュースで頻出の専門語彙です。\n\n2. **~-led coalition forces**(3語)\n   - 本文:「Saudi-led coalition forces」\n   - 「Saudi」を `~` に一般化しました。「X-led」(〜が主導する)は、ニュースでよく使う複合形容詞です。\n\n3. **weaken ~ military targets**(4語)\n   - 本文:「weaken Houthi military targets」\n   - 「Houthi」を `~` に一般化しました。「weaken」は軍事・政治報道でよく使う動詞で、「攻撃などで弱体化させる」という意味になります。\n\n4. **in the same box**(4語)\n   - 本文:「in the same box」\n   - 「同じ枠・カテゴリーにまとめられている」という比喩的な表現です。\n\n5. **more than the facts show**(5語)\n   - 本文:「more than the facts show」\n   - 「事実が示す以上のこと」という意味で、主張の行き過ぎを指摘するときに使える言い回しです。\n\n**照合結果**:5件とも本文の連続した語句です。一般化(`~`)以外の改変はなく、すべて5語以内です。",
+ "usage": {
+  "input_tokens": 1320,
+  "output_tokens": 1624,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGXAGkSdKJhvqn8hk7NT",
+ "model_returned": "claude-sonnet-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 3.0208,
+ "raw_response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgGXAGkSdKJhvqn8hk7NT",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "以下の5件を選びました。\n\n1. **ballistic missile**(2語)\n   - 本文:「one ballistic missile」\n   - 軍事・ニュースで頻出の専門語彙です。\n\n2. **~-led coalition forces**(3語)\n   - 本文:「Saudi-led coalition forces」\n   - 「Saudi」を `~` に一般化しました。「X-led」(〜が主導する)は、ニュースでよく使う複合形容詞です。\n\n3. **weaken ~ military targets**(4語)\n   - 本文:「weaken Houthi military targets」\n   - 「Houthi」を `~` に一般化しました。「weaken」は軍事・政治報道でよく使う動詞で、「攻撃などで弱体化させる」という意味になります。\n\n4. **in the same box**(4語)\n   - 本文:「in the same box」\n   - 「同じ枠・カテゴリーにまとめられている」という比喩的な表現です。\n\n5. **more than the facts show**(5語)\n   - 本文:「more than the facts show」\n   - 「事実が示す以上のこと」という意味で、主張の行き過ぎを指摘するときに使える言い回しです。\n\n**照合結果**:5件とも本文の連続した語句です。一般化(`~`)以外の改変はなく、すべて5語以内です。"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 1320,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 1624,
+   "output_tokens_details": {
+    "thinking_tokens": 1182
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

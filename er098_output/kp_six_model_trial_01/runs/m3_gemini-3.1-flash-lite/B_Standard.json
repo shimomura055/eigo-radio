@@ -1,0 +1,83 @@
+{
+ "model_key": "m3_gemini-3.1-flash-lite",
+ "requested_model_id": "gemini-3.1-flash-lite",
+ "provider": "gemini",
+ "unit_id": "B_Standard",
+ "article_id": "B",
+ "level": "Standard",
+ "article_sha256": "45988779521655cf4fb1a3f3a5892b85d298ee2aeddeb0fab5eec3374e401aae",
+ "prompt_sha256": "4360c9cccee8765543b7ecc8d7e9dc60f73754951803e86383e24ac286b6921d",
+ "user_message_sha256": "c7c379003108fbd6c81d6fbcdc5e3ba5de2fdec87b5065ca9500a0a4a5fa0f1c",
+ "request_body": {
+  "contents": [
+   {
+    "role": "user",
+    "parts": [
+     {
+      "text": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。一般化以外の変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：一般化後の語数をスペース区切りで正確に数える。6語以上は出力禁止。\n3. **一般化**：固有名詞や特定の人物・物事を指す部分は、意味と文法を保って `~`、`A/B/someone/something` 等に置き換える。一般化できる場合は必ず行う。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、一般化以外の改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# Does Earning More Make You Work Harder? Compare Yourself with Who You Were Yesterday\n\n“Are people who earn more always more hardworking?” When people discuss income and personality, they often look for “things successful people have in common.” But this time, let’s ask the high earner next door to step away from the stage for a moment. The person in the spotlight is none other than you.\n\nThe research team gathered information from 11 studies and studied it. The studies followed the same people over time. The people in them had jobs. They reported their personalities and income from work. Researchers asked about both at least three times. So this was not one picture, but a set of pictures showing changes over time.\n\nThe way researchers looked at the data matters. They separated differences between people from changes within one person. One example is: “That person works harder than I do and earns more.” Another question is: “How did my personality change after my income changed?” They moved from ranking people by yearly income to following one person over time. It was a different contest altogether.\n\nThe trait they focused on was conscientiousness: the habit of working seriously and steadily. Their study found that, within the same person, higher income was linked to greater conscientiousness later on.\n\nWait—we thought personality affected income. But income had a part too!\n\nBut the arrow does not point only one way. A rise in conscientiousness was also weakly linked to higher income later. They found a weak link in both directions: personality with later income, and income with later personality.\n\nAfter hearing this, you may want to ask, “Does a pay raise change your personality too?” But wait before you decide that is true. The team studied data that tracked changes over time. This cannot prove that income changed personality, or that personality increased income. Something else may have affected both.\n\n“Coming first” and “being the cause” are two different things. In a drama, the person we see first at the scene is not always the criminal. The order of events can give us a clue, but it cannot solve the case by itself.\n\nSo when you look back at your income or the way you work, you do not have to end with, “That’s just my personality.” Ask instead, “What has changed in me lately?” Then look more closely. Instead of judging other people, look for changes in yourself. With income and personality, changing who you compare yourself with can show a very different picture.\n\n## In one line\nFor one person, higher income was linked to later conscientiousness, and higher conscientiousness was weakly linked to later income. These links do not prove cause and effect, but your own changes can show a different picture."
+     }
+    ]
+   }
+  ],
+  "generationConfig": {
+   "maxOutputTokens": 16000
+  }
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 1.7
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 1.7,
+ "response_text": "ご提示いただいた記事から、英語上級者が学ぶ価値のある表現を5つ選定しました。\n\n1. **step away from the stage** (5語)\n   - 意味：表舞台から退く、議論の対象から外す。\n   - 学習価値：比喩表現として、文脈の中で役割を終える対象を切り替える際に洗練された響きを持つ。\n\n2. **none other than someone** (4語)\n   - 意味：まさに～その人（〜に他ならない）。\n   - 学習価値：特定の対象を強調するための定番の修辞的表現。\n\n3. **a different contest altogether** (4語)\n   - 意味：全く別の次元の話（全く異なる勝負）。\n   - 学習価値：議論の枠組みが完全に変わったことを強調する際に使える慣用的なフレーズ。\n\n4. **within the same person** (4語)\n   - 意味：同一人物の中で（個人の内部で）。\n   - 学習価値：集団間の比較（between people）と対比される、個人内変化を論じる際の論理的な表現。\n\n5. **prove cause and effect** (4語)\n   - 意味：因果関係を証明する。\n   - 学習価値：学術的・論理的な議論において必須のコロケーション。",
+ "usage": {
+  "input_tokens": 892,
+  "output_tokens": 291,
+  "reasoning_tokens": 0,
+  "cached_tokens": 0
+ },
+ "response_id": "qnrZaqyTKNaB1e8Py4DA0AM",
+ "model_returned": "gemini-3.1-flash-lite",
+ "finish": "STOP",
+ "cost_jpy": 0.10552,
+ "raw_response": {
+  "candidates": [
+   {
+    "content": {
+     "parts": [
+      {
+       "text": "ご提示いただいた記事から、英語上級者が学ぶ価値のある表現を5つ選定しました。\n\n1. **step away from the stage** (5語)\n   - 意味：表舞台から退く、議論の対象から外す。\n   - 学習価値：比喩表現として、文脈の中で役割を終える対象を切り替える際に洗練された響きを持つ。\n\n2. **none other than someone** (4語)\n   - 意味：まさに～その人（〜に他ならない）。\n   - 学習価値：特定の対象を強調するための定番の修辞的表現。\n\n3. **a different contest altogether** (4語)\n   - 意味：全く別の次元の話（全く異なる勝負）。\n   - 学習価値：議論の枠組みが完全に変わったことを強調する際に使える慣用的なフレーズ。\n\n4. **within the same person** (4語)\n   - 意味：同一人物の中で（個人の内部で）。\n   - 学習価値：集団間の比較（between people）と対比される、個人内変化を論じる際の論理的な表現。\n\n5. **prove cause and effect** (4語)\n   - 意味：因果関係を証明する。\n   - 学習価値：学術的・論理的な議論において必須のコロケーション。",
+       "thoughtSignature": "EnMKcQFpFH0T8Pcdn9BFfm1CsONdN7km/7UtUw678utIhEbZeKNkttUP/TxrNMUe/381ZRnnpt3dHOqcuVBkpcrdu83tSD1xrJI7NdJFFgBndM/K84Rh+LVJ9WJ9j9ryTWtS/sSZdhnNANZ2JdALMuKttafw"
+      }
+     ],
+     "role": "model"
+    },
+    "finishReason": "STOP",
+    "index": 0
+   }
+  ],
+  "usageMetadata": {
+   "promptTokenCount": 892,
+   "candidatesTokenCount": 291,
+   "totalTokenCount": 1183,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 892
+    }
+   ],
+   "serviceTier": "standard"
+  },
+  "modelVersion": "gemini-3.1-flash-lite",
+  "responseId": "qnrZaqyTKNaB1e8Py4DA0AM"
+ }
+}

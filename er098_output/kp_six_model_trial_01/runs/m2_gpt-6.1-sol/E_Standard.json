@@ -1,0 +1,149 @@
+{
+ "model_key": "m2_gpt-6.1-sol",
+ "requested_model_id": "gpt-6.1-sol",
+ "provider": "openai",
+ "unit_id": "E_Standard",
+ "article_id": "E",
+ "level": "Standard",
+ "article_sha256": "1454647e36b76202337e6231c3930f05cd045c7a0446f448e0d7c4e9093ae7af",
+ "prompt_sha256": "4360c9cccee8765543b7ecc8d7e9dc60f73754951803e86383e24ac286b6921d",
+ "user_message_sha256": "611f6ff46fec57fb52feba30eac436b582d634069d5f1e494674a3c97a296e98",
+ "request_body": {
+  "model": "gpt-6.1-sol",
+  "input": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。一般化以外の変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：一般化後の語数をスペース区切りで正確に数える。6語以上は出力禁止。\n3. **一般化**：固有名詞や特定の人物・物事を指す部分は、意味と文法を保って `~`、`A/B/someone/something` 等に置き換える。一般化できる場合は必ず行う。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、一般化以外の改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# A Human Joined an AI Phone Call. The Problem Was the “Cast Change” Notice\n\nI was impressed: “AI can even make phone calls. The future is here!” But the person taking the request at the other end was human. Wait—what a sudden change, from science fiction to a workplace drama. Still, the main point is not, “So it was a person after all!” The question is whether people were clearly told that a new person had joined.\n\nMeta was testing some calls made through Muse. Trained contract workers made these calls and finished the conversations with the other person. They tested a setup where Muse passed the work to a human helper. People did not handle every call. So it is too soon to put up a caption saying, “Actually, people did it all!”\n\nBut this test missed one important notice. The vice president of Meta’s Superintelligence Labs division wrote a post for Meta staff. There, the vice president called it a “mistake.” The mistake was starting a test where contract workers made calls without clearly telling people. The vice president also said Meta had paused its human concierge feature for now.\n\nLet’s check the breaking-news caption once more. What Meta pulled back was the human concierge feature. It did not stop all calls through Muse. Canceling a whole show and pausing one part are different things.\n\nSo, is it wrong by itself to bring in a human helper? Sometimes, passing the conversation to a person can help it move forward. But saying, “A person will take over from here,” is very different. Quietly changing the cast behind the scenes is not the same. In a movie, you might clap when a mysterious person is revealed. You might say, “Ah, so that’s who it is!” But you may not want that surprise in a conversation you are part of.\n\nSome people may speak or feel differently if they think they are talking to AI. Knowing they are talking to a person may change that. Even if the request goes well, we cannot ignore the missing notice. We cannot just say, “It all worked out in the end.” That was exactly what Meta admitted it had got wrong.\n\nConvenience matters. But some people care just as much about knowing who they are talking to. If AI passes the baton to a person, it should say so. That one line is part of the service, too. The person taking over does not have to be a secret guest.\n\n## In one line\nMeta admitted it was a mistake to have contractors handle some Muse calls without telling the people they called.",
+  "max_output_tokens": 16000
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 17.08
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 17.08,
+ "response_text": "本文は比較的平易なため、易しい表現で数を補わず、学習価値のあるものを**3件**に絞りました。いずれも本文との一致と、一般化後に5語以内であることを確認済みです。\n\n| 表現 | 語数 | 意味・学習ポイント |\n|---|---:|---|\n| **human concierge feature** | 3語 | **人間のコンシェルジュによる対応機能**。*concierge* は、利用者の要望に応じて手配・支援を行う担当者。ホテル以外のサービスでも使われます。 |\n| **pulled back** | 2語 | **引っ込めた／提供を取りやめた**。本文では、サービスの一機能を停止したという意味。物理的に「後ろへ引く」以外の、施策・提供などを後退させる用法です。 |\n| **passes the baton to someone** | 5語 | **誰かに役割・責任を引き継ぐ**。リレーの「バトンを渡す」ことから転じた比喩表現。本文の特定の引き継ぎ先を指す部分を *someone* に一般化しています。 |",
+ "usage": {
+  "input_tokens": 925,
+  "output_tokens": 755,
+  "reasoning_tokens": 452,
+  "cached_tokens": 0
+ },
+ "response_id": "resp_0b5e5867d5bb1c44006ad97ac77bc887d0aa675e67e5c38a03",
+ "model_returned": "gpt-6.1-sol",
+ "finish": "completed",
+ "cost_jpy": 1.504,
+ "raw_response": {
+  "id": "resp_0b5e5867d5bb1c44006ad97ac77bc887d0aa675e67e5c38a03",
+  "created_at": 1792637639.0,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": null,
+  "metadata": {},
+  "model": "gpt-6.1-sol",
+  "object": "response",
+  "output": [
+   {
+    "id": "rs_0b5e5867d5bb1c44006ad97ac85d7c87d08b697bc4d5d505a7",
+    "summary": [],
+    "type": "reasoning",
+    "content": [],
+    "encrypted_content": "gAAAAABq2XrYeS3gdiaax8h3xwZTq78CO-4VhdwdqU_5RMCU4WFM4UhHdYiPfK4BAAE5KdU0qb3F-4EyhEm44VUR5AQnlxe6t9Y629qPE9GqQ8RVfhwerLxrZ1ObsKec1H593JVBSIjGgL4SN-wqFnxz0r0aFCHjU4Jrif78ByCWpV51v3ppcHqdL6jH7d9Py5Gzb0S-iDX2uhRZKWCfS8Cxuv4AHvGPWOrAzgNtEinW-tzCFnnpg2Wsy5xCCSJhiozafJYUV9YC66GPXJpfE5RJUA7_Wy6CoNpt_y8utugS_DbZNrgKiemH5Hq7T99JbnM-y-dX-INdd7UObaCCB2AbFbro1V0RuYO7YJhzsgLTXthrOerxJrTZFnjkXWnvYFTUeWl8lJ3yhPrfbE6jywJ7mWqZ6BFKtB1TdkpnGkke81LzpiNEL0lmGsbt-bl2Gpwer8MtS1_MIuM5MMg-o3R5rIWni9RROQHJDJqDyjJ8hbkj9CsPBkOF07yZeNF4fAnL2oKmXbvYnKvR06jB4OKg9s5JlAFJm7drnuprIciuxkPNXApmeC-wUnGsIWL5sogL2dIV71hT4TFqXw3P_EcZUhrgzVQRSxdSYZ1-e3z4ZLbuYIW7dpmK7InpvK0laELS_CaEYDK8ODvpS4HbC724A9GVduPgShOTmZ4vQqACQXgq_QoJN_-MwHtXbUXWVQn2rTvYMdlvHzEsoG0p419lcsJZ3oW55sItiE8tt7inEf7Ut9Zx_TfPMsezqFNkmAWuzSSWIdEJ60AkhcYG5dUZ7fSzYCmIB4kR1A8Oo3H7J-WGSUgfpigPhSGgNAYTIV-P5sTkFBr76O8wx0Crwd4f6f6vyXNk75h48GgFPmCxQ6L3U1koV92PV5YLgUpgDA4Sue6Qd3T1MyXD1KCPuaQz210d-RYV7cczdy0SN5v-hhdUKdrOuciB265hSWhI9-j0BC_8TNsuoxU-Z363Oq-6_IhJ1hY_WKyvOGjUPQQnWsOg2F4R66UiNlMx29sThcyYNIvfFrtIeYZW9kz5YrQ2Xw8sIsf6iMqBzyBYwOz0oIejzb53ArymVMj7L-UEDOxUMZRb79Qrt7AVBJQXyt6gdMBc5WBROwbKpOKgYwhVpUURrrqjUQh3fUM0jr5EU79unaGLGZdNs3Wih0Qfowj4M4s8JQ8ZPmoObGTFHTdCdoz5DMQTv3_PgWO4tkyr8nAiWeB6UgJVW5cgYl4Wm3b4qFcNqPTWixU5KkeeHEHAj-LIrBZ4R9NznqSiLG9vhpmKHbkkKYcP1Ogl3n4YBSFsWxrG-IdXr5iQ5UqYzhijKbN4jWSbwKyUh7_6YfMjq7nKcTcaGc3JqJykTFUehUhH-KC6nU4MDSQ6_IbxLj0ngYo8mQP0gqH5ltSH2KBjQTUbntMYl2tJXk7qxFjUFpX6e2niKPiC3Vj8VoqdFUtSTQhY34JYYZH6k5WAcdCleaR_CiLE4O9igYdO88F110BiRDeCa6g5PRj-0eZFV8-KZsIsgHL2OX4TiO9ensQVhHUTi4ELDt2ikwmyPbTAMx_2eIvRzKghG0NhkeucgrWZINPCLwEMNrrOjvxm5RhXYc4KD3E-mORdAYTw_hpk8cuyEWeng0--fdcg2AuIT17aY-uty0BFUNLWRcwwKVf_BiHPnzGjouBQYoIwacDwctJXjcM3LlcKWyn3Slntjt3wQHmxcFjrmn8zZ8yO_ZoJ9XtWwveEVl_B5DVHbqZz9Ld5eS4SG-lyOj38KpG9Bu8O2vRFYvTHols24wMmxjDDaX4CXMmcuGOnd51mlFKsEXiWgp8WilC0oF-sBX5L8kcpt0EaC0j6WYTHh7pbfEmEX-HCKzIDzXve2IxpOenUmYaSXtKACPbKuKrub8bm2pw8PncjkuM5ROjyU5GsoPL3MTxWZxQ6OP_qCnb_Q_WZzMwyTQlgRHrw8UKes2KuQHiocdezEwrGjk6_SEaBCpqQzpUEk64Ol2j8bss3rM8csoZAEmGuUBpcHtaplhFWVaWbDOOpF4RwNqUp0u3-5VspgkU4hLwNXwlK5KeyHJCJWzR5bdVKMxVlp32kS57W0qTr1ceuCGcpcym6HwkWXVUjFAsBFvD0jk2GfHO1HOtlZkvJIckcGz0e7N9vPpu6E5S1pQmtHjnIOLutGH1FjrGrqJLMRQceucymZpHtZYbQWuVXSK9_uLoRdRMn1MHK6r62Jf8ASGQPsb-q3ru8hXw-t0vqq7YBPDGI1z67Twf8uXuP0d0gjR0v--VqtrAMZzuW0-DnT4ur6IFy8nOegcTN9CQpmeTDghci27IyMXjXQv27Ush0_DlsKVVJVyry7dAR1dSRa2a0j2y5hWc63oqsD8s2OfIulTLVTcoK7YzUxKKkKhOZhUzOsHjvTtxiC6Oqc5ArXl3neTF58hN1d5dRZw5OPVGB2OROeBQQnl5m7mkZnV9JrZt4u6LE9ocYSZo0lp6G5AXVkbXmrgkhGFowMsBKOcQnpBvSsHOupRBDkELM298C6fotVWGfJzv-WA95PwsyBpNJEYsvclOXgYkmcec-XI6ouIrtQXtEIFO9-C3wY5XbDP79oWljDm3rtYJVkUgoXP9JeFgWHO3ZcyIYu8cI8P5NmZOYO8rdJ_zQp_-CoMWN6Enl9pYDg0-6KnDwCF16tNjduh7Brhnm6un5OKDyshMPF7eyjfMfLxr5K8WKuaBD9x7jme1hcm8Yfjfb2-tA-a_yjGG9hojWMkUSjNVz6gUn8ThpH_4ar5wL0IizGtnz1lJ-QQQ7Vqnx7TJ9EX2XP33yf3F3-e6UqBVBhDHnW6KesM3mJX_J738MmkAyF9k_4-mwm7CZIPg23ilOUaije7uTN8D4SmsagfkFuZ6YAw6fkk-_m5hsEpQSGa_zGPV2uEgYSAQCv5VJT6NBvkopSinTHfbTRy5bnVV6ywvJMkD_YvLd9gRm0jLEUum20dCxVZrPCMeHVfTHdzL0u7CKSwurBsZ_BaP3fDukreC4Qqht1jrBotIemg6cPPO1hDqlc_Ok0Ja1zCNpCpBNUBmBJoXz8rfWsqcHozBXfK2NRzoc3g4nEWHfV4Y81neunoqY4xeUiIyS0cn2vTuHbe9TSmi1tJYR0gVvz_gAXerYFmwgU6mmr4-MrTkShAgUHhMWmPkvJmBWZbSImvhLnPRN7bjI1HyGFktGy_4TmMuQ3W2aQZW8u4HCG9FqwQ0FZeuw2mbV9sXbpnrJmbabQvTm7tGTfsX4hl8CdmOrf3U1oO_gtsn_u97J46ZtlRwxCvjX94032fTrb0iEOEKDmI6J-ka-cFuHHspf8-PG83-wEWzoUqFhfekX9Xq1S0RHtx6jcQ_HBRMkwbj55KfJAdqAtOPhDwzNsHg6y0z8s1PLtcdcGD4XEh0DUB12v6KHbV3SqFLrZ49PpFQFlE00D-nFnWHXW3QBdIHPEySq0SVOYuqym8PAV29kQpEJYJIzNCZRtLxJfwpB1gHKpQ0wa4ixqcYsNIbhHQZSUm4wHLehz49hWc_HFHELQtPJBUWiaevQjecXXrfuTirOLVUy10r_fe-PqvJ1ISOUY4fLnHaaBEbYEmeHcJuXym4s7S03JVVdX8K6nJSZ5_kbbMfhvyAEgXfqkLgKB-LEoVmIg7UyLrQGfQPn7Ols_rtHk1EhbEVaZV4ElMNdaan20HWygB5XDMJrHqVp9O3J0bwryoBFe20OQQGFvCRLddeCsVblkctj5Cx2rajjYjzMpPyQKwTfWUugR5eZl08QwE_mb2BDYiV1WIlgaXHa0qI7SFJur42guILDt2yHzwRCZ1CW5iaw4sJQtwk3RdrwM6sUrEEj6OUT-n0ePn4llYzlshrl4vPDieE6dWo1eKaggXPAy_3VY0oyAUzVAKtkF7iCiYe9frARfQrH0ViJ1PCH0-AdQIcuQoklK8G-TUzJKdah-HM0JS_LqKi2FC01jSeOF2MK15JmThMurbbl1a2GLp1z7bbdxxBDBfVCWwmfcNy0Lv6LJkS7xh-OMfZ_AI_WI3PlUH2su8KqHRq9zAjaJu2LYUpsJBxWqMze3Y3tMQTjntjHZ1tmpC1YREhdoApjtV3CeHXu7mdfcuBsojUWLkoAnsjHNBwfEzfS6PQhhdEIO39lbeBQFRi7mCq90Mdb6y3nYIqpvfJKm4RXu90NpwL_iPEXck5lriPv1Df2DDZTz1MdYuZ0Z51qoKaZ-3D2mJstHK50UvGbgQNKgy6tLZDvP733r1DxFMD7dXNLRmQJ5bcHcnP3UaXts_iP61IwECaJWSES_zmH-Y2JNZFmP1iTglUiIJ-yZmO3tH2my9-a9hiPwkyRaZNKASVz49JumvDnbFXi8SZWfLGE7uY_GQPtO1b0GM2WsKyDYNz9WAWfVdFIw56lGjFP25oYN6qMh2OMzS96pQXv-ECRlcWhiuNZNGMKb5TvCYcF4USxiJbYKGryrqNft-ZJvBWY3tAhO_ObsncQoe-Hlcp3jbvkWBqbxb9ejIIwMAvf1n6ZArA-7Lj7ZyNMhQn7WdFTnbWfVZml2Biu2QVs4yQyXkPbCAyBgZH51WP-Xf7NXgwt2C7JyFuJ1dCMdFMIpRtLZLVGpTf2Kf75rgcULEWsSzQJBbgaK1mhB1XsqmLpGFtIwIXi-WqeiuUozICtGlxU7vBDRiU9PdDvtVMMBOfwd9Ihl9L9ctCv66c34TXaZUCk2xaWeL2laseEjvzB3XIXWEufxhXeai_aj1pW3MgAOEOvfmFq6CYptiD0LB5jOpCllAZmvGqWiLlgcfpRRWWgPiemgm2CAF-gKBD24dCJmS9ePwSyfSZXwq2u1Z2POee28V3aqD9293NhFV2MjikNtjY-ew89TOpA6uwqxTO1-w5NklQ3KNm1Ue7QEJ1s7rVPJF77yIy6nPmU3BXYWqafwqkrOK11CTsT_Ha3o7-nnB7_KBlO1CW1E_1CIyMZx05K2V4sDZxhfH4bHoJz0VmdeyTik8NaRlZt0AxAWdmF9RSci7mrlSxpeZAoY1fhVlU39A8tw51oqutWXtzeA3pTAs-V4q5ikqE3cXOhP20hx430kjm0OVMh43AI18VRzZGSdeZHAyAMdxOW1QXMj9v3ETKuNDdwNqRCJfTFHAxE_b6JC44uO6hbVTazxZVPc_n2G_lvX3E0a4vn1vsymcbFEhrFywnqm63StORqtaFuiS1xYcXonavlCY60JLwbLjhodHSct5NK1o6vP3phKL31Js1e0PTGTgueIcZJq8h0fylf92pYqXDy-1nSLGQ1ZG2JYPnK9D-a78xpK5UjUXobjTXFQjxX3NWWt6bcWT-uQpDO0EiRCA04X26Xoe6M9NfpRgG48vX9IeA9p5ykyzSS6Gmbg635jOp7MSwz2JZtD0Ow2p66Xco753t8wqdQN-gf5wET6Jagsqvwlx050kOVdS-J25b5NW9APa7eT3fiUpbqxoQUD-p29S-YlocbfK6UpkOazaBb_5X_lpWHeRnGL-b_hF08lxQhOoTMiQlbaWyvL3qArZBS9epLLKXwP559jtJZKl5uRuneG9Kc-kBhBEYn_kWjVebD0iJW20-Co7UxpS0twqaTCbbguCrw6u9g6y0-X87r15QIV6QUMP3a_Xq9EfCtR3fsiOTiJgCaXxW7XsttvF7Mo4O3E4pQd5t0x9WMzj92xcLZb0XaGaRgSKqbQW-bWEcLgZgCq2ZXgbrw8AVZOczSYnJmanrIDYd8geDTVoYcI3KgjVltfy2iepptj_Vpt0f2JLzojFPiIGU8F8gY2KU9c4lPEm-0i8RGGyf7iK71E-0DTgGwVmTQ4tCT0BqCNJ4t1A57dNU32fL7Qw2t2mGgBFwRWCx-AyH5dG5ZjU800g8kWOOMQnR2L4xnoU-DdHq_DNBBqRW3qK9xo1lKjVAtEKi15wmMLQSbKmtr3J5FG8C5LmUfbVswvY6Zz0FF1_e7V-BC78MuOD1H8hu27c-7L57YLNmPXZ521AK1Qh2XeQ91IuLdRoprg4Szb5mbFVwxsqERgvqykHryV5zVaisvppu21e-ni4SOs_z3rghPMDH-7NWF4rBN4g92_D92nKHr2phG_2edF7-x3jqJdfYn_OHmCemo_W3CVLjRzMi-WtTdOCY3pPu8f62sRYz4cOn-iTmoefkEg0FJfqe-2a2kDostenzYhUJcmjlJVekz37AIZotM9LonjDlYvISaP7B968zJIuvy4C_HrFd2YLNB_auLNM6tBfF_XQIHp9ZuKiWTRYIqUNG81T9eUfKR3Wi2-nJ7j3arbTeEliiYpcbeOq48EywbxHVzugiQ82Mn1X6x7zTC14ex2skE6YBl-POh5PBbylpwhtA3l03zI7yWP8LIHpxtdk445yRiLlvHy_5H9JAx8GHX2cQru2zvBE8mEUsnN7Dka-mIo-dTKVNuX71EEyGn06muE2ZU4rTcgLCNzFcaEBJxwhph36t3aoaCZlUwHXdNbP23jhpJhZwtN6a7jnXETX3zDjNENuZBU6shAHYXt2F7itpwqh5K-RgIGspQS-xLKgvHwVH3StbXS9JAjo-MvRy4tD7A85gI2SBL4YxWjlGYCaBc2XwIxslqSuWYBRomvfxfYSPf8s9UwUWlzgJIYQJCap4hDwg7GH1s42iZgoWGeFNvzUL07nYDOQSKPqGsT8_Fp3yduk49IuL4JXCZNFvnfq2Al_YZ0HEHHNjrz6G3VSTuADy0eEOYWtG7vFQBm9FNWeOG6lJ9sAxXyPq1fChmDeEloz1JEwgHmuHaC4PS6FgWKHyY6Xs5zxBgucOZupnq8RTp4oAIYdDDSoOyLVMsg5yf0VuSTi4OP2gRLoQCOuXpX58uZV4t1nZeExahqrvsxXmm307jcvzu8I1W9cwdam4iZauiTRykrjW3RXG_OUsbfmdlYawLIoPDh0BtuDRA78oG5lI11W0DkOnLa0vWQjYoNw-VRXygaKpgie6LjtiF1ISxVwOA6YED_Kmo6bg2yCmmx1dQu5X8Sc0W-u-5UCfvUzcB7pcgT2ay-YlMCwzTwSF3tC-CnbmMWZhDIDnJW7V1gqdJfXjzk4TDLawC0S2TjPzSseaG9YO9XwAtpv_0cYd65TuXvaPdh5uTdGgunsyy4zkVLMGYTSqqlf-_om04hdHq_78TzcB_8rfu8c_GUsVj3a6LnaPItUTUsW9UM83EWyB_oKp-EE7d2akVBPQkNw3rSuzI11Q=",
+    "status": null
+   },
+   {
+    "id": "msg_0b5e5867d5bb1c44006ad97ad2570887d08bc8f34dd803a03f",
+    "content": [
+     {
+      "annotations": [],
+      "text": "本文は比較的平易なため、易しい表現で数を補わず、学習価値のあるものを**3件**に絞りました。いずれも本文との一致と、一般化後に5語以内であることを確認済みです。\n\n| 表現 | 語数 | 意味・学習ポイント |\n|---|---:|---|\n| **human concierge feature** | 3語 | **人間のコンシェルジュによる対応機能**。*concierge* は、利用者の要望に応じて手配・支援を行う担当者。ホテル以外のサービスでも使われます。 |\n| **pulled back** | 2語 | **引っ込めた／提供を取りやめた**。本文では、サービスの一機能を停止したという意味。物理的に「後ろへ引く」以外の、施策・提供などを後退させる用法です。 |\n| **passes the baton to someone** | 5語 | **誰かに役割・責任を引き継ぐ**。リレーの「バトンを渡す」ことから転じた比喩表現。本文の特定の引き継ぎ先を指す部分を *someone* に一般化しています。 |",
+      "type": "output_text",
+      "logprobs": []
+     }
+    ],
+    "role": "assistant",
+    "status": "completed",
+    "type": "message",
+    "phase": "final_answer"
+   }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1.0,
+  "tool_choice": "auto",
+  "tools": [],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": 1792637656.0,
+  "conversation": null,
+  "max_output_tokens": 16000,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": null,
+  "prompt": null,
+  "prompt_cache_key": null,
+  "prompt_cache_options": null,
+  "prompt_cache_retention": "24h",
+  "reasoning": {
+   "context": "all_turns",
+   "effort": "medium",
+   "generate_summary": null,
+   "mode": "standard",
+   "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+   "format": {
+    "type": "text"
+   },
+   "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+   "input_tokens": 925,
+   "input_tokens_details": {
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "output_tokens": 755,
+   "output_tokens_details": {
+    "reasoning_tokens": 452
+   },
+   "total_tokens": 1680
+  },
+  "user": null,
+  "access_programs": null,
+  "billing": {
+   "payer": "developer"
+  },
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "store": true,
+  "tool_usage": {
+   "image_gen": {
+    "input_tokens": 0,
+    "input_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "output_tokens": 0,
+    "output_tokens_details": {
+     "image_tokens": 0,
+     "text_tokens": 0
+    },
+    "total_tokens": 0
+   },
+   "web_search": {
+    "num_requests": 0
+   }
+  }
+ }
+}
