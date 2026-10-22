@@ -7,6 +7,7 @@
   - Family Z(`er026_family_z_fiction_production_runner_01.py:1486-1494`): 戻り値のcanonicalization statusがPASS/REVIEW_REQUIRED以外(NG_REVIEW_REQUIRED/OUTER_RETRY_EXHAUSTED含む)ならstage停止。=> 実害なし。
 - 修正の可否: **修正せず選択肢を報告**(委任文の「判断に迷う場合」)。理由=単純な「INVALID時に旧ファイルを退避/削除」は、`run_key_phrases`(`:818-827`)の意図的設計(途中attemptのHR itemを失敗後もディスク上のartifactから報告する、OF-KGDC-04/OF-KGCPW-03)と衝突し、既存test(`er003_test_kp_gloss_alignment_wiring.py:380`「途中attemptのHR artifactがdiskに残っている」)の期待値が変わる。Production挙動の設計変更になるため最小修正の範囲を超える。
 - 選択肢: (1)`run_key_phrases`のHR報告(`:827`)の**後**で、最終結果がcanonicalization未成功かつファイルが残っている場合に`keywords_canonicalized.invalid_<ts>.json`へ退避(HR報告は維持、後段はfile無し=`BLOCKED_KP_SCAFFOLD_MISSING`/TTSのKPスキップ。ただし`resolve_gloss`の対象artifactが無くなるため、HR runbookの扱いをFable確認)。(2)Family X scaffold(`er019:424`)でkp_statusがPASS系以外ならstage停止(Zと同等)。後段が読むファイルは変えず、Production runnerの停止条件追加。(3)現状維持(発生条件が限定的)。推奨=(2)(Zと対称で既存HR設計に触れない。ただしProduction挙動の変更のため正式判断/Opus条件の要否はFable判断)。
+- **選択肢2を実施(委任_03、2026-10-22)**: Family X runnerのKP stageをkp_status非PASS系でfail-closed化(Zと対称)。詳細=OPEN_ITEMS.md OPEN-452。`er019_family_x_audio_production_runner_01.py`(kp_stage_failure_status/kp_stage_failed.json marker/main rc=3)、test=`er019_family_x_kp_stage_fail_closed_01_test_01.py`。
 
 ## B2: STOP/STOP_ALLセンチネルのtest由来生成
 - センチネル実パス: `tools/stop_scope_check_01.py:STOP_ALL_REL`=`er026_output/family_z_production_e2e_01/STOP_ALL`(`er062_family_z_structure_01.py:158` `STOP_ALL_PATH`と同一)。

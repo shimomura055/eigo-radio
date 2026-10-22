@@ -339,6 +339,33 @@ def _support_texts_path(level: str, level_out_dir: str) -> str:
     return f"{level_out_dir}/b1_support_texts.json" if level == "b1b" else f"{level_out_dir}/a2_support_texts.json"
 
 
+# FAMILY-X-KP-STAGE-FAIL-CLOSED-FIX-01(KPMP-03 委任_03、2026-10-22): KP stageのfail-closed判定。
+# Family Z `er026_family_z_fiction_production_runner_01.stage_kp`(:1486-1494付近)の停止条件と同一リテラル
+# (相互参照: Z側を変更する場合はここも揃えること)。Redundancy QA NG確定(NG_REVIEW_REQUIRED)・外側retry尽き・
+# canonicalization無し/PASS系以外のKPは、旧attemptの`keywords_canonicalized.json`がdiskに残っていても後段(TTS/assembly)が
+# 使わないよう、stageを止める。gloss HR(別key`gloss_alignment_run_status`)は従来どおりHR経路で扱い、ここでは止めない。
+KP_STAGE_BLOCKING_RUN_STATUSES = ("NG_REVIEW_REQUIRED", "OUTER_RETRY_EXHAUSTED", "KP_ARTICLE_COST_CAP_EXCEEDED")
+KP_STAGE_PASS_CANON_STATUSES = ("CANONICALIZATION_PASS", "CANONICALIZATION_REVIEW_REQUIRED")
+KP_STAGE_FAILED_MARKER = "kp_stage_failed.json"
+
+
+def kp_stage_failure_status(kp: dict):
+    """PASS系ならNone、停止すべきなら`KP_STAGE_FAILED(<kp_status>)`を返す。"""
+    canon = kp.get("canonicalization")
+    canon_status = (canon or {}).get("status")
+    run_status = kp.get("status")
+    if run_status in KP_STAGE_BLOCKING_RUN_STATUSES or not canon or canon_status not in KP_STAGE_PASS_CANON_STATUSES:
+        kp_status = run_status if run_status in KP_STAGE_BLOCKING_RUN_STATUSES else (
+            canon_status if canon else (kp.get("selection") or {}).get("status"))
+        return f"KP_STAGE_FAILED({kp_status})"
+    return None
+
+
+def _kp_stage_failed_markers(out_dir: str, levels: list[str]) -> list[str]:
+    return [f"{out_dir}/{lv}/key_phrases/{KP_STAGE_FAILED_MARKER}" for lv in levels
+            if os.path.exists(f"{out_dir}/{lv}/key_phrases/{KP_STAGE_FAILED_MARKER}")]
+
+
 def _kp_already_generated(kp_dir: str) -> list[str]:
     """`--scaffold-only kp`のQ5(iv): KP再生成は1レベル1回まで。既にKP成果物がある場合はその一覧を返す。"""
     found = []
@@ -413,6 +440,13 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
                                  kp_backend=kp_backend)
         kp_status = (kp["canonicalization"] or {}).get("status") if kp["canonicalization"] else kp["selection"]["status"]
         print(f"[FAMILY-X-AUDIO-SCAFFOLD] {level}: key phrase status={kp_status}")
+        # fail-closed(KPMP-03 委任_03): PASS系以外はstageを止める(Zと対称)。ただしsummary(kp_run_status/gloss HR event等、
+        # OF-KGCPW-04/16)は欠落させず全て記録してから、下のloop末尾でmarker+kp_stage_statusを付けて残levelを実行せず終了する。
+        # 実際のrc≠0停止はmain()側(result内のkp_stage_statusを検出してFamilyXKPStageFailed)。markerは成功時に削除する。
+        _marker = f"{kp_dir}/{KP_STAGE_FAILED_MARKER}"
+        _fail = kp_stage_failure_status(kp)
+        if _fail is None and os.path.exists(_marker):
+            os.remove(_marker)
 
         # 修正1回目(Opus L2所見B2、2026-09-27): result[level]へ
         # kp_backend_usedを載せる(entry_point.jsonへの反映はmain()側で
@@ -438,8 +472,16 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
         result[level]["gloss_alignment_metrics"] = _canon.get("gloss_alignment_metrics")
         if scaffold_only:
             result[level]["scaffold_only"] = scaffold_only
+        if _fail is not None:
+            os.makedirs(kp_dir, exist_ok=True)
+            save_json(_marker, {"status": _fail, "level": level, "kp_status": kp_status,
+                                "kp_run_status": kp.get("status")})
+            result[level]["kp_stage_status"] = _fail
+            print(f"[FAMILY-X-AUDIO-SCAFFOLD][STOP] {level}: {_fail}(自動採用しない・HR Lockへ送らない・後段TTS/assemblyは実行しない)")
         if budget_check is not None:
             budget_check(f"after scaffold {level}")
+        if _fail is not None:
+            break   # 残levelのAPI呼出をしない(Zはstage失敗で停止)
     save_json(f"{out_dir}/scaffold_run_summary.json", result)
     _all_fb = [ev for lv in result.values() for ev in (lv.get("m2_fallback_events") or [])]
     if _all_fb:
@@ -2664,6 +2706,18 @@ def main() -> None:
                     client, source_dir, out_dir, levels, scaffold_only=args.scaffold_only,
                     budget_check=lambda note: assert_budget_ok(out_dir, args.budget_jpy, note))
             assert_budget_ok(out_dir, args.budget_jpy, "after scaffold")
+            _kp_fail = {lv: (scaffold_result.get(lv) or {}).get("kp_stage_status") for lv in levels
+                        if (scaffold_result.get(lv) or {}).get("kp_stage_status")}
+            if _kp_fail:   # fail-closed(KPMP-03 委任_03): rc=3。entry_pointへStatus記録、後段(tts/assemble/player)へ進まない
+                _ep = f"{out_dir}/entry_point.json"
+                if os.path.exists(_ep):
+                    with open(_ep, encoding="utf-8") as f:
+                        _epd = json.load(f)
+                    _epd["kp_stage_status"] = _kp_fail
+                    save_json(_ep, _epd)
+                print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {_kp_fail}: KP stage fail-closed(技術STOP、HR Lockへ送らない)。"
+                      "原因確認後に同stageを再実行してください。")
+                sys.exit(3)
             # 修正1回目(Opus L2所見B2、2026-09-27): scaffold完了後、
             # entry_point.jsonへlevelごとのkp_backend_usedを追記する
             # (per-article traceability、既存フィールドは保持したまま追加)。
@@ -2678,6 +2732,12 @@ def main() -> None:
                     level: (scaffold_result.get(level) or {}).get("m2_fallback") for level in levels
                 }
                 save_json(entry_point_path, entry_point)
+
+        if args.stage in ("tts", "assemble", "all"):
+            _kpf = _kp_stage_failed_markers(out_dir, levels)
+            if _kpf:
+                print(f"[FAMILY-X-AUDIO-RUNNER][STOP] KP_STAGE_FAILED markerあり(旧attemptのKPを後段で使わない): {_kpf}")
+                sys.exit(3)
 
         if args.stage in ("tts", "all"):
             # W5(Opus L2所見MAJOR-3是正): 課金が発生するTTS呼び出し(下の

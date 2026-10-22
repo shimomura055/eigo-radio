@@ -503,7 +503,7 @@ class ScaffoldOnlyKpTests(unittest.TestCase):
                 f.write("{}")
 
     def _kp_result(self):
-        return {"canonicalization": {"status": "OK"}, "selection": {"status": "KEY_WORDS_STRUCTURE_PASS", "kp_backend_used": "db_hybrid"}}
+        return {"canonicalization": {"status": "CANONICALIZATION_PASS"}, "selection": {"status": "KEY_WORDS_STRUCTURE_PASS", "kp_backend_used": "db_hybrid"}}
 
     def test_kp_only_skips_support_generation_and_keeps_records(self):
         self._put_support(["a2", "b1b"])
