@@ -652,7 +652,7 @@ def _production_py_files():
             continue
         if f.startswith(("er088_", "er091_", "er092_", "er093_", "er096_", "er099_", "er106_", "er107_", "er108_kp_cmu_census",
                          "er108_kp_noguard", "er108_kp_guard_exposure", "er108_kp_guard_lifted_runtime",
-                         "er109_pattern_probe_01", "er109_stored_census_01")):    # 履歴script/Trial/研究script(Productionではない)
+                         "er109_")):    # 履歴script/Trial/研究script(Productionではない。er109_*=ASR-HOMOPHONE調査の未配線module+研究script)
             continue
         out.append(f)
     return out

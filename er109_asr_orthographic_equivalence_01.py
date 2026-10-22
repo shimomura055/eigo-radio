@@ -27,7 +27,8 @@ import er008_asr_variant_hardening_15_homophone_en as _hp
 
 # ---- 単一flag(未承認・既定OFF。配線されるまで読取側は存在しない。env/引数/設定dictから変えられない) ----
 ORTHOGRAPHIC_EQUIVALENCE_ENABLED = False
-LAYER_VERSION = "er109_orthographic_equivalence_v0_proto"
+LAYER_VERSION = "er109_orthographic_equivalence_v1_proto_aho02"
+STRESS_MODE = "binary_stressed_vs_unstressed"   # P-01: 強勢は有/無の2値で比較(1,2->1, 0->0)。除去しない
 
 
 def is_enabled() -> bool:
@@ -122,29 +123,32 @@ def cardinal_variants(n: int) -> list[list[str]]:
 # ---------------------------------------------------------------- 閉じた記号・略語表(新規許容はこれだけ)
 SYMBOL_READINGS = {
     "%": [["percent"]], "&": [["and"]], "+": [["plus"]], "=": [["equals"], ["equal"]], "@": [["at"]],
-    "°": [["degrees"], ["degree"]], "#": [["number"], ["hash"], ["pound"]],
+    "°": [["degrees"], ["degree"]],
 }
+# P-04: 複数の別語へ展開される記号・略語はfail-closed(同じ語の活用違い[degree/degrees, minute/minutes, foot/feet]だけ許す)
+AMBIGUOUS_SYMBOLS = {"#"}            # number / hash / pound
+AMBIGUOUS_ABBREVIATIONS = {"st", "dr", "mt"}   # saint/street, doctor/drive, mount/mountain
 CURRENCY_SYMBOLS = {"$": ("dollar", "dollars", "cent", "cents"), "£": ("pound", "pounds", "penny", "pence"),
                     "€": ("euro", "euros", "cent", "cents")}
 # 略語(語単位)。ambiguous語(dr=doctor/drive, st=saint/street)は候補を複数持つ(どれか1つが相手と一致すれば同値)。
 ABBREVIATIONS = {
-    "mr": [["mister"]], "mrs": [["missus"], ["misses"]], "ms": [["miz"], ["mizz"]], "dr": [["doctor"], ["drive"]],
-    "st": [["saint"], ["street"]], "jr": [["junior"]], "sr": [["senior"]], "vs": [["versus"]], "v": [["versus"]],
+    "mr": [["mister"]], "mrs": [["missus"], ["misses"]], "ms": [["miz"], ["mizz"]], 
+    "jr": [["junior"]], "sr": [["senior"]], "vs": [["versus"]], "v": [["versus"]],
     "inc": [["incorporated"]], "co": [["company"]], "ltd": [["limited"]], "corp": [["corporation"]],
     "ok": [["okay"]], "approx": [["approximately"]], "dept": [["department"]], "govt": [["government"]],
     "etc": [["et", "cetera"], ["etcetera"]], "ave": [["avenue"]], "blvd": [["boulevard"]], "rd": [["road"]],
-    "mt": [["mount"], ["mountain"]], "ft": [["feet"], ["foot"]], "lb": [["pounds"], ["pound"]], "lbs": [["pounds"]],
+    "ft": [["feet"], ["foot"]], "lb": [["pounds"], ["pound"]], "lbs": [["pounds"]],
     "oz": [["ounces"], ["ounce"]], "min": [["minutes"], ["minute"]], "sec": [["seconds"], ["second"]],
     "hr": [["hour"], ["hours"]], "hrs": [["hours"]], "km": [["kilometers"], ["kilometres"]],
     "kg": [["kilograms"], ["kilogram"]], "mph": [["miles", "per", "hour"]]
 }
 # 句読点付きだけ略語とみなす語(通常語と衝突する): min/sec/hr/v/co/ft/mt/ok 等は『ピリオド付き』か『大文字のみ』のとき限定
-_ABBR_NEEDS_DOT_OR_CAPS = {"min", "sec", "hr", "v", "co", "ft", "mt", "lb", "oz", "st", "dr", "ms", "ave", "rd", "sr", "jr", "inc"}
-_LETTER_NAMES = {
-    "a": "EY", "b": "B IY", "c": "S IY", "d": "D IY", "e": "IY", "f": "EH F", "g": "JH IY", "h": "EY CH", "i": "AY",
-    "j": "JH EY", "k": "K EY", "l": "EH L", "m": "EH M", "n": "EH N", "o": "OW", "p": "P IY", "q": "K Y UW",
-    "r": "AA R", "s": "EH S", "t": "T IY", "u": "Y UW", "v": "V IY", "w": "D AH B AH L Y UW", "x": "EH K S",
-    "y": "W AY", "z": "Z IY",
+_ABBR_NEEDS_DOT_OR_CAPS = {"min", "sec", "hr", "v", "co", "ft", "lb", "oz", "ms", "ave", "rd", "sr", "jr", "inc"}
+_LETTER_NAMES = {   # CMUの文字名(2値強勢)。aのみ強勢読み(EY1)を明示
+    "a": "EY1", "b": "B IY1", "c": "S IY1", "d": "D IY1", "e": "IY1", "f": "EH1 F", "g": "JH IY1", "h": "EY1 CH", "i": "AY1",
+    "j": "JH EY1", "k": "K EY1", "l": "EH1 L", "m": "EH1 M", "n": "EH1 N", "o": "OW1", "p": "P IY1", "q": "K Y UW1",
+    "r": "AA1 R", "s": "EH1 S", "t": "T IY1", "u": "Y UW1", "v": "V IY1", "w": "D AH1 B AH0 L Y UW0", "x": "EH1 K S",
+    "y": "W AY1", "z": "Z IY1",
 }
 _FRACTIONS = {(1, 2): [["one", "half"], ["a", "half"]], (1, 3): [["one", "third"]], (2, 3): [["two", "thirds"]],
               (1, 4): [["one", "quarter"], ["one", "fourth"]], (3, 4): [["three", "quarters"], ["three", "fourths"]]}
@@ -155,14 +159,28 @@ class Unit:
     surface: str
     key: str
     kind: str                       # word | number | symbol | abbrev | acronym | unknown
-    prons: set | None               # set[tuple[str,...]] 音素列(stress無視)。None=判定不能
+    prons: set | None               # set[tuple[str,...]] 音素列(強勢2値)。None=判定不能。語unitは『強勢読みのみ』
     rep_prons: set | None = None    # 代表発音のみ(固有名詞・variant爆発時の縮退用)
     rule: str = ""
     why: str = ""
+    own_strong: set | None = None   # 語unitの『自分自身のCMU強勢読み』(contraction展開を含まない)
+    rep_strong: tuple | None = None # 語unitの代表(先頭)強勢読み
+    exp_strong: set | None = None   # contraction展開(承認済み標準表)の強勢読み
+    all_prons: set | None = None    # 語unitの全読み(弱形含む。承認済みdespaced規則[綴り連結一致]の判定専用)
 
 
 def _strip_stress(ph: str) -> tuple:
-    return tuple(re.sub(r"\d", "", ph).split())
+    """P-01: 強勢を除去せず2値化(AH1/AH2->AH1, AH0->AH0)。billow(B IH1 L OW0)とbelow(B IH0 L OW1)は別物のまま。"""
+    return _hp._stress2_tokens(ph)
+
+
+def _is_stressed_reading(r: tuple) -> bool:
+    return _hp._has_stressed_vowel(r)
+
+
+def _strong(ps):
+    """P-02: 強勢母音を含む読みだけ(弱形のみの読み[are=ER0等]での一致を許さない)。"""
+    return {r for r in (ps or ()) if _is_stressed_reading(r)}
 
 
 def _word_prons(w: str, representative: bool = False) -> set | None:
@@ -209,7 +227,7 @@ def _concat_words(word_lists: list[list[str]], representative: bool = False) -> 
         sets = []
         ok = True
         for w in words:
-            s = _word_prons(w, representative)
+            s = _strong(_word_prons(w, representative))
             if not s:
                 ok = False
                 break
@@ -235,6 +253,11 @@ def _letters_prons(letters: str) -> set | None:
 
 def _surface_key(s: str) -> str:
     return re.sub(r"[^a-z0-9]+", "", unicodedata.normalize("NFKC", s).lower())
+
+
+def _word_key(s: str) -> str:
+    """語unitの整列key。アポストロフィを残す(we're/were, I'll/ill, he'll/hell, we'd/wed を『表層が同じ』と誤認しない)。"""
+    return re.sub(r"[^a-z0-9']+", "", unicodedata.normalize("NFKC", s).lower().replace("’", "'")).strip("'")
 
 
 _TOKEN_RE = re.compile(
@@ -382,8 +405,8 @@ def _units(text: str, entity_tokens: set) -> list[Unit]:
             out.append(_num_units(s, g, False))
         elif g == "sym":
             reads = SYMBOL_READINGS.get(s)
-            out.append(Unit(s, "", "symbol", _concat_words(reads) if reads else None, rule="symbol_reading",
-                            why="" if reads else "symbol_unsupported"))
+            why = "" if reads else ("ambiguous_symbol(#)" if s in AMBIGUOUS_SYMBOLS else "symbol_unsupported")
+            out.append(Unit(s, "", "symbol", _concat_words(reads) if reads else None, rule="symbol_reading", why=why))
         elif g == "dotted":
             letters = re.sub(r"[^A-Za-z]", "", s)
             out.append(Unit(s, letters.lower(), "acronym", _letters_prons(letters), rule="acronym_letters"))
@@ -395,6 +418,9 @@ def _units(text: str, entity_tokens: set) -> list[Unit]:
             if low.endswith("'") and len(low) > 1 and low[-2] != "s":
                 low = low.rstrip("'")
             is_caps = core.isupper() and len(core) >= 2 and core.isalpha()
+            if low in AMBIGUOUS_ABBREVIATIONS and (has_dot or is_caps):
+                out.append(Unit(core, _surface_key(core), "abbrev", None, rule="abbreviation", why="ambiguous_abbreviation(St/Dr/Mt)"))
+                continue
             if low in ABBREVIATIONS and (low not in _ABBR_NEEDS_DOT_OR_CAPS or has_dot or is_caps):
                 out.append(Unit(core, _surface_key(core), "abbrev", _concat_words(ABBREVIATIONS[low]),
                                  rep_prons=None, rule="abbreviation"))
@@ -405,26 +431,79 @@ def _units(text: str, entity_tokens: set) -> list[Unit]:
                 continue
             if is_caps and len(core) <= 5:
                 lp = _letters_prons(core)
-                wp = _word_prons(low)
+                wp = _strong(_word_prons(low, True))     # P-04: 文字読み+代表発音のみ(CMUの展開variantは除外)
                 ps = (lp or set()) | (wp or set())
                 out.append(Unit(core, low, "acronym", ps or None, rule="acronym_letters_or_word"))
                 continue
             ent = low in entity_tokens
-            prons = _word_prons(low, representative=ent)
+            if len(low) >= 2 and not re.search(r"[aeiouy]", low):
+                # P-04: 母音字の無い綴り(tv/st/dr/mt/ft等)は略語であり、CMUが誤って付ける展開variant(tv->television)を使わない
+                out.append(Unit(core, _surface_key(core), "word", None, rule="cmu_word", why="vowelless_token_abbreviation_like"))
+                continue
+            all_p = _word_prons(low, representative=False)
+            own = _strong(_word_prons(low, representative=ent))
+            rep_p = _strong(_word_prons(low, representative=True))
             rule = "cmu_word"
             exp = _val_contractions().get(low)
+            exp_set = set()
             if exp:
-                # 承認済み標準contraction(否定保持/非否定。val.expand_standard_contractionsと同一表)の展開形も読みの候補にする
+                # 承認済み標準contraction(否定保持/非否定。val.expand_standard_contractionsと同一表)の展開形(閉じた表なのでentityでも使う)
                 alt = _concat_words([exp.split()], representative=ent)
                 if alt:
-                    prons = (prons or set()) | alt
+                    exp_set = set(alt)
                     rule = "contraction_expand"
-            out.append(Unit(core, _surface_key(core), "word", prons, rep_prons=_word_prons(low, True), rule=rule,
-                            why="" if prons else "cmu_unregistered"))
+            out.append(Unit(core, _word_key(core), "word", None, rep_prons=rep_p or None, rule=rule,
+                            why="" if (own or exp_set) else "cmu_unregistered_or_no_strong_reading",
+                            own_strong=own, rep_strong=_hp.representative_strong_reading(low), exp_strong=exp_set,
+                            all_prons=all_p))
+            out[-1].prons = (own | exp_set) or None
     return out
 
 
 # ---------------------------------------------------------------- 比較
+NEGATION_WORDS = {"not", "no", "never", "none", "nobody", "nothing", "neither", "nor", "cannot", "without", "nowhere"}
+
+
+def _build_number_vocab() -> frozenset:
+    """P-07: 数・記号を含むspanに混ざってよい『数の読み語彙』(基数・序数・位取り・and/point/oh/percent/通貨・時刻・分数・記号/略語の展開語・文字名)。"""
+    v: set = set(_ONES) | {t for t in _TENS if t} | {"hundred", "thousand", "million", "billion", "trillion", "and", "point", "oh",
+        "zero", "minus", "negative", "percent", "o'clock", "half", "quarter", "quarters", "thirds", "third", "fourth", "fourths",
+        "a", "am", "pm", "plus", "equals", "equal", "at", "per", "hour", "dollar", "dollars", "cent", "cents", "pound", "pounds",
+        "penny", "pence", "euro", "euros", "degree", "degrees"}
+    for n in list(range(0, 1001)) + [1100, 2000, 10 ** 6]:
+        for w in cardinal_variants(n):
+            v.update(w)
+            v.update(_ordinal_of_words(w))
+    for exps in ABBREVIATIONS.values():
+        for e in exps:
+            v.update(e)
+    v.update(_LETTER_NAMES.keys())
+    for rs in SYMBOL_READINGS.values():
+        for e in rs:
+            v.update(e)
+    return frozenset(v)
+
+
+_TENS_PLURALS = frozenset(t[:-1] + "ies" for t in _TENS if t)    # twenties..nineties(年代)
+_NUMBER_VOCAB = _build_number_vocab()
+_VOCAB_HOMOPHONE_CACHE: dict = {}
+
+
+def _in_number_vocab(u: "Unit") -> bool:
+    w = u.surface.lower().rstrip(".")
+    if w.endswith("'s"):
+        w = w[:-2]                       # one's / two's(数+'s)
+    if w in _NUMBER_VOCAB or w in _TENS_PLURALS:
+        return True
+    if "-" in w and all(p in _NUMBER_VOCAB or p in _TENS_PLURALS for p in w.split("-") if p):
+        return True                       # twenty-eight / thirty-first(複合数詞)
+    # 数詞と同音の普通の語(to/too->two, for->four, won->one, ate->eight)。strict(canonical=語彙語, asr=その語)
+    if w not in _VOCAB_HOMOPHONE_CACHE:
+        _VOCAB_HOMOPHONE_CACHE[w] = any(
+            _hp.strict_homophone_pair(v, w) for v in _NUMBER_VOCAB if len(v) > 1 and v.isalpha())
+    return _VOCAB_HOMOPHONE_CACHE[w]
+
+
 @dataclass
 class SpanRecord:
     canon_span: list
@@ -432,6 +511,10 @@ class SpanRecord:
     equivalent: bool
     rule: str
     why: str = ""
+    matched: list = field(default_factory=list)         # 一致した読み(最大3、音素列文字列)
+    representative_match: bool | None = None            # 代表発音同士でも一致したか(False=非代表variantのみ=警告)
+    heteronym_guard: bool = False                       # 同形異音語ガード(P-03)を適用した語unitがあったか
+    warnings: list = field(default_factory=list)
 
 
 @dataclass
@@ -444,26 +527,69 @@ class EquivalenceResult:
     asr_units: list = field(default_factory=list)
     contraction_expanded: bool = False
     version: str = LAYER_VERSION
+    warnings: list = field(default_factory=list)    # P-08: 空=警告なし。非空=PASS_WITH_WARNING+事後試聴の対象
+
+    @property
+    def verdict(self) -> str:
+        if not self.equivalent:
+            return "NOT_EQUIVALENT"
+        return "PASS_WITH_WARNING" if self.warnings else "PASS"
 
     def audit(self) -> dict:
-        return {"version": self.version, "equivalent": self.equivalent, "reason": self.reason,
-                "rules": list(self.rules), "contraction_expanded": self.contraction_expanded,
+        return {"version": self.version, "flag_enabled": is_enabled(), "stress_mode": STRESS_MODE,
+                "equivalent": self.equivalent, "verdict": self.verdict, "reason": self.reason,
+                "rules": list(self.rules), "warnings": list(self.warnings), "contraction_expanded": self.contraction_expanded,
                 "spans": [{"canon": r.canon_span, "asr": r.asr_span, "equivalent": r.equivalent, "rule": r.rule,
-                           "why": r.why} for r in self.spans]}
+                           "why": r.why, "matched_variants": r.matched, "representative_match": r.representative_match,
+                           "heteronym_guard": r.heteronym_guard, "warnings": r.warnings} for r in self.spans]}
 
 
-def _joint(units: list[Unit], representative: bool) -> set | None:
+def _unit_set(u: Unit, side: str, mode: str, representative_only: bool = False, numeric_ctx: bool = False,
+              exp_only: bool = False) -> set | None:
+    """unitの読み候補。mode='policy': 語unitにP-02/P-03を適用
+         canonical側: 強勢読みが『ただ1つ』の語だけ(同形異音語は不可)。ASR側: 代表(先頭)強勢読みのみ。
+         contraction unitは自身のCMU読み(同上)に承認済み展開の読みを加える。
+       mode='loose': 強勢読みのすべて(承認済みdespaced規則=綴り連結一致の判定用)。
+       mode='rep': 両側とも代表強勢読みのみ(警告判定=非代表variantでしか一致しないか)。
+    数・記号・略語・頭字語は閉じた表から作った固定の読み(モードに依らない)。"""
+    if u.kind != "word":
+        return u.prons
+    own = u.own_strong or set()
+    exp = u.exp_strong or set()
+    _sl = u.surface.lower().rstrip(".")
+    if numeric_ctx and (_sl in _NUMBER_VOCAB or _sl in _TENS_PLURALS or (_sl.endswith("'s") and _sl[:-2] in _NUMBER_VOCAB)
+                        or ("-" in _sl and all(p in _NUMBER_VOCAB for p in _sl.split("-") if p))):
+        # 数の読み語彙そのもの(twenty/first/and/dollars等)は同形異音語ではなく弱化variantのみ=強勢読みすべてを使う
+        return (own | exp) or None
+    if mode == "loose":
+        return ((u.all_prons or own) | exp) or None
+    rep = {u.rep_strong} if u.rep_strong else set()
+    if exp_only and exp:
+        # 個数の違う語span(1:n/n:m)ではcontractionは承認済みの展開形としてのみ使う(自身のCMU読みで語境界をまたがない:
+        # corbeil<->korb i'll 型の誤同値を防ぐ)
+        return exp
+    if mode == "rep":
+        return ((rep & own) | exp) or None
+    if side == "c":
+        base = own if len(own) == 1 else set()
+        if representative_only:
+            base = base & rep
+    else:
+        base = rep & own
+    return (base | exp) or None
+
+
+def _joint(units: list[Unit], side: str, mode: str, representative_only: bool = False, numeric_ctx: bool = False,
+           exp_only: bool = False) -> set | None:
     sets = []
     for u in units:
-        s = (u.rep_prons if representative and u.rep_prons else u.prons)
-        if representative and u.kind in ("number", "symbol", "abbrev", "acronym"):
-            s = u.prons      # 記号・数・略語は固定の閉じた候補(代表縮退しない)
-        if not s:
+        s_ = _unit_set(u, side, mode, representative_only, numeric_ctx, exp_only)
+        if not s_:
             return None
-        sets.append(s)
+        sets.append(s_)
     n = 1
-    for s in sets:
-        n *= len(s)
+    for s_ in sets:
+        n *= len(s_)
     if n > MAX_JOINT:
         return None
     return {tuple(x for part in combo for x in part) for combo in itertools.product(*sets)}
@@ -475,6 +601,8 @@ def _span_rule(cu: list[Unit], au: list[Unit]) -> str:
                     ("acronym", "acronym_letters")):
         if k in kinds:
             return name
+    if any(u.rule == "contraction_expand" for u in cu + au):
+        return "contraction_or_homophone"
     if len(cu) != len(au):
         return "word_boundary_cmu_equal"
     return "cmu_homophone"
@@ -484,52 +612,103 @@ def _letters(units: list[Unit]) -> str:
     return "".join(re.sub(r"[^a-z]", "", u.surface.lower()) for u in units)
 
 
-def _judge_span(c_span: list[Unit], a_span: list[Unit], representative_only: bool, entity_tokens: set):
-    """1つの差spanの判定 -> (同値?, rule, why)。
-    語だけのspanは承認済みの既存条件を超えない: 同数(n:n)は『位置ごとのCMU同音』(既存1:1同音救済と同じ単位)、
-    個数が違うとき(1:n)は ①綴り連結が一致(複合語の分かち書き差=承認済みdespaced規則) または ②er094(PNMH-01承認済み多語同音条件)の純関数。
-    数・記号・略語・頭字語を含むspanは、閉じた読み表から作った音素列集合の交差で判定する。"""
+def _span_warnings(c_span, a_span, rep_ok: bool | None) -> list:
+    w = []
+    surf = [u.surface.lower() for u in c_span + a_span]
+    if any(x in NEGATION_WORDS or x.endswith("n't") for x in surf):
+        w.append("negation_word_homophone")
+    if rep_ok is False:
+        w.append("non_representative_variant_match")
+    return w
+
+
+def _fmt(t: tuple) -> str:
+    return " ".join(t)
+
+
+def _judge_span(c_span: list[Unit], a_span: list[Unit], representative_only: bool, entity_tokens: set) -> SpanRecord:
+    cs, as_ = [u.surface for u in c_span], [u.surface for u in a_span]
+    rec = SpanRecord(cs, as_, False, "", "")
+    plain = [u for u in c_span + a_span if u.kind == "word"]
+    non_word = [u for u in c_span + a_span if u.kind != "word"]
+    rec.heteronym_guard = any(u.rule == "cmu_word" for u in plain)
+    # P-07: 数・記号・略語・頭字語を含むspanに混ざる普通の語は数の読み語彙(とその同音語)に限る
+    if non_word:
+        stray = [u.surface for u in plain if not _in_number_vocab(u)]
+        if stray:
+            rec.rule, rec.why = _span_rule(c_span, a_span), "ordinary_word_in_numeric_span:" + ",".join(stray)
+            return rec
     all_words = all(u.kind == "word" and u.rule != "contraction_expand" for u in c_span + a_span)
-    if all_words:
-        if len(c_span) == len(a_span):
-            for cu_, au_ in zip(c_span, a_span):
-                vc = _joint([cu_], representative_only) or _joint([cu_], True)
-                va = _joint([au_], representative_only) or _joint([au_], True)
-                if vc is None or va is None:
-                    return False, "incomparable", "incomparable(variant過多)"
-                if not (vc & va):
-                    return False, "cmu_homophone", "phoneme_differs"
-            return True, "cmu_homophone", "phoneme_equal"
+    if all_words and len(c_span) != len(a_span):
         if _letters(c_span) == _letters(a_span):
-            # 複合語の分かち書き・ハイフン位置の差のみ(綴り連結が同一)。承認済みdespaced規則と同じ基準
-            vc, va = _joint(c_span, False), _joint(a_span, False)
+            # 複合語の分かち書き・ハイフン位置の差のみ(綴り連結が同一)。承認済みdespaced規則と同じ基準(variantは全強勢読み)
+            vc, va = _joint(c_span, "c", "loose"), _joint(a_span, "a", "loose")
+            rec.rule = "compound_spacing"
             if vc is not None and va is not None and not (vc & va):
-                return False, "compound_spacing", "phoneme_differs"
-            return True, "compound_spacing", "letters_equal_and_phoneme_compatible"
-        import er094_multiword_homophone_01 as _mw   # 承認済み多語同音条件をそのまま再利用(再実装しない)
+                rec.why = "phoneme_differs"
+                return rec
+            rec.equivalent, rec.why = True, "letters_equal_and_phoneme_compatible"
+            return rec
+        import er006_preprod_hardening_01_validation as _val   # 承認済み多語同音条件(PNMH-01)を、valが保持する同一moduleからそのまま再利用(再実装しない。
+        _mw = _val._mw_homophone                                # er094を直接importするのはvalだけ=er094 StaticChecksの『valのみimport』を保つ)
         toks_c = [u.surface.lower() for u in c_span]
         toks_a = [u.surface.lower() for u in a_span]
         ent = all(u.surface.lower() in entity_tokens or u.surface in entity_tokens for u in c_span)
+        rec.rule = "multiword_homophone_er094"
         if _mw.multiword_span_equivalent_v3(toks_c, toks_a, ent):
-            return True, "multiword_homophone_er094", "er094_conditions_and_phoneme_equal"
-        return False, "multiword", "outside_approved_multiword_conditions_or_phoneme_differs"
-    vc = _joint(c_span, representative_only) or _joint(c_span, True)
-    va = _joint(a_span, representative_only) or _joint(a_span, True)
+            rec.equivalent, rec.why = True, "er094_conditions_and_phoneme_equal"
+            rec.warnings = _span_warnings(c_span, a_span, None)
+        else:
+            rec.why = "outside_approved_multiword_conditions_or_phoneme_differs"
+        return rec
+    rec.rule = _span_rule(c_span, a_span)
+    if len(c_span) == len(a_span) and all(u.kind == "word" for u in c_span + a_span):
+        # 同数の語span: 位置ごとに判定(既存1:1同音救済と同じ単位。語境界をまたぐ連結をさせない)
+        for cu_, au_ in zip(c_span, a_span):
+            if len(cu_.surface.rstrip(".")) == 1 or len(au_.surface.rstrip(".")) == 1:
+                rec.why = "single_letter_token_not_equalized"      # tea<->T 等。文字読みの同値は頭字語spanでのみ扱う
+                return rec
+            vc = _joint([cu_], "c", "policy", representative_only)
+            va = _joint([au_], "a", "policy", representative_only)
+            if vc is None or va is None:
+                rec.why = "incomparable(同形異音語/強勢読み無し)"
+                return rec
+            if not (vc & va):
+                rec.why = "phoneme_differs"
+                return rec
+            rec.matched.append(_fmt(sorted(vc & va)[0]))
+        vcr = [_joint([x], "c", "rep") for x in c_span]
+        var = [_joint([x], "a", "rep") for x in a_span]
+        rec.representative_match = all(a1 and b1 and (a1 & b1) for a1, b1 in zip(vcr, var))
+        rec.equivalent, rec.why = True, "phoneme_equal"
+        rec.warnings = _span_warnings(c_span, a_span, rec.representative_match)
+        return rec
+    nctx = any(u.kind in ("number", "symbol") for u in non_word)   # 数読み語彙のloose化は数・記号spanだけ(略語/頭字語spanでは使わない)
+    eo = (not non_word) and len(c_span) != len(a_span)             # 語だけで個数が違うspan: contractionは展開形のみ
+    vc = _joint(c_span, "c", "policy", representative_only, nctx, eo)
+    va = _joint(a_span, "a", "policy", representative_only, nctx, eo)
     if vc is None or va is None:
-        return False, "incomparable", "incomparable(variant過多)"
-    rule = _span_rule(c_span, a_span)
-    ok = bool(vc & va)
-    return ok, rule, "phoneme_equal" if ok else "phoneme_differs"
+        rec.why = "incomparable(同形異音語/variant過多/強勢読み無し)"
+        return rec
+    common = vc & va
+    if not common:
+        rec.why = "phoneme_differs"
+        return rec
+    rec.matched = [_fmt(x) for x in sorted(common)[:3]]
+    vcr, var = _joint(c_span, "c", "rep", numeric_ctx=nctx, exp_only=eo), _joint(a_span, "a", "rep", numeric_ctx=nctx, exp_only=eo)
+    rec.representative_match = bool(vcr and var and (vcr & var))
+    rec.equivalent, rec.why = True, "phoneme_equal"
+    rec.warnings = _span_warnings(c_span, a_span, rec.representative_match)
+    return rec
 
 
 def evaluate(canonical: str, asr: str, *, representative_only: bool = False) -> EquivalenceResult:
     """canonical(期待文)とasr(転写)が『発音として同値』かを判定する純関数。
-    representative_only=True: 全wordを代表発音(CMU先頭variant)のみで比較(より厳格。設計比較用)。"""
+    representative_only=True: canonical側も代表強勢読みのみで比較(より厳格。設計比較用)。"""
     if asr is None or canonical is None:
         return EquivalenceResult(False, "none_input")
     import er006_preprod_hardening_01_validation as val   # 遅延import(循環回避。純関数のみ使用)
     c_text, a_text = canonical, asr
-    expanded = False
     entity_tokens = set()
     try:
         entity_tokens = set(val.capitalized_flags(canonical)) | set(val.loanword_flags(canonical))
@@ -541,7 +720,7 @@ def evaluate(canonical: str, asr: str, *, representative_only: bool = False) -> 
     ck = [u.key or u.surface for u in cu]
     ak = [u.key or u.surface for u in au]
     sm = difflib.SequenceMatcher(None, ck, ak, autojunk=False)
-    res = EquivalenceResult(False, "", contraction_expanded=expanded, canon_units=cu, asr_units=au)
+    res = EquivalenceResult(False, "", canon_units=cu, asr_units=au)
     n_diff = 0
     for tag, i1, i2, j1, j2 in sm.get_opcodes():
         if tag == "equal":
@@ -560,15 +739,18 @@ def evaluate(canonical: str, asr: str, *, representative_only: bool = False) -> 
         bad = [u for u in c_span + a_span if not u.prons]
         if bad:
             res.spans.append(SpanRecord(cs, as_, False, "incomparable", ",".join(sorted({u.why or u.kind for u in bad}))))
-            res.reason = "incomparable(CMU未登録/解析不能のため同値化しない)"
+            res.reason = "incomparable(CMU未登録/解析不能/曖昧略語のため同値化しない)"
             return res
-        ok, rule, why = _judge_span(c_span, a_span, representative_only, entity_tokens)
-        res.spans.append(SpanRecord(cs, as_, ok, rule, why))
-        if not ok:
-            res.reason = why
+        rec = _judge_span(c_span, a_span, representative_only, entity_tokens)
+        res.spans.append(rec)
+        if not rec.equivalent:
+            res.reason = rec.why
             return res
-        if rule not in res.rules:
-            res.rules.append(rule)
+        if rec.rule not in res.rules:
+            res.rules.append(rec.rule)
+        for w in rec.warnings:
+            if w not in res.warnings:
+                res.warnings.append(w)
     if n_diff == 0:
         res.equivalent = True
         res.reason = "surface_equal_after_normalization"

@@ -4,8 +4,10 @@
 import json
 import sys
 
-SRC = "docs/research/ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01/pattern_probe_01.json"
-OUT = "docs/research/ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01/PATTERN_CATALOG_01.md"
+_REV = "02" if "--rev02" in sys.argv else "01"
+SRC = ("docs/research/ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01/pattern_probe_01.json" if _REV == "01" else
+       "docs/research/ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01/pattern_probe_02_aho02.json")
+OUT = f"docs/research/ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01/PATTERN_CATALOG_{_REV}.md"
 
 # id -> (class, 根拠・未対応の理由・対策)
 CLASS = {
@@ -39,10 +41,22 @@ CLASS = {
     "N30": ("D", "値は同じだが読み(a hundred/one hundred)が違う。既存はPASSさせる(承認済み値等価)。同等にするかではなく現状維持"),
     "A23": ("A", "CMUのus変種(Y UW EH S)と既存の大小無視により国名US/代名詞usは既存で同一視(承認済み挙動)。注意事項としてOpusへ"),
 }
+# 委任_02(--rev02): B不具合3件は修正済み(単独commit)、Opus P-04で曖昧略語はfail-closedへ、P-09で漏れをC/Eへ分類
+CLASS_02 = {
+    "N11": ("B(修正済)", "委任_02でB-1修正: 値ガードatomへ val._convert_compound_ordinal_words を再利用(再実装なし)。`21st`との値DIFFが消え、最終ゲートが再否定しない。値違い(22nd)は従来どおりDIFF"),
+    "H04": ("B(修正済)", "委任_02でB-2修正: 1語/短文のratio<0.4は、token数同一・差の全位置が承認済み同音判定でTrue・entityでない・同形異音語でない場合のみ迂回(`seize`/`sees`はPASS、`seize`/`cease`・`lead`/`led`はNG)"),
+    "H13": ("B(修正済)", "同上(B-2)"), "H19": ("B(修正済)", "同上(B-2)"),
+    "M06": ("B(修正済)", "B-2の迂回は1:1置換のみ(多語同音PNMHは対象外)。短文の多語同音の到達性は本修正の範囲外のまま(C扱い、ユーザー判断事項に整理)"),
+    "A10": ("C", "Opus P-04: `Dr.`はdoctor/driveの曖昧略語=fail-closed。文脈(後続が固有名詞等)で解決する案は新仕様候補"),
+    "A11": ("C", "Opus P-04: `St.`はSaint/Streetの曖昧略語=fail-closed。同上"),
+    "A15": ("D", "Opus P-04: 大文字略語はCMUの展開variant(tv->television)を使わない。`TV`<->`television`は同値にしない"),
+}
 KP_ONLY_FAIL_C = "C-KP"   # 本文(Tier1)はPASS、KP/Whisper票で不合格
 
 
 def klass(r):
+    if _REV == "02" and r["id"] in CLASS_02:
+        return CLASS_02[r["id"]]
     if r["id"] in CLASS:
         return CLASS[r["id"]]
     if not r["same_pron_expected"]:
@@ -54,7 +68,7 @@ def klass(r):
     return ("C", "既存は不合格(要個別確認)")
 
 
-PREAMBLE = """# PATTERN_CATALOG_01(ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01 委任_01、2026-10-22。API 0・Production無編集)
+PREAMBLE = """# PATTERN_CATALOG_%REV%(ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01 %DELEG%、2026-10-22。API 0)
 
 生成: `er109_pattern_catalog_md_01.py`(入力=`pattern_probe_01.json`=`er109_pattern_probe_01.py`の実行結果)。ユーザー例示は下限であり、本表は体系的な洗い出し(数/所有格・短縮形/同音異綴/語境界/略語・記号/ハイフン・句読点・大小/ASR自動整形)の代表例149件。
 
@@ -86,6 +100,11 @@ EXTRA = """
 | 国名/代名詞 `US`/`us` | `the US` / `the us` | CMUのus変種(Y UW EH S)と既存の大小無視で既存が同一視(承認済み挙動、Opus注意事項) |
 | CMU音素表記の差 | `tyre`/`tire`(R vs ER) | E: 辞書限界。同値にしない(残存偽NG)。補完辞書は別判断 |
 | 固有名詞の表記ゆれ | `Kristie`/`Christie` | 既存G9(代表発音のみ・entity_like)を尊重。er109は固有名詞(canonical側大文字始まり)を代表発音のみで比較 |
+| (委任_02 P-09)月名の後の日付 | `March 5` <-> `March fifth` | C: 序数読みへの変換規則が無い(月名+数の限定規則は新仕様候補)。er109は非同値 |
+| (委任_02 P-09)語順が入れ替わる通貨 | `$5 million` <-> `five million dollars` | C: 単位語が数の後ろへ移る語順規則が無い。er109は非同値 |
+| (委任_02 P-09)スラッシュ数 | `24/7` / `9/11` | C: 読みが一意でない(twenty four seven / nine eleven)。分数以外は未対応=非同値 |
+| (委任_02 P-09)ローマ数字(KP) | `World War II` <-> `2` | C-KP: 本文は既存Tier1。KPは非適用。er109は非同値 |
+| (委任_02 P-09)英式綴り -ise/-yse | `organise`, `analyse` | E: CMU未登録=判定不能(fail-closed)。補完辞書は別判断 |
 | 4桁を年と読むか数と読むか | `2024` | 年読み(twenty twenty four)と基数読み(two thousand ...)の両候補のどれか一致で同値 |
 """
 
@@ -108,7 +127,7 @@ def main():
                f"- 負例(発音が異なる、n={sm['neg']['er109'][1]}): 既存の誤PASS {sm['neg']['body_final_after_value_gate'][0]}(N30: 値は同じで読みだけ違う=承認済み値等価)、"
                f"**er109の誤同値 {sm['neg']['er109'][0]}**\n"
                f"- 分類件数: " + ", ".join(f"{k}={v}" for k, v in sorted(cnt.items())) + "\n")
-    open(OUT, "w", encoding="utf-8", newline="\n").write(PREAMBLE.replace("{SUMMARY}", summary) + "\n".join(lines) + "\n" + EXTRA)
+    open(OUT, "w", encoding="utf-8", newline="\n").write(PREAMBLE.replace("%REV%", _REV).replace("%DELEG%", "委任_01" if _REV == "01" else "委任_02(Opus P-01〜P-09是正後er109 v1・B不具合修正後のProduction判定で再測定)").replace("{SUMMARY}", summary) + "\n".join(lines) + "\n" + EXTRA)
     print(dict(cnt))
 
 

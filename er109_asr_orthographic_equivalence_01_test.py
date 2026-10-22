@@ -37,8 +37,8 @@ class Positives(unittest.TestCase):
 
     def test_symbols_abbreviations(self):
         for c, a in [("rock & roll", "rock and roll"), ("two plus two", "2 + 2"), ("Tom vs. Jerry", "Tom versus Jerry"),
-                     ("Mr. Smith", "mister Smith"), ("Dr. Lee", "doctor Lee"), ("OK", "okay"), ("FBI agent", "F B I agent"),
-                     ("the AI model", "the A.I. model"), ("St. Louis", "Saint Louis")]:
+                     ("Mr. Smith", "mister Smith"), ("OK", "okay"), ("FBI agent", "F B I agent"),
+                     ("the AI model", "the A.I. model"), ("5 min.", "5 minutes")]:
             with self.subTest(c=c, a=a):
                 self.assertTrue(eq(c, a))
 
@@ -80,6 +80,72 @@ class Negatives(unittest.TestCase):
                      ("because it works", "'cause it works"), ("I want to go", "I wanna go")]:
             with self.subTest(c=c, a=a):
                 self.assertFalse(eq(c, a))
+
+
+class OpusMustFix(unittest.TestCase):
+    """委任_02: Opus必須レビュー P-01〜P-08 の是正test(誤同値になってはいけない実例=CMUで確認済み)。"""
+
+    def test_p01_stress_is_binary_not_removed(self):
+        for c, a in [("billow", "below"), ("for tea", "40"), ("the billow", "the below")]:
+            with self.subTest(c=c, a=a):
+                self.assertFalse(eq(c, a))
+        self.assertTrue(eq("ok", "okay"))          # OW1/OW2は同じ『強勢あり』=同値を維持
+
+    def test_p02_weak_form_only_match_is_not_equivalent(self):
+        for c, a in [("are", "or"), ("we're here", "were here"), ("our house", "are house"), ("are you", "our you"),
+                     ("I'll go", "ill go"), ("he'll go", "hell go"), ("we'll go", "well go")]:
+            with self.subTest(c=c, a=a):
+                self.assertFalse(eq(c, a))
+
+    def test_p03_heteronym_is_not_equalized(self):
+        for c, a in [("lead pipe", "led pipe"), ("a desert", "a dessert"), ("the wind", "the wined"), ("bass drum", "base drum"),
+                     ("I read it", "I red it"), ("I won", "I one"), ("route", "root")]:
+            with self.subTest(c=c, a=a):
+                self.assertFalse(eq(c, a))
+        # 単一読みのcanonical + 綴りの違いは従来どおり同値(seize/sees型)
+        self.assertTrue(eq("seize it", "sees it"))
+        self.assertFalse(eq("seize it", "cease it"))
+
+    def test_p04_ambiguous_abbreviations_fail_closed(self):
+        for c, a in [("St. Louis", "Street Louis"), ("St. Louis", "Saint Louis"), ("Dr. Lee", "drive Lee"), ("Dr. Lee", "doctor Lee"),
+                     ("Mt. Fuji", "mountain Fuji"), ("# 5", "number 5"), ("# 5", "hash 5"), ("TV show", "television show"),
+                     ("tv show", "television show"), ("the st. is", "the street is")]:
+            with self.subTest(c=c, a=a):
+                self.assertFalse(eq(c, a))
+        self.assertTrue(eq("5 min.", "5 minutes"))   # 同じ語の活用違いだけの略語は許す
+        self.assertTrue(eq("TV show", "TV show"))
+
+    def test_p07_ordinary_words_in_numeric_span_limited(self):
+        self.assertFalse(eq("for tea", "40"))
+        self.assertFalse(eq("I eat 40", "I eat for tea"))
+        self.assertTrue(eq("to go", "2 go"))
+        self.assertTrue(eq("for sale", "4 sale"))
+        self.assertTrue(eq("one hundred and five", "105"))
+
+    def test_p08_warning_policy_and_audit_fields(self):
+        r = e.evaluate("no way", "know way")
+        self.assertTrue(r.equivalent)
+        self.assertEqual(r.verdict, "PASS_WITH_WARNING")
+        self.assertIn("negation_word_homophone", r.warnings)
+        r2 = e.evaluate("thirty percent", "30%")
+        self.assertEqual(r2.verdict, "PASS")        # 決定的規則=警告なし
+        a = r2.audit()
+        for k in ("version", "flag_enabled", "stress_mode", "verdict", "warnings"):
+            self.assertIn(k, a)
+        sp = a["spans"][0]
+        for k in ("matched_variants", "representative_match", "heteronym_guard"):
+            self.assertIn(k, sp)
+        self.assertFalse(a["flag_enabled"])
+
+    def test_p09_known_leaks_remain_ng_fail_closed(self):
+        # 記録済みの未救済(C/E分類): 誤同値にはならず従来どおり不合格のまま
+        for c, a in [("March 5", "March fifth"), ("$5 million", "five million dollars"), ("24/7", "twenty four seven"),
+                     ("World War II", "World War 2"), ("organise it", "organize it")]:
+            with self.subTest(c=c, a=a):
+                self.assertFalse(eq(c, a))
+
+    def test_single_letter_token_not_equalized(self):
+        self.assertFalse(eq("a cup of tea", "a cup of T"))
 
 
 class FailClosed(unittest.TestCase):

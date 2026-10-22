@@ -553,7 +553,7 @@ def test_new_ja_label_is_not_embedded_in_any_downstream_allowlist():
     hits = []
     for f in glob.glob(os.path.join(root, "*.py")):
         name = os.path.basename(f)
-        if name.endswith(("_test.py", "_test_01.py", "_test_02.py")) or name.startswith("er058_"):
+        if name.endswith(("_test.py", "_test_01.py", "_test_02.py")) or name.startswith(("er058_", "er109_")):   # er109_*=ASR-HOMOPHONE調査の研究script(未配線)
             continue
         try:
             if "NUMERIC_VALUE_EQUIVALENT_MATCH" in open(f, encoding="utf-8").read():

@@ -22138,3 +22138,10 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - Opus独立レビュー(条件A、2026-10-22。全文=docs/research/KP-QUALITY-IMPROVEMENT-2ITEMS-PRODUCTION-01/OPUS_REVIEW_COND_A_01.md、条件付きGO): Fable決定=OF-KPQ-P-01〜10全採用(must-fix: P-01再利用guardのskipは呼出元の明示引数`kp_vote_gate_follows`で行いlabel判定しない/P-02 M2 NG時の`keywords_canonicalized.json`即退避+noteの次周引継ぎ)。Q1 AMBIGUOUSは票の分類として維持、Q3 er104へ折込み単一実装(`kp_vote_check_v1`据え置き+`guard_lifted`加算、staging module削除)、Q5 R4 clitic分解はSSOT明記、Q6 M2はINVALID→外側retry。
 - 実装: ①配線 58932e328 / ②配線 a3bb2b50c / 撤去 65200313d。回帰は新規失敗0(残存の既存失敗は他task起因/単独PASS確認済み)。runtime evidence=docs/research/KP-QUALITY-IMPROVEMENT-2ITEMS-PRODUCTION-01/RUNTIME_EVIDENCE_01.md(実費約5円)。PRODUCTION_WIREDはFable受入後。
 - 影響: P-07解釈(b)(`NG_PROTECTED_DISSENT`)を置換(CURRENT_SPEC KP3V節)、KPFTブロックへCMU条件を追記。非KP音声・A/B/Cは不変。
+
+## 2026-10-22 ASR同一発音・異表記対策: Opus必須レビュー是正+B不具合3件の最小修正(ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01 委任_02、OPEN-459、Status=B_FIXED_C_VALIDATION_PENDING_FABLE)
+
+- Opus必須独立レビュー(条件付きGO、全文=docs/research/ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01/OPUS_REVIEW_MANDATORY_01.md): Fable決定=P-01〜P-12全採用。P-01〜P-06はVALIDATED前に必須、『新規誤同値0』の主張は敵対的負例の再測定まで保留。
+- **B不具合3件を既存承認仕様の不具合修正として実施**(自律・独立commit d9e36f54a。仕様追加ではない): B-1複合序数の値ガード(valの単一関数再利用)/B-2 1語・短文でratioゲートが承認済み同音救済より先行(token数同一・全差が既存同音True+strict_homophone_pair・entity/多語でない場合のみ迂回)/B-3 `60 %`。A/B/C/X/Z共通Validatorのため全Familyが同じ改善を受けるが、挙動変化は『不合格->合格』のみ(前後比較12,342件でPASS->NG 0)でProduction品質Gateの緩和ではない。CURRENT_SPEC該当2行へ追記。
+- er109(新規救済範囲C)は**未配線・既定OFFのまま**(PRODUCTION_WIREDではない)。v1でP-01〜P-09を是正、P-06/P-10/P-11は設計(DESIGN_ADDENDUM_02.md)。再検証=VALIDATION_02.md(敵対的負例で誤同値は閉じた略語表の単一展開4対のみ、保存4,879行ON/OFFでPASS->NG 0)。VALIDATEDの宣言とflag配線(11-7限定例外)の可否はFable。
+- 影響: 非KP最終ゲートの偽NG(複合序数・`60 %`)と1語KPの同音語偽NG(Z seize/sees)が解消。A/B/Cの挙動はNG->PASS方向のみ変化。ユーザー判断が必要な新仕様(採用判断材料)=Opus§5の7項目(DESIGN_ADDENDUM_02 §8)。
