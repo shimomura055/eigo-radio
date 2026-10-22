@@ -484,3 +484,4 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-22 | HR-QUEUE-TEST-CONTAMINATION-FIX-01 委任_01 | 単体テスト(er026)がProduction HR queueへmock行25件を書いていた問題をtest隔離で是正+混入行sidecar記録、HR queue本体無変更、回帰152/152 PASS、¥0。FIXED_RECORDED。
 - 2026-10-22 | PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02 委任_09 | Stage 2 第3巡(TTS側読み制御Trial): HRプロキシ25のうちKhaite綴り置換で実測3件PASS(推定9件=36%)、Meink/Altuzarra制御不能、供給不可4語0、誤読対照は置換後比較でPASS化し得る、費用JPY49.85。TRIAL_R3_DONE_PENDING_FABLE。
 - 2026-10-22 | PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02 委任_10 | Stage 2 Closeout: 本番判定器(M1込み)replayでHR基準値を取り直し(現行TTS HR 23[Melos除き19]、保存58=混入25+実質33→現行判定でHR 29)、Melosは別綴り聞き取り型のみM1解消済み。分類=判定側REJECTED/TTS入力側Khaite型VALIDATED条件付き/全体USER_DECISION_REQUIRED(UDR #147、推奨=現状維持)、費用JPY0。STAGE2_TRIAL_CLOSED_USER_DECISION_REQUIRED。
+- 2026-10-22 | FAMILY-X-KP-MINIMIZATION-PRODUCTION-PATH-TRIAL-03 委任_01(決定記録) | ユーザー決定を記録: KP選定gpt-6-luna維持(UDR #145)、選定・一般化2工程方式見送り・提案C GO(UDR #146)。OPEN-445/446 CLOSED、API 0・JPY0、Production無変更。

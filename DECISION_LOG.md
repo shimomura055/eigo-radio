@@ -22094,3 +22094,5 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - STOP根拠: Step A→B→Cを2回(第2巡・第3巡)回し、残る代替案(音素認識wav2vec2=判定側で天井低、Meink別制御=既存例なし、取得拡充=22ページ確認済み)の合理的な改善見込みが小さい(ユーザー§4終了条件)。費用余力は継続理由にならない。累計JPY128.94/300、Closeout 0円。
 - §8の判断(UDR #147): 取得発音のTTS入力側供給を新仕様として採用するか。(ア)現状維持(Fable推奨。Human Reviewは対象語で正しく機能、人手コストは月数件・1回限り)/(イ)A階層のみ自動供給+B階層は人承認登録(Production変更・Opus条件C・配線Trial必要)。方式の安全性は供給元の正しさに全面依存(Meink→Mink対照で実証)。
 - Production/正式Ledger/HR queue/Store/Validator/Prompt無変更(`closeout/protect_closeout.json`)。出典=docs/research/PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02/STAGE2_TRIAL_CLOSEOUT_01.md、STAGE2_TRIAL_RESULT_03.md §7・§8。
+
+## FAMILY-X-KP-SELECTION-* ユーザー決定(2026-10-22): KP選定モデル=gpt-6-luna維持(UDR #145/#146-A)。選定・一般化2工程方式(TRIAL-02 Trial②)=見送り(#146-B)。提案C=最小化条件を現行Production経路Promptへ組み込む比較Trial=GO(#146-C→FAMILY-X-KP-MINIMIZATION-PRODUCTION-PATH-TRIAL-03)。原文=docs/pm/delegation_log/2026-10-22_FAMILY-X-KP-MINIMIZATION-PRODUCTION-PATH-TRIAL-03_USER.md(190字、sha256 f32a06fb4793412d409ffc7f0d55b1394c8eb8aa4a39c612d48fe22842d0569f)。Production無変更。
