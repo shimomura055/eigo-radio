@@ -67,11 +67,21 @@ Toteme・Zabelina・Melos=取得なしで供給せず(ESTIMATED供給禁止 v4-5
 - Trial累計Cap300: 79.09+49.85=**128.94**(残171.06)。当日(JST 2026-10-22): 委任文の既使用約749.6+49.85=**約799.5/1,000**(残約200.5)。
 - 量産単価への影響: 読み制御は既存の置換辞書(`tts_safe_name_pronunciation_en`、`er003_v1_n3_01_tts_generate.py:990-999`)の拡張であり**追加API呼出0**(置換は文字列処理のみ)。HRが減ればHR起票・再生成retryが減るので量産単価は下がる方向だが、効果は本巡では語依存(Khaiteのみ)。ただしLedger→置換辞書への自動供給は現時点で未実装(Ledgerのhintはstyle注入[H相当]に使われる設計であり、R相当の置換は辞書手編集)。実装する場合は新仕様(Production挙動の意味的変更)でユーザー承認が必要。
 
-## 7. Fable独立評価、Trial終了Status
-(Fable記入欄)到達Status=`TRIAL_R3_DONE_PENDING_FABLE`。
+## 7. Fable独立評価、Trial終了Status(2026-10-22、委任_10 Closeout。数値は本番判定器[M1込み]replayで取り直し、`closeout/baseline_table.json`)
+到達Status=`STAGE2_TRIAL_CLOSED_USER_DECISION_REQUIRED`。
 
-## 8. Production採用に必要なユーザー判断
-(Fable記入欄)判断候補(Fable向け整理のみ): (a)B階層(報道/媒体1〜5件一致)の発音をTTS入力側へ供給してよいか(本巡のKhaite効果はB階層のみ)。(b)Ledgerの取得発音を置換辞書へ自動供給する仕様化(Production挙動変更)。(c)Reicher方式の置換後比較は誤供給をPASSにするため、供給元の品質ゲート(引用実在確認+複数出所)をどう置くか。いずれもProduction未採用・Trial結果のみ。
+**基準値の取り直し(要点)**: 第1〜3巡の「HRプロキシ(Primary/Azureの綴り一致)」はM1複数候補判定を通していなかった。本番の判定関数(`er006_secondary_asr_01.evaluate_attempt_with_cascade_detail`、M1・CS Equivalence・Tier3・統一judge込み)へ保存転写をそのまま通すと、(a)現行TTS 30 segment(take1)の本番判定HRは**23件、Melos(別掲)を除くと19件**(語別: Khaite 9/10、Toteme 3/4、Altuzarra 3/3、Meink 2/2、Canelé 2/2、Zabelina 0/1)。(b)保存HR事象58は、単体テスト混入25行(全てMelos、本番判定では全てM1で警告付きPASS)を除く**実質33件、うち現行判定でもHRは29件**(Melos 7、他22)。M1配線前(〜2026-10-13)30件中26件がHR継続(Melos 4件のみM1で解消)、M1配線後3件(全てMelos)。(c)**Melosは『Mello/Melo said』型の別綴り聞き取りはM1で解消済みだが、『Mallo』『Mellus』『Mellow Strength』等の別語聞き取り(実誤読の可能性が高い)はHRとして残る**(現行TTS 8 segment中HR 4)。詳細は`STAGE2_TRIAL_CLOSEOUT_01.md`。
+
+- 分類: **判定側の改善方式(計画v4の中核: 取得/推定発音とASR転写の音素照合、第1巡・第2巡)=`REJECTED`**(Opus Step Bの補正を入れてもHR削減0〜2件。天井約24%、実測0%。主因は判定ではなく現行TTSの実誤読)。**TTS入力側への取得発音供給(第3巡)=Khaite型に限り`VALIDATED(条件付き)`**(綴り置換でTTSが追従する語では8/8で全エンジン一致。本番判定器で通した場合も、Khaite HR segment 3本のうち2本は両takeでPASS、1本は1take PASS+1takeは無関係な「palm-sized→palm-size」差でNG。Meink/Altuzarraは制御不能、Toteme/Zabelina/Canelé/Melosは供給元なしまたは解消済み)。**Stage 2全体=`USER_DECISION_REQUIRED`**(Production採用の可否は下記8)。改善ループはStep A→B→Cを2回(第2巡・第3巡)回し、残る代替案(音素認識wav2vec2=判定側で天井低、Meink別制御=既存例なし・見込み低、取得拡充=22ページ確認済みで見込み低)はいずれも合理的な改善見込みが小さいため、ここでSTOPする(ユーザー§4の終了条件「原因分析と代替方式の検討により合理的な改善見込みがないと確認」に該当。予算は累計128.94/300で余裕があるが、費用があることは継続理由にならない)。
+- 最重要の事実: 対象7語がHuman Reviewに回る主因は「正しい音声の誤判定」ではなく「TTSが実際に誤読している」こと(現行TTSで複数ASRが揃って別語に聞き取る事象が多数。試聴ページ02/03で確認可能。ASR転写が根拠であり発音の正否は耳での確認が最終)。したがって**これらの語についてはHuman Reviewは正しく機能している**。Melosは既存のM1複数候補判定で『別綴り聞き取り型』が解消済み(第1〜3巡のHR件数にMelosを含めたのは過大で、途中報告で訂正済み。ただし別語聞き取り型の7事象/4 segmentはHR継続)。
+- 安全性: 全巡で明確な誤発音の新規誤PASS 0(拡充負例29本)。発音根拠の虚偽登録0、Production判定変更0、正式Ledger登録0。本番判定器replayでの負例30本: 28本NG、2本が警告付きPASS(n_toteme_V=Primaryが全固有名詞を正しく転写、n_melos_F2=『Mello said』をM1[承認済み仕様]が受理。音声の真の正否は断定しない)。誤供給対照6本は本番判定でも全てNG。
+- TTS入力側供給の限界(事実): Reicher→Riker方式は「置換後テキスト」でASR比較するため、**誤った発音を供給すればそれが正解として通る**(第3巡のMeink→Minkの対照で実証)。安全性は供給元の正しさに全面依存し、Khaiteの供給元はNylon 1媒体(B階層)のみ。また綴り置換が成立するのは、ASRが置換後の一般語(Kate等)をそのまま書く語に限る(Altuzarraは置換後綴りと不一致でNG)。
+- 費用: Trial累計JPY128.94(第1巡15.54/第2巡63.55/第3巡49.85)、本Closeoutは0円。量産単価影響: 採用しなければ0。採用しても文字列置換で追加API 0(Ledger→辞書の自動供給は未実装=新仕様)。
+
+## 8. Production採用に必要なユーザー判断(1件)
+- 問い: 「取得した発音(公式/実使用)をTTS入力の綴り置換へ供給し、Khaite型の誤読を自動で直す」仕組みを新仕様として採用するか。
+- 選択肢: (ア)採用しない=現状維持(この型の新出ブランド名等は従来どおりHuman Reviewで人が1回聴いて承認。発生頻度は保存データで新出辞書外語12種/約2か月、HR 1回の人手コストのみ、API追加0)。(イ)採用する=A階層(公式・引用実在確認済み)のみ自動供給、B階層(媒体)は人が1回承認した語だけ辞書へ登録(Production変更・Opus条件Cレビュー・配線Trialが必要。効果は本Trialで確認できた範囲ではKhaite 1語型。本番判定器基準で救えるHR segmentは実測2〜3、同型推定を足しても最大9/Melos除くHR 19)。
+- **Fable推奨=(ア)現状維持。** 理由: 実証できた効果が1語型に限られ、方式の安全性が供給元の正しさに全面依存する一方、Human Reviewはこれらの語で正しく機能しており、人手コストは月数件・1回限り。費用対効果でも(イ)の実装・運用コストが上回る。(イ)を選ぶ場合も、A階層限定+人承認登録なら安全条件は守れる。
 
 ---
 ## 付録 限界の開示

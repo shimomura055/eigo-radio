@@ -22087,3 +22087,10 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 分類: Trial①=VALIDATED(最小化Prompt有効、Production採用ではない)/Trial②=REJECTED(Haiku 5.5+初期一般化Prompt。原形化適用漏れ17〜22/70、過剰変更4、意味変化3、語追加4、両者PASS 44/70)。
 - 根拠: Trial①は5モデルで平均語数短縮・5語超0件・本文一致維持。Trial②は変更すべき/不要を区別できず、原形化は既存Production(DB hybrid canonicalization)が担う処理。
 - 推奨(ユーザー判断UDR #146): A=現行Luna維持/B=今回構成の2工程不採用/C=最小化条件を現行Production経路Promptへ入れる小規模Trial(見積事前提示)。採用判断はユーザー、Production/Prompt/Validator無変更、費用JPY0。出典=TRIAL_RESULT_02.md §7。
+
+## PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02 Stage 2 Trial Closeout Fable分類(2026-10-22、委任_10)
+- 分類: 判定側の改善方式(計画v4中核、第1巡・第2巡)=`REJECTED`(Opus Step B補正後もHR削減0〜2件、天井約24%・実測0%。主因は判定でなく現行TTSの実誤読)。TTS入力側への取得発音供給(第3巡)=Khaite型に限り`VALIDATED(条件付き)`。Stage 2全体=`STAGE2_TRIAL_CLOSED_USER_DECISION_REQUIRED`(UDR #147)。
+- HR基準値の取り直し(本番判定器`evaluate_attempt_with_cascade_detail`[M1込み]へ保存転写を入力、API 0): 現行TTS 30 segmentの本番判定HR=23(Melos別掲4/Melos除き19)、保存HR事象58=単体テスト混入25(全てM1で警告付きPASS)+実質33、うち現行判定でHR 29(Melos 7/他22)、M1配線後の実HR=3事象(全てMelos)。Melosは「Mello/Melo said」型のみM1で解消済みで、Mallo/Mellus等の別語聞き取り型はHR継続(第1〜3巡のHRプロキシにMelos混入25を含めたのは過大、途中報告で訂正済み)。Khaite型綴り置換で救えるのは実測2〜3、同型推定込み最大9(Melos除きHR 19)。
+- STOP根拠: Step A→B→Cを2回(第2巡・第3巡)回し、残る代替案(音素認識wav2vec2=判定側で天井低、Meink別制御=既存例なし、取得拡充=22ページ確認済み)の合理的な改善見込みが小さい(ユーザー§4終了条件)。費用余力は継続理由にならない。累計JPY128.94/300、Closeout 0円。
+- §8の判断(UDR #147): 取得発音のTTS入力側供給を新仕様として採用するか。(ア)現状維持(Fable推奨。Human Reviewは対象語で正しく機能、人手コストは月数件・1回限り)/(イ)A階層のみ自動供給+B階層は人承認登録(Production変更・Opus条件C・配線Trial必要)。方式の安全性は供給元の正しさに全面依存(Meink→Mink対照で実証)。
+- Production/正式Ledger/HR queue/Store/Validator/Prompt無変更(`closeout/protect_closeout.json`)。出典=docs/research/PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02/STAGE2_TRIAL_CLOSEOUT_01.md、STAGE2_TRIAL_RESULT_03.md §7・§8。
