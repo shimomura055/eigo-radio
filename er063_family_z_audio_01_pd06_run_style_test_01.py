@@ -6,6 +6,8 @@ Narrator=PD06)に合わせて改名・更新したもの(期待値の意図的�
 実行: .venv/Scripts/python.exe -m unittest er063_family_z_audio_01_pd06_run_style_test_01 -v"""
 from __future__ import annotations
 
+# HR-QUEUE-TEST-CONTAMINATION-FIX-01 委任_02: Production監査ログ(attempt_history)への追記を隔離
+import test_state_isolation_01  # noqa: F401
 import ast
 import hashlib
 import json

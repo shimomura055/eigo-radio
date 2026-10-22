@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """FAMILY-XZ-M2P0-N01-PRODUCTION-COMPLETION-01 委任_02 (OF-X9 / OF-X11 / OF-X12): 明示的無効化CLI・stage関数統合test。
 TTSはmock(wavを書き、実entry形式を返す)のみ。API呼出なし。Gate(asm.verify_episode_audio_validation_gate)は無変更。"""
+# HR-QUEUE-TEST-CONTAMINATION-FIX-01 委任_02: Production監査ログ(attempt_history)への追記を隔離
+import test_state_isolation_01  # noqa: F401
 import hashlib
 import io
 import json

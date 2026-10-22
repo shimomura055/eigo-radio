@@ -22,6 +22,8 @@
 #   (f) fallback経路がoverrideの影響を受けない(既存テキスト流用のまま)
 from __future__ import annotations
 
+# HR-QUEUE-TEST-CONTAMINATION-FIX-01 委任_02: Production監査ログ(attempt_history)への追記を隔離
+import test_state_isolation_01  # noqa: F401
 import json
 import os
 import shutil

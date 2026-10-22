@@ -1,0 +1,2953 @@
+{
+ "managed_id": "HR-QUEUE-TEST-CONTAMINATION-FIX-01",
+ "delegation": "委任_02",
+ "date": "2026-10-22",
+ "target": "er011_output/attempt_history.jsonl",
+ "policy": "append-only監査ログ本体は無編集。本日(2026-10-22)分のうちtest fixture由来と判定できた行のみ行番号(1始まり、空行を含む物理行)で記録。過去日分の全件特定は未実施。",
+ "basis": "theme_idがtest fixture名(pool_test_theme/theme/unittest_scratch_theme/x/x_default/x_k2/z_run/wiring_theme*)、またはwav_pathが\"dummy.wav\"/\"dummy_out.wav\"。paycheck_personality__run_pp_02等の実run行・theme_id=Noneのwav_path=None行(TTS_RESULTS_PRIOR_ATTEMPTS_ARCHIVED等)は由来未確定のため記録対象外。",
+ "source_tests_identified": "15 test file(test_state_isolation_01_test_01.py KNOWN_WRITER_TESTS)。例: er021_en_asr_semantic_equivalence_production_wiring_01_test_01.py:402,545,565(wiring_theme_asrw2/asrw3)、er003_news_tail_fix_semantic_equivalence_surfacing_02_test_01.py:72,93(wiring_theme_flx2)、写経路=er011_human_review_lock_01.py:112 ATTEMPT_HISTORY_PATH/:193 _append_attempt_history",
+ "note": "一部は本委任の調査(全test file単体実行の特定scan)自体が隔離前に追記した行を含む。",
+ "file_lines_at_record": 16907,
+ "file_sha256_at_record": "025d2e54a365e179c541f264a41b286f288b4e3fac4f3c9e372c354d86d7cf57",
+ "count": 417,
+ "count_by_theme_or_wav": {
+  "wiring_theme_asrw2": 8,
+  "wiring_theme_asrw3": 16,
+  "wiring_theme_auw3": 8,
+  "wiring_theme_auw5": 48,
+  "wiring_theme_auw13": 80,
+  "dummy.wav": 15,
+  "dummy_out.wav": 15,
+  "unittest_scratch_theme": 20,
+  "pool_test_theme": 132,
+  "wiring_theme": 22,
+  "x_k2": 3,
+  "x_default": 1,
+  "z_run": 2,
+  "theme": 24,
+  "x": 15,
+  "wiring_theme_flx2": 8
+ },
+ "unclassified_today_rows_not_listed": 156,
+ "rows": [
+  {
+   "line": 16335,
+   "timestamp": "2026-10-22T08:23:04",
+   "theme_id": "wiring_theme_asrw2",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16336,
+   "timestamp": "2026-10-22T08:23:05",
+   "theme_id": "wiring_theme_asrw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16337,
+   "timestamp": "2026-10-22T08:23:05",
+   "theme_id": "wiring_theme_asrw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16338,
+   "timestamp": "2026-10-22T08:24:53",
+   "theme_id": "wiring_theme_auw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16339,
+   "timestamp": "2026-10-22T08:24:59",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16340,
+   "timestamp": "2026-10-22T08:24:59",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16341,
+   "timestamp": "2026-10-22T08:24:59",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16342,
+   "timestamp": "2026-10-22T08:24:59",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16343,
+   "timestamp": "2026-10-22T08:24:59",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16344,
+   "timestamp": "2026-10-22T08:24:59",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16345,
+   "timestamp": "2026-10-22T08:25:08",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16346,
+   "timestamp": "2026-10-22T08:25:08",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16347,
+   "timestamp": "2026-10-22T08:25:08",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16348,
+   "timestamp": "2026-10-22T08:25:08",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16349,
+   "timestamp": "2026-10-22T08:25:08",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16350,
+   "timestamp": "2026-10-22T08:25:09",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16351,
+   "timestamp": "2026-10-22T08:25:09",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16352,
+   "timestamp": "2026-10-22T08:25:09",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16353,
+   "timestamp": "2026-10-22T08:25:09",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16354,
+   "timestamp": "2026-10-22T08:25:09",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16355,
+   "timestamp": "2026-10-22T08:42:52",
+   "theme_id": "wiring_theme_asrw2",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16356,
+   "timestamp": "2026-10-22T08:42:53",
+   "theme_id": "wiring_theme_asrw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16357,
+   "timestamp": "2026-10-22T08:42:53",
+   "theme_id": "wiring_theme_asrw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16358,
+   "timestamp": "2026-10-22T08:43:11",
+   "theme_id": "wiring_theme_auw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16359,
+   "timestamp": "2026-10-22T08:43:17",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16360,
+   "timestamp": "2026-10-22T08:43:17",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16361,
+   "timestamp": "2026-10-22T08:43:17",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16362,
+   "timestamp": "2026-10-22T08:43:17",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16363,
+   "timestamp": "2026-10-22T08:43:17",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16364,
+   "timestamp": "2026-10-22T08:43:18",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16365,
+   "timestamp": "2026-10-22T08:43:26",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16366,
+   "timestamp": "2026-10-22T08:43:26",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16367,
+   "timestamp": "2026-10-22T08:43:26",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16368,
+   "timestamp": "2026-10-22T08:43:26",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16369,
+   "timestamp": "2026-10-22T08:43:26",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16370,
+   "timestamp": "2026-10-22T08:43:26",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16371,
+   "timestamp": "2026-10-22T08:43:26",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16372,
+   "timestamp": "2026-10-22T08:43:26",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16373,
+   "timestamp": "2026-10-22T08:43:26",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16374,
+   "timestamp": "2026-10-22T08:43:26",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16376,
+   "timestamp": "2026-10-22T08:52:51",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy.wav"
+  },
+  {
+   "line": 16385,
+   "timestamp": "2026-10-22T09:04:00",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy_out.wav"
+  },
+  {
+   "line": 16386,
+   "timestamp": "2026-10-22T09:04:00",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy_out.wav"
+  },
+  {
+   "line": 16387,
+   "timestamp": "2026-10-22T09:04:00",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy.wav"
+  },
+  {
+   "line": 16388,
+   "timestamp": "2026-10-22T09:04:00",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy_out.wav"
+  },
+  {
+   "line": 16389,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16390,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16391,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16392,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16393,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16394,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16395,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16396,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "REGENERATE_APPROVED_GRANTED",
+   "wav_path": null
+  },
+  {
+   "line": 16397,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16398,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16399,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "REGENERATE_APPROVED_GRANTED",
+   "wav_path": null
+  },
+  {
+   "line": 16400,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16401,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16402,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16403,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16404,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16405,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16406,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16407,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16408,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16409,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16410,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16411,
+   "timestamp": "2026-10-22T09:04:18",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16412,
+   "timestamp": "2026-10-22T09:04:19",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16413,
+   "timestamp": "2026-10-22T09:04:19",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16414,
+   "timestamp": "2026-10-22T09:04:19",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16415,
+   "timestamp": "2026-10-22T09:04:19",
+   "theme_id": "wiring_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16416,
+   "timestamp": "2026-10-22T09:04:19",
+   "theme_id": "wiring_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16417,
+   "timestamp": "2026-10-22T09:06:57",
+   "theme_id": "wiring_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16418,
+   "timestamp": "2026-10-22T09:06:57",
+   "theme_id": "wiring_theme",
+   "action": "REGENERATE_APPROVED_GRANTED",
+   "wav_path": null
+  },
+  {
+   "line": 16419,
+   "timestamp": "2026-10-22T09:06:58",
+   "theme_id": "wiring_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16421,
+   "timestamp": "2026-10-22T09:08:29",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy.wav"
+  },
+  {
+   "line": 16430,
+   "timestamp": "2026-10-22T09:08:30",
+   "theme_id": "wiring_theme_asrw2",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16431,
+   "timestamp": "2026-10-22T09:08:32",
+   "theme_id": "wiring_theme_asrw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16432,
+   "timestamp": "2026-10-22T09:08:32",
+   "theme_id": "wiring_theme_asrw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16433,
+   "timestamp": "2026-10-22T09:15:49",
+   "theme_id": "x_k2",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16434,
+   "timestamp": "2026-10-22T09:15:56",
+   "theme_id": "x_k2",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16435,
+   "timestamp": "2026-10-22T09:16:02",
+   "theme_id": "x_k2",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16437,
+   "timestamp": "2026-10-22T09:16:06",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy_out.wav"
+  },
+  {
+   "line": 16438,
+   "timestamp": "2026-10-22T09:16:06",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy_out.wav"
+  },
+  {
+   "line": 16439,
+   "timestamp": "2026-10-22T09:16:06",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy.wav"
+  },
+  {
+   "line": 16440,
+   "timestamp": "2026-10-22T09:16:06",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy_out.wav"
+  },
+  {
+   "line": 16441,
+   "timestamp": "2026-10-22T09:16:12",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16442,
+   "timestamp": "2026-10-22T09:16:12",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16443,
+   "timestamp": "2026-10-22T09:16:24",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16444,
+   "timestamp": "2026-10-22T09:16:24",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16445,
+   "timestamp": "2026-10-22T09:16:24",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16446,
+   "timestamp": "2026-10-22T09:16:24",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16447,
+   "timestamp": "2026-10-22T09:16:24",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16448,
+   "timestamp": "2026-10-22T09:16:24",
+   "theme_id": "pool_test_theme",
+   "action": "REGENERATE_APPROVED_GRANTED",
+   "wav_path": null
+  },
+  {
+   "line": 16449,
+   "timestamp": "2026-10-22T09:16:24",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16450,
+   "timestamp": "2026-10-22T09:16:24",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16451,
+   "timestamp": "2026-10-22T09:16:24",
+   "theme_id": "pool_test_theme",
+   "action": "REGENERATE_APPROVED_GRANTED",
+   "wav_path": null
+  },
+  {
+   "line": 16452,
+   "timestamp": "2026-10-22T09:16:24",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16453,
+   "timestamp": "2026-10-22T09:16:24",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16454,
+   "timestamp": "2026-10-22T09:16:24",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16455,
+   "timestamp": "2026-10-22T09:16:24",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16456,
+   "timestamp": "2026-10-22T09:16:24",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16457,
+   "timestamp": "2026-10-22T09:16:24",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16458,
+   "timestamp": "2026-10-22T09:16:24",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16459,
+   "timestamp": "2026-10-22T09:16:24",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16460,
+   "timestamp": "2026-10-22T09:16:27",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16461,
+   "timestamp": "2026-10-22T09:16:27",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16462,
+   "timestamp": "2026-10-22T09:16:27",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16463,
+   "timestamp": "2026-10-22T09:16:27",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16464,
+   "timestamp": "2026-10-22T09:16:27",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16465,
+   "timestamp": "2026-10-22T09:16:27",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16466,
+   "timestamp": "2026-10-22T09:16:27",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16467,
+   "timestamp": "2026-10-22T09:16:29",
+   "theme_id": "wiring_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16468,
+   "timestamp": "2026-10-22T09:16:29",
+   "theme_id": "wiring_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16469,
+   "timestamp": "2026-10-22T09:16:38",
+   "theme_id": "wiring_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16470,
+   "timestamp": "2026-10-22T09:16:38",
+   "theme_id": "wiring_theme",
+   "action": "REGENERATE_APPROVED_GRANTED",
+   "wav_path": null
+  },
+  {
+   "line": 16471,
+   "timestamp": "2026-10-22T09:16:38",
+   "theme_id": "wiring_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16475,
+   "timestamp": "2026-10-22T09:17:45",
+   "theme_id": "x_default",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16477,
+   "timestamp": "2026-10-22T09:18:08",
+   "theme_id": "z_run",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16478,
+   "timestamp": "2026-10-22T09:18:13",
+   "theme_id": "z_run",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16480,
+   "timestamp": "2026-10-22T09:20:29",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16481,
+   "timestamp": "2026-10-22T09:20:34",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16482,
+   "timestamp": "2026-10-22T09:20:39",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16483,
+   "timestamp": "2026-10-22T09:20:43",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16484,
+   "timestamp": "2026-10-22T09:20:49",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16485,
+   "timestamp": "2026-10-22T09:20:54",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16486,
+   "timestamp": "2026-10-22T09:21:00",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16487,
+   "timestamp": "2026-10-22T09:21:06",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16488,
+   "timestamp": "2026-10-22T09:21:12",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16489,
+   "timestamp": "2026-10-22T09:21:17",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16490,
+   "timestamp": "2026-10-22T09:21:22",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16491,
+   "timestamp": "2026-10-22T09:21:28",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16492,
+   "timestamp": "2026-10-22T09:21:34",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16493,
+   "timestamp": "2026-10-22T09:21:41",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16494,
+   "timestamp": "2026-10-22T09:21:47",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16495,
+   "timestamp": "2026-10-22T09:21:52",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16496,
+   "timestamp": "2026-10-22T09:21:58",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16497,
+   "timestamp": "2026-10-22T09:22:04",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16498,
+   "timestamp": "2026-10-22T09:22:08",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16499,
+   "timestamp": "2026-10-22T09:22:14",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16500,
+   "timestamp": "2026-10-22T09:22:19",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16501,
+   "timestamp": "2026-10-22T09:22:31",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16502,
+   "timestamp": "2026-10-22T09:22:37",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16503,
+   "timestamp": "2026-10-22T09:22:42",
+   "theme_id": "theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16512,
+   "timestamp": "2026-10-22T09:23:59",
+   "theme_id": "wiring_theme_asrw2",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16513,
+   "timestamp": "2026-10-22T09:24:00",
+   "theme_id": "wiring_theme_asrw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16514,
+   "timestamp": "2026-10-22T09:24:00",
+   "theme_id": "wiring_theme_asrw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16515,
+   "timestamp": "2026-10-22T09:25:15",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy.wav"
+  },
+  {
+   "line": 16526,
+   "timestamp": "2026-10-22T09:25:46",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy.wav"
+  },
+  {
+   "line": 16527,
+   "timestamp": "2026-10-22T09:26:12",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy.wav"
+  },
+  {
+   "line": 16530,
+   "timestamp": "2026-10-22T09:27:34",
+   "theme_id": "x",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16531,
+   "timestamp": "2026-10-22T09:27:34",
+   "theme_id": "x",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16532,
+   "timestamp": "2026-10-22T09:27:34",
+   "theme_id": "x",
+   "action": "A2_SLOWDOWN_REVERIFY",
+   "wav_path": "x/a2/narration/full_story_part3_c1.wav"
+  },
+  {
+   "line": 16533,
+   "timestamp": "2026-10-22T09:27:45",
+   "theme_id": "wiring_theme_auw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16534,
+   "timestamp": "2026-10-22T09:28:03",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16535,
+   "timestamp": "2026-10-22T09:28:03",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16536,
+   "timestamp": "2026-10-22T09:28:03",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16537,
+   "timestamp": "2026-10-22T09:28:03",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16538,
+   "timestamp": "2026-10-22T09:28:03",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16539,
+   "timestamp": "2026-10-22T09:28:04",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16540,
+   "timestamp": "2026-10-22T09:28:10",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16541,
+   "timestamp": "2026-10-22T09:28:10",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16542,
+   "timestamp": "2026-10-22T09:28:10",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16543,
+   "timestamp": "2026-10-22T09:28:10",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16544,
+   "timestamp": "2026-10-22T09:28:10",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16545,
+   "timestamp": "2026-10-22T09:28:11",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16546,
+   "timestamp": "2026-10-22T09:28:11",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16547,
+   "timestamp": "2026-10-22T09:28:11",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16548,
+   "timestamp": "2026-10-22T09:28:11",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16549,
+   "timestamp": "2026-10-22T09:28:11",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16550,
+   "timestamp": "2026-10-22T09:29:18",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16551,
+   "timestamp": "2026-10-22T09:29:18",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16552,
+   "timestamp": "2026-10-22T09:29:18",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy_out.wav"
+  },
+  {
+   "line": 16553,
+   "timestamp": "2026-10-22T09:29:19",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy_out.wav"
+  },
+  {
+   "line": 16554,
+   "timestamp": "2026-10-22T09:29:19",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy.wav"
+  },
+  {
+   "line": 16555,
+   "timestamp": "2026-10-22T09:29:19",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy_out.wav"
+  },
+  {
+   "line": 16558,
+   "timestamp": "2026-10-22T09:29:23",
+   "theme_id": "x",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16559,
+   "timestamp": "2026-10-22T09:29:23",
+   "theme_id": "x",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16560,
+   "timestamp": "2026-10-22T09:29:23",
+   "theme_id": "x",
+   "action": "A2_SLOWDOWN_REVERIFY",
+   "wav_path": "x/a2/narration/full_story_part3_c1.wav"
+  },
+  {
+   "line": 16563,
+   "timestamp": "2026-10-22T09:29:32",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16564,
+   "timestamp": "2026-10-22T09:29:32",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16565,
+   "timestamp": "2026-10-22T09:29:32",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16566,
+   "timestamp": "2026-10-22T09:29:32",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16567,
+   "timestamp": "2026-10-22T09:29:32",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16568,
+   "timestamp": "2026-10-22T09:29:32",
+   "theme_id": "pool_test_theme",
+   "action": "REGENERATE_APPROVED_GRANTED",
+   "wav_path": null
+  },
+  {
+   "line": 16569,
+   "timestamp": "2026-10-22T09:29:32",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16570,
+   "timestamp": "2026-10-22T09:29:32",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16571,
+   "timestamp": "2026-10-22T09:29:32",
+   "theme_id": "pool_test_theme",
+   "action": "REGENERATE_APPROVED_GRANTED",
+   "wav_path": null
+  },
+  {
+   "line": 16572,
+   "timestamp": "2026-10-22T09:29:32",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16573,
+   "timestamp": "2026-10-22T09:29:32",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16574,
+   "timestamp": "2026-10-22T09:29:32",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16575,
+   "timestamp": "2026-10-22T09:29:32",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16576,
+   "timestamp": "2026-10-22T09:29:32",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16577,
+   "timestamp": "2026-10-22T09:29:32",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16578,
+   "timestamp": "2026-10-22T09:29:32",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16579,
+   "timestamp": "2026-10-22T09:29:32",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16580,
+   "timestamp": "2026-10-22T09:29:35",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16581,
+   "timestamp": "2026-10-22T09:29:35",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16582,
+   "timestamp": "2026-10-22T09:29:35",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16583,
+   "timestamp": "2026-10-22T09:29:35",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16584,
+   "timestamp": "2026-10-22T09:29:35",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16585,
+   "timestamp": "2026-10-22T09:29:35",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16586,
+   "timestamp": "2026-10-22T09:29:35",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16587,
+   "timestamp": "2026-10-22T09:29:38",
+   "theme_id": "wiring_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16588,
+   "timestamp": "2026-10-22T09:29:38",
+   "theme_id": "wiring_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16589,
+   "timestamp": "2026-10-22T09:29:44",
+   "theme_id": "wiring_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16590,
+   "timestamp": "2026-10-22T09:29:44",
+   "theme_id": "wiring_theme",
+   "action": "REGENERATE_APPROVED_GRANTED",
+   "wav_path": null
+  },
+  {
+   "line": 16591,
+   "timestamp": "2026-10-22T09:29:44",
+   "theme_id": "wiring_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16593,
+   "timestamp": "2026-10-22T09:30:16",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy.wav"
+  },
+  {
+   "line": 16602,
+   "timestamp": "2026-10-22T09:30:32",
+   "theme_id": "wiring_theme_asrw2",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16611,
+   "timestamp": "2026-10-22T09:30:34",
+   "theme_id": "wiring_theme_asrw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16612,
+   "timestamp": "2026-10-22T09:30:34",
+   "theme_id": "wiring_theme_asrw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16613,
+   "timestamp": "2026-10-22T09:33:39",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy.wav"
+  },
+  {
+   "line": 16614,
+   "timestamp": "2026-10-22T09:33:48",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy.wav"
+  },
+  {
+   "line": 16627,
+   "timestamp": "2026-10-22T09:34:03",
+   "theme_id": "x",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16628,
+   "timestamp": "2026-10-22T09:34:03",
+   "theme_id": "x",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16629,
+   "timestamp": "2026-10-22T09:34:03",
+   "theme_id": "x",
+   "action": "A2_SLOWDOWN_REVERIFY",
+   "wav_path": "x/a2/narration/full_story_part3_c1.wav"
+  },
+  {
+   "line": 16630,
+   "timestamp": "2026-10-22T09:34:12",
+   "theme_id": "wiring_theme_auw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16631,
+   "timestamp": "2026-10-22T09:34:24",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16632,
+   "timestamp": "2026-10-22T09:34:24",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16633,
+   "timestamp": "2026-10-22T09:34:24",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16634,
+   "timestamp": "2026-10-22T09:34:24",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16635,
+   "timestamp": "2026-10-22T09:34:24",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16636,
+   "timestamp": "2026-10-22T09:34:25",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16637,
+   "timestamp": "2026-10-22T09:34:31",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16638,
+   "timestamp": "2026-10-22T09:34:31",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16639,
+   "timestamp": "2026-10-22T09:34:31",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16640,
+   "timestamp": "2026-10-22T09:34:31",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16641,
+   "timestamp": "2026-10-22T09:34:31",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16642,
+   "timestamp": "2026-10-22T09:34:31",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16643,
+   "timestamp": "2026-10-22T09:34:32",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16644,
+   "timestamp": "2026-10-22T09:34:32",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16645,
+   "timestamp": "2026-10-22T09:34:32",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16646,
+   "timestamp": "2026-10-22T09:34:32",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16647,
+   "timestamp": "2026-10-22T09:52:16",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16648,
+   "timestamp": "2026-10-22T09:52:16",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16649,
+   "timestamp": "2026-10-22T09:52:40",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16650,
+   "timestamp": "2026-10-22T09:52:40",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16651,
+   "timestamp": "2026-10-22T09:55:50",
+   "theme_id": "wiring_theme_auw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16652,
+   "timestamp": "2026-10-22T09:55:55",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16653,
+   "timestamp": "2026-10-22T09:55:55",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16654,
+   "timestamp": "2026-10-22T09:55:55",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16655,
+   "timestamp": "2026-10-22T09:55:55",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16656,
+   "timestamp": "2026-10-22T09:55:55",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16657,
+   "timestamp": "2026-10-22T09:55:56",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16658,
+   "timestamp": "2026-10-22T09:55:56",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16659,
+   "timestamp": "2026-10-22T09:55:56",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16660,
+   "timestamp": "2026-10-22T09:55:56",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16661,
+   "timestamp": "2026-10-22T09:55:56",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16662,
+   "timestamp": "2026-10-22T09:55:56",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16663,
+   "timestamp": "2026-10-22T09:55:57",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16664,
+   "timestamp": "2026-10-22T09:55:57",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16665,
+   "timestamp": "2026-10-22T09:55:57",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16666,
+   "timestamp": "2026-10-22T09:55:57",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16667,
+   "timestamp": "2026-10-22T09:55:57",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16668,
+   "timestamp": "2026-10-22T09:58:00",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16669,
+   "timestamp": "2026-10-22T09:58:00",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16670,
+   "timestamp": "2026-10-22T10:01:02",
+   "theme_id": "wiring_theme_auw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16671,
+   "timestamp": "2026-10-22T10:01:06",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16672,
+   "timestamp": "2026-10-22T10:01:07",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16673,
+   "timestamp": "2026-10-22T10:01:07",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16674,
+   "timestamp": "2026-10-22T10:01:07",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16675,
+   "timestamp": "2026-10-22T10:01:07",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16676,
+   "timestamp": "2026-10-22T10:01:07",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16677,
+   "timestamp": "2026-10-22T10:01:08",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16678,
+   "timestamp": "2026-10-22T10:01:08",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16679,
+   "timestamp": "2026-10-22T10:01:08",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16680,
+   "timestamp": "2026-10-22T10:01:08",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16681,
+   "timestamp": "2026-10-22T10:01:08",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16682,
+   "timestamp": "2026-10-22T10:01:08",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16683,
+   "timestamp": "2026-10-22T10:01:08",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16684,
+   "timestamp": "2026-10-22T10:01:08",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16685,
+   "timestamp": "2026-10-22T10:01:08",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16686,
+   "timestamp": "2026-10-22T10:01:08",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16687,
+   "timestamp": "2026-10-22T10:02:09",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16688,
+   "timestamp": "2026-10-22T10:02:09",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16689,
+   "timestamp": "2026-10-22T10:05:10",
+   "theme_id": "wiring_theme_auw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16690,
+   "timestamp": "2026-10-22T10:05:14",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16691,
+   "timestamp": "2026-10-22T10:05:14",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16692,
+   "timestamp": "2026-10-22T10:05:14",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16693,
+   "timestamp": "2026-10-22T10:05:14",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16694,
+   "timestamp": "2026-10-22T10:05:14",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16695,
+   "timestamp": "2026-10-22T10:05:15",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16696,
+   "timestamp": "2026-10-22T10:05:15",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16697,
+   "timestamp": "2026-10-22T10:05:15",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16698,
+   "timestamp": "2026-10-22T10:05:15",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16699,
+   "timestamp": "2026-10-22T10:05:15",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16700,
+   "timestamp": "2026-10-22T10:05:15",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16701,
+   "timestamp": "2026-10-22T10:05:16",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16702,
+   "timestamp": "2026-10-22T10:05:16",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16703,
+   "timestamp": "2026-10-22T10:05:16",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16704,
+   "timestamp": "2026-10-22T10:05:16",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16705,
+   "timestamp": "2026-10-22T10:05:16",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16707,
+   "timestamp": "2026-10-22T10:09:15",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16708,
+   "timestamp": "2026-10-22T10:09:15",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16710,
+   "timestamp": "2026-10-22T10:12:19",
+   "theme_id": "wiring_theme_auw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16711,
+   "timestamp": "2026-10-22T10:12:25",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16712,
+   "timestamp": "2026-10-22T10:12:25",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16713,
+   "timestamp": "2026-10-22T10:12:25",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16714,
+   "timestamp": "2026-10-22T10:12:25",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16715,
+   "timestamp": "2026-10-22T10:12:25",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16716,
+   "timestamp": "2026-10-22T10:12:26",
+   "theme_id": "wiring_theme_auw5",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16717,
+   "timestamp": "2026-10-22T10:12:26",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16718,
+   "timestamp": "2026-10-22T10:12:26",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16719,
+   "timestamp": "2026-10-22T10:12:26",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16720,
+   "timestamp": "2026-10-22T10:12:26",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16721,
+   "timestamp": "2026-10-22T10:12:26",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16722,
+   "timestamp": "2026-10-22T10:12:26",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16723,
+   "timestamp": "2026-10-22T10:12:27",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16724,
+   "timestamp": "2026-10-22T10:12:27",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16725,
+   "timestamp": "2026-10-22T10:12:27",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16726,
+   "timestamp": "2026-10-22T10:12:27",
+   "theme_id": "wiring_theme_auw13",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16728,
+   "timestamp": "2026-10-22T10:13:21",
+   "theme_id": "wiring_theme_flx2",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16729,
+   "timestamp": "2026-10-22T10:13:21",
+   "theme_id": "wiring_theme_flx2",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16731,
+   "timestamp": "2026-10-22T10:14:43",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy.wav"
+  },
+  {
+   "line": 16732,
+   "timestamp": "2026-10-22T10:14:43",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy_out.wav"
+  },
+  {
+   "line": 16733,
+   "timestamp": "2026-10-22T10:14:43",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy_out.wav"
+  },
+  {
+   "line": 16734,
+   "timestamp": "2026-10-22T10:14:44",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy_out.wav"
+  },
+  {
+   "line": 16735,
+   "timestamp": "2026-10-22T10:14:44",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16736,
+   "timestamp": "2026-10-22T10:14:44",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16737,
+   "timestamp": "2026-10-22T10:15:07",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16738,
+   "timestamp": "2026-10-22T10:15:07",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16739,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16740,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16741,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16742,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16743,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16744,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "REGENERATE_APPROVED_GRANTED",
+   "wav_path": null
+  },
+  {
+   "line": 16745,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16746,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16747,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "REGENERATE_APPROVED_GRANTED",
+   "wav_path": null
+  },
+  {
+   "line": 16748,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16749,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16750,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16751,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16752,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16753,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16754,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16755,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16756,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16757,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16758,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16759,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16760,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16761,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "wiring_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16762,
+   "timestamp": "2026-10-22T10:15:08",
+   "theme_id": "wiring_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16766,
+   "timestamp": "2026-10-22T10:18:14",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy.wav"
+  },
+  {
+   "line": 16779,
+   "timestamp": "2026-10-22T10:18:16",
+   "theme_id": "wiring_theme_asrw2",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16780,
+   "timestamp": "2026-10-22T10:18:18",
+   "theme_id": "wiring_theme_asrw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16781,
+   "timestamp": "2026-10-22T10:18:18",
+   "theme_id": "wiring_theme_asrw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16790,
+   "timestamp": "2026-10-22T10:25:03",
+   "theme_id": "x",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16791,
+   "timestamp": "2026-10-22T10:25:03",
+   "theme_id": "x",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16792,
+   "timestamp": "2026-10-22T10:25:03",
+   "theme_id": "x",
+   "action": "A2_SLOWDOWN_REVERIFY",
+   "wav_path": "x/a2/narration/full_story_part3_c1.wav"
+  },
+  {
+   "line": 16827,
+   "timestamp": "2026-10-22T14:01:00",
+   "theme_id": "wiring_theme_asrw2",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16828,
+   "timestamp": "2026-10-22T14:01:02",
+   "theme_id": "wiring_theme_asrw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16829,
+   "timestamp": "2026-10-22T14:01:02",
+   "theme_id": "wiring_theme_asrw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16830,
+   "timestamp": "2026-10-22T14:01:02",
+   "theme_id": "wiring_theme_flx2",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16831,
+   "timestamp": "2026-10-22T14:01:02",
+   "theme_id": "wiring_theme_flx2",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16832,
+   "timestamp": "2026-10-22T14:01:11",
+   "theme_id": "wiring_theme_flx2",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16833,
+   "timestamp": "2026-10-22T14:01:11",
+   "theme_id": "wiring_theme_flx2",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16834,
+   "timestamp": "2026-10-22T14:28:38",
+   "theme_id": "wiring_theme_flx2",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16835,
+   "timestamp": "2026-10-22T14:28:38",
+   "theme_id": "wiring_theme_flx2",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16836,
+   "timestamp": "2026-10-22T14:34:26",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy.wav"
+  },
+  {
+   "line": 16837,
+   "timestamp": "2026-10-22T14:34:26",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy_out.wav"
+  },
+  {
+   "line": 16838,
+   "timestamp": "2026-10-22T14:34:27",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy_out.wav"
+  },
+  {
+   "line": 16839,
+   "timestamp": "2026-10-22T14:34:27",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy_out.wav"
+  },
+  {
+   "line": 16840,
+   "timestamp": "2026-10-22T14:34:35",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16841,
+   "timestamp": "2026-10-22T14:34:35",
+   "theme_id": "unittest_scratch_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16842,
+   "timestamp": "2026-10-22T14:36:48",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16843,
+   "timestamp": "2026-10-22T14:36:48",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16844,
+   "timestamp": "2026-10-22T14:36:48",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16845,
+   "timestamp": "2026-10-22T14:36:48",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16846,
+   "timestamp": "2026-10-22T14:36:48",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16847,
+   "timestamp": "2026-10-22T14:36:48",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16848,
+   "timestamp": "2026-10-22T14:36:48",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16849,
+   "timestamp": "2026-10-22T14:36:48",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16850,
+   "timestamp": "2026-10-22T14:36:48",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16851,
+   "timestamp": "2026-10-22T14:36:48",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16852,
+   "timestamp": "2026-10-22T14:36:48",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16853,
+   "timestamp": "2026-10-22T14:36:48",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16854,
+   "timestamp": "2026-10-22T14:36:49",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16855,
+   "timestamp": "2026-10-22T14:36:49",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16856,
+   "timestamp": "2026-10-22T14:36:49",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16857,
+   "timestamp": "2026-10-22T14:36:49",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16858,
+   "timestamp": "2026-10-22T14:36:49",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16859,
+   "timestamp": "2026-10-22T14:36:49",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16860,
+   "timestamp": "2026-10-22T14:36:49",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16861,
+   "timestamp": "2026-10-22T14:36:49",
+   "theme_id": "pool_test_theme",
+   "action": "REGENERATE_APPROVED_GRANTED",
+   "wav_path": null
+  },
+  {
+   "line": 16862,
+   "timestamp": "2026-10-22T14:36:49",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16863,
+   "timestamp": "2026-10-22T14:36:49",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16864,
+   "timestamp": "2026-10-22T14:36:49",
+   "theme_id": "pool_test_theme",
+   "action": "REGENERATE_APPROVED_GRANTED",
+   "wav_path": null
+  },
+  {
+   "line": 16865,
+   "timestamp": "2026-10-22T14:36:49",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16866,
+   "timestamp": "2026-10-22T14:36:49",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16867,
+   "timestamp": "2026-10-22T14:36:50",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16868,
+   "timestamp": "2026-10-22T14:36:50",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16869,
+   "timestamp": "2026-10-22T14:36:53",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16870,
+   "timestamp": "2026-10-22T14:36:53",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16871,
+   "timestamp": "2026-10-22T14:36:53",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16872,
+   "timestamp": "2026-10-22T14:36:53",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16873,
+   "timestamp": "2026-10-22T14:36:53",
+   "theme_id": "pool_test_theme",
+   "action": "BLOCKED_HUMAN_REVIEW_REQUIRED",
+   "wav_path": null
+  },
+  {
+   "line": 16874,
+   "timestamp": "2026-10-22T14:36:53",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16875,
+   "timestamp": "2026-10-22T14:36:53",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16876,
+   "timestamp": "2026-10-22T14:36:53",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16877,
+   "timestamp": "2026-10-22T14:36:53",
+   "theme_id": "pool_test_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16878,
+   "timestamp": "2026-10-22T14:36:58",
+   "theme_id": "wiring_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16879,
+   "timestamp": "2026-10-22T14:36:58",
+   "theme_id": "wiring_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16880,
+   "timestamp": "2026-10-22T14:40:52",
+   "theme_id": "wiring_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16881,
+   "timestamp": "2026-10-22T14:40:52",
+   "theme_id": "wiring_theme",
+   "action": "REGENERATE_APPROVED_GRANTED",
+   "wav_path": null
+  },
+  {
+   "line": 16882,
+   "timestamp": "2026-10-22T14:40:52",
+   "theme_id": "wiring_theme",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16885,
+   "timestamp": "2026-10-22T14:44:35",
+   "theme_id": null,
+   "action": "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED",
+   "wav_path": "dummy.wav"
+  },
+  {
+   "line": 16898,
+   "timestamp": "2026-10-22T14:45:19",
+   "theme_id": "wiring_theme_asrw2",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16899,
+   "timestamp": "2026-10-22T14:45:21",
+   "theme_id": "wiring_theme_asrw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16900,
+   "timestamp": "2026-10-22T14:45:21",
+   "theme_id": "wiring_theme_asrw3",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16905,
+   "timestamp": "2026-10-22T15:01:13",
+   "theme_id": "x",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16906,
+   "timestamp": "2026-10-22T15:01:13",
+   "theme_id": "x",
+   "action": "PROCEED",
+   "wav_path": null
+  },
+  {
+   "line": 16907,
+   "timestamp": "2026-10-22T15:01:13",
+   "theme_id": "x",
+   "action": "A2_SLOWDOWN_REVERIFY",
+   "wav_path": "x/a2/narration/full_story_part3_c1.wav"
+  }
+ ]
+}
