@@ -22068,3 +22068,11 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - `mini`隔離(OPEN-436の枠): `ledger_disabled`のみ変更、backup保存。Phrase List差分18文(`mini`のみ)・M1 hash差0・4,032ペア差分0。
 - 実Perplexityは401(UDR #134、枠切れ)のため実調査は成立せず(JPY0)。出典ページ照合は保存結果のreplay+実HTTPで確認。自然発生(否定記録・別type採用)は未観測として残事項。
 - Status=`WIRED_PENDING_FABLE`(OPEN-441)。`PRODUCTION_WIRED`の判定はFable。
+
+## FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01 委任_09 Fable判定 PRODUCTION_WIRED(2026-10-22)
+- 判定: OPEN-437 `WIRED_PENDING_FABLE` -> **`PRODUCTION_WIRED`**(Fable判定)。Production採用自体はユーザー承認済み(`docs/pm/delegation_log/2026-10-22_FAMILY-X-B3-CORE-NUMBER-ROUNDING-TRIAL-01_APPROVAL-AND-ARTICLE-A-REMAKE_USER.md`、`APPROVED_FOR_PRODUCTION`、Family Xのみ)。
+- 根拠: (a)正式経路実run(run_pp_02)で丸め判断がLuna lowで実行され概数1件(134,515人->約13万5千人、相対誤差0.36%、V8 10%内)、V7降格不要・他は厳密維持、(b)overlay再利用でWriter段API 0、(c)実R0 Promptに規則8+【概数表記】注入(sha一致、P-11(2)実run充足)、(d)S5タグ漏れ0・P-10数値監査違反0・Validator/ASR(KP両方PASS)/組立完走・HR Lock 0、(e)配線test(er095 test 56+wiring 22)PASS、(f)Opus条件A/Cレビュー(OF-B3RD-P-01〜13)反映済み(Ledger非RESOLVED分は`CLOSEOUT_CONFIRMED`へ)。
+- 残存観測事項(blockingではない・費用0): 記事A最終本文に概数が使われなかった(Writerが標本数の言及を省略。規則8は強制でない)。次のFamily X実記事で自然に観測し記録する。
+- UDR #143(丸め判断の揺れ対策): Fable決定=今はユーザー判断不要・新仕様提案しない(`FABLE_DECIDED_NO_ACTION_OBSERVE`)。両結果とも承認済み仕様内でV8により誤差10%以内、実害未確認(PM_GOVERNANCE 10-2-a)。2回判断一致方式(+約0.1円/記事)は実際の品質問題が出た時のみ再提案。
+- UDR #144(記事A試聴受入): Fable推奨=試聴のうえ問題なければ受入(OPEN-442を`CLOSED_USER_ACCEPTED`、旧e2e_01保持)。
+- 補足(判断不要): Family X正式runnerのTTSはGemini `batches.create`を1segmentずつ呼ぶ既存Production経路(コード変更0)。STANDARD切替手段なし、同期完走。費用はBatch単価。
