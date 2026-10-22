@@ -338,7 +338,7 @@ PROPER_NOUN_ENTITY_ARPABET_CONFIRMED = "PROPER_NOUN_ENTITY_ARPABET_CONFIRMED"
 _UNRESOLVED_ENTITY_TYPE = "cascade_unresolved_entity"
 
 
-def _resolve_unresolved_entity_for_review(canonical_span: str) -> dict | None:
+def _legacy_resolve_unresolved_entity_for_review(canonical_span: str) -> dict | None:
     """D-2'(B): CMU辞書で安全に比較できない固有名詞spanについて、
     Pronunciation Ledgerをcache確認(記事横断で再利用)し、無ければ
     その場でresearch_pronunciations()を1回だけ呼び出して永続cacheする。
@@ -382,6 +382,92 @@ def _resolve_unresolved_entity_for_review(canonical_span: str) -> dict | None:
     # PRONUNCIATION-LEDGER-INVALID-ENTRY-REMEDIATION-01: 研究結果が不正(canonical="unknown"等)ならupsertが隔離済み。
     # 記録はLedgerに残すが、Human Reviewパッケージへ誤情報(unknown)は載せない(None=unconfirmed扱い)。
     return None if (saved or {}).get("ledger_disabled") else saved
+
+
+# ============================================================
+# PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02 Stage 1(委任_05 E-2、ユーザー承認2026-10-22)
+# ============================================================
+# 最終slot・最終NG確定後の「Human Review用 発音情報取得」だけを改善する(否定記録/entity_type非依存lookup/一般語は調査省略/
+# HR根拠階層表示/出典ページ照合[弱い確認])。**合否判定基準・自動PASS条件は不変**(この関数の戻り値はHR packageのpronunciation_lookupsにのみ使われ、
+# PASS/NG・retry・fallbackは読まない)。設計=docs/research/PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02/STAGE1_IMPLEMENTATION_DESIGN_01.md。
+# rollback(S1-08): 下記単一定数をFalseにすると旧関数(_legacy_...)の経路へ完全に戻る(サポート組合せは全ON/全OFFのみ)。
+PRON_SUPPLY_STAGE1_ENABLED = True
+PRON_SUPPLY_NEGATIVE_CACHE_FILENAME = "negative_cache.json"   # sidecar(Ledger本体と同じdir。Ledger pathを差し替えるとsidecarも追随する)
+
+_STUB_NOTE_DEFAULT = (
+    "Pronunciation Ledger lookupおよびresearch_pronunciations()が"
+    "いずれも情報を返さなかった(ネットワーク不可またはresearch結果0件)。"
+    "IPA/pronunciation guideは確定できていません。")
+
+
+def _stage1_stub_note(action, negative=None) -> str:
+    """S1-06: stubのambiguity_noteを省略理由別にする(情報が無い場合のHR表示。判定には使わない)。action=None/想定外は従来文言。"""
+    tail = "IPA/pronunciation guideは確定できていません。"
+    if action == "SKIP_GENERAL_WORD":
+        return "通常の英語語彙のため発音調査を省略した(Pronunciation Ledger研究の対象外)。" + tail
+    if action == "SKIP_NEGATIVE_CACHE":
+        s, u = (negative or (None, None))
+        return (f"過去に調査したが発音情報は得られなかった({str(s or '')[:10]}調査、{str(u or '')[:10]}まで再調査しない)。" + tail)
+    if action == "SKIP_ISOLATED_ENTRY":
+        return "同綴りのLedger entryは誤情報として隔離済みのため、情報を載せず再調査もしていない。" + tail
+    return _STUB_NOTE_DEFAULT
+
+
+_STAGE1_LOCAL = __import__("threading").local()
+
+
+def _stage1_clear() -> None:
+    _STAGE1_LOCAL.last = None
+
+
+def _stage1_take() -> dict:
+    d = getattr(_STAGE1_LOCAL, "last", None) or {}
+    _STAGE1_LOCAL.last = None
+    return d
+
+
+def _pron_supply_neg_store():
+    import er097_pronunciation_supply_stage1_01 as pns
+    return pns.NegativeCacheStore(os.path.join(os.path.dirname(pronun_ledger.LEDGER_PATH), PRON_SUPPLY_NEGATIVE_CACHE_FILENAME))
+
+
+def _pron_supply_fetch(url: str, timeout: float = 5.0, max_bytes: int = 512 * 1024):
+    import er097_pronunciation_supply_stage1_01 as pns
+    return pns.default_fetch(url, timeout, max_bytes)
+
+
+def _resolve_unresolved_entity_for_review(canonical_span: str) -> dict | None:
+    """Stage 1版(上の旧関数を内側から置換)。シグネチャ・戻り値の形は旧関数と同じ(dictまたはNone)。
+    戻り値は旧関数と同じ(dictまたはNone)。表示用の追加情報は戻り値に混ぜず、thread-localの`_STAGE1_LOCAL.last`に置き、呼出側が
+    直前にclear→呼出→takeする(mockがNone/従来dictを返した場合は何も置かれず従来どおり)。
+    PRON_SUPPLY_STAGE1_ENABLED=Falseなら旧関数をそのまま呼ぶ。"""
+    if not PRON_SUPPLY_STAGE1_ENABLED:
+        return _legacy_resolve_unresolved_entity_for_review(canonical_span)
+    import datetime as _dt
+    import er097_pronunciation_supply_stage1_01 as pns
+
+    def _research(span):
+        return pronun_research.research_pronunciations([{
+            "surface": span, "entity_type": "unknown",
+            "risk_reason": "ASR Cascade(Primary#1/#2, Secondary#1/#2)を尽くしても解決できなかった固有名詞",
+        }])
+
+    def _upsert(span, item):
+        item = dict(item)
+        if "evidence_check" in item:                 # Ledger保存キーは source_page_check_v1(論点F)
+            item["source_page_check_v1"] = item.pop("evidence_check")
+        key = pronun_ledger.LedgerKey(surface=span, entity_type=_UNRESOLVED_ENTITY_TYPE, source_context="")
+        pronun_ledger.upsert(key, item)
+        return pronun_ledger.lookup(key)
+
+    r = pns.resolve_span_for_review(
+        canonical_span, ledger_loader=pronun_ledger._load, research_fn=_research, upsert_fn=_upsert,
+        neg_store=_pron_supply_neg_store(), now=_dt.datetime.now(), fetch=_pron_supply_fetch,
+        transient_exceptions=(requests.exceptions.RequestException,), enabled=True)
+    ex = r.get("extra") or {}
+    _STAGE1_LOCAL.last = {"extra": ex, "action": r.get("action"),
+                          "negative": (ex.get("negative_searched_at"), ex.get("negative_until"))}
+    return dict(r["info"]) if r.get("info") else None
 
 
 HUMAN_REVIEW_LOG_PATH = "er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl"
@@ -1092,16 +1178,22 @@ def evaluate_attempt_with_cascade_detail(
             if is_entity_like_mismatch(cls):
                 pronunciation_lookups = {}
                 for span in _unresolved_entity_spans(cls):
+                    _stage1_clear()
                     info = _resolve_unresolved_entity_for_review(span)
-                    pronunciation_lookups[span] = info if info is not None else {
-                        "expected_pronunciation_ipa": "", "pronunciation_hint": "",
-                        "confidence": "unconfirmed",
-                        "ambiguity_note": (
-                            "Pronunciation Ledger lookupおよびresearch_pronunciations()が"
-                            "いずれも情報を返さなかった(ネットワーク不可またはresearch結果0件)。"
-                            "IPA/pronunciation guideは確定できていません。"),
-                        "sources": [],
-                    }
+                    # Stage 1(S1-02): 追加表示情報はthread-localから取得。mockがNone/従来dictを返した場合は何も無く、従来どおり(追加キー無し・stub)。
+                    _s1 = _stage1_take()
+                    _s1_extra, _s1_action, _s1_neg = _s1.get("extra") or {}, _s1.get("action"), _s1.get("negative")
+                    if info is None:
+                        pronunciation_lookups[span] = {
+                            "expected_pronunciation_ipa": "", "pronunciation_hint": "",
+                            "confidence": "unconfirmed",
+                            "ambiguity_note": _stage1_stub_note(_s1_action, _s1_neg),
+                            "sources": [],
+                        }
+                    else:
+                        pronunciation_lookups[span] = info
+                    for _k, _v in _s1_extra.items():   # 追加キーのみ(既存キーは上書きしない)
+                        pronunciation_lookups[span].setdefault(_k, _v)
                 result["pronunciation_lookups"] = pronunciation_lookups
     audit["adapter"] = {"layers": layers, "azure_real_calls": az.real_calls, "cost_guard_triggered": az.cost_guard_triggered,
                         "language": language, "segment_id": segment_id, "asr_text_present": asr_text is not None,

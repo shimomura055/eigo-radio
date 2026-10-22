@@ -187,6 +187,11 @@ def upsert(key: LedgerKey, entry: dict) -> str:
         "ledger_disabled": disabled,
         "ledger_disabled_reason": disabled_reason,
     }
+    # PNPS Stage 1(S1-09): 出典ページ照合(弱い確認)の任意キー3つ。**今回渡されたentryにある場合だけ**書き、既存entryからは引き継がない。
+    # キーを渡さない既存の全呼出は従来とバイト一致。表示・管理専用でPASS根拠にしない。
+    for _k in ("evidence_tier", "source_page_check_v1", "evidence"):
+        if _k in entry:
+            ledger[ledger_id][_k] = entry[_k]
     _save(ledger)
     return ledger_id
 

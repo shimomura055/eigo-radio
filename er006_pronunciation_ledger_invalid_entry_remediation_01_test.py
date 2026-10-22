@@ -114,15 +114,16 @@ def test_research_failure_registers_nothing_supplyable(tmp_ledger, monkeypatch):
     assert L.get_hint_for_text("Zzqz here", min_confidence="low") == []
 
 
+# PNPS Stage 1(E-2): 一般語('us')は調査自体を省略する(Stage 1)ため、調査→不正登録→隔離の経路は一般語でない綴り(Zzqv)で検証する。
 def test_research_returning_unknown_is_registered_disabled(tmp_ledger, monkeypatch):
-    item = {"surface": "us", "entity_type": "unknown", "canonical_spelling": "unknown", "pronunciation_hint": "uhn-NOHN",
+    item = {"surface": "Zzqv", "entity_type": "unknown", "canonical_spelling": "unknown", "pronunciation_hint": "uhn-NOHN",
             "expected_pronunciation_ipa": "/ʌnˈnoʊn/", "alternate_pronunciations": [], "confidence": "low", "ambiguity_note": ""}
     monkeypatch.setattr(sec.pronun_research, "research_pronunciations",
                         lambda *a, **k: {"status": "OK", "items": [item], "citations": ["https://d"]})
-    info = sec._resolve_unresolved_entity_for_review("us")  # Human Reviewへ誤情報を載せない(None)
+    info = sec._resolve_unresolved_entity_for_review("Zzqv")  # Human Reviewへ誤情報を載せない(None)
     assert info is None
-    assert L.lookup(L.LedgerKey(surface="us", entity_type=CAS))["ledger_disabled"] is True  # 記録は残る
-    assert L.get_hint_for_text("the US and us", min_confidence="low") == []
+    assert L.lookup(L.LedgerKey(surface="Zzqv", entity_type=CAS))["ledger_disabled"] is True  # 記録は残る
+    assert L.get_hint_for_text("the Zzqv and zzqv", min_confidence="low") == []
 
 
 # ---- 本番Ledger(現行ledger.json)の健全性ガード ----
