@@ -1,0 +1,94 @@
+{
+  "alarms": [
+    {
+      "alarm_id": "pnal_6cfcd644e5595c64",
+      "article_id": "",
+      "created_at": "2026-10-22T16:05:07",
+      "entry_key": "segments/full_story_part2",
+      "family": "X",
+      "final_state": "PASS_WITH_PRONUNCIATION_ALARM",
+      "final_state_ja": "アラーム付き完成",
+      "inherited": false,
+      "level": "b1b",
+      "location": {
+        "approx_note": "文字位置を音声長で按分した目安(±数秒)。正確な時刻ではありません",
+        "approx_seconds": 8.1,
+        "canonical_sentence": "ELLE's small-bag examples ELLE listed mini bags as one of the trends in fall and winter 2026 styling. Its examples included Khaite's palm-sized evening clutch and Chanel's novelty minaudière. They mainly hold the basics. a phone, wallet, keys, and lip products. They do not challenge roomy bags on storage. Their job is visual. adding a sense of occasion and saying, This is today's mood. The season's picture becomes clearer when we look at what appeared beside them.",
+        "char_index": 124,
+        "context": "...ter 2026 styling. Its examples included [[khaite]]'s palm-sized evening clutch and Chanel'...",
+        "tts_input_text": "ELLE's small-bag examples ELLE listed mini bags as one of the trends in fall and winter 2026 styling. Its examples included Khaite's palm-sized evening clutch and Chanel's novelty minaudière. They mainly hold the basics. a phone, wallet, keys, and lip products. They do not challenge roomy bags on storage. Their job is visual. adding a sense of occasion and saying, This is today's mood. The season's picture becomes clearer when we look at what appeared beside them.",
+        "wav_path": "er019_output/family_x_audio_production_wiring_01/pnap_evidence_01__small_bag__run_02/b1b/narration/full_story_part2.wav",
+        "wav_sha256": "b50b3bfb134db010ae6fe546234b088b1eb117e39eb4b378753ebf3e5c0dc65d"
+      },
+      "mismatch": {
+        "asr_primary": "kate",
+        "asr_secondary": "",
+        "canonical": "khaite",
+        "primary_text": "Elle's small bag examples, Elle listed mini bags as one of the trends in fall and winter 2026 styling. Its examples included Kate's palm-sized evening clutch and Chanel's novelty minaudière. They mainly hold the basics: a phone, wallet, keys, and lip products. They do not challenge roomy bags on storage. Their job is visual, adding a sense of occasion and saying, this is today's mood. The season's picture becomes clearer when we look at what appeared beside them.",
+        "proper_noun_evidence": "ledger",
+        "secondary_text": "Elle's small bag examples L listed mini bags as one of the trends in fall and winter 2026 styling. Its examples included Kates palm sized evening clutch and channels novelty Minotti Air. They mainly hold the basics, a phone, wallet, keys and lip products. They do not challenge roomy bags on storage. Their job is visual, adding a sense of occasion and saying this is today's mood. The season's picture becomes clearer when we look at what appeared beside.Them.",
+        "similarity_primary": 0.8,
+        "similarity_secondary": 1.0
+      },
+      "models": {
+        "primary_asr": {
+          "model": "gpt-4o-mini-transcribe",
+          "provider": "openai_asr"
+        },
+        "secondary_asr": "azure-speech-stt",
+        "secondary_azure_calls": 0,
+        "tts_model_id": "gemini-3.8-flash-lite-tts",
+        "tts_voice": "Aoede"
+      },
+      "operator_only": true,
+      "policy_id": "PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01",
+      "pronunciation_basis": {
+        "confidence": "medium",
+        "evidence_tier": "UNVERIFIED_AI_OUTPUT",
+        "has_basis": true,
+        "ipa": "\u0002keɪt\u0002",
+        "note": "",
+        "pronunciation_hint": "KAYT",
+        "sources": [
+          "https://www.farfetch.com/style-guide/brands/khaite-brand-everything-you-need-to-know",
+          "https://azzurrodue.com/khaite/",
+          "https://medium.com/@joycebirkins/khaite-cool-quirky-and-ethereal-style-4-year-runway-collection-and-10-classic-pieces-f2d95b0251df"
+        ]
+      },
+      "proper_noun": "khaite",
+      "reason": "固有名詞の発音不一致のみ(Primary/Secondary両ASRとも他の差なし)。承認済み方針によりHuman Review・再生成なしで完成扱い。",
+      "role": "FULL_STORY",
+      "run_dir": "er019_output/family_x_audio_production_wiring_01/pnap_evidence_01__small_bag__run_02/b1b",
+      "segment_id": "full_story_part2",
+      "slot": 2,
+      "tts_input_token": null,
+      "tts_supply_result": {
+        "evidence_tier": null,
+        "human_approved": false,
+        "ledger_id": null,
+        "original": "khaite",
+        "policy_id": "PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01",
+        "reason": "EVIDENCE_NOT_VERIFIED_ESTIMATED",
+        "respelling": null,
+        "source_urls": [],
+        "supplied": false,
+        "tier": null
+      }
+    }
+  ],
+  "consistency": {
+    "alarm_state_records": 1,
+    "match": true,
+    "reported": 1
+  },
+  "count": 1,
+  "hr_residual": {
+    "available": true,
+    "hr_asr_uncertain_segments": 0,
+    "of_which_proper_noun_only_outside_alarm_boundary": 0
+  },
+  "operator_only": true,
+  "policy_id": "PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01",
+  "source": "audit/tts_generation_results.json",
+  "supply_applied": []
+}

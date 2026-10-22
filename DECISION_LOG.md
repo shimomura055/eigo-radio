@@ -22109,3 +22109,8 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - ユーザー正式承認: 2026-10-22(JST)の開発費上限を1,000円→1,500円(累計)に引き上げ(+500円)。明日以降は1,000円のまま。既存の個別Trial予算・承認Scope・STOP条件は維持(PM_GOVERNANCE 7-9の例外、他規定は変更なし)。
 - 方針: PNAP・KP3V・KPFTの3件(すべてユーザー承認済みProduction実装)を本日中のPRODUCTION_WIRED到達最優先。日付分割なし・合同runtime検証を優先。PRODUCTION_WIRED判定はタスク別・Family別。品質基準・Gate・受入条件は緩和しない。累計1,500円超見込み・承認仕様変更・重大品質安全問題・自律解決不能blockerは即報告。
 - 本日実支出集計(記録時点)=約887円(出典=docs/pm/RESULT_PACKET_BUD1.md)。原文=docs/pm/delegation_log/2026-10-22_PM-BUDGET-EXCEPTION-20261022-01_USER.md。記録のみ・費用0円。
+
+
+## PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01 委任_02: Opus条件A反映+X/Z配線+runtime evidence(2026-10-22、OPEN-450 WIRED_PENDING_FABLE)
+- Opus条件A所見OF-PNAP-P-01〜15(必須7+推奨)を全て反映し、ユーザー承認済み仕様(固有名詞の発音不一致=アラーム記録のみで停止/HRしない+TTS発音供給)をFamily X・Z正式経路へ配線。flag既定ON(単一定数、run scope内のみ有効、A/B/C・単体は従来どおり)。判断: P-09は集計(補正後3/55=5.5%<25%)に従い`ALARM_ACCEPT_MIN_SLOT=1`。P-04の上限対象は『非固有名詞』差に限定(Opus趣旨に沿い、他の外来語をAzureだけが聞き違えるKhaite文10件を受理に残すため)。旧ルール撤去0(HR投入経路は範囲外の受け皿として残置)、OPEN-318/327/330/331/335は範囲縮小注記のみ(Status不変)。
+- 検証: Regression新規失敗0(既存失敗4件はHEADでも同一)、保存4,032ペアON/OFF差分(KP/JA/scope無し=0、X英語本文HR->アラーム260)、runtime evidence(X実発火1件・HR追記0・Lock RESOLVED、Zは9clip自然発火なし)。実費JPY11.15(日次上限内)。供給は初期0件(B階層=Khaite等は人承認待ち)。ユーザー判断候補なし(B階層の承認操作は仕様上人間が行うため承認候補一覧をFableが提示)。PRODUCTION_WIRED宣言はFable。証跡=docs/research/PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01/。

@@ -54,7 +54,7 @@ class TestP01Entry:
         d = decide("Melos said.", "Mello said.", "Mellow said.", p3_entry="force_secondary")
         assert not d.accept and d.reason == pol.R_P3_ENTRY
 
-    @pytest.mark.parametrize("entry", ["primary_length_ng", "primary_pass_demoted_ambiguous_value", None, "dual_required"])
+    @pytest.mark.parametrize("entry", ["primary_length_ng", "primary_pass_demoted_ambiguous_value", None, "vote_required"])
     def test_other_p3_entries_not_accepted(self, entry):
         d = decide("Melos said.", "Mello said.", "Mellow said.", p3_entry=entry)
         assert not d.accept and d.reason == pol.R_P3_ENTRY
@@ -566,7 +566,7 @@ def _run(canon, prim, sec_text, tmp_path, monkeypatch, *, segment_id="full_story
     monkeypatch.setattr(sec, "get_full_text_via_azure_stt_with_phrase_list", az)
     ctx = {"slot": slot, "is_last_slot": last}
     if dual:
-        ctx["dual_required"] = True
+        ctx["vote_required"] = True
     return sec.evaluate_attempt_with_cascade(canon, prim, [], _wav(tmp_path), cascade_enabled=True, segment_id=segment_id,
                                              attempt_ctx=ctx, detail_out=kw.setdefault("detail_out", {}), **{k: v for k, v in kw.items() if k != "detail_out"}), az
 
@@ -614,7 +614,7 @@ class TestAdapterWiring:
             (ok2, _s2, _c2), _ = _run(CANON, PRIM, SEC, tmp_path, monkeypatch, slot=2, last=False)
         assert ok1 is False and ok2 is True
 
-    def test_kp_dual_required_not_applied(self, tmp_path, monkeypatch, adapter_env):
+    def test_kp_vote_required_not_applied(self, tmp_path, monkeypatch, adapter_env):
         monkeypatch.setattr(pol, "PROPER_NOUN_ALARM_POLICY_ENABLED", True)
         detail = {}
         with pol.run_scope("X"):
@@ -690,3 +690,65 @@ def test_generated_public_pages_do_not_contain_alarm_terms():
     for p in glob.glob("user_test/**/*.html", recursive=True):
         txt = open(p, encoding="utf-8", errors="ignore").read()
         assert not any(b in txt for b in banned), p
+
+
+class TestZRunTtsStageHook:
+    """Z正式関数 run_tts_stage を fake generator で通し、scope(Z)・finally hook・audit出力・scope解除を確認する(API 0)。"""
+
+    def _plan_and_gens(self, alarm_clip, raise_clip=None):
+        import er063_family_z_audio_01_test_01 as zt
+        plan, _s, _k = zt.make_plan("b1b")
+        base = zt.fake_generators()
+        seen = {"scope": []}
+
+        def wrap(kind):
+            def fn(spec, out_path):
+                seen["scope"].append(pol.current_scope())
+                if raise_clip and spec.clip_id == raise_clip:
+                    raise RuntimeError("mid-run failure")
+                r = base[kind](spec, out_path)
+                if spec.clip_id == alarm_clip:
+                    e = _alarm_entry()
+                    j = e["asr_judgement"]
+                    for rec in j["pronunciation_alarm_records"]:
+                        rec["segment_id"] = spec.clip_id
+                    r["asr_judgement"] = j
+                return r
+            return fn
+        return plan, {k: wrap(k) for k in base}, seen
+
+    def test_alarm_entry_reported_and_scope_released(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(pol, "PROPER_NOUN_ALARM_POLICY_ENABLED", True)
+        plan, gens, seen = self._plan_and_gens(alarm_clip=None)
+        import er063_family_z_audio_01 as z
+        clip = next(s.clip_id for s in plan if s.kind == "narrator")
+        plan, gens, seen = self._plan_and_gens(alarm_clip=clip)
+        run = str(tmp_path / "melos" / "run_01")
+        out = z.run_tts_stage(run, "b1b", plan, generators=gens)
+        assert set(seen["scope"]) == {"Z"} and pol.current_scope() is None
+        d = json.load(open(f"{run}/b1b/audit/pronunciation_alarms.json", encoding="utf-8"))
+        assert d["count"] == 1 and d["consistency"]["match"] is True and d["alarms"][0]["segment_id"] == clip
+        assert "固有名詞発音アラーム" in open(f"{run}/b1b/audit/operator_alarm_report.md", encoding="utf-8").read()
+        assert out["statuses"][clip] == "OK"
+
+    def test_mid_run_failure_still_reports_and_releases_scope(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(pol, "PROPER_NOUN_ALARM_POLICY_ENABLED", True)
+        import er063_family_z_audio_01 as z
+        plan, gens, seen = self._plan_and_gens(alarm_clip=None)
+        clip = [s.clip_id for s in plan if s.kind == "narrator"][1]
+        plan, gens, seen = self._plan_and_gens(alarm_clip=None, raise_clip=clip)
+        run = str(tmp_path / "melos" / "run_02")
+        with pytest.raises(RuntimeError):
+            z.run_tts_stage(run, "b1b", plan, generators=gens)
+        assert pol.current_scope() is None
+        md = open(f"{run}/b1b/audit/operator_alarm_report.md", encoding="utf-8").read()
+        assert "アラーム集計失敗" in md        # results未確定の途中失敗=0件と誤表示せず集計失敗を明示
+
+    def test_flag_off_no_scope_no_report_files(self, tmp_path, monkeypatch):
+        import er063_family_z_audio_01 as z
+        monkeypatch.setattr(pol, "PROPER_NOUN_ALARM_POLICY_ENABLED", False)
+        plan, gens, seen = self._plan_and_gens(alarm_clip=None)
+        run = str(tmp_path / "melos" / "run_03")
+        z.run_tts_stage(run, "b1b", plan, generators=gens)
+        assert set(seen["scope"]) == {None}
+        assert not os.path.exists(f"{run}/b1b/audit/operator_alarm_report.md")
