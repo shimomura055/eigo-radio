@@ -309,17 +309,34 @@ def _convert_cardinal_words(text: str) -> str:
             j = i
             while j < len(tokens) and lower_tokens[j] in _NUM_WORD_VOCAB:
                 j += 1
+            # 2026-10-23(FAMILY-Z-VOICE-PRODUCTION-WIRING-01、承認済み規則の不具合是正): "and"は数値語列の中では
+            # hundred/thousand/million の直後(one hundred and two)にだけ現れる。"Her husband and two young brothers"の
+            # ように数値語の直前/直後に付いた接続詞"and"を数値語列へ巻き込まず、語として残す(従来は"and two"全体が
+            # "2"になり、digit側(canonical "and 2")とword側(ASR "and two")でtoken数が食い違い、正しく読めた音声が
+            # ASR_VALIDATION_UNCERTAINでHuman Review Lockになっていた)。
             seq = lower_tokens[i:j]
-            if len(seq) == 1 and seq[0] == "one":
-                out.append(tokens[i])
-                i += 1
+            lead, trail = 0, 0
+            while lead < len(seq) and seq[lead] == "and":
+                lead += 1
+            while len(seq) - trail > lead and seq[len(seq) - trail - 1] == "and":
+                trail += 1
+            core = seq[lead:len(seq) - trail]
+            for k, w in enumerate(core):
+                if w == "and" and not (k > 0 and core[k - 1] in ("hundred", "thousand", "million")):
+                    core = []          # 不正な"and"位置の数値語列は変換しない(従来は誤った値へ変換していた)
+                    break
+            if not core or (len(core) == 1 and core[0] == "one"):
+                out.extend(tokens[i:j])
+                i = j
                 continue
-            val = _words_to_number(seq)
-            if val is None or (len(seq) == 1 and val < 2):
-                out.append(tokens[i])
-                i += 1
+            val = _words_to_number(core)
+            if val is None or (len(core) == 1 and val < 2):
+                out.extend(tokens[i:j])
+                i = j
                 continue
+            out.extend(tokens[i:i + lead])
             out.append(str(val))
+            out.extend(tokens[j - trail:j])
             i = j
         else:
             out.append(tokens[i])
