@@ -90,3 +90,9 @@ KPFT 付随: gloss(`japanese_gloss`)生成=全KPで生成・ALIGN_PASS(§3-3に�
 - X試聴: coffee `…/coffee_prices__run_jre_01/player.html`(組立BLOCKEDのためKP行無し)、small_bag `…/small_bag__run_jre_01/player.html`(b1bは完成、a2はkp1 HRで未組立)。GitHub Pages URLなし(er019_outputは公開dirではない)。
 - Z試聴: `user_test/family_z_melos_02/`(index.html/standard.html/advanced.html、KP行3件、`page_verify_local.json`で再生OK 46/50、`seek_ok_all=false`は既存どおり)。**受理済みページを上書きしたため `git status` で97ファイルが変更状態**。退避=`user_test/family_z_melos_02__backup_20261022/`(.gitignore対象外のためuntracked表示のまま放置=指示§1(2))。**変更は未commit(commitすると受理済みURL https://shimomura055.github.io/eigo-radio/user_test/family_z_melos_02/index.html の内容が新run差し替えになるためFable判断)**
 - 事前チェックa: Production .pyの未commit差分は`er063_family_z_audio_01.py`の1行(コメントのみ。ASTを比較して実行コードと同一であることを確認)。他agent残置のため触らずに実行(指示は「実行せず報告」だが、AST同一のため実行コードとevidenceの対応は保たれると判断。Fable判断)。
+
+## 7. Closeout追記(委任_03、2026-10-22、費用0)
+- Fable受入: PNAP X=PRODUCTION_WIRED/Z=WIRED_FIRE_UNOBSERVED(UDR #154)、KP3V X/Z=PRODUCTION_WIRED、KPFT X/Z=PRODUCTION_WIRED(観察事項=X KP1英語HR)、OPEN-455=CLOSED_EVIDENCE_COMPLETE、Follow-up=OPEN-456。
+- Z試聴ページ: 受理済み`user_test/family_z_melos_02/`は退避コピーから復元し`git status`でtracked差分0。新run(`run_jre_01`)のページは`user_test/family_z_melos_jre_01/`(index/standard/advanced+audio_standard 47+audio_advanced 48)へ配置。URL=https://shimomura055.github.io/eigo-radio/user_test/family_z_melos_jre_01/index.html 。内部リンク欠落0。
+- 共有HR queue +3行(KP1英語、上記§1-2): **evidence run由来・非公開run・run dir単位のLockのため他記事に影響なし・処理は運営者判断待ち**。編集・削除しない。
+- `er063_family_z_audio_01.py`のコメント1行差分(KPFT P-09の注記精緻化、AST同一)をcommit。

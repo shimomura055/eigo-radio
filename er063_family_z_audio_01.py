@@ -1169,7 +1169,7 @@ def _run_tts_stage_impl(run_dir: str, level: str, plan: list, *, generators: dic
     assert_run_style_record(level_dir, level, write=False)
     cached = load_results(level_dir)
     cached = _merge_checkpoint(cached, load_checkpoint(level_dir))   # 委任_10: process中断時もOK clipを再利用(再課金しない)
-    cached = prune_cached_to_plan(cached, plan)   # KPFT 委任_02(OF-KPFT-P-09): 旧rank/旧語句(reuse_key不一致)のentryを再利用経路へ入れない
+    cached = prune_cached_to_plan(cached, plan)   # KPFT 委任_02(OF-KPFT-P-09): 旧rank/旧語句(reuse_key不一致。reuse_keyを持たないentryは判定不能のため従来どおり保持)を再利用経路へ入れない
     gens = generators or real_generators()
     os.makedirs(narr, exist_ok=True)
     os.makedirs(f"{level_dir}/audit", exist_ok=True)
