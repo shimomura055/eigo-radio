@@ -199,7 +199,7 @@ def cmd_z_rerun():
             z.run_tts_stage(run_dir, level, plan)
 
 
-def cmd_z_new(n: int = 20):
+def cmd_z_new(n: int = 8):
     import er005_cost_logger as cl
     import er063_family_z_audio_01 as z
     run_dir = f"{OUT}/z_new"
