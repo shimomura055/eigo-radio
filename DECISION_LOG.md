@@ -21959,3 +21959,71 @@ Fable決定: F1 STOP_NOTICE(2026-10-12)をrun_e2e_03限定で解除(run_e2e_01/0
 - 範囲外(ユーザー判断事項として報告に列挙、実装せず): 多語同音PASSへのwarningラベル付与(事後試聴リスト登録)/camelCase固有名詞を`entity_like`に含める拡張/J11・resume許容集合の現行判定への整合(OPEN-443に別管理ID候補として起票のみ)。
 - 使用モデル(25節): TTS=gemini-3.8-flash-lite-tts(Production Family X/Z)、ASR Primary=OpenAI gpt-4o-mini-transcribe、Secondary=Azure Speech STT en-US、局所確認=faster-whisper small(無料)。Production条件の検証が目的のためProduction採用済みモデルを使用(最新世代比較は目的外)。
 - 2026-10-22 ユーザー正式判断+Fable/Sonnet記録(FAMILY-X-MANGA-AI-CHAT-BYUS-PRODUCTION-E2E-01 委任_04、OPEN-431 CLOSED_USER_ACCEPTED、REGISTER #140判断済み、費用JPY0): ユーザー原文(逐語、38文字、sha256 7a3d8f28738b4e70a55dbf0196ffbdb5cc9bf61ac4ac4d935ebe7ce1bd2b4744): 「「漫画のキャラクターとAIで会話(byUs)」正式E2E-01を承認します。」。記事B(byUs)正式E2E-01のユーザー承認(試聴PASS)。URL=https://shimomura055.github.io/eigo-radio/user_test/manga_ai_chat_byus_e2e_01/index.html。承認版=commit 5a92f9c73(KP4是正後)・index.html sha 3ef83ebdf1da…・Std結合mp3 sha 4566479f53bc…・Adv結合mp3 sha 2191b4471b66…・KP4 wav sha e4405501…。記録=er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/audit/user_acceptance_20261022.json、原文=docs/pm/delegation_log/2026-10-22_FAMILY-X-MANGA-AI-CHAT-BYUS-PRODUCTION-E2E-01_USER-ACCEPT_USER.md(38文字、sha256 7a3d8f28738b4e70a55dbf0196ffbdb5cc9bf61ac4ac4d935ebe7ce1bd2b4744)。KP1-3,5はPrimary単独PASS採用版で、KP両方PASS仕様のAzure追加確認(S1、D-2)は進行中だが、本承認版は人間の試聴に基づく最終判断として優先しS1不成立でも差し替えない(結果は情報として報告)。音声・text・manifest無変更、Production変更0、API 0。
+
+## PROPER-NOUN-PRONUNCIATION-MULTIWORD-HOMOPHONE-PLAN-01: 多語同音救済のユーザー受入・追加提案3件の回答・PM運用是正(2026-10-22、委任_08 F-1、OPEN-439・OPEN-443、UDR #138)
+
+ユーザー原文(逐語、2039文字、sha256 f3e97da535ea4965689b3017d1eb58b1b6ed1a6def334da3fe8d850d018e888b、全文=`docs/pm/delegation_log/2026-10-22_PNMH-CLOSEOUT-AND-PM-DECISION-REDUCTION_USER.md`)の要点逐語(§1〜§3):
+
+### 1. 多語同音救済のProduction実装
+
+Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
+
+- 両Familyの正式Production経路への配線を確認済み。
+- 新規誤PASS 0件、既存PASS→NG 0件。
+- 量産APIコスト増0円。
+- 今回の実装結果を受け入れる。
+
+残っているSSOT最終反映を完了し、両Familyの配線・検証結果・Statusを整合させてCloseoutすること。
+
+**既に完了した検証を不必要に繰り返さないこと。**
+
+### 2. 追加提案3件への正式回答
+
+**① 同音救済PASS音声への警告ラベル：承認**
+
+- 内部記録のみとする。
+- 人間による試聴義務、Human Reviewへの自動転送、量産停止は追加しない。
+- 既存の記録機構を優先利用し、必要最小限の対応とする。
+- 警告記録のために追加APIを呼び出さない。
+
+**② 大文字・小文字の組み合わせによる固有名詞判定の拡張：不採用**
+
+- `ByUs` のような表記を特別扱いする新機能は追加しない。
+- 今回承認済みの多語同音救済は維持する。
+- 不採用判断を記録し、同じ提案を繰り返さない。
+
+**③ 中断後の再判定・不要な再生成への追加対策：対応不要**
+
+- 今回報告されたのは、主にイレギュラーな中断後の再開・再利用に関する潜在的懸念。
+- 通常の制作フローで無駄な再生成が発生したという証拠は提示されていない。
+- 現段階では追加調査・新規対策・Trialを実施しない。
+- 既存の再開・再利用仕様は変更しない。
+
+ただし、将来、実際の品質・費用・Production正常動作への重大な影響が確認された場合は、通常の不具合管理原則に従う。
+
+### 3. PM運用の是正【重要】
+
+今回、実害や重要性が明確でない技術的懸念まで、ユーザー判断事項として報告されていた。
+
+これは改善すること。
+
+今後は以下を徹底する。
+
+1. **問題を発見したら、まず事実・発生条件・影響範囲・QCD影響を確認する。**
+2. 既存承認仕様内で解決できる不具合は、Claude/Fable側で自律的に修正・検証する。
+3. 実害未確認・影響軽微・対応不要の潜在的懸念を、安易にユーザー判断へ上げない。
+4. 新仕様採用・品質基準変更・重大なQCDトレードオフなど、本当にユーザー判断が必要な事項だけを提示する。
+5. ユーザー判断が必要な場合は、何が起きており、放置すると何が困るのか、推奨案は何かを平易な言葉で説明する。
+6. 管理番号だけで課題を説明せず、必ず具体的な内容を示す。
+7. 過去に回答済みの事項を再度ユーザーに質問しない。
+
+ただし、重大な品質・安全問題、承認範囲外の変更、予算・STOP条件に該当する場合の報告義務は維持する。
+
+**不要なユーザー判断を減らすこと自体が、Deliveryを短縮する重要なPM改善である。**
+
+### 記録(Fable/Sonnet、API 0・JPY0・コード無変更)
+- 多語同音救済(L1): Family X/Z とも Fable判定 PRODUCTION_WIRED をユーザーが受領・受入。残=SSOT最終反映とCloseout。Status=`PRODUCTION_WIRED_USER_ACCEPTED_CLOSEOUT_PENDING`(OPEN-439)。
+- ①同音救済PASS音声への警告ラベル=**承認**(内部記録のみ。試聴義務・Human Review自動転送・量産停止なし、既存記録機構優先、追加API 0)。**実装はF-2**(Key Phrase両方PASS配線D-2完了後)。
+- ②大文字小文字の組み合わせによる固有名詞判定拡張(`ByUs`等の特別扱い)=**不採用**。再提案禁止。
+- ③中断後の再判定・再生成の追加対策(旧OPEN-443)=**対応不要**。既存の再開・再利用仕様不変。OPEN-443=`CLOSED_NO_ACTION_USER_DECISION`(再提案禁止。将来、品質・費用・Production正常動作への重大な影響が確認された場合のみ通常の不具合管理)。
+- PM運用是正7項目は`docs/pm/PM_GOVERNANCE.md` 10-2節末尾「2026-10-22ユーザー是正」小節へ逐語記載。報告順序(結論→実際の問題と影響→完了状況→本当に必要なユーザー判断)は9節末尾へ追記。memory=`feedback_user_decision_reduction.md`。
