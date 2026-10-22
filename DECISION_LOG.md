@@ -22096,3 +22096,7 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - Production/正式Ledger/HR queue/Store/Validator/Prompt無変更(`closeout/protect_closeout.json`)。出典=docs/research/PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02/STAGE2_TRIAL_CLOSEOUT_01.md、STAGE2_TRIAL_RESULT_03.md §7・§8。
 
 ## FAMILY-X-KP-SELECTION-* ユーザー決定(2026-10-22): KP選定モデル=gpt-6-luna維持(UDR #145/#146-A)。選定・一般化2工程方式(TRIAL-02 Trial②)=見送り(#146-B)。提案C=最小化条件を現行Production経路Promptへ組み込む比較Trial=GO(#146-C→FAMILY-X-KP-MINIMIZATION-PRODUCTION-PATH-TRIAL-03)。原文=docs/pm/delegation_log/2026-10-22_FAMILY-X-KP-MINIMIZATION-PRODUCTION-PATH-TRIAL-03_USER.md(190字、sha256 f32a06fb4793412d409ffc7f0d55b1394c8eb8aa4a39c612d48fe22842d0569f)。Production無変更。
+
+## FAMILY-X-KP-MINIMIZATION-PRODUCTION-PATH-TRIAL-03 Fable分類 REJECTED(2026-10-22)
+- 現行Production経路のKP選定Promptへの最小化条件(第3条)追加は不採用。根拠=現行経路は元々平均2.17語で短縮-0.13語と小さく、短縮圧力で代名詞断片が選ばれcanonicalization 2/14失敗(現行14/14)、評価V/E低下、費用差+0.036円/セットで利点なし。先行Trialの長いKP問題は現行方式では元々ほぼ発生しない。
+- Production/Prompt/Validator無変更。ユーザー判断不要(別案を望む場合のみ指示)。手順逸脱(STOP確認前の有料process起動、<=約3円)は記録。副次発見: B1=Family XでRedundancy retry後INVALID時に旧KPファイルが残る経路あり(修正せず選択肢提示、推奨=scaffoldでkp_status非PASSならstop)、B2=実パスSTOP_ALLを作るtestをopt-in化(OPEN-449)。証跡=docs/research/FAMILY-X-KP-MINIMIZATION-PRODUCTION-PATH-TRIAL-03/(TRIAL_RESULT_03.md §7・§8、FOLLOWUPS_01.md)。

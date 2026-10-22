@@ -54,8 +54,14 @@ Excel: `docs/research/FAMILY-X-KP-MINIMIZATION-PRODUCTION-PATH-TRIAL-03/KP_MIN_P
 ## 6. 限界
 1回の実行(各arm1回)のためLLM非決定性を分離できない(A-Prod一致61%が示す揺らぎ)。評価者1系統・n=60/arm。第3条の挿入位置は現行templateの「1〜5語」段落直後(「5語以内」「学習価値」の文言が現行にないため)で、太字・番号は付していない(別位置・別文言の影響は未検証)。Arm AのE_StandardだけStrategy L fallbackで、同一単位のA/Bはfreeな条件差を含む。選定はshortlist候補の表層形に拘束されるため、Promptで短縮できる範囲は候補の選択に限られ(canonicalizationの原形化は別工程)、自由抽出のTrial①と同程度の短縮は原理的に出にくい。
 
-## 7. 分類候補(Fableが確定)
-`NOT_VALIDATED`(事前合格基準未達: 成功率低下・V/E低下・C/U/S/X同等)。Production Prompt変更の採用提案は根拠不足。
+## 7. Fable独立評価・Trial終了Status(2026-10-22)
+- 分類: **`REJECTED`**(現行Production経路のKP選定Promptへの最小化条件(第3条)追加は不採用)。
+- 根拠: (1)現行経路(候補DB照合方式)の出力は元々短く(平均2.17語、4語4件/60、5語超0)、第3条での短縮は平均-0.13語と小さい。(2)一方で短縮圧力により代名詞を含む断片(例`just my personality`)が選ばれ、原形化・一般化(canonicalization)が2/14単位で失敗し、最終KPが得られなかった(現行は14/14)。(3)評価の学習価値V・易しさ除外Eは低下、最小化観点は同等。(4)費用差は+0.036円/セットで無視できるが、品質面で利点がない。(5)ユーザー例示`think up what happens next`は現行Production経路で既に`think up`が選ばれており、他2例は現行経路では選定対象にならない。**先行Trial(全文渡し方式)で見えた「長く焦点のぼやけたKey Phrase」は、現行Productionの方式では元々ほぼ発生していない**。
+- 読み方の注意: Arm Aと既存Production KPの一致は61%、A-B間75%で、LLMの非決定性による入れ替わりが約3〜4割ある。各arm 1回実行のため、小さな差は揺らぎと区別できない(本結論は「改善の証拠がない+失敗増」に基づく)。
+- Closeout: Production/Prompt/Validator無変更。追加のPrompt案(第3条をcanonicalization側へ/代名詞断片の但し書き)は改善見込み低〜中のため起票しない(ユーザーが望む場合のみ)。
+- 逸脱記録: STOP確認結果を見る前の有料process起動(即kill、<=約3円、PM_GOVERNANCE 26節の手順逸脱)。原因=手順順序の誤り。再発防止=runner側でSTOP確認のrc!=0なら起動しないガードを`er102`等のTrial runnerに入れるのではなく、委任文T-3/26節の手順を厳守(記録のみ)。なお当時のSTOP_ALL一時出現(rc=3)の原因はtest由来と判明(`FOLLOWUPS_01.md` B2)。
 
-## 8. 判断候補
-現行KP選定Promptへの第3条追加の採否: 推奨=**採用しない(現状維持)**。区分D(新Promptの採否は正式判断事項だが、推奨は現状維持のため実質報告のみ)。さらに試すなら(別Trial・要承認)、(i)第3条をcanonicalization側(原形化段)に置く、(ii)代名詞断片を避ける但し書きを併記する、のいずれも改善見込みは低〜中(shortlist候補が既に短く、改善余地が小さいため)で、積極推奨しない。
+## 8. ユーザー判断
+不要(現状維持=Prompt無変更。ユーザーが別案の検討を望む場合のみ指示を受ける)。
+
+(委任_01時点の旧「分類候補/判断候補」は上記7・8に置換。副次発見2件の確認結果=`FOLLOWUPS_01.md`。)

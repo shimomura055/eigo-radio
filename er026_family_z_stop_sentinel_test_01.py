@@ -4,7 +4,8 @@
 項目1〜7を固定する(項目8=統合testの環境起因failの再確認は別手順)。証跡は
 er026_output/family_z_production_e2e_01/melos/evidence_12A/ へ書く。
 実行: .venv/Scripts/python.exe -m unittest er026_family_z_stop_sentinel_test_01 -v
-注意: 項目4の一部は STOP_ALL を一時的に実パスへ作成する(試験後に必ず削除。事前に存在する場合はtestを中止)。
+注意: 項目4a・5は STOP_ALL を一時的に実パスへ作成するため、既定ではSkip。実行はFAMZ_ALLOW_REAL_STOP_ALL_TEST=1の明示opt-in時のみ
+(有料run・並行agent作業中は禁止。削除は自分のtoken入りの場合のみ。事前に存在する場合はtestを中止)。
 """
 from __future__ import annotations
 
@@ -146,19 +147,47 @@ def purge_test_runs():
                 shutil.rmtree(os.path.join(MELOS, n), ignore_errors=True)
 
 
+# KPMP-FOLLOWUPS 委任_02 (B2, 2026-10-22): 本testは実パスSTOP_ALLを一時作成するため、回帰(er026*)や
+# 並行agentの実行時に有料runの起動前確認[tools/stop_scope_check_01.py]をrc=3にしてしまう実害が出た。
+# 子processが絶対path定数(er062 STOP_ALL_PATH)を見る検証のため、実パス使用自体は避けられない。よって
+#  (1) 既定ではSkip(明示opt-in環境変数が必要。回帰では実パスに触れない)
+#  (2) 作成はO_EXCL(存在すれば作らない)、削除は自分が書いたtokenが残っている場合のみ
+#      (作成後にFable/ユーザーが同path[tools/stop_all_family_z.py]へ書込んだ本物は消さない)
+REAL_STOP_ALL_OPT_IN_ENV = "FAMZ_ALLOW_REAL_STOP_ALL_TEST"
+
+
 @contextlib.contextmanager
 def real_stop_all(note="12A test"):
-    """実パスの STOP_ALL を一時作成する(既存なら使わない=中止)。必ず削除する。"""
+    """実パスの STOP_ALL を一時作成する(opt-in必須・既存なら使わない=中止)。自分のtokenが残る場合のみ削除する。"""
+    if os.environ.get(REAL_STOP_ALL_OPT_IN_ENV) != "1":
+        raise unittest.SkipTest(f"実パスSTOP_ALLを作るtestはopt-in必須(環境変数{REAL_STOP_ALL_OPT_IN_ENV}=1。"
+                                "有料run実行中・並行agent作業中は実行しない)")
     if os.path.exists(st.STOP_ALL_PATH):
         raise unittest.SkipTest("STOP_ALL が既に存在する(Fable/ユーザー操作中)。このtestは実行しない")
     os.makedirs(os.path.dirname(st.STOP_ALL_PATH), exist_ok=True)
-    with open(st.STOP_ALL_PATH, "w", encoding="utf-8") as f:
-        json.dump({"reason": note, "by": "er026_family_z_stop_sentinel_test_01"}, f)
+    token = f"{os.getpid()}-{time.time_ns()}"
+    try:
+        fd = os.open(st.STOP_ALL_PATH, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+    except FileExistsError:
+        raise unittest.SkipTest("STOP_ALL が既に存在する(作成直前に出現。Fable/ユーザー操作中)")
+    with os.fdopen(fd, "w", encoding="utf-8") as f:
+        json.dump({"reason": note, "by": "er026_family_z_stop_sentinel_test_01", "token": token}, f)
     try:
         yield
     finally:
-        if os.path.exists(st.STOP_ALL_PATH):
-            os.remove(st.STOP_ALL_PATH)
+        _remove_if_own_token(st.STOP_ALL_PATH, token)
+
+
+def _remove_if_own_token(path, token):
+    """pathが自分のtoken入りの場合だけ削除する。それ以外(本物に差し替わった等)は残す。戻り値=削除したか。"""
+    try:
+        with open(path, encoding="utf-8") as fh:
+            mine = json.load(fh).get("token") == token
+    except (OSError, ValueError):
+        mine = False
+    if mine:
+        os.remove(path)
+    return mine
 
 
 def spec_of(clip_id="full_story_part1_c1"):
@@ -721,6 +750,48 @@ class Item7StopAllTool(Base):
         sec = t[i:i + 6000]
         for key in ("STOP_ALL", "再起動", "RESTART_STORM"):
             self.assertIn(key, sec, key)
+
+
+class ItemSafeRealStopAllIsolation(unittest.TestCase):
+    """B2再発防止: opt-inなしでは実パスに触れない/本物(token違い)は削除しない(st.STOP_ALL_PATHは一時pathへ差替え)。"""
+
+    def test_default_skip_does_not_touch_path(self):
+        d = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, d, True)
+        fake = os.path.join(d, "STOP_ALL")
+        env = {k: v for k, v in os.environ.items() if k != REAL_STOP_ALL_OPT_IN_ENV}
+        with mock.patch.object(st, "STOP_ALL_PATH", fake), mock.patch.dict(os.environ, env, clear=True):
+            with self.assertRaises(unittest.SkipTest):
+                with real_stop_all():
+                    self.fail("must not enter")
+        self.assertFalse(os.path.exists(fake))
+
+    def test_foreign_stop_all_is_not_removed(self):
+        d = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, d, True)
+        fake = os.path.join(d, "STOP_ALL")
+        with mock.patch.object(st, "STOP_ALL_PATH", fake), mock.patch.dict(os.environ, {REAL_STOP_ALL_OPT_IN_ENV: "1"}):
+            with real_stop_all():
+                self.assertTrue(os.path.exists(fake))
+                with open(fake, "w", encoding="utf-8") as f:       # Fable/ユーザーが本物を書込んだ状況
+                    json.dump({"reason": "real stop", "by": "fable"}, f)
+            self.assertTrue(os.path.exists(fake))                   # 本物は残る
+            with open(fake, encoding="utf-8") as f:
+                self.assertEqual(json.load(f)["by"], "fable")
+
+    def test_own_stop_all_is_removed_and_existing_blocks(self):
+        d = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, d, True)
+        fake = os.path.join(d, "STOP_ALL")
+        with mock.patch.object(st, "STOP_ALL_PATH", fake), mock.patch.dict(os.environ, {REAL_STOP_ALL_OPT_IN_ENV: "1"}):
+            with real_stop_all():
+                self.assertTrue(os.path.exists(fake))
+            self.assertFalse(os.path.exists(fake))
+            open(fake, "w").close()
+            with self.assertRaises(unittest.SkipTest):
+                with real_stop_all():
+                    self.fail("must not enter")
+            self.assertTrue(os.path.exists(fake))                   # 既存は消さない
 
 
 if __name__ == "__main__":
