@@ -25,6 +25,7 @@ import os
 import re
 import socket
 import unicodedata
+import uuid
 from typing import Callable, Optional
 from urllib.parse import urlparse
 
@@ -35,6 +36,10 @@ FETCH_MAX_BYTES = 512 * 1024
 FETCH_TIMEOUT_SEC = 5.0
 FETCH_MAX_URLS = 3
 EXCLUDED_ENTITY_TYPES = frozenset({"ja_reading_katakana"})   # 日本語読みは英語発音の根拠にしない(M1も除外)
+RESEARCH_ENTITY_TYPE = "cascade_unresolved_entity"           # 調査用type(旧lookupが見ていた唯一のtype)。このtypeのentryは従来どおり最優先で処理する(S1-04)
+PRON_SUPPLY_STAGE1_ENABLED = True   # 全体ON/OFFの単一定数(S1-08)。サポート組合せは「全ON/全OFF」のみ。OFF時はresolve_span_for_reviewが
+                                    # action=DISABLED_USE_LEGACYを返し、副作用ゼロ(呼出側が従来関数へ戻す)。項目別定数は持たない。
+MIN_PRON_FORM_LEN = 5               # 発音表記の照合に使う最小長(正規化後、空白除く。S1-07)
 
 OUTCOME_FOUND = "FOUND"
 OUTCOME_NOT_FOUND = "NOT_FOUND"
@@ -45,9 +50,10 @@ ACTION_SKIP_ISOLATED = "SKIP_ISOLATED_ENTRY"
 ACTION_SKIP_GENERAL = "SKIP_GENERAL_WORD"
 ACTION_SKIP_NEGATIVE = "SKIP_NEGATIVE_CACHE"
 ACTION_RESEARCH = "RESEARCH"
+ACTION_DISABLED = "DISABLED_USE_LEGACY"
 
 TIER_QUOTE_VERIFIED = "QUOTE_VERIFIED"            # 出典ページに引用文が実在(Stage 2のresearch形式で付与。Stage 1は表示のみ)
-TIER_PRON_IN_PAGE = "PRON_IN_CITED_PAGE"          # 出典ページ本文に名称と発音表記(IPA/ヒント)が実在
+TIER_PRON_IN_PAGE = "PRON_IN_CITED_PAGE"          # 出典ページ本文に名称と発音表記(IPA/ヒント)が実在(出典ページ照合V1'=弱い確認。引用実在確認ではない)
 TIER_NAME_IN_PAGE = "NAME_IN_CITED_PAGE"          # 出典ページ本文に名称のみ実在(発音表記は未確認)
 TIER_UNVERIFIED = "UNVERIFIED_AI_OUTPUT"          # 出典はあるが取得失敗/不一致=AI出力のまま(拒否ではない)
 TIER_NO_SOURCE = "NO_SOURCE"                      # 出典なし
@@ -164,11 +170,12 @@ class NegativeCacheStore:
             with open(self.path, encoding="utf-8") as f:
                 d = json.load(f)
             return d if isinstance(d, dict) else {}
-        except (OSError, ValueError):
-            return {}   # 破損時は「記録なし」扱い(=従来どおり調査する。安全側)
+        except Exception:   # noqa: BLE001  破損・権限・文字コード等すべて「記録なし」扱い(=従来どおり調査する。安全側, S1-03)
+            return {}
 
     def get(self, surface: str) -> Optional[dict]:
-        return self._load().get(norm_surface(surface))
+        rec = self._load().get(norm_surface(surface))
+        return rec if isinstance(rec, dict) else None
 
     def put(self, rec: Optional[dict]) -> bool:
         if not rec:
@@ -189,10 +196,17 @@ class NegativeCacheStore:
 
     def _atomic_write(self, d: dict) -> None:
         os.makedirs(os.path.dirname(self.path) or ".", exist_ok=True)
-        tmp = self.path + ".tmp"
-        with open(tmp, "w", encoding="utf-8") as f:
-            json.dump(d, f, ensure_ascii=False, indent=2, sort_keys=True)
-        os.replace(tmp, self.path)
+        tmp = f"{self.path}.{os.getpid()}.{uuid.uuid4().hex[:8]}.tmp"   # 並列run同士で一時fileを共有しない(S1-03)
+        try:
+            with open(tmp, "w", encoding="utf-8") as f:
+                json.dump(d, f, ensure_ascii=False, indent=2, sort_keys=True)
+            os.replace(tmp, self.path)
+        finally:
+            if os.path.exists(tmp):
+                try:
+                    os.remove(tmp)
+                except OSError:
+                    pass
 
 
 # ---------------------------------------------------------------- 2. 統一lookup
@@ -261,13 +275,10 @@ def is_safe_url(url: str, *, resolver: Optional[Callable] = None) -> bool:
     """http/httpsのみ。loopback/private/link-local/reserved宛は遮断(SSRF)。解決不能はFalse。"""
     try:
         p = urlparse(url)
-    except ValueError:
-        return False
-    if p.scheme not in ("http", "https") or not p.hostname:
-        return False
-    try:
+        if p.scheme not in ("http", "https") or not p.hostname:
+            return False
         addrs = resolver(p.hostname) if resolver else [ai[4][0] for ai in socket.getaddrinfo(p.hostname, None)]
-    except OSError:
+    except Exception:   # noqa: BLE001  名前解決・URL解析のどの失敗も「安全と確認できない」=False(S1-03)
         return False
     if not addrs:
         return False
@@ -289,27 +300,47 @@ def html_to_text(raw: str) -> str:
     return re.sub(r"\s+", " ", _html.unescape(t)).strip()
 
 
-def _squash(s: str) -> str:
-    return re.sub(r"[^0-9a-zɐ-ʯθðŋ]+", "", fold(s))
+_KEEP = "0-9a-zæœøðþßɐ-ʯθŋ"          # 照合に使う文字(英数字+æ等+IPA主要範囲)。それ以外は空白に置換(S1-07)
+_IPA_MARKS_RE = re.compile(r"[ˈˌːˑ.‿/\[\]()]")
+
+
+def _words(s: str, *, ipa: bool = False) -> str:
+    """空白を残した正規化テキスト(語境界つき照合用)。ipa=Trueは強勢・長音・括弧等を削除してから正規化する。"""
+    t = fold(s)
+    if ipa:
+        t = _IPA_MARKS_RE.sub("", t)
+    return re.sub(r"\s+", " ", re.sub(f"[^{_KEEP}]+", " ", t)).strip()
+
+
+def _has_phrase(hay: str, needle: str) -> bool:
+    """語境界つき部分一致(hay/needleは_wordsの出力)。'ottoni'は'bottonix'にはマッチしない。"""
+    return bool(needle) and f" {needle} " in f" {hay} "
 
 
 def _pron_forms(entry: dict) -> list:
+    """[(kind, form)]。kind='ipa'|'words'。正規化後(空白除く)がMIN_PRON_FORM_LEN未満の表記は照合に使わない(偶然一致防止)。"""
     forms = []
     ipa = (entry.get("expected_pronunciation_ipa") or "").strip()
     if ipa:
-        forms.append(re.sub(r"[/\[\]\s.ˈˌ]", "", ipa))
+        forms.append(("ipa", ipa))
     hint = (entry.get("pronunciation_hint") or "").strip()
     if hint:
-        forms.append(hint)
+        forms.append(("words", hint))
     for a in entry.get("alternate_pronunciations") or []:
         if isinstance(a, str) and a.strip():
-            forms.append(re.sub(r"[/\[\]\s.ˈˌ]", "", a))
-    return [f for f in forms if len(_squash(f)) >= 3]
+            forms.append(("ipa" if (not a.isascii() or a.strip().startswith(("/", "["))) else "words", a.strip()))
+    out = []
+    for kind, f in forms:
+        w = _words(f, ipa=(kind == "ipa"))
+        if len(w.replace(" ", "")) >= MIN_PRON_FORM_LEN:
+            out.append((kind, w))
+    return out
 
 
 def verify_citations(entry: dict, fetch: Callable, *, max_urls: int = FETCH_MAX_URLS, timeout: float = FETCH_TIMEOUT_SEC,
                      max_bytes: int = FETCH_MAX_BYTES, url_ok: Callable = is_safe_url) -> dict:
-    """出典URLを取得し、(1)evidence[].quoteがあれば本文への実在、(2)なければ名称+発音表記(IPA/hint)の実在を確認する。
+    """【出典ページ照合V1'=名称・発音表記の出現確認(弱い確認)。承認された「引用実在確認」そのものではない。保存キーevidence_check/tier名は互換のため維持、
+    報告上の名称は`source_page_check_v1`】出典URLを取得し、(1)evidence[].quoteがあれば本文への実在、(2)なければ名称+発音表記(IPA/hint)の実在を語境界つきで確認する。
     fetch(url, timeout, max_bytes) -> 本文(str, HTML可)またはNone(失敗)。**失敗は拒否ではなく`UNVERIFIED_AI_OUTPUT`**。
     読取専用: Ledgerを書換えない。戻り値は表示/記録用のdict(tier, checked, details)。"""
     urls = [u for u in (entry.get("sources") or []) if isinstance(u, str)]
@@ -318,8 +349,8 @@ def verify_citations(entry: dict, fetch: Callable, *, max_urls: int = FETCH_MAX_
         return {"tier": TIER_NO_SOURCE, "checked": 0, "details": []}
     ev_urls = {x["url"] for x in ev}
     targets = [(x["url"], x["quote"]) for x in ev] + [(u, None) for u in urls if u not in ev_urls]
-    name = _squash(entry.get("canonical_spelling") or entry.get("surface") or "")
-    forms = [_squash(f) for f in _pron_forms(entry)]
+    name = _words(entry.get("canonical_spelling") or entry.get("surface") or "")
+    forms = _pron_forms(entry)
     best, details, n = TIER_UNVERIFIED, [], 0
     order = {TIER_UNVERIFIED: 0, TIER_NAME_IN_PAGE: 1, TIER_PRON_IN_PAGE: 2, TIER_QUOTE_VERIFIED: 3}
     for url, quote in targets[:max_urls]:
@@ -336,13 +367,14 @@ def verify_citations(entry: dict, fetch: Callable, *, max_urls: int = FETCH_MAX_
             details.append({"url": url, "result": "FETCH_FAILED"})
             continue
         text = html_to_text(raw[:max_bytes])
-        sq = _squash(text)
-        q = _squash(quote) if quote else ""
-        if q and q in sq:
+        sq = _words(text)
+        sq_ipa = _words(text, ipa=True)
+        q = _words(quote) if quote else ""
+        if q and _has_phrase(sq, q):
             tier = TIER_QUOTE_VERIFIED
-        elif forms and name and name in sq and any(f and f in sq for f in forms):
+        elif forms and _has_phrase(sq, name) and any(_has_phrase(sq_ipa if k == "ipa" else sq, f) for k, f in forms):
             tier = TIER_PRON_IN_PAGE
-        elif name and name in sq:
+        elif _has_phrase(sq, name):
             tier = TIER_NAME_IN_PAGE
         else:
             tier = TIER_UNVERIFIED
@@ -370,7 +402,7 @@ def evidence_tier(entry: Optional[dict], verification: Optional[dict] = None) ->
 def hr_display(info: Optional[dict], *, action: str, lookup_meta: Optional[dict] = None, negative: Optional[dict] = None,
                verification: Optional[dict] = None, general_word: bool = False) -> dict:
     """pronunciation_lookups[span]へ**追加**するキー群を返す(既存キーは上書きしない)。
-    keys: evidence_tier / evidence_tier_label_ja / lookup_action / lookup_entity_type / source_urls /
+    keys: same_spelling_other_type(別type採用時のみ) / evidence_tier / evidence_tier_label_ja / lookup_action / lookup_entity_type / source_urls /
     negative_searched_at / negative_until / citation_check / display_lines_ja。"""
     if action == ACTION_SKIP_GENERAL or (action == ACTION_SKIP_ISOLATED and general_word):
         tier = TIER_GENERAL
@@ -380,6 +412,10 @@ def hr_display(info: Optional[dict], *, action: str, lookup_meta: Optional[dict]
         tier = evidence_tier(info, verification)
     urls = [u for u in ((info or {}).get("sources") or []) if isinstance(u, str)][:3]
     lines = [f"根拠階層: {TIER_LABELS_JA[tier]}"]
+    other_type = None
+    if action == ACTION_USE_LEDGER and info and info.get("entity_type") not in (None, RESEARCH_ENTITY_TYPE):
+        other_type = info.get("entity_type")      # S1-05: 調査用type以外のentryを採用した場合は同一対象かの未確認を明示
+        lines.append(f"同綴りの別entry(type={other_type})の情報。同一対象かは未確認")
     if action == ACTION_SKIP_NEGATIVE and negative:
         lines.append(f"調査済み・未取得({str(negative.get('searched_at',''))[:10]}調査、"
                      f"{str(negative.get('negative_until',''))[:10]}まで再調査しない)")
@@ -390,6 +426,8 @@ def hr_display(info: Optional[dict], *, action: str, lookup_meta: Optional[dict]
     extra = {"evidence_tier": tier, "evidence_tier_label_ja": TIER_LABELS_JA[tier], "lookup_action": action,
              "lookup_entity_type": (lookup_meta or {}).get("picked_entity_type"), "source_urls": urls,
              "display_lines_ja": lines}
+    if other_type:
+        extra["same_spelling_other_type"] = other_type
     if negative:
         extra["negative_searched_at"] = negative.get("searched_at")
         extra["negative_until"] = negative.get("negative_until")
@@ -402,30 +440,46 @@ def hr_display(info: Optional[dict], *, action: str, lookup_meta: Optional[dict]
 def decide_span_action(span: str, ledger: dict, neg_store: Optional[NegativeCacheStore], *, now: _dt.datetime,
                        cmu_has: Callable = _default_cmu_has, zipf: Callable = _default_zipf) -> dict:
     """最終slotのentity-like不一致spanについて、調査(有料)を呼ぶかを決める。優先順(上で確定すれば下は評価しない):
-      1. USE_LEDGER         : unified_lookupが発音情報つきentryを返す(旧lookupの取りこぼし解消を含む)
-      2. SKIP_ISOLATED_ENTRY: ledger_disabledの隔離entryが同綴りにある(旧実装も命中扱い=再調査なし・HR情報なし)
-      3. USE_LEDGER         : 発音情報の無い有効entryのみ(旧実装も命中扱い=再調査なし)
-      4. SKIP_GENERAL_WORD  : 一般語/一般句
-      5. SKIP_NEGATIVE_CACHE: 否定記録がACTIVE
-      6. RESEARCH           : 上記すべて非該当(従来どおり1回調査)
+      0. 調査用type(RESEARCH_ENTITY_TYPE)のentryが同綴りにある -> 従来のlookupと同じ扱いを**最優先**(S1-04):
+           有効entry -> USE_LEDGER(発音情報の有無を問わない) / ledger_disabled -> SKIP_ISOLATED_ENTRY(HR情報なし・再調査なし)
+      1. USE_LEDGER         : 別typeの有効entryで発音情報つき(unified_lookup。旧lookupの取りこぼし解消)。発音情報の無い別typeのentryは調査を止めない
+      2. SKIP_GENERAL_WORD  : 一般語/一般句
+      3. SKIP_NEGATIVE_CACHE: 否定記録がACTIVE(記録の取得・評価で例外が出た場合は「記録なし」扱い=調査する)
+      4. RESEARCH           : 上記すべて非該当(従来どおり1回調査)
     互換性不変条件: 旧lookupが命中していた(同surfaceのcascade_unresolved_entity entryがある)場合は決してRESEARCHにならない。"""
-    entry, meta = unified_lookup(ledger, span)
     key = norm_surface(span)
     same = [e for e in (ledger or {}).values() if norm_surface(e.get("surface", "")) == key]
+    own = [e for e in same if e.get("entity_type") == RESEARCH_ENTITY_TYPE]
+    if own:
+        live = [e for e in own if not e.get("ledger_disabled")]
+        if live:
+            best = sorted(live, key=lambda e: (1 if _has_usable_info(e) else 0, str(e.get("updated_at") or "")), reverse=True)[0]
+            return {"action": ACTION_USE_LEDGER, "entry": best, "meta": {"candidates": len(live), "excluded": {},
+                    "picked_entity_type": RESEARCH_ENTITY_TYPE, "picked_ledger_id": None}}
+        return {"action": ACTION_SKIP_ISOLATED, "entry": None, "meta": {"candidates": 0, "excluded": {"ledger_disabled": len(own)},
+                "picked_entity_type": None, "picked_ledger_id": None}, "general_word": _safe_general(span, cmu_has, zipf)}
+    entry, meta = unified_lookup(ledger, span)
     if entry is not None and _has_usable_info(entry):
         return {"action": ACTION_USE_LEDGER, "entry": entry, "meta": meta}
-    if any(e.get("ledger_disabled") and e.get("entity_type") not in EXCLUDED_ENTITY_TYPES for e in same):
-        return {"action": ACTION_SKIP_ISOLATED, "entry": None, "meta": meta,
-                "general_word": is_general_word_span(span, cmu_has=cmu_has, zipf=zipf)}
-    if entry is not None:
-        return {"action": ACTION_USE_LEDGER, "entry": entry, "meta": meta}
-    if is_general_word_span(span, cmu_has=cmu_has, zipf=zipf):
+    if _safe_general(span, cmu_has, zipf):
         return {"action": ACTION_SKIP_GENERAL, "entry": None, "meta": meta}
-    rec = neg_store.get(span) if neg_store is not None else None
-    st = negative_status(rec, now=now, ledger_entries=same)
+    rec, st = None, NEG_ABSENT
+    try:
+        rec = neg_store.get(span) if neg_store is not None else None
+        st = negative_status(rec, now=now, ledger_entries=same)
+    except Exception:   # noqa: BLE001  否定記録の取得・評価失敗は従来動作(=調査する)へ(S1-03)
+        rec, st = None, NEG_ABSENT
     if st == NEG_ACTIVE:
         return {"action": ACTION_SKIP_NEGATIVE, "entry": None, "meta": meta, "negative": rec}
     return {"action": ACTION_RESEARCH, "entry": None, "meta": meta, "negative_status": st}
+
+
+def _safe_general(span: str, cmu_has: Callable, zipf: Callable) -> bool:
+    """一般語判定。辞書(pronouncing/wordfreq)のimport失敗等はFalse=従来どおり調査する側(S1-03)。"""
+    try:
+        return is_general_word_span(span, cmu_has=cmu_has, zipf=zipf)
+    except Exception:   # noqa: BLE001
+        return False
 
 
 # ---------------------------------------------------------------- 5b. 既定の取得関数(読取専用GET。testではhttp_getを注入)
@@ -473,29 +527,41 @@ def default_fetch(url: str, timeout: float = FETCH_TIMEOUT_SEC, max_bytes: int =
 def resolve_span_for_review(span: str, *, ledger_loader: Callable, research_fn: Callable, upsert_fn: Callable,
                             neg_store: Optional[NegativeCacheStore], now: _dt.datetime,
                             fetch: Optional[Callable] = None, url_ok: Callable = is_safe_url, transient_exceptions: tuple = (OSError,),
-                            cmu_has: Callable = _default_cmu_has, zipf: Callable = _default_zipf) -> dict:
+                            cmu_has: Callable = _default_cmu_has, zipf: Callable = _default_zipf,
+                            enabled: Optional[bool] = None) -> dict:
     """副作用(Ledger読込・調査API・Ledger登録)は全て引数で注入する。戻り値:
       info            : HR packageへ載せる既存形式のdict(従来の`_resolve_unresolved_entity_for_review`の戻り値と同じ形)またはNone
       extra           : hr_display(...)の追加キー(表示専用。呼出側が info(またはstub)へ重ねる)
       action/outcome  : 判断の記録(監査用)  research_called/negative_written : bool
     **PASS/NGに関与する値は返さない**。research_fn(span)->research dict、upsert_fn(span, item)->saved entry(dict)。
-    transient_exceptions以外の例外(cost logger未初期化等)は従来どおり伝播させる(揉み消さない)。"""
+    enabled: None=module定数PRON_SUPPLY_STAGE1_ENABLED。Falseなら副作用ゼロでaction=DISABLED_USE_LEGACYを返す(呼出側が従来関数へ戻す, S1-08)。
+    例外の扱い(S1-03): 否定記録のget/put・出典ページ照合V1'・HR表示キー生成の例外は捕捉して従来動作へ(照合/表示なしで続行)。
+    research_fn(調査API)のtransient_exceptions以外(cost logger未初期化等)・ledger_loader・upsert_fnの例外は従来どおり伝播させる(揉み消さない)。"""
+    if not (PRON_SUPPLY_STAGE1_ENABLED if enabled is None else enabled):
+        return {"info": None, "extra": {}, "action": ACTION_DISABLED, "outcome": None, "research_called": False, "negative_written": False}
     ledger = ledger_loader()
     d = decide_span_action(span, ledger, neg_store, now=now, cmu_has=cmu_has, zipf=zipf)
     act = d["action"]
-    out = {"info": None, "action": act, "outcome": None, "research_called": False, "negative_written": False}
+    out = {"info": None, "extra": {}, "action": act, "outcome": None, "research_called": False, "negative_written": False}
+
+    def _disp(*a, **k) -> dict:
+        try:
+            return hr_display(*a, **k)
+        except Exception:   # noqa: BLE001  表示専用キーの生成失敗は表示なし(従来表示)へ
+            return {}
+
     if act == ACTION_USE_LEDGER:
         out["info"] = dict(d["entry"])
-        out["extra"] = hr_display(out["info"], action=act, lookup_meta=d["meta"])
+        out["extra"] = _disp(out["info"], action=act, lookup_meta=d["meta"])
         return out
     if act == ACTION_SKIP_ISOLATED:
-        out["extra"] = hr_display(None, action=act, lookup_meta=d["meta"], general_word=bool(d.get("general_word")))
+        out["extra"] = _disp(None, action=act, lookup_meta=d["meta"], general_word=bool(d.get("general_word")))
         return out
     if act == ACTION_SKIP_GENERAL:
-        out["extra"] = hr_display(None, action=act, lookup_meta=d["meta"])
+        out["extra"] = _disp(None, action=act, lookup_meta=d["meta"])
         return out
     if act == ACTION_SKIP_NEGATIVE:
-        out["extra"] = hr_display(None, action=act, lookup_meta=d["meta"], negative=d.get("negative"))
+        out["extra"] = _disp(None, action=act, lookup_meta=d["meta"], negative=d.get("negative"))
         return out
     # RESEARCH(従来どおり1回だけ)
     exc, research = None, None
@@ -507,27 +573,35 @@ def resolve_span_for_review(span: str, *, ledger_loader: Callable, research_fn: 
     outcome = classify_research_outcome(research, exc)
     out["outcome"] = outcome
     if outcome == OUTCOME_TRANSIENT:
-        out["extra"] = hr_display(None, action=act)
+        out["extra"] = _disp(None, action=act)
         return out                       # 何も保存しない(一時失敗を否定記録にしない)
     if outcome == OUTCOME_NOT_FOUND:
         rec = build_negative_record(span, outcome, now=now)
-        if neg_store is not None and neg_store.put(rec):
-            out["negative_written"] = True
-        out["extra"] = hr_display(None, action=act, negative=rec)
+        try:
+            if neg_store is not None and neg_store.put(rec):
+                out["negative_written"] = True
+        except Exception:   # noqa: BLE001  否定記録の保存失敗=記録なし(次回また調査するだけ。従来動作)
+            out["negative_written"] = False
+        out["extra"] = _disp(None, action=act, negative=rec if out["negative_written"] else None)
         return out
     item = dict(research["items"][0])
     item["sources"] = research.get("citations", [])
     verification = None
     if fetch is not None:
-        verification = verify_citations(item, fetch, url_ok=url_ok)
-        item["evidence_tier"] = verification["tier"]
-        item["evidence_check"] = {"tier": verification["tier"], "checked": verification["checked"], "at": _fmt(now)}
+        try:
+            verification = verify_citations(item, fetch, url_ok=url_ok)
+            item["evidence_tier"] = verification["tier"]
+            item["evidence_check"] = {"tier": verification["tier"], "checked": verification["checked"], "at": _fmt(now)}
+        except Exception:   # noqa: BLE001  照合の失敗は照合なしで従来どおり登録
+            verification = None
+            item.pop("evidence_tier", None)
+            item.pop("evidence_check", None)
     saved = upsert_fn(span, item)
     if (saved or {}).get("ledger_disabled"):
-        out["extra"] = hr_display(None, action=act)      # 隔離entryは従来どおりHRへ誤情報を載せない
+        out["extra"] = _disp(None, action=act)      # 隔離entryは従来どおりHRへ誤情報を載せない
         return out
     out["info"] = dict(saved) if saved else None
-    out["extra"] = hr_display(out["info"], action=act, verification=verification)
+    out["extra"] = _disp(out["info"], action=act, verification=verification)
     return out
 
 

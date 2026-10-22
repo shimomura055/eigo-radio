@@ -1,0 +1,16 @@
+ledger sha256 6bc3c45f9190944b697726aefc6e8513a4c61abadc35aca7b8cace5881f2f857 entries 38
+HR queue rows 108 real-path rows 79 rows with pronunciation_lookups 49
+distinct spans 18 pairs 27
+first-research decision per span (empty ledger): {'RESEARCH': 12, 'SKIP_GENERAL_WORD': 6}
+  SKIP_GENERAL spans: ['another voice', 'main story', 'mini', 'one voice', 'plus', 'us']
+  RESEARCH spans    : ['altuzarra', 'canele', 'ganis', 'kallmeyer', 'khaite', 'lindberg', 'meink', 'melos', 'muse', 'stephen reicher', 'toteme', 'zabelina']
+decision with CURRENT ledger: {'USE_LEDGER': 13, 'SKIP_ISOLATED_ENTRY': 5}
+spans where unified lookup newly hits (old miss, other type hit): []
+Ledger-wide: surfaces with >=2 entity types: {'melos': 2, 'muse': 2}
+non-cascade EN entries that old lookup could never hit: 10 ['Ottoni', 'Malmö', 'Triangeln', 'Boavida', 'MTA', 'Vancouver', 'Katz', 'Shapiro', 'Oimo no Canele', 'OPEC']
+logged pronunciation_research calls (dedup) 32 success 32 single-item 24 items=0 0 total_tokens 24120
+general-word spans ['another voice', 'main story', 'mini', 'one voice', 'plus', 'us'] -> HR rows whose lookup was about a general word: 10 / 49
+general spans already isolated(ledger_disabled) by OPEN-436: ['another voice', 'main story', 'one voice', 'plus', 'us']  not isolated (valid-looking entry): ['mini']
+M1 replay: ledger entries removed (general cascade)=6; texts=95; candidate_set_hash differing=0; OOV words seen=218
+PhraseList replay: texts=95 differing=18 [('ELLE listed mini bags as one of the trends in fall and winte', ['mini']), ('ELLE included mini bags among its fall and winter 2026 style', ['mini']), ('Vogue also covered the 2026 season. It showed small pouches ', ['mini']), ('ELLE included mini bags among its fall and winter 2026 style', ['mini']), ('ELLE included mini bags among its fall and winter 2026 style', ['mini'])]
+Phrase List contribution of removed entries (current ledger, low+):  [('another voice', 'low', True), ('main story', 'medium', True), ('mini', 'medium', False), ('one voice', 'medium', True), ('plus', 'medium', True), ('us', 'low', True)]

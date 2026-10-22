@@ -388,5 +388,149 @@ def test_resolver_no_judgement_outputs():
         assert k not in blob
 
 
+# ================= 委任_04 [E-1b] Opus反映 (S1-03/04/05/07/08)
+# ---------------- S1-03: 補助機能の例外は従来動作へ。調査APIの例外は素通し
+class _BoomStore:
+    def get(self, surface):
+        raise RuntimeError("get boom")
+
+    def put(self, rec):
+        raise RuntimeError("put boom")
+
+
+def test_s103_negative_store_exceptions_fall_back_to_legacy_behaviour():
+    w = _World(research={"status": "OK", "items": [], "citations": []})
+    r = _run(w, "Zorbax", _BoomStore())                       # get例外=記録なし扱い=調査する / put例外=書込なしで続行
+    assert r["research_called"] and r["outcome"] == s1.OUTCOME_NOT_FOUND and r["negative_written"] is False and r["info"] is None
+    assert "negative_until" not in r["extra"]                 # 書けていないので「再調査しない」とは表示しない
+    assert w.research_calls == ["Zorbax"]
+
+
+def test_s103_store_tmp_unique_and_cleaned_even_when_replace_fails(tmp_path, monkeypatch):
+    p = str(tmp_path / "n.json")
+    st = s1.NegativeCacheStore(p)
+    monkeypatch.setattr(os, "replace", lambda a, b: (_ for _ in ()).throw(OSError("replace failed")))
+    with pytest.raises(OSError):
+        st.put(s1.build_negative_record("Foo", s1.OUTCOME_NOT_FOUND, now=NOW))
+    assert os.listdir(tmp_path) == []                         # 一時fileを残さない
+    monkeypatch.undo()
+    names = []
+    real_replace = os.replace
+
+    def spy(a, b):
+        names.append(os.path.basename(a))
+        return real_replace(a, b)
+    monkeypatch.setattr(os, "replace", spy)
+    st.put(s1.build_negative_record("A", s1.OUTCOME_NOT_FOUND, now=NOW))
+    st.put(s1.build_negative_record("B", s1.OUTCOME_NOT_FOUND, now=NOW))
+    assert len(set(names)) == 2 and all(str(os.getpid()) in n and n.endswith(".tmp") for n in names)   # 呼出ごとに別名(pid+uuid)
+
+
+def test_s103_corrupt_record_shape_is_ignored(tmp_path):
+    p = tmp_path / "n.json"
+    p.write_text(json.dumps({"zorbax": "not-a-dict", "other": 5}), encoding="utf-8")
+    st = s1.NegativeCacheStore(str(p))
+    assert st.get("zorbax") is None
+    assert s1.decide_span_action("zorbax", {}, st, now=NOW)["action"] == s1.ACTION_RESEARCH
+
+
+def test_s103_verify_and_display_exceptions_do_not_break_registration(monkeypatch):
+    item = {"canonical_spelling": "Altuzarra", "pronunciation_hint": "al-too-ZAH-rah", "confidence": "low"}
+    w = _World(research={"status": "OK", "items": [item], "citations": ["https://e.example/p"]})
+    monkeypatch.setattr(s1, "verify_citations", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("v boom")))
+    r = _run(w, "altuzarra", fetch=lambda u, t, m: "x")
+    assert r["info"] is not None and "evidence_tier" not in w.upserts[0][1] and "evidence_check" not in w.upserts[0][1]
+    monkeypatch.setattr(s1, "hr_display", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("d boom")))
+    w2 = _World(research={"status": "OK", "items": [item], "citations": []})
+    r2 = _run(w2, "altuzarra")
+    assert r2["info"] is not None and r2["extra"] == {}      # 表示キーなし=従来のHR表示
+
+
+def test_s103_research_api_exception_still_propagates_and_general_check_failure_researches():
+    w = _World(raises=KeyError("cost logger"))
+    with pytest.raises(KeyError):
+        _run(w, "Zorbax")
+    boom = lambda t: (_ for _ in ()).throw(ImportError("no wordfreq"))
+    assert s1.decide_span_action("main story", {}, None, now=NOW, cmu_has=boom)["action"] == s1.ACTION_RESEARCH   # 判定不能=従来どおり調査
+
+
+def test_s103_is_safe_url_any_exception_is_false():
+    def boom(_h):
+        raise RuntimeError("dns")
+    assert s1.is_safe_url("https://example.com/", resolver=boom) is False
+    assert s1.is_safe_url(None) is False and s1.is_safe_url("http://[bad") is False
+
+
+# ---------------- S1-04: 調査用type entryを先に処理
+def test_s104_research_type_entry_takes_precedence_over_other_type():
+    # 調査用typeが隔離されていれば、別typeの有効entry(情報あり)があっても従来どおり「隔離=None」
+    led = {"a": E("foo", ledger_disabled=True, canonical_spelling="cascade"), "b": E("foo", "person", confidence="high")}
+    assert _decide("foo", led)["action"] == s1.ACTION_SKIP_ISOLATED
+    # 調査用type有効(情報なしでも)=従来の命中扱いで返す
+    led = {"a": E("foo", ipa="", hint=""), "b": E("foo", "person", confidence="high")}
+    d = _decide("foo", led)
+    assert d["action"] == s1.ACTION_USE_LEDGER and d["entry"]["entity_type"] == s1.RESEARCH_ENTITY_TYPE
+    # 調査用typeがなく別typeに情報あり -> 別typeを採用
+    assert _decide("foo", {"b": E("foo", "person")})["entry"]["entity_type"] == "person"
+
+
+def test_s104_step3_is_limited_to_research_type():
+    # 発音情報の無い別typeのentryだけ: 旧実装(lookupは調査用keyのみ)は調査していた -> 同じく調査する
+    assert _decide("Altuzarra", {"p": E("altuzarra", "person", ipa="", hint="")})["action"] == s1.ACTION_RESEARCH
+    # 別typeの隔離entryだけ: 旧lookupは命中しなかった -> 調査する
+    assert _decide("Altuzarra", {"p": E("altuzarra", "person", ledger_disabled=True)})["action"] == s1.ACTION_RESEARCH
+
+
+# ---------------- S1-05: 別type採用の注記
+def test_s105_other_type_note_in_display():
+    led = {"p": E("Katz", "person", confidence="high")}
+    r = s1.resolve_span_for_review("katz", ledger_loader=lambda: led, research_fn=lambda s: pytest.fail("no research"),
+                                   upsert_fn=lambda *a: None, neg_store=None, now=NOW)
+    assert any("同綴りの別entry(type=person)の情報。同一対象かは未確認" in l for l in r["extra"]["display_lines_ja"])
+    assert r["extra"]["same_spelling_other_type"] == "person"
+    same_type = s1.hr_display(E("Katz"), action=s1.ACTION_USE_LEDGER)
+    assert "same_spelling_other_type" not in same_type and not any("別entry" in l for l in same_type["display_lines_ja"])
+
+
+# ---------------- S1-07: 語境界・短い表記・ae
+def test_s107_word_boundary_matching():
+    fm = lambda t: _fetch_map({OK_URL: t})
+    assert s1.verify_citations(ENTRY, fm("<p>Bottonix oh-TOH-nee</p>"), url_ok=lambda u: True)["tier"] == s1.TIER_UNVERIFIED   # ottoniは語の途中
+    assert s1.verify_citations(ENTRY, fm("<p>Ottoni's oh-TOH-nee</p>"), url_ok=lambda u: True)["tier"] == s1.TIER_PRON_IN_PAGE
+    assert s1.verify_citations(ENTRY, fm("<p>Ottoni oh-TOH-neeeee</p>"), url_ok=lambda u: True)["tier"] == s1.TIER_NAME_IN_PAGE  # 発音表記も語境界
+
+
+def test_s107_short_pron_forms_are_not_used():
+    e = E("Ottoni", "person", ipa="", hint="oh-no", sources=[OK_URL])          # 正規化後4文字 -> 照合に使わない
+    assert s1.verify_citations(e, _fetch_map({OK_URL: "<p>Ottoni says oh no</p>"}), url_ok=lambda u: True)["tier"] == s1.TIER_NAME_IN_PAGE
+    e5 = E("Ottoni", "person", ipa="", hint="oh-toni", sources=[OK_URL])       # 5文字は使う
+    assert s1.verify_citations(e5, _fetch_map({OK_URL: "<p>Ottoni = oh-toni</p>"}), url_ok=lambda u: True)["tier"] == s1.TIER_PRON_IN_PAGE
+
+
+def test_s107_ipa_marks_and_ae_letters():
+    e = E("Ottoni", "person", ipa="/oʊˈtoʊni/", hint="", sources=[OK_URL])
+    assert s1.verify_citations(e, _fetch_map({OK_URL: "<p>Ottoni [oʊˈtoʊni]</p>"}), url_ok=lambda u: True)["tier"] == s1.TIER_PRON_IN_PAGE
+    ae = E("Ægir", "person", ipa="/ˈaɪɡɪr/", hint="EYE-gir", sources=[OK_URL])
+    assert s1.verify_citations(ae, _fetch_map({OK_URL: "<p>Ægir (EYE-gir)</p>"}), url_ok=lambda u: True)["tier"] == s1.TIER_PRON_IN_PAGE
+    assert s1._words("Ægir Malmö Žižek") == "ægir malmo zizek"
+
+
+# ---------------- S1-08: 全体ON/OFF(全ON/全OFFのみ)
+def test_s108_single_flag_all_off_has_zero_side_effects():
+    calls = []
+    r = s1.resolve_span_for_review("Zorbax", ledger_loader=lambda: calls.append("L"), research_fn=lambda s: calls.append("R"),
+                                   upsert_fn=lambda *a: calls.append("U"), neg_store=_BoomStore(), now=NOW, fetch=lambda *a: calls.append("F"),
+                                   enabled=False)
+    assert calls == [] and r["action"] == s1.ACTION_DISABLED and r["info"] is None and r["extra"] == {} and not r["research_called"]
+
+
+def test_s108_module_constant_controls_default(monkeypatch):
+    monkeypatch.setattr(s1, "PRON_SUPPLY_STAGE1_ENABLED", False)
+    w = _World()
+    assert _run(w, "main story")["action"] == s1.ACTION_DISABLED
+    monkeypatch.setattr(s1, "PRON_SUPPLY_STAGE1_ENABLED", True)
+    assert _run(w, "main story")["action"] == s1.ACTION_SKIP_GENERAL
+
+
 if __name__ == "__main__":
     sys.exit(pytest.main([__file__, "-q"]))
