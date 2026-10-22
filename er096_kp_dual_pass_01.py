@@ -1,4 +1,10 @@
 # ============================================================
+# 【履歴script / SUPERSEDED】KP3V(KP-THREE-ASR-MAJORITY-PRODUCTION-01、2026-10-22ユーザー承認)でProductionのKP英語phrase判定は
+# 3-ASR多数決(er104_kp_three_asr_vote_01 / er104_kp_vote_reuse_01)へ置換された。本moduleはProductionからimportされない
+# (er096_kp_dual_pass_01_test_01 のAST testで固定)。旧「両方PASS必須」(OPEN-440)の履歴、および er096_kp_dual_runtime_evidence_01 /
+# er099 が保存証跡を読むために残置する。judgeの`dual_required`は撤去済みのため`evaluate_dual`は実行不可(RuntimeError)。
+# ============================================================
+# ============================================================
 # er096_kp_dual_pass_01.py
 # FAMILY-XZ-ASR-PASS-CONDITION-SPEC-AUDIT-01 委任_03 [D-2](2026-10-22、UDR #139 APPROVED_FOR_PRODUCTION)
 #
@@ -30,6 +36,7 @@ import er078_asr_unified_judge_01 as uj
 
 # ---- rollback(module定数。env/flagではない) ----
 KP_EN_PHRASE_DUAL_REQUIRED = True
+SUPERSEDED_BY = "er104_kp_vote_reuse_01"
 CHECK_VERSION = "kp_dual_check_v1"
 DUAL_KEY_VERSION_SUFFIX = "+dual1"   # X default profileの専用Store key(旧共有keyのentryは上書きしない)
 
@@ -102,6 +109,7 @@ def evaluate_dual(canonical_text: str, primary_text: str, wav_path: str, *, seco
                   max_extra_chars: int = 10) -> dict:
     """保存済みPrimary転写を現行分類器で再判定し、Secondary転写が与えられればAPI 0、無ければAzureを1回呼ぶ(S1)。
     戻り値: {verified, state, technical_stop, azure_real_calls, dual(audit), asr_judgement, primary_text, secondary_text}。"""
+    raise RuntimeError("er096_kp_dual_pass_01.evaluate_dual is superseded by er104_kp_vote_reuse_01.evaluate_vote (3-ASR majority vote)")
     import er003_v1_repro01_main_generate as repro01
     ledger_phrases = [h["canonical_spelling"] for h in repro01.pronun_ledger.get_hint_for_text(canonical_text, min_confidence="low")]
     sha = secondary_asr._wav_sha256(wav_path)

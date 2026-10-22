@@ -264,10 +264,11 @@ def generate_narration_snippet_verified_strict(
     # 「後続slotが残るNG」ではHR queueへ投入されず、最終slotのNGのみ投入される(er078_asr_unified_attempt_ctx_01)。
     slot_offset: int = 0,
     total_slots: int | None = None,
-    # KPDUAL-PROD-D2(2026-10-22、UDR #139、既定False=他の全呼出元は無変更): KP英語phraseのみ「Primary・Secondary両方PASS必須」で判定する。
-    # True を渡す呼出元は KP英語phrase 6箇所(本ファイルの generate_key_phrase_component_verified 内2・K2 store 2・Family Z 2)のみ
-    # (静的test er096で固定)。KP英語解説・phrase_repeat・KP日本語・その他全音声は渡さない。
-    dual_pass_required: bool = False,
+    # KP3V(2026-10-22、ユーザー承認APPROVED_FOR_PRODUCTION、既定False=他の全呼出元は無変更): KP英語phraseのみ「3-ASR多数決(OpenAI・Azure・Whisper、
+    # 2/3 PASS)」で判定する(旧「両方PASS必須」[KPDUAL-PROD-D2]を置換)。True を渡す呼出元は KP英語phrase 6箇所(本ファイルの
+    # generate_key_phrase_component_verified 内2・K2 store 2・Family Z 2)のみ(静的test er104_kp_vote_wiring_test_01で固定)。
+    # KP英語解説・phrase_repeat・KP日本語・その他全音声は渡さない。
+    vote_pass_required: bool = False,
 ) -> dict:
     # ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: 英語(language=="en")は、
     # 単純substring一致に代えて正規化+6分類のvalidatorを使う(数字・否定・
@@ -285,8 +286,8 @@ def generate_narration_snippet_verified_strict(
     # する。呼び出し側でtts_safe_*によるNormalizer適用済みの前提で、
     # 通過後になお残る禁止記号を検出する。%$¥はEnglishのみobserve専用
     # (ブロックしない)。
-    if dual_pass_required and language != "en":
-        raise ValueError("dual_pass_required is only defined for English Key Phrase audio (language='en')")
+    if vote_pass_required and language != "en":
+        raise ValueError("vote_pass_required is only defined for English Key Phrase audio (language='en')")
     symbol_findings = safety.detect_prohibited_symbols(text, language=language)
     if safety.symbol_gate_requires_stop(symbol_findings):
         return {
@@ -370,7 +371,7 @@ def generate_narration_snippet_verified_strict(
                 segment_id=segment_id,
                 attempt_ctx=attempt_ctx_mod.build_attempt_ctx(
                     attempt, max_attempts, slot_offset=slot_offset, total_slots=total_slots, max_len=max_len,
-                    dual_required=dual_pass_required))  # AUW 委任_05/13、KPDUAL-PROD-D2
+                    vote_required=vote_pass_required))  # AUW 委任_05/13、KP3V
             final_len_ok = unified_judge_mod.final_length_ok(length_ok, cascade_detail)  # AUW 委任_13(A3是正)
             verified = verified_content and final_len_ok
             gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
@@ -782,10 +783,14 @@ KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT = (
 )
 
 
-def _dual_circuit_open() -> bool:
-    """KPDUAL-PROD-D2(OF-KPD-P-02): run単位のSecondary circuit breakerが開いているか(RunState未導入=False)。"""
+def _vote_circuit_open() -> bool:
+    """KP3V(OF-KPD-P-02、P-08): run単位のSecondary(Azure)またはWhisper(ローカル)のcircuit breakerが開いているか(RunState未導入=False)。
+    開いていればENGLISH_LOCK段のTTSを回さない(どの試行もSecondary/Whisper不能の技術STOPになり無駄になるため)。"""
     rs = getattr(secondary_asr, "_RUN_STATE", None)
-    return bool(rs is not None and getattr(rs, "circuit_open", False))
+    if rs is not None and getattr(rs, "circuit_open", False):
+        return True
+    import er104_kp_three_asr_vote_01 as _kp3v
+    return bool(_kp3v.whisper_circuit_open())
 
 
 @review_lock.guarded_generate("en")
@@ -801,9 +806,9 @@ def generate_key_phrase_component_verified(text: str, out_path: str,
         # generate_narration_snippet_verified_strict呼び出しへ転送する
         # (retry/fallbackとも同一backend経由)。
         tts_backend: str = "structured_separation",
-        # KPDUAL-PROD-D2(2026-10-22、UDR #139、既定False=Family A/B/Cを含む他の全呼出元は無変更): Family X(default profile)のみ
-        # er096_kp_dual_pass_01.generate_key_phrase_english_x_dual経由でTrueを渡す。
-        dual_pass_required: bool = False) -> dict:
+        # KP3V(2026-10-22、既定False=Family A/B/Cを含む他の全呼出元は無変更): Family X(default profile)のみ
+        # er104_kp_vote_reuse_01.ensure_key_phrase_english_component_x_vote経由でTrueを渡す。
+        vote_pass_required: bool = False) -> dict:
     """Primary: Minimal instruction(KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX)
     で最大KEY_PHRASE_MINIMAL_MAX_ATTEMPTS(2)回まで試行する。2回とも
     不合格の場合のみ、Fallback: Minimal instruction+English language lock
@@ -831,19 +836,19 @@ def generate_key_phrase_component_verified(text: str, out_path: str,
         # 英語Key Phrase Component経路のみ、この関数だけが明示的に渡す)。
         asr_prompt=KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT, enable_non_latin_cascade=True, tts_backend=tts_backend,
         # AUW 委任_05: KP 4回構成の前半。後段(English Lock 2回)が残るため、ここのNGはHR queueへ投入しない。
-        slot_offset=0, total_slots=KEY_PHRASE_TOTAL_MAX_ATTEMPTS, dual_pass_required=dual_pass_required)
+        slot_offset=0, total_slots=KEY_PHRASE_TOTAL_MAX_ATTEMPTS, vote_pass_required=vote_pass_required)
     if primary.get("status") == "OK":
         primary["fallback_used"] = False
         primary["primary_instruction_type"] = "MINIMAL"
         return primary
 
-    if dual_pass_required and _dual_circuit_open():
-        # KPDUAL-PROD-D2(OF-KPD-P-02の最小緩和): Azureのcircuit breakerが既に開いている(連続障害)ときはENGLISH_LOCK段のTTSを回さない
-        # (どの試行もSecondary不呼出のNG_SECONDARY_UNAVAILABLEになり無駄になるため)。最大試行回数・HR Lockの意味は不変。
+    if vote_pass_required and _vote_circuit_open():
+        # KP3V(OF-KPD-P-02の最小緩和、P-08でWhisperへ拡張): Azure/Whisperのcircuit breakerが既に開いている(連続障害)ときはENGLISH_LOCK段のTTSを回さない
+        # (どの試行もSecondary/Whisper不能の技術STOPになり無駄になるため)。最大試行回数・HR Lockの意味は不変。
         primary["fallback_used"] = False
         primary["primary_instruction_type"] = "MINIMAL_ONLY_SECONDARY_CIRCUIT_OPEN"
         primary["english_lock_skipped_secondary_circuit_open"] = True
-        primary["reason"] = ("Secondary(Azure) circuit breaker open: ENGLISH_LOCK段をスキップ(技術STOP)。"
+        primary["reason"] = ("Secondary(Azure)またはWhisper circuit breaker open: ENGLISH_LOCK段をスキップ(技術STOP)。"
                              + str(primary.get("reason") or ""))
         return primary
 
@@ -854,7 +859,7 @@ def generate_key_phrase_component_verified(text: str, out_path: str,
         asr_prompt=KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT, enable_non_latin_cascade=True, tts_backend=tts_backend,
         # AUW 委任_05: KP 4回構成の後半(最終slot=通算4)。ここのNGのみHR queue対象。
         slot_offset=KEY_PHRASE_MINIMAL_MAX_ATTEMPTS, total_slots=KEY_PHRASE_TOTAL_MAX_ATTEMPTS,
-        dual_pass_required=dual_pass_required)
+        vote_pass_required=vote_pass_required)
     fallback["fallback_used"] = True
     fallback["primary_instruction_type"] = "ENGLISH_LOCK" if fallback.get("status") == "OK" else "MINIMAL_AND_ENGLISH_LOCK_BOTH_FAILED"
     # record_outcome()のcumulative_tts_attempts集計は

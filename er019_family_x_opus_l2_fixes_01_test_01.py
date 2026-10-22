@@ -52,7 +52,7 @@ class KpExplanationFailClosedTests(unittest.TestCase):
     def _run(self, explanation_bundle):
         with mock.patch.object(runner.kp_explanation_gen, "generate_kp_explanations",
                                 return_value=explanation_bundle), \
-             mock.patch.object(runner.kp_dual, "ensure_key_phrase_english_component_x_dual",
+             mock.patch.object(runner.kp_vote, "ensure_key_phrase_english_component_x_vote",
                                 side_effect=lambda *_a, **_kw: {
                                     "status": "OK", "path": "narration/kp1_en.wav", "sha256": "sha_en_1"}), \
              mock.patch.object(runner, "generate_key_phrase_explanation_en_verified") as expl_mock:
@@ -87,7 +87,7 @@ class KpExplanationFailClosedTests(unittest.TestCase):
         bundle = {"items": {1: {"english_explanation": "to make people worried", "qa": {"passed": True},
                                  "status": "OK"}}, "audit": {}}
         with mock.patch.object(runner.kp_explanation_gen, "generate_kp_explanations", return_value=bundle), \
-             mock.patch.object(runner.kp_dual, "ensure_key_phrase_english_component_x_dual",
+             mock.patch.object(runner.kp_vote, "ensure_key_phrase_english_component_x_vote",
                                 side_effect=lambda *_a, **_kw: {
                                     "status": "OK", "path": "narration/kp1_en.wav", "sha256": "sha_en_1"}), \
              mock.patch.object(runner, "generate_key_phrase_explanation_en_verified",
@@ -204,8 +204,8 @@ class GenerateOrReuseKpGuardTests(unittest.TestCase):
             return {"status": "OK"}
 
         # KPDUAL-PROD-D2: KP英語phraseの前回results再利用には両Provider PASS証跡のgateが入る(本testの対象はstyle_version非参照のみ)。
-        # gate自体の挙動は er096_kp_dual_pass_01_wiring_test_01.py で検証するため、ここでは通過扱いにする。
-        with mock.patch.object(runner.os.path, "exists", return_value=True),              mock.patch.object(runner.kp_dual, "kp_dual_reuse_ok", return_value={"ok": True, "action": "reuse", "kp_dual_check": None}):
+        # gate自体の挙動は er104_kp_vote_wiring_test_01.py で検証するため、ここでは通過扱いにする。
+        with mock.patch.object(runner.os.path, "exists", return_value=True),              mock.patch.object(runner.kp_vote, "kp_vote_reuse_ok", return_value={"ok": True, "action": "reuse", "kp_dual_check": None}):
             result = runner._generate_or_reuse_kp(cached, 1, "english", "kp1_en.wav", gen,
                                                     expected_text="phrase")
         self.assertEqual(calls["n"], 0)

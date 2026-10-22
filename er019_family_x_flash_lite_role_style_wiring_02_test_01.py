@@ -223,7 +223,7 @@ class KeyPhraseBackendPropagationTests(unittest.TestCase):
         explanation_bundle = {"items": {1: {"english_explanation": "to choose not to take part",
                                              "qa": {"passed": True}, "status": "OK"}},
                                "audit": {}}
-        with mock.patch.object(runner.kp_dual, "ensure_key_phrase_english_component_x_dual",   # KPDUAL-PROD-D2: default profileのKP英語はX専用関数(共有関数と同一tts_backend伝播)
+        with mock.patch.object(runner.kp_vote, "ensure_key_phrase_english_component_x_vote",   # KPDUAL-PROD-D2: default profileのKP英語はX専用関数(共有関数と同一tts_backend伝播)
                                 side_effect=_ok) as en_mock, \
              mock.patch.object(runner.kp_explanation_gen, "generate_kp_explanations",
                                 return_value=explanation_bundle), \
@@ -235,7 +235,7 @@ class KeyPhraseBackendPropagationTests(unittest.TestCase):
 
     def test_a2_key_phrase_segments_receive_tts_backend(self):
         kp = {"items": [{"rank": 1, "used_form": "opt out", "japanese_gloss": "見送る"}]}
-        with mock.patch.object(runner.kp_dual, "ensure_key_phrase_english_component_x_dual",   # KPDUAL-PROD-D2: default profileのKP英語はX専用関数(共有関数と同一tts_backend伝播)
+        with mock.patch.object(runner.kp_vote, "ensure_key_phrase_english_component_x_vote",   # KPDUAL-PROD-D2: default profileのKP英語はX専用関数(共有関数と同一tts_backend伝播)
                                 side_effect=_ok) as en_mock, \
              mock.patch.object(runner.n3_tts, "generate_a2_japanese_with_reading_safety",
                                 side_effect=_ok) as ja_mock, \

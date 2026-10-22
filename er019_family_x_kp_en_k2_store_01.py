@@ -24,7 +24,7 @@ import hashlib
 import er003_v1_repro01_main_generate as repro01
 import er006_audio_cost_pilot_02_shared_narration as shared
 import er006_master_audio_store_01 as store
-import er096_kp_dual_pass_01 as kp_dual  # KPDUAL-PROD-D2(2026-10-22、UDR #139): KP英語phrase Primary・Secondary両方PASS必須
+import er104_kp_vote_reuse_01 as kp_vote  # KP3V(2026-10-22、ユーザー承認APPROVED_FOR_PRODUCTION): KP英語phrase 3-ASR多数決(OpenAI・Azure・Whisper)
 
 KEY_PHRASE_STYLED_PATH_PRIMARY = "primary"
 KEY_PHRASE_STYLED_PATH_FALLBACK = "english_lock_fallback"
@@ -59,13 +59,13 @@ def _styled_two_stage(text: str, out_path: str, *, style_text: str, key_b, tts_b
         style_prefix_override=style_text, asr_prompt=repro01.KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT,
         enable_non_latin_cascade=True, tts_backend=tts_backend,
         slot_offset=0, total_slots=repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS,  # 4回構成の前半(HR queue対象外)
-        dual_pass_required=kp_dual.dual_enabled())  # KPDUAL-PROD-D2: KP英語phrase=Primary・Secondary両方PASS必須
+        vote_pass_required=kp_vote.vote_enabled())  # KP3V: KP英語phrase=Primary・Secondary両方PASS必須
     if primary.get("status") == "OK":
         primary["fallback_used"] = False
         primary["primary_instruction_type"] = "STYLED"
         return primary
-    if kp_dual.dual_enabled() and repro01._dual_circuit_open():
-        # KPDUAL-PROD-D2(OF-KPD-P-02の最小緩和): Azure circuit breaker open中はENGLISH_LOCK段のTTSを回さない(技術STOP、最大試行・HR Lockの意味は不変)。
+    if kp_vote.vote_enabled() and repro01._vote_circuit_open():
+        # KP3V(OF-KPD-P-02の最小緩和): Azure circuit breaker open中はENGLISH_LOCK段のTTSを回さない(技術STOP、最大試行・HR Lockの意味は不変)。
         primary["fallback_used"] = False
         primary["primary_instruction_type"] = "STYLED_ONLY_SECONDARY_CIRCUIT_OPEN"
         primary["english_lock_skipped_secondary_circuit_open"] = True
@@ -80,10 +80,10 @@ def _styled_two_stage(text: str, out_path: str, *, style_text: str, key_b, tts_b
             tts_backend=tts_backend,
             slot_offset=repro01.KEY_PHRASE_MINIMAL_MAX_ATTEMPTS,
             total_slots=repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS,  # 4回構成の後半(最終slot)
-            dual_pass_required=kp_dual.dual_enabled())  # KPDUAL-PROD-D2
+            vote_pass_required=kp_vote.vote_enabled())  # KP3V
 
     fb = store.get_or_generate(key_b, out_path, _gen_lock,
-                               reuse_gate=(kp_dual.KpDualReuseGate() if kp_dual.dual_enabled() else None))
+                               reuse_gate=(kp_vote.KpVoteReuseGate() if kp_vote.vote_enabled() else None))
     fb["fallback_used"] = True
     fb["primary_instruction_type"] = "ENGLISH_LOCK" if fb.get("status") == "OK" else "STYLED_AND_ENGLISH_LOCK_BOTH_FAILED"
     # legacy `generate_key_phrase_component_verified`と同じ会計(record_outcomeの実TTS試行数=4)。
@@ -113,5 +113,5 @@ def ensure_key_phrase_english_component_styled(used_form_tts_safe: str, out_path
         return r
 
     ra = store.get_or_generate(key_a, out_path, _gen_a,
-                               reuse_gate=(kp_dual.KpDualReuseGate() if kp_dual.dual_enabled() else None))
+                               reuse_gate=(kp_vote.KpVoteReuseGate() if kp_vote.vote_enabled() else None))
     return holder["fb"] if "fb" in holder else ra

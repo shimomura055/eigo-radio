@@ -41,7 +41,8 @@ from typing import Optional
 REUSED_VALIDATED = "REUSED_VALIDATED"
 DURATION_WITNESS_TOLERANCE_SECONDS = 0.020
 _OVERWRITABLE_STATUSES = (None, "SKIPPED_NOT_SELECTED", "INVALIDATED_FOR_REGENERATION",
-                          "TECHNICAL_STOP_SECONDARY_UNAVAILABLE")  # 委任_06c: Secondary障害の技術STOP(再実行で再生成)
+                          "TECHNICAL_STOP_SECONDARY_UNAVAILABLE",  # 委任_06c: Secondary障害の技術STOP(再実行で再生成)
+                          "TECHNICAL_STOP_WHISPER_UNAVAILABLE")    # KP3V(P-08): Whisper(ローカルASR)障害の技術STOP(再実行で再生成)
 
 
 def sha256_file(path: str) -> str:
@@ -188,8 +189,8 @@ def is_untouched_entry(entry: dict) -> bool:
 
 def try_inherit_from_cached(cached_entry: Optional[dict], wav_path: str, expected_text: Optional[str],
                             cached_style_version: Optional[str], current_style_version: str,
-                            source_ref: dict, *, kp_dual_required: bool = False,
-                            kp_dual_canonical: Optional[str] = None) -> Optional[dict]:
+                            source_ref: dict, *, kp_vote_required: bool = False,
+                            kp_vote_canonical: Optional[str] = None) -> Optional[dict]:
     """runner(`--only-segments`で非選択のsegment)用: 同一out_dirの前回results entryを、上記証拠が揃う場合に限り
     引き継ぐ。style_version不一致の旧cacheは通常のreuseと同様に引き継がない。引き継げなければNone。
     OF-X11: OK+asr_verifiedの検証済みentryは`REUSED_VALIDATED`として、それ以外のstatus(STOPPED等)はsha一致時に
@@ -203,13 +204,13 @@ def try_inherit_from_cached(cached_entry: Optional[dict], wav_path: str, expecte
         import er078_reuse_value_guard_01 as _rvg
         if _rvg.guard_entry(cached_entry, label=str((source_ref or {}).get("label") or "")).get("blocked"):
             return None
-        if kp_dual_required:
-            # KPDUAL-PROD-D2(OF-KPD-P-03、再利用点2): KP英語phraseの引継ぎ(--only-segments非選択)は、両Provider PASSの保存証跡を現行分類器で
+        if kp_vote_required:
+            # KP3V(OF-KPD-P-03、再利用点2): KP英語phraseの引継ぎ(--only-segments非選択)は、両Provider PASSの保存証跡を現行分類器で
             # API 0再判定して成立する場合に限る(Azureは呼ばない=allow_s1=False)。証跡が無い/不成立/判定不能は引き継がない(None=SKIPPED)。
-            import er096_kp_dual_pass_01 as _kd
-            if not kp_dual_canonical:
+            import er104_kp_vote_reuse_01 as _kd
+            if not kp_vote_canonical:
                 return None
-            _d = _kd.kp_dual_reuse_ok(cached_entry, wav_path=wav_path, canonical_text=kp_dual_canonical, allow_s1=False,
+            _d = _kd.kp_vote_reuse_ok(cached_entry, wav_path=wav_path, canonical_text=kp_vote_canonical, allow_s1=False,
                                       label=str((source_ref or {}).get("label") or ""))
             if not _d["ok"]:
                 return None
@@ -343,7 +344,7 @@ def rejudge_with_current_judge(entry: dict, level: str, label: str, force_lang: 
             dec = pnap.evaluate_for_adapter(
                 canonical_text=canon, primary_cls=cls_p, secondary_cls=cls_s, primary_text=asr_text, secondary_text=stored_secondary,
                 judge_state=jr.state, judge_reason_code=jr.reason_code, p3_entry=jr.audit_record.get("p3_entry"),
-                role=_rg.resolve_narrative_role(label), lang="en", dual_required=False, lookup=lookup)
+                role=_rg.resolve_narrative_role(label), lang="en", vote_required=False, lookup=lookup)
             out["alarm_rejudge"] = {"accepted": dec.accept, "reason": dec.reason}
             if dec.accept:
                 rec = copy.deepcopy(aj)

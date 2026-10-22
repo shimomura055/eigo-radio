@@ -678,7 +678,7 @@ class V5RunnerCaptureTests(unittest.TestCase):
                   "phrases_signature": ["price tag"]}
         with mock.patch.object(runner.shared_narration, "ensure_all_shared_narration_b1"), \
              mock.patch.object(runner.shared_narration, "ensure_all_shared_narration_a2"), \
-             mock.patch.object(runner.kp_dual, "ensure_key_phrase_english_component_x_dual", side_effect=kp_en), \
+             mock.patch.object(runner.kp_vote, "ensure_key_phrase_english_component_x_vote", side_effect=kp_en), \
              mock.patch.object(runner.voice01, "generate_charon_english", side_effect=other_b1), \
              mock.patch.object(runner.news_tail_fix, "generate_news_narration_wide_margin", side_effect=other_b1), \
              mock.patch.object(runner.crosslevel_common, "generate_english_segment_with_fallback", side_effect=other_a2), \

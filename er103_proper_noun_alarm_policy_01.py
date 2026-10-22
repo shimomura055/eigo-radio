@@ -10,7 +10,7 @@
 Secondary許容集合の**全て**を通ってもNGだった場合のみ到達する(既存救済が先、解決すればそちら優先)。追加API呼出は0。
 
 承認範囲(厳守): 緩和するのは「固有名詞の発音不一致だけ」。次は従来どおり(本moduleは受理しない=fail-closed):
-  KPフレーズ(dual_required/KEY_PHRASE role)、HEADING_READOUT、日本語、一般語・内容語の差、数値/否定の差、語の脱落/追加、
+  KPフレーズ(vote_required/KEY_PHRASE role)、HEADING_READOUT、日本語、一般語・内容語の差、数値/否定の差、語の脱落/追加、
   音声欠落(TTS_FAILURE)、Secondary障害(NG_SECONDARY_UNAVAILABLE=技術STOP)、除外表(NG_EXCLUDED)。
 
 純関数のみ(I/Oは`append_alarm_log`/`write_run_alarms`の引数pathに限る)。依存はProduction判定器のimport(読取のみ)。
@@ -292,7 +292,7 @@ def _noun_checks(canon: str, asr: str, canonical_text: str, *, ledger_surfaces, 
 
 def evaluate_alarm_eligibility(
         *, canonical_text: str, primary_cls, secondary_cls, primary_text: Optional[str], secondary_text: Optional[str],
-        judge_state: str, judge_reason_code: str, role: Optional[str], lang: str = "en", dual_required: bool = False,
+        judge_state: str, judge_reason_code: str, role: Optional[str], lang: str = "en", vote_required: bool = False,
         enabled: Optional[bool] = None, ledger_surfaces: frozenset = frozenset(),
         cmu_has: Callable = _default_cmu_has, zipf: Callable = _default_zipf,
         max_diffs: int = MAX_DIFFS_PER_SEGMENT, max_asr_per_canon: int = MAX_ASR_TOKENS_PER_CANON_TOKEN,
@@ -301,7 +301,7 @@ def evaluate_alarm_eligibility(
     """固有名詞の発音不一致**だけ**が原因でNGになったかを機械判定する(純関数、API 0、fail-closed)。
 
     受理条件(全て満たす場合のみ accept=True):
-      G0  flag有効 / 言語=en / role∈APPLICABLE_ROLES / dual_required=False(KP英語phrase両方PASS条件は維持)
+      G0  flag有効 / 言語=en / role∈APPLICABLE_ROLES / vote_required=False(KP英語phraseの3-ASR多数決[KP3V]は維持)
       G1  統一judgeが NG_BOTH ∧ reason=secondary_not_accepted(既存の全救済層を通過後。この時点で両転写の値ガード/否定ガードはPASS済み)
       G2  Primary(OpenAI ASR=production authority)分類=ASR_VALIDATION_UNCERTAIN ∧ 全diffがentity_like
           (= 数値/否定差なし・非固有名詞の内容語差なし・TTS_FAILUREでない・語の追加のみの差なし)
@@ -322,7 +322,7 @@ def evaluate_alarm_eligibility(
         return AlarmDecision(False, R_DISABLED)
     if str(lang).lower() not in ("en", "en-us"):
         return AlarmDecision(False, R_LANG)
-    if dual_required:
+    if vote_required:
         return AlarmDecision(False, R_DUAL)
     if role not in APPLICABLE_ROLES:
         return AlarmDecision(False, R_ROLE, detail={"role": role})
@@ -712,7 +712,7 @@ def ledger_surface_tokens(ledger: Optional[dict] = None) -> frozenset:
 
 
 def evaluate_for_adapter(*, canonical_text: str, primary_cls, secondary_cls, primary_text, secondary_text, judge_state: str,
-                         judge_reason_code: str, p3_entry: Optional[str], role: Optional[str], lang: str, dual_required: bool,
+                         judge_reason_code: str, p3_entry: Optional[str], role: Optional[str], lang: str, vote_required: bool,
                          lookup: Optional[dict] = None, ledger: Optional[dict] = None, slot: Optional[int] = None, **kw) -> AlarmDecision:
     """adapter(新規生成)と継承再判定が**同一の現行定数**で受理判定するための共通入口(OF-PNAP-P-05(i))。
     lookup={supply_map,...}(TTS供給registry or 保存済みsupply_map)。"""
@@ -721,7 +721,7 @@ def evaluate_for_adapter(*, canonical_text: str, primary_cls, secondary_cls, pri
     return evaluate_alarm_eligibility(
         canonical_text=canonical_text, primary_cls=primary_cls, secondary_cls=secondary_cls, primary_text=primary_text,
         secondary_text=secondary_text, judge_state=judge_state, judge_reason_code=judge_reason_code, role=role, lang=lang,
-        dual_required=dual_required, ledger_surfaces=ledger_surface_tokens(ledger), supply_map=(lookup or {}).get("supply_map") or {},
+        vote_required=vote_required, ledger_surfaces=ledger_surface_tokens(ledger), supply_map=(lookup or {}).get("supply_map") or {},
         p3_entry=p3_entry, **kw)
 
 

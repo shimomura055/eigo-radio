@@ -188,7 +188,7 @@ def x_stubs(x, tts_ok=True):
     def expl_tts(text, wav, **k):
         STUB_CALLS["expl_tts"] += 1
         return {"status": "OK", "path": wav}
-    with mock.patch.object(x.kp_dual, "ensure_key_phrase_english_component_x_dual", side_effect=en), \
+    with mock.patch.object(x.kp_vote, "ensure_key_phrase_english_component_x_vote", side_effect=en), \
             mock.patch.object(x.n3_tts, "generate_a2_japanese_with_reading_safety", side_effect=ja), \
             mock.patch.object(x.kp_explanation_gen, "generate_kp_explanations", side_effect=expl_gen), \
             mock.patch.object(x, "generate_key_phrase_explanation_en_verified", side_effect=expl_tts):

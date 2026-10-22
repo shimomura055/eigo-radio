@@ -28,7 +28,7 @@ import re
 import shutil
 from dataclasses import dataclass, field
 import er078_secondary_run_scope_01 as secondary_run_scope  # AUW 委任_05
-import er096_kp_dual_pass_01 as kp_dual  # KPDUAL-PROD-D2(2026-10-22、UDR #139): KP英語phrase Primary・Secondary両方PASS必須
+import er104_kp_vote_reuse_01 as kp_vote  # KP3V(2026-10-22、ユーザー承認APPROVED_FOR_PRODUCTION): KP英語phrase 3-ASR多数決(OpenAI・Azure・Whisper)
 # 2026-10-17 委任_15: Xの承認済みStyle定数を**定数として**参照する(コピーしない)。DEFAULT_NEW_RUN_PROFILE・profile解決関数は
 # 参照しない(X既定の変更がZへ無言で波及しない。Opus R-C1)。er019のimportは標準ライブラリ+er002_commonのみで循環しない。
 import er019_family_x_style_profile_01 as _xs
@@ -718,6 +718,8 @@ def generate_or_reuse_z(cached_entry: dict | None, spec: ClipSpec, wav_path: str
     の全一致のみ再利用。キーはentryの reuse_key に保存。1つでも異なれば再生成。
     再利用時はwav実在・status OK・sha256一致(stale検知)も要求。"""
     generate_fn = secondary_run_scope.guard_generate(generate_fn, str(spec.clip_id))  # 委任_06c: circuit open中は技術STOP
+    if spec.kind == "kp_en":
+        generate_fn = kp_vote.guard_whisper(generate_fn, str(spec.clip_id))   # KP3V(P-08): Whisper事前確認/circuit open中はTTSを回さず技術STOP
     key = build_reuse_key(spec)
     if cached_entry and cached_entry.get("status") == "OK" and cached_entry.get("reuse_key") == key and os.path.exists(wav_path):
         recorded = cached_entry.get("sha256")
@@ -732,13 +734,13 @@ def generate_or_reuse_z(cached_entry: dict | None, spec: ClipSpec, wav_path: str
                     _r["reuse_value_guard_blocked_previous"] = {k: _g.get(k) for k in ("reason", "reason_code", "unified_state")}
                 return _r
             _kd = None
-            if spec.kind == "kp_en" and kp_dual.dual_enabled():
-                # KPDUAL-PROD-D2(OF-KPD-P-03、再利用点6): KP英語phraseの前回results再利用は両Provider PASSの証跡を要する(fail-closed)。
+            if spec.kind == "kp_en" and kp_vote.vote_enabled():
+                # KP3V(OF-KPD-P-03、再利用点6): KP英語phraseの前回results再利用は両Provider PASSの証跡を要する(fail-closed)。
                 # 証跡が無ければS1(Azure 1回)、NGなら再生成、Azure障害は技術STOP(再利用も再生成もしない)。
-                _kd = kp_dual.kp_dual_reuse_ok(cached_entry, wav_path=wav_path, canonical_text=_norm_for_tts(spec), allow_s1=True,
+                _kd = kp_vote.kp_vote_reuse_ok(cached_entry, wav_path=wav_path, canonical_text=_norm_for_tts(spec), allow_s1=True,
                                                label=str(spec.clip_id))
-                if _kd["action"] == kp_dual.ACTION_TECHNICAL_STOP:
-                    return kp_dual.technical_stop_entry(str(spec.clip_id), _kd)
+                if _kd["action"] == kp_vote.ACTION_TECHNICAL_STOP:
+                    return kp_vote.technical_stop_entry(str(spec.clip_id), _kd)
                 if not _kd["ok"]:
                     _r = generate_fn()
                     if isinstance(_r, dict):
@@ -854,12 +856,12 @@ def real_generators() -> dict:
             style_prefix_override=style_text_for(spec), asr_prompt=repro01.KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT,
             enable_non_latin_cascade=True, tts_backend=TTS_BACKEND,
             slot_offset=0, total_slots=repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS,  # AUW 委任_05: 4回構成の前半(HR queue対象外)
-            dual_pass_required=kp_dual.dual_enabled())  # KPDUAL-PROD-D2: KP英語phrase=Primary・Secondary両方PASS必須
+            vote_pass_required=kp_vote.vote_enabled())  # KP3V: KP英語phrase=Primary・Secondary両方PASS必須
         if primary.get("status") == "OK":
             primary["fallback_used"] = False
-            return kp_dual.attach_kp_dual_check(primary, out_path, text)
-        if kp_dual.dual_enabled() and repro01._dual_circuit_open():
-            # KPDUAL-PROD-D2(OF-KPD-P-02の最小緩和): Azure circuit breaker open中はENGLISH_LOCK段のTTSを回さない(技術STOP)
+            return kp_vote.attach_kp_vote_check(primary, out_path, text)
+        if kp_vote.vote_enabled() and repro01._vote_circuit_open():
+            # KP3V(OF-KPD-P-02の最小緩和): Azure circuit breaker open中はENGLISH_LOCK段のTTSを回さない(技術STOP)
             primary["fallback_used"] = False
             primary["english_lock_skipped_secondary_circuit_open"] = True
             return primary
@@ -871,8 +873,8 @@ def real_generators() -> dict:
             tts_backend=TTS_BACKEND,
             slot_offset=repro01.KEY_PHRASE_MINIMAL_MAX_ATTEMPTS,
             total_slots=repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS,  # AUW 委任_05: 4回構成の後半(最終slot)
-            dual_pass_required=kp_dual.dual_enabled())  # KPDUAL-PROD-D2
-        kp_dual.attach_kp_dual_check(fb, out_path, text)
+            vote_pass_required=kp_vote.vote_enabled())  # KP3V
+        kp_vote.attach_kp_vote_check(fb, out_path, text)
         fb["fallback_used"] = True
         # legacy `generate_key_phrase_component_verified`と同じ会計: record_outcomeの実TTS試行数(=4)のため、1段目の
         # attempts_logをfallback_attempts_logへ載せる(監査用の別名も同じ)。
@@ -1017,7 +1019,7 @@ def build_entry(spec: ClipSpec, out_path: str, result: dict, *, human_approved: 
         # AUW 委任_03(additive): 統一ASR判定の監査record(PASS_WITH_WARNING等)。事後試聴リストの入力。
         "asr_judgement": result.get("asr_judgement"),
     }
-    if result.get("kp_dual_check") is not None:   # KPDUAL-PROD-D2(additive): KP英語phraseのみ。両Provider PASSの証跡
+    if result.get("kp_dual_check") is not None:   # KP3V(additive): KP英語phraseのみ。両Provider PASSの証跡
         entry["kp_dual_check"] = result["kp_dual_check"]
     if os.path.exists(out_path):
         try:
@@ -1406,7 +1408,7 @@ def run_audio_gate(run_dir: str, level: str, plan: list, shell_names: list, *, a
         raise FamilyZAudioStop(f"clip品質確認でNG: {problems}")
     deviations = {k: v["audio_text_deviation"] for k, v in entries.items() if v and v.get("audio_text_deviation")}
     result = {"m2_complete": True, "m1_slowdown": slow, "audio_text_deviation_clips": sorted(deviations),
-              "kp_dual_audit": kp_dual.assembly_audit(data, level),   # KPDUAL-PROD-D2: 非blocking監査(KP英語phraseのdual証跡欠落を警告+記録)
+              "kp_vote_audit": kp_vote.assembly_audit(data, level),   # KP3V: 非blocking監査(KP英語phraseのvote証跡欠落を警告+記録)
               "audio_text_deviations": m2["audio_text_deviations"],
               "article_text_source": "canonical(原稿のまま)", "shared_gate": "skipped" if skip_shared_gate else "PASS"}
     if not skip_shared_gate:
@@ -1427,7 +1429,7 @@ SHELL_ASSET_SOURCES = {
 NUMBER_ASSET_SOURCES = {f"kp{i}_number": f"num_{w}_charon.wav" for i, w in enumerate(["one", "two", "three", "four", "five"], 1)}
 
 
-def provision_shell_assets(run_dir: str, level: str, kp_count: int = 5, *, dry_run: bool = False) -> dict:
+def provision_shell_assets(run_dir: str, level: str, kp_count: int, *, dry_run: bool = False) -> dict:
     """shell/番号は既存共有Production資産を読み取りコピー(Master Store書込なし)。entryはGate互換(status OK+sha)。"""
     import er003_v1_n3_01_assemble as asm
     narr = narration_dir_for(run_dir, level)

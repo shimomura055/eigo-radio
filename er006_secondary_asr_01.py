@@ -824,7 +824,7 @@ def _pnap_try_accept(*, result: dict, audit: dict, jr, cls, captured: dict, sec:
     dec = pnap.evaluate_for_adapter(
         canonical_text=canonical_text, primary_cls=cls, secondary_cls=captured.get("cls_s"), primary_text=asr_text,
         secondary_text=sec.get("text"), judge_state=jr.state, judge_reason_code=jr.reason_code, p3_entry=audit.get("p3_entry"),
-        role=role, lang=("en" if str(lang).lower().startswith("en") else str(lang)), dual_required=False, lookup=lk,
+        role=role, lang=("en" if str(lang).lower().startswith("en") else str(lang)), vote_required=False, lookup=lk,
         slot=int(actx.get("slot", 1)))
     audit["pronunciation_alarm_eval"] = {"accepted": dec.accept, "reason": dec.reason, "detail": dec.detail if not dec.accept else {}}
     if not dec.accept:
@@ -904,19 +904,19 @@ def evaluate_attempt_with_cascade_detail(
     if not cascade_enabled:
         verified, stop_retrying, cls = val.evaluate_attempt(
             canonical_text, asr_text, prior_results, max_same_signature=max_same_signature, segment_id=segment_id)
-        if (attempt_ctx or {}).get("dual_required"):
-            # KPDUAL-PROD-D2(設計(a)-4、防御): dual_required(KP英語phrase両方PASS必須)でCascade OFFなら、Primary単独で通さない(fail-closed)。
+        if (attempt_ctx or {}).get("vote_required"):
+            # KP3V(設計(a)-4、防御): vote_required(KP英語phrase 3-ASR多数決)でCascade OFFなら、Primary単独で通さない(fail-closed)。
             # FEATURE_FLAG_SECONDARY_ASR_ENABLED=Trueが既定のため通常は不発。
             return {
                 "verified": False, "stop_retrying": False, "classification": cls,
                 "cascade_invoked": False,
                 "steps": [{"step": "primary_1", "provider": "openai_asr", "text": asr_text,
-                           "classification": cls.classification, "dual_required": True}],
+                           "classification": cls.classification, "vote_required": True}],
                 "final_status": cls.classification, "human_review_required": False, "canonical_text": canonical_text,
                 "wav_path": wav_path, "cost_guard_triggered": False, "non_latin_cascade_invoked": False,
                 "connected_speech_equivalence_layer_invoked": False,
-                "technical_stop": {"type": "DUAL_REQUIRED_BUT_CASCADE_DISABLED", "restartable": True, "approval_required": False},
-                "technical_stop_status": "TECHNICAL_STOP_DUAL_CASCADE_DISABLED"}
+                "technical_stop": {"type": "VOTE_REQUIRED_BUT_CASCADE_DISABLED", "restartable": True, "approval_required": False},
+                "technical_stop_status": "TECHNICAL_STOP_VOTE_CASCADE_DISABLED"}
         return {
             "verified": verified, "stop_retrying": stop_retrying, "classification": cls,
             "cascade_invoked": False,
@@ -965,7 +965,7 @@ def evaluate_attempt_with_cascade_detail(
     az = _AzureShared(wav_path, language, ledger_phrases, sha or f"nosha:{id(result)}", cache)
     primary_warnings: list = []
     layers: list = []
-    rescue_layers: list = []  # KPDUAL-PROD-D2(OF-KPD-P-06): Azure転写でPrimaryをPASSさせた救済層(cs_equivalence/tier3/non_latin)。dual_required時のみjudgeが参照
+    rescue_layers: list = []  # KPDUAL-PROD-D2(OF-KPD-P-06): Azure転写でPrimaryをPASSさせた救済層(cs_equivalence/tier3/non_latin)。vote_required時のみjudgeが参照
     adopted_text: Optional[str] = None  # 委任_06c(OF-AUW-C-01): 非ラテン層でAzure転写が採用根拠のとき、その転写(最終ANDゲート対象)
 
     if (not verified and enable_connected_speech_equivalence_layer
@@ -1127,9 +1127,18 @@ def evaluate_attempt_with_cascade_detail(
     signals = {"c1_proper_noun_diff": bool(is_entity_like_mismatch(cls)),
                "c2_homophone_candidate": bool(is_homophone_candidate_mismatch(cls)),
                "similarity": cls.normalized_ratio}
-    _dual = bool(actx.get("dual_required"))
-    if _dual:
-        # KPDUAL-PROD-D2(OF-KPD-P-06): 救済フラグは全層(non_latin/tier3/cs_equivalence)。CMU alternate/M1(Primary転写由来・追加ASRなし)は
+    _vote = bool(actx.get("vote_required"))
+    _whisper_fn = None
+    if _vote:
+        # KP3V: Whisper票の供給(割れたときだけjudgeが呼ぶ)。既定=ローカルfaster-whisper small(同一wavはshaでmemo)、max_lenは呼出元と同じ長さ判定(P-02)。
+        # `vote_whisper_fn`は保存Whisper転写の再利用(再判定)・test用の注入点(attempt_ctx経由のみ。env/flagからは変えられない)。
+        _whisper_fn = actx.get("vote_whisper_fn")
+        if _whisper_fn is None:
+            import er104_kp_three_asr_vote_01 as _kp3v
+            _wmax = actx.get("max_len")
+            _whisper_fn = (lambda: _kp3v.whisper_vote(canonical_text, wav_path, sha=az.sha, max_len=_wmax))
+    if _vote:
+        # KP3V(OF-KPD-P-06踏襲): 救済フラグは全層(non_latin/tier3/cs_equivalence)。CMU alternate/M1(Primary転写由来・追加ASRなし)は
         # Primary救済として維持(立てない)。
         signals["primary_rescued_by_secondary"] = bool(verified and rescue_layers)
         signals["primary_rescue_layers"] = list(rescue_layers)
@@ -1143,7 +1152,7 @@ def evaluate_attempt_with_cascade_detail(
         segment_key=segment_id or "", script_version=actx.get("script_version", "v0"), slot=int(actx.get("slot", 1)),
         is_last_slot=bool(actx.get("is_last_slot", False)), length_ok=bool(actx.get("length_ok", True)),
         max_len=actx.get("max_len"),  # AUW 委任_13(A3R-01/03): 呼出元のmax_len。None=従来挙動(安全ラッチ)
-        force_secondary=bool(force_secondary), dual_required=_dual, engine="azure", phrase_list_hash=_phrase_hash(ledger_phrases),
+        force_secondary=bool(force_secondary), vote_required=_vote, whisper_fn=_whisper_fn, engine="azure", phrase_list_hash=_phrase_hash(ledger_phrases),
         cache=cache, run_state=actx.get("run_state") or _RUN_STATE)
     try:
         import er020_tts_retry_local_rewrite_01 as _rg
@@ -1152,7 +1161,7 @@ def evaluate_attempt_with_cascade_detail(
         judge_role = None
     captured: dict = {}
     # 従来のstep名を維持(audit/HR packageの互換): force_secondary経路="secondary_forced"、通常="secondary_1"。
-    _sec_step_name = ("secondary_dual" if _dual else "secondary_forced" if (force_secondary and verified) else "secondary_1")
+    _sec_step_name = ("secondary_vote" if _vote else "secondary_forced" if (force_secondary and verified) else "secondary_1")
 
     def _secondary_fn(_ctx):
         return az.outcome()
@@ -1191,7 +1200,7 @@ def evaluate_attempt_with_cascade_detail(
                        "azure_phrase_list_weight": (AZURE_PHRASE_LIST_WEIGHT if ledger_phrases else None),
                        "azure_phrase_list": list(ledger_phrases or []), "cached": bool(sec.get("cached")),
                        "unified_judge_state": jr.state,
-                       **({"dual_required": True} if _dual else {}),
+                       **({"vote_required": True} if _vote else {}),
                        "entity_like_source": (val.aggregate_entity_like_sources(cls_s.protected.content_word_diffs) if cls_s else []),
                        **(val.multiword_steps_extra(cls_s.protected.content_word_diffs) if cls_s else {})})
     if az.cost_guard_triggered:
@@ -1199,10 +1208,18 @@ def evaluate_attempt_with_cascade_detail(
 
     result["verified"] = bool(jr.verified)
     result["stop_retrying"] = False
-    if _dual:
-        result["dual_state"] = jr.state
-    if jr.verified and _dual:
-        # KPDUAL-PROD-D2(OF-KPD-P-08): dual PASS時はclassificationをSecondary側で上書きしない(Primary自身のPASS根拠を保持)。
+    _vote_audit = audit.get("vote") if _vote else None
+    if _vote:
+        result["vote_state"] = jr.state
+        if _vote_audit and _vote_audit.get("whisper_called"):
+            _wa = _vote_audit.get("whisper") or {}
+            steps.append({"step": "whisper_vote", "provider": "faster_whisper", "text": _wa.get("text"), "pass": bool(_wa.get("pass")),
+                          "classification": _wa.get("label"), "error": _wa.get("error"), "memo_hit": bool(_wa.get("memo_hit")),
+                          "model": (_vote_audit.get("whisper_model") or {}).get("model"), "unified_judge_state": jr.state})
+            result["cascade_invoked"] = True
+    if jr.verified and _vote and (_vote_audit or {}).get("row") in ("P+S", "P+W"):
+        # KP3V(P-03): 行1(P+S)・行2(P+W)はPrimary(OpenAI自身)のPASS根拠を保持する(classificationをSecondary/Whisper側で上書きしない)。
+        # 行4(S+W: Primary NGでAzure+Whisperが合格)は下のelif連鎖でSecondaryの分類を採る(SECONDARY_CONFIRMED警告つき)。
         pass
     elif jr.verified:
         if "m1_audit" in captured:
@@ -1221,12 +1238,13 @@ def evaluate_attempt_with_cascade_detail(
         # 委任_06c(OF-AUW-C-06、ADDENDUM §4): NG理由が**Secondary障害のみ**(NG_SECONDARY_UNAVAILABLE)の最終slotは、人間が聞いて判断する
         # 品質問題ではなく技術障害のため、Human Review(Lock/queue)へ投入しない。`technical_stop`(truthy dict)+status名で
         # 技術STOP(承認不要・再実行で再開可)として返し、runnerがcircuit_open/technical_stopを読んで残りclipを停止・報告する。
-        _tech_only = jr.state == unified_judge_mod.NG_SECONDARY_UNAVAILABLE
+        _tech_only = jr.state in unified_judge_mod.TECHNICAL_STOP_STATES   # Secondary(Azure)障害 / Whisper(ローカル)障害(KP3V)
         # PNAP(ユーザー承認2026-10-22): 全救済層・統一judgeを通ってNG_BOTH/secondary_not_acceptedで終わった「固有名詞の発音不一致だけ」の
         # attemptを、アラーム記録のみで受理する(HR queue/HR Lock/再生成/approve_regenerateを経由しない)。Family A/B/C・KP・JAは
-        # pnap.is_active_for_run()がFalse/dual_required/role不一致でfail-closed=従来どおり。追加API呼出0(Stage 1調査は従来のHR投入と同じ条件・回数)。
+        # pnap.is_active_for_run()がFalse/vote_required/role不一致でfail-closed=従来どおり。追加API呼出0(Stage 1調査は従来のHR投入と同じ条件・回数)。
+        # KP3V: KP英語phrase(vote_required)は3-ASR多数決が最終判定でありPNAPの受理対象外(KP除外を新flagへ追従、P-05/P-12)。
         _alarm_accepted = False
-        if (not _tech_only) and (not _dual) and pnap.is_active_for_run():
+        if (not _tech_only) and (not _vote) and pnap.is_active_for_run():
             try:
                 _alarm_accepted = _pnap_try_accept(
                     result=result, audit=audit, jr=jr, cls=cls, captured=captured, sec=sec, canonical_text=canonical_text,
@@ -1236,9 +1254,11 @@ def evaluate_attempt_with_cascade_detail(
                 _alarm_accepted = False
         if _tech_only:
             result["human_review_required"] = False
-            result["technical_stop"] = audit.get("technical_stop") or {"type": "SECONDARY_UNAVAILABLE", "restartable": True,
-                                                                        "approval_required": False}
-            result["technical_stop_status"] = "TECHNICAL_STOP_SECONDARY_UNAVAILABLE"
+            _whisper_stop = jr.state == unified_judge_mod.NG_WHISPER_UNAVAILABLE
+            result["technical_stop"] = audit.get("technical_stop") or {"type": "WHISPER_UNAVAILABLE" if _whisper_stop else "SECONDARY_UNAVAILABLE",
+                                                                        "restartable": True, "approval_required": False}
+            result["technical_stop_status"] = ("TECHNICAL_STOP_WHISPER_UNAVAILABLE" if _whisper_stop
+                                               else "TECHNICAL_STOP_SECONDARY_UNAVAILABLE")
         if bool(actx.get("is_last_slot", False)) and not _tech_only and not _alarm_accepted:
             result["human_review_required"] = True
             if is_entity_like_mismatch(cls):

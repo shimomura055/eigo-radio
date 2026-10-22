@@ -60,7 +60,7 @@ import er006_model_routing_contract_01 as routing
 import er019_family_x_audio_plan_01 as plan
 import er019_family_x_kp_explanation_01 as kp_explanation_gen
 import er019_family_x_kp_en_k2_store_01 as kp_en_k2_store  # 委任_02A: KP英語K2の2段key(Family X専用module)
-import er096_kp_dual_pass_01 as kp_dual  # KPDUAL-PROD-D2(2026-10-22、UDR #139): KP英語phrase Primary・Secondary両方PASS必須
+import er104_kp_vote_reuse_01 as kp_vote  # KP3V(2026-10-22、ユーザー承認APPROVED_FOR_PRODUCTION): KP英語phrase 3-ASR多数決(OpenAI・Azure・Whisper)
 import er081_family_x_in_one_line_01 as fx_iol  # FXPW 委任_04: In One Line scope(Family X専用)
 import er019_family_x_style_profile_01 as style_profile_mod
 import er019_family_x_validation_inheritance_01 as validation_inheritance
@@ -736,6 +736,8 @@ def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: s
     require_style_version=Falseのまま(この引数を渡さない呼び出し元は
     従来どおりの挙動)。"""
     generate_fn = secondary_run_scope.guard_generate(generate_fn, f"kp{rank}_{role}")  # 委任_06c: circuit open中は技術STOP
+    if role == "english":
+        generate_fn = kp_vote.guard_whisper(generate_fn, f"kp{rank}_{role}")   # KP3V(P-08): Whisper事前確認/circuit open中はTTSを回さず技術STOP
     _skip = _only_segments_skip(f"kp{rank}_{role}")
     if _skip is not None:
         # 是正②: 上記_generate_or_reuseと同じ証拠つき引継ぎ(Key Phrase component版)。
@@ -745,10 +747,10 @@ def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: s
             _cached_kp, wav_path, expected_text,
             cached.get("style_version") if cached else None, FAMILY_X_VARIABLE_ROLE_STYLE_VERSION,
             {"kind": "same_out_dir_previous_results", "label": f"kp{rank}_{role}"},
-            # KPDUAL-PROD-D2(再利用点2): KP英語phraseの引継ぎは両Provider PASSの保存証跡を要する(API 0・fail-closed)。
-            kp_dual_canonical=(n3_tts.tts_safe_kp_en(expected_text) if (role == "english" and kp_dual.dual_enabled() and expected_text)
+            # KP3V(再利用点2): KP英語phraseの引継ぎは両Provider PASSの保存証跡を要する(API 0・fail-closed)。
+            kp_vote_canonical=(n3_tts.tts_safe_kp_en(expected_text) if (role == "english" and kp_vote.vote_enabled() and expected_text)
                                else None),
-            kp_dual_required=bool(role == "english" and kp_dual.dual_enabled()))
+            kp_vote_required=bool(role == "english" and kp_vote.vote_enabled()))
         return _inh if _inh is not None else _skip
     if require_style_version and cached is not None and cached.get("style_version") != FAMILY_X_VARIABLE_ROLE_STYLE_VERSION:
         return generate_fn()
@@ -761,14 +763,14 @@ def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: s
         if _blk is not None:
             return _regenerate_after_reuse_block(generate_fn, _blk)
         _kd = None
-        if role == "english" and kp_dual.dual_enabled():
-            # KPDUAL-PROD-D2(OF-KPD-P-03、再利用点1): 前回results再利用は両Provider PASSの証跡を要する(fail-closed)。
+        if role == "english" and kp_vote.vote_enabled():
+            # KP3V(OF-KPD-P-03、再利用点1): 前回results再利用は両Provider PASSの証跡を要する(fail-closed)。
             # 証跡が無ければS1(Azure 1回)、NGなら再生成(Store gate経由)、Azure障害は技術STOP(再利用も再生成もしない)。
-            _kd = kp_dual.kp_dual_reuse_ok(
+            _kd = kp_vote.kp_vote_reuse_ok(
                 cached_result, wav_path=wav_path, canonical_text=n3_tts.tts_safe_kp_en(expected_text or ""),
                 allow_s1=bool(expected_text), label=f"kp{rank}_{role}")
-            if _kd["action"] == kp_dual.ACTION_TECHNICAL_STOP:
-                return kp_dual.technical_stop_entry(f"kp{rank}_{role}", _kd)
+            if _kd["action"] == kp_vote.ACTION_TECHNICAL_STOP:
+                return kp_vote.technical_stop_entry(f"kp{rank}_{role}", _kd)
             if not _kd["ok"]:
                 _r = generate_fn()
                 if isinstance(_r, dict):
@@ -1109,9 +1111,9 @@ def _kp_english_generate_fn(style_profile: str, level: str, tts_backend: str, us
     k2 = style_profile_mod.resolve_role_style(style_profile, style_profile_mod.ROLE_KP_EN, level, lambda _r: None)
     safe = n3_tts.tts_safe_kp_en(used_form)
     if k2 is None:
-        # KPDUAL-PROD-D2(P-04): 共有関数(Family A/B/Cと共有・不変)ではなくX専用関数から、同一構造のMasterAudioKey(+dual1)で
-        # `dual_pass_required=True`の生成を呼ぶ(KP_EN_PHRASE_DUAL_REQUIRED=Falseなら共有関数へ委譲=旧挙動とバイト同一)。
-        return (lambda: kp_dual.ensure_key_phrase_english_component_x_dual(
+        # KP3V(P-04): 共有関数(Family A/B/Cと共有・不変)ではなくX専用関数から、同一構造のMasterAudioKey(+vote1)で
+        # `vote_pass_required=True`の生成を呼ぶ(KP_THREE_ASR_VOTE_ENABLED=Falseなら共有関数へ委譲=旧挙動とバイト同一)。
+        return (lambda: kp_vote.ensure_key_phrase_english_component_x_vote(
             safe, wav_path, tts_backend=tts_backend)), None
     return (lambda: kp_en_k2_store.ensure_key_phrase_english_component_styled(
         safe, wav_path, style_text=k2, style_id=style_profile_mod.KP_EN_STORE_STYLE_ID, style_tag="k2",
@@ -1781,15 +1783,15 @@ def _assert_no_gloss_alignment_hr(level_out_dir: str, level: str) -> None:
             + (f"(未評価: {_gloss_align_mod().UNEVALUATED_REASON})" if any(x.get("_unevaluated") for x in _hr) else ""))
 
 
-def _attach_kp_dual_audit(summary: dict, out_dir: str, level: str) -> None:
-    """KPDUAL-PROD-D2(Fable判断で採用): 組立時の非blocking監査。blockingゲート化はしない(ユーザー判断の範囲外)。"""
-    if not kp_dual.dual_enabled():
+def _attach_kp_vote_audit(summary: dict, out_dir: str, level: str) -> None:
+    """KP3V(Fable判断で採用): 組立時の非blocking監査。blockingゲート化はしない(ユーザー判断の範囲外)。"""
+    if not kp_vote.vote_enabled():
         return
     try:
         res = load_json(f"{out_dir}/audit/tts_generation_results.json")
-        summary["kp_dual_audit"] = kp_dual.assembly_audit(res, level)
+        summary["kp_vote_audit"] = kp_vote.assembly_audit(res, level)
     except Exception as exc:   # 監査の失敗で組立を止めない
-        summary["kp_dual_audit"] = {"enabled": True, "error": f"{type(exc).__name__}: {exc}", "blocking": False}
+        summary["kp_vote_audit"] = {"enabled": True, "error": f"{type(exc).__name__}: {exc}", "blocking": False}
 
 
 def stage_assemble_family_x_b1(theme_out_dir: str, theme_id: str, source_dir: str | None = None) -> dict:
@@ -1840,7 +1842,7 @@ def stage_assemble_family_x_b1(theme_out_dir: str, theme_id: str, source_dir: st
         "clipping_detected": metrics["clipping_detected"], "peak": round(p9a.peak(assembled), 5),
         "sample_rate": SR, "channels": 2, "headroom_safety_valve": headroom["report"],
     }
-    _attach_kp_dual_audit(summary, out_dir, "b1b")   # KPDUAL-PROD-D2: 非blocking監査(KP英語phraseのdual証跡欠落を警告+summary記録)
+    _attach_kp_vote_audit(summary, out_dir, "b1b")   # KP3V: 非blocking監査(KP英語phraseのvote証跡欠落を警告+summary記録)
     pnap_hooks.attach_alarm_audit(summary, out_dir, "b1b")   # PNAP 委任_02: 固有名詞アラーム要約を組立summaryへ埋め込み(非blocking・flag OFFは何も付けない)
     save_json(f"{out_dir}/run_summary_assemble.json", summary)
     return summary
@@ -2047,7 +2049,7 @@ def stage_assemble_family_x_a2(theme_out_dir: str, theme_id: str, source_dir: st
         "clipping_detected": metrics["clipping_detected"], "peak": round(p9a.peak(assembled), 5),
         "sample_rate": SR, "channels": 2, "headroom_safety_valve": headroom["report"],
     }
-    _attach_kp_dual_audit(summary, out_dir, "a2")   # KPDUAL-PROD-D2: 非blocking監査(KP英語phraseのdual証跡欠落を警告+summary記録)
+    _attach_kp_vote_audit(summary, out_dir, "a2")   # KP3V: 非blocking監査(KP英語phraseのvote証跡欠落を警告+summary記録)
     pnap_hooks.attach_alarm_audit(summary, out_dir, "a2")   # PNAP 委任_02: 固有名詞アラーム要約を組立summaryへ埋め込み(非blocking・flag OFFは何も付けない)
     save_json(f"{out_dir}/run_summary_assemble.json", summary)
     return summary

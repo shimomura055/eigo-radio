@@ -461,12 +461,13 @@ class FakeStrict:
         res = {"status": "OK" if ok else "STOPPED", "path": out_path, "attempts_log": attempts,
                "sha256": "abc", "asr_verified": ok, "asr_text": text, "disfluency_checked": True,
                "en_pronunciation_resolver_info": {"hints_applied": False}}
-        if ok and kw.get("dual_pass_required"):
-            # KPDUAL-PROD-D2: 実strictが返す両Provider PASSの監査record(KP英語phraseは dual_pass_required=True で呼ばれる)
-            res["asr_judgement"] = {"state": "PASS", "reason_code": "dual_agreed", "dual": {
-                "required": True, "primary_provider": "openai", "secondary_provider": "azure", "primary_pass": True,
-                "primary_text": text, "primary_rescued_by_secondary": False, "primary_rescue_layers": [],
-                "secondary_called": True, "secondary_pass": True, "secondary_text": text, "outcome": "PASS"}}
+        if ok and kw.get("vote_pass_required"):
+            # KP3V: 実strictが返す3-ASR多数決の監査record(KP英語phraseは vote_pass_required=True で呼ばれる)
+            res["asr_judgement"] = {"state": "PASS", "reason_code": "dual_agreed", "vote": {
+                "required": True, "version": "kp_vote_check_v1", "state": "PASS_DUAL", "row": "P+S", "pass_count": 2,
+                "primary": {"provider": "openai", "text": text, "pass": True, "rescued": False, "rescue_layers": []},
+                "secondary": {"provider": "azure", "text": text, "pass": True}, "secondary_called": True,
+                "whisper": None, "whisper_called": False}}
         return res
 
 
@@ -646,8 +647,8 @@ class AbcGoldenTests(unittest.TestCase):
         self.assertEqual((c["max_attempts"], c["slot_offset"], c["total_slots"]), (2, 0, 4))
         self.assertEqual(inspect.signature(repro01.generate_key_phrase_component_verified).parameters.keys(),
                          {"text": 0, "out_path": 0, "disfluency_qa": 0, "tts_backend": 0,
-                          "dual_pass_required": 0}.keys())            # KPDUAL-PROD-D2: 既定False(A/B/Cは引数なし=従来動作)の1引数のみ追加
-        self.assertIs(inspect.signature(repro01.generate_key_phrase_component_verified).parameters["dual_pass_required"].default, False)
+                          "vote_pass_required": 0}.keys())            # KPDUAL-PROD-D2: 既定False(A/B/Cは引数なし=従来動作)の1引数のみ追加
+        self.assertIs(inspect.signature(repro01.generate_key_phrase_component_verified).parameters["vote_pass_required"].default, False)
 
     def test_k2_store_module_is_family_x_only(self):
         # 新module(KP英語K2の2段key)をimportするのはFamily X runnerとtestだけ。Family A/B/C/Z・共有moduleは参照しない。
@@ -658,8 +659,8 @@ class AbcGoldenTests(unittest.TestCase):
                     users.append(fn)
         self.assertEqual(users, ["er019_family_x_audio_production_runner_01.py",
                                  "er019_family_x_fx_20261016_wiring_01_test_01.py",
-                                 "er096_kp_dual_pass_01_wiring_test_01.py",    # KPDUAL-PROD-D2: 本件のtest(K2 siteのdual flag転送確認)
-                                 "er096_kp_dual_runtime_evidence_01.py"])      # KPDUAL-PROD-D2: 本件のX専用runtime evidence driver(K2 Production関数を直接呼ぶ)
+                                 "er096_kp_dual_runtime_evidence_01.py",       # 履歴script(旧KPDUAL evidence driver。Productionではない)
+                                 "er104_kp_vote_wiring_test_01.py"])           # KP3V: 本件のtest(K2 siteのvote flag転送確認)
 
     def test_master_audio_store_module_unchanged_contract(self):
         self.assertEqual(store.EQUALITY_FIELDS, (
@@ -710,7 +711,7 @@ EXPL = {"items": {1: {"english_explanation": "to choose not to take part", "qa":
 
 class RunnerKpWiringTests(unittest.TestCase):
     def _run_b1(self, profile):
-        with mock.patch.object(runner.kp_dual, "ensure_key_phrase_english_component_x_dual", side_effect=_ok) as legacy, \
+        with mock.patch.object(runner.kp_vote, "ensure_key_phrase_english_component_x_vote", side_effect=_ok) as legacy, \
              mock.patch.object(runner.kp_en_k2_store, "ensure_key_phrase_english_component_styled", side_effect=_ok) as styled, \
              mock.patch.object(runner.kp_explanation_gen, "generate_kp_explanations", return_value=EXPL), \
              mock.patch.object(runner, "generate_key_phrase_explanation_en_verified", side_effect=_ok) as expl:
@@ -718,7 +719,7 @@ class RunnerKpWiringTests(unittest.TestCase):
         return res, legacy, styled, expl
 
     def _run_a2(self, profile, **kw):
-        with mock.patch.object(runner.kp_dual, "ensure_key_phrase_english_component_x_dual", side_effect=_ok) as legacy, \
+        with mock.patch.object(runner.kp_vote, "ensure_key_phrase_english_component_x_vote", side_effect=_ok) as legacy, \
              mock.patch.object(runner.kp_en_k2_store, "ensure_key_phrase_english_component_styled", side_effect=_ok) as styled, \
              mock.patch.object(runner.n3_tts, "generate_a2_japanese_with_reading_safety", side_effect=_ok) as ja, \
              mock.patch.object(runner.n3_tts, "resolve_key_phrase_ja_gloss_tts", return_value=("みおくる", False)):

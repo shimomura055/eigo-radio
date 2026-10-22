@@ -22,6 +22,9 @@
 #          それ以外                                          -> NG_BOTH
 # 委任_13(A3是正): ctx.max_len指定時のみ、Primary NG+length NGもP3へ回し、Primary PASS+length NGはP3へ降格する。Secondary受理時は採用転写(Secondary)の
 #   長さで再評価(超過=NG_BOTH `secondary_length_ng`)。呼出元の最終ANDは `final_length_ok`(fail-closed)。ロールバック=module定数 A3_SECONDARY_LENGTH_REEVAL。
+# KP3V(2026-10-22、ユーザー承認APPROVED_FOR_PRODUCTION): KP英語phrase専用の`vote_required`モード = OpenAI(Primary)・Azure(Secondary)・Whisper(local)の
+#   3-ASR多数決(2/3 PASS)。P/Sが割れたときだけWhisperを呼ぶ。集計は純関数`er104_kp_three_asr_vote_01.tally()`(done()出口が1回呼ぶ)。
+#   旧`dual_required`(両方PASS必須)と`NG_DUAL_PRIMARY_NOT_PASS`は撤去。既定False=現行コードパスを1行も変えない。
 # 言語別Secondary許容集合は本module内に再実装しない。`secondary_fn`の戻り値(accepted)または`secondary_accept_fn`(注入callable)で受ける。
 # ============================================================
 from __future__ import annotations
@@ -46,12 +49,13 @@ NG_EXCLUDED = "NG_EXCLUDED"
 NG_BOTH = "NG_BOTH"
 NG_SECONDARY_UNAVAILABLE = "NG_SECONDARY_UNAVAILABLE"
 NG_PRIMARY_ASR_FAILURE = "NG_PRIMARY_ASR_FAILURE"
-# KPDUAL-PROD-D2(2026-10-22、UDR #139): KP英語phrase「Primary・Secondary両方PASS必須」(dual_required)でのみ発生する不合格状態。
-# Secondaryは受理したが、Primary(OpenAI)自身がPASSしていない(Primary NG / Azure転写由来の救済 / AMBIGUOUS・length降格)。PASSING_STATESには入れない。
-NG_DUAL_PRIMARY_NOT_PASS = "NG_DUAL_PRIMARY_NOT_PASS"
+# KP3V(2026-10-22): `vote_required`モード(KP英語phrase)でのみ発生。Whisper(local)の例外/import失敗/timeout/circuit open = 技術STOP(PASS不可・HRに入れない)。
+# 空転写はNG票(通常の再生成)でありこの状態にはならない。
+NG_WHISPER_UNAVAILABLE = "NG_WHISPER_UNAVAILABLE"
 STATES = (PASS, PASS_WITH_WARNING, NG_PROTECTED, NG_EXCLUDED, NG_BOTH, NG_SECONDARY_UNAVAILABLE, NG_PRIMARY_ASR_FAILURE,
-          NG_DUAL_PRIMARY_NOT_PASS)
+          NG_WHISPER_UNAVAILABLE)
 PASSING_STATES = (PASS, PASS_WITH_WARNING)
+TECHNICAL_STOP_STATES = (NG_SECONDARY_UNAVAILABLE, NG_WHISPER_UNAVAILABLE)   # HR Lock/queueへ投入せず再実行で再開する状態
 
 # ---- warningラベル ----
 W_SECONDARY_CONFIRMED = "SECONDARY_CONFIRMED"
@@ -261,9 +265,10 @@ class AttemptCtx:
     # 委任_13(A3R-01/03): 呼出元のmax_len(余裕文字数は呼出元ごとに異なる。judge内で固定再計算しない)。None=従来挙動(安全ラッチ)。
     max_len: int | None = None
     force_secondary: bool = False
-    # KPDUAL-PROD-D2: True=KP英語phrase専用の「Primary・Secondary両方PASS必須」判定。既定False=現行コードパスを1行も変えない。
-    # Trueを渡す呼出元は`generate_narration_snippet_verified_strict(dual_pass_required=True)`経由のKP英語phrase 6箇所のみ(静的testで固定)。
-    dual_required: bool = False
+    # KP3V: True=KP英語phrase専用の「3-ASR多数決(2/3 PASS)」判定。既定False=現行コードパスを1行も変えない。
+    # Trueを渡す呼出元は`generate_narration_snippet_verified_strict(vote_pass_required=True)`経由のKP英語phrase 6箇所のみ(静的testで固定)。
+    vote_required: bool = False
+    whisper_fn: object = None   # vote_required時のみ: callable() -> er104.Voter(Whisper票)。None=Whisper未設定(割れたら技術STOP)
     engine: str = "azure"
     phrase_list_hash: str = ""
     cache: SecondaryCache | None = None
@@ -387,27 +392,20 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
                    "adopted_from": "primary", "adopted_ok": None, "surface_len": None, "primary_ok": None},
     }
     a3 = _a3_reeval_active(ctx)
-    dual = None
-    if ctx.dual_required:
-        # KPDUAL-PROD-D2(P-08): 両Providerの判定を並べて残すための監査キー(additive、dual_required時のみ存在)。
-        dual = {"required": True, "primary_provider": "openai", "secondary_provider": "azure", "primary_pass": False,
-                "primary_text": pr.text, "primary_rescued_by_secondary": False, "primary_rescue_layers": [],
-                "primary_not_pass_reason": None, "secondary_called": False, "secondary_pass": False, "secondary_text": None,
-                "outcome": None}
-        audit["dual"] = dual
+    vote = None
+    if ctx.vote_required:
+        # KP3V: 3 Providerの票を並べて残すための監査キー(additive、vote_required時のみ存在)。確定時に`build_vote_audit`の完全形で置換する。
+        vote = {"required": True, "version": "kp_vote_check_v1", "primary_pass": False, "primary_text": pr.text,
+                "primary_rescued_by_secondary": False, "primary_rescue_layers": [], "primary_not_pass_reason": None,
+                "state": None, "row": None}
+        audit["vote"] = vote
     if ctx.wav_sha256:
         audit["audio_sha256"] = ctx.wav_sha256  # 委任_03: Primary PASS(Secondary不呼出)でも採用音声のsha256を記録(registryが突合に使う)
 
     def done(state, reason, warnings=(), unavailable=False) -> JudgeResult:
-        if dual is not None:
-            _sec = audit.get("secondary") or {}
-            dual["secondary_called"] = bool(_sec.get("called") or _sec.get("cached"))
-            dual["secondary_text"] = _sec.get("text")
-            if state in PASSING_STATES and not dual["primary_pass"]:
-                # Secondary単独PASS / Azure転写でPrimaryを救済したPASSは最終合格としない(ユーザー§1、ケース3)。
-                reason = "dual_primary_not_pass:" + reason
-                state = NG_DUAL_PRIMARY_NOT_PASS
-            dual["outcome"] = state
+        if vote is not None and audit.get("vote") is vote:
+            # 票の集計(finish_vote)を経由せずに確定した出口(Primary失敗/P1保護差/P2除外/Secondary障害): 状態だけ記録する。
+            vote["state"] = state
         audit["state"], audit["reason_code"] = state, reason
         wl = list(dict.fromkeys(warnings))
         if state in PASSING_STATES and ctx.script_version == "v1":
@@ -459,16 +457,16 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
         if primary_ng_reason is None and not plen_ok:
             # 委任_13(A3R-02): Primary内容PASS+length NGはAMBIGUOUS降格と同形でP3(Secondary)へ降格する。
             primary_ng_reason = "primary_length_ng"
-        if primary_ng_reason is None and dual is not None and (pr.signals or {}).get("primary_rescued_by_secondary"):
-            # KPDUAL-PROD-D2(OF-KPD-P-06): Azure転写でPrimaryをPASSさせた救済(非ラテンKP層/Tier3/CS equivalence)はOpenAI自身のPASSではない。
+        if primary_ng_reason is None and vote is not None and (pr.signals or {}).get("primary_rescued_by_secondary"):
+            # KP3V(OF-KPD-P-06踏襲): Azure転写でPrimaryをPASSさせた救済(非ラテンKP層/Tier3/CS equivalence)はOpenAI自身のPASS(票)ではない。
             primary_ng_reason = "primary_rescued_by_secondary"
-            dual["primary_rescued_by_secondary"] = True
-        if primary_ng_reason is None and not ctx.force_secondary and dual is None:
+            vote["primary_rescued_by_secondary"] = True
+        if primary_ng_reason is None and not ctx.force_secondary and vote is None:
             return done(PASS, "primary_pass" if not approved else f"primary_pass_approved_equivalence:{pr.equivalence_basis}", warnings)
         if primary_ng_reason is None:
-            if dual is not None:
-                dual["primary_pass"] = True   # OpenAI自身のPASS(救済・降格なし)。以降Secondaryを必ず呼ぶ
-            primary_ng_reason = "force_secondary" if dual is None else "dual_required"
+            if vote is not None:
+                vote["primary_pass"] = True   # OpenAI自身のPASS(救済・降格なし)。以降Secondaryを必ず呼ぶ
+            primary_ng_reason = "force_secondary" if vote is None else "vote_required"
     else:
         # ---- Primary NG: P1 / P2 ----
         if pvg.kind == vg.DIFF:
@@ -487,10 +485,10 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
             return done(NG_EXCLUDED, f"p2_exclusion:{hit}")
         primary_ng_reason = "p3_primary_ng"
     audit["p3_entry"] = primary_ng_reason
-    if dual is not None:
-        dual["primary_rescue_layers"] = list((pr.signals or {}).get("primary_rescue_layers") or [])
-        if not dual["primary_pass"]:
-            dual["primary_not_pass_reason"] = primary_ng_reason
+    if vote is not None:
+        vote["primary_rescue_layers"] = list((pr.signals or {}).get("primary_rescue_layers") or [])
+        if not vote["primary_pass"]:
+            vote["primary_not_pass_reason"] = primary_ng_reason
 
     # ---- P3: Secondary 1回 ----
     key = (ctx.sha(), ctx.engine, lang, ctx.phrase_list_hash)
@@ -549,8 +547,50 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
     svg, sneg = _protected(canon, stext, lang)
     audit["value_guard"]["secondary"] = svg.to_dict()
     audit["negation_guard"]["secondary"] = sneg
+
+    def finish_vote(s_pass: bool, s_reason: str, extra_warnings=(), s_pdiff: bool = False):
+        """KP3V: 票(P/S[/W])を純関数tally()で集計して確定する唯一の出口。状態変換(PASS/PASS_WITH_WARNING/NG)はdone()の
+        PASS_WITH_WARNING変換・LR_REWRITTEN付与より前にここで済ませる(P-09)。Whisperは割れたときだけ呼ぶ。"""
+        import er104_kp_three_asr_vote_01 as kp3v
+        pv = kp3v.Voter("openai", text=pr.text, passed=bool(vote["primary_pass"]), label=pr.label,
+                        rescued=bool(vote["primary_rescued_by_secondary"]), rescue_layers=tuple(vote["primary_rescue_layers"]),
+                        reason_note=vote.get("primary_not_pass_reason"))
+        sv = kp3v.Voter("azure", text=stext, passed=bool(s_pass), label=(audit["secondary"].get("label") or ""), protected_diff=bool(s_pdiff), reason_note=s_reason)
+        wv, wcalled = None, False
+        if kp3v.whisper_needed(pv, sv):
+            wcalled = True
+            if ctx.whisper_fn is not None:
+                try:
+                    wv = ctx.whisper_fn()
+                except Exception as _we:  # noqa: BLE001  Whisper障害は必ず技術STOP(PASS不可)
+                    wv = kp3v.Voter("whisper", None, False, available=False, error=f"{type(_we).__name__}: {_we}", technical_failure=True)
+        tr = kp3v.tally(pv, sv, wv)
+        va = kp3v.build_vote_audit(pv, sv, wv, tr, secondary_called=bool(audit["secondary"].get("called") or audit["secondary"].get("cached")),
+                                   whisper_called=wcalled,
+                                   extra={"primary_not_pass_reason": vote.get("primary_not_pass_reason"),
+                                          "primary_rescued_by_secondary": vote["primary_rescued_by_secondary"]})
+        audit["vote"] = va
+        w2 = list(warnings) + list(extra_warnings)
+        if tr.verified:
+            if tr.secondary_confirmed_warning:
+                w2 = w2 + [W_SECONDARY_CONFIRMED]   # 行4(P NG/S PASS/W PASS)= 事後試聴リスト対象(P-03)
+            return done(PASS, tr.reason, w2)
+        if tr.state == kp3v.NG_WHISPER_UNAVAILABLE:
+            ev = {"type": "WHISPER_UNAVAILABLE", "error": (wv.error if wv is not None else tr.reason), "segment_key": ctx.segment_key,
+                  "slot": ctx.slot, "restartable": True, "approval_required": False}
+            audit["technical_stop"] = ev
+            if rs is not None:
+                rs.technical_stop_events.append(ev)
+            return done(NG_WHISPER_UNAVAILABLE, tr.reason, w2)
+        # NG: P/Sとも不合格は従来の具体的な理由(secondary_not_accepted等)を維持。割れ(Whisper NG/保護差/rollback)はvote理由。
+        both_ng = (not pv.passed) and (not sv.passed)
+        return done(NG_BOTH, s_reason if both_ng else tr.reason, w2)
+
     if svg.kind == vg.DIFF or sneg:
-        return done(NG_BOTH, "secondary_value_diff" if svg.kind == vg.DIFF else "secondary_negation_diff", warnings)
+        _r = "secondary_value_diff" if svg.kind == vg.DIFF else "secondary_negation_diff"
+        if vote is not None:
+            return finish_vote(False, _r, s_pdiff=True)
+        return done(NG_BOTH, _r, warnings)
 
     # 許容集合判定(注入)
     accepted, label = outcome.accepted, outcome.label
@@ -569,6 +609,8 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
         audit["length"].update(secondary_len=slen, surface_len=len(_surface_key(stext)))
         if accepted and not sok:
             audit["length"].update(adopted_from="secondary", adopted_ok=False)
+            if vote is not None:
+                return finish_vote(False, "secondary_length_ng")
             return done(NG_BOTH, "secondary_length_ng", warnings)
         if accepted:
             audit["length"].update(adopted_from="secondary", adopted_ok=True)
@@ -576,25 +618,26 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
                 warnings = warnings + [W_PRIMARY_LENGTH_EXCESS]  # A3R-07: additive(受理条件は不変)
     ambiguous_primary = pvg.kind == vg.AMBIGUOUS
     if svg.kind == vg.AMBIGUOUS and not same_surface(canon, stext):
+        if vote is not None:
+            return finish_vote(False, "secondary_ambiguous_value_not_same_surface")
         return done(NG_BOTH, "secondary_ambiguous_value_not_same_surface", warnings)
     if ambiguous_primary:
         if same_surface(canon, stext):
-            if dual is not None:
-                dual["secondary_pass"] = True
+            if vote is not None:
+                return finish_vote(True, "secondary_exact_resolves_ambiguous", [W_NUMERIC_AMBIGUOUS_SURFACE])
             return done(PASS_WITH_WARNING, "secondary_exact_resolves_ambiguous", warnings + [W_NUMERIC_AMBIGUOUS_SURFACE])
+        if vote is not None:
+            return finish_vote(False, "ambiguous_value_secondary_not_same_surface")
         return done(NG_BOTH, "ambiguous_value_secondary_not_same_surface", warnings)
     if not accepted:
+        if vote is not None:
+            return finish_vote(False, "secondary_not_accepted")
         return done(NG_BOTH, "secondary_not_accepted", warnings)
     if final_and_gate:
         audit["final_gate"] = {"applied": True, "target": "secondary", "value_guard": svg.kind, "negation_diff": sneg}
-    if dual is not None:
-        dual["secondary_pass"] = True
-        if dual["primary_pass"]:
-            # KPDUAL-PROD-D2: Primary(OpenAI自身)PASS ∧ Secondary(Azure)許容集合PASS ∧ 両者の値/否定ガードOK = 両方PASS。警告なしの`PASS`
-            # (Primary側の警告ラベルがあればdone()が従来どおりPASS_WITH_WARNINGへ変換)。classificationをSecondary側で上書きしない。
-            return done(PASS, "dual_agreed", warnings + list(svg.warnings))
-        # Primary非PASS: done()が NG_DUAL_PRIMARY_NOT_PASS へ変換する(Secondary単独PASSは最終合格にしない)。
-        return done(PASS_WITH_WARNING, "secondary_confirmed", warnings + [W_SECONDARY_CONFIRMED] + list(svg.warnings))
+    if vote is not None:
+        # KP3V: Secondary(Azure)許容集合PASS ∧ 値/否定ガードOK = S票PASS。最終は3票の集計(finish_vote)。classificationはadapter側で行ごとに整理(P-03)。
+        return finish_vote(True, "secondary_accepted", list(svg.warnings))
     if primary_ng_reason == "force_secondary":
         # 委任_03: Primary PASS + force_secondary(minimal fallback/LR後v1)でSecondaryも許容集合PASS = 両エンジン合意。
         # 従来(er006 force_secondary)もPASS扱い(警告なし)だったため、SECONDARY_CONFIRMED警告は付けない(LR後v1はdone()がLR_REWRITTENを付与)。

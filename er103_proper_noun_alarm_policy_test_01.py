@@ -150,8 +150,8 @@ class AcceptBoundaryTest(unittest.TestCase):
 
 
 class ScopeGateTest(unittest.TestCase):
-    def test_kp_dual_required_rejected(self):
-        d = decide("Melos said.", "Mello said.", "Mellow said.", dual_required=True)
+    def test_kp_vote_required_rejected(self):
+        d = decide("Melos said.", "Mello said.", "Mellow said.", vote_required=True)
         self.assertFalse(d.accept)
         self.assertEqual(d.reason, pol.R_DUAL)
 

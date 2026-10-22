@@ -225,7 +225,7 @@ class KeyPhraseRoleUnchangedTests(unittest.TestCase):
 
     def test_a2_key_phrase_english_role_unaffected_by_ja_style(self):
         kp = {"items": [{"rank": 1, "used_form": "opt out", "japanese_gloss": "見送る"}]}
-        with mock.patch.object(runner.kp_dual, "ensure_key_phrase_english_component_x_dual",
+        with mock.patch.object(runner.kp_vote, "ensure_key_phrase_english_component_x_vote",
                                 side_effect=_ok) as en_mock, \
              mock.patch.object(runner.n3_tts, "generate_a2_japanese_with_reading_safety",
                                 side_effect=_ok), \
@@ -240,7 +240,7 @@ class KeyPhraseJapaneseMeaningJ3WiringTests(unittest.TestCase):
 
     def test_a2_key_phrase_japanese_meaning_receives_j3_on_flash_lite_backend(self):
         kp = {"items": [{"rank": 1, "used_form": "opt out", "japanese_gloss": "見送る"}]}
-        with mock.patch.object(runner.kp_dual, "ensure_key_phrase_english_component_x_dual",
+        with mock.patch.object(runner.kp_vote, "ensure_key_phrase_english_component_x_vote",
                                 side_effect=_ok), \
              mock.patch.object(runner.n3_tts, "generate_a2_japanese_with_reading_safety",
                                 side_effect=_ok) as ja_mock, \
@@ -254,7 +254,7 @@ class KeyPhraseJapaneseMeaningJ3WiringTests(unittest.TestCase):
         """既定backendではNone(=既存JAPANESE_STYLE_PREFIXのまま、他Family
         無影響の既存契約を維持)。"""
         kp = {"items": [{"rank": 1, "used_form": "opt out", "japanese_gloss": "見送る"}]}
-        with mock.patch.object(runner.kp_dual, "ensure_key_phrase_english_component_x_dual",
+        with mock.patch.object(runner.kp_vote, "ensure_key_phrase_english_component_x_vote",
                                 side_effect=_ok), \
              mock.patch.object(runner.n3_tts, "generate_a2_japanese_with_reading_safety",
                                 side_effect=_ok) as ja_mock, \
@@ -361,7 +361,7 @@ class CacheVersionGuardTests(unittest.TestCase):
             return {"status": "OK"}
 
         # KPDUAL-PROD-D2: KP英語phraseの再利用には両Provider PASS証跡のgateが入る(gate自体はer096 wiring testで検証)。ここはstyle_version非参照のみ。
-        with mock.patch.object(runner.os.path, "exists", return_value=True),              mock.patch.object(runner.kp_dual, "kp_dual_reuse_ok", return_value={"ok": True, "action": "reuse", "kp_dual_check": None}):
+        with mock.patch.object(runner.os.path, "exists", return_value=True),              mock.patch.object(runner.kp_vote, "kp_vote_reuse_ok", return_value={"ok": True, "action": "reuse", "kp_dual_check": None}):
             result = runner._generate_or_reuse_kp(cached, 1, "english", "dummy.wav", gen)
         self.assertEqual(calls["n"], 0)
         self.assertTrue(result.get("reused_from_previous_run"))
