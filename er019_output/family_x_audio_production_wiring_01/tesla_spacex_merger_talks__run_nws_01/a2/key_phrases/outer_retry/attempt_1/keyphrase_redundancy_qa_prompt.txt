@@ -1,0 +1,67 @@
+以下は、同じ記事から選ばれた3件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。3件から作れる全てのペア(3組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず3組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Could Musk’s “Good Idea” Slow Merger Talks?
+
+“If the boss wants it, things move fast.” It is a familiar hope in meetings and business talks. But talks about joining Tesla and SpaceX may bring the opposite result. You think you have pressed the gas, but the brake lights come on. People are starting to worry about this kind of change.
+
+Musk supported joining the two companies. He called it “a good idea.” But he says the choice should be left to special committees at both companies. Do not decide too soon. There are still steps between “he supports it” and “the merger is decided.”
+
+According to Reuters, a person who knows about the talks is worried. They worry that Musk’s support and the public announcement of the talks may make shareholders look more closely. This could slow the talks. Support from a big name does not always make things move ahead quickly. This is not a report that the talks have already slowed.
+
+The louder the support, the more attention it gets. When the star of the show steps into the spotlight, the audience watches more closely. Will people think, “Musk supports it, so we can relax,” or, “Wait, let’s check the details”? What matters is not how loud the support is. It is how others respond.
+
+To begin, special committees at both companies are there to review the merger. Setting them up does not mean the merger is approved. In other words, they have only put out chairs for a meeting to review it. It is too early to set off the party poppers.
+
+Shareholders must also follow certain steps to approve it. For some mergers and other matters, SpaceX’s articles of incorporation set rules. Holders of “Class B” shares must vote as a separate group and approve it. Other required approvals are needed too. Musk’s support is not a pass that opens every gate.
+
+We do not know if talks will really be delayed this time. So watch not only, “Does Musk support it?” but also, “How will others react?” Will cheers help things move forward, or will closer checks make people drive carefully? A big name’s words can fire the starting gun or give people a reason to stop. Since someone has spoken in favor, we must watch others’ next moves in these talks.
+
+## In one line
+Musk called a Tesla-SpaceX merger “a good idea,” but it is still under review. A person who knows the talks worries Musk’s support and the public announcement may make shareholders look more closely and slow talks, but no delay has been reported.
+
+【Key Phrase 3件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "articles of incorporation",
+    "japanese_gloss": "定款",
+    "source_sentence": "For some mergers and other matters, SpaceX's articles of incorporation set rules"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "vote as a separate group",
+    "japanese_gloss": "別のグループとして投票する",
+    "source_sentence": "Holders of \"Class B\" shares must vote as a separate group and approve it"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "under review",
+    "japanese_gloss": "検討中",
+    "source_sentence": "Musk called a Tesla-SpaceX merger \"a good idea,\" but it is still under review"
+  }
+]

@@ -1,0 +1,67 @@
+以下は、同じ記事から選ばれた3件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。3件から作れる全てのペア(3組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず3組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Could Musk’s “Good Idea” Jam Up Merger Talks?
+
+“If the boss is eager, things move fast.” It’s a familiar hope in meetings and business talks. But in talks about bringing Tesla and SpaceX together, that hope may be turned on its head. You think you’ve stepped on the gas, but the brake lights come on. Concerns are emerging about that kind of turn of events.
+
+Musk supported combining the two companies, calling it “a good idea.” However, he says the decision should be left to the special committees of the two companies. Don’t jump to conclusions. There are still hurdles to clear between “he supports it” and “the merger is decided.”
+
+According to Reuters, a person familiar with the talks is concerned that Musk’s statement of support and the public announcement of the talks could make shareholders look more closely, slowing the negotiations. Support from a big name does not always mean things will suddenly move ahead. Note that this is not a report that talks have already been delayed.
+
+The louder the support, the more attention it draws. When the star of the show steps into the spotlight, people in the audience watch more closely. Will people think, “If Musk supports it, we can relax,” or “Wait, let’s check the details”? What matters is not how loud the support is, but the response it gets.
+
+To begin with, the special committees of both companies are there to consider the merger. Setting them up does not mean the merger has been approved. To put it another way, they have only reached the stage of setting out chairs for a review meeting. It’s too early to pop the party poppers.
+
+Shareholder approval also has to follow certain steps. For example, for certain mergers and other matters, SpaceX’s articles of incorporation require approval from holders of “Class B” shares voting as a separate group, as well as any other required approvals. Musk’s support is not a pass that opens every gate.
+
+We do not know whether talks will really be delayed this time. So what to watch next is not just “Is Musk in favor?” but “How will others act in response to that support?” Will the cheering voices build momentum, or will closer checks lead to cautious driving? A big name’s words can fire the starting gun, or give people a reason to stop. Precisely because someone has spoken in favor, we can’t take our eyes off the reactions that follow in these merger talks.
+
+## In one line
+Musk called a Tesla-SpaceX merger “a good idea,” but the deal is still under review. A person familiar with the talks worries that his support and the public announcement could draw closer shareholder scrutiny and slow negotiations, though no delay has been reported.
+
+【Key Phrase 3件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "turn on its head",
+    "japanese_gloss": "～をひっくり返す",
+    "source_sentence": "But in talks about bringing Tesla and SpaceX together, that hope may be turned on its head"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "articles of incorporation",
+    "japanese_gloss": "定款",
+    "source_sentence": "For example, for certain mergers and other matters, SpaceX's articles of incorporation require approval from holders of \"Class B\" shares voting as a separate group, as well as any other required approvals"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "fire the starting gun",
+    "japanese_gloss": "スタートの合図を出す",
+    "source_sentence": "A big name's words can fire the starting gun, or give people a reason to stop"
+  }
+]

@@ -1,0 +1,35 @@
+[B3-RUNNER][research] Researcher呼び出し開始(topic='フランスで、AIと人間が共同執筆したフランス語のフィクションを対象とする新しい文学賞「Prix Pascal」が設立され'...)...
+[B3-RUNNER][research] facts=8 web_search_calls=3
+[B3-RUNNER][ledger] Verification呼び出し開始...
+[B3-RUNNER][ledger] Ledger確定。verdict_counts={'VERIFIED': 7, 'AMBIGUOUS': 1, 'REJECTED': 0} kept_facts=8
+[E-FAMILY-RUNNER][cost] so far=11.13 JPY by_provider={'openai': 11.13} (after research_ledger)
+[E-FAMILY-RUNNER][cost] so far=17.13 JPY by_provider={'openai': 17.13} (after storyline_b3)
+[B3-RUNNER][annotation] producer=deterministic_v2 rules_sha=3b4b7fdf8dc6 facts=5 annotated_sha=caf179e4dd95(LLM 0 call)
+[E-FAMILY-RUNNER][cost] so far=17.21 JPY by_provider={'openai': 17.21} (after core_number_rounding)
+[B3-RUNNER][core_number_rounding] status=OK api_calls=1 reused=False n_approximate_ok=0
+[E-FAMILY-RUNNER][cost] so far=17.21 JPY by_provider={'openai': 17.21} (w1 writer)
+[E-FAMILY-RUNNER][cost] so far=26.42 JPY by_provider={'openai': 26.42} (w1 writer)
+[E-FAMILY-RUNNER][cost] so far=30.03 JPY by_provider={'openai': 30.03} (w1 writer)
+[E-FAMILY-RUNNER][cost] so far=33.75 JPY by_provider={'openai': 33.75} (after ja_writer)
+[E-FAMILY-RUNNER][writer/prix_pascal_ai_novel_prize] Advanced(Family X忠実英訳)生成開始...
+[E-FAMILY-RUNNER][cost] so far=34.09 JPY by_provider={'openai': 34.09} (after advanced writer)
+[E-FAMILY-RUNNER][cost] so far=34.09 JPY by_provider={'openai': 34.09} (after advanced)
+[B3-RUNNER][risk_flag/b1b] Risk Flagger開始(非Blocking、4条件逐次)...
+[E-FAMILY-RUNNER][cost] so far=34.09 JPY by_provider={'openai': 34.09} (risk_flag b1b)
+[E-FAMILY-RUNNER][cost] so far=34.20 JPY by_provider={'openai': 34.2} (risk_flag b1b)
+[E-FAMILY-RUNNER][cost] so far=34.36 JPY by_provider={'openai': 34.36} (risk_flag b1b)
+[E-FAMILY-RUNNER][cost] so far=34.54 JPY by_provider={'openai': 34.36, 'gemini': 0.18} (risk_flag b1b)
+[B3-RUNNER][risk_flag/b1b] status=OK issues=1 queue_saved=True
+[E-FAMILY-RUNNER][cost] so far=34.73 JPY by_provider={'openai': 34.36, 'gemini': 0.37} (after risk_flag b1b)
+[E-FAMILY-RUNNER][writer/prix_pascal_ai_novel_prize] Standard(Family X見出し廃止A2)生成開始...
+[E-FAMILY-RUNNER][cost] so far=34.96 JPY by_provider={'openai': 34.59, 'gemini': 0.37} (after standard writer)
+[E-FAMILY-RUNNER][cost] so far=34.96 JPY by_provider={'openai': 34.59, 'gemini': 0.37} (after standard)
+[B3-RUNNER][risk_flag/a2] Risk Flagger開始(非Blocking、4条件逐次)...
+[E-FAMILY-RUNNER][cost] so far=34.96 JPY by_provider={'openai': 34.59, 'gemini': 0.37} (risk_flag a2)
+[E-FAMILY-RUNNER][cost] so far=35.09 JPY by_provider={'openai': 34.72, 'gemini': 0.37} (risk_flag a2)
+[E-FAMILY-RUNNER][cost] so far=35.21 JPY by_provider={'openai': 34.83, 'gemini': 0.37} (risk_flag a2)
+[E-FAMILY-RUNNER][cost] so far=35.40 JPY by_provider={'openai': 34.83, 'gemini': 0.56} (risk_flag a2)
+[B3-RUNNER][risk_flag/a2] status=OK issues=1 queue_saved=True
+[E-FAMILY-RUNNER][cost] so far=35.59 JPY by_provider={'openai': 34.83, 'gemini': 0.76} (after risk_flag a2)
+[B3-RUNNER] Standardまで完了。Mandatory STOP(ユーザー確認前に後工程[scaffold/tts/assemble/player]へは進みません。本runnerにはそれらのstage自体が実装されていません)。
+[B3-RUNNER][cost] {'by_stage_jpy': {'research': 5.652, 'ledger': 5.482, 'storyline_b3': 5.998, 'b3_core_number_rounding': 0.074, 'w1_r0': 9.211, 'w1_astra_r1': 3.61, 'w1_astra_r2': 3.724, 'advanced': 0.334, 'risk_flag.luna.A3.b1b': 0.119, 'risk_flag.luna.A4.b1b': 0.151, 'risk_flag.gemini35fl.A3.b1b': 0.183, 'risk_flag.gemini35fl.A4.b1b': 0.189, 'standard': 0.232, 'risk_flag.luna.A3.a2': 0.13, 'risk_flag.luna.A4.a2': 0.117, 'risk_flag.gemini35fl.A3.a2': 0.189, 'risk_flag.gemini35fl.A4.a2': 0.195}, 'total_jpy': 35.59, 'by_provider_jpy': {'openai': 34.835, 'gemini': 0.755}, 'risk_flag_by_level_model_condition_jpy': {'b1b': {'luna': {'A3': 0.119, 'A4': 0.151}, 'gemini35fl': {'A3': 0.183, 'A4': 0.189}}, 'a2': {'luna': {'A3': 0.13, 'A4': 0.117}, 'gemini35fl': {'A3': 0.189, 'A4': 0.195}}}, 'b3_core_number_rounding': {'enabled': True, 'status': 'OK', 'n_approximate_ok': 0, 'overlay_sha256': 'fb7f1b1639540ea4dc0f83e736f0d08ef5d81b52b17d2d0db6ce413bea4927fb', 'error': None, 'model_returned': 'gpt-6-luna', 'effort': 'low', 'warn': False}}

@@ -1,0 +1,118 @@
+{
+  "runner": "er019_family_x_entertainment_production_runner_01.py",
+  "management_id": "NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01",
+  "runner_sha256": "2d43707266523753189ff38450d76cddf251292c4bbca4d41d6bd25207ba3223",
+  "b3_module_sha256": "338e8e145adce9e5b195d0263160020023026998bb33533f83b0742b56991468",
+  "ja_writer_module_sha256": "212e4b6d50388092f53ee593cc6dc208104f76ed25295c8023ee3c351c98dd3d",
+  "annotation_contract_module_sha256": "5f4c725e0b332e028b8285389532dedc28e067f29caf6c63863b0be4f0017885",
+  "annotation_producer_module_sha256": "ce7f9895535110893112d79aeac0fd226bceb69b2d3f92f458fd33db88770cf5",
+  "risk_flagger_module_sha256": "ed3555c9da56ed651892858bdddef3624dd375bf9f0035bc1e10996604784810",
+  "review_queue_module_sha256": "ebe746f11181888ed286f05db17d40141c60aa6fca0b163f47fcd60c0aa3f7ed",
+  "core_number_rounding_module_sha256": "de1fb8eb11c05e694eab76624126dbcede81c92dd71b898327b247b16576cf82",
+  "args": {
+    "theme": "イーロン・マスクがTeslaとSpaceXの合併に前向きな姿勢を表明し、両社が特別委員会を設けて合併の可能性を検討している(2026-10-21 Reuters)。合併は未決定で検討段階。株主承認などのハードルを正確に扱う。2026-10-22のReuters補足(マスクの公的支持が交渉の妨げになりうる)も確認する。",
+    "slug": "tesla_spacex_merger_talks",
+    "out_dir": "er019_output/tesla_spacex_merger_talks/run_nws_01",
+    "source_note": "Reuters 2026-10-21 https://www.marketscreener.com/news/tesla-spacex-deal-wall-st-says-inevitable-but-musk-says-it-s-not-certain-ce785cd8d081f227 ; Reuters 2026-10-22 https://www.marketscreener.com/news/musk-s-public-endorsement-of-spacex-tesla-deal-may-throw-a-wrench-in-talks-ce785cd9df8ef622",
+    "run_label": "FAMILY-X-NEWS-2ARTICLES-E2E-01",
+    "budget_jpy": 120.0,
+    "stage": "all",
+    "regenerate_stage": null,
+    "stop_after": "standard"
+  },
+  "timestamp": "2026-10-22T20:03:07",
+  "risk_flagger": {
+    "b1b": {
+      "status": "OK",
+      "reason": null,
+      "rf_run_id": "rf20261022T111337Z-5636",
+      "article_sha256": "987983db98a3560dc675e580232d18107dd01f2907e3dbf0d7587a608455a92f",
+      "ledger_sha256": "9bf1698dc75efdef5a53e0b9daa1e4db01dd1038629095615b49e64583ab691e",
+      "splitter_version": "en_split_v1",
+      "timestamp": "2026-10-22T11:13:37+00:00",
+      "producer": "deterministic_v2",
+      "run_label": "FAMILY-X-NEWS-2ARTICLES-E2E-01",
+      "issue_count": 2,
+      "conditions": [
+        {
+          "model_key": "luna",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.108768
+        },
+        {
+          "model_key": "luna",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 2,
+          "cost_jpy": 0.299248
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.188944
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.194704
+        }
+      ]
+    },
+    "a2": {
+      "status": "OK",
+      "reason": null,
+      "rf_run_id": "rf20261022T111548Z-2115",
+      "article_sha256": "d45e00dde51f40452503f42f5daae3125d120e7aaa58adb87ef33cabc3020d95",
+      "ledger_sha256": "9bf1698dc75efdef5a53e0b9daa1e4db01dd1038629095615b49e64583ab691e",
+      "splitter_version": "en_split_v1",
+      "timestamp": "2026-10-22T11:15:48+00:00",
+      "producer": "deterministic_v2",
+      "run_label": "FAMILY-X-NEWS-2ARTICLES-E2E-01",
+      "issue_count": 4,
+      "conditions": [
+        {
+          "model_key": "luna",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.176928
+        },
+        {
+          "model_key": "luna",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 4,
+          "cost_jpy": 0.181408
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.19336
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.19912
+        }
+      ]
+    }
+  }
+}

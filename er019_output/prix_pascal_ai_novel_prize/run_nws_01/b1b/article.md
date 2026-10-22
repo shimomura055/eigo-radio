@@ -1,0 +1,20 @@
+# If You Didn’t Write with AI, You Can’t Apply
+
+What if the rules for entering a literary prize included a condition like this? Not “You may use AI,” but “Write together with AI.” Wait, that’s required? AI, which I thought was a helper behind the scenes, is now openly the ticket to enter.
+
+The Prix Pascal, whose creation was announced in France, is for unpublished fiction in French written jointly by a human and AI. Using AI is not a bonus or an exception. If you haven’t used it, you can’t apply.
+
+It may be too early to brace yourself for “At last, it’s time to compete over AI’s writing skills.” What I’m curious about is not the writers, but the people giving the prize. Why did they go out of their way to create this kind of entrance?
+
+The people behind the prize say it is an effort to ask other literary prizes, which are struggling with how to handle writers’ use of AI, a question. They create one prize and ask the others, “So, what would you do?” You might call it a question in the shape of a trophy.
+
+For example, what if you were reading a story late into the night, and just after the last line moved you, you heard, “Actually, I wrote it with AI”? Would a line that had seemed beautiful suddenly feel distant? Or would you say, “I enjoyed it, so I have no complaint”? A special judging meeting might begin inside the reader’s mind.
+
+Of course, the label “co-written with AI” alone doesn’t guarantee an interesting story. I wouldn’t decide I wanted to read it based on that alone, either. What I want to know is what kind of story it is, and what the writing is like. Before the label, I want to see the first page.
+
+But when I take the writer’s side, things suddenly get complicated. I might ask AI to fix a phrase or talk through the plot. But how far can I go and still proudly say, “I wrote this”? Where is the line between a helpful partner to talk things over with and a co-writer?
+
+So it would be a shame to reduce this prize to a simple choice: “Is AI good or bad?” A prize that is supposed to choose works also shines a light on the values of the people doing the choosing. It makes the question of whether AI was used not the end of the discussion, but the starting point for reading. It seems that writers are not the only ones being tested at this new entrance. So, how will we read that book?
+
+## In one line
+France has announced a literary prize requiring unpublished French fiction to be co-written by a person and AI. Its founders say it challenges other awards over AI, while inviting readers to consider how AI changes the way they read.

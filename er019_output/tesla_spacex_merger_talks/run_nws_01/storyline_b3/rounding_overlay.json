@@ -1,0 +1,110 @@
+{
+ "annotated_md_sha256": "79526c59bff19a793f9fbf0c6ef2ab90092718f6e4dcadc00f1e7ab2a6809e07",
+ "core_concept_order": [
+  "C2",
+  "C3",
+  "C5"
+ ],
+ "entries": [
+  {
+   "approved_condition": "事実の範囲を正確に示す必要がある数値は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F02"
+   ],
+   "concept": "C2",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F02"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "対象となる企業がTeslaとSpaceXの2社であることが事実の範囲を定めるため、正確に維持します。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "2社"
+    }
+   ]
+  },
+  {
+   "approved_condition": "法的な承認手続や議決権に関わり、精度自体が意味を持つ数値は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F02",
+    "F07"
+   ],
+   "concept": "C3",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2,
+    5
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F02",
+    "F07"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "委員会数や議決権数に関わる「1」は、それぞれの数・権利を示す値であり、概数化すると意味が変わり得ます。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "1"
+    }
+   ]
+  },
+  {
+   "approved_condition": "法的な議決権など、精度自体が意味を持つ数値は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F07"
+   ],
+   "concept": "C5",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    5
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F07"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "Class B普通株1株あたりの議決権数を定める値であり、概数化は権利内容を変えてしまいます。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "10"
+    }
+   ]
+  }
+ ],
+ "judge": {
+  "developer_message_sha256": "8d2618b7cc966affb3567e5ee1354551b92f394462a4786683f8f9a3052a9d3d",
+  "effort": "low",
+  "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
+  "model_requested": "gpt-6-luna",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_01ef5a6c34c3e514006ad9eec927a487d0bd40d4da9befff52",
+  "sec": 6.3,
+  "usage": {
+   "input_tokens": 3998,
+   "output_tokens": 579,
+   "reasoning_tokens": 224
+  },
+  "user_prompt_sha256": "c5fb7c6c9c71a97994d482a320484e90daaaf1c12d8138aea67ddfdfb1d748b5"
+ },
+ "n_approximate_ok": 0,
+ "overlay_sha256": "7f9d943b21206844db9c011e2035a36b73828a49eb829171ddbeae165ce1496d",
+ "requested_effort": "low",
+ "requested_model": "gpt-6-luna",
+ "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+ "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
+ "sidecar_sha256": "716add77b98955b7aa2761da5d20d84466b5f0e9e6d180a6c80ee02fd7893fc8",
+ "status": "OK",
+ "v8_max_relative_error": "0.10",
+ "violations": []
+}
