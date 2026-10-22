@@ -121,3 +121,7 @@
 4. **V1'の弱い確認**(名称+発音表記の実在。quoteなし)をStage 1の「引用実在確認」と呼んでよいか。quote付きはStage 2のresearch形式で導入。
 5. **自然発生は未観測(残事項、論点E)**: 否定記録・別type採用の実発火は保存データで0件。4,032ペアの判定差分0は回帰確認のみで、これらの経路の自然発生検証ではない。実調査1回と実URL取得は一時コピーpathで行う(架空語をProduction Ledgerへ登録しない)。
 6. **Production実走証拠の不足の扱い**: 否定記録は実APIで`items=[]`を再現できず(保存ログ0件)、mock注入でのみ実関数発火を確認できる。実走で自然発生するまで「Production実走証拠は部分的」と残事項に明記する。
+
+---
+Fable判定(2026-10-22): Stage 1=`PRODUCTION_WIRED`(条件付き残事項あり)。根拠=X/Z共通の`evaluate_attempt_with_cascade_detail`内に配線、判定基準・自動PASS条件は不変(ON/OFFで実関数の判定出力一致、保存HR 79行の再判定差分0、4,032ペアはバイト一致、Ledger upsertキー無し呼出は配線前版とバイト一致)。実関数での発火=X(crosslevel)・Z(er063 kp_en)でmock注入により最終slot NG→調査→出典ページ照合→Ledger登録/USE_LEDGER/否定記録/SKIP_NEGATIVE_CACHEの各分岐を記録。実機で一般語(`good morning`/`main story`)の調査不呼出とLedger命中時の調査0を確認。出典ページ照合は保存済み調査結果3語の実HTTP取得で動作確認。`mini`隔離(OPEN-436の枠)はPhrase List差分18文(mini由来のみ)・M1候補集合差0・判定差分0。**残事項(完了と誤認しない)**: (1)実調査API(Perplexity)の端から端の確認は枠切れ(401、UDR #134未回答)のため未実施。枠復旧後に1語で確認する。(2)否定記録・別type採用の自然発生は未観測(過去データで発火0)。(3)「引用実在確認」はStage 1では弱い照合(出典ページに名称・発音表記の出現確認)のみ。本来の引用確認はStage 2の調査形式変更(Prompt変更=別承認)と同時。費用JPY0。
+---
