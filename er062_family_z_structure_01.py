@@ -24,7 +24,7 @@ import er013_family_c_production_01 as fam_c
 # 値の出所はこのdict一箇所。er026 STORY_REGISTRY[story]の"speaker_config"はここを参照し(二重定義しない)、
 # er062 writer(ATTR prompt/schema enum)・er063(Voice表/alias)はstory_keyで解決する。引数省略=Melos(従来値とバイト同一、
 # testで逐語固定)。new Gate/閾値/Prompt構造の追加ではなく、roster名列挙と{main_character}等の値差替えのみ。
-# dialogue_voice_tts_namesの値None=未割当(ユーザー判断待ち)。resolve時にfail-closedで明示エラー(値欠落の検出)。
+# dialogue_voice_tts_namesは上記の正式Voice表+決定的割当規則から導出する(値None=未割当はer063 resolveでfail-closedの保険として残す)。
 # ------------------------------------------------------------
 _MELOS_ATTR_ROSTER = (
     "- \"melos\": the main character, Melos (including when he speaks to the king or to his friend)\n"
@@ -36,6 +36,97 @@ _MELOS_ATTR_CAUTION = (
     "Be careful: a name or role that appears NEAR a quote is not always the speaker (for example, in "
     "'\"I will return,\" Melos told the king.' the speaker is melos, not king; in '\"I am here,\" he said to his friend.' "
     "decide who \"he\" is from the story).")
+
+# ------------------------------------------------------------
+# Family Z 登場人物Voice 正式表と決定的割当規則(FAMILY-Z-VOICE-PRODUCTION-WIRING-01 委任_01、
+# ユーザー最終決定2026-10-23 APPROVED_FOR_PRODUCTION、原文=docs/pm/delegation_log/2026-10-23_FAMILY-Z-VOICE-PRODUCTION-WIRING-01_USER.md。
+# 割当方針=2026-10-21ユーザー指示§4: 男女独立・登場順・6人目以降は循環・同一人物は作品全体で同一Voice)。
+# Narrator=Aoede、Advanced補助=Charonは別枠で登場人物用プールに含めない。性別・登場順はrosterの明示データ
+# (名前からの推測・LLM判定はしない)。割当は純粋関数で、resume時に再計算しても同一になる。
+# ------------------------------------------------------------
+FAMILY_Z_NARRATOR_VOICE = "Aoede"
+FAMILY_Z_ADVANCED_AUX_VOICE = "Charon"
+FAMILY_Z_DIALOGUE_VOICE_POOL = {
+    "male": ("Algieba", "Schedar", "Fenrir", "Orus", "Puck"),
+    "female": ("Zephyr", "Kore", "Leda", "Sulafat", "Erinome"),
+}
+FAMILY_Z_VOICE_STATUS = "APPROVED_FOR_PRODUCTION(2026-10-23ユーザー最終決定)"
+
+# story別roster: speaker=話者key(STORY_SPEAKER_CONFIG speakers/dialogue_voice_tts_namesのkey)、gender=male|female、
+# order=作品内の初出順(1始まり、story内一意)、first_appearance=根拠(本文上の初出箇所)。
+STORY_VOICE_ROSTER = {
+    "melos": (
+        {"speaker": "melos", "gender": "male", "order": 1, "first_appearance": "Adv q0_1(王への最初の発話)"},
+        {"speaker": "dionysius", "gender": "male", "order": 2, "first_appearance": "Adv q3_1(王=king、友を人質に置く発話)"},
+        {"speaker": "selinuntius", "gender": "male", "order": 3, "first_appearance": "Adv q5_1(友=friend、'Go.')"},
+    ),
+    "the_open_window": (
+        {"speaker": "vera", "gender": "female", "order": 1, "first_appearance": "冒頭の最初の引用('My aunt will come downstairs...'を言う15歳の少女)"},
+        {"speaker": "framton", "gender": "male", "order": 2, "first_appearance": "2番目の引用('I don't really know anything about her.')"},
+        {"speaker": "mrs_sappleton", "gender": "female", "order": 3, "first_appearance": "叔母の登場後の引用('I hope you've enjoyed talking to my niece...')"},
+        {"speaker": "men", "gender": "male", "order": 4, "first_appearance": "狩りから戻る男たち(歌声'Oh, brother...'・夫の'Who's the man...')"},
+    ),
+}
+# 作品単位のpin(既存確定値の固定)。メロスは2026-10-21 U:§7「メロス完成版は変更しない」により受入済み成果物のVoiceを
+# 変更しない(pin値=受入済みfamily_z_melos_02の実使用値。規則適用値との差分は仕様差分として報告済み・変更はユーザー承認事項)。
+STORY_VOICE_PINS = {
+    "melos": {
+        "melos": "Algieba",
+        "selinuntius": "Erinome",
+        "dionysius": "Charon",
+    },
+}
+STORY_VOICE_PIN_REASON = {
+    "melos": "2026-10-21 U:§7 メロス完成版(受入済みpage family_z_melos_02)のVoiceは変更しない",
+}
+
+
+def assign_dialogue_voices(roster, pool=None) -> dict:
+    """決定的割当(純粋関数)。男女独立に、order昇順で pool[gender][(n-1) % len] を割り当てる(6人目以降は循環)。
+    入力=rosterの明示データ(speaker/gender/order)。出力={speaker: voice}(Narrator/Charonは含めない)。"""
+    pool = pool or FAMILY_Z_DIALOGUE_VOICE_POOL
+    seen_speakers, seen_orders = set(), set()
+    for r in roster:
+        if r["gender"] not in pool:
+            raise ValueError(f"UNKNOWN_GENDER: {r['speaker']!r} gender={r['gender']!r}(male|femaleの明示データが必要)")
+        if r["speaker"] in seen_speakers or r["order"] in seen_orders:
+            raise ValueError(f"ROSTER_DUPLICATE: speaker/orderが重複 {r!r}")
+        seen_speakers.add(r["speaker"])
+        seen_orders.add(r["order"])
+    out = {}
+    for gender in pool:
+        members = sorted((r for r in roster if r["gender"] == gender), key=lambda r: r["order"])
+        for i, r in enumerate(members):
+            out[r["speaker"]] = pool[gender][i % len(pool[gender])]
+    return out
+
+
+def derive_voice_assignment(story_key: str) -> dict:
+    """story別のVoice割当記録(run metadata `voice_assignment.json` の中身)。規則適用値→pin上書き→最終値。"""
+    roster = STORY_VOICE_ROSTER[story_key]
+    rule = assign_dialogue_voices(roster)
+    pins = STORY_VOICE_PINS.get(story_key, {})
+    unknown = set(pins) - set(rule)
+    if unknown:
+        raise ValueError(f"PIN_SPEAKER_NOT_IN_ROSTER: {sorted(unknown)}")
+    rows = []
+    for r in sorted(roster, key=lambda r: r["order"]):
+        sp = r["speaker"]
+        final = pins.get(sp, rule[sp])
+        rows.append({"speaker": sp, "gender": r["gender"], "order": r["order"], "first_appearance": r["first_appearance"],
+                     "rule_voice": rule[sp], "pinned": sp in pins, "voice": final})
+    return {"story_key": story_key, "status": FAMILY_Z_VOICE_STATUS, "narrator_voice": FAMILY_Z_NARRATOR_VOICE,
+            "pool": {k: list(v) for k, v in FAMILY_Z_DIALOGUE_VOICE_POOL.items()},
+            "pin_reason": STORY_VOICE_PIN_REASON.get(story_key) if pins else None, "speakers": rows}
+
+
+def derive_dialogue_voice_tts_names(story_key: str) -> dict:
+    """STORY_SPEAKER_CONFIG[story]["dialogue_voice_tts_names"] の導出(narrator + roster全員。値None=未割当は残さない)。"""
+    names = {"narrator": FAMILY_Z_NARRATOR_VOICE}
+    for row in derive_voice_assignment(story_key)["speakers"]:
+        names[row["speaker"]] = row["voice"]
+    return names
+
 
 STORY_SPEAKER_CONFIG = {
     "melos": {
@@ -55,17 +146,12 @@ STORY_SPEAKER_CONFIG = {
             "selinuntius": ["selinuntius", "friend"],
             "dionysius": ["dionysius", "ruler", "king", "tyrant"],
         },
-        "dialogue_voice_tts_names": {
-            "narrator": "Aoede",
-            "melos": "Algieba",        # PROVISIONAL_UNAPPROVED(新規割当、要ユーザー承認)
-            "selinuntius": "Erinome",
-            "dionysius": "Charon",
-        },
+        # 規則適用+作品単位pin(メロスは既存確定値固定)から導出。値の出所=STORY_VOICE_ROSTER/STORY_VOICE_PINS。
+        "dialogue_voice_tts_names": derive_dialogue_voice_tts_names("melos"),
         "speaker_aliases": {"king": "dionysius", "friend": "selinuntius", "melos": "melos", "narrator": "narrator",
                             "dionysius": "dionysius", "selinuntius": "selinuntius"},
     },
-    # 『開いた窓』(Saki)。主人公Framton Nuttel(Algieba)、姪Vera(Erinome)、叔母Mrs. Sappleton(Voice未割当=ユーザー判断待ち、
-    # plan/TTS以降でfail-closed)、男性端役[叔母の夫・弟Ronnie等、歌声含む](men=Charon)。"other"は想定外話者(Melos同様STOP)。
+    # 『開いた窓』(Saki)。主人公Framton Nuttel(男)、姪Vera(女)、叔母Mrs. Sappleton(女)、男性端役[叔母の夫・弟Ronnie等、歌声含む](men、男性グループ1話者)。Voiceは導出(roster/規則参照)。"other"は想定外話者(Melos同様STOP)。
     "the_open_window": {
         "speakers": ("framton", "vera", "mrs_sappleton", "men", "other", "narrator"),
         "z_voice_keywords": {
@@ -91,13 +177,8 @@ STORY_SPEAKER_CONFIG = {
             "mrs_sappleton": ["sappleton", "aunt"],
             "men": ["ronnie", "brother", "husband"],
         },
-        "dialogue_voice_tts_names": {
-            "narrator": "Aoede",
-            "framton": "Algieba",
-            "vera": "Erinome",
-            "mrs_sappleton": None,     # 未割当(ユーザー判断待ち、Voice poolで第2女性Voiceを賄えない)。plan/TTSでfail-closed
-            "men": "Charon",
-        },
+        # 正式Voice表+決定的割当規則から導出(Mrs. Sappletonを含む。未割当/fail-closedの値Noneは残さない)。
+        "dialogue_voice_tts_names": derive_dialogue_voice_tts_names("the_open_window"),
         "speaker_aliases": {"framton": "framton", "vera": "vera", "mrs_sappleton": "mrs_sappleton", "men": "men",
                             "narrator": "narrator"},
     },

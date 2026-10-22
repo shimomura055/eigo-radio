@@ -338,13 +338,12 @@ def verify_styles_against_origin(repo_root: str = ".") -> dict:
 #    任意のvoice_nameを受け取る。コード変更不要。
 #    Voice名の割当(narrator=Aoede / selinuntius=Erinome / dionysius=Charon)は
 #    er026 STORY_REGISTRY['melos']['voice_tts_names_plan']の参照先(Z-4)に従う。
-#    melos用の値のみ未定義だったため追加する。PROVISIONAL_UNAPPROVED: Voice選定は
-#    ユーザー/Fable承認事項(Family C 'brother'の運用実績Voice Algieba を暫定値とする)。
+#    Voice値は er062 の正式Voice表+決定的割当規則(+メロスのpin)から導出される(2026-10-23 APPROVED_FOR_PRODUCTION)。
 # ============================================================
 # 値の出所は er062_family_z_structure_01.STORY_SPEAKER_CONFIG(story別、Melos=従来値。二重定義せず同一objectを参照)。
 FAMILY_Z_DIALOGUE_VOICE_KEYWORDS = _st.STORY_SPEAKER_CONFIG["melos"]["dialogue_voice_keywords"]
 FAMILY_Z_DIALOGUE_VOICE_TTS_NAMES = _st.STORY_SPEAKER_CONFIG["melos"]["dialogue_voice_tts_names"]
-MELOS_VOICE_STATUS = "PROVISIONAL_UNAPPROVED"
+MELOS_VOICE_STATUS = "APPROVED_FOR_PRODUCTION"   # Algieba=正式男性Voice 1位(2026-10-23ユーザー最終決定)。メロスはpinで既存確定値を維持
 
 
 # er062(04B)のsegment_planは speaker=melos/king/friend/other、voice_role=dialogue:<speaker> を出す。

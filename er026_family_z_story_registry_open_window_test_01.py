@@ -38,8 +38,8 @@ class RegistryKeysTest(unittest.TestCase):
         self.assertEqual(c["trial_seed_dir"], "er026_seeds/the_open_window")
         self.assertEqual(c["e2e_pages_dir"], "user_test/family_z_open_window_01")
         self.assertEqual(c["e2e_management_id"], "FAMILY-Z-THE-OPEN-WINDOW-PRODUCTION-E2E-01")
-        # 承認pool内のVoiceのみ(Aoede/Erinome/Charon/Algieba)
-        self.assertTrue(set(c["voice_tts_names_plan"].values()) <= {"Aoede", "Erinome", "Charon", "Algieba"})
+        # 正式Voice表(2026-10-23)から導出した値のみ
+        self.assertEqual(c["voice_tts_names_plan"], {"narrator": "Aoede", "vera": "Zephyr", "framton": "Algieba", "mrs_sappleton": "Kore", "men": "Schedar"})
         self.assertEqual(c["voice_tts_names_plan"]["narrator"], "Aoede")
 
 

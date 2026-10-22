@@ -128,20 +128,30 @@ class OpenWindowRosterTest(unittest.TestCase):
 
     def test_aliases_and_voices(self):
         self.assertEqual(a63.normalize_speaker("dialogue:vera", "the_open_window"), "vera")
-        self.assertEqual(a63.resolve_dialogue_voice("vera", "the_open_window"), "Erinome")
+        self.assertEqual(a63.resolve_dialogue_voice("vera", "the_open_window"), "Zephyr")
         self.assertEqual(a63.resolve_dialogue_voice("framton", "the_open_window"), "Algieba")
-        self.assertEqual(a63.resolve_dialogue_voice("men", "the_open_window"), "Charon")
+        self.assertEqual(a63.resolve_dialogue_voice("men", "the_open_window"), "Schedar")
+        self.assertEqual(a63.resolve_dialogue_voice("mrs_sappleton", "the_open_window"), "Kore")
         self.assertEqual(a63.resolve_dialogue_voice("narrator", "the_open_window"), "Aoede")
         with self.assertRaises(a63.FamilyZVoiceMappingStop):
             a63.normalize_speaker("other", "the_open_window")     # 想定外話者はMelos同様fail-closed
         with self.assertRaises(a63.FamilyZVoiceMappingStop):
             a63.normalize_speaker("melos", "the_open_window")
 
-    def test_unassigned_voice_fails_closed(self):
+    def test_mrs_sappleton_assigned_and_none_guard_kept(self):
+        # 2026-10-23 APPROVED_FOR_PRODUCTION: Mrs. Sappleton=女性2人目=Kore(旧None/fail-closed値は撤去)。
         self.assertEqual(a63.normalize_speaker("mrs_sappleton", "the_open_window"), "mrs_sappleton")
-        with self.assertRaises(a63.FamilyZVoiceMappingStop) as cm:
-            a63.resolve_dialogue_voice("mrs_sappleton", "the_open_window")
-        self.assertIn("VOICE_UNASSIGNED", str(cm.exception))
+        self.assertEqual(a63.resolve_dialogue_voice("mrs_sappleton", "the_open_window"), "Kore")
+        self.assertNotIn(None, st.STORY_SPEAKER_CONFIG["the_open_window"]["dialogue_voice_tts_names"].values())
+        # 値欠落(None)検出の保険(一般的fail-closed)自体は残す
+        names = st.STORY_SPEAKER_CONFIG["the_open_window"]["dialogue_voice_tts_names"]
+        names["mrs_sappleton"] = None
+        try:
+            with self.assertRaises(a63.FamilyZVoiceMappingStop) as cm:
+                a63.resolve_dialogue_voice("mrs_sappleton", "the_open_window")
+            self.assertIn("VOICE_UNASSIGNED", str(cm.exception))
+        finally:
+            names["mrs_sappleton"] = "Kore"
 
     def test_build_level_plan_fail_closed_on_unassigned_and_ok_otherwise(self):
         base = dict(preview_text="p", comments={1: "a", 2: "b", 3: "c"}, kp_items=[], topic_title="The Open Window",
@@ -151,9 +161,12 @@ class OpenWindowRosterTest(unittest.TestCase):
                     {"id": "full_story_part1_c3", "speaker": "men", "text": '"Hi."'}]
         plan = a63.build_level_plan("a2", clips_ok, story_key="the_open_window", **base)
         voices = {c.clip_id: c.voice for c in plan if c.clip_id.startswith("full_story")}
-        self.assertEqual(voices, {"full_story_part1_c1": "Aoede", "full_story_part1_c2": "Erinome",
-                                  "full_story_part1_c3": "Charon"})
-        clips_bad = clips_ok + [{"id": "full_story_part1_c4", "speaker": "mrs_sappleton", "text": '"Hi."'}]
+        self.assertEqual(voices, {"full_story_part1_c1": "Aoede", "full_story_part1_c2": "Zephyr",
+                                  "full_story_part1_c3": "Schedar"})
+        clips_more = clips_ok + [{"id": "full_story_part1_c4", "speaker": "mrs_sappleton", "text": '"Hi."'}]
+        plan2 = a63.build_level_plan("a2", clips_more, story_key="the_open_window", **base)
+        self.assertEqual({c.clip_id: c.voice for c in plan2}["full_story_part1_c4"], "Kore")
+        clips_bad = clips_ok + [{"id": "full_story_part1_c4", "speaker": "other", "text": '"Hi."'}]
         with self.assertRaises(a63.FamilyZVoiceMappingStop):
             a63.build_level_plan("a2", clips_bad, story_key="the_open_window", **base)
 

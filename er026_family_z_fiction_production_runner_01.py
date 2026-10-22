@@ -276,8 +276,7 @@ STORY_REGISTRY = {
         "trial_seed_dir": "er026_seeds/the_open_window",
         # Voice割当案(plan only の voice_tts_names_plan)。E2E経路の実走用speaker/Voice表は上記"speaker_config"
         # (委任_01b: story別化済み)。ここのvoice_keywords/voice_tts_names_planはFamily C型segment計画(plan only)用。
-        # 承認pool(Aoede/Erinome/Charon/Algieba[Melos run_e2e_02で21/21使用])の範囲内。Mrs. Sappleton用の
-        # 第2女性Voiceは承認pool内で賄えないため未割当(判断候補、E2E_PLAN_01.md §4)。
+        # Voiceは正式Voice表(2026-10-23 APPROVED_FOR_PRODUCTION)の決定的割当規則から導出(Mrs. Sappletonを含む)。
         "rights_block": OPEN_WINDOW_RIGHTS_BLOCK,
         "speaker_config": _st062.STORY_SPEAKER_CONFIG["the_open_window"],
         "voice_keywords": {
@@ -285,12 +284,8 @@ STORY_REGISTRY = {
             "framton": ["framton", "nuttel", "visitor"],
             "men": ["husband", "brother", "ronnie"],
         },
-        "voice_tts_names_plan": {
-            "narrator": "Aoede",
-            "vera": "Erinome",
-            "framton": "Algieba",
-            "men": "Charon",
-        },
+        # 正式Voice表+決定的割当規則(er062 derive_dialogue_voice_tts_names)から導出。speaker_configと同一値。
+        "voice_tts_names_plan": _st062.derive_dialogue_voice_tts_names("the_open_window"),
     },
 }
 
@@ -2074,6 +2069,25 @@ def build_parser():
     return parser
 
 
+def write_voice_assignment(out_dir: str, story_key: str) -> dict:
+    """run metadata `voice_assignment.json`(人物->Voice、性別・登場順・規則値・pin)を書く。割当は決定的なので
+    resume時の再計算は同一。既存fileと内容が異なる場合(Voice表変更後のresume)は旧fileを
+    `voice_assignment_STALE_<ts>.json` へ退避(削除しない)して警告する。"""
+    rec = _m().st.derive_voice_assignment(story_key)
+    path = f"{out_dir}/voice_assignment.json"
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            old = json.load(f)
+        if old != rec:
+            stale = f"{out_dir}/voice_assignment_STALE_{time.strftime('%Y%m%dT%H%M%S')}.json"
+            os.replace(path, stale)
+            print(f"[VOICE-ASSIGN] 既存voice_assignment.jsonと差分あり。旧を退避: {stale}", file=sys.stderr)
+    if not os.path.exists(path):
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(rec, f, ensure_ascii=False, indent=2)
+    return rec
+
+
 def main(argv=None):
     import er_secret_mask_01 as _sm; _sm.install_stream_masking()   # GIT-SECRET-REPAIR-01: stderr/stdoutの秘密値をマスク
     args = build_parser().parse_args(argv)
@@ -2119,6 +2133,7 @@ def main(argv=None):
         os.makedirs(ctx.out_dir, exist_ok=True)
         with open(f"{ctx.out_dir}/gloss_alignment_flag.json", "w", encoding="utf-8") as _ff:
             json.dump(_flag_eff, _ff, ensure_ascii=False, indent=2)
+        write_voice_assignment(ctx.out_dir, ctx.story_key)
         results = run_stages(ctx, stages)
         summary = {"management_id": ctx.management_id, "mode": ctx.mode, "stages": list(results),
                    "gloss_alignment_flag": _flag_eff,

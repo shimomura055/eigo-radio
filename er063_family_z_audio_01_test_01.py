@@ -170,7 +170,7 @@ class DialogueVoiceTest(unittest.TestCase):
         r = z.check_melos_voice_mechanism()
         self.assertTrue(r["melos_quote_routed"])
         self.assertEqual(r["melos_voice"], "Algieba")
-        self.assertEqual(z.MELOS_VOICE_STATUS, "PROVISIONAL_UNAPPROVED")
+        self.assertEqual(z.MELOS_VOICE_STATUS, "APPROVED_FOR_PRODUCTION")
 
     def test_registry_lacked_melos_key(self):
         import er026_family_z_fiction_production_runner_01 as r26

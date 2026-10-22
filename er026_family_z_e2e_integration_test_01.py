@@ -131,9 +131,9 @@ class MockFullPipelineTest(unittest.TestCase):
         self.assertFalse(self.results["std_adjust"]["auto_regenerated"])
         self.assertEqual(g_std["failures"], [])
 
-    def test_seed_check_reports_provisional_melos_voice(self):
+    def test_seed_check_reports_approved_melos_voice(self):
         res = self.results["seed_check"]
-        self.assertEqual(res["melos_voice_status"], "PROVISIONAL_UNAPPROVED")
+        self.assertEqual(res["melos_voice_status"], "APPROVED_FOR_PRODUCTION")
         self.assertEqual(res["dialogue_voices"]["narrator"], "Aoede")
         self.assertEqual(res["dialogue_voices"]["selinuntius"], "Erinome")
         self.assertEqual(res["dialogue_voices"]["dionysius"], "Charon")
@@ -277,7 +277,7 @@ class DryRunAndCliTest(unittest.TestCase):
         plan = json.loads(out)
         self.assertEqual([s["stage"] for s in plan["stages"]], list(r.E2E_STAGES))
         self.assertTrue(plan["dry_run"])
-        self.assertEqual(plan["preflight"]["melos_voice_status"], "PROVISIONAL_UNAPPROVED")
+        self.assertEqual(plan["preflight"]["melos_voice_status"], "APPROVED_FOR_PRODUCTION")
         self.assertNotIn("validate_b1b", [s["stage"] for s in plan["stages"]])
         self.assertEqual(plan["stop_sentinel"]["exit_code_on_hit"], 3)
         self.assertFalse(os.path.exists(out_dir))
