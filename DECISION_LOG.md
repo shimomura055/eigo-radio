@@ -22027,3 +22027,13 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - ②大文字小文字の組み合わせによる固有名詞判定拡張(`ByUs`等の特別扱い)=**不採用**。再提案禁止。
 - ③中断後の再判定・再生成の追加対策(旧OPEN-443)=**対応不要**。既存の再開・再利用仕様不変。OPEN-443=`CLOSED_NO_ACTION_USER_DECISION`(再提案禁止。将来、品質・費用・Production正常動作への重大な影響が確認された場合のみ通常の不具合管理)。
 - PM運用是正7項目は`docs/pm/PM_GOVERNANCE.md` 10-2節末尾「2026-10-22ユーザー是正」小節へ逐語記載。報告順序(結論→実際の問題と影響→完了状況→本当に必要なユーザー判断)は9節末尾へ追記。memory=`feedback_user_decision_reduction.md`。
+
+## 2026-10-22 PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02 委任_03: ユーザー判断(Stage 1実施承認・Stage 2設計方針[警告付きPASS許容・根拠優先順位]の承認)
+- **出典(原文逐語)**: `docs/pm/delegation_log/2026-10-22_PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02_STAGE1-GO-STAGE2-POLICY_USER.md`(文字数3378 / sha256=0fad0afd7409cda70c67e6b3a16da46e5a57928948bfcd0ec3d341fa1a157341)。ユーザー原文§1「今回、ユーザーは以下を承認した」:
+  1. 「**Stage 1の実施**：発音のPASS/NG基準を変更せず、不要調査の削減・発音情報管理を改善する。」
+  2. 「**Stage 2の進め方**：Stage 1の結果を踏まえてTrialを判断する。現時点でTrial実行・Production採用は未承認。」
+  3. 「**公式発音が不明な場合の方針**：合理的な英語発音であれば、警告付き自動PASSを基本的に許容する。」
+  4. 「発音の根拠は、公式情報→英語圏での実際の呼ばれ方→合理的な英語発音の順に優先する。」
+- **範囲の明確化**(原文§2・§3): Stage 1の対象=否定記録(60日)・entity_type非依存のLedger lookup・一般語誤検出の調査除外・HR画面の根拠表示・登録時の引用実在確認・保存データでの効果測定・複数発音候補の既存判定との整合確認。**Stage 1では合否判定基準・自動PASS条件を変更しない**。承認済みの範囲で調査→実装→Regression→Production配線→runtime evidence→SSOT/Git反映まで自律的に進める(Production実走証拠が不足する場合は完了と誤認せず残事項を明示)。Stage 2は「**設計方針の承認であり、現行Productionの自動PASS条件を直ちに変更する承認ではない**」(原文§3末尾)。新たな品質基準の変更・Production実装・Trial実行はユーザーの正式承認が別途必要(原文§5)。
+- **Status**: Stage 1=`APPROVED`(実施承認。設計書+未配線module[er097, test 42 PASS]まで完了、Production .py未編集。Opus条件A+D-2[`er006_secondary_asr_01.py`編集]完了後にE-2で配線)。Stage 2=設計方針承認のみ(計画v3=`STAGE2_PLAN_V3`、Fable独立レビュー待ち)。Trial未承認・Production採用未承認。UDR #141(Stage 1)・#142(Stage 2方針)、OPEN-441。#133/#134/J7のStatusは変更しない(注記のみ)。
+- 成果物: `docs/research/PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02/{STAGE1_IMPLEMENTATION_DESIGN_01,PLAN_01(v3節),PLAN_SUMMARY_01,stage1_effect_measure_01_result}`、`er097_pronunciation_supply_stage1_01.py`(+`_test_01.py`)。報告=`docs/pm/RESULT_PACKET_PNPS3.md`。API 0・JPY0。

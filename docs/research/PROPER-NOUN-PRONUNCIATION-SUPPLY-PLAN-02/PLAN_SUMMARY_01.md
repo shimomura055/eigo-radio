@@ -1,5 +1,29 @@
 # PLAN_SUMMARY_01: 固有名詞の正しい発音情報を「必要なときだけ」取得・登録・再利用する仕組み(改善計画 v2 要約)
 
+## v3(2026-10-22 委任_03。**Stage 1承認済み・Stage 2は設計方針のみ承認[Trial・Production採用は未承認]**。v2以前と矛盾する場合はv3が優先)
+Status管理ラベル: Stage 1=`STAGE1_APPROVED_IMPL_DESIGN_PENDING_REVIEW`(Production未編集、Opus条件A+D-2完了待ち)/Stage 2=`STAGE2_PLAN_V3_PENDING_FABLE_REVIEW`。詳細=`PLAN_01.md`末尾v3-0〜v3-12、`STAGE1_IMPLEMENTATION_DESIGN_01.md`。API 0・JPY0。
+
+### v3-A. ユーザー方針(2026-10-22)
+- 根拠優先順位=①公式発音 ②英語圏での実際の呼ばれ方(対象の固有名詞を指すことを確認。綴り一致・別人/別ブランドは不可) ③合理的な英語発音(推定を公式と偽らず、Ledgerで根拠・信頼度を区別)。
+- 公式不明でも合理的な発音とTTSが一致すれば**警告付き自動PASSを基本許容**(警告は内部記録用で量産を停止しない/明らかな誤発音・音素差・脱落は従来どおりNG/不適切な推定の再利用を防ぐ/Human Reviewは本質的問題に限定)。**ただしStage 2の設計方針の承認であり、現行の自動PASS条件の変更承認ではない**。
+
+### v3-B. Stage 1(実施承認済み。判定基準は不変)の要点と実測
+- 否定記録(sidecar・60日・一時失敗は保存しない)/entity_type非依存の統一lookup(日本語読みは除外)/一般語の調査除外(CMU収録かつ全token zipf≥4.0)/HR根拠階層表示/登録時の出典実在確認(弱い確認。失敗は`UNVERIFIED`で登録継続)。
+- **実測(API 0)**: 初回調査18種のうち一般語6種(33%)が不要=今後の新たな一般語の初回調査を削減。**v2の「11ペア46%」は同一語再調査をLedger命中(元々API 0)として数えた誤りで訂正**。否定記録・統一lookupの実データ上の発火は0件(保存調査ログ32件は全て成功・空応答0)で、構造的リスク解消とStage 2の保険。M1候補集合は95文でハッシュ差0。**Phrase List経由の間接影響を開示**(将来の一般語がPhrase Listに載らない。保存データ反事実で95文中18文、原因は`mini`1語のみ)。
+
+### v3-C. Stage 2推奨方式
+- 取得: R0(Wikidata/Wikipedia/Wiktionary、0円)→(再出現語/HR到達語に限り)R1(LLM+web、記事≤3語・≤15円、5.4円/語実測)→**見込み薄・高額なら合理的推定へ切替**。YouTube字幕・ニュース音声のASRは綴りであって発音でないため非推奨(HR試聴リンクのみ)。
+- 推定(ESTIMATED): E1=CMU分割連結(決定論)、または独立2推定(G2P+低コストLLM)の一致。候補が複数なら共通部分のみ。推定の推定を禁止、TTL案90日、NG報告で失効、estimator version変更で無効。
+- 警告付きPASS: 候補集合のいずれかと**音素完全一致**(L1と同じ厳密一致)・保護差なし・公式/実使用と矛盾なしのとき`PASS_WITH_WARNING`。音素が1つでも違えばNG。「発音情報の確からしさ(basis)」と「TTSの実現(音素一致)」は別評価。
+- 供給口: 採用済みL1の`expected_phoneme_provider`(canonical側のみ、ASR側はCMU収録語のみ)。Primary・Secondary(KP英語フレーズは両方PASS)の既存合格条件は不変。X/Z/将来Yは同じ接続点1か所。
+- ByUs例: 英語公式発音なし・英語圏実使用なし→合理的推定=bias系の共通読み(`B AY AH S`)。TTSがbias系→警告付きPASS(公式未確認の旨を記録)、`Bi-us`/`bee-us`/`bye-yoos`→NG。
+- Trial案(未承認): O0(0円offline replay)/O1(0円無料源)/P1(R1≤5語、≤約60円)/P2(実TTS 6本≈31円)/R(0円)。**Cap案JPY100**(v2の150から縮小)。ハード合格=負例→PASS 0・OFFICIAL誤記録0・既存判定悪化0・実Ledger/Production無変更・HR到達数は現行以下。
+- 70円への影響: 期待原価は中央値≈0.9円/記事セット(約1.3%)を上限に維持、最悪でも記事あたりCap 15円。**未確認**: R0収録率・E3単価・R1取得率(P1/O1で実測)。
+- 代替案(Fable比較用): A=R1廃止(最小費用)/B=人間確認の語単位再利用のみ/C=HR文面のみ改善(Stage 1で完了)。R1を入れるかはP1実測で決める。
+- ユーザー判断が必要になる事項(`判断候補`。ラベルはFableが付与): Stage 2 Trial GO+Cap(案JPY100)/ESTIMATED用G2P等の新規依存の導入/J7(日本語公式読みの扱い)/CURRENT_SPEC:1837(B)の例外(警告付きPASS)の正式採用/TTL・累積回数等の数値/#133・#134はStatus不変。
+
+---
+
 管理ID: PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02 委任_02 / 2026-10-22 / Status管理ラベル: `PLAN_V2_PENDING_USER`(計画のみ。API 0・JPY0・Trial未実行・Production/Ledger/Validator/Prompt無変更。VALIDATED / APPROVED_FOR_PRODUCTION / PRODUCTION_WIREDではない)。Fable独立レビュー所見FR-01〜11を反映済み(対応表=`REVIEW_POINTS_01.md` §3)。詳細=`PLAN_01.md`(末尾v2-0〜v2-9)、`DESIGN_OPTIONS_01.md`(v2節)、`INVESTIGATION_01.md`(定量)。この下の「v1要約」は履歴で、矛盾する場合はv2が優先。
 
 ## v2-A. 全体像: 2段階で進める(FR-01・FR-11)

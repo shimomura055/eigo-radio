@@ -275,3 +275,112 @@ CURRENT_SPEC.md:1837の判定優先順位との対応: (1)本人自身の英語�
 | 共通 | #134: 調査バックエンド(Perplexity枠切れ。未回答、計画はバックエンド非依存) | B/C境界 |
 | 共通 | #133: 第4案(エ)「反応的・階層付きLedger(Stage 1先行、Stage 2はTrial後)」の併記(Statusは未回答のまま、選択肢追加のみ) | 情報(Fable判断) |
 | 別判断 | M1の階層連動(Stage 2(d)の実装可否) | D(M1承認の挙動変更) |
+
+---
+# v3(2026-10-22 委任_03 [E-1]。ユーザー方針[根拠優先順位・警告付きPASS許容・費用最適化]の反映。**Stage 2の計画。Trial実行・Production採用は未承認**。Fable独立レビュー=未実施[Fableが実施]。API 0・JPY0)
+参照: ユーザー原文=`docs/pm/delegation_log/2026-10-22_PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02_STAGE1-GO-STAGE2-POLICY_USER.md` §3〜§5。Stage 1の実装・実測=`STAGE1_IMPLEMENTATION_DESIGN_01.md`・`stage1_effect_measure_01_result.txt`。
+**位置づけ**: ユーザー承認は「Stage 2の**設計方針**」(警告付き自動PASSを基本許容・根拠優先順位)であり、**現行Productionの自動PASS条件(CURRENT_SPEC:1837(B)「Ledger情報は自動PASSの根拠にしない」、IPA→ARPAbet近似PASSなし)を直ちに変える承認ではない**。変更にはOffline Trial→ユーザー正式承認が必要。
+
+## v3-0. Stage 1実測の反映(「Stage 1結果で更新」箇所)
+- 調査対象になった語18種のうち一般語6種(33%)は調査不要(Stage 1で解消)。**残る12種のうち、CMU未収録・同綴り衝突の語が真のStage 2対象**。同一語の再調査は元々Ledger命中でAPI 0(v2の「再調査削減2ペア」は訂正済み)。保存調査ログ32件は全て成功・items空0=「見つからなかった」実例は無く、否定記録の実効はStage 2で「公式発音なし」が常態になる局面で初めて出る。
+- 現行Ledger38件の根拠階層は、新基準(公式/実使用)でも**該当0件**(quote欄0・human_approved欄0)。全てAI出力のまま=「未検証」。Stage 2は既存entryを昇格させず、新規登録から階層を付ける。
+- 調査単価は未確認のまま: PNEP実測(5.4円/語、追加検索16.3円/語、再試行1組5.16円)のみ使用。
+
+## v3-1. 根拠の区別とLedger登録形式(検討事項1)
+| basis(根拠) | 意味(ユーザー優先順位) | PASSでの扱い | Ledger表示 |
+|---|---|---|---|
+| `OFFICIAL` | 第1優先。企業・団体・権利者等が公開した英語発音(公式サイト/公式音声・動画/公式資料)。**出典が公式ドメインであること+引用実在確認(V1')** | 警告なしでL1基準に使える(Stage 2採用後) | 出典URL・引用・取得日時・公式ドメイン判定 |
+| `USAGE` | 第2優先。英語圏の実際の呼ばれ方(英語の信頼できる報道/インタビュー/辞書類で、**対象の固有名詞を指していること**を確認。綴り一致だけ・別人/別ブランドは不可) | 独立2源以上の一致、または信頼辞書allowlist1源でA2相当。1源のみは警告付き | 出典・引用・「対象同定の根拠」欄(同定できない場合は登録しない) |
+| `ESTIMATED` | 第3優先。公式・実使用が見つからないときの合理的推定(綴り規則/CMU類似/複数estimatorの合意)。**公式と偽らない** | 警告付きPASS(v3-4) | `basis=ESTIMATED`・estimator名/version・候補集合・合意の根拠・`status=WARN` |
+| `DICTIONARY` | CMU辞書(Case A)。既存どおり | 既存Case A(不変) | 登録不要 |
+| `UNCONFIRMED` | 上記いずれも成立しない | 従来どおり(retry→HR) | `confidence="unconfirmed"`(既存形式) |
+- 追加キー(Ledger entry任意キー。Stage 1の`evidence_tier`とは別の概念: Stage 1=出典検証状態、Stage 2=根拠の種類): `pron_basis`/`pron_evidence`(url・quote・fetch_sha256・source_class)/`pron_phonemes`(ストレス除去ARPAbet集合、監査用)/`pron_status`(`VERIFIED|WARN|HUMAN_APPROVED|EXPIRED`)/`pron_estimator`(name・version・入力)/`pron_valid_until`。
+- 「発音情報の確からしさ(basis・confidence)」と「TTSがその発音を実現しているか(音素一致)」は**別フィールド・別評価**。後者は判定時にASR転写から都度算出し、Ledgerに保存しない(ASR転写から基準を作らない)。
+
+## v3-2. 英語圏での実際の呼ばれ方を低コストで確認する方法(検討事項2)
+上から順に実施し、手前で十分なら後段は呼ばない。いずれも**記事中の語が実際にHR/警告対象になったときだけ**(事前検索しない)。
+| 段 | 手段 | 費用 | 評価 |
+|---|---|---|---|
+| R0 | 無料の構造化源をHTTPで確認: Wikidata(IPA転写P898・発音音声P443の有無)、Wikipediaの冒頭IPA、Wiktionaryの発音欄。取得はLLM不使用・本文機械抽出 | 0円 | **収録率は未確認**(Trial O1で測る)。信頼度は源ごとに公式/実使用/参考に分類(Wikipedia自体は二次情報。引用された一次出典があれば辿る) |
+| R1 | LLM+Web検索(記事単位で1回・対象語最大3・金額Cap)。出力は出典URL・引用・IPA/読み・出典種別・対象同定の根拠 | 5.4円/語(PNEP実測)、追加検索16.3円/語。PNEPの公式取得率は1/7=14%(母数小) | R0未解決で、(a)複数記事に再出現する語、または(b)HR到達済みの語に限定。取得率が低いため既定は「呼ばずにESTIMATED」 |
+| R2 | YouTube字幕・ニュース音声のASR | 単価未確認(動画取得・切出し・ASR) | **非推奨**: 字幕(特に自動字幕)は綴りであって発音ではなく、固有名詞は誤認識されやすい。ASR転写も綴りで音素を与えないため「ASR consensus ≠ pronunciation verification」(CURRENT_SPEC:1837)に抵触。音素を取るには音素認識モデル/強制アライメントが必要で環境に未導入・費用大。**用途はHRへの試聴リンク(B3)のみ** |
+| 切替 | 調査が高額、または見込みが薄い(R0が空・R1の上限到達・当該語が否定記録中) | 0円 | **ESTIMATEDへ切替**。「公式が見つからない」だけで高額検索を繰り返さず、HRにも転送しない |
+- 否定記録(Stage 1実装)は「R0/R1で見つからなかった」事実を60日記録し、同じ語の再調査を止める。記事横断の再利用は`USAGE/OFFICIAL`のLedger登録+`ESTIMATED`の`pron_valid_until`で行う。
+- R1の追加費用の歯止め: 1記事セットで調査語≤3・金額Cap(案: 1記事15円)・同一語は否定記録期間内は再調査0。
+
+## v3-3. 合理的な発音推定の判断方法(検討事項3)
+- **estimator(候補生成)**: E1=CMU分割連結(CamelCase境界・既知語境界で分割した各語のCMU全variantの連結。決定論・依存なし。byUs/FamilyMart/KitchenAid型)。E2=英語の綴り→音素変換モデル(G2P)。**現環境に未導入**(`cmudict`/`pronouncing`のみ)で、導入は新規依存=Trial O0で可否と精度を評価してから判断。E3=低コストLLMによる推定(1記事1回・候補をARPAbet/IPAで返す)。**単価未確認**。
+- **採用規則**: ESTIMATEDとして使うのは(i)E1が成立する、または(ii)E2とE3の独立2推定が(ストレス除去後)一致する場合のみ。候補が複数ある場合は「全候補の共通部分」(v2-6の決定不要判定)を第一とし、共通部分が空なら推定不成立(従来経路)。**単一estimatorの出力だけではPASS根拠にしない**(誤推定の再利用防止)。
+- **自然さ・文脈**: ①`language_origin`(Ledger既存field/research出力)が外国語由来の人名・地名は、英語圏で通用する英語読み(anglicized)を優先候補に置く ②記事テーマ(ブランド/人名/地名)は同定の補助のみで、音素を決める根拠にしない ③複数の自然な読みが並立する場合は許容集合として保持し、TTSがそのいずれかなら一致(承認済みER-008-N8-...-16の許容発音集合方針と整合)。
+- **推定を公式と偽らない**: `basis=ESTIMATED`・`status=WARN`を必ず記録し、HR/試聴リスト/ログの表示は「公式発音未確認(推定)」。OFFICIAL/USAGEへ自動昇格しない(昇格は出典の引用確認済み取得、または人間承認のみ)。
+- **ESTIMATEDの歯止め**: ①他の語のESTIMATEDの根拠にしない(推定の推定を禁止) ②TTL(案90日。実測なし=暫定)で失効→再評価 ③同一語で警告付きPASSがN回(案5)累積、または事後試聴でNG報告が1件でも出たら失効→OFFICIAL/USAGE探索かHR ④estimator version変更で全ESTIMATEDを無効 ⑤CMU辞書収録語(Case A)には適用しない。
+
+## v3-4. 警告付きPASSの発動条件と誤PASS防止(検討事項4)
+**発動条件(すべて満たす場合のみ。Stage 2採用後)**:
+1. 対象はCase Aで解決できないentity-like span(辞書外、または同綴り衝突フラグ付き)。
+2. 当該語のbasisが`OFFICIAL`/`USAGE`/`ESTIMATED`のいずれかで、`OFFICIAL/USAGE`と矛盾する証拠が無い(矛盾はNG/HR)。
+3. 判定対象のASR転写(Primary、KP英語フレーズは本日承認どおりPrimary・Secondary両方)の当該span音素列(ASR側はCMU収録語のみ)が、候補集合の**いずれかとストレス除去後に完全一致**(L1と同じ厳密一致。近似・編集距離は使わない)。
+4. 保護差(数値・否定)なし。当該span以外に未解決の差分なし。
+5. 一致の仕方が「音素差・脱落・挿入」でない。**音素が1つでも違えば従来どおりNG**(例: bias系の`B AY AH S`に対し`B IY AH S`=Bi-us/bee-us、`B AY Y UW S`=bye-yoos)。
+
+**結果**: `PASS_WITH_WARNING`(reason案 `PRON_UNCONFIRMED_OFFICIAL_ACCEPT`、basisがESTIMATED/USAGE-1源のとき)。警告は**内部記録(判定audit・Ledger・事後試聴リスト)用で、量産を停止しない**。OFFICIAL/USAGE-2源のときは警告なし。
+**区別**: 「公式発音未確認」=発音情報の確からしさ(basis)。「明確な誤発音」=TTS実現の音素不一致(従来NG)。前者だけではNG/HRにしない。
+**誤PASS防止**: ①推定の独立2合意または決定論E1(v3-3) ②完全一致のみ ③矛盾する公式/実使用が見つかれば即NG ④ESTIMATED→Ledger再利用の歯止め(v3-3) ⑤事後試聴リストに必ず載せ、NG報告で失効 ⑥誤PASS1件でTrial STOP。
+**残留リスク(開示)**: 公式の読みが推定と異なり、かつTTSも推定どおりに発話した場合は検出できない(ユーザー方針「合理的ならPASS」を受け入れた上での既知のリスク。事後試聴リストで回収)。
+**Human Review**: AI側で判断できない本質的な問題(推定不成立・複数読みが並立しTTSがどれにも一致しない・公式/実使用と矛盾)に限る。
+
+## v3-5. 同音判定Validatorへの発音情報供給(検討事項5)
+- 接続点: 採用済みの多語同音救済L1(`er094_multiword_homophone_01.py`、配線済み=`protected_check`1箇所)の`expected_phoneme_provider(token)`。canonical側の**辞書外/衝突語**に限り、`OFFICIAL/USAGE/ESTIMATED`の音素集合(`pron_phonemes`)と警告レベルを返す。**ASR側は従来どおりCMU収録語のみ**(ASR転写から基準を作らない)。Noneは「根拠なし=従来どおり」。
+- Primary・Secondary双方の判定が同じ純関数`protected_check`を通るため、1か所の接続でX/Z/将来Yとも両ASRの判定に反映される(D-1/D-2で正式採用されたKP英語フレーズ両方PASSとも整合: 各ASRを独立にこの基準で判定し、KPは両方PASSを要求)。
+- ASR側が辞書外綴り(例: `Altuzara`)を返した場合は判定不能=従来経路。ASR側もestimatorで音素化する拡張は「綴りの近さ=同音」と誤認するリスクがあり、Stage 2初期では行わない(拡張案として記録のみ)。
+
+## v3-6. 複数候補・同綴り衝突・辞書外語の扱い(検討事項6)
+| ケース | 扱い |
+|---|---|
+| 複数の英語読みが並立 | 許容発音集合として保持。TTSが集合のいずれかと完全一致ならPASS(basisに応じ警告) |
+| 同綴り衝突(byUs型: CMUに同綴りの別物がある/内部大文字/日本語読みのみ) | 衝突フラグ(C1内部大文字、C2日本語読みのみ)。CMU読みを公式の確認とみなさず、「CMU同綴り全variant+分割語連結」の共通部分のみを`ESTIMATED`で受理。共通部分が空/1候補のみで衝突解消不能なら不発 |
+| 辞書外(CMU未収録) | R0→(必要時)R1→ESTIMATED(E1/E2+E3)。いずれも不成立なら従来経路 |
+| 日本語公式読みのみ(J7未回答) | 英語期待発音の根拠にしない。J7で認められた場合のみ「英語候補音素を決定論でカタカナ化して公式読みと整合するか」を参考表示(カタカナ→英語の推測はしない) |
+| 既存Ledger entry(AI出力・未検証) | basis=`UNCONFIRMED`扱い(昇格しない)。M1のC2候補としては従来どおり(M1の階層連動は別判断) |
+
+## v3-7. 既存のPrimary/Secondary合格条件との整合(検討事項7)
+- 現行の合格条件を**変えない**: KP英語フレーズ=Primary・Secondary両方PASS(2026-10-22正式採用、D-1/D-2)、他=Primary PASS(NG時はSecondary 1回、Secondary PASSで`PASS_WITH_WARNING`)。Stage 2は両ASRの判定で使うcanonical側の音素集合を増やすだけ(v3-5)。
+- 警告付きPASSの`reason`は既存の`PASS_WITH_WARNING`系の枠内に追加(新しい最終statusを増やさない設計を第一案とし、audit内の`reason`で区別)。事後試聴リスト運用も既存。
+
+## v3-8. Trialケース(誤発音と公式未確認の区別。実行は未承認)
+**目的**: 「公式発音が存在しない・確認できない語でも、合理的な発音なら不必要に停止せず、実際の誤発音はNGにできるか」。
+| 段 | 内容 | 費用 | 合格(ハード) |
+|---|---|---|---|
+| O0 | 完全オフライン: estimator(E1、可能ならE2)を保存データに適用。(a)辞書外61語・衝突語の推定成立率(b)Ledgerの28件(IPA→ARPAbet変換可、AI出力のため「一致度」の参考値)との一致(c)保存の正例/負例転写(PNMHの4,032ペア+544転写)に`expected_phoneme_provider`を当てた判定replay | 0円 | **負例→PASSの新規誤PASS 0**。既存判定の悪化0 |
+| O1 | 無料源(Wikidata/Wikipedia/Wiktionary)の収録率・引用確認・対象同定(辞書外61語)。HTTPのみ、Stage 1の安全条件を流用 | 0円 | 誤登録0・設計外のAPI呼出0 |
+| P1 | R1(LLM+web)を「O1未解決かつHR到達済み」の最大5語に1回ずつ。取得率・費用を実測(R1の費用対効果判断) | 5.4円×≤5語(追加検索16.3円×≤2語を上限とし≤約60円) | 誤登録0・`OFFICIAL`誤記録0 |
+| P2 | 実TTS 6本=3語×{合理的な読み, 明確な誤発音(音素差/脱落)}。(例: byUs→bias系の共通読み vs `Bi-us`/`bee-us`。他2語はO0/O1の結果で選定) | 再試行1組5.16円×6≈31円 | 合理的な読みは`PASS_WITH_WARNING`に到達、誤発音はNG。HR到達数は現行以下 |
+| R | 無料replay: ESTIMATEDのLedger再利用(TTL/累積/失効)の挙動、実Ledger sha256不変の確認 | 0円 | 実Ledger・Production無変更 |
+- **Cap案: JPY100**(O0/O1/R=0、P1≤約60、P2≈31の合計上限≈91。v2案150より小さい: Stage 1で一般語調査が除かれR0を先行するため)。同一Trialで複数の価値を得る設計: P2で「警告PASSの到達」と「誤発音NG」を同じ語で対にして1回で測る。
+- **STOP条件**: 負例→PASS(誤PASS)1件、推定がOFFICIALとして記録された1件、実Ledger/Productionの変更、Cap超過見込み、同じ失敗が繰り返され改善見込みがない場合(方針転換をユーザーへ進言)。
+
+## v3-9. Family X/Z共通配線と将来のFamily Y(検討事項9)
+- 接続は`protected_check`のL1接続点1か所(判定側)+Ledger/エスティメータ(供給側)。Family別分岐なし。X/Zは同じ`evaluate_attempt_with_cascade_detail`、YもL1を通る前提で自動適用。KP英語フレーズ両方PASS・B3丸め・PNMH L1との相互作用はO0 replayで衝突がないことを確認(順序: Case A→L1/provider→M1の既存順を維持)。
+
+## v3-10. API費用・調査頻度・キャッシュと量産単価70円への影響(検討事項10)
+- 構成要素: R0=0円、R1=5.4円/語(PNEP実測)、ESTIMATED(E1/E2)=0円、E3=**単価未確認**、事後試聴=人手(費用対象外だがHR削減が目的)。
+- 頻度の上限: 実測の調査語は保存データで18種/約2か月(一般語を除くと12種)。1記事セットあたりR1を呼ぶ語は、(R0未解決)∩(再出現またはHR到達)に限定し、1記事≤3語・≤15円のCap。ESTIMATEDで通せる語はR1を呼ばない(v2から期待費用はさらに下がる見込み。**数値は未測定**=P1で実測)。
+- キャッシュ: OFFICIAL/USAGEは失効なし・記事横断。ESTIMATEDはTTL案90日・累積/NG報告で失効。否定記録60日(Stage 1)。
+- 70円への影響: v2の期待原価は中央値≈0.9円/記事セット(範囲0.16〜8.2円、70円の約1.3%)を上限として維持。Stage 1で既に初回調査の33%を削減。最悪ケース(全語でR1)でもCap(15円/記事)内。HR削減・TTS再生成削減の便益は未測定(Trialで測る)。
+
+## v3-11. より安全・単純・低コストな代替方式(Fable比較用)
+| 案 | 内容 | 長所 | 短所 |
+|---|---|---|---|
+| 推奨 | R0→(限定)R1→ESTIMATED+警告PASS(v3-1〜v3-8) | ユーザー方針に直接合致、費用小、HR削減 | estimator/G2P依存、事後試聴運用 |
+| 代替A(最小) | R1を廃止し、R0+E1+(E2/E3)のみ | 費用最小、構成が単純 | 公式/実使用が取れた場合の利得を捨てる |
+| 代替B | 人間確認の語単位再利用(A1)のみ | 誤PASSが最小(人間承認が根拠) | 初回はHR必須で「不要なHR削減」の目的に弱い。承認の意味の拡張が必要 |
+| 代替C | HR文面のみ改善(Stage 1で完了) | リスク0 | byUs型・HR再発は残る |
+推奨の理由: ユーザー原文「合理的な発音なら不必要に停止しない・実際の誤発音はNG」を直接満たすのは推奨案/代替Aで、Aは費用最小。**R1を入れるか否かはP1の実測(取得率・単価)で決める**(取得率が低いままならAへ縮小)。
+
+## v3-12. ByUsを使った具体的な判定例(根拠: `PLAN_01.md` §8、`class_collapse_check_01_result.txt`、PNEP K1)
+1. 事実: CMUに`byus`(`B AY1 AH0 S`、姓)。英語の公式情報源に発音記載なし、日本語公式読みは「バイアス」のみ(PNEP K1安全終了)。→ `OFFICIAL`未確認。
+2. 実使用: R0(Wikidata/Wikipedia/Wiktionary)・必要時R1。見つからなければ否定記録(60日)で再調査を止める→ `USAGE`未確認(「見つからない」をHR理由にしない)。
+3. 合理的推定(ESTIMATED): E1で`byUs`=辞書`byus`(`B AY AH S`)と分割`by`+`Us`(`B AY`+`AH S`/`Y UW EH S`)の全variantを作り、共通部分=`B AY AH S`(bias系)の1つ。公式と偽らず`basis=ESTIMATED, status=WARN`で記録。
+4. TTS評価(別評価): TTSがbias系の共通読みで発話→ASR(Primary)が`Bias`/`By us`/`Buy us`と書く→CMU音素が`B AY AH S`に完全一致(L1多語同音救済と接続)→**`PASS_WITH_WARNING`(公式発音未確認・推定一致)、停止せずHR不要**。
+5. 誤発音: TTSが`Bi-us`(`B IY AH S`)や`bee-us`、`bye-yoos`(`B AY Y UW S`)で発話→ASR転写の音素が共通部分と不一致→**NG**(従来どおりretry→上限後HR)。HR packageには「公式英語発音は未確認、日本語公式読みは『バイアス』、推定=bias系」を載せる。
+6. 参考: 現行Productionでもbias系の一致はL1/辞書で通る場合があるが、byUsのような**同綴り衝突語を「公式確認なしでも受理してよい」と明示的に位置づけ、記録(Ledger/試聴リスト)と失効の歯止めを持つ**のがStage 2の新規部分。
