@@ -22,6 +22,7 @@ import json
 import os
 import subprocess
 import sys
+import re
 import time
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -29,6 +30,7 @@ sys.path.insert(0, ROOT)
 import er109_xz_scope_01 as xz
 
 # データ側Familyの許可リスト(M2)。output rootの先頭ディレクトリ -> Family。これ以外は拒否。
+_JA_CHARS = re.compile(r"[぀-ヿ㐀-鿿]")
 OUTPUT_ROOT_FAMILY = {"er019_output": "X", "er026_output": "Z"}
 LOCKED_STATES = ("HUMAN_REVIEW_REQUIRED", "HUMAN_REVIEW_LOCKED")
 CLASS_PASS, CLASS_PWW, CLASS_INSUFF, CLASS_NOT = "PASS", "PASS_WITH_WARNING", "INSUFFICIENT_EVIDENCE", "NOT_CANDIDATE"
@@ -183,6 +185,12 @@ def evaluate_level(level_dir: str, segment_ids=None) -> dict:
             report["candidates"].append(cand)
             continue
         ident["canonical_text"], ident["canonical_text_sha256"] = canonical, _text_hash(canonical)
+        if _JA_CHARS.search(canonical):
+            # er109は英語ASR(en)専用。日本語segmentは対象外(英語judgeに強制langで通さない)=候補外
+            cand.update(candidate_id=f"{ident['theme_id']}/{ident['level']}/{seg_id}@{ident['canonical_text_sha256'][:8]}", **{"class": CLASS_NOT},
+                        note="日本語を含むsegment=er109(英語ASR専用)の対象外。再判定しない(NOT_CANDIDATE)")
+            report["candidates"].append(cand)
+            continue
         cand["candidate_id"] = f"{base_id}@{ident['canonical_text_sha256'][:8]}"
         if ident["canonical_text_sha256"] != le.get("canonical_text_sha256"):
             cand["note"] = "lockのcanonical text sha256とresultsのtextが不一致=候補外(INSUFFICIENT_EVIDENCE)"

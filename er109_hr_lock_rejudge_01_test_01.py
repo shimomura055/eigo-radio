@@ -99,6 +99,12 @@ class HrRejudgeTests(T.Base):
         self.assertEqual(rep["execution"]["api_calls"], 0)
         self.assertIn("commit", rep["execution"])
 
+    def test_japanese_segment_is_not_candidate(self):
+        ld = self.make_level({"comment_1": ("これはテストです。", [{"asr": "これはテストです。", "secondary": "これはテストです。"}], False)})
+        c = cli.evaluate_level(ld)["candidates"][0]
+        self.assertEqual(c["class"], "NOT_CANDIDATE")
+        self.assertEqual(c["attempts"], [])                                       # 英語judgeに通していない
+
     def test_kp_needs_three_votes(self):
         ld = self.make_level({
             "kp1_en": ("I said no", [{"asr": "I said know", "secondary": "I said no"}], True),                      # P ortho PASS / S PASS -> 合格(P+S)
