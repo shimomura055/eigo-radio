@@ -52,7 +52,7 @@
 
 | # | 候補 | 承認済み仕様の変更か | 追加API | 誤PASSリスク |
 |---|---|---|---|---|
-| C1 | Azure取得時にlexical形(`RecognitionResult.best()[0].lexical`、Detailed output)を併せて取得・保存し、数値保護差の判定にlexicalを使う | 該当(KP3V/値ガードの入力定義変更=承認済みASR判定仕様の変更。ユーザー承認要) | 追加呼出なし(同一Azure呼出のoutput形式変更。SDK設定のみ) | 低〜中: lexicalは数詞が単語のままなので原稿の数字を誤読していても発話確認しにくい。数値KP(`2 days`等)の保護は維持が必要 |
+| C1 | Azure取得時にlexical形(`RecognitionResult.best()[0].lexical`、Detailed output)を併せて取得・保存し、数値保護差の判定にlexicalを使う | 該当(KP3V/値ガードの入力定義変更=承認済みASR判定仕様の変更。ユーザー承認要) | 追加呼出なし(同一Azure呼出のoutput形式変更。SDK設定のみ) | 低〜中: lexicalは数詞が単語のままなので原稿の数字を誤読していても発話確認しにくい。数値KP(`2 days`等)の保護は維持が必要 **【ユーザー不採用(REJECTED、2026-10-22)。対症療法のためProduction配線しない。同一発音・異表記は包括対策ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01へ)】** |
 | C2 | 値ガードで「期待側に数字なし・転写側のnumber atomが数詞1語由来(`1's`等)」をDIFFでなくUNKNOWN/AMBIGUOUSに(`one's`↔`1's`同値化、縮約`'s`付きの数詞を単語へ戻す) | 該当(`er078_asr_value_guard_01.py`の挙動変更=承認済みGate/保護条件の変更。ユーザー承認要) | 0 | 中: 本物の数字読み間違い(`1's`と実際に言った等)を見逃す余地。対象を`one's`/`ones`に限定すれば低 |
 | C3 | 期待側に数字がない場合のみ、Azure由来の数字を英語数詞へ戻した転写(de-ITN)でも`classify_asr_match`+値ガードを再評価し、どちらかPASSなら可とする(本分析の近似反事実と同じ) | 該当(投票規則・保護条件の変更。ユーザー承認要) | 0 | 中: 近似de-ITN(`X ^2`のような誤認識数字を単語化する等)の誤PASSを個別検証が必要 |
 | C4 | protected dissent(P=PASS・S=protected diffのみ)でもWhisper(local、API 0)を呼ぶ | 該当(「protected dissentはWhisperを呼ばない」設計=`er104:138-146`の変更。ユーザー承認要) | 0(local faster-whisper、費用0) | 中〜高: 数値保護差を多数決で覆す設計になり、本来保護差で止めるべき誤数値でも通る余地(Opusレビュー要の可能性) |
