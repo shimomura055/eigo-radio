@@ -190,3 +190,26 @@ Dangling Reference洗い出し(配線後に実施するGrepリスト): `human_re
 | 供給の誤供給で誤発音が固定 | B階層は人承認のみ、機械respellingは「CMU収録語のみ」に限定、衝突時は不供給 |
 | runner scopeの設定漏れ | 設定漏れ=不活性(従来動作=HR)で安全側。wiring testでX/Z両runner入口の設定を検証 |
 | 継承再判定の許容集合の取りこぼし(§5-5) | 3箇所をGrep(`"PASS", "PASS_WITH_WARNING"`)で網羅し回帰 |
+
+## 15. 委任_02: Opus条件A反映(OF-PNAP-P-01〜15)。§2/§3/§5/§7/§13のうち本節と矛盾する記述は**本節が優先**
+Opus全文=`OPUS_REVIEW_COND_A_01.md`。Fable採否=必須7+推奨全て採用(P-09はFable規則)。実装=`er103_proper_noun_alarm_policy_01.py`/`er103_pronunciation_tts_supply_01.py`/`er103_pnap_runner_hooks_01.py`/`er103_pronunciation_approve_cli_01.py`、test=`er103_proper_noun_alarm_policy_test_01.py`(52)+`er103_pnap_wiring_test_01.py`(66)。
+
+| 指摘 | 反映(設計の修正点) |
+|---|---|
+| P-01 | §2-1 **G1に追加**: `audit["p3_entry"]=="p3_primary_ng"`(adapterは`audit.get("p3_entry")`を渡す)。force_secondary/primary_length_ng/primary_pass_demoted_ambiguous_value由来のNG_BOTHは不受理(`P3_ENTRY_NOT_PRIMARY_NG`)。dualはG0で既に除外 |
+| P-02 | §2-2(3)を修正: 文中大文字がCMU収録語の根拠になるのは、**文頭/コロン・引用符・括弧直後/一般語だけのTitle Case連なり/role=TOPIC_INTRO以外**。CMU未収録・Ledger語・単独ALLCAPSは従来どおり根拠。人名句(連なりに語彙外語を含む)は可 |
+| P-03 | §2-1 G5に追加: Primary・Secondary両方のASR側句が全token一般語(CMU∧zipf>=4.0)なら不受理(`ASR_SIDES_ALL_GENERAL_WORDS`)。ASR側が一般語に崩れた句は、原稿綴り(despaced)4文字以下なら類似度>=0.5、ASR語数<=原稿語数。低頻度語への崩れ(kite/mellow/totem/mink)は維持 |
+| P-04 | G3に追加: Secondaryだけの**非固有名詞**差(entity_like・固有名詞と合成されたspan・所有格'sだけのspanを除く)は<=2件、noiseで内容語2語以上の連続脱落は不受理(`SECONDARY_ONLY_NOISE_LIMIT`)。上限対象を非固有名詞に限定したのは、Khaite文で他の外来語(ELLE/minaudiere)をAzureだけが聞き違える実例(HR queue 10件)をOpus趣旨(非固有名詞差の抑制)から外れずに受理するため |
+| P-05 | §5-5を修正: (i)継承は`rejudge_with_current_judge`でアラーム元entryをNG_BOTH後に**現行定数・現行Ledgerで`evaluate_for_adapter`を再評価**(scope外・flag OFF・Secondary転写無し・境界外は再判定NG)。`_j11_adopted_judgement`はALARM時Primary転写。受理時は現runのsegment/wav/shaでrecordを再構築 (ii)`er078_reuse_value_guard_01.guard_entry`(全再利用点の共通ガード)でALARM音声は`is_active_for_run()`外ではblocked=再生成 (iii)auditの`pronunciation_alarm`に`tts_input_text`・`pre_supply_text`・`supply_map`・`supply_decisions`を保存し再判定に使う |
+| P-06 | §8を修正: 供給の置換は大文字小文字区別(全小文字登録のみIGNORECASE)。小文字形が一般語(Nice/Muse/Gap等)なら文中の大文字始まりのみ置換(文頭・引用直後は不変) |
+| P-07 | §8 A階層を修正: A = QUOTE_VERIFIED ∧ 出典hostが参照辞書/百科またはhostの**ラベル単位**がsurfaceと一致 ∧ (人の`tts_respelling` または hint由来respellingが当該host引用`evidence[].quote`に語として現れる)。Wikipediaも同条件。整合しない/引用なしはB扱い=人承認必須 |
+| P-08 | §6を修正: `audit/pronunciation_alarms.json`に`consistency`(ALARM state件数=report件数)を記録、不一致は報告に明示。results未作成の途中失敗は『0件』でなく『アラーム集計失敗』を書く。hookは`run_with_alarm_hook`のfinally(STOP/途中失敗でも実行)でX/Zとも標準出力へも出す。X assembly summaryに`pronunciation_alarm_audit`を埋込、Zは`stage_tts`結果に埋込。記事単位集約=`aggregate_article_alarms`。継承recordは現runのsegment/wavで表示(元の場所は`inherited_from`)。重複排除キー=(entry_key,alarm_id) |
+| P-09 | `ALARM_ACCEPT_MIN_SLOT=1`。0円集計`p09_slot_resolution_stats_01.py`: 全run保存分のみ3/10=30%だが生存者バイアス(未解消はHR queueのみに残る)を補正した全体は**3/55=5.5%<25%**→Fable規則で1(初回受理)。結果JSON=`p09_slot_resolution_stats_01_result.json` |
+| P-10 | `run_scope()`(context manager、finallyで直前値へ復元)。runnerは`family_scope`/`run_with_alarm_hook`経由 |
+| P-11 | 完成報告に「発音供給の適用一覧」節(`applied_supplies()`)。静的辞書(Reicher->Riker)は`static_decisions`で`supply_map`へ登録(置換自体は共有tts_safeが実施、二重適用なし)。Ledger hint注入(`compute_ledger_hits`)は供給前の原文に対する旨を報告に注記 |
+| P-13 | 報告に「Human Review残(受理境界の外)」を追加し、固有名詞のみ不一致だが境界外(脱落/一般語化等)の件数を区別。日本語対象外を報告末尾に明記 |
+| P-14 | §7の整理: 撤去0。OPEN-318/327/330/331/335は「固有名詞のみHR」部分の範囲縮小注記のみ(Status不変) |
+| P-15 | 追加test: 上表の全観点+Store跨ぎ再利用・Z clip ID role・scope解除・`audit/`外に書かない・公開ページbuilderがアラーム語を参照しない |
+
+### 校正(再実行、`calibrate_replay_02.py`/`calibrate_replay_02_result.json`、保存HR queue 88イベント、API 0)
+受理 45 -> **40**(45.5%)。差分5件: Muse->use系4件(`ASR_SIDES_ALL_GENERAL_WORDS`)、Khaite->Kate(両ASRがKateと書いた1件=正しい発音の可能性が高いが一般語化ガードで不受理)。不受理内訳(88): SECONDARY_NOT_ENTITY_ONLY 16 / WORD_DELETION 9 / SECONDARY_TEXT_MISSING 9 / P3_ENTRY_NOT_PRIMARY_NG 5(force_secondary由来、従来受理側に混入) / ASR_SIDES_ALL_GENERAL 5 / NO_ENTITY_DIFF 2 / SECONDARY_ONLY_NOISE_LIMIT 1 / CANONICAL_GENERAL 1。Muse系の除外を確認。

@@ -14,7 +14,8 @@ import er006_preprod_hardening_01_validation as val
 import er103_proper_noun_alarm_policy_01 as pol
 import er103_pronunciation_tts_supply_01 as sup
 
-ELIGIBLE = dict(judge_state="NG_BOTH", judge_reason_code="secondary_not_accepted", role="FULL_STORY", lang="en", enabled=True)
+ELIGIBLE = dict(judge_state="NG_BOTH", judge_reason_code="secondary_not_accepted", role="FULL_STORY", lang="en", enabled=True,
+                p3_entry="p3_primary_ng")
 
 
 def decide(canon, prim, sec, **kw):
@@ -224,13 +225,18 @@ class AlarmRecordAndRegistryTest(unittest.TestCase):
         results = {"segments": {
             "full_story_part1_c3": {"status": "OK", "segment_id": "x", "asr_judgement": aj},
             "full_story_part1_c4": {"status": "STOPPED", "asr_judgement": aj},                      # 未採用
-            "full_story_part1_c5": {"status": "OK", "asr_judgement_inherited": aj},                 # 継承(同alarm_idは重複排除)
+            "full_story_part1_c5": {"status": "OK", "asr_judgement_inherited": aj, "path": "cur/c5.wav"},  # 継承(別segment=別箇所。P-08)
             "full_story_part1_c6": {"status": "OK", "asr_judgement": {"state": "PASS_WITH_WARNING"}},
             "attempts": {"attempts_log": [{"asr_judgement": aj}]},                                  # attempt logは走査しない
         }}
         out = pol.derive_run_alarms(results)
-        self.assertEqual(len(out), 1)
+        self.assertEqual(len(out), 2)   # c3(原本) + c5(継承。現runのsegment/wavで表示)
         self.assertEqual(out[0]["proper_noun"], "melos")
+        inh = [o for o in out if o["inherited"]][0]
+        self.assertEqual(inh["segment_id"], "full_story_part1_c5")
+        self.assertEqual(inh["location"]["wav_path"], "cur/c5.wav")
+        self.assertEqual(inh["inherited_from"]["segment_id"], "full_story_part1_c3")
+        self.assertEqual(pol.count_alarm_states(results), 2)
 
     def test_registry_does_not_leak_to_pass_with_warning_listening_list(self):
         import er078_pass_with_warning_registry_01 as pww
@@ -263,7 +269,10 @@ class AlarmRecordAndRegistryTest(unittest.TestCase):
                 f.write("{broken json")
             rep = pol.write_run_alarms_safe(td)
             self.assertIsNotNone(rep["error"])
-            self.assertEqual(pol.write_run_alarms_safe(os.path.join(td, "empty_run"))["count"], 0)
+            # results未作成(途中失敗)は『0件』ではなく集計失敗を明示する(OF-PNAP-P-08)
+            r2 = pol.write_run_alarms_safe(os.path.join(td, "empty_run"))
+            self.assertIsNotNone(r2["error"])
+            self.assertIn("アラーム集計失敗", open(r2["md"], encoding="utf-8").read())
 
 
     def test_zero_alarm_section_is_still_rendered(self):
@@ -293,7 +302,8 @@ class TtsSupplyTest(unittest.TestCase):
         return sup.plan_supply(text, led, enabled=True, **kw)
 
     def test_a_tier_auto_supplied_b_tier_requires_approval(self):
-        a = _entry(surface="Meink", pronunciation_hint="mink", sources=["https://en.wikipedia.org/wiki/Meink"])
+        a = _entry(surface="Meink", pronunciation_hint="mink", sources=["https://en.wikipedia.org/wiki/Meink"],
+                   evidence=[{"url": "https://en.wikipedia.org/wiki/Meink", "quote": "Meink (pronounced mink) is a brand"}])
         d = self.plan({"a": a}, "Meink spoke.")[0]
         self.assertTrue(d.supplied)
         self.assertEqual(d.tier, "A")
@@ -345,7 +355,8 @@ class TtsSupplyTest(unittest.TestCase):
     def test_apply_supply_word_boundary_and_possessive(self):
         decs = self.plan({"k": _entry(human_approved=True)}, "Khaite's bag, khaite and Khaiteful.")
         text, smap = sup.apply_supply("Khaite's bag, khaite and Khaiteful.", decs)
-        self.assertEqual(text, "Kate's bag, Kate and Khaiteful.")
+        # OF-PNAP-P-06: 大文字小文字を区別(登録どおりの綴りのみ置換。小文字khaiteは置換しない)
+        self.assertEqual(text, "Kate's bag, khaite and Khaiteful.")
         self.assertEqual(smap, {"kate": "khaite"})
 
     def test_respelling_must_differ_and_be_words(self):
@@ -386,7 +397,7 @@ class RunScopeTest(unittest.TestCase):
         return pol.evaluate_alarm_eligibility(
             canonical_text=c, primary_cls=val.classify_asr_match(c, "Mello said."), secondary_cls=val.classify_asr_match(c, "Mellow said."),
             primary_text="Mello said.", secondary_text="Mellow said.", judge_state="NG_BOTH", judge_reason_code="secondary_not_accepted",
-            role="FULL_STORY")
+            role="FULL_STORY", p3_entry="p3_primary_ng")
 
     def test_flag_on_but_no_scope_is_inactive_family_abc_unchanged(self):
         pol.PROPER_NOUN_ALARM_POLICY_ENABLED = True
@@ -438,8 +449,9 @@ class RealUnifiedJudgeEntryConditionTest(unittest.TestCase):
         d = pol.evaluate_alarm_eligibility(
             canonical_text="Melos said.", primary_cls=cp, secondary_cls=val.classify_asr_match("Melos said.", "Mellow said."),
             primary_text="Mello said.", secondary_text="Mellow said.", judge_state=jr.state, judge_reason_code=jr.reason_code,
-            role="FULL_STORY", enabled=True)
+            role="FULL_STORY", enabled=True, p3_entry=jr.audit_record.get("p3_entry"))
         self.assertTrue(d.accept)
+        self.assertEqual(jr.audit_record.get("p3_entry"), "p3_primary_ng")
 
     def test_secondary_outage_is_not_eligible(self):
         jr, cp = self._judge("Melos said.", "Mello said.", None, sec_ok=False)

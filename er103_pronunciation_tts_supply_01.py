@@ -74,13 +74,37 @@ def source_hosts(entry: dict) -> list:
 
 
 def _is_official_host(host: str, surface: str) -> bool:
+    """参照辞書/百科のホスト、またはホストの**ラベル単位**がsurface名と一致する公式ホスト(OF-PNAP-P-07: 部分文字列一致は不可。
+    例 khaite.com / www.khaite.com / shop.khaite.com は可、khaite-fan-blog.example / notkhaite.com は不可)。"""
     if any(host == suf or host.endswith("." + suf) for suf in REFERENCE_HOST_SUFFIXES):
         return True
     slug = re.sub(r"[^a-z0-9]", "", _fold(surface))
-    return len(slug) >= 4 and slug in re.sub(r"[^a-z0-9]", "", host)
+    return len(slug) >= 4 and any(re.sub(r"[^a-z0-9]", "", lab) == slug for lab in host.split("."))
 
 
-def classify_supply_tier(entry: dict) -> tuple:
+def _word_in(text: str, phrase: str) -> bool:
+    t, ph = _fold(text), _fold(phrase)
+    return bool(ph) and re.search(r"(?<![a-z0-9])" + re.escape(ph) + r"(?![a-z0-9])", t) is not None
+
+
+def respelling_consistent_with_verified_quote(entry: dict, respelling: Optional[str]) -> bool:
+    """OF-PNAP-P-07: A階層の自動供給は『人が登録したtts_respelling』または『hint由来のrespellingが、出典ホスト条件を満たす引用
+    (evidence[].quote)の中に語として現れる(=検証済み引用のIPA/respellingと整合)』場合に限る。引用の無い・整合しないhintは自動供給しない。"""
+    if (entry.get("tts_respelling") or "").strip():
+        return True
+    if not respelling:
+        return False
+    surface = entry.get("surface", "")
+    for ev in entry.get("evidence") or []:
+        if not isinstance(ev, dict) or not ev.get("quote") or not ev.get("url"):
+            continue
+        host = (urlparse(ev["url"]).hostname or "").lower()
+        if host and _is_official_host(host, surface) and _word_in(ev["quote"], respelling):
+            return True
+    return False
+
+
+def classify_supply_tier(entry: dict, *, cmu_has: Callable = _default_cmu_has) -> tuple:
     """Ledger entry -> (tier|None, reason)。tier: "A"|"B"。
       A: evidence_tier==QUOTE_VERIFIED(出典ページに引用文が実在) ∧ 出典ホストの1つが参照辞書/百科またはsurface名を含む公式ホスト
       B: evidence_tier∈{QUOTE_VERIFIED, PRON_IN_CITED_PAGE}(媒体由来) または human_approved=True
@@ -89,7 +113,10 @@ def classify_supply_tier(entry: dict) -> tuple:
     et = entry.get("evidence_tier")
     approved = bool(entry.get("human_approved"))
     if et == TIER_QUOTE_VERIFIED and any(_is_official_host(h, entry.get("surface", "")) for h in source_hosts(entry)):
-        return "A", "official_or_reference_host_quote_verified"
+        if respelling_consistent_with_verified_quote(entry, derive_respelling(entry, cmu_has=cmu_has)):
+            return "A", "official_or_reference_host_quote_verified_consistent"
+        if not approved:
+            return "B", "official_host_but_respelling_not_consistent_with_quote"
     if approved:
         return "B", "human_approved"
     if et in (TIER_QUOTE_VERIFIED, TIER_PRON_IN_PAGE):
@@ -143,7 +170,28 @@ class SupplyDecision:
 
 
 def _surface_pattern(surface: str):
-    return re.compile(r"(?<![A-Za-z0-9])" + re.escape(surface) + r"(?![A-Za-z0-9])", flags=re.IGNORECASE)
+    """OF-PNAP-P-06: 置換は**大文字小文字を区別**する。Ledger surfaceが全小文字なら(固有名詞の小文字登録)大文字小文字無視、
+    それ以外(Khaite等)は登録どおりの綴りのみ。"""
+    flags = re.IGNORECASE if surface == surface.lower() else 0
+    return re.compile(r"(?<![A-Za-z0-9])" + re.escape(surface) + r"(?![A-Za-z0-9])", flags=flags)
+
+
+def _is_general_lower(surface: str, *, cmu_has: Callable = _default_cmu_has, zipf: Optional[Callable] = None) -> bool:
+    """surfaceの小文字形が通常語彙(CMU収録∧zipf>=4.0)か(Nice/Muse/Gap等)。"""
+    if zipf is None:
+        from wordfreq import zipf_frequency
+        zipf = lambda w: zipf_frequency(w, "en")   # noqa: E731
+    toks = [t for t in re.findall(r"[a-z']+", _fold(surface))]
+    return bool(toks) and all(cmu_has(t) and zipf(t) >= 4.0 for t in toks)
+
+
+def _sentence_initial(text: str, start: int) -> bool:
+    before = text[:start].rstrip()
+    if before == "":
+        return True
+    if re.search(r"[:;\"'\u201c\u2018(\[\u2014]$", before):
+        return True
+    return bool(re.search(r"[.!?]['\")\]]*$", before) and not re.search(r"(?<![A-Za-z])[A-Z]\.$", before))
 
 
 def plan_supply(text: str, ledger: dict, *, static_overrides: Optional[dict] = None, enabled: Optional[bool] = None,
@@ -177,7 +225,7 @@ def plan_supply(text: str, ledger: dict, *, static_overrides: Optional[dict] = N
             if e.get("ledger_disabled") or e.get("tts_injection_disabled"):
                 last_reason = R_DISABLED
                 continue
-            tier, why = classify_supply_tier(e)
+            tier, why = classify_supply_tier(e, cmu_has=cmu_has)
             if tier is None:
                 last_reason = why
                 continue
@@ -209,7 +257,12 @@ def apply_supply(text: str, decisions: list) -> tuple:
     for d in decisions:
         if not d.supplied:
             continue
-        out = _surface_pattern(d.surface).sub(d.respelling, out)
+        pat = _surface_pattern(d.surface)
+        if _is_general_lower(d.surface) and d.surface[:1].isupper():
+            # OF-PNAP-P-06: 小文字形が一般語(Nice/Muse/Gap)の場合、大文字始まりの**文中**出現のみ置換(文頭・引用直後は一般語の可能性が高い)
+            out = pat.sub(lambda m, _r=d.respelling, _t=out: m.group(0) if _sentence_initial(_t, m.start()) else _r, out)
+        else:
+            out = pat.sub(d.respelling, out)
         for t in d.respelling.split():
             smap[t.lower()] = d.surface.lower()
     return out, smap
@@ -222,8 +275,9 @@ def apply_supply(text: str, decisions: list) -> tuple:
 _REGISTRY: dict = {}
 
 
-def register_supply(tts_text: str, decisions: list, supply_map: dict) -> None:
-    _REGISTRY[tts_text] = {"supply_map": dict(supply_map or {}), "decisions": [d.to_audit() for d in decisions]}
+def register_supply(tts_text: str, decisions: list, supply_map: dict, *, pre_supply_text: Optional[str] = None, error: Optional[str] = None) -> None:
+    _REGISTRY[tts_text] = {"supply_map": dict(supply_map or {}), "decisions": [d.to_audit() for d in decisions],
+                           "tts_input_text": tts_text, "pre_supply_text": pre_supply_text, "error": error}
 
 
 def lookup_supply(canonical_text: str) -> dict:
@@ -234,6 +288,19 @@ def clear_registry() -> None:
     _REGISTRY.clear()
 
 
+def applied_supplies() -> list:
+    """このprocess(=run)で登録された供給判断のうち、実際に供給した語(静的辞書含む)を重複なしで返す。完成報告の『発音供給の適用一覧』用。"""
+    seen, out = set(), []
+    for v in _REGISTRY.values():
+        for d in v.get("decisions") or []:
+            if d.get("supplied"):
+                k = (d.get("original"), d.get("respelling"), d.get("tier"))
+                if k not in seen:
+                    seen.add(k)
+                    out.append(d)
+    return out
+
+
 def supply_info_for(noun_surface: str, lookup: dict) -> dict:
     """アラームrecordの`tts_supply_result`: 当該固有名詞に対するTTS発音改善の試行結果(供給した/しなかった+理由)。"""
     key = _fold(noun_surface)
@@ -241,3 +308,50 @@ def supply_info_for(noun_surface: str, lookup: dict) -> dict:
         if _fold(d.get("original", "")) == key:
             return d
     return {"supplied": False, "reason": "no_ledger_entry_or_not_planned", "original": noun_surface}
+
+
+def supply_list_from_lookup(lookup: dict) -> list:
+    """完成報告の『発音供給の適用一覧』用: 供給した語(静的辞書含む)のみ。"""
+    return [d for d in (lookup.get("decisions") or []) if d.get("supplied")]
+
+
+# ---------------------------------------------------------------- X/Z共通の入口(配線点5-4)。共有er003 TTS生成関数は編集しない
+def static_decisions(original_text: str, static_overrides: Optional[dict]) -> list:
+    """既存の静的辞書(例 Reicher->Riker)で**既に**置換済みの語を、供給記録(SupplyDecision tier="S")として登録する(OF-PNAP-P-11)。
+    置換自体は共有`tts_safe_*`が済ませているので本moduleは再適用しない(二重適用防止)。ここでは監査・supply_map(アラーム判定の固有名詞扱い)用。"""
+    out = []
+    for k, v in (static_overrides or {}).items():
+        if re.search(r"(?<![A-Za-z0-9])" + re.escape(k) + r"(?![A-Za-z0-9])", original_text or "", flags=re.IGNORECASE):
+            out.append(SupplyDecision(k, True, "STATIC_OVERRIDE", tier="S", respelling=v, ledger_id="static:er003_EN_NAME_PRONUNCIATION_OVERRIDES",
+                                      evidence_tier="STATIC_DICT"))
+    return out
+
+
+def supply_for_tts(original_text: str, shaped_text: str, *, ledger: Optional[dict] = None, static_overrides: Optional[dict] = None,
+                   enabled: Optional[bool] = None, cmu_has: Callable = _default_cmu_has) -> str:
+    """X/Zのtext整形点(`tts_safe_news_en`等)の**直後**に1回呼ぶ。戻り値=TTS入力text(供給なし/無効時は`shaped_text`をそのまま返す=恒等)。
+    有効条件: TTS_SUPPLY_ENABLED ∧ run scope∈{X,Z}(アラーム方針moduleのscope。A/B/C・単体は恒等)。
+    ASR比較のcanonical(=戻り値)と供給判断を`register_supply`で登録し、adapterがcanonical_textで引く。例外は呼出側へ伝播させない
+    (供給は補助機能: 失敗時は恒等+registryへ失敗理由を残す)。"""
+    if enabled is None:
+        try:
+            import er103_proper_noun_alarm_policy_01 as _pol
+            enabled = is_enabled() and _pol.current_scope() in _pol.APPROVED_SCOPES
+        except Exception:
+            enabled = False
+    if not enabled:
+        return shaped_text
+    try:
+        if ledger is None:
+            import er006_pronunciation_ledger_01 as _pl
+            ledger = _pl._load()
+        decs = plan_supply(shaped_text, ledger, static_overrides=static_overrides, enabled=True, cmu_has=cmu_has)
+        out, smap = apply_supply(shaped_text, decs)
+        sdec = static_decisions(original_text, static_overrides)
+        for d in sdec:
+            smap[d.respelling.lower()] = d.surface.lower()
+        register_supply(out, [*sdec, *decs], smap, pre_supply_text=shaped_text)
+        return out
+    except Exception as exc:  # noqa: BLE001  供給は補助。失敗は恒等(従来動作)
+        register_supply(shaped_text, [], {}, error=f"{type(exc).__name__}: {exc}")
+        return shaped_text
