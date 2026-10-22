@@ -55,6 +55,14 @@ def guard_entry(entry, *, label: str = "", canonical_text: str | None = None, le
         if not _pnap.is_active_for_run():
             out.update(blocked=True, applicable=True, reason="PRONUNCIATION_ALARM_AUDIO_OUT_OF_SCOPE")
             return out
+    # ASR-HOMOPHONE 委任_04(E-2、Opus M1): er109(表記違い同音)が合否に寄与した音声(層・印の種類ごと: orthographic_equivalence.applied / primary・secondary・vote票のlabel /
+    # ORTHO_*警告)は、X/Z run scope(∧flag有効)の外では再利用しない(Master Audio StoreはA/B/Cとも共有。scope外の判定では多くの場合secondary_not_acceptedになり
+    # 下の再判定が止めないため、ここで先に止める)。`asr_judgement`と`asr_judgement_inherited`の**両方**を見る。KP vote gate後続のskip(下)より前。
+    # er109で生まれたentryだけが対象=既存のentry・印のないentryには作用しない。flag Falseのrollback時はX/Z内のortho entryもここで再生成へ回る(再生成費用が出る)。
+    import er109_xz_scope_01 as _xz
+    if (_xz.ortho_contributed(entry.get("asr_judgement")) or _xz.ortho_contributed(entry.get("asr_judgement_inherited"))) and not _xz.is_active_for_run():
+        out.update(blocked=True, applicable=True, reason=_xz.OUT_OF_SCOPE_BLOCK_REASON)
+        return out
     if kp_vote_gate_follows:
         out.update(applicable=False, reason="KP_EN_VOTE_GATE_DECIDES")
         return out

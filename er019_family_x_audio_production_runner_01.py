@@ -55,6 +55,7 @@ import er011_human_review_lock_01 as review_lock
 import er078_pass_with_warning_registry_01 as pww_registry  # AUW 委任_03: PASS_WITH_WARNING 事後試聴リスト
 import er103_pnap_runner_hooks_01 as pnap_hooks  # PNAP 委任_02: 固有名詞アラーム方針のrun scope+完成報告hook(flag OFFなら素通し)
 import er103_pronunciation_tts_supply_01 as pnap_supply  # PNAP 委任_02: 固有名詞の発音供給(flag OFF/scope外は恒等)
+import er109_xz_scope_01 as er109_scope  # ASR-HOMOPHONE 委任_04: er109(表記違い同音)のrun scope(X)。TTS段の入口decoratorだけで使う(リテラル"X"のみ)
 import er006_audio_cost_pilot_02_shared_narration as shared_narration
 import er006_model_routing_contract_01 as routing
 import er019_family_x_audio_plan_01 as plan
@@ -883,6 +884,7 @@ def _pnap_supply(original: str, shaped: str) -> str:
 @secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
 @fx_iol.family_x_in_one_line_scope()  # FXPW 委任_04: LR gate 8_sentence_count_unchanged をFamily X TTS段のみで有効化
 @pnap_hooks.family_scope("X", "b1b")  # PNAP 委任_02: 固有名詞アラーム方針のrun scope(X)+finallyの完成報告hook。flag OFFなら素通し
+@er109_scope.family_scope("X")  # ASR-HOMOPHONE 委任_04: er109 run scope(X)。例外・STOP時もfinallyで復元
 def generate_family_x_b1_segments(
         theme_out_dir: str,
         # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(2026-09-27、
@@ -1228,6 +1230,7 @@ def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict 
 @secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
 @fx_iol.family_x_in_one_line_scope()  # FXPW 委任_04: LR gate 8_sentence_count_unchanged をFamily X TTS段のみで有効化
 @pnap_hooks.family_scope("X", "a2")  # PNAP 委任_02: 固有名詞アラーム方針のrun scope(X)+finallyの完成報告hook。flag OFFなら素通し
+@er109_scope.family_scope("X")  # ASR-HOMOPHONE 委任_04: er109 run scope(X)。例外・STOP時もfinallyで復元
 def generate_family_x_a2_segments(
         theme_out_dir: str, japanese_title: str,
         # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01/02

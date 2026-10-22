@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-"""er109_asr_orthographic_equivalence_01 のtest(API 0・未配線プロトタイプ)。
+"""er109_asr_orthographic_equivalence_01 のtest(API 0・純関数(Production配線=er109_xz_scope_01))。
 実行: .venv\\Scripts\\python.exe -m unittest er109_asr_orthographic_equivalence_01_test -v
 構成: (1)正例(発音同一の異表記は同値) (2)負例(発音が異なるものは同値にしない=誤同値0) (3)fail-closed(未登録/解析不能/欠落・付加)
-      (4)監査出力 (5)Production隔離(DefaultOffIsolation: 既定OFF・Production既存fileから未参照・純関数=外部呼出/ファイル書込なし)。"""
+      (4)監査出力 (5)隔離(正式採用後: 純関数=外部呼出/ファイル書込なし・scope module経由のみ。旧DefaultOffIsolationは撤去)。"""
 from __future__ import annotations
 
 import ast
@@ -135,7 +135,7 @@ class OpusMustFix(unittest.TestCase):
         sp = a["spans"][0]
         for k in ("matched_variants", "representative_match", "heteronym_guard"):
             self.assertIn(k, sp)
-        self.assertFalse(a["flag_enabled"])
+        self.assertTrue(a["flag_enabled"])        # 正式採用後はrollbackスイッチ=True(旧: 既定OFFのFalse)
 
     def test_p09_known_leaks_remain_ng_fail_closed(self):
         # 記録済みの未救済(C/E分類): 誤同値にはならず従来どおり不合格のまま
@@ -190,13 +190,15 @@ class Audit(unittest.TestCase):
 
 
 class ProductionIsolation(unittest.TestCase):
-    """未承認機能のDefaultOffIsolation: 既定OFF、Production既存fileから未参照、純関数(通信・ファイル書込なし)。"""
+    """正式採用後(2026-10-23、X/Zのみ・委任_04)の隔離: 旧『既定OFF』『未配線』前提は撤去済み。残すもの=純関数module(通信・ファイル書込なし)・
+    共有Validatorにer109記述なし・er109純関数をimportするのはscope module(er109_xz_scope_01)と研究tool(er109_*)だけ。
+    X/Z限定の構造・実行の隔離testは er109_xz_isolation_01_test_01.py / er109_wiring_golden_test_01.py。"""
 
-    def test_flag_default_off_and_single_reader(self):
-        self.assertFalse(e.ORTHOGRAPHIC_EQUIVALENCE_ENABLED)
-        self.assertFalse(e.is_enabled())
+    def test_flag_is_rollback_switch_default_true_and_read_only_via_scope_module(self):
+        self.assertTrue(e.ORTHOGRAPHIC_EQUIVALENCE_ENABLED)     # 正式採用: rollbackスイッチ(Falseで従来判定へ戻る)
+        self.assertTrue(e.is_enabled())
 
-    def test_no_production_file_imports_er109(self):
+    def test_only_scope_module_and_research_tools_import_the_pure_module(self):
         offenders = []
         for p in glob.glob(os.path.join(ROOT, "*.py")):
             base = os.path.basename(p)
@@ -214,7 +216,7 @@ class ProductionIsolation(unittest.TestCase):
                     names = [node.module or ""]
                 if any(n.startswith("er109_asr_orthographic_equivalence_01") for n in names):
                     offenders.append(base)
-        self.assertEqual(sorted(set(offenders)), [], f"er109をimportするProduction/他file: {offenders}")
+        self.assertEqual(sorted(set(offenders)), [], f"er109純関数を直接importするProduction/他file(scope module経由に限る): {offenders}")
 
     def test_module_has_no_network_or_file_write(self):
         src = open(os.path.join(ROOT, "er109_asr_orthographic_equivalence_01.py"), encoding="utf-8").read()
@@ -225,7 +227,7 @@ class ProductionIsolation(unittest.TestCase):
         src = open(os.path.join(ROOT, "er006_preprod_hardening_01_validation.py"), encoding="utf-8").read()
         self.assertNotIn("er109", src)
         src2 = open(os.path.join(ROOT, "er104_kp_three_asr_vote_01.py"), encoding="utf-8").read()
-        self.assertNotIn("er109", src2)
+        self.assertNotIn("er109_asr_orthographic_equivalence_01", src2)      # KP voterは純関数を直接importしない(scope module経由のみ)
 
 
 if __name__ == "__main__":

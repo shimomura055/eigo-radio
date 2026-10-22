@@ -79,11 +79,21 @@ class Voter:
     ms: Optional[int] = None
     memo_hit: bool = False
     rescue_layers: tuple = ()
+    # ASR-HOMOPHONE 委任_04(M11): er109(表記違い同音)でPASSした票の印。ortho不使用の票ではauditにキー自体を出さない(A/B/C署名不変)。
+    ortho_applied: bool = False
+    ortho_warnings: tuple = ()
+    ortho_error: Optional[str] = None     # er109評価が例外 -> 『同値ではない』として従来判定のまま続行した事実(未発生ならキー無し)
 
     def audit(self) -> dict:
-        return {"provider": self.provider, "text": self.text, "pass": bool(self.passed), "available": bool(self.available),
-                "label": self.label, "observed_protected_diff": bool(self.observed_protected_diff), "rescued": bool(self.rescued), "error": self.error,
-                "technical_failure": bool(self.technical_failure), "note": self.reason_note, "rescue_layers": list(self.rescue_layers)}
+        a = {"provider": self.provider, "text": self.text, "pass": bool(self.passed), "available": bool(self.available),
+             "label": self.label, "observed_protected_diff": bool(self.observed_protected_diff), "rescued": bool(self.rescued), "error": self.error,
+             "technical_failure": bool(self.technical_failure), "note": self.reason_note, "rescue_layers": list(self.rescue_layers)}
+        if self.ortho_applied:
+            a["ortho_applied"] = True
+            a["ortho_warnings"] = list(self.ortho_warnings)
+        if self.ortho_error:
+            a["ortho_error"] = self.ortho_error
+        return a
 
 
 @dataclass
@@ -191,6 +201,10 @@ def build_vote_audit(primary: Voter, secondary: Optional[Voter], whisper: Option
                             "library": "faster_whisper"} if whisper_called else None)}
     if whisper is not None:
         a["whisper"].update(ms=whisper.ms, memo_hit=whisper.memo_hit)
+    import er109_xz_scope_01 as _xz
+    if _xz.is_active_for_run():   # ASR-HOMOPHONE 委任_04(M11): X/Z scope内のときだけ層versionとscopeを加算(scope外はキー無し=従来と同一)
+        a["ortho_layer_version"] = _xz.layer_version()
+        a["ortho_scope"] = _xz.current_scope()
     if extra:
         a.update(extra)
     return a
@@ -229,7 +243,7 @@ def decide(primary: Voter, secondary_fn: Callable[[], Voter], whisper_fn: Option
 # ============================================================
 # Voter構築: Production既存の分類器をそのまま使う(新しい判定基準は作らない)
 # ============================================================
-def _classify(canonical: str, text: str):
+def _classify(canonical: str, text: str, lang: str = "en", sink: Optional[dict] = None):
     import er006_preprod_hardening_01_validation as val
     import er006_secondary_asr_01 as S
     cls = val.classify_asr_match(canonical, text)
@@ -238,6 +252,11 @@ def _classify(canonical: str, text: str):
     alt = S._step_alternate_pass(cls)
     if alt:
         return True, str(alt)
+    # ASR-HOMOPHONE 委任_04(M5): 既存の全層で不合格のときだけ、英語(lang=="en")かつX/Z run scope内でer109(表記違い同音)を1回評価する。
+    # scope外・flag OFF・lang!="en"では decision()がNone=従来どおり。
+    import er109_xz_scope_01 as xz
+    if lang == "en" and xz.decision(canonical, text, sink=sink) is not None:
+        return True, xz.ORTHO_LABEL
     return False, cls.classification
 
 
@@ -252,14 +271,23 @@ def make_voter(provider: str, canonical: str, text: Optional[str], *, rescued: b
     import er078_asr_unified_judge_01 as uj
     vgr, neg = uj._protected(canonical, text, lang)
     pdiff = bool(vgr.kind == uj.vg.DIFF or neg)
-    ok, label = _classify(canonical, text)
+    _sink: dict = {}
+    ok, label = _classify(canonical, text, lang, _sink)
     note = None
     if ok and max_len is not None and len(text) > int(max_len):
         ok, note = False, "length_ng"
     if ok and ambiguous_blocks and vgr.kind == uj.vg.AMBIGUOUS:
         ok, note = False, "ambiguous_value"
-    return Voter(provider=provider, text=text, passed=bool(ok and not rescued), label=label, observed_protected_diff=pdiff,
-                 rescued=rescued, reason_note=note)
+    v = Voter(provider=provider, text=text, passed=bool(ok and not rescued), label=label, observed_protected_diff=pdiff,
+              rescued=rescued, reason_note=note)
+    if _sink.get("orthographic_equivalence_errors"):
+        v.ortho_error = _sink["orthographic_equivalence_errors"][0]
+    if v.passed and lang == "en":
+        import er109_xz_scope_01 as xz
+        if label == xz.ORTHO_LABEL:     # ASR-HOMOPHONE 委任_04(M11): ortho票の印(ortho不使用の票は従来どおり=キー無し)
+            d = xz.decision(canonical, text)
+            v.ortho_applied, v.ortho_warnings = True, (tuple(d.warning_labels) if d is not None else ())
+    return v
 
 
 # ============================================================

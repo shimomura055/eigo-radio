@@ -1,7 +1,8 @@
 # ============================================================
 # er109_asr_orthographic_equivalence_01.py
 # ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01 委任_01 (2026-10-22) 未配線プロトタイプ。
-# Status: INVESTIGATION_DESIGN_PENDING_OPUS(未承認・既定OFF。Production既存ファイルから参照されない=er109_*_test.pyで固定)。
+# Status: APPROVED_FOR_PRODUCTION(ユーザー正式決定2026-10-23、Family X/Zのみ・A/B/C対象外)。Production配線=er109_xz_scope_01(X/Z run scope内でのみ有効)。
+#         WIRED_PENDING_FABLE(委任_04、Fable受入前)。本moduleは純関数のまま(scope/stateを持たない)。
 #
 # 目的: 『発音が同一なのに転写の表記が違うだけ』(one<->1, one's<->1's, 30 percent<->30%, Mr.<->mister ...)の偽NGを、
 #       全英語ASR経路で共通に解消する「表記正規化+発音同値化」層の純関数(API 0・副作用なし)。
@@ -25,14 +26,15 @@ from dataclasses import dataclass, field
 
 import er008_asr_variant_hardening_15_homophone_en as _hp
 
-# ---- 単一flag(未承認・既定OFF。配線されるまで読取側は存在しない。env/引数/設定dictから変えられない) ----
-ORTHOGRAPHIC_EQUIVALENCE_ENABLED = False
+# ---- 単一flag(正式採用後の戻しスイッチ。読取は er109_xz_scope_01.is_active_for_run() 経由のみ=X/Z run scope内でのみ有効。env/引数/設定dictから変えられない) ----
+# rollback: Falseにすると X/Zでも従来判定へ戻る(注意: X/Z内でer109受理されたStore entryは再利用ブロックされ再生成費用が出る)。
+ORTHOGRAPHIC_EQUIVALENCE_ENABLED = True
 LAYER_VERSION = "er109_orthographic_equivalence_v1_proto_aho02"
 STRESS_MODE = "binary_stressed_vs_unstressed"   # P-01: 強勢は有/無の2値で比較(1,2->1, 0->0)。除去しない
 
 
 def is_enabled() -> bool:
-    """配線時の単一読取関数(現状は誰も呼ばない)。"""
+    """単一flag読取関数(er109_xz_scope_01.is_active_for_run()だけが呼ぶ)。"""
     return bool(ORTHOGRAPHIC_EQUIVALENCE_ENABLED)
 
 

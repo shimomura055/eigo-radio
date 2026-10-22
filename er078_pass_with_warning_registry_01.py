@@ -52,7 +52,7 @@ def _entry(path, node, judgement, inherited):
     sec = judgement.get("secondary") or {}
     prim = judgement.get("primary") or {}
     seg_id = node.get("segment_id") or "/".join(p for p in path if p not in ("segments",))
-    return {
+    entry = {
         "segment_id": seg_id,
         "entry_key": "/".join(path),
         "role": node.get("role") or judgement.get("role") or (path[-1] if path else ""),
@@ -72,6 +72,22 @@ def _entry(path, node, judgement, inherited):
         "script_version": judgement.get("script_version"),
         "inherited": bool(inherited),
     }
+    # ASR-HOMOPHONE 委任_04(D): er109(表記違い同音)が合否に寄与した音声だけ、事後試聴リストに根拠(適用規則・同値span・警告)を加算表示する。
+    # ortho不使用の判定にはキー自体を作らない=A/B/Cの出力はバイト同一。
+    oe = judgement.get("orthographic_equivalence")
+    if isinstance(oe, dict) and oe.get("applied"):
+        spans, rules = [], []
+        for site in oe.get("sites") or []:
+            er = site.get("er109") or {}
+            for r in er.get("rules") or []:
+                if r not in rules:
+                    rules.append(r)
+            for sp in er.get("spans") or []:
+                spans.append({"site": site.get("site"), "canon": sp.get("canon"), "asr": sp.get("asr"), "rule": sp.get("rule"),
+                              "warnings": sp.get("warnings")})
+        entry["orthographic_equivalence"] = {"version": oe.get("version"), "scope": oe.get("scope"), "rules": rules, "spans": spans,
+                                             "warnings": list(oe.get("warnings") or [])}
+    return entry
 
 
 def derive_listening_list(tts_generation_results: dict) -> list:
@@ -201,11 +217,16 @@ def render_html_section(entries: list, href_fn=None) -> str:
                  else "(音声リンクなし)")
         tag = " (引継ぎ)" if e.get("inherited") else ""
         vgk = "/".join(str(k) for k in (e.get("value_guard_kind_primary"), e.get("value_guard_kind_secondary")) if k) or "-"
+        reason_cell = str(e["reason"])
+        oe = e.get("orthographic_equivalence")
+        if oe:   # ASR-HOMOPHONE 委任_04: er109が寄与した音声だけ、同値と判定したspan(原稿->転写・規則)を理由欄へ加算表示(キー無し=従来と同一)
+            reason_cell += " | er109: " + "; ".join(f"{' '.join(map(str, s.get('canon') or []))} -> {' '.join(map(str, s.get('asr') or []))} ({s.get('rule')})"
+                                                  for s in (oe.get("spans") or []))
         parts.append(
             "<tr><td>%s%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
                 e_(str(e["segment_id"])), tag, e_(str(e["role"])), e_(", ".join(e["warning_labels"])),
                 e_(str(e["canonical_text"])), e_(str(e["primary_text"] or "")), e_(str(e["secondary_text"] or "")),
-                e_(vgk), e_(str(e["reason"])), audio))
+                e_(vgk), e_(reason_cell), audio))
     parts.append("</table></section>")
     return "\n".join(parts)
 

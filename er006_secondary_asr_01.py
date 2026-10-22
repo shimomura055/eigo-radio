@@ -199,6 +199,9 @@ import er006_m1_multi_candidate_01 as m1_multi
 # 固有名詞の発音不一致だけが原因のNG_BOTHをアラーム受理する最終救済。単一読取関数pnap.is_active_for_run()(flag∧Family X/Z run scope)。
 import er103_proper_noun_alarm_policy_01 as pnap
 import er103_pronunciation_tts_supply_01 as pnap_supply
+# ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01 委任_04(ユーザー正式採用2026-10-23、Family X/Zのみ): er109(表記違い同音)をX/Z run scope内でのみ有効にする。
+# 単一読取関数 ortho_scope.is_active_for_run()(flag∧scope)。scope外(A/B/C・単体呼出)は下の追加ブロックが全て短絡=従来コードパスのまま。
+import er109_xz_scope_01 as ortho_scope
 
 
 # --- M1 複数発音候補(ASR-M1-OOV-MULTI-PRONUNCIATION-PRODUCTION-01) -------------
@@ -1124,6 +1127,19 @@ def evaluate_attempt_with_cascade_detail(
                 else:
                     _m1_note_reject(result, _au)
 
+    # ---- ASR-HOMOPHONE 委任_04: er109(表記違い同音、Family X/Zのみ)。既存の全層で不合格のときだけ、英語かつX/Z run scope内で1回評価する(P1: 既存ラベル・警告の勝敗は不変)。
+    # scope外・flag OFF・非英語では decision()がNone=何も起きない(従来コードパス)。合格なら Primary PASS(最終ANDゲートはjudge側でspan単位に再確認)。
+    _ortho_errors: dict = {}
+    _ortho_primary = None
+    if (not verified) and lang == "en" and ortho_scope.is_active_for_run():
+        _ortho_primary = ortho_scope.decision(canonical_text, asr_text, sink=_ortho_errors)
+        if _ortho_primary is not None:
+            verified = True
+            result["verified"] = True
+            result["final_status"] = ortho_scope.ORTHO_LABEL
+            layers.append("orthographic_er109")
+            primary_warnings.extend(_ortho_primary.warning_labels)
+
     # ---- 統一judge ----
     if verified and cls.classification in _PRIMARY_WARNING_BY_CLASSIFICATION:
         primary_warnings.append(_PRIMARY_WARNING_BY_CLASSIFICATION[cls.classification])
@@ -1145,9 +1161,11 @@ def evaluate_attempt_with_cascade_detail(
         # Primary救済として維持(立てない)。
         signals["primary_rescued_by_secondary"] = bool(verified and rescue_layers)
         signals["primary_rescue_layers"] = list(rescue_layers)
+    if _ortho_primary is not None:
+        signals["er109_decision"] = _ortho_primary     # judgeが最終ゲートのspan解除・記録に使う(同一process内オブジェクト)
     primary = unified_judge_mod.PrimaryResult(
         passed=bool(verified), text=asr_text, label=str(result.get("final_status") or cls.classification),
-        equivalence_basis=_equivalence_basis_of(cls) if verified else None,
+        equivalence_basis=(ortho_scope.ORTHO_BASIS if _ortho_primary is not None else (_equivalence_basis_of(cls) if verified else None)),
         warning_labels=tuple(dict.fromkeys(primary_warnings)), signals=signals,
         adopted_text=adopted_text if verified else None)
     ctx = unified_judge_mod.AttemptCtx(
@@ -1184,6 +1202,12 @@ def evaluate_attempt_with_cascade_detail(
         if _ok2:
             captured["m1_audit"] = _au2
             return True, "M1_MULTI_CANDIDATE"
+        # ASR-HOMOPHONE 委任_04: Secondary転写でもM1まで不成立のときだけ、英語かつX/Z run scope内でer109を1回評価する(M1不成立の後・P1順)。
+        if lang == "en" and ortho_scope.is_active_for_run():
+            _od_s = ortho_scope.decision(canon, stext, sink=_ortho_errors)
+            if _od_s is not None:
+                captured["ortho_s"] = _od_s
+                return True, ortho_scope.ORTHO_LABEL
         _m1_note_reject(result, _au2)
         return False, cls_s.classification
 
@@ -1227,6 +1251,10 @@ def evaluate_attempt_with_cascade_detail(
     elif jr.verified:
         if "m1_audit" in captured:
             _m1_accept(result, steps, captured["m1_audit"], captured.get("cls_s"))
+        elif "ortho_s" in captured and not primary.passed:
+            # ASR-HOMOPHONE 委任_04: Secondary転写がer109で受理された(M1/alt_labelの救済と同形: classificationは具体的な不合格分類のまま、final_statusにORTHO_LABEL)。
+            result["final_status"] = ortho_scope.ORTHO_LABEL
+            result["classification"] = captured["cls_s"]
         elif "alt_label" in captured:
             result["final_status"] = captured["alt_label"]
             result["classification"] = captured["cls_s"]
@@ -1296,5 +1324,8 @@ def evaluate_attempt_with_cascade_detail(
     # 多語同音spanが無い(1:1同音・通常PASS・NG)場合はキー自体を付けない(OFF時バイト一致)。
     if result.get("verified") and any(st.get("multiword_homophone_spans") for st in steps):
         audit["internal_flags"] = list(audit.get("internal_flags") or []) + ["MULTIWORD_HOMOPHONE_PASS"]
+    if _ortho_errors.get("orthographic_equivalence_errors"):
+        # ASR-HOMOPHONE 委任_04: er109評価が例外 -> 『同値ではない』として従来判定のまま続行し、事実だけauditに残す(runは止めない)。scope外では空=キー無し。
+        audit["orthographic_equivalence_errors"] = list(audit.get("orthographic_equivalence_errors") or []) + _ortho_errors["orthographic_equivalence_errors"]
     result["asr_judgement"] = audit
     return result

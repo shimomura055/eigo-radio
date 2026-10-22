@@ -26,6 +26,7 @@ import shutil
 import time
 
 import er019_family_x_validation_inheritance_01 as vi
+import er109_xz_scope_01 as er109_scope  # ASR-HOMOPHONE 委任_04: X専用toolの入口decorator(リテラル"X"のみ)
 
 EVIDENCE = "backup_entry_wav_mtime_before_overwrite_and_trimmed_duration"
 
@@ -37,6 +38,7 @@ def _backup_epoch(backup_path: str) -> float:
     return os.path.getmtime(backup_path)
 
 
+@er109_scope.family_scope("X")  # ASR-HOMOPHONE 委任_04: Family X専用。rejudgeをX scope内で実行
 def plan_and_apply(level_dir: str, level: str, backup_path: str, labels: list, apply: bool, expected_texts: dict | None = None) -> dict:
     results_path = f"{level_dir}/audit/tts_generation_results.json"
     cur = json.load(open(results_path, encoding="utf-8"))

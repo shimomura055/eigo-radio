@@ -38,6 +38,8 @@ import time
 import wave
 from typing import Optional
 
+import er109_xz_scope_01 as er109_scope  # ASR-HOMOPHONE 委任_04: X専用tool(rebuild_state系)の入口decorator(リテラル"X"のみ)
+
 REUSED_VALIDATED = "REUSED_VALIDATED"
 DURATION_WITNESS_TOLERANCE_SECONDS = 0.020
 _OVERWRITABLE_STATUSES = (None, "SKIPPED_NOT_SELECTED", "INVALIDATED_FOR_REGENERATION",
@@ -318,10 +320,25 @@ def rejudge_with_current_judge(entry: dict, level: str, label: str, force_lang: 
                 primary = uj.PrimaryResult(passed=True, text=asr_text, label=res_nl.classification,
                                            equivalence_basis=en_adapter._equivalence_basis_of(res_nl),
                                            warning_labels=(uj.W_SECONDARY_CONFIRMED,), adopted_text=stored_secondary)
+        # ASR-HOMOPHONE 委任_04(再評価2点のうち1): 既存判定で不合格のときだけ、X/Z run scope内でer109を1回評価する(adapterと同じ判定原則・同じ層順)。
+        # scope外(A/B/C再利用・単体呼出)では decision()がNone=従来どおり。この関数自体はscopeを設定しない(guard_entry経由でA/B/Cからも呼ばれる共有経路)。
+        _ortho_primary = None
+        if not primary.passed:
+            import er109_xz_scope_01 as ortho_scope
+            _ortho_primary = ortho_scope.decision(tts_input, asr_text, sink=out)
+            if _ortho_primary is not None:
+                primary = uj.PrimaryResult(passed=True, text=asr_text, label=ortho_scope.ORTHO_LABEL, equivalence_basis=ortho_scope.ORTHO_BASIS,
+                                           warning_labels=tuple(_ortho_primary.warning_labels), signals={"er109_decision": _ortho_primary})
 
         def accept_fn(canon, stext):
             r2 = en_validator.classify_asr_match(canon, stext)
-            return bool(r2.should_pass), r2.classification
+            if r2.should_pass:
+                return True, r2.classification
+            # ASR-HOMOPHONE 委任_04(再評価2点のうち2): 保存Secondary転写もer109で評価する(X/Z run scope内のみ。adapterの_secondary_acceptと同じ原則)。
+            import er109_xz_scope_01 as _os
+            if _os.decision(canon, stext, sink=out) is not None:
+                return True, _os.ORTHO_LABEL
+            return False, r2.classification
     sha = entry.get("sha256") or ""
     ctx = uj.AttemptCtx(canonical_text=tts_input, wav_sha256=sha or f"j11:{label}", segment_key=label, engine="azure",
                         length_ok=True, script_version=(aj or {}).get("script_version", "v0"))
@@ -378,6 +395,11 @@ def rejudge_with_current_judge(entry: dict, level: str, label: str, force_lang: 
         rec["state"] = jr.state if not jr.verified else (aj.get("state") if aj.get("state") in ("PASS", "PASS_WITH_WARNING") else jr.state)
         if jr.verified and rec["warnings"] and rec["state"] == "PASS":
             rec["state"] = "PASS_WITH_WARNING"
+        # ASR-HOMOPHONE 委任_04(M1): 再判定でer109が寄与した場合、継承record(asr_judgement_inherited)にも印を残す(Storeへ再登録されても
+        # scope外再利用ブロックが効くように)。ortho不使用ならjr.audit_recordにキーが無い=何も加算しない(従来と同一)。
+        for _k in ("orthographic_equivalence", "orthographic_equivalence_errors"):
+            if _k in jr.audit_record:
+                rec[_k] = copy.deepcopy(jr.audit_record[_k])
     rec["inherited"] = {"via": "J11_rejudge_with_current_judge", "api_calls": 0, "secondary_new_calls": 0,
                         "rejudged_state": jr.state, "rejudged_reason_code": jr.reason_code, "lang": lang,
                         "had_original_asr_judgement": isinstance(aj, dict), "stored_secondary_used": bool(stored_secondary and calls["n"]),
@@ -391,6 +413,7 @@ def rejudge_with_current_judge(entry: dict, level: str, label: str, force_lang: 
 # ------------------------------------------------------------
 # 別run由来のseed segment(音声wavだけをcopyし、results entryが無い)用の再構築(明示CLI、既定dry-run)
 # ------------------------------------------------------------
+@er109_scope.family_scope("X")  # ASR-HOMOPHONE 委任_04: Family X専用の再構築。rejudge_f1のer109再評価をX scope内で実行
 def rebuild_state(level_dir: str, source_results_path: str, source_root: str, provenance_path: Optional[str],
                   labels: list, expected_texts: Optional[dict] = None, *, level: str = "b1b",
                   rejudge_f1: bool = False, cross_version_accepted_by: Optional[str] = None,
@@ -481,6 +504,7 @@ def rebuild_state(level_dir: str, source_results_path: str, source_root: str, pr
     return report
 
 
+@er109_scope.family_scope("X")  # ASR-HOMOPHONE 委任_04: Family X専用
 def rebuild_state_multi(level_dir: str, specs: list, expected_texts: Optional[dict], **kw) -> dict:
     """specs=[{labels:[..], source_results_path, source_root, provenance_path}]。各sourceのreportを1つへ統合する。"""
     merged = None

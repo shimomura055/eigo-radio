@@ -29,6 +29,7 @@ import shutil
 from dataclasses import dataclass, field
 import er078_secondary_run_scope_01 as secondary_run_scope  # AUW 委任_05
 import er104_kp_vote_reuse_01 as kp_vote  # KP3V(2026-10-22、ユーザー承認APPROVED_FOR_PRODUCTION): KP英語phrase 3-ASR多数決(OpenAI・Azure・Whisper)
+import er109_xz_scope_01 as er109_scope  # ASR-HOMOPHONE 委任_04: er109(表記違い同音)のrun scope(Z)。TTS段の入口decoratorだけで使う(リテラル"Z"のみ)
 # 2026-10-17 委任_15: Xの承認済みStyle定数を**定数として**参照する(コピーしない)。DEFAULT_NEW_RUN_PROFILE・profile解決関数は
 # 参照しない(X既定の変更がZへ無言で波及しない。Opus R-C1)。er019のimportは標準ライブラリ+er002_commonのみで循環しない。
 import er019_family_x_style_profile_01 as _xs
@@ -1134,6 +1135,7 @@ def _cached_entry(cached: dict | None, spec: ClipSpec):
 
 
 @secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
+@er109_scope.family_scope("Z")  # ASR-HOMOPHONE 委任_04: er109 run scope(Z)。PNAP hookとは独立(PNAP flag OFFでも有効)。例外・STOP時もfinallyで復元
 def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | None = None, dry_run: bool = False,
                   only_clips: set | None = None, revalidate_fn=None, article_text: str | None = None,
                   story_key: str = DEFAULT_SLUG) -> dict:

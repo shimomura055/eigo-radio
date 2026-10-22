@@ -318,18 +318,25 @@ def negation_diff(canonical: str, text: str, lang: str) -> bool:
     """EN: er006 _NEGATION_WORDS の出現数が異なる / JA: er003 safety._has_negation_ja の有無が異なる。"""
     if lang == "ja":
         return bool(_safety._has_negation_ja(canonical or "")) != bool(_safety._has_negation_ja(text or ""))
+    return _neg_count_impl(canonical) != _neg_count_impl(text)
 
-    def neg_count(t: str) -> Counter:
-        # 委任_03(統合で判明した偽否定の是正): 承認済みの標準contraction展開(TRANSCRIPT_STYLE_NORMALIZED_MATCH: do not/don't,
-        # will not/won't, is not/isn't, cannot/can't)と「can not」=cannotを、否定語の数える前に正規化する。展開しないと
-        # 『否定語の語形が違う』だけで承認済み等価(否定保持)をNG_PROTECTEDにしてしまう。否定の有無が反転する差
-        # (can/can't, is/isn't)は展開後も差として残る(安全側は不変)。
-        t = _val.expand_standard_contractions(t or "")
-        t = re.sub(r"\bcan\s+not\b", "cannot", unicodedata.normalize("NFKC", t).lower().replace("’", "'"))
-        toks = [w.replace("'", "") for w in re.findall(r"[a-z']+", t)]
-        return Counter(w for w in toks if w in _val._NEGATION_WORDS)
 
-    return neg_count(canonical) != neg_count(text)
+def _neg_count_impl(t: str) -> Counter:
+    # 委任_03(統合で判明した偽否定の是正): 承認済みの標準contraction展開(TRANSCRIPT_STYLE_NORMALIZED_MATCH: do not/don't,
+    # will not/won't, is not/isn't, cannot/can't)と「can not」=cannotを、否定語の数える前に正規化する。展開しないと
+    # 『否定語の語形が違う』だけで承認済み等価(否定保持)をNG_PROTECTEDにしてしまう。否定の有無が反転する差
+    # (can/can't, is/isn't)は展開後も差として残る(安全側は不変)。
+    # ASR-HOMOPHONE 委任_04: negation_diffの内部関数を module-level へ移しただけ(本体は1文字も変えない。negation_counterが公開入口)。
+    t = _val.expand_standard_contractions(t or "")
+    t = re.sub(r"\bcan\s+not\b", "cannot", unicodedata.normalize("NFKC", t).lower().replace("’", "'"))
+    toks = [w.replace("'", "") for w in re.findall(r"[a-z']+", t)]
+    return Counter(w for w in toks if w in _val._NEGATION_WORDS)
+
+
+def negation_counter(t: str) -> Counter:
+    """EN: 否定語の出現数(Counter)。`negation_diff`と同じ数え方の公開入口(ASR-HOMOPHONE 委任_04: er109のspan解除が『judgeと同じneg_count』を
+    使うため。実装は`negation_diff`の`neg_count`を呼ぶだけ=数え方は二重化しない)。"""
+    return _neg_count_impl(t)
 
 
 def _surface_key(t: str) -> str:
@@ -348,6 +355,79 @@ def same_surface(a: str, b: str) -> bool:
 def _protected(canonical: str, text: str, lang: str):
     """(value_guard結果, 否定差bool)。"""
     return vg.value_guard(canonical, text, lang), negation_diff(canonical, text, lang)
+
+
+# ---- ASR-HOMOPHONE 委任_04: er109(表記違い同音)のX/Z限定配線。scope外・ortho根拠でない呼出では下の関数群は何もしない(従来コードパスのまま) ----
+def _ortho_record_primary(pr, lang: str, audit: dict) -> None:
+    """adapterがer109でPrimaryをPASSさせたとき(signals['er109_decision']あり)だけ、asr_judgementへ`orthographic_equivalence`を加算記録する。"""
+    dec = (pr.signals or {}).get("er109_decision") if lang == "en" else None
+    if dec is None:
+        return
+    import er109_xz_scope_01 as xz
+    xz.record_site(audit, "primary", dec)
+
+
+def _ortho_unlock_primary(pr, canon: str, gate_text: str, pvg, pneg: bool, lang: str, audit: dict):
+    """Primary PASS最終ゲート(非KP)のspan単位解除(P-06)。解除対象は『ortho根拠のPrimary』かつ『gate_text==er109判定対象』のときだけ(M9)。
+    戻り値: ProtectedExplanation(解除可否) / None(対象外=従来どおり)。"""
+    if lang != "en" or (pr.signals or {}).get("er109_decision") is None:
+        return None
+    import er109_xz_scope_01 as xz
+    if (not xz.is_active_for_run()) or pr.equivalence_basis != xz.ORTHO_BASIS:
+        return None
+    try:
+        ex = xz.explain_protected(pr.signals["er109_decision"], pvg, pneg, canon, gate_text)
+    except Exception as exc:  # noqa: BLE001  fail-closed: 説明不能=解除しない(従来のNG_PROTECTED)
+        audit.setdefault("orthographic_equivalence_errors", []).append(f"{type(exc).__name__}: {exc}")
+        return None
+    xz.record_site(audit, "primary", pr.signals["er109_decision"],
+                   span_unlock={"explained": ex.explained, "reason": ex.reason, "detail": ex.detail, "negation_unlocked": ex.negation_unlocked,
+                                "value_unlocked": ex.value_unlocked})
+    return ex
+
+
+def _ortho_secondary_precheck(outcome, canon: str, stext: str, svg, sneg: bool, lang: str, audit: dict, has_accept_fn: bool):
+    """Secondary転写に値DIFF/否定差があるとき(非KP)、er109の同値spanで説明できるなら『判定を許容集合判定まで保留』する(M10)。
+    条件: lang=en ∧ scope内 ∧ `outcome.accepted is None`(providerが事前に受理を決めていない) ∧ accept関数が注入されている ∧ Secondary転写のspan説明が成立。
+    保留した場合は呼出元が、許容集合判定が`ORTHO_LABEL`受理でなければ従来どおり`NG_BOTH(secondary_value_diff/negation_diff)`へ戻す。
+    判定対象は必ずSecondary転写(stext)=Primaryのガード結果・decisionを流用しない(M9)。"""
+    if lang != "en" or outcome.accepted is not None or not has_accept_fn:
+        return None
+    import er109_xz_scope_01 as xz
+    if not xz.is_active_for_run():
+        return None
+    dec = xz.decision(canon, stext, sink=audit)
+    if dec is None:
+        return None
+    try:
+        ex = xz.explain_protected(dec, svg, sneg, canon, stext)
+    except Exception as exc:  # noqa: BLE001
+        audit.setdefault("orthographic_equivalence_errors", []).append(f"{type(exc).__name__}: {exc}")
+        return None
+    if not ex.explained:
+        return None
+    return dec, ex
+
+
+def _ortho_mark_votes(canon: str, lang: str, audit: dict, voters) -> list:
+    """KP3V票(P/S/W)のうち、er109(ORTHO_LABEL)でPASSした票に`ortho_applied`/`ortho_warnings`を付け、PASS票由来のORTHO警告を返す(M11)。
+    S/W票の警告は『その票の転写文字列』で再計算(P票と同じ判定入力。tallyの勝ち組はPASS票なのでPASS票から合成)。scope外は何もしない=空リスト。"""
+    if lang != "en":
+        return []
+    import er109_xz_scope_01 as xz
+    if not xz.is_active_for_run():
+        return []
+    out: list = []
+    for site, v in voters:
+        if v is None or not v.passed or v.label != xz.ORTHO_LABEL:
+            continue
+        d = xz.decision(canon, v.text, sink=audit)
+        v.ortho_applied = True
+        if d is not None:
+            v.ortho_warnings = tuple(d.warning_labels)
+            xz.record_site(audit, site, d)
+            out += list(d.warning_labels)
+    return list(dict.fromkeys(out))
 
 
 def _mk_primary(p) -> PrimaryResult:
@@ -401,6 +481,7 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
         audit["vote"] = vote
     if ctx.wav_sha256:
         audit["audio_sha256"] = ctx.wav_sha256  # 委任_03: Primary PASS(Secondary不呼出)でも採用音声のsha256を記録(registryが突合に使う)
+    _ortho_record_primary(pr, lang, audit)   # ASR-HOMOPHONE 委任_04: ortho根拠のPrimaryのみ加算記録(それ以外は何もしない)
 
     def done(state, reason, warnings=(), unavailable=False) -> JudgeResult:
         if vote is not None and audit.get("vote") is vote:
@@ -457,7 +538,13 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
         else:
             audit["final_gate"] = {"applied": True, "value_guard": pvg.kind, "negation_diff": pneg}
             if pvg.kind == vg.DIFF or pneg:
-                return done(NG_PROTECTED, "final_gate_value_diff" if pvg.kind == vg.DIFF else "final_gate_negation_diff")
+                # ASR-HOMOPHONE 委任_04(P-06、M7/M9): er109(表記違い同音)でPASSしたPrimaryに限り、値DIFF/否定差を『er109の同値spanで説明できる場合のみ』解除する。
+                # X/Z run scope外・ortho根拠でないPrimaryは_ortho_unlock_primaryがNoneを返す=従来どおりNG_PROTECTED。説明不能・AMBIGUOUSは解除しない。
+                _ex = _ortho_unlock_primary(pr, canon, gate_text, pvg, pneg, lang, audit)
+                if _ex is None or not _ex.explained:
+                    return done(NG_PROTECTED, "final_gate_value_diff" if pvg.kind == vg.DIFF else "final_gate_negation_diff")
+                audit["final_gate"]["span_unlock"] = {"explained": True, "reason": _ex.reason, "detail": _ex.detail}
+                warnings = warnings + [w for w in _ex.warning_labels if w not in warnings]   # 否定差を解除した場合は必ず警告付き=PASS_WITH_WARNING(M7)
             if pvg.kind == vg.AMBIGUOUS:
                 # 根拠のない曖昧表層(10分/十分)はPrimary転写のままPASSさせない -> P3(Secondary)へ降格
                 primary_ng_reason = "primary_pass_demoted_ambiguous_value"
@@ -574,13 +661,14 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
                     wv = ctx.whisper_fn()
                 except Exception as _we:  # noqa: BLE001  Whisper障害は必ず技術STOP(PASS不可)
                     wv = kp3v.Voter("whisper", None, False, available=False, error=f"{type(_we).__name__}: {_we}", technical_failure=True)
+        _ow = _ortho_mark_votes(canon, lang, audit, (("primary", pv), ("secondary", sv), ("whisper", wv)))   # ASR-HOMOPHONE 委任_04(M11): ortho票の印+警告
         tr = kp3v.tally(pv, sv, wv)
         va = kp3v.build_vote_audit(pv, sv, wv, tr, secondary_called=bool(audit["secondary"].get("called") or audit["secondary"].get("cached")),
                                    whisper_called=wcalled,
                                    extra={"primary_not_pass_reason": vote.get("primary_not_pass_reason"),
                                           "primary_rescued_by_secondary": vote["primary_rescued_by_secondary"]})
         audit["vote"] = va
-        w2 = list(warnings) + list(extra_warnings)
+        w2 = list(warnings) + list(extra_warnings) + list(_ow)
         if tr.verified:
             if tr.secondary_confirmed_warning:
                 w2 = w2 + [W_SECONDARY_CONFIRMED]   # 行4(P NG/S PASS/W PASS)= 事後試聴リスト対象(P-03)
@@ -596,10 +684,14 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
         both_ng = (not pv.passed) and (not sv.passed)
         return done(NG_BOTH, s_reason if both_ng else tr.reason, w2)
 
+    _s_ortho_hold = None   # ASR-HOMOPHONE 委任_04(M10): (OrthoDecision, ProtectedExplanation, 従来のNG理由)。許容集合判定がORTHO_LABEL受理のときだけ解除を確定する
     if vote is None and (svg.kind == vg.DIFF or sneg):
         # 2026-10-22: vote_required(KP英語)ではS票の値DIFF/否定差を票に影響させない(下の許容集合判定で決める)。非KPは従来どおり。
         _r = "secondary_value_diff" if svg.kind == vg.DIFF else "secondary_negation_diff"
-        return done(NG_BOTH, _r, warnings)
+        _hold = _ortho_secondary_precheck(outcome, canon, stext, svg, sneg, lang, audit, secondary_accept_fn is not None)
+        if _hold is None:
+            return done(NG_BOTH, _r, warnings)
+        _s_ortho_hold = (_hold[0], _hold[1], _r)
 
     # 許容集合判定(注入)
     accepted, label = outcome.accepted, outcome.label
@@ -610,6 +702,24 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
         accepted = same_surface(canon, stext)  # 注入が無い場合はEXACT(同一表層)のみ
         label = label or "EXACT_SURFACE"
     audit["secondary"].update(accepted=bool(accepted), label=label)
+    if _s_ortho_hold is not None:
+        # M10: ORTHO_LABEL受理でなければ(M1/homophone等のORTHO以外の受理・不受理)、従来どおり値DIFF/否定差のNG_BOTH。
+        import er109_xz_scope_01 as _xz
+        if not (accepted and label == _xz.ORTHO_LABEL):
+            return done(NG_BOTH, _s_ortho_hold[2], warnings)
+        audit["final_gate"] = {"applied": True, "target": "secondary", "value_guard": svg.kind, "negation_diff": sneg,
+                               "span_unlock": {"explained": True, "reason": _s_ortho_hold[1].reason, "detail": _s_ortho_hold[1].detail}}
+    # ASR-HOMOPHONE 委任_04: Secondary転写がer109(ORTHO_LABEL)で受理されたとき、ORTHO警告(+否定差解除時のORTHO_NEGATION_WORD_HOMOPHONE)を付与し、記録を加算する。
+    _s_ortho_w: list = []
+    if accepted and lang == "en" and label == "ORTHOGRAPHIC_EQUIVALENT_MATCH":
+        import er109_xz_scope_01 as _xz
+        _sd = _s_ortho_hold[0] if _s_ortho_hold is not None else _xz.decision(canon, stext, sink=audit)
+        if _sd is not None:
+            _xz.record_site(audit, "secondary", _sd,
+                            span_unlock=({"explained": True, "reason": _s_ortho_hold[1].reason, "detail": _s_ortho_hold[1].detail}
+                                         if _s_ortho_hold is not None else None))
+            _s_ortho_w = list(_sd.warning_labels) + (list(_s_ortho_hold[1].warning_labels) if _s_ortho_hold is not None else [])
+            _s_ortho_w = list(dict.fromkeys(_s_ortho_w))
 
     if a3:
         # 委任_13(A3R-01/02/06): Secondary受理時は採用転写(Secondary)の長さで再評価する(max_lenは呼出元の値)。
@@ -643,13 +753,16 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
             return finish_vote(False, "secondary_not_accepted")
         return done(NG_BOTH, "secondary_not_accepted", warnings)
     if final_and_gate:
+        _fg_prev = audit.get("final_gate") if isinstance(audit.get("final_gate"), dict) else {}
         audit["final_gate"] = {"applied": True, "target": "secondary", "value_guard": svg.kind, "negation_diff": sneg}
+        if _fg_prev.get("span_unlock") is not None and _s_ortho_hold is not None:
+            audit["final_gate"]["span_unlock"] = _fg_prev["span_unlock"]   # ASR-HOMOPHONE 委任_04: Secondary転写のspan解除記録を残す(ortho不使用ならキー無し)
     if vote is not None:
         # KP3V: Secondary(Azure)許容集合PASS ∧ 値/否定ガードOK = S票PASS。最終は3票の集計(finish_vote)。classificationはadapter側で行ごとに整理(P-03)。
         return finish_vote(True, "secondary_accepted", list(svg.warnings))
     if primary_ng_reason == "force_secondary":
         # 委任_03: Primary PASS + force_secondary(minimal fallback/LR後v1)でSecondaryも許容集合PASS = 両エンジン合意。
         # 従来(er006 force_secondary)もPASS扱い(警告なし)だったため、SECONDARY_CONFIRMED警告は付けない(LR後v1はdone()がLR_REWRITTENを付与)。
-        return done(PASS, "force_secondary_agreed", warnings + list(svg.warnings))
+        return done(PASS, "force_secondary_agreed", warnings + list(svg.warnings) + _s_ortho_w)
     return done(PASS_WITH_WARNING, "secondary_confirmed" if primary_ng_reason != "primary_length_ng" else "secondary_confirmed_primary_length_ng",
-                warnings + [W_SECONDARY_CONFIRMED] + list(svg.warnings))
+                warnings + [W_SECONDARY_CONFIRMED] + list(svg.warnings) + _s_ortho_w)
