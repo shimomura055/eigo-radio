@@ -128,7 +128,8 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
         _probe["asr_judgement"] = entry.get("asr_judgement")
         _probe["reuse_blocked"] = entry.get("reuse_blocked")
         reuse_guard_info = _rvg.guard_entry(_probe, label="master:" + str(key.style_instruction_id),
-                                            canonical_text=key.canonical_text)
+                                            canonical_text=key.canonical_text,
+                                            kp_vote_gate_follows=(reuse_gate is not None))   # KP-QUALITY OF-KPQ-P-01: vote gateが後続する呼出のみ保護再判定をskip
         if reuse_guard_info["blocked"]:
             _log_telemetry({"event": "reuse_blocked_by_value_guard", "master_audio_id": master_id, "out_path": out_path,
                             "key": key.as_dict(), "guard": {k: reuse_guard_info.get(k) for k in ("reason", "reason_code", "unified_state")}})

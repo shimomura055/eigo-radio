@@ -894,6 +894,9 @@ def evaluate_attempt_with_cascade_detail(
     呼出なし)。Secondary許容集合PASSならPASS_WITH_WARNING(SECONDARY_CONFIRMED、自動採用+事後試聴リスト)、取得不能
     (例外/空転写/timeout/cost guard)はPASS不可のNG_SECONDARY_UNAVAILABLE(技術STOP記録)。
 
+    【2026-10-22 KP-QUALITY-2ITEMS】vote_required(KP英語)では上記の保護差短絡(最終ANDゲート/Primary NGのNG_PROTECTED/S票の値・否定差NG)を行わない
+    (票は本文一致判定のみ、値DIFF/否定差は監査audit.vote.observed_protected_diffに記録)。非KPは上記のまま。
+
     force_secondary(既定False): Trueの場合、Primary PASSでもSecondaryの許容集合PASSを必須にする(従来の保護を維持)。
     Secondaryが同意しなければNG(従来のHR直行ではなく次attempt/slotへ)。
 

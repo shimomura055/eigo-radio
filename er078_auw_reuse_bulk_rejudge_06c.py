@@ -2,6 +2,9 @@
 # **offline(API 0)**で一括再判定し、値ガードDIFF/否定差(再利用禁止対象)を数える。
 # 使い方: python er078_auw_reuse_bulk_rejudge_06c.py --out <json> [--apply-marks]
 #   既定は読取のみ。--apply-marks指定時のみ、DIFF該当資産のMaster manifest entryへ `reuse_blocked` markを付与する(削除しない)。
+# 【運用注記 OF-KPQ-P-03/09、2026-10-22】KP英語(key_phrase_english_component・kp<N>_english・kp<N>_en)は2026-10-22以降数値・否定の保護を解除済み(vote gateが再判定)。
+#   本scriptはKP英語entryにも旧保護で`--apply-marks`し得る(KPのS+W合格行等へ`reuse_blocked`が付き再生成になる)。KP英語entryを対象に
+#   --apply-marksを使わない(集計のみ=既定は無害)。KP英語の再利用可否は kp_vote_reuse_ok が決める。
 from __future__ import annotations
 
 import argparse

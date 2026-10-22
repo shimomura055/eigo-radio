@@ -727,7 +727,8 @@ def generate_or_reuse_z(cached_entry: dict | None, spec: ClipSpec, wav_path: str
             # AUW 委任_06c(OF-AUW-C-03、ADDENDUM §3-1): 再利用前に保存転写のみ(API 0)を現行の統一judgeへ通し、値ガードDIFF/否定差
             # (`reuse_blocked` mark含む)なら再利用せず再生成する。転写が無い/判定不能なentryは従来どおり再利用。
             import er078_reuse_value_guard_01 as _rvg
-            _g = _rvg.guard_entry(cached_entry, label=str(spec.clip_id), canonical_text=None)
+            _g = _rvg.guard_entry(cached_entry, label=str(spec.clip_id), canonical_text=None,
+                                  kp_vote_gate_follows=bool(spec.kind == "kp_en" and kp_vote.vote_enabled()))   # OF-KPQ-P-01: 直後にkp_vote_reuse_okが続く
             if _g.get("blocked"):
                 _r = generate_fn()
                 if isinstance(_r, dict):

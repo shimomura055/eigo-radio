@@ -29,9 +29,15 @@ def is_protected_reason(reason_code: str) -> bool:
     return bool(reason_code) and any(str(reason_code).startswith(p) for p in PROTECTED_REASON_PREFIXES)
 
 
-def guard_entry(entry, *, label: str = "", canonical_text: str | None = None, level: str | None = None) -> dict:
+def guard_entry(entry, *, label: str = "", canonical_text: str | None = None, level: str | None = None,
+                kp_vote_gate_follows: bool = False) -> dict:
     """再利用しようとしているentry(results entry / Master Store qa_evidence+key / .ok meta 相当のdict)を保存転写で再判定する。
-    戻り値: {blocked, applicable, reason, unified_state, reason_code, api_calls(=0)}。例外を投げない。"""
+    戻り値: {blocked, applicable, reason, unified_state, reason_code, api_calls(=0)}。例外を投げない。
+
+    kp_vote_gate_follows(2026-10-22 KP-QUALITY-2ITEMS、OF-KPQ-P-01): True = このentryはKP英語で、**呼出元が直後にKP 3-ASR vote gate
+    (`kp_vote_reuse_ok`/`KpVoteReuseGate`)を必ず通す**。KP英語は数値・否定の保護を解除した(ユーザー承認2026-10-22)ため、vote gateの手前の
+    保存転写・保護差再判定をskipする(`reuse_blocked`明示markとPNAP範囲外判定は従来どおり)。labelでは判定しない(A/B/Cの
+    `key_phrase_english_component`はvote gateが後続しないため保護を維持する。vote無効=rollback時も呼出元がFalseを渡す)。既定False=従来どおり。"""
     out = {"blocked": False, "applicable": False, "reason": "", "unified_state": None, "reason_code": None,
            "api_calls": 0, "secondary_new_calls": 0}
     if not isinstance(entry, dict):
@@ -49,6 +55,9 @@ def guard_entry(entry, *, label: str = "", canonical_text: str | None = None, le
         if not _pnap.is_active_for_run():
             out.update(blocked=True, applicable=True, reason="PRONUNCIATION_ALARM_AUDIO_OUT_OF_SCOPE")
             return out
+    if kp_vote_gate_follows:
+        out.update(applicable=False, reason="KP_EN_VOTE_GATE_DECIDES")
+        return out
     asr_text = entry.get("asr_text")
     if not asr_text:  # C `.ok.meta.json`等、asr_textを持たず統一judge recordだけを保存している資産
         _aj = entry.get("asr_judgement") or entry.get("asr_judgement_inherited") or {}

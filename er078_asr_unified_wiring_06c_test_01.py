@@ -309,9 +309,15 @@ def test_c_x_runner_kp_reuse_guard(tmp_path, monkeypatch):
     def gen():
         calls.append(1)
         return {"status": "OK", "regenerated": True}
-    cached = {"key_phrases": {"1": {"english": dict(E_VAL)}}}
-    r = x_runner._generate_or_reuse_kp(cached, 1, "english", wav, gen, expected_text=TXT)
+    # KP-QUALITY-2ITEMS(2026-10-22): KP英語(role=english)は数値・否定の保護を解除し、再利用可否はkp_vote_reuse_okが決める。
+    # 保護再判定(guard_entry)が働くのは (a) KP非英語role(explanation等) (b) KP英語でもvote無効(rollback)。ここでは(a)(b)を固定する。
+    cached = {"key_phrases": {"1": {"explanation": dict(E_VAL), "english": dict(E_VAL)}}}
+    r = x_runner._generate_or_reuse_kp(cached, 1, "explanation", wav, gen, expected_text=TXT)
     assert r.get("regenerated") is True and calls == [1]
+    import er104_kp_three_asr_vote_01 as _kp3v
+    monkeypatch.setattr(_kp3v, "KP_THREE_ASR_VOTE_ENABLED", False)
+    r = x_runner._generate_or_reuse_kp(cached, 1, "english", wav, gen, expected_text=TXT)
+    assert r.get("regenerated") is True and calls == [1, 1]
 
 
 def _patch_store(monkeypatch, tmp_path):

@@ -47,27 +47,27 @@ class TallyPurityAndEquivalence(unittest.TestCase):
 
     def test_all_combinations_decide_equals_tally(self):
         import itertools
-        voters_p = [V("openai", True), V("openai", False), V("openai", False, protected_diff=True),
+        voters_p = [V("openai", True), V("openai", False), V("openai", False, observed_protected_diff=True),
                     Voter("openai", None, False, available=False)]
-        voters_s = [V("azure", True), V("azure", False), V("azure", False, protected_diff=True), V("azure", True, protected_diff=True),
+        voters_s = [V("azure", True), V("azure", False), V("azure", False, observed_protected_diff=True), V("azure", True, observed_protected_diff=True),
                     Voter("azure", None, False, available=False), Voter("azure", "", False)]
         voters_w = [None, V("whisper", True), V("whisper", False), Voter("whisper", None, False, available=False, technical_failure=True),
                     Voter("whisper", "", False, available=False)]
         n_checked = 0
-        for p, s, w, pdb, tb in itertools.product(voters_p, voters_s, voters_w, (True, False), (True, False)):
-            need = m.whisper_needed(p, s, protected_dissent_blocks=pdb, tiebreak=tb)
-            tr = m.tally(p, s, w if need else None, protected_dissent_blocks=pdb, tiebreak=tb)
+        for p, s, w, tb in itertools.product(voters_p, voters_s, voters_w, (True, False)):
+            need = m.whisper_needed(p, s, tiebreak=tb)
+            tr = m.tally(p, s, w if need else None, tiebreak=tb)
             wc = Counter(w) if w is not None else None
-            d = m.decide(p, lambda s=s: s, wc, protected_dissent_blocks=pdb, tiebreak=tb)
+            d = m.decide(p, lambda s=s: s, wc, tiebreak=tb)
             if need and w is None:
                 # whisper_fn未設定の割れ: decideはWhisper無し=技術STOP(tally(None)と同じ)
                 self.assertEqual(d.state, m.NG_WHISPER_UNAVAILABLE)
             else:
-                self.assertEqual((d.state, d.reason, d.pass_count, d.row), (tr.state, tr.reason, tr.pass_count, tr.row), (p, s, w, pdb, tb))
+                self.assertEqual((d.state, d.reason, d.pass_count, d.row), (tr.state, tr.reason, tr.pass_count, tr.row), (p, s, w, tb))
             if not need:
                 self.assertTrue(wc is None or wc.n == 0, "whisper must not be called when not needed")
             n_checked += 1
-        self.assertGreater(n_checked, 400)
+        self.assertGreater(n_checked, 200)
 
     def test_tally_has_no_side_effects(self):
         import inspect
@@ -76,10 +76,9 @@ class TallyPurityAndEquivalence(unittest.TestCase):
             self.assertNotIn(forbidden, src)
 
     def test_hard_states_never_overridden_by_whisper(self):
-        """除外確定状態(Primary失敗/Primary保護差/Secondary障害)はWhisper PASSでも覆らない。"""
+        """除外確定状態(Primary失敗/Secondary障害)はWhisper PASSでも覆らない。"""
         w = V("whisper", True)
         for p, s in ((Voter("openai", None, False, available=False), V("azure", True)),
-                     (V("openai", False, protected_diff=True), V("azure", True)),
                      (V("openai", True), Voter("azure", None, False, available=False))):
             tr = m.tally(p, s, w)
             self.assertIn(tr.state, m.HARD_STATES)

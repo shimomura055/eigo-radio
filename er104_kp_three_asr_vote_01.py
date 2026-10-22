@@ -6,6 +6,10 @@
 # 置換対象 = 旧「両方PASS必須」(er096_kp_dual_pass_01、OPEN-440)。本moduleは **純粋な集計関数 tally()/whisper_needed()** を持つ
 # (P-09: er078 judgeの`done()`出口と`decide()`が同じ関数を呼ぶ=実装二重化なし)。
 #
+# 【2026-10-22 KP-QUALITY-IMPROVEMENT-2ITEMS-PRODUCTION-01(OPEN-458、ユーザー承認)】KP英語の票・短絡から『数値・否定の保護(値DIFF/否定差)』を撤去した。
+#   票のPASS/NGは本文一致判定(classify_asr_match+同音救済)だけで決め、値DIFF/否定差は監査(observed_protected_diff)に記録するだけで判定に使わない
+#   (撤去: Primary保護差短絡の状態・反対票側保護差ブロックの状態/引数・Voterの保護差の判定用途。いずれも2026-10-22以前のKP3V v1の規則)。非KP音声の統一judgeの保護(er078側のNG_PROTECTED)は不変。
+#   audit/証跡には `guard_lifted:true` / `guard_lifted_version` を加算(version `kp_vote_check_v1`は据え置き)。AMBIGUOUS(根拠のない曖昧表層)は票の分類として維持(保護解除の対象外)。
 # 真理値表(ユーザー§2):  P=Primary(OpenAI自身のPASS。Azure転写に依存した救済PASSはPASSと数えない) S=Secondary(Azure) W=Whisper
 #   行1 P PASS S PASS -> PASS(W不要)         行2 P PASS S NG -> W PASS で PASS(PASS_VOTE_2OF3,row=P+W) / W NG で NG
 #   行4 P NG S PASS -> W PASS で PASS_WITH_WARNING+SECONDARY_CONFIRMED(row=S+W、事後試聴リスト対象。P-03) / W NG で NG
@@ -25,6 +29,7 @@ from dataclasses import dataclass, field
 from typing import Callable, Optional
 
 CHECK_VERSION = "kp_vote_check_v1"
+GUARD_LIFTED_VERSION = "kp_vote_guard_lifted_v1"   # 2026-10-22: 数値・否定の保護解除(加算フィールド。reader互換のためCHECK_VERSIONは据え置き)
 KP_THREE_ASR_VOTE_ENABLED = True   # 単一flag(module定数。env/引数/設定dictからは変えられない)。読取は vote_enabled() のみ
 KP_WHISPER_TIEBREAK_ENABLED = True  # 戻しスイッチ(P-04): False = 旧「両方PASS必須」。読取は tiebreak_enabled() のみ
 WHISPER_MODEL_SIZE = "small"        # Production既存(er008 disfluency QA / er006 CS-equivalence)と同一: faster-whisper small cpu int8
@@ -37,16 +42,14 @@ PASS_DUAL = "PASS_DUAL"                         # P PASS かつ S PASS (Whisper�
 PASS_VOTE_2OF3 = "PASS_VOTE_2OF3"               # P/Sが割れ、Whisperが多数派を作ってPASS
 NG_BOTH = "NG_BOTH"                             # P NG かつ S NG (Whisper不呼出)
 NG_VOTE_WHISPER_NG = "NG_VOTE_WHISPER_NG"       # 割れてWhisperもNG/空転写(1/3 PASS)。通常の再生成
-NG_PROTECTED = "NG_PROTECTED"                   # Primaryの保護差(値DIFF/否定差)。既存P1どおりSecondary/Whisper不呼出
-NG_PROTECTED_DISSENT = "NG_PROTECTED_DISSENT"   # 反対票側の保護差(承認済み値/否定ガードの対称適用、P-07b。既定ON)
 NG_PRIMARY_ASR_FAILURE = "NG_PRIMARY_ASR_FAILURE"
 NG_SECONDARY_UNAVAILABLE = "NG_SECONDARY_UNAVAILABLE"   # 技術STOP(Primary+Whisperの2/3へ降格しない)
 NG_WHISPER_UNAVAILABLE = "NG_WHISPER_UNAVAILABLE"       # 技術STOP(例外/import失敗/timeout/circuit open/未設定)
 NG_SPLIT_TIEBREAK_OFF = "NG_SPLIT_TIEBREAK_OFF"         # tie-break無効(戻しスイッチ)時の割れ = 旧「両方PASS必須」と同じ通常NG
 PASSING = (PASS_DUAL, PASS_VOTE_2OF3)
 TECHNICAL_STOPS = (NG_SECONDARY_UNAVAILABLE, NG_WHISPER_UNAVAILABLE)
-HARD_STATES = (NG_PRIMARY_ASR_FAILURE, NG_PROTECTED, NG_SECONDARY_UNAVAILABLE)   # 票を集計する前に確定する状態(除外NG_EXCLUDEDはjudge側P2)
-STATES = (PASS_DUAL, PASS_VOTE_2OF3, NG_BOTH, NG_VOTE_WHISPER_NG, NG_PROTECTED, NG_PROTECTED_DISSENT, NG_PRIMARY_ASR_FAILURE,
+HARD_STATES = (NG_PRIMARY_ASR_FAILURE, NG_SECONDARY_UNAVAILABLE)   # 票を集計する前に確定する状態(除外NG_EXCLUDEDはjudge側P2)
+STATES = (PASS_DUAL, PASS_VOTE_2OF3, NG_BOTH, NG_VOTE_WHISPER_NG, NG_PRIMARY_ASR_FAILURE,
           NG_SECONDARY_UNAVAILABLE, NG_WHISPER_UNAVAILABLE, NG_SPLIT_TIEBREAK_OFF)
 ROW_DUAL, ROW_P_W, ROW_S_W = "P+S", "P+W", "S+W"   # どの行で合格したか(P-10)
 
@@ -68,7 +71,7 @@ class Voter:
     passed: bool = False              # 現行分類器(classify_asr_match + 同音救済 + 値/否定ガード)でのPASS。Primaryは「OpenAI自身のPASS」
     available: bool = True            # False = 票を投じられない(空転写/例外/circuit open/timeout/未導入)
     label: str = ""
-    protected_diff: bool = False      # 値DIFFまたは否定差(転写自体が別の数/否定を言っている)
+    observed_protected_diff: bool = False   # 観測した値DIFF/否定差(監査のみ。票・短絡には使わない=2026-10-22保護解除)
     rescued: bool = False             # (Primaryのみ) Azure転写等に依存した救済PASS。passed=Falseとして渡す
     error: Optional[str] = None
     technical_failure: bool = False   # True = 環境障害(例外/import失敗/timeout/circuit open)。空転写はFalse(NG票)
@@ -79,7 +82,7 @@ class Voter:
 
     def audit(self) -> dict:
         return {"provider": self.provider, "text": self.text, "pass": bool(self.passed), "available": bool(self.available),
-                "label": self.label, "protected_diff": bool(self.protected_diff), "rescued": bool(self.rescued), "error": self.error,
+                "label": self.label, "observed_protected_diff": bool(self.observed_protected_diff), "rescued": bool(self.rescued), "error": self.error,
                 "technical_failure": bool(self.technical_failure), "note": self.reason_note, "rescue_layers": list(self.rescue_layers)}
 
 
@@ -135,21 +138,16 @@ def _is_split(primary: Voter, secondary: Voter) -> bool:
     return bool(primary.passed) != bool(secondary.passed)
 
 
-def whisper_needed(primary: Voter, secondary: Optional[Voter], *, protected_dissent_blocks: bool = True,
-                   tiebreak: Optional[bool] = None) -> bool:
+def whisper_needed(primary: Voter, secondary: Optional[Voter], *, tiebreak: Optional[bool] = None) -> bool:
     """純関数: PとSが割れていて、Whisperの票で結論が変わりうるときだけTrue(呼出側はTrueのときだけWhisperを呼ぶ)。"""
-    if not primary.available or primary.text is None or primary.protected_diff or not _secondary_ok(secondary):
+    if not primary.available or primary.text is None or not _secondary_ok(secondary):
         return False
     if not _is_split(primary, secondary):
-        return False
-    dissent = secondary if primary.passed else primary
-    if protected_dissent_blocks and dissent.protected_diff:
         return False
     return bool(tiebreak_enabled() if tiebreak is None else tiebreak)
 
 
-def tally(primary: Voter, secondary: Optional[Voter], whisper: Optional[Voter], *, protected_dissent_blocks: bool = True,
-          tiebreak: Optional[bool] = None) -> TallyResult:
+def tally(primary: Voter, secondary: Optional[Voter], whisper: Optional[Voter], *, tiebreak: Optional[bool] = None) -> TallyResult:
     """純粋な集計関数(I/Oなし)。judgeの`done()`出口と`decide()`が共に呼ぶ(P-09)。`whisper`はwhisper_needed()がTrueのときだけ渡す。"""
     n = int(bool(primary.passed)) + int(bool(secondary and secondary.passed)) + int(bool(whisper and whisper.passed))
 
@@ -158,17 +156,12 @@ def tally(primary: Voter, secondary: Optional[Voter], whisper: Optional[Voter], 
 
     if not primary.available or primary.text is None:
         return R(NG_PRIMARY_ASR_FAILURE, "primary_asr_failure", count=0)
-    if primary.protected_diff:
-        return R(NG_PROTECTED, "primary_protected_diff", count=int(bool(primary.passed)))        # 既存P1と同じ短絡(S/Wは呼ばれない)
     if not _secondary_ok(secondary):
         return R(NG_SECONDARY_UNAVAILABLE, "secondary_unavailable")
     if primary.passed and secondary.passed:
         return R(PASS_DUAL, "dual_agreed", ROW_DUAL)
     if (not primary.passed) and (not secondary.passed):
         return R(NG_BOTH, "primary_and_secondary_ng")
-    dissent = secondary if primary.passed else primary
-    if protected_dissent_blocks and dissent.protected_diff:
-        return R(NG_PROTECTED_DISSENT, f"dissent_protected_diff:{dissent.provider}")
     if not (tiebreak_enabled() if tiebreak is None else tiebreak):
         return R(NG_SPLIT_TIEBREAK_OFF, "split_tiebreak_disabled_dual_rule")
     if whisper is None:
@@ -187,7 +180,10 @@ def tally(primary: Voter, secondary: Optional[Voter], whisper: Optional[Voter], 
 def build_vote_audit(primary: Voter, secondary: Optional[Voter], whisper: Optional[Voter], tr: TallyResult, *, secondary_called: bool,
                      whisper_called: bool, tiebreak: Optional[bool] = None, extra: Optional[dict] = None) -> dict:
     """judgeの`audit["vote"]`と`decide()`の`VoteDecision.audit`が同じ形になる唯一の組立関数。"""
-    a = {"version": CHECK_VERSION, "required": True, "state": tr.state, "reason": tr.reason, "row": tr.row, "pass_count": tr.pass_count,
+    obs = {"primary": bool(primary.observed_protected_diff), "secondary": bool(secondary.observed_protected_diff) if secondary else False,
+           "whisper": bool(whisper.observed_protected_diff) if whisper else False}
+    a = {"version": CHECK_VERSION, "guard_lifted": True, "guard_lifted_version": GUARD_LIFTED_VERSION, "observed_protected_diff": obs,
+         "required": True, "state": tr.state, "reason": tr.reason, "row": tr.row, "pass_count": tr.pass_count,
          "tiebreak_enabled": bool(tiebreak_enabled() if tiebreak is None else tiebreak),
          "primary": primary.audit(), "secondary": (secondary.audit() if secondary else None), "secondary_called": bool(secondary_called),
          "whisper": (whisper.audit() if whisper else None), "whisper_called": bool(whisper_called),
@@ -201,16 +197,16 @@ def build_vote_audit(primary: Voter, secondary: Optional[Voter], whisper: Option
 
 
 def decide(primary: Voter, secondary_fn: Callable[[], Voter], whisper_fn: Optional[Callable[[], Voter]], *,
-           protected_dissent_blocks: bool = True, tiebreak: Optional[bool] = None) -> VoteDecision:
+           tiebreak: Optional[bool] = None) -> VoteDecision:
     """純関数+遅延callable。judgeと同じ`whisper_needed()`/`tally()`だけを使う(判定ロジックの二重実装なし)。
     secondary_fn/whisper_fnの例外はfail-closed(Secondary=技術STOP、Whisper=技術STOP)に変換する。"""
     def finish(sec, wh, sc, wc):
-        tr = tally(primary, sec, wh, protected_dissent_blocks=protected_dissent_blocks, tiebreak=tiebreak)
+        tr = tally(primary, sec, wh, tiebreak=tiebreak)
         return VoteDecision(tr.state, tr.reason, primary, sec, wh, whisper_called=wc, secondary_called=sc, pass_count=tr.pass_count,
                             row=tr.row, secondary_confirmed_warning=tr.secondary_confirmed_warning,
                             audit=build_vote_audit(primary, sec, wh, tr, secondary_called=sc, whisper_called=wc, tiebreak=tiebreak))
 
-    if not primary.available or primary.text is None or primary.protected_diff:
+    if not primary.available or primary.text is None:
         return finish(None, None, False, False)
     try:
         sec = secondary_fn()
@@ -218,7 +214,7 @@ def decide(primary: Voter, secondary_fn: Callable[[], Voter], whisper_fn: Option
         sec = _unavailable("azure", f"{type(e).__name__}: {e}")
     if not _secondary_ok(sec):
         return finish(sec, None, True, False)
-    if not whisper_needed(primary, sec, protected_dissent_blocks=protected_dissent_blocks, tiebreak=tiebreak):
+    if not whisper_needed(primary, sec, tiebreak=tiebreak):
         return finish(sec, None, True, False)
     if whisper_fn is None:
         wh = None
@@ -248,6 +244,7 @@ def _classify(canonical: str, text: str):
 def make_voter(provider: str, canonical: str, text: Optional[str], *, rescued: bool = False, lang: str = "en",
                max_len: Optional[int] = None, ambiguous_blocks: bool = False) -> Voter:
     """転写文字列 -> Voter。classify_asr_match + 同音救済(_step_alternate_pass) + 値/否定ガード(er078 _protected)。
+    票は本文一致判定のみで決める(値DIFF/否定差=pdiffは`observed_protected_diff`として記録するだけ。2026-10-22保護解除)。
     M1(multi-candidate)は含めない(P-07c: Whisperには適用しない=保守側)。`max_len`(P-02)=呼出元と同じ長さ判定(超過はNG票)、
     `ambiguous_blocks`=値ガードAMBIGUOUS(根拠のない曖昧表層)はPASS票にしない(P-02)。空転写は技術障害ではなくNG票(available=False)。"""
     if text is None or not str(text).strip():
@@ -261,7 +258,7 @@ def make_voter(provider: str, canonical: str, text: Optional[str], *, rescued: b
         ok, note = False, "length_ng"
     if ok and ambiguous_blocks and vgr.kind == uj.vg.AMBIGUOUS:
         ok, note = False, "ambiguous_value"
-    return Voter(provider=provider, text=text, passed=bool(ok and not pdiff and not rescued), label=label, protected_diff=pdiff,
+    return Voter(provider=provider, text=text, passed=bool(ok and not rescued), label=label, observed_protected_diff=pdiff,
                  rescued=rescued, reason_note=note)
 
 
@@ -402,13 +399,14 @@ def vote_check_from_audit(vote_audit: dict, wav_path: str, canonical_text: str, 
     a = vote_audit or {}
     ok = bool(a.get("state") in PASSING) if verified is None else bool(verified)
     p, s, w = a.get("primary") or {}, a.get("secondary") or {}, a.get("whisper") or {}
-    return {"version": CHECK_VERSION, "ok": ok, "source": source, "canonical_text": canonical_text, "wav_sha256": sha256_file(wav_path),
+    return {"version": CHECK_VERSION, "guard_lifted": bool(a.get("guard_lifted", False)), "guard_lifted_version": a.get("guard_lifted_version"),
+            "observed_protected_diff": a.get("observed_protected_diff"), "ok": ok, "source": source, "canonical_text": canonical_text, "wav_sha256": sha256_file(wav_path),
             "vote_state": a.get("state"), "judge_state": judge_state or a.get("state"), "reason_code": a.get("reason"), "row": a.get("row"),
             "pass_count": a.get("pass_count"), "tiebreak_enabled": a.get("tiebreak_enabled"),
             "primary": {"provider": "openai", "text": p.get("text"), "pass": bool(p.get("pass")), "rescued": bool(p.get("rescued")),
                         "rescue_layers": list(p.get("rescue_layers") or [])},
             "secondary": ({"provider": "azure", "text": s.get("text"), "pass": bool(s.get("pass")), "called": bool(a.get("secondary_called")),
-                           "protected_diff": bool(s.get("protected_diff"))} if s else None),
+                           "observed_protected_diff": bool(s.get("observed_protected_diff"))} if s else None),
             "whisper": ({"provider": "faster_whisper", "model": WHISPER_MODEL_SIZE, "compute_type": WHISPER_COMPUTE_TYPE,
                          "text": w.get("text"), "pass": bool(w.get("pass")), "called": bool(a.get("whisper_called")),
                          "error": w.get("error"), "memo_hit": bool(w.get("memo_hit"))} if w else {"called": False}),

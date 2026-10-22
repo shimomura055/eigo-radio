@@ -447,6 +447,13 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
             audit["final_gate"] = {"applied": False, "skipped": "final_and_gate=False"}
         elif approved:
             audit["final_gate"] = {"applied": False, "skipped": f"approved_equivalence:{pr.equivalence_basis}"}
+        elif vote is not None:
+            # 2026-10-22(KP-QUALITY-2ITEMS、ユーザー承認): KP英語(vote_required)は数値・否定の保護を解除。値DIFF/否定差は監査に記録するだけでNGにしない。
+            # AMBIGUOUS(根拠のない曖昧表層)は票の分類として維持(P3へ降格)。
+            audit["final_gate"] = {"applied": False, "skipped": "vote_guard_lifted",
+                                   "observed": {"value_guard": pvg.kind, "negation_diff": pneg}}
+            if pvg.kind == vg.AMBIGUOUS:
+                primary_ng_reason = "primary_pass_demoted_ambiguous_value"
         else:
             audit["final_gate"] = {"applied": True, "value_guard": pvg.kind, "negation_diff": pneg}
             if pvg.kind == vg.DIFF or pneg:
@@ -469,9 +476,10 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
             primary_ng_reason = "force_secondary" if vote is None else "vote_required"
     else:
         # ---- Primary NG: P1 / P2 ----
-        if pvg.kind == vg.DIFF:
+        # 2026-10-22: vote_required(KP英語)ではP1(値DIFF/否定差の短絡)をskipしてP3(Secondary)へ進む。P2除外は維持(数値・否定の保護ではない)。
+        if vote is None and pvg.kind == vg.DIFF:
             return done(NG_PROTECTED, "p1_value_diff")
-        if pneg:
+        if vote is None and pneg:
             return done(NG_PROTECTED, "p1_negation_diff")
         # 委任_04(JA): 既存の保護差(JA SCGが従来から除外していた per-span 数字不一致[値ガードがUNKNOWN/NO_VALUESのとき]・
         # per-span 否定不一致・fugashi否定マーカー差)を、呼出側(adapter)が signals["protected_diff"]=<理由> で渡す。
@@ -548,14 +556,16 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
     audit["value_guard"]["secondary"] = svg.to_dict()
     audit["negation_guard"]["secondary"] = sneg
 
-    def finish_vote(s_pass: bool, s_reason: str, extra_warnings=(), s_pdiff: bool = False):
+    def finish_vote(s_pass: bool, s_reason: str, extra_warnings=()):
         """KP3V: 票(P/S[/W])を純関数tally()で集計して確定する唯一の出口。状態変換(PASS/PASS_WITH_WARNING/NG)はdone()の
         PASS_WITH_WARNING変換・LR_REWRITTEN付与より前にここで済ませる(P-09)。Whisperは割れたときだけ呼ぶ。"""
         import er104_kp_three_asr_vote_01 as kp3v
         pv = kp3v.Voter("openai", text=pr.text, passed=bool(vote["primary_pass"]), label=pr.label,
+                        observed_protected_diff=bool(pvg.kind == vg.DIFF or pneg),
                         rescued=bool(vote["primary_rescued_by_secondary"]), rescue_layers=tuple(vote["primary_rescue_layers"]),
                         reason_note=vote.get("primary_not_pass_reason"))
-        sv = kp3v.Voter("azure", text=stext, passed=bool(s_pass), label=(audit["secondary"].get("label") or ""), protected_diff=bool(s_pdiff), reason_note=s_reason)
+        sv = kp3v.Voter("azure", text=stext, passed=bool(s_pass), label=(audit["secondary"].get("label") or ""),
+                        observed_protected_diff=bool(svg.kind == vg.DIFF or sneg), reason_note=s_reason)
         wv, wcalled = None, False
         if kp3v.whisper_needed(pv, sv):
             wcalled = True
@@ -586,10 +596,9 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
         both_ng = (not pv.passed) and (not sv.passed)
         return done(NG_BOTH, s_reason if both_ng else tr.reason, w2)
 
-    if svg.kind == vg.DIFF or sneg:
+    if vote is None and (svg.kind == vg.DIFF or sneg):
+        # 2026-10-22: vote_required(KP英語)ではS票の値DIFF/否定差を票に影響させない(下の許容集合判定で決める)。非KPは従来どおり。
         _r = "secondary_value_diff" if svg.kind == vg.DIFF else "secondary_negation_diff"
-        if vote is not None:
-            return finish_vote(False, _r, s_pdiff=True)
         return done(NG_BOTH, _r, warnings)
 
     # 許容集合判定(注入)

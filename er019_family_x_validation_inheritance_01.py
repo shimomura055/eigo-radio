@@ -202,7 +202,8 @@ def try_inherit_from_cached(cached_entry: Optional[dict], wav_path: str, expecte
         # AUW 委任_06c(OF-AUW-C-03): 引継ぎ前に保存転写のみ(API 0)を現行の統一judgeへ通す。値ガードDIFF/否定差(`reuse_blocked` mark含む)
         # なら引継ぎず(None)、呼出側は再生成/SKIPPED(=Gate BLOCK維持)へ回す。carry_over_unchanged(検証済み扱いにしない持越し)は対象外。
         import er078_reuse_value_guard_01 as _rvg
-        if _rvg.guard_entry(cached_entry, label=str((source_ref or {}).get("label") or "")).get("blocked"):
+        if _rvg.guard_entry(cached_entry, label=str((source_ref or {}).get("label") or ""),
+                            kp_vote_gate_follows=bool(kp_vote_required)).get("blocked"):   # OF-KPQ-P-01: kp_vote_required時は直後にkp_vote_reuse_okが続く
             return None
         if kp_vote_required:
             # KP3V(OF-KPD-P-03、再利用点2): KP英語phraseの引継ぎ(--only-segments非選択)は、両Provider PASSの保存証跡を現行分類器で
@@ -400,7 +401,10 @@ def rebuild_state(level_dir: str, source_results_path: str, source_root: str, pr
     無い/`roles`キー無しでも可: entry自身のsha256経路で通る)。
     seed_wav=True: 元runのwavをlevel_dir/narration/{label}.wavへ置く(適用時)前提で、元wavを候補として評価する
     (現在wavが無い/元wavと異なる場合のみ。既存wavはapply時に`_replaced_02/`へ退避してから置換する)。
-    現在のresults(level_dir/audit/tts_generation_results.json)は変更しない。戻り値=判定結果(merged_segments案を含む)。"""
+    現在のresults(level_dir/audit/tts_generation_results.json)は変更しない。戻り値=判定結果(merged_segments案を含む)。
+    【OF-KPQ-P-09、2026-10-22】本関数(明示CLI・既定dry-run)はnarration/{label}.wav系segmentの再構築用で、KP英語component(key_phrases)は
+    対象外。rejudge_f1の`rejudge_with_current_judge`はvoteなしのjudgeで再判定するため、KP英語entryを渡すと保護解除(vote)の規則と
+    食い違う。KP英語entryをこの経路へ渡す運用はしない(KP英語の再利用はkp_vote_reuse_ok経由のみ=Production再利用6点)。"""
     cur_path = f"{level_dir}/audit/tts_generation_results.json"
     cur = json.load(open(cur_path, encoding="utf-8")) if os.path.exists(cur_path) else {"segments": {}}
     src = json.load(open(source_results_path, encoding="utf-8"))

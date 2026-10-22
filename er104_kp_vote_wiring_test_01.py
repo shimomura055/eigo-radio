@@ -176,17 +176,56 @@ def test_row6_both_ng_no_whisper_call():
     assert (jr.state, n, wh.calls) == (uj.NG_BOTH, 1, 0) and jr.reason_code == "secondary_not_accepted"
 
 
-def test_P05_primary_ng_with_p1_protected_diff_keeps_existing_short_circuit_no_azure_no_whisper():
-    wh = Wh()
+def test_P05_lifted_primary_ng_with_protected_diff_no_short_circuit_calls_secondary_and_whisper():
+    """2026-10-22保護解除(OF-KPQ): KPではPrimary NG+保護差でもP1短絡せずSecondaryを呼び、S PASS+W PASSなら行4(S+W、PASS_WITH_WARNING)。"""
+    wh = Wh("I have 5 cats.", canon="I have 5 cats")
     jr, n = _judge("I have 3 cats", False, "I have 5 cats", canon="I have 5 cats", whisper=wh)
-    assert jr.state == uj.NG_PROTECTED and n == 0 and wh.calls == 0
+    assert n == 1 and wh.calls == 1 and jr.state == uj.PASS_WITH_WARNING and uj.W_SECONDARY_CONFIRMED in jr.warning_labels
+    v = jr.audit_record["vote"]
+    assert v["row"] == "S+W" and v["guard_lifted"] is True and v["observed_protected_diff"]["primary"] is True
 
 
-def test_dissent_secondary_protected_diff_blocks_2of3_P07b():
-    """P-07(b): 反対票側(Secondary)が別の数を言っている(値DIFF)なら、P PASS+W PASSでも2/3を成立させない(承認済み値ガードの対称適用)。"""
+def test_P05_non_kp_keeps_p1_short_circuit_no_azure_no_whisper():
+    """非KP(vote_required=False)のP1短絡(NG_PROTECTED)は不変。"""
+    jr, n = _judge("I have 3 cats", False, "I have 5 cats", canon="I have 5 cats", vote=False)
+    assert jr.state == uj.NG_PROTECTED and n == 0
+
+
+def test_lifted_primary_pass_with_value_diff_final_gate_skipped_but_recorded():
+    """Primary PASS(分類器PASS扱い)+観測保護差: 最終ANDゲートでNG_PROTECTEDにせず票として扱う(記録のみ)。非KPは従来どおりNG_PROTECTED。"""
+    wh = Wh("I have 5 cats.", canon="I have 5 cats")
+    jr, n = _judge("I have 3 cats.", True, "I have 5 cats.", canon="I have 5 cats", whisper=wh)
+    assert jr.state == uj.PASS and wh.calls == 0 and jr.audit_record["vote"]["observed_protected_diff"]["primary"] is True
+    jr2, _ = _judge("I have 3 cats.", True, "I have 5 cats.", canon="I have 5 cats", vote=False)
+    assert jr2.state == uj.NG_PROTECTED
+
+
+def test_dissent_secondary_protected_diff_no_longer_blocks_2of3_lifted():
+    """2026-10-22保護解除(P-07(b)置換): 反対票側(Secondary)が別の数を言っていてもWhisperを呼び、P PASS+W PASSなら2/3でPASS(行2、P+W)。"""
     wh = Wh("I have 5 cats.", canon="I have 5 cats")
     jr, n = _judge("I have 5 cats.", True, "I have 3 cats.", canon="I have 5 cats", whisper=wh)
-    assert jr.state == uj.NG_BOTH and wh.calls == 0 and jr.audit_record["vote"]["state"] == kp3v.NG_PROTECTED_DISSENT
+    assert jr.verified and wh.calls == 1 and jr.audit_record["vote"]["row"] == "P+W"
+    assert jr.audit_record["vote"]["observed_protected_diff"]["secondary"] is True
+
+
+def test_lifted_dissent_with_whisper_ng_is_ng():
+    wh = Wh("I have 3 cats.", canon="I have 5 cats")
+    jr, n = _judge("I have 5 cats.", True, "I have 3 cats.", canon="I have 5 cats", whisper=wh)
+    assert (not jr.verified) and wh.calls == 1 and jr.audit_record["vote"]["state"] == kp3v.NG_VOTE_WHISPER_NG
+
+
+def test_lifted_both_ng_with_protected_diff_no_whisper():
+    wh = Wh("I have 5 cats.", canon="I have 5 cats")
+    jr, n = _judge("I have 3 cats.", False, "I have 3 cats.", canon="I have 5 cats", whisper=wh)
+    assert (not jr.verified) and wh.calls == 0 and jr.audit_record["vote"]["state"] == kp3v.NG_BOTH
+
+
+def test_P06_lifted_p1_skip_now_evaluates_p2_exclusion():
+    """OF-KPQ-P-06: P1を外すとP2除外(A3 length NGなど)が評価される。除外は数値・否定の保護ではないため維持される。"""
+    wh = Wh("I have 5 cats.", canon="I have 5 cats")
+    jr, n = _judge("I have 3 cats.", False, "I have 5 cats.", canon="I have 5 cats", whisper=wh,
+                   length_ok=False)
+    assert jr.state == uj.NG_EXCLUDED and n == 0 and wh.calls == 0 and jr.reason_code.startswith("p2_exclusion:")
 
 
 @pytest.mark.parametrize("exc,text", [(RuntimeError("timeout"), "x"), (None, ""), (None, None)])
@@ -305,8 +344,8 @@ def test_P09_judge_and_decide_agree_on_all_combinations(monkeypatch, tiebreak):
         sv = kp3v.make_voter("azure", canon, st) if st else kp3v.Voter("azure", st, False, available=False)
         wh2 = Wh(wt, exc=(RuntimeError("x") if wk == "boom" else None), canon=canon)
         d = kp3v.decide(pv, lambda sv=sv: sv, wh2)
-        assert jr.audit_record["vote"]["state"] == d.state or jr.state in (uj.NG_PROTECTED, uj.NG_SECONDARY_UNAVAILABLE) \
-            and d.state in (kp3v.NG_PROTECTED, kp3v.NG_SECONDARY_UNAVAILABLE), (pk, sk, wk, jr.state, jr.audit_record["vote"], d.state)
+        assert jr.audit_record["vote"]["state"] == d.state or jr.state == uj.NG_SECONDARY_UNAVAILABLE \
+            and d.state == kp3v.NG_SECONDARY_UNAVAILABLE, (pk, sk, wk, jr.state, jr.audit_record["vote"], d.state)
         assert jr.verified == d.verified, (pk, sk, wk)
         assert wh.calls == wh2.calls, (pk, sk, wk, wh.calls, wh2.calls)
         n_checked += 1
@@ -611,7 +650,9 @@ def _production_py_files():
             continue
         if "_test" in f or f.startswith("test_") or "audit" in f or "_trial_" in f or "_trial." in f:
             continue
-        if f.startswith(("er088_", "er091_", "er092_", "er093_", "er096_", "er099_")):    # 履歴script/Trial(Productionではない)
+        if f.startswith(("er088_", "er091_", "er092_", "er093_", "er096_", "er099_", "er106_", "er107_", "er108_kp_cmu_census",
+                         "er108_kp_noguard", "er108_kp_guard_exposure", "er108_kp_guard_lifted_runtime",
+                         "er109_pattern_probe_01", "er109_stored_census_01")):    # 履歴script/Trial/研究script(Productionではない)
             continue
         out.append(f)
     return out
@@ -1296,3 +1337,82 @@ def test_assembly_audit_is_nonblocking_and_reports_missing_evidence(tmp_path, ca
     s2 = {}
     x._attach_kp_vote_audit(s2, str(tmp_path), "b1b")
     assert s2 == {} and kv.assembly_audit(res) == {"enabled": False}
+
+
+# ============================================================
+# I. KP-QUALITY-2ITEMS(2026-10-22): 再利用事前guard(guard_entry)の保護解除は『vote gateが後続する呼出』だけ(OF-KPQ-P-01)
+# ============================================================
+import er078_reuse_value_guard_01 as rvg  # noqa: E402
+
+_E_DIFF = {"status": "OK", "asr_verified": True, "text": "two days", "canonical_text": "two days", "asr_text": "Three days."}
+
+
+def test_P01_guard_entry_skip_only_with_explicit_arg_and_reuse_blocked_mark_still_wins():
+    lab = "master:key_phrase_english_component"
+    assert rvg.guard_entry(_E_DIFF, label=lab)["blocked"] is True                          # 既定(A/B/C・非KP・vote無効)= 保護維持
+    assert rvg.guard_entry(_E_DIFF, label=lab, kp_vote_gate_follows=False)["blocked"] is True
+    g = rvg.guard_entry(_E_DIFF, label=lab, kp_vote_gate_follows=True)
+    assert g["blocked"] is False and g["reason"] == "KP_EN_VOTE_GATE_DECIDES" and g["api_calls"] == 0
+    g2 = rvg.guard_entry(dict(_E_DIFF, reuse_blocked={"by": "bulk"}), label=lab, kp_vote_gate_follows=True)
+    assert g2["blocked"] is True and g2["reason"] == "REUSE_BLOCKED_MARK"                  # 明示markは尊重
+
+
+def test_P01_store_abc_default_still_blocks_value_diff_same_label_as_kp(tmp_path, monkeypatch):
+    """A/B/CのKP英語再利用(reuse_gate=None, label同一)は保護維持: 値DIFFのentryは再利用せず再生成する。"""
+    key = kv.vote_store_key("two days", "speech_metadata_flash_lite")
+    _seed_store(key, tmp_path, primary="Three days.")
+    monkeypatch.setattr(sec, "get_full_text_via_azure_stt_with_phrase_list", Az(raises=AssertionError("no azure")))
+    gen = []
+    r = store.get_or_generate(key, str(tmp_path / "out.wav"), lambda p: (gen.append(1), _wav(p), {"status": "OK"})[2])
+    assert gen == [1] and r["reused"] is False
+
+
+def test_P01_store_with_vote_gate_passes_true_and_without_gate_passes_false(tmp_path, monkeypatch):
+    seen = []
+    orig = rvg.guard_entry
+
+    def spy(entry, **kw):
+        seen.append(kw.get("kp_vote_gate_follows"))
+        return orig(entry, **kw)
+    monkeypatch.setattr(rvg, "guard_entry", spy)
+    key = kv.vote_store_key("two days", "speech_metadata_flash_lite")
+    _seed_store(key, tmp_path, primary="Two days.")
+    monkeypatch.setattr(sec, "get_full_text_via_azure_stt_with_phrase_list", Az(("Two days.", None)))
+    store.get_or_generate(key, str(tmp_path / "o1.wav"), lambda p: {"status": "OK"})
+    store.get_or_generate(key, str(tmp_path / "o2.wav"), lambda p: {"status": "OK"}, reuse_gate=kv.KpVoteReuseGate())
+    assert seen == [False, True]
+
+
+def test_P01_x_runner_and_inheritance_and_z_pass_explicit_arg(monkeypatch):
+    import er019_family_x_audio_production_runner_01 as xr
+    import er019_family_x_validation_inheritance_01 as vi
+    seen = []
+    orig = rvg.guard_entry
+
+    def spy(entry, **kw):
+        seen.append(("kp_vote_gate_follows", kw.get("kp_vote_gate_follows")))
+        return orig(entry, **kw)
+    monkeypatch.setattr(rvg, "guard_entry", spy)
+    assert xr._reuse_guard_blocks(_E_DIFF, "kp1_english", kp_vote_gate_follows=True) is None
+    assert xr._reuse_guard_blocks(_E_DIFF, "kp1_english") is not None
+    # 引継ぎ: kp_vote_required がそのまま渡る
+    seen.clear()
+    vi.try_inherit_from_cached(dict(_E_DIFF), "no.wav", None, "v1", "v1", {"label": "x"}, kp_vote_required=True)
+    vi.try_inherit_from_cached(dict(_E_DIFF), "no.wav", None, "v1", "v1", {"label": "x"}, kp_vote_required=False)
+    # 上は証拠不足でguardに到達しない場合があるため、ソースでも固定する
+    srcs = {f: open(os.path.join(ROOT, f), encoding="utf-8").read() for f in
+            ("er019_family_x_validation_inheritance_01.py", "er019_family_x_audio_production_runner_01.py", "er063_family_z_audio_01.py",
+             "er006_master_audio_store_01.py")}
+    assert "kp_vote_gate_follows=bool(kp_vote_required)" in srcs["er019_family_x_validation_inheritance_01.py"]
+    assert 'kp_vote_gate_follows=bool(role == "english" and kp_vote.vote_enabled())' in srcs["er019_family_x_audio_production_runner_01.py"]
+    assert 'kp_vote_gate_follows=bool(spec.kind == "kp_en" and kp_vote.vote_enabled())' in srcs["er063_family_z_audio_01.py"]
+    assert "kp_vote_gate_follows=(reuse_gate is not None)" in srcs["er006_master_audio_store_01.py"]
+
+
+def test_P01_rollback_vote_disabled_keeps_protection_in_x_and_z(monkeypatch):
+    """vote無効(rollback)ではKP英語でも保護再判定を維持する(呼出元がFalseを渡す)。"""
+    import er019_family_x_audio_production_runner_01 as xr
+    monkeypatch.setattr(kp3v, "KP_THREE_ASR_VOTE_ENABLED", False)
+    follows = bool("english" == "english" and xr.kp_vote.vote_enabled())
+    assert follows is False
+    assert xr._reuse_guard_blocks(_E_DIFF, "kp1_english", kp_vote_gate_follows=follows) is not None

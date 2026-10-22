@@ -114,22 +114,18 @@ class FailClosed(unittest.TestCase):
         d = m.decide(Voter("openai", None, False, available=False), sec, wh)
         self.assertEqual((d.state, sec.n, wh.n), (m.NG_PRIMARY_ASR_FAILURE, 0, 0))
 
-    def test_primary_protected_diff_short_circuit_no_calls(self):
+    def test_primary_observed_protected_diff_no_short_circuit(self):
+        """2026-10-22保護解除: Primary NG+観測保護差でもSecondary/Whisperを呼ぶ(短絡しない)。"""
         sec, wh = Counter(V("azure", True)), Counter(V("whisper", True))
-        d = m.decide(V("openai", False, protected_diff=True), sec, wh)
-        self.assertEqual((d.state, sec.n, wh.n, d.verified), (m.NG_PROTECTED, 0, 0, False))
+        d = m.decide(V("openai", False, observed_protected_diff=True), sec, wh)
+        self.assertEqual((d.state, sec.n, wh.n, d.verified, d.row), (m.PASS_VOTE_2OF3, 1, 1, True, m.ROW_S_W))
 
-    def test_dissent_protected_diff_blocks_2of3(self):
+    def test_dissent_observed_protected_diff_still_calls_whisper(self):
+        """反対票側の観測保護差でWhisperを止めない(旧dissentブロックの撤去)。"""
         wh = Counter(V("whisper", True))
-        d = m.decide(V("openai", True), Counter(V("azure", False, protected_diff=True)), wh)
-        self.assertEqual((d.state, wh.n, d.verified), (m.NG_PROTECTED_DISSENT, 0, False))
-        # 反対票側がPrimary(NG+保護差)でもP1短絡(NG_PROTECTED)
-        d2 = m.decide(V("openai", False, protected_diff=True), Counter(V("azure", True)), wh)
-        self.assertEqual(d2.state, m.NG_PROTECTED)
-        # opt-out時は表どおり(Whisper呼出)
-        d3 = m.decide(V("openai", True), Counter(V("azure", False, protected_diff=True)), Counter(V("whisper", True)),
-                      protected_dissent_blocks=False)
-        self.assertEqual(d3.state, m.PASS_VOTE_2OF3)
+        d = m.decide(V("openai", True), Counter(V("azure", False, observed_protected_diff=True)), wh)
+        self.assertEqual((d.state, wh.n, d.verified, d.row), (m.PASS_VOTE_2OF3, 1, True, m.ROW_P_W))
+        self.assertTrue(d.audit["observed_protected_diff"]["secondary"] and d.audit["guard_lifted"])
 
     def test_rescued_primary_is_not_a_pass(self):
         """Azure転写依存で救済されたPrimary(rescued)はOpenAI自身のPASSではない: make_voterでpassed=False。"""
