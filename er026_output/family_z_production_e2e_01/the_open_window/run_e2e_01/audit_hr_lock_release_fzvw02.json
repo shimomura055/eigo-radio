@@ -1,0 +1,465 @@
+{
+ "time": "2026-10-23T07:27:02",
+ "operation": "er011_human_review_lock_01.approve_regenerate",
+ "out_path": "er026_output/family_z_production_e2e_01/the_open_window/run_e2e_01/a2/narration/full_story_part1_c10.wav",
+ "approved_by": "fable:FZVW-02:validator_fix_79e9b4310",
+ "before": {
+  "state": "HUMAN_REVIEW_REQUIRED",
+  "canonical_text_sha256": "13d837f708463ea3202d0537d5e1c63c1851b4ddc5c84535022821a4a10165f4",
+  "language": "en",
+  "theme_id": "run_e2e_01",
+  "level": "a2",
+  "segment_id": "full_story_part1_c10",
+  "updated_at": "2026-10-23T06:56:37",
+  "reason": "最終status=STOPPED。3回試行してもASR検証に合格しませんでした",
+  "final_status": "STOPPED",
+  "wav_path": "er026_output/family_z_production_e2e_01/the_open_window/run_e2e_01/a2/narration/full_story_part1_c10.wav",
+  "cumulative_tts_attempts": 3,
+  "cumulative_asr_calls": 3,
+  "budget_guard_triggered": false,
+  "last_attempts_log": [
+   {
+    "attempt": 1,
+    "status": "OK",
+    "asr_text": "Her husband and two young brothers went shooting three years ago today. They went outside through that very window.",
+    "asr_judgement": {
+     "state": "NG_BOTH",
+     "reason_code": "secondary_not_accepted",
+     "slot": 1,
+     "script_version": "v0",
+     "role": null,
+     "lang": "en",
+     "segment_key": "",
+     "audio_sha256": "c8ab8488b1bd02809c030abd1ad965c907fb878afcb9489e9397746e8c11d2e8",
+     "primary": {
+      "text": "Her husband and two young brothers went shooting three years ago today. They went outside through that very window.",
+      "passed": false,
+      "label": "ASR_VALIDATION_UNCERTAIN",
+      "equivalence_basis": null,
+      "warning_labels": []
+     },
+     "secondary": {
+      "called": true,
+      "cached": false,
+      "engine": "azure",
+      "text": "Her husband and two young brothers went shooting three years ago today. They went outside through that very window.",
+      "label": "ASR_VALIDATION_UNCERTAIN",
+      "accepted": false,
+      "error": null,
+      "unavailable": false
+     },
+     "value_guard": {
+      "primary": {
+       "kind": "EQUAL",
+       "pairs": [
+        {
+         "src": "2",
+         "hyp": "2",
+         "verdict": "EQUAL",
+         "reason": "same_surface"
+        },
+        {
+         "src": "3",
+         "hyp": "3",
+         "verdict": "EQUAL",
+         "reason": "same_surface"
+        }
+       ],
+       "reasons": [],
+       "warnings": []
+      },
+      "secondary": {
+       "kind": "EQUAL",
+       "pairs": [
+        {
+         "src": "2",
+         "hyp": "2",
+         "verdict": "EQUAL",
+         "reason": "same_surface"
+        },
+        {
+         "src": "3",
+         "hyp": "3",
+         "verdict": "EQUAL",
+         "reason": "same_surface"
+        }
+       ],
+       "reasons": [],
+       "warnings": []
+      }
+     },
+     "negation_guard": {
+      "primary": false,
+      "secondary": false
+     },
+     "final_gate": {
+      "applied": false
+     },
+     "warnings": [],
+     "exclusion_rule": null,
+     "cost": {
+      "azure_calls": 1,
+      "azure_seconds": 7.851,
+      "est_jpy": 0.3556,
+      "est_jpy_known": true
+     },
+     "timing": {
+      "total_ms": 2042,
+      "secondary_ms": 2040
+     },
+     "technical_stop": null,
+     "length": {
+      "applied": true,
+      "primary_len": 115,
+      "secondary_len": 115,
+      "max_len": 126,
+      "adopted_from": "primary",
+      "adopted_ok": true,
+      "surface_len": 95,
+      "primary_ok": true
+     },
+     "p3_entry": "p3_primary_ng",
+     "pronunciation_alarm_eval": {
+      "accepted": false,
+      "reason": "ROLE_NOT_APPLICABLE",
+      "detail": {
+       "role": null
+      }
+     },
+     "adapter": {
+      "layers": [],
+      "azure_real_calls": 1,
+      "cost_guard_triggered": false,
+      "language": "en-US",
+      "segment_id": null,
+      "asr_text_present": true,
+      "cache": {
+       "calls": 15,
+       "hits": 3
+      }
+     }
+    },
+    "instruction_type": "english_style_prefix_wide_margin",
+    "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+    "connected_speech_info": null,
+    "length_ok": true,
+    "final_length_ok": true,
+    "verified": false,
+    "trim_info": {
+     "raw_duration_seconds": 7.851,
+     "raw_leading_silence_seconds": 0.26,
+     "raw_trailing_silence_seconds": 0.18,
+     "trimmed_duration_seconds": 7.851,
+     "leading_margin_retained_seconds": 0.26,
+     "trailing_margin_retained_seconds": 0.18
+    },
+    "disfluency_checked": false,
+    "disfluency_evidence": null,
+    "repetition_qa_checked": false,
+    "repetition_qa_evidence": null,
+    "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_e2e_01/a2/narration/attempts/full_story_part1_c10_attempt1_englishstyleprefixwidemargin.wav"
+   },
+   {
+    "attempt": 2,
+    "status": "OK",
+    "asr_text": "Her husband and two young brothers went shooting three years ago today. They went outside through that very window.",
+    "asr_judgement": {
+     "state": "NG_BOTH",
+     "reason_code": "secondary_not_accepted",
+     "slot": 2,
+     "script_version": "v0",
+     "role": null,
+     "lang": "en",
+     "segment_key": "",
+     "audio_sha256": "77482a60070f9ea770256dc3ac5563c43111bf7bbf2691ea62c8cf0c105db97f",
+     "primary": {
+      "text": "Her husband and two young brothers went shooting three years ago today. They went outside through that very window.",
+      "passed": false,
+      "label": "ASR_VALIDATION_UNCERTAIN",
+      "equivalence_basis": null,
+      "warning_labels": []
+     },
+     "secondary": {
+      "called": true,
+      "cached": false,
+      "engine": "azure",
+      "text": "Her husband and two young brothers went shooting three years ago today. They went outside through that very window.",
+      "label": "ASR_VALIDATION_UNCERTAIN",
+      "accepted": false,
+      "error": null,
+      "unavailable": false
+     },
+     "value_guard": {
+      "primary": {
+       "kind": "EQUAL",
+       "pairs": [
+        {
+         "src": "2",
+         "hyp": "2",
+         "verdict": "EQUAL",
+         "reason": "same_surface"
+        },
+        {
+         "src": "3",
+         "hyp": "3",
+         "verdict": "EQUAL",
+         "reason": "same_surface"
+        }
+       ],
+       "reasons": [],
+       "warnings": []
+      },
+      "secondary": {
+       "kind": "EQUAL",
+       "pairs": [
+        {
+         "src": "2",
+         "hyp": "2",
+         "verdict": "EQUAL",
+         "reason": "same_surface"
+        },
+        {
+         "src": "3",
+         "hyp": "3",
+         "verdict": "EQUAL",
+         "reason": "same_surface"
+        }
+       ],
+       "reasons": [],
+       "warnings": []
+      }
+     },
+     "negation_guard": {
+      "primary": false,
+      "secondary": false
+     },
+     "final_gate": {
+      "applied": false
+     },
+     "warnings": [],
+     "exclusion_rule": null,
+     "cost": {
+      "azure_calls": 1,
+      "azure_seconds": 8.201,
+      "est_jpy": 0.4,
+      "est_jpy_known": true
+     },
+     "timing": {
+      "total_ms": 2036,
+      "secondary_ms": 2034
+     },
+     "technical_stop": null,
+     "length": {
+      "applied": true,
+      "primary_len": 115,
+      "secondary_len": 115,
+      "max_len": 126,
+      "adopted_from": "primary",
+      "adopted_ok": true,
+      "surface_len": 95,
+      "primary_ok": true
+     },
+     "p3_entry": "p3_primary_ng",
+     "pronunciation_alarm_eval": {
+      "accepted": false,
+      "reason": "ROLE_NOT_APPLICABLE",
+      "detail": {
+       "role": null
+      }
+     },
+     "adapter": {
+      "layers": [],
+      "azure_real_calls": 1,
+      "cost_guard_triggered": false,
+      "language": "en-US",
+      "segment_id": null,
+      "asr_text_present": true,
+      "cache": {
+       "calls": 17,
+       "hits": 3
+      }
+     }
+    },
+    "instruction_type": "english_style_prefix_wide_margin",
+    "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+    "connected_speech_info": null,
+    "length_ok": true,
+    "final_length_ok": true,
+    "verified": false,
+    "trim_info": {
+     "raw_duration_seconds": 8.251,
+     "raw_leading_silence_seconds": 0.3,
+     "raw_trailing_silence_seconds": 0.4,
+     "trimmed_duration_seconds": 8.201,
+     "leading_margin_retained_seconds": 0.3,
+     "trailing_margin_retained_seconds": 0.35
+    },
+    "disfluency_checked": false,
+    "disfluency_evidence": null,
+    "repetition_qa_checked": false,
+    "repetition_qa_evidence": null,
+    "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_e2e_01/a2/narration/attempts/full_story_part1_c10_attempt2_englishstyleprefixwidemargin.wav"
+   },
+   {
+    "attempt": 3,
+    "status": "OK",
+    "asr_text": "her husband and two young brothers went shooting three years ago today. They went outside through that very window.",
+    "asr_judgement": {
+     "state": "NG_BOTH",
+     "reason_code": "secondary_not_accepted",
+     "slot": 3,
+     "script_version": "v0",
+     "role": null,
+     "lang": "en",
+     "segment_key": "",
+     "audio_sha256": "3b7564b2246e6931c3c6c00637913be13c78de6ca32433ebf76c8e2f1ca41eb5",
+     "primary": {
+      "text": "her husband and two young brothers went shooting three years ago today. They went outside through that very window.",
+      "passed": false,
+      "label": "ASR_VALIDATION_UNCERTAIN",
+      "equivalence_basis": null,
+      "warning_labels": []
+     },
+     "secondary": {
+      "called": true,
+      "cached": false,
+      "engine": "azure",
+      "text": "Her husband and two young brothers went shooting three years ago today.They went outside through that very window.",
+      "label": "ASR_VALIDATION_UNCERTAIN",
+      "accepted": false,
+      "error": null,
+      "unavailable": false
+     },
+     "value_guard": {
+      "primary": {
+       "kind": "EQUAL",
+       "pairs": [
+        {
+         "src": "2",
+         "hyp": "2",
+         "verdict": "EQUAL",
+         "reason": "same_surface"
+        },
+        {
+         "src": "3",
+         "hyp": "3",
+         "verdict": "EQUAL",
+         "reason": "same_surface"
+        }
+       ],
+       "reasons": [],
+       "warnings": []
+      },
+      "secondary": {
+       "kind": "EQUAL",
+       "pairs": [
+        {
+         "src": "2",
+         "hyp": "2",
+         "verdict": "EQUAL",
+         "reason": "same_surface"
+        },
+        {
+         "src": "3",
+         "hyp": "3",
+         "verdict": "EQUAL",
+         "reason": "same_surface"
+        }
+       ],
+       "reasons": [],
+       "warnings": []
+      }
+     },
+     "negation_guard": {
+      "primary": false,
+      "secondary": false
+     },
+     "final_gate": {
+      "applied": false
+     },
+     "warnings": [],
+     "exclusion_rule": null,
+     "cost": {
+      "azure_calls": 1,
+      "azure_seconds": 8.851,
+      "est_jpy": 0.4,
+      "est_jpy_known": true
+     },
+     "timing": {
+      "total_ms": 2557,
+      "secondary_ms": 2555
+     },
+     "technical_stop": null,
+     "length": {
+      "applied": true,
+      "primary_len": 115,
+      "secondary_len": 114,
+      "max_len": 126,
+      "adopted_from": "primary",
+      "adopted_ok": true,
+      "surface_len": 95,
+      "primary_ok": true
+     },
+     "p3_entry": "p3_primary_ng",
+     "pronunciation_alarm_eval": {
+      "accepted": false,
+      "reason": "ROLE_NOT_APPLICABLE",
+      "detail": {
+       "role": null
+      }
+     },
+     "adapter": {
+      "layers": [],
+      "azure_real_calls": 1,
+      "cost_guard_triggered": false,
+      "language": "en-US",
+      "segment_id": null,
+      "asr_text_present": true,
+      "cache": {
+       "calls": 19,
+       "hits": 3
+      }
+     }
+    },
+    "instruction_type": "english_style_prefix_wide_margin",
+    "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+    "connected_speech_info": null,
+    "length_ok": true,
+    "final_length_ok": true,
+    "verified": false,
+    "trim_info": {
+     "raw_duration_seconds": 8.851,
+     "raw_leading_silence_seconds": 0.26,
+     "raw_trailing_silence_seconds": 0.26,
+     "trimmed_duration_seconds": 8.851,
+     "leading_margin_retained_seconds": 0.26,
+     "trailing_margin_retained_seconds": 0.26
+    },
+    "disfluency_checked": false,
+    "disfluency_evidence": null,
+    "repetition_qa_checked": false,
+    "repetition_qa_evidence": null,
+    "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_e2e_01/a2/narration/attempts/full_story_part1_c10_attempt3_englishstyleprefixwidemargin.wav"
+   }
+  ]
+ },
+ "after": {
+  "state": "REGENERATE_APPROVED",
+  "canonical_text_sha256": "13d837f708463ea3202d0537d5e1c63c1851b4ddc5c84535022821a4a10165f4",
+  "theme_id": "run_e2e_01",
+  "level": "a2",
+  "segment_id": "full_story_part1_c10",
+  "updated_at": "2026-10-23T07:27:02",
+  "reason": "ユーザー(fable:FZVW-02:validator_fix_79e9b4310)による明示的な再生成承認",
+  "approved_by": "fable:FZVW-02:validator_fix_79e9b4310",
+  "cumulative_tts_attempts": 3,
+  "cumulative_asr_calls": 3
+ },
+ "check_before_generation_after": {
+  "proceed": true,
+  "consuming_regenerate_approval": true,
+  "theme_id": "run_e2e_01",
+  "level": "a2",
+  "segment_id": "full_story_part1_c10"
+ }
+}
