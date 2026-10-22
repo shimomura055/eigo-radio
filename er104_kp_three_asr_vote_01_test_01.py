@@ -66,7 +66,7 @@ class TruthTable(unittest.TestCase):
         d, _, _ = self.run_row(True, False, True)
         self.assertEqual(d.pass_count, 2)
         self.assertTrue(d.audit["whisper_called"])
-        self.assertEqual(d.audit["whisper_model"], "small")
+        self.assertEqual(d.audit["whisper_model"]["model"], "small")
         d1, _, _ = self.run_row(True, True, None)
         self.assertIsNone(d1.audit["whisper"])
         self.assertIsNone(d1.audit["whisper_model"])
@@ -79,12 +79,19 @@ class FailClosed(unittest.TestCase):
         self.assertFalse(d.verified)
         self.assertTrue(d.whisper_called)
 
-    def test_whisper_none_or_empty_or_unavailable(self):
-        for bad in (None, Voter("whisper", "", False), Voter("whisper", None, False, available=False, error="timeout"),
-                    Voter("whisper", "  ", True)):
+    def test_whisper_none_or_technical_failure_is_technical_stop(self):
+        for bad in (None, Voter("whisper", None, False, available=False, error="timeout", technical_failure=True)):
             d = m.decide(V("openai", False), Counter(V("azure", True)), Counter(bad))
             self.assertEqual(d.state, m.NG_WHISPER_UNAVAILABLE, bad)
             self.assertFalse(d.verified)
+            self.assertTrue(d.technical_stop)
+
+    def test_whisper_empty_transcript_is_ng_vote_not_technical_stop(self):
+        """P-08: 空転写 = NG票(通常の再生成)。技術STOPにしない。PASSにもしない。"""
+        for bad in (m.make_voter("whisper", "think up", ""), m.make_voter("whisper", "think up", "  "), m.make_voter("whisper", "think up", None)):
+            d = m.decide(V("openai", False), Counter(V("azure", True)), Counter(bad))
+            self.assertEqual((d.state, d.verified, d.technical_stop), (m.NG_VOTE_WHISPER_NG, False, False), bad)
+            self.assertEqual(d.reason, "whisper_empty_transcript_ng_vote")
 
     def test_whisper_not_configured_is_not_pass(self):
         d = m.decide(V("openai", True), Counter(V("azure", False)), None)
@@ -137,16 +144,23 @@ class TiebreakOff(unittest.TestCase):
         for p in (True, False):
             for s in (True, False):
                 wh = Counter(V("whisper", True))
-                d = m.decide(V("openai", p), Counter(V("azure", s)), wh, tiebreak_enabled=False)
+                d = m.decide(V("openai", p), Counter(V("azure", s)), wh, tiebreak=False)
                 self.assertEqual(d.verified, p and s)
                 self.assertEqual(wh.n, 0)
-        d = m.decide(V("openai", True), Counter(V("azure", False)), Counter(V("whisper", True)), tiebreak_enabled=False)
+        d = m.decide(V("openai", True), Counter(V("azure", False)), Counter(V("whisper", True)), tiebreak=False)
         self.assertEqual(d.state, m.NG_SPLIT_TIEBREAK_OFF)
         self.assertFalse(d.technical_stop)
 
     def test_default_constants(self):
         self.assertTrue(m.KP_WHISPER_TIEBREAK_ENABLED)
         self.assertTrue(m.vote_enabled())
+        self.assertTrue(m.tiebreak_enabled())
+
+    def test_no_primary_only_switch_exists(self):
+        """P-04: Primary単独へ落とすスイッチは置かない(戻しスイッチは両方PASS必須への1本だけ)。"""
+        names = [n for n in dir(m) if n.isupper()]
+        self.assertEqual(sorted(n for n in names if n.startswith("KP_")), ["KP_THREE_ASR_VOTE_ENABLED", "KP_WHISPER_TIEBREAK_ENABLED"])
+        self.assertFalse([n for n in dir(m) if "PRIMARY_ONLY" in n.upper()])
 
 
 class RealClassifier(unittest.TestCase):
@@ -177,95 +191,3 @@ class RealClassifier(unittest.TestCase):
         self.assertEqual((d.state, wn), (m.PASS_DUAL, 0))
 
 
-class StoredRejudge(unittest.TestCase):
-    def _wav(self):
-        f = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
-        f.write(b"RIFFfakewav")
-        f.close()
-        self.addCleanup(os.unlink, f.name)
-        return f.name
-
-    def test_old_dual_check_think_up_becomes_pass_with_local_whisper_only(self):
-        wav = self._wav()
-        chk = {"version": "kp_dual_check_v1", "ok": False, "canonical_text": "think up", "wav_sha256": m._sha256_file(wav),
-               "primary": {"text": "ThinkUp.", "pass": True, "rescued_by_secondary": False}, "secondary": {"text": "Think.", "pass": False}}
-        wh = Counter(m.make_voter("whisper", "think up", "Think up."))
-        d = m.rejudge_stored(chk, wav, "think up", whisper_fn=wh)
-        self.assertEqual((d.state, wh.n), (m.PASS_VOTE_2OF3, 1))
-        rec = m.vote_check_from_decision(d, wav, "think up", source="stored_rejudged")
-        self.assertEqual((rec["version"], rec["ok"], rec["whisper"]["called"]), ("kp_vote_check_v1", True, True))
-        # 保存済みWhisper転写(同sha)があれば再転写しない
-        wh2 = Counter(m.make_voter("whisper", "think up", "SHOULD NOT RUN"))
-        d2 = m.rejudge_stored(rec, wav, "think up", whisper_fn=wh2)
-        self.assertEqual((d2.state, wh2.n), (m.PASS_VOTE_2OF3, 0))
-
-    def test_sha_or_canonical_mismatch_or_missing_text_returns_none(self):
-        wav = self._wav()
-        base = {"version": "kp_dual_check_v1", "canonical_text": "think up", "wav_sha256": m._sha256_file(wav),
-                "primary": {"text": "ThinkUp."}, "secondary": {"text": "Think."}}
-        self.assertIsNone(m.rejudge_stored({**base, "wav_sha256": "0" * 64}, wav, "think up", whisper_fn=None))
-        self.assertIsNone(m.rejudge_stored(base, wav, "blurt", whisper_fn=None))
-        self.assertIsNone(m.rejudge_stored({**base, "secondary": {"text": ""}}, wav, "think up", whisper_fn=None))
-        self.assertIsNone(m.rejudge_stored({**base, "primary": {}}, wav, "think up", whisper_fn=None))
-
-    def test_rescued_primary_in_stored_check_counts_ng(self):
-        wav = self._wav()
-        chk = {"version": "kp_dual_check_v1", "canonical_text": "take part", "wav_sha256": m._sha256_file(wav),
-               "primary": {"text": "Take part.", "rescued_by_secondary": True}, "secondary": {"text": "Take part."}}
-        wh = Counter(m.make_voter("whisper", "take part", "Take part."))
-        d = m.rejudge_stored(chk, wav, "take part", whisper_fn=wh)
-        self.assertEqual((d.state, wh.n), (m.PASS_VOTE_2OF3, 1))   # P(NG:救済)/S PASS/W PASS = 2/3
-        self.assertEqual(d.reason, "vote_2of3:secondary+whisper")
-
-
-class WhisperRunner(unittest.TestCase):
-    def test_timeout_converts_to_unavailable(self):
-        def slow(_p):
-            time.sleep(0.5)
-            return "x"
-        orig = m.whisper_transcribe
-
-        def wt(path, *, timeout=0.05):
-            import concurrent.futures
-            ex = concurrent.futures.ThreadPoolExecutor(max_workers=1)
-            try:
-                return ex.submit(slow, path).result(timeout=timeout)
-            finally:
-                ex.shutdown(wait=False, cancel_futures=True)
-        fn = m.make_whisper_fn("think up", "dummy.wav", transcribe_fn=wt)
-        d = m.decide(V("openai", True), Counter(V("azure", False)), fn)
-        self.assertEqual(d.state, m.NG_WHISPER_UNAVAILABLE)
-        self.assertIs(m.whisper_transcribe, orig)
-
-    def test_model_is_production_small_int8_shared_loader(self):
-        import inspect
-        import er008_disfluency_qa_18 as dq
-        self.assertEqual(m.WHISPER_MODEL_SIZE, "small")
-        src = inspect.getsource(dq._get_model)
-        self.assertIn('device="cpu", compute_type="int8"', src)
-
-
-class Isolation(unittest.TestCase):
-    """未配線の固定: Production .pyはer104_*をimportしない(配線は次委任で本testを更新する)。"""
-
-    def test_no_production_module_imports_er104(self):
-        pat = re.compile(r"^\s*(import|from)\s+er104_", re.M)
-        hits = []
-        for p in glob.glob("*.py") + glob.glob("tools/*.py"):
-            if os.path.basename(p).startswith("er104_"):
-                continue
-            try:
-                with open(p, encoding="utf-8", errors="replace") as fh:
-                    if pat.search(fh.read()):
-                        hits.append(p)
-            except OSError:
-                pass
-        self.assertEqual(hits, [])
-
-    def test_er096_dual_still_present_and_unchanged_default(self):
-        import er096_kp_dual_pass_01 as d2
-        self.assertTrue(d2.KP_EN_PHRASE_DUAL_REQUIRED)   # 現行(両方PASS)は本委任で無変更
-
-
-if __name__ == "__main__":
-    unittest.main()

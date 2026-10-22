@@ -131,3 +131,42 @@ KPは対象外(PNAPはKP以外のsegmentの`NG_BOTH`後最終救済)。KPに固�
 
 ## 15. 実装ファイル(本委任で作成済み・未配線)
 `er104_kp_three_asr_vote_01.py`(判定核・Voter・`decide`・`make_voter`・`whisper_transcribe`・`rejudge_stored`・`vote_check_from_decision`)、`er104_kp_three_asr_vote_01_test_01.py`(28件PASS)、`er104_whisper_env_check_01.py`、`er104_stored_audio_reeval_01.py`。実行: `.venv\Scripts\python.exe -m unittest er104_kp_three_asr_vote_01_test_01 -v`。
+
+---
+
+# 委任_02 追記: Opus条件Aレビュー(OF-KP3V-P-01〜12)の反映(2026-10-22)
+本節は §1〜§15 の設計を**上書きする箇所**を明記する(§1〜§15は委任_01時点の設計として残す)。Opus全文要旨=`OPUS_REVIEW_COND_A_01.md`。
+
+## 16-1 設計変更の一覧(P-xx → 反映先)
+| P | 設計変更 | 反映先(ファイル:関数) |
+|---|---|---|
+| P-01 | 再利用6点の再判定は**本番adapter経由**(`evaluate_attempt_with_cascade_detail`、`vote_required=True`、保存Secondary転写をcacheへ注入、保存Whisper転写[同sha]または既定ローカルWhisper)に統一。手書き`rejudge_stored`は**削除**。旧`asr_judgement.dual`/`kp_dual_check_v1`は読取専用。保存音声再評価も本番adapter経路(`er104_stored_audio_reeval_02.py`) | `er104_kp_vote_reuse_01.py:evaluate_vote/kp_vote_reuse_ok`、`er104_stored_audio_reeval_02.py` |
+| P-02 | Whisper票にも呼出元と同じ`max_len`長さ判定、値ガードAMBIGUOUSは**PASS票にしない**(`ambiguous_blocks`) | `er104_kp_three_asr_vote_01.py:make_voter/whisper_vote` |
+| P-03 | 表4行目(P NG/S PASS/W PASS)=`PASS_WITH_WARNING`+`SECONDARY_CONFIRMED`(事後試聴リスト)。表2行目(P PASS/S NG/W PASS)=警告なし`PASS`。adapterのclassification上書きは行ごとに整理(行1・行2=Primary根拠保持、行4=Secondary分類) | `er078:finish_vote`、`er006:evaluate_attempt_with_cascade_detail`(`row in (P+S,P+W)`) |
+| P-04 | 戻しスイッチは`KP_WHISPER_TIEBREAK_ENABLED=False`(=旧「両方PASS必須」)の**1本のみ**。Primary単独へ落とすスイッチは置かない。定数読取は単一関数(`vote_enabled()`/`tiebreak_enabled()`) | `er104_kp_three_asr_vote_01.py`(testで「Primary単独スイッチ不在」を固定) |
+| P-05 | **混合方式**: 意味名[flag関数・kwarg・ctx・state・step名]は`vote`へ(`vote_enabled()`/`vote_pass_required`/`vote_required`/`audit["vote"]`/`secondary_vote`/`whisper_vote`)、`NG_DUAL_PRIMARY_NOT_PASS`は**撤去**。保存容器名`kp_dual_check`・telemetry名(`reuse_blocked_by_kp_dual_gate`/`kp_dual_gate`/`kp_dual_reuse_gate`)は**維持**(共有Store`er006_master_audio_store_01.py`無編集)し、`version="kp_vote_check_v1"`で新旧を区別。X default Store keyは`+vote1`(本番manifestの`+dual1`は0件を実測=orphanなし)。er096は**履歴script**として残置(Production importなしをAST+unittestで固定)。PNAPのKP除外は新flag(`vote_required`)へ追従 | 全配線点(§16-3)、`er096_kp_dual_pass_01_test_01.py`(履歴固定)、`er103_proper_noun_alarm_policy_01.py` |
+| P-06 | Zのruntime evidenceは**正式経路のみ**(dual導入前のZ KP entryを再利用点6のS1経路へ+新規KP)。人工entry・HR Lock迂回は禁止。発火が観測できなければ「Xで発火観測+Zが同じadapterを通ることをtestで固定+Zの正式runで`kp_vote_check_v1`記録が出ること」を事実として記録 | `RUNTIME_EVIDENCE_02.md`(c commit) |
+| P-07 | 解釈の明記(§16-5) | CURRENT_SPEC/DECISION_LOG/closeout |
+| P-08 | 空転写=NG票(通常再生成)、例外/import失敗/timeout/circuit open=**技術STOP**(`NG_WHISPER_UNAVAILABLE`、HRに入れない、再実行で再開可)。timeoutはcircuit閾値1で即open。KP stage生成前にWhisper事前確認(preflight、model cache有無・load秒・model/compute type記録)、English Lock前のcircuit確認をAzureに加えWhisperにも拡張。OPEN-371(Azure障害時の技術STOPがHR Lockへ入る現行挙動)の露出はWhisperにも及ぶ点をOPEN-371へ追記 | `er104_kp_three_asr_vote_01.py:whisper_vote/whisper_preflight`、`er104_kp_vote_reuse_01.py:guard_whisper`、`er003:_vote_circuit_open` |
+| P-09 | judgeの`done()`出口は**純粋集計関数`tally()`を1つ呼ぶ**(`finish_vote`)。`decide()`も同じ`tally()/whisper_needed()`。状態変換(PASS/PASS_WITH_WARNING/NG)は`done()`のPASS→PASS_WITH_WARNING変換とLR_REWRITTEN付与より前。票集計前に確定する除外状態4つ=`NG_PRIMARY_ASR_FAILURE`/`NG_PROTECTED`(P1)/`NG_EXCLUDED`(P2)/`NG_SECONDARY_UNAVAILABLE` | `er078:finish_vote`、`er104:tally/whisper_needed/decide`、test`test_P09_judge_and_decide_agree_on_all_combinations` |
+| P-10 | `kp_vote_check`に**合格した行**(`row`: P+S/P+W/S+W)を記録。think up・blurt・cause a stir#3/#4の4本は運営者向け試聴ページ`user_test/kp3v_vote_evidence_01/index.html`へ(c commit) | `er104:vote_check_from_audit` |
+| P-11 | SSOT更新範囲(§16-6) | c commit |
+| P-12 | test追加(§16-4) | `er104_kp_three_asr_vote_01_test_02.py`、`er104_kp_vote_wiring_test_01.py` |
+
+## 16-2 P-01 本番adapter経路での保存音声再評価(0円)
+`er104_stored_audio_reeval_02.py`: 保存Primary/Secondary転写を本番adapter(`vote_required=True`)へ通し、Whisperは割れたときだけ既定のローカルsmall(実経路)。結果=`stored_audio_reeval_02.json`。受入条件=旧script結果(`stored_audio_reeval_01.json`)との84行一致、問題音声21件の新規誤PASS 0、判定変化4件(think up/blurt/cause a stir#3/#4)。
+
+## 16-3 配線点(実装済み、コミット(b))
+`er078_asr_unified_judge_01.py`(`vote_required`/`whisper_fn`/`finish_vote`、`NG_WHISPER_UNAVAILABLE`、`TECHNICAL_STOP_STATES`)、`er078_asr_unified_attempt_ctx_01.py`、`er006_secondary_asr_01.py`(adapter: whisper_fn供給・step`whisper_vote`・classification行別・`_tech_only`・Cascade OFF fail-closed)、`er003_v1_repro01_main_generate.py`(`vote_pass_required`・`_vote_circuit_open`)、X: `er019_family_x_audio_production_runner_01.py`(guard_whisper・reuse・assembly audit)/`er019_family_x_kp_en_k2_store_01.py`/`er019_family_x_validation_inheritance_01.py`(`kp_vote_required`・`TECHNICAL_STOP_WHISPER_UNAVAILABLE`)、Z: `er063_family_z_audio_01.py`、共通部品: `er104_kp_vote_reuse_01.py`(旧er096後継)、判定核: `er104_kp_three_asr_vote_01.py`。
+
+## 16-4 test(P-12全項目)
+真理値表6行+呼出回数(judge・adapter・strict層)/行別classification/Whisperの長さ・AMBIGUOUS/空転写=NG票/例外・timeout・circuit(閾値1)/preflight失敗でTTS前停止(X・Z)/Azure障害でWhisper不呼出(2/3降格なし)/旧dual_v1・asr_judgement.dual読取のみ/再利用6点が本番adapterを通る/AST(`vote_pass_required`はKP英語6点のみ・Trueリテラル無し・旧識別子撤去・er096 Production import 0・er104 import許可集合)/rollback(KP_THREE_ASR_VOTE_ENABLED=False→旧経路バイト同一、TIEBREAK=False→両方PASS必須と一致)/judgeとdecideの全組合せ一致。
+
+## 16-5 P-07 解釈の明記(ユーザー承認依頼ではない)
+(a) Azure障害(例外・空転写・circuit open)時は**技術STOP維持**(Primary+Whisperの2/3へ降格しない)。ユーザー§2の表は「Azure NG」の行のみを定義しており、障害は定義外=現行承認(UDR #139の「Azure障害でPrimary単独PASSへ降格しない」)を踏襲。
+(b) `NG_PROTECTED_DISSENT`(反対票側に値DIFF/否定差があれば2/3を成立させない)は、**承認済みの値/否定ガード(P1)の対称適用**であり新基準ではない。既定ON(KPに数字はほぼ無く影響は極小)。
+(c) WhisperにM1(multi-candidate)は適用しない(保守側)。ProductionのSecondary側のみ既存M1経路を維持。
+(d) 救済PASS(Azure転写に依存した非ラテン救済・Tier3・cs_equivalence)はPrimary **NG票**として数える。
+
+## 16-6 旧ルール・旧識別子の整理(撤去/書換/残置)
+撤去: `NG_DUAL_PRIMARY_NOT_PASS`(judge STATES・done変換・test)、`dual_required`(AttemptCtx/ctx/adapter)、`dual_pass_required`(kwarg)、`_dual_circuit_open`、`kp_dual_*`の関数名(`kp_vote_*`へ)、`KP_EN_PHRASE_DUAL_REQUIRED`、`+dual1`、`secondary_dual`、`er096_kp_dual_pass_01_wiring_test_01.py`(`er104_kp_vote_wiring_test_01.py`へ3-ASR版として移設)。残置(意図的): 保存容器名`kp_dual_check`/telemetry名(P-05)、`er096_kp_dual_pass_01.py`(履歴script。`evaluate_dual`は実行不可)、`er096_kp_dual_runtime_evidence_01.py`/`er099`(履歴)、`docs/research/PROPER-NOUN-.../onoff_differential_02.py`(PNAP履歴script)。
