@@ -22114,3 +22114,6 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 ## PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01 委任_02: Opus条件A反映+X/Z配線+runtime evidence(2026-10-22、OPEN-450 WIRED_PENDING_FABLE)
 - Opus条件A所見OF-PNAP-P-01〜15(必須7+推奨)を全て反映し、ユーザー承認済み仕様(固有名詞の発音不一致=アラーム記録のみで停止/HRしない+TTS発音供給)をFamily X・Z正式経路へ配線。flag既定ON(単一定数、run scope内のみ有効、A/B/C・単体は従来どおり)。判断: P-09は集計(補正後3/55=5.5%<25%)に従い`ALARM_ACCEPT_MIN_SLOT=1`。P-04の上限対象は『非固有名詞』差に限定(Opus趣旨に沿い、他の外来語をAzureだけが聞き違えるKhaite文10件を受理に残すため)。旧ルール撤去0(HR投入経路は範囲外の受け皿として残置)、OPEN-318/327/330/331/335は範囲縮小注記のみ(Status不変)。
 - 検証: Regression新規失敗0(既存失敗4件はHEADでも同一)、保存4,032ペアON/OFF差分(KP/JA/scope無し=0、X英語本文HR->アラーム260)、runtime evidence(X実発火1件・HR追記0・Lock RESOLVED、Zは9clip自然発火なし)。実費JPY11.15(日次上限内)。供給は初期0件(B階層=Khaite等は人承認待ち)。ユーザー判断候補なし(B階層の承認操作は仕様上人間が行うため承認候補一覧をFableが提示)。PRODUCTION_WIRED宣言はFable。証跡=docs/research/PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01/。
+
+## 2026-10-22 PNAP 委任_03: Khaite->Kate B階層人承認登録
+- ユーザー承認(chat、原文=docs/pm/delegation_log/2026-10-22_PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01_KHAITE-APPROVAL_USER.md「Khaite → Kate の登録を承認する」)に基づき、承認CLI(er103_pronunciation_approve_cli_01.py --apply)でLedger entry 1652efa9f4bdd7e8を登録。出典=Ledger sources(nylon.com発音ガイド含む15件)、Stage 2 Trial(STAGE2_TRIAL_CLOSEOUT_01.md §24)でKhaite型は綴り置換有効。費用0・Production .py/Prompt無変更。Status不変(PRODUCTION_WIRED宣言はFable)。
