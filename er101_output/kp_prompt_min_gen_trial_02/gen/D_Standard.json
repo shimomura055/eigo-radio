@@ -1,0 +1,116 @@
+{
+ "unit_id": "D_Standard",
+ "requested_model_id": "claude-haiku-5-5",
+ "user_message_sha256": "5219816e4aab3f4ab64d337402f1ce65c8787789468ca654104c291c498cfbee",
+ "gen_prompt_sha256": "43635944ea53758eb9bf1be808b529318ce6f38b77e86a4787a0301f1827e192",
+ "user_message": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. the stage is set\n   本文中の該当文(参考情報): Now we also notice how the stage is set.\n2. too soon to say\n   本文中の該当文(参考情報): But it is too soon to say, “Add a button to make rewards bigger and bring world peace!” The two were separate experiments.\n3. use its results directly\n   本文中の該当文(参考情報): We cannot use its results directly to explain everyday meanness or boredom that lasts a long time.\n4. alone caused the different results\n   本文中の該当文(参考情報): We cannot say the choices alone caused the different results.\n5. strongly liked seeing others suffer\n   本文中の該当文(参考情報): People who strongly liked seeing others suffer were more likely to make the other person’s reward smaller after watching the stone video than after watching the magician video.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。",
+ "request_body": {
+  "model": "claude-haiku-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. the stage is set\n   本文中の該当文(参考情報): Now we also notice how the stage is set.\n2. too soon to say\n   本文中の該当文(参考情報): But it is too soon to say, “Add a button to make rewards bigger and bring world peace!” The two were separate experiments.\n3. use its results directly\n   本文中の該当文(参考情報): We cannot use its results directly to explain everyday meanness or boredom that lasts a long time.\n4. alone caused the different results\n   本文中の該当文(参考情報): We cannot say the choices alone caused the different results.\n5. strongly liked seeing others suffer\n   本文中の該当文(参考情報): People who strongly liked seeing others suffer were more likely to make the other person’s reward smaller after watching the stone video than after watching the magician video.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。"
+   }
+  ]
+ },
+ "before_phrases": [
+  "the stage is set",
+  "too soon to say",
+  "use its results directly",
+  "alone caused the different results",
+  "strongly liked seeing others suffer"
+ ],
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 7.85
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 7.85,
+ "response_text": "[{\"no\": 1, \"before\": \"the stage is set\", \"after\": \"the stage is set\", \"reason\": \"一般的な表現で特定の対象への依存がないため変更不要\"}, {\"no\": 2, \"before\": \"too soon to say\", \"after\": \"too soon to say\", \"reason\": \"汎用的な表現で特定の対象への依存がないため変更不要\"}, {\"no\": 3, \"before\": \"use its results directly\", \"after\": \"use results directly\", \"reason\": \"所有格「its」が特定の研究を指しているため取り除き、単複の名詞のみの汎用的な形にした\"}, {\"no\": 4, \"before\": \"alone caused the different results\", \"after\": \"alone caused different results\", \"reason\": \"定冠詞「the」が特定の結果を指しているため取り除き、「X alone caused Y」の文法構造と意味を維持した\"}, {\"no\": 5, \"before\": \"strongly liked seeing others suffer\", \"after\": \"strongly liked seeing others suffer\", \"reason\": \"「others」を使った一般的な表現で特定の人物への依存がないため変更不要\"}]",
+ "parsed": [
+  {
+   "no": 1,
+   "before": "the stage is set",
+   "after": "the stage is set",
+   "reason": "一般的な表現で特定の対象への依存がないため変更不要"
+  },
+  {
+   "no": 2,
+   "before": "too soon to say",
+   "after": "too soon to say",
+   "reason": "汎用的な表現で特定の対象への依存がないため変更不要"
+  },
+  {
+   "no": 3,
+   "before": "use its results directly",
+   "after": "use results directly",
+   "reason": "所有格「its」が特定の研究を指しているため取り除き、単複の名詞のみの汎用的な形にした"
+  },
+  {
+   "no": 4,
+   "before": "alone caused the different results",
+   "after": "alone caused different results",
+   "reason": "定冠詞「the」が特定の結果を指しているため取り除き、「X alone caused Y」の文法構造と意味を維持した"
+  },
+  {
+   "no": 5,
+   "before": "strongly liked seeing others suffer",
+   "after": "strongly liked seeing others suffer",
+   "reason": "「others」を使った一般的な表現で特定の人物への依存がないため変更不要"
+  }
+ ],
+ "usage": {
+  "input_tokens": 586,
+  "output_tokens": 1295,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGbSKhhM85mEBkTQBBzC",
+ "model_returned": "claude-haiku-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 0.11298,
+ "raw_response": {
+  "model": "claude-haiku-5-5",
+  "id": "msg_011CgGbSKhhM85mEBkTQBBzC",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "[{\"no\": 1, \"before\": \"the stage is set\", \"after\": \"the stage is set\", \"reason\": \"一般的な表現で特定の対象への依存がないため変更不要\"}, {\"no\": 2, \"before\": \"too soon to say\", \"after\": \"too soon to say\", \"reason\": \"汎用的な表現で特定の対象への依存がないため変更不要\"}, {\"no\": 3, \"before\": \"use its results directly\", \"after\": \"use results directly\", \"reason\": \"所有格「its」が特定の研究を指しているため取り除き、単複の名詞のみの汎用的な形にした\"}, {\"no\": 4, \"before\": \"alone caused the different results\", \"after\": \"alone caused different results\", \"reason\": \"定冠詞「the」が特定の結果を指しているため取り除き、「X alone caused Y」の文法構造と意味を維持した\"}, {\"no\": 5, \"before\": \"strongly liked seeing others suffer\", \"after\": \"strongly liked seeing others suffer\", \"reason\": \"「others」を使った一般的な表現で特定の人物への依存がないため変更不要\"}]"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 586,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 1295,
+   "output_tokens_details": {
+    "thinking_tokens": 944
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

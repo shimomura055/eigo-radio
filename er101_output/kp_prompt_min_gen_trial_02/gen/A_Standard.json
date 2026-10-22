@@ -1,0 +1,116 @@
+{
+ "unit_id": "A_Standard",
+ "requested_model_id": "claude-haiku-5-5",
+ "user_message_sha256": "58aef4b2c5c6c7f5123054a00191c2962e5efb17489521ada948ed0c22c38fc2",
+ "gen_prompt_sha256": "43635944ea53758eb9bf1be808b529318ce6f38b77e86a4787a0301f1827e192",
+ "user_message": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. pumps its fist\n   本文中の該当文(参考情報): “Beans cost less now!” When you hear that, your wallet pumps its fist.\n2. keep raw beans in stock\n   本文中の該当文(参考情報): The article says US companies that roast coffee keep raw beans in stock.\n3. pushed prices up\n   本文中の該当文(参考情報): A person who runs a cafe in Chicago said three costs had pushed prices up.\n4. appear in US shop prices\n   本文中の該当文(参考情報): They estimate raw-bean prices take at least about nine months to appear in US shop prices.\n5. its own hidden clock\n   本文中の該当文(参考情報): If you are waiting for your usual cup to get cheaper, ask more than, “How much do beans cost now?” Also ask, “When does the bean price reach here?” A coffee price tag may have its own hidden clock, separate from the latest market news.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。",
+ "request_body": {
+  "model": "claude-haiku-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. pumps its fist\n   本文中の該当文(参考情報): “Beans cost less now!” When you hear that, your wallet pumps its fist.\n2. keep raw beans in stock\n   本文中の該当文(参考情報): The article says US companies that roast coffee keep raw beans in stock.\n3. pushed prices up\n   本文中の該当文(参考情報): A person who runs a cafe in Chicago said three costs had pushed prices up.\n4. appear in US shop prices\n   本文中の該当文(参考情報): They estimate raw-bean prices take at least about nine months to appear in US shop prices.\n5. its own hidden clock\n   本文中の該当文(参考情報): If you are waiting for your usual cup to get cheaper, ask more than, “How much do beans cost now?” Also ask, “When does the bean price reach here?” A coffee price tag may have its own hidden clock, separate from the latest market news.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。"
+   }
+  ]
+ },
+ "before_phrases": [
+  "pumps its fist",
+  "keep raw beans in stock",
+  "pushed prices up",
+  "appear in US shop prices",
+  "its own hidden clock"
+ ],
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 6.95
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 6.95,
+ "response_text": "[\n{\"no\": 1, \"before\": \"pumps its fist\", \"after\": \"pumps their fist\", \"reason\": \"原文の \\\"your wallet\\\"（特定の対象）に依存する \\\"its\\\" を、人を指す \\\"their\\\" に置換して汎用化した。意味と語法は維持している。\"},\n{\"no\": 2, \"before\": \"keep raw beans in stock\", \"after\": \"keep raw materials in stock\", \"reason\": \"特定の商品 \\\"beans\\\" を上位語 \\\"materials\\\" に一般化した。「原料を在庫として持つ」という学習ポイントは維持している。\"},\n{\"no\": 3, \"before\": \"pushed prices up\", \"after\": \"pushed prices up\", \"reason\": \"特定の人物・物事への依存がなく、すでに汎用的な表現のため変更しない。\"},\n{\"no\": 4, \"before\": \"appear in US shop prices\", \"after\": \"appear in shop prices\", \"reason\": \"特定の国名 \\\"US\\\" を取り除いて汎用化した。\\\"shop prices\\\" は他の場面でも使える語句である。\"},\n{\"no\": 5, \"before\": \"its own hidden clock\", \"after\": \"its own hidden clock\", \"reason\": \"\\\"its\\\" は文脈上の一般的な対象（価格表示など）を指し、特定の固有名詞や人物への依存はないため変更しない。\"}\n]",
+ "parsed": [
+  {
+   "no": 1,
+   "before": "pumps its fist",
+   "after": "pumps their fist",
+   "reason": "原文の \"your wallet\"（特定の対象）に依存する \"its\" を、人を指す \"their\" に置換して汎用化した。意味と語法は維持している。"
+  },
+  {
+   "no": 2,
+   "before": "keep raw beans in stock",
+   "after": "keep raw materials in stock",
+   "reason": "特定の商品 \"beans\" を上位語 \"materials\" に一般化した。「原料を在庫として持つ」という学習ポイントは維持している。"
+  },
+  {
+   "no": 3,
+   "before": "pushed prices up",
+   "after": "pushed prices up",
+   "reason": "特定の人物・物事への依存がなく、すでに汎用的な表現のため変更しない。"
+  },
+  {
+   "no": 4,
+   "before": "appear in US shop prices",
+   "after": "appear in shop prices",
+   "reason": "特定の国名 \"US\" を取り除いて汎用化した。\"shop prices\" は他の場面でも使える語句である。"
+  },
+  {
+   "no": 5,
+   "before": "its own hidden clock",
+   "after": "its own hidden clock",
+   "reason": "\"its\" は文脈上の一般的な対象（価格表示など）を指し、特定の固有名詞や人物への依存はないため変更しない。"
+  }
+ ],
+ "usage": {
+  "input_tokens": 625,
+  "output_tokens": 1319,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGbSKRaZdRV6i9P9iBYP",
+ "model_returned": "claude-haiku-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 0.11552,
+ "raw_response": {
+  "model": "claude-haiku-5-5",
+  "id": "msg_011CgGbSKRaZdRV6i9P9iBYP",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "[\n{\"no\": 1, \"before\": \"pumps its fist\", \"after\": \"pumps their fist\", \"reason\": \"原文の \\\"your wallet\\\"（特定の対象）に依存する \\\"its\\\" を、人を指す \\\"their\\\" に置換して汎用化した。意味と語法は維持している。\"},\n{\"no\": 2, \"before\": \"keep raw beans in stock\", \"after\": \"keep raw materials in stock\", \"reason\": \"特定の商品 \\\"beans\\\" を上位語 \\\"materials\\\" に一般化した。「原料を在庫として持つ」という学習ポイントは維持している。\"},\n{\"no\": 3, \"before\": \"pushed prices up\", \"after\": \"pushed prices up\", \"reason\": \"特定の人物・物事への依存がなく、すでに汎用的な表現のため変更しない。\"},\n{\"no\": 4, \"before\": \"appear in US shop prices\", \"after\": \"appear in shop prices\", \"reason\": \"特定の国名 \\\"US\\\" を取り除いて汎用化した。\\\"shop prices\\\" は他の場面でも使える語句である。\"},\n{\"no\": 5, \"before\": \"its own hidden clock\", \"after\": \"its own hidden clock\", \"reason\": \"\\\"its\\\" は文脈上の一般的な対象（価格表示など）を指し、特定の固有名詞や人物への依存はないため変更しない。\"}\n]"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 625,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 1319,
+   "output_tokens_details": {
+    "thinking_tokens": 881
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

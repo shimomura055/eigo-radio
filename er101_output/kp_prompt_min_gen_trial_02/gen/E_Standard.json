@@ -1,0 +1,116 @@
+{
+ "unit_id": "E_Standard",
+ "requested_model_id": "claude-haiku-5-5",
+ "user_message_sha256": "5366fa3bbe0180a7f619c034aa24f63c781d1c9a0d2d7da163bc422efe751ea9",
+ "gen_prompt_sha256": "43635944ea53758eb9bf1be808b529318ce6f38b77e86a4787a0301f1827e192",
+ "user_message": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. passed the baton\n   本文中の該当文(参考情報): If AI passes the baton to a person, it should say so.\n2. behind the scenes\n   本文中の該当文(参考情報): Quietly changing the cast behind the scenes is not the same.\n3. pulled back\n   本文中の該当文(参考情報): What Meta pulled back was the human concierge feature.\n4. human concierge feature\n   本文中の該当文(参考情報): The vice president also said Meta had paused its human concierge feature for now.\n5. take over\n   本文中の該当文(参考情報): But saying, “A person will take over from here,” is very different.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。",
+ "request_body": {
+  "model": "claude-haiku-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. passed the baton\n   本文中の該当文(参考情報): If AI passes the baton to a person, it should say so.\n2. behind the scenes\n   本文中の該当文(参考情報): Quietly changing the cast behind the scenes is not the same.\n3. pulled back\n   本文中の該当文(参考情報): What Meta pulled back was the human concierge feature.\n4. human concierge feature\n   本文中の該当文(参考情報): The vice president also said Meta had paused its human concierge feature for now.\n5. take over\n   本文中の該当文(参考情報): But saying, “A person will take over from here,” is very different.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。"
+   }
+  ]
+ },
+ "before_phrases": [
+  "passed the baton",
+  "behind the scenes",
+  "pulled back",
+  "human concierge feature",
+  "take over"
+ ],
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 6.5
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 6.5,
+ "response_text": "[{\"no\": 1, \"before\": \"passed the baton\", \"after\": \"passed the baton\", \"reason\": \"特定の人物や固有名詞に依存しない一般的な慣用表現のため変更なし\"}, {\"no\": 2, \"before\": \"behind the scenes\", \"after\": \"behind the scenes\", \"reason\": \"一般的な慣用表現で特定の対象に依存しないため変更なし\"}, {\"no\": 3, \"before\": \"pulled back\", \"after\": \"pulled back\", \"reason\": \"一般的な句動詞で特定の対象に依存しないため変更なし\"}, {\"no\": 4, \"before\": \"human concierge feature\", \"after\": \"human concierge service\", \"reason\": \"「feature」は特定のサービスの機能を指す語感があるため、一般的な「service」に置換。「human concierge」は一般語のため維持\"}, {\"no\": 5, \"before\": \"take over\", \"after\": \"take over\", \"reason\": \"一般的な句動詞で特定の対象に依存しないため変更なし\"}]",
+ "parsed": [
+  {
+   "no": 1,
+   "before": "passed the baton",
+   "after": "passed the baton",
+   "reason": "特定の人物や固有名詞に依存しない一般的な慣用表現のため変更なし"
+  },
+  {
+   "no": 2,
+   "before": "behind the scenes",
+   "after": "behind the scenes",
+   "reason": "一般的な慣用表現で特定の対象に依存しないため変更なし"
+  },
+  {
+   "no": 3,
+   "before": "pulled back",
+   "after": "pulled back",
+   "reason": "一般的な句動詞で特定の対象に依存しないため変更なし"
+  },
+  {
+   "no": 4,
+   "before": "human concierge feature",
+   "after": "human concierge service",
+   "reason": "「feature」は特定のサービスの機能を指す語感があるため、一般的な「service」に置換。「human concierge」は一般語のため維持"
+  },
+  {
+   "no": 5,
+   "before": "take over",
+   "after": "take over",
+   "reason": "一般的な句動詞で特定の対象に依存しないため変更なし"
+  }
+ ],
+ "usage": {
+  "input_tokens": 525,
+  "output_tokens": 1240,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGbSf2nqg4anT12WRRpW",
+ "model_returned": "claude-haiku-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 0.1076,
+ "raw_response": {
+  "model": "claude-haiku-5-5",
+  "id": "msg_011CgGbSf2nqg4anT12WRRpW",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "[{\"no\": 1, \"before\": \"passed the baton\", \"after\": \"passed the baton\", \"reason\": \"特定の人物や固有名詞に依存しない一般的な慣用表現のため変更なし\"}, {\"no\": 2, \"before\": \"behind the scenes\", \"after\": \"behind the scenes\", \"reason\": \"一般的な慣用表現で特定の対象に依存しないため変更なし\"}, {\"no\": 3, \"before\": \"pulled back\", \"after\": \"pulled back\", \"reason\": \"一般的な句動詞で特定の対象に依存しないため変更なし\"}, {\"no\": 4, \"before\": \"human concierge feature\", \"after\": \"human concierge service\", \"reason\": \"「feature」は特定のサービスの機能を指す語感があるため、一般的な「service」に置換。「human concierge」は一般語のため維持\"}, {\"no\": 5, \"before\": \"take over\", \"after\": \"take over\", \"reason\": \"一般的な句動詞で特定の対象に依存しないため変更なし\"}]"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 525,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 1240,
+   "output_tokens_details": {
+    "thinking_tokens": 915
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

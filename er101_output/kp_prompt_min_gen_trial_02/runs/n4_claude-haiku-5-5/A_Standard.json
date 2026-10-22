@@ -1,0 +1,87 @@
+{
+ "model_key": "n4_claude-haiku-5-5",
+ "requested_model_id": "claude-haiku-5-5",
+ "provider": "anthropic",
+ "unit_id": "A_Standard",
+ "article_id": "A",
+ "level": "Standard",
+ "article_sha256": "4e7cd0b120266057697e08d29b3aab8459cff0d67241d6e4ed28c5192d439260",
+ "prompt_sha256": "6a5d2052f8a1c68297275d732e74f2d97fe7c21d0f1a8044cdb4aa1df0a5cb32",
+ "user_message_sha256": "9018d73232e9f14fbe352002fbb84f365c94c9ac18e187c86439fce68d433c5e",
+ "request_body": {
+  "model": "claude-haiku-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：スペース区切りで正確に数える。6語以上は出力禁止。\n3. **学習ポイントの明確化と最小化（必須）**：学ぶべき語彙・熟語・表現を明確にし、意味と自然さを保てる最短の形で抽出する。不要な目的語・修飾語・文脈は除く。5語は上限であり、目標ではない。短縮によって学習価値が失われる場合のみ、必要な語を残す。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# Coffee Bean Prices Fall. Are Price Tags Still on a Journey?\n\n“Beans cost less now!” When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less, too. But a shop’s price may not change right away. When a price tag makes you ask, “Haven’t you heard the news?”, it feels like there is a delay.\n\nThe International Coffee Organization shared a measure of coffee prices. It fell 8.7% from the month before. The group said more beans picked in Brazil had reached the market. It also expected a good supply to continue.\n\nThe US Department of Agriculture said several things had raised prices at once. There was bad weather in Brazil and Vietnam. Fewer beans were for sale. Demand was also strong.\n\nAt the same time, US data on what people pay showed coffee cost 6.1% more than in the same month a year earlier. You might wonder, “Did prices fall or rise?” But this data was for a different month than the bean price measure. It also does not show the price of coffee at a cafe. Don’t put the two numbers in the ring just yet.\n\nSo, how long does it take for bean prices to reach a price tag?\n\nPeople in the market and experts spoke with Reuters. They estimate raw-bean prices take at least about nine months to appear in US shop prices. The road to a price tag is quite a long journey.\n\nThe article says US companies that roast coffee keep raw beans in stock. Roasting and packing the beans also take time. These companies often talk with stores about prices on a regular basis. A shop’s price tag does not change the moment the market moves.\n\nHowever, “about nine months” is an estimate based on interviews. It is not a rule for every company. And it is not a promise that “prices will fall in nine months.” It is too soon to mark the date on your calendar.\n\nA cafe cup also costs money for more than just beans. A person who runs a cafe in Chicago said three costs had pushed prices up. These were cups, workers’ pay, and buying beans. Even if bean prices fall, other costs do not always fall with them.\n\nIf you are waiting for your usual cup to get cheaper, ask more than, “How much do beans cost now?” Also ask, “When does the bean price reach here?” A coffee price tag may have its own hidden clock, separate from the latest market news.\n\n## In one line\nFalling coffee bean prices may take at least nine months to affect US shop prices."
+   }
+  ]
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 9.96
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 9.96,
+ "response_text": "## 選定結果（5件）\n\n| No. | 表現（本文そのまま） | 語数 | 学習ポイント |\n|---|---|---|---|\n| 1 | pumps its fist | 3語 | \"wallet pumps its fist\"で「財布が喜ぶ」という擬人化表現。pump one's fistは「ガッツポーズをする」の意味 |\n| 2 | pushed prices up | 3語 | 句動詞。「値段を押し上げる」の意味で、price rises を表す際の自然な言い方 |\n| 3 | on a regular basis | 4語 | 「定期的に」を表す定型表現。on a regular basisはregularlyより改まった書き言葉的な言い回し |\n| 4 | hidden clock | 2語 | 比喩表現。価格に「目に見えないタイミング」があることを示す。clockは「時間の経過・仕組み」の比喩として使われている |\n| 5 | road to a price tag | 5語 | 比喩表現。「市場の変化が値札に届くまでの道のり」を表す。roadを時間的な遅れのたとえとして用いている |\n\n## 照合・語数確認\n- 1: \"your wallet pumps its fist.\" に一致（3語）\n- 2: \"had pushed prices up.\" に一致（3語）\n- 3: \"talk with stores about prices on a regular basis.\" に一致（4語）\n- 4: \"its own hidden clock\" に一致（2語）\n- 5: \"The road to a price tag is quite a long journey.\" に一致（5語）\n\nすべて本文中の連続した語句のみで、改変はありません。いずれも5語以内です。",
+ "usage": {
+  "input_tokens": 1287,
+  "output_tokens": 2004,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGbENUZKZ4Xe3v7uvA1C",
+ "model_returned": "claude-haiku-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 0.18091,
+ "raw_response": {
+  "model": "claude-haiku-5-5",
+  "id": "msg_011CgGbENUZKZ4Xe3v7uvA1C",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "## 選定結果（5件）\n\n| No. | 表現（本文そのまま） | 語数 | 学習ポイント |\n|---|---|---|---|\n| 1 | pumps its fist | 3語 | \"wallet pumps its fist\"で「財布が喜ぶ」という擬人化表現。pump one's fistは「ガッツポーズをする」の意味 |\n| 2 | pushed prices up | 3語 | 句動詞。「値段を押し上げる」の意味で、price rises を表す際の自然な言い方 |\n| 3 | on a regular basis | 4語 | 「定期的に」を表す定型表現。on a regular basisはregularlyより改まった書き言葉的な言い回し |\n| 4 | hidden clock | 2語 | 比喩表現。価格に「目に見えないタイミング」があることを示す。clockは「時間の経過・仕組み」の比喩として使われている |\n| 5 | road to a price tag | 5語 | 比喩表現。「市場の変化が値札に届くまでの道のり」を表す。roadを時間的な遅れのたとえとして用いている |\n\n## 照合・語数確認\n- 1: \"your wallet pumps its fist.\" に一致（3語）\n- 2: \"had pushed prices up.\" に一致（3語）\n- 3: \"talk with stores about prices on a regular basis.\" に一致（4語）\n- 4: \"its own hidden clock\" に一致（2語）\n- 5: \"The road to a price tag is quite a long journey.\" に一致（5語）\n\nすべて本文中の連続した語句のみで、改変はありません。いずれも5語以内です。"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 1287,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 2004,
+   "output_tokens_details": {
+    "thinking_tokens": 1464
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

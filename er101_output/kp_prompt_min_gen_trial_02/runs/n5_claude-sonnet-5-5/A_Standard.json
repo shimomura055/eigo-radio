@@ -1,0 +1,87 @@
+{
+ "model_key": "n5_claude-sonnet-5-5",
+ "requested_model_id": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "unit_id": "A_Standard",
+ "article_id": "A",
+ "level": "Standard",
+ "article_sha256": "4e7cd0b120266057697e08d29b3aab8459cff0d67241d6e4ed28c5192d439260",
+ "prompt_sha256": "6a5d2052f8a1c68297275d732e74f2d97fe7c21d0f1a8044cdb4aa1df0a5cb32",
+ "user_message_sha256": "9018d73232e9f14fbe352002fbb84f365c94c9ac18e187c86439fce68d433c5e",
+ "request_body": {
+  "model": "claude-sonnet-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：スペース区切りで正確に数える。6語以上は出力禁止。\n3. **学習ポイントの明確化と最小化（必須）**：学ぶべき語彙・熟語・表現を明確にし、意味と自然さを保てる最短の形で抽出する。不要な目的語・修飾語・文脈は除く。5語は上限であり、目標ではない。短縮によって学習価値が失われる場合のみ、必要な語を残す。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# Coffee Bean Prices Fall. Are Price Tags Still on a Journey?\n\n“Beans cost less now!” When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less, too. But a shop’s price may not change right away. When a price tag makes you ask, “Haven’t you heard the news?”, it feels like there is a delay.\n\nThe International Coffee Organization shared a measure of coffee prices. It fell 8.7% from the month before. The group said more beans picked in Brazil had reached the market. It also expected a good supply to continue.\n\nThe US Department of Agriculture said several things had raised prices at once. There was bad weather in Brazil and Vietnam. Fewer beans were for sale. Demand was also strong.\n\nAt the same time, US data on what people pay showed coffee cost 6.1% more than in the same month a year earlier. You might wonder, “Did prices fall or rise?” But this data was for a different month than the bean price measure. It also does not show the price of coffee at a cafe. Don’t put the two numbers in the ring just yet.\n\nSo, how long does it take for bean prices to reach a price tag?\n\nPeople in the market and experts spoke with Reuters. They estimate raw-bean prices take at least about nine months to appear in US shop prices. The road to a price tag is quite a long journey.\n\nThe article says US companies that roast coffee keep raw beans in stock. Roasting and packing the beans also take time. These companies often talk with stores about prices on a regular basis. A shop’s price tag does not change the moment the market moves.\n\nHowever, “about nine months” is an estimate based on interviews. It is not a rule for every company. And it is not a promise that “prices will fall in nine months.” It is too soon to mark the date on your calendar.\n\nA cafe cup also costs money for more than just beans. A person who runs a cafe in Chicago said three costs had pushed prices up. These were cups, workers’ pay, and buying beans. Even if bean prices fall, other costs do not always fall with them.\n\nIf you are waiting for your usual cup to get cheaper, ask more than, “How much do beans cost now?” Also ask, “When does the bean price reach here?” A coffee price tag may have its own hidden clock, separate from the latest market news.\n\n## In one line\nFalling coffee bean prices may take at least nine months to affect US shop prices."
+   }
+  ]
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 14.04
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 14.04,
+ "response_text": "# 選定結果\n\n| # | 表現 | 語数 | 学習ポイント |\n|---|------|------|-------------|\n| 1 | **pumps its fist** | 3語 | 「拳を突き上げる」。喜びや達成感を表す動作表現です。ここでは財布を擬人化し、「やった!」という気持ちを描いています。 |\n| 2 | **on a regular basis** | 4語 | 「定期的に」。regularly より硬めで、ビジネス文書や報道でよく使われます。 |\n| 3 | **at once** | 2語 | 「同時に」。「すぐに」の意味もありますが、ここでは「一度に・同時に」の意味です。 |\n| 4 | **a measure of** | 3語 | 「〜の指標・尺度」。measure を名詞で使う経済・統計記事の頻出表現です。 |\n| 5 | **the moment the market moves** | 4語 | the moment は「〜した瞬間に」という接続詞的な用法です。when より即時性が強く出ます。 |\n\n# 最終照合\n- 1: 本文「your wallet **pumps its fist**」に一致。3語\n- 2: 本文「on a regular basis」に一致。4語\n- 3: 本文「raised prices **at once**」に一致。2語\n- 4: 本文「shared **a measure of** coffee prices」に一致。3語\n- 5: 本文「does not change **the moment the market moves**」に一致。4語\n\nいずれも本文から連続して抜き出しており、改変はなく、5語以内です。",
+ "usage": {
+  "input_tokens": 1287,
+  "output_tokens": 1756,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGbERrCT2eakvqBQuchp",
+ "model_returned": "claude-sonnet-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 3.22144,
+ "raw_response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgGbERrCT2eakvqBQuchp",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "# 選定結果\n\n| # | 表現 | 語数 | 学習ポイント |\n|---|------|------|-------------|\n| 1 | **pumps its fist** | 3語 | 「拳を突き上げる」。喜びや達成感を表す動作表現です。ここでは財布を擬人化し、「やった!」という気持ちを描いています。 |\n| 2 | **on a regular basis** | 4語 | 「定期的に」。regularly より硬めで、ビジネス文書や報道でよく使われます。 |\n| 3 | **at once** | 2語 | 「同時に」。「すぐに」の意味もありますが、ここでは「一度に・同時に」の意味です。 |\n| 4 | **a measure of** | 3語 | 「〜の指標・尺度」。measure を名詞で使う経済・統計記事の頻出表現です。 |\n| 5 | **the moment the market moves** | 4語 | the moment は「〜した瞬間に」という接続詞的な用法です。when より即時性が強く出ます。 |\n\n# 最終照合\n- 1: 本文「your wallet **pumps its fist**」に一致。3語\n- 2: 本文「on a regular basis」に一致。4語\n- 3: 本文「raised prices **at once**」に一致。2語\n- 4: 本文「shared **a measure of** coffee prices」に一致。3語\n- 5: 本文「does not change **the moment the market moves**」に一致。4語\n\nいずれも本文から連続して抜き出しており、改変はなく、5語以内です。"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 1287,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 1756,
+   "output_tokens_details": {
+    "thinking_tokens": 1238
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

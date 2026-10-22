@@ -1,0 +1,93 @@
+{
+ "model_key": "n5_claude-sonnet-5-5",
+ "requested_model_id": "claude-sonnet-5-5",
+ "provider": "anthropic",
+ "unit_id": "G_Advanced",
+ "article_id": "G",
+ "level": "Advanced",
+ "article_sha256": "7d0188f7a84e17b26e1791e837c4fefa881039faf34043b9dc0728a2499f9e19",
+ "prompt_sha256": "6a5d2052f8a1c68297275d732e74f2d97fe7c21d0f1a8044cdb4aa1df0a5cb32",
+ "user_message_sha256": "f1a4cdb8b95b6f76a82b699a59af73a0cfce5aaeef3aa21ff5052d9a13756b6e",
+ "request_body": {
+  "model": "claude-sonnet-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：スペース区切りで正確に数える。6語以上は出力禁止。\n3. **学習ポイントの明確化と最小化（必須）**：学ぶべき語彙・熟語・表現を明確にし、意味と自然さを保てる最短の形で抽出する。不要な目的語・修飾語・文脈は除く。5語は上限であり、目標ではない。短縮によって学習価値が失われる場合のみ、必要な語を残す。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nAbout 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the Strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day."
+   }
+  ]
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": false,
+   "error": "net:ConnectTimeout:HTTPSConnectionPool(host='api.anthropic.com', port=443): Max retries exceeded with url: /v1/messages (Caused by ConnectTimeoutError(<HTTPSConnection(host='api.anthropic.com', port=443) at 0x29b7e34a49",
+   "elapsed_s": 21.04
+  },
+  {
+   "attempt": 2,
+   "ok": true,
+   "elapsed_s": 10.76
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 36.8,
+ "response_text": "以下の5件を選びました。\n\n| # | 表現 | 語数 | 学習ポイント |\n|---|------|------|-------------|\n| 1 | center stage | 2語 | 「注目の的」を表すイディオム。take center stage(主役になる)の形でもよく使われます。 |\n| 2 | legal basis | 2語 | 「法的根拠」を表すコロケーション。ニュースや法律の文脈で頻出します。 |\n| 3 | settled at | 2語 | 相場や株価が「~で取引を終えた」という市況用語です。 |\n| 4 | gave back | 2語 | 市況での「(上げた分を)吐き出した」という意味の句動詞です。 |\n| 5 | flashy | 1語 | 「派手で見かけ倒しの」というやや否定的なニュアンスの形容詞です。 |\n\n**照合結果**:5件とも本文中の連続した語句と一致し、改変はありません。語数もすべて5語以内です。\n\n- \"stood at **center stage**\"\n- \"what **legal basis** would support it\"\n- \"**settled at** $83.30\"\n- \"briefly **gave back** some of their gains\"\n- \"the **flashy** 20% plan\"",
+ "usage": {
+  "input_tokens": 1216,
+  "output_tokens": 1331,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGbKNa9AdTDu3d25PSbb",
+ "model_returned": "claude-sonnet-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 2.51872,
+ "raw_response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgGbKNa9AdTDu3d25PSbb",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "以下の5件を選びました。\n\n| # | 表現 | 語数 | 学習ポイント |\n|---|------|------|-------------|\n| 1 | center stage | 2語 | 「注目の的」を表すイディオム。take center stage(主役になる)の形でもよく使われます。 |\n| 2 | legal basis | 2語 | 「法的根拠」を表すコロケーション。ニュースや法律の文脈で頻出します。 |\n| 3 | settled at | 2語 | 相場や株価が「~で取引を終えた」という市況用語です。 |\n| 4 | gave back | 2語 | 市況での「(上げた分を)吐き出した」という意味の句動詞です。 |\n| 5 | flashy | 1語 | 「派手で見かけ倒しの」というやや否定的なニュアンスの形容詞です。 |\n\n**照合結果**:5件とも本文中の連続した語句と一致し、改変はありません。語数もすべて5語以内です。\n\n- \"stood at **center stage**\"\n- \"what **legal basis** would support it\"\n- \"**settled at** $83.30\"\n- \"briefly **gave back** some of their gains\"\n- \"the **flashy** 20% plan\""
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 1216,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 1331,
+   "output_tokens_details": {
+    "thinking_tokens": 930
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

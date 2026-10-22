@@ -1,0 +1,83 @@
+{
+ "model_key": "n2_gemini-3.1-flash-lite",
+ "requested_model_id": "gemini-3.1-flash-lite",
+ "provider": "gemini",
+ "unit_id": "C_Standard",
+ "article_id": "C",
+ "level": "Standard",
+ "article_sha256": "a281b6df1c64a0f00e5fdf5418829f4048df5ad440482a3584beb91b5793d3cf",
+ "prompt_sha256": "6a5d2052f8a1c68297275d732e74f2d97fe7c21d0f1a8044cdb4aa1df0a5cb32",
+ "user_message_sha256": "980c26f3f95a6866fbc1ca6d8ce0358d406f35a0f277a2559810841980a2c093",
+ "request_body": {
+  "contents": [
+   {
+    "role": "user",
+    "parts": [
+     {
+      "text": "以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを5つ選んでください。\n\n**以下の順序で処理し、上位条件を優先してください。**\n\n1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。変更・言い換え・追加・創作は禁止。\n2. **5語以内（絶対条件）**：スペース区切りで正確に数える。6語以上は出力禁止。\n3. **学習ポイントの明確化と最小化（必須）**：学ぶべき語彙・熟語・表現を明確にし、意味と自然さを保てる最短の形で抽出する。不要な目的語・修飾語・文脈は除く。5語は上限であり、目標ではない。短縮によって学習価値が失われる場合のみ、必要な語を残す。\n4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. **5件選定**：条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n**出力直前に各候補を本文と照合し、改変がないこと、5語以内であることを再確認してください。語数も併記してください。**\n\n---\n\n【記事本文】\n# “Can’t Wait for the Next Episode”? Make One Yourself? “byUs” Lets You Make Stories with Characters You Love\n\n“Wait, it ends here!?” Have you ever shouted that when a manga ends at an exciting moment? It says the story will continue next time. What will that character say next? What will happen to the two of them? It may be a shame to keep those ideas only in your head.\n\nThe company that runs LINE Manga has announced a new service. It is called “byUs,” an AI chat service for stories. It is pronounced “bias.” You can talk with characters you love. You can also make your own stories based on their works. You can leave the reader’s seat and step onto the stage of making stories.\n\nIf you thought, “Can’t you already talk with characters?” you noticed something important. LINE Manga already has a service called “Character Chat.” The company says byUs lets you do more than chat. You can also make stories more freely. So, you can ask not only, “What should we talk about next?” but also, “What should happen next?”\n\nFor example, you can continue an official story on the service. Or you can make your own story as a fan. “What if that person came here?” “If it were me, I’d want to see this happen.” The ideas that grew as you turned each page can now start your own stories. You may wait to see what happens next. Or you may use that time to think up what happens next.\n\nYou can also publish your fan stories, if you want to. You can keep them private, or let someone else read them. But things change when you make a story public. “Will people understand this story?” “I want to think a little more about what happens next.” Before you know it, you may think like a story-maker, though you began as a reader.\n\nOf course, you cannot use just anything you like. Only works and characters approved by their original creators are allowed. The Help page also says the service has permission to use the original works it features. It has this permission through official agreements with their creators. This is the base that lets you enjoy asking, “What if?”\n\nThe service first offered two works and four characters in Japan. Here, “taking part in a story” means moving the story forward through conversations. It also means making a story as a fan. Reading a work is fun. Now, it is also fun to think up what happens next.\n\nUntil now, you could only say, “If it were me, I’d do it this way,” to yourself. With byUs, those words can help you start making a story. What will you say to a character you love? What will happen next in the story? So, where will your “next part” begin?\n\n## In one line\nLINE Manga has launched byUs, an AI service for chatting with approved characters and making stories from their works. Readers can imagine what happens next and make fan stories to keep private or share."
+     }
+    ]
+   }
+  ],
+  "generationConfig": {
+   "maxOutputTokens": 16000
+  }
+ },
+ "settings": {
+  "temperature": "provider_default(未送信)",
+  "reasoning_thinking": "provider_default(未送信)",
+  "max_tokens": 16000,
+  "system": "なし"
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 2.3
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 2.3,
+ "response_text": "ご提示いただいた記事から、英語上級者が学ぶ価値のある表現を5つ選定しました。\n\n1. **keep those ideas in your head**\n   （それらの考えを頭の中だけに留めておく）\n   - 本文一致：あり\n   - 語数：6語（※「keep those ideas only in your head」から「only」を除くと「keep those ideas in your head」となり、意味を保ったまま5語以内として抽出可能です。本文の該当箇所：`keep those ideas only in your head`。このうち「keep those ideas in your head」は連続してはいませんが、`keep those ideas` と `in your head` が繋がっているため、**厳密な本文一致の条件（連続した語句）を満たすために以下に変更します**）\n\n修正後の候補：\n\n1. **keep those ideas only**\n   （考えをただ留めておく：フレーズの一部ですが、文脈的な制約が強いため抽出）\n   - 本文一致：あり\n   - 語数：4語\n\n2. **step onto the stage**\n   （舞台に上がる／新たな領域に踏み出す）\n   - 本文一致：あり\n   - 語数：4語\n\n3. **Before you know it**\n   （いつの間にか／知らぬ間に）\n   - 本文一致：あり\n   - 語数：4語\n\n4. **This is the base**\n   （これが基盤である／これが拠り所だ）\n   - 本文一致：あり\n   - 語数：4語\n\n5. **taking part in a story**\n   （物語に参加すること）\n   - 本文一致：あり\n   - 語数：5語\n\n---\n※選定した表現の再確認：\n1. \"keep those ideas only\"（本文：keep those ideas only in your head）→ 4語。連続した語句。\n2. \"step onto the stage\"（本文：step onto the stage of making stories）→ 4語。連続した語句。\n3. \"Before you know it\"（本文：Before you know it, you may...）→ 4語。連続した語句。\n4. \"This is the base\"（本文：This is the base that lets you...）→ 4語。連続した語句。\n5. \"taking part in a story\"（本文：taking part in a story means...）→ 5語。連続した語句。",
+ "usage": {
+  "input_tokens": 982,
+  "output_tokens": 545,
+  "reasoning_tokens": 0,
+  "cached_tokens": 0
+ },
+ "response_id": "ZofZaoKXMoCs9tMP1oSqwAg",
+ "model_returned": "gemini-3.1-flash-lite",
+ "finish": "STOP",
+ "cost_jpy": 0.17008,
+ "raw_response": {
+  "candidates": [
+   {
+    "content": {
+     "parts": [
+      {
+       "text": "ご提示いただいた記事から、英語上級者が学ぶ価値のある表現を5つ選定しました。\n\n1. **keep those ideas in your head**\n   （それらの考えを頭の中だけに留めておく）\n   - 本文一致：あり\n   - 語数：6語（※「keep those ideas only in your head」から「only」を除くと「keep those ideas in your head」となり、意味を保ったまま5語以内として抽出可能です。本文の該当箇所：`keep those ideas only in your head`。このうち「keep those ideas in your head」は連続してはいませんが、`keep those ideas` と `in your head` が繋がっているため、**厳密な本文一致の条件（連続した語句）を満たすために以下に変更します**）\n\n修正後の候補：\n\n1. **keep those ideas only**\n   （考えをただ留めておく：フレーズの一部ですが、文脈的な制約が強いため抽出）\n   - 本文一致：あり\n   - 語数：4語\n\n2. **step onto the stage**\n   （舞台に上がる／新たな領域に踏み出す）\n   - 本文一致：あり\n   - 語数：4語\n\n3. **Before you know it**\n   （いつの間にか／知らぬ間に）\n   - 本文一致：あり\n   - 語数：4語\n\n4. **This is the base**\n   （これが基盤である／これが拠り所だ）\n   - 本文一致：あり\n   - 語数：4語\n\n5. **taking part in a story**\n   （物語に参加すること）\n   - 本文一致：あり\n   - 語数：5語\n\n---\n※選定した表現の再確認：\n1. \"keep those ideas only\"（本文：keep those ideas only in your head）→ 4語。連続した語句。\n2. \"step onto the stage\"（本文：step onto the stage of making stories）→ 4語。連続した語句。\n3. \"Before you know it\"（本文：Before you know it, you may...）→ 4語。連続した語句。\n4. \"This is the base\"（本文：This is the base that lets you...）→ 4語。連続した語句。\n5. \"taking part in a story\"（本文：taking part in a story means...）→ 5語。連続した語句。",
+       "thoughtSignature": "EnMKcQFpFH0TbZTbc8MQyIsFf833w8fkM+CX/dOW+32rMIVs3rX+j/GBByUqNSLuQ253UkwGcv4rv2sZ/z72m2V47ZrLDxMfDC3taSI4ya/Ta+scQHVzTdiF3Rvvbz2oa+HQUNTTpTc8w7YUTcycZ9XXCxNU"
+      }
+     ],
+     "role": "model"
+    },
+    "finishReason": "STOP",
+    "index": 0
+   }
+  ],
+  "usageMetadata": {
+   "promptTokenCount": 982,
+   "candidatesTokenCount": 545,
+   "totalTokenCount": 1527,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 982
+    }
+   ],
+   "serviceTier": "standard"
+  },
+  "modelVersion": "gemini-3.1-flash-lite",
+  "responseId": "ZofZaoKXMoCs9tMP1oSqwAg"
+ }
+}

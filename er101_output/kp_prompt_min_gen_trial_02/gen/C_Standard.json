@@ -1,0 +1,116 @@
+{
+ "unit_id": "C_Standard",
+ "requested_model_id": "claude-haiku-5-5",
+ "user_message_sha256": "23b94c3853d6d2c333f1fd8c6ce4605d0be5818a4f9be1095fdf97af151b17eb",
+ "gen_prompt_sha256": "43635944ea53758eb9bf1be808b529318ce6f38b77e86a4787a0301f1827e192",
+ "user_message": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. think up\n   本文中の該当文(参考情報): Or you may use that time to think up what happens next.\n2. Before you know it\n   本文中の該当文(参考情報): “Will people understand this story?” “I want to think a little more about what happens next.” Before you know it, you may think like a story-maker, though you began as a reader.\n3. moving the story forward\n   本文中の該当文(参考情報): Here, “taking part in a story” means moving the story forward through conversations.\n4. make a story public\n   本文中の該当文(参考情報): But things change when you make a story public.\n5. leave the reader’s seat\n   本文中の該当文(参考情報): You can leave the reader’s seat and step onto the stage of making stories.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。",
+ "request_body": {
+  "model": "claude-haiku-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. think up\n   本文中の該当文(参考情報): Or you may use that time to think up what happens next.\n2. Before you know it\n   本文中の該当文(参考情報): “Will people understand this story?” “I want to think a little more about what happens next.” Before you know it, you may think like a story-maker, though you began as a reader.\n3. moving the story forward\n   本文中の該当文(参考情報): Here, “taking part in a story” means moving the story forward through conversations.\n4. make a story public\n   本文中の該当文(参考情報): But things change when you make a story public.\n5. leave the reader’s seat\n   本文中の該当文(参考情報): You can leave the reader’s seat and step onto the stage of making stories.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。"
+   }
+  ]
+ },
+ "before_phrases": [
+  "think up",
+  "Before you know it",
+  "moving the story forward",
+  "make a story public",
+  "leave the reader’s seat"
+ ],
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 6.31
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 6.31,
+ "response_text": "[\n{\"no\": 1, \"before\": \"think up\", \"after\": \"think up\", \"reason\": \"句動詞で汎用性が高く、特定の人物や物事に依存していないため変更不要。\"},\n{\"no\": 2, \"before\": \"Before you know it\", \"after\": \"Before you know it\", \"reason\": \"汎用的な慣用表現で、特定の語への依存がないため変更不要。\"},\n{\"no\": 3, \"before\": \"moving the story forward\", \"after\": \"moving something forward\", \"reason\": \"the storyをsomethingに置換し、物語以外の場面でも使えるように一般化。動名詞+目的語+副詞の文法構造は維持。\"},\n{\"no\": 4, \"before\": \"make a story public\", \"after\": \"make something public\", \"reason\": \"a storyをsomethingに置換して一般化。『公開する』の意味と文法構造は維持し、情報や作品などにも使えるようにした。\"},\n{\"no\": 5, \"before\": \"leave the reader’s seat\", \"after\": \"leave the reader’s seat\", \"reason\": \"readerは特定の人物ではなく役割を表す語で、比喩的表現として意味が成立しているため変更不要。\"}\n]",
+ "parsed": [
+  {
+   "no": 1,
+   "before": "think up",
+   "after": "think up",
+   "reason": "句動詞で汎用性が高く、特定の人物や物事に依存していないため変更不要。"
+  },
+  {
+   "no": 2,
+   "before": "Before you know it",
+   "after": "Before you know it",
+   "reason": "汎用的な慣用表現で、特定の語への依存がないため変更不要。"
+  },
+  {
+   "no": 3,
+   "before": "moving the story forward",
+   "after": "moving something forward",
+   "reason": "the storyをsomethingに置換し、物語以外の場面でも使えるように一般化。動名詞+目的語+副詞の文法構造は維持。"
+  },
+  {
+   "no": 4,
+   "before": "make a story public",
+   "after": "make something public",
+   "reason": "a storyをsomethingに置換して一般化。『公開する』の意味と文法構造は維持し、情報や作品などにも使えるようにした。"
+  },
+  {
+   "no": 5,
+   "before": "leave the reader’s seat",
+   "after": "leave the reader’s seat",
+   "reason": "readerは特定の人物ではなく役割を表す語で、比喩的表現として意味が成立しているため変更不要。"
+  }
+ ],
+ "usage": {
+  "input_tokens": 554,
+  "output_tokens": 1135,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGbSKT5HCnXDHv6iHutB",
+ "model_returned": "claude-haiku-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 0.09966,
+ "raw_response": {
+  "model": "claude-haiku-5-5",
+  "id": "msg_011CgGbSKT5HCnXDHv6iHutB",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "[\n{\"no\": 1, \"before\": \"think up\", \"after\": \"think up\", \"reason\": \"句動詞で汎用性が高く、特定の人物や物事に依存していないため変更不要。\"},\n{\"no\": 2, \"before\": \"Before you know it\", \"after\": \"Before you know it\", \"reason\": \"汎用的な慣用表現で、特定の語への依存がないため変更不要。\"},\n{\"no\": 3, \"before\": \"moving the story forward\", \"after\": \"moving something forward\", \"reason\": \"the storyをsomethingに置換し、物語以外の場面でも使えるように一般化。動名詞+目的語+副詞の文法構造は維持。\"},\n{\"no\": 4, \"before\": \"make a story public\", \"after\": \"make something public\", \"reason\": \"a storyをsomethingに置換して一般化。『公開する』の意味と文法構造は維持し、情報や作品などにも使えるようにした。\"},\n{\"no\": 5, \"before\": \"leave the reader’s seat\", \"after\": \"leave the reader’s seat\", \"reason\": \"readerは特定の人物ではなく役割を表す語で、比喩的表現として意味が成立しているため変更不要。\"}\n]"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 554,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 1135,
+   "output_tokens_details": {
+    "thinking_tokens": 756
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

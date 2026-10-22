@@ -1,0 +1,116 @@
+{
+ "unit_id": "G_Advanced",
+ "requested_model_id": "claude-haiku-5-5",
+ "user_message_sha256": "02d88e6580710a464aec839560607780783379da9c8b78538aa93a42fc4ff3ba",
+ "gen_prompt_sha256": "43635944ea53758eb9bf1be808b529318ce6f38b77e86a4787a0301f1827e192",
+ "user_message": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. took a sharp turn\n   本文中の該当文(参考情報): Then the story took a sharp turn.\n2. gave back\n   本文中の該当文(参考情報): On July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains.\n3. final settlement price\n   本文中の該当文(参考情報): Its final settlement price was $84.73, up 1.7% from the day before.\n4. pulled back briefly\n   本文中の該当文(参考情報): Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.\n5. legal basis\n   本文中の該当文(参考情報): The post did not say who would pay, how the money would be collected, or what legal basis would support it.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。",
+ "request_body": {
+  "model": "claude-haiku-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. took a sharp turn\n   本文中の該当文(参考情報): Then the story took a sharp turn.\n2. gave back\n   本文中の該当文(参考情報): On July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains.\n3. final settlement price\n   本文中の該当文(参考情報): Its final settlement price was $84.73, up 1.7% from the day before.\n4. pulled back briefly\n   本文中の該当文(参考情報): Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.\n5. legal basis\n   本文中の該当文(参考情報): The post did not say who would pay, how the money would be collected, or what legal basis would support it.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。"
+   }
+  ]
+ },
+ "before_phrases": [
+  "took a sharp turn",
+  "gave back",
+  "final settlement price",
+  "pulled back briefly",
+  "legal basis"
+ ],
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 4.52
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 4.52,
+ "response_text": "[\n{\"no\": 1, \"before\": \"took a sharp turn\", \"after\": \"took a sharp turn\", \"reason\": \"固有名詞や特定の対象への依存がなく、すでに汎用的な表現のため変更不要。\"},\n{\"no\": 2, \"before\": \"gave back\", \"after\": \"gave back\", \"reason\": \"句動詞として汎用性が高く、過去形という学習ポイントを維持するため変更不要。\"},\n{\"no\": 3, \"before\": \"final settlement price\", \"after\": \"final settlement price\", \"reason\": \"特定の銘柄や数値に依存しない一般的な金融用語であり、意味を保つため変更不要。\"},\n{\"no\": 4, \"before\": \"pulled back briefly\", \"after\": \"pulled back briefly\", \"reason\": \"特定の人物・物事に依存せず、場面を問わず使えるため変更不要。\"},\n{\"no\": 5, \"before\": \"legal basis\", \"after\": \"legal basis\", \"reason\": \"一般的な名詞句であり、固有の対象を含まないため変更不要。\"}\n]",
+ "parsed": [
+  {
+   "no": 1,
+   "before": "took a sharp turn",
+   "after": "took a sharp turn",
+   "reason": "固有名詞や特定の対象への依存がなく、すでに汎用的な表現のため変更不要。"
+  },
+  {
+   "no": 2,
+   "before": "gave back",
+   "after": "gave back",
+   "reason": "句動詞として汎用性が高く、過去形という学習ポイントを維持するため変更不要。"
+  },
+  {
+   "no": 3,
+   "before": "final settlement price",
+   "after": "final settlement price",
+   "reason": "特定の銘柄や数値に依存しない一般的な金融用語であり、意味を保つため変更不要。"
+  },
+  {
+   "no": 4,
+   "before": "pulled back briefly",
+   "after": "pulled back briefly",
+   "reason": "特定の人物・物事に依存せず、場面を問わず使えるため変更不要。"
+  },
+  {
+   "no": 5,
+   "before": "legal basis",
+   "after": "legal basis",
+   "reason": "一般的な名詞句であり、固有の対象を含まないため変更不要。"
+  }
+ ],
+ "usage": {
+  "input_tokens": 631,
+  "output_tokens": 895,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGbStURmKKKeZojzCrmz",
+ "model_returned": "claude-haiku-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 0.0817,
+ "raw_response": {
+  "model": "claude-haiku-5-5",
+  "id": "msg_011CgGbStURmKKKeZojzCrmz",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "[\n{\"no\": 1, \"before\": \"took a sharp turn\", \"after\": \"took a sharp turn\", \"reason\": \"固有名詞や特定の対象への依存がなく、すでに汎用的な表現のため変更不要。\"},\n{\"no\": 2, \"before\": \"gave back\", \"after\": \"gave back\", \"reason\": \"句動詞として汎用性が高く、過去形という学習ポイントを維持するため変更不要。\"},\n{\"no\": 3, \"before\": \"final settlement price\", \"after\": \"final settlement price\", \"reason\": \"特定の銘柄や数値に依存しない一般的な金融用語であり、意味を保つため変更不要。\"},\n{\"no\": 4, \"before\": \"pulled back briefly\", \"after\": \"pulled back briefly\", \"reason\": \"特定の人物・物事に依存せず、場面を問わず使えるため変更不要。\"},\n{\"no\": 5, \"before\": \"legal basis\", \"after\": \"legal basis\", \"reason\": \"一般的な名詞句であり、固有の対象を含まないため変更不要。\"}\n]"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 631,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 895,
+   "output_tokens_details": {
+    "thinking_tokens": 553
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

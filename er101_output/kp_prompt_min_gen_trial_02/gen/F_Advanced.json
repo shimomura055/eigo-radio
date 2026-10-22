@@ -1,0 +1,116 @@
+{
+ "unit_id": "F_Advanced",
+ "requested_model_id": "claude-haiku-5-5",
+ "user_message_sha256": "3f3d0ea80b8b93b146f1b3df15a851c97d78ce2359d283130ffcac7ff8ba3376",
+ "gen_prompt_sha256": "43635944ea53758eb9bf1be808b529318ce6f38b77e86a4787a0301f1827e192",
+ "user_message": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. track down the subject\n   本文中の該当文(参考情報): This time, it’s the news detective’s turn to track down the subject.\n2. refueling support\n   本文中の該当文(参考情報): Britain also said it would extend refueling support for Saudi air-defense operations.\n3. put in the same box\n   本文中の該当文(参考情報): Even though both are put in the same box marked “British support,” they are not all the same kind of activity.\n4. stretch what was said\n   本文中の該当文(参考情報): So if you sum it up as “Britain won’t attack,” you stretch what was said about the Typhoon mission too far, making it cover all support.\n5. goes beyond the evidence\n   本文中の該当文(参考情報): On the other hand, looking at what the refueling support covers and saying, “Then the Typhoons will attack too,” goes beyond the evidence.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。",
+ "request_body": {
+  "model": "claude-haiku-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. track down the subject\n   本文中の該当文(参考情報): This time, it’s the news detective’s turn to track down the subject.\n2. refueling support\n   本文中の該当文(参考情報): Britain also said it would extend refueling support for Saudi air-defense operations.\n3. put in the same box\n   本文中の該当文(参考情報): Even though both are put in the same box marked “British support,” they are not all the same kind of activity.\n4. stretch what was said\n   本文中の該当文(参考情報): So if you sum it up as “Britain won’t attack,” you stretch what was said about the Typhoon mission too far, making it cover all support.\n5. goes beyond the evidence\n   本文中の該当文(参考情報): On the other hand, looking at what the refueling support covers and saying, “Then the Typhoons will attack too,” goes beyond the evidence.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。"
+   }
+  ]
+ },
+ "before_phrases": [
+  "track down the subject",
+  "refueling support",
+  "put in the same box",
+  "stretch what was said",
+  "goes beyond the evidence"
+ ],
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 7.56
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 7.56,
+ "response_text": "[\n{\"no\": 1, \"before\": \"track down the subject\", \"after\": \"track down the subject\", \"reason\": \"「the subject」は特定の人物ではなく汎用的な名詞句で、他の場面でも使えるため変更不要。\"},\n{\"no\": 2, \"before\": \"refueling support\", \"after\": \"refueling support\", \"reason\": \"軍事文脈に限らず使える一般的な名詞句で、固有名詞や特定の対象への依存がないため変更不要。\"},\n{\"no\": 3, \"before\": \"put in the same box\", \"after\": \"put in the same box\", \"reason\": \"「同じ箱に入れる」＝同じカテゴリーに分類するという慣用的な汎用表現で、特定の対象に依存しないため変更不要。\"},\n{\"no\": 4, \"before\": \"stretch what was said\", \"after\": \"stretch what was said\", \"reason\": \"「was said」は主語を特定しない受動態で既に汎用的。someoneへの置換を行うと元の受動的ニュアンスが変わるため変更不要。\"},\n{\"no\": 5, \"before\": \"goes beyond the evidence\", \"after\": \"goes beyond the evidence\", \"reason\": \"証拠・根拠を超えるという意味の汎用的な表現で、特定の人物や事柄に依存しないため変更不要。\"}\n]",
+ "parsed": [
+  {
+   "no": 1,
+   "before": "track down the subject",
+   "after": "track down the subject",
+   "reason": "「the subject」は特定の人物ではなく汎用的な名詞句で、他の場面でも使えるため変更不要。"
+  },
+  {
+   "no": 2,
+   "before": "refueling support",
+   "after": "refueling support",
+   "reason": "軍事文脈に限らず使える一般的な名詞句で、固有名詞や特定の対象への依存がないため変更不要。"
+  },
+  {
+   "no": 3,
+   "before": "put in the same box",
+   "after": "put in the same box",
+   "reason": "「同じ箱に入れる」＝同じカテゴリーに分類するという慣用的な汎用表現で、特定の対象に依存しないため変更不要。"
+  },
+  {
+   "no": 4,
+   "before": "stretch what was said",
+   "after": "stretch what was said",
+   "reason": "「was said」は主語を特定しない受動態で既に汎用的。someoneへの置換を行うと元の受動的ニュアンスが変わるため変更不要。"
+  },
+  {
+   "no": 5,
+   "before": "goes beyond the evidence",
+   "after": "goes beyond the evidence",
+   "reason": "証拠・根拠を超えるという意味の汎用的な表現で、特定の人物や事柄に依存しないため変更不要。"
+  }
+ ],
+ "usage": {
+  "input_tokens": 603,
+  "output_tokens": 1367,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGbSpUZfFnkMYx9BEoXX",
+ "model_returned": "claude-haiku-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 0.11901,
+ "raw_response": {
+  "model": "claude-haiku-5-5",
+  "id": "msg_011CgGbSpUZfFnkMYx9BEoXX",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "[\n{\"no\": 1, \"before\": \"track down the subject\", \"after\": \"track down the subject\", \"reason\": \"「the subject」は特定の人物ではなく汎用的な名詞句で、他の場面でも使えるため変更不要。\"},\n{\"no\": 2, \"before\": \"refueling support\", \"after\": \"refueling support\", \"reason\": \"軍事文脈に限らず使える一般的な名詞句で、固有名詞や特定の対象への依存がないため変更不要。\"},\n{\"no\": 3, \"before\": \"put in the same box\", \"after\": \"put in the same box\", \"reason\": \"「同じ箱に入れる」＝同じカテゴリーに分類するという慣用的な汎用表現で、特定の対象に依存しないため変更不要。\"},\n{\"no\": 4, \"before\": \"stretch what was said\", \"after\": \"stretch what was said\", \"reason\": \"「was said」は主語を特定しない受動態で既に汎用的。someoneへの置換を行うと元の受動的ニュアンスが変わるため変更不要。\"},\n{\"no\": 5, \"before\": \"goes beyond the evidence\", \"after\": \"goes beyond the evidence\", \"reason\": \"証拠・根拠を超えるという意味の汎用的な表現で、特定の人物や事柄に依存しないため変更不要。\"}\n]"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 603,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 1367,
+   "output_tokens_details": {
+    "thinking_tokens": 941
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

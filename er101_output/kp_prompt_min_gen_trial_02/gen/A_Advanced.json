@@ -1,0 +1,116 @@
+{
+ "unit_id": "A_Advanced",
+ "requested_model_id": "claude-haiku-5-5",
+ "user_message_sha256": "83d627aaddfdaa22b3b5ecf8b9f9e3293d1815908201747f2fbe9d9f47ea707e",
+ "gen_prompt_sha256": "43635944ea53758eb9bf1be808b529318ce6f38b77e86a4787a0301f1827e192",
+ "user_message": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. a time lag\n   本文中の該当文(参考情報): When you see a price tag that makes you want to say, “Haven’t you heard the news?”, it seems there is a time lag.\n2. market insiders\n   本文中の該当文(参考情報): According to estimates from market insiders and experts interviewed by Reuters, it takes at least about nine months for the price of raw beans to show up in US retail prices.\n3. retail prices\n   本文中の該当文(参考情報): According to estimates from market insiders and experts interviewed by Reuters, it takes at least about nine months for the price of raw beans to show up in US retail prices.\n4. comes with costs\n   本文中の該当文(参考情報): And a cup at a cafe comes with costs besides the beans.\n5. behind price increases\n   本文中の該当文(参考情報): One cafe operator in Chicago said that the cost of cups and labor, as well as the cost of buying beans, had been behind price increases.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。",
+ "request_body": {
+  "model": "claude-haiku-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. a time lag\n   本文中の該当文(参考情報): When you see a price tag that makes you want to say, “Haven’t you heard the news?”, it seems there is a time lag.\n2. market insiders\n   本文中の該当文(参考情報): According to estimates from market insiders and experts interviewed by Reuters, it takes at least about nine months for the price of raw beans to show up in US retail prices.\n3. retail prices\n   本文中の該当文(参考情報): According to estimates from market insiders and experts interviewed by Reuters, it takes at least about nine months for the price of raw beans to show up in US retail prices.\n4. comes with costs\n   本文中の該当文(参考情報): And a cup at a cafe comes with costs besides the beans.\n5. behind price increases\n   本文中の該当文(参考情報): One cafe operator in Chicago said that the cost of cups and labor, as well as the cost of buying beans, had been behind price increases.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。"
+   }
+  ]
+ },
+ "before_phrases": [
+  "a time lag",
+  "market insiders",
+  "retail prices",
+  "comes with costs",
+  "behind price increases"
+ ],
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 3.52
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 3.52,
+ "response_text": "[{\"no\": 1, \"before\": \"a time lag\", \"after\": \"a time lag\", \"reason\": \"特定の人物・物事に依存しない汎用的な表現のため変更不要。\"}, {\"no\": 2, \"before\": \"market insiders\", \"after\": \"market insiders\", \"reason\": \"特定の固有名詞に依存しない汎用的な表現のため変更不要。\"}, {\"no\": 3, \"before\": \"retail prices\", \"after\": \"retail prices\", \"reason\": \"特定の商品や場所に依存しない汎用的な表現のため変更不要。\"}, {\"no\": 4, \"before\": \"comes with costs\", \"after\": \"comes with costs\", \"reason\": \"特定の物事に依存しない汎用的な表現のため変更不要。\"}, {\"no\": 5, \"before\": \"behind price increases\", \"after\": \"behind price increases\", \"reason\": \"特定の物事に依存しない汎用的な表現のため変更不要。\"}]",
+ "parsed": [
+  {
+   "no": 1,
+   "before": "a time lag",
+   "after": "a time lag",
+   "reason": "特定の人物・物事に依存しない汎用的な表現のため変更不要。"
+  },
+  {
+   "no": 2,
+   "before": "market insiders",
+   "after": "market insiders",
+   "reason": "特定の固有名詞に依存しない汎用的な表現のため変更不要。"
+  },
+  {
+   "no": 3,
+   "before": "retail prices",
+   "after": "retail prices",
+   "reason": "特定の商品や場所に依存しない汎用的な表現のため変更不要。"
+  },
+  {
+   "no": 4,
+   "before": "comes with costs",
+   "after": "comes with costs",
+   "reason": "特定の物事に依存しない汎用的な表現のため変更不要。"
+  },
+  {
+   "no": 5,
+   "before": "behind price increases",
+   "after": "behind price increases",
+   "reason": "特定の物事に依存しない汎用的な表現のため変更不要。"
+  }
+ ],
+ "usage": {
+  "input_tokens": 632,
+  "output_tokens": 678,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGbSKVYuUJtfnLPuT9Ub",
+ "model_returned": "claude-haiku-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 0.06435,
+ "raw_response": {
+  "model": "claude-haiku-5-5",
+  "id": "msg_011CgGbSKVYuUJtfnLPuT9Ub",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQSyQwKEAgTGAI4AUIIdGhpbmtpbmcSDIKfH/+Vb3NlugJTLRoMm2agesLeaJFp4avAIjCxnAkNmwdlhova7U4z+KlA/TDfF8fb1bvyz6xUyH9EjA+zqdR1uLUtAFbwAtCxyaMq5gsS5BUjV0zJMTyWRdwPhCuNGMJJxAaqzUZ6bHNMaAMDsuKsRGiuGm63NnWtCOV3NwNt8ptO3Il7f3dZbodQ4x4zMcuW7uXlE7kyItd1/+Ory895xwpEr1244Ws/T9WnEUI6EY65UTltaa9ku+uegkDWCDdajzCKzqHJYUfdQGgaJD8CQnhuLsWyrD0plbG4cpaJTtnXiJ+86+PUVHMXQq9hse5psGEaOeb+hrMP4tALiDXiSI2sxZDNyy5263z6VoXalKy2T1/o+4YO0VYMRBZxOkSklgHbAgjB5CUjTNgFhUV/paoq6PQyWEjSM+VbWKp7W2Fu4zW15z0qQhxGH+dkBT+brDFP6QGFGqA6vdbyl7h8T5Men5ttflJwY3K8+eh5Y43NOo5ZZcos/rngP2u3shVs/SbxbRwGN21FwEVZf8Di8AmP++K1QRc92cI2U5Pz8JixWqakbNHxCwTttdBN/oDqzj9tTpazPXbHThrpsJ1JkRUPJW0/djAUt+gjHhCFPuMVCmstMP1VI9WMwhMxAAf5Iuu7RY7zR/PJwY4Yir/N0oqVP1TOjXor9QOXMnp8KcTlceiXMvPJ/ObQB6pwJESrfdVnwthDMANU8hYJ+Ts6wURl0FD73rvlo98gnHCtmPVf0SxRYCsV4OHO3nV/+awbN1ASyzLOb7MKEseoeaYCWCieAsr7UEPnTLCzj3UDd9Pwt0eKAr2U9JAxTWyaVE1URVK+WmnNXGSXSkFfcvolxr6NkeY8cKqatPoAFgUZYI+4kpUcBGuzxI8qKe+OfOeSgaVEBBmHDRR4S85W7wK9mNr3a9vdj6GhrMwo2xJ8i/Pki8+qmd4uRKj1VoazCk8wRkYPZ6hjdY7X3hfjl3O/u7D3ZgCTCfaULIzI1YFl61SUWW0XSKW8OjdnEcdKwzCJbjcwVp/3pczbsi31GYjVE8JONSB4vpn1n2rcqz3OVWYLJE447uFW6QH+m1T5af7j4+gLO7JgDSBU4MIIOrrCJlsV+6pZ4z3G3vfBY/fD9UiIXjCBQZ0Q43LpTNbIkoY1CVzqpTYS8Z97V1O3sUTuLkLX3aIYCQzno7Lub+ujlwQuISFj/+PFXKl1y3k8yIZc66vNUwuRK9MUQwFL4jl8CxwlEAL0kclPtHnYEX2l6fo+Wr2mSs0Yc7kc+MNKFPIsHHn7K3BSTu6WxifZWzVBREA6ohtODaOMGc+eFggkF/VKYCFBu3Kkhz4iUY6Qzs1QhEHEf2vdYh1yeXZIrdcqDnscsnHcSujB0s1IB+deC1wrA/WHXh4qPAacFdibyDeYCpMCoA5febay/Pum0s0BbU4YPpZRhHDgXinVIkdKvutFmmvHPGUqvuZkZyL4ubKSvrnce36ukkYN/WDC0X2CrM1/ZuDrUTobL49To0ceofrLQhFlWQcqQzr8GJhM0VuYv7vjYWpQ3arGNmuZn1bLrkO0CaXhCxXqBluKIz/EN0yTHH0g8MhvGsswsHicAqEMl5qVn/0SobroFmz6Z2k1az4rbvA+iSPABMvj/1gzMcxBXJJyGP6tV7moVrJOBydidVvSofQFKoGCQx35WtB//3upxYZ0fq7pOwTp+4GVxw7wQgVSVdvKjSaixskzUUJb4BLSzjB3x+8yjUHcZ9kxzzaPaj3aSGwtEYpxJjQicoIrR5VOBpZVSqBiutcOaEm7dSb0Plesklf4Z+NveTMkqspYhzib+gkGRNQO8Mhkn+VcebW0LPnrhMnDabM9FULcOnqhN9ScVrmybeq7n5wt7f6JBjZbT7tSrgP6I3tk0OQ4Ya/Jy/JZ2co5znD2QQc+SU4qap6chjNEDKdhAX7lCH2+LIKCT2T+NIwxxPTkC06GhQMELb3lo6wofY9Ca5mD9/fvF3nTu3oJE36j8hqOYQVDMiNnayRSWXK2S2RZmx5j06MZBYsPkXJw57Jn23PnJwNwxxMi444DrWWAMVbJZVFt4wmh16l0YAeAP3997xcRl4o9KLdhiv9uCa4lTszZzo0WGAE="
+   },
+   {
+    "type": "text",
+    "text": "[{\"no\": 1, \"before\": \"a time lag\", \"after\": \"a time lag\", \"reason\": \"特定の人物・物事に依存しない汎用的な表現のため変更不要。\"}, {\"no\": 2, \"before\": \"market insiders\", \"after\": \"market insiders\", \"reason\": \"特定の固有名詞に依存しない汎用的な表現のため変更不要。\"}, {\"no\": 3, \"before\": \"retail prices\", \"after\": \"retail prices\", \"reason\": \"特定の商品や場所に依存しない汎用的な表現のため変更不要。\"}, {\"no\": 4, \"before\": \"comes with costs\", \"after\": \"comes with costs\", \"reason\": \"特定の物事に依存しない汎用的な表現のため変更不要。\"}, {\"no\": 5, \"before\": \"behind price increases\", \"after\": \"behind price increases\", \"reason\": \"特定の物事に依存しない汎用的な表現のため変更不要。\"}]"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 632,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 678,
+   "output_tokens_details": {
+    "thinking_tokens": 377
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

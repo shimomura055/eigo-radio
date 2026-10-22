@@ -1,0 +1,116 @@
+{
+ "unit_id": "D_Advanced",
+ "requested_model_id": "claude-haiku-5-5",
+ "user_message_sha256": "0e58cb522fd6dd6d23c75122364deb4f6c29c8b726894f1de460621805b4f72d",
+ "gen_prompt_sha256": "43635944ea53758eb9bf1be808b529318ce6f38b77e86a4787a0301f1827e192",
+ "user_message": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. randomly assigned\n   本文中の該当文(参考情報): They were randomly assigned to watch either a five-minute video of a stone, where nothing happened, or a video of a magician.\n2. fuel for meanness\n   本文中の該当文(参考情報): So, did boredom become fuel for meanness?\n3. dismiss this by saying\n   本文中の該当文(参考情報): You might want to dismiss this by saying, “So it really is a matter of personality.” But there’s more to the story.\n4. regardless of\n   本文中の該当文(参考情報): This time, regardless of how strongly participants were inclined to enjoy seeing others suffer, those who watched the stone video were more likely to reduce another person’s reward than those in the other conditions.\n5. apply its findings directly\n   本文中の該当文(参考情報): We can’t apply its findings directly to everyday meanness or boredom that lasts a long time.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。",
+ "request_body": {
+  "model": "claude-haiku-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. randomly assigned\n   本文中の該当文(参考情報): They were randomly assigned to watch either a five-minute video of a stone, where nothing happened, or a video of a magician.\n2. fuel for meanness\n   本文中の該当文(参考情報): So, did boredom become fuel for meanness?\n3. dismiss this by saying\n   本文中の該当文(参考情報): You might want to dismiss this by saying, “So it really is a matter of personality.” But there’s more to the story.\n4. regardless of\n   本文中の該当文(参考情報): This time, regardless of how strongly participants were inclined to enjoy seeing others suffer, those who watched the stone video were more likely to reduce another person’s reward than those in the other conditions.\n5. apply its findings directly\n   本文中の該当文(参考情報): We can’t apply its findings directly to everyday meanness or boredom that lasts a long time.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。"
+   }
+  ]
+ },
+ "before_phrases": [
+  "randomly assigned",
+  "fuel for meanness",
+  "dismiss this by saying",
+  "regardless of",
+  "apply its findings directly"
+ ],
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 4.45
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 4.45,
+ "response_text": "[{\"no\": 1, \"before\": \"randomly assigned\", \"after\": \"randomly assigned\", \"reason\": \"特定の人物・物事に依存しない汎用的な表現のため変更なし。\"}, {\"no\": 2, \"before\": \"fuel for meanness\", \"after\": \"fuel for meanness\", \"reason\": \"特定の人物・物事に依存しない汎用的な表現のため変更なし。\"}, {\"no\": 3, \"before\": \"dismiss this by saying\", \"after\": \"dismiss something by saying\", \"reason\": \"「this」が直前の文脈に依存しているため、someth­ingに置換して汎用化した。\"}, {\"no\": 4, \"before\": \"regardless of\", \"after\": \"regardless of\", \"reason\": \"特定の人物・物事に依存しない汎用的な表現のため変更なし。\"}, {\"no\": 5, \"before\": \"apply its findings directly\", \"after\": \"apply findings directly\", \"reason\": \"「its」が特定の研究を指しているため削除し、可算名詞の複数形「findings」で汎用化した。\"}]",
+ "parsed": [
+  {
+   "no": 1,
+   "before": "randomly assigned",
+   "after": "randomly assigned",
+   "reason": "特定の人物・物事に依存しない汎用的な表現のため変更なし。"
+  },
+  {
+   "no": 2,
+   "before": "fuel for meanness",
+   "after": "fuel for meanness",
+   "reason": "特定の人物・物事に依存しない汎用的な表現のため変更なし。"
+  },
+  {
+   "no": 3,
+   "before": "dismiss this by saying",
+   "after": "dismiss something by saying",
+   "reason": "「this」が直前の文脈に依存しているため、someth­ingに置換して汎用化した。"
+  },
+  {
+   "no": 4,
+   "before": "regardless of",
+   "after": "regardless of",
+   "reason": "特定の人物・物事に依存しない汎用的な表現のため変更なし。"
+  },
+  {
+   "no": 5,
+   "before": "apply its findings directly",
+   "after": "apply findings directly",
+   "reason": "「its」が特定の研究を指しているため削除し、可算名詞の複数形「findings」で汎用化した。"
+  }
+ ],
+ "usage": {
+  "input_tokens": 619,
+  "output_tokens": 774,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGbSZvxxbZiBnc6uTqYz",
+ "model_returned": "claude-haiku-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 0.07182,
+ "raw_response": {
+  "model": "claude-haiku-5-5",
+  "id": "msg_011CgGbSZvxxbZiBnc6uTqYz",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "CAQSjA4KEAgTGAI4AUIIdGhpbmtpbmcSDNRS1ie+BudoR0oygRoMEJQpKbZiMCFTwccXIjAB+IitFMSmBYwy51qeRgvKzevL6PIcHU3IsXjEtQVDg/7Lja/GTiavODCpJ1piEJEqqQ2gxQkc0E4QD81m2qqb8WeeZVNtqK4l/hTxBC+7k4KX7eAjHblrMARYg2/x3LZVL5N5xRh3PC9sY/sxXMex3EoKtR6lPIvstWJumHcfH9VljqAjOyljuayQOIB/iGryG15ThSPden0OShyavcnVaEM4ghwltFDMfpwBLvgo4G2F1d1ysPOMil0FArqpSPeLov0Y6ccJ0gwHCy4QdbTDgDY8qVKC5Pfs1aGv+mP1FiawiKpqEUN50lsfWmuLmoGGv0f3xcfzEotiHQfVM/3ovtLhcA8ZcwntsEUV4XDaNRvt/TyorW7z0Q1Xryz6+FXEVrvLMknhBHfLRqXXItfEYTRs0juRE73Y/Bk1/AZsuprtDxw4R9A4eJWh9DO1Eobca0T/o3CyzUDCk4TbEg2Nad4p3YgOL4zrcgd7+3IIsqR4dHBQOLlw7dMFtVlKWUzTlkiM/M5JWGuS7oXBwwsm8/dE+MfwvTMphYd40b6J8e+VZNjggs3IxQqaqWkLkCqSBRadBcpBuu2oIsTKQkzGHZqDk85XtahMUTElxJIgxAgSe3Cg5bYhrwaIuAiSCZUPq9XOnDnI/mIO3PGt1UeTDzoCxJH8UUw+grqrGa+hf/otpQal0aKq8GDwQEcRcycMsvLjbhHjAENdoU4srUQdXk/muB227BuoUu3X0dEiYPMdOMTgpXIKvg9E3KGqFmao1RSM7SJwYWFne8IRDrW5LKy6P1TFbjTpxJ5hawx4in68TaPs4MUtuAOzK+Q6JkGMkufrldZashg8eDG9w/huTwyjA15AZeLNSQvC5qHjgat07EBb3u+CDzGkalBisePIMcR4cogM8DAFqlKfCeJf5trPfdxKkdFMt+P+OFqWdmZFaba0rwQPU6g5HlipLtnuQ9qWXRRoaY3jZ7LiiNLbmv8NXlB/fCCI6ER1MUnAqhe8vH9hSGG4Kk5vsMdGU6zgSkkKABR8KbwiRc8qd7IygwnGOM3R4Fp99Ce7PXuj8doVCr8QfDbJeAFzYKSa5EMLXC88IhF3tVYm2L6rU2WkgyXKqzNDHdEE35Gr8rDH0YT1VyQDXN9D2UxycU0/kgC83mq6jTZz6VxaPzIj/Yh0CuC5l2qf51c3Wa5wO39EjhtpP+nnDy1rtwo0caQjZdJ91Bxj6IqKJbot7lvoaXCbktjBjWnKUPAJqPkST9hVzrI3cg3jb3ghUZGtvIlzpEAHQTH5Kh7Y9tG5PPmh+an38pkscZkVSdH3XlwC6y8o03MCo8ahbI2eIhw4lrZeZ2h25Zg8+LxLOPhhmr5UWedaMkBV+Q5uRuLv2kOJVu7Z8G7qS/GxmE8mnnqKdNRgJBM0v5MRLxD7hn+N+k6gt2Pd85ACFyUCfh746COg4zUosFL1pmwBQIhN/YJPzlFkNEpX1V1DxEid0BtShaLS7Cqr3BcsYBPvFSI38mNn6h9HS5BTXRYTugWfZvc1GsSmjw0k7VK0CprwQ58+awG2UCVdIWX5pRrHBVPURPbQpoa/agqr/qNsKvz+9irs81Ir65LY50t2iIEGtsW455eT8moOtbnmVNo22Q0b1b7+uydtQquXd4WCxNxrCoRvObxUnF3anXJZOLFYcxQHbzal7RzQQ3CD/BvJOEe5l3rKW5H7+xNTWzvdx7lNMyqDtA2/+mQnqNYW2uOMZSUYxBKgE++Ic/NqzMBxsGCyrCG74al4OxiA8y1Pknv2szLpp/ai1pLzWi0la5YWyHMHXYzZKI7DR/CxqLElo93EJ7+i6AWqvy2/XFAcz58XiaM1rOL3V9ArRBtkklYXdRLYcGVn3hSRvBNv23u1dsuW4VzFxtydEwejt/LhePkLn4jdsvpYdzkgXdJJPFNPtpsVIhnwk6lBJOgfcDW6S5Ho7ZGwcgItfWU2U6V7aNNd7bYZDXLq20gdIkATWvyl6r97IHsj/Kc5XVjDnA7dvSNsgh6VQW05W5tj0divL7DL6SntcR677ZD7X7hBxMlRKGrf/7zzSKawgCjGOkgZQyGo/unBSWPr4jO1lVL/YKpTkqCqVVuNoq+tf0MU1j8dDirKBJxpxGoMpJhhJBniVI8e4E5J2Wl6i4ElHkBrKH1tC4KTfrs6/hva71K2B54SDMybCkjqO9gIkU5MHU3GW/vhHm5sLW0Fd9B3gW5MehfFei7vXVW0fb+4b6lxFpQ3fuKDSsfjvd340RrDZe8VVEo41HVJOmLGtjQTJfXIjbrTW2cXOzl2gQKtXf22Le5trQ2lHfliGxNulO+IB2fFKS7E/G4ZGAE="
+   },
+   {
+    "type": "text",
+    "text": "[{\"no\": 1, \"before\": \"randomly assigned\", \"after\": \"randomly assigned\", \"reason\": \"特定の人物・物事に依存しない汎用的な表現のため変更なし。\"}, {\"no\": 2, \"before\": \"fuel for meanness\", \"after\": \"fuel for meanness\", \"reason\": \"特定の人物・物事に依存しない汎用的な表現のため変更なし。\"}, {\"no\": 3, \"before\": \"dismiss this by saying\", \"after\": \"dismiss something by saying\", \"reason\": \"「this」が直前の文脈に依存しているため、someth­ingに置換して汎用化した。\"}, {\"no\": 4, \"before\": \"regardless of\", \"after\": \"regardless of\", \"reason\": \"特定の人物・物事に依存しない汎用的な表現のため変更なし。\"}, {\"no\": 5, \"before\": \"apply its findings directly\", \"after\": \"apply findings directly\", \"reason\": \"「its」が特定の研究を指しているため削除し、可算名詞の複数形「findings」で汎用化した。\"}]"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 619,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 774,
+   "output_tokens_details": {
+    "thinking_tokens": 432
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

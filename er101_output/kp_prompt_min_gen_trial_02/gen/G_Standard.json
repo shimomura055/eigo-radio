@@ -1,0 +1,116 @@
+{
+ "unit_id": "G_Standard",
+ "requested_model_id": "claude-haiku-5-5",
+ "user_message_sha256": "0cc8b2472e3fef65b56ad1918386743659dec674471c0f2b29d35c6ec584456d",
+ "gen_prompt_sha256": "43635944ea53758eb9bf1be808b529318ce6f38b77e86a4787a0301f1827e192",
+ "user_message": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. gave back some gains\n   本文中の該当文(参考情報): After the withdrawal and replacement announcement, Brent crude futures briefly gave back some gains.\n2. refuses to stay down\n   本文中の該当文(参考情報): ### The chart refuses to stay down\n3. pulled back only briefly\n   本文中の該当文(参考情報): But the chart pulled back only briefly before recovering.\n4. sea blockade\n   本文中の該当文(参考情報): Reuters linked that rise to concern about a US sea blockade of Iran.\n5. settled at\n   本文中の該当文(参考情報): On July 13, Brent rose 9.59% and settled at $83.30.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。",
+ "request_body": {
+  "model": "claude-haiku-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. gave back some gains\n   本文中の該当文(参考情報): After the withdrawal and replacement announcement, Brent crude futures briefly gave back some gains.\n2. refuses to stay down\n   本文中の該当文(参考情報): ### The chart refuses to stay down\n3. pulled back only briefly\n   本文中の該当文(参考情報): But the chart pulled back only briefly before recovering.\n4. sea blockade\n   本文中の該当文(参考情報): Reuters linked that rise to concern about a US sea blockade of Iran.\n5. settled at\n   本文中の該当文(参考情報): On July 13, Brent rose 9.59% and settled at $83.30.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。"
+   }
+  ]
+ },
+ "before_phrases": [
+  "gave back some gains",
+  "refuses to stay down",
+  "pulled back only briefly",
+  "sea blockade",
+  "settled at"
+ ],
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 3.83
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 3.83,
+ "response_text": "[\n{\"no\": 1, \"before\": \"gave back some gains\", \"after\": \"gave back some gains\", \"reason\": \"特定の固有名詞や人物に依存しておらず、汎用的に使える表現のため変更不要。\"},\n{\"no\": 2, \"before\": \"refuses to stay down\", \"after\": \"refuses to stay down\", \"reason\": \"特定の対象に依存しない一般的な比喩表現で、一般化が不要なため変更しない。\"},\n{\"no\": 3, \"before\": \"pulled back only briefly\", \"after\": \"pulled back only briefly\", \"reason\": \"主語や対象に依存しない汎用的な表現のため変更不要。\"},\n{\"no\": 4, \"before\": \"sea blockade\", \"after\": \"sea blockade\", \"reason\": \"「sea blockade」自体が一般的な名詞句で、国名などの固有要素は含まれていないため変更不要。\"},\n{\"no\": 5, \"before\": \"settled at\", \"after\": \"settled at\", \"reason\": \"価格や対象に依存せず、後ろに任意の値を続けられる汎用的な表現のため変更不要。\"}\n]",
+ "parsed": [
+  {
+   "no": 1,
+   "before": "gave back some gains",
+   "after": "gave back some gains",
+   "reason": "特定の固有名詞や人物に依存しておらず、汎用的に使える表現のため変更不要。"
+  },
+  {
+   "no": 2,
+   "before": "refuses to stay down",
+   "after": "refuses to stay down",
+   "reason": "特定の対象に依存しない一般的な比喩表現で、一般化が不要なため変更しない。"
+  },
+  {
+   "no": 3,
+   "before": "pulled back only briefly",
+   "after": "pulled back only briefly",
+   "reason": "主語や対象に依存しない汎用的な表現のため変更不要。"
+  },
+  {
+   "no": 4,
+   "before": "sea blockade",
+   "after": "sea blockade",
+   "reason": "「sea blockade」自体が一般的な名詞句で、国名などの固有要素は含まれていないため変更不要。"
+  },
+  {
+   "no": 5,
+   "before": "settled at",
+   "after": "settled at",
+   "reason": "価格や対象に依存せず、後ろに任意の値を続けられる汎用的な表現のため変更不要。"
+  }
+ ],
+ "usage": {
+  "input_tokens": 547,
+  "output_tokens": 759,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGbSpdkcTsCktkcsJmW9",
+ "model_returned": "claude-haiku-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 0.06947,
+ "raw_response": {
+  "model": "claude-haiku-5-5",
+  "id": "msg_011CgGbSpdkcTsCktkcsJmW9",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "[\n{\"no\": 1, \"before\": \"gave back some gains\", \"after\": \"gave back some gains\", \"reason\": \"特定の固有名詞や人物に依存しておらず、汎用的に使える表現のため変更不要。\"},\n{\"no\": 2, \"before\": \"refuses to stay down\", \"after\": \"refuses to stay down\", \"reason\": \"特定の対象に依存しない一般的な比喩表現で、一般化が不要なため変更しない。\"},\n{\"no\": 3, \"before\": \"pulled back only briefly\", \"after\": \"pulled back only briefly\", \"reason\": \"主語や対象に依存しない汎用的な表現のため変更不要。\"},\n{\"no\": 4, \"before\": \"sea blockade\", \"after\": \"sea blockade\", \"reason\": \"「sea blockade」自体が一般的な名詞句で、国名などの固有要素は含まれていないため変更不要。\"},\n{\"no\": 5, \"before\": \"settled at\", \"after\": \"settled at\", \"reason\": \"価格や対象に依存せず、後ろに任意の値を続けられる汎用的な表現のため変更不要。\"}\n]"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 547,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 759,
+   "output_tokens_details": {
+    "thinking_tokens": 400
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

@@ -1,0 +1,116 @@
+{
+ "unit_id": "F_Standard",
+ "requested_model_id": "claude-haiku-5-5",
+ "user_message_sha256": "5b2987dae0a497482fa6e41cb926936c1d5ddae231f649affef5e7751e3a4b86",
+ "gen_prompt_sha256": "43635944ea53758eb9bf1be808b529318ce6f38b77e86a4787a0301f1827e192",
+ "user_message": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. Saudi-led coalition forces\n   本文中の該当文(参考情報): A spokesperson for the Saudi-led coalition forces in Yemen said they had stopped and destroyed one ballistic missile.\n2. ballistic missile\n   本文中の該当文(参考情報): A spokesperson for the Saudi-led coalition forces in Yemen said they had stopped and destroyed one ballistic missile.\n3. air-defense mission\n   本文中の該当文(参考情報): In this case, the UK Ministry of Defence announced an air-defense mission for Royal Air Force Typhoon fighter jets.\n4. refueling support\n   本文中の該当文(参考情報): Britain also said it would continue refueling support for Saudi air-defense work.\n5. responsible for military support\n   本文中の該当文(参考情報): But this example cannot tell us who is responsible for military support.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。",
+ "request_body": {
+  "model": "claude-haiku-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "以下のKey Phraseを、英語学習者が他の場面でも使える汎用的な形に整えてください。\n\n固有名詞や特定の人物・物事への依存を取り除き、必要に応じて原形化、単複変換、someone/something等への置換を行ってください。\n\n元の学習ポイント・意味・文法・自然さを維持し、不要な語句は追加しないでください。一般化が不要な表現は変更しないでください。\n\n各表現は5語以内とし、変更前・変更後・変更理由を示してください。\n\n---\n\n【Key Phrase一覧】\n1. Saudi-led coalition forces\n   本文中の該当文(参考情報): A spokesperson for the Saudi-led coalition forces in Yemen said they had stopped and destroyed one ballistic missile.\n2. ballistic missile\n   本文中の該当文(参考情報): A spokesperson for the Saudi-led coalition forces in Yemen said they had stopped and destroyed one ballistic missile.\n3. air-defense mission\n   本文中の該当文(参考情報): In this case, the UK Ministry of Defence announced an air-defense mission for Royal Air Force Typhoon fighter jets.\n4. refueling support\n   本文中の該当文(参考情報): Britain also said it would continue refueling support for Saudi air-defense work.\n5. responsible for military support\n   本文中の該当文(参考情報): But this example cannot tell us who is responsible for military support.\n\n【出力形式(受け渡し用の指定)】JSON配列のみを出力(説明文・コードフェンス不要)。要素は入力と同じ順序・同じ件数で、{\"no\": 番号, \"before\": 変更前(入力のKey Phraseそのまま), \"after\": 変更後, \"reason\": 変更理由(変更しない場合はその旨)}。"
+   }
+  ]
+ },
+ "before_phrases": [
+  "Saudi-led coalition forces",
+  "ballistic missile",
+  "air-defense mission",
+  "refueling support",
+  "responsible for military support"
+ ],
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 5.71
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 5.71,
+ "response_text": "[\n  {\"no\": 1, \"before\": \"Saudi-led coalition forces\", \"after\": \"country-led coalition forces\", \"reason\": \"特定の国名（Saudi）を一般的な語（country）に置換し、「○○-led」という複合形容詞の文法と「国が主導する連合軍」という意味を維持したため。\"},\n  {\"no\": 2, \"before\": \"ballistic missile\", \"after\": \"ballistic missile\", \"reason\": \"固有名詞や特定の対象への依存がなく、汎用的な表現のため変更不要。\"},\n  {\"no\": 3, \"before\": \"air-defense mission\", \"after\": \"air-defense mission\", \"reason\": \"固有名詞や特定の対象への依存がなく、汎用的な表現のため変更不要。\"},\n  {\"no\": 4, \"before\": \"refueling support\", \"after\": \"refueling support\", \"reason\": \"固有名詞や特定の対象への依存がなく、汎用的な表現のため変更不要。\"},\n  {\"no\": 5, \"before\": \"responsible for military support\", \"after\": \"responsible for military support\", \"reason\": \"固有名詞への依存がなく、汎用的な表現のため変更不要。\"}\n]",
+ "parsed": [
+  {
+   "no": 1,
+   "before": "Saudi-led coalition forces",
+   "after": "country-led coalition forces",
+   "reason": "特定の国名（Saudi）を一般的な語（country）に置換し、「○○-led」という複合形容詞の文法と「国が主導する連合軍」という意味を維持したため。"
+  },
+  {
+   "no": 2,
+   "before": "ballistic missile",
+   "after": "ballistic missile",
+   "reason": "固有名詞や特定の対象への依存がなく、汎用的な表現のため変更不要。"
+  },
+  {
+   "no": 3,
+   "before": "air-defense mission",
+   "after": "air-defense mission",
+   "reason": "固有名詞や特定の対象への依存がなく、汎用的な表現のため変更不要。"
+  },
+  {
+   "no": 4,
+   "before": "refueling support",
+   "after": "refueling support",
+   "reason": "固有名詞や特定の対象への依存がなく、汎用的な表現のため変更不要。"
+  },
+  {
+   "no": 5,
+   "before": "responsible for military support",
+   "after": "responsible for military support",
+   "reason": "固有名詞への依存がなく、汎用的な表現のため変更不要。"
+  }
+ ],
+ "usage": {
+  "input_tokens": 612,
+  "output_tokens": 904,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 1
+ },
+ "response_id": "msg_011CgGbSmks6kKjw9AaVUbxk",
+ "model_returned": "claude-haiku-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 0.08211,
+ "raw_response": {
+  "model": "claude-haiku-5-5",
+  "id": "msg_011CgGbSmks6kKjw9AaVUbxk",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "[\n  {\"no\": 1, \"before\": \"Saudi-led coalition forces\", \"after\": \"country-led coalition forces\", \"reason\": \"特定の国名（Saudi）を一般的な語（country）に置換し、「○○-led」という複合形容詞の文法と「国が主導する連合軍」という意味を維持したため。\"},\n  {\"no\": 2, \"before\": \"ballistic missile\", \"after\": \"ballistic missile\", \"reason\": \"固有名詞や特定の対象への依存がなく、汎用的な表現のため変更不要。\"},\n  {\"no\": 3, \"before\": \"air-defense mission\", \"after\": \"air-defense mission\", \"reason\": \"固有名詞や特定の対象への依存がなく、汎用的な表現のため変更不要。\"},\n  {\"no\": 4, \"before\": \"refueling support\", \"after\": \"refueling support\", \"reason\": \"固有名詞や特定の対象への依存がなく、汎用的な表現のため変更不要。\"},\n  {\"no\": 5, \"before\": \"responsible for military support\", \"after\": \"responsible for military support\", \"reason\": \"固有名詞への依存がなく、汎用的な表現のため変更不要。\"}\n]"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 612,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 904,
+   "output_tokens_details": {
+    "thinking_tokens": 522
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}
