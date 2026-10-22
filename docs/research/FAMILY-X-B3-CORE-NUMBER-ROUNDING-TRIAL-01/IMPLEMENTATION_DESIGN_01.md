@@ -71,3 +71,13 @@ Status: APPROVED_FOR_PRODUCTION_WIRING_IN_PROGRESS(ユーザー正式採用済�
 3. **S5の`MARK_RE`/`TAG_LEAK_RE`同時拡張**: 漏れは検出(TagLeak)ではなく`MARK_RE`により**除去+`marks_echoed`計上**される(正確な`【概数表記】`・空白入りの両形。他の変形は`TAG_LEAK_RE`でTagLeak STOP)。「検出」要件を、除去前の検出(`marks_echoed`/`r0_meta`)で満たすか、STOP(TagLeak)にするか。現設計は不要STOPを増やさない側(除去+記録)。
 4. **provenance照合(W5)のlegacy許容**: 旧記事(evidenceに`rounding`キー無し)の再利用は許容、キー有りで不一致のみSTOP。旧JA記事の再利用中にB3が再判断されoverlayが有効化された場合の扱い(現設計=legacyは常に許容)。
 5. **失敗時のfail-closed範囲**: `Exception`全般を捕捉して丸めなしで続行(ModelContractViolation=routing未登録も含む)。設定ミスを黙って握りつぶすリスクに対し、overlayの`status/error`をevidenceへ記録+runnerログ出力で十分か。
+
+## 10. C-2 実装記録(委任_06、2026-10-22)— Opus所見(OF-B3RD-P-01〜13)の反映差分
+上記 §2〜§5 からの変更(すべてFable採否で採用済み。台帳=`docs/pm/OPUS_FINDINGS_LEDGER.md`):
+- **P-01**: 同一B3版(`annotated_md_sha256`一致)のoverlayは`status`不問で確定値として再利用(§2「冪等」・§4の表を更新)。再判断は overlay無し/破損/stale/`--regenerate-stage writer`(`storyline_b3`)のみ。W5の照合対象=現在のoverlayファイルの`overlay_sha256`(status不問)、記録時・現在とも`enabled=True`のときだけ照合(flag切替時はSTOPせずログ)。
+- **P-02**: JA再利用経路(既存`revision2.md`あり、`--stage advanced/standard`等)は新規判断をせず既存overlayの検査のみ。
+- **P-03**: `require_model(ROLE_KEY)`はtryの外。捕捉は API/通信・JSON解析・model不一致(`JUDGE_API_ERROR`)と構造不正(`INTERNAL_ERROR`)に限定し、他の例外は伝播。runner `[WARN]`+`cost.json["b3_core_number_rounding"]`で記事ごとのstatus集計が可能(§2「fail-closed」・§9論点5への回答)。
+- **P-05**: V9 = `kind=date_time`は丸め不可(CURRENT_SPEC:1730の機械化)。V8 fixture 90件の影響0件(全てmagnitude)。50%/100%境界降格は未実装(新基準候補)。
+- **P-06**: W1は1行helper(`run_core_number_rounding`)。W6のS5固定値testは「承認済みS5による許容差」として更新(承認原文path明記)。routing閉集合test・既知FAIL(`er090_`/`er095_`をTRIAL_HARNESS_PREFIXESへ)是正。
+- **P-07/P-08**: overlay0件は`news_field_text`をそのまま使用(バイト一致)。S5は除去して記録、`approx_marks_echoed`別カウンタ+WARN。
+- §9論点1(V8b線引き)/論点2(Promptを変えない)/論点3(除去+記録)/論点4(legacy許容)は設計どおり(Fable了承)。実装・検証の詳細=`docs/pm/RESULT_PACKET_B3RD6.md`、CURRENT_SPEC「Family X 中核数値丸め」節。

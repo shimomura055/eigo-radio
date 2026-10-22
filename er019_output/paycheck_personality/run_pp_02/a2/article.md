@@ -1,0 +1,22 @@
+# When Pay Goes Up, Do You Become More Serious? Compare Yourself with “Your Usual Self”
+
+“Work hard, and your pay will go up.” We’ve heard that before. But what about “When your pay goes up, you become more serious”? Does your pay slip come with a personality update? This study also looked at this surprising reverse direction.
+
+The researchers brought together information from 11 studies. Each study followed the same people for a long time. The people were working and reported their personalities and work income. Each study measured personality and income at least three times. So this was not one quick look. The studies followed changes over time.
+
+But this series did not compare people with the talented coworker next door. Each person was compared with their usual self. The researchers looked separately at differences between people and changes within each person. They did not ask, “How are you doing compared with other people?” Instead, they asked, “How have you changed from your usual self?”
+
+They found that when a person’s income was higher than usual, they were a little more serious about work later. The study calls this trait conscientiousness. Think of conscientiousness as being serious about your work. They also found that people earned a little more later when they were more serious than usual.
+
+Income and later seriousness were linked. Seriousness and later income were linked too. The road we thought went only one way also had a lane in the other direction. Still, both links were small. This was not a big story where a pay rise makes you extremely serious!
+
+If you are thinking of a yearly income ranking, set it aside for now. This is not about serious people earning more than others. The study looks at changes within the same person. It is like watching yourself over time, with no one to compete against.
+
+It is also too soon to say, “I became more serious because my pay went up.” The researchers say these results alone cannot show what caused what. Something else may have affected both people’s income and how serious they were. Finding a link does not tell us what caused it.
+
+So you do not need to use your pay slip as a scorecard for how serious you are. Low income does not mean you are lazy. High income does not mean you are a model student. This study cannot give us such a simple report card.
+
+Income may come from a person’s personality. But it can also help us think about how their personality may change later. From “Who earns the most?” to “How will I change?” This is an ongoing series that makes you wonder what happens next. The main character may be you.
+
+## In one line
+Across 11 studies, people were a little more serious at work after earning more than usual. Being more serious than usual was linked to a little more income later; these small links were within each person and do not show that either change caused the other.
