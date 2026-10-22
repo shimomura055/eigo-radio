@@ -1,0 +1,154 @@
+{
+  "schema": "er106_joint_runtime_evidence_01/v1",
+  "generated_at": "2026-10-22T17:25:08",
+  "inputs": {
+    "x_run_dir": null,
+    "z_run_dir": null,
+    "x_source_dir": null
+  },
+  "families": {
+    "X": {
+      "family": "X",
+      "exists": false,
+      "run_dir": null
+    },
+    "Z": {
+      "family": "Z",
+      "exists": false,
+      "run_dir": null
+    }
+  },
+  "shared": {
+    "ledger_lookup": {
+      "ledger_path": "C:/Users/tensh/eigo-radio/er006_output/pronunciation_ledger_01/ledger.json",
+      "error": null,
+      "entries": {}
+    },
+    "stop_sentinels_now": [
+      "C:/Users/tensh/eigo-radio/docs/pm/delegation_log/2026-10-12_FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01_STOP_NOTICE.md"
+    ]
+  },
+  "dangling_grep": {
+    "KPFT: db_hybrid経路": {
+      "production_hits": 0,
+      "test_hits": 0,
+      "production_sample": []
+    },
+    "KPFT: m2_fallback": {
+      "production_hits": 0,
+      "test_hits": 2,
+      "production_sample": []
+    },
+    "KPFT: KP_ARTICLE_COST_CAP": {
+      "production_hits": 0,
+      "test_hits": 0,
+      "production_sample": []
+    },
+    "KP3V: 旧dual識別子(撤去対象)": {
+      "production_hits": 22,
+      "test_hits": 3,
+      "production_sample": [
+        "er078_asr_unified_judge_01.py:27",
+        "er096_kp_dual_pass_01.py:5",
+        "er096_kp_dual_pass_01.py:12",
+        "er096_kp_dual_pass_01.py:14",
+        "er096_kp_dual_pass_01.py:16",
+        "er096_kp_dual_pass_01.py:18",
+        "er096_kp_dual_pass_01.py:22",
+        "er096_kp_dual_pass_01.py:38"
+      ]
+    },
+    "KP3V: 維持する容器名/telemetry名(情報。0件でなくてよい)": {
+      "production_hits": 39,
+      "test_hits": 4,
+      "production_sample": [
+        "er019_family_x_audio_production_runner_01.py:767",
+        "er019_family_x_audio_production_runner_01.py:771",
+        "er019_family_x_audio_production_runner_01.py:772",
+        "er063_family_z_audio_01.py:747",
+        "er063_family_z_audio_01.py:751",
+        "er063_family_z_audio_01.py:752",
+        "er063_family_z_audio_01.py:1022",
+        "er063_family_z_audio_01.py:1023"
+      ]
+    }
+  },
+  "vote_table": {},
+  "assessment": {
+    "KPFT": {
+      "X": [
+        {
+          "id": "KPFT-ALL",
+          "status": "MISSING",
+          "detail": "X run dirが存在しない"
+        }
+      ],
+      "Z": [
+        {
+          "id": "KPFT-ALL",
+          "status": "MISSING",
+          "detail": "Z run dirが存在しない"
+        }
+      ]
+    },
+    "KP3V": {
+      "X": [
+        {
+          "id": "KP3V-ALL",
+          "status": "MISSING",
+          "detail": "X run dirが存在しない"
+        }
+      ],
+      "Z": [
+        {
+          "id": "KP3V-ALL",
+          "status": "MISSING",
+          "detail": "Z run dirが存在しない"
+        }
+      ],
+      "JOINT": [
+        {
+          "id": "KP3V-J Whisper正式runtime発火(X/Zいずれか)",
+          "status": "NOT_FIRED",
+          "detail": "X=False Z=False。双方未発火なら『Xで発火観測+Z同adapterをtestで固定』は不成立→別素材で追加run(設計P-06)"
+        }
+      ]
+    },
+    "PNAP": {
+      "X": [
+        {
+          "id": "PNAP-ALL",
+          "status": "MISSING",
+          "detail": "X run dirが存在しない"
+        }
+      ],
+      "Z": [
+        {
+          "id": "PNAP-ALL",
+          "status": "MISSING",
+          "detail": "Z run dirが存在しない"
+        }
+      ],
+      "JOINT": [
+        {
+          "id": "PNAP-J アラーム発火(X・Z双方、PNAP原文§5-9)",
+          "status": "NOT_FIRED",
+          "detail": "alarms X=None Z=None"
+        }
+      ]
+    }
+  },
+  "summary": {
+    "KPFT": {
+      "MISSING": 2
+    },
+    "KP3V": {
+      "MISSING": 2,
+      "NOT_FIRED": 1
+    },
+    "PNAP": {
+      "MISSING": 2,
+      "NOT_FIRED": 1
+    }
+  }
+}

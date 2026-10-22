@@ -1,0 +1,545 @@
+{
+  "scope": "KP外側retry(X/Z共通実装。Zのdelegate)",
+  "max_outer": 3,
+  "generic_note": "",
+  "attempts": [
+    {
+      "outer_attempt": 1,
+      "note_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+      "selection_phrases": [
+        "sentenced him to death",
+        "pulled him under",
+        "held out his hands"
+      ],
+      "canonicalization_status": "CANONICALIZATION_INVALID",
+      "canonicalization_attempts": [
+        {
+          "attempt": 1,
+          "status": "CANONICALIZATION_INVALID",
+          "reasons": [],
+          "item_reasons": [
+            {
+              "index": 0,
+              "rank": 1,
+              "reasons": [
+                "key_phrase('sentence someone to death')がdisplay_phraseと一致せず、source_span('sentenced him to death')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            },
+            {
+              "index": 1,
+              "rank": 2,
+              "reasons": [
+                "key_phrase('pull someone under')がdisplay_phraseと一致せず、source_span('pulled him under')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            }
+          ],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "key_phrase": "sentence someone to death",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "himは本文中のMelosを指すため、辞書的な一般形someoneに置き換え、動詞も見出し語のsentenceにしました。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 2,
+                "key_phrase": "pull someone under",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "himは本文中のMelosを指すためsomeoneに一般化し、動詞を見出し語のpullにしました。underを含めることで、水中などへ引き込む意味が保たれます。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 3,
+                "key_phrase": "hold out one's hands",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "hisは本文中の友人を指すためone'sに一般化し、動詞を見出し語のholdにしました。「手を差し出す」という中心的な意味は保たれ、句としても自然です。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_04d9a3aa2f2c4b4b006ad9ca53cbb887d18ec4e43a391f99a4"
+        },
+        {
+          "attempt": 2,
+          "status": "CANONICALIZATION_INVALID",
+          "reasons": [],
+          "item_reasons": [
+            {
+              "index": 0,
+              "rank": 1,
+              "reasons": [
+                "key_phrase('sentence someone to death')がdisplay_phraseと一致せず、source_span('sentenced him to death')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            },
+            {
+              "index": 1,
+              "rank": 2,
+              "reasons": [
+                "key_phrase('pull someone under')がdisplay_phraseと一致せず、source_span('pulled him under')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            }
+          ],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "key_phrase": "sentence someone to death",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "記事中の特定人物を指す him を辞書的な someone に一般化し、動詞も見出し語形の sentence にしました。sentence someone to death は意味と用法を保つ自然な学習単位です。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 2,
+                "key_phrase": "pull someone under",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "記事中の him を一般的な対象を示す someone に置き換え、pulled は見出し語形の pull にしました。句動詞の粒子 under を含めることで、引きずり込む意味が保たれます。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 3,
+                "key_phrase": "hold out one's hands",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "記事中の特定人物に結び付いた his を慣例的な一般形 one's に置き換え、held は見出し語形の hold にしました。hold out one's hands は動作の意味が分かる自然な単位です。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_0a72621a3639f406006ad9ca6496cc87d1ba46b06ae5407688"
+        }
+      ],
+      "artifacts": "er026_output/family_z_production_e2e_01/melos/run_jre_01/key_phrases/b1b/outer_retry/attempt_1"
+    },
+    {
+      "outer_attempt": 2,
+      "note_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+      "selection_phrases": [
+        "sentenced him to death",
+        "without asking for another promise",
+        "earn such trust"
+      ],
+      "canonicalization_status": "CANONICALIZATION_INVALID",
+      "canonicalization_attempts": [
+        {
+          "attempt": 1,
+          "status": "CANONICALIZATION_INVALID",
+          "reasons": [],
+          "item_reasons": [
+            {
+              "index": 0,
+              "rank": 1,
+              "reasons": [
+                "key_phrase('sentence someone to death')がdisplay_phraseと一致せず、source_span('sentenced him to death')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            }
+          ],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "key_phrase": "sentence someone to death",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "辞書的な表現として、記事中の特定人物を指す him を someone に一般化し、動詞 sentenced は見出し語の sentence にしました。to death は処罰の内容を表す中心的な部分なので保持します。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 2,
+                "key_phrase": "without asking for another promise",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "without の後には asking の形が必要で、ask に戻すと不自然になるため表層形を維持します。another promise まで含むことで、何を求めないのかが明確です。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 3,
+                "key_phrase": "earn such trust",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "自然で再利用可能な表現であり、such は信頼の性質や程度を示すため意味上保持します。earn trust まで削ると、そのニュアンスが失われます。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_0b84d861f6dfa512006ad9ca7a373c87d19cbccfd71a007cb2"
+        },
+        {
+          "attempt": 2,
+          "status": "CANONICALIZATION_INVALID",
+          "reasons": [],
+          "item_reasons": [
+            {
+              "index": 0,
+              "rank": 1,
+              "reasons": [
+                "key_phrase('sentence someone to death')がdisplay_phraseと一致せず、source_span('sentenced him to death')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            }
+          ],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "key_phrase": "sentence someone to death",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "記事中の人物を指す him を、辞書的な一般形 someone に置き換えました。あわせて動詞を見出し語の形にし、「死刑を宣告する」という意味を保っています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 2,
+                "key_phrase": "without asking for another promise",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "単独でも自然で、約束を求めずに、という意味が十分に伝わる表現です。another は追加の約束という意味を担うため、削りません。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 3,
+                "key_phrase": "earn such trust",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "inherit_selection_normalization",
+                "reasoning": "earn はすでに動詞の基本形で、earn such trust は自然な学習単位として成立します。such が強調する「そのような信頼」という意味も保つため、変更しません。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_0c7667d2c36266ec006ad9ca8823fc87d1a8e9977c37650b16"
+        }
+      ],
+      "artifacts": "er026_output/family_z_production_e2e_01/melos/run_jre_01/key_phrases/b1b/outer_retry/attempt_2"
+    },
+    {
+      "outer_attempt": 3,
+      "note_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+      "selection_phrases": [
+        "sentenced him to death",
+        "held out his hands",
+        "nearly abandoned you"
+      ],
+      "canonicalization_status": "CANONICALIZATION_INVALID",
+      "canonicalization_attempts": [
+        {
+          "attempt": 1,
+          "status": "CANONICALIZATION_INVALID",
+          "reasons": [],
+          "item_reasons": [
+            {
+              "index": 0,
+              "rank": 1,
+              "reasons": [
+                "key_phrase('sentence someone to death')がdisplay_phraseと一致せず、source_span('sentenced him to death')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            },
+            {
+              "index": 2,
+              "rank": 3,
+              "reasons": [
+                "key_phrase('nearly abandon someone')がdisplay_phraseと一致せず、source_span('nearly abandoned you')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            }
+          ],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "key_phrase": "sentence someone to death",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "記事中の人物を指す him を someone に一般化し、動詞 sentenced は辞書的な基本形 sentence にしました。「死刑を宣告する」という意味と to death の補語を保っています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 2,
+                "key_phrase": "hold out one's hands",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "記事中の友人を指す his を one's に一般化し、動詞 held は基本形 hold にしました。「手を差し出す」という表現に必要な語を保っています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 3,
+                "key_phrase": "nearly abandon someone",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "記事中の相手を指す you を someone に一般化し、abandoned は基本形 abandon にしました。nearly を残すことで「もう少しで見捨てるところだった」という意味を保っています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_06dcff9aab2aa276006ad9caa1c4bc87d1b23a4c301020aad9"
+        },
+        {
+          "attempt": 2,
+          "status": "CANONICALIZATION_INVALID",
+          "reasons": [],
+          "item_reasons": [
+            {
+              "index": 0,
+              "rank": 1,
+              "reasons": [
+                "key_phrase('sentence someone to death')がdisplay_phraseと一致せず、source_span('sentenced him to death')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            },
+            {
+              "index": 2,
+              "rank": 3,
+              "reasons": [
+                "key_phrase('nearly abandon someone')がdisplay_phraseと一致せず、source_span('nearly abandoned you')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            }
+          ],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "key_phrase": "sentence someone to death",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "記事中の特定人物を指すhimを辞書的なsomeoneに一般化し、動詞sentencedは見出し語の原形sentenceにしました。「死刑を宣告する」という中心的な意味とto deathは保持しています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 2,
+                "key_phrase": "hold out one's hands",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "記事中の友人を指すhisを慣例的な一般形one'sにし、動詞heldは見出し語の原形holdにしました。「手を差し出す」という意味が単独でも伝わる単位です。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 3,
+                "key_phrase": "nearly abandon someone",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "記事中の相手を指すyouを一般形someoneにし、abandonedは動詞の原形abandonにしました。nearlyを含めることで「もう少しで見捨てるところだった」という意味を保っています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_09408ee33e1a5e8f006ad9caacb28487d19bb01f7fc30b6a81"
+        }
+      ],
+      "artifacts": "er026_output/family_z_production_e2e_01/melos/run_jre_01/key_phrases/b1b/outer_retry/attempt_3"
+    }
+  ]
+}

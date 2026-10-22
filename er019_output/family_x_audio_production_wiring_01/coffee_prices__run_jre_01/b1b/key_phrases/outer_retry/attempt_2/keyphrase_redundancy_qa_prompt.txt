@@ -1,0 +1,73 @@
+以下は、同じ記事から選ばれた3件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。3件から作れる全てのペア(3組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず3組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Coffee Bean Prices Fall. Are Price Tags Still on a Journey?
+
+“Beans have gotten cheaper!” At that news, your wallet pumps its fist. In your mind, the price of your usual cup has already come down, too. But the price tag in a shop may not change right away. When you see a price tag that makes you want to say, “Haven’t you heard the news?”, it seems there is a time lag.
+
+The price measure reported by the International Coffee Organization fell 8.7% from the previous month. The reason, it said, was that more beans harvested in Brazil had entered the market, and a good supply was expected to continue.
+
+The US Department of Agriculture said that earlier high prices came from several factors happening at once: bad weather in Brazil and Vietnam, fewer beans available for sale, and strong demand.
+
+Meanwhile, US consumer price data showed that the price of coffee was 6.1% higher than in the same month a year earlier. It may leave you wondering, “Did prices go down or up?” But the data covers a different month from the bean price measure. And it does not show the price of a cup at a cafe. Hold on before putting the two figures in the ring.
+
+So, how long does it take for the price of beans to reach a price tag?
+
+According to estimates from market insiders and experts interviewed by Reuters, it takes at least about nine months for the price of raw beans to show up in US retail prices. The road to a price tag is quite a long journey.
+
+The article says that companies in the US that roast coffee keep raw beans in stock. Roasting and packing the beans also take time. They also often negotiate prices with retailers on a regular basis. The price tag in a shop does not flash to a new price the moment the market moves.
+
+However, the “about nine months” figure is an estimate based on interviews. It is not a rule that applies to every company, and it is not a promise that “prices will fall in nine months.” It is too soon to mark the date on your calendar.
+
+And a cup at a cafe comes with costs besides the beans. One cafe operator in Chicago said that the cost of cups and labor, as well as the cost of buying beans, had been behind price increases. Even if bean prices fall, other costs do not always fall along with them.
+
+If you are waiting for the price of your usual cup to come down, think not only, “How much do beans cost now?” but also, “When does the price of the beans reach here?” A coffee price tag may have an unseen clock of its own, separate from the latest news about the market.
+
+## In one line
+Falling coffee bean prices may take at least nine months to affect US retail prices.
+
+【Key Phrase 3件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "pump one's fist",
+    "japanese_gloss": "自分の拳を突き上げる",
+    "source_sentence": "At that news, your wallet pumps its fist"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "time lag",
+    "japanese_gloss": "時間差",
+    "source_sentence": "When you see a price tag that makes you want to say, \"Haven't you heard the news?\", it seems there is a time lag"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "behind price increases",
+    "japanese_gloss": "値上がりの背景にある",
+    "source_sentence": "One cafe operator in Chicago said that the cost of cups and labor, as well as the cost of buying beans, had been behind price increases"
+  }
+]

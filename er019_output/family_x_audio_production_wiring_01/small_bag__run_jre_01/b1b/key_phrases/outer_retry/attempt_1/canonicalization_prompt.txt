@@ -1,0 +1,86 @@
+以下は、英語ポッドキャストの記事全文から、英語上級者が学ぶ価値のある語句として既に選ばれたKey Phrase候補です。各候補は本文中の連続した語句(表層形)のまま、記事全文からの直接選定で選ばれています(この工程では選定そのものを変更しません)。
+
+あなたの仕事は、各候補の表示形(display_phrase)を、学習教材として提示するのに最も自然な学習単位(key_phrase)へ正規化することです。**目標は「できるだけ短くすること」ではなく、「1〜5語の範囲で、意味理解に必要十分な自然な単位にすること」です(最小十分、Minimal Sufficient Unit)。**
+
+**最重要の前提: display_phraseは本文中の表層形のままです(時制・単数複数・語順は本文のとおり。例: 本文の"pushed prices up"、"took a sharp turn")。学習教材では、辞書の見出し語に近い形で提示します。**
+
+判断の優先順位は次のとおりです。**まず「display_phraseは既にそのままで自然で、単独で聞いても意味が分かる、最小十分な単位か?」を自問してください。YESであれば、key_phraseはdisplay_phraseと完全に同じにしてください(動詞の活用形・名詞の複数形も下の規則4に当てはまらない場合は変更しません)。** 変更してよいのは、以下の具体的な理由がある場合のみです。
+
+1. 文脈限定語の除去: display_phraseの先頭・末尾に、この記事の文脈だけで必要な限定語(the, a, an, this, that, these, those, 所有限定詞など)が残っており、それを除いても意味・自然さが保てる場合。
+2. 意味理解に必要な語の復元: display_phraseが既に削りすぎていて、単独で聞いたときに「何をする/何に対する」が欠けて意味が抽象的になる場合、source_span(本文中の元のspan)から**必要最小限の語だけ**を復元する。ただし記事固有の情報まで必要以上に抱え込まない(source_sentence全体に近い長さまで復元するのは不可)。
+3. 人称代名詞・所有格の一般化: display_phraseに、本文中の特定の人物・立場に依存した人称代名詞・所有格(my/your/his/her/their/our/its、you/they/he/she、yourself/himself/herself/themselves等)が含まれており、それが記事固有の誰か(例: この記事の「あなた」「彼ら」)を指しているに過ぎない場合、辞書の見出し語として使われる標準的な一般形(one's/someone's/somebody's、someone/somebody/one、oneself等、英語学習辞書がこの種の表現を掲載する際に使う慣例的な形)へ**置換**してください(削除ではありません)。例: "catch their attention"→"catch someone's attention"、"a piece of your attention"→"a piece of someone's attention"。**ただし、特定の代名詞を含むこと自体がその表現の意味・用法として必要な場合(例: 相互性を表すeach other、その記事の主題人物を指すことが表現の一部として本質的な場合、決まった一人称・二人称の慣用句など)は、機械的に一般形へ変換しないでください。** 変換すべきかどうか迷う場合は、reasoningでその判断根拠を説明した上で、より自然だと判断する側を選んでください。この置換は必ずnormalization_reason="generalize_person_dependent_reference"を使い、人称代名詞・所有格以外の語は一切変更しないでください。**一般化してよい代名詞は上に列挙した語(my/your/his/her/their/our/its、you/they/he/she、yourself/himself/herself/themselves等)だけです。him/her(目的格)/them/me/us/it等の目的格・その他の代名詞は、記事の登場人物を指していても一般形(someone等)へ置換せず、そのまま残してください(列挙外の置換は決定論検証で却下されます)。**
+4. 語形の基本形化(lemma): 辞書の見出し語として提示するため、**動詞の活用形(過去形・過去分詞・三人称単数・-ing形)を原形(基本形)に直してよい**。また、自然な場合に限り**名詞の複数形を単数形に直してよい**。例: "pushed prices up"→"push prices up"、"gave back some gains"→"give back"(範囲は連続した語句のまま)、"pumps its fist"→"pump its fist"(人称の一般化と併用する場合は"pump one's fist")、"hands the baton"→"hand the baton"。**変更してよいのは「同じ語の語形」だけです。語順の入れ替え、語の追加・削除、別の語への置き換え、本文に無い別の辞書形の創作は禁止です。** 形容詞として働く分詞(heated debate、mixed feelings、rising prices、limited resources等)は動詞の活用形ではないので原形にしないでください。単数にすると意味が変わる複数名詞(news、goods、means、sales、savings等)は単数にしないでください。この変更は必ずnormalization_reason="lemma_normalization"を使ってください(人称の一般化と同時に行う場合は"generalize_person_dependent_reference"でもかまいません)。
+
+この規則のいずれにも該当しない場合(display_phraseが既に自然な最小十分の単位である場合)は、**時制・単複・語順・大文字小文字を含め、一切変更しないでください。** "本文により忠実な形に戻す"という理由だけでの変更は禁止です。
+
+その他の規則:
+
+- 冠詞・限定詞そのものが表現の一部になっている固定表現(例: a lot of, a number of, at the same time, on the other hand, the same as)は、絶対に壊さないでください。この場合、display_phraseをそのままkey_phraseにしてください。
+- 前置詞・不定詞のto・句動詞の粒子など、意味を構成する機能語(例: opt out, depend on, lead to, in charge of, urge to watch)は、不用意に削除しないでください。
+- key_phraseは、原則としてdisplay_phraseと同じか、display_phraseから文脈限定語を除いた形か、source_span内に連続した文字列として存在する形か、上記規則4(語形の基本形化)・規則3(人称の一般化)に従った同じ語の語形変化のいずれかでなければなりません。source_spanにも本文にもdisplay_phraseにも存在しない別の辞書形を、勝手に生成してはいけません。
+- 短くする、または語を復元しないことで、学習価値や意味が失われる場合は、そのままにしないでください(例: digital switch-off periodをswitch offへ変更しない)。
+- key_phraseに「～」「〜」「…」のようなプレースホルダー記号を一切使わないでください。目的語や補語を省略した形にしたい場合でも、省略記号に頼らず、文法的に完結した自然な英語表現(display_phraseのまま維持する、またはsource_span内から必要な語を復元する)にしてください。
+
+**Meaning Preservation Rule(意味保持の原則、最重要): display_phraseからさらに語を削る場合、その削除によって中心的な意味・文法機能・学習価値が失われていないか、必ず明示的に確認してください。** 特に、意味の核を担う語(例: risk, possibility, obligation, pressure, attempt, refusal のような、リスク・可能性・義務・圧力・試み・拒否といった意味役割を表す語)を削ると、残った部分だけでは全く別の意味になることがあります。例: "the risk of losing jobs"から"the"を除くのはよいですが、"risk of"や"risk"自体を落として"losing jobs"にしてはいけません("失業すること"という意味に変わってしまい、「リスク」という中心的な意味が失われるためです)。これは特定の単語のリストで機械的に判定するのではなく、その都度「この語を削ると意味が変わるか」を考えて判断してください。
+
+各候補について、以下を判定してください(それぞれPASSまたはFAIL)。
+
+- qa_standalone_natural_unit: key_phrase単独で自然な英語学習単位として成立するか
+- qa_no_residual_context_word: key_phraseの先頭・末尾に、この文脈だけで必要な不要語が残っていないか
+- qa_meaning_or_usage_unchanged: 語を削ったことで意味または用法が変化していないか(変化していなければPASS)。**規則4による語形の基本形化(時制・単複を見出し語の形にすること)そのものは、意味・用法の変化としてFAILにしないでください。**
+- qa_reusable_other_context: 別の文脈でも再利用可能な表現か
+- qa_traceable_contiguous_span: key_phraseがsource_spanから追跡可能か。**次のいずれかであればPASS**: (a) key_phraseがdisplay_phraseと完全一致する、(b) key_phraseがsource_span内の連続した文字列として存在する、(c) key_phraseが上記規則3(人称代名詞・所有格の一般化)に従って生成されたものである、(d) key_phraseが上記規則4(語形の基本形化)に従って生成されたもの(表層形と同じ語の語形変化だけの違い)である。(c)(d)の場合、一般化後・基本形化後の語がsource_span中の語と文字列として一致しないのは意図した正当な変換であり、それを理由にFAILにしないでください。
+- qa_listening_blocker_value_preserved: **この候補が持っていた学習価値(上級者が学ぶ価値のある語彙・表現としての価値)を、key_phraseが維持しているか。** (旧称のまま「初回リスニングで意味を取れない表現としての価値」ではなく、学習価値の維持を判定します。)
+- qa_standalone_comprehensibility: このkey_phraseをKey Phrasesセクションで単独提示した際、学習者が何を意味する表現なのか十分に理解できるか
+- qa_not_over_minimized: source_spanから語を削りすぎたことで、意味が抽象化・不完全化していないか(削りすぎていなければPASS)
+- qa_context_sufficiency: source_span内の語を1〜5語制限内で追加保持することで、より自然で理解しやすい学習単位になる余地を検討したか(検討した上で現在の形が適切ならPASS)
+- qa_core_meaning_preserved: display_phrase(またはsource_span)が持っていた中心的な意味が、key_phraseでも保持されているか(Meaning Preservation Rule参照)
+- qa_no_semantic_role_loss: risk/possibility/obligation/pressure/attempt/refusalのような意味役割を表す語を削ったことで、その意味役割そのものが消えていないか(消えていなければPASS)
+- qa_person_reference_generalized: display_phraseに記事固有の人称代名詞・所有格が含まれる場合、それが上記規則3に従って辞書的な一般形に正しく置換されているか、または特定の代名詞を保持する必要性がreasoningで説明されているか(display_phraseに元々人称代名詞・所有格が含まれない場合は、該当なしとして常にPASS)
+
+normalization_reasonには、display_phraseからkey_phraseへの変換の種類を、次のいずれか一つで示してください: "none"(無変更)/ "remove_contextual_determiner"(文脈限定詞の除去)/ "restore_semantic_complement"(意味理解に必要な語をsource_spanから復元)/ "generalize_person_dependent_reference"(人称代名詞・所有格の一般化、上記規則3)/ "lemma_normalization"(語形の基本形化、上記規則4)/ "inherit_selection_normalization"(無変更だが、display_phrase自体が既に基本形である)/ "other"(その他、reasoningで説明)。
+
+changed_from_display_phraseには、key_phraseがdisplay_phraseと完全一致しない場合はtrue、完全一致する場合はfalseを入れてください。reasoningには、判定理由を1〜2文の日本語で書いてください(特に、source_spanから語を復元した場合、削った場合、語形を基本形化した場合はその理由を明記してください)。
+
+どの語句を選ぶか(選定)・候補の順序・件数はこの工程の対象外です。変更しないでください。
+
+【記事本文(参考、文脈確認用)】
+# Bags Split the Job: Mini Bags Draw the Eye, Large Bags Carry the Load
+
+Looking at fashion for 2026, mini bags are having a big moment. Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports. Some are so small that you might ask, “Can you really fit anything in that?”
+
+But this is not a takeover, with mini bags pushing large bags out. In 2026, the two sizes seem to have different jobs. One carries what we need. The other helps create the look.
+
+ELLE listed mini bags as one of the trends in fall and winter 2026 styling. Its examples included Khaite’s palm-sized evening clutch and Chanel’s novelty minaudière. They mainly hold the basics: a phone, wallet, keys, and lip products. They do not challenge roomy bags on storage. Their job is visual: adding a sense of occasion and saying, “This is today’s mood.”
+
+The season’s picture becomes clearer when we look at what appeared beside them.
+
+Vogue, also covering the 2026 season, showed not only small pouches from Prada and Loewe, but also Celine’s Ultra Maxi, Altuzarra’s large shoulder bag, and roomy totes from Toteme and other brands. This lineup matters: large bags had not vanished. Small and large bags were appearing in the same season.
+
+What we see here is not mini bags spreading across the whole market, but their return in fashion coverage and on selected runways. Even so, the way trends look has changed. Bags are no longer in a game where one size alone sits on the throne. Large bags are the luggage crew, carrying what we need. Mini bags are the stage crew, drawing the eye and setting the mood. In 2026, the runway is proudly showing this division of labor.
+
+## In one line
+
+In 2026, large bags carry the load, while mini bags carry the mood.
+
+【Key Phrase候補(JSON)】
+[
+  {
+    "rank": 1,
+    "display_phrase": "a sense of occasion",
+    "source_span": "a sense of occasion",
+    "source_sentence": "Their job is visual: adding a sense of occasion and saying, \"This is today's mood"
+  },
+  {
+    "rank": 2,
+    "display_phrase": "division of labor",
+    "source_span": "division of labor",
+    "source_sentence": "In 2026, the runway is proudly showing this division of labor"
+  },
+  {
+    "rank": 3,
+    "display_phrase": "Carry the Load",
+    "source_span": "Carry the Load",
+    "source_sentence": "Bags Split the Job: Mini Bags Draw the Eye, Large Bags Carry the Load"
+  }
+]
