@@ -8,7 +8,7 @@
  ],
  "entries": [
   {
-   "approved_condition": "研究数という分析対象の規模を正確に示す。",
+   "approved_condition": "研究数など、正確な件数が意味を持つ場合は厳密値を維持する。",
    "basis_fact_ids": [
     "F04"
    ],
@@ -23,7 +23,7 @@
     "F04"
    ],
    "llm_decision": "EXACT_REQUIRED",
-   "reason": "統合した研究数そのものを示すため、概数化すると分析の規模を変えて伝えることになります。",
+   "reason": "研究数は統合分析の規模を示す具体的な件数であり、概数にする必要はありません。",
    "surfaces": [
     {
      "approx": null,
@@ -32,7 +32,7 @@
    ]
   },
   {
-   "approved_condition": "解析標本数の最大値という記録を維持し、限定語「最大」も保持する。",
+   "approved_condition": "追加の精度がストーリーの意味や重要な区別に影響しない場合、聞き取りやすい概数にできる。",
    "basis_fact_ids": [
     "F04"
    ],
@@ -41,26 +41,26 @@
    "fact_ns": [
     2
    ],
-   "final_decision": "EXACT_REQUIRED",
+   "final_decision": "APPROXIMATE_OK",
    "kind": "magnitude",
    "ledger_ids": [
     "F04"
    ],
-   "llm_decision": "EXACT_REQUIRED",
-   "reason": "これは解析に含まれた最大標本数であり、「最大」という限定と正確な人数を保つ必要があります。概数化すると最大値の記録としての精度が失われます。",
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "最大解析標本数の規模を伝える数字なので、千人単位に丸めても意味を損ないません。「最大」の限定は維持します。",
    "surfaces": [
     {
-     "approx": null,
+     "approx": "最大約13万5千人",
      "surface": "最大134,515人"
     },
     {
-     "approx": null,
+     "approx": "約13万5千人",
      "surface": "134,515人"
     }
    ]
   },
   {
-   "approved_condition": "重要な適格条件・閾値に当たる数値は厳密に維持する。",
+   "approved_condition": "重要な閾値は、精度が意味を持つため厳密値を維持する。",
    "basis_fact_ids": [
     "F07"
    ],
@@ -75,7 +75,7 @@
     "F07"
    ],
    "llm_decision": "EXACT_REQUIRED",
-   "reason": "3回以上は研究の適格条件を示す閾値です。概数化すると条件の境界が曖昧になります。",
+   "reason": "3回以上は研究の適格条件を示す閾値であり、丸めると基準が変わるおそれがあります。",
    "surfaces": [
     {
      "approx": null,
@@ -84,14 +84,12 @@
    ]
   },
   {
-   "approved_condition": "精度自体が結論に必要でない場合、意味を損なわない範囲で聞き取りやすい概数にする。",
+   "approved_condition": "丸めによって意味のある値の区別や証拠の解釈が損なわれる場合は、小数精度を維持する。",
    "basis_fact_ids": [
     "F08"
    ],
    "concept": "C5",
-   "downgrade_reasons": [
-    "0.0630:V7_collides_with_other_number_in_same_fact(['0.0589'])"
-   ],
+   "downgrade_reasons": [],
    "fact_ns": [
     4
    ],
@@ -100,8 +98,8 @@
    "ledger_ids": [
     "F08"
    ],
-   "llm_decision": "APPROXIMATE_OK",
-   "reason": "標準化交差遅延効果の方向と大きさを示す値ですが、この表記の追加桁は聞き手が意味を理解するうえで必要ではなく、約0.06としても小さな正の関連という解釈を保てます。",
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "標準化効果の値であり、小数を丸めると周辺の別方向の効果値と同じように見えるおそれがあります。別々の効果を区別して伝えるため、厳密値を維持します。",
    "surfaces": [
     {
      "approx": null,
@@ -116,17 +114,17 @@
   "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
   "model_requested": "gpt-6-luna",
   "model_returned": "gpt-6-luna",
-  "response_id": "resp_00da1bb9dbe4ff1a006ad951c024f887d0a930439733b08db9",
-  "sec": 6.4,
+  "response_id": "resp_0588e983925fb48b006ad95dd5fadc87d0b10d55e9d7b9b728",
+  "sec": 9.8,
   "usage": {
    "input_tokens": 3869,
-   "output_tokens": 475,
-   "reasoning_tokens": 0
+   "output_tokens": 904,
+   "reasoning_tokens": 414
   },
   "user_prompt_sha256": "a660304e565fe8dad19bc572973b9424489638ef0bca0707fbcd44c72cc15339"
  },
- "n_approximate_ok": 0,
- "overlay_sha256": "42d90be9084e3988e6a8cdec2d56adab89443532c732dac90e9433fb3290d182",
+ "n_approximate_ok": 1,
+ "overlay_sha256": "739ad765a5f1eda49d7c32ff16fe07690ea49a6630e4d83c81894b577b246870",
  "requested_effort": "low",
  "requested_model": "gpt-6-luna",
  "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",

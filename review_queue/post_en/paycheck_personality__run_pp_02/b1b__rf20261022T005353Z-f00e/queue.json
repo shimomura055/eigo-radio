@@ -1,0 +1,187 @@
+{
+  "schema_version": "review_queue_post_en_v1",
+  "article_id": "paycheck_personality__run_pp_02",
+  "article_level": "b1b",
+  "article_sha256": "5052ff7c21a25d5cef081feb170765c7aae884f663434fa9efe969574edcab75",
+  "ledger_sha256": "a31992b53082d2f143f9b32949dbb926d353c1034a04e2fad666cceca21b0980",
+  "run_id": "rf20261022T005353Z-f00e",
+  "timestamp": "2026-10-22T00:53:53+00:00",
+  "status": "OK",
+  "reason": null,
+  "splitter_version": "en_split_v1",
+  "producer": "deterministic_v2",
+  "run_label": "B3RD8 writer after rejudge",
+  "sentence_count": 35,
+  "fact_count": 19,
+  "conditions": [
+    {
+      "model_key": "luna",
+      "condition": "A3",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6256,
+      "output_tokens": 979,
+      "cached_tokens": 0,
+      "cost_jpy": 0.178416,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "luna",
+      "condition": "A4",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6406,
+      "output_tokens": 1006,
+      "cached_tokens": 0,
+      "cost_jpy": 0.182976,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A3",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5641,
+      "output_tokens": 120,
+      "cached_tokens": 0,
+      "cost_jpy": 0.318768,
+      "flag_count": 1,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A4",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5761,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.278128,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "paycheck_personality__run_pp_02__b1b__5052ff7c__rf20261022T005353Z-f00e__s15",
+      "article_id": "paycheck_personality__run_pp_02",
+      "article_level": "b1b",
+      "article_sha256": "5052ff7c21a25d5cef081feb170765c7aae884f663434fa9efe969574edcab75",
+      "run_id": "rf20261022T005353Z-f00e",
+      "timestamp": "2026-10-22T00:53:53+00:00",
+      "sentence_id": "s15",
+      "sentence_text": "The personality trait they focused on was conscientiousness: the tendency to work seriously and steadily.",
+      "context": {
+        "before": [
+          "They moved from ranking people by yearly income to tracking one person over time.",
+          "It’s a different contest altogether."
+        ],
+        "after": [
+          "Their analysis found that, within the same person, higher income was linked to higher conscientiousness later on.",
+          "Wait—we thought this was about personality affecting income, but income got a part too!"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F08",
+        "F13"
+      ],
+      "facts": [
+        {
+          "fact_id": "F08",
+          "text": "最大標準化交差遅延効果では、収入から勤勉性への関連は+0.0630、勤勉性から後の収入への関連は+0.0589で、いずれも約1.30年の間隔で最大だった。\n  scope: 11研究の統合個人内モデル。特性別解析のNは異なる。\n  conditions: 報告値は複数の測定間隔にわたる最大の標準化離散時間交差遅延効果。\n  numeric_value: 収入→勤勉性 +0.0630; 勤勉性→収入 +0.0589 (numeric_scope: それぞれの方向の最大標準化交差遅延効果。単位は標準化されたモデル係数。)\n  date_or_period: 最も大きい推定効果は約1.30年の時間間隔\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 観察された縦断的関連であり、因果効果として表現しない。最大値は該当する時間間隔での推定値。"
+        },
+        {
+          "fact_id": "F13",
+          "text": "性格特性から後の収入への関連と、収入から後の性格変化への関連の推定は、特性により正負が異なる。勤勉性・情緒安定性では両方向が正、外向性では両方向が負、協調性では収入から後の協調性への関連が負で逆方向は非有意、開放性では両方向が非有意だった。\n  scope: 統合された個人内縦断モデル\n  conditions: 因果方向を確定する実験ではなく、先行値から後続値への交差遅延関連。\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 「双方向」は両方向に時間的な関連をモデル化したことを指し、すべての特性で両方向の関連が有意だったという意味ではない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "s15で「The personality trait they focused on was conscientiousness」と記述されていますが、台帳F08やF13にある通り一次研究はBig Fiveの他の特性（情緒安定性、外向性、協調性、開放性）も対象としており、勤勉性のみに焦点を当てていたわけではありません。この表現は適切ですか？"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "gemini35fl",
+          "model_id": "gemini-3.5-flash-lite",
+          "condition": "A3",
+          "confidence": 0.3,
+          "type": "その他",
+          "fact_ids": [
+            "F08",
+            "F13"
+          ],
+          "question": "s15で「The personality trait they focused on was conscientiousness」と記述されていますが、台帳F08やF13にある通り一次研究はBig Fiveの他の特性（情緒安定性、外向性、協調性、開放性）も対象としており、勤勉性のみに焦点を当てていたわけではありません。この表現は適切ですか？",
+          "severity": "重大",
+          "raw_flag_source": "raw/gemini35fl_A3.jsonl"
+        }
+      ],
+      "confidence": 0.3
+    }
+  ],
+  "unlocated_flags": [],
+  "model_stats": {
+    "luna": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 12662,
+      "output_tokens": 1985,
+      "cost_jpy": 0.361392,
+      "a3_flag_count": 0,
+      "a4_flag_count": 0,
+      "unique_issue": 0,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 1
+    },
+    "gemini35fl": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 11402,
+      "output_tokens": 124,
+      "cost_jpy": 0.596896,
+      "a3_flag_count": 1,
+      "a4_flag_count": 0,
+      "unique_issue": 1,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 0
+    },
+    "_all": {
+      "article_level": "b1b",
+      "article_status": "OK",
+      "unique_issue": 1,
+      "cost_jpy": 0.958288,
+      "issues_by_both_models": 0
+    }
+  },
+  "warnings": []
+}

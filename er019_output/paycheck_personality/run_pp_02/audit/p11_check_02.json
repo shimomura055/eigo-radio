@@ -1,0 +1,53 @@
+{
+ "purpose": "P-11 (2) 実run充足(委任_08 再判断後)",
+ "rejudge_history": [
+  {
+   "run": 1,
+   "overlay_sha256": "42d90be9...",
+   "n_approximate_ok": 0,
+   "file": "audit/pre_rejudge_run1/rounding_overlay.json"
+  },
+  {
+   "run": 2,
+   "overlay_sha256": "739ad765a5f1eda49d7c32ff16fe07690ea49a6630e4d83c81894b577b246870",
+   "n_approximate_ok": 1,
+   "file": "audit/rounding_overlay_rejudge_run2.json"
+  }
+ ],
+ "p11_1": {
+  "status": "OK",
+  "model_returned": "gpt-6-luna",
+  "effort": "low"
+ },
+ "p11_2": {
+  "n_approximate_ok": 1,
+  "actual_r0_prompt_sha256": "5e0c7550702b7ebb6cf4627ca2c2312e8231c26bbcdacee6bd9e4d4667af27a8",
+  "hypothetical_prompt_sha256_from_p11_check_01": "5e0c7550702b7ebb6cf4627ca2c2312e8231c26bbcdacee6bd9e4d4667af27a8",
+  "actual_equals_hypothetical": true,
+  "hypothetical_constraint_lines": [
+   "- 事実2について：【概数表記】「最大134,515人」は「最大約13万5千人」と書いてよい。書く場合はこの表記に限り、他の丸め方や別の数字にはしない。",
+   "- 事実2について：【概数表記】「134,515人」は「約13万5千人」と書いてよい。書く場合はこの表記に限り、他の丸め方や別の数字にはしない。"
+  ],
+  "rule8_in_hypothetical": true
+ },
+ "p11_3": "Writer run(--stage all, 再生成指定なし)で core_number_rounding status=OK api_calls=0 reused=True (console_text_03.txt:6)",
+ "p11_4": "numeric audit violations=0 (audit/rounding_text_audit_01.json)",
+ "runtime_evidence_rounding": {
+  "enabled": true,
+  "overlay_path": "storyline_b3/rounding_overlay.json",
+  "applied": true,
+  "reason": "applied",
+  "overlay_sha256": "739ad765a5f1eda49d7c32ff16fe07690ea49a6630e4d83c81894b577b246870",
+  "n_approximate_ok": 1,
+  "status": "OK",
+  "overlay_status": "OK",
+  "judge_model_returned": "gpt-6-luna",
+  "judge_effort": "low",
+  "rule8_in_prompt": true,
+  "rule8_text_sha256": "46c397513197b2ca760703096a5bf8840cfb16795b3fa9a0e4633b4967c9bc7c",
+  "news_field_sha256_before": "4cf999fc7a7da3fa4136f24f9e813b62cccee04b29ec9364d935606d1c5b9b2b",
+  "news_field_sha256_after": "a80e48db159f3165864639ef8f922b82b48ffe4990c2403c76b6a65d70191afe",
+  "r0_prompt_sha256": "5e0c7550702b7ebb6cf4627ca2c2312e8231c26bbcdacee6bd9e4d4667af27a8",
+  "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING"
+ }
+}

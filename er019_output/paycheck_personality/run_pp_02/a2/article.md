@@ -1,22 +1,22 @@
-# When Pay Goes Up, Do You Become More Serious? Compare Yourself with “Your Usual Self”
+# Does Earning More Make You Work Harder? Compare Yourself with Who You Were Yesterday
 
-“Work hard, and your pay will go up.” We’ve heard that before. But what about “When your pay goes up, you become more serious”? Does your pay slip come with a personality update? This study also looked at this surprising reverse direction.
+“Are people who earn more always more hardworking?” When people discuss income and personality, they often look for “things successful people have in common.” But this time, let’s ask the high earner next door to step away from the stage for a moment. The person in the spotlight is none other than you.
 
-The researchers brought together information from 11 studies. Each study followed the same people for a long time. The people were working and reported their personalities and work income. Each study measured personality and income at least three times. So this was not one quick look. The studies followed changes over time.
+The research team gathered information from 11 studies and studied it. The studies followed the same people over time. The people in them had jobs. They reported their personalities and income from work. Researchers asked about both at least three times. So this was not one picture, but a set of pictures showing changes over time.
 
-But this series did not compare people with the talented coworker next door. Each person was compared with their usual self. The researchers looked separately at differences between people and changes within each person. They did not ask, “How are you doing compared with other people?” Instead, they asked, “How have you changed from your usual self?”
+The way researchers looked at the data matters. They separated differences between people from changes within one person. One example is: “That person works harder than I do and earns more.” Another question is: “How did my personality change after my income changed?” They moved from ranking people by yearly income to following one person over time. It was a different contest altogether.
 
-They found that when a person’s income was higher than usual, they were a little more serious about work later. The study calls this trait conscientiousness. Think of conscientiousness as being serious about your work. They also found that people earned a little more later when they were more serious than usual.
+The trait they focused on was conscientiousness: the habit of working seriously and steadily. Their study found that, within the same person, higher income was linked to greater conscientiousness later on.
 
-Income and later seriousness were linked. Seriousness and later income were linked too. The road we thought went only one way also had a lane in the other direction. Still, both links were small. This was not a big story where a pay rise makes you extremely serious!
+Wait—we thought personality affected income. But income had a part too!
 
-If you are thinking of a yearly income ranking, set it aside for now. This is not about serious people earning more than others. The study looks at changes within the same person. It is like watching yourself over time, with no one to compete against.
+But the arrow does not point only one way. A rise in conscientiousness was also weakly linked to higher income later. They found a weak link in both directions: personality with later income, and income with later personality.
 
-It is also too soon to say, “I became more serious because my pay went up.” The researchers say these results alone cannot show what caused what. Something else may have affected both people’s income and how serious they were. Finding a link does not tell us what caused it.
+After hearing this, you may want to ask, “Does a pay raise change your personality too?” But wait before you decide that is true. The team studied data that tracked changes over time. This cannot prove that income changed personality, or that personality increased income. Something else may have affected both.
 
-So you do not need to use your pay slip as a scorecard for how serious you are. Low income does not mean you are lazy. High income does not mean you are a model student. This study cannot give us such a simple report card.
+“Coming first” and “being the cause” are two different things. In a drama, the person we see first at the scene is not always the criminal. The order of events can give us a clue, but it cannot solve the case by itself.
 
-Income may come from a person’s personality. But it can also help us think about how their personality may change later. From “Who earns the most?” to “How will I change?” This is an ongoing series that makes you wonder what happens next. The main character may be you.
+So when you look back at your income or the way you work, you do not have to end with, “That’s just my personality.” Ask instead, “What has changed in me lately?” Then look more closely. Instead of judging other people, look for changes in yourself. With income and personality, changing who you compare yourself with can show a very different picture.
 
 ## In one line
-Across 11 studies, people were a little more serious at work after earning more than usual. Being more serious than usual was linked to a little more income later; these small links were within each person and do not show that either change caused the other.
+For one person, higher income was linked to later conscientiousness, and higher conscientiousness was weakly linked to later income. These links do not prove cause and effect, but your own changes can show a different picture.
