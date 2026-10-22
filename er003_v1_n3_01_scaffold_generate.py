@@ -25,10 +25,12 @@
 
 from __future__ import annotations
 
+import functools
 import itertools
 import json
 import os
 import re
+import shutil
 import time
 from collections import Counter
 
@@ -323,6 +325,10 @@ def run_key_phrase_selection(article_text: str, out_dir: str, article_id: str, s
     等でこの呼び出しを発生させた場合にTrueを渡す(本番実行との区別)。
     `shortlist_cache`はdb_hybrid経路のみで使う(S8、Redundancy QA retry
     時のStage1再計算を避ける、Strategy L経路では無視される)。"""
+    if kp_backend == FULLTEXT_BACKEND_ID:
+        return _run_key_phrase_selection_fulltext(
+            article_text, out_dir, article_id, source_level, process=process,
+            diagnostic_note=diagnostic_note, synthetic=synthetic)
     if kp_backend == "db_hybrid":
         return _run_key_phrase_selection_db_hybrid_with_fallback(
             article_text, out_dir, article_id, source_level, process=process,
@@ -345,6 +351,29 @@ def run_key_phrase_selection(article_text: str, out_dir: str, article_id: str, s
         role_counts=result.get("role_counts"),
         strategy_l_attempts=result.get("strategy_l_attempts"),
         retry_reached_second_attempt=result.get("retry_reached_second_attempt"))
+    return result
+
+
+# KP-FULLTEXT-SELECTION-3KP-PRODUCTION-01 委任_02(2026-10-22、ユーザーAPPROVED_FOR_PRODUCTION): Family X/Zの既定backend。
+# 記事全文+正式Prompt 2(GPT-6 Luna、一字一句固定)で最大3件を直接選定する(`er105_kp_fulltext_selector_01`)。
+# 選定段のみを置換し、後段(canonicalization/gloss再整合/Redundancy QA/Z D1/音声/組立)は既存を再利用する。
+# A/B/C(kp_backend="strategy_l"既定)は無変更(27-7: 開発対象外)。
+FULLTEXT_BACKEND_ID = "fulltext_p2"
+
+
+def _run_key_phrase_selection_fulltext(article_text: str, out_dir: str, article_id: str, source_level: str,
+                                        process: str = None, diagnostic_note: str = None, synthetic: bool = False) -> dict:
+    """全文選定backend(Prompt 2)。選定失敗はretry上限(er105)後にstatus!=PASSを返す(fail-closed。旧経路へのfallbackはしない)。
+    モデルrouting違反・API 400等の設定不備はFulltextSelectionErrorを送出して即停止する。"""
+    import er105_kp_fulltext_selector_01 as ft
+    result = ft.run_fulltext_selection(article_text, out_dir, article_id, source_level, process=process,
+                                       diagnostic_note=diagnostic_note)
+    _log_kp_backend_telemetry(
+        article_id, source_level, requested_backend=FULLTEXT_BACKEND_ID, backend_used=FULLTEXT_BACKEND_ID,
+        final_status=result.get("status"), fallback_triggered=False, model_id=result.get("model_id"),
+        cost_jpy=None, synthetic=synthetic, source_reference_contract=ft.FULLTEXT_SOURCE_REF_ID,
+        kp_attempts=result.get("kp_attempts"), shortfall=result.get("shortfall"),
+        prompt_sha256=ft.PROMPT_2_SHA256)
     return result
 
 
@@ -687,7 +716,10 @@ def run_key_phrase_canonicalization(article_text: str, original_items: list, out
 
     gloss再整合(KP-GLOSS-ALIGNMENT-CORRECTED-PRODUCTION-WIRING-01、2026-10-15): 修正版が唯一の方式で既定ON。
     kill switchはプロセス環境変数EIGO_KP_GLOSS_ALIGNMENT=0のみ(gloss_align.flag_enabled())。"""
-    template = kc.load_prompt_template()
+    # KPFT 委任_02: 全文選定itemがあるときだけ、fulltext版template(Listening Blocker/5件記述を除去、基本形化規則を追加)と
+    # fulltext専用schema(lemma_normalization enum)を使う。A/B/C(fulltext_source_refなし)は従来のtemplate/schemaのまま(バイト同一)。
+    is_fulltext = any(kc.is_fulltext_item(it) for it in original_items)
+    template = kc.load_prompt_template(kc.FULLTEXT_PROMPT_TEMPLATE_PATH) if is_fulltext else kc.load_prompt_template()
     user_message = kc.build_user_message(original_items, article_text, template=template)
     with open(f"{out_dir}/canonicalization_prompt.txt", "w", encoding="utf-8") as f:
         f.write(user_message)
@@ -696,16 +728,23 @@ def run_key_phrase_canonicalization(article_text: str, original_items: list, out
         kwargs = {}
         if process is not None:
             kwargs["model"] = routing.require_model(process, routing.SUPPORT_MODEL)
+        if is_fulltext:
+            kwargs["schema"] = kc.CANONICALIZATION_JSON_SCHEMA_FULLTEXT
         return kc.make_canonicalization_fn(user_message, **kwargs)
 
-    parsed, status, attempts, model_id, response_id = kc.run_canonicalization_gate(make_factory, original_items)
+    # OF-KPFT-P-07: 技術失敗の再試行前に待機する(canonicalization gateの既存sleep_fn(2)機構を全文選定itemにだけ有効化。A/B/Cは従来どおり即再試行)。
+    parsed, status, attempts, model_id, response_id = kc.run_canonicalization_gate(
+        make_factory, original_items, sleep_fn=(time.sleep if is_fulltext else None))
+    _canon_meta = {
+        "article_id": article_id, "canonicalization_version": kc.CANONICALIZATION_VERSION,
+        "record_status": "PROTOTYPE", "approval_status": "NOT_APPROVED",
+        "final_status": status, "model_id": model_id, "response_id": response_id,
+        "attempts_detail": [{k: v for k, v in a.items() if k != "raw_text"} for a in attempts],
+    }
+    if is_fulltext:
+        _canon_meta["template"] = "fulltext_p2"
     with open(f"{out_dir}/canonicalization_runtime_metadata.json", "w", encoding="utf-8") as f:
-        json.dump({
-            "article_id": article_id, "canonicalization_version": kc.CANONICALIZATION_VERSION,
-            "record_status": "PROTOTYPE", "approval_status": "NOT_APPROVED",
-            "final_status": status, "model_id": model_id, "response_id": response_id,
-            "attempts_detail": [{k: v for k, v in a.items() if k != "raw_text"} for a in attempts],
-        }, f, ensure_ascii=False, indent=2)
+        json.dump(_canon_meta, f, ensure_ascii=False, indent=2)
 
     result = {"status": status}
     if status not in ("CANONICALIZATION_PASS", "CANONICALIZATION_REVIEW_REQUIRED"):
@@ -750,13 +789,22 @@ def run_key_phrase_redundancy_qa(article_text: str, merged_items: list, out_dir:
     """ER-011-NO18-PRODUCTION-SPEC-IMPROVEMENT-01: canonicalization後の5件を
     対象に、意味・使用場面・文法/構文上の学習価値・記事内で担う概念の
     4観点で相互重複を判定する(processの意味は他のKey Phrase関数と同じ)。"""
+    if len(merged_items) < 2:
+        # KPFT 委任_02: 全文選定でKPが1件(shortfall)のとき、比較するペアが無いのでQAを呼ばない(API 0)。記録は残す。
+        result = {"article_id": article_id, "redundancy_qa_version": redundancy_qa.REDUNDANCY_QA_VERSION,
+                  "status": "REDUNDANCY_PASS", "model_id": None, "response_id": None, "duplicate_pairs": [],
+                  "attempts_detail": [], "skipped": "ペアが無い(KP件数が2未満)"}
+        with open(f"{out_dir}/keyphrase_redundancy_qa.json", "w", encoding="utf-8") as f:
+            json.dump(result, f, ensure_ascii=False, indent=2)
+        return result
     user_message = redundancy_qa.build_user_message(merged_items, article_text)
     with open(f"{out_dir}/keyphrase_redundancy_qa_prompt.txt", "w", encoding="utf-8") as f:
         f.write(user_message)
+    _dev_msg = redundancy_qa.developer_message_for(len(merged_items))   # 件数語を実件数に(5件ではバイト同一)
 
     def make_factory():
         model = routing.require_model(process, routing.SUPPORT_MODEL) if process else routing.SUPPORT_MODEL
-        return redundancy_qa.make_redundancy_qa_fn(user_message, model=model)
+        return redundancy_qa.make_redundancy_qa_fn(user_message, model=model, developer_message=_dev_msg)
 
     ranks = [it["rank"] for it in merged_items]
     parsed, status, attempts, model_id, response_id = redundancy_qa.run_redundancy_qa_gate(make_factory, ranks)
@@ -799,17 +847,170 @@ def detect_key_phrase_symbol_findings(merged_items: list) -> list:
     return findings
 
 
+# ============================================================
+# KPFT 委任_02(OF-KPFT-P-07/P-08): X/Z共通の外側retry(全文選定backend用)。
+# 旧: Z限定・暫定(`er062.run_kp_with_outer_retry`、OPEN-310回避)。Xには無く、canonicalization INVALIDで旧attemptのKPが残った
+# (KPMP B1)。全文選定+最小化圧力でINVALID頻度が上がるため、X/Zで同じ関数を共有する(er062は薄いdelegateに変更)。
+# 構造(P-08): カウンタを入れ子にしない。1つのwhileループで次の2つを別々に数える。
+#   failures      = 選定の失敗(INVALID/PARSE_FAILED/TECHNICAL_FAILED)+ canonicalization INVALID(通算max_outer回まで。P-07: 選定INVALIDも予算に含む)
+#   red_attempt   = Redundancy NG/記号NGによる選定やり直し(KEY_PHRASE_REDUNDANCY_RETRY_MAX回まで)
+# 最大周回 = max_outer + KEY_PHRASE_REDUNDANCY_RETRY_MAX(=5)。各周の開始時にSTOPセンチネルを確認する(stop_check_fn)。
+# 最終失敗時は直近attemptが書いたkeywords_canonicalized.jsonを`keywords_canonicalized.STALE_attempt{n}.json`へ改名し、
+# 後段が旧KPを読めないようにする(KPMP B1の恒久修正)。
+# ============================================================
+KP_OUTER_RETRY_MAX = 3   # 旧Z_KP_OUTER_RETRY_MAX(=3)と同値
+KP_STALE_PREFIX = "keywords_canonicalized.STALE_attempt"
+
+
+def _kp_sha(s: str) -> str:
+    import hashlib
+    return hashlib.sha256((s or "").encode("utf-8")).hexdigest()
+
+
+def _kp_copy_attempt_artifacts(kp_dir: str, attempt: int) -> str:
+    dst = f"{kp_dir}/outer_retry/attempt_{attempt}"
+    os.makedirs(dst, exist_ok=True)
+    for name in os.listdir(kp_dir):
+        src_p = f"{kp_dir}/{name}"
+        if os.path.isfile(src_p):
+            shutil.copyfile(src_p, f"{dst}/{name}")
+    return dst
+
+
+def _kp_canon_reasons(kp_dir: str):
+    p = f"{kp_dir}/canonicalization_runtime_metadata.json"
+    if not os.path.exists(p):
+        return None
+    with open(p, encoding="utf-8") as f:
+        d = json.load(f)
+    return [{k: v for k, v in a.items() if k != "raw_text"} for a in d.get("attempts_detail", [])]
+
+
+def _kp_retire_stale_artifact(kp_dir: str, attempt: int):
+    """最終失敗時: 本名のkeywords_canonicalized.jsonを退避名へ改名(後段が旧attemptのKPを読めないようにする)。"""
+    p = f"{kp_dir}/keywords_canonicalized.json"
+    if os.path.exists(p):
+        stale = f"{kp_dir}/{KP_STALE_PREFIX}{attempt}.json"
+        os.replace(p, stale)
+        return stale
+    return None
+
+
+def make_stop_check(run_dir: str = None):
+    """STOPセンチネル(<run>/STOP, STOP_ALL)確認。あれば例外(新規API呼出なし)。er062_family_z_structure_01の既存実装を遅延importで再利用。"""
+    def check(where: str):
+        import er062_family_z_structure_01 as _st
+        _st.check_stop_sentinel(where, run_dir)
+    return check
+
+
+def run_kp_with_outer_retry(text: str, kp_dir: str, article_id: str, source_level: str, process=None, *,
+                            max_outer: int = KP_OUTER_RETRY_MAX, generic_note: str = "",
+                            select_fn=None, canon_fn=None, redundancy_fn=None, stop_check_fn=None,
+                            scope_note: str = "KP外側retry(全文選定backend、X/Z共通)", **_):
+    select_fn = select_fn or functools.partial(run_key_phrase_selection, kp_backend=FULLTEXT_BACKEND_ID)
+    canon_fn = canon_fn or run_key_phrase_canonicalization
+    redundancy_fn = redundancy_fn or run_key_phrase_redundancy_qa
+    os.makedirs(kp_dir, exist_ok=True)
+    red_max = KEY_PHRASE_REDUNDANCY_RETRY_MAX
+    red_note, red_attempt, failures, log, redundancy_retry_log = None, 0, 0, [], []
+    outer = 0
+
+    def save_log():
+        with open(f"{kp_dir}/outer_retry_log.json", "w", encoding="utf-8") as f:
+            json.dump({"scope": scope_note, "max_outer": max_outer, "generic_note": generic_note, "attempts": log},
+                      f, ensure_ascii=False, indent=2)
+
+    def fail(entry, sel, canon, status):
+        """最終失敗: 旧attemptのKPを残さない。"""
+        stale = _kp_retire_stale_artifact(kp_dir, outer)
+        if stale:
+            entry["stale_artifact"] = stale
+        save_log()
+        res = {"selection": sel, "canonicalization": canon, "redundancy_qa": None,
+               "redundancy_retry_log": redundancy_retry_log, "outer_retry_log": log}
+        if status:
+            res["status"] = status
+        return res
+
+    while True:
+        outer += 1
+        if stop_check_fn is not None:
+            stop_check_fn(f"kp_outer_retry:{article_id}:attempt{outer}")   # OF-KPFT-P-08: 各周の開始時(新規API呼出の前)
+        note = (generic_note or "") + (("\n\n" if generic_note else "") + red_note if red_note else "")
+        sel = select_fn(text, kp_dir, article_id, source_level, process=process, diagnostic_note=(note or None))
+        entry = {"outer_attempt": outer, "note_sha256": _kp_sha(note), "selection_status": sel.get("status"),
+                 "selection_phrases": [it.get("display_phrase") for it in ((sel.get("parsed") or {}).get("items") or [])]}
+        if sel.get("status") != "KEY_WORDS_STRUCTURE_PASS":
+            failures += 1
+            entry["artifacts"] = _kp_copy_attempt_artifacts(kp_dir, outer)
+            log.append(entry)
+            if failures >= max_outer:
+                return fail(entry, sel, None, "OUTER_RETRY_EXHAUSTED")
+            save_log()
+            continue
+        canon = canon_fn(text, sel["original_items"], kp_dir, article_id, process=process)
+        entry["canonicalization_status"] = canon.get("status")
+        entry["canonicalization_attempts"] = _kp_canon_reasons(kp_dir)
+        if canon.get("status") not in ("CANONICALIZATION_PASS", "CANONICALIZATION_REVIEW_REQUIRED"):
+            failures += 1
+            entry["artifacts"] = _kp_copy_attempt_artifacts(kp_dir, outer)
+            log.append(entry)
+            if failures >= max_outer:
+                return fail(entry, sel, canon, "OUTER_RETRY_EXHAUSTED")
+            save_log()
+            continue
+        merged_items = canon["merged"]["items"]
+        red = redundancy_fn(text, merged_items, kp_dir, article_id, process=process)
+        findings = detect_key_phrase_symbol_findings(merged_items)
+        flagged = safety.symbol_gate_requires_stop(findings)
+        redundancy_retry_log.append({"attempt": red_attempt, "status": red.get("status"),
+                                     "duplicate_pairs": red.get("duplicate_pairs"), "symbol_flagged": flagged,
+                                     "symbol_findings": findings})
+        entry.update({"redundancy_status": red.get("status"), "symbol_flagged": flagged,
+                      "artifacts": _kp_copy_attempt_artifacts(kp_dir, outer)})
+        log.append(entry)
+        if red.get("status") != "REDUNDANCY_NG" and not flagged:
+            save_log()
+            return {"selection": sel, "canonicalization": canon, "redundancy_qa": red,
+                    "redundancy_retry_log": redundancy_retry_log, "redundancy_retry_attempts": red_attempt,
+                    "outer_retry_log": log}
+        if red_attempt >= red_max:
+            stale = _kp_retire_stale_artifact(kp_dir, outer)
+            if stale:
+                entry["stale_artifact"] = stale
+            save_log()
+            return {"selection": sel, "canonicalization": canon, "redundancy_qa": red,
+                    "redundancy_retry_log": redundancy_retry_log, "redundancy_retry_attempts": red_attempt,
+                    "outer_retry_log": log, "status": "NG_REVIEW_REQUIRED"}
+        save_log()
+        by_rank = {it["rank"]: it for it in merged_items}
+        red_note = ""
+        if red.get("status") == "REDUNDANCY_NG":
+            red_note += redundancy_qa.build_redundancy_diagnostic_note(red["duplicate_pairs"], by_rank)
+        if flagged:
+            red_note += ("\n\n" if red_note else "") + safety.build_symbol_violation_prompt_note(findings)
+        red_attempt += 1
+
+
 def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_level: str,
                      process: str = None, synthetic: bool = False,
-                     kp_backend: str = "strategy_l") -> dict:
+                     kp_backend: str = "strategy_l", stop_run_dir: str = None) -> dict:
     """`_run_key_phrases_impl`の薄いwrapper(委任_03、2026-10-13): retryループ全attemptで発生した
     M2→Strategy L Fallback eventを`m2_fallback_events`(list、空=発生なし)として戻り値へ追記する。
     それ以外の戻り値・挙動は無変更(全呼び出し元で追記キーのみ増える)。"""
     sink: list = []
     # OF-229: gloss規則の抽出失敗は記事内容に依存しない設定不備なので、run開始時(最初の記事のAPI呼出前)に即時停止する。
     gloss_align.preflight()
-    result = _run_key_phrases_impl(article_text, out_dir, article_id, source_level, process=process,
-                                   synthetic=synthetic, kp_backend=kp_backend, _m2_fb_sink=sink)
+    if kp_backend == FULLTEXT_BACKEND_ID:
+        # KPFT 委任_02: 全文選定backendはX/Z共通の外側retry(選定失敗/canonicalization INVALIDの通算3回+Redundancy NGの選定やり直し)。
+        result = run_kp_with_outer_retry(
+            article_text, out_dir, article_id, source_level, process=process,
+            select_fn=functools.partial(run_key_phrase_selection, kp_backend=FULLTEXT_BACKEND_ID, synthetic=synthetic),
+            stop_check_fn=make_stop_check(stop_run_dir))
+    else:
+        result = _run_key_phrases_impl(article_text, out_dir, article_id, source_level, process=process,
+                                       synthetic=synthetic, kp_backend=kp_backend, _m2_fb_sink=sink)
     result["m2_fallback_events"] = sink
     # 委任_02(OF-KGDC-04 / OF-KGCPW-03): HR報告は外側retry確定後に、**ディスク上の最終artifact**(消費側が読むものと同一の
     # keywords_canonicalized.json)に対して1回だけ行う。途中attemptでHR→次attemptで失敗(canonicalization=None)でも、

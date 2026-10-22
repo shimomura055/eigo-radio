@@ -142,11 +142,31 @@ _PROMPT_TEXT_FOR_HASH = "␟".join(
 PROMPT_SHA256 = hashlib.sha256(_PROMPT_TEXT_FOR_HASH.encode("utf-8")).hexdigest()
 
 
+def explanation_phrase(item: dict) -> str:
+    """KPFT 委任_02(OF-KPFT-P-03): 解説の入力phraseと照合キー。全文選定itemでは、音声・試聴ページで実際に使う形
+    (used_form=基本形化後)にする。display_phrase(本文の表層形)に対して解説すると『pushed prices up の解説 -> push prices up の音声』
+    の時制ずれが毎回起きるため。display_phraseは選定の証跡として残る。旧経路(A/B/C・過去artifact)は従来どおりdisplay_phrase。"""
+    if item.get("fulltext_source_ref") and (item.get("used_form") or "").strip():
+        return item["used_form"]
+    return item["display_phrase"]
+
+
+def _header_for(n: int) -> str:
+    """KPFT 委任_02: 件数語を実件数にする。n=5ではUSER_TEMPLATE_HEADERとバイト同一(Trial-02逐語性のPROMPT_SHA256は5件版で維持)。"""
+    return USER_TEMPLATE_HEADER.replace("For each of the 5 Key Phrases below",
+                                        f"For each of the {n} Key Phrase{'s' if n != 1 else ''} below")
+
+
+def _footer_for(n: int) -> str:
+    return USER_TEMPLATE_FOOTER.replace("} x5 ]}", f"}} x{n} ]}}")
+
+
 def build_explanation_user_message(items: list[dict]) -> str:
     """er041._build_explanation_user_messageと同一ロジック(逐語転記)。
     items各要素は{"display_phrase", "source_sentence", "japanese_gloss"}
-    (keywords_canonicalized.jsonのitem、rank昇順ソート済み前提)。"""
-    lines = [USER_TEMPLATE_HEADER]
+    (keywords_canonicalized.jsonのitem、rank昇順ソート済み前提)。
+    KPFT 委任_02: 件数語(5 Key Phrases / x5)のみ実件数nへ置換(n=5はバイト同一)。"""
+    lines = [_header_for(len(items))]
     for i, it in enumerate(items, start=1):
         lines.append(
             f'{i}. phrase: "{it["display_phrase"]}"\n'
@@ -154,7 +174,7 @@ def build_explanation_user_message(items: list[dict]) -> str:
             f'   japanese_reference_meaning (for accuracy check only, do '
             f'not translate literally): "{it["japanese_gloss"]}"\n'
         )
-    lines.append(USER_TEMPLATE_FOOTER)
+    lines.append(_footer_for(len(items)))
     return "".join(lines)
 
 

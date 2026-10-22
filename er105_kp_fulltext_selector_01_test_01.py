@@ -69,7 +69,9 @@ class TestPromptFixed(unittest.TestCase):
         self.assertEqual(m.KP_WORDS_MAX, 5)
         self.assertEqual(m.SELECTION_MODEL_ID, "gpt-6-luna")
         sch = m.SELECTOR_JSON_SCHEMA["schema"]["properties"]["items"]
-        self.assertEqual(sch["maxItems"], 3)
+        # OF-KPFT-P-10: strictモードのschema拒否(HTTP 400)で全呼出が止まる事故を避けるため、件数制約はschemaに置かずローカル検証のみ
+        self.assertNotIn("maxItems", sch)
+        self.assertNotIn("minItems", sch)
 
 
 EXPECTED_SHA = "a12896f485604f32efd52cb159d2615733c0eca262725af78db0b4f1c9a3dc9a"
@@ -121,14 +123,14 @@ class TestLocateAndValidate(unittest.TestCase):
                {"phrase": "took a sharp turn", "declared_word_count": 4}]
         v = m.validate_and_resolve(sel, _units())
         self.assertTrue(v["ok"], v)
-        self.assertEqual([r["resolution_method"] for r in v["resolved"]], ["fulltext_exact_unique"] * 3)
+        self.assertEqual([r["selection_resolution_method"] for r in v["resolved"]], ["fulltext_exact_unique"] * 3)
         self.assertTrue(all(r["source_sentence_id"].startswith("S") for r in v["resolved"]))
 
     def test_first_of_n_when_phrase_in_multiple_sentences(self):
         v = m.validate_and_resolve([{"phrase": "retail prices", "declared_word_count": 2}], _units())
         self.assertTrue(v["ok"])
         r = v["resolved"][0]
-        self.assertEqual(r["resolution_method"], "fulltext_exact_first_of_N")
+        self.assertEqual(r["selection_resolution_method"], "fulltext_exact_first_of_N")
         self.assertEqual(r["occurrence_count"], 2)
         self.assertEqual(r["source_span"], "Retail prices")   # 原文スライス(先頭出現)
 
@@ -288,7 +290,8 @@ class TestRunEntry(unittest.TestCase):
 
 
 class TestIsolation(unittest.TestCase):
-    """未配線の機械的証拠: Production既存ファイルがer105をimport/参照していない。API 0。"""
+    """配線後の機械的証拠: er105を参照するProductionファイルは委任_02で配線した最小集合だけ(予期せぬ参照元が無い)。API 0。"""
+    ALLOWED = {"er003_key_words_canonicalization.py", "er003_v1_n3_01_scaffold_generate.py"}
 
     def test_no_production_file_references_er105(self):
         offenders = []
@@ -297,7 +300,7 @@ class TestIsolation(unittest.TestCase):
             if b.startswith("er105_"):
                 continue
             with open(p, encoding="utf-8", errors="ignore") as f:
-                if re.search(r"\ber105_kp_fulltext", f.read()):
+                if re.search(r"\ber105_kp_fulltext", f.read()) and "test" not in b and b not in self.ALLOWED:
                     offenders.append(b)
         self.assertEqual(offenders, [])
 
@@ -338,8 +341,13 @@ class TestInflectionNormalizationPrototype(unittest.TestCase):
         for k, d in [("push prices up", "pushed prices up"), ("roll back", "rolled back"), ("brush aside", "brushed aside"),
                      ("give back some gains", "gave back some gains"), ("take a sharp turn", "took a sharp turn"),
                      ("pump one's fist", "pumps its fist"), ("hand the baton", "hands the baton"), ("retail price", "retail prices"),
-                     ("try hard", "tried hard"), ("stop short", "stopped short")]:
+                     ]:
             self.assertTrue(m.is_valid_inflection_normalization(k, d), (k, d))
+
+    def test_v_plus_adverb_or_noun_phrases_are_not_normalized(self):
+        # 範囲縮小(開示): V+副詞/名詞は形容詞化分詞・名詞修飾と区別できないため基本形化しない(表層形のまま=Rule7無変更で扱う)
+        for k, d in [("try hard", "tried hard"), ("stop short", "stopped short"), ("raise concern", "raised concerns")]:
+            self.assertFalse(m.is_valid_inflection_normalization(k, d), (k, d))
 
     def test_rejects_content_change_or_length_change(self):
         for k, d in [("keep raw materials in stock", "keep raw beans in stock"), ("human concierge service", "human concierge feature"),
@@ -362,7 +370,10 @@ class TestZD1GateCompatibility(unittest.TestCase):
         kp = {"items": [{**it, "used_form": it["display_phrase"]} for it in items]}
         rep = P.apply_to_kp(kp, ARTICLE, "a2")
         self.assertEqual(rep["status"], "PASS", rep)
-        self.assertEqual([i["resolution_method"] for i in rep["items"]], ["exact"] * 3)
+        self.assertEqual([i["resolution_method"] for i in rep["items"]], ["exact"] * 3)   # D1側のフィールド名(=exact)
+        # OF-KPFT-P-06: D1が`resolution_method`を上書きしても、選定時の解決方式は別名で保持される
+        self.assertEqual([i["selection_resolution_method"] for i in kp["items"]],
+                         ["fulltext_exact_first_of_N", "fulltext_exact_unique", "fulltext_exact_unique"])
         self.assertEqual(rep["ambiguous"], [])
 
 

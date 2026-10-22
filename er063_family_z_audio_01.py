@@ -1093,6 +1093,23 @@ def save_checkpoint(level_dir: str, segments: dict, key_phrases: dict) -> None:
     os.replace(tmp, p)
 
 
+def prune_cached_to_plan(cached: dict | None, plan: list) -> dict | None:
+    """KPFT 委任_02(OF-KPFT-P-09): 前回results/checkpointのうち、現在のplanのclipで、かつreuse_key(本文・style・voice・backend)が
+    一致するentryだけを残す。同じrun dirでKPを再生成した(5件->3件、または語句が変わった)後に、旧rank/旧語句の音声entryが
+    混入して再利用されることを防ぐ(rank集合ではなくreuse_keyの不一致で刈り込む)。"""
+    if not cached:
+        return cached
+    out = {"segments": {}, "key_phrases": {}}
+    for spec in plan:
+        prev = _cached_entry(cached, spec)
+        if prev is not None and prev.get("reuse_key") in (None, build_reuse_key(spec)):
+            _store(out["segments"], out["key_phrases"], spec, prev)
+    for k, v in cached.items():
+        if k not in ("segments", "key_phrases"):
+            out[k] = v
+    return out
+
+
 def _merge_checkpoint(cached: dict | None, ck: dict | None) -> dict | None:
     if not ck:
         return cached
@@ -1152,6 +1169,7 @@ def _run_tts_stage_impl(run_dir: str, level: str, plan: list, *, generators: dic
     assert_run_style_record(level_dir, level, write=False)
     cached = load_results(level_dir)
     cached = _merge_checkpoint(cached, load_checkpoint(level_dir))   # 委任_10: process中断時もOK clipを再利用(再課金しない)
+    cached = prune_cached_to_plan(cached, plan)   # KPFT 委任_02(OF-KPFT-P-09): 旧rank/旧語句(reuse_key不一致)のentryを再利用経路へ入れない
     gens = generators or real_generators()
     os.makedirs(narr, exist_ok=True)
     os.makedirs(f"{level_dir}/audit", exist_ok=True)
@@ -1165,7 +1183,8 @@ def _run_tts_stage_impl(run_dir: str, level: str, plan: list, *, generators: dic
             raise FamilyZAudioStop(f"narration配置が不正です(.../<run>/<level>/narration/<segment>.wav): {out_path}")
         if only_clips and spec.clip_id not in only_clips:
             prev = _cached_entry(cached, spec)
-            if prev is not None:
+            # KPFT 委任_02(OF-KPFT-P-09): key照合なしの流用を塞ぐ(同じrun dirでKPを再生成した後の部分再生成で旧語句の音声が混入しうる)。
+            if prev is not None and prev.get("reuse_key") in (None, build_reuse_key(spec)):
                 _store(segments, key_phrases, spec, prev)
             continue
         cb = _cached_entry(cached, spec)

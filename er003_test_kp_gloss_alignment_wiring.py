@@ -382,7 +382,7 @@ class NgReviewRequiredPlusHrBlocksX(_FlagOn):
                     return sc_orig(article_text, kp_dir, article_id, level, **kw)
             sc_orig = sc.run_key_phrases
             with mock.patch.object(sc, "run_key_phrases", side_effect=real_run), contextlib.redirect_stdout(io.StringIO()):
-                x.run_theme_scaffold(None, src, out, ["a2"], scaffold_only="kp")
+                x.run_theme_scaffold(None, src, out, ["a2"], scaffold_only="kp", kp_backend="strategy_l")   # KPFT: 既定はfulltext_p2のため、_run_key_phrases_implを経由するA/B/C系backendで固定
             summ = json.load(open(f"{out}/scaffold_run_summary.json", encoding="utf-8"))["a2"]
             self.assertEqual(summ["kp_run_status"], "NG_REVIEW_REQUIRED")
             self.assertEqual(summ["gloss_alignment_run_status"], ga.STOPPED_STATUS)

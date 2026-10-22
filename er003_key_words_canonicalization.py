@@ -114,6 +114,12 @@ NORMALIZATION_REASONS = (
     "other",
 )
 
+# KPFT 委任_02(OF-KPFT-P-02(1)): 全文選定(fulltext_p2)専用。`lemma_normalization`(語形の基本形化)を共有enumへ足すと
+# A/B/Cへ送るschemaの中身が変わる(バイト同一条件が崩れる)ため、fulltext専用のenum/schemaを別に持つ。
+LEMMA_NORMALIZATION_REASON = "lemma_normalization"
+NORMALIZATION_REASONS_FULLTEXT = NORMALIZATION_REASONS[:-1] + (LEMMA_NORMALIZATION_REASON, "other")
+FULLTEXT_PROMPT_TEMPLATE_PATH = "er003_v1_translator_briefs/b1_p2_keywords_canonicalization_fulltext_prompt_template.txt"
+
 _ITEM_SCHEMA_PROPERTIES = {
     "rank": {"type": "integer"},
     "key_phrase": {"type": "string"},
@@ -123,6 +129,12 @@ _ITEM_SCHEMA_PROPERTIES = {
     **{field: {"type": "string", "enum": list(QA_VERDICTS)} for field in QA_FIELDS},
 }
 _ITEM_REQUIRED_FIELDS = tuple(_ITEM_SCHEMA_PROPERTIES.keys())
+
+
+def _fulltext_item_properties() -> dict:
+    props = json.loads(json.dumps(_ITEM_SCHEMA_PROPERTIES))
+    props["normalization_reason"] = {"type": "string", "enum": list(NORMALIZATION_REASONS_FULLTEXT)}
+    return props
 
 CANONICALIZATION_JSON_SCHEMA = {
     "name": "key_words_canonicalization",
@@ -134,6 +146,27 @@ CANONICALIZATION_JSON_SCHEMA = {
                 "items": {
                     "type": "object",
                     "properties": _ITEM_SCHEMA_PROPERTIES,
+                    "required": list(_ITEM_REQUIRED_FIELDS),
+                    "additionalProperties": False,
+                },
+            },
+        },
+        "required": ["items"],
+        "additionalProperties": False,
+    },
+    "strict": True,
+}
+
+CANONICALIZATION_JSON_SCHEMA_FULLTEXT = {
+    "name": "key_words_canonicalization_fulltext",
+    "schema": {
+        "type": "object",
+        "properties": {
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": _fulltext_item_properties(),
                     "required": list(_ITEM_REQUIRED_FIELDS),
                     "additionalProperties": False,
                 },
@@ -319,6 +352,7 @@ def make_canonicalization_fn(
     model: str = SELECTOR_MODEL,
     reasoning_effort: str = SELECTOR_REASONING_EFFORT,
     developer_message: str = DEVELOPER_MESSAGE,
+    schema: Optional[dict] = None,
 ):
     if client is None:
         from dotenv import load_dotenv
@@ -330,7 +364,7 @@ def make_canonicalization_fn(
         response = client.responses.create(
             model=model,
             reasoning={"effort": reasoning_effort},
-            text={"format": {"type": "json_schema", **CANONICALIZATION_JSON_SCHEMA}},
+            text={"format": {"type": "json_schema", **(schema if schema is not None else CANONICALIZATION_JSON_SCHEMA)}},
             input=[
                 {"role": "developer", "content": developer_message},
                 {"role": "user", "content": user_message},
@@ -455,12 +489,31 @@ def _is_valid_person_generalization(key_phrase: str, display_phrase: str) -> boo
 # 反映する、決定論的な後処理である。他のQAフィールド・他のFAIL理由には
 # 一切影響しない(何かを新たに免除・緩和するものではなく、既存承認済み
 # 例外をQA側でも認識させるだけ)。
+def is_fulltext_item(item: dict) -> bool:
+    """全文選定(fulltext_p2)由来のitemか(`fulltext_source_ref`マーカー。A/B/Cのitemは持たない)。"""
+    return bool(isinstance(item, dict) and item.get("fulltext_source_ref"))
+
+
+def _is_valid_fulltext_normalization(key_phrase: str, display_phrase: str, normalization_reason: Optional[str]) -> bool:
+    """KPFT 委任_02(OF-KPFT-P-02(2)(3)(4)): 全文選定itemに限り、display_phrase内の連続範囲に対する
+    『同じ語の語形の1対1置換(動詞の原形化・名詞の単数化・人称の一般化、併用可)』を受理する。reasonは
+    lemma_normalization/generalize_person_dependent_referenceのどちらでもよい(同時に起きる場合の両受理)。
+    判定本体は決定論validator(er105.is_valid_inflection_normalization)。"""
+    if normalization_reason not in (LEMMA_NORMALIZATION_REASON, "generalize_person_dependent_reference"):
+        return False
+    import er105_kp_fulltext_selector_01 as _ft   # 遅延import(循環回避: er105は遅延でkcをimportする)
+    return _ft.is_valid_inflection_normalization(key_phrase, display_phrase)
+
+
 def _qa_field_effective_verdict(field: str, verdict: str, key_phrase: str, display_phrase: str,
-                                 normalization_reason: Optional[str]) -> str:
+                                 normalization_reason: Optional[str], fulltext: bool = False) -> str:
     if field != "qa_traceable_contiguous_span" or verdict != "FAIL":
         return verdict
     if (normalization_reason == "generalize_person_dependent_reference"
             and _is_valid_person_generalization(key_phrase, display_phrase)):
+        return "PASS"
+    # OF-KPFT-P-02(2): validatorが合格した基本形化に限りPASSとして扱う(これが無いと動詞を含むitemの大半がREVIEW_REQUIREDになる)。
+    if fulltext and _is_valid_fulltext_normalization(key_phrase, display_phrase, normalization_reason):
         return "PASS"
     return verdict
 
@@ -486,7 +539,8 @@ def _left_end_guard_ok(key_phrase: str, expanded_span: str, original_span: str) 
 
 def validate_canonicalization_item(key_phrase: str, display_phrase: str, source_span: str,
                                     normalization_reason: Optional[str] = None,
-                                    original_span: Optional[str] = None) -> dict:
+                                    original_span: Optional[str] = None,
+                                    allow_inflection_normalization: bool = False) -> dict:
     """LLMが提案したkey_phraseの構造的安全性のみを検査する。冠詞削除・
     語の復元の要否そのものは判定しない(それはLLMの役割)。ここで弾くのは、
     (a) 空文字、(b) source_spanにもdisplay_phraseにも存在しない文字列の
@@ -517,6 +571,10 @@ def validate_canonicalization_item(key_phrase: str, display_phrase: str, source_
             normalization_reason == "generalize_person_dependent_reference"
             and _is_valid_person_generalization(key_phrase, display_phrase)
         )
+        # KPFT 委任_02: 全文選定itemのみ(allow_inflection_normalization=True)、語形の基本形化(連続範囲+1対1置換)も受理。
+        if allow_inflection_normalization and not is_valid_person_generalization:
+            is_valid_person_generalization = _is_valid_fulltext_normalization(
+                key_phrase, display_phrase, normalization_reason)
         if not is_valid_person_generalization:
             reasons.append(
                 f"key_phrase({key_phrase!r})がdisplay_phraseと一致せず、"
@@ -568,6 +626,7 @@ def validate_canonicalization_response(parsed: dict, original_items: list) -> di
     }
     source_span_by_rank = {it["rank"]: it.get("source_span", "") for it in canonicalization_view_items(original_items)}
     original_span_by_rank = {it["rank"]: it.get("source_span", "") for it in original_items}
+    fulltext_by_rank = {it["rank"]: is_fulltext_item(it) for it in original_items}
 
     for i, item in enumerate(items):
         this_reasons = []
@@ -587,7 +646,8 @@ def validate_canonicalization_response(parsed: dict, original_items: list) -> di
             if item[field] not in QA_VERDICTS:
                 this_reasons.append(f"{field}が不正(実際: {item[field]!r})")
 
-        if item["normalization_reason"] not in NORMALIZATION_REASONS:
+        _is_ft = fulltext_by_rank.get(item.get("rank"), False)
+        if item["normalization_reason"] not in (NORMALIZATION_REASONS_FULLTEXT if _is_ft else NORMALIZATION_REASONS):
             this_reasons.append(f"normalization_reasonが不正(実際: {item['normalization_reason']!r})")
 
         display_phrase = display_phrase_by_rank.get(item.get("rank"), "")
@@ -595,7 +655,8 @@ def validate_canonicalization_response(parsed: dict, original_items: list) -> di
         structural = validate_canonicalization_item(
             item["key_phrase"], display_phrase, source_span,
             normalization_reason=item.get("normalization_reason"),
-            original_span=original_span_by_rank.get(item.get("rank")))
+            original_span=original_span_by_rank.get(item.get("rank")),
+            allow_inflection_normalization=_is_ft)
         this_reasons.extend(structural["reasons"])
 
         if this_reasons:
@@ -603,7 +664,8 @@ def validate_canonicalization_response(parsed: dict, original_items: list) -> di
             ok = False
         elif any(
             _qa_field_effective_verdict(
-                field, item[field], item["key_phrase"], display_phrase, item.get("normalization_reason")
+                field, item[field], item["key_phrase"], display_phrase, item.get("normalization_reason"),
+                fulltext=_is_ft
             ) == "FAIL"
             for field in QA_FIELDS
         ):
@@ -704,6 +766,10 @@ def kp_extends_beyond_candidate(original: dict, expanded_span: Optional[str], ke
     return any(t in extension for t in extra)
 
 
+FULLTEXT_PASSTHROUGH_FIELDS = ("fulltext_source_ref", "source_sentence_id", "occurrence_count", "occurrence_sentence_ids",
+                               "selection_resolution_method", "declared_word_count_mismatch")
+
+
 def merge_canonicalization_result(original_items: list, canonicalization_items: list) -> dict:
     """source_span/display_phrase(選定結果、無変更)と、key_phrase/
     used_form/QA/reasoning(この工程の出力)を1つのproduction artifactへ
@@ -726,7 +792,8 @@ def merge_canonicalization_result(original_items: list, canonicalization_items: 
         japanese_gloss = original.get("ja_gloss") or original.get("japanese_gloss")
         qa = {
             field: _qa_field_effective_verdict(
-                field, canon[field], canon["key_phrase"], display_phrase, canon.get("normalization_reason"))
+                field, canon[field], canon["key_phrase"], display_phrase, canon.get("normalization_reason"),
+                fulltext=is_fulltext_item(original))
             for field in QA_FIELDS
         }
         item_review_required = any(v == "FAIL" for v in qa.values())
@@ -771,6 +838,13 @@ def merge_canonicalization_result(original_items: list, canonicalization_items: 
                                    "surface_echo", "candidate_mismatch_suspected", "key_phrase_role"):
             if passthrough_field in original:
                 merged_item[passthrough_field] = original[passthrough_field]
+        # KPFT 委任_02(OF-KPFT-P-01): 全文選定itemのマーカーと解決情報を引き継ぐ。引き継がないと、gloss生成対象の選定
+        # (`fulltext_source_ref`)も消費側STOPも一度も発火せず、Stdの日本語意味もAdv解説の入力glossも空のまま後段へ進む。
+        # 全文選定itemにだけ適用する(A/B/Cのitemは`fulltext_source_ref`を持たないため出力は変わらない)。
+        if is_fulltext_item(original):
+            for ft_field in FULLTEXT_PASSTHROUGH_FIELDS:
+                if ft_field in original:
+                    merged_item[ft_field] = original[ft_field]
         merged_items.append(merged_item)
     return {
         "items": merged_items,

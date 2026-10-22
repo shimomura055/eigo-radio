@@ -37,6 +37,11 @@ DEVELOPER_MESSAGE = (
     "同じ内容の言い換えになっていないかを判定してください。"
 )
 
+def developer_message_for(num_items: int) -> str:
+    """KPFT 委任_02: 件数語を実件数にする(Key Phrase 5件 -> {n}件)。n=5ではDEVELOPER_MESSAGEとバイト同一(A/B/C不変)。"""
+    return DEVELOPER_MESSAGE.replace("Key Phrase 5件", f"Key Phrase {num_items}件")
+
+
 REDUNDANCY_QA_JSON_SCHEMA = {
     "name": "key_phrase_set_redundancy_qa",
     "schema": {

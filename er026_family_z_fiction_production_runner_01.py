@@ -861,32 +861,20 @@ def compute_actual_cost_jpy(log_path: str) -> dict:
 
 
 # ============================================================
-# Stage: keyphrase (既存Production経路、未変更)
+# Stage: keyphrase (legacy。KPFT 委任_02[OF-KPFT-P-05]で撤去=呼ばれたら明示エラー)
 # ============================================================
+# 旧: process=None(Sol系既定model)・Strategy L・5件でKPを生成した。D1(SRC)・外側retry・gloss関所をすべて迂回するため、
+# 付け替えではなく撤去する(5件・旧modelでProductionに届く経路を残さない)。正式なKP生成は`--mode real`のE2E `stage_kp`のみ。
+class LegacyKeyphraseStageRemoved(RuntimeError):
+    pass
+
+
 def run_keyphrase_stage(story_key: str, slug: str, run: str, dry_run: bool = False) -> dict:
     if dry_run:
-        return {"dry_run": True, "note": "Key Phrase stageはdry-runでは実行しない(¥0保証)。"}
-    out_dir = out_dir_for(slug, run)
-    article_path = f"{out_dir}/article.md"
-    if not os.path.exists(article_path):
-        raise RuntimeError(
-            "FAMILY_Z_KEYPHRASE_REQUIRES_TEXT_STAGE_FIRST: "
-            f"{article_path} が存在しません(先に--stage textを実行してください)。")
-    with open(article_path, encoding="utf-8") as f:
-        article_text = f.read()
-    kp_dir = f"{out_dir}/key_phrases"
-    os.makedirs(kp_dir, exist_ok=True)
-    # 実usage(gpt-5.6-sol、Key Phrase既定model)の記録用(¥計算はsol単価を
-    # 未実装のためrecord_countのみ、既知の欠落として報告する)。
-    kp_log_path = f"{kp_dir}/raw_usage_log.jsonl"
-    trial02.cl.install(kp_log_path)
-    # Family C(A2、Future Story)が実際に呼んでいるのと同一の既存Production
-    # 入口・同一パターン(er013_family_c_episode_trial_10_memory_run.py 532行)。
-    with trial02.cl.logging_context(THEME_TAG, "key_phrases"):
-        result = scaffold.run_key_phrases(article_text, kp_dir, f"family_z_{slug}", "A2", process=None)
-    with open(f"{kp_dir}/family_z_keyphrase_stage_result.json", "w", encoding="utf-8") as f:
-        json.dump(result, f, ensure_ascii=False, indent=2, default=str)
-    return result
+        return {"dry_run": True, "note": "Key Phrase stageはdry-runでは実行しない(¥0保証)。legacy --stage keyphraseは撤去済み。"}
+    raise LegacyKeyphraseStageRemoved(
+        "FAMILY_Z_LEGACY_KEYPHRASE_STAGE_REMOVED: legacy `--stage keyphrase`は撤去されました(KPFT 委任_02、OF-KPFT-P-05)。"
+        "Key Phraseは`--mode real`のE2E stage kp(全文選定・最大3件・D1/外側retry/gloss関所つき)で生成してください。")
 
 
 # ============================================================
@@ -1267,7 +1255,7 @@ def _kp_fn_for_ctx(ctx):
     fn = ctx.hooks.get("kp_fn")
     if fn:
         return fn
-    return _m().w62.run_kp_with_outer_retry
+    return _m().w62.run_kp_with_outer_retry_fulltext   # KPFT 委任_02: 全文選定(Prompt 2・最大3件)。X/Z共通の外側retry実装
 
 
 _GLOSS_HR_SNAPSHOT = "gloss_alignment_pending_result.json"
@@ -1512,6 +1500,8 @@ def stage_kp(ctx) -> dict:
         _res_doc = w62.rj(f"{ctx.out_dir}/key_phrases/{lv}_result.json")
         _canon_doc = _res_doc.get("canonicalization") or {}
         summary[lv] = {"status": r["status"], "assets": dst,
+                       # OF-KPFT-P-14: 旧5件KP(strategy_l/db_hybrid)を再利用した場合と区別できるよう、使用backendを完成報告に表示する
+                       "kp_backend_used": (_res_doc.get("selection") or {}).get("kp_backend_used"),
                        "gloss_alignment_status": _canon_doc.get("gloss_alignment_status"),
                        "gloss_alignment_metrics": _canon_doc.get("gloss_alignment_metrics"),
                        "gloss_alignment_flag": ga.flag_effective(),
@@ -1521,7 +1511,9 @@ def stage_kp(ctx) -> dict:
     # 方針6: Adv KP第3segment=英語解説(Coffee最終v3 Adv / X B1と同一構成)。
     kp = w62.rj(f"{_kp_assets_dir(ctx, 'b1b')}/keywords_canonicalized.json")
     items = sorted(kp["items"], key=lambda x: x["rank"])
-    sig_payload = [it["display_phrase"] for it in items]
+    import er019_family_x_kp_explanation_01 as _kexp
+    # KPFT 委任_02(OF-KPFT-P-03): 全文選定itemでは解説の対象=音声・試聴ページで実際に使うused_form(基本形化後)。旧artifactはdisplay_phraseのまま(sig互換)。
+    sig_payload = [_kexp.explanation_phrase(it) for it in items]
     if any(it.get("gloss_alignment_status") for it in items):
         # 委任_02(Opus (d)) / OF-KGCPW-07: 解説の入力にglossを含むため、gloss再整合のstatusを持つitemがあれば、gloss確定後に
         # 旧gloss入力の解説が再利用されないようsigへglossを含める。status無し(ON化前/対象0件)は従来sig(=display_phraseのみ)
@@ -1538,7 +1530,7 @@ def stage_kp(ctx) -> dict:
     def runner_ex():
         import er019_family_x_kp_explanation_01 as kexp
         _guard(ctx, "kp_expl_b1b", 2.0)
-        inp = [{"rank": it["rank"], "display_phrase": it["display_phrase"],
+        inp = [{"rank": it["rank"], "display_phrase": kexp.explanation_phrase(it),
                 "source_sentence": it.get("source_sentence", ""), "japanese_gloss": it.get("japanese_gloss", "")}
                for it in items]
         res = kexp.generate_kp_explanations(inp, call_fn=ctx.hooks.get("expl_call_fn"), client=ctx.llm_client)
@@ -1886,8 +1878,8 @@ def mock_en_support_fn(client, role, context, model=None):
 
 
 def mock_kp_fn(text, kp_dir, article_id, source_level, process=None, **kw):
-    spans = [s for s in _MOCK_KP_CANDIDATES if s in text][:5]
-    if len(spans) < 5:
+    spans = [s for s in _MOCK_KP_CANDIDATES if s in text][:3]   # KPFT 委任_02: 最大3件(Production件数)
+    if len(spans) < 3:
         raise AssertionError(f"mock KP: 本文に実在する候補が{len(spans)}件しかない")
     os.makedirs(kp_dir, exist_ok=True)
     items = [{"rank": i, "source_span": s, "source_sentence": s, "display_phrase": s, "key_phrase": s, "used_form": s,

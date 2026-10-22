@@ -2,9 +2,10 @@
 """KP-FULLTEXT-SELECTION-3KP-PRODUCTION-01 委任_01: Key Phrase全文選定(Prompt 2・GPT-6 Luna・最大3件)の
 **未配線module**(設計: docs/research/KP-FULLTEXT-SELECTION-3KP-PRODUCTION-01/IMPLEMENTATION_DESIGN_01.md)。
 
-Status: APPROVED_FOR_PRODUCTION_DESIGN_PENDING_OPUS。Production既存ファイルは一切import元から変更していない。
-どのProduction経路からもimportされていない(配線は次委任・Opus条件Aレビュー後)。API呼出0(本moduleのimport時・
-test時とも。実API呼出は`make_selector_fn()`が返す関数を呼んだときだけ)。
+Status: 委任_02(2026-10-22)でX/Z Productionへ配線(`sc.run_key_phrase_selection(kp_backend="fulltext_p2")`が委譲)。
+Status表記はWIRED_CODE_PENDING_RUNTIME_EVIDENCE(runtime evidenceは翌JST日。PRODUCTION_WIREDとは呼ばない)。
+Opus条件Aレビュー(OF-KPFT-P-01〜14)反映済み。API呼出0(本moduleのimport時・test時とも。実API呼出は
+`make_selector_fn()`が返す関数を呼んだときだけ)。
 
 責務(本module=選定段のみ):
   記事全文 + 正式Prompt 2(一字一句固定)をLunaへ1回 -> 構造化出力(phrase, word_count)の厳密parse ->
@@ -22,6 +23,7 @@ import hashlib
 import json
 import os
 import re
+import time
 import unicodedata
 from typing import Any, Callable, Optional
 
@@ -76,8 +78,8 @@ SELECTOR_JSON_SCHEMA = {
         "properties": {
             "items": {
                 "type": "array",
-                "minItems": KP_COUNT_MIN,
-                "maxItems": KP_COUNT_MAX,
+                # OF-KPFT-P-10: strictモードでminItems/maxItemsが拒否されると全呼出が400で止まるため、schemaには件数制約を置かず、
+                # 件数(1〜KP_COUNT_MAX)はローカル検証(validate_and_resolve)だけで保証する。
                 "items": {
                     "type": "object",
                     "properties": {"phrase": {"type": "string"}, "word_count": {"type": "integer"}},
@@ -192,6 +194,22 @@ def locate_phrase(units: list, phrase: str) -> list:
     return hits
 
 
+def _crosses_sentence_boundary(units: list, phrase: str) -> bool:
+    """単一文内には一致しないが、隣接する2文をまたぐと(文末記号を挟んで)語が連続する語句か(OF-KPFT-P-10: 理由の区別用。受理はしない)。"""
+    toks = [t for t in _normalize_phrase(phrase).split(" ") if t]
+    if len(toks) < 2 or len(units) < 2:
+        return False
+    gap = r"[^" + _WORD_CH + r"]+"
+    pat = re.compile(r"(?<![" + _WORD_CH + r"])" + gap.join(re.escape(t) for t in toks) + r"(?![" + _WORD_CH + r"])", re.IGNORECASE)
+    for i in range(len(units) - 1):
+        first = units[i]["raw_text"]
+        joined = first + " " + units[i + 1]["raw_text"]
+        for m in pat.finditer(joined):
+            if m.start() < len(first) < m.end():
+                return True
+    return False
+
+
 def _legacy_form_reasons(phrase: str) -> list:
     """下流互換precheck: 既存canonicalizationが必ず拒否する形(1〜5語・有限助動詞)を、API費用を使う前に検出する。
     既存validatorの値を再利用(再実装しない)。Prompt 2が許容する形でも、既存承認済み構造Validatorが拒否するなら
@@ -200,6 +218,7 @@ def _legacy_form_reasons(phrase: str) -> list:
     reasons = []
     if kc._contains_finite_auxiliary(phrase):
         reasons.append("有限助動詞を含む(既存canonicalization Validatorが拒否する形)")
+    reasons.extend(numeric_placeholder_reasons(phrase))   # P-13: 数値placeholder型の回避(CURRENT_SPEC:470-472)
     return reasons
 
 
@@ -223,7 +242,10 @@ def validate_and_resolve(selected: list, units: list) -> dict:
         seen.add(key)
         hits = locate_phrase(units, phrase) if wc >= 1 else []
         if not hits:
-            r.append("本文に連続一致しない(変更・言い換え・創作、または文をまたぐ語句)")
+            if _crosses_sentence_boundary(units, phrase):
+                r.append("文の境界をまたいでいる(1文の中の連続した語句だけを選ぶ)")
+            else:
+                r.append("本文に連続一致しない(変更・言い換え・創作)")
         r.extend(_legacy_form_reasons(phrase))
         rec = {"index": idx, "phrase": phrase, "word_count": wc, "declared_word_count": s.get("declared_word_count"),
                "declared_word_count_mismatch": (s.get("declared_word_count") is not None and s.get("declared_word_count") != wc),
@@ -232,7 +254,8 @@ def validate_and_resolve(selected: list, units: list) -> dict:
             first = hits[0]
             rec.update(source_span=first["span"], source_sentence=first["sentence"], source_sentence_id=first["sentence_id"],
                        occurrence_count=len(hits), occurrence_sentence_ids=sorted({h["sentence_id"] for h in hits}),
-                       resolution_method="fulltext_exact_unique" if len(hits) == 1 else "fulltext_exact_first_of_N")
+                       # OF-KPFT-P-06: Z D1 gateが同名`resolution_method`を`exact`で上書きするため、別名で保持する。
+                       selection_resolution_method="fulltext_exact_unique" if len(hits) == 1 else "fulltext_exact_first_of_N")
         if r:
             item_reasons.append({"index": idx, "phrase": phrase, "reasons": r})
         resolved.append(rec)
@@ -257,7 +280,7 @@ def build_original_items(resolved: list) -> list:
             "ja_gloss": None,
             "japanese_gloss": None,
             "fulltext_source_ref": FULLTEXT_SOURCE_REF_ID,
-            "resolution_method": r["resolution_method"],
+            "selection_resolution_method": r["selection_resolution_method"],
             "occurrence_count": r["occurrence_count"],
             "occurrence_sentence_ids": r["occurrence_sentence_ids"],
             "declared_word_count_mismatch": r["declared_word_count_mismatch"],
@@ -279,11 +302,16 @@ def make_selector_fn(user_message: str, *, client: Any = None, model: Optional[s
         client = OpenAI()
 
     def fn():
-        response = client.responses.create(
-            model=model,
-            text={"format": {"type": "json_schema", **SELECTOR_JSON_SCHEMA}},
-            input=[{"role": "user", "content": user_message}],
-        )
+        try:
+            response = client.responses.create(
+                model=model,
+                text={"format": {"type": "json_schema", **SELECTOR_JSON_SCHEMA}},
+                input=[{"role": "user", "content": user_message}],
+            )
+        except Exception as e:   # OF-KPFT-P-10: schema拒否(HTTP 400)等はretryで直らない設定不備=即停止(技術的失敗として再試行しない)
+            if type(e).__name__ == "BadRequestError" or getattr(e, "status_code", None) == 400:
+                raise FulltextSelectionError(f"selector APIが要求を拒否しました(HTTP 400、設定/schema不備。retryしません): {e}") from e
+            raise
         if response.model != model:
             raise ModelMismatchError(f"応答モデルが不一致です(期待: {model}, 実際: {response.model})")
         text = getattr(response, "output_text", None)
@@ -312,54 +340,94 @@ def resolve_model(process: Optional[str]) -> str:
 # ============================================================
 # 選定gate(retry込み)と、run_key_phrase_selection互換の入口
 # ============================================================
+def build_machine_note(attempt_record: dict) -> str:
+    """P-07: 直前attemptの機械診断(不適合だった語句と理由)を2回目の選定noteにする。Prompt 2本文は変更せず、本文の後ろに置く。"""
+    lines = []
+    if attempt_record.get("status") == STATUS_PARSE_FAILED:
+        lines.append("- 前回の出力は所定のJSON形式として解釈できませんでした。")
+    for r in attempt_record.get("validation_reasons") or []:
+        lines.append(f"- {r}")
+    for ir in attempt_record.get("item_reasons") or []:
+        lines.append(f"- 「{ir['phrase']}」: " + " / ".join(ir["reasons"]))
+    if not lines:
+        return ""
+    return ("前回の選定結果のうち、次の点が機械検証で不適合でした。該当する語句を、条件を満たす別の語句に置き換えて選び直してください"
+            "(不適合でなかった語句は、そのまま使ってかまいません)。\n" + "\n".join(lines))
+
+
+def merge_notes(*notes) -> Optional[str]:
+    parts = [n for n in notes if n]
+    return "\n\n".join(parts) if parts else None
+
+
 def run_selection_gate(article_text: str, make_call_fn: Callable[[str], Callable], *, diagnostic_note: Optional[str] = None,
-                       max_attempts: int = MAX_ATTEMPTS, units: Optional[list] = None) -> dict:
-    """returns {"status", "items"(original_items形式), "attempts_detail", "model_id", "response_id", "shortfall", "user_message_sha256"}。
-    attempt失敗(技術/parse/検証)は同一messageで最大max_attempts回。内容品質を理由とした再選定はしない(hard requirementのみ)。"""
+                       max_attempts: int = MAX_ATTEMPTS, units: Optional[list] = None,
+                       sleep_fn: Optional[Callable[[float], None]] = None) -> dict:
+    """returns {"status", "items"(original_items形式), "attempts_detail", "model_id", "response_id", "shortfall",
+    "user_message_sha256", "messages"}。attempt失敗(技術/parse/検証)は最大max_attempts回。
+    OF-KPFT-P-07: 2回目以降は直前の機械診断noteを本文の後ろに後置して再選定する(Prompt 2本文は不変)。技術失敗の再試行前は待機する
+    (canonicalizationのsleep_fn(2)と同じ思想)。内容品質を理由とした再選定はしない(hard requirementのみ)。"""
     if units is None:
         import er030_key_phrase_db_hybrid_core_01 as core   # 遅延import
         units = core.build_sentence_units(article_text)
-    user_message = build_user_message(article_text, diagnostic_note)
-    assert prompt_prefix_intact(user_message), "Prompt 2が改変されている"
-    msg_sha = hashlib.sha256(user_message.encode("utf-8")).hexdigest()
-    attempts, last_status, last_model, last_resp = [], STATUS_TECHNICAL_FAILED, None, None
+    sleep_fn = sleep_fn if sleep_fn is not None else time.sleep
+    attempts, messages = [], []
+    last_status, last_model, last_resp = STATUS_TECHNICAL_FAILED, None, None
+    machine_note = None
     for attempt in range(1, max_attempts + 1):
+        user_message = build_user_message(article_text, merge_notes(diagnostic_note, machine_note))
+        assert prompt_prefix_intact(user_message), "Prompt 2が改変されている"
+        messages.append(user_message)
+        msg_sha = hashlib.sha256(user_message.encode("utf-8")).hexdigest()
         fn = make_call_fn(user_message)
         try:
             raw, model_id, response_id = fn()
         except FulltextSelectionError as e:
             if isinstance(e, ModelMismatchError):
-                attempts.append({"attempt": attempt, "status": STATUS_TECHNICAL_FAILED, "error": str(e), "raw_text": None})
+                attempts.append({"attempt": attempt, "status": STATUS_TECHNICAL_FAILED, "error": str(e), "raw_text": None,
+                                 "user_message_sha256": msg_sha})
                 last_status = STATUS_TECHNICAL_FAILED
+                if attempt < max_attempts:
+                    sleep_fn(2)
                 continue
             raise
         except Exception as e:   # 通信等の技術的失敗(retry対象)
-            attempts.append({"attempt": attempt, "status": STATUS_TECHNICAL_FAILED, "error": f"{type(e).__name__}: {e}", "raw_text": None})
+            attempts.append({"attempt": attempt, "status": STATUS_TECHNICAL_FAILED, "error": f"{type(e).__name__}: {e}", "raw_text": None,
+                             "user_message_sha256": msg_sha})
             last_status = STATUS_TECHNICAL_FAILED
+            if attempt < max_attempts:
+                sleep_fn(2)
             continue
         last_model, last_resp = model_id, response_id
         try:
             selected = parse_selection(raw)
         except ParseError as e:
-            attempts.append({"attempt": attempt, "status": STATUS_PARSE_FAILED, "error": str(e), "raw_text": raw,
-                             "model": model_id, "response_id": response_id})
+            rec = {"attempt": attempt, "status": STATUS_PARSE_FAILED, "error": str(e), "raw_text": raw,
+                   "model": model_id, "response_id": response_id, "user_message_sha256": msg_sha}
+            attempts.append(rec)
+            machine_note = build_machine_note(rec)
             last_status = STATUS_PARSE_FAILED
             continue
         v = validate_and_resolve(selected, units)
-        attempts.append({"attempt": attempt, "status": STATUS_PASS if v["ok"] else STATUS_INVALID, "validation_reasons": v["reasons"],
-                         "item_reasons": v["item_reasons"], "resolved": v["resolved"], "raw_text": raw, "model": model_id,
-                         "response_id": response_id})
+        rec = {"attempt": attempt, "status": STATUS_PASS if v["ok"] else STATUS_INVALID, "validation_reasons": v["reasons"],
+               "item_reasons": v["item_reasons"], "resolved": v["resolved"], "raw_text": raw, "model": model_id,
+               "response_id": response_id, "user_message_sha256": msg_sha}
+        attempts.append(rec)
         if v["ok"]:
             items = build_original_items(v["resolved"])
             return {"status": STATUS_PASS, "items": items, "attempts_detail": attempts, "model_id": model_id,
-                    "response_id": response_id, "shortfall": len(items) < KP_COUNT_MAX, "user_message_sha256": msg_sha}
+                    "response_id": response_id, "shortfall": len(items) < KP_COUNT_MAX, "user_message_sha256": msg_sha,
+                    "messages": messages}
+        machine_note = build_machine_note(rec)
         last_status = STATUS_INVALID
     return {"status": last_status, "items": None, "attempts_detail": attempts, "model_id": last_model, "response_id": last_resp,
-            "shortfall": None, "user_message_sha256": msg_sha}
+            "shortfall": None, "user_message_sha256": attempts[-1].get("user_message_sha256") if attempts else None,
+            "messages": messages}
 
 
 def run_fulltext_selection(article_text: str, out_dir: str, article_id: str, source_level: str, process: Optional[str] = None,
-                           diagnostic_note: Optional[str] = None, *, make_call_fn: Optional[Callable[[str], Callable]] = None) -> dict:
+                           diagnostic_note: Optional[str] = None, *, make_call_fn: Optional[Callable[[str], Callable]] = None,
+                           sleep_fn: Optional[Callable[[float], None]] = None) -> dict:
     """`sc.run_key_phrase_selection(..., kp_backend="fulltext_p2")`が委譲する入口(配線は次委任)。
     戻り値は旧`_run_key_phrase_selection_strategy_l`と同じキー構成(status/parsed/model_id/original_items/kp_backend_used)に
     加え、Zの外側retryが参照する`parsed={"items": [...]}`を持つ。成果物: keywords_selector_prompt.txt / keywords_runtime_metadata.json。
@@ -371,15 +439,21 @@ def run_fulltext_selection(article_text: str, out_dir: str, article_id: str, sou
     else:
         if process is not None and process not in ALLOWED_PROCESSES:
             raise FulltextSelectionError(f"processはB1_SUPPORT/A2_SUPPORTのみ(実際: {process!r})")
-    gate = run_selection_gate(article_text, make_call_fn, diagnostic_note=diagnostic_note)
-    user_message = build_user_message(article_text, diagnostic_note)
-    with open(f"{out_dir}/keywords_selector_prompt.txt", "w", encoding="utf-8") as f:
-        f.write(user_message)
+    gate = run_selection_gate(article_text, make_call_fn, diagnostic_note=diagnostic_note, sleep_fn=sleep_fn)
+    for n, msg in enumerate(gate["messages"], start=1):
+        with open(f"{out_dir}/keywords_selector_prompt.txt" if n == 1 else f"{out_dir}/keywords_selector_prompt_attempt{n}.txt",
+                  "w", encoding="utf-8") as f:
+            f.write(msg)
+    # OF-KPFT-P-10: attemptごとの生出力を監査用に保存する(metadata本体はraw_textを含めない)。
+    with open(f"{out_dir}/keywords_selector_raw_attempts.json", "w", encoding="utf-8") as f:
+        json.dump([{"attempt": a["attempt"], "status": a["status"], "raw_text": a.get("raw_text"), "error": a.get("error")}
+                   for a in gate["attempts_detail"]], f, ensure_ascii=False, indent=2)
     meta = {
         "article_id": article_id, "source_level": source_level, "kp_backend": BACKEND_ID, "prompt_id": "kp_prompt_2",
         "prompt_sha256": PROMPT_2_SHA256, "user_message_sha256": gate["user_message_sha256"], "record_status": "PRODUCTION",
         "model_requested": SELECTION_MODEL_ID, "model_id": gate["model_id"], "response_id": gate["response_id"],
         "final_status": gate["status"], "shortfall": gate["shortfall"], "kp_count_max": KP_COUNT_MAX,
+        "kp_backend_used": BACKEND_ID,
         "attempts": len(gate["attempts_detail"]), "has_diagnostic_note": bool(diagnostic_note),
         "attempts_detail": [{k: v for k, v in a.items() if k != "raw_text"} for a in gate["attempts_detail"]],
     }
@@ -393,35 +467,72 @@ def run_fulltext_selection(article_text: str, out_dir: str, article_id: str, sou
 
 
 # ============================================================
-# 原形化(語形の基本形化)の決定論validator【プロトタイプ・未配線】(設計書§4-2、Opus確認事項Q1)
+# 原形化(語形の基本形化)の決定論validator(設計書§4-2、Opus条件A Q1/OF-KPFT-P-02/P-04)
 # 背景: 旧経路は「選定Prompt」が基本形への整形を担い(display_phrase=基本形)、canonicalizationのRule7は
 #   「display_phrase一致 / source_span内の連続部分文字列 / 人称一般化」以外を拒否する。全文選定ではdisplay_phrase=本文の
 #   表層形(pushed prices up)になるため、基本形化(push prices up)は現行Rule7で拒否される。
 # 方式: 人称一般化(`kc._is_valid_person_generalization`が閉じた語彙表による1対1トークン置換のみ許す)と同じ思想で、
-#   「活用形→基本形の1対1トークン置換(語数不変)」だけを許す。語の追加・削除・別語への置換(raw beans->raw materials等)は許さない。
-# 配線時はcanonicalizationのvalidator(`validate_canonicalization_item`)へ、fulltext由来itemに限って(`fulltext_source_ref`)
-# 追加判定として組み込む(A/B/Cの旧経路は無変更)。
+#   「display_phraseの連続したトークン範囲(語数=key_phraseの語数)」に対する1対1トークン置換だけを許す。
+#   語の追加・削除・並べ替え・別語への置換(raw beans->raw materials等)は許さない。
+# 誤受理防止(OF-KPFT-P-04): (1)動詞の活用形変換は、key_phrase内の先頭トークンかtoの直後に限り、かつ直後が限定詞/代名詞/不変化詞/前置詞
+#   (または句末が不変化詞)の句動詞・他動詞句に限る(heated debate->heat debate等の形容詞化分詞を通さない)。過去形専用の不規則形
+#   (gave/took等)は曖昧さが無いため直後条件を課さない。(2)複数->単数は句末トークンに限り、閉じた除外表(news/goods/means/sales等)を拒否。
+#   (3)is/are/was/were/been->be、has/had->have、does/did->doは不規則表で扱う。
+# 範囲(開示): 旧経路の選定Promptが担っていた「語順の整理」(took off players->take a player off)は含まない(安全側への縮小)。
+#   V+名詞(raised concerns等)は形容詞/名詞修飾との区別がつかないため基本形化せず、表層形のまま(=Rule7の無変更)とする。
 # ============================================================
-_IRREGULAR_TO_BASE = {   # 閉じた不規則活用表(過去形/過去分詞/三単現以外)。拡張はここだけで行う
-    "gave": "give", "given": "give", "took": "take", "taken": "take", "went": "go", "gone": "go", "came": "come",
-    "made": "make", "got": "get", "gotten": "get", "ran": "run", "saw": "see", "seen": "see", "said": "say",
-    "kept": "keep", "held": "hold", "brought": "bring", "thought": "think", "began": "begin", "begun": "begin",
-    "broke": "break", "broken": "break", "fell": "fall", "fallen": "fall", "felt": "feel", "found": "find",
-    "left": "leave", "lost": "lose", "met": "meet", "paid": "pay", "sold": "sell", "told": "tell", "stood": "stand",
-    "understood": "understand", "wrote": "write", "written": "write", "drew": "draw", "drawn": "draw",
-    "grew": "grow", "grown": "grow", "knew": "know", "known": "know", "led": "lead", "sent": "send", "spent": "spend",
-    "built": "build", "caught": "catch", "chose": "choose", "chosen": "choose", "rose": "rise", "risen": "rise",
-    "hit": "hit", "cut": "cut", "put": "put", "set": "set", "let": "let", "men": "man", "women": "woman",
-    "people": "person", "children": "child",
+_PAST_ONLY_IRREGULAR = {   # 過去形専用(形容詞/名詞の用法が実質無い)。位置制約のみ・直後条件なし
+    "gave": "give", "took": "take", "went": "go", "came": "come", "made": "make", "got": "get", "ran": "run",
+    "kept": "keep", "brought": "bring", "thought": "think", "began": "begin", "broke": "break", "fell": "fall",
+    "paid": "pay", "told": "tell", "stood": "stand", "understood": "understand", "wrote": "write", "drew": "draw",
+    "grew": "grow", "knew": "know", "sent": "send", "caught": "catch", "chose": "choose", "rose": "rise",
+    "said": "say", "met": "meet", "sold": "sell", "led": "lead",
 }
+_AMBIGUOUS_IRREGULAR = {   # 過去分詞/形容詞・名詞用法がありうる不規則形(直後条件を課す)
+    "given": "give", "taken": "take", "gone": "go", "gotten": "get", "seen": "see", "saw": "see", "held": "hold",
+    "begun": "begin", "broken": "break", "fallen": "fall", "felt": "feel", "found": "find", "left": "leave",
+    "lost": "lose", "spent": "spend", "written": "write", "drawn": "draw", "grown": "grow", "known": "know",
+    "built": "build", "chosen": "choose", "risen": "rise",
+}
+_FUNCTION_VERB_FORMS = {   # be/have/do系(語彙的な曖昧さが無い)。位置制約のみ
+    "is": "be", "are": "be", "was": "be", "were": "be", "been": "be", "being": "be", "am": "be",
+    "has": "have", "had": "have", "having": "have", "does": "do", "did": "do", "done": "do", "doing": "do",
+}
+_IRREGULAR_PLURAL = {"men": "man", "women": "woman", "children": "child", "feet": "foot", "teeth": "tooth", "mice": "mouse"}
+_PLURAL_EXCLUDE = frozenset({   # 単数化すると意味が変わる/単数形が別義の語(閉じた除外表。OF-KPFT-P-04)
+    "news", "goods", "means", "arms", "glasses", "savings", "earnings", "odds", "terms", "clothes", "series", "species",
+    "headquarters", "belongings", "sales", "customs", "premises", "outskirts", "remains", "thanks", "wages", "riches",
+    "politics", "economics", "physics", "mathematics", "athletics", "statistics", "ethics", "dynamics", "electronics",
+    "jeans", "pants", "trousers", "shorts", "scissors", "surroundings", "stairs", "proceeds", "feelings", "people",
+    "bus", "gas", "lens", "focus", "status", "bonus", "campus", "virus", "census", "chaos", "access", "success", "business",
+    "progress", "process", "class", "mass", "press", "stress", "loss", "boss", "glass", "grass", "pass", "dress",
+})
+_PARTICIPIAL_ADJ_EXCLUDE = frozenset({   # 形容詞化した分詞(動詞の基本形化の対象にしない)
+    "heated", "mixed", "limited", "advanced", "skilled", "experienced", "tired", "aged", "married", "damaged", "detailed",
+    "seasoned", "charged", "wounded", "closed", "united", "related", "involved", "interested", "excited", "worried",
+    "concerned", "surprised", "talented", "gifted", "determined", "dedicated", "complicated", "sophisticated",
+    "established", "estimated", "expected", "unexpected", "unlimited", "committed", "retired", "unmarked", "named",
+    "rising", "growing", "leading", "living", "working", "missing", "existing", "aging", "ongoing", "lasting",
+    "surprising", "mounting", "striking", "booming", "emerging", "declining", "increasing", "decreasing", "remaining",
+    "challenging", "interesting", "exciting", "boring", "amazing", "shocking", "puzzling", "pressing", "binding",
+    "outgoing", "upcoming", "incoming", "following", "preceding", "opening", "closing", "building", "meeting",
+    "setting", "spending", "housing", "banking", "training", "marketing", "shipping", "sitting", "standing",
+})
+_GUARD_DET = frozenset({
+    "a", "an", "the", "some", "any", "this", "that", "these", "those", "my", "your", "his", "her", "its", "our", "their",
+    "one's", "someone's", "somebody's", "one", "someone", "somebody", "oneself", "it", "them", "him", "me", "us", "you",
+})
+_GUARD_PARTICLE = frozenset({
+    "up", "down", "off", "out", "over", "back", "away", "in", "on", "along", "through", "by", "apart", "aside",
+    "together", "forward", "around", "about", "across", "after", "ahead", "into", "onto", "for", "with", "at", "to",
+    "from", "of", "under", "behind", "past", "against", "between", "toward", "towards", "upon", "without", "within",
+})
 _TOKEN_RE = re.compile(r"[A-Za-z0-9]+(?:['’\-][A-Za-z0-9]+)*")
 
 
-def _base_candidates(w: str) -> set:
-    w = w.lower()
+def _verb_base_candidates(w: str) -> set:
+    """regular活用(-s/-es/-ies/-ed/-ied/-ing)の基本形候補。w=小文字。irregularは別表。"""
     c = set()
-    if w in _IRREGULAR_TO_BASE:
-        c.add(_IRREGULAR_TO_BASE[w])
     if len(w) > 3 and w.endswith("ies"):
         c.add(w[:-3] + "y")
     if len(w) > 3 and w.endswith("es"):
@@ -441,24 +552,94 @@ def _base_candidates(w: str) -> set:
     return c
 
 
-def is_valid_inflection_normalization(key_phrase: str, display_phrase: str) -> bool:
-    """key_phraseがdisplay_phraseの『活用形->基本形(動詞の原形・名詞の単数等)』の1対1トークン置換のみで得られるか。
-    語数不変・変化トークンが1つ以上・各変化トークンが基本形候補に一致すること。人称一般化との併用は
-    人称代名詞->一般形(closed table)も同じ1対1置換として許す。"""
+def _plural_base_candidates(w: str) -> set:
+    if w in _IRREGULAR_PLURAL:
+        return {_IRREGULAR_PLURAL[w]}
+    c = set()
+    if len(w) > 3 and w.endswith("ies"):
+        c.add(w[:-3] + "y")
+    if len(w) > 4 and w.endswith(("ches", "shes", "sses", "xes", "zes")):
+        c.add(w[:-2])
+    if len(w) > 3 and w.endswith("s") and not w.endswith(("ss", "us", "is")):
+        c.add(w[:-1])
+    c.discard(w)
+    return c
+
+
+def _guard_ok(key_tokens: list, idx: int) -> bool:
+    """動詞活用の変換を許す文脈: 直後が限定詞/代名詞/不変化詞/前置詞、または句末が不変化詞(句動詞: pushed prices up)。"""
+    nxt = key_tokens[idx + 1].lower() if idx + 1 < len(key_tokens) else None
+    if nxt is not None and (nxt in _GUARD_DET or nxt in _GUARD_PARTICLE):
+        return True
+    return len(key_tokens) > idx + 1 and key_tokens[-1].lower() in _GUARD_PARTICLE
+
+
+def _token_pair_ok(kt: str, dt: str, idx: int, key_tokens: list) -> bool:
+    """key側トークンkt(idx番目)が、display側トークンdtからの許可された1対1置換か。"""
+    kl, dl = kt.lower(), dt.lower()
+    if kl == dl:
+        return True
     import er003_key_words_canonicalization as kc   # 閉じた人称表を再利用(再実装しない)
-    k = _TOKEN_RE.findall(unicodedata.normalize("NFKC", key_phrase or "").replace("’", "'"))
-    d = _TOKEN_RE.findall(unicodedata.normalize("NFKC", display_phrase or "").replace("’", "'"))
-    if not k or len(k) != len(d):
+    if kl in (kc._PERSON_DEPENDENT_TO_GENERIC.get(dl) or ()):
+        return True
+    verb_pos = idx == 0 or key_tokens[idx - 1].lower() == "to"
+    if verb_pos:
+        if dl in _FUNCTION_VERB_FORMS and kl == _FUNCTION_VERB_FORMS[dl]:
+            return True
+        if dl in _PAST_ONLY_IRREGULAR and kl == _PAST_ONLY_IRREGULAR[dl]:
+            return True
+        if dl in _AMBIGUOUS_IRREGULAR and kl == _AMBIGUOUS_IRREGULAR[dl] and _guard_ok(key_tokens, idx):
+            return True
+        if (dl not in _IRREGULAR_PLURAL and dl not in _PARTICIPIAL_ADJ_EXCLUDE and dl not in _PLURAL_EXCLUDE
+                and kl in _verb_base_candidates(dl) and len(key_tokens) >= 2 and _guard_ok(key_tokens, idx)):
+            return True
+    if idx == len(key_tokens) - 1 and dl not in _PLURAL_EXCLUDE and kl in _plural_base_candidates(dl):
+        return True
+    return False
+
+
+def is_valid_inflection_normalization(key_phrase: str, display_phrase: str) -> bool:
+    """key_phraseがdisplay_phrase内の**連続したトークン範囲**(語数=key_phraseの語数)の『活用形->基本形(動詞の原形・名詞の単数)』
+    および/または人称一般化の1対1トークン置換だけで得られるか(語数不変・変化トークン1つ以上・語の追加/削除/並べ替えなし)。
+    例: pushed prices up->push prices up / gave back some gains->give back / pumps its fist->pump one's fist。
+    拒否: mixed feelings->mix feelings / heated debate->heat debate / news->new / goods->good / means->mean /
+    raw beans->raw materials(別語)。"""
+    norm = lambda s: _TOKEN_RE.findall(unicodedata.normalize("NFKC", s or "").replace("’", "'"))   # noqa: E731
+    k, d = norm(key_phrase), norm(display_phrase)
+    if not k or len(k) > len(d):
         return False
-    changed = False
-    for kt, dt in zip(k, d):
-        kl, dl = kt.lower(), dt.lower()
-        if kl == dl:
-            continue
-        changed = True
-        if kl in _base_candidates(dl):
-            continue
-        if kl in (kc._PERSON_DEPENDENT_TO_GENERIC.get(dl) or ()):
-            continue
-        return False
-    return changed
+    for start in range(0, len(d) - len(k) + 1):
+        window = d[start:start + len(k)]
+        if all(_token_pair_ok(kt, dt, i, k) for i, (kt, dt) in enumerate(zip(k, window))) \
+                and any(kt.lower() != dt.lower() for kt, dt in zip(k, window)):
+            return True
+    return False
+
+
+# ============================================================
+# P-13(Fable決定、旧selection template:15 = CURRENT_SPEC:470-472「(2) 数値placeholder型の回避」の維持)
+# Prompt 2は逐語固定で変更しない。選定後の決定論precheckで、数値・％・placeholder記号を含む、または数値を補わないと成立しない形
+# のspanを拒否し、retry noteに理由を載せる(既存placeholder gate[音声化禁止記号検出]は現状維持)。
+# ============================================================
+_PLACEHOLDER_CHARS = "～〜~…"
+_NUMBER_WORDS = frozenset({
+    "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "twenty", "thirty",
+    "forty", "fifty", "sixty", "seventy", "eighty", "ninety", "hundred", "thousand", "million", "billion", "half",
+    "quarter", "double", "triple",
+})
+
+
+def numeric_placeholder_reasons(phrase: str) -> list:
+    """数値placeholder型の回避(CURRENT_SPEC:470-472)の決定論precheck。理由のlist(空=問題なし)。"""
+    reasons = []
+    p = phrase or ""
+    if re.search(r"[0-9０-９]", p):
+        reasons.append("数字を含む(数値placeholder型の回避: 数値を補わないと成立しない形/音声化で不安定になる形は選ばない)")
+    if "%" in p or "％" in p:
+        reasons.append("％記号を含む(数値placeholder型の回避)")
+    if any(ch in p for ch in _PLACEHOLDER_CHARS) or "..." in p or "___" in p:
+        reasons.append("placeholder記号(～,〜,…等)を含む")
+    toks = [t.lower() for t in _TOKEN_RE.findall(p)]
+    if ("percent" in toks or ("per" in toks and "cent" in toks)) and not any(t in _NUMBER_WORDS for t in toks):
+        reasons.append("数値を補わないと成立しない形(percentのみで数値語が無い。数値placeholder型の回避)")
+    return reasons

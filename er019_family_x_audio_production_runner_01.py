@@ -374,12 +374,16 @@ def _kp_already_generated(kp_dir: str) -> list[str]:
     for name in ("keywords_runtime_metadata.json", "keywords_canonicalized.json", "key_phrases_db_hybrid"):
         if os.path.exists(f"{kp_dir}/{name}"):
             found.append(f"{kp_dir}/{name}")
+    # KPFT 委任_02: 全文選定の外側retryが最終失敗時に退避した旧attemptの成果物(keywords_canonicalized.STALE_attempt*.json)も
+    # 『生成済み』として数える(KP再生成は1レベル1回。本名のファイルが無くても引き直さない)。
+    import glob as _glob
+    found += sorted(_glob.glob(f"{kp_dir}/keywords_canonicalized.STALE_attempt*.json"))
     return found
 
 
 def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
                         scaffold_only: str | None = None, budget_check=None,
-                        kp_backend: str = "db_hybrid") -> dict:
+                        kp_backend: str = "fulltext_p2") -> dict:
     """既存sc.run_key_phrases()(選定+canonicalization+redundancy QA)を
     Family X本文へそのまま適用する(記事冒頭Key Phrasesは既存Family A
     既定構成をそのまま再利用する、本委任文の前提どおり)。
@@ -439,7 +443,7 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
         article_id = f"FAMILY_X_AUDIO_{os.path.basename(out_dir)}_{level}"
         kp_process = "B1_SUPPORT" if level == "b1b" else "A2_SUPPORT"
         kp = sc.run_key_phrases(article_text, kp_dir, article_id, level, process=kp_process,
-                                 kp_backend=kp_backend)
+                                 kp_backend=kp_backend, stop_run_dir=out_dir)
         kp_status = (kp["canonicalization"] or {}).get("status") if kp["canonicalization"] else kp["selection"]["status"]
         print(f"[FAMILY-X-AUDIO-SCAFFOLD] {level}: key phrase status={kp_status}")
         # fail-closed(KPMP-03 委任_03): PASS系以外はstageを止める(Zと対称)。ただしsummary(kp_run_status/gloss HR event等、
@@ -1080,11 +1084,12 @@ def _resolve_kp_explanations_text(kp_items: list, cached: dict | None) -> dict:
     (display_phrase)の並びが前回runと完全一致する場合のみreuseし、1件
     でも変化していれば5件まとめて再生成する(部分reuseはしない、5件
     バッチ生成という性質上)。"""
-    signature = [it["display_phrase"] for it in kp_items]
+    # KPFT 委任_02(OF-KPFT-P-03): 全文選定itemの解説は音声・試聴ページと同じ形(used_form)に対して生成する。旧artifact/A/B/Cはdisplay_phrase。
+    signature = [kp_explanation_gen.explanation_phrase(it) for it in kp_items]
     # OF-KGCPW-06: glossは解説LLMの入力。gloss_alignment_status付きitemが1件でもあれば、gloss_signature
     # (display_phrase/key_phrase/glossの並び)の一致を必須にする(欠落も不一致=再生成)。status無しartifact
     # (ON化前/対象0件)は従来署名で互換。
-    gloss_signature = [[it["display_phrase"], it.get("key_phrase"), it.get("japanese_gloss", "")] for it in kp_items]
+    gloss_signature = [[kp_explanation_gen.explanation_phrase(it), it.get("key_phrase"), it.get("japanese_gloss", "")] for it in kp_items]
     _has_status = any(it.get("gloss_alignment_status") for it in kp_items)
     cached_bundle = (cached or {}).get("key_phrase_explanations_text")
     if (cached_bundle and cached_bundle.get("phrases_signature") == signature
@@ -1092,7 +1097,7 @@ def _resolve_kp_explanations_text(kp_items: list, cached: dict | None) -> dict:
         reused = dict(cached_bundle)
         reused["reused_from_previous_run"] = True
         return reused
-    input_items = [{"rank": it["rank"], "display_phrase": it["display_phrase"],
+    input_items = [{"rank": it["rank"], "display_phrase": kp_explanation_gen.explanation_phrase(it),
                     "source_sentence": it.get("source_sentence", ""),
                     "japanese_gloss": it.get("japanese_gloss", "")} for it in kp_items]
     result = kp_explanation_gen.generate_kp_explanations(input_items)

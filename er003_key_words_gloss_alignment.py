@@ -250,11 +250,23 @@ def _person_mismatch_reason(item: dict) -> Optional[str]:
     return person_reference_mismatch(item.get("key_phrase"), item.get("japanese_gloss"))
 
 
+def is_fulltext_gloss_missing(item: dict) -> bool:
+    """KPFT 委任_02(Q6): 全文選定(fulltext_p2)由来itemでjapanese_glossが未生成(Prompt 2は意味を出力しない)。
+    `fulltext_source_ref`マーカーはmerge時にcanonicalizationが引き継ぐ(OF-KPFT-P-01)。A/B/Cのitemは該当しない。"""
+    return bool(isinstance(item, dict) and item.get("fulltext_source_ref") and not (item.get("japanese_gloss") or "").strip())
+
+
+def select_fulltext_gloss_missing(items: list) -> list:
+    return [it for it in items if is_fulltext_gloss_missing(it)]
+
+
 def select_generation_targets(merged_items: list) -> list:
-    """(a)生成用: 従来の再整合対象 + 人称一般化item + 決定論checkで不整合のitem。消費側(select_consumer_unevaluated)とは別関数。"""
+    """(a)生成用: 従来の再整合対象 + 人称一般化item + 決定論checkで不整合のitem + 全文選定でgloss未生成のitem。
+    消費側(select_consumer_unevaluated)とは別関数。"""
     out = []
     for it in merged_items:
-        if (select_alignment_targets([it]) or is_person_generalized(it) or _person_mismatch_reason(it)):
+        if (select_alignment_targets([it]) or is_person_generalized(it) or _person_mismatch_reason(it)
+                or is_fulltext_gloss_missing(it)):
             out.append(it)
     return out
 
@@ -272,6 +284,9 @@ def select_consumer_unevaluated(items: list) -> list:
     out = [it for it in select_alignment_targets(items) if not it.get("gloss_alignment_status")]
     seen = {id(it) for it in out}
     out += [it for it in select_person_mismatches(items) if id(it) not in seen]
+    # KPFT 委任_02(Q6/OF-KPFT-P-01): 全文選定でgloss未生成のitemは、TTS/組立へ進めない(fail-closed。gloss再整合が生成を担う)。
+    seen = {id(it) for it in out}
+    out += [it for it in select_fulltext_gloss_missing(items) if id(it) not in seen]
     return out
 
 
@@ -297,6 +312,15 @@ PERSON_CONSTRAINT_TEXT = (
     "(型の例: catch someone's attention -> 『人の注意を引く』であって『あなたの注意を引く』ではない。)\n\n")
 
 
+NEW_GENERATION_TEXT = (
+    "【新規生成の規則(current_japanese_glossがnull[未生成]の項目に適用。全文選定で選ばれた表現には、まだ日本語グロスがありません)】\n"
+    "- current_japanese_glossがnullの項目は、既存グロスの修正ではなく新規生成です。current_gloss_consistentは必ずfalseにし、"
+    "japanese_glossには最終key_phrase全体の意味に過不足なく一致する日本語グロスを新しく書いてください(上記の指示2の"
+    "『そのまま返す』は適用されません)。\n"
+    "- source_sentenceは、辞書に複数の語義がある表現で、そのうちどの語義かを選ぶためだけに使ってください"
+    "(文中の固有名詞・文脈の追加はしないでください)。\n\n")
+
+
 class GlossRulesExtractionError(RuntimeError):
     pass
 
@@ -304,7 +328,10 @@ class GlossRulesExtractionError(RuntimeError):
 _RULES_CACHE: dict = {}
 
 
-def load_approved_gloss_rules(path: str = APPROVED_GLOSS_RULES_TEMPLATE_PATH) -> str:
+NUMERIC_PLACEHOLDER_RULE_MARKER = "数値を補わないと意味が成立しない句"
+
+
+def load_approved_gloss_rules(path: str = APPROVED_GLOSS_RULES_TEMPLATE_PATH, include_numeric_rule: bool = False) -> str:
     """承認済み選定Promptの日本語グロス規則を実行時に抽出する(複製・改変しない)。
     対象: (1)『日本語グロス』で始まる段落すべて(3段落以上) + (2)『短く自然な日本語グロス』を含む選定指示の段落
     (OF-229: テンプレート17行『選ぶ表現は必ず本文中の実表現(source_span)に対応させ、短く自然な日本語グロスを付けて…』)。
@@ -318,6 +345,14 @@ def load_approved_gloss_rules(path: str = APPROVED_GLOSS_RULES_TEMPLATE_PATH) ->
         raise GlossRulesExtractionError(f"承認済みgloss規則の抽出に失敗(日本語グロス段落数不足: {len(gloss)})")
     if len(selection) != 1:
         raise GlossRulesExtractionError(f"承認済み選定指示『短く自然な日本語グロス』段落の抽出に失敗(件数: {len(selection)})")
+    if include_numeric_rule:
+        # KPFT 委任_02(OF-KPFT-P-13、Fable決定): 旧template:15『数値を補わないと意味が成立しない句・日本語グロスは選ばない』は
+        # CURRENT_SPEC:470-472『(2) 数値placeholder型の回避』=承認済みProduction品質条件。Prompt 2は逐語固定のため、
+        # 全文選定itemのgloss生成規則へ含めて維持する(A/B/Cのgloss規則=従来の抽出は無変更)。
+        numeric = [p for p in paras if NUMERIC_PLACEHOLDER_RULE_MARKER in p]
+        if len(numeric) != 1:
+            raise GlossRulesExtractionError(f"承認済み『数値placeholder型の回避』段落の抽出に失敗(件数: {len(numeric)})")
+        return "\n\n".join(selection + gloss + numeric)
     return "\n\n".join(selection + gloss)
 
 
@@ -334,7 +369,9 @@ def preflight(enabled: Optional[bool] = None) -> Optional[dict]:
         return None
     if "v" not in _RULES_CACHE:
         rules = load_approved_gloss_rules()
-        _RULES_CACHE["v"] = {"rules": rules, "sha256": rules_sha256(rules)}
+        rules_ft = load_approved_gloss_rules(include_numeric_rule=True)   # 抽出失敗は記事内容に依存しない設定不備=ここで即時停止
+        _RULES_CACHE["v"] = {"rules": rules, "sha256": rules_sha256(rules),
+                             "rules_fulltext": rules_ft, "sha256_fulltext": rules_sha256(rules_ft)}
     return _RULES_CACHE["v"]
 
 
@@ -404,7 +441,8 @@ HR_REPORT_MD = "GLOSS_ALIGNMENT_HUMAN_REVIEW_01.md"
 HR_REPORT_VERSION = "ER-003-KP-GLOSS-ALIGN-HR-01"
 HR_REASON_CODE = "GLOSS_ALIGNMENT_HUMAN_REVIEW_REQUIRED"
 HR_REFERENCE_CAUTION = "KPを短くすると意味が失われる、人間判断でのみ採用"
-UNEVALUATED_REASON = ("ON化前・未評価のKP成果物(gloss再整合の対象itemにgloss_alignment_statusが無い)。"
+UNEVALUATED_REASON = ("ON化前・未評価のKP成果物(gloss再整合の対象itemにgloss_alignment_statusが無い、または全文選定itemのgloss未生成"
+                      "[kill switch EIGO_KP_GLOSS_ALIGNMENT=0のままだとglossが作られないため、X/Zでは解除して再生成])。"
                       "KPを再生成してください(Z: --regenerate-stage kp_<lv> / X: KP成果物削除後に再生成)")
 
 
@@ -535,6 +573,7 @@ def build_user_message_corrected(targets: list, article_text: str, rules: Option
                                               "reasons": list(prior[it["rank"]].get("reasons") or [])}
         items.append(d)
     person_block = PERSON_CONSTRAINT_TEXT if any_person else ""
+    new_gen_block = NEW_GENERATION_TEXT if any(is_fulltext_gloss_missing(it) for it in targets) else ""
     prior_block = ("previous_attempt_rejected(ある項目のみ)は、前回の応答が検証で却下された理由です。同じ誤りを繰り返さないでください。\n\n"
                    if prior else "")
     return (
@@ -563,7 +602,7 @@ def build_user_message_corrected(targets: list, article_text: str, rules: Option
         "- key_phrase「fall into」にcurrent「～に落ちる」: 意味は表れているので一致です(「～に陥る」へ書き換えません)。\n\n"
         "key_phrase単体で他の文脈でも再利用できる自然な訳にし、本文固有の固有名詞・文脈の追加はしないでください。"
         "key_phrase全体の意味を反映できている場合のみqa_reflects_all_key_phrase_wordsをPASSにしてください。\n\n"
-        + person_block + prior_block +
+        + person_block + new_gen_block + prior_block +
         "【日本語グロスの規則(承認済み選定Promptと同一)】\n" + rules + "\n\n"
         "【対象項目】\n" + json.dumps(items, ensure_ascii=False, indent=2) + "\n\n【記事本文(参考)】\n" + article_text
     )
@@ -607,11 +646,13 @@ def validate_item_corrected(resp: Any, target: dict, mapping_gate: bool = False)
             [{**f, "rank": rank} for f in safety.detect_prohibited_symbols(kc.convert_display_gloss_to_tts_text(g), language="ja")]):
         reasons.append("音声化禁止記号")
     same = _norm_tilde_space(g) == _norm_tilde_space(cur)
-    if consistent is True and not same:
-        reasons.append("current_gloss_consistent=真なのにcurrentと異なるglossを返した(矛盾)")
-    if consistent is False and same:
-        reasons.append("current_gloss_consistent=偽なのにcurrentと同じglossを返した(矛盾)")
-    adopt = cur if (consistent is True and same) else g
+    new_generation = is_fulltext_gloss_missing(target)   # KPFT 委任_02: current無し=新規生成。矛盾判定は適用しない(他の検査は全て適用)
+    if not new_generation:
+        if consistent is True and not same:
+            reasons.append("current_gloss_consistent=真なのにcurrentと異なるglossを返した(矛盾)")
+        if consistent is False and same:
+            reasons.append("current_gloss_consistent=偽なのにcurrentと同じglossを返した(矛盾)")
+    adopt = cur if (consistent is True and same and not new_generation) else g
     out["adopt_gloss"] = adopt
     # ITEM1(F1-3): 決定論の人称語突合は提案値ではなく採用値adopt_glossに掛ける(current維持でも素通りさせない)。
     pm = person_reference_mismatch(target.get("key_phrase"), adopt)
@@ -767,7 +808,11 @@ def align_glosses(merged: dict, article_text: str, make_factory_for: Callable[[s
     if not targets:
         return {"merged": merged, "status": "NO_TARGETS", "targets": [], "attempts": []}
     pf = preflight(True)
-    gate = run_alignment_gate_corrected(make_factory_for, targets, article_text, pf["rules"], mapping_gate=mapping_gate)
+    # P-13: 全文選定itemが対象に含まれる場合のみ、数値placeholder型の回避規則を含むgloss規則を使う(A/B/Cの規則・sha無変更)。
+    use_ft_rules = any(t.get("fulltext_source_ref") for t in targets)
+    rules_text = pf["rules_fulltext"] if use_ft_rules else pf["rules"]
+    rules_sha = pf["sha256_fulltext"] if use_ft_rules else pf["sha256"]
+    gate = run_alignment_gate_corrected(make_factory_for, targets, article_text, rules_text, mapping_gate=mapping_gate)
     new_merged = apply_alignment_corrected(merged, targets, gate)
     n_unres = len(gate["unresolved_ranks"])
     status = "ALIGN_PASS" if n_unres == 0 else ("ALIGN_FAILED_HUMAN_REVIEW_REQUIRED" if n_unres == len(targets)
@@ -783,12 +828,12 @@ def align_glosses(merged: dict, article_text: str, make_factory_for: Callable[[s
             json.dump({"article_id": article_id, "version": GLOSS_ALIGNMENT_VERSION,
                        "final_status": status, "targets": [t["rank"] for t in targets],
                        "unresolved_ranks": gate["unresolved_ranks"], "mapping_gate": mapping_gate,
-                       "rules_sha256": pf["sha256"], "cost_jpy": total_cost,
+                       "rules_sha256": rules_sha, "cost_jpy": total_cost,
                        "attempts_detail": [{k: v for k, v in a.items() if k != "parsed"} for a in gate["attempts"]],
                        "item_log": {str(k): v for k, v in gate["item_log"].items()}}, f, ensure_ascii=False, indent=2)
     return {"merged": new_merged, "status": status, "targets": [t["rank"] for t in targets],
             "attempts": gate["attempts"], "item_log": gate["item_log"], "unresolved_ranks": gate["unresolved_ranks"],
-            "cost_jpy": total_cost, "fallback_event": None, "rules_sha256": pf["sha256"],
+            "cost_jpy": total_cost, "fallback_event": None, "rules_sha256": rules_sha,
             "model_id": next((a.get("model") for a in gate["attempts"] if a.get("model")), None)}
 
 
@@ -807,13 +852,14 @@ def collect_unevaluated(kp_items: Any) -> list:
     """OF-KGCPW-08(LLM 0・決定論): 再整合の対象(select_alignment_targets)なのにgloss_alignment_statusが無いitem
     =ON化前・未評価のKP成果物。加えて(ITEM1)決定論の人称語突合で不整合のitem(statusにかかわらず。HUMAN_RESOLVEDは除く)。kill switch OFF時は評価対象外のため[]。対象0件の成果物は通過([])。
     kp_itemsはitemのlistまたはartifact dict(items)。"""
-    if not flag_enabled():
-        return []
     if isinstance(kp_items, dict):
         kp_items = kp_items.get("items")
     if not isinstance(kp_items, list):
         return []
     items = [it for it in kp_items if isinstance(it, dict)]
+    if not flag_enabled():
+        # KPFT 委任_02: kill switch OFFでもgloss未生成の全文選定itemは通さない(X/Zでは実質『停止スイッチ』。SSOTに明記)。
+        return select_fulltext_gloss_missing(items)
     return select_consumer_unevaluated(items)   # ITEM1(F1-1): 消費側の定義(従来 ∪ 人称不整合)。人称一般化item全件は入れない
 
 
@@ -843,7 +889,9 @@ def build_hr_entries(article_id: str, level: str, unresolved_items: list) -> lis
         entries.append({
             "article": article_id, "level": level, "rank": it.get("rank"),
             "key_phrase_en": it.get("key_phrase"),
-            "current_japanese_gloss": info.get("original_japanese_gloss") or it.get("japanese_gloss"),
+            # KPFT 委任_02: 全文選定でgloss未生成のitemが再整合に失敗した場合、現在glossは空。HR報告書の必須項目検証(非空)でfail-closed例外に
+            # ならないよう、空であることを明示する文言を入れる(A/B/Cは従来どおり元のgloss)。
+            "current_japanese_gloss": info.get("original_japanese_gloss") or it.get("japanese_gloss") or "(未生成: 全文選定のためgloss無し)",
             "added_content_words": required,
             "failure_reasons": reasons,
             "attempts": attempts,

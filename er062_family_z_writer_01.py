@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import contextlib
 import datetime as dt
+import functools
 import json
 import os
 import re
@@ -1013,9 +1014,10 @@ def run_support_adv(client, parts: dict, full_text: str, *, en_support_fn=None, 
 
 
 def run_kp_stage(level: str, text: str, out_dir: str, slug: str, *, kp_fn=None) -> dict:
-    """Key Phrases: Strategy Lで両レベル別々に再選定(Std/Advで本文が異なる)。実呼出はE2Eで実施。"""
-    import er003_v1_n3_01_scaffold_generate as scaffold
-    fn = kp_fn or scaffold.run_key_phrases
+    """Key Phrases: 両レベル別々に再選定(Std/Advで本文が異なる)。実呼出はE2Eで実施。
+    KPFT 委任_02(2026-10-22、ユーザーAPPROVED_FOR_PRODUCTION): 既定は全文選定(Prompt 2・Luna・最大3件。`kp_backend="fulltext_p2"`)。
+    旧Strategy L(5件・4+1)はZでは使わない(A/B/Cは別経路)。kp_fn注入(test/hook)は従来どおり。"""
+    fn = kp_fn or run_kp_with_outer_retry_fulltext
     src_level, process = ("A2", "A2_SUPPORT") if level == "a2" else ("B1", "B1_SUPPORT")
     kp_dir = f"{out_dir}/key_phrases/{LEVEL_DIR[level]}"
     os.makedirs(kp_dir, exist_ok=True)
@@ -1024,9 +1026,9 @@ def run_kp_stage(level: str, text: str, out_dir: str, slug: str, *, kp_fn=None) 
 
 
 # ------------------------------------------------------------
-# Z限定・暫定: KP外側retry(委任_10、OPEN-310の暫定回避。Production恒久策ではない)
-# 共有module(er003 canonicalization/KP backend)は無改変。selection->canonicalization->redundancyを
-# Z側で組み、canonicalization INVALID時のみselectionを外側retryする(通算上限Z_KP_OUTER_RETRY_MAX)。
+# KP外側retry: 実装はX/Z共通の`er003_v1_n3_01_scaffold_generate.run_kp_with_outer_retry`へ移した
+# (KPFT 委任_02、OF-KPFT-P-07/P-08。旧『Z限定・暫定』=OPEN-310回避策を恒久・X/Z共有化)。
+# ここはZ向けの薄いdelegate(後方互換のZ_KP_*定数・Zの既定noteを保持)。
 # ------------------------------------------------------------
 Z_KP_OUTER_RETRY_MAX = 3
 Z_KP_GENERIC_NOTE = ("【選定上の注意(汎用)】所有格人称代名詞(my/our 等)を含むphraseは、可能な限り避けて"
@@ -1034,97 +1036,45 @@ Z_KP_GENERIC_NOTE = ("【選定上の注意(汎用)】所有格人称代名詞(m
 
 
 def _copy_attempt_artifacts(kp_dir: str, attempt: int) -> str:
-    dst = f"{kp_dir}/outer_retry/attempt_{attempt}"
-    os.makedirs(dst, exist_ok=True)
-    for name in os.listdir(kp_dir):
-        src = f"{kp_dir}/{name}"
-        if os.path.isfile(src):
-            shutil.copyfile(src, f"{dst}/{name}")
-    return dst
+    import er003_v1_n3_01_scaffold_generate as sc
+    return sc._kp_copy_attempt_artifacts(kp_dir, attempt)
 
 
 def _canon_reasons(kp_dir: str):
-    """共有canonicalizationがkp_dirへ書く runtime_metadata から各attemptの検証理由を抜く(証跡用)。"""
-    p = f"{kp_dir}/canonicalization_runtime_metadata.json"
-    if not os.path.exists(p):
-        return None
-    d = json.load(open(p, encoding="utf-8"))
-    return [{k: v for k, v in a.items() if k != "raw_text"} for a in d.get("attempts_detail", [])]
+    import er003_v1_n3_01_scaffold_generate as sc
+    return sc._kp_canon_reasons(kp_dir)
+
+
+def _run_dir_of_kp_dir(kp_dir: str) -> str:
+    """kp_dir(<run>/key_phrases/<level>)から<run>を導く(STOPセンチネル確認用)。"""
+    norm = kp_dir.replace("\\", "/")
+    return norm.split("/key_phrases/")[0] if "/key_phrases/" in norm else os.path.dirname(norm)
 
 
 def run_kp_with_outer_retry(text: str, kp_dir: str, article_id: str, source_level: str, process=None, *,
                             max_outer: int = Z_KP_OUTER_RETRY_MAX, generic_note: str = Z_KP_GENERIC_NOTE,
                             select_fn=None, canon_fn=None, redundancy_fn=None, **_):
-    """canonicalization INVALID時のみselectionを外側retry(通算max_outer回、外側1回目から汎用noteを付与)。
-    Redundancy NG時の選定やり直しは共有run_key_phrasesと同じ上限(KEY_PHRASE_REDUNDANCY_RETRY_MAX)で別カウント。"""
+    """canonicalization INVALID時(および選定失敗時: OF-KPFT-P-07)にselectionを外側retry(通算max_outer回、外側1回目からgeneric_noteを付与)。
+    Redundancy NG時の選定やり直しは共有run_key_phrasesと同じ上限(KEY_PHRASE_REDUNDANCY_RETRY_MAX)で別カウント。
+    既定select_fnは従来のsc.run_key_phrase_selection(Strategy L)。Z Productionは`run_kp_with_outer_retry_fulltext`を使う。"""
     import er003_v1_n3_01_scaffold_generate as sc
-    select_fn = select_fn or sc.run_key_phrase_selection
-    canon_fn = canon_fn or sc.run_key_phrase_canonicalization
-    redundancy_fn = redundancy_fn or sc.run_key_phrase_redundancy_qa
-    os.makedirs(kp_dir, exist_ok=True)
-    red_max = sc.KEY_PHRASE_REDUNDANCY_RETRY_MAX
-    red_note, red_attempt, canon_failures, log, redundancy_retry_log = None, 0, 0, [], []
-    outer = 0
-
-    def save_log():
-        wt(f"{kp_dir}/outer_retry_log.json", json.dumps(
-            {"scope": "Z限定・暫定(OPEN-310回避策、Production恒久策ではない)", "max_outer": max_outer,
-             "generic_note": generic_note, "attempts": log}, ensure_ascii=False, indent=2))
-
-    while True:
-        outer += 1
-        note = generic_note + (("\n\n" + red_note) if red_note else "")
-        sel = select_fn(text, kp_dir, article_id, source_level, process=process, diagnostic_note=note)
-        entry = {"outer_attempt": outer, "note_sha256": sha(note), "selection_status": sel.get("status"),
-                 "selection_phrases": [it.get("display_phrase") for it in
-                                       ((sel.get("parsed") or {}).get("items") or [])]}
-        if sel.get("status") != "KEY_WORDS_STRUCTURE_PASS":
-            entry["artifacts"] = _copy_attempt_artifacts(kp_dir, outer)
-            log.append(entry)
-            save_log()
-            return {"selection": sel, "canonicalization": None, "redundancy_qa": None,
-                    "redundancy_retry_log": redundancy_retry_log, "outer_retry_log": log}
-        canon = canon_fn(text, sel["original_items"], kp_dir, article_id, process=process)
-        entry["canonicalization_status"] = canon.get("status")
-        entry["canonicalization_attempts"] = _canon_reasons(kp_dir)
-        if canon.get("status") not in ("CANONICALIZATION_PASS", "CANONICALIZATION_REVIEW_REQUIRED"):
-            canon_failures += 1
-            entry["artifacts"] = _copy_attempt_artifacts(kp_dir, outer)
-            log.append(entry)
-            save_log()
-            if canon_failures >= max_outer:
-                return {"selection": sel, "canonicalization": canon, "redundancy_qa": None,
-                        "redundancy_retry_log": redundancy_retry_log, "outer_retry_log": log,
-                        "status": "OUTER_RETRY_EXHAUSTED"}
-            continue
-        merged_items = canon["merged"]["items"]
-        red = redundancy_fn(text, merged_items, kp_dir, article_id, process=process)
-        findings = sc.detect_key_phrase_symbol_findings(merged_items)
-        flagged = sc.safety.symbol_gate_requires_stop(findings)
-        redundancy_retry_log.append({"attempt": red_attempt, "status": red.get("status"),
-                                     "duplicate_pairs": red.get("duplicate_pairs"), "symbol_flagged": flagged,
-                                     "symbol_findings": findings})
-        entry.update({"redundancy_status": red.get("status"), "symbol_flagged": flagged,
-                      "artifacts": _copy_attempt_artifacts(kp_dir, outer)})
-        log.append(entry)
-        save_log()
-        if red.get("status") != "REDUNDANCY_NG" and not flagged:
-            return {"selection": sel, "canonicalization": canon, "redundancy_qa": red,
-                    "redundancy_retry_log": redundancy_retry_log, "redundancy_retry_attempts": red_attempt,
-                    "outer_retry_log": log}
-        if red_attempt >= red_max:
-            return {"selection": sel, "canonicalization": canon, "redundancy_qa": red,
-                    "redundancy_retry_log": redundancy_retry_log, "redundancy_retry_attempts": red_attempt,
-                    "outer_retry_log": log, "status": "NG_REVIEW_REQUIRED"}
-        by_rank = {it["rank"]: it for it in merged_items}
-        red_note = ""
-        if red.get("status") == "REDUNDANCY_NG":
-            red_note += sc.redundancy_qa.build_redundancy_diagnostic_note(red["duplicate_pairs"], by_rank)
-        if flagged:
-            red_note += ("\n\n" if red_note else "") + sc.safety.build_symbol_violation_prompt_note(findings)
-        red_attempt += 1
+    return sc.run_kp_with_outer_retry(
+        text, kp_dir, article_id, source_level, process=process, max_outer=max_outer, generic_note=generic_note,
+        select_fn=select_fn or sc.run_key_phrase_selection, canon_fn=canon_fn, redundancy_fn=redundancy_fn,
+        stop_check_fn=sc.make_stop_check(_run_dir_of_kp_dir(kp_dir)),
+        scope_note="KP外側retry(X/Z共通実装。Zのdelegate)")
 
 
+def run_kp_with_outer_retry_fulltext(text: str, kp_dir: str, article_id: str, source_level: str, process=None, *,
+                                     max_outer: int = Z_KP_OUTER_RETRY_MAX, generic_note: str = "",
+                                     select_fn=None, canon_fn=None, redundancy_fn=None, **_):
+    """Z Production既定(KPFT 委任_02): 全文選定(Prompt 2逐語)。Z_KP_GENERIC_NOTE(所有格代名詞回避)はPrompt 2を逐語固定するため付けない
+    (代名詞を含む断片は、canonicalization Rule3[人称一般化・既存]と外側retryで処理)。"""
+    import er003_v1_n3_01_scaffold_generate as sc
+    return run_kp_with_outer_retry(
+        text, kp_dir, article_id, source_level, process=process, max_outer=max_outer, generic_note=generic_note,
+        select_fn=select_fn or functools.partial(sc.run_key_phrase_selection, kp_backend=sc.FULLTEXT_BACKEND_ID),
+        canon_fn=canon_fn, redundancy_fn=redundancy_fn)
 def english_phrase_sharing_allowed(std_text: str, adv_text: str) -> bool:
     """KPの英語Phrase共通化は両レベルの本文が同一テキストのときのみ許可。"""
     return sha(std_text) == sha(adv_text)
