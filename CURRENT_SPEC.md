@@ -1560,6 +1560,7 @@ TTS記号正規化(`PRODUCTION_WIRED`)と読み解決resolver
   7826行付近])。Family ZはZ-2の方針どおりこの既存関数を再利用し、
   新しいVoice仕様を作らない。ユーザーが別ルールを意図している場合は
   訂正を受け付ける。
+- **Family Z登場人物Voice 正式表・割当規則(2026-10-23ユーザー最終決定、`APPROVED_FOR_PRODUCTION`、原文=`docs/pm/delegation_log/2026-10-23_FAMILY-Z-VOICE-PRODUCTION-WIRING-01_USER.md`、OPEN-430)**: 男性Voice=1 Algieba/2 Schedar/3 Fenrir/4 Orus/5 Puck、女性Voice=1 Zephyr/2 Kore/3 Leda/4 Sulafat/5 Erinome。男女独立に、作品内の登場順(初出順)で順位1から割当て、6人目以降は循環。同一人物は作品全体で同一Voice。Narrator=Aoede、Advanced補助=Charonは別枠(登場人物用プールに含めない)。性別・登場順はroster(`er062_family_z_structure_01.STORY_VOICE_ROSTER`)の明示データで、名前からの推測・LLM判定はしない。割当は決定的な純粋関数`assign_dialogue_voices`で、結果はrun metadata `voice_assignment.json`に記録(resume時の再計算は同一、差分時は旧fileをSTALE退避)。『開いた窓』=vera Zephyr / framton Algieba / mrs_sappleton Kore / men Schedar。『走れメロス』は完成版不変(2026-10-21 U:§7)のため作品単位pin(`STORY_VOICE_PINS`)で現行Algieba/Erinome/Charonを固定(規則適用値はmelos Algieba・dionysius Schedar・selinuntius Fenrir、差分は報告済み・変更はユーザー承認事項)。旧記述(Mrs. Sappleton Voice未割当/MELOS PROVISIONAL_UNAPPROVED/#131待ち/Charonを登場人物men割当)は本項で置換。Status: 配線実装・test済み(commit 654bc9fe3)、音声run検証中(`PRODUCTION_WIRED`宣言はFable受入後)。
 - 上記によりOPEN-185の未決論点(2)(3)(4)は解消。残るのは(1)権利論点
   (走れメロス米国著作権status)のみで、別管理ID
   `FICTION-FAMILY-Z-RIGHTS-RECHECK-01`で確認中。Production配線

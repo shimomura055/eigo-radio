@@ -296,13 +296,13 @@
 
 ### 2026-10-21 DWA 委任_02追記(`FAMILY-X-WRITER-DETECTIVE-WORD-AVOIDANCE-TRIAL-01`・`FAMILY-Z-THE-OPEN-WINDOW-PRODUCTION-E2E-01`。既存行は書き換えず追記のみ。#129/#130はFable報告で予告済みの番号を本委任で登録)
 
-- #129(UDR-blocking・未回答、2026-10-21 登録、FAMILY-Z-THE-OPEN-WINDOW-PRODUCTION-E2E-01 委任_01b) Mrs. Sappleton Voice割当(判断分類D候補・ユーザー判断待ち)。割当後にSTORY_SPEAKER_CONFIG反映→`--stage all`同run resume。詳細=docs/pm/RESULT_PACKET_OW2.md。注記: Fable報告で予告済み番号、本委任で登録。
+- #129(判断済み=2026-10-23 FAMILY-Z-VOICE-PRODUCTION-WIRING-01 ユーザー最終決定[原文=docs/pm/delegation_log/2026-10-23_FAMILY-Z-VOICE-PRODUCTION-WIRING-01_USER.md]: Mrs. Sappleton=女性2人目=Kore。旧:UDR-blocking・未回答、2026-10-21 登録、FAMILY-Z-THE-OPEN-WINDOW-PRODUCTION-E2E-01 委任_01b) Mrs. Sappleton Voice割当(判断分類D候補・ユーザー判断待ち)。割当後にSTORY_SPEAKER_CONFIG反映→`--stage all`同run resume。詳細=docs/pm/RESULT_PACKET_OW2.md。注記: Fable報告で予告済み番号、本委任で登録。
 - #130(判断済み 2026-10-21(A/B/C全てProduction採用見送り。原文=docs/pm/delegation_log/2026-10-21_FAMILY-X-WRITER-DETECTIVE-WORD-AVOIDANCE-TRIAL-01_CLOSEOUT_USER.md、sha256=c603ac0e0bac16dc9d79ce6ef604d82fe37b3bd80e4457b529b91654133cbf37[本文のみ])；2026-10-21 登録、FAMILY-X-WRITER-DETECTIVE-WORD-AVOIDANCE-TRIAL-01 委任_02) Detective Pattern C Production採用の可否: Pattern A=不採用、B=不採用、C=VALIDATED評価(試験結果)は保持するがProduction採用は見送り。現行Writer Prompt・Production経路は変更しない。追加Trial・再生成なし。Detective回避の意向自体は撤回されていない。将来再検討は保存済み結果(REUSE_INDEX_01.md)から。OPEN-429 CLOSED。注記: Fable報告で予告済み番号、本委任で登録。
 
 ### 2026-10-21 FZVS 委任_01追記(`FAMILY-Z-COMMON-DIALOGUE-VOICE-SELECTION-TRIAL-01`。既存行は書き換えず追記のみ)
 
 - 注記(#129): 2026-10-21ユーザー指示§7により#131の選定結果を待つ(Sulafat等の先行採用禁止)。
-- #131(UDR-blocking・未回答、2026-10-21 登録、FAMILY-Z-COMMON-DIALOGUE-VOICE-SELECTION-TRIAL-01 委任_01、OPEN-430) Family Z共通Voice 男性1〜3/女性1〜3の選定: 試聴URL=https://shimomura055.github.io/eigo-radio/user_test/family_z_voice_candidates_01/index.html。男性的5(Algieba/Schedar/Fenrir/Orus/Puck)・女性的5(Erinome/Sulafat/Kore/Leda/Zephyr)から各3名を決定。割当方針(登場順・独立循環)は決定済み、Voice名のみ未決。決定後に別委任でSTORY_SPEAKER_CONFIG反映・開いた窓(#129)へ適用。詳細=docs/pm/RESULT_PACKET_FZVS1.md。
+- #131(判断済み=2026-10-23 ユーザー最終決定[原文=docs/pm/delegation_log/2026-10-23_FAMILY-Z-VOICE-PRODUCTION-WIRING-01_USER.md、APPROVED_FOR_PRODUCTION]: 男性=Algieba/Schedar/Fenrir/Orus/Puck、女性=Zephyr/Kore/Leda/Sulafat/Erinome[順位順・6人目以降循環]、Narrator=Aoede・Adv補助=Charon別枠。旧:UDR-blocking・未回答、2026-10-21 登録、FAMILY-Z-COMMON-DIALOGUE-VOICE-SELECTION-TRIAL-01 委任_01、OPEN-430) Family Z共通Voice 男性1〜3/女性1〜3の選定: 試聴URL=https://shimomura055.github.io/eigo-radio/user_test/family_z_voice_candidates_01/index.html。男性的5(Algieba/Schedar/Fenrir/Orus/Puck)・女性的5(Erinome/Sulafat/Kore/Leda/Zephyr)から各3名を決定。割当方針(登場順・独立循環)は決定済み、Voice名のみ未決。決定後に別委任でSTORY_SPEAKER_CONFIG反映・開いた窓(#129)へ適用。詳細=docs/pm/RESULT_PACKET_FZVS1.md。
 
 ### 2026-10-21 FXPP 委任_04追記(`FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01`。既存行は書き換えず追記のみ)
 
