@@ -68,6 +68,7 @@ A-2で**配線表のgrep検証(全呼出行が`classify_asr_match`に到達)**�
 9. **費用見積**(出典=`TRIAL_RESULT_01.md` §3: 13クリップのTTS+ASR実測6.32円=約0.5円/クリップ、`er093_output/pnmh_trial_01/paid_calls.jsonl`): A-2想定=X 1本+Z 1本+Bi-us候補約6本+再ASR 約8〜10クリップ -> **約5円(目安上限JPY30)**。量産単価への影響=判定のみ追加でAPI呼出増0・原価増0(不要retry減による微減はありうるが未測定)。
 
 ## (g) KP両方PASS条件との関係
+> **【2026-10-22 D-2 上書き注記(OF-KPD-P-07)】以下(g)の『KP両方PASSは実装しない/ユーザー回答待ち』は、2026-10-22ユーザー正式採用(UDR #139、`APPROVED_FOR_PRODUCTION`)により更新された。KP英語phraseに限り『Primary(OpenAI)・Secondary(Azure)の両方PASS必須』を`FAMILY-XZ-ASR-PASS-CONDITION-SPEC-AUDIT-01`委任_03[D-2]でX/Zに配線した(判定機構=`dual_required`、`force_secondary`ではない)。多語同音救済は本配線(`protected_check`)のまま、Primary/Secondary**それぞれが同じ`classify_asr_match`→`_step_alternate_pass`で同音救済基準を満たしたときのみ**KP英語phraseはPASSする(`er096_kp_dual_pass_01_wiring_test_01.py::test_adapter_homophone_rescue_applies_to_each_provider_separately`)。本節の旧記述は履歴として残す。**
 - 承認済み正式仕様=Primary PASSならSecondary不要(CURRENT_SPEC:2818、全Section共通・KP含む。`docs/research/FAMILY-XZ-ASR-PASS-CONDITION-SPEC-AUDIT-01/SPEC_IMPL_MATRIX_01.md`)。ユーザー原文§2「承認済み仕様に食い違いがある場合は勝手に仕様を変更しない」により、**KP両方PASSは実装しない**(OPEN-440ユーザー回答待ち・未承認)。本実装は現行判定順序を変えない。
 - 干渉しない理由: 配線点`protected_check`は「その転写が同音候補か」を決めるだけで、Primary/Secondary間のAND/OR(unified judge)には触れない。将来OPEN-440で`force_secondary`等が入っても、Secondary転写も同じ`classify_asr_match`を通るため、多語救済はPrimary/Secondary双方で同一に働く。
 - OPEN-440実装が承認された場合は、本配線のレビュー・Regression・runtime確認を合同化する(ユーザー原文§2)。

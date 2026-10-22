@@ -28,6 +28,7 @@ import re
 import shutil
 from dataclasses import dataclass, field
 import er078_secondary_run_scope_01 as secondary_run_scope  # AUW 委任_05
+import er096_kp_dual_pass_01 as kp_dual  # KPDUAL-PROD-D2(2026-10-22、UDR #139): KP英語phrase Primary・Secondary両方PASS必須
 # 2026-10-17 委任_15: Xの承認済みStyle定数を**定数として**参照する(コピーしない)。DEFAULT_NEW_RUN_PROFILE・profile解決関数は
 # 参照しない(X既定の変更がZへ無言で波及しない。Opus R-C1)。er019のimportは標準ライブラリ+er002_commonのみで循環しない。
 import er019_family_x_style_profile_01 as _xs
@@ -730,8 +731,23 @@ def generate_or_reuse_z(cached_entry: dict | None, spec: ClipSpec, wav_path: str
                 if isinstance(_r, dict):
                     _r["reuse_value_guard_blocked_previous"] = {k: _g.get(k) for k in ("reason", "reason_code", "unified_state")}
                 return _r
+            _kd = None
+            if spec.kind == "kp_en" and kp_dual.dual_enabled():
+                # KPDUAL-PROD-D2(OF-KPD-P-03、再利用点6): KP英語phraseの前回results再利用は両Provider PASSの証跡を要する(fail-closed)。
+                # 証跡が無ければS1(Azure 1回)、NGなら再生成、Azure障害は技術STOP(再利用も再生成もしない)。
+                _kd = kp_dual.kp_dual_reuse_ok(cached_entry, wav_path=wav_path, canonical_text=_norm_for_tts(spec), allow_s1=True,
+                                               label=str(spec.clip_id))
+                if _kd["action"] == kp_dual.ACTION_TECHNICAL_STOP:
+                    return kp_dual.technical_stop_entry(str(spec.clip_id), _kd)
+                if not _kd["ok"]:
+                    _r = generate_fn()
+                    if isinstance(_r, dict):
+                        _r["kp_dual_reuse_gate_previous"] = {"reason": _kd["reason"], "action": _kd["action"]}
+                    return _r
             reused = dict(cached_entry)
             reused["reused_from_previous_run"] = True
+            if _kd is not None and _kd.get("kp_dual_check") is not None:
+                reused["kp_dual_check"] = _kd["kp_dual_check"]
             if "asr_judgement" in reused:   # AUW 委任_03: 再利用音声の元のWARNINGを継承(asr_judgement_inherited)
                 reused["asr_judgement_inherited"] = reused.pop("asr_judgement")
             return reused
@@ -829,9 +845,15 @@ def real_generators() -> dict:
             safety_margin_seconds=repro01.KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS, disfluency_qa=True,
             style_prefix_override=style_text_for(spec), asr_prompt=repro01.KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT,
             enable_non_latin_cascade=True, tts_backend=TTS_BACKEND,
-            slot_offset=0, total_slots=repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS)  # AUW 委任_05: 4回構成の前半(HR queue対象外)
+            slot_offset=0, total_slots=repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS,  # AUW 委任_05: 4回構成の前半(HR queue対象外)
+            dual_pass_required=kp_dual.dual_enabled())  # KPDUAL-PROD-D2: KP英語phrase=Primary・Secondary両方PASS必須
         if primary.get("status") == "OK":
             primary["fallback_used"] = False
+            return kp_dual.attach_kp_dual_check(primary, out_path, text)
+        if kp_dual.dual_enabled() and repro01._dual_circuit_open():
+            # KPDUAL-PROD-D2(OF-KPD-P-02の最小緩和): Azure circuit breaker open中はENGLISH_LOCK段のTTSを回さない(技術STOP)
+            primary["fallback_used"] = False
+            primary["english_lock_skipped_secondary_circuit_open"] = True
             return primary
         fb = repro01.generate_narration_snippet_verified_strict(
             text, "en", out_path, text, max_extra_chars=10, max_attempts=repro01.KEY_PHRASE_ENGLISH_LOCK_MAX_ATTEMPTS,
@@ -840,7 +862,9 @@ def real_generators() -> dict:
             asr_prompt=repro01.KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT, enable_non_latin_cascade=True,
             tts_backend=TTS_BACKEND,
             slot_offset=repro01.KEY_PHRASE_MINIMAL_MAX_ATTEMPTS,
-            total_slots=repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS)  # AUW 委任_05: 4回構成の後半(最終slot)
+            total_slots=repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS,  # AUW 委任_05: 4回構成の後半(最終slot)
+            dual_pass_required=kp_dual.dual_enabled())  # KPDUAL-PROD-D2
+        kp_dual.attach_kp_dual_check(fb, out_path, text)
         fb["fallback_used"] = True
         # legacy `generate_key_phrase_component_verified`と同じ会計: record_outcomeの実TTS試行数(=4)のため、1段目の
         # attempts_logをfallback_attempts_logへ載せる(監査用の別名も同じ)。
@@ -985,6 +1009,8 @@ def build_entry(spec: ClipSpec, out_path: str, result: dict, *, human_approved: 
         # AUW 委任_03(additive): 統一ASR判定の監査record(PASS_WITH_WARNING等)。事後試聴リストの入力。
         "asr_judgement": result.get("asr_judgement"),
     }
+    if result.get("kp_dual_check") is not None:   # KPDUAL-PROD-D2(additive): KP英語phraseのみ。両Provider PASSの証跡
+        entry["kp_dual_check"] = result["kp_dual_check"]
     if os.path.exists(out_path):
         try:
             entry["duration_seconds"] = round(_wav_duration(out_path), 3)
@@ -1358,6 +1384,7 @@ def run_audio_gate(run_dir: str, level: str, plan: list, shell_names: list, *, a
         raise FamilyZAudioStop(f"clip品質確認でNG: {problems}")
     deviations = {k: v["audio_text_deviation"] for k, v in entries.items() if v and v.get("audio_text_deviation")}
     result = {"m2_complete": True, "m1_slowdown": slow, "audio_text_deviation_clips": sorted(deviations),
+              "kp_dual_audit": kp_dual.assembly_audit(data, level),   # KPDUAL-PROD-D2: 非blocking監査(KP英語phraseのdual証跡欠落を警告+記録)
               "audio_text_deviations": m2["audio_text_deviations"],
               "article_text_source": "canonical(原稿のまま)", "shared_gate": "skipped" if skip_shared_gate else "PASS"}
     if not skip_shared_gate:

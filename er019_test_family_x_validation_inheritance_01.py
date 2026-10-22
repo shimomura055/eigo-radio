@@ -173,8 +173,14 @@ class RunnerOnlySegmentsTest(_Tmp):
     def test_kp_component_inheritance(self):
         p = self.wav("kp1_english")
         e = _entry("phrase", _sha(b"RIFFdata-1"), p)
-        cached = {"style_version": self.sv, "key_phrases": {"1": {"english": e}}}
+        # KPDUAL-PROD-D2(UDR #139): KP英語phraseの引継ぎは両Provider PASSの保存証跡を要する(fail-closed)。証跡なしは引き継がない。
+        cached_nodual = {"style_version": self.sv, "key_phrases": {"1": {"english": dict(e)}}}
         runner._ONLY_SEGMENTS = {"full_story_part1"}
+        r0 = runner._generate_or_reuse_kp(cached_nodual, 1, "english", p, self._gen, expected_text="phrase")
+        self.assertEqual(r0["status"], "SKIPPED_NOT_SELECTED")
+        e["kp_dual_check"] = {"version": "kp_dual_check_v1", "ok": True, "canonical_text": "phrase", "wav_sha256": _sha(b"RIFFdata-1"),
+                              "primary": {"text": "phrase", "pass": True}, "secondary": {"text": "phrase", "pass": True}}
+        cached = {"style_version": self.sv, "key_phrases": {"1": {"english": e}}}
         r = runner._generate_or_reuse_kp(cached, 1, "english", p, self._gen, expected_text="phrase")
         self.assertEqual(r["status"], "OK")
         self.assertEqual(r["validation_inheritance"]["label"], "REUSED_VALIDATED")

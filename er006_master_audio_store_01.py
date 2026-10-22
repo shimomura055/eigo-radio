@@ -96,7 +96,7 @@ def _log_telemetry(record: dict) -> None:
 
 
 def get_or_generate(key: MasterAudioKey, out_path: str,
-                     generate_fn: Callable[[str], dict]) -> dict:
+                     generate_fn: Callable[[str], dict], reuse_gate=None) -> dict:
     """key(MasterAudioKey)に一致するmasterが既にStoreにあれば、それを
     out_pathへコピーして再利用する(TTS/ASR呼び出しは一切行わない)。
     無ければgenerate_fn(out_path)を呼んでTTS生成させ、成功時のみStoreへ
@@ -105,6 +105,13 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
     generate_fnは通常のgenerate_charon_english/generate_key_phrase_
     component_verified等と同じ呼び出し規約(out_pathを渡し、statusを
     含むdictを返す)を想定する。
+
+    reuse_gate(KPDUAL-PROD-D2、2026-10-22、既定None=Family A/B/C等の既存呼出は無変更・manifestにも新キーを書かない):
+    KP英語phrase「Primary・Secondary両方PASS必須」(UDR #139)のX専用gate。callable(entry, key, master_id) -> dict
+    {"action": "reuse"|"regenerate"|"technical_stop", "reason":..., "kp_dual_check": dict|None}。entryがある再利用直前に
+    1回だけ呼ぶ。reuse=従来どおり再利用(kp_dual_checkをmanifestへ追記)/regenerate=旧音声を_reuse_blockedへ退避して再生成/
+    technical_stop=Azure障害のため再利用も再生成もしない(TECHNICAL_STOP statusを返す)。新規生成成功時は
+    reuse_gate.on_generated(r, stored_path, key)の戻り値をentryの`kp_dual_check`へ保存する。
 
     戻り値のdictには reused(bool)・master_audio_id・cache_miss_reason
     (reused=Falseのときのみ)を追加で含む。"""
@@ -126,6 +133,35 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
             _log_telemetry({"event": "reuse_blocked_by_value_guard", "master_audio_id": master_id, "out_path": out_path,
                             "key": key.as_dict(), "guard": {k: reuse_guard_info.get(k) for k in ("reason", "reason_code", "unified_state")}})
             try:  # 削除しない: 再生成が同じaudio_pathを上書きするため、旧音声を退避して残す
+                _bdir = f"{AUDIO_DIR}/_reuse_blocked"
+                os.makedirs(_bdir, exist_ok=True)
+                shutil.copyfile(entry["audio_path"], f"{_bdir}/{master_id}_{time.strftime('%Y%m%dT%H%M%S')}.wav")
+            except OSError:
+                pass
+    dual_gate_info = None
+    if (reuse_gate is not None and entry is not None and os.path.exists(entry["audio_path"])
+            and not (reuse_guard_info or {}).get("blocked")):
+        dual_gate_info = reuse_gate(entry, key, master_id)
+        _act = dual_gate_info.get("action")
+        if dual_gate_info.get("kp_dual_check") is not None:
+            entry["kp_dual_check"] = dual_gate_info["kp_dual_check"]
+            manifest[master_id] = entry
+            _save_manifest(manifest)
+        if _act == "technical_stop":
+            _log_telemetry({"event": "reuse_gate_technical_stop", "master_audio_id": master_id, "out_path": out_path,
+                            "key": key.as_dict(), "reason": dual_gate_info.get("reason")})
+            return {"status": "TECHNICAL_STOP_SECONDARY_UNAVAILABLE", "technical_stop": True, "restartable": True,
+                    "approval_required": False, "human_review_required": False, "asr_verified": False, "reused": False,
+                    "master_audio_id": master_id, "master_audio_key": key.as_dict(), "path": out_path,
+                    "reason": "KP dual reuse gate: Secondary(Azure)障害のため再利用判定不能(再利用も再生成もしない。再実行で再開可)",
+                    "kp_dual_reuse_gate": {k: dual_gate_info.get(k) for k in ("action", "reason")}}
+        if _act != "reuse":
+            reuse_guard_info = {"blocked": True, "reason": dual_gate_info.get("reason"), "reason_code": "kp_dual_gate",
+                                "unified_state": (dual_gate_info.get("kp_dual_check") or {}).get("judge_state")}
+            _log_telemetry({"event": "reuse_blocked_by_kp_dual_gate", "master_audio_id": master_id, "out_path": out_path,
+                            "key": key.as_dict(), "reason": dual_gate_info.get("reason"),
+                            "kp_dual_check": dual_gate_info.get("kp_dual_check")})   # NG時の両Provider転写も証跡として残す
+            try:  # 削除しない: 旧音声を退避して残す(再生成が同じaudio_pathを上書きする)
                 _bdir = f"{AUDIO_DIR}/_reuse_blocked"
                 os.makedirs(_bdir, exist_ok=True)
                 shutil.copyfile(entry["audio_path"], f"{_bdir}/{master_id}_{time.strftime('%Y%m%dT%H%M%S')}.wav")
@@ -155,6 +191,8 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
         # `asr_judgement_inherited`として復元する(元のWARNINGを試聴リストへ継承。OF-AUW-15)。
         if entry.get("asr_judgement") is not None:
             result["asr_judgement_inherited"] = entry["asr_judgement"]
+        if entry.get("kp_dual_check") is not None:   # KPDUAL-PROD-D2(additive): KP dual証跡(gate通過済み)を再利用でも復元する
+            result["kp_dual_check"] = entry["kp_dual_check"]
         _log_telemetry({
             "event": "reused", "master_audio_id": master_id, "out_path": out_path,
             "key": key.as_dict(),
@@ -162,7 +200,8 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
         return result
 
     cache_miss_reason = ("no_existing_master" if entry is None else
-                         "reuse_value_guard_blocked" if (reuse_guard_info or {}).get("blocked") else "stored_audio_file_missing")
+                         ("kp_dual_gate_blocked" if (reuse_guard_info or {}).get("reason_code") == "kp_dual_gate"
+                          else "reuse_value_guard_blocked") if (reuse_guard_info or {}).get("blocked") else "stored_audio_file_missing")
     r = generate_fn(out_path)
     if r.get("status") == "OK":
         os.makedirs(AUDIO_DIR, exist_ok=True)
@@ -185,6 +224,11 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
         manifest[master_id]["audio_classification"] = r.get("audio_classification")
         # AUW 委任_03(additive): 統一ASR判定のaudit record。再利用時に`asr_judgement_inherited`として復元する。
         manifest[master_id]["asr_judgement"] = r.get("asr_judgement")
+        if reuse_gate is not None and hasattr(reuse_gate, "on_generated"):
+            _kdc = reuse_gate.on_generated(r, stored_path, key)   # KPDUAL-PROD-D2: 生成時のdual証跡(両Provider転写・判定)を保存
+            if _kdc is not None:
+                manifest[master_id]["kp_dual_check"] = _kdc
+                r["kp_dual_check"] = _kdc
         _scg = r.get("scg_info")
         manifest[master_id]["scg_result"] = _scg.get("scg_result") if isinstance(_scg, dict) else None
         _save_manifest(manifest)
@@ -197,6 +241,9 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
             "event": "generate_failed", "master_audio_id": master_id, "out_path": out_path,
             "cache_miss_reason": cache_miss_reason, "status": r.get("status"), "key": key.as_dict(),
         })
+    if dual_gate_info is not None and dual_gate_info.get("action") == "regenerate":
+        r["kp_dual_reuse_gate_previous"] = {"reason": dual_gate_info.get("reason"),   # 再生成に回した旧entryの判定理由(additive)
+                                            "kp_dual_check": dual_gate_info.get("kp_dual_check")}
     r["reused"] = False
     r["master_audio_id"] = master_id
     r["cache_miss_reason"] = cache_miss_reason

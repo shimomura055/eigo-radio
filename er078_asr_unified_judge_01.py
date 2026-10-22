@@ -46,7 +46,11 @@ NG_EXCLUDED = "NG_EXCLUDED"
 NG_BOTH = "NG_BOTH"
 NG_SECONDARY_UNAVAILABLE = "NG_SECONDARY_UNAVAILABLE"
 NG_PRIMARY_ASR_FAILURE = "NG_PRIMARY_ASR_FAILURE"
-STATES = (PASS, PASS_WITH_WARNING, NG_PROTECTED, NG_EXCLUDED, NG_BOTH, NG_SECONDARY_UNAVAILABLE, NG_PRIMARY_ASR_FAILURE)
+# KPDUAL-PROD-D2(2026-10-22、UDR #139): KP英語phrase「Primary・Secondary両方PASS必須」(dual_required)でのみ発生する不合格状態。
+# Secondaryは受理したが、Primary(OpenAI)自身がPASSしていない(Primary NG / Azure転写由来の救済 / AMBIGUOUS・length降格)。PASSING_STATESには入れない。
+NG_DUAL_PRIMARY_NOT_PASS = "NG_DUAL_PRIMARY_NOT_PASS"
+STATES = (PASS, PASS_WITH_WARNING, NG_PROTECTED, NG_EXCLUDED, NG_BOTH, NG_SECONDARY_UNAVAILABLE, NG_PRIMARY_ASR_FAILURE,
+          NG_DUAL_PRIMARY_NOT_PASS)
 PASSING_STATES = (PASS, PASS_WITH_WARNING)
 
 # ---- warningラベル ----
@@ -257,6 +261,9 @@ class AttemptCtx:
     # 委任_13(A3R-01/03): 呼出元のmax_len(余裕文字数は呼出元ごとに異なる。judge内で固定再計算しない)。None=従来挙動(安全ラッチ)。
     max_len: int | None = None
     force_secondary: bool = False
+    # KPDUAL-PROD-D2: True=KP英語phrase専用の「Primary・Secondary両方PASS必須」判定。既定False=現行コードパスを1行も変えない。
+    # Trueを渡す呼出元は`generate_narration_snippet_verified_strict(dual_pass_required=True)`経由のKP英語phrase 6箇所のみ(静的testで固定)。
+    dual_required: bool = False
     engine: str = "azure"
     phrase_list_hash: str = ""
     cache: SecondaryCache | None = None
@@ -380,10 +387,27 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
                    "adopted_from": "primary", "adopted_ok": None, "surface_len": None, "primary_ok": None},
     }
     a3 = _a3_reeval_active(ctx)
+    dual = None
+    if ctx.dual_required:
+        # KPDUAL-PROD-D2(P-08): 両Providerの判定を並べて残すための監査キー(additive、dual_required時のみ存在)。
+        dual = {"required": True, "primary_provider": "openai", "secondary_provider": "azure", "primary_pass": False,
+                "primary_text": pr.text, "primary_rescued_by_secondary": False, "primary_rescue_layers": [],
+                "primary_not_pass_reason": None, "secondary_called": False, "secondary_pass": False, "secondary_text": None,
+                "outcome": None}
+        audit["dual"] = dual
     if ctx.wav_sha256:
         audit["audio_sha256"] = ctx.wav_sha256  # 委任_03: Primary PASS(Secondary不呼出)でも採用音声のsha256を記録(registryが突合に使う)
 
     def done(state, reason, warnings=(), unavailable=False) -> JudgeResult:
+        if dual is not None:
+            _sec = audit.get("secondary") or {}
+            dual["secondary_called"] = bool(_sec.get("called") or _sec.get("cached"))
+            dual["secondary_text"] = _sec.get("text")
+            if state in PASSING_STATES and not dual["primary_pass"]:
+                # Secondary単独PASS / Azure転写でPrimaryを救済したPASSは最終合格としない(ユーザー§1、ケース3)。
+                reason = "dual_primary_not_pass:" + reason
+                state = NG_DUAL_PRIMARY_NOT_PASS
+            dual["outcome"] = state
         audit["state"], audit["reason_code"] = state, reason
         wl = list(dict.fromkeys(warnings))
         if state in PASSING_STATES and ctx.script_version == "v1":
@@ -435,10 +459,16 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
         if primary_ng_reason is None and not plen_ok:
             # 委任_13(A3R-02): Primary内容PASS+length NGはAMBIGUOUS降格と同形でP3(Secondary)へ降格する。
             primary_ng_reason = "primary_length_ng"
-        if primary_ng_reason is None and not ctx.force_secondary:
+        if primary_ng_reason is None and dual is not None and (pr.signals or {}).get("primary_rescued_by_secondary"):
+            # KPDUAL-PROD-D2(OF-KPD-P-06): Azure転写でPrimaryをPASSさせた救済(非ラテンKP層/Tier3/CS equivalence)はOpenAI自身のPASSではない。
+            primary_ng_reason = "primary_rescued_by_secondary"
+            dual["primary_rescued_by_secondary"] = True
+        if primary_ng_reason is None and not ctx.force_secondary and dual is None:
             return done(PASS, "primary_pass" if not approved else f"primary_pass_approved_equivalence:{pr.equivalence_basis}", warnings)
         if primary_ng_reason is None:
-            primary_ng_reason = "force_secondary"
+            if dual is not None:
+                dual["primary_pass"] = True   # OpenAI自身のPASS(救済・降格なし)。以降Secondaryを必ず呼ぶ
+            primary_ng_reason = "force_secondary" if dual is None else "dual_required"
     else:
         # ---- Primary NG: P1 / P2 ----
         if pvg.kind == vg.DIFF:
@@ -457,6 +487,10 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
             return done(NG_EXCLUDED, f"p2_exclusion:{hit}")
         primary_ng_reason = "p3_primary_ng"
     audit["p3_entry"] = primary_ng_reason
+    if dual is not None:
+        dual["primary_rescue_layers"] = list((pr.signals or {}).get("primary_rescue_layers") or [])
+        if not dual["primary_pass"]:
+            dual["primary_not_pass_reason"] = primary_ng_reason
 
     # ---- P3: Secondary 1回 ----
     key = (ctx.sha(), ctx.engine, lang, ctx.phrase_list_hash)
@@ -545,12 +579,22 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
         return done(NG_BOTH, "secondary_ambiguous_value_not_same_surface", warnings)
     if ambiguous_primary:
         if same_surface(canon, stext):
+            if dual is not None:
+                dual["secondary_pass"] = True
             return done(PASS_WITH_WARNING, "secondary_exact_resolves_ambiguous", warnings + [W_NUMERIC_AMBIGUOUS_SURFACE])
         return done(NG_BOTH, "ambiguous_value_secondary_not_same_surface", warnings)
     if not accepted:
         return done(NG_BOTH, "secondary_not_accepted", warnings)
     if final_and_gate:
         audit["final_gate"] = {"applied": True, "target": "secondary", "value_guard": svg.kind, "negation_diff": sneg}
+    if dual is not None:
+        dual["secondary_pass"] = True
+        if dual["primary_pass"]:
+            # KPDUAL-PROD-D2: Primary(OpenAI自身)PASS ∧ Secondary(Azure)許容集合PASS ∧ 両者の値/否定ガードOK = 両方PASS。警告なしの`PASS`
+            # (Primary側の警告ラベルがあればdone()が従来どおりPASS_WITH_WARNINGへ変換)。classificationをSecondary側で上書きしない。
+            return done(PASS, "dual_agreed", warnings + list(svg.warnings))
+        # Primary非PASS: done()が NG_DUAL_PRIMARY_NOT_PASS へ変換する(Secondary単独PASSは最終合格にしない)。
+        return done(PASS_WITH_WARNING, "secondary_confirmed", warnings + [W_SECONDARY_CONFIRMED] + list(svg.warnings))
     if primary_ng_reason == "force_secondary":
         # 委任_03: Primary PASS + force_secondary(minimal fallback/LR後v1)でSecondaryも許容集合PASS = 両エンジン合意。
         # 従来(er006 force_secondary)もPASS扱い(警告なし)だったため、SECONDARY_CONFIRMED警告は付けない(LR後v1はdone()がLR_REWRITTENを付与)。

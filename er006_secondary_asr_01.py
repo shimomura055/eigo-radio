@@ -764,6 +764,19 @@ def evaluate_attempt_with_cascade_detail(
     if not cascade_enabled:
         verified, stop_retrying, cls = val.evaluate_attempt(
             canonical_text, asr_text, prior_results, max_same_signature=max_same_signature, segment_id=segment_id)
+        if (attempt_ctx or {}).get("dual_required"):
+            # KPDUAL-PROD-D2(設計(a)-4、防御): dual_required(KP英語phrase両方PASS必須)でCascade OFFなら、Primary単独で通さない(fail-closed)。
+            # FEATURE_FLAG_SECONDARY_ASR_ENABLED=Trueが既定のため通常は不発。
+            return {
+                "verified": False, "stop_retrying": False, "classification": cls,
+                "cascade_invoked": False,
+                "steps": [{"step": "primary_1", "provider": "openai_asr", "text": asr_text,
+                           "classification": cls.classification, "dual_required": True}],
+                "final_status": cls.classification, "human_review_required": False, "canonical_text": canonical_text,
+                "wav_path": wav_path, "cost_guard_triggered": False, "non_latin_cascade_invoked": False,
+                "connected_speech_equivalence_layer_invoked": False,
+                "technical_stop": {"type": "DUAL_REQUIRED_BUT_CASCADE_DISABLED", "restartable": True, "approval_required": False},
+                "technical_stop_status": "TECHNICAL_STOP_DUAL_CASCADE_DISABLED"}
         return {
             "verified": verified, "stop_retrying": stop_retrying, "classification": cls,
             "cascade_invoked": False,
@@ -812,6 +825,7 @@ def evaluate_attempt_with_cascade_detail(
     az = _AzureShared(wav_path, language, ledger_phrases, sha or f"nosha:{id(result)}", cache)
     primary_warnings: list = []
     layers: list = []
+    rescue_layers: list = []  # KPDUAL-PROD-D2(OF-KPD-P-06): Azure転写でPrimaryをPASSさせた救済層(cs_equivalence/tier3/non_latin)。dual_required時のみjudgeが参照
     adopted_text: Optional[str] = None  # 委任_06c(OF-AUW-C-01): 非ラテン層でAzure転写が採用根拠のとき、その転写(最終ANDゲート対象)
 
     if (not verified and enable_connected_speech_equivalence_layer
@@ -847,6 +861,7 @@ def evaluate_attempt_with_cascade_detail(
                 result["verified"] = True
                 result["final_status"] = cls.classification
                 result["classification"] = cls
+                rescue_layers.append("cs_equivalence")
             else:
                 # accept未達: 既存判定は変えず、診断情報だけをconnected_speech_infoへ付与する。
                 cls = val.ClassificationResult(
@@ -889,6 +904,7 @@ def evaluate_attempt_with_cascade_detail(
                     "warning": bool(corroborated_by), "role": resolved_role, "diff_spans": diff_loc,
                 }
                 if corroborated_by:
+                    rescue_layers.append("tier3")
                     cls = val.ClassificationResult(
                         "SECONDARY_ASR_CORROBORATED_MATCH", cls.normalized_ratio, cls.protected,
                         should_pass=True, should_retry=False,
@@ -941,6 +957,7 @@ def evaluate_attempt_with_cascade_detail(
             verified = True
             cls = cls_nl
             adopted_text = text_nl
+            rescue_layers.append("non_latin")
             primary_warnings.append(unified_judge_mod.W_SECONDARY_CONFIRMED)  # Secondaryが救済した=事後試聴対象
 
     if not verified:
@@ -970,6 +987,12 @@ def evaluate_attempt_with_cascade_detail(
     signals = {"c1_proper_noun_diff": bool(is_entity_like_mismatch(cls)),
                "c2_homophone_candidate": bool(is_homophone_candidate_mismatch(cls)),
                "similarity": cls.normalized_ratio}
+    _dual = bool(actx.get("dual_required"))
+    if _dual:
+        # KPDUAL-PROD-D2(OF-KPD-P-06): 救済フラグは全層(non_latin/tier3/cs_equivalence)。CMU alternate/M1(Primary転写由来・追加ASRなし)は
+        # Primary救済として維持(立てない)。
+        signals["primary_rescued_by_secondary"] = bool(verified and rescue_layers)
+        signals["primary_rescue_layers"] = list(rescue_layers)
     primary = unified_judge_mod.PrimaryResult(
         passed=bool(verified), text=asr_text, label=str(result.get("final_status") or cls.classification),
         equivalence_basis=_equivalence_basis_of(cls) if verified else None,
@@ -980,7 +1003,7 @@ def evaluate_attempt_with_cascade_detail(
         segment_key=segment_id or "", script_version=actx.get("script_version", "v0"), slot=int(actx.get("slot", 1)),
         is_last_slot=bool(actx.get("is_last_slot", False)), length_ok=bool(actx.get("length_ok", True)),
         max_len=actx.get("max_len"),  # AUW 委任_13(A3R-01/03): 呼出元のmax_len。None=従来挙動(安全ラッチ)
-        force_secondary=bool(force_secondary), engine="azure", phrase_list_hash=_phrase_hash(ledger_phrases),
+        force_secondary=bool(force_secondary), dual_required=_dual, engine="azure", phrase_list_hash=_phrase_hash(ledger_phrases),
         cache=cache, run_state=actx.get("run_state") or _RUN_STATE)
     try:
         import er020_tts_retry_local_rewrite_01 as _rg
@@ -989,7 +1012,7 @@ def evaluate_attempt_with_cascade_detail(
         judge_role = None
     captured: dict = {}
     # 従来のstep名を維持(audit/HR packageの互換): force_secondary経路="secondary_forced"、通常="secondary_1"。
-    _sec_step_name = "secondary_forced" if (force_secondary and verified) else "secondary_1"
+    _sec_step_name = ("secondary_dual" if _dual else "secondary_forced" if (force_secondary and verified) else "secondary_1")
 
     def _secondary_fn(_ctx):
         return az.outcome()
@@ -1028,6 +1051,7 @@ def evaluate_attempt_with_cascade_detail(
                        "azure_phrase_list_weight": (AZURE_PHRASE_LIST_WEIGHT if ledger_phrases else None),
                        "azure_phrase_list": list(ledger_phrases or []), "cached": bool(sec.get("cached")),
                        "unified_judge_state": jr.state,
+                       **({"dual_required": True} if _dual else {}),
                        "entity_like_source": (val.aggregate_entity_like_sources(cls_s.protected.content_word_diffs) if cls_s else []),
                        **(val.multiword_steps_extra(cls_s.protected.content_word_diffs) if cls_s else {})})
     if az.cost_guard_triggered:
@@ -1035,7 +1059,12 @@ def evaluate_attempt_with_cascade_detail(
 
     result["verified"] = bool(jr.verified)
     result["stop_retrying"] = False
-    if jr.verified:
+    if _dual:
+        result["dual_state"] = jr.state
+    if jr.verified and _dual:
+        # KPDUAL-PROD-D2(OF-KPD-P-08): dual PASS時はclassificationをSecondary側で上書きしない(Primary自身のPASS根拠を保持)。
+        pass
+    elif jr.verified:
         if "m1_audit" in captured:
             _m1_accept(result, steps, captured["m1_audit"], captured.get("cls_s"))
         elif "alt_label" in captured:

@@ -1929,6 +1929,14 @@ def mock_tts_generators() -> dict:
                  "standard_attempts_log": [{"attempt": 1, "instruction_type": "english_style_prefix_wide_margin",
                                             "style_prefix": {"sha256": "ab" * 32, "head200": "mock"},
                                             "tts_model_id": "mock-tts", "voice": spec.voice}]}
+            if spec.kind == "kp_en":
+                # KPDUAL-PROD-D2(UDR #139): 実strictはKP英語phraseで両Provider PASSの監査record(asr_judgement.dual)を返す。mock時も同形で返し、
+                # 前回results再利用(generate_or_reuse_z。両Provider PASS証跡を要する=fail-closed)がmockでも実と同じ経路を通るようにする。
+                _t = a63._norm_for_tts(spec)
+                r["asr_judgement"] = {"state": "PASS", "reason_code": "dual_agreed", "dual": {
+                    "required": True, "primary_provider": "openai", "secondary_provider": "azure", "primary_pass": True,
+                    "primary_text": _t, "primary_rescued_by_secondary": False, "primary_rescue_layers": [],
+                    "secondary_called": True, "secondary_pass": True, "secondary_text": _t, "outcome": "PASS"}}
             if is_std_story:
                 write_tone(out_path.replace(".wav", "_original.wav"), d)
                 r["slowdown_applied"] = True

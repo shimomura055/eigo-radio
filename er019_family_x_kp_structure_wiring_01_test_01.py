@@ -254,7 +254,7 @@ class B1bKeyPhraseAssemblyWiringTests(unittest.TestCase):
     def test_no_japanese_role_in_b1b_kp_results(self):
         with mock.patch.object(runner.kp_explanation_gen, "generate_kp_explanations",
                                 return_value=self.explanation_bundle), \
-             mock.patch.object(runner.shared_narration, "ensure_key_phrase_english_component",
+             mock.patch.object(runner.kp_dual, "ensure_key_phrase_english_component_x_dual",
                                 side_effect=lambda *_a, **_kw: _fake_en_result(1)), \
              mock.patch.object(runner, "generate_key_phrase_explanation_en_verified",
                                 return_value={"status": "OK", "path": "narration/kp_expl.wav",
@@ -269,7 +269,7 @@ class B1bKeyPhraseAssemblyWiringTests(unittest.TestCase):
     def test_phrase_repeat_is_same_path_and_sha256_as_first(self):
         with mock.patch.object(runner.kp_explanation_gen, "generate_kp_explanations",
                                 return_value=self.explanation_bundle), \
-             mock.patch.object(runner.shared_narration, "ensure_key_phrase_english_component",
+             mock.patch.object(runner.kp_dual, "ensure_key_phrase_english_component_x_dual",
                                 side_effect=lambda *_a, **_kw: _fake_en_result(1)), \
              mock.patch.object(runner, "generate_key_phrase_explanation_en_verified",
                                 return_value={"status": "OK", "path": "narration/kp_expl.wav",
@@ -285,7 +285,7 @@ class B1bKeyPhraseAssemblyWiringTests(unittest.TestCase):
         の同一性(付帯条件)は影響を受けない。"""
         with mock.patch.object(runner.kp_explanation_gen, "generate_kp_explanations",
                                 return_value=self.explanation_bundle), \
-             mock.patch.object(runner.shared_narration, "ensure_key_phrase_english_component",
+             mock.patch.object(runner.kp_dual, "ensure_key_phrase_english_component_x_dual",
                                 side_effect=lambda *_a, **_kw: _fake_en_result(1)), \
              mock.patch.object(runner, "generate_key_phrase_explanation_en_verified",
                                 return_value={"status": "STOPPED", "reason": "forced_for_test"}):
@@ -302,7 +302,7 @@ class B1bKeyPhraseAssemblyWiringTests(unittest.TestCase):
                                "fallback_used": True, "canonical_text": "raise privacy concerns"}
         with mock.patch.object(runner.kp_explanation_gen, "generate_kp_explanations",
                                 return_value=self.explanation_bundle), \
-             mock.patch.object(runner.shared_narration, "ensure_key_phrase_english_component",
+             mock.patch.object(runner.kp_dual, "ensure_key_phrase_english_component_x_dual",
                                 side_effect=lambda *_a, **_kw: dict(fallback_en_result)), \
              mock.patch.object(runner, "generate_key_phrase_explanation_en_verified",
                                 return_value={"status": "OK", "path": "narration/kp_expl.wav",
@@ -318,7 +318,7 @@ class B1bKeyPhraseAssemblyWiringTests(unittest.TestCase):
         Variant Bが適用される(以前は無条件適用だった)。"""
         with mock.patch.object(runner.kp_explanation_gen, "generate_kp_explanations",
                                 return_value=self.explanation_bundle), \
-             mock.patch.object(runner.shared_narration, "ensure_key_phrase_english_component",
+             mock.patch.object(runner.kp_dual, "ensure_key_phrase_english_component_x_dual",
                                 side_effect=lambda *_a, **_kw: _fake_en_result(1)), \
              mock.patch.object(runner, "generate_key_phrase_explanation_en_verified",
                                 return_value={"status": "OK", "path": "x", "sha256": "y"}) as expl_mock:
@@ -333,7 +333,7 @@ class B1bKeyPhraseAssemblyWiringTests(unittest.TestCase):
         であること(legacy backendへVariant Bを無条件適用しない)。"""
         with mock.patch.object(runner.kp_explanation_gen, "generate_kp_explanations",
                                 return_value=self.explanation_bundle), \
-             mock.patch.object(runner.shared_narration, "ensure_key_phrase_english_component",
+             mock.patch.object(runner.kp_dual, "ensure_key_phrase_english_component_x_dual",
                                 side_effect=lambda *_a, **_kw: _fake_en_result(1)), \
              mock.patch.object(runner, "generate_key_phrase_explanation_en_verified",
                                 return_value={"status": "OK", "path": "x", "sha256": "y"}) as expl_mock:
@@ -346,7 +346,7 @@ class B1bKeyPhraseAssemblyWiringTests(unittest.TestCase):
         (Englishはrankごとに1回のみ生成される)。"""
         with mock.patch.object(runner.kp_explanation_gen, "generate_kp_explanations",
                                 return_value=self.explanation_bundle), \
-             mock.patch.object(runner.shared_narration, "ensure_key_phrase_english_component",
+             mock.patch.object(runner.kp_dual, "ensure_key_phrase_english_component_x_dual",
                                 side_effect=lambda *_a, **_kw: _fake_en_result(1)) as en_mock, \
              mock.patch.object(runner, "generate_key_phrase_explanation_en_verified",
                                 return_value={"status": "OK", "path": "x", "sha256": "y"}) as expl_mock:
@@ -359,7 +359,7 @@ class B1bKeyPhraseAssemblyWiringTests(unittest.TestCase):
         しない)。"""
         gen_mock = mock.Mock(return_value=self.explanation_bundle)
         with mock.patch.object(runner.kp_explanation_gen, "generate_kp_explanations", gen_mock), \
-             mock.patch.object(runner.shared_narration, "ensure_key_phrase_english_component",
+             mock.patch.object(runner.kp_dual, "ensure_key_phrase_english_component_x_dual",
                                 side_effect=lambda *_a, **_kw: _fake_en_result(1)), \
              mock.patch.object(runner, "generate_key_phrase_explanation_en_verified",
                                 return_value={"status": "OK", "path": "x", "sha256": "y"}):

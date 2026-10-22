@@ -196,7 +196,11 @@ class KpInheritanceTest(unittest.TestCase):
         open(wav, "wb").write(_wavbytes(4))
         sv = runner.FAMILY_X_VARIABLE_ROLE_STYLE_VERSION
         cached_en = {"status": "OK", "asr_verified": True, "canonical_text": "based on", "text": "based on",
-                     "path": wav, "sha256": _sha(_wavbytes(4)), "disfluency_checked": True}
+                     "path": wav, "sha256": _sha(_wavbytes(4)), "disfluency_checked": True,
+                     # KPDUAL-PROD-D2(UDR #139): KP英語phraseの引継ぎは両Provider PASSの保存証跡を要する(fail-closed)
+                     "kp_dual_check": {"version": "kp_dual_check_v1", "ok": True, "canonical_text": "based on",
+                                       "wav_sha256": _sha(_wavbytes(4)), "primary": {"text": "based on", "pass": True},
+                                       "secondary": {"text": "based on", "pass": True}}}
         cached_ja = dict(cached_en, canonical_text="〜に基づいて", text="〜に基づいて")
         cached = {"style_version": sv, "key_phrases": {"1": {"english": cached_en, "japanese_meaning": cached_ja}}}
         with mock.patch.object(runner, "_ONLY_SEGMENTS", {"full_story_part1"}):

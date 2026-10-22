@@ -137,6 +137,11 @@ def test_force_secondary_true_call_sites_are_exactly_one_production_site():
         name = os.path.basename(p)
         if "_test" in name or name.startswith("test_") or "audit" in name:
             continue
+        # KPDUAL-PROD-D2(2026-10-22): Trial/DEV隔離経路(Production runnerから到達しない。例: er088_kp_asr_dual_pass_trial_01.py)は
+        # 「Production call-site」の対象外。KP英語phraseの両方PASS必須はforce_secondaryではなく`dual_required`(別機構)で、
+        # その呼出点は er096_kp_dual_pass_01_test_01 のAST testで固定する。
+        if "_trial_" in name or "_trial." in name:
+            continue
         try:
             tree = ast.parse(open(p, encoding="utf-8").read())
         except (SyntaxError, UnicodeDecodeError):

@@ -92,3 +92,22 @@ module定数`KP_EN_PHRASE_DUAL_REQUIRED = True`(新規`er096_kp_dual_pass_01.py`
 
 ## 未配線test
 `er096_kp_dual_pass_01_test_01.py`(16件: 現行挙動9 PASS・7 skip[D-2で有効化])。実行: `.venv/Scripts/python.exe -m unittest er096_kp_dual_pass_01_test_01 -v`。
+
+---
+# D-2 訂正(委任_03、2026-10-22、Opus独立レビュー OF-KPD-P-01〜12 + Fable採否を反映)
+上記D-1設計のうち、下記は**本節が優先**(旧記述は履歴として残す)。Opus台帳=`docs/pm/OPUS_FINDINGS_LEDGER.md`(OF-KPD-P-01〜12)。
+
+| 項 | D-1の記述 | D-2で確定した内容(実装=commit参照) |
+|---|---|---|
+| 論点A(GAP-3) | Primary救済層をPrimary NG扱い案 | **採用**。非ラテンKP層・Tier3・CS equivalenceなどAzure転写に依存して受理されたPrimaryは「Primary PASS」ではない(ユーザー§1「Secondary単独PASSでは最終合格としない」)。KP英語phraseに限り2026-09-06承認(CURRENT_SPEC:2111)を2026-10-22決定が上書き。救済フラグ`primary_rescued_by_secondary`は全層で立てる(P-06)。6呼出点は`segment_id`を渡さずTier3は到達しないが防御として持つ |
+| (a)2 Primary NG時 | 「Azureを呼ばず不合格」(短絡) | **短絡しない**(P-05)。Primary NG(P3相当)でもAzureを呼ぶ(費用は現行P3と同じ・HRパッケージにSecondary転写が残る・実装単純)。Primary PASS時は`force_secondary`と同じ経路。最終的にPrimary自身がPASSしていなければ`NG_DUAL_PRIMARY_NOT_PASS`。P1/P2(値DIFF・否定差・除外表)の既存短絡は現行どおり |
+| dual結果の保存 | `dual_check`をmanifestへ・`reuse_blocked` markで再生成 | X/Z専用フィールド**`kp_dual_check`**(`{version,ok,canonical_text,wav_sha256,primary{text,pass,rescued},secondary{text,pass},judge_state,source}`)に保存し、dual gateだけが読む。`reuse_blocked`はdualからは付けない(P-01)。gateは判定できなければ不合格(fail-closed) |
+| Store再利用 | 案S1(Azure 1回追記) | S1は維持。ただし**旧共有key(`ensure_key_phrase_english_component`の`key_phrase_english_component`)のentryは上書きしない**: X default profileは`style_instruction_version`末尾`+dual1`のX専用keyを使う(Fable判断)。K2 key A/B(X専用)はS1ゲート。**Azure障害=技術STOP(印も再生成もしない)、Azure NGのときだけ再生成**。Store全件一括事前確認はしない(再利用時のみ) |
+| 再利用点 | Store/他を「共通helper」 | 6点すべてが共通helper`kp_dual_reuse_ok`を呼ぶ: X(1)前回results `_generate_or_reuse_kp` role=english (2)`try_inherit_from_cached`(API 0) (3)Store key A (4)Store key B (5)X default `+dual1` key / Z(6)`generate_or_reuse_z` kp_en。再判定は保存Primary転写を現行分類器でAPI 0再判定し、非ラテン再構成・救済依存は不合格 |
+| 共有module | `ensure_key_phrase_english_component`にkwarg追加 | **`er006_audio_cost_pilot_02_shared_narration.py`は編集しない**(Family A隔離不変条件、P-04)。X runnerの`_kp_english_generate_fn`既定分岐から`er096_kp_dual_pass_01.ensure_key_phrase_english_component_x_dual`を呼び、同一構造のMasterAudioKeyを組み立てて`repro01.generate_key_phrase_component_verified(..., dual_pass_required=True)`を呼ぶ。rollback時は共有関数へ委譲し`master_audio_id`一致(test固定)。kwarg追加は`generate_key_phrase_component_verified`・strict・`build_attempt_ctx`・`AttemptCtx`・`store.get_or_generate(reuse_gate=)`のみ(すべて既定OFF) |
+| ENGLISH_LOCK前 | circuit open時もTTS最大回数 | **ENGLISH_LOCK段に入る前に`circuit_open()`を確認**し、openならTTSを回さず技術STOP(最大試行回数・HR Lockの意味は不変、P-02)。HR Lockモジュールは**変更しない**(U4/#86、OPEN-371継続)。最終slotの`NG_SECONDARY_UNAVAILABLE`→`STOPPED`→HR Lock(HUMAN_REVIEW_REQUIRED)に入る現行挙動はAPI 0 testで実証・記録(dual化で露出が増える点をユーザーへ明示=判断候補: OPEN-371のKP限定先行実装) |
+| 監査 | `audit["dual"]` | `audit["dual"]`(required/primary_provider/secondary_provider/primary_pass/primary_text/primary_rescued_by_secondary/primary_rescue_layers/primary_not_pass_reason/secondary_called/secondary_pass/secondary_text/outcome)、Secondary step名`secondary_dual`、dual PASS時にclassificationをSecondary側で上書きしない、新state`NG_DUAL_PRIMARY_NOT_PASS`(PASSING_STATESに入れない。`done()`の警告→PASS_WITH_WARNING変換は不変)(P-08) |
+| AST test | 6箇所 | `total_slots=KEY_PHRASE_TOTAL_MAX_ATTEMPTS`を渡すstrict呼出⇔`dual_pass_required`、`KP_EXPLANATION_MAX_ATTEMPTS`呼出にはdualなし。値はTrue直書き禁止(転送変数か単一flag読取関数`dual_enabled()`のみ)。Production .pyがer088/er091/er092/er093(Trial)をimportしない(P-09) |
+| 範囲外 | - | 組立時のdual証跡欠落blockingゲート(ユーザー判断)、Store全件事前確認(ユーザー決定済み)、同一wavのAzure再試行(P-11)。**非blockingの監査**(組立時にKP英語のdual証跡欠落を警告ログ+summary記録)はFable判断で採用 |
+
+実装ファイル: `er078_asr_unified_judge_01.py`(`dual_required`、`NG_DUAL_PRIMARY_NOT_PASS`)・`er006_secondary_asr_01.py`(救済フラグ全層・step名・classification非上書き・cascade OFF時fail-closed)・`er078_asr_unified_attempt_ctx_01.py`・`er003_v1_repro01_main_generate.py`(kwarg・circuit確認)・`er006_master_audio_store_01.py`(`reuse_gate`)・`er096_kp_dual_pass_01.py`(新)・`er019_family_x_kp_en_k2_store_01.py`・`er019_family_x_audio_production_runner_01.py`・`er019_family_x_validation_inheritance_01.py`・`er063_family_z_audio_01.py`。test=`er096_kp_dual_pass_01_test_01.py`(判定層)+`er096_kp_dual_pass_01_wiring_test_01.py`(配線)。rollback=`er096_kp_dual_pass_01.KP_EN_PHRASE_DUAL_REQUIRED`(既定True)。
