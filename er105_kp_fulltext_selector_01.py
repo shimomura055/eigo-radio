@@ -340,19 +340,83 @@ def resolve_model(process: Optional[str]) -> str:
 # ============================================================
 # 選定gate(retry込み)と、run_key_phrase_selection互換の入口
 # ============================================================
-def build_machine_note(attempt_record: dict) -> str:
-    """P-07: 直前attemptの機械診断(不適合だった語句と理由)を2回目の選定noteにする。Prompt 2本文は変更せず、本文の後ろに置く。"""
+def phrase_key(phrase: str) -> str:
+    """KP-OUTER-RETRY-SAME-PHRASE-FIX: 同一句判定用の正規化キー(NFKC・空白正規化・小文字化)。"""
+    return _normalize_phrase(phrase or "").lower()
+
+
+def build_machine_note(attempt_record: dict, history: Optional[list] = None) -> str:
+    """P-07: 直前attemptの機械診断(不適合だった語句と理由)を2回目の選定noteにする。Prompt 2本文は変更せず、本文の後ろに置く。
+    history(KP-OUTER-RETRY-SAME-PHRASE-FIX): それ以前のattemptで不適合だった語句[{"phrase","reasons"}]を累積して併記する(同一句の再選択を防ぐ)。"""
     lines = []
     if attempt_record.get("status") == STATUS_PARSE_FAILED:
         lines.append("- 前回の出力は所定のJSON形式として解釈できませんでした。")
     for r in attempt_record.get("validation_reasons") or []:
         lines.append(f"- {r}")
+    cur = set()
     for ir in attempt_record.get("item_reasons") or []:
+        cur.add(phrase_key(ir["phrase"]))
         lines.append(f"- 「{ir['phrase']}」: " + " / ".join(ir["reasons"]))
-    if not lines:
+    prior = [h for h in (history or []) if phrase_key(h["phrase"]) not in cur]
+    if not lines and not prior:
         return ""
-    return ("前回の選定結果のうち、次の点が機械検証で不適合でした。該当する語句を、条件を満たす別の語句に置き換えて選び直してください"
-            "(不適合でなかった語句は、そのまま使ってかまいません)。\n" + "\n".join(lines))
+    out = ""
+    if lines:
+        out = ("前回の選定結果のうち、次の点が機械検証で不適合でした。該当する語句を、条件を満たす別の語句に置き換えて選び直してください"
+               "(不適合でなかった語句は、そのまま使ってかまいません)。\n" + "\n".join(lines))
+    if prior:
+        out += ("\n\n" if out else "") + build_exclusion_note(prior)
+    return out
+
+
+def build_exclusion_note(excluded: list) -> str:
+    """KP-OUTER-RETRY-SAME-PHRASE-FIX: 『次の語句は選ばない(理由付き)』のnote(本文後置・Prompt 2本文は不変)。excluded=[{"phrase","reasons":[...]}]。"""
+    if not excluded:
+        return ""
+    lines = [f"- 「{e['phrase']}」: " + " / ".join(e.get("reasons") or ["不適合"]) for e in excluded]
+    return ("次の語句は、これまでの検証で不適合と確定しています。同じ語句、または同じ理由で不適合になる語句は選ばないでください"
+            "(条件を満たす別の語句がなければ、無理に3件に揃えず、適切な語句だけを選んでください)。\n" + "\n".join(lines))
+
+
+def apply_exclusions(v: dict, excluded: Optional[list], *, final_attempt: bool, min_keep: int = KP_COUNT_MIN) -> dict:
+    """KP-OUTER-RETRY-SAME-PHRASE-FIX: 外側retryで不適合確定済みの語句(excluded、正規化後一致)が選定に再び含まれたら、
+    Luna(canonicalization)呼出前に機械検証で不適合とする。通常attemptはitem_reasonsへ理由追加(=再選定へ)。最終attemptは、残るitemが
+    min_keep件以上なら除外句だけを落としてshortfall確定(数合わせ/条件緩和なし)、残らなければ不適合のまま。入力dictは変更しない。
+    除外した語句は v["exclusion_dropped"] / 不適合化は v["exclusion_hits"] に残す。"""
+    out = {k: (list(val) if isinstance(val, list) else val) for k, val in v.items()}
+    out.setdefault("exclusion_hits", [])
+    out.setdefault("exclusion_dropped", [])
+    if not excluded:
+        return out
+    ex = {phrase_key(e["phrase"]): e for e in excluded}
+    resolved = [dict(r) for r in v.get("resolved", [])]
+    item_reasons = [dict(ir, reasons=list(ir["reasons"])) for ir in v.get("item_reasons", [])]
+    hit_idx = {r["index"] for r in resolved if phrase_key(r["phrase"]) in ex}
+    if not hit_idx:
+        return out
+    hits = [{"index": r["index"], "phrase": r["phrase"], "prior_reasons": list(ex[phrase_key(r["phrase"])].get("reasons") or [])}
+            for r in resolved if r["index"] in hit_idx]
+    keep = [r for r in resolved if r["index"] not in hit_idx]
+    if final_attempt and len(keep) >= min_keep:
+        item_reasons = [ir for ir in item_reasons if ir["index"] not in hit_idx]
+        reasons = [x for x in out.get("reasons", []) if not x.startswith("件数が")]
+        if not (KP_COUNT_MIN <= len(keep) <= KP_COUNT_MAX):
+            reasons.append(f"件数が{KP_COUNT_MIN}〜{KP_COUNT_MAX}の範囲外(実際: {len(keep)})")
+        out.update(resolved=keep, item_reasons=item_reasons, reasons=reasons, exclusion_dropped=hits,
+                   ok=(not reasons and not item_reasons))
+        return out
+    by_idx = {ir["index"]: ir for ir in item_reasons}
+    for h in hits:
+        msg = "外側retryで不適合と確定済みの語句の再選択(前回の理由: " + (" / ".join(h["prior_reasons"]) or "不適合") + ")"
+        if h["index"] in by_idx:
+            by_idx[h["index"]]["reasons"].append(msg)
+        else:
+            item_reasons.append({"index": h["index"], "phrase": h["phrase"], "reasons": [msg]})
+        for r in resolved:
+            if r["index"] == h["index"]:
+                r["reasons"] = list(r.get("reasons", [])) + [msg]
+    out.update(resolved=resolved, item_reasons=item_reasons, exclusion_hits=hits, ok=False)
+    return out
 
 
 def merge_notes(*notes) -> Optional[str]:
@@ -371,7 +435,7 @@ def _cmu_gate_meta(cmu, lexicon: dict, attempts: list) -> dict:
 
 def run_selection_gate(article_text: str, make_call_fn: Callable[[str], Callable], *, diagnostic_note: Optional[str] = None,
                        max_attempts: int = MAX_ATTEMPTS, units: Optional[list] = None,
-                       sleep_fn: Optional[Callable[[float], None]] = None) -> dict:
+                       sleep_fn: Optional[Callable[[float], None]] = None, excluded_phrases: Optional[list] = None) -> dict:
     """returns {"status", "items"(original_items形式), "attempts_detail", "model_id", "response_id", "shortfall",
     "user_message_sha256", "messages"}。attempt失敗(技術/parse/検証)は最大max_attempts回。
     OF-KPFT-P-07: 2回目以降は直前の機械診断noteを本文の後ろに後置して再選定する(Prompt 2本文は不変)。技術失敗の再試行前は待機する
@@ -386,6 +450,15 @@ def run_selection_gate(article_text: str, make_call_fn: Callable[[str], Callable
     attempts, messages = [], []
     last_status, last_model, last_resp = STATUS_TECHNICAL_FAILED, None, None
     machine_note = None
+    history = []   # KP-OUTER-RETRY-SAME-PHRASE-FIX: 以前のattemptで不適合だった語句(累積。次のmachine_noteへ併記)
+    excluded_phrases = list(excluded_phrases or [])
+
+    def _acc(rec):
+        seen = {phrase_key(h["phrase"]) for h in history}
+        for ir in rec.get("item_reasons") or []:
+            if phrase_key(ir["phrase"]) not in seen:
+                history.append({"phrase": ir["phrase"], "reasons": list(ir["reasons"])})
+                seen.add(phrase_key(ir["phrase"]))
     for attempt in range(1, max_attempts + 1):
         user_message = build_user_message(article_text, merge_notes(diagnostic_note, machine_note))
         assert prompt_prefix_intact(user_message), "Prompt 2が改変されている"
@@ -417,14 +490,16 @@ def run_selection_gate(article_text: str, make_call_fn: Callable[[str], Callable
             rec = {"attempt": attempt, "status": STATUS_PARSE_FAILED, "error": str(e), "raw_text": raw,
                    "model": model_id, "response_id": response_id, "user_message_sha256": msg_sha}
             attempts.append(rec)
-            machine_note = build_machine_note(rec)
+            machine_note = build_machine_note(rec, history)
             last_status = STATUS_PARSE_FAILED
             continue
         v = validate_and_resolve(selected, units)
         # KP-QUALITY-2ITEMS M1: 構成する全英単語のCMU登録確認(語単位)。未登録語itemは機械診断noteで再選定、最終attemptはCMU未登録のみが原因なら除外してshortfall確定。
+        v = apply_exclusions(v, excluded_phrases, final_attempt=(attempt == max_attempts))
         v = cmu.apply_cmu_to_validation(v, final_attempt=(attempt == max_attempts))
         rec = {"attempt": attempt, "status": STATUS_PASS if v["ok"] else STATUS_INVALID, "validation_reasons": v["reasons"],
-               "item_reasons": v["item_reasons"], "resolved": v["resolved"], "cmu_excluded": v.get("cmu_excluded") or [], "raw_text": raw, "model": model_id,
+               "item_reasons": v["item_reasons"], "resolved": v["resolved"], "cmu_excluded": v.get("cmu_excluded") or [],
+               "exclusion_hits": v.get("exclusion_hits") or [], "exclusion_dropped": v.get("exclusion_dropped") or [], "raw_text": raw, "model": model_id,
                "response_id": response_id, "user_message_sha256": msg_sha}
         attempts.append(rec)
         if v["ok"]:
@@ -432,7 +507,8 @@ def run_selection_gate(article_text: str, make_call_fn: Callable[[str], Callable
             return {"status": STATUS_PASS, "items": items, "attempts_detail": attempts, "model_id": model_id,
                     "response_id": response_id, "shortfall": len(items) < KP_COUNT_MAX, "user_message_sha256": msg_sha,
                     "messages": messages, "cmu_gate": _cmu_gate_meta(cmu, cmu_lexicon, attempts)}
-        machine_note = build_machine_note(rec)
+        machine_note = build_machine_note(rec, history)
+        _acc(rec)
         last_status = STATUS_INVALID
     return {"status": last_status, "items": None, "attempts_detail": attempts, "model_id": last_model, "response_id": last_resp,
             "shortfall": None, "user_message_sha256": attempts[-1].get("user_message_sha256") if attempts else None,
@@ -441,7 +517,7 @@ def run_selection_gate(article_text: str, make_call_fn: Callable[[str], Callable
 
 def run_fulltext_selection(article_text: str, out_dir: str, article_id: str, source_level: str, process: Optional[str] = None,
                            diagnostic_note: Optional[str] = None, *, make_call_fn: Optional[Callable[[str], Callable]] = None,
-                           sleep_fn: Optional[Callable[[float], None]] = None) -> dict:
+                           sleep_fn: Optional[Callable[[float], None]] = None, excluded_phrases: Optional[list] = None) -> dict:
     """`sc.run_key_phrase_selection(..., kp_backend="fulltext_p2")`が委譲する入口(配線は次委任)。
     戻り値は旧`_run_key_phrase_selection_strategy_l`と同じキー構成(status/parsed/model_id/original_items/kp_backend_used)に
     加え、Zの外側retryが参照する`parsed={"items": [...]}`を持つ。成果物: keywords_selector_prompt.txt / keywords_runtime_metadata.json。
@@ -453,7 +529,8 @@ def run_fulltext_selection(article_text: str, out_dir: str, article_id: str, sou
     else:
         if process is not None and process not in ALLOWED_PROCESSES:
             raise FulltextSelectionError(f"processはB1_SUPPORT/A2_SUPPORTのみ(実際: {process!r})")
-    gate = run_selection_gate(article_text, make_call_fn, diagnostic_note=diagnostic_note, sleep_fn=sleep_fn)
+    gate = run_selection_gate(article_text, make_call_fn, diagnostic_note=diagnostic_note, sleep_fn=sleep_fn,
+                              excluded_phrases=excluded_phrases)
     for n, msg in enumerate(gate["messages"], start=1):
         with open(f"{out_dir}/keywords_selector_prompt.txt" if n == 1 else f"{out_dir}/keywords_selector_prompt_attempt{n}.txt",
                   "w", encoding="utf-8") as f:
@@ -471,6 +548,7 @@ def run_fulltext_selection(article_text: str, out_dir: str, article_id: str, sou
         "attempts": len(gate["attempts_detail"]), "has_diagnostic_note": bool(diagnostic_note),
         "attempts_detail": [{k: v for k, v in a.items() if k != "raw_text"} for a in gate["attempts_detail"]],
         "cmu_gate": gate.get("cmu_gate"),
+        "outer_excluded_phrases": [{"phrase": e["phrase"], "reasons": list(e.get("reasons") or [])} for e in (excluded_phrases or [])],
     }
     with open(f"{out_dir}/keywords_runtime_metadata.json", "w", encoding="utf-8") as f:
         json.dump(meta, f, ensure_ascii=False, indent=2)

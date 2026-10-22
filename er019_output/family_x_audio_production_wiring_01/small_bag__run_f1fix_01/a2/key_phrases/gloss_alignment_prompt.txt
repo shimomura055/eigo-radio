@@ -1,0 +1,76 @@
+以下の各英語key_phraseは、教材として最終確定した英語表現です。current_japanese_glossは、確定前の候補表現(display_phrase_before_canonicalization)を基準に付けた日本語グロスで、確定したkey_phrase全体とは一致していない可能性があります。added_content_wordsは、確定時に候補表現へ新しく加わった内容語です(空の場合があります)。
+
+各項目について、次を行ってください。
+1. current_japanese_glossが、最終的なkey_phrase全体(目的語・補語・修飾語を含むすべての語)の意味と過不足なく一致しているかを判定し(current_gloss_consistent)てください。「～」「〜」を含むかどうかは判定の基準ではありません。key_phrase全体の意味が日本語に表れているかどうかだけで判定してください。
+2. 一致している場合は、japanese_glossにcurrent_japanese_glossをそのまま返してください。一致していない場合は、最終key_phrase全体に一致する日本語グロスを返してください。current_japanese_glossが最終key_phrase全体の意味を既に表している場合は、より自然・より適切と思える言い換えがあっても書き換えず、current_japanese_glossをそのまま返してください。書き換えるのは、key_phraseの語の意味が欠けている・誤っている場合だけです。
+3. added_content_wordsの各語について、japanese_glossの中でその語の意味を表している部分を、japanese_glossからそのまま切り出してadded_word_mappingsに書いてください(english_wordには対応させる英語の語、複数語をまとめた句でもかまいません。japanese_spanにはjapanese_glossに含まれない文字列や、「～」などの記号だけを書かないでください)。複数の英語語が一つの日本語表現でまとめて表されている場合は、同じ部分を複数の語に対応させてかまいません。added_content_wordsが空の項目は、added_word_mappingsを空配列にしてください。
+判定の参考例:
+- key_phrase「based on」にcurrent「～をもとにした」: 辞書的に自然なので一致です。
+- key_phrase「based on interviews」にcurrent「～をもとにした」: interviewsの意味が欠けているので不一致です。「インタビューをもとにした」なら一致です。
+- key_phrase「fall into」にcurrent「～に落ちる」: 意味は表れているので一致です(「～に陥る」へ書き換えません)。
+
+key_phrase単体で他の文脈でも再利用できる自然な訳にし、本文固有の固有名詞・文脈の追加はしないでください。key_phrase全体の意味を反映できている場合のみqa_reflects_all_key_phrase_wordsをPASSにしてください。
+
+【新規生成の規則(current_japanese_glossがnull[未生成]の項目に適用。全文選定で選ばれた表現には、まだ日本語グロスがありません)】
+- current_japanese_glossがnullの項目は、既存グロスの修正ではなく新規生成です。current_gloss_consistentは必ずfalseにし、japanese_glossには最終key_phrase全体の意味に過不足なく一致する日本語グロスを新しく書いてください(上記の指示2の『そのまま返す』は適用されません)。
+- source_sentenceは、辞書に複数の語義がある表現で、そのうちどの語義かを選ぶためだけに使ってください(文中の固有名詞・文脈の追加はしないでください)。
+
+【日本語グロスの規則(承認済み選定Promptと同一)】
+選ぶ表現は必ず本文中の実表現(source_span)に対応させ、短く自然な日本語グロスを付けてください。
+
+日本語グロスは、辞書的に正しいだけでなく、日本人の英語学習者が聞いてすぐ意味を理解できる、自然で平易な現代日本語にしてください。直訳調や、「常態」「是正」のような過度に硬い報道語・漢語、一般的な学習者には伝わりにくい表現は避けてください。
+
+日本語グロスには、括弧（　）を使って別の訳し方・専門用語・補足情報を書き添えないでください。音声だけで聞いてそのまま意味が伝わる、平易な言い換えだけの一文にしてください。
+
+日本語グロスは、辞書的な表記として自然な範囲であれば「～」「〜」を使ってもかまいません(例: 「～を示す」)。ただし「…」のようなプレースホルダー記号は使わないでください。日本語グロスに数字を含める場合は、算用数字(1、2、3…)ではなく漢数字(一、二、三…)で書いてください。
+
+「ソロ旅行を～％とする」のように、数値を補わないと意味が成立しない句・日本語グロス(数値の穴埋めを必要とする不完全な表現)は選ばないでください。それ単体で意味が成立する句・グロスを選んでください。
+
+【対象項目】
+[
+  {
+    "rank": 1,
+    "key_phrase": "Carry the Load",
+    "display_phrase_before_canonicalization": "Carry the Load",
+    "current_japanese_gloss": null,
+    "source_sentence": "Bags Split the Job: Mini Bags Catch the Eye, Large Bags Carry the Load",
+    "added_content_words": []
+  },
+  {
+    "rank": 2,
+    "key_phrase": "on the throne",
+    "display_phrase_before_canonicalization": "on the throne",
+    "current_japanese_gloss": null,
+    "source_sentence": "Bags no longer play a game with only one size on the throne",
+    "added_content_words": []
+  },
+  {
+    "rank": 3,
+    "key_phrase": "spread through the whole market",
+    "display_phrase_before_canonicalization": "spread through the whole market",
+    "current_japanese_gloss": null,
+    "source_sentence": "We are not seeing mini bags spread through the whole market",
+    "added_content_words": []
+  }
+]
+
+【記事本文(参考)】
+# Bags Split the Job: Mini Bags Catch the Eye, Large Bags Carry the Load
+
+In 2026 fashion, mini bags are having a big moment. Palm-sized clutches, small pouches, and eye-catching minaudières fill runways and fashion reports. Some are so small that you might ask, “Can you really fit anything in that?”
+
+But mini bags are not taking over. They are not pushing large bags away. In 2026, the two sizes seem to have different jobs. One carries what we need. The other helps create the look.
+
+ELLE included mini bags among its fall and winter 2026 style trends. Its examples included Khaite’s palm-sized evening clutch and Chanel’s novelty minaudière. They mostly hold the basics: a phone, wallet, keys, and lip products. They cannot compete with roomy bags for storage. Their job is visual. They add a special feeling. They say, “This is today’s mood.”
+
+We see the season more clearly by looking at bags beside them.
+
+Vogue also covered the 2026 season. It showed small pouches from Prada and Loewe. It also showed Celine’s Ultra Maxi and Altuzarra’s large shoulder bag. It showed roomy totes from Toteme and other brands, too.
+
+This list matters. Large bags had not disappeared. Small and large bags appeared in the same season.
+
+We are not seeing mini bags spread through the whole market. Instead, they are back in fashion reports and on certain runways. Even so, trends now look different. Bags no longer play a game with only one size on the throne. Large bags are the luggage crew. They carry what we need. Mini bags are the stage crew. They catch the eye and set the mood. In 2026, the runway proudly shows this split in their work.
+
+## In one line
+
+In 2026, large bags carry the load, while mini bags carry the mood.

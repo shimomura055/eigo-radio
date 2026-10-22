@@ -295,7 +295,8 @@ def get_client():
 # ============================================================
 def run_key_phrase_selection(article_text: str, out_dir: str, article_id: str, source_level: str,
                               process: str = None, diagnostic_note: str = None,
-                              kp_backend: str = "strategy_l", synthetic: bool = False) -> dict:
+                              kp_backend: str = "strategy_l", synthetic: bool = False,
+                              excluded_phrases: list = None) -> dict:
     """process(ER-006-MODEL-ROUTING-CONTRACT-01追補): "B1_SUPPORT"/"A2_SUPPORT"を
     渡すと、routing.require_model()で検証済みのApproved ModelをAPI call直前に
     このスコープ内で確定させる(呼び出し元でmodelを事前計算させない)。Noneの
@@ -314,7 +315,9 @@ def run_key_phrase_selection(article_text: str, out_dir: str, article_id: str, s
     if kp_backend == FULLTEXT_BACKEND_ID:
         return _run_key_phrase_selection_fulltext(
             article_text, out_dir, article_id, source_level, process=process,
-            diagnostic_note=diagnostic_note, synthetic=synthetic)
+            diagnostic_note=diagnostic_note, synthetic=synthetic, excluded_phrases=excluded_phrases)
+    if excluded_phrases:
+        raise ValueError("excluded_phrases(外側retryの明示除外)は全文選定backend(fulltext_p2)専用。A/B/C(strategy_l)には適用しない")
     if kp_backend != "strategy_l":
         raise ValueError(f"未対応のkp_backend={kp_backend!r}(対応: 'strategy_l', {FULLTEXT_BACKEND_ID!r}。旧db_hybridはKPFT 委任_02で撤去)")
     result = _run_key_phrase_selection_strategy_l(
@@ -346,12 +349,13 @@ FULLTEXT_BACKEND_ID = "fulltext_p2"
 
 
 def _run_key_phrase_selection_fulltext(article_text: str, out_dir: str, article_id: str, source_level: str,
-                                        process: str = None, diagnostic_note: str = None, synthetic: bool = False) -> dict:
+                                        process: str = None, diagnostic_note: str = None, synthetic: bool = False,
+                                        excluded_phrases: list = None) -> dict:
     """全文選定backend(Prompt 2)。選定失敗はretry上限(er105)後にstatus!=PASSを返す(fail-closed。旧経路へのfallbackはしない)。
     モデルrouting違反・API 400等の設定不備はFulltextSelectionErrorを送出して即停止する。"""
     import er105_kp_fulltext_selector_01 as ft
     result = ft.run_fulltext_selection(article_text, out_dir, article_id, source_level, process=process,
-                                       diagnostic_note=diagnostic_note)
+                                       diagnostic_note=diagnostic_note, excluded_phrases=excluded_phrases)
     _log_kp_backend_telemetry(
         article_id, source_level, requested_backend=FULLTEXT_BACKEND_ID, backend_used=FULLTEXT_BACKEND_ID,
         final_status=result.get("status"), fallback_triggered=False, model_id=result.get("model_id"),
@@ -663,6 +667,41 @@ def make_stop_check(run_dir: str = None):
     return check
 
 
+def _kp_accepts_kwarg(fn, name: str) -> bool:
+    import inspect
+    try:
+        params = inspect.signature(fn).parameters
+    except (TypeError, ValueError):
+        return False
+    return name in params or any(p.kind == inspect.Parameter.VAR_KEYWORD for p in params.values())
+
+
+def _kp_invalid_item_reasons(canon: dict, entry: dict):
+    """canonicalization INVALIDの項目別理由 -> [(rank, index, [reasons])]。最終attemptの診断を使う(無ければ空=除外しない)。"""
+    attempts = entry.get("canonicalization_attempts") or []
+    if not attempts:
+        return []
+    last = attempts[-1]
+    return [(ir.get("rank"), ir.get("index"), list(ir.get("reasons") or [])) for ir in (last.get("item_reasons") or [])]
+
+
+def _kp_add_exclusions(excluded: list, original_items: list, bad: list, outer: int, source: str) -> None:
+    """KP-OUTER-RETRY-SAME-PHRASE-FIX: INVALID確定した選定句(display_phrase=選定時の本文表層形)を、理由付きで累積除外リストへ追加する(重複は理由を併合)。"""
+    import er105_kp_fulltext_selector_01 as ft
+    for rank, index, reasons in bad:
+        it = next((x for x in original_items if rank is not None and x.get("rank") == rank), None)
+        if it is None and index is not None and 0 <= index < len(original_items):
+            it = original_items[index]
+        if not it or not it.get("display_phrase"):
+            continue
+        key = ft.phrase_key(it["display_phrase"])
+        ex = next((e for e in excluded if ft.phrase_key(e["phrase"]) == key), None)
+        if ex is None:
+            excluded.append({"phrase": it["display_phrase"], "reasons": list(reasons), "outer_attempt": outer, "source": source})
+        else:
+            ex["reasons"] = list(dict.fromkeys(ex["reasons"] + list(reasons)))
+
+
 def run_kp_with_outer_retry(text: str, kp_dir: str, article_id: str, source_level: str, process=None, *,
                             max_outer: int = KP_OUTER_RETRY_MAX, generic_note: str = "",
                             select_fn=None, canon_fn=None, redundancy_fn=None, stop_check_fn=None,
@@ -671,15 +710,18 @@ def run_kp_with_outer_retry(text: str, kp_dir: str, article_id: str, source_leve
     canon_fn = canon_fn or run_key_phrase_canonicalization
     redundancy_fn = redundancy_fn or run_key_phrase_redundancy_qa
     os.makedirs(kp_dir, exist_ok=True)
+    import er105_kp_fulltext_selector_01 as ft_sel
     red_max = KEY_PHRASE_REDUNDANCY_RETRY_MAX
     red_note, red_attempt, failures, log, redundancy_retry_log = None, 0, 0, [], []
     outer = 0
+    excluded = []   # KP-OUTER-RETRY-SAME-PHRASE-FIX(OPEN-456 F1): 前周までにINVALID確定した選定句[{"phrase","reasons","outer_attempt","source"}]。累積して次周の選定へ渡す
     cmu_note = ""   # KP-QUALITY-2ITEMS M2(OF-KPQ-P-02): canonicalization後のCMU未登録診断。NGのたびに作り直し、次周の選定noteへ確実に渡す
     import er108_kp_cmu_lexicon_gate_01 as cmu
 
     def save_log():
         with open(f"{kp_dir}/outer_retry_log.json", "w", encoding="utf-8") as f:
-            json.dump({"scope": scope_note, "max_outer": max_outer, "generic_note": generic_note, "attempts": log},
+            json.dump({"scope": scope_note, "max_outer": max_outer, "generic_note": generic_note, "attempts": log,
+                       "excluded_phrases": excluded},
                       f, ensure_ascii=False, indent=2)
 
     def fail(entry, sel, canon, status):
@@ -701,9 +743,22 @@ def run_kp_with_outer_retry(text: str, kp_dir: str, article_id: str, source_leve
         note = (generic_note or "") + (("\n\n" if generic_note else "") + red_note if red_note else "")
         if cmu_note:
             note = note + ("\n\n" if note else "") + cmu_note
-        sel = select_fn(text, kp_dir, article_id, source_level, process=process, diagnostic_note=(note or None))
+        if excluded:
+            note = note + ("\n\n" if note else "") + ft_sel.build_exclusion_note(excluded)
+        sel_kwargs = {}
+        if excluded and _kp_accepts_kwarg(select_fn, "excluded_phrases"):
+            sel_kwargs["excluded_phrases"] = [dict(e) for e in excluded]
+        sel = select_fn(text, kp_dir, article_id, source_level, process=process, diagnostic_note=(note or None), **sel_kwargs)
         entry = {"outer_attempt": outer, "note_sha256": _kp_sha(note), "selection_status": sel.get("status"),
-                 "selection_phrases": [it.get("display_phrase") for it in ((sel.get("parsed") or {}).get("items") or [])]}
+                 "selection_phrases": [it.get("display_phrase") for it in ((sel.get("parsed") or {}).get("items") or [])],
+                 "excluded_phrases_in": [e["phrase"] for e in excluded]}
+        # F1: select_fnがgate(er105)を通らない/除外を受け取れない場合の保険。除外句が再び返ったら、canonicalization(Luna)呼出前に不適合とする。
+        if sel.get("status") == "KEY_WORDS_STRUCTURE_PASS" and excluded:
+            ex_keys = {ft_sel.phrase_key(e["phrase"]) for e in excluded}
+            again = [it.get("display_phrase") for it in (sel.get("original_items") or []) if ft_sel.phrase_key(it.get("display_phrase")) in ex_keys]
+            if again:
+                entry["excluded_phrase_reselected"] = again
+                sel = dict(sel, status="KEY_WORDS_STRUCTURE_INVALID")
         if sel.get("status") != "KEY_WORDS_STRUCTURE_PASS":
             failures += 1
             entry["artifacts"] = _kp_copy_attempt_artifacts(kp_dir, outer)
@@ -717,6 +772,8 @@ def run_kp_with_outer_retry(text: str, kp_dir: str, article_id: str, source_leve
         entry["canonicalization_attempts"] = _kp_canon_reasons(kp_dir)
         if canon.get("status") not in ("CANONICALIZATION_PASS", "CANONICALIZATION_REVIEW_REQUIRED"):
             failures += 1
+            _kp_add_exclusions(excluded, sel.get("original_items") or [], _kp_invalid_item_reasons(canon, entry), outer, "canonicalization_invalid")
+            entry["excluded_phrases_added"] = [e["phrase"] for e in excluded if e["outer_attempt"] == outer]
             entry["artifacts"] = _kp_copy_attempt_artifacts(kp_dir, outer)
             log.append(entry)
             if failures >= max_outer:
@@ -735,6 +792,10 @@ def run_kp_with_outer_retry(text: str, kp_dir: str, article_id: str, source_leve
             if stale:
                 entry["stale_artifact"] = stale
             cmu_note = cmu.build_canonicalized_note(chk)
+            _kp_add_exclusions(excluded, sel.get("original_items") or [],
+                               [(b.get("rank"), None, ["基本形化・一般化後「%s」にCMU未登録語 %s" % (b.get("used_form"), ", ".join(b.get("unregistered") or []))]) for b in chk["bad"]],
+                               outer, "cmu_post_canon")
+            entry["excluded_phrases_added"] = [e["phrase"] for e in excluded if e["outer_attempt"] == outer]
             entry["canonicalization_status"] = "CMU_POST_CANON_INVALID"
             log.append(entry)
             if failures >= max_outer:
