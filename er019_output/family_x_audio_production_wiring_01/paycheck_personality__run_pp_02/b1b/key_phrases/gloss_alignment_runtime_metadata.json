@@ -1,0 +1,78 @@
+{
+  "article_id": "FAMILY_X_AUDIO_paycheck_personality__run_pp_02_b1b",
+  "version": "ER-003-KP-GLOSS-ALIGN-02",
+  "final_status": "ALIGN_PASS",
+  "targets": [
+    3
+  ],
+  "unresolved_ranks": [],
+  "mapping_gate": false,
+  "rules_sha256": "447e07cb8b9a30850a8dc75b6c3cce48c53d99b5f1fafa88d19b778d9155949b",
+  "cost_jpy": 0.0801,
+  "attempts_detail": [
+    {
+      "attempt": 1,
+      "target_ranks": [
+        3
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_0fb80b170d1bf16a006ad9613d92b087d0847a6b060c6635d0",
+      "usage": {
+        "input_tokens": 1881,
+        "output_tokens": 625,
+        "cached_input_tokens": 0
+      },
+      "cost_jpy": 0.0801,
+      "status": "ALIGN_PASS",
+      "n_valid": 1,
+      "n_items": 1
+    }
+  ],
+  "item_log": {
+    "3": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "より高い収入と弱い関連がある",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "現在のグロスには「より高い収入」との関連が含まれていません。修正版では、関連の弱さと、関連する対象であるより高い収入を表しています。",
+        "added_word_mappings": [
+          {
+            "english_word": "linked",
+            "japanese_span": "関連がある"
+          },
+          {
+            "english_word": "higher",
+            "japanese_span": "より高い"
+          },
+          {
+            "english_word": "income",
+            "japanese_span": "収入"
+          }
+        ],
+        "machine_check": {
+          "required_words": [
+            "linked",
+            "higher",
+            "income"
+          ],
+          "covered": {
+            "linked": "関連がある",
+            "higher": "より高い",
+            "income": "収入"
+          },
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.0801,
+        "model": "gpt-6-luna"
+      }
+    ]
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "attempt_number": 1,
+  "route": "custom_60ebc452",
+  "segment_id": "kp2_en",
+  "theme_id": "paycheck_personality__run_pp_02",
+  "level": "a2",
+  "source_out_path": "er019_output/family_x_audio_production_wiring_01/paycheck_personality__run_pp_02/a2/narration/kp2_en.wav",
+  "saved_at": "2026-10-22T10:37:11",
+  "sha256": "10f686d0c9a9f38c5c2fa4a5edccb8c9e546c71350deb2a759052a5a8224b07d",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "BATCH",
+  "instruction_text": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Say only this phrase, exactly once, without adding, omitting, or changing any words, and make sure the final sound is actually spoken.",
+  "asr_text": "weak link",
+  "audio_classification": "EXACT_MATCH",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": true,
+  "disfluency_checked": true,
+  "disfluency_evidence": {
+    "flagged": false,
+    "repeats": [],
+    "word_count": 2,
+    "transcript": "Weak  Link.",
+    "method": "faster_whisper_small_local_verbatim"
+  },
+  "repetition_qa_checked": false,
+  "repetition_qa_evidence": null,
+  "scg_info": null,
+  "asr_prompt_applied": true,
+  "non_latin_cascade_enabled": true,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": true,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "weak link",
+      "classification": "EXACT_MATCH",
+      "entity_like_source": []
+    },
+    {
+      "step": "secondary_dual",
+      "provider": "azure",
+      "text": "Weak link.",
+      "classification": "NORMALIZED_MATCH",
+      "phrase_list_used": false,
+      "azure_phrase_list_weight": null,
+      "azure_phrase_list": [],
+      "cached": false,
+      "unified_judge_state": "PASS",
+      "dual_required": true,
+      "entity_like_source": []
+    }
+  ]
+}
