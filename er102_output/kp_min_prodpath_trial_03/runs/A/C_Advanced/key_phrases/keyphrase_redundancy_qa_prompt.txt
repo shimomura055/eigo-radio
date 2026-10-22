@@ -1,0 +1,81 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# “Can’t Wait for the Next Episode”? Make One Yourself? “byUs” Lets You Shape Stories with Characters You Love
+
+“Wait, it ends here!?” Have you ever blurted that out when a manga ends at an exciting moment and says the story will continue next time? What will that character say next? What will happen to the two of them? It might be a shame to let those ideas stay only in your head.
+
+The company that runs LINE Manga has announced the launch of “byUs,” an AI story chat service. It is pronounced “bias.” You can enjoy talking with your favorite characters and make your own stories based on the works. You can take a step from the reader’s seat onto the stage of story-making.
+
+If you thought, “Can’t you already talk with characters?” you’ve noticed something important. LINE Manga already has “Character Chat.” The company says the difference is that, as well as having conversations, you can make stories more freely. In other words, you can enjoy not only asking, “What should we talk about next?” but also, “What should happen next?”
+
+For example, you can continue an official story in the service. Or you can make your own story as a fan. “What if that person showed up here?” “If it were me, I’d want to see this happen.” The ideas that grew with every turn of the page can now become a starting point for your own stories. The time spent waiting for what happens next may become time spent thinking up what happens next.
+
+What’s more, you can publish the fan stories you make if you want to. You can enjoy them privately, or let someone else read them. But things change when you make a story public. “Will people understand this plot?” “I want to work on what happens next a little more.” You may find yourself thinking like a story-maker before you know it, even though you started out as a reader.
+
+Of course, you can’t bring in just anything you like. Only works and characters approved by their original creators can be used. The Help page also explains that the service has permission to use the original works it features through formal agreements with their creators. This is the foundation that lets you enjoy freely imagining “what if.”
+
+The service first offered two works and four characters in Japan. “Taking part in a story” here means moving the story forward through conversation or making a story as a fan. The fun of reading a work is joined by the fun of thinking up what happens next.
+
+Until now, “If it were me, I’d do it this way” was something you could only say to yourself. With byUs, those words become a way into making a story. What will you say to a character you love? What will happen next in the story? So, where will your “next part” begin?
+
+## In one line
+LINE Manga has launched byUs, an AI service that lets readers chat with approved characters and create stories based on their works. It gives readers a way to imagine what happens next and make fan stories they can keep private or share.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "blurt out",
+    "japanese_gloss": "思わず口に出す",
+    "source_sentence": "Have you ever blurted that out when a manga ends at an exciting moment and says the story will continue next time"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "think up",
+    "japanese_gloss": "思いつく",
+    "source_sentence": "The time spent waiting for what happens next may become time spent thinking up what happens next"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "story-making",
+    "japanese_gloss": "物語を作ること",
+    "source_sentence": "You can take a step from the reader's seat onto the stage of story-making"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "before you know it",
+    "japanese_gloss": "いつの間にか",
+    "source_sentence": "You may find yourself thinking like a story-maker before you know it, even though you started out as a reader"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "bring in",
+    "japanese_gloss": "取り入れる",
+    "source_sentence": "Of course, you can't bring in just anything you like"
+  }
+]

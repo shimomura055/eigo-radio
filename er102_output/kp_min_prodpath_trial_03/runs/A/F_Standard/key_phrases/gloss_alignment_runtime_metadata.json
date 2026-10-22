@@ -1,0 +1,66 @@
+{
+  "article_id": "KPMP3_A_F_Standard",
+  "version": "ER-003-KP-GLOSS-ALIGN-02",
+  "final_status": "ALIGN_PASS",
+  "targets": [
+    5
+  ],
+  "unresolved_ranks": [],
+  "mapping_gate": false,
+  "rules_sha256": "447e07cb8b9a30850a8dc75b6c3cce48c53d99b5f1fafa88d19b778d9155949b",
+  "cost_jpy": 0.0583,
+  "attempts_detail": [
+    {
+      "attempt": 1,
+      "target_ranks": [
+        5
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_01cec7547cb35bd1006ad9a631251887d0b834ae0d785ee4ae",
+      "usage": {
+        "input_tokens": 1860,
+        "output_tokens": 357,
+        "cached_input_tokens": 0
+      },
+      "cost_jpy": 0.0583,
+      "status": "ALIGN_PASS",
+      "n_valid": 1,
+      "n_items": 1
+    }
+  ],
+  "item_log": {
+    "5": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "どれも同じ種類",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "「どれも同じ」では「種類」を表す kind の意味が欠けています。「どれも同じ種類」なら all、same、kind の意味が反映されています。",
+        "added_word_mappings": [
+          {
+            "english_word": "kind",
+            "japanese_span": "種類"
+          }
+        ],
+        "machine_check": {
+          "required_words": [
+            "kind"
+          ],
+          "covered": {
+            "kind": "種類"
+          },
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.0583,
+        "model": "gpt-6-luna"
+      }
+    ]
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "article_id": "KPMP3_A_B_Advanced",
+  "version": "ER-003-KP-GLOSS-ALIGN-02",
+  "final_status": "ALIGN_PASS",
+  "targets": [
+    3,
+    5
+  ],
+  "unresolved_ranks": [],
+  "mapping_gate": false,
+  "rules_sha256": "447e07cb8b9a30850a8dc75b6c3cce48c53d99b5f1fafa88d19b778d9155949b",
+  "cost_jpy": 0.0571,
+  "attempts_detail": [
+    {
+      "attempt": 1,
+      "target_ranks": [
+        3,
+        5
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_0f9f55e585975750006ad9a50032fc87d0825bc3d06dcd7302",
+      "usage": {
+        "input_tokens": 1961,
+        "output_tokens": 321,
+        "cached_input_tokens": 0
+      },
+      "cost_jpy": 0.0571,
+      "status": "ALIGN_PASS",
+      "n_valid": 2,
+      "n_items": 2
+    }
+  ],
+  "item_log": {
+    "3": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "ほかでもないあなた",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "「ほかでもない」だけでは、key phraseに含まれる you の意味が表れていません。",
+        "added_word_mappings": [
+          {
+            "english_word": "you",
+            "japanese_span": "あなた"
+          }
+        ],
+        "machine_check": {
+          "required_words": [
+            "you"
+          ],
+          "covered": {
+            "you": "あなた"
+          },
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.0571,
+        "model": "gpt-6-luna"
+      }
+    ],
+    "5": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "収入のこととなると",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "current glossには income の意味が含まれていません。",
+        "added_word_mappings": [
+          {
+            "english_word": "income",
+            "japanese_span": "収入"
+          }
+        ],
+        "machine_check": {
+          "required_words": [
+            "income"
+          ],
+          "covered": {
+            "income": "収入"
+          },
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.0571,
+        "model": "gpt-6-luna"
+      }
+    ]
+  }
+}

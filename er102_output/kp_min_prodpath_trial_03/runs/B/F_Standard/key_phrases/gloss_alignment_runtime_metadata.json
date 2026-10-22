@@ -1,0 +1,66 @@
+{
+  "article_id": "KPMP3_B_F_Standard",
+  "version": "ER-003-KP-GLOSS-ALIGN-02",
+  "final_status": "ALIGN_PASS",
+  "targets": [
+    5
+  ],
+  "unresolved_ranks": [],
+  "mapping_gate": false,
+  "rules_sha256": "447e07cb8b9a30850a8dc75b6c3cce48c53d99b5f1fafa88d19b778d9155949b",
+  "cost_jpy": 0.0532,
+  "attempts_detail": [
+    {
+      "attempt": 1,
+      "target_ranks": [
+        5
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_0a914ac512a28186006ad9a6564c2487d0a1c32f6966484e86",
+      "usage": {
+        "input_tokens": 1859,
+        "output_tokens": 293,
+        "cached_input_tokens": 0
+      },
+      "cost_jpy": 0.0532,
+      "status": "ALIGN_PASS",
+      "n_valid": 1,
+      "n_items": 1
+    }
+  ],
+  "item_log": {
+    "5": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "みんな同じ種類",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "「みんな同じ」では「kind（種類）」の意味が抜けています。「みんな同じ種類」なら、句全体の意味を表しています。",
+        "added_word_mappings": [
+          {
+            "english_word": "kind",
+            "japanese_span": "種類"
+          }
+        ],
+        "machine_check": {
+          "required_words": [
+            "kind"
+          ],
+          "covered": {
+            "kind": "種類"
+          },
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.0532,
+        "model": "gpt-6-luna"
+      }
+    ]
+  }
+}

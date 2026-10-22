@@ -1,0 +1,83 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Does Earning More Make You Work Harder? Compare Yourself with Who You Were Yesterday
+
+“Are people who earn more always more hardworking?” When people discuss income and personality, they often look for “things successful people have in common.” But this time, let’s ask the high earner next door to step away from the stage for a moment. The person in the spotlight is none other than you.
+
+The research team gathered information from 11 studies and studied it. The studies followed the same people over time. The people in them had jobs. They reported their personalities and income from work. Researchers asked about both at least three times. So this was not one picture, but a set of pictures showing changes over time.
+
+The way researchers looked at the data matters. They separated differences between people from changes within one person. One example is: “That person works harder than I do and earns more.” Another question is: “How did my personality change after my income changed?” They moved from ranking people by yearly income to following one person over time. It was a different contest altogether.
+
+The trait they focused on was conscientiousness: the habit of working seriously and steadily. Their study found that, within the same person, higher income was linked to greater conscientiousness later on.
+
+Wait—we thought personality affected income. But income had a part too!
+
+But the arrow does not point only one way. A rise in conscientiousness was also weakly linked to higher income later. They found a weak link in both directions: personality with later income, and income with later personality.
+
+After hearing this, you may want to ask, “Does a pay raise change your personality too?” But wait before you decide that is true. The team studied data that tracked changes over time. This cannot prove that income changed personality, or that personality increased income. Something else may have affected both.
+
+“Coming first” and “being the cause” are two different things. In a drama, the person we see first at the scene is not always the criminal. The order of events can give us a clue, but it cannot solve the case by itself.
+
+So when you look back at your income or the way you work, you do not have to end with, “That’s just my personality.” Ask instead, “What has changed in me lately?” Then look more closely. Instead of judging other people, look for changes in yourself. With income and personality, changing who you compare yourself with can show a very different picture.
+
+## In one line
+For one person, higher income was linked to later conscientiousness, and higher conscientiousness was weakly linked to later income. These links do not prove cause and effect, but your own changes can show a different picture.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "conscientiousness",
+    "japanese_gloss": "まじめに責任を持って取り組む性格",
+    "source_sentence": "The trait they focused on was conscientiousness: the habit of working seriously and steadily"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "weak link",
+    "japanese_gloss": "関係があまり強くないこと",
+    "source_sentence": "They found a weak link in both directions: personality with later income, and income with later personality"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "come first",
+    "japanese_gloss": "先に起こること",
+    "source_sentence": "Coming first\" and \"being the cause\" are two different things"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "pay raise",
+    "japanese_gloss": "給料が上がること",
+    "source_sentence": "After hearing this, you may want to ask, \"Does a pay raise change your personality too"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "in the spotlight",
+    "japanese_gloss": "注目を集めている",
+    "source_sentence": "The person in the spotlight is none other than you"
+  }
+]

@@ -1,0 +1,27 @@
+{
+ "使用モデル": "gpt-6-luna(選定・canonicalization・gloss整合・Redundancy QA。er006 SUPPORT_MODEL=Production既定) / 評価者 claude-sonnet-5-5(最新世代、前回と同一尺度)",
+ "ArmA_全工程費用JPY": 16.2949,
+ "ArmA_OpenAI呼出数": 53,
+ "ArmA_input_tokens": 167185,
+ "ArmA_output_tokens": 174716,
+ "ArmB_全工程費用JPY": 16.5447,
+ "ArmB_OpenAI呼出数": 55,
+ "ArmB_input_tokens": 177182,
+ "ArmB_output_tokens": 175908,
+ "ArmA_選定のみJPY_最終attempt": 5.849,
+ "ArmB_選定のみJPY_最終attempt": 6.239,
+ "評価JPY_Sonnet5_5_24呼出": 42.8272,
+ "Trial合計JPY": 75.6668,
+ "per_unit_全工程": {
+  "A": 1.1639,
+  "B": 1.1818
+ },
+ "per_unit_選定": {
+  "A": 0.4178,
+  "B": 0.4456
+ },
+ "per_記事セット(2レベル)_全工程_B_minus_A": 0.0357,
+ "per_記事セット(2レベル)_選定_B_minus_A": 0.0557,
+ "注記": "起動順序の事故: 初回起動直後にSTOP確認rc=3(STOP_ALLが一時出現、直後に消滅=他agentのtest由来と推定)を見る前にprocessを起動してしまい、直ちに終了。usage logは0件(応答前)で、課金発生の可能性は最大8呼出(Luna選定1呼出約0.4円、合計約3円以下)で上記費用に含まず。再確認rc=0後に1回のみ再起動。",
+ "単価": "er009 PRICING(Luna)/ er098 PRICES(Sonnet 5.5 $2入力/$0.10キャッシュ/$10出力 per 1M、USD_JPY=160)"
+}

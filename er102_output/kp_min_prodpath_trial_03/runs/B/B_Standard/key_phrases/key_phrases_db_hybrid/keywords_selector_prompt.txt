@@ -1,0 +1,109 @@
+以下のB1英語記事本文から、初回リスニングで意味を取れず、その後の理解を止める可能性が高い英語表現を、支援価値の高い順にちょうど5個選んでください。
+
+まず初回リスニングで難しい箇所を見つけ、その箇所をコピーするのではなく、学ぶべき最小の単語・句・コロケーションへ抽出してください。
+
+display_phraseは1〜5語にしてください。完全文、主語と有限動詞を持つ節、記事固有の長い説明は禁止です。
+
+学習ポイントの明確化と最小化（必須）：学ぶべき語彙・熟語・表現を明確にし、意味と自然さを保てる最短の形で抽出する。不要な目的語・修飾語・文脈は除く。5語は上限であり、目標ではない。短縮によって学習価値が失われる場合のみ、必要な語を残す。
+
+動詞表現は本文の時制を残さず、原則として基本形へ直してください。受動表現を学ぶ価値がある場合は、be + past participleの見出し形を使用できます。
+
+文字で読み返したときではなく、音声で一度だけ聞いたときに意味を処理できるかを最優先してください。
+
+優先順位は、初回音声での処理困難、未知の可能性、瞬時の推測困難、本文の事実・感情・面白さへの影響、記事内重要度、汎用性の順です。
+
+未知単語、題材固有表現、短い複数語パターン、比喩・感情表現を同格の候補として扱ってください。構成語から意味を容易に推測できる透明表現は、記事上重要でも優先度を下げてください。
+
+「ソロ旅行を～％とする」のように、数値を補わないと意味が成立しない句・日本語グロス(数値の穴埋めを必要とする不完全な表現)は選ばないでください。それ単体で意味が成立する句・グロスを選んでください。
+
+選ぶ表現は必ず本文中の実表現(source_span)に対応させ、短く自然な日本語グロスを付けてください。
+
+日本語グロスは、辞書的に正しいだけでなく、日本人の英語学習者が聞いてすぐ意味を理解できる、自然で平易な現代日本語にしてください。直訳調や、「常態」「是正」のような過度に硬い報道語・漢語、一般的な学習者には伝わりにくい表現は避けてください。
+
+日本語グロスには、括弧（　）を使って別の訳し方・専門用語・補足情報を書き添えないでください。音声だけで聞いてそのまま意味が伝わる、平易な言い換えだけの一文にしてください。
+
+日本語グロスは、辞書的な表記として自然な範囲であれば「～」「〜」を使ってもかまいません(例: 「～を示す」)。ただし「…」のようなプレースホルダー記号は使わないでください。日本語グロスに数字を含める場合は、算用数字(1、2、3…)ではなく漢数字(一、二、三…)で書いてください。
+
+5個のうち1個は、汎用性や一般的な学習重要度は必ずしも高くなくても、この記事に特有であり、事前に意味・用法・音を理解しておくことでこの記事の本文全体を追いやすくなる語または表現を選んでください(key_phrase_role="topic")。判断基準は「この語・表現を事前に理解していると、この記事の本文を明確に追いやすくなるか」です。人名・企業名・ブランド名・地名だから選ぶ、専門用語だから選ぶ、といった特定の種類を優先するルールではありません。該当する語・表現が見当たらない場合でも、topicの項目を空にせず、その記事の中で最も近いと考えられる候補を選んでください。残り4個は、上記の基準に従って選んでください(key_phrase_role="important")。このkey_phrase_roleは、候補の種類・区分とは独立した、選定後の役割ラベルです。
+
+【Topic】title: Does Earning More Make You Work Harder? Compare Yourself with Who You Were Yesterday
+
+【重要な単語・単語群候補】
+- id: C14 | candidate: "higher income" | type: noun_phrase | occ: 3 | evidence: repeated_compound_noun | contained_in: C19 | sentence: S20
+- id: C15 | candidate: "different picture" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S38
+- id: C16 | candidate: "income changed" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S16
+- id: C17 | candidate: "later income" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S25
+- id: C18 | candidate: "person higher" | type: noun_phrase | occ: 0 | evidence: repeated_compound_noun | contained_in: C19 | sentence: ?
+- id: C19 | candidate: "person higher income" | type: noun_phrase | occ: 0 | evidence: repeated_compound_noun | contains: C14,C18 | sentence: ?
+- id: C20 | candidate: "want to" | type: noun_phrase | occ: 1 | evidence: wiktionary_multiword | sentence: S26
+- id: C21 | candidate: "weak link" | type: noun_phrase | occ: 1 | evidence: wiktionary_multiword | sentence: S25
+- id: C22 | candidate: "conscientiousness" | type: important_word | occ: 5 | evidence: heuristic[rare_technical_single_word_heuristic] | sentence: S19
+- id: C23 | candidate: "earner" | type: important_word | occ: 1 | evidence: heuristic[rare_technical_single_word_heuristic] | sentence: S5
+- id: C24 | candidate: "hardworking" | type: important_word | occ: 1 | evidence: heuristic[rare_technical_single_word_heuristic] | sentence: S3
+
+【phrase / idiom / phrasal verb候補】
+- id: C1 | candidate: "changes over" | type: phrasal_verb | occ: 2 | evidence: wiktionary[idiom,phrasal_verb] | sentence: S12
+- id: C2 | candidate: "Coming first" | type: idiom | occ: 2 | evidence: wiktionary[idiom] | sentence: S31
+- id: C3 | candidate: "in the spotlight" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S6
+- id: C4 | candidate: "Instead of" | type: phrase | occ: 2 | evidence: cefr_j | sentence: S37
+- id: C5 | candidate: "look back" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S34
+- id: C6 | candidate: "look for" | type: phrasal_verb | occ: 2 | evidence: wiktionary[phrasal_verb] | sentence: S4
+- id: C7 | candidate: "looked at" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S13
+- id: C8 | candidate: "next door" | type: phrase | occ: 1 | evidence: cefr_j | sentence: S5
+- id: C9 | candidate: "none other than" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | contains: C11 | sentence: S6
+- id: C10 | candidate: "one way" | type: phrase | occ: 1 | evidence: wiktionary[multiword_term] | sentence: S23
+- id: C11 | candidate: "other than" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | contained_in: C9 | sentence: S6
+- id: C12 | candidate: "over time" | type: phrase | occ: 4 | evidence: wiktionary[multiword_term] | sentence: S8
+- id: C13 | candidate: "pay raise" | type: phrase | occ: 1 | evidence: wiktionary[multiword_term] | sentence: S26
+- id: C30 | candidate: "reported their personalities" | type: phrase | occ: 1 | evidence: rule_poss_pattern | sentence: S10
+- id: C31 | candidate: "change your personality" | type: phrase | occ: 1 | evidence: rule_poss_pattern | sentence: S26
+- id: C32 | candidate: "just my personality" | type: phrase | occ: 1 | evidence: rule_poss_pattern | sentence: S34
+
+【word候補】
+- id: C25 | candidate: "weakly" | type: word | occ: 2 | evidence: cefr_j+ngsl_family | sentence: S24
+- id: C26 | candidate: "earns" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | sentence: S15
+- id: C27 | candidate: "trait" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | sentence: S19
+- id: C28 | candidate: "steadily" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | sentence: S19
+- id: C29 | candidate: "yearly" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | sentence: S17
+
+【SENTENCE REFERENCE】(文脈参照専用。この表の文字列をそのままitemへ書かないでください)
+S3: "Are people who earn more always more hardworking"
+S4: "When people discuss income and personality, they often look for "things successful people have in common"
+S5: "But this time, let's ask the high earner next door to step away from the stage for a moment"
+S6: "The person in the spotlight is none other than you"
+S8: "The studies followed the same people over time"
+S10: "They reported their personalities and income from work"
+S12: "So this was not one picture, but a set of pictures showing changes over time"
+S13: "The way researchers looked at the data matters"
+S15: "One example is: "That person works harder than I do and earns more"
+S16: "Another question is: "How did my personality change after my income changed"
+S17: "They moved from ranking people by yearly income to following one person over time"
+S19: "The trait they focused on was conscientiousness: the habit of working seriously and steadily"
+S20: "Their study found that, within the same person, higher income was linked to greater conscientiousness later on"
+S23: "But the arrow does not point only one way"
+S24: "A rise in conscientiousness was also weakly linked to higher income later"
+S25: "They found a weak link in both directions: personality with later income, and income with later personality"
+S26: "After hearing this, you may want to ask, "Does a pay raise change your personality too"
+S31: "Coming first" and "being the cause" are two different things"
+S34: "So when you look back at your income or the way you work, you do not have to end with, "That's just my personality"
+S37: "Instead of judging other people, look for changes in yourself"
+S38: "With income and personality, changing who you compare yourself with can show a very different picture"
+
+【選定方針】
+- 最終的に選ぶ5件は、必ず下記の候補一覧の中から選んでください。候補に
+  無い新しい表現を作らないでください。
+- 5個のうち少なくとも1個は、[重要な単語・単語群候補]区分から選んで
+  ください(記事理解・再利用価値の高い重要な名詞・専門用語・複合語)。
+- 残りは、[phrase / idiom / phrasal verb候補]区分を優先してください。
+  良い候補が不足する場合のみ[word候補]区分で補ってください。
+- CEFR難易度・語彙レベルを主要な判断軸にしないでください。
+- 各itemのsource_candidate_idには、下記候補一覧の各行に付与されている
+  candidate ID(例: C7)のうち、実際に選んだ候補のIDを1つだけ指定して
+  ください。本文の文字列そのもの(元のsource_sentence/source_span相当の
+  自由記述)は一切書かないでください。
+- surface_echoには、選んだ候補が表す表現を短く(1〜6語程度)書いて
+  ください。これは内部確認用の参考情報であり、正誤判定には使用しません。
+- 上記5件とは別に、backup_itemとして、重要語・重要表現
+  (key_phrase_role="important")の予備候補を1件、上記5件とは異なる
+  candidate IDで選んでください。topicの候補が正しく選べた場合でも、
+  backup_itemは必ず1件返してください(その場合は採用されません)。

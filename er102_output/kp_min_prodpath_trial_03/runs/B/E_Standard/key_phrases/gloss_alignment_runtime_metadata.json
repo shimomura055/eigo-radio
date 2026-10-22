@@ -1,0 +1,72 @@
+{
+  "article_id": "KPMP3_B_E_Standard",
+  "version": "ER-003-KP-GLOSS-ALIGN-02",
+  "final_status": "ALIGN_PASS",
+  "targets": [
+    5
+  ],
+  "unresolved_ranks": [],
+  "mapping_gate": false,
+  "rules_sha256": "447e07cb8b9a30850a8dc75b6c3cce48c53d99b5f1fafa88d19b778d9155949b",
+  "cost_jpy": 0.0605,
+  "attempts_detail": [
+    {
+      "attempt": 1,
+      "target_ranks": [
+        5
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_013aeca2d8cbcdb2006ad9a5a636a087d0b34a1a983597b6e6",
+      "usage": {
+        "input_tokens": 1835,
+        "output_tokens": 389,
+        "cached_input_tokens": 0
+      },
+      "cost_jpy": 0.0605,
+      "status": "ALIGN_PASS",
+      "n_valid": 1,
+      "n_items": 1
+    }
+  ],
+  "item_log": {
+    "5": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "人を呼んで手伝ってもらう",
+        "current_gloss_consistent": true,
+        "qa": "PASS",
+        "reasoning": "「人」がhuman、「手伝ってもらう」がhelperの意味を表しており、「呼んで」がbring inの意味も含むため、句全体と一致しています。",
+        "added_word_mappings": [
+          {
+            "english_word": "human",
+            "japanese_span": "人"
+          },
+          {
+            "english_word": "helper",
+            "japanese_span": "手伝ってもらう"
+          }
+        ],
+        "machine_check": {
+          "required_words": [
+            "human",
+            "helper"
+          ],
+          "covered": {
+            "human": "人",
+            "helper": "手伝ってもらう"
+          },
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.0605,
+        "model": "gpt-6-luna"
+      }
+    ]
+  }
+}

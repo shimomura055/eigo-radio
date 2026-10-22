@@ -1,0 +1,198 @@
+{
+ "kind": "span",
+ "evaluator": "claude-sonnet-5-5",
+ "unit_id": "F_Advanced",
+ "user_message_sha256": "bf493a587df4995c7e61ea5c0c232a5a378454d02cead9397d5c5c7d745f189c",
+ "user_message": "あなたは英語学習コンテンツの独立評価者です。以下の英語記事から「英語上級者が学ぶ価値のあるKey Phrase」を選ぶ課題があり、\n複数の匿名の選定結果(セット S1〜Sn、各5件以内)があります。各候補を下記rubricで採点してください。どのセットがどのモデルの結果かは不明です。\n\n【選定時に参加者へ与えられた条件(参考)】\n1. 本文中の連続した語句だけを抜き出す(変更・言い換え・追加・創作は禁止。原形化や一般化は行わない)。\n2. 5語以内。\n3. 学習ポイントの明確化と最小化: 学ぶべき語彙・熟語・表現を明確にし、意味と自然さを保てる最短の形で抽出する。不要な目的語・修飾語・文脈は除く。5語は上限であり目標ではない。短縮によって学習価値が失われる場合のみ、必要な語を残す。\n4. 上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. 基本語だけで構成され字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. 条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n【採点rubric(各候補、各0〜2の整数)】\n(以下V,E,Nは前回(6モデル比較)と同一の定義)\n- V 上級者向け学習価値: 2=上級者でも学ぶ価値が明確(句動詞・イディオム・コロケーション・語法・語彙として) / 1=価値はあるが中程度、または一部平易 / 0=学習価値がほぼない。\n- E 易しさの排除: 2=易しい表現ではない(意味が字面から自明でない) / 1=やや易しいが慣用的な意味や語法の学びはある / 0=基本語のみで字面どおり、上級者なら当然知っている。\n- N 単位の自然さ: 2=自然で完結した学習単位 / 1=余分な語または不足があるが許容 / 0=中途半端に切られている・不自然。\n(以下は今回追加した最小化観点。前回スコアとは別尺度として採点)\n- C 学習ポイントの明確さ: 2=何を学ぶ表現かが一目で明確 / 1=やや曖昧(学習点が複数に分散・焦点がぼやける) / 0=何が学習点か不明確。\n- U 不要語の除去: 2=不要な目的語・修飾語・文脈語が残っていない / 1=軽微な余分語が残る / 0=学習点に不要な目的語・修飾語・文脈が明らかに残り長い。\n- S 最短形: 2=学習価値を保った最短形になっている / 1=もう少し短くできる、または短くしすぎの兆候 / 0=明らかにもっと短くできる(または必要語を欠く)。\n- X 短縮の不自然さのなさ: 2=不自然・不完全な形になっていない / 1=やや不自然だが許容 / 0=短縮によって不自然・不完全なフレーズになっている。\nセット単位: padding = 5件を埋めるために学習価値の低い候補(V<=0またはE<=0)を入れていると判断するか(true/false)。\n\n【注意】\n- 本文との一致・語数は別途機械検証するため、ここでは採点対象外。ただし本文に明らかに存在しない表現と気付いた場合のみ noteに \"not_in_text\" と書く。\n- 候補の優劣を、セットの並び順やセットIDから推測しない。各候補を独立に採点する。\n- 候補が0件のセットは candidates を空配列にする。\n\n【出力】JSONのみ(説明文・コードフェンス不要)。noteは通常は空文字、本文に存在しない表現と気付いた場合のみ \"not_in_text\"。形式:\n{\"sets\":[{\"set_id\":\"S1\",\"padding\":false,\"candidates\":[{\"idx\":1,\"V\":2,\"E\":1,\"N\":2,\"C\":2,\"U\":2,\"S\":1,\"X\":2,\"note\":\"\"}]}]}\n\n\n【記事】\n\n# Who Says “We Won’t Attack”? A Warning About Mixing Up the Subject of British Support\n\n“Won’t attack.” At that one line, you were about to end the meeting in your head with the conclusion, “So Britain will only defend.” Wait a minute! An important detail is missing from the minutes: who won’t attack? This time, it’s the news detective’s turn to track down the subject.\n\nFirst, let’s check the announcement. A spokesperson for the Saudi-led coalition forces in Yemen said they had intercepted and destroyed one ballistic missile fired toward Riyadh by the Houthis.\n\nIn this context, the UK Ministry of Defence announced an air-defense mission for the Royal Air Force’s Typhoon fighter jets. They will protect Saudi cities and important facilities from air attacks. The mission is limited to defense, and the jets will not attack the Houthis.\n\nAt this point, you might want to say, “Right, they’re only on defense!” But the announcement mentions another task too: refueling in the air.\n\nBritain also said it would extend refueling support for Saudi air-defense operations. That support also covers operations to weaken Houthi military targets in Yemen. According to Britain, those targets threaten people in Saudi Arabia and Yemen.\n\n“Wait! You just said they wouldn’t attack, right?”\n\nHere, the detective zooms in on the name tag. The phrase “won’t attack” refers to the Typhoon mission. Meanwhile, refueling support also backs operations to weaken Houthi military targets. Even though both are put in the same box marked “British support,” they are not all the same kind of activity.\n\nIt is like someone saying, “I won’t drive,” while helping put fuel in a car. Not taking the wheel is different from not supporting the journey. But this comparison cannot settle who is responsible for military support. What we need to check is what the words cover.\n\nSo if you sum it up as “Britain won’t attack,” you stretch what was said about the Typhoon mission too far, making it cover all support. On the other hand, looking at what the refueling support covers and saying, “Then the Typhoons will attack too,” goes beyond the evidence.\n\nThe tools you need to read news are not a magnifying glass, but three questions: “Who?” “For which mission?” “Doing what?” Don’t leave after seeing only the big sign that says “to protect”; check the name tag underneath it too. Just putting one subject back can change how the news looks.\n\n## In one line\nBritain said its Typhoon jets would defend Saudi cities and key facilities, not attack the Houthis, while its refueling support also backs operations to weaken Houthi military targets. So the no-attack statement applies to the Typhoon mission, not all British support.\n\n\n【匿名の選定結果】\n\nS1:\n  1. refueling support\n  2. Mixing Up\n  3. taking the wheel\n  4. intercepted\n  5. zooms in on\n\nS2:\n  1. refueling support\n  2. Mixing Up\n  3. taking the wheel\n  4. Houthi military targets\n  5. intercepted\n",
+ "request_body": {
+  "model": "claude-sonnet-5-5",
+  "max_tokens": 16000,
+  "messages": [
+   {
+    "role": "user",
+    "content": "あなたは英語学習コンテンツの独立評価者です。以下の英語記事から「英語上級者が学ぶ価値のあるKey Phrase」を選ぶ課題があり、\n複数の匿名の選定結果(セット S1〜Sn、各5件以内)があります。各候補を下記rubricで採点してください。どのセットがどのモデルの結果かは不明です。\n\n【選定時に参加者へ与えられた条件(参考)】\n1. 本文中の連続した語句だけを抜き出す(変更・言い換え・追加・創作は禁止。原形化や一般化は行わない)。\n2. 5語以内。\n3. 学習ポイントの明確化と最小化: 学ぶべき語彙・熟語・表現を明確にし、意味と自然さを保てる最短の形で抽出する。不要な目的語・修飾語・文脈は除く。5語は上限であり目標ではない。短縮によって学習価値が失われる場合のみ、必要な語を残す。\n4. 上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。\n5. 基本語だけで構成され字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。\n6. 条件を満たす候補から5件選ぶ。適切な候補が不足する場合のみ5件未満とし、数合わせはしない。\n\n【採点rubric(各候補、各0〜2の整数)】\n(以下V,E,Nは前回(6モデル比較)と同一の定義)\n- V 上級者向け学習価値: 2=上級者でも学ぶ価値が明確(句動詞・イディオム・コロケーション・語法・語彙として) / 1=価値はあるが中程度、または一部平易 / 0=学習価値がほぼない。\n- E 易しさの排除: 2=易しい表現ではない(意味が字面から自明でない) / 1=やや易しいが慣用的な意味や語法の学びはある / 0=基本語のみで字面どおり、上級者なら当然知っている。\n- N 単位の自然さ: 2=自然で完結した学習単位 / 1=余分な語または不足があるが許容 / 0=中途半端に切られている・不自然。\n(以下は今回追加した最小化観点。前回スコアとは別尺度として採点)\n- C 学習ポイントの明確さ: 2=何を学ぶ表現かが一目で明確 / 1=やや曖昧(学習点が複数に分散・焦点がぼやける) / 0=何が学習点か不明確。\n- U 不要語の除去: 2=不要な目的語・修飾語・文脈語が残っていない / 1=軽微な余分語が残る / 0=学習点に不要な目的語・修飾語・文脈が明らかに残り長い。\n- S 最短形: 2=学習価値を保った最短形になっている / 1=もう少し短くできる、または短くしすぎの兆候 / 0=明らかにもっと短くできる(または必要語を欠く)。\n- X 短縮の不自然さのなさ: 2=不自然・不完全な形になっていない / 1=やや不自然だが許容 / 0=短縮によって不自然・不完全なフレーズになっている。\nセット単位: padding = 5件を埋めるために学習価値の低い候補(V<=0またはE<=0)を入れていると判断するか(true/false)。\n\n【注意】\n- 本文との一致・語数は別途機械検証するため、ここでは採点対象外。ただし本文に明らかに存在しない表現と気付いた場合のみ noteに \"not_in_text\" と書く。\n- 候補の優劣を、セットの並び順やセットIDから推測しない。各候補を独立に採点する。\n- 候補が0件のセットは candidates を空配列にする。\n\n【出力】JSONのみ(説明文・コードフェンス不要)。noteは通常は空文字、本文に存在しない表現と気付いた場合のみ \"not_in_text\"。形式:\n{\"sets\":[{\"set_id\":\"S1\",\"padding\":false,\"candidates\":[{\"idx\":1,\"V\":2,\"E\":1,\"N\":2,\"C\":2,\"U\":2,\"S\":1,\"X\":2,\"note\":\"\"}]}]}\n\n\n【記事】\n\n# Who Says “We Won’t Attack”? A Warning About Mixing Up the Subject of British Support\n\n“Won’t attack.” At that one line, you were about to end the meeting in your head with the conclusion, “So Britain will only defend.” Wait a minute! An important detail is missing from the minutes: who won’t attack? This time, it’s the news detective’s turn to track down the subject.\n\nFirst, let’s check the announcement. A spokesperson for the Saudi-led coalition forces in Yemen said they had intercepted and destroyed one ballistic missile fired toward Riyadh by the Houthis.\n\nIn this context, the UK Ministry of Defence announced an air-defense mission for the Royal Air Force’s Typhoon fighter jets. They will protect Saudi cities and important facilities from air attacks. The mission is limited to defense, and the jets will not attack the Houthis.\n\nAt this point, you might want to say, “Right, they’re only on defense!” But the announcement mentions another task too: refueling in the air.\n\nBritain also said it would extend refueling support for Saudi air-defense operations. That support also covers operations to weaken Houthi military targets in Yemen. According to Britain, those targets threaten people in Saudi Arabia and Yemen.\n\n“Wait! You just said they wouldn’t attack, right?”\n\nHere, the detective zooms in on the name tag. The phrase “won’t attack” refers to the Typhoon mission. Meanwhile, refueling support also backs operations to weaken Houthi military targets. Even though both are put in the same box marked “British support,” they are not all the same kind of activity.\n\nIt is like someone saying, “I won’t drive,” while helping put fuel in a car. Not taking the wheel is different from not supporting the journey. But this comparison cannot settle who is responsible for military support. What we need to check is what the words cover.\n\nSo if you sum it up as “Britain won’t attack,” you stretch what was said about the Typhoon mission too far, making it cover all support. On the other hand, looking at what the refueling support covers and saying, “Then the Typhoons will attack too,” goes beyond the evidence.\n\nThe tools you need to read news are not a magnifying glass, but three questions: “Who?” “For which mission?” “Doing what?” Don’t leave after seeing only the big sign that says “to protect”; check the name tag underneath it too. Just putting one subject back can change how the news looks.\n\n## In one line\nBritain said its Typhoon jets would defend Saudi cities and key facilities, not attack the Houthis, while its refueling support also backs operations to weaken Houthi military targets. So the no-attack statement applies to the Typhoon mission, not all British support.\n\n\n【匿名の選定結果】\n\nS1:\n  1. refueling support\n  2. Mixing Up\n  3. taking the wheel\n  4. intercepted\n  5. zooms in on\n\nS2:\n  1. refueling support\n  2. Mixing Up\n  3. taking the wheel\n  4. Houthi military targets\n  5. intercepted\n"
+   }
+  ]
+ },
+ "attempts": [
+  {
+   "attempt": 1,
+   "ok": true,
+   "elapsed_s": 4.46
+  }
+ ],
+ "ok": true,
+ "elapsed_s_total": 4.46,
+ "response_text": "{\"sets\":[{\"set_id\":\"S1\",\"padding\":true,\"candidates\":[{\"idx\":1,\"V\":1,\"E\":1,\"N\":2,\"C\":1,\"U\":2,\"S\":2,\"X\":2,\"note\":\"\"},{\"idx\":2,\"V\":1,\"E\":1,\"N\":1,\"C\":1,\"U\":2,\"S\":1,\"X\":1,\"note\":\"\"},{\"idx\":3,\"V\":1,\"E\":1,\"N\":2,\"C\":2,\"U\":2,\"S\":2,\"X\":2,\"note\":\"\"},{\"idx\":4,\"V\":1,\"E\":1,\"N\":2,\"C\":2,\"U\":2,\"S\":2,\"X\":2,\"note\":\"\"},{\"idx\":5,\"V\":2,\"E\":2,\"N\":2,\"C\":2,\"U\":2,\"S\":2,\"X\":2,\"note\":\"\"}]},{\"set_id\":\"S2\",\"padding\":true,\"candidates\":[{\"idx\":1,\"V\":1,\"E\":1,\"N\":2,\"C\":1,\"U\":2,\"S\":2,\"X\":2,\"note\":\"\"},{\"idx\":2,\"V\":1,\"E\":1,\"N\":1,\"C\":1,\"U\":2,\"S\":1,\"X\":1,\"note\":\"\"},{\"idx\":3,\"V\":1,\"E\":1,\"N\":2,\"C\":2,\"U\":2,\"S\":2,\"X\":2,\"note\":\"\"},{\"idx\":4,\"V\":0,\"E\":1,\"N\":2,\"C\":0,\"U\":1,\"S\":1,\"X\":2,\"note\":\"\"},{\"idx\":5,\"V\":1,\"E\":1,\"N\":2,\"C\":2,\"U\":2,\"S\":2,\"X\":2,\"note\":\"\"}]}]}",
+ "parsed": {
+  "sets": [
+   {
+    "set_id": "S1",
+    "padding": true,
+    "candidates": [
+     {
+      "idx": 1,
+      "V": 1,
+      "E": 1,
+      "N": 2,
+      "C": 1,
+      "U": 2,
+      "S": 2,
+      "X": 2,
+      "note": ""
+     },
+     {
+      "idx": 2,
+      "V": 1,
+      "E": 1,
+      "N": 1,
+      "C": 1,
+      "U": 2,
+      "S": 1,
+      "X": 1,
+      "note": ""
+     },
+     {
+      "idx": 3,
+      "V": 1,
+      "E": 1,
+      "N": 2,
+      "C": 2,
+      "U": 2,
+      "S": 2,
+      "X": 2,
+      "note": ""
+     },
+     {
+      "idx": 4,
+      "V": 1,
+      "E": 1,
+      "N": 2,
+      "C": 2,
+      "U": 2,
+      "S": 2,
+      "X": 2,
+      "note": ""
+     },
+     {
+      "idx": 5,
+      "V": 2,
+      "E": 2,
+      "N": 2,
+      "C": 2,
+      "U": 2,
+      "S": 2,
+      "X": 2,
+      "note": ""
+     }
+    ]
+   },
+   {
+    "set_id": "S2",
+    "padding": true,
+    "candidates": [
+     {
+      "idx": 1,
+      "V": 1,
+      "E": 1,
+      "N": 2,
+      "C": 1,
+      "U": 2,
+      "S": 2,
+      "X": 2,
+      "note": ""
+     },
+     {
+      "idx": 2,
+      "V": 1,
+      "E": 1,
+      "N": 1,
+      "C": 1,
+      "U": 2,
+      "S": 1,
+      "X": 1,
+      "note": ""
+     },
+     {
+      "idx": 3,
+      "V": 1,
+      "E": 1,
+      "N": 2,
+      "C": 2,
+      "U": 2,
+      "S": 2,
+      "X": 2,
+      "note": ""
+     },
+     {
+      "idx": 4,
+      "V": 0,
+      "E": 1,
+      "N": 2,
+      "C": 0,
+      "U": 1,
+      "S": 1,
+      "X": 2,
+      "note": ""
+     },
+     {
+      "idx": 5,
+      "V": 1,
+      "E": 1,
+      "N": 2,
+      "C": 2,
+      "U": 2,
+      "S": 2,
+      "X": 2,
+      "note": ""
+     }
+    ]
+   }
+  ]
+ },
+ "usage": {
+  "input_tokens": 2442,
+  "output_tokens": 526,
+  "reasoning_tokens": null,
+  "cached_tokens": 0,
+  "cache_creation_tokens": 0,
+  "thinking_blocks": 0
+ },
+ "response_id": "msg_011CgGmm5W7qJyfEgpSKjJXb",
+ "model_returned": "claude-sonnet-5-5",
+ "finish": "end_turn",
+ "cost_jpy": 1.62304,
+ "raw_response": {
+  "model": "claude-sonnet-5-5",
+  "id": "msg_011CgGmm5W7qJyfEgpSKjJXb",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "text",
+    "text": "{\"sets\":[{\"set_id\":\"S1\",\"padding\":true,\"candidates\":[{\"idx\":1,\"V\":1,\"E\":1,\"N\":2,\"C\":1,\"U\":2,\"S\":2,\"X\":2,\"note\":\"\"},{\"idx\":2,\"V\":1,\"E\":1,\"N\":1,\"C\":1,\"U\":2,\"S\":1,\"X\":1,\"note\":\"\"},{\"idx\":3,\"V\":1,\"E\":1,\"N\":2,\"C\":2,\"U\":2,\"S\":2,\"X\":2,\"note\":\"\"},{\"idx\":4,\"V\":1,\"E\":1,\"N\":2,\"C\":2,\"U\":2,\"S\":2,\"X\":2,\"note\":\"\"},{\"idx\":5,\"V\":2,\"E\":2,\"N\":2,\"C\":2,\"U\":2,\"S\":2,\"X\":2,\"note\":\"\"}]},{\"set_id\":\"S2\",\"padding\":true,\"candidates\":[{\"idx\":1,\"V\":1,\"E\":1,\"N\":2,\"C\":1,\"U\":2,\"S\":2,\"X\":2,\"note\":\"\"},{\"idx\":2,\"V\":1,\"E\":1,\"N\":1,\"C\":1,\"U\":2,\"S\":1,\"X\":1,\"note\":\"\"},{\"idx\":3,\"V\":1,\"E\":1,\"N\":2,\"C\":2,\"U\":2,\"S\":2,\"X\":2,\"note\":\"\"},{\"idx\":4,\"V\":0,\"E\":1,\"N\":2,\"C\":0,\"U\":1,\"S\":1,\"X\":2,\"note\":\"\"},{\"idx\":5,\"V\":1,\"E\":1,\"N\":2,\"C\":2,\"U\":2,\"S\":2,\"X\":2,\"note\":\"\"}]}]}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 2442,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 526,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}
