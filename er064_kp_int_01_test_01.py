@@ -92,6 +92,9 @@ class PromptRules(unittest.TestCase):
             self.assertNotIn("anchors_r1", open(f, encoding="utf-8").read(), f)
             self.assertNotIn("er064_kp_int_01_eval", open(f, encoding="utf-8").read(), f)
 
+    # TEST-HYGIENE-02(2026-10-22): tiktokenは本体.venv非導入(隔離環境のTIKTOKEN_PATH運用)。未導入環境ではskip。
+    @unittest.skipUnless(os.environ.get("TIKTOKEN_PATH") or __import__("importlib.util").util.find_spec("tiktoken"),
+                         "tiktoken未導入(隔離環境のみ。TIKTOKEN_PATHを指定すれば実行)")
     def test_tokens_not_above_current(self):
         base = PR.tokens(PR.head("P0", "std")) + PR.tokens(PR.tail("P0"))
         for pid in ("P1", "P2", "P3", "P4"):
@@ -168,7 +171,15 @@ class MachinePatterns(unittest.TestCase):
 
 class RunnerRules(unittest.TestCase):
     def test_constants(self):
-        self.assertEqual(RUN.HARD_STOP, 95.0)
+        # TEST-HYGIENE-02(2026-10-22): er064_kp_int_02_run/03_runはimport時にRUN.HARD_STOPを書き換える(R2/R3の上限)。
+        # 同一process(全回帰)ではそれらがdiscoveryで先にimportされるため、共有module属性は95.0でない。
+        # Round1定数としての95.0は、別名で独立にloadしたRound1 moduleで検証する(共有状態に依存しない)。
+        import importlib.util as _ilu
+        _spec = _ilu.spec_from_file_location("er064_kp_int_01_run_isolated_hygiene02", os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "er064_kp_int_01_run.py"))
+        _iso = _ilu.module_from_spec(_spec)
+        _spec.loader.exec_module(_iso)
+        self.assertEqual(_iso.HARD_STOP, 95.0)
         self.assertEqual(RUN.N["coffee"], 3)
         self.assertEqual(RUN.N["other"], 2)
         self.assertEqual(RUN.S.MODEL, "gpt-6-luna")

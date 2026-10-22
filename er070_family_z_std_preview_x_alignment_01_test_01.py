@@ -3,6 +3,7 @@
 import json
 import re
 import sys
+import unittest
 
 import er070_family_z_std_preview_x_alignment_01 as m
 import er003_v1_iran01_a2_generate as a2gen
@@ -76,4 +77,15 @@ check("[prior] Comment 1/2/Preview reused, only Comment 3 regenerated", len(call
       and out2["comments"]["1"] == out["comments"]["1"] and out2["comments"]["2"] == out["comments"]["2"])
 
 print(f"ALL PASS: {passed} checks")
-sys.exit(0)
+
+
+class ScriptChecksTest(unittest.TestCase):
+    """unittest discovery用(TEST-HYGIENE-02、2026-10-22): 本fileはstandalone script形式(`python <file>`で実行、
+    終了codeで判定)。モジュール読込時に全checkが実行済みなので、その結果を1件のtestとして検証する。"""
+    def test_all_checks_pass(self):
+        # check()は失敗時にAssertionErrorを送出するため、ここへ到達した時点で全check PASS
+        self.assertGreater(passed, 0)
+
+
+if __name__ == "__main__":
+    sys.exit(0)

@@ -1,5 +1,5 @@
 """KP-OPT-01 委任_02 test (Trial専用。ネットワーク・有料呼出なし)。実行: TIKTOKEN_PATH=... python er064_kp_opt_01_fix_test_02.py"""
-import hashlib, json, os, re, subprocess, sys
+import hashlib, json, os, re, subprocess, sys, unittest
 
 sys.path.insert(0, os.getcwd())
 if os.environ.get("TIKTOKEN_PATH"):
@@ -115,4 +115,14 @@ check("Production 8ファイルの未コミット差分なし", r.returncode == 
 
 fail = [n for n, ok in RES if not ok]
 print(f"\nRESULT {len(RES) - len(fail)}/{len(RES)} PASS")
-sys.exit(1 if fail else 0)
+
+
+class ScriptChecksTest(unittest.TestCase):
+    """unittest discovery用(TEST-HYGIENE-02、2026-10-22): 本fileはstandalone script形式(`python <file>`で実行、
+    終了codeで判定)。モジュール読込時に全checkが実行済みなので、その結果を1件のtestとして検証する。"""
+    def test_all_checks_pass(self):
+        self.assertEqual(fail, [])
+
+
+if __name__ == "__main__":
+    sys.exit(1 if fail else 0)

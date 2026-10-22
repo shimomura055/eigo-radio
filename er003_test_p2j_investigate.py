@@ -77,7 +77,10 @@ class CollectionCountTests(unittest.TestCase):
         import re
         files = glob.glob("er0*_test_*.py")
         prefixes = sorted({m.group(1) for m in (re.match(r"(er0\d\d)_", f) for f in files) if m})
-        sum_by_prefix = sum(inv_mod.collect_count(f"{p}_test_*.py") for p in prefixes)
+        # TEST-HYGIENE-02(2026-10-22): 現行の命名規則はer0NN_<name>_test_NN.py(例: er011_open146_..._test_01.py)も
+        # 含むため、prefix別patternは`{p}*_test_*.py`でないと旧形式(er0NN_test_*.py)だけを数えて過少になる。
+        # 各fileは先頭のer0NNで必ず1つのprefixに属するので、合計は重複なく全体と一致する。
+        sum_by_prefix = sum(inv_mod.collect_count(f"{p}*_test_*.py") for p in prefixes)
         combined = inv_mod.collect_count("er0*_test_*.py")
         self.assertEqual(combined, sum_by_prefix)
 
@@ -114,9 +117,17 @@ class ReconciliationArithmeticTests(unittest.TestCase):
     def setUpClass(cls):
         cls.inventory = inv_mod.build_inventory()
 
+    # TEST-HYGIENE-02(2026-10-22): P2H/P2I era listの既存moduleへ、その後の承認済み変更が正当にtestを追加した分
+    # (era当時の報告値1032/660はfrozenのまま保つ。live収集値からこの既知増分を引いた値が報告値と一致することを検証する)。
+    #   er003_test_key_words_research10 +2 = 652e71e62(ER-008-N8-FINAL-QA-HARDENING-21、2026-08-29)
+    #   er003_test_key_words_min_unit   +3 = 678f38e45(ER-009-N1-CONTENT-QUALITY-RECALIBRATION-03、2026-08-30)と
+    #                                        0e6744e0b(KEY-PHRASE-4PLUS1 Phase B、2026-09-28)の合計
+    # 新たな未説明の増減があればこの検証が失敗する(増分を黙って受理しない)。
+    TESTS_ADDED_SINCE_ERA = 5
+
     def test_p2h_reported_count_matches_er002_plus_er003_at_that_time(self):
         detail = self.inventory["detail"]
-        self.assertEqual(detail["er002_total_now"] + detail["er003_total_at_p2h_era"],
+        self.assertEqual(detail["er002_total_now"] + detail["er003_total_at_p2h_era"] - self.TESTS_ADDED_SINCE_ERA,
                          inv_mod.P2H_REPORTED_COUNT)
 
     def test_p2i_reported_count_matches_er003_at_p2i_era(self):
@@ -125,7 +136,7 @@ class ReconciliationArithmeticTests(unittest.TestCase):
         含めても値が変わらないことを確認する(過去時点のスコープは
         固定リストで再現しているため)。"""
         detail = self.inventory["detail"]
-        self.assertEqual(detail["er003_total_at_p2i_era"], inv_mod.P2I_REPORTED_COUNT)
+        self.assertEqual(detail["er003_total_at_p2i_era"] - self.TESTS_ADDED_SINCE_ERA, inv_mod.P2I_REPORTED_COUNT)
 
     def test_delta_fully_explained_by_scope_and_new_tests(self):
         arithmetic = self.inventory["detail"]["reconciliation_arithmetic"]

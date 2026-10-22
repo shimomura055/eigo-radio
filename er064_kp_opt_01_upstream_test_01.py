@@ -1,5 +1,5 @@
 # KP-OPT-01 Phase1-A test (Trial専用、Production非接続、ネットワーク・有料呼出なし)。件数を報告する。
-import hashlib, inspect, json, os, subprocess, sys
+import hashlib, inspect, json, os, subprocess, sys, unittest
 sys.path.insert(0, os.getcwd())
 import er064_kp_opt_01_upstream_core as U
 core, s1v2, ing = U.core, U.s1v2, U.ing
@@ -103,4 +103,14 @@ check("Rule7: take my place -> take someone's place INVALID(表とPromptの不�
 
 n_pass = sum(1 for _, ok, _ in RES if ok)
 print(f"\nRESULT {n_pass}/{len(RES)} PASS")
-sys.exit(0 if n_pass == len(RES) else 1)
+
+
+class ScriptChecksTest(unittest.TestCase):
+    """unittest discovery用(TEST-HYGIENE-02、2026-10-22): 本fileはstandalone script形式(`python <file>`で実行、
+    終了codeで判定)。モジュール読込時に全checkが実行済みなので、その結果を1件のtestとして検証する。"""
+    def test_all_checks_pass(self):
+        self.assertEqual(n_pass, len(RES))
+
+
+if __name__ == "__main__":
+    sys.exit(0 if n_pass == len(RES) else 1)

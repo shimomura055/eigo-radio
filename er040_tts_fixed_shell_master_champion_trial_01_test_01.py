@@ -105,9 +105,11 @@ class MasterAudioKeyDistinguishesStyleVersionsTest(unittest.TestCase):
     def test_master_audio_key_distinguishes_style_versions(self):
         text = shared_narration.FIXED_ENGLISH_TEXTS["welcome"]
         # (a) Production既定(v1、structured_separation)
-        key_v1 = shared_narration._make_english_key(text, tts_backend="structured_separation")
+        # TEST-HYGIENE-02(2026-10-22): _make_english_keyは承認済みW2(2ecb0c647、2026-09-29)でphrase名`name`が第1引数に追加された。
+        # welcomeは現行Master(v2)を継続する仕様のため、name="welcome"で呼ぶと本testの意図(a:v1/b:v2)どおりになる。
+        key_v1 = shared_narration._make_english_key("welcome", text, tts_backend="structured_separation")
         # (b) Production Flash-Lite Baseline(v2_flash_lite_short_style)
-        key_v2 = shared_narration._make_english_key(text, tts_backend="speech_metadata_flash_lite")
+        key_v2 = shared_narration._make_english_key("welcome", text, tts_backend="speech_metadata_flash_lite")
         # (c) 本TrialのCandidate B(Role style、trial_ch1_role_style_v1)
         key_trial_b = store.MasterAudioKey(
             language="en", speaker_voice="Charon", tts_model_id=shared_narration.TTS_MODEL_FLASH_LITE,

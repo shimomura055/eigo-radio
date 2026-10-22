@@ -187,8 +187,12 @@ class AssetsUnchanged(unittest.TestCase):
         if not os.path.exists(p):
             self.skipTest("state_guard未作成")
         g = json.load(open(p))
-        now = RUN3.RUN.state_hashes()
-        self.assertEqual(g["before"], now)
+        # TEST-HYGIENE-02(2026-10-22): 旧testは「Round3開始時のstate hashが現在も同一」を要求していたが、stateファイル
+        # (ledger/telemetry/master store等)はProduction runで正当に更新され続けるため、時間経過で必ず陳腐化する。
+        # 本guardの意図(Round3 Trial自身がstateを変更していないこと)は、記録済みguardの内部整合
+        # (before == after_stage0 かつ unchanged_after_stage0)で検証する。
+        self.assertTrue(g["unchanged_after_stage0"])
+        self.assertEqual(g["before"], g["after_stage0"])
 
 
 if __name__ == "__main__":

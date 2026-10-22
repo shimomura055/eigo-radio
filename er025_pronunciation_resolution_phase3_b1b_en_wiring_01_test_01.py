@@ -662,10 +662,11 @@ class FamilyXRunnerKwargWiringTests(unittest.TestCase):
 
         tmpdir = tempfile.mkdtemp(prefix="family_x_b1_resolver_wiring_")
         try:
+            # TEST-HYGIENE-02(2026-10-22): 新記事構造(FAMILY-X-REFRESH W1、8d9064083)は途中Heading廃止・
+            # 本文を段落境界でpart1/part2/part3に3分割済み。runnerはparts["part2"]/["part3"]を読む。
             parts = {
                 "title": "Sample Title", "part1": "Part one text.",
-                "heading1": "Heading One.", "body2": "Body two text.",
-                "heading2": "Heading Two.", "body3": "Body three text.",
+                "part2": "Part two text.", "part3": "Part three text.",
                 "in_one_line": "In one line text.",
             }
             support = {"preview": "Preview.", "comment_1": "C1.", "comment_2": "C2.",

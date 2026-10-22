@@ -190,7 +190,14 @@ def per_file_counts(patterns: list) -> dict:
     results = {}
     for f in sorted(set(files)):
         mod_name = f[:-3]
-        suite = loader.loadTestsFromName(mod_name)
+        try:
+            suite = loader.loadTestsFromName(mod_name)
+        except unittest.SkipTest:
+            # TEST-HYGIENE-02(2026-10-22): import時にSkipTestを送出するmodule(撤去済み経路を参照するTrial test、
+            # standalone script形式のtest等)は、unittest discoveryでは「skipされた1件」として収集される。
+            # 同じ数え方に揃える(discovery件数との一致検証のため)。
+            results[mod_name] = 1
+            continue
         results[mod_name] = count_tests_in_suite(suite)
     return results
 

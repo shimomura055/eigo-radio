@@ -41,8 +41,10 @@ class ProductionCharacterization(unittest.TestCase):
     def test_existing_pattern_a_first_diff_only_hole_is_recorded(self):
         # 既存Pattern Aは最初の食い違い語しか見ない: 後続の無関係な語の置換(cats->dogs)を見逃す。本委任では修正しない(報告のみ)。
         c, a = "The studies suggest cats today.", "The study suggests dogs today."
-        self.assertTrue(O.prod_judge(c, a)["pass"])
-        self.assertEqual(jd(c, a), "PROD_PASS_UNCHANGED")  # 設計判定は既存PASSを変えない(増分0)
+        # TEST-HYGIENE-02(2026-10-22): この穴はユーザー承認のF1是正(ASR-PHONETIC-EQUIVALENCE-M1-F1-PRODUCTION-WIRING-01
+        # 委任_03、2026-10-13: 全差分を点検し、cats->dogsは非PASS必須)でProductionが塞いだ。現行Productionは非PASS。
+        self.assertFalse(O.prod_judge(c, a)["pass"])
+        self.assertNotIn(jd(c, a), ("PROD_PASS_UNCHANGED", "ACCEPT_M1"))  # 設計判定も受理側へ変えない
 
 
 class M1Behavior(unittest.TestCase):
@@ -166,8 +168,21 @@ class NoHardcodeAndIsolation(unittest.TestCase):
             for w in ("melos", "mello", "mellow", "melo "):
                 self.assertNotIn(w, code, f"{fn.__name__} contains literal {w!r}")
 
+    # TEST-HYGIENE-02(2026-10-22): 旧testは「er068_」の部分文字列で全er0*.pyを走査したため、後続taskの研究script
+    # (ASR-PHONETIC-EQUIVALENCE-M1-F1の census/benefit/oov_options/eval。Production非接続・27-7の研究script扱い)
+    # とtest fileを誤検出していた。禁止したいのはProduction fileによるimportなので、実際のimport文のみを対象にし、
+    # test fileと下記の研究scriptを対象外として明示する(新しいProduction側のimportは従来どおり検出される)。
+    _RESEARCH_SCRIPTS_ALLOWED_TO_IMPORT = {
+        "er075_m1_f1_production_wiring_01_census.py", "er075_m1_f1_production_wiring_01_m1_benefit.py",
+        "er075_m1_f1_production_wiring_01_oov_options.py", "er077_m1_oov_multi_pronunciation_01_eval.py",
+    }
+    _IMPORT_RE = re.compile(r"^\s*(?:import|from)\s+er068_", re.M)
+
     def test_not_imported_by_production_files(self):
-        prod = [p for p in glob.glob(os.path.join(ROOT, "er0*.py")) if not os.path.basename(p).startswith(("er068", "er069"))]
+        prod = [p for p in glob.glob(os.path.join(ROOT, "er0*.py"))
+                if not os.path.basename(p).startswith(("er068", "er069"))
+                and not re.search(r"_test_\d+\.py$", os.path.basename(p))
+                and os.path.basename(p) not in self._RESEARCH_SCRIPTS_ALLOWED_TO_IMPORT]
         offenders = []
         for p in prod:
             try:
@@ -175,7 +190,7 @@ class NoHardcodeAndIsolation(unittest.TestCase):
                     txt = fh.read()
             except Exception:
                 continue
-            if "er068_" in txt:
+            if self._IMPORT_RE.search(txt):
                 offenders.append(os.path.basename(p))
         self.assertEqual(offenders, [], offenders)
 

@@ -261,7 +261,9 @@ class MainStageTests(Base):
         def fake_rf(**kw):
             events.append(("rf", kw["article_level"], dict(cl._CONTEXT)))
             return orig_rf(call_fn=stub, sleep_fn=lambda s: None, **kw)
-        fake_sc = mock.Mock(return_value={"canonicalization": {"status": "OK"},
+        # TEST-HYGIENE-02(2026-10-22): Family X runnerのKP stageは承認済みfail-closed(KPMP-03、75f52edff)で
+        # canonicalization.statusがPASS系(KP_STAGE_PASS_CANON_STATUSES)でなければrc=3で停止する。PASS系statusを返す。
+        fake_sc = mock.Mock(return_value={"canonicalization": {"status": "CANONICALIZATION_PASS"},
                                           "selection": {"status": "OK", "kp_backend_used": "db_hybrid"}})
         patches = [
             mock.patch.object(sys, "argv", argv),

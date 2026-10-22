@@ -10,6 +10,7 @@
 # 実行方法:
 #   .venv/Scripts/python.exe -m unittest er003_test_b1_p5a_audio -v
 
+import os
 import tempfile
 import unittest
 
@@ -80,6 +81,11 @@ class AzureTtsCallFnIntegrationTests(unittest.TestCase):
     """実Azure Speech APIへの最小限のサブプロセス相当呼び出しを含む
     統合テスト(短文1回のみ、全文生成やGemini TTSは呼ばない)。"""
 
+    # TEST-HYGIENE-02(2026-10-22): 実Azure Speech APIを呼ぶ(有料・要資格情報・要network)。project-wide regression
+    # (run_project_regression.py)を「API費用0で回せる」状態に保つため、既定ではskipし、明示opt-in
+    # (EIGO_RUN_PAID_INTEGRATION_TESTS=1)でのみ実行する。
+    @unittest.skipUnless(os.environ.get("EIGO_RUN_PAID_INTEGRATION_TESTS") == "1",
+                         "paid Azure integration test: set EIGO_RUN_PAID_INTEGRATION_TESTS=1 to run")
     def test_minimal_real_call_returns_pcm_and_metadata(self):
         tts_call_fn = p5a.make_azure_tts_call_fn()
         pcm = tts_call_fn("テスト")

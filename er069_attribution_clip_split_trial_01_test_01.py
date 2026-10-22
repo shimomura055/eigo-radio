@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """回帰/単体test(API呼出なし)。python er069_attribution_clip_split_trial_01_test_01.py"""
 import sys, os, json
+import unittest
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import er069_attribution_clip_split_trial_01_lib as L
 import er069_attribution_clip_split_trial_01_mkplan as M
@@ -61,4 +62,14 @@ check("results_02 obs 126 (std 2 + adv 1 per audio)", r2["n_obs"] == 126)
 check("results_02 nophrase obs only on Melos said/replied", all((("azure_np" in r) == (r["name"] == "Melos" and r["verb"] in ("said", "replied"))) for r in r2["rows"]))
 check("results_02 total within JPY25 guardrail", r2["total_jpy"] <= 25)
 print("FAILS:", fails)
-sys.exit(1 if fails else 0)
+
+
+class ScriptChecksTest(unittest.TestCase):
+    """unittest discovery用(TEST-HYGIENE-02、2026-10-22): 本fileはstandalone script形式(`python <file>`で実行、
+    終了codeで判定)。モジュール読込時に全checkが実行済みなので、その結果を1件のtestとして検証する。"""
+    def test_all_checks_pass(self):
+        self.assertEqual(fails, [])
+
+
+if __name__ == "__main__":
+    sys.exit(1 if fails else 0)

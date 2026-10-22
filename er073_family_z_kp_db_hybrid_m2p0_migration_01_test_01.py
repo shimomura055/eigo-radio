@@ -5,6 +5,7 @@ import json
 import os
 import tempfile
 import unittest
+from unittest import mock
 
 import er073_family_z_kp_db_hybrid_m2p0_migration_01_run as run
 
@@ -34,11 +35,21 @@ class RunnerTests(unittest.TestCase):
         self.assertAlmostEqual(run.jaccard(["a", "b"], ["b", "c"]), 1 / 3)
         self.assertEqual(run.norm_phrase("  Come  Back "), "come back")
 
-    def test_old_stop_notice_not_applied(self):
-        # 旧(2026-10-12 run_e2e_01)通知は委任文により非適用。それ以外の新規STOPが無いこと。
-        self.assertEqual(run.check_stop(), [], run.check_stop())
+    # TEST-HYGIENE-02(2026-10-22): er026_output/.../melos/run_e2e_02/STOPは、本Trial(2026-10-13)の後に
+    # Fable決定B1(2026-10-17、FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01 委任_17、fb01f125f)で凍結された
+    # 正規のSTOP sentinel(解除はFable/ユーザーのみ。削除・回避しない)。本testはそれを許容対象として明示し、
+    # それ以外の新規STOPが無いことだけを確認する。guard/mock runのtestは、実環境のSTOP有無に依存しないよう
+    # check_stopを固定して「budget guard・Production無書込」の本来の検証だけを行う。
+    FROZEN_STOP_RUN_E2E_02 = "er026_output/family_z_production_e2e_01/melos/run_e2e_02/STOP"
 
-    def test_guard_budget_stop(self):
+    def test_old_stop_notice_not_applied(self):
+        # 旧(2026-10-12 run_e2e_01)通知は委任文により非適用。それ以外の新規STOPが無いこと
+        # (凍結済みrun_e2e_02/STOPのみ許容)。
+        extra = [p for p in run.check_stop() if p.replace("\\", "/") != self.FROZEN_STOP_RUN_E2E_02]
+        self.assertEqual(extra, [], extra)
+
+    @mock.patch.object(run, "check_stop", return_value=[])
+    def test_guard_budget_stop(self, _cs):
         with tempfile.TemporaryDirectory() as d:
             os.makedirs(f"{d}/t/x_run1")
             row = {"success": True, "model_id": "gpt-6-luna", "input_tokens": 1_000_000, "cached_input_tokens": 0,
@@ -54,7 +65,8 @@ class RunnerTests(unittest.TestCase):
             g2("soft")
             self.assertTrue(events and events[0]["soft"])
 
-    def test_mock_run_one_pass_no_prod_writes(self):
+    @mock.patch.object(run, "check_stop", return_value=[])
+    def test_mock_run_one_pass_no_prod_writes(self, _cs):
         before = run.state_snapshot()
         with tempfile.TemporaryDirectory() as d:
             import er003_v1_n3_01_scaffold_generate as sc

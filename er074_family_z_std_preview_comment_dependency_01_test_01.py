@@ -3,6 +3,7 @@
 import difflib
 import re
 import sys
+import unittest
 
 import er074_family_z_std_preview_comment_dependency_01 as m
 
@@ -46,4 +47,14 @@ dd = [l for l in difflib.unified_diff(P["A"][2].splitlines(), P["D"][2].splitlin
       if l[:1] in "+-" and not l.startswith(("+++", "---"))]
 check("A->D: 変更行は4行(2箇所の-/+)", len(dd) == 4)
 check("effortはProduction同一(high)", a2gen.REASONING_EFFORT == "high")
-sys.exit(RC)
+
+
+class ScriptChecksTest(unittest.TestCase):
+    """unittest discovery用(TEST-HYGIENE-02、2026-10-22): 本fileはstandalone script形式(`python <file>`で実行、
+    終了codeで判定)。モジュール読込時に全checkが実行済みなので、その結果を1件のtestとして検証する。"""
+    def test_all_checks_pass(self):
+        self.assertEqual(RC, 0)
+
+
+if __name__ == "__main__":
+    sys.exit(RC)

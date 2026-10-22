@@ -35,13 +35,19 @@ class TestExistingSpecClosedCounterList(unittest.TestCase):
             self.assertFalse(r.should_pass, (c, a))
             self.assertEqual(r.classification, "TRUE_CONTENT_MISMATCH")
 
+    # TEST-HYGIENE-02(2026-10-22): 旧testは単純な部分文字列一致のため、Production側のコメント(移設元の記録:
+    # er078_asr_value_guard_01.pyの「Production→Trial import禁止のため移設」説明)にも反応していた。
+    # 禁止したいのは実際のimport文なので、import/from文のみを検出する。parity test(er078_asr_value_guard_01_test_01.py、
+    # 設計どおり"test側のみがTrialをimport")はtest fileとして対象外。
+    _IMPORT_RE = re.compile(r"^\s*(?:import|from)\s+er066_ja_asr_orthographic", re.M)
+
     def test_production_does_not_import_trial(self):
         for p in glob.glob("er0*.py") + glob.glob("verify_*.py"):
-            if "er066_" in p:
+            if "er066_" in p or re.search(r"_test_\d+\.py$", p):
                 continue
             with open(p, encoding="utf-8", errors="ignore") as fh:
                 txt = fh.read()
-            self.assertNotIn("er066_ja_asr_orthographic", txt, p)
+            self.assertIsNone(self._IMPORT_RE.search(txt), p)
 
 
 class TestNumberReading(unittest.TestCase):

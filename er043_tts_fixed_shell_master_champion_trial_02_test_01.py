@@ -101,7 +101,8 @@ class MasterAudioKeyDistinguishesGroupsAndCandidatesTest(unittest.TestCase):
 
     def test_new_candidate_keys_differ_from_production_key(self):
         text = shared_narration.FIXED_ENGLISH_TEXTS["welcome"]
-        production_key = shared_narration._make_english_key(text, tts_backend="speech_metadata_flash_lite")
+        # TEST-HYGIENE-02: _make_english_keyの第1引数nameは承認済みW2(2ecb0c647)で追加(welcomeはv2継続)
+        production_key = shared_narration._make_english_key("welcome", text, tts_backend="speech_metadata_flash_lite")
         trial_key = self._key_for("welcome", "B")
         self.assertNotEqual(production_key.master_audio_id(), trial_key.master_audio_id())
 

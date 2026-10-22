@@ -6,8 +6,20 @@
 from __future__ import annotations
 
 import hashlib
+import unittest
 
-import er015_standard_a2_6000_generation_first_trial_01 as trial
+# TEST-HYGIENE-02(2026-10-22): 本Trialのgeneration-first語彙段落はユーザー正式採用により
+# Production STANDARD_A2_PROMPT_V5へ取り込み済み(er003_v1_n3_01_standard_a2_generate.py:109付近)。
+# Trial module側のimport時guard(旧語彙段落が存在しなければ停止)は設計どおり発動し、
+# このTrialを再構築できなくなっている。撤去済み経路を参照するTrial testとして、
+# guard発動時(のみ)skipする。それ以外のimport失敗は握りつぶさない。
+try:
+    import er015_standard_a2_6000_generation_first_trial_01 as trial
+except RuntimeError as _e:
+    if "STANDARD_A2_PROMPT_V5の語彙段落テキストが想定と" not in str(_e):
+        raise
+    raise unittest.SkipTest(
+        "er015 Trial superseded: Production STANDARD_A2_PROMPT_V5 has adopted the generation-first vocab block") from _e
 
 
 def test_gen_first_prompt_differs_only_in_vocab_block():

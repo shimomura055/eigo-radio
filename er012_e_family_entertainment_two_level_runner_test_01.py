@@ -389,7 +389,8 @@ class U2StandaloneCliBlockTests(unittest.TestCase):
         out = os.path.join(tempfile.mkdtemp(), "should_not_exist")
         script = os.path.join(os.path.dirname(runner.__file__), "er012_e_family_entertainment_two_level_runner_01.py")
         res = subprocess.run([sys.executable, script, "--ja-article", "dummy.md", "--slug", "s", "--out-dir", out],
-                             capture_output=True, text=True)
+                             capture_output=True, text=True, encoding="utf-8", errors="replace",
+                             env={**os.environ, "PYTHONIOENCODING": "utf-8"})   # TEST-HYGIENE-02: 子/親の復号を揃える
         self.assertNotEqual(res.returncode, 0)
         self.assertIn("U-2", res.stderr)
         self.assertFalse(os.path.exists(out), "封鎖はファイル出力(out_dir作成)より前に行う")
@@ -438,7 +439,8 @@ class TtsModeCliTests(unittest.TestCase):
             [sys.executable, script,
              "--slug", "sewer", "--out-dir", "dummy_out",
              "--tts-mode", "BATCH"],
-            capture_output=True, text=True,
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            env={**os.environ, "PYTHONIOENCODING": "utf-8"},   # TEST-HYGIENE-02: 子/親の復号を揃える
         )
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("--batch-reason", result.stderr)

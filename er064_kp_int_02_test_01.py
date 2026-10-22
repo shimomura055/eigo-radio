@@ -66,6 +66,9 @@ class P5Rules(unittest.TestCase):
                 self.assertNotIn(w, t, w)
         self.assertIn("動詞は本文の時制を残さず基本形へ直してください", PR.P5)
 
+    # TEST-HYGIENE-02(2026-10-22): tiktokenは本体.venv非導入(隔離環境のTIKTOKEN_PATH運用)。未導入環境ではskip。
+    @unittest.skipUnless(os.environ.get("TIKTOKEN_PATH") or __import__("importlib.util").util.find_spec("tiktoken"),
+                         "tiktoken未導入(隔離環境のみ。TIKTOKEN_PATHを指定すれば実行)")
     def test_tokens_vs_p0(self):
         base = PR.tokens(PR.head("P0", "std")) + PR.tokens(PR.tail("P0"))
         for lv in ("std", "adv"):
