@@ -30,7 +30,7 @@ E109_MOD = "er109_asr_orthographic_equivalence_01"
 PRODUCTION_SCOPE_IMPORTERS = {
     "er006_secondary_asr_01.py", "er078_asr_unified_judge_01.py", "er104_kp_three_asr_vote_01.py", "er019_family_x_validation_inheritance_01.py",
     "er078_reuse_value_guard_01.py", "er019_family_x_audio_production_runner_01.py", "er063_family_z_audio_01.py", "er019_family_x_clobber_restore_03.py",
-    "er109_hr_lock_rejudge_01.py", "er109_wiring_signature_01.py",
+    "er109_hr_lock_rejudge_01.py", "er109_wiring_signature_01.py", "er109_runtime_evidence_04_01.py",
 }
 # 絶対にer109/scope moduleをimportしてはならないA/B/C系Production(共有leafは除く: leaf自体はadapter経由で間接的に効くがimportしない)
 ABC_FILES = ("er012_b_family_voices_production_01.py", "er012_b_family_voices_a2_production_01.py", "er013_family_c_production_runner_01.py",
@@ -47,6 +47,8 @@ EXPECTED_SCOPE_CALLS = collections.Counter({
     ("er109_hr_lock_rejudge_01.py", "run_scope", "Z"): 1,
     ("er109_wiring_signature_01.py", "run_scope", "X"): 1,
     ("er109_wiring_signature_01.py", "run_scope", "Z"): 1,
+    ("er109_runtime_evidence_04_01.py", "run_scope", "X"): 1,
+    ("er109_runtime_evidence_04_01.py", "run_scope", "Z"): 1,
 })
 
 
