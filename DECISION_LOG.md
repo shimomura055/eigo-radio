@@ -22130,3 +22130,10 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 ## 2026-10-22 ユーザー決定: KP品質改善追加案③ Azure整形前テキスト併用=REJECTED(KP-QUALITY-IMPROVEMENT-2ITEMS-PRODUCTION-01、OPEN-458、決定記録 委任_01)
 
 2026-10-22 ユーザー決定(原文=docs/pm/delegation_log/2026-10-22_KP-QUALITY-IMPROVEMENT-2ITEMS-PRODUCTION-01_USER-DECISION-02.md、1074文字、sha256 6ec5f0abbbac5617873f1ecd94770278e51e86202a0cad3323a45f2940ceba51): ③Azure整形前テキスト(lexical形)併用案=**REJECTED(正式不採用)**。理由: Azure個別現象への対症療法で根本解決にならない。将来の採用候補として保留せず不採用とする。Productionへ配線しない(AZURE_ITN_IMPACT_01.md C1)。①(KP英語音声の数値・否定保護解除)・②(CMU辞書登録語のみKP選定)は承認済みのままFamily X/ZのProduction Wiring継続(完了=PRODUCTION_WIRED検証・Fable受入)。同一発音・異表記(one⇔1、one's⇔1's等)は全英語ASR判定対象の共通Validator/同音救済機構による包括対策ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01で解決する(既存の数値正規化・同音救済仕様・過去Trialとの重複/矛盾確認、Opus独立レビュー活用、同一発音は表記差のみでNGにせず異発音の誤PASSは認めない)。包括対策のProduction採用は既存PM Gateに従う。追加のユーザー判断不要(決定済み)。Production無変更・費用0。
+
+## 2026-10-22 KP品質改善2項目のProduction配線(KP-QUALITY-IMPROVEMENT-2ITEMS-PRODUCTION-01 委任_02、OPEN-458、Status=WIRED_PENDING_FABLE)
+
+- ユーザー承認(2026-10-22、`APPROVED_FOR_PRODUCTION`。原文=docs/pm/delegation_log/2026-10-22_KP-QUALITY-IMPROVEMENT-2ITEMS-PRODUCTION-01_USER.md): ①KP英語音声の数値・否定保護解除 ②KP選定のCMU辞書登録語のみ必須。③Azure lexical形併用はREJECTED(USER-DECISION-02、UDR #155)。
+- Opus独立レビュー(条件A、2026-10-22。全文=docs/research/KP-QUALITY-IMPROVEMENT-2ITEMS-PRODUCTION-01/OPUS_REVIEW_COND_A_01.md、条件付きGO): Fable決定=OF-KPQ-P-01〜10全採用(must-fix: P-01再利用guardのskipは呼出元の明示引数`kp_vote_gate_follows`で行いlabel判定しない/P-02 M2 NG時の`keywords_canonicalized.json`即退避+noteの次周引継ぎ)。Q1 AMBIGUOUSは票の分類として維持、Q3 er104へ折込み単一実装(`kp_vote_check_v1`据え置き+`guard_lifted`加算、staging module削除)、Q5 R4 clitic分解はSSOT明記、Q6 M2はINVALID→外側retry。
+- 実装: ①配線 58932e328 / ②配線 a3bb2b50c / 撤去 65200313d。回帰は新規失敗0(残存の既存失敗は他task起因/単独PASS確認済み)。runtime evidence=docs/research/KP-QUALITY-IMPROVEMENT-2ITEMS-PRODUCTION-01/RUNTIME_EVIDENCE_01.md(実費約5円)。PRODUCTION_WIREDはFable受入後。
+- 影響: P-07解釈(b)(`NG_PROTECTED_DISSENT`)を置換(CURRENT_SPEC KP3V節)、KPFTブロックへCMU条件を追記。非KP音声・A/B/Cは不変。

@@ -1,0 +1,736 @@
+{
+  "segments": {},
+  "key_phrases": {
+    "1": {
+      "english": {
+        "status": "OK",
+        "path": "er026_output/family_z_production_e2e_01/melos/run_kpq_01/b1b/narration/kp1_en.wav",
+        "sha256": "1279262460ae0a612fc76c26ce9fefa8ac4fa58abc612441dc47966f770e2964",
+        "canonical_text": "sentence him to death",
+        "text": "sentence him to death",
+        "disfluency_checked": true,
+        "asr_text": "Sentenced him to death.",
+        "slowdown_applied": null,
+        "z_adoption": "adopted",
+        "segment_id": "kp1_en",
+        "narration_path": "er026_output/family_z_production_e2e_01/melos/run_kpq_01/b1b/narration/kp1_en.wav",
+        "role": "KEY_PHRASE",
+        "connected_speech_enabled": false,
+        "tts_backend": "speech_metadata_flash_lite",
+        "voice": "Aoede",
+        "speaker": "narrator",
+        "clip_kind": "kp_en",
+        "role_style_key": "KP_EN",
+        "model_ids_measured": [
+          "gemini-3.8-flash-lite-tts"
+        ],
+        "style": {
+          "instruction_label": "K2",
+          "style_prefix_sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "effective_style_prefix_sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "fallback_used": false,
+          "fallback_attempts": []
+        },
+        "reuse_key": {
+          "canonical_text_sha256": "739f503d2e7bf10e284f1aae5b1e378ecd2b9803ea07a09d9588f36fb9f7d529",
+          "role_style_version": "z_v2_pd8_r2_e1_e2up_k2_m2_kpx_20261012",
+          "voice": "Aoede",
+          "style_prefix_sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "tts_backend": "speech_metadata_flash_lite"
+        },
+        "slowdown_ratio": null,
+        "attempts": [
+          {
+            "phase": "standard",
+            "attempt": 1,
+            "instruction_type": null,
+            "instruction_label": null,
+            "style_prefix_sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+            "style_prefix_head": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa",
+            "tts_model_id": "gemini-3.8-flash-lite-tts",
+            "voice": "Aoede",
+            "audio_classification": "NORMALIZED_MATCH",
+            "verified": true,
+            "asr_text": "Sentenced him to death."
+          }
+        ],
+        "cooldown_occurred": false,
+        "cooldown_events": [],
+        "audio_text_deviation": null,
+        "tts_generations_used": null,
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "vote_2of3:secondary+whisper",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "1279262460ae0a612fc76c26ce9fefa8ac4fa58abc612441dc47966f770e2964",
+          "primary": {
+            "text": "Sentenced him to death.",
+            "passed": false,
+            "label": "TRUE_CONTENT_MISMATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Sentence him to death.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [
+            "SECONDARY_CONFIRMED"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.58,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 3178,
+            "secondary_ms": 1159
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 23,
+            "secondary_len": 22,
+            "max_len": 31,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 18,
+            "primary_ok": true
+          },
+          "vote": {
+            "version": "kp_vote_check_v1",
+            "guard_lifted": true,
+            "guard_lifted_version": "kp_vote_guard_lifted_v1",
+            "observed_protected_diff": {
+              "primary": false,
+              "secondary": false,
+              "whisper": false
+            },
+            "required": true,
+            "state": "PASS_VOTE_2OF3",
+            "reason": "vote_2of3:secondary+whisper",
+            "row": "S+W",
+            "pass_count": 2,
+            "tiebreak_enabled": true,
+            "primary": {
+              "provider": "openai",
+              "text": "Sentenced him to death.",
+              "pass": false,
+              "available": true,
+              "label": "TRUE_CONTENT_MISMATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "p3_primary_ng",
+              "rescue_layers": []
+            },
+            "secondary": {
+              "provider": "azure",
+              "text": "Sentence him to death.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "secondary_accepted",
+              "rescue_layers": []
+            },
+            "secondary_called": true,
+            "whisper": {
+              "provider": "whisper",
+              "text": "sentence him to death.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": null,
+              "rescue_layers": [],
+              "ms": 2017,
+              "memo_hit": false
+            },
+            "whisper_called": true,
+            "whisper_model": {
+              "model": "small",
+              "compute_type": "int8",
+              "device": "cpu",
+              "library": "faster_whisper"
+            },
+            "primary_not_pass_reason": "p3_primary_ng",
+            "primary_rescued_by_secondary": false
+          },
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "kp_dual_check": {
+          "version": "kp_vote_check_v1",
+          "guard_lifted": true,
+          "guard_lifted_version": "kp_vote_guard_lifted_v1",
+          "observed_protected_diff": {
+            "primary": false,
+            "secondary": false,
+            "whisper": false
+          },
+          "ok": true,
+          "source": "generation",
+          "canonical_text": "sentence him to death",
+          "wav_sha256": "1279262460ae0a612fc76c26ce9fefa8ac4fa58abc612441dc47966f770e2964",
+          "vote_state": "PASS_VOTE_2OF3",
+          "judge_state": "PASS_WITH_WARNING",
+          "reason_code": "vote_2of3:secondary+whisper",
+          "row": "S+W",
+          "pass_count": 2,
+          "tiebreak_enabled": true,
+          "primary": {
+            "provider": "openai",
+            "text": "Sentenced him to death.",
+            "pass": false,
+            "rescued": false,
+            "rescue_layers": []
+          },
+          "secondary": {
+            "provider": "azure",
+            "text": "Sentence him to death.",
+            "pass": true,
+            "called": true,
+            "observed_protected_diff": false
+          },
+          "whisper": {
+            "provider": "faster_whisper",
+            "model": "small",
+            "compute_type": "int8",
+            "text": "sentence him to death.",
+            "pass": true,
+            "called": true,
+            "error": null,
+            "memo_hit": false
+          },
+          "checked_at": "2026-10-22T21:41:06"
+        },
+        "duration_seconds": 1.58
+      }
+    },
+    "2": {
+      "english": {
+        "status": "OK",
+        "path": "er026_output/family_z_production_e2e_01/melos/run_kpq_01/b1b/narration/kp2_en.wav",
+        "sha256": "63a4d56138a21ecbf511f7c70c15091e9fb84b2d1a4584d07420efb32eed4249",
+        "canonical_text": "hold out one's hands",
+        "text": "hold out one's hands",
+        "disfluency_checked": true,
+        "asr_text": "Hold out one's hands.",
+        "slowdown_applied": null,
+        "z_adoption": "adopted",
+        "segment_id": "kp2_en",
+        "narration_path": "er026_output/family_z_production_e2e_01/melos/run_kpq_01/b1b/narration/kp2_en.wav",
+        "role": "KEY_PHRASE",
+        "connected_speech_enabled": false,
+        "tts_backend": "speech_metadata_flash_lite",
+        "voice": "Aoede",
+        "speaker": "narrator",
+        "clip_kind": "kp_en",
+        "role_style_key": "KP_EN",
+        "model_ids_measured": [
+          "gemini-3.8-flash-lite-tts"
+        ],
+        "style": {
+          "instruction_label": "K2",
+          "style_prefix_sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "effective_style_prefix_sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "fallback_used": false,
+          "fallback_attempts": []
+        },
+        "reuse_key": {
+          "canonical_text_sha256": "ca41e9a6bcaaffc56a380d048808e7e2aef522933a8c606e3688d16c55a9a4cb",
+          "role_style_version": "z_v2_pd8_r2_e1_e2up_k2_m2_kpx_20261012",
+          "voice": "Aoede",
+          "style_prefix_sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "tts_backend": "speech_metadata_flash_lite"
+        },
+        "slowdown_ratio": null,
+        "attempts": [
+          {
+            "phase": "standard",
+            "attempt": 1,
+            "instruction_type": null,
+            "instruction_label": null,
+            "style_prefix_sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+            "style_prefix_head": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa",
+            "tts_model_id": "gemini-3.8-flash-lite-tts",
+            "voice": "Aoede",
+            "audio_classification": "NORMALIZED_MATCH",
+            "verified": true,
+            "asr_text": "Hold out one's hands."
+          }
+        ],
+        "cooldown_occurred": false,
+        "cooldown_events": [],
+        "audio_text_deviation": null,
+        "tts_generations_used": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "dual_agreed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "63a4d56138a21ecbf511f7c70c15091e9fb84b2d1a4584d07420efb32eed4249",
+          "primary": {
+            "text": "Hold out one's hands.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Hold out one's hands.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.72,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 538,
+            "secondary_ms": 537
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 21,
+            "secondary_len": 21,
+            "max_len": 30,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 16,
+            "primary_ok": true
+          },
+          "vote": {
+            "version": "kp_vote_check_v1",
+            "guard_lifted": true,
+            "guard_lifted_version": "kp_vote_guard_lifted_v1",
+            "observed_protected_diff": {
+              "primary": false,
+              "secondary": false,
+              "whisper": false
+            },
+            "required": true,
+            "state": "PASS_DUAL",
+            "reason": "dual_agreed",
+            "row": "P+S",
+            "pass_count": 2,
+            "tiebreak_enabled": true,
+            "primary": {
+              "provider": "openai",
+              "text": "Hold out one's hands.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": null,
+              "rescue_layers": []
+            },
+            "secondary": {
+              "provider": "azure",
+              "text": "Hold out one's hands.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "secondary_accepted",
+              "rescue_layers": []
+            },
+            "secondary_called": true,
+            "whisper": null,
+            "whisper_called": false,
+            "whisper_model": null,
+            "primary_not_pass_reason": null,
+            "primary_rescued_by_secondary": false
+          },
+          "p3_entry": "vote_required",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 4,
+              "hits": 0
+            }
+          }
+        },
+        "kp_dual_check": {
+          "version": "kp_vote_check_v1",
+          "guard_lifted": true,
+          "guard_lifted_version": "kp_vote_guard_lifted_v1",
+          "observed_protected_diff": {
+            "primary": false,
+            "secondary": false,
+            "whisper": false
+          },
+          "ok": true,
+          "source": "generation",
+          "canonical_text": "hold out one's hands",
+          "wav_sha256": "63a4d56138a21ecbf511f7c70c15091e9fb84b2d1a4584d07420efb32eed4249",
+          "vote_state": "PASS_DUAL",
+          "judge_state": "PASS",
+          "reason_code": "dual_agreed",
+          "row": "P+S",
+          "pass_count": 2,
+          "tiebreak_enabled": true,
+          "primary": {
+            "provider": "openai",
+            "text": "Hold out one's hands.",
+            "pass": true,
+            "rescued": false,
+            "rescue_layers": []
+          },
+          "secondary": {
+            "provider": "azure",
+            "text": "Hold out one's hands.",
+            "pass": true,
+            "called": true,
+            "observed_protected_diff": false
+          },
+          "whisper": {
+            "called": false
+          },
+          "checked_at": "2026-10-22T21:41:11"
+        },
+        "duration_seconds": 1.72
+      }
+    },
+    "3": {
+      "english": {
+        "status": "OK",
+        "path": "er026_output/family_z_production_e2e_01/melos/run_kpq_01/b1b/narration/kp3_en.wav",
+        "sha256": "19fa3d2a9554f069686c37d3e22681224a759846c58530c6a4f8711c5a00ada1",
+        "canonical_text": "pull him under",
+        "text": "pull him under",
+        "disfluency_checked": true,
+        "asr_text": "Pull him under.",
+        "slowdown_applied": null,
+        "z_adoption": "adopted",
+        "segment_id": "kp3_en",
+        "narration_path": "er026_output/family_z_production_e2e_01/melos/run_kpq_01/b1b/narration/kp3_en.wav",
+        "role": "KEY_PHRASE",
+        "connected_speech_enabled": false,
+        "tts_backend": "speech_metadata_flash_lite",
+        "voice": "Aoede",
+        "speaker": "narrator",
+        "clip_kind": "kp_en",
+        "role_style_key": "KP_EN",
+        "model_ids_measured": [
+          "gemini-3.8-flash-lite-tts"
+        ],
+        "style": {
+          "instruction_label": "K2",
+          "style_prefix_sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "effective_style_prefix_sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "fallback_used": false,
+          "fallback_attempts": []
+        },
+        "reuse_key": {
+          "canonical_text_sha256": "f2686b5db3bdf3cdf0a0d43f7e138b123dc13f94107644c94c47e0a34fc7b355",
+          "role_style_version": "z_v2_pd8_r2_e1_e2up_k2_m2_kpx_20261012",
+          "voice": "Aoede",
+          "style_prefix_sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "tts_backend": "speech_metadata_flash_lite"
+        },
+        "slowdown_ratio": null,
+        "attempts": [
+          {
+            "phase": "standard",
+            "attempt": 1,
+            "instruction_type": null,
+            "instruction_label": null,
+            "style_prefix_sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+            "style_prefix_head": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa",
+            "tts_model_id": "gemini-3.8-flash-lite-tts",
+            "voice": "Aoede",
+            "audio_classification": "NORMALIZED_MATCH",
+            "verified": true,
+            "asr_text": "Pull him under."
+          }
+        ],
+        "cooldown_occurred": false,
+        "cooldown_events": [],
+        "audio_text_deviation": null,
+        "tts_generations_used": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "dual_agreed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "19fa3d2a9554f069686c37d3e22681224a759846c58530c6a4f8711c5a00ada1",
+          "primary": {
+            "text": "Pull him under.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Pull him under.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.24,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 534,
+            "secondary_ms": 534
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 15,
+            "secondary_len": 15,
+            "max_len": 24,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 12,
+            "primary_ok": true
+          },
+          "vote": {
+            "version": "kp_vote_check_v1",
+            "guard_lifted": true,
+            "guard_lifted_version": "kp_vote_guard_lifted_v1",
+            "observed_protected_diff": {
+              "primary": false,
+              "secondary": false,
+              "whisper": false
+            },
+            "required": true,
+            "state": "PASS_DUAL",
+            "reason": "dual_agreed",
+            "row": "P+S",
+            "pass_count": 2,
+            "tiebreak_enabled": true,
+            "primary": {
+              "provider": "openai",
+              "text": "Pull him under.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": null,
+              "rescue_layers": []
+            },
+            "secondary": {
+              "provider": "azure",
+              "text": "Pull him under.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "secondary_accepted",
+              "rescue_layers": []
+            },
+            "secondary_called": true,
+            "whisper": null,
+            "whisper_called": false,
+            "whisper_model": null,
+            "primary_not_pass_reason": null,
+            "primary_rescued_by_secondary": false
+          },
+          "p3_entry": "vote_required",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 6,
+              "hits": 0
+            }
+          }
+        },
+        "kp_dual_check": {
+          "version": "kp_vote_check_v1",
+          "guard_lifted": true,
+          "guard_lifted_version": "kp_vote_guard_lifted_v1",
+          "observed_protected_diff": {
+            "primary": false,
+            "secondary": false,
+            "whisper": false
+          },
+          "ok": true,
+          "source": "generation",
+          "canonical_text": "pull him under",
+          "wav_sha256": "19fa3d2a9554f069686c37d3e22681224a759846c58530c6a4f8711c5a00ada1",
+          "vote_state": "PASS_DUAL",
+          "judge_state": "PASS",
+          "reason_code": "dual_agreed",
+          "row": "P+S",
+          "pass_count": 2,
+          "tiebreak_enabled": true,
+          "primary": {
+            "provider": "openai",
+            "text": "Pull him under.",
+            "pass": true,
+            "rescued": false,
+            "rescue_layers": []
+          },
+          "secondary": {
+            "provider": "azure",
+            "text": "Pull him under.",
+            "pass": true,
+            "called": true,
+            "observed_protected_diff": false
+          },
+          "whisper": {
+            "called": false
+          },
+          "checked_at": "2026-10-22T21:41:18"
+        },
+        "duration_seconds": 1.24
+      }
+    }
+  },
+  "tts_backend": "speech_metadata_flash_lite",
+  "style_version": "z_v2_pd8_r2_e1_e2up_k2_m2_kpx_20261012",
+  "management_id": "FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01",
+  "level": "b1b"
+}
