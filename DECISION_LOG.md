@@ -22082,3 +22082,8 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 根拠: 6モデル固定・同一Prompt(調整は区切りのみ)・同一14本文・各1回・返却model ID全件一致・技術的失敗0・異系統評価者を主評価(同系統自己評価0.949 vs 異系統0.760)。費用JPY206.60。
 - 読み方の注意: (1)本文一致は厳密規則で採点、原形化は不一致扱い (2)主評価差(0.707〜0.777)は評価者間ぶれと同程度 (3)全文渡し方式で現行DB hybrid+canonicalizationと別物、既存Production行は参考値。
 - 推奨: 現行Luna維持(遵守100%・約0.35円/記事セット、Sonnet 5.5は品質差がぶれの範囲内で費用約18倍)。一般化強化は別Trial(ユーザーが望む場合のみ)。Production/Prompt/Validator/モデル無変更。出典=docs/research/FAMILY-X-KP-SELECTION-SIX-MODEL-COMPARISON-TRIAL-01/TRIAL_RESULT_01.md §7。
+
+## FAMILY-X-KP-SELECTION-PROMPT-MIN-AND-GENERALIZATION-TRIAL-02 委任_02 Fable分類(2026-10-22)
+- 分類: Trial①=VALIDATED(最小化Prompt有効、Production採用ではない)/Trial②=REJECTED(Haiku 5.5+初期一般化Prompt。原形化適用漏れ17〜22/70、過剰変更4、意味変化3、語追加4、両者PASS 44/70)。
+- 根拠: Trial①は5モデルで平均語数短縮・5語超0件・本文一致維持。Trial②は変更すべき/不要を区別できず、原形化は既存Production(DB hybrid canonicalization)が担う処理。
+- 推奨(ユーザー判断UDR #146): A=現行Luna維持/B=今回構成の2工程不採用/C=最小化条件を現行Production経路Promptへ入れる小規模Trial(見積事前提示)。採用判断はユーザー、Production/Prompt/Validator無変更、費用JPY0。出典=TRIAL_RESULT_02.md §7。

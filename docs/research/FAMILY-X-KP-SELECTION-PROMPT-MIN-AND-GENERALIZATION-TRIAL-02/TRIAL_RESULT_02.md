@@ -66,7 +66,16 @@ Before=Trial①のLuna出力14本文70件そのまま(再選定なし)。一般�
 - 費用(実測、1記事セット=Std+Adv): 今回Luna新Prompt選定 0.258円 + Haiku一般化 0.183円 = **0.441円**。既存Production KP選定(selector+canonicalization実測)=1.828円。評価費用は運用に含まれない(Trial費用)。為替=USD/JPY 160(プロジェクト既定、実為替ではない)。
 
 ## 7. Fable独立評価とTrial終了Status
-(Fable記入欄。担当者の分類候補: 8-6節)
+### 7. Fable独立評価・Trial終了Status(2026-10-22)
+- 分類: **Trial①=`VALIDATED`**(最小化Promptの有効性は確認。Production採用ではない)。**Trial②=`REJECTED`(今回構成=Claude Haiku 5.5+初期一般化Prompt)**。2工程方式という考え方自体は閉じない(下記C)。
+- Trial①の根拠: 5モデルすべてで平均語数が短縮(Luna 3.61→3.14、Sonnet 3.89→2.87等)し、5語超0件・本文一致も維持(Luna 69/70、Haiku/Sonnet 70/70)。例示3件のうち`think up what happens next→think up`はLuna/Sonnetで達成、`formal agreements with their creators→through formal agreements`(Luna)は改善方向、`alone caused the different results`は期待形が本文に連続して存在しないため本文一致必須の条件下では原理的に不可能(Trial②/原形化の領域)。留意: Lunaの学習価値V(前回と同観点)は1.26→1.06へ低下しており、短縮と引き換えに価値がやや下がった可能性がある(評価者のぶれ[前回実測 平均絶対差0.11]の範囲内で断定不可)。
+- Trial②の根拠: 変更16/70に対し原形化の適用漏れが17〜22/70(両評価者一致17)、過剰変更4、意味変化3、許容外の語の追加4(`materials`/`service`/`to`/`country-led`)。一般化の適切さ両者PASSは44/70(63%)。「変更すべきものを変え、不要なものを維持する」という要件を満たしていない。なお**原形化(canonicalization)は既存Production(DB hybrid方式)に既に工程として存在し**、今回の漏れの大半は既存工程が担っている種類の処理である。従って「新たに一般化LLMを1工程追加する」より、「最小化条件を既存のProduction経路(shortlist→選定→canonicalization)に入れて検証する」方が、既存仕様との整合・費用・リスクの面で合理的。
+- 既存Productionとの比較の読み方: 今回Luna(厳格合格69/70、V/E/N 0.629、0.258円+一般化0.183円)と既存(47/70、0.550、1.828円)は方式が異なる(全文渡し vs DB hybrid+canonicalization)。既存の厳格合格の低さの大半は意図した原形化によるもの。費用差は方式差(shortlist・canonicalizationの呼出)を含む。
+- Fable推奨(ユーザー判断A/B/Cは別件として整理):
+  - **A(選定モデル変更)=現行gpt-6-luna維持を推奨。** Sonnet 5.5は最良だが費用約20倍。Claude Haiku 5.5は2回のTrialで一貫してLuna以上(遵守100%、最小化0.843 vs 0.766、価値0.669 vs 0.629)で費用もほぼ同等(0.335 vs 0.258円/セット)だが、差は評価者のぶれの範囲内で、かつProductionにAnthropic APIという新しいProvider依存を追加する実装・運用コストが発生する。品質差が実証されるまで切替は不要。
+  - **B(選定・一般化の2工程方式の正式採用)=今回構成では不採用を推奨。** 適用漏れ・過剰変更が多く、原形化は既存工程で担える。
+  - **C(次の一手)=「最小化条件(新Prompt第3条)を現行Production経路のPromptに組み込み、同一14本文・Lunaで現行方式と比較する小規模Trial」を推奨(見積は事前に算出、前回規模より小さい見込み)。** 採用判断はその結果で行う(Prompt変更はユーザー承認事項)。
+- Closeout: Production/Prompt/Validator/モデル構成は無変更。再現情報=TRIAL_DESIGN_02.md+`er101_*`+paid_calls.jsonl。Opus条件Cレビューは採用提案時に実施。
 
 ## 8. 追加報告
 ### 8-1. 次に必要なユーザー判断(判断候補。事実材料のみ、推奨はFable)
