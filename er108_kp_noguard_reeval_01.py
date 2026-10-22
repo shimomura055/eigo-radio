@@ -1,4 +1,5 @@
 # ============================================================
+# 【履歴script(委任_01時点)】2026-10-22 委任_02で保護解除をProductionへ配線したため、本scriptのbaseline変種(保護あり)は現行Productionでは再現しない。現行の再判定は er108_kp_guard_lifted_runtime_reeval_01.py。
 # er108_kp_noguard_reeval_01.py  (API 0 / 費用0 / 研究用script。Production参照なし=import先を読むだけで編集しない)
 # KP-QUALITY-IMPROVEMENT-2ITEMS-PRODUCTION-01 委任_01 成果物4: 保存音声84件+coffee/small_bag 12本を、本番adapter経路
 # (er104_kp_vote_reuse_01.evaluate_vote -> er006 evaluate_attempt_with_cascade_detail, vote_required=True)で再判定する。
@@ -18,7 +19,7 @@ import er006_secondary_asr_01 as sec
 import er078_asr_unified_judge_01 as uj
 import importlib
 
-kp3v = importlib.import_module("er104_kp_three_asr_vote_01")   # `import er104_`字面を避ける理由はer108_kp_vote_noguard_01.py参照
+kp3v = importlib.import_module("er104_kp_three_asr_vote_01")   # `import er104_`字面を避ける理由は委任_02で折込み済みの旧staging module、削除済み
 kv = importlib.import_module("er104_kp_vote_reuse_01")
 r2 = importlib.import_module("er104_stored_audio_reeval_02")
 

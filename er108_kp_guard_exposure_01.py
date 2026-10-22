@@ -18,7 +18,7 @@ sys.path.insert(0, ".")
 import er078_asr_unified_judge_01 as uj
 import importlib
 
-kp3v = importlib.import_module("er104_kp_three_asr_vote_01")   # `import er104_`字面を避ける理由はer108_kp_vote_noguard_01.py参照
+kp3v = importlib.import_module("er104_kp_three_asr_vote_01")   # `import er104_`字面を避ける理由は委任_02で折込み済みの旧staging module、削除済み
 
 NUM = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "twenty", "thirty", "hundred", "thousand", "million", "half"]
 NEG = {"not", "no", "never", "without", "none", "nothing", "nobody", "nowhere", "neither", "nor", "cannot", "n't"}

@@ -114,7 +114,7 @@ def tag(r):
         try:  # 保存Azure転写を現行voter(make_voter=classify+値guard)で再判定(API 0)。azure_pass未保存行の補完にも使う
             rv0 = v.make_voter("azure", c, a)
             r["replay_pass"] = rv0.passed
-            r["replay_protected_diff"] = rv0.protected_diff
+            r["replay_protected_diff"] = rv0.observed_protected_diff
             r["replay_label"] = rv0.label
         except Exception as ex:
             r["replay_error"] = str(ex)
@@ -124,7 +124,7 @@ def tag(r):
             r["cf_deitn_text"] = t2
             r["cf_pass"] = vt.passed
             r["cf_label"] = vt.label
-            r["cf_protected"] = vt.protected_diff
+            r["cf_protected"] = vt.observed_protected_diff
         except Exception as ex:
             r["cf_error"] = str(ex)
 

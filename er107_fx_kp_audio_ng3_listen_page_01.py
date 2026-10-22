@@ -120,7 +120,7 @@ def main():
                      f'<td><small>{wprod}</small></td>'
                      f'<td><code>{html.escape(r["whisper_offline_text"])}</code> {pill(r["whisper_offline_pass"])}</td></tr>')
         H.append('</table></div>')
-    H.append('<p><small>Whisperを呼ばない理由: 本番KP投票(kp_vote_check_v1)は、OpenAIとAzureが両方NG(NG_BOTH)、または反対票側に保護差(数値/否定)がある(NG_PROTECTED_DISSENT)場合、Whisperを呼びません(er104_kp_three_asr_vote_01.py whisper_needed / tally)。</small></p>')
+    H.append('<p><small>Whisperを呼ばない理由: 本番KP投票(kp_vote_check_v1)は、OpenAIとAzureが両方NG(NG_BOTH)、または反対票側に保護差(数値/否定)がある(NG_PROTECTED_DISSENT)場合、Whisperを呼びません(er104_kp_three_asr_vote_01.py whisper_needed / tally)。<b>【注記 2026-10-22】この保護差ブロックは同日のユーザー承認で撤去済み(KP英語は数値・否定の保護なし。保護差があってもWhisperを呼ぶ)。本ページは撤去前の過去runの記録です。</b></small></p>')
     H.append('<hr><p><small>出典: er019_output/family_x_audio_production_wiring_01/(coffee_prices__run_jre_01, small_bag__run_jre_01)の narration/attempts/kp1_en_attempt*.json・audit/review_lock_state.json。'
              '詳細: docs/research/FAMILY-X-KP-AUDIO-NG3-EVIDENCE-01/EVIDENCE_01.md。TTS: gemini-3.8-flash-lite-tts(voice Aoede)。</small></p></body></html>')
     open(OUT + "/index.html", "w", encoding="utf-8").write("\n".join(H))
