@@ -360,6 +360,15 @@ def merge_notes(*notes) -> Optional[str]:
     return "\n\n".join(parts) if parts else None
 
 
+def _cmu_gate_meta(cmu, lexicon: dict, attempts: list) -> dict:
+    """選定metadataに記録するCMU条件の適用結果(OF-KPQ-P-05/P-08(a))。CMU未登録が原因のretry回と、最終attemptでの除外を残す。"""
+    cmu_attempts = [a["attempt"] for a in attempts if any("CMU発音辞書" in r for ir in (a.get("item_reasons") or []) for r in ir.get("reasons", []))
+                    or a.get("cmu_excluded")]
+    excluded = [x for a in attempts for x in (a.get("cmu_excluded") or [])]
+    return {"version": cmu.CHECK_VERSION, "applied": True, "lexicon": lexicon, "attempts_with_cmu_reason": cmu_attempts,
+            "excluded": excluded}
+
+
 def run_selection_gate(article_text: str, make_call_fn: Callable[[str], Callable], *, diagnostic_note: Optional[str] = None,
                        max_attempts: int = MAX_ATTEMPTS, units: Optional[list] = None,
                        sleep_fn: Optional[Callable[[float], None]] = None) -> dict:
@@ -370,6 +379,9 @@ def run_selection_gate(article_text: str, make_call_fn: Callable[[str], Callable
     if units is None:
         import er030_key_phrase_db_hybrid_core_01 as core   # 遅延import
         units = core.build_sentence_units(article_text)
+    # KP-QUALITY-2ITEMS(2026-10-22、OF-KPQ-P-05): 『構成する全英単語がCMU発音辞書に登録済み』条件の辞書をAPI支出の前にpreflight(不備=fail-closedで例外)。
+    import er108_kp_cmu_lexicon_gate_01 as cmu
+    cmu_lexicon = cmu.preflight()
     sleep_fn = sleep_fn if sleep_fn is not None else time.sleep
     attempts, messages = [], []
     last_status, last_model, last_resp = STATUS_TECHNICAL_FAILED, None, None
@@ -409,20 +421,22 @@ def run_selection_gate(article_text: str, make_call_fn: Callable[[str], Callable
             last_status = STATUS_PARSE_FAILED
             continue
         v = validate_and_resolve(selected, units)
+        # KP-QUALITY-2ITEMS M1: 構成する全英単語のCMU登録確認(語単位)。未登録語itemは機械診断noteで再選定、最終attemptはCMU未登録のみが原因なら除外してshortfall確定。
+        v = cmu.apply_cmu_to_validation(v, final_attempt=(attempt == max_attempts))
         rec = {"attempt": attempt, "status": STATUS_PASS if v["ok"] else STATUS_INVALID, "validation_reasons": v["reasons"],
-               "item_reasons": v["item_reasons"], "resolved": v["resolved"], "raw_text": raw, "model": model_id,
+               "item_reasons": v["item_reasons"], "resolved": v["resolved"], "cmu_excluded": v.get("cmu_excluded") or [], "raw_text": raw, "model": model_id,
                "response_id": response_id, "user_message_sha256": msg_sha}
         attempts.append(rec)
         if v["ok"]:
             items = build_original_items(v["resolved"])
             return {"status": STATUS_PASS, "items": items, "attempts_detail": attempts, "model_id": model_id,
                     "response_id": response_id, "shortfall": len(items) < KP_COUNT_MAX, "user_message_sha256": msg_sha,
-                    "messages": messages}
+                    "messages": messages, "cmu_gate": _cmu_gate_meta(cmu, cmu_lexicon, attempts)}
         machine_note = build_machine_note(rec)
         last_status = STATUS_INVALID
     return {"status": last_status, "items": None, "attempts_detail": attempts, "model_id": last_model, "response_id": last_resp,
             "shortfall": None, "user_message_sha256": attempts[-1].get("user_message_sha256") if attempts else None,
-            "messages": messages}
+            "messages": messages, "cmu_gate": _cmu_gate_meta(cmu, cmu_lexicon, attempts)}
 
 
 def run_fulltext_selection(article_text: str, out_dir: str, article_id: str, source_level: str, process: Optional[str] = None,
@@ -456,6 +470,7 @@ def run_fulltext_selection(article_text: str, out_dir: str, article_id: str, sou
         "kp_backend_used": BACKEND_ID,
         "attempts": len(gate["attempts_detail"]), "has_diagnostic_note": bool(diagnostic_note),
         "attempts_detail": [{k: v for k, v in a.items() if k != "raw_text"} for a in gate["attempts_detail"]],
+        "cmu_gate": gate.get("cmu_gate"),
     }
     with open(f"{out_dir}/keywords_runtime_metadata.json", "w", encoding="utf-8") as f:
         json.dump(meta, f, ensure_ascii=False, indent=2)

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """KP-QUALITY-IMPROVEMENT-2ITEMS-PRODUCTION-01 委任_01 / 項目②: Key Phrase選定の『CMU発音辞書 登録語のみ』必須条件の判定core(**未配線module**)。
 
-Status: 未配線(委任_01=調査・設計・module+test)。Production参照0(本moduleは標準ライブラリと`pronouncing`[=cmudict]のみをimportする。
-Productionのどのmoduleもこのmoduleをimportしない: er108_kp_cmu_lexicon_gate_01_test_01.pyのAST testで固定)。配線は委任_02。
-API呼出0・費用0。
+Status: WIRED_CODE(委任_02、2026-10-22): er105 `run_selection_gate`(M1)と er003_v1_n3_01_scaffold_generate `run_kp_with_outer_retry`(M2)が本moduleを使う
+(X/Z共通=fulltext_p2経路。A/B/C無影響)。ユーザー承認APPROVED_FOR_PRODUCTION(2026-10-22)。本moduleは標準ライブラリと`pronouncing`[=cmudict]のみをimportする。
+API呼出0・費用0。R4(縮約clitic分解)は閉集合規則: clitic側は s/d/m/re/ve/t がCMU登録エントリ、ll は単独エントリ無し(base登録で許容。census発火0件)。
 
 ユーザー要件(2026-10-22原文§3)の写像:
   - Key Phrase全体でなく、構成する英単語ごとにCMU登録を確認する。                          -> check_phrase() は語(token)単位
@@ -59,6 +59,38 @@ def lexicon_info() -> dict:
     return {"package_cmudict": md.version("cmudict"), "package_pronouncing": md.version("pronouncing"),
             "cmudict_data_dir": d, "entries": len(pronouncing.pronunciations),
             "lookup": "pronouncing.phones_for_word(lowercase)"}
+
+
+class CmuLexiconError(RuntimeError):
+    """CMU辞書を使えない(import失敗/辞書空)。fail-closed: 呼出側はAPI支出の前に停止する(OF-KPQ-P-05)。"""
+
+
+_PREFLIGHT_CACHE: dict = {}
+
+
+def preflight(lookup: Optional[Callable[[str], bool]] = None) -> dict:
+    """KP段開始時のCMU辞書確認(API 0)。登録済みの基準語(the/have/phrase)が引けること・entries>0を確認し、`lexicon_info()`を返す(metadataに記録)。
+    辞書不備は例外(CmuLexiconError)。lookup注入時(test)は基準語確認のみ。"""
+    if lookup is not None:
+        for w in ("the", "have"):
+            if not lookup(w):
+                raise CmuLexiconError(f"CMU lookup sanity failed: {w!r}")
+        return {"lookup": "injected"}
+    if "info" in _PREFLIGHT_CACHE:
+        return dict(_PREFLIGHT_CACHE["info"])
+    try:
+        info = lexicon_info()
+        for w in ("the", "have", "phrase"):
+            if not _default_lookup(w):
+                raise CmuLexiconError(f"CMU lookup sanity failed: {w!r}")
+        if int(info.get("entries") or 0) < 100000:
+            raise CmuLexiconError(f"CMU entries too small: {info.get('entries')}")
+    except CmuLexiconError:
+        raise
+    except Exception as e:  # noqa: BLE001  import失敗/辞書欠落
+        raise CmuLexiconError(f"CMU lexicon unavailable: {type(e).__name__}: {e}") from e
+    _PREFLIGHT_CACHE["info"] = info
+    return dict(info)
 
 
 def normalize_token(tok: str) -> str:

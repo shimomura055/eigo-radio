@@ -872,7 +872,8 @@ class KpOuterRetryTest(unittest.TestCase):
 
         def sel(text, d, aid, lvl, process=None, diagnostic_note=None):
             calls["sel"].append(diagnostic_note)
-            items = [{"rank": i, "display_phrase": f"phrase{i}"} for i in range(1, 6)]
+            # KP-QUALITY-2ITEMS(2026-10-22): canonicalization後のCMU再確認(M2)を通るよう、fixtureの語はCMU登録語にする(旧: phrase1..5=数字入りでCMU未登録)。
+            items = [{"rank": i, "display_phrase": w_} for i, w_ in enumerate(["apple pie", "brave dragon", "candle light", "dark forest", "early bird"], 1)]
             return {"status": "KEY_WORDS_STRUCTURE_PASS", "parsed": {"items": items}, "original_items": items}
 
         def canon(text, items, d, aid, process=None):
@@ -918,12 +919,13 @@ class KpOuterRetryTest(unittest.TestCase):
         for forbidden in ("take my place", "my place", "someone's", "Melos", "メロス", "'", '"', "「"):
             self.assertNotIn(forbidden, n)
         self.assertIn("所有格人称代名詞", n)
-        # 実呼出時のnoteにも個別phrase名(fake phrase1..5)が混入しない(最初のINVALID後でも同一note)
+        # 実呼出時のnoteにも個別phrase名(fake phrase1..5)が混入しない(最初のINVALID後でも同一note。fixture語=apple pie等)
         with tempfile.TemporaryDirectory() as d:
             calls, _ = self._run(d, ["CANONICALIZATION_INVALID", "CANONICALIZATION_PASS"])
             for note in calls["sel"]:
                 self.assertEqual(note, n)
-                self.assertNotRegex(note, r"phrase\d")
+                for p_ in ("apple pie", "brave dragon", "candle light", "dark forest", "early bird"):
+                    self.assertNotIn(p_, note)
 
     def test_redundancy_retry_separate_counter_and_appends_note(self):
         with tempfile.TemporaryDirectory() as d:

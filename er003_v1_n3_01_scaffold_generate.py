@@ -674,6 +674,8 @@ def run_kp_with_outer_retry(text: str, kp_dir: str, article_id: str, source_leve
     red_max = KEY_PHRASE_REDUNDANCY_RETRY_MAX
     red_note, red_attempt, failures, log, redundancy_retry_log = None, 0, 0, [], []
     outer = 0
+    cmu_note = ""   # KP-QUALITY-2ITEMS M2(OF-KPQ-P-02): canonicalization後のCMU未登録診断。NGのたびに作り直し、次周の選定noteへ確実に渡す
+    import er108_kp_cmu_lexicon_gate_01 as cmu
 
     def save_log():
         with open(f"{kp_dir}/outer_retry_log.json", "w", encoding="utf-8") as f:
@@ -697,6 +699,8 @@ def run_kp_with_outer_retry(text: str, kp_dir: str, article_id: str, source_leve
         if stop_check_fn is not None:
             stop_check_fn(f"kp_outer_retry:{article_id}:attempt{outer}")   # OF-KPFT-P-08: 各周の開始時(新規API呼出の前)
         note = (generic_note or "") + (("\n\n" if generic_note else "") + red_note if red_note else "")
+        if cmu_note:
+            note = note + ("\n\n" if note else "") + cmu_note
         sel = select_fn(text, kp_dir, article_id, source_level, process=process, diagnostic_note=(note or None))
         entry = {"outer_attempt": outer, "note_sha256": _kp_sha(note), "selection_status": sel.get("status"),
                  "selection_phrases": [it.get("display_phrase") for it in ((sel.get("parsed") or {}).get("items") or [])]}
@@ -720,6 +724,24 @@ def run_kp_with_outer_retry(text: str, kp_dir: str, article_id: str, source_leve
             save_log()
             continue
         merged_items = canon["merged"]["items"]
+        # KP-QUALITY-2ITEMS M2: canonicalization(基本形化・人称一般化)後の最終used_formをCMUで再確認。不適合=INVALID扱い(外側retry通算内)。
+        # OF-KPQ-P-02: NGになった時点で`keywords_canonicalized.json`を即座に退避(本名のまま残さない=TTS段/resumeが読まない)し、次周のnoteへCMU診断を渡す。
+        chk = cmu.canonicalized_check(merged_items)
+        entry["cmu_post_canon"] = {"version": chk["version"], "ok": chk["ok"], "checked": chk["checked"], "bad": chk["bad"]}
+        if not chk["ok"]:
+            failures += 1
+            entry["artifacts"] = _kp_copy_attempt_artifacts(kp_dir, outer)
+            stale = _kp_retire_stale_artifact(kp_dir, outer)
+            if stale:
+                entry["stale_artifact"] = stale
+            cmu_note = cmu.build_canonicalized_note(chk)
+            entry["canonicalization_status"] = "CMU_POST_CANON_INVALID"
+            log.append(entry)
+            if failures >= max_outer:
+                return fail(entry, sel, canon, "OUTER_RETRY_EXHAUSTED")
+            save_log()
+            continue
+        cmu_note = ""
         red = redundancy_fn(text, merged_items, kp_dir, article_id, process=process)
         findings = detect_key_phrase_symbol_findings(merged_items)
         flagged = safety.symbol_gate_requires_stop(findings)

@@ -199,30 +199,23 @@ class ApplyToValidation(unittest.TestCase):
         g.apply_cmu_to_validation(v, final_attempt=True)
         self.assertEqual(repr(v), snap)
 
-    def test_er105_gate_flow_retry_note_then_pass(self):
-        """er105.run_selection_gateを実コードのまま回し(API 0・mock selector)、validate結果にCMU条件を重ねる配線後の挙動を再現する。
-        1回目=未登録語を含む選定 -> INVALID+機械診断note -> 2回目=登録語のみ -> PASS。"""
+    def _gate(self, per_attempt):
+        import json
         import er105_kp_fulltext_selector_01 as ft
-        orig = ft.validate_and_resolve
-        calls = {"n": 0}
-
-        def wired(selected, units):
-            calls["n"] += 1
-            return g.apply_cmu_to_validation(orig(selected, units), final_attempt=(calls["n"] >= ft.MAX_ATTEMPTS))
-
         sent = []
 
         def make_call_fn(msg):
             sent.append(msg)
-            phrases = (["novelty minaudière", "pump one's fist"] if len(sent) == 1 else ["pump one's fist", "pushed up"])
-            import json
+            phrases = per_attempt[min(len(sent), len(per_attempt)) - 1]
             return lambda: (json.dumps({"items": [{"phrase": p, "word_count": len(p.split())} for p in phrases]}), "gpt-6-luna", f"r{len(sent)}")
 
-        ft.validate_and_resolve = wired
-        try:
-            res = ft.run_selection_gate(self.ART, make_call_fn, sleep_fn=lambda s: None)
-        finally:
-            ft.validate_and_resolve = orig
+        res = ft.run_selection_gate(self.ART, make_call_fn, sleep_fn=lambda s: None)
+        return ft, res, sent
+
+    def test_er105_gate_flow_retry_note_then_pass(self):
+        """配線後のer105.run_selection_gateを実コードのまま回す(API 0・mock selector)。
+        1回目=未登録語を含む選定 -> INVALID+機械診断note -> 2回目=登録語のみ -> PASS。"""
+        ft, res, sent = self._gate([["novelty minaudière", "pump one's fist"], ["pump one's fist", "pushed up"]])
         self.assertEqual(res["status"], ft.STATUS_PASS)
         self.assertEqual(len(res["attempts_detail"]), 2)
         self.assertEqual(res["attempts_detail"][0]["status"], ft.STATUS_INVALID)
@@ -231,14 +224,107 @@ class ApplyToValidation(unittest.TestCase):
         self.assertTrue(sent[1].startswith(ft.PROMPT_2_TEXT))     # Prompt 2本文は不変
         self.assertEqual([i["source_span"].lower() for i in res["items"]], ["pump one's fist", "pushed up"])
         self.assertTrue(res["shortfall"])    # 2件 < 3件 (数合わせしない)
+        cg = res["cmu_gate"]
+        self.assertTrue(cg["applied"] and cg["attempts_with_cmu_reason"] == [1] and cg["excluded"] == [])
+        self.assertEqual(cg["lexicon"]["package_cmudict"], "1.1.3")      # OF-KPQ-P-05: 辞書versionをmetadataに固定
+
+    def test_er105_gate_final_attempt_excludes_cmu_only_and_confirms_shortfall(self):
+        ft, res, sent = self._gate([["novelty minaudière", "pump one's fist"], ["novelty minaudière", "pump one's fist"]])
+        self.assertEqual(res["status"], ft.STATUS_PASS)
+        self.assertEqual([i["source_span"].lower() for i in res["items"]], ["pump one's fist"])
+        self.assertEqual(res["cmu_gate"]["excluded"][0]["phrase"], "novelty minaudière")
+        self.assertEqual(res["cmu_gate"]["excluded"][0]["unregistered"], ["minaudière"])
+        self.assertEqual([i["rank"] for i in res["items"]], [1])         # rankは1..nに振り直し
+
+    def test_er105_gate_all_unregistered_is_invalid_not_empty(self):
+        ft, res, sent = self._gate([["novelty minaudière"], ["novelty minaudière"]])
+        self.assertEqual(res["status"], ft.STATUS_INVALID)
+        self.assertIsNone(res["items"])
+
+    def test_run_fulltext_selection_records_cmu_gate_in_metadata(self):
+        import json
+        import tempfile
+        import er105_kp_fulltext_selector_01 as ft
+
+        def make_call_fn(msg):
+            return lambda: (json.dumps({"items": [{"phrase": "pump one's fist", "word_count": 3}]}), "gpt-6-luna", "r1")
+
+        with tempfile.TemporaryDirectory() as d:
+            ft.run_fulltext_selection(self.ART, d, "A", "a2", process=None, make_call_fn=make_call_fn, sleep_fn=lambda s: None)
+            meta = json.load(open(os.path.join(d, "keywords_runtime_metadata.json"), encoding="utf-8"))
+        self.assertTrue(meta["cmu_gate"]["applied"])
+        self.assertEqual(meta["cmu_gate"]["lexicon"]["package_cmudict"], "1.1.3")
 
 
-class Isolation(unittest.TestCase):
-    def test_no_production_module_imports_er108_cmu(self):
+class PostCanonOuterRetry(unittest.TestCase):
+    """M2(OF-KPQ-P-02): run_kp_with_outer_retryがcanonicalization後のCMU未登録をINVALID扱いし、keywords_canonicalized.jsonを即退避して次周へnoteを渡す。"""
+
+    def _run(self, tmp, merged_per_attempt, max_outer=3):
+        import json
+        import er003_v1_n3_01_scaffold_generate as sc
+        notes = []
+        n = {"sel": 0, "canon": 0}
+
+        def select_fn(text, kp_dir, article_id, level, process=None, diagnostic_note=None):
+            n["sel"] += 1
+            notes.append(diagnostic_note)
+            return {"status": "KEY_WORDS_STRUCTURE_PASS", "original_items": [{"rank": 1}], "parsed": {"items": [{"display_phrase": "x"}]}}
+
+        def canon_fn(text, items, kp_dir, article_id, process=None):
+            n["canon"] += 1
+            merged = {"items": merged_per_attempt[min(n["canon"], len(merged_per_attempt)) - 1]}
+            with open(os.path.join(kp_dir, "keywords_canonicalized.json"), "w", encoding="utf-8") as f:
+                json.dump(merged, f)
+            return {"status": "CANONICALIZATION_PASS", "merged": merged}
+
+        red = lambda *a, **k: {"status": "REDUNDANCY_PASS", "duplicate_pairs": []}
+        res = sc.run_kp_with_outer_retry("text", tmp, "A", "a2", select_fn=select_fn, canon_fn=canon_fn, redundancy_fn=red,
+                                         max_outer=max_outer)
+        return sc, res, notes, n
+
+    def test_cmu_ng_after_canon_retires_artifact_and_passes_note_to_next_round(self):
+        import tempfile
+        bad = [{"rank": 1, "used_form": "novelty minaudière"}]
+        good = [{"rank": 1, "used_form": "pump one's fist"}]
+        with tempfile.TemporaryDirectory() as d:
+            sc, res, notes, n = self._run(d, [bad, good])
+            self.assertNotIn("status", res)                                  # 2周目でPASS
+            self.assertEqual(n["sel"], 2)
+            self.assertIn("minaudière", notes[1])                            # CMU診断noteが次周へ
+            self.assertIn("CMU", notes[1])
+            self.assertEqual(res["outer_retry_log"][0]["canonicalization_status"], "CMU_POST_CANON_INVALID")
+            self.assertTrue(res["outer_retry_log"][0]["stale_artifact"].endswith(".json"))
+            self.assertTrue(os.path.exists(res["outer_retry_log"][0]["stale_artifact"]))
+            self.assertTrue(os.path.exists(os.path.join(d, "keywords_canonicalized.json")))   # 2周目のPASS成果物
+
+    def test_cmu_ng_every_round_exhausts_and_no_keywords_file_remains(self):
+        import tempfile
+        bad = [{"rank": 1, "used_form": "novelty minaudière"}]
+        with tempfile.TemporaryDirectory() as d:
+            sc, res, notes, n = self._run(d, [bad], max_outer=3)
+            self.assertEqual(res["status"], "OUTER_RETRY_EXHAUSTED")
+            self.assertEqual(n["sel"], 3)
+            self.assertFalse(os.path.exists(os.path.join(d, "keywords_canonicalized.json")))   # 本名のまま残さない(TTS段が読まない)
+
+    def test_registered_used_form_unchanged_flow(self):
+        import tempfile
+        good = [{"rank": 1, "used_form": "pump one's fist"}]
+        with tempfile.TemporaryDirectory() as d:
+            sc, res, notes, n = self._run(d, [good])
+            self.assertNotIn("status", res)
+            self.assertEqual(n["sel"], 1)
+            self.assertTrue(res["outer_retry_log"][0]["cmu_post_canon"]["ok"])
+
+
+class Importers(unittest.TestCase):
+    ALLOWED = {"er105_kp_fulltext_selector_01.py", "er003_v1_n3_01_scaffold_generate.py"}
+
+    def test_cmu_gate_is_imported_only_by_x_z_shared_kp_path(self):
+        """A/B/Cの量産経路(er003 v1 main/N3 tts, er013, er006 shared narration等)はCMU gateを使わない。許可=全文選定(M1)と共通外側retry(M2)のみ。"""
         offenders = []
         for f in glob.glob(os.path.join(ROOT, "*.py")):
             base = os.path.basename(f)
-            if base.startswith("er108_"):
+            if base.startswith("er108_") or "_test" in base:
                 continue
             try:
                 with open(f, encoding="utf-8") as fh:
@@ -251,9 +337,15 @@ class Isolation(unittest.TestCase):
                     names = [a.name for a in node.names]
                 elif isinstance(node, ast.ImportFrom):
                     names = [node.module or ""]
-                if any(n.startswith("er108_kp_cmu_lexicon_gate_01") for n in names):
+                if any(n.startswith("er108_kp_cmu_lexicon_gate_01") for n in names) and base not in self.ALLOWED:
                     offenders.append(base)
-        self.assertEqual(offenders, [], f"未配線moduleをimportするfile: {offenders}")
+        self.assertEqual(sorted(set(offenders)), [], f"許可外のimporter: {offenders}")
+
+    def test_legacy_strategy_l_path_does_not_call_cmu(self):
+        """A/B/Cの`_run_key_phrases_impl`(strategy_l)にはCMU呼出が無い。"""
+        src = open(os.path.join(ROOT, "er003_v1_n3_01_scaffold_generate.py"), encoding="utf-8").read()
+        a = src.index("def _run_key_phrases_impl")
+        self.assertNotIn("cmu.", src[a:a + 6000])
 
 
 if __name__ == "__main__":
