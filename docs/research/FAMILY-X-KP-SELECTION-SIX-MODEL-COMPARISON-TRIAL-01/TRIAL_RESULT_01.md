@@ -87,11 +87,13 @@ Status: **TRIAL_DONE_PENDING_FABLE**(Trial承認済み。**Production採用未�
 - 本Trialで未検証: 1本文1回生成のため生成ばらつき、KP DB(`kp_english_lock`等)との整合、日本語glossのTTS・ASR工程、5件固定仕様(4+1 role構成)の扱い。方式をPrompt全文渡しへ変えるかは別途設計判断(Fable11-3条件A等)になる。
 
 ## 7. Fableによる独立レビュー・Trial Closeout
-(Fable記入欄)
-- 最終Status(VALIDATED / REJECTED / USER_DECISION_REQUIRED):
-- Opus独立レビュー要否(採用提案時は条件C):
-- ユーザー判断に回す事項:
-- 備考:
+### 7. Fable独立レビュー・Trial Closeout(2026-10-22)
+- 分類: **`VALIDATED`**(比較Trialとして有効。Production採用ではない。最終的なモデル採否はユーザー判断=UDR #145)。
+- 根拠: 6モデル固定・同一Prompt(調整は本文受け渡し区切りのみ、意味・条件不変)・同一14本文・各1回生成・返却model ID全件一致・技術的失敗0・不合格結果の修正掲載なし・評価は選定元と異系統の評価者を主評価(同系統の自己評価が0.949 vs 異系統0.760と大きく乖離したことから、この設計は必要だった)。費用は出典付き実測(JPY206.60=選定71.74+評価134.86)。
+- 読み方の注意(ユーザー誤読防止): (1)「本文一致」は本Promptの厳密規則(一般化以外の変更禁止)で採点したため、活用形を原形に直した候補は不一致に数えている。既存Production(67.1%)とGemini 3.5(73.1%)の低さの大半はこの原形化(既存Productionでは意図したcanonicalization)によるもので、創作ではない。(2)主評価(0.707〜0.777)のモデル間差は評価者間のぶれ(相関0.58、平均絶対差0.11)と同程度で、品質の順位付けは弱い。(3)本Trialは全文渡し方式で、現行のDB hybrid+canonicalization方式とは別物。モデル差と方式差は分離できておらず、既存Productionの行は「別方式の参考値」。
+- 事実の要点: 指示遵守はLuna/Haiku 5.5/Sonnet 5.5が100%、Sol 100%だが候補数が少ない(平均2.64件/セット、byUs Standardは0件)、Gemini 2種は5語超・自己申告不一致が目立つ。一般化の実施数はSonnet 24・Gemini 3.1 21に対しLuna 6・Haiku 4・Sol 5で、Lunaは「一般化できる場合は必ず行う」の面では弱い可能性がある(評価平均には小さくしか出ていない)。費用はLuna 0.35円/記事セット、Haiku 0.40、Gemini 0.22〜0.39、Sol 2.67、Sonnet 6.23。
+- Fable推奨: **現行Luna維持(モデル変更なし)**。理由: Lunaは絶対条件(本文一致・5語以内)を全件遵守し最安級で、上回る候補(Sonnet 5.5)の品質差は評価のぶれの範囲内かつ費用約18倍。Haiku 5.5は同等品質・同等費用だが切替の利点が小さい。Solは5件を埋められず、Geminiは遵守が弱い。一般化の弱さが気になる場合は、モデル変更ではなく現行Prompt/方式側の改善(別Trial)で扱う方が安価。
+- Closeout: Production/Prompt/Validator/モデル構成は無変更。再現情報=TRIAL_DESIGN_01.md+`er098_*`+paid_calls.jsonl。後続Trial(全文渡し+canonicalization統合、一般化強化)はユーザーが望む場合のみ起票(本Closeoutでは起票しない)。
 
 ## 8. 追加報告(委任文§3-8の必須項目)
 ### 8-1. 開始前チェック対応表
