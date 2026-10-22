@@ -1,0 +1,234 @@
+{
+ "managed_id": "HR-QUEUE-TEST-CONTAMINATION-FIX-01",
+ "delegation": "委任_01",
+ "created": "2026-10-22",
+ "purpose": "HR queue本体(無変更・行削除/編集禁止)に混入した単体テストmock行を、集計から除外できるよう特定する。",
+ "queue_path": "er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl",
+ "queue_snapshot_at_creation": {
+  "line_count": 113,
+  "sha256": "d1c81083d2863dfe94d64a28369d289615c0719b2f173b1bc2d07195e149685f"
+ },
+ "exclusion_basis": "wav_pathが tempfile.mkdtemp(prefix='er026_pscr_outer_') 配下で音声実体なし。canonical_text='Melos said.'、primary_1 ASR='Mello said.'、Azure='Mellow said.' は er026_post_slowdown_cascade_rescue_01_test_01.py の OuterLoopIntegrationTests.test_no_rescue_consumes_budget_as_before / _run (mock入力 :279-283, :250) と完全一致。STOPPED経路で er006_secondary_asr_01.py:_log_human_review (:476-516、HUMAN_REVIEW_LOG_PATH=:473) が既定Productionパスへ追記していた。",
+ "excluded_row_count": 25,
+ "excluded_rows": [
+  {
+   "line_number": 87,
+   "timestamp": "2026-10-17T17:29:21",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_34014qdw/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 88,
+   "timestamp": "2026-10-17T17:29:32",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_hy35obbn/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 89,
+   "timestamp": "2026-10-17T17:34:47",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_ozfc1gi8/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 90,
+   "timestamp": "2026-10-17T19:01:11",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_r9kri7ul/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 91,
+   "timestamp": "2026-10-17T19:05:21",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_gonza3fo/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 92,
+   "timestamp": "2026-10-17T19:44:59",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_qh83k4uy/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 95,
+   "timestamp": "2026-10-19T19:13:15",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_to7pmgql/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 96,
+   "timestamp": "2026-10-19T19:41:13",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_rqbes92r/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 97,
+   "timestamp": "2026-10-19T20:34:57",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_fen9s6bp/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 98,
+   "timestamp": "2026-10-19T20:52:58",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_0lb0577i/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 99,
+   "timestamp": "2026-10-19T21:38:10",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_fraqe130/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 100,
+   "timestamp": "2026-10-19T21:41:34",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer__3aif1lw/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 101,
+   "timestamp": "2026-10-19T21:59:58",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_p6oz99l0/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 102,
+   "timestamp": "2026-10-21T08:32:25",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_qyyi7_io/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 103,
+   "timestamp": "2026-10-21T08:41:46",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_vybs0d3v/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 104,
+   "timestamp": "2026-10-21T08:54:39",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_ypy8q8fo/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 105,
+   "timestamp": "2026-10-21T20:17:48",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_5e2ctjnp/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 106,
+   "timestamp": "2026-10-22T09:13:41",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_tv81ehec/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 107,
+   "timestamp": "2026-10-22T09:25:24",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_yxz9dwd5/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 108,
+   "timestamp": "2026-10-22T09:30:52",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_yz2khroy/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 109,
+   "timestamp": "2026-10-22T09:55:50",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_twcnm_lk/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 110,
+   "timestamp": "2026-10-22T10:01:02",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_y9dp0ss9/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 111,
+   "timestamp": "2026-10-22T10:05:10",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_700nu_us/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 112,
+   "timestamp": "2026-10-22T10:12:19",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_wzvzubbd/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  },
+  {
+   "line_number": 113,
+   "timestamp": "2026-10-22T10:23:44",
+   "canonical_text": "Melos said.",
+   "wav_path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\er026_pscr_outer_sbpfqo6s/full_story_part1_c5.wav",
+   "primary_asr_text": "Mello said.",
+   "azure_text": "Mellow said."
+  }
+ ],
+ "additional_test_origin_candidates_already_fixed": {
+  "note": "別のtest由来と判断される9行(wav_pathがTemp配下、ASR='The price rose to $2.3 million this year.')。2026-10-15〜16に発生し、委任_06c(Azure SDK mock化)以降は新規発生なし(2026-10-22の再実行でも不変を確認)。本sidecarの除外対象25行には含めず、参考として記録。",
+  "line_numbers": [
+   78,
+   79,
+   80,
+   81,
+   82,
+   83,
+   84,
+   85,
+   86
+  ],
+  "wav_path_prefixes": [
+   "er021w2_a2_standard_path_test_",
+   "er021w3_news_tail_fix_wiring_test_",
+   "er003_news_tail_fix_semeq_surfacing_"
+  ]
+ }
+}

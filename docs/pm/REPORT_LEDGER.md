@@ -481,3 +481,4 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-22 | FAMILY-X-KP-SELECTION-PROMPT-MIN-AND-GENERALIZATION-TRIAL-02 委任_02 | Fable分類 Trial①VALIDATED/Trial②REJECTED(今回構成)、推奨A Luna維持/B不採用/C Production経路Trial、UDR #146起票、記録のみ¥0。
 - 2026-10-22 | PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02 委任_07 | Stage 2 Trial第1巡(O0/O1/推定/P2/replay/試聴ページ)、HR58→57、誤PASS0、費用JPY15.54。TRIAL_R1_DONE_PENDING_FABLE。
 - 2026-10-22 | PROPER-NOUN-PRONUNCIATION-SUPPLY-PLAN-02 委任_08 | Stage 2 第2巡(Opus案1): 現行TTS再測定+負例拡充29本+新arm、HR(プロキシ)25→PASS 0(全46音声で37→2)、誤PASS0/29、費用JPY63.55。TRIAL_R2_DONE_PENDING_FABLE。
+- 2026-10-22 | HR-QUEUE-TEST-CONTAMINATION-FIX-01 委任_01 | 単体テスト(er026)がProduction HR queueへmock行25件を書いていた問題をtest隔離で是正+混入行sidecar記録、HR queue本体無変更、回帰152/152 PASS、¥0。FIXED_RECORDED。

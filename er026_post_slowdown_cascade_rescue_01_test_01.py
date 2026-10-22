@@ -53,7 +53,22 @@ def _m1_off_setup_module():
     unittest.addModuleCleanup(patcher.stop)
 
 
+def _isolate_production_queue_paths():
+    """HR-QUEUE-TEST-CONTAMINATION-FIX-01(2026-10-22): 本testはmock入力("Melos said."/"Mello said."/"Mellow said.")のまま実際の
+    _log_human_review/attempt_historyを通るため、隔離しないとProductionのHuman Review queue
+    (er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl)とer011_output/attempt_history.jsonlへmock行が追記される
+    (er006_secondary_asr_01.py HUMAN_REVIEW_LOG_PATH / er011_human_review_lock_01.py ATTEMPT_HISTORY_PATH)。tmp配下へ差し替える。"""
+    import er011_human_review_lock_01 as _lock
+    d = tempfile.mkdtemp(prefix="er026_pscr_isolated_queue_")
+    unittest.addModuleCleanup(shutil.rmtree, d, True)
+    for patcher in (mock.patch.object(sec, "HUMAN_REVIEW_LOG_PATH", os.path.join(d, "human_review_queue.jsonl")),
+                    mock.patch.object(_lock, "ATTEMPT_HISTORY_PATH", os.path.join(d, "attempt_history.jsonl"))):
+        patcher.start()
+        unittest.addModuleCleanup(patcher.stop)
+
+
 def setUpModule():
+    _isolate_production_queue_paths()
     _m1_off_setup_module()
 
 
@@ -287,6 +302,33 @@ class OuterLoopIntegrationTests(unittest.TestCase):
             r, calls, _ = self._run("full_story_part1_c5", "Melos said.", "Mello said.", "Mellow said.", 1.5)
         self.assertEqual(r["status"], "OK")
         self.assertEqual(calls["tts"], 1)
+
+
+class ProductionQueueIsolationTests(unittest.TestCase):
+    """隔離の検証: 本moduleのmock実行がProductionのHR queue/attempt_historyを1バイトも変えない(行数・sha256不変)。"""
+    PROD = ("er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl", "er011_output/attempt_history.jsonl")
+
+    @staticmethod
+    def _snap(path):
+        if not os.path.exists(path):
+            return None
+        with open(path, "rb") as f:
+            b = f.read()
+        return (b.count(b"\n"), hashlib.sha256(b).hexdigest())
+
+    def test_module_paths_are_redirected_away_from_production(self):
+        import er011_human_review_lock_01 as lock
+        self.assertNotEqual(os.path.abspath(sec.HUMAN_REVIEW_LOG_PATH), os.path.abspath(self.PROD[0]))
+        self.assertNotEqual(os.path.abspath(lock.ATTEMPT_HISTORY_PATH), os.path.abspath(self.PROD[1]))
+
+    def test_stopped_flow_writes_isolated_queue_and_leaves_production_unchanged(self):
+        before = [self._snap(p) for p in self.PROD]
+        outer = OuterLoopIntegrationTests("test_no_rescue_consumes_budget_as_before")
+        outer.addCleanup = self.addCleanup
+        r, calls, _ = outer._run("full_story_part1_c5", "Melos said.", "Mello said.", "Mellow said.", 1.5)
+        self.assertEqual(r["status"], "STOPPED")
+        self.assertTrue(os.path.exists(sec.HUMAN_REVIEW_LOG_PATH), "STOPPED経路は隔離先queueへ書かれる(=実際にwriterを通った証拠)")
+        self.assertEqual([self._snap(p) for p in self.PROD], before)
 
 
 if __name__ == "__main__":
