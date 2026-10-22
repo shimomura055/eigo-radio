@@ -1,0 +1,73 @@
+{
+ "generated_by": "er109_gate_exposure_01.py",
+ "api_calls": 0,
+ "cost_jpy": 0,
+ "summary": {
+  "positives_generated": 2099,
+  "classify_or_homophone_pass": 1780,
+  "blocked_by_final_gate": 5,
+  "blocked_by_category": {
+   "symbol_sym": 3,
+   "num_words_to_digits": 1,
+   "num_digits_to_words": 1
+  }
+ },
+ "blocked": [
+  {
+   "canonical": "In the United States, about 60 percent of people in one survey worried about missing different views.",
+   "asr": "In the United States, about 60 % of people in one survey worried about missing different views.",
+   "cat": "symbol_sym",
+   "label": "NORMALIZED_MATCH",
+   "value_guard": "DIFF",
+   "reasons": [
+    "DIFF:form_differs(percent/currency/ordinal/meridiem):'60'->'60'"
+   ],
+   "negation_diff": false
+  },
+  {
+   "canonical": "A survey cited in one report found that only 9 percent of companies were already using highly independent robots or machines.",
+   "asr": "A survey cited in one report found that only 9 % of companies were already using highly independent robots or machines.",
+   "cat": "symbol_sym",
+   "label": "NORMALIZED_MATCH",
+   "value_guard": "DIFF",
+   "reasons": [
+    "DIFF:form_differs(percent/currency/ordinal/meridiem):'9'->'9'"
+   ],
+   "negation_diff": false
+  },
+  {
+   "canonical": "In the United States, food-industry installations rose 30 percent, while automotive installations fell 1 percent.",
+   "asr": "In the United States, food-industry installations rose 30 %, while automotive installations fell 1 percent.",
+   "cat": "symbol_sym",
+   "label": "NORMALIZED_MATCH",
+   "value_guard": "DIFF",
+   "reasons": [
+    "DIFF:form_differs(percent/currency/ordinal/meridiem):'30'->'30'"
+   ],
+   "negation_diff": false
+  },
+  {
+   "canonical": "A peer-reviewed study published in 2014 examined more than 13 million credit-card taxi transactions in New York City.",
+   "asr": "A peer-reviewed study published in 2014 examined more than 13 1000000 credit-card taxi transactions in New York City.",
+   "cat": "num_words_to_digits",
+   "label": "NORMALIZED_MATCH",
+   "value_guard": "DIFF",
+   "reasons": [
+    "DIFF:value_differs:'13000000'->'13'"
+   ],
+   "negation_diff": false
+  },
+  {
+   "canonical": "The group's 68th single is called Suki-ish.",
+   "asr": "The group's sixty eighth single is called Suki-ish.",
+   "cat": "num_digits_to_words",
+   "label": "NORMALIZED_MATCH",
+   "value_guard": "DIFF",
+   "reasons": [
+    "DIFF:value_differs:'68'->'60'",
+    "DIFF:hyp_drop(b):None->'8'"
+   ],
+   "negation_diff": false
+  }
+ ]
+}

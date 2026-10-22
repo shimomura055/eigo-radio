@@ -1,0 +1,511 @@
+{
+ "generated_by": "er109_stored_census_01.py",
+ "api_calls": 0,
+ "cost_jpy": 0,
+ "summary": {
+  "itn_profile_by_provider": {
+   "openai_primary": {
+    "n": 4800,
+    "digit_token": 145,
+    "hyphen": 73,
+    "percent_symbol": 20,
+    "colon_time": 6,
+    "em_dash": 11,
+    "currency_symbol": 2
+   },
+   "azure_secondary": {
+    "n": 225,
+    "digit_token": 7,
+    "percent_symbol": 1
+   },
+   "kp_corpus_openai": {
+    "n": 96,
+    "hyphen": 2
+   },
+   "kp_corpus_azure": {
+    "n": 96,
+    "digit_token": 8
+   },
+   "kp_corpus_whisper": {
+    "n": 11
+   }
+  },
+  "results_files": 370,
+  "attempt_rows_en": 4877,
+  "distinct_canonical_asr_pairs": 2191,
+  "kp_rows": 1003,
+  "stats": {
+   "stored_ng_rows": 914,
+   "stored_ng_and_now_ng": 829,
+   "stored_ng_e109_equiv": 90,
+   "stored_ng_e109_equiv_and_now_ng": 24,
+   "stored_rescue_rows": 167,
+   "azure_text_rows": 225,
+   "azure_text_e109_equiv_nontrivial_and_now_ng": 6
+  },
+  "by_rule_stored_ng_e109_equiv_now_ng": {
+   "number_spoken_form": 14,
+   "cmu_homophone": 7,
+   "compound_spacing": 3,
+   "multiword_homophone_er094": 2,
+   "abbreviation": 1
+  },
+  "stored_ng_e109_equiv_now_ng_reaching_final_stop_or_hr": 5,
+  "false_ng_distinct_pairs": 13,
+  "false_ng_distinct_segments": 21,
+  "false_ng_segments_final_stopped_or_hr": 3,
+  "false_ng_kp_rows": 6,
+  "false_ng_rows_by_top_dir": {
+   "er003_output": 3,
+   "er005_output": 3,
+   "er006_output": 2,
+   "er011_output": 10,
+   "er019_output": 3,
+   "er026_output": 2,
+   "er071_output": 1
+  },
+  "all_rows_by_top_dir": {
+   "er003_output": 149,
+   "er005_output": 176,
+   "er006_output": 471,
+   "er011_output": 1203,
+   "er012_output": 254,
+   "er014_output": 270,
+   "er017_output": 20,
+   "er019_output": 1023,
+   "er022_output": 24,
+   "er026_output": 939,
+   "er038_output": 30,
+   "er056_output": 28,
+   "er057_output": 39,
+   "er058_output": 139,
+   "er063_output": 1,
+   "er071_output": 92,
+   "er094_output": 13,
+   "er096_output": 4,
+   "er104_output": 2
+  },
+  "stored_ng_rows_by_top_dir": {
+   "er003_output": 53,
+   "er005_output": 113,
+   "er006_output": 124,
+   "er011_output": 277,
+   "er012_output": 20,
+   "er014_output": 46,
+   "er017_output": 4,
+   "er019_output": 137,
+   "er022_output": 24,
+   "er026_output": 66,
+   "er038_output": 1,
+   "er056_output": 4,
+   "er057_output": 6,
+   "er058_output": 25,
+   "er071_output": 8,
+   "er094_output": 6
+  },
+  "stored_vs_current_agreement": {
+   "stored_pass|now_pass": 3597,
+   "stored_ng_or_rescue|now_ng": 829,
+   "stored_pass|now_ng": 366,
+   "stored_ng_or_rescue|now_pass": 85
+  },
+  "azure_equiv_examples": [
+   {
+    "canonical": "pump one's fist",
+    "azure": "Pump 1's fist.",
+    "rules": [
+     "number_spoken_form"
+    ],
+    "seg": "kp1_en",
+    "src": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_jre_01/a2/audit/tts_generation_results.json"
+   },
+   {
+    "canonical": "pump one's fist",
+    "azure": "Pump 1's fist.",
+    "rules": [
+     "number_spoken_form"
+    ],
+    "seg": "kp1_en",
+    "src": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_jre_01/a2/audit/tts_generation_results.json"
+   },
+   {
+    "canonical": "pump one's fist",
+    "azure": "Pump 1's fist.",
+    "rules": [
+     "number_spoken_form"
+    ],
+    "seg": "kp1_en",
+    "src": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_jre_01/b1b/audit/tts_generation_results.json"
+   },
+   {
+    "canonical": "pump one's fist",
+    "azure": "Pump 1's fist.",
+    "rules": [
+     "number_spoken_form"
+    ],
+    "seg": "kp1_en",
+    "src": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_kpq_01/a2/audit/tts_generation_results.json"
+   },
+   {
+    "canonical": "brace oneself for",
+    "azure": "Brace oneself 4.",
+    "rules": [
+     "number_spoken_form"
+    ],
+    "seg": "kp2_en",
+    "src": "er019_output/family_x_audio_production_wiring_01/prix_pascal_ai_novel_prize__run_nws_01/b1b/audit/tts_generation_results.json"
+   },
+   {
+    "canonical": "seize",
+    "azure": "Sees.",
+    "rules": [
+     "cmu_homophone"
+    ],
+    "seg": "kp4_en",
+    "src": "er104_output/kp3v_runtime_evidence_01/z_s1/b1b/audit/tts_generation_results.json"
+   }
+  ]
+ },
+ "false_ng_candidates_e109_equiv_but_ng_now": [
+  {
+   "src": "er003_output/n3_01/hanshin/b1b/audit/tts_generation_results.json",
+   "seg": "full_story_part2",
+   "attempt": 4,
+   "canonical": "Hiroshima finally scored in the fifth inning. E. Montero hit a solo home run, cutting into the lead.\n\nBut that was the Carp’s only run of the night.\n\nHanshin stayed patient and waited for another chance to strike. That chance came late in the game. The Tigers added runs in both the seventh and eighth innings, turning a close contest into a comfortable victory.\n\nBy the end, there was no late drama and no need for a difficult escape.\n\nThe final score was clear:\n\nHanshin Tigers 8, Hiroshima Toyo Carp 1\n\nIt was a complete win built on a simple plan: score early, pitch well, and finish strongly.",
+   "asr": "Hiroshima finally scored in the 5th inning. E Montero hit a solo home run, cutting into the lead, but that was the Carps only run of the night. Hanshin stayed patient and waited for another chance to strike. That chance came late in the game. The Tigers added runs in both the 7th and 8th innings, turning a close contest into a comfortable victory. By the end, there was no late drama and no need for a difficult escape.The final score was clear. Hanshin Tigers 8 Hiroshima Toyo Carp one. It was a complete win built on a simple plan. Score early, pitch well and finish strongly.",
+   "stored_cls": null,
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "STOPPED",
+   "rules": [
+    "number_spoken_form"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er003_output/n3_01/health/b1b/audit/tts_generation_results.json",
+   "seg": "point_one",
+   "attempt": 1,
+   "canonical": "The study’s fresh angle is the combination. Sleep, movement, and food were not treated as three separate contests. The model examined how outcomes differed when all three shifted together. The possible gain was linked to a small team effort, not one “perfect” habit.",
+   "asr": "The studies Fresh angle is the combination sleep, movement and food were not treated as three separate contests. The model examined how outcomes differed when all three shifted together. The possible gain was linked to a small team effort, not one perfect habit.",
+   "stored_cls": null,
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "OK",
+   "rules": [
+    "cmu_homophone"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er003_output/n3_01/health/b1b/audit/tts_generation_results.json",
+   "seg": "point_one",
+   "attempt": 2,
+   "canonical": "The study’s fresh angle is the combination. Sleep, movement, and food were not treated as three separate contests. The model examined how outcomes differed when all three shifted together. The possible gain was linked to a small team effort, not one “perfect” habit.",
+   "asr": "The studies Fresh angle is the combination sleep, movement and food were not treated as three separate contests. The model examined how outcomes differed when all three shifted together. The possible gain was linked to a small team effort, not one perfect habit.",
+   "stored_cls": null,
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "OK",
+   "rules": [
+    "cmu_homophone"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er005_output/e2e_tts_cost_quality_01/b1b/audit/tts_generation_results.json",
+   "seg": "full_story_part2",
+   "attempt": 2,
+   "canonical": "Finally, they looked at two types of behavior problems. One type involves difficulties turned inward, such as emotional and peer problems. The other involves behavior seen outwardly, such as hyperactivity, inattention, and conduct problems.\n\nThe main pattern was this: a more conflictual relationship was linked with more screen time at a later point. More screen time was then linked with both types of behavior problems. Conflict was also directly linked with those problems.\n\nIn the study’s statistical model, screen time accounted for part of the connection between conflict and later behavior problems. It did not account for the whole connection.\n\nA closer parent-child relationship was linked with fewer behavior problems. However, closeness did not show a significant path to later screen time.",
+   "asr": "Finally, they looked at two types of behavior problems. One type involves difficulties turned inward, such as emotional and peer problems. The other involves behavior seen outwardly, such as hyperactivity, inattention, and conduct problems. The main pattern was this. A more conflictual relationship was linked with more screen time at a later point. More screen time was then linked with both types of behavior problems. Conflict was also directly linked with.Those problems in the studies statistical model screen time accounted for part of the connection between conflict and later behavior problems. It did not account for the whole connection. A closer parent child relationship was linked with fewer behavior problems. However, closeness did not show a significant path to later screen time.",
+   "stored_cls": null,
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "STOPPED",
+   "rules": [
+    "cmu_homophone",
+    "compound_spacing"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er005_output/e2e_tts_cost_quality_01/b1b/audit/tts_generation_results.json",
+   "seg": "full_story_part2",
+   "attempt": 5,
+   "canonical": "Finally, they looked at two types of behavior problems. One type involves difficulties turned inward, such as emotional and peer problems. The other involves behavior seen outwardly, such as hyperactivity, inattention, and conduct problems.\n\nThe main pattern was this: a more conflictual relationship was linked with more screen time at a later point. More screen time was then linked with both types of behavior problems. Conflict was also directly linked with those problems.\n\nIn the study’s statistical model, screen time accounted for part of the connection between conflict and later behavior problems. It did not account for the whole connection.\n\nA closer parent-child relationship was linked with fewer behavior problems. However, closeness did not show a significant path to later screen time.",
+   "asr": "Finally, they looked at two types of behavior problems. One type involves difficulties turned inward, such as emotional and peer problems. The other involves behavior seen outwardly, such as hyperactivity, inattention, and conduct problems. The main pattern was this. A more conflictual relationship was linked with more screen time at a later point. More screen time was then linked with both types of behavior problems.Conflict was also directly linked with.Those problems in the studies statistical model screen time accounted for part of the connection between conflict and later behavior problems. It did not account for the whole connection. A closer parent child relationship was linked with fewer behavior problems. However, closeness did not show a significant path to later screen time.",
+   "stored_cls": null,
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "STOPPED",
+   "rules": [
+    "cmu_homophone",
+    "compound_spacing"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er005_output/e2e_tts_cost_quality_01/b1b/audit/tts_generation_results.json",
+   "seg": "full_story_part2",
+   "attempt": 6,
+   "canonical": "Finally, they looked at two types of behavior problems. One type involves difficulties turned inward, such as emotional and peer problems. The other involves behavior seen outwardly, such as hyperactivity, inattention, and conduct problems.\n\nThe main pattern was this: a more conflictual relationship was linked with more screen time at a later point. More screen time was then linked with both types of behavior problems. Conflict was also directly linked with those problems.\n\nIn the study’s statistical model, screen time accounted for part of the connection between conflict and later behavior problems. It did not account for the whole connection.\n\nA closer parent-child relationship was linked with fewer behavior problems. However, closeness did not show a significant path to later screen time.",
+   "asr": "Finally, they looked at two types of behavior problems. One type involves difficulties turned inward, such as emotional and peer problems. The other involves behavior seen outwardly, such as hyperactivity, inattention, and conduct problems. The main pattern was this. A more conflictual relationship was linked with more screen time at a later point. More screen time was then linked with both types of behavior problems.Conflict was also directly linked with those problems.In the studies statistical model, screen time accounted for part of the connection between conflict and later behavior problems. It did not account for the whole connection. A closer parent child relationship was linked with fewer behavior problems. However, closeness did not show a significant path to later screen time.",
+   "stored_cls": null,
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "STOPPED",
+   "rules": [
+    "cmu_homophone",
+    "compound_spacing"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er006_output/pool_pilot_01/pool_n5_cafes/a2/audit/tts_generation_results.json",
+   "seg": "kp2_en",
+   "attempt": 1,
+   "canonical": "third places",
+   "asr": "Third place is...",
+   "stored_cls": "TRUE_CONTENT_MISMATCH",
+   "current_cls": "ASR_VALIDATION_UNCERTAIN",
+   "final_status": "OK",
+   "rules": [
+    "multiword_homophone_er094"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er006_output/pool_pilot_01/pool_n5_cafes/b1b/audit/tts_generation_results.json",
+   "seg": "kp2_en",
+   "attempt": 1,
+   "canonical": "third places",
+   "asr": "third place is",
+   "stored_cls": "TRUE_CONTENT_MISMATCH",
+   "current_cls": "ASR_VALIDATION_UNCERTAIN",
+   "final_status": "OK",
+   "rules": [
+    "multiword_homophone_er094"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er011_output/family_a_completion_a2_trend_end_to_end_01/a2/rerun_01/a2/audit/tts_generation_results.json",
+   "seg": "point_one",
+   "attempt": 1,
+   "canonical": "Here, “slow” does not always mean a long holiday. Among men aged 29 and under, about one in four chose solo travel, and a similar share chose a hobby-focused trip. Another survey found that about 90% of people aged 19 to 25 wanted free time in an overseas tour; most wanted half a day or more. This suggests that open time may matter as much as trip length.",
+   "asr": "Here, slow does not always mean a long holiday. Among men aged 29 and under, about 1 in 4 chose solo travel, and a similar share chose a hobby-focused trip. Another survey found that about 90% of people aged 19 to 25 wanted free time in an overseas tour. Most wanted half a day or more. This suggests that open time may matter as much as trip length.",
+   "stored_cls": "TRUE_CONTENT_MISMATCH",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "OK",
+   "rules": [
+    "number_spoken_form"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er011_output/household_unified_final_candidate_01/b1b/audit/tts_generation_results.json",
+   "seg": "preview",
+   "attempt": 1,
+   "canonical": "This episode looks at how to choose the right place for fresh food in a refrigerator. The usual fruit-versus-vegetable rule is not always enough, so what should you consider before choosing a drawer setting?",
+   "asr": "This episode looks at how to choose the right place for fresh food in a refrigerator. The usual fruit vs. vegetable rule is not always enough, so what should you consider before choosing a drawer setting?",
+   "stored_cls": "TRUE_CONTENT_MISMATCH",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "OK",
+   "rules": [
+    "abbreviation"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er011_output/open129_production_wiring_evidence_01/reproduction_cases/A_FAMILY_B1/_gate_tmp_baseline/audit/tts_generation_results.json",
+   "seg": "full_story_part2",
+   "attempt": 4,
+   "canonical": "Hiroshima finally scored in the fifth inning. E. Montero hit a solo home run, cutting into the lead.\n\nBut that was the Carp’s only run of the night.\n\nHanshin stayed patient and waited for another chance to strike. That chance came late in the game. The Tigers added runs in both the seventh and eighth innings, turning a close contest into a comfortable victory.\n\nBy the end, there was no late drama and no need for a difficult escape.\n\nThe final score was clear:\n\nHanshin Tigers 8, Hiroshima Toyo Carp 1\n\nIt was a complete win built on a simple plan: score early, pitch well, and finish strongly.",
+   "asr": "Hiroshima finally scored in the 5th inning. E Montero hit a solo home run, cutting into the lead, but that was the Carps only run of the night. Hanshin stayed patient and waited for another chance to strike. That chance came late in the game. The Tigers added runs in both the 7th and 8th innings, turning a close contest into a comfortable victory. By the end, there was no late drama and no need for a difficult escape.The final score was clear. Hanshin Tigers 8 Hiroshima Toyo Carp one. It was a complete win built on a simple plan. Score early, pitch well and finish strongly.",
+   "stored_cls": null,
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "OK",
+   "rules": [
+    "number_spoken_form"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er011_output/open129_production_wiring_evidence_01/reproduction_cases/A_FAMILY_B1/_gate_tmp_extra_segment/audit/tts_generation_results.json",
+   "seg": "full_story_part2",
+   "attempt": 4,
+   "canonical": "Hiroshima finally scored in the fifth inning. E. Montero hit a solo home run, cutting into the lead.\n\nBut that was the Carp’s only run of the night.\n\nHanshin stayed patient and waited for another chance to strike. That chance came late in the game. The Tigers added runs in both the seventh and eighth innings, turning a close contest into a comfortable victory.\n\nBy the end, there was no late drama and no need for a difficult escape.\n\nThe final score was clear:\n\nHanshin Tigers 8, Hiroshima Toyo Carp 1\n\nIt was a complete win built on a simple plan: score early, pitch well, and finish strongly.",
+   "asr": "Hiroshima finally scored in the 5th inning. E Montero hit a solo home run, cutting into the lead, but that was the Carps only run of the night. Hanshin stayed patient and waited for another chance to strike. That chance came late in the game. The Tigers added runs in both the 7th and 8th innings, turning a close contest into a comfortable victory. By the end, there was no late drama and no need for a difficult escape.The final score was clear. Hanshin Tigers 8 Hiroshima Toyo Carp one. It was a complete win built on a simple plan. Score early, pitch well and finish strongly.",
+   "stored_cls": null,
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "OK",
+   "rules": [
+    "number_spoken_form"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er011_output/open129_production_wiring_evidence_01/reproduction_cases/A_FAMILY_B1/_gate_tmp_reorder/audit/tts_generation_results.json",
+   "seg": "full_story_part2",
+   "attempt": 4,
+   "canonical": "Hiroshima finally scored in the fifth inning. E. Montero hit a solo home run, cutting into the lead.\n\nBut that was the Carp’s only run of the night.\n\nHanshin stayed patient and waited for another chance to strike. That chance came late in the game. The Tigers added runs in both the seventh and eighth innings, turning a close contest into a comfortable victory.\n\nBy the end, there was no late drama and no need for a difficult escape.\n\nThe final score was clear:\n\nHanshin Tigers 8, Hiroshima Toyo Carp 1\n\nIt was a complete win built on a simple plan: score early, pitch well, and finish strongly.",
+   "asr": "Hiroshima finally scored in the 5th inning. E Montero hit a solo home run, cutting into the lead, but that was the Carps only run of the night. Hanshin stayed patient and waited for another chance to strike. That chance came late in the game. The Tigers added runs in both the 7th and 8th innings, turning a close contest into a comfortable victory. By the end, there was no late drama and no need for a difficult escape.The final score was clear. Hanshin Tigers 8 Hiroshima Toyo Carp one. It was a complete win built on a simple plan. Score early, pitch well and finish strongly.",
+   "stored_cls": null,
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "OK",
+   "rules": [
+    "number_spoken_form"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er011_output/open129_production_wiring_evidence_01/reproduction_cases/A_FAMILY_B1/_gate_tmp_voice_swap/audit/tts_generation_results.json",
+   "seg": "full_story_part2",
+   "attempt": 4,
+   "canonical": "Hiroshima finally scored in the fifth inning. E. Montero hit a solo home run, cutting into the lead.\n\nBut that was the Carp’s only run of the night.\n\nHanshin stayed patient and waited for another chance to strike. That chance came late in the game. The Tigers added runs in both the seventh and eighth innings, turning a close contest into a comfortable victory.\n\nBy the end, there was no late drama and no need for a difficult escape.\n\nThe final score was clear:\n\nHanshin Tigers 8, Hiroshima Toyo Carp 1\n\nIt was a complete win built on a simple plan: score early, pitch well, and finish strongly.",
+   "asr": "Hiroshima finally scored in the 5th inning. E Montero hit a solo home run, cutting into the lead, but that was the Carps only run of the night. Hanshin stayed patient and waited for another chance to strike. That chance came late in the game. The Tigers added runs in both the 7th and 8th innings, turning a close contest into a comfortable victory. By the end, there was no late drama and no need for a difficult escape.The final score was clear. Hanshin Tigers 8 Hiroshima Toyo Carp one. It was a complete win built on a simple plan. Score early, pitch well and finish strongly.",
+   "stored_cls": null,
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "OK",
+   "rules": [
+    "number_spoken_form"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er011_output/open129_structural_completeness_trial_01/reproduction_cases/A_FAMILY_B1/_gate_tmp_baseline/audit/tts_generation_results.json",
+   "seg": "full_story_part2",
+   "attempt": 4,
+   "canonical": "Hiroshima finally scored in the fifth inning. E. Montero hit a solo home run, cutting into the lead.\n\nBut that was the Carp’s only run of the night.\n\nHanshin stayed patient and waited for another chance to strike. That chance came late in the game. The Tigers added runs in both the seventh and eighth innings, turning a close contest into a comfortable victory.\n\nBy the end, there was no late drama and no need for a difficult escape.\n\nThe final score was clear:\n\nHanshin Tigers 8, Hiroshima Toyo Carp 1\n\nIt was a complete win built on a simple plan: score early, pitch well, and finish strongly.",
+   "asr": "Hiroshima finally scored in the 5th inning. E Montero hit a solo home run, cutting into the lead, but that was the Carps only run of the night. Hanshin stayed patient and waited for another chance to strike. That chance came late in the game. The Tigers added runs in both the 7th and 8th innings, turning a close contest into a comfortable victory. By the end, there was no late drama and no need for a difficult escape.The final score was clear. Hanshin Tigers 8 Hiroshima Toyo Carp one. It was a complete win built on a simple plan. Score early, pitch well and finish strongly.",
+   "stored_cls": null,
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "OK",
+   "rules": [
+    "number_spoken_form"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er011_output/open129_structural_completeness_trial_01/reproduction_cases/A_FAMILY_B1/_gate_tmp_extra_segment/audit/tts_generation_results.json",
+   "seg": "full_story_part2",
+   "attempt": 4,
+   "canonical": "Hiroshima finally scored in the fifth inning. E. Montero hit a solo home run, cutting into the lead.\n\nBut that was the Carp’s only run of the night.\n\nHanshin stayed patient and waited for another chance to strike. That chance came late in the game. The Tigers added runs in both the seventh and eighth innings, turning a close contest into a comfortable victory.\n\nBy the end, there was no late drama and no need for a difficult escape.\n\nThe final score was clear:\n\nHanshin Tigers 8, Hiroshima Toyo Carp 1\n\nIt was a complete win built on a simple plan: score early, pitch well, and finish strongly.",
+   "asr": "Hiroshima finally scored in the 5th inning. E Montero hit a solo home run, cutting into the lead, but that was the Carps only run of the night. Hanshin stayed patient and waited for another chance to strike. That chance came late in the game. The Tigers added runs in both the 7th and 8th innings, turning a close contest into a comfortable victory. By the end, there was no late drama and no need for a difficult escape.The final score was clear. Hanshin Tigers 8 Hiroshima Toyo Carp one. It was a complete win built on a simple plan. Score early, pitch well and finish strongly.",
+   "stored_cls": null,
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "OK",
+   "rules": [
+    "number_spoken_form"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er011_output/open129_structural_completeness_trial_01/reproduction_cases/A_FAMILY_B1/_gate_tmp_reorder/audit/tts_generation_results.json",
+   "seg": "full_story_part2",
+   "attempt": 4,
+   "canonical": "Hiroshima finally scored in the fifth inning. E. Montero hit a solo home run, cutting into the lead.\n\nBut that was the Carp’s only run of the night.\n\nHanshin stayed patient and waited for another chance to strike. That chance came late in the game. The Tigers added runs in both the seventh and eighth innings, turning a close contest into a comfortable victory.\n\nBy the end, there was no late drama and no need for a difficult escape.\n\nThe final score was clear:\n\nHanshin Tigers 8, Hiroshima Toyo Carp 1\n\nIt was a complete win built on a simple plan: score early, pitch well, and finish strongly.",
+   "asr": "Hiroshima finally scored in the 5th inning. E Montero hit a solo home run, cutting into the lead, but that was the Carps only run of the night. Hanshin stayed patient and waited for another chance to strike. That chance came late in the game. The Tigers added runs in both the 7th and 8th innings, turning a close contest into a comfortable victory. By the end, there was no late drama and no need for a difficult escape.The final score was clear. Hanshin Tigers 8 Hiroshima Toyo Carp one. It was a complete win built on a simple plan. Score early, pitch well and finish strongly.",
+   "stored_cls": null,
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "OK",
+   "rules": [
+    "number_spoken_form"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er011_output/open129_structural_completeness_trial_01/reproduction_cases/A_FAMILY_B1/_gate_tmp_voice_swap/audit/tts_generation_results.json",
+   "seg": "full_story_part2",
+   "attempt": 4,
+   "canonical": "Hiroshima finally scored in the fifth inning. E. Montero hit a solo home run, cutting into the lead.\n\nBut that was the Carp’s only run of the night.\n\nHanshin stayed patient and waited for another chance to strike. That chance came late in the game. The Tigers added runs in both the seventh and eighth innings, turning a close contest into a comfortable victory.\n\nBy the end, there was no late drama and no need for a difficult escape.\n\nThe final score was clear:\n\nHanshin Tigers 8, Hiroshima Toyo Carp 1\n\nIt was a complete win built on a simple plan: score early, pitch well, and finish strongly.",
+   "asr": "Hiroshima finally scored in the 5th inning. E Montero hit a solo home run, cutting into the lead, but that was the Carps only run of the night. Hanshin stayed patient and waited for another chance to strike. That chance came late in the game. The Tigers added runs in both the 7th and 8th innings, turning a close contest into a comfortable victory. By the end, there was no late drama and no need for a difficult escape.The final score was clear. Hanshin Tigers 8 Hiroshima Toyo Carp one. It was a complete win built on a simple plan. Score early, pitch well and finish strongly.",
+   "stored_cls": null,
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "OK",
+   "rules": [
+    "number_spoken_form"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_03_flashlite/b1b/audit/tts_generation_results.json",
+   "seg": "full_story_part1",
+   "attempt": 1,
+   "canonical": "This news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.",
+   "asr": "This news feels like a short play in three acts. Act 1 was 20%. Act 2 brought an unexpected turn. Act 3 was an unexpected move in oil prices. The curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of U.S. efforts to keep the Strait safe. But 20% was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage. The number stayed at center stage for about a day. Then the story took a sharp turn.",
+   "stored_cls": "TRUE_CONTENT_MISMATCH",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "OK",
+   "rules": [
+    "number_spoken_form"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_04_parallel_a/b1b/audit/tts_generation_results.json",
+   "seg": "full_story_part1",
+   "attempt": 2,
+   "canonical": "This news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.",
+   "asr": "This news feels like a short play in three acts. Act 1 was 20%. Act 2 brought an unexpected turn. Act 3 was an unexpected move in oil prices. The curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of U.S. efforts to keep the Strait safe. But 20% was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage. The number stayed at center stage for about a day. Then the story took a sharp turn.",
+   "stored_cls": "TRUE_CONTENT_MISMATCH",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "OK",
+   "rules": [
+    "number_spoken_form"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er019_output/family_x_audio_production_wiring_01/kgcpw_evidence_01/E7_x_b1b/b1b/audit/tts_generation_results.json",
+   "seg": "kp5_en",
+   "attempt": 1,
+   "canonical": "point to",
+   "asr": "Point 2.",
+   "stored_cls": "TRUE_CONTENT_MISMATCH",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "OK",
+   "rules": [
+    "number_spoken_form"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er026_output/family_z_production_e2e_01/melos/run_e2e_04/b1b/audit/tts_generation_results.json",
+   "seg": "kp4_en",
+   "attempt": 1,
+   "canonical": "seize",
+   "asr": "Seas",
+   "stored_cls": "TTS_FAILURE",
+   "current_cls": "TTS_FAILURE",
+   "final_status": "OK",
+   "rules": [
+    "cmu_homophone"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er026_output/family_z_production_e2e_01/melos/run_kgcpw_z_e2e_01/b1b/audit/tts_generation_results.json",
+   "seg": "kp3_en",
+   "attempt": 1,
+   "canonical": "seize",
+   "asr": "sees",
+   "stored_cls": "TTS_FAILURE",
+   "current_cls": "TTS_FAILURE",
+   "final_status": "HUMAN_REVIEW_LOCKED",
+   "rules": [
+    "cmu_homophone"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  },
+  {
+   "src": "er071_output/m2p0_n01_production_wiring_01/gloss_alignment_production_wiring_01/evidence/E7_e2e/x_b1b_synth_artifacts/b1b/audit/tts_generation_results.json",
+   "seg": "kp5_en",
+   "attempt": 1,
+   "canonical": "point to",
+   "asr": "Point 2.",
+   "stored_cls": "TRUE_CONTENT_MISMATCH",
+   "current_cls": "TRUE_CONTENT_MISMATCH",
+   "final_status": "OK",
+   "rules": [
+    "number_spoken_form"
+   ],
+   "reason": "all_diff_spans_phoneme_equal"
+  }
+ ],
+ "rescued_rows_e109_equiv_but_ng_now": []
+}
