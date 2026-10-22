@@ -1,0 +1,962 @@
+{
+  "schema": "er106_joint_runtime_evidence_01/v1",
+  "generated_at": "2026-10-22T16:29:36",
+  "inputs": {
+    "x_run_dir": "er019_output/family_x_audio_production_wiring_01/pnap_evidence_01__small_bag__run_02",
+    "z_run_dir": "er026_output/family_z_production_e2e_01/melos/run_pnap_01",
+    "x_source_dir": null
+  },
+  "families": {
+    "X": {
+      "family": "X",
+      "run_dir": "er019_output/family_x_audio_production_wiring_01/pnap_evidence_01__small_bag__run_02",
+      "exists": true,
+      "levels": {
+        "b1b": {
+          "article_text_path": null,
+          "selection": {
+            "kp_dir": "er019_output/family_x_audio_production_wiring_01/pnap_evidence_01__small_bag__run_02/b1b/key_phrases",
+            "metadata_present": true,
+            "metadata_error": null,
+            "metadata_missing_keys": [
+              "kp_backend",
+              "kp_backend_used",
+              "prompt_id",
+              "prompt_sha256",
+              "user_message_sha256",
+              "model_requested",
+              "shortfall",
+              "kp_count_max",
+              "attempts"
+            ],
+            "kp_backend": null,
+            "kp_backend_used": null,
+            "model_id": "gpt-5.6-luna",
+            "model_requested": null,
+            "prompt_sha256": null,
+            "selection_attempts": null,
+            "shortfall": null,
+            "final_status": "KEY_WORDS_STRUCTURE_INVALID",
+            "canonicalization_present": false,
+            "canonicalization_overall": null,
+            "n_items": 0,
+            "items": [],
+            "canonicalization_attempts": null,
+            "canonicalization_final_status": null,
+            "redundancy_status": null,
+            "redundancy_attempts": null,
+            "outer_retry_attempts": null,
+            "stale_files": [],
+            "db_hybrid_dir_present": false,
+            "fallback_notice_present": false
+          },
+          "audio": {
+            "results_present": true,
+            "results_error": null,
+            "kp": {},
+            "n_kp_results": 0,
+            "segments_status": {
+              "topic_intro": "SKIPPED_NOT_SELECTED",
+              "preview": "SKIPPED_NOT_SELECTED",
+              "comment_1": "SKIPPED_NOT_SELECTED",
+              "comment_2": "SKIPPED_NOT_SELECTED",
+              "comment_3": "SKIPPED_NOT_SELECTED",
+              "comment_4": "SKIPPED_NOT_SELECTED",
+              "full_story_part1": "SKIPPED_NOT_SELECTED",
+              "full_story_part2": "OK",
+              "full_story_part3": "OK",
+              "in_one_line": "SKIPPED_NOT_SELECTED"
+            },
+            "segments_with_vote": [],
+            "alarm_state_segments": [
+              "full_story_part2"
+            ],
+            "supply_nonempty_count": 2
+          },
+          "order": {
+            "timeline_present": false,
+            "timeline_error": "ABSENT",
+            "per_kp": {}
+          },
+          "locks": {
+            "present": true,
+            "state_counts": {
+              "RESOLVED": 2
+            },
+            "non_resolved_segments": []
+          }
+        }
+      },
+      "entry_point": {
+        "present": false
+      },
+      "whisper_preflight_files": [],
+      "alarms": {
+        "per_level": {
+          "b1b": {
+            "alarms_json_present": true,
+            "alarms_json_error": null,
+            "report_md_present": true,
+            "payload_missing_keys": [],
+            "count": 1,
+            "consistency": {
+              "alarm_state_records": 1,
+              "match": true,
+              "reported": 1
+            },
+            "hr_residual": {
+              "available": true,
+              "hr_asr_uncertain_segments": 0,
+              "of_which_proper_noun_only_outside_alarm_boundary": 0
+            },
+            "supply_applied_count": 0,
+            "operator_only": true,
+            "alarm_records": [
+              {
+                "alarm_id": "pnal_6cfcd644e5595c64",
+                "proper_noun": "khaite",
+                "segment_id": "full_story_part2",
+                "final_state": "PASS_WITH_PRONUNCIATION_ALARM",
+                "missing_keys": [],
+                "tts_supply_result": {
+                  "evidence_tier": null,
+                  "human_approved": false,
+                  "ledger_id": null,
+                  "original": "khaite",
+                  "policy_id": "PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01",
+                  "reason": "EVIDENCE_NOT_VERIFIED_ESTIMATED",
+                  "respelling": null,
+                  "source_urls": [],
+                  "supplied": false,
+                  "tier": null
+                },
+                "pronunciation_basis": {
+                  "confidence": "medium",
+                  "evidence_tier": "UNVERIFIED_AI_OUTPUT",
+                  "has_basis": true,
+                  "ipa": "\u0002keɪt\u0002",
+                  "note": "",
+                  "pronunciation_hint": "KAYT",
+                  "sources": [
+                    "https://www.farfetch.com/style-guide/brands/khaite-brand-everything-you-need-to-know",
+                    "https://azzurrodue.com/khaite/",
+                    "https://medium.com/@joycebirkins/khaite-cool-quirky-and-ethereal-style-4-year-runway-collection-and-10-classic-pieces-f2d95b0251df"
+                  ]
+                },
+                "models": {
+                  "primary_asr": {
+                    "model": "gpt-4o-mini-transcribe",
+                    "provider": "openai_asr"
+                  },
+                  "secondary_asr": "azure-speech-stt",
+                  "secondary_azure_calls": 0,
+                  "tts_model_id": "gemini-3.8-flash-lite-tts",
+                  "tts_voice": "Aoede"
+                },
+                "mismatch": {
+                  "asr_primary": "kate",
+                  "asr_secondary": "",
+                  "canonical": "khaite",
+                  "primary_text": "Elle's small bag examples, Elle listed mini bags as one of the trends in fall and winter 2026 styling. Its examples included Kate's palm-sized evening clutch and Chanel's novelty minaudière. They mainly hold the basics: a phone, wallet, keys, and lip products. They do not challenge roomy bags on storage. Their job is visual, adding a sense of occasion and saying, this is today's mood. The season's picture becomes clearer when we look at what appeared beside them.",
+                  "proper_noun_evidence": "ledger",
+                  "secondary_text": "Elle's small bag examples L listed mini bags as one of the trends in fall and winter 2026 styling. Its examples included Kates palm sized evening clutch and channels novelty Minotti Air. They mainly hold the basics, a phone, wallet, keys and lip products. They do not challenge roomy bags on storage. Their job is visual, adding a sense of occasion and saying this is today's mood. The season's picture becomes clearer when we look at what appeared beside.Them.",
+                  "similarity_primary": 0.8,
+                  "similarity_secondary": 1.0
+                },
+                "inherited": false
+              }
+            ],
+            "report_md_head": "## 固有名詞発音アラーム(運営責任者向け・一般リスナー非表示)\n1箇所。最終状態=**アラーム付き完成**。制作は停止せずHuman Reviewにも回していません。確認・承認操作は完成の条件ではありません。\n- **khaite** × 1箇所\n  - [X/b1b/full_story_part2] er019_output/family_x_audio_production_wiring_01/pnap_evidence_01__small_bag__run_02/b1b/narration/full_story_part2.wav / 文脈 `...ter 2026 styling. Its examples included [[khaite]]'s palm-sized evening clutch and Chanel'...` / 目安8.1秒\n    - 検出した不一致: 原稿 `khaite` -> Primary `kate` / Secondary `(原稿どおり)`\n    - 発音の根拠: 階層=UNVERIFIED_AI_OUTPUT / 確信度=medium / hint=KAYT\n    - TTS発音改善: 供給なし(EVIDENCE_NOT_VERIFIED_ESTIMATED)\n    - 最終状態: アラーム付き完成 / 使用モデル: A",
+            "report_md_has_section": true
+          }
+        },
+        "total_alarms": 1
+      },
+      "cost": {
+        "tool": "docs/pm/tools/daily_dev_cost_01.py",
+        "usd_jpy": 160.0,
+        "pricing_snapshot": "er005_output/cost_baseline_01/pricing_snapshot.json",
+        "files": [
+          "er019_output/family_x_audio_production_wiring_01/pnap_evidence_01__small_bag__run_02/raw_usage_log.jsonl"
+        ],
+        "records": 9,
+        "buckets": {
+          "non_kp_audio": {
+            "jpy": 7.9279,
+            "calls": 9
+          }
+        },
+        "by_kind": {
+          "non_kp_audio:tts": {
+            "jpy": 2.619,
+            "calls": 3
+          },
+          "non_kp_audio:asr_openai": {
+            "jpy": 0.5178,
+            "calls": 3
+          },
+          "non_kp_audio:asr_azure": {
+            "jpy": 4.7911,
+            "calls": 3
+          }
+        },
+        "by_model": {
+          "gemini/gemini-3.8-flash-lite-tts": {
+            "jpy": 2.619,
+            "calls": 3
+          },
+          "openai_asr/gpt-4o-mini-transcribe": {
+            "jpy": 0.5178,
+            "calls": 3
+          },
+          "azure/azure-speech-stt": {
+            "jpy": 4.7911,
+            "calls": 3
+          }
+        },
+        "unpriced": {},
+        "total_jpy": 7.9279,
+        "synthetic_skipped": 0,
+        "kp_related_jpy": 0.0,
+        "kp_related_incl_unsplit_scaffold_jpy": 0.0
+      },
+      "pages": {
+        "pages_found": [],
+        "checks": []
+      },
+      "levels_detected": [
+        "b1b"
+      ]
+    },
+    "Z": {
+      "family": "Z",
+      "run_dir": "er026_output/family_z_production_e2e_01/melos/run_pnap_01",
+      "exists": true,
+      "levels": {
+        "a2": {
+          "article_text_path": "er026_output/family_z_production_e2e_01/melos/run_pnap_01/writer/std.md",
+          "selection": {
+            "kp_dir": "er026_output/family_z_production_e2e_01/melos/run_pnap_01/key_phrases/a2",
+            "metadata_present": true,
+            "metadata_error": null,
+            "metadata_missing_keys": [
+              "kp_backend",
+              "kp_backend_used",
+              "prompt_id",
+              "prompt_sha256",
+              "user_message_sha256",
+              "model_requested",
+              "shortfall",
+              "kp_count_max",
+              "attempts"
+            ],
+            "kp_backend": null,
+            "kp_backend_used": null,
+            "model_id": "gpt-6-luna",
+            "model_requested": null,
+            "prompt_sha256": null,
+            "selection_attempts": null,
+            "shortfall": null,
+            "final_status": "KEY_WORDS_STRUCTURE_PASS",
+            "canonicalization_present": true,
+            "canonicalization_overall": "PASS",
+            "n_items": 5,
+            "items": [
+              {
+                "rank": 1,
+                "display_phrase": "pull someone under",
+                "source_span": "pulled him under",
+                "used_form": "pull someone under",
+                "words_span": 3,
+                "words_used": 3,
+                "span_in_article": true,
+                "changed": true,
+                "normalization_reason": "inherit_selection_normalization",
+                "has_gloss": true,
+                "has_source_sentence": true,
+                "missing_item_keys": []
+              },
+              {
+                "rank": 2,
+                "display_phrase": "in your place",
+                "source_span": "in your place",
+                "used_form": "in someone's place",
+                "words_span": 3,
+                "words_used": 3,
+                "span_in_article": true,
+                "changed": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "has_gloss": true,
+                "has_source_sentence": true,
+                "missing_item_keys": []
+              },
+              {
+                "rank": 3,
+                "display_phrase": "lose trust in someone",
+                "source_span": "lost my trust in you",
+                "used_form": "lose trust in someone",
+                "words_span": 5,
+                "words_used": 4,
+                "span_in_article": true,
+                "changed": true,
+                "normalization_reason": "inherit_selection_normalization",
+                "has_gloss": true,
+                "has_source_sentence": true,
+                "missing_item_keys": []
+              },
+              {
+                "rank": 4,
+                "display_phrase": "hold out",
+                "source_span": "held out",
+                "used_form": "hold out",
+                "words_span": 2,
+                "words_used": 2,
+                "span_in_article": true,
+                "changed": true,
+                "normalization_reason": "inherit_selection_normalization",
+                "has_gloss": true,
+                "has_source_sentence": true,
+                "missing_item_keys": []
+              },
+              {
+                "rank": 5,
+                "display_phrase": "far bank",
+                "source_span": "far bank",
+                "used_form": "far bank",
+                "words_span": 2,
+                "words_used": 2,
+                "span_in_article": true,
+                "changed": false,
+                "normalization_reason": "none",
+                "has_gloss": true,
+                "has_source_sentence": true,
+                "missing_item_keys": []
+              }
+            ],
+            "canonicalization_attempts": 1,
+            "canonicalization_final_status": "CANONICALIZATION_PASS",
+            "redundancy_status": "REDUNDANCY_PASS",
+            "redundancy_attempts": 1,
+            "outer_retry_attempts": 3,
+            "stale_files": [],
+            "db_hybrid_dir_present": false,
+            "fallback_notice_present": false
+          },
+          "audio": {
+            "results_present": true,
+            "results_error": null,
+            "kp": {},
+            "n_kp_results": 0,
+            "segments_status": {
+              "full_story_part1_c1": "OK",
+              "full_story_part1_c5": "OK",
+              "full_story_part3_c3": "OK"
+            },
+            "segments_with_vote": [],
+            "alarm_state_segments": [],
+            "supply_nonempty_count": 0
+          },
+          "order": {
+            "timeline_present": false,
+            "timeline_error": "ABSENT",
+            "per_kp": {}
+          },
+          "locks": {
+            "present": true,
+            "state_counts": {
+              "RESOLVED": 3
+            },
+            "non_resolved_segments": []
+          },
+          "z_explanations_present": false
+        },
+        "b1b": {
+          "article_text_path": "er026_output/family_z_production_e2e_01/melos/run_pnap_01/writer/r2.md",
+          "selection": {
+            "kp_dir": "er026_output/family_z_production_e2e_01/melos/run_pnap_01/key_phrases/b1b",
+            "metadata_present": true,
+            "metadata_error": null,
+            "metadata_missing_keys": [
+              "kp_backend",
+              "kp_backend_used",
+              "prompt_id",
+              "prompt_sha256",
+              "user_message_sha256",
+              "model_requested",
+              "shortfall",
+              "kp_count_max",
+              "attempts"
+            ],
+            "kp_backend": null,
+            "kp_backend_used": null,
+            "model_id": "gpt-6-luna",
+            "model_requested": null,
+            "prompt_sha256": null,
+            "selection_attempts": null,
+            "shortfall": null,
+            "final_status": "KEY_WORDS_STRUCTURE_PASS",
+            "canonicalization_present": true,
+            "canonicalization_overall": "PASS",
+            "n_items": 5,
+            "items": [
+              {
+                "rank": 1,
+                "display_phrase": "sentence someone to death",
+                "source_span": "sentenced him to death",
+                "used_form": "sentence someone to death",
+                "words_span": 4,
+                "words_used": 4,
+                "span_in_article": true,
+                "changed": true,
+                "normalization_reason": "inherit_selection_normalization",
+                "has_gloss": true,
+                "has_source_sentence": true,
+                "missing_item_keys": []
+              },
+              {
+                "rank": 2,
+                "display_phrase": "current",
+                "source_span": "current",
+                "used_form": "current",
+                "words_span": 1,
+                "words_used": 1,
+                "span_in_article": true,
+                "changed": false,
+                "normalization_reason": "none",
+                "has_gloss": true,
+                "has_source_sentence": true,
+                "missing_item_keys": []
+              },
+              {
+                "rank": 3,
+                "display_phrase": "hold out",
+                "source_span": "held out his hands",
+                "used_form": "hold out",
+                "words_span": 4,
+                "words_used": 2,
+                "span_in_article": true,
+                "changed": true,
+                "normalization_reason": "inherit_selection_normalization",
+                "has_gloss": true,
+                "has_source_sentence": true,
+                "missing_item_keys": []
+              },
+              {
+                "rank": 4,
+                "display_phrase": "seize",
+                "source_span": "seized",
+                "used_form": "seize",
+                "words_span": 1,
+                "words_used": 1,
+                "span_in_article": true,
+                "changed": true,
+                "normalization_reason": "inherit_selection_normalization",
+                "has_gloss": true,
+                "has_source_sentence": true,
+                "missing_item_keys": []
+              },
+              {
+                "rank": 5,
+                "display_phrase": "abandon",
+                "source_span": "abandoned",
+                "used_form": "abandon",
+                "words_span": 1,
+                "words_used": 1,
+                "span_in_article": true,
+                "changed": true,
+                "normalization_reason": "inherit_selection_normalization",
+                "has_gloss": true,
+                "has_source_sentence": true,
+                "missing_item_keys": []
+              }
+            ],
+            "canonicalization_attempts": 1,
+            "canonicalization_final_status": "CANONICALIZATION_PASS",
+            "redundancy_status": "REDUNDANCY_PASS",
+            "redundancy_attempts": 1,
+            "outer_retry_attempts": 1,
+            "stale_files": [],
+            "db_hybrid_dir_present": false,
+            "fallback_notice_present": false
+          },
+          "audio": {
+            "results_present": true,
+            "results_error": null,
+            "kp": {},
+            "n_kp_results": 0,
+            "segments_status": {
+              "full_story_part1_c1": "OK",
+              "full_story_part1_c5": "OK",
+              "full_story_part1_c9": "OK",
+              "full_story_part1_c11": "OK",
+              "full_story_part3_c1": "OK",
+              "full_story_part3_c3": "OK"
+            },
+            "segments_with_vote": [],
+            "alarm_state_segments": [],
+            "supply_nonempty_count": 0
+          },
+          "order": {
+            "timeline_present": false,
+            "timeline_error": "ABSENT",
+            "per_kp": {}
+          },
+          "locks": {
+            "present": true,
+            "state_counts": {
+              "RESOLVED": 6
+            },
+            "non_resolved_segments": []
+          },
+          "z_explanations_present": true
+        }
+      },
+      "entry_point": null,
+      "whisper_preflight_files": [],
+      "alarms": {
+        "per_level": {
+          "a2": {
+            "alarms_json_present": true,
+            "alarms_json_error": null,
+            "report_md_present": true,
+            "payload_missing_keys": [],
+            "count": 0,
+            "consistency": {
+              "alarm_state_records": 0,
+              "match": true,
+              "reported": 0
+            },
+            "hr_residual": {
+              "available": true,
+              "hr_asr_uncertain_segments": 0,
+              "of_which_proper_noun_only_outside_alarm_boundary": 0
+            },
+            "supply_applied_count": 0,
+            "operator_only": true,
+            "alarm_records": [],
+            "report_md_head": "## 固有名詞発音アラーム(運営責任者向け・一般リスナー非表示)\n0件(固有名詞の発音不一致アラームなし)\n\n### 発音供給の適用一覧(TTS入力へ綴り置換した語。ASR比較は置換後の綴りが基準)\n0件(供給対象なし。A階層の自動供給対象/人承認済みB階層が無い、または該当語が本文に無い)\n\n### Human Review残(受理境界の外): ASR不確実のまま残ったsegment 0件 (うち固有名詞のみ不一致だが境界外=脱落/一般語化等 0件)\n\n注: 日本語音声の固有名詞読みはこのアラーム方針の対象外です(従来の検証・Human Reviewのまま)。\n",
+            "report_md_has_section": true
+          },
+          "b1b": {
+            "alarms_json_present": true,
+            "alarms_json_error": null,
+            "report_md_present": true,
+            "payload_missing_keys": [],
+            "count": 0,
+            "consistency": {
+              "alarm_state_records": 0,
+              "match": true,
+              "reported": 0
+            },
+            "hr_residual": {
+              "available": true,
+              "hr_asr_uncertain_segments": 0,
+              "of_which_proper_noun_only_outside_alarm_boundary": 0
+            },
+            "supply_applied_count": 0,
+            "operator_only": true,
+            "alarm_records": [],
+            "report_md_head": "## 固有名詞発音アラーム(運営責任者向け・一般リスナー非表示)\n0件(固有名詞の発音不一致アラームなし)\n\n### 発音供給の適用一覧(TTS入力へ綴り置換した語。ASR比較は置換後の綴りが基準)\n0件(供給対象なし。A階層の自動供給対象/人承認済みB階層が無い、または該当語が本文に無い)\n\n### Human Review残(受理境界の外): ASR不確実のまま残ったsegment 0件 (うち固有名詞のみ不一致だが境界外=脱落/一般語化等 0件)\n\n注: 日本語音声の固有名詞読みはこのアラーム方針の対象外です(従来の検証・Human Reviewのまま)。\n",
+            "report_md_has_section": true
+          }
+        },
+        "total_alarms": 0
+      },
+      "cost": {
+        "tool": "docs/pm/tools/daily_dev_cost_01.py",
+        "usd_jpy": 160.0,
+        "pricing_snapshot": "er005_output/cost_baseline_01/pricing_snapshot.json",
+        "files": [
+          "er026_output/family_z_production_e2e_01/melos/run_pnap_01/cost_log.jsonl"
+        ],
+        "records": 31,
+        "buckets": {
+          "non_kp_audio": {
+            "jpy": 3.2191,
+            "calls": 31
+          }
+        },
+        "by_kind": {
+          "non_kp_audio:tts": {
+            "jpy": 1.5172,
+            "calls": 9
+          },
+          "non_kp_audio:asr_openai": {
+            "jpy": 0.3268,
+            "calls": 12
+          },
+          "non_kp_audio:asr_azure": {
+            "jpy": 1.3751,
+            "calls": 10
+          }
+        },
+        "by_model": {
+          "gemini/gemini-3.8-flash-lite-tts": {
+            "jpy": 1.5172,
+            "calls": 9
+          },
+          "openai_asr/gpt-4o-mini-transcribe": {
+            "jpy": 0.3268,
+            "calls": 12
+          },
+          "azure/azure-speech-stt": {
+            "jpy": 1.3751,
+            "calls": 10
+          }
+        },
+        "unpriced": {},
+        "total_jpy": 3.2191,
+        "synthetic_skipped": 0,
+        "kp_related_jpy": 0.0,
+        "kp_related_incl_unsplit_scaffold_jpy": 0.0
+      },
+      "pages": {
+        "pages_found": [],
+        "checks": []
+      },
+      "levels_detected": [
+        "a2",
+        "b1b"
+      ]
+    }
+  },
+  "shared": {
+    "ledger_lookup": {
+      "ledger_path": "C:/Users/tensh/eigo-radio/er006_output/pronunciation_ledger_01/ledger.json",
+      "error": null,
+      "entries": {
+        "khaite": [
+          {
+            "surface": "khaite",
+            "evidence_tier": "MISSING",
+            "human_approved": true,
+            "tts_respelling": "Kate",
+            "pronunciation_hint": "KAYT",
+            "ledger_disabled": null
+          }
+        ]
+      }
+    },
+    "stop_sentinels_now": [
+      "C:/Users/tensh/eigo-radio/docs/pm/delegation_log/2026-10-12_FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01_STOP_NOTICE.md"
+    ]
+  },
+  "vote_table": {
+    "X": [],
+    "Z": []
+  },
+  "assessment": {
+    "KPFT": {
+      "X": [
+        {
+          "id": "KPFT-1 全文直接選定(候補DBでない)",
+          "status": "MISSING",
+          "detail": "b1b:MISSING(kp_backend=None used=None db_hybrid_dir=False)"
+        },
+        {
+          "id": "KPFT-2 actual model ID=gpt-6-luna",
+          "status": "NG",
+          "detail": "b1b:NG(model_id=gpt-5.6-luna requested=None)"
+        },
+        {
+          "id": "KPFT-3 正式Prompt 2のsha",
+          "status": "MISSING",
+          "detail": "b1b:MISSING(prompt_sha256=None)"
+        },
+        {
+          "id": "KPFT-4 KP最大3件",
+          "status": "MISSING",
+          "detail": "b1b:MISSING(n_items=0 shortfall=None (期待3, 1-2はshortfall記録つきで許容))"
+        },
+        {
+          "id": "KPFT-5 本文外/6語以上が不採用",
+          "status": "MISSING",
+          "detail": "b1b:MISSING(items無し)"
+        },
+        {
+          "id": "KPFT-6 原形化・一般化",
+          "status": "MISSING",
+          "detail": "b1b:MISSING(items無し)"
+        },
+        {
+          "id": "KPFT-7 後段(意味/解説/音声/ASR/組立)",
+          "status": "MISSING",
+          "detail": "b1b:MISSING(timeline無し(assemble未実施?) 未OK=[])"
+        },
+        {
+          "id": "KPFT-8 retry/fallback/regen/resume",
+          "status": "INFO",
+          "detail": "b1b:INFO(選定None/2 canonNone/2 redNone(None) outerNone/3 stale=[] fallback_notice=False)"
+        },
+        {
+          "id": "KPFT-9 旧DB/5件のDangling Reference",
+          "status": "MANUAL",
+          "detail": "--dangling-grep で別途集計(下記)。run出力からは判定しない"
+        },
+        {
+          "id": "KPFT-10 必須Regression/Validator/test",
+          "status": "MANUAL",
+          "detail": "当日手順書の事前チェック(全回帰PASS)で確認"
+        },
+        {
+          "id": "KPFT-11 X/Z双方の正式runtime evidence",
+          "status": "INFO",
+          "detail": "levels=['b1b']"
+        },
+        {
+          "id": "KPFT-12 SSOT/Git",
+          "status": "MANUAL",
+          "detail": "Fable受入時"
+        }
+      ],
+      "Z": [
+        {
+          "id": "KPFT-1 全文直接選定(候補DBでない)",
+          "status": "MISSING",
+          "detail": "a2:MISSING(kp_backend=None used=None db_hybrid_dir=False); b1b:MISSING(kp_backend=None used=None db_hybrid_dir=False)"
+        },
+        {
+          "id": "KPFT-2 actual model ID=gpt-6-luna",
+          "status": "OK",
+          "detail": "a2:OK(model_id=gpt-6-luna requested=None); b1b:OK(model_id=gpt-6-luna requested=None)"
+        },
+        {
+          "id": "KPFT-3 正式Prompt 2のsha",
+          "status": "MISSING",
+          "detail": "a2:MISSING(prompt_sha256=None); b1b:MISSING(prompt_sha256=None)"
+        },
+        {
+          "id": "KPFT-4 KP最大3件",
+          "status": "NG",
+          "detail": "a2:NG(n_items=5 shortfall=None (期待3, 1-2はshortfall記録つきで許容)); b1b:NG(n_items=5 shortfall=None (期待3, 1-2はshortfall記録つきで許容))"
+        },
+        {
+          "id": "KPFT-5 本文外/6語以上が不採用",
+          "status": "OK",
+          "detail": "a2:OK(本文不一致/6語以上のrank=[] (全5件のsource_span本文一致+<=5語)); b1b:OK(本文不一致/6語以上のrank=[] (全5件のsource_span本文一致+<=5語))"
+        },
+        {
+          "id": "KPFT-6 原形化・一般化",
+          "status": "INFO",
+          "detail": "a2:INFO(変更4件(要:聴取/目視で一般化の妥当性確認): [(1, 'pulled him under', 'pull someone under', 'inherit_selection_normalization'), (2, 'in your place', \"in someone's place\", 'generalize_person_dependent_reference'), (3, 'lost my trust in you', 'lose trust in someone', 'inherit_selection_normalization'), (4, 'held out', 'hold out', 'inherit_selection_normalization')]); b1b:INFO(変更4件(要:聴取/目視で一般化の妥当性確認): [(1, 'sentenced him to death', 'sentence someone to death', 'inherit_selection_normalization'), (3, 'held out his hands', 'hold out', 'inherit_selection_normalization'), (4, 'seized', 'seize', 'inherit_selection_normalization'), (5, 'abandoned', 'abandon', 'inherit_selection_normalization')])"
+        },
+        {
+          "id": "KPFT-7 後段(意味/解説/音声/ASR/組立)",
+          "status": "NG",
+          "detail": "a2:NG(timeline無し(assemble未実施?) 未OK=['kp1.english', 'kp2.english', 'kp3.english', 'kp4.english', 'kp5.english']); b1b:NG(timeline無し(assemble未実施?) 未OK=['kp1.english', 'kp2.english', 'kp3.english', 'kp4.english', 'kp5.english', 'kp1.explanation', 'kp2.explanation', 'kp3.explanation', 'kp4.explanation', 'kp5.explanation'])"
+        },
+        {
+          "id": "KPFT-8 retry/fallback/regen/resume",
+          "status": "INFO",
+          "detail": "a2:INFO(選定None/2 canon1/2 red1(REDUNDANCY_PASS) outer3/3 stale=[] fallback_notice=False); b1b:INFO(選定None/2 canon1/2 red1(REDUNDANCY_PASS) outer1/3 stale=[] fallback_notice=False)"
+        },
+        {
+          "id": "KPFT-9 旧DB/5件のDangling Reference",
+          "status": "MANUAL",
+          "detail": "--dangling-grep で別途集計(下記)。run出力からは判定しない"
+        },
+        {
+          "id": "KPFT-10 必須Regression/Validator/test",
+          "status": "MANUAL",
+          "detail": "当日手順書の事前チェック(全回帰PASS)で確認"
+        },
+        {
+          "id": "KPFT-11 X/Z双方の正式runtime evidence",
+          "status": "INFO",
+          "detail": "levels=['a2', 'b1b']"
+        },
+        {
+          "id": "KPFT-12 SSOT/Git",
+          "status": "MANUAL",
+          "detail": "Fable受入時"
+        }
+      ]
+    },
+    "KP3V": {
+      "X": [
+        {
+          "id": "KP3V-0 KP英語voteの存在",
+          "status": "MISSING",
+          "detail": "KP英語音声のresultsが無い"
+        }
+      ],
+      "Z": [
+        {
+          "id": "KP3V-0 KP英語voteの存在",
+          "status": "MISSING",
+          "detail": "KP英語音声のresultsが無い"
+        }
+      ],
+      "JOINT": [
+        {
+          "id": "KP3V-J Whisper正式runtime発火(X/Zいずれか)",
+          "status": "NOT_FIRED",
+          "detail": "X=False Z=False。双方未発火なら『Xで発火観測+Z同adapterをtestで固定』は不成立→別素材で追加run(設計P-06)"
+        }
+      ]
+    },
+    "PNAP": {
+      "X": [
+        {
+          "id": "PNAP-0 audit/pronunciation_alarms.json と operator_alarm_report.md の生成",
+          "status": "OK",
+          "detail": "levels=['b1b'] json=['b1b']"
+        },
+        {
+          "id": "PNAP-0b 期待キー不一致(payload/record)",
+          "status": "OK",
+          "detail": "payload_missing=[] record_missing=[]"
+        },
+        {
+          "id": "PNAP-6 アラームが完成報告へ引継ぎ(集計一致P-08)",
+          "status": "OK",
+          "detail": "consistency=[('b1b', {'alarm_state_records': 1, 'match': True, 'reported': 1})] / ALARM state segments(results)={'b1b': ['full_story_part2']}"
+        },
+        {
+          "id": "PNAP-2 不一致時にアラーム記録+制作継続(発火証拠)",
+          "status": "OK",
+          "detail": "alarms=1件 nouns=['khaite'](0件=自然発火せず。再実行は別素材へ。設計§10)"
+        },
+        {
+          "id": "PNAP-2b アラーム記録の必須項目(固有名詞/箇所/不一致/根拠/TTS供給結果/最終状態/models)",
+          "status": "OK",
+          "detail": "欠落=[]"
+        },
+        {
+          "id": "PNAP-3 固有名詞不一致のみでHRに回らない",
+          "status": "MANUAL",
+          "detail": "snapshot未指定のためHR queue/attempt_history前後比較不可。非RESOLVED lock={}"
+        },
+        {
+          "id": "PNAP-1 発音情報取得・TTS供給(respelling)の発火記録",
+          "status": "OK",
+          "detail": "results内supply記録(非空)=2 / payload.supply_applied=0"
+        },
+        {
+          "id": "PNAP-1b Ledger evidence_tier/human_approved",
+          "status": "INFO",
+          "detail": "対象語=['khaite'] Ledger一致={'khaite': [{'surface': 'khaite', 'evidence_tier': 'MISSING', 'human_approved': True, 'tts_respelling': 'Kate', 'pronunciation_hint': 'KAYT', 'ledger_disabled': None}]}"
+        },
+        {
+          "id": "PNAP-4 通常ASR/retry/fallback/regen/resume整合",
+          "status": "INFO",
+          "detail": "tts_generation_results.segments statusとattempts: {'b1b': {'topic_intro': 'SKIPPED_NOT_SELECTED', 'preview': 'SKIPPED_NOT_SELECTED', 'comment_1': 'SKIPPED_NOT_SELECTED', 'comment_2': 'SKIPPED_NOT_SELECTED', 'comment_3': 'SKIPPED_NOT_SELECTED', 'comment_4': 'SKIPPED_NOT_SELECTED', 'full_story_part1': 'SKIPPED_NOT_SELECTED', 'full_story_part2': 'OK', 'full_story_part3': 'OK', 'in_one_line': 'SKIPPED_NOT_SELECTED'}}"
+        },
+        {
+          "id": "PNAP-5 固有名詞以外の不一致は従来どおり",
+          "status": "MANUAL",
+          "detail": "アラーム対象外のNG/HRが従来どおり残るかは、HR residual(payload.hr_residual)で確認: {'b1b': {'available': True, 'hr_asr_uncertain_segments': 0, 'of_which_proper_noun_only_outside_alarm_boundary': 0}}"
+        },
+        {
+          "id": "PNAP-7 一般リスナー(公開ページ)に非露出",
+          "status": "MISSING",
+          "detail": "leaks=[] pages=[]"
+        },
+        {
+          "id": "PNAP-8 KP segmentにアラーム受理が適用されていない(範囲外)",
+          "status": "OK",
+          "detail": "KP alarm segments=[]"
+        },
+        {
+          "id": "PNAP-9 必須Regression/Validator/test",
+          "status": "MANUAL",
+          "detail": "当日手順書の事前チェック"
+        }
+      ],
+      "Z": [
+        {
+          "id": "PNAP-0 audit/pronunciation_alarms.json と operator_alarm_report.md の生成",
+          "status": "OK",
+          "detail": "levels=['a2', 'b1b'] json=['a2', 'b1b']"
+        },
+        {
+          "id": "PNAP-0b 期待キー不一致(payload/record)",
+          "status": "OK",
+          "detail": "payload_missing=[] record_missing=[]"
+        },
+        {
+          "id": "PNAP-6 アラームが完成報告へ引継ぎ(集計一致P-08)",
+          "status": "OK",
+          "detail": "consistency=[('a2', {'alarm_state_records': 0, 'match': True, 'reported': 0}), ('b1b', {'alarm_state_records': 0, 'match': True, 'reported': 0})] / ALARM state segments(results)={'a2': [], 'b1b': []}"
+        },
+        {
+          "id": "PNAP-2 不一致時にアラーム記録+制作継続(発火証拠)",
+          "status": "NOT_FIRED",
+          "detail": "alarms=0件 nouns=[](0件=自然発火せず。再実行は別素材へ。設計§10)"
+        },
+        {
+          "id": "PNAP-2b アラーム記録の必須項目(固有名詞/箇所/不一致/根拠/TTS供給結果/最終状態/models)",
+          "status": "NOT_FIRED",
+          "detail": "欠落=[]"
+        },
+        {
+          "id": "PNAP-3 固有名詞不一致のみでHRに回らない",
+          "status": "MANUAL",
+          "detail": "snapshot未指定のためHR queue/attempt_history前後比較不可。非RESOLVED lock={}"
+        },
+        {
+          "id": "PNAP-1 発音情報取得・TTS供給(respelling)の発火記録",
+          "status": "NOT_FIRED",
+          "detail": "results内supply記録(非空)=0 / payload.supply_applied=0"
+        },
+        {
+          "id": "PNAP-1b Ledger evidence_tier/human_approved",
+          "status": "INFO",
+          "detail": "対象語=[] Ledger一致={}"
+        },
+        {
+          "id": "PNAP-4 通常ASR/retry/fallback/regen/resume整合",
+          "status": "INFO",
+          "detail": "tts_generation_results.segments statusとattempts: {'a2': {'full_story_part1_c1': 'OK', 'full_story_part1_c5': 'OK', 'full_story_part3_c3': 'OK'}, 'b1b': {'full_story_part1_c1': 'OK', 'full_story_part1_c5': 'OK', 'full_story_part1_c9': 'OK', 'full_story_part1_c11': 'OK', 'full_story_part3_c1': 'OK', 'full_story_part3_c3': 'OK'}}"
+        },
+        {
+          "id": "PNAP-5 固有名詞以外の不一致は従来どおり",
+          "status": "MANUAL",
+          "detail": "アラーム対象外のNG/HRが従来どおり残るかは、HR residual(payload.hr_residual)で確認: {'a2': {'available': True, 'hr_asr_uncertain_segments': 0, 'of_which_proper_noun_only_outside_alarm_boundary': 0}, 'b1b': {'available': True, 'hr_asr_uncertain_segments': 0, 'of_which_proper_noun_only_outside_alarm_boundary': 0}}"
+        },
+        {
+          "id": "PNAP-7 一般リスナー(公開ページ)に非露出",
+          "status": "MISSING",
+          "detail": "leaks=[] pages=[]"
+        },
+        {
+          "id": "PNAP-8 KP segmentにアラーム受理が適用されていない(範囲外)",
+          "status": "OK",
+          "detail": "KP alarm segments=[]"
+        },
+        {
+          "id": "PNAP-9 必須Regression/Validator/test",
+          "status": "MANUAL",
+          "detail": "当日手順書の事前チェック"
+        }
+      ],
+      "JOINT": [
+        {
+          "id": "PNAP-J アラーム発火(X・Z双方、PNAP原文§5-9)",
+          "status": "NOT_FIRED",
+          "detail": "alarms X=1 Z=0"
+        }
+      ]
+    }
+  },
+  "summary": {
+    "KPFT": {
+      "MISSING": 8,
+      "NG": 3,
+      "INFO": 5,
+      "MANUAL": 6,
+      "OK": 2
+    },
+    "KP3V": {
+      "MISSING": 2,
+      "NOT_FIRED": 1
+    },
+    "PNAP": {
+      "OK": 11,
+      "MANUAL": 6,
+      "INFO": 4,
+      "MISSING": 2,
+      "NOT_FIRED": 4
+    }
+  }
+}
