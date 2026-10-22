@@ -1,0 +1,178 @@
+{
+  "kp2_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "dda32086da6f42dd6c32fa7aea84383dbca0aa30f5a2c6a161fdb19144334104",
+    "language": "en",
+    "theme_id": "x_default",
+    "level": "a2",
+    "segment_id": "kp2_en",
+    "updated_at": "2026-10-22T09:17:45",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er096_output/kp_dual_prod_01/x_default/a2/narration/kp2_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.18,
+        "asr_text": "Can't wait.",
+        "asr_text_length": 11,
+        "max_len": 20,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 2,
+          "transcript": "Can't  wait",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 1076,
+          "sha256": "2b0c7505f48ee5470fbe866535088f01704634b4973d22c7f90b8f021fc3696d",
+          "head200": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not add explanations, examples, introductions, or any other com"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Can't wait.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_dual",
+            "provider": "azure",
+            "text": "Can't wait.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS",
+            "dual_required": true,
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "dual_agreed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "13e4d8e7b707a11b4387c4e402bd41831d9dec9649dfe0d7d05f85bab3c29a9c",
+          "primary": {
+            "text": "Can't wait.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Can't wait.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.18,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 692,
+            "secondary_ms": 690
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 11,
+            "secondary_len": 11,
+            "max_len": 20,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 8,
+            "primary_ok": true
+          },
+          "dual": {
+            "required": true,
+            "primary_provider": "openai",
+            "secondary_provider": "azure",
+            "primary_pass": true,
+            "primary_text": "Can't wait.",
+            "primary_rescued_by_secondary": false,
+            "primary_rescue_layers": [],
+            "primary_not_pass_reason": null,
+            "secondary_called": true,
+            "secondary_pass": true,
+            "secondary_text": "Can't wait.",
+            "outcome": "PASS"
+          },
+          "p3_entry": "dual_required",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er096_output/kp_dual_prod_01/x_default/a2/narration/attempts/kp2_en_attempt1_custombd5c8f46.wav"
+      }
+    ]
+  }
+}

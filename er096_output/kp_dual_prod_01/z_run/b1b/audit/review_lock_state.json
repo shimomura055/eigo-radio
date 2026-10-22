@@ -1,0 +1,317 @@
+{
+  "kp1_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "7f0325da8ed97d75c643a889450869003527ec027f21ce392e46f083854b29b6",
+    "language": "en",
+    "theme_id": "z_run",
+    "level": "b1b",
+    "segment_id": "kp1_en",
+    "updated_at": "2026-10-22T09:18:08",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er096_output/kp_dual_prod_01/z_run/b1b/narration/kp1_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.1,
+        "asr_text": "Give way.",
+        "asr_text_length": 9,
+        "max_len": 18,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 2,
+          "transcript": "Give  way.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Give way.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_dual",
+            "provider": "azure",
+            "text": "Give way.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS",
+            "dual_required": true,
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "dual_agreed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "2eb3e665646f8863a8924eac58318964360af127a98c30ddb5aafa90e8c50e68",
+          "primary": {
+            "text": "Give way.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Give way.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.1,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 671,
+            "secondary_ms": 669
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 9,
+            "secondary_len": 9,
+            "max_len": 18,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 7,
+            "primary_ok": true
+          },
+          "dual": {
+            "required": true,
+            "primary_provider": "openai",
+            "secondary_provider": "azure",
+            "primary_pass": true,
+            "primary_text": "Give way.",
+            "primary_rescued_by_secondary": false,
+            "primary_rescue_layers": [],
+            "primary_not_pass_reason": null,
+            "secondary_called": true,
+            "secondary_pass": true,
+            "secondary_text": "Give way.",
+            "outcome": "PASS"
+          },
+          "p3_entry": "dual_required",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er096_output/kp_dual_prod_01/z_run/b1b/narration/attempts/kp1_en_attempt1_custom60ebc452.wav"
+      }
+    ]
+  },
+  "kp1_explanation_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "50bbe0add6de9826d7a62faa23e557a26bc71cff3d8b8f224c0a92af25dc0c16",
+    "language": "en",
+    "theme_id": "z_run",
+    "level": "b1b",
+    "segment_id": "kp1_explanation_en",
+    "updated_at": "2026-10-22T09:18:13",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er096_output/kp_dual_prod_01/z_run/b1b/narration/kp1_explanation_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 3.46,
+        "asr_text": "to become too weak to support you, so you fall.",
+        "asr_text_length": 47,
+        "max_len": 69,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 10,
+          "transcript": "to  become  too  weak  to  support  you,  so  you  fall.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 136,
+          "sha256": "0518000694e31ef7de6602401b7fa9abd3beb45654e95714817930582020b9fc",
+          "head200": "Speak clearly at a slightly relaxed, natural pace. Keep a steady rhythm, with brief transitions between phrases and no drawn-out pauses."
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "to become too weak to support you, so you fall.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "f047ec347371eabd0baf416bb6795ee9a41302ebe4643f133bedad2b10e5993f",
+          "primary": {
+            "text": "to become too weak to support you, so you fall.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 47,
+            "secondary_len": null,
+            "max_len": 69,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er096_output/kp_dual_prod_01/z_run/b1b/narration/attempts/kp1_explanation_en_attempt1_custom7f3c0b8a.wav"
+      }
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+[driver] argv= ['er019_family_x_audio_production_runner_01.py', '--slug', 'manga_ai_chat_byus', '--run', 'run_byus_01', '--level', 'a2', '--stage', 'tts', '--out-dir', 'er096_output/kp_dual_prod_01/x_default', '--budget-jpy', '60', '--only-segments', 'kp2_english', '--style-profile', 'default']
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er096_kp_dual_runtime_evidence_01.py", line 162, in <module>
+    {"x_k2": cmd_x_k2, "x_k2_rerun": cmd_x_k2_rerun, "x_default": cmd_x_default, "z": cmd_z, "z_rerun": cmd_z_rerun,
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     "survey": cmd_survey}[sys.argv[1]]()
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\tensh\eigo-radio\er096_kp_dual_runtime_evidence_01.py", line 94, in cmd_x_default
+    _run_x(out_dir, "a2", "kp2_english", ["--style-profile", "default"], store_dir)
+    ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er096_kp_dual_runtime_evidence_01.py", line 70, in _run_x
+    x.main()
+    ~~~~~~^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 2599, in main
+    _profile_id, _profile_source = style_profile_mod.resolve_run_profile(
+                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        out_dir, args.style_profile, write=False, tts_backend=args.tts_backend)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_style_profile_01.py", line 476, in resolve_run_profile
+    raise StyleProfileStop(
+        f"[STOP][USER_DECISION_REQUIRED] --style-profile={cli_profile!r} が{record_path(out_dir)}の"
+        f"固定記録({recorded!r})と食い違います。途中でprofileを変更できません。")
+er019_family_x_style_profile_01.StyleProfileStop: [STOP][USER_DECISION_REQUIRED] --style-profile='default' がer096_output/kp_dual_prod_01/x_default/audit/style_profile.jsonの固定記録('fx_20261017')と食い違います。途中でprofileを変更できません。

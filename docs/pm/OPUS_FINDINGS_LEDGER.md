@@ -558,3 +558,15 @@ OPEN残(Closeout前に未解決): OF-001(Stage 1 recall、E2E未測定)、OF-002
 | OF-B3RD-P-11 | 2026-10-22 | B3RD Opus_C2 | MAJOR | PRODUCTION_WIRED証拠条件(1)status OK/gpt-6-luna/low (2)概数可1件以上+規則8 (3)resume実走API 0+W5 PASS (4)数値監査PASS | 採用 | B3RD 委任_06 C-2 Phase 3/4(`er095_article_a_p11_check_01.py`) | (1)(3)(4)=充足、(2)=実runは概数可0件のため「何もしない経路のみ実証」+offline Prompt組立(API 0・仮定指定)で補完(`audit/p11_check_01.json`) | 未(Fable判定待ち) | EVIDENCED |
 | OF-B3RD-P-12 | 2026-10-22 | B3RD Opus_C2 | Info | (了承事項) | 採用(了承) | B3RD 委任_06 C-2 | - | 未 | RESOLVED |
 | OF-B3RD-P-13 | 2026-10-22 | B3RD Opus_C2 | Info | (了承事項) | 採用(了承) | B3RD 委任_06 C-2 | - | 未 | RESOLVED |
+| OF-KPD-P-01 | 2026-10-22 | KPDUAL Opus_D2 | Major | dual結果はX/Z専用kp_dual_check・reuse_blocked不使用・fail-closed・旧共有key非上書き | 採用(+dual1別key、Azure障害=技術STOP/NG=再生成) | KPDUAL 委任_03 | 設計書D-2訂正表、er096 module | 未(Fable判定待ち、OPEN-440) | RESOLVED |
+| OF-KPD-P-02 | 2026-10-22 | KPDUAL Opus_D2 | Major | 最終slot NG_SECONDARY_UNAVAILABLE→STOPPED→HR Lockの露出増 | 採用(API 0 test実証+ENGLISH_LOCK前circuit_open確認。HR Lock module不変) | KPDUAL 委任_03 | er096 wiring test P-02、stats/ | 未(Fable判定待ち、OPEN-440) | RESOLVED |
+| OF-KPD-P-03 | 2026-10-22 | KPDUAL Opus_D2 | Major | 再利用6点全てで共通helper kp_dual_reuse_okを呼ぶ | 採用(6点配線+AST/呼出test) | KPDUAL 委任_03 | er096 wiring test E群 | 未(Fable判定待ち、OPEN-440) | RESOLVED |
+| OF-KPD-P-04 | 2026-10-22 | KPDUAL Opus_D2 | Major | 共有moduleを編集せずX専用関数から同一MasterAudioKeyで呼ぶ | 採用(共有module不変git差分0、master_audio_id一致test) | KPDUAL 委任_03 | er096 module、git diff | 未(Fable判定待ち、OPEN-440) | RESOLVED |
+| OF-KPD-P-05 | 2026-10-22 | KPDUAL Opus_D2 | Minor | Primary NG時もAzureを呼ぶ(短絡しない) | Fable選択=短絡しない | KPDUAL 委任_03 | er078 judge、wiring test A群 | 未(Fable判定待ち、OPEN-440) | RESOLVED |
+| OF-KPD-P-06 | 2026-10-22 | KPDUAL Opus_D2 | Minor | primary_rescued_by_secondaryを非ラテン/tier3/cs全層で立てる | 採用 | KPDUAL 委任_03 | er006_secondary_asr_01、wiring test B群 | 未(Fable判定待ち、OPEN-440) | RESOLVED |
+| OF-KPD-P-07 | 2026-10-22 | KPDUAL Opus_D2 | Minor | A-2設計書へ上書き注記・1839注記更新・er094 KPシナリオ | 採用(設計書(g)注記、CURRENT_SPEC:1839更新) | KPDUAL 委任_03 | CURRENT_SPEC:1839、A-2設計書 | 未(Fable判定待ち、OPEN-440) | RESOLVED |
+| OF-KPD-P-08 | 2026-10-22 | KPDUAL Opus_D2 | Minor | audit[dual]・step名・classification非上書き・新state読み手確認 | 採用 | KPDUAL 委任_03 | wiring test A/B/H群、backcompat_07 PASS | 未(Fable判定待ち、OPEN-440) | RESOLVED |
+| OF-KPD-P-09 | 2026-10-22 | KPDUAL Opus_D2 | Minor | AST test(total_slots⇔dual flag、解説にdualなし、Trial import 0) | 採用 | KPDUAL 委任_03 | wiring test D群 | 未(Fable判定待ち、OPEN-440) | RESOLVED |
+| OF-KPD-P-10 | 2026-10-22 | KPDUAL Opus_D2 | Minor | Azure空転写のEN/JA表現差をSSOTで明確化 | 採用(記録のみ、挙動不変) | KPDUAL 委任_03 | CURRENT_SPEC:2821追記 | 未(Fable判定待ち、OPEN-440) | RESOLVED |
+| OF-KPD-P-11 | 2026-10-22 | KPDUAL Opus_D2 | Info | 同一wavのAzure再試行はしない | 採用 | KPDUAL 委任_03 | 実装(Secondary 1回) | 未(Fable判定待ち、OPEN-440) | RESOLVED |
+| OF-KPD-P-12 | 2026-10-22 | KPDUAL Opus_D2 | Minor | 追加ケース(最終slot NOT_PASS/UNAVAILABLE/take part型/HR承認KP不変/S1 NG・障害区別) | 採用(take part型は保存Azure転写10/10をAPI 0、実呼出3回も実施) | KPDUAL 委任_03 | wiring test G群、take_part_live.json | 未(Fable判定待ち、OPEN-440) | RESOLVED |

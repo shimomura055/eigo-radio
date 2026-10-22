@@ -1,0 +1,493 @@
+{
+  "kp1_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "4b739e17156c33161aaea78aeafba7fe7dc5158edfd8919927789787861e3281",
+    "language": "en",
+    "theme_id": "x_k2",
+    "level": "b1b",
+    "segment_id": "kp1_en",
+    "updated_at": "2026-10-22T09:15:49",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er096_output/kp_dual_prod_01/x_k2/b1b/narration/kp1_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.1,
+        "asr_text": "ThinkUp",
+        "asr_text_length": 7,
+        "max_len": 18,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 2,
+          "transcript": "Think  up.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "ThinkUp",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_dual",
+            "provider": "azure",
+            "text": "Think up.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS",
+            "dual_required": true,
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "dual_agreed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "7d8296e49bb2ea28f2dfd21f5e61593da3e5e4f9b36aa1dcd0beb7d438373575",
+          "primary": {
+            "text": "ThinkUp",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Think up.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.1,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 542,
+            "secondary_ms": 541
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 7,
+            "secondary_len": 9,
+            "max_len": 18,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 7,
+            "primary_ok": true
+          },
+          "dual": {
+            "required": true,
+            "primary_provider": "openai",
+            "secondary_provider": "azure",
+            "primary_pass": true,
+            "primary_text": "ThinkUp",
+            "primary_rescued_by_secondary": false,
+            "primary_rescue_layers": [],
+            "primary_not_pass_reason": null,
+            "secondary_called": true,
+            "secondary_pass": true,
+            "secondary_text": "Think up.",
+            "outcome": "PASS"
+          },
+          "p3_entry": "dual_required",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er096_output/kp_dual_prod_01/x_k2/b1b/narration/attempts/kp1_en_attempt1_custom60ebc452.wav"
+      }
+    ]
+  },
+  "kp1_explanation_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "7faec3b96dd9f02dd190b54856768e761f2c9918c025520fb8a74be1b18c6e28",
+    "language": "en",
+    "theme_id": "x_k2",
+    "level": "b1b",
+    "segment_id": "kp1_explanation_en",
+    "updated_at": "2026-10-22T09:15:56",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er096_output/kp_dual_prod_01/x_k2/b1b/narration/kp1_explanation_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 3.2,
+        "asr_text": "To create an idea or plan in your mind.",
+        "asr_text_length": 39,
+        "max_len": 58,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 9,
+          "transcript": "to  create  an  idea  or  plan  in  your  mind.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 136,
+          "sha256": "0518000694e31ef7de6602401b7fa9abd3beb45654e95714817930582020b9fc",
+          "head200": "Speak clearly at a slightly relaxed, natural pace. Keep a steady rhythm, with brief transitions between phrases and no drawn-out pauses."
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "To create an idea or plan in your mind.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "021009a6b488f3c4c0e19dd0c96b9a4e56ee40bd8f2d0b9f55099039f2748a2d",
+          "primary": {
+            "text": "To create an idea or plan in your mind.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 39,
+            "secondary_len": null,
+            "max_len": 58,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er096_output/kp_dual_prod_01/x_k2/b1b/narration/attempts/kp1_explanation_en_attempt1_custom7f3c0b8a.wav"
+      }
+    ]
+  },
+  "kp4_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "05764af609889c61cba7ae9388b6ee00f0e7922264357eb38a986ba1770024de",
+    "language": "en",
+    "theme_id": "x_k2",
+    "level": "b1b",
+    "segment_id": "kp4_en",
+    "updated_at": "2026-10-22T09:16:02",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er096_output/kp_dual_prod_01/x_k2/b1b/narration/kp4_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.44,
+        "asr_text": "StoryMaker",
+        "asr_text_length": 10,
+        "max_len": 21,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 1,
+          "transcript": "StoryMaker.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "StoryMaker",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_dual",
+            "provider": "azure",
+            "text": "Story Maker.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS",
+            "dual_required": true,
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "dual_agreed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "677a260c4d37051f5cccf6d5534addf2233a3730f0ee3216bc50b4856cf61954",
+          "primary": {
+            "text": "StoryMaker",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Story Maker.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.44,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 566,
+            "secondary_ms": 565
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 10,
+            "secondary_len": 12,
+            "max_len": 21,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 10,
+            "primary_ok": true
+          },
+          "dual": {
+            "required": true,
+            "primary_provider": "openai",
+            "secondary_provider": "azure",
+            "primary_pass": true,
+            "primary_text": "StoryMaker",
+            "primary_rescued_by_secondary": false,
+            "primary_rescue_layers": [],
+            "primary_not_pass_reason": null,
+            "secondary_called": true,
+            "secondary_pass": true,
+            "secondary_text": "Story Maker.",
+            "outcome": "PASS"
+          },
+          "p3_entry": "dual_required",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 4,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er096_output/kp_dual_prod_01/x_k2/b1b/narration/attempts/kp4_en_attempt1_custom60ebc452.wav"
+      }
+    ]
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "dfc02b77b0cca4b9ff7c4107": {
+    "audio_path": "er096_output/kp_dual_prod_01/x_default_store/audio/dfc02b77b0cca4b9ff7c4107.wav",
+    "key": {
+      "language": "en",
+      "level": null,
+      "speaker_voice": "Aoede",
+      "tts_model_id": "gemini-3.8-flash-lite-tts",
+      "style_instruction_id": "key_phrase_english_component",
+      "style_instruction_version": "v2_margin030+dual1",
+      "instruction_path": "primary",
+      "canonical_text_hash": "dda32086da6f42dd",
+      "audio_processing_version": "v1",
+      "sample_rate": 24000,
+      "channels": 1
+    },
+    "created_at": "2026-10-22T09:17:45",
+    "qa_evidence": {
+      "sha256": "13e4d8e7b707a11b4387c4e402bd41831d9dec9649dfe0d7d05f85bab3c29a9c",
+      "asr_verified": true,
+      "asr_text": "Can't wait.",
+      "disfluency_checked": true,
+      "disfluency_evidence": {
+        "flagged": false,
+        "repeats": [],
+        "word_count": 2,
+        "transcript": "Can't  wait",
+        "method": "faster_whisper_small_local_verbatim"
+      }
+    },
+    "audio_classification": "NORMALIZED_MATCH",
+    "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "dual_agreed",
+      "slot": 1,
+      "script_version": "v0",
+      "role": null,
+      "lang": "en",
+      "segment_key": "",
+      "audio_sha256": "13e4d8e7b707a11b4387c4e402bd41831d9dec9649dfe0d7d05f85bab3c29a9c",
+      "primary": {
+        "text": "Can't wait.",
+        "passed": true,
+        "label": "NORMALIZED_MATCH",
+        "equivalence_basis": null,
+        "warning_labels": []
+      },
+      "secondary": {
+        "called": true,
+        "cached": false,
+        "engine": "azure",
+        "text": "Can't wait.",
+        "label": "NORMALIZED_MATCH",
+        "accepted": true,
+        "error": null,
+        "unavailable": false
+      },
+      "value_guard": {
+        "primary": {
+          "kind": "NO_VALUES",
+          "pairs": [],
+          "reasons": [],
+          "warnings": []
+        },
+        "secondary": {
+          "kind": "NO_VALUES",
+          "pairs": [],
+          "reasons": [],
+          "warnings": []
+        }
+      },
+      "negation_guard": {
+        "primary": false,
+        "secondary": false
+      },
+      "final_gate": {
+        "applied": true,
+        "target": "secondary",
+        "value_guard": "NO_VALUES",
+        "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+        "azure_calls": 1,
+        "azure_seconds": 1.18,
+        "est_jpy": 0.0889,
+        "est_jpy_known": true
+      },
+      "timing": {
+        "total_ms": 692,
+        "secondary_ms": 690
+      },
+      "technical_stop": null,
+      "length": {
+        "applied": true,
+        "primary_len": 11,
+        "secondary_len": 11,
+        "max_len": 20,
+        "adopted_from": "secondary",
+        "adopted_ok": true,
+        "surface_len": 8,
+        "primary_ok": true
+      },
+      "dual": {
+        "required": true,
+        "primary_provider": "openai",
+        "secondary_provider": "azure",
+        "primary_pass": true,
+        "primary_text": "Can't wait.",
+        "primary_rescued_by_secondary": false,
+        "primary_rescue_layers": [],
+        "primary_not_pass_reason": null,
+        "secondary_called": true,
+        "secondary_pass": true,
+        "secondary_text": "Can't wait.",
+        "outcome": "PASS"
+      },
+      "p3_entry": "dual_required",
+      "adapter": {
+        "layers": [],
+        "azure_real_calls": 1,
+        "cost_guard_triggered": false,
+        "language": "en-US",
+        "segment_id": null,
+        "asr_text_present": true,
+        "cache": {
+          "calls": 2,
+          "hits": 0
+        }
+      }
+    },
+    "kp_dual_check": {
+      "version": "kp_dual_check_v1",
+      "ok": true,
+      "source": "generation",
+      "canonical_text": "can't wait",
+      "wav_sha256": "13e4d8e7b707a11b4387c4e402bd41831d9dec9649dfe0d7d05f85bab3c29a9c",
+      "primary": {
+        "provider": "openai",
+        "text": "Can't wait.",
+        "pass": true,
+        "rescued_by_secondary": false,
+        "rescue_layers": []
+      },
+      "secondary": {
+        "provider": "azure",
+        "text": "Can't wait.",
+        "pass": true,
+        "called": true
+      },
+      "judge_state": "PASS",
+      "reason_code": "dual_agreed",
+      "checked_at": "2026-10-22T09:17:45"
+    },
+    "scg_result": null
+  }
+}
