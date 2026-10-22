@@ -540,7 +540,7 @@ class AzureStrictCancelTests(unittest.TestCase):
             fake_pkg.__dict__.update(sdk.__dict__)
             import azure.cognitiveservices as _acs
             with mock.patch.dict(sys.modules, {"azure.cognitiveservices.speech": fake_pkg}), \
-                 mock.patch.object(_acs, "speech", fake_pkg), \
+                 mock.patch.object(_acs, "speech", fake_pkg, create=True), \
                  mock.patch.dict(os.environ, {"SPEECH_KEY": "k", "SPEECH_REGION": "r"}), \
                  mock.patch.object(ja_secondary.cl, "record"):  # 委任_05A(M2): Azure費用計上はlogger未初期化のtestではmock
                 return ja_secondary._azure_stt_strict(wav, timeout_seconds=3)
