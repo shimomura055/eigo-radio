@@ -257,6 +257,14 @@ class TestCanonicalizationFulltext(unittest.TestCase):
             parsed = {"items": [_canon_row(1, "pump one's fist", reason)]}
             self.assertEqual(kc.validate_canonicalization_response(parsed, orig)["status"], "CANONICALIZATION_PASS", reason)
 
+    def test_object_pronoun_kept_accepted_but_generalized_rejected(self):
+        # JRE 委任_02: 目的格him->someoneは閉じた人称表外(却下)、himを残した基本形化は受理(template是正後に期待される出力)。
+        orig = [_fulltext_original(1, "sentenced him to death")]
+        ok = {"items": [_canon_row(1, "sentence him to death", "lemma_normalization")]}
+        ng = {"items": [_canon_row(1, "sentence someone to death", "generalize_person_dependent_reference")]}
+        self.assertEqual(kc.validate_canonicalization_response(ok, orig)["status"], "CANONICALIZATION_PASS")
+        self.assertEqual(kc.validate_canonicalization_response(ng, orig)["status"], "CANONICALIZATION_INVALID")
+
     def test_other_reason_does_not_unlock_lemma(self):
         orig = [_fulltext_original(1, "pushed prices up")]
         parsed = {"items": [_canon_row(1, "push prices up", "other")]}
@@ -276,6 +284,9 @@ class TestCanonicalizationFulltext(unittest.TestCase):
         self.assertNotIn("Listening Blocker Ranking", t)
         self.assertIn("{article_text}", t)
         self.assertIn("{items_json}", t)
+        # JRE 委任_02(Z melos runtime evidence): LLMが目的格him等をsomeoneへ過剰一般化→決定論validator却下→外側retry尽きた事象の是正。
+        self.assertIn("目的格", t)
+        self.assertIn("そのまま残してください", t)
         # 旧templateはA/B/C用に無変更(git blob hashで固定)
         old = open(os.path.join(ROOT, kc.PROMPT_TEMPLATE_PATH), "rb").read().replace(b"\r\n", b"\n")
         self.assertEqual(hashlib.sha1(b"blob %d\0" % len(old) + old).hexdigest(), "6e19a90557b8512a0f3727cfa4547663df873ea4")
