@@ -431,40 +431,6 @@ class SelectorWiringTests(unittest.TestCase):
         self.assertEqual(e.telemetry["reason_code"], "M2_SUPPLY_EXCEPTION")
         mcore.assert_not_called()
 
-    def test_fallback_telemetry_records_reason_and_no_kp_supply(self):
-        """fallback発火時: telemetryにreason_code、kp_supplyは付かない(M2未発火=evidence不成立)。"""
-        tmp = tempfile.mkdtemp()
-        tel = os.path.join(tmp, "telemetry.jsonl")
-        fail = sel.DbHybridFailure("M2_SUPPLY_EXCEPTION", "x", telemetry={"reason_code": "M2_SUPPLY_EXCEPTION",
-                                                                          "kp_supply_attempted": "m2"})
-        with mock.patch.object(sc, "KP_BACKEND_TELEMETRY_PATH", tel), \
-                mock.patch("er030_key_phrase_db_hybrid_selector_01.run_db_hybrid_selection", side_effect=fail), \
-                mock.patch.object(sc, "_run_key_phrase_selection_strategy_l", return_value={"status": "KEY_WORDS_STRUCTURE_PASS"}):
-            res = sc._run_key_phrase_selection_db_hybrid_with_fallback("art", tmp, "T", "A2", process=None)
-        self.assertEqual(res["kp_backend_used"], "strategy_l_fallback")
-        row = json.loads(open(tel, encoding="utf-8").read().splitlines()[-1])
-        self.assertEqual(row["fallback_reason_code"], "M2_SUPPLY_EXCEPTION")
-        self.assertEqual(row["kp_supply_attempted"], "m2")
-        self.assertNotIn("kp_supply", row)
-
-    def test_success_telemetry_has_kp_supply_and_m2_summary(self):
-        tmp = tempfile.mkdtemp()
-        tel = os.path.join(tmp, "telemetry.jsonl")
-        ok = {"status": "KEY_WORDS_STRUCTURE_PASS", "parsed": {"items": []}, "original_items": [], "model_id": "m",
-              "cost_jpy": 1.0, "shortlist_total_count": 20, "kp_backend": "db_hybrid", "kp_supply": "m2",
-              "m2_report": {"m2_meta": {"n_candidates": 20, "reserved": ["a b c"]},
-                            "selected_reserved_slot_candidates": [], "selected_fragment_risk_candidates": []}}
-        with mock.patch.object(sc, "KP_BACKEND_TELEMETRY_PATH", tel), \
-                mock.patch("er030_key_phrase_db_hybrid_selector_01.run_db_hybrid_selection", return_value=ok):
-            res = sc._run_key_phrase_selection_db_hybrid_with_fallback("art", tmp, "T", "A2", process=None)
-        self.assertEqual(res["kp_backend_used"], "db_hybrid")
-        row = json.loads(open(tel, encoding="utf-8").read().splitlines()[-1])
-        self.assertEqual(row["kp_supply"], "m2")
-        self.assertEqual(row["m2_summary"]["reserved"], ["a b c"])
-        rm = json.load(open(os.path.join(tmp, "keywords_runtime_metadata.json"), encoding="utf-8"))
-        self.assertEqual(rm["kp_backend_kp_supply"], "m2")
-
-
 class UnchangedLimitsTests(unittest.TestCase):
     def test_retry_and_cost_limits_unchanged(self):  # S-5
         import er003_key_words_production as prod
@@ -473,15 +439,16 @@ class UnchangedLimitsTests(unittest.TestCase):
         self.assertEqual(sc.KEY_PHRASE_REDUNDANCY_RETRY_MAX, 2)
         self.assertEqual(sel.MIN_SHORTLIST_COUNT, 12)
 
-    def test_family_z_kp_stage_still_strategy_l(self):  # S-7(Z-1未決の間のguard)
+class XZNoLongerUseDbHybridTests(unittest.TestCase):
+    def test_family_z_kp_stage_uses_fulltext_and_not_db_hybrid(self):   # KPFT 委任_02: 旧guard(Z=Strategy L)の置換
         src = open("er062_family_z_writer_01.py", encoding="utf-8").read()
         i = src.index("def run_kp_stage")
         seg = src[i:i + 3000]
-        self.assertNotIn("kp_backend", seg)
         self.assertNotIn("db_hybrid", seg)
+        self.assertIn("run_kp_with_outer_retry_fulltext", seg)
         zsrc = open("er026_family_z_fiction_production_runner_01.py", encoding="utf-8").read()
-        self.assertNotIn("kp_backend", zsrc)
         self.assertNotIn("m2_supply", zsrc)
+        self.assertNotIn("db_hybrid_with_fallback", zsrc)
 
 
 class ScaffoldOnlyKpTests(unittest.TestCase):
@@ -503,7 +470,7 @@ class ScaffoldOnlyKpTests(unittest.TestCase):
                 f.write("{}")
 
     def _kp_result(self):
-        return {"canonicalization": {"status": "CANONICALIZATION_PASS"}, "selection": {"status": "KEY_WORDS_STRUCTURE_PASS", "kp_backend_used": "db_hybrid"}}
+        return {"canonicalization": {"status": "CANONICALIZATION_PASS"}, "selection": {"status": "KEY_WORDS_STRUCTURE_PASS", "kp_backend_used": "fulltext_p2"}}
 
     def test_kp_only_skips_support_generation_and_keeps_records(self):
         self._put_support(["a2", "b1b"])
@@ -518,13 +485,13 @@ class ScaffoldOnlyKpTests(unittest.TestCase):
         mb1.assert_not_called()                                    # support(Preview/Comment)は再生成しない
         self.assertEqual(len(calls), 2)                            # Std -> Adv 直列で各1回
         for (a, k), lv in zip(calls, ("a2", "b1b")):
-            self.assertEqual(k.get("kp_backend"), "db_hybrid")     # 既存と同じ呼出(kp_backend引数)
+            self.assertEqual(k.get("kp_backend"), "fulltext_p2")   # 既存と同じ呼出(kp_backend引数)。KPFT 委任_02: 既定=全文選定
             self.assertEqual(a[3], lv)
-        self.assertEqual(res["a2"]["kp_backend_used"], "db_hybrid")
+        self.assertEqual(res["a2"]["kp_backend_used"], "fulltext_p2")
         self.assertEqual(res["b1b"]["scaffold_only"], "kp")
         self.assertTrue(os.path.exists(f"{self.out}/audit/scaffold_article_sha256.json"))     # (ii)
         summ = json.load(open(f"{self.out}/scaffold_run_summary.json", encoding="utf-8"))
-        self.assertEqual(summ["a2"]["kp_backend_used"], "db_hybrid")
+        self.assertEqual(summ["a2"]["kp_backend_used"], "fulltext_p2")
         self.assertEqual(budget_notes, ["after scaffold a2", "after scaffold b1b"])
 
     def test_missing_support_stops_before_any_kp_call(self):                                     # (iii)
@@ -557,8 +524,9 @@ class ScaffoldOnlyKpTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.runner.run_theme_scaffold(None, self.SRC_DIR, self.out, ["a2"], scaffold_only="support")
 
-    def test_kp_backend_remains_last_default(self):
-        self.assertEqual(self.runner.run_theme_scaffold.__defaults__[-1], "db_hybrid")
+    def test_kp_backend_default_is_fulltext(self):
+        import inspect
+        self.assertEqual(inspect.signature(self.runner.run_theme_scaffold).parameters["kp_backend"].default, "fulltext_p2")
 
 
 if __name__ == "__main__":

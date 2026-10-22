@@ -346,7 +346,7 @@ def _support_texts_path(level: str, level_out_dir: str) -> str:
 # (相互参照: Z側を変更する場合はここも揃えること)。Redundancy QA NG確定(NG_REVIEW_REQUIRED)・外側retry尽き・
 # canonicalization無し/PASS系以外のKPは、旧attemptの`keywords_canonicalized.json`がdiskに残っていても後段(TTS/assembly)が
 # 使わないよう、stageを止める。gloss HR(別key`gloss_alignment_run_status`)は従来どおりHR経路で扱い、ここでは止めない。
-KP_STAGE_BLOCKING_RUN_STATUSES = ("NG_REVIEW_REQUIRED", "OUTER_RETRY_EXHAUSTED", "KP_ARTICLE_COST_CAP_EXCEEDED")
+KP_STAGE_BLOCKING_RUN_STATUSES = ("NG_REVIEW_REQUIRED", "OUTER_RETRY_EXHAUSTED")   # KPFT 委任_02: 旧db_hybridの記事cap停止statusは撤去
 KP_STAGE_PASS_CANON_STATUSES = ("CANONICALIZATION_PASS", "CANONICALIZATION_REVIEW_REQUIRED")
 KP_STAGE_FAILED_MARKER = "kp_stage_failed.json"
 
@@ -388,14 +388,9 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
     Family X本文へそのまま適用する(記事冒頭Key Phrasesは既存Family A
     既定構成をそのまま再利用する、本委任文の前提どおり)。
 
-    kp_backend(KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01、
-    2026-09-27): ユーザー正式決定によりFamily X通常記事はDB Hybrid方式
-    (Primary、"db_hybrid")を既定で使う。失敗時は
-    `sc.run_key_phrase_selection`内部で既存Strategy L全文方式へ自動
-    fallbackする(本関数はfallbackの発生有無を意識しない、
-    `er030_output/kp_backend_telemetry_01/telemetry.jsonl`で観測可能)。
-    他Family(A/B/C/News/Z)の`sc.run_key_phrases`呼び出しはこの引数を
-    渡さないため既定"strategy_l"のまま無変更。"""
+    kp_backend(KPFT 委任_02、2026-10-22): Family X通常記事は全文選定(Prompt 2・最大3件、"fulltext_p2")を既定で使う。
+    選定失敗はX/Z共通の外側retry後にfail-closedで停止し、旧5件経路(db_hybrid/Strategy L)へfallbackしない。
+    他Family(A/B/C)の`sc.run_key_phrases`呼び出しはこの引数を渡さないため既定"strategy_l"のまま無変更。"""
     # FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01(Opus Q5条件、`--scaffold-only kp`):
     #  (i) `sc.run_key_phrases(..., kp_backend=kp_backend)`呼出は下記の同じ行を通す(support生成ブロックのみskip)
     #  (ii) `record_scaffold_article_sha`と`scaffold_run_summary`/`kp_backend_used`記録は維持
@@ -459,14 +454,8 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
         # scaffold stage完了後に行う)。
         kp_backend_used = (kp.get("selection") or {}).get("kp_backend_used")
 
-        _fb_events = list(kp.get("m2_fallback_events") or [])
         result[level] = {"parts": parts, "support": {k: v.get("status") for k, v in support.items()},
-                          "key_phrases_status": kp_status, "kp_backend_used": kp_backend_used,
-                          # 委任_03(2026-10-13): M2→Strategy L Fallbackの必須ユーザー報告(summaryキー契約)
-                          "m2_fallback": (_fb_events[-1] if _fb_events else None),
-                          "m2_fallback_events": _fb_events}
-        if _fb_events:
-            print(sc.format_m2_fallback_stdout(_fb_events))
+                          "key_phrases_status": kp_status, "kp_backend_used": kp_backend_used}
         # KGCPW(OF-KGCPW-04/11/16): gloss再整合は無条件。KP段のtop-level status(kp_run_status)と
         # gloss停止(gloss_alignment_run_status)は別キーで記録する(NG_REVIEW_REQUIREDとHRが重なっても隠れない)。
         _canon = kp.get("canonicalization") or {}
@@ -489,9 +478,6 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
         if _fail is not None:
             break   # 残levelのAPI呼出をしない(Zはstage失敗で停止)
     save_json(f"{out_dir}/scaffold_run_summary.json", result)
-    _all_fb = [ev for lv in result.values() for ev in (lv.get("m2_fallback_events") or [])]
-    if _all_fb:
-        sc.write_m2_fallback_notice(out_dir, _all_fb, header=os.path.basename(out_dir))
     return result
 
 
@@ -2578,20 +2564,6 @@ def ensure_rf_record(source_dir: str, out_dir: str, level: str, budget_jpy: floa
     return rec
 
 
-def print_m2_fallback_final_line(out_dir: str) -> str:
-    """runner終了時の標準出力にM2→Strategy L Fallbackの有無を常に明示する(委任_03、必須ユーザー報告の1要素)。"""
-    _fb_notice = os.path.join(out_dir, sc.M2_FALLBACK_NOTICE_FILENAME)
-    events = []
-    _sum_path = f"{out_dir}/scaffold_run_summary.json"
-    if os.path.exists(_sum_path):
-        with open(_sum_path, encoding="utf-8") as _f:
-            _sum = json.load(_f)
-        events = [ev for lv in _sum.values() if isinstance(lv, dict) for ev in (lv.get("m2_fallback_events") or [])]
-    line = sc.format_m2_fallback_stdout(events) + (f" notice={_fb_notice}" if os.path.exists(_fb_notice) else "")
-    print(line)
-    return line
-
-
 def print_gloss_hr_final_line(out_dir: str, levels: list | None = None) -> str:
     """委任_02(「届いた」条件③): runner終了時の最終stdoutに、gloss再整合のHuman Review待ちを専用1行で明示する。
     判定基準=ディスク上のartifactのcollect_unresolved(OF-KGCPW-05。報告書ファイルの有無ではない=resolve後に誤報しない)。
@@ -2747,9 +2719,6 @@ def main() -> None:
                 entry_point["kp_backend_used_by_level"] = {
                     level: (scaffold_result.get(level) or {}).get("kp_backend_used") for level in levels
                 }
-                entry_point["m2_fallback_by_level"] = {
-                    level: (scaffold_result.get(level) or {}).get("m2_fallback") for level in levels
-                }
                 save_json(entry_point_path, entry_point)
 
         if args.stage in ("tts", "assemble", "all"):
@@ -2804,9 +2773,6 @@ def main() -> None:
             print(f"[FAMILY-X-AUDIO-RUNNER] player.html: {os.path.abspath(player_path)}")
 
     finally:
-        # 委任_03(2026-10-13): M2→Strategy L Fallbackの必須ユーザー報告。runner終了時の標準出力に常に明示する
-        # (stage問わず。noticeがあれば存在とpathを示す)。Fallback成功をM2P0正常動作と誤認させない。
-        print_m2_fallback_final_line(out_dir)
         # OF-KGCPW-03: 例外(--stage allのEPISODE_BLOCKED等)で途中終了しても最終stdoutの1行を必ず出す(try/finally)。
         print_gloss_hr_final_line(out_dir, levels)
     final_jpy, by_provider = compute_cost_jpy_so_far(f"{out_dir}/raw_usage_log.jsonl")

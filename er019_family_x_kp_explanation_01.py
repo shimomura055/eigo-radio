@@ -256,7 +256,7 @@ def _default_call_fn_factory(client, model: str, schema: dict | None = None):
 
 
 def generate_kp_explanations(items: list[dict], call_fn=None, client=None) -> dict:
-    """Advanced(B1B)Key Phrase 5件(4+1構成)まとめて1 callで英語解説
+    """Advanced(B1B)Key Phrase(Production=全文選定の最大3件、A/B/Cの旧5件も可)まとめて1 callで英語解説
     (explanation_en)を生成する。
 
     items: [{"rank", "display_phrase", "source_sentence", "japanese_gloss"}, ...]

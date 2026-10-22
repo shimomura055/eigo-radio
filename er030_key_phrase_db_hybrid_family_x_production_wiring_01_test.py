@@ -402,7 +402,7 @@ def _build_minimal_shortlist_info(n=12, phrase=3, important=3):
 class CostGuardAndArticleCostCapTests(unittest.TestCase):
     """修正1回目(Opus L2所見S4、Fable決定): 1呼び出しあたりのcost guardは
     PASS済み結果を破棄しない(cost_guard_exceeded=trueのみ記録)。記事単位
-    の累積コスト上限超過はfallbackせずSTOP(KP_ARTICLE_COST_CAP_EXCEEDED)。"""
+    の累積cap停止はKPFT 委任_02でscaffoldごと撤去)。"""
 
     def _fake_s1r(self):
         return {"stage1": {}, "shortlist_info": _build_minimal_shortlist_info()}
@@ -435,21 +435,6 @@ class CostGuardAndArticleCostCapTests(unittest.TestCase):
         self.assertEqual(result["status"], "KEY_WORDS_STRUCTURE_PASS")
         self.assertTrue(result["cost_guard_exceeded"])
         mocked_factory.assert_called_once()
-
-    def test_article_cost_cap_exceeded_stops_without_fallback(self):
-        fake_result = {"status": "KEY_WORDS_STRUCTURE_PASS", "parsed": {"items": []}, "original_items": [],
-                        "model_id": "fake-model", "cost_jpy": 999.0, "shortlist_total_count": 20,
-                        "kp_backend": "db_hybrid", "cost_guard_exceeded": True}
-        with mock.patch("er030_key_phrase_db_hybrid_selector_01.run_db_hybrid_selection",
-                         return_value=dict(fake_result)), \
-             mock.patch.object(sc, "_run_key_phrase_selection_strategy_l") as mocked_strategy_l:
-            result = sc.run_key_phrases(
-                "dummy article text", "er030_output/_test_article_cost_cap", "TEST_COST_CAP", "TEST_LEVEL",
-                process=None, kp_backend="db_hybrid")
-        mocked_strategy_l.assert_not_called()
-        self.assertEqual(result["status"], "KP_ARTICLE_COST_CAP_EXCEEDED")
-        self.assertGreater(result["cumulative_cost_jpy"], db_hybrid.KP_ARTICLE_COST_CAP_JPY)
-
 
 class ModelContractViolationStopsWithoutFallbackTests(unittest.TestCase):
     """修正1回目(Opus L2所見B3): 応答モデルが承認済みモデルと不一致の
@@ -491,64 +476,6 @@ class ModelContractViolationStopsWithoutFallbackTests(unittest.TestCase):
                     candidate_supply="m0")  # M2既定化後も本testは従来供給(M0)での契約違反STOPを検証する
         self.assertEqual(ctx.exception.reason_code, "MODEL_CONTRACT_VIOLATION")
         self.assertFalse(ctx.exception.fallback_allowed)
-
-    def test_scaffold_generate_propagates_without_fallback_on_disallowed_failure(self):
-        with mock.patch("er030_key_phrase_db_hybrid_selector_01.run_db_hybrid_selection",
-                         side_effect=db_hybrid.DbHybridFailure(
-                             "MODEL_CONTRACT_VIOLATION", "forced for test",
-                             telemetry={"expected_model": "a", "actual_model": "b"}, fallback_allowed=False)), \
-             mock.patch.object(sc, "_run_key_phrase_selection_strategy_l") as mocked_fallback:
-            with self.assertRaises(db_hybrid.DbHybridFailure):
-                sc.run_key_phrase_selection(
-                    "dummy article", "er030_output/_test_model_mismatch_stop", "TEST_ID_MISMATCH", "TEST_LEVEL",
-                    process=None, kp_backend="db_hybrid")
-        mocked_fallback.assert_not_called()
-
-
-class PerArticleTraceabilityMetadataTests(unittest.TestCase):
-    """修正1回目(Opus L2所見B2): db_hybrid成功時・fallback時いずれも
-    {kp_dir}/keywords_runtime_metadata.jsonへkp_backend関連フィールドが
-    追記(既存内容を保持したままupdate)されること。"""
-
-    def test_success_path_writes_top_level_metadata_file(self):
-        fake_result = {"status": "KEY_WORDS_STRUCTURE_PASS", "parsed": {"items": []}, "original_items": [],
-                        "model_id": "fake-model", "cost_jpy": 1.0, "shortlist_total_count": 20,
-                        "kp_backend": "db_hybrid", "cost_guard_exceeded": False, "attempts_detail": []}
-        out_dir = os.path.join("er030_output", "kp_backend_telemetry_01", "_test_b2_success")
-        metadata_path = os.path.join(out_dir, "keywords_runtime_metadata.json")
-        if os.path.exists(metadata_path):
-            os.remove(metadata_path)
-        with mock.patch("er030_key_phrase_db_hybrid_selector_01.run_db_hybrid_selection",
-                         return_value=dict(fake_result)):
-            sc.run_key_phrase_selection(
-                "dummy article", out_dir, "TEST_B2_SUCCESS", "TEST_LEVEL", process=None, kp_backend="db_hybrid")
-        with open(metadata_path, encoding="utf-8") as f:
-            saved = json.load(f)
-        self.assertEqual(saved["kp_backend_used"], "db_hybrid")
-        self.assertEqual(saved["kp_backend_model_id"], "fake-model")
-        self.assertIsNone(saved["kp_backend_fallback_reason_code"])
-
-    def test_fallback_path_preserves_attempted_db_hybrid_fact(self):
-        fallback_result = {"status": "KEY_WORDS_STRUCTURE_PASS", "parsed": {"items": []}, "original_items": [],
-                            "model_id": "fake-fallback-model"}
-        out_dir = os.path.join("er030_output", "kp_backend_telemetry_01", "_test_b2_fallback")
-        metadata_path = os.path.join(out_dir, "keywords_runtime_metadata.json")
-        if os.path.exists(metadata_path):
-            os.remove(metadata_path)
-        with mock.patch("er030_key_phrase_db_hybrid_selector_01.run_db_hybrid_selection",
-                         side_effect=db_hybrid.DbHybridFailure(
-                             "SHORTLIST_TOO_SMALL", "forced for test",
-                             telemetry={"shortlist_total_count": 3})), \
-             mock.patch.object(sc, "_run_key_phrase_selection_strategy_l",
-                               return_value=dict(fallback_result)):
-            sc.run_key_phrase_selection(
-                "dummy article", out_dir, "TEST_B2_FALLBACK", "TEST_LEVEL", process=None, kp_backend="db_hybrid")
-        with open(metadata_path, encoding="utf-8") as f:
-            saved = json.load(f)
-        self.assertEqual(saved["kp_backend_used"], "strategy_l_fallback")
-        self.assertEqual(saved["kp_backend_fallback_reason_code"], "SHORTLIST_TOO_SMALL")
-        self.assertEqual(saved["kp_backend"], "db_hybrid_attempted")
-
 
 class DbHybridFallbackTriggerTests(unittest.TestCase):
     """DB Hybrid failure条件のうち、API呼び出し前に判定可能な
@@ -603,16 +530,6 @@ class ScaffoldGenerateDispatchTests(unittest.TestCase):
         with open(self._tmp_telemetry_path, encoding="utf-8") as f:
             return [json.loads(line) for line in f if line.strip()]
 
-    def test_default_kp_backend_never_touches_db_hybrid_module(self):
-        with mock.patch.object(
-                sc, "_run_key_phrase_selection_db_hybrid_with_fallback",
-                side_effect=AssertionError("db_hybrid経路に到達してはならない")):
-            with mock.patch.object(routing, "SUPPORT_MODEL", None):
-                with self.assertRaises(routing.ModelContractViolation):
-                    sc.run_key_phrase_selection(
-                        "dummy article", "er030_output/_test_default_backend", "TEST_ID", "TEST_LEVEL",
-                        process="B1_SUPPORT")
-
     def test_legacy_default_backend_logs_telemetry(self):
         # 修正1回目(Opus L2所見B1): 既定"strategy_l"経路でもtelemetryが
         # 1行記録されること(旧: db_hybrid経路のみ記録)。
@@ -632,46 +549,22 @@ class ScaffoldGenerateDispatchTests(unittest.TestCase):
             e["level"] == "TEST_LEVEL" and e["model_id"] == "fake-legacy-model"
             for e in entries))
 
-    def test_db_hybrid_backend_success_path_sets_kp_backend_used_and_logs_telemetry(self):
-        fake_result = {"status": "KEY_WORDS_STRUCTURE_PASS", "parsed": {"items": []}, "original_items": [],
-                        "model_id": "fake-model", "cost_jpy": 1.2345, "shortlist_total_count": 20,
-                        "cost_guard_exceeded": False}
-        with mock.patch("er030_key_phrase_db_hybrid_selector_01.run_db_hybrid_selection",
-                         return_value=dict(fake_result)):
-            result = sc.run_key_phrase_selection(
-                "dummy article", "er030_output/_test_db_hybrid_success", "TEST_ID_2", "TEST_LEVEL",
-                process=None, kp_backend="db_hybrid")
-        self.assertEqual(result["kp_backend_used"], "db_hybrid")
-        self.assertEqual(result["status"], "KEY_WORDS_STRUCTURE_PASS")
-        entries = self._read_new_lines()
-        self.assertTrue(any(e["article_id"] == "TEST_ID_2" and not e["fallback_triggered"] and
-                             e["requested_backend"] == "db_hybrid" and e["backend_used"] == "db_hybrid"
-                             for e in entries))
-
-    def test_db_hybrid_backend_failure_triggers_fallback_and_logs_telemetry(self):
-        fallback_result = {"status": "KEY_WORDS_STRUCTURE_PASS", "parsed": {"items": []}, "original_items": []}
-        with mock.patch("er030_key_phrase_db_hybrid_selector_01.run_db_hybrid_selection",
-                         side_effect=db_hybrid.DbHybridFailure(
-                             "SHORTLIST_TOO_SMALL", "forced for test",
-                             telemetry={"shortlist_total_count": 3})):
-            with mock.patch.object(sc, "_run_key_phrase_selection_strategy_l",
-                                    return_value=dict(fallback_result)) as mocked_fallback:
-                result = sc.run_key_phrase_selection(
-                    "dummy article", "er030_output/_test_db_hybrid_fallback", "TEST_ID_3", "TEST_LEVEL",
-                    process=None, kp_backend="db_hybrid")
-        mocked_fallback.assert_called_once()
-        self.assertEqual(result["kp_backend_used"], "strategy_l_fallback")
-        self.assertEqual(result["kp_backend_fallback_reason_code"], "SHORTLIST_TOO_SMALL")
-        entries = self._read_new_lines()
-        self.assertTrue(any(e["article_id"] == "TEST_ID_3" and e["fallback_triggered"]
-                             and e["fallback_reason_code"] == "SHORTLIST_TOO_SMALL" for e in entries))
-
     def test_run_key_phrases_default_kp_backend_is_strategy_l(self):
-        self.assertEqual(sc.run_key_phrases.__defaults__[-1], "strategy_l")
+        import inspect
+        self.assertEqual(inspect.signature(sc.run_key_phrases).parameters["kp_backend"].default, "strategy_l")   # A/B/C既定は不変
 
-    def test_family_x_runner_default_kp_backend_is_db_hybrid(self):
+    def test_family_x_runner_default_kp_backend_is_fulltext(self):
+        # KPFT 委任_02: Family Xの既定はdb_hybridから全文選定(fulltext_p2)へ置換された(db_hybrid経路は撤去)
+        import inspect
         import er019_family_x_audio_production_runner_01 as runner
-        self.assertEqual(runner.run_theme_scaffold.__defaults__[-1], "db_hybrid")
+        self.assertEqual(inspect.signature(runner.run_theme_scaffold).parameters["kp_backend"].default, "fulltext_p2")
+
+    def test_removed_db_hybrid_backend_is_rejected_not_silently_downgraded(self):
+        # KPFT 委任_02: db_hybridはscaffoldから撤去。未対応値はValueError(黙ってStrategy Lへ倒さない)
+        with mock.patch.object(sc, "_run_key_phrase_selection_strategy_l", side_effect=AssertionError("到達してはならない")):
+            with self.assertRaises(ValueError):
+                sc.run_key_phrase_selection("dummy article", "er030_output/_test_removed_db_hybrid", "TEST_ID", "TEST_LEVEL",
+                                            process=None, kp_backend="db_hybrid")
 
 
 if __name__ == "__main__":

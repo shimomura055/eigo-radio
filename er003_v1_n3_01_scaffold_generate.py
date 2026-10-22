@@ -295,8 +295,7 @@ def get_client():
 # ============================================================
 def run_key_phrase_selection(article_text: str, out_dir: str, article_id: str, source_level: str,
                               process: str = None, diagnostic_note: str = None,
-                              kp_backend: str = "strategy_l", synthetic: bool = False,
-                              shortlist_cache: dict = None) -> dict:
+                              kp_backend: str = "strategy_l", synthetic: bool = False) -> dict:
     """process(ER-006-MODEL-ROUTING-CONTRACT-01追補): "B1_SUPPORT"/"A2_SUPPORT"を
     渡すと、routing.require_model()で検証済みのApproved ModelをAPI call直前に
     このスコープ内で確定させる(呼び出し元でmodelを事前計算させない)。Noneの
@@ -307,32 +306,17 @@ def run_key_phrase_selection(article_text: str, out_dir: str, article_id: str, s
     がNGと判定した場合、その診断情報をprompt末尾へ追加して再選定させる
     (記事固有のハードコードではなく、直前の判定結果をそのまま渡すだけ)。
 
-    kp_backend(KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01追加、
-    2026-09-27): 既定`"strategy_l"`は本関数の従来どおりの挙動(本文全文を
-    prompt送信するStrategy L方式、以下の関数本体)を変更しない。
-    `"db_hybrid"`を渡すと、Family X通常記事向けにユーザーが正式採用した
-    DB Hybrid方式(Primary、`er030_key_phrase_db_hybrid_selector_01`)を
-    試み、失敗した場合のみこの関数の既存挙動(Strategy L全文方式、
-    Fallback)へ自動的に切り替える(失敗理由は
-    `er030_output/kp_backend_telemetry_01/telemetry.jsonl`へ記録する)。
-    既定値を変更していないため、Family X以外の全既存呼び出し元
-    (Family A/B/C/News/Z等)は無変更のまま影響を受けない。
-
-    修正1回目(Opus L2所見B1/S8、2026-09-27): 呼び出し経路によらず
-    (`kp_backend`の値にかかわらず)常に1回`_log_kp_backend_telemetry()`を
-    記録する(既定"strategy_l"経路が無記録だった観測性の欠落を解消)。
-    `synthetic`(既定False)は、evidence/testスクリプトが強制failure注入
-    等でこの呼び出しを発生させた場合にTrueを渡す(本番実行との区別)。
-    `shortlist_cache`はdb_hybrid経路のみで使う(S8、Redundancy QA retry
-    時のStage1再計算を避ける、Strategy L経路では無視される)。"""
+    kp_backend(KPFT 委任_02[2026-10-22]で整理): `"fulltext_p2"`=Family X/Zの正式backend(全文選定・Prompt 2・最大3件、
+    `er105_kp_fulltext_selector_01`)。既定`"strategy_l"`=従来のStrategy L全文方式(Family A/B/C等、本関数の従来挙動を変更しない)。
+    旧`"db_hybrid"`(DB Hybrid+M2供給+Strategy Lへのfallback)はX/Zから撤去済み。未対応の値はValueError(黙ってStrategy Lへ
+    倒さない)。いずれの経路でも1回`_log_kp_backend_telemetry()`を記録する。
+    `synthetic`(既定False)は、evidence/testスクリプトが強制failure注入等でこの呼び出しを発生させた場合にTrueを渡す。"""
     if kp_backend == FULLTEXT_BACKEND_ID:
         return _run_key_phrase_selection_fulltext(
             article_text, out_dir, article_id, source_level, process=process,
             diagnostic_note=diagnostic_note, synthetic=synthetic)
-    if kp_backend == "db_hybrid":
-        return _run_key_phrase_selection_db_hybrid_with_fallback(
-            article_text, out_dir, article_id, source_level, process=process,
-            diagnostic_note=diagnostic_note, synthetic=synthetic, shortlist_cache=shortlist_cache)
+    if kp_backend != "strategy_l":
+        raise ValueError(f"未対応のkp_backend={kp_backend!r}(対応: 'strategy_l', {FULLTEXT_BACKEND_ID!r}。旧db_hybridはKPFT 委任_02で撤去)")
     result = _run_key_phrase_selection_strategy_l(
         article_text, out_dir, article_id, source_level, process=process,
         diagnostic_note=diagnostic_note)
@@ -451,41 +435,8 @@ KP_BACKEND_TELEMETRY_PATH = os.path.join("er030_output", "kp_backend_telemetry_0
 # 将来別specがtelemetry.jsonlを共有する場合でも起源を区別できるようにする。
 KP_BACKEND_SPEC_ID = "KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01"
 
-# KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-01
-# (2026-09-28新設): Fallback(Strategy L全文方式)は従来どおりLLMが
-# source_sentence/source_spanを自由記述する契約のままである(候補ID
-# 契約はDB Hybrid経路にのみ適用する)。telemetryへ両契約の混在を観測
-# 可能にするためのタグ(db_hybrid成功時のタグは
-# `er030_key_phrase_db_hybrid_source_reference_contract_01.
-# SOURCE_REFERENCE_CONTRACT_ID`側で定義、ここでは循環import回避のため
-# 文字列を直接複製する[両定数は意味的に対になる、値の変更時は両方を
-# 揃えて更新する])。
+# Strategy L全文方式はLLMがsource_sentence/source_spanを自由記述する契約(telemetryで全文選定の契約と区別するタグ)。
 FREE_TEXT_SOURCE_REFERENCE_CONTRACT_ID = "free_text_strategy_l"
-
-
-def _role_counts_from_items(items):
-    """KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(2026-09-28): telemetry
-    観測用に、items(存在する場合)のkey_phrase_role内訳を集計する
-    (件数検証そのものはvalidatorが既に行っており、ここは観測のみ)。
-    itemsが入手不能な時点(選定失敗直後等)ではNoneを返す。"""
-    if not items:
-        return None
-    return dict(Counter(it.get("key_phrase_role") for it in items if isinstance(it, dict)))
-
-
-def _m2_summary_for_telemetry(m2_report):
-    """M2供給のtelemetry用要約(件数・予約枠・照会秒数)。M2未使用ならNone。"""
-    if not m2_report:
-        return None
-    meta = m2_report.get("m2_meta") or {}
-    return {"n_candidates": meta.get("n_candidates"), "reserved": meta.get("reserved"),
-            "overflow_beyond_cap": meta.get("overflow_beyond_cap"),
-            "fragment_risk_candidates": meta.get("fragment_risk_candidates"),
-            "selected_reserved_slot_candidates": m2_report.get("selected_reserved_slot_candidates"),
-            "selected_fragment_risk_candidates": m2_report.get("selected_fragment_risk_candidates"),
-            "m2_lookup_seconds": meta.get("m2_lookup_seconds"),
-            "wiktionary_multiword_lookup": meta.get("wiktionary_multiword_lookup"),
-            "selector_message_sha256": m2_report.get("selector_message_sha256")}
 
 
 def _log_kp_backend_telemetry(article_id: str, source_level: str, requested_backend: str,
@@ -515,198 +466,6 @@ def _log_kp_backend_telemetry(article_id: str, source_level: str, requested_back
     }
     with open(KP_BACKEND_TELEMETRY_PATH, "a", encoding="utf-8") as f:
         f.write(json.dumps(entry, ensure_ascii=False) + "\n")
-
-
-def _merge_kp_backend_metadata_into_runtime_file(out_dir: str, extra: dict) -> None:
-    """修正1回目(Opus L2所見B2、2026-09-27): {kp_dir}/keywords_runtime_
-    metadata.json(per-article traceability、既存Strategy L/db_hybrid
-    どちらも書き込む正式ファイル)へ、kp_backend関連のfield(kp_backend/
-    kp_backend_used/fallback_reason_code/cost_jpy/model_id/attempt履歴等)
-    を追記型(既存内容を保持したままdictをupdate)で記録する。db_hybrid
-    成功時は新規作成、fallback時は既存Strategy L出力へ「db_hybridを
-    試して失敗した事実」を追記する。"""
-    os.makedirs(out_dir, exist_ok=True)
-    path = os.path.join(out_dir, "keywords_runtime_metadata.json")
-    existing = {}
-    if os.path.exists(path):
-        with open(path, encoding="utf-8") as f:
-            existing = json.load(f)
-    existing.update(extra)
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(existing, f, ensure_ascii=False, indent=2)
-
-
-# ============================================================
-# M2構築失敗時のStrategy L Fallback通知(FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01 委任_03、2026-10-13)
-# ユーザー承認: 「M2の候補生成が正常に完了できない場合、既存のStrategy L方式へのFallbackを許可。ただし
-# Fallback発生を検知・記録し、必ずユーザーへ報告する。Fallback成功をM2P0正常動作と誤認しない」。
-# 既存パターン(run dir内notice file[STOP_NOTICEと同パターン]+run summary+標準出力)のみで実現する。
-# summaryキー契約(Family X/Z共通): `m2_fallback`(最後の1件のdictまたはNone)/`m2_fallback_events`(全件list)。
-# 各eventのキー: family/article/level/stage/reason_code/reason/fallback_result/m2_related/kp_supply_actual/note。
-# ============================================================
-M2_FALLBACK_NOTICE_FILENAME = "M2_FALLBACK_NOTICE.md"
-M2_FALLBACK_EVENT_KEYS = ("family", "article", "level", "stage", "reason_code", "reason",
-                          "fallback_result", "m2_related", "kp_supply_actual", "note")
-# M2構築そのものの失敗(M2内部例外/Wiktionary照会失敗)。他のDB Hybrid fallback理由(SHORTLIST_TOO_SMALL等)も
-# 同じStrategy L fallbackなので同様に報告対象とする(m2_related=Falseで区別、報告は省略しない)。
-M2_RELATED_FALLBACK_REASON_CODES = ("M2_SUPPLY_EXCEPTION", "SELECTOR_EXCEPTION")
-
-
-def infer_family_from_article_id(article_id: str) -> str:
-    a = (article_id or "")
-    if a.startswith("FAMILY_X_AUDIO_"):
-        return "X"
-    if a.lower().startswith("family_z_"):
-        return "Z"
-    return "UNKNOWN"
-
-
-def build_m2_fallback_record(article_id: str, source_level: str, reason_code: str, reason: str,
-                             fallback_result_status, m2_related: bool = True,
-                             stage: str = "key_phrase_selection(db_hybrid->strategy_l)") -> dict:
-    return {
-        "family": infer_family_from_article_id(article_id), "article": article_id, "level": source_level,
-        "stage": stage, "reason_code": reason_code, "reason": reason,
-        "fallback_result": f"strategy_l_fallback status={fallback_result_status}",
-        "m2_related": bool(m2_related), "kp_supply_actual": "strategy_l_fallback(M2不発火・M2P0正常動作ではない)",
-        "note": "Fallback成功はM2P0正常動作ではない。Fable/PMはユーザーへ必ず報告すること(CURRENT_SPEC M2供給節)。",
-    }
-
-
-def write_m2_fallback_notice(out_dir: str, events: list, header: str = "") -> str:
-    """run dir直下へ人間可読notice(STOP_NOTICEと同パターン)を書く。eventsが空なら何も書かずNoneを返す。"""
-    if not events:
-        return None
-    path = os.path.join(out_dir, M2_FALLBACK_NOTICE_FILENAME)
-    lines = [f"# M2_FALLBACK_NOTICE ({header or os.path.basename(out_dir)})", "",
-             "M2候補供給が正常に完了できず、承認済みの既存Strategy L方式へFallbackしました(2026-10-13ユーザー承認の挙動)。",
-             "**Fallback成功はM2P0正常動作ではありません。PM/Fableはユーザーへ必ず報告してください。**", ""]
-    for i, ev in enumerate(events, 1):
-        lines.append(f"## Fallback {i}")
-        for k in M2_FALLBACK_EVENT_KEYS:
-            lines.append(f"- {k}: {ev.get(k)}")
-        lines.append("")
-    os.makedirs(out_dir, exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
-        f.write("\n".join(lines))
-    return path
-
-
-def format_m2_fallback_stdout(events: list) -> str:
-    if not events:
-        return "[M2-FALLBACK] 発生なし(M2P0はFallbackなしで完了)"
-    parts = [f"[M2-FALLBACK][NOTICE] M2→Strategy L Fallbackが{len(events)}件発生しました。"
-             f"M2P0正常動作ではありません。ユーザーへ必ず報告してください({M2_FALLBACK_NOTICE_FILENAME}参照)。"]
-    for ev in events:
-        parts.append(f"  - family={ev.get('family')} article={ev.get('article')} level={ev.get('level')} "
-                     f"stage={ev.get('stage')} reason_code={ev.get('reason_code')} result={ev.get('fallback_result')}")
-    return "\n".join(parts)
-
-
-def _run_key_phrase_selection_db_hybrid_with_fallback(
-        article_text: str, out_dir: str, article_id: str, source_level: str,
-        process: str = None, diagnostic_note: str = None, synthetic: bool = False,
-        shortlist_cache: dict = None) -> dict:
-    """KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01: Primary=DB
-    Hybrid方式(`er030_key_phrase_db_hybrid_selector_01`)を試み、
-    `DbHybridFailure`が送出された場合、`fallback_allowed`が真であれば
-    Fallback=既存Strategy L全文方式(`_run_key_phrase_selection_
-    strategy_l`、無変更)へ切り替える。`fallback_allowed`が偽(修正1回目、
-    Opus L2所見B3: モデルルーティング契約違反等)の場合はfallbackせず
-    そのまま再raiseしてSTOPする(fail-closed)。いずれの経路でも
-    telemetry・per-article metadataへ記録する(fallbackの黙示的な通常
-    経路化を防ぐ)。"""
-    import er030_key_phrase_db_hybrid_selector_01 as db_hybrid
-
-    try:
-        result = db_hybrid.run_db_hybrid_selection(
-            article_text, os.path.join(out_dir, "key_phrases_db_hybrid"), article_id, source_level,
-            process=process, diagnostic_note=diagnostic_note, shortlist_cache=shortlist_cache)
-    except db_hybrid.DbHybridFailure as e:
-        if not e.fallback_allowed:
-            _log_kp_backend_telemetry(
-                article_id, source_level, requested_backend="db_hybrid", backend_used="db_hybrid",
-                final_status="STOP", fallback_triggered=False, fallback_reason_code=e.reason_code,
-                fallback_reason=str(e), synthetic=synthetic,
-                source_reference_contract=db_hybrid.src_ref_contract.SOURCE_REFERENCE_CONTRACT_ID,
-                **e.telemetry)
-            _merge_kp_backend_metadata_into_runtime_file(out_dir, {
-                "kp_backend": "db_hybrid", "kp_backend_used": None,
-                "kp_backend_fallback_allowed": False, "kp_backend_stop_reason_code": e.reason_code,
-                "kp_backend_stop_reason": str(e),
-            })
-            print(f"[KP-BACKEND][STOP] db_hybrid selectorがfallback不可の理由で失敗しました"
-                  f"({e.reason_code}: {e})。安全のためfallbackせず処理を停止します({article_id})。")
-            raise
-        _log_kp_backend_telemetry(
-            article_id, source_level, requested_backend="db_hybrid", backend_used="strategy_l_fallback",
-            final_status="FALLBACK_TRIGGERED", fallback_triggered=True, fallback_reason_code=e.reason_code,
-            fallback_reason=str(e), synthetic=synthetic,
-            source_reference_contract=FREE_TEXT_SOURCE_REFERENCE_CONTRACT_ID,
-            # 項目15(軽微、Opus L2所見、修正1回目、2026-09-28): fallback
-            # 発火行にも「db_hybrid側で本来試みていた契約」を明記し、
-            # source_reference_contract(=fallback側の契約)と混同しない
-            # ようにする。
-            attempted_source_reference_contract=db_hybrid.src_ref_contract.SOURCE_REFERENCE_CONTRACT_ID,
-            **e.telemetry)
-        print(f"[KP-BACKEND] db_hybrid selectorが失敗しました({e.reason_code}: {e})。"
-              f"Strategy L全文方式へfallbackします({article_id})。")
-        result = _run_key_phrase_selection_strategy_l(
-            article_text, out_dir, article_id, source_level, process=process,
-            diagnostic_note=diagnostic_note)
-        result["kp_backend_used"] = "strategy_l_fallback"
-        result["kp_backend_fallback_reason_code"] = e.reason_code
-        # FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01 委任_03(2026-10-13、ユーザー承認: M2構築失敗時のStrategy L
-        # Fallbackは許可、ただし発生時は必ずユーザーへ報告): Fallbackを構造化recordにしてresultへ載せる
-        # (runnerがsummary/notice file/標準出力へ出す)。Fallback成功はM2P0正常動作ではない。
-        result["m2_fallback"] = build_m2_fallback_record(
-            article_id, source_level, e.reason_code, str(e), result.get("status"),
-            m2_related=(e.reason_code in M2_RELATED_FALLBACK_REASON_CODES))
-        _merge_kp_backend_metadata_into_runtime_file(out_dir, {
-            "kp_backend": "db_hybrid_attempted", "kp_backend_used": "strategy_l_fallback",
-            "kp_backend_fallback_reason_code": e.reason_code, "kp_backend_fallback_reason": str(e),
-            "kp_backend_attempted_telemetry": e.telemetry,
-            "kp_backend_source_reference_contract": FREE_TEXT_SOURCE_REFERENCE_CONTRACT_ID,
-        })
-        return result
-
-    _log_kp_backend_telemetry(
-        article_id, source_level, requested_backend="db_hybrid", backend_used="db_hybrid",
-        final_status=result.get("status"), fallback_triggered=False,
-        cost_jpy=result.get("cost_jpy"), model_id=result.get("model_id"), synthetic=synthetic,
-        shortlist_total_count=result.get("shortlist_total_count"),
-        cost_guard_exceeded=result.get("cost_guard_exceeded"),
-        source_reference_contract=result.get("source_reference_contract"),
-        candidate_mismatch_suspected_count=result.get("candidate_mismatch_suspected_count"),
-        role_counts=_role_counts_from_items(result.get("original_items")),
-        auxiliary_candidate_count=result.get("auxiliary_candidate_count"),
-        # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01 修正1回目(2026-09-28、
-        # ユーザー既決事項): topic欠損/単独無効をbackup_itemで機械的に
-        # 補完したかの観測用フラグ・理由。
-        topic_slot_filled_by_backup=result.get("topic_slot_filled_by_backup"),
-        backup_substitution_reason=result.get("backup_substitution_reason"),
-        # FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01(2026-10-13): 候補供給(M2)の発火記録。追記のみ。
-        kp_supply=result.get("kp_supply"),
-        m2_summary=_m2_summary_for_telemetry(result.get("m2_report")))
-    result["kp_backend_used"] = "db_hybrid"
-    _merge_kp_backend_metadata_into_runtime_file(out_dir, {
-        "kp_backend": "db_hybrid", "kp_backend_used": "db_hybrid",
-        "kp_backend_fallback_reason_code": None,
-        "kp_backend_cost_jpy": result.get("cost_jpy"), "kp_backend_model_id": result.get("model_id"),
-        "kp_backend_shortlist_total_count": result.get("shortlist_total_count"),
-        "kp_backend_cost_guard_exceeded": result.get("cost_guard_exceeded"),
-        "kp_backend_attempts_detail": result.get("attempts_detail"),
-        "kp_backend_source_reference_contract": result.get("source_reference_contract"),
-        "kp_backend_candidate_mismatch_suspected_count": result.get("candidate_mismatch_suspected_count"),
-        "kp_backend_selection_contract": result.get("selection_contract"),
-        "kp_backend_role_counts": result.get("role_counts"),
-        "kp_backend_auxiliary_candidate_count": result.get("auxiliary_candidate_count"),
-        "kp_backend_topic_slot_filled_by_backup": result.get("topic_slot_filled_by_backup"),
-        "kp_backend_backup_substitution_reason": result.get("backup_substitution_reason"),
-        "kp_backend_kp_supply": result.get("kp_supply"),
-        "kp_backend_m2_report": result.get("m2_report"),
-    })
-    return result
 
 
 def run_key_phrase_canonicalization(article_text: str, original_items: list, out_dir: str, article_id: str,
@@ -996,10 +755,9 @@ def run_kp_with_outer_retry(text: str, kp_dir: str, article_id: str, source_leve
 def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_level: str,
                      process: str = None, synthetic: bool = False,
                      kp_backend: str = "strategy_l", stop_run_dir: str = None) -> dict:
-    """`_run_key_phrases_impl`の薄いwrapper(委任_03、2026-10-13): retryループ全attemptで発生した
-    M2→Strategy L Fallback eventを`m2_fallback_events`(list、空=発生なし)として戻り値へ追記する。
-    それ以外の戻り値・挙動は無変更(全呼び出し元で追記キーのみ増える)。"""
-    sink: list = []
+    """Key Phrase stage(選定→canonicalization→Redundancy QA)。kp_backend=fulltext_p2(X/Z)は共通の外側retry、
+    それ以外(strategy_l=A/B/C)は従来の`_run_key_phrases_impl`。最後に最終artifactへgloss HR報告を1回行う。
+    (旧: M2->Strategy L Fallback eventのM2 fallback event一覧の戻り値追記はdb_hybrid撤去に伴い廃止[KPFT 委任_02])"""
     # OF-229: gloss規則の抽出失敗は記事内容に依存しない設定不備なので、run開始時(最初の記事のAPI呼出前)に即時停止する。
     gloss_align.preflight()
     if kp_backend == FULLTEXT_BACKEND_ID:
@@ -1010,8 +768,7 @@ def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_lev
             stop_check_fn=make_stop_check(stop_run_dir))
     else:
         result = _run_key_phrases_impl(article_text, out_dir, article_id, source_level, process=process,
-                                       synthetic=synthetic, kp_backend=kp_backend, _m2_fb_sink=sink)
-    result["m2_fallback_events"] = sink
+                                       synthetic=synthetic, kp_backend=kp_backend)
     # 委任_02(OF-KGDC-04 / OF-KGCPW-03): HR報告は外側retry確定後に、**ディスク上の最終artifact**(消費側が読むものと同一の
     # keywords_canonicalized.json)に対して1回だけ行う。途中attemptでHR→次attemptで失敗(canonicalization=None)でも、
     # ディスク上のHR itemを見落とさず報告書・event・stdoutを出す。artifactが無ければ報告なし。
@@ -1035,7 +792,7 @@ def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_lev
 
 def _run_key_phrases_impl(article_text: str, out_dir: str, article_id: str, source_level: str,
                      process: str = None, synthetic: bool = False,
-                     kp_backend: str = "strategy_l", _m2_fb_sink: list = None) -> dict:
+                     kp_backend: str = "strategy_l") -> dict:
     """processの意味はrun_key_phrase_selection()と同じ(ER-006-MODEL-ROUTING-
     CONTRACT-01追補、"B1_SUPPORT"/"A2_SUPPORT"を渡す)。
 
@@ -1047,43 +804,14 @@ def _run_key_phrases_impl(article_text: str, out_dir: str, article_id: str, sour
     本文は変更せず"NG_REVIEW_REQUIRED"として報告する(黙示的な自動採用は
     しない)。
 
-    kp_backend(KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01追加):
-    意味はrun_key_phrase_selection()と同じ。retry(選定からやり直す
-    ループ)でも同じkp_backendが一貫して使われる(既定"strategy_l"は
-    全既存呼び出し元で無変更)。
-
-    修正1回目(Opus L2所見S4/S8、2026-09-27): (1)本関数スコープで
-    article_id単位の累積コスト(db_hybrid選定+fallback選定の合算、
-    canonicalization/Redundancy QA自体は既存Productionが元々cost計測
-    していないため対象外[N5])を追跡し、`KP_ARTICLE_COST_CAP_JPY`
-    (既定¥15.0、`er030_key_phrase_db_hybrid_selector_01`定数)を超えた
-    場合はfallbackではなく`status="KP_ARTICLE_COST_CAP_EXCEEDED"`で
-    STOPする(retryを続けない)。(2)`shortlist_cache`(本関数ローカル、
-    article_textのsha256をkeyとするdict)をretryループ全体で共有し、
-    db_hybrid経路のStage1/Wiktionary lookup再計算を防ぐ(retryは
-    prompt[diagnostic_note]再生成のみ)。"""
+    kp_backend: 意味はrun_key_phrase_selection()と同じ(retryでも同じkp_backendを一貫して使う。既定"strategy_l"は
+    全既存呼び出し元[A/B/C等]で無変更)。X/Z(fulltext_p2)は`run_key_phrases`が共通の外側retryへ振り分けるため本関数を通らない。"""
     redundancy_retry_log = []
     diagnostic_note = None
-    shortlist_cache: dict = {}
-    cumulative_cost_jpy = 0.0
     for attempt in range(0, KEY_PHRASE_REDUNDANCY_RETRY_MAX + 1):
         sel = run_key_phrase_selection(article_text, out_dir, article_id, source_level, process=process,
                                         diagnostic_note=diagnostic_note, kp_backend=kp_backend,
-                                        synthetic=synthetic, shortlist_cache=shortlist_cache)
-        cumulative_cost_jpy += (sel.get("cost_jpy") or 0.0)
-        if _m2_fb_sink is not None and sel.get("m2_fallback"):
-            _m2_fb_sink.append(sel["m2_fallback"])
-        if kp_backend == "db_hybrid":
-            import er030_key_phrase_db_hybrid_selector_01 as _db_hybrid_mod
-            if cumulative_cost_jpy > _db_hybrid_mod.KP_ARTICLE_COST_CAP_JPY:
-                print(f"[KP-BACKEND][STOP] {article_id}: 記事単位の累積コスト"
-                      f"(JPY {cumulative_cost_jpy:.4f})が上限(JPY "
-                      f"{_db_hybrid_mod.KP_ARTICLE_COST_CAP_JPY})を超過しました。"
-                      "fallbackせず処理を停止します。")
-                return {"selection": sel, "canonicalization": None, "redundancy_qa": None,
-                        "redundancy_retry_log": redundancy_retry_log,
-                        "status": "KP_ARTICLE_COST_CAP_EXCEEDED",
-                        "cumulative_cost_jpy": round(cumulative_cost_jpy, 4)}
+                                        synthetic=synthetic)
         if sel["status"] != "KEY_WORDS_STRUCTURE_PASS":
             return {"selection": sel, "canonicalization": None, "redundancy_qa": None,
                      "redundancy_retry_log": redundancy_retry_log}

@@ -776,6 +776,28 @@ def _read(p):
     return open(os.path.join(ROOT, p), encoding="utf-8").read()
 
 
+class TestStaleKpClipsIgnoredByPlanDrivenGate(unittest.TestCase):
+    """OF-KPFT-P-09: 同じrun dirに旧5件の kp4/kp5 音声・結果entryが残っていても、Gateは今回のplan(3件)が要求するclipだけを見る。"""
+
+    def test_gate_checks_only_required_clips_and_ignores_stale_kp4_kp5(self):
+        import json as _json
+        import tempfile
+        import er063_family_z_audio_01 as a63
+        with tempfile.TemporaryDirectory() as d:
+            os.makedirs(f"{d}/audit")
+            kp = {str(i): {"english": {"status": "OK"}, "japanese_meaning": {"status": "OK"}, "explanation": {"status": "OK"}}
+                  for i in (1, 2, 3)}
+            kp["4"] = {"english": {"status": "FAILED"}}   # 旧5件runの残り(不採択でも今回は無関係)
+            kp["5"] = {"english": {"status": "OK"}}
+            with open(f"{d}/audit/tts_generation_results.json", "w", encoding="utf-8") as f:
+                _json.dump({"segments": {}, "key_phrases": kp}, f)
+            req = [f"kp{i}_{k}" for i in (1, 2, 3) for k in ("en", "ja", "explanation_en")]
+            r = a63.assert_tts_results_complete(d, req)
+            self.assertEqual(r["checked"], 9)
+            with self.assertRaises(a63.FamilyZTtsResultsIncompleteStop):   # 逆に4件目を要求すれば(旧5件plan)ちゃんと止まる
+                a63.assert_tts_results_complete(d, req + ["kp4_en"])
+
+
 class TestNoDanglingReferences(unittest.TestCase):
     def test_removed_identifiers_have_no_references_in_xz_production_files(self):
         removed = ("_run_key_phrase_selection_db_hybrid_with_fallback", "run_db_hybrid_selection", "KP_ARTICLE_COST_CAP", "build_m2_fallback_record",

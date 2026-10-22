@@ -64,8 +64,8 @@ class FailureStatusTests(unittest.TestCase):
             ({"selection": {"status": "SELECTION_FAILED"}, "canonicalization": None}, "KP_STAGE_FAILED(SELECTION_FAILED)"),
             ({"selection": {}, "canonicalization": {"status": "CANONICALIZATION_PASS"}, "redundancy_qa": {"status": "REDUNDANCY_NG"},
               "status": "NG_REVIEW_REQUIRED"}, "KP_STAGE_FAILED(NG_REVIEW_REQUIRED)"),
-            ({"selection": {}, "canonicalization": None, "status": "KP_ARTICLE_COST_CAP_EXCEEDED"},
-             "KP_STAGE_FAILED(KP_ARTICLE_COST_CAP_EXCEEDED)"),
+            ({"selection": {}, "canonicalization": None, "status": "OUTER_RETRY_EXHAUSTED"},
+             "KP_STAGE_FAILED(OUTER_RETRY_EXHAUSTED)"),   # KPFT 委任_02: 旧db_hybrid記事cap停止statusは撤去
         ]
         for kp, want in cases:
             self.assertEqual(runner.kp_stage_failure_status(kp), want)

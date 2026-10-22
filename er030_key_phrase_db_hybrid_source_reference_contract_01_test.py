@@ -529,34 +529,6 @@ class FallbackContractMixingTelemetryTests(unittest.TestCase):
         with open(self._tmp_telemetry_path, encoding="utf-8") as f:
             return [json.loads(line) for line in f if line.strip()]
 
-    def test_db_hybrid_success_tags_candidate_id_v1(self):
-        fake_result = {"status": "KEY_WORDS_STRUCTURE_PASS", "parsed": {"items": []}, "original_items": [],
-                        "model_id": "fake-model", "cost_jpy": 1.0, "shortlist_total_count": 20,
-                        "cost_guard_exceeded": False, "source_reference_contract": "candidate_id_v1",
-                        "candidate_mismatch_suspected_count": 0}
-        with mock.patch("er030_key_phrase_db_hybrid_selector_01.run_db_hybrid_selection",
-                         return_value=dict(fake_result)):
-            sc.run_key_phrase_selection(
-                "dummy article", "er030_output/_test_src_ref_contract_success", "TEST_SRC_REF_SUCCESS",
-                "TEST_LEVEL", process=None, kp_backend="db_hybrid")
-        entries = self._read_new_lines()
-        self.assertTrue(any(e.get("source_reference_contract") == "candidate_id_v1" for e in entries))
-
-    def test_fallback_tags_free_text_strategy_l(self):
-        fallback_result = {"status": "KEY_WORDS_STRUCTURE_PASS", "parsed": {"items": []}, "original_items": []}
-        with mock.patch("er030_key_phrase_db_hybrid_selector_01.run_db_hybrid_selection",
-                         side_effect=db_hybrid.DbHybridFailure(
-                             "SHORTLIST_TOO_SMALL", "forced for test",
-                             telemetry={"shortlist_total_count": 3})), \
-             mock.patch.object(sc, "_run_key_phrase_selection_strategy_l",
-                               return_value=dict(fallback_result)):
-            sc.run_key_phrase_selection(
-                "dummy article", "er030_output/_test_src_ref_contract_fallback", "TEST_SRC_REF_FALLBACK",
-                "TEST_LEVEL", process=None, kp_backend="db_hybrid")
-        entries = self._read_new_lines()
-        self.assertTrue(any(e.get("source_reference_contract") == "free_text_strategy_l" and
-                             e.get("fallback_triggered") for e in entries))
-
     def test_legacy_strategy_l_default_tags_free_text_strategy_l(self):
         fake_strategy_result = {"status": "KEY_WORDS_STRUCTURE_PASS", "parsed": {"items": []},
                                  "original_items": [], "model_id": "fake-legacy-model"}
@@ -574,7 +546,8 @@ class LegacyInvariantTests(unittest.TestCase):
     よって一切変化しないこと。"""
 
     def test_run_key_phrases_default_kp_backend_is_strategy_l(self):
-        self.assertEqual(sc.run_key_phrases.__defaults__[-1], "strategy_l")
+        import inspect
+        self.assertEqual(inspect.signature(sc.run_key_phrases).parameters["kp_backend"].default, "strategy_l")
 
     def test_er026_family_z_text_runner_not_imported_by_new_contract_module(self):
         with open("er030_key_phrase_db_hybrid_source_reference_contract_01.py", encoding="utf-8") as f:
