@@ -1,0 +1,440 @@
+{
+ "purpose": "run_pp_02 B3入力に対するLuna low判断の追加3回再実行(offline、overlay/Production無変更)",
+ "prompt_sha256": "a660304e565fe8dad19bc572973b9424489638ef0bca0707fbcd44c72cc15339",
+ "prompt_sha_matches_recorded": true,
+ "recorded_overlay_decision": [
+  [
+   "C1",
+   "EXACT_REQUIRED",
+   "EXACT_REQUIRED"
+  ],
+  [
+   "C2",
+   "EXACT_REQUIRED",
+   "EXACT_REQUIRED"
+  ],
+  [
+   "C4",
+   "EXACT_REQUIRED",
+   "EXACT_REQUIRED"
+  ],
+  [
+   "C5",
+   "APPROXIMATE_OK",
+   "EXACT_REQUIRED"
+  ]
+ ],
+ "runs": [
+  {
+   "rep": 1,
+   "model_returned": "gpt-6-luna",
+   "response_id": "resp_08c75ce1bf7597ee006ad95b96973087d09179c5ce54f472e8",
+   "usage": {
+    "input_tokens": 3869,
+    "output_tokens": 657,
+    "reasoning_tokens": 175
+   },
+   "sec": 8.2,
+   "raw_decisions": {
+    "decisions": [
+     {
+      "concept": "C1",
+      "decision": "EXACT_REQUIRED",
+      "surfaces": [
+       {
+        "surface": "11件",
+        "approx_surface": null
+       }
+      ],
+      "reason": "統合した研究の件数そのものを示すため、正確な件数を維持します。",
+      "basis_fact_ids": [
+       "F04"
+      ],
+      "approved_condition": "研究数という記録の精度が意味を持つ数値は厳密値を維持する。"
+     },
+     {
+      "concept": "C2",
+      "decision": "APPROXIMATE_OK",
+      "surfaces": [
+       {
+        "surface": "最大134,515人",
+        "approx_surface": "最大約13万5千人"
+       },
+       {
+        "surface": "134,515人",
+        "approx_surface": "約13万5千人"
+       }
+      ],
+      "reason": "最大解析標本数の規模を示す数字であり、細かな桁を丸めても規模の理解は損なわれません。",
+      "basis_fact_ids": [
+       "F04"
+      ],
+      "approved_condition": "精度自体が意味を持たない数値は、意味を損なわない範囲で聞き取りやすい概数にできる。"
+     },
+     {
+      "concept": "C4",
+      "decision": "EXACT_REQUIRED",
+      "surfaces": [
+       {
+        "surface": "3回以上",
+        "approx_surface": null
+       }
+      ],
+      "reason": "研究の適格条件となる測定回数の下限を示しており、丸めると閾値を変えてしまいます。",
+      "basis_fact_ids": [
+       "F07"
+      ],
+      "approved_condition": "重要な閾値は、丸めによって隠したり曖昧にしたりせず厳密値を維持する。"
+     },
+     {
+      "concept": "C5",
+      "decision": "EXACT_REQUIRED",
+      "surfaces": [
+       {
+        "surface": "0.0630",
+        "approx_surface": null
+       }
+      ],
+      "reason": "小さな標準化効果の大きさを示す推定値であり、精度を落とすと結果の解釈に関わる可能性があります。",
+      "basis_fact_ids": [
+       "F08"
+      ],
+      "approved_condition": "小規模な測定値や、精度を落とすと証拠の解釈を変えうる数値は厳密値を維持する。"
+     }
+    ]
+   },
+   "entries": [
+    {
+     "concept": "C1",
+     "surfaces": [
+      "11件"
+     ],
+     "approx": [
+      null
+     ],
+     "llm_decision": "EXACT_REQUIRED",
+     "final_decision": "EXACT_REQUIRED",
+     "downgrade_reasons": [],
+     "reason": "統合した研究の件数そのものを示すため、正確な件数を維持します。"
+    },
+    {
+     "concept": "C2",
+     "surfaces": [
+      "最大134,515人",
+      "134,515人"
+     ],
+     "approx": [
+      "最大約13万5千人",
+      "約13万5千人"
+     ],
+     "llm_decision": "APPROXIMATE_OK",
+     "final_decision": "APPROXIMATE_OK",
+     "downgrade_reasons": [],
+     "reason": "最大解析標本数の規模を示す数字であり、細かな桁を丸めても規模の理解は損なわれません。"
+    },
+    {
+     "concept": "C4",
+     "surfaces": [
+      "3回以上"
+     ],
+     "approx": [
+      null
+     ],
+     "llm_decision": "EXACT_REQUIRED",
+     "final_decision": "EXACT_REQUIRED",
+     "downgrade_reasons": [],
+     "reason": "研究の適格条件となる測定回数の下限を示しており、丸めると閾値を変えてしまいます。"
+    },
+    {
+     "concept": "C5",
+     "surfaces": [
+      "0.0630"
+     ],
+     "approx": [
+      null
+     ],
+     "llm_decision": "EXACT_REQUIRED",
+     "final_decision": "EXACT_REQUIRED",
+     "downgrade_reasons": [],
+     "reason": "小さな標準化効果の大きさを示す推定値であり、精度を落とすと結果の解釈に関わる可能性があります。"
+    }
+   ],
+   "n_approximate_ok": 1,
+   "violations": []
+  },
+  {
+   "rep": 2,
+   "model_returned": "gpt-6-luna",
+   "response_id": "resp_04c3b04e79c51a82006ad95b9d4c7c87d0b3c111db1b032e69",
+   "usage": {
+    "input_tokens": 3869,
+    "output_tokens": 751,
+    "reasoning_tokens": 210
+   },
+   "sec": 7.7,
+   "raw_decisions": {
+    "decisions": [
+     {
+      "concept": "C1",
+      "decision": "EXACT_REQUIRED",
+      "surfaces": [
+       {
+        "surface": "11件",
+        "approx_surface": null
+       }
+      ],
+      "reason": "研究件数は統合分析の規模を示す具体的な数であり、丸めると事実の精度を損ないます。",
+      "basis_fact_ids": [
+       "F04"
+      ],
+      "approved_condition": "記事の意味・規模を理解するうえで必要な具体的な件数は厳密値を維持する。"
+     },
+     {
+      "concept": "C2",
+      "decision": "APPROXIMATE_OK",
+      "surfaces": [
+       {
+        "surface": "最大134,515人",
+        "approx_surface": "最大約13万5千人"
+       },
+       {
+        "surface": "134,515人",
+        "approx_surface": "約13万5千人"
+       }
+      ],
+      "reason": "最大解析標本数の規模を伝える目的では、百人単位の精度は聞き手の理解に実質的な影響を与えません。最大という限定語は維持し、概数でもLedger上の最大値として表せます。",
+      "basis_fact_ids": [
+       "F04"
+      ],
+      "approved_condition": "余分な精度がストーリー上の重要な規模や解釈に影響しない場合は、聞き取りやすい概数にしてよい。"
+     },
+     {
+      "concept": "C4",
+      "decision": "EXACT_REQUIRED",
+      "surfaces": [
+       {
+        "surface": "3回以上",
+        "approx_surface": null
+       }
+      ],
+      "reason": "これは研究の適格条件としての最低測定回数を示す閾値です。丸めると条件の意味が変わるおそれがあります。",
+      "basis_fact_ids": [
+       "F07"
+      ],
+      "approved_condition": "重要な閾値は、丸めによって隠したり曖昧にしたりせず厳密値を維持する。"
+     },
+     {
+      "concept": "C5",
+      "decision": "EXACT_REQUIRED",
+      "surfaces": [
+       {
+        "surface": "0.0630",
+        "approx_surface": null
+       }
+      ],
+      "reason": "標準化効果の小さな数値であり、小数を落とすと効果の大きさや他の方向の効果との区別を損なう可能性があります。",
+      "basis_fact_ids": [
+       "F08"
+      ],
+      "approved_condition": "精度を落とすことで小さな測定値の解釈や、意味の異なる値同士の区別が変わりうる場合は厳密値を維持する。"
+     }
+    ]
+   },
+   "entries": [
+    {
+     "concept": "C1",
+     "surfaces": [
+      "11件"
+     ],
+     "approx": [
+      null
+     ],
+     "llm_decision": "EXACT_REQUIRED",
+     "final_decision": "EXACT_REQUIRED",
+     "downgrade_reasons": [],
+     "reason": "研究件数は統合分析の規模を示す具体的な数であり、丸めると事実の精度を損ないます。"
+    },
+    {
+     "concept": "C2",
+     "surfaces": [
+      "最大134,515人",
+      "134,515人"
+     ],
+     "approx": [
+      "最大約13万5千人",
+      "約13万5千人"
+     ],
+     "llm_decision": "APPROXIMATE_OK",
+     "final_decision": "APPROXIMATE_OK",
+     "downgrade_reasons": [],
+     "reason": "最大解析標本数の規模を伝える目的では、百人単位の精度は聞き手の理解に実質的な影響を与えません。最大という限定語は維持し、概数でもLedger上の最大値として表せます。"
+    },
+    {
+     "concept": "C4",
+     "surfaces": [
+      "3回以上"
+     ],
+     "approx": [
+      null
+     ],
+     "llm_decision": "EXACT_REQUIRED",
+     "final_decision": "EXACT_REQUIRED",
+     "downgrade_reasons": [],
+     "reason": "これは研究の適格条件としての最低測定回数を示す閾値です。丸めると条件の意味が変わるおそれがあります。"
+    },
+    {
+     "concept": "C5",
+     "surfaces": [
+      "0.0630"
+     ],
+     "approx": [
+      null
+     ],
+     "llm_decision": "EXACT_REQUIRED",
+     "final_decision": "EXACT_REQUIRED",
+     "downgrade_reasons": [],
+     "reason": "標準化効果の小さな数値であり、小数を落とすと効果の大きさや他の方向の効果との区別を損なう可能性があります。"
+    }
+   ],
+   "n_approximate_ok": 1,
+   "violations": []
+  },
+  {
+   "rep": 3,
+   "model_returned": "gpt-6-luna",
+   "response_id": "resp_0b69c8fdc88807a8006ad95ba501b487d0b95ff25db1430e22",
+   "usage": {
+    "input_tokens": 3869,
+    "output_tokens": 669,
+    "reasoning_tokens": 161
+   },
+   "sec": 6.3,
+   "raw_decisions": {
+    "decisions": [
+     {
+      "concept": "C1",
+      "decision": "EXACT_REQUIRED",
+      "surfaces": [
+       {
+        "surface": "11件",
+        "approx_surface": null
+       }
+      ],
+      "reason": "統合した研究の件数は研究規模を示す正確な数であり、概数にする根拠はありません。",
+      "basis_fact_ids": [
+       "F04"
+      ],
+      "approved_condition": "数え上げられた研究件数は、意味を保つため厳密値を維持する。"
+     },
+     {
+      "concept": "C2",
+      "decision": "APPROXIMATE_OK",
+      "surfaces": [
+       {
+        "surface": "最大134,515人",
+        "approx_surface": "最大約13万5千人"
+       },
+       {
+        "surface": "134,515人",
+        "approx_surface": "約13万5千人"
+       }
+      ],
+      "reason": "最大解析標本数の規模を伝える数値であり、百人単位の精度は聞き手の理解に必要ありません。丸めても「最大」であることと、全モデルで同じ人数ではないというFactの意味は保てます。",
+      "basis_fact_ids": [
+       "F04"
+      ],
+      "approved_condition": "余分な精度がストーリー上の意味に影響しない人数は、聞き取りやすい概数にできる。"
+     },
+     {
+      "concept": "C4",
+      "decision": "EXACT_REQUIRED",
+      "surfaces": [
+       {
+        "surface": "3回以上",
+        "approx_surface": null
+       }
+      ],
+      "reason": "研究の適格条件を示す閾値なので、概数化すると基準の意味が変わるおそれがあります。",
+      "basis_fact_ids": [
+       "F07"
+      ],
+      "approved_condition": "重要な閾値は、丸めで隠したり曖昧にしたりせず維持する。"
+     },
+     {
+      "concept": "C5",
+      "decision": "EXACT_REQUIRED",
+      "surfaces": [
+       {
+        "surface": "0.0630",
+        "approx_surface": null
+       }
+      ],
+      "reason": "標準化効果の小さな推定値であり、丸めると効果の大きさや精度の解釈を変えるおそれがあります。観察された関連の数値として厳密値を維持します。",
+      "basis_fact_ids": [
+       "F08"
+      ],
+      "approved_condition": "小規模な測定値では、丸めが解釈や重要な差を損なう場合に精度を保つ。"
+     }
+    ]
+   },
+   "entries": [
+    {
+     "concept": "C1",
+     "surfaces": [
+      "11件"
+     ],
+     "approx": [
+      null
+     ],
+     "llm_decision": "EXACT_REQUIRED",
+     "final_decision": "EXACT_REQUIRED",
+     "downgrade_reasons": [],
+     "reason": "統合した研究の件数は研究規模を示す正確な数であり、概数にする根拠はありません。"
+    },
+    {
+     "concept": "C2",
+     "surfaces": [
+      "最大134,515人",
+      "134,515人"
+     ],
+     "approx": [
+      "最大約13万5千人",
+      "約13万5千人"
+     ],
+     "llm_decision": "APPROXIMATE_OK",
+     "final_decision": "APPROXIMATE_OK",
+     "downgrade_reasons": [],
+     "reason": "最大解析標本数の規模を伝える数値であり、百人単位の精度は聞き手の理解に必要ありません。丸めても「最大」であることと、全モデルで同じ人数ではないというFactの意味は保てます。"
+    },
+    {
+     "concept": "C4",
+     "surfaces": [
+      "3回以上"
+     ],
+     "approx": [
+      null
+     ],
+     "llm_decision": "EXACT_REQUIRED",
+     "final_decision": "EXACT_REQUIRED",
+     "downgrade_reasons": [],
+     "reason": "研究の適格条件を示す閾値なので、概数化すると基準の意味が変わるおそれがあります。"
+    },
+    {
+     "concept": "C5",
+     "surfaces": [
+      "0.0630"
+     ],
+     "approx": [
+      null
+     ],
+     "llm_decision": "EXACT_REQUIRED",
+     "final_decision": "EXACT_REQUIRED",
+     "downgrade_reasons": [],
+     "reason": "標準化効果の小さな推定値であり、丸めると効果の大きさや精度の解釈を変えるおそれがあります。観察された関連の数値として厳密値を維持します。"
+    }
+   ],
+   "n_approximate_ok": 1,
+   "violations": []
+  }
+ ]
+}
