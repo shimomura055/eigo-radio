@@ -1,0 +1,621 @@
+{
+ "results": [
+  {
+   "id": "X_kp_jre_a1",
+   "family": "X",
+   "kind": "kp",
+   "scope_active": "X",
+   "state": "PASS_WITH_WARNING",
+   "verified": true,
+   "row": "S+W",
+   "azure_real_calls": 1,
+   "whisper_called": true,
+   "vote": {
+    "version": "kp_vote_check_v1",
+    "guard_lifted": true,
+    "guard_lifted_version": "kp_vote_guard_lifted_v1",
+    "observed_protected_diff": {
+     "primary": false,
+     "secondary": true,
+     "whisper": false
+    },
+    "required": true,
+    "state": "PASS_VOTE_2OF3",
+    "reason": "vote_2of3:secondary+whisper",
+    "row": "S+W",
+    "pass_count": 2,
+    "tiebreak_enabled": true,
+    "primary": {
+     "provider": "openai",
+     "text": "Pump one fist.",
+     "pass": false,
+     "available": true,
+     "label": "TRUE_CONTENT_MISMATCH",
+     "observed_protected_diff": false,
+     "rescued": false,
+     "error": null,
+     "technical_failure": false,
+     "note": "p3_primary_ng",
+     "rescue_layers": []
+    },
+    "secondary": {
+     "provider": "azure",
+     "text": "Pump 1's fist.",
+     "pass": true,
+     "available": true,
+     "label": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+     "observed_protected_diff": true,
+     "rescued": false,
+     "error": null,
+     "technical_failure": false,
+     "note": "secondary_accepted",
+     "rescue_layers": [],
+     "ortho_applied": true,
+     "ortho_warnings": []
+    },
+    "secondary_called": true,
+    "whisper": {
+     "provider": "whisper",
+     "text": "Pump One's Fist",
+     "pass": true,
+     "available": true,
+     "label": "NORMALIZED_MATCH",
+     "observed_protected_diff": false,
+     "rescued": false,
+     "error": null,
+     "technical_failure": false,
+     "note": null,
+     "rescue_layers": [],
+     "ms": 4266,
+     "memo_hit": false
+    },
+    "whisper_called": true,
+    "whisper_model": {
+     "model": "small",
+     "compute_type": "int8",
+     "device": "cpu",
+     "library": "faster_whisper"
+    },
+    "ortho_layer_version": "er109_orthographic_equivalence_v1_proto_aho02",
+    "ortho_scope": "X",
+    "primary_not_pass_reason": "p3_primary_ng",
+    "primary_rescued_by_secondary": false
+   },
+   "orthographic_equivalence": {
+    "applied": true,
+    "version": "er109_orthographic_equivalence_v1_proto_aho02",
+    "scope": "X",
+    "label": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+    "sites": [
+     {
+      "site": "secondary",
+      "text": "Pump 1's fist.",
+      "verdict": "PASS",
+      "warnings": [],
+      "er109": {
+       "version": "er109_orthographic_equivalence_v1_proto_aho02",
+       "flag_enabled": true,
+       "stress_mode": "binary_stressed_vs_unstressed",
+       "equivalent": true,
+       "verdict": "PASS",
+       "reason": "all_diff_spans_phoneme_equal",
+       "rules": [
+        "number_spoken_form"
+       ],
+       "warnings": [],
+       "contraction_expanded": false,
+       "spans": [
+        {
+         "canon": [
+          "one's"
+         ],
+         "asr": [
+          "1's"
+         ],
+         "equivalent": true,
+         "rule": "number_spoken_form",
+         "why": "phoneme_equal",
+         "matched_variants": [
+          "W AH1 N Z"
+         ],
+         "representative_match": true,
+         "heteronym_guard": true,
+         "warnings": []
+        }
+       ]
+      }
+     }
+    ],
+    "warnings": []
+   },
+   "reason_code": "vote_2of3:secondary+whisper",
+   "warnings": [
+    "SECONDARY_CONFIRMED"
+   ]
+  },
+  {
+   "id": "X_kp_jre_a2",
+   "family": "X",
+   "kind": "kp",
+   "scope_active": "X",
+   "state": "PASS_WITH_WARNING",
+   "verified": true,
+   "row": "S+W",
+   "azure_real_calls": 1,
+   "whisper_called": true,
+   "vote": {
+    "version": "kp_vote_check_v1",
+    "guard_lifted": true,
+    "guard_lifted_version": "kp_vote_guard_lifted_v1",
+    "observed_protected_diff": {
+     "primary": false,
+     "secondary": true,
+     "whisper": false
+    },
+    "required": true,
+    "state": "PASS_VOTE_2OF3",
+    "reason": "vote_2of3:secondary+whisper",
+    "row": "S+W",
+    "pass_count": 2,
+    "tiebreak_enabled": true,
+    "primary": {
+     "provider": "openai",
+     "text": "Pump one fist.",
+     "pass": false,
+     "available": true,
+     "label": "TRUE_CONTENT_MISMATCH",
+     "observed_protected_diff": false,
+     "rescued": false,
+     "error": null,
+     "technical_failure": false,
+     "note": "p3_primary_ng",
+     "rescue_layers": []
+    },
+    "secondary": {
+     "provider": "azure",
+     "text": "Pump 1's fist.",
+     "pass": true,
+     "available": true,
+     "label": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+     "observed_protected_diff": true,
+     "rescued": false,
+     "error": null,
+     "technical_failure": false,
+     "note": "secondary_accepted",
+     "rescue_layers": [],
+     "ortho_applied": true,
+     "ortho_warnings": []
+    },
+    "secondary_called": true,
+    "whisper": {
+     "provider": "whisper",
+     "text": "Pump Ones Fist",
+     "pass": true,
+     "available": true,
+     "label": "NORMALIZED_MATCH",
+     "observed_protected_diff": false,
+     "rescued": false,
+     "error": null,
+     "technical_failure": false,
+     "note": null,
+     "rescue_layers": [],
+     "ms": 2171,
+     "memo_hit": false
+    },
+    "whisper_called": true,
+    "whisper_model": {
+     "model": "small",
+     "compute_type": "int8",
+     "device": "cpu",
+     "library": "faster_whisper"
+    },
+    "ortho_layer_version": "er109_orthographic_equivalence_v1_proto_aho02",
+    "ortho_scope": "X",
+    "primary_not_pass_reason": "p3_primary_ng",
+    "primary_rescued_by_secondary": false
+   },
+   "orthographic_equivalence": {
+    "applied": true,
+    "version": "er109_orthographic_equivalence_v1_proto_aho02",
+    "scope": "X",
+    "label": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+    "sites": [
+     {
+      "site": "secondary",
+      "text": "Pump 1's fist.",
+      "verdict": "PASS",
+      "warnings": [],
+      "er109": {
+       "version": "er109_orthographic_equivalence_v1_proto_aho02",
+       "flag_enabled": true,
+       "stress_mode": "binary_stressed_vs_unstressed",
+       "equivalent": true,
+       "verdict": "PASS",
+       "reason": "all_diff_spans_phoneme_equal",
+       "rules": [
+        "number_spoken_form"
+       ],
+       "warnings": [],
+       "contraction_expanded": false,
+       "spans": [
+        {
+         "canon": [
+          "one's"
+         ],
+         "asr": [
+          "1's"
+         ],
+         "equivalent": true,
+         "rule": "number_spoken_form",
+         "why": "phoneme_equal",
+         "matched_variants": [
+          "W AH1 N Z"
+         ],
+         "representative_match": true,
+         "heteronym_guard": true,
+         "warnings": []
+        }
+       ]
+      }
+     }
+    ],
+    "warnings": []
+   },
+   "reason_code": "vote_2of3:secondary+whisper",
+   "warnings": [
+    "SECONDARY_CONFIRMED"
+   ]
+  },
+  {
+   "id": "X_kp_h1b_stored_wav",
+   "family": "X",
+   "kind": "kp",
+   "scope_active": "X",
+   "state": "PASS",
+   "verified": true,
+   "row": "P+S",
+   "azure_real_calls": 1,
+   "whisper_called": false,
+   "vote": {
+    "version": "kp_vote_check_v1",
+    "guard_lifted": true,
+    "guard_lifted_version": "kp_vote_guard_lifted_v1",
+    "observed_protected_diff": {
+     "primary": false,
+     "secondary": true,
+     "whisper": false
+    },
+    "required": true,
+    "state": "PASS_DUAL",
+    "reason": "dual_agreed",
+    "row": "P+S",
+    "pass_count": 2,
+    "tiebreak_enabled": true,
+    "primary": {
+     "provider": "openai",
+     "text": "Pump one's fist.",
+     "pass": true,
+     "available": true,
+     "label": "NORMALIZED_MATCH",
+     "observed_protected_diff": false,
+     "rescued": false,
+     "error": null,
+     "technical_failure": false,
+     "note": null,
+     "rescue_layers": []
+    },
+    "secondary": {
+     "provider": "azure",
+     "text": "Pump 1's fist.",
+     "pass": true,
+     "available": true,
+     "label": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+     "observed_protected_diff": true,
+     "rescued": false,
+     "error": null,
+     "technical_failure": false,
+     "note": "secondary_accepted",
+     "rescue_layers": [],
+     "ortho_applied": true,
+     "ortho_warnings": []
+    },
+    "secondary_called": true,
+    "whisper": null,
+    "whisper_called": false,
+    "whisper_model": null,
+    "ortho_layer_version": "er109_orthographic_equivalence_v1_proto_aho02",
+    "ortho_scope": "X",
+    "primary_not_pass_reason": null,
+    "primary_rescued_by_secondary": false
+   },
+   "orthographic_equivalence": {
+    "applied": true,
+    "version": "er109_orthographic_equivalence_v1_proto_aho02",
+    "scope": "X",
+    "label": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+    "sites": [
+     {
+      "site": "secondary",
+      "text": "Pump 1's fist.",
+      "verdict": "PASS",
+      "warnings": [],
+      "er109": {
+       "version": "er109_orthographic_equivalence_v1_proto_aho02",
+       "flag_enabled": true,
+       "stress_mode": "binary_stressed_vs_unstressed",
+       "equivalent": true,
+       "verdict": "PASS",
+       "reason": "all_diff_spans_phoneme_equal",
+       "rules": [
+        "number_spoken_form"
+       ],
+       "warnings": [],
+       "contraction_expanded": false,
+       "spans": [
+        {
+         "canon": [
+          "one's"
+         ],
+         "asr": [
+          "1's"
+         ],
+         "equivalent": true,
+         "rule": "number_spoken_form",
+         "why": "phoneme_equal",
+         "matched_variants": [
+          "W AH1 N Z"
+         ],
+         "representative_match": true,
+         "heteronym_guard": true,
+         "warnings": []
+        }
+       ]
+      }
+     }
+    ],
+    "warnings": []
+   },
+   "reason_code": "dual_agreed",
+   "warnings": []
+  },
+  {
+   "id": "X_body_smallbag_p2_a2",
+   "family": "X",
+   "kind": "body",
+   "scope_active": "X",
+   "state": "NG_BOTH",
+   "verified": false,
+   "reason_code": "secondary_not_accepted",
+   "secondary": {
+    "called": true,
+    "cached": false,
+    "engine": "azure",
+    "text": "L listed mini bags as one of the trends in fall and winter 2026 stylings. Its examples included kites, palm sized evening clutch and Chanel's novelty minotiere. They mainly hold the basics, a phone, wallet, keys and lip products. They do not challenge roomy bags on storage. Their job is visual, adding a sense of occasion and saying this is today's mood. This season's picture becomes clearer when we look at what appeared.",
+    "label": "TRUE_CONTENT_MISMATCH",
+    "accepted": false,
+    "error": null,
+    "unavailable": false
+   },
+   "orthographic_equivalence": null,
+   "warnings": [],
+   "final_gate": {
+    "applied": false
+   },
+   "azure_real_calls": 1
+  },
+  {
+   "id": "Z_kp1_a1",
+   "family": "Z",
+   "kind": "kp",
+   "scope_active": "Z",
+   "state": "NG_BOTH",
+   "verified": false,
+   "row": null,
+   "azure_real_calls": 1,
+   "whisper_called": false,
+   "vote": {
+    "version": "kp_vote_check_v1",
+    "guard_lifted": true,
+    "guard_lifted_version": "kp_vote_guard_lifted_v1",
+    "observed_protected_diff": {
+     "primary": false,
+     "secondary": false,
+     "whisper": false
+    },
+    "required": true,
+    "state": "NG_BOTH",
+    "reason": "primary_and_secondary_ng",
+    "row": null,
+    "pass_count": 0,
+    "tiebreak_enabled": true,
+    "primary": {
+     "provider": "openai",
+     "text": "Sentenced to death.",
+     "pass": false,
+     "available": true,
+     "label": "TRUE_CONTENT_MISMATCH",
+     "observed_protected_diff": false,
+     "rescued": false,
+     "error": null,
+     "technical_failure": false,
+     "note": "p3_primary_ng",
+     "rescue_layers": []
+    },
+    "secondary": {
+     "provider": "azure",
+     "text": "Sentenced to death.",
+     "pass": false,
+     "available": true,
+     "label": "TRUE_CONTENT_MISMATCH",
+     "observed_protected_diff": false,
+     "rescued": false,
+     "error": null,
+     "technical_failure": false,
+     "note": "secondary_not_accepted",
+     "rescue_layers": []
+    },
+    "secondary_called": true,
+    "whisper": null,
+    "whisper_called": false,
+    "whisper_model": null,
+    "ortho_layer_version": "er109_orthographic_equivalence_v1_proto_aho02",
+    "ortho_scope": "Z",
+    "primary_not_pass_reason": "p3_primary_ng",
+    "primary_rescued_by_secondary": false
+   },
+   "orthographic_equivalence": null,
+   "reason_code": "secondary_not_accepted",
+   "warnings": []
+  },
+  {
+   "id": "Z_kp3_a1",
+   "family": "Z",
+   "kind": "kp",
+   "scope_active": "Z",
+   "state": "PASS",
+   "verified": true,
+   "row": "P+S",
+   "azure_real_calls": 1,
+   "whisper_called": false,
+   "vote": {
+    "version": "kp_vote_check_v1",
+    "guard_lifted": true,
+    "guard_lifted_version": "kp_vote_guard_lifted_v1",
+    "observed_protected_diff": {
+     "primary": false,
+     "secondary": false,
+     "whisper": false
+    },
+    "required": true,
+    "state": "PASS_DUAL",
+    "reason": "dual_agreed",
+    "row": "P+S",
+    "pass_count": 2,
+    "tiebreak_enabled": true,
+    "primary": {
+     "provider": "openai",
+     "text": "sees",
+     "pass": true,
+     "available": true,
+     "label": "HOMOPHONE_EQUIVALENT",
+     "observed_protected_diff": false,
+     "rescued": false,
+     "error": null,
+     "technical_failure": false,
+     "note": null,
+     "rescue_layers": []
+    },
+    "secondary": {
+     "provider": "azure",
+     "text": "Seas.",
+     "pass": true,
+     "available": true,
+     "label": "HOMOPHONE_EQUIVALENT",
+     "observed_protected_diff": false,
+     "rescued": false,
+     "error": null,
+     "technical_failure": false,
+     "note": "secondary_accepted",
+     "rescue_layers": []
+    },
+    "secondary_called": true,
+    "whisper": null,
+    "whisper_called": false,
+    "whisper_model": null,
+    "ortho_layer_version": "er109_orthographic_equivalence_v1_proto_aho02",
+    "ortho_scope": "Z",
+    "primary_not_pass_reason": null,
+    "primary_rescued_by_secondary": false
+   },
+   "orthographic_equivalence": null,
+   "reason_code": "dual_agreed",
+   "warnings": []
+  },
+  {
+   "id": "Z_kp3_a2",
+   "family": "Z",
+   "kind": "kp",
+   "scope_active": "Z",
+   "state": "PASS_WITH_WARNING",
+   "verified": true,
+   "row": "S+W",
+   "azure_real_calls": 1,
+   "whisper_called": true,
+   "vote": {
+    "version": "kp_vote_check_v1",
+    "guard_lifted": true,
+    "guard_lifted_version": "kp_vote_guard_lifted_v1",
+    "observed_protected_diff": {
+     "primary": false,
+     "secondary": false,
+     "whisper": false
+    },
+    "required": true,
+    "state": "PASS_VOTE_2OF3",
+    "reason": "vote_2of3:secondary+whisper",
+    "row": "S+W",
+    "pass_count": 2,
+    "tiebreak_enabled": true,
+    "primary": {
+     "provider": "openai",
+     "text": "Sez.",
+     "pass": false,
+     "available": true,
+     "label": "TTS_FAILURE",
+     "observed_protected_diff": false,
+     "rescued": false,
+     "error": null,
+     "technical_failure": false,
+     "note": "p3_primary_ng",
+     "rescue_layers": []
+    },
+    "secondary": {
+     "provider": "azure",
+     "text": "Sees.",
+     "pass": true,
+     "available": true,
+     "label": "HOMOPHONE_EQUIVALENT",
+     "observed_protected_diff": false,
+     "rescued": false,
+     "error": null,
+     "technical_failure": false,
+     "note": "secondary_accepted",
+     "rescue_layers": []
+    },
+    "secondary_called": true,
+    "whisper": {
+     "provider": "whisper",
+     "text": "Sees",
+     "pass": true,
+     "available": true,
+     "label": "HOMOPHONE_EQUIVALENT",
+     "observed_protected_diff": false,
+     "rescued": false,
+     "error": null,
+     "technical_failure": false,
+     "note": null,
+     "rescue_layers": [],
+     "ms": 2142,
+     "memo_hit": false
+    },
+    "whisper_called": true,
+    "whisper_model": {
+     "model": "small",
+     "compute_type": "int8",
+     "device": "cpu",
+     "library": "faster_whisper"
+    },
+    "ortho_layer_version": "er109_orthographic_equivalence_v1_proto_aho02",
+    "ortho_scope": "Z",
+    "primary_not_pass_reason": "p3_primary_ng",
+    "primary_rescued_by_secondary": false
+   },
+   "orthographic_equivalence": null,
+   "reason_code": "vote_2of3:secondary+whisper",
+   "warnings": [
+    "SECONDARY_CONFIRMED"
+   ]
+  }
+ ],
+ "scope_after": null
+}
