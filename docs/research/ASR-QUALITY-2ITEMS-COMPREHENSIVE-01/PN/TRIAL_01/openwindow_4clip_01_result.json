@@ -1,0 +1,557 @@
+{
+ "table_llm": [
+  {
+   "surface": "Framton",
+   "words": [
+    "framton"
+   ],
+   "category": "person",
+   "grade": "confirmed",
+   "sources": [
+    "llm_a",
+    "det:cmu_oov"
+   ],
+   "eligible": [
+    "framton"
+   ],
+   "initials": [],
+   "notes": []
+  },
+  {
+   "surface": "Vera",
+   "words": [
+    "vera"
+   ],
+   "category": "person",
+   "grade": "confirmed",
+   "sources": [
+    "llm_a",
+    "det:capitalized_midsentence"
+   ],
+   "eligible": [
+    "vera"
+   ],
+   "initials": [],
+   "notes": []
+  },
+  {
+   "surface": "Bertie",
+   "words": [
+    "bertie"
+   ],
+   "category": "person",
+   "grade": "confirmed",
+   "sources": [
+    "llm_a",
+    "llm_b_agree"
+   ],
+   "eligible": [
+    "bertie"
+   ],
+   "initials": [],
+   "notes": []
+  },
+  {
+   "surface": "India",
+   "words": [
+    "india"
+   ],
+   "category": "place",
+   "grade": "weak",
+   "sources": [
+    "llm_a"
+   ],
+   "eligible": [],
+   "initials": [],
+   "notes": [
+    "india:general_word",
+    "no_eligible_token"
+   ]
+  }
+ ],
+ "table_declared_only": [
+  {
+   "surface": "Framton",
+   "words": [
+    "framton"
+   ],
+   "category": "person",
+   "grade": "declared",
+   "sources": [
+    "declared:seed.key_roles.keep_name"
+   ],
+   "eligible": [
+    "framton"
+   ],
+   "initials": [],
+   "notes": []
+  },
+  {
+   "surface": "Vera",
+   "words": [
+    "vera"
+   ],
+   "category": "person",
+   "grade": "declared",
+   "sources": [
+    "declared:seed.key_roles.keep_name"
+   ],
+   "eligible": [
+    "vera"
+   ],
+   "initials": [],
+   "notes": []
+  }
+ ],
+ "clips": [
+  {
+   "level": "a2",
+   "segment": "full_story_part1_c14",
+   "status": "STOPPED",
+   "canonical": "\"Her husband carried his white coat over his arm. Her youngest brother sang, 'Bertie, why do you bound?' He always sang ",
+   "attempts": [
+    {
+     "estimate_secondary_equals_primary": {
+      "orig": [
+       false,
+       "NO_PROPER_NOUN_EVIDENCE"
+      ],
+      "ret": [
+       true,
+       "ENTITY_ONLY_ACCEPT"
+      ]
+     },
+     "attempt": 1,
+     "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+     "primary_asr": "Her husband carried his white coat over his arm, her youngest brother sang, Birdie, why do you bound? He always sang that song to annoy her.",
+     "primary_diffs": [
+      [
+       "bertie",
+       "birdie",
+       true
+      ]
+     ],
+     "classification_now": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "estimate_secondary_equals_primary": null,
+     "attempt": 2,
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "primary_asr": "Her husband carried his white coat over her arm. Her youngest brother sang, Birdie, why do you bound? He always sang that song to annoy her.",
+     "primary_diffs": [
+      [
+       "his",
+       "her",
+       false
+      ],
+      [
+       "bertie",
+       "birdie",
+       true
+      ]
+     ],
+     "classification_now": "TRUE_CONTENT_MISMATCH"
+    },
+    {
+     "estimate_secondary_equals_primary": {
+      "orig": [
+       false,
+       "NO_PROPER_NOUN_EVIDENCE"
+      ],
+      "ret": [
+       true,
+       "ENTITY_ONLY_ACCEPT"
+      ]
+     },
+     "attempt": 3,
+     "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+     "primary_asr": "Her husband carried his white coat over his arm. Her youngest brother sang, Birdie, why do you bound? He always sang that song to annoy her.",
+     "primary_diffs": [
+      [
+       "bertie",
+       "birdie",
+       true
+      ]
+     ],
+     "classification_now": "ASR_VALIDATION_UNCERTAIN"
+    }
+   ],
+   "hr_rows": [
+    120
+   ],
+   "evals": [
+    {
+     "row": 120,
+     "orig": [
+      false,
+      "NO_PROPER_NOUN_EVIDENCE"
+     ],
+     "primary": "Her husband carried his white coat over his arm. Her youngest brother sang, Birdie, why do you bound? He always sang tha",
+     "secondary": "Her husband carried his white coat over his arm, her youngest brother saying, Bertie, why do you bound? He always sang t",
+     "llm_table": [
+      true,
+      "ENTITY_ONLY_ACCEPT",
+      [
+       [
+        "bertie",
+        "birdie",
+        "",
+        "entity_table:confirmed:person"
+       ]
+      ]
+     ],
+     "declared_only": [
+      false,
+      "NO_PROPER_NOUN_EVIDENCE",
+      []
+     ],
+     "llm+declared": [
+      true,
+      "ENTITY_ONLY_ACCEPT",
+      [
+       [
+        "bertie",
+        "birdie",
+        "",
+        "entity_table:confirmed:person"
+       ]
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "level": "a2",
+   "segment": "full_story_part3_c2",
+   "status": "STOPPED",
+   "canonical": "\"Bertie, why do you bound?\"",
+   "attempts": [
+    {
+     "estimate_secondary_equals_primary": null,
+     "attempt": 1,
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "primary_asr": "Birdie, what is you bound?",
+     "primary_diffs": [
+      [
+       "bertie why do",
+       "birdie what",
+       false
+      ]
+     ],
+     "classification_now": "TRUE_CONTENT_MISMATCH"
+    },
+    {
+     "estimate_secondary_equals_primary": {
+      "orig": [
+       false,
+       "NO_PROPER_NOUN_EVIDENCE"
+      ],
+      "ret": [
+       true,
+       "ENTITY_ONLY_ACCEPT"
+      ]
+     },
+     "attempt": 2,
+     "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+     "primary_asr": "Birdie, why do you bound?",
+     "primary_diffs": [
+      [
+       "bertie",
+       "birdie",
+       true
+      ]
+     ],
+     "classification_now": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "estimate_secondary_equals_primary": {
+      "orig": [
+       false,
+       "NO_PROPER_NOUN_EVIDENCE"
+      ],
+      "ret": [
+       true,
+       "ENTITY_ONLY_ACCEPT"
+      ]
+     },
+     "attempt": 3,
+     "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+     "primary_asr": "Birdie, why do you bound?",
+     "primary_diffs": [
+      [
+       "bertie",
+       "birdie",
+       true
+      ]
+     ],
+     "classification_now": "ASR_VALIDATION_UNCERTAIN"
+    }
+   ],
+   "hr_rows": [
+    121
+   ],
+   "evals": [
+    {
+     "row": 121,
+     "orig": [
+      false,
+      "NO_PROPER_NOUN_EVIDENCE"
+     ],
+     "primary": "Birdie, why do you bound?",
+     "secondary": "Birdie, why do you bound?",
+     "llm_table": [
+      true,
+      "ENTITY_ONLY_ACCEPT",
+      [
+       [
+        "bertie",
+        "birdie",
+        "birdie",
+        "entity_table:confirmed:person"
+       ]
+      ]
+     ],
+     "declared_only": [
+      false,
+      "NO_PROPER_NOUN_EVIDENCE",
+      []
+     ],
+     "llm+declared": [
+      true,
+      "ENTITY_ONLY_ACCEPT",
+      [
+       [
+        "bertie",
+        "birdie",
+        "birdie",
+        "entity_table:confirmed:person"
+       ]
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "level": "b1b",
+   "segment": "full_story_part1_c14",
+   "status": "STOPPED",
+   "canonical": "\"Her husband had his white coat over his arm. Her youngest brother was singing, 'Bertie, why do you bound?' He always sa",
+   "attempts": [
+    {
+     "estimate_secondary_equals_primary": {
+      "orig": [
+       false,
+       "NO_PROPER_NOUN_EVIDENCE"
+      ],
+      "ret": [
+       true,
+       "ENTITY_ONLY_ACCEPT"
+      ]
+     },
+     "attempt": 1,
+     "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+     "primary_asr": "Her husband had his white coat over his arm; her youngest brother was singing, Birdie, why do you bound? He always sang it to tease her.",
+     "primary_diffs": [
+      [
+       "bertie",
+       "birdie",
+       true
+      ]
+     ],
+     "classification_now": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "estimate_secondary_equals_primary": {
+      "orig": [
+       false,
+       "NO_PROPER_NOUN_EVIDENCE"
+      ],
+      "ret": [
+       true,
+       "ENTITY_ONLY_ACCEPT"
+      ]
+     },
+     "attempt": 2,
+     "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+     "primary_asr": "Her husband had his white coat over his arm. Her youngest brother was singing, Birdie, why do you bound? He always sang it to tease her.",
+     "primary_diffs": [
+      [
+       "bertie",
+       "birdie",
+       true
+      ]
+     ],
+     "classification_now": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "estimate_secondary_equals_primary": null,
+     "attempt": 3,
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "primary_asr": "Her husband had his white coat over his arm. Her youngest brother was singing, Birdie, why do you bound? He always sing it to tease her.",
+     "primary_diffs": [
+      [
+       "bertie",
+       "birdie",
+       true
+      ],
+      [
+       "sang",
+       "sing",
+       false
+      ]
+     ],
+     "classification_now": "TRUE_CONTENT_MISMATCH"
+    }
+   ],
+   "hr_rows": [
+    117
+   ],
+   "evals": [
+    {
+     "row": 117,
+     "orig": [
+      false,
+      "PRIMARY_NOT_ENTITY_ONLY"
+     ],
+     "primary": "Her husband had his white coat over his arm. Her youngest brother was singing, Birdie, why do you bound? He always sing ",
+     "secondary": "Her husband had his white coat over his arm. Her youngest brother was singing birdie. Why do you bound? He always sing i",
+     "llm_table": [
+      false,
+      "PRIMARY_NOT_ENTITY_ONLY",
+      []
+     ],
+     "declared_only": [
+      false,
+      "PRIMARY_NOT_ENTITY_ONLY",
+      []
+     ],
+     "llm+declared": [
+      false,
+      "PRIMARY_NOT_ENTITY_ONLY",
+      []
+     ]
+    }
+   ]
+  },
+  {
+   "level": "b1b",
+   "segment": "full_story_part3_c2",
+   "status": "STOPPED",
+   "canonical": "\"Bertie, why do you bound?\"",
+   "attempts": [
+    {
+     "estimate_secondary_equals_primary": {
+      "orig": [
+       false,
+       "NO_PROPER_NOUN_EVIDENCE"
+      ],
+      "ret": [
+       true,
+       "ENTITY_ONLY_ACCEPT"
+      ]
+     },
+     "attempt": 1,
+     "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+     "primary_asr": "Birdie, why do you bound?",
+     "primary_diffs": [
+      [
+       "bertie",
+       "birdie",
+       true
+      ]
+     ],
+     "classification_now": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "estimate_secondary_equals_primary": {
+      "orig": [
+       false,
+       "NO_PROPER_NOUN_EVIDENCE"
+      ],
+      "ret": [
+       true,
+       "ENTITY_ONLY_ACCEPT"
+      ]
+     },
+     "attempt": 2,
+     "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+     "primary_asr": "Birdie, why do you bound?",
+     "primary_diffs": [
+      [
+       "bertie",
+       "birdie",
+       true
+      ]
+     ],
+     "classification_now": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "estimate_secondary_equals_primary": {
+      "orig": [
+       false,
+       "NO_PROPER_NOUN_EVIDENCE"
+      ],
+      "ret": [
+       true,
+       "ENTITY_ONLY_ACCEPT"
+      ]
+     },
+     "attempt": 3,
+     "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+     "primary_asr": "Birdie, why do you bound?",
+     "primary_diffs": [
+      [
+       "bertie",
+       "birdie",
+       true
+      ]
+     ],
+     "classification_now": "ASR_VALIDATION_UNCERTAIN"
+    }
+   ],
+   "hr_rows": [
+    118
+   ],
+   "evals": [
+    {
+     "row": 118,
+     "orig": [
+      false,
+      "NO_PROPER_NOUN_EVIDENCE"
+     ],
+     "primary": "Birdie, why do you bound?",
+     "secondary": "Birdie, why do you bound?",
+     "llm_table": [
+      true,
+      "ENTITY_ONLY_ACCEPT",
+      [
+       [
+        "bertie",
+        "birdie",
+        "birdie",
+        "entity_table:confirmed:person"
+       ]
+      ]
+     ],
+     "declared_only": [
+      false,
+      "NO_PROPER_NOUN_EVIDENCE",
+      []
+     ],
+     "llm+declared": [
+      true,
+      "ENTITY_ONLY_ACCEPT",
+      [
+       [
+        "bertie",
+        "birdie",
+        "birdie",
+        "entity_table:confirmed:person"
+       ]
+      ]
+     ]
+    }
+   ]
+  }
+ ]
+}
