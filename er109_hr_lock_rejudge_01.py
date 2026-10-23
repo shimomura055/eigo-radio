@@ -69,7 +69,8 @@ def _code_commit() -> dict:
     try:
         h = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True, timeout=20).stdout.strip()
         d = subprocess.run(["git", "status", "--porcelain", "--", "er109_xz_scope_01.py", "er078_asr_unified_judge_01.py", "er006_secondary_asr_01.py",
-                            "er104_kp_three_asr_vote_01.py", "er019_family_x_validation_inheritance_01.py", "er109_asr_orthographic_equivalence_01.py"],
+                            "er104_kp_three_asr_vote_01.py", "er019_family_x_validation_inheritance_01.py", "er109_asr_orthographic_equivalence_01.py",
+                            "er109_ukus_spelling_01.py", "er109_ukus_pairs_v1.json"],
                            cwd=ROOT, capture_output=True, text=True, timeout=20).stdout.strip()
         return {"commit": h, "judge_files_dirty": bool(d)}
     except Exception as exc:  # noqa: BLE001

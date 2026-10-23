@@ -42,8 +42,44 @@ SYNTHETIC = [
     ("They looked at three nearby neighborhoods.", "They looked at 3:00 nearby neighborhoods.", None, False, "3:00 の読み(観察事項)"),
 ]
 
+# ②英米綴り(UKUS、ASR-QUALITY-2ITEMS 委任_04, OF-UKUS-W-05): 既存golden rows(g0000-g0297)は一切変えず、末尾へ追記する合成行(id g0298〜)。
+# (canonical, asr, azure, kp, 説明)。新行のpre署名だけ配線前commit overlay(b7b6d07d8)で採る(manifest.pre_wiring_commit・既存行は不変)。
+SYNTHETIC_UKUS = [
+    ("Inventing convincing stories at a moment's notice was Vera's speciality.", "Inventing convincing stories at a moment's notice was Vera's specialty.", None, False, "UKUS: c12 speciality/specialty Primary"),
+    ("Inventing convincing stories at a moment's notice was Vera's speciality.", "Inventing convincing stories at a moment's notice was Vera's forte.",
+     "Inventing convincing stories at a moment's notice was Vera's specialty.", False, "UKUS: c12 Secondary(Azure)がspecialty"),
+    ("Her speciality", "Her specialty", "Her speciality", True, "UKUS: KP P ortho(UKUS)+S"),
+    ("Her speciality", "Her specialty", "Her specialty", True, "UKUS: KP P,S ortho(UKUS)"),
+    ("The colour of the neighbour's jewellery was bright.", "The color of the neighbor's jewelry was bright.", None, False, "UKUS: colour/neighbour's/jewellery 複数位置"),
+    ("The tire is flat.", "The tyre is flat.", None, False, "UKUS: AMB逆方向(US形->UK形)NG維持"),
+    ("The tyre is flat.", "The tire is flat.", None, False, "UKUS: AMB UK形->US形 PASS"),
+    ("He visited Aluminium City last year.", "He visited Aluminum City last year.", None, False, "UKUS負例: 固有名詞(文中大文字)NG維持"),
+    ("The speciality is cooking.", "The specialty is cooling.", None, False, "UKUS負例: 綴り差+実誤読 NG"),
+    ("The speciality costs 3 pounds.", "The specialty costs 4 pounds.", None, False, "UKUS負例: 綴り差+実数値差 NG"),
+    ("He did not like the colour.", "He did like the color.", None, False, "UKUS負例: 綴り差+not脱落 NG"),
+    ("Mum said hello to us.", "Mom said hello to us.", None, False, "UKUS負例: mum/mom除外 NG"),
+    ("Their speciality was fine at the time.", "There specialty was fine at the time.", None, False, "UKUS: 既存rule(their/there)隣接のn:n span内位置別救済"),
+    ("Her jewellery-making kit arrived.", "Her jewelry making kit arrived.", None, False, "UKUS負例: 語数違いspan(ハイフン複合<->分かち書き)NG維持"),
+]
+
+
+def append_ukus(existing_path, out_path):
+    """既存golden rows(byte不変)の末尾へSYNTHETIC_UKUSを追記(id連番を継続)。"""
+    lines = [l for l in open(existing_path, encoding="utf-8", newline="").read().split("\n") if l.strip()]
+    n = len(lines)
+    for i, (c, asr, az, kp, why) in enumerate(SYNTHETIC_UKUS):
+        lines.append(json.dumps({"id": f"g{n + i:04d}", "canonical": c, "asr": asr, "azure": az, "seg": ("full_story_part1" if not kp else None), "kp": kp, "why": why},
+                                ensure_ascii=False, sort_keys=True))
+    with open(out_path, "w", encoding="utf-8", newline="\n") as fo:
+        fo.write("\n".join(lines) + "\n")
+    print(f"golden rows={len(lines)} (appended {len(SYNTHETIC_UKUS)})")
+
 
 def main():
+    import sys
+    if len(sys.argv) == 4 and sys.argv[1] == "--append-ukus":      # python er109_wiring_golden_build_01.py --append-ukus EXISTING_ROWS OUT
+        append_ukus(sys.argv[2], sys.argv[3])
+        return
     ap = argparse.ArgumentParser()
     ap.add_argument("--all-rows", required=True)
     ap.add_argument("--changed-keys", required=True)

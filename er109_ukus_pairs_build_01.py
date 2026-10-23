@@ -1,14 +1,14 @@
 # ============================================================
-# er111_ukus_pairs_build_01.py
-# ASR-QUALITY-2ITEMS-COMPREHENSIVE-01 ②英米綴り UKUS 委任_02 (DEV/Trial専用・Production未配線)
-# 目的: VarCon 2020.12.07 + SCOWL 2020.12.07 から、英米綴り対の『固定対表』er111_ukus_pairs_v1.json を決定論的に生成する(ビルド時のみ。runtimeは固定表だけを読む)。
+# er109_ukus_pairs_build_01.py
+# ASR-QUALITY-2ITEMS-COMPREHENSIVE-01 ②英米綴り UKUS (開発ツール: Productionからimportされない。固定対表の再生成専用。更新手順は er109_ukus_spelling_01.py 冒頭参照)
+# 目的: VarCon 2020.12.07 + SCOWL 2020.12.07 から、英米綴り対の『固定対表』er109_ukus_pairs_v1.json を決定論的に生成する(ビルド時のみ。runtimeは固定表だけを読む)。
 #   Opus OF-03: VarConタグ解析 = UK側はB/Z(plain)でA(plain)を持たない語、US側はA(plain)でB(plain)を持たない語(Av=米変異綴りはUK側へ入れない)。
 #   Opus OF-04: UK形が別の項で有効な米綴り(mum[silent]/mom 型)は自動検出して除外(用法不明のため判定不能)。
 #   Opus OF-05: Tier-2(level71-99)は active=False(初回Trialでは非同値=fail-closed)。
 #   Opus OF-08: 規則(ise->ize, yse->yze, our->or)の実在語判定は SCOWL固定版(変換前=SCOWL英国語専用リストにある語、変換後=SCOWL米国語/共通語 level<=70)。runtime依存なし。
 #   Opus OF-11: breame不採用。出力冒頭に著作権/許諾文・入力hashを残す。
 # 入力: docs/research/.../UKUS/work/{varcon_2020.12.07.txt, scowl_subsets_2020.12.07.json.gz}
-# 出力: er111_ukus_pairs_v1.json (+ --review で TRIAL_01/PAIRS_REVIEW_01.md の元データ)
+# 出力: er109_ukus_pairs_v1.json (+ --review で TRIAL_01/PAIRS_REVIEW_01.md の元データ)
 # ============================================================
 from __future__ import annotations
 
@@ -24,8 +24,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 WORK = os.path.join(HERE, "docs", "research", "ASR-QUALITY-2ITEMS-COMPREHENSIVE-01", "UKUS", "work")
 VARCON = os.path.join(WORK, "varcon_2020.12.07.txt")
 SCOWL_SUB = os.path.join(WORK, "scowl_subsets_2020.12.07.json.gz")
-OUT = os.path.join(HERE, "er111_ukus_pairs_v1.json")
-BUILD_VERSION = "er111_ukus_pairs_build_01_v1"
+OUT = os.path.join(HERE, "er109_ukus_pairs_v1.json")
+BUILD_VERSION = "er109_ukus_pairs_build_01_v1"
 
 LICENSE_TEXT = (
     "VarCon (Variant Conversion Info) 2020.12.07 and SCOWL 2020.12.07 are Copyright 2000-2020 by Kevin Atkinson (VarCon also Benjamin Titze) and the contributors "
@@ -282,7 +282,7 @@ def review_md(res) -> str:
     P = res["pairs"]
     ex = res["excluded"]
     m = res["meta"]["counts"]
-    L = ["# PAIRS_REVIEW_01 -- 固定対表(er111_ukus_pairs_v1.json)の人手レビュー結果(自動生成: er111_ukus_pairs_build_01.py --review-md)", "",
+    L = ["# PAIRS_REVIEW_01 -- 固定対表(er109_ukus_pairs_v1.json)の人手レビュー結果(自動生成: er109_ukus_pairs_build_01.py --review-md)", "",
          f"- 件数: {json.dumps(m, ensure_ascii=False)}",
          "- 入力: VarCon 2020.12.07 / SCOWL 2020.12.07 (許諾文は json 冒頭 meta.license。breame不採用)。UK側=B/Zタグ(x/-なし)でA第一推奨でない語、US側=A第一推奨(OF-03)。",
          "- レビュー観点: (a)編集距離>2/短語/語頭相違 (b)CMU両側登録で音素が異なる (c)両形が高頻度独立語 (d)AMB(用法付き)全件 (e)OF-04自動検出 (f)UK側定義拡張(Bv/B.)で増えた約430対 (g)規則(SCOWL固定)出力。",

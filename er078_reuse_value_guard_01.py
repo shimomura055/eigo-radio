@@ -55,6 +55,15 @@ def guard_entry(entry, *, label: str = "", canonical_text: str | None = None, le
         if not _pnap.is_active_for_run():
             out.update(blocked=True, applicable=True, reason="PRONUNCIATION_ALARM_AUDIO_OUT_OF_SCOPE")
             return out
+    # ASR-QUALITY PN 委任_04(RET、OPEN-472 / Opus W-06): Run Entity Table(RET)が受理に寄与したアラーム音声(`pronunciation_alarm.entity_table`あり)は、
+    # RETが有効でない間(X/Z scope内でRET flag=Falseのrollback)、または保存entryを現行のeligible規則で復元できない間(rules_version不一致)は再利用しない
+    # (再判定NGが保護理由でなければ下の再判定は止めないため、ここで先に止める)。`asr_judgement`と`asr_judgement_inherited`の**両方**を見る。
+    # RET由来の受理だけが対象=既存のLedger受理entry・印のないentryには作用しない。再判定自体がNGになった場合のブロックは下の再判定後(REJUDGE_NG_ENTITY_TABLE)。
+    import er103_run_entity_table_01 as _ret
+    _aj_ret = [a for a in (entry.get("asr_judgement"), entry.get("asr_judgement_inherited")) if _ret.entity_contributed(a)]
+    if _aj_ret and (not _ret.is_active_for_run() or not all(_ret.restorable(a) for a in _aj_ret)):
+        out.update(blocked=True, applicable=True, reason="ENTITY_TABLE_ALARM_AUDIO_RET_INACTIVE_OR_UNRESTORABLE")
+        return out
     # ASR-HOMOPHONE 委任_04(E-2、Opus M1): er109(表記違い同音)が合否に寄与した音声(層・印の種類ごと: orthographic_equivalence.applied / primary・secondary・vote票のlabel /
     # ORTHO_*警告)は、X/Z run scope(∧flag有効)の外では再利用しない(Master Audio StoreはA/B/Cとも共有。scope外の判定では多くの場合secondary_not_acceptedになり
     # 下の再判定が止めないため、ここで先に止める)。`asr_judgement`と`asr_judgement_inherited`の**両方**を見る。KP vote gate後続のskip(下)より前。
@@ -62,6 +71,12 @@ def guard_entry(entry, *, label: str = "", canonical_text: str | None = None, le
     import er109_xz_scope_01 as _xz
     if (_xz.ortho_contributed(entry.get("asr_judgement")) or _xz.ortho_contributed(entry.get("asr_judgement_inherited"))) and not _xz.is_active_for_run():
         out.update(blocked=True, applicable=True, reason=_xz.OUT_OF_SCOPE_BLOCK_REASON)
+        return out
+    # ASR-QUALITY-2ITEMS ②UKUS 委任_04(OF-UKUS-W-03): ②英米綴り層(UKUS)が合否に寄与した音声は、UKUS層が有効でない間(UKUS flagだけOFFのrollback等。親ortho/scopeは上で処理済み)は再利用しない。
+    # UKUS flagだけOFFだと再判定NG(非保護差)はblockされない(下の保護差のみblock)ため、ここが唯一の防壁。asr_judgement/asr_judgement_inherited両方・全site(primary/secondary/KP票)を見る。
+    # 検出は fail-closed(ortho適用・version=*_ukus*でsite auditが無い/壊れていればUKUS寄与あり)。配置はkp_vote_gate_follows早期returnより前。
+    if (_xz.ukus_contributed(entry.get("asr_judgement")) or _xz.ukus_contributed(entry.get("asr_judgement_inherited"))) and not _xz.is_ukus_active_for_run():
+        out.update(blocked=True, applicable=True, reason=_xz.UKUS_OUT_OF_SCOPE_BLOCK_REASON)
         return out
     if kp_vote_gate_follows:
         out.update(applicable=False, reason="KP_EN_VOTE_GATE_DECIDES")
@@ -91,6 +106,9 @@ def guard_entry(entry, *, label: str = "", canonical_text: str | None = None, le
         return out
     if is_protected_reason(rj.get("unified_reason_code") or ""):
         out.update(blocked=True, reason=f"PROTECTED_DIFF:{rj.get('unified_reason_code')}")
+        return out
+    if _aj_ret:   # RET由来の受理音声は、現行境界での再判定がNGなら(保護理由でなくても)再利用しない=境界を厳しくした後に古い受理を黙って通さない(W-06)
+        out.update(blocked=True, reason=f"REJUDGE_NG_ENTITY_TABLE:{rj.get('reason')}")
         return out
     out["reason"] = f"REJUDGE_NG_NOT_PROTECTED:{rj.get('reason')}"
     return out

@@ -1,6 +1,6 @@
 # ============================================================
-# er111_ukus_trial_cases_01.py -- ASR-QUALITY-2ITEMS-COMPREHENSIVE-01 ②英米綴り UKUS 委任_02 の検証ケース(データのみ。DEV/Trial専用)。
-# V1 正常系 / V2 異常系 / V3 境界。test(er111_ukus_spelling_trial_01_test_01.py)と評価script(er111_ukus_trial_eval_01.py)が共用する。
+# er109_ukus_spelling_01_test_cases_01.py -- ASR-QUALITY-2ITEMS-COMPREHENSIVE-01 ②英米綴り UKUS の検証ケース(データのみ。test fixture。Trial由来=旧er111_ukus_trial_cases_01.py をProduction化に伴い改名)。
+# V1 正常系 / V2 異常系 / V3 境界。er109_ukus_spelling_01_test_01.py が使う。
 # ============================================================
 CARRIER = "She said the {w} was very important to them."
 

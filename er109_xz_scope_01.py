@@ -33,6 +33,7 @@ ORTHO_WARNING_LABELS = frozenset({W_ORTHO_NEGATION, W_ORTHO_NONREP})
 _WARNING_MAP = {"negation_word_homophone": W_ORTHO_NEGATION, "non_representative_variant_match": W_ORTHO_NONREP}
 AUDIT_KEY = "orthographic_equivalence"
 OUT_OF_SCOPE_BLOCK_REASON = "ORTHOGRAPHIC_EQUIVALENT_AUDIO_OUT_OF_SCOPE"
+UKUS_OUT_OF_SCOPE_BLOCK_REASON = "UKUS_SPELLING_EQUIVALENT_AUDIO_OUT_OF_SCOPE"
 
 
 # ---------------------------------------------------------------- scope
@@ -93,12 +94,36 @@ def is_active_for_run() -> bool:
     return e109.is_enabled()
 
 
+def is_ukus_active_for_run() -> bool:
+    """②英米綴り層(UKUS)の唯一のrun scope内flag読取関数: is_active_for_run() ∧ UKUS flag(親flag従属)。env/引数/設定dictから変えられない。"""
+    if not is_active_for_run():
+        return False
+    import er109_asr_orthographic_equivalence_01 as e109
+    return e109.ukus_is_enabled()
+
+
+def ukus_run_evidence() -> dict:
+    """W-07: run単位のevidence/summary用。UKUS層の有効/無効・LAYER_VERSION・固定対表のsha(ロード可否)を返す(API 0・副作用なし)。
+    runner側のsummaryに載せる場合はこの関数の戻り値をそのまま記録する。"""
+    import er109_asr_orthographic_equivalence_01 as e109
+    out = {"scope": _RUN_SCOPE, "ukus_active": is_ukus_active_for_run(), "layer_version": e109.LAYER_VERSION,
+           "ortho_flag": e109.is_enabled(), "ukus_flag": e109.ukus_is_enabled()}
+    try:
+        import er109_ukus_spelling_01 as uk
+        out["ukus_table_sha256"] = uk.table().sha256
+        out["ukus_table_active_pairs"] = uk.table().size
+    except Exception as exc:  # noqa: BLE001
+        out["ukus_table_error"] = f"{type(exc).__name__}: {exc}"
+    return out
+
+
 # ---------------------------------------------------------------- 判定(純関数のメモ + 例外時fail-closed)
 @functools.lru_cache(maxsize=8192)
-def _evaluate_cached(canonical: str, text: str):
-    """er109.evaluate のみをメモ化(M4。scope/flagはメモ外)。純関数・API 0。"""
+def _evaluate_cached(canonical: str, text: str, ukus: bool = False):
+    """er109.evaluate のみをメモ化(M4。scope/flagはメモ外)。純関数・API 0。ukus(flag値)をcache keyに含める(ON/OFF切替で古い結果を返さない)。
+    evaluate(ukus=...)を渡してよいのは本関数だけ(AST test)。"""
     import er109_asr_orthographic_equivalence_01 as e109
-    return e109.evaluate(canonical, text)
+    return e109.evaluate(canonical, text, ukus=bool(ukus))
 
 
 @dataclass(frozen=True)
@@ -127,7 +152,9 @@ def decision(canonical, text, *, lang: str = "en", sink: Optional[dict] = None) 
         return None
     try:
         import er109_asr_orthographic_equivalence_01 as e109
-        eq = _evaluate_cached(canonical, text)
+        eq = _evaluate_cached(canonical, text, is_ukus_active_for_run())   # flag値はメモ外で毎回計算(M4)
+        if getattr(eq, "ukus_error", "") and sink is not None:
+            sink.setdefault("orthographic_equivalence_errors", []).append("ukus_layer_error(v1判定へfail-closed): " + str(eq.ukus_error))
         if (not eq.equivalent) or eq.version != e109.LAYER_VERSION:
             return None
         labels = tuple(dict.fromkeys(_WARNING_MAP.get(w, "ORTHO_" + str(w).upper()) for w in (eq.warnings or [])))
@@ -154,6 +181,28 @@ def record_site(audit: dict, site: str, dec: OrthoDecision, *, span_unlock: Opti
     rec["warnings"] = warns
     if span_unlock is not None:
         rec.setdefault("span_unlock", {})[site] = span_unlock
+
+
+def ukus_contributed(aj) -> bool:
+    """W-03/OF-UKUS-W-03: この判定record(asr_judgement / asr_judgement_inherited)で②英米綴り層(UKUS)が合否に寄与した(可能性がある)か。
+    判定キー統一: orthographic_equivalence.sites[*] 全site(primary/secondary/KP票)の er109.rules に 'ukus_spelling_variant' を含む、または ukus_pairs 非空。
+    fail-closed: ortho適用(applied)・versionが '*_ukus*' なのに、site別のer109 auditが無い/壊れている -> UKUS寄与ありとみなす。
+    UKUS層が存在しない旧version(v1)のentry、ortho未使用のentryは常にFalse(旧entryの再利用可否は変えない)。"""
+    if not isinstance(aj, dict):
+        return False
+    oe = aj.get(AUDIT_KEY)
+    if not (isinstance(oe, dict) and oe.get("applied")):
+        return False
+    sites = oe.get("sites")
+    audits_missing = not isinstance(sites, list) or not sites
+    for st in (sites if isinstance(sites, list) else []):
+        er = st.get("er109") if isinstance(st, dict) else None
+        if not isinstance(er, dict):
+            audits_missing = True
+            continue
+        if "ukus_spelling_variant" in (er.get("rules") or []) or er.get("ukus_pairs"):
+            return True
+    return bool(audits_missing and "_ukus" in str(oe.get("version") or ""))
 
 
 def ortho_contributed(aj) -> bool:

@@ -147,6 +147,31 @@ class GoldenSignatures(unittest.TestCase):
             self.assertFalse(v(c, a, sc="none")["verified"], (c, a))
         self.assertFalse(v("Pump one's fist.", "Pump 1's fist.", sc="none")["verified"])      # scope未設定は従来どおりNG
 
+    def test_ukus_rows_expected_verdicts(self):
+        """②UKUS(ASR-QUALITY-2ITEMS 委任_04): 合成行g0298〜。X/Zでは英米綴り差のみのNGがPASS(warningsなし)、負例はNG維持、scope無しは従来(NG)。"""
+        rows = {(r["canonical"], r["asr"], r.get("azure")): r["id"] for r in
+                (json.loads(l) for l in open(os.path.join(FIX, "golden_rows_01.jsonl"), encoding="utf-8") if l.strip())}
+        c12c = "Inventing convincing stories at a moment's notice was Vera's speciality."
+        c12a = "Inventing convincing stories at a moment's notice was Vera's specialty."
+
+        def v(canon, asr, azure=None, sc="X"):
+            return self.now[sc][f"{rows[(canon, asr, azure)]}|adapter"]
+        for sc in ("X", "Z"):
+            d = v(c12c, c12a, sc=sc)
+            self.assertTrue(d["verified"], sc)
+            self.assertEqual((d["state"], d["warnings"]), ("PASS", []))
+            self.assertIn("ukus_spelling_variant", json.dumps(d["aj"]["orthographic_equivalence"]))
+            self.assertTrue(v(c12c, "Inventing convincing stories at a moment's notice was Vera's forte.", c12a, sc=sc)["verified"])     # Secondary(Azure)
+            self.assertTrue(v("The tyre is flat.", "The tire is flat.", sc=sc)["verified"])
+            self.assertFalse(v("The tire is flat.", "The tyre is flat.", sc=sc)["verified"])                                          # AMB逆方向
+            for c, a in (("He visited Aluminium City last year.", "He visited Aluminum City last year."),
+                         ("The speciality is cooking.", "The specialty is cooling."), ("The speciality costs 3 pounds.", "The specialty costs 4 pounds."),
+                         ("He did not like the colour.", "He did like the color."), ("Mum said hello to us.", "Mom said hello to us."),
+                         ("Her jewellery-making kit arrived.", "Her jewelry making kit arrived.")):
+                self.assertFalse(v(c, a, sc=sc)["verified"], (sc, c))
+        for c, a, az in ((c12c, c12a, None), ("The tyre is flat.", "The tire is flat.", None)):
+            self.assertFalse(v(c, a, az, sc="none")["verified"])                             # scope無し(A/B/C相当)は従来どおりNG
+
 
 if __name__ == "__main__":
     unittest.main()

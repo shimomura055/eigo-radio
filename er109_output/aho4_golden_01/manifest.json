@@ -5,12 +5,12 @@
  "rows": "golden_rows_01.jsonl",
  "build": "er109_wiring_golden_build_01.py",
  "sha256": {
-  "pre_wiring_signatures_none_01.jsonl.gz": "5a5a46cca5a095719d333cf31601bf1c7f0d1b6513071d8514f4101b8363975e",
-  "pre_wiring_signatures_X_01.jsonl.gz": "f358d34ffa941de13eb72be0a54b6881185a907eb9d1eb3da5d29d59eb8e5b9e",
-  "post_wiring_changed_X_01.jsonl.gz": "95dd60a4009b28cca74a6121fa1105e708a00772c946816c58952edc5bb2e665",
-  "pre_wiring_signatures_Z_01.jsonl.gz": "4814404692bdb719644f9129f29b5f939f7c7cb73803b4828b5ec544f5ff7697",
-  "post_wiring_changed_Z_01.jsonl.gz": "724fa939af1a96055d4f229e06f4dfe46fb94092b89f213234740e84163fe398",
-  "golden_rows_01.jsonl": "8652856051d45542662ee676190b6d36380a4b031de85fde9898118bbd324b8a"
+  "pre_wiring_signatures_none_01.jsonl.gz": "834b5163cf26de4b1c42da0e24b110c8fdf50f3989854f02dc4358f5f6eddac9",
+  "pre_wiring_signatures_X_01.jsonl.gz": "57e78260fa952dc9b019d6bd3218f448ad6af204dc42fbbb876c2a07dbfdf664",
+  "post_wiring_changed_X_01.jsonl.gz": "e095cd3b13ff52e6b3ebf95ba6ee45e1f95f8c8c28975dc59fd1d06b0eedec88",
+  "pre_wiring_signatures_Z_01.jsonl.gz": "d76778133648737dfad1bc541fcd30ff45e2ef2f39acfd0d716cf45b556b1742",
+  "post_wiring_changed_Z_01.jsonl.gz": "08b05234369bb34fc56fb65d4313e889fb14fb0aba0f24726aa766988878a4de",
+  "golden_rows_01.jsonl": "d85a4ee92c5f3d1689cc2af35f0707ca608c38f642767d44900d079430571fa4"
  },
  "routes": [
   "adapter",
@@ -21,5 +21,6 @@
  ],
  "api_calls": 0,
  "cost_jpy": 0,
- "note_委任_05": "post_wiring_changed_{X,Z}: three<->3:00 型(g0023/g0058 の5経路)は委任_05是正(裸の数詞は3:00と同値にしない)で配線前と同一(NG)になったためchangedから除外"
+ "note_委任_05": "post_wiring_changed_{X,Z}: three<->3:00 型(g0023/g0058 の5経路)は委任_05是正(裸の数詞は3:00と同値にしない)で配線前と同一(NG)になったためchangedから除外",
+ "note_UKUS_委任_04": "ASR-QUALITY-2ITEMS UKUS: golden_rows 末尾へUKUS合成行g0298〜を追記、pre_wiring_signatures_*は新行の行だけを配線前commit(pre_wiring_commit)overlayで追記(既存行は不変・再計算がfixtureとバイト同一を確認)、post_wiring_changed_{X,Z}はv2(LAYER_VERSION=er109_orthographic_equivalence_v2_ukus01)署名で再作成。変化行の3分類=WIRING/GOLDEN_CHANGE_01.md"
 }

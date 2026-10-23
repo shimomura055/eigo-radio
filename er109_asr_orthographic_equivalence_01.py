@@ -29,13 +29,22 @@ import er008_asr_variant_hardening_15_homophone_en as _hp
 # ---- 単一flag(正式採用後の戻しスイッチ。読取は er109_xz_scope_01.is_active_for_run() 経由のみ=X/Z run scope内でのみ有効。env/引数/設定dictから変えられない) ----
 # rollback: Falseにすると X/Zでも従来判定へ戻る(注意: X/Z内でer109受理されたStore entryは再利用ブロックされ再生成費用が出る)。
 ORTHOGRAPHIC_EQUIVALENCE_ENABLED = True
-LAYER_VERSION = "er109_orthographic_equivalence_v1_proto_aho02"
+# ②英米綴り層(UKUS、APPROVED_FOR_PRODUCTION 2026-10-23 UDR #168)のrollbackスイッチ。親flag(上)がFalseなら本層も不活性。
+# 読取は er109_xz_scope_01.is_ukus_active_for_run() 経由のみ(X/Z run scope内)。env/引数/設定dictから変えられない。evaluate(ukus=...)は _evaluate_cached だけが渡す(AST test)。
+# rollback: Falseにすると X/Zでも従来(v1)判定へ戻る(UKUSで受理済みStore entryは再利用ブロック→再生成費用が出る)。
+UKUS_SPELLING_EQUIVALENCE_ENABLED = True
+LAYER_VERSION = "er109_orthographic_equivalence_v2_ukus01"
 STRESS_MODE = "binary_stressed_vs_unstressed"   # P-01: 強勢は有/無の2値で比較(1,2->1, 0->0)。除去しない
 
 
 def is_enabled() -> bool:
     """単一flag読取関数(er109_xz_scope_01.is_active_for_run()だけが呼ぶ)。"""
     return bool(ORTHOGRAPHIC_EQUIVALENCE_ENABLED)
+
+
+def ukus_is_enabled() -> bool:
+    """UKUS層のflag読取関数(er109_xz_scope_01.is_ukus_active_for_run()だけが呼ぶ)。親flagがFalseなら常にFalse。"""
+    return bool(UKUS_SPELLING_EQUIVALENCE_ENABLED) and is_enabled()
 
 
 MAX_UNITS_PER_SIDE = 6      # 1つの差span内の最大unit数
@@ -532,6 +541,8 @@ class EquivalenceResult:
     contraction_expanded: bool = False
     version: str = LAYER_VERSION
     warnings: list = field(default_factory=list)    # P-08: 空=警告なし。非空=PASS_WITH_WARNING+事後試聴の対象
+    ukus_pairs: list = field(default_factory=list)  # UKUS層で同値化した位置の記録(空=UKUS寄与なし。warningsには入れない)
+    ukus_error: str = ""                            # UKUS層の例外(fail-closed: v1判定へ戻る)。空=なし
 
     @property
     def verdict(self) -> str:
@@ -540,6 +551,19 @@ class EquivalenceResult:
         return "PASS_WITH_WARNING" if self.warnings else "PASS"
 
     def audit(self) -> dict:
+        d = self._audit_base()
+        if self.ukus_pairs:                          # UKUS適用時のみ追加(非UKUS行のauditはversion文字列を除き不変)
+            d["ukus_pairs"] = [dict(p) for p in self.ukus_pairs]
+            d["ukus_pairs_n"] = len(self.ukus_pairs)
+            d["pron_differs_n"] = sum(1 for p in self.ukus_pairs if p.get("pron_differs"))
+            import er109_ukus_spelling_01 as _uk
+            d["ukus_active"] = True
+            d["ukus_table_sha256"] = _uk.PAIRS_CANONICAL_SHA256       # W-07: 適用時のみ(非UKUS行の署名は不変)
+        if self.ukus_error:
+            d["ukus_error"] = self.ukus_error
+        return d
+
+    def _audit_base(self) -> dict:
         return {"version": self.version, "flag_enabled": is_enabled(), "stress_mode": STRESS_MODE,
                 "equivalent": self.equivalent, "verdict": self.verdict, "reason": self.reason,
                 "rules": list(self.rules), "warnings": list(self.warnings), "contraction_expanded": self.contraction_expanded,
@@ -706,9 +730,11 @@ def _judge_span(c_span: list[Unit], a_span: list[Unit], representative_only: boo
     return rec
 
 
-def evaluate(canonical: str, asr: str, *, representative_only: bool = False) -> EquivalenceResult:
+def evaluate(canonical: str, asr: str, *, representative_only: bool = False, ukus: bool = False) -> EquivalenceResult:
     """canonical(期待文)とasr(転写)が『発音として同値』かを判定する純関数。
-    representative_only=True: canonical側も代表強勢読みのみで比較(より厳格。設計比較用)。"""
+    representative_only=True: canonical側も代表強勢読みのみで比較(より厳格。設計比較用)。
+    ukus=True: 既存判定が不合格になった『同数・全unitがword』のspanだけ、固定対表(er109_ukus_spelling_01)で位置別に英米綴り差を救済する。
+      既存判定が合格するspanには触れない(PASS->NG 0)。救済不成立なら ukus=False と同一のNG記録。既定False(従来)。呼出はer109_xz_scope_01._evaluate_cachedのみ(AST test)。"""
     if asr is None or canonical is None:
         return EquivalenceResult(False, "none_input")
     import er006_preprod_hardening_01_validation as val   # 遅延import(循環回避。純関数のみ使用)
@@ -741,11 +767,32 @@ def evaluate(canonical: str, asr: str, *, representative_only: bool = False) -> 
             res.reason = "span_too_long"
             return res
         bad = [u for u in c_span + a_span if not u.prons]
+        rec = None if bad else _judge_span(c_span, a_span, representative_only, entity_tokens)
+        if ukus and (bad or not rec.equivalent):
+            # UKUS救済(既存判定が不合格のspanだけ。合格spanには触れない)。例外はfail-closed(v1判定のNG記録へ戻る)。
+            try:
+                import er109_ukus_spelling_01 as _uk
+                resc = _uk.rescue_span(canonical, len(cu), i1, c_span, a_span, representative_only, entity_tokens)
+            except Exception as exc:  # noqa: BLE001
+                resc = None
+                res.ukus_error = f"{type(exc).__name__}: {exc}"
+            if resc is not None:
+                recs, pairs, wns = resc
+                res.spans.extend(recs)
+                if _uk.RULE_NAME not in res.rules:
+                    res.rules.append(_uk.RULE_NAME)
+                for r_ in recs:
+                    if r_.rule not in res.rules:
+                        res.rules.append(r_.rule)
+                res.ukus_pairs.extend(pairs)
+                for w in wns:
+                    if w not in res.warnings:
+                        res.warnings.append(w)
+                continue
         if bad:
             res.spans.append(SpanRecord(cs, as_, False, "incomparable", ",".join(sorted({u.why or u.kind for u in bad}))))
             res.reason = "incomparable(CMU未登録/解析不能/曖昧略語のため同値化しない)"
             return res
-        rec = _judge_span(c_span, a_span, representative_only, entity_tokens)
         res.spans.append(rec)
         if not rec.equivalent:
             res.reason = rec.why
@@ -760,5 +807,5 @@ def evaluate(canonical: str, asr: str, *, representative_only: bool = False) -> 
         res.reason = "surface_equal_after_normalization"
         return res
     res.equivalent = True
-    res.reason = "all_diff_spans_phoneme_equal"
+    res.reason = "all_diff_spans_phoneme_equal_or_ukus_variant" if res.ukus_pairs else "all_diff_spans_phoneme_equal"
     return res

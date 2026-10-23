@@ -1,0 +1,20 @@
+# OPUS_REVIEW_02_COND_C (ASR-QUALITY-2ITEMS ②UKUS Production配線設計 条件Cレビュー)
+
+注記: 本文はFableが委任_04文へ転記した逐語要約(Opus原本ではなくFable転記)。保存日2026-10-23。
+
+## Fable判定(記録用)
+Opus総合判定=「必須修正4点を反映すれば実装可、再設計不要」。一致: 統合点1か所、hook変更不要、RET表非参照、flag設計、対表git mv+sha照合、Trial撤去順序、LAYER_VERSION扱い。対立点4(同等性検証の網羅sweep/c12は `reuse_blocked` 印+checkpoint・provenance考慮/`ukus_contributed` の検出範囲とキー/Xは陽性証拠を取る)は検証・安全の技術修正→**Fable判断で実装へ進む**。PRODUCTION_WIREDはFable受入後(X/Z双方のevidence必須)。T-K(両層ON相互作用test)は①②の後からcommitする側の必須test+B工程前のFable受入項目。
+
+## Opus所見(逐語要約)
+- W-01[必須] 同等性差分testの強化: 保存6,137行のNG→PASSはc12のみ、合成27件では救済経路を検査できない。構造差(span粒度: Trialは合格同数語spanも位置別分解、Production案は不合格spanのみ/rules: contraction含むn:n span同居時)。修正: (1)Trial撤去前に全active 6,361対を両方向で文に埋め込んだ網羅sweep(API 0)でTrial⇔Production比較。文型=文頭/文中小文字/文頭+次語大文字/所有格・複数・ハイフン複合/v1救済spanが前後に同居/数・否定spanとの同居/n:n複数位置混在/CMU未登録位置(jewellery型)/`_canon_entity_flags` 長さ不一致、`er111_ukus_trial_eval_01.py` のcase生成流用 (2)比較項目固定: `equivalent`・`reason`・`warnings`(集合)・`ukus_pairs` 完全一致、`rules` は集合比較し差分は全件列挙・分類保存、`spans` は比較対象外と明記 (3)`reason` の `all_diff_spans_phoneme_equal_or_ukus_variant`(Trial:232)を移植 (4)W1文言「1:1 span」→「同数・全unitがword(Trial:177 positional条件)」、救済は各位置を既存位置別判定→不合格位置だけ対表(Trial:197-227と同一)、`bad` 分岐の救済もpositional span限定。CMU未登録位置のbadチェック除外は承認済み(OF-01/02)どおり移植可、音素注入なし・対表完全一致のみをsweepで確認。
+- W-02[必須] c12解除手順: (1)`_merge_checkpoint`(er063:1325)が `tts_checkpoint.json` のc12を再注入し得る→checkpoint不在/該当キー不在の確認を手順に追加 (2)`writer/provenance.json` の `audio_text_deviations` にforte記録が残る→削除せず「superseded」注記追記またはRUNTIME_EVIDENCEで明示 (3)累積カウンタ: c12は `state=RESOLVED`、`cumulative_tts_attempts=4`、上限15・1回3なので発火しない、RESOLVEDはブロックしない、attemptファイルは自動採番→実装時は `canonical_text_sha256` が現行TTS入力hashと一致することのみ確認 (4)**推奨代替: segmentsキー削除でなく既存の `reuse_blocked` 印をc12 entryに付ける**(er078:46-49で常にblock、er063:764-768で再生成、旧理由は `reuse_value_guard_blocked_previous` に自動記録。印の値に理由[ユーザー指示B]・日付・保全コピーpath)。失敗時は保全コピーから復元。
+- W-03[必須] `ukus_contributed` の検出漏れ: UKUS flagだけOFFのrollback時、再判定NG(非保護差)はblockされない(er078:92-96)→W11が唯一の防壁。修正: (1)`asr_judgement` と `asr_judgement_inherited` 両方を見る(Zは再利用時inheritedへ移す er063:786-787) (2)`orthographic_equivalence.sites[*]` 全site(primary/secondary/KP票)の `er109.rules` を走査 (3)判定キー統一: `"ukus_spelling_variant" in rules` または `ukus_pairs` 非空 (4)fail-closed: `ortho_contributed`=True・versionが `*_ukus*`・siteのer109 audit無し→UKUS寄与ありとしてblock (5)配置は `kp_vote_gate_follows` 早期return(:66)より前・既存ortho判定(:63)直後 (6)T-E5に「inheritedのみ」「KP票site」「audit欠落」を追加。
+- W-04[必須] T-K(両方ON相互作用test)の割当: 後からcommitする側の委任の必須test+B工程run前のFable受入項目。内容=PNAP供給後canonicalでの判定/固有名詞差+綴り差同居文が両方ONでもNG維持(G2限界、既知別案件)/②OFF/ONで①署名不変・①OFF/ONで②判定不変。
+- W-05[推奨] golden: `pre_wiring_signatures_*`・`manifest.pre_wiring_commit` の既存行は触らない。合成行追加時は新行のpre署名だけ配線前commit overlayで採り、既存行再計算がfixtureとバイト同一を確認。現HEAD(v1)のX/Z署名を中間baselineとし、v2との差分を「version文字列のみ/新規UKUS PASS/PASS→NG 0」の3分類で全件確認。T-Iの「flag OFF→従来署名」はversion文字列正規化後に比較。
+- W-06[推奨] HR rejudge dirty検査対象に `er109_ukus_pairs_v1.json` も追加。
+- W-07[推奨] run単位evidence/summaryに `ukus_active`・表sha・LAYER_VERSION を記録。表sha不一致は失敗状態をcache(lru_cacheは例外をcacheしない→毎回1.5MB再ロード)、sha照合testを常設回帰に。
+- W-08[推奨] X陽性証拠: 「非発火の記録」では弱い。(1)X正式TTS段のdecorator付き入口から、米綴り化しやすいUK専用語を複数含む文(organisation/centre/colour/programme)2〜3文を実行し最初の発火で止める(上限約3clip・約3円) (2)API 0でV6行列(Primary/Secondary/KP票/継承/Store guard×X)をhook差し替えなしの実コードで再実行。Zで発火しない場合(TTSがspecialityと読みASRもそのまま)は保全attempt1〜3の実転写をZ scopeで再判定(API 0)を予備証拠と明記。
+- W-09[推奨] c12は `pron_differs=true` である旨をB報告の最終試聴確認点として明記(Gate・基準変更ではない)。
+- W-10[推奨] test更新: `er109_xz_isolation_01_test_01.py:248` のspy、`er109_xz_scope_01_test_01.py:140-144,156,466,472` が `_evaluate_cached` 2引数前提→`ukus=` を渡してよいのは `_evaluate_cached` のみとするAST test新設と同時更新。
+- 情報: W-11 LAYER_VERSION副作用の根拠妥当(機能比較は xz:131,214 のみ、保存値参照は監査用)。W-12 P-06安全性妥当だが T-Dで value_guard数語彙・`negation_counter` に表の語が該当しないことも検査(`nought→naught` はactive)。W-13 flag構成は既存 `ORTHOGRAPHIC_EQUIVALENCE_ENABLED` と同型で承認済み、11-7対象外、27-3整合。W-14 ①との干渉は近接hunk・allowlist・SSOTのみ、後からcommitする側がrebaseせず両方の行を残して全回帰(※本プロジェクトではrebase禁止→最新化後に自分のhunkを再適用)。W-15 offline tool(`er109_stored_*`)は既定Falseでv1を測り続ける→Production挙動の証拠には `decision()` をscope内で通す。
+
