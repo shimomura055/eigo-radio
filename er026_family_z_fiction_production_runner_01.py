@@ -1083,6 +1083,9 @@ def stage_seed_check(ctx) -> dict:
         if actual != meta["sha256"]:
             raise FamilyZE2EStop(f"FAMILY_Z_SEED_SHA_MISMATCH: {name} {actual[:12]} != {meta['sha256'][:12]}")
         seed_files[name] = actual[:12]
+    # 原作忠実性包括対策v1(2026-10-23): fail-closed。Melos以外のFamily Z文学作品はSeedにsource_essentialsが無いと承認不可。
+    # スキーマ・件数・source_quote(原作最終段落との逐語一致)を決定論で検査。意味の妥当性はFable CPが原作最終段と照合する。
+    seed_essentials = m.w62.validate_source_essentials(m.w62.rj(f"{ctx.seed_dir}/seed.json"), ctx.story_key, ctx.seed_dir)
     keys = ("FAMILY_Z_WRITER_ADV_R0", "FAMILY_Z_WRITER_ADV_R1", "FAMILY_Z_WRITER_ADV_R2", "FAMILY_Z_STD_ADJUST",
             "FAMILY_Z_STORY_SPLIT", "FAMILY_Z_DIALOGUE_ATTRIBUTION")
     models = {k: routing.PROCESS_MODEL_MAP[k] for k in keys}
@@ -1092,7 +1095,7 @@ def stage_seed_check(ctx) -> dict:
                   for i in ("full_story_part1_c1", "full_story_part2_c3", "full_story_part3_c20"))
     if not role_ok:
         raise FamilyZE2EStop("FAMILY_Z_ER020_ROLE_PATTERN_NOT_RESOLVING")
-    return {"seed_files": seed_files, "routing_models": models,
+    return {"seed_files": seed_files, "source_essentials": seed_essentials, "routing_models": models,
             "style_table_keys": sorted(style), "melos_voice": melos_voice["melos_voice"],
             "melos_voice_status": melos_voice["status"], "er020_full_story_clip_pattern": role_ok,
             "dialogue_voices": m.st.STORY_SPEAKER_CONFIG[ctx.story_key]["dialogue_voice_tts_names"]}
@@ -1104,6 +1107,8 @@ def stage_writer(ctx) -> dict:
     llm = _w62_llm(ctx)
     res = m.w62.run_writer_chain(llm, ctx.out_dir, ctx.seed_dir, stages=("r0", "r1", "r2"),
                                  regenerate_stage=_regen_for(ctx, "r0", "r1", "r2"), story_key=ctx.story_key)
+    # essentialsがあるSeedのみ、Fable CPチェックリストを決定論で機械生成(API 0。essentials無し=書かない)。
+    m.w62.write_cp_checklist(ctx.out_dir, m.w62.rj(f"{ctx.seed_dir}/seed.json"), ctx.story_key)
     return {"stages": {k: {"status": v["status"], "guardrails": v["guardrails"],
                            "output_sha256": v["entry"]["output_sha256"][:12]} for k, v in res["stages"].items()},
             "llm_spent_jpy": round(llm.budget.spent, 4)}
@@ -1118,6 +1123,7 @@ def stage_std_adjust(ctx) -> dict:
     res = m.w62.run_writer_chain(llm, ctx.out_dir, ctx.seed_dir, stages=("std_adjust",),
                                  regenerate_stage=_regen_for(ctx, "std_adjust"), story_key=ctx.story_key)
     g = res["stages"]["std_adjust"]["guardrails"]
+    m.w62.write_cp_checklist(ctx.out_dir, m.w62.rj(f"{ctx.seed_dir}/seed.json"), ctx.story_key)   # Std反映後に更新(essentials無し=書かない)
     warn = None
     if not g["std_adv_paragraph_count_match"]:
         warn = (f"STD_ADV_PARAGRAPH_COUNT_MISMATCH(WARNのみ・再生成/STOPしない): std={g['paragraph_count_std']} "

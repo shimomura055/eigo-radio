@@ -48,6 +48,13 @@ Status: `PHASE1_SEED_RIGHTS_REGISTRY_DRYRUN_READY_PENDING_FABLE`。性質=既存
 5. Standard/Advancedで中心Story・結末が変わっていないか。
 - 要注意(Fable判定事項): CURRENT_SPEC 2026-10-12追記④(Family Z編集方針=エッセンス優先・原作と異なる展開も許容、旧「原作保持条件」はWriter Prompt `R0_BLOCK_PRESERVATION`へ置換)と、ユーザー2026-10-21指示§2(中心Story・人物関係・因果関係・結末を維持)は文言上の強さが異なる。既存Promptは変更しない前提で、上記は`seed.json`のデータ側で担保した。text stage後の観点1〜5でNGなら、Prompt変更ではなくFableが11-6で扱う(新仕様候補)。
 
+### 2-3 【2026-10-23追記】原作忠実性包括対策v1(修正版B全体、APPROVED_FOR_PRODUCTION)によるCP・Seed承認手順の更新
+(旧2-1の『主人公のみ固有名・Framton Nuttel』『観点1〜5のみ』は履歴として残す。以下が現行。)
+- **Seed承認手順(新規Family Z文学作品は必須、Melosのみ除外)**: Seedに`source_essentials`(最大5件・各1文・意味レベル)を記入する。`ending_reveal`(`source_quote`=原作最終段落からの逐語引用必須、`withhold_until_end`対必須)・`setups_and_payoffs`(結末成立に不可欠なものだけ)・`key_roles`(`keep_name`付き)・`key_causality`・`free_to_cut`(必須)。`stage_seed_check`が決定論で「essentials有無・スキーマ・件数≤5・source_quoteが`primary_text_excerpt.md`末尾段落に逐語一致」を検査し、不備はSTOP(`FamilyZSeedEssentialsStop`、fail-closed)。**Fableはseed承認時にessentialsを原作最終段(`seed/primary_text_excerpt.md`末尾)と照合する(1回)**。
+- **CPチェックリスト**: `writer/cp_checklist.md`がessentialsから機械生成される(`er062_family_z_writer_01.build_cp_checklist`、writer/std_adjust stage後)。項目ごとに『本文の該当引用』(stage別)を必須欄とし、観点4は「結末前に示唆が無い」に加えて「**種明かし自体が最終に在る**」を要求する。
+- **処置規則**: (A)重大=`ending_reveal`・`key_roles`(keep_name人物の脱落/他人名の増加)・`key_causality`・`setups_and_payoffs`の欠落 -> CP不合格。TTS前に修正(承認済みの明示`--regenerate-stage`または決定論パッチ)、原因分析を記録、C案(軽量事後確認)要否をユーザーへ提示(`判断候補`)。(B)軽微=結末直前の付加文などwithholdを希釈する不要文のみ -> `apply_cp_deletion_patch`(exact文字列の削除・provenanceへ削除文/理由/前後sha記録)。所見を処置せずTTSへ進めてはならない。**自動判定・LLM検査・retry・Human Reviewは追加しない**(Fable/Sonnetの記入と判定。10-12決定③④に整合)。
+- 固有名詞: 固有名は主人公と`keep_name=true`人物のみ(『開いた窓』=Framton[`STORY_MAIN_CHARACTER`、フルネームNuttelは使わない]+Vera)。他は役割語。
+
 ## §3 Melos固有ハードコード棚卸しと変更差分
 ### 3-A 棚卸し表(Grep `melos|Melos|MELOS|メロス|selinunt|dionys`、現在の行番号)
 種別: C=コメント/docstring、K=定数(story別値)、P=Prompt文、B=分岐/ロジック、T=test fixture/mock、L=legacy(Phase 1経路、E2E非使用)。対応: ✓=実装(Melos不変)、D=設計案のみ(実装せず)、-=変更不要。

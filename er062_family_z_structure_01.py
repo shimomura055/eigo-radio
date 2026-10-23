@@ -801,11 +801,12 @@ STORY_LINT_CONFIG = {
                        "arrives just"],
     },
     # 委任_01(FAMILY-Z-THE-OPEN-WINDOW-PRODUCTION-E2E-01): 『開いた窓』用の同一機構(story_key別config)の値。新しい検査方式ではない。
-    # forbidden_names=主人公(Framton Nuttel)以外の人名(Preview/Commentに出さない、Melosと同方針)。
-    # 短い名前('Vera'等)は'several'等への部分一致誤検出を避けるため含めない。
+    # forbidden_names=主人公(Framton)・keep_name人物(Vera、Seed source_essentials.key_roles)以外の人名(Preview/Commentに出さない、Melosと同方針)。
+    # 2026-10-23(修正版B全体の正式採用): keep_name=trueのVera(カナ「ヴェラ」)はforbidden_namesから外した
+    # (Std日本語Preview/Commentで「ヴェラ」が出てもblockingにしない)。短い名前は'several'等への部分一致誤検出を避けるため含めない。
     # spoiler_*=結末(少女の作り話・種明かし)を先回りする語。ユーザー2026-10-21指示「結末の意外性を損なう先回りの説明を入れない」に対応。
     "the_open_window": {
-        "forbidden_names": ["Sappleton", "Ronnie", "サプルトン", "サップルトン", "ロニー", "ヴェラ"],
+        "forbidden_names": ["Sappleton", "Ronnie", "サプルトン", "サップルトン", "ロニー"],
         # 結末(少女の作り話・種明かし・叔母の夫と弟の帰還後の展開)の先回りに必要な最小限の語のみ(Fable判定2026-10-21、一般語は入れない)。
         "spoiler_ja": ["作り話", "でっち上げ", "嘘", "うそ", "偽り", "種明かし", "ハッタリ"],
         "spoiler_en": ["made up", "made-up", "invented", "a lie", "was lying", "lied", "tall tale", "the truth is",

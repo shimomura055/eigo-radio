@@ -357,10 +357,145 @@ class LLM:
 
 
 # ------------------------------------------------------------
+# 原作忠実性 包括対策v1(修正版B全体、2026-10-23ユーザー正式採用 APPROVED_FOR_PRODUCTION、OPEN-465/464)
+#  - Seedの任意キー source_essentials(維持必須要素・最大5件)から決定論的にMust-keep文字列を作り、R0/R1/R2/Std調整の全段へ
+#    **引数で**渡す(グローバル差替えなし)。essentialsが無いSeed(Melos)ではPromptは従来とbyte一致。
+#  - keep_name=true人物は「主人公のみ個人名可」を上書き(作品名は共通Promptに入れない=Seedのkey_rolesが置き場)。
+#  - 新Validator・LLM検査・retry・Human Reviewは追加しない(2026-10-12決定③④)。
+# ------------------------------------------------------------
+class FamilyZSeedEssentialsStop(FamilyZStop):
+    """新規Family Z文学作品のSeedがsource_essentialsを欠く/スキーマ不正(fail-closed)。"""
+
+
+# essentials無しで従来どおり許可する作品(完成版不変のMelos)。それ以外のFamily Z文学作品はessentials必須。
+ESSENTIALS_EXEMPT_STORIES = ("melos",)
+ESSENTIALS_MAX_ITEMS = 5      # ending_reveal(1)+setups_and_payoffs+key_causality+keep_name=true人物 の合計上限
+
+_R0_NAME_SENT = "Only the main character (the protagonist) may be given a personal name."
+_R0_NAME_SENT_KEEP = ("Only the main character (the protagonist) and the people marked \"keep the name\" in the Must-keep section may be given "
+                      "personal names; use only one of the two names (first or last) of a person, consistently.")
+_R0_PRES_LAST = "- Keep the cast small and do not add named people other than the main character."
+_R0_PRES_LAST_KEEP = ("- Keep the cast small and do not add named people other than the main character and the people marked "
+                      "\"keep the name\" in the Must-keep section.")
+_REVISE_NAME_SENT = "and only {main_character} may have a personal name."
+_REVISE_NAME_SENT_KEEP = ("and only {main_character} and the people marked \"keep the name\" in the Must-keep section below may have a personal name "
+                          "(keep those names as they are; use no other personal names; use only one of the two names (first or last) "
+                          "of a person, consistently).")
+_REVISE_TAIL = " Output the title and the story only."
+_STD_ANCHOR = "\n\nKeep the essence of the source story"
+
+
+def _esc(s: str) -> str:
+    return s.replace("{", "{{").replace("}", "}}")
+
+
+class Essentials:
+    """Seedのsource_essentialsから決定論的に作る全段共通のMust-keep情報(純粋データ)。"""
+    def __init__(self, ess: dict):
+        self.ess = ess
+        self.keep_names = [r["name"] for r in (ess.get("key_roles") or []) if r.get("keep_name") and r.get("name")]
+        self.block_full = _render_essentials_block(ess, "full")
+        self.block_std = _render_essentials_block(ess, "std")
+        # 入力指紋/provenance用: 内容(正規化JSON)のsha。Seed shaとは別に各段のcache判定へ組込む。
+        self.sha256 = sha(json.dumps(ess, sort_keys=True, ensure_ascii=False))
+
+
+def _render_essentials_block(ess: dict, mode: str) -> str:
+    """mode='full': R0/R1/R2用。'std': Std調整用(結末前の示唆禁止は不要。最終行は要約でないことを明示)。Trial(sftrial_dev_runner_01)と同一文面。"""
+    L = ["[Must-keep -- story essentials]",
+         "These are the points that make this story work. Keep their meaning (your own words are fine); everything not listed here may be shortened or reshaped."]
+    er = ess.get("ending_reveal")
+    if er:
+        q = (' (the original\'s own last sentence: "' + er["source_quote"] + '").') if er.get("source_quote") else "."
+        L.append("- Ending (required): " + er["meaning"] +
+                 " The final reveal line is part of the story, not a summary, a moral or a new explanation: keep it as the closing line "
+                 "of the story, in your own words if you like, but its idea must be clearly conveyed" + q)
+        if mode == "full" and er.get("withhold_until_end"):
+            L.append("- Not before the ending: " + er["withhold_until_end"])
+    for sp in ess.get("setups_and_payoffs") or []:
+        L.append("- Setup and payoff (keep both): " + sp["setup"] + " -> " + sp["payoff"])
+    roles = ess.get("key_roles") or []
+    if roles:
+        parts = []
+        for r in roles:
+            if r.get("keep_name") and r.get("name"):
+                parts.append(f"{r['name']} ({r['role']}) -- keep the name {r['name']}")
+            else:
+                parts.append(f"{r['role']} -- refer to this person by role or relationship, without a name")
+        L.append("- Key people: " + "; ".join(parts) + ".")
+    for c in ess.get("key_causality") or []:
+        L.append("- Cause and effect to keep: " + c)
+    if mode == "std":
+        L.append("- The closing line (the final reveal) must stay as the last line of the A2 version: it is part of the story, "
+                 "not a closing summary or a new explanation, so the rules against summaries and new explanations do not apply to it.")
+    if ess.get("free_to_cut"):
+        L.append("- May be cut or compressed: " + "; ".join(ess["free_to_cut"]) + ".")
+    return "\n".join(L)
+
+
+def build_essentials(seed: dict):
+    """Seedにsource_essentialsがあれば Essentials、無ければ None(=従来動作)。"""
+    e = (seed or {}).get("source_essentials")
+    return Essentials(e) if e else None
+
+
+def _norm_quote(s: str) -> str:
+    s = (s or "").replace("’", "'").replace("‘", "'").replace("“", '"').replace("”", '"')
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def validate_source_essentials(seed: dict, story_key: str, seed_dir: str | None = None) -> dict:
+    """Seed承認(seed_check)とrun_writer_chainで呼ぶ。fail-closed: Melos以外のFamily Z文学作品はessentials必須。
+    スキーマ・件数・source_quoteを決定論で検査する(Seed記入規則であり本文Validatorではない)。
+    source_quoteは seed_dir/primary_text_excerpt.md の最終段落に逐語(引用符・空白正規化のみ許容)で含まれること。
+    意味の妥当性(原作最終段との照合)はFable CPが行う。戻り値は記録用サマリ。"""
+    ess = (seed or {}).get("source_essentials")
+    if not ess:
+        if story_key in ESSENTIALS_EXEMPT_STORIES:
+            return {"present": False, "exempt": True}
+        raise FamilyZSeedEssentialsStop(
+            f"FAMILY_Z_SEED_ESSENTIALS_MISSING: {story_key}のSeedにsource_essentialsが無い(新規Family Z文学作品はSeed承認不可。"
+            "Melosのみ例外)。Seedへ ending_reveal(source_quote/withhold_until_end)・free_to_cut 等を記入すること")
+    why = []
+    er = ess.get("ending_reveal")
+    if not isinstance(er, dict) or not all(isinstance(er.get(k), str) and er.get(k).strip()
+                                          for k in ("meaning", "source_quote", "withhold_until_end")):
+        why.append("ending_reveal(meaning/source_quote/withhold_until_endの3点必須)")
+    for sp in ess.get("setups_and_payoffs") or []:
+        if not (isinstance(sp, dict) and sp.get("setup") and sp.get("payoff")):
+            why.append("setups_and_payoffsのsetup/payoff")
+    roles = ess.get("key_roles") or []
+    for r in roles:
+        if not (isinstance(r, dict) and r.get("role") and isinstance(r.get("keep_name"), bool)):
+            why.append("key_rolesのrole/keep_name(bool)")
+        elif r["keep_name"] and not r.get("name"):
+            why.append("key_roles keep_name=trueにname無し")
+    if not (isinstance(ess.get("free_to_cut"), list) and ess["free_to_cut"]):
+        why.append("free_to_cut(必須)")
+    n_items = ((1 if er else 0) + len(ess.get("setups_and_payoffs") or []) + len(ess.get("key_causality") or [])
+               + sum(1 for r in roles if isinstance(r, dict) and r.get("keep_name")))
+    if n_items > ESSENTIALS_MAX_ITEMS:
+        why.append(f"維持必須要素が{n_items}件(最大{ESSENTIALS_MAX_ITEMS}件)")
+    quote_checked = False
+    if not why and seed_dir:
+        ex = os.path.join(seed_dir, "primary_text_excerpt.md")
+        if os.path.exists(ex):
+            paras = [x for x in re.split(r"\n\s*\n", rd(ex)) if x.strip()]
+            if _norm_quote(er["source_quote"]) not in _norm_quote(paras[-1]):
+                why.append("ending_reveal.source_quoteが原作最終段落(primary_text_excerpt.md末尾)に逐語で無い")
+            quote_checked = True
+    if why:
+        raise FamilyZSeedEssentialsStop("FAMILY_Z_SEED_ESSENTIALS_INVALID: " + " / ".join(why))
+    return {"present": True, "exempt": story_key in ESSENTIALS_EXEMPT_STORIES, "items": n_items,
+            "keep_names": [r["name"] for r in roles if r.get("keep_name")], "source_quote_checked_vs_last_paragraph": quote_checked,
+            "essentials_sha256": Essentials(ess).sha256}
+
+
+# ------------------------------------------------------------
 # Prompt組立
 # ------------------------------------------------------------
-def build_r0_prompt(seed: dict, story_type: str = "literature") -> tuple:
-    """(prompt, substitutions_applied)。Seed(seed.json)からR0 Promptを作る。"""
+def build_r0_prompt(seed: dict, story_type: str = "literature", essentials: "Essentials | None" = None) -> tuple:
+    """(prompt, substitutions_applied)。Seed(seed.json)からR0 Promptを作る。essentials=None -> 従来出力(byte一致)。"""
     bullets = "\n".join(f"- {e}" for e in seed["seed_elements"])
     conv = seed.get("conversion_plan", "")
     applied = []
@@ -372,15 +507,35 @@ def build_r0_prompt(seed: dict, story_type: str = "literature") -> tuple:
     if len(applied) < len(_CONVERSION_SUBSTITUTIONS):
         conv = conv + _CONVERSION_OVERRIDE
         applied.append("override_appended")
-    return R0_TEMPLATE.format(seed_bullets=bullets, conversion=conv, story_type=story_type), applied
+    tmpl = R0_TEMPLATE
+    if essentials is not None:
+        common, pres = R0_BLOCK_COMMON, R0_BLOCK_PRESERVATION
+        if essentials.keep_names:
+            assert _R0_NAME_SENT in common and _R0_PRES_LAST in pres
+            common = common.replace(_R0_NAME_SENT, _R0_NAME_SENT_KEEP)
+            pres = pres.replace(_R0_PRES_LAST, _R0_PRES_LAST_KEEP)
+        tmpl = ("[Story Seed -- inspired by a real, rights-cleared source, freely reimagined;\n"
+                "this is NOT a summary to reproduce, just raw material]\n{seed_bullets}\n\n"
+                "[How to convert it]\n{conversion}\n\n"
+                + pres + "\n\n" + _esc(essentials.block_full) + "\n\n" + R0_BLOCK_STORY_TYPE + "\n\n" + common + "\n\n"
+                + R0_BLOCK_LENGTH_ADV + "\n\n" + R0_BLOCK_LISTENING + "\n\n" + R0_BLOCK_FINAL)
+    return tmpl.format(seed_bullets=bullets, conversion=conv, story_type=story_type), applied
 
 
 # story別の主人公名(REVISE_USER_TMPLの「only <名前> may have a personal name」に入る。Story名の差替えのみ。Melosは従来文言と同一)。
-STORY_MAIN_CHARACTER = {"melos": "Melos", "the_open_window": "Framton Nuttel"}
+# the_open_window: 2026-10-23 "Framton Nuttel"->"Framton"(一方の名前のみ。ユーザー決定の目標=FramtonとVera、Opus論点4 must-fix)。
+STORY_MAIN_CHARACTER = {"melos": "Melos", "the_open_window": "Framton"}
 
 
-def build_revise_prompt(body: str, story_key: str = "melos") -> str:
-    return REVISE_USER_TMPL.format(body=body.strip(), main_character=STORY_MAIN_CHARACTER[story_key])
+def build_revise_prompt(body: str, story_key: str = "melos", essentials: "Essentials | None" = None) -> str:
+    tmpl = REVISE_USER_TMPL
+    if essentials is not None:
+        if essentials.keep_names:
+            assert _REVISE_NAME_SENT in tmpl
+            tmpl = tmpl.replace(_REVISE_NAME_SENT, _REVISE_NAME_SENT_KEEP)
+        assert _REVISE_TAIL in tmpl
+        tmpl = tmpl.replace(_REVISE_TAIL, "\n\n" + _esc(essentials.block_full) + "\n\n" + _REVISE_TAIL.strip())
+    return tmpl.format(body=body.strip(), main_character=STORY_MAIN_CHARACTER[story_key])
 
 
 def std_developer() -> str:
@@ -388,14 +543,18 @@ def std_developer() -> str:
     return sa2.STANDARD_A2_DEVELOPER
 
 
-def build_std_prompt(adv_text: str) -> str:
+def build_std_prompt(adv_text: str, essentials: "Essentials | None" = None) -> str:
     import er003_v1_n3_01_standard_a2_generate as sa2     # X共有ブロック(import only)
     title, body = st.split_title_body(adv_text)
     paras = st.clean_body_paragraphs(body)
+    tail_tmpl = STD_PROMPT_TAIL
+    if essentials is not None:
+        assert _STD_ANCHOR in tail_tmpl
+        tail_tmpl = tail_tmpl.replace(_STD_ANCHOR, "\n\n" + _esc(essentials.block_std) + _STD_ANCHOR, 1)
     # 2026-10-12ユーザー決定: 語数目標はAdvと同じ400±70=330-470(Advの語数に連動させない)。
-    tail = STD_PROMPT_TAIL.format(n_paragraphs=len(paras), target_words=TARGET_WORDS,
-                                  lo_words=STD_WORD_RANGE[0], hi_words=STD_WORD_RANGE[1],
-                                  advanced_story=adv_text.strip())
+    tail = tail_tmpl.format(n_paragraphs=len(paras), target_words=TARGET_WORDS,
+                            lo_words=STD_WORD_RANGE[0], hi_words=STD_WORD_RANGE[1],
+                            advanced_story=adv_text.strip())
     return STD_PROMPT_HEAD + sa2.STANDARD_A2_NEW_VOCAB_BLOCK + tail
 
 
@@ -563,7 +722,13 @@ def run_writer_chain(llm: LLM, out_dir: str, seed_dir: str, *, stages=("r0", "r1
     if pinfo["files"]["seed.json"]["sha256"] != seed_sha:
         raise FamilyZProvenanceMismatchStop("seed.json shaがSEED_PROVENANCE.jsonと不一致(Seed凍結違反)")
     seed = rj(seed_path)
+    # 原作忠実性包括対策v1: Seed承認のfail-closed(Melos以外のFamily Z文学作品はessentials必須)。essentialsは全段・全経路
+    # (通常/regenerate/resume/retry)で毎回Seedから作り直して引数で渡す(状態を持たない)。
+    validate_source_essentials(seed, story_key, seed_dir)
+    ess = build_essentials(seed)
     prov = Provenance(f"{wdir}/provenance.json", story_key, seed_sha)
+    if ess is not None:
+        prov.data["source_essentials_sha256"] = ess.sha256
     results = {}
     prev_sha, prev_text = seed_sha, None
     for stage in CHAIN_STAGES:
@@ -587,13 +752,15 @@ def run_writer_chain(llm: LLM, out_dir: str, seed_dir: str, *, stages=("r0", "r1
             prev_sha, prev_text = pe["output_sha256"], rd(pf)
         out_path = f"{wdir}/{STAGE_FILE[stage]}"
         if stage == "r0":
-            prompt, applied = build_r0_prompt(seed)
+            prompt, applied = build_r0_prompt(seed, essentials=ess)
             dev, user = WRITER_DEVELOPER_MESSAGE, prompt
             extra = {"conversion_substitutions": applied}
         elif stage in ("r1", "r2"):
-            dev, user, extra = None, build_revise_prompt(prev_text, story_key), {}
+            dev, user, extra = None, build_revise_prompt(prev_text, story_key, essentials=ess), {}
         else:
-            dev, user, extra = std_developer(), build_std_prompt(prev_text), {}
+            dev, user, extra = std_developer(), build_std_prompt(prev_text, essentials=ess), {}
+        if ess is not None:
+            extra = {**extra, "essentials_sha256": ess.sha256}
         prompt_sha = sha((dev or "") + "\n\n---\n\n" + user)
         wt(f"{wdir}/{stage}_prompt.txt", (dev + "\n\n---\n\n" if dev else "") + user)
 
@@ -606,7 +773,10 @@ def run_writer_chain(llm: LLM, out_dir: str, seed_dir: str, *, stages=("r0", "r1
                     raise FamilyZStop("[STOP] Std調整出力が『# 』Title行で始まらない(明示 --regenerate-stage std_adjust で再生成)")
             return text, fields
 
-        r = ensure_stage(prov, stage, prev_sha, out_path, runner, regenerate=regen)
+        # essentialsがある場合のみ、その内容shaを入力指紋へ混ぜる(resume/cache判定。essentials変更時に旧本文を黙って再利用しない)。
+        # essentials無し(Melos)は従来の指紋と同一。
+        in_sha = prev_sha if ess is None else sha(prev_sha + "\n##ESSENTIALS##" + ess.sha256)
+        r = ensure_stage(prov, stage, in_sha, out_path, runner, regenerate=regen)
         text = rd(out_path)
         if stage == "std_adjust":
             g = check_std_guardrails(text, prev_text)
@@ -621,6 +791,108 @@ def run_writer_chain(llm: LLM, out_dir: str, seed_dir: str, *, stages=("r0", "r1
             raise FamilyZStop(f"[STOP] {stage} guardrail FAIL: {g['failures']}(明示 --regenerate-stage {stage} のみ再生成)")
         prev_sha, prev_text = e["output_sha256"], text
     return {"provenance": prov.data, "stages": results}
+
+
+# ------------------------------------------------------------
+# Fable CPチェックリストの機械生成と処置規則(原作忠実性包括対策v1、2026-10-23)
+#  - essentialsから項目別の確認欄(本文該当引用の必須欄)を決定論で作る。自動判定・LLM検査・retryは無い(記入・判定はFable/CP担当)。
+# ------------------------------------------------------------
+CP_TREATMENT_RULE = (
+    "処置規則(ユーザー承認2026-10-23): (A)重大=ending_reveal・key_roles(keep_name人物の脱落/他人名の増加)・key_causality・"
+    "setups_and_payoffsのいずれかの欠落 -> CP不合格。TTS前に修正(Writer再実行=承認済みの明示--regenerate-stage、または決定論パッチ)し、"
+    "原因分析を記録し、C案(軽量事後確認)要否をユーザーへ提示する(報告で`判断候補`)。"
+    "(B)軽微=結末直前の付加文など、結末前の示唆(withhold_until_end)を希釈する不要文のみ -> 決定論の削除パッチ(exact文字列の削除)を適用し、"
+    "削除した文・理由・前後sha・対象stageを記録する。所見を処置せずTTSへ進めてはならない。自動判定・LLM検査・retry・Human Reviewは無い。")
+
+
+def _last_paragraph(text: str) -> str:
+    _t, body = st.split_title_body(text)
+    paras = st.clean_body_paragraphs(body)
+    return paras[-1] if paras else ""
+
+
+def build_cp_checklist(seed: dict, story_key: str, stage_texts: dict) -> str:
+    """essentialsからFable CPチェックリスト(Markdown)を決定論で生成する。essentials無しなら''。
+    stage_texts={'r0':text,'r1':..,'r2':..,'std_adjust':..}(存在するstageのみ)。各項目に『本文の該当引用』欄(stage別)を必須欄として置く。"""
+    ess = (seed or {}).get("source_essentials")
+    if not ess:
+        return ""
+    stages = [s for s in CHAIN_STAGES if s in stage_texts]
+    L = [f"# Fable CPチェックリスト(機械生成: {story_key}、essentials sha {Essentials(ess).sha256[:12]})", "",
+         "各行の『本文の該当引用』欄にstage別の本文引用(逐語)を記入する。引用できない=欠落。判定・記入はCP担当(Fable/Sonnet記入→Fable確認)。", "",
+         CP_TREATMENT_RULE, ""]
+    items = []
+    er = ess.get("ending_reveal")
+    if er:
+        items.append(("重大", "ending_reveal(種明かしが最終に在る)", er["meaning"] + f" [原作最終文: {er.get('source_quote','')}]"))
+        if er.get("withhold_until_end"):
+            items.append(("軽微", "withhold_until_end(結末前の示唆・結末直前の付加文が無い)", er["withhold_until_end"]))
+    for sp in ess.get("setups_and_payoffs") or []:
+        items.append(("重大", "setup と payoff", sp["setup"] + "  ->  " + sp["payoff"]))
+    for r in ess.get("key_roles") or []:
+        if r.get("keep_name") and r.get("name"):
+            items.append(("重大", f"key_role keep_name={r['name']}(名前が維持され他人名が増えていない)", r["role"]))
+        else:
+            items.append(("重大", "key_role(役割・関係で表され名前が付いていない)", r["role"]))
+    for c in ess.get("key_causality") or []:
+        items.append(("重大", "key_causality", c))
+    L.append("| # | 深刻度 | 項目 | 内容 | " + " | ".join(f"本文の該当引用({s})" for s in stages) + " | 判定 |")
+    L.append("|---|---|---|---|" + "---|" * len(stages) + "---|")
+    for i, (sev, name, body) in enumerate(items, 1):
+        L.append(f"| {i} | {sev} | {name} | {body.replace('|', '/')} | " + " | ".join("" for _ in stages) + " |  |")
+    L += ["", "## 各stageの最終段落(機械抽出、参考。結末直前の付加文の有無はこの直前段落も確認)", ""]
+    for s in stages:
+        _t, body = st.split_title_body(stage_texts[s])
+        paras = st.clean_body_paragraphs(body)
+        L.append(f"### {s}(段落数{len(paras)}、語数{st.body_word_count(stage_texts[s])})")
+        L.append("- 最終段落: " + (paras[-1] if paras else ""))
+        if len(paras) >= 2:
+            L.append("- 最終の直前段落: " + paras[-2])
+        L.append("")
+    return "\n".join(L)
+
+
+def write_cp_checklist(out_dir: str, seed: dict, story_key: str) -> str | None:
+    """writer/ にある既存stage本文からチェックリストを作り <out_dir>/writer/cp_checklist.md へ書く(essentials無し=書かない)。"""
+    wdir = f"{out_dir}/writer"
+    texts = {s: rd(f"{wdir}/{STAGE_FILE[s]}") for s in CHAIN_STAGES if os.path.exists(f"{wdir}/{STAGE_FILE[s]}")}
+    md = build_cp_checklist(seed, story_key, texts)
+    if not md:
+        return None
+    path = f"{wdir}/cp_checklist.md"
+    wt(path, md + "\n")
+    return path
+
+
+def apply_cp_deletion_patch(out_dir: str, stage: str, exact_text: str, reason: str) -> dict:
+    """CP処置規則(B)軽微の決定論削除パッチ。stage本文から exact_text(1回だけ現れる完全一致の段落/文)を削除し、
+    provenanceの当該entryへ cp_patches(削除文・理由・前後sha)を記録して output_sha256 を更新する。
+    exact_textが0回/複数回なら何もせずSTOP。stageがr0/r1/r2で子stageが生成済みなら、子のinput_sha256も新しい親shaへ付け替えて記録する
+    (本文の手書き修正ではなく、exact削除のみ)。"""
+    wdir = f"{out_dir}/writer"
+    prov = Provenance(f"{wdir}/provenance.json", None, rj(f"{wdir}/provenance.json")["seed_sha256"])
+    path = f"{wdir}/{STAGE_FILE[stage]}"
+    entry = prov.chain_entry(stage)
+    if entry is None or not os.path.exists(path):
+        raise FamilyZStop(f"[STOP] CP削除パッチ対象stage未生成: {stage}")
+    old_text = rd(path)
+    if old_text.count(exact_text) != 1:
+        raise FamilyZStop(f"[STOP] CP削除パッチ: exact_textが本文に{old_text.count(exact_text)}回(1回のみ許可): {exact_text[:60]!r}")
+    new_text = old_text.replace(exact_text, "", 1)
+    new_text = re.sub(r"\n{3,}", "\n\n", new_text).rstrip() + "\n"
+    old_sha, new_sha = entry["output_sha256"], sha(new_text)
+    wt(path, new_text)
+    entry["output_sha256"] = new_sha
+    entry.setdefault("cp_patches", []).append({"removed_text": exact_text, "reason": reason, "stage": stage,
+                                                "old_output_sha256": old_sha, "new_output_sha256": new_sha, "at": _now()})
+    ess_sha = prov.data.get("source_essentials_sha256")
+    nxt = {"r0": "r1", "r1": "r2", "r2": "std_adjust"}.get(stage)
+    if nxt and prov.chain_entry(nxt):
+        ce = prov.chain_entry(nxt)
+        ce["input_sha256"] = new_sha if ess_sha is None else sha(new_sha + "\n##ESSENTIALS##" + ess_sha)
+        ce.setdefault("cp_parent_relink", []).append({"parent": stage, "old_parent_sha256": old_sha, "new_parent_sha256": new_sha})
+    prov.save()
+    return {"stage": stage, "old_sha256": old_sha, "new_sha256": new_sha, "removed_text": exact_text}
 
 
 # ------------------------------------------------------------

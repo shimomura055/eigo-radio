@@ -84,7 +84,10 @@ class SeedFilesTest(unittest.TestCase):
             m = json.load(f)
         with open(f"{SEED_DIR}/seed.json", encoding="utf-8") as f:
             s = json.load(f)
-        self.assertEqual(list(m), list(s))
+        # 2026-10-23(修正版B全体の正式採用): 『開いた窓』Seedは任意キーsource_essentialsを追加で持つ(Melosは持たない=従来どおり)
+        self.assertEqual(list(m), [k for k in s if k != "source_essentials"])
+        self.assertIn("source_essentials", s)
+        self.assertNotIn("source_essentials", m)
         self.assertEqual(set(m["rights_status"]), set(s["rights_status"]))
         self.assertEqual(s["rights_status"]["confirmed_date"], "2026-10-21")
         self.assertGreaterEqual(len(s["seed_elements"]), 4)
@@ -180,7 +183,9 @@ class MelosUnchangedSnapshotTest(unittest.TestCase):
         self.assertEqual(w.build_revise_prompt("BODY"), old)
         self.assertEqual(w.build_revise_prompt("BODY", "melos"), old)
         ow = w.build_revise_prompt("BODY", "the_open_window")
-        self.assertIn("only Framton Nuttel may have a personal name", ow)
+        # 2026-10-23(修正版B全体の正式採用): 主人公名を"Framton"へ(フルネームNuttelは指示文に使わない、Opus論点4 must-fix)
+        self.assertIn("only Framton may have a personal name", ow)
+        self.assertNotIn("Nuttel", ow)
         self.assertNotIn("Melos", ow)
 
     def test_check_adv_guardrails_melos_default_unchanged(self):
