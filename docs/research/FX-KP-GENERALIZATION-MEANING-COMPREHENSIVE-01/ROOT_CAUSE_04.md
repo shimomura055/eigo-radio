@@ -4,6 +4,21 @@
 範囲: 既存データの再集計+Prompt組立関数のローカル呼出のみ(API 0)。再現script=`er112_output/kp_gm_design_07/`(`prompt_dump.py`・`ng_context_dump.py`・`hardcore_arm_table.py`・`canon_reasoning_census.py`・`cp_vs_b0.py`)。コード行は**HEAD(c7a43c8f3)基準**(作業ツリーは並行の課題②配線で`er003_key_words_gloss_alignment.py`等が編集中のため行番号がずれる。`git show HEAD:<file>`で確認可)。
 前提の訂正(FABLE_VERIFICATION_02): `reach for someone's wallet`・`apply one's findings`は見出し語placeholderの問題で字義訳NGではない(本書の字義訳集計から除外し別掲)。
 
+## 0-R. 【改訂(委任_22、2026-10-24)OPUS_REVIEW_07 OF-KP1-01の反映 + Fable裁定】 以下の§0〜§6の記述のうち、この節と矛盾する部分はこの節が優先する
+
+原文の§0〜§6は逐語を残す(履歴)。結論の文言のみ次のとおり改訂する(根拠=`OPUS_REVIEW_07.md`論点1、Fable裁定=委任_22 §0)。
+
+| 項目 | 旧(§0) | 改訂後 |
+|---|---|---|
+| 主因 | H5(gloss callの文脈限定句)が主因 | **主因=gloss callに『本文での意味を確定する段』が無い**(翻訳モードでglossを直接1本書く形。H4+H10の統合)。根拠: 意味の計算を強いたarm(G2/G3/Cp/C)は、制約句の有無と無関係に効いた。 |
+| H5(文脈限定句) | 主因(確度高) | **増悪因子(未検証)**。反証: (1)Cpは制約句を含む現行messageのまま(`er112_kp_gm_trial_04_gen.py` l.115-121、`CP_BLOCK`を差し込むだけ)で hard-core 0/4・F層FAIL 0/41、(2)G3は制約句不変で0/7、G2は制約句をむしろ強化して1/7、(3)Mは制約句を残しても `greener grass` 0/2・trophy 1/2。制約句は字義訳の**必要条件ではない**。X1(M対X1)で検証する。事前の期待は下げる。 |
+| 性質の表現 | 『確率的ではなく決定論的』 | **特定の型に集中する高確率の失敗。promptの揺れにも敏感**。型=『具体名詞を含み、字義どおり読んでも文法が通り、直訳した日本語では比喩の意味が運ばれない、新造または断片化した比喩』。各KP 2rep(+Production artifact)ではp=0.7とp=1.0を区別できない。Mのchurn(出力がB0から入れ替わる)も確率性を示す。 |
+| 暴露の上流原因(追記) | (なし) | 選定の規則5(字面で分かる表現を除外)が再利用性の低い新造比喩(`question shaped like a trophy`、`an unseen clock`)を選ばせ、規則3が慣用句を断片化させる(`greener`)。これがリスクの母数を作る。 |
+| few-shot例(追記・原因候補) | (なし) | 現行の判定参考例『key_phrase「fall into」にcurrent「～に落ちる」: 意味は表れているので一致です(「～に陥る」へ書き換えません)』(`er003_key_words_gloss_alignment.py` `build_user_message_corrected`)は、**字義寄りの訳を手本として示している**。M-baseは再整合用の指示と共に除くため新規生成では除かれるが、Production現行のB0には含まれる=原因候補として記録(新造比喩のような字義訳との因果は未検証)。 |
+| Cpの機序(追記・未確認) | 『gloss後の欄は影響しない構造のため機序不明』 | effort=highの推論モデルは出力前の隠れた推論で全欄を計画する。『Cpの欄はglossの後だから影響しない』という前提は成り立たない。reasoning_tokensによる確認を試みた結果は`TRIAL_05/REASONING_TOKENS_01.md`(既存ledgerにはluna gen行のreasoning_tokensが**未記録**のため、新規実行から計測)。 |
+| 設計意図のトレードオフ(追記) | (なし) | 『key_phrase単体で再利用できる訳』と新造比喩の訳は原理的に両立しない(新造比喩に再利用できる訳は存在しない)。gold(字義訳=FAIL)は『本文での意味』側のユーザー水準を示している。ただしこの原則の変更は承認事項として明示する(`DESIGN_07.md` §5 (1))。 |
+| 『確率的で済ませない』への回答 | 決定論的 | 型の特定(上の『型』)で応える。決定論と断定しない。 |
+
 ## 0. 結論(先頭)
 
 「LLMが確率的に字義訳を選ぶ」は**誤り**である。実データでは、字義訳NGは**ごく少数のKP(4個)に集中し、現行Promptでは3個がほぼ決定論的に字義訳になる**(G0/B0出力: `an unseen clock` 2/2、`greener grass` 2/2、`question shaped like a trophy` 2/2、`draw a line`のみ確率的で2/5。4KP合計 8/11=73%)。それ以外のF層KP(比喩・慣用37個)は現行Promptで字義訳0。つまり「全体の1〜3%がランダムに外れる」のではなく、**特定の型のKPがPrompt構造の下で系統的に外れる**。系統的な失敗はPrompt/構造に原因がある。
