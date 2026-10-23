@@ -5028,18 +5028,18 @@
     ]
   },
   "full_story_part1_c14": {
-    "state": "HUMAN_REVIEW_REQUIRED",
+    "state": "RESOLVED",
     "canonical_text_sha256": "8b8e7c1d64141eeef6a9c9b85641bb4cbcf314cdf58a853e92f2dc797dc55a9f",
     "language": "en",
     "theme_id": "run_sf_prod_01",
     "level": "b1b",
     "segment_id": "full_story_part1_c14",
-    "updated_at": "2026-10-23T19:10:01",
-    "reason": "最終status=STOPPED。3回試行してもASR検証に合格しませんでした",
-    "final_status": "STOPPED",
+    "updated_at": "2026-10-23T19:59:15",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
     "wav_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/full_story_part1_c14.wav",
-    "cumulative_tts_attempts": 6,
-    "cumulative_asr_calls": 6,
+    "cumulative_tts_attempts": 8,
+    "cumulative_asr_calls": 8,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
@@ -5047,28 +5047,30 @@
         "status": "OK",
         "asr_text": "Her husband had his white coat over his arm. Her youngest brother was singing, Birdie, why do you bound? He always sang it to tease her.",
         "asr_judgement": {
-          "state": "NG_BOTH",
-          "reason_code": "secondary_not_accepted",
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "primary_pass",
           "slot": 1,
           "script_version": "v0",
-          "role": null,
+          "role": "FULL_STORY",
           "lang": "en",
-          "segment_key": "",
-          "audio_sha256": "6f34fa6bbb97334dbdd9014a745bfca9ab93dceaae9d7166d5a1a06b1f0d7da9",
+          "segment_key": "full_story_part1_c14",
+          "audio_sha256": "84633f1aa7b3934b865abf4b80ec9a6837e11e9b4ef82ef6ff6343702a6dd9bd",
           "primary": {
             "text": "Her husband had his white coat over his arm. Her youngest brother was singing, Birdie, why do you bound? He always sang it to tease her.",
-            "passed": false,
-            "label": "ASR_VALIDATION_UNCERTAIN",
+            "passed": true,
+            "label": "SECONDARY_ASR_CORROBORATED_MATCH",
             "equivalence_basis": null,
-            "warning_labels": []
+            "warning_labels": [
+              "SECONDARY_CORROBORATED"
+            ]
           },
           "secondary": {
-            "called": true,
+            "called": false,
             "cached": false,
             "engine": "azure",
-            "text": "Her husband had his white coat over his arm. Her youngest brother was singing birdie. Why do you bound? He always sang it to tease her.",
-            "label": "ASR_VALIDATION_UNCERTAIN",
-            "accepted": false,
+            "text": null,
+            "label": "",
+            "accepted": null,
             "error": null,
             "unavailable": false
           },
@@ -5078,173 +5080,48 @@
               "pairs": [],
               "reasons": [],
               "warnings": []
-            },
-            "secondary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
             }
           },
           "negation_guard": {
-            "primary": false,
-            "secondary": false
+            "primary": false
           },
           "final_gate": {
-            "applied": false
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
           },
-          "warnings": [],
+          "warnings": [
+            "SECONDARY_CORROBORATED"
+          ],
           "exclusion_rule": null,
           "cost": {
-            "azure_calls": 1,
-            "azure_seconds": 9.811,
-            "est_jpy": 0.4444,
-            "est_jpy_known": true
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
           },
           "timing": {
-            "total_ms": 3322,
-            "secondary_ms": 3317
+            "total_ms": 0,
+            "secondary_ms": 0
           },
           "technical_stop": null,
           "length": {
             "applied": true,
             "primary_len": 136,
-            "secondary_len": 135,
+            "secondary_len": null,
             "max_len": 155,
             "adopted_from": "primary",
             "adopted_ok": true,
-            "surface_len": 106,
+            "surface_len": null,
             "primary_ok": true
           },
-          "p3_entry": "p3_primary_ng",
-          "pronunciation_alarm_eval": {
-            "accepted": false,
-            "reason": "ROLE_NOT_APPLICABLE",
-            "detail": {
-              "role": null
-            }
-          },
           "adapter": {
-            "layers": [],
+            "layers": [
+              "tier3"
+            ],
             "azure_real_calls": 1,
             "cost_guard_triggered": false,
             "language": "en-US",
-            "segment_id": null,
-            "asr_text_present": true,
-            "cache": {
-              "calls": 2,
-              "hits": 0
-            }
-          }
-        },
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
-        "connected_speech_info": null,
-        "length_ok": true,
-        "final_length_ok": true,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 9.811,
-          "raw_leading_silence_seconds": 0.3,
-          "raw_trailing_silence_seconds": 0.34,
-          "trimmed_duration_seconds": 9.811,
-          "leading_margin_retained_seconds": 0.3,
-          "trailing_margin_retained_seconds": 0.34
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part1_c14_attempt4_englishstyleprefixwidemargin.wav"
-      },
-      {
-        "attempt": 2,
-        "status": "OK",
-        "asr_text": "Her husband had his white coat over her arm. Her youngest brother was singing, Birdie, why do you bound? He always sang it to Teaser.",
-        "asr_judgement": {
-          "state": "NG_BOTH",
-          "reason_code": "secondary_not_accepted",
-          "slot": 2,
-          "script_version": "v0",
-          "role": null,
-          "lang": "en",
-          "segment_key": "",
-          "audio_sha256": "3247e8b4931809278052145a7fe82f080696c8daed4e7709cc6677310b61ded3",
-          "primary": {
-            "text": "Her husband had his white coat over her arm. Her youngest brother was singing, Birdie, why do you bound? He always sang it to Teaser.",
-            "passed": false,
-            "label": "TRUE_CONTENT_MISMATCH",
-            "equivalence_basis": null,
-            "warning_labels": []
-          },
-          "secondary": {
-            "called": true,
-            "cached": false,
-            "engine": "azure",
-            "text": "Her husband had his white coat over her arm. Her youngest brother was singing.Bertie, why do you bound? He always sang it to tease her.",
-            "label": "TRUE_CONTENT_MISMATCH",
-            "accepted": false,
-            "error": null,
-            "unavailable": false
-          },
-          "value_guard": {
-            "primary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            },
-            "secondary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            }
-          },
-          "negation_guard": {
-            "primary": false,
-            "secondary": false
-          },
-          "final_gate": {
-            "applied": false
-          },
-          "warnings": [],
-          "exclusion_rule": null,
-          "cost": {
-            "azure_calls": 1,
-            "azure_seconds": 9.011,
-            "est_jpy": 0.4444,
-            "est_jpy_known": true
-          },
-          "timing": {
-            "total_ms": 2538,
-            "secondary_ms": 2534
-          },
-          "technical_stop": null,
-          "length": {
-            "applied": true,
-            "primary_len": 133,
-            "secondary_len": 135,
-            "max_len": 155,
-            "adopted_from": "primary",
-            "adopted_ok": true,
-            "surface_len": 106,
-            "primary_ok": true
-          },
-          "p3_entry": "p3_primary_ng",
-          "pronunciation_alarm_eval": {
-            "accepted": false,
-            "reason": "ROLE_NOT_APPLICABLE",
-            "detail": {
-              "role": null
-            }
-          },
-          "adapter": {
-            "layers": [],
-            "azure_real_calls": 1,
-            "cost_guard_triggered": false,
-            "language": "en-US",
-            "segment_id": null,
+            "segment_id": "full_story_part1_c14",
             "asr_text_present": true,
             "cache": {
               "calls": 4,
@@ -5253,139 +5130,94 @@
           }
         },
         "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "audio_classification": "SECONDARY_ASR_CORROBORATED_MATCH",
         "connected_speech_info": null,
         "length_ok": true,
         "final_length_ok": true,
-        "verified": false,
+        "verified": true,
         "trim_info": {
-          "raw_duration_seconds": 9.011,
-          "raw_leading_silence_seconds": 0.22,
-          "raw_trailing_silence_seconds": 0.24,
-          "trimmed_duration_seconds": 9.011,
-          "leading_margin_retained_seconds": 0.22,
-          "trailing_margin_retained_seconds": 0.24
+          "raw_duration_seconds": 10.011,
+          "raw_leading_silence_seconds": 0.4,
+          "raw_trailing_silence_seconds": 0.28,
+          "trimmed_duration_seconds": 9.961,
+          "leading_margin_retained_seconds": 0.35,
+          "trailing_margin_retained_seconds": 0.28
         },
         "disfluency_checked": false,
         "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part1_c14_attempt5_englishstyleprefixwidemargin.wav"
-      },
-      {
-        "attempt": 3,
-        "status": "OK",
-        "asr_text": "Her husband had his white coat over his arm. Her youngest brother was singing, Birdie, why do you bound? He always sang it to tease her.",
-        "asr_judgement": {
-          "state": "NG_BOTH",
-          "reason_code": "secondary_not_accepted",
-          "slot": 3,
-          "script_version": "v0",
-          "role": null,
-          "lang": "en",
-          "segment_key": "",
-          "audio_sha256": "abd843f4bdf39c380527df781dfdd7989e35680f64e462850ee6f8134ac0ef07",
-          "primary": {
-            "text": "Her husband had his white coat over his arm. Her youngest brother was singing, Birdie, why do you bound? He always sang it to tease her.",
-            "passed": false,
-            "label": "ASR_VALIDATION_UNCERTAIN",
-            "equivalence_basis": null,
-            "warning_labels": []
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": false,
+          "duration_seconds": 9.961,
+          "method_a_ngram": {
+            "matches": [],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 26,
+            "canonical_known": true,
+            "min_words": 3
           },
-          "secondary": {
-            "called": true,
-            "cached": false,
-            "engine": "azure",
-            "text": "Her husband had his white coat over his arm. Her youngest brother was singing birdie. Why do you bound? He always sang it to tease her.",
-            "label": "ASR_VALIDATION_UNCERTAIN",
-            "accepted": false,
-            "error": null,
-            "unavailable": false
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.9941,
+                "time_a_seconds": 4.14,
+                "time_b_seconds": 5.68,
+                "lag_seconds": 1.54,
+                "run_length_seconds_at_thresh_0.85": 0.04
+              },
+              {
+                "similarity": 0.993,
+                "time_a_seconds": 1.61,
+                "time_b_seconds": 7.11,
+                "lag_seconds": 5.5,
+                "run_length_seconds_at_thresh_0.85": 0.02
+              },
+              {
+                "similarity": 0.9901,
+                "time_a_seconds": 4.67,
+                "time_b_seconds": 6.57,
+                "lag_seconds": 1.9,
+                "run_length_seconds_at_thresh_0.85": 0.04
+              },
+              {
+                "similarity": 0.9897,
+                "time_a_seconds": 3.11,
+                "time_b_seconds": 5.69,
+                "lag_seconds": 2.58
+              },
+              {
+                "similarity": 0.9883,
+                "time_a_seconds": 0.82,
+                "time_b_seconds": 4.14,
+                "lag_seconds": 3.32
+              }
+            ],
+            "best_run_length_seconds": 0.04,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
           },
-          "value_guard": {
-            "primary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            },
-            "secondary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            }
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.31,
+            "time_a": 1.5,
+            "lag": 0.78,
+            "similarity_at_start": 0.7425,
+            "best_run_length_seconds": 0.31,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": false
           },
-          "negation_guard": {
-            "primary": false,
-            "secondary": false
-          },
-          "final_gate": {
-            "applied": false
-          },
-          "warnings": [],
-          "exclusion_rule": null,
-          "cost": {
-            "azure_calls": 1,
-            "azure_seconds": 10.251,
-            "est_jpy": 0.4889,
-            "est_jpy_known": true
-          },
-          "timing": {
-            "total_ms": 3047,
-            "secondary_ms": 3044
-          },
-          "technical_stop": null,
-          "length": {
-            "applied": true,
-            "primary_len": 136,
-            "secondary_len": 135,
-            "max_len": 155,
-            "adopted_from": "primary",
-            "adopted_ok": true,
-            "surface_len": 106,
-            "primary_ok": true
-          },
-          "p3_entry": "p3_primary_ng",
-          "pronunciation_alarm_eval": {
-            "accepted": false,
-            "reason": "ROLE_NOT_APPLICABLE",
-            "detail": {
-              "role": null
-            }
-          },
-          "adapter": {
-            "layers": [],
-            "azure_real_calls": 1,
-            "cost_guard_triggered": false,
-            "language": "en-US",
-            "segment_id": null,
-            "asr_text_present": true,
-            "cache": {
-              "calls": 6,
-              "hits": 0
-            }
-          }
+          "method_c_v2_window_check": null
         },
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
-        "connected_speech_info": null,
-        "length_ok": true,
-        "final_length_ok": true,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 10.251,
-          "raw_leading_silence_seconds": 0.28,
-          "raw_trailing_silence_seconds": 0.3,
-          "trimmed_duration_seconds": 10.251,
-          "leading_margin_retained_seconds": 0.28,
-          "trailing_margin_retained_seconds": 0.3
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part1_c14_attempt6_englishstyleprefixwidemargin.wav"
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part1_c14_attempt8_englishstyleprefixwidemargin.wav"
       }
     ]
   },
