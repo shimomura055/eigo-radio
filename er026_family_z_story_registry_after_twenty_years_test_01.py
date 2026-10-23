@@ -25,7 +25,7 @@ def _sha(path):
 
 class RegistryTest(unittest.TestCase):
     def test_registered_alongside_existing(self):
-        self.assertEqual(set(r.STORY_REGISTRY), {"melos", "the_open_window", KEY})
+        self.assertLessEqual({"melos", "the_open_window", KEY}, set(r.STORY_REGISTRY))   # 作品追加(賢者の贈り物)に伴い部分集合判定へ(値の追加のみ)
 
     def test_required_keys_identical_to_existing(self):
         self.assertEqual(set(r.STORY_REGISTRY[KEY]), set(r.STORY_REGISTRY["the_open_window"]))

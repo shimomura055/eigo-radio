@@ -70,6 +70,10 @@ STORY_VOICE_ROSTER = {
         {"speaker": "bob", "gender": "male", "order": 1, "first_appearance": "冒頭の最初の引用(店の戸口で待つ男Bob『It's all right, officer.』)"},
         {"speaker": "patrolman", "gender": "male", "order": 2, "first_appearance": "2番目の引用(巡回中の警官『Until five years ago.』。正体はJimmyで、最後の手紙の書き手と同一人物=同一Voice)"},
         {"speaker": "detective", "gender": "male", "order": 3, "first_appearance": "3番目の話者(長いオーバーコートの背の高い男=私服刑事『Is that you, Bob?』)"},
+    ),    "the_gift_of_the_magi": (
+        {"speaker": "della", "gender": "female", "order": 1, "first_appearance": "主人公の妻Della(Madameに『Will you buy my hair?』と尋ねる、またはJimへの呼びかけ。作品の中心人物)"},
+        {"speaker": "madame", "gender": "female", "order": 2, "first_appearance": "髪を買うMadame Sofronie(髪飾り店の女主人。『I buy hair.』『Twenty dollars.』)"},
+        {"speaker": "jim", "gender": "male", "order": 3, "first_appearance": "夫Jim(部屋に入りDellaの髪を見て『You've cut off your hair?』と言う。唯一の男性話者で男性Poolの1番目)"},
     ),
 }
 # 作品単位のpin(既存確定値の固定)。メロスは2026-10-21 U:§7「メロス完成版は変更しない」により受入済み成果物のVoiceを
@@ -217,6 +221,35 @@ STORY_SPEAKER_CONFIG = {
         "dialogue_voice_tts_names": derive_dialogue_voice_tts_names("after_twenty_years"),
         "speaker_aliases": {"bob": "bob", "patrolman": "patrolman", "detective": "detective", "narrator": "narrator",
                             "jimmy": "patrolman"},
+    },    # 『賢者の贈り物』(O. Henry、FAMILY-Z-GIFT-OF-THE-MAGI-PRODUCTION-01 委任_01、data表の値追加のみ)。妻Della(女)、夫Jim(男)、髪を買うMadame Sofronie(女)。
+    # Voiceは導出(roster/規則参照)。"other"は想定外話者(Melos同様STOP)。
+    "the_gift_of_the_magi": {
+        "speakers": ("della", "madame", "jim", "other", "narrator"),
+        # 挿入順=判定優先順(madame->della->jim)。
+        "z_voice_keywords": {
+            "madame": ["madame", "sofronie"],
+            "della": ["della"],
+            "jim": ["jim"],
+        },
+        "attr_roster_text": (
+            "- \"della\": Della, the young wife who sells her hair on Christmas Eve to buy a gift for her husband\n"
+            "- \"madame\": Madame Sofronie, the owner of the hair-goods shop who buys Della's hair\n"
+            "- \"jim\": Jim, Della's husband (also when Della calls him 'Jim' or 'boy')\n"
+            "- \"other\": any other speaker (a stranger, a crowd, etc.)\n"
+            "- \"narrator\": the line is not spoken by a character (e.g. a quoted phrase used by the narrator)"),
+        "attr_caution_text": (
+            "Be careful: a name or role that appears NEAR a quote is not always the speaker (for example, in "
+            "'\"Jim, darling,\" she cried.' the speaker is della, who is speaking TO Jim; in '\"Dell,\" said he, \"let's put our "
+            "Christmas presents away.\"' the speaker is jim, who is speaking TO Della; in '\"Will you buy my hair?\" asked Della.' "
+            "the speaker is della and the answer '\"I buy hair,\" said Madame.' is madame)."),
+        "dialogue_voice_keywords": {
+            "madame": ["madame", "sofronie"],
+            "della": ["della"],
+            "jim": ["jim"],
+        },
+        # 正式Voice表+決定的割当規則から導出(未割当/fail-closedの値Noneは残さない)。
+        "dialogue_voice_tts_names": derive_dialogue_voice_tts_names("the_gift_of_the_magi"),
+        "speaker_aliases": {"della": "della", "madame": "madame", "jim": "jim", "narrator": "narrator"},
     },
 }
 
@@ -858,6 +891,15 @@ STORY_LINT_CONFIG = {
         "spoiler_en": ["wanted man", "wanted in chicago", "under arrest", "arrested", "plain clothes", "plain-clothes",
                        "was the policeman", "was the patrolman", "the policeman was jimmy", "the patrolman was jimmy",
                        "turns out", "the twist"],
+    },    # 『賢者の贈り物』(FAMILY-Z-GIFT-OF-THE-MAGI-PRODUCTION-01 委任_01): 同一機構(story_key別config)の値。
+    # forbidden_names=主人公Della・Jim(Seed source_essentials.key_roles)以外の人名(髪飾り店のSofronie、Jimの正式名Dillingham等)。
+    # spoiler_*=結末(Jimが時計を売ったこと・贈り物の櫛・互いの贈り物が使えなくなること)を先回りする語(一般語は入れない)。
+    "the_gift_of_the_magi": {
+        "forbidden_names": ["Sofronie", "Dillingham", "ソフロニー", "ソフローニー", "ディリンガム", "ディリンハム"],
+        "spoiler_ja": ["時計を売", "時計を手放", "時計を質", "櫛", "くしを", "コーム", "贈り物は使えな", "使えなくなる",
+                       "無駄になる", "皮肉な結末"],
+        "spoiler_en": ["sold his watch", "sold the watch", "sold his gold watch", "combs", "no watch", "useless gift",
+                       "useless gifts", "turns out", "the twist", "the irony"],
     },
 }
 
