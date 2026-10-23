@@ -136,6 +136,86 @@ def cmd_blind(a):
     print("blind rows", n, "max cols", maxcols, "cells", sum(len(c["cells"]) for v in keymap.values() for c in v["cols"].values()), "controls", nctl)
 
 
+def cmd_blind_c(a):
+    """委任_23: Cp追加後に新たに出現した文字列のみの追加盲検表(fable_blind_05c.md)。既出文字列(既知ラベル+fable_labels_05)はラベル継承、arm伏せ。"""
+    A = T5.all_kps5()
+    labels = json.load(open(RD / "TRIAL_05" / "fable_labels_05.json", encoding="utf-8"))
+    tab, _ = label_lookup(labels)
+    nc = new_cells()
+    orig = {v["key"] for v in json.load(open(OUT5 / "fable_blind_05_key.json", encoding="utf-8")).values()}
+    keys = [k for k in blind_keys() if k in orig]
+    cells = collections.defaultdict(lambda: collections.defaultdict(list))
+    for (arm, k, rep), r in nc.items():
+        if k in keys and arm == "Cp":
+            cells[k][r["gloss"]].append("%s/rep%d" % (arm, rep))
+    lines = ["# fable_blind_05c: Cp追加後に新たに出現したStd日本語gloss文字列(委任_23。arm伏せ)\n",
+             "行=Key Phrase、列=この表で見る日本語glossの**文字列**(既出でラベル済みの文字列は含めず継承)。**判定してからkeyを開くこと。** keyは`fable_blind_05c_key.json`。",
+             "判定: PASS / 薄(THIN) / FAIL / FAIL_LIT(字義訳)。ラベル形式 `{\"<row#>:<col>\": LABEL}`。\n",
+             "| # | key_phrase | 本文の文 | " + " | ".join(chr(65 + i) for i in range(6)) + " |", "|---|---|---|" + "---|" * 6]
+    keymap = {}
+    n = 0
+    ks = list(keys)
+    random.Random("blind05c").shuffle(ks)
+    for k in ks:
+        kp = A[k]
+        strs = [g for g in cells[k] if tab.get((kp["key"], kp["sent"], g)) is None]
+        if not strs:
+            continue
+        random.Random("blind05c-" + k).shuffle(strs)
+        assert len(strs) <= 6
+        n += 1
+        keymap[str(n)] = {"key": k, "cols": {chr(65 + i): dict(gloss=g, cells=cells[k][g]) for i, g in enumerate(strs)}}
+        lines.append("| %d | %s | %s | %s |" % (n, kp["key"], kp["sent"].replace("|", "/")[:160], " | ".join(g.replace("|", "/") for g in strs + [""] * (6 - len(strs)))))
+    (OUT5 / "fable_blind_05c.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (OUT5 / "fable_blind_05c_key.json").write_text(json.dumps(keymap, ensure_ascii=False, indent=1), encoding="utf-8")
+    print("blind_c rows", n, "strings", sum(len(v["cols"]) for v in keymap.values()))
+
+
+def cmd_blind_s2(a):
+    """委任_23 Stage 2準備(API 0): non-R KP x X2 1rep(新規、T5 results)・B0/CpはTrial_04再利用の盲検表。X2未実行なら件数見積のみ。"""
+    A = T5.all_kps5()
+    st = json.load(open(RD / "TRIAL_04/strata_04.json", encoding="utf-8"))
+    keys = [k for k in st["trial_set"] if k not in T5.R_KEYS]
+    arts = collections.defaultdict(list)
+    for k in keys:
+        arts[G4.art_id(A[k])].append(k)
+    x2 = {k: r for (arm, k, rep), r in new_cells().items() if arm == "X2" and rep == 1 and k in keys}
+    est = len(arts) * 0.1254
+    print("Stage2 non-R KP %d, X2 calls %d, 見積 %.2f円(X2実測単価0.1254円/call)、X2済み %d KP" % (len(keys), len(arts), est, len(x2)))
+    if len(x2) < len(keys):
+        print("X2未実行のため盲検表は未生成(Fableの「Stage 1通過」連絡後に gen --arm X2 --set S2 --reps 1 を実行)")
+        return
+    known = known_labels()
+    rc = ref_cells(set(keys))
+    cells = collections.defaultdict(lambda: collections.defaultdict(list))
+    for k, r in x2.items():
+        cells[k][r["gloss"]].append("X2_t5/rep1")
+    for (arm, k, rep), g in rc.items():
+        if arm in ("B0_t4", "Cp_t4"):
+            cells[k][g].append("%s/rep%d" % (arm, rep))
+    NL = chr(10)
+    lines = ["# fable_blind_05s2: Stage 2 Std日本語gloss盲検表(委任_23準備。arm伏せ。既ラベル済み文字列は継承して非掲載)" + NL,
+             "判定: PASS / 薄(THIN) / FAIL / FAIL_LIT。ラベル形式 {row#:col: LABEL}。keyは fable_blind_05s2_key.json。" + NL,
+             "| # | key_phrase | 本文の文 | " + " | ".join(chr(65 + i) for i in range(6)) + " |", "|---|---|---|" + "---|" * 6]
+    keymap = {}
+    n = 0
+    ks = sorted(keys)
+    random.Random("blind05s2").shuffle(ks)
+    for k in ks:
+        kp = A[k]
+        strs = [g for g in cells[k] if (kp["key"], kp["sent"], g) not in known]
+        if not strs:
+            continue
+        random.Random("blind05s2-" + k).shuffle(strs)
+        strs = strs[:6]
+        n += 1
+        keymap[str(n)] = {"key": k, "cols": {chr(65 + i): dict(gloss=g, cells=cells[k][g]) for i, g in enumerate(strs)}}
+        lines.append("| %d | %s | %s | %s |" % (n, kp["key"], kp["sent"].replace("|", "/")[:160], " | ".join(g.replace("|", "/") for g in strs + [""] * (6 - len(strs)))))
+    (OUT5 / "fable_blind_05s2.md").write_text(NL.join(lines) + NL, encoding="utf-8")
+    (OUT5 / "fable_blind_05s2_key.json").write_text(json.dumps(keymap, ensure_ascii=False, indent=1), encoding="utf-8")
+    print("blind_s2 rows", n)
+
+
 # ------------------------------------------------------------------ 決定論的集計(0円、OF-KP1-05)
 _EXPL = re.compile(r"(こと|もの|ようす|様子|という|とき|ため|場合|状態|ところ)$")
 
@@ -196,7 +276,7 @@ def cmd_metrics(a):
 
 
 # ------------------------------------------------------------------ Fable判定後の集計
-def label_lookup(labels):
+def label_lookup(labels, labels_c=None):
     A = T5.all_kps5()
     known = known_labels()
     keymap = json.load(open(OUT5 / "fable_blind_05_key.json", encoding="utf-8"))
@@ -213,12 +293,20 @@ def label_lookup(labels):
                 # 再判定ラベルは使わず前回ラベルを維持(集計の一貫性)。差異は一致率で別掲
                 continue
             tab[(kp["key"], kp["sent"], c["gloss"])] = lab
+    if labels_c:
+        kc = json.load(open(OUT5 / "fable_blind_05c_key.json", encoding="utf-8"))
+        for rk, v in kc.items():
+            for col, c in v["cols"].items():
+                lab = labels_c.get("%s:%s" % (rk, col))
+                if lab is not None:
+                    tab[(A[v["key"]]["key"], A[v["key"]]["sent"], c["gloss"])] = lab
     return tab, ctl
 
 
 def cmd_report(a):
     labels = json.load(open(a.labels, encoding="utf-8"))
-    tab, ctl = label_lookup(labels)
+    labels_c = json.load(open(a.labels_c, encoding="utf-8")) if a.labels_c else None
+    tab, ctl = label_lookup(labels, labels_c)
     A = T5.all_kps5()
     nc = new_cells()
     rc = ref_cells(set(T5.R_KEYS) | set(T5.heldout_order()))
@@ -303,7 +391,7 @@ def cmd_report(a):
             lab = lab_of(k, r["gloss"])
             labs[arm] = lab
             row.append("%s / %s" % (r["gloss"], lab or "?"))
-        if not row or all(x == "-" for x in row):
+        if not row or all(x == "-" for x in row) or row[0] == "-":
             continue
         w = []
         for arm in ("X2", "Cp"):
@@ -312,7 +400,7 @@ def cmd_report(a):
                 w.append(arm)
         L.append("| %s | %s | %s |" % (k, " | ".join(row), ",".join(w) or "なし"))
     L.append("\nheld-out 悪化: X2=%s Cp=%s(基準: 0)\n" % (worse["X2"] or "なし", worse["Cp"] or "なし"))
-    (OUT5 / ("report_05_%s.md" % os.path.basename(a.labels).replace(".json", ""))).write_text("\n".join(L) + "\n", encoding="utf-8")
+    (OUT5 / ("report_05_%s%s.md" % (os.path.basename(a.labels).replace(".json", ""), "_withc" if a.labels_c else ""))).write_text("\n".join(L) + "\n", encoding="utf-8")
     print("\n".join(L))
 
 
@@ -320,5 +408,6 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd")
     ap.add_argument("--labels", default="")
+    ap.add_argument("--labels_c", default="")
     a = ap.parse_args()
-    {"blind": cmd_blind, "metrics": cmd_metrics, "report": cmd_report}[a.cmd](a)
+    {"blind": cmd_blind, "metrics": cmd_metrics, "report": cmd_report, "blind_c": cmd_blind_c, "blind_s2": cmd_blind_s2}[a.cmd](a)

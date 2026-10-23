@@ -38,3 +38,9 @@
 ## 5. 未解決・次の判断(判断候補)
 1. 事前宣言の判定基準(R)での判定は**Fable盲検後**(私はしない)。Cpが2rep目以降未完のため、X2対Cpの比較はCpが「rep1 4call+Trial_04のrep1参照」の1〜2rep相当。
 2. 予算: Cp R残り7call(約1.7円)+held-out Cp 10call(約2.4円)=約4.1円=合計約10.4円で個別枠8.33円を約2.1円超過。Cpは単価が見積(0.18円)の1.35倍(0.242円)。**案**: (a)追加約4.1円(+上限の見積幅を含め約5円)で完遂(案件累計は約280円≦300円)=推奨、(b)held-out Cpを除きR Cp残りのみ(約1.7円、残枠内だがpilot閾値0.20円/callの平均超過で自動停止している=閾値の再設定が必要)、(c)Cpを追加せずStage 1の盲検結果(B0/M/X1/X2+Cp 1.2rep)で判断。いずれもFableの判断。
+
+## 委任_23 追記(Fable盲検ラベル反映・Cp完遂)
+- Fable盲検ラベル(Stage1+held-out、Key未開封で確定)を `fable_labels_05.json` に保存、注記を `FABLE_BLIND_RESULT_05.md` に逐語保存し集計(`report_05_fable_labels_05.md`)。
+- 判定材料(**VALIDATED判定はFable**): R基準(FAIL系<=1/12 かつ 2rep以上失敗KP 0 かつ THIN<=B0+1)は、X2: FAIL系0/2rep失敗KP 0だがTHIN 4>B0+1=1、Cp: FAIL_LIT 2(ラベル確定前でも不達)、X1/M/B0不達。H5(X1対M)はFAIL系 6→5で有意差なし。held-out悪化: X2=0、Cp=追加盲検05c確定後。control一致率 7/10(不一致3件はすべて前回より緩い方向)。
+- Cp追加(19call、2.545円)後の追加盲検表 `fable_blind_05c.md`(10文字列)。ラベル後に `--labels_c` 付きで再集計。
+- Stage 2準備(未実行): `er112_kp_gm_trial_05.py gen --arm X2 --set S2 --reps 1`(non-R 54KP、29 call、見積約3.64円)→`er112_kp_gm_trial_05_report.py blind_s2`(B0/CpはTrial_04再利用)。Fableが「Stage 1通過」を連絡してから実行。

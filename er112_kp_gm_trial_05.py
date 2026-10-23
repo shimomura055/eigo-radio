@@ -24,6 +24,8 @@ LEDGER5 = OUT5 / "paid_calls.jsonl"
 RES5 = OUT5 / "results.jsonl"
 CAP_JPY = 8.33
 PER_CALL_MAX = 0.20
+# 委任_23 Fable判断(a): Cp armのみ平均閾値を0.26円/callへ一時引上げ(推論token増による単価、本委任限り)。他armは不変。
+PER_CALL_ARM = {"Cp": 0.26}
 RD = ROOT / "docs/research/FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01"
 STOP_PATHS = [OUT5 / "STOP", OUT5 / "STOP_ALL", ROOT / "er026_output/family_z_production_e2e_01/STOP_ALL", RD / "STOP", ROOT / "er112_output/kp_gm_trial_04/STOP"]
 
@@ -219,7 +221,7 @@ def run_gen(arm, reps, keys, cap, tag="", workers=2, max_calls=None):
         g = [kp for kp in g if (arm, kp["key"].lower(), rep) not in done]
         if stop():
             return ("SKIP_STOP", rep, g[0]["key"])
-        est = PER_CALL_MAX
+        est = PER_CALL_ARM.get(arm, PER_CALL_MAX)
         with _lock:
             if total() + est > cap:
                 _halt["flag"], _halt["why"] = True, "cap: cum %.3f + est %.2f > %.2f" % (total(), est, cap)
@@ -229,8 +231,9 @@ def run_gen(arm, reps, keys, cap, tag="", workers=2, max_calls=None):
             _append(LEDGER5, dict(kind="gen", arm=arm, tag=tag, keys=[x["key"] for x in g], rep=rep, usage=u, cost_jpy=round(c, 5), ts=time.strftime("%Y-%m-%dT%H:%M:%S")))
             arm_calls = [x["cost_jpy"] for x in read_jsonl(LEDGER5) if x.get("arm") == arm and x.get("kind") == "gen" and not str(x.get("tag", "")).startswith("pilot")]
             arm_calls += [x["cost_jpy"] for x in read_jsonl(LEDGER5) if x.get("arm") == arm and str(x.get("tag", "")).startswith("pilot")]
-            if c > 2 * PER_CALL_MAX or (len(arm_calls) >= 4 and sum(arm_calls) / len(arm_calls) > PER_CALL_MAX):
-                _halt["flag"], _halt["why"] = True, "per-call %.4f (>2x%.2f) or arm(%s) avg %.4f > %.2f" % (c, PER_CALL_MAX, arm, sum(arm_calls) / len(arm_calls), PER_CALL_MAX)
+            pcm = PER_CALL_ARM.get(arm, PER_CALL_MAX)
+            if c > 2 * pcm or (len(arm_calls) >= 4 and sum(arm_calls) / len(arm_calls) > pcm):
+                _halt["flag"], _halt["why"] = True, "per-call %.4f (>2x%.2f) or arm(%s) avg %.4f > %.2f" % (c, pcm, arm, sum(arm_calls) / len(arm_calls), pcm)
         by = {it.get("rank"): it for it in items}
         for i, kp in enumerate(g):
             it = by.get(i + 1) or {}
@@ -257,10 +260,13 @@ def keys_of(a):
         return R_KEYS
     if a.set == "RCORE":
         return R_CORE
+    if a.set == "S2":     # 委任_23: Stage 2 = Trial_04 trial_set のうちR以外(X2 1repの対象)。未実行(Fable連絡後)
+        st = json.load(open(RD / "TRIAL_04/strata_04.json", encoding="utf-8"))
+        return [k for k in st["trial_set"] if k not in R_KEYS]
     if a.set == "H":
         order = heldout_order()
         return order[: a.nheld] if a.nheld else order
-    raise SystemExit("--set R|RCORE|H or --keys")
+    raise SystemExit("--set R|RCORE|S2|H or --keys")
 
 
 if __name__ == "__main__":

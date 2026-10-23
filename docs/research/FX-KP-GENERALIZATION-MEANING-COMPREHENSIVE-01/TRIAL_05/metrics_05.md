@@ -6,7 +6,7 @@
 | M | 7 | 0.0524 | 336 | 388 | 0/0 | - | 3/7 | 0 | 0 | - |
 | X1 | 21 | 0.0654 | 528 | 679 | 21/21 | - | 11/21 | 3 | 0 | - |
 | X2 | 31 | 0.1254 | 1074 | 1282 | 31/31 | 0/31 | 15/31 | 3 | 0 | 8/1/22 |
-| Cp | 9 | 0.2424 | 2309 | 2600 | 9/9 | - | 2/9 | 0 | 0 | - |
+| Cp | 30 | 0.1566 | 1340 | 1551 | 30/30 | - | 5/26 | 1 | 0 | - |
 
 validate不合格の出力: 0件 []
 
@@ -15,4 +15,4 @@ validate不合格の出力: 0件 []
 - M: 4 call、reasoning_tokens平均=336、output_tokens平均=388、1call平均費用=0.0524円
 - X1: 12 call、reasoning_tokens平均=528、output_tokens平均=679、1call平均費用=0.0654円
 - X2: 22 call、reasoning_tokens平均=1074、output_tokens平均=1282、1call平均費用=0.1254円
-- Cp: 5 call、reasoning_tokens平均=2309、output_tokens平均=2600、1call平均費用=0.2424円
+- Cp: 24 call、reasoning_tokens平均=1340、output_tokens平均=1551、1call平均費用=0.1566円
