@@ -102,3 +102,16 @@ Status: TRIAL_COMPLETE_USER_DECISION_REQUIRED(Production未変更・Trial版のP
 ## 9. 採用した場合の反映手順と費用見込み(参考、未実施)
 - 手順案: `apply_a2_slowdown_postprocess`のdialogue clipだけ減速をskip(Std限定のProduction仕様変更=ユーザー承認後のflag/新コード経路)、既存2作品はB版assembled wav(+公開ページmp3)でproduction runのa2/assemblyと公開ページを差替え。再生成は不要(原音再利用)。
 - 費用: 既存2作品の差替えはTTS 0円(ローカル組立+mp3化のみ)。今後の新規Z作品は生成工程でskipするだけで追加費用なし。新規作品のASR再検証は減速後ASR再検証が不要になる分むしろ微減。
+
+## 10. Advanced統合(委任_03、2026-10-23)
+- 試聴ページを1ページに統合: https://shimomura055.github.io/eigo-radio/user_test/family_z_std_dialogue_speed_ab_01/index.html (#melos / #melos_adv / #open_window / #open_window_adv)。ページ先頭に比較条件表(Std Narrator 変更なし/Std会話 6%減速撤去/Adv Narrator 変更なし/Adv会話 機械処理で約6%高速化)。Standard節・Standard mp3は不変(HEAD比で変更はindex.htmlと新規adv mp3 62本のみ)。
+- Advanced B(会話のみatempo 1.06、音程保持、素材=委任_02_ADV): ADV証跡=docs/research/FAMILY-Z-STD-DIALOGUE-SPEED-AB-TRIAL-01/TRIAL_RESULT_ADV_01.md、er026_output/family_z_std_dialogue_speed_ab_01/adv/(manifest_adv.json、analysis_adv.json)。非対象clip sha一致: メロス38/38、開いた窓34/34。長さ比0.9435〜0.9519。
+- Production ASR(`routing.transcribe` en-US、Standardと同一経路)をAdvanced B会話29clipに実施: メロス11/11、開いた窓16/18が正規化完全一致。残り2件(full_story_part2_c2=引用符内の句読点差のみ、類似度0.962。full_story_part3_c4 'Who was that'→'Who is that'、類似度0.8)はA版の事後ASR記録(asr_A_stored)と同一テキスト=B固有の新規欠陥ではない。ASR API error 0。証跡=er026_output/family_z_std_dialogue_speed_ab_01/adv/asr_qa_adv_B.json、スクリプトasr_qa_adv_B_01.py。
+- 会話WPM(A→B、中央値/8語以上/加重)と Narrator中央値: 
+  - Standard メロス: 会話136.1→143.6 / 148.2→156.5 / 131.6→139.0、Narrator 134.3。
+  - Standard 開いた窓: 会話130.4→137.9 / 140.6→148.9 / 137.0→144.8、Narrator 128.4。
+  - Advanced メロス: 会話109.0→114.6 / 146.3→154.8(3clip) / 125.8→132.8、Narrator 137.4(8語以上149.3、加重151.4)。
+  - Advanced 開いた窓: 会話136.6→144.1 / 151.9→160.0(7clip) / 141.3→149.4、Narrator 138.5(8語以上155.4、加重148.1)。
+- 費用: TTS再生成0・追加生成費用0円。Advanced B ASR 29clip(合計122.138秒)の上限見積=122.138秒×0.0463円/秒≒5.66円(Standardと同じ単価。出典=OW full_story_part3_c9 asr_judgement est_jpy 0.1333/2.878秒)。実額の個別集計は未実施(routing provider依存)。
+- 公開ページ検証(commit bac2b0160 push後): page HTTP 200、audio 122本(Standard 60+Advanced 62)中 HTTP200+Playwright実再生 122/122 OK。証跡=er026_output/family_z_std_dialogue_speed_ab_01/public_play_verify_02_merge.json。
+- Production無変更: 保護対象(公開3ページ・er026 production_e2e・Master Store・er063/er003/er008/er006 routing)のgit diff 2f8b75126..HEAD=0ファイル。Status=TRIAL_COMPLETE_USER_DECISION_REQUIRED(UDR #159は作品×レベル4組のA/B採否)。
