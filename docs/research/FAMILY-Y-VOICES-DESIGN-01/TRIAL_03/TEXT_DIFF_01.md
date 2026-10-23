@@ -111,14 +111,14 @@ Status: DEV/Trial。LLM Writerを呼ばず手修正(初回稿を基準、世界�
 + (修正稿) Only banning them in class is not enough.
 + (修正稿) I get home late from the job site.
 + (修正稿) Fighting about phones every night makes me tired.
-+ (修正稿) If I can say, “It's the school rule too,” I won't be the only bad guy.
++ (修正稿) If the school has the same rule, I won't be the only bad guy.
 + (修正稿) My daughter did not keep our agreement.
-+ (修正稿) She was supposed to put her phone in the charging basket in the living room.
++ (修正稿) She was supposed to put her phone in the living-room charging basket.
 + (修正稿) I took her phone away.
 + (修正稿) The next morning, it was hard to talk to her at breakfast.
-+ (修正稿) She also said, “If I am the only one who replies late, I will be left out.” I had no answer.
-+ (修正稿) I want her to keep our promise.
-+ (修正稿) I don't want to shout like my father, either.
++ (修正稿) She also said, “If I am the only one who replies late, I will be left out.” Her words left me speechless.
++ (修正稿) A promise is a promise, and I want it kept.
++ (修正稿) Shouting like my father is not what I want, either.
 + (修正稿) But if she can't use her phone at school, nothing changes at home at night.
 + (修正稿) Maybe I just want the school to help so my life is easier.
 + (修正稿) I am a site supervisor who can't even manage things at home.
@@ -237,12 +237,12 @@ Status: DEV/Trial。LLM Writerを呼ばず手修正(初回稿を基準、世界�
 + (修正稿) I'm for a rule at my daughter's high school that keeps phones off during breaks and lunch, too.
 + (修正稿) Banning them only during class isn't enough.
 + (修正稿) I get home late from the job site, and fighting about phones every night is exhausting.
-+ (修正稿) If I can say, “That's the rule at school too,” then I don't have to be the only bad guy.
-+ (修正稿) My daughter didn't keep our agreement to put her phone in the charging basket in the living room.
++ (修正稿) If the school has the same rule, then I'm not the only bad guy.
++ (修正稿) My daughter didn't keep our agreement to put her phone in the living-room charging basket.
 + (修正稿) The morning after I took it away, it was hard to talk to her at breakfast.
-+ (修正稿) She also said, “If I'm the only one who replies late, I'll be left out.” I had no answer for that.
-+ (修正稿) I want her to stick to what we've agreed.
-+ (修正稿) I don't want to yell like my father, either.
++ (修正稿) She also said, “If I'm the only one who replies late, I'll be left out.” Her words left me speechless.
++ (修正稿) Still, a promise is a promise, and I want it kept.
++ (修正稿) Yelling like my father is out of the question, too.
 + (修正稿) But even if she can't use her phone at school during the day, nothing changes at home at night.
 + (修正稿) Maybe I just want to ask the school for help so things are easier for me.
 + (修正稿) I'm a site supervisor who can't even get things organized at home.

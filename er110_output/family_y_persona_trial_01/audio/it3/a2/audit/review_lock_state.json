@@ -1049,15 +1049,15 @@
     ]
   },
   "full_story_part1": {
-    "state": "RESOLVED",
-    "canonical_text_sha256": "9370bae7949199b01cc0541e2cc71be2fe483dc625e37f79c64de9a47cde6a53",
+    "state": "HUMAN_REVIEW_REQUIRED",
+    "canonical_text_sha256": "84b63dfdf1168813eccce257286650003fa529b0d3a489d3e12071b06e525778",
     "language": "en",
     "theme_id": "it3",
     "level": "a2",
     "segment_id": "full_story_part1",
-    "updated_at": "2026-10-23T19:53:12",
-    "reason": "status=OKで確定しました。",
-    "final_status": "OK",
+    "updated_at": "2026-10-23T20:31:29",
+    "reason": "最終status=STOPPED。標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+    "final_status": "STOPPED",
     "wav_path": "er110_output/family_y_persona_trial_01/audio/it3/a2/narration/full_story_part1.wav",
     "cumulative_tts_attempts": 3,
     "cumulative_asr_calls": 3,
@@ -1066,23 +1066,93 @@
       {
         "attempt": 1,
         "status": "OK",
-        "duration_seconds": 56.87,
-        "asr_text": "I am for a rule at my daughter's high school. I would keep phones off during breaks and lunch too. Only banning them in class is not enough. I get home late from the job site. Fighting about phones every night makes me tired. If I can say, it's the school rule too, I won't be the only bad guy. My daughter did not keep our agreement. She was supposed to put her phone in the charging basket in the living room. I took her phone away. The next morning, it was hard to talk to her at breakfast. She also said, if I am the only one who replies late, I will be left out. I had no answer. I want her to keep our promise. I don't want to shout like my father either. But if she can't use her phone at school, nothing changes at home at night. Maybe I just want the school to help so my life is easier. I am a site supervisor who can't even manage things at home.",
-        "asr_text_length": 857,
-        "max_len": 920,
+        "duration_seconds": 57.57,
+        "asr_text": "I am for a rule at my daughter's high school. It will keep phones off during breaks and lunch too. Only banning them in class is not enough. I get home late from the job site. Fighting about phones every night makes me tired. If the school has the same rule, I won't be the only bad guy. My daughter did not keep our agreement. She was supposed to put her phone in the living room charging basket. I took her phone away. The next morning, it was hard to talk to her at breakfast. She also said, if I am the only one who replies late, I will be left out. Her words left me speechless. A promise is a promise, and I want it kept. Shouting like my father is not what I want either. But if she can't use her phone at school, nothing changes at home at night. Maybe I just want the school to help, so my life is easier. I am a site supervisor who can't even manage things at home.",
+        "asr_text_length": 875,
+        "max_len": 937,
         "substring_ok": null,
         "length_ok": true,
         "final_length_ok": true,
         "phonetic_verdict": null,
-        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "audio_classification": "NORMALIZED_MATCH",
         "connected_speech_info": null,
         "reading_resolver_info": null,
         "scg_info": null,
         "verified": false,
         "disfluency_checked": false,
         "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": true,
+          "duration_seconds": 57.57,
+          "method_a_ngram": {
+            "matches": [],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 177,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.998,
+                "time_a_seconds": 17.1,
+                "time_b_seconds": 20.24,
+                "lag_seconds": 3.14,
+                "run_length_seconds_at_thresh_0.85": 0.01
+              },
+              {
+                "similarity": 0.9966,
+                "time_a_seconds": 9.66,
+                "time_b_seconds": 45.87,
+                "lag_seconds": 36.21,
+                "run_length_seconds_at_thresh_0.85": 0.01
+              },
+              {
+                "similarity": 0.9959,
+                "time_a_seconds": 20.42,
+                "time_b_seconds": 37.15,
+                "lag_seconds": 16.73,
+                "run_length_seconds_at_thresh_0.85": 0.09
+              },
+              {
+                "similarity": 0.9957,
+                "time_a_seconds": 26.29,
+                "time_b_seconds": 33.62,
+                "lag_seconds": 7.33
+              },
+              {
+                "similarity": 0.9955,
+                "time_a_seconds": 17.1,
+                "time_b_seconds": 36.89,
+                "lag_seconds": 19.79
+              }
+            ],
+            "best_run_length_seconds": 0.09,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.67,
+            "time_a": 6.58,
+            "lag": 1.45,
+            "similarity_at_start": 0.8082,
+            "best_run_length_seconds": 0.67,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": true
+          },
+          "method_c_v2_window_check": null
+        },
         "asr_prompt_applied": false,
         "non_latin_cascade_enabled": false,
         "non_latin_cascade_invoked": false,
@@ -1095,34 +1165,34 @@
           {
             "step": "primary_1",
             "provider": "openai_asr",
-            "text": "I am for a rule at my daughter's high school. I would keep phones off during breaks and lunch too. Only banning them in class is not enough. I get home late from the job site. Fighting about phones every night makes me tired. If I can say, it's the school rule too, I won't be the only bad guy. My daughter did not keep our agreement. She was supposed to put her phone in the charging basket in the living room. I took her phone away. The next morning, it was hard to talk to her at breakfast. She also said, if I am the only one who replies late, I will be left out. I had no answer. I want her to keep our promise. I don't want to shout like my father either. But if she can't use her phone at school, nothing changes at home at night. Maybe I just want the school to help so my life is easier. I am a site supervisor who can't even manage things at home.",
+            "text": "I am for a rule at my daughter's high school. It will keep phones off during breaks and lunch too. Only banning them in class is not enough. I get home late from the job site. Fighting about phones every night makes me tired. If the school has the same rule, I won't be the only bad guy. My daughter did not keep our agreement. She was supposed to put her phone in the living room charging basket. I took her phone away. The next morning, it was hard to talk to her at breakfast. She also said, if I am the only one who replies late, I will be left out. Her words left me speechless. A promise is a promise, and I want it kept. Shouting like my father is not what I want either. But if she can't use her phone at school, nothing changes at home at night. Maybe I just want the school to help, so my life is easier. I am a site supervisor who can't even manage things at home.",
             "classification": "TRUE_CONTENT_MISMATCH",
             "entity_like_source": []
           },
           {
             "step": "secondary_1",
             "provider": "azure",
-            "text": "I am for a rule at my daughter's high school. I would keep phones off during breaks and lunch too. Only banning them in class is not enough. I get home late from the job site fighting about phones every night makes me tired. If I can say it's the school rule too, I won't be the only bad guy. My daughter did not keep our agreement. She was supposed to put her phone in the charging basket in the living room.I took her phone away the next morning. It was hard to talk to her.Breakfast. She also said if I am the only one who replies late I will be left out. I had no answer. I want her to keep our promise. I don't want to shout like my father either. But if she can't use her phone at school, nothing changes at home at night. Maybe I just want the school to help so my life is easier. I am a site supervisor who can't even manage things at home.",
-            "classification": "TRUE_CONTENT_MISMATCH",
+            "text": "I am for a rule at my daughter's high school. It would keep phones off during breaks and lunch too. Only banning them in class is not enough. I get home late from the job site. Fighting about phones every night makes me tired. If the school has the same rule, I won't be the only bad guy. My daughter did not keep our agreement. She was supposed to put her phone in the living room charging basket.I took her phone away.The next morning it was hard to talk to her at breakfast. She also said if I am the only one who replies late, I will be left out.Her words left me speechless. A promise is a promise and I want it kept shouting like my father is not what I want either. But if she can't use her phone at school, nothing changes at home at night. Maybe I just want the school to help so my life is easier. I am a site supervisor who can't even manage things at home.",
+            "classification": "NORMALIZED_MATCH",
             "phrase_list_used": false,
             "azure_phrase_list_weight": null,
             "azure_phrase_list": [],
             "cached": false,
-            "unified_judge_state": "NG_BOTH",
+            "unified_judge_state": "PASS_WITH_WARNING",
             "entity_like_source": []
           }
         ],
         "asr_judgement": {
-          "state": "NG_BOTH",
-          "reason_code": "secondary_not_accepted",
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "secondary_confirmed",
           "slot": 1,
           "script_version": "v0",
           "role": "FULL_STORY",
           "lang": "en",
           "segment_key": "full_story_part1",
-          "audio_sha256": "88d44344dbc14e28ff577d9811da3c06d48b101754151d74a64536e58e63ca96",
+          "audio_sha256": "0afbf09d146cf6bb046fe85846b1b0356f9dafaa8220faf7b5cd37cddbdab184",
           "primary": {
-            "text": "I am for a rule at my daughter's high school. I would keep phones off during breaks and lunch too. Only banning them in class is not enough. I get home late from the job site. Fighting about phones every night makes me tired. If I can say, it's the school rule too, I won't be the only bad guy. My daughter did not keep our agreement. She was supposed to put her phone in the charging basket in the living room. I took her phone away. The next morning, it was hard to talk to her at breakfast. She also said, if I am the only one who replies late, I will be left out. I had no answer. I want her to keep our promise. I don't want to shout like my father either. But if she can't use her phone at school, nothing changes at home at night. Maybe I just want the school to help so my life is easier. I am a site supervisor who can't even manage things at home.",
+            "text": "I am for a rule at my daughter's high school. It will keep phones off during breaks and lunch too. Only banning them in class is not enough. I get home late from the job site. Fighting about phones every night makes me tired. If the school has the same rule, I won't be the only bad guy. My daughter did not keep our agreement. She was supposed to put her phone in the living room charging basket. I took her phone away. The next morning, it was hard to talk to her at breakfast. She also said, if I am the only one who replies late, I will be left out. Her words left me speechless. A promise is a promise, and I want it kept. Shouting like my father is not what I want either. But if she can't use her phone at school, nothing changes at home at night. Maybe I just want the school to help, so my life is easier. I am a site supervisor who can't even manage things at home.",
             "passed": false,
             "label": "TRUE_CONTENT_MISMATCH",
             "equivalence_basis": null,
@@ -1132,9 +1202,9 @@
             "called": true,
             "cached": false,
             "engine": "azure",
-            "text": "I am for a rule at my daughter's high school. I would keep phones off during breaks and lunch too. Only banning them in class is not enough. I get home late from the job site fighting about phones every night makes me tired. If I can say it's the school rule too, I won't be the only bad guy. My daughter did not keep our agreement. She was supposed to put her phone in the charging basket in the living room.I took her phone away the next morning. It was hard to talk to her.Breakfast. She also said if I am the only one who replies late I will be left out. I had no answer. I want her to keep our promise. I don't want to shout like my father either. But if she can't use her phone at school, nothing changes at home at night. Maybe I just want the school to help so my life is easier. I am a site supervisor who can't even manage things at home.",
-            "label": "TRUE_CONTENT_MISMATCH",
-            "accepted": false,
+            "text": "I am for a rule at my daughter's high school. It would keep phones off during breaks and lunch too. Only banning them in class is not enough. I get home late from the job site. Fighting about phones every night makes me tired. If the school has the same rule, I won't be the only bad guy. My daughter did not keep our agreement. She was supposed to put her phone in the living room charging basket.I took her phone away.The next morning it was hard to talk to her at breakfast. She also said if I am the only one who replies late, I will be left out.Her words left me speechless. A promise is a promise and I want it kept shouting like my father is not what I want either. But if she can't use her phone at school, nothing changes at home at night. Maybe I just want the school to help so my life is easier. I am a site supervisor who can't even manage things at home.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
             "error": null,
             "unavailable": false
           },
@@ -1171,29 +1241,34 @@
             "secondary": false
           },
           "final_gate": {
-            "applied": false
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "EQUAL",
+            "negation_diff": false
           },
-          "warnings": [],
+          "warnings": [
+            "SECONDARY_CONFIRMED"
+          ],
           "exclusion_rule": null,
           "cost": {
             "azure_calls": 1,
-            "azure_seconds": 56.87,
-            "est_jpy": 2.5333,
+            "azure_seconds": 57.57,
+            "est_jpy": 2.5778,
             "est_jpy_known": true
           },
           "timing": {
-            "total_ms": 26073,
-            "secondary_ms": 26054
+            "total_ms": 26714,
+            "secondary_ms": 26706
           },
           "technical_stop": null,
           "length": {
             "applied": true,
-            "primary_len": 857,
-            "secondary_len": 848,
-            "max_len": 920,
-            "adopted_from": "primary",
+            "primary_len": 875,
+            "secondary_len": 868,
+            "max_len": 937,
+            "adopted_from": "secondary",
             "adopted_ok": true,
-            "surface_len": 651,
+            "surface_len": 672,
             "primary_ok": true
           },
           "p3_entry": "p3_primary_ng",
@@ -1205,25 +1280,25 @@
             "segment_id": "full_story_part1",
             "asr_text_present": true,
             "cache": {
-              "calls": 4,
+              "calls": 2,
               "hits": 0
             }
           }
         },
-        "attempt_audio_path": "er110_output/family_y_persona_trial_01/audio/it3/a2/narration/attempts/full_story_part1_attempt1_customa3c4625e.wav"
+        "attempt_audio_path": "er110_output/family_y_persona_trial_01/audio/it3/a2/narration/attempts/full_story_part1_attempt4_customa3c4625e.wav"
       },
       {
         "attempt": 2,
         "status": "OK",
-        "duration_seconds": 53.19,
-        "asr_text": "I am for a rule at my daughter's high school. It would keep phones off during breaks and lunch too. Only banning them in class is not enough. I get home late from the job site. Fighting about phones every night makes me tired. If I can say, it's the school rule too, I won't be the only bad guy. My daughter did not keep our agreement. She was supposed to put her phone in the charging basket in the living room. I took her phone away. The next morning, it was hard to talk to her at breakfast. She also said, if I am the only one who replies late, I will be left out. I had no answer. I want her to keep our promise. I don't want to shout like my father either. But if she can't use her phone at school, nothing changes at home at night. Maybe I just want the school to help so my life is easier. I am a site supervisor who can't even manage things at home.",
-        "asr_text_length": 858,
-        "max_len": 920,
+        "duration_seconds": 55.95,
+        "asr_text": "I am for a rule at my daughter's high school. It would keep phones off during breaks and lunch, too. Only banning them in class is not enough. I get home late from the job site. Fighting about phones every night makes me tired. If the school has the same rule, I won't be the only bad guy. My daughter did not keep our agreement. She was supposed to put her phone in the living room charging basket. I took her phone away. The next morning, it was hard to talk to her at breakfast. She also said, if I am the only one who replies late, I will be left out. Her words left me speechless. A promise is a promise, and I want it kept. Shouting like my father is not what I want either. But if she can't use her phone at school, nothing changes at home at night. Maybe I just want the school to help, so my life is easier. I'm a site supervisor who can't even manage things at home.",
+        "asr_text_length": 876,
+        "max_len": 937,
         "substring_ok": null,
         "length_ok": true,
         "final_length_ok": true,
         "phonetic_verdict": null,
-        "audio_classification": "NORMALIZED_MATCH",
+        "audio_classification": "TRANSCRIPT_STYLE_NORMALIZED_MATCH",
         "connected_speech_info": null,
         "reading_resolver_info": null,
         "scg_info": null,
@@ -1233,52 +1308,52 @@
         "repetition_qa_checked": true,
         "repetition_qa_evidence": {
           "flagged": true,
-          "duration_seconds": 53.19,
+          "duration_seconds": 55.95,
           "method_a_ngram": {
             "matches": [],
             "flagged": false,
             "flagged_matches": [],
-            "word_count": 177,
+            "word_count": 175,
             "canonical_known": true,
             "min_words": 3
           },
           "method_d_spectral_long_lag": {
             "top_matches": [
               {
-                "similarity": 0.9954,
-                "time_a_seconds": 19.55,
-                "time_b_seconds": 42.09,
-                "lag_seconds": 22.54,
-                "run_length_seconds_at_thresh_0.85": 0.04
+                "similarity": 0.9926,
+                "time_a_seconds": 22.67,
+                "time_b_seconds": 42.43,
+                "lag_seconds": 19.76,
+                "run_length_seconds_at_thresh_0.85": 0.09
               },
               {
-                "similarity": 0.9949,
-                "time_a_seconds": 19.6,
-                "time_b_seconds": 42.09,
-                "lag_seconds": 22.49,
-                "run_length_seconds_at_thresh_0.85": 0.03
+                "similarity": 0.9913,
+                "time_a_seconds": 46.59,
+                "time_b_seconds": 53.86,
+                "lag_seconds": 7.27,
+                "run_length_seconds_at_thresh_0.85": 0.01
               },
               {
-                "similarity": 0.9946,
-                "time_a_seconds": 17.77,
-                "time_b_seconds": 19.55,
-                "lag_seconds": 1.78,
-                "run_length_seconds_at_thresh_0.85": 0.03
+                "similarity": 0.9911,
+                "time_a_seconds": 3.27,
+                "time_b_seconds": 35.32,
+                "lag_seconds": 32.05,
+                "run_length_seconds_at_thresh_0.85": 0.08
               },
               {
-                "similarity": 0.9946,
-                "time_a_seconds": 30.87,
-                "time_b_seconds": 51.23,
-                "lag_seconds": 20.36
+                "similarity": 0.9909,
+                "time_a_seconds": 28.09,
+                "time_b_seconds": 35.5,
+                "lag_seconds": 7.41
               },
               {
-                "similarity": 0.9943,
-                "time_a_seconds": 37.62,
-                "time_b_seconds": 50.57,
-                "lag_seconds": 12.95
+                "similarity": 0.9905,
+                "time_a_seconds": 42.88,
+                "time_b_seconds": 55.38,
+                "lag_seconds": 12.5
               }
             ],
-            "best_run_length_seconds": 0.04,
+            "best_run_length_seconds": 0.09,
             "min_lag_seconds": 1.0,
             "sim_threshold": 0.85,
             "decision_threshold_seconds": 0.12,
@@ -1287,11 +1362,11 @@
             "flagged": false
           },
           "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.6,
-            "time_a": 33.35,
-            "lag": 1.79,
-            "similarity_at_start": 0.8327,
-            "best_run_length_seconds": 0.6,
+            "run_length_seconds": 0.64,
+            "time_a": 31.53,
+            "lag": 1.6,
+            "similarity_at_start": 0.7837,
+            "best_run_length_seconds": 0.64,
             "lag_range_seconds": [
               0.5,
               2.0
@@ -1314,8 +1389,8 @@
           {
             "step": "primary_1",
             "provider": "openai_asr",
-            "text": "I am for a rule at my daughter's high school. It would keep phones off during breaks and lunch too. Only banning them in class is not enough. I get home late from the job site. Fighting about phones every night makes me tired. If I can say, it's the school rule too, I won't be the only bad guy. My daughter did not keep our agreement. She was supposed to put her phone in the charging basket in the living room. I took her phone away. The next morning, it was hard to talk to her at breakfast. She also said, if I am the only one who replies late, I will be left out. I had no answer. I want her to keep our promise. I don't want to shout like my father either. But if she can't use her phone at school, nothing changes at home at night. Maybe I just want the school to help so my life is easier. I am a site supervisor who can't even manage things at home.",
-            "classification": "NORMALIZED_MATCH",
+            "text": "I am for a rule at my daughter's high school. It would keep phones off during breaks and lunch, too. Only banning them in class is not enough. I get home late from the job site. Fighting about phones every night makes me tired. If the school has the same rule, I won't be the only bad guy. My daughter did not keep our agreement. She was supposed to put her phone in the living room charging basket. I took her phone away. The next morning, it was hard to talk to her at breakfast. She also said, if I am the only one who replies late, I will be left out. Her words left me speechless. A promise is a promise, and I want it kept. Shouting like my father is not what I want either. But if she can't use her phone at school, nothing changes at home at night. Maybe I just want the school to help, so my life is easier. I'm a site supervisor who can't even manage things at home.",
+            "classification": "TRANSCRIPT_STYLE_NORMALIZED_MATCH",
             "entity_like_source": []
           }
         ],
@@ -1327,11 +1402,11 @@
           "role": "FULL_STORY",
           "lang": "en",
           "segment_key": "full_story_part1",
-          "audio_sha256": "9c5023718e54b9dd39485b20ad451c12a6e928fb8662d0540c29aec8f2a5caf3",
+          "audio_sha256": "36967f0ff9d6778ea606fb9fe0f70e3c211d03de41ee1cd8b8709f1b10104408",
           "primary": {
-            "text": "I am for a rule at my daughter's high school. It would keep phones off during breaks and lunch too. Only banning them in class is not enough. I get home late from the job site. Fighting about phones every night makes me tired. If I can say, it's the school rule too, I won't be the only bad guy. My daughter did not keep our agreement. She was supposed to put her phone in the charging basket in the living room. I took her phone away. The next morning, it was hard to talk to her at breakfast. She also said, if I am the only one who replies late, I will be left out. I had no answer. I want her to keep our promise. I don't want to shout like my father either. But if she can't use her phone at school, nothing changes at home at night. Maybe I just want the school to help so my life is easier. I am a site supervisor who can't even manage things at home.",
+            "text": "I am for a rule at my daughter's high school. It would keep phones off during breaks and lunch, too. Only banning them in class is not enough. I get home late from the job site. Fighting about phones every night makes me tired. If the school has the same rule, I won't be the only bad guy. My daughter did not keep our agreement. She was supposed to put her phone in the living room charging basket. I took her phone away. The next morning, it was hard to talk to her at breakfast. She also said, if I am the only one who replies late, I will be left out. Her words left me speechless. A promise is a promise, and I want it kept. Shouting like my father is not what I want either. But if she can't use her phone at school, nothing changes at home at night. Maybe I just want the school to help, so my life is easier. I'm a site supervisor who can't even manage things at home.",
             "passed": true,
-            "label": "NORMALIZED_MATCH",
+            "label": "TRANSCRIPT_STYLE_NORMALIZED_MATCH",
             "equivalence_basis": null,
             "warning_labels": []
           },
@@ -1376,15 +1451,15 @@
             "est_jpy": 0.0
           },
           "timing": {
-            "total_ms": 1,
+            "total_ms": 2,
             "secondary_ms": 0
           },
           "technical_stop": null,
           "length": {
             "applied": true,
-            "primary_len": 858,
+            "primary_len": 876,
             "secondary_len": null,
-            "max_len": 920,
+            "max_len": 937,
             "adopted_from": "primary",
             "adopted_ok": true,
             "surface_len": null,
@@ -1398,12 +1473,12 @@
             "segment_id": "full_story_part1",
             "asr_text_present": true,
             "cache": {
-              "calls": 4,
+              "calls": 2,
               "hits": 0
             }
           }
         },
-        "attempt_audio_path": "er110_output/family_y_persona_trial_01/audio/it3/a2/narration/attempts/full_story_part1_attempt2_customa3c4625e.wav"
+        "attempt_audio_path": "er110_output/family_y_persona_trial_01/audio/it3/a2/narration/attempts/full_story_part1_attempt5_customa3c4625e.wav"
       }
     ]
   },

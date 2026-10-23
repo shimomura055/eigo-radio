@@ -924,38 +924,38 @@
     ]
   },
   "full_story_part1": {
-    "state": "HUMAN_REVIEW_REQUIRED",
-    "canonical_text_sha256": "09fa89ddcfdf5c916ad66639afe1e1c14d2b749648b44d0c72df1b6d97afa8de",
+    "state": "RESOLVED",
+    "canonical_text_sha256": "33e7f43c051dd3563601335c84884f53912d5a7bb8ef7b6aca8153c3e5d25d62",
     "language": "en",
     "theme_id": "it3",
     "level": "b1b",
     "segment_id": "full_story_part1",
-    "updated_at": "2026-10-23T19:36:52",
-    "reason": "最終status=STOPPED。3回試行してもASR検証に合格しませんでした",
-    "final_status": "STOPPED",
+    "updated_at": "2026-10-23T20:18:10",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
     "wav_path": "er110_output/family_y_persona_trial_01/audio/it3/b1b/narration/full_story_part1.wav",
-    "cumulative_tts_attempts": 3,
-    "cumulative_asr_calls": 3,
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
         "attempt": 1,
         "status": "OK",
-        "asr_text": "I'm for a rule at my daughter's high school that keeps phones off during breaks and lunch, too. Banning them only during class isn't enough. I get home late from the job site, and fighting about phones every night is exhausting. If I can say, that's the rule at school, too, then I don't have to be the only bad guy. My daughter didn't keep our agreement to put her phone in the charging basket in the living room. The morning after I took it away, it was hard to talk to her at breakfast. She also said, if I'm the only one who replies late, I'll be left out. I had no answer for that. I want her to stick to what we've agreed. I don't want to yell like my father, either. But even if she can't use her phone at school during the day, nothing changes at home at night. Maybe I just want to ask the school for help, so things are easier for me. I'm a site supervisor who can't even get things organized at home.",
+        "asr_text": "I'm for a rule at my daughter's high school that keeps phones off during breaks and lunch, too. Banning them only during class isn't enough. I get home late from the job site, and fighting about phones every night is exhausting. If the school has the same rule, then I'm not the only bad guy. My daughter didn't keep our agreement to put her phone in the living room charging basket. The morning after I took it away, it was hard to talk to her at breakfast. She also said, if I'm the only one who replies late, I'll be left out. Her words left me speechless. Still, a promise is a promise, and I want it kept. Yelling like my father is out of the question, too. But even if she can't use her phone at school during the day, nothing changes at home at night. Maybe I just want to ask the school for help so things are easier for me. I'm a site supervisor who can't even get things organized at home.",
         "asr_judgement": {
           "state": "PASS",
-          "reason_code": "primary_pass",
+          "reason_code": "primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE",
           "slot": 1,
           "script_version": "v0",
           "role": "FULL_STORY",
           "lang": "en",
           "segment_key": "full_story_part1",
-          "audio_sha256": "e9bb5bef0417f8a8bfaf76c885ef509462745f42dc764b6fe88847c2b6b052b5",
+          "audio_sha256": "beda54eb08e3095c75a00c1b660f0a884d34ebed5b3f66713bae93ea944865d5",
           "primary": {
-            "text": "I'm for a rule at my daughter's high school that keeps phones off during breaks and lunch, too. Banning them only during class isn't enough. I get home late from the job site, and fighting about phones every night is exhausting. If I can say, that's the rule at school, too, then I don't have to be the only bad guy. My daughter didn't keep our agreement to put her phone in the charging basket in the living room. The morning after I took it away, it was hard to talk to her at breakfast. She also said, if I'm the only one who replies late, I'll be left out. I had no answer for that. I want her to stick to what we've agreed. I don't want to yell like my father, either. But even if she can't use her phone at school during the day, nothing changes at home at night. Maybe I just want to ask the school for help, so things are easier for me. I'm a site supervisor who can't even get things organized at home.",
+            "text": "I'm for a rule at my daughter's high school that keeps phones off during breaks and lunch, too. Banning them only during class isn't enough. I get home late from the job site, and fighting about phones every night is exhausting. If the school has the same rule, then I'm not the only bad guy. My daughter didn't keep our agreement to put her phone in the living room charging basket. The morning after I took it away, it was hard to talk to her at breakfast. She also said, if I'm the only one who replies late, I'll be left out. Her words left me speechless. Still, a promise is a promise, and I want it kept. Yelling like my father is out of the question, too. But even if she can't use her phone at school during the day, nothing changes at home at night. Maybe I just want to ask the school for help so things are easier for me. I'm a site supervisor who can't even get things organized at home.",
             "passed": true,
-            "label": "NORMALIZED_MATCH",
-            "equivalence_basis": null,
+            "label": "NUMERIC_EQUIVALENCE_MATCH",
+            "equivalence_basis": "TIER1_NUMERIC_EQUIVALENCE",
             "warning_labels": []
           },
           "secondary": {
@@ -987,9 +987,8 @@
             "primary": false
           },
           "final_gate": {
-            "applied": true,
-            "value_guard": "EQUAL",
-            "negation_diff": false
+            "applied": false,
+            "skipped": "approved_equivalence:TIER1_NUMERIC_EQUIVALENCE"
           },
           "warnings": [],
           "exclusion_rule": null,
@@ -1005,9 +1004,9 @@
           "technical_stop": null,
           "length": {
             "applied": true,
-            "primary_len": 911,
+            "primary_len": 899,
             "secondary_len": null,
-            "max_len": 924,
+            "max_len": 914,
             "adopted_from": "primary",
             "adopted_ok": true,
             "surface_len": null,
@@ -1027,260 +1026,1677 @@
           }
         },
         "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "NORMALIZED_MATCH",
+        "audio_classification": "NUMERIC_EQUIVALENCE_MATCH",
         "connected_speech_info": null,
-        "semantic_equivalence_info": null,
-        "length_ok": true,
-        "final_length_ok": true,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 51.6,
-          "raw_leading_silence_seconds": 0.24,
-          "raw_trailing_silence_seconds": 0.36,
-          "trimmed_duration_seconds": 51.59,
-          "leading_margin_retained_seconds": 0.24,
-          "trailing_margin_retained_seconds": 0.35
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": true,
-        "repetition_qa_evidence": {
-          "flagged": true,
-          "duration_seconds": 51.59,
-          "method_a_ngram": {
-            "matches": [],
-            "flagged": false,
-            "flagged_matches": [],
-            "word_count": 182,
-            "canonical_known": true,
-            "min_words": 3
-          },
-          "method_d_spectral_long_lag": {
-            "top_matches": [
+        "semantic_equivalence_info": {
+          "tier_applied": "tier1_numeric",
+          "sub_reason": "numeric_only",
+          "corroborated_by": [],
+          "warning": false,
+          "role": "FULL_STORY",
+          "diff_spans": {
+            "canonical_atoms": [
               {
-                "similarity": 0.9946,
-                "time_a_seconds": 9.84,
-                "time_b_seconds": 41.0,
-                "lag_seconds": 31.16,
-                "run_length_seconds_at_thresh_0.85": 0.12
+                "kind": "literal",
+                "word": "i'm"
               },
               {
-                "similarity": 0.9944,
-                "time_a_seconds": 32.39,
-                "time_b_seconds": 42.7,
-                "lag_seconds": 10.31,
-                "run_length_seconds_at_thresh_0.85": 0.06
+                "kind": "literal",
+                "word": "for"
               },
               {
-                "similarity": 0.9941,
-                "time_a_seconds": 9.84,
-                "time_b_seconds": 40.99,
-                "lag_seconds": 31.15,
-                "run_length_seconds_at_thresh_0.85": 0.13
+                "kind": "literal",
+                "word": "a"
               },
               {
-                "similarity": 0.9939,
-                "time_a_seconds": 3.82,
-                "time_b_seconds": 41.0,
-                "lag_seconds": 37.18
+                "kind": "literal",
+                "word": "rule"
               },
               {
-                "similarity": 0.9932,
-                "time_a_seconds": 12.02,
-                "time_b_seconds": 20.06,
-                "lag_seconds": 8.04
+                "kind": "literal",
+                "word": "at"
+              },
+              {
+                "kind": "literal",
+                "word": "my"
+              },
+              {
+                "kind": "literal",
+                "word": "daughter's"
+              },
+              {
+                "kind": "literal",
+                "word": "high"
+              },
+              {
+                "kind": "literal",
+                "word": "school"
+              },
+              {
+                "kind": "literal",
+                "word": "that"
+              },
+              {
+                "kind": "literal",
+                "word": "keeps"
+              },
+              {
+                "kind": "literal",
+                "word": "phones"
+              },
+              {
+                "kind": "literal",
+                "word": "off"
+              },
+              {
+                "kind": "literal",
+                "word": "during"
+              },
+              {
+                "kind": "literal",
+                "word": "breaks"
+              },
+              {
+                "kind": "literal",
+                "word": "and"
+              },
+              {
+                "kind": "literal",
+                "word": "lunch"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "too"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "banning"
+              },
+              {
+                "kind": "literal",
+                "word": "them"
+              },
+              {
+                "kind": "literal",
+                "word": "only"
+              },
+              {
+                "kind": "literal",
+                "word": "during"
+              },
+              {
+                "kind": "literal",
+                "word": "class"
+              },
+              {
+                "kind": "literal",
+                "word": "isn't"
+              },
+              {
+                "kind": "literal",
+                "word": "enough"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "i"
+              },
+              {
+                "kind": "literal",
+                "word": "get"
+              },
+              {
+                "kind": "literal",
+                "word": "home"
+              },
+              {
+                "kind": "literal",
+                "word": "late"
+              },
+              {
+                "kind": "literal",
+                "word": "from"
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "job"
+              },
+              {
+                "kind": "literal",
+                "word": "site"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "and"
+              },
+              {
+                "kind": "literal",
+                "word": "fighting"
+              },
+              {
+                "kind": "literal",
+                "word": "about"
+              },
+              {
+                "kind": "literal",
+                "word": "phones"
+              },
+              {
+                "kind": "literal",
+                "word": "every"
+              },
+              {
+                "kind": "literal",
+                "word": "night"
+              },
+              {
+                "kind": "literal",
+                "word": "is"
+              },
+              {
+                "kind": "literal",
+                "word": "exhausting"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "if"
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "school"
+              },
+              {
+                "kind": "literal",
+                "word": "has"
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "same"
+              },
+              {
+                "kind": "literal",
+                "word": "rule"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "then"
+              },
+              {
+                "kind": "literal",
+                "word": "i'm"
+              },
+              {
+                "kind": "literal",
+                "word": "not"
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "only"
+              },
+              {
+                "kind": "literal",
+                "word": "bad"
+              },
+              {
+                "kind": "literal",
+                "word": "guy"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "my"
+              },
+              {
+                "kind": "literal",
+                "word": "daughter"
+              },
+              {
+                "kind": "literal",
+                "word": "didn't"
+              },
+              {
+                "kind": "literal",
+                "word": "keep"
+              },
+              {
+                "kind": "literal",
+                "word": "our"
+              },
+              {
+                "kind": "literal",
+                "word": "agreement"
+              },
+              {
+                "kind": "literal",
+                "word": "to"
+              },
+              {
+                "kind": "literal",
+                "word": "put"
+              },
+              {
+                "kind": "literal",
+                "word": "her"
+              },
+              {
+                "kind": "literal",
+                "word": "phone"
+              },
+              {
+                "kind": "literal",
+                "word": "in"
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "living"
+              },
+              {
+                "kind": "literal",
+                "word": "room"
+              },
+              {
+                "kind": "literal",
+                "word": "charging"
+              },
+              {
+                "kind": "literal",
+                "word": "basket"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "morning"
+              },
+              {
+                "kind": "literal",
+                "word": "after"
+              },
+              {
+                "kind": "literal",
+                "word": "i"
+              },
+              {
+                "kind": "literal",
+                "word": "took"
+              },
+              {
+                "kind": "literal",
+                "word": "it"
+              },
+              {
+                "kind": "literal",
+                "word": "away"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "it"
+              },
+              {
+                "kind": "literal",
+                "word": "was"
+              },
+              {
+                "kind": "literal",
+                "word": "hard"
+              },
+              {
+                "kind": "literal",
+                "word": "to"
+              },
+              {
+                "kind": "literal",
+                "word": "talk"
+              },
+              {
+                "kind": "literal",
+                "word": "to"
+              },
+              {
+                "kind": "literal",
+                "word": "her"
+              },
+              {
+                "kind": "literal",
+                "word": "at"
+              },
+              {
+                "kind": "literal",
+                "word": "breakfast"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "she"
+              },
+              {
+                "kind": "literal",
+                "word": "also"
+              },
+              {
+                "kind": "literal",
+                "word": "said"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "if"
+              },
+              {
+                "kind": "literal",
+                "word": "i'm"
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "only"
+              },
+              {
+                "kind": "number",
+                "value": "1",
+                "currency": null,
+                "percent": false,
+                "ordinal": false,
+                "value_float": 1.0
+              },
+              {
+                "kind": "literal",
+                "word": "who"
+              },
+              {
+                "kind": "literal",
+                "word": "replies"
+              },
+              {
+                "kind": "literal",
+                "word": "late"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "i'll"
+              },
+              {
+                "kind": "literal",
+                "word": "be"
+              },
+              {
+                "kind": "literal",
+                "word": "left"
+              },
+              {
+                "kind": "literal",
+                "word": "out"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "her"
+              },
+              {
+                "kind": "literal",
+                "word": "words"
+              },
+              {
+                "kind": "literal",
+                "word": "left"
+              },
+              {
+                "kind": "literal",
+                "word": "me"
+              },
+              {
+                "kind": "literal",
+                "word": "speechless"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "still"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "a"
+              },
+              {
+                "kind": "literal",
+                "word": "promise"
+              },
+              {
+                "kind": "literal",
+                "word": "is"
+              },
+              {
+                "kind": "literal",
+                "word": "a"
+              },
+              {
+                "kind": "literal",
+                "word": "promise"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "and"
+              },
+              {
+                "kind": "literal",
+                "word": "i"
+              },
+              {
+                "kind": "literal",
+                "word": "want"
+              },
+              {
+                "kind": "literal",
+                "word": "it"
+              },
+              {
+                "kind": "literal",
+                "word": "kept"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "yelling"
+              },
+              {
+                "kind": "literal",
+                "word": "like"
+              },
+              {
+                "kind": "literal",
+                "word": "my"
+              },
+              {
+                "kind": "literal",
+                "word": "father"
+              },
+              {
+                "kind": "literal",
+                "word": "is"
+              },
+              {
+                "kind": "literal",
+                "word": "out"
+              },
+              {
+                "kind": "literal",
+                "word": "of"
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "question"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "too"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "but"
+              },
+              {
+                "kind": "literal",
+                "word": "even"
+              },
+              {
+                "kind": "literal",
+                "word": "if"
+              },
+              {
+                "kind": "literal",
+                "word": "she"
+              },
+              {
+                "kind": "literal",
+                "word": "can't"
+              },
+              {
+                "kind": "literal",
+                "word": "use"
+              },
+              {
+                "kind": "literal",
+                "word": "her"
+              },
+              {
+                "kind": "literal",
+                "word": "phone"
+              },
+              {
+                "kind": "literal",
+                "word": "at"
+              },
+              {
+                "kind": "literal",
+                "word": "school"
+              },
+              {
+                "kind": "literal",
+                "word": "during"
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "day"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "nothing"
+              },
+              {
+                "kind": "literal",
+                "word": "changes"
+              },
+              {
+                "kind": "literal",
+                "word": "at"
+              },
+              {
+                "kind": "literal",
+                "word": "home"
+              },
+              {
+                "kind": "literal",
+                "word": "at"
+              },
+              {
+                "kind": "literal",
+                "word": "night"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "maybe"
+              },
+              {
+                "kind": "literal",
+                "word": "i"
+              },
+              {
+                "kind": "literal",
+                "word": "just"
+              },
+              {
+                "kind": "literal",
+                "word": "want"
+              },
+              {
+                "kind": "literal",
+                "word": "to"
+              },
+              {
+                "kind": "literal",
+                "word": "ask"
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "school"
+              },
+              {
+                "kind": "literal",
+                "word": "for"
+              },
+              {
+                "kind": "literal",
+                "word": "help"
+              },
+              {
+                "kind": "literal",
+                "word": "so"
+              },
+              {
+                "kind": "literal",
+                "word": "things"
+              },
+              {
+                "kind": "literal",
+                "word": "are"
+              },
+              {
+                "kind": "literal",
+                "word": "easier"
+              },
+              {
+                "kind": "literal",
+                "word": "for"
+              },
+              {
+                "kind": "literal",
+                "word": "me"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "i'm"
+              },
+              {
+                "kind": "literal",
+                "word": "a"
+              },
+              {
+                "kind": "literal",
+                "word": "site"
+              },
+              {
+                "kind": "literal",
+                "word": "supervisor"
+              },
+              {
+                "kind": "literal",
+                "word": "who"
+              },
+              {
+                "kind": "literal",
+                "word": "can't"
+              },
+              {
+                "kind": "literal",
+                "word": "even"
+              },
+              {
+                "kind": "literal",
+                "word": "get"
+              },
+              {
+                "kind": "literal",
+                "word": "things"
+              },
+              {
+                "kind": "literal",
+                "word": "organized"
+              },
+              {
+                "kind": "literal",
+                "word": "at"
+              },
+              {
+                "kind": "literal",
+                "word": "home"
+              },
+              {
+                "kind": "literal",
+                "word": "."
               }
             ],
-            "best_run_length_seconds": 0.13,
-            "min_lag_seconds": 1.0,
-            "sim_threshold": 0.85,
-            "decision_threshold_seconds": 0.12,
-            "acoustic_flagged": true,
-            "local_asr_confirmation": {
-              "confirmed": false,
-              "overlap_ratio": 0.087,
-              "lcs_words": 1,
-              "window_half_seconds_a": 1.5,
-              "window_half_seconds_b": 1.5,
-              "fragment_a": "home late from the job site and fighting about phones every",
-              "fragment_b": "can't use her phone at school during the day, nothing changes at",
-              "overlap_ratio_threshold": 0.5,
-              "lcs_words_threshold": 3
-            },
-            "flagged": false
-          },
-          "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.62,
-            "time_a": 36.53,
-            "lag": 0.88,
-            "similarity_at_start": 0.9008,
-            "best_run_length_seconds": 0.62,
-            "lag_range_seconds": [
-              0.5,
-              2.0
+            "asr_atoms": [
+              {
+                "kind": "literal",
+                "word": "i'm"
+              },
+              {
+                "kind": "literal",
+                "word": "for"
+              },
+              {
+                "kind": "literal",
+                "word": "a"
+              },
+              {
+                "kind": "literal",
+                "word": "rule"
+              },
+              {
+                "kind": "literal",
+                "word": "at"
+              },
+              {
+                "kind": "literal",
+                "word": "my"
+              },
+              {
+                "kind": "literal",
+                "word": "daughter's"
+              },
+              {
+                "kind": "literal",
+                "word": "high"
+              },
+              {
+                "kind": "literal",
+                "word": "school"
+              },
+              {
+                "kind": "literal",
+                "word": "that"
+              },
+              {
+                "kind": "literal",
+                "word": "keeps"
+              },
+              {
+                "kind": "literal",
+                "word": "phones"
+              },
+              {
+                "kind": "literal",
+                "word": "off"
+              },
+              {
+                "kind": "literal",
+                "word": "during"
+              },
+              {
+                "kind": "literal",
+                "word": "breaks"
+              },
+              {
+                "kind": "literal",
+                "word": "and"
+              },
+              {
+                "kind": "literal",
+                "word": "lunch"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "too"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "banning"
+              },
+              {
+                "kind": "literal",
+                "word": "them"
+              },
+              {
+                "kind": "literal",
+                "word": "only"
+              },
+              {
+                "kind": "literal",
+                "word": "during"
+              },
+              {
+                "kind": "literal",
+                "word": "class"
+              },
+              {
+                "kind": "literal",
+                "word": "isn't"
+              },
+              {
+                "kind": "literal",
+                "word": "enough"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "i"
+              },
+              {
+                "kind": "literal",
+                "word": "get"
+              },
+              {
+                "kind": "literal",
+                "word": "home"
+              },
+              {
+                "kind": "literal",
+                "word": "late"
+              },
+              {
+                "kind": "literal",
+                "word": "from"
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "job"
+              },
+              {
+                "kind": "literal",
+                "word": "site"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "and"
+              },
+              {
+                "kind": "literal",
+                "word": "fighting"
+              },
+              {
+                "kind": "literal",
+                "word": "about"
+              },
+              {
+                "kind": "literal",
+                "word": "phones"
+              },
+              {
+                "kind": "literal",
+                "word": "every"
+              },
+              {
+                "kind": "literal",
+                "word": "night"
+              },
+              {
+                "kind": "literal",
+                "word": "is"
+              },
+              {
+                "kind": "literal",
+                "word": "exhausting"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "if"
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "school"
+              },
+              {
+                "kind": "literal",
+                "word": "has"
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "same"
+              },
+              {
+                "kind": "literal",
+                "word": "rule"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "then"
+              },
+              {
+                "kind": "literal",
+                "word": "i'm"
+              },
+              {
+                "kind": "literal",
+                "word": "not"
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "only"
+              },
+              {
+                "kind": "literal",
+                "word": "bad"
+              },
+              {
+                "kind": "literal",
+                "word": "guy"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "my"
+              },
+              {
+                "kind": "literal",
+                "word": "daughter"
+              },
+              {
+                "kind": "literal",
+                "word": "didn't"
+              },
+              {
+                "kind": "literal",
+                "word": "keep"
+              },
+              {
+                "kind": "literal",
+                "word": "our"
+              },
+              {
+                "kind": "literal",
+                "word": "agreement"
+              },
+              {
+                "kind": "literal",
+                "word": "to"
+              },
+              {
+                "kind": "literal",
+                "word": "put"
+              },
+              {
+                "kind": "literal",
+                "word": "her"
+              },
+              {
+                "kind": "literal",
+                "word": "phone"
+              },
+              {
+                "kind": "literal",
+                "word": "in"
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "living"
+              },
+              {
+                "kind": "literal",
+                "word": "room"
+              },
+              {
+                "kind": "literal",
+                "word": "charging"
+              },
+              {
+                "kind": "literal",
+                "word": "basket"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "morning"
+              },
+              {
+                "kind": "literal",
+                "word": "after"
+              },
+              {
+                "kind": "literal",
+                "word": "i"
+              },
+              {
+                "kind": "literal",
+                "word": "took"
+              },
+              {
+                "kind": "literal",
+                "word": "it"
+              },
+              {
+                "kind": "literal",
+                "word": "away"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "it"
+              },
+              {
+                "kind": "literal",
+                "word": "was"
+              },
+              {
+                "kind": "literal",
+                "word": "hard"
+              },
+              {
+                "kind": "literal",
+                "word": "to"
+              },
+              {
+                "kind": "literal",
+                "word": "talk"
+              },
+              {
+                "kind": "literal",
+                "word": "to"
+              },
+              {
+                "kind": "literal",
+                "word": "her"
+              },
+              {
+                "kind": "literal",
+                "word": "at"
+              },
+              {
+                "kind": "literal",
+                "word": "breakfast"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "she"
+              },
+              {
+                "kind": "literal",
+                "word": "also"
+              },
+              {
+                "kind": "literal",
+                "word": "said"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "if"
+              },
+              {
+                "kind": "literal",
+                "word": "i'm"
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "only"
+              },
+              {
+                "kind": "number",
+                "value": "1",
+                "currency": null,
+                "percent": false,
+                "ordinal": false,
+                "value_float": 1.0
+              },
+              {
+                "kind": "literal",
+                "word": "who"
+              },
+              {
+                "kind": "literal",
+                "word": "replies"
+              },
+              {
+                "kind": "literal",
+                "word": "late"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "i'll"
+              },
+              {
+                "kind": "literal",
+                "word": "be"
+              },
+              {
+                "kind": "literal",
+                "word": "left"
+              },
+              {
+                "kind": "literal",
+                "word": "out"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "her"
+              },
+              {
+                "kind": "literal",
+                "word": "words"
+              },
+              {
+                "kind": "literal",
+                "word": "left"
+              },
+              {
+                "kind": "literal",
+                "word": "me"
+              },
+              {
+                "kind": "literal",
+                "word": "speechless"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "still"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "a"
+              },
+              {
+                "kind": "literal",
+                "word": "promise"
+              },
+              {
+                "kind": "literal",
+                "word": "is"
+              },
+              {
+                "kind": "literal",
+                "word": "a"
+              },
+              {
+                "kind": "literal",
+                "word": "promise"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "and"
+              },
+              {
+                "kind": "literal",
+                "word": "i"
+              },
+              {
+                "kind": "literal",
+                "word": "want"
+              },
+              {
+                "kind": "literal",
+                "word": "it"
+              },
+              {
+                "kind": "literal",
+                "word": "kept"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "yelling"
+              },
+              {
+                "kind": "literal",
+                "word": "like"
+              },
+              {
+                "kind": "literal",
+                "word": "my"
+              },
+              {
+                "kind": "literal",
+                "word": "father"
+              },
+              {
+                "kind": "literal",
+                "word": "is"
+              },
+              {
+                "kind": "literal",
+                "word": "out"
+              },
+              {
+                "kind": "literal",
+                "word": "of"
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "question"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "too"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "but"
+              },
+              {
+                "kind": "literal",
+                "word": "even"
+              },
+              {
+                "kind": "literal",
+                "word": "if"
+              },
+              {
+                "kind": "literal",
+                "word": "she"
+              },
+              {
+                "kind": "literal",
+                "word": "can't"
+              },
+              {
+                "kind": "literal",
+                "word": "use"
+              },
+              {
+                "kind": "literal",
+                "word": "her"
+              },
+              {
+                "kind": "literal",
+                "word": "phone"
+              },
+              {
+                "kind": "literal",
+                "word": "at"
+              },
+              {
+                "kind": "literal",
+                "word": "school"
+              },
+              {
+                "kind": "literal",
+                "word": "during"
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "day"
+              },
+              {
+                "kind": "literal",
+                "word": ","
+              },
+              {
+                "kind": "literal",
+                "word": "nothing"
+              },
+              {
+                "kind": "literal",
+                "word": "changes"
+              },
+              {
+                "kind": "literal",
+                "word": "at"
+              },
+              {
+                "kind": "literal",
+                "word": "home"
+              },
+              {
+                "kind": "literal",
+                "word": "at"
+              },
+              {
+                "kind": "literal",
+                "word": "night"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "maybe"
+              },
+              {
+                "kind": "literal",
+                "word": "i"
+              },
+              {
+                "kind": "literal",
+                "word": "just"
+              },
+              {
+                "kind": "literal",
+                "word": "want"
+              },
+              {
+                "kind": "literal",
+                "word": "to"
+              },
+              {
+                "kind": "literal",
+                "word": "ask"
+              },
+              {
+                "kind": "literal",
+                "word": "the"
+              },
+              {
+                "kind": "literal",
+                "word": "school"
+              },
+              {
+                "kind": "literal",
+                "word": "for"
+              },
+              {
+                "kind": "literal",
+                "word": "help"
+              },
+              {
+                "kind": "literal",
+                "word": "so"
+              },
+              {
+                "kind": "literal",
+                "word": "things"
+              },
+              {
+                "kind": "literal",
+                "word": "are"
+              },
+              {
+                "kind": "literal",
+                "word": "easier"
+              },
+              {
+                "kind": "literal",
+                "word": "for"
+              },
+              {
+                "kind": "literal",
+                "word": "me"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              },
+              {
+                "kind": "literal",
+                "word": "i'm"
+              },
+              {
+                "kind": "literal",
+                "word": "a"
+              },
+              {
+                "kind": "literal",
+                "word": "site"
+              },
+              {
+                "kind": "literal",
+                "word": "supervisor"
+              },
+              {
+                "kind": "literal",
+                "word": "who"
+              },
+              {
+                "kind": "literal",
+                "word": "can't"
+              },
+              {
+                "kind": "literal",
+                "word": "even"
+              },
+              {
+                "kind": "literal",
+                "word": "get"
+              },
+              {
+                "kind": "literal",
+                "word": "things"
+              },
+              {
+                "kind": "literal",
+                "word": "organized"
+              },
+              {
+                "kind": "literal",
+                "word": "at"
+              },
+              {
+                "kind": "literal",
+                "word": "home"
+              },
+              {
+                "kind": "literal",
+                "word": "."
+              }
             ],
-            "sim_threshold": 0.7,
-            "decision_threshold_seconds": 0.6,
-            "flagged": true
-          },
-          "method_c_v2_window_check": null
-        },
-        "attempt_audio_path": "er110_output/family_y_persona_trial_01/audio/it3/b1b/narration/attempts/full_story_part1_attempt1_englishstyleprefixwidemargin.wav"
-      },
-      {
-        "attempt": 2,
-        "status": "OK",
-        "asr_text": "I'm for a rule at my daughter's high school that keeps phones off during breaks and lunch, too. Banning them only during class isn't enough. I get home late from the job site, and fighting about phones every night is exhausting. If I can say, that's the rule at school, too, then I don't have to be the only bad guy. My daughter didn't keep our agreement to put her phone in the charging basket in the living room. The morning after I took it away, it was hard to talk to her at breakfast. She also said, if I'm the only one who replies late, I'll be left out. I had no answer for that. I want her to stick to what we've agreed. I don't want to yell like my father, either. But even if she can't use her phone at school during the day, nothing changes at home at night. Maybe I just want to ask the school for help, so things are easier for me. I'm a site supervisor who can't even get things organized at home.",
-        "asr_judgement": {
-          "state": "PASS",
-          "reason_code": "primary_pass",
-          "slot": 2,
-          "script_version": "v0",
-          "role": "FULL_STORY",
-          "lang": "en",
-          "segment_key": "full_story_part1",
-          "audio_sha256": "0151ade5158a909a866e6d993d440df5419138d0b98bdae3ee34e81fbe8e1783",
-          "primary": {
-            "text": "I'm for a rule at my daughter's high school that keeps phones off during breaks and lunch, too. Banning them only during class isn't enough. I get home late from the job site, and fighting about phones every night is exhausting. If I can say, that's the rule at school, too, then I don't have to be the only bad guy. My daughter didn't keep our agreement to put her phone in the charging basket in the living room. The morning after I took it away, it was hard to talk to her at breakfast. She also said, if I'm the only one who replies late, I'll be left out. I had no answer for that. I want her to stick to what we've agreed. I don't want to yell like my father, either. But even if she can't use her phone at school during the day, nothing changes at home at night. Maybe I just want to ask the school for help, so things are easier for me. I'm a site supervisor who can't even get things organized at home.",
-            "passed": true,
-            "label": "NORMALIZED_MATCH",
-            "equivalence_basis": null,
-            "warning_labels": []
-          },
-          "secondary": {
-            "called": false,
-            "cached": false,
-            "engine": "azure",
-            "text": null,
-            "label": "",
-            "accepted": null,
-            "error": null,
-            "unavailable": false
-          },
-          "value_guard": {
-            "primary": {
-              "kind": "EQUAL",
-              "pairs": [
-                {
-                  "src": "1",
-                  "hyp": "1",
-                  "verdict": "EQUAL",
-                  "reason": "same_surface"
-                }
-              ],
-              "reasons": [],
-              "warnings": []
-            }
-          },
-          "negation_guard": {
-            "primary": false
-          },
-          "final_gate": {
-            "applied": true,
-            "value_guard": "EQUAL",
-            "negation_diff": false
-          },
-          "warnings": [],
-          "exclusion_rule": null,
-          "cost": {
-            "azure_calls": 0,
-            "azure_seconds": null,
-            "est_jpy": 0.0
-          },
-          "timing": {
-            "total_ms": 2,
-            "secondary_ms": 0
-          },
-          "technical_stop": null,
-          "length": {
-            "applied": true,
-            "primary_len": 911,
-            "secondary_len": null,
-            "max_len": 924,
-            "adopted_from": "primary",
-            "adopted_ok": true,
-            "surface_len": null,
-            "primary_ok": true
-          },
-          "adapter": {
-            "layers": [],
-            "azure_real_calls": 0,
-            "cost_guard_triggered": false,
-            "language": "en-US",
-            "segment_id": "full_story_part1",
-            "asr_text_present": true,
-            "cache": {
-              "calls": 0,
-              "hits": 0
-            }
+            "diff_anchored": false,
+            "absorbed_ops": 0
           }
         },
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "NORMALIZED_MATCH",
-        "connected_speech_info": null,
-        "semantic_equivalence_info": null,
         "length_ok": true,
         "final_length_ok": true,
-        "verified": false,
+        "verified": true,
         "trim_info": {
-          "raw_duration_seconds": 54.24,
-          "raw_leading_silence_seconds": 0.22,
-          "raw_trailing_silence_seconds": 0.4,
-          "trimmed_duration_seconds": 54.19,
-          "leading_margin_retained_seconds": 0.22,
-          "trailing_margin_retained_seconds": 0.35
+          "raw_duration_seconds": 50.24,
+          "raw_leading_silence_seconds": 0.24,
+          "raw_trailing_silence_seconds": 0.3,
+          "trimmed_duration_seconds": 50.24,
+          "leading_margin_retained_seconds": 0.24,
+          "trailing_margin_retained_seconds": 0.3
         },
         "disfluency_checked": false,
         "disfluency_evidence": null,
         "repetition_qa_checked": true,
         "repetition_qa_evidence": {
-          "flagged": true,
-          "duration_seconds": 54.19,
+          "flagged": false,
+          "duration_seconds": 50.24,
           "method_a_ngram": {
             "matches": [],
             "flagged": false,
             "flagged_matches": [],
-            "word_count": 182,
+            "word_count": 175,
             "canonical_known": true,
             "min_words": 3
           },
           "method_d_spectral_long_lag": {
             "top_matches": [
               {
-                "similarity": 0.9954,
-                "time_a_seconds": 18.05,
-                "time_b_seconds": 42.85,
-                "lag_seconds": 24.8,
-                "run_length_seconds_at_thresh_0.85": 0.03
-              },
-              {
-                "similarity": 0.9948,
-                "time_a_seconds": 18.3,
-                "time_b_seconds": 20.01,
-                "lag_seconds": 1.71,
+                "similarity": 0.9949,
+                "time_a_seconds": 14.43,
+                "time_b_seconds": 48.75,
+                "lag_seconds": 34.32,
                 "run_length_seconds_at_thresh_0.85": 0.02
               },
               {
                 "similarity": 0.9947,
-                "time_a_seconds": 5.52,
-                "time_b_seconds": 52.5,
-                "lag_seconds": 46.98,
-                "run_length_seconds_at_thresh_0.85": 0.03
+                "time_a_seconds": 5.39,
+                "time_b_seconds": 38.04,
+                "lag_seconds": 32.65,
+                "run_length_seconds_at_thresh_0.85": 0.02
               },
               {
-                "similarity": 0.9946,
-                "time_a_seconds": 5.52,
-                "time_b_seconds": 51.92,
-                "lag_seconds": 46.4
+                "similarity": 0.9944,
+                "time_a_seconds": 11.86,
+                "time_b_seconds": 25.65,
+                "lag_seconds": 13.79,
+                "run_length_seconds_at_thresh_0.85": 0.04
               },
               {
                 "similarity": 0.9942,
-                "time_a_seconds": 18.05,
-                "time_b_seconds": 20.71,
-                "lag_seconds": 2.66
+                "time_a_seconds": 18.32,
+                "time_b_seconds": 37.97,
+                "lag_seconds": 19.65
+              },
+              {
+                "similarity": 0.9938,
+                "time_a_seconds": 8.17,
+                "time_b_seconds": 16.81,
+                "lag_seconds": 8.64
               }
             ],
-            "best_run_length_seconds": 0.03,
+            "best_run_length_seconds": 0.04,
             "min_lag_seconds": 1.0,
             "sim_threshold": 0.85,
             "decision_threshold_seconds": 0.12,
@@ -1289,152 +2705,22 @@
             "flagged": false
           },
           "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.6,
-            "time_a": 37.84,
-            "lag": 1.19,
-            "similarity_at_start": 0.7097,
-            "best_run_length_seconds": 0.6,
+            "run_length_seconds": 0.47,
+            "time_a": 17.01,
+            "lag": 1.64,
+            "similarity_at_start": 0.7588,
+            "best_run_length_seconds": 0.47,
             "lag_range_seconds": [
               0.5,
               2.0
             ],
             "sim_threshold": 0.7,
             "decision_threshold_seconds": 0.6,
-            "flagged": true
+            "flagged": false
           },
           "method_c_v2_window_check": null
         },
-        "attempt_audio_path": "er110_output/family_y_persona_trial_01/audio/it3/b1b/narration/attempts/full_story_part1_attempt2_englishstyleprefixwidemargin.wav"
-      },
-      {
-        "attempt": 3,
-        "status": "OK",
-        "asr_text": "I'm for a rule at my daughter's high school that keeps phones off during breaks and lunch too. Banning them only during class isn't enough. I get home late from the job site, and fighting about phones every night is exhausting. If I could say, \"That's the rule at school too,\" then I don't have to be the only bad guy. My daughter didn't keep our agreement to put her phone in the charging basket in the living room. The morning after I took it away, it was hard to talk to her at breakfast. She also said, if I'm the only one who replies late, I'll be left out. I had no answer for that. I want her to stick to what we've agreed. I don't want to yell like my father either. But even if she can't use her phone at school during the day, nothing changes at home at night. Maybe I just want to ask the school for help so things are easier for me. I'm a site supervisor who can't even get things organized at home.",
-        "asr_judgement": {
-          "state": "NG_BOTH",
-          "reason_code": "secondary_not_accepted",
-          "slot": 3,
-          "script_version": "v0",
-          "role": "FULL_STORY",
-          "lang": "en",
-          "segment_key": "full_story_part1",
-          "audio_sha256": "da1c3dc2dce464cac129cfa756e0726ed63973566c754cf5ceb4f32294abe019",
-          "primary": {
-            "text": "I'm for a rule at my daughter's high school that keeps phones off during breaks and lunch too. Banning them only during class isn't enough. I get home late from the job site, and fighting about phones every night is exhausting. If I could say, \"That's the rule at school too,\" then I don't have to be the only bad guy. My daughter didn't keep our agreement to put her phone in the charging basket in the living room. The morning after I took it away, it was hard to talk to her at breakfast. She also said, if I'm the only one who replies late, I'll be left out. I had no answer for that. I want her to stick to what we've agreed. I don't want to yell like my father either. But even if she can't use her phone at school during the day, nothing changes at home at night. Maybe I just want to ask the school for help so things are easier for me. I'm a site supervisor who can't even get things organized at home.",
-            "passed": false,
-            "label": "TRUE_CONTENT_MISMATCH",
-            "equivalence_basis": null,
-            "warning_labels": []
-          },
-          "secondary": {
-            "called": true,
-            "cached": false,
-            "engine": "azure",
-            "text": "I'm for a rule at my daughter's high school that keeps phones off during breaks and lunch too. Banning them only during class isn't enough.I get home late from the job site and fighting about phones every night is exhausting. If I could say that's the rule at school too, then I don't have to be the only bad guy. My daughter didn't keep our agreement to put her phone in the charging basket in the living room the morning after I took it away. It was hard to talk to her at breakfast.She also said if I'm the only one who replies late, I'll be left out.I had no answer for that. I want her to stick to what we've agreed. I don't want to yell like my father either. But even if she can't use her phone at school during the day, nothing changes at home at night.Maybe I just want to ask the school for help so things are easier for me. I'm a site supervisor who can't even get things organized at home.",
-            "label": "TRUE_CONTENT_MISMATCH",
-            "accepted": false,
-            "error": null,
-            "unavailable": false
-          },
-          "value_guard": {
-            "primary": {
-              "kind": "EQUAL",
-              "pairs": [
-                {
-                  "src": "1",
-                  "hyp": "1",
-                  "verdict": "EQUAL",
-                  "reason": "same_surface"
-                }
-              ],
-              "reasons": [],
-              "warnings": []
-            },
-            "secondary": {
-              "kind": "EQUAL",
-              "pairs": [
-                {
-                  "src": "1",
-                  "hyp": "1",
-                  "verdict": "EQUAL",
-                  "reason": "same_surface"
-                }
-              ],
-              "reasons": [],
-              "warnings": []
-            }
-          },
-          "negation_guard": {
-            "primary": false,
-            "secondary": false
-          },
-          "final_gate": {
-            "applied": false
-          },
-          "warnings": [],
-          "exclusion_rule": null,
-          "cost": {
-            "azure_calls": 1,
-            "azure_seconds": 53.95,
-            "est_jpy": 2.4,
-            "est_jpy_known": true
-          },
-          "timing": {
-            "total_ms": 24719,
-            "secondary_ms": 24696
-          },
-          "technical_stop": null,
-          "length": {
-            "applied": true,
-            "primary_len": 911,
-            "secondary_len": 901,
-            "max_len": 924,
-            "adopted_from": "primary",
-            "adopted_ok": true,
-            "surface_len": 696,
-            "primary_ok": true
-          },
-          "p3_entry": "p3_primary_ng",
-          "adapter": {
-            "layers": [],
-            "azure_real_calls": 1,
-            "cost_guard_triggered": false,
-            "language": "en-US",
-            "segment_id": "full_story_part1",
-            "asr_text_present": true,
-            "cache": {
-              "calls": 2,
-              "hits": 0
-            }
-          }
-        },
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "TRUE_CONTENT_MISMATCH",
-        "connected_speech_info": null,
-        "semantic_equivalence_info": {
-          "tier_applied": "none",
-          "sub_reason": "content_word",
-          "corroborated_by": [],
-          "warning": false,
-          "role": "FULL_STORY",
-          "diff_spans": null
-        },
-        "length_ok": true,
-        "final_length_ok": true,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 54.56,
-          "raw_leading_silence_seconds": 0.24,
-          "raw_trailing_silence_seconds": 0.96,
-          "trimmed_duration_seconds": 53.95,
-          "leading_margin_retained_seconds": 0.24,
-          "trailing_margin_retained_seconds": 0.35
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er110_output/family_y_persona_trial_01/audio/it3/b1b/narration/attempts/full_story_part1_attempt3_englishstyleprefixwidemargin.wav"
+        "attempt_audio_path": "er110_output/family_y_persona_trial_01/audio/it3/b1b/narration/attempts/full_story_part1_attempt5_englishstyleprefixwidemargin.wav"
       }
     ]
   },
