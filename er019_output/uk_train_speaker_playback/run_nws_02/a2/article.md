@@ -1,0 +1,24 @@
+# Is Your Video Putting on an Unwanted Show on the Train?
+
+You get on the train and find a seat. At last, you can relax—or so you think. Then you hear sounds from a video somewhere: laughter, sound effects, and cheerful music in the background. You are quietly going home. But your ears have to log in to someone else’s video suggestions. You paid for a train ticket, but you don’t remember paying to see this show.
+
+One smartphone makes the whole train carriage an audience. That’s a pretty bold show.
+
+Here’s news about this kind of “sound no one asked for.” On October 19, 2026, the UK announced the start of a national campaign. It asks train passengers to use headphones.
+
+But don’t quickly think, “In the UK, no headphones means you’re breaking the law!” No new rule bans all sound. The campaign points to current rail rules and asks people to think about others.
+
+Current rail rules ban sounds from a device when they bother other people. They may cover sound from a phone speaker, too, if the situation fits the rules. There is an exception when the train company has given written permission. A song may sound like a masterpiece to you, but not to the person beside you.
+
+If you break the rules, you could get a fine of up to £1,000. That’s enough to make you reach for your wallet before the volume button. But remember the words “up to” and “could.” It doesn’t mean everyone who plays sound on a speaker gets a £1,000 fine.
+
+So the first step is a call to use headphones. People will see the message on posters and hear it in announcements at stations and on trains. The fine may be what people hear most, but let’s hear the campaign’s message, too.
+
+Its name means something like, “Share the journey, not the noise.” Just because we’re in the same carriage doesn’t mean we’ve joined the fan club for the same video. The words draw that line simply.
+
+This isn’t saying, “Don’t enjoy yourself.” It’s more like saying, “Choose who hears the sound.” You can enjoy videos and music. Just don’t make people around you sit in the audience without asking them. Headphones don’t take away your entertainment. They’re a small screen that keeps the fun in your own seat.
+
+The next time you press play, take a breath. “Who am I sending this sound to?” We’re on the same train, going the same way. Still, the sound doesn’t have to ride into everyone else’s ears.
+
+## In one line
+The UK has started a national campaign asking train passengers to use headphones, not banning all sound. It asks people to enjoy videos and music without making other passengers listen.

@@ -1,0 +1,114 @@
+{
+ "annotated_md_sha256": "3de5787389aa926e824594ed58c57be0aa3ddcc86aa4a99d0baa6c0ef53236bb",
+ "core_concept_order": [
+  "C4",
+  "C5",
+  "C6"
+ ],
+ "entries": [
+  {
+   "approved_condition": "法的な罰金上限など、精度そのものが意味を持つ数字はEXACT_REQUIRED。",
+   "basis_fact_ids": [
+    "F004"
+   ],
+   "concept": "C4",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F004"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "標準罰金尺度の法的な上限を示す値であり、精度を変えると規定内容が変わりうるため維持する。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "3以下"
+    }
+   ]
+  },
+  {
+   "approved_condition": "日付・記録など、精度そのものが意味を持つ数字はEXACT_REQUIRED。",
+   "basis_fact_ids": [
+    "F004",
+    "F011"
+   ],
+   "concept": "C5",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2,
+    3
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "date_time",
+   "ledger_ids": [
+    "F004",
+    "F011"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "キャンペーン開始の発表日を特定する日付であり、概数化すると日付の事実が失われるため維持する。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "2026年10月19日"
+    }
+   ]
+  },
+  {
+   "approved_condition": "法的な罰金上限など、精度そのものが意味を持つ数字はEXACT_REQUIRED。",
+   "basis_fact_ids": [
+    "F004"
+   ],
+   "concept": "C6",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F004"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "罰金の最大額を示す法的な上限であり、金額の精度を変えずに維持する。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "最大£1,000"
+    },
+    {
+     "approx": null,
+     "surface": "£1,000"
+    }
+   ]
+  }
+ ],
+ "judge": {
+  "developer_message_sha256": "8d2618b7cc966affb3567e5ee1354551b92f394462a4786683f8f9a3052a9d3d",
+  "effort": "low",
+  "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
+  "model_requested": "gpt-6-luna",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_01d715dca4ed3a65006adac781721487d0aea6b3abbacab1c3",
+  "sec": 4.2,
+  "usage": {
+   "input_tokens": 3731,
+   "output_tokens": 405,
+   "reasoning_tokens": 62
+  },
+  "user_prompt_sha256": "9fcc5b85035941056a986939e74fe9de0906dcc21458292d8030c845da345f40"
+ },
+ "n_approximate_ok": 0,
+ "overlay_sha256": "c5ec8a98a80fe16ae47c5a6483897cf59e6b07f5fd6da2568534bc7e1fe26df2",
+ "requested_effort": "low",
+ "requested_model": "gpt-6-luna",
+ "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+ "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
+ "sidecar_sha256": "1ceb8fd4797c554e2adb0d67965c54b6b007de73afdcf19fda747b0ee0ade733",
+ "status": "OK",
+ "v8_max_relative_error": "0.10",
+ "violations": []
+}
