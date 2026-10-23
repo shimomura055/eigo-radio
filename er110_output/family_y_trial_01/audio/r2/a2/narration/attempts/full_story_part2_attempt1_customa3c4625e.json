@@ -1,0 +1,125 @@
+{
+  "attempt_number": 1,
+  "route": "custom_a3c4625e",
+  "segment_id": "full_story_part2",
+  "theme_id": "r2",
+  "level": "a2",
+  "source_out_path": "er110_output/family_y_trial_01/audio/r2/a2/narration/full_story_part2.wav",
+  "saved_at": "2026-10-23T13:36:18",
+  "sha256": "861fd8e9db7bed19f06dd31e87267de081fd226f259bc39369393c6718049a77",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Algieba",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "BATCH",
+  "instruction_text": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible.",
+  "asr_text": "Before class, I mark parts to discuss with my middle school Japanese class. I look at the lesson plan spread across the teacher's desk. I think about where to add a check. It would make sure everyone has put their phone away. I want them to focus on the text, not their screens. But I want to protect more than test scores or a quiet classroom. I want time to hear how other people see things differently. I read the parts I marked again, then suddenly stop. What if all these checks leave less time to read the text that matters? It is my job to keep the lesson moving. I cannot think a quiet classroom is enough.",
+  "audio_classification": "EXACT_MATCH",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": false,
+    "duration_seconds": 39.19,
+    "method_a_ngram": {
+      "matches": [
+        {
+          "span_text": " a  quiet  classroom.",
+          "n_words": 3,
+          "category": "phrase",
+          "first_start_s": 20.02,
+          "first_end_s": 20.88,
+          "second_start_s": 37.42,
+          "second_end_s": 38.3,
+          "gap_seconds": 16.54,
+          "canonical_repeat_count": 2,
+          "intentional": true,
+          "flagged": false
+        }
+      ],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 118,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.9944,
+          "time_a_seconds": 25.31,
+          "time_b_seconds": 39.04,
+          "lag_seconds": 13.73,
+          "run_length_seconds_at_thresh_0.85": 0.04
+        },
+        {
+          "similarity": 0.9942,
+          "time_a_seconds": 10.89,
+          "time_b_seconds": 26.03,
+          "lag_seconds": 15.14,
+          "run_length_seconds_at_thresh_0.85": 0.03
+        },
+        {
+          "similarity": 0.994,
+          "time_a_seconds": 2.25,
+          "time_b_seconds": 32.15,
+          "lag_seconds": 29.9,
+          "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+          "similarity": 0.9937,
+          "time_a_seconds": 17.31,
+          "time_b_seconds": 25.31,
+          "lag_seconds": 8.0
+        },
+        {
+          "similarity": 0.9936,
+          "time_a_seconds": 17.31,
+          "time_b_seconds": 39.04,
+          "lag_seconds": 21.73
+        }
+      ],
+      "best_run_length_seconds": 0.04,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": false,
+      "local_asr_confirmation": null,
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.49,
+      "time_a": 30.94,
+      "lag": 0.79,
+      "similarity_at_start": 0.776,
+      "best_run_length_seconds": 0.49,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  },
+  "scg_info": null,
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": false,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "Before class, I mark parts to discuss with my middle school Japanese class. I look at the lesson plan spread across the teacher's desk. I think about where to add a check. It would make sure everyone has put their phone away. I want them to focus on the text, not their screens. But I want to protect more than test scores or a quiet classroom. I want time to hear how other people see things differently. I read the parts I marked again, then suddenly stop. What if all these checks leave less time to read the text that matters? It is my job to keep the lesson moving. I cannot think a quiet classroom is enough.",
+      "classification": "EXACT_MATCH",
+      "entity_like_source": []
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+以下は、同じ記事から選ばれた3件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。3件から作れる全てのペア(3組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず3組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# What Comes After Putting Away Our Smartphones
+
+If we put our smartphones away, what changes in the classroom? Where do looking away from the screen and learning meet? There are teachers, people who review school budgets, and people who study while working. Even when they face the same smartphone, they do not necessarily have the same concerns.
+
+In a classroom before class, I teach Japanese at a middle school and mark a text we want to discuss. If smartphones no longer distract us, could we focus more on the text? I do hope so. But what I want to protect, apart from test scores, is not just a quiet classroom. It is time to encounter, through words, a point of view different from my own. I look over the lesson plan on the teacher’s desk. I don’t want to cut the time we spend with the text by focusing only on checking whether phones are put away.
+
+As someone who reviews school budgets for a local government, I spread documents about device management and learning support across my desk and add sticky notes. Do I see this as money spent to reduce device use, or money spent to help students learn more? My hand stops as I write the review notes. I can’t say one should take priority while that difference remains unclear. I’m afraid of cutting necessary support from a limited budget. I can’t simply use findings from overseas as the answer for my own area. I have to explain what evidence I used to choose this allocation.
+
+In an evening high school classroom after work, I take out my notebook and check whether there are any work messages on my phone. I want to avoid using it during class. Still, I can’t say that I will stay away from messages no matter what happens. As an adult, I want to take responsibility for both my work and my studies. In the margin of my notebook, I write what I want to tell the school. Before it is decided that devices will be locked away, I want room to think about it too. I don’t want to put in the bag my responsibility to manage how I use the device myself.
+
+Everyone wants to value the time they spend learning. I think we agree on that. But when a decision is wrong, what people lose and how much they have to take on themselves are different. So we do not all have the same standard for saying it was a good choice. The power to decide where the money goes, the power to run a classroom, and the responsibility to manage one’s own life are not the same thing. And even if you have little say in what is decided, the weight of the decision is not necessarily any lighter. Even if you have something deeply important to protect, that does not mean you will have a say in the decision. Whose understanding is still waiting to be put into words?
+
+## In one line
+Teachers, budget reviewers, and working students all value learning time, but they have different concerns about smartphone rules. People who bear a decision’s weight may have little say in it, so their concerns still need to be heard.
+
+【Key Phrase 3件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "take priority",
+    "japanese_gloss": "優先する",
+    "source_sentence": "I can't say one should take priority while that difference remains unclear"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "take responsibility for",
+    "japanese_gloss": "～の責任を引き受ける",
+    "source_sentence": "As an adult, I want to take responsibility for both my work and my studies"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "put into words",
+    "japanese_gloss": "言葉にする",
+    "source_sentence": "Whose understanding is still waiting to be put into words"
+  }
+]

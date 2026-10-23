@@ -1,0 +1,137 @@
+{
+  "attempt_number": 1,
+  "route": "custom_a3c4625e",
+  "segment_id": "full_story_part3_c2",
+  "theme_id": "r0",
+  "level": "a2",
+  "source_out_path": "er110_output/family_y_trial_01/audio/r0/a2/narration/full_story_part3_c2.wav",
+  "saved_at": "2026-10-23T13:30:55",
+  "sha256": "d139cf8cb94c11e5f6f66367914104c59d11526c28712dac9d98fd0ef696cdd9",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Schedar",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "BATCH",
+  "instruction_text": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible.",
+  "asr_text": "In an evening high school classroom, after work, I take out my notebook, I check if I have any work messages on my phone. I want to avoid using it in class. Still, I can't say I will stay away from messages, whatever happens. As an adult, I want to take responsibility for both my work and studies. In my notebook's margin, I write what I want to tell the school. Before it is decided to lock devices away, I want room to think about it, too. I don't want to put my responsibility for managing my own device use into the back.",
+  "audio_classification": "NORMALIZED_MATCH",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": false,
+    "duration_seconds": 33.85,
+    "method_a_ngram": {
+      "matches": [
+        {
+          "span_text": " I  want  to",
+          "n_words": 3,
+          "category": "phrase",
+          "first_start_s": 8.22,
+          "first_end_s": 8.56,
+          "second_start_s": 16.22,
+          "second_end_s": 16.68,
+          "gap_seconds": 7.66,
+          "canonical_repeat_count": 3,
+          "intentional": true,
+          "flagged": false
+        }
+      ],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 103,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.9911,
+          "time_a_seconds": 21.79,
+          "time_b_seconds": 30.06,
+          "lag_seconds": 8.27,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9906,
+          "time_a_seconds": 23.36,
+          "time_b_seconds": 26.43,
+          "lag_seconds": 3.07,
+          "run_length_seconds_at_thresh_0.85": 0.03
+        },
+        {
+          "similarity": 0.9901,
+          "time_a_seconds": 17.36,
+          "time_b_seconds": 22.4,
+          "lag_seconds": 5.04,
+          "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+          "similarity": 0.9892,
+          "time_a_seconds": 15.57,
+          "time_b_seconds": 17.36,
+          "lag_seconds": 1.79
+        },
+        {
+          "similarity": 0.989,
+          "time_a_seconds": 1.32,
+          "time_b_seconds": 25.29,
+          "lag_seconds": 23.97
+        }
+      ],
+      "best_run_length_seconds": 0.03,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": false,
+      "local_asr_confirmation": null,
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.32,
+      "time_a": 10.06,
+      "lag": 0.96,
+      "similarity_at_start": 0.7202,
+      "best_run_length_seconds": 0.32,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  },
+  "scg_info": null,
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": true,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "In an evening high school classroom, after work, I take out my notebook, I check if I have any work messages on my phone. I want to avoid using it in class. Still, I can't say I will stay away from messages, whatever happens. As an adult, I want to take responsibility for both my work and studies. In my notebook's margin, I write what I want to tell the school. Before it is decided to lock devices away, I want room to think about it, too. I don't want to put my responsibility for managing my own device use into the back.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "entity_like_source": []
+    },
+    {
+      "step": "secondary_1",
+      "provider": "azure",
+      "text": "In an evening high school classroom after work, I take out my notebook. I check if I have any work messages on my phone. I want to avoid using it in class. Still, I can't say I will stay away from messages. Whatever happens as an adult, I want to take responsibility for both my work and studies.In my notebooks margin I write what I want to tell the school.Before it is decided to lock devices away, I want room to think about it too.I don't want to put my responsibility for managing my own device use into the bag.",
+      "classification": "NORMALIZED_MATCH",
+      "phrase_list_used": false,
+      "azure_phrase_list_weight": null,
+      "azure_phrase_list": [],
+      "cached": false,
+      "unified_judge_state": "PASS_WITH_WARNING",
+      "entity_like_source": []
+    }
+  ]
+}

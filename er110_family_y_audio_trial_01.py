@@ -159,6 +159,26 @@ def prepare(cand: str) -> dict:
     return info
 
 
+def voice_guard_cached(cached: dict | None) -> dict | None:
+    """M4(Opus S/M): 同一out_dirのresume時、本文segmentの前回entryを再利用してよいのは『要求Voiceが一致する』場合だけ。
+    XのMaster Audio Storeはspeaker_voiceをkeyに含むが、run内cache(tts_generation_results.json)はsegment ID+テキストのみで照合するため、
+    Y側でVoice名を追加照合する薄いラッパー(X関数は無変更)。記録のないentry・Voice不一致entryは再利用せず再生成させる(cacheから外す)。"""
+    if not cached:
+        return cached
+    segs = dict(cached.get("segments") or {})
+    dropped = []
+    for sid, voice in Y_VOICE_OF.items():
+        e = segs.get(sid)
+        if e is not None and e.get("y_tts_voice_requested") != voice:
+            segs.pop(sid)
+            dropped.append(sid)
+    out = dict(cached)
+    out["segments"] = segs
+    if dropped:
+        out["y_m4_dropped_for_voice_mismatch"] = dropped
+    return out
+
+
 # ============================================================
 # TTS: Advanced(b1b)
 # ============================================================
@@ -189,7 +209,7 @@ def generate_y_b1_segments(theme_out_dir: str) -> dict:
     kp = load_json(kp_path) if os.path.exists(kp_path) else None
     shared_raw = xr.shared_narration.ensure_all_shared_narration_b1(narration_dir, tts_backend=TTS_BACKEND)
     shared_status = xr._summarize_shared_narration(shared_raw)
-    cached = xr._load_cached_tts_results(out_dir)
+    cached = voice_guard_cached(xr._load_cached_tts_results(out_dir))
     results = {}
 
     topic_text = f"Today's topic is {parts['title']}."
@@ -285,7 +305,7 @@ def generate_y_a2_segments(theme_out_dir: str, japanese_title: str) -> dict:
     kp = load_json(kp_path) if os.path.exists(kp_path) else None
     shared_raw = xr.shared_narration.ensure_all_shared_narration_a2(narration_dir, tts_backend=TTS_BACKEND)
     shared_status = xr._summarize_shared_narration(shared_raw)
-    cached = xr._load_cached_tts_results(out_dir)
+    cached = voice_guard_cached(xr._load_cached_tts_results(out_dir))
     results = {}
 
     topic_text = f"Today's topic is {parts['title']}."

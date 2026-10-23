@@ -1,0 +1,12 @@
+{
+  "recorded_at_jst": "2026-10-23 12:3x (TTS開始前)",
+  "basis": "X実績 uk_train run_nws_02 の音声段(scaffold含む) 24.22円(openai 1.42 / gemini TTS 13.58 / openai_asr 3.79 / azure 5.44)。Y本文は語数+25%・本文5segment(Xは3)・Comment 4なし・scaffoldはPhase2で実施済み",
+  "per_candidate_estimate_jpy": "20〜32 (Std+Adv)",
+  "two_candidates_estimate_jpy": "40〜64",
+  "phase0_2_actual_jpy": 146.28,
+  "cumulative_estimate_jpy": "186〜210",
+  "cap_jpy": 250,
+  "decision": "250円超過見込みなし(上限側でも通算約210円) -> 主候補R2g+比較候補R0gの両方を音声化(実行前判断)。各候補のbudget guard=60円(raw_usage_log累計、assert_budget_ok)。通算が250円に近づく場合はR0gを開始しない",
+  "tts_model": "gemini-3.8-flash-lite-tts (speech_metadata_flash_lite、Pro系不使用)",
+  "start_condition": "他agentの有料run(TTS)が終了していること(5分間隔・最大30分待機)"
+}

@@ -1,0 +1,60 @@
+{
+  "attempt_number": 1,
+  "route": "custom_60ebc452",
+  "segment_id": "kp3_en",
+  "theme_id": "r0",
+  "level": "b1b",
+  "source_out_path": "er110_output/family_y_trial_01/audio/r0/b1b/narration/kp3_en.wav",
+  "saved_at": "2026-10-23T13:05:38",
+  "sha256": "890b4867fc29c4efeb626d77a5a0b55a7e11e060183c6107740d0a92bd0fda34",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "BATCH",
+  "instruction_text": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Say only this phrase, exactly once, without adding, omitting, or changing any words, and make sure the final sound is actually spoken.",
+  "asr_text": "Put into words.",
+  "audio_classification": "NORMALIZED_MATCH",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": true,
+  "disfluency_checked": true,
+  "disfluency_evidence": {
+    "flagged": false,
+    "repeats": [],
+    "word_count": 3,
+    "transcript": "put  into  words.",
+    "method": "faster_whisper_small_local_verbatim"
+  },
+  "repetition_qa_checked": false,
+  "repetition_qa_evidence": null,
+  "scg_info": null,
+  "asr_prompt_applied": true,
+  "non_latin_cascade_enabled": true,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": true,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "Put into words.",
+      "classification": "NORMALIZED_MATCH",
+      "entity_like_source": []
+    },
+    {
+      "step": "secondary_vote",
+      "provider": "azure",
+      "text": "Put into words.",
+      "classification": "NORMALIZED_MATCH",
+      "phrase_list_used": false,
+      "azure_phrase_list_weight": null,
+      "azure_phrase_list": [],
+      "cached": false,
+      "unified_judge_state": "PASS",
+      "vote_required": true,
+      "entity_like_source": []
+    }
+  ]
+}

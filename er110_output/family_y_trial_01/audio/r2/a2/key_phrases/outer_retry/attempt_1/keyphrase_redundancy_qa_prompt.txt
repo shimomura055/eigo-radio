@@ -1,0 +1,63 @@
+以下は、同じ記事から選ばれた3件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。3件から作れる全てのペア(3組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず3組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Putting Away Our Phones—and What Comes Next
+
+Put a phone in a bag and click the lock shut. If only we could lock away classroom problems, too. When the screen goes dark, does learning start by itself? A Japanese teacher, a school budget worker, and a student who works and goes to school all face the same bag. But different alarms go off in each person’s mind.
+
+Before class, I mark parts to discuss with my middle school Japanese class. I look at the lesson plan spread across the teacher’s desk. I think about where to add a check. It would make sure everyone has put their phone away. I want them to focus on the text, not their screens. But I want to protect more than test scores or a quiet classroom. I want time to hear how other people see things differently. I read the parts I marked again, then suddenly stop. What if all these checks leave less time to read the text that matters? It is my job to keep the lesson moving. I cannot think a quiet classroom is enough.
+
+I check school budgets for the local government. I lay out device costs and papers about learning help on my desk. I mark them with sticky notes. Should money for putting phones away count as spending to help students do better at school? I start writing a note about the budget review, then stop. How can I explain the link between not using phones and learning? The budget cannot make money appear from nowhere. I worry that money for the bags could mean less help for students who need help with learning. At the same time, I still do not know if this cost is needed. I decide how the money is shared. So I cannot avoid explaining why.
+
+After work, I take out my notebook at the evening high school I attend. I check if my phone still has any work messages. I want to avoid using it during class. But can I say with confidence, “No matter what happens, I can stay away from work messages”? I take both my work and my studies seriously. As an adult, I want to be responsible for both. I write what I want to tell the school in my notebook’s margin. Before the bag is shut, I want the door to a talk to stay open. I do not want to give up my responsibility to manage how I use my phone, either.
+
+We all want to value the time we spend learning. But even when we want the same thing, a wrong choice can cost each of us different things. We also have different amounts of responsibility to take on. One bag cannot hold everyone’s idea of what is “good.” There is power to decide how money is spent. There is power to shape the classroom. And there is the duty to keep daily life going. Even people with little say in decisions have burdens just as heavy. What they need to protect may matter deeply. Still, they may not get to take part in the decision. Before we close the bag, are we shutting out even the acceptance someone has not yet found the words to express?
+
+## In one line
+A teacher, a budget worker, and a working student see different risks in phone bags at school. They value learning, but their duties differ, and those with much to protect may have little say.
+
+【Key Phrase 3件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "little say in decisions",
+    "japanese_gloss": "決定にほとんど口を出せないこと",
+    "source_sentence": "Even people with little say in decisions have burdens just as heavy"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "shut out",
+    "japanese_gloss": "締め出す",
+    "source_sentence": "Before we close the bag, are we shutting out even the acceptance someone has not yet found the words to express"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "keep daily life going",
+    "japanese_gloss": "日々の暮らしを続けていく",
+    "source_sentence": "And there is the duty to keep daily life going"
+  }
+]

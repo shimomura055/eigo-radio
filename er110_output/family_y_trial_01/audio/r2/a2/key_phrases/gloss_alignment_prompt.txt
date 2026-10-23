@@ -1,0 +1,71 @@
+以下の各英語key_phraseは、教材として最終確定した英語表現です。current_japanese_glossは、確定前の候補表現(display_phrase_before_canonicalization)を基準に付けた日本語グロスで、確定したkey_phrase全体とは一致していない可能性があります。added_content_wordsは、確定時に候補表現へ新しく加わった内容語です(空の場合があります)。
+
+各項目について、次を行ってください。
+1. current_japanese_glossが、最終的なkey_phrase全体(目的語・補語・修飾語を含むすべての語)の意味と過不足なく一致しているかを判定し(current_gloss_consistent)てください。「～」「〜」を含むかどうかは判定の基準ではありません。key_phrase全体の意味が日本語に表れているかどうかだけで判定してください。
+2. 一致している場合は、japanese_glossにcurrent_japanese_glossをそのまま返してください。一致していない場合は、最終key_phrase全体に一致する日本語グロスを返してください。current_japanese_glossが最終key_phrase全体の意味を既に表している場合は、より自然・より適切と思える言い換えがあっても書き換えず、current_japanese_glossをそのまま返してください。書き換えるのは、key_phraseの語の意味が欠けている・誤っている場合だけです。
+3. added_content_wordsの各語について、japanese_glossの中でその語の意味を表している部分を、japanese_glossからそのまま切り出してadded_word_mappingsに書いてください(english_wordには対応させる英語の語、複数語をまとめた句でもかまいません。japanese_spanにはjapanese_glossに含まれない文字列や、「～」などの記号だけを書かないでください)。複数の英語語が一つの日本語表現でまとめて表されている場合は、同じ部分を複数の語に対応させてかまいません。added_content_wordsが空の項目は、added_word_mappingsを空配列にしてください。
+判定の参考例:
+- key_phrase「based on」にcurrent「～をもとにした」: 辞書的に自然なので一致です。
+- key_phrase「based on interviews」にcurrent「～をもとにした」: interviewsの意味が欠けているので不一致です。「インタビューをもとにした」なら一致です。
+- key_phrase「fall into」にcurrent「～に落ちる」: 意味は表れているので一致です(「～に陥る」へ書き換えません)。
+
+key_phrase単体で他の文脈でも再利用できる自然な訳にし、本文固有の固有名詞・文脈の追加はしないでください。key_phrase全体の意味を反映できている場合のみqa_reflects_all_key_phrase_wordsをPASSにしてください。
+
+【新規生成の規則(current_japanese_glossがnull[未生成]の項目に適用。全文選定で選ばれた表現には、まだ日本語グロスがありません)】
+- current_japanese_glossがnullの項目は、既存グロスの修正ではなく新規生成です。current_gloss_consistentは必ずfalseにし、japanese_glossには最終key_phrase全体の意味に過不足なく一致する日本語グロスを新しく書いてください(上記の指示2の『そのまま返す』は適用されません)。
+- source_sentenceは、辞書に複数の語義がある表現で、そのうちどの語義かを選ぶためだけに使ってください(文中の固有名詞・文脈の追加はしないでください)。
+
+【日本語グロスの規則(承認済み選定Promptと同一)】
+選ぶ表現は必ず本文中の実表現(source_span)に対応させ、短く自然な日本語グロスを付けてください。
+
+日本語グロスは、辞書的に正しいだけでなく、日本人の英語学習者が聞いてすぐ意味を理解できる、自然で平易な現代日本語にしてください。直訳調や、「常態」「是正」のような過度に硬い報道語・漢語、一般的な学習者には伝わりにくい表現は避けてください。
+
+日本語グロスには、括弧（　）を使って別の訳し方・専門用語・補足情報を書き添えないでください。音声だけで聞いてそのまま意味が伝わる、平易な言い換えだけの一文にしてください。
+
+日本語グロスは、辞書的な表記として自然な範囲であれば「～」「〜」を使ってもかまいません(例: 「～を示す」)。ただし「…」のようなプレースホルダー記号は使わないでください。日本語グロスに数字を含める場合は、算用数字(1、2、3…)ではなく漢数字(一、二、三…)で書いてください。
+
+「ソロ旅行を～％とする」のように、数値を補わないと意味が成立しない句・日本語グロス(数値の穴埋めを必要とする不完全な表現)は選ばないでください。それ単体で意味が成立する句・グロスを選んでください。
+
+【対象項目】
+[
+  {
+    "rank": 1,
+    "key_phrase": "little say in decisions",
+    "display_phrase_before_canonicalization": "little say in decisions",
+    "current_japanese_gloss": null,
+    "source_sentence": "Even people with little say in decisions have burdens just as heavy",
+    "added_content_words": []
+  },
+  {
+    "rank": 2,
+    "key_phrase": "shut out",
+    "display_phrase_before_canonicalization": "shutting out",
+    "current_japanese_gloss": null,
+    "source_sentence": "Before we close the bag, are we shutting out even the acceptance someone has not yet found the words to express",
+    "added_content_words": []
+  },
+  {
+    "rank": 3,
+    "key_phrase": "keep daily life going",
+    "display_phrase_before_canonicalization": "keep daily life going",
+    "current_japanese_gloss": null,
+    "source_sentence": "And there is the duty to keep daily life going",
+    "added_content_words": []
+  }
+]
+
+【記事本文(参考)】
+# Putting Away Our Phones—and What Comes Next
+
+Put a phone in a bag and click the lock shut. If only we could lock away classroom problems, too. When the screen goes dark, does learning start by itself? A Japanese teacher, a school budget worker, and a student who works and goes to school all face the same bag. But different alarms go off in each person’s mind.
+
+Before class, I mark parts to discuss with my middle school Japanese class. I look at the lesson plan spread across the teacher’s desk. I think about where to add a check. It would make sure everyone has put their phone away. I want them to focus on the text, not their screens. But I want to protect more than test scores or a quiet classroom. I want time to hear how other people see things differently. I read the parts I marked again, then suddenly stop. What if all these checks leave less time to read the text that matters? It is my job to keep the lesson moving. I cannot think a quiet classroom is enough.
+
+I check school budgets for the local government. I lay out device costs and papers about learning help on my desk. I mark them with sticky notes. Should money for putting phones away count as spending to help students do better at school? I start writing a note about the budget review, then stop. How can I explain the link between not using phones and learning? The budget cannot make money appear from nowhere. I worry that money for the bags could mean less help for students who need help with learning. At the same time, I still do not know if this cost is needed. I decide how the money is shared. So I cannot avoid explaining why.
+
+After work, I take out my notebook at the evening high school I attend. I check if my phone still has any work messages. I want to avoid using it during class. But can I say with confidence, “No matter what happens, I can stay away from work messages”? I take both my work and my studies seriously. As an adult, I want to be responsible for both. I write what I want to tell the school in my notebook’s margin. Before the bag is shut, I want the door to a talk to stay open. I do not want to give up my responsibility to manage how I use my phone, either.
+
+We all want to value the time we spend learning. But even when we want the same thing, a wrong choice can cost each of us different things. We also have different amounts of responsibility to take on. One bag cannot hold everyone’s idea of what is “good.” There is power to decide how money is spent. There is power to shape the classroom. And there is the duty to keep daily life going. Even people with little say in decisions have burdens just as heavy. What they need to protect may matter deeply. Still, they may not get to take part in the decision. Before we close the bag, are we shutting out even the acceptance someone has not yet found the words to express?
+
+## In one line
+A teacher, a budget worker, and a working student see different risks in phone bags at school. They value learning, but their duties differ, and those with much to protect may have little say.

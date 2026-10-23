@@ -58,3 +58,8 @@
 - M2=JA・Adv・Stdで決定論確認(全PASS) / M3=一覧再Grep済み、parity testはPhase 3 / M4=Phase 3
 - M5=実装・実測(3原稿とも判定2回で通過) / M6=R0最終稿に`postprocess_ja`+記号QA適用 / M7=実施(`LEAKAGE_CALIBRATION_01.md`)
 - S1=Card 7項目+決定論`not_my_point` / S2=R2gで比較(差は微小) / S3=Std英語3原稿・0件 / S4=モニタ記録 / S5=RF flag件数記録 / S6=書き換え後の一人称保持を記録(保持) / S7=最終パートの締め2〜3型をPromptに / S8=R0/R1/R2全段比較(R0+R1枠は包含) / S9=Phase 3 / S10=リードに『取材』系0件 / S11=外部制約統合は使わず(必須化も禁止もしない) / S12=KP日本語意味の人称一般化moduleは既存経路で自動継承(KP 3件PASS) / S13=『です・ます』調0件
+
+## 6. Phase 3(委任_05)での更新(2026-10-23)
+- T8/T9/T10/T11/T12は**実施済み**(`er110_family_y_audio_trial_01.py`ほか。方式・結果は`AUDIO_QA_01.md`§2〜3、`TRIAL_SUMMARY_01.md`§6)。表2の対応: #1/#2(slowdown対象定数・未適用検知)=Yは自前で本文5segmentの`slowdown_applied`を確認(共有定数は無変更)、#3/#4(`_REQUIRED_FULL_STORY_SEGMENT_IDS`/`_BODY_SEGMENT_NAMES`)=Y独自タプル`Y_BODY_IDS`、#5(`resolve_narrative_role`)=ZのPart内clipパターンに合わせたalias ID(`full_story_part3_c2/c3`)でer020無変更のまま全5segmentがFULL_STORY、#6(Style profile)=M3 GateをY版で本文5segmentに拡張、#7(plan)=Y timeline builder、#9(timeline/gain基準)=Y builder(基準はX関数をそのまま)。
+- T13(scope限定へ"Y"追加)は**未実施**(X/Z Production .py変更0の指示。er109/PNAPはYで非活性)。M4(Voice名照合)はY側ラッパー`voice_guard_cached`で実装(unit test済み)。
+- 隔離の再確認: `git status`のtracked .py変更は新規er110ファイルのみ(Phase 3でも既存.py変更0、test側のallowlist2件はPhase 0〜2で追加済み)。

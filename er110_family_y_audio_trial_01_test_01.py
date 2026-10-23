@@ -77,6 +77,23 @@ class TestVoiceOverride(unittest.TestCase):
         self.assertEqual(mas.STORE_DIR, "er006_output/master_audio_store_01")
 
 
+class TestM4VoiceGuard(unittest.TestCase):
+    def test_voice_mismatch_or_missing_voice_not_reused(self):
+        cached = {"segments": {
+            "full_story_part2": {"status": "OK", "y_tts_voice_requested": "Algieba"},      # 一致 -> 再利用
+            "full_story_part3": {"status": "OK", "y_tts_voice_requested": "Aoede"},        # 不一致 -> 外す
+            "full_story_part3_c2": {"status": "OK"},                                       # 記録なし -> 外す
+            "preview": {"status": "OK"}}}
+        out = y.voice_guard_cached(cached)
+        self.assertIn("full_story_part2", out["segments"])
+        self.assertNotIn("full_story_part3", out["segments"])
+        self.assertNotIn("full_story_part3_c2", out["segments"])
+        self.assertIn("preview", out["segments"])
+        self.assertEqual(sorted(out["y_m4_dropped_for_voice_mismatch"]), ["full_story_part3", "full_story_part3_c2"])
+        self.assertIn("full_story_part3", cached["segments"])    # 元dictは変更しない
+        self.assertIsNone(y.voice_guard_cached(None))
+
+
 class TestTrialStoreNamespace(unittest.TestCase):
     def test_trial_store_copy_and_path_override_leaves_production_untouched(self):
         import er006_master_audio_store_01 as mas

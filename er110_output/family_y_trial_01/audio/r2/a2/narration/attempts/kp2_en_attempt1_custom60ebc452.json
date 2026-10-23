@@ -1,0 +1,60 @@
+{
+  "attempt_number": 1,
+  "route": "custom_60ebc452",
+  "segment_id": "kp2_en",
+  "theme_id": "r2",
+  "level": "a2",
+  "source_out_path": "er110_output/family_y_trial_01/audio/r2/a2/narration/kp2_en.wav",
+  "saved_at": "2026-10-23T13:49:25",
+  "sha256": "0d6e4fdc6523283129d32fed4779ca6a1a115f9ea7b386e84c6b1c13602d25e3",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "BATCH",
+  "instruction_text": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Say only this phrase, exactly once, without adding, omitting, or changing any words, and make sure the final sound is actually spoken.",
+  "asr_text": "Shut out.",
+  "audio_classification": "NORMALIZED_MATCH",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": true,
+  "disfluency_checked": true,
+  "disfluency_evidence": {
+    "flagged": false,
+    "repeats": [],
+    "word_count": 2,
+    "transcript": "Shut  out",
+    "method": "faster_whisper_small_local_verbatim"
+  },
+  "repetition_qa_checked": false,
+  "repetition_qa_evidence": null,
+  "scg_info": null,
+  "asr_prompt_applied": true,
+  "non_latin_cascade_enabled": true,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": true,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "Shut out.",
+      "classification": "NORMALIZED_MATCH",
+      "entity_like_source": []
+    },
+    {
+      "step": "secondary_vote",
+      "provider": "azure",
+      "text": "Shut out.",
+      "classification": "NORMALIZED_MATCH",
+      "phrase_list_used": false,
+      "azure_phrase_list_weight": null,
+      "azure_phrase_list": [],
+      "cached": false,
+      "unified_judge_state": "PASS",
+      "vote_required": true,
+      "entity_like_source": []
+    }
+  ]
+}
