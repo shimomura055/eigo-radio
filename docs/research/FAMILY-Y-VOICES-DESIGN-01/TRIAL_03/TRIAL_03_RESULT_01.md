@@ -7,7 +7,7 @@ Status: `TRIAL_TEXT_DONE_AUDIO_PARTIAL_V1_BLOCKED_PENDING_FABLE`(委任_09B、DE
 ## 0. 結論(先に)
 1. **世界設定は再設計済み**: 前回の「朝に全員から預かり下校時に返す(終日一律回収)」は日本の高校(特に定時制)の実態と整合しないと判断(通知は小・中の配慮措置として例示、埼玉県2014年調査では高校は全日制142校・定時制25校とも該当0校)。争点を、日本の高校で実在する分岐「今は授業中だけ使えない。休み時間や昼休みも含め、学校にいる間は使わないことにするか」に置き換えた。3人のPersonaは維持(V1/V2/V3とも維持、争点の言い方のみ修正、V2は発言理由を明示)。詳細=`WORLD_SETTING_01.md`。
 2. **日本語・英語(Std/Adv)の本文は完成**(初回稿ベースの部分修正、全面再生成なし)。Gate(Voice・Tension Leakage)は初回PASS、英語契約PASS、RF非停止。
-3. **音声は人物1(V1)だけが両levelで確定できず、全編通し音声は未作成**: Adv=HR Lock(ASRの1語差[can/could]・Repetition QA method D'境界flag)、Std=fallbackテイクでY style gate BLOCK。V1以外の全segmentは正式に確定。HR Lock・style gateは迂回していない。V1のみの修復案=`V1_REPAIR_PLAN_01.md`(未実施、Fable判断)。
+3. **音声は人物1(V1)だけが両levelで確定できず、全編通し音声は未作成**: Adv=HR Lock(4試行[Local Rewrite recovery含む]: Repetition QA method D'境界flag 3回+ASRの1語差[can/could]1回)、Std=fallbackテイクでY style gate BLOCK。V1以外の全segmentは正式に確定。HR Lock・style gateは迂回していない。V1のみの修復案=`V1_REPAIR_PLAN_01.md`(未実施、Fable判断)。
 4. 費用: 本委任実費 約50.0円(Y累計 約315.7円。旧上限400円基準で残約84.3円[明示上限134.25円内]、同日追補[USER_04_ADDENDUM_BUDGET.md]後の上限600円基準で残約284.3円)。当日 824.93円(旧上限1,200円・追補後上限1,400円のいずれも内)。
 
 ## 1. ユーザー§6 受入条件の自己チェック(証跡path付き)
