@@ -1,0 +1,422 @@
+{
+  "scope": "KP外側retry(X/Z共通実装。Zのdelegate)",
+  "max_outer": 3,
+  "generic_note": "",
+  "attempts": [
+    {
+      "outer_attempt": 1,
+      "note_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+      "selection_phrases": [
+        "couldn't bring myself to arrest",
+        "plain-clothes officer",
+        "lost touch"
+      ],
+      "excluded_phrases_in": [],
+      "canonicalization_status": "CANONICALIZATION_INVALID",
+      "canonicalization_attempts": [
+        {
+          "attempt": 1,
+          "status": "CANONICALIZATION_INVALID",
+          "reasons": [],
+          "item_reasons": [
+            {
+              "index": 0,
+              "rank": 1,
+              "reasons": [
+                "key_phrase(\"couldn't bring oneself to arrest\")がdisplay_phraseと一致せず、source_span(\"couldn't bring myself to arrest\")内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            },
+            {
+              "index": 2,
+              "rank": 3,
+              "reasons": [
+                "key_phrase('lose touch')がdisplay_phraseと一致せず、source_span('lost touch')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            }
+          ],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "key_phrase": "couldn't bring oneself to arrest",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "「bring oneself to do」は「どうしても〜する気になれない」という慣用表現なので、記事中の話者を指す myself を辞書的な一般形 oneself に置き換えました。couldn't は表現の意味を保つため変更していません。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 2,
+                "key_phrase": "plain-clothes officer",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "「私服警官」を表す自然な複合名詞で、単独でも意味が通じ、文脈限定語も含まれていないため変更しません。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 3,
+                "key_phrase": "lose touch",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "lemma_normalization",
+                "reasoning": "「連絡が途絶える」という慣用表現として単独で意味が通じるため、意味を補う語は加えません。動詞 lost を見出し語の原形 lose にしました。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_034c9cd8be6681d0006adb6095736487d095951a1722d11c9b"
+        },
+        {
+          "attempt": 2,
+          "status": "CANONICALIZATION_INVALID",
+          "reasons": [],
+          "item_reasons": [
+            {
+              "index": 0,
+              "rank": 1,
+              "reasons": [
+                "key_phrase(\"couldn't bring oneself to arrest\")がdisplay_phraseと一致せず、source_span(\"couldn't bring myself to arrest\")内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            },
+            {
+              "index": 2,
+              "rank": 3,
+              "reasons": [
+                "key_phrase('lose touch')がdisplay_phraseと一致せず、source_span('lost touch')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            }
+          ],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "key_phrase": "couldn't bring oneself to arrest",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "記事中の特定人物を指す myself を、表現の意味を保つ辞書的な一般形 oneself に置き換えました。couldn't bring oneself to do something は自然な表現で、arrest まで含めることで行為へのためらいも保たれます。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 2,
+                "key_phrase": "plain-clothes officer",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "そのままで自然な複合名詞であり、単独で意味が分かる学習単位です。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 3,
+                "key_phrase": "lose touch",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "lemma_normalization",
+                "reasoning": "動詞 lost を見出し語形の lose に直しました。「lose touch」は相手を明示しなくても「連絡が途絶える」という意味で自然に使えます。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_07c40263d0354329006adb60a1ba7c87d08e8a099be6bbde1c"
+        }
+      ],
+      "excluded_phrases_added": [
+        "couldn't bring myself to arrest",
+        "lost touch"
+      ],
+      "artifacts": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/key_phrases/b1b/outer_retry/attempt_1"
+    },
+    {
+      "outer_attempt": 2,
+      "note_sha256": "8b4e44cd4fc6343c4d487348210bbe86ec1033a52165f0375c4762c72dfa8bb2",
+      "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+      "selection_phrases": [
+        "plain-clothes officer",
+        "couldn't bring myself to",
+        "struck a match"
+      ],
+      "excluded_phrases_in": [
+        "couldn't bring myself to arrest",
+        "lost touch"
+      ],
+      "canonicalization_status": "CANONICALIZATION_INVALID",
+      "canonicalization_attempts": [
+        {
+          "attempt": 1,
+          "status": "CANONICALIZATION_INVALID",
+          "reasons": [],
+          "item_reasons": [
+            {
+              "index": 1,
+              "rank": 2,
+              "reasons": [
+                "key_phrase(\"couldn't bring oneself to\")がdisplay_phraseと一致せず、source_span(\"couldn't bring myself to\")内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            },
+            {
+              "index": 2,
+              "rank": 3,
+              "reasons": [
+                "key_phrase('strike a match')がdisplay_phraseと一致せず、source_span('struck a match')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            }
+          ],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "key_phrase": "plain-clothes officer",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "職業を表す自然で自立した名詞句であり、文脈限定語も含まないため変更しません。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 2,
+                "key_phrase": "couldn't bring oneself to",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "記事中の話者を指すmyselfを、慣例的な一般形oneselfに置き換えました。「bring oneself to」は何かをする気になれないという慣用表現で、to以下は文脈に応じて補われます。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 3,
+                "key_phrase": "strike a match",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "lemma_normalization",
+                "reasoning": "動詞の過去形struckを見出し語の基本形strikeにしました。「a match」は表現の一部なので残しています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_0f320187b9e18dab006adb60b9e2f087d0bc3d3c4596739a51"
+        },
+        {
+          "attempt": 2,
+          "status": "CANONICALIZATION_INVALID",
+          "reasons": [],
+          "item_reasons": [
+            {
+              "index": 1,
+              "rank": 2,
+              "reasons": [
+                "key_phrase(\"couldn't bring oneself to arrest\")がdisplay_phraseと一致せず、source_span(\"couldn't bring myself to\")内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            },
+            {
+              "index": 2,
+              "rank": 3,
+              "reasons": [
+                "key_phrase('strike a match')がdisplay_phraseと一致せず、source_span('struck a match')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            }
+          ],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "key_phrase": "plain-clothes officer",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "そのままで自然な名詞句であり、別の文脈でも再利用できる学習単位です。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 2,
+                "key_phrase": "couldn't bring oneself to arrest",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "記事中の話者に依存するmyselfを、慣用表現の一般形oneselfに置き換えました。また、toで終わる不完全文を避け、source_span内の補語arrestを加えて意味を明確にしています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 3,
+                "key_phrase": "strike a match",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "lemma_normalization",
+                "reasoning": "句動詞表現の意味を保ち、動詞の過去形struckを見出し語形strikeにしました。冠詞aは表現の一部なので維持しています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_08e1d25be80b8acf006adb60ca608087d0ae3720e42cccfca5"
+        }
+      ],
+      "excluded_phrases_added": [
+        "couldn't bring myself to",
+        "struck a match"
+      ],
+      "artifacts": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/key_phrases/b1b/outer_retry/attempt_2"
+    }
+  ],
+  "excluded_phrases": [
+    {
+      "phrase": "couldn't bring myself to arrest",
+      "reasons": [
+        "key_phrase(\"couldn't bring oneself to arrest\")がdisplay_phraseと一致せず、source_span(\"couldn't bring myself to arrest\")内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+      ],
+      "outer_attempt": 1,
+      "source": "canonicalization_invalid"
+    },
+    {
+      "phrase": "lost touch",
+      "reasons": [
+        "key_phrase('lose touch')がdisplay_phraseと一致せず、source_span('lost touch')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+      ],
+      "outer_attempt": 1,
+      "source": "canonicalization_invalid"
+    },
+    {
+      "phrase": "couldn't bring myself to",
+      "reasons": [
+        "key_phrase(\"couldn't bring oneself to arrest\")がdisplay_phraseと一致せず、source_span(\"couldn't bring myself to\")内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+      ],
+      "outer_attempt": 2,
+      "source": "canonicalization_invalid"
+    },
+    {
+      "phrase": "struck a match",
+      "reasons": [
+        "key_phrase('strike a match')がdisplay_phraseと一致せず、source_span('struck a match')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+      ],
+      "outer_attempt": 2,
+      "source": "canonicalization_invalid"
+    }
+  ]
+}

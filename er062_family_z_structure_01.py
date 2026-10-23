@@ -191,10 +191,12 @@ STORY_SPEAKER_CONFIG = {
     # Voiceは導出(roster/規則参照)。"other"は想定外話者(Melos同様STOP)。
     "after_twenty_years": {
         "speakers": ("bob", "patrolman", "detective", "other", "narrator"),
+        # 挿入順=判定優先順。detectiveを先頭にする(『Bob』宛の呼びかけを含む同一段落で'the tall man replied'の台詞がBobと誤判定される
+        # addressee_keyword型の誤りを避ける。2026-10-23 plan実行で観測)。
         "z_voice_keywords": {
+            "detective": ["detective", "tall man", "plain clothes", "plain-clothes"],
             "bob": ["bob"],
             "patrolman": ["patrolman", "policeman", "officer", "jimmy"],
-            "detective": ["detective", "tall man", "plain clothes", "plain-clothes"],
         },
         "attr_roster_text": (
             "- \"bob\": Bob, the man from the West who waits in the doorway for his old friend\n"
@@ -207,9 +209,9 @@ STORY_SPEAKER_CONFIG = {
             "'\"Is that you, Jimmy Wells?\" cried the man in the door.' the speaker is bob, and the tall man who answers him is the detective; "
             "the text of the note that ends the story is written by the patrolman, signed Jimmy)."),
         "dialogue_voice_keywords": {
+            "detective": ["detective", "tall man", "plain clothes", "plain-clothes"],
             "bob": ["bob"],
             "patrolman": ["patrolman", "policeman", "officer", "jimmy"],
-            "detective": ["detective", "tall man", "plain clothes", "plain-clothes"],
         },
         # 正式Voice表+決定的割当規則から導出(未割当/fail-closedの値Noneは残さない)。
         "dialogue_voice_tts_names": derive_dialogue_voice_tts_names("after_twenty_years"),
