@@ -1,0 +1,96 @@
+{
+  "id": "NG3_aihiring_a2_reeval",
+  "label": "NG",
+  "tag": "luna_high_en",
+  "old_labels": {
+    "voice_1": [],
+    "voice_2": [
+      "leak_narrator_analysis",
+      "leak_discovery_syntax"
+    ],
+    "voice_3": [
+      "leak_numbers_foreground",
+      "leak_discovery_syntax"
+    ],
+    "tension": [
+      "leak_discovery_syntax",
+      "leak_evidence_memorable"
+    ]
+  },
+  "check": {
+    "model": "gpt-6-luna",
+    "effort": "high",
+    "meta": {
+      "response_id": "resp_00a29cd18ea2aca8006adac4cb693487d08bb9b56d54537b7e",
+      "model": "gpt-6-luna",
+      "usage": {
+        "input_tokens": 2279,
+        "output_tokens": 4957
+      }
+    },
+    "prompt_sha256": "05b9b6103ab8254b7d532c034b9dff6de0991106796f8ae014d239e79ebf8b5d",
+    "parsed": {
+      "voice_1": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "外部の応募者の事例には触れていますが、調査や報告を主語にした説明ではなく、最後は本人が望む評価のされ方に着地しています。相手側の中心的な主張を代弁してもいません。",
+        "quoted_evidence": ""
+      },
+      "voice_2": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "採用業務の負荷、候補者への説明、AI作成履歴書への迷いなど、本人の仕事上の考えが中心です。公開通知への短い言及も、調査結果や傾向を報じる構成にはなっていません。",
+        "quoted_evidence": ""
+      },
+      "voice_3": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "FAIL",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "本人の判断と責任は描かれていますが、導入の根拠が導入後の効率・コストの改善報告と、女性の低評価事例に置かれ、報告された結果が目立ちます。文法上の主語は本人で、外部分析を本人の視点に置くこと自体は不自然ではありません。",
+        "quoted_evidence": "I have seen reports of faster hiring and lower costs after using AI. That is why I may keep using it. But I heard that one tool gave women lower scores."
+      },
+      "tension": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_tension_reverts_to_research": "PASS",
+        "leak_binary_camp_split": "PASS",
+        "reasoning": "法律上の要件やツール停止の事例は出ますが、中心は応募者・採用担当者・経営者それぞれの選択権や責任の違いです。3人を単純な二陣営に分けず、異なる制約が答えを難しくする構成です。",
+        "quoted_evidence": ""
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_3",
+        "paragraph_index": 3,
+        "fail_fields": [
+          "leak_discovery_syntax",
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "本人の判断と責任は描かれていますが、導入の根拠が導入後の効率・コストの改善報告と、女性の低評価事例に置かれ、報告された結果が目立ちます。文法上の主語は本人で、外部分析を本人の視点に置くこと自体は不自然ではありません。",
+        "quoted_evidence": "I have seen reports of faster hiring and lower costs after using AI. That is why I may keep using it. But I heard that one tool gave women lower scores."
+      }
+    ],
+    "any_flagged": true,
+    "fail_field_counts": {
+      "leak_discovery_syntax": 1,
+      "leak_evidence_memorable": 1
+    },
+    "n_fail_fields": 2
+  }
+}

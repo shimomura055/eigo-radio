@@ -1,0 +1,118 @@
+{
+  "id": "NG1_regression01_a1",
+  "label": "NG",
+  "tag": "luna_high_en",
+  "old_labels": {
+    "voice_1": [
+      "leak_discovery_syntax",
+      "leak_evidence_memorable"
+    ],
+    "voice_2": [],
+    "voice_3": [
+      "leak_numbers_foreground",
+      "leak_discovery_syntax",
+      "leak_evidence_memorable"
+    ],
+    "tension": [
+      "leak_discovery_syntax",
+      "leak_evidence_memorable",
+      "leak_binary_camp_split"
+    ]
+  },
+  "check": {
+    "model": "gpt-6-luna",
+    "effort": "high",
+    "meta": {
+      "response_id": "resp_03dc1ab9b4a1b770006adac47d512487d08fb09cf0eaabf797",
+      "model": "gpt-6-luna",
+      "usage": {
+        "input_tokens": 2197,
+        "output_tokens": 5404
+      }
+    },
+    "prompt_sha256": "38640b591cdfafa6c73da8e2c00bfd5c0e81c6a0637bf68aaa3892c73290f948",
+    "parsed": {
+      "voice_1": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "一人称の応募者の立場は保たれていますが、本人の経験ではない二つの事例が本文の主要な根拠となり、本人の短い経験描写より強く印象に残ります。調査等を主語にした文や、外部統計・傾向を報じる構文はありません。",
+        "quoted_evidence": "In one reported case, a woman did well on a skills test but received a low video score for her gestures and expression, then faced long-term unemployment. Another applicant sued after having no way to refuse or challenge an AI score about trust and honesty."
+      },
+      "voice_2": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "採用担当者自身の責任や日々の判断を一人称で語っており、外部データや語り手による分析に置き換わっていません。応募者や経営側の懸念を中心的に代弁することもなく、具体的な数字もありません。",
+        "quoted_evidence": ""
+      },
+      "voice_3": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "FAIL",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "本人の経験ではない企業の採用時間・費用の比較結果を、AIの魅力を示す根拠として前面に置いています。そのため数値・事実が本人の責任やリスクより印象に残りやすい一方、報告主体は企業であり、研究やデータ自体が文の主語になっているわけではありません。",
+        "quoted_evidence": "AI looks attractive: a hotel chain reported cutting hiring time from weeks to days, while another company reported lower hiring costs."
+      },
+      "tension": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "FAIL",
+        "leak_tension_reverts_to_research": "PASS",
+        "leak_binary_camp_split": "FAIL",
+        "reasoning": "三者の負担を示した後に規制や企業の事例が具体的に続き、個々の立場の葛藤より外部の事実が印象に残りやすくなっています。また、応募者を一方、採用担当者と事業側をもう一方として明示的に分けていますが、研究データの説明・比較へ全面的に戻っているわけではありません。",
+        "quoted_evidence": "In New York City, yearly bias checks and public notice make speed not just a private choice: the recruiter must document the tool, and applicants must be told. One company stopped a tool after it rated women’s résumés lower.\n\nThe positions are not identical: the applicant is judged by the process, while the recruiter or hiring manager and the business side consider how the tool is used and what it achieves."
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_1",
+        "paragraph_index": 1,
+        "fail_fields": [
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "一人称の応募者の立場は保たれていますが、本人の経験ではない二つの事例が本文の主要な根拠となり、本人の短い経験描写より強く印象に残ります。調査等を主語にした文や、外部統計・傾向を報じる構文はありません。",
+        "quoted_evidence": "In one reported case, a woman did well on a skills test but received a low video score for her gestures and expression, then faced long-term unemployment. Another applicant sued after having no way to refuse or challenge an AI score about trust and honesty."
+      },
+      {
+        "section": "voice_3",
+        "paragraph_index": 3,
+        "fail_fields": [
+          "leak_numbers_foreground",
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "本人の経験ではない企業の採用時間・費用の比較結果を、AIの魅力を示す根拠として前面に置いています。そのため数値・事実が本人の責任やリスクより印象に残りやすい一方、報告主体は企業であり、研究やデータ自体が文の主語になっているわけではありません。",
+        "quoted_evidence": "AI looks attractive: a hotel chain reported cutting hiring time from weeks to days, while another company reported lower hiring costs."
+      },
+      {
+        "section": "tension",
+        "paragraph_index": 4,
+        "fail_fields": [
+          "leak_evidence_memorable",
+          "leak_binary_camp_split"
+        ],
+        "reasoning": "三者の負担を示した後に規制や企業の事例が具体的に続き、個々の立場の葛藤より外部の事実が印象に残りやすくなっています。また、応募者を一方、採用担当者と事業側をもう一方として明示的に分けていますが、研究データの説明・比較へ全面的に戻っているわけではありません。",
+        "quoted_evidence": "In New York City, yearly bias checks and public notice make speed not just a private choice: the recruiter must document the tool, and applicants must be told. One company stopped a tool after it rated women’s résumés lower.\n\nThe positions are not identical: the applicant is judged by the process, while the recruiter or hiring manager and the business side consider how the tool is used and what it achieves."
+      }
+    ],
+    "any_flagged": true,
+    "fail_field_counts": {
+      "leak_binary_camp_split": 1,
+      "leak_evidence_memorable": 3,
+      "leak_numbers_foreground": 1
+    },
+    "n_fail_fields": 5
+  }
+}

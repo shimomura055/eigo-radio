@@ -1,0 +1,119 @@
+{
+  "id": "NG2_persontrial02_a1",
+  "label": "NG",
+  "tag": "luna_high",
+  "old_labels": {
+    "voice_1": [
+      "leak_evidence_subject"
+    ],
+    "voice_2": [
+      "leak_evidence_subject"
+    ],
+    "voice_3": [
+      "leak_numbers_foreground",
+      "leak_discovery_syntax"
+    ],
+    "tension": []
+  },
+  "check": {
+    "model": "gpt-6-luna",
+    "effort": "high",
+    "meta": {
+      "response_id": "resp_08f12a885e727b3b006adac2cd959c87d0842fb520a6ed4995",
+      "model": "gpt-6-luna",
+      "usage": {
+        "input_tokens": 2655,
+        "output_tokens": 4759
+      }
+    },
+    "prompt_sha256": "8430f9ed34a8e37e17821c0e1ec9a549459af3fcbef5af44f494587f79dc67c5",
+    "parsed": {
+      "voice_1": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "FAIL",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "FAIL",
+        "leak_discovery_syntax": "FAIL",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "本人の体験を一人称で語っていますが、ほぼ半数という外部の割合を主語にした統計的な主張が、本人のPerspectiveに入り込んでいます。経験と公平な機会を求める気持ちは残るため、記憶に残る中心は本人の状況です。",
+        "quoted_evidence": "米国で仕事を探している人のほぼ半数は、AI採用ツールのほうが人間より偏りが大きいと考えている。"
+      },
+      "voice_2": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "FAIL",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "FAIL",
+        "leak_discovery_syntax": "FAIL",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "採用担当者の一人称の業務や判断も書かれていますが、業界の割合を示す統計が、本人の視点というより外部の分析的な根拠として挿入されています。ツールを動かす立場と導入を決める立場の違いを述べており、経営者の中心的な主張を代弁してはいません。",
+        "quoted_evidence": "人事担当者の約10人に9人は、すでに採用でAIを使っていると答えている。"
+      },
+      "voice_3": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "FAIL",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "外部の報告事例を見たという一人称の経験として書かれていますが、採用期間や費用削減の具体的な数字は本人自身の経験ではありません。最終的には、自社の競争上の懸念と不公平な結果への責任という本人の葛藤に戻っています。",
+        "quoted_evidence": "何週間もかかっていた採用期間を数日に短縮した企業や、採用費用を約30パーセント削減した別の企業について、報告された事例を見たことがある。"
+      },
+      "tension": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_tension_reverts_to_research": "PASS",
+        "leak_binary_camp_split": "PASS",
+        "reasoning": "規制や企業の事例には触れていますが、中心は応募者・採用担当者・経営者の権限と責任の違いです。三者を単純な二陣営に分けず、制度上の制約がそれぞれに異なる形で及ぶことを示しています。",
+        "quoted_evidence": ""
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_1",
+        "paragraph_index": 1,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground",
+          "leak_unknowable_analysis",
+          "leak_discovery_syntax"
+        ],
+        "reasoning": "本人の体験を一人称で語っていますが、ほぼ半数という外部の割合を主語にした統計的な主張が、本人のPerspectiveに入り込んでいます。経験と公平な機会を求める気持ちは残るため、記憶に残る中心は本人の状況です。",
+        "quoted_evidence": "米国で仕事を探している人のほぼ半数は、AI採用ツールのほうが人間より偏りが大きいと考えている。"
+      },
+      {
+        "section": "voice_2",
+        "paragraph_index": 2,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground",
+          "leak_unknowable_analysis",
+          "leak_discovery_syntax"
+        ],
+        "reasoning": "採用担当者の一人称の業務や判断も書かれていますが、業界の割合を示す統計が、本人の視点というより外部の分析的な根拠として挿入されています。ツールを動かす立場と導入を決める立場の違いを述べており、経営者の中心的な主張を代弁してはいません。",
+        "quoted_evidence": "人事担当者の約10人に9人は、すでに採用でAIを使っていると答えている。"
+      },
+      {
+        "section": "voice_3",
+        "paragraph_index": 3,
+        "fail_fields": [
+          "leak_numbers_foreground"
+        ],
+        "reasoning": "外部の報告事例を見たという一人称の経験として書かれていますが、採用期間や費用削減の具体的な数字は本人自身の経験ではありません。最終的には、自社の競争上の懸念と不公平な結果への責任という本人の葛藤に戻っています。",
+        "quoted_evidence": "何週間もかかっていた採用期間を数日に短縮した企業や、採用費用を約30パーセント削減した別の企業について、報告された事例を見たことがある。"
+      }
+    ],
+    "any_flagged": true,
+    "fail_field_counts": {
+      "leak_discovery_syntax": 2,
+      "leak_evidence_subject": 2,
+      "leak_numbers_foreground": 3,
+      "leak_unknowable_analysis": 2
+    },
+    "n_fail_fields": 9
+  }
+}

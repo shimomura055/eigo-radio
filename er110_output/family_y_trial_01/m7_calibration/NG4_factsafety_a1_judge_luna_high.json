@@ -1,0 +1,104 @@
+{
+  "id": "NG4_factsafety_a1",
+  "label": "NG",
+  "tag": "luna_high",
+  "old_labels": {
+    "voice_1": [],
+    "voice_2": [],
+    "voice_3": [
+      "leak_evidence_subject",
+      "leak_numbers_foreground",
+      "leak_discovery_syntax"
+    ],
+    "tension": []
+  },
+  "check": {
+    "model": "gpt-6-luna",
+    "effort": "high",
+    "meta": {
+      "response_id": "resp_069e9dad2ab74851006adac32a406887d0a92b70db7feec306",
+      "model": "gpt-6-luna",
+      "usage": {
+        "input_tokens": 2657,
+        "output_tokens": 4301
+      }
+    },
+    "prompt_sha256": "616087d8b9bc7bf05b44a2fce90318de9b65eb6544bbbec73d23cdf65376e277",
+    "parsed": {
+      "voice_1": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "応募者本人の一人称の経験と懸念が中心で、外部調査や数字を論拠として提示していません。他の立場の主張を引き受けるのではなく、選考を受ける側の不透明さや異議申立ての難しさを語っています。",
+        "quoted_evidence": ""
+      },
+      "voice_2": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "応募者から評価について尋ねられる場面や、ツールを選んでいないのに説明・運用を担う立場が本人の言葉で描かれています。監査や公示への言及はありますが、外部調査の説明に置き換わっておらず、採用担当者自身の責任と必要が中心です。",
+        "quoted_evidence": ""
+      },
+      "voice_3": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "FAIL",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "FAIL",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "採用期間や費用について報告を根拠にAIの魅力を説明しており、報告を主語にした記事的な発見報告の構文になっています。本人の安堵や責任への懸念もありますが、外部報告の比較が前面に出て、経験より記憶に残る構成です。",
+        "quoted_evidence": "いくつかの報告では採用にかかる期間が週単位から日単位に短縮したと示され、ほかの報告では費用が下がったとされているため、AIには魅力を感じる。"
+      },
+      "tension": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "FAIL",
+        "leak_tension_reverts_to_research": "PASS",
+        "leak_binary_camp_split": "PASS",
+        "reasoning": "中心では応募者・採用担当者・経営者それぞれの賭けと権力差を描き、調査データの比較には戻っていません。一方、後半の具体的な規則と社内ツールの失敗事例は印象に残りやすく、人物の経験や感情より事実が記憶に残る構成です。",
+        "quoted_evidence": "ニューヨーク市では、雇用主は年に一度の偏り監査を実施し、応募者に通知しなければならない。これによって採用担当者の仕事が増え、スピードだけを基準にした経営者の選択には制限が加わる。ある社内ツールは、女性の履歴書を低く評価した後、使用が中止された。"
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_3",
+        "paragraph_index": 3,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground",
+          "leak_discovery_syntax",
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "採用期間や費用について報告を根拠にAIの魅力を説明しており、報告を主語にした記事的な発見報告の構文になっています。本人の安堵や責任への懸念もありますが、外部報告の比較が前面に出て、経験より記憶に残る構成です。",
+        "quoted_evidence": "いくつかの報告では採用にかかる期間が週単位から日単位に短縮したと示され、ほかの報告では費用が下がったとされているため、AIには魅力を感じる。"
+      },
+      {
+        "section": "tension",
+        "paragraph_index": 4,
+        "fail_fields": [
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "中心では応募者・採用担当者・経営者それぞれの賭けと権力差を描き、調査データの比較には戻っていません。一方、後半の具体的な規則と社内ツールの失敗事例は印象に残りやすく、人物の経験や感情より事実が記憶に残る構成です。",
+        "quoted_evidence": "ニューヨーク市では、雇用主は年に一度の偏り監査を実施し、応募者に通知しなければならない。これによって採用担当者の仕事が増え、スピードだけを基準にした経営者の選択には制限が加わる。ある社内ツールは、女性の履歴書を低く評価した後、使用が中止された。"
+      }
+    ],
+    "any_flagged": true,
+    "fail_field_counts": {
+      "leak_discovery_syntax": 1,
+      "leak_evidence_memorable": 2,
+      "leak_evidence_subject": 1,
+      "leak_numbers_foreground": 1
+    },
+    "n_fail_fields": 5
+  }
+}

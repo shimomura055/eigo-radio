@@ -1,0 +1,108 @@
+{
+  "id": "NG5_regression01_n2_a3",
+  "label": "NG",
+  "tag": "luna_high_en",
+  "old_labels": {
+    "voice_1": [
+      "leak_evidence_subject",
+      "leak_numbers_foreground",
+      "leak_discovery_syntax"
+    ],
+    "voice_2": [
+      "leak_evidence_subject",
+      "leak_numbers_foreground",
+      "leak_discovery_syntax"
+    ],
+    "voice_3": [],
+    "tension": []
+  },
+  "check": {
+    "model": "gpt-6-luna",
+    "effort": "high",
+    "meta": {
+      "response_id": "resp_0c314890684ff456006adac50ca9b887d0a707be2c4e8ecb13",
+      "model": "gpt-6-luna",
+      "usage": {
+        "input_tokens": 2201,
+        "output_tokens": 2826
+      }
+    },
+    "prompt_sha256": "5d6125a79dc1aace09707bde9a3af47ca149481c016e93b75994493da526bfab",
+    "parsed": {
+      "voice_1": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "FAIL",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "本人の経験として語られた後、外部統計が割合を主語にして提示され、セクションの最後に置かれています。そのため統計が経験の印象を弱めていますが、語り手による外側からの分析や他者側の主張の代弁はありません。",
+        "quoted_evidence": "About half of working U.S. job seekers see these tools as more biased than human recruiters."
+      },
+      "voice_2": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "FAIL",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "採用担当者の仕事上の経験や問いを一人称で描いていますが、最後に外部統計を割合主語で置いており、数字が経験より目立ちます。候補者側の懸念を中心的な主張として引き受けているわけではありません。",
+        "quoted_evidence": "About 90% of HR leaders say they use AI somewhere in hiring."
+      },
+      "voice_3": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "ダッシュボードやニュースへの反応も、意思決定を担う本人の経験と責任感として描かれています。採用の速度と公平性の両方に触れていますが、他の立場の中心的な主張を代弁してはいません。",
+        "quoted_evidence": ""
+      },
+      "tension": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_tension_reverts_to_research": "PASS",
+        "leak_binary_camp_split": "PASS",
+        "reasoning": "中心は、判断される応募者、運用を担う採用担当者、選択と結果を負うオーナーの権限や責任の違いです。監査や事例への言及は補助的で、3人を単純な二陣営に分けていません。",
+        "quoted_evidence": ""
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_1",
+        "paragraph_index": 1,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground",
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "本人の経験として語られた後、外部統計が割合を主語にして提示され、セクションの最後に置かれています。そのため統計が経験の印象を弱めていますが、語り手による外側からの分析や他者側の主張の代弁はありません。",
+        "quoted_evidence": "About half of working U.S. job seekers see these tools as more biased than human recruiters."
+      },
+      {
+        "section": "voice_2",
+        "paragraph_index": 2,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground",
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "採用担当者の仕事上の経験や問いを一人称で描いていますが、最後に外部統計を割合主語で置いており、数字が経験より目立ちます。候補者側の懸念を中心的な主張として引き受けているわけではありません。",
+        "quoted_evidence": "About 90% of HR leaders say they use AI somewhere in hiring."
+      }
+    ],
+    "any_flagged": true,
+    "fail_field_counts": {
+      "leak_evidence_memorable": 2,
+      "leak_evidence_subject": 2,
+      "leak_numbers_foreground": 2
+    },
+    "n_fail_fields": 6
+  }
+}

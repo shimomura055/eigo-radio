@@ -1,0 +1,258 @@
+{
+  "schema_version": "review_queue_post_en_v1",
+  "article_id": "family_y_trial__r1",
+  "article_level": "b1b",
+  "article_sha256": "eeeb63c8ce8bcb9459b6ce8abe35f4d923d9819810ce2d4ff45452800a4846e2",
+  "ledger_sha256": "115a6528d97f9dab19f9b5022e2ce13ca83b4f50316f248dfaa9d3e45a67da89",
+  "run_id": "rf20261023T023826Z-ea2f",
+  "timestamp": "2026-10-23T02:38:26+00:00",
+  "status": "OK",
+  "reason": null,
+  "splitter_version": "en_split_v1",
+  "producer": null,
+  "run_label": "FAMILY-Y-TRIAL-r1",
+  "sentence_count": 41,
+  "fact_count": 15,
+  "conditions": [
+    {
+      "model_key": "luna",
+      "condition": "A3",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6244,
+      "output_tokens": 182,
+      "cached_tokens": 0,
+      "cost_jpy": 0.114464,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "luna",
+      "condition": "A4",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6394,
+      "output_tokens": 1221,
+      "cached_tokens": 0,
+      "cost_jpy": 0.199984,
+      "flag_count": 3,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A3",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5615,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.27112,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A4",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5735,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.27688,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "family_y_trial__r1__b1b__eeeb63c8__rf20261023T023826Z-ea2f__s7",
+      "article_id": "family_y_trial__r1",
+      "article_level": "b1b",
+      "article_sha256": "eeeb63c8ce8bcb9459b6ce8abe35f4d923d9819810ce2d4ff45452800a4846e2",
+      "run_id": "rf20261023T023826Z-ea2f",
+      "timestamp": "2026-10-23T02:38:26+00:00",
+      "sentence_id": "s7",
+      "sentence_text": "I teach Japanese at a junior high school.",
+      "context": {
+        "before": [
+          "A teacher, someone who manages a school budget, and someone who studies while working may all look at the same phone, but different alarms are ringing in their minds.",
+          "Before class, I mark the parts of a text I want to discuss with my students."
+        ],
+        "after": [
+          "If the phones are in bags, will students be able to give their attention to the text in front of them?",
+          "That makes me hopeful."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [],
+      "facts": [],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「I teach Japanese at a junior high school.」という経歴は、台帳Factで確認できない事実主張ではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.28,
+          "type": "その他",
+          "fact_ids": [],
+          "question": "「I teach Japanese at a junior high school.」という経歴は、台帳Factで確認できない事実主張ではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.28
+    },
+    {
+      "issue_id": "family_y_trial__r1__b1b__eeeb63c8__rf20261023T023826Z-ea2f__s15",
+      "article_id": "family_y_trial__r1",
+      "article_level": "b1b",
+      "article_sha256": "eeeb63c8ce8bcb9459b6ce8abe35f4d923d9819810ce2d4ff45452800a4846e2",
+      "run_id": "rf20261023T023826Z-ea2f",
+      "timestamp": "2026-10-23T02:38:26+00:00",
+      "sentence_id": "s15",
+      "sentence_text": "I review school budgets for the local government.",
+      "context": {
+        "before": [
+          "What if checking that the phones are away cuts into the time for working with the text?",
+          "That would be a problem."
+        ],
+        "after": [
+          "I spread papers on device management and learning support across my desk and add sticky notes.",
+          "Should spending to reduce phone use also be a priority as a way to help students do better in school?"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [],
+      "facts": [],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「I review school budgets for the local government.」という職務は、台帳Factで確認できない事実主張ではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.28,
+          "type": "その他",
+          "fact_ids": [],
+          "question": "「I review school budgets for the local government.」という職務は、台帳Factで確認できない事実主張ではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.28
+    },
+    {
+      "issue_id": "family_y_trial__r1__b1b__eeeb63c8__rf20261023T023826Z-ea2f__s24",
+      "article_id": "family_y_trial__r1",
+      "article_level": "b1b",
+      "article_sha256": "eeeb63c8ce8bcb9459b6ce8abe35f4d923d9819810ce2d4ff45452800a4846e2",
+      "run_id": "rf20261023T023826Z-ea2f",
+      "timestamp": "2026-10-23T02:38:26+00:00",
+      "sentence_id": "s24",
+      "sentence_text": "At the evening high school I go to after work, I take out my notebook and check whether I still have work messages on my phone.",
+      "context": {
+        "before": [
+          "I cannot treat schools overseas and schools in this area as if they were the same.",
+          "Even so, I have to show why I think the money should go where it does."
+        ],
+        "after": [
+          "I want to avoid using it in class.",
+          "But I cannot promise, “No matter what happens, I will stay away from work messages.”"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [],
+      "facts": [],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「At the evening high school I go to after work」という通学状況は、台帳Factで確認できない事実主張ではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.28,
+          "type": "その他",
+          "fact_ids": [],
+          "question": "「At the evening high school I go to after work」という通学状況は、台帳Factで確認できない事実主張ではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.28
+    }
+  ],
+  "unlocated_flags": [],
+  "model_stats": {
+    "luna": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 12638,
+      "output_tokens": 1403,
+      "cost_jpy": 0.314448,
+      "a3_flag_count": 0,
+      "a4_flag_count": 3,
+      "unique_issue": 3,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 0
+    },
+    "gemini35fl": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 11350,
+      "output_tokens": 8,
+      "cost_jpy": 0.548,
+      "a3_flag_count": 0,
+      "a4_flag_count": 0,
+      "unique_issue": 0,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 1
+    },
+    "_all": {
+      "article_level": "b1b",
+      "article_status": "OK",
+      "unique_issue": 3,
+      "cost_jpy": 0.862448,
+      "issues_by_both_models": 0
+    }
+  },
+  "warnings": []
+}

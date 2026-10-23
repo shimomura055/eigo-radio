@@ -1,0 +1,95 @@
+{
+  "id": "OK2_aihiring_b1_reeval",
+  "label": "OK",
+  "tag": "luna_high_en",
+  "old_labels": {
+    "voice_1": [],
+    "voice_2": [],
+    "voice_3": [],
+    "tension": []
+  },
+  "check": {
+    "model": "gpt-6-luna",
+    "effort": "high",
+    "meta": {
+      "response_id": "resp_0c6a20f91a257784006adac547c9b087d0aaf5f8ed33e3d33e",
+      "model": "gpt-6-luna",
+      "usage": {
+        "input_tokens": 2213,
+        "output_tokens": 2933
+      }
+    },
+    "prompt_sha256": "e99b9b2d4c04198d6ca068ede3f2cf9db36622359eba8c63242aa0402312eb80",
+    "parsed": {
+      "voice_1": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "本人の経験として語られるのは冒頭と結びが中心で、本文の目立つ部分は別の応募者の事例です。読者に残りやすいのは本人の感情や経験より、他人についての事実になっています。",
+        "quoted_evidence": "I have read about a woman who did well on a skills test but was rejected after AI rated her gestures and facial expressions low. She later faced long-term unemployment. I also know of an applicant who said AI scored his reliability and honesty without an opt-out or a way to challenge the result."
+      },
+      "voice_2": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "採用担当者自身の業務、判断、責任の範囲が一人称で語られており、外部の調査や分析を説明する構成にはなっていません。候補者への説明にも触れていますが、中心は採用担当者の実務上の葛藤です。",
+        "quoted_evidence": ""
+      },
+      "voice_3": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "「news」が文の主語となり、外部の事実を説明の起点にしています。一方で、業務の継続や自分が誤った場合の責任も本人の立場として描かれています。",
+        "quoted_evidence": "But news of a tool that rated women lower makes me look twice at my own choice."
+      },
+      "tension": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_tension_reverts_to_research": "PASS",
+        "leak_binary_camp_split": "PASS",
+        "reasoning": "中心は、応募者・採用担当者・経営者それぞれの権限や責任が異なることに置かれています。法的要件と企業の事例は補助的に使われており、3人を単純な二陣営に分けてもいません。",
+        "quoted_evidence": ""
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_1",
+        "paragraph_index": 1,
+        "fail_fields": [
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "本人の経験として語られるのは冒頭と結びが中心で、本文の目立つ部分は別の応募者の事例です。読者に残りやすいのは本人の感情や経験より、他人についての事実になっています。",
+        "quoted_evidence": "I have read about a woman who did well on a skills test but was rejected after AI rated her gestures and facial expressions low. She later faced long-term unemployment. I also know of an applicant who said AI scored his reliability and honesty without an opt-out or a way to challenge the result."
+      },
+      {
+        "section": "voice_3",
+        "paragraph_index": 3,
+        "fail_fields": [
+          "leak_evidence_subject"
+        ],
+        "reasoning": "「news」が文の主語となり、外部の事実を説明の起点にしています。一方で、業務の継続や自分が誤った場合の責任も本人の立場として描かれています。",
+        "quoted_evidence": "But news of a tool that rated women lower makes me look twice at my own choice."
+      }
+    ],
+    "any_flagged": true,
+    "fail_field_counts": {
+      "leak_evidence_memorable": 1,
+      "leak_evidence_subject": 1
+    },
+    "n_fail_fields": 2
+  }
+}

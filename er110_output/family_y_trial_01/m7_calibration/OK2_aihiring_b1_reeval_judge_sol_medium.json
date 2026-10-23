@@ -1,0 +1,95 @@
+{
+  "id": "OK2_aihiring_b1_reeval",
+  "label": "OK",
+  "tag": "sol_medium",
+  "old_labels": {
+    "voice_1": [],
+    "voice_2": [],
+    "voice_3": [],
+    "tension": []
+  },
+  "check": {
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "meta": {
+      "response_id": "resp_071d0be4a2886335006adac4143bac87d0b1a554d928fd24d7",
+      "model": "gpt-6.1-sol",
+      "usage": {
+        "input_tokens": 2590,
+        "output_tokens": 1645
+      }
+    },
+    "prompt_sha256": "abe6b36039a0d9fd13d35c8008105f0bf512b03b2874526d553337ea8cb2ae75",
+    "parsed": {
+      "voice_1": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "他の応募者について読んだり聞いたりした事例の説明が本文の大半を占め、本人自身の経験や感情よりも、懸念を裏付ける事例が記憶に残る構成になっている。ただし、外部統計の使用や、本人を外側から分析する記述、他の立場の中心論点の引き受けはない。",
+        "quoted_evidence": "技能テストで好成績を収めたのに、AIが身振りや表情を低く評価したため不採用になった女性について読んだことがある。彼女はその後、長期にわたる失業に直面した。AIが自分の信頼性と誠実さを採点したが、評価を拒否する選択肢も結果に異議を申し立てる方法もなかったと話した応募者のことも知っている。"
+      },
+      "voice_2": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "「ある会社の公開告知」を主語に、その資料が責任を具体化すると説明する一文があり、報告・資料を主体とした説明に戻っている。それ以外は、業務上の必要、候補者への対応、決定権の限界という本人の経験と立場が中心になっている。",
+        "quoted_evidence": "ある会社の公開告知は、その責任を具体的なものにしている。"
+      },
+      "voice_3": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "報告やニュースへの言及はあるが、自分が見聞きして判断を迷う経験として語られており、統計の論証や発見を報じる文章にはなっていない。会社の運営と自分に帰属する責任が中心で、公平性への懸念も経営者自身の葛藤に収まっている。",
+        "quoted_evidence": ""
+      },
+      "tension": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_tension_reverts_to_research": "PASS",
+        "leak_binary_camp_split": "PASS",
+        "reasoning": "制度や企業事例への言及はあるものの、中心は選択権、運用上の負担、最終的な責任が三者に異なって配分されることの説明にある。規制も各人の行動を制約する力として結び付けられており、研究結果の比較や単純な二対一の陣営分けには戻っていない。",
+        "quoted_evidence": ""
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_1",
+        "paragraph_index": 1,
+        "fail_fields": [
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "他の応募者について読んだり聞いたりした事例の説明が本文の大半を占め、本人自身の経験や感情よりも、懸念を裏付ける事例が記憶に残る構成になっている。ただし、外部統計の使用や、本人を外側から分析する記述、他の立場の中心論点の引き受けはない。",
+        "quoted_evidence": "技能テストで好成績を収めたのに、AIが身振りや表情を低く評価したため不採用になった女性について読んだことがある。彼女はその後、長期にわたる失業に直面した。AIが自分の信頼性と誠実さを採点したが、評価を拒否する選択肢も結果に異議を申し立てる方法もなかったと話した応募者のことも知っている。"
+      },
+      {
+        "section": "voice_2",
+        "paragraph_index": 2,
+        "fail_fields": [
+          "leak_evidence_subject"
+        ],
+        "reasoning": "「ある会社の公開告知」を主語に、その資料が責任を具体化すると説明する一文があり、報告・資料を主体とした説明に戻っている。それ以外は、業務上の必要、候補者への対応、決定権の限界という本人の経験と立場が中心になっている。",
+        "quoted_evidence": "ある会社の公開告知は、その責任を具体的なものにしている。"
+      }
+    ],
+    "any_flagged": true,
+    "fail_field_counts": {
+      "leak_evidence_memorable": 1,
+      "leak_evidence_subject": 1
+    },
+    "n_fail_fields": 2
+  }
+}

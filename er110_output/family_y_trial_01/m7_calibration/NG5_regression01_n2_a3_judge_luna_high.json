@@ -1,0 +1,110 @@
+{
+  "id": "NG5_regression01_n2_a3",
+  "label": "NG",
+  "tag": "luna_high",
+  "old_labels": {
+    "voice_1": [
+      "leak_evidence_subject",
+      "leak_numbers_foreground",
+      "leak_discovery_syntax"
+    ],
+    "voice_2": [
+      "leak_evidence_subject",
+      "leak_numbers_foreground",
+      "leak_discovery_syntax"
+    ],
+    "voice_3": [],
+    "tension": []
+  },
+  "check": {
+    "model": "gpt-6-luna",
+    "effort": "high",
+    "meta": {
+      "response_id": "resp_083fb5261a8ce11e006adac34a384087d0b2a98ed406269a63",
+      "model": "gpt-6-luna",
+      "usage": {
+        "input_tokens": 2573,
+        "output_tokens": 3295
+      }
+    },
+    "prompt_sha256": "c31ece62a5d194999bb6e07e79311ba42a95575991f1c14207af2505232e9b9c",
+    "parsed": {
+      "voice_1": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "FAIL",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "FAIL",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "本人の経験を語る一方、最後に外部統計を根拠として提示している。具体的な選考上の不利益や異議申立ての機会がない経験は十分に描かれており、相手側の中心論点を代弁してはいない。",
+        "quoted_evidence": "「米国で求職中の人の約半数は、こうしたツールのほうが人間の採用担当者より偏りが大きいと見ている。」"
+      },
+      "voice_2": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "FAIL",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "FAIL",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "本人の業務上の負担や判断の迷いは一人称で語られているが、最後の外部統計が締めくくりとなり、経験より採用現場でのAI利用率が印象に残りやすい。応募者側の公正さの懸念を中心的な主張として引き受けてはいない。",
+        "quoted_evidence": "「人事責任者の約90パーセントは、採用のどこかでAIを使っていると答えている。」"
+      },
+      "voice_3": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "ダッシュボードや批判のニュースは、外部データを説明するためでなく、本人の判断や安堵、責任の重さに結びつけて描かれている。経営上の必要と問題視されることへの懸念が本人の視点として自然に語られている。",
+        "quoted_evidence": ""
+      },
+      "tension": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_tension_reverts_to_research": "PASS",
+        "leak_binary_camp_split": "PASS",
+        "reasoning": "中心は調査結果の説明ではなく、応募者・採用担当者・経営者で異なる権限と責任の整理になっている。ニューヨーク市の制約や企業の事例は添えられているが、三者を単純な二陣営に分けてはいない。",
+        "quoted_evidence": ""
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_1",
+        "paragraph_index": 1,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground",
+          "leak_discovery_syntax"
+        ],
+        "reasoning": "本人の経験を語る一方、最後に外部統計を根拠として提示している。具体的な選考上の不利益や異議申立ての機会がない経験は十分に描かれており、相手側の中心論点を代弁してはいない。",
+        "quoted_evidence": "「米国で求職中の人の約半数は、こうしたツールのほうが人間の採用担当者より偏りが大きいと見ている。」"
+      },
+      {
+        "section": "voice_2",
+        "paragraph_index": 2,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground",
+          "leak_discovery_syntax",
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "本人の業務上の負担や判断の迷いは一人称で語られているが、最後の外部統計が締めくくりとなり、経験より採用現場でのAI利用率が印象に残りやすい。応募者側の公正さの懸念を中心的な主張として引き受けてはいない。",
+        "quoted_evidence": "「人事責任者の約90パーセントは、採用のどこかでAIを使っていると答えている。」"
+      }
+    ],
+    "any_flagged": true,
+    "fail_field_counts": {
+      "leak_discovery_syntax": 2,
+      "leak_evidence_memorable": 1,
+      "leak_evidence_subject": 2,
+      "leak_numbers_foreground": 2
+    },
+    "n_fail_fields": 7
+  }
+}

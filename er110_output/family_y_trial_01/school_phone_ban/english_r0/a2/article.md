@@ -1,0 +1,14 @@
+# What Comes After Putting Away Our Smartphones
+
+If we put away our smartphones, what changes in class? How do looking away from screens and learning come together? Teachers, people who check school budgets, and people who study while working are all here. Even when they face the same smartphone, they may worry about different things.
+
+Before class, I am in a middle school classroom. I teach Japanese and mark a text we want to discuss. If phones no longer distract us, could we focus more on the text? I hope so. But beyond test scores, I want to protect more than a quiet classroom. I want time to meet a point of view different from mine through words. I look over the lesson plan on the teacher’s desk. I don’t want us to spend less time with the text just to check if phones are put away.
+
+As someone who checks school budgets for the local government, I spread papers about managing devices and helping students learn across my desk. I add sticky notes. Do I see this as money spent to reduce device use, or to help students learn more? My hand stops as I write my review notes. While this difference is unclear, I can’t say which should come first. I’m afraid of cutting needed support from a small budget. I can’t simply use findings from other countries as the answer for my area. I have to explain what information I used to choose how to spend this money.
+
+In an evening high school classroom, after work, I take out my notebook. I check if I have any work messages on my phone. I want to avoid using it in class. Still, I can’t say I will stay away from messages, whatever happens. As an adult, I want to take responsibility for both my work and studies. In my notebook’s margin, I write what I want to tell the school. Before it is decided to lock devices away, I want room to think about it too. I don’t want to put my responsibility for managing my own device use into the bag.
+
+Everyone wants to value the time they spend learning. I think we agree on that. But when a decision is wrong, people lose different things. They also have to carry different amounts themselves. So we do not all use the same standard to decide if it was a good choice. The power to decide where money goes, run a classroom, and manage your own life are not the same. Even if you have little say in a decision, its weight may not be any lighter. Even if you have something very important to protect, you may not get a say in the decision. Whose understanding is still waiting to be put into words?
+
+## In one line
+Teachers, people who check budgets, and working students all value learning time. But they have different worries about phone rules. People who carry a decision’s weight may have little say. Their worries still need to be heard.

@@ -1,0 +1,91 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "high",
+  "meta": {
+    "response_id": "resp_04b4fb8c915b6401006adac9d31c7c87d09f143f824aa0a60f",
+    "model": "gpt-6-luna",
+    "usage": {
+      "input_tokens": 2390,
+      "output_tokens": 3494
+    }
+  },
+  "prompt_sha256": "efe175582abe9c12fd6274940ef80a1dc0c7f899569629dcd2ac1dbab9109f57",
+  "parsed": {
+    "voice_1": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_position_blur": "PASS",
+      "reasoning": "授業前の行動や、授業で大切にしたいことが一人称の経験として語られています。相手側の中心的な懸念を代弁している様子もありません。",
+      "quoted_evidence": ""
+    },
+    "voice_2": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "FAIL",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_position_blur": "PASS",
+      "reasoning": "予算査定の経験や、限られた予算で何を優先するかという本人の葛藤が中心です。一方、米国の結果という本人の経験に属さない外部の研究結果を、適用可能性の論拠として持ち込んでいます。",
+      "quoted_evidence": "米国の結果を、この町にもそのまま当てはめられない。"
+    },
+    "voice_3": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_position_blur": "PASS",
+      "reasoning": "仕事と学業の両立や、一律の制限に対する本人の不安と希望が具体的な経験として描かれています。別のVoiceの中心的な主張を引き受けてはいません。",
+      "quoted_evidence": ""
+    },
+    "tension": {
+      "leak_evidence_subject": "FAIL",
+      "leak_numbers_foreground": "FAIL",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "FAIL",
+      "leak_tension_reverts_to_research": "FAIL",
+      "leak_binary_camp_split": "PASS",
+      "reasoning": "三者の関心を示した後、平均得点や使用の減少、調査対象の範囲といった研究結果の説明が続き、最終パートの重心が研究の解釈に戻っています。三者を二陣営に単純分割するのではなく、異なる関心として並べています。",
+      "quoted_evidence": "平均得点がほぼ動かないことは、何も変わらないこととは違う。でも使用の減少を、そのまま学力向上とは呼べない。調べたのはロック式ポーチで、ほかの禁止方式にも同じ結果が出るとは限らない。"
+    }
+  },
+  "flagged_items": [
+    {
+      "section": "voice_2",
+      "paragraph_index": 2,
+      "fail_fields": [
+        "leak_numbers_foreground"
+      ],
+      "reasoning": "予算査定の経験や、限られた予算で何を優先するかという本人の葛藤が中心です。一方、米国の結果という本人の経験に属さない外部の研究結果を、適用可能性の論拠として持ち込んでいます。",
+      "quoted_evidence": "米国の結果を、この町にもそのまま当てはめられない。"
+    },
+    {
+      "section": "tension",
+      "paragraph_index": 4,
+      "fail_fields": [
+        "leak_evidence_subject",
+        "leak_numbers_foreground",
+        "leak_discovery_syntax",
+        "leak_evidence_memorable",
+        "leak_tension_reverts_to_research"
+      ],
+      "reasoning": "三者の関心を示した後、平均得点や使用の減少、調査対象の範囲といった研究結果の説明が続き、最終パートの重心が研究の解釈に戻っています。三者を二陣営に単純分割するのではなく、異なる関心として並べています。",
+      "quoted_evidence": "平均得点がほぼ動かないことは、何も変わらないこととは違う。でも使用の減少を、そのまま学力向上とは呼べない。調べたのはロック式ポーチで、ほかの禁止方式にも同じ結果が出るとは限らない。"
+    }
+  ],
+  "any_flagged": true,
+  "fail_field_counts": {
+    "leak_discovery_syntax": 1,
+    "leak_evidence_memorable": 1,
+    "leak_evidence_subject": 1,
+    "leak_numbers_foreground": 2,
+    "leak_tension_reverts_to_research": 1
+  },
+  "n_fail_fields": 6
+}

@@ -1,0 +1,14 @@
+# Putting Away Our Phones, and What Comes Next
+
+Put phones away and lock them up. Still, this does not fix everything in class. If students stop looking at screens, will learning begin too? A teacher, someone who checks school budgets, and someone who studies while working may all see the same phone. But different alarms ring in their minds.
+
+Before class, I mark the parts of a text that I want to discuss with my students. I teach Japanese at a junior high school. If phones are in bags, can students focus on the text in front of them? That makes me hopeful. But I want to protect more than test scores. I do not just want “a completely quiet classroom.” I want students to meet different views through words. I look back at my lesson plan. What if checking that phones are away takes time from working with the text? That would be a problem.
+
+I review school budgets for the local government. I spread papers about managing devices and supporting learning across my desk. Then I add sticky notes. Should spending money to reduce phone use also be a priority, to help students do better at school? My hand stops as I write notes about the budget. Can I really explain the link: put phones away, and grades go up? Budgets are limited. I worry that spending money on bags could mean cutting support students need. I cannot treat schools overseas and schools in this area as the same. Even so, I have to show why I think the money should be spent that way.
+
+At the evening high school I go to after work, I take out my notebook. I check whether I still have work messages on my phone. I want to avoid using it in class. But I cannot promise, “No matter what happens, I will stay away from work messages.” As an adult, I want to take responsibility for my job and my studies. In the margin of my notebook, I write what I want to tell the school. Before the bag is closed, I want the door to a discussion to stay open. I do not want to put my duty to control my own phone use away with my phone.
+
+We all want to value the time we spend learning. That is what we share. But if a decision is wrong, what each of us loses is different. We also have different amounts of responsibility to take on. That is probably why we do not all use the same measure for what counts as “good.” The power to decide where money goes, the power to run a classroom, and the duty to keep life going are separate things. Even if you have little power to decide, your load is no lighter. Even if something you want to protect matters deeply, you may not be able to take part in the decision. Before we close the bag, are we leaving out someone who has not yet found words to say they can accept it?
+
+## In one line
+Putting phones away does not solve everything; teachers, budget workers, and working students face different worries. They value learning, but their duties and power differ, so we should hear worries not yet shared.

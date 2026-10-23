@@ -1,0 +1,104 @@
+{
+  "id": "NG3_aihiring_a2_reeval",
+  "label": "NG",
+  "tag": "sol_medium",
+  "old_labels": {
+    "voice_1": [],
+    "voice_2": [
+      "leak_narrator_analysis",
+      "leak_discovery_syntax"
+    ],
+    "voice_3": [
+      "leak_numbers_foreground",
+      "leak_discovery_syntax"
+    ],
+    "tension": [
+      "leak_discovery_syntax",
+      "leak_evidence_memorable"
+    ]
+  },
+  "check": {
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "meta": {
+      "response_id": "resp_057baf8b775eb49f006adac364544487d0ae2a651ca81e358e",
+      "model": "gpt-6.1-sol",
+      "usage": {
+        "input_tokens": 2649,
+        "output_tokens": 1308
+      }
+    },
+    "prompt_sha256": "4345c410be7f07528a73f5cd28caecde030598f9fcf75af108d5ce036def1857",
+    "parsed": {
+      "voice_1": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "本文の大半が、読んだり聞いたりした他の応募者の事例の説明であり、本人の経験や感情よりも外部の事実が記憶に残る構成になっている。一方、調査等を主語にした文や外側からの人物分析はなく、技能や人柄を見てほしいという立場も一貫している。",
+        "quoted_evidence": "技能テストで良い成績を取った女性について読んだ。しかしAIは、彼女の動きや表情に低い点をつけた。その後、会社は彼女を不採用にした。彼女は長い間、仕事に就けなかった。"
+      },
+      "voice_2": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "「ある会社の公開通知」が主語となり、外部資料を根拠に職務を説明する文が入り込んでいる。ただし、全体の中心は本人の業務、応募者への対応、決定権の限界にあり、外部統計や他のVoiceの中心的主張への置き換えはない。",
+        "quoted_evidence": "ある会社の公開通知は、この職務をはっきり示している。"
+      },
+      "voice_3": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "報告への言及は本人が見聞きした判断材料として位置づけられ、中心には採用を止められない事情と、自分の名前で選択の責任を負う心配がある。女性への低評価を気にする点も、経営上の責任に結びついた葛藤であり、応募者側の主張の代弁にはなっていない。",
+        "quoted_evidence": ""
+      },
+      "tension": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_tension_reverts_to_research": "PASS",
+        "leak_binary_camp_split": "PASS",
+        "reasoning": "制度説明はあるものの、通知義務や公平性確認が三者の行動・決定権をどう制約するかに結びつけられており、調査結果の説明や比較が中心にはなっていない。応募者の選べなさ、採用担当者の運用責任、経営者の決定責任を区別し、単純な二対一の陣営にも分けていない。",
+        "quoted_evidence": ""
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_1",
+        "paragraph_index": 1,
+        "fail_fields": [
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "本文の大半が、読んだり聞いたりした他の応募者の事例の説明であり、本人の経験や感情よりも外部の事実が記憶に残る構成になっている。一方、調査等を主語にした文や外側からの人物分析はなく、技能や人柄を見てほしいという立場も一貫している。",
+        "quoted_evidence": "技能テストで良い成績を取った女性について読んだ。しかしAIは、彼女の動きや表情に低い点をつけた。その後、会社は彼女を不採用にした。彼女は長い間、仕事に就けなかった。"
+      },
+      {
+        "section": "voice_2",
+        "paragraph_index": 2,
+        "fail_fields": [
+          "leak_evidence_subject"
+        ],
+        "reasoning": "「ある会社の公開通知」が主語となり、外部資料を根拠に職務を説明する文が入り込んでいる。ただし、全体の中心は本人の業務、応募者への対応、決定権の限界にあり、外部統計や他のVoiceの中心的主張への置き換えはない。",
+        "quoted_evidence": "ある会社の公開通知は、この職務をはっきり示している。"
+      }
+    ],
+    "any_flagged": true,
+    "fail_field_counts": {
+      "leak_evidence_memorable": 1,
+      "leak_evidence_subject": 1
+    },
+    "n_fail_fields": 2
+  }
+}

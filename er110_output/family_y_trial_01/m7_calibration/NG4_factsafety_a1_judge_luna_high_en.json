@@ -1,0 +1,95 @@
+{
+  "id": "NG4_factsafety_a1",
+  "label": "NG",
+  "tag": "luna_high_en",
+  "old_labels": {
+    "voice_1": [],
+    "voice_2": [],
+    "voice_3": [
+      "leak_evidence_subject",
+      "leak_numbers_foreground",
+      "leak_discovery_syntax"
+    ],
+    "tension": []
+  },
+  "check": {
+    "model": "gpt-6-luna",
+    "effort": "high",
+    "meta": {
+      "response_id": "resp_0158ed007ec9901e006adac4f18c4487d0875be5624aaf89bd",
+      "model": "gpt-6-luna",
+      "usage": {
+        "input_tokens": 2219,
+        "output_tokens": 3554
+      }
+    },
+    "prompt_sha256": "069e8d4378cfbab217b58e9d2fb46e3f38628c7b64925c6eca313752b1190fc8",
+    "parsed": {
+      "voice_1": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "外部調査や統計を論拠にせず、応募者自身の不安や不公平への懸念を一人称で語っています。他の立場の中心的な主張を代弁しているとはいえません。",
+        "quoted_evidence": ""
+      },
+      "voice_2": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "採用担当者として人への説明やツール運用に向き合う経験が中心で、外部の分析を本人の視点として代弁してはいません。独立レビューへの言及も、本人が公示を見た経験として述べられています。",
+        "quoted_evidence": ""
+      },
+      "voice_3": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "FAIL",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "FAIL",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "採用期間やコストについて、本人の経験ではない複数の報告を根拠として持ち込み、その比較が目立っています。報告が主語となる発見報告型の文構造になっています。",
+        "quoted_evidence": "“AI is tempting because some reports show hiring moving from weeks to days, while others report lower costs.”"
+      },
+      "tension": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_tension_reverts_to_research": "PASS",
+        "leak_binary_camp_split": "PASS",
+        "reasoning": "三者それぞれの利害や権限の差を中心に、規制や過去の失敗が各人の選択をどう制約するかを示しています。調査結果の比較や単純な二陣営への分類には戻っていません。",
+        "quoted_evidence": ""
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_3",
+        "paragraph_index": 3,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground",
+          "leak_discovery_syntax",
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "採用期間やコストについて、本人の経験ではない複数の報告を根拠として持ち込み、その比較が目立っています。報告が主語となる発見報告型の文構造になっています。",
+        "quoted_evidence": "“AI is tempting because some reports show hiring moving from weeks to days, while others report lower costs.”"
+      }
+    ],
+    "any_flagged": true,
+    "fail_field_counts": {
+      "leak_discovery_syntax": 1,
+      "leak_evidence_memorable": 1,
+      "leak_evidence_subject": 1,
+      "leak_numbers_foreground": 1
+    },
+    "n_fail_fields": 4
+  }
+}

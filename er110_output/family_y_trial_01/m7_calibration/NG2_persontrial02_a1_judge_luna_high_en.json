@@ -1,0 +1,119 @@
+{
+  "id": "NG2_persontrial02_a1",
+  "label": "NG",
+  "tag": "luna_high_en",
+  "old_labels": {
+    "voice_1": [
+      "leak_evidence_subject"
+    ],
+    "voice_2": [
+      "leak_evidence_subject"
+    ],
+    "voice_3": [
+      "leak_numbers_foreground",
+      "leak_discovery_syntax"
+    ],
+    "tension": []
+  },
+  "check": {
+    "model": "gpt-6-luna",
+    "effort": "high",
+    "meta": {
+      "response_id": "resp_0c277c734f3705ed006adac4a9ed2487d0980a61287aeac487",
+      "model": "gpt-6-luna",
+      "usage": {
+        "input_tokens": 2230,
+        "output_tokens": 4177
+      }
+    },
+    "prompt_sha256": "dec319acfa1ea5ed573978adce52665a52916cac033468f1f40e34bf1722f8ac",
+    "parsed": {
+      "voice_1": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "FAIL",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "FAIL",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "当事者の経験を語る一方で、外部の割合を主語にした統計文が論証材料として挿入されています。中心には不採用や異議を申し立てられない不安があり、語り手による外側からの分析や他のVoiceの主張の代弁はありません。",
+        "quoted_evidence": "Nearly half of working U.S. job seekers see AI hiring tools as more biased than people."
+      },
+      "voice_2": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "FAIL",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "FAIL",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "候補者とのやりとりや採用担当者自身の権限の限界は一人称で描かれていますが、HRリーダー全体の割合を報告する文が入り、調査結果を伝える構文になっています。採用の導入を決める権限がないという点は、採用担当者自身の立場の説明にとどまっています。",
+        "quoted_evidence": "Around nine in ten HR leaders say they already use AI in hiring."
+      },
+      "voice_3": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "FAIL",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "FAIL",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "外部の報告事例と具体的な削減数値が、本人の責任や懸念を語る前に提示され、報告内容を紹介する文構造になっています。会社の競争力と、判断責任を負う懸念はこの人物自身の視点として保たれています。",
+        "quoted_evidence": "I have seen reported cases where some companies cut hiring time from weeks to days, and another cut hiring costs by about 30%."
+      },
+      "tension": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_tension_reverts_to_research": "PASS",
+        "leak_binary_camp_split": "PASS",
+        "reasoning": "監査要件や企業の事例は、三者の権限と負担の違いを具体化する補助材料として使われ、中心はその力関係と各人の制約にあります。三者を単純な賛成・反対の二陣営に分けず、応募者・採用担当者・経営者それぞれの異なる利害を描いています。",
+        "quoted_evidence": ""
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_1",
+        "paragraph_index": 1,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground",
+          "leak_discovery_syntax"
+        ],
+        "reasoning": "当事者の経験を語る一方で、外部の割合を主語にした統計文が論証材料として挿入されています。中心には不採用や異議を申し立てられない不安があり、語り手による外側からの分析や他のVoiceの主張の代弁はありません。",
+        "quoted_evidence": "Nearly half of working U.S. job seekers see AI hiring tools as more biased than people."
+      },
+      {
+        "section": "voice_2",
+        "paragraph_index": 2,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground",
+          "leak_discovery_syntax"
+        ],
+        "reasoning": "候補者とのやりとりや採用担当者自身の権限の限界は一人称で描かれていますが、HRリーダー全体の割合を報告する文が入り、調査結果を伝える構文になっています。採用の導入を決める権限がないという点は、採用担当者自身の立場の説明にとどまっています。",
+        "quoted_evidence": "Around nine in ten HR leaders say they already use AI in hiring."
+      },
+      {
+        "section": "voice_3",
+        "paragraph_index": 3,
+        "fail_fields": [
+          "leak_numbers_foreground",
+          "leak_discovery_syntax",
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "外部の報告事例と具体的な削減数値が、本人の責任や懸念を語る前に提示され、報告内容を紹介する文構造になっています。会社の競争力と、判断責任を負う懸念はこの人物自身の視点として保たれています。",
+        "quoted_evidence": "I have seen reported cases where some companies cut hiring time from weeks to days, and another cut hiring costs by about 30%."
+      }
+    ],
+    "any_flagged": true,
+    "fail_field_counts": {
+      "leak_discovery_syntax": 3,
+      "leak_evidence_memorable": 1,
+      "leak_evidence_subject": 2,
+      "leak_numbers_foreground": 3
+    },
+    "n_fail_fields": 9
+  }
+}

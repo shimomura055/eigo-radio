@@ -1,0 +1,97 @@
+{
+  "id": "OK1_persontrial02_a2",
+  "label": "OK",
+  "tag": "luna_high_en",
+  "old_labels": {
+    "voice_1": [],
+    "voice_2": [],
+    "voice_3": [],
+    "tension": []
+  },
+  "check": {
+    "model": "gpt-6-luna",
+    "effort": "high",
+    "meta": {
+      "response_id": "resp_03a3435c2f26758f006adac522a33887d091c506f73db71195",
+      "model": "gpt-6-luna",
+      "usage": {
+        "input_tokens": 2213,
+        "output_tokens": 4598
+      }
+    },
+    "prompt_sha256": "e99b9b2d4c04198d6ca068ede3f2cf9db36622359eba8c63242aa0402312eb80",
+    "parsed": {
+      "voice_1": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "本人のカメラ越しの経験と願いは示されていますが、本文の中央は本人自身ではなく、別の女性や応募者について読んだ事例に割かれています。そのため、本人の経験・感情より外部事例の方が記憶に残りやすい構成です。",
+        "quoted_evidence": "I have read about a woman who did well on a skills test but was rejected after AI rated her gestures and facial expressions low. She later faced long-term unemployment. I also know of an applicant who said AI scored his reliability and honesty without an opt-out or a way to challenge the result."
+      },
+      "voice_2": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "FAIL",
+        "leak_unknowable_analysis": "FAIL",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "業務上の負担や判断の限界は本人の視点で語られていますが、「ある会社の公開通知がその義務を具体化する」という部分は、人物の経験というより記事の書き手が例を添えて説明する文です。その編集的な説明が、本人の視点として挿入されています。",
+        "quoted_evidence": "one company's public notice makes that duty concrete."
+      },
+      "voice_3": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "外部の報告やツールの問題には触れますが、具体的な数値を前面に出さず、それらを受けて本人が選択を見直す理由と、判断を誤った場合の責任を描いています。公平性への懸念にも触れつつ、中心は経営側としての責任にあります。",
+        "quoted_evidence": ""
+      },
+      "tension": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_tension_reverts_to_research": "PASS",
+        "leak_binary_camp_split": "PASS",
+        "reasoning": "応募者・採用担当者・経営者の権限や責任の違いが中心で、NY市の要件やツール停止の事例もその制約を補足する役割にとどまっています。3人を単純な二陣営に分けず、それぞれの立場が異なる理由を描いています。",
+        "quoted_evidence": ""
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_1",
+        "paragraph_index": 1,
+        "fail_fields": [
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "本人のカメラ越しの経験と願いは示されていますが、本文の中央は本人自身ではなく、別の女性や応募者について読んだ事例に割かれています。そのため、本人の経験・感情より外部事例の方が記憶に残りやすい構成です。",
+        "quoted_evidence": "I have read about a woman who did well on a skills test but was rejected after AI rated her gestures and facial expressions low. She later faced long-term unemployment. I also know of an applicant who said AI scored his reliability and honesty without an opt-out or a way to challenge the result."
+      },
+      {
+        "section": "voice_2",
+        "paragraph_index": 2,
+        "fail_fields": [
+          "leak_narrator_analysis",
+          "leak_unknowable_analysis"
+        ],
+        "reasoning": "業務上の負担や判断の限界は本人の視点で語られていますが、「ある会社の公開通知がその義務を具体化する」という部分は、人物の経験というより記事の書き手が例を添えて説明する文です。その編集的な説明が、本人の視点として挿入されています。",
+        "quoted_evidence": "one company's public notice makes that duty concrete."
+      }
+    ],
+    "any_flagged": true,
+    "fail_field_counts": {
+      "leak_evidence_memorable": 1,
+      "leak_narrator_analysis": 1,
+      "leak_unknowable_analysis": 1
+    },
+    "n_fail_fields": 3
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "id": "OK2_aihiring_b1_reeval",
+  "label": "OK",
+  "tag": "luna_high",
+  "old_labels": {
+    "voice_1": [],
+    "voice_2": [],
+    "voice_3": [],
+    "tension": []
+  },
+  "check": {
+    "model": "gpt-6-luna",
+    "effort": "high",
+    "meta": {
+      "response_id": "resp_0c975b92acb3d149006adac37f68b087d0b47bd0bb5fb3874d",
+      "model": "gpt-6-luna",
+      "usage": {
+        "input_tokens": 2590,
+        "output_tokens": 5474
+      }
+    },
+    "prompt_sha256": "abe6b36039a0d9fd13d35c8008105f0bf512b03b2874526d553337ea8cb2ae75",
+    "parsed": {
+      "voice_1": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "本人自身の経験や感情よりも、読んだ女性や知っている応募者の事例が本文の大部分を占めています。本人の願いは最後に短く述べられるだけで、外部事例の方が印象に残りやすい構成です。",
+        "quoted_evidence": "技能テストで好成績を収めたのに、AIが身振りや表情を低く評価したため不採用になった女性について読んだことがある。彼女はその後、長期にわたる失業に直面した。AIが自分の信頼性と誠実さを採点したが、評価を拒否する選択肢も結果に異議を申し立てる方法もなかったと話した応募者のことも知っている。"
+      },
+      "voice_2": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "公開告知を文の主語にして、外部の情報が責任を具体化したと説明しています。一方、ツールを使う実務と候補者への対応、AI作成履歴書をめぐる迷いは本人の視点で描かれています。",
+        "quoted_evidence": "ある会社の公開告知は、その責任を具体的なものにしている。"
+      },
+      "voice_3": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "FAIL",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "本人が見た報告として述べてはいますが、採用速度と費用の変化を外部報告の結果として提示する、発見を伝える記事調の文が含まれています。本文の中心は、経営者としての責任や判断を誤るリスクにあります。",
+        "quoted_evidence": "AI導入後に採用が速くなり、費用が下がったという報告を見たことがある。"
+      },
+      "tension": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "FAIL",
+        "leak_tension_reverts_to_research": "PASS",
+        "leak_binary_camp_split": "PASS",
+        "reasoning": "三者の役割や選択権の違いを描いていますが、ニューヨーク市の要件や企業の対応という事実が具体的に示され、当事者の経験・感情より目立っています。調査結果の比較には戻っておらず、三者を単純な二陣営に分けてもいません。",
+        "quoted_evidence": "ニューヨーク市では、雇用主は自動採用ツールを使う前に、最近の公平性チェックと公開要約を用意し、通知を行う必要がある。採用担当者はそれをひそかに使うことはできず、経営者は速さだけを頼りにすることはできないが、応募者は依然として点数をコントロールできない。ある会社は、女性を低く評価した後にツールの使用を中止した。"
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_1",
+        "paragraph_index": 1,
+        "fail_fields": [
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "本人自身の経験や感情よりも、読んだ女性や知っている応募者の事例が本文の大部分を占めています。本人の願いは最後に短く述べられるだけで、外部事例の方が印象に残りやすい構成です。",
+        "quoted_evidence": "技能テストで好成績を収めたのに、AIが身振りや表情を低く評価したため不採用になった女性について読んだことがある。彼女はその後、長期にわたる失業に直面した。AIが自分の信頼性と誠実さを採点したが、評価を拒否する選択肢も結果に異議を申し立てる方法もなかったと話した応募者のことも知っている。"
+      },
+      {
+        "section": "voice_2",
+        "paragraph_index": 2,
+        "fail_fields": [
+          "leak_evidence_subject"
+        ],
+        "reasoning": "公開告知を文の主語にして、外部の情報が責任を具体化したと説明しています。一方、ツールを使う実務と候補者への対応、AI作成履歴書をめぐる迷いは本人の視点で描かれています。",
+        "quoted_evidence": "ある会社の公開告知は、その責任を具体的なものにしている。"
+      },
+      {
+        "section": "voice_3",
+        "paragraph_index": 3,
+        "fail_fields": [
+          "leak_discovery_syntax"
+        ],
+        "reasoning": "本人が見た報告として述べてはいますが、採用速度と費用の変化を外部報告の結果として提示する、発見を伝える記事調の文が含まれています。本文の中心は、経営者としての責任や判断を誤るリスクにあります。",
+        "quoted_evidence": "AI導入後に採用が速くなり、費用が下がったという報告を見たことがある。"
+      },
+      {
+        "section": "tension",
+        "paragraph_index": 4,
+        "fail_fields": [
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "三者の役割や選択権の違いを描いていますが、ニューヨーク市の要件や企業の対応という事実が具体的に示され、当事者の経験・感情より目立っています。調査結果の比較には戻っておらず、三者を単純な二陣営に分けてもいません。",
+        "quoted_evidence": "ニューヨーク市では、雇用主は自動採用ツールを使う前に、最近の公平性チェックと公開要約を用意し、通知を行う必要がある。採用担当者はそれをひそかに使うことはできず、経営者は速さだけを頼りにすることはできないが、応募者は依然として点数をコントロールできない。ある会社は、女性を低く評価した後にツールの使用を中止した。"
+      }
+    ],
+    "any_flagged": true,
+    "fail_field_counts": {
+      "leak_discovery_syntax": 1,
+      "leak_evidence_memorable": 2,
+      "leak_evidence_subject": 1
+    },
+    "n_fail_fields": 4
+  }
+}

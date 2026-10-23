@@ -1,0 +1,127 @@
+{
+  "id": "NG3_aihiring_a2_reeval",
+  "label": "NG",
+  "tag": "luna_high",
+  "old_labels": {
+    "voice_1": [],
+    "voice_2": [
+      "leak_narrator_analysis",
+      "leak_discovery_syntax"
+    ],
+    "voice_3": [
+      "leak_numbers_foreground",
+      "leak_discovery_syntax"
+    ],
+    "tension": [
+      "leak_discovery_syntax",
+      "leak_evidence_memorable"
+    ]
+  },
+  "check": {
+    "model": "gpt-6-luna",
+    "effort": "high",
+    "meta": {
+      "response_id": "resp_0e34302921f2d34d006adac2f28e0487d0b289a3cb04ca1f3b",
+      "model": "gpt-6-luna",
+      "usage": {
+        "input_tokens": 2649,
+        "output_tokens": 7575
+      }
+    },
+    "prompt_sha256": "4345c410be7f07528a73f5cd28caecde030598f9fcf75af108d5ce036def1857",
+    "parsed": {
+      "voice_1": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "調査やデータを主語にした文や具体的な数字はありません。ただし、語り手自身の体験より、読んだ女性や別の応募者の事例が主張を支えており、当人の感情や経験はあまり描かれていません。",
+        "quoted_evidence": "技能テストで良い成績を取った女性について読んだ。しかしAIは、彼女の動きや表情に低い点をつけた。その後、会社は彼女を不採用にした。彼女は長い間、仕事に就けなかった。\n\n別の応募者のことも知っている。その人は、AIが自分の信頼性と誠実さを採点したと言っていた。"
+      },
+      "voice_2": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "FAIL",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "FAIL",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "一人称で業務や迷いを語る部分はありますが、公開通知を根拠として職務を説明する一文が、当人の語りから外れた記事側の解説になっています。具体的な数字はなく、応募者側の中心的な反論を自分の主張として引き受けてもいません。",
+        "quoted_evidence": "ある会社の公開通知は、この職務をはっきり示している。"
+      },
+      "voice_3": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "FAIL",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "具体的な数値は出ていませんが、採用の速さや費用の低下という外部報告を、使い続ける理由として持ち出しています。一方、ダッシュボードを見る仕事や自分の責任・失敗リスクも本人の視点で語られています。",
+        "quoted_evidence": "AIを使った後に採用が速くなり、費用が下がったという報告を見たことがある。それが、私が使い続けるかもしれない理由だ。"
+      },
+      "tension": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "FAIL",
+        "leak_tension_reverts_to_research": "PASS",
+        "leak_binary_camp_split": "PASS",
+        "reasoning": "三つの役割それぞれの制約は示されていますが、当事者の具体的な経験や感情より、制度上の義務や会社の事例が印象に残りやすい構成です。研究データの説明に戻ったわけではなく、三者を単純な賛否の二陣営にも分けていません。",
+        "quoted_evidence": "ニューヨーク市では、雇用主は最近の公平性確認を受けていなければならない。また、簡単な概要を一般に公開し、自動採用ツールを使う前に通知しなければならない。\n\nある会社は、女性に低い点数をつけたツールの使用を中止した。"
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_1",
+        "paragraph_index": 1,
+        "fail_fields": [
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "調査やデータを主語にした文や具体的な数字はありません。ただし、語り手自身の体験より、読んだ女性や別の応募者の事例が主張を支えており、当人の感情や経験はあまり描かれていません。",
+        "quoted_evidence": "技能テストで良い成績を取った女性について読んだ。しかしAIは、彼女の動きや表情に低い点をつけた。その後、会社は彼女を不採用にした。彼女は長い間、仕事に就けなかった。\n\n別の応募者のことも知っている。その人は、AIが自分の信頼性と誠実さを採点したと言っていた。"
+      },
+      {
+        "section": "voice_2",
+        "paragraph_index": 2,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_narrator_analysis",
+          "leak_discovery_syntax"
+        ],
+        "reasoning": "一人称で業務や迷いを語る部分はありますが、公開通知を根拠として職務を説明する一文が、当人の語りから外れた記事側の解説になっています。具体的な数字はなく、応募者側の中心的な反論を自分の主張として引き受けてもいません。",
+        "quoted_evidence": "ある会社の公開通知は、この職務をはっきり示している。"
+      },
+      {
+        "section": "voice_3",
+        "paragraph_index": 3,
+        "fail_fields": [
+          "leak_numbers_foreground"
+        ],
+        "reasoning": "具体的な数値は出ていませんが、採用の速さや費用の低下という外部報告を、使い続ける理由として持ち出しています。一方、ダッシュボードを見る仕事や自分の責任・失敗リスクも本人の視点で語られています。",
+        "quoted_evidence": "AIを使った後に採用が速くなり、費用が下がったという報告を見たことがある。それが、私が使い続けるかもしれない理由だ。"
+      },
+      {
+        "section": "tension",
+        "paragraph_index": 4,
+        "fail_fields": [
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "三つの役割それぞれの制約は示されていますが、当事者の具体的な経験や感情より、制度上の義務や会社の事例が印象に残りやすい構成です。研究データの説明に戻ったわけではなく、三者を単純な賛否の二陣営にも分けていません。",
+        "quoted_evidence": "ニューヨーク市では、雇用主は最近の公平性確認を受けていなければならない。また、簡単な概要を一般に公開し、自動採用ツールを使う前に通知しなければならない。\n\nある会社は、女性に低い点数をつけたツールの使用を中止した。"
+      }
+    ],
+    "any_flagged": true,
+    "fail_field_counts": {
+      "leak_discovery_syntax": 1,
+      "leak_evidence_memorable": 2,
+      "leak_evidence_subject": 1,
+      "leak_narrator_analysis": 1,
+      "leak_numbers_foreground": 1
+    },
+    "n_fail_fields": 6
+  }
+}

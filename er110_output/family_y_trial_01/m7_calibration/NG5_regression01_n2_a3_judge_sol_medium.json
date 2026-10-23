@@ -1,0 +1,105 @@
+{
+  "id": "NG5_regression01_n2_a3",
+  "label": "NG",
+  "tag": "sol_medium",
+  "old_labels": {
+    "voice_1": [
+      "leak_evidence_subject",
+      "leak_numbers_foreground",
+      "leak_discovery_syntax"
+    ],
+    "voice_2": [
+      "leak_evidence_subject",
+      "leak_numbers_foreground",
+      "leak_discovery_syntax"
+    ],
+    "voice_3": [],
+    "tension": []
+  },
+  "check": {
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "meta": {
+      "response_id": "resp_02720026b3df8cb3006adac3b8479c87d0aed1a431a4b0d612",
+      "model": "gpt-6.1-sol",
+      "usage": {
+        "input_tokens": 2573,
+        "output_tokens": 1276
+      }
+    },
+    "prompt_sha256": "c31ece62a5d194999bb6e07e79311ba42a95575991f1c14207af2505232e9b9c",
+    "parsed": {
+      "voice_1": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "FAIL",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "末尾で求職者全体の割合を主語にし、本人の経験に属さない外部統計を懸念の裏付けとして使っている。一方、本文の中心は、評価対象を自分で選べず、理由も分からないまま選考から外される当事者の経験にある。",
+        "quoted_evidence": "米国で求職中の人の約半数は、こうしたツールのほうが人間の採用担当者より偏りが大きいと見ている。"
+      },
+      "voice_2": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "FAIL",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "末尾の割合を主語とする文は、本人の経験ではなく外部の回答集計を持ち込み、AI利用の広がりを説明している。それ以外は、選定権がないのに運用と説明を担う採用担当者の経験として成立しており、その葛藤が本文の中心にある。",
+        "quoted_evidence": "人事責任者の約90パーセントは、採用のどこかでAIを使っていると答えている。"
+      },
+      "voice_3": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "ダッシュボードを見る日常、採用が終わった安堵、自分の名前で決定を引き受ける不安が一人称の経験として描かれている。公正さへの心配も、他者の立場の代弁ではなく、選択権と責任を持つ経営者自身の葛藤になっている。",
+        "quoted_evidence": ""
+      },
+      "tension": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_tension_reverts_to_research": "PASS",
+        "leak_binary_camp_split": "PASS",
+        "reasoning": "規制や企業の事例は登場するが、調査結果の説明・比較ではなく、三者の選択を制約する背景として置かれている。中心は評価される人、選べずに運用する人、選んで責任を負う人の権限と負担の違いであり、単純な二対一には分けていない。",
+        "quoted_evidence": ""
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_1",
+        "paragraph_index": 1,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground"
+        ],
+        "reasoning": "末尾で求職者全体の割合を主語にし、本人の経験に属さない外部統計を懸念の裏付けとして使っている。一方、本文の中心は、評価対象を自分で選べず、理由も分からないまま選考から外される当事者の経験にある。",
+        "quoted_evidence": "米国で求職中の人の約半数は、こうしたツールのほうが人間の採用担当者より偏りが大きいと見ている。"
+      },
+      {
+        "section": "voice_2",
+        "paragraph_index": 2,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground"
+        ],
+        "reasoning": "末尾の割合を主語とする文は、本人の経験ではなく外部の回答集計を持ち込み、AI利用の広がりを説明している。それ以外は、選定権がないのに運用と説明を担う採用担当者の経験として成立しており、その葛藤が本文の中心にある。",
+        "quoted_evidence": "人事責任者の約90パーセントは、採用のどこかでAIを使っていると答えている。"
+      }
+    ],
+    "any_flagged": true,
+    "fail_field_counts": {
+      "leak_evidence_subject": 2,
+      "leak_numbers_foreground": 2
+    },
+    "n_fail_fields": 4
+  }
+}

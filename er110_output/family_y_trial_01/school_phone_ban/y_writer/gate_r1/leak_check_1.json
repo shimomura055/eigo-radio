@@ -1,0 +1,90 @@
+{
+  "model": "gpt-6-luna",
+  "effort": "high",
+  "meta": {
+    "response_id": "resp_068ac30f303de732006adac6e6b13487d087d78eb64aa4e48d",
+    "model": "gpt-6-luna",
+    "usage": {
+      "input_tokens": 2427,
+      "output_tokens": 3903
+    }
+  },
+  "prompt_sha256": "8bb03b4bdabffdc79d93d0bd8075b0642ffec2a2990bf59b5daeae351ae945c0",
+  "parsed": {
+    "voice_1": {
+      "leak_evidence_subject": "FAIL",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "PASS",
+      "leak_position_blur": "PASS",
+      "reasoning": "研究を主語にして導入効果を述べる文があり、発見を報告する構文に戻っています。一方、具体的な数字はなく、教室で守りたいものと授業時間への懸念が人物の声として残ります。",
+      "quoted_evidence": "「米国で、スマホを鍵のかかる袋にしまう方式を取り入れた学校の研究では、導入後、校内での使用が大きく減ったという。」"
+    },
+    "voice_2": {
+      "leak_evidence_subject": "FAIL",
+      "leak_numbers_foreground": "FAIL",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "FAIL",
+      "leak_position_blur": "PASS",
+      "reasoning": "ワーキングペーパーの結果を主語にして報告し、平均や学年段階別の外部データを予算判断の論拠にしています。その比較がVoiceの導入部を占め、本人の予算上の不安よりも調査結果が目立ちます。",
+      "quoted_evidence": "「米国の同じ方式を調べたワーキングペーパーでは、導入後のテスト得点への効果は平均ではほぼなく、高校では少し上向き、中学校では少し下向きだったという。」"
+    },
+    "voice_3": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_position_blur": "PASS",
+      "reasoning": "仕事の連絡を確かめる場面や、学びと仕事への責任、使い方を自分で律したいという本人の葛藤が中心です。ほかのVoiceの主張を代弁するのではなく、自分の立場から話し合いを求めています。",
+      "quoted_evidence": ""
+    },
+    "tension": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_tension_reverts_to_research": "PASS",
+      "leak_binary_camp_split": "PASS",
+      "reasoning": "調査結果の説明ではなく、決定する力や暮らしを保つ責任の違いが、判断の重さにどう関わるかを描いています。三人を二つの陣営にまとめず、納得を置き去りにする危険を問いかけています。",
+      "quoted_evidence": ""
+    }
+  },
+  "flagged_items": [
+    {
+      "section": "voice_1",
+      "paragraph_index": 1,
+      "fail_fields": [
+        "leak_evidence_subject",
+        "leak_discovery_syntax"
+      ],
+      "reasoning": "研究を主語にして導入効果を述べる文があり、発見を報告する構文に戻っています。一方、具体的な数字はなく、教室で守りたいものと授業時間への懸念が人物の声として残ります。",
+      "quoted_evidence": "「米国で、スマホを鍵のかかる袋にしまう方式を取り入れた学校の研究では、導入後、校内での使用が大きく減ったという。」"
+    },
+    {
+      "section": "voice_2",
+      "paragraph_index": 2,
+      "fail_fields": [
+        "leak_evidence_subject",
+        "leak_numbers_foreground",
+        "leak_discovery_syntax",
+        "leak_evidence_memorable"
+      ],
+      "reasoning": "ワーキングペーパーの結果を主語にして報告し、平均や学年段階別の外部データを予算判断の論拠にしています。その比較がVoiceの導入部を占め、本人の予算上の不安よりも調査結果が目立ちます。",
+      "quoted_evidence": "「米国の同じ方式を調べたワーキングペーパーでは、導入後のテスト得点への効果は平均ではほぼなく、高校では少し上向き、中学校では少し下向きだったという。」"
+    }
+  ],
+  "any_flagged": true,
+  "fail_field_counts": {
+    "leak_discovery_syntax": 2,
+    "leak_evidence_memorable": 1,
+    "leak_evidence_subject": 2,
+    "leak_numbers_foreground": 1
+  },
+  "n_fail_fields": 6
+}

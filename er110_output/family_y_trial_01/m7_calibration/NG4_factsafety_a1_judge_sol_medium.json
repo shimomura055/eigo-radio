@@ -1,0 +1,103 @@
+{
+  "id": "NG4_factsafety_a1",
+  "label": "NG",
+  "tag": "sol_medium",
+  "old_labels": {
+    "voice_1": [],
+    "voice_2": [],
+    "voice_3": [
+      "leak_evidence_subject",
+      "leak_numbers_foreground",
+      "leak_discovery_syntax"
+    ],
+    "tension": []
+  },
+  "check": {
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "meta": {
+      "response_id": "resp_0209716b27269e92006adac385d55c87d099a32c63d834a0ac",
+      "model": "gpt-6.1-sol",
+      "usage": {
+        "input_tokens": 2657,
+        "output_tokens": 1589
+      }
+    },
+    "prompt_sha256": "616087d8b9bc7bf05b44a2fce90318de9b65eb6544bbbec73d23cdf65376e277",
+    "parsed": {
+      "voice_1": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "応募者自身の不安として語られており、外側からの分析や他の立場の代弁はない。ただし、後半は他の応募者の被害事例を重ねており、本人の経験よりも外部の事例が印象に残る構成になっている。",
+        "quoted_evidence": "そうした経験について語った女性の話や、仕事に就けないまま長い期間が経ったことを、私は無視できない。また、「信頼性」のスコアを付けられた後、辞退する機会も異議を申し立てる機会も与えられなかった応募者のことも、無視できない。"
+      },
+      "voice_2": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "応募者への説明、監査関連の準備、選んでいないシステムの運用という、自分の担当業務と負担を語っている。公示への言及も自分が目にしたものとして扱われ、調査の解説や他の立場の中心的主張には移っていない。",
+        "quoted_evidence": ""
+      },
+      "voice_3": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "FAIL",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "FAIL",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "外部報告を起点に期間短縮と費用低下を説明し、本人の経験ではない定量的な比較をAIの魅力の論拠として用いている。一方、全体の着地点は自分の名前と判断への信頼を守る不安であり、他者の中心論点の代弁や外側からの人物分析にはなっていない。",
+        "quoted_evidence": "いくつかの報告では採用にかかる期間が週単位から日単位に短縮したと示され、ほかの報告では費用が下がったとされているため、AIには魅力を感じる。"
+      },
+      "tension": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_tension_reverts_to_research": "PASS",
+        "leak_binary_camp_split": "PASS",
+        "reasoning": "三者が失うものと意思決定権の違いを中心に据え、監査義務や過去の失敗も、その選択を制約する条件として接続している。監査頻度や事例の説明が主題を奪うことなく、三者を単純な二陣営にも分けていない。",
+        "quoted_evidence": ""
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_1",
+        "paragraph_index": 1,
+        "fail_fields": [
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "応募者自身の不安として語られており、外側からの分析や他の立場の代弁はない。ただし、後半は他の応募者の被害事例を重ねており、本人の経験よりも外部の事例が印象に残る構成になっている。",
+        "quoted_evidence": "そうした経験について語った女性の話や、仕事に就けないまま長い期間が経ったことを、私は無視できない。また、「信頼性」のスコアを付けられた後、辞退する機会も異議を申し立てる機会も与えられなかった応募者のことも、無視できない。"
+      },
+      {
+        "section": "voice_3",
+        "paragraph_index": 3,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground",
+          "leak_discovery_syntax"
+        ],
+        "reasoning": "外部報告を起点に期間短縮と費用低下を説明し、本人の経験ではない定量的な比較をAIの魅力の論拠として用いている。一方、全体の着地点は自分の名前と判断への信頼を守る不安であり、他者の中心論点の代弁や外側からの人物分析にはなっていない。",
+        "quoted_evidence": "いくつかの報告では採用にかかる期間が週単位から日単位に短縮したと示され、ほかの報告では費用が下がったとされているため、AIには魅力を感じる。"
+      }
+    ],
+    "any_flagged": true,
+    "fail_field_counts": {
+      "leak_discovery_syntax": 1,
+      "leak_evidence_memorable": 1,
+      "leak_evidence_subject": 1,
+      "leak_numbers_foreground": 1
+    },
+    "n_fail_fields": 4
+  }
+}

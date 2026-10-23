@@ -1,0 +1,63 @@
+以下は、同じ記事から選ばれた3件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。3件から作れる全てのペア(3組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず3組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# What Comes After Putting Away Our Smartphones
+
+If we put away our smartphones, what changes in class? How do looking away from screens and learning come together? Teachers, people who check school budgets, and people who study while working are all here. Even when they face the same smartphone, they may worry about different things.
+
+Before class, I am in a middle school classroom. I teach Japanese and mark a text we want to discuss. If phones no longer distract us, could we focus more on the text? I hope so. But beyond test scores, I want to protect more than a quiet classroom. I want time to meet a point of view different from mine through words. I look over the lesson plan on the teacher’s desk. I don’t want us to spend less time with the text just to check if phones are put away.
+
+As someone who checks school budgets for the local government, I spread papers about managing devices and helping students learn across my desk. I add sticky notes. Do I see this as money spent to reduce device use, or to help students learn more? My hand stops as I write my review notes. While this difference is unclear, I can’t say which should come first. I’m afraid of cutting needed support from a small budget. I can’t simply use findings from other countries as the answer for my area. I have to explain what information I used to choose how to spend this money.
+
+In an evening high school classroom, after work, I take out my notebook. I check if I have any work messages on my phone. I want to avoid using it in class. Still, I can’t say I will stay away from messages, whatever happens. As an adult, I want to take responsibility for both my work and studies. In my notebook’s margin, I write what I want to tell the school. Before it is decided to lock devices away, I want room to think about it too. I don’t want to put my responsibility for managing my own device use into the bag.
+
+Everyone wants to value the time they spend learning. I think we agree on that. But when a decision is wrong, people lose different things. They also have to carry different amounts themselves. So we do not all use the same standard to decide if it was a good choice. The power to decide where money goes, run a classroom, and manage your own life are not the same. Even if you have little say in a decision, its weight may not be any lighter. Even if you have something very important to protect, you may not get a say in the decision. Whose understanding is still waiting to be put into words?
+
+## In one line
+Teachers, people who check budgets, and working students all value learning time. But they have different worries about phone rules. People who carry a decision’s weight may have little say. Their worries still need to be heard.
+
+【Key Phrase 3件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "little say in a decision",
+    "japanese_gloss": "決定にほとんど発言権がないこと",
+    "source_sentence": "Even if you have little say in a decision, its weight may not be any lighter"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "carry a decision's weight",
+    "japanese_gloss": "決定の重みを背負う",
+    "source_sentence": "People who carry a decision's weight may have little say"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "put into words",
+    "japanese_gloss": "言葉にする",
+    "source_sentence": "Whose understanding is still waiting to be put into words"
+  }
+]

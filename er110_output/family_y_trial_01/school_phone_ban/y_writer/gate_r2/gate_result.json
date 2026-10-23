@@ -1,0 +1,217 @@
+{
+  "stage": "y_r2_gate",
+  "status": "PASS",
+  "n_judgements": 2,
+  "history": [
+    {
+      "attempt": 1,
+      "article_sha256": "6398404337860057795a3c9c4352916c619b9c2fa2e771d39464a66bffbe2ac4",
+      "check": {
+        "model": "gpt-6-luna",
+        "effort": "high",
+        "meta": {
+          "response_id": "resp_0625b3df61a60a35006adac725ef3c87d099cde66e668a429c",
+          "model": "gpt-6-luna",
+          "usage": {
+            "input_tokens": 2417,
+            "output_tokens": 2543
+          }
+        },
+        "prompt_sha256": "5d3c2c66b6ac4cbbf2232e4462180ff2e69e1efa717e5b7e5c3dc70439581f32",
+        "parsed": {
+          "voice_1": {
+            "leak_evidence_subject": "FAIL",
+            "leak_numbers_foreground": "FAIL",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "PASS",
+            "leak_position_blur": "PASS",
+            "reasoning": "研究結果を主語にした説明が入り、本人の経験に属さない調査結果を根拠として扱っています。一方で、授業で守りたいものや読む時間への心配が中心に残り、他のVoiceの立場を代弁してはいません。",
+            "quoted_evidence": "米国で、スマホを鍵のかかる袋にしまう方式を取り入れた学校の研究では、導入後、校内での使用が大きく減ったという。"
+          },
+          "voice_2": {
+            "leak_evidence_subject": "FAIL",
+            "leak_numbers_foreground": "FAIL",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "FAIL",
+            "leak_position_blur": "PASS",
+            "reasoning": "冒頭で研究結果と学校段階別の効果を詳しく報告し、それを予算判断の論拠にしています。予算担当者としての心配も描かれていますが、研究上の比較結果が強く印象に残る構成です。",
+            "quoted_evidence": "米国の同じ方式を調べたワーキングペーパーでは、導入後のテスト得点への効果は平均ではほぼなく、高校では少し上向き、中学校では少し下向きだったという。"
+          },
+          "voice_3": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_position_blur": "PASS",
+            "reasoning": "仕事の連絡を気にしながら学ぶ本人の経験と、仕事と学びの双方に責任を持ちたいという思いが軸です。話し合いへの希望は示しますが、中心的な懸念は連絡から完全に離れることや自己管理を手放すことにあります。",
+            "quoted_evidence": ""
+          },
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "PASS",
+            "leak_binary_camp_split": "PASS",
+            "reasoning": "研究や数値の説明に戻らず、決定する力の違いや各人が背負うものを中心に描いています。3人を単純な賛否の陣営に分けず、決定権と責任の非対称さを示しています。",
+            "quoted_evidence": ""
+          }
+        },
+        "flagged_items": [
+          {
+            "section": "voice_1",
+            "paragraph_index": 1,
+            "fail_fields": [
+              "leak_evidence_subject",
+              "leak_numbers_foreground",
+              "leak_discovery_syntax"
+            ],
+            "reasoning": "研究結果を主語にした説明が入り、本人の経験に属さない調査結果を根拠として扱っています。一方で、授業で守りたいものや読む時間への心配が中心に残り、他のVoiceの立場を代弁してはいません。",
+            "quoted_evidence": "米国で、スマホを鍵のかかる袋にしまう方式を取り入れた学校の研究では、導入後、校内での使用が大きく減ったという。"
+          },
+          {
+            "section": "voice_2",
+            "paragraph_index": 2,
+            "fail_fields": [
+              "leak_evidence_subject",
+              "leak_numbers_foreground",
+              "leak_discovery_syntax",
+              "leak_evidence_memorable"
+            ],
+            "reasoning": "冒頭で研究結果と学校段階別の効果を詳しく報告し、それを予算判断の論拠にしています。予算担当者としての心配も描かれていますが、研究上の比較結果が強く印象に残る構成です。",
+            "quoted_evidence": "米国の同じ方式を調べたワーキングペーパーでは、導入後のテスト得点への効果は平均ではほぼなく、高校では少し上向き、中学校では少し下向きだったという。"
+          }
+        ],
+        "any_flagged": true,
+        "fail_field_counts": {
+          "leak_discovery_syntax": 2,
+          "leak_evidence_memorable": 1,
+          "leak_evidence_subject": 2,
+          "leak_numbers_foreground": 2
+        },
+        "n_fail_fields": 7
+      },
+      "judgement_noise_unchanged_paragraphs": null,
+      "rewrite_calls": [
+        {
+          "try": 1,
+          "meta": {
+            "response_id": "resp_034ac08814f00ebb006adac739232c87d09554527bc155b254",
+            "model": "gpt-6.1-sol",
+            "usage": {
+              "input_tokens": 3005,
+              "output_tokens": 538
+            }
+          },
+          "details": {
+            "applied_paragraphs": [
+              2,
+              3
+            ],
+            "errors": []
+          },
+          "raw_rewrites": [
+            {
+              "paragraph_index": 2,
+              "text": "授業前の教室で、中学校の国語を教える私は、話し合いたい文章に印をつける。教卓に広げた授業案を見ながら、スマホをしまう確認をどこに挟むか考える。画面を気にせず文章に向かってほしい。でも、私が点数とは別に守りたいのは、しんと静かな教室だけじゃない。言葉を通じて、自分と違う見方に出会う時間だ。印をつけた箇所を読み返し、ふと手が止まる。しまったかどうかの確認ばかりで、肝心の文章を読む時間がやせていったら？　授業を進める責任は私にある。静かになればそれでいい、とは思えないんだ。"
+            },
+            {
+              "paragraph_index": 3,
+              "text": "自治体で学校予算を査定する私は、机に端末管理の費用と学習支援の資料を広げ、付箋を貼る。スマホをしまうための費用を、学力を伸ばすための支出として扱っていいのか。査定メモを書こうとして、手が止まる。使わなくなることと、学べるようになること。その間を、私はどう説明できるだろう。財布は打ち出の小づちじゃない。袋に予算を回したぶん、学習に支えが必要な生徒への予算を削ることになったら怖い。かといって、必要な費用かどうか、今の私にはまだ判断がつかない。配分を決める以上、その理由を説明する責任からは離れられない。"
+            }
+          ]
+        }
+      ],
+      "rewritten_paragraphs": [
+        2,
+        3
+      ],
+      "first_person_kept_after_rewrite": {
+        "段落2": true,
+        "段落3": true
+      }
+    },
+    {
+      "attempt": 2,
+      "article_sha256": "dd240b491c9fb88745fb41f744e9648a8bcceddf5c0351fe33c89182c0a85ad6",
+      "check": {
+        "model": "gpt-6-luna",
+        "effort": "high",
+        "meta": {
+          "response_id": "resp_02f88a92064b6719006adac746c49887d0937ba72649a26675",
+          "model": "gpt-6-luna",
+          "usage": {
+            "input_tokens": 2488,
+            "output_tokens": 1087
+          }
+        },
+        "prompt_sha256": "ece0a1aa8024927d5fbcd92b53f8713ca44ccaf575200f68bd09152225100866",
+        "parsed": {
+          "voice_1": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_position_blur": "PASS",
+            "reasoning": "授業案に印をつける動作や、文章を読む時間が減ることへの迷いを本人の視点で描いており、調査・データの説明や外側からの分析はありません。教師としての中心的な懸念にとどまり、他の人物の立場を代弁していません。",
+            "quoted_evidence": ""
+          },
+          "voice_2": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_position_blur": "PASS",
+            "reasoning": "査定メモを書く手が止まる場面を通じ、予算配分の責任と判断への迷いが本人の言葉として表れています。外部統計や記事的な発見の説明はなく、他の人物の中心的な懸念を引き受けてもいません。",
+            "quoted_evidence": ""
+          },
+          "voice_3": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_position_blur": "PASS",
+            "reasoning": "仕事の連絡を確かめる具体的な経験を起点に、学びと仕事の両方への責任や、自分で使い方を律したい思いを語っています。調査的な説明や外部からの要約はなく、他のVoiceの主張を代弁していません。",
+            "quoted_evidence": ""
+          },
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "PASS",
+            "leak_binary_camp_split": "PASS",
+            "reasoning": "調査や比較結果ではなく、予算・教室・暮らしそれぞれの責任や決定権の違いから、同じ願いでも判断が分かれる理由を描いています。3人を二つの陣営に単純化せず、決定に加われない人の納得を問うています。",
+            "quoted_evidence": ""
+          }
+        },
+        "flagged_items": [],
+        "any_flagged": false,
+        "fail_field_counts": {},
+        "n_fail_fields": 0
+      },
+      "judgement_noise_unchanged_paragraphs": []
+    }
+  ],
+  "final_article_sha256": "dd240b491c9fb88745fb41f744e9648a8bcceddf5c0351fe33c89182c0a85ad6",
+  "first_judgement_flagged": true,
+  "first_judgement_fail_field_counts": {
+    "leak_discovery_syntax": 2,
+    "leak_evidence_memorable": 1,
+    "leak_evidence_subject": 2,
+    "leak_numbers_foreground": 2
+  },
+  "first_judgement_n_fail_fields": 7
+}

@@ -1,0 +1,95 @@
+{
+  "id": "OK1_persontrial02_a2",
+  "label": "OK",
+  "tag": "sol_medium",
+  "old_labels": {
+    "voice_1": [],
+    "voice_2": [],
+    "voice_3": [],
+    "tension": []
+  },
+  "check": {
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "meta": {
+      "response_id": "resp_0b6d72d168868e39006adac3e1055887d0a47720d6e7cf657b",
+      "model": "gpt-6.1-sol",
+      "usage": {
+        "input_tokens": 2578,
+        "output_tokens": 1354
+      }
+    },
+    "prompt_sha256": "dba781371dbf64047b7072277f1c1b254c5d9b25f359aba00e6652496806a196",
+    "parsed": {
+      "voice_1": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "他の応募者について読んだり知ったりした内容を本人が語ること自体は自然で、外側からの人物分析や立場の混同もありません。ただし、本文の大半を他者の被害事例が占めており、本人の面接経験や感情より外部の事実が印象に残る構成です。",
+        "quoted_evidence": "技能テストで好成績を収めたのに、AIに身振りや表情を低く評価された後に不採用になった女性について読んだことがある。彼女はその後、長期失業に直面した。"
+      },
+      "voice_2": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "公開通知という外部の根拠資料を主語にして責務を説明する一文があり、そこでは当事者の語りから資料による説明へ移っています。それ以外は、処理しきれない応募への対応、候補者への説明、導入決定権の不在という採用担当者自身の仕事と制約が中心です。",
+        "quoted_evidence": "ある企業の公開通知は、その責務を具体的なものにしている。"
+      },
+      "voice_3": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "報告やニュースは本人が判断する際に接した情報として語られており、研究結果を解説する構造にはなっていません。採用の遅れへの焦りと自分の名前で責任を負う不安が軸で、公平性への言及も経営者自身のリスクとして位置づけられています。",
+        "quoted_evidence": ""
+      },
+      "tension": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_tension_reverts_to_research": "PASS",
+        "leak_binary_camp_split": "PASS",
+        "reasoning": "制度や企業事例への言及はありますが、中心は選択権、実務上の説明責任、最終決定の責任が三者で異なることと、それぞれにかかる制約です。調査結果の比較には戻らず、三者を単純な賛成側と反対側にも分けていません。",
+        "quoted_evidence": ""
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_1",
+        "paragraph_index": 1,
+        "fail_fields": [
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "他の応募者について読んだり知ったりした内容を本人が語ること自体は自然で、外側からの人物分析や立場の混同もありません。ただし、本文の大半を他者の被害事例が占めており、本人の面接経験や感情より外部の事実が印象に残る構成です。",
+        "quoted_evidence": "技能テストで好成績を収めたのに、AIに身振りや表情を低く評価された後に不採用になった女性について読んだことがある。彼女はその後、長期失業に直面した。"
+      },
+      {
+        "section": "voice_2",
+        "paragraph_index": 2,
+        "fail_fields": [
+          "leak_evidence_subject"
+        ],
+        "reasoning": "公開通知という外部の根拠資料を主語にして責務を説明する一文があり、そこでは当事者の語りから資料による説明へ移っています。それ以外は、処理しきれない応募への対応、候補者への説明、導入決定権の不在という採用担当者自身の仕事と制約が中心です。",
+        "quoted_evidence": "ある企業の公開通知は、その責務を具体的なものにしている。"
+      }
+    ],
+    "any_flagged": true,
+    "fail_field_counts": {
+      "leak_evidence_memorable": 1,
+      "leak_evidence_subject": 1
+    },
+    "n_fail_fields": 2
+  }
+}

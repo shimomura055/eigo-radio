@@ -1,0 +1,123 @@
+{
+  "id": "NG1_regression01_a1",
+  "label": "NG",
+  "tag": "sol_medium",
+  "old_labels": {
+    "voice_1": [
+      "leak_discovery_syntax",
+      "leak_evidence_memorable"
+    ],
+    "voice_2": [],
+    "voice_3": [
+      "leak_numbers_foreground",
+      "leak_discovery_syntax",
+      "leak_evidence_memorable"
+    ],
+    "tension": [
+      "leak_discovery_syntax",
+      "leak_evidence_memorable",
+      "leak_binary_camp_split"
+    ]
+  },
+  "check": {
+    "model": "gpt-6.1-sol",
+    "effort": "medium",
+    "meta": {
+      "response_id": "resp_0378e5a61affdadb006adac319a65c87d095b9a8505c334686",
+      "model": "gpt-6.1-sol",
+      "usage": {
+        "input_tokens": 2569,
+        "output_tokens": 1593
+      }
+    },
+    "prompt_sha256": "27db58f79bd2ecf6bc7f609d704542d670e9604e22cdae26002e790527fdffc3",
+    "parsed": {
+      "voice_1": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "FAIL",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "主語は調査やデータではなく、外部統計の数値や人物を外側から分析する記述もありませんが、途中で他の応募者の報告事例を紹介する記事調に戻っています。本人の経験の具体性より、低評価・失業・訴訟という外部事例の方が強く印象に残ります。",
+        "quoted_evidence": "報告されたある事例では、ある女性は技能テストで好成績を収めたが、身振りや表情について低い動画スコアをつけられ、その後、長期の失業に直面した。別の応募者は、信頼性や誠実さについてのAIスコアを拒否したり異議を申し立てたりする手段がなかったとして、訴訟を起こした。"
+      },
+      "voice_2": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "選考を進めながら候補者への説明を担い、方針決定権は持たない担当者自身の責任と迷いとして一貫しています。公平性への配慮も担当業務に結びついており、応募者側の主張を中心に引き受けてはいません。",
+        "quoted_evidence": ""
+      },
+      "voice_3": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "FAIL",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "FAIL",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "企業を主語にした報告であって調査自体が主語ではありませんが、本人の経験ではない採用期間の比較と費用削減実績を、AIの魅力を裏づける材料にしています。この報告の列挙が本人の具体的な経験より目立ち、差別への懸念は経営上の責任という本人の立場に収まっています。",
+        "quoted_evidence": "あるホテルチェーンは採用期間を数週間から数日に短縮したと報告し、別の企業は採用費用が下がったと報告した。"
+      },
+      "tension": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "FAIL",
+        "leak_tension_reverts_to_research": "FAIL",
+        "leak_binary_camp_split": "FAIL",
+        "reasoning": "後半は監査制度と企業の使用中止事例の説明に移り、三者が異なる答えに至る制約の掘り下げより、外部の制度・事実が印象に残ります。また、応募者を評価される側、採用担当者と事業側をツールの使用・成果を考える側としてまとめ、冒頭で分けた三者の緊張を実質的に二陣営へ整理しています。",
+        "quoted_evidence": "応募者は選考過程によって評価される一方、採用担当者や採用マネージャー、そして事業側は、そのツールがどのように使われ、何を達成するかを考える。\nニューヨーク市では、毎年のバイアス監査と公示により、速度はもはや私的な選択だけではない。採用担当者はツールを記録し、応募者にはそのことを知らせなければならない。ある企業は、女性の履歴書を低く評価したツールの使用をやめた。"
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_1",
+        "paragraph_index": 1,
+        "fail_fields": [
+          "leak_discovery_syntax",
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "主語は調査やデータではなく、外部統計の数値や人物を外側から分析する記述もありませんが、途中で他の応募者の報告事例を紹介する記事調に戻っています。本人の経験の具体性より、低評価・失業・訴訟という外部事例の方が強く印象に残ります。",
+        "quoted_evidence": "報告されたある事例では、ある女性は技能テストで好成績を収めたが、身振りや表情について低い動画スコアをつけられ、その後、長期の失業に直面した。別の応募者は、信頼性や誠実さについてのAIスコアを拒否したり異議を申し立てたりする手段がなかったとして、訴訟を起こした。"
+      },
+      {
+        "section": "voice_3",
+        "paragraph_index": 3,
+        "fail_fields": [
+          "leak_numbers_foreground",
+          "leak_discovery_syntax",
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "企業を主語にした報告であって調査自体が主語ではありませんが、本人の経験ではない採用期間の比較と費用削減実績を、AIの魅力を裏づける材料にしています。この報告の列挙が本人の具体的な経験より目立ち、差別への懸念は経営上の責任という本人の立場に収まっています。",
+        "quoted_evidence": "あるホテルチェーンは採用期間を数週間から数日に短縮したと報告し、別の企業は採用費用が下がったと報告した。"
+      },
+      {
+        "section": "tension",
+        "paragraph_index": 4,
+        "fail_fields": [
+          "leak_evidence_memorable",
+          "leak_tension_reverts_to_research",
+          "leak_binary_camp_split"
+        ],
+        "reasoning": "後半は監査制度と企業の使用中止事例の説明に移り、三者が異なる答えに至る制約の掘り下げより、外部の制度・事実が印象に残ります。また、応募者を評価される側、採用担当者と事業側をツールの使用・成果を考える側としてまとめ、冒頭で分けた三者の緊張を実質的に二陣営へ整理しています。",
+        "quoted_evidence": "応募者は選考過程によって評価される一方、採用担当者や採用マネージャー、そして事業側は、そのツールがどのように使われ、何を達成するかを考える。\nニューヨーク市では、毎年のバイアス監査と公示により、速度はもはや私的な選択だけではない。採用担当者はツールを記録し、応募者にはそのことを知らせなければならない。ある企業は、女性の履歴書を低く評価したツールの使用をやめた。"
+      }
+    ],
+    "any_flagged": true,
+    "fail_field_counts": {
+      "leak_binary_camp_split": 1,
+      "leak_discovery_syntax": 2,
+      "leak_evidence_memorable": 3,
+      "leak_numbers_foreground": 1,
+      "leak_tension_reverts_to_research": 1
+    },
+    "n_fail_fields": 8
+  }
+}

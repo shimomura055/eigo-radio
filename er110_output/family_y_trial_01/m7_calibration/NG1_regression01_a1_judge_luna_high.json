@@ -1,0 +1,123 @@
+{
+  "id": "NG1_regression01_a1",
+  "label": "NG",
+  "tag": "luna_high",
+  "old_labels": {
+    "voice_1": [
+      "leak_discovery_syntax",
+      "leak_evidence_memorable"
+    ],
+    "voice_2": [],
+    "voice_3": [
+      "leak_numbers_foreground",
+      "leak_discovery_syntax",
+      "leak_evidence_memorable"
+    ],
+    "tension": [
+      "leak_discovery_syntax",
+      "leak_evidence_memorable",
+      "leak_binary_camp_split"
+    ]
+  },
+  "check": {
+    "model": "gpt-6-luna",
+    "effort": "high",
+    "meta": {
+      "response_id": "resp_0feddd2bc1c1ed56006adac29d698087d0903cf2b9219c0057",
+      "model": "gpt-6-luna",
+      "usage": {
+        "input_tokens": 2569,
+        "output_tokens": 6102
+      }
+    },
+    "prompt_sha256": "27db58f79bd2ecf6bc7f609d704542d670e9604e22cdae26002e790527fdffc3",
+    "parsed": {
+      "voice_1": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "FAIL",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "本人の待つ立場は示されていますが、報告された事例や訴訟の説明が本文に入り、発見・報告を伝える記事の語り口になっています。外部事例が本人の限られた経験より印象に残りやすくなっています。",
+        "quoted_evidence": "報告されたある事例では、ある女性は技能テストで好成績を収めたが、身振りや表情について低い動画スコアをつけられ、その後、長期の失業に直面した。別の応募者は、信頼性や誠実さについてのAIスコアを拒否したり異議を申し立てたりする手段がなかったとして、訴訟を起こした。"
+      },
+      "voice_2": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "PASS",
+        "leak_evidence_memorable": "PASS",
+        "leak_position_blur": "PASS",
+        "reasoning": "選考を進める本人の責任や、応募者への説明、履歴書でのAI利用をどう見るかという実務上の迷いが中心です。外部の調査結果や他の立場の主張を代弁してはいません。",
+        "quoted_evidence": ""
+      },
+      "voice_3": {
+        "leak_evidence_subject": "FAIL",
+        "leak_numbers_foreground": "FAIL",
+        "leak_narrator_analysis": "PASS",
+        "leak_unknowable_analysis": "PASS",
+        "leak_discovery_syntax": "FAIL",
+        "leak_evidence_memorable": "FAIL",
+        "leak_position_blur": "PASS",
+        "reasoning": "経営側の時間・費用への重圧は語られていますが、他社の報告結果がAIの魅力を示す論拠として挿入されています。具体的な期間比較も本人自身の経験ではなく、報告を紹介する記事的な構成です。",
+        "quoted_evidence": "あるホテルチェーンは採用期間を数週間から数日に短縮したと報告し、別の企業は採用費用が下がったと報告した。"
+      },
+      "tension": {
+        "leak_evidence_subject": "PASS",
+        "leak_numbers_foreground": "PASS",
+        "leak_discovery_syntax": "FAIL",
+        "leak_evidence_memorable": "FAIL",
+        "leak_tension_reverts_to_research": "PASS",
+        "leak_binary_camp_split": "PASS",
+        "reasoning": "三者それぞれの制約と立場の違いが中心で、研究データの説明・比較に戻ってはいません。ただし、自治体の制度や企業の使用中止を報道する文が入り、具体的な外部事実が人物間の緊張より目立つ箇所があります。",
+        "quoted_evidence": "ニューヨーク市では、毎年のバイアス監査と公示により、速度はもはや私的な選択だけではない。採用担当者はツールを記録し、応募者にはそのことを知らせなければならない。ある企業は、女性の履歴書を低く評価したツールの使用をやめた。"
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_1",
+        "paragraph_index": 1,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_discovery_syntax",
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "本人の待つ立場は示されていますが、報告された事例や訴訟の説明が本文に入り、発見・報告を伝える記事の語り口になっています。外部事例が本人の限られた経験より印象に残りやすくなっています。",
+        "quoted_evidence": "報告されたある事例では、ある女性は技能テストで好成績を収めたが、身振りや表情について低い動画スコアをつけられ、その後、長期の失業に直面した。別の応募者は、信頼性や誠実さについてのAIスコアを拒否したり異議を申し立てたりする手段がなかったとして、訴訟を起こした。"
+      },
+      {
+        "section": "voice_3",
+        "paragraph_index": 3,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground",
+          "leak_discovery_syntax",
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "経営側の時間・費用への重圧は語られていますが、他社の報告結果がAIの魅力を示す論拠として挿入されています。具体的な期間比較も本人自身の経験ではなく、報告を紹介する記事的な構成です。",
+        "quoted_evidence": "あるホテルチェーンは採用期間を数週間から数日に短縮したと報告し、別の企業は採用費用が下がったと報告した。"
+      },
+      {
+        "section": "tension",
+        "paragraph_index": 4,
+        "fail_fields": [
+          "leak_discovery_syntax",
+          "leak_evidence_memorable"
+        ],
+        "reasoning": "三者それぞれの制約と立場の違いが中心で、研究データの説明・比較に戻ってはいません。ただし、自治体の制度や企業の使用中止を報道する文が入り、具体的な外部事実が人物間の緊張より目立つ箇所があります。",
+        "quoted_evidence": "ニューヨーク市では、毎年のバイアス監査と公示により、速度はもはや私的な選択だけではない。採用担当者はツールを記録し、応募者にはそのことを知らせなければならない。ある企業は、女性の履歴書を低く評価したツールの使用をやめた。"
+      }
+    ],
+    "any_flagged": true,
+    "fail_field_counts": {
+      "leak_discovery_syntax": 3,
+      "leak_evidence_memorable": 3,
+      "leak_evidence_subject": 2,
+      "leak_numbers_foreground": 1
+    },
+    "n_fail_fields": 9
+  }
+}
