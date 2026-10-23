@@ -38,7 +38,7 @@ class PricingCoverageTest(unittest.TestCase):
 
     def test_every_routing_constant_model_has_prices(self):
         names = ["QUERY_PLANNER_MODEL", "TOPIC_SELECTOR_MODEL", "RESEARCH_MODEL", "WRITER_MODEL",
-                 "WRITER_FACT_CHECK_MODEL", "SUPPORT_MODEL", "SUPPORT_FACT_CHECK_MODEL"]
+                 "WRITER_FACT_CHECK_MODEL", "SUPPORT_MODEL", "SUPPORT_FACT_CHECK_MODEL", "RUN_ENTITY_TABLE_MODEL"]
         price = efam._load_pricing()
         for n in names:
             model = getattr(routing, n)

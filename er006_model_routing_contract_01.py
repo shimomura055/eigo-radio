@@ -49,6 +49,8 @@ WRITER_MODEL = "gpt-6-luna"            # B1 Writer / A2 Writer(Deviation Check�
 WRITER_FACT_CHECK_MODEL = "gpt-6-luna"
 SUPPORT_MODEL = "gpt-6-luna"           # B1 Support / A2 Support(Key Phrase選定・正規化含む)
 SUPPORT_FACT_CHECK_MODEL = "gpt-6-luna"
+# ASR-QUALITY-2ITEMS-COMPREHENSIVE-01 PN(OPEN-472、ユーザー正式採用UDR #168): Run Entity Table(本文固有名詞の実体抽出NER)。X/Z run内のTTS段入口で使う(er103_run_entity_table_01)。
+RUN_ENTITY_TABLE_MODEL = "gpt-6-luna"
 
 # ------------------------------------------------------------
 # Approved Provider(非OpenAI)

@@ -1297,9 +1297,11 @@ def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | No
         return _run_tts_stage_impl(run_dir, level, plan, generators=generators, dry_run=dry_run, only_clips=only_clips,
                                    revalidate_fn=revalidate_fn, article_text=article_text, story_key=story_key)
     import er103_pnap_runner_hooks_01 as _pnap_hooks
+    import er103_run_entity_table_01 as _ret   # ASR-QUALITY PN 委任_04(OPEN-472): Run Entity Table構築provider(構築点はhook 1か所。dry_runはここへ来ない=API 0)
     return _pnap_hooks.run_with_alarm_hook(
         "Z", f"{run_dir}/{level}", _run_tts_stage_impl, run_dir, level, plan, generators=generators, dry_run=dry_run,
-        only_clips=only_clips, revalidate_fn=revalidate_fn, article_text=article_text, story_key=story_key)
+        only_clips=only_clips, revalidate_fn=revalidate_fn, article_text=article_text, story_key=story_key,
+        _ret_provider=(lambda: _ret.ZProvider(run_dir, level, plan)))
 
 
 def _run_tts_stage_impl(run_dir: str, level: str, plan: list, *, generators: dict | None = None, dry_run: bool = False,

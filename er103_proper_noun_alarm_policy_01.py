@@ -297,7 +297,8 @@ def evaluate_alarm_eligibility(
         cmu_has: Callable = _default_cmu_has, zipf: Callable = _default_zipf,
         max_diffs: int = MAX_DIFFS_PER_SEGMENT, max_asr_per_canon: int = MAX_ASR_TOKENS_PER_CANON_TOKEN,
         min_similarity: float = MIN_SPAN_SIMILARITY, supply_map: Optional[dict] = None,
-        p3_entry: Optional[str] = None, max_secondary_noise: int = MAX_SECONDARY_NOISE) -> AlarmDecision:
+        p3_entry: Optional[str] = None, max_secondary_noise: int = MAX_SECONDARY_NOISE,
+        entity_table=None) -> AlarmDecision:
     """固有名詞の発音不一致**だけ**が原因でNGになったかを機械判定する(純関数、API 0、fail-closed)。
 
     受理条件(全て満たす場合のみ accept=True):
@@ -315,7 +316,15 @@ def evaluate_alarm_eligibility(
           ∧ despaced綴り類似度>=min_similarity(別語句への聞き取り替わり["Melos"->"Mellow Strength"]を除く)
     アラーム対象の固有名詞 = G5を満たしたPrimary diffのcanonical語句。
     supply_map: TTS発音供給で綴り置換した語の {置換後token(小文字): 元の固有名詞surface}。置換後tokenを固有名詞として扱う(G5の一般語/根拠検査を置換)。
+    entity_table: Run Entity Table(er103_run_entity_table_01.EntityTable、ASR-QUALITY PN 委任_04 / OPEN-472、ユーザー正式採用UDR #168)。None/空なら全分岐が従来とバイト一致。
+      非Noneのとき、次の2点**だけ**が従来より受理側に動く(いずれも従来は不受理になる場合のみ作用=反実仮想):
+        RET-2(G5): Primary diff句が`R_NOT_PROPER_EVIDENCE`で落ちたときに限り、その句の実体出現範囲(位置紐づけ)にあるeligible tokenへ証拠を付与して再判定する。
+                   他の全検査[類似度>=min_similarity・一般語・P-03・数値/否定・ASR長]は再判定でもそのまま適用する。受理に寄与したときだけ`detail.entity_table`を付ける(W-01)。
+        RET-3(G3): Secondary spanが固有名詞隣接語まで巻き込んで従来不受理になる分岐でのみ、spanが当該位置の連続1実体出現と一致し、重なるPrimary diffを全て含み、
+                   合成spanも`_noun_checks`/P-03を通り、供給置換tokenを含まない場合に限りnoise扱いにする。
     """
+    if entity_table is not None and entity_table.is_empty():
+        entity_table = None
     if enabled is None:
         enabled = is_active_for_run()
     if not enabled:
@@ -349,6 +358,7 @@ def evaluate_alarm_eligibility(
     p_canons = {d["canonical"] for d in dp}
     noise = []
     by_canon_s = {}
+    ret3_records = []
     for d in ds:
         c_set = set(d["canonical"].split())
         if d["canonical"] in p_canons:
@@ -361,8 +371,23 @@ def evaluate_alarm_eligibility(
             rest = [t for t in d["canonical"].split() if t not in noun_tokens and t != "s"]
             asr_toks = d["asr"].split()
             if not all(any(_same_or_plural(t, a) for a in asr_toks) for t in rest):
-                return AlarmDecision(False, R_SECONDARY_NOT_ENTITY_ONLY,
-                                     detail={"canonical": d["canonical"], "asr_secondary": d["asr"], "why": "adjacent_word_changed"})
+                rescued, ret3_why = None, None
+                if entity_table is not None:                  # RET-3(従来不受理になるこの分岐でのみ作用。W-02(c): 表が関与しないspanはdetailも不変)
+                    ok3, rec3, touched3 = entity_table.ret3_check(
+                        d, dp, canonical_text, ledger_surfaces=ledger_surfaces, cmu_has=cmu_has, zipf=zipf, max_asr_per_canon=max_asr_per_canon,
+                        min_similarity=min_similarity, role=role, supply_map=supply_map)
+                    if ok3:
+                        rescued = rec3
+                    elif touched3:
+                        ret3_why = rec3
+                if rescued is None:
+                    det = {"canonical": d["canonical"], "asr_secondary": d["asr"], "why": "adjacent_word_changed"}
+                    if ret3_why:
+                        det["ret3_rejected"] = ret3_why
+                    return AlarmDecision(False, R_SECONDARY_NOT_ENTITY_ONLY, detail=det)
+                ret3_records.append(rescued)
+                noise.append({"canonical": d["canonical"], "asr_secondary": d["asr"], "entity_like": bool(d.get("entity_like")), "merged_with_noun": True, "ret3": True})
+                continue
             noise.append({"canonical": d["canonical"], "asr_secondary": d["asr"], "entity_like": bool(d.get("entity_like")), "merged_with_noun": True})
         else:
             # Primaryが一致している位置、または所有格's等でspanが合成された位置(例 'khaite s'->'kites')のSecondary-only差
@@ -378,15 +403,26 @@ def evaluate_alarm_eligibility(
         if len(ctoks) - len(atoks) >= MAX_SECONDARY_NOISE_DROPPED_CONTENT:
             return AlarmDecision(False, R_SECONDARY_NOISE_LIMIT, detail={"dropped_content_words": ctoks, "asr_secondary": nz["asr_secondary"]})
     out = []
+    table_used = []
     for d in dp:
         bad, info, sim_p = _noun_checks(d["canonical"], d["asr"], canonical_text, ledger_surfaces=ledger_surfaces, cmu_has=cmu_has,
                                         zipf=zipf, max_asr_per_canon=max_asr_per_canon, min_similarity=min_similarity, supply_map=supply_map, role=role)
+        ls, ginfo = ledger_surfaces, None
+        if bad == R_NOT_PROPER_EVIDENCE and entity_table is not None:
+            # RET-2(W-01 反実仮想): 元のledger_surfacesで固有名詞根拠が無く落ちたPrimary句に限り、この句の実体出現範囲(位置紐づけ)の証拠で再判定する。
+            # grantが変えるのは`proper_noun_evidence`のみ(`is_general_word`はledger非依存)。他の全検査は再判定でもそのまま適用される。
+            grant, ginfo_ = entity_table.grant_for_phrase(canonical_text, d["canonical"].split())
+            if grant:
+                ls = frozenset(ledger_surfaces) | grant
+                ginfo = ginfo_
+                bad, info, sim_p = _noun_checks(d["canonical"], d["asr"], canonical_text, ledger_surfaces=ls, cmu_has=cmu_has,
+                                                zipf=zipf, max_asr_per_canon=max_asr_per_canon, min_similarity=min_similarity, supply_map=supply_map, role=role)
         if bad:
             return AlarmDecision(False, bad, detail=info)
         sh = by_canon_s.get(d["canonical"])
         asr_s, sim_s = "", None
         if sh is not None:
-            bad_s, info_s, sim_s = _noun_checks(d["canonical"], sh["asr"], canonical_text, ledger_surfaces=ledger_surfaces,
+            bad_s, info_s, sim_s = _noun_checks(d["canonical"], sh["asr"], canonical_text, ledger_surfaces=ls,
                                                 cmu_has=cmu_has, zipf=zipf, max_asr_per_canon=max_asr_per_canon, min_similarity=min_similarity, supply_map=supply_map, role=role)
             if bad_s:
                 return AlarmDecision(False, bad_s, detail={"side": "secondary", **(info_s if isinstance(info_s, dict) else {})})
@@ -395,8 +431,15 @@ def evaluate_alarm_eligibility(
             if not (supply_map and any(t in supply_map for t in d["canonical"].split()))                     and asr_all_general(d["asr"], cmu_has=cmu_has, zipf=zipf) and asr_all_general(asr_s, cmu_has=cmu_has, zipf=zipf):
                 return AlarmDecision(False, R_ASR_BOTH_GENERAL_WORDS,
                                      detail={"canonical": d["canonical"], "asr_primary": d["asr"], "asr_secondary": asr_s})
+        if ginfo is not None:                            # 表が実際に受理へ寄与した句だけ(W-01)。証拠ラベルは表依存tokenのみ`entity_table:<grade>:<category>`
+            info = entity_table.relabel(d["canonical"], info, frozenset(ledger_surfaces), ls - frozenset(ledger_surfaces), ginfo, canonical_text, cmu_has, role)
+            table_used.append({"canonical": d["canonical"], **ginfo})
         out.append(AlarmDiff(d["canonical"], d["asr"], asr_s, info, sim_p, sim_s if sim_s is not None else 1.0))
-    return AlarmDecision(True, "ENTITY_ONLY_ACCEPT", diffs=out, detail={"secondary_only_noise": noise})
+    detail = {"secondary_only_noise": noise}
+    if entity_table is not None and (table_used or ret3_records):
+        detail["entity_table"] = entity_table.audit_block(table_used, ret3_records)
+        detail["alarm_labels"] = entity_table.alarm_labels(out, zipf=zipf)
+    return AlarmDecision(True, "ENTITY_ONLY_ACCEPT", diffs=out, detail=detail)
 
 
 # ---------------------------------------------------------------- アラーム記録
@@ -428,12 +471,22 @@ def build_alarm_records(decision: AlarmDecision, *, canonical_text: str, display
         return []
     ts = now or time.strftime("%Y-%m-%dT%H:%M:%S")
     recs = []
+    et = (decision.detail or {}).get("entity_table") or {} if isinstance(decision.detail, dict) else {}
     for d in decision.diffs:
         key = f"{family}|{article_id}|{level}|{segment_id}|{wav_sha256 or wav_path}|{_fold(d.canonical)}"
         alarm_id = "pnal_" + hashlib.sha256(key.encode("utf-8")).hexdigest()[:16]
         li = ledger_info or {}
         sup = supply_info or {"supplied": False, "reason": "no_supply_info"}
         orig = " ".join((supply_map or {}).get(t, t) for t in d.canonical.split())
+        basis = None
+        if et:
+            pd = [x for x in (et.get("per_diff") or []) if x.get("canonical") == d.canonical]
+            r3 = [x for x in (et.get("ret3") or []) if set(str(x.get("span", "")).split()) & set(d.canonical.split())]
+            if pd or r3:
+                basis = {"entities": [{"surface": e.get("surface"), "category": e.get("category"), "grade": e.get("grade")}
+                                      for x in pd + r3 for e in (x.get("entities") or [])],
+                         "ret3_span": [x.get("span") for x in r3], "table_sha256": et.get("sha256"), "table_status": et.get("status"),
+                         "builder_version": et.get("builder_version")}
         recs.append({
             "alarm_id": alarm_id, "policy_id": POLICY_ID, "created_at": ts,
             "final_state": STATE_ALARM, "final_state_ja": FINAL_STATE_JA,
@@ -453,6 +506,7 @@ def build_alarm_records(decision: AlarmDecision, *, canonical_text: str, display
             "models": models or {},
             "reason": "固有名詞の発音不一致のみ(Primary/Secondary両ASRとも他の差なし)。承認済み方針によりHuman Review・再生成なしで完成扱い。",
             "operator_only": True,
+            **({"entity_table_basis": basis} if basis else {}),
         })
     return recs
 
@@ -649,7 +703,11 @@ def render_operator_report(alarms: list, *, supply_list: Optional[list] = None, 
                     f"  - [{a['family']}/{a['level']}/{a['segment_id']}{' 継承' if a.get('inherited') else ''}] {loc.get('wav_path')} / 文脈 `{loc.get('context')}`"
                     + (f" / 目安{loc['approx_seconds']}秒" if loc.get("approx_seconds") is not None else ""),
                     f"    - 検出した不一致: 原稿 `{m['canonical']}` -> Primary `{m['asr_primary'] or '(原稿どおり)'}` / Secondary `{m['asr_secondary'] or '(原稿どおり)'}`",
-                    f"    - 発音の根拠: " + (f"階層={b.get('evidence_tier') or '未検証'} / 確信度={b.get('confidence')} / hint={b.get('pronunciation_hint')}" if b.get("has_basis") else "根拠なし(調査で発音情報を取得できていません)"),
+                    f"    - 発音の根拠(Ledger/Perplexity調査): " + (f"階層={b.get('evidence_tier') or '未検証'} / 確信度={b.get('confidence')} / hint={b.get('pronunciation_hint')}" if b.get("has_basis") else "根拠なし(調査で発音情報を取得できていません)"),
+                    *([f"    - 固有名詞と認識した根拠(実体表・受理判定用。発音の根拠とは別): " + ", ".join(
+                        f"{e.get('surface')}[{e.get('category')}/{e.get('grade')}]" for e in a["entity_table_basis"].get("entities", []))
+                       + (f" / RET-3 span={a['entity_table_basis'].get('ret3_span')}" if a["entity_table_basis"].get("ret3_span") else "")]
+                      if a.get("entity_table_basis") else []),
                     f"    - TTS発音改善: " + (f"供給あり({s.get('tier')}階層, `{s.get('original')}`->`{s.get('respelling')}`)でも不一致" if s.get("supplied") else f"供給なし({s.get('reason')})"),
                     f"    - 最終状態: {FINAL_STATE_JA} / 使用モデル: ASR={(mod.get('primary_asr') or {}).get('model')}, Secondary={mod.get('secondary_asr')}, TTS={mod.get('tts_model_id')}",
                 ]
@@ -713,16 +771,19 @@ def ledger_surface_tokens(ledger: Optional[dict] = None) -> frozenset:
 
 def evaluate_for_adapter(*, canonical_text: str, primary_cls, secondary_cls, primary_text, secondary_text, judge_state: str,
                          judge_reason_code: str, p3_entry: Optional[str], role: Optional[str], lang: str, vote_required: bool,
-                         lookup: Optional[dict] = None, ledger: Optional[dict] = None, slot: Optional[int] = None, **kw) -> AlarmDecision:
+                         lookup: Optional[dict] = None, ledger: Optional[dict] = None, slot: Optional[int] = None,
+                         entity_table=None, **kw) -> AlarmDecision:
     """adapter(新規生成)と継承再判定が**同一の現行定数**で受理判定するための共通入口(OF-PNAP-P-05(i))。
-    lookup={supply_map,...}(TTS供給registry or 保存済みsupply_map)。"""
+    lookup={supply_map,...}(TTS供給registry or 保存済みsupply_map)。
+    entity_table(W-04): **明示渡しのみ**。現runの表を自動取得しない(adapter経路[er006_secondary_asr_01._pnap_try_accept]だけが`adapter_table()`を渡し、
+    継承・Store再判定は保存entryから復元した表かNoneを明示する=現runの別記事の表が再判定へ混入しない)。"""
     if slot is not None and int(slot) < ALARM_ACCEPT_MIN_SLOT:
         return AlarmDecision(False, R_BELOW_MIN_SLOT, detail={"slot": slot, "min_slot": ALARM_ACCEPT_MIN_SLOT})
     return evaluate_alarm_eligibility(
         canonical_text=canonical_text, primary_cls=primary_cls, secondary_cls=secondary_cls, primary_text=primary_text,
         secondary_text=secondary_text, judge_state=judge_state, judge_reason_code=judge_reason_code, role=role, lang=lang,
         vote_required=vote_required, ledger_surfaces=ledger_surface_tokens(ledger), supply_map=(lookup or {}).get("supply_map") or {},
-        p3_entry=p3_entry, **kw)
+        p3_entry=p3_entry, entity_table=entity_table, **kw)
 
 
 def build_audit_block(decision: AlarmDecision, records: list, *, tts_input_text: str, lookup: Optional[dict] = None) -> dict:
@@ -731,4 +792,7 @@ def build_audit_block(decision: AlarmDecision, records: list, *, tts_input_text:
     lk = lookup or {}
     blk.update(tts_input_text=tts_input_text, pre_supply_text=lk.get("pre_supply_text"), supply_map=dict(lk.get("supply_map") or {}),
                supply_decisions=list(lk.get("decisions") or []))
+    et = (decision.detail or {}).get("entity_table") if isinstance(decision.detail, dict) else None
+    if et:   # ASR-QUALITY PN 委任_04(RET): 受理に実際に寄与した実体entry等(additive。寄与が無い受理にはキー自体を付けない=既存audit署名不変)
+        blk["entity_table"] = {**et, "alarm_labels": decision.detail.get("alarm_labels")}
     return blk

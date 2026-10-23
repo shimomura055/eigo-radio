@@ -199,6 +199,7 @@ import er006_m1_multi_candidate_01 as m1_multi
 # 固有名詞の発音不一致だけが原因のNG_BOTHをアラーム受理する最終救済。単一読取関数pnap.is_active_for_run()(flag∧Family X/Z run scope)。
 import er103_proper_noun_alarm_policy_01 as pnap
 import er103_pronunciation_tts_supply_01 as pnap_supply
+import er103_run_entity_table_01 as pnap_ret   # ASR-QUALITY PN 委任_04(OPEN-472): Run Entity Table。adapter経路だけが現runの表を取得する(W-04)
 # ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01 委任_04(ユーザー正式採用2026-10-23、Family X/Zのみ): er109(表記違い同音)をX/Z run scope内でのみ有効にする。
 # 単一読取関数 ortho_scope.is_active_for_run()(flag∧scope)。scope外(A/B/C・単体呼出)は下の追加ブロックが全て短絡=従来コードパスのまま。
 import er109_xz_scope_01 as ortho_scope
@@ -828,7 +829,7 @@ def _pnap_try_accept(*, result: dict, audit: dict, jr, cls, captured: dict, sec:
         canonical_text=canonical_text, primary_cls=cls, secondary_cls=captured.get("cls_s"), primary_text=asr_text,
         secondary_text=sec.get("text"), judge_state=jr.state, judge_reason_code=jr.reason_code, p3_entry=audit.get("p3_entry"),
         role=role, lang=("en" if str(lang).lower().startswith("en") else str(lang)), vote_required=False, lookup=lk,
-        slot=int(actx.get("slot", 1)))
+        slot=int(actx.get("slot", 1)), entity_table=pnap_ret.adapter_table())
     audit["pronunciation_alarm_eval"] = {"accepted": dec.accept, "reason": dec.reason, "detail": dec.detail if not dec.accept else {}}
     if not dec.accept:
         return False

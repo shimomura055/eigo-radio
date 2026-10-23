@@ -357,12 +357,16 @@ def rejudge_with_current_judge(entry: dict, level: str, label: str, force_lang: 
                 lookup = {"supply_map": ab.get("supply_map") or {}, "decisions": ab.get("supply_decisions") or [],
                           "pre_supply_text": ab.get("pre_supply_text")}
             import er020_tts_retry_local_rewrite_01 as _rg
+            import er103_run_entity_table_01 as _ret_tbl
             cls_p = en_validator.classify_asr_match(canon, asr_text)
             cls_s = en_validator.classify_asr_match(canon, stored_secondary)
+            # ASR-QUALITY PN 委任_04(RET、W-04): 継承再判定は**現runの表を自動取得しない**。保存entry(pronunciation_alarm.entity_table.entries_used)から復元した表
+            # (rules_version一致・RET有効時のみ。LLM 0 call)か、None(=従来どおりLedgerのみ)を明示で渡す。
             dec = pnap.evaluate_for_adapter(
                 canonical_text=canon, primary_cls=cls_p, secondary_cls=cls_s, primary_text=asr_text, secondary_text=stored_secondary,
                 judge_state=jr.state, judge_reason_code=jr.reason_code, p3_entry=jr.audit_record.get("p3_entry"),
-                role=_rg.resolve_narrative_role(label), lang="en", vote_required=False, lookup=lookup)
+                role=_rg.resolve_narrative_role(label), lang="en", vote_required=False, lookup=lookup,
+                entity_table=_ret_tbl.restore_from_audit_block(ab))
             out["alarm_rejudge"] = {"accepted": dec.accept, "reason": dec.reason}
             if dec.accept:
                 rec = copy.deepcopy(aj)
@@ -381,6 +385,15 @@ def rejudge_with_current_judge(entry: dict, level: str, label: str, force_lang: 
                         ledger_info=({**(base.get("pronunciation_basis") or {}), "expected_pronunciation_ipa": (base.get("pronunciation_basis") or {}).get("ipa")} if base else None),
                         slot=base.get("slot"), models=base.get("models"), supply_map=smap)
                 rec["pronunciation_alarm_records"] = new_recs
+                # W-04: 継承で受理したら`pronunciation_alarm.entity_table`を今回の判定(dec.detail)で更新する(RETの寄与が無くなったらキーを外す)。
+                _et_new = (dec.detail or {}).get("entity_table")
+                if _et_new or isinstance(rec.get("pronunciation_alarm"), dict):
+                    _pa = dict(rec.get("pronunciation_alarm") or {})
+                    if _et_new:
+                        _pa["entity_table"] = {**_et_new, "alarm_labels": (dec.detail or {}).get("alarm_labels")}
+                    else:
+                        _pa.pop("entity_table", None)
+                    rec["pronunciation_alarm"] = _pa
                 rec["inherited"] = {"via": "J11_rejudge_with_current_judge", "api_calls": 0, "secondary_new_calls": 0,
                                     "rejudged_state": pnap.STATE_ALARM, "rejudged_reason_code": "pronunciation_alarm_reevaluated", "lang": lang,
                                     "had_original_asr_judgement": True, "stored_secondary_used": True,

@@ -336,9 +336,22 @@ class EquivalenceTest(unittest.TestCase):
                     a = (a[0], a[1], a[2], a[3].replace(", 'ret3_rejected': 'span_not_one_entity_run'", ""))
                 self.assertEqual(a, b, (c, tb))
 
-    def test_drift_guard(self):
-        self.assertEqual(ev.source_hashes(), ev.ORIG_SOURCE_SHA256,
-                         "er103 の複製元関数が変わった: er111_pn_trial_evaluate_01.py の複製を再照合し、ORIG_SOURCE_SHA256 を更新すること(OF-PN2-11)")
+    def test_drift_guard_retired_replaced_by_production_differential(self):
+        """ASR-QUALITY PN 委任_04(Production統合): 複製元er103の`evaluate_alarm_eligibility`は本体へRETが統合されたため旧drift guard(ORIG_SOURCE_SHA256のうち
+        evaluate_alarm_eligibility)は意味を失った(複製=Trial資料として残置)。代替=Trial関数とProduction本体の差分test(Trialはtestからのみimport。
+        全コーパス版は er103_run_entity_table_test_01.py::TestEquivalenceW02)。ここでは代表ケースで accept/reason/diffs(evidence含む)が一致することを固定する。"""
+        tb = ret.EntityTable([E("Bertie", ["bertie"]), E("L. Mimoun", ["l", "mimoun"], elig=["mimoun"], inits=["l"])])
+        cases = self.CASES + [('"Bertie, why do you bound?"', '"Birdie, why do you bound?"', '"Birdie, why do you bound?"'),
+                              ("We met L. Mimoun at the cafe yesterday.", "We met L. Mimon at the cafe yesterday.", "We met elle mimon at the cafe yesterday.")]
+        import er103_run_entity_table_01 as prod_ret
+        ptb = prod_ret.table_from_saved_entries([e.to_dict() for e in tb.entries])
+        for c, p, s in cases:
+            kw = dict(canonical_text=c, primary_cls=val.classify_asr_match(c, p), secondary_cls=val.classify_asr_match(c, s), primary_text=p,
+                      secondary_text=s, judge_state="NG_BOTH", judge_reason_code="secondary_not_accepted", role="FULL_STORY", p3_entry="p3_primary_ng")
+            a = ev.evaluate_alarm_eligibility_pn(enabled=True, table=tb, **kw)
+            b = pol.evaluate_alarm_eligibility(enabled=True, entity_table=ptb, **kw)
+            self.assertEqual((a.accept, a.reason, [(x.canonical, x.asr_primary, x.asr_secondary, x.evidence) for x in a.diffs]),
+                             (b.accept, b.reason, [(x.canonical, x.asr_primary, x.asr_secondary, x.evidence) for x in b.diffs]), c)
 
     def test_disabled_and_ja_and_kp_unchanged(self):
         tb = ret.EntityTable([E("Bertie", ["bertie"])])
@@ -428,7 +441,7 @@ class IsolationTest(unittest.TestCase):
         with open(os.path.join(HERE, "er103_proper_noun_alarm_policy_01.py"), encoding="utf-8") as fh:
             src = fh.read()
         self.assertNotIn("er111_pn_", src)
-        self.assertNotIn("entity_table", src)
+        # 委任_04: Production本体にRETが統合されたため`entity_table`引数は存在してよい(Trial moduleへの参照が無いことだけを固定)
         for f in ("er111_pn_entity_table_trial_01.py", "er111_pn_trial_evaluate_01.py"):
             with open(os.path.join(HERE, f), encoding="utf-8") as fh:
                 s = fh.read()

@@ -10,11 +10,20 @@ import sys
 
 import er103_proper_noun_alarm_policy_01 as pnap
 import er103_pronunciation_tts_supply_01 as pnap_supply
+import er103_run_entity_table_01 as ret   # ASR-QUALITY PN 委任_04(OPEN-472): Run Entity Table。有効条件は ret.is_active_for_run() の単一関数のみ
 
 
-def emit_alarm_report(level_dir: str) -> dict:
-    """level_dir/audit/ にアラーム報告を書き、完成報告(標準出力)へ同じ内容を出す。例外を投げない。"""
+def emit_alarm_report(level_dir: str, table=None) -> dict:
+    """level_dir/audit/ にアラーム報告を書き、完成報告(標準出力)へ同じ内容を出す。例外を投げない。
+    RET有効時(ret.is_active_for_run())のみ、実体表サマリ(表の根拠。Ledger/Perplexity根拠とは別欄)をreportへ追記する(A-16)。RET不活性/rollback時は従来とバイト一致。"""
     rep = pnap.write_run_alarms_safe(level_dir, supply_list=pnap_supply.applied_supplies())
+    try:
+        if ret.is_active_for_run() and rep.get("md") and os.path.exists(rep["md"]):
+            with open(rep["md"], "a", encoding="utf-8") as f:
+                f.write("\n### 実体表(固有名詞と認識した根拠。受理判定用。発音の根拠[Ledger/Perplexity調査]とは別)\n"
+                        + "\n".join("- " + ln for ln in ret.operator_report_lines(table)) + "\n")
+    except Exception as exc:  # noqa: BLE001
+        print(f"[WARN][entity_table] 報告への実体表サマリ追記に失敗: {type(exc).__name__}: {exc}", file=sys.stderr)
     try:
         if rep.get("md") and os.path.exists(rep["md"]):
             with open(rep["md"], encoding="utf-8") as f:
@@ -25,16 +34,23 @@ def emit_alarm_report(level_dir: str) -> dict:
     return rep
 
 
-def run_with_alarm_hook(family: str, level_dir: str, fn, *args, **kwargs):
-    """flag OFF -> fn(*args, **kwargs) をそのまま呼ぶ。ON -> scope(X|Z)内で実行し、finallyでアラーム報告を出す。"""
+def run_with_alarm_hook(family: str, level_dir: str, fn, *args, _ret_provider=None, **kwargs):
+    """flag OFF -> fn(*args, **kwargs) をそのまま呼ぶ。ON -> scope(X|Z)内で実行し、finallyでアラーム報告を出す。
+    ASR-QUALITY PN 委任_04(RET、構築点=本関数1か所): scope内かつ ret.is_active_for_run() のとき、`fn`の直前に`_ret_provider()`(provider factory)から
+    run単位の実体表を構築し(未カバーtextのみNER。失敗は縮退して表なし=現行)、`fn`の間だけ`ret.run_table`で保持する(finallyで必ず復元)。
+    runner本体関数は無変更。dry_run/scope外/PNAP OFFではここに入らない(API 0)。"""
     if not pnap.is_enabled():
         return fn(*args, **kwargs)
     with pnap.run_scope(family):
         pnap_supply.clear_registry()
+        table = None
         try:
-            return fn(*args, **kwargs)
+            if _ret_provider is not None and ret.is_active_for_run():
+                table = ret.ensure_table_safe(_ret_provider())
+            with ret.run_table(table):
+                return fn(*args, **kwargs)
         finally:
-            emit_alarm_report(level_dir)
+            emit_alarm_report(level_dir, table)
 
 
 def aggregate_article_alarms(article_dir: str, level_dirs: list) -> dict:
@@ -82,7 +98,8 @@ def family_scope(family: str, subdir: str):
     def deco(fn):
         @functools.wraps(fn)
         def wrapper(theme_out_dir, *args, **kwargs):
-            return run_with_alarm_hook(family, f"{theme_out_dir}/{subdir}", fn, theme_out_dir, *args, **kwargs)
+            return run_with_alarm_hook(family, f"{theme_out_dir}/{subdir}", fn, theme_out_dir, *args,
+                                       _ret_provider=(lambda: ret.XProvider(theme_out_dir)), **kwargs)
         wrapper.__pnap_scoped__ = True
         return wrapper
     return deco
