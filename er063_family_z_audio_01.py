@@ -718,7 +718,7 @@ def copy_reusable_run_assets(src_run_dir: str, dst_run_dir: str, *, dry_run: boo
 def style_text_for(spec: ClipSpec):
     """そのclipで実際に渡すstyle_prefix_override(None=従来Dialogue style/既存挙動)。"""
     if spec.kind == "dialogue":
-        # Std/Adv共通: 既定Dialogue Style(2026-10-19ユーザー決定③。Stdも生成時の減速指示なし、後処理6%減速のみ)
+        # Std/Adv共通: 既定Dialogue Style(2026-10-19ユーザー決定③。Stdも生成時の減速指示なし。2026-10-23速度仕様v2でStd会話の後処理6%減速は撤去、Adv会話のみ約6%高速化)
         return None
     return FAMILY_Z_ROLE_STYLE[spec.role_key]["text"]
 

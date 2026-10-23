@@ -641,18 +641,204 @@
     "theme_id": "run_e2e_06",
     "level": "b1b",
     "segment_id": "kp1_en",
-    "updated_at": "2026-10-20T10:38:30",
+    "updated_at": "2026-10-23T10:04:04",
     "reason": "status=OKで確定しました。",
     "final_status": "OK",
     "wav_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_06/b1b/narration/kp1_en.wav",
-    "cumulative_tts_attempts": 1,
-    "cumulative_asr_calls": 1,
+    "cumulative_tts_attempts": 3,
+    "cumulative_asr_calls": 3,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
         "attempt": 1,
         "status": "OK",
-        "duration_seconds": 1.88,
+        "duration_seconds": 1.92,
+        "asr_text": "Sentencing someone to death.",
+        "asr_text_length": 28,
+        "max_len": 35,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Sentencing someone to death.",
+            "classification": "TRUE_CONTENT_MISMATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_vote",
+            "provider": "azure",
+            "text": "Sentenced someone to death.",
+            "classification": "TRUE_CONTENT_MISMATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "NG_BOTH",
+            "vote_required": true,
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "d976caf2f597004f2025377150361dae962c17dc01d3495df3cffce917bded0f",
+          "primary": {
+            "text": "Sentencing someone to death.",
+            "passed": false,
+            "label": "TRUE_CONTENT_MISMATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Sentenced someone to death.",
+            "label": "TRUE_CONTENT_MISMATCH",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.92,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 534,
+            "secondary_ms": 534
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 28,
+            "secondary_len": 27,
+            "max_len": 35,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": 23,
+            "primary_ok": true
+          },
+          "vote": {
+            "version": "kp_vote_check_v1",
+            "guard_lifted": true,
+            "guard_lifted_version": "kp_vote_guard_lifted_v1",
+            "observed_protected_diff": {
+              "primary": false,
+              "secondary": false,
+              "whisper": false
+            },
+            "required": true,
+            "state": "NG_BOTH",
+            "reason": "primary_and_secondary_ng",
+            "row": null,
+            "pass_count": 0,
+            "tiebreak_enabled": true,
+            "primary": {
+              "provider": "openai",
+              "text": "Sentencing someone to death.",
+              "pass": false,
+              "available": true,
+              "label": "TRUE_CONTENT_MISMATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "p3_primary_ng",
+              "rescue_layers": []
+            },
+            "secondary": {
+              "provider": "azure",
+              "text": "Sentenced someone to death.",
+              "pass": false,
+              "available": true,
+              "label": "TRUE_CONTENT_MISMATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "secondary_not_accepted",
+              "rescue_layers": []
+            },
+            "secondary_called": true,
+            "whisper": null,
+            "whisper_called": false,
+            "whisper_model": null,
+            "ortho_layer_version": "er109_orthographic_equivalence_v1_proto_aho02",
+            "ortho_scope": "Z",
+            "primary_not_pass_reason": "p3_primary_ng",
+            "primary_rescued_by_secondary": false
+          },
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_06/b1b/narration/attempts/kp1_en_attempt2_custom60ebc452.wav"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "duration_seconds": 1.96,
         "asr_text": "Sentence someone to death.",
         "asr_text_length": 26,
         "max_len": 35,
@@ -670,7 +856,7 @@
           "flagged": false,
           "repeats": [],
           "word_count": 4,
-          "transcript": "Sentenced  someone  to  death.",
+          "transcript": "Sentence  someone  to  death.",
           "method": "faster_whisper_small_local_verbatim"
         },
         "repetition_qa_checked": false,
@@ -690,17 +876,30 @@
             "text": "Sentence someone to death.",
             "classification": "NORMALIZED_MATCH",
             "entity_like_source": []
+          },
+          {
+            "step": "secondary_vote",
+            "provider": "azure",
+            "text": "Sentence someone to death.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS",
+            "vote_required": true,
+            "entity_like_source": []
           }
         ],
         "asr_judgement": {
           "state": "PASS",
-          "reason_code": "primary_pass",
-          "slot": 1,
+          "reason_code": "dual_agreed",
+          "slot": 2,
           "script_version": "v0",
           "role": null,
           "lang": "en",
           "segment_key": "",
-          "audio_sha256": "a031440ae0711077f857a6c9db7e7ff50fa54359156e74b7e822770cdf316574",
+          "audio_sha256": "ee97b0a6b8e40e1ad7360166d96ee1ece7cea87bbc6d67ae1c7187769b4d9c3a",
           "primary": {
             "text": "Sentence someone to death.",
             "passed": true,
@@ -709,12 +908,12 @@
             "warning_labels": []
           },
           "secondary": {
-            "called": false,
+            "called": true,
             "cached": false,
             "engine": "azure",
-            "text": null,
-            "label": "",
-            "accepted": null,
+            "text": "Sentence someone to death.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
             "error": null,
             "unavailable": false
           },
@@ -724,52 +923,112 @@
               "pairs": [],
               "reasons": [],
               "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
             }
           },
           "negation_guard": {
-            "primary": false
+            "primary": false,
+            "secondary": false
           },
           "final_gate": {
             "applied": true,
+            "target": "secondary",
             "value_guard": "NO_VALUES",
             "negation_diff": false
           },
           "warnings": [],
           "exclusion_rule": null,
           "cost": {
-            "azure_calls": 0,
-            "azure_seconds": null,
-            "est_jpy": 0.0
+            "azure_calls": 1,
+            "azure_seconds": 1.96,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
           },
           "timing": {
-            "total_ms": 0,
-            "secondary_ms": 0
+            "total_ms": 1038,
+            "secondary_ms": 1038
           },
           "technical_stop": null,
           "length": {
             "applied": true,
             "primary_len": 26,
-            "secondary_len": null,
+            "secondary_len": 26,
             "max_len": 35,
-            "adopted_from": "primary",
+            "adopted_from": "secondary",
             "adopted_ok": true,
-            "surface_len": null,
+            "surface_len": 22,
             "primary_ok": true
           },
+          "vote": {
+            "version": "kp_vote_check_v1",
+            "guard_lifted": true,
+            "guard_lifted_version": "kp_vote_guard_lifted_v1",
+            "observed_protected_diff": {
+              "primary": false,
+              "secondary": false,
+              "whisper": false
+            },
+            "required": true,
+            "state": "PASS_DUAL",
+            "reason": "dual_agreed",
+            "row": "P+S",
+            "pass_count": 2,
+            "tiebreak_enabled": true,
+            "primary": {
+              "provider": "openai",
+              "text": "Sentence someone to death.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": null,
+              "rescue_layers": []
+            },
+            "secondary": {
+              "provider": "azure",
+              "text": "Sentence someone to death.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "secondary_accepted",
+              "rescue_layers": []
+            },
+            "secondary_called": true,
+            "whisper": null,
+            "whisper_called": false,
+            "whisper_model": null,
+            "ortho_layer_version": "er109_orthographic_equivalence_v1_proto_aho02",
+            "ortho_scope": "Z",
+            "primary_not_pass_reason": null,
+            "primary_rescued_by_secondary": false
+          },
+          "p3_entry": "vote_required",
           "adapter": {
             "layers": [],
-            "azure_real_calls": 0,
+            "azure_real_calls": 1,
             "cost_guard_triggered": false,
             "language": "en-US",
             "segment_id": null,
             "asr_text_present": true,
             "cache": {
-              "calls": 1,
+              "calls": 4,
               "hits": 0
             }
           }
         },
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_06/b1b/narration/attempts/kp1_en_attempt1_custom60ebc452.wav"
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_06/b1b/narration/attempts/kp1_en_attempt3_custom60ebc452.wav"
       }
     ]
   },
