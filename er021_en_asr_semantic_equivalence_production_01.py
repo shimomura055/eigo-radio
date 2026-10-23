@@ -126,6 +126,8 @@ _FRACTION_PHRASES = {
     ("three", "quarters"): Fraction(3, 4),
 }
 
+# OF-TN: `_try_clock_pair`の分の範囲(10〜59。00〜09は`oh`系・別件)。時の範囲1〜12は_try_clock_pair内のdocstring参照。
+_CLOCK_MINUTE_MIN, _CLOCK_MINUTE_MAX = 10, 59
 _NUMSTR_RE = re.compile(r"\d[\d,]*(?:\.\d+)?")
 _TIME_RE = re.compile(r"(\d{1,2}):(\d{2})")
 _FRACTION_DIGIT_RE = re.compile(r"(\d+)/(\d+)")
@@ -365,6 +367,65 @@ def _try_spoken_time(words: list[str], i: int):
     return {"kind": "time", "value": Fraction(hour * 100 + minute), "meridiem": meridiem}, j
 
 
+def _try_clock_pair(words: list[str], i: int):
+    """OPEN-482(ASR-TIME-NUMERAL-EQUIVALENCE-01 案C): 『時(1〜12の算用数字/数詞語) + 分(10〜59)』の隣接2語は、
+    年ペア読み(1030)ではなく、TTS入力の数字化後の形(`10 thirty` -> num10,num30)と同じ2つのnumber atom
+    (am/pm直後ならtime atom)にする。相手側の`10:30`は最終ゲートの_clock_pair、`1030`は値差で判定される。
+    範囲が層ごとに異なる理由: er006境界分割=桁連結の分割用、value_guard `_clock_pair`=相手が数字2atomで24時間表記があり得るため0〜24、
+    本関数=語形側は年号(nineteen ninety/twenty twenty等)を守るため時1〜12・分10〜59に限る(共通化しない)。
+    除外(Noneを返し従来の読みへ): 時が13以上 / 分が範囲外 / 直前が数詞語・数字(直前`and`は更にその前が数詞語・数字のときだけ) /
+    分の後に数詞語・数字・point・percent・per cent・通貨語が続く(OF-TN-01: `10 twenty-dollar bills`/`2 fifteen percent`)。
+    am/pmが直後に続く場合に限り分に2桁数字(10〜59)も受け付け両側をtime atomに揃える(OF-TN-02: `10 30 pm`)。"""
+    n = len(words)
+    w = words[i]
+    if re.fullmatch(r"\d{1,2}", w):
+        hour = int(w)
+    elif w.lower() in _ONES:
+        hour = _ONES[w.lower()]
+    else:
+        return None
+    if not 1 <= hour <= 12:
+        return None
+    if i > 0:
+        prev = words[i - 1].lower()
+        if prev == "and":
+            # OF-TN-03: `between 9 and 10 thirty`/`nine and ten thirty`のandは接続詞。`one hundred and ten`型(andの直前がscale語)のときだけ数の一部とみなす。
+            before = words[i - 2].lower() if i > 1 else ""
+            if before in _SCALE_WORDS:
+                return None
+        elif prev in _NUMBER_VOCAB or _NUMSTR_RE.fullmatch(prev):
+            return None
+    # 分: 10-19の語 / 十の位の語 / 十の位の語+一の位(語 or TTS数字化後の1桁数字 `thirty 5`)。数詞語以外・範囲外はNone(従来の読みへ)。
+    # `thirty 5`分岐はF-1(er003のTTS入力が`thirty five`の`five`だけ数字化する問題)の時刻位置での部分救済(F-1本体修正時に統合する)。
+    j = i + 1
+    mw = words[j].lower() if j < n else ""
+    digit_minute = False
+    if mw in _TENS and _TENS[mw] <= _CLOCK_MINUTE_MAX:
+        minute, j = _TENS[mw], j + 1
+        nxt = words[j].lower() if j < n else ""
+        if nxt in _ONES and 1 <= _ONES[nxt] <= 9:
+            minute, j = minute + _ONES[nxt], j + 1
+        elif re.fullmatch(r"[1-9]", nxt):
+            minute, j = minute + int(nxt), j + 1
+    elif mw in _ONES and _CLOCK_MINUTE_MIN <= _ONES[mw] <= 19:
+        minute, j = _ONES[mw], j + 1
+    elif re.fullmatch(r"[1-5]\d", mw) and _CLOCK_MINUTE_MIN <= int(mw) <= _CLOCK_MINUTE_MAX:
+        minute, j, digit_minute = int(mw), j + 1, True  # am/pmが続く場合のみ有効(下で確認)
+    else:
+        return None
+    nxt_w = words[j].lower() if j < n else ""
+    if nxt_w in _NUMBER_VOCAB or _NUMSTR_RE.fullmatch(nxt_w) or nxt_w == "point":
+        return None
+    if nxt_w == "percent" or nxt_w in _CURRENCY_WORDS or (nxt_w == "per" and j + 1 < n and words[j + 1].lower() == "cent"):
+        return None
+    mer = _peek_meridiem(words, j)
+    if mer is not None:
+        return [{"kind": "time", "value": Fraction(hour * 100 + minute), "meridiem": mer[0]}], j + mer[1]
+    if digit_minute:
+        return None
+    return [_mk_number(Fraction(hour)), _mk_number(Fraction(minute))], j
+
+
 def _apply_suffixes(atom: dict, words: list[str], idx: int) -> int:
     """数値atom生成直後に、続く語がscale語・"percent"・通貨語であれば併合する。"""
     if atom["kind"] != "number":
@@ -438,6 +499,11 @@ def _tier1_atoms(text: str) -> list[dict]:
             atoms.append(_mk_number(_to_fraction(m_ord.group(1)), ordinal=True))
             i += 1
             i = _apply_suffixes(atoms[-1], words, i)
+            continue
+        clock = _try_clock_pair(words, i)
+        if clock is not None:
+            atoms.extend(clock[0])
+            i = clock[1]
             continue
         if _NUMSTR_RE.fullmatch(w):
             bare = w.replace(",", "")

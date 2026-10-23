@@ -8,7 +8,7 @@ AK = ("asr", "asr_text", "primary_text", "secondary_text", "transcript", "asr_tr
 NUMRE = re.compile(r"\d|\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred)\b", re.I)
 SKIP = {".git", ".venv", "node_modules", "__pycache__"}
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--root", default="."); ap.add_argument("--out", default="pairs_01.jsonl"); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--root", default="."); ap.add_argument("--out", default="pairs_01.jsonl"); ap.add_argument("--skip-substr", action="append", default=[], help="委任_02追加: このsubstringを含むpathは抽出しない(自作の合成test/replay出力が混入するのを防ぐ)"); a = ap.parse_args()
     pairs = {}; nfiles = 0
     for root, ds, fs in os.walk(a.root):
         ds[:] = [d for d in ds if d not in SKIP]
@@ -16,6 +16,7 @@ def main():
             if not f.endswith((".json", ".jsonl")): continue
             p = os.path.join(root, f)
             if os.path.abspath(p) == os.path.abspath(a.out): continue
+            if any(sb in p.replace("\\", "/") for sb in a.skip_substr): continue
             try: t = open(p, encoding="utf-8", errors="ignore").read()
             except Exception: continue
             nfiles += 1
