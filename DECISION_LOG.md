@@ -22179,3 +22179,10 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 検証: (1)保存9,003行×5経路=43,033署名: no-scope・flag False(rollback)は配線前とバイト一致、X/Z flag ON=PASS->NG 0・NG->PASS 185(adapter 30/adapter_kp 38/rejudge 113/guard 4)。(2)全回帰`run_project_regression.py`単独: collected 6,901/passed 6,891/failed 0/errors 0/skipped 10(基準failed 0/errors 0を維持)。(3)runtime evidence(RUNTIME_EVIDENCE_04.md): X `pump one's fist`でAzure `1's`がorthoでPASS(P+S/S+W)を自然発火確認。Z表記差の新規生成・②実音声は未観測(Zのtts_b1bはrestart storm sentinelで停止、STOP削除せず)。費用約3.1円。(4)HR Lock再判定CLI: 既存X/Z 19件を走査=再生成承認候補0(INSUFFICIENT_EVIDENCE 13・NOT_CANDIDATE 6)。
 - 事実(判断なし): J-2=B不具合修正d9e36f54a(共有Validator)はA/B/Cにも影響する(現状維持=Fable区分)。`three`↔`3:00`が既存ルール`number_spoken_form`でPASSし得る(er109内部、再レビュー対象外、Fable判断材料)。
 - 状態: **WIRED_PENDING_FABLE**。PRODUCTION_WIREDはFable受入後。報告=docs/pm/RESULT_PACKET_AHO4.md、evidence=docs/research/ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01/RUNTIME_EVIDENCE_04.md、er109_output/aho4_runtime_evidence_01/。
+
+## 2026-10-23 ASR包括対策 er109 v1: Fable受入Closeout=PRODUCTION_WIRED(ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01 委任_05、OPEN-459)
+
+- 受入(Fable): X ①(`Pump 1's fist`がORTHOGRAPHIC_EQUIVALENT_MATCH、HR Lock済み2件がPASS_WITH_WARNING、誤転写はNG_BOTH維持、保存43,033署名PASS→NG 0)=受入。X ② `no`↔`know`=決定的検証済み・実音声未観測を開示のうえ受入。Z ①②=Z runner正式TTS段のruntime evidenceを補完して受入(下記)。
+- 是正(承認範囲内の不具合是正、新仕様ではない): `three`↔`3:00`が`number_spoken_form`でPASSし得た(承認済み安全条件『発音が異なる表現を同値にしない』違反)。er109の時刻unitから裸の数詞候補を削除(`o'clock`/分を伴う読みのみ同値)。保存9,013行×5経路=43,083署名での影響は合成pair2664のみ(保存音声由来PASS→NG 0=誤PASSの除去)、golden fixture更新。
+- Z正式TTS段evidence: run_aho4_z_h3のSTOP(restart storm=エージェント起動エラー由来)をFable権限で正規`--clear-stop`解除し1回だけ`tts_b1b`(KP 3clip)を実行、rc=0・1.50円。vote auditに`ortho_scope=Z`・`ortho_layer_version`、KP3V 3/3 PASS_DUAL。
+- 状態: **PRODUCTION_WIRED(Family X/Z、①②別、Fable受入2026-10-23)**。開示: X ②実音声未観測、Z ①②・本文での表記差自然発火は未観測、J-2(B不具合修正d9e36f54aのA/B/C波及は10-22承認済み是正・現状維持)、rollback(flag False)時はX/Z内のer109受理entryがStore再利用ブロックされ再生成費用が発生。報告=docs/pm/RESULT_PACKET_AHO5.md、evidence=docs/research/ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01/RUNTIME_EVIDENCE_05.md。
