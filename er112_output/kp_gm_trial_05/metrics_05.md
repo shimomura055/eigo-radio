@@ -7,6 +7,7 @@
 | X1 | 21 | 0.0654 | 528 | 679 | 21/21 | - | 11/21 | 3 | 0 | - |
 | X2 | 31 | 0.1254 | 1074 | 1282 | 31/31 | 0/31 | 15/31 | 3 | 0 | 8/1/22 |
 | Cp | 30 | 0.1566 | 1340 | 1551 | 30/30 | - | 5/26 | 1 | 0 | - |
+| X2p | 31 | 0.1412 | 1240 | 1436 | 31/31 | 0/31 | 14/31 | 3 | 0 | 4/4/23 |
 
 validate不合格の出力: 0件 []
 
@@ -16,3 +17,4 @@ validate不合格の出力: 0件 []
 - X1: 12 call、reasoning_tokens平均=528、output_tokens平均=679、1call平均費用=0.0654円
 - X2: 22 call、reasoning_tokens平均=1074、output_tokens平均=1282、1call平均費用=0.1254円
 - Cp: 24 call、reasoning_tokens平均=1340、output_tokens平均=1551、1call平均費用=0.1566円
+- X2p: 23 call、reasoning_tokens平均=1240、output_tokens平均=1436、1call平均費用=0.1412円

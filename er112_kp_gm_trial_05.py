@@ -7,6 +7,7 @@ arm:
   M  = Trial_04のM-base(再整合用指示を除く、制約句は残す、M_SCHEMA)
   X1 = M-base + 制約句置換のみ(欄追加なし)。出力schemaはProduction互換(OF-KP1-07)
   X2 = X1 + meaning_in_text_en -> naive_ja -> naive_ja_conveys -> japanese_gloss(案A)。Production互換schema+新欄(japanese_glossの前)
+  X2p = X2 + 委任_25の規則追加: (i)meaning_in_text_en=フレーズ全体の意味(本文の一側面に絞らない・比喩はwhat it stands for) (ii)glossはmeaning全体を運び動作主/動詞の意味を移さない (iii)長さ・説明文化禁止は従来通り
   Cp = Trial_04のCp(CP_BLOCK + cp_schema、gloss後の自己監査欄)
 モデル: gpt-6-luna(Production系列と同一=比較のため。25節の例外理由=評価対象がluna生成の品質そのもの)、effort=high固定。
 """
@@ -24,8 +25,8 @@ LEDGER5 = OUT5 / "paid_calls.jsonl"
 RES5 = OUT5 / "results.jsonl"
 CAP_JPY = 8.33
 PER_CALL_MAX = 0.20
-# 委任_23 Fable判断(a): Cp armのみ平均閾値を0.26円/callへ一時引上げ(推論token増による単価、本委任限り)。他armは不変。
-PER_CALL_ARM = {"Cp": 0.26}
+# 委任_25: Cpの一時値0.26円は撤去(0.20円へ戻す、残置しない)。per-arm上書きなし。
+PER_CALL_ARM = {}
 RD = ROOT / "docs/research/FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01"
 STOP_PATHS = [OUT5 / "STOP", OUT5 / "STOP_ALL", ROOT / "er026_output/family_z_production_e2e_01/STOP_ALL", RD / "STOP", ROOT / "er112_output/kp_gm_trial_04/STOP"]
 
@@ -39,7 +40,7 @@ import er009_n1_routing_governance_10_actual_model_cost as pricing   # noqa: E40
 _lock = threading.Lock()
 _halt = {"flag": False, "why": ""}
 EFFORT = "high"
-ARMS = ("B0", "M", "X1", "X2", "Cp")
+ARMS = ("B0", "M", "X1", "X2", "Cp", "X2p")
 
 
 def stop():
@@ -119,12 +120,25 @@ X2_MEANING = ("【意味の決め方(各項目、japanese_glossを書く前に�
               "key_phrase全体(目的語・修飾語を含む)の意味を落とさず、key_phraseと同じ品詞・同じ程度の長さの句にする(説明文・定義文にしない)。\n\n")
 
 
+X2P_MEANING = ("【意味の決め方(各項目、japanese_glossを書く前に、この順で必ず出力してください)】\n"
+               "- meaning_in_text_en: 【記事本文】のこの箇所(source_sentenceとその前後の文)でkey_phrase【全体】が表している意味を、平易な英語1文で書く。"
+               "key_phraseの語をそのまま繰り返さず言い換える。本文の話題の一側面(例: 差の大きさ、時間、量など)だけに絞らず、key_phrase全体が何を言っているかを書く。"
+               "字義どおりの用法なら字義の意味。比喩・慣用・筆者が作った比喩なら、その比喩が指す一般的な意味(what it stands for)を書く。記事固有の固有名詞・数値は入れない。\n"
+               "- naive_ja: key_phraseの英単語を、それぞれ日本語の対応語に置き換えただけの訳を、意味の解釈を加えずに書く。\n"
+               "- naive_ja_conveys: 日本語だけを読む学習者が、naive_jaからmeaning_in_text_enの意味を受け取れるか。"
+               "yes(同じ意味・同じ比喩が日本語でも通じる、または字義どおりの用法)/ partly(一部が落ちる)/ no(字義の動作・物の像しか伝わらず、本文での意味は伝わらない)。\n"
+               "- japanese_gloss: yesなら、naive_jaをそのまま写さず、自然で平易な訳(英和辞典の定訳や日本語の慣用表現があればそれ)を選ぶ。"
+               "partly/noなら、naive_jaの字義の像を使わず、meaning_in_text_enの意味【全体】を日本語の慣用表現か平易な短い言い換えで表す(意味の一部だけを取り出した語にしない)。"
+               "naive_jaの語を別の語に置き換えるときは、動作主(誰が)・動詞の意味を変えない(例: 「誰も出なかった電話」を「誰もかけたくなかった電話」のように、動詞の意味を別の意味にずらさない)。"
+               "key_phrase全体(目的語・修飾語を含む)の意味を落とさず、key_phraseと同じ品詞・同じ程度の長さの句にする(説明文・定義文にしない)。\n\n")
+
+
 def x_schema(arm):
     s = json.loads(json.dumps(ga.GLOSS_ALIGNMENT_JSON_SCHEMA))
     it = s["schema"]["properties"]["items"]["items"]
     props = {}
     for k, v in it["properties"].items():
-        if k == "japanese_gloss" and arm == "X2":
+        if k == "japanese_gloss" and arm in ("X2", "X2p"):
             props["meaning_in_text_en"] = {"type": "string"}
             props["naive_ja"] = {"type": "string"}
             props["naive_ja_conveys"] = {"type": "string", "enum": ["yes", "partly", "no"]}
@@ -158,7 +172,7 @@ def build_x_message(arm, tgt, article, prior=None):
     assert a1 in person and a2 in person and a3 in person
     person = (person.replace(a1, "").replace(a2, "display_phrase_before_canonicalization・source_sentenceにある")
               .replace(a3, "source_sentenceと前後の文脈は語義と用法を決めるために使い、人称の指示対象を決めるためには使わないでください。"))
-    return (X_HEAD + (person if any_person else "") + X_NEWGEN + (X2_MEANING if arm == "X2" else "") + X_OUTRULES +
+    return (X_HEAD + (person if any_person else "") + X_NEWGEN + (X2_MEANING if arm == "X2" else X2P_MEANING if arm == "X2p" else "") + X_OUTRULES +
             "【日本語グロスの規則(承認済み選定Promptと同一)】\n" + rules + "\n\n"
             "【対象項目】\n" + json.dumps(items, ensure_ascii=False, indent=2) + "\n\n【記事本文(参考)】\n" + article)
 
@@ -167,7 +181,7 @@ def build(arm, tgt, article):
     """戻り=(developer, message, schema)。"""
     if arm == "M":
         return G.M_DEVELOPER, G.build_m_message(tgt, article), G.M_SCHEMA
-    if arm in ("X1", "X2"):
+    if arm in ("X1", "X2", "X2p"):
         return G.M_DEVELOPER, build_x_message(arm, tgt, article), x_schema(arm)
     msg = ga.build_user_message_corrected(tgt, article)
     schema, dev = ga.GLOSS_ALIGNMENT_JSON_SCHEMA, ga.DEVELOPER_MESSAGE

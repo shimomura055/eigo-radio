@@ -44,3 +44,18 @@
 - 判定材料(**VALIDATED判定はFable**): R基準(FAIL系<=1/12 かつ 2rep以上失敗KP 0 かつ THIN<=B0+1)は、X2: FAIL系0/2rep失敗KP 0だがTHIN 4>B0+1=1、Cp: FAIL_LIT 2(ラベル確定前でも不達)、X1/M/B0不達。H5(X1対M)はFAIL系 6→5で有意差なし。held-out悪化: X2=0、Cp=追加盲検05c確定後。control一致率 7/10(不一致3件はすべて前回より緩い方向)。
 - Cp追加(19call、2.545円)後の追加盲検表 `fable_blind_05c.md`(10文字列)。ラベル後に `--labels_c` 付きで再集計。
 - Stage 2準備(未実行): `er112_kp_gm_trial_05.py gen --arm X2 --set S2 --reps 1`(non-R 54KP、29 call、見積約3.64円)→`er112_kp_gm_trial_05_report.py blind_s2`(B0/CpはTrial_04再利用)。Fableが「Stage 1通過」を連絡してから実行。
+
+## 委任_25 追記(05cラベル確定・Stage 1確定表・X2')
+- 05cラベル(Fable、Key未開封)を `fable_labels_05c.json` に保存、注記と「Fable判定の揺れ(緩化方向)」を `FABLE_BLIND_RESULT_05.md` に逐語保存。再集計: `py er112_kp_gm_trial_05_report.py report --labels fable_labels_05.json --labels_c fable_labels_05c.json`(`report_05_fable_labels_05_withc.md`、X2p追加後は同ファイル名で上書き)。
+- **Stage 1確定表(R hard-core 4KP x 3rep=12出力/arm、ラベル確定後)**:
+
+| arm | PASS | THIN | FAIL系(FAIL_LIT+FAIL) | 2rep以上失敗KP | 事前宣言基準 |
+|---|---|---|---|---|---|
+| B0 | 2 | 0 | 10 | unseen clock/trophy/greener grass | (基準線) |
+| M | 6 | 0 | 6 | unseen clock/trophy | 不達 |
+| X1 | 7 | 0 | 5 | trophy | 不達 |
+| X2 | 8 | 4 | 0 | なし | THIN 4>B0+1のみ不達 |
+| **Cp(確定)** | **9** | **1** | **2** | なし | FAIL系2>1で不達(unseen clock rep2「見えない時計」、greener grass rep3「より青々とした芝生」) |
+- held-out 10KP: X2悪化0、**Cp悪化0**(05c確定後)。
+- X2p(委任_25): 差分は `TRIAL_DESIGN_06.md` §9、費用 `BUDGET_LOG_01.md` 委任_25追記。決定論集計(`metrics_05.md`): 31出力、1call平均0.1412円、gloss==naive_ja 0/31、文字数比>1.5 14/31(X2 15/31)、説明文型語尾3(X2 3)、30字超0、conveys yes/partly/no=4/4/23(X2 8/1/22)、validate互換31/31。出力欄=`x2p_fields_05.md`(判定後に開く運用)。
+- 盲検表 `fable_blind_05d.md`(X2pで新出の13文字列・10行、既出14文字列はラベル継承、arm伏せ)+`fable_blind_05d_key.json`(別ファイル)。**VALIDATED判定はしない(Fable)。** ラベル後: `report --labels fable_labels_05.json --labels_c fable_labels_05c.json --labels_d fable_labels_05d.json`。

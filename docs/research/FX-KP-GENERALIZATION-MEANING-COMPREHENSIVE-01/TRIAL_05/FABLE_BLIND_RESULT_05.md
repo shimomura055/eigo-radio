@@ -43,3 +43,13 @@ Cp追加実行後(R Cp 12出力・held-out Cp 12KP)の時点。**Cpの未ラベ�
 
 ## Cp追加後(05c: 追加盲検表)
 `fable_blind_05c.md`(9行・10文字列。Cp追加で**新たに出現した文字列のみ**、既出文字列[既知ラベル+05ラベル]は継承、arm伏せ)+`fable_blind_05c_key.json`(別ファイル)。Fableが `fable_labels_05c.json`(`{"<row#>:<col>": LABEL}`)を作成後、`py er112_kp_gm_trial_05_report.py report --labels fable_labels_05.json --labels_c fable_labels_05c.json` で再集計(出力=`report_05_fable_labels_05_withc.md`)。
+
+## 05c ラベル(委任_25で逐語保存、Key未開封で確定)
+`fable_labels_05c.json`:
+```
+{"1:A":"PASS","1:B":"PASS","2:A":"PASS","3:A":"PASS","4:A":"PASS","5:A":"PASS","6:A":"PASS","7:A":"PASS","8:A":"THIN","9:A":"PASS"}
+```
+Fable注記(逐語): 3:A「境界線を引く」は日本語で区別の慣用表現として機能しPASS(「線を引く」単独はFAIL_LITの従来判定と区別)。8:A「苦しみの中にある戻り道」は物語解釈を含み本文だけでは検証できないためTHIN(05の7:Bと同基準)。
+
+### Fable判定の揺れ(緩化方向)
+OF-KP1-08 control再判定の一致率は7/10。不一致3件(`draw a line|区別する` THIN->PASS、`reach for someone's wallet|人の財布に手を伸ばす` FAIL->PASS、`on the throne|トップの座にいて` THIN->PASS)はいずれも前回より緩い方向。集計は前回ラベル維持で正しい(Fable判断)。

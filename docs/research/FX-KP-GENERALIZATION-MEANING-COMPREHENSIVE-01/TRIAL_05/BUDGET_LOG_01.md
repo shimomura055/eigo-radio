@@ -28,3 +28,9 @@
 - 誤り(正直な記録): held-outを `--nheld 10` 指定なしで実行したため余分2call(`jump into action`0.095円、`feel borrowed`0.248円=0.343円)。盲検・集計はオリジナル10KPのみ。
 - 日次(JST 10-24): 開始時の281.78円(委任_22で6.25円加算済み=約288.0円)+本委任2.545円 = **約290.6円**/1,000円。案件累計は約276円+2.5円≒**約279円<300円**。
 - 台帳 `er112_output/kp_gm_trial_05/paid_calls.jsonl`(84行)。
+
+# 委任_25 追記(X2p。2026-10-24)
+- 実行: pilot 1call(`an unseen clock` rep1、0.1236円)->`gen --arm X2p --reps 1,2,3 --set R`(pilot分は再利用、12 job)->`gen --arm X2p --reps 1 --set H --nheld 10`(10 call)。cap=12.80円(開始時累計8.797+上限約4.0)、workers=2、再起動なし、HALTなし、Cp閾値は0.20円に戻した。
+- 費用: X2p 23 call **3.247円**(1call平均0.1412円、reasoning_tokens平均1,240)。台帳 `er112_output/kp_gm_trial_05/paid_calls.jsonl` 累計 **12.044円**(個別枠8.33円を3.714円超過=Fable委任_25で承認済みの約4.0円内)。
+- 日次(JST 10-24): 開始時約290.6円+3.25円 = **約293.8円**/1,000円。案件累計 約279円+3.25円 = **約282.3円<300円**。
+- 使用モデル: gpt-6-luna effort=high(最新系/Production系列、25節例外理由=評価対象がluna生成の品質)。

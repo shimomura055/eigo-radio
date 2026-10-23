@@ -65,3 +65,12 @@ KP集合: **R**=hard-core 4KP(`draw a line`/`an unseen clock`/`question shaped l
 
 ## 8. 撤去・残置
 撤去する規則・検査・testは無い(新規DEV追加のみ)。残置: Production現行Prompt/schema(B0)、Trial_04の`M_HEAD`/`M_NEWGEN`/`CP_BLOCK`/`cp_schema`(DEV、再利用)。
+
+## 9. 委任_25: X2'(arm名X2p、THIN対策)の差分(2026-10-24)
+- 原因仮説(Fable): X2のTHIN 4件は `meaning_in_text_en` が本文の一側面(価格差の時間差など)に絞られる・素朴訳(naive_ja)から意味が移動する(asked for=頼む -> 聞きたくない)。同じPrompt変更の反復ではなく規則追加。
+- X2に対する差分は `meaning_in_text_en` と `japanese_gloss` の2項目の文言のみ(他は不変。`er112_kp_gm_trial_05.py` の `X2P_MEANING`、`x_schema`/`build_x_message`のarm分岐、出力欄はX2と同一)。
+  - (i) `meaning_in_text_en`: 「key_phrase【全体】が表している意味を平易な英語1文」。「本文の話題の一側面(差の大きさ、時間、量など)だけに絞らず」。比喩・慣用・筆者の比喩は「その比喩が指す一般的な意味(what it stands for)」を書く。
+  - (ii) `japanese_gloss`: partly/noのとき「meaning_in_text_enの意味【全体】を表す(意味の一部だけを取り出した語にしない)」。naive_jaの語を置き換えるときは「動作主(誰が)・動詞の意味を変えない」。一般例=「誰も出なかった電話」を「誰もかけたくなかった電話」にしない(原文のKPは使わない)。
+  - (iii) 長さ上限・説明文化禁止(同品詞・同程度の長さの句)は従来どおり。
+- 対象: R 7KP(hard-core 4+co-KP 3)x3rep + held-out 10KP x1rep(`--nheld 10`明示)。モデル=gpt-6-luna effort=high(25節例外: 評価対象がluna生成の品質そのもの)。
+- 撤去: Cp armの一時値 `PER_CALL_ARM={"Cp":0.26}` を撤去し `{}`(全arm 0.20円/call)へ戻した(残置なし)。
