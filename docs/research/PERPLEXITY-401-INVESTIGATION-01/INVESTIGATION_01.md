@@ -50,3 +50,10 @@ Status: ROOT_CAUSE_CONFIRMED(Perplexity側クレジット残高切れ=insufficie
 
 ## 6. 本調査の実施事項
 - API: Perplexity最小疎通1回(費用ほぼ0円、401のため課金なし)。他API 0。コード・Prompt・閾値・flag変更0。キー値は出力・保存していない。
+
+## 7. 復旧確認(委任_02、2026-10-23)
+- ユーザーが$10追加チャージ済み。最小疎通(sonar、`api.perplexity.ai/chat/completions`、Bearer): max_tokens=5は入力エラー(HTTP 400「max_tokens must be at least 16」=認証・残高は通過)、max_tokens=16で**HTTP 200**。復旧確認。
+- 正式関数 `research_pronunciations()` を1 topic(Bertie)で1回: status=OK、items 1件(hint=BUR-tee、confidence=low)、citations 10、usage total_cost $0.0052(約0.8円)。cost_logはsuccess=true/http_status=200で記録(`er006_output/perplexity_recovery_check_02/cost_log.jsonl`、Production cost logへは書いていない)。本関数は調査結果を返すのみで、Ledger登録は呼出側(`er006_secondary_asr_01.py:372,457`等)の責務。今回は呼出側を実行していないため、Ledger本体・Production成果物への副作用は0。
+- 費用合計: 約2円(疎通2回[400入力エラーは課金なしの見込み]+正式関数1回+関数のcost_log失敗前の1回[logger未初期化のRuntimeErrorで結果破棄、API課金済み])。コード変更0、キー値の出力・保存0。
+- 復旧後の運用注意: (1)Perplexity ConsoleのBillingで残高を定期確認し、自動チャージ(auto top-up)を有効化する(今回の枯渇は10-12最終成功〜10-22初回401の間に発生)。(2)401(insufficient_quota)が出たら`cost_log.jsonl`のhttp_status=401の連続をアラート条件にする。(3)Perplexityはクレジット不足を401で返すため、401=キー不正とは限らず、本文の`type`を最初に確認する。(4)401期間中に否定記録は保存されていない(`er097:108-119`でTRANSIENT扱い)ため、復旧後に再researchされ、再処理は不要。
+- OPEN-473 = CLOSED(2026-10-23)。
