@@ -97,3 +97,9 @@ Std誤りでない入力でのAdv NG: A 0/55(Opusの59/60の残りが全てPASS)
 - **過去報告の暫定値の残置**: TRIAL_RESULT_02.md:17,38,41,65 / RESULT_PACKET_KPGM7.md:3 / RESULT_PACKET_KPGM8.md:20 に、gold確定前のSonnet基準(E0 78%/E4 86%、G3 96%/G0 85%)が本文として残る(:8の注記のみ)。FABLE_BLIND_RESULT_03.md:18の「G0=3 KP」は境界を含む。
 - **分類の幅**: `reach for someone's wallet`は字義訳/所有者誤りの両読みが可能(合計は不変)。`settle at`は確定FAIL合計の外に別掲。
 - **本監査の範囲外**: Trial_01・probe-03、Trial_02のE0@prod/E1/E1c/E4(Std glossを入力にしない/別Prompt)、Productionコード・配線。
+
+## Fable確定(2026-10-23、上の推定・暫定表記は残す。詳細=FABLE_VERIFICATION_01.md)
+
+- Std確定FAIL: G0=3(字義訳2[unseen clock×2]+文法・意味関係1[reach])/G2=1(字義訳1[draw a line])/G3=2(文法・意味関係2[apply、reach])。語義誤認・その他・原因不明は各0。`settle at`(G0 rep2)は境界ではなく△(NGではない)に確定。△: G0=1/G2=3/G3=4。
+- 「0/120伝染」は分母の誤り。正=誤りgloss入力1件中0件、薄い入力2件中0件。Std誤り→Adv波及は難例1/5(約2割)、通常0/1。「59/60」はOpus確定gold基準、Sonnet暫定は45/60。
+- 未判明のまま残す: Opus個別判定ログ無し/Std G3「25〜26/26」の未特定1件/E0@G2・G3「22」母集団の厳密同定/Trial_03 G3 draw a line rep2は欠損補修の再実行出力/DEV E0は1KP/callでProduction(5KP/call)とバイト同一ではない(PROMPT_SHA256未記録)/「伝染0」は実行層目視のみ。
