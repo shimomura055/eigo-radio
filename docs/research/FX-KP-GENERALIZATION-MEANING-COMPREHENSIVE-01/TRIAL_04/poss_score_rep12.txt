@@ -1,0 +1,24 @@
+== 見出し語スコア(所有格を含む目視ラベル付きitem x rep)
+a1_c                     n=80  {'CORRECT_GENERALIZED': 55, 'WRONG': 14, 'KEPT': 11}
+a1r_c                    n=80  {'KEPT': 25, 'CORRECT_GENERALIZED': 55}
+a1r_c:raw                n=80  {'KEPT': 25, 'CORRECT_GENERALIZED': 55}
+a1r_c:revert             n=80  {'KEPT': 25, 'CORRECT_GENERALIZED': 55}
+a1r_c:role_roles_only    n=0  {}
+== role判定 vs 目視gold: {'role!=gold(self->non_person)': 4, 'role==gold': 76}
+== 修復status(role mode): {'NO_CHANGE': 80}
+== canon_status: {'a1_c': {'CANONICALIZATION_PASS': 65, 'CANONICALIZATION_INVALID': 5, 'CANONICALIZATION_REVIEW_REQUIRED': 2}, 'a1r_c': {'CANONICALIZATION_PASS': 70, 'CANONICALIZATION_INVALID': 2}}
+== 対照(非所有格item)のC0A vs C1A key同一性: {'c0a_vs_c1a_same': 199, 'c0a_vs_c1a_diff': 5}
+[rep1] compete through its presence | gold=['non_person'] | C0A=compete through one's presence(WRONG) | C1A-raw=compete through its presence(KEPT) | C1A-final=compete through its presence(KEPT) | roles=['non_person'] | NO_CHANGE
+[rep1] enforce their rules | gold=['non_person'] | C0A=enforce someone's rules(WRONG) | C1A-raw=enforce their rules(KEPT) | C1A-final=enforce their rules(KEPT) | roles=['non_person'] | NO_CHANGE
+[rep2] enforce their rules | gold=['non_person'] | C0A=enforce someone's rules(WRONG) | C1A-raw=enforce their rules(KEPT) | C1A-final=enforce their rules(KEPT) | roles=['non_person'] | NO_CHANGE
+[rep1] find its way back | gold=['non_person'] | C0A=find one's way back(WRONG) | C1A-raw=find its way back(KEPT) | C1A-final=find its way back(KEPT) | roles=['non_person'] | NO_CHANGE
+[rep2] find its way back | gold=['non_person'] | C0A=find one's way back(WRONG) | C1A-raw=find its way back(KEPT) | C1A-final=find its way back(KEPT) | roles=['non_person'] | NO_CHANGE
+[rep1] make something your whole life | gold=['self'] | C0A=make something someone's whole life(WRONG) | C1A-raw=make something one's whole life(CORRECT_GENERALIZED) | C1A-final=make something one's whole life(CORRECT_GENERALIZED) | roles=['self'] | NO_CHANGE
+[rep1] occupy their thoughts | gold=['self'] | C0A=occupy someone's thoughts(WRONG) | C1A-raw=occupy one's thoughts(CORRECT_GENERALIZED) | C1A-final=occupy one's thoughts(CORRECT_GENERALIZED) | roles=['self'] | NO_CHANGE
+[rep2] occupy their thoughts | gold=['self'] | C0A=occupy someone's thoughts(WRONG) | C1A-raw=occupy one's thoughts(CORRECT_GENERALIZED) | C1A-final=occupy one's thoughts(CORRECT_GENERALIZED) | roles=['self'] | NO_CHANGE
+[rep1] apply its findings | gold=['non_person'] | C0A=apply one's findings(WRONG) | C1A-raw=apply its findings(KEPT) | C1A-final=apply its findings(KEPT) | roles=['non_person'] | NO_CHANGE
+[rep2] apply its findings | gold=['non_person'] | C0A=apply one's findings(WRONG) | C1A-raw=apply its findings(KEPT) | C1A-final=apply its findings(KEPT) | roles=['non_person'] | NO_CHANGE
+[rep1] keeps its promise | gold=['non_person'] | C0A=keep one's promise(WRONG) | C1A-raw=keep its promise(KEPT) | C1A-final=keep its promise(KEPT) | roles=['non_person'] | NO_CHANGE
+[rep1] take my place | gold=['other_person'] | C0A=take one's place(WRONG) | C1A-raw=take someone's place(CORRECT_GENERALIZED) | C1A-final=take someone's place(CORRECT_GENERALIZED) | roles=['other_person'] | NO_CHANGE
+[rep1] questioned its methods | gold=['non_person'] | C0A=question one's methods(WRONG) | C1A-raw=question its methods(KEPT) | C1A-final=question its methods(KEPT) | roles=['non_person'] | NO_CHANGE
+[rep2] questioned its methods | gold=['non_person'] | C0A=question one's methods(WRONG) | C1A-raw=question its methods(KEPT) | C1A-final=question its methods(KEPT) | roles=['non_person'] | NO_CHANGE

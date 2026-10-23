@@ -1,0 +1,82 @@
+[
+ {
+  "call": 1,
+  "items": [
+   {
+    "rank": 1,
+    "display": "pumps its fist",
+    "roles": [
+     {
+      "token": "its",
+      "role": "non_person"
+     }
+    ],
+    "key_before": "pump its fist",
+    "reason_before": "lemma_normalization",
+    "repair_role": {
+     "key_after": "pump its fist",
+     "status": "NO_CHANGE",
+     "repairs": [],
+     "roles_ok": true,
+     "roles_reason": "",
+     "window_start": 0
+    },
+    "repair_revert": {
+     "key_after": "pump its fist",
+     "status": "NO_CHANGE",
+     "repairs": [],
+     "roles_ok": true,
+     "roles_reason": "",
+     "window_start": 0
+    }
+   },
+   {
+    "rank": 2,
+    "display": "the moment the market moves",
+    "roles": [],
+    "key_before": "the moment the market moves",
+    "reason_before": "none",
+    "repair_role": {
+     "key_after": "the moment the market moves",
+     "status": "NO_POSSESSIVE",
+     "repairs": [],
+     "roles_ok": null,
+     "roles_reason": "",
+     "window_start": null
+    },
+    "repair_revert": {
+     "key_after": "the moment the market moves",
+     "status": "NO_POSSESSIVE",
+     "repairs": [],
+     "roles_ok": null,
+     "roles_reason": "",
+     "window_start": null
+    }
+   },
+   {
+    "rank": 3,
+    "display": "pushed prices up",
+    "roles": [],
+    "key_before": "push prices up",
+    "reason_before": "lemma_normalization",
+    "repair_role": {
+     "key_after": "push prices up",
+     "status": "NO_POSSESSIVE",
+     "repairs": [],
+     "roles_ok": null,
+     "roles_reason": "",
+     "window_start": null
+    },
+    "repair_revert": {
+     "key_after": "push prices up",
+     "status": "NO_POSSESSIVE",
+     "repairs": [],
+     "roles_ok": null,
+     "roles_reason": "",
+     "window_start": null
+    }
+   }
+  ],
+  "raw": "{\n  \"items\": [\n    {\n      \"rank\": 1,\n      \"possessor_roles\": [\n        {\n          \"token\": \"its\",\n          \"role\": \"non_person\"\n        }\n      ],\n      \"key_phrase\": \"pump its fist\",\n      \"changed_from_display_phrase\": true,\n      \"normalization_reason\": \"lemma_normalization\",\n      \"reasoning\": \"動詞を見出し語形のpumpにしました。itsは人ではないwalletを指すため一般化せず残しています。\",\n      \"qa_standalone_natural_unit\": \"PASS\",\n      \"qa_no_residual_context_word\": \"PASS\",\n      \"qa_meaning_or_usage_unchanged\": \"PASS\",\n      \"qa_reusable_other_context\": \"PASS\",\n      \"qa_traceable_contiguous_span\": \"PASS\",\n      \"qa_listening_blocker_value_preserved\": \"PASS\",\n      \"qa_standalone_comprehensibility\": \"PASS\",\n      \"qa_not_over_minimized\": \"PASS\",\n      \"qa_context_sufficiency\": \"PASS\",\n      \"qa_core_meaning_preserved\": \"PASS\",\n      \"qa_no_semantic_role_loss\": \"PASS\",\n      \"qa_person_reference_generalized\": \"PASS\"\n    },\n    {\n      \"rank\": 2,\n      \"possessor_roles\": [],\n      \"key_phrase\": \"the moment the market moves\",\n      \"changed_from_display_phrase\": false,\n      \"normalization_reason\": \"none\",\n      \"reasoning\": \"the moment the market movesは、時間を表す自然な節としてそのまま学習単位になります。movesを原形にすると節の文法が崩れるため変更しません。\",\n      \"qa_standalone_natural_unit\": \"PASS\",\n      \"qa_no_residual_context_word\": \"PASS\",\n      \"qa_meaning_or_usage_unchanged\": \"PASS\",\n      \"qa_reusable_other_context\": \"PASS\",\n      \"qa_traceable_contiguous_span\": \"PASS\",\n      \"qa_listening_blocker_value_preserved\": \"PASS\",\n      \"qa_standalone_comprehensibility\": \"PASS\",\n      \"qa_not_over_minimized\": \"PASS\",\n      \"qa_context_sufficiency\": \"PASS\",\n      \"qa_core_meaning_preserved\": \"PASS\",\n      \"qa_no_semantic_role_loss\": \"PASS\",\n      \"qa_person_reference_generalized\": \"PASS\"\n    },\n    {\n      \"rank\": 3,\n      \"possessor_roles\": [],\n      \"key_phrase\": \"push prices up\",\n      \"changed_from_display_phrase\": true,\n      \"normalization_reason\": \"lemma_normalization\",\n      \"reasoning\": \"句動詞の意味を保ったまま、pushedを基本形のpushにしました。prices upを含めることで「価格を上げる」という意味が保たれます。\",\n      \"qa_standalone_natural_unit\": \"PASS\",\n      \"qa_no_residual_context_word\": \"PASS\",\n      \"qa_meaning_or_usage_unchanged\": \"PASS\",\n      \"qa_reusable_other_context\": \"PASS\",\n      \"qa_traceable_contiguous_span\": \"PASS\",\n      \"qa_listening_blocker_value_preserved\": \"PASS\",\n      \"qa_standalone_comprehensibility\": \"PASS\",\n      \"qa_not_over_minimized\": \"PASS\",\n      \"qa_context_sufficiency\": \"PASS\",\n      \"qa_core_meaning_preserved\": \"PASS\",\n      \"qa_no_semantic_role_loss\": \"PASS\",\n      \"qa_person_reference_generalized\": \"PASS\"\n    }\n  ]\n}"
+ }
+]
