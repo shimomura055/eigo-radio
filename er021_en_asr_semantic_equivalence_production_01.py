@@ -287,6 +287,10 @@ def _consume_number_word_run(words: list[str], i: int):
         return None
     value = Fraction(int_value)
     k = j
+    # OPEN-F-1(委任_02 H): TTS入力の数字化後の『十の位の語 + 1桁数字』(`thirty 5`)は1つの合成数(35)として読む(er006 `_convert_cardinal_words`と同じ規則)。
+    if integer_words[-1] in _TENS and k < n and re.fullmatch(r"[1-9]", words[k]):
+        value += int(words[k])
+        k += 1
     if k < n and words[k].lower() == "point":
         k2 = k + 1
         frac_digits = []

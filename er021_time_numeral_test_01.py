@@ -71,8 +71,9 @@ _add("NEG", "At ten thirty", "At 10:13", "NE")
 _add("NEG", "At ten thirty", "At 11:30", "NE")
 _add("NEG", "Chapter eleven fifty is long", "Chapter 1150 is long", "NE")
 _add("NEG", "Magna Carta in twelve fifteen", "Magna Carta in 1215", "NE")
-# F-1由来の既知残存(PIN): thirty 5 を分類層が30 5と読む
-_add("F-1", "At 10 thirty 5", "At 10:35", ("PIN", False), note="F-1由来で残存(OPEN新規)")
+# F-1(別commit=委任_02 H): thirty 5 を合成数35として読む修正後はEQ(修正前は分類層が30 5と読んでPIN=NG。TEST_MATRIX_02は修正前のPINで記録)
+_add("F-1", "At 10 thirty 5", "At 10:35", "EQ", note="F-1修正後(commit 2)でEQ")
+_add("F-1", "At 12 forty 5", "At 12:45", "EQ", note="F-1修正後でEQ")
 
 
 def judge_primary(canon: str, asr: str, role: str = "FULL_STORY"):
