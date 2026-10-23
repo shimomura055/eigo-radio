@@ -1,0 +1,309 @@
+== arm別 rate ==
+new25   a1gE0: n=50 PASS(両Judge)=40/50 (80%) PASS(sonnet)=42/50 (84%) PASS(sol)=43/50 (86%) sense_ok両=48/50 (96%) core両=42/50 (84%) single両=46/50 (92%) avg_words=9.3
+new25   a1gE3: n=50 PASS(両Judge)=40/50 (80%) PASS(sonnet)=42/50 (84%) PASS(sol)=47/50 (94%) sense_ok両=47/50 (94%) core両=47/50 (94%) single両=46/50 (92%) avg_words=8.4
+hard14  a1gE0: n=42 PASS(両Judge)=26/42 (62%) PASS(sonnet)=28/42 (67%) PASS(sol)=37/42 (88%) sense_ok両=40/42 (95%) core両=33/42 (79%) single両=36/42 (86%) avg_words=9.8
+hard14  a1gE3: n=42 PASS(両Judge)=27/42 (64%) PASS(sonnet)=30/42 (71%) PASS(sol)=35/42 (83%) sense_ok両=38/42 (90%) core両=35/42 (83%) single両=36/42 (86%) avg_words=8.8
+ALL     a1gE0: n=92 PASS(両Judge)=66/92 (72%) PASS(sonnet)=70/92 (76%) PASS(sol)=80/92 (87%) sense_ok両=88/92 (96%) core両=75/92 (82%) single両=82/92 (89%) avg_words=9.5
+ALL     a1gE3: n=92 PASS(両Judge)=67/92 (73%) PASS(sonnet)=72/92 (78%) PASS(sol)=82/92 (89%) sense_ok両=85/92 (92%) core両=82/92 (89%) single両=82/92 (89%) avg_words=8.6
+new25 {'改善': 5, '維持': 13, '判断分かれ': 2, '悪化': 5} n_kp 25
+hard14 {'維持': 9, '判断分かれ': 1, '改善': 2, '悪化': 1} n_kp 13
+ALL {'改善': 7, '維持': 22, '判断分かれ': 3, '悪化': 6} n_kp 38
+== 詳細 ==
+
+[hard14] shine a light on => 判断分かれ E0pass=1/3 E3pass=0/3 sense E0=3/3 E3=3/3 (dSon=0.33,dSol=-0.67)
+  SENT: A prize that is supposed to choose works also shines a light on the values of the people doing the choosing
+  E0 r1 son=111 sol=110 | to help people notice or understand something  ##sol:気づくことと理解を併記
+  E0 r2 son=101 sol=111 | to help people understand something more clearly, especially something that is not well known  ##son:not well known限定
+  E0 r3 son=111 sol=111 | to draw attention to something so people notice or understand it
+  E3 r1 son=111 sol=110 | to make people notice or understand something  ##sol:注目と理解の二義を併記
+  E3 r2 son=111 sol=110 | to make something easier to see or understand  ##sol:見えることと理解を併記
+  E3 r3 son=111 sol=110 | to make people notice or understand something  ##sol:注目と理解の二義を併記
+
+[hard14] pull someone under => 悪化 E0pass=1/3 E3pass=0/3 sense E0=3/3 E3=3/3 (dSon=-0.33,dSol=-0.67)
+  SENT: The current pulled him under
+  E0 r1 son=101 sol=111 | to drag someone below the surface of the water  ##son:水の限定
+  E0 r2 son=111 sol=111 | to drag someone down beneath a surface
+  E0 r3 son=101 sol=111 | to drag someone below the surface of the water  ##son:水の限定
+  E3 r1 son=101 sol=101 | to pull someone below the surface of the water  ##son:水面限定が話題由来  ##sol:水中という本文由来の限定
+  E3 r2 son=101 sol=101 | to pull someone below the surface of the water  ##son:水面限定が話題由来  ##sol:水中という本文由来の限定
+  E3 r3 son=101 sol=111 | to drag someone below the surface of water  ##son:水の限定
+
+[hard14] draw a line => 改善 E0pass=0/3 E3pass=2/3 sense E0=3/3 E3=3/3 (dSon=0.33,dSol=0.67)
+  SENT: The words draw that line simply
+  E0 r1 son=101 sol=101 | to set a clear limit on what is acceptable  ##son:acceptableに限定  ##sol:許容範囲への限定がある
+  E0 r2 son=111 sol=110 | to set a limit or make a clear distinction  ##sol:限度設定と区別を併記
+  E0 r3 son=101 sol=101 | to set a limit on what is acceptable  ##son:acceptableに限定  ##sol:許容範囲への限定がある
+  E3 r1 son=111 sol=111 | to make a clear distinction between two things
+  E3 r2 son=111 sol=111 | to show where one thing ends and another begins
+  E3 r3 son=110 sol=110 | to set a limit or show a clear difference  ##son:or/併記  ##sol:制限設定と区別の二義を併記
+
+[hard14] rise above the other voices => 改善 E0pass=1/3 E3pass=2/3 sense E0=3/3 E3=3/3 (dSon=0.33,dSol=0.0)
+  SENT: At the wedding, his sister's laughter rose above the other voices
+  E0 r1 son=110 sol=111 | to be heard more clearly or loudly than the other voices  ##son:clearlyかloudlyの併記
+  E0 r2 son=111 sol=111 | to be heard more clearly or loudly than the other people speaking
+  E0 r3 son=110 sol=111 | to be heard more clearly or loudly than the other voices  ##son:clearlyかloudlyの併記
+  E3 r1 son=111 sol=111 | to be heard more loudly than other voices
+  E3 r2 son=110 sol=111 | to be heard more clearly or loudly than the other voices  ##son:clearlyかloudlyの併記
+  E3 r3 son=111 sol=111 | to be louder and easier to hear than other voices  ##son:声に限定(話題由来)
+
+[hard14] Carry the Load => 維持 E0pass=1/3 E3pass=1/3 sense E0=3/3 E3=1/3 (dSon=0.0,dSol=0.0)
+  SENT: Bags Split the Job: Mini Bags Draw the Eye, Large Bags Carry the Load
+  E0 r1 son=101 sol=111 | to carry the things or weight that need to be moved  ##son:運ぶ物の説明が循環的
+  E0 r2 son=110 sol=110 | to carry something that needs moving or take on a large part of a task  ##son:運ぶ/任務担う併記  ##sol:文字通りと比喩の二義を併記
+  E0 r3 son=111 sol=111 | To hold and transport the things that need to be carried.
+  E3 r1 son=011 sol=101 | to carry the things someone needs to take with them  ##son:説明が文意とずれる  ##sol:携行する必要という限定を追加
+  E3 r2 son=111 sol=111 | to carry the things that need to be moved
+  E3 r3 son=011 sol=111 | to carry the things that need to be taken somewhere  ##son:文脈の荷物限定で意味ずれ
+
+[hard14] brace yourself for => 維持 E0pass=1/3 E3pass=1/3 sense E0=3/3 E3=3/3 (dSon=0.0,dSol=0.0)
+  SENT: It may be too early to brace yourself for "At last, it's time to compete over AI's writing skills
+  E0 r1 son=101 sol=111 | to prepare yourself for something difficult or unpleasant  ##son:「困難」限定でなく二義
+  E0 r2 son=111 sol=111 | to prepare yourself for something that may be difficult or surprising
+  E0 r3 son=101 sol=111 | to prepare yourself for something difficult or unpleasant  ##son:「困難」限定でなく二義
+  E3 r1 son=111 sol=111 | to prepare yourself mentally for something difficult or unpleasant
+  E3 r2 son=101 sol=111 | to prepare yourself for something difficult or unpleasant  ##son:「困難」限定でなく二義
+  E3 r3 son=101 sol=111 | to prepare yourself for something difficult or unpleasant  ##son:「困難」限定でなく二義
+
+[hard14] earn such trust => 維持 E0pass=3/3 E3pass=3/3 sense E0=3/3 E3=3/3 (dSon=0.0,dSol=0.0)
+  SENT: Then, more quietly, he asked, "How does a man earn such trust
+  E0 r1 son=111 sol=111 | to behave in a way that makes people trust you so much
+  E0 r2 son=111 sol=111 | to act in a way that makes people trust you that much
+  E0 r3 son=111 sol=111 | to gain this kind of confidence and belief from others
+  E3 r1 son=111 sol=111 | to do things that make someone trust you
+  E3 r2 son=111 sol=111 | to gain someone's belief that you can be relied on
+  E3 r3 son=111 sol=111 | to make someone trust you through your actions
+
+[hard14] fire the starting gun => 維持 E0pass=3/3 E3pass=3/3 sense E0=3/3 E3=3/3 (dSon=0.0,dSol=0.0)
+  SENT: A big name's words can fire the starting gun, or give people a reason to stop
+  E0 r1 son=111 sol=111 | to cause an activity or process to begin
+  E0 r2 son=111 sol=111 | to cause an activity or process to begin
+  E0 r3 son=111 sol=111 | to cause an activity or process to begin
+  E3 r1 son=111 sol=111 | to cause an activity or process to begin
+  E3 r2 son=111 sol=111 | to cause an activity or process to begin
+  E3 r3 son=111 sol=111 | to cause something to begin
+
+[hard14] go out of one's way => 維持 E0pass=3/3 E3pass=3/3 sense E0=3/3 E3=3/3 (dSon=0.0,dSol=0.0)
+  SENT: Why did they go out of their way to create this kind of entrance
+  E0 r1 son=111 sol=111 | to make a special effort to do something
+  E0 r2 son=111 sol=111 | to make a special effort to do something
+  E0 r3 son=111 sol=111 | to make a special effort to do something
+  E3 r1 son=111 sol=111 | to make a special effort to do something
+  E3 r2 son=111 sol=111 | to make a special effort to do something
+  E3 r3 son=111 sol=111 | to make a special effort to do something
+
+[hard14] hold out one's hands => 維持 E0pass=2/3 E3pass=2/3 sense E0=3/3 E3=3/3 (dSon=0.0,dSol=0.0)
+  SENT: Melos turned to his friend, but before he could speak, his friend held out his hands for the chains
+  E0 r1 son=111 sol=111 | to extend your hands in front of you or toward someone
+  E0 r2 son=110 sol=111 | to extend both hands in front of oneself or toward someone  ##son:両手/誰かへの二義
+  E0 r3 son=111 sol=111 | to extend one's hands toward someone or something
+  E3 r1 son=111 sol=111 | to extend your hands away from your body
+  E3 r2 son=111 sol=111 | to stretch one's hands out in front of oneself
+  E3 r3 son=100 sol=111 | to extend one's hands in front of oneself  ##son:一般的説明だが文脈の意味を欠く(鎖を受けるため)
+
+[hard14] reach for someone's wallet => 維持 E0pass=1/3 E3pass=1/3 sense E0=1/3 E3=1/3 (dSon=0.0,dSol=0.0)
+  SENT: That's enough to make you reach for your wallet before the volume button
+  E0 r1 son=011 sol=111 | to get ready to take out money to pay for something  ##son:財布を出す準備と限定
+  E0 r2 son=111 sol=111 | to get ready to spend money
+  E0 r3 son=001 sol=111 | to be ready to pay for something  ##son:支払い限定・意味弱い
+  E3 r1 son=111 sol=111 | to get ready to pay for something
+  E3 r2 son=011 sol=111 | to get ready to spend money on something  ##son:支払い準備に限定
+  E3 r3 son=011 sol=111 | to get ready to spend money on something  ##son:支払い準備に限定
+
+[hard14] sentence someone to death => 維持 E0pass=6/6 E3pass=6/6 sense E0=6/6 E3=6/6 (dSon=0.0,dSol=0.0)
+  SENT: Then the guards seized the young shepherd, and the ruler sentenced him to death
+  E0 r1 son=111 sol=111 | to officially order that someone be killed as a punishment
+  E0 r1 son=111 sol=111 | to officially decide that someone must be killed as a punishment
+  E0 r2 son=111 sol=111 | to officially decide that someone must be killed as a punishment
+  E0 r2 son=111 sol=111 | to officially decide that someone must be killed as punishment
+  E0 r3 son=111 sol=111 | to officially decide that someone must be killed as a punishment
+  E0 r3 son=111 sol=111 | to officially order that someone be killed as a punishment
+  E3 r1 son=111 sol=111 | to officially order that someone be killed as a punishment
+  E3 r1 son=111 sol=111 | to officially decide that someone must be killed as a punishment
+  E3 r2 son=111 sol=111 | to officially order that someone be killed as a punishment
+  E3 r2 son=111 sol=111 | to officially order that someone be killed as a punishment
+  E3 r3 son=111 sol=111 | to officially decide that someone must be killed as a punishment
+  E3 r3 son=111 sol=111 | to officially order that someone be killed as a punishment
+
+[hard14] turned on its head => 維持 E0pass=3/3 E3pass=3/3 sense E0=3/3 E3=3/3 (dSon=0.0,dSol=0.0)
+  SENT: But in talks about bringing Tesla and SpaceX together, that hope may be turned on its head
+  E0 r1 son=111 sol=111 | to be completely changed, often in a way that is unexpected
+  E0 r2 son=111 sol=111 | to change something completely, often in the opposite way
+  E0 r3 son=111 sol=111 | to change a situation completely, often in an unexpected way
+  E3 r1 son=111 sol=111 | to completely change an idea or situation, often into its opposite
+  E3 r2 son=111 sol=111 | to change something completely, often making it the opposite of what was expected
+  E3 r3 son=111 sol=111 | to change something completely, often in an unexpected way
+
+[new25] refueling support => 判断分かれ E0pass=0/2 E3pass=0/2 sense E0=2/2 E3=2/2 (dSon=0.5,dSol=-0.5)
+  SENT: Britain also said it would extend refueling support for Saudi air-defense operations
+  E0 r1 son=101 sol=101 | Help that provides fuel so vehicles can continue traveling.  ##son:vehiclesに限定  ##sol:移動継続という目的は不要
+  E0 r2 son=101 sol=111 | help with supplying fuel so vehicles can keep operating.  ##son:燃料補給という本文の対象を含む
+  E3 r1 son=101 sol=101 | help by providing fuel to aircraft while they are flying  ##son:航空機・飛行中に限定  ##sol:飛行中の航空機に限定している
+  E3 r2 son=111 sol=101 | help that provides fuel to aircraft while they are flying  ##sol:飛行中の航空機に限定
+
+[new25] shock someone's wallet => 判断分かれ E0pass=1/2 E3pass=0/2 sense E0=2/2 E3=2/2 (dSon=-0.5,dSol=0.5)
+  SENT: Before you buy something to wake you up, the price shocks your wallet awake
+  E0 r1 son=111 sol=111 | to cost someone much more than they expect
+  E0 r2 son=100 sol=110 | to make someone surprised or worried because something costs a lot  ##son:値段・worried併記  ##sol:驚きと心配の二義を併記
+  E3 r1 son=110 sol=111 | to surprise someone because something costs a lot  ##son:値段限定が表現外
+  E3 r2 son=110 sol=111 | to surprise someone because something costs a lot  ##son:値段限定が表現外
+
+[new25] bring in => 悪化 E0pass=2/2 E3pass=1/2 sense E0=2/2 E3=1/2 (dSon=0.0,dSol=-0.5)
+  SENT: Of course, you can't bring in just anything you like
+  E0 r1 son=111 sol=111 | to introduce or include something in a place, group, or situation
+  E0 r2 son=111 sol=111 | to introduce or add something to a place or situation
+  E3 r1 son=111 sol=111 | to add or use something as part of something else
+  E3 r2 son=111 sol=011 | to introduce or start using something  ##sol:本文では持ち込む意味
+
+[new25] hold on => 悪化 E0pass=2/2 E3pass=1/2 sense E0=2/2 E3=1/2 (dSon=-0.5,dSol=0.0)
+  SENT: But hold on before reaching that conclusion
+  E0 r1 son=111 sol=111 | to wait briefly before doing or deciding something
+  E0 r2 son=111 sol=111 | to pause and wait before doing or deciding something
+  E3 r1 son=111 sol=111 | to wait or pause before doing something
+  E3 r2 son=011 sol=111 | to wait for a short time  ##son:一時的な待機でなく一時停止
+
+[new25] in the spotlight => 悪化 E0pass=2/2 E3pass=1/2 sense E0=2/2 E3=2/2 (dSon=-0.5,dSol=0.0)
+  SENT: The person in the spotlight is none other than you
+  E0 r1 son=111 sol=111 | getting a lot of attention from other people
+  E0 r2 son=111 sol=111 | getting a lot of attention from other people
+  E3 r1 son=110 sol=111 | to be receiving a lot of attention  ##son:受動的で「注目を浴びる」意味。場面限定なし?
+  E3 r2 son=111 sol=111 | receiving a lot of attention
+
+[new25] letter of introduction => 悪化 E0pass=2/2 E3pass=1/2 sense E0=2/2 E3=1/2 (dSon=-0.5,dSol=0.0)
+  SENT: He turned his letter of introduction between his fingers
+  E0 r1 son=111 sol=111 | a letter that presents someone to another person and explains who they are
+  E0 r2 son=111 sol=111 | a letter that presents someone to another person and explains who they are
+  E3 r1 son=111 sol=111 | a letter that presents someone to another person
+  E3 r2 son=011 sol=111 | a letter that tells someone who another person is  ##son:本文の意味とずれる(紹介状は身元保証)
+
+[new25] small positive link => 悪化 E0pass=2/2 E3pass=1/2 sense E0=2/2 E3=2/2 (dSon=-0.5,dSol=0.0)
+  SENT: There was a small positive link between changes in a person's income and later changes in their diligence
+  E0 r1 son=111 sol=111 | a weak connection in which two things tend to change in the same direction
+  E0 r2 son=111 sol=111 | a slight connection in which two things tend to change in the same direction
+  E3 r1 son=111 sol=111 | a weak connection in which two things tend to change in the same direction
+  E3 r2 son=101 sol=111 | a slight connection between two things that tend to change in the same direction  ##son:同方向に変化と限定
+
+[new25] abandon => 改善 E0pass=1/2 E3pass=2/2 sense E0=2/2 E3=2/2 (dSon=0.5,dSol=0.0)
+  SENT: “I nearly abandoned you,” he whispered.
+  E0 r1 son=111 sol=111 | to leave someone or something and stop giving them support or care
+  E0 r2 son=100 sol=111 | to leave someone and stop helping or caring for them  ##son:helping/caring限定
+  E3 r1 son=111 sol=111 | to leave someone and stop being with them
+  E3 r2 son=111 sol=111 | to leave someone and stop helping or supporting them
+
+[new25] apply one's findings => 改善 E0pass=0/2 E3pass=2/2 sense E0=2/2 E3=2/2 (dSon=1.0,dSol=1.0)
+  SENT: We can't apply its findings directly to everyday meanness or boredom that lasts a long time
+  E0 r1 son=100 sol=101 | to use the results of research in another situation  ##son:研究結果に限定  ##sol:研究結果と別場面に限定
+  E0 r2 son=101 sol=101 | to use what someone has learned from research in another situation  ##son:研究由来に限定  ##sol:別の状況という限定は不要
+  E3 r1 son=111 sol=111 | to use what someone has learned or discovered in a particular situation
+  E3 r2 son=111 sol=111 | to use what one has learned in a particular situation
+
+[new25] execution bell => 改善 E0pass=1/2 E3pass=2/2 sense E0=2/2 E3=2/2 (dSon=0.5,dSol=0.5)
+  SENT: At the city gates, the execution bell rang.
+  E0 r1 son=110 sol=101 | a bell used to signal that an execution is about to take place  ##son:用途が表現そのもの  ##sol:執行直前という限定を追加
+  E0 r2 son=111 sol=111 | a bell that signals that an execution is about to happen
+  E3 r1 son=111 sol=111 | a bell that signals an execution
+  E3 r2 son=111 sol=111 | a bell that signals that an execution is about to happen
+
+[new25] leap into action => 改善 E0pass=1/2 E3pass=2/2 sense E0=2/2 E3=2/2 (dSon=0.0,dSol=0.5)
+  SENT: At this point, the marketing team might be ready to leap into action, but hold on
+  E0 r1 son=111 sol=111 | to start doing something quickly and energetically
+  E0 r2 son=111 sol=101 | to start doing something quickly when action is needed  ##sol:行動が必要との条件は不要
+  E3 r1 son=111 sol=111 | to start doing something immediately
+  E3 r2 son=111 sol=111 | to start doing something quickly and energetically
+
+[new25] take the wheel => 改善 E0pass=1/2 E3pass=2/2 sense E0=1/2 E3=2/2 (dSon=0.0,dSol=0.5)
+  SENT: Not taking the wheel is different from not supporting the journey
+  E0 r1 son=111 sol=111 | To take control of what happens or how an activity is directed.
+  E0 r2 son=111 sol=011 | to take control of a vehicle by becoming the person who drives it.  ##sol:本文の比喩的意味と不一致
+  E3 r1 son=111 sol=111 | to take control of something, like a driver taking control of a vehicle
+  E3 r2 son=111 sol=111 | to take control and direct what happens
+
+[new25] all the same kind => 維持 E0pass=2/2 E3pass=2/2 sense E0=2/2 E3=2/2 (dSon=0.0,dSol=0.0)
+  SENT: Even though both are put in the same box marked "British support," they are not all the same kind of activity
+  E0 r1 son=111 sol=111 | All belonging to the same type.
+  E0 r2 son=111 sol=111 | having the same type or nature as one another.
+  E3 r1 son=111 sol=111 | all belonging to one type or category
+  E3 r2 son=111 sol=111 | all belonging to the same type
+
+[new25] at a moment's notice => 維持 E0pass=1/2 E3pass=1/2 sense E0=1/2 E3=2/2 (dSon=0.0,dSol=0.0)
+  SENT: Inventing convincing stories at a moment's notice was Vera's speciality
+  E0 r1 son=111 sol=111 | with almost no warning or time to prepare
+  E0 r2 son=011 sol=111 | to be ready to act immediately, without advance warning  ##son:準備状態の説明で不正確
+  E3 r1 son=110 sol=111 | to do something immediately, with little or no time to prepare  ##son:doと即時が限定?
+  E3 r2 son=111 sol=111 | with very little warning or time to prepare
+
+[new25] behind price increases => 維持 E0pass=2/2 E3pass=2/2 sense E0=2/2 E3=2/2 (dSon=0.0,dSol=0.0)
+  SENT: One cafe operator in Chicago said that the cost of cups and labor, as well as the cost of buying beans, had been behind price increases
+  E0 r1 son=111 sol=111 | to be one of the reasons that prices go up
+  E0 r2 son=111 sol=111 | helping to cause prices to go up
+  E3 r1 son=111 sol=111 | to be one of the reasons that prices go up
+  E3 r2 son=111 sol=111 | to be one of the causes of something
+
+[new25] come first => 維持 E0pass=2/2 E3pass=2/2 sense E0=2/2 E3=2/2 (dSon=0.0,dSol=0.0)
+  SENT: Came first" and "was the cause" are two different things
+  E0 r1 son=111 sol=111 | to happen before something else
+  E0 r2 son=111 sol=111 | to happen before something else
+  E3 r1 son=111 sol=111 | to happen before something else
+  E3 r2 son=111 sol=111 | to happen before something else
+
+[new25] former self => 維持 E0pass=2/2 E3pass=2/2 sense E0=2/2 E3=2/2 (dSon=0.0,dSol=0.0)
+  SENT: The Main Character Turned Out to Be Your Former Self
+  E0 r1 son=111 sol=111 | the person you were at an earlier time
+  E0 r2 son=111 sol=111 | the person you were in the past
+  E3 r1 son=111 sol=111 | the person you were in the past
+  E3 r2 son=111 sol=111 | the person you were at an earlier time
+
+[new25] jump to conclusions => 維持 E0pass=2/2 E3pass=2/2 sense E0=2/2 E3=2/2 (dSon=0.0,dSol=0.0)
+  SENT: No, that would be jumping to conclusions too
+  E0 r1 son=111 sol=111 | to decide what is true before you have enough information
+  E0 r2 son=111 sol=111 | to decide what is true before you have enough information
+  E3 r1 son=111 sol=111 | to decide something is true too quickly, without enough information
+  E3 r2 son=111 sol=111 | to decide something is true before you have enough information
+
+[new25] mix up => 維持 E0pass=2/2 E3pass=2/2 sense E0=2/2 E3=2/2 (dSon=0.0,dSol=0.0)
+  SENT: A Warning About Mixing Up the Subject of British Support
+  E0 r1 son=111 sol=111 | To mistake one thing for another.
+  E0 r2 son=111 sol=111 | to mistake one thing for another.
+  E3 r1 son=111 sol=111 | to mistake one person or thing for another
+  E3 r2 son=111 sol=111 | to confuse one thing with another
+
+[new25] off the hook => 維持 E0pass=2/2 E3pass=2/2 sense E0=2/2 E3=2/2 (dSon=0.0,dSol=0.0)
+  SENT: So, are tariffs off the hook
+  E0 r1 son=111 sol=111 | to avoid being held responsible for something
+  E0 r2 son=111 sol=111 | to avoid being held responsible for something
+  E3 r1 son=111 sol=111 | to avoid being held responsible for something
+  E3 r2 son=111 sol=111 | to avoid being blamed or punished for something
+
+[new25] play a part => 維持 E0pass=2/2 E3pass=2/2 sense E0=2/2 E3=2/2 (dSon=0.0,dSol=0.0)
+  SENT: Something else may have played a part in both
+  E0 r1 son=111 sol=111 | to have some influence on something or help cause it
+  E0 r2 son=111 sol=111 | to have some effect or influence
+  E3 r1 son=111 sol=111 | to have an effect on something
+  E3 r2 son=111 sol=111 | to have some influence on something
+
+[new25] take turns => 維持 E0pass=2/2 E3pass=2/2 sense E0=2/2 E3=2/2 (dSon=0.0,dSol=0.0)
+  SENT: He said they took turns
+  E0 r1 son=111 sol=111 | to do something one after another, sharing the chance to do it
+  E0 r2 son=111 sol=111 | to do something one after another, with each person having a chance
+  E3 r1 son=111 sol=111 | to do something one after another, with each person having a chance
+  E3 r2 son=111 sol=111 | to do something one after another, with each person having a chance
+
+[new25] think up => 維持 E0pass=2/2 E3pass=2/2 sense E0=2/2 E3=2/2 (dSon=0.0,dSol=0.0)
+  SENT: The time spent waiting for what happens next may become time spent thinking up what happens next
+  E0 r1 son=111 sol=111 | to create an idea or plan in your mind
+  E0 r2 son=111 sol=111 | to create an idea or plan in your mind
+  E3 r1 son=111 sol=111 | to create an idea or plan in your mind
+  E3 r2 son=111 sol=111 | to create an idea or plan in your mind
+
+[new25] time lag => 維持 E0pass=2/2 E3pass=2/2 sense E0=2/2 E3=2/2 (dSon=0.0,dSol=0.0)
+  SENT: When you see a price tag that makes you want to say, "Haven't you heard the news?", it seems there is a time lag
+  E0 r1 son=111 sol=111 | a delay between one event and another
+  E0 r2 son=111 sol=111 | a delay between one event and another
+  E3 r1 son=111 sol=111 | a period of time between two related events
+  E3 r2 son=111 sol=111 | a delay between one event or change and another
+
+[new25] turn out => 維持 E0pass=2/2 E3pass=2/2 sense E0=2/2 E3=2/2 (dSon=0.0,dSol=0.0)
+  SENT: The Main Character Turned Out to Be Your Former Self
+  E0 r1 son=111 sol=111 | to be found or shown to be true in the end
+  E0 r2 son=111 sol=111 | to be found to be something after all
+  E3 r1 son=111 sol=111 | to be found to be something after all
+  E3 r2 son=111 sol=111 | to be found to be something in the end
