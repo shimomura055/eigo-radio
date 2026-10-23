@@ -3216,15 +3216,15 @@
       }
     },
     "full_story_part2_c8": {
-      "status": "STOPPED",
+      "status": "OK",
       "path": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/a2/narration/full_story_part2_c8.wav",
-      "sha256": "0f8cfe8dfe1fbc7937fdb962b9a6b9ccbf767afc6860a9c8a035d4900ce4258f",
+      "sha256": "2d0c0f1de4a3d1a8046cc3cbb0cd50e6bf60fa87cf51a64e76bf67a07b39c3d4",
       "canonical_text": "The officer continued down the street. Bob leaned back in the doorway, listening for footsteps. He checked his watch, then put it away. After such a long journey, a few minutes hardly mattered. At ten thirty, a tall man in a long overcoat hurried towards Bob.",
       "text": "The officer continued down the street. Bob leaned back in the doorway, listening for footsteps. He checked his watch, then put it away. After such a long journey, a few minutes hardly mattered. At ten thirty, a tall man in a long overcoat hurried towards Bob.",
       "disfluency_checked": false,
-      "asr_text": null,
-      "slowdown_applied": null,
-      "z_adoption": "failed",
+      "asr_text": "The officer continued down the street. Bob leaned back in the doorway, listening for footsteps. He checked his watch, then put it away. After such a long journey, a few minutes hardly mattered. At 10:30, a tall man in a long overcoat hurried towards Bob.",
+      "slowdown_applied": true,
+      "z_adoption": "adopted",
       "segment_id": "full_story_part2_c8",
       "narration_path": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/a2/narration/full_story_part2_c8.wav",
       "role": "FULL_STORY",
@@ -3241,14 +3241,8 @@
         "instruction_label": "PD06",
         "style_prefix_sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
         "effective_style_prefix_sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
-        "fallback_used": true,
-        "fallback_attempts": [
-          {
-            "instruction_label": "FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]",
-            "style_prefix_sha256": "dba23e664f387c6641f9dd003cf4571f78af87613c68536ddbb5f1e52cad964b",
-            "style_prefix_head": "natural, clear, conversational"
-          }
-        ]
+        "fallback_used": false,
+        "fallback_attempts": []
       },
       "reuse_key": {
         "canonical_text_sha256": "4e9bff992795700ccec41d2a6127ee19e267074ae4b5801fdcac2cae44ec79c7",
@@ -3257,14 +3251,14 @@
         "style_prefix_sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
         "tts_backend": "speech_metadata_flash_lite"
       },
-      "slowdown_ratio": null,
+      "slowdown_ratio": 1.0598,
       "speed_profile": {
         "version": "z_speed_v2",
         "profile": "std_narrator_slow6",
-        "applied": false,
-        "tempo": null,
-        "slowdown_pct_target": null,
-        "original_sha256": null,
+        "applied": true,
+        "tempo": 0.943396,
+        "slowdown_pct_target": 6.0,
+        "original_sha256": "3daeb325b036b5e555759c980eb873216a082c5b5400dd42bf773cea423d5969",
         "source": "generated"
       },
       "attempts": [
@@ -3278,51 +3272,99 @@
           "tts_model_id": "gemini-3.8-flash-lite-tts",
           "voice": "Aoede",
           "audio_classification": "NORMALIZED_MATCH",
-          "verified": false,
-          "asr_text": "The officer continued down the street. Bob leaned back in the doorway, listening for footsteps. He checked his watch, then put it away. After such a long journey, a few minutes hardly mattered. At 10:30, a tall man in a long overcoat hurried towards Bob."
-        },
-        {
-          "phase": "standard",
-          "attempt": 2,
-          "instruction_type": null,
-          "instruction_label": null,
-          "style_prefix_sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
-          "style_prefix_head": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible.",
-          "tts_model_id": "gemini-3.8-flash-lite-tts",
-          "voice": "Aoede",
-          "audio_classification": "NORMALIZED_MATCH",
-          "verified": false,
-          "asr_text": "The officer continued down the street. Bob leaned back in the doorway, listening for footsteps. He checked his watch, then put it away. After such a long journey, a few minutes hardly mattered. At 10:30, a tall man in a long overcoat hurried towards Bob."
-        },
-        {
-          "phase": "fallback",
-          "attempt": 1,
-          "instruction_type": null,
-          "instruction_label": "FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]",
-          "style_prefix_sha256": "dba23e664f387c6641f9dd003cf4571f78af87613c68536ddbb5f1e52cad964b",
-          "style_prefix_head": "natural, clear, conversational",
-          "tts_model_id": "gemini-3.8-flash-lite-tts",
-          "voice": "Aoede",
-          "audio_classification": "NORMALIZED_MATCH",
-          "verified": false,
+          "verified": true,
           "asr_text": "The officer continued down the street. Bob leaned back in the doorway, listening for footsteps. He checked his watch, then put it away. After such a long journey, a few minutes hardly mattered. At 10:30, a tall man in a long overcoat hurried towards Bob."
         }
       ],
-      "cooldown_occurred": true,
-      "cooldown_events": [
-        {
-          "cooldown_requested_seconds": 600.0,
-          "cooldown_actual_seconds": 600.004,
-          "cooldown_started_at": "2026-10-23T22:47:25+09:00",
-          "cooldown_ended_at": "2026-10-23T22:57:25+09:00",
-          "attempt_before_cooldown": 2,
-          "attempt_after_cooldown": 3
-        }
-      ],
+      "cooldown_occurred": false,
+      "cooldown_events": [],
       "audio_text_deviation": null,
-      "tts_generations_used": 3,
-      "asr_judgement": null,
-      "duration_seconds": 15.79
+      "tts_generations_used": 1,
+      "asr_judgement": {
+        "state": "PASS",
+        "reason_code": "primary_pass",
+        "slot": 1,
+        "script_version": "v0",
+        "role": "FULL_STORY",
+        "lang": "en",
+        "segment_key": "full_story_part2_c8",
+        "audio_sha256": "2d0c0f1de4a3d1a8046cc3cbb0cd50e6bf60fa87cf51a64e76bf67a07b39c3d4",
+        "primary": {
+          "text": "The officer continued down the street. Bob leaned back in the doorway, listening for footsteps. He checked his watch, then put it away. After such a long journey, a few minutes hardly mattered. At 10:30, a tall man in a long overcoat hurried towards Bob.",
+          "passed": true,
+          "label": "NORMALIZED_MATCH",
+          "equivalence_basis": null,
+          "warning_labels": []
+        },
+        "secondary": {
+          "called": false,
+          "cached": false,
+          "engine": "azure",
+          "text": null,
+          "label": "",
+          "accepted": null,
+          "error": null,
+          "unavailable": false
+        },
+        "value_guard": {
+          "primary": {
+            "kind": "EQUAL",
+            "pairs": [
+              {
+                "src": "10 30",
+                "hyp": "1030",
+                "verdict": "EQUAL",
+                "reason": "clock_time_words_vs_digits"
+              }
+            ],
+            "reasons": [],
+            "warnings": []
+          }
+        },
+        "negation_guard": {
+          "primary": false
+        },
+        "final_gate": {
+          "applied": true,
+          "value_guard": "EQUAL",
+          "negation_diff": false
+        },
+        "warnings": [],
+        "exclusion_rule": null,
+        "cost": {
+          "azure_calls": 0,
+          "azure_seconds": null,
+          "est_jpy": 0.0
+        },
+        "timing": {
+          "total_ms": 0,
+          "secondary_ms": 0
+        },
+        "technical_stop": null,
+        "length": {
+          "applied": false,
+          "primary_len": null,
+          "secondary_len": null,
+          "max_len": null,
+          "adopted_from": "primary",
+          "adopted_ok": null,
+          "surface_len": null,
+          "primary_ok": null
+        },
+        "adapter": {
+          "layers": [],
+          "azure_real_calls": 0,
+          "cost_guard_triggered": false,
+          "language": "en-US",
+          "segment_id": "full_story_part2_c8",
+          "asr_text_present": true,
+          "cache": {
+            "calls": 0,
+            "hits": 0
+          }
+        }
+      },
+      "duration_seconds": 17.857
     },
     "full_story_part2_c9": {
       "status": "OK",
@@ -4941,6 +4983,125 @@
         }
       },
       "duration_seconds": 21.461
+    },
+    "welcome": {
+      "status": "OK",
+      "path": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/a2/narration/welcome.wav",
+      "sha256": "1d3e9a740fb2fa086b87a91e72517a43a6ff719f86f651d6365d2e7a7e94fdb5",
+      "canonical_text": null,
+      "disfluency_checked": true,
+      "reused": true,
+      "clip_kind": "shell",
+      "voice": "Charon",
+      "segment_id": "welcome",
+      "tts_backend": "existing_master",
+      "style": {
+        "instruction_label": "既存Master/共有Production資産(変更なし)",
+        "style_prefix_sha256": null,
+        "fallback_used": false
+      }
+    },
+    "preview_intro": {
+      "status": "OK",
+      "path": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/a2/narration/preview_intro.wav",
+      "sha256": "c12297e84758e3b9b572932cc3041a3b17f9da9a839f396ff52b24429e182d07",
+      "canonical_text": null,
+      "disfluency_checked": true,
+      "reused": true,
+      "clip_kind": "shell",
+      "voice": "Charon",
+      "segment_id": "preview_intro",
+      "tts_backend": "existing_master",
+      "style": {
+        "instruction_label": "既存Master/共有Production資産(変更なし)",
+        "style_prefix_sha256": null,
+        "fallback_used": false
+      }
+    },
+    "key_phrases_intro": {
+      "status": "OK",
+      "path": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/a2/narration/key_phrases_intro.wav",
+      "sha256": "840e75b60b21c9b813dfa466eb98982c9bd26e8aca727491b1a4fae8b3c549b7",
+      "canonical_text": null,
+      "disfluency_checked": true,
+      "reused": true,
+      "clip_kind": "shell",
+      "voice": "Charon",
+      "segment_id": "key_phrases_intro",
+      "tts_backend": "existing_master",
+      "style": {
+        "instruction_label": "既存Master/共有Production資産(変更なし)",
+        "style_prefix_sha256": null,
+        "fallback_used": false
+      }
+    },
+    "full_story_intro": {
+      "status": "OK",
+      "path": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/a2/narration/full_story_intro.wav",
+      "sha256": "c624a331fd17652e45d6ec887b00716212fd0cb15c4e555ce7e1c28236be1b0b",
+      "canonical_text": null,
+      "disfluency_checked": true,
+      "reused": true,
+      "clip_kind": "shell",
+      "voice": "Charon",
+      "segment_id": "full_story_intro",
+      "tts_backend": "existing_master",
+      "style": {
+        "instruction_label": "既存Master/共有Production資産(変更なし)",
+        "style_prefix_sha256": null,
+        "fallback_used": false
+      }
+    },
+    "kp1_number": {
+      "status": "OK",
+      "path": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/a2/narration/kp1_number.wav",
+      "sha256": "820234eb7b58011e5636d299c960e34cfdcdfc855382348e2726089662533e69",
+      "canonical_text": null,
+      "disfluency_checked": true,
+      "reused": true,
+      "clip_kind": "shell",
+      "voice": "Charon",
+      "segment_id": "kp1_number",
+      "tts_backend": "existing_master",
+      "style": {
+        "instruction_label": "既存Master/共有Production資産(変更なし)",
+        "style_prefix_sha256": null,
+        "fallback_used": false
+      }
+    },
+    "kp2_number": {
+      "status": "OK",
+      "path": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/a2/narration/kp2_number.wav",
+      "sha256": "0ab8554a1691c98134ba860421a9072abc1ccdf2180ce9be33d396cca2557a5e",
+      "canonical_text": null,
+      "disfluency_checked": true,
+      "reused": true,
+      "clip_kind": "shell",
+      "voice": "Charon",
+      "segment_id": "kp2_number",
+      "tts_backend": "existing_master",
+      "style": {
+        "instruction_label": "既存Master/共有Production資産(変更なし)",
+        "style_prefix_sha256": null,
+        "fallback_used": false
+      }
+    },
+    "kp3_number": {
+      "status": "OK",
+      "path": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/a2/narration/kp3_number.wav",
+      "sha256": "70a1070d29dd145611cdcec1d2c91bdcfcb6b05e95b5841c2eacfcab3d50555c",
+      "canonical_text": null,
+      "disfluency_checked": true,
+      "reused": true,
+      "clip_kind": "shell",
+      "voice": "Charon",
+      "segment_id": "kp3_number",
+      "tts_backend": "existing_master",
+      "style": {
+        "instruction_label": "既存Master/共有Production資産(変更なし)",
+        "style_prefix_sha256": null,
+        "fallback_used": false
+      }
     }
   },
   "key_phrases": {
