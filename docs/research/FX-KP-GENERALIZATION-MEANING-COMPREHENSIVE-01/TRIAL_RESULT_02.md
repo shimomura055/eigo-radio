@@ -4,7 +4,15 @@
 使用model: 生成=gpt-6-luna(本番と同じ)、Std比較=gpt-6.1-sol(最新世代、Production routingで既に承認済みのmodel)。Judge=claude-sonnet-5-5 と gpt-6.1-sol(いずれも評価用の最新世代、25節)。
 費用: **68.98円/上限70円**(luna gloss 5.37・Sol gloss 18.24・Adv生成+E2E 8.32・Judge Sonnet 31.63/Sol 5.40・repair 0.03)。累計55円到達時点(Judge段階)で完成見込み約67〜69円と再計算し、70円以内のため停止せず続行した(予算警告の条件=70円超過見込みに該当せず)。
 
-## 0. 結論(先頭)
+## 0-A. 【追記 2026-10-23 委任_08、OF-KPGM-BE-01】gold確定後の再集計(Opus盲検、OPUS_REVIEW_04)
+以下、本文の『Adv未達』『G3 96%/G0 85%』『矛盾2/20』等は**gold確定前のSonnet Judge基準**の記述であり、元記述は注記付きで残す。Fable確定gold(`TRIAL_02/GOLD_LABELS_FINAL_01.md`)に対するOpus盲検の再集計は次のとおり。
+- Adv難例(確定gold): E0@G0 59/60、E0@G2 22/22、E0@G3 22/22、E1 58/60、E1c 21/22、E4 21/22。KP単位の改善0/悪化0。**難例では全armほぼ上限で、Advの差はJudge雑音の範囲**。draw a lineのAdv『未達』(下記#2)はgold確定前Sonnet基準であり、確定gold盲検ではG3+E0@G3 3/3、G2+E0@G2 3/3。
+- Std(確定gold): G0 24/26、G2 26/26、G3 25〜26/26。Sonnetの『G2=85%』は過小評価(pump one's fist G2は問題なし)。
+- Std/Adv用法矛盾: G0+E0@G0 4件、G3+E0@G3 0件、G3+E4 0件(本文§3の『G3+E4 2/20』『G0 3/20』は確定gold前の数値)。
+- 結論更新: Adv Promptは現行E0維持、Std改善のみで対応(Fable判断)。E1/E1c/E4は新たな誤り(語義併記・weak link誤読・一般化しすぎ)を生むため不採用。
+- 注意: 盲検は部分的(OPUS_REVIEW_04 BE-09)。Sonnet Judgeの揺れ(apply one's findings)があるため、以後の最終判定は確定gold+Fable/Opus盲検を根拠とする。
+
+## 0. 結論(先頭)【以下はgold確定前のSonnet基準の記述。上の0-Aで再集計済み】
 
 1. **Std(日本語意味)は改善した。** 新規生成項目の目標を「英和辞典の定訳→対応する日本語慣用句→無ければ中心義を平易に」に変え、同一call内で2〜3案から選ばせる方式(G3、luna)で、`draw a line`は3回とも慣用義(区別をはっきりさせる/境界をはっきりさせる/一線を引く)。現行(G0)は「線を引く」2回(字義でNG)・「一線を引く」1回。難例20+通常6(n=26)でJudge合格率 G3=96%(25/26、CI 81-99) / G0=85%(22/26) / G2(用法先決め)=85%。KP単位flip G0→G3は改善3・悪化0・不変23。残る不合格はG3で1件(apply one's findings、「自分の」逐語)。
 2. **「モデルの判断力が律速」(DESIGN_03仮説)は支持されなかった。** 上位model(gpt-6.1-sol)のG0同条件は10/12でluna G0 9/12とほぼ同じで、luna G3(11/12)に及ばない。Solは1call 1.1〜1.6円(luna約0.09円の12〜18倍)で、**律速はmodelでなく生成目標の種類だった**。Sol化(+約1.9円/セット)は不要。→ OF-15の費用低減候補は『G3(lunaのまま、費用差ほぼ0)』が最良。
@@ -17,7 +25,7 @@
 | # | 項目 | 結果 | 判定 |
 |---|---|---|---|
 | 1 | `draw a line`のStd日本語 | G3: 区別をはっきりさせる/境界をはっきりさせる/一線を引く(3/3慣用義)。G2: 境界をはっきりさせる×2/はっきり区別する(3/3)。G0(現行): 線を引く/一線を引く/線を引く(字義NG 2/3)。Sol: G0-sol 線引きをする×2/境界をはっきりさせる、G2-sol 許される範囲をはっきりさせる/区別をはっきりさせる×2(3/3) | **達成(G3/G2)**。3回目の『一線を引く』は慣用義だがOpus指摘のとおり『許容の限界』含意が強い(Fable確定要) |
-| 2 | 同KPのAdv英語 | 3rep合格: E0@G0 1/3、E0@G2 3/3、E0@G3 1/3、E1 1/3、E1c 1/3、E4 2/3。失敗は『between what is acceptable and what is not』(core混入)と『a clear difference between two things』(語義が弱い)型 | **未達**(安定して満たすarmなし。E0@G2のみ3/3だがn=3でG2をStdに採るかは別判断) |
+| 2 | 同KPのAdv英語 | 3rep合格: E0@G0 1/3、E0@G2 3/3、E0@G3 1/3、E1 1/3、E1c 1/3、E4 2/3。失敗は『between what is acceptable and what is not』(core混入)と『a clear difference between two things』(語義が弱い)型 | **未達[gold確定前Sonnet基準。確定gold盲検ではG3+E0@G3 3/3、0-A参照]**(安定して満たすarmなし。E0@G2のみ3/3だがn=3でG2をStdに採るかは別判断) |
 | 3 | 他の慣用句・句動詞・一般表現 | 難例20(慣用句・句動詞・多語動詞句中心)+通常55。下記§2・REPRESENTATIVE_01 | 部分達成(Std改善、Advは差なし〜E4が微増) |
 | 4 | 既に正しい説明を壊さない | 通常KP55: E0@prod→E1 flip 改善2/悪化2、E1c 改善4/悪化8。通常30のPASS3はE0 80%→E4 87% | E1は壊さない、**E1cは壊す傾向**、E4は壊さない傾向 |
 | 5 | X/Z双方 | Std/Advともhard20にX16/Z4、通常にX40/Z15を含む。E2E KP説明段はX12+Z8バッチ | X/Zとも失敗は同種(固有人名を含むZの通常KPで悪化なし) |
