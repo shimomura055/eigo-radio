@@ -1,5 +1,7 @@
 # BUDGET_PLAN_01: Family Y Trial_03(委任_09B、案(d)+世界設定先行)の費用計画と実績追記
 
+> **[2026-10-24 注記 PM-FAMILY-Y-BUDGET-CONSOLIDATION-01]** 本書内の「Family Y累計上限(600円/650円等)」は作成当時の枠。同日ユーザー決定で撤廃済み(以後は日次1,000円で一元管理、PM_GOVERNANCE 7-9)。本書の委任単位上限(run単位Cap)は歴史的記録として維持。
+
 Status: DEV/Trial。Production変更0。作成=開始前(T-0)。各段階後に「実績追記」節へ累計を追記する。
 
 ## 前提(ユーザー原文 USER_04 §1/§5)

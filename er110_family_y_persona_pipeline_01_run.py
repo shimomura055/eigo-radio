@@ -44,6 +44,7 @@ THEMES = {
     },
 }
 TREE_CAP_JPY = 245.0       # 委任_14+15合算上限(Fable判断2026-10-24。予算ガード定数のみ変更、Prompt/閾値/選定ロジック無変更)
+# 注: これは委任_14+15のrun(tree)単位の歯止めであり『Family Y累計上限』ではない(Y累計上限は2026-10-24撤廃、日次1,000円で一元管理。PM_GOVERNANCE 7-9)。
 
 
 def tree_cost() -> float:
