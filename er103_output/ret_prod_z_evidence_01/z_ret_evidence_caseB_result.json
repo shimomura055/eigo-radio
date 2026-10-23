@@ -1,0 +1,106 @@
+{
+ "case": "B",
+ "evidence_class": "formal_Z_run_tts_stage+real_generator+TTS_primitive_replaced_by_stored_misread_wav+ledger_excluded_first_seen_simulation",
+ "level": "a2",
+ "kind": "dialogue",
+ "wav": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/a2/narration/attempts/full_story_part1_c14_attempt1_englishstyleprefixwidemargin.wav",
+ "seconds": 10.3,
+ "tts_stub_calls": 3,
+ "status": "STOPPED",
+ "asr_state": null,
+ "asr_reason": null,
+ "role_in_judgement": null,
+ "segment_key_in_judgement": null,
+ "pronunciation_alarm_eval": null,
+ "pronunciation_alarm": null,
+ "alarm_records": [],
+ "hr_stub_calls": [
+  {
+   "segment": null,
+   "reason": null
+  }
+ ],
+ "stage1_stub_calls": 1,
+ "entity_table_json": {
+  "schema": "ret_prod_01",
+  "status": "OK",
+  "builds": [
+   {
+    "at": "2026-10-23T19:16:53",
+    "calls": 2,
+    "status": "OK",
+    "uncovered": 1,
+    "usage": [
+     {
+      "in": 250,
+      "jpy_est": 0.00576,
+      "model": "gpt-6-luna",
+      "out": 22,
+      "prompt": "A",
+      "sec": 1.36
+     },
+     {
+      "in": 241,
+      "jpy_est": 0.00794,
+      "model": "gpt-6-luna",
+      "out": 51,
+      "prompt": "B",
+      "sec": 1.28
+     }
+    ]
+   }
+  ],
+  "n_covered": 1,
+  "entries": [
+   [
+    "Bertie",
+    "person",
+    "confirmed",
+    [
+     "llm_a",
+     "llm_b_agree"
+    ]
+   ]
+  ]
+ },
+ "operator_report_excerpt": "## 固有名詞発音アラーム(運営責任者向け・一般リスナー非表示)\n0件(固有名詞の発音不一致アラームなし)\n\n### 発音供給の適用一覧(TTS入力へ綴り置換した語。ASR比較は置換後の綴りが基準)\n0件(供給対象なし。A階層の自動供給対象/人承認済みB階層が無い、または該当語が本文に無い)\n\n### Human Review残(受理境界の外): ASR不確実のまま残ったsegment 0件 (うち固有名詞のみ不一致だが境界外=脱落/一般語化等 0件)\n\n注: 日本語音声の固有名詞読みはこのアラーム方針の対象外です(従来の検証・Human Reviewのまま)。\n\n### 実体表(固有名詞と認識した根拠。受理判定用。発音の根拠[Ledger/Perplexity調査]とは別)\n- 実体表: 1件(うち証拠として使用可 1件) / NER call=2 / model=gpt-6-luna / table_sha256=92b4d0f4330b\n- 実体表 person/confirmed: 1件\n",
+ "review_lock_state": "HUMAN_REVIEW_REQUIRED",
+ "attempt_judgements": [
+  {
+   "attempt": 1,
+   "state": "NG_BOTH",
+   "role": null,
+   "pae": {
+    "accepted": false,
+    "reason": "ROLE_NOT_APPLICABLE",
+    "detail": {
+     "role": null
+    }
+   }
+  },
+  {
+   "attempt": 2,
+   "state": "NG_BOTH",
+   "role": null,
+   "pae": {
+    "accepted": false,
+    "reason": "ROLE_NOT_APPLICABLE",
+    "detail": {
+     "role": null
+    }
+   }
+  },
+  {
+   "attempt": 3,
+   "state": "NG_BOTH",
+   "role": null,
+   "pae": {
+    "accepted": false,
+    "reason": "ROLE_NOT_APPLICABLE",
+    "detail": {
+     "role": null
+    }
+   }
+  }
+ ]
+}

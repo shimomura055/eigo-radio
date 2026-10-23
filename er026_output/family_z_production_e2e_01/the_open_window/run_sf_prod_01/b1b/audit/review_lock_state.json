@@ -5034,18 +5034,18 @@
     "theme_id": "run_sf_prod_01",
     "level": "b1b",
     "segment_id": "full_story_part1_c14",
-    "updated_at": "2026-10-23T12:15:44",
+    "updated_at": "2026-10-23T19:10:01",
     "reason": "最終status=STOPPED。3回試行してもASR検証に合格しませんでした",
     "final_status": "STOPPED",
     "wav_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/full_story_part1_c14.wav",
-    "cumulative_tts_attempts": 3,
-    "cumulative_asr_calls": 3,
+    "cumulative_tts_attempts": 6,
+    "cumulative_asr_calls": 6,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
         "attempt": 1,
         "status": "OK",
-        "asr_text": "Her husband had his white coat over his arm; her youngest brother was singing, Birdie, why do you bound? He always sang it to tease her.",
+        "asr_text": "Her husband had his white coat over his arm. Her youngest brother was singing, Birdie, why do you bound? He always sang it to tease her.",
         "asr_judgement": {
           "state": "NG_BOTH",
           "reason_code": "secondary_not_accepted",
@@ -5054,122 +5054,7 @@
           "role": null,
           "lang": "en",
           "segment_key": "",
-          "audio_sha256": "aa1f0e8f21905a91c757f9a6362cfcee24a4c77314ad7ebd799db1ab7830018f",
-          "primary": {
-            "text": "Her husband had his white coat over his arm; her youngest brother was singing, Birdie, why do you bound? He always sang it to tease her.",
-            "passed": false,
-            "label": "ASR_VALIDATION_UNCERTAIN",
-            "equivalence_basis": null,
-            "warning_labels": []
-          },
-          "secondary": {
-            "called": true,
-            "cached": false,
-            "engine": "azure",
-            "text": "Her husband had his white coat over his arm. Her youngest brother was singing birdie. Why do you bound? He always sang it to tease her.",
-            "label": "ASR_VALIDATION_UNCERTAIN",
-            "accepted": false,
-            "error": null,
-            "unavailable": false
-          },
-          "value_guard": {
-            "primary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            },
-            "secondary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            }
-          },
-          "negation_guard": {
-            "primary": false,
-            "secondary": false
-          },
-          "final_gate": {
-            "applied": false
-          },
-          "warnings": [],
-          "exclusion_rule": null,
-          "cost": {
-            "azure_calls": 1,
-            "azure_seconds": 9.891,
-            "est_jpy": 0.4444,
-            "est_jpy_known": true
-          },
-          "timing": {
-            "total_ms": 3077,
-            "secondary_ms": 3073
-          },
-          "technical_stop": null,
-          "length": {
-            "applied": true,
-            "primary_len": 136,
-            "secondary_len": 135,
-            "max_len": 155,
-            "adopted_from": "primary",
-            "adopted_ok": true,
-            "surface_len": 106,
-            "primary_ok": true
-          },
-          "p3_entry": "p3_primary_ng",
-          "pronunciation_alarm_eval": {
-            "accepted": false,
-            "reason": "ROLE_NOT_APPLICABLE",
-            "detail": {
-              "role": null
-            }
-          },
-          "adapter": {
-            "layers": [],
-            "azure_real_calls": 1,
-            "cost_guard_triggered": false,
-            "language": "en-US",
-            "segment_id": null,
-            "asr_text_present": true,
-            "cache": {
-              "calls": 16,
-              "hits": 4
-            }
-          }
-        },
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
-        "connected_speech_info": null,
-        "length_ok": true,
-        "final_length_ok": true,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 9.891,
-          "raw_leading_silence_seconds": 0.3,
-          "raw_trailing_silence_seconds": 0.3,
-          "trimmed_duration_seconds": 9.891,
-          "leading_margin_retained_seconds": 0.3,
-          "trailing_margin_retained_seconds": 0.3
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part1_c14_attempt1_englishstyleprefixwidemargin.wav"
-      },
-      {
-        "attempt": 2,
-        "status": "OK",
-        "asr_text": "Her husband had his white coat over his arm. Her youngest brother was singing, Birdie, why do you bound? He always sang it to tease her.",
-        "asr_judgement": {
-          "state": "NG_BOTH",
-          "reason_code": "secondary_not_accepted",
-          "slot": 2,
-          "script_version": "v0",
-          "role": null,
-          "lang": "en",
-          "segment_key": "",
-          "audio_sha256": "35aa3e930b841c5ebd0c678e28415ca9aee913fb8e25f04a81330183711d4c24",
+          "audio_sha256": "6f34fa6bbb97334dbdd9014a745bfca9ab93dceaae9d7166d5a1a06b1f0d7da9",
           "primary": {
             "text": "Her husband had his white coat over his arm. Her youngest brother was singing, Birdie, why do you bound? He always sang it to tease her.",
             "passed": false,
@@ -5212,13 +5097,13 @@
           "exclusion_rule": null,
           "cost": {
             "azure_calls": 1,
-            "azure_seconds": 9.611,
+            "azure_seconds": 9.811,
             "est_jpy": 0.4444,
             "est_jpy_known": true
           },
           "timing": {
-            "total_ms": 3052,
-            "secondary_ms": 3050
+            "total_ms": 3322,
+            "secondary_ms": 3317
           },
           "technical_stop": null,
           "length": {
@@ -5247,8 +5132,8 @@
             "segment_id": null,
             "asr_text_present": true,
             "cache": {
-              "calls": 18,
-              "hits": 4
+              "calls": 2,
+              "hits": 0
             }
           }
         },
@@ -5259,34 +5144,34 @@
         "final_length_ok": true,
         "verified": false,
         "trim_info": {
-          "raw_duration_seconds": 9.611,
-          "raw_leading_silence_seconds": 0.16,
-          "raw_trailing_silence_seconds": 0.32,
-          "trimmed_duration_seconds": 9.611,
-          "leading_margin_retained_seconds": 0.16,
-          "trailing_margin_retained_seconds": 0.32
+          "raw_duration_seconds": 9.811,
+          "raw_leading_silence_seconds": 0.3,
+          "raw_trailing_silence_seconds": 0.34,
+          "trimmed_duration_seconds": 9.811,
+          "leading_margin_retained_seconds": 0.3,
+          "trailing_margin_retained_seconds": 0.34
         },
         "disfluency_checked": false,
         "disfluency_evidence": null,
         "repetition_qa_checked": false,
         "repetition_qa_evidence": null,
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part1_c14_attempt2_englishstyleprefixwidemargin.wav"
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part1_c14_attempt4_englishstyleprefixwidemargin.wav"
       },
       {
-        "attempt": 3,
+        "attempt": 2,
         "status": "OK",
-        "asr_text": "Her husband had his white coat over his arm. Her youngest brother was singing, Birdie, why do you bound? He always sing it to tease her.",
+        "asr_text": "Her husband had his white coat over her arm. Her youngest brother was singing, Birdie, why do you bound? He always sang it to Teaser.",
         "asr_judgement": {
           "state": "NG_BOTH",
           "reason_code": "secondary_not_accepted",
-          "slot": 3,
+          "slot": 2,
           "script_version": "v0",
           "role": null,
           "lang": "en",
           "segment_key": "",
-          "audio_sha256": "72979550bbeafd36621a25653aa9468e7a6835730ec3e245421e776110daa174",
+          "audio_sha256": "3247e8b4931809278052145a7fe82f080696c8daed4e7709cc6677310b61ded3",
           "primary": {
-            "text": "Her husband had his white coat over his arm. Her youngest brother was singing, Birdie, why do you bound? He always sing it to tease her.",
+            "text": "Her husband had his white coat over her arm. Her youngest brother was singing, Birdie, why do you bound? He always sang it to Teaser.",
             "passed": false,
             "label": "TRUE_CONTENT_MISMATCH",
             "equivalence_basis": null,
@@ -5296,7 +5181,7 @@
             "called": true,
             "cached": false,
             "engine": "azure",
-            "text": "Her husband had his white coat over his arm. Her youngest brother was singing birdie. Why do you bound? He always sing it to tease her.",
+            "text": "Her husband had his white coat over her arm. Her youngest brother was singing.Bertie, why do you bound? He always sang it to tease her.",
             "label": "TRUE_CONTENT_MISMATCH",
             "accepted": false,
             "error": null,
@@ -5327,13 +5212,128 @@
           "exclusion_rule": null,
           "cost": {
             "azure_calls": 1,
-            "azure_seconds": 10.611,
+            "azure_seconds": 9.011,
+            "est_jpy": 0.4444,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 2538,
+            "secondary_ms": 2534
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 133,
+            "secondary_len": 135,
+            "max_len": 155,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": 106,
+            "primary_ok": true
+          },
+          "p3_entry": "p3_primary_ng",
+          "pronunciation_alarm_eval": {
+            "accepted": false,
+            "reason": "ROLE_NOT_APPLICABLE",
+            "detail": {
+              "role": null
+            }
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 4,
+              "hits": 0
+            }
+          }
+        },
+        "instruction_type": "english_style_prefix_wide_margin",
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "connected_speech_info": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "verified": false,
+        "trim_info": {
+          "raw_duration_seconds": 9.011,
+          "raw_leading_silence_seconds": 0.22,
+          "raw_trailing_silence_seconds": 0.24,
+          "trimmed_duration_seconds": 9.011,
+          "leading_margin_retained_seconds": 0.22,
+          "trailing_margin_retained_seconds": 0.24
+        },
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part1_c14_attempt5_englishstyleprefixwidemargin.wav"
+      },
+      {
+        "attempt": 3,
+        "status": "OK",
+        "asr_text": "Her husband had his white coat over his arm. Her youngest brother was singing, Birdie, why do you bound? He always sang it to tease her.",
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 3,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "abd843f4bdf39c380527df781dfdd7989e35680f64e462850ee6f8134ac0ef07",
+          "primary": {
+            "text": "Her husband had his white coat over his arm. Her youngest brother was singing, Birdie, why do you bound? He always sang it to tease her.",
+            "passed": false,
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Her husband had his white coat over his arm. Her youngest brother was singing birdie. Why do you bound? He always sang it to tease her.",
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 10.251,
             "est_jpy": 0.4889,
             "est_jpy_known": true
           },
           "timing": {
-            "total_ms": 3543,
-            "secondary_ms": 3540
+            "total_ms": 3047,
+            "secondary_ms": 3044
           },
           "technical_stop": null,
           "length": {
@@ -5362,30 +5362,30 @@
             "segment_id": null,
             "asr_text_present": true,
             "cache": {
-              "calls": 20,
-              "hits": 4
+              "calls": 6,
+              "hits": 0
             }
           }
         },
         "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
         "connected_speech_info": null,
         "length_ok": true,
         "final_length_ok": true,
         "verified": false,
         "trim_info": {
-          "raw_duration_seconds": 10.611,
-          "raw_leading_silence_seconds": 0.3,
-          "raw_trailing_silence_seconds": 0.26,
-          "trimmed_duration_seconds": 10.611,
-          "leading_margin_retained_seconds": 0.3,
-          "trailing_margin_retained_seconds": 0.26
+          "raw_duration_seconds": 10.251,
+          "raw_leading_silence_seconds": 0.28,
+          "raw_trailing_silence_seconds": 0.3,
+          "trimmed_duration_seconds": 10.251,
+          "leading_margin_retained_seconds": 0.28,
+          "trailing_margin_retained_seconds": 0.3
         },
         "disfluency_checked": false,
         "disfluency_evidence": null,
         "repetition_qa_checked": false,
         "repetition_qa_evidence": null,
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part1_c14_attempt3_englishstyleprefixwidemargin.wav"
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part1_c14_attempt6_englishstyleprefixwidemargin.wav"
       }
     ]
   },
@@ -7431,18 +7431,18 @@
     ]
   },
   "full_story_part3_c2": {
-    "state": "HUMAN_REVIEW_REQUIRED",
+    "state": "RESOLVED",
     "canonical_text_sha256": "38705718fbe22ef92914a71bbbe63ee63f24c5f2d2134697486e52f931869443",
     "language": "en",
     "theme_id": "run_sf_prod_01",
     "level": "b1b",
     "segment_id": "full_story_part3_c2",
-    "updated_at": "2026-10-23T12:17:22",
-    "reason": "最終status=STOPPED。3回試行してもASR検証に合格しませんでした",
-    "final_status": "STOPPED",
+    "updated_at": "2026-10-23T19:10:14",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
     "wav_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/full_story_part3_c2.wav",
-    "cumulative_tts_attempts": 3,
-    "cumulative_asr_calls": 3,
+    "cumulative_tts_attempts": 4,
+    "cumulative_asr_calls": 4,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
@@ -7450,14 +7450,14 @@
         "status": "OK",
         "asr_text": "Birdie, why do you bound?",
         "asr_judgement": {
-          "state": "NG_BOTH",
-          "reason_code": "secondary_not_accepted",
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "secondary_confirmed",
           "slot": 1,
           "script_version": "v0",
           "role": null,
           "lang": "en",
           "segment_key": "",
-          "audio_sha256": "2a29996b7981581a11d371d302d709d8e18a7f95410bbada0c844e966e60089a",
+          "audio_sha256": "4e52098e8f0c89e24e1b2c6cb2f4fff6b7d379eb0a91cfd624523dc09952f3dc",
           "primary": {
             "text": "Birdie, why do you bound?",
             "passed": false,
@@ -7469,9 +7469,9 @@
             "called": true,
             "cached": false,
             "engine": "azure",
-            "text": "Birdie, why do you bound?",
-            "label": "ASR_VALIDATION_UNCERTAIN",
-            "accepted": false,
+            "text": "Bertie, why do you bound?",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
             "error": null,
             "unavailable": false
           },
@@ -7494,19 +7494,24 @@
             "secondary": false
           },
           "final_gate": {
-            "applied": false
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
           },
-          "warnings": [],
+          "warnings": [
+            "SECONDARY_CONFIRMED"
+          ],
           "exclusion_rule": null,
           "cost": {
             "azure_calls": 1,
-            "azure_seconds": 2.571,
+            "azure_seconds": 2.321,
             "est_jpy": 0.1333,
             "est_jpy_known": true
           },
           "timing": {
-            "total_ms": 1052,
-            "secondary_ms": 1051
+            "total_ms": 2049,
+            "secondary_ms": 2048
           },
           "technical_stop": null,
           "length": {
@@ -7514,19 +7519,12 @@
             "primary_len": 25,
             "secondary_len": 25,
             "max_len": 42,
-            "adopted_from": "primary",
+            "adopted_from": "secondary",
             "adopted_ok": true,
             "surface_len": 19,
             "primary_ok": true
           },
           "p3_entry": "p3_primary_ng",
-          "pronunciation_alarm_eval": {
-            "accepted": false,
-            "reason": "ROLE_NOT_APPLICABLE",
-            "detail": {
-              "role": null
-            }
-          },
           "adapter": {
             "layers": [],
             "azure_real_calls": 1,
@@ -7535,260 +7533,100 @@
             "segment_id": null,
             "asr_text_present": true,
             "cache": {
-              "calls": 24,
-              "hits": 6
+              "calls": 8,
+              "hits": 0
             }
           }
         },
         "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "audio_classification": "NORMALIZED_MATCH",
         "connected_speech_info": null,
         "length_ok": true,
         "final_length_ok": true,
-        "verified": false,
+        "verified": true,
         "trim_info": {
-          "raw_duration_seconds": 2.571,
+          "raw_duration_seconds": 2.451,
           "raw_leading_silence_seconds": 0.22,
-          "raw_trailing_silence_seconds": 0.32,
-          "trimmed_duration_seconds": 2.571,
+          "raw_trailing_silence_seconds": 0.48,
+          "trimmed_duration_seconds": 2.321,
           "leading_margin_retained_seconds": 0.22,
-          "trailing_margin_retained_seconds": 0.32
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part3_c2_attempt1_englishstyleprefixwidemargin.wav"
-      },
-      {
-        "attempt": 2,
-        "status": "OK",
-        "asr_text": "Birdie, why do you bound?",
-        "asr_judgement": {
-          "state": "NG_BOTH",
-          "reason_code": "secondary_not_accepted",
-          "slot": 2,
-          "script_version": "v0",
-          "role": null,
-          "lang": "en",
-          "segment_key": "",
-          "audio_sha256": "3ef043be9c37538ee64a238a91ae51e517f5975496eeb2e9b85db5df2ce673f6",
-          "primary": {
-            "text": "Birdie, why do you bound?",
-            "passed": false,
-            "label": "ASR_VALIDATION_UNCERTAIN",
-            "equivalence_basis": null,
-            "warning_labels": []
-          },
-          "secondary": {
-            "called": true,
-            "cached": false,
-            "engine": "azure",
-            "text": "Birdie, why do you bound?",
-            "label": "ASR_VALIDATION_UNCERTAIN",
-            "accepted": false,
-            "error": null,
-            "unavailable": false
-          },
-          "value_guard": {
-            "primary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            },
-            "secondary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            }
-          },
-          "negation_guard": {
-            "primary": false,
-            "secondary": false
-          },
-          "final_gate": {
-            "applied": false
-          },
-          "warnings": [],
-          "exclusion_rule": null,
-          "cost": {
-            "azure_calls": 1,
-            "azure_seconds": 2.721,
-            "est_jpy": 0.1333,
-            "est_jpy_known": true
-          },
-          "timing": {
-            "total_ms": 2040,
-            "secondary_ms": 2039
-          },
-          "technical_stop": null,
-          "length": {
-            "applied": true,
-            "primary_len": 25,
-            "secondary_len": 25,
-            "max_len": 42,
-            "adopted_from": "primary",
-            "adopted_ok": true,
-            "surface_len": 19,
-            "primary_ok": true
-          },
-          "p3_entry": "p3_primary_ng",
-          "pronunciation_alarm_eval": {
-            "accepted": false,
-            "reason": "ROLE_NOT_APPLICABLE",
-            "detail": {
-              "role": null
-            }
-          },
-          "adapter": {
-            "layers": [],
-            "azure_real_calls": 1,
-            "cost_guard_triggered": false,
-            "language": "en-US",
-            "segment_id": null,
-            "asr_text_present": true,
-            "cache": {
-              "calls": 26,
-              "hits": 6
-            }
-          }
-        },
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
-        "connected_speech_info": null,
-        "length_ok": true,
-        "final_length_ok": true,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 2.731,
-          "raw_leading_silence_seconds": 0.28,
-          "raw_trailing_silence_seconds": 0.36,
-          "trimmed_duration_seconds": 2.721,
-          "leading_margin_retained_seconds": 0.28,
           "trailing_margin_retained_seconds": 0.35
         },
         "disfluency_checked": false,
         "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part3_c2_attempt2_englishstyleprefixwidemargin.wav"
-      },
-      {
-        "attempt": 3,
-        "status": "OK",
-        "asr_text": "Birdie, why do you bound?",
-        "asr_judgement": {
-          "state": "NG_BOTH",
-          "reason_code": "secondary_not_accepted",
-          "slot": 3,
-          "script_version": "v0",
-          "role": null,
-          "lang": "en",
-          "segment_key": "",
-          "audio_sha256": "b557dfbd933d3f2899ad94cdcdff2a069f0c454eae7eccf720c474e8d49f114f",
-          "primary": {
-            "text": "Birdie, why do you bound?",
-            "passed": false,
-            "label": "ASR_VALIDATION_UNCERTAIN",
-            "equivalence_basis": null,
-            "warning_labels": []
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": false,
+          "duration_seconds": 2.321,
+          "method_a_ngram": {
+            "matches": [],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 5,
+            "canonical_known": true,
+            "min_words": 3
           },
-          "secondary": {
-            "called": true,
-            "cached": false,
-            "engine": "azure",
-            "text": "Birdie, why do you bound?",
-            "label": "ASR_VALIDATION_UNCERTAIN",
-            "accepted": false,
-            "error": null,
-            "unavailable": false
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.9845,
+                "time_a_seconds": 0.22,
+                "time_b_seconds": 1.54,
+                "lag_seconds": 1.32,
+                "run_length_seconds_at_thresh_0.85": 0.02
+              },
+              {
+                "similarity": 0.9783,
+                "time_a_seconds": 0.25,
+                "time_b_seconds": 2.02,
+                "lag_seconds": 1.77,
+                "run_length_seconds_at_thresh_0.85": 0.03
+              },
+              {
+                "similarity": 0.9644,
+                "time_a_seconds": 0.99,
+                "time_b_seconds": 2.0,
+                "lag_seconds": 1.01,
+                "run_length_seconds_at_thresh_0.85": 0.03
+              },
+              {
+                "similarity": 0.9474,
+                "time_a_seconds": 0.01,
+                "time_b_seconds": 2.29,
+                "lag_seconds": 2.28
+              },
+              {
+                "similarity": 0.9425,
+                "time_a_seconds": 1.0,
+                "time_b_seconds": 2.0,
+                "lag_seconds": 1.0
+              }
+            ],
+            "best_run_length_seconds": 0.03,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
           },
-          "value_guard": {
-            "primary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            },
-            "secondary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            }
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.13,
+            "time_a": 0.81,
+            "lag": 1.35,
+            "similarity_at_start": 0.7071,
+            "best_run_length_seconds": 0.13,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": false
           },
-          "negation_guard": {
-            "primary": false,
-            "secondary": false
-          },
-          "final_gate": {
-            "applied": false
-          },
-          "warnings": [],
-          "exclusion_rule": null,
-          "cost": {
-            "azure_calls": 1,
-            "azure_seconds": 2.851,
-            "est_jpy": 0.1333,
-            "est_jpy_known": true
-          },
-          "timing": {
-            "total_ms": 1035,
-            "secondary_ms": 1034
-          },
-          "technical_stop": null,
-          "length": {
-            "applied": true,
-            "primary_len": 25,
-            "secondary_len": 25,
-            "max_len": 42,
-            "adopted_from": "primary",
-            "adopted_ok": true,
-            "surface_len": 19,
-            "primary_ok": true
-          },
-          "p3_entry": "p3_primary_ng",
-          "pronunciation_alarm_eval": {
-            "accepted": false,
-            "reason": "ROLE_NOT_APPLICABLE",
-            "detail": {
-              "role": null
-            }
-          },
-          "adapter": {
-            "layers": [],
-            "azure_real_calls": 1,
-            "cost_guard_triggered": false,
-            "language": "en-US",
-            "segment_id": null,
-            "asr_text_present": true,
-            "cache": {
-              "calls": 28,
-              "hits": 6
-            }
-          }
+          "method_c_v2_window_check": null
         },
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
-        "connected_speech_info": null,
-        "length_ok": true,
-        "final_length_ok": true,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 2.851,
-          "raw_leading_silence_seconds": 0.22,
-          "raw_trailing_silence_seconds": 0.18,
-          "trimmed_duration_seconds": 2.851,
-          "leading_margin_retained_seconds": 0.22,
-          "trailing_margin_retained_seconds": 0.18
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part3_c2_attempt3_englishstyleprefixwidemargin.wav"
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part3_c2_attempt4_englishstyleprefixwidemargin.wav"
       }
     ]
   },
@@ -9766,12 +9604,12 @@
     "theme_id": "run_sf_prod_01",
     "level": "b1b",
     "segment_id": "full_story_part3_c12",
-    "updated_at": "2026-10-23T12:29:23",
+    "updated_at": "2026-10-23T19:14:45",
     "reason": "status=OKで確定しました。",
     "final_status": "OK",
     "wav_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/full_story_part3_c12.wav",
-    "cumulative_tts_attempts": 4,
-    "cumulative_asr_calls": 4,
+    "cumulative_tts_attempts": 5,
+    "cumulative_asr_calls": 5,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
@@ -9779,388 +9617,19 @@
         "status": "OK",
         "asr_text": "Inventing convincing stories at a moment's notice was Vera's specialty.",
         "asr_judgement": {
-          "state": "NG_BOTH",
-          "reason_code": "secondary_not_accepted",
-          "slot": 1,
-          "script_version": "v0",
-          "role": "FULL_STORY",
-          "lang": "en",
-          "segment_key": "full_story_part3_c12",
-          "audio_sha256": "c5747049c4fabe48ff6efebc5983663d4f97b7eec3aa832b256d9a515d9299f9",
-          "primary": {
-            "text": "Inventing convincing stories at a moment's notice was Vera's specialty.",
-            "passed": false,
-            "label": "TRUE_CONTENT_MISMATCH",
-            "equivalence_basis": null,
-            "warning_labels": []
-          },
-          "secondary": {
-            "called": true,
-            "cached": false,
-            "engine": "azure",
-            "text": "Inventing convincing stories at a moment's notice was Vera's specialty.",
-            "label": "TRUE_CONTENT_MISMATCH",
-            "accepted": false,
-            "error": null,
-            "unavailable": false
-          },
-          "value_guard": {
-            "primary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            },
-            "secondary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            }
-          },
-          "negation_guard": {
-            "primary": false,
-            "secondary": false
-          },
-          "final_gate": {
-            "applied": false
-          },
-          "warnings": [],
-          "exclusion_rule": null,
-          "cost": {
-            "azure_calls": 1,
-            "azure_seconds": 5.0,
-            "est_jpy": 0.2222,
-            "est_jpy_known": true
-          },
-          "timing": {
-            "total_ms": 1050,
-            "secondary_ms": 1048
-          },
-          "technical_stop": null,
-          "length": {
-            "applied": true,
-            "primary_len": 71,
-            "secondary_len": 71,
-            "max_len": 87,
-            "adopted_from": "primary",
-            "adopted_ok": true,
-            "surface_len": 59,
-            "primary_ok": true
-          },
-          "p3_entry": "p3_primary_ng",
-          "pronunciation_alarm_eval": {
-            "accepted": false,
-            "reason": "PRIMARY_NOT_ENTITY_ONLY",
-            "detail": {
-              "classification": "TRUE_CONTENT_MISMATCH"
-            }
-          },
-          "adapter": {
-            "layers": [],
-            "azure_real_calls": 1,
-            "cost_guard_triggered": false,
-            "language": "en-US",
-            "segment_id": "full_story_part3_c12",
-            "asr_text_present": true,
-            "cache": {
-              "calls": 31,
-              "hits": 7
-            }
-          }
-        },
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "TRUE_CONTENT_MISMATCH",
-        "connected_speech_info": null,
-        "semantic_equivalence_info": {
-          "tier_applied": "none",
-          "sub_reason": "content_word",
-          "corroborated_by": [],
-          "warning": false,
-          "role": "FULL_STORY",
-          "diff_spans": null
-        },
-        "length_ok": true,
-        "final_length_ok": true,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 5.0,
-          "raw_leading_silence_seconds": 0.32,
-          "raw_trailing_silence_seconds": 0.34,
-          "trimmed_duration_seconds": 5.0,
-          "leading_margin_retained_seconds": 0.32,
-          "trailing_margin_retained_seconds": 0.34
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part3_c12_attempt1_englishstyleprefixwidemargin.wav"
-      },
-      {
-        "attempt": 2,
-        "status": "OK",
-        "asr_text": "Inventing convincing stories at a moment's notice was Vera's specialty.",
-        "asr_judgement": {
-          "state": "NG_BOTH",
-          "reason_code": "secondary_not_accepted",
-          "slot": 2,
-          "script_version": "v0",
-          "role": "FULL_STORY",
-          "lang": "en",
-          "segment_key": "full_story_part3_c12",
-          "audio_sha256": "15529c0a98b5612184e38061c70cb8670ce6f53937d3a4543a17614d9bde6580",
-          "primary": {
-            "text": "Inventing convincing stories at a moment's notice was Vera's specialty.",
-            "passed": false,
-            "label": "TRUE_CONTENT_MISMATCH",
-            "equivalence_basis": null,
-            "warning_labels": []
-          },
-          "secondary": {
-            "called": true,
-            "cached": false,
-            "engine": "azure",
-            "text": "Inventing convincing stories at a moment's notice was Vera's specialty.",
-            "label": "TRUE_CONTENT_MISMATCH",
-            "accepted": false,
-            "error": null,
-            "unavailable": false
-          },
-          "value_guard": {
-            "primary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            },
-            "secondary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            }
-          },
-          "negation_guard": {
-            "primary": false,
-            "secondary": false
-          },
-          "final_gate": {
-            "applied": false
-          },
-          "warnings": [],
-          "exclusion_rule": null,
-          "cost": {
-            "azure_calls": 1,
-            "azure_seconds": 5.37,
-            "est_jpy": 0.2667,
-            "est_jpy_known": true
-          },
-          "timing": {
-            "total_ms": 1039,
-            "secondary_ms": 1037
-          },
-          "technical_stop": null,
-          "length": {
-            "applied": true,
-            "primary_len": 71,
-            "secondary_len": 71,
-            "max_len": 87,
-            "adopted_from": "primary",
-            "adopted_ok": true,
-            "surface_len": 59,
-            "primary_ok": true
-          },
-          "p3_entry": "p3_primary_ng",
-          "pronunciation_alarm_eval": {
-            "accepted": false,
-            "reason": "PRIMARY_NOT_ENTITY_ONLY",
-            "detail": {
-              "classification": "TRUE_CONTENT_MISMATCH"
-            }
-          },
-          "adapter": {
-            "layers": [],
-            "azure_real_calls": 1,
-            "cost_guard_triggered": false,
-            "language": "en-US",
-            "segment_id": "full_story_part3_c12",
-            "asr_text_present": true,
-            "cache": {
-              "calls": 33,
-              "hits": 7
-            }
-          }
-        },
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "TRUE_CONTENT_MISMATCH",
-        "connected_speech_info": null,
-        "semantic_equivalence_info": {
-          "tier_applied": "none",
-          "sub_reason": "content_word",
-          "corroborated_by": [],
-          "warning": false,
-          "role": "FULL_STORY",
-          "diff_spans": null
-        },
-        "length_ok": true,
-        "final_length_ok": true,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 5.52,
-          "raw_leading_silence_seconds": 0.3,
-          "raw_trailing_silence_seconds": 0.5,
-          "trimmed_duration_seconds": 5.37,
-          "leading_margin_retained_seconds": 0.3,
-          "trailing_margin_retained_seconds": 0.35
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part3_c12_attempt2_englishstyleprefixwidemargin.wav"
-      },
-      {
-        "attempt": 3,
-        "status": "OK",
-        "asr_text": "Inventing convincing stories at a moment's notice was Vera's specialty.",
-        "asr_judgement": {
-          "state": "NG_BOTH",
-          "reason_code": "secondary_not_accepted",
-          "slot": 3,
-          "script_version": "v0",
-          "role": "FULL_STORY",
-          "lang": "en",
-          "segment_key": "full_story_part3_c12",
-          "audio_sha256": "aed166bd58dba7d089d3b630856dad64e2ab0af75751a93d4514a87a1ea1a164",
-          "primary": {
-            "text": "Inventing convincing stories at a moment's notice was Vera's specialty.",
-            "passed": false,
-            "label": "TRUE_CONTENT_MISMATCH",
-            "equivalence_basis": null,
-            "warning_labels": []
-          },
-          "secondary": {
-            "called": true,
-            "cached": false,
-            "engine": "azure",
-            "text": "Inventing convincing stories at a moment's notice was Vera's specialty.",
-            "label": "TRUE_CONTENT_MISMATCH",
-            "accepted": false,
-            "error": null,
-            "unavailable": false
-          },
-          "value_guard": {
-            "primary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            },
-            "secondary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            }
-          },
-          "negation_guard": {
-            "primary": false,
-            "secondary": false
-          },
-          "final_gate": {
-            "applied": false
-          },
-          "warnings": [],
-          "exclusion_rule": null,
-          "cost": {
-            "azure_calls": 1,
-            "azure_seconds": 5.04,
-            "est_jpy": 0.2667,
-            "est_jpy_known": true
-          },
-          "timing": {
-            "total_ms": 1054,
-            "secondary_ms": 1051
-          },
-          "technical_stop": null,
-          "length": {
-            "applied": true,
-            "primary_len": 71,
-            "secondary_len": 71,
-            "max_len": 87,
-            "adopted_from": "primary",
-            "adopted_ok": true,
-            "surface_len": 59,
-            "primary_ok": true
-          },
-          "p3_entry": "p3_primary_ng",
-          "pronunciation_alarm_eval": {
-            "accepted": false,
-            "reason": "PRIMARY_NOT_ENTITY_ONLY",
-            "detail": {
-              "classification": "TRUE_CONTENT_MISMATCH"
-            }
-          },
-          "adapter": {
-            "layers": [],
-            "azure_real_calls": 1,
-            "cost_guard_triggered": false,
-            "language": "en-US",
-            "segment_id": "full_story_part3_c12",
-            "asr_text_present": true,
-            "cache": {
-              "calls": 35,
-              "hits": 7
-            }
-          }
-        },
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "TRUE_CONTENT_MISMATCH",
-        "connected_speech_info": null,
-        "semantic_equivalence_info": {
-          "tier_applied": "none",
-          "sub_reason": "content_word",
-          "corroborated_by": [],
-          "warning": false,
-          "role": "FULL_STORY",
-          "diff_spans": null
-        },
-        "length_ok": true,
-        "final_length_ok": true,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 5.04,
-          "raw_leading_silence_seconds": 0.32,
-          "raw_trailing_silence_seconds": 0.32,
-          "trimmed_duration_seconds": 5.04,
-          "leading_margin_retained_seconds": 0.32,
-          "trailing_margin_retained_seconds": 0.32
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part3_c12_attempt3_englishstyleprefixwidemargin.wav"
-      },
-      {
-        "attempt": 1,
-        "status": "OK",
-        "asr_text": "Inventing convincing stories at a moment's notice was Vera's forte.",
-        "asr_judgement": {
-          "state": "PASS_WITH_WARNING",
+          "state": "PASS",
           "reason_code": "primary_pass",
           "slot": 1,
-          "script_version": "v1",
+          "script_version": "v0",
           "role": "FULL_STORY",
           "lang": "en",
           "segment_key": "full_story_part3_c12",
-          "audio_sha256": "19812cbe96b59ceeefa9c4d247dd4286e86844c98476497889e6aaa089e247f7",
+          "audio_sha256": "b054321b331b5c4d2b59787d08baaf4f9685ecd9484f3c018826f573897610d9",
           "primary": {
-            "text": "Inventing convincing stories at a moment's notice was Vera's forte.",
+            "text": "Inventing convincing stories at a moment's notice was Vera's specialty.",
             "passed": true,
-            "label": "EXACT_MATCH",
-            "equivalence_basis": null,
+            "label": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+            "equivalence_basis": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
             "warning_labels": []
           },
           "secondary": {
@@ -10189,9 +9658,7 @@
             "value_guard": "NO_VALUES",
             "negation_diff": false
           },
-          "warnings": [
-            "LR_REWRITTEN"
-          ],
+          "warnings": [],
           "exclusion_rule": null,
           "cost": {
             "azure_calls": 0,
@@ -10205,48 +9672,118 @@
           "technical_stop": null,
           "length": {
             "applied": true,
-            "primary_len": 67,
+            "primary_len": 71,
             "secondary_len": null,
-            "max_len": 82,
+            "max_len": 87,
             "adopted_from": "primary",
             "adopted_ok": true,
             "surface_len": null,
             "primary_ok": true
           },
+          "orthographic_equivalence": {
+            "applied": true,
+            "version": "er109_orthographic_equivalence_v2_ukus01",
+            "scope": "Z",
+            "label": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+            "sites": [
+              {
+                "site": "primary",
+                "text": "Inventing convincing stories at a moment's notice was Vera's specialty.",
+                "verdict": "PASS",
+                "warnings": [],
+                "er109": {
+                  "version": "er109_orthographic_equivalence_v2_ukus01",
+                  "flag_enabled": true,
+                  "stress_mode": "binary_stressed_vs_unstressed",
+                  "equivalent": true,
+                  "verdict": "PASS",
+                  "reason": "all_diff_spans_phoneme_equal_or_ukus_variant",
+                  "rules": [
+                    "ukus_spelling_variant"
+                  ],
+                  "warnings": [],
+                  "contraction_expanded": false,
+                  "spans": [
+                    {
+                      "canon": [
+                        "speciality"
+                      ],
+                      "asr": [
+                        "specialty"
+                      ],
+                      "equivalent": true,
+                      "rule": "ukus_spelling_variant",
+                      "why": "ukus_pair:T1:speciality/specialty",
+                      "matched_variants": [],
+                      "representative_match": null,
+                      "heteronym_guard": false,
+                      "warnings": []
+                    }
+                  ],
+                  "ukus_pairs": [
+                    {
+                      "canon": "speciality",
+                      "asr": "specialty",
+                      "uk": "speciality",
+                      "us": "specialty",
+                      "tier": "T1",
+                      "src": "varcon",
+                      "dir": "both",
+                      "pron_differs": true
+                    }
+                  ],
+                  "ukus_pairs_n": 1,
+                  "pron_differs_n": 1,
+                  "ukus_active": true,
+                  "ukus_table_sha256": "c5598eb6e603ee4cf5af2b8664f8ead9495eafd839ed8abbefda6bbe2bbb2dee"
+                }
+              }
+            ],
+            "warnings": []
+          },
           "adapter": {
-            "layers": [],
+            "layers": [
+              "orthographic_er109"
+            ],
             "azure_real_calls": 0,
             "cost_guard_triggered": false,
             "language": "en-US",
             "segment_id": "full_story_part3_c12",
             "asr_text_present": true,
             "cache": {
-              "calls": 35,
-              "hits": 7
+              "calls": 0,
+              "hits": 0
             }
           }
         },
         "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "EXACT_MATCH",
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
         "connected_speech_info": null,
-        "semantic_equivalence_info": null,
+        "semantic_equivalence_info": {
+          "tier_applied": "none",
+          "sub_reason": "content_word",
+          "corroborated_by": [],
+          "warning": false,
+          "role": "FULL_STORY",
+          "diff_spans": null
+        },
         "length_ok": true,
         "final_length_ok": true,
         "verified": true,
         "trim_info": {
-          "raw_duration_seconds": 4.64,
-          "raw_leading_silence_seconds": 0.32,
-          "raw_trailing_silence_seconds": 0.4,
-          "trimmed_duration_seconds": 4.59,
-          "leading_margin_retained_seconds": 0.32,
-          "trailing_margin_retained_seconds": 0.35
+          "raw_duration_seconds": 5.12,
+          "raw_leading_silence_seconds": 0.34,
+          "raw_trailing_silence_seconds": 0.32,
+          "trimmed_duration_seconds": 5.12,
+          "leading_margin_retained_seconds": 0.34,
+          "trailing_margin_retained_seconds": 0.32
         },
         "disfluency_checked": false,
         "disfluency_evidence": null,
         "repetition_qa_checked": true,
         "repetition_qa_evidence": {
           "flagged": false,
-          "duration_seconds": 4.59,
+          "duration_seconds": 5.12,
           "method_a_ngram": {
             "matches": [],
             "flagged": false,
@@ -10258,40 +9795,40 @@
           "method_d_spectral_long_lag": {
             "top_matches": [
               {
-                "similarity": 0.9896,
-                "time_a_seconds": 1.12,
-                "time_b_seconds": 3.32,
-                "lag_seconds": 2.2,
-                "run_length_seconds_at_thresh_0.85": 0.03
-              },
-              {
-                "similarity": 0.9829,
-                "time_a_seconds": 1.11,
-                "time_b_seconds": 2.57,
-                "lag_seconds": 1.46,
+                "similarity": 0.9914,
+                "time_a_seconds": 0.05,
+                "time_b_seconds": 4.91,
+                "lag_seconds": 4.86,
                 "run_length_seconds_at_thresh_0.85": 0.02
               },
               {
-                "similarity": 0.9817,
-                "time_a_seconds": 0.03,
-                "time_b_seconds": 4.54,
-                "lag_seconds": 4.51,
+                "similarity": 0.9897,
+                "time_a_seconds": 1.13,
+                "time_b_seconds": 2.37,
+                "lag_seconds": 1.24,
+                "run_length_seconds_at_thresh_0.85": 0.05
+              },
+              {
+                "similarity": 0.9884,
+                "time_a_seconds": 1.33,
+                "time_b_seconds": 2.38,
+                "lag_seconds": 1.05,
                 "run_length_seconds_at_thresh_0.85": 0.03
               },
               {
-                "similarity": 0.9761,
-                "time_a_seconds": 1.1,
-                "time_b_seconds": 2.28,
-                "lag_seconds": 1.18
+                "similarity": 0.9879,
+                "time_a_seconds": 1.34,
+                "time_b_seconds": 2.4,
+                "lag_seconds": 1.06
               },
               {
-                "similarity": 0.9752,
-                "time_a_seconds": 0.25,
-                "time_b_seconds": 4.49,
-                "lag_seconds": 4.24
+                "similarity": 0.9841,
+                "time_a_seconds": 1.34,
+                "time_b_seconds": 3.41,
+                "lag_seconds": 2.07
               }
             ],
-            "best_run_length_seconds": 0.03,
+            "best_run_length_seconds": 0.05,
             "min_lag_seconds": 1.0,
             "sim_threshold": 0.85,
             "decision_threshold_seconds": 0.12,
@@ -10301,9 +9838,9 @@
           },
           "method_d_prime_spectral_short_lag": {
             "run_length_seconds": 0.33,
-            "time_a": 1.71,
-            "lag": 0.98,
-            "similarity_at_start": 0.7418,
+            "time_a": 1.77,
+            "lag": 1.2,
+            "similarity_at_start": 0.7301,
             "best_run_length_seconds": 0.33,
             "lag_range_seconds": [
               0.5,
@@ -10315,7 +9852,7 @@
           },
           "method_c_v2_window_check": null
         },
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part3_c12_attempt4_englishstyleprefixwidemargin.wav"
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part3_c12_attempt5_englishstyleprefixwidemargin.wav"
       }
     ]
   }

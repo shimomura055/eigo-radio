@@ -1,0 +1,175 @@
+{
+ "case": "A",
+ "evidence_class": "formal_Z_run_tts_stage+real_generator+TTS_primitive_replaced_by_stored_misread_wav+ledger_excluded_first_seen_simulation",
+ "level": "b1b",
+ "kind": "narrator",
+ "wav": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/attempts/full_story_part1_c14_attempt1_englishstyleprefixwidemargin.wav",
+ "seconds": 13.7,
+ "tts_stub_calls": 1,
+ "status": "OK",
+ "asr_state": "PASS_WITH_PRONUNCIATION_ALARM",
+ "asr_reason": "pronunciation_alarm_accept",
+ "role_in_judgement": "FULL_STORY",
+ "segment_key_in_judgement": "full_story_part1_c14",
+ "pronunciation_alarm_eval": null,
+ "pronunciation_alarm": {
+  "policy_id": "PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01",
+  "accepted": true,
+  "reason": "ENTITY_ONLY_ACCEPT",
+  "alarm_ids": [
+   "pnal_52028304d8195616"
+  ],
+  "nouns": [
+   "bertie"
+  ],
+  "tts_input_text": "\"Her husband had his white coat over his arm. Her youngest brother was singing, 'Bertie, why do you bound?' He always sang it to tease her.\"",
+  "pre_supply_text": "\"Her husband had his white coat over his arm. Her youngest brother was singing, 'Bertie, why do you bound?' He always sang it to tease her.\"",
+  "supply_map": {},
+  "supply_decisions": [
+   {
+    "supplied": false,
+    "reason": "B_TIER_NOT_HUMAN_APPROVED",
+    "tier": null,
+    "original": "bertie",
+    "respelling": null,
+    "ledger_id": null,
+    "evidence_tier": null,
+    "human_approved": false,
+    "source_urls": [],
+    "policy_id": "PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01"
+   }
+  ],
+  "entity_table": {
+   "sha256": "92b4d0f4330ba8ff1c11bb787c9c815eb6940d6904b310d8da30d74cd7f48f24",
+   "status": "OK",
+   "builder_version": "111746c7cbbd8d79",
+   "rules_version": "6532f35042255d87",
+   "per_diff": [
+    {
+     "canonical": "bertie",
+     "entities": [
+      {
+       "surface": "Bertie",
+       "words": [
+        "bertie"
+       ],
+       "category": "person",
+       "grade": "confirmed",
+       "eligible": [
+        "bertie"
+       ],
+       "initials": []
+      }
+     ],
+     "grant": [
+      "bertie"
+     ]
+    }
+   ],
+   "ret3": [],
+   "entries_used": [
+    {
+     "surface": "Bertie",
+     "words": [
+      "bertie"
+     ],
+     "category": "person",
+     "grade": "confirmed",
+     "sources": [
+      "llm_a",
+      "llm_b_agree"
+     ],
+     "eligible": [
+      "bertie"
+     ],
+     "initials": [],
+     "notes": []
+    }
+   ],
+   "alarm_labels": [
+    {
+     "similarity_band": "mid(0.50-0.70)",
+     "both_asr_same_other_word": true,
+     "asr_zipf_near_general_boundary": false
+    }
+   ]
+  }
+ },
+ "alarm_records": [
+  {
+   "proper_noun": "bertie",
+   "evidence": "entity_table:confirmed:person",
+   "entity_table_basis": {
+    "entities": [
+     {
+      "surface": "Bertie",
+      "category": "person",
+      "grade": "confirmed"
+     }
+    ],
+    "ret3_span": [],
+    "table_sha256": "92b4d0f4330ba8ff1c11bb787c9c815eb6940d6904b310d8da30d74cd7f48f24",
+    "table_status": "OK",
+    "builder_version": "111746c7cbbd8d79"
+   }
+  }
+ ],
+ "hr_stub_calls": [],
+ "stage1_stub_calls": 1,
+ "entity_table_json": {
+  "schema": "ret_prod_01",
+  "status": "OK",
+  "builds": [
+   {
+    "at": "2026-10-23T19:16:29",
+    "calls": 2,
+    "status": "OK",
+    "uncovered": 1,
+    "usage": [
+     {
+      "in": 250,
+      "jpy_est": 0.00784,
+      "model": "gpt-6-luna",
+      "out": 48,
+      "prompt": "A",
+      "sec": 1.83
+     },
+     {
+      "in": 241,
+      "jpy_est": 0.0077,
+      "model": "gpt-6-luna",
+      "out": 48,
+      "prompt": "B",
+      "sec": 1.38
+     }
+    ]
+   }
+  ],
+  "n_covered": 1,
+  "entries": [
+   [
+    "Bertie",
+    "person",
+    "confirmed",
+    [
+     "llm_a",
+     "llm_b_agree"
+    ]
+   ]
+  ]
+ },
+ "operator_report_excerpt": "## 固有名詞発音アラーム(運営責任者向け・一般リスナー非表示)\n1箇所。最終状態=**アラーム付き完成**。制作は停止せずHuman Reviewにも回していません。確認・承認操作は完成の条件ではありません。\n- **bertie** × 1箇所\n  - [Z/b1b/full_story_part1_c14] C:/Users/tensh/eigo-radio/er103_output/ret_prod_z_evidence_01/run_z/b1b/narration/full_story_part1_c14.wav / 文脈 `...arm. Her youngest brother was singing, '[[bertie]], why do you bound?' He always sang it t...` / 目安5.7秒\n    - 検出した不一致: 原稿 `bertie` -> Primary `birdie` / Secondary `birdie`\n    - 発音の根拠(Ledger/Perplexity調査): 階層=未検証 / 確信度=stub / hint=(stub)\n    - 固有名詞と認識した根拠(実体表・受理判定用。発音の根拠とは別): Bertie[person/confirmed]\n    - TTS発音改善: 供給なし(B_TIER_NOT_HUMAN_APPROVED)\n    - 最終状態: アラーム付き完成 / 使用モデル: ASR=gpt-4o-mini-transcribe, Secondary=azure-speech-stt, TTS=None\n\n### 発音供給の適用一覧(TTS入力へ綴り置換した語。ASR比較は置換後の綴りが基準)\n0件(供給対象なし。A階層の自動供給対象/人承認済みB階層が無い、または該当語が本文に無い)\n\n### Human Review残(受理境界の外): ASR不確実のまま残ったsegment 0件 (うち固有名詞のみ不一致だが境界外=脱落/一般語化等 0件)\n\n注: 日本語音声の固有名詞読みはこのアラーム方針の対象外です(従来の検証・Human Reviewのまま)。\n\n### 実体表(固有名詞と認識した根拠。受理判定用。発音の根拠[Ledger/Perplexity調査]とは別)\n- 実体表: 1件(うち証拠として使用可 1件) / NER call=2 / model=gpt-6-luna / table_sha256=92b4d0f4330b\n- 実体表 person/confirmed: 1件\n",
+ "review_lock_state": "RESOLVED",
+ "attempt_judgements": [
+  {
+   "attempt": 1,
+   "state": "PASS_WITH_PRONUNCIATION_ALARM",
+   "role": "FULL_STORY",
+   "pae": {
+    "accepted": true,
+    "reason": "ENTITY_ONLY_ACCEPT",
+    "detail": {}
+   }
+  }
+ ]
+}

@@ -3,42 +3,42 @@
 - **framton** × 8箇所
   - [Z/a2/full_story_part1_c1] er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/a2/narration/full_story_part1_c1.wav / 文脈 `...[[framton]] sat on his chair's edge, turning his le...` / 目安0.0秒
     - 検出した不一致: 原稿 `framton` -> Primary `frampton` / Secondary `frampton`
-    - 発音の根拠: 根拠なし(調査で発音情報を取得できていません)
+    - 発音の根拠(Ledger/Perplexity調査): 根拠なし(調査で発音情報を取得できていません)
     - TTS発音改善: 供給なし(no_ledger_entry_or_not_planned)
     - 最終状態: アラーム付き完成 / 使用モデル: ASR=gpt-4o-mini-transcribe, Secondary=azure-speech-stt, TTS=None
   - [Z/a2/full_story_part1_c6] er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/a2/narration/full_story_part1_c6.wav / 文脈 `...[[framton]] answered. Vera looked at the wide-open ...` / 目安0.0秒
     - 検出した不一致: 原稿 `framton` -> Primary `frampton` / Secondary `frampton`
-    - 発音の根拠: 根拠なし(調査で発音情報を取得できていません)
+    - 発音の根拠(Ledger/Perplexity調査): 根拠なし(調査で発音情報を取得できていません)
     - TTS発音改善: 供給なし(no_ledger_entry_or_not_planned)
     - 最終状態: アラーム付き完成 / 使用モデル: ASR=gpt-4o-mini-transcribe, Secondary=azure-speech-stt, TTS=None
   - [Z/a2/full_story_part1_c8] er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/a2/narration/full_story_part1_c8.wav / 文脈 `...The letter lay still in [[framton]]'s hands....` / 目安1.9秒
     - 検出した不一致: 原稿 `framton` -> Primary `frampton` / Secondary `frampton`
-    - 発音の根拠: 根拠なし(調査で発音情報を取得できていません)
+    - 発音の根拠(Ledger/Perplexity調査): 根拠なし(調査で発音情報を取得できていません)
     - TTS発音改善: 供給なし(no_ledger_entry_or_not_planned)
     - 最終状態: アラーム付き完成 / 使用モデル: ASR=gpt-4o-mini-transcribe, Secondary=azure-speech-stt, TTS=None
   - [Z/a2/full_story_part1_c11] er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/a2/narration/full_story_part1_c11.wav / 文脈 `...said [[framton]] quietly....` / 目安0.5秒
     - 検出した不一致: 原稿 `framton` -> Primary `frampton` / Secondary `frampton`
-    - 発音の根拠: 根拠なし(調査で発音情報を取得できていません)
+    - 発音の根拠(Ledger/Perplexity調査): 根拠なし(調査で発音情報を取得できていません)
     - TTS発音改善: 供給なし(no_ledger_entry_or_not_planned)
     - 最終状態: アラーム付き完成 / 使用モデル: ASR=gpt-4o-mini-transcribe, Secondary=azure-speech-stt, TTS=None
   - [Z/a2/full_story_part2_c3] er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/a2/narration/full_story_part2_c3.wav / 文脈 `...Her aunt came in quickly before [[framton]] could answer her....` / 目安2.3秒
     - 検出した不一致: 原稿 `framton` -> Primary `frampton` / Secondary `frampton`
-    - 発音の根拠: 根拠なし(調査で発音情報を取得できていません)
+    - 発音の根拠(Ledger/Perplexity調査): 根拠なし(調査で発音情報を取得できていません)
     - TTS発音改善: 供給なし(no_ledger_entry_or_not_planned)
     - 最終状態: アラーム付き完成 / 使用モデル: ASR=gpt-4o-mini-transcribe, Secondary=azure-speech-stt, TTS=None
   - [Z/a2/full_story_part2_c5] er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/a2/narration/full_story_part2_c5.wav / 文脈 `...[[framton]] went cold because she really did expect...` / 目安0.0秒
     - 検出した不一致: 原稿 `framton` -> Primary `frampton` / Secondary `frampton`
-    - 発音の根拠: 根拠なし(調査で発音情報を取得できていません)
+    - 発音の根拠(Ledger/Perplexity調査): 根拠なし(調査で発音情報を取得できていません)
     - TTS発音改善: 供給なし(no_ledger_entry_or_not_planned)
     - 最終状態: アラーム付き完成 / 使用モデル: ASR=gpt-4o-mini-transcribe, Secondary=azure-speech-stt, TTS=None
   - [Z/a2/full_story_part2_c7] er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/a2/narration/full_story_part2_c7.wav / 文脈 `...ned wide as she looked outside in fear. [[framton]] looked behind him....` / 目安4.3秒
     - 検出した不一致: 原稿 `framton` -> Primary `frampton` / Secondary `frampton`
-    - 発音の根拠: 根拠なし(調査で発音情報を取得できていません)
+    - 発音の根拠(Ledger/Perplexity調査): 根拠なし(調査で発音情報を取得できていません)
     - TTS発音改善: 供給なし(no_ledger_entry_or_not_planned)
     - 最終状態: アラーム付き完成 / 使用モデル: ASR=gpt-4o-mini-transcribe, Secondary=azure-speech-stt, TTS=None
   - [Z/a2/full_story_part3_c3] er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/a2/narration/full_story_part3_c3.wav / 文脈 `...[[framton]] struggled for breath as the dead approa...` / 目安0.0秒
     - 検出した不一致: 原稿 `framton` -> Primary `crampton` / Secondary `frampton`
-    - 発音の根拠: 根拠なし(調査で発音情報を取得できていません)
+    - 発音の根拠(Ledger/Perplexity調査): 根拠なし(調査で発音情報を取得できていません)
     - TTS発音改善: 供給なし(no_ledger_entry_or_not_planned)
     - 最終状態: アラーム付き完成 / 使用モデル: ASR=gpt-4o-mini-transcribe, Secondary=azure-speech-stt, TTS=None
 
@@ -48,3 +48,10 @@
 ### Human Review残(受理境界の外): ASR不確実のまま残ったsegment 0件 (うち固有名詞のみ不一致だが境界外=脱落/一般語化等 0件)
 
 注: 日本語音声の固有名詞読みはこのアラーム方針の対象外です(従来の検証・Human Reviewのまま)。
+
+### 実体表(固有名詞と認識した根拠。受理判定用。発音の根拠[Ledger/Perplexity調査]とは別)
+- 実体表: 5件(うち証拠として使用可 3件) / NER call=0 / model=gpt-6-luna / table_sha256=9a7afda0f483
+- 実体表 person/confirmed: 3件
+- 実体表 place/weak: 1件
+- 実体表 work_title/weak: 1件
+- 証拠にならなかった語(weak/一般語等): The Open Window, India
