@@ -31,7 +31,10 @@ PRODUCTION_SCOPE_IMPORTERS = {
     "er006_secondary_asr_01.py", "er078_asr_unified_judge_01.py", "er104_kp_three_asr_vote_01.py", "er019_family_x_validation_inheritance_01.py",
     "er078_reuse_value_guard_01.py", "er019_family_x_audio_production_runner_01.py", "er063_family_z_audio_01.py", "er019_family_x_clobber_restore_03.py",
     "er109_hr_lock_rejudge_01.py", "er109_wiring_signature_01.py", "er109_runtime_evidence_04_01.py",
+    "er012_b_family_voices_production_01.py",   # OPEN-479(Fable承認2026-10-23): is_active_for_run()の読取のみ(scope入口は呼ばない)。会話clipのsegment_idをX/Z scope内だけに限定するため
 }
+# OPEN-479: 共有leaf er012_b だけは scope module の「読取関数」importを許可(er109純関数・scope入口呼出は引き続き禁止)
+ABC_SCOPE_READER_ALLOWED = {"er012_b_family_voices_production_01.py": SCOPE_MOD}
 # 絶対にer109/scope moduleをimportしてはならないA/B/C系Production(共有leafは除く: leaf自体はadapter経由で間接的に効くがimportしない)
 ABC_FILES = ("er012_b_family_voices_production_01.py", "er012_b_family_voices_a2_production_01.py", "er013_family_c_production_runner_01.py",
              "er012_e_family_entertainment_two_level_runner_01.py", "er003_v1_n3_01_tts_generate.py", "er003_v1_sing01_voice01_generate.py",
@@ -204,6 +207,8 @@ class StaticIsolation(unittest.TestCase):
                 elif isinstance(n, ast.ImportFrom) and n.module:
                     mods = [n.module]
                 for m in mods:
+                    if m == ABC_SCOPE_READER_ALLOWED.get(b):
+                        continue
                     self.assertFalse(m.startswith("er109"), f"{b} が {m} をimport")
 
     def test_flag_default_is_true_rollback_switch_and_documented(self):

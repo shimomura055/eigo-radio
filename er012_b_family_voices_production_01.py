@@ -78,6 +78,7 @@ import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
 import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
+import er109_xz_scope_01 as xz_scope  # OPEN-479: X/Z run scope内のときだけ会話clipへsegment_idを渡す(B/Cは従来どおり)
 import er078_asr_unified_attempt_ctx_01 as attempt_ctx_mod  # AUW 委任_05
 import er078_asr_unified_judge_01 as unified_judge_mod  # AUW 委任_13: final_length_ok(A3是正)
 import er011_open121_repetition_qa_production_01 as repetition_qa
@@ -550,11 +551,17 @@ def generate_voice_body_wide_margin(text: str, out_path: str, voice_name: str,
         length_ok = asr_text is not None and len(asr_text) <= max_len
         ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
         _aj = {}  # AUW 委任_03: 統一judgeの監査record(asr_judgement)をadditiveに受け取る
+        # OPEN-479(Fable承認2026-10-23): X/Z run scope内(er109_xz_scope_01.is_active_for_run())のときだけ、
+        # narrator経路(er003_v1_sing01_news_tail_fix.py:205-213)と同方式でsegment_idを導出して渡す。
+        # scope外(Family B/C Production)は引数自体を渡さず従来どおり(挙動不変、27-3 Legacy凍結)。
+        _seg_kw = {}
+        if xz_scope.is_active_for_run() and review_lock._has_valid_narration_layout(out_path):
+            _seg_kw["segment_id"] = review_lock.derive_segment_key(out_path)[2]
         verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
             text, asr_text, classification_history, out_path, language="en-US",
             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer, detail_out=_aj,
-            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts, max_len=max_len))  # AUW 委任_05/13
+            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts, max_len=max_len), **_seg_kw)  # AUW 委任_05/13
         final_len_ok = unified_judge_mod.final_length_ok(length_ok, _aj)  # AUW 委任_13(A3是正)
         verified = verified_content and final_len_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=False)

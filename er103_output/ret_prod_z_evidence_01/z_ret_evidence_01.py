@@ -20,7 +20,7 @@ import er063_family_z_audio_01 as a63
 import er103_proper_noun_alarm_policy_01 as pol
 import er103_run_entity_table_01 as ret
 
-SRC = "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01"
+SRC = "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01_preserve_20261023_b7"   # 委任_07: 再生成前の保全コピー(誤読attempt1 wav入力を再現)
 def canon(lv):
     d = json.load(open(f"{SRC}/{lv}/audit/tts_generation_results.json", encoding="utf-8"))
     return d["segments"]["full_story_part1_c14"]["canonical_text"]
