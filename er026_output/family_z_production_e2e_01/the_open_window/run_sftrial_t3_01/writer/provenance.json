@@ -1,0 +1,110 @@
+{
+  "story_key": "the_open_window",
+  "seed_sha256": "69f3e63cfd4f4749f5ab552712ed935c1c308ba57bdec12194860a5cad83ac22",
+  "chain": [
+    {
+      "stage": "r0",
+      "input_sha256": "69f3e63cfd4f4749f5ab552712ed935c1c308ba57bdec12194860a5cad83ac22",
+      "output_sha256": "f3006e1e1ff757019a3e06cedceee2045b2faaf5eb9c59aff59d8fb0ae651ef8",
+      "generated_at": "2026-10-23T01:51:37+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R0",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_0ddfe530b19da01d006adabd8d6a5087d089a140b8ed5f6ae1",
+      "attempts": 1,
+      "cost_jpy": 2.0765,
+      "prompt_sha256": "f4075eef94b2ca8abb1673a458dbd2e194dfd44dd616234d5b15d64c5879d904",
+      "input_tokens": 1959,
+      "output_tokens": 906,
+      "reasoning_tokens": 338,
+      "conversion_substitutions": [
+        "override_appended"
+      ],
+      "guardrails": {
+        "word_count": 426
+      }
+    },
+    {
+      "stage": "r1",
+      "input_sha256": "f3006e1e1ff757019a3e06cedceee2045b2faaf5eb9c59aff59d8fb0ae651ef8",
+      "output_sha256": "00f5c3f814203ab50dfe7b71c37ead9b4a82f24796ced3b47a6237ef55fe5225",
+      "generated_at": "2026-10-23T01:54:53+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R1",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_0faf0a4aee398c69006adabe54dd6087d0ab685477fcd9548c",
+      "attempts": 1,
+      "cost_jpy": 1.9664,
+      "prompt_sha256": "a084980b3f1cbe71160721bf6061becc3d9c601772473e5169175a9217182f84",
+      "input_tokens": 1145,
+      "output_tokens": 1000,
+      "reasoning_tokens": 405,
+      "guardrails": {
+        "word_count": 440
+      }
+    },
+    {
+      "stage": "r2",
+      "input_sha256": "00f5c3f814203ab50dfe7b71c37ead9b4a82f24796ced3b47a6237ef55fe5225",
+      "output_sha256": "4197e37cf29b5c22b1331bfb563ec4454fe6c151350e5029bc18a8dd0c0eab86",
+      "generated_at": "2026-10-23T01:55:19+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R2",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_0e9a73030878445e006adabe6e1ca487d0a7fa9c43bc877a46",
+      "attempts": 1,
+      "cost_jpy": 1.9046,
+      "prompt_sha256": "4ab83c3877062d953dcc157b7688b290d55da74acc427b46cf28bb6d5d7d7d3a",
+      "input_tokens": 1172,
+      "output_tokens": 956,
+      "reasoning_tokens": 377,
+      "guardrails": {
+        "word_count": 433,
+        "warnings": [],
+        "failures": []
+      }
+    },
+    {
+      "stage": "std_adjust",
+      "input_sha256": "4197e37cf29b5c22b1331bfb563ec4454fe6c151350e5029bc18a8dd0c0eab86",
+      "output_sha256": "0f8730a7a7aa6e84b69bec51962b3b56b159efcb2dc231e870256ed2b3d8d84e",
+      "generated_at": "2026-10-23T01:57:30+00:00",
+      "routing_key": "FAMILY_Z_STD_ADJUST",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_0bfee732b09ba537006adabe87ffac87d0be3ff0bf5a5e569e",
+      "attempts": 1,
+      "cost_jpy": 11.0406,
+      "prompt_sha256": "78c0d81b47c3bade83b8dd2c98d6bd2536135f22a2015030c663e439a614aaa5",
+      "input_tokens": 1822,
+      "output_tokens": 6536,
+      "reasoning_tokens": 5947,
+      "guardrails": {
+        "std_words": 457,
+        "adv_words": 433,
+        "ratio": 1.0554,
+        "identical_sentence_ratio": 0.0204,
+        "avg_sentence_len_std": 9.33,
+        "avg_sentence_len_adv": 7.22,
+        "paragraph_count_std": 31,
+        "paragraph_count_adv": 31,
+        "std_adv_paragraph_count_match": true,
+        "warnings": [
+          "STD_AVG_SENT_LEN_NOT_SHORTER:9.33 vs adv 7.22x0.85 (soft gate)"
+        ],
+        "failures": []
+      }
+    }
+  ],
+  "downstream_stale": [],
+  "downstream_stages": {},
+  "regenerations": [],
+  "audio_text_deviations": [],
+  "reference_only": {},
+  "adv_final_sha256": "4197e37cf29b5c22b1331bfb563ec4454fe6c151350e5029bc18a8dd0c0eab86",
+  "std_sha256": "0f8730a7a7aa6e84b69bec51962b3b56b159efcb2dc231e870256ed2b3d8d84e"
+}
