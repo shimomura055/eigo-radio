@@ -509,7 +509,7 @@ class StructuralTest(unittest.TestCase):
 class RealLegacyRunSmokeTest(unittest.TestCase):
     """既存の旧仕様run(実在する場合のみ)で『5件・vote無し(LEGACY_DUAL)・alarm無し』になること。"""
     X = "er019_output/family_x_audio_production_wiring_01/paycheck_personality__run_pp_02"
-    Z = "er026_output/family_z_production_e2e_01/melos/run_e2e_06"
+    Z = "er026_output/family_z_production_e2e_01/melos/run_e2e_05"   # 2026-10-23: run_e2e_06は速度仕様v2の再処理でKP1英語がKP3V gateでvote付きに再生成されたため、未再処理の旧仕様run(run_e2e_05)へ変更
 
     def test_real_legacy(self):
         if not (os.path.isdir(os.path.join(REPO, self.X)) and os.path.isdir(os.path.join(REPO, self.Z))):

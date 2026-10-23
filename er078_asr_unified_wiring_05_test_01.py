@@ -81,7 +81,7 @@ def _iso(monkeypatch, tmp_path):
 # ============================================================
 # A. A2減速後判定(J7)の統一judge化
 # ============================================================
-def _fake_stretch(src, dst):
+def _fake_stretch(src, dst, *_pct):
     with open(dst, "wb") as f:
         f.write(b"POST_STRETCHED_" + os.path.basename(dst).encode())
     return {"src_duration_seconds": 2.0, "dst_duration_seconds": 2.12}
@@ -239,13 +239,15 @@ def _z_gens(monkeypatch):
     return z, z.real_generators()
 
 
-def test_dialogue_std_reaches_unified_judge_via_j4_and_j7_with_prompt_unchanged(tmp_path, monkeypatch):
+def test_dialogue_adv_reaches_unified_judge_via_j4_and_j7_with_prompt_unchanged(tmp_path, monkeypatch):
+    # 2026-10-23 速度仕様v2(FAMILY-Z-DIALOGUE-SPEED-PRODUCTION-WIRING-01): 期待値を意図的に更新。旧=Std会話が生成後6%減速+J7再検証、
+    # 現=Adv会話が生成後約6%高速化+J7再検証(同じ外側ループ・統一judge)。Std会話は速度後処理なし(次のtest)。
     import er003_v1_n3_01_tts_generate as n3
     import er012_b_family_voices_production_01 as bv
     z, gens = _z_gens(monkeypatch)
-    narr = tmp_path / "melos" / "run_01" / "a2" / "narration"
+    narr = tmp_path / "melos" / "run_01" / "b1b" / "narration"
     narr.mkdir(parents=True)
-    spec = z.ClipSpec("full_story_part1_c2", "a2", "dialogue", CANON, voice="Puck", speaker="king", role_key="")
+    spec = z.ClipSpec("full_story_part1_c2", "b1b", "dialogue", CANON, voice="Puck", speaker="king", role_key="")
     out_path = str(narr / "full_story_part1_c2.wav").replace("\\", "/")
     captured = {}
     inner_judgement = {"state": "PASS", "marker": "voice_body_inner"}
@@ -266,17 +268,18 @@ def test_dialogue_std_reaches_unified_judge_via_j4_and_j7_with_prompt_unchanged(
                         Az((n3.tts_safe_news_en(CANON), None)))
     r = gens["dialogue"](spec, out_path)
     # Dialogue固有のPrompt/Voice不変。委任_06c(OF-AUW-C-08)で外側ループ化: 初回のmax_attempts=通算予算3(残予算)が追加される。
-    assert captured["voice"] == "Puck" and captured["kw"] == {"max_attempts": 3}  # 2026-10-19 決定③: Z Std Dialogueは生成時Style override無し(Adv同一)
+    assert captured["voice"] == "Puck" and captured["kw"] == {"max_attempts": 3}  # 2026-10-19 決定③: Z Dialogueは生成時Style override無し(Std/Adv同一)
     assert r["status"] == "OK" and r["slowdown_applied"] is True
     assert r["asr_judgement"]["state"] == uj.PASS_WITH_WARNING            # J7(減速後)が統一judge経由でWARNING
     assert r["asr_judgement_pre_slowdown"] == inner_judgement             # J4(減速前)のrecordは退避
     assert z2 is z
 
 
-def test_dialogue_adv_has_no_slowdown_and_no_style_override(tmp_path, monkeypatch):
+def test_dialogue_std_has_no_slowdown_and_no_style_override(tmp_path, monkeypatch):
+    # 2026-10-23 速度仕様v2: 旧(Adv会話=減速なし)と新(Std会話=減速なし)の対応を入れ替えた期待値の意図的更新。
     import er012_b_family_voices_production_01 as bv
     z, gens = _z_gens(monkeypatch)
-    spec = z.ClipSpec("full_story_part1_c2", "b1b", "dialogue", CANON, voice="Puck", speaker="king")
+    spec = z.ClipSpec("full_story_part1_c2", "a2", "dialogue", CANON, voice="Puck", speaker="king")
     calls = []
     monkeypatch.setattr(bv, "generate_voice_body_wide_margin", lambda text, op, voice, **kw: calls.append((voice, kw)) or {"status": "OK"})
     r = gens["dialogue"](spec, str(tmp_path / "x.wav"))
