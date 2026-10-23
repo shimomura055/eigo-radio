@@ -1,0 +1,108 @@
+以下は、同じ記事から選ばれた3件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。3件から作れる全てのペア(3組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず3組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+Della counted her coins again, pressing them against the table. She still had only $1.87, and Christmas was tomorrow.
+
+She had saved every coin she could for Jim, her husband. How could she buy him a good enough gift?
+
+She cried for a while on their old couch. Then she noticed her face in the mirror.
+
+They were proud of two things: Della’s long brown hair and Jim’s gold watch. His grandfather, then his father, had owned the watch before him.
+
+She slowly let down her hair, shining below her knees. She ran her fingers through it in the pale light. Quickly, she put on her coat before changing her mind.
+
+Outside a shop selling hair, she stopped to catch her breath.
+
+“Would you like to buy my hair?”
+
+The shop owner lifted her thick waves of hair.
+
+“I can pay you twenty dollars.”
+
+“Please cut it off right now.”
+
+Della closed her eyes as the scissors first touched her hair.
+
+For two hours, she rushed between shops until she found it: a simple platinum watch chain. Like Jim, it needed nothing extra to show its value.
+
+Its price was twenty-one dollars.
+
+With eighty-seven cents left, she took it home. She pictured Jim using it instead of his worn leather strap.
+
+By seven, dinner was almost ready, and her short hair was curled. Still, she kept looking in the mirror.
+
+“Please, let me still look pretty to him,” she said softly.
+
+She heard his steps, and then the door opened.
+
+Jim stood still in the doorway.
+
+He stared at her hair as she hurried towards him.
+
+“Jim, I sold my hair to buy you a Christmas gift. It will grow back!”
+
+He held her close, then handed her a package.
+
+She found the tortoise-shell combs inside the package. She had often admired them in a shop window.
+
+She pressed them to her chest and smiled through her tears.
+
+“It won’t take long for my hair to grow.”
+
+Then she remembered her gift and took out the chain.
+
+“See how beautiful it is! Let me have your watch.”
+
+Jim smiled softly as he took a seat.
+
+“To buy your combs, I had to sell my watch.”
+
+Della joined him and held his hand. Without her hair, she could not use the combs. Without his watch, he could not use the chain. Both had sold their greatest treasure for the other’s gift.
+
+Wise men called the magi brought gifts on the first Christmas. The two young people seemed foolish with their useless gifts. But their love made them wiser than all other gift-givers. In every place, they are the wisest; these two are the magi.
+
+【Key Phrase 3件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "tortoise-shell combs",
+    "japanese_gloss": "べっ甲のくし",
+    "source_sentence": "She found the tortoise-shell combs inside the package"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "smile through one's tears",
+    "japanese_gloss": "涙を浮かべながらほほ笑む",
+    "source_sentence": "She pressed them to her chest and smiled through her tears"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "the magi",
+    "japanese_gloss": "東方の三博士",
+    "source_sentence": "Wise men called the magi brought gifts on the first Christmas"
+  }
+]
