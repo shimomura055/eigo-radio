@@ -1,0 +1,120 @@
+{
+  "article_id": "Z_the_open_window_run_e2e_01__b1b",
+  "version": "ER-003-KP-GLOSS-ALIGN-02",
+  "final_status": "ALIGN_PASS",
+  "targets": [
+    1,
+    2,
+    3
+  ],
+  "unresolved_ranks": [],
+  "mapping_gate": false,
+  "rules_sha256": "fa5ae89cd739f5fd0a06de92c29c7eb1056a4a755b6fd4a745d49da37e894760",
+  "cost_jpy": 0.0787,
+  "attempts_detail": [
+    {
+      "attempt": 1,
+      "target_ranks": [
+        1,
+        2,
+        3
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_01859ab995710c83006adb04ed8c0887d1afd133c1e21d11f8",
+      "usage": {
+        "input_tokens": 2627,
+        "output_tokens": 931,
+        "cached_input_tokens": 2624
+      },
+      "cost_jpy": 0.0787,
+      "status": "ALIGN_PASS",
+      "n_valid": 3,
+      "n_items": 3
+    }
+  ],
+  "item_log": {
+    "1": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "紹介状",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "current_japanese_glossが未生成のため新規生成しました。「letter of introduction」全体の意味を表しています。",
+        "added_word_mappings": [],
+        "machine_check": {
+          "required_words": [],
+          "covered": {},
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true,
+          "note": "必須内容語なし(機械検査対象外)"
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.0787,
+        "model": "gpt-6-luna"
+      }
+    ],
+    "2": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "とても風変わりな訪問客",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "current_japanese_glossが未生成のため新規生成しました。「とても」がmost、「風変わりな」がpeculiar、「訪問客」がvisitorの意味を表しています。",
+        "added_word_mappings": [],
+        "machine_check": {
+          "required_words": [],
+          "covered": {},
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true,
+          "note": "必須内容語なし(機械検査対象外)"
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.0787,
+        "model": "gpt-6-luna"
+      }
+    ],
+    "3": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "交代で行う",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "current_japanese_glossが未生成のため新規生成しました。「take turns」全体の意味を自然に表しています。",
+        "added_word_mappings": [
+          {
+            "english_word": "take",
+            "japanese_span": "行う"
+          }
+        ],
+        "machine_check": {
+          "required_words": [
+            "take"
+          ],
+          "covered": {
+            "take": "行う"
+          },
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.0787,
+        "model": "gpt-6-luna"
+      }
+    ]
+  }
+}

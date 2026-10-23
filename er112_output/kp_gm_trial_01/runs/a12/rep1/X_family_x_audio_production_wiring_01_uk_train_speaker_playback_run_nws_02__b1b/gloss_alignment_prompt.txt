@@ -1,0 +1,101 @@
+以下の各英語key_phraseは、教材として最終確定した英語表現です。current_japanese_glossは、確定前の候補表現(display_phrase_before_canonicalization)を基準に付けた日本語グロスで、確定したkey_phrase全体とは一致していない可能性があります。added_content_wordsは、確定時に候補表現へ新しく加わった内容語です(空の場合があります)。
+
+各項目について、次を行ってください。
+1. current_japanese_glossが、最終的なkey_phrase全体(目的語・補語・修飾語を含むすべての語)の意味と過不足なく一致しているかを判定し(current_gloss_consistent)てください。「～」「〜」を含むかどうかは判定の基準ではありません。key_phrase全体の意味が日本語に表れているかどうかだけで判定してください。
+2. 一致している場合は、japanese_glossにcurrent_japanese_glossをそのまま返してください。一致していない場合は、最終key_phrase全体に一致する日本語グロスを返してください。current_japanese_glossが最終key_phrase全体の意味を既に表している場合は、より自然・より適切と思える言い換えがあっても書き換えず、current_japanese_glossをそのまま返してください。書き換えるのは、key_phraseの語の意味が欠けている・誤っている場合だけです。
+3. added_content_wordsの各語について、japanese_glossの中でその語の意味を表している部分を、japanese_glossからそのまま切り出してadded_word_mappingsに書いてください(english_wordには対応させる英語の語、複数語をまとめた句でもかまいません。japanese_spanにはjapanese_glossに含まれない文字列や、「～」などの記号だけを書かないでください)。複数の英語語が一つの日本語表現でまとめて表されている場合は、同じ部分を複数の語に対応させてかまいません。added_content_wordsが空の項目は、added_word_mappingsを空配列にしてください。
+判定の参考例:
+- key_phrase「based on」にcurrent「～をもとにした」: 辞書的に自然なので一致です。
+- key_phrase「based on interviews」にcurrent「～をもとにした」: interviewsの意味が欠けているので不一致です。「インタビューをもとにした」なら一致です。
+- key_phrase「fall into」にcurrent「～に落ちる」: 意味は表れているので一致です(「～に陥る」へ書き換えません)。
+
+key_phrase単体で他の文脈でも再利用できる自然な訳にし、本文固有の固有名詞・文脈の追加はしないでください。key_phrase全体の意味を反映できている場合のみqa_reflects_all_key_phrase_wordsをPASSにしてください。
+
+【人称・指示対象の規則(indefinite_person_tokens_in_key_phraseを持つ項目に適用。承認済みgloss規則・上記1〜3より優先)】
+- key_phraseの不定の人称(someone's/someone/somebody/one's/oneself等)は、日本語でも不定のまま表してください(例: 『誰かの』『人の』『人を』。one's/oneselfのように主語自身を指す再帰の場合は『自分の』『自分自身を』)。display_phrase_before_canonicalization・current_japanese_gloss・source_sentenceにある具体的な人称(あなた・君・私・僕・彼・彼女・彼ら・我々等)を日本語意味へ残してはいけません。不定の人称を具体的な人称で訳すことは『誤っている』に当たります。current_japanese_glossがそうなっている場合は、指示2の『書き換えない』の例外として、current_gloss_consistent=falseにして書き換えてください。
+- source_sentenceは、辞書に複数の語義がある表現で、そのうちどの語義かを選ぶためだけに使い、人称の指示対象を決めるためには使わないでください。
+- 逐語訳は求めません。不定の人称を訳出すると不自然になる場合は、人称を明示しない自然な表現にしてかまいません。(型の例: catch someone's attention -> 『人の注意を引く』であって『あなたの注意を引く』ではない。)
+
+【新規生成の規則(current_japanese_glossがnull[未生成]の項目に適用。全文選定で選ばれた表現には、まだ日本語グロスがありません)】
+- current_japanese_glossがnullの項目は、既存グロスの修正ではなく新規生成です。current_gloss_consistentは必ずfalseにし、japanese_glossには最終key_phrase全体の意味に過不足なく一致する日本語グロスを新しく書いてください(上記の指示2の『そのまま返す』は適用されません)。
+- source_sentenceは、辞書に複数の語義がある表現で、そのうちどの語義かを選ぶためだけに使ってください(文中の固有名詞・文脈の追加はしないでください)。
+
+【語義の方針(新規生成の項目に適用。上記1〜3の『すべての語の意味を反映する』より優先)】
+- key_phraseが慣用句・比喩・定型表現のときは、語ごとの直訳ではなく、フレーズ全体の意味を日本語にしてください(型の例: cut corners→『手を抜く』であり『角を切る』ではない)。日本語でも同じ比喩が同じ意味で自然に通じる場合は、その表現でかまいません(型の例: bridge the gap→『溝を埋める』)。通じない場合は、フレーズ全体の意味を書いてください。本文で字義どおりに使われている場合は、字義どおりの意味を書いてください。
+- どの語義かは本文(source_sentenceと記事本文)で判断し、その文での意味を表してください。ただし記事固有の状況・固有名詞は入れず、別の場面でも通用する簡潔な言い方にしてください。意味は原則1つだけを書き、訳語を並べないでください。
+- key_phraseに含まれる冠詞・指示語(a, the, this, that等)を『その』『ある』などと逐語的に訳出しないでください。
+- 上の『key_phrase全体のすべての語の意味を反映する』は、慣用句・定型表現では、フレーズ全体の意味が日本語に表れていれば満たされます(語ごとの対応は求めません)。
+
+【日本語グロスの規則(承認済み選定Promptと同一)】
+選ぶ表現は必ず本文中の実表現(source_span)に対応させ、短く自然な日本語グロスを付けてください。
+
+日本語グロスは、辞書的に正しいだけでなく、日本人の英語学習者が聞いてすぐ意味を理解できる、自然で平易な現代日本語にしてください。直訳調や、「常態」「是正」のような過度に硬い報道語・漢語、一般的な学習者には伝わりにくい表現は避けてください。
+
+日本語グロスには、括弧（　）を使って別の訳し方・専門用語・補足情報を書き添えないでください。音声だけで聞いてそのまま意味が伝わる、平易な言い換えだけの一文にしてください。
+
+日本語グロスは、辞書的な表記として自然な範囲であれば「～」「〜」を使ってもかまいません(例: 「～を示す」)。ただし「…」のようなプレースホルダー記号は使わないでください。日本語グロスに数字を含める場合は、算用数字(1、2、3…)ではなく漢数字(一、二、三…)で書いてください。
+
+「ソロ旅行を～％とする」のように、数値を補わないと意味が成立しない句・日本語グロス(数値の穴埋めを必要とする不完全な表現)は選ばないでください。それ単体で意味が成立する句・グロスを選んでください。
+
+【対象項目】
+[
+  {
+    "rank": 1,
+    "key_phrase": "a blanket ban",
+    "display_phrase_before_canonicalization": "a blanket ban",
+    "current_japanese_gloss": null,
+    "source_sentence": "The UK has launched a nationwide campaign urging rail passengers to use headphones, not a blanket ban on sound",
+    "added_content_words": []
+  },
+  {
+    "rank": 2,
+    "key_phrase": "reach for someone's wallet",
+    "display_phrase_before_canonicalization": "reach for your wallet",
+    "current_japanese_gloss": null,
+    "source_sentence": "That's enough to make you reach for your wallet before the volume button",
+    "added_content_words": [],
+    "indefinite_person_tokens_in_key_phrase": [
+      "someone's"
+    ],
+    "person_generalization": [
+      {
+        "from": "your",
+        "to": "someone's"
+      }
+    ]
+  },
+  {
+    "rank": 3,
+    "key_phrase": "draw a line",
+    "display_phrase_before_canonicalization": "draw that line",
+    "current_japanese_gloss": null,
+    "source_sentence": "The words draw that line simply",
+    "added_content_words": []
+  }
+]
+
+【記事本文(参考)】
+# Are You Giving That Video an Uninvited Premiere on the Train?
+
+You get on the train. You find a seat. At last, you can relax—or so you think. Then you hear video sounds from somewhere: laughter, sound effects, and very upbeat background music. You’re quietly heading home, but your ears are forced to log in to someone else’s recommendations. You bought a train ticket, but you don’t remember buying a ticket to this show.
+
+One smartphone, and the whole carriage is the audience. That’s a pretty bold show.
+
+Here’s news about this kind of “sound delivery nobody asked for.” On October 19, 2026, the UK announced the start of a nationwide campaign encouraging rail passengers to use headphones.
+
+But don’t rush to think, “In the UK, no headphones means you’re breaking the law!” No new rule has been made to ban all sound. The main focus is existing rail rules and a campaign asking people to think of those around them.
+
+The existing rules ban making noise from a device in a way that bothers other people. A smartphone speaker can also be covered, if the situation meets the rules. There is an exception if the rail company has given written permission. A song that’s a masterpiece to you may not sound that way to the person beside you.
+
+If you don’t follow the rules, you could face a fine of up to £1,000. That’s enough to make you reach for your wallet before the volume button. But the key words are “up to” and “could.” It doesn’t mean everyone who plays something through a speaker automatically gets a £1,000 bill.
+
+So the first step is a call to use headphones. The message is due to be shared through posters and announcements at stations and on trains. The fine may be what people hear loudest, but let’s listen to the campaign’s message, too.
+
+Its name is roughly, “Share the journey, not the noise.” Just because we’re in the same carriage doesn’t mean we’ve joined the fan club for the same video. The words draw that line simply.
+
+This isn’t saying, “Don’t enjoy yourself.” It’s more like saying, “Choose who hears the sound.” You can enjoy videos and music. Just don’t make the people around you sit in the audience without asking them. Headphones don’t take away your entertainment. They’re a small screen that keeps the fun in your own seat.
+
+The next time you press play, take a breath. “Who am I sending this sound to?” We’re on the same train, going in the same direction. Still, there’s no need for the sound to ride along into everyone’s ears.
+
+## In one line
+The UK has launched a nationwide campaign urging rail passengers to use headphones, not a blanket ban on sound. It asks people to enjoy videos and music without making other passengers listen too.

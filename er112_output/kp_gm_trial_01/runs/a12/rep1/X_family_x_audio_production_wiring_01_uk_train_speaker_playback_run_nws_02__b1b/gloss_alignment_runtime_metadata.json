@@ -1,0 +1,154 @@
+{
+  "article_id": "X_family_x_audio_production_wiring_01_uk_train_speaker_playback_run_nws_02__b1b",
+  "version": "ER-003-KP-GLOSS-ALIGN-02",
+  "final_status": "ALIGN_PASS",
+  "targets": [
+    1,
+    2,
+    3
+  ],
+  "unresolved_ranks": [],
+  "mapping_gate": false,
+  "rules_sha256": "fa5ae89cd739f5fd0a06de92c29c7eb1056a4a755b6fd4a745d49da37e894760",
+  "cost_jpy": 0.3174,
+  "attempts_detail": [
+    {
+      "attempt": 1,
+      "target_ranks": [
+        1,
+        2,
+        3
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_0acca84fd3bc0b75006adb04bf4c3887d1a68b9d9439e1fd0f",
+      "usage": {
+        "input_tokens": 3102,
+        "output_tokens": 2133,
+        "cached_input_tokens": 0
+      },
+      "cost_jpy": 0.2203,
+      "status": "ALIGN_PARTIAL",
+      "n_valid": 2,
+      "n_items": 3
+    },
+    {
+      "attempt": 2,
+      "target_ranks": [
+        2
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_0605a717191cd5c5006adb04d13b2887d194b6424b456b9f6f",
+      "usage": {
+        "input_tokens": 3137,
+        "output_tokens": 586,
+        "cached_input_tokens": 0
+      },
+      "cost_jpy": 0.0971,
+      "status": "ALIGN_PASS",
+      "n_valid": 1,
+      "n_items": 1
+    }
+  ],
+  "item_log": {
+    "1": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "全面的な禁止",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "新規生成のためfalseです。「全面的な禁止」で、包括的な禁止を表しています。",
+        "added_word_mappings": [],
+        "machine_check": {
+          "required_words": [],
+          "covered": {},
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true,
+          "note": "必須内容語なし(機械検査対象外)"
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.2203,
+        "model": "gpt-6-luna"
+      }
+    ],
+    "2": [
+      {
+        "attempt": 1,
+        "verdict": "INVALID",
+        "reasons": [
+          "人称不整合: 英語KP『reach for someone's wallet』は不定の人称(someone's)だが、日本語意味『人が自分の財布に手を伸ばす』が具体的な人称語(自分)を含む。不定の人称は日本語でも不定のまま(『誰かの』『人の』、再帰のone's等は『自分の』)表す"
+        ],
+        "proposed_gloss": "人が自分の財布に手を伸ばす",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "新規生成のためfalseです。不定の人を「人」とし、その人自身の財布に手を伸ばす意味を表しています。",
+        "added_word_mappings": [],
+        "machine_check": {
+          "required_words": [],
+          "covered": {},
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true,
+          "note": "必須内容語なし(機械検査対象外)"
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.2203,
+        "model": "gpt-6-luna"
+      },
+      {
+        "attempt": 2,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "誰かの財布に手を伸ばす",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "current_japanese_glossがnullのため新規生成。最終key_phrase全体の意味を表し、不定の人称someone'sも「誰かの」として示しています。",
+        "added_word_mappings": [],
+        "machine_check": {
+          "required_words": [],
+          "covered": {},
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true,
+          "note": "必須内容語なし(機械検査対象外)"
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.0971,
+        "model": "gpt-6-luna"
+      }
+    ],
+    "3": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "区別をつける",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "新規生成のためfalseです。この文脈での「draw a line」は、境界を引いて区別する意味です。",
+        "added_word_mappings": [],
+        "machine_check": {
+          "required_words": [],
+          "covered": {},
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true,
+          "note": "必須内容語なし(機械検査対象外)"
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.2203,
+        "model": "gpt-6-luna"
+      }
+    ]
+  }
+}

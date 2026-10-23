@@ -1,0 +1,120 @@
+{
+  "article_id": "Z_melos_run_kpq_01__b1b",
+  "version": "ER-003-KP-GLOSS-ALIGN-02",
+  "final_status": "ALIGN_PASS",
+  "targets": [
+    1,
+    2,
+    3
+  ],
+  "unresolved_ranks": [],
+  "mapping_gate": false,
+  "rules_sha256": "fa5ae89cd739f5fd0a06de92c29c7eb1056a4a755b6fd4a745d49da37e894760",
+  "cost_jpy": 0.125,
+  "attempts_detail": [
+    {
+      "attempt": 1,
+      "target_ranks": [
+        1,
+        2,
+        3
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_0f2031db8f730428006adb01f84b9c87d197eb7f0ceb134409",
+      "usage": {
+        "input_tokens": 2729,
+        "output_tokens": 1017,
+        "cached_input_tokens": 0
+      },
+      "cost_jpy": 0.125,
+      "status": "ALIGN_PASS",
+      "n_valid": 3,
+      "n_items": 3
+    }
+  ],
+  "item_log": {
+    "1": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "人に死刑を言い渡す",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "新規生成のためfalseです。「人に」がsomeoneを、「死刑を言い渡す」がsentence someone to deathの意味を表しています。",
+        "added_word_mappings": [],
+        "machine_check": {
+          "required_words": [],
+          "covered": {},
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true,
+          "note": "必須内容語なし(機械検査対象外)"
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.125,
+        "model": "gpt-6-luna"
+      }
+    ],
+    "2": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "自分の両手を差し出す",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "新規生成のためfalseです。「自分の両手」がone's handsを、「差し出す」がhold outの意味を表しています。",
+        "added_word_mappings": [
+          {
+            "english_word": "hold",
+            "japanese_span": "差し出す"
+          }
+        ],
+        "machine_check": {
+          "required_words": [
+            "hold"
+          ],
+          "covered": {
+            "hold": "差し出す"
+          },
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.125,
+        "model": "gpt-6-luna"
+      }
+    ],
+    "3": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "人を水中に引きずり込む",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "新規生成のためfalseです。「人を」がsomeoneを、「水中に引きずり込む」がpull underの意味を表しています。",
+        "added_word_mappings": [],
+        "machine_check": {
+          "required_words": [],
+          "covered": {},
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true,
+          "note": "必須内容語なし(機械検査対象外)"
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.125,
+        "model": "gpt-6-luna"
+      }
+    ]
+  }
+}

@@ -1,0 +1,532 @@
+# Fable抜取り用一覧(難例×arm×rep、Judge判定つき)
+
+arm: prod=記録済みProduction出力(baseline 1標本) / a1g=A-1のみ(gloss・説明は現行Prompt) / a12=A-1+A-2 / a123s=A-1+A-2+A-3 v1+Std/Adv共有 / a3v2=A-1+A-2+A-3 v2 / a1gE0・E2・E3=A-1のみのitemsに対し説明段を現行/A-3 v2/A-3 v3で各3回。Judge欄: S=Sonnet5.5, X=Sol6.1(1=良い側の総合PASS、0=NG、-=未判定)。
+
+
+## brace yourself for
+- a12 r1 [ovel_prize_run_nws_01__b1b] key=`brace yourself for` | 意味=～に備えて心構えをする | 説明=to prepare yourself mentally for something that may be difficult or unpleasant | G:S1/X- E2:S1/X-
+- a12 r2 [ovel_prize_run_nws_01__b1b] key=`brace oneself for` | 意味=～に備えて心構えをする | 説明=to prepare yourself mentally for something difficult or unpleasant | G:S1/X- E2:S1/X-
+- a12 r3 [ovel_prize_run_nws_01__b1b] key=`brace oneself for` | 意味=～に備えて心の準備をする | 説明=to prepare yourself mentally for something that may be difficult | G:S1/X- E2:S0/X-
+- a123s r1 [ovel_prize_run_nws_01__b1b] key=`brace yourself for` | 意味=～に備えて心構えをする | 説明=to prepare yourself mentally for something that may happen | G:S1/X- E2:S1/X-
+- a123s r2 [ovel_prize_run_nws_01__b1b] key=`brace oneself for` | 意味=～に備えて心構えをする | 説明=to prepare yourself for something difficult or unpleasant | G:S1/X- E2:S1/X-
+- a123s r3 [ovel_prize_run_nws_01__b1b] key=`brace oneself for` | 意味=～に備えて心の準備をする | 説明=to prepare yourself mentally for something that may be difficult | G:S1/X- E2:S0/X-
+- a1g r1 [ovel_prize_run_nws_01__b1b] key=`brace yourself for` | 意味=～に備えて覚悟する | 説明=to prepare yourself for something difficult or unpleasant | G:S1/X- E2:S0/X1
+- a1gE0 r1 [ovel_prize_run_nws_01__b1b] key=`brace yourself for` | 意味=～に備えて覚悟する | 説明=to prepare yourself for something difficult or unpleasant | G:S1/X- E2:S0/X1
+- a1gE0 r2 [ovel_prize_run_nws_01__b1b] key=`brace yourself for` | 意味=～に備えて覚悟する | 説明=to prepare yourself for something that may be difficult or surprising | G:S1/X- E2:S1/X1
+- a1gE0 r3 [ovel_prize_run_nws_01__b1b] key=`brace yourself for` | 意味=～に備えて覚悟する | 説明=to prepare yourself for something difficult or unpleasant | G:S1/X- E2:S0/X1
+- a1gE2 r1 [ovel_prize_run_nws_01__b1b] key=`brace yourself for` | 意味=～に備えて覚悟する | 説明=to prepare yourself mentally for something | G:S1/X- E2:S1/X-
+- a1gE2 r2 [ovel_prize_run_nws_01__b1b] key=`brace yourself for` | 意味=～に備えて覚悟する | 説明=to prepare yourself mentally for something difficult or unpleasant | G:S1/X- E2:S1/X1
+- a1gE2 r3 [ovel_prize_run_nws_01__b1b] key=`brace yourself for` | 意味=～に備えて覚悟する | 説明=to prepare yourself mentally for something difficult or unpleasant | G:S1/X- E2:S1/X1
+- a1gE3 r1 [ovel_prize_run_nws_01__b1b] key=`brace yourself for` | 意味=～に備えて覚悟する | 説明=to prepare yourself mentally for something difficult or unpleasant | G:S1/X- E2:S1/X1
+- a1gE3 r2 [ovel_prize_run_nws_01__b1b] key=`brace yourself for` | 意味=～に備えて覚悟する | 説明=to prepare yourself for something difficult or unpleasant | G:S1/X- E2:S0/X1
+- a1gE3 r3 [ovel_prize_run_nws_01__b1b] key=`brace yourself for` | 意味=～に備えて覚悟する | 説明=to prepare yourself for something difficult or unpleasant | G:S1/X- E2:S0/X1
+- a3v2 r1 [ovel_prize_run_nws_01__b1b] key=`brace yourself for` | 意味=～に備えて心構えをする | 説明=to prepare yourself mentally for something that may be difficult | G:S1/X- E2:S1/X-
+- a3v2 r2 [ovel_prize_run_nws_01__b1b] key=`brace oneself for` | 意味=～に備えて心構えをする | 説明=to prepare yourself mentally for something that may be difficult | G:S1/X- E2:S0/X-
+- a3v2 r3 [ovel_prize_run_nws_01__b1b] key=`brace oneself for` | 意味=～に備えて心の準備をする | 説明=to prepare yourself mentally for something that may happen | G:S1/X- E2:S1/X-
+- prod r0 [ovel_prize_run_nws_01__b1b] key=`brace oneself for` | 意味=～に備えて心の準備をする | 説明=to prepare yourself mentally for something that may be difficult or unpleasant | G:S1/X- E2:S1/X1
+
+## Carry the Load
+- a12 r1 [small_bag_run_f1fix_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a12 r1 [1_small_bag_run_jre_01__a2] key=`Carry the Load` | 意味=必要なものを持ち運ぶ | 説明=None | G:S0/X-
+- a12 r1 [_small_bag_run_jre_01__b1b] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=to carry the things that need to be taken somewhere | G:S1/X- E2:S0/X1
+- a123s r1 [small_bag_run_f1fix_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a123s r1 [1_small_bag_run_jre_01__a2] key=`Carry the Load` | 意味=必要なものを持ち運ぶ | 説明=None | G:S0/X-
+- a123s r1 [_small_bag_run_jre_01__b1b] key=`Carry the Load` | 意味=必要なものを持ち運ぶ | 説明=To carry the things that need to be taken from one place to another. | G:S1/X- E2:S1/X-
+- a1g r1 [small_bag_run_f1fix_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1g r1 [1_small_bag_run_jre_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1g r1 [_small_bag_run_jre_01__b1b] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=To carry the things that need to be moved. | G:S1/X- E2:S1/X1
+- a1gE0 r1 [small_bag_run_f1fix_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1gE0 r1 [1_small_bag_run_jre_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1gE0 r1 [_small_bag_run_jre_01__b1b] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=to carry the things or weight that need to be moved | G:S1/X- E2:S0/X1
+- a1gE0 r2 [small_bag_run_f1fix_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1gE0 r2 [1_small_bag_run_jre_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1gE0 r2 [_small_bag_run_jre_01__b1b] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=to carry something that needs moving or take on a large part of a task | G:S1/X- E2:S0/X0
+- a1gE0 r3 [small_bag_run_f1fix_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1gE0 r3 [1_small_bag_run_jre_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1gE0 r3 [_small_bag_run_jre_01__b1b] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=To hold and transport the things that need to be carried. | G:S1/X- E2:S1/X1
+- a1gE2 r1 [small_bag_run_f1fix_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1gE2 r1 [1_small_bag_run_jre_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1gE2 r1 [_small_bag_run_jre_01__b1b] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=To carry or support the weight of something. | G:S1/X- E2:S1/X-
+- a1gE2 r2 [small_bag_run_f1fix_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1gE2 r2 [1_small_bag_run_jre_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1gE2 r2 [_small_bag_run_jre_01__b1b] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=to carry the things or weight that need to be moved | G:S1/X- E2:S0/X1
+- a1gE2 r3 [small_bag_run_f1fix_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1gE2 r3 [1_small_bag_run_jre_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1gE2 r3 [_small_bag_run_jre_01__b1b] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=To carry or hold the things that need to be moved. | G:S1/X- E2:S1/X-
+- a1gE3 r1 [small_bag_run_f1fix_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1gE3 r1 [1_small_bag_run_jre_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1gE3 r1 [_small_bag_run_jre_01__b1b] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=to carry the things someone needs to take with them | G:S1/X- E2:S0/X0
+- a1gE3 r2 [small_bag_run_f1fix_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1gE3 r2 [1_small_bag_run_jre_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1gE3 r2 [_small_bag_run_jre_01__b1b] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=to carry the things that need to be moved | G:S1/X- E2:S1/X1
+- a1gE3 r3 [small_bag_run_f1fix_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1gE3 r3 [1_small_bag_run_jre_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a1gE3 r3 [_small_bag_run_jre_01__b1b] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=to carry the things that need to be taken somewhere | G:S1/X- E2:S0/X1
+- a3v2 r1 [small_bag_run_f1fix_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- a3v2 r1 [1_small_bag_run_jre_01__a2] key=`Carry the Load` | 意味=必要なものを持ち運ぶ | 説明=None | G:S0/X-
+- a3v2 r1 [_small_bag_run_jre_01__b1b] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=To carry things that are heavy or need to be moved. | G:S1/X- E2:S0/X-
+- prod r0 [small_bag_run_f1fix_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- prod r0 [1_small_bag_run_jre_01__a2] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=None | G:S1/X-
+- prod r0 [_small_bag_run_jre_01__b1b] key=`Carry the Load` | 意味=荷物を運ぶ | 説明=To carry the things that need to be moved. | G:S1/X- E2:S1/X1
+
+## draw that line
+- a12 r1 [er_playback_run_nws_02__a2] key=`draw a line` | 意味=一線を引く | 説明=None | G:S1/X-
+- a12 r1 [r_playback_run_nws_02__b1b] key=`draw a line` | 意味=区別をつける | 説明=to make a clear distinction or set a limit | G:S1/X- E2:S0/X-
+- a12 r2 [er_playback_run_nws_02__a2] key=`draw a line` | 意味=線を引く | 説明=None | G:S1/X-
+- a12 r2 [r_playback_run_nws_02__b1b] key=`draw a line` | 意味=線を引く | 説明=to set a limit or make a clear distinction | G:S1/X- E2:S1/X0
+- a12 r3 [er_playback_run_nws_02__a2] key=`draw a line` | 意味=境界線を引く | 説明=None | G:S1/X-
+- a12 r3 [r_playback_run_nws_02__b1b] key=`draw a line` | 意味=線を引く | 説明=to set a limit between what is acceptable and what is not | G:S1/X- E2:S0/X-
+- a123s r1 [er_playback_run_nws_02__a2] key=`draw a line` | 意味=一線を引く | 説明=None | G:S1/X-
+- a123s r1 [r_playback_run_nws_02__b1b] key=`draw a line` | 意味=一線を引く | 説明=to set a limit between what is acceptable and what is not | G:S1/X- E2:S0/X-
+- a123s r2 [er_playback_run_nws_02__a2] key=`draw a line` | 意味=線を引く | 説明=None | G:S1/X-
+- a123s r2 [r_playback_run_nws_02__b1b] key=`draw a line` | 意味=線を引く | 説明=to set a clear limit or show a difference | G:S1/X- E2:S0/X-
+- a123s r3 [er_playback_run_nws_02__a2] key=`draw a line` | 意味=境界線を引く | 説明=None | G:S1/X-
+- a123s r3 [r_playback_run_nws_02__b1b] key=`draw a line` | 意味=境界線を引く | 説明=to set a clear limit or show where one thing ends and another begins | G:S1/X- E2:S1/X-
+- a1g r1 [er_playback_run_nws_02__a2] key=`draw a line` | 意味=一線を引く | 説明=None | G:S1/X-
+- a1g r1 [r_playback_run_nws_02__b1b] key=`draw a line` | 意味=一線を引く | 説明=to set a clear limit on what is acceptable | G:S1/X- E2:S0/X0
+- a1gE0 r1 [er_playback_run_nws_02__a2] key=`draw a line` | 意味=一線を引く | 説明=None | G:S1/X-
+- a1gE0 r1 [r_playback_run_nws_02__b1b] key=`draw a line` | 意味=一線を引く | 説明=to set a clear limit on what is acceptable | G:S1/X- E2:S0/X0
+- a1gE0 r2 [er_playback_run_nws_02__a2] key=`draw a line` | 意味=一線を引く | 説明=None | G:S1/X-
+- a1gE0 r2 [r_playback_run_nws_02__b1b] key=`draw a line` | 意味=一線を引く | 説明=to set a limit or make a clear distinction | G:S1/X- E2:S1/X0
+- a1gE0 r3 [er_playback_run_nws_02__a2] key=`draw a line` | 意味=一線を引く | 説明=None | G:S1/X-
+- a1gE0 r3 [r_playback_run_nws_02__b1b] key=`draw a line` | 意味=一線を引く | 説明=to set a limit on what is acceptable | G:S1/X- E2:S0/X0
+- a1gE2 r1 [er_playback_run_nws_02__a2] key=`draw a line` | 意味=一線を引く | 説明=None | G:S1/X-
+- a1gE2 r1 [r_playback_run_nws_02__b1b] key=`draw a line` | 意味=一線を引く | 説明=to set a limit between what is acceptable and what is not | G:S1/X- E2:S0/X-
+- a1gE2 r2 [er_playback_run_nws_02__a2] key=`draw a line` | 意味=一線を引く | 説明=None | G:S1/X-
+- a1gE2 r2 [r_playback_run_nws_02__b1b] key=`draw a line` | 意味=一線を引く | 説明=To set a limit on what is acceptable. | G:S1/X- E2:S0/X-
+- a1gE2 r3 [er_playback_run_nws_02__a2] key=`draw a line` | 意味=一線を引く | 説明=None | G:S1/X-
+- a1gE2 r3 [r_playback_run_nws_02__b1b] key=`draw a line` | 意味=一線を引く | 説明=to set a clear limit between what is allowed and what is not | G:S1/X- E2:S0/X-
+- a1gE3 r1 [er_playback_run_nws_02__a2] key=`draw a line` | 意味=一線を引く | 説明=None | G:S1/X-
+- a1gE3 r1 [r_playback_run_nws_02__b1b] key=`draw a line` | 意味=一線を引く | 説明=to make a clear distinction between two things | G:S1/X- E2:S1/X1
+- a1gE3 r2 [er_playback_run_nws_02__a2] key=`draw a line` | 意味=一線を引く | 説明=None | G:S1/X-
+- a1gE3 r2 [r_playback_run_nws_02__b1b] key=`draw a line` | 意味=一線を引く | 説明=to show where one thing ends and another begins | G:S1/X- E2:S1/X1
+- a1gE3 r3 [er_playback_run_nws_02__a2] key=`draw a line` | 意味=一線を引く | 説明=None | G:S1/X-
+- a1gE3 r3 [r_playback_run_nws_02__b1b] key=`draw a line` | 意味=一線を引く | 説明=to set a limit or show a clear difference | G:S1/X- E2:S0/X0
+- a3v2 r1 [er_playback_run_nws_02__a2] key=`draw a line` | 意味=一線を引く | 説明=None | G:S1/X-
+- a3v2 r1 [r_playback_run_nws_02__b1b] key=`draw a line` | 意味=区別をつける | 説明=to make a clear distinction between things | G:S1/X- E2:S1/X-
+- a3v2 r2 [er_playback_run_nws_02__a2] key=`draw a line` | 意味=線を引く | 説明=None | G:S1/X-
+- a3v2 r2 [r_playback_run_nws_02__b1b] key=`draw a line` | 意味=線を引く | 説明=to set a limit between what is acceptable and what is not | G:S1/X- E2:S0/X-
+- a3v2 r3 [er_playback_run_nws_02__a2] key=`draw a line` | 意味=境界線を引く | 説明=None | G:S1/X-
+- a3v2 r3 [r_playback_run_nws_02__b1b] key=`draw a line` | 意味=線を引く | 説明=to set a clear limit or boundary | G:S1/X- E2:S1/X-
+- prod r0 [er_playback_run_nws_02__a2] key=`draw that line` | 意味=その線を引く | 説明=None | G:S0/X-
+- prod r0 [r_playback_run_nws_02__b1b] key=`draw that line` | 意味=その境界線を引く | 説明=to decide where the limit is between what is acceptable and what is not | G:S0/X- E2:S0/X0
+
+## earn such trust
+- a12 r1 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=深い信頼を得る | 説明=to do things that make people trust you deeply | G:S1/X- E2:S1/X-
+- a12 r1 [Z_melos_run_jre_01__b1b] key=`earn such trust` | 意味=これほどの信頼を得る | 説明=to act in a way that makes people trust you this much | G:S1/X- E2:S0/X-
+- a12 r2 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=これほどの信頼を得る | 説明=to act in a way that makes others trust you so much | G:S1/X- E2:S1/X-
+- a12 r3 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=厚い信頼を得る | 説明=to act in a way that makes people trust you so much | G:S1/X- E2:S1/X1
+- a123s r1 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=深い信頼を得る | 説明=to get people to believe that you are honest and can be relied on | G:S1/X- E2:S0/X-
+- a123s r1 [Z_melos_run_jre_01__b1b] key=`earn such trust` | 意味=これほどの信頼を得る | 説明=to behave in a way that makes someone trust you deeply | G:S1/X- E2:S1/X-
+- a123s r2 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=これほどの信頼を得る | 説明=to gain a high level of confidence from others through your actions | G:S1/X- E2:S0/X-
+- a123s r3 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=厚い信頼を得る | 説明=to gain a great deal of trust through your actions | G:S1/X- E2:S1/X-
+- a1g r1 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=そのような信頼を得る | 説明=to do things that make others feel they can rely on you | G:S1/X- E2:S1/X1
+- a1gE0 r1 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=そのような信頼を得る | 説明=to behave in a way that makes people trust you so much | G:S1/X- E2:S1/X1
+- a1gE0 r2 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=そのような信頼を得る | 説明=to act in a way that makes people trust you that much | G:S1/X- E2:S1/X1
+- a1gE0 r3 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=そのような信頼を得る | 説明=to gain this kind of confidence and belief from others | G:S1/X- E2:S1/X1
+- a1gE2 r1 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=そのような信頼を得る | 説明=to gain someone's trust through your actions | G:S1/X- E2:S1/X-
+- a1gE2 r2 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=そのような信頼を得る | 説明=to make someone trust you through your actions | G:S1/X- E2:S1/X1
+- a1gE2 r3 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=そのような信頼を得る | 説明=to act in a way that makes someone trust you | G:S1/X- E2:S1/X-
+- a1gE3 r1 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=そのような信頼を得る | 説明=to do things that make someone trust you | G:S1/X- E2:S1/X1
+- a1gE3 r2 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=そのような信頼を得る | 説明=to gain someone's belief that you can be relied on | G:S1/X- E2:S1/X1
+- a1gE3 r3 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=そのような信頼を得る | 説明=to make someone trust you through your actions | G:S1/X- E2:S1/X1
+- a3v2 r1 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=深い信頼を得る | 説明=to behave in a way that makes someone trust you to that degree | G:S1/X- E2:S1/X-
+- a3v2 r1 [Z_melos_run_jre_01__b1b] key=`earn such trust` | 意味=これほどの信頼を得る | 説明=to act in a way that makes someone trust you to that degree | G:S1/X- E2:S1/X-
+- a3v2 r2 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=これほどの信頼を得る | 説明=to do things that make someone trust you a great deal | G:S1/X- E2:S1/X-
+- a3v2 r3 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=厚い信頼を得る | 説明=to act in a way that makes someone believe they can depend on you | G:S1/X- E2:S1/X-
+- prod r0 [Z_melos_run_aho4_z_h3__b1b] key=`earn such trust` | 意味=これほどの信頼を得る | 説明=to do things that make people have a great deal of confidence in you | G:S1/X- E2:S1/X1
+- prod r0 [Z_melos_run_jre_01__b1b] key=`earn such trust` | 意味=これほどの信頼を得る | 説明=to act in a way that makes people trust you so much | G:S1/X- E2:S1/X1
+
+## fire the starting gun
+- a12 r1 [rger_talks_run_nws_01__b1b] key=`fire the starting gun` | 意味=始まりの合図を出す | 説明=to give a signal that something is beginning | G:S1/X- E2:S1/X-
+- a123s r1 [rger_talks_run_nws_01__b1b] key=`fire the starting gun` | 意味=始まりの合図を出す | 説明=to cause an activity or process to begin | G:S1/X- E2:S1/X1
+- a1g r1 [rger_talks_run_nws_01__b1b] key=`fire the starting gun` | 意味=スタートの合図を出す | 説明=to cause an activity or process to begin | E2:S1/X1 G:S0/X-
+- a1gE0 r1 [rger_talks_run_nws_01__b1b] key=`fire the starting gun` | 意味=スタートの合図を出す | 説明=to cause an activity or process to begin | E2:S1/X1 G:S0/X-
+- a1gE0 r2 [rger_talks_run_nws_01__b1b] key=`fire the starting gun` | 意味=スタートの合図を出す | 説明=to cause an activity or process to begin | E2:S1/X1 G:S0/X-
+- a1gE0 r3 [rger_talks_run_nws_01__b1b] key=`fire the starting gun` | 意味=スタートの合図を出す | 説明=to cause an activity or process to begin | E2:S1/X1 G:S0/X-
+- a1gE2 r1 [rger_talks_run_nws_01__b1b] key=`fire the starting gun` | 意味=スタートの合図を出す | 説明=to cause something to begin | G:S0/X- E2:S1/X1
+- a1gE2 r2 [rger_talks_run_nws_01__b1b] key=`fire the starting gun` | 意味=スタートの合図を出す | 説明=to cause an activity or process to begin | E2:S1/X1 G:S0/X-
+- a1gE2 r3 [rger_talks_run_nws_01__b1b] key=`fire the starting gun` | 意味=スタートの合図を出す | 説明=to give a signal or cause that makes something begin | G:S0/X- E2:S1/X-
+- a1gE3 r1 [rger_talks_run_nws_01__b1b] key=`fire the starting gun` | 意味=スタートの合図を出す | 説明=to cause an activity or process to begin | E2:S1/X1 G:S0/X-
+- a1gE3 r2 [rger_talks_run_nws_01__b1b] key=`fire the starting gun` | 意味=スタートの合図を出す | 説明=to cause an activity or process to begin | E2:S1/X1 G:S0/X-
+- a1gE3 r3 [rger_talks_run_nws_01__b1b] key=`fire the starting gun` | 意味=スタートの合図を出す | 説明=to cause something to begin | G:S0/X- E2:S1/X1
+- a3v2 r1 [rger_talks_run_nws_01__b1b] key=`fire the starting gun` | 意味=始まりの合図を出す | 説明=to cause something to begin | G:S1/X- E2:S1/X1
+- prod r0 [rger_talks_run_nws_01__b1b] key=`fire the starting gun` | 意味=スタートの合図を出す | 説明=to cause an activity or process to begin | E2:S1/X1 G:S0/X-
+
+## For once
+- a12 r1 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=今回ばかりは | 説明=None | G:S1/X-
+- a12 r1 [Z_melos_run_jre_01__a2] key=`For once` | 意味=今回ばかりは | 説明=None | G:S1/X-
+- a12 r2 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=珍しく | 説明=None | G:S1/X-
+- a12 r3 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=今回ばかりは | 説明=None | G:S1/X-
+- a123s r1 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=今回ばかりは | 説明=None | G:S1/X-
+- a123s r1 [Z_melos_run_jre_01__a2] key=`For once` | 意味=今回ばかりは | 説明=None | G:S1/X-
+- a123s r2 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=珍しく | 説明=None | G:S1/X-
+- a123s r3 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=今回ばかりは | 説明=None | G:S1/X-
+- a1g r1 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=今回だけは | 説明=None | G:S1/X-
+- a1gE0 r1 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=今回だけは | 説明=None | G:S1/X-
+- a1gE0 r2 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=今回だけは | 説明=None | G:S1/X-
+- a1gE0 r3 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=今回だけは | 説明=None | G:S1/X-
+- a1gE2 r1 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=今回だけは | 説明=None | G:S1/X-
+- a1gE2 r2 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=今回だけは | 説明=None | G:S1/X-
+- a1gE2 r3 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=今回だけは | 説明=None | G:S1/X-
+- a1gE3 r1 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=今回だけは | 説明=None | G:S1/X-
+- a1gE3 r2 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=今回だけは | 説明=None | G:S1/X-
+- a1gE3 r3 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=今回だけは | 説明=None | G:S1/X-
+- a3v2 r1 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=今回ばかりは | 説明=None | G:S1/X-
+- a3v2 r1 [Z_melos_run_jre_01__a2] key=`For once` | 意味=今回ばかりは | 説明=None | G:S1/X-
+- a3v2 r2 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=珍しく | 説明=None | G:S1/X-
+- a3v2 r3 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=今回ばかりは | 説明=None | G:S1/X-
+- prod r0 [Z_melos_run_aho4_z_h3__a2] key=`For once` | 意味=今回ばかりは | 説明=None | G:S1/X-
+- prod r0 [Z_melos_run_jre_01__a2] key=`For once` | 意味=たまには | 説明=None | G:S1/X-
+
+## gave way
+- a12 r1 [window_run_sf_prod_01__b1b] key=`give way` | 意味=崩れる | 説明=to break or fall down under pressure | G:S1/X- E2:S1/X-
+- a123s r1 [window_run_sf_prod_01__b1b] key=`give way` | 意味=崩れる | 説明=to collapse or sink under pressure | G:S1/X- E2:S1/X-
+- a3v2 r1 [window_run_sf_prod_01__b1b] key=`give way` | 意味=崩れる | 説明=to break or collapse under pressure | G:S1/X- E2:S0/X1
+- prod r0 [window_run_sf_prod_01__b1b] key=`give way` | 意味=崩れる | 説明=to break or collapse under pressure | G:S1/X- E2:S0/X1
+
+## go out of their way
+- a12 r1 [ovel_prize_run_nws_01__b1b] key=`go out of one's way` | 意味=わざわざ～する | 説明=to make a special effort to do something, even when it is not necessary | G:S1/X- E2:S1/X1
+- a12 r2 [ovel_prize_run_nws_01__b1b] key=`go out of someone's way` | 意味=わざわざ手間をかける | 説明=to make a special effort to do something | G:S1/X- E2:S1/X-
+- a12 r3 [ovel_prize_run_nws_01__b1b] key=`go out of one's way` | 意味=わざわざ～する | 説明=to make a special effort to do something | G:S1/X- E2:S1/X1
+- a123s r1 [ovel_prize_run_nws_01__b1b] key=`go out of one's way` | 意味=わざわざ～する | 説明=to make a special effort to do something | G:S1/X- E2:S1/X1
+- a123s r2 [ovel_prize_run_nws_01__b1b] key=`go out of someone's way` | 意味=わざわざ手間をかける | 説明=to make a special effort to do something | G:S1/X- E2:S1/X-
+- a123s r3 [ovel_prize_run_nws_01__b1b] key=`go out of one's way` | 意味=わざわざ～する | 説明=to make a special effort to do something | G:S1/X- E2:S1/X1
+- a1g r1 [ovel_prize_run_nws_01__b1b] key=`go out of one's way` | 意味=わざわざ手間をかけて～する | 説明=to make a special effort to do something | E2:S1/X1 G:S1/X-
+- a1gE0 r1 [ovel_prize_run_nws_01__b1b] key=`go out of one's way` | 意味=わざわざ手間をかけて～する | 説明=to make a special effort to do something | E2:S1/X1 G:S1/X-
+- a1gE0 r2 [ovel_prize_run_nws_01__b1b] key=`go out of one's way` | 意味=わざわざ手間をかけて～する | 説明=to make a special effort to do something | E2:S1/X1 G:S1/X-
+- a1gE0 r3 [ovel_prize_run_nws_01__b1b] key=`go out of one's way` | 意味=わざわざ手間をかけて～する | 説明=to make a special effort to do something | E2:S1/X1 G:S1/X-
+- a1gE2 r1 [ovel_prize_run_nws_01__b1b] key=`go out of one's way` | 意味=わざわざ手間をかけて～する | 説明=to make a special effort to do something | E2:S1/X1 G:S1/X-
+- a1gE2 r2 [ovel_prize_run_nws_01__b1b] key=`go out of one's way` | 意味=わざわざ手間をかけて～する | 説明=to make a special effort to do something | E2:S1/X1 G:S1/X-
+- a1gE2 r3 [ovel_prize_run_nws_01__b1b] key=`go out of one's way` | 意味=わざわざ手間をかけて～する | 説明=to make a special effort to do something | E2:S1/X1 G:S1/X-
+- a1gE3 r1 [ovel_prize_run_nws_01__b1b] key=`go out of one's way` | 意味=わざわざ手間をかけて～する | 説明=to make a special effort to do something | E2:S1/X1 G:S1/X-
+- a1gE3 r2 [ovel_prize_run_nws_01__b1b] key=`go out of one's way` | 意味=わざわざ手間をかけて～する | 説明=to make a special effort to do something | E2:S1/X1 G:S1/X-
+- a1gE3 r3 [ovel_prize_run_nws_01__b1b] key=`go out of one's way` | 意味=わざわざ手間をかけて～する | 説明=to make a special effort to do something | E2:S1/X1 G:S1/X-
+- a3v2 r1 [ovel_prize_run_nws_01__b1b] key=`go out of one's way` | 意味=わざわざ～する | 説明=to make a special effort to do something | G:S1/X- E2:S1/X1
+- a3v2 r2 [ovel_prize_run_nws_01__b1b] key=`go out of someone's way` | 意味=わざわざ手間をかける | 説明=to make a special effort to do something | G:S1/X- E2:S1/X-
+- a3v2 r3 [ovel_prize_run_nws_01__b1b] key=`go out of one's way` | 意味=わざわざ～する | 説明=to make a special effort to do something | G:S1/X- E2:S1/X1
+- prod r0 [ovel_prize_run_nws_01__b1b] key=`go out of one's way` | 意味=わざわざ～する | 説明=to make a special effort to do something, even when it is not necessary | G:S1/X- E2:S1/X1
+
+## held out
+- a12 r1 [Z_melos_run_jre_01__a2] key=`hold out` | 意味=差し出す | 説明=None | G:S1/X-
+- a123s r1 [Z_melos_run_jre_01__a2] key=`hold out` | 意味=差し出す | 説明=None | G:S1/X-
+- a3v2 r1 [Z_melos_run_jre_01__a2] key=`hold out` | 意味=差し出す | 説明=None | G:S1/X-
+- prod r0 [Z_melos_run_jre_01__a2] key=`hold out` | 意味=差し出す | 説明=None | G:S1/X-
+
+## held out his hands
+- a12 r1 [Z_melos_run_kpq_01__b1b] key=`hold out one's hands` | 意味=手を差し出す | 説明=to extend one's hands toward someone or something | G:S1/X- E2:S1/X1
+- a123s r1 [Z_melos_run_kpq_01__b1b] key=`hold out one's hands` | 意味=手を差し出す | 説明=to extend one's hands in front of oneself or toward someone | G:S1/X- E2:S1/X-
+- a1g r1 [Z_melos_run_kpq_01__b1b] key=`hold out one's hands` | 意味=両手を差し出す | 説明=to extend one's hands away from one's body | G:S1/X- E2:S1/X1
+- a1gE0 r1 [Z_melos_run_kpq_01__b1b] key=`hold out one's hands` | 意味=両手を差し出す | 説明=to extend your hands in front of you or toward someone | G:S1/X- E2:S1/X1
+- a1gE0 r2 [Z_melos_run_kpq_01__b1b] key=`hold out one's hands` | 意味=両手を差し出す | 説明=to extend both hands in front of oneself or toward someone | G:S1/X- E2:S0/X1
+- a1gE0 r3 [Z_melos_run_kpq_01__b1b] key=`hold out one's hands` | 意味=両手を差し出す | 説明=to extend one's hands toward someone or something | E2:S1/X1 G:S1/X-
+- a1gE2 r1 [Z_melos_run_kpq_01__b1b] key=`hold out one's hands` | 意味=両手を差し出す | 説明=to extend one's hands away from one's body | G:S1/X- E2:S1/X1
+- a1gE2 r2 [Z_melos_run_kpq_01__b1b] key=`hold out one's hands` | 意味=両手を差し出す | 説明=to extend one's hands away from one's body | G:S1/X- E2:S1/X1
+- a1gE2 r3 [Z_melos_run_kpq_01__b1b] key=`hold out one's hands` | 意味=両手を差し出す | 説明=to extend one's hands away from one's body | G:S1/X- E2:S1/X1
+- a1gE3 r1 [Z_melos_run_kpq_01__b1b] key=`hold out one's hands` | 意味=両手を差し出す | 説明=to extend your hands away from your body | G:S1/X- E2:S1/X1
+- a1gE3 r2 [Z_melos_run_kpq_01__b1b] key=`hold out one's hands` | 意味=両手を差し出す | 説明=to stretch one's hands out in front of oneself | G:S1/X- E2:S1/X1
+- a1gE3 r3 [Z_melos_run_kpq_01__b1b] key=`hold out one's hands` | 意味=両手を差し出す | 説明=to extend one's hands in front of oneself | G:S1/X- E2:S0/X1
+- a3v2 r1 [Z_melos_run_kpq_01__b1b] key=`hold out one's hands` | 意味=手を差し出す | 説明=to extend one's hands away from one's body | G:S1/X- E2:S1/X1
+- prod r0 [Z_melos_run_kpq_01__b1b] key=`hold out one's hands` | 意味=自分の手を差し出す | 説明=to extend one's hands toward someone or something | E2:S1/X1 G:S0/X-
+
+## in your place
+- a12 r1 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a12 r1 [Z_melos_run_jre_01__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a12 r1 [Z_melos_run_kpq_01__a2] key=`in someone's place` | 意味=誰かの代わりに | 説明=None | G:S1/X-
+- a12 r2 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a12 r3 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a123s r1 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a123s r1 [Z_melos_run_jre_01__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a123s r1 [Z_melos_run_kpq_01__a2] key=`in someone's place` | 意味=誰かの代わりに | 説明=None | G:S1/X-
+- a123s r2 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a123s r3 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a1g r1 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a1g r1 [Z_melos_run_kpq_01__a2] key=`in someone's place` | 意味=誰かの代わりに | 説明=None | G:S1/X-
+- a1gE0 r1 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a1gE0 r1 [Z_melos_run_kpq_01__a2] key=`in someone's place` | 意味=誰かの代わりに | 説明=None | G:S1/X-
+- a1gE0 r2 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a1gE0 r2 [Z_melos_run_kpq_01__a2] key=`in someone's place` | 意味=誰かの代わりに | 説明=None | G:S1/X-
+- a1gE0 r3 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a1gE0 r3 [Z_melos_run_kpq_01__a2] key=`in someone's place` | 意味=誰かの代わりに | 説明=None | G:S1/X-
+- a1gE2 r1 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a1gE2 r1 [Z_melos_run_kpq_01__a2] key=`in someone's place` | 意味=誰かの代わりに | 説明=None | G:S1/X-
+- a1gE2 r2 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a1gE2 r2 [Z_melos_run_kpq_01__a2] key=`in someone's place` | 意味=誰かの代わりに | 説明=None | G:S1/X-
+- a1gE2 r3 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a1gE2 r3 [Z_melos_run_kpq_01__a2] key=`in someone's place` | 意味=誰かの代わりに | 説明=None | G:S1/X-
+- a1gE3 r1 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a1gE3 r1 [Z_melos_run_kpq_01__a2] key=`in someone's place` | 意味=誰かの代わりに | 説明=None | G:S1/X-
+- a1gE3 r2 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a1gE3 r2 [Z_melos_run_kpq_01__a2] key=`in someone's place` | 意味=誰かの代わりに | 説明=None | G:S1/X-
+- a1gE3 r3 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a1gE3 r3 [Z_melos_run_kpq_01__a2] key=`in someone's place` | 意味=誰かの代わりに | 説明=None | G:S1/X-
+- a3v2 r1 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a3v2 r1 [Z_melos_run_jre_01__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a3v2 r1 [Z_melos_run_kpq_01__a2] key=`in someone's place` | 意味=誰かの代わりに | 説明=None | G:S1/X-
+- a3v2 r2 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- a3v2 r3 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=人の代わりに | 説明=None | G:S1/X-
+- prod r0 [Z_melos_run_aho4_z_h3__a2] key=`in someone's place` | 意味=誰かの代わりに | 説明=None | G:S1/X-
+- prod r0 [Z_melos_run_jre_01__a2] key=`in someone's place` | 意味=誰かの代わりに | 説明=None | G:S1/X-
+- prod r0 [Z_melos_run_kpq_01__a2] key=`in someone's place` | 意味=誰かの代わりに | 説明=None | G:S1/X-
+
+## kept you company
+- a12 r1 [window_run_sf_prod_01__b1b] key=`keep someone company` | 意味=人の話し相手になる | 説明=to spend time with someone so they are not alone | G:S1/X- E2:S1/X1
+- a123s r1 [window_run_sf_prod_01__b1b] key=`keep someone company` | 意味=人の話し相手になる | 説明=to stay with someone so they are not alone | G:S1/X- E2:S1/X-
+- a3v2 r1 [window_run_sf_prod_01__b1b] key=`keep someone company` | 意味=人の話し相手になる | 説明=to spend time with someone so they are not alone | G:S1/X- E2:S1/X1
+- prod r0 [window_run_sf_prod_01__b1b] key=`keep someone company` | 意味=人の相手をする | 説明=to spend time with someone so they are not alone | E2:S1/X1 G:S1/X-
+
+## on the throne
+- a12 r1 [small_bag_run_f1fix_01__a2] key=`on the throne` | 意味=王座に君臨している | 説明=None | G:S1/X-
+- a12 r1 [1_small_bag_run_jre_01__a2] key=`on the throne` | 意味=王座に君臨している | 説明=None | G:S1/X-
+- a123s r1 [small_bag_run_f1fix_01__a2] key=`on the throne` | 意味=王座に君臨している | 説明=None | G:S1/X-
+- a123s r1 [1_small_bag_run_jre_01__a2] key=`on the throne` | 意味=王座に君臨している | 説明=None | G:S1/X-
+- a1g r1 [small_bag_run_f1fix_01__a2] key=`on the throne` | 意味=王座に就いている | 説明=None | G:S1/X-
+- a1g r1 [1_small_bag_run_jre_01__a2] key=`on the throne` | 意味=王座に君臨している | 説明=None | G:S1/X-
+- a1gE0 r1 [small_bag_run_f1fix_01__a2] key=`on the throne` | 意味=王座に就いている | 説明=None | G:S1/X-
+- a1gE0 r1 [1_small_bag_run_jre_01__a2] key=`on the throne` | 意味=王座に君臨している | 説明=None | G:S1/X-
+- a1gE0 r2 [small_bag_run_f1fix_01__a2] key=`on the throne` | 意味=王座に就いている | 説明=None | G:S1/X-
+- a1gE0 r2 [1_small_bag_run_jre_01__a2] key=`on the throne` | 意味=王座に君臨している | 説明=None | G:S1/X-
+- a1gE0 r3 [small_bag_run_f1fix_01__a2] key=`on the throne` | 意味=王座に就いている | 説明=None | G:S1/X-
+- a1gE0 r3 [1_small_bag_run_jre_01__a2] key=`on the throne` | 意味=王座に君臨している | 説明=None | G:S1/X-
+- a1gE2 r1 [small_bag_run_f1fix_01__a2] key=`on the throne` | 意味=王座に就いている | 説明=None | G:S1/X-
+- a1gE2 r1 [1_small_bag_run_jre_01__a2] key=`on the throne` | 意味=王座に君臨している | 説明=None | G:S1/X-
+- a1gE2 r2 [small_bag_run_f1fix_01__a2] key=`on the throne` | 意味=王座に就いている | 説明=None | G:S1/X-
+- a1gE2 r2 [1_small_bag_run_jre_01__a2] key=`on the throne` | 意味=王座に君臨している | 説明=None | G:S1/X-
+- a1gE2 r3 [small_bag_run_f1fix_01__a2] key=`on the throne` | 意味=王座に就いている | 説明=None | G:S1/X-
+- a1gE2 r3 [1_small_bag_run_jre_01__a2] key=`on the throne` | 意味=王座に君臨している | 説明=None | G:S1/X-
+- a1gE3 r1 [small_bag_run_f1fix_01__a2] key=`on the throne` | 意味=王座に就いている | 説明=None | G:S1/X-
+- a1gE3 r1 [1_small_bag_run_jre_01__a2] key=`on the throne` | 意味=王座に君臨している | 説明=None | G:S1/X-
+- a1gE3 r2 [small_bag_run_f1fix_01__a2] key=`on the throne` | 意味=王座に就いている | 説明=None | G:S1/X-
+- a1gE3 r2 [1_small_bag_run_jre_01__a2] key=`on the throne` | 意味=王座に君臨している | 説明=None | G:S1/X-
+- a1gE3 r3 [small_bag_run_f1fix_01__a2] key=`on the throne` | 意味=王座に就いている | 説明=None | G:S1/X-
+- a1gE3 r3 [1_small_bag_run_jre_01__a2] key=`on the throne` | 意味=王座に君臨している | 説明=None | G:S1/X-
+- a3v2 r1 [small_bag_run_f1fix_01__a2] key=`on the throne` | 意味=王座に君臨している | 説明=None | G:S1/X-
+- a3v2 r1 [1_small_bag_run_jre_01__a2] key=`on the throne` | 意味=王座に君臨している | 説明=None | G:S1/X-
+- prod r0 [small_bag_run_f1fix_01__a2] key=`on the throne` | 意味=王座に就いている | 説明=None | G:S1/X-
+- prod r0 [1_small_bag_run_jre_01__a2] key=`on the throne` | 意味=王座に就いている | 説明=None | G:S1/X-
+
+## pulled him under
+- a12 r1 [Z_melos_run_aho4_z_h3__a2] key=`pull someone under` | 意味=人を水中に引き込む | 説明=None | G:S1/X-
+- a12 r1 [Z_melos_run_kpq_01__a2] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=None | G:S1/X-
+- a12 r1 [Z_melos_run_kpq_01__b1b] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=to pull someone down below the surface of the water | G:S1/X- E2:S0/X-
+- a12 r2 [Z_melos_run_aho4_z_h3__a2] key=`pull someone under` | 意味=人を水の中に引きずり込む | 説明=None | G:S1/X-
+- a12 r3 [Z_melos_run_aho4_z_h3__a2] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=None | G:S1/X-
+- a123s r1 [Z_melos_run_aho4_z_h3__a2] key=`pull someone under` | 意味=人を水中に引き込む | 説明=None | G:S1/X-
+- a123s r1 [Z_melos_run_kpq_01__a2] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=None | G:S1/X-
+- a123s r1 [Z_melos_run_kpq_01__b1b] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=to drag someone down below the surface of water | G:S1/X- E2:S1/X-
+- a123s r2 [Z_melos_run_aho4_z_h3__a2] key=`pull someone under` | 意味=人を水の中に引きずり込む | 説明=None | G:S1/X-
+- a123s r3 [Z_melos_run_aho4_z_h3__a2] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=None | G:S1/X-
+- a1g r1 [Z_melos_run_aho4_z_h3__a2] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=None | G:S1/X-
+- a1g r1 [Z_melos_run_kpq_01__a2] key=`pull someone under` | 意味=人を水中に引き込む | 説明=None | G:S1/X-
+- a1g r1 [Z_melos_run_kpq_01__b1b] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=to force someone below the surface of water or another substance | G:S1/X- E2:S1/X1
+- a1gE0 r1 [Z_melos_run_aho4_z_h3__a2] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=None | G:S1/X-
+- a1gE0 r1 [Z_melos_run_kpq_01__a2] key=`pull someone under` | 意味=人を水中に引き込む | 説明=None | G:S1/X-
+- a1gE0 r1 [Z_melos_run_kpq_01__b1b] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=to drag someone below the surface of the water | G:S1/X- E2:S0/X1
+- a1gE0 r2 [Z_melos_run_aho4_z_h3__a2] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=None | G:S1/X-
+- a1gE0 r2 [Z_melos_run_kpq_01__a2] key=`pull someone under` | 意味=人を水中に引き込む | 説明=None | G:S1/X-
+- a1gE0 r2 [Z_melos_run_kpq_01__b1b] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=to drag someone down beneath a surface | G:S1/X- E2:S1/X1
+- a1gE0 r3 [Z_melos_run_aho4_z_h3__a2] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=None | G:S1/X-
+- a1gE0 r3 [Z_melos_run_kpq_01__a2] key=`pull someone under` | 意味=人を水中に引き込む | 説明=None | G:S1/X-
+- a1gE0 r3 [Z_melos_run_kpq_01__b1b] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=to drag someone below the surface of the water | G:S1/X- E2:S0/X1
+- a1gE2 r1 [Z_melos_run_aho4_z_h3__a2] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=None | G:S1/X-
+- a1gE2 r1 [Z_melos_run_kpq_01__a2] key=`pull someone under` | 意味=人を水中に引き込む | 説明=None | G:S1/X-
+- a1gE2 r1 [Z_melos_run_kpq_01__b1b] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=to pull someone below a surface | G:S1/X- E2:S1/X-
+- a1gE2 r2 [Z_melos_run_aho4_z_h3__a2] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=None | G:S1/X-
+- a1gE2 r2 [Z_melos_run_kpq_01__a2] key=`pull someone under` | 意味=人を水中に引き込む | 説明=None | G:S1/X-
+- a1gE2 r2 [Z_melos_run_kpq_01__b1b] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=to drag someone below the surface of the water | G:S1/X- E2:S0/X1
+- a1gE2 r3 [Z_melos_run_aho4_z_h3__a2] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=None | G:S1/X-
+- a1gE2 r3 [Z_melos_run_kpq_01__a2] key=`pull someone under` | 意味=人を水中に引き込む | 説明=None | G:S1/X-
+- a1gE2 r3 [Z_melos_run_kpq_01__b1b] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=to pull someone down below a surface | G:S1/X- E2:S1/X-
+- a1gE3 r1 [Z_melos_run_aho4_z_h3__a2] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=None | G:S1/X-
+- a1gE3 r1 [Z_melos_run_kpq_01__a2] key=`pull someone under` | 意味=人を水中に引き込む | 説明=None | G:S1/X-
+- a1gE3 r1 [Z_melos_run_kpq_01__b1b] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=to pull someone below the surface of the water | G:S1/X- E2:S0/X0
+- a1gE3 r2 [Z_melos_run_aho4_z_h3__a2] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=None | G:S1/X-
+- a1gE3 r2 [Z_melos_run_kpq_01__a2] key=`pull someone under` | 意味=人を水中に引き込む | 説明=None | G:S1/X-
+- a1gE3 r2 [Z_melos_run_kpq_01__b1b] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=to pull someone below the surface of the water | G:S1/X- E2:S0/X0
+- a1gE3 r3 [Z_melos_run_aho4_z_h3__a2] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=None | G:S1/X-
+- a1gE3 r3 [Z_melos_run_kpq_01__a2] key=`pull someone under` | 意味=人を水中に引き込む | 説明=None | G:S1/X-
+- a1gE3 r3 [Z_melos_run_kpq_01__b1b] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=to drag someone below the surface of water | G:S1/X- E2:S0/X1
+- a3v2 r1 [Z_melos_run_aho4_z_h3__a2] key=`pull someone under` | 意味=人を水中に引き込む | 説明=None | G:S1/X-
+- a3v2 r1 [Z_melos_run_kpq_01__a2] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=None | G:S1/X-
+- a3v2 r1 [Z_melos_run_kpq_01__b1b] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=to pull someone down so they go below a surface | G:S1/X- E2:S1/X-
+- a3v2 r2 [Z_melos_run_aho4_z_h3__a2] key=`pull someone under` | 意味=人を水の中に引きずり込む | 説明=None | G:S1/X-
+- a3v2 r3 [Z_melos_run_aho4_z_h3__a2] key=`pull someone under` | 意味=人を水中に引きずり込む | 説明=None | G:S1/X-
+- prod r0 [Z_melos_run_aho4_z_h3__a2] key=`pulled him under` | 意味=彼を水中に引きずり込んだ | 説明=None | G:S0/X-
+- prod r0 [Z_melos_run_kpq_01__a2] key=`pull him under` | 意味=彼を水中に引きずり込む | 説明=None | G:S1/X-
+- prod r0 [Z_melos_run_kpq_01__b1b] key=`pull him under` | 意味=彼を水中に引きずり込む | 説明=to drag him below the surface of the water | G:S0/X- E2:S0/X0
+
+## pumps its fist
+- a12 r1 [ee_prices_run_aho4_h1b__a2] key=`pump one's fist` | 意味=ガッツポーズをする | 説明=None | G:S1/X-
+- a12 r1 [ffee_prices_run_jre_01__a2] key=`pump one's fist` | 意味=人が喜んでこぶしを突き上げる | 説明=None | G:S1/X-
+- a12 r1 [fee_prices_run_jre_01__b1b] key=`pump one's fist` | 意味=自分の拳を突き上げて喜ぶ | 説明=to lift a closed hand sharply to show excitement or success | G:S0/X- E2:S1/X-
+- a12 r1 [ffee_prices_run_kpq_01__a2] key=`pump its fist` | 意味=こぶしを突き上げて喜ぶ | 説明=None | G:S1/X-
+- a123s r1 [ee_prices_run_aho4_h1b__a2] key=`pump one's fist` | 意味=ガッツポーズをする | 説明=None | G:S1/X-
+- a123s r1 [ffee_prices_run_jre_01__a2] key=`pump one's fist` | 意味=人が喜んでこぶしを突き上げる | 説明=None | G:S1/X-
+- a123s r1 [fee_prices_run_jre_01__b1b] key=`pump one's fist` | 意味=人が喜んでこぶしを突き上げる | 説明=to raise a closed hand in the air to show excitement or success | G:S1/X- E2:S1/X-
+- a123s r1 [ffee_prices_run_kpq_01__a2] key=`pump its fist` | 意味=こぶしを突き上げて喜ぶ | 説明=None | G:S1/X-
+- a3v2 r1 [ee_prices_run_aho4_h1b__a2] key=`pump one's fist` | 意味=ガッツポーズをする | 説明=None | G:S1/X-
+- a3v2 r1 [ffee_prices_run_jre_01__a2] key=`pump one's fist` | 意味=人が喜んでこぶしを突き上げる | 説明=None | G:S1/X-
+- a3v2 r1 [fee_prices_run_jre_01__b1b] key=`pump one's fist` | 意味=自分の拳を突き上げて喜ぶ | 説明=to thrust a closed hand upward to show excitement or success | G:S0/X- E2:S1/X-
+- a3v2 r1 [ffee_prices_run_kpq_01__a2] key=`pump its fist` | 意味=こぶしを突き上げて喜ぶ | 説明=None | G:S1/X-
+- prod r0 [ee_prices_run_aho4_h1b__a2] key=`pump one's fist` | 意味=自分のこぶしを突き上げる | 説明=None | G:S0/X-
+- prod r0 [ffee_prices_run_jre_01__a2] key=`pump one's fist` | 意味=自分のこぶしを突き上げて喜ぶ | 説明=None | G:S0/X-
+- prod r0 [fee_prices_run_jre_01__b1b] key=`pump one's fist` | 意味=自分の拳を突き上げる | 説明=to raise a closed hand to show excitement or victory | G:S0/X- E2:S1/X1
+- prod r0 [ffee_prices_run_kpq_01__a2] key=`pump one's fist` | 意味=自分のこぶしを突き上げる | 説明=None | G:S0/X-
+
+## reach for your wallet
+- a12 r1 [er_playback_run_nws_02__a2] key=`reach for one's wallet` | 意味=財布に手を伸ばす | 説明=None | G:S1/X-
+- a12 r1 [r_playback_run_nws_02__b1b] key=`reach for someone's wallet` | 意味=誰かの財布に手を伸ばす | 説明=to make someone feel ready to spend money | G:S0/X- E2:S0/X-
+- a12 r2 [er_playback_run_nws_02__a2] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=None | G:S0/X-
+- a12 r2 [r_playback_run_nws_02__b1b] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=to get ready to spend money | G:S0/X- E2:S1/X1
+- a12 r3 [er_playback_run_nws_02__a2] key=`reach for your wallet` | 意味=財布に手を伸ばす | 説明=None | G:S0/X-
+- a12 r3 [r_playback_run_nws_02__b1b] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=to get ready to pay for something | G:S0/X- E2:S0/X-
+- a123s r1 [er_playback_run_nws_02__a2] key=`reach for one's wallet` | 意味=財布に手を伸ばす | 説明=None | G:S1/X-
+- a123s r1 [r_playback_run_nws_02__b1b] key=`reach for someone's wallet` | 意味=誰かの財布に手を伸ばす | 説明=to get ready to spend money | G:S0/X- E2:S1/X1
+- a123s r2 [er_playback_run_nws_02__a2] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=None | G:S0/X-
+- a123s r2 [r_playback_run_nws_02__b1b] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=to get ready to spend money | G:S0/X- E2:S1/X1
+- a123s r3 [er_playback_run_nws_02__a2] key=`reach for your wallet` | 意味=財布に手を伸ばす | 説明=None | G:S0/X-
+- a123s r3 [r_playback_run_nws_02__b1b] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=to get ready to spend money | G:S0/X- E2:S1/X1
+- a1g r1 [er_playback_run_nws_02__a2] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=None | G:S0/X-
+- a1g r1 [r_playback_run_nws_02__b1b] key=`reach for someone's wallet` | 意味=誰かの財布に手を伸ばす | 説明=to make someone get ready to spend money | G:S0/X- E2:S0/X0
+- a1gE0 r1 [er_playback_run_nws_02__a2] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=None | G:S0/X-
+- a1gE0 r1 [r_playback_run_nws_02__b1b] key=`reach for someone's wallet` | 意味=誰かの財布に手を伸ばす | 説明=to get ready to take out money to pay for something | G:S0/X- E2:S0/X1
+- a1gE0 r2 [er_playback_run_nws_02__a2] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=None | G:S0/X-
+- a1gE0 r2 [r_playback_run_nws_02__b1b] key=`reach for someone's wallet` | 意味=誰かの財布に手を伸ばす | 説明=to get ready to spend money | G:S0/X- E2:S1/X1
+- a1gE0 r3 [er_playback_run_nws_02__a2] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=None | G:S0/X-
+- a1gE0 r3 [r_playback_run_nws_02__b1b] key=`reach for someone's wallet` | 意味=誰かの財布に手を伸ばす | 説明=to be ready to pay for something | G:S0/X- E2:S0/X1
+- a1gE2 r1 [er_playback_run_nws_02__a2] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=None | G:S0/X-
+- a1gE2 r1 [r_playback_run_nws_02__b1b] key=`reach for someone's wallet` | 意味=誰かの財布に手を伸ばす | 説明=to get ready to spend money | G:S0/X- E2:S1/X1
+- a1gE2 r2 [er_playback_run_nws_02__a2] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=None | G:S0/X-
+- a1gE2 r2 [r_playback_run_nws_02__b1b] key=`reach for someone's wallet` | 意味=誰かの財布に手を伸ばす | 説明=To get ready to pay money for something. | G:S0/X- E2:S1/X-
+- a1gE2 r3 [er_playback_run_nws_02__a2] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=None | G:S0/X-
+- a1gE2 r3 [r_playback_run_nws_02__b1b] key=`reach for someone's wallet` | 意味=誰かの財布に手を伸ばす | 説明=to feel ready to spend money on something | G:S0/X- E2:S0/X-
+- a1gE3 r1 [er_playback_run_nws_02__a2] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=None | G:S0/X-
+- a1gE3 r1 [r_playback_run_nws_02__b1b] key=`reach for someone's wallet` | 意味=誰かの財布に手を伸ばす | 説明=to get ready to pay for something | G:S0/X- E2:S1/X1
+- a1gE3 r2 [er_playback_run_nws_02__a2] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=None | G:S0/X-
+- a1gE3 r2 [r_playback_run_nws_02__b1b] key=`reach for someone's wallet` | 意味=誰かの財布に手を伸ばす | 説明=to get ready to spend money on something | G:S0/X- E2:S0/X1
+- a1gE3 r3 [er_playback_run_nws_02__a2] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=None | G:S0/X-
+- a1gE3 r3 [r_playback_run_nws_02__b1b] key=`reach for someone's wallet` | 意味=誰かの財布に手を伸ばす | 説明=to get ready to spend money on something | G:S0/X- E2:S0/X1
+- a3v2 r1 [er_playback_run_nws_02__a2] key=`reach for one's wallet` | 意味=財布に手を伸ばす | 説明=None | G:S1/X-
+- a3v2 r1 [r_playback_run_nws_02__b1b] key=`reach for someone's wallet` | 意味=誰かの財布に手を伸ばす | 説明=to get ready to spend money | G:S0/X- E2:S1/X1
+- a3v2 r2 [er_playback_run_nws_02__a2] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=None | G:S0/X-
+- a3v2 r2 [r_playback_run_nws_02__b1b] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=to get ready to pay for something | G:S0/X- E2:S0/X-
+- a3v2 r3 [er_playback_run_nws_02__a2] key=`reach for your wallet` | 意味=財布に手を伸ばす | 説明=None | G:S0/X-
+- a3v2 r3 [r_playback_run_nws_02__b1b] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=to get ready to spend money | G:S0/X- E2:S1/X1
+- prod r0 [er_playback_run_nws_02__a2] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=None | G:S0/X-
+- prod r0 [r_playback_run_nws_02__b1b] key=`reach for one's wallet` | 意味=自分の財布に手を伸ばす | 説明=to get ready to spend money | G:S0/X- E2:S1/X1
+
+## rose above the other voices
+- a12 r1 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声よりも大きく響く | 説明=to be heard more clearly or loudly than the other voices | G:S0/X- E2:S0/X1
+- a12 r2 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声よりも大きく聞こえる | 説明=to be heard more clearly or loudly than the other voices | E2:S0/X1 G:S1/X-
+- a12 r3 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声より大きく響く | 説明=to be heard more clearly or loudly than the other voices | E2:S0/X1 G:S0/X-
+- a123s r1 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声よりも大きく響く | 説明=to be heard more clearly or loudly than the other voices | G:S0/X- E2:S0/X1
+- a123s r2 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声よりも大きく聞こえる | 説明=to be heard more clearly or loudly than the other voices | E2:S0/X1 G:S1/X-
+- a123s r3 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声より大きく響く | 説明=to be louder and easier to hear than the voices around it | G:S0/X- E2:S0/X-
+- a1g r1 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声よりも大きく響く | 説明=to be heard more clearly or loudly than the other people speaking | G:S0/X- E2:S1/X1
+- a1gE0 r1 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声よりも大きく響く | 説明=to be heard more clearly or loudly than the other voices | G:S0/X- E2:S0/X1
+- a1gE0 r2 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声よりも大きく響く | 説明=to be heard more clearly or loudly than the other people speaking | G:S0/X- E2:S1/X1
+- a1gE0 r3 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声よりも大きく響く | 説明=to be heard more clearly or loudly than the other voices | G:S0/X- E2:S0/X1
+- a1gE2 r1 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声よりも大きく響く | 説明=to be heard more clearly or loudly than the other voices | G:S0/X- E2:S0/X1
+- a1gE2 r2 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声よりも大きく響く | 説明=to be louder than the other voices | G:S0/X- E2:S0/X-
+- a1gE2 r3 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声よりも大きく響く | 説明=to be louder than the other voices | G:S0/X- E2:S0/X-
+- a1gE3 r1 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声よりも大きく響く | 説明=to be heard more loudly than other voices | G:S0/X- E2:S1/X1
+- a1gE3 r2 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声よりも大きく響く | 説明=to be heard more clearly or loudly than the other voices | G:S0/X- E2:S0/X1
+- a1gE3 r3 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声よりも大きく響く | 説明=to be louder and easier to hear than other voices | G:S0/X- E2:S1/X1
+- a3v2 r1 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声よりも大きく響く | 説明=to be louder or more noticeable than the other voices | G:S0/X- E2:S0/X-
+- a3v2 r2 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声よりも大きく聞こえる | 説明=to be louder and easier to hear than the other voices | G:S1/X- E2:S1/X-
+- a3v2 r3 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声より大きく響く | 説明=to be louder and easier to hear than the other voices | G:S0/X- E2:S1/X-
+- prod r0 [Z_melos_run_aho4_z_h3__b1b] key=`rise above the other voices` | 意味=ほかの声より大きく響く | 説明=to be heard more clearly or loudly than the other voices | E2:S0/X1 G:S0/X-
+
+## sentenced him to death
+- a12 r1 [Z_melos_run_aho4_z_h3__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially decide that someone must be killed as punishment | G:S1/X- E2:S1/X1
+- a12 r1 [Z_melos_run_jre_01__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially decide that someone must be killed as punishment | G:S1/X- E2:S1/X1
+- a12 r1 [Z_melos_run_kpq_01__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially decide that someone must be killed as a punishment | G:S1/X- E2:S1/X1
+- a12 r2 [Z_melos_run_aho4_z_h3__b1b] key=`sentence someone to death` | 意味=人を死刑にする | 説明=to officially order that someone be killed as a punishment | G:S1/X- E2:S1/X1
+- a12 r3 [Z_melos_run_aho4_z_h3__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially decide that someone must be killed as a punishment | G:S1/X- E2:S1/X1
+- a123s r1 [Z_melos_run_aho4_z_h3__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially order that someone be killed as a punishment | G:S1/X- E2:S1/X1
+- a123s r1 [Z_melos_run_jre_01__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially decide that someone must be killed as punishment | G:S1/X- E2:S1/X1
+- a123s r1 [Z_melos_run_kpq_01__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially decide that someone must be killed as a punishment | G:S1/X- E2:S1/X1
+- a123s r2 [Z_melos_run_aho4_z_h3__b1b] key=`sentence someone to death` | 意味=人を死刑にする | 説明=to officially decide that someone must be killed as a punishment | E2:S1/X1 G:S1/X-
+- a123s r3 [Z_melos_run_aho4_z_h3__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially order that someone be killed as a punishment | G:S1/X- E2:S1/X1
+- a1g r1 [Z_melos_run_aho4_z_h3__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially decide that someone must be killed as punishment | G:S1/X- E2:S1/X1
+- a1g r1 [Z_melos_run_kpq_01__b1b] key=`sentence someone to death` | 意味=誰かに死刑を言い渡す | 説明=to officially decide that someone must be killed as a punishment | E2:S1/X1 G:S0/X-
+- a1gE0 r1 [Z_melos_run_aho4_z_h3__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially order that someone be killed as a punishment | G:S1/X- E2:S1/X1
+- a1gE0 r1 [Z_melos_run_kpq_01__b1b] key=`sentence someone to death` | 意味=誰かに死刑を言い渡す | 説明=to officially decide that someone must be killed as a punishment | E2:S1/X1 G:S0/X-
+- a1gE0 r2 [Z_melos_run_aho4_z_h3__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially decide that someone must be killed as a punishment | G:S1/X- E2:S1/X1
+- a1gE0 r2 [Z_melos_run_kpq_01__b1b] key=`sentence someone to death` | 意味=誰かに死刑を言い渡す | 説明=to officially decide that someone must be killed as punishment | E2:S1/X1 G:S0/X-
+- a1gE0 r3 [Z_melos_run_aho4_z_h3__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially decide that someone must be killed as a punishment | G:S1/X- E2:S1/X1
+- a1gE0 r3 [Z_melos_run_kpq_01__b1b] key=`sentence someone to death` | 意味=誰かに死刑を言い渡す | 説明=to officially order that someone be killed as a punishment | E2:S1/X1 G:S0/X-
+- a1gE2 r1 [Z_melos_run_aho4_z_h3__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially decide that someone must be killed as a punishment | G:S1/X- E2:S1/X1
+- a1gE2 r1 [Z_melos_run_kpq_01__b1b] key=`sentence someone to death` | 意味=誰かに死刑を言い渡す | 説明=to officially decide that someone must be killed as a punishment | E2:S1/X1 G:S0/X-
+- a1gE2 r2 [Z_melos_run_aho4_z_h3__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially order that someone be killed as a punishment | G:S1/X- E2:S1/X1
+- a1gE2 r2 [Z_melos_run_kpq_01__b1b] key=`sentence someone to death` | 意味=誰かに死刑を言い渡す | 説明=to officially decide that someone must be killed as a punishment | E2:S1/X1 G:S0/X-
+- a1gE2 r3 [Z_melos_run_aho4_z_h3__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially order that someone be killed as a punishment | G:S1/X- E2:S1/X1
+- a1gE2 r3 [Z_melos_run_kpq_01__b1b] key=`sentence someone to death` | 意味=誰かに死刑を言い渡す | 説明=to officially decide that someone must be killed as a punishment | E2:S1/X1 G:S0/X-
+- a1gE3 r1 [Z_melos_run_aho4_z_h3__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially order that someone be killed as a punishment | G:S1/X- E2:S1/X1
+- a1gE3 r1 [Z_melos_run_kpq_01__b1b] key=`sentence someone to death` | 意味=誰かに死刑を言い渡す | 説明=to officially decide that someone must be killed as a punishment | E2:S1/X1 G:S0/X-
+- a1gE3 r2 [Z_melos_run_aho4_z_h3__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially order that someone be killed as a punishment | G:S1/X- E2:S1/X1
+- a1gE3 r2 [Z_melos_run_kpq_01__b1b] key=`sentence someone to death` | 意味=誰かに死刑を言い渡す | 説明=to officially order that someone be killed as a punishment | E2:S1/X1 G:S0/X-
+- a1gE3 r3 [Z_melos_run_aho4_z_h3__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially decide that someone must be killed as a punishment | G:S1/X- E2:S1/X1
+- a1gE3 r3 [Z_melos_run_kpq_01__b1b] key=`sentence someone to death` | 意味=誰かに死刑を言い渡す | 説明=to officially order that someone be killed as a punishment | E2:S1/X1 G:S0/X-
+- a3v2 r1 [Z_melos_run_aho4_z_h3__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially decide that someone must be killed as a punishment | G:S1/X- E2:S1/X1
+- a3v2 r1 [Z_melos_run_jre_01__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially decide that someone must be killed as a punishment | G:S1/X- E2:S1/X1
+- a3v2 r1 [Z_melos_run_kpq_01__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially order that someone be killed as a punishment | G:S1/X- E2:S1/X1
+- a3v2 r2 [Z_melos_run_aho4_z_h3__b1b] key=`sentence someone to death` | 意味=人を死刑にする | 説明=to officially order that someone must die as a punishment | G:S1/X- E2:S1/X-
+- a3v2 r3 [Z_melos_run_aho4_z_h3__b1b] key=`sentence someone to death` | 意味=人に死刑を言い渡す | 説明=to officially decide that someone must be killed as a punishment | G:S1/X- E2:S1/X1
+- prod r0 [Z_melos_run_aho4_z_h3__b1b] key=`sentence him to death` | 意味=彼に死刑を宣告する | 説明=to officially order that someone be killed as a punishment | G:S0/X- E2:S1/X1
+- prod r0 [Z_melos_run_jre_01__b1b] key=`sentence him to death` | 意味=彼に死刑を言い渡す | 説明=to officially decide that someone must be killed as a punishment | G:S0/X- E2:S1/X1
+- prod r0 [Z_melos_run_kpq_01__b1b] key=`sentence him to death` | 意味=彼に死刑を言い渡す | 説明=to officially decide that he must be killed as a punishment | G:S0/X- E2:S1/X1
+
+## shines a light on
+- a12 r1 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to help people notice or understand something | G:S1/X- E2:S1/X0
+- a12 r2 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to help people notice or understand something | G:S1/X- E2:S1/X0
+- a12 r3 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to help people notice or understand something | G:S1/X- E2:S1/X0
+- a123s r1 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to help people notice or understand something | G:S1/X- E2:S1/X0
+- a123s r2 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to draw attention to something and help people understand it | G:S1/X- E2:S1/X-
+- a123s r3 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to help people notice or understand something | G:S1/X- E2:S1/X0
+- a1g r1 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to bring attention to something so people can notice or understand it | G:S1/X- E2:S1/X1
+- a1gE0 r1 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to help people notice or understand something | G:S1/X- E2:S1/X0
+- a1gE0 r2 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to help people understand something more clearly, especially something that is not well known | G:S1/X- E2:S0/X1
+- a1gE0 r3 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to draw attention to something so people notice or understand it | G:S1/X- E2:S1/X1
+- a1gE2 r1 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to help people notice or understand something | G:S1/X- E2:S1/X0
+- a1gE2 r2 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to make something easier to notice or understand | G:S1/X- E2:S1/X-
+- a1gE2 r3 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to help people notice or understand something more clearly | G:S1/X- E2:S1/X-
+- a1gE3 r1 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to make people notice or understand something | G:S1/X- E2:S1/X0
+- a1gE3 r2 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to make something easier to see or understand | G:S1/X- E2:S1/X0
+- a1gE3 r3 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to make people notice or understand something | G:S1/X- E2:S1/X0
+- a3v2 r1 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to help people see or understand something more clearly | G:S1/X- E2:S1/X-
+- a3v2 r2 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to help people notice or understand something more clearly | G:S1/X- E2:S1/X-
+- a3v2 r3 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to help people notice or understand something | G:S1/X- E2:S1/X0
+- prod r0 [ovel_prize_run_nws_01__b1b] key=`shine a light on` | 意味=～に光を当てる | 説明=to draw attention to something and help people understand it better | G:S1/X- E2:S1/X1
+
+## turned on its head
+- a12 r1 [rger_talks_run_nws_01__b1b] key=`turned on its head` | 意味=ひっくり返される | 説明=to be changed completely, often in a way that makes things the opposite of what was expected | G:S1/X- E2:S1/X-
+- a123s r1 [rger_talks_run_nws_01__b1b] key=`turned on its head` | 意味=ひっくり返される | 説明=to change something completely, often making it the opposite of what people expected | G:S1/X- E2:S1/X1
+- a1g r1 [rger_talks_run_nws_01__b1b] key=`turned on its head` | 意味=すっかり覆される | 説明=to change something completely, often making it the opposite of what people expected | E2:S1/X1 G:S1/X-
+- a1gE0 r1 [rger_talks_run_nws_01__b1b] key=`turned on its head` | 意味=すっかり覆される | 説明=to be completely changed, often in a way that is unexpected | G:S1/X- E2:S1/X1
+- a1gE0 r2 [rger_talks_run_nws_01__b1b] key=`turned on its head` | 意味=すっかり覆される | 説明=to change something completely, often in the opposite way | G:S1/X- E2:S1/X1
+- a1gE0 r3 [rger_talks_run_nws_01__b1b] key=`turned on its head` | 意味=すっかり覆される | 説明=to change a situation completely, often in an unexpected way | G:S1/X- E2:S1/X1
+- a1gE2 r1 [rger_talks_run_nws_01__b1b] key=`turned on its head` | 意味=すっかり覆される | 説明=to change something completely, often into its opposite | G:S1/X- E2:S1/X-
+- a1gE2 r2 [rger_talks_run_nws_01__b1b] key=`turned on its head` | 意味=すっかり覆される | 説明=to be changed completely, often in a way that is opposite to what was expected | G:S1/X- E2:S1/X-
+- a1gE2 r3 [rger_talks_run_nws_01__b1b] key=`turned on its head` | 意味=すっかり覆される | 説明=to change something completely, often in a way that reverses what was expected | G:S1/X- E2:S1/X-
+- a1gE3 r1 [rger_talks_run_nws_01__b1b] key=`turned on its head` | 意味=すっかり覆される | 説明=to completely change an idea or situation, often into its opposite | G:S1/X- E2:S1/X1
+- a1gE3 r2 [rger_talks_run_nws_01__b1b] key=`turned on its head` | 意味=すっかり覆される | 説明=to change something completely, often making it the opposite of what was expected | G:S1/X- E2:S1/X1
+- a1gE3 r3 [rger_talks_run_nws_01__b1b] key=`turned on its head` | 意味=すっかり覆される | 説明=to change something completely, often in an unexpected way | G:S1/X- E2:S1/X1
+- a3v2 r1 [rger_talks_run_nws_01__b1b] key=`turned on its head` | 意味=ひっくり返される | 説明=to change something so that it becomes the opposite of what was expected | G:S1/X- E2:S1/X-
+- prod r0 [rger_talks_run_nws_01__b1b] key=`turn on its head` | 意味=～をひっくり返す | 説明=to change something completely, often making it the opposite of what people expected | G:S1/X- E2:S1/X1
+
+## win such trust
+- a12 r1 [Z_melos_run_kpq_01__a2] key=`win such trust` | 意味=これほどの信頼を得る | 説明=None | G:S1/X-
+- a123s r1 [Z_melos_run_kpq_01__a2] key=`win such trust` | 意味=これほどの信頼を得る | 説明=None | G:S1/X-
+- a1g r1 [Z_melos_run_kpq_01__a2] key=`win such trust` | 意味=そのような信頼を得る | 説明=None | G:S0/X-
+- a1gE0 r1 [Z_melos_run_kpq_01__a2] key=`win such trust` | 意味=そのような信頼を得る | 説明=None | G:S0/X-
+- a1gE0 r2 [Z_melos_run_kpq_01__a2] key=`win such trust` | 意味=そのような信頼を得る | 説明=None | G:S0/X-
+- a1gE0 r3 [Z_melos_run_kpq_01__a2] key=`win such trust` | 意味=そのような信頼を得る | 説明=None | G:S0/X-
+- a1gE2 r1 [Z_melos_run_kpq_01__a2] key=`win such trust` | 意味=そのような信頼を得る | 説明=None | G:S0/X-
+- a1gE2 r2 [Z_melos_run_kpq_01__a2] key=`win such trust` | 意味=そのような信頼を得る | 説明=None | G:S0/X-
+- a1gE2 r3 [Z_melos_run_kpq_01__a2] key=`win such trust` | 意味=そのような信頼を得る | 説明=None | G:S0/X-
+- a1gE3 r1 [Z_melos_run_kpq_01__a2] key=`win such trust` | 意味=そのような信頼を得る | 説明=None | G:S0/X-
+- a1gE3 r2 [Z_melos_run_kpq_01__a2] key=`win such trust` | 意味=そのような信頼を得る | 説明=None | G:S0/X-
+- a1gE3 r3 [Z_melos_run_kpq_01__a2] key=`win such trust` | 意味=そのような信頼を得る | 説明=None | G:S0/X-
+- a3v2 r1 [Z_melos_run_kpq_01__a2] key=`win such trust` | 意味=これほどの信頼を得る | 説明=None | G:S1/X-
+- prod r0 [Z_melos_run_kpq_01__a2] key=`win such trust` | 意味=そのような信頼を得る | 説明=None | G:S0/X-
