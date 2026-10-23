@@ -3480,6 +3480,12 @@ Family Z runner(er026/er062/er063)に次を実装済み(課金0のmock/dry-run�
 - 解除: `--clear-stop --reason "<text>"`(`audit_stop_sentinel.jsonl`へ記録)。RESTART_STORM由来は必須。run閉鎖(STOP内`reason=RUN_CLOSED`)は解除不可。STOP_ALLは`tools/stop_all_family_z.py --release --reason`(Fable/ユーザー専用)。
 - Fable用: `tools/stop_all_family_z.py`(既定dry-run。`--execute --reason`でSTOP_ALL作成+該当プロセス停止)。停止済みの実行層が新しい実行手段(別名ラッパ・監視ループ・別script)を作ることは禁止のまま。作っても上記で止まる。
 
+### 26-6. プロセス終了の制限(2026-10-23、OPEN-477 AGENT-IMAGE-NAME-TASKKILL-INCIDENT-01、ユーザー承認の再発防止)
+背景: 並行agent環境で、実行層が待機中に`taskkill //F //IM python.exe`(イメージ名一括強制終了)を実行した事故(2026-10-23、過去にも2026-10-22に同種)。結果は無害だったが、他agentの有料run・Trial・TTSを巻き込み、不完全attempt・lock残り・二重課金を生み得る。なお26-3に既存の(e)(f)があるため、本小節は(g)〜(i)と表記する。
+(g) プロセス終了は**自分が起動したPID(自分のBash `$!`/PIDファイルで確認できたPID)のみ**とする。`taskkill //IM python.exe`・`pkill python`・`Stop-Process -Name python`等のイメージ名・一括・ワイルドカードによる終了を禁止する。PID指定の終了も、`wmic`/`Get-CimInstance Win32_Process`でcommand lineが自分の起動したものと確認してから行う。他agentのprocessと判別できない場合は終了せずFableへ報告する。
+(h) background processの完了待ちは`sleep`/pollingループ(例 `timeout N bash -c 'until grep -q <完了マーカー> <log>; do sleep 5; done'`)で行い、待機のために他processを終了しない。止める必要が生じた場合も、自分が起動したPIDの`taskkill //PID <pid>`(`/T`は子のみ)に限る。background起動時はPIDを記録する(`echo $! > <run>/pid`)。
+(i) 違反は事故として記録(OPEN新規+DECISION_LOG)し、影響範囲をread-onlyで確認する(出力更新時刻・lock・RESTART_STORM等)。実行層向け要約は`.claude/agents/sonnet-worker.md`「有料run・停止・再起動」節末尾。
+
 ### 26-X. commit前secret scan必須・デバッグログはcommit対象外(2026-10-12、GIT-SECRET-REPAIR-01、事故再発防止)
 
 - 背景: er026 Melos evidence_10のデバッグログへAzure Speech Keyが平文混入し、GitHub push protectionがpushを拒否した(未push局所commitのみ再作成して解消。remote履歴は無変更、Keyローテーションは別判断)。
@@ -3656,6 +3662,7 @@ Family Z runner(er026/er062/er063)に次を実装済み(課金0のmock/dry-run�
 
 - 2026-10-13(`FAMILY-X-KP-INTEGRATED-OPTIMIZATION-TRIAL-01`委任_03、ユーザー決定): 7-8節(探索Trialの一括承認運用4点)を新設。既存節は無変更。
 
+- 2026-10-23(`FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01`委任_05、OPEN-477、ユーザー承認の再発防止): 26節へ小節26-6(プロセス終了は自分が起動したPIDのみ・イメージ名一括kill禁止・待機はsleep/polling、(g)〜(i))を新設。26-3の既存(e)(f)との重複回避のため(g)起点。`.claude/agents/sonnet-worker.md`へ要約追記。コード変更なし。
 - 2026-10-12(`FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01`委任_11、ユーザー仕様修正に伴う事故再発防止): 26節(有料runの停止・再起動・STOP通知の運用)を新設。実行層の再起動禁止ルール(a)〜(d)、Fable側STOP_ALL先置き手順(e)(f)。
 
 

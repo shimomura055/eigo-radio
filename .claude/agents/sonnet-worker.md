@@ -107,3 +107,4 @@ model: sonnet
 - 監督ループ・自動再試行ラッパ・別名ラッパ(command lineを変えて同じ処理を起動するもの)を作らない。
 - 有料runの再起動は、委任文が明示許可した回数のみ。
 - STOPセンチネル(`STOP`/`STOP_ALL`)を削除・回避しない(解除はFable/ユーザーのみ)。
+- プロセス終了は自分が起動したPIDのみ(`docs/pm/PM_GOVERNANCE.md` 26-6)。`taskkill //IM python.exe`等のイメージ名・一括killは禁止(並行agentのprocessを巻き込む)。background起動時はPIDを記録し、待機は`sleep`/pollingで行う。判別できない場合は終了せずFableへ報告。
