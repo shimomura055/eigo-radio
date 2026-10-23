@@ -22228,3 +22228,5 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 2026-10-23 | FAMILY-Y-VOICES-DESIGN-01 委任_10 (OPEN-463/469) | **Fable修復案B承認の実施結果**: 人物1(V1)英語を意味不変で言い換え(Gate・閾値・HR Lock無変更)。Adv V1=1テイクで確定、Adv全編通し342秒組立・試聴ページ公開(Playwright 42本OK)。Std V1=3テイクでHR Lock残存(D'境界flag x2+fallbackのAzure不一致)、Fable指示(Bが不成功なら再試行せず停止)により案A(人間試聴承認)を判断候補としてFableへ返却。本委任実費11.66円。記録のみ、Production変更0、CURRENT_SPEC変更なし。
 
 - 2026-10-23 | FAMILY-Y-VOICES-DESIGN-01 委任_11 (OPEN-463/469) | **Fable B2承認(Std専用言い換え1回・最大2テイク)の実施結果**: Std英文を意味不変で言い換え(Gate・閾値・HR Lock無変更)、Std V1を2テイク再生成したが両テイクD'境界flag(0.78/0.60s)でHR Lock残存、Std通し未作成。Fable指示により停止し案A(人間試聴承認)を判断候補として返却。本委任実費2.93円。記録のみ、Production変更0、CURRENT_SPEC変更なし。
+
+- 2026-10-23 | FAMILY-Y-VOICES-DESIGN-01 委任_12 (OPEN-463/469) | **Fable Trial_03評価**: 受入条件9項目中、世界設定・日本/海外混同なし・Persona整合・主観性・初回稿維持・難易度差・予算はPASS、Advは正式Gate PASS・全編通し・再生PASS。Std V1のみRepetition QA D'境界値flag(0.60〜0.78s、閾値0.6)でHR Lock(5テイク)、Std通し未作成のためVALIDATED不可、REJECTEDでもない。判定=USER_DECISION_REQUIRED(UDR #172: Std V1最終テイク人間承認 A承認/B不承認協議/C Adv完成版のみで評価、Fable推奨A)。Fableは人間確認を代行しない。評価全文=TRIAL_03/FABLE_EVAL_03.md。記録のみ、API 0・コード変更0・Production変更0、CURRENT_SPEC変更なし。
