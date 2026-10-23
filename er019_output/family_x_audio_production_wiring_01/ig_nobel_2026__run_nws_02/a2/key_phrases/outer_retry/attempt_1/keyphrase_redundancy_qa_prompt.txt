@@ -1,0 +1,75 @@
+以下は、同じ記事から選ばれた3件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。3件から作れる全てのペア(3組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず3組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# “Cockroach Milk”: Before You Get a Cup, Look at How It Stores Food
+
+If you hear “cockroach milk,” the café in your mind shuts down. I understand. But let’s put the urgent meeting about drinking it on hold. The story is not its taste or how it feels to swallow. It is how baby cockroaches store food just for themselves.
+
+The Ig Nobel Prize went to earlier research on crystals full of nutrients. This does not mean cockroach milk has finally appeared on the dinner table! No one drank it as part of the study. The study did not test it as food for people. Put the cup back on the shelf.
+
+The study looked at a kind of cockroach that keeps its babies inside its body. Researchers took protein crystals with nutrients from the gut of the unborn young. You may think you are heading to the milk aisle. Instead, you see the food store inside a body.
+
+The researchers used X-rays to study the shape of the protein inside the crystals. Fats stuck to the protein, and sugars stuck to it too. You may have expected a fancy latte. Instead, you got a map of molecules. Suddenly, we are in a science lab.
+
+The paper gives a surprising estimate. The crystals have over three times as much energy as the same weight of milk. The milk came from several kinds of mammals.
+
+“The final boss of nutrition?”
+
+The marketing team may be ready to jump into action, but wait. The comparison was between “crystals” and “milk.” It does not mean that drinking them would make people three times as energetic. Take that number alone, and soon a science story can turn into a TV shopping show.
+
+The more interesting idea is turning nutrients into crystals and storing them away. No fridge, no lunch box. If tiny crystals can store food, that is a clever way to save space.
+
+The authors also say storing nutrients as crystals may help feed the young. But this role has not been confirmed. Next to “That makes sense!” there should be a sign saying “Still being studied.” The two should be shown together.
+
+When you hear “packed with nutrition,” ask, “Compared with what?” and “For whom?” Behind the exciting number, you may find something else that is interesting.
+
+Do not see this as a possible breakfast for people. See it as a way to bring nutrients to the young. They have not been born yet. You do not need to be brave enough to drink it. Today, bring your curiosity, not a cup. Look inside this little food store.
+
+## In one line
+Researchers studied protein crystals with nutrients in unborn cockroach babies, not cockroach milk for people. The crystals may help feed the babies, but this is not confirmed.
+
+【Key Phrase 3件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "jump into action",
+    "japanese_gloss": "すぐに行動を起こす",
+    "source_sentence": "The marketing team may be ready to jump into action, but wait"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "three times as much energy",
+    "japanese_gloss": "三倍のエネルギー",
+    "source_sentence": "The crystals have over three times as much energy as the same weight of milk"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "packed with nutrition",
+    "japanese_gloss": "栄養がたっぷり詰まった",
+    "source_sentence": "When you hear \"packed with nutrition,\" ask, \"Compared with what"
+  }
+]

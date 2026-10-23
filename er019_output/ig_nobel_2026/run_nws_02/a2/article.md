@@ -1,0 +1,26 @@
+# “Cockroach Milk”: Before You Get a Cup, Look at How It Stores Food
+
+If you hear “cockroach milk,” the café in your mind shuts down. I understand. But let’s put the urgent meeting about drinking it on hold. The story is not its taste or how it feels to swallow. It is how baby cockroaches store food just for themselves.
+
+The Ig Nobel Prize went to earlier research on crystals full of nutrients. This does not mean cockroach milk has finally appeared on the dinner table! No one drank it as part of the study. The study did not test it as food for people. Put the cup back on the shelf.
+
+The study looked at a kind of cockroach that keeps its babies inside its body. Researchers took protein crystals with nutrients from the gut of the unborn young. You may think you are heading to the milk aisle. Instead, you see the food store inside a body.
+
+The researchers used X-rays to study the shape of the protein inside the crystals. Fats stuck to the protein, and sugars stuck to it too. You may have expected a fancy latte. Instead, you got a map of molecules. Suddenly, we are in a science lab.
+
+The paper gives a surprising estimate. The crystals have over three times as much energy as the same weight of milk. The milk came from several kinds of mammals.
+
+“The final boss of nutrition?”
+
+The marketing team may be ready to jump into action, but wait. The comparison was between “crystals” and “milk.” It does not mean that drinking them would make people three times as energetic. Take that number alone, and soon a science story can turn into a TV shopping show.
+
+The more interesting idea is turning nutrients into crystals and storing them away. No fridge, no lunch box. If tiny crystals can store food, that is a clever way to save space.
+
+The authors also say storing nutrients as crystals may help feed the young. But this role has not been confirmed. Next to “That makes sense!” there should be a sign saying “Still being studied.” The two should be shown together.
+
+When you hear “packed with nutrition,” ask, “Compared with what?” and “For whom?” Behind the exciting number, you may find something else that is interesting.
+
+Do not see this as a possible breakfast for people. See it as a way to bring nutrients to the young. They have not been born yet. You do not need to be brave enough to drink it. Today, bring your curiosity, not a cup. Look inside this little food store.
+
+## In one line
+Researchers studied protein crystals with nutrients in unborn cockroach babies, not cockroach milk for people. The crystals may help feed the babies, but this is not confirmed.

@@ -5,7 +5,7 @@
   "b3_module_sha256": "338e8e145adce9e5b195d0263160020023026998bb33533f83b0742b56991468",
   "ja_writer_module_sha256": "212e4b6d50388092f53ee593cc6dc208104f76ed25295c8023ee3c351c98dd3d",
   "annotation_contract_module_sha256": "5f4c725e0b332e028b8285389532dedc28e067f29caf6c63863b0be4f0017885",
-  "annotation_producer_module_sha256": "ce7f9895535110893112d79aeac0fd226bceb69b2d3f92f458fd33db88770cf5",
+  "annotation_producer_module_sha256": "630d5a3dabdbcb6ad10e1726b908970fa032ed4c88b3b8a6eb0d627247994d79",
   "risk_flagger_module_sha256": "ed3555c9da56ed651892858bdddef3624dd375bf9f0035bc1e10996604784810",
   "review_queue_module_sha256": "ebe746f11181888ed286f05db17d40141c60aa6fca0b163f47fcd60c0aa3f7ed",
   "core_number_rounding_module_sha256": "de1fb8eb11c05e694eab76624126dbcede81c92dd71b898327b247b16576cf82",
@@ -17,8 +17,102 @@
     "run_label": "FAMILY-X-NEWS-2ARTICLES-E2E-02",
     "budget_jpy": 120.0,
     "stage": "all",
-    "regenerate_stage": "storyline_b3",
+    "regenerate_stage": null,
     "stop_after": "standard"
   },
-  "timestamp": "2026-10-23T11:49:37"
+  "timestamp": "2026-10-23T12:32:44",
+  "risk_flagger": {
+    "b1b": {
+      "status": "OK",
+      "reason": null,
+      "rf_run_id": "rf20261023T033538Z-e9d8",
+      "article_sha256": "067edef1d9c57e7eb102781988813837edc882203805df5548b879865f16fd81",
+      "ledger_sha256": "736f16e200bc9bfcf07b9a20b9fe28421d1afcd6ddef61c3a45fd05f29b9f531",
+      "splitter_version": "en_split_v1",
+      "timestamp": "2026-10-23T03:35:38+00:00",
+      "producer": "deterministic_v2",
+      "run_label": "FAMILY-X-NEWS-2ARTICLES-E2E-02",
+      "issue_count": 3,
+      "conditions": [
+        {
+          "model_key": "luna",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.160656
+        },
+        {
+          "model_key": "luna",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 3,
+          "cost_jpy": 0.195776
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.298384
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 2,
+          "cost_jpy": 0.339344
+        }
+      ]
+    },
+    "a2": {
+      "status": "OK",
+      "reason": null,
+      "rf_run_id": "rf20261023T033702Z-92e1",
+      "article_sha256": "39433e21f0baec2fa8b5d36bf91281332d3e9fa891b389a73e0890923ad871d4",
+      "ledger_sha256": "736f16e200bc9bfcf07b9a20b9fe28421d1afcd6ddef61c3a45fd05f29b9f531",
+      "splitter_version": "en_split_v1",
+      "timestamp": "2026-10-23T03:37:02+00:00",
+      "producer": "deterministic_v2",
+      "run_label": "FAMILY-X-NEWS-2ARTICLES-E2E-02",
+      "issue_count": 4,
+      "conditions": [
+        {
+          "model_key": "luna",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.187744
+        },
+        {
+          "model_key": "luna",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 4,
+          "cost_jpy": 0.247824
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.30512
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.31168
+        }
+      ]
+    }
+  }
 }

@@ -1,0 +1,60 @@
+{
+  "attempt_number": 1,
+  "route": "custom_60ebc452",
+  "segment_id": "kp3_en",
+  "theme_id": "ig_nobel_2026__run_nws_02",
+  "level": "a2",
+  "source_out_path": "er019_output/family_x_audio_production_wiring_01/ig_nobel_2026__run_nws_02/a2/narration/kp3_en.wav",
+  "saved_at": "2026-10-23T13:33:13",
+  "sha256": "e72e6001a22021689a71e1bb8604392b96804d2b20732fa94db25b6869d5fa38",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "BATCH",
+  "instruction_text": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Say only this phrase, exactly once, without adding, omitting, or changing any words, and make sure the final sound is actually spoken.",
+  "asr_text": "Packed with nutrition.",
+  "audio_classification": "NORMALIZED_MATCH",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": true,
+  "disfluency_checked": true,
+  "disfluency_evidence": {
+    "flagged": false,
+    "repeats": [],
+    "word_count": 3,
+    "transcript": "Packed  with  Nutrition.",
+    "method": "faster_whisper_small_local_verbatim"
+  },
+  "repetition_qa_checked": false,
+  "repetition_qa_evidence": null,
+  "scg_info": null,
+  "asr_prompt_applied": true,
+  "non_latin_cascade_enabled": true,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": true,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "Packed with nutrition.",
+      "classification": "NORMALIZED_MATCH",
+      "entity_like_source": []
+    },
+    {
+      "step": "secondary_vote",
+      "provider": "azure",
+      "text": "Packed with nutrition.",
+      "classification": "NORMALIZED_MATCH",
+      "phrase_list_used": false,
+      "azure_phrase_list_weight": null,
+      "azure_phrase_list": [],
+      "cached": false,
+      "unified_judge_state": "PASS",
+      "vote_required": true,
+      "entity_like_source": []
+    }
+  ]
+}

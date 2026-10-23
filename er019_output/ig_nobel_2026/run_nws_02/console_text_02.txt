@@ -1,0 +1,32 @@
+[B3-RUNNER][research_ledger] 既存Ledgerを再利用(既生成済み): er019_output/ig_nobel_2026/run_nws_02/research_ledger
+[E-FAMILY-RUNNER][cost] so far=58.20 JPY by_provider={'openai': 58.2} (after research_ledger)
+[B3-RUNNER][storyline_b3] 既存Selected Fact Briefを再利用: er019_output/ig_nobel_2026/run_nws_02/storyline_b3
+[B3-RUNNER][annotation] producer=deterministic_v2 rules_sha=fccecc144888 facts=3 annotated_sha=1c8846047347(LLM 0 call)
+[E-FAMILY-RUNNER][cost] so far=58.31 JPY by_provider={'openai': 58.31} (after core_number_rounding)
+[B3-RUNNER][core_number_rounding] status=OK api_calls=1 reused=False n_approximate_ok=0
+[E-FAMILY-RUNNER][cost] so far=58.31 JPY by_provider={'openai': 58.31} (w1 writer)
+[E-FAMILY-RUNNER][cost] so far=64.14 JPY by_provider={'openai': 64.14} (w1 writer)
+[E-FAMILY-RUNNER][cost] so far=66.34 JPY by_provider={'openai': 66.34} (w1 writer)
+[E-FAMILY-RUNNER][cost] so far=69.98 JPY by_provider={'openai': 69.98} (after ja_writer)
+[E-FAMILY-RUNNER][writer/ig_nobel_2026] Advanced(Family X忠実英訳)生成開始...
+[E-FAMILY-RUNNER][cost] so far=70.29 JPY by_provider={'openai': 70.29} (after advanced writer)
+[E-FAMILY-RUNNER][cost] so far=70.29 JPY by_provider={'openai': 70.29} (after advanced)
+[B3-RUNNER][risk_flag/b1b] Risk Flagger開始(非Blocking、4条件逐次)...
+[E-FAMILY-RUNNER][cost] so far=70.29 JPY by_provider={'openai': 70.29} (risk_flag b1b)
+[E-FAMILY-RUNNER][cost] so far=70.45 JPY by_provider={'openai': 70.45} (risk_flag b1b)
+[E-FAMILY-RUNNER][cost] so far=70.65 JPY by_provider={'openai': 70.65} (risk_flag b1b)
+[E-FAMILY-RUNNER][cost] so far=70.95 JPY by_provider={'openai': 70.65, 'gemini': 0.3} (risk_flag b1b)
+[B3-RUNNER][risk_flag/b1b] status=OK issues=3 queue_saved=True
+[E-FAMILY-RUNNER][cost] so far=71.28 JPY by_provider={'openai': 70.65, 'gemini': 0.64} (after risk_flag b1b)
+[E-FAMILY-RUNNER][writer/ig_nobel_2026] Standard(Family X見出し廃止A2)生成開始...
+[E-FAMILY-RUNNER][cost] so far=71.75 JPY by_provider={'openai': 71.11, 'gemini': 0.64} (after standard writer)
+[E-FAMILY-RUNNER][cost] so far=71.75 JPY by_provider={'openai': 71.11, 'gemini': 0.64} (after standard)
+[B3-RUNNER][risk_flag/a2] Risk Flagger開始(非Blocking、4条件逐次)...
+[E-FAMILY-RUNNER][cost] so far=71.75 JPY by_provider={'openai': 71.11, 'gemini': 0.64} (risk_flag a2)
+[E-FAMILY-RUNNER][cost] so far=71.94 JPY by_provider={'openai': 71.3, 'gemini': 0.64} (risk_flag a2)
+[E-FAMILY-RUNNER][cost] so far=72.18 JPY by_provider={'openai': 71.55, 'gemini': 0.64} (risk_flag a2)
+[E-FAMILY-RUNNER][cost] so far=72.49 JPY by_provider={'openai': 71.55, 'gemini': 0.94} (risk_flag a2)
+[B3-RUNNER][risk_flag/a2] status=OK issues=4 queue_saved=True
+[E-FAMILY-RUNNER][cost] so far=72.80 JPY by_provider={'openai': 71.55, 'gemini': 1.25} (after risk_flag a2)
+[B3-RUNNER] Standardまで完了。Mandatory STOP(ユーザー確認前に後工程[scaffold/tts/assemble/player]へは進みません。本runnerにはそれらのstage自体が実装されていません)。
+[B3-RUNNER][cost] {'by_stage_jpy': {'research': 21.602, 'ledger': 19.359, 'storyline_b3': 17.244, 'b3_core_number_rounding': 0.1, 'w1_r0': 5.838, 'w1_astra_r1': 2.196, 'w1_astra_r2': 3.644, 'advanced': 0.308, 'risk_flag.luna.A3.b1b': 0.161, 'risk_flag.luna.A4.b1b': 0.196, 'risk_flag.gemini35fl.A3.b1b': 0.298, 'risk_flag.gemini35fl.A4.b1b': 0.339, 'standard': 0.463, 'risk_flag.luna.A3.a2': 0.188, 'risk_flag.luna.A4.a2': 0.248, 'risk_flag.gemini35fl.A3.a2': 0.305, 'risk_flag.gemini35fl.A4.a2': 0.312}, 'total_jpy': 72.8, 'by_provider_jpy': {'openai': 71.545, 'gemini': 1.255}, 'risk_flag_by_level_model_condition_jpy': {'b1b': {'luna': {'A3': 0.161, 'A4': 0.196}, 'gemini35fl': {'A3': 0.298, 'A4': 0.339}}, 'a2': {'luna': {'A3': 0.188, 'A4': 0.248}, 'gemini35fl': {'A3': 0.305, 'A4': 0.312}}}, 'b3_core_number_rounding': {'enabled': True, 'status': 'OK', 'n_approximate_ok': 0, 'overlay_sha256': '56d213b8e29ce9b2f72c85f53a17e0fbe59e2bcef7a2c1a078ca48c69777783f', 'error': None, 'model_returned': 'gpt-6-luna', 'effort': 'low', 'warn': False}}

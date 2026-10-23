@@ -1,0 +1,107 @@
+{
+ "annotated_md_sha256": "1c8846047347a33dbeb8823d4a5454d2f4e7d0d0391fd08b7d29ec2eaae45efe",
+ "core_concept_order": [
+  "C1",
+  "C4",
+  "C6"
+ ],
+ "entries": [
+  {
+   "approved_condition": "日付は記録として精度そのものが意味を持つため、厳密値を維持する。",
+   "basis_fact_ids": [
+    "IG2026-01"
+   ],
+   "concept": "C1",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    1
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "date_time",
+   "ledger_ids": [
+    "IG2026-01"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "授賞式の日付を示す具体的な日付であり、概数化すると事実の特定性が失われます。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "2026年9月3日"
+    }
+   ]
+  },
+  {
+   "approved_condition": "小数を落とすと小規模な測定値の精度や事実忠実性を損なうため、厳密値を維持する。",
+   "basis_fact_ids": [
+    "IG2026-02"
+   ],
+   "concept": "C4",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "IG2026-02"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "結晶構造解析で報告された分解能の測定値であり、丸めると測定精度と報告内容を変えてしまいます。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "1.2"
+    }
+   ]
+  },
+  {
+   "approved_condition": "証拠の解釈や重要な比較の意味を変えうる数値は、厳密値を維持する。",
+   "basis_fact_ids": [
+    "IG2026-03"
+   ],
+   "concept": "C6",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    3
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "IG2026-03"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "論文の推定比較で示された「3倍を超える」という値は、比較の大きさを表す数値です。概数化すると、原著の比較結果の解釈を変えるおそれがあります。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "3倍"
+    }
+   ]
+  }
+ ],
+ "judge": {
+  "developer_message_sha256": "8d2618b7cc966affb3567e5ee1354551b92f394462a4786683f8f9a3052a9d3d",
+  "effort": "low",
+  "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
+  "model_requested": "gpt-6-luna",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_053445d065102e62006adad55cbb9087d09217515eb7e8dff3",
+  "sec": 5.1,
+  "usage": {
+   "input_tokens": 3624,
+   "output_tokens": 528,
+   "reasoning_tokens": 154
+  },
+  "user_prompt_sha256": "931a36d5bc9a54b307d37e1c92c167594fb342a1ae2ecb1d2a8ba2e0d211ab3e"
+ },
+ "n_approximate_ok": 0,
+ "overlay_sha256": "56d213b8e29ce9b2f72c85f53a17e0fbe59e2bcef7a2c1a078ca48c69777783f",
+ "requested_effort": "low",
+ "requested_model": "gpt-6-luna",
+ "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+ "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
+ "sidecar_sha256": "41f174b696132eab38f1d1f03b2da72e444111975265628ea6c570affe848e79",
+ "status": "OK",
+ "v8_max_relative_error": "0.10",
+ "violations": []
+}
