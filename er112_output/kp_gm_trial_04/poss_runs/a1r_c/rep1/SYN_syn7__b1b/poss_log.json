@@ -1,0 +1,120 @@
+[
+ {
+  "call": 1,
+  "items": [
+   {
+    "rank": 1,
+    "display": "keeps its promise",
+    "roles": [
+     {
+      "token": "its",
+      "role": "non_person"
+     }
+    ],
+    "key_before": "keep its promise",
+    "reason_before": "lemma_normalization",
+    "repair_role": {
+     "key_after": "keep its promise",
+     "status": "NO_CHANGE",
+     "repairs": [],
+     "roles_ok": true,
+     "roles_reason": "",
+     "window_start": 0
+    },
+    "repair_revert": {
+     "key_after": "keep its promise",
+     "status": "NO_CHANGE",
+     "repairs": [],
+     "roles_ok": true,
+     "roles_reason": "",
+     "window_start": 0
+    }
+   },
+   {
+    "rank": 2,
+    "display": "take my place",
+    "roles": [
+     {
+      "token": "my",
+      "role": "other_person"
+     }
+    ],
+    "key_before": "take someone's place",
+    "reason_before": "generalize_person_dependent_reference",
+    "repair_role": {
+     "key_after": "take someone's place",
+     "status": "NO_CHANGE",
+     "repairs": [],
+     "roles_ok": true,
+     "roles_reason": "",
+     "window_start": 0
+    },
+    "repair_revert": {
+     "key_after": "take someone's place",
+     "status": "NO_CHANGE",
+     "repairs": [],
+     "roles_ok": true,
+     "roles_reason": "",
+     "window_start": 0
+    }
+   },
+   {
+    "rank": 3,
+    "display": "catches your eye",
+    "roles": [
+     {
+      "token": "your",
+      "role": "other_person"
+     }
+    ],
+    "key_before": "catch someone's eye",
+    "reason_before": "generalize_person_dependent_reference",
+    "repair_role": {
+     "key_after": "catch someone's eye",
+     "status": "NO_CHANGE",
+     "repairs": [],
+     "roles_ok": true,
+     "roles_reason": "",
+     "window_start": 0
+    },
+    "repair_revert": {
+     "key_after": "catch someone's eye",
+     "status": "NO_CHANGE",
+     "repairs": [],
+     "roles_ok": true,
+     "roles_reason": "",
+     "window_start": 0
+    }
+   },
+   {
+    "rank": 4,
+    "display": "mind your own business",
+    "roles": [
+     {
+      "token": "your",
+      "role": "self"
+     }
+    ],
+    "key_before": "mind your own business",
+    "reason_before": "none",
+    "repair_role": {
+     "key_after": "mind your own business",
+     "status": "NO_CHANGE",
+     "repairs": [],
+     "roles_ok": true,
+     "roles_reason": "",
+     "window_start": 0
+    },
+    "repair_revert": {
+     "key_after": "mind your own business",
+     "status": "NO_CHANGE",
+     "repairs": [],
+     "roles_ok": true,
+     "roles_reason": "",
+     "window_start": 0
+    }
+   }
+  ],
+  "raw": "{\n  \"items\": [\n    {\n      \"rank\": 1,\n      \"possessor_roles\": [\n        {\n          \"token\": \"its\",\n          \"role\": \"non_person\"\n        }\n      ],\n      \"key_phrase\": \"keep its promise\",\n      \"changed_from_display_phrase\": true,\n      \"normalization_reason\": \"lemma_normalization\",\n      \"reasoning\": \"動詞keepsを見出し語形のkeepにし、itsは人でない航空会社を指すためそのまま残します。\",\n      \"qa_standalone_natural_unit\": \"PASS\",\n      \"qa_no_residual_context_word\": \"PASS\",\n      \"qa_meaning_or_usage_unchanged\": \"PASS\",\n      \"qa_reusable_other_context\": \"PASS\",\n      \"qa_traceable_contiguous_span\": \"PASS\",\n      \"qa_listening_blocker_value_preserved\": \"PASS\",\n      \"qa_standalone_comprehensibility\": \"PASS\",\n      \"qa_not_over_minimized\": \"PASS\",\n      \"qa_context_sufficiency\": \"PASS\",\n      \"qa_core_meaning_preserved\": \"PASS\",\n      \"qa_no_semantic_role_loss\": \"PASS\",\n      \"qa_person_reference_generalized\": \"PASS\"\n    },\n    {\n      \"rank\": 2,\n      \"possessor_roles\": [\n        {\n          \"token\": \"my\",\n          \"role\": \"other_person\"\n        }\n      ],\n      \"key_phrase\": \"take someone's place\",\n      \"changed_from_display_phrase\": true,\n      \"normalization_reason\": \"generalize_person_dependent_reference\",\n      \"reasoning\": \"myは動作主とは別の人物を指すため、表現の意味を保ってsomeone'sに一般化します。takeはすでに基本形です。\",\n      \"qa_standalone_natural_unit\": \"PASS\",\n      \"qa_no_residual_context_word\": \"PASS\",\n      \"qa_meaning_or_usage_unchanged\": \"PASS\",\n      \"qa_reusable_other_context\": \"PASS\",\n      \"qa_traceable_contiguous_span\": \"PASS\",\n      \"qa_listening_blocker_value_preserved\": \"PASS\",\n      \"qa_standalone_comprehensibility\": \"PASS\",\n      \"qa_not_over_minimized\": \"PASS\",\n      \"qa_context_sufficiency\": \"PASS\",\n      \"qa_core_meaning_preserved\": \"PASS\",\n      \"qa_no_semantic_role_loss\": \"PASS\",\n      \"qa_person_reference_generalized\": \"PASS\"\n    },\n    {\n      \"rank\": 3,\n      \"possessor_roles\": [\n        {\n          \"token\": \"your\",\n          \"role\": \"other_person\"\n        }\n      ],\n      \"key_phrase\": \"catch someone's eye\",\n      \"changed_from_display_phrase\": true,\n      \"normalization_reason\": \"generalize_person_dependent_reference\",\n      \"reasoning\": \"yourは「目に留める」経験者を指すためsomeone'sに一般化し、動詞catchesも見出し語形のcatchにします。\",\n      \"qa_standalone_natural_unit\": \"PASS\",\n      \"qa_no_residual_context_word\": \"PASS\",\n      \"qa_meaning_or_usage_unchanged\": \"PASS\",\n      \"qa_reusable_other_context\": \"PASS\",\n      \"qa_traceable_contiguous_span\": \"PASS\",\n      \"qa_listening_blocker_value_preserved\": \"PASS\",\n      \"qa_standalone_comprehensibility\": \"PASS\",\n      \"qa_not_over_minimized\": \"PASS\",\n      \"qa_context_sufficiency\": \"PASS\",\n      \"qa_core_meaning_preserved\": \"PASS\",\n      \"qa_no_semantic_role_loss\": \"PASS\",\n      \"qa_person_reference_generalized\": \"PASS\"\n    },\n    {\n      \"rank\": 4,\n      \"possessor_roles\": [\n        {\n          \"token\": \"your\",\n          \"role\": \"self\"\n        }\n      ],\n      \"key_phrase\": \"mind your own business\",\n      \"changed_from_display_phrase\": false,\n      \"normalization_reason\": \"none\",\n      \"reasoning\": \"yourは命令の動作主自身を指しますが、mind your own businessは定型的な二人称の慣用表現なので一般化せず、そのまま提示します。\",\n      \"qa_standalone_natural_unit\": \"PASS\",\n      \"qa_no_residual_context_word\": \"PASS\",\n      \"qa_meaning_or_usage_unchanged\": \"PASS\",\n      \"qa_reusable_other_context\": \"PASS\",\n      \"qa_traceable_contiguous_span\": \"PASS\",\n      \"qa_listening_blocker_value_preserved\": \"PASS\",\n      \"qa_standalone_comprehensibility\": \"PASS\",\n      \"qa_not_over_minimized\": \"PASS\",\n      \"qa_context_sufficiency\": \"PASS\",\n      \"qa_core_meaning_preserved\": \"PASS\",\n      \"qa_no_semantic_role_loss\": \"PASS\",\n      \"qa_person_reference_generalized\": \"PASS\"\n    }\n  ]\n}"
+ }
+]
