@@ -1,0 +1,138 @@
+[
+ {
+  "case": "n8_point_two",
+  "wav": "er006_output/pool_pilot_01/pool_n8_airport_line/b1b/narration/point_two.wav",
+  "canonical_text": "Kristie Tse links the behavior to anxiety and a wish to feel in control. The overhead bins add another worry: people may fear being last and having to check a bag. Once a few passengers form a line, o",
+  "evidence_class": "stored_misread_wav_replay_isolated_run_dir",
+  "scope": "X",
+  "table_at_run": {
+   "status": "OK",
+   "n_entries": 2,
+   "usable": [
+    "Kristie Tse"
+   ],
+   "grades": {
+    "Evidence replay": "weak",
+    "Kristie Tse": "confirmed"
+   },
+   "meta_calls": 2,
+   "model": "gpt-6-luna"
+  },
+  "primary_asr": {
+   "text": "Christy C. links the behavior to anxiety and a wish to feel in control. The overhead bins add another worry: people may fear being last and having to check a bag. Once a few passengers form a line, others may copy them. Social pressure can make waiting feel safer.",
+   "error": null
+  },
+  "adapter": {
+   "ok": true,
+   "technical_stop": false,
+   "classification": "PASS_WITH_PRONUNCIATION_ALARM",
+   "human_review_required": false,
+   "state": "PASS_WITH_PRONUNCIATION_ALARM",
+   "azure_real_calls": 1,
+   "pronunciation_alarm_eval": {
+    "accepted": true,
+    "reason": "ENTITY_ONLY_ACCEPT",
+    "detail": {}
+   },
+   "reason_code": "pronunciation_alarm_accept"
+  },
+  "pronunciation_alarm": {
+   "entity_table": null,
+   "nouns": [
+    "kristie tse"
+   ]
+  },
+  "alarm_records": [
+   {
+    "proper_noun": "kristie tse",
+    "evidence": "ledger",
+    "entity_table_basis": null,
+    "pronunciation_basis_hint": "(stub: Ledger upsert/Perplexity not executed in isolated replay)"
+   }
+  ],
+  "seconds": 15.6,
+  "hr_stub_calls": [],
+  "stage1_stub_calls": [
+   "kristie tse"
+  ],
+  "entity_table_json": {
+   "schema": "ret_prod_01",
+   "builder_version": "111746c7cbbd8d79",
+   "status": "OK",
+   "n_covered": 2,
+   "raw": {
+    "declared": [],
+    "llm_a": [
+     {
+      "category": "other_named",
+      "surface": "Evidence replay"
+     },
+     {
+      "category": "person",
+      "surface": "Kristie Tse"
+     }
+    ],
+    "llm_b": [
+     {
+      "category": "person",
+      "surface": "Kristie Tse"
+     }
+    ]
+   },
+   "builds": [
+    {
+     "at": "2026-10-23T18:44:48",
+     "calls": 2,
+     "status": "OK",
+     "uncovered": 2,
+     "usage": [
+      {
+       "in": 277,
+       "jpy_est": 0.00699,
+       "model": "gpt-6-luna",
+       "out": 32,
+       "prompt": "A",
+       "sec": 1.77
+      },
+      {
+       "in": 268,
+       "jpy_est": 0.01261,
+       "model": "gpt-6-luna",
+       "out": 104,
+       "prompt": "B",
+       "sec": 2.11
+      }
+     ]
+    }
+   ]
+  },
+  "operator_report_has_entity_section": true,
+  "rebuild_same_input": {
+   "ner_calls": 0,
+   "status": "OK",
+   "covered_all_current": true
+  },
+  "inheritance_rejudge": {
+   "ok": true,
+   "state": "PASS_WITH_PRONUNCIATION_ALARM",
+   "alarm_rejudge": {
+    "accepted": true,
+    "reason": "ENTITY_ONLY_ACCEPT"
+   },
+   "secondary_new_calls": 0,
+   "api_calls": 0,
+   "entity_table_updated": false
+  },
+  "inheritance_rejudge_rules_mismatch_ok": true,
+  "store_guard": {
+   "active": {
+    "blocked": false,
+    "reason": "REJUDGE_OK"
+   },
+   "ret_flag_false": {
+    "blocked": false,
+    "reason": "REJUDGE_OK"
+   }
+  }
+ }
+]

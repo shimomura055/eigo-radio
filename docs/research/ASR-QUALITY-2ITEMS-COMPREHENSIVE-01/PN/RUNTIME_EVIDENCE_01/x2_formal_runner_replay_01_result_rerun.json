@@ -1,0 +1,79 @@
+{
+ "evidence_class": "formal_runner_function_with_tts_synthesis_primitive_replaced_by_stored_misread_wav+ledger_excluded_first_seen_name_simulation",
+ "ledger_excluded": true,
+ "wav": "er006_output/pool_pilot_01/pool_n8_airport_line/b1b/narration/point_two.wav",
+ "canonical_text": "Kristie Tse links the behavior to anxiety and a wish to feel in control. The overhead bins add another worry: people may fear being last and having to check a bag. Once a few passengers form a line, o",
+ "seconds": 1.4,
+ "tts_stub_calls": 0,
+ "scope_after": null,
+ "table_holder_after": null,
+ "segment": {
+  "status": "OK",
+  "reason": null,
+  "attempts": 1,
+  "final_status": null,
+  "asr_state": null,
+  "human_review_required": null
+ },
+ "pronunciation_alarm": {
+  "entity_table": null,
+  "nouns": null
+ },
+ "alarm_records": [],
+ "hr_stub_calls": [],
+ "stage1_stub_calls": [],
+ "entity_table_json": {
+  "schema": "ret_prod_01",
+  "builder_version": "111746c7cbbd8d79",
+  "status": "OK",
+  "raw": {
+   "declared": [],
+   "llm_a": [
+    {
+     "category": "person",
+     "surface": "Kristie Tse"
+    }
+   ],
+   "llm_b": [
+    {
+     "category": "person",
+     "surface": "Kristie Tse"
+    }
+   ]
+  },
+  "n_covered": 10,
+  "builds": [
+   {
+    "at": "2026-10-23T18:47:31",
+    "calls": 2,
+    "status": "OK",
+    "uncovered": 10,
+    "usage": [
+     {
+      "in": 342,
+      "jpy_est": 0.01035,
+      "model": "gpt-6-luna",
+      "out": 61,
+      "prompt": "A",
+      "sec": 4.77
+     },
+     {
+      "in": 333,
+      "jpy_est": 0.01373,
+      "model": "gpt-6-luna",
+      "out": 105,
+      "prompt": "B",
+      "sec": 2.28
+     }
+    ]
+   }
+  ]
+ },
+ "operator_report_excerpt": "## 固有名詞発音アラーム(運営責任者向け・一般リスナー非表示)\n1箇所。最終状態=**アラーム付き完成**。制作は停止せずHuman Reviewにも回していません。確認・承認操作は完成の条件ではありません。\n- **kristie tse** × 1箇所\n  - [X/b1b/full_story_part2 継承] C:\\Users\\tensh\\eigo-radio\\docs\\research\\ASR-QUALITY-2ITEMS-COMPREHENSIVE-01\\PN\\RUNTIME_EVIDENCE_01\\x2_run\\theme_n8/b1b/narration/full_story_part2.wav / 文脈 `...[[kristie]] Tse links the behavior to anxiety and a...` / 目安0.0秒\n    - 検出した不一致: 原稿 `kristie tse` -> Primary `christy c` / Secondary `(原稿どおり)`\n    - 発音の根拠(Ledger/Perplexity調査): 階層=未検証 / 確信度=stub / hint=(stub: Ledger upsert/Perplexity not executed in isolated run)\n    - 固有名詞と認識した根拠(実体表・受理判定用。発音の根拠とは別): Kristie Tse[person/confirmed]\n    - TTS発音改善: 供給なし(EVIDENCE_NOT_VERIFIED_ESTIMATED)\n    - 最終状態: アラーム付き完成 / 使用モデル: ASR=gpt-4o-mini-transcribe, Secondary=azure-speech-stt, TTS=gemini-3.8-flash-lite-tts\n\n### 発音供給の適用一覧(TTS入力へ綴り置換した語。ASR比較は置換後の綴りが基準)\n0件(供給対象なし。A階層の自動供給対象/人承認済みB階層が無い、または該当語が本文に無い)\n\n### Human Review残(受理境界の外): ASR不確実のまま残ったsegment 0件 (うち固有名詞のみ不一致だが境界外=脱落/一般語化等 0件)\n\n注: 日本語音声の固有名詞読みはこのアラーム方針の対象外です(従来の検証・Human Reviewのまま)。\n\n### 実体表(固有名詞と認識した根拠。受理判定用。発音の根拠[Ledger/Perplexity調査]とは別)\n- 実体表: 1件(うち証拠として使用可 1件) / NER call=0 / model=gpt-6-luna / table_sha256=f0cecadd9ba8\n- 実体表 person/confirmed: 1件\n",
+ "pronunciation_alarms_json_count": 1,
+ "review_queue": "HR queue stubで捕捉した件数=0(正式HR queueへは書込なし)",
+ "rerun_same_out_dir": true,
+ "reused_from_previous_run": true,
+ "asr_judgement_inherited_state": "PASS_WITH_PRONUNCIATION_ALARM",
+ "inherited_entity_table_present": true
+}

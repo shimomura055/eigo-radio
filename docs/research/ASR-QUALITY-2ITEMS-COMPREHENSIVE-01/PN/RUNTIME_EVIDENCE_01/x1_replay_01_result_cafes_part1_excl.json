@@ -1,0 +1,231 @@
+[
+ {
+  "case": "cafes_part1",
+  "wav": "er006_output/pool_pilot_01/pool_n5_cafes/b1b/narration/full_story_part1.wav",
+  "canonical_text": "A café is no longer only a place for coffee and conversation. For some people, it is also a place to work for hours with a laptop. These customer-workers buy something, take a seat, and use a public s",
+  "evidence_class": "stored_misread_wav_replay_isolated_run_dir+ledger_excluded_first_seen_name_simulation",
+  "ledger_excluded": true,
+  "scope": "X",
+  "table_at_run": {
+   "status": "OK",
+   "n_entries": 9,
+   "usable": [
+    "L. Mimoun",
+    "A. Gruen",
+    "PTPs"
+   ],
+   "grades": {
+    "L. Mimoun": "confirmed",
+    "A. Gruen": "confirmed",
+    "Journal of Service Research": "weak",
+    "London": "weak",
+    "Archetypal places": "weak",
+    "Status Quo places": "weak",
+    "Compromise places": "weak",
+    "Productive Third Places": "weak",
+    "PTPs": "confirmed"
+   },
+   "meta_calls": 1,
+   "model": "gpt-6-luna"
+  },
+  "primary_asr": {
+   "text": "A cafe is no longer only a place for coffee and conversation. For some people, it is also a place to work for hours with a laptop. These customer-workers buy something, take a seat, and use a public space for work-related tasks. For cafe owners, this creates a difficult choice. Should they welcome this customer group or protect the space for shorter visits and social use? Two recent sources show that both answers are now being tested. A 2021 qualitative study by L. Mimon and A. Gruen, published in the Journal of Service Research, examined this question. In London, it covered 38 third places. Researchers made 52 observation visits, interviewed 27 customers and 12 service providers, and reviewed 55 media sources. The study places these businesses into four groups. Archetypal places discourage work. Status quo places do not clearly choose between workers and social customers, and this is where conflict is described as strongest. Compromise places try to serve both groups, but may struggle to enforce their rules. Productive third places, or PTPs, clearly target customer-workers and adapt the space for them.",
+   "error": null
+  },
+  "adapter": {
+   "ok": true,
+   "technical_stop": false,
+   "classification": "PASS_WITH_PRONUNCIATION_ALARM",
+   "human_review_required": false,
+   "state": "PASS_WITH_PRONUNCIATION_ALARM",
+   "azure_real_calls": 1,
+   "pronunciation_alarm_eval": {
+    "accepted": true,
+    "reason": "ENTITY_ONLY_ACCEPT",
+    "detail": {}
+   },
+   "reason_code": "pronunciation_alarm_accept"
+  },
+  "pronunciation_alarm": {
+   "entity_table": {
+    "sha256": "ea885cf99141ad68f4a697de41149fe5fb869df3e0d5ecb63e2233d68674fb3d",
+    "status": "OK",
+    "builder_version": "111746c7cbbd8d79",
+    "rules_version": "6532f35042255d87",
+    "per_diff": [],
+    "ret3": [
+     {
+      "span": "l mimoun",
+      "asr_secondary": "el mimoon",
+      "similarity": 0.8,
+      "entities": [
+       {
+        "surface": "L. Mimoun",
+        "words": [
+         "l",
+         "mimoun"
+        ],
+        "category": "person",
+        "grade": "confirmed"
+       }
+      ],
+      "evidence": "capitalized_midsentence+cmu_oov"
+     }
+    ],
+    "entries_used": [
+     {
+      "surface": "L. Mimoun",
+      "words": [
+       "l",
+       "mimoun"
+      ],
+      "category": "person",
+      "grade": "confirmed",
+      "sources": [
+       "llm_a",
+       "det:cmu_oov"
+      ],
+      "eligible": [
+       "mimoun"
+      ],
+      "initials": [
+       "l"
+      ],
+      "notes": []
+     }
+    ],
+    "alarm_labels": [
+     {
+      "similarity_band": "high(>=0.70)",
+      "both_asr_same_other_word": false,
+      "asr_zipf_near_general_boundary": false
+     }
+    ]
+   },
+   "nouns": [
+    "mimoun"
+   ]
+  },
+  "alarm_records": [
+   {
+    "proper_noun": "mimoun",
+    "evidence": "cmu_oov",
+    "entity_table_basis": {
+     "entities": [
+      {
+       "surface": "L. Mimoun",
+       "category": "person",
+       "grade": "confirmed"
+      }
+     ],
+     "ret3_span": [
+      "l mimoun"
+     ],
+     "table_sha256": "ea885cf99141ad68f4a697de41149fe5fb869df3e0d5ecb63e2233d68674fb3d",
+     "table_status": "OK",
+     "builder_version": "111746c7cbbd8d79"
+    },
+    "pronunciation_basis_hint": "(stub: Ledger upsert/Perplexity not executed in isolated replay)"
+   }
+  ],
+  "seconds": 47.6,
+  "hr_stub_calls": [],
+  "stage1_stub_calls": [
+   "mimoun"
+  ],
+  "entity_table_json": {
+   "schema": "ret_prod_01",
+   "builder_version": "111746c7cbbd8d79",
+   "status": "OK",
+   "n_covered": 2,
+   "raw": {
+    "declared": [],
+    "llm_a": [
+     {
+      "category": "person",
+      "surface": "L. Mimoun"
+     },
+     {
+      "category": "person",
+      "surface": "A. Gruen"
+     },
+     {
+      "category": "work_title",
+      "surface": "Journal of Service Research"
+     },
+     {
+      "category": "place",
+      "surface": "London"
+     },
+     {
+      "category": "other_named",
+      "surface": "Archetypal places"
+     },
+     {
+      "category": "other_named",
+      "surface": "Status Quo places"
+     },
+     {
+      "category": "other_named",
+      "surface": "Compromise places"
+     },
+     {
+      "category": "other_named",
+      "surface": "Productive Third Places"
+     },
+     {
+      "category": "other_named",
+      "surface": "PTPs"
+     }
+    ],
+    "llm_b": []
+   },
+   "builds": [
+    {
+     "at": "2026-10-23T18:46:21",
+     "calls": 1,
+     "status": "OK",
+     "uncovered": 2,
+     "usage": [
+      {
+       "in": 454,
+       "jpy_est": 0.03294,
+       "model": "gpt-6-luna",
+       "out": 321,
+       "prompt": "A",
+       "sec": 4.71
+      }
+     ]
+    }
+   ]
+  },
+  "operator_report_has_entity_section": true,
+  "rebuild_same_input": {
+   "ner_calls": 0,
+   "status": "OK",
+   "covered_all_current": true
+  },
+  "inheritance_rejudge": {
+   "ok": true,
+   "state": "PASS_WITH_PRONUNCIATION_ALARM",
+   "alarm_rejudge": {
+    "accepted": true,
+    "reason": "ENTITY_ONLY_ACCEPT"
+   },
+   "secondary_new_calls": 0,
+   "api_calls": 0,
+   "entity_table_updated": true
+  },
+  "inheritance_rejudge_rules_mismatch_ok": false,
+  "store_guard": {
+   "active": {
+    "blocked": false,
+    "reason": "REJUDGE_OK"
+   },
+   "ret_flag_false": {
+    "blocked": true,
+    "reason": "ENTITY_TABLE_ALARM_AUDIO_RET_INACTIVE_OR_UNRESTORABLE"
+   }
+  }
+ }
+]

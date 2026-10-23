@@ -55,9 +55,13 @@ hr_calls, stage1_calls = [], []
 sec._log_human_review = lambda d: hr_calls.append({"segment": d.get("segment_id"), "reason": d.get("reason") or d.get("review_reason")})
 sec._resolve_unresolved_entity_for_review = lambda span: stage1_calls.append(span) or {"pronunciation_hint": "(stub: Ledger upsert/Perplexity not executed in isolated run)", "confidence": "stub", "sources": []}
 
+if "--excl-ledger" in sys.argv:        # 『初見の固有名詞』(Ledger未登録)の模擬: 受理判定のLedger語集合を空にする(live Ledgerには既にKristie Tseが登録済みのため)
+    pol.ledger_surface_tokens = lambda ledger=None: frozenset()
+res_ledger_excluded = "--excl-ledger" in sys.argv
 x._ONLY_SEGMENTS = {"full_story_part2"}          # --only-segments full_story_part2 相当(main()と同じ代入)
 t0 = time.time()
-res = {"evidence_class": "formal_runner_function_with_tts_synthesis_primitive_replaced_by_stored_misread_wav", "wav": WAV, "canonical_text": canon[:200]}
+res = {"evidence_class": "formal_runner_function_with_tts_synthesis_primitive_replaced_by_stored_misread_wav" + ("+ledger_excluded_first_seen_name_simulation" if res_ledger_excluded else ""),
+       "ledger_excluded": res_ledger_excluded, "wav": WAV, "canonical_text": canon[:200]}
 with cl.logging_context("x2_ret_evidence", "tts"):
     out = x.generate_family_x_b1_segments(THEME, tts_backend=x.FAMILY_X_APPROVED_PRODUCTION_TTS_BACKEND, style_profile="fx_20261017")
 res["seconds"] = round(time.time() - t0, 1)
@@ -83,5 +87,9 @@ rep = os.path.join(THEME, "b1b", "audit", "operator_alarm_report.md")
 res["operator_report_excerpt"] = open(rep, encoding="utf-8").read()[:3500] if os.path.exists(rep) else None
 res["pronunciation_alarms_json_count"] = json.load(open(os.path.join(THEME, "b1b", "audit", "pronunciation_alarms.json"), encoding="utf-8")).get("count")
 res["review_queue"] = "HR queue stubで捕捉した件数=%d(正式HR queueへは書込なし)" % len(hr_calls)
-json.dump(res, open(os.path.join(HERE, "x2_formal_runner_replay_01_result.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
+res["rerun_same_out_dir"] = "--keep" in sys.argv
+res["reused_from_previous_run"] = seg.get("reused_from_previous_run")
+res["asr_judgement_inherited_state"] = (seg.get("asr_judgement_inherited") or {}).get("state")
+res["inherited_entity_table_present"] = bool(((seg.get("asr_judgement_inherited") or {}).get("pronunciation_alarm") or {}).get("entity_table"))
+json.dump(res, open(os.path.join(HERE, "x2_formal_runner_replay_01_result_rerun.json" if "--keep" in sys.argv else "x2_formal_runner_replay_01_result.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
 print(json.dumps({k: res[k] for k in ("seconds", "tts_stub_calls", "segment", "pronunciation_alarm", "hr_stub_calls", "stage1_stub_calls")}, ensure_ascii=False, default=str)[:3000])

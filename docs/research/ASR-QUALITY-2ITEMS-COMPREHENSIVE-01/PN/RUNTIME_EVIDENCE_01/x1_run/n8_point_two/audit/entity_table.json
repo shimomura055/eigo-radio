@@ -1,0 +1,104 @@
+{
+  "builder_version": "111746c7cbbd8d79",
+  "builds": [
+    {
+      "at": "2026-10-23T18:44:48",
+      "calls": 2,
+      "status": "OK",
+      "uncovered": 2,
+      "usage": [
+        {
+          "in": 277,
+          "jpy_est": 0.00699,
+          "model": "gpt-6-luna",
+          "out": 32,
+          "prompt": "A",
+          "sec": 1.77
+        },
+        {
+          "in": 268,
+          "jpy_est": 0.01261,
+          "model": "gpt-6-luna",
+          "out": 104,
+          "prompt": "B",
+          "sec": 2.11
+        }
+      ]
+    }
+  ],
+  "covered_b_text_sha256": [
+    "29132cbbd3280779c8d84633ba2713880540a21b419e91d6118e3ee417e2d29d",
+    "af622e7bfc0488682ece92b39e0c9eaffebb485a27fd3ddb903232a24e9c0139"
+  ],
+  "covered_text_sha256": [
+    "29132cbbd3280779c8d84633ba2713880540a21b419e91d6118e3ee417e2d29d",
+    "af622e7bfc0488682ece92b39e0c9eaffebb485a27fd3ddb903232a24e9c0139"
+  ],
+  "derived_snapshot": {
+    "entries": [
+      {
+        "category": "other_named",
+        "eligible": [],
+        "grade": "weak",
+        "initials": [],
+        "notes": [
+          "evidence:general_word",
+          "replay:lowercase_form_in_text",
+          "no_eligible_token"
+        ],
+        "sources": [
+          "llm_a"
+        ],
+        "surface": "Evidence replay",
+        "words": [
+          "evidence",
+          "replay"
+        ]
+      },
+      {
+        "category": "person",
+        "eligible": [
+          "kristie",
+          "tse"
+        ],
+        "grade": "confirmed",
+        "initials": [],
+        "notes": [],
+        "sources": [
+          "llm_a",
+          "llm_b_agree"
+        ],
+        "surface": "Kristie Tse",
+        "words": [
+          "kristie",
+          "tse"
+        ]
+      }
+    ],
+    "note": "監査用。判定には使わない(毎回rawから導出)",
+    "sha256": "66c052c505eca00c56b263513801720de3e0b15f47eb349bb093253e093d6709"
+  },
+  "model": "gpt-6-luna",
+  "raw": {
+    "declared": [],
+    "llm_a": [
+      {
+        "category": "other_named",
+        "surface": "Evidence replay"
+      },
+      {
+        "category": "person",
+        "surface": "Kristie Tse"
+      }
+    ],
+    "llm_b": [
+      {
+        "category": "person",
+        "surface": "Kristie Tse"
+      }
+    ]
+  },
+  "rules_version": "6532f35042255d87",
+  "schema": "ret_prod_01",
+  "status": "OK"
+}

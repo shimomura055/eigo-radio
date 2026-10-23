@@ -12,7 +12,8 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..",
 os.chdir(ROOT)
 sys.path.insert(0, ROOT)
 HERE = os.path.dirname(os.path.abspath(__file__))
-RUN = os.path.join(HERE, "x1_run")
+EXCL = "--excl-ledger" in sys.argv           # 『初見の固有名詞』(Ledger未登録)を模擬: 受理判定のLedger語集合を空にする(Trial D1の『Ledger全除外』と同じ前提)
+RUN = os.path.join(HERE, "x1_run_excl" if EXCL else "x1_run")
 os.makedirs(RUN, exist_ok=True)
 
 import er005_cost_logger as cl
@@ -29,6 +30,8 @@ CASES = [
     dict(id="cafes_part1", wav="er006_output/pool_pilot_01/pool_n5_cafes/b1b/narration/full_story_part1.wav", seg="full_story_part1"),
 ]
 only = [a for a in sys.argv[1:] if not a.startswith("-")]
+if EXCL:
+    pol.ledger_surface_tokens = lambda ledger=None: frozenset()
 rows = [json.loads(l) for l in open(HR, encoding="utf-8") if l.strip()]
 hr_calls, stage1_calls = [], []
 sec._log_human_review = lambda d: hr_calls.append({"segment": d.get("segment_id"), "reason": d.get("reason") or d.get("review_reason")})
@@ -44,7 +47,7 @@ for c in CASES:
     os.makedirs(os.path.join(theme, "b1b"), exist_ok=True)
     json.dump({"title": "Evidence replay", "part1": canon, "part2": "", "part3": "", "in_one_line": ""}, open(os.path.join(theme, "b1b", "parts.json"), "w", encoding="utf-8"))
     level_dir = os.path.join(theme, "b1b")
-    out = {"case": c["id"], "wav": c["wav"], "canonical_text": canon[:200], "evidence_class": "stored_misread_wav_replay_isolated_run_dir"}
+    out = {"case": c["id"], "wav": c["wav"], "canonical_text": canon[:200], "evidence_class": "stored_misread_wav_replay_isolated_run_dir" + ("+ledger_excluded_first_seen_name_simulation" if EXCL else ""), "ledger_excluded": EXCL}
     t0 = time.time()
 
     def fn():
@@ -124,4 +127,4 @@ for c in CASES:
         out["store_guard"] = {"active": {"blocked": ok_g["blocked"], "reason": ok_g["reason"]}, "ret_flag_false": {"blocked": bad_g["blocked"], "reason": bad_g["reason"]}}
     summary.append(out)
     print(json.dumps({k: out.get(k) for k in ("case", "adapter", "table_at_run", "rebuild_same_input", "inheritance_rejudge", "store_guard", "seconds")}, ensure_ascii=False, default=str))
-json.dump(summary, open(os.path.join(HERE, "x1_replay_01_result.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
+json.dump(summary, open(os.path.join(HERE, "x1_replay_01_result_%s%s.json" % ("_".join(only) or "all", "_excl" if EXCL else "_ledger_live")), "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
