@@ -1,0 +1,86 @@
+OK  正常 exp=EQ judge=PASS/primary_pass vg=EQUAL    cls=P | 'At ten thirty' || 'At 10:30'  [S5/S9/HP] OPEN-482(1) 純語形
+OK  正常 exp=EQ judge=PASS/primary_pass vg=EQUAL    cls=P | 'At 10:30' || 'At ten thirty'  [S5/S9/HP] 逆向き
+OK  正常 exp=EQ judge=PASS/primary_pass vg=EQUAL    cls=P | 'At ten-thirty' || 'At 10:30'  [S5/HP] ハイフン
+OK  正常 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'At ten thirty' || 'At 10 30'  [S5/S9] ASRが空白区切り数字
+OK  正常 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'At 10 thirty' || 'At ten thirty'  [S5/S9] TTS入力の数字化後canon vs ASR語形(実在し得る経路)
+OK  正常 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'At ten thirty' || 'At 10 thirty'  [S5/S9] 
+OK  正常 exp=EQ judge=PASS/primary_pass vg=EQUAL    cls=P | 'At 10 thirty' || 'At 10:30'  [S5/HP] c8実経路(第2層修正済み)
+OK  正常 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'At ten thirty am' || 'At 10:30 am'  [S5/HP] am付き
+OK  正常 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'At 10 thirty am' || 'At 10:30 am'  [S5/HP] 数字化canon+am
+OK  正常 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'At 10 thirty pm' || 'At 10:30 pm'  [S5/HP] 数字化canon+pm(現行は誤NG)
+OK  正常 exp=EQ judge=PASS/primary_pass vg=EQUAL    cls=P | 'At two fifteen' || 'At 2:15'  [S5/HP] 
+OK  正常 exp=EQ judge=PASS/primary_pass vg=EQUAL    cls=P | 'At 2 fifteen' || 'At 2:15'  [S5/HP] 
+OK  正常 exp=EQ judge=PASS/primary_pass vg=EQUAL    cls=P | 'At one thirty' || 'At 1:30'  [S5/HP] oneは数字化されず純語形で届く
+OK  正常 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'At one thirty' || 'At 1 30'  [S5/S9] 
+OK  正常 exp=EQ judge=PASS/primary_pass vg=EQUAL    cls=P | 'At two thirty' || 'At 2:30'  [S5/HP] 
+OK  正常 exp=EQ judge=PASS/primary_pass vg=EQUAL    cls=P | 'At ten thirty five' || 'At 10:35'  [S5/HP] 分が2語
+OK  正常 exp=EQ judge=PASS/primary_pass vg=EQUAL    cls=P | 'At 10 thirty five' || 'At 10:35'  [S5/HP] 
+OK  正常 exp=EQ judge=PASS/primary_pass vg=EQUAL    cls=P | 'At ten thirty. He left.' || 'At 10:30. He left.'  [S5] 文末
+OK  正常 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'Meet at 10 thirty tomorrow' || 'Meet at ten thirty tomorrow'  [S5] 
+OK  正常 exp=EQ judge=PASS/primary_pass vg=EQUAL    cls=P | 'At twelve forty five' || 'At 12:45'  [S5/HP] 
+OK  異常 exp=NE judge=NG_PROTECTED/final_gate_value_diff vg=DIFF     cls=P | 'At ten thirty' || 'At 1030'  [ユーザー指示②-2/S5] OPEN-482(2) 桁連結は時刻と別物(現行は誤EQUAL)
+OK  異常 exp=NE judge=NG_PROTECTED/final_gate_value_diff vg=DIFF     cls=P | 'At 1030' || 'At ten thirty'  [ユーザー指示②-2/S5] 逆向き
+OK  異常 exp=NE judge=NG_PROTECTED/final_gate_value_diff vg=DIFF     cls=P | 'At 10 thirty' || 'At 1030'  [S5] 数字化canon vs 桁連結
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At ten thirty' || 'At 10:13'  [S5] 
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At ten thirty' || 'At 10:03'  [S5] 
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At ten thirty' || 'At 11:30'  [S5] 
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At ten thirty' || 'At 40'  [S5] 合算40
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At ten thirty' || 'At forty'  [S5] 
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At ten thirty' || 'At ten'  [S5] 分の脱落
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At ten thirty' || 'At 30'  [S5] 時の脱落
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At ten thirty pm' || 'At 10:30 am'  [S5] pm/am相違
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At 10 thirty pm' || 'At 10:30 am'  [S5] 
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At ten thirty am' || 'At 10:30 pm'  [S5] 
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At ten thirty' || 'At 10:30 pm'  [S5] 原稿にam/pm無し・ASRのみpm(付加は現行NG維持)
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At ten thirty' || 'At 10:30:15'  [S5] 
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At ten thirty' || 'At 20:30'  [S5] 
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At ten thirty' || 'At 10:30 and 5'  [S5] 余分な数値
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At two thirty' || 'At 2:03'  [S5] 
+OK  異常 exp=NE judge=NG_PROTECTED/final_gate_value_diff vg=DIFF     cls=P | 'At two thirty' || 'At 230'  [ユーザー指示②-2/S5] 桁連結
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At seven fifteen' || 'At 7:50'  [S5] 
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At ten thirty five' || 'At 10:53'  [S5] 
+OK  異常 exp=NE judge=NG_PROTECTED/final_gate_value_diff vg=DIFF     cls=P | 'At ten thirty five' || 'At 1035'  [ユーザー指示②-2/S5] 桁連結
+OK  異常 exp=NE judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=EQUAL    cls=N | 'At ten thirty' || 'At 10 apples and 30 pears'  [S5] 
+OK  境界 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'In twenty twenty' || 'In 2020'  [YR] 年号(20|20は時刻形だが年として維持)
+OK  境界 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'In twenty twenty six' || 'In 2026'  [YR] 
+OK  境界 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'In 2026' || 'In twenty twenty six'  [YR] 
+OK  境界 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'In nineteen ninety' || 'In 1990'  [YR] 分90は時刻不成立
+OK  境界 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'In nineteen ninety nine' || 'In 1999'  [YR] 
+OK  境界 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'In 1999' || 'In nineteen ninety nine'  [YR] 
+OK  境界 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'In nineteen seventy five' || 'In 1975'  [YR] 
+OK  境界 exp=NE judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  cls=N | 'In twenty twenty' || 'In 20:20'  [S5] 年と時刻を混同しない(現行も非EQUAL)
+OK  境界 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'In twenty twenty' || 'In 2021'  [S5] 
+OK  境界 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'In nineteen ninety' || 'In 1991'  [S5] 
+OK  境界 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'twenty one people' || '21 people'  [S9] 十の位→一の位は通常基数
+OK  境界 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'twenty one people' || '20 1 people'  [S5] 
+OK  境界 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'one hundred thirty people' || '130 people'  [S9] scale語後の基数
+OK  境界 exp=REF judge=PASS/primary_pass vg=UNKNOWN  cls=P | 'one hundred thirty people' || '1:30 people'  [-] 既存の別の穴X-2: 一次分類のdespace一致(130==1:30の空白除去)+value_guardのUNKNOWN(kind_mismatch)は止めない仕様でPASS。現行も修正後も同じ(本件のscope外、Opus論点)
+OK  境界 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'two thousand twenty six' || '2026'  [YR] 
+OK  境界 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'ten people' || '10 people'  [S9] 単独数
+OK  境界 exp=REF judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'ten thirty-year-olds' || '10 30-year-olds'  [-] 『時 分』隣接でも年齢語の複合 -> 数字化canonと同じ読みなら一致
+OK  境界 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'It costs two thirty dollars' || 'It costs 2.30 dollars'  [S5] 金額読み(2.30)は時刻/桁連結と別物。非EQUAL維持(安全側)
+OK  境界 exp=NE judge=NG_PROTECTED/final_gate_value_diff vg=DIFF     cls=P | 'It costs two thirty dollars' || 'It costs 230 dollars'  [S5] 桁連結
+OK  境界 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | "twelve o'clock" || "12 o'clock"  [HP] o'clock
+OK  境界 exp=REF judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  cls=N | "twelve o'clock" || '12:00'  [HP] 分を伴わない読みは現行どおり(HP:2970はo'clock <-> 時刻の同値を既承認)
+OK  境界 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'At 1030' || 'At 1030'  [S5] 桁連結が原稿にある場合は同表層でEQUAL
+OK  境界 exp=REF judge=PASS/primary_pass vg=UNKNOWN  cls=P | 'At 1030' || 'At 10:30'  [er109(CURRENT_SPEC.md:2970)] 原稿の桁連結 vs 時刻。er109の承認済み同音規則が1030<->10:30を同値(er109_probe_01: RESCUE)とするため期待値を置かない。現行も修正後も同じ
+OK  境界 exp=NE judge=NG_PROTECTED/final_gate_value_diff vg=DIFF     cls=P | 'Chapter eleven fifty is long' || 'Chapter 1150 is long'  [ユーザー指示②-2と同型] 時分形(11|50)の桁連結は一致させない。現行EQUAL->修正後NG=意図したPASS->NG(論点: 中世年号)
+OK  境界 exp=NE judge=NG_PROTECTED/final_gate_value_diff vg=DIFF     cls=P | 'Magna Carta in twelve fifteen' || 'Magna Carta in 1215'  [ユーザー指示②-2と同型] 中世年号(12|15)も時分形。現行EQUAL->修正後NG=意図したPASS->NG(論点)
+OK  境界 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'In ten sixty six' || 'In 1066'  [YR] 分66は時刻不成立->年読み維持
+OK  境界 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'At 3' || 'At three'  [S9] 単独数
+OK  境界 exp=NE judge=NG_PROTECTED/final_gate_value_diff vg=DIFF     cls=P | 'At five ten fifteen' || 'At 5:10 15'  [S5] 数詞3連(解釈不能)は安全側
+OK  正常 exp=REF judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=EQUAL    cls=N | 'At 12 forty 5' || 'At 12:45'  [-] TTS数字化後の実canon。vg層はEQUAL(修正後)だが分類層(normalize_numeric)が `forty 5`を40 5と読みNG=既存の別不具合F-1(`thirty 5 people`vs`35 people`も同じ)。本件範囲外
+OK  正常 exp=REF judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=EQUAL    cls=N | 'At 10 thirty 5' || 'At 10:35'  [-] 同上 F-1(分類層)
+OK  正常 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'At 10 thirty 5' || 'At ten thirty five'  [S5/S9] ASRが語形
+OK  正常 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'At 10 thirty 5' || 'At 10 35'  [S5/S9] 
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At 10 thirty 5' || 'At 10:53'  [S5] 
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At 10 thirty 5' || 'At 1035'  [ユーザー指示②-2/S5] 桁連結
+OK  異常 exp=NE judge=NG_PROTECTED/p1_value_diff vg=DIFF     cls=N | 'At 10 thirty 5' || 'At 10:30'  [S5] 分の末尾脱落
+OK  異常 exp=NE judge=NG_PROTECTED/final_gate_value_diff vg=DIFF     cls=P | 'At 10 thirty 5' || 'At 10:30 5'  [S5] 
+OK  正常 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'At 3 fifteen pm' || 'At 3:15 pm'  [S5/HP] 
+OK  正常 exp=EQ judge=PASS/primary_pass vg=EQUAL    cls=P | 'At 10 thirty, then 5 people left' || 'At 10:30, then five people left'  [S5] 時刻の後ろの通常数値は独立
+OK  境界 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | '10 thirty people came' || '10 30 people came'  [S5] 『時 分』形に見えるが数字化canonと同形ならASR数字列と一致
+OK  境界 exp=REF judge=NG_PROTECTED/final_gate_value_diff vg=DIFF     cls=P | 'ten twenty-one people' || '10:21 people'  [-] 時刻の直後に可算名詞が続く形は単位付き=数量読みとして_clock_pairが拒否(安全側)。自然な時刻文ではないため期待値を置かない
+OK  境界 exp=EQ judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    cls=P | 'I saw 5 ten year olds' || 'I saw 5 10 year olds'  [S5] digit+digit列は従来どおり
+modules: C:\Users\tensh\eigo-radio\er078_asr_value_guard_01.py
+cases 84 mismatch_vs_expectation 0

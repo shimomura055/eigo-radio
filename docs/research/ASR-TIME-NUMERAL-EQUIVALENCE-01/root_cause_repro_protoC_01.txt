@@ -1,0 +1,25 @@
+== A. 各層が同じ入力をどう表現するか(normalize_numeric / _tier1_atoms)
+  'At ten thirty'          norm='at 10 30'         atoms=[('literal', 'at', None), ('number', '10', None), ('number', '30', None)]
+  'At 10 thirty'           norm='at 10 30'         atoms=[('literal', 'at', None), ('number', '10', None), ('number', '30', None)]
+  'At 10:30'               norm='at 10:30'         atoms=[('literal', 'at', None), ('time', '1030', None)]
+  'At 10 30'               norm='at 10 30'         atoms=[('literal', 'at', None), ('number', '10', None), ('number', '30', None)]
+  'At 1030'                norm='at 1030'          atoms=[('literal', 'at', None), ('number', '1030', None)]
+  'At ten-thirty'          norm='at 10 30'         atoms=[('literal', 'at', None), ('number', '10', None), ('number', '30', None)]
+  'At one thirty'          norm='at 1 30'          atoms=[('literal', 'at', None), ('number', '1', None), ('number', '30', None)]
+  'At two thirty'          norm='at 2 30'          atoms=[('literal', 'at', None), ('number', '2', None), ('number', '30', None)]
+  'In twenty twenty'       norm='in 40'            atoms=[('literal', 'in', None), ('number', '2020', None)]
+  'In nineteen ninety'     norm='in 19 90'         atoms=[('literal', 'in', None), ('number', '1990', None)]
+== B. TTS入力の数字化(canonical_textの実形)
+  tts_safe_number_words_en('At ten thirty, a tall man') = 'At 10 thirty, a tall man'   (KP英語 tts_safe_kp_en は数字化しない=語形のまま)
+  tts_safe_number_words_en('At one thirty') = 'At one thirty'   (KP英語 tts_safe_kp_en は数字化しない=語形のまま)
+  tts_safe_number_words_en('At twelve forty five') = 'At 12 forty 5'   (KP英語 tts_safe_kp_en は数字化しない=語形のまま)
+  tts_safe_number_words_en('At twenty twenty') = 'At twenty twenty'   (KP英語 tts_safe_kp_en は数字化しない=語形のまま)
+== C. value_guard(最終Gateの値判定)と正式経路の判定(Primary 1本、Secondary不可)
+  'At ten thirty'     ||'At 10:30'       vg=EQUAL    judge=PASS/primary_pass  []
+  'At ten thirty'     ||'At 1030'        vg=DIFF     judge=NG_PROTECTED/final_gate_value_diff  ["DIFF:value_differs:'10'->'1030'", "DIFF:src_drop(b):'30'->None"]
+  'At 10 thirty'      ||'At 10:30'       vg=EQUAL    judge=PASS/primary_pass  []
+  'At 10 thirty'      ||'At ten thirty'  vg=EQUAL    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE  []
+  'At 10 thirty'      ||'At ten-thirty'  vg=EQUAL    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE  []
+  'At 10 thirty'      ||'At 1030'        vg=DIFF     judge=NG_PROTECTED/final_gate_value_diff  ["DIFF:value_differs:'10'->'1030'", "DIFF:src_drop(b):'30'->None"]
+  'At one thirty'     ||'At 1:30'        vg=EQUAL    judge=PASS/primary_pass  []
+  'At 10 thirty pm'   ||'At 10:30 pm'    vg=EQUAL    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE  []

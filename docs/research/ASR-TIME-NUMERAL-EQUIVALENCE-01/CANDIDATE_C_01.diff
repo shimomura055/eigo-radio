@@ -1,0 +1,62 @@
+diff --git a/er021_en_asr_semantic_equivalence_production_01.py b/er021_en_asr_semantic_equivalence_production_01.py
+index f5c35b809..c369d5c3b 100644
+--- a/er021_en_asr_semantic_equivalence_production_01.py
++++ b/er021_en_asr_semantic_equivalence_production_01.py
+@@ -365,6 +365,45 @@ def _try_spoken_time(words: list[str], i: int):
+     return {"kind": "time", "value": Fraction(hour * 100 + minute), "meridiem": meridiem}, j
+ 
+ 
++def _try_clock_pair(words: list[str], i: int):
++    """OPEN-482(ASR-TIME-NUMERAL-EQUIVALENCE-01): 『時(1〜12の算用数字語/数詞語) + 分(10〜59の数詞語)』の隣接2語は、
++    年ペア読み(1030)ではなく、TTS入力の数字化後の形(`10 thirty` -> num10,num30)と同じ2つのnumber atom
++    (am/pm直後ならtime atom)にする。時刻と桁連結を同じ規則で扱い、相手側の`10:30`は最終ゲートの_clock_pairで、`1030`は値差で判定される。
++    時が13以上(nineteen ninety/twenty twenty)・分が10〜59以外・後続に数詞語が続く場合はNone(従来の年ペア読みへ)。"""
++    n = len(words)
++    w = words[i]
++    if re.fullmatch(r"\d{1,2}", w):
++        hour = int(w)
++    elif w.lower() in _ONES:
++        hour = _ONES[w.lower()]
++    else:
++        return None
++    if not 1 <= hour <= 12:
++        return None
++    if i > 0 and (words[i - 1].lower() in _NUMBER_VOCAB or _NUMSTR_RE.fullmatch(words[i - 1])):
++        return None
++    # 分: 10-19の語 / 十の位の語 / 十の位の語+一の位(語 or TTS数字化後の1桁数字 `thirty 5`)。数詞語以外・範囲外はNone(従来の読みへ)。
++    j = i + 1
++    mw = words[j].lower() if j < n else ""
++    if mw in _TENS and _TENS[mw] <= 50:
++        minute, j = _TENS[mw], j + 1
++        nxt = words[j].lower() if j < n else ""
++        if nxt in _ONES and 1 <= _ONES[nxt] <= 9:
++            minute, j = minute + _ONES[nxt], j + 1
++        elif re.fullmatch(r"[1-9]", nxt):
++            minute, j = minute + int(nxt), j + 1
++    elif mw in _ONES and 10 <= _ONES[mw] <= 19:
++        minute, j = _ONES[mw], j + 1
++    else:
++        return None
++    if j < n and (words[j].lower() in _NUMBER_VOCAB or _NUMSTR_RE.fullmatch(words[j]) or words[j].lower() == "point"):
++        return None
++    mer = _peek_meridiem(words, j)
++    if mer is not None:
++        return [{"kind": "time", "value": Fraction(hour * 100 + minute), "meridiem": mer[0]}], j + mer[1]
++    return [_mk_number(Fraction(hour)), _mk_number(Fraction(minute))], j
++
++
+ def _apply_suffixes(atom: dict, words: list[str], idx: int) -> int:
+     """数値atom生成直後に、続く語がscale語・"percent"・通貨語であれば併合する。"""
+     if atom["kind"] != "number":
+@@ -439,6 +478,11 @@ def _tier1_atoms(text: str) -> list[dict]:
+             i += 1
+             i = _apply_suffixes(atoms[-1], words, i)
+             continue
++        clock = _try_clock_pair(words, i)
++        if clock is not None:
++            atoms.extend(clock[0])
++            i = clock[1]
++            continue
+         if _NUMSTR_RE.fullmatch(w):
+             bare = w.replace(",", "")
+             if "," not in w and "." not in w and len(bare) >= 7:
