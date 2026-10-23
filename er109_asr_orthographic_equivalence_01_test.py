@@ -59,6 +59,17 @@ class Negatives(unittest.TestCase):
             with self.subTest(c=c, a=a):
                 self.assertFalse(eq(c, a))
 
+    def test_clock_time_not_equal_to_bare_numeral(self):
+        # 委任_05是正: 裸の数詞は「3:00」と同値にしない(発音が異なる)。追加語(o'clock/分)を伴う読みのみ同値
+        for c, a in [("three", "3:00"), ("3:00", "three"), ("3", "3:00"), ("3:00", "3"), ("at three", "at 3:00"),
+                     ("three", "3:15"), ("three o'clock", "3:15")]:
+            with self.subTest(neg=(c, a)):
+                self.assertFalse(eq(c, a))
+        for c, a in [("three o'clock", "3:00"), ("3:00", "three o'clock"), ("three fifteen", "3:15"),
+                     ("at five o'clock", "at 5:00"), ("three p.m.", "3:00 p.m.")]:
+            with self.subTest(pos=(c, a)):
+                self.assertTrue(eq(c, a))
+
     def test_known_ng_examples(self):
         for c, a in [("take part", "take tart"), ("take part", "take apart"), ("Melos", "Mellows"), ("a ship", "a sheep"),
                      ("three men", "tree men"), ("very good", "berry good"), ("the word", "the world"), ("increase", "decrease")]:

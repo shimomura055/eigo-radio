@@ -58,3 +58,10 @@
 
 ## 7. F6(Opus十分条件)の充足
 1. P-01〜P-07適用+正例再測定: 済(§3)。2. CMU全体の敵対的負例で新規誤同値0: 済(§2、閉じた略語表の単一展開4対を除く)。3. 保存全件ON/OFF、PASS→NG 0、NG→PASS全件列挙(A/B/C分離): 済(§4)。4. 新規PASS保存wavのローカルWhisper再転写: 済(10本、6本一致/4本不一致を開示)。5. ユーザー指摘NG音声で新規PASS 0: 済(§5)。6. 全回帰+DefaultOffIsolation: 済(§6、自分起因の新規失敗は是正)。7. 試聴リスト: 済(§4)。
+
+## 委任_05 追記(2026-10-23): `three`↔`3:00` 型の是正(承認済み安全条件『発音が異なる表現を同値にしない』に基づく不具合是正)
+- 不具合: er109 `_num_units` の時刻unit(meridiemなし・分=00)が候補 `[hour+"o'clock", hour]` を持ち、裸の数詞 `three` が `3:00` と同値になった(`three` と `three o'clock` は発音が異なる)。委任_04で開示(pairs_02 pair2664)。
+- 是正: 候補から裸の時(hour)を削除(o'clock付きのみ)。meridiem付き(`3:00 p.m.`=`three p m`)・分あり(`3:15`=`three fifteen`、`3:05`=`three oh five`)は不変。曖昧な場合は非同値(fail-closed)。
+- 検証: `three`↔`3:00` NG、`3`↔`3:00` NG、`three o'clock`↔`3:00` PASS、`three fifteen`↔`3:15` PASS、`three p.m.`↔`3:00 p.m.` PASS(`er109_asr_orthographic_equivalence_01_test.py::test_clock_time_not_equal_to_bare_numeral`)。pairs_02 4,032組の直接評価でPASS→NGは pair2664 の1組のみ(合成pair、音声由来でない)。保存9,013行×5経路=43,083署名の再比較でも是正による変化は pair2664 の5署名のみ(保存音声由来のPASS→NG 0)=誤PASSの除去。
+- 『B/C境界(時刻・セント)3件』(PATTERN_CATALOG_02 N20 `five thirty`↔`5:30`・N21 `five o'clock`↔`5:00`・N26 `five dollars and fifty cents`↔`$5.50`)との整合: 3件ともer109で同値のまま(是正の影響なし。追加語[o'clock/分/dollars]を伴う正しい読みの同値)。裸の数詞との同値のみを除去したため、B/C境界の判断(Tier1文言の再確認)は不変。
+- evidence: `er109_output/aho4_runtime_evidence_01/invariance_compare_05_threeoclock_fix.json`、`RUNTIME_EVIDENCE_05.md`。

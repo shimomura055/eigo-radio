@@ -301,7 +301,9 @@ def _num_units(m_text: str, group: str, entity: bool) -> Unit:
             return Unit(s, key, "unknown", None, why="time_out_of_range")
         hw = int_to_words(h) if h else ["zero"]
         if mi == 0:
-            cands = [hw + ["o'clock"], hw] if not mer else [hw]
+            # 委任_05 是正: 裸の数詞(three)は「3:00」と同値にしない(発音が異なる=three o'clockと三。fail-closed)。
+            # 時刻表記は o'clock を伴う読みのみ。meridiem付きは「hour + a m/p m」(meridiem文字を伴うので裸ではない)
+            cands = [hw + ["o'clock"]] if not mer else [hw]
         elif mi < 10:
             cands = [hw + ["oh", _ONES[mi]], hw + ["zero", _ONES[mi]]]
         else:
