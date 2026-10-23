@@ -1,0 +1,272 @@
+FABLE-DELEGATION-MARKER: FAMILY-Y-VOICES-DESIGN-01-委任_01A-20261023
+
+# 委任_01A: Family Y(Voices型)設計のための **Family X/Z 最新承認済み仕様の棚卸し**(read-only・API費用0・Production変更禁止)
+
+## T-0
+1. 委任文逐語保存: `.venv\Scripts\python.exe docs/pm/tools/extract_delegation_from_jsonl_01.py --jsonl C:\Users\tensh\.claude\projects\C--Users-tensh-eigo-radio\a66c19e8-1d31-4bc4-b0cb-f15b29248dc1.jsonl --role assistant --tool-use-name Agent --tool-input-field prompt --index N --out docs/pm/delegation_log/2026-10-23_FAMILY-Y-VOICES-DESIGN-01_委任_01A.md`(N≈320〜330、先頭行MARKER一致確認)。
+2. ユーザー指示原文(§1)を `docs/pm/delegation_log/2026-10-23_FAMILY-Y-VOICES-DESIGN-01_USER.md` に逐語保存(本委任Aが担当。委任Bは保存しない)。
+3. ACTIVE_TASK.md: 別agent複数が並行中。編集直前に再読込し、「並行タスク: FAMILY-Y-VOICES-DESIGN-01 委任_01A/01B(調査中)」の1行を追加するだけ。
+4. 並行する委任_01B(旧Family B Voices仕様の棚卸し)とは成果物ファイルを分ける。SSOT(OPEN_ITEMS等)は本委任では編集しない(後続の統合委任で行う)。
+
+## 1. ユーザー指示原文(逐語、保存用)
+```
+# Family Y 基本設計・仕様継承調査指示
+
+## 1. 目的
+
+Family Y(Voices型)の新規設計を開始する。
+
+**Family Xを技術・記事品質・Production仕様の基盤とし、旧Family BのVoices編集思想を取り込む。**
+
+旧Family BのProduction経路を改修・転用するのではない。
+
+Family X/Zで蓄積された最新の品質対策・承認済み共通仕様を維持しながら、Voices固有の構造だけを追加する。
+
+最上位優先順位は **品質(Q)>完成速度(D)>量産単価(C)≫開発費用**。
+
+本委任では、既存仕様の調査、差分整理、Family Yの設計案作成まで実施する。
+
+**Production実装・新規Trial・API費用を伴う検証は行わない。**
+
+## 2. ユーザー決定済み基本設計
+
+以下は今回の設計前提として確定しており、再承認を求めない。
+
+### 2.1 本文構造
+
+Family Yの本文は次の5パートに固定する。
+
+1. 本文リード文(テーマ・問題提起・導入)
+2. Voice 1
+3. Voice 2
+4. Voice 3
+5. Tension + Closing
+
+旧Family Bからの構造変更は、3 Voices固定と、独立Closingの廃止・Tensionとの統合。
+
+Preview、Comment、Key Phrase、In One Line等の学習支援構造は、Family Xの最新承認済み仕様を基盤とする。
+
+### 2.2 Voices数
+
+**3 Voices固定。**
+
+- 2 Voicesは不採用。構造が単純になりすぎ、リスナーが内容を容易に予測できる。
+- 4 Voicesは不採用。設計負荷、時間尺、Voice制御の複雑化を避ける。
+- 3 Voicesで、多様性・意外性・制作効率・品質安定性を両立する。
+
+3 Voicesを必ず「賛成・反対・中立」とする必要はない。
+
+経験、価値観、利害、優先順位等の異なる3つの視点を設計し、リスナーに発見を提供する。
+
+2V/4Vをサポートするための新規可変構造・追加実装は不要。
+
+### 2.3 Voice編集思想
+
+旧Family Bで承認済みの思想を継承する。
+
+**Research is backstage. People are on stage.**
+
+各Voiceは独立した人物として、一人称で自身の経験・感情・価値観・主観的立場から自由に発言する。
+
+重要原則:
+
+- Voiceは調査報告・統計・外部Evidenceの説明者にならない。
+- 各Voiceの視点・人物像・立場の独自性を保つ。
+- 自分の立場の中の迷い・葛藤・ニュアンスは許容する。
+- 他のVoiceが中心的に担う反論・懸念まで無理に抱え込まない。
+- 主観的意見の自由と、客観的事実の正確性を両立する。
+- 検証可能な数値・制度・他者の具体的行動・出来事等を創作しない。
+
+旧B後期に承認済みのVoice立場境界・Fact Safety対策を確認し、Family Yに継承する。
+
+### 2.4 Tension + Closing
+
+独立Closingを廃止し、最終パートに統合する。
+
+Tensionは旧Bの「共通前提→分岐点→非対称性」の設計思想を基本的に継承する。
+
+3 Voicesの違いを浮き彫りにし、自然に締めくくる。
+
+各Voiceの単純な再要約、論点の反復、独立したClosing相当の冗長な追加は避ける。
+
+## 3. 既存仕様の調査
+
+CURRENT_SPEC、DECISION_LOG、OPEN_ITEMS、CLAUDE.md、PM_GOVERNANCEおよび関連Productionコード・過去Trial・ユーザー承認記録を確認する。
+
+調査対象:
+
+### A. Family X/Zの最新仕様
+
+- Research/Fact Ledger/Fact Safety
+- Writer・記事構造・CEFR別難易度・語数・文長
+- Preview・Comment・Key Phrase・In One Line
+- 数字処理・自然な音声表現
+- TTS・Voice・ASR・音声品質検査
+- retry/fallback/regeneration/resume
+- QA・Validator・Assembly・試聴ページ
+- 共通仕様のFamily間整合
+
+古い仕様と現在の正式仕様を混同しないこと。
+
+### B. 旧Family BのVoices固有仕様
+
+特に以下を確認する。
+
+- 3 Voicesの人物・視点設計方法
+- Voice間の独自性・立場境界
+- 一人称表現・主観的意見の扱い
+- Fact Safety・Fact Attribution
+- Analytical Leakage Check
+- Tensionの役割
+- 旧Bで品質NGを生んだ構造的原因
+- 後期にユーザーが承認した改善策
+- なお残存する構造的品質リスク
+
+旧Bで承認済みの最終仕様と、途中で試しただけのTrial仕様、不採用案を明確に区別する。
+
+旧BのProductionコードをそのまま移植する必要はない。
+
+## 4. 仕様継承・差分整理の原則
+
+**Family YはFamily Xの最新仕様を原則継承し、Voicesに必要な差分だけを設計する。**
+
+次の4分類で整理する。
+
+| 分類 | 対応 |
+|---|---|
+| A:Family X/Zの承認済み共通仕様 | 原則そのまま継承 |
+| B:旧Bの承認済みVoices固有仕様 | Family Y構造との整合を確認して継承設計 |
+| C:旧Bの旧仕様・不採用案・不要な独自実装 | 原則継承しない |
+| D:Family Y固有の新設計・実質的仕様変更 | 理由・QCD影響を示してユーザー判断へ |
+
+承認済み共通仕様をFamily Yに適用することと、新仕様を正式Production採用することは区別する。
+
+Family Y自体は設計段階であり、今回の調査結果をもってProduction採用・配線を行わない。
+
+## 5. ユーザー判断を最小化すること【重要】
+
+ユーザーは技術実装担当者ではなく、プロジェクト責任者である。
+
+自明の仕様継承、既存承認済み仕様の適用、内部の実装方法、軽微な不整合について、逐一ユーザー確認を求めない。
+
+Claude/Fableが調査・分析し、既存承認範囲で解決できる事項は自律的に整理する。
+
+ユーザー判断が必要なのは、原則として以下に限る。
+
+- 新しい編集仕様・品質基準の採用
+- 既存の承認済み仕様との実質的な衝突
+- 品質・尺・量産単価などに重要なトレードオフがある場合
+- 今回の設計思想からの変更が必要な場合
+
+問題を発見しただけでユーザーへ転送しない。
+
+既存の仕組みで解決できるか、過去に同様の問題を解決していないかを確認し、合理的な推奨案まで整理すること。
+
+ただし、未承認の新仕様を独断で確定・Production採用しない。
+
+## 6. 特に検討する品質リスク
+
+旧Bの問題をFamily Yへ持ち込まないよう、設計時点で以下を検討する。
+
+1. Voiceが客観的な解説者になり、人物らしさを失う。
+2. 3 Voicesの立場や論点が重複する。
+3. 各Voiceが他のVoiceの中心的主張まで取り込む。
+4. VoiceとTension + Closingの論点が重複する。
+5. 主観的な体験談の中で根拠のない事実が創作される。
+6. 検査や書き直しを反復しても、構造起因の品質NGが解消されない。
+
+既存の承認済み対策でカバーできるものはそれを優先する。
+
+新しいValidatorや品質検査を増やすことを目的化しない。
+
+必要十分な品質を、できるだけ少ない生成・検査・再試行で達成する設計を優先する。
+
+## 7. QCDと設計効率
+
+- Family Xの正式Production経路と既存共通機能を最大限活用する。
+- 旧B固有の複雑な仕組みを無条件に再構築しない。
+- 3 Voices固定を前提とし、不要な可変Voice数対応を設計しない。
+- 品質を維持したうえで、生成回数・retry・API利用量・検査負荷を最小化する。
+- 量産単価目標は70円/記事セット。現段階で達成を保証する必要はないが、設計上の費用増加要因は明確にする。
+- 独立した調査は並列化し、不要な日付分割・待機・逐次作業を避ける。
+
+## 8. 成果物・報告形式
+
+以下の順序で、非エンジニアのPMが判断できるように報告する。
+
+### ① 結論
+
+Family Yの基本設計が成立する見込みと、重要な未解決事項。
+
+### ② 仕様継承マトリクス
+
+Family Xから継承するもの、旧Bから取り込むもの、新規設計が必要なものを一覧化。
+
+### ③ Family Yの構造案
+
+5パート・3 Voices固定を前提に、各パートの役割と相互の境界を示す。
+
+### ④ 過去の品質NGと対策の対応表
+
+旧Bの品質問題について、原因・承認済み対策・Family Yへの適用方針・残存リスクを記載。
+
+### ⑤ QCD評価
+
+品質、完成までの開発工程、量産単価への影響と改善余地。
+
+### ⑥ ユーザー判断事項
+
+本当に新しい判断が必要な事項だけを列挙。
+
+判断不要な事項を確認依頼として並べない。
+
+### ⑦ 次工程
+
+設計確定後、最小のTrialで品質・構造・尺を検証する計画案。
+
+実施は別途承認を要する。
+
+## 9. Status・Gate・STOP
+
+今回の作業は **DESIGN/RESEARCH ONLY**。
+
+- 既存Repo調査・仕様差分分析・設計資料作成:実施可
+- 新しいPrompt・構造案の設計:提案可、正式採用不可
+- 新規Trial:禁止
+- Productionコード・Promptの変更:禁止
+- Production Wiring:禁止
+- 有料API利用:禁止
+- ユーザー承認前の仕様採用:禁止
+
+設計結果は、承認済みのFamily Y基本方針と、新たな判断待ちの仕様候補を分けて管理する。
+
+今回の到達点は設計調査完了とユーザー判断事項の提示まで。`APPROVED_FOR_PRODUCTION`、`PRODUCTION_WIRED`への移行は行わない。
+
+調査結果は既存のSSOT/OPEN_ITEMSと照合する。設計資料を保存する場合も、既存正式仕様を書き換えたり、未承認案を正式仕様として記録したりしない。
+
+Fableによる独立レビューを活用し、旧Bの品質NG再発、承認済み仕様の継承漏れ、不要な複雑化、QCD上の問題を確認する。
+
+**最終的な目的は、旧BのVoicesとしての面白さを維持しながら、Family Xの成熟した品質基盤を活用し、安定して量産できるFamily Yを最短で設計すること。**
+```
+
+## 2. 本委任(01A)の範囲 = 原文§3-A「Family X/Zの最新仕様」の棚卸し
+成果物: `docs/research/FAMILY-Y-VOICES-DESIGN-01/INVENTORY_X_Z_SPEC_01.md`
+各項目について「現在の正式仕様(Status=PRODUCTION_WIRED等)/出典(CURRENT_SPEC行・DECISION_LOG ID・commit)/実装の所在(ファイル:関数)/Family Yへの継承時の注意(X固有でVoices構造と衝突し得る点)」を表形式で。**古い仕様と現行正式仕様を混同しない**(Status語彙・日付・override関係を明記。例: 2819 Whisper不採用はKP英語のみoverride)。
+1. Research / Fact Ledger / Fact Safety(web_search、Ledger VERIFIED/AMBIGUOUS/REJECTED、B3 storyline、丸め判断、未確定点の扱い、Risk Flagger)。
+2. Writer・記事構造(X: 本文part1-3等の構造、R0〜R2、Adv/Std、a2 derived from advanced)、CEFR別難易度・語数・文長・時間尺の規定値。
+3. Preview・Comment・Key Phrase(KPFT fulltext P2・3件・KP3V 3-ASR多数決・CMU gate・gloss・解説)・In One Line・日本語タイトル。
+4. 数字処理・自然な音声表現(数値読み、Pronunciation Ledger、PNAP固有名詞アラーム、Khaite前例)。
+5. TTS(gemini-3.8-flash-lite-tts、style_profile、speech_metadata、Voice: Std Aoede/Adv Aoede+Charon)、ASR(Primary OpenAI/Secondary Azure/Whisper決選)、音声品質検査(ratio、値ガード、否定保護、er109同音・異表記[X/Z限定]、多語同音救済、PASS_WITH_WARNING registry、HR Lock)。
+6. retry / fallback / regeneration / resume(外側retry、STALE退避、Store再利用・継承、`--only-segments`、STOPセンチネル[Zのみ?]、RUN_LOCK)。
+7. QA・Validator・Assembly・試聴ページ(style_profile_gate、key_phrase_source_gate、headroom valve、timeline、ページ生成script、Playwright検証、ページ標準検査)。
+8. 共通仕様のFamily間整合(X/Z共有部と、A/B/C Legacy凍結[§27-3]、共有Validatorの扱い)。
+9. 費用構造(直近2記事の実測: A 54.06円/B 131.61円、定常見込み平均約75円、Research変動、unit cost目標70円)と、Voices構造で増減し得る要因の仮説(事実と分ける)。
+10. X経路でFamily Yを「構造差分だけ追加」する場合の技術的接続点の候補(Writer prompt/構造定義/scaffold/KP選定/assembly)の所在を列挙(設計は後続委任)。
+
+## 3. 制約
+- SSOT全文読込禁止(節単位Grep)。Production/Prompt/SSOT変更禁止、API費用0、Trial禁止。
+- 推測と事実を分け、出典のない数値は「未確認」。
+- 所要目安: 60〜90分。commitは自分の成果物(INVENTORY_X_Z_SPEC_01.md、delegation_log 2件)のみ明示add、secret_scan `--staged` hits=0、`git push origin HEAD:main`。
+
+## 4. 報告(docs/pm/RESULT_PACKET_FYD1A.md、同内容を最終報告で)
+(1)成果物path・raw URL (2)項目別の要点(各1〜2行) (3)Family Y継承時に衝突・注意が要る点の一覧 (4)未確認事項 + RESULT_PACKET 4行 + 「判定整合: 重大NG=あり/なし」。
