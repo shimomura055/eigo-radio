@@ -102,3 +102,23 @@
 - ①の最終数値は**Fable盲検待ち**(盲検表=`TRIAL_04/fable_blind_04.md`、51行・232セル、key分離。ingest scriptは`er112_kp_gm_trial_04_report.py report --labels <json>`で再集計可)。Sonnet参考Judgeは過去にFableとの乖離(83/360セル)があり、特にtake the wheel『車を運転する』(goldは許容)をFAILと判定した例がある。
 - `er003_test_kp_fulltext_wiring_01.py`・`er064_*`の一部は本環境で`wordfreq`未導入のためcollect不可(採用時の配線委任で確認)。
 - 検査器はPhase 0で1回のみ改訂(v1->v2low)。精度向上の余地は未探索(予算上限のため)。
+
+## 8. Fable確定(2026-10-23、委任_15。盲検判定=`TRIAL_04/FABLE_BLIND_RESULT_04.md`、ラベル=`TRIAL_04/fable_labels_04.json`、再集計=`TRIAL_04/REPORT_FABLE_04.md`。API 0・コード変更0)
+**手段と目的の区別**: ②は目的(所有格placeholderの取り違え解消)を決定論スコアで達成する見込み(誤り9->0、1 repのみ・採用判断待ち)。①は手段(独立検査+flag項目のみ再生成)が部分改善にとどまり、目的(字義訳NGの解消)は未達。
+
+**①の再集計(出力単位、全体122出力=61KP x 2rep、継承ラベル込み。Cpは1 rep=61出力)**
+| arm | PASS | THIN | FAIL(字義/その他) | FAIL_LIT KP数 |
+|---|---|---|---|---|
+| B0(現行) | 113 | 1 | 8 (6/2) | 3 |
+| C(独立検査+flag項目再生成) | 118 | 0 | 4 (1/3) | 1 |
+| M | 117 | 1 | 4 (4/0) | 3 |
+| Cp(自己監査) | 59 | 2 | 0 (0/0) | 0 |
+- F層(41KP/82出力): B0 FAIL 7(字義6)、C FAIL 3(字義1: trophy rep1)、M FAIL 4(字義4)、Cp FAIL 0。N標本(20KP): B0/C FAIL 1(継承のOTHER_NG)、M/Cp 0。
+- 注: 「その他FAIL」の継承分(reach for someone's wallet、settle at)はTrial_02/03ラベル継承で、Cでも不変。新規のC内語義誤認は27:B(trophy rep2)の1件。
+- Cのflag項目内(再生成19出力): 改善5(unseen clock 2、greener grass 2、pump one's fist rep2 THIN->PASS)、不変14、PASS->FAIL悪化0(ただしtrophy rep2はFAIL_LIT->FAIL=字義訳から語義誤認へ、RANK上は不変)。検査器(V2_inv)vs FAIL_LIT: TP5 FP14 FN1 TN102(recall 5/6、precision 5/19)。
+- 結論: F層の字義NGは6出力->2出力(字義1+語義誤認1)。既知3種のうち unseen clock・greener grass は解消、trophy型は未解消。「解消」とは書けない(F層残存NG 2/122)。
+- Cpは出力自体のFAILが0だが、検出器としてはrecall 0、かつB0と文字列が変わっており(事実上の生成Prompt変更)未flag項目バイト同一の保証がない。Mは改善なし。
+
+**Sonnet参考Judgeとの差分(Fable確定が優先)**: Sonnet参考が非PASSとしFableがPASSとしたセルの代表=3 behind the curtain「陰で動いている/関わっている」(Sonnet THIN、Fable PASS)。Fableが非PASSとしたセルの一覧=FAIL_LIT 2:A,13:E,27:D,27:E,27:F / FAIL 27:B / THIN 8:B,24:B,25:D,46:C。Sonnet参考の全セル別の不一致一覧は参考Judge出力側(本節では上記代表例のみ。全件突合は未実施)。
+
+**次**: ②=Opus条件C(Production採用提案前レビュー)->ユーザー採否へ。①=部分改善・trophy型未解消のため次の方針(別方式の追加検討/現状許容)はユーザー判断。
