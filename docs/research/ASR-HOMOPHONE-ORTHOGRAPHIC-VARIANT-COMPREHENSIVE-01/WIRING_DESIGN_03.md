@@ -218,3 +218,8 @@ def ortho_label() -> "ORTHOGRAPHIC_EQUIVALENT_MATCH" ; BASIS = "ORTHOGRAPHIC_EQU
 3. **層順(P1: 全既存層の後)とKP票での警告合成(§B)**: S/W票由来のortho合格でも`ORTHO_*`警告がjudgeに入る設計、Primary票がAzure依存救済でない扱い、`kp_vote_check_v1`のversion据え置きでよいか。
 4. **HR Lock再判定の運用(§E-4)**: 自動解除なし・候補列挙のみ・解除は既存`approve_regenerate`、で十分か。
 5. **正式採用後のtest置換(§A-6)**: DefaultOffIsolation撤去→A/B/C署名一致+rollback+scope静的testへの置換で、11-7の隔離要件(旧)を実質的に上回るか。
+
+---
+## 【委任_04 2026-10-23 追記】実装後のrollback性と運用注記
+- **rollback性**: `ORTHOGRAPHIC_EQUIVALENCE_ENABLED`をFalseにすると、X/Z内でer109により合格した既存entry(`asr_judgement`/`asr_judgement_inherited`に`orthographic_equivalence.applied`・`ORTHOGRAPHIC_EQUIVALENT_MATCH`・`ORTHO_*`警告)は、Store guard(`er078_reuse_value_guard_01`のM1)により再利用がブロックされ、再生成費用が発生する(旧『rollbackでentryが無害』ではない)。flag Trueに戻せば再び再利用可能。
+- **運用注記(Opus should-fix)**: X/Z stage code(`er019_family_x_audio_production_runner_01.py`・`er063_family_z_audio_01.py`・`er019_family_x_validation_inheritance_01.py`)にASR呼出を含むsubprocessは無い(Grep確認、`subprocess`/`os.system` 0件)。`er011_*`・`er014_output`・`er026_output`配下の運用scriptはX/Z run-scopeの外であり、従来判定のまま(er109は効かない)。HR Lock再判定は`er109_hr_lock_rejudge_01.py`のみ(候補列挙のみ・自動解除なし)。

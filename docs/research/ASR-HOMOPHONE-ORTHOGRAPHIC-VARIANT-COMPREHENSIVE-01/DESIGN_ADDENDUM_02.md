@@ -63,3 +63,7 @@ Secondary分岐(:599)の変更も同様に**flag OFFでは到達不能**にす�
 5. 記号・曖昧でない略語・年代・時刻・セント・年読みの閉じた読み表(曖昧略語St/Dr/Mt/#はfail-closed=救済しない)。
 6. 警告・事後試聴の方針。
 7. (任意)oronym(ice cream/I scream)を除外したままにすること。
+
+---
+## 【委任_04 2026-10-23 追記】§5(11-7限定例外の読替え)
+正式採用(APPROVED_FOR_PRODUCTION、2026-10-23)により、本書§5が前提とした『11-7限定例外(未承認・既定OFF、5条件)』は役割を終えた。委任_04で配線した現行状態は『X/Z run-scope内のみ有効、`ORTHOGRAPHIC_EQUIVALENCE_ENABLED`(=True)はrollbackスイッチ』であり、旧`ProductionIsolation`(DefaultOffIsolation)testは撤去・置換済み(`er109_xz_isolation_01_test_01.py`ほか)。§5の5条件は『未承認機能を既定OFFで隔離する』ための要件であり、現行(承認済み機能をX/Z scopeで有効化)には適用しない。
