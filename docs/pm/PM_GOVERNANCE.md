@@ -181,6 +181,8 @@ ChatGPT旧PMからの引き継ぎ照合PM-HANDOFF-CHATGPT-001の結果を受け�
 - **Gate 1 — Trial Closeout**: Trial終了時に`REJECTED` / `VALIDATED` /
   `USER_DECISION_REQUIRED`のいずれかへ分類する。`VALIDATED`はProduction採用
   ではない。`USER_DECISION_REQUIRED`ならユーザー判断または明示deferまでSTOPする。
+  **(2026-10-23追記、`PM-CLOSEOUT-MEANS-VS-GOAL-RULE-01`)** `REJECTED`は
+  「試した手段」の分類であり、品質課題(目的)の終了ではない。Closeout項目32参照。
 - **Gate 2 — User Decision**: `VALIDATED`→`APPROVED_FOR_PRODUCTION`は
   ユーザー正式採用時のみ行う。Fable/Sonnet/Opusが独自判断で承認しない。
   コスト影響(2-2参照)が未評価のまま承認しない。**ユーザー承認の記録は
@@ -602,6 +604,17 @@ PM-CLOSEOUT-CONSOLIDATION-59)。
 31. ユーザー向け報告が9-0の固定5節順(結論/ユーザー判断が必要なこと/重要な
     問題・残作業/完了・良好だったこと/次の行動・費用)になっているか
     (2026-10-05ユーザー指示)。
+32. **手段の成否と目的の達成の区別**(2026-10-23ユーザー指示、
+    `FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01`指示§6、
+    `PM-CLOSEOUT-MEANS-VS-GOAL-RULE-01`): Trial Closeoutでは「手段の成否」
+    (試した仕様・Promptが有効だったか)と「目的の達成」(ユーザーが求めた
+    品質問題が実際に解消したか)を分けて記載する。手段が`REJECTED`・不採用でも
+    目的未達なら改善タスクをCloseせず、原因・アプローチを見直して承認範囲内で
+    継続する(効果のない手段の反復は11-6に従い停止)。品質未達を「現行維持」
+    「仕様不採用」だけで終了処理しない。ユーザー向け報告の「現在の状態」には
+    目的達成度(達成/部分達成/未達)を明記する。受入記録の「目的要件との
+    一致/不一致」(`sandwich-pm.md`手順4-2)およびRESULT_PACKET(3)は
+    本区別の記載場所であり、新Gate・新報告工程ではない。
 
 ## 4. 「1記事ずつ完結させる」原則と例外
 
