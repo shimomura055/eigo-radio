@@ -1,0 +1,69 @@
+以下の各英語key_phraseは、教材として最終確定した英語表現です。current_japanese_glossは、確定前の候補表現(display_phrase_before_canonicalization)を基準に付けた日本語グロスで、確定したkey_phrase全体とは一致していない可能性があります。added_content_wordsは、確定時に候補表現へ新しく加わった内容語です(空の場合があります)。
+
+各項目について、次を行ってください。
+1. current_japanese_glossが、最終的なkey_phrase全体(目的語・補語・修飾語を含むすべての語)の意味と過不足なく一致しているかを判定し(current_gloss_consistent)てください。「～」「〜」を含むかどうかは判定の基準ではありません。key_phrase全体の意味が日本語に表れているかどうかだけで判定してください。
+2. 一致している場合は、japanese_glossにcurrent_japanese_glossをそのまま返してください。一致していない場合は、最終key_phrase全体に一致する日本語グロスを返してください。current_japanese_glossが最終key_phrase全体の意味を既に表している場合は、より自然・より適切と思える言い換えがあっても書き換えず、current_japanese_glossをそのまま返してください。書き換えるのは、key_phraseの語の意味が欠けている・誤っている場合だけです。
+3. added_content_wordsの各語について、japanese_glossの中でその語の意味を表している部分を、japanese_glossからそのまま切り出してadded_word_mappingsに書いてください(english_wordには対応させる英語の語、複数語をまとめた句でもかまいません。japanese_spanにはjapanese_glossに含まれない文字列や、「～」などの記号だけを書かないでください)。複数の英語語が一つの日本語表現でまとめて表されている場合は、同じ部分を複数の語に対応させてかまいません。added_content_wordsが空の項目は、added_word_mappingsを空配列にしてください。
+判定の参考例:
+- key_phrase「based on」にcurrent「～をもとにした」: 辞書的に自然なので一致です。
+- key_phrase「based on interviews」にcurrent「～をもとにした」: interviewsの意味が欠けているので不一致です。「インタビューをもとにした」なら一致です。
+- key_phrase「fall into」にcurrent「～に落ちる」: 意味は表れているので一致です(「～に陥る」へ書き換えません)。
+
+key_phrase単体で他の文脈でも再利用できる自然な訳にし、本文固有の固有名詞・文脈の追加はしないでください。key_phrase全体の意味を反映できている場合のみqa_reflects_all_key_phrase_wordsをPASSにしてください。
+
+【新規生成の規則(current_japanese_glossがnull[未生成]の項目に適用。全文選定で選ばれた表現には、まだ日本語グロスがありません)】
+- current_japanese_glossがnullの項目は、既存グロスの修正ではなく新規生成です。current_gloss_consistentは必ずfalseにし、japanese_glossには最終key_phrase全体の意味に過不足なく一致する日本語グロスを新しく書いてください(上記の指示2の『そのまま返す』は適用されません)。
+- source_sentenceは、辞書に複数の語義がある表現で、そのうちどの語義かを選ぶためだけに使ってください(文中の固有名詞・文脈の追加はしないでください)。
+
+【日本語グロスの規則(承認済み選定Promptと同一)】
+選ぶ表現は必ず本文中の実表現(source_span)に対応させ、短く自然な日本語グロスを付けてください。
+
+日本語グロスは、辞書的に正しいだけでなく、日本人の英語学習者が聞いてすぐ意味を理解できる、自然で平易な現代日本語にしてください。直訳調や、「常態」「是正」のような過度に硬い報道語・漢語、一般的な学習者には伝わりにくい表現は避けてください。
+
+日本語グロスには、括弧（　）を使って別の訳し方・専門用語・補足情報を書き添えないでください。音声だけで聞いてそのまま意味が伝わる、平易な言い換えだけの一文にしてください。
+
+日本語グロスは、辞書的な表記として自然な範囲であれば「～」「〜」を使ってもかまいません(例: 「～を示す」)。ただし「…」のようなプレースホルダー記号は使わないでください。日本語グロスに数字を含める場合は、算用数字(1、2、3…)ではなく漢数字(一、二、三…)で書いてください。
+
+「ソロ旅行を～％とする」のように、数値を補わないと意味が成立しない句・日本語グロス(数値の穴埋めを必要とする不完全な表現)は選ばないでください。それ単体で意味が成立する句・グロスを選んでください。
+
+【対象項目】
+[
+  {
+    "rank": 1,
+    "key_phrase": "left out",
+    "display_phrase_before_canonicalization": "left out",
+    "current_japanese_gloss": null,
+    "source_sentence": "She also said, \"If I am the only one who replies late, I will be left out",
+    "added_content_words": []
+  },
+  {
+    "rank": 2,
+    "key_phrase": "off-limits",
+    "display_phrase_before_canonicalization": "off-limits",
+    "current_japanese_gloss": null,
+    "source_sentence": "After the phones are off-limits, who will listen to that child",
+    "added_content_words": []
+  },
+  {
+    "rank": 3,
+    "key_phrase": "phone-free time",
+    "display_phrase_before_canonicalization": "phone-free time",
+    "current_japanese_gloss": null,
+    "source_sentence": "Longer phone-free time may mean fewer fights about the basket at night",
+    "added_content_words": []
+  }
+]
+
+【記事本文(参考)】
+# No Phones Even at Break Time: Different Voices
+
+I am for a rule at my daughter's high school. It would keep phones off during breaks and lunch, too. Only banning them in class is not enough. I get home late from the job site. Fighting about phones every night makes me tired. If I can say, “It's the school rule too,” I won't be the only bad guy. My daughter did not keep our agreement. She was supposed to put her phone in the charging basket in the living room. I took her phone away. The next morning, it was hard to talk to her at breakfast. She also said, “If I am the only one who replies late, I will be left out.” I had no answer. I want her to keep our promise. I don't want to shout like my father, either. But if she can't use her phone at school, nothing changes at home at night. Maybe I just want the school to help so my life is easier. I am a site supervisor who can't even manage things at home.
+
+First thing every morning, I see the kids who come to the nurse's office. “I'm sleepy,” they say. “My head hurts,” they say. The other day, a student was resting on the bed. Their phone screen glowed beside the pillow. When I hear they stayed up until morning, I don't know what to say. I also think about one student. After their phone was taken away at school, they stopped coming to see me. If they don't come, does that mean they are okay? A teacher asked me, “If we ban phones, will fewer kids come to the nurse's office?” I could not answer. If the school bans phones during breaks too, will it think the problem is solved? That scares me. I don't take phones away in the nurse's office. I want to keep a place where kids can talk about what happened at night. After the phones are off-limits, who will listen to that child?
+
+I'm against a rule that bans phones during breaks, too. I work at a warehouse during the day. At night, I go to evening high school. So I can't promise to stop all contact while I'm at school. Between classes, I get messages about my shifts. If I reply late, the work goes to someone else. Once, my workplace kept calling during class. I couldn't answer. Later, they told me it was a problem that they could not reach me. They almost cut my shifts, too. I want to graduate from this school. I also need money to give to my family. Now I can understand my classes. I don't want to choose between work and school. I promise to keep my phone at the bottom of my bag. I won't touch it during class. But before you decide, please hear how I work, too.
+
+At breakfast, beside the pillow in the nurse's office, and through work messages during breaks, people want to keep talking with someone. Longer phone-free time may mean fewer fights about the basket at night. But a student whose phone is taken away may stop talking at the bedside. He may follow the rule in class. But if his shift messages stop during breaks, his workplace may lose trust in him. The father who asks the school for help also does not want another silent morning after taking the phone away. They may disagree about how long phones can be used. But they all want someone they can still talk to. What message do you want to answer right away? When does it come, and who sends it?
+
+## In one line
+A father wants phones off at school even during breaks, but a nurse and a working student worry that it may stop talks. They disagree about when phones can be used, but all want someone to talk to.

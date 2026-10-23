@@ -1,0 +1,71 @@
+{
+  "attempt_number": 1,
+  "route": "custom_60ebc452",
+  "segment_id": "kp2_en",
+  "theme_id": "it3",
+  "level": "b1b",
+  "source_out_path": "er110_output/family_y_persona_trial_01/audio/it3/b1b/narration/kp2_en.wav",
+  "saved_at": "2026-10-23T19:39:45",
+  "sha256": "92bb306892a85e08852c79f017269d58351c7a6033d0878fe57c7d10c351b6c4",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Say only this phrase, exactly once, without adding, omitting, or changing any words, and make sure the final sound is actually spoken.",
+  "asr_text": "Louis Trustin",
+  "audio_classification": "NORMALIZED_MATCH",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": true,
+  "disfluency_checked": true,
+  "disfluency_evidence": {
+    "flagged": false,
+    "repeats": [],
+    "word_count": 3,
+    "transcript": "Lose  trust  in.",
+    "method": "faster_whisper_small_local_verbatim"
+  },
+  "repetition_qa_checked": false,
+  "repetition_qa_evidence": null,
+  "scg_info": null,
+  "asr_prompt_applied": true,
+  "non_latin_cascade_enabled": true,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": true,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "Louis Trustin",
+      "classification": "TTS_FAILURE",
+      "entity_like_source": []
+    },
+    {
+      "step": "secondary_vote",
+      "provider": "azure",
+      "text": "Lose trust in.",
+      "classification": "NORMALIZED_MATCH",
+      "phrase_list_used": false,
+      "azure_phrase_list_weight": null,
+      "azure_phrase_list": [],
+      "cached": false,
+      "unified_judge_state": "PASS_WITH_WARNING",
+      "vote_required": true,
+      "entity_like_source": []
+    },
+    {
+      "step": "whisper_vote",
+      "provider": "faster_whisper",
+      "text": "Lose trust in.",
+      "pass": true,
+      "classification": "NORMALIZED_MATCH",
+      "error": null,
+      "memo_hit": false,
+      "model": "small",
+      "unified_judge_state": "PASS_WITH_WARNING"
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "attempt_number": 2,
+  "route": "custom_a3c4625e",
+  "segment_id": "full_story_part2",
+  "theme_id": "it3",
+  "level": "a2",
+  "source_out_path": "er110_output/family_y_persona_trial_01/audio/it3/a2/narration/full_story_part2.wav",
+  "saved_at": "2026-10-23T19:54:31",
+  "sha256": "5f29a1d4ffd30e4196ee1354e2799cc1ba06307ed7b8f50a78951b74bf52db1b",
+  "loop_attempt_index": 2,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Zephyr",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible.",
+  "asr_text": "First thing every morning, I see the kids who come to the nurse's office. I'm sleepy, they say. My head hurts, they say. The other day, a student was resting on the bed. Their phone screen glowed beside the pillow. When I hear they stayed up until morning, I don't know what to say. I also think about one student. After their phone was taken away at school, they stopped coming to see me. If they don't come, does that mean they are okay? A teacher asked me, if we ban phones, will fewer kids come to the nurse's office? I could not answer. If the school bans phones during breaks too, will it think the problem is solved? That scares me. I don't take phones away in the nurse's office. I want to keep a place where kids can talk about what happened at night. After the phones are off limits, who will listen to that child?",
+  "audio_classification": "NUMERIC_EQUIVALENCE_MATCH",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": false,
+    "duration_seconds": 52.76,
+    "method_a_ngram": {
+      "matches": [
+        {
+          "span_text": " come  to  the  nurse's  office.",
+          "n_words": 5,
+          "category": "sentence",
+          "first_start_s": 2.62,
+          "first_end_s": 3.78,
+          "second_start_s": 32.38,
+          "second_end_s": 33.6,
+          "gap_seconds": 28.6,
+          "canonical_repeat_count": 2,
+          "intentional": true,
+          "flagged": false
+        }
+      ],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 159,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.9971,
+          "time_a_seconds": 21.47,
+          "time_b_seconds": 36.67,
+          "lag_seconds": 15.2,
+          "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+          "similarity": 0.9971,
+          "time_a_seconds": 18.69,
+          "time_b_seconds": 45.02,
+          "lag_seconds": 26.33,
+          "run_length_seconds_at_thresh_0.85": 0.04
+        },
+        {
+          "similarity": 0.9958,
+          "time_a_seconds": 8.65,
+          "time_b_seconds": 10.43,
+          "lag_seconds": 1.78,
+          "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+          "similarity": 0.9953,
+          "time_a_seconds": 15.05,
+          "time_b_seconds": 36.65,
+          "lag_seconds": 21.6
+        },
+        {
+          "similarity": 0.9952,
+          "time_a_seconds": 28.97,
+          "time_b_seconds": 45.03,
+          "lag_seconds": 16.06
+        }
+      ],
+      "best_run_length_seconds": 0.04,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": false,
+      "local_asr_confirmation": null,
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.32,
+      "time_a": 24.5,
+      "lag": 1.67,
+      "similarity_at_start": 0.7208,
+      "best_run_length_seconds": 0.32,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  },
+  "scg_info": null,
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": false,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "First thing every morning, I see the kids who come to the nurse's office. I'm sleepy, they say. My head hurts, they say. The other day, a student was resting on the bed. Their phone screen glowed beside the pillow. When I hear they stayed up until morning, I don't know what to say. I also think about one student. After their phone was taken away at school, they stopped coming to see me. If they don't come, does that mean they are okay? A teacher asked me, if we ban phones, will fewer kids come to the nurse's office? I could not answer. If the school bans phones during breaks too, will it think the problem is solved? That scares me. I don't take phones away in the nurse's office. I want to keep a place where kids can talk about what happened at night. After the phones are off limits, who will listen to that child?",
+      "classification": "NUMERIC_EQUIVALENCE_MATCH",
+      "entity_like_source": []
+    }
+  ]
+}

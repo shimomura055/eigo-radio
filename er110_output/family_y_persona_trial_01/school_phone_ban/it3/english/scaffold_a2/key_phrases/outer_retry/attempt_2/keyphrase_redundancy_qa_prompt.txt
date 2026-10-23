@@ -1,0 +1,61 @@
+以下は、同じ記事から選ばれた3件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。3件から作れる全てのペア(3組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず3組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# No Phones Even at Break Time: Different Voices
+
+I am for a rule at my daughter's high school. It would keep phones off during breaks and lunch, too. Only banning them in class is not enough. I get home late from the job site. Fighting about phones every night makes me tired. If I can say, “It's the school rule too,” I won't be the only bad guy. My daughter did not keep our agreement. She was supposed to put her phone in the charging basket in the living room. I took her phone away. The next morning, it was hard to talk to her at breakfast. She also said, “If I am the only one who replies late, I will be left out.” I had no answer. I want her to keep our promise. I don't want to shout like my father, either. But if she can't use her phone at school, nothing changes at home at night. Maybe I just want the school to help so my life is easier. I am a site supervisor who can't even manage things at home.
+
+First thing every morning, I see the kids who come to the nurse's office. “I'm sleepy,” they say. “My head hurts,” they say. The other day, a student was resting on the bed. Their phone screen glowed beside the pillow. When I hear they stayed up until morning, I don't know what to say. I also think about one student. After their phone was taken away at school, they stopped coming to see me. If they don't come, does that mean they are okay? A teacher asked me, “If we ban phones, will fewer kids come to the nurse's office?” I could not answer. If the school bans phones during breaks too, will it think the problem is solved? That scares me. I don't take phones away in the nurse's office. I want to keep a place where kids can talk about what happened at night. After the phones are off-limits, who will listen to that child?
+
+I'm against a rule that bans phones during breaks, too. I work at a warehouse during the day. At night, I go to evening high school. So I can't promise to stop all contact while I'm at school. Between classes, I get messages about my shifts. If I reply late, the work goes to someone else. Once, my workplace kept calling during class. I couldn't answer. Later, they told me it was a problem that they could not reach me. They almost cut my shifts, too. I want to graduate from this school. I also need money to give to my family. Now I can understand my classes. I don't want to choose between work and school. I promise to keep my phone at the bottom of my bag. I won't touch it during class. But before you decide, please hear how I work, too.
+
+At breakfast, beside the pillow in the nurse's office, and through work messages during breaks, people want to keep talking with someone. Longer phone-free time may mean fewer fights about the basket at night. But a student whose phone is taken away may stop talking at the bedside. He may follow the rule in class. But if his shift messages stop during breaks, his workplace may lose trust in him. The father who asks the school for help also does not want another silent morning after taking the phone away. They may disagree about how long phones can be used. But they all want someone they can still talk to. What message do you want to answer right away? When does it come, and who sends it?
+
+## In one line
+A father wants phones off at school even during breaks, but a nurse and a working student worry that it may stop talks. They disagree about when phones can be used, but all want someone to talk to.
+
+【Key Phrase 3件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "left out",
+    "japanese_gloss": "仲間外れにされる",
+    "source_sentence": "She also said, \"If I am the only one who replies late, I will be left out"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "off-limits",
+    "japanese_gloss": "使うことが禁止されている",
+    "source_sentence": "After the phones are off-limits, who will listen to that child"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "phone-free time",
+    "japanese_gloss": "携帯電話を使わない時間",
+    "source_sentence": "Longer phone-free time may mean fewer fights about the basket at night"
+  }
+]
