@@ -1,0 +1,638 @@
+{
+  "kp1_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "739f503d2e7bf10e284f1aae5b1e378ecd2b9803ea07a09d9588f36fb9f7d529",
+    "language": "en",
+    "theme_id": "run_aho4_z_h3",
+    "level": "b1b",
+    "segment_id": "kp1_en",
+    "updated_at": "2026-10-23T09:14:24",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er026_output/family_z_production_e2e_01/melos/run_aho4_z_h3/b1b/narration/kp1_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.58,
+        "asr_text": "Sentence him to death.",
+        "asr_text_length": 22,
+        "max_len": 31,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 4,
+          "transcript": "Sentence  him  to  death.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Sentence him to death.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_vote",
+            "provider": "azure",
+            "text": "Sentence him to death.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS",
+            "vote_required": true,
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "dual_agreed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "f06548ccb387b21d27115b8d4e2b3deca00160814f186ea4182bcc45721e58fe",
+          "primary": {
+            "text": "Sentence him to death.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Sentence him to death.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.58,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 1256,
+            "secondary_ms": 1243
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 22,
+            "secondary_len": 22,
+            "max_len": 31,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 18,
+            "primary_ok": true
+          },
+          "vote": {
+            "version": "kp_vote_check_v1",
+            "guard_lifted": true,
+            "guard_lifted_version": "kp_vote_guard_lifted_v1",
+            "observed_protected_diff": {
+              "primary": false,
+              "secondary": false,
+              "whisper": false
+            },
+            "required": true,
+            "state": "PASS_DUAL",
+            "reason": "dual_agreed",
+            "row": "P+S",
+            "pass_count": 2,
+            "tiebreak_enabled": true,
+            "primary": {
+              "provider": "openai",
+              "text": "Sentence him to death.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": null,
+              "rescue_layers": []
+            },
+            "secondary": {
+              "provider": "azure",
+              "text": "Sentence him to death.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "secondary_accepted",
+              "rescue_layers": []
+            },
+            "secondary_called": true,
+            "whisper": null,
+            "whisper_called": false,
+            "whisper_model": null,
+            "ortho_layer_version": "er109_orthographic_equivalence_v1_proto_aho02",
+            "ortho_scope": "Z",
+            "primary_not_pass_reason": null,
+            "primary_rescued_by_secondary": false
+          },
+          "p3_entry": "vote_required",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/melos/run_aho4_z_h3/b1b/narration/attempts/kp1_en_attempt1_custom60ebc452.wav"
+      }
+    ]
+  },
+  "kp2_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "69869f95f179dd1b34941fc80b9ec314e30809d4552e6489e5cbd3af3981d81a",
+    "language": "en",
+    "theme_id": "run_aho4_z_h3",
+    "level": "b1b",
+    "segment_id": "kp2_en",
+    "updated_at": "2026-10-23T09:14:31",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er026_output/family_z_production_e2e_01/melos/run_aho4_z_h3/b1b/narration/kp2_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 2.12,
+        "asr_text": "Rise above the other voices.",
+        "asr_text_length": 28,
+        "max_len": 37,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 5,
+          "transcript": "Rise  above  the  other  voices.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Rise above the other voices.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_vote",
+            "provider": "azure",
+            "text": "Rise above the other voices.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS",
+            "vote_required": true,
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "dual_agreed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "f711d558ed0354f5e9df3aecc04875e1cf213a03db8cd12bab6fd6b687380d91",
+          "primary": {
+            "text": "Rise above the other voices.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Rise above the other voices.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 2.12,
+            "est_jpy": 0.1333,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 542,
+            "secondary_ms": 540
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 28,
+            "secondary_len": 28,
+            "max_len": 37,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 23,
+            "primary_ok": true
+          },
+          "vote": {
+            "version": "kp_vote_check_v1",
+            "guard_lifted": true,
+            "guard_lifted_version": "kp_vote_guard_lifted_v1",
+            "observed_protected_diff": {
+              "primary": false,
+              "secondary": false,
+              "whisper": false
+            },
+            "required": true,
+            "state": "PASS_DUAL",
+            "reason": "dual_agreed",
+            "row": "P+S",
+            "pass_count": 2,
+            "tiebreak_enabled": true,
+            "primary": {
+              "provider": "openai",
+              "text": "Rise above the other voices.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": null,
+              "rescue_layers": []
+            },
+            "secondary": {
+              "provider": "azure",
+              "text": "Rise above the other voices.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "secondary_accepted",
+              "rescue_layers": []
+            },
+            "secondary_called": true,
+            "whisper": null,
+            "whisper_called": false,
+            "whisper_model": null,
+            "ortho_layer_version": "er109_orthographic_equivalence_v1_proto_aho02",
+            "ortho_scope": "Z",
+            "primary_not_pass_reason": null,
+            "primary_rescued_by_secondary": false
+          },
+          "p3_entry": "vote_required",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 4,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/melos/run_aho4_z_h3/b1b/narration/attempts/kp2_en_attempt1_custom60ebc452.wav"
+      }
+    ]
+  },
+  "kp3_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "68cc09b9ae0e88fdb50d96fe9d8cae488fc8da49ed037c15e557835b1959a1fb",
+    "language": "en",
+    "theme_id": "run_aho4_z_h3",
+    "level": "b1b",
+    "segment_id": "kp3_en",
+    "updated_at": "2026-10-23T09:14:38",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er026_output/family_z_production_e2e_01/melos/run_aho4_z_h3/b1b/narration/kp3_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.98,
+        "asr_text": "Earn such trust.",
+        "asr_text_length": 16,
+        "max_len": 25,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 3,
+          "transcript": "Earn  such  trust.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Earn such trust.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_vote",
+            "provider": "azure",
+            "text": "Earn such trust.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS",
+            "vote_required": true,
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "dual_agreed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "4a4d1eb073a42068ad46f7b0a37858440cea809b4b1e7517ccbe63339949f4bc",
+          "primary": {
+            "text": "Earn such trust.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Earn such trust.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.98,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 541,
+            "secondary_ms": 540
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 16,
+            "secondary_len": 16,
+            "max_len": 25,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 13,
+            "primary_ok": true
+          },
+          "vote": {
+            "version": "kp_vote_check_v1",
+            "guard_lifted": true,
+            "guard_lifted_version": "kp_vote_guard_lifted_v1",
+            "observed_protected_diff": {
+              "primary": false,
+              "secondary": false,
+              "whisper": false
+            },
+            "required": true,
+            "state": "PASS_DUAL",
+            "reason": "dual_agreed",
+            "row": "P+S",
+            "pass_count": 2,
+            "tiebreak_enabled": true,
+            "primary": {
+              "provider": "openai",
+              "text": "Earn such trust.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": null,
+              "rescue_layers": []
+            },
+            "secondary": {
+              "provider": "azure",
+              "text": "Earn such trust.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "secondary_accepted",
+              "rescue_layers": []
+            },
+            "secondary_called": true,
+            "whisper": null,
+            "whisper_called": false,
+            "whisper_model": null,
+            "ortho_layer_version": "er109_orthographic_equivalence_v1_proto_aho02",
+            "ortho_scope": "Z",
+            "primary_not_pass_reason": null,
+            "primary_rescued_by_secondary": false
+          },
+          "p3_entry": "vote_required",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 6,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/melos/run_aho4_z_h3/b1b/narration/attempts/kp3_en_attempt1_custom60ebc452.wav"
+      }
+    ]
+  }
+}

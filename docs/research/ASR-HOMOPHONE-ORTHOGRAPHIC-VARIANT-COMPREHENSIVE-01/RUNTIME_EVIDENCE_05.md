@@ -1,0 +1,21 @@
+# RUNTIME_EVIDENCE_05 (ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01 委任_05、2026-10-23)
+
+## 1. A: `three`↔`3:00` 型の是正(er109内、fail-closed)
+- 原因: `er109_asr_orthographic_equivalence_01.py` `_num_units` の時刻unit(meridiemなし・分=00)の候補が `[hour+["o'clock"], hour]`。裸の `hour` 候補により `three`↔`3:00` が `number_spoken_form` で同値。
+- 是正: 候補を `[hour+["o'clock"]]` のみに(meridiem付き `3:00 p.m.`=`three p m` ・分あり `3:15` は不変)。曖昧は非同値。
+- test: `er109_asr_orthographic_equivalence_01_test.py::Negatives::test_clock_time_not_equal_to_bare_numeral`(NG: `three`↔`3:00`、`3`↔`3:00`、`at three`↔`at 3:00`、`three`↔`3:15`、`three o'clock`↔`3:15` / PASS: `three o'clock`↔`3:00`、`three fifteen`↔`3:15`、`at five o'clock`↔`at 5:00`、`three p.m.`↔`3:00 p.m.`)。
+- 影響(API 0): pairs_02 4,032組を是正前後で直接評価→PASS→NG 1組(pair2664: 合成pair `three nearby neighborhoods`/`3:00 nearby neighborhoods`)、NG→PASS 0。保存9,013行×5経路=43,083署名(X scope、是正前=HEAD版er109 vs 是正後)→差は pair2664 の5署名(adapter/adapter_kp/rejudge=PASS→NG、guard/voter=他)のみ。**保存音声由来の行でPASS→NGは0**。判定: pair2664 は canonical `three`・転写 `3:00`(=音声は "three o'clock" と読まれる)で、**誤PASSだった(是正が正しい)**。正当なPASSを壊した行は無い。
+- 署名不変性(`invariance_compare_05_threeoclock_fix.json`): no-scope署名は配線前commit b7b6d07d8 のworktreeと43,083/43,083一致(out sha 同一)。X/Z flag ON(er109の寄与=X/Z rollback[flag False]との差): PASS→NG 0・NG→PASS 182(委任_04の185 − pair2664由来3 と一致)。golden fixture `er109_output/aho4_golden_01`: g0023/g0058(`three`↔`3:00`行、X/Z)の期待変化が是正で消えたため、post_wiring_changed_{X,Z}のadapter/guard/rejudge/voter各8キーを除外・adapter_kp 2キーを更新しmanifest sha更新(PASS→NG 0・NG→PASS>10の検査は維持)。
+
+## 2. B: Z正式TTS段(`run_tts_stage`=scope入口)のruntime evidence(Fable許可1回)
+- 手順: `run_aho4_z_h3` のSTOP+RESTART_STORM_LOCK を正規 `--clear-stop --reason "FABLE-AUTH 委任_05: ..."` で解除(rc=0、`audit_stop_sentinel.jsonl` に `CLEARED` 記録、STOP_ALL・STOP_NOTICEは非適用)。別agent(速度A/B Trial)の有料runは08:59 JSTに終了済み(ACTIVE_TASK)、python processにTTS runnerなしを確認。`--stage tts_b1b --only-clips kp1_en,kp2_en,kp3_en --approved-budget-jpy 15 --tts-execution-mode STANDARD`(`TTS_EXECUTION_MODE=STANDARD`)を**1回だけ**起動 → rc=0、spent 1.5034円。
+- 観測: 3clip(`sentence him to death`/`rise above the other voices`/`earn such trust`)すべて status OK、`kp_vote_check_v1`: state=PASS_DUAL・row=P+S・Primary/Secondary=NORMALIZED_MATCH。vote auditに **`ortho_scope: "Z"`、`ortho_layer_version: er109_orthographic_equivalence_v1_proto_aho02`** (3/3、`tts_generation_results.json` と `review_lock_state.json`)=Z runnerのTTS段でscope=Zが有効。`observed_protected_diff` 全て false。HR queue 0・STOP無し・固有名詞アラーム0。
+- 未観測(開示): 表記差の自然発火(ortho_contributed)は**今回の3clipでは未発生**(全て既存層で合格)。Store再利用(`reused=false` 3/3の新規生成)のためStore guard(`ORTHOGRAPHIC_EQUIVALENT_AUDIO_OUT_OF_SCOPE`)は未発火。PASS→NGなし。
+- 成果物: `er026_output/family_z_production_e2e_01/melos/run_aho4_z_h3/b1b/`(試験run。melosの受入済みpage・成果物は無変更)。ログ: `er109_output/aho4_runtime_evidence_01/h3_05/tts_b1b_kp_05.log`、STOP確認: `stop_check_05_before_clear.json`/`stop_check_05_after_clear.json`。
+- 費用: 本委任 1.5034円(runner出力spent_jpy)+署名比較/回帰はAPI 0。委任_04の約3.1円との合計 約4.6円(上限・日次内)。
+
+## 3. 回帰・test(委任_05)
+- 新規/更新test: `er109_asr_orthographic_equivalence_01_test.py`(新規 `test_clock_time_not_equal_to_bare_numeral` 含む)・`er109_wiring_golden_test_01.py`(fixture更新後)・`er109_xz_scope_01_test_01.py`・`er109_xz_isolation_01_test_01.py`・`er109_hr_lock_rejudge_01_test_01.py`・`er109_bfix_test_01.py` = 126 passed。
+- `run_project_regression.py` 単独実行(`regression_run_05b.log`/`regression_summary_05b.json`): collected 6,901 / passed 6,890 / **failed 1** / errors 0 / skipped 10。failed 1 は `er064_kp_int_01_test_01.ProductionUnchanged.test_no_tracked_py_or_template_modified`(『tracked .py/templateが未コミット変更でない』の状態依存guard)。実行時の未コミットtracked .pyは**他agentの `er003_v1_n3_01_tts_generate.py`(FZ-SOURCE-FIDELITY等)のみ**で、er109/本委任のファイルは含まない(1回目の`regression_run_05.log`では私のer109未コミット2ファイルが原因で同guardが失敗→commit後の2回目で自分起因は消えた)。`er003_test_bad`のFAIL行は入れ子fixtureの出力で集計外(TEST-HYGIENE-02 §2)。他は全PASS=自分起因の失敗0。
+- pytest群(er078*/er10[3-9]*): 984中 4 failed(`er078_asr_unified_wiring_05/06e`、他agentの未コミット `er063_family_z_audio_01.py`・`er003_v1_n3_01_tts_generate.py` 差分が原因)。**清浄HEAD(d9ca61908の隔離worktree)で同2ファイル 61 passed**=自分起因ではない。他agentがcommitした後の再実行で解消見込み。
+- 署名不変性は §1 / `invariance_compare_05_threeoclock_fix.json`。

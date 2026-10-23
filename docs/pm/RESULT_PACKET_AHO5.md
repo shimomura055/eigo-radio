@@ -1,0 +1,9 @@
+# RESULT_PACKET AHO5 (ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01 委任_05、OPEN-459)
+(1)`three`↔`3:00`是正: er109時刻unitの裸の数詞候補を削除(o'clock/分を伴う読みのみ同値、fail-closed)。pairs_02 4,032組でPASS→NG 1組(合成pair2664のみ)、保存9,013行×5経路=43,083署名で是正の影響は同pair2664の5署名のみ=保存音声由来PASS→NG 0(誤PASSの除去。正当PASSを壊した行なし)。B/C境界3件(five thirty/5:30、five o'clock/5:00、$5.50)は不変。golden fixture(g0023/g0058のchanged期待)を更新。
+(2)Z正式TTS段: STOP+RESTART_STORM_LOCKを正規`--clear-stop`(audit CLEARED記録、STOP_ALL/NOTICE非適用)→`tts_b1b`(KP 3clip)を1回だけ起動、rc=0・1.50円。vote auditに`ortho_scope=Z`・`ortho_layer_version`(3/3)、KP3V 3/3 PASS_DUAL、HR 0・STOP無し。表記差の自然発火・Store guard発火は未観測(3clip新規生成・全て既存層で合格)。
+(3)数値: er109関連126 passed、`run_project_regression.py` 6,901/passed 6,890/failed 1(他agentの未コミットtracked .py起因のguard、自分起因0)/errors 0。署名: no-scope=配線前と43,083/43,083一致、er109寄与 NG→PASS 182・PASS→NG 0(X/Z同数)。pytest群4 failは他agent未コミット差分起因(清浄HEADで61 passed)。
+(4)費用: 本委任1.5034円(runner spent_jpy)、委任_04約3.1円と合計約4.6円(API以外は0)。
+(5)SSOT: OPEN-459=PRODUCTION_WIRED(Family X/Z、①②別、Fable受入2026-10-23)。CURRENT_SPEC・DECISION_LOG・OPUS ledger(M01〜M13・P-06/10/11=CLOSEOUT_CONFIRMED)・UDR #156・REPORT_LEDGER反映。
+(6)詳細: docs/research/ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01/RUNTIME_EVIDENCE_05.md、er109_output/aho4_runtime_evidence_01/。
+RESULT_PACKET 4行: (1)既存仕様整合: er109_asr_orthographic_equivalence_01.py:302-306(時刻unit)・承認済み『発音が異なる表現は同値にしない』(CURRENT_SPEC.md:2967 仕様(1))・WIRING_DESIGN_03。 (2)未承認機能の既定値: 該当なし(er109はユーザー正式採用済み、flag ORTHOGRAPHIC_EQUIVALENCE_ENABLED=True、X/Zのみ。no-scope署名は配線前と一致)。 (3)失敗終了時の最終成果物: 正常終了(Z TTS段 rc=0、成果物=er026_output/.../melos/run_aho4_z_h3/b1b/audit/tts_generation_results.json)。目的適合=Z正式TTS段でscope=Z有効をruntimeで確認し、誤同値を是正、受入に必要な証拠を揃えた。 (4)撤去/残置: 撤去=時刻unitの裸数詞候補`hw`(grep `\[hw \+ \["o'clock"\], hw\]` 残存0)、golden changed期待のg0023/g0058(adapter/guard/rejudge/voter各8キー除外)。残置=なし。
+判定整合: 重大NG=なし

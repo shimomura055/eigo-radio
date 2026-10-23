@@ -1,0 +1,69 @@
+{
+ "purpose": "委任_05 three<->3:00是正後の署名再比較(API0、費用0)",
+ "rows_sha256": "51daaae8f50b438cee23adb9614f35d5be3ca47d19ddcda7a00524a3149be5e8",
+ "rows": 9013,
+ "signatures": 43083,
+ "er109_fix": "number_time mi==0 meridiemなし: 候補から裸の時(hw)を削除(o'clock付きのみ)",
+ "pre_vs_none_new": {
+  "identical": 43083,
+  "keys": 43083,
+  "NG_to_PASS": 0,
+  "PASS_to_NG": 0,
+  "other": 0
+ },
+ "X_old_vs_new": {
+  "identical": 43078,
+  "keys": 43083,
+  "NG_to_PASS": 0,
+  "PASS_to_NG": 3,
+  "other": 2
+ },
+ "Xrollback_vs_Xnew": {
+  "identical": 34817,
+  "keys": 43083,
+  "NG_to_PASS": 182,
+  "PASS_to_NG": 0,
+  "other": 8084
+ },
+ "Zrollback_vs_Znew": {
+  "identical": 34817,
+  "keys": 43083,
+  "NG_to_PASS": 182,
+  "PASS_to_NG": 0,
+  "other": 8084
+ },
+ "none_vs_X_rollback": {
+  "identical": 40703,
+  "keys": 43083,
+  "NG_to_PASS": 210,
+  "PASS_to_NG": 0,
+  "other": 2170
+ },
+ "none_vs_X_new": {
+  "identical": 32473,
+  "keys": 43083,
+  "NG_to_PASS": 392,
+  "PASS_to_NG": 0,
+  "other": 10218
+ },
+ "fix_effect_rows": {
+  "PASS_to_NG": [
+   "pair2664|adapter",
+   "pair2664|adapter_kp",
+   "pair2664|rejudge"
+  ],
+  "other": [
+   "pair2664|guard",
+   "pair2664|voter"
+  ],
+  "note": "全てpair2664(pairs_02の合成pair: canonical 'They looked at three nearby neighborhoods.' / asr 'They looked at 3:00 nearby neighborhoods.')。保存音声由来の行は0"
+ },
+ "pairs_02_direct_eval": {
+  "pairs": 4032,
+  "PASS_to_NG": 1,
+  "NG_to_PASS": 0,
+  "row": "pair2664"
+ },
+ "X_rollback_note": "X scope + flag False(rollback)は no-scope と2,380差(PNAP等のX/Z scope機構の差)。er109の寄与はXrollback_vs_Xnewで分離: NG->PASS 182(委任_04の185からpair2664由来3を除いた値と一致)、PASS->NG 0",
+ "none_vs_pre_wiring": "no-scope署名はb7b6d07d8(配線前)worktreeと43,083/43,083バイト一致(out_sha256 05c39131e59e96ef…が両者同一)"
+}
