@@ -220,3 +220,18 @@ def test_y_comment_roles_have_no_x_part_structure_and_no_comment4():
 def test_ablation_light_prompt_is_evaluation_only_and_has_no_factlock():
     p = y.build_y_r0_light_prompt("x", "- 【事実1】a", _cards())
     assert "出典タグの規則" not in p and "この人物の中心の論点にしないこと" not in p
+
+
+def test_acceptance_gate_blocks_non_pass_articles_from_downstream(tmp_path):
+    d = tmp_path / "g"
+    d.mkdir()
+    (d / "article_final.md").write_text(art(), encoding="utf-8")
+    with pytest.raises(y.YStop) as e:
+        y.load_gated_article_or_stop(str(d))                 # gate_result.jsonなし
+    assert e.value.code == "GATE_RESULT_MISSING"
+    (d / "gate_result.json").write_text(json.dumps({"status": "LEAKAGE_RESIDUAL_STOP"}), encoding="utf-8")
+    with pytest.raises(y.YStop) as e:
+        y.load_gated_article_or_stop(str(d))
+    assert e.value.code == "ACCEPTANCE_GATE_NOT_PASSED"
+    (d / "gate_result.json").write_text(json.dumps({"status": "PASS"}), encoding="utf-8")
+    assert y.load_gated_article_or_stop(str(d)).startswith(TITLE)

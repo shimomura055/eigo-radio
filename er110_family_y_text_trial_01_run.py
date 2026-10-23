@@ -320,7 +320,7 @@ def cmd_english(a):
         if os.path.exists(f"{ed}/en_summary.json"):
             print("skip", st)
             continue
-        ja = w1.rdt(f"{rd}/y_writer/gate_{st}/article_final.md")
+        ja = y.load_gated_article_or_stop(f"{rd}/y_writer/gate_{st}")     # Acceptance Gate: PASS以外は後続へ流さない
         # 忠実英訳(Advanced)
         r = adv_gen.generate_family_x_faithful_translation(ja, client=client)
         title, body = r.title, r.body

@@ -836,5 +836,16 @@ Y_COMMENT_3_ROLE = {
 }
 
 
+def load_gated_article_or_stop(gate_dir: str) -> str:
+    """Acceptance Gate: Gate結果がPASSでない原稿(LEAKAGE_RESIDUAL_STOP/REWRITE_STOP/結果なし)は後続(英語化)へ流さない。"""
+    gp = os.path.join(gate_dir, "gate_result.json")
+    if not os.path.exists(gp):
+        raise YStop("GATE_RESULT_MISSING", f"{gate_dir}: gate_result.jsonがありません。後続へ進めません")
+    st = json.load(open(gp, encoding="utf-8")).get("status")
+    if st != "PASS":
+        raise YStop("ACCEPTANCE_GATE_NOT_PASSED", f"{gate_dir}: Gate status={st}。残存flagのある原稿は後続へ流しません")
+    return w1.rdt(os.path.join(gate_dir, "article_final.md"))
+
+
 def now_iso() -> str:
     return datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")

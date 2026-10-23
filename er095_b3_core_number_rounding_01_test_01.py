@@ -531,7 +531,8 @@ class TestIsolation(unittest.TestCase):
         hits = []
         for p in glob.glob(os.path.join(HERE, "*.py")):
             b = os.path.basename(p)
-            if b.startswith("er095_") or b.startswith("er090_"):
+            # FAMILY-Y-VOICES-DESIGN-01 委任_04: er110_(Family Y Trial harness=DEV/Trial専用、読み取りimportのみ、Production配線ではない)もer090_と同型に除外(test側のみ)
+            if b.startswith("er095_") or b.startswith("er090_") or b.startswith("er110_"):
                 continue
             if "er095_b3_core_number_rounding_01" in open(p, encoding="utf-8", errors="replace").read():
                 hits.append(b)

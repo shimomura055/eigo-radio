@@ -591,7 +591,9 @@ class StaticTests(unittest.TestCase):
         allowed = {"er019_family_x_entertainment_production_runner_01.py"}
         # 委任_06 C-2: er090_(中核数値丸めTrial harness群、Trial_01の er090_*_evidence.py が w1 を読み取りimportする。C-1時点から既知FAILだった)と
         # er095_(中核数値丸めmodule/testはw1と相互に参照する)を同型の許容に追加(test側のみ。Production runnerへの新規配線の許可ではない)
-        TRIAL_HARNESS_PREFIXES = ("er082_", "er083_", "er086_", "er087_", "er090_", "er095_")
+        # FAMILY-Y-VOICES-DESIGN-01 委任_04: er110_(Family Y統合Trial=DEV/Trial専用harness。Production module[W-1・RF・Queue・契約]を読み取り専用importする。
+        # Production runnerへの配線ではなく、Yは未採用。test側のallowlist追加のみ=er090_等と同型)
+        TRIAL_HARNESS_PREFIXES = ("er082_", "er083_", "er086_", "er087_", "er090_", "er095_", "er110_")
         audio_allowed = {"er053_risk_flagger_production_01", "er053_review_queue_01"}
         for f in self._root_py_files():
             b = os.path.basename(f)
