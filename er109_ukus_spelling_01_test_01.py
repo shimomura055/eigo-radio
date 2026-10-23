@@ -557,5 +557,56 @@ class DefaultOnScope(T.Base):
         self.assertEqual(d.scope, "Z")
 
 
+class InteractionWithRET(T.Base):
+    """T-K(OPUS_REVIEW_02 W-04): ①RET(er103_run_entity_table_01、PNAP)と②UKUSの両方ONの相互作用。
+    (a) 固有名詞差+綴り差が同居する文は両方ONでもNG維持(G2限界・既知別案件)  (b) ②OFF/ONで、UKUS無関係の行(PN行)の署名は不変
+    (c) ①(RET flag)OFF/ONで、②の判定(c12 PASS/UKUS rule/ukus_pairs)は不変  (d) 両層は独立flag(一方をOFFにしても他方は有効)。"""
+
+    def _core(self, d):
+        aj = d["asr_judgement"]
+        oe = (aj.get("orthographic_equivalence") or {}).get("sites") or []
+        return {"verified": d["verified"], "state": aj.get("state"), "reason": aj.get("reason_code"), "warnings": aj.get("warnings"),
+                "final_status": d.get("final_status"),
+                "ukus_rules": [("ukus_spelling_variant" in (s_.get("er109") or {}).get("rules", [])) for s_ in oe]}
+
+    def test_a_proper_noun_diff_plus_spelling_diff_stays_ng_with_both_on(self):
+        import er103_run_entity_table_01 as ret
+        self.assertTrue(e109.ukus_is_enabled())
+        self.assertTrue(ret.is_enabled())
+        for c, a in (("Bertie loved speciality coffee.", "Birdie loved specialty coffee."),
+                     ("She joined Aluminium City Council in May.", "She joined Aluminum City Council in May."),
+                     ("Bertie lost his jewellery.", "Birdie lost his jewelry.")):
+            d = self.adapter(c, a)
+            self.assertFalse(d["verified"], (c, d["asr_judgement"].get("state")))
+            self.assertNotEqual(d["asr_judgement"].get("state"), "PASS_WITH_PRONUNCIATION_ALARM", c)
+
+    def test_b_ukus_on_off_does_not_change_non_ukus_rows(self):
+        rows = [("Bertie ran home.", "Birdie ran home."), ("Pump one's fist.", "Pump 1's fist."), ("I said no.", "I said know."),
+                ("We have two cats.", "We have one cats."), ("Mum said hello to us.", "Mom said hello to us.")]
+        for c, a in rows:
+            on = self._core(self.adapter(c, a))
+            with mock.patch.object(e109, "UKUS_SPELLING_EQUIVALENCE_ENABLED", False):
+                off = self._core(self.adapter(c, a))
+            self.assertEqual(on, off, (c, a))
+
+    def test_c_ret_flag_on_off_does_not_change_ukus_decision(self):
+        import er103_run_entity_table_01 as ret
+        on = self._core(self.adapter(C12_C, C12_A))
+        with mock.patch.object(ret, "RUN_ENTITY_TABLE_ENABLED", False):
+            off = self._core(self.adapter(C12_C, C12_A))
+        self.assertEqual(on, off)
+        self.assertTrue(on["verified"])
+        self.assertEqual(on["ukus_rules"], [True])
+
+    def test_d_flags_are_independent(self):
+        import er103_run_entity_table_01 as ret
+        with mock.patch.object(ret, "RUN_ENTITY_TABLE_ENABLED", False):
+            with xz.run_scope("X"):
+                self.assertTrue(xz.is_ukus_active_for_run())
+        with mock.patch.object(e109, "UKUS_SPELLING_EQUIVALENCE_ENABLED", False):
+            with xz.run_scope("X"):
+                self.assertTrue(ret.is_enabled())
+
+
 if __name__ == "__main__":
     unittest.main()
