@@ -1,0 +1,53 @@
+== CURRENT_LEDGER(registered状態で再評価)
+   A_accepted 41
+   B_no_evidence 3
+   C2_secondary_noise 1
+   C_secondary_span_merge 16
+   D_general_word_block 6
+   E_non_entity_cause(NO_ENTITY_DIFF) 2
+   E_non_entity_cause(P3_ENTRY_NOT_PRIMARY_NG) 7
+   E_non_entity_cause(PRIMARY_NOT_ENTITY_ONLY) 3
+   E_non_entity_cause(WORD_DELETION_OR_NO_ASR_TOKEN) 9
+   entity-only candidate pool (A+B+C+C2+D) = 67
+   cat brand_product {'A_accepted': 15, 'C2_secondary_noise': 1, 'C_secondary_span_merge': 2, 'D_general_word_block': 5}
+   cat brand_product(food) {'A_accepted': 2}
+   cat brand_product(term) {'A_accepted': 1}
+   cat general_word {'D_general_word_block': 1}
+   cat organization(media) {'A_accepted': 4}
+   cat person {'C_secondary_span_merge': 13, 'A_accepted': 11}
+   cat person(fiction) {'A_accepted': 8, 'C_secondary_span_merge': 3, 'B_no_evidence': 3}
+== EMPTY_LEDGER(初見語=Ledger未登録を再現)
+   A_accepted 36
+   B_no_evidence 9
+   C2_secondary_noise 1
+   C_secondary_span_merge 16
+   D_general_word_block 5
+   E_non_entity_cause(NO_ENTITY_DIFF) 2
+   E_non_entity_cause(P3_ENTRY_NOT_PRIMARY_NG) 7
+   E_non_entity_cause(PRIMARY_NOT_ENTITY_ONLY) 3
+   E_non_entity_cause(WORD_DELETION_OR_NO_ASR_TOKEN) 9
+   entity-only candidate pool (A+B+C+C2+D) = 67
+   cat brand_product {'A_accepted': 15, 'C2_secondary_noise': 1, 'C_secondary_span_merge': 2, 'D_general_word_block': 4, 'B_no_evidence': 1}
+   cat brand_product(food) {'A_accepted': 2}
+   cat brand_product(term) {'A_accepted': 1}
+   cat general_word {'D_general_word_block': 1}
+   cat organization(media) {'A_accepted': 4}
+   cat person {'C_secondary_span_merge': 13, 'A_accepted': 6, 'B_no_evidence': 5}
+   cat person(fiction) {'A_accepted': 8, 'C_secondary_span_merge': 3, 'B_no_evidence': 3}
+== C(secondary span merge) detail
+   7 l mimoun -> elle momon
+   8 l mimoun -> elle mimon
+   9 l mimoun -> el mimone
+   12 l mimoun -> el mimone
+   13 l mimoun -> el mimoon
+   15 l mimoun -> el mimon
+   16 l mimoun -> el mimon
+   17 l mimoun -> el mimoon
+   18 l mimoun -> el mimon
+   20 l mimoun -> el mimoon
+   25 kristie tse -> christie say
+   37 altuzarra toteme -> altusara totem
+   44 altuzarra toteme -> altus era totem
+   73 melos drank -> mellow strength
+   92 melos drank -> mellow strength
+   93 melos drank -> mellow strength
