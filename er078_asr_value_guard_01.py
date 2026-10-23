@@ -523,6 +523,22 @@ def _guard_en(src: str, hyp: str) -> ValueGuardResult:
         bn = [b for b in b_blk if isnum(b)]
         al = [a for a in a_blk if not isnum(a)]
         bl = [b for b in b_blk if not isnum(b)]
+        # 2026-10-23(OPEN-482 第2層、FAMILY-Z-AFTER-TWENTY-YEARS-PRODUCTION-01 委任_04、承認済み規則の不具合是正): 原稿の「時 分」2数値atom
+        # (TTS入力の数字化後の`10 thirty` -> num10,num30)と、反対側の1つの時刻atom(`10:30` -> time1030)は、隣接する2数値の
+        # hour*100+minute(時0-24・分10-59・単位/%/通貨/序数なし)が時刻atomと一致し、時刻atomにam/pmが無いときだけ同一とみなす。
+        # 値が違えば(10:13/11:30/2:03/10 vs 10:30等)従来どおりDIFF/UNKNOWN。単独数値・桁連結には適用しない。
+        def _clock_pair(blk2, blk1):
+            n2 = [(k, t) for k, t in enumerate(blk2) if isnum(t)]
+            n1 = [t for t in blk1 if isnum(t)]
+            if len(n2) != 2 or len(n1) != 1 or n2[1][0] - n2[0][0] != 1:
+                return False
+            (_, h), (_, mi), one = n2[0], n2[1], n1[0]
+            return (one.kind == "time" and one.extra == (None,)
+                    and all(t.kind == "num" and t.unit == "" and t.extra == (False, None, False) and t.value == int(t.value) for t in (h, mi))
+                    and 0 <= h.value <= 24 and 10 <= mi.value <= 59 and h.value * 100 + mi.value == one.value)
+        if _clock_pair(a_blk, b_blk) or _clock_pair(b_blk, a_blk):
+            pairs.append(PairResult(" ".join(a.surface for a in an), " ".join(b.surface for b in bn), EQUAL, "clock_time_words_vs_digits"))
+            continue
         m = min(len(an), len(bn))
         for k in range(m):
             a, b = an[k], bn[k]
