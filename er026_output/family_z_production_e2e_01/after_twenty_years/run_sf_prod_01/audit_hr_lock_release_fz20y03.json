@@ -1,0 +1,316 @@
+{
+ "time": "2026-10-23T23:23:01",
+ "operation": "er011_human_review_lock_01.approve_regenerate",
+ "out_path": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/a2/narration/full_story_part2_c8.wav",
+ "approved_by": "fable:FZ20Y-03:OPEN-482_time_numeral_fix",
+ "basis": "FAMILY-Z-AFTER-TWENTY-YEARS-PRODUCTION-01 委任_03 / ユーザー原文§5(必要なretry/fallbackは既存仕様に従い自律実行)/OPEN-482 gate通過・時刻数詞の正規化是正済み。原稿不変",
+ "before": {
+  "state": "HUMAN_REVIEW_REQUIRED",
+  "canonical_text_sha256": "365eab652200af8602450de7fa586ce5b1e667f8ba113959916b50f6351d02c8",
+  "language": "en",
+  "theme_id": "run_sf_prod_01",
+  "level": "a2",
+  "segment_id": "full_story_part2_c8",
+  "updated_at": "2026-10-23T22:57:45",
+  "reason": "最終status=STOPPED。標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+  "final_status": "STOPPED",
+  "wav_path": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/a2/narration/full_story_part2_c8.wav",
+  "cumulative_tts_attempts": 3,
+  "cumulative_asr_calls": 3,
+  "budget_guard_triggered": false,
+  "last_attempts_log": [
+   {
+    "attempt": 1,
+    "status": "OK",
+    "duration_seconds": 17.67,
+    "asr_text": "The officer continued down the street. Bob leaned back in the doorway, listening for footsteps. He checked his watch, then put it away. After such a long journey, a few minutes hardly mattered. At 10:30, a tall man in a long overcoat hurried towards Bob.",
+    "asr_text_length": 254,
+    "max_len": 318,
+    "substring_ok": null,
+    "length_ok": true,
+    "final_length_ok": true,
+    "phonetic_verdict": null,
+    "audio_classification": "NORMALIZED_MATCH",
+    "connected_speech_info": null,
+    "reading_resolver_info": null,
+    "scg_info": null,
+    "verified": false,
+    "disfluency_checked": false,
+    "disfluency_evidence": null,
+    "repetition_qa_checked": false,
+    "repetition_qa_evidence": null,
+    "asr_prompt_applied": false,
+    "non_latin_cascade_enabled": false,
+    "non_latin_cascade_invoked": false,
+    "style_prefix": {
+     "len": 177,
+     "sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
+     "head200": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible."
+    },
+    "cascade_steps": [
+     {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "The officer continued down the street. Bob leaned back in the doorway, listening for footsteps. He checked his watch, then put it away. After such a long journey, a few minutes hardly mattered. At 10:30, a tall man in a long overcoat hurried towards Bob.",
+      "classification": "NORMALIZED_MATCH",
+      "entity_like_source": []
+     }
+    ],
+    "asr_judgement": {
+     "state": "NG_PROTECTED",
+     "reason_code": "final_gate_value_diff",
+     "slot": 1,
+     "script_version": "v0",
+     "role": "FULL_STORY",
+     "lang": "en",
+     "segment_key": "full_story_part2_c8",
+     "audio_sha256": "525292098e033cfdf9732734db29427a65b87d26b5d9b15073d3fa1733e5e9ec",
+     "primary": {
+      "text": "The officer continued down the street. Bob leaned back in the doorway, listening for footsteps. He checked his watch, then put it away. After such a long journey, a few minutes hardly mattered. At 10:30, a tall man in a long overcoat hurried towards Bob.",
+      "passed": true,
+      "label": "NORMALIZED_MATCH",
+      "equivalence_basis": null,
+      "warning_labels": []
+     },
+     "secondary": {
+      "called": false,
+      "cached": false,
+      "engine": "azure",
+      "text": null,
+      "label": "",
+      "accepted": null,
+      "error": null,
+      "unavailable": false
+     },
+     "value_guard": {
+      "primary": {
+       "kind": "DIFF",
+       "pairs": [
+        {
+         "src": "10",
+         "hyp": "1030",
+         "verdict": "UNKNOWN",
+         "reason": "kind_mismatch:num/time"
+        },
+        {
+         "src": "30",
+         "hyp": null,
+         "verdict": "DIFF",
+         "reason": "src_drop(b)"
+        }
+       ],
+       "reasons": [
+        "UNKNOWN:kind_mismatch:num/time:'10'->'1030'",
+        "DIFF:src_drop(b):'30'->None"
+       ],
+       "warnings": []
+      }
+     },
+     "negation_guard": {
+      "primary": false
+     },
+     "final_gate": {
+      "applied": true,
+      "value_guard": "DIFF",
+      "negation_diff": false
+     },
+     "warnings": [],
+     "exclusion_rule": null,
+     "cost": {
+      "azure_calls": 0,
+      "azure_seconds": null,
+      "est_jpy": 0.0
+     },
+     "timing": {
+      "total_ms": 0,
+      "secondary_ms": 0
+     },
+     "technical_stop": null,
+     "length": {
+      "applied": true,
+      "primary_len": 254,
+      "secondary_len": null,
+      "max_len": 318,
+      "adopted_from": "primary",
+      "adopted_ok": true,
+      "surface_len": null,
+      "primary_ok": true
+     },
+     "pronunciation_alarm_eval": {
+      "accepted": false,
+      "reason": "JUDGE_STATE_NOT_ELIGIBLE",
+      "detail": {
+       "judge_state": "NG_PROTECTED",
+       "reason_code": "final_gate_value_diff"
+      }
+     },
+     "adapter": {
+      "layers": [],
+      "azure_real_calls": 0,
+      "cost_guard_triggered": false,
+      "language": "en-US",
+      "segment_id": "full_story_part2_c8",
+      "asr_text_present": true,
+      "cache": {
+       "calls": 0,
+       "hits": 0
+      }
+     }
+    },
+    "attempt_audio_path": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/a2/narration/attempts/full_story_part2_c8_attempt3_customa3c4625e.wav"
+   },
+   {
+    "attempt": 2,
+    "status": "OK",
+    "duration_seconds": 16.63,
+    "asr_text": "The officer continued down the street. Bob leaned back in the doorway, listening for footsteps. He checked his watch, then put it away. After such a long journey, a few minutes hardly mattered. At 10:30, a tall man in a long overcoat hurried towards Bob.",
+    "asr_text_length": 254,
+    "max_len": 318,
+    "substring_ok": null,
+    "length_ok": true,
+    "final_length_ok": true,
+    "phonetic_verdict": null,
+    "audio_classification": "NORMALIZED_MATCH",
+    "connected_speech_info": null,
+    "reading_resolver_info": null,
+    "scg_info": null,
+    "verified": false,
+    "disfluency_checked": false,
+    "disfluency_evidence": null,
+    "repetition_qa_checked": false,
+    "repetition_qa_evidence": null,
+    "asr_prompt_applied": false,
+    "non_latin_cascade_enabled": false,
+    "non_latin_cascade_invoked": false,
+    "style_prefix": {
+     "len": 177,
+     "sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
+     "head200": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible."
+    },
+    "cascade_steps": [
+     {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "The officer continued down the street. Bob leaned back in the doorway, listening for footsteps. He checked his watch, then put it away. After such a long journey, a few minutes hardly mattered. At 10:30, a tall man in a long overcoat hurried towards Bob.",
+      "classification": "NORMALIZED_MATCH",
+      "entity_like_source": []
+     }
+    ],
+    "asr_judgement": {
+     "state": "NG_PROTECTED",
+     "reason_code": "final_gate_value_diff",
+     "slot": 2,
+     "script_version": "v0",
+     "role": "FULL_STORY",
+     "lang": "en",
+     "segment_key": "full_story_part2_c8",
+     "audio_sha256": "3013281dee6f8ba45e13cd88b097bf289f5c6043f293f67e626b906e29a808fc",
+     "primary": {
+      "text": "The officer continued down the street. Bob leaned back in the doorway, listening for footsteps. He checked his watch, then put it away. After such a long journey, a few minutes hardly mattered. At 10:30, a tall man in a long overcoat hurried towards Bob.",
+      "passed": true,
+      "label": "NORMALIZED_MATCH",
+      "equivalence_basis": null,
+      "warning_labels": []
+     },
+     "secondary": {
+      "called": false,
+      "cached": false,
+      "engine": "azure",
+      "text": null,
+      "label": "",
+      "accepted": null,
+      "error": null,
+      "unavailable": false
+     },
+     "value_guard": {
+      "primary": {
+       "kind": "DIFF",
+       "pairs": [
+        {
+         "src": "10",
+         "hyp": "1030",
+         "verdict": "UNKNOWN",
+         "reason": "kind_mismatch:num/time"
+        },
+        {
+         "src": "30",
+         "hyp": null,
+         "verdict": "DIFF",
+         "reason": "src_drop(b)"
+        }
+       ],
+       "reasons": [
+        "UNKNOWN:kind_mismatch:num/time:'10'->'1030'",
+        "DIFF:src_drop(b):'30'->None"
+       ],
+       "warnings": []
+      }
+     },
+     "negation_guard": {
+      "primary": false
+     },
+     "final_gate": {
+      "applied": true,
+      "value_guard": "DIFF",
+      "negation_diff": false
+     },
+     "warnings": [],
+     "exclusion_rule": null,
+     "cost": {
+      "azure_calls": 0,
+      "azure_seconds": null,
+      "est_jpy": 0.0
+     },
+     "timing": {
+      "total_ms": 0,
+      "secondary_ms": 0
+     },
+     "technical_stop": null,
+     "length": {
+      "applied": true,
+      "primary_len": 254,
+      "secondary_len": null,
+      "max_len": 318,
+      "adopted_from": "primary",
+      "adopted_ok": true,
+      "surface_len": null,
+      "primary_ok": true
+     },
+     "pronunciation_alarm_eval": {
+      "accepted": false,
+      "reason": "JUDGE_STATE_NOT_ELIGIBLE",
+      "detail": {
+       "judge_state": "NG_PROTECTED",
+       "reason_code": "final_gate_value_diff"
+      }
+     },
+     "adapter": {
+      "layers": [],
+      "azure_real_calls": 0,
+      "cost_guard_triggered": false,
+      "language": "en-US",
+      "segment_id": "full_story_part2_c8",
+      "asr_text_present": true,
+      "cache": {
+       "calls": 0,
+       "hits": 0
+      }
+     }
+    },
+    "attempt_audio_path": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/a2/narration/attempts/full_story_part2_c8_attempt4_customa3c4625e.wav"
+   }
+  ]
+ },
+ "after": {
+  "state": "REGENERATE_APPROVED",
+  "canonical_text_sha256": "365eab652200af8602450de7fa586ce5b1e667f8ba113959916b50f6351d02c8",
+  "theme_id": "run_sf_prod_01",
+  "level": "a2",
+  "segment_id": "full_story_part2_c8",
+  "updated_at": "2026-10-23T23:23:01",
+  "reason": "ユーザー(fable:FZ20Y-03:OPEN-482_time_numeral_fix)による明示的な再生成承認",
+  "approved_by": "fable:FZ20Y-03:OPEN-482_time_numeral_fix",
+  "cumulative_tts_attempts": 3,
+  "cumulative_asr_calls": 3
+ }
+}

@@ -1,0 +1,12 @@
+525a526,536
+>         # OPEN-482候補: 語/数字の「時+分」2atom(ten thirty -> 10,30)と、反対側の1つの時刻atom(10:30 -> time 1030)が
+>         # 同値(hour*100+minute)で修飾(extra)が同形のときは同一とみなす(時刻表現の表記差。値が違えば従来どおりDIFF/UNKNOWN)。
+>         def _clock_pair(two, one):
+>             return (len(two) == 2 and len(one) == 1 and one[0].kind == "time"
+>                     and all(t.kind == "num" and t.unit == "" and t.extra == (False, None, False) for t in two)
+>                     and two[0].value == int(two[0].value) and two[1].value == int(two[1].value)
+>                     and 0 <= two[0].value <= 24 and 10 <= two[1].value <= 59
+>                     and two[0].value * 100 + two[1].value == one[0].value)
+>         if _clock_pair(an, bn) or _clock_pair(bn, an):
+>             pairs.append(PairResult(" ".join(a.surface for a in an), " ".join(b.surface for b in bn), EQUAL, "clock_time_words_vs_digits"))
+>             continue

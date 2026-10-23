@@ -329,6 +329,29 @@ def _convert_cardinal_words(text: str) -> str:
                 out.extend(tokens[i:j])
                 i = j
                 continue
+            # 2026-10-23(OPEN-482、FAMILY-Z-AFTER-TWENTY-YEARS-PRODUCTION-01 委任_03、承認済み規則の不具合是正): 「一の位/10-19の語」
+            # の直後に「十の位(twenty..ninety)または10-19の語」が来る並び(ten thirty/two thirty/seven fifteen)は、英語の
+            # 正しい基数語列ではあり得ない(基数は tens→ones の順)。時刻の読み(10:30/2:30)であり、従来はこれを合算して
+            # 40/32/22にしていたため、ASRの『10:30』(=10 30)と比較して正しく読めた音声が数字不一致のHR Lockになった。
+            # このような境界で別の数値語列へ分割する(正しい合成数 twenty one / one hundred thirty / two hundred and five は
+            # 境界条件に当たらず従来どおり)。数値の検出力は維持(10 30 と 10 13 / 10 / 40 は引き続き別token列)。
+            chunks = [[]]
+            for w in core:
+                if (chunks[-1] and chunks[-1][-1] in _ONES
+                        and (w in _TENS or (w in _ONES and _ONES[w] >= 10))):
+                    chunks.append([])
+                chunks[-1].append(w)
+            if len(chunks) > 1:
+                vals = [_words_to_number(c) for c in chunks]
+                if any(v is None for v in vals):
+                    out.extend(tokens[i:j])
+                    i = j
+                    continue
+                out.extend(tokens[i:i + lead])
+                out.extend(str(v) for v in vals)
+                out.extend(tokens[j - trail:j])
+                i = j
+                continue
             val = _words_to_number(core)
             if val is None or (len(core) == 1 and val < 2):
                 out.extend(tokens[i:j])
