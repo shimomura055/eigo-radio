@@ -215,6 +215,8 @@ class ProductionIsolation(unittest.TestCase):
             base = os.path.basename(p)
             if base.startswith("er109_"):
                 continue
+            if base.startswith("er111_ukus_"):
+                continue   # DEV/Trial専用(ASR-QUALITY-2ITEMS ②UKUS 委任_02)。Production->Trialの逆方向はer111_ukus_spelling_trial_01_test_01.Isolationが固定
             try:
                 tree = ast.parse(open(p, encoding="utf-8").read())
             except SyntaxError:

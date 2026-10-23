@@ -1,0 +1,988 @@
+{
+ "criterion": "pairs>=30 (both dirs): new PASS (base NG -> trial PASS) = 0 except same-word variant (legit) / intentional AMB uk>us; extra cases all as expected",
+ "pairs": 52,
+ "directions": 104,
+ "base_already_equivalent(phoneme layer, not this layer's responsibility)": [
+  [
+   "principal",
+   "principle"
+  ],
+  [
+   "principle",
+   "principal"
+  ],
+  [
+   "stationary",
+   "stationery"
+  ],
+  [
+   "stationery",
+   "stationary"
+  ],
+  [
+   "discreet",
+   "discrete"
+  ],
+  [
+   "discrete",
+   "discreet"
+  ],
+  [
+   "canon",
+   "cannon"
+  ],
+  [
+   "cannon",
+   "canon"
+  ],
+  [
+   "four",
+   "for"
+  ],
+  [
+   "for",
+   "four"
+  ]
+ ],
+ "new_pass_unexpected": [],
+ "new_pass_amb_intended": [
+  {
+   "canon": "tyre",
+   "asr": "tire",
+   "base_eq": false,
+   "trial_eq": true,
+   "new_pass": true,
+   "ukus_pairs": [
+    [
+     "tyre",
+     "tire"
+    ]
+   ]
+  }
+ ],
+ "new_pass_legit_same_word_variant": [],
+ "extra_cases": [
+  {
+   "canonical": "Mum said hello to us.",
+   "asr": "Mom said hello to us.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "phoneme_differs",
+   "ok": true
+  },
+  {
+   "canonical": "Speciality coffee is popular here.",
+   "asr": "Specialty coffee is popular here.",
+   "expected": true,
+   "trial_eq": true,
+   "base_eq": false,
+   "reason": "all_diff_spans_phoneme_equal_or_ukus_variant",
+   "ok": true
+  },
+  {
+   "canonical": "Speciality Coffee Roasters opened here.",
+   "asr": "Specialty Coffee Roasters opened here.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "phoneme_differs",
+   "ok": true
+  },
+  {
+   "canonical": "The speciality's price rose.",
+   "asr": "The specialty's price rose.",
+   "expected": true,
+   "trial_eq": true,
+   "base_eq": false,
+   "reason": "all_diff_spans_phoneme_equal_or_ukus_variant",
+   "ok": true
+  },
+  {
+   "canonical": "The jewellery-making class began.",
+   "asr": "The jewelry-making class began.",
+   "expected": true,
+   "trial_eq": true,
+   "base_eq": false,
+   "reason": "all_diff_spans_phoneme_equal_or_ukus_variant",
+   "ok": true
+  },
+  {
+   "canonical": "The jewellery-making class began.",
+   "asr": "The jewel-making class began.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "incomparable(CMU未登録/解析不能/曖昧略語のため同値化しない)",
+   "ok": true
+  },
+  {
+   "canonical": "He bought a tyre for it.",
+   "asr": "He bought a tire for it.",
+   "expected": true,
+   "trial_eq": true,
+   "base_eq": false,
+   "reason": "all_diff_spans_phoneme_equal_or_ukus_variant",
+   "ok": true
+  },
+  {
+   "canonical": "He bought a tire for it.",
+   "asr": "He bought a tyre for it.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "phoneme_differs",
+   "ok": true
+  },
+  {
+   "canonical": "They will advise us soon.",
+   "asr": "They will advice us soon.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "incomparable(同形異音語/強勢読み無し)",
+   "ok": true
+  }
+ ],
+ "extra_case_failures": [],
+ "verdict": "PASS",
+ "rows": [
+  {
+   "canon": "advice",
+   "asr": "advise",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "advise",
+   "asr": "advice",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "ensure",
+   "asr": "insure",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "insure",
+   "asr": "ensure",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "complement",
+   "asr": "compliment",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "compliment",
+   "asr": "complement",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "principal",
+   "asr": "principle",
+   "base_eq": true,
+   "trial_eq": true,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "principle",
+   "asr": "principal",
+   "base_eq": true,
+   "trial_eq": true,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "stationary",
+   "asr": "stationery",
+   "base_eq": true,
+   "trial_eq": true,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "stationery",
+   "asr": "stationary",
+   "base_eq": true,
+   "trial_eq": true,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "affect",
+   "asr": "effect",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "effect",
+   "asr": "affect",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "discreet",
+   "asr": "discrete",
+   "base_eq": true,
+   "trial_eq": true,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "discrete",
+   "asr": "discreet",
+   "base_eq": true,
+   "trial_eq": true,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "canon",
+   "asr": "cannon",
+   "base_eq": true,
+   "trial_eq": true,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "cannon",
+   "asr": "canon",
+   "base_eq": true,
+   "trial_eq": true,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "device",
+   "asr": "devise",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "devise",
+   "asr": "device",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "prophecy",
+   "asr": "prophesy",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "prophesy",
+   "asr": "prophecy",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "practical",
+   "asr": "practise",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "practise",
+   "asr": "practical",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "specialty",
+   "asr": "special",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "special",
+   "asr": "specialty",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "speciality",
+   "asr": "specially",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "specially",
+   "asr": "speciality",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "colour",
+   "asr": "collar",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "collar",
+   "asr": "colour",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "grey",
+   "asr": "great",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "great",
+   "asr": "grey",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "centre",
+   "asr": "central",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "central",
+   "asr": "centre",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "hour",
+   "asr": "our",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "our",
+   "asr": "hour",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "four",
+   "asr": "for",
+   "base_eq": true,
+   "trial_eq": true,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "for",
+   "asr": "four",
+   "base_eq": true,
+   "trial_eq": true,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "pour",
+   "asr": "poor",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "poor",
+   "asr": "pour",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "tour",
+   "asr": "tore",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "tore",
+   "asr": "tour",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "flour",
+   "asr": "floor",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "floor",
+   "asr": "flour",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "story",
+   "asr": "stir",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "stir",
+   "asr": "story",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "program",
+   "asr": "progress",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "progress",
+   "asr": "program",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "jewellery",
+   "asr": "jewel",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "jewel",
+   "asr": "jewellery",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "cheque",
+   "asr": "cheek",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "cheek",
+   "asr": "cheque",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "licence",
+   "asr": "lioness",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "lioness",
+   "asr": "licence",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "honour",
+   "asr": "hammer",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "hammer",
+   "asr": "honour",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "organise",
+   "asr": "organs",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "organs",
+   "asr": "organise",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "realise",
+   "asr": "relies",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "relies",
+   "asr": "realise",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "analyse",
+   "asr": "analysis",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "analysis",
+   "asr": "analyse",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "storey",
+   "asr": "stir",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "stir",
+   "asr": "storey",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "metre",
+   "asr": "mother",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "mother",
+   "asr": "metre",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "tire",
+   "asr": "tyre",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "tyre",
+   "asr": "tire",
+   "base_eq": false,
+   "trial_eq": true,
+   "new_pass": true,
+   "ukus_pairs": [
+    [
+     "tyre",
+     "tire"
+    ]
+   ]
+  },
+  {
+   "canon": "labour",
+   "asr": "lab",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "lab",
+   "asr": "labour",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "favour",
+   "asr": "fever",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "fever",
+   "asr": "favour",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "theatre",
+   "asr": "theme",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "theme",
+   "asr": "theatre",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "neighbour",
+   "asr": "neighbourhood",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "neighbourhood",
+   "asr": "neighbour",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "mould",
+   "asr": "mild",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "mild",
+   "asr": "mould",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "plough",
+   "asr": "plot",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "plot",
+   "asr": "plough",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "sulphur",
+   "asr": "sulk",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "sulk",
+   "asr": "sulphur",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "axe",
+   "asr": "ask",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "ask",
+   "asr": "axe",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "catalogue",
+   "asr": "category",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "category",
+   "asr": "catalogue",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "defence",
+   "asr": "deference",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "deference",
+   "asr": "defence",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "aluminium",
+   "asr": "alumni",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "alumni",
+   "asr": "aluminium",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "grey",
+   "asr": "grew",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "grew",
+   "asr": "grey",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "enquire",
+   "asr": "require",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "require",
+   "asr": "enquire",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "mum",
+   "asr": "mom",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "mom",
+   "asr": "mum",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "mom",
+   "asr": "mum",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "mum",
+   "asr": "mom",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "learnt",
+   "asr": "learn",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "learn",
+   "asr": "learnt",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "recognise",
+   "asr": "reckon",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "reckon",
+   "asr": "recognise",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "surprise",
+   "asr": "surprize",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "surprize",
+   "asr": "surprise",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "surprize",
+   "asr": "surprise",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  },
+  {
+   "canon": "surprise",
+   "asr": "surprize",
+   "base_eq": false,
+   "trial_eq": false,
+   "new_pass": false,
+   "ukus_pairs": []
+  }
+ ]
+}

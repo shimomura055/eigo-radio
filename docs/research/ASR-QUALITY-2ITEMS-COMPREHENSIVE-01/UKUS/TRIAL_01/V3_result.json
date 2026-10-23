@@ -1,0 +1,405 @@
+{
+ "criterion": "cases>=25: proper nouns not equalized by this layer / spelling diff + real misreading stays NG / omission & addition NG / base PASS kept",
+ "cases": 29,
+ "ok": 29,
+ "failures": [],
+ "pass_to_ng": [],
+ "verdict": "PASS",
+ "rows": [
+  {
+   "canonical": "She joined the Speciality Foods Group in May.",
+   "asr": "She joined the Specialty Foods Group in May.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "phoneme_differs",
+   "ukus_pairs": [],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "He visited Aluminium City last year.",
+   "asr": "He visited Aluminum City last year.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "phoneme_differs",
+   "ukus_pairs": [],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "The Jewellery Quarter is famous.",
+   "asr": "The Jewelry Quarter is famous.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "incomparable(CMU未登録/解析不能/曖昧略語のため同値化しない)",
+   "ukus_pairs": [],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "He lives near Rockefeller Center today.",
+   "asr": "He lives near Rockefeller Centre today.",
+   "expected": true,
+   "trial_eq": true,
+   "base_eq": true,
+   "reason": "all_diff_spans_phoneme_equal",
+   "ukus_pairs": [],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "We saw Earl Grey in the shop.",
+   "asr": "We saw Earl Gray in the shop.",
+   "expected": true,
+   "trial_eq": true,
+   "base_eq": true,
+   "reason": "all_diff_spans_phoneme_equal",
+   "ukus_pairs": [],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "The Labour Party won the vote.",
+   "asr": "The Labor Party won the vote.",
+   "expected": true,
+   "trial_eq": true,
+   "base_eq": true,
+   "reason": "all_diff_spans_phoneme_equal",
+   "ukus_pairs": [],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "He joined the Aluminum Company of America.",
+   "asr": "He joined the Aluminium Company of America.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "phoneme_differs",
+   "ukus_pairs": [],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "Learnt Academy is in Leeds.",
+   "asr": "Learned Academy is in Leeds.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "phoneme_differs",
+   "ukus_pairs": [],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "The speciality is cooking.",
+   "asr": "The specialty is cooling.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "phoneme_differs",
+   "ukus_pairs": [
+    [
+     "speciality",
+     "specialty"
+    ]
+   ],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "Her jewellery was lost.",
+   "asr": "His jewelry was lost.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "phoneme_differs",
+   "ukus_pairs": [],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "The colour and the flavour were great.",
+   "asr": "The color and the flavour were poor.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "phoneme_differs",
+   "ukus_pairs": [],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "We organise the theatre tour.",
+   "asr": "We organize the theatre tore.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "phoneme_differs",
+   "ukus_pairs": [
+    [
+     "organise",
+     "organize"
+    ]
+   ],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "It was her speciality.",
+   "asr": "It was specialty.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "outside_approved_multiword_conditions_or_phoneme_differs",
+   "ukus_pairs": [],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "It was her speciality.",
+   "asr": "It was her very specialty.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "outside_approved_multiword_conditions_or_phoneme_differs",
+   "ukus_pairs": [],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "The jewellery shop opened.",
+   "asr": "The jewelry opened.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "incomparable(CMU未登録/解析不能/曖昧略語のため同値化しない)",
+   "ukus_pairs": [],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "They went to the colour fair.",
+   "asr": "They went to the collar fair.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "phoneme_differs",
+   "ukus_pairs": [],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "The speciality costs 3 pounds.",
+   "asr": "The specialty costs 3 pounds.",
+   "expected": true,
+   "trial_eq": true,
+   "base_eq": false,
+   "reason": "all_diff_spans_phoneme_equal_or_ukus_variant",
+   "ukus_pairs": [
+    [
+     "speciality",
+     "specialty"
+    ]
+   ],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "The speciality costs 3 pounds.",
+   "asr": "The specialty costs 4 pounds.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "phoneme_differs",
+   "ukus_pairs": [
+    [
+     "speciality",
+     "specialty"
+    ]
+   ],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "The speciality costs 30%.",
+   "asr": "The specialty costs 30 percent.",
+   "expected": true,
+   "trial_eq": true,
+   "base_eq": false,
+   "reason": "all_diff_spans_phoneme_equal_or_ukus_variant",
+   "ukus_pairs": [
+    [
+     "speciality",
+     "specialty"
+    ]
+   ],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "Her jewellery-making kit arrived.",
+   "asr": "Her jewelry making kit arrived.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "incomparable(CMU未登録/解析不能/曖昧略語のため同値化しない)",
+   "ukus_pairs": [],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "The speciality is a speciality of the house.",
+   "asr": "The specialty is a specialty of the house.",
+   "expected": true,
+   "trial_eq": true,
+   "base_eq": false,
+   "reason": "all_diff_spans_phoneme_equal_or_ukus_variant",
+   "ukus_pairs": [
+    [
+     "speciality",
+     "specialty"
+    ],
+    [
+     "speciality",
+     "specialty"
+    ]
+   ],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "The speciality is a speciality of the house.",
+   "asr": "The specialty is a speciality of the house.",
+   "expected": true,
+   "trial_eq": true,
+   "base_eq": false,
+   "reason": "all_diff_spans_phoneme_equal_or_ukus_variant",
+   "ukus_pairs": [
+    [
+     "speciality",
+     "specialty"
+    ]
+   ],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "The speciality is a speciality of the house.",
+   "asr": "The specialty is a specialty of the home.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "phoneme_differs",
+   "ukus_pairs": [
+    [
+     "speciality",
+     "specialty"
+    ],
+    [
+     "speciality",
+     "specialty"
+    ]
+   ],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "The aluminium tin and the jewellery box.",
+   "asr": "The aluminum tin and the jewelry box.",
+   "expected": true,
+   "trial_eq": true,
+   "base_eq": false,
+   "reason": "all_diff_spans_phoneme_equal_or_ukus_variant",
+   "ukus_pairs": [
+    [
+     "aluminium",
+     "aluminum"
+    ],
+    [
+     "jewellery",
+     "jewelry"
+    ]
+   ],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "ALUMINIUM prices rose.",
+   "asr": "ALUMINUM prices rose.",
+   "expected": false,
+   "trial_eq": false,
+   "base_eq": false,
+   "reason": "phoneme_differs",
+   "ukus_pairs": [],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "They trained at the Centre for Defence.",
+   "asr": "They trained at the Center for Defense.",
+   "expected": true,
+   "trial_eq": true,
+   "base_eq": true,
+   "reason": "all_diff_spans_phoneme_equal",
+   "ukus_pairs": [],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "Our neighbour's speciality is baking, and the neighbours love her colourful cakes.",
+   "asr": "Our neighbor's specialty is baking, and the neighbors love her colorful cakes.",
+   "expected": true,
+   "trial_eq": true,
+   "base_eq": false,
+   "reason": "all_diff_spans_phoneme_equal_or_ukus_variant",
+   "ukus_pairs": [
+    [
+     "speciality",
+     "specialty"
+    ],
+    [
+     "colourful",
+     "colorful"
+    ]
+   ],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "The specialty is hers.",
+   "asr": "The speciality is hers.",
+   "expected": true,
+   "trial_eq": true,
+   "base_eq": false,
+   "reason": "all_diff_spans_phoneme_equal_or_ukus_variant",
+   "ukus_pairs": [
+    [
+     "speciality",
+     "specialty"
+    ]
+   ],
+   "ok": true,
+   "pass_to_ng": false
+  },
+  {
+   "canonical": "Their jewelry is old.",
+   "asr": "Their jewellery is old.",
+   "expected": true,
+   "trial_eq": true,
+   "base_eq": false,
+   "reason": "all_diff_spans_phoneme_equal_or_ukus_variant",
+   "ukus_pairs": [
+    [
+     "jewellery",
+     "jewelry"
+    ]
+   ],
+   "ok": true,
+   "pass_to_ng": false
+  }
+ ]
+}

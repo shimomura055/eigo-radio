@@ -182,9 +182,14 @@ class StaticIsolation(unittest.TestCase):
                     importers.add(b)
                 if E109_MOD in mods and not is_test_file(rel):
                     e109_importers.add(b)
-        self.assertTrue(importers <= PRODUCTION_SCOPE_IMPORTERS, importers - PRODUCTION_SCOPE_IMPORTERS)
+        # DEV/Trial評価script(V6はworker processでscope hookを差し替える)は Production ではない。Production->Trialの逆方向は er111_ukus_spelling_trial_01_test_01.Isolation が固定。
+        dev_trial = {"er111_ukus_trial_eval_01.py"}
+        self.assertTrue(importers - dev_trial <= PRODUCTION_SCOPE_IMPORTERS, importers - dev_trial - PRODUCTION_SCOPE_IMPORTERS)
         # 純関数moduleを直接importするProduction .pyは scope module(と判定のみのer109_*研究tool・scope/golden tool)だけ
         allowed_e109 = {f"{SCOPE_MOD}.py"}
+        # DEV/Trial専用(ASR-QUALITY-2ITEMS ②UKUS 委任_02): 正式経路から未参照であることは er111_ukus_spelling_trial_01_test_01.Isolation が逆方向(Production->Trial)を固定している。
+        allowed_e109 |= {"ukus_sim_01.py",   # 委任_01の研究用机上sim(docs/research/.../work。er109._unitsをmonkeypatchする調査scriptでProduction未配線)
+                      "er111_ukus_spelling_trial_01.py", "er111_ukus_pairs_build_01.py", "er111_ukus_trial_eval_01.py", "er111_ukus_trial_cases_01.py"}
         stray = {b for b in e109_importers if b not in allowed_e109 and not b.startswith("er109_")}
         self.assertEqual(stray, set(), "er109純関数をscope module以外のProduction .pyがimportしている")
 

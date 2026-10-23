@@ -1,0 +1,64 @@
+{
+ "criterion": "PASS->NG = 0; NG->PASS all items eyeballed & classified (cause = ukus pair only); er109-PASS rows reason change = 0",
+ "api_calls": 0,
+ "n_rows_by_set": {
+  "stored_primary": 2470,
+  "stored_azure": 172,
+  "pairs_02": 3039,
+  "hr_queue": 426,
+  "lr_recovery": 30
+ },
+ "distinct_judgments": 5646,
+ "stats": {
+  "stored_primary": {
+   "rows": 2470,
+   "cur_pass": 1924,
+   "trial_pass": 1925
+  },
+  "stored_azure": {
+   "rows": 172,
+   "cur_pass": 115,
+   "trial_pass": 115
+  },
+  "pairs_02": {
+   "rows": 3039,
+   "cur_pass": 1818,
+   "trial_pass": 1818
+  },
+  "hr_queue": {
+   "rows": 426,
+   "cur_pass": 16,
+   "trial_pass": 18
+  },
+  "lr_recovery": {
+   "rows": 30,
+   "cur_pass": 3,
+   "trial_pass": 4
+  }
+ },
+ "PASS_to_NG": 0,
+ "PASS_to_NG_items": [],
+ "NG_to_PASS_items": 4,
+ "NG_to_PASS_distinct": 1,
+ "er109_PASS_rows_reason_changed": 0,
+ "reason_changes": [],
+ "NG_to_PASS_list": [
+  {
+   "set": "stored_primary",
+   "seg": "full_story_part3_c12",
+   "src": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/audit/tts_generation_results.json",
+   "c": "Inventing convincing stories at a moment's notice was Vera's speciality.",
+   "a": "Inventing convincing stories at a moment's notice was Vera's specialty.",
+   "ukus_pairs": [
+    [
+     "speciality",
+     "specialty"
+    ]
+   ],
+   "e109_reason": "phoneme_differs",
+   "final_status": "OK",
+   "classification": "UKUS_ONLY(machine-check: all diff spans are phoneme-equal or ukus pair; see ukus_pairs)"
+  }
+ ],
+ "verdict": "PASS"
+}

@@ -1,0 +1,20 @@
+{
+ "criterion": "dictionary load <= 0.5 s (once per process); extra per judgment <= 1 ms (p95, NG path) ; API 0",
+ "table_load_seconds": 0.0197,
+ "table_active_pairs": 6361,
+ "ng_path": {
+  "n": 385,
+  "base_p50_ms": 0.548,
+  "trial_p50_ms": 0.613,
+  "extra_p50_ms": 0.064,
+  "extra_p95_ms": 0.143,
+  "extra_max_ms": 18.313
+ },
+ "pass_path": {
+  "n": 200,
+  "extra_p95_ms": 0.039
+ },
+ "api_calls": 0,
+ "note": "NG path reuses the unit lists kept by the e109.evaluate NG result (no second tokenization); the production-like hook would additionally memoize via lru_cache",
+ "verdict": "PASS"
+}
