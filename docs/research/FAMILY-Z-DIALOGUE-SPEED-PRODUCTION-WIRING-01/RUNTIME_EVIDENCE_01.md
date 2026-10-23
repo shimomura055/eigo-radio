@@ -48,3 +48,7 @@ Status: WIRED_PENDING_FABLE(コード配線・test・既存2作品4組の正式�
 
 ## 6. 非変更の確認
 Voice割当・Prompt・Style・台詞・本文・順序・効果音/BGM: 上記sha一致(Narrator等28/28、29/29、28/28)、sequence_order一致。『開いた窓』の本文・台詞は未変更(作品全体は`USER_LISTENING_PENDING`+原作忠実性[OPEN-465]未解決のまま、CLOSEDにしない)。
+
+## 7. 回帰結果(確定値、commit b3defe8f8時点・単独実行)
+- `run_project_regression.py`: collected=6925 passed=6915 failed=0 errors=0 skipped=10(`regression_summary_01.json`)。経過: 初回(速度仕様実装直後)はX共有関数への誤kwarg混入を検出して11 error(er026/er058、`generate_a2_segment_with_slowdown`へ誤って`slowdown_pct`を渡していた=修正済み)、2回目はコメント編集が未commitでtracked-diff guard 1 fail、3回目で0/0。
+- pytest系別枠(er078*/er103/er104*/er105/er106/er108/er109): 984 passed, 0 failed(初回3 failedは旧仕様期待値[er078 wiring_05のStd/Adv会話入替]と、速度配線で実体が変わった旧fixture run[er106 legacy run_e2e_06→未再処理run_e2e_05]の意図的更新)。
