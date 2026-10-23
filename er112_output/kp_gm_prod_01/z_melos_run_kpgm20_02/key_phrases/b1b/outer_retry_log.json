@@ -1,0 +1,128 @@
+{
+  "scope": "KP外側retry(X/Z共通実装。Zのdelegate)",
+  "max_outer": 3,
+  "generic_note": "",
+  "attempts": [
+    {
+      "outer_attempt": 1,
+      "note_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+      "selection_phrases": [
+        "sentenced him to death",
+        "held out",
+        "abandoned"
+      ],
+      "excluded_phrases_in": [],
+      "canonicalization_status": "CANONICALIZATION_PASS",
+      "canonicalization_attempts": [
+        {
+          "attempt": 1,
+          "status": "CANONICALIZATION_PASS",
+          "reasons": [],
+          "item_reasons": [],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "possessor_roles": [],
+                "key_phrase": "sentence someone to death",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "目的格のhimを一般的なsomeoneに置き換え、sentencedは規則4に従って原形にしました。sentence someone to deathで「人に死刑を宣告する」という意味を保てます。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "sentence someone to death",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 2,
+                "possessor_roles": [],
+                "key_phrase": "hold out",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "lemma_normalization",
+                "reasoning": "句動詞の粒子outを保ち、heldを辞書見出し形のholdにしました。hold outは句動詞として成立し、意味の核を保っています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "hold out",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 3,
+                "possessor_roles": [],
+                "key_phrase": "abandon",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "lemma_normalization",
+                "reasoning": "動詞の過去形abandonedを辞書見出し形のabandonにしました。語形以外は変えず、「見捨てる」という中心的な意味を保っています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "abandon",
+                  "role_ok_poss": []
+                }
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_03f5b9c5e548cbaa006adbe4afe36487d0b630b0197a37cd8f"
+        }
+      ],
+      "cmu_post_canon": {
+        "version": "kp_cmu_lexicon_gate_v1",
+        "ok": true,
+        "checked": 3,
+        "bad": []
+      },
+      "redundancy_status": "REDUNDANCY_PASS",
+      "symbol_flagged": false,
+      "artifacts": "er026_output/family_z_production_e2e_01/melos/run_kpgm20_02/key_phrases/b1b/outer_retry/attempt_1"
+    }
+  ],
+  "excluded_phrases": []
+}

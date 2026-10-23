@@ -1,0 +1,123 @@
+{
+ "unit_id": "R_a2a6b4e520",
+ "status": "CANONICALIZATION_PASS",
+ "model_id": "gpt-6-luna",
+ "response_id": "resp_0d7a0c40ac9dac12006adbe39b56b087d0bf5d5c899391781e",
+ "process": "B1_SUPPORT",
+ "routing_model": "gpt-6-luna",
+ "n_attempts": 1,
+ "attempt_statuses": [
+  "CANONICALIZATION_PASS"
+ ],
+ "template_sha256": "a57e8e38026f9710d5c53449fea07eec3e70b3c969c1b1ebda0531e36444076c",
+ "schema_sha256": "64044994620480a7a3b051e41c6648607fc692d7cd60675727d24ef4f4e86b6d",
+ "developer_message_sha256": "26d8374cc6f808439e1a55b942a79a4471c83b56bcf87fa852995769128639ef",
+ "user_message_sha256": "a4f846a227bbeed9ba6420fb57c42b0b582272b996a8ee201290fb9eaffff0a9",
+ "items": [
+  {
+   "rank": 1,
+   "display": "pull someone under",
+   "key_raw_llm": "pull someone under",
+   "reason_raw_llm": "inherit_selection_normalization",
+   "key_final": "pull someone under",
+   "reason_final": "inherit_selection_normalization",
+   "roles": [],
+   "person_role_repair": {
+    "status": "NO_POSSESSIVE",
+    "roles_ok": null,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "pull someone under",
+    "role_ok_poss": []
+   },
+   "gold": null
+  },
+  {
+   "rank": 2,
+   "display": "in your place",
+   "key_raw_llm": "in someone's place",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "in someone's place",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [
+    {
+     "token": "your",
+     "role": "other_person"
+    }
+   ],
+   "person_role_repair": {
+    "status": "NO_CHANGE",
+    "roles_ok": true,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "in someone's place",
+    "role_ok_poss": []
+   },
+   "gold": [
+    "other_person"
+   ]
+  },
+  {
+   "rank": 3,
+   "display": "lose trust in someone",
+   "key_raw_llm": "lose trust in someone",
+   "reason_raw_llm": "inherit_selection_normalization",
+   "key_final": "lose trust in someone",
+   "reason_final": "inherit_selection_normalization",
+   "roles": [],
+   "person_role_repair": {
+    "status": "NO_POSSESSIVE",
+    "roles_ok": null,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "lose trust in someone",
+    "role_ok_poss": []
+   },
+   "gold": null
+  },
+  {
+   "rank": 4,
+   "display": "hold out",
+   "key_raw_llm": "hold out",
+   "reason_raw_llm": "inherit_selection_normalization",
+   "key_final": "hold out",
+   "reason_final": "inherit_selection_normalization",
+   "roles": [],
+   "person_role_repair": {
+    "status": "NO_POSSESSIVE",
+    "roles_ok": null,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "hold out",
+    "role_ok_poss": []
+   },
+   "gold": null
+  },
+  {
+   "rank": 5,
+   "display": "far bank",
+   "key_raw_llm": "far bank",
+   "reason_raw_llm": "none",
+   "key_final": "far bank",
+   "reason_final": "none",
+   "roles": [],
+   "person_role_repair": {
+    "status": "NO_POSSESSIVE",
+    "roles_ok": null,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "far bank",
+    "role_ok_poss": []
+   },
+   "gold": null
+  }
+ ],
+ "merged_overall_status": "PASS",
+ "merged_used_form": [
+  "pull someone under",
+  "in someone's place",
+  "lose trust in someone",
+  "hold out",
+  "far bank"
+ ]
+}

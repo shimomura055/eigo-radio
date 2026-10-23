@@ -214,15 +214,28 @@ class TestCanonicalizationFulltext(unittest.TestCase):
         self.assertNotIn("lemma_normalization", kc.NORMALIZATION_REASONS)
 
     def test_fulltext_schema_adds_only_lemma_normalization(self):
-        enum = kc.CANONICALIZATION_JSON_SCHEMA_FULLTEXT["schema"]["properties"]["items"]["items"]["properties"]["normalization_reason"]["enum"]
+        # 委任_20(A-1/課題②)で差分許可リスト方式へ更新: fulltext schemaが共有schemaと異なってよいのは
+        # (1)normalization_reasonのenum(lemma_normalization + generalize_reference_word) (2)itemsのpossessor_roles(rank直後・required)のみ。
+        props_ft = kc.CANONICALIZATION_JSON_SCHEMA_FULLTEXT["schema"]["properties"]["items"]["items"]
+        enum = props_ft["properties"]["normalization_reason"]["enum"]
         self.assertIn("lemma_normalization", enum)
-        self.assertEqual(set(enum) - {"lemma_normalization"}, set(kc.NORMALIZATION_REASONS))
+        self.assertIn("generalize_reference_word", enum)
+        self.assertEqual(set(enum) - {"lemma_normalization", "generalize_reference_word"}, set(kc.NORMALIZATION_REASONS))
+        self.assertNotIn("generalize_reference_word", kc.NORMALIZATION_REASONS)
+        keys = list(props_ft["properties"])
+        self.assertEqual(keys[:2], ["rank", "possessor_roles"])
+        self.assertEqual(props_ft["required"], keys)
+        pr = props_ft["properties"]["possessor_roles"]
+        self.assertEqual(pr["items"]["properties"]["role"]["enum"], ["self", "other_person", "non_person", "none"])
+        self.assertEqual(pr["items"]["required"], ["token", "role"])
         a = json.loads(json.dumps(kc.CANONICALIZATION_JSON_SCHEMA_FULLTEXT))
         b = json.loads(json.dumps(kc.CANONICALIZATION_JSON_SCHEMA))
-        a["schema"]["properties"]["items"]["items"]["properties"]["normalization_reason"]["enum"] = None
-        b["schema"]["properties"]["items"]["items"]["properties"]["normalization_reason"]["enum"] = None
-        a["name"] = b["name"] = None
-        self.assertEqual(a, b)   # enum以外は共有schemaと同一
+        for x in (a, b):
+            x["schema"]["properties"]["items"]["items"]["properties"]["normalization_reason"]["enum"] = None
+            x["name"] = None
+        a["schema"]["properties"]["items"]["items"]["properties"].pop("possessor_roles")
+        a["schema"]["properties"]["items"]["items"]["required"].remove("possessor_roles")
+        self.assertEqual(a, b)   # 許可差分以外は共有schemaと同一
 
     def test_lemma_accepted_for_fulltext_item_and_qa_traceable_not_review_required(self):
         orig = [_fulltext_original(1, "pushed prices up")]
@@ -257,13 +270,14 @@ class TestCanonicalizationFulltext(unittest.TestCase):
             parsed = {"items": [_canon_row(1, "pump one's fist", reason)]}
             self.assertEqual(kc.validate_canonicalization_response(parsed, orig)["status"], "CANONICALIZATION_PASS", reason)
 
-    def test_object_pronoun_kept_accepted_but_generalized_rejected(self):
-        # JRE 委任_02: 目的格him->someoneは閉じた人称表外(却下)、himを残した基本形化は受理(template是正後に期待される出力)。
+    def test_object_pronoun_kept_and_generalized_both_accepted(self):
+        # 委任_20(A-1、UDR #169): 目的格him/her/me/us->someoneは規則5(b)として受理(旧testは却下を期待する旧仕様=撤去)。
+        # himを残した基本形化も引き続き受理。reasonはgeneralize_person_dependent_reference(規則5(b))。
         orig = [_fulltext_original(1, "sentenced him to death")]
         ok = {"items": [_canon_row(1, "sentence him to death", "lemma_normalization")]}
-        ng = {"items": [_canon_row(1, "sentence someone to death", "generalize_person_dependent_reference")]}
+        gen = {"items": [_canon_row(1, "sentence someone to death", "generalize_person_dependent_reference")]}
         self.assertEqual(kc.validate_canonicalization_response(ok, orig)["status"], "CANONICALIZATION_PASS")
-        self.assertEqual(kc.validate_canonicalization_response(ng, orig)["status"], "CANONICALIZATION_INVALID")
+        self.assertEqual(kc.validate_canonicalization_response(gen, orig)["status"], "CANONICALIZATION_PASS")
 
     def test_other_reason_does_not_unlock_lemma(self):
         orig = [_fulltext_original(1, "pushed prices up")]

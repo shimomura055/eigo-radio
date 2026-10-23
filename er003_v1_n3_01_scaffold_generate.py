@@ -496,8 +496,15 @@ def run_key_phrase_canonicalization(article_text: str, original_items: list, out
         return kc.make_canonicalization_fn(user_message, **kwargs)
 
     # OF-KPFT-P-07: 技術失敗の再試行前に待機する(canonicalization gateの既存sleep_fn(2)機構を全文選定itemにだけ有効化。A/B/Cは従来どおり即再試行)。
+    # FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01 委任_20(課題②、UDR #173): 全文選定itemのときだけ、parse直後・validate前に
+    # 所有格role後処理(er105.postprocess_possessor_roles: revertのみ・API 0)を適用する。A/B/Cの呼出点(他scaffold/generate)はhookを渡さない。
+    # X/Z共通の唯一の経路(初回/外側retry/fallback/regeneration/resumeはすべて本関数を通る)。
+    _postprocess = None
+    if is_fulltext:
+        import er105_kp_fulltext_selector_01 as _ft_pp
+        _postprocess = _ft_pp.postprocess_possessor_roles
     parsed, status, attempts, model_id, response_id = kc.run_canonicalization_gate(
-        make_factory, original_items, sleep_fn=(time.sleep if is_fulltext else None))
+        make_factory, original_items, sleep_fn=(time.sleep if is_fulltext else None), postprocess=_postprocess)
     _canon_meta = {
         "article_id": article_id, "canonicalization_version": kc.CANONICALIZATION_VERSION,
         "record_status": "PROTOTYPE", "approval_status": "NOT_APPROVED",

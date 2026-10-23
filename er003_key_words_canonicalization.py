@@ -117,7 +117,10 @@ NORMALIZATION_REASONS = (
 # KPFT 委任_02(OF-KPFT-P-02(1)): 全文選定(fulltext_p2)専用。`lemma_normalization`(語形の基本形化)を共有enumへ足すと
 # A/B/Cへ送るschemaの中身が変わる(バイト同一条件が崩れる)ため、fulltext専用のenum/schemaを別に持つ。
 LEMMA_NORMALIZATION_REASON = "lemma_normalization"
-NORMALIZATION_REASONS_FULLTEXT = NORMALIZATION_REASONS[:-1] + (LEMMA_NORMALIZATION_REASON, "other")
+# FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01 委任_20(A-1、UDR #169): 指示語this/that->a/anの置換用reasonをfulltext専用enumにだけ追加
+# (`NORMALIZATION_REASONS`=A/B/C共有enum・A/B/C schemaはバイト同一のまま)。
+REFERENCE_WORD_REASON = "generalize_reference_word"
+NORMALIZATION_REASONS_FULLTEXT = NORMALIZATION_REASONS[:-1] + (LEMMA_NORMALIZATION_REASON, REFERENCE_WORD_REASON, "other")
 FULLTEXT_PROMPT_TEMPLATE_PATH = "er003_v1_translator_briefs/b1_p2_keywords_canonicalization_fulltext_prompt_template.txt"
 
 _ITEM_SCHEMA_PROPERTIES = {
@@ -131,10 +134,38 @@ _ITEM_SCHEMA_PROPERTIES = {
 _ITEM_REQUIRED_FIELDS = tuple(_ITEM_SCHEMA_PROPERTIES.keys())
 
 
+# FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01 委任_20(課題②、UDR #173): 所有者の指示対象を先に判定させる。display_phrase内の所有格
+# (my/your/his/her/its/their/our)1個につき{token, role}を出現順に出力する(所有格が無ければ空配列)。propertiesの順序=生成順なので
+# `rank`直後(key_phraseより前)に置く。fulltext専用(共有`_ITEM_SCHEMA_PROPERTIES`・A/B/C schemaは不変)。
+POSSESSOR_ROLE_ENUM = ("self", "other_person", "non_person", "none")
+_POSSESSOR_ROLES_SCHEMA = {
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {"token": {"type": "string"}, "role": {"type": "string", "enum": list(POSSESSOR_ROLE_ENUM)}},
+        "required": ["token", "role"],
+        "additionalProperties": False,
+    },
+}
+# merge時にcanon側(LLM出力+後処理)から複写する欄(全文選定itemのみ。A/B/Cの出力はバイト同一)
+FULLTEXT_CANON_PASSTHROUGH_FIELDS = ("possessor_roles", "person_role_repair")
+
+
 def _fulltext_item_properties() -> dict:
-    props = json.loads(json.dumps(_ITEM_SCHEMA_PROPERTIES))
-    props["normalization_reason"] = {"type": "string", "enum": list(NORMALIZATION_REASONS_FULLTEXT)}
+    base = json.loads(json.dumps(_ITEM_SCHEMA_PROPERTIES))
+    base["normalization_reason"] = {"type": "string", "enum": list(NORMALIZATION_REASONS_FULLTEXT)}
+    props = {"rank": base["rank"], "possessor_roles": json.loads(json.dumps(_POSSESSOR_ROLES_SCHEMA))}
+    props.update({k: v for k, v in base.items() if k != "rank"})
     return props
+
+
+def _role_ok_poss_of(item) -> frozenset:
+    """後処理が`person_role_repair.role_ok_poss`に記録した、role=other_person検証済みのmy/ourのdisplay token index集合。無ければ空。
+    LLM出力はstrict schemaで`person_role_repair`を持てない(additionalProperties false)ため、LLMが自己申告で受理範囲を広げることはできない。"""
+    try:
+        return frozenset(int(i) for i in ((item or {}).get("person_role_repair") or {}).get("role_ok_poss") or ())
+    except Exception:   # noqa: BLE001
+        return frozenset()
 
 CANONICALIZATION_JSON_SCHEMA = {
     "name": "key_words_canonicalization",
@@ -167,7 +198,7 @@ CANONICALIZATION_JSON_SCHEMA_FULLTEXT = {
                 "items": {
                     "type": "object",
                     "properties": _fulltext_item_properties(),
-                    "required": list(_ITEM_REQUIRED_FIELDS),
+                    "required": list(_fulltext_item_properties()),
                     "additionalProperties": False,
                 },
             },
@@ -494,26 +525,30 @@ def is_fulltext_item(item: dict) -> bool:
     return bool(isinstance(item, dict) and item.get("fulltext_source_ref"))
 
 
-def _is_valid_fulltext_normalization(key_phrase: str, display_phrase: str, normalization_reason: Optional[str]) -> bool:
+def _is_valid_fulltext_normalization(key_phrase: str, display_phrase: str, normalization_reason: Optional[str],
+                                      role_ok_poss: frozenset = frozenset()) -> bool:
     """KPFT 委任_02(OF-KPFT-P-02(2)(3)(4)): 全文選定itemに限り、display_phrase内の連続範囲に対する
     『同じ語の語形の1対1置換(動詞の原形化・名詞の単数化・人称の一般化、併用可)』を受理する。reasonは
     lemma_normalization/generalize_person_dependent_referenceのどちらでもよい(同時に起きる場合の両受理)。
-    判定本体は決定論validator(er105.is_valid_inflection_normalization)。"""
-    if normalization_reason not in (LEMMA_NORMALIZATION_REASON, "generalize_person_dependent_reference"):
+    判定本体は決定論validator(er105.is_valid_inflection_normalization)。
+    委任_20: reasonに`generalize_reference_word`(A-1: this/that->a/an)を追加。role_ok_poss=role検証済みのmy/our->someone's受理index
+    (既定空=従来と同一。A/B/C経路は渡さない)。"""
+    if normalization_reason not in (LEMMA_NORMALIZATION_REASON, "generalize_person_dependent_reference", REFERENCE_WORD_REASON):
         return False
     import er105_kp_fulltext_selector_01 as _ft   # 遅延import(循環回避: er105は遅延でkcをimportする)
-    return _ft.is_valid_inflection_normalization(key_phrase, display_phrase)
+    return _ft.is_valid_inflection_normalization(key_phrase, display_phrase, role_ok_poss)
 
 
 def _qa_field_effective_verdict(field: str, verdict: str, key_phrase: str, display_phrase: str,
-                                 normalization_reason: Optional[str], fulltext: bool = False) -> str:
+                                 normalization_reason: Optional[str], fulltext: bool = False,
+                                 role_ok_poss: frozenset = frozenset()) -> str:
     if field != "qa_traceable_contiguous_span" or verdict != "FAIL":
         return verdict
     if (normalization_reason == "generalize_person_dependent_reference"
             and _is_valid_person_generalization(key_phrase, display_phrase)):
         return "PASS"
     # OF-KPFT-P-02(2): validatorが合格した基本形化に限りPASSとして扱う(これが無いと動詞を含むitemの大半がREVIEW_REQUIREDになる)。
-    if fulltext and _is_valid_fulltext_normalization(key_phrase, display_phrase, normalization_reason):
+    if fulltext and _is_valid_fulltext_normalization(key_phrase, display_phrase, normalization_reason, role_ok_poss):
         return "PASS"
     return verdict
 
@@ -540,7 +575,8 @@ def _left_end_guard_ok(key_phrase: str, expanded_span: str, original_span: str) 
 def validate_canonicalization_item(key_phrase: str, display_phrase: str, source_span: str,
                                     normalization_reason: Optional[str] = None,
                                     original_span: Optional[str] = None,
-                                    allow_inflection_normalization: bool = False) -> dict:
+                                    allow_inflection_normalization: bool = False,
+                                    role_ok_poss: frozenset = frozenset()) -> dict:
     """LLMが提案したkey_phraseの構造的安全性のみを検査する。冠詞削除・
     語の復元の要否そのものは判定しない(それはLLMの役割)。ここで弾くのは、
     (a) 空文字、(b) source_spanにもdisplay_phraseにも存在しない文字列の
@@ -574,7 +610,7 @@ def validate_canonicalization_item(key_phrase: str, display_phrase: str, source_
         # KPFT 委任_02: 全文選定itemのみ(allow_inflection_normalization=True)、語形の基本形化(連続範囲+1対1置換)も受理。
         if allow_inflection_normalization and not is_valid_person_generalization:
             is_valid_person_generalization = _is_valid_fulltext_normalization(
-                key_phrase, display_phrase, normalization_reason)
+                key_phrase, display_phrase, normalization_reason, role_ok_poss)
         if not is_valid_person_generalization:
             reasons.append(
                 f"key_phrase({key_phrase!r})がdisplay_phraseと一致せず、"
@@ -656,7 +692,8 @@ def validate_canonicalization_response(parsed: dict, original_items: list) -> di
             item["key_phrase"], display_phrase, source_span,
             normalization_reason=item.get("normalization_reason"),
             original_span=original_span_by_rank.get(item.get("rank")),
-            allow_inflection_normalization=_is_ft)
+            allow_inflection_normalization=_is_ft,
+            role_ok_poss=(_role_ok_poss_of(item) if _is_ft else frozenset()))
         this_reasons.extend(structural["reasons"])
 
         if this_reasons:
@@ -665,7 +702,7 @@ def validate_canonicalization_response(parsed: dict, original_items: list) -> di
         elif any(
             _qa_field_effective_verdict(
                 field, item[field], item["key_phrase"], display_phrase, item.get("normalization_reason"),
-                fulltext=_is_ft
+                fulltext=_is_ft, role_ok_poss=(_role_ok_poss_of(item) if _is_ft else frozenset())
             ) == "FAIL"
             for field in QA_FIELDS
         ):
@@ -695,10 +732,15 @@ def run_canonicalization_gate(
     original_items: list,
     max_attempts: int = MAX_CANONICALIZATION_RETRY_ATTEMPTS,
     sleep_fn: Optional[Callable[[float], None]] = None,
+    postprocess: Optional[Callable[[dict, list], dict]] = None,
 ):
     """技術的失敗、または構造的不適合(item数・rank不整合、Rule5違反等)で
     あれば、同一条件で最大1回だけ再試行する。内容品質(qa_*フィールドの
     PASS/FAIL自体)を理由とした再試行は行わない(そのまま記録する)。
+
+    postprocess(委任_20、課題②): None(既定)では従来と完全に同一。渡された場合のみ、parse成功直後・validate前に
+    `parsed = postprocess(parsed, original_items)`を適用する(全文選定=fulltext経路だけがer105.postprocess_possessor_rolesを渡す。
+    A/B/Cの呼出点は渡さない)。後処理が例外を送出したら生応答のまま続行する(現行と同じ挙動)。attemptsの`raw_text`は生応答のまま保持。
 
     戻り値: (parsed, final_status, attempts_detail, model_id, response_id)
     """
@@ -731,12 +773,19 @@ def run_canonicalization_gate(
                 continue
             return None, "PARSE_FAILED", attempts_detail, model_id, response_id
 
+        _postprocess_error = None
+        if postprocess is not None:
+            try:
+                parsed = postprocess(parsed, original_items)
+            except Exception as e:   # noqa: BLE001  後処理失敗時は生応答のまま検証へ進む(後処理が無い現行と同じ挙動)
+                _postprocess_error = f"{type(e).__name__}: {e}"
         validation = validate_canonicalization_response(parsed, original_items)
         attempts_detail.append({
             "attempt": attempt, "status": validation["status"], "reasons": validation["reasons"],
             "item_reasons": validation["item_reasons"],
             "items_requiring_review": validation["items_requiring_review"],
             "raw_text": raw_text, "parsed": parsed, "model": model_id, "response_id": response_id,
+            **({"postprocess_error": _postprocess_error} if _postprocess_error else {}),
         })
         # PASS/REVIEW_REQUIREDはいずれも構造validator合格であり、自動
         # 再試行はしない(REVIEW_REQUIREDは人間確認後に採用する運用のため、
@@ -793,7 +842,8 @@ def merge_canonicalization_result(original_items: list, canonicalization_items: 
         qa = {
             field: _qa_field_effective_verdict(
                 field, canon[field], canon["key_phrase"], display_phrase, canon.get("normalization_reason"),
-                fulltext=is_fulltext_item(original))
+                fulltext=is_fulltext_item(original),
+                role_ok_poss=(_role_ok_poss_of(canon) if is_fulltext_item(original) else frozenset()))
             for field in QA_FIELDS
         }
         item_review_required = any(v == "FAIL" for v in qa.values())
@@ -845,6 +895,11 @@ def merge_canonicalization_result(original_items: list, canonicalization_items: 
             for ft_field in FULLTEXT_PASSTHROUGH_FIELDS:
                 if ft_field in original:
                     merged_item[ft_field] = original[ft_field]
+            # 委任_20(課題②): canon側(LLM出力+後処理)のpossessor_roles/person_role_repairを複写する(監査・gloss人称gate・
+            # 件数集計用。A/B/Cのitemは対象外=出力はバイト同一)。
+            for ft_field in FULLTEXT_CANON_PASSTHROUGH_FIELDS:
+                if ft_field in canon:
+                    merged_item[ft_field] = canon[ft_field]
         merged_items.append(merged_item)
     return {
         "items": merged_items,

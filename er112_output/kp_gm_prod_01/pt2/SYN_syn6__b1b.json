@@ -1,0 +1,99 @@
+{
+ "unit_id": "SYN_syn6__b1b",
+ "status": "CANONICALIZATION_PASS",
+ "model_id": "gpt-6-luna",
+ "response_id": "resp_0c87e56bb834234f006adbe2d5a73487d080c8f2c645cc904b",
+ "process": "B1_SUPPORT",
+ "routing_model": "gpt-6-luna",
+ "n_attempts": 1,
+ "attempt_statuses": [
+  "CANONICALIZATION_PASS"
+ ],
+ "template_sha256": "a57e8e38026f9710d5c53449fea07eec3e70b3c969c1b1ebda0531e36444076c",
+ "schema_sha256": "64044994620480a7a3b051e41c6648607fc692d7cd60675727d24ef4f4e86b6d",
+ "developer_message_sha256": "26d8374cc6f808439e1a55b942a79a4471c83b56bcf87fa852995769128639ef",
+ "user_message_sha256": "bbdd08c00f3afb7d142b30cc01057ea944795db9675cc1defb635638577a7a5f",
+ "items": [
+  {
+   "rank": 1,
+   "display": "put herself in their shoes",
+   "key_raw_llm": "put oneself in someone's shoes",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "put oneself in someone's shoes",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [
+    {
+     "token": "their",
+     "role": "other_person"
+    }
+   ],
+   "person_role_repair": {
+    "status": "NO_CHANGE",
+    "roles_ok": true,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "put oneself in someone's shoes",
+    "role_ok_poss": []
+   },
+   "gold": [
+    "other_person"
+   ]
+  },
+  {
+   "rank": 2,
+   "display": "pulled her own weight",
+   "key_raw_llm": "pull one's own weight",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "pull one's own weight",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [
+    {
+     "token": "her",
+     "role": "self"
+    }
+   ],
+   "person_role_repair": {
+    "status": "NO_CHANGE",
+    "roles_ok": true,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "pull one's own weight",
+    "role_ok_poss": []
+   },
+   "gold": [
+    "self"
+   ]
+  },
+  {
+   "rank": 3,
+   "display": "runs its course",
+   "key_raw_llm": "run its course",
+   "reason_raw_llm": "lemma_normalization",
+   "key_final": "run its course",
+   "reason_final": "lemma_normalization",
+   "roles": [
+    {
+     "token": "its",
+     "role": "non_person"
+    }
+   ],
+   "person_role_repair": {
+    "status": "NO_CHANGE",
+    "roles_ok": true,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "run its course",
+    "role_ok_poss": []
+   },
+   "gold": [
+    "non_person"
+   ]
+  }
+ ],
+ "merged_overall_status": "PASS",
+ "merged_used_form": [
+  "put oneself in someone's shoes",
+  "pull one's own weight",
+  "run its course"
+ ]
+}

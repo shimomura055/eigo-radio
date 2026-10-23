@@ -1,0 +1,120 @@
+{
+  "article_id": "family_z_melos_b1b",
+  "version": "ER-003-KP-GLOSS-ALIGN-02",
+  "final_status": "ALIGN_PASS",
+  "targets": [
+    1,
+    2,
+    3
+  ],
+  "unresolved_ranks": [],
+  "mapping_gate": false,
+  "rules_sha256": "fa5ae89cd739f5fd0a06de92c29c7eb1056a4a755b6fd4a745d49da37e894760",
+  "cost_jpy": 0.103,
+  "attempts_detail": [
+    {
+      "attempt": 1,
+      "target_ranks": [
+        1,
+        2,
+        3
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_0e4769eaef7a3588006adbe44b802887d0be80cf430f7887fb",
+      "usage": {
+        "input_tokens": 2640,
+        "output_tokens": 759,
+        "cached_input_tokens": 0
+      },
+      "cost_jpy": 0.103,
+      "status": "ALIGN_PASS",
+      "n_valid": 3,
+      "n_items": 3
+    }
+  ],
+  "item_log": {
+    "1": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "人に死刑を言い渡す",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "新規生成のため一致判定はfalseです。「人に」でsomeone、「死刑を言い渡す」でsentence someone to deathの意味を表しています。",
+        "added_word_mappings": [],
+        "machine_check": {
+          "required_words": [],
+          "covered": {},
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true,
+          "note": "必須内容語なし(機械検査対象外)"
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.103,
+        "model": "gpt-6-luna"
+      }
+    ],
+    "2": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "差し出す",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "新規生成のため一致判定はfalseです。文脈に合う「手などを差し出す」の意味です。",
+        "added_word_mappings": [
+          {
+            "english_word": "hold",
+            "japanese_span": "差し出す"
+          }
+        ],
+        "machine_check": {
+          "required_words": [
+            "hold"
+          ],
+          "covered": {
+            "hold": "差し出す"
+          },
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.103,
+        "model": "gpt-6-luna"
+      }
+    ],
+    "3": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "捕らえる",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "新規生成のため一致判定はfalseです。seizeの「力ずくで捕まえる」という意味を表しています。",
+        "added_word_mappings": [],
+        "machine_check": {
+          "required_words": [],
+          "covered": {},
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true,
+          "note": "必須内容語なし(機械検査対象外)"
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.103,
+        "model": "gpt-6-luna"
+      }
+    ]
+  }
+}

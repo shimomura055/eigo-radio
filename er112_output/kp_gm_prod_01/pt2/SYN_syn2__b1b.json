@@ -1,0 +1,85 @@
+{
+ "unit_id": "SYN_syn2__b1b",
+ "status": "CANONICALIZATION_PASS",
+ "model_id": "gpt-6-luna",
+ "response_id": "resp_0c73ade8575b948e006adbe3dfa62c87d0a2abed40bcf16ef4",
+ "process": "B1_SUPPORT",
+ "routing_model": "gpt-6-luna",
+ "n_attempts": 1,
+ "attempt_statuses": [
+  "CANONICALIZATION_PASS"
+ ],
+ "template_sha256": "a57e8e38026f9710d5c53449fea07eec3e70b3c969c1b1ebda0531e36444076c",
+ "schema_sha256": "64044994620480a7a3b051e41c6648607fc692d7cd60675727d24ef4f4e86b6d",
+ "developer_message_sha256": "26d8374cc6f808439e1a55b942a79a4471c83b56bcf87fa852995769128639ef",
+ "user_message_sha256": "3f0b20f3a4d58503a02957ac52c17bf565f46c075236d23b13943a01f979c670",
+ "items": [
+  {
+   "rank": 1,
+   "display": "told her the truth",
+   "key_raw_llm": "tell someone the truth",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "tell someone the truth",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [
+    {
+     "token": "her",
+     "role": "none"
+    }
+   ],
+   "person_role_repair": {
+    "status": "NO_CHANGE",
+    "roles_ok": true,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "tell someone the truth",
+    "role_ok_poss": []
+   },
+   "gold": [
+    "none"
+   ]
+  },
+  {
+   "rank": 2,
+   "display": "gave him a hand",
+   "key_raw_llm": "give someone a hand",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "give someone a hand",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [],
+   "person_role_repair": {
+    "status": "NO_POSSESSIVE",
+    "roles_ok": null,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "give someone a hand",
+    "role_ok_poss": []
+   },
+   "gold": null
+  },
+  {
+   "rank": 3,
+   "display": "close around me",
+   "key_raw_llm": "close around someone",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "close around someone",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [],
+   "person_role_repair": {
+    "status": "NO_POSSESSIVE",
+    "roles_ok": null,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "close around someone",
+    "role_ok_poss": []
+   },
+   "gold": null
+  }
+ ],
+ "merged_overall_status": "PASS",
+ "merged_used_form": [
+  "tell someone the truth",
+  "give someone a hand",
+  "close around someone"
+ ]
+}

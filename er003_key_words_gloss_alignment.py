@@ -239,8 +239,25 @@ def person_generalization_pairs(item: dict) -> list:
     k = _kp_tokens(item.get("key_phrase"))
     if len(d) != len(k):
         return []
-    return [{"from": a, "to": b} for a, b in zip(d, k)
-            if a != b and b in (kc._PERSON_DEPENDENT_TO_GENERIC.get(a) or ())]
+    # FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01 委任_20(A-1 G1 / 課題② G1'): 共有表(kc._PERSON_DEPENDENT_TO_GENERIC)は拡張せず、
+    # (G1)A-1の目的格him/her/me/us->someone/somebody、(G1')role検証済み(person_role_repair.role_ok_poss)のmy/our->someone's/somebody'sも
+    # 組として返す(日本語意味に『私の/彼を』が残る人称不整合を検出・再整合できるようにする)。表外の組み合わせは増やさない。
+    role_ok = set()
+    try:
+        role_ok = {int(i) for i in ((item.get("person_role_repair") or {}).get("role_ok_poss") or ())}
+    except Exception:   # noqa: BLE001
+        role_ok = set()
+    out = []
+    for n, (a, b) in enumerate(zip(d, k)):
+        if a == b:
+            continue
+        if b in (kc._PERSON_DEPENDENT_TO_GENERIC.get(a) or ()):
+            out.append({"from": a, "to": b})
+        elif a in ("him", "her", "me", "us") and b in ("someone", "somebody"):
+            out.append({"from": a, "to": b})
+        elif a in ("my", "our") and b in ("someone's", "somebody's") and n in role_ok:
+            out.append({"from": a, "to": b})
+    return out
 
 
 def _person_mismatch_reason(item: dict) -> Optional[str]:

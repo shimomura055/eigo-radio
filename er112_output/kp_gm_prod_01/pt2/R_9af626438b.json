@@ -1,0 +1,85 @@
+{
+ "unit_id": "R_9af626438b",
+ "status": "CANONICALIZATION_PASS",
+ "model_id": "gpt-6-luna",
+ "response_id": "resp_0260da8acdf313d0006adbe384e5ec87d09679d8fcdcb2a7bd",
+ "process": "B1_SUPPORT",
+ "routing_model": "gpt-6-luna",
+ "n_attempts": 1,
+ "attempt_statuses": [
+  "CANONICALIZATION_PASS"
+ ],
+ "template_sha256": "a57e8e38026f9710d5c53449fea07eec3e70b3c969c1b1ebda0531e36444076c",
+ "schema_sha256": "64044994620480a7a3b051e41c6648607fc692d7cd60675727d24ef4f4e86b6d",
+ "developer_message_sha256": "26d8374cc6f808439e1a55b942a79a4471c83b56bcf87fa852995769128639ef",
+ "user_message_sha256": "53f480be65b18b08434a589e0ca19a6f3bc2c63e20bb905123b58868cd68767a",
+ "items": [
+  {
+   "rank": 1,
+   "display": "go out of their way",
+   "key_raw_llm": "go out of one's way",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "go out of one's way",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [
+    {
+     "token": "their",
+     "role": "self"
+    }
+   ],
+   "person_role_repair": {
+    "status": "NO_CHANGE",
+    "roles_ok": true,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "go out of one's way",
+    "role_ok_poss": []
+   },
+   "gold": [
+    "self"
+   ]
+  },
+  {
+   "rank": 2,
+   "display": "brace yourself for",
+   "key_raw_llm": "brace oneself for",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "brace oneself for",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [],
+   "person_role_repair": {
+    "status": "NO_POSSESSIVE",
+    "roles_ok": null,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "brace oneself for",
+    "role_ok_poss": []
+   },
+   "gold": null
+  },
+  {
+   "rank": 3,
+   "display": "shines a light on",
+   "key_raw_llm": "shine a light on",
+   "reason_raw_llm": "lemma_normalization",
+   "key_final": "shine a light on",
+   "reason_final": "lemma_normalization",
+   "roles": [],
+   "person_role_repair": {
+    "status": "NO_POSSESSIVE",
+    "roles_ok": null,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "shine a light on",
+    "role_ok_poss": []
+   },
+   "gold": null
+  }
+ ],
+ "merged_overall_status": "PASS",
+ "merged_used_form": [
+  "go out of one's way",
+  "brace oneself for",
+  "shine a light on"
+ ]
+}

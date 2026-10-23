@@ -1,0 +1,127 @@
+{
+ "unit_id": "SYN_syn7__b1b",
+ "status": "CANONICALIZATION_PASS",
+ "model_id": "gpt-6-luna",
+ "response_id": "resp_03e387ecf9352e54006adbe3e624c487d08b3a655ce88ae02c",
+ "process": "B1_SUPPORT",
+ "routing_model": "gpt-6-luna",
+ "n_attempts": 1,
+ "attempt_statuses": [
+  "CANONICALIZATION_PASS"
+ ],
+ "template_sha256": "a57e8e38026f9710d5c53449fea07eec3e70b3c969c1b1ebda0531e36444076c",
+ "schema_sha256": "64044994620480a7a3b051e41c6648607fc692d7cd60675727d24ef4f4e86b6d",
+ "developer_message_sha256": "26d8374cc6f808439e1a55b942a79a4471c83b56bcf87fa852995769128639ef",
+ "user_message_sha256": "c1513414adbbc672c4f75a48cb72499810699a97343ce677ced9519f0ab49e95",
+ "items": [
+  {
+   "rank": 1,
+   "display": "keeps its promise",
+   "key_raw_llm": "keep its promise",
+   "reason_raw_llm": "lemma_normalization",
+   "key_final": "keep its promise",
+   "reason_final": "lemma_normalization",
+   "roles": [
+    {
+     "token": "its",
+     "role": "non_person"
+    }
+   ],
+   "person_role_repair": {
+    "status": "NO_CHANGE",
+    "roles_ok": true,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "keep its promise",
+    "role_ok_poss": []
+   },
+   "gold": [
+    "non_person"
+   ]
+  },
+  {
+   "rank": 2,
+   "display": "take my place",
+   "key_raw_llm": "take someone's place",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "take someone's place",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [
+    {
+     "token": "my",
+     "role": "other_person"
+    }
+   ],
+   "person_role_repair": {
+    "status": "NO_CHANGE",
+    "roles_ok": true,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "take someone's place",
+    "role_ok_poss": [
+     1
+    ]
+   },
+   "gold": [
+    "other_person"
+   ]
+  },
+  {
+   "rank": 3,
+   "display": "catches your eye",
+   "key_raw_llm": "catch someone's eye",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "catch someone's eye",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [
+    {
+     "token": "your",
+     "role": "other_person"
+    }
+   ],
+   "person_role_repair": {
+    "status": "NO_CHANGE",
+    "roles_ok": true,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "catch someone's eye",
+    "role_ok_poss": []
+   },
+   "gold": [
+    "other_person"
+   ]
+  },
+  {
+   "rank": 4,
+   "display": "mind your own business",
+   "key_raw_llm": "mind your own business",
+   "reason_raw_llm": "none",
+   "key_final": "mind your own business",
+   "reason_final": "none",
+   "roles": [
+    {
+     "token": "your",
+     "role": "self"
+    }
+   ],
+   "person_role_repair": {
+    "status": "NO_CHANGE",
+    "roles_ok": true,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "mind your own business",
+    "role_ok_poss": []
+   },
+   "gold": [
+    "self"
+   ]
+  }
+ ],
+ "merged_overall_status": "PASS",
+ "merged_used_form": [
+  "keep its promise",
+  "take someone's place",
+  "catch someone's eye",
+  "mind your own business"
+ ]
+}

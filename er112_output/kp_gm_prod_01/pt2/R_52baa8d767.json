@@ -1,0 +1,85 @@
+{
+ "unit_id": "R_52baa8d767",
+ "status": "CANONICALIZATION_PASS",
+ "model_id": "gpt-6-luna",
+ "response_id": "resp_0652371a1ec14f9c006adbe3d0991c87d08042118242705387",
+ "process": "B1_SUPPORT",
+ "routing_model": "gpt-6-luna",
+ "n_attempts": 1,
+ "attempt_statuses": [
+  "CANONICALIZATION_PASS"
+ ],
+ "template_sha256": "a57e8e38026f9710d5c53449fea07eec3e70b3c969c1b1ebda0531e36444076c",
+ "schema_sha256": "64044994620480a7a3b051e41c6648607fc692d7cd60675727d24ef4f4e86b6d",
+ "developer_message_sha256": "26d8374cc6f808439e1a55b942a79a4471c83b56bcf87fa852995769128639ef",
+ "user_message_sha256": "f304f40f811e748bc6193246902a9eef27ca3512c873a1d9fec27043c03a0455",
+ "items": [
+  {
+   "rank": 1,
+   "display": "look her in the face",
+   "key_raw_llm": "look someone in the face",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "look someone in the face",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [
+    {
+     "token": "her",
+     "role": "none"
+    }
+   ],
+   "person_role_repair": {
+    "status": "NO_CHANGE",
+    "roles_ok": true,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "look someone in the face",
+    "role_ok_poss": []
+   },
+   "gold": [
+    "none"
+   ]
+  },
+  {
+   "rank": 2,
+   "display": "piling up",
+   "key_raw_llm": "pile up",
+   "reason_raw_llm": "lemma_normalization",
+   "key_final": "pile up",
+   "reason_final": "lemma_normalization",
+   "roles": [],
+   "person_role_repair": {
+    "status": "NO_POSSESSIVE",
+    "roles_ok": null,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "pile up",
+    "role_ok_poss": []
+   },
+   "gold": null
+  },
+  {
+   "rank": 3,
+   "display": "cut off a conversation",
+   "key_raw_llm": "cut off a conversation",
+   "reason_raw_llm": "inherit_selection_normalization",
+   "key_final": "cut off a conversation",
+   "reason_final": "inherit_selection_normalization",
+   "roles": [],
+   "person_role_repair": {
+    "status": "NO_POSSESSIVE",
+    "roles_ok": null,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "cut off a conversation",
+    "role_ok_poss": []
+   },
+   "gold": null
+  }
+ ],
+ "merged_overall_status": "PASS",
+ "merged_used_form": [
+  "look someone in the face",
+  "pile up",
+  "cut off a conversation"
+ ]
+}

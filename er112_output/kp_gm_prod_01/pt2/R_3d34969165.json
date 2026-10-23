@@ -1,0 +1,85 @@
+{
+ "unit_id": "R_3d34969165",
+ "status": "CANONICALIZATION_PASS",
+ "model_id": "gpt-6-luna",
+ "response_id": "resp_0ca09d6ca355c54f006adbe2ea433487d0ba85dd0652b623ca",
+ "process": "B1_SUPPORT",
+ "routing_model": "gpt-6-luna",
+ "n_attempts": 1,
+ "attempt_statuses": [
+  "CANONICALIZATION_PASS"
+ ],
+ "template_sha256": "a57e8e38026f9710d5c53449fea07eec3e70b3c969c1b1ebda0531e36444076c",
+ "schema_sha256": "64044994620480a7a3b051e41c6648607fc692d7cd60675727d24ef4f4e86b6d",
+ "developer_message_sha256": "26d8374cc6f808439e1a55b942a79a4471c83b56bcf87fa852995769128639ef",
+ "user_message_sha256": "bbf8da85889285af65312aa111c66588e822412d4bc403cc2fe868d4ede9e3bb",
+ "items": [
+  {
+   "rank": 1,
+   "display": "sentenced him to death",
+   "key_raw_llm": "sentence someone to death",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "sentence someone to death",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [],
+   "person_role_repair": {
+    "status": "NO_POSSESSIVE",
+    "roles_ok": null,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "sentence someone to death",
+    "role_ok_poss": []
+   },
+   "gold": null
+  },
+  {
+   "rank": 2,
+   "display": "held out his hands",
+   "key_raw_llm": "hold out one's hands",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "hold out one's hands",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [
+    {
+     "token": "his",
+     "role": "self"
+    }
+   ],
+   "person_role_repair": {
+    "status": "NO_CHANGE",
+    "roles_ok": true,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "hold out one's hands",
+    "role_ok_poss": []
+   },
+   "gold": [
+    "self"
+   ]
+  },
+  {
+   "rank": 3,
+   "display": "pulled him under",
+   "key_raw_llm": "pull someone under",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "pull someone under",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [],
+   "person_role_repair": {
+    "status": "NO_POSSESSIVE",
+    "roles_ok": null,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "pull someone under",
+    "role_ok_poss": []
+   },
+   "gold": null
+  }
+ ],
+ "merged_overall_status": "PASS",
+ "merged_used_form": [
+  "sentence someone to death",
+  "hold out one's hands",
+  "pull someone under"
+ ]
+}

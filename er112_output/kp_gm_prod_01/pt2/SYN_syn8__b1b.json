@@ -1,0 +1,125 @@
+{
+ "unit_id": "SYN_syn8__b1b",
+ "status": "CANONICALIZATION_PASS",
+ "model_id": "gpt-6-luna",
+ "response_id": "resp_054f86bc7bdc64a4006adbe3eb2e5087d0bebfa36a09b6fd49",
+ "process": "B1_SUPPORT",
+ "routing_model": "gpt-6-luna",
+ "n_attempts": 1,
+ "attempt_statuses": [
+  "CANONICALIZATION_PASS"
+ ],
+ "template_sha256": "a57e8e38026f9710d5c53449fea07eec3e70b3c969c1b1ebda0531e36444076c",
+ "schema_sha256": "64044994620480a7a3b051e41c6648607fc692d7cd60675727d24ef4f4e86b6d",
+ "developer_message_sha256": "26d8374cc6f808439e1a55b942a79a4471c83b56bcf87fa852995769128639ef",
+ "user_message_sha256": "b2bfe7c5096cd86c773ad9f8343cbb67e36ca986ab1d7d1478b4c7e6f69b7042",
+ "items": [
+  {
+   "rank": 1,
+   "display": "raised her voice",
+   "key_raw_llm": "raise one's voice",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "raise one's voice",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [
+    {
+     "token": "her",
+     "role": "self"
+    }
+   ],
+   "person_role_repair": {
+    "status": "NO_CHANGE",
+    "roles_ok": true,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "raise one's voice",
+    "role_ok_poss": []
+   },
+   "gold": [
+    "self"
+   ]
+  },
+  {
+   "rank": 2,
+   "display": "admired their courage",
+   "key_raw_llm": "admire someone's courage",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "admire someone's courage",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [
+    {
+     "token": "their",
+     "role": "other_person"
+    }
+   ],
+   "person_role_repair": {
+    "status": "NO_CHANGE",
+    "roles_ok": true,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "admire someone's courage",
+    "role_ok_poss": []
+   },
+   "gold": [
+    "other_person"
+   ]
+  },
+  {
+   "rank": 3,
+   "display": "questioned its methods",
+   "key_raw_llm": "question its methods",
+   "reason_raw_llm": "lemma_normalization",
+   "key_final": "question its methods",
+   "reason_final": "lemma_normalization",
+   "roles": [
+    {
+     "token": "its",
+     "role": "non_person"
+    }
+   ],
+   "person_role_repair": {
+    "status": "NO_CHANGE",
+    "roles_ok": true,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "question its methods",
+    "role_ok_poss": []
+   },
+   "gold": [
+    "non_person"
+   ]
+  },
+  {
+   "rank": 4,
+   "display": "changed their minds",
+   "key_raw_llm": "change one's mind",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "change one's mind",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [
+    {
+     "token": "their",
+     "role": "self"
+    }
+   ],
+   "person_role_repair": {
+    "status": "NO_CHANGE",
+    "roles_ok": true,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "change one's mind",
+    "role_ok_poss": []
+   },
+   "gold": [
+    "self"
+   ]
+  }
+ ],
+ "merged_overall_status": "PASS",
+ "merged_used_form": [
+  "raise one's voice",
+  "admire someone's courage",
+  "question its methods",
+  "change one's mind"
+ ]
+}

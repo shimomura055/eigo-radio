@@ -1,0 +1,133 @@
+{
+  "scope": "KP外側retry(全文選定backend、X/Z共通)",
+  "max_outer": 3,
+  "generic_note": "",
+  "attempts": [
+    {
+      "outer_attempt": 1,
+      "note_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+      "selection_phrases": [
+        "Putting on an Unwanted Show",
+        "draw that line",
+        "reach for your wallet"
+      ],
+      "excluded_phrases_in": [],
+      "canonicalization_status": "CANONICALIZATION_PASS",
+      "canonicalization_attempts": [
+        {
+          "attempt": 1,
+          "status": "CANONICALIZATION_PASS",
+          "reasons": [],
+          "item_reasons": [],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "possessor_roles": [],
+                "key_phrase": "Put on an Unwanted Show",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "lemma_normalization",
+                "reasoning": "動詞の-ing形を見出し語に近い原形 put にし、記事固有の「望まない見せ物をしてしまう」という意味を保つため、unwanted show は残しました。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "Put on an Unwanted Show",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 2,
+                "possessor_roles": [],
+                "key_phrase": "draw a line",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_reference_word",
+                "reasoning": "that は記事中の特定の境界を指す限定詞なので、一般的な表現として a に置き換えました。draw a line で「境界を引く」という中心的な意味を保てます。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "draw a line",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 3,
+                "possessor_roles": [
+                  {
+                    "token": "your",
+                    "role": "self"
+                  }
+                ],
+                "key_phrase": "reach for one's wallet",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "your は reach の動作主自身が持つ財布を指すため、辞書的な一般形 one's に置き換えました。reach for one's wallet は別の文脈でも使える自然な単位です。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_CHANGE",
+                  "roles_ok": true,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "reach for one's wallet",
+                  "role_ok_poss": []
+                }
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_04a904cf313cec84006adbe42ed51887d0b2227a6f0df8d371"
+        }
+      ],
+      "cmu_post_canon": {
+        "version": "kp_cmu_lexicon_gate_v1",
+        "ok": true,
+        "checked": 3,
+        "bad": []
+      },
+      "redundancy_status": "REDUNDANCY_PASS",
+      "symbol_flagged": false,
+      "artifacts": "er112_output/kp_gm_prod_01/x_uk_train/a2/key_phrases/outer_retry/attempt_1"
+    }
+  ],
+  "excluded_phrases": []
+}

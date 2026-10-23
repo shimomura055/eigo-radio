@@ -1,0 +1,138 @@
+{
+  "scope": "KP外側retry(X/Z共通実装。Zのdelegate)",
+  "max_outer": 3,
+  "generic_note": "",
+  "attempts": [
+    {
+      "outer_attempt": 1,
+      "note_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+      "selection_phrases": [
+        "blocked his way",
+        "held out",
+        "kept his eyes on them"
+      ],
+      "excluded_phrases_in": [],
+      "canonicalization_status": "CANONICALIZATION_PASS",
+      "canonicalization_attempts": [
+        {
+          "attempt": 1,
+          "status": "CANONICALIZATION_PASS",
+          "reasons": [],
+          "item_reasons": [],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "possessor_roles": [
+                  {
+                    "token": "his",
+                    "role": "other_person"
+                  }
+                ],
+                "key_phrase": "block someone's way",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "hisは動作主のmenとは別のMelosを指すためsomeone'sに一般化し、動詞も見出し語形のblockにしました。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_CHANGE",
+                  "roles_ok": true,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "block someone's way",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 2,
+                "possessor_roles": [],
+                "key_phrase": "hold out",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "lemma_normalization",
+                "reasoning": "hold outは「差し出す・伸ばす」などを表す単独で学べる句動詞なので、意味を限定する語は追加せず、動詞を見出し語形にしました。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "hold out",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 3,
+                "possessor_roles": [
+                  {
+                    "token": "his",
+                    "role": "self"
+                  }
+                ],
+                "key_phrase": "keep one's eyes on them",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "hisは動作主であるruler自身を指すためone'sに一般化し、keptも見出し語形のkeepにしました。themは一般化対象として指定されていないため、そのまま残しています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_CHANGE",
+                  "roles_ok": true,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "keep one's eyes on them",
+                  "role_ok_poss": []
+                }
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_0a7994e6ae937ad9006adbe4e8120087d095ade57f8f0c174a"
+        }
+      ],
+      "cmu_post_canon": {
+        "version": "kp_cmu_lexicon_gate_v1",
+        "ok": true,
+        "checked": 3,
+        "bad": []
+      },
+      "redundancy_status": "REDUNDANCY_PASS",
+      "symbol_flagged": false,
+      "artifacts": "er026_output/family_z_production_e2e_01/melos/run_kpgm20_02/key_phrases/a2/outer_retry/attempt_1"
+    }
+  ],
+  "excluded_phrases": []
+}

@@ -691,22 +691,269 @@ def _token_pair_ok(kt: str, dt: str, idx: int, key_tokens: list) -> bool:
     return False
 
 
-def is_valid_inflection_normalization(key_phrase: str, display_phrase: str) -> bool:
-    """key_phraseがdisplay_phrase内の**連続したトークン範囲**(語数=key_phraseの語数)の『活用形->基本形(動詞の原形・名詞の単数)』
-    および/または人称一般化の1対1トークン置換だけで得られるか(語数不変・変化トークン1つ以上・語の追加/削除/並べ替えなし)。
-    例: pushed prices up->push prices up / gave back some gains->give back / pumps its fist->pump one's fist。
-    拒否: mixed feelings->mix feelings / heated debate->heat debate / news->new / goods->good / means->mean /
-    raw beans->raw materials(別語)。"""
-    norm = lambda s: _TOKEN_RE.findall(unicodedata.normalize("NFKC", s or "").replace("’", "'"))   # noqa: E731
-    k, d = norm(key_phrase), norm(display_phrase)
-    if not k or len(k) > len(d):
+# ============================================================
+# FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01 委任_20 (2026-10-24, APPROVED_FOR_PRODUCTION: UDR #169[A-1]・#173[課題②])
+# 課題② 見出し語の所有格一般化(possessor_roles + role条件付き受理 + revertのみの決定論後処理) + A-1(参照語の不定化)の統合。
+# 設計正本: docs/research/FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01/WIRING_DESIGN_05.md
+# 窓特定は本関数群に一本化する(validator[kc経由]と後処理が同じ`find_inflection_window`を使う。二重実装を作らない)。
+# 共有許可表kc._PERSON_DEPENDENT_TO_GENERIC・A/B/Cの受理範囲は不変(role_ok_possは既定空=従来とバイト同一)。
+# ============================================================
+# A-1: 参照語の不定化の置換条件(this/that->a/an、目的格him/me/us/her->someone)
+_DEM_FOLLOW_BLOCK = frozenset({
+    "much", "many", "is", "was", "are", "were", "said", "will", "would", "can", "could", "has", "had", "does", "did", "off", "up", "out", "over",
+    "down", "in", "on", "at", "to", "for", "with", "by", "from", "and", "or", "but", "if", "as", "than", "so", "time", "point", "case", "way", "day",
+    "moment", "reason", "night", "morning", "long", "far", "big", "little", "one", "kind", "sort", "of",
+    # 接続詞のthat(直後に主語・限定詞が来る): so that nobody noticed / said that the team won
+    "nobody", "everyone", "everybody", "someone", "somebody", "anyone", "anybody", "he", "she", "they", "it", "we", "i", "you", "there",
+    "the", "a", "an", "his", "her", "their", "our", "my", "your", "its", "people", "this", "that", "these", "those",
+})
+_UNCOUNTABLE = frozenset({
+    "advice", "information", "news", "equipment", "furniture", "luggage", "baggage", "money", "music", "traffic", "weather", "progress", "research",
+    "knowledge", "evidence", "help", "behavior", "behaviour", "attention", "trust", "work", "homework", "software", "feedback", "damage", "noise",
+    "luck", "fun", "water", "air", "time", "energy", "love", "hope", "courage", "pressure", "silence", "sound",
+})
+_OBJ_HER_FOLLOW = frozenset({
+    "the", "a", "an", "this", "that", "these", "those", "some", "any", "my", "your", "his", "our", "their", "to", "for", "with", "up", "down", "off", "out",
+    "over", "away", "back", "in", "on", "at", "from", "into", "about", "around", "through", "by", "and", "or", "but", "so", "along", "aside", "apart",
+})
+POSSESSIVE_TOKENS = ("my", "your", "his", "her", "its", "their", "our")
+GENERIC_POSSESSIVES = ("one's", "someone's", "somebody's")
+POSSESSOR_ROLES = ("self", "other_person", "non_person", "none")
+ROLE_OK_DISPLAY_TOKENS = ("my", "our")            # role=other_personのときだけ->someone's/somebody'sを受理するdisplay側の語
+ROLE_OK_KEY_TOKENS = ("someone's", "somebody's")
+REASON_REFERENCE_WORD = "generalize_reference_word"
+
+
+def starts_with_vowel_sound(word: str) -> bool:
+    """語頭が母音の音か(a/an判定)。本番既存のCMU辞書(`pronouncing`=cmudict 1.1.3、er108と同一)を使う。辞書に無い語は簡易規則(API 0)。"""
+    w = (word or "").lower().strip("'")
+    if not w:
         return False
+    try:
+        import pronouncing
+        prons = pronouncing.phones_for_word(w)
+    except Exception:   # noqa: BLE001  辞書が使えない場合も簡易規則で判定(a/anの母音判定のみ)
+        prons = []
+    if prons:
+        return any(ch.isdigit() for ch in prons[0].split()[0])
+    if w.startswith(("hour", "honest", "honor", "honour", "heir")):
+        return True
+    if w.startswith(("uni", "use", "usu", "eu", "one", "once")):
+        return False
+    return w[0] in "aeiou"
+
+
+def _looks_plural(w: str) -> bool:
+    return len(w) > 3 and w.endswith("s") and not w.endswith(("ss", "us", "is"))
+
+
+def reference_pair_ok(kt: str, dt: str, idx: int, key_tokens: list, window: list) -> bool:
+    """A-1: 参照語の1対1置換が許されるか。指示語this/that->a/an(単数可算名詞の限定詞のときのみ。theは許可しない)、
+    目的格him/me/us->someone/somebody、her->someone/somebody(直後語が_OBJ_HER_FOLLOWのときのみ=所有格herと区別)。"""
+    kl, dl = kt.lower(), dt.lower()
+    nxt_d = window[idx + 1].lower() if idx + 1 < len(window) else None
+    if dl in ("that", "this"):
+        if kl not in ("a", "an"):
+            return False
+        if nxt_d is None or nxt_d in _DEM_FOLLOW_BLOCK or nxt_d in _UNCOUNTABLE or _looks_plural(nxt_d):
+            return False
+        nxt_k = key_tokens[idx + 1].lower() if idx + 1 < len(key_tokens) else None
+        if nxt_k is None:
+            return False
+        if kl == "a" and starts_with_vowel_sound(nxt_k):
+            return False
+        if kl == "an" and not starts_with_vowel_sound(nxt_k):
+            return False
+        return True
+    if dl in ("him", "me", "us"):
+        return kl in ("someone", "somebody")
+    if dl == "her":
+        return kl in ("someone", "somebody") and (nxt_d is None or nxt_d in _OBJ_HER_FOLLOW)
+    return False
+
+
+def _norm_tokens(s: str) -> list:
+    return _TOKEN_RE.findall(unicodedata.normalize("NFKC", s or "").replace("’", "'"))
+
+
+def find_inflection_window(key_phrase: str, display_phrase: str, role_ok_poss=frozenset()):
+    """key_phraseがdisplay_phrase内の連続トークン範囲の1対1置換(活用形->基本形・人称一般化[共有表]・A-1参照語・role条件付きmy/our->someone's)で
+    得られるとき、その開始token indexを返す(最初に見つかった窓、変化トークン1つ以上)。無ければNone。
+    role_ok_poss: displayのtoken index(絶対index)の集合。そのindexのmy/ourに限り->someone's/somebody'sを受理する(既定空=従来と同一)。"""
+    k, d = _norm_tokens(key_phrase), _norm_tokens(display_phrase)
+    if not k or len(k) > len(d):
+        return None
+    ok_idx = frozenset(role_ok_poss or ())
     for start in range(0, len(d) - len(k) + 1):
         window = d[start:start + len(k)]
-        if all(_token_pair_ok(kt, dt, i, k) for i, (kt, dt) in enumerate(zip(k, window))) \
+        if all(_token_pair_ok(kt, dt, i, k) or reference_pair_ok(kt, dt, i, k, window)
+               or ((start + i) in ok_idx and dt.lower() in ROLE_OK_DISPLAY_TOKENS and kt.lower() in ROLE_OK_KEY_TOKENS)
+               for i, (kt, dt) in enumerate(zip(k, window))) \
                 and any(kt.lower() != dt.lower() for kt, dt in zip(k, window)):
-            return True
-    return False
+            return start
+    return None
+
+
+def is_valid_inflection_normalization(key_phrase: str, display_phrase: str, role_ok_poss=frozenset()) -> bool:
+    """key_phraseがdisplay_phrase内の**連続したトークン範囲**(語数=key_phraseの語数)の『活用形->基本形(動詞の原形・名詞の単数)』
+    および/または人称一般化・参照語不定化(A-1)の1対1トークン置換だけで得られるか(語数不変・変化トークン1つ以上・語の追加/削除/並べ替えなし)。
+    例: pushed prices up->push prices up / gave back some gains->give back / pumps its fist->pump one's fist / draw that line->draw a line。
+    拒否: mixed feelings->mix feelings / heated debate->heat debate / news->new / goods->good / means->mean /
+    raw beans->raw materials(別語) / bound to->bind to(OPEN-476=DEFERRED)。
+    role_ok_poss: find_inflection_windowを参照(既定空=従来と同一の受理範囲)。"""
+    return find_inflection_window(key_phrase, display_phrase, role_ok_poss) is not None
+
+
+# ------------------------------------------------------------ 課題② 後処理(決定論・API 0・revertのみ)
+def possessive_slots(display_phrase: str) -> list:
+    """display内の所有格(POSSESSIVE_TOKENS)の位置。[(token_index, token_lower)]。"""
+    return [(i, t.lower()) for i, t in enumerate(_norm_tokens(display_phrase)) if t.lower() in POSSESSIVE_TOKENS]
+
+
+def validate_possessor_roles(roles, display_phrase: str) -> tuple:
+    """(ok, reason)。要素数=display内の所有格数、tokenが出現順に一致、roleがenum内。"""
+    slots = possessive_slots(display_phrase)
+    if not isinstance(roles, list):
+        return False, "roles_not_list"
+    if len(roles) != len(slots):
+        return False, f"count_mismatch(expected={len(slots)},got={len(roles)})"
+    for n, (r, (_, tok)) in enumerate(zip(roles, slots)):
+        if not isinstance(r, dict) or str(r.get("token", "")).strip().lower() != tok:
+            return False, f"token_mismatch@{n}(expected={tok},got={r.get('token') if isinstance(r, dict) else r})"
+        if r.get("role") not in POSSESSOR_ROLES:
+            return False, f"role_not_in_enum@{n}({r.get('role')})"
+    return True, ""
+
+
+def _allowed_generic_for_role(role: str) -> frozenset:
+    """role -> 置換してよい一般形。置換しない(displayの語のまま)ことはどのroleでも常に許可。"""
+    if role == "self":
+        return frozenset({"one's"})
+    if role == "other_person":
+        return frozenset({"someone's", "somebody's"})
+    return frozenset()   # non_person / none: 一般形は不可(displayの語へrevert)
+
+
+def _replace_token_in_key(key: str, idx: int, new: str) -> str:
+    """key文字列のidx番目のtokenをnewへ置換(周囲の文字列は保持。先頭大文字は引き継ぐ)。"""
+    s = unicodedata.normalize("NFKC", key or "").replace("’", "'")
+    for n, m in enumerate(_TOKEN_RE.finditer(s)):
+        if n == idx:
+            old = m.group(0)
+            repl = (new[:1].upper() + new[1:]) if old[:1].isupper() else new
+            return s[:m.start()] + repl + s[m.end():]
+    return key
+
+
+# 不定人称語(gloss側`_GENERIC_TOKENS`相当。A-1の`him->someone`を含む)
+_PERSON_SUB_TOKENS = frozenset({"one's", "someone's", "somebody's", "one", "someone", "somebody", "oneself"})
+
+
+def _recompute_item_fields(item: dict, display: str, new_key: str, role_ok: frozenset) -> None:
+    """revert後のchanged_from_display_phrase / normalization_reasonを決定論で再計算する。
+    LLMのreasonが新keyで整合するなら変更しない(A-1の`generalize_reference_word`記録を消さない)。"""
+    import er003_key_words_canonicalization as kc
+    kn, dn = _norm_tokens(new_key), _norm_tokens(display)
+    same = [t.lower() for t in kn] == [t.lower() for t in dn]
+    item["changed_from_display_phrase"] = not same
+    if same:
+        item["normalization_reason"] = "none"
+        if item.get("qa_traceable_contiguous_span") == "FAIL":
+            item["qa_traceable_contiguous_span"] = "PASS"   # QA定義(a): key_phraseがdisplay_phraseと完全一致
+        return
+    start = find_inflection_window(new_key, display, role_ok)
+    dwin = dn[start:start + len(kn)] if start is not None else []
+    person_sub = any(k.lower() in _PERSON_SUB_TOKENS and k.lower() != d.lower() for k, d in zip(kn, dwin))
+    reason = item.get("normalization_reason")
+    if reason == "generalize_person_dependent_reference" and not person_sub:
+        if kc._is_valid_fulltext_normalization(new_key, display, "lemma_normalization", role_ok_poss=role_ok):
+            item["normalization_reason"] = "lemma_normalization"
+    elif reason == "lemma_normalization" and person_sub:
+        item["normalization_reason"] = "generalize_person_dependent_reference"
+
+
+def postprocess_possessor_roles(parsed: dict, original_items: list) -> dict:
+    """canonicalization応答(parsed)に対する決定論後処理(fulltext専用。run_canonicalization_gateのpostprocess hookから呼ばれる)。API 0。
+
+    各itemについて、possessor_roles(出現順の所有格ごとのrole)を検証し、keyの一般形(one's/someone's/somebody's)がroleと食い違う場合に
+    **displayの語へ戻す(revertのみ)**。role modeでの書換え(one's<->someone's)・表外への置換はしない(WRONGを作らない)。
+    roles検証不能/窓なし/revert後にvalidatorを通らない場合はkey無変更(現行どおり=新しいINVALID/retry消費を作らない)。
+    parsed itemへ`person_role_repair`={status, roles_ok, roles_reason, repairs[], key_before, role_ok_poss[]}を残す(validator・mergeが参照)。
+    入力parsedは破壊しない(deepcopyを返す)。"""
+    import copy
+    import er003_key_words_canonicalization as kc
+    out = copy.deepcopy(parsed)
+    items = out.get("items") if isinstance(out, dict) else None
+    if not isinstance(items, list):
+        return out
+    by_rank = {it.get("rank"): it for it in (original_items or []) if isinstance(it, dict)}
+    span_by_rank = {it["rank"]: it.get("source_span", "") for it in kc.canonicalization_view_items(list(original_items or []))}
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        orig = by_rank.get(item.get("rank"))
+        if orig is None:
+            continue
+        display = orig.get("display_phrase") or orig.get("canonical_english") or ""
+        key = item.get("key_phrase") or ""
+        roles = item.get("possessor_roles")
+        rec = {"status": "NO_POSSESSIVE", "roles_ok": None, "roles_reason": "", "repairs": [], "key_before": key, "role_ok_poss": []}
+        item["person_role_repair"] = rec
+        slots = possessive_slots(display)
+        if not slots or not isinstance(key, str) or not key.strip():
+            continue
+        ok, why = validate_possessor_roles(roles, display)
+        rec["roles_ok"], rec["roles_reason"] = ok, why
+        if not ok:
+            rec["status"] = "UNVERIFIED_ROLES"      # 迷えば触らない(現行どおり)。件数を記録して測る
+            continue
+        if [t.lower() for t in _norm_tokens(key)] == [t.lower() for t in _norm_tokens(display)]:
+            rec["status"] = "NO_CHANGE"      # keyがdisplayと同一(置換していない)=常に許可
+            continue
+        # 窓特定: my/ourは全slotを許容して窓だけ特定し(受理の可否はrole照合後に決める)、食い違いはrevertで解消する。
+        permissive = frozenset(i for i, t in slots if t in ROLE_OK_DISPLAY_TOKENS)
+        start = find_inflection_window(key, display, permissive)
+        if start is None:
+            rec["status"] = "NO_WINDOW"
+            continue
+        kt = _norm_tokens(key)
+        new_key = key
+        repairs = []
+        role_ok = set()
+        for n, ((di, dtok), r) in enumerate(zip(slots, roles)):
+            ki = di - start
+            if ki < 0 or ki >= len(kt):
+                continue            # 所有格が窓の外(keyに含まれない)
+            cur = kt[ki].lower()
+            if cur not in GENERIC_POSSESSIVES:
+                continue            # 置換していない(displayの語のまま等)=常に許可
+            if cur in _allowed_generic_for_role(r["role"]):
+                if dtok in ROLE_OK_DISPLAY_TOKENS and r["role"] == "other_person" and cur in ROLE_OK_KEY_TOKENS:
+                    role_ok.add(di)
+                continue
+            new_key = _replace_token_in_key(new_key, ki, dtok)    # revert(displayの語へ戻す)
+            repairs.append({"ordinal": n, "display_token": dtok, "role": r["role"], "before": cur, "after": dtok,
+                            "rule": "revert_%s" % r["role"]})
+        rec["role_ok_poss"] = sorted(role_ok)
+        if not repairs:
+            rec["status"] = "NO_CHANGE"
+            continue
+        # revert後のkeyがvalidatorを通ることを確認できなければ、revertを中止してkey無変更(INVALID->retry消費を新たに作らない)。
+        same_as_display = [t.lower() for t in _norm_tokens(new_key)] == [t.lower() for t in _norm_tokens(display)]
+        valid = same_as_display or kc.validate_canonicalization_item(
+            new_key, display, span_by_rank.get(item.get("rank"), ""), normalization_reason="lemma_normalization",
+            original_span=orig.get("source_span"), allow_inflection_normalization=True, role_ok_poss=frozenset(role_ok))["ok"]
+        rec["repairs"] = repairs
+        if not valid:
+            rec["status"] = "REVERT_SKIPPED"
+            continue
+        item["key_phrase"] = new_key
+        rec["status"] = "REPAIRED"
+        _recompute_item_fields(item, display, new_key, frozenset(role_ok))
+        # revert後は全所有格slotがroleと整合する(上のループで食い違いを全てrevertした)ため、人称一般化QAをPASSにする。
+        # 無条件のPASS上書きではなく、repairsがありvalidatorを通ったitemに限る。
+        item["qa_person_reference_generalized"] = "PASS"
+    return out
 
 
 # ============================================================

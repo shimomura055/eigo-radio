@@ -17,16 +17,18 @@ import er112_kp_gm_trial_01 as t
 ROOT = Path(__file__).resolve().parent
 
 # Production関数のsource hash(先頭16桁)。DEV側で複製・ラップしている関数が変わったらこのtestが落ち、DEV側の再レビューを強制する(drift guard)。
+# 委任_20(2026-10-24): A-1/課題②がProductionへ配線されたため、Production側4関数のhashを配線後の値へ更新した(DEV複製は配線前の状態のTrial記録として残す。
+# 配線後のDEV installerはtemplate drift guardでfail-closed=二重適用しない。下のDefaultOffIsolation/TemplateEditで固定)。
 PROD_SRC_HASH = {
-    "kc._is_valid_fulltext_normalization": ("ce19f2ce2cb554e4", kc._is_valid_fulltext_normalization),
-    "ft.is_valid_inflection_normalization": ("e794d650688f1bdb", ft.is_valid_inflection_normalization),
+    "kc._is_valid_fulltext_normalization": ("55dec0fc4327efe7", kc._is_valid_fulltext_normalization),
+    "ft.is_valid_inflection_normalization": ("dd0ca4faf3cf389f", ft.is_valid_inflection_normalization),
     "ft._token_pair_ok": ("3616a7b8760bcc04", ft._token_pair_ok),
     "ga.build_user_message_corrected": ("32b12d9ceb965306", ga.build_user_message_corrected),
     "kx._header_for": ("c09cea1aa20d0e15", kx._header_for),
     "kx.build_explanation_user_message": ("2dd4eb620c826216", kx.build_explanation_user_message),
-    "kc.run_canonicalization_gate": ("4f482fafa4342d70", kc.run_canonicalization_gate),
+    "kc.run_canonicalization_gate": ("3902ffd14cda8093", kc.run_canonicalization_gate),
     "ga.align_glosses": ("cbb5a74e7d3ae0a5", ga.align_glosses),
-    "ga.person_generalization_pairs": ("d1d869fabb81444d", ga.person_generalization_pairs),
+    "ga.person_generalization_pairs": ("056971b04e3fed77", ga.person_generalization_pairs),
     "kc.make_canonicalization_fn": ("7dbf318990504198", kc.make_canonicalization_fn),
     "ga.make_alignment_fn": ("94fd639bd6d9e22e", ga.make_alignment_fn),
     "kc.load_prompt_template": ("1f6714df01309fbe", kc.load_prompt_template),
@@ -54,53 +56,31 @@ class DefaultOffIsolation(unittest.TestCase):
                 hits.append(f.name)
         self.assertEqual(hits, [])
 
-    def test_installed_but_no_ctx_is_passthrough(self):
-        t.install_dev_patches()
-        try:
-            t._TL.ctx = None
-            # 参照語置換はctx無し(=baseline)では受理されない(Production挙動)
-            self.assertFalse(kc._is_valid_fulltext_normalization("draw a line", "draw that line", "generalize_reference_word"))
-            self.assertFalse(kc._is_valid_fulltext_normalization("pull someone under", "pulled him under", "generalize_person_dependent_reference"))
-            self.assertTrue(kc._is_valid_fulltext_normalization("push prices up", "pushed prices up", "lemma_normalization"))
-            tpl = kc.load_prompt_template(kc.FULLTEXT_PROMPT_TEMPLATE_PATH)
-            self.assertNotIn("generalize_reference_word", tpl)
-            # baseline armでも素通し
-            t._TL.ctx = t.ArmCtx("base", 1, "u")
-            self.assertFalse(kc._is_valid_fulltext_normalization("draw a line", "draw that line", "generalize_reference_word"))
-            self.assertNotIn("generalize_reference_word", kc.load_prompt_template(kc.FULLTEXT_PROMPT_TEMPLATE_PATH))
-            self.assertEqual(kx._header_for(5), t._ORIG["kx._header_for"](5))
-            # a1 arm のときだけ有効
-            t._TL.ctx = t.ArmCtx("a1", 1, "u")
-            self.assertTrue(kc._is_valid_fulltext_normalization("draw a line", "draw that line", "generalize_reference_word"))
-            self.assertIn("generalize_reference_word", kc.load_prompt_template(kc.FULLTEXT_PROMPT_TEMPLATE_PATH))
-            self.assertEqual(kx._header_for(5), t._ORIG["kx._header_for"](5))   # a3未指定なら説明Promptは不変
-            t._TL.ctx = t.ArmCtx("a123s", 1, "u")
-            self.assertIn("Use the sense the phrase has in the source sentence", kx._header_for(5))
-            self.assertEqual(kx.PROMPT_SHA256, kx.PROMPT_SHA256)   # 本番定数(逐語性hash)はDEV注入で変わらない
-        finally:
-            t._TL.ctx = None
-            t.uninstall_dev_patches()
+    def test_dev_installer_fails_closed_after_wiring(self):
+        """委任_20: A-1がProductionへ配線済みのため、DEV installerは(同じ規則を二重適用せず)template drift guardでfail-closedする。"""
+        before = {"load": kc.load_prompt_template, "make": kc.make_canonicalization_fn, "gate": kc.run_canonicalization_gate,
+                  "valid": kc._is_valid_fulltext_normalization, "pairs": ga.person_generalization_pairs}
+        with self.assertRaises(RuntimeError) as cm:
+            t.install_dev_patches()
+        self.assertIn("drift", str(cm.exception))
         self.assertFalse(t._INSTALLED)
-        self.assertFalse(kc._is_valid_fulltext_normalization("draw a line", "draw that line", "generalize_reference_word"))
+        self.assertIs(kc.load_prompt_template, before["load"])
+        self.assertIs(kc.make_canonicalization_fn, before["make"])
+        self.assertIs(kc.run_canonicalization_gate, before["gate"])
+        self.assertIs(kc._is_valid_fulltext_normalization, before["valid"])
+        self.assertIs(ga.person_generalization_pairs, before["pairs"])
+        # Production側は(DEV注入なしで)A-1を受理する
+        self.assertTrue(kc._is_valid_fulltext_normalization("draw a line", "draw that line", "generalize_reference_word"))
+        self.assertTrue(kc._is_valid_fulltext_normalization("pull someone under", "pulled him under", "generalize_person_dependent_reference"))
+        self.assertTrue(kc._is_valid_fulltext_normalization("push prices up", "pushed prices up", "lemma_normalization"))
 
-    def test_gloss_prompt_a2_only_when_flagged(self):
-        t.install_dev_patches()
-        try:
-            targets = [{"rank": 1, "key_phrase": "draw a line", "display_phrase": "draw that line", "japanese_gloss": None, "source_sentence": "The words draw that line simply",
-                        "fulltext_source_ref": "fulltext_exact_v1"}]
-            t._TL.ctx = t.ArmCtx("a1", 1, "u")
-            m1 = ga.build_user_message_corrected(targets, "ART", rules="RULES")
-            t._TL.ctx = t.ArmCtx("a12", 1, "u")
-            m2 = ga.build_user_message_corrected(targets, "ART", rules="RULES")
-            t._TL.ctx = None
-            m0 = ga.build_user_message_corrected(targets, "ART", rules="RULES")
-            self.assertEqual(m0, m1)
-            self.assertNotIn("語義の方針", m1)
-            self.assertIn("語義の方針", m2)
-            self.assertEqual(m2.replace(t.A2_EXTRA, ""), m1)
-        finally:
-            t._TL.ctx = None
-            t.uninstall_dev_patches()
+    def test_gloss_prompt_a2_not_wired(self):
+        """A-2(gloss語義方針)は本配線の対象外(未採用)。Productionのgloss生成promptにA-2の文言は入っていない。"""
+        targets = [{"rank": 1, "key_phrase": "draw a line", "display_phrase": "draw that line", "japanese_gloss": None, "source_sentence": "The words draw that line simply",
+                    "fulltext_source_ref": "fulltext_exact_v1"}]
+        m0 = ga.build_user_message_corrected(targets, "ART", rules="RULES")
+        self.assertNotIn("語義の方針", m0)
+        self.assertNotIn(t.A2_EXTRA, m0)
 
 
 class ValidatorDev(unittest.TestCase):
@@ -132,23 +112,24 @@ class ValidatorDev(unittest.TestCase):
 
 
 class TemplateEdit(unittest.TestCase):
-    def test_anchors_unique_and_edit_applied(self):
+    def test_anchors_consumed_and_production_template_has_rule5(self):
+        """委任_20: A-1のtemplate編集はProductionのtemplateへ適用済み。DEVの旧anchor(置換前の文)は残っていない(drift guardでfail-closed)。"""
         tpl = (ROOT / kc.FULLTEXT_PROMPT_TEMPLATE_PATH).read_text(encoding="utf-8")
-        for old, _new in t._A1_EDITS:
-            self.assertEqual(tpl.count(old), 1, old[:30])
-        out = t.build_a1_template(tpl)
-        self.assertIn("5. 参照語の不定化", out)
-        self.assertIn("generalize_reference_word", out)
-        self.assertNotIn("him/her(目的格)/them/me/us/it等の目的格", out)   # 旧『目的格はそのまま残す』規則は置換済み
-        self.assertIn("{article_text}", out)
-        self.assertIn("{items_json}", out)
+        self.assertIn("5. 参照語の不定化", tpl)
+        self.assertIn("generalize_reference_word", tpl)
+        self.assertNotIn("him/her(目的格)/them/me/us/it等の目的格", tpl)   # 旧『目的格はそのまま残す』規則は置換済み
+        self.assertIn("{article_text}", tpl)
+        self.assertIn("{items_json}", tpl)
+        with self.assertRaises(RuntimeError):
+            t.build_a1_template(tpl)
 
-    def test_dev_schema_adds_reason_only_in_dev(self):
+    def test_production_fulltext_enum_has_reason_but_shared_enum_does_not(self):
         s = t._dev_schema()
         enum = s["schema"]["properties"]["items"]["items"]["properties"]["normalization_reason"]["enum"]
         self.assertIn("generalize_reference_word", enum)
         prod_enum = kc.CANONICALIZATION_JSON_SCHEMA_FULLTEXT["schema"]["properties"]["items"]["items"]["properties"]["normalization_reason"]["enum"]
-        self.assertNotIn("generalize_reference_word", prod_enum)
+        self.assertIn("generalize_reference_word", prod_enum)                       # fulltext専用enumに配線済み
+        self.assertNotIn("generalize_reference_word", kc.NORMALIZATION_REASONS)     # A/B/C共有enumは不変
 
 
 class ShareArm(unittest.TestCase):
@@ -173,9 +154,12 @@ class ShareArm(unittest.TestCase):
 
 
 class ProductionUnchanged(unittest.TestCase):
-    def test_git_diff_has_no_production_file_change(self):
-        out = subprocess.run(["git", "diff", "--name-only", "--"] + t.PROD_FILES, cwd=ROOT, capture_output=True, text=True).stdout.strip()
-        self.assertEqual(out, "", f"Production file modified: {out}")
+    def test_wired_production_files_carry_provenance_marker(self):
+        """委任_20: DEV Trialの『Production無変更』guardは配線により陳腐化した。代わりに、配線した各Production fileが承認(UDR #169/#173)への
+        参照を持つこと(provenance)と、A/B/C共有schemaがバイト同一であることを固定する(後者は er003_test_kp_fulltext_wiring_01 でも固定)。"""
+        for rel in ("er003_key_words_canonicalization.py", "er105_kp_fulltext_selector_01.py", "er003_v1_n3_01_scaffold_generate.py",
+                    "er003_key_words_gloss_alignment.py"):
+            self.assertIn("FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01 委任_20", (ROOT / rel).read_text(encoding="utf-8"), rel)
 
 
 if __name__ == "__main__":

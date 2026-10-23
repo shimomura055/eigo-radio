@@ -1,0 +1,85 @@
+{
+ "unit_id": "R_34f3edfb2b",
+ "status": "CANONICALIZATION_PASS",
+ "model_id": "gpt-6-luna",
+ "response_id": "resp_0848e7a40c827946006adbe2eb45e087d08c595e3745f6188b",
+ "process": "B1_SUPPORT",
+ "routing_model": "gpt-6-luna",
+ "n_attempts": 1,
+ "attempt_statuses": [
+  "CANONICALIZATION_PASS"
+ ],
+ "template_sha256": "a57e8e38026f9710d5c53449fea07eec3e70b3c969c1b1ebda0531e36444076c",
+ "schema_sha256": "64044994620480a7a3b051e41c6648607fc692d7cd60675727d24ef4f4e86b6d",
+ "developer_message_sha256": "26d8374cc6f808439e1a55b942a79a4471c83b56bcf87fa852995769128639ef",
+ "user_message_sha256": "02954cfa5495bb6927c2bdc92723d2d95f0df285e6550d3fd7adc8148b1d1e68",
+ "items": [
+  {
+   "rank": 1,
+   "display": "in your place",
+   "key_raw_llm": "in someone's place",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "in someone's place",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [
+    {
+     "token": "your",
+     "role": "other_person"
+    }
+   ],
+   "person_role_repair": {
+    "status": "NO_CHANGE",
+    "roles_ok": true,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "in someone's place",
+    "role_ok_poss": []
+   },
+   "gold": [
+    "other_person"
+   ]
+  },
+  {
+   "rank": 2,
+   "display": "pulled him under",
+   "key_raw_llm": "pull someone under",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "pull someone under",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [],
+   "person_role_repair": {
+    "status": "NO_POSSESSIVE",
+    "roles_ok": null,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "pull someone under",
+    "role_ok_poss": []
+   },
+   "gold": null
+  },
+  {
+   "rank": 3,
+   "display": "win such trust",
+   "key_raw_llm": "win such trust",
+   "reason_raw_llm": "inherit_selection_normalization",
+   "key_final": "win such trust",
+   "reason_final": "inherit_selection_normalization",
+   "roles": [],
+   "person_role_repair": {
+    "status": "NO_POSSESSIVE",
+    "roles_ok": null,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "win such trust",
+    "role_ok_poss": []
+   },
+   "gold": null
+  }
+ ],
+ "merged_overall_status": "PASS",
+ "merged_used_form": [
+  "in someone's place",
+  "pull someone under",
+  "win such trust"
+ ]
+}

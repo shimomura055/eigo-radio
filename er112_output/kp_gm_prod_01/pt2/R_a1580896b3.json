@@ -1,0 +1,85 @@
+{
+ "unit_id": "R_a1580896b3",
+ "status": "CANONICALIZATION_PASS",
+ "model_id": "gpt-6-luna",
+ "response_id": "resp_0f910be9bbd5a6a5006adbe391946887d0a4c5d133286ef57e",
+ "process": "B1_SUPPORT",
+ "routing_model": "gpt-6-luna",
+ "n_attempts": 1,
+ "attempt_statuses": [
+  "CANONICALIZATION_PASS"
+ ],
+ "template_sha256": "a57e8e38026f9710d5c53449fea07eec3e70b3c969c1b1ebda0531e36444076c",
+ "schema_sha256": "64044994620480a7a3b051e41c6648607fc692d7cd60675727d24ef4f4e86b6d",
+ "developer_message_sha256": "26d8374cc6f808439e1a55b942a79a4471c83b56bcf87fa852995769128639ef",
+ "user_message_sha256": "a58d6f39d144164343fb3e683d02d504835240d7137651387bbe569d334ef566",
+ "items": [
+  {
+   "rank": 1,
+   "display": "sound no one asked for",
+   "key_raw_llm": "sound no one asked for",
+   "reason_raw_llm": "none",
+   "key_final": "sound no one asked for",
+   "reason_final": "none",
+   "roles": [],
+   "person_role_repair": {
+    "status": "NO_POSSESSIVE",
+    "roles_ok": null,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "sound no one asked for",
+    "role_ok_poss": []
+   },
+   "gold": null
+  },
+  {
+   "rank": 2,
+   "display": "reach for your wallet",
+   "key_raw_llm": "reach for one's wallet",
+   "reason_raw_llm": "generalize_person_dependent_reference",
+   "key_final": "reach for one's wallet",
+   "reason_final": "generalize_person_dependent_reference",
+   "roles": [
+    {
+     "token": "your",
+     "role": "self"
+    }
+   ],
+   "person_role_repair": {
+    "status": "NO_CHANGE",
+    "roles_ok": true,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "reach for one's wallet",
+    "role_ok_poss": []
+   },
+   "gold": [
+    "self"
+   ]
+  },
+  {
+   "rank": 3,
+   "display": "draw that line",
+   "key_raw_llm": "draw a line",
+   "reason_raw_llm": "generalize_reference_word",
+   "key_final": "draw a line",
+   "reason_final": "generalize_reference_word",
+   "roles": [],
+   "person_role_repair": {
+    "status": "NO_POSSESSIVE",
+    "roles_ok": null,
+    "roles_reason": "",
+    "repairs": [],
+    "key_before": "draw a line",
+    "role_ok_poss": []
+   },
+   "gold": null
+  }
+ ],
+ "merged_overall_status": "PASS",
+ "merged_used_form": [
+  "sound no one asked for",
+  "reach for one's wallet",
+  "draw a line"
+ ]
+}

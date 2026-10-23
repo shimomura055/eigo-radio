@@ -115,28 +115,24 @@ def test_score_headword():
     assert P.score_headword("apply its findings", "apply one's findings", ["non_person"]) == "WRONG"
 
 
-def test_template_and_schema_do_not_mutate_production():
+def test_dev_poss_builders_fail_closed_after_wiring():
+    """委任_20: 課題②+A-1がProductionへ配線済みのため、DEVのtemplate builderは(二重適用せず)drift guardでfail-closedし、
+    Production templateは既にpossessor_roles規則を持つ。"""
     import er112_kp_gm_trial_01 as t1
     base = (ROOT / kc.FULLTEXT_PROMPT_TEMPLATE_PATH).read_text(encoding="utf-8")
-    before_schema = json.dumps(kc.CANONICALIZATION_JSON_SCHEMA_FULLTEXT, sort_keys=True)
-    tpl = P.build_poss_template(t1.build_a1_template(base))
-    assert "possessor_roles" in tpl and "possessor_roles" not in base
-    schema = P.build_poss_schema(t1._dev_schema())
-    props = list(schema["schema"]["properties"]["items"]["items"]["properties"])
+    assert "possessor_roles" in base and "5. 参照語の不定化" in base
+    with pytest.raises(RuntimeError):
+        P.build_poss_template(t1.build_a1_template(base))
+    props = list(kc.CANONICALIZATION_JSON_SCHEMA_FULLTEXT["schema"]["properties"]["items"]["items"]["properties"])
     assert props[:3] == ["rank", "possessor_roles", "key_phrase"]
-    assert json.dumps(kc.CANONICALIZATION_JSON_SCHEMA_FULLTEXT, sort_keys=True) == before_schema
+    assert "possessor_roles" not in json.dumps(kc.CANONICALIZATION_JSON_SCHEMA)       # A/B/C共有schemaは不変
     assert (ROOT / kc.FULLTEXT_PROMPT_TEMPLATE_PATH).read_text(encoding="utf-8") == base
 
 
-def test_install_uninstall_restores_production_attributes():
-    import er112_kp_gm_trial_01 as t1
+def test_dev_installer_fails_closed_without_partial_patch():
     orig_make, orig_load, orig_table = kc.make_canonicalization_fn, kc.load_prompt_template, {k: set(v) for k, v in kc._PERSON_DEPENDENT_TO_GENERIC.items()}
-    P.install_poss_patches()
-    try:
-        assert kc._PERSON_DEPENDENT_TO_GENERIC["my"] >= {"one's", "someone's"}
-        assert kc.make_canonicalization_fn is not orig_make
-    finally:
-        P.uninstall_poss_patches()
+    with pytest.raises(RuntimeError):
+        P.install_poss_patches()
     assert kc.make_canonicalization_fn is orig_make and kc.load_prompt_template is orig_load
-    assert {k: set(v) for k, v in kc._PERSON_DEPENDENT_TO_GENERIC.items()} == orig_table
+    assert {k: set(v) for k, v in kc._PERSON_DEPENDENT_TO_GENERIC.items()} == orig_table   # 共有許可表は不変(my/ourへ足されていない)
     assert not P._INSTALLED

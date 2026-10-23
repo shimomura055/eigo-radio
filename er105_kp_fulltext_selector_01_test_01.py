@@ -299,6 +299,8 @@ class TestIsolation(unittest.TestCase):
             b = os.path.basename(p)
             if b.startswith("er105_"):
                 continue
+            if b.startswith("er112_"):
+                continue   # DEV/Trial専用module(Production到達経路なし。逆方向のimport禁止は er112_kp_gm_trial_01_test_01.test_no_production_module_imports_er112 が担保)
             with open(p, encoding="utf-8", errors="ignore") as f:
                 if re.search(r"\ber105_kp_fulltext", f.read()) and "test" not in b and b not in self.ALLOWED:
                     offenders.append(b)
