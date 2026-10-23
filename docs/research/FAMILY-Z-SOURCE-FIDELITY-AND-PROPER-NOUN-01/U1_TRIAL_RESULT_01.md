@@ -89,3 +89,15 @@ T1 R0: 2.19/1.88/1.76、T2 R0: 2.08/1.58/1.69(計11.18円)、T3 R1〜Std: 14.91/
 - `STORY_MAIN_CHARACTER`のフルネームと「FirstかLastのみ」(§5)。
 - Stdのclosing line明示は有効だったか(2/2で最終文が残ったが、対照なし)。
 - Status: VALIDATED(提示。承認範囲内の観測のみで、独自合格基準なし)。ユーザーの正式採用判断はPhase 2のPM Gate。
+
+
+---
+
+## Fable判定(委任_04、2026-10-23)
+
+- **U1統合Offline Trial = VALIDATED**(Trial上限。Production採用はユーザー判断待ち=必須PM Gate。採用ではない)。
+- 根拠: 観測8本(R0 6本+全段2本)で結末欠落0件、Vera維持(修正版B)5/5、他人名増加0、メロスはPromptがbyte一致(影響なし)。原因とした矛盾の除去と整合するが統計的確定ではなく(失敗率95%上限はR0で約39%、全段n=2で約78%)、検証は1作品(『開いた窓』)のみ。
+- **項目6(自然で面白いStorytelling・難易度)のFable自身の読み判定**: T3-01/T3-02のAdv(r2.md)とStd(std.md)を通読。いずれも原作の伏線(窓・白いコート・歌・犬・帰還・逃走・犬の作り話)を保ち、最終文がオチとして機能(T3-01 Adv "Inventing convincing stories at a moment's notice was Vera's speciality." / Std "Making up stories in seconds was Vera's special skill." / T3-02 Adv "...Vera's special talent." / Std "Vera was very good at inventing believable stories in seconds.")。Veraの導入は自然("said Vera, her fifteen-year-old niece" / "I hope Vera has been talking to you")。Stdは文が短く平易でA2相当、Advは語彙・構文がB1相当、どちらも会話中心で聞きやすい。軽微所見: T3-01のR2/Stdで結末直前に語り手の付加文("She spoke so naturally that no one questioned her."等)があり、オチの効果をやや薄める(CPの削除パッチで対応可)。冒頭に「Framton Nuttel」フルネーム1回(`STORY_MAIN_CHARACTER`由来、配線時に"Framton"へ)。判定=項目6 PASS(所見付き)。
+- Opusレビュー(条件C、OPUS_REVIEW_02_U1.md): VALIDATED可。推奨=「修正版B全体+keep_name+CP処置規則(深刻度2区分)」の条件付き採用。上乗せ効果(R1以降・Std)はTrialで未証明で、採用根拠は設計上の担保とほぼゼロのコスト(正直に開示)。
+- 採用時の配線パッケージ(must-fix含む、優先順): (1)Seedスキーマ`source_essentials`+Seed承認時必須化(新規文学作品はessentials無しでは承認不可、Melos対象外)+source_quote原作最終段との照合手順 (2)R0/R1/R2/Std引継ぎ=引数渡し(グローバル差替え不可)、essentials shaを各段入力指紋(キャッシュ/resume判定)に組込み、provenanceにsha、配線後PromptがT2/T3のdumpとbyte一致するtest(意図した名前修正のみ差分許容) (3)keep_name上書き+`STORY_MAIN_CHARACTER["the_open_window"]`を"Framton"へ(REVISE上書き文にも「一方の名前のみ」節) (4)`forbidden_names`からkeep_name人物(ヴェラ)を外す+カナ表記も含め非含有test (5)CP処置規則: 重大(ending_reveal・key_roles・key_causality・setups_and_payoffsの欠落)=CP不合格→修正→原因分析→C案要否提示/軽微(結末直前の付加文等withhold希釈)=CPで削除パッチ+記録のみ。
+- 残リスク: 標本少・1作品のみ・R1以降の上乗せ効果未実証・結末直前の付加文の再発(CP依存)・名前修正はPhase 4で初検証・Vera発音未登録(PNAP既存運用)・"romance"誤解(R1以降は言い換えで解消)。
