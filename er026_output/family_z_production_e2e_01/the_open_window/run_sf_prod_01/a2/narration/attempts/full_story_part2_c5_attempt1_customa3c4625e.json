@@ -1,0 +1,136 @@
+{
+  "attempt_number": 1,
+  "route": "custom_a3c4625e",
+  "segment_id": "full_story_part2_c5",
+  "theme_id": "run_sf_prod_01",
+  "level": "a2",
+  "source_out_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/a2/narration/full_story_part2_c5.wav",
+  "saved_at": "2026-10-23T13:24:28",
+  "sha256": "8374c7c49e466370be51a35ff7a4c95b56566820dcaf8902e675898474c97e53",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible.",
+  "asr_text": "Frampton went cold because she really did expect them back. He talked about his health problems and avoided the window. But his hostess hardly listened, often looking past him towards the lawn. Then a happy smile suddenly appeared on her face.",
+  "audio_classification": "PASS_WITH_PRONUNCIATION_ALARM",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": false,
+    "duration_seconds": 16.25,
+    "method_a_ngram": {
+      "matches": [],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 41,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.9963,
+          "time_a_seconds": 4.21,
+          "time_b_seconds": 13.01,
+          "lag_seconds": 8.8,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9957,
+          "time_a_seconds": 1.61,
+          "time_b_seconds": 12.85,
+          "lag_seconds": 11.24,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9957,
+          "time_a_seconds": 10.03,
+          "time_b_seconds": 12.95,
+          "lag_seconds": 2.92,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9954,
+          "time_a_seconds": 1.6,
+          "time_b_seconds": 16.15,
+          "lag_seconds": 14.55
+        },
+        {
+          "similarity": 0.9951,
+          "time_a_seconds": 1.59,
+          "time_b_seconds": 12.85,
+          "lag_seconds": 11.26
+        }
+      ],
+      "best_run_length_seconds": 0.01,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": false,
+      "local_asr_confirmation": null,
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.27,
+      "time_a": 5.98,
+      "lag": 0.73,
+      "similarity_at_start": 0.7393,
+      "best_run_length_seconds": 0.27,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  },
+  "scg_info": null,
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": true,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "Frampton went cold because she really did expect them back. He talked about his health problems and avoided the window. But his hostess hardly listened, often looking past him towards the lawn. Then a happy smile suddenly appeared on her face.",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "entity_like_source": [
+        "capitalized"
+      ]
+    },
+    {
+      "step": "tier3_corroboration_secondary",
+      "provider": "azure",
+      "text": "Frampton went cold because she really did expect them back. He talked about his health problems and avoided the window, but his Hostess hardly listened, often looking past him towards the lawn. Then a happy smile suddenly appeared on her face.",
+      "sub_reason": "entity_only",
+      "entity_like_source": [
+        "capitalized"
+      ]
+    },
+    {
+      "step": "secondary_1",
+      "provider": "azure",
+      "text": "Frampton went cold because she really did expect them back. He talked about his health problems and avoided the window, but his Hostess hardly listened, often looking past him towards the lawn. Then a happy smile suddenly appeared on her face.",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "phrase_list_used": false,
+      "azure_phrase_list_weight": null,
+      "azure_phrase_list": [],
+      "cached": true,
+      "unified_judge_state": "NG_BOTH",
+      "entity_like_source": [
+        "capitalized"
+      ]
+    }
+  ]
+}
