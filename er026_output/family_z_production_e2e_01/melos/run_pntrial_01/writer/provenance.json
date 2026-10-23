@@ -1,0 +1,111 @@
+{
+  "story_key": "melos",
+  "seed_sha256": "f4a85f5ceb9a1d7cd511872644391dddd8e2f61516e2f09e08da9ddeeb42c761",
+  "chain": [
+    {
+      "stage": "r0",
+      "input_sha256": "f4a85f5ceb9a1d7cd511872644391dddd8e2f61516e2f09e08da9ddeeb42c761",
+      "output_sha256": "27309ebc4b3e92423118cb9f4d85bdf477e9d2f6f5aba729e0b94daf96581969",
+      "generated_at": "2026-10-23T00:38:35+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R0",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_01a7eefba008644e006adaac6b5e2c87d0920c27b717270e2e",
+      "attempts": 1,
+      "cost_jpy": 2.0445,
+      "prompt_sha256": "097a399ae36020ade226653c18c1d3f50619b0408ae8313a8e6879eaddbc68cc",
+      "input_tokens": 1094,
+      "output_tokens": 1059,
+      "reasoning_tokens": 486,
+      "conversion_substitutions": [
+        "simple third-person English at about 300[–-]350 words",
+        "while simplifying the language and minor details for A2 learners"
+      ],
+      "guardrails": {
+        "word_count": 441
+      }
+    },
+    {
+      "stage": "r1",
+      "input_sha256": "27309ebc4b3e92423118cb9f4d85bdf477e9d2f6f5aba729e0b94daf96581969",
+      "output_sha256": "cf01352ca2186d3e92f04e201c7340caf9aef97670c45d430e5871357e1f9a9b",
+      "generated_at": "2026-10-23T00:39:21+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R1",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_0d9fff638c7669c6006adaac8c20f487d0ab9ab873f6e43433",
+      "attempts": 1,
+      "cost_jpy": 4.3539,
+      "prompt_sha256": "051754e4456b7ada94dd22072b596b5e8b21e992b30afd946905bb4f51a95f56",
+      "input_tokens": 716,
+      "output_tokens": 2578,
+      "reasoning_tokens": 2050,
+      "guardrails": {
+        "word_count": 405
+      }
+    },
+    {
+      "stage": "r2",
+      "input_sha256": "cf01352ca2186d3e92f04e201c7340caf9aef97670c45d430e5871357e1f9a9b",
+      "output_sha256": "d3a384e0108f7d8c9c4d171db73f8c7577182290ba0b8367336631b940e0e8ad",
+      "generated_at": "2026-10-23T00:39:51+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R2",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_02294d01140d9741006adaacba187487d0ad2b161cc97dc483",
+      "attempts": 1,
+      "cost_jpy": 2.4435,
+      "prompt_sha256": "205e301002b152fd52a4acf6c88b7eb0f8711dbe6e66c708ed784435e83749d9",
+      "input_tokens": 671,
+      "output_tokens": 1393,
+      "reasoning_tokens": 856,
+      "guardrails": {
+        "word_count": 411,
+        "warnings": [],
+        "failures": []
+      }
+    },
+    {
+      "stage": "std_adjust",
+      "input_sha256": "d3a384e0108f7d8c9c4d171db73f8c7577182290ba0b8367336631b940e0e8ad",
+      "output_sha256": "1bcabbdfb95a07897d3850b3e57134b68102777d8c7f9a1a2e60dd59ee77f3ff",
+      "generated_at": "2026-10-23T00:42:15+00:00",
+      "routing_key": "FAMILY_Z_STD_ADJUST",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_091c39e14504aed6006adaacdcce6c87d0b69b58963ad9e539",
+      "attempts": 1,
+      "cost_jpy": 12.0867,
+      "prompt_sha256": "84fba8f4ce2583b24dcde631e066f58dfd2a126412c256f98e442f9546ef863a",
+      "input_tokens": 1286,
+      "output_tokens": 7297,
+      "reasoning_tokens": 6728,
+      "guardrails": {
+        "std_words": 451,
+        "adv_words": 411,
+        "ratio": 1.0973,
+        "identical_sentence_ratio": 0.0,
+        "avg_sentence_len_std": 8.2,
+        "avg_sentence_len_adv": 6.23,
+        "paragraph_count_std": 40,
+        "paragraph_count_adv": 40,
+        "std_adv_paragraph_count_match": true,
+        "warnings": [
+          "STD_AVG_SENT_LEN_NOT_SHORTER:8.20 vs adv 6.23x0.85 (soft gate)"
+        ],
+        "failures": []
+      }
+    }
+  ],
+  "downstream_stale": [],
+  "downstream_stages": {},
+  "regenerations": [],
+  "audio_text_deviations": [],
+  "reference_only": {},
+  "adv_final_sha256": "d3a384e0108f7d8c9c4d171db73f8c7577182290ba0b8367336631b940e0e8ad",
+  "std_sha256": "1bcabbdfb95a07897d3850b3e57134b68102777d8c7f9a1a2e60dd59ee77f3ff"
+}
