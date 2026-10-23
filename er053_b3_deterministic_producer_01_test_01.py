@@ -208,6 +208,13 @@ class GoldenTests(unittest.TestCase):
 # FAMILY-X-MANGA-AI-CHAT-BYUS-PRODUCTION-E2E-01 委任_02: Trial原文からの唯一の意図的差分(NUMのドット区切り数値列 26.10.10 対応)。
 # 値 = (Trial原文, 本module期待コード部)。差分は (?:\.\d+)? -> (?:\.\d+)* のみ。
 DOCUMENTED_DIVERGENCE = {"NUM": ('NUM = r"\\d[\\d,]*(?:\\.\\d+)?"', 'NUM = r"\\d[\\d,]*(?:\\.\\d+)*"')}
+# FAMILY-X-NEWS-2ARTICLES-E2E-02 委任_02(26.10.23、Fable承認・11-8不具合是正): derive_ranksの役割付与1行のみ。
+# 結合概念がcoreでも、never-core kind(year/ordinal/name_embedded、c_core_peripheral内部検査と同じ不変条件)のitemはperipheralにする。
+# 値 = (Trial原文の該当行, 本moduleの期待行群)。関数の他の部分はTrial原文と逐語一致を要求する。
+DOCUMENTED_FUNCTION_DIVERGENCE = {"derive_ranks": (
+    '        it["role"] = "core" if it["_root"] in core else "peripheral"',
+    '        # never-core kind(year/ordinal/name_embedded, :798の不変条件)のitemは、結合概念がcoreでもperipheralにする(FXN2-E2E-02 委任_02)\n'
+    '        it["role"] = "core" if (it["_root"] in core and it["kind"] not in ("year", "ordinal", "name_embedded")) else "peripheral"')}
 
 
 class PortFidelityTests(unittest.TestCase):
@@ -224,6 +231,12 @@ class PortFidelityTests(unittest.TestCase):
             if name in DOCUMENTED_DIVERGENCE:    # 委任_02: 承認済み設計内の整合是正1件のみ。コード部は期待値と完全一致を要求
                 self.assertEqual(ours[name].split("   #")[0], DOCUMENTED_DIVERGENCE[name][1], name)
                 self.assertIn(DOCUMENTED_DIVERGENCE[name][0], trial.get(name, []), name)
+                continue
+            if name in DOCUMENTED_FUNCTION_DIVERGENCE:    # 委任_02(FXN2-E2E-02): 役割付与1行のみの意図的差分。Trial原文の該当行を置換した結果と完全一致を要求
+                old_line, new_lines = DOCUMENTED_FUNCTION_DIVERGENCE[name]
+                expected = [t.replace(old_line, new_lines) for t in trial.get(name, []) if old_line in t]
+                self.assertTrue(expected, f"{name}: trial source lacks the documented line")
+                self.assertIn(ours[name], expected, f"{name}: differs beyond the documented divergence")
                 continue
             self.assertIn(ours[name], trial.get(name, []), f"{name}: producer source differs from every Trial source")
         self.assertEqual(len(prod._PORTED_NAMES), len(set(prod._PORTED_NAMES)))

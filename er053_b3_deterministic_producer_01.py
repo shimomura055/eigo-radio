@@ -541,7 +541,8 @@ def derive_ranks(ledger_text, ordered_ids, storyline, surfaces_by_fact=None, wit
     core = set(order[:cap])
     capped_off = [concepts[k]["name"] for k in order[cap:]]
     for it in items:
-        it["role"] = "core" if it["_root"] in core else "peripheral"
+        # never-core kind(year/ordinal/name_embedded, :798の不変条件)のitemは、結合概念がcoreでもperipheralにする(FXN2-E2E-02 委任_02)
+        it["role"] = "core" if (it["_root"] in core and it["kind"] not in ("year", "ordinal", "name_embedded")) else "peripheral"
         it["eligible"] = concepts[it["_root"]]["elig"]
         it["concept"] = concepts[it["_root"]]["name"]
         it["ikey"] = "|".join(map(str, it["ckey"]))

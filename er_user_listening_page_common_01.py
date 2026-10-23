@@ -122,8 +122,9 @@ class _Tree(HTMLParser):
         self.cur.text.append(data)
 
 
+# 「音楽」は単独/括弧内/ラベル形式のみ内部情報(効果音注記)として検出し、本文中の語(音楽や動画…)は誤検知しない(FXN2-E2E-02 委任_02)
 _INTERNAL_RE = re.compile(
-    r"Voice:|Style:|base_sha|fx_20\d{6}|SUPPORT_JA|SUPPORT_|音楽|通知音|効果音|読み上げなし|fallback_used|"
+    r"Voice:|Style:|base_sha|fx_20\d{6}|SUPPORT_JA|SUPPORT_|(?:^|[\s(（\[【「『])音楽(?:$|[\s)）\]】」』:：])|通知音|効果音|読み上げなし|fallback_used|"
     r"\(A2\)|\(B1\)|B1B|PD06|\bK2\b|\bP8\b|\bP7\b|\bE1\b|\bS3\b|style_profile|slowdown|6%減速|tts_backend")
 _RAW_ID_RE = re.compile(r"^(full_story_part\d+_c\d+|key_phrase_\d+|kp\d+_en|comment_\d+|[a-z]+(_[a-z0-9]+)+)$")
 _JP_RE = re.compile(r"[ぁ-んァ-ヶ一-龥]")
