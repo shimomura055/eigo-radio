@@ -59,3 +59,11 @@
 - held-out 10KP: X2悪化0、**Cp悪化0**(05c確定後)。
 - X2p(委任_25): 差分は `TRIAL_DESIGN_06.md` §9、費用 `BUDGET_LOG_01.md` 委任_25追記。決定論集計(`metrics_05.md`): 31出力、1call平均0.1412円、gloss==naive_ja 0/31、文字数比>1.5 14/31(X2 15/31)、説明文型語尾3(X2 3)、30字超0、conveys yes/partly/no=4/4/23(X2 8/1/22)、validate互換31/31。出力欄=`x2p_fields_05.md`(判定後に開く運用)。
 - 盲検表 `fable_blind_05d.md`(X2pで新出の13文字列・10行、既出14文字列はラベル継承、arm伏せ)+`fable_blind_05d_key.json`(別ファイル)。**VALIDATED判定はしない(Fable)。** ラベル後: `report --labels fable_labels_05.json --labels_c fable_labels_05c.json --labels_d fable_labels_05d.json`。
+
+## 委任_26 追記(05dラベル確定・X2p確定値・Stage 2部分結果。2026-10-24)
+- 05dラベル(Fable、Key未開封)を `fable_labels_05d.json` に保存、注記を `FABLE_BLIND_RESULT_05.md` に逐語保存。再集計=`report_05_fable_labels_05_withc.md`(`--labels_d`付き)。
+- **X2p確定(R hard-core 4KP x 3rep=12出力)**: PASS 11 / THIN 1(`an unseen clock` rep2「値札に隠れた時間のずれ」)/ FAIL系 0 / 2rep以上失敗KP なし。旧事前宣言(THIN<=B0+1=1)も形式上満たす。X2: 8/4/0、Cp: 9/1/2、B0: 2/0/10。held-out 10KP: X2p悪化0(`a door inside the pain`はB0もTHIN)。X2p R co-KP悪化なし。
+- Fable gating基準是正(`TRIAL_DESIGN_06.md` 4-追記): (FAIL系=0, THIN<=2, 2/3以上失敗KP 0, held-out悪化0) を満たす -> Stage 2へ。
+- **Stage 2(non-R 54KP x X2p 1rep)は部分完了**: 21 job/43 KP(未実行11 KP)、4.054円で費用cap(16.0円)HALT。BUDGET_LOG_01.md参照。
+- 決定論集計(Stage 2完了43 KPのみ): gloss==naive_ja **0/43**、文字数比>1.5(対Trial_04 B0 2rep平均) **4/43**、説明文型語尾(こと/もの/ようす等)または30字超 **0/43**、B0のいずれかのrepと同一文字列 18/43、conveys yes/partly/no=6/6/31。validate互換 全74出力(Stage1+2のX2p)不合格0。
+- 盲検表 `fable_blind_05e.md`(**部分表**: 完了43KPのうち、X2p新出文字列で未ラベル=16行。B0の良い方/悪い方rep・Cp_t4と同一文字列は継承)+`fable_blind_05e_key.json`(別ファイル)。残11KPを実行すれば再生成が必要(blind_s2コマンドは完了分のみで生成)。strict(B0良い方rep基準)/lenient(悪い方rep基準)の比較はFable判定後に実施(準備済み: B0_t4/Cp_t4 ref_cells)。VALIDATED判定はしない。

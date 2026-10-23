@@ -74,3 +74,8 @@ KP集合: **R**=hard-core 4KP(`draw a line`/`an unseen clock`/`question shaped l
   - (iii) 長さ上限・説明文化禁止(同品詞・同程度の長さの句)は従来どおり。
 - 対象: R 7KP(hard-core 4+co-KP 3)x3rep + held-out 10KP x1rep(`--nheld 10`明示)。モデル=gpt-6-luna effort=high(25節例外: 評価対象がluna生成の品質そのもの)。
 - 撤去: Cp armの一時値 `PER_CALL_ARM={"Cp":0.26}` を撤去し `{}`(全arm 0.20円/call)へ戻した(残置なし)。
+
+### 4-追記 (委任_26、2026-10-24) Fableによるgating基準の是正(X2p -> Stage 2)
+- 事前宣言の(3)「THIN<=B0のTHIN数+1」は、B0がhard-coreで10/12 FAIL_LIT(THIN 0)となるため基準として機能しない(FAILはTHINより悪い状態で、THIN 0を要求すると改善armほど不利になる)。Fableは本Trialの**Stage 2進行のgating基準**を「R 12出力で (FAIL_LIT+FAIL)=0 かつ THIN<=2 かつ 2/3以上失敗KP 0、held-out悪化0」に改める(X2p確定値を見た後に置いた基準である点を開示する)。
+- これはTrialの進行判断であり、ユーザー定義品質水準・承認済みGate/仕様の変更ではない(VALIDATED判定・Production採用の基準でもない)。
+- X2p確定値(Fable盲検05/05c/05d): R 12出力 PASS 11 / THIN 1 / FAIL系 0 / 2rep以上失敗KP 0、held-out悪化 0 -> 改訂基準を満たす -> Stage 2(non-R 54KP x X2p 1rep)を実行。

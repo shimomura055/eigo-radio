@@ -22255,3 +22255,7 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - **決定(ユーザー原文=docs/pm/delegation_log/2026-10-24_PM-FAMILY-Y-BUDGET-CONSOLIDATION-01_USER.md)**: Family Y固有の累計開発予算上限(600円/650円等)を撤廃。以後はプロジェクト共通の日次1,000円(JST、他Family・並行タスク含む全体上限)で管理し、Y累計によるSTOPは廃止。費用はタスク別記録を継続。日付変更を理由とする不要な分割・延期はしない。当日累計が1,000円に近づき上限到達が見込まれる場合は事前報告(使用額・残額・継続費用見込み・残工程・追加予算要否と理由)。残予算内の作業で少額ごとの承認は求めない。追加承認なく日次1,000円を超過しない。
 - **範囲**: Family Y Persona改善Trial継続。UDR #176の予算上限変更判断は解消。ただし旧題材での再現検証・6段階方式の追加iterationなど承認範囲を超える選択肢は従来どおり判断Gate。未承認の新仕様・新Trial範囲・Production採用を自由に認めるものではない。他タスクの個別承認条件(KP案件の7-7枠等)は撤廃しない。
 - **反映**: PM_GOVERNANCE 7-9/7-7、OPEN-463、USER_DECISION_REGISTER #176、ACTIVE_TASK。実行制御の残存確認=docs/research/FAMILY-Y-VOICES-DESIGN-01/BUDGET_POLICY_CHANGE_01.md(Y累計を参照するコード/STOP条件=0件、per-run Capのみ残存)。API 0・Production変更0。
+
+## 2026-10-24 FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01 委任_26 Fable判断(Trial_05 gating基準の是正・Stage 2実行)
+- **判断(Fable)**: 事前宣言の「THIN<=B0+1」はB0がhard-coreで10/12 FAIL_LITのため機能しない。Stage 2進行のgating基準を「R 12出力で(FAIL_LIT+FAIL)=0かつTHIN<=2かつ2/3以上失敗KP 0、held-out悪化0」に是正(X2p確定値を見た後の設定である点を開示。Trialの進行判断でありユーザー定義品質水準の変更ではない)。X2p(R PASS11/THIN1/FAIL系0、held-out悪化0)は満たすためStage 2(non-R 54KP x X2p 1rep)を実行。
+- **結果**: 費用cap16.0円で自動HALT、21job/43KP完了(4.054円)、残11KP未実行。VALIDATED判定なし。記録=docs/research/FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01/TRIAL_DESIGN_06.md(4-追記)・TRIAL_05/TRIAL_RESULT_05.md・BUDGET_LOG_01.md。Production変更0。

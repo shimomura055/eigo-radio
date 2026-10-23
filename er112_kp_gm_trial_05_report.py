@@ -215,17 +215,17 @@ def cmd_blind_s2(a):
     arts = collections.defaultdict(list)
     for k in keys:
         arts[G4.art_id(A[k])].append(k)
-    x2 = {k: r for (arm, k, rep), r in new_cells().items() if arm == "X2" and rep == 1 and k in keys}
+    x2 = {k: r for (arm, k, rep), r in new_cells().items() if arm == "X2p" and rep == 1 and k in keys}
     est = len(arts) * 0.1254
     print("Stage2 non-R KP %d, X2 calls %d, 見積 %.2f円(X2実測単価0.1254円/call)、X2済み %d KP" % (len(keys), len(arts), est, len(x2)))
     if len(x2) < len(keys):
-        print("X2未実行のため盲検表は未生成(Fableの「Stage 1通過」連絡後に gen --arm X2 --set S2 --reps 1 を実行)")
-        return
+        print("WARN(委任_26): X2p S2が未完(%d/%d KP)。完了済みKPのみで盲検表を生成(部分表)" % (len(x2), len(keys)))
+        keys = [k for k in keys if k in x2]
     known = known_labels()
     rc = ref_cells(set(keys))
     cells = collections.defaultdict(lambda: collections.defaultdict(list))
     for k, r in x2.items():
-        cells[k][r["gloss"]].append("X2_t5/rep1")
+        cells[k][r["gloss"]].append("X2p_t5/rep1")
     for (arm, k, rep), g in rc.items():
         if arm in ("B0_t4", "Cp_t4"):
             cells[k][g].append("%s/rep%d" % (arm, rep))

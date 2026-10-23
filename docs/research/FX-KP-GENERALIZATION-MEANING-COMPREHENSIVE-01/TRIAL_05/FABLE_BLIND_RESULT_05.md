@@ -53,3 +53,10 @@ Fable注記(逐語): 3:A「境界線を引く」は日本語で区別の慣用�
 
 ### Fable判定の揺れ(緩化方向)
 OF-KP1-08 control再判定の一致率は7/10。不一致3件(`draw a line|区別する` THIN->PASS、`reach for someone's wallet|人の財布に手を伸ばす` FAIL->PASS、`on the throne|トップの座にいて` THIN->PASS)はいずれも前回より緩い方向。集計は前回ラベル維持で正しい(Fable判断)。
+
+## 05d ラベル(委任_26で逐語保存、Key未開封で確定)
+`fable_labels_05d.json`:
+```
+{"1:A":"PASS","1:B":"PASS","2:A":"PASS","3:A":"PASS","4:A":"PASS","5:A":"PASS","6:A":"THIN","7:A":"PASS","8:A":"PASS","9:A":"PASS","10:A":"THIN","10:B":"PASS","10:C":"PASS"}
+```
+Fable注記(逐語): 6:A「悲しみの中に見つけた、思い出と向き合い直す道」は物語解釈を含み長く説明的でTHIN(05の7:B・05cの8:Aと同基準)。10:A「時間のずれ」は「独自のタイミング」より狭くTHIN、10:B/10:Cは全体の意味を運びPASS。2:A「それだけで十分」は all it takes の意味を運びPASS。

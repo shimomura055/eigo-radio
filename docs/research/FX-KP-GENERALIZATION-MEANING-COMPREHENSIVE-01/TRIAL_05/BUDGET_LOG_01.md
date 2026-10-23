@@ -34,3 +34,9 @@
 - 費用: X2p 23 call **3.247円**(1call平均0.1412円、reasoning_tokens平均1,240)。台帳 `er112_output/kp_gm_trial_05/paid_calls.jsonl` 累計 **12.044円**(個別枠8.33円を3.714円超過=Fable委任_25で承認済みの約4.0円内)。
 - 日次(JST 10-24): 開始時約290.6円+3.25円 = **約293.8円**/1,000円。案件累計 約279円+3.25円 = **約282.3円<300円**。
 - 使用モデル: gpt-6-luna effort=high(最新系/Production系列、25節例外理由=評価対象がluna生成の品質)。
+
+# 委任_26 追記(Stage 2 X2p。2026-10-24)
+- 実行: `gen --arm X2p --set S2 --reps 1 --cap 16.0 --workers 2`(29 job見込み、見積3.64円)。1起動のみ、再起動なし。**cap 16.0円(開始時累計12.044+約4.0)で自動HALT**: 21 jobを完了(43 KP、4.054円、1call平均0.193円)、cum=16.098円(最後の1callでcap超過0.098円)、残8 job(11 KP: play a part/pull back/reach for someone's wallet/step out/stone video/supply chain/take off an ai costume/take the wheel/too broad a label/turn out/weak link)は未実行(SKIP_CAP 1+SKIP_STOP 7)。
+- 見積差: 見積0.1254円/call(X2実測)に対し実測0.193円/call(+54%、non-R batchは1callに2〜4KP入り、X2p推論token増)。完走見込み=残8 job約1.5〜1.9円、合計約5.6〜6.0円(見積3.64円の約1.6倍)。
+- 累計: 台帳(128行)12.044->**16.098円**。日次(JST 10-24)約293.8->**約297.9円**/1,000円。案件累計約282.3->**約286.4円<300円**(完走しても約288円で300円内)。個別枠8.33円は既に超過(Fable委任_25承認の約4.0円も本委任で追加4.054円使用)。
+- 再起動は委任文で許可されていないため未実行(判断候補: 残8 job約1.5〜1.9円の追加実行)。

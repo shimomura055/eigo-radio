@@ -23,7 +23,7 @@
 | X1 | 12 | 7 | 0 | 0 | 5 | 0 | 5 | ['question shaped like a trophy'] | 満たさない |
 | X2 | 12 | 8 | 4 | 0 | 0 | 0 | 0 | なし | 満たさない |
 | Cp | 12 | 9 | 1 | 0 | 2 | 0 | 2 | なし | 満たさない |
-| X2p | 12 | 6 | 0 | 0 | 0 | 6 | 0 | なし | **満たす** |
+| X2p | 12 | 11 | 1 | 0 | 0 | 0 | 0 | なし | **満たす** |
 | Cp_t4 | 4 | 3 | 1 | 0 | 0 | 0 | 0 | なし | **満たす**(n<12参考) |
 
 (Mは Trial_04の既存rep1-2 + 新規rep3。X1対M=H5の比較。)
@@ -46,33 +46,33 @@
 
 | KP | rep | B0 | M | X1 | X2 | Cp | X2p | Cp_t4 |
 |---|---|---|---|---|---|---|---|---|
-| draw a line | 1 | 一線を引く / PASS | 違いをはっきり示す / PASS | 境目をはっきりさせる / PASS | 違いをはっきり示す / PASS | 線引きをする / PASS | はっきりと区別する / ? | 区別する / THIN |
+| draw a line | 1 | 一線を引く / PASS | 違いをはっきり示す / PASS | 境目をはっきりさせる / PASS | 違いをはっきり示す / PASS | 線引きをする / PASS | はっきりと区別する / PASS | 区別する / THIN |
 | draw a line | 2 | 一線を引く / PASS | 線を引く / FAIL_LIT | 境目をはっきりさせる / PASS | 区別をつける / PASS | 線引きをする / PASS | 違いをはっきり示す / PASS | - |
 | draw a line | 3 | 線を引く / FAIL_LIT | 違いをはっきりさせる / PASS | 線を引く / FAIL_LIT | 境目をはっきり示す / PASS | 境界線を引く / PASS | 区別をはっきりさせる / PASS | - |
-| an unseen clock | 1 | 目に見えない時計 / FAIL_LIT | 見えない時計 / FAIL_LIT | 目に見えない独自の時間の流れ / PASS | 価格が変わるまでの見えない時間差 / THIN | 目に見えない時間の仕組み / PASS | 値札に隠れた独自のタイミング / ? | 目に見えないタイミングの仕組み / PASS |
-| an unseen clock | 2 | 目に見えない時計 / FAIL_LIT | 目に見えない時計 / FAIL_LIT | 目に見えない時計 / FAIL_LIT | 価格が変わるまでの見えない時間差 / THIN | 見えない時計 / FAIL_LIT | 値札に隠れた時間のずれ / ? | - |
-| an unseen clock | 3 | 目に見えない時計 / FAIL_LIT | 見えないところで時を刻む時計 / FAIL_LIT | 表には見えない独自の時間の流れ / PASS | 値札に隠れた時間差 / THIN | 目に見えない時間の仕組み / PASS | 表には見えない独自のタイミング / ? | - |
+| an unseen clock | 1 | 目に見えない時計 / FAIL_LIT | 見えない時計 / FAIL_LIT | 目に見えない独自の時間の流れ / PASS | 価格が変わるまでの見えない時間差 / THIN | 目に見えない時間の仕組み / PASS | 値札に隠れた独自のタイミング / PASS | 目に見えないタイミングの仕組み / PASS |
+| an unseen clock | 2 | 目に見えない時計 / FAIL_LIT | 目に見えない時計 / FAIL_LIT | 目に見えない時計 / FAIL_LIT | 価格が変わるまでの見えない時間差 / THIN | 見えない時計 / FAIL_LIT | 値札に隠れた時間のずれ / THIN | - |
+| an unseen clock | 3 | 目に見えない時計 / FAIL_LIT | 見えないところで時を刻む時計 / FAIL_LIT | 表には見えない独自の時間の流れ / PASS | 値札に隠れた時間差 / THIN | 目に見えない時間の仕組み / PASS | 表には見えない独自のタイミング / PASS | - |
 | question shaped like a trophy | 1 | トロフィーの形をした質問 / FAIL_LIT | 賞を通じて投げかける問い / PASS | 賞の形をした問いかけ / FAIL_LIT | 賞を通じて投げかける問い / PASS | トロフィーの形を借りた問いかけ / THIN | 賞という形で投げかける問い / PASS | 賞という形で投げかける問い / PASS |
 | question shaped like a trophy | 2 | トロフィーの形をした質問 / FAIL_LIT | トロフィーの形をした問いかけ / FAIL_LIT | 賞の形をした問いかけ / FAIL_LIT | 賞を通じて投げかける問い / PASS | 賞という形で投げかけられた問い / PASS | 賞という形で投げかける問い / PASS | - |
 | question shaped like a trophy | 3 | トロフィーの形をした質問 / FAIL_LIT | トロフィーの形をした問いかけ / FAIL_LIT | 賞の形をした問いかけ / FAIL_LIT | 賞の形を借りた問いかけ / PASS | 賞を通して投げかける問い / PASS | 賞という形で投げかける問い / PASS | - |
 | greener grass | 1 | より青く見える芝生 / FAIL_LIT | 自分より恵まれて見える人の暮らし / PASS | 人の暮らしのほうが自分より良く見えること / PASS | 他人の暮らしのほうがよく見えること / PASS | 自分の暮らしよりよく見える他人の暮らし / PASS | 自分より恵まれて見える他人の暮らし / PASS | 人のもののほうがよく見えること / PASS |
-| greener grass | 2 | より青々とした芝生 / FAIL_LIT | 他人のほうが恵まれているように見えること / PASS | 隣の芝生のほうが青く見えること / PASS | 他人のほうがよく見える状況 / THIN | 自分より恵まれて見える他人の暮らし / PASS | 人の暮らしのほうがよく見えること / ? | - |
-| greener grass | 3 | より青々とした芝生 / FAIL_LIT | 自分より恵まれて見える他人の暮らし / PASS | 人の暮らしのほうが自分よりよく見えること / PASS | 他人の暮らしのほうがよく見えること / PASS | より青々とした芝生 / FAIL_LIT | 他人の暮らしが自分よりよく見えること / ? | - |
+| greener grass | 2 | より青々とした芝生 / FAIL_LIT | 他人のほうが恵まれているように見えること / PASS | 隣の芝生のほうが青く見えること / PASS | 他人のほうがよく見える状況 / THIN | 自分より恵まれて見える他人の暮らし / PASS | 人の暮らしのほうがよく見えること / PASS | - |
+| greener grass | 3 | より青々とした芝生 / FAIL_LIT | 自分より恵まれて見える他人の暮らし / PASS | 人の暮らしのほうが自分よりよく見えること / PASS | 他人の暮らしのほうがよく見えること / PASS | より青々とした芝生 / FAIL_LIT | 他人の暮らしが自分よりよく見えること / PASS | - |
 
 ## held-out(各1rep、B0/X2/Cp/X2p)
 
 | KP | B0 | X2 | Cp | X2p | 悪化(B0=PASSでX2/Cp/X2p=THIN/FAIL/FAIL_LIT) |
 |---|---|---|---|---|---|
-| rise above | ～より大きく聞こえる / PASS | ほかの声より大きく響く / PASS | ～より大きく響く / PASS | ひときわ大きく響く / ? | なし |
-| tiny bomb | 小さな爆弾 / PASS | 小さな爆弾 / PASS | 小さな爆弾 / PASS | 小型爆弾 / ? | なし |
-| work to do | やるべきこと / PASS | これから取り組むべきこと / PASS | まだ取り組むべきこと / PASS | まだやるべきこと / ? | なし |
-| become like porches | 玄関先のような場所になる / THIN | 近所の人が気軽に立ち寄って交流できる場所になる / PASS | 人が気軽に立ち寄り、交流できる場所になる / PASS | ベンチが人々の憩いや交流の場になる / ? | なし |
+| rise above | ～より大きく聞こえる / PASS | ほかの声より大きく響く / PASS | ～より大きく響く / PASS | ひときわ大きく響く / PASS | なし |
+| tiny bomb | 小さな爆弾 / PASS | 小さな爆弾 / PASS | 小さな爆弾 / PASS | 小型爆弾 / PASS | なし |
+| work to do | やるべきこと / PASS | これから取り組むべきこと / PASS | まだ取り組むべきこと / PASS | まだやるべきこと / PASS | なし |
+| become like porches | 玄関先のような場所になる / THIN | 近所の人が気軽に立ち寄って交流できる場所になる / PASS | 人が気軽に立ち寄り、交流できる場所になる / PASS | ベンチが人々の憩いや交流の場になる / PASS | なし |
 | carry a decision's weight | 決定の重さを背負う / PASS | 決定の負担を背負う / PASS | 決定の重みを背負う / PASS | 決定の重みを背負う / PASS | なし |
-| a door inside the pain | 痛みの中にある扉 / THIN | 苦しみの中に見えた、記憶へ戻る道 / THIN | 苦しみの中にある戻り道 / THIN | 悲しみの中に見つけた、思い出と向き合い直す道 / ? | なし |
+| a door inside the pain | 痛みの中にある扉 / THIN | 苦しみの中に見えた、記憶へ戻る道 / THIN | 苦しみの中にある戻り道 / THIN | 悲しみの中に見つけた、思い出と向き合い直す道 / THIN | なし |
 | one doorway among several | いくつかある入り口の一つ / PASS | いくつもあるアクセス手段の一つ / PASS | 複数あるアクセス手段の一つ / PASS | 複数あるアクセス手段の一つ / PASS | なし |
 | inner timekeeper | 体内時計 / PASS | 体内時計 / PASS | 体内時計 / PASS | 体内時計 / PASS | なし |
-| two different speeds | 二つの異なるペース / PASS | 旅行への意識と実際の旅行計画の変化の速さの違い / PASS | 異なる二つのペース / PASS | 異なるペースで進む二つの動き / ? | なし |
-| all it takes | 必要なのは～だけ / PASS | 必要なのは～だけ / PASS | 必要なのは～だけ / PASS | それだけで十分 / ? | なし |
+| two different speeds | 二つの異なるペース / PASS | 旅行への意識と実際の旅行計画の変化の速さの違い / PASS | 異なる二つのペース / PASS | 異なるペースで進む二つの動き / PASS | なし |
+| all it takes | 必要なのは～だけ / PASS | 必要なのは～だけ / PASS | 必要なのは～だけ / PASS | それだけで十分 / PASS | なし |
 
 held-out 悪化: X2=なし Cp=なし X2p=なし(基準: 0)
 
