@@ -694,6 +694,9 @@ class AbcGoldenTests(unittest.TestCase):
                                          # FZ委任_17のZ版Style適用表script(read-only: run_e2e_03のtts_generation_results.jsonを読み
                                          # audit配下へ書くのみ。Store entry/Production出力へ書き戻さない)
                                          "er026_fz_style_table_17.py",
+                                         # FAMILY-X-NEWS-2ARTICLES-E2E-02の集計script(read-only: 完了runのtts_generation_results.jsonを読み
+                                         # docs/research配下のeval jsonへ書くのみ。Store entry/Production出力へ書き戻さない)
+                                         "er019_nws2_eval_01.py",
                                          # FAMILY-Y-VOICES-DESIGN-01 委任_05のDEV/Trial専用script(Family Y音声Trial: 完了runのtts_generation_results.jsonの本文segment entryを
                                          # 読むのみ[KP英語Store entryは読まない]。Store entry/Production出力へ書き戻さない。Production到達経路なし=test_no_production_reference)
                                          "er110_family_y_audio_report_01.py", "er110_family_y_audio_trial_01.py"}, readers)
