@@ -1,0 +1,73 @@
+E1 expl jobs 60
+('E1', 'draw a line', 1, 0.0133) cum=23.705
+('E1', 'draw a line', 3, 0.0162) cum=23.722
+('E1', 'pull someone under', 2, 0.0159) cum=23.767
+('E1', 'pull someone under', 3, 0.0174) cum=23.849
+('E1', 'pull someone under', 1, 0.0159) cum=23.914
+('E1', 'sentence someone to death', 2, 0.011) cum=24.044
+('E1', 'shine a light on', 1, 0.011) cum=24.137
+('E1', 'shine a light on', 2, 0.0126) cum=24.195
+('E1', 'sentence someone to death', 3, 0.012) cum=24.207
+('E1', 'draw a line', 2, 0.0148) cum=24.297
+('E1', 'sentence someone to death', 1, 0.0129) cum=24.310
+('E1', 'shine a light on', 3, 0.011) cum=24.518
+('E1', "reach for someone's wallet", 1, 0.012) cum=24.596
+('E1', "reach for someone's wallet", 3, 0.013) cum=24.760
+('E1', "reach for someone's wallet", 2, 0.0162) cum=24.776
+('E1', 'fire the starting gun', 1, 0.0127) cum=24.789
+('E1', 'fire the starting gun', 3, 0.0107) cum=24.913
+('E1', 'fire the starting gun', 2, 0.0129) cum=24.939
+('E1', 'carry the load', 1, 0.0129) cum=24.967
+('E1', 'carry the load', 2, 0.0132) cum=25.102
+('E1', 'brace yourself for', 3, 0.0113) cum=25.221
+('E1', 'brace yourself for', 1, 0.0132) cum=25.250
+('E1', "apply one's findings", 1, 0.0123) cum=25.296
+('E1', 'brace yourself for', 2, 0.0156) cum=25.348
+('E1', 'carry the load', 3, 0.0236) cum=25.426
+('E1', "apply one's findings", 2, 0.0151) cum=25.517
+('E1', "apply one's findings", 3, 0.0119) cum=25.740
+('E1', 'refueling support', 1, 0.0135) cum=25.754
+('E1', 'refueling support', 2, 0.0141) cum=25.822
+('E1', 'refueling support', 3, 0.0152) cum=25.852
+('E1', 'execution bell', 1, 0.0155) cum=26.071
+('E1', 'leap into action', 1, 0.0116) cum=26.206
+('E1', 'execution bell', 2, 0.0153) cum=26.221
+('E1', 'leap into action', 2, 0.011) cum=26.232
+('E1', 'leap into action', 3, 0.0122) cum=26.268
+('E1', 'execution bell', 3, 0.0149) cum=26.359
+('E1', 'take the wheel', 3, 0.0112) cum=26.489
+('E1', 'take the wheel', 1, 0.0135) cum=26.518
+('E1', 'take the wheel', 2, 0.0122) cum=26.549
+('E1', 'bring in', 1, 0.014) cum=26.673
+('E1', 'bring in', 2, 0.0173) cum=26.731
+('E1', 'bring in', 3, 0.016) cum=26.829
+('E1', 'hold on', 1, 0.0119) cum=26.884
+('E1', 'hold on', 3, 0.0114) cum=26.920
+('E1', 'letter of introduction', 1, 0.0131) cum=27.056
+('E1', 'letter of introduction', 2, 0.0119) cum=27.056
+('E1', 'hold on', 2, 0.0121) cum=27.069
+('E1', 'on the throne', 1, 0.0135) cum=27.190
+('E1', 'letter of introduction', 3, 0.0137) cum=27.204
+('E1', 'on the throne', 3, 0.0117) cum=27.323
+('E1', 'on the throne', 2, 0.0129) cum=27.336
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er112_kp_gm_trial_02.py", line 323, in <module>
+    elif a.set == "std":
+  File "C:\Users\tensh\eigo-radio\er112_kp_gm_trial_02.py", line 293, in run_expl
+    print(f.result(), "cum=%.3f" % total(), flush=True)
+                                   ~~~~~^^
+  File "C:\Users\tensh\eigo-radio\er112_kp_gm_trial_02.py", line 71, in total
+    return sum(json.loads(l).get("cost_jpy", 0) for l in LEDGER.read_text(encoding="utf-8").splitlines() if l.strip())
+  File "C:\Users\tensh\eigo-radio\er112_kp_gm_trial_02.py", line 71, in <genexpr>
+    return sum(json.loads(l).get("cost_jpy", 0) for l in LEDGER.read_text(encoding="utf-8").splitlines() if l.strip())
+               ~~~~~~~~~~^^^
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\json\__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\json\decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Unterminated string starting at: line 1 column 1 (char 0)

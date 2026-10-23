@@ -1,0 +1,46 @@
+E0@prod expl jobs 55
+('E0@prod', 'blurt', 1, 0.012) cum=25.782
+('E0@prod', 'a sense of occasion', 1, 0.0146) cum=25.852
+('E0@prod', 'a most peculiar visitor', 1, 0.0124) cum=25.968
+('E0@prod', 'behind the scenes', 1, 0.0127) cum=25.980
+('E0@prod', 'a blanket ban', 1, 0.0133) cum=26.023
+('E0@prod', "at a moment's notice", 1, 0.0127) cum=26.036
+('E0@prod', 'co-written with ai', 1, 0.0131) cum=26.326
+('E0@prod', 'division of labor', 1, 0.013) cum=26.372
+('E0@prod', 'earn such trust', 1, 0.0132) cum=26.385
+('E0@prod', 'for once', 1, 0.0127) cum=26.398
+('E0@prod', "can't wait", 1, 0.0121) cum=26.489
+('E0@prod', 'bound to the protein', 1, 0.0158) cum=26.505
+('E0@prod', 'give way', 1, 0.0158) cum=26.798
+('E0@prod', 'go cold', 1, 0.0129) cum=26.841
+('E0@prod', 'former self', 1, 0.0113) cum=26.853
+('E0@prod', "go out of one's way", 1, 0.0135) cum=26.960
+('E0@prod', 'greener grass', 1, 0.0124) cum=27.056
+('E0@prod', 'hold out', 1, 0.0153) cum=27.116
+('E0@prod', "hold out one's hands", 1, 0.0138) cum=27.177
+('E0@prod', 'houthi military targets', 1, 0.0189) cum=27.312
+('E0@prod', 'intercept', 1, 0.0139) cum=27.405
+('E0@prod', 'in the spotlight', 1, 0.0117) cum=27.417
+('E0@prod', "in someone's place", 1, 0.0155) cum=27.443
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er112_kp_gm_trial_02.py", line 325, in <module>
+    run_expl(a.arm, reps, A, keys=keys, gloss_arm=a.gloss_arm, cap=a.cap)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er112_kp_gm_trial_02.py", line 293, in run_expl
+    print(f.result(), "cum=%.3f" % total(), flush=True)
+                                   ~~~~~^^
+  File "C:\Users\tensh\eigo-radio\er112_kp_gm_trial_02.py", line 71, in total
+    return sum(json.loads(l).get("cost_jpy", 0) for l in LEDGER.read_text(encoding="utf-8").splitlines() if l.strip())
+  File "C:\Users\tensh\eigo-radio\er112_kp_gm_trial_02.py", line 71, in <genexpr>
+    return sum(json.loads(l).get("cost_jpy", 0) for l in LEDGER.read_text(encoding="utf-8").splitlines() if l.strip())
+               ~~~~~~~~~~^^^
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\json\__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\json\decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Unterminated string starting at: line 1 column 1 (char 0)

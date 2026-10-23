@@ -26,6 +26,15 @@ import er112_kp_gm_trial_01 as tr   # noqa: E402
 
 OUT = ROOT / "er112_output" / "kp_gm_trial_01"
 JDIR = OUT / "judge"
+
+
+def configure_out(out_dir):
+    """委任_07: 別Trial出力先へ切替(判定cacheと費用台帳を分離)。trial_01の既存cache/定義は変更しない。"""
+    global OUT, JDIR
+    OUT = Path(out_dir)
+    JDIR = OUT / "judge"
+    tr.LEDGER = OUT / "paid_calls.jsonl"
+    tr.OUT = OUT
 JUDGES = {"sonnet": dict(provider="anthropic", model_id="claude-sonnet-5-5"), "sol": dict(provider="openai", model_id="gpt-6.1-sol")}
 BATCH = 24
 
@@ -34,7 +43,7 @@ COMMON = ("あなたは英語学習コンテンツの独立評価者です。英
           "出力形式: 対象行ごとに1行、`<行番号> <判定文字列> <note>`。判定文字列は下記の項目を指定の順に並べた0/1の連結(区切り無し)。"
           "noteは、問題(0または1の悪い側)があるときだけ20字以内で理由を書き、問題が無ければ省略してください。\n\n")
 INSTR = {
-    "G": COMMON + ("【行の種類G: 日本語の意味(gloss)】key_phrase(英語)、source_sentence(本文の1文)、gloss(日本語の意味)があります。\n"
+    "G": COMMON + ("【行の種類G: 日本語の意味(gloss)】key_phrase(英語)、source_sentence(本文の1文)、gloss(日本語の意味)があります。gold_referenceがある行は、その表現の本文での用法と許容される語義範囲の正解ラベルです。sense_okの判断に使ってください(許容範囲内ならOK、範囲外・別用法・字義の逐語訳ならNG)。\n"
                    "- sense_ok(1/0): glossが『その本文の文での』この表現の意味を、日本語学習者に正しく伝えているか。\n"
                    "- literal(1/0): 慣用句・比喩・定型表現なのに語ごとの直訳になっていて、本来の意味が伝わらない場合に1。日本語でも同じ比喩が同じ意味で自然に通じる表現"
                    "(例: 光を当てる、一線を引く)は逐語に数えず0。本文で字義どおりに使われている場合も0。\n"
@@ -53,8 +62,16 @@ INSTR = {
                     "- core(1/0): 説明が、どの場面でも成り立つ中心的な意味だけを書いている場合に1。本文の話題に由来する条件・目的・対象(何が許容されるか、誰が何のためか、など、表現自体に含まれない限定)を含む場合は0。\n"
                     "- single(1/0): 意味が1つに絞られている場合に1。『AまたはB』のように2つの意味を併記している場合は0。\n"
                     "判定文字列の項目順: sense_ok,core,single(良い例 `111`)。\n"),
+    # 委任_07(OF-KPGM-D3-02/10): E3=E2の再定義版。E2はTrial_01再現用に凍結(定義を変えない)。
+    "E3": COMMON + ("【行の種類E3: 英語の説明(Advanced向けexplanation)の汎用性】key_phrase、source_sentence、explanation(英語1文)があります。gold_referenceがある行は、その表現の本文での用法と許容される語義範囲の正解ラベルです。sense_okの判断に使ってください(許容範囲内ならOK、範囲外・別用法ならNG)。\n"
+                    "- sense_ok(1/0): explanationが『その本文の文での』この表現の意味を正しく表しているか。\n"
+                    "- core(1/0): 説明が、どの場面でも成り立つ中心的な意味だけを書いている場合に1。表現の定義そのものに含まれる語(例: refueling supportのfuel、execution bellのexecution)は混入に数えない。"
+                    "記事の対象・目的・場面・評価条件(表現自体に含まれない、本文の話題に由来する限定。例: research、vehicles、何が許容されるか、誰が何のためか)が入っている場合だけ0。\n"
+                    "- single(1/0): 意味・用法が1つに絞られている場合に1。『異なる2つの語義・用法を並べている』場合だけ0。同じ1つの語義を同義語や言い換えで補っているだけ(例: to establish a clear boundary or limit)は1。\n"
+                    "- over_general(1/0): 本文の用法から外れた、ぼやけた一般義(例: 比喩的に使われているのに字義の一般語義だけを書く)になっている場合に1。\n"
+                    "判定文字列の項目順: sense_ok,core,single,over_general(良い例 `1110`)。\n"),
     "P": COMMON + ("【行の種類P: Std/Adv整合】同じ表現について、Standard向けの日本語の意味(gloss_ja)とAdvanced向けの英語説明(explanation_en)があります。\n"
-                   "- consistent(1/0): 2つが同じ語義(同じ中心義)を指しているか。片方が字義どおり、もう片方が比喩的意味など、語義が食い違う場合は0。\n"
+                   "- consistent(1/0): 2つが同じ用法(字義/比喩)・同じ語義を指していて矛盾がないか。表現の細かい違いや言い換えは矛盾に数えない。片方が字義どおり、もう片方が比喩的意味など、用法・語義が食い違う場合だけ0。\n"
                    "判定文字列の項目順: consistent(良い例 `1`)。\n"),
     "K": COMMON + ("【行の種類K: Key Phrase形】display(本文中の表層形)から学習用に整えたkey(提示形)があります。source_sentenceは参考です。\n"
                    "- ok(1/0): keyは英語として自然で文法的に正しく、displayの意味・用法を保った、別の場面でも再利用できる形か。\n"
@@ -62,7 +79,7 @@ INSTR = {
                    "- over(1/0): 不要な変更・意味の変化・非文法(例: someone job)がある場合に1。\n"
                    "判定文字列の項目順: ok,under,over(良い例 `100`)。\n"),
 }
-FIELDS = {"E2": ("sense_ok", "core", "single"), "G": ("sense_ok", "literal", "deictic", "specific", "multi"), "E": ("sense_ok", "specific", "narrow", "multi"),
+FIELDS = {"E2": ("sense_ok", "core", "single"), "E3": ("sense_ok", "core", "single", "over_general"), "G": ("sense_ok", "literal", "deictic", "specific", "multi"), "E": ("sense_ok", "specific", "narrow", "multi"),
           "P": ("consistent",), "K": ("ok", "under", "over")}
 _LOCK = threading.Lock()
 
@@ -225,7 +242,7 @@ def cmd_count(a):
     return 0
 
 
-GOOD = {"core": 1, "single": 1, "sense_ok": 1, "literal": 0, "deictic": 0, "specific": 0, "multi": 0, "narrow": 0, "consistent": 1, "ok": 1, "under": 0, "over": 0}
+GOOD = {"over_general": 0, "core": 1, "single": 1, "sense_ok": 1, "literal": 0, "deictic": 0, "specific": 0, "multi": 0, "narrow": 0, "consistent": 1, "ok": 1, "under": 0, "over": 0}
 
 
 def verdict_ok(kind, v):
@@ -236,6 +253,8 @@ def verdict_ok(kind, v):
         return bool(v["sense_ok"] == 1 and v["narrow"] == 0 and v["specific"] == 0)
     if kind == "E2":
         return bool(v["sense_ok"] == 1 and v["core"] == 1 and v["single"] == 1)
+    if kind == "E3":
+        return bool(v["sense_ok"] == 1 and v["core"] == 1 and v["single"] == 1 and v["over_general"] == 0)
     if kind == "P":
         return bool(v["consistent"] == 1)
     if kind == "K":

@@ -1,0 +1,46 @@
+E1 expl jobs 55
+('E1', 'blurt', 1, 0.0109) cum=25.728
+('E1', 'a sense of occasion', 1, 0.0125) cum=25.794
+('E1', 'a blanket ban', 1, 0.0116) cum=25.877
+('E1', 'behind the scenes', 1, 0.0122) cum=25.955
+('E1', 'a most peculiar visitor', 1, 0.0131) cum=25.955
+('E1', "at a moment's notice", 1, 0.0109) cum=26.010
+('E1', 'bound to the protein', 1, 0.0118) cum=26.155
+('E1', "can't wait", 1, 0.0112) cum=26.256
+('E1', 'division of labor', 1, 0.0119) cum=26.297
+('E1', 'co-written with ai', 1, 0.0131) cum=26.430
+('E1', 'former self', 1, 0.0122) cum=26.606
+('E1', 'for once', 1, 0.012) cum=26.631
+('E1', 'give way', 1, 0.0146) cum=26.782
+('E1', "go out of one's way", 1, 0.0128) cum=26.896
+('E1', 'greener grass', 1, 0.014) cum=26.934
+('E1', 'earn such trust', 1, 0.012) cum=26.946
+('E1', 'go cold', 1, 0.018) cum=27.006
+('E1', "hold out one's hands", 1, 0.0127) cum=27.116
+('E1', 'in the spotlight', 1, 0.0108) cum=27.246
+('E1', 'hold out', 1, 0.0197) cum=27.280
+('E1', 'intercept', 1, 0.0127) cum=27.293
+('E1', 'houthi military targets', 1, 0.0189) cum=27.391
+('E1', 'keep someone company', 1, 0.0111) cum=27.428
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er112_kp_gm_trial_02.py", line 325, in <module>
+    run_expl(a.arm, reps, A, keys=keys, gloss_arm=a.gloss_arm, cap=a.cap)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er112_kp_gm_trial_02.py", line 293, in run_expl
+    print(f.result(), "cum=%.3f" % total(), flush=True)
+                                   ~~~~~^^
+  File "C:\Users\tensh\eigo-radio\er112_kp_gm_trial_02.py", line 71, in total
+    return sum(json.loads(l).get("cost_jpy", 0) for l in LEDGER.read_text(encoding="utf-8").splitlines() if l.strip())
+  File "C:\Users\tensh\eigo-radio\er112_kp_gm_trial_02.py", line 71, in <genexpr>
+    return sum(json.loads(l).get("cost_jpy", 0) for l in LEDGER.read_text(encoding="utf-8").splitlines() if l.strip())
+               ~~~~~~~~~~^^^
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\json\__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\json\decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Unterminated string starting at: line 1 column 1 (char 0)

@@ -1,0 +1,72 @@
+E0@G0 expl jobs 60
+('E0@G0', 'draw a line', 2, 0.015) cum=23.653
+('E0@G0', 'pull someone under', 1, 0.0159) cum=23.653
+('E0@G0', 'draw a line', 3, 0.0174) cum=23.799
+('E0@G0', 'pull someone under', 2, 0.0172) cum=23.816
+('E0@G0', 'pull someone under', 3, 0.0194) cum=23.914
+('E0@G0', 'draw a line', 1, 0.016) cum=24.009
+('E0@G0', 'sentence someone to death', 2, 0.0125) cum=24.021
+('E0@G0', 'sentence someone to death', 1, 0.0144) cum=24.100
+('E0@G0', 'shine a light on', 1, 0.0132) cum=24.150
+('E0@G0', 'shine a light on', 2, 0.0135) cum=24.163
+('E0@G0', 'sentence someone to death', 3, 0.0146) cum=24.221
+('E0@G0', 'shine a light on', 3, 0.0135) cum=24.483
+('E0@G0', "reach for someone's wallet", 2, 0.0167) cum=24.612
+('E0@G0', 'fire the starting gun', 1, 0.0128) cum=24.642
+('E0@G0', 'fire the starting gun', 2, 0.0134) cum=24.669
+('E0@G0', "reach for someone's wallet", 1, 0.0224) cum=24.726
+('E0@G0', "reach for someone's wallet", 3, 0.0226) cum=24.841
+('E0@G0', 'fire the starting gun', 3, 0.0122) cum=24.853
+('E0@G0', 'brace yourself for', 1, 0.0152) cum=25.088
+('E0@G0', 'carry the load', 2, 0.0176) cum=25.119
+('E0@G0', 'carry the load', 1, 0.0167) cum=25.149
+('E0@G0', 'brace yourself for', 3, 0.0151) cum=25.183
+('E0@G0', 'carry the load', 3, 0.0187) cum=25.183
+('E0@G0', 'brace yourself for', 2, 0.0151) cum=25.250
+('E0@G0', "apply one's findings", 3, 0.0146) cum=25.552
+('E0@G0', 'refueling support', 2, 0.0134) cum=25.578
+('E0@G0', "apply one's findings", 1, 0.0142) cum=25.592
+('E0@G0', "apply one's findings", 2, 0.0162) cum=25.685
+('E0@G0', 'refueling support', 3, 0.0159) cum=25.782
+('E0@G0', 'refueling support', 1, 0.0143) cum=25.808
+('E0@G0', 'leap into action', 1, 0.013) cum=26.101
+('E0@G0', 'leap into action', 3, 0.0121) cum=26.131
+('E0@G0', 'leap into action', 2, 0.0126) cum=26.144
+('E0@G0', 'execution bell', 3, 0.013) cum=26.245
+('E0@G0', 'execution bell', 1, 0.0168) cum=26.285
+('E0@G0', 'execution bell', 2, 0.0159) cum=26.313
+('E0@G0', 'take the wheel', 2, 0.0132) cum=26.562
+('E0@G0', 'take the wheel', 1, 0.0132) cum=26.594
+('E0@G0', 'take the wheel', 3, 0.0131) cum=26.619
+('E0@G0', 'bring in', 2, 0.0118) cum=26.643
+('E0@G0', 'bring in', 1, 0.0149) cum=26.673
+('E0@G0', 'bring in', 3, 0.0146) cum=26.829
+('E0@G0', 'hold on', 1, 0.0122) cum=26.909
+('E0@G0', 'hold on', 3, 0.0131) cum=26.988
+('E0@G0', 'hold on', 2, 0.0127) cum=27.019
+('E0@G0', 'letter of introduction', 1, 0.0164) cum=27.132
+('E0@G0', 'letter of introduction', 2, 0.0128) cum=27.145
+('E0@G0', 'letter of introduction', 3, 0.0125) cum=27.216
+('E0@G0', 'on the throne', 1, 0.0142) cum=27.260
+('E0@G0', 'on the throne', 2, 0.0141) cum=27.372
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er112_kp_gm_trial_02.py", line 323, in <module>
+    elif a.set == "std":
+  File "C:\Users\tensh\eigo-radio\er112_kp_gm_trial_02.py", line 293, in run_expl
+    print(f.result(), "cum=%.3f" % total(), flush=True)
+                                   ~~~~~^^
+  File "C:\Users\tensh\eigo-radio\er112_kp_gm_trial_02.py", line 71, in total
+    return sum(json.loads(l).get("cost_jpy", 0) for l in LEDGER.read_text(encoding="utf-8").splitlines() if l.strip())
+  File "C:\Users\tensh\eigo-radio\er112_kp_gm_trial_02.py", line 71, in <genexpr>
+    return sum(json.loads(l).get("cost_jpy", 0) for l in LEDGER.read_text(encoding="utf-8").splitlines() if l.strip())
+               ~~~~~~~~~~^^^
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\json\__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\json\decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Unterminated string starting at: line 1 column 1 (char 0)
