@@ -52,7 +52,8 @@ def fake_generators(slow_std: bool = True, lr_clips=(), fail_clips=()):
         def fn(spec, out_path):
             if spec.clip_id in fail_clips:
                 return {"status": "STOPPED", "reason": "x"}
-            _write_tone(out_path, 1.06)
+            _adv_fast = spec.level == "b1b" and spec.kind == "dialogue" and z._CLIP_ID_RE.fullmatch(spec.clip_id) and slow_std
+            _write_tone(out_path, (1.0 / z.Z_ADV_DIALOGUE_SPEEDUP_TEMPO) if _adv_fast else 1.06)
             r = {"status": "OK", "asr_text": spec.text, "disfluency_checked": True, "text": spec.text,
                  "standard_attempts_log": [{"attempt": 1, "instruction_type": "english_style_prefix_wide_margin",
                                             "style_prefix": {"sha256": "ab" * 32, "head200": "x"},
@@ -69,10 +70,16 @@ def fake_generators(slow_std: bool = True, lr_clips=(), fail_clips=()):
                     "required": True, "primary_provider": "openai", "secondary_provider": "azure", "primary_pass": True,
                     "primary_text": _t, "primary_rescued_by_secondary": False, "primary_rescue_layers": [],
                     "secondary_called": True, "secondary_pass": True, "secondary_text": _t, "outcome": "PASS"}}
-            if spec.level == "a2" and z._CLIP_ID_RE.fullmatch(spec.clip_id) and slow_std:
+            if spec.level == "a2" and spec.kind == "narrator" and z._CLIP_ID_RE.fullmatch(spec.clip_id) and slow_std:
                 _write_tone(out_path.replace(".wav", "_original.wav"), 1.0)
                 r["slowdown_applied"] = True
-                r["slowdown_info"] = {"src_duration_seconds": 1.0, "dst_duration_seconds": 1.06}
+                r["slowdown_info"] = {"src_duration_seconds": 1.0, "dst_duration_seconds": 1.06, "slowdown_pct_target": 6.0}
+            if _adv_fast:   # 速度仕様v2: Adv会話は約6%高速化(原音1.06s -> 1.0s)
+                _write_tone(out_path.replace(".wav", "_original.wav"), 1.0)
+                r["slowdown_applied"] = True
+                r["original_path"] = out_path.replace(".wav", "_original.wav")
+                r["slowdown_info"] = {"src_duration_seconds": 1.0, "dst_duration_seconds": 1.0 / z.Z_ADV_DIALOGUE_SPEEDUP_TEMPO,
+                                      "slowdown_pct_target": z.Z_ADV_DIALOGUE_SLOWDOWN_PCT}
             return r
         return fn
     return {k: make(k) for k in ("narrator", "dialogue", "topic_intro", "preview", "comment", "japanese_title", "kp_en", "kp_ja")}
@@ -348,8 +355,13 @@ class StageGateTest(unittest.TestCase):
         self.assertEqual(row["derived_segment_id"], "full_story_part1_c2")
         self.assertEqual(row["model_ids_measured"], ["gemini-3.8-flash-lite-tts"])
         self.assertEqual(row["voice"], "Charon")
-        self.assertTrue(row["slowdown_applied"])
-        self.assertAlmostEqual(row["slowdown_ratio"], 1.06, places=2)
+        # 速度仕様v2(2026-10-23): Std会話(c2)は減速なし、Std narrator(c1)だけ6%減速
+        self.assertFalse(row["slowdown_applied"])
+        self.assertEqual(row["speed_profile"]["profile"], "std_dialogue_none")
+        nrow = [c for c in ev["clips"] if c["clip_id"] == "full_story_part1_c1"][0]
+        self.assertTrue(nrow["slowdown_applied"])
+        self.assertAlmostEqual(nrow["slowdown_ratio"], 1.06, places=2)
+        self.assertEqual(nrow["speed_profile"]["profile"], "std_narrator_slow6")
         # 配置: <run>/a2/narration/<segment>.wav
         self.assertTrue(os.path.exists(f"{self.run}/a2/narration/full_story_part1_c1.wav"))
 
@@ -489,7 +501,7 @@ class StageGateTest(unittest.TestCase):
         self.assertEqual(shared.call_args.args[1], "A2")
 
     def test_adv_gate_skips_std_slowdown(self):
-        plan, story, kp, out = self._run_stage("b1b", gen={"slow_std": False})
+        plan, story, kp, out = self._run_stage("b1b")   # 速度仕様v2: Adv会話は高速化済み(fake_generatorsが模す)。Std 6%減速gate(m1_slowdown)は対象外
         z.provision_shell_assets(self.run, "b1b", kp_count=1)
         shell = list(z.SHELL_ASSET_SOURCES) + ["kp1_number"]
         with mock.patch("er003_v1_n3_01_assemble.verify_episode_audio_validation_gate"):
@@ -642,14 +654,16 @@ class WiringTest(unittest.TestCase):
     def test_adv_dialogue_has_no_style_override_and_right_voice(self):
         import er012_b_family_voices_production_01 as bv
         spec = self._spec("b1b", "dialogue", "dionysius")
-        with mock.patch.object(bv, "generate_voice_body_wide_margin", return_value={"status": "OK"}) as m:
+        import er003_v1_n3_01_tts_generate as n3
+        with mock.patch.object(bv, "generate_voice_body_wide_margin", return_value={"status": "OK"}) as m,                 mock.patch.object(n3, "apply_a2_slowdown_postprocess", return_value={"status": "OK", "slowdown_applied": True}) as pp,                 mock.patch.object(n3.review_lock, "append_attempt_history_event"):
             z.real_generators()["dialogue"](spec, "x/b1b/narration/full_story_part1_c2.wav")
         self.assertEqual(m.call_args.args[2], "Charon")
         self.assertNotIn("style_prefix_override", m.call_args.kwargs)
+        self.assertEqual(pp.call_args.kwargs["slowdown_pct"], z.Z_ADV_DIALOGUE_SLOWDOWN_PCT)   # 速度仕様v2: Adv会話は約6%高速化(Trial Bと同一係数)
 
-    def test_std_dialogue_default_style_same_as_adv_and_postprocess_6pct_no_pd8(self):
-        # 2026-10-19 委任_04(ユーザー決定③): 期待値を意図的に更新(旧: Std Dialogue=A2_ENGLISH_STYLE_PREFIX_SLOWERを生成時に渡す)。
-        # 現: Advと同一の既定Dialogue Style(style_prefix_overrideを渡さない)+生成後6%減速のみ。
+    def test_std_dialogue_default_style_same_as_adv_and_no_speed_postprocess_no_pd8(self):
+        # 2026-10-19 委任_04(ユーザー決定③): Advと同一の既定Dialogue Style(style_prefix_overrideを渡さない)。
+        # 2026-10-23 速度仕様v2(ユーザー正式決定、旧6%減速の撤去): 期待値を意図的に更新(旧: 生成後6%減速[apply_a2_slowdown_postprocess]あり)。現: 速度後処理なし。
         import er012_b_family_voices_production_01 as bv
         import er003_v1_n3_01_tts_generate as n3
         spec = self._spec("a2", "dialogue", "melos")
@@ -658,9 +672,9 @@ class WiringTest(unittest.TestCase):
             r = z.real_generators()["dialogue"](spec, "x/a2/narration/full_story_part3_c1.wav")
         self.assertEqual(m.call_args.args[2], "Algieba")
         self.assertNotIn("style_prefix_override", m.call_args.kwargs)   # Advと同一(既定ENGLISH_STYLE_PREFIX)
-        self.assertEqual(m.call_args.kwargs, {"max_attempts": 3})
-        pp.assert_called_once()
-        self.assertTrue(r["slowdown_applied"])
+        self.assertEqual(m.call_args.kwargs, {})
+        pp.assert_not_called()
+        self.assertNotIn("slowdown_applied", r)
 
     def test_preview_comment_kp_styles(self):
         import er003_v1_sing01_voice01_generate as v1

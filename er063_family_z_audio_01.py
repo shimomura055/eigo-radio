@@ -49,6 +49,24 @@ GATE_LEVEL_STRING = {"a2": "A2", "b1b": "B1"}
 SLOWDOWN_RATIO_MIN = 1.03
 SLOWDOWN_RATIO_MAX = 1.09
 
+# FAMILY-Z-DIALOGUE-SPEED-PRODUCTION-WIRING-01(2026-10-23ユーザー正式決定=APPROVED_FOR_PRODUCTION、OPEN-462/UDR #159): Family Z会話速度仕様 v2。
+#   (level, kind) -> 速度処理: (a2,narrator)=6%減速(従来) / (a2,dialogue)=減速なし(旧6%減速を撤去) /
+#   (b1b,narrator)=処理なし(従来) / (b1b,dialogue)=生成後に約6%高速化(atempo=1.06、ピッチ保持。Trial Bと同一関数・係数)。
+# 速度処理は既存`er008.apply_a2_slowdown`(pct<0=高速化)の再利用のみ。clipのspeed_profileとreuse_key(dialogueのみ)に版を載せる。
+Z_SPEED_PROFILE_VERSION = "z_speed_v2"
+Z_ADV_DIALOGUE_SPEEDUP_TEMPO = 1.06
+Z_ADV_DIALOGUE_SLOWDOWN_PCT = (1.0 / Z_ADV_DIALOGUE_SPEEDUP_TEMPO - 1.0) * 100.0   # -5.660377... (er008のtempo=1/(1+pct/100)=1.06)
+Z_STD_NARRATOR_SLOWDOWN_PCT = 6.0
+ADV_DIALOGUE_RATIO_MIN, ADV_DIALOGUE_RATIO_MAX = 0.93, 0.96   # 現行wav/原音の長さ比(目標1/1.06=0.9434)
+STD_DIALOGUE_RATIO_MIN, STD_DIALOGUE_RATIO_MAX = 0.99, 1.01  # Std会話は原音そのまま(_original.wavが残っていれば比≈1)
+
+
+def speed_profile_name(level: str, kind: str):
+    """(level, kind)->速度profile名。story clip(narrator/dialogue)以外はNone(速度処理の対象外=従来どおり)。"""
+    table = {("a2", "narrator"): "std_narrator_slow6", ("a2", "dialogue"): "std_dialogue_none",
+             ("b1b", "narrator"): "adv_narrator_none", ("b1b", "dialogue"): "adv_dialogue_fast6"}
+    return table.get((level, kind))
+
 _CLIP_ID_RE = re.compile(r"full_story_part([1-3])_c([0-9]+)")
 
 
@@ -176,13 +194,15 @@ FAMILY_Z_ROLE_STYLE = {
     "DIALOGUE_ADV": {
         "style_label": "existing_dialogue_style(ENGLISH_STYLE_PREFIX)", "text": None, "voice": "per-speaker", "language": "en",
         "origin_kind": _ORIGIN_KIND_Z,
-        "origin": "family_z_specific: er012 generate_voice_body_wide_margin 既定(style_prefix_override=None)。Narrator Styleは混入しない",
-        "path": "er012.generate_voice_body_wide_margin"},
+        "origin": "family_z_specific: er012 generate_voice_body_wide_margin 既定(style_prefix_override=None)+生成後約6%高速化(2026-10-23速度仕様v2)。Narrator Styleは混入しない",
+        "path": "er012.generate_voice_body_wide_margin + n3_tts.generate_with_a2_slowdown_outer_loop(slowdown_pct=-5.66)"},
     "DIALOGUE_STD": {
+        # 注意: style_label末尾の"+post6%"は歴史的名称(旧6%減速)。速度仕様v2(2026-10-23)で減速は撤去済み(実際の速度処理はspeed_profile/reuse_keyが正)。
+        # labelはrun単位Style記録(inspect_run_style_record)の照合対象のため、既存run/進行中runをRECORD_MISMATCHにしないようbumpしない。
         "style_label": "existing_dialogue_style(ENGLISH_STYLE_PREFIX)+post6%", "text": None, "voice": "per-speaker",
         "language": "en", "origin_kind": _ORIGIN_KIND_Z,
-        "origin": "family_z_specific: Advと同一の既定Dialogue Style(style_prefix_override=None、生成時の減速指示なし、2026-10-19ユーザー決定③)+生成後6%減速。Narrator Styleは混入しない",
-        "path": "er012.generate_voice_body_wide_margin + n3_tts.apply_a2_slowdown_postprocess"},
+        "origin": "family_z_specific: Advと同一の既定Dialogue Style(style_prefix_override=None、生成時の減速指示なし)。速度後処理なし(2026-10-23速度仕様v2で旧6%減速を撤去)。Narrator Styleは混入しない",
+        "path": "er012.generate_voice_body_wide_margin"},
     "STD_JA_PREVIEW": {"style_label": "S3", "text": _STYLE_TEXT["S3"], "voice": "Aoede", "language": "ja",
                        "origin_kind": _ORIGIN_KIND_COMMON,
                        "origin": _ORIGIN_COMMON.format(name="SUPPORT_JA_STYLE_S3_20261017") + "(旧R2から置換)",
@@ -704,13 +724,25 @@ def style_text_for(spec: ClipSpec):
 
 
 def build_reuse_key(spec: ClipSpec) -> dict:
-    return {
+    key = {
         "canonical_text_sha256": _sha256_text(spec.text),
         "role_style_version": FAMILY_Z_ROLE_STYLE_VERSION,
         "voice": spec.voice,
         "style_prefix_sha256": style_prefix_sha256(style_text_for(spec)),
         "tts_backend": TTS_BACKEND,
     }
+    if spec.kind == "dialogue":
+        # 速度仕様v2(会話のみ速度処理が変わった)。旧仕様(Std=6%減速済み/Adv=未処理)の保存音声はこのkeyを持たず、不一致=新仕様として再利用されない。
+        # 会話以外(Narrator・Preview・KP等)は速度処理が不変のため、keyを変えず既存の再利用を維持する。
+        key["speed_profile"] = f"{Z_SPEED_PROFILE_VERSION}:{speed_profile_name(spec.level, spec.kind)}"
+    return key
+
+
+def build_legacy_reuse_key(spec: ClipSpec) -> dict:
+    """速度仕様v2導入前のreuse_key(speed_profileなし)。旧entryが『音声は有効だが速度仕様が旧い』ことの判定にだけ使う(移行専用)。"""
+    key = build_reuse_key(spec)
+    key.pop("speed_profile", None)
+    return key
 
 
 def generate_or_reuse_z(cached_entry: dict | None, spec: ClipSpec, wav_path: str, generate_fn) -> dict:
@@ -808,15 +840,17 @@ def real_generators() -> dict:
 
     def dialogue(spec, out_path):
         text = _norm_for_tts(spec)
-        if spec.level == "a2":
-            # Std: Advと同一の既定Dialogue Style(生成時の減速指示なし)+生成後6%減速(2026-10-19ユーザー決定③)。Narrator Style(PD06)は渡さない。
-            # 委任_06c(OF-AUW-C-08、原文L204「最大3回のTTS生成フロー」): 減速後NGでも通算TTS3回の残予算で取り直す外側ループ
-            # (旧: 減速後NGは再生成せずSTOPPED)。Voice・話者帰属は不変。
+        if spec.level == "b1b":
+            # FAMILY-Z-DIALOGUE-SPEED-PRODUCTION-WIRING-01(速度仕様v2): Adv会話は生成後に約6%高速化(atempo=1.06、ピッチ保持。Trial Bと同一関数・係数)。
+            # 高速化後の音声を統一judgeで再検証し、NGなら通算TTS3回の残予算で取り直す(旧Std減速と同じ外側ループ=既存のretry上限・ASR検査を維持)。
+            # 生成時Styleは従来のまま(Narrator Styleは渡さない)。Voice・話者帰属は不変。
             return n3_tts.generate_with_a2_slowdown_outer_loop(
                 spec.clip_id, text, out_path,
                 lambda max_attempts: bvoices.generate_voice_body_wide_margin(
-                    text, out_path, spec.voice, max_attempts=max_attempts))
-        return bvoices.generate_voice_body_wide_margin(text, out_path, spec.voice)  # style_prefix_overrideを渡さない
+                    text, out_path, spec.voice, max_attempts=max_attempts),
+                slowdown_pct=Z_ADV_DIALOGUE_SLOWDOWN_PCT)
+        # Std会話: 速度後処理なし(旧6%減速を撤去、速度仕様v2)。生成はAdvと同一の既定Dialogue Style(style_prefix_overrideを渡さない)。
+        return bvoices.generate_voice_body_wide_margin(text, out_path, spec.voice)
 
     def charon_en(spec, out_path):
         return voice01.generate_charon_english(
@@ -961,6 +995,23 @@ def _wav_duration(path: str):
     return float(sf.info(path).duration)
 
 
+def build_speed_profile_record(spec: ClipSpec, result: dict, out_path: str):
+    """速度仕様v2のclip単位記録(story clip=narrator/dialogueのみ。他kindはNone)。applied=実際に速度後処理が掛かったか、
+    tempo=atempo係数(減速6%=0.943396、Adv会話高速化=1.06、処理なし=None)、original_sha256=処理前原音(_original.wav)のsha。"""
+    name = speed_profile_name(spec.level, spec.kind)
+    if name is None:
+        return None
+    applied = bool(result.get("slowdown_applied"))
+    sd = result.get("slowdown_info") or {}
+    tempo = None
+    if applied and sd.get("slowdown_pct_target") is not None:
+        tempo = round(1.0 / (1.0 + sd["slowdown_pct_target"] / 100.0), 6)
+    orig = result.get("original_path")
+    return {"version": Z_SPEED_PROFILE_VERSION, "profile": name, "applied": applied, "tempo": tempo,
+            "slowdown_pct_target": sd.get("slowdown_pct_target") if applied else None,
+            "original_sha256": _sha_file(orig) if (applied and orig) else None, "source": "generated"}
+
+
 def build_entry(spec: ClipSpec, out_path: str, result: dict, *, human_approved: bool = False) -> dict:
     import er020_tts_retry_local_rewrite_01 as retry_primitive
     seg_id = derive_segment_id(out_path)
@@ -992,6 +1043,7 @@ def build_entry(spec: ClipSpec, out_path: str, result: dict, *, human_approved: 
     ratio = None
     if sd.get("dst_duration_seconds") and sd.get("src_duration_seconds"):
         ratio = round(sd["dst_duration_seconds"] / sd["src_duration_seconds"], 4)
+    speed_profile = build_speed_profile_record(spec, result, out_path)
     entry = {
         # --- 既存Gate互換 ---
         "status": status, "path": out_path, "sha256": _sha_file(out_path),
@@ -1013,7 +1065,7 @@ def build_entry(spec: ClipSpec, out_path: str, result: dict, *, human_approved: 
                                          "style_prefix_sha256": a["style_prefix_sha256"],
                                          "style_prefix_head": a["style_prefix_head"]} for a in fallback_attempts]},
         "reuse_key": build_reuse_key(spec),
-        "slowdown_ratio": ratio, "attempts": attempts,
+        "slowdown_ratio": ratio, "speed_profile": speed_profile, "attempts": attempts,
         "cooldown_occurred": bool(stop_events), "cooldown_events": stop_events,
         "audio_text_deviation": deviation,
         "tts_generations_used": result.get("tts_generations_used"),
@@ -1111,6 +1163,106 @@ def prune_cached_to_plan(cached: dict | None, plan: list) -> dict | None:
     return out
 
 
+def _speed_migration_record(spec: ClipSpec, prev: dict, **extra) -> dict:
+    return {"from": "legacy(speed_profileなし=速度仕様v1)", "to": f"{Z_SPEED_PROFILE_VERSION}:{speed_profile_name(spec.level, spec.kind)}",
+            "tts_calls": 0, "legacy_sha256": prev.get("sha256"), "legacy_duration_seconds": prev.get("duration_seconds"), **extra}
+
+
+def _migrate_one_std_dialogue(spec: ClipSpec, prev: dict, narr: str, level_dir: str):
+    """Std会話: 旧6%減速済みwavを、退避済みの減速前原音(`<id>_original.wav`)へ戻す。TTS・ASR呼出0(原音は生成時にASR検証済み)。
+    旧wavは audit/legacy_speed_backup/ へ退避してから戻す。idempotent(既にwav==originalでもentryだけ更新)。条件を満たさなければNone。"""
+    cur, orig = f"{narr}/{spec.clip_id}.wav", f"{narr}/{spec.clip_id}_original.wav"
+    if not (os.path.exists(cur) and os.path.exists(orig)):
+        return None
+    already = _sha_file(cur) == _sha_file(orig)
+    if not already:
+        try:
+            ratio = _wav_duration(cur) / _wav_duration(orig)
+        except Exception:
+            return None
+        if prev.get("slowdown_applied") is not True or not (SLOWDOWN_RATIO_MIN <= ratio <= SLOWDOWN_RATIO_MAX):
+            return None    # 旧6%減速済みと確認できない音声は移行しない(再生成経路へ)
+        bdir = f"{level_dir}/audit/legacy_speed_backup"
+        os.makedirs(bdir, exist_ok=True)
+        shutil.copyfile(cur, f"{bdir}/{spec.clip_id}_slowed6pct_legacy.wav")
+        shutil.copyfile(orig, cur)
+    new = dict(prev)
+    new.update({"sha256": _sha_file(cur), "duration_seconds": round(_wav_duration(cur), 3), "slowdown_applied": False,
+                "slowdown_ratio": None, "reuse_key": build_reuse_key(spec),
+                "speed_profile": {"version": Z_SPEED_PROFILE_VERSION, "profile": speed_profile_name(spec.level, spec.kind), "applied": False,
+                                  "tempo": None, "slowdown_pct_target": None, "original_sha256": _sha_file(orig),
+                                  "source": "migrated_from_original"},
+                "speed_migration": _speed_migration_record(spec, prev, asr_recheck="not_required(原音は生成時ASR検証済み・sha不変)")})
+    if "asr_judgement" in new:
+        new["asr_judgement_legacy_post_slowdown"] = new.pop("asr_judgement")   # 旧(減速後wav)の判定recordは別名へ退避(現行wavの判定ではない)
+    return new
+
+
+def _migrate_one_adv_dialogue(spec: ClipSpec, prev: dict, narr: str, level_dir: str):
+    """Adv会話: 未処理の旧wavへ約6%高速化を正式後処理(`apply_a2_slowdown_postprocess(slowdown_pct=-5.66)`+統一judge ASR再検証)で適用する。
+    TTS呼出0・ASR 1回/clip。`_original.wav`が残っていれば(高速化だけが先に掛かった中断)それが原音のため、wavへ戻してから適用(二重適用防止)。
+    ASR NGなら原音へ戻し、移行せずNone(通常の再生成経路=外側ループのretry上限内)。"""
+    import er003_v1_n3_01_tts_generate as n3_tts
+    cur, orig = f"{narr}/{spec.clip_id}.wav", f"{narr}/{spec.clip_id}_original.wav"
+    if not os.path.exists(cur):
+        return None
+    if os.path.exists(orig):
+        shutil.copyfile(orig, cur)
+    before_sha = _sha_file(cur)
+    stub = {"status": "OK", "asr_text": prev.get("asr_text"), "audio_text_deviation": prev.get("audio_text_deviation"),
+            "duration_seconds": prev.get("duration_seconds"), "text": prev.get("text")}
+    res = n3_tts.apply_a2_slowdown_postprocess(spec.clip_id, narr, _norm_for_tts(spec), stub, is_last_slot=True,
+                                               log_human_review=False, slowdown_pct=Z_ADV_DIALOGUE_SLOWDOWN_PCT)
+    if res.get("status") != "OK" or not res.get("slowdown_applied"):
+        if os.path.exists(orig):
+            shutil.copyfile(orig, cur)
+        return None
+    new = dict(prev)
+    sd = res.get("slowdown_info") or {}
+    ratio = round(sd["dst_duration_seconds"] / sd["src_duration_seconds"], 4) if sd.get("dst_duration_seconds") and sd.get("src_duration_seconds") else None
+    new.update({"sha256": _sha_file(cur), "duration_seconds": round(_wav_duration(cur), 3), "slowdown_applied": True,
+                "slowdown_ratio": ratio, "reuse_key": build_reuse_key(spec),
+                "speed_profile": {**build_speed_profile_record(spec, res, cur), "source": "migrated_via_formal_postprocess"},
+                "speed_migration": _speed_migration_record(spec, prev, asr_recheck="unified_judge(apply_a2_slowdown_postprocess)",
+                                                           pre_speed_sha256=before_sha,
+                                                           post_speed_asr_text=res.get("post_slowdown_asr_text"))})
+    if res.get("asr_judgement") is not None:
+        new["asr_judgement"] = res["asr_judgement"]
+    return new
+
+
+def migrate_legacy_dialogue_speed(cached: dict | None, plan: list, run_dir: str, level: str) -> tuple:
+    """速度仕様v2への移行(TTS再生成なし)。reuse_keyが『速度仕様導入前のkey』と完全一致するOKの会話entryだけを対象に、
+    Std=減速前原音へ戻す / Adv=約6%高速化を正式後処理で適用する。移行後entryは新reuse_keyを持つので通常の再利用経路へ乗る。
+    移行できない旧entryは触らない(新keyと不一致のままprune_cached_to_planで刈られ、通常の再生成経路[retry上限内]に回る=旧仕様音声が新仕様として再利用されない)。
+    戻り値=(cached, report)。"""
+    report = []
+    if not cached:
+        return cached, report
+    level_dir = f"{run_dir}/{level}"
+    narr = narration_dir_for(run_dir, level)
+    import er005_cost_logger as cl
+    for spec in plan:
+        if spec.kind != "dialogue":
+            continue
+        prev = _cached_entry(cached, spec)
+        if not prev or prev.get("status") != "OK" or "speed_profile" in (prev.get("reuse_key") or {}) or prev.get("speed_profile"):
+            continue
+        if prev.get("reuse_key") != build_legacy_reuse_key(spec):
+            continue
+        _check_stop_sentinel(run_dir, f"tts_speed_migrate:{spec.clip_id}")
+        with cl.segment_context(spec.clip_id):
+            new = (_migrate_one_std_dialogue if spec.level == "a2" else _migrate_one_adv_dialogue)(spec, prev, narr, level_dir)
+        report.append({"clip_id": spec.clip_id, "level": spec.level, "migrated": new is not None,
+                       "profile": speed_profile_name(spec.level, spec.kind)})
+        if new is not None:
+            cached["segments"][spec.clip_id] = new
+    if report:
+        os.makedirs(f"{level_dir}/audit", exist_ok=True)
+        _write_json(f"{level_dir}/audit/speed_migration_{SUB_TASK_ID}.json", {"version": Z_SPEED_PROFILE_VERSION, "clips": report})
+    return cached, report
+
+
 def _merge_checkpoint(cached: dict | None, ck: dict | None) -> dict | None:
     if not ck:
         return cached
@@ -1171,6 +1323,7 @@ def _run_tts_stage_impl(run_dir: str, level: str, plan: list, *, generators: dic
     assert_run_style_record(level_dir, level, write=False)
     cached = load_results(level_dir)
     cached = _merge_checkpoint(cached, load_checkpoint(level_dir))   # 委任_10: process中断時もOK clipを再利用(再課金しない)
+    cached, _speed_migration = migrate_legacy_dialogue_speed(cached, plan, run_dir, level)   # 速度仕様v2: 旧会話entryをTTS再生成なしで移行(ASRはAdvのみ)
     cached = prune_cached_to_plan(cached, plan)   # KPFT 委任_02(OF-KPFT-P-09): 旧rank/旧語句(reuse_key不一致。reuse_keyを持たないentryは判定不能のため従来どおり保持)を再利用経路へ入れない
     gens = generators or real_generators()
     os.makedirs(narr, exist_ok=True)
@@ -1263,6 +1416,7 @@ def _evidence_row(spec: ClipSpec, out_path: str, entry: dict) -> dict:
         "asr_text": entry.get("asr_text"), "status": entry.get("status"), "z_adoption": entry.get("z_adoption"),
         "local_rewrite_diff": entry.get("audio_text_deviation"), "cooldown_occurred": entry.get("cooldown_occurred"),
         "slowdown_applied": entry.get("slowdown_applied"), "slowdown_ratio": entry.get("slowdown_ratio"),
+        "speed_profile": entry.get("speed_profile"),
         "reused": bool(entry.get("reused_from_previous_run")), "duration_seconds": entry.get("duration_seconds"),
         "cost_jpy": entry.get("cost_jpy"),
     }
@@ -1365,6 +1519,8 @@ def verify_std_english_slowdown(level_dir: str, required_clip_entries: dict, nar
     for cid, entry in required_clip_entries.items():
         if not _CLIP_ID_RE.fullmatch(cid):
             continue
+        if (entry or {}).get("clip_kind") == "dialogue":
+            continue   # 速度仕様v2: Std会話は減速禁止(verify_z_speed_profileが検査)。本関数は6%減速必須のStd narrator story clipのみ
         ok, why = False, ""
         if (entry or {}).get("slowdown_applied") is True:
             ok, why = True, "slowdown_applied=True"
@@ -1384,6 +1540,60 @@ def verify_std_english_slowdown(level_dir: str, required_clip_entries: dict, nar
             failures.append(f"{cid}({why})")
     if failures:
         raise FamilyZSlowdownGateStop(f"Std英語Story clipに6%減速の証跡がありません: {failures}")
+    return detail
+
+
+def verify_z_speed_profile(level: str, required_clip_entries: dict, narration_dir: str) -> dict:
+    """速度仕様v2の未適用/誤適用ガード(Gate前、1つでも不合格ならFamilyZSlowdownGateStop)。
+    Std(a2): narrator story clip=6%減速必須(verify_std_english_slowdown)、dialogue=減速禁止(speed_profile=std_dialogue_none・
+    slowdown_applied非True・`_original.wav`が残っていれば現行wavとの長さ比≈1)。
+    Adv(b1b): dialogue=約6%高速化必須(speed_profile.applied・tempo≈1.06・`_original.wav`との長さ比0.93〜0.96)、narrator=処理なし。
+    旧仕様の誤適用(Std会話の減速済み/Adv会話の未処理)をここで検知する。Xには影響しない(Zのrun_audio_gateからのみ呼ぶ)。"""
+    failures, detail = [], {}
+    for cid, e in required_clip_entries.items():
+        e = e or {}
+        kind = e.get("clip_kind")
+        if kind not in ("narrator", "dialogue") or not _CLIP_ID_RE.fullmatch(cid):
+            continue
+        want = speed_profile_name(level, kind)
+        sp = e.get("speed_profile") or {}
+        why = None
+        if kind == "dialogue":
+            key_sp = (e.get("reuse_key") or {}).get("speed_profile")
+            if sp.get("profile") != want or sp.get("version") != Z_SPEED_PROFILE_VERSION:
+                why = f"speed_profile不一致(期待={want}/{Z_SPEED_PROFILE_VERSION}, 実={sp.get('profile')}/{sp.get('version')})"
+            elif key_sp != f"{Z_SPEED_PROFILE_VERSION}:{want}":
+                why = f"reuse_key.speed_profile不一致({key_sp})"
+        if why is None and kind == "dialogue":
+            orig, cur = f"{narration_dir}/{cid}_original.wav", f"{narration_dir}/{cid}.wav"
+            ratio = None
+            if os.path.exists(orig) and os.path.exists(cur):
+                try:
+                    ratio = _wav_duration(cur) / _wav_duration(orig)
+                except Exception as ex:
+                    why = f"duration unreadable: {ex}"
+            if why is None and level == "a2":
+                if sp.get("applied") or e.get("slowdown_applied") is True:
+                    why = "Std会話に速度後処理が掛かっています(旧6%減速の残存)"
+                elif ratio is not None and not (STD_DIALOGUE_RATIO_MIN <= ratio <= STD_DIALOGUE_RATIO_MAX):
+                    why = f"Std会話wav/original長さ比={ratio:.4f}(≈1必須。減速済み音声の混入疑い)"
+            elif why is None and level == "b1b":
+                if not sp.get("applied") or e.get("slowdown_applied") is not True:
+                    why = "Adv会話に高速化が掛かっていません(未処理=旧仕様)"
+                elif abs((sp.get("tempo") or 0) - Z_ADV_DIALOGUE_SPEEDUP_TEMPO) > 0.001:
+                    why = f"tempo不一致({sp.get('tempo')})"
+                elif ratio is None:
+                    why = "_original.wavが無く高速化の証跡を確認できません"
+                elif not (ADV_DIALOGUE_RATIO_MIN <= ratio <= ADV_DIALOGUE_RATIO_MAX):
+                    why = f"Adv会話wav/original長さ比={ratio:.4f}(0.93〜0.96必須)"
+        elif why is None and kind == "narrator" and level == "b1b":
+            if e.get("slowdown_applied") is True:
+                why = "Adv Narratorに速度後処理が掛かっています(変更対象外)"
+        detail[cid] = {"ok": why is None, "why": why or "ok", "profile": want}
+        if why is not None:
+            failures.append(f"{cid}({why})")
+    if failures:
+        raise FamilyZSlowdownGateStop(f"速度仕様v2({Z_SPEED_PROFILE_VERSION})違反: {failures}")
     return detail
 
 
@@ -1422,13 +1632,14 @@ def run_audio_gate(run_dir: str, level: str, plan: list, shell_names: list, *, a
     data = _read_json(f"{level_dir}/audit/tts_generation_results.json")
     entries = {cid: _lookup_entry(data, cid) for cid in ids}
     slow = None
+    speed = verify_z_speed_profile(level, {k: v for k, v in entries.items() if _CLIP_ID_RE.fullmatch(k)}, f"{level_dir}/narration")
     if level == "a2":
         slow = verify_std_english_slowdown(level_dir, {k: v for k, v in entries.items() if _CLIP_ID_RE.fullmatch(k)})
     problems = check_clip_audio_quality(f"{level_dir}/narration", {k: v for k, v in entries.items() if v and v.get("clip_kind")})
     if problems:
         raise FamilyZAudioStop(f"clip品質確認でNG: {problems}")
     deviations = {k: v["audio_text_deviation"] for k, v in entries.items() if v and v.get("audio_text_deviation")}
-    result = {"m2_complete": True, "m1_slowdown": slow, "audio_text_deviation_clips": sorted(deviations),
+    result = {"m2_complete": True, "m1_slowdown": slow, "z_speed_profile": {"version": Z_SPEED_PROFILE_VERSION, "clips": speed}, "audio_text_deviation_clips": sorted(deviations),
               "kp_vote_audit": kp_vote.assembly_audit(data, level),   # KP3V: 非blocking監査(KP英語phraseのvote証跡欠落を警告+記録)
               "audio_text_deviations": m2["audio_text_deviations"],
               "article_text_source": "canonical(原稿のまま)", "shared_gate": "skipped" if skip_shared_gate else "PASS"}
@@ -1658,7 +1869,9 @@ def build_page_rows(run_dir: str, level: str, audio_rel_prefix: str, audio_out_d
             row["style"] = (entry.get("style") or {}).get("instruction_label", "-")
             row["script"] = entry.get("canonical_text") or FIXED_SHELL_TEXT.get(cid, "未取得")
             if entry.get("slowdown_applied"):
-                row["notes"].append(f"6%減速適用(比 {entry.get('slowdown_ratio')})" if entry.get("slowdown_ratio") else "6%減速適用")
+                _tempo = (entry.get("speed_profile") or {}).get("tempo")
+                _label = "約6%高速化" if (_tempo or 0) > 1.0 else "6%減速"
+                row["notes"].append(f"{_label}適用(比 {entry.get('slowdown_ratio')})" if entry.get("slowdown_ratio") else f"{_label}適用")
             if entry.get("audio_text_deviation"):
                 row["notes"].append("Local Rewrite採用(音声は原稿から変更: " + entry["audio_text_deviation"].get("diff_summary", "") + ")")
         if part.startswith("key_phrase_"):

@@ -192,7 +192,8 @@ def _post_slowdown_unified_judge(result: dict, tts_input_text: str, asr_text: st
 
 
 def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text: str, result: dict,
-                                  is_last_slot: bool = True, log_human_review: bool = False) -> dict:
+                                  is_last_slot: bool = True, log_human_review: bool = False,
+                                  slowdown_pct: float | None = None) -> dict:
     """generate_english_segment_with_fallback()が返した通常ペースの
     結果(status=="OK")に対し、6% time-stretchを適用し、post-process後の
     音声を実際にASRで再検証した上でresultを更新する。post-process後の
@@ -219,7 +220,12 @@ def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text:
     tts_input_text, _expected_source = retry_primitive.resolve_expected_text_after_local_rewrite(result, tts_input_text)
     result["post_slowdown_expected_text_source"] = _expected_source
 
-    stretch_info = a2_slowdown.apply_a2_slowdown(original_path, out_path)
+    # FAMILY-Z-DIALOGUE-SPEED-PRODUCTION-WIRING-01: slowdown_pct=None(既定)は従来の6%減速そのまま(X/A/B/Cは引数を渡さない=出力不変)。
+    # Family Z Advanced会話の約6%高速化(負のpct、atempo=1.06)だけが明示的に渡す。ASR再検証・統一judge・original退避は共通。
+    if slowdown_pct is None:
+        stretch_info = a2_slowdown.apply_a2_slowdown(original_path, out_path)
+    else:
+        stretch_info = a2_slowdown.apply_a2_slowdown(original_path, out_path, slowdown_pct)
 
     asr_text, err = routing.transcribe(out_path, language="en-US")
     if err:
@@ -426,7 +432,7 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
     return result
 
 def generate_with_a2_slowdown_outer_loop(name: str, tts_input: str, out_path: str, gen_fn,
-                                         max_slowdown_attempts: int = 3) -> dict:
+                                         max_slowdown_attempts: int = 3, slowdown_pct: float | None = None) -> dict:
     """AUW 委任_06c(OF-AUW-C-08、ユーザー原文L204「最大3回のTTS生成フロー」): 外側ループを持たなかった
     Dialogue(Std)[`er063.dialogue` a2]/Voices A2[`er012_b_family_voices_a2_production_01`の`*_with_a2_slowdown`]向けの、
     `generate_a2_segment_with_slowdown`と同じ構造の外側ループ。`gen_fn(max_attempts)->result dict`(減速前の通常ペース生成。
@@ -451,7 +457,7 @@ def generate_with_a2_slowdown_outer_loop(name: str, tts_input: str, out_path: st
         result = apply_a2_slowdown_postprocess(
             name, narration_dir, tts_input, result,
             is_last_slot=(generations_used >= total_budget or attempt >= max_slowdown_attempts),
-            log_human_review=True)
+            log_human_review=True, **({} if slowdown_pct is None else {"slowdown_pct": slowdown_pct}))
         final_post_slowdown_ng = result.get("status") != "OK"
         slowdown_attempts_log.append({
             "attempt": attempt, "status": result.get("status"),

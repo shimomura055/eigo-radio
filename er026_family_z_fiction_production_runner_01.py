@@ -1896,7 +1896,8 @@ def mock_expl_call_fn(user_message: str):
 
 
 def mock_tts_generators() -> dict:
-    """発話長を語数から決める偽TTS(tone wav)。Std Story clipは6%減速の証跡(_original.wav + slowdown_applied)付き。"""
+    """発話長を語数から決める偽TTS(tone wav)。速度仕様v2を模す: Std Narrator story clipは6%減速、Adv会話story clipは約6%高速化
+    (いずれも_original.wav + slowdown_applied + slowdown_info付き)。Std会話・Adv Narratorは速度処理なし。"""
     import numpy as np
     import er002_common as common
     a63 = _m().a63
@@ -1914,8 +1915,10 @@ def mock_tts_generators() -> dict:
     def make(kind):
         def fn(spec, out_path):
             d = duration_of(spec)
-            is_std_story = spec.level == "a2" and a63._CLIP_ID_RE.fullmatch(spec.clip_id)
-            write_tone(out_path, d * (1.06 if is_std_story else 1.0))
+            is_story = bool(a63._CLIP_ID_RE.fullmatch(spec.clip_id))
+            is_std_story = spec.level == "a2" and spec.kind == "narrator" and is_story
+            is_adv_fast = spec.level == "b1b" and spec.kind == "dialogue" and is_story
+            write_tone(out_path, d * (1.06 if is_std_story else (1 / a63.Z_ADV_DIALOGUE_SPEEDUP_TEMPO if is_adv_fast else 1.0)))
             r = {"status": "OK", "asr_text": spec.text, "disfluency_checked": True, "text": spec.text,
                  "standard_attempts_log": [{"attempt": 1, "instruction_type": "english_style_prefix_wide_margin",
                                             "style_prefix": {"sha256": "ab" * 32, "head200": "mock"},
@@ -1931,7 +1934,13 @@ def mock_tts_generators() -> dict:
             if is_std_story:
                 write_tone(out_path.replace(".wav", "_original.wav"), d)
                 r["slowdown_applied"] = True
-                r["slowdown_info"] = {"src_duration_seconds": d, "dst_duration_seconds": d * 1.06}
+                r["slowdown_info"] = {"src_duration_seconds": d, "dst_duration_seconds": d * 1.06, "slowdown_pct_target": 6.0}
+            if is_adv_fast:
+                write_tone(out_path.replace(".wav", "_original.wav"), d)
+                r["slowdown_applied"] = True
+                r["original_path"] = out_path.replace(".wav", "_original.wav")
+                r["slowdown_info"] = {"src_duration_seconds": d, "dst_duration_seconds": d / a63.Z_ADV_DIALOGUE_SPEEDUP_TEMPO,
+                                      "slowdown_pct_target": a63.Z_ADV_DIALOGUE_SLOWDOWN_PCT}
             return r
         return fn
     return {k: make(k) for k in ("narrator", "dialogue", "topic_intro", "preview", "comment", "japanese_title",
@@ -2052,6 +2061,9 @@ def build_parser():
     parser.add_argument("--slug", default=None, help="出力ディレクトリ名(既定: --storyと同じ)")
     parser.add_argument("--run", default=E2E_DEFAULT_RUN)
     parser.add_argument("--stage", default="all", choices=list(E2E_STAGES) + ["all"] + list(LEGACY_STAGES))
+    parser.add_argument("--stages", default=None,
+                        help="カンマ区切りのstage名(E2E_STAGES内)を1回の起動でE2E順に実行する(例 tts_b1b,tts_a2,gate,assemble)。"
+                             "--stageとの併用不可。既存runの後段だけを再実行する用途(5分3起動のRESTART_STORMを避け、起動を1回にする)")
     parser.add_argument("--mode", default="dry-run", choices=("dry-run", "mock", "real"))
     parser.add_argument("--dry-run", action="store_true", help="legacy(Phase 1 text/keyphrase)互換。--mode dry-run と同じ")
     parser.add_argument("--only-clips", default=None, help="カンマ区切りclip id(TTS stageの当該clipのみ再実行)")
@@ -2102,6 +2114,16 @@ def main(argv=None):
         return 0
 
     stages = list(E2E_STAGES) if args.stage == "all" else [args.stage]
+    if args.stages:
+        if args.stage != "all":
+            print("[STOP] --stages と --stage は併用できません", file=sys.stderr)
+            return 2
+        want = [x.strip() for x in args.stages.split(",") if x.strip()]
+        bad = [x for x in want if x not in E2E_STAGES]
+        if bad or not want:
+            print(f"[STOP] --stages に不正なstage名: {bad}(許可={list(E2E_STAGES)})", file=sys.stderr)
+            return 2
+        stages = [x for x in E2E_STAGES if x in want]      # E2E順に正規化(重複は除く)
     if args.stop_after:
         stages = stages[: stages.index(args.stop_after) + 1]
     only = {c.strip() for c in args.only_clips.split(",") if c.strip()} if args.only_clips else None

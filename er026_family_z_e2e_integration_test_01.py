@@ -192,7 +192,13 @@ class MockFullPipelineTest(unittest.TestCase):
         voices = {adv[k]["voice"] for k in clip_ids}
         self.assertIn("Aoede", voices)                    # narrator
         self.assertTrue(voices & {"Charon", "Erinome", "Algieba"})   # dialogue clipは別Voice
-        self.assertTrue(all(std[k]["slowdown_applied"] is True for k in std if re.fullmatch(r"full_story_part[1-3]_c[0-9]+", k)))
+        # 速度仕様v2(2026-10-23): Std narratorのみ6%減速、Std会話は減速なし。Adv会話のみ高速化、Adv narratorは処理なし。
+        for k in std:
+            if re.fullmatch(r"full_story_part[1-3]_c[0-9]+", k):
+                self.assertEqual(std[k]["slowdown_applied"] is True, std[k]["clip_kind"] == "narrator", k)
+                self.assertEqual(std[k]["speed_profile"]["profile"], "std_narrator_slow6" if std[k]["clip_kind"] == "narrator" else "std_dialogue_none")
+        for k in clip_ids:
+            self.assertEqual(adv[k]["slowdown_applied"] is True, adv[k]["clip_kind"] == "dialogue", k)
 
     def test_gate_and_assembly(self):
         for lv in ("b1b", "a2"):
