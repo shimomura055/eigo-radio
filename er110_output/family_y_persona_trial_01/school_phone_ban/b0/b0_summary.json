@@ -1,0 +1,102 @@
+{
+  "summary": {
+    "P": [
+      {
+        "run": 1,
+        "base": "A",
+        "pass": true,
+        "fail_fields": [],
+        "quoted": ""
+      },
+      {
+        "run": 2,
+        "base": "B",
+        "pass": true,
+        "fail_fields": [],
+        "quoted": ""
+      },
+      {
+        "run": 3,
+        "base": "C",
+        "pass": true,
+        "fail_fields": [],
+        "quoted": ""
+      }
+    ],
+    "N1": [
+      {
+        "run": 1,
+        "base": "B",
+        "pass": false,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_discovery_syntax"
+        ],
+        "quoted": "調べた研究では、校内の使用を制限した高校のほうが、授業に集中しやすいという結果が出ている。"
+      },
+      {
+        "run": 2,
+        "base": "C",
+        "pass": false,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_discovery_syntax"
+        ],
+        "quoted": "調べた研究では、校内の使用を制限した高校のほうが、授業に集中しやすいという結果が出ている。"
+      },
+      {
+        "run": 3,
+        "base": "A",
+        "pass": false,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground",
+          "leak_unknowable_analysis",
+          "leak_discovery_syntax"
+        ],
+        "quoted": "調べた研究では、校内の使用を制限した高校のほうが、授業に集中しやすいという結果が出ている。"
+      }
+    ],
+    "N2": [
+      {
+        "run": 1,
+        "base": "C",
+        "pass": false,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_discovery_syntax"
+        ],
+        "quoted": "ある研究が、禁止した高校では生徒の集中が上がると示したらしい、と聞いた。"
+      },
+      {
+        "run": 2,
+        "base": "A",
+        "pass": false,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_discovery_syntax"
+        ],
+        "quoted": "ある研究が、禁止した高校では生徒の集中が上がると示したらしい、と聞いた。"
+      },
+      {
+        "run": 3,
+        "base": "B",
+        "pass": false,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground",
+          "leak_unknowable_analysis",
+          "leak_discovery_syntax"
+        ],
+        "quoted": "ある研究が、禁止した高校では生徒の集中が上がると示したらしい、と聞いた。"
+      }
+    ]
+  },
+  "verdict": {
+    "positive_control_P_all_pass": true,
+    "negative_control_N1_all_fail": true,
+    "negative_control_N2_all_fail": true
+  },
+  "judge": "gpt-6-luna high(M7校正済み現行判定・許容リストなし)",
+  "note": "P=本人主語の伝聞1文(PASS期待) / N1=研究主語(FAIL期待) / N2=研究主語の伝聞形(FAIL期待)。各3回(base A/B/Cをラテン方陣で回転)"
+}

@@ -1,0 +1,104 @@
+{
+  "run": 1,
+  "slots": {
+    "voice_1": {
+      "base": "A",
+      "variant": "P"
+    },
+    "voice_2": {
+      "base": "B",
+      "variant": "N1"
+    },
+    "voice_3": {
+      "base": "C",
+      "variant": "N2"
+    }
+  },
+  "sections": {
+    "voice_1": "現場の仕事で、帰りはいつも遅い。家に着くと、娘は居間でスマホを見ている。取り上げると、翌朝の食卓が冷える。俺が聞いた話だと、国も高校は校内で使うのを控えさせる考えらしい。この前も、娘に「みんなは返事が早いのに、私だけ遅れると外される」と言われて、俺は何も言えなかった。学校が決めてくれたら、俺は楽になる。正直、そう思う。家では俺ひとりが悪者だ。結局、楽したいだけなんだよな、俺は。",
+    "voice_2": "朝いちばんの保健室に、眠そうな子が来る。この前も、ベッドで寝ている子の枕元で画面が光っていた。眠い、って。調べた研究では、校内の使用を制限した高校のほうが、授業に集中しやすいという結果が出ている。頭が痛い、って。それを見ていると、夜のことが気になる。取り上げて、それで安心していいのかな。私は、保健室まで没収の場にしたくない。そう思う。",
+    "voice_3": "僕は昼、倉庫で荷物を仕分けして、夜に定時制へ通ってる。授業中は鞄の奥に入れる。約束する。ある研究が、禁止した高校では生徒の集中が上がると示したらしい、と聞いた。でも、朝から預けっぱなしは無理だ。休憩中にシフトの連絡が来る。返事が遅いと、他の人に回される。信用をなくしたくない。決める前に、僕らの話を聞いてほしい。",
+    "tension": "3人とも、スマホで子どもが困らないでほしいと思っている。ただ、困る場所が違う。夜の居間のカゴ、朝の保健室のベッド、休憩中に届くシフトの連絡。守りたいものも、それぞれ違う。あなたの家では、夜、スマホはどこに置いてある?"
+  },
+  "check": {
+    "model": "gpt-6-luna",
+    "effort": "high",
+    "meta": {
+      "response_id": "resp_0460c497192ed029006adb083d94e887d189072d122024da95",
+      "model": "gpt-6-luna",
+      "usage": {
+        "input_tokens": 2292,
+        "output_tokens": 2203
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_2",
+        "paragraph_index": 2,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_discovery_syntax"
+        ],
+        "reasoning": "調査研究を主語にした結果の説明があり、発見を報じる文構造になっています。一方、具体的な数字はなく、眠そうな子どもや保健室での経験、没収の場にしたくないという本人の懸念が中心です。",
+        "quoted_evidence": "調べた研究では、校内の使用を制限した高校のほうが、授業に集中しやすいという結果が出ている。"
+      },
+      {
+        "section": "voice_3",
+        "paragraph_index": 3,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_discovery_syntax"
+        ],
+        "reasoning": "研究結果を主語にした報告があり、「示した」という発見・報告の構文が使われています。具体的な数字はなく、倉庫の仕事やシフト連絡への対応など、本人の経験と必要が前面に出ています。",
+        "quoted_evidence": "ある研究が、禁止した高校では生徒の集中が上がると示したらしい、と聞いた。"
+      }
+    ],
+    "any_flagged": true
+  },
+  "parsed": {
+    "voice_1": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_position_blur": "PASS",
+      "reasoning": "調査・研究を主語にした文や具体的な数字はありません。父親としての疲れや娘とのやりとり、学校に決めてほしいという気持ちが本人の語りとして描かれ、他のVoiceの中心的な懸念を代弁していません。",
+      "quoted_evidence": ""
+    },
+    "voice_2": {
+      "leak_evidence_subject": "FAIL",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "PASS",
+      "leak_position_blur": "PASS",
+      "reasoning": "調査研究を主語にした結果の説明があり、発見を報じる文構造になっています。一方、具体的な数字はなく、眠そうな子どもや保健室での経験、没収の場にしたくないという本人の懸念が中心です。",
+      "quoted_evidence": "調べた研究では、校内の使用を制限した高校のほうが、授業に集中しやすいという結果が出ている。"
+    },
+    "voice_3": {
+      "leak_evidence_subject": "FAIL",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "PASS",
+      "leak_position_blur": "PASS",
+      "reasoning": "研究結果を主語にした報告があり、「示した」という発見・報告の構文が使われています。具体的な数字はなく、倉庫の仕事やシフト連絡への対応など、本人の経験と必要が前面に出ています。",
+      "quoted_evidence": "ある研究が、禁止した高校では生徒の集中が上がると示したらしい、と聞いた。"
+    },
+    "tension": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_tension_reverts_to_research": "PASS",
+      "leak_binary_camp_split": "PASS",
+      "reasoning": "調査や数字の説明に戻らず、夜の居間・朝の保健室・休憩中の連絡という異なる場面と、それぞれが守りたいものを対比しています。3人を単純な2対1の陣営に分けていません。",
+      "quoted_evidence": ""
+    }
+  },
+  "prompt_sha256": "a4a66d9b0320ad28223e2f750d7bb3e46421f231a796bc6ecff92434de346621"
+}

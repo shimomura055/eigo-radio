@@ -1,0 +1,108 @@
+{
+  "run": 3,
+  "slots": {
+    "voice_1": {
+      "base": "C",
+      "variant": "P"
+    },
+    "voice_2": {
+      "base": "A",
+      "variant": "N1"
+    },
+    "voice_3": {
+      "base": "B",
+      "variant": "N2"
+    }
+  },
+  "sections": {
+    "voice_1": "僕は昼、倉庫で荷物を仕分けして、夜に定時制へ通ってる。授業中は鞄の奥に入れる。約束する。俺が聞いた話だと、国も高校は校内で使うのを控えさせる考えらしい。でも、朝から預けっぱなしは無理だ。休憩中にシフトの連絡が来る。返事が遅いと、他の人に回される。信用をなくしたくない。決める前に、僕らの話を聞いてほしい。",
+    "voice_2": "現場の仕事で、帰りはいつも遅い。家に着くと、娘は居間でスマホを見ている。取り上げると、翌朝の食卓が冷える。調べた研究では、校内の使用を制限した高校のほうが、授業に集中しやすいという結果が出ている。この前も、娘に「みんなは返事が早いのに、私だけ遅れると外される」と言われて、俺は何も言えなかった。学校が決めてくれたら、俺は楽になる。正直、そう思う。家では俺ひとりが悪者だ。結局、楽したいだけなんだよな、俺は。",
+    "voice_3": "朝いちばんの保健室に、眠そうな子が来る。この前も、ベッドで寝ている子の枕元で画面が光っていた。眠い、って。ある研究が、禁止した高校では生徒の集中が上がると示したらしい、と聞いた。頭が痛い、って。それを見ていると、夜のことが気になる。取り上げて、それで安心していいのかな。私は、保健室まで没収の場にしたくない。そう思う。",
+    "tension": "3人とも、スマホで子どもが困らないでほしいと思っている。ただ、困る場所が違う。夜の居間のカゴ、朝の保健室のベッド、休憩中に届くシフトの連絡。守りたいものも、それぞれ違う。あなたの家では、夜、スマホはどこに置いてある?"
+  },
+  "check": {
+    "model": "gpt-6-luna",
+    "effort": "high",
+    "meta": {
+      "response_id": "resp_0df2e48d2b7b1ce6006adb086a0fa487d1a1b6db789b60313f",
+      "model": "gpt-6-luna",
+      "usage": {
+        "input_tokens": 2292,
+        "output_tokens": 2840
+      }
+    },
+    "flagged_items": [
+      {
+        "section": "voice_2",
+        "paragraph_index": 2,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground",
+          "leak_unknowable_analysis",
+          "leak_discovery_syntax"
+        ],
+        "reasoning": "家での親子の気まずさや父親自身の後悔は具体的だが、研究結果を根拠として挿入し、本人の経験から離れた分析的な説明になっている。研究の記述はあるものの、全体としては娘の言葉や父親の葛藤の方が印象に残る。",
+        "quoted_evidence": "調べた研究では、校内の使用を制限した高校のほうが、授業に集中しやすいという結果が出ている。"
+      },
+      {
+        "section": "voice_3",
+        "paragraph_index": 3,
+        "fail_fields": [
+          "leak_evidence_subject",
+          "leak_numbers_foreground",
+          "leak_unknowable_analysis",
+          "leak_discovery_syntax"
+        ],
+        "reasoning": "保健室で見た子どもの様子と、没収の場にしたくないという本人の懸念が中心にある。一方、研究結果を引いて集中力の変化を述べる箇所は、当事者の経験より外部の分析を持ち込む記事的な説明になっている。",
+        "quoted_evidence": "ある研究が、禁止した高校では生徒の集中が上がると示したらしい、と聞いた。"
+      }
+    ],
+    "any_flagged": true
+  },
+  "parsed": {
+    "voice_1": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_position_blur": "PASS",
+      "reasoning": "倉庫の仕事や授業中の対応、シフト連絡への心配を本人の一人称で語っている。政策への言及はあるが、研究やデータを根拠として論じたり、相手側の中心的な懸念を代弁したりはしていない。",
+      "quoted_evidence": ""
+    },
+    "voice_2": {
+      "leak_evidence_subject": "FAIL",
+      "leak_numbers_foreground": "FAIL",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "FAIL",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "PASS",
+      "leak_position_blur": "PASS",
+      "reasoning": "家での親子の気まずさや父親自身の後悔は具体的だが、研究結果を根拠として挿入し、本人の経験から離れた分析的な説明になっている。研究の記述はあるものの、全体としては娘の言葉や父親の葛藤の方が印象に残る。",
+      "quoted_evidence": "調べた研究では、校内の使用を制限した高校のほうが、授業に集中しやすいという結果が出ている。"
+    },
+    "voice_3": {
+      "leak_evidence_subject": "FAIL",
+      "leak_numbers_foreground": "FAIL",
+      "leak_narrator_analysis": "PASS",
+      "leak_unknowable_analysis": "FAIL",
+      "leak_discovery_syntax": "FAIL",
+      "leak_evidence_memorable": "PASS",
+      "leak_position_blur": "PASS",
+      "reasoning": "保健室で見た子どもの様子と、没収の場にしたくないという本人の懸念が中心にある。一方、研究結果を引いて集中力の変化を述べる箇所は、当事者の経験より外部の分析を持ち込む記事的な説明になっている。",
+      "quoted_evidence": "ある研究が、禁止した高校では生徒の集中が上がると示したらしい、と聞いた。"
+    },
+    "tension": {
+      "leak_evidence_subject": "PASS",
+      "leak_numbers_foreground": "PASS",
+      "leak_discovery_syntax": "PASS",
+      "leak_evidence_memorable": "PASS",
+      "leak_tension_reverts_to_research": "PASS",
+      "leak_binary_camp_split": "PASS",
+      "reasoning": "研究や比較結果ではなく、各人が気にかける場所や守りたいものの違いを並べている。3人を2対1の陣営に分類せず、それぞれの事情として提示している。",
+      "quoted_evidence": ""
+    }
+  },
+  "prompt_sha256": "050c1ceaede1b81751544abb9775b45c11766c11b3515660f9dfd10eea073dd1"
+}
