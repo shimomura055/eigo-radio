@@ -103,3 +103,6 @@ Std誤りでない入力でのAdv NG: A 0/55(Opusの59/60の残りが全てPASS)
 - Std確定FAIL: G0=3(字義訳2[unseen clock×2]+文法・意味関係1[reach])/G2=1(字義訳1[draw a line])/G3=2(文法・意味関係2[apply、reach])。語義誤認・その他・原因不明は各0。`settle at`(G0 rep2)は境界ではなく△(NGではない)に確定。△: G0=1/G2=3/G3=4。
 - 「0/120伝染」は分母の誤り。正=誤りgloss入力1件中0件、薄い入力2件中0件。Std誤り→Adv波及は難例1/5(約2割)、通常0/1。「59/60」はOpus確定gold基準、Sonnet暫定は45/60。
 - 未判明のまま残す: Opus個別判定ログ無し/Std G3「25〜26/26」の未特定1件/E0@G2・G3「22」母集団の厳密同定/Trial_03 G3 draw a line rep2は欠損補修の再実行出力/DEV E0は1KP/callでProduction(5KP/call)とバイト同一ではない(PROMPT_SHA256未記録)/「伝染0」は実行層目視のみ。
+
+## Fable訂正(2026-10-23、ユーザー指摘反映)
+所有者誤りNGと分類した3出力(Trial_03: G0 reach「人の財布」、G3 reach「誰かの財布」、G3 apply「人の研究結果」)は、見出し語(`reach for someone's wallet` / `apply one's findings`)に忠実な訳であり**NGから外す**。「見出し語の人称placeholder不整合(生成器の誤りではない)」として別掲。Std確定NGは G0=2(an unseen clock×2、字義訳)・G2=1(draw a line字義訳)・G3=0。Adv 59/60の唯一のNG(reach rep1 "another person's wallet")も見出し語に忠実で、Std意味生成の誤りに起因するAdv NGは0件。詳細: `FABLE_VERIFICATION_02.md`、見出し語の出所と規定: `HEADWORD_PLACEHOLDER_01.md`。上表・本文の旧分類(所有者誤り、Std誤り→Adv波及1/5)は元記録として残す。

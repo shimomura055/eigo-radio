@@ -408,3 +408,6 @@ Sonnet暫定のG0 22/26(85%)とOpus 24/26(92%)の差は、Sonnetの『deictic(�
 
 - reachの「人の財布」(G0)・「誰かの財布」(G3)は所有者誤り(someone'sは本文では自分の)に統一。字義訳ではない。
 - FABLE_BLIND_RESULT_03の「G0=3 KP」は境界を含む表記。確定FAIL3出力は2 KP(reach 1、unseen clock 2)。
+
+## Fable訂正(2026-10-23、ユーザー指摘反映)
+「所有者誤り(文法・意味関係NG)」とした reach(G0「人の財布」/G3「誰かの財布」)・apply(G3「人の研究結果」)は見出し語どおりの訳でありNGから外す(見出し語の人称placeholder不整合として別掲)。Std確定NG(各120出力)は G0=2(an unseen clock×2)、G2=1(draw a line字義訳)、G3=0。元表・感度記述は残す。根拠は `FABLE_VERIFICATION_02.md`、見出し語の出所は `HEADWORD_PLACEHOLDER_01.md`。

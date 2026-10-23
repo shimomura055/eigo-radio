@@ -337,3 +337,6 @@ Std判定=Fable盲検最終判定(FABLE_BLIND_RESULT_03.md)。Adv判定=Sonnet�
 ## 8. 補足: A/B以外のE行(参考・今回の対象外)
 
 T2にはE0@prod(通常55、Production gloss入力、Sonnet暫定のみ)・E1(115)・E1c(77)・E4(52)がある。これらはStd glossを入力にしない、または別Promptであり、今回の『Std誤り→Adv波及』分析の対象外。
+
+## Fable訂正(2026-10-23、ユーザー指摘反映)
+59/60の唯一のNG(reach rep1 "to move your hand toward another person's wallet to take or use it")は見出し語 "someone's" に忠実な出力でStdと整合している。「Std誤り→Adv波及 1/5」は「見出し語不整合→Std/Advが揃って見出し語に従った1件」に訂正、Std意味生成の誤りに起因するAdv NGは0件。元の分類(i)は記録として残す。根拠は `FABLE_VERIFICATION_02.md`・`HEADWORD_PLACEHOLDER_01.md`。
