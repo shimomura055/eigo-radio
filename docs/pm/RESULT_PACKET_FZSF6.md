@@ -1,0 +1,9 @@
+# RESULT_PACKET_FZSF6 (FAMILY-Z-SOURCE-FIDELITY-AND-PROPER-NOUN-01 委任_06)
+結論: Phase 3受入はSSOT反映済み(commit 22bb3502a)。Phase 4は tts_b1b で HR Lock 2clip(`Bertie`)により rc=2 停止、有料run再起動なし。tts_a2以降・試聴ページ(family_z_open_window_02)は未実行。累計37.2円/上限100円。
+原因: PNAP(er103)が `Bertie`(CMU収録人名、引用符内/文頭)を固有名詞証拠なし(NO_PROPER_NOUN_EVIDENCE)で不受理 -> ASR `Birdie` -> NG_BOTH -> HR Lock。Ledger surfaceに`bertie`があれば受理(同module再現、API 0)。Validator不具合でなく承認済みP-02の想定外ケース。
+追加所見: 最終種明かし文 `Vera's speciality` が ASR `specialty` でNG x2 -> 10分cooldown -> Local Rewriteで音声は `forte`(脚本と不一致、PASS_WITH_WARNING)。
+再開に必要: (A)Ledger B階層 `Bertie` 人承認登録 or (B)PNAP証拠源へSeed人物名追加(仕様変更) or (C)HR Lock解除 + `speciality` 綴り異形の扱い。さらに pages_dir が registry 固定で `family_z_open_window_01`(上書き禁止)のため、`family_z_open_window_02` に出すにはregistry 1行(e2e_pages_dir)+registry test 2行の変更が必要(コード変更禁止のため未実施、auto modeが拒否)。
+全回帰: collected 6951 / passed 6940 / failed 1 / errors 0 / skipped 10。failed=er019_family_x_fx_20261016_wiring_01_test_01 test_fallback_used_consumers_do_not_read_kp_english_entries(readersに er110_family_y_audio_report_01.py / er110_family_y_audio_trial_01.py が新規出現=Family Y側DEV。未編集。(α)許可リスト追加が妥当だが、Y agent作業中のため未着手)。前回のer053/er095の2件はY agent側のallowlist追加で既にPASS、T3(r)もPASS。自分起因failed 0。
+詳細: docs/research/FAMILY-Z-SOURCE-FIDELITY-AND-PROPER-NOUN-01/PHASE4_RESULT_01.md
+RESULT_PACKET 4行: (1)既存仕様整合=er103_proper_noun_alarm_policy_01.py:167-232(P-02)/:393-398(P-03)、PHASE4_RESULT_01.md、委任文§2。(2)未承認機能の既定値=本委任で新規機能追加なし(コード変更0)。(3)失敗終了時の最終成果物=run_sf_prod_01/{writer/r2.md,std.md, support/, key_phrases/, b1b/narration(36 OK wav+2 STOPPED), b1b/audit/*, voice_assignment.json}。Adv音声は全編未完(2clip欠)、Std音声なし、ページなし=試聴可能な完成候補は未成立。目的(完成候補02の試聴)は未達。(4)撤去・残置=なし。Grep該当なし。
+判定整合: 重大NG=あり(Phase 4完成候補が成立していない[HR Lock停止]。主因=NO_PROPER_NOUN_EVIDENCE[Bertie]、是正対象=Ledger登録orPNAP証拠源、STOP理由=HR Lock+再起動禁止、提示=不可)

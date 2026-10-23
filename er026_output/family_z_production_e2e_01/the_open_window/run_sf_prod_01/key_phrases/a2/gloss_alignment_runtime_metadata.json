@@ -1,0 +1,120 @@
+{
+  "article_id": "family_z_the_open_window_a2",
+  "version": "ER-003-KP-GLOSS-ALIGN-02",
+  "final_status": "ALIGN_PASS",
+  "targets": [
+    1,
+    2,
+    3
+  ],
+  "unresolved_ranks": [],
+  "mapping_gate": false,
+  "rules_sha256": "fa5ae89cd739f5fd0a06de92c29c7eb1056a4a755b6fd4a745d49da37e894760",
+  "cost_jpy": 0.1589,
+  "attempts_detail": [
+    {
+      "attempt": 1,
+      "target_ranks": [
+        1,
+        2,
+        3
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_04e4d15ff5226079006adace00783c87d09ec2710b0d61c5bd",
+      "usage": {
+        "input_tokens": 2254,
+        "output_tokens": 1536,
+        "cached_input_tokens": 0
+      },
+      "cost_jpy": 0.1589,
+      "status": "ALIGN_PASS",
+      "n_valid": 3,
+      "n_items": 3
+    }
+  ],
+  "item_log": {
+    "1": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "紹介状",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "current_japanese_glossがnullのため新規生成です。「letter of introduction」全体の意味を「紹介状」で表しています。",
+        "added_word_mappings": [],
+        "machine_check": {
+          "required_words": [],
+          "covered": {},
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true,
+          "note": "必須内容語なし(機械検査対象外)"
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.1589,
+        "model": "gpt-6-luna"
+      }
+    ],
+    "2": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "ぞっとする",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "current_japanese_glossがnullのため新規生成です。文脈に合う「急に恐怖を感じる」という意味を「ぞっとする」で表しています。「する」がgoの意味に対応します。",
+        "added_word_mappings": [
+          {
+            "english_word": "go",
+            "japanese_span": "する"
+          }
+        ],
+        "machine_check": {
+          "required_words": [
+            "go"
+          ],
+          "covered": {
+            "go": "する"
+          },
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.1589,
+        "model": "gpt-6-luna"
+      }
+    ],
+    "3": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "息をするのに苦しむ",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "current_japanese_glossがnullのため新規生成です。「struggle for breath」全体の、息をするのが困難で苦しむという意味を表しています。",
+        "added_word_mappings": [],
+        "machine_check": {
+          "required_words": [],
+          "covered": {},
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true,
+          "note": "必須内容語なし(機械検査対象外)"
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.1589,
+        "model": "gpt-6-luna"
+      }
+    ]
+  }
+}

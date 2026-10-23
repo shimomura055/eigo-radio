@@ -1,0 +1,60 @@
+{
+  "attempt_number": 1,
+  "route": "custom_60ebc452",
+  "segment_id": "kp1_en",
+  "theme_id": "run_sf_prod_01",
+  "level": "b1b",
+  "source_out_path": "er026_output/family_z_production_e2e_01/the_open_window/run_sf_prod_01/b1b/narration/kp1_en.wav",
+  "saved_at": "2026-10-23T12:12:33",
+  "sha256": "c4c4b3278edf38aed47df912db2d26bd2c647186a831e07b744890204b910056",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Say only this phrase, exactly once, without adding, omitting, or changing any words, and make sure the final sound is actually spoken.",
+  "asr_text": "Give way.",
+  "audio_classification": "NORMALIZED_MATCH",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": true,
+  "disfluency_checked": true,
+  "disfluency_evidence": {
+    "flagged": false,
+    "repeats": [],
+    "word_count": 2,
+    "transcript": "Give  way.",
+    "method": "faster_whisper_small_local_verbatim"
+  },
+  "repetition_qa_checked": false,
+  "repetition_qa_evidence": null,
+  "scg_info": null,
+  "asr_prompt_applied": true,
+  "non_latin_cascade_enabled": true,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": true,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "Give way.",
+      "classification": "NORMALIZED_MATCH",
+      "entity_like_source": []
+    },
+    {
+      "step": "secondary_vote",
+      "provider": "azure",
+      "text": "Give way.",
+      "classification": "NORMALIZED_MATCH",
+      "phrase_list_used": false,
+      "azure_phrase_list_weight": null,
+      "azure_phrase_list": [],
+      "cached": false,
+      "unified_judge_state": "PASS",
+      "vote_required": true,
+      "entity_like_source": []
+    }
+  ]
+}
