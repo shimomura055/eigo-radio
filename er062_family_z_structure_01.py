@@ -66,6 +66,11 @@ STORY_VOICE_ROSTER = {
         {"speaker": "mrs_sappleton", "gender": "female", "order": 3, "first_appearance": "叔母の登場後の引用('I hope you've enjoyed talking to my niece...')"},
         {"speaker": "men", "gender": "male", "order": 4, "first_appearance": "狩りから戻る男たち(歌声'Oh, brother...'・夫の'Who's the man...')"},
     ),
+    "after_twenty_years": (
+        {"speaker": "bob", "gender": "male", "order": 1, "first_appearance": "冒頭の最初の引用(店の戸口で待つ男Bob『It's all right, officer.』)"},
+        {"speaker": "patrolman", "gender": "male", "order": 2, "first_appearance": "2番目の引用(巡回中の警官『Until five years ago.』。正体はJimmyで、最後の手紙の書き手と同一人物=同一Voice)"},
+        {"speaker": "detective", "gender": "male", "order": 3, "first_appearance": "3番目の話者(長いオーバーコートの背の高い男=私服刑事『Is that you, Bob?』)"},
+    ),
 }
 # 作品単位のpin(既存確定値の固定)。メロスは2026-10-21 U:§7「メロス完成版は変更しない」により受入済み成果物のVoiceを
 # 変更しない(pin値=受入済みfamily_z_melos_02の実使用値。規則適用値との差分は仕様差分として報告済み・変更はユーザー承認事項)。
@@ -181,6 +186,35 @@ STORY_SPEAKER_CONFIG = {
         "dialogue_voice_tts_names": derive_dialogue_voice_tts_names("the_open_window"),
         "speaker_aliases": {"framton": "framton", "vera": "vera", "mrs_sappleton": "mrs_sappleton", "men": "men",
                             "narrator": "narrator"},
+    },
+    # 『二十年後』(O. Henry、FAMILY-Z-AFTER-TWENTY-YEARS-PRODUCTION-01 委任_02、data表の値追加のみ)。待つ男Bob(男)、巡回中の警官=Jimmy Wells(男。最後の手紙の書き手と同一人物で同一Voice)、私服刑事(男)。
+    # Voiceは導出(roster/規則参照)。"other"は想定外話者(Melos同様STOP)。
+    "after_twenty_years": {
+        "speakers": ("bob", "patrolman", "detective", "other", "narrator"),
+        "z_voice_keywords": {
+            "bob": ["bob"],
+            "patrolman": ["patrolman", "policeman", "officer", "jimmy"],
+            "detective": ["detective", "tall man", "plain clothes", "plain-clothes"],
+        },
+        "attr_roster_text": (
+            "- \"bob\": Bob, the man from the West who waits in the doorway for his old friend\n"
+            "- \"patrolman\": the patrolman on the beat who talks with Bob and walks on; also the writer of the final note signed Jimmy (the note is spoken in this voice)\n"
+            "- \"detective\": the tall man in the long overcoat, a plain clothes officer who pretends to be Jimmy and arrests Bob\n"
+            "- \"other\": any other speaker (a stranger, a crowd, etc.)\n"
+            "- \"narrator\": the line is not spoken by a character (e.g. a quoted phrase used by the narrator)"),
+        "attr_caution_text": (
+            "Be careful: a name or role that appears NEAR a quote is not always the speaker (for example, in "
+            "'\"Is that you, Jimmy Wells?\" cried the man in the door.' the speaker is bob, and the tall man who answers him is the detective; "
+            "the text of the note that ends the story is written by the patrolman, signed Jimmy)."),
+        "dialogue_voice_keywords": {
+            "bob": ["bob"],
+            "patrolman": ["patrolman", "policeman", "officer", "jimmy"],
+            "detective": ["detective", "tall man", "plain clothes", "plain-clothes"],
+        },
+        # 正式Voice表+決定的割当規則から導出(未割当/fail-closedの値Noneは残さない)。
+        "dialogue_voice_tts_names": derive_dialogue_voice_tts_names("after_twenty_years"),
+        "speaker_aliases": {"bob": "bob", "patrolman": "patrolman", "detective": "detective", "narrator": "narrator",
+                            "jimmy": "patrolman"},
     },
 }
 
@@ -811,6 +845,17 @@ STORY_LINT_CONFIG = {
         "spoiler_ja": ["作り話", "でっち上げ", "嘘", "うそ", "偽り", "種明かし", "ハッタリ"],
         "spoiler_en": ["made up", "made-up", "invented", "a lie", "was lying", "lied", "tall tale", "the truth is",
                        "romance at short notice", "a hoax"],
+    },
+    # 『二十年後』(FAMILY-Z-AFTER-TWENTY-YEARS-PRODUCTION-01 委任_02): 同一機構(story_key別config)の値。
+    # forbidden_names=主人公Bob・Jimmy(Seed source_essentials.key_roles)以外の人名(店主のBrady)。
+    # spoiler_*=結末(警官の正体=Jimmy、Bobが指名手配犯で逮捕される、私服刑事の登場)を先回りする語(一般語は入れない)。
+    "after_twenty_years": {
+        "forbidden_names": ["Brady", "ブレイディ", "ブレイディー", "ブラディ"],
+        "spoiler_ja": ["指名手配", "逮捕", "私服刑事", "警官の正体", "巡査の正体", "警官こそ", "巡査こそ", "警官が親友",
+                       "親友が警官", "友人が警官", "ジミー本人"],
+        "spoiler_en": ["wanted man", "wanted in chicago", "under arrest", "arrested", "plain clothes", "plain-clothes",
+                       "was the policeman", "was the patrolman", "the policeman was jimmy", "the patrolman was jimmy",
+                       "turns out", "the twist"],
     },
 }
 

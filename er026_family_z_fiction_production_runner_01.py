@@ -223,8 +223,43 @@ OPEN_WINDOW_RIGHTS_BLOCK = {
 }
 
 
+# 『二十年後』(O. Henry)のrights block(FAMILY-Z-AFTER-TWENTY-YEARS-PRODUCTION-01 委任_02、data表の値追加のみ)。
+# 出典・確認日付き。法的最終判断ではない。計算根拠は『開いた窓』と同形式(没年+50年+戦時加算3,794日)。
+# legal_use_basisは『開いた窓』と同じユーザー決定(2026-09-26、REPORT §6)の(1)〜(5)と採用文の逐語転記。
+AFTER_TWENTY_YEARS_RIGHTS_BLOCK = {
+    "author": "William Sydney Porter (筆名 O. Henry / オー・ヘンリー)",
+    "author_death_date": "1910-06-05",
+    "jp_public_domain_basis": (
+        "日本の著作権保護期間は、2018年末のTPP11整備法による70年化以前は"
+        "死後50年だった。Porter(O. Henry)は1910-06-05没(米国人、"
+        "en.wikipedia.org/wiki/O._Henry、確認2026-10-23、HTTP 200)。死後50年は没年の翌年から起算し"
+        "1960-12-31に満了。連合国(米国)国民の著作権には、1941-12-07以前に取得された著作権について"
+        "連合国及び連合国民の著作権の特例に関する法律(昭和27年法律第302号)の戦時加算3,794日が"
+        "加算される(英国・米国・豪州・カナダ・仏等は3,794日、en.wikipedia.org/wiki/Copyright_law_of_Japan、"
+        "確認2026-10-23、HTTP 200)。"
+        "1960-12-31+3,794日=1971-05-22に日本での保護は満了(計算値)。本作は1906年発表"
+        "(短編集'The Four Million'、1906年)で取得時期は1941-12-07以前。2018年末の70年化は、"
+        "1999〜2018-12-29に満了済みの作品には遡及しない(en.wikipedia.org/wiki/Copyright_law_of_Japan、"
+        "確認2026-10-23、HTTP 200)ため、日本において1971-05-22以降パブリックドメイン。"
+        "Project Gutenberg(#2776、'The Four Million')が全文を公開している。最終的な法的判断ではない。"
+    ),
+    "source_url": "https://www.gutenberg.org/cache/epub/2776/pg2776.txt",
+    "source_card_url": "https://www.gutenberg.org/ebooks/2776",
+    "confirmed_date": "2026-10-23",
+    "us_copyright_status_record_only": (
+        "記録事項(必須条件ではない、日本国内向けサービスのため)。1906年発表の"
+        "作品は1931年より前の出版であり、Cornell University Library "
+        "\"Copyright Term and the Public Domain in the United States\" "
+        "チャート(https://copyright.cornell.edu/publicdomain、確認2026-10-23)で"
+        "「Before 1931: In the public domain」に該当し米国PD。最終的な法的判断ではない。"
+    ),
+    "legal_use_basis": OPEN_WINDOW_RIGHTS_BLOCK["legal_use_basis"],
+    "gate_reference": "FICTION-FAMILY-Z-RIGHTS-RECHECK-01_REPORT.md §6 (2026-09-26); FAMILY-Z-AFTER-TWENTY-YEARS-PRODUCTION-01 (2026-10-23)",
+}
+
+
 # ============================================================
-# Story Registry ("melos" / "the_open_window")
+# Story Registry ("melos" / "the_open_window" / "after_twenty_years")
 # ============================================================
 TRIAL_SEED_DIR = (
     "er018_output/fiction_external_seed_selection_criteria_trial_02/"
@@ -286,6 +321,27 @@ STORY_REGISTRY = {
         },
         # 正式Voice表+決定的割当規則(er062 derive_dialogue_voice_tts_names)から導出。speaker_configと同一値。
         "voice_tts_names_plan": _st062.derive_dialogue_voice_tts_names("the_open_window"),
+    },
+    "after_twenty_years": {
+        "e2e_management_id": "FAMILY-Z-AFTER-TWENTY-YEARS-PRODUCTION-01",
+        "e2e_theme_tag": "FAMILY_Z_AFTER_TWENTY_YEARS_PRODUCTION_01",
+        "e2e_pages_dir": "user_test/family_z_after_twenty_years_01",
+        "page_title_ja": "二十年後",
+        "audio_file_prefix": "AfterTwentyYears",
+        "story_type": "literature",
+        "topic_title": "After Twenty Years",
+        "japanese_title_text": "二十年後(After Twenty Years)",
+        "japanese_title_tts": "二十年後",
+        "trial_seed_dir": "er026_seeds/after_twenty_years",
+        "rights_block": AFTER_TWENTY_YEARS_RIGHTS_BLOCK,
+        "speaker_config": _st062.STORY_SPEAKER_CONFIG["after_twenty_years"],
+        "voice_keywords": {
+            "bob": ["bob"],
+            "patrolman": ["patrolman", "policeman", "officer", "jimmy"],
+            "detective": ["detective", "tall man", "plain clothes"],
+        },
+        # 正式Voice表+決定的割当規則(er062 derive_dialogue_voice_tts_names)から導出。speaker_configと同一値。
+        "voice_tts_names_plan": _st062.derive_dialogue_voice_tts_names("after_twenty_years"),
     },
 }
 

@@ -524,7 +524,7 @@ def build_r0_prompt(seed: dict, story_type: str = "literature", essentials: "Ess
 
 # story別の主人公名(REVISE_USER_TMPLの「only <名前> may have a personal name」に入る。Story名の差替えのみ。Melosは従来文言と同一)。
 # the_open_window: 2026-10-23 "Framton Nuttel"->"Framton"(一方の名前のみ。ユーザー決定の目標=FramtonとVera、Opus論点4 must-fix)。
-STORY_MAIN_CHARACTER = {"melos": "Melos", "the_open_window": "Framton"}
+STORY_MAIN_CHARACTER = {"melos": "Melos", "the_open_window": "Framton", "after_twenty_years": "Bob"}
 
 
 def build_revise_prompt(body: str, story_key: str = "melos", essentials: "Essentials | None" = None) -> str:
