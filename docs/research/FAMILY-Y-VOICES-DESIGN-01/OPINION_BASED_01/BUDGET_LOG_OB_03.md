@@ -27,3 +27,10 @@ stdout控え(`run_03.log`): gen +13.637(54.7秒) → map1 +0.533(87.4秒) → un
 - **run_03 実績: 23.667円**(承認上限25円以内)、所要約209秒。Gate(Leakage判定)は累計22円超のため`SKIPPED_BUDGET`(01から続く歯止め。再起動なし)。
 - 本委任の有料支出合計: **23.667円**(run_03のみ。testは`--paid`を与えない隔離で、API呼出0)。0円作業: Fable評価記録、起動ガード、OPEN-493修正、集計。
 - 10-24日次累計: 委任_21までの約390円(`BUDGET_LOG_OB_02.md` §3) + 23.667円 = **約413.7円**(本案件の把握分。他案件=KP委任_30・ASR委任_05等の並行支出は含まない)。日次1,000円の範囲内。
+
+## 委任_23 追記: Leakage Gate後追い(2026-10-24)
+
+- 承認: Fable委任_23(Gate後追い、上限2円、本文の再生成なし)。run_03の`voices_final.json`(本文)に対し、`run_gate_pl`を`max_judgements=1`で1回だけ実行(判定gpt-6-luna、effort=high。flag時の書換(sol)は構造上発生しない設定。実際はflagなし)。使い捨てスクリプトはscratchpad(リポジトリ外)、費用ログは`run_03/raw_usage_log_gate.jsonl`(別file)。
+- 結果: **PASS**(7項目x3 Voice=21項目、flagged 0、n_fail_fields 0)。証跡=`run_03/gate_voices/{leak_check_1,gate_result,final_texts}.json`。`run_03/run_status.json`と`state.json`のgate_statusを`SKIPPED_BUDGET`->`PASS`に更新(`gate_status_original`・`gate_status_note`で後追いと明記、本文・final_textsは不変)。
+- 費用: 本委任のAPI支出 **0.109円**(上限2円以内)。run_03の合計 23.667 + 0.109 = **23.776円**。再起動0回、Python環境は`.venv`(stop_scope_check: rc=0 非停止、`docs/pm/delegation_log/2026-10-24_FYV23_stop_check.json`)。
+- 10-24日次累計(本案件の把握分): 約413.7円 + 0.109円 = **約413.8円**(他案件の並行支出は含まない)。日次1,000円の範囲内。

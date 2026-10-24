@@ -17,3 +17,16 @@
 (F) 総合: 02a>02b>旧R0。改善方針①〜⑤は達成。Fable判定Status(本委任のrun_03の結果で確定): 定義混入が解消されれば **VALIDATED(限定: 1テーマ・同一題材での複数run、Production採用はユーザー判断、OPEN-484の正式経路未整備)**、解消しなければ VALIDATED_LIMITED(残存=定義混入、開示済み)。
 
 (G) 予算事故(委任_21、testの承認ファイル読込バグで実runを2回誤起動、約50.6円、承認45円→実績約91.1円): Fable判断=事故費用として記録・追認(日次1,000円の範囲内、承認枠45円は拡大しない、Scope変更なし)。再発防止はtest側のAPI隔離(`read_cap(path=None)`)に加え、起動ガード(委任_22 §3: `--paid`)を追加する。
+
+## 委任_23 Fable判定(委任_22の問いへの回答。Fable委任文の逐語転記。記録者: Sonnet(委任_23))
+
+1. V2第4文「そこは自分でも都合がいいのかもしれない」= 高校生が自分の留保に自分で気づく自己評価であり、Sheetの感情の癖の範囲。出来事の追加でない。受入。
+2. V1第9文の迷いの結び = TBS-07「助かる」と「守りたい」の矛盾欄に対応し、USER_07④「葛藤は残す」に合致。受入。
+3. V3の軽い反復(第4・6・7文で同じ心配の言い換え)= 捏造・逸脱ではなく文体上の弱さ。run_02a V3の方が引き締まっている。USER_07④は機械的回数制限を禁じているため、是正は次回Trial以降の一般指示(考え方C)の効き具合で見る。VALIDATEDを妨げない。
+4. 定義混入(02a/02bの残存問題)は run_03 で解消(定義由来の出典外意見0、捏造0、最終UNMAPPED 0/0/0)。
+5. **Status(Fable)**: Leakage GateがPASSすれば **VALIDATED(限定)** — 限定条件=(a)1テーマ(SNS年齢制限)・同一題材3 run(02a/02b/03)のみで、他テーマの再現性は未証明、(b)Production採用はユーザー判断(APPROVED_FOR_PRODUCTIONではない)、(c)Family Y正式経路は未整備(OPEN-484)、(d)TBS権利確認は公開前の宿題、(e)目視照合は1名。GateがFAILなら VALIDATED_LIMITED とし原因を記録。
+6. 予算事故(約50.6円)のFable追認は委任_22で記録済み。本委任の支出はGate後追いのみ(約0.3円、上限2円)。
+
+### Gate結果(Sonnet実測)と確定Status
+- run_03 Leakage Gate後追い: **PASS**(判定1回、3 Voice x 7項目=21項目中flagged 0、書換0、本文不変)。実費0.109円(見込み約0.3円・上限2円以内)。証跡=`er110_output/family_y_opinion_based_02/sns_age_limit/run_03/gate_voices/`、費用=`BUDGET_LOG_OB_03.md`。
+- **確定Status: VALIDATED(限定)**(Fable判定5の条件「GateがPASS」を満たした。限定条件(a)〜(e)は上記5のとおり。APPROVED_FOR_PRODUCTIONでもPRODUCTION_WIREDでもない)。

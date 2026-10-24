@@ -3,6 +3,7 @@
 機械指標はローカル正規表現(`scripts/aggregate_03.py`=`aggregate_02.py`の関数を再利用、API 0、結果を見て調整していない)。**合否ではなく目視の補助**。Fable判定欄は空欄。構造タグ(冒頭型・結び型)は各runのluna判定。数値の詳細は`structure_metrics_03.json`。
 
 **注意: run_03は費用が累計22円を超えたためGate(Leakage判定)が`SKIPPED_BUDGET`で実行されていない(01/02と同じ歯止め。run_02aはGate実行、run_02bは一部実行)。**
+**【委任_23追記】上記Gate未実行は委任_23で後追い実行済み: Leakage Gate=PASS(判定1回、0/21 flagged、書換0、本文不変、0.109円)。Fable判定欄は委任_23で記入済み(Fable判定の逐語=FABLE_EVAL_02.md「委任_23 Fable判定」節)。**
 
 ## (A) V1の比較(同じ人物。run_02a / run_02b / run_03。盲検ではない)
 
@@ -30,9 +31,9 @@
 | 結びが冒頭と近いか(last_vs_first_echo) | False | False | False |
 | 文数 / 字数 | 9文 / 271字 | 8文 / 277字 | 9文 / 269字 |
 | 結びの型(luna) / (正規表現) | 迷いを残して締める / その他 | 迷いを残して締める / その他 | 迷いを残して締める / その他 |
-| Fable判定: 定義由来の出典外意見の有無 | | | |
-| Fable判定: 葛藤が残っているか | | | |
-| Fable判定: 冗長か | | | |
+| Fable判定: 定義由来の出典外意見の有無 | (FABLE_EVAL_02: 定義混入あり) | (FABLE_EVAL_02: 定義混入あり) | **なし**(委任_23 Fable判定: 解消) |
+| Fable判定: 葛藤が残っているか | (FABLE_EVAL_02) | (FABLE_EVAL_02) | 残っている(第9文の迷いの結び=TBS-07「助かる」と「守りたい」の矛盾欄に対応、USER_07④に合致。受入) |
+| Fable判定: 冗長か | (FABLE_EVAL_02) | (FABLE_EVAL_02) | 冗長でない |
 
 ## (B) V2/V3の絶対評価
 
@@ -69,9 +70,9 @@
 | 一人称の望み(ほしい・たい等)の文の数 | 1 | 3 | 1 | 1 | 1 | 1 |
 | 反復ペア数(repetition_report。記録専用) | 0 | 0 | 1 | 0 | 0 | 0 |
 | 結びが冒頭と近いか | False | False | False | False | False | False |
-| Fable判定: テーマ一言テスト |  |  |  |  |  |  |
-| Fable判定: 制度設計の解説(その人が言いそうにない文)の有無 |  |  |  |  |  |  |
-| Fable判定: 自然さ(V3は同じたとえ・同じ心配の反復も) |  |  |  |  |  |  |
+| Fable判定: テーマ一言テスト | (FABLE_EVAL_02) | (FABLE_EVAL_02) | 言える | (FABLE_EVAL_02) | (FABLE_EVAL_02) | 言える |
+| Fable判定: 制度設計の解説(その人が言いそうにない文)の有無 | (FABLE_EVAL_02) | (FABLE_EVAL_02) | なし | (FABLE_EVAL_02) | (FABLE_EVAL_02) | なし |
+| Fable判定: 自然さ(V3は同じたとえ・同じ心配の反復も) | (FABLE_EVAL_02) | (FABLE_EVAL_02) | 良(第4文「そこは自分でも都合がいいのかもしれない」=高校生の自己評価で出来事の追加でない。受入) | (FABLE_EVAL_02) | (FABLE_EVAL_02) | 可(第4・6・7文で同じ心配の言い換え=文体上の弱さ。捏造・逸脱でない。02a V3の方が引き締まっている) |
 
 ## (C) 3人全体の冒頭型・結び型
 
@@ -93,7 +94,7 @@
 
 - run_03: 結びの型(luna)の種類=3/3、冒頭型(luna)の種類=3/3
 
-| Fable判定: 結びの型が分かれているか / 冒頭の型が別々か | |
+| Fable判定: 結びの型が分かれているか / 冒頭の型が別々か | luna判定は結び3/3・冒頭3/3(Fableの個別判定指示なし。委任_22時点の記録のまま) |
 |---|---|
 | run_02a | |
 | run_02b | |
@@ -121,8 +122,8 @@
 |---|---|---|
 | run_02a | 20.639 | PASS |
 | run_02b | 19.796 | PASS |
-| run_03 | 23.667 | SKIPPED_BUDGET |
+| run_03 | 23.667(本文生成まで。後追いGate=0.109円、合計23.776) | SKIPPED_BUDGET -> **PASS(委任_23で後追い実行。判定1回・0/21 flagged・書換0・本文不変)** |
 
 | Fable判定: 世界設定の定義由来の出典外意見が解消したか(Status確定: VALIDATED限定 / VALIDATED_LIMITED) | |
 |---|---|
-| run_03 | |
+| run_03 | 解消(定義由来の出典外意見0、捏造0、最終UNMAPPED 0/0/0)。後追いLeakage Gate PASS。**確定Status=VALIDATED(限定)**(限定条件=FABLE_EVAL_02「委任_23 Fable判定」節) |
