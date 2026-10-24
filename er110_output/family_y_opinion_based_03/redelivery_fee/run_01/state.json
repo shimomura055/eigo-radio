@@ -1,0 +1,900 @@
+{
+  "management_id": "FAMILY-Y-VOICES-DESIGN-01",
+  "models": {
+    "writer": "gpt-6.1-sol",
+    "judge": "gpt-6-luna"
+  },
+  "stages": {
+    "gen": {
+      "voice_1": {
+        "text": "私は毎日、荷物を配って回る中で、不在票を入れて次の家へ向かうことがある。少し気持ちが沈む。届けられなかった荷物をまた届けに行く、そのきつさは身にしみている。ただ、その分をお客さんごとに請求して済ませるより、運ぶ料金全体で受け止める形のほうが、私には筋が通るように思える。できれば不在での再配達は減ってほしいのに、有料にするとなると、どうも賛成しきれないんだ。会社には、通販の送料無料を見直すことも含めて、運ぶ手間をどう料金に入れるか考えてほしい。再配達の分を誰から取るかだけでなく、配る人にちゃんと回るような送料のつけ方にしてもらいたい。",
+        "monitors": {
+          "note": "記録専用。合否に使わない",
+          "chars": 269,
+          "sentences": 7,
+          "mean_sentence_chars": 38.4,
+          "max_sentence_chars": 57,
+          "numbers": [],
+          "exclamations": 0,
+          "question_marks": 0,
+          "role_words": [],
+          "interview_expr": [],
+          "self_intro_pattern": false,
+          "first_person_count": 2,
+          "ends_with_question": false,
+          "last_sentence": "再配達の分を誰から取るかだけでなく、配る人にちゃんと回るような送料のつけ方にしてもらいたい。"
+        },
+        "problems_per_try": [
+          []
+        ],
+        "prompt_sha256": "7c82623a277a2eb65b6b39666b07d807090f15dff2cd02a49eccddc7c73ade6b"
+      },
+      "voice_2": {
+        "text": "再配達にお金がかかるって、すんなり受け入れられないんだよね。わたしも夫も仕事があるから、日中ずっと家にはいられない。指定できる荷物は、ちゃんと家にいる日と時間にしてる。それでも午前に指定した荷物が来なくて、用事を済ませに出て、戻ったら不在票が入っていたことがある。有料にする前に、まず指定した時間に来てほしいし、指定できない荷物もいつ届くのか分かるようにしてほしい。配達員さんも追い込まれて大変なんだろうし、仕方ないのかなとも思うけど、そこでわたしがお金を払うのは納得できない。受け取ろうとして待っていたのに、それでもわたしが悪いの？",
+        "monitors": {
+          "note": "記録専用。合否に使わない",
+          "chars": 267,
+          "sentences": 7,
+          "mean_sentence_chars": 38.1,
+          "max_sentence_chars": 56,
+          "numbers": [],
+          "exclamations": 0,
+          "question_marks": 1,
+          "role_words": [],
+          "interview_expr": [],
+          "self_intro_pattern": false,
+          "first_person_count": 3,
+          "ends_with_question": true,
+          "last_sentence": "受け取ろうとして待っていたのに、それでもわたしが悪いの？"
+        },
+        "problems_per_try": [
+          []
+        ],
+        "prompt_sha256": "6a177465a06f9a7628df8d3eec7e54effcab9f5927ac6388cce2cc8cfa8334eb"
+      },
+      "voice_3": {
+        "text": "僕は再配達で迷惑をかけないよう、営業所やロッカーで受け取るようにしている。自分の都合で取りに行けるのは便利なんだけど、商品によってはロッカーを選べないし、営業所に頼んでも届くのが遅れて、結局は対面で受け取ることもある。それでも、こっちは受け取り方を考えて手間をかけているのに、いつも不在で再配達を頼む人と同じ料金なのは、正直おかしいと思う。配達する人の時間を使うんだから、再配達は有料でいい。最初の再配達は無料にして、くり返し不在になる人から払ってもらう形なら納得できる。ただ、これは営業所が近くて、受け取り方を選べる僕の言い分かもしれないけど。",
+        "monitors": {
+          "note": "記録専用。合否に使わない",
+          "chars": 273,
+          "sentences": 6,
+          "mean_sentence_chars": 45.5,
+          "max_sentence_chars": 72,
+          "numbers": [],
+          "exclamations": 0,
+          "question_marks": 0,
+          "role_words": [],
+          "interview_expr": [],
+          "self_intro_pattern": false,
+          "first_person_count": 2,
+          "ends_with_question": false,
+          "last_sentence": "ただ、これは営業所が近くて、受け取り方を選べる僕の言い分かもしれないけど。"
+        },
+        "problems_per_try": [
+          []
+        ],
+        "prompt_sha256": "f47be8ec0a34d2c7953acb76daf77d91e082cde2dcb16c7c8d1037d610184e92"
+      }
+    },
+    "map1": {
+      "voice_1": {
+        "slot": "voice_1",
+        "n_sentences": 7,
+        "n_unmapped": 2,
+        "unmapped_idx": [
+          0,
+          2
+        ],
+        "tbs_only_idx": [
+          1,
+          3,
+          5,
+          6
+        ],
+        "rows": [
+          {
+            "idx": 0,
+            "text": "私は毎日、荷物を配って回る中で、不在票を入れて次の家へ向かうことがある。",
+            "source_ids": [],
+            "supplement_kinds": [],
+            "is_event_claim": true,
+            "event_like": false,
+            "reasons": [
+              "NO_ID_NO_SUPPLEMENT",
+              "EVENT_CLAIM_WITHOUT_ID"
+            ],
+            "verdict": "UNMAPPED",
+            "note": "「毎日」という頻度や配達を回る場面は根拠メモにない。"
+          },
+          {
+            "idx": 1,
+            "text": "少し気持ちが沈む。",
+            "source_ids": [
+              "ONE_c"
+            ],
+            "supplement_kinds": [],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "不在票を入れて帰るときに気持ちが沈むという記述に基づく。"
+          },
+          {
+            "idx": 2,
+            "text": "届けられなかった荷物をまた届けに行く、そのきつさは身にしみている。",
+            "source_ids": [],
+            "supplement_kinds": [
+              "感情の言い方"
+            ],
+            "is_event_claim": true,
+            "event_like": false,
+            "reasons": [
+              "EVENT_CLAIM_WITHOUT_ID"
+            ],
+            "verdict": "UNMAPPED",
+            "note": "再配達自体は記載されているが、そのきつさが身にしみているという経験は記載されていない。"
+          },
+          {
+            "idx": 3,
+            "text": "ただ、その分をお客さんごとに請求して済ませるより、運ぶ料金全体で受け止める形のほうが、私には筋が通るように思える。",
+            "source_ids": [
+              "ONE_a"
+            ],
+            "supplement_kinds": [
+              "仮定・意見の言い換え"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "個別請求より料金全体で受け止めるほうが筋が通るという意見に基づく。"
+          },
+          {
+            "idx": 4,
+            "text": "できれば不在での再配達は減ってほしいのに、有料にするとなると、どうも賛成しきれないんだ。",
+            "source_ids": [
+              "ONE_c",
+              "ONE_g"
+            ],
+            "supplement_kinds": [
+              "仮定・意見の言い換え",
+              "口調・言い回し"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "再配達を減らしたい意向と、有料化への懸念を組み合わせた言い換え。"
+          },
+          {
+            "idx": 5,
+            "text": "会社には、通販の送料無料を見直すことも含めて、運ぶ手間をどう料金に入れるか考えてほしい。",
+            "source_ids": [
+              "ONE_a"
+            ],
+            "supplement_kinds": [
+              "仮定・意見の言い換え"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "送料無料の見直しや運ぶ人に費用を回すという提案に基づく。"
+          },
+          {
+            "idx": 6,
+            "text": "再配達の分を誰から取るかだけでなく、配る人にちゃんと回るような送料のつけ方にしてもらいたい。",
+            "source_ids": [
+              "ONE_a"
+            ],
+            "supplement_kinds": [
+              "仮定・意見の言い換え"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "料金全体で受け止め、運ぶ人に回すという意見の言い換え。"
+          }
+        ],
+        "stage": "m1"
+      },
+      "voice_2": {
+        "slot": "voice_2",
+        "n_sentences": 7,
+        "n_unmapped": 1,
+        "unmapped_idx": [
+          6
+        ],
+        "tbs_only_idx": [],
+        "rows": [
+          {
+            "idx": 0,
+            "text": "再配達にお金がかかるって、すんなり受け入れられないんだよね。",
+            "source_ids": [
+              "TWO_g"
+            ],
+            "supplement_kinds": [
+              "感情の言い方"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "再配達料金への不納得を意見として言い換えている。"
+          },
+          {
+            "idx": 1,
+            "text": "わたしも夫も仕事があるから、日中ずっと家にはいられない。",
+            "source_ids": [
+              "TWO_d"
+            ],
+            "supplement_kinds": [],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "夫婦とも仕事があり、ずっと家にいられないという内容。"
+          },
+          {
+            "idx": 2,
+            "text": "指定できる荷物は、ちゃんと家にいる日と時間にしてる。",
+            "source_ids": [
+              "TWO_a"
+            ],
+            "supplement_kinds": [
+              "口調・言い回し"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "在宅が確実な日時に指定するという内容。「ちゃんと」は口調の補い。"
+          },
+          {
+            "idx": 3,
+            "text": "それでも午前に指定した荷物が来なくて、用事を済ませに出て、戻ったら不在票が入っていたことがある。",
+            "source_ids": [
+              "TWO_b"
+            ],
+            "supplement_kinds": [],
+            "is_event_claim": false,
+            "event_like": true,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "午前指定の荷物が来ず、外出後に戻ると不在票があった出来事。"
+          },
+          {
+            "idx": 4,
+            "text": "有料にする前に、まず指定した時間に来てほしいし、指定できない荷物もいつ届くのか分かるようにしてほしい。",
+            "source_ids": [
+              "TWO_a",
+              "TWO_d"
+            ],
+            "supplement_kinds": [
+              "仮定・意見の言い換え"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "時間指定の改善要望と、配達時刻が分かるようにしてほしいという意見。"
+          },
+          {
+            "idx": 5,
+            "text": "配達員さんも追い込まれて大変なんだろうし、仕方ないのかなとも思うけど、そこでわたしがお金を払うのは納得できない。",
+            "source_ids": [
+              "TWO_f",
+              "TWO_g"
+            ],
+            "supplement_kinds": [
+              "口調・言い回し"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "配達員への理解と、再配達料金への不納得に基づく。"
+          },
+          {
+            "idx": 6,
+            "text": "受け取ろうとして待っていたのに、それでもわたしが悪いの？",
+            "source_ids": [],
+            "supplement_kinds": [
+              "感情の言い方"
+            ],
+            "is_event_claim": true,
+            "event_like": true,
+            "reasons": [
+              "EVENT_CLAIM_WITHOUT_ID",
+              "EVENT_LIKE_WITHOUT_E_ID"
+            ],
+            "verdict": "UNMAPPED",
+            "note": "待って受け取ろうとしていたという具体的な場面は根拠メモにない。"
+          }
+        ],
+        "stage": "m1"
+      },
+      "voice_3": {
+        "slot": "voice_3",
+        "n_sentences": 6,
+        "n_unmapped": 0,
+        "unmapped_idx": [],
+        "tbs_only_idx": [],
+        "rows": [
+          {
+            "idx": 0,
+            "text": "僕は再配達で迷惑をかけないよう、営業所やロッカーで受け取るようにしている。",
+            "source_ids": [
+              "THREE_a"
+            ],
+            "supplement_kinds": [],
+            "is_event_claim": true,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "営業所やロッカーで受け取る習慣は根拠メモにある。"
+          },
+          {
+            "idx": 1,
+            "text": "自分の都合で取りに行けるのは便利なんだけど、商品によってはロッカーを選べないし、営業所に頼んでも届くのが遅れて、結局は対面で受け取ることもある。",
+            "source_ids": [
+              "THREE_a",
+              "THREE_b"
+            ],
+            "supplement_kinds": [
+              "口調・言い回し"
+            ],
+            "is_event_claim": true,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "受け取りの便利さ、ロッカー不可や遅延、対面受取はいずれも記載がある。"
+          },
+          {
+            "idx": 2,
+            "text": "それでも、こっちは受け取り方を考えて手間をかけているのに、いつも不在で再配達を頼む人と同じ料金なのは、正直おかしいと思う。",
+            "source_ids": [
+              "THREE_a",
+              "THREE_c"
+            ],
+            "supplement_kinds": [
+              "口調・言い回し"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "受け取り方を工夫する立場と、同じ料金への疑問が対応する。"
+          },
+          {
+            "idx": 3,
+            "text": "配達する人の時間を使うんだから、再配達は有料でいい。",
+            "source_ids": [
+              "THREE_d"
+            ],
+            "supplement_kinds": [
+              "口調・言い回し"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "配達する人の時間を理由に再配達を有料化してよいという意見。"
+          },
+          {
+            "idx": 4,
+            "text": "最初の再配達は無料にして、くり返し不在になる人から払ってもらう形なら納得できる。",
+            "source_ids": [
+              "THREE_h"
+            ],
+            "supplement_kinds": [],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "初回無料で、くり返し不在になる人から取る案に対応する。"
+          },
+          {
+            "idx": 5,
+            "text": "ただ、これは営業所が近くて、受け取り方を選べる僕の言い分かもしれないけど。",
+            "source_ids": [
+              "THREE_a",
+              "THREE_e"
+            ],
+            "supplement_kinds": [
+              "聞き手への呼びかけ・つなぎ"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "営業所が近い人の言い分かもしれないという留保と、受取方法を選ぶ立場に対応する。"
+          }
+        ],
+        "stage": "m1"
+      }
+    }
+  },
+  "unmapped_regen": {
+    "voice_1": {
+      "before": "私は毎日、荷物を配って回る中で、不在票を入れて次の家へ向かうことがある。少し気持ちが沈む。届けられなかった荷物をまた届けに行く、そのきつさは身にしみている。ただ、その分をお客さんごとに請求して済ませるより、運ぶ料金全体で受け止める形のほうが、私には筋が通るように思える。できれば不在での再配達は減ってほしいのに、有料にするとなると、どうも賛成しきれないんだ。会社には、通販の送料無料を見直すことも含めて、運ぶ手間をどう料金に入れるか考えてほしい。再配達の分を誰から取るかだけでなく、配る人にちゃんと回るような送料のつけ方にしてもらいたい。",
+      "after": "不在票を入れて帰るときは、私もやはり少し気持ちが沈む。でも、そのまま次の家へ向かう。再配達はできれば減ってほしいし、きついのも本当だ。それでも、その費用をお客さんに払ってもらえばいい、とは割り切れないんだ。私は、受け取れなかったお客さんごとに、その再配達にかかった分を請求するより、荷物を運ぶための料金全体で受け止めるほうが、筋が通るんじゃないかと思う。そのためには、通販の送料無料も、そのままでいいのか、会社の側で考えてもらいたい。送料を見直すなら、その分がちゃんと運ぶ人に回るように、料金の組み方まで見直してほしい。",
+      "n_unmapped_before": 2,
+      "n_unmapped_after": 0,
+      "problems_per_try": [
+        []
+      ]
+    },
+    "voice_2": {
+      "before": "再配達にお金がかかるって、すんなり受け入れられないんだよね。わたしも夫も仕事があるから、日中ずっと家にはいられない。指定できる荷物は、ちゃんと家にいる日と時間にしてる。それでも午前に指定した荷物が来なくて、用事を済ませに出て、戻ったら不在票が入っていたことがある。有料にする前に、まず指定した時間に来てほしいし、指定できない荷物もいつ届くのか分かるようにしてほしい。配達員さんも追い込まれて大変なんだろうし、仕方ないのかなとも思うけど、そこでわたしがお金を払うのは納得できない。受け取ろうとして待っていたのに、それでもわたしが悪いの？",
+      "after": "再配達でお金を払うとなると、どうも引っかかるんだよね。わたしも夫も仕事で家を空けるから、指定できる荷物は確実に家にいる日と時間にしてる。でも、午前の時間帯を指定したのに来なくて、用事を済ませに出て、戻ったら不在票が入っていたことがある。時間指定できない荷物も多くて、いつ届くか事前に分からない。お金を取る前に、指定した時間に来ることと、届く日時を知らせることを、まず何とかしてほしい。配達員さんも人手が足りなくて大変なんだろうし、仕方ないのかなとも思う。でも、そこでわたしが払うのは納得できない。そう思うわたしが悪いの？",
+      "n_unmapped_before": 1,
+      "n_unmapped_after": 0,
+      "problems_per_try": [
+        []
+      ]
+    }
+  },
+  "structure": {
+    "tags_before": {
+      "tags": {
+        "voice_1": {
+          "voice": "voice_1",
+          "opening_type": "出来事・場面の描写から",
+          "development_type": "その他",
+          "closing_type": "約束・要求で締める",
+          "evidence_ja": "冒頭は「不在票を入れて帰るときは」と場面から始まる。展開は気持ちの沈みや負担感を述べた後、料金全体で受け止めるべきだという考えへ進む。締めは「料金の組み方まで見直してほしい」と要求している。"
+        },
+        "voice_2": {
+          "voice": "voice_2",
+          "opening_type": "感情・本音の吐露から",
+          "development_type": "自分への突っ込みと本音を行き来する",
+          "closing_type": "問いを残して締める",
+          "evidence_ja": "冒頭は「どうも引っかかる」と本音を示す。配達員への理解を示しつつ「でも、そこでわたしが払うのは納得できない」と自分の思いに戻り、最後は「そう思うわたしが悪いの？」と問いを残す。"
+        },
+        "voice_3": {
+          "voice": "voice_3",
+          "opening_type": "自分の状況・立場の描写から",
+          "development_type": "具体例から感情を経て主張へ",
+          "closing_type": "迷いを残して締める",
+          "evidence_ja": "冒頭は「営業所やロッカーで受け取るようにしている」と自分の行動を述べる。受け取り方の制約や遅れの例から「正直おかしい」と感じ、再配達を有料にする主張へ進む。最後は「僕の言い分かもしれない」と留保している。"
+        }
+      },
+      "fire": {
+        "fired": false,
+        "pairs": [],
+        "regenerate_slot": null
+      }
+    },
+    "regen": null,
+    "tags_after": null
+  },
+  "gate_status": "PASS",
+  "final_texts": {
+    "voice_1": "不在票を入れて帰るときは、私もやはり少し気持ちが沈む。でも、そのまま次の家へ向かう。再配達はできれば減ってほしいし、きついのも本当だ。それでも、その費用をお客さんに払ってもらえばいい、とは割り切れないんだ。私は、受け取れなかったお客さんごとに、その再配達にかかった分を請求するより、荷物を運ぶための料金全体で受け止めるほうが、筋が通るんじゃないかと思う。そのためには、通販の送料無料も、そのままでいいのか、会社の側で考えてもらいたい。送料を見直すなら、その分がちゃんと運ぶ人に回るように、料金の組み方まで見直してほしい。",
+    "voice_2": "再配達でお金を払うとなると、どうも引っかかるんだよね。わたしも夫も仕事で家を空けるから、指定できる荷物は確実に家にいる日と時間にしてる。でも、午前の時間帯を指定したのに来なくて、用事を済ませに出て、戻ったら不在票が入っていたことがある。時間指定できない荷物も多くて、いつ届くか事前に分からない。お金を取る前に、指定した時間に来ることと、届く日時を知らせることを、まず何とかしてほしい。配達員さんも人手が足りなくて大変なんだろうし、仕方ないのかなとも思う。でも、そこでわたしが払うのは納得できない。そう思うわたしが悪いの？",
+    "voice_3": "僕は再配達で迷惑をかけないよう、営業所やロッカーで受け取るようにしている。自分の都合で取りに行けるのは便利なんだけど、商品によってはロッカーを選べないし、営業所に頼んでも届くのが遅れて、結局は対面で受け取ることもある。それでも、こっちは受け取り方を考えて手間をかけているのに、いつも不在で再配達を頼む人と同じ料金なのは、正直おかしいと思う。配達する人の時間を使うんだから、再配達は有料でいい。最初の再配達は無料にして、くり返し不在になる人から払ってもらう形なら納得できる。ただ、これは営業所が近くて、受け取り方を選べる僕の言い分かもしれないけど。"
+  },
+  "final_maps": {
+    "voice_1": {
+      "slot": "voice_1",
+      "n_sentences": 7,
+      "n_unmapped": 0,
+      "unmapped_idx": [],
+      "tbs_only_idx": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "rows": [
+        {
+          "idx": 0,
+          "text": "不在票を入れて帰るときは、私もやはり少し気持ちが沈む。",
+          "source_ids": [
+            "ONE_c"
+          ],
+          "supplement_kinds": [],
+          "is_event_claim": true,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "不在票を入れて帰るときの気持ちは根拠メモにある。"
+        },
+        {
+          "idx": 1,
+          "text": "でも、そのまま次の家へ向かう。",
+          "source_ids": [
+            "ONE_c"
+          ],
+          "supplement_kinds": [],
+          "is_event_claim": true,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "不在票を入れた後、次の家へ向かう出来事に基づく。"
+        },
+        {
+          "idx": 2,
+          "text": "再配達はできれば減ってほしいし、きついのも本当だ。",
+          "source_ids": [
+            "ONE_b",
+            "ONE_c"
+          ],
+          "supplement_kinds": [
+            "口調・言い回し"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "再配達を減らしたい思いと仕事のきつさに基づく。「本当だ」は強調表現。"
+        },
+        {
+          "idx": 3,
+          "text": "それでも、その費用をお客さんに払ってもらえばいい、とは割り切れないんだ。",
+          "source_ids": [
+            "ONE_a",
+            "ONE_d"
+          ],
+          "supplement_kinds": [
+            "仮定・意見の言い換え"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "料金全体で受け止める意見と、お客さんを責めない姿勢の言い換え。"
+        },
+        {
+          "idx": 4,
+          "text": "私は、受け取れなかったお客さんごとに、その再配達にかかった分を請求するより、荷物を運ぶための料金全体で受け止めるほうが、筋が通るんじゃないかと思う。",
+          "source_ids": [
+            "ONE_a"
+          ],
+          "supplement_kinds": [
+            "仮定・意見の言い換え"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "個別請求より料金全体で受け止めるのが筋という意見に基づく。"
+        },
+        {
+          "idx": 5,
+          "text": "そのためには、通販の送料無料も、そのままでいいのか、会社の側で考えてもらいたい。",
+          "source_ids": [
+            "ONE_a"
+          ],
+          "supplement_kinds": [
+            "仮定・意見の言い換え"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "通販の送料無料を見直す意見を、会社への要望として表現している。"
+        },
+        {
+          "idx": 6,
+          "text": "送料を見直すなら、その分がちゃんと運ぶ人に回るように、料金の組み方まで見直してほしい。",
+          "source_ids": [
+            "ONE_a"
+          ],
+          "supplement_kinds": [
+            "口調・言い回し",
+            "仮定・意見の言い換え"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "見直し分を運ぶ人に回す意見に基づく。「ちゃんと」は強調表現。"
+        }
+      ],
+      "stage": "final"
+    },
+    "voice_2": {
+      "slot": "voice_2",
+      "n_sentences": 8,
+      "n_unmapped": 0,
+      "unmapped_idx": [],
+      "tbs_only_idx": [],
+      "rows": [
+        {
+          "idx": 0,
+          "text": "再配達でお金を払うとなると、どうも引っかかるんだよね。",
+          "source_ids": [
+            "TWO_e",
+            "TWO_g"
+          ],
+          "supplement_kinds": [
+            "感情の言い方",
+            "口調・言い回し"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "再配達料金への心配・不納得を口語的に表現。"
+        },
+        {
+          "idx": 1,
+          "text": "わたしも夫も仕事で家を空けるから、指定できる荷物は確実に家にいる日と時間にしてる。",
+          "source_ids": [
+            "TWO_a",
+            "TWO_d"
+          ],
+          "supplement_kinds": [],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "仕事で常時在宅ではないことと、在宅日に指定することに基づく。"
+        },
+        {
+          "idx": 2,
+          "text": "でも、午前の時間帯を指定したのに来なくて、用事を済ませに出て、戻ったら不在票が入っていたことがある。",
+          "source_ids": [
+            "TWO_b"
+          ],
+          "supplement_kinds": [],
+          "is_event_claim": true,
+          "event_like": true,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "午前指定で届かず、外出後に不在票があった経験。"
+        },
+        {
+          "idx": 3,
+          "text": "時間指定できない荷物も多くて、いつ届くか事前に分からない。",
+          "source_ids": [
+            "TWO_a"
+          ],
+          "supplement_kinds": [],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "時間指定できない荷物が多く、到着時期が分からないという内容。"
+        },
+        {
+          "idx": 4,
+          "text": "お金を取る前に、指定した時間に来ることと、届く日時を知らせることを、まず何とかしてほしい。",
+          "source_ids": [
+            "TWO_a",
+            "TWO_d"
+          ],
+          "supplement_kinds": [
+            "仮定・意見の言い換え"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "時間指定の改善を求める意見と、到着時期が分からない点を要望として表現。"
+        },
+        {
+          "idx": 5,
+          "text": "配達員さんも人手が足りなくて大変なんだろうし、仕方ないのかなとも思う。",
+          "source_ids": [
+            "TWO_f"
+          ],
+          "supplement_kinds": [
+            "感情の言い方"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "人手不足への理解と、事情を仕方ないと思う気持ちに基づく。"
+        },
+        {
+          "idx": 6,
+          "text": "でも、そこでわたしが払うのは納得できない。",
+          "source_ids": [
+            "TWO_g"
+          ],
+          "supplement_kinds": [
+            "聞き手への呼びかけ・つなぎ"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "到着時期が分からない荷物への再配達料は納得できないという意見。"
+        },
+        {
+          "idx": 7,
+          "text": "そう思うわたしが悪いの？",
+          "source_ids": [
+            "TWO_g"
+          ],
+          "supplement_kinds": [
+            "聞き手への呼びかけ・つなぎ",
+            "感情の言い方"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "料金への不納得を受けた聞き手への問いかけ。"
+        }
+      ],
+      "stage": "final"
+    },
+    "voice_3": {
+      "slot": "voice_3",
+      "n_sentences": 6,
+      "n_unmapped": 1,
+      "unmapped_idx": [
+        5
+      ],
+      "tbs_only_idx": [],
+      "rows": [
+        {
+          "idx": 0,
+          "text": "僕は再配達で迷惑をかけないよう、営業所やロッカーで受け取るようにしている。",
+          "source_ids": [
+            "THREE_a"
+          ],
+          "supplement_kinds": [],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "営業所やロッカーで受け取る習慣は根拠メモにある。"
+        },
+        {
+          "idx": 1,
+          "text": "自分の都合で取りに行けるのは便利なんだけど、商品によってはロッカーを選べないし、営業所に頼んでも届くのが遅れて、結局は対面で受け取ることもある。",
+          "source_ids": [
+            "THREE_a",
+            "THREE_b"
+          ],
+          "supplement_kinds": [
+            "聞き手への呼びかけ・つなぎ"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "受け取りの便利さ、ロッカー不可や遅延、対面受取は根拠メモにある。"
+        },
+        {
+          "idx": 2,
+          "text": "それでも、こっちは受け取り方を考えて手間をかけているのに、いつも不在で再配達を頼む人と同じ料金なのは、正直おかしいと思う。",
+          "source_ids": [
+            "THREE_a",
+            "THREE_c"
+          ],
+          "supplement_kinds": [
+            "口調・言い回し"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "受取方法を工夫することと、同じ配達料への疑問に基づく。"
+        },
+        {
+          "idx": 3,
+          "text": "配達する人の時間を使うんだから、再配達は有料でいい。",
+          "source_ids": [
+            "THREE_d"
+          ],
+          "supplement_kinds": [
+            "聞き手への呼びかけ・つなぎ"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "再配達が配達員の時間を使うため、有料でもよいという意見に基づく。"
+        },
+        {
+          "idx": 4,
+          "text": "最初の再配達は無料にして、くり返し不在になる人から払ってもらう形なら納得できる。",
+          "source_ids": [
+            "THREE_h"
+          ],
+          "supplement_kinds": [],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "最初は無料で、くり返し不在の人から徴収する案に基づく。"
+        },
+        {
+          "idx": 5,
+          "text": "ただ、これは営業所が近くて、受け取り方を選べる僕の言い分かもしれないけど。",
+          "source_ids": [],
+          "supplement_kinds": [
+            "聞き手への呼びかけ・つなぎ"
+          ],
+          "is_event_claim": true,
+          "event_like": false,
+          "reasons": [
+            "EVENT_CLAIM_WITHOUT_ID"
+          ],
+          "verdict": "UNMAPPED",
+          "note": "営業所が近いという本人の事情は根拠メモにない。"
+        }
+      ],
+      "stage": "final"
+    }
+  },
+  "final_cost_jpy": 25.344,
+  "repetition_03": {
+    "voice_1": {
+      "note": "記録専用。合否に使わない。1サンプルで較正した簡易判定(目視確認なしに結論に使わない)",
+      "threshold": 0.3,
+      "n_sentences": 7,
+      "n_repeat_pairs": 1,
+      "repeat_pairs": [
+        {
+          "i": 1,
+          "j": 5,
+          "overlap": 0.33,
+          "a": "でも、そのまま次の家へ向かう。",
+          "b": "そのためには、通販の送料無料も、そのままでいいのか、会社の側で考えてもらいたい。"
+        }
+      ],
+      "contrast_turns": 2,
+      "last_vs_first_echo": false
+    },
+    "voice_2": {
+      "note": "記録専用。合否に使わない。1サンプルで較正した簡易判定(目視確認なしに結論に使わない)",
+      "threshold": 0.3,
+      "n_sentences": 8,
+      "n_repeat_pairs": 0,
+      "repeat_pairs": [],
+      "contrast_turns": 2,
+      "last_vs_first_echo": false
+    },
+    "voice_3": {
+      "note": "記録専用。合否に使わない。1サンプルで較正した簡易判定(目視確認なしに結論に使わない)",
+      "threshold": 0.3,
+      "n_sentences": 6,
+      "n_repeat_pairs": 2,
+      "repeat_pairs": [
+        {
+          "i": 0,
+          "j": 1,
+          "overlap": 0.36,
+          "a": "僕は再配達で迷惑をかけないよう、営業所やロッカーで受け取るようにしている。",
+          "b": "自分の都合で取りに行けるのは便利なんだけど、商品によってはロッカーを選べないし、営業所に頼んでも届くのが遅れて、結局は対面で受け取ることもある。"
+        },
+        {
+          "i": 1,
+          "j": 5,
+          "overlap": 0.32,
+          "a": "自分の都合で取りに行けるのは便利なんだけど、商品によってはロッカーを選べないし、営業所に頼んでも届くのが遅れて、結局は対面で受け取ることもある。",
+          "b": "ただ、これは営業所が近くて、受け取り方を選べる僕の言い分かもしれないけど。"
+        }
+      ],
+      "contrast_turns": 5,
+      "last_vs_first_echo": false
+    }
+  },
+  "gate_status_original": "SKIPPED_BUDGET",
+  "gate_status_note": "委任_25: 累計22円超でrunnerがSKIPPED_BUDGETにしたため、同一委任内で後追い実行(判定1回、max_judgements=1。本文不変)。費用はraw_usage_log_gate.jsonl(別file)",
+  "gate": {
+    "stage": "ob_voices_gate",
+    "kind": "voices",
+    "status": "PASS",
+    "n_judgements": 1,
+    "first_judgement_flagged": false,
+    "first_judgement_n_fail_fields": 0,
+    "final_sha256": {
+      "voice_1": "4dad1b8132d8901e93e9c8ff0d18320f0a138dc7e9f61eb62d9211d738d14e50",
+      "voice_2": "7215b68741723e48e01291aa914d9b30a6e3e0d95acc9b61ceb67f9c03f632c3",
+      "voice_3": "430169b043bdc195892f408c1f3faade0c4b61b7ef8ea7244cf9c9b17a0d6187"
+    }
+  }
+}

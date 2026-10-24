@@ -40,7 +40,7 @@ APPROVAL_FILE_03 = "er110_output/family_y_opinion_based_03/BUDGET_APPROVED.json"
 LEDGER_MD_03 = "docs/research/FAMILY-Y-VOICES-DESIGN-01/OPINION_BASED_02/BUDGET_LOG_OB_04.md"
 
 # Sheetに必須の欄(02のSheetが使う欄を正とする。relevant_termsは任意)
-REQUIRED_SHEET_KEYS = tuple(k for k in ob2.SHEETS_02["voice_2"].keys() if k not in ("tbs_only", "relevant_terms"))     # 02が使う全欄(人物像・stake・arcを含む)
+REQUIRED_SHEET_KEYS = tuple(k for k in ob2.SHEETS_02["voice_2"].keys() if k not in ("tbs_only", "r2plus_only", "relevant_terms"))     # 02が使う全欄(人物像・stake・arcを含む)
 
 
 def validate_theme(theme: dict) -> None:
@@ -66,13 +66,14 @@ def validate_theme(theme: dict) -> None:
 
 
 def load_theme(path: str = None) -> dict:
-    """THEME_DATA(JSON)を読み、01の照合が使う `tbs_only`(=権利区分が重い出典だけが根拠の項目の印。公開前Gateの確認対象)を付けて返す。"""
+    """THEME_DATA(JSON)を読み、`r2plus_only`(=権利区分R2+/R3の出典だけが根拠の項目の印。公開前Gateの確認対象。前テーマの `tbs_only` を今回の意味に合わせて改名)を付けて返す。
+    01の照合が読む旧名 `tbs_only` は、patched_ob_03 のwith内でだけ別名として付ける(01は無変更)。"""
     t = json.load(open(path or THEME_FILE, encoding="utf-8"))
     restricted = set(t.get("restricted_voice_ids", []))
     sheets = copy.deepcopy(t["sheets"])
     for sh in sheets.values():
         for x in sh["experiences"]:
-            x["tbs_only"] = bool(x["source_ids"]) and all(i in restricted for i in x["source_ids"])
+            x["r2plus_only"] = bool(x["source_ids"]) and all(i in restricted for i in x["source_ids"])
     theme = {"theme_id": t["theme_id"], "world_frame": copy.deepcopy(t["world_frame"]), "sheets": sheets, "who_ja": dict(t["who_ja"])}
     validate_theme(theme)
     return theme
@@ -83,7 +84,10 @@ def patched_ob_03(cap_jpy: float, theme: dict, ledger_md: str = LEDGER_MD_03):
     """01の runner を、テーマデータ(Sheet・WHO_JA)+02の改訂Prompt/render/OPENING_GUIDE+予算で動かす(with内だけ差し替え)。"""
     saved = {k: getattr(ob, k) for k in ob2._PATCH_KEYS}
     orig_build = saved["build_voice_prompt_ob"]
-    sheets = theme["sheets"]
+    sheets = copy.deepcopy(theme["sheets"])
+    for _sh in sheets.values():                                    # 01の照合は旧名 tbs_only を読む(with内の写しにだけ別名を付ける。themeそのものは変更しない)
+        for _x in _sh["experiences"]:
+            _x["tbs_only"] = _x["r2plus_only"]
 
     def build(wf: dict, slot: str, emphasize: bool = False) -> str:
         """区別の定義を、Sheetの relevant_terms にある用語だけに絞って 01 のbuilderへ渡す(未指定のSheetは全件)。"""

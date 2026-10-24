@@ -269,7 +269,7 @@ def test_isolation_no_importer_and_api_zero_on_import():
           "er110_family_y_opinion_based_03.py", "er110_family_y_opinion_based_03_test_01.py"}      # 03=委任_24のテーマ非依存化(DEV/Trial専用・未配線)
     bad = []
     for f in glob.glob("*.py") + glob.glob("**/*.py", recursive=True):
-        if os.path.basename(f) in me or ".venv" in f or "OPINION_BASED_01" in f:        # docs配下の解析script(build_blind_set_05.py等)はAPI 0のoffline集計でProduction未参照
+        if os.path.basename(f) in me or ".venv" in f or "OPINION_BASED_01" in f or "OPINION_BASED_02/scripts" in f.replace(os.sep, "/"):        # docs配下の解析script(build_blind_set_05.py等)はAPI 0のoffline集計でProduction未参照
             continue
         try:
             src = open(f, encoding="utf-8").read()

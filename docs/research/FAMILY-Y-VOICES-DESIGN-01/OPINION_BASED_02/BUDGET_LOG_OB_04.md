@@ -28,3 +28,21 @@
 - 今回の**情報収集・整理のAPI費用は0円**。ただし**人手(agent)の閲読に約25分**かかった。量産でこれをLLM化する場合の費用は**未測定**(前回の見積15〜20円/記事[FLOW_DESIGN_02]は構造化データ770件が前提。今回は検索が必須で、ページ本文が長く、必要な閲読量は前回より大きい。概算の見積レンジ=10〜25円、根拠なしの仮置き)。
 - 検索は無料のHTTP検索で足りたが、**Yahoo検索の429・DuckDuckGoのbot確認**で途中から使えなくなり、サイト内検索(知恵袋)・ブクマに切り替えた。量産では検索APIの費用(数円〜十数円、未測定)か、サイト内検索の自動化が必要。
 - R0生成側の実績単価(前回run_03: 23.8円/記事)は、情報収集0円と合わせても『1テーマ約24円+人手25分』。70円/記事セット目標との関係は、次委任のR0実測後に判断(Fable)。
+
+## 委任_25 追記: runnerが自動追記したR0 run_01の段階別費用(03 runnerの台帳先がこのファイル。正式な費用台帳は`BUDGET_LOG_OB_05.md`)
+
+| 段階 | stage | 費用(円) | 累計(円) |
+|---|---|---|---|
+| gen | ypl_ob_voice_1 | 5.238 | 13.289 |
+| gen | ypl_ob_voice_3 | 8.051 | 13.289 |
+| map1 | UNTAGGED | 0.194 | 13.822 |
+| map1 | ypl_ob_map_voice_1_m1 | 0.184 | 13.822 |
+| map1 | ypl_ob_map_voice_3_m1 | 0.155 | 13.822 |
+| unmapped_regen | ypl_ob_voice_1_unmapregen | 6.592 | 24.482 |
+| unmapped_regen | ypl_ob_voice_2_unmapregen | 4.068 | 24.482 |
+| map2 | ypl_ob_map_voice_2_m1 | 0.161 | 24.738 |
+| map2 | ypl_ob_map_voice_2_m2 | 0.095 | 24.738 |
+| structure1 | ypl_ob_structure1 | 0.137 | 24.875 |
+| final_map | ypl_ob_map_voice_1_final | 0.184 | 25.346 |
+| final_map | ypl_ob_map_voice_2_final | 0.123 | 25.346 |
+| final_map | ypl_ob_map_voice_3_final | 0.164 | 25.346 |
