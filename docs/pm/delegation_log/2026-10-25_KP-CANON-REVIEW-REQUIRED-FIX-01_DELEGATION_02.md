@@ -1,0 +1,13 @@
+管理ID: KP-CANON-REVIEW-REQUIRED-FIX-01 委任_02 — Fable受入記録(記録のみ、API 0・Productionコード変更0)と、CURRENT_SPEC.md作業ツリー残差分の確認。
+
+## Fable判定(そのまま記録)
+- 委任_01(`docs/pm/RESULT_PACKET_KCRR1.md`、IMPACT_01、RUNTIME_EVIDENCE_01、commit 746934961/68ab115e8)を照合。X/Z正式経路で`CANONICALIZATION_REVIEW_REQUIRED`が採用されない(PASSのみ採用、上限到達→既存の人間確認停止)ことはtest 8件・runtime evidence(mode A/B/C)で確認。A/B/C無影響。**OPEN-504 = FIXED(Fable受入2026-10-25)**。
+- ただし留意: CURRENT_SPEC:1966の2026-08-08決定文は「REVIEW_REQUIRED→自動retryなし→人間承認で採用可」。今回の実装は人間確認の前に「除外語付き再選定(外側retry、通算3回内)」を挟む。これは既存のZ外側retry(INVALID対象、委任_10「Z限定・暫定」)の適用拡大であり、不良KPを採用しない点では仕様に整合するが、「自動retryなし」の文言を超える運用のため**ユーザー確認事項(非blocking)**として新規UDRに登録: 「REVIEW_REQUIRED時に人間確認の前に再選定(最大3回)を挟む運用の可否。Fable推奨=承認(HR停止を記事あたり0.1%未満に抑え、人間が行う『別候補を選ぶ』を機械的に先行するだけで品質基準は緩めない)。代替=再選定なしで即HR停止(2026-08-08文言どおり、HR頻度約1%/KP段)」。ユーザーが代替を選べば `run_kp_with_outer_retry` のREVIEW_REQUIRED分岐を即停止へ変更(小変更)。
+- 事故記録: 委任_01でSSOT編集scriptが`CURRENT_SPEC.md`作業コピーを一時的に空にし、HEAD+変換で復元した件を事故として記録(再発防止: SSOT編集は編集前にバックアップを取り、編集後に`git diff --stat`と内容差分を確認)。
+
+## 作業
+1. **CURRENT_SPEC.md残差分の確認**: `git diff CURRENT_SPEC.md` を取り、HEADとの差分内容を全文確認する(事前情報: 「ASR品質改善2件 X/Z状態」行の孤立CR `\r` を `\r\n` に分割する改行だけの変更、3行 `++-`)。(a)内容変更が改行コード以外に無い場合: 誰の変更でも実害がないので、衛生目的で単独commit(message「CURRENT_SPEC: 孤立CRの改行正規化のみ、内容変更なし」)するか、または差分を破棄して作業ツリーをHEADへ戻す(`git checkout -- CURRENT_SPEC.md` は**使わない**。`git show HEAD:CURRENT_SPEC.md > CURRENT_SPEC.md` の上書きで戻す)。どちらにするかはこの順で判断: 元の差分がHEADに無い情報を含む→commit、含まない→HEADへ戻す。(b)改行以外の内容差分がある場合: その内容(どの案件の追記か)を特定し、commit済みの同内容があるか確認。commit済みならHEADへ戻し、未commitの実質的追記ならそのまま残して報告(勝手に捨てない)。判断と結果を報告に明記。同様に `DECISION_LOG.md`の未commit差分(「委任_36 Fable受入」節4行の削除差分)も確認: HEADに当該節が存在するなら作業ツリー側の削除は誤差分なので上記と同じ方法でHEADへ戻す。
+2. SSOT: `OPEN_ITEMS.md` OPEN-504=FIXED(Fable受入2026-10-25、UDR番号)、`docs/pm/USER_DECISION_REGISTER_01.md`に新規UDR(次番号、非blocking、上記文言)、`DECISION_LOG.md`に受入エントリ1件(事故記録含む)、`docs/pm/ACTIVE_TASK.md`。`docs/research/KP-CANON-REVIEW-REQUIRED-FIX-01/FABLE_ACCEPT_01.md`に判定保存。
+3. 本委任文を `docs/pm/delegation_log/2026-10-25_KP-CANON-REVIEW-REQUIRED-FIX-01_DELEGATION_02.md` に逐語保存(`py docs/pm/tools/extract_delegation_from_jsonl_01.py --jsonl C:\Users\tensh\.claude\projects\C--Users-tensh-eigo-radio\a66c19e8-1d31-4bc4-b0cb-f15b29248dc1.jsonl --role assistant --tool-use-name Agent --tool-input-field prompt --index <最新(495以降、見つからなければjsonlをgrep)> --out <path>`、先頭行一致確認)。
+4. Git: 自分の変更のみ(`git add <path>`→`git diff --cached --name-status`→`git commit --only -- <path…>`または前例のupdate-index方式)→`git push origin HEAD:main`。現在並行agentはいない。禁止: `git add -A/-u/-f/-N`、amend、rebase、force push、stash、clean、reset --hard、checkout -f(`git checkout -- <file>`も使わない)。secret grep 0件。
+5. 報告 `docs/pm/RESULT_PACKET_KCRR2.md`(UDR番号、CURRENT_SPEC/DECISION_LOG残差分の内容と処置、commit hash)。
