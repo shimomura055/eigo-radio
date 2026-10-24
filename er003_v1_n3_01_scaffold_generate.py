@@ -692,6 +692,23 @@ def _kp_invalid_item_reasons(canon: dict, entry: dict):
     return [(ir.get("rank"), ir.get("index"), list(ir.get("reasons") or [])) for ir in (last.get("item_reasons") or [])]
 
 
+def _kp_review_required_reasons(entry: dict):
+    """canonicalization REVIEW_REQUIRED(QA FAILあり)の項目別理由 -> [(rank, None, [reasons])]。最終attemptのitems_requiring_reviewと
+    そのparsed itemのFAILフィールドから作る(診断が無ければ空=除外しない)。再選定時の除外語の理由文に使う。"""
+    attempts = entry.get("canonicalization_attempts") or []
+    if not attempts:
+        return []
+    last = attempts[-1]
+    parsed_items = {it.get("rank"): it for it in ((last.get("parsed") or {}).get("items") or []) if isinstance(it, dict)}
+    out = []
+    for rank in (last.get("items_requiring_review") or []):
+        it = parsed_items.get(rank) or {}
+        fails = [k for k, v in it.items() if k.startswith("qa_") and v == "FAIL"]
+        reason = "canonicalization QAでFAIL(学習単位として不適切の疑い)" + (": " + ", ".join(fails) if fails else "")
+        out.append((rank, None, [reason]))
+    return out
+
+
 def _kp_add_exclusions(excluded: list, original_items: list, bad: list, outer: int, source: str) -> None:
     """KP-OUTER-RETRY-SAME-PHRASE-FIX: INVALID確定した選定句(display_phrase=選定時の本文表層形)を、理由付きで累積除外リストへ追加する(重複は理由を併合)。"""
     import er105_kp_fulltext_selector_01 as ft
@@ -777,11 +794,24 @@ def run_kp_with_outer_retry(text: str, kp_dir: str, article_id: str, source_leve
         canon = canon_fn(text, sel["original_items"], kp_dir, article_id, process=process)
         entry["canonicalization_status"] = canon.get("status")
         entry["canonicalization_attempts"] = _kp_canon_reasons(kp_dir)
-        if canon.get("status") not in ("CANONICALIZATION_PASS", "CANONICALIZATION_REVIEW_REQUIRED"):
+        # KP-CANON-REVIEW-REQUIRED-FIX-01(OPEN-504、2026-10-25): 承認済み3状態モデル(CURRENT_SPEC「REVIEW_REQUIREDは自動採用しない・
+        # 人間確認後に採用可」、er003_key_words_canonicalization.validate_canonicalization_response)への整合是正。採用はPASSのみ。
+        # REVIEW_REQUIRED(構造OK・QA FAILあり)もINVALID同様に除外語付き再選定(通算max_outer内)の対象とし、上限到達後は
+        # OUTER_RETRY_EXHAUSTEDで停止する(X/Z runnerの既存HR停止へ)。旧attemptのKP(canonicalizationが書いた本名ファイル)は退避する。
+        if canon.get("status") != "CANONICALIZATION_PASS":
             failures += 1
-            _kp_add_exclusions(excluded, sel.get("original_items") or [], _kp_invalid_item_reasons(canon, entry), outer, "canonicalization_invalid")
+            if canon.get("status") == "CANONICALIZATION_REVIEW_REQUIRED":
+                bad = _kp_review_required_reasons(entry)
+                entry["review_required_ranks"] = [b[0] for b in bad]
+                entry["artifacts"] = _kp_copy_attempt_artifacts(kp_dir, outer)   # 退避前の本名ファイルも証跡へ残す
+                stale = _kp_retire_stale_artifact(kp_dir, outer)
+                if stale:
+                    entry["stale_artifact"] = stale
+                _kp_add_exclusions(excluded, sel.get("original_items") or [], bad, outer, "canonicalization_review_required")
+            else:
+                _kp_add_exclusions(excluded, sel.get("original_items") or [], _kp_invalid_item_reasons(canon, entry), outer, "canonicalization_invalid")
+                entry["artifacts"] = _kp_copy_attempt_artifacts(kp_dir, outer)
             entry["excluded_phrases_added"] = [e["phrase"] for e in excluded if e["outer_attempt"] == outer]
-            entry["artifacts"] = _kp_copy_attempt_artifacts(kp_dir, outer)
             log.append(entry)
             if failures >= max_outer:
                 return fail(entry, sel, canon, "OUTER_RETRY_EXHAUSTED")

@@ -1710,7 +1710,7 @@ def stage_kp(ctx) -> dict:
                 res = w62.run_kp_stage(lv, text, ctx.out_dir, ctx.slug, kp_fn=_kp_fn_for_ctx(ctx))
             canon_status = (res.get("canonicalization") or {}).get("status")
             if (res.get("status") in ("NG_REVIEW_REQUIRED", "OUTER_RETRY_EXHAUSTED") or not res.get("canonicalization")
-                    or canon_status not in ("CANONICALIZATION_PASS", "CANONICALIZATION_REVIEW_REQUIRED")):
+                    or canon_status != "CANONICALIZATION_PASS"):   # KP-CANON-REVIEW-REQUIRED-FIX-01(OPEN-504): 採用はPASSのみ(REVIEW_REQUIREDは外側retryで再選定→上限後ここで停止)
                 raise FamilyZE2EStop(f"FAMILY_Z_KP_NOT_PASSED({lv}): status={res.get('status')} "
                                      f"canonicalization={bool(res.get('canonicalization'))}(自動採用しない)")
             _gloss_hr_gate(ctx, lv, text, res, prov=prov)

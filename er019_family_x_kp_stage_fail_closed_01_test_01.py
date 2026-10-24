@@ -52,8 +52,10 @@ def _scaffold(src, out, kp, scaffold_only="kp"):
 class FailureStatusTests(unittest.TestCase):
     def test_pass_family_returns_none(self):
         self.assertIsNone(runner.kp_stage_failure_status(PASS))
-        self.assertIsNone(runner.kp_stage_failure_status(
-            {"selection": {}, "canonicalization": {"status": "CANONICALIZATION_REVIEW_REQUIRED"}}))
+        # KP-CANON-REVIEW-REQUIRED-FIX-01(OPEN-504): REVIEW_REQUIREDは採用されない(承認済み3状態モデル。旧期待値=受理を是正)
+        self.assertEqual(runner.kp_stage_failure_status(
+            {"selection": {}, "canonicalization": {"status": "CANONICALIZATION_REVIEW_REQUIRED"}}),
+            "KP_STAGE_FAILED(CANONICALIZATION_REVIEW_REQUIRED)")
         # gloss HR(別key。canonicalizationはPASS)は従来のHR経路で扱い、ここでは止めない
         self.assertIsNone(runner.kp_stage_failure_status(
             {"selection": {}, "canonicalization": {"status": "CANONICALIZATION_PASS"}, "status": "GLOSS_ALIGNMENT_HUMAN_REVIEW"}))
@@ -72,6 +74,7 @@ class FailureStatusTests(unittest.TestCase):
 
     def test_same_pass_literals_as_family_z(self):
         src = open(os.path.join(_REPO, "er026_family_z_fiction_production_runner_01.py"), encoding="utf-8").read()
+        self.assertEqual(runner.KP_STAGE_PASS_CANON_STATUSES, ("CANONICALIZATION_PASS",))   # OPEN-504: 採用はPASSのみ
         for lit in runner.KP_STAGE_PASS_CANON_STATUSES + ("NG_REVIEW_REQUIRED", "OUTER_RETRY_EXHAUSTED"):
             self.assertIn(f'"{lit}"', src)
 

@@ -348,7 +348,9 @@ def _support_texts_path(level: str, level_out_dir: str) -> str:
 # canonicalization無し/PASS系以外のKPは、旧attemptの`keywords_canonicalized.json`がdiskに残っていても後段(TTS/assembly)が
 # 使わないよう、stageを止める。gloss HR(別key`gloss_alignment_run_status`)は従来どおりHR経路で扱い、ここでは止めない。
 KP_STAGE_BLOCKING_RUN_STATUSES = ("NG_REVIEW_REQUIRED", "OUTER_RETRY_EXHAUSTED")   # KPFT 委任_02: 旧db_hybridの記事cap停止statusは撤去
-KP_STAGE_PASS_CANON_STATUSES = ("CANONICALIZATION_PASS", "CANONICALIZATION_REVIEW_REQUIRED")
+# KP-CANON-REVIEW-REQUIRED-FIX-01(OPEN-504、2026-10-25): 承認済み3状態モデルどおり採用はPASSのみ。REVIEW_REQUIREDは共有外側retryが
+# 再選定し、上限到達後はOUTER_RETRY_EXHAUSTEDで止まる(ここは多層防御: 外側retryを経ない保存結果の再利用でも自動採用しない)。
+KP_STAGE_PASS_CANON_STATUSES = ("CANONICALIZATION_PASS",)
 KP_STAGE_FAILED_MARKER = "kp_stage_failed.json"
 
 
