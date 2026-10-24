@@ -26,6 +26,8 @@ import os
 import re
 import subprocess
 import sys
+import time
+import datetime
 
 import numpy as np
 
@@ -60,8 +62,16 @@ PROTECTED_STORES = (
     "er006_output/master_audio_store_01/reuse_telemetry.jsonl",
     "er006_output/pronunciation_ledger_01/ledger.json",
     "er005_output/cost_baseline_01/cost_summary.json",
+    # Opus条件A M3追加: Ledgerの付属ファイル(Ledger path差替えで本来はDEV側へ移る。念のため元の不変も確認)、JA foreign token HR queue
+    "er006_output/pronunciation_ledger_01/negative_cache.json",
+    "er009_output/ja_foreign_token_gate_01/human_review_queue.jsonl",
 )
-PROTECTED_TREES = (A_THEME_DIR, "user_test/uk_train_speaker_playback_e2e_02")
+PROTECTED_TREES = (A_THEME_DIR, "user_test/uk_train_speaker_playback_e2e_02", "er011_output/local_rewrite_recovery")
+# M3: repo全体のmtime走査で除外するdir(本Trial自身の出力先・環境・cache)
+SCAN_EXCLUDE_DIRS = (".venv", ".git", "__pycache__", "node_modules", "er113_output/fx_paragraph_chunk_trial_01",
+                     "user_test/fx_paragraph_chunk_trial_01")
+# M3: 走査結果のうち『他agentの管理/文書領域』として別枠表示する接頭辞(それ以外=Production書込み先候補は即STOP対象)
+SCAN_BENIGN_PREFIXES = ("docs/", ".claude/", "tools/")
 
 
 # ============================================================
@@ -398,7 +408,7 @@ def _write_mp3(stereo48: np.ndarray, out_path: str, br: str = "96k") -> None:
     os.remove(tmp)
 
 
-def compute_b_artifacts(chunk_wav_dir_fmt: str, out_sub: str, pause_seconds: float = 0.5) -> dict:
+def compute_b_artifacts(chunk_wav_dir_fmt: str, out_sub: str, pause_seconds: float = 0.5, with_full: bool = True) -> dict:
     """chunk wav(<chunk_wav_dir_fmt>.format(chunk_id=..., part=...))から B の本文part・本文全体・Advanced通しを組み立て、計測する。
     gainの基準はA側 gain_report の target_rms(他segmentのgainは不変)。"""
     import er003_b1_p9a_audio as p9a
@@ -406,7 +416,7 @@ def compute_b_artifacts(chunk_wav_dir_fmt: str, out_sub: str, pause_seconds: flo
     plan = build_chunk_plan(parts)
     target = a_target_rms()
     res = {"target_rms": target, "pause_seconds": pause_seconds, "parts": {}, "chunks": {}}
-    b_stereo, b_mono_final = {}, {}
+    b_stereo, b_mono_final, all_gained = {}, {}, []
     for n in PARTS:
         chs = [c for c in plan if c["part"] == n]
         monos = []
@@ -418,6 +428,7 @@ def compute_b_artifacts(chunk_wav_dir_fmt: str, out_sub: str, pause_seconds: flo
         j = join_chunks(monos, target, pause_seconds, per_chunk_gain=True)
         jseg = join_chunks(monos, target, pause_seconds, per_chunk_gain=False)  # 診断: segment単位1gainの場合
         b_mono_final[n] = j["mono24"]
+        all_gained.extend([m * g for m, g in zip(monos, j["gains"])])
         b_stereo[n] = p9a.mono_24k_to_stereo_target(j["mono24"])
         words = sum(c["words"] for c in chs)
         res["parts"][f"part{n}"] = {
@@ -429,10 +440,14 @@ def compute_b_artifacts(chunk_wav_dir_fmt: str, out_sub: str, pause_seconds: flo
     # 本文全体(part1+1.0s+part2+1.0s+part3。A/Bとも同一の接続)
     gap = p9a.silence_stereo(1.0)
     body_b = np.concatenate([b_stereo[1], gap, b_stereo[2], gap, b_stereo[3]])
-    full_b = rebuild_full_episode(b_stereo)
+    full_b = rebuild_full_episode(b_stereo) if with_full else None
     os.makedirs(os.path.join(ROOT, out_sub), exist_ok=True)
-    res["full_episode_b"] = {"duration_s": round(len(full_b["assembled"]) / SR48, 2), "headroom": full_b["headroom"]}
-    res["_stereo"] = {"parts": b_stereo, "body": body_b, "full": full_b["assembled"], "timeline": full_b["timeline"]}
+    res["boundary_jump_db_all_chunks"] = boundary_jump_db(all_gained)  # R3: 10 chunk間の全9境界(part跨ぎ含む)
+    if full_b:
+        res["full_episode_b"] = {"duration_s": round(len(full_b["assembled"]) / SR48, 2), "headroom": full_b["headroom"]}
+    res["_stereo"] = {"parts": b_stereo, "body": body_b, "full": full_b["assembled"] if full_b else None,
+                      "timeline": full_b["timeline"] if full_b else None}
+    res["_mono"] = b_mono_final
     return res
 
 
@@ -450,6 +465,91 @@ def a_artifacts() -> dict:
 
 
 
+# ============================================================
+# M4: 閾値に依存しない速度分解(段落ごとの発話区間長・段落境界gap・両端)。A/A_r2/B系の全てで同一関数・同一ASR整列を使う
+# ============================================================
+def measure_alignment(model, wav_path: str, part_text: str) -> dict:
+    """faster-whisper(word timestamps)+difflib整列で、台本の段落ごとに
+      span   = 段落内の最初の整列語のstart〜最後の整列語のend (発話区間長)
+      gap_k  = 段落k最後の語end → 段落k+1最初の語start (段落境界gap。連結構造からの計算値ではなく実音声から測る)
+      head   = 全長先頭〜最初の語start / tail = 最後の語end〜全長
+    を得る。厳密な恒等式: duration = head + Σspan + Σgap + tail (整列できた段落について)。500ms等の閾値は使わない。"""
+    import difflib
+    import soundfile as sf
+    paras = split_paragraphs(part_text)
+    ref, owner = [], []
+    for pi, para in enumerate(paras):
+        for tk in para.split():
+            nt = _norm_tok(tk)
+            if nt:
+                ref.append(nt)
+                owner.append(pi)
+    segs, _ = model.transcribe(wav_path, language="en", word_timestamps=True, beam_size=5, vad_filter=False,
+                               condition_on_previous_text=False)
+    words = [(_norm_tok(w.word), float(w.start), float(w.end)) for sg in segs for w in sg.words if _norm_tok(w.word)]
+    sm = difflib.SequenceMatcher(a=ref, b=[w[0] for w in words], autojunk=False)
+    ref2asr = {}
+    for blk in sm.get_matching_blocks():
+        for k in range(blk.size):
+            ref2asr[blk.a + k] = blk.b + k
+    info = sf.info(wav_path)
+    dur = info.frames / info.samplerate
+    per = []
+    for pi in range(len(paras)):
+        idx = [ref2asr[i] for i in range(len(ref)) if owner[i] == pi and i in ref2asr]
+        n_ref = sum(1 for o in owner if o == pi)
+        if not idx:
+            per.append({"matched": 0, "n_ref": n_ref, "start": None, "end": None, "span": None})
+            continue
+        st, en = words[min(idx)][1], words[max(idx)][2]
+        per.append({"matched": len(idx), "n_ref": n_ref, "start": round(st, 3), "end": round(en, 3), "span": round(en - st, 3)})
+    ok = [q for q in per if q["span"] is not None]
+    gaps = [round(b["start"] - a["end"], 3) for a, b in zip(per[:-1], per[1:]) if a["end"] is not None and b["start"] is not None]
+    head = ok[0]["start"] if ok else None
+    tail = round(dur - ok[-1]["end"], 3) if ok else None
+    return {"wav": wav_path, "duration_s": round(dur, 3), "n_paragraphs": len(paras), "paragraphs": per, "para_gaps": gaps,
+            "head_s": head, "tail_s": tail,
+            "decomp_sum_s": round((head or 0) + sum(q["span"] for q in ok) + sum(gaps) + (tail or 0), 3),
+            "all_paragraphs_aligned": len(ok) == len(paras), "asr_words": len(words), "ref_words": len(ref),
+            "match_ratio": round(len(ref2asr) / max(1, len(ref)), 4)}
+
+
+def m4_decompose(v_a: dict, v_b: dict) -> dict:
+    """2 variant(各 {part: measure_alignment結果})のΔ全長を Δ発話(Σspan差) + Δgap(段落境界gap差) + Δ両端(head+tail差) に厳密分解する。
+    v_*: {"1": alignment, "2":…, "3":…}。符号 = v_b - v_a。part境界(part間1.0秒)は本文全体では A/B 同一接続のため含めない。"""
+    out = {"parts": {}, "total": {}}
+    tot = {"d_dur": 0.0, "d_speech": 0.0, "d_gap": 0.0, "d_ends": 0.0}
+    for n in ("1", "2", "3"):
+        a, b = v_a[n], v_b[n]
+        d_speech = sum(q["span"] for q in b["paragraphs"]) - sum(q["span"] for q in a["paragraphs"])
+        d_gap = sum(b["para_gaps"]) - sum(a["para_gaps"])
+        d_ends = (b["head_s"] + b["tail_s"]) - (a["head_s"] + a["tail_s"])
+        d_dur = b["duration_s"] - a["duration_s"]
+        out["parts"][n] = {"d_dur": round(d_dur, 3), "d_speech": round(d_speech, 3), "d_gap": round(d_gap, 3), "d_ends": round(d_ends, 3),
+                           "residual": round(d_dur - d_speech - d_gap - d_ends, 3)}
+        for k, v in (("d_dur", d_dur), ("d_speech", d_speech), ("d_gap", d_gap), ("d_ends", d_ends)):
+            tot[k] += v
+    out["total"] = {k: round(v, 3) for k, v in tot.items()}
+    out["total"]["residual"] = round(tot["d_dur"] - tot["d_speech"] - tot["d_gap"] - tot["d_ends"], 3)
+    # 段落単位(10対): 各段落の発話区間長の差と、発話速度(語/秒)の差
+    pairs = []
+    for n in ("1", "2", "3"):
+        for i, (qa, qb) in enumerate(zip(v_a[n]["paragraphs"], v_b[n]["paragraphs"]), start=1):
+            pairs.append({"para": f"p{n}_{i}", "span_a": qa["span"], "span_b": qb["span"], "d_span": round(qb["span"] - qa["span"], 3),
+                          "ratio_b_over_a": round(qb["span"] / qa["span"], 4)})
+    out["paragraph_pairs"] = pairs
+    out["n_paragraph_b_slower"] = sum(1 for q in pairs if q["d_span"] > 0)
+    out["n_paragraph_b_faster"] = sum(1 for q in pairs if q["d_span"] < 0)
+    out["mean_span_ratio_b_over_a"] = round(float(np.mean([q["ratio_b_over_a"] for q in pairs])), 4)
+    return out
+
+
+def a_part_boundary_diagnostics(target_rms: float, a_parts_mono: dict) -> list:
+    """R3: Aの既存part境界(part1→2, 2→3。独立TTS call間を1.0秒でつないだ承認済みの接続)をBの段落境界と同じ診断(boundary_jump_db)で測る。"""
+    gained = [normalize_chunk_to_target(a_parts_mono[n], target_rms)[0] for n in PARTS]
+    return boundary_jump_db(gained)
+
+
 PAGE_DIR = "user_test/fx_paragraph_chunk_trial_01"
 _PAGE_CSS = ("body{font-family:sans-serif;max-width:1100px;margin:1em auto;padding:0 1em;line-height:1.5}table{border-collapse:collapse;width:100%;margin:.5em 0 1.5em}"
              "th,td{border:1px solid #ccc;padding:6px;vertical-align:top;text-align:left}td.play{min-width:300px}audio{width:100%}.sec{color:#666;font-size:.85em}"
@@ -457,11 +557,13 @@ _PAGE_CSS = ("body{font-family:sans-serif;max-width:1100px;margin:1em auto;paddi
              ".note{background:#fff8e0;padding:8px;border:1px solid #cb8;margin-bottom:1em}.na{color:#a00}")
 
 
-def build_page(a_art: dict, b_art: dict | None, report: dict | None, b0_art: dict | None = None, out_dir: str = PAGE_DIR) -> str:
+def build_page(a_art: dict, b_art: dict | None, report: dict | None, b0_art: dict | None = None, out_dir: str = PAGE_DIR,
+               extra_arms: dict | None = None) -> str:
     """A/B試聴ページ(既存Family X試聴ページのCSS・audio table構造を再利用)。b_art=None なら B欄は『Phase 2で生成』表示のテンプレート。
-    B  = 段落chunk + 承認済みFamily C/Z story clip接続(chunkごとRMS gain + narrator→narrator 0.5秒 gap)
-    B0 = 同じchunkを追加無音なし(各chunkのtrim margin残置分のみ)で結合した参考(TTS追加費用0。見かけの減速の切り分け用)
-    mp3は out_dir/audio/ に出力(user_test/配下のみ追跡可)。reportは比較表(WPM・ポーズ・音量・費用・Gate)のhtml断片。"""
+    B  = 段落chunk + 承認済みFamily C/Z story clip接続(chunkごとRMS gain + narrator→narrator 0.5秒 gap)。主表示take=B_r1(DESIGN_01で事前固定)
+    B0 = 同じchunkを追加無音なし(各chunkのtrim margin残置分のみ)で結合した対等な比較(R2。TTS追加費用0)
+    extra_arms(R1): {名前: {"parts": {n: stereo}, "body": stereo}} を折りたたみで表示(A_r2=現行方式の新規take、B_r2=Bの別take 等)。
+    mp3は out_dir/audio/ に出力(user_test/配下のみ追跡可)。reportは比較表のhtml断片。"""
     import html as H
     aud = f"{out_dir}/audio"
     rows = [("part1", "本文1 (Full Story Part 1)", 1), ("part2", "本文2 (Full Story Part 2)", 2), ("part3", "本文3 (Full Story Part 3)", 3)]
@@ -479,27 +581,44 @@ def build_page(a_art: dict, b_art: dict | None, report: dict | None, b0_art: dic
         a = mp3(tag, "A", a_art["parts"][n])
         b = mp3(tag, "B", b_art["parts"][n]) if b_art else None
         b0 = mp3(tag, "B0", b0_art["parts"][n]) if b0_art else None
-        trs.append(f"<tr><td><b>{label}</b></td><td class='play'>A 現行(1 Chunk)<br>{cell(a)}</td><td class='play'>B 段落Chunk<br>{cell(b)}</td>"
-                   f"<td class='play'>B0 参考(追加無音なし)<br>{cell(b0)}</td>"
+        trs.append(f"<tr><td><b>{label}</b></td><td class='play'>A 現行(1 Chunk)<br>{cell(a)}</td><td class='play'>B 段落Chunk(+0.5秒)<br>{cell(b)}</td>"
+                   f"<td class='play'>B0 段落Chunk(追加無音なし)<br>{cell(b0)}</td>"
                    f"<td><div class='script'>{H.escape(parts_json[f'part{n}']).replace(chr(10), '<br>')}</div></td></tr>")
     a_body = mp3("body", "A", a_art["body"])
     b_body = mp3("body", "B", b_art["body"]) if b_art else None
     b0_body = mp3("body", "B0", b0_art["body"]) if b0_art else None
     a_full = mp3("full", "A", a_art["full"], "128k")
-    b_full = mp3("full", "B", b_art["full"], "128k") if b_art else None
+    b_full = mp3("full", "B", b_art["full"], "128k") if b_art and b_art.get("full") is not None else None
     trs.append(f"<tr><td><b>本文全体</b><br><span class='sec'>本文1+本文2+本文3(間1.0秒、A/B同一接続)</span></td><td class='play'>A<br>{cell(a_body)}</td>"
                f"<td class='play'>B<br>{cell(b_body)}</td><td class='play'>B0<br>{cell(b0_body)}</td><td></td></tr>")
     trs.append(f"<tr><td><b>Advanced通し</b><br><span class='sec'>同一組立(Intro〜Outro)。本文3 segmentのみB版へ差替え</span></td><td class='play'>A<br>{cell(a_full)}</td>"
                f"<td class='play'>B<br>{cell(b_full)}</td><td></td><td></td></tr>")
+    extra_html = ""
+    if extra_arms:
+        names = list(extra_arms)
+        ths = "".join(f"<th>{H.escape(extra_arms[nm].get('label', nm))}</th>" for nm in names)
+        erows = []
+        for tag, label, n in rows + [("body", "本文全体", None)]:
+            tds = ""
+            for nm in names:
+                art = extra_arms[nm]
+                arr = art["body"] if n is None else art["parts"][n]
+                tds += f"<td class='play'>{cell(mp3(tag, nm, arr))}</td>"
+            erows.append(f"<tr><td><b>{label}</b></td>{tds}</tr>")
+        extra_html = ("<details><summary><b>参考: 別take(A_r2=現行方式の新規take、B_r2=B方式の別take)</b> — Aは承認済みの選ばれたtake、Bは新規の1 takeのため、"
+                      "take違いによる差を見るための折りたたみ</summary>"
+                      f"<table><thead><tr><th>パート</th>{ths}</tr></thead><tbody>{''.join(erows)}</tbody></table></details>")
     rep_html = ("<h2>比較結果</h2>" + report.get("html", "")) if report else ""
     html_doc = (f"<!DOCTYPE html><html lang='ja'><head><meta charset='utf-8'><title>Family X 段落Chunk Trial A/B試聴</title>"
                 f"<meta name='viewport' content='width=device-width, initial-scale=1'><style>{_PAGE_CSS}</style></head><body>"
                 "<h1>Family X『英国の電車マナー』Advanced 段落単位TTS Chunk A/B試聴(Trial)</h1>"
                 "<div class='note'><b>状態: Trial(Production採用ではありません)</b>。A=ユーザー承認済みの現行完成音声(本文1・2・3を各1 TTS Chunk)、"
-                "B=本文内の段落ごとに別TTS Chunk(承認済みFamily C/Z接続方式)。B0=Bと同じ音声を追加無音なしで結合した参考。"
-                "元文章・Voice(Aoede)・モデル・Style・既存の品質Gate・音量正規化(RMS)は同一。Production・公開済み完成ページは変更していません。</div>"
-                f"<table><thead><tr><th>パート</th><th>A 現行</th><th>B 段落Chunk</th><th>B0 参考</th><th>Script</th></tr></thead><tbody>{''.join(trs)}</tbody></table>"
-                f"{rep_html}</body></html>")
+                "B=本文内の段落ごとに別TTS Chunk(承認済みFamily C/Z接続方式、段落間+0.5秒)、B0=Bと同じ音声を追加無音なしで結合(段落間の間の好みと見かけの減速を切り分けるための、Bと対等な比較)。"
+                "元文章・Voice(Aoede)・モデル・Style・既存の品質Gate・音量正規化(RMS)は同一。Production・公開済み完成ページは変更していません。"
+                "<br>聴いていただきたい観点: 発音の正確性 / 抑揚・リズムの自然さ / 声質・話し方の一貫性(段落ごとに別callになるため、段落間で声の質が変わって聞こえないか) / 段落の接続の不自然さ / 段落全体の聞きやすさ / 話す速さ(A比)。"
+                "<br>※Aは過去に承認済みの選ばれたtake、BとB0は新規に1回生成したtakeです(同じ音声のB/B0以外は別takeのため偶然の差が混じります。折りたたみ内のA_r2/B_r2で別takeも確認できます)。</div>"
+                f"<table><thead><tr><th>パート</th><th>A 現行</th><th>B 段落Chunk(+0.5秒)</th><th>B0(追加無音なし)</th><th>Script</th></tr></thead><tbody>{''.join(trs)}</tbody></table>"
+                f"{extra_html}{rep_html}</body></html>")
     ap = os.path.join(ROOT, out_dir, "index.html")
     os.makedirs(os.path.dirname(ap), exist_ok=True)
     with open(ap, "w", encoding="utf-8") as f:
@@ -528,11 +647,25 @@ def estimate_asr_jpy(n_calls: int, in_tokens_each: int = 530, out_tokens_each: i
 # ============================================================
 # Production sink隔離(Phase 2で使用。プロセス内override。Productionファイルは編集しない)
 # ============================================================
+LR_EVENTS: list = []  # M2: wrapper経由で呼ばれたrun_local_rewrite_recoveryの呼出記録(条件差異の検知用)
+
+
+def assert_cwd_is_root() -> None:
+    """M3: sink差替え先・snapshotは相対パス(er113_output/…)のためcwd==ROOTを必須とする。"""
+    if os.path.normcase(os.path.realpath(os.getcwd())) != os.path.normcase(os.path.realpath(ROOT)):
+        raise SystemExit(f"[STOP] cwd({os.getcwd()}) != ROOT({ROOT})。ROOTで起動すること")
+
+
 @contextlib.contextmanager
 def redirect_production_sinks(dev_dir: str):
-    """Production書込み先4種をDEV dirへ向ける。終了時に必ず元へ戻す。
-    er021のappend_telemetry_log は path 既定引数が定義時束縛のため、定数差替えでは効かない→関数自体をpath固定のwrapperに差替える。"""
+    """Production書込み先をDEV dirへ向ける。終了時に必ず元へ戻す。
+    er021のappend_telemetry_log は path 既定引数が定義時束縛のため、定数差替えでは効かない→関数自体をpath固定のwrapperに差替える。
+    Opus条件A M1: Pronunciation Ledger(LEDGER_PATH)を『開始時点の現行ledger.jsonのコピー』へ向ける
+      (読む内容は同一、upsertはDEV側へ。negative_cache.jsonはLedgerと同dirなので自動でDEV側へ移る)。
+    Opus条件A M2: er020.run_local_rewrite_recoveryをwrapperで包みout_dirをDEV側へ差替える(Production側 er011_output/local_rewrite_recovery を作らない)。"""
     import importlib
+    import shutil
+    assert_cwd_is_root()
     saved, patched_fn = [], []
     os.makedirs(os.path.join(ROOT, dev_dir), exist_ok=True)
     try:
@@ -541,6 +674,15 @@ def redirect_production_sinks(dev_dir: str):
             old = getattr(mod, attr)
             saved.append((mod, attr, old))
             setattr(mod, attr, f"{dev_dir}/sink_{modname}_{attr}.jsonl")
+        # M1: Ledger隔離
+        ledger_mod = importlib.import_module("er006_pronunciation_ledger_01")
+        dev_ledger_dir = f"{dev_dir}/ledger_copy"
+        os.makedirs(os.path.join(ROOT, dev_ledger_dir), exist_ok=True)
+        dev_ledger = f"{dev_ledger_dir}/ledger.json"
+        if os.path.exists(os.path.join(ROOT, ledger_mod.LEDGER_PATH)):
+            shutil.copyfile(os.path.join(ROOT, ledger_mod.LEDGER_PATH), os.path.join(ROOT, dev_ledger))
+        saved.append((ledger_mod, "LEDGER_PATH", ledger_mod.LEDGER_PATH))
+        ledger_mod.LEDGER_PATH = dev_ledger
         m21 = importlib.import_module("er021_en_asr_semantic_equivalence_production_01")
         orig_fn = m21.append_telemetry_log
         patched_fn.append((m21, "append_telemetry_log", orig_fn))
@@ -549,12 +691,77 @@ def redirect_production_sinks(dev_dir: str):
         def _wrapped(record, path=None, _orig=orig_fn):
             return _orig(record, path=dev_tel)
         m21.append_telemetry_log = _wrapped
+        # M2: Local Rewrite回復の出力先をDEV側へ
+        m20 = importlib.import_module("er020_tts_retry_local_rewrite_01")
+        orig_lr = m20.run_local_rewrite_recovery
+        patched_fn.append((m20, "run_local_rewrite_recovery", orig_lr))
+
+        def _lr_wrapped(*args, out_dir=None, _orig=orig_lr, **kw):
+            sub = (out_dir or "unknown").replace("\\", "/").split("local_rewrite_recovery/", 1)[-1]
+            dev_out = f"{dev_dir}/local_rewrite_recovery/{sub}"
+            LR_EVENTS.append({"segment_id": kw.get("segment_id"), "orig_out_dir": out_dir, "dev_out_dir": dev_out})
+            return _orig(*args, out_dir=dev_out, **kw)
+        m20.run_local_rewrite_recovery = _lr_wrapped
         yield
     finally:
         for mod, attr, old in saved:
             setattr(mod, attr, old)
         for mod, attr, old in patched_fn:
             setattr(mod, attr, old)
+
+
+def scan_new_files(since_ts: float) -> dict:
+    """M3: repo全体で開始時刻(since_ts)以降にmtimeが更新/作成されたファイルを走査する(未知の書込み先の検知網)。
+    SCAN_EXCLUDE_DIRSは除外。SCAN_BENIGN_PREFIXES(docs/等=他agentの文書領域)は別枠、それ以外は suspicious(=STOP対象)。"""
+    hits = []
+    excl = [e.replace("/", os.sep) for e in SCAN_EXCLUDE_DIRS]
+    for dp, dn, fns in os.walk(ROOT):
+        rel_dp = os.path.relpath(dp, ROOT)
+        dn[:] = [d for d in dn if os.path.normpath(os.path.join(rel_dp, d)).replace("\\", "/") not in
+                 [e.replace("\\", "/") for e in excl] and d not in (".venv", ".git", "__pycache__", "node_modules")]
+        for fn in fns:
+            ap = os.path.join(dp, fn)
+            try:
+                mt = os.path.getmtime(ap)
+            except OSError:
+                continue
+            if mt >= since_ts:
+                hits.append(os.path.relpath(ap, ROOT).replace("\\", "/"))
+    benign = sorted(h for h in hits if h.startswith(SCAN_BENIGN_PREFIXES))
+    susp = sorted(h for h in hits if not h.startswith(SCAN_BENIGN_PREFIXES))
+    return {"since_ts": since_ts, "n_total": len(hits), "benign_other_agent_or_docs": benign, "suspicious": susp}
+
+
+# ============================================================
+# M1: Ledger/ resolver preflight(無料。有料run前に実行し、空でなければSTOPしてFableへ報告)
+# ============================================================
+def ledger_preflight() -> dict:
+    """全chunk(B)とA_r2(part全体)のTTS入力について、(1)hint注入(augment_style_prefix_with_pronunciation, min_confidence=medium)
+    (2)resolverの低confidence再research対象(get_low_confidence_entries_for_text→confidence=low)(3)ASR Cascade D-2'用ledger_phrases
+    (get_hint_for_text min_confidence=low)を事前計算する。A記録(hints_applied=False, cache_hits=[])と同じく全て空であること。
+    読むLedgerは現行のProduction ledger.json(読取のみ、書込みなし)。"""
+    import er003_v1_n3_01_tts_generate as n3_tts
+    import er006_pronunciation_ledger_01 as ledger
+    import er006_pronunciation_tts_injection_01 as inj
+    import er019_family_x_audio_production_runner_01 as runner
+    parts_json = load_json(f"{A_LEVEL_DIR}/parts.json")
+    style = a_style_prefix()
+    items = build_chunk_plan(parts_json) + build_whole_part_plan(parts_json)
+    out = {"ledger_path": ledger.LEDGER_PATH, "ledger_sha256": sha256_file(ledger.LEDGER_PATH), "items": {}, "all_empty": True}
+    before = sha256_file(ledger.LEDGER_PATH)
+    for ch in items:
+        tts_input = runner._pnap_supply(ch["text"], n3_tts.tts_safe_news_en(ch["text"]))
+        _, hits = inj.augment_style_prefix_with_pronunciation(style, tts_input, min_confidence="medium")
+        low = [e for e in ledger.get_low_confidence_entries_for_text(tts_input, exclude_entity_types={ledger.CASCADE_UNRESOLVED_ENTITY_TYPE})
+               if e.get("confidence") == "low" and e.get("entity_type") != ledger.JA_READING_ENTITY_TYPE]
+        asr_phr = [h["canonical_spelling"] for h in ledger.get_hint_for_text(tts_input, min_confidence="low")]
+        rec = {"hints_medium_plus": [h.get("surface") for h in hits], "low_confidence_research_targets": [e["surface"] for e in low],
+               "asr_ledger_phrases_low_plus": asr_phr}
+        out["items"][ch["chunk_id"]] = rec
+        if rec["hints_medium_plus"] or rec["low_confidence_research_targets"] or rec["asr_ledger_phrases_low_plus"]:
+            out["all_empty"] = False
+    out["ledger_unchanged_by_preflight"] = (before == sha256_file(ledger.LEDGER_PATH))
+    return out
 
 
 # ============================================================
@@ -645,18 +852,213 @@ def generate_chunks_phase2(plan: list, only: list | None = None, tts_generate_fn
             wav = f"{OUT_DIR}/gen/{ch['chunk_id']}/b1b/narration/{seg}.wav"
             os.makedirs(os.path.dirname(os.path.join(ROOT, wav)), exist_ok=True)
             tts_input = runner._pnap_supply(ch["text"], n3_tts.tts_safe_news_en(ch["text"]))  # A側と同じ整形(tts_safe_news_en→pnap_supply)
+            n_lr_before = len(LR_EVENTS)
+            t0 = time.time()
+            t0_iso = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).isoformat(timespec="seconds")
             with cl.segment_context(ch["chunk_id"]):
                 res = gen(tts_input, os.path.join(ROOT, wav), disfluency_qa=False,
                           enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(seg),
                           enable_repetition_qa=True, enable_pronunciation_resolver=True,
                           style_prefix_override=style, tts_backend="speech_metadata_flash_lite")
-            results[ch["chunk_id"]] = {"status": res.get("status"), "path": wav, "tts_input_sha256": hashlib.sha256(tts_input.encode()).hexdigest(),
-                                       "attempts": len(res.get("attempts_log") or []), "audio_classification": res.get("audio_classification"),
-                                       "repetition_qa_checked": res.get("repetition_qa_checked"), "trim_info": res.get("trim_info")}
+            elapsed = time.time() - t0
+            res = res or {}
+            cool = res.get("cooldown_events") or []
+            cool_s = sum(float(c.get("cooldown_actual_seconds") or 0) for c in cool)
+            attempts_log = res.get("attempts_log") or []
+            lr = res.get("local_rewrite_recovery")
+            fallback_used = res.get("instruction_type") == "minimal_fallback" or any(
+                (a_.get("instruction_type") == "minimal_fallback") for a_ in attempts_log if isinstance(a_, dict))
+            canon_before = res.get("canonical_text_before_local_rewrite")
+            pron = res.get("en_pronunciation_resolver_info") or {}
+            cond_diff = []
+            if lr:
+                cond_diff.append("local_rewrite_recovery")
+            if canon_before is not None and canon_before != tts_input:
+                cond_diff.append("text_changed")
+            if fallback_used:
+                cond_diff.append("minimal_fallback_style")
+            if pron.get("hints_applied") or pron.get("low_confidence_retry_attempted"):
+                cond_diff.append("pronunciation_hint_or_research")
+            style_used = res.get("style_prefix")
+            results[ch["chunk_id"]] = {
+                "status": res.get("status"), "path": wav, "tts_input_sha256": hashlib.sha256(tts_input.encode()).hexdigest(),
+                "attempts": len(attempts_log), "audio_classification": res.get("audio_classification"),
+                "repetition_qa_checked": res.get("repetition_qa_checked"), "trim_info": res.get("trim_info"),
+                # M2: 条件同一性の記録
+                "instruction_type": res.get("instruction_type"), "minimal_fallback_used": fallback_used,
+                "local_rewrite_recovery": ({"status": lr.get("status"), "ng_span": lr.get("ng_span"),
+                                            "selected": (lr.get("selection") or {}).get("selected")} if lr else None),
+                "canonical_text_before_local_rewrite": canon_before,
+                "en_pronunciation_resolver_info": pron, "cooldown_events": cool,
+                "style_prefix_sha256": hashlib.sha256((style_used or "").encode()).hexdigest() if style_used else None,
+                "style_prefix_equals_A_style": (style_used == style) if style_used else None,
+                "tts_model_id": res.get("tts_model_id"), "voice": res.get("voice"),
+                "condition_diff": cond_diff, "condition_diff_flag": bool(cond_diff),
+                "local_rewrite_wrapper_calls": len(LR_EVENTS) - n_lr_before,
+                # QCD: 所要時間(R4: cool-down分を分離)
+                "started_jst": t0_iso, "elapsed_s": round(elapsed, 2), "cooldown_s": round(cool_s, 2),
+                "elapsed_excl_cooldown_s": round(elapsed - cool_s, 2),
+                "tts_input_chars": len(tts_input), "max_extra_chars_allowance_ratio": round(15 / max(1, len(tts_input)), 4)}
             if res.get("status") != "OK":
+                results[ch["chunk_id"]]["fail_reason"] = res.get("reason")
                 break  # 自動再実行しない。Fableへ報告(既存retry/Gateの上限=PRODUCTION_MAX_TTS_ATTEMPTSは関数内で消化済み)
     _run(f"{OUT_DIR}/gen")
     return results
+
+
+# ============================================================
+# Phase 2後: 計測・ページ生成(chunk wavが揃っていればAPI 0、ローカルのみ)
+# ============================================================
+def _write_wav24(path: str, x: np.ndarray) -> None:
+    import soundfile as sf
+    ap = os.path.join(ROOT, path)
+    os.makedirs(os.path.dirname(ap), exist_ok=True)
+    sf.write(ap, x.astype("float32"), SR24)
+
+
+def _agg_wpm(part_measures: dict) -> dict:
+    """本文3 partの合計(words合計/duration合計、articulation=Σwords/Σ発話時間)。measure_a_sideと同定義。"""
+    out = {}
+    tw = sum(m["words"] for m in part_measures.values())
+    td = sum(m["duration_s"] for m in part_measures.values())
+    out["words"], out["duration_s"], out["total_wpm"] = tw, round(td, 3), round(tw / td * 60, 2)
+    for thr in (300, 500):
+        sp = sum(m["words"] / m[f"articulation_wpm_{thr}"] * 60 for m in part_measures.values())
+        out[f"articulation_wpm_{thr}"] = round(tw / sp * 60, 2)
+        out[f"pause_{thr}_mid_n"] = sum(m[f"pause_{thr}"]["n_mid"] for m in part_measures.values())
+        out[f"pause_{thr}_mid_sum_s"] = round(sum(m[f"pause_{thr}"]["sum_mid_s"] for m in part_measures.values()), 3)
+    return out
+
+
+def _verdict_speed(cross: dict, art300: dict) -> dict:
+    """M4: 実速度の結論は『段落単位の比較』と『art300』の両方が同方向で一致した場合のみ断定(A/A_r2 x B_r1/B_r2 の4対すべて)。"""
+    ratios = {k: v["mean_span_ratio_b_over_a"] for k, v in cross.items()}
+    direction_para = ("B_slower" if all(r > 1.0 for r in ratios.values()) else
+                      "B_faster" if all(r < 1.0 for r in ratios.values()) else "mixed")
+    direction_300 = ("B_slower" if all(v < 0 for v in art300.values()) else "B_faster" if all(v > 0 for v in art300.values()) else "mixed")
+    asserted = direction_para if (direction_para == direction_300 and direction_para != "mixed") else "not_assertable"
+    return {"paragraph_level_direction": direction_para, "art300_direction": direction_300, "asserted": asserted,
+            "mean_span_ratio_b_over_a_by_pair": ratios, "art300_wpm_b_minus_a_by_pair": dict(art300)}
+
+
+def run_postprocess(render_page: bool = True) -> dict:
+    """計測+(任意で)ページ生成。生成wav(gen/<arm>_<chunk_id>/…)→ A/A_r2/B_r1/B0_r1/B_r2/B0_r2 の6 variantを同一方式で測り、
+    M4分解・R3境界診断・Gate/条件差異/QCDを `measure_01.json` に保存する。"""
+    from faster_whisper import WhisperModel
+    import er019_family_x_audio_production_runner_01 as runner
+    parts_json = load_json(f"{A_LEVEL_DIR}/parts.json")
+    target = a_target_rms()
+    mw = _mw()
+    words = {n: mw.count_primary(parts_json[f"part{n}"]) for n in PARTS}
+    gen_res = load_json(f"{OUT_DIR}/gen_result_01.json")["results"]
+
+    mono_raw = {"A": {}, "A_r2": {}}
+    for n in PARTS:
+        mono_raw["A"][n] = _read_mono(f"{A_LEVEL_DIR}/narration/full_story_part{n}.wav")[0]
+        if f"A_p{n}" in gen_res:
+            mono_raw["A_r2"][n] = _read_mono(gen_res[f"A_p{n}"]["path"])[0]
+    variants_mono = {}
+    for vn in ("A", "A_r2"):
+        if len(mono_raw[vn]) == 3:
+            variants_mono[vn] = {n: normalize_chunk_to_target(mono_raw[vn][n], target)[0] for n in PARTS}
+    arts = {}
+    for arm in ("B_r1", "B_r2"):
+        if f"{arm}_p1_1" not in gen_res:
+            continue
+        fmt = f"{OUT_DIR}/gen/{arm}_{{chunk_id}}/b1b/narration/full_story_part{{part}}.wav"
+        b = compute_b_artifacts(fmt.replace("{chunk_id}", "{chunk_id}"), f"{OUT_DIR}/postprocess", 0.5, with_full=(arm == "B_r1"))
+        b0 = compute_b_artifacts(fmt, f"{OUT_DIR}/postprocess", 0.0, with_full=False)
+        arts[arm], arts[f"B0_{arm[2:]}"] = b, b0
+        variants_mono[arm] = b["_mono"]
+        variants_mono[f"B0_{arm[2:]}"] = b0["_mono"]
+    names = list(variants_mono)
+
+    out = {"target_rms": target, "variants": {}, "gate": {}, "alignment": {}, "decomposition": {}, "boundary": {}}
+    model = WhisperModel("small", device="cpu", compute_type="int8")
+    for vn in names:
+        pm = {}
+        for n in PARTS:
+            pm[f"part{n}"] = measure_wav(variants_mono[vn][n], SR24, words[n])
+            wp = f"{OUT_DIR}/postprocess/align/{vn}_part{n}.wav"
+            _write_wav24(wp, variants_mono[vn][n])
+            out["alignment"].setdefault(vn, {})[str(n)] = measure_alignment(model, os.path.join(ROOT, wp), parts_json[f"part{n}"])
+        out["variants"][vn] = {"parts": {k: {kk: vv for kk, vv in v.items() if kk != "pauses_300_detail"} for k, v in pm.items()},
+                               "total": _agg_wpm(pm)}
+    pairs = [("A", "A_r2"), ("A", "B_r1"), ("A", "B0_r1"), ("A_r2", "B_r1"), ("A_r2", "B0_r1"), ("B_r1", "B_r2"),
+             ("A", "B_r2"), ("A_r2", "B_r2")]
+    cross, art300 = {}, {}
+    for x, y in pairs:
+        if x in out["alignment"] and y in out["alignment"]:
+            out["decomposition"][f"{x}->{y}"] = m4_decompose(out["alignment"][x], out["alignment"][y])
+    for x in ("A", "A_r2"):
+        for y in ("B_r1", "B_r2"):
+            k = f"{x}->{y}"
+            if k in out["decomposition"]:
+                cross[k] = out["decomposition"][k]
+                art300[k] = round(out["variants"][y]["total"]["articulation_wpm_300"] - out["variants"][x]["total"]["articulation_wpm_300"], 2)
+    out["speed_verdict"] = _verdict_speed(cross, art300) if cross else None
+    if "A" in variants_mono:
+        out["boundary"]["A_part_boundaries_db"] = a_part_boundary_diagnostics(target, mono_raw["A"])
+    if "A_r2" in variants_mono:
+        out["boundary"]["A_r2_part_boundaries_db"] = a_part_boundary_diagnostics(target, mono_raw["A_r2"])
+    for arm in ("B_r1", "B_r2"):
+        if arm in arts:
+            out["boundary"][f"{arm}_all_chunk_boundaries_db"] = arts[arm]["boundary_jump_db_all_chunks"]
+            out["boundary"][f"{arm}_chunk_gains"] = {f"part{n}": arts[arm]["parts"][f"part{n}"]["gains_per_chunk"] for n in PARTS}
+            out["boundary"][f"{arm}_segment_gain_alt_boundary_db"] = {f"part{n}": arts[arm]["parts"][f"part{n}"]["boundary_jump_db_if_segment_gain"] for n in PARTS}
+    out["gate"] = gen_res
+    spent, detail = runner.compute_cost_jpy_so_far(os.path.join(ROOT, f"{OUT_DIR}/raw_usage_log.jsonl"))
+    out["cost_jpy_from_raw_usage_log"] = spent
+    out["cost_detail"] = detail if isinstance(detail, (dict, list, int, float, str)) else str(detail)
+    out["tts_calls_in_gen_result"] = sum(max(1, v.get("attempts") or 1) for v in gen_res.values())
+    out["condition_diff_chunks"] = [k for k, v in gen_res.items() if v.get("condition_diff_flag")]
+    save_json(f"{OUT_DIR}/measure_01.json", out)
+    if render_page and "A" in variants_mono and "B_r1" in arts:
+        a_art = a_artifacts()
+        extras = {}
+        if "A_r2" in variants_mono:
+            import er003_b1_p9a_audio as p9a
+            st = {n: p9a.mono_24k_to_stereo_target(variants_mono["A_r2"][n]) for n in PARTS}
+            gap = p9a.silence_stereo(1.0)
+            extras["A_r2"] = {"label": "A_r2 (現行方式の新規take)", "parts": st, "body": np.concatenate([st[1], gap, st[2], gap, st[3]])}
+        if "B_r2" in arts:
+            extras["B_r2"] = {"label": "B_r2 (B方式の別take、+0.5秒)", "parts": arts["B_r2"]["_stereo"]["parts"], "body": arts["B_r2"]["_stereo"]["body"]}
+        report = {"html": build_report_html(out)}
+        build_page(a_art, arts["B_r1"]["_stereo"], report, arts["B0_r1"]["_stereo"], extra_arms=extras)
+    return out
+
+
+def build_report_html(m: dict) -> str:
+    import html as H
+    rows = ""
+    for vn, v in m["variants"].items():
+        t = v["total"]
+        rows += (f"<tr><td>{H.escape(vn)}</td><td>{t['duration_s']}</td><td>{t['total_wpm']}</td><td>{t['articulation_wpm_500']}</td>"
+                 f"<td>{t['articulation_wpm_300']}</td><td>{t['pause_500_mid_n']} / {t['pause_500_mid_sum_s']}</td></tr>")
+    dec = ""
+    for k, d in m["decomposition"].items():
+        t = d["total"]
+        dec += (f"<tr><td>{H.escape(k)}</td><td>{t['d_dur']:+.2f}</td><td>{t['d_speech']:+.2f}</td><td>{t['d_gap']:+.2f}</td><td>{t['d_ends']:+.2f}</td>"
+                f"<td>{d['n_paragraph_b_slower']}/{d['n_paragraph_b_faster']}</td><td>{d['mean_span_ratio_b_over_a']}</td></tr>")
+    v = m.get("speed_verdict") or {}
+    bd = "".join(f"<li>{H.escape(k)}: {H.escape(str(x))}</li>" for k, x in m["boundary"].items() if k.endswith("_db"))
+    gate_rows = ""
+    for cid, g in m["gate"].items():
+        cd = "あり: " + ",".join(g.get("condition_diff") or []) if g.get("condition_diff_flag") else "なし"
+        gate_rows += (f"<tr><td>{H.escape(cid)}</td><td>{g.get('status')}</td><td>{g.get('attempts')}</td><td>{g.get('audio_classification')}</td>"
+                      f"<td>{g.get('repetition_qa_checked')}</td><td>{cd}</td><td>{g.get('elapsed_excl_cooldown_s')}</td></tr>")
+    return ("<h3>速度(本文3 part合計、各variantを同じ正規化後に同一方法で測定)</h3>"
+            "<table><thead><tr><th>variant</th><th>全長s</th><th>total WPM</th><th>art500 WPM</th><th>art300 WPM</th><th>中間ポーズ500ms以上 個数/合計s</th></tr></thead>"
+            f"<tbody>{rows}</tbody></table>"
+            "<h3>全長差の分解(後者-前者。閾値に依存しない: 発話区間差 + 段落境界gap差 + 両端差)</h3>"
+            "<table><thead><tr><th>比較</th><th>Δ全長s</th><th>Δ発話区間s</th><th>Δ段落境界gap s</th><th>Δ両端s</th><th>後者が長い/短い段落数(10中)</th><th>段落span比(後者/前者)</th></tr></thead>"
+            f"<tbody>{dec}</tbody></table>"
+            f"<p>速度の断定: <b>{H.escape(str(v.get('asserted')))}</b> (段落単位={H.escape(str(v.get('paragraph_level_direction')))}、art300={H.escape(str(v.get('art300_direction')))}。両者が一致しない場合は断定しない)</p>"
+            f"<h3>境界の音量差診断(dB。Aのpart境界2か所とBの段落境界を同一診断で並べた参考値、判定なし)</h3><ul>{bd}</ul>"
+            "<h3>Gate結果とchunk別(B_r1/B_r2/A_r2)</h3>"
+            "<table><thead><tr><th>chunk</th><th>status</th><th>attempts</th><th>classification</th><th>RepQA</th><th>条件差異</th><th>所要s(cooldown除く)</th></tr></thead>"
+            f"<tbody>{gate_rows}</tbody></table>"
+            f"<p>費用(raw_usage_log): {m.get('cost_jpy_from_raw_usage_log')}円 / 条件差異chunk: {H.escape(str(m.get('condition_diff_chunks')))}</p>")
 
 
 # ============================================================
@@ -664,8 +1066,10 @@ def generate_chunks_phase2(plan: list, only: list | None = None, tts_generate_fn
 # ============================================================
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["plan", "measure_a", "a_boundaries", "verify_rebuild", "gen"])
+    ap.add_argument("cmd", choices=["plan", "measure_a", "a_boundaries", "verify_rebuild", "preflight", "gen", "postprocess", "scan_since"])
     ap.add_argument("--only", nargs="*")
+    ap.add_argument("--since", type=float, default=None, help="scan_since: epoch秒")
+    ap.add_argument("--no-page", action="store_true")
     ap.add_argument("--arms", nargs="*", default=["B_r1"], help="gen: B_r1(必須) / A_r2(分散基準: Aの方式で再生成) / B_r2(Bの再take)。1 launchで直列実行")
     a = ap.parse_args()
     if a.cmd == "plan":
@@ -691,10 +1095,29 @@ def main() -> None:
                "protected_changed": diff_snapshots(before, snapshot_protected())}
         save_json(f"{OUT_DIR}/rebuild_check_01.json", out)
         print(json.dumps(out))
+    elif a.cmd == "preflight":
+        assert_cwd_is_root()
+        res = ledger_preflight()
+        save_json(f"{OUT_DIR}/ledger_preflight_01.json", res)
+        print(json.dumps({"all_empty": res["all_empty"], "ledger_unchanged": res["ledger_unchanged_by_preflight"],
+                          "nonempty": {k: v for k, v in res["items"].items() if any(v.values())}}, ensure_ascii=False))
+    elif a.cmd == "scan_since":
+        print(json.dumps(scan_new_files(a.since), ensure_ascii=False, indent=1))
+    elif a.cmd == "postprocess":
+        assert_cwd_is_root()
+        r = run_postprocess(render_page=not a.no_page)
+        print(json.dumps({"speed_verdict": r.get("speed_verdict"), "cost": r.get("cost_jpy_from_raw_usage_log")}, ensure_ascii=False))
     elif a.cmd == "gen":
+        assert_cwd_is_root()
         _require_go()
+        pre = ledger_preflight()  # M1: 空でなければ有料run前にSTOP
+        save_json(f"{OUT_DIR}/ledger_preflight_01.json", pre)
+        if not pre["all_empty"] or not pre["ledger_unchanged_by_preflight"]:
+            raise SystemExit("[STOP] Ledger preflightが空でない(A作成時と条件差)。Fableへ報告")
         _stop_check()
+        t_start = time.time()
         before = snapshot_protected()
+        ledger_before = sha256_file("er006_output/pronunciation_ledger_01/ledger.json")
         parts_json = load_json(f"{A_LEVEL_DIR}/parts.json")
         res = {}
         with redirect_production_sinks(f"{OUT_DIR}/sinks"):
@@ -703,11 +1126,18 @@ def main() -> None:
                 res.update(r)
                 if any(v["status"] != "OK" for v in r.values()):
                     break  # 失敗したら後続armへ進まず停止・報告(自動再実行しない)
-        changed = diff_snapshots(before, snapshot_protected())
-        save_json(f"{OUT_DIR}/gen_result_01.json", {"results": res, "protected_changed": changed})
-        print(json.dumps({"results": {k: v["status"] for k, v in res.items()}, "protected_changed": changed}))
-        if changed:
-            raise SystemExit(f"[STOP] Production storeが変化: {changed}")
+        after = snapshot_protected()
+        changed = diff_snapshots(before, after)
+        scan = scan_new_files(t_start - 2)
+        iso = {"t_start": t_start, "before": before, "after": after, "protected_changed": changed, "mtime_scan": scan,
+               "dev_ledger_sha256": sha256_file(f"{OUT_DIR}/sinks/ledger_copy/ledger.json"),
+               "prod_ledger_sha256_before": ledger_before, "local_rewrite_wrapper_events": LR_EVENTS}
+        save_json(f"{OUT_DIR}/isolation_01.json", iso)
+        save_json(f"{OUT_DIR}/gen_result_01.json", {"results": res, "protected_changed": changed, "mtime_scan_suspicious": scan["suspicious"]})
+        print(json.dumps({"results": {k: v["status"] for k, v in res.items()}, "protected_changed": changed,
+                          "mtime_suspicious": scan["suspicious"]}))
+        if changed or scan["suspicious"]:
+            raise SystemExit(f"[STOP] 隔離検知: changed={changed} suspicious={scan['suspicious'][:10]}")
 
 
 if __name__ == "__main__":

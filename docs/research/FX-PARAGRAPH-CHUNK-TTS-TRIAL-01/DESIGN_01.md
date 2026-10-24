@@ -117,3 +117,20 @@
 ## 10. Phase 2 手順(Go後)
 
 1. `PHASE2_GO.json`(`managed_id`,`cap_jpy`,`approved_by`,`arms`)をFableが作成 → 2. stop check → 3. `TTS_EXECUTION_MODE=STANDARD .venv\Scripts\python.exe er113_fx_paragraph_chunk_trial_01.py gen --arms B_r1 A_r2 B_r2`(1 launch) → 4. `compute_b_artifacts`でB(0.5s)/B0(0s)を組立・計測(API 0) → 5. ローカルfaster-whisperで結合part確認 → 6. `build_page`でページ生成 → 7. Fable独立評価・Closeout(VALIDATED/REJECTED/USER_DECISION_REQUIRED)。
+
+## 11. Opus条件A反映(委任_02、2026-10-25、Phase 2前に追記・事前宣言)
+
+Opusレビュー全文=`OPUS_REVIEW_01.md`。Fable判断=承認範囲内・新仕様なし・予算内のためM1〜M4反映後にPhase 2へ進んでよい(Fable Go)。Production file編集0(DEV script/testのみ)。
+
+| 項目 | 反映内容(`er113_fx_paragraph_chunk_trial_01.py`) |
+|---|---|
+| M1 | `redirect_production_sinks`に`er006_pronunciation_ledger_01.LEDGER_PATH`をDEV dir内の『開始時点の現行ledger.jsonコピー』へ向ける処理を追加(upsert・negative_cacheはDEV側へ)。無料`preflight`(全13入力=B 10 chunk+A_r2 3 part)でhint注入・低confidence再research対象・ASR ledger phrase(low以上)を事前計算、全て空でなければ`gen`は有料run前にSTOP。**結果=全て空(all_empty=true、`ledger_preflight_01.json`)。A記録(hints_applied=false)と条件一致** |
+| M2 | `er020.run_local_rewrite_recovery`をwrapperで包みout_dirをDEV側へ。`gen_result`にinstruction_type/minimal_fallback/local_rewrite_recovery/canonical_text_before_local_rewrite/en_pronunciation_resolver_info/cooldown_events/style_prefix sha/tts_model_id/所要時間(cool-down分離)を記録。LR・本文変更・minimal_fallback style・hint/research発生chunkは`condition_diff_flag`を立て、ページと集計に明示(WPM比較から別枠化、自動再生成なし) |
+| M3 | 開始時刻以降にmtime更新/新規のファイルをrepo全体で走査(`.venv`/`.git`/`__pycache__`/本Trial出力は除外、`docs/`・`.claude/`・`tools/`=他agent文書領域は別枠、それ以外は`suspicious`でSTOP)。個別監視に`negative_cache.json`・`er009_output/ja_foreign_token_gate_01/human_review_queue.jsonl`・`er011_output/local_rewrite_recovery/`tree追加。起動時に`os.getcwd()==ROOT`をassert |
+| M4 | 全variant(A/A_r2/B_r1/B0_r1/B_r2/B0_r2)に同一のfaster-whisper+difflib整列(`measure_alignment`)を適用し、段落ごとの発話区間長・段落境界gap(実音声から測定)・両端(head/tail)を取得。Δ全長 = Σ発話区間差 + Σ段落境界gap差 + 両端差に厳密分解(`m4_decompose`、unit testで恒等式を確認)。実速度は『段落単位10対』と『art300』が、A/A_r2×B_r1/B_r2の4対すべてで同方向の場合のみ断定(`_verdict_speed`)。**限界**: whisperのword timestamp精度(先頭語start=0.0、語境界end=startの0.0 gap等のartifact)は整列法の限界で、span/gap/head間の配分に誤差が入りうる(spanとgapの和は比較的頑健)。判定は両指標一致時のみ |
+| R1 | **B主表示take=B_r1に事前固定(生成前に宣言、後からtakeを選ばない)**。A_r2・B_r2は折りたたみで試聴行に掲載 |
+| R2 | BとB0を同格で並べる。秒数の独自調整はしない |
+| R3 | 境界の音量差診断(`boundary_jump_db`)でBの全9境界(part跨ぎ含む)とAの2 part境界を同一診断で並べる(参考値・判定なし)。F0/spectral centroidは任意項目のため実施しない(Gate化もしない) |
+| R4 | Connected Speechの10分cool-downは`cooldown_s`として所要時間から分離記録。短chunkの`max_extra_chars=15`許容比率(`max_extra_chars_allowance_ratio`)を記録、規則は変更しない |
+
+Phase 2 Go: `er113_output/fx_paragraph_chunk_trial_01/PHASE2_GO.json`(managed_id=FX-PARAGRAPH-CHUNK-TTS-TRIAL-01、cap_jpy=50、approved_by=Fable、arms=[B_r1,A_r2,B_r2])。1 launch直列、再起動は原則0回(必要時はRESTART_STORM規則厳守・回数記録)。
