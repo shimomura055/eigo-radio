@@ -259,7 +259,7 @@ def test_gate_does_not_rewrite_text(tmp_path):
 
 def test_misread_warn_observation_only():
     w = D.scan_misreading("約4億年前から今も同じ速さで縮んでいる。月の誕生以来のことだ。")
-    assert w["near_time_misread"] and w["origin_claims"]
+    assert w["near_time_misread"] and w["origin_claims_unnegated"]
     w2 = D.scan_misreading("約4億年前以降の後期の縮みで、開始時期は推定である。")
     assert not w2["near_time_misread"] and not w2["origin_claims"]
 
@@ -313,3 +313,47 @@ def test_b3_dev_E_empty_when_storyline_has_no_numbers(tmp_path, monkeypatch):
     client, sent = _b3_fake(["月のしわは縮みを全部は語らない。"])
     res = D.run_b3_dev("moon_shrinking", "A", "t3", per_run_cap=30, phase_cap=120, client=client)
     assert res["status"] == "E_EMPTY" and len(sent) == 1
+
+
+# ---------------- R1/R2が波ダッシュへ戻す問題(Phase 1実測)への後処理と再開 ----------------
+WAVE_R1 = "月のしわが語ること\n\n月の半径は、後期に約42〜46メートル縮んだと推定されている。\n"
+
+
+def test_astra_output_range_wave_is_normalized_not_stop(tmp_path):
+    d, E = _chain_dir(tmp_path)
+    fc = FakeClient([GOOD, WAVE_R1, WAVE_R1])
+    r = D.run_w1_dev(d, fc, E)
+    assert r["runtime_evidence"]["calls_count"] == {"r0": 1, "r1": 1, "r2": 1}
+    assert "約42から46メートル" in r["ja_text"] and "〜" not in r["ja_text"]
+    assert r["runtime_evidence"]["r1_calls"][0]["range_wave_normalized"] == 1
+
+
+def test_non_numeric_wave_still_flagged_by_symbol_qa(tmp_path):
+    d, E = _chain_dir(tmp_path)
+    bad = "月のしわが語ること\n\n月の半径は約42から46メートル縮んだ。ローベート〜スカープ。\n"
+    fc = FakeClient([GOOD, GOOD, bad, bad])
+    with pytest.raises(D.JANumericRetentionStopError) as ei:
+        D.run_w1_dev(d, fc, E)
+    assert ei.value.stage == "r2"
+
+
+def test_resume_from_r2_reuses_r0_r1_and_normalizes(tmp_path, monkeypatch):
+    d, E = _chain_dir(tmp_path)
+    monkeypatch.setattr(D, "normalize_ranges_counted", lambda t: (t, 0))
+    fc = FakeClient([GOOD, WAVE_R1, WAVE_R1, WAVE_R1])
+    with pytest.raises(D.JANumericRetentionStopError):
+        D.run_w1_dev(d, fc, E)                     # 旧挙動(正規化なし)の再現: R2で記号STOP
+    monkeypatch.undo()
+    fc2 = FakeClient([WAVE_R1])
+    r = D.resume_w1_dev_from_r2(d, fc2, E)
+    assert len(fc2.prompts) == 1                    # R2を1呼出するだけ(R0/R1は再利用)
+    assert "約42から46メートル" in r["ja_text"]
+    assert os.path.exists(os.path.join(d, "ja_writer", "factlock", "r1.raw.orig.md"))
+    assert r["runtime_evidence"]["resumed_from_r2"]["r1_raw_range_wave_normalized"] == 1
+
+
+def test_origin_claim_negation_detected():
+    w = D.scan_misreading("これは月の誕生以来の縮み総決算ではない点だ。")
+    assert w["origin_claims"] and w["origin_claims"][0]["negated"] and not w["origin_claims_unnegated"]
+    w2 = D.scan_misreading("月は誕生以来ずっと縮んでいる。")
+    assert w2["origin_claims_unnegated"]

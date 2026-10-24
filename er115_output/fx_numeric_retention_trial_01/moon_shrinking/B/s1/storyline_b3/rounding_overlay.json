@@ -1,0 +1,109 @@
+{
+ "annotated_md_sha256": "d5ec98e66b627363e00820e5c4b96f020218f022fad52e8c1451ae4445ae6ee5",
+ "core_concept_order": [
+  "C1",
+  "C3",
+  "C4"
+ ],
+ "entries": [
+  {
+   "approved_condition": "精度を落とすと、比較に関わる数値の解釈や事実への忠実性を損なうおそれがある場合は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F04"
+   ],
+   "concept": "C1",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2,
+    3
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "range",
+   "ledger_ids": [
+    "F04",
+    "F05"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "この範囲が後期の半径収縮の推定値そのものとして示され、概数化すると推定幅や比較の精度を変えるおそれがあります。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "約42〜46"
+    }
+   ]
+  },
+  {
+   "approved_condition": "年次・期間の幅や不確かさを損なうおそれがある場合は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F05"
+   ],
+   "concept": "C3",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    3
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "range",
+   "ledger_ids": [
+    "F05"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "これは断層形成時期について論文が触れる幅のある年代であり、さらに丸めると時期の幅や不確かさの表現を変えるおそれがあります。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "約3〜4億年"
+    }
+   ]
+  },
+  {
+   "approved_condition": "重要な比較の解釈や事実への忠実性を損なう場合は、数値の精度を落とさない。",
+   "basis_fact_ids": [
+    "F07"
+   ],
+   "concept": "C4",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    4
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F07"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "熱史モデルの累積収縮予測として、後期収縮の推定値との規模の差を示す比較値です。さらに丸めるとモデル予測の数値を変え、比較の忠実性を損なうおそれがあります。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "約750"
+    }
+   ]
+  }
+ ],
+ "judge": {
+  "developer_message_sha256": "8d2618b7cc966affb3567e5ee1354551b92f394462a4786683f8f9a3052a9d3d",
+  "effort": "low",
+  "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
+  "model_requested": "gpt-6-luna",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0996d2ce00faeef9006add349bd75887d0b79943a05458e5ac",
+  "sec": 10.9,
+  "usage": {
+   "input_tokens": 3605,
+   "output_tokens": 730,
+   "reasoning_tokens": 324
+  },
+  "user_prompt_sha256": "1939d0b4667bb63842213961ad73134192ba2ad7b45fd00c89acbbf49fe1c204"
+ },
+ "n_approximate_ok": 0,
+ "overlay_sha256": "71fec794d96ba01af2609d5dd867cc215edbeff4ea11a6d3911227cfe89bcd08",
+ "requested_effort": "low",
+ "requested_model": "gpt-6-luna",
+ "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+ "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
+ "sidecar_sha256": "92faffa597fbe3bf5e52acda501789ea24308e05afba2ae84042dbd58d483938",
+ "status": "OK",
+ "v8_max_relative_error": "0.10",
+ "violations": []
+}

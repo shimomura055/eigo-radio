@@ -1,0 +1,24 @@
+# The Moon’s Wrinkle Case: The Key Is a “Rock Blanket”!
+
+The Moon seems to have shrunk. The clue is the “wrinkles” cut into its surface. If we study how the Moon cooled, can we solve the case? But the search found something unexpected: a thick “blanket” made of broken rocks. Moon, could your secret really be in your bedding?
+
+First, let’s look at the scene. On the Moon, some cliffs are steep on one side and gentle on the other. They may be marks left when one mass of rock pushed up over another. Don’t mistake them for simple steps in the ground. These land “wrinkles” show that the Moon shrank.
+
+Researchers used these wrinkles to estimate a change in the Moon’s size. Its radius shrank by about 42 to 46 meters during a later time in its history. Some studies say the wrinkles formed about 300 to 400 million years ago. But no one knows for sure when they first began to form. Most importantly, this is not the Moon’s total shrinkage since it formed.
+
+Now let’s open another file. Some models show how the Moon cooled. They predict a total loss of at least about 750 meters in its radius. One estimate is about 42 to 46 meters. The other is at least about 750 meters. Just looking at the numbers, they seem very different.
+
+It is too soon to hit the desk and shout, “The numbers don’t add up! Open the case again!” The models look at shrinkage that built up over time. The wrinkles show shrinkage during a later time. They cover different periods and use different methods. So we should not compare them as measurements made in the same conditions.
+
+So how did the Moon really cool? To explain the difference, the research team points to one possible answer. It is a thick layer of broken rock with many gaps. At last, the “blanket” we heard about makes its entrance.
+
+A rock blanket does not sound like a good bed. It is heavy. It sounds hard. Even turning over would be a big event. But this study is not about comfort. It is about how well the layer keeps heat in. This layer may have helped stop heat from escaping.
+
+If that is true, the Moon’s inside would not cool as easily. It would shrink more slowly. Rock layers are not all alike. Their thickness matters. So does the number of gaps in them. When we think about how the Moon cooled, we must also ask what covered it.
+
+Of course, this does not mean, “Case closed: the rock blanket did it!” It is still an idea, not a proven fact. We also do not know for sure when the wrinkles began to form. So it is too early to close the case file.
+
+Still, who would have thought that following the Moon’s wrinkles would lead us to look into a blanket? The question has changed. We once asked, “How much did it shrink?” Now we ask, “How did it let heat escape?” To uncover the Moon’s past, it seems we may need an insulation team, not a bedding team.
+
+## In one line
+Researchers think a thick layer of broken rock with many gaps may have kept heat in, slowing the Moon’s cooling and shrinkage. This idea may explain different estimates, made for different times and in different ways, but it is not proven.

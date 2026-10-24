@@ -441,8 +441,12 @@ def retention_note(missing: list) -> str:
     return RETENTION_NOTE_TEMPLATE.format(items="、".join(display_form(e) for e in missing))
 
 
+NEGATION_AFTER = ("ではない", "ではなく", "でない", "わけではない", "とは限らない", "ではありません", "という意味ではない", "ではなかった", "ではないこと", "の総決算ではない", "禁物", "は早い", "早すぎ", "急ぐのは", "と言い切れ", "とは言えない")
+
+
 def scan_misreading(text: str, observe_E: list | None = None) -> dict:
-    """時間・前提の数値の近くにある誤解表現/起源の主張(観察のみ)。"""
+    """時間・前提の数値の近くにある誤解表現/起源の主張(観察のみ・ブロックしない)。
+    起源の主張(『月の誕生以来』等)は直後に否定(『…ではない』等)が続けば negated=True(正しい打ち消し)。人手確認が最終。"""
     t = text or ""
     near = []
     for m in re.finditer(r"[0-9０-９][0-9０-９,，.]*\s*(?:万|億|兆)?年", t):
@@ -450,8 +454,12 @@ def scan_misreading(text: str, observe_E: list | None = None) -> dict:
         for w in MISREAD_NEAR_TIME:
             if w in win:
                 near.append({"time_expr": m.group(0), "phrase": w, "window": win})
-    origin = [w for w in ORIGIN_CLAIMS if w in t]
-    return {"near_time_misread": near, "origin_claims": origin}
+    origin = []
+    for w in ORIGIN_CLAIMS:
+        for m in re.finditer(re.escape(w), t):
+            after = t[m.end(): m.end() + 40]
+            origin.append({"phrase": w, "negated": any(n in after for n in NEGATION_AFTER), "context": t[max(0, m.start() - 20): m.end() + 40]})
+    return {"near_time_misread": near, "origin_claims": origin, "origin_claims_unnegated": [o for o in origin if not o["negated"]]}
 
 
 # ======================================================================================================
@@ -469,6 +477,120 @@ def _meta(resp):
     return w1._resp_meta(resp)
 
 
+def normalize_ranges_counted(text: str):
+    """normalize_ranges + 置換件数(R1/R2出力の後処理用)。"""
+    new = normalize_ranges(text)
+    pat = rf"\d\s*[{WAVES}]\s*\d"
+    n = len(re.findall(pat, text or "")) - len(re.findall(pat, new))
+    return new, max(n, 0)
+
+
+def make_astra(client):
+    """R1/R2(Astra段)の呼出。出力の『数字〜数字』は決定論で『数字から数字』へ戻す(R1/R2がR0の『から』を波ダッシュへ戻す実測=
+    PHASE1 s1/s3で観測のため。数字以外の波ダッシュには触れない=既存の記号QAが従来どおり検出する)。"""
+    def astra(src_path, stage_tag):
+        user = w1.USER_TMPL.format(body=w1.rdt(src_path).strip())
+        t0 = time.time()
+        resp = w1.call_astra(client, user, stage_tag)
+        raw0 = (resp.output_text or "").strip()
+        raw, nrep = normalize_ranges_counted(raw0)
+        meta = {"model": resp.model, "response_id": resp.id, "sec": round(time.time() - t0, 1), "stage": stage_tag,
+                "range_wave_normalized": nrep, "raw_sha256_before_norm": sha_text(raw0),
+                "usage": {"input_tokens": getattr(resp.usage, "input_tokens", None), "output_tokens": getattr(resp.usage, "output_tokens", None)}}
+        return raw, w1.postprocess_ja(raw), meta
+    return astra
+
+
+def _sym_of(text):
+    f = safety.detect_prohibited_symbols(text, language="ja")
+    return f, safety.symbol_gate_requires_stop(f)
+
+
+def _run_r2(d, fdir, astra, gate_E, approx, ev, budget_check):
+    """R2 + 記号QA + 保持Gate(再実行枠は共有=1回)。成功なら (final, p2, raw2, m2, r2_all)、不足/残存ならSTOP。"""
+    budget_check()
+    raw2, p2, m2 = astra(os.path.join(fdir, "r1.raw.md"), "w1_astra_r2")
+    final = w1.clean_ja_for_next(p2)
+    f2, sym2 = _sym_of(final)
+    miss2 = check_retention(final, gate_E, approx)
+    ev["symbol_qa"]["r2"] = {"findings_first": f2, "rerun": False}
+    ev["retention"]["r2"] = {"missing_first": [e["news_surface"] for e in miss2["missing"]], "rerun": False,
+                            "table_case": ("sym+ret" if sym2 and miss2["missing"] else "sym_only" if sym2 else "ret_only" if miss2["missing"] else "ok")}
+    r2_all = [m2]
+    if sym2 or miss2["missing"]:
+        wt(os.path.join(fdir, "r2.first.final_rejected.md"), final)
+        budget_check()
+        raw2b, p2b, m2b = astra(os.path.join(fdir, "r1.raw.md"), "w1_astra_r2_rerun")
+        r2_all.append(m2b)
+        final_b = w1.clean_ja_for_next(p2b)
+        f2b, sym2b = _sym_of(final_b)
+        miss2b = check_retention(final_b, gate_E, approx)
+        ev["symbol_qa"]["r2"].update({"rerun": True, "findings_after": f2b})
+        ev["retention"]["r2"].update({"rerun": True, "missing_after": [e["news_surface"] for e in miss2b["missing"]]})
+        if sym2b or miss2b["missing"]:
+            wt(os.path.join(d, "audit", "rejected_w1_r2.md"), final_b)
+            wj(os.path.join(d, "runtime_evidence_stopped.json"), ev)
+            raise JANumericRetentionStopError("r2", f"[STOP] JA_NUMERIC_RETENTION_STOP(R2): 再実行後も symbol={sym2b} missing={[e['news_surface'] for e in miss2b['missing']]}",
+                                              {"first": final, "rerun": final_b}, miss2b["missing"])
+        final, p2, raw2, m2 = final_b, p2b, raw2b, m2b
+    wt(os.path.join(fdir, "r2.raw.md"), raw2)
+    wj(os.path.join(fdir, "r2.response.json"), r2_all)
+    return final, p2, raw2, m2, r2_all
+
+
+def _finish(d, ev, r0_calls, r1_all, r2_all, clean0, p1, final):
+    ev.update({"r0_calls": r0_calls, "r1_calls": r1_all, "r2_calls": r2_all, "title": w1.extract_title(final), "ja_text_sha256": sha_text(final),
+               "calls_count": {"r0": len(r0_calls), "r1": len(r1_all), "r2": len(r2_all)},
+               "finished": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")})
+    wt(os.path.join(d, "original.md"), clean0)
+    wt(os.path.join(d, "revision1.md"), p1)
+    wj(os.path.join(d, "runtime_evidence.json"), ev)
+    wt(os.path.join(d, "revision2.md"), final)
+    return {"ja_text": final, "title": ev["title"], "runtime_evidence": ev}
+
+
+def resume_w1_dev_from_r2(out_dir: str, client, E_info: dict, *, arm: str = "A", budget_check=None) -> dict:
+    """STOP済み標本の再開: 保存済みのR0(clean)・R1生出力を再利用し、R1生出力へ決定論の範囲正規化を適用してR2から再実行する。
+    (R0/R1の入力・Promptは不変=R1を再サンプルするのと同条件。R1の再生成費用を避ける。元のR1生出力は r1.raw.orig.md に保存。)"""
+    budget_check = budget_check or (lambda: None)
+    d = os.path.join(out_dir, "ja_writer")
+    fdir = os.path.join(d, "factlock")
+    prior = rj(os.path.join(d, "runtime_evidence_stopped.json"))
+    gate_E = list(E_info.get("gate_E") or [])
+    approx = approx_forms_of(out_dir)
+    ev = dict(prior)
+    ev["resumed_from_r2"] = {"reason": "R2 symbol STOP due to R1/R2 wave-dash reintroduction", "prior_symbol_qa_r2": prior.get("symbol_qa", {}).get("r2"),
+                             "prior_retention_r2": prior.get("retention", {}).get("r2"),
+                             "resumed_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")}
+    ev["post_range_norm"] = True
+    clean0 = w1.rdt(os.path.join(fdir, "r0.md"))
+    r0_calls = rj(os.path.join(fdir, "r0_meta.json"))["writer_calls"]
+    orig_raw1 = w1.rdt(os.path.join(fdir, "r1.raw.md"))
+    if not os.path.exists(os.path.join(fdir, "r1.raw.orig.md")):
+        wt(os.path.join(fdir, "r1.raw.orig.md"), orig_raw1)
+    raw1, nrep = normalize_ranges_counted(orig_raw1)
+    p1 = w1.postprocess_ja(raw1)
+    r1_all = rj(os.path.join(fdir, "r1.response.json"))
+    ev["resumed_from_r2"]["r1_raw_range_wave_normalized"] = nrep
+    miss1 = check_retention(p1, gate_E, approx)
+    ev["retention"]["r1"] = {**(ev["retention"].get("r1") or {}), "missing_after_post_norm": [e["news_surface"] for e in miss1["missing"]]}
+    wt(os.path.join(fdir, "r1.raw.md"), raw1)
+    wt(os.path.join(fdir, "r1.p1.md"), p1)
+    if miss1["missing"]:
+        raise JANumericRetentionStopError("r1", "[STOP] 再開時のR1に保持不足", {"p1": p1}, miss1["missing"])
+    for stale in ("r2.first.final_rejected.md",):
+        sp = os.path.join(fdir, stale)
+        if os.path.exists(sp):
+            os.replace(sp, sp.replace(".md", ".prior_stop.md"))
+    for stale in ("rejected_w1_r2.md",):
+        sp = os.path.join(d, "audit", stale)
+        if os.path.exists(sp):
+            os.replace(sp, sp.replace(".md", ".prior_stop.md"))
+    astra = make_astra(client)
+    final, p2, raw2, m2, r2_all = _run_r2(d, fdir, astra, gate_E, approx, ev, budget_check)
+    return _finish(d, ev, r0_calls, r1_all, r2_all, clean0, p1, final)
+
+
 def run_w1_dev(out_dir: str, client, E_info: dict, *, arm: str = "A", budget_check=None) -> dict:
     """arm A = 範囲正規化(R4) + 保持Gate / arm B = A + R0規則9。ja_writer/ 以下へ Production と同名で出力。
     再実行枠: R0<=2 / R1<=2 / R2<=2 呼出。R0は記号QAと保持を1枠に合流、R2も記号QAと保持で1回を共有(M3)。"""
@@ -484,7 +606,7 @@ def run_w1_dev(out_dir: str, client, E_info: dict, *, arm: str = "A", budget_che
     routing_ok = w1.routing.require_model("FAMILY_X_FACTLOCK_R0", w1.R0_MODEL), w1.routing.require_model("FAMILY_X_FACTLOCK_REVISE", w1.ASTRA_MODEL)
     d = os.path.join(out_dir, "ja_writer")
     fdir = os.path.join(d, "factlock")
-    ev = {"arm": arm, "chain_method": "W-1_DEV_er115", "annotated_md_sha256": annotated.annotated_md_sha256,
+    ev = {"arm": arm, "chain_method": "W-1_DEV_er115", "post_range_norm": True, "annotated_md_sha256": annotated.annotated_md_sha256,
           "verbatim_shas": w1.verbatim_shas(), "rounding": rounding_ev, "gate_E": gate_E, "observe_E": E_info.get("observe_E"),
           "rule9_text_sha256": sha_text(RULE9_TEXT), "retention_note_template_sha256": sha_text(RETENTION_NOTE_TEMPLATE),
           "range_norm": True, "retention": {}, "symbol_qa": {}, "model_contract": [str(x) for x in routing_ok],
@@ -494,9 +616,7 @@ def run_w1_dev(out_dir: str, client, E_info: dict, *, arm: str = "A", budget_che
     ev["r0_prompt_has_wave_in_news"] = bool(re.search(r"\d\s*[〜～~]\s*\d", prompt0.split("[ニュース]", 1)[-1]))
     wt(os.path.join(fdir, "r0_prompt_dev.txt"), prompt0)
 
-    def sym_of(text):
-        f = safety.detect_prohibited_symbols(text, language="ja")
-        return f, safety.symbol_gate_requires_stop(f)
+    sym_of = _sym_of
 
     # ---- R0 (初回 + 最大1回の再生成。記号QAと保持を1枠に合流) ----
     budget_check()
@@ -537,14 +657,7 @@ def run_w1_dev(out_dir: str, client, E_info: dict, *, arm: str = "A", budget_che
     wj(os.path.join(fdir, "r0_meta.json"), {"writer_calls": r0_calls, "tags_used": sorted({t for m in w1.TAG_RE.finditer(text0) for t in w1.tag_ids(m.group(0))}),
                                             "r0_sha256": sha_text(clean0), "r0_prompt_sha256": sha_text(prompt0)})
 
-    def astra(src_path, stage_tag):
-        user = w1.USER_TMPL.format(body=w1.rdt(src_path).strip())
-        t0 = time.time()
-        resp = w1.call_astra(client, user, stage_tag)
-        raw = (resp.output_text or "").strip()
-        meta = {"model": resp.model, "response_id": resp.id, "sec": round(time.time() - t0, 1), "stage": stage_tag,
-                "usage": {"input_tokens": getattr(resp.usage, "input_tokens", None), "output_tokens": getattr(resp.usage, "output_tokens", None)}}
-        return raw, w1.postprocess_ja(raw), meta
+    astra = make_astra(client)
 
     # ---- R1 (保持不足なら1回だけ再実行=新規。記号QAはR1では従来どおり検査なし) ----
     budget_check()
@@ -569,42 +682,9 @@ def run_w1_dev(out_dir: str, client, E_info: dict, *, arm: str = "A", budget_che
     wj(os.path.join(fdir, "r1.response.json"), r1_all)
     wt(os.path.join(fdir, "r1.p1.md"), p1)
 
-    # ---- R2 (記号QAと保持で再実行枠を共有=1回だけ) ----
-    budget_check()
-    raw2, p2, m2 = astra(os.path.join(fdir, "r1.raw.md"), "w1_astra_r2")
-    final = w1.clean_ja_for_next(p2)
-    f2, sym2 = sym_of(final)
-    miss2 = check_retention(final, gate_E, approx)
-    ev["symbol_qa"]["r2"] = {"findings_first": f2, "rerun": False}
-    ev["retention"]["r2"] = {"missing_first": [e["news_surface"] for e in miss2["missing"]], "rerun": False,
-                            "table_case": ("sym+ret" if sym2 and miss2["missing"] else "sym_only" if sym2 else "ret_only" if miss2["missing"] else "ok")}
-    r2_all = [m2]
-    if sym2 or miss2["missing"]:
-        wt(os.path.join(fdir, "r2.first.final_rejected.md"), final)
-        budget_check()
-        raw2b, p2b, m2b = astra(os.path.join(fdir, "r1.raw.md"), "w1_astra_r2_rerun")
-        r2_all.append(m2b)
-        final_b = w1.clean_ja_for_next(p2b)
-        f2b, sym2b = sym_of(final_b)
-        miss2b = check_retention(final_b, gate_E, approx)
-        ev["symbol_qa"]["r2"].update({"rerun": True, "findings_after": f2b})
-        ev["retention"]["r2"].update({"rerun": True, "missing_after": [e["news_surface"] for e in miss2b["missing"]]})
-        if sym2b or miss2b["missing"]:
-            wt(os.path.join(d, "audit", "rejected_w1_r2.md"), final_b)
-            wj(os.path.join(d, "runtime_evidence_stopped.json"), ev)
-            raise JANumericRetentionStopError("r2", f"[STOP] JA_NUMERIC_RETENTION_STOP(R2): 再実行後も symbol={sym2b} missing={[e['news_surface'] for e in miss2b['missing']]}",
-                                              {"first": final, "rerun": final_b}, miss2b["missing"])
-        final, p2, raw2, m2 = final_b, p2b, raw2b, m2b
-    wt(os.path.join(fdir, "r2.raw.md"), raw2)
-    wj(os.path.join(fdir, "r2.response.json"), r2_all)
-    ev.update({"r0_calls": r0_calls, "r1_calls": r1_all, "r2_calls": r2_all, "title": w1.extract_title(final), "ja_text_sha256": sha_text(final),
-               "calls_count": {"r0": len(r0_calls), "r1": len(r1_all), "r2": len(r2_all)},
-               "finished": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")})
-    wt(os.path.join(d, "original.md"), clean0)
-    wt(os.path.join(d, "revision1.md"), p1)
-    wj(os.path.join(d, "runtime_evidence.json"), ev)
-    wt(os.path.join(d, "revision2.md"), final)
-    return {"ja_text": final, "title": ev["title"], "runtime_evidence": ev}
+    # ---- R2 (記号QAと保持で再実行枠を共有=1回だけ。helper) ----
+    final, p2, raw2, m2, r2_all = _run_r2(d, fdir, astra, gate_E, approx, ev, budget_check)
+    return _finish(d, ev, r0_calls, r1_all, r2_all, clean0, p1, final)
 
 
 # ======================================================================================================
@@ -647,7 +727,7 @@ def measure_run(out_dir: str, E_info: dict | None = None) -> dict:
             continue
         pers, unc, amb = [], [], []
         seen = set()
-        for s in P.extract_surfaces(texts[st]):
+        for s in P.extract_surfaces(re.sub(r"(\d)\s*から\s*(\d)", r"\g<1>〜\g<2>", texts[st])):
             k = P.surface_kind(s)
             kk = (k, P.main_numbers(s, k))
             if kk in seen:
@@ -673,7 +753,7 @@ def measure_run(out_dir: str, E_info: dict | None = None) -> dict:
         "non_E_core_included": {st: [r["surface"] for r in ev_rows if (not r["in_E"]) and r["present"].get(st)] for st in stages},
         "observe_E_present": {st: {r["surface"]: r["present"].get(st) for r in ev_rows if r["in_E"] and r not in gate_E} for st in stages},
         "peripheral_included": {st: body[st]["peripheral_included"] for st in body},
-        "misreading_warn": {st: scan_misreading(texts[st]) for st in ("R2", "EN_Std", "EN_Adv") if texts.get(st) and st == "R2"},
+        "misreading_warn": ({"R2": scan_misreading(texts["R2"])} if texts.get("R2") else {}),
     }
     return {"out_dir": os.path.relpath(out_dir, ROOT).replace("\\", "/"), "storyline": E_info["storyline"], "E_ok": E_info["ok"],
             "violations": E_info["violations"], "core_rows": core_rows, "body": body, "summary": summ,
@@ -810,13 +890,15 @@ def run_b3_dev(article: str, arm: str, sample: str, *, per_run_cap: float, phase
     return res
 
 
-def run_chain_dev(article: str, arm: str, sample: str, *, per_run_cap: float, phase_cap: float, client=None) -> dict:
+def run_chain_dev(article: str, arm: str, sample: str, *, per_run_cap: float, phase_cap: float, client=None, resume_r2: bool = False) -> dict:
     out_dir = sample_dir(article, arm, sample)
     m1 = rj(os.path.join(out_dir, "m1_result.json"))
     if m1["status"] != "E_OK":
         raise RuntimeError(f"[STOP] chain前提不成立: m1 status={m1['status']}")
     if os.path.exists(os.path.join(out_dir, "ja_writer", "revision2.md")):
         raise RuntimeError("[STOP] ja_writer/revision2.md が既にあります(DEV chainは再実行しない)。")
+    if resume_r2 and not os.path.exists(os.path.join(out_dir, "ja_writer", "runtime_evidence_stopped.json")):
+        raise RuntimeError("[STOP] --resume-r2 はSTOP済み標本(runtime_evidence_stopped.json)にのみ使えます。")
     src_info = prepare_dir(article, out_dir)
     cl.install(os.path.join(out_dir, "raw_usage_log.jsonl"))
     import er003_v1_en_direct_vfl_01_generate as vfl01
@@ -829,7 +911,11 @@ def run_chain_dev(article: str, arm: str, sample: str, *, per_run_cap: float, ph
     t0 = time.time()
     stop = None
     try:
-        wres = run_w1_dev(out_dir, client, E_info, arm=arm, budget_check=lambda: guard_budget(out_dir, per_run_cap, phase_cap, "w1 dev"))
+        _bc = lambda: guard_budget(out_dir, per_run_cap, phase_cap, "w1 dev")   # noqa: E731
+        if resume_r2:
+            wres = resume_w1_dev_from_r2(out_dir, client, E_info, arm=arm, budget_check=_bc)
+        else:
+            wres = run_w1_dev(out_dir, client, E_info, arm=arm, budget_check=_bc)
     except JANumericRetentionStopError as exc:
         stop = {"stage": exc.stage, "message": str(exc), "missing": [e["news_surface"] for e in exc.missing]}
         wj(os.path.join(out_dir, "stop_record.json"), stop)
@@ -861,11 +947,12 @@ def main():
     ap.add_argument("--sample", required=True)
     ap.add_argument("--per-run-cap-jpy", type=float, default=30.0)
     ap.add_argument("--phase-cap-jpy", type=float, default=120.0)
+    ap.add_argument("--resume-r2", action="store_true", help="STOP済み標本のR0/R1を再利用しR2から再開(範囲正規化つき)")
     a = ap.parse_args()
     if a.cmd == "b3":
         run_b3_dev(a.article, a.arm, a.sample, per_run_cap=a.per_run_cap_jpy, phase_cap=a.phase_cap_jpy)
     elif a.cmd == "chain":
-        run_chain_dev(a.article, a.arm, a.sample, per_run_cap=a.per_run_cap_jpy, phase_cap=a.phase_cap_jpy)
+        run_chain_dev(a.article, a.arm, a.sample, per_run_cap=a.per_run_cap_jpy, phase_cap=a.phase_cap_jpy, resume_r2=a.resume_r2)
     else:
         d = sample_dir(a.article, a.arm, a.sample)
         wj(os.path.join(d, "trial_metrics.json"), measure_run(d))

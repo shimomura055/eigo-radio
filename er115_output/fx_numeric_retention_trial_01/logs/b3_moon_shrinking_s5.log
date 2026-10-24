@@ -1,0 +1,15 @@
+[E-FAMILY-RUNNER][cost] so far=0.00 JPY by_provider={} (before b3 dev)
+[E-FAMILY-RUNNER][cost] so far=13.41 JPY by_provider={'openai': 13.41} (after b3 dev attempt1)
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er115_fx_numeric_retention_trial_01.py", line 963, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er115_fx_numeric_retention_trial_01.py", line 953, in main
+    run_b3_dev(a.article, a.arm, a.sample, per_run_cap=a.per_run_cap_jpy, phase_cap=a.phase_cap_jpy)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er115_fx_numeric_retention_trial_01.py", line 872, in run_b3_dev
+    guard_budget(out_dir, per_run_cap, phase_cap, f"after b3 dev attempt{attempt}")
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er115_fx_numeric_retention_trial_01.py", line 838, in guard_budget
+    raise RuntimeError(f"[BUDGET_GUARD] phase spent {spent:.2f} > cap {phase_cap} ({note})")
+RuntimeError: [BUDGET_GUARD] phase spent 120.12 > cap 120.0 (after b3 dev attempt1)

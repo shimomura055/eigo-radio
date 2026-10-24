@@ -1,0 +1,137 @@
+{
+ "annotated_md_sha256": "379eee3a0eedbeb69a92d510be522b1f34987ee99a890d31f4c7e921ecb37548",
+ "core_concept_order": [
+  "C1",
+  "C2",
+  "C3",
+  "C5"
+ ],
+ "entries": [
+  {
+   "approved_condition": "丸めると重要な境界値が変わるため、精度を維持する。",
+   "basis_fact_ids": [
+    "F02"
+   ],
+   "concept": "C1",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F02"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "これは「長さ1 km超」という分類の境界値であり、丸めると対象範囲が変わります。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "1"
+    }
+   ]
+  },
+  {
+   "approved_condition": "余分な精度が意味や解釈に影響しない場合は、聞き取りやすい概数を優先する。",
+   "basis_fact_ids": [
+    "F02"
+   ],
+   "concept": "C2",
+   "downgrade_reasons": [
+    "約5,470本:V8b_already_approximate_not_rerounded"
+   ],
+   "fact_ns": [
+    2
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F02"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "地図化された崖の数として規模を伝える値であり、十の位までの精度は聞き取りの理解に大きく影響しません。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "約5,470本"
+    }
+   ]
+  },
+  {
+   "approved_condition": "限定語と数値の意味を損なう不確かな丸めは避ける。",
+   "basis_fact_ids": [
+    "F02"
+   ],
+   "concept": "C3",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F02"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "「超」という下限表現を伴う数であり、丸めると記録数の下限を変えてしまうおそれがあります。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "8,900本超"
+    }
+   ]
+  },
+  {
+   "approved_condition": "丸めることで証拠の解釈や意味のある差が変わる場合は、精度を維持する。",
+   "basis_fact_ids": [
+    "F04",
+    "F07"
+   ],
+   "concept": "C5",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    3,
+    4
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "range",
+   "ledger_ids": [
+    "F04",
+    "F05"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "この範囲は推定条件による幅を表し、単一の概数にすると推定結果の幅と意味を損ないます。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "約42〜46"
+    }
+   ]
+  }
+ ],
+ "judge": {
+  "developer_message_sha256": "8d2618b7cc966affb3567e5ee1354551b92f394462a4786683f8f9a3052a9d3d",
+  "effort": "low",
+  "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
+  "model_requested": "gpt-6-luna",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_00b367e375360b9d006add349bd9ac87d09860ef7a413b6c9b",
+  "sec": 9.0,
+  "usage": {
+   "input_tokens": 4284,
+   "output_tokens": 723,
+   "reasoning_tokens": 280
+  },
+  "user_prompt_sha256": "f4fff476a686b59794b506b3263fb0a4cd089d2d44100f32d3256be1e66fd54c"
+ },
+ "n_approximate_ok": 0,
+ "overlay_sha256": "c3e3bd324b4eac0269b0373ebff4d8a9c270017358595ab6e0402b1421a63a46",
+ "requested_effort": "low",
+ "requested_model": "gpt-6-luna",
+ "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+ "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
+ "sidecar_sha256": "903e740691f2c1367b126160d6d9697d78fae1c58b23fa9cca70ec4b5901129c",
+ "status": "OK",
+ "v8_max_relative_error": "0.10",
+ "violations": []
+}

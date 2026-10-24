@@ -46,3 +46,10 @@ M1検査で方式が成立しない(3標本中2以上がE=∅またはM1違反)�
 - OFF時(range_norm=False, rule9=False)の`build_r0_prompt_dev`は`w1.build_r0_prompt`とバイト一致(`test_off_is_byte_identical_to_production`)。`jaw.R0_PROMPT`のsha256=`6108a7cd…8366`固定(`test_production_prompt_constants_unchanged`)。
 - DEVモジュールに環境変数読取・CLI経由のON/OFFはない(`test_dev_flag_free_import`)。実行は`er115_fx_numeric_retention_trial_01.py b3|chain|measure`を明示起動したときのみ。出力は`er115_output/fx_numeric_retention_trial_01/`限定。
 - B3: `er019_family_x_entertainment_production_runner_01.run_storyline_b3`/`run_annotation_producer`/`run_core_number_rounding`、`er053_family_x_factlock_ja_writer_01`の各関数、`er012...run_writer_stage`はimportして呼ぶだけ(編集0)。
+
+## 6. Phase 1で追加した設計変更(M1〜M5/R1〜R5の外・実測で判明、Opus未レビュー)
+**6-1 出力側の範囲正規化(R1/R2出力の「数字〜数字」→「数字から数字」、決定論)**: 実装=`make_astra`/`normalize_ranges_counted`、再開=`resume_w1_dev_from_r2`。
+- 実測: R0は範囲正規化(R4)した入力に従い「約42から46 m」と書いたが、R1(Production逐語のAstra revise)が「約42〜46メートル」へ書き戻し(R1: 3/3標本)、R2も入力が「から」でも波ダッシュを出力(B/s1: 2箇所)。Productionと同じ記号QAではR2がSTOP(A/s1: 3箇所・A/s3: 1箇所、同一R1生出力での再実行でも解消せず)。波ダッシュのままでは音声が「約42なになに46メートル」になる(Normalizer実測)。
+- 対策: Astra段(R1/R2)の出力にだけ、数字〜数字の波ダッシュを「から」へ戻す決定論処理を適用(数字以外の波ダッシュには触れず、既存の記号QAが従来どおり検出する=`test_non_numeric_wave_still_flagged_by_symbol_qa`)。LLM追加call 0。入力側R4(OpusはWriter入力側のみで十分と判断)に出力側を追加した形で、**Opusの設計レビュー範囲(J2=Writer入力側のみ)を超える**。Production採用時は条件A/Cの再レビュー対象。
+- 位置づけ: C4(波ダッシュ衝突)の直接証拠。この衝突がある限り、範囲値を含む中核数値は「Writerが避ける」か「R2でSTOP」になる(Productionの月run_ms_01のR0が最初に波ダッシュで再生成された事実とも整合)。
+**6-2 費用ガードの運用**: DEV runnerにper-run capとphase cap(`phase_spent_jpy`=er115_output配下の全`raw_usage_log.jsonl`合計)を実装。s5のB3呼出後にphase cap(120円)を0.12円超過して発火(B3単価の見積差)。
