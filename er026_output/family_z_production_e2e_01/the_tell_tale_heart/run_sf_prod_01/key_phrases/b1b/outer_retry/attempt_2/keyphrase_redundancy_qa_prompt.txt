@@ -1,0 +1,92 @@
+以下は、同じ記事から選ばれた3件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。3件から作れる全てのペア(3組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず3組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+He was not mad, the old man’s housemate insisted. Only nervous. His illness had sharpened his senses, especially his hearing. He heard everything in heaven and earth. Surely that proved he was sane. His listener should judge how calmly he told the story.
+
+He loved the old man, who had never hurt him. He wanted no money. But that pale blue eye, covered by a thin film like a vulture’s, made his blood turn cold. He would kill the old man and close it forever.
+
+For seven nights, at midnight, he eased open the bedroom door. Slowly, he slipped his head inside with a covered lantern. He let one thin ray fall across the eye.
+
+Always closed.
+
+He could do nothing. He hated the eye, not the man. Each morning, he greeted his housemate warmly.
+
+On the eighth night, his thumb slipped on the lantern’s metal fastening.
+
+“Who’s there?” the old man cried.
+
+For an hour, he stood perfectly still while the old man sat upright, listening. From the bed came a small groan of terror.
+
+At last, he opened the lantern a little. The narrow beam struck the eye.
+
+Wide open.
+
+Then he heard it: a low, quick beating, like a watch wrapped in cotton. The old man’s heart. Faster it beat, and louder. What if a neighbour heard?
+
+He rushed forward with a yell. The old man shrieked once. He dragged him to the floor and pulled the heavy bed over him. For a while, the beating continued.
+
+Then silence.
+
+He hid the body beneath three floorboards and carefully fitted them back. No mark remained.
+
+At four in the morning came a knock. Three police officers stood outside; a neighbour had heard a shriek.
+
+He smiled and welcomed them. The cry had been his own, he explained—a bad dream. The old man was away in the country.
+
+He showed them the house, then brought chairs into the bedroom. Calm and confident, he sat directly above the hidden body. The officers settled down and chatted.
+
+A ringing troubled his ears. He spoke louder, but now the sound was clear: low, quick, like a watch wrapped in cotton.
+
+He stood and paced. He scraped his chair across the boards. Still the beating grew louder.
+
+The officers kept smiling and talking. They seemed to hear nothing.
+
+But they knew. They must know. Their pleasant smiles were mocking him. How could they sit there? How could he bear another second?
+
+“Stop pretending!” he screamed. “I did it! Tear up the planks! Here, beneath my feet! It is the beating of his hideous heart!”
+
+【Key Phrase 3件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "sharpen someone's senses",
+    "japanese_gloss": "人の感覚を研ぎ澄ます",
+    "source_sentence": "His illness had sharpened his senses, especially his hearing"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "make someone's blood turn cold",
+    "japanese_gloss": "人をぞっとさせる",
+    "source_sentence": "But that pale blue eye, covered by a thin film like a vulture's, made his blood turn cold"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "hideous",
+    "japanese_gloss": "ぞっとするほど恐ろしい",
+    "source_sentence": "It is the beating of his hideous heart"
+  }
+]

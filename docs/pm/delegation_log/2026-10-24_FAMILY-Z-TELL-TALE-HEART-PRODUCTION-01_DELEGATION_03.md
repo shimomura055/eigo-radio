@@ -1,0 +1,15 @@
+管理ID: FAMILY-Z-TELL-TALE-HEART-PRODUCTION-01 委任_03 — kp段(Std/a2)の再選定から完成候補(USER_LISTENING_PENDING)まで。上限=作品累計70円(既使用約17〜20円)。
+
+## Fable判断(委任_02の報告 `docs/pm/RESULT_PACKET_FZTTH2.md` を受けて)
+- 案A採用: `--stages kp --regenerate-stage kp_a2` でStdのみ再選定を**1回**起動(Advの結果は保持)。既存仕様内の再試行であり、Gate緩和・Prompt変更なし。
+- 案Aで再び不合格なら案B: `er003_key_words_canonicalization.py` の閉じた語彙表 `_PERSON_DEPENDENT_TO_GENERIC`(464-482行)へ `myself→oneself` を追加する(既存mapping my→one's 等と同系のデータ拡張=承認済みA-1仕様の欠落補完、意味的変更ではない)。実施前に**影響分析gate**(既存test全PASS・X/Z保存KP entryへのreplayで変化0・他の`-self`形[yourself/himself/herself/ourselves/themselves]の現状の扱いを確認し、今回は`myself`のみ追加)を `docs/research/FAMILY-Z-TELL-TALE-HEART-PRODUCTION-01/OPEN_KP_MYSELF_IMPACT_01.md` に記録、単独commit。そのうえで kp_a2 再選定を**もう1回**(合計2回まで)。活用形変更(Rule7違反)はGate側の仕様どおり不合格のままとし、再選定で別候補が選ばれることに委ねる(Rule7・A-1の変更禁止)。
+- 2回目も不合格なら停止してFableへ報告(outer_retry_logの全件、不合格理由の内訳、Std本文の一人称率)。新規OPEN登録(分類付き)を提案に含める。
+
+## 実行
+1. 本委任文を `docs/pm/delegation_log/2026-10-24_FAMILY-Z-TELL-TALE-HEART-PRODUCTION-01_DELEGATION_03.md` に逐語保存(`py docs/pm/tools/extract_delegation_from_jsonl_01.py --jsonl C:\Users\tensh\.claude\projects\C--Users-tensh-eigo-radio\a66c19e8-1d31-4bc4-b0cb-f15b29248dc1.jsonl --role assistant --tool-use-name Agent --tool-input-field prompt --index <最新(489以降)> --out <path>`、先頭行一致確認)。
+2. 起動条件を再確認(Z経路import graph clean・stop_scope_check rc=0・STOPなし・cost logger install・日次1,000円内[並行: X『月の縮小』≤100円、X2p'委任≤25円])。前回起動から150秒以上。
+3. 案A→(必要なら)案B→kp完了後、委任_02の計画どおり ④tts_b1b ⑤tts_a2 ⑥provision_shell,gate,assemble,pages,page_verify(必ず1起動)。同一run起動間隔150秒以上、RESTART_STORM回避、TTS直列化flag尊重(他agentのTTS中は待つ)、`.venv\Scripts\python.exe`。STOP条件: HR Lock(停止して報告、approve_regenerateはFable権限)、速度Gate停止(『猿の手』前例=該当clipのみ再生成・wav退避で対応可、報告に記載)、RESTART_STORM(自分で解除しない)、予算超過見込み、原作結末欠落等の重大品質問題。
+4. 完成後: `SOURCE_FIDELITY_CHECK_01.md`(維持項目の所在・因果・結末・心臓音・Local Rewrite開示)、`RUNTIME_EVIDENCE_01.md`(正式入口・stage・actual model_id・Gate結果・Voice割当・速度Gate・KP一覧[英語/日本語gloss、`meaning_stage`=X2p'発火evidence]・ASR・HR Lock有無・費用内訳と70円目標差・所要時間・試聴URL Std/Adv)。公開 `user_test/family_z_tell_tale_heart_01/`、page_verify PASS。
+5. SSOT: `OPEN_ITEMS.md`新規OPEN(COMPLETE_USER_LISTENING_PENDING、分類付き)、`DECISION_LOG.md`制作記録1件、`docs/pm/USER_DECISION_REGISTER_01.md`最終試聴UDR(追記直前に再Readし重複しない次番号)、`docs/pm/ACTIVE_TASK.md`更新。別agentが同SSOTを並行編集中: 編集直前に再Read・最小Edit・衝突時再試行。
+6. Git: 委任_02の未commit分(seed置き場・委任文)も含め、自分の変更のみ `git add <path>`→`git diff --cached --name-status`→`git commit --only -- <path…>`(または前例のupdate-index方式)→`git push origin HEAD:main`。案Bのコード変更は単独commit。wav/mp3/raw_usage_log/STOP/lock不追跡。禁止: `git add -A/-u/-f/-N`、amend、rebase、force push、stash、clean、reset --hard、checkout -f。secret grep 0件。OPEN-490。
+7. 報告 `docs/pm/RESULT_PACKET_FZTTH3.md`: ユーザー§4項目(Std/Adv試聴URL、全編・パート別再生、全スクリプトとKP、Gate結果、runtime evidence、実費、問題・未解決、SSOT/Git)+kp再選定の経緯(回数・理由・案Bの有無)。到達目標「正式完成候補・ユーザー最終試聴待ち」、PASS先取り禁止。

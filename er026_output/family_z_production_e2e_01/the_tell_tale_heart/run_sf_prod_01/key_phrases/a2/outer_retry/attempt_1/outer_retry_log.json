@@ -1,0 +1,767 @@
+{
+  "scope": "KP外側retry(X/Z共通実装。Zのdelegate)",
+  "max_outer": 3,
+  "generic_note": "",
+  "attempts": [
+    {
+      "outer_attempt": 1,
+      "note_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+      "selection_phrases": [
+        "froze my blood",
+        "as if they heard nothing",
+        "leaving no mark"
+      ],
+      "excluded_phrases_in": [],
+      "canonicalization_status": "CANONICALIZATION_INVALID",
+      "canonicalization_attempts": [
+        {
+          "attempt": 1,
+          "status": "CANONICALIZATION_INVALID",
+          "reasons": [],
+          "item_reasons": [
+            {
+              "index": 0,
+              "rank": 1,
+              "reasons": [
+                "key_phrase(\"freeze someone's blood\")がdisplay_phraseと一致せず、source_span('froze my blood')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            },
+            {
+              "index": 2,
+              "rank": 3,
+              "reasons": [
+                "key_phrase('leave no mark')がdisplay_phraseと一致せず、source_span('leaving no mark')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            }
+          ],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "possessor_roles": [
+                  {
+                    "token": "my",
+                    "role": "other_person"
+                  }
+                ],
+                "key_phrase": "freeze someone's blood",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "「my」は表現の原因となる主体とは別の人物を指すため、someone'sに一般化しました。あわせて動詞を基本形にしています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_WINDOW",
+                  "roles_ok": true,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "freeze someone's blood",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 2,
+                "possessor_roles": [],
+                "key_phrase": "as if someone heard nothing",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "「they」は記事中の警官たちを指すため、一般的な人を表すsomeoneに置き換えました。「heard」は仮定的なas if節として自然な形を保つため変更していません。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "as if someone heard nothing",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 3,
+                "possessor_roles": [],
+                "key_phrase": "leave no mark",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "lemma_normalization",
+                "reasoning": "「leaving」はここでは動詞の-ing形なので、見出し語に近い基本形のleaveにしました。「no mark」を残すことで「跡を残さない」という意味を保っています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "leave no mark",
+                  "role_ok_poss": []
+                }
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_04d0610f026b0e47006adcb4b01af087d0bb5dbcb56ac5245b"
+        },
+        {
+          "attempt": 2,
+          "status": "CANONICALIZATION_INVALID",
+          "reasons": [],
+          "item_reasons": [
+            {
+              "index": 0,
+              "rank": 1,
+              "reasons": [
+                "key_phrase(\"freeze someone's blood\")がdisplay_phraseと一致せず、source_span('froze my blood')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            },
+            {
+              "index": 2,
+              "rank": 3,
+              "reasons": [
+                "key_phrase('leave no mark')がdisplay_phraseと一致せず、source_span('leaving no mark')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            }
+          ],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "possessor_roles": [
+                  {
+                    "token": "my",
+                    "role": "other_person"
+                  }
+                ],
+                "key_phrase": "freeze someone's blood",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "「my」は表現の原因となる主語とは別の経験者を指すため、someone'sに一般化しました。動詞も見出し語の形にしています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_WINDOW",
+                  "roles_ok": true,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "freeze someone's blood",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 2,
+                "possessor_roles": [],
+                "key_phrase": "as if someone heard nothing",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "「they」は本文中の警官たちを指すため、一般的なsomeoneに置き換えました。「as if」と「heard nothing」は意味を保つため残しています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "as if someone heard nothing",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 3,
+                "possessor_roles": [],
+                "key_phrase": "leave no mark",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "lemma_normalization",
+                "reasoning": "「leaving」は動詞の-ing形なので、見出し語の原形leaveにしました。「no mark」を残すことで、跡を残さないという意味が保たれます。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "leave no mark",
+                  "role_ok_poss": []
+                }
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_098fc7e33c1f0be3006adcb4c2b6cc87d0ad372e586c83710d"
+        }
+      ],
+      "excluded_phrases_added": [
+        "froze my blood",
+        "leaving no mark"
+      ],
+      "artifacts": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_01/key_phrases/a2/outer_retry/attempt_1"
+    },
+    {
+      "outer_attempt": 2,
+      "note_sha256": "32ddd9b54c0281431ee5484e402f7a6601e01ab0d83cbe39302653b387ecef13",
+      "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+      "selection_phrases": [
+        "metal catch",
+        "sure of myself",
+        "in heaven and on earth"
+      ],
+      "excluded_phrases_in": [
+        "froze my blood",
+        "leaving no mark"
+      ],
+      "canonicalization_status": "CANONICALIZATION_INVALID",
+      "canonicalization_attempts": [
+        {
+          "attempt": 1,
+          "status": "CANONICALIZATION_INVALID",
+          "reasons": [],
+          "item_reasons": [
+            {
+              "index": 1,
+              "rank": 2,
+              "reasons": [
+                "key_phrase('sure of oneself')がdisplay_phraseと一致せず、source_span('sure of myself')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            }
+          ],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "possessor_roles": [],
+                "key_phrase": "metal catch",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "「metal catch」は金属製の留め具・引っ掛け金具を表す自然な名詞句で、単独でも学習単位として成立します。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "metal catch",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 2,
+                "possessor_roles": [],
+                "key_phrase": "sure of oneself",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "「myself」は語り手を指す記事固有の再帰代名詞なので、辞書的な一般形「oneself」に置き換えます。「sure of oneself」は自然な表現です。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "sure of oneself",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 3,
+                "possessor_roles": [],
+                "key_phrase": "in heaven and on earth",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "「in heaven and on earth」は「天にも地にも」という広がりを表す自然な定型表現で、単独で意味が通ります。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "in heaven and on earth",
+                  "role_ok_poss": []
+                }
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_091591e97215d4f3006adcb4e4dba887d09a93d4796f9048fe"
+        },
+        {
+          "attempt": 2,
+          "status": "CANONICALIZATION_INVALID",
+          "reasons": [],
+          "item_reasons": [
+            {
+              "index": 1,
+              "rank": 2,
+              "reasons": [
+                "key_phrase('sure of oneself')がdisplay_phraseと一致せず、source_span('sure of myself')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            }
+          ],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "possessor_roles": [],
+                "key_phrase": "metal catch",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "「metal catch」は金属製の留め具・キャッチを指す自然な名詞句で、単独でも学習単位として成立しています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "metal catch",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 2,
+                "possessor_roles": [],
+                "key_phrase": "sure of oneself",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "「myself」は本文の語り手を指す再帰代名詞なので、辞書的な一般形「oneself」に置き換えます。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "sure of oneself",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 3,
+                "possessor_roles": [],
+                "key_phrase": "in heaven and on earth",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "「in heaven and on earth」は「天地のあらゆるところに」という意味を表す自然な定型的表現なので、そのまま保持します。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "in heaven and on earth",
+                  "role_ok_poss": []
+                }
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_0d81f1aa3b85f71f006adcb4f0cae887d0a2c56b7bf11511f9"
+        }
+      ],
+      "excluded_phrases_added": [
+        "sure of myself"
+      ],
+      "artifacts": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_01/key_phrases/a2/outer_retry/attempt_2"
+    },
+    {
+      "outer_attempt": 3,
+      "note_sha256": "99b295fdf41add4cb96b55ff899f2d1e4eb2babd64141600860e683866bafd8b",
+      "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+      "selection_phrases": [
+        "in heaven and on earth",
+        "metal catch",
+        "My ears began ringing"
+      ],
+      "excluded_phrases_in": [
+        "froze my blood",
+        "leaving no mark",
+        "sure of myself"
+      ],
+      "canonicalization_status": "CANONICALIZATION_INVALID",
+      "canonicalization_attempts": [
+        {
+          "attempt": 1,
+          "status": "CANONICALIZATION_INVALID",
+          "reasons": [],
+          "item_reasons": [
+            {
+              "index": 2,
+              "rank": 3,
+              "reasons": [
+                "key_phrase(\"one's ears begin ringing\")がdisplay_phraseと一致せず、source_span('My ears began ringing')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            }
+          ],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "possessor_roles": [],
+                "key_phrase": "in heaven and on earth",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "慣用的な表現として自然で、単独でも意味が分かるため、そのまま維持します。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "in heaven and on earth",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 2,
+                "possessor_roles": [],
+                "key_phrase": "metal catch",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "物を留める金属製の部品を指す自然な名詞句で、記事固有の lantern を加えなくても学習単位として成立します。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "metal catch",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 3,
+                "possessor_roles": [
+                  {
+                    "token": "My",
+                    "role": "self"
+                  }
+                ],
+                "key_phrase": "one's ears begin ringing",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "記事の語り手に依存する所有格 My を、経験主体を表す一般形 one's に置き換えます。併せて動詞 began を基本形 begin にします。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_WINDOW",
+                  "roles_ok": true,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "one's ears begin ringing",
+                  "role_ok_poss": []
+                }
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_0cee754d1e08ca87006adcb511d8d887d0b4534d1abf0ee7a2"
+        },
+        {
+          "attempt": 2,
+          "status": "CANONICALIZATION_INVALID",
+          "reasons": [],
+          "item_reasons": [
+            {
+              "index": 2,
+              "rank": 3,
+              "reasons": [
+                "key_phrase(\"one's ears begin ringing\")がdisplay_phraseと一致せず、source_span('My ears began ringing')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            }
+          ],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "possessor_roles": [],
+                "key_phrase": "in heaven and on earth",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "「in heaven and on earth」は「天にも地にも」という自然で再利用可能な表現で、単独で意味が通じます。限定語の除去や語形変更も不要です。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "in heaven and on earth",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 2,
+                "possessor_roles": [],
+                "key_phrase": "metal catch",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "「metal catch」は自然な名詞句で、金属製の留め具・掛け金を指す学習単位として成立します。記事固有の限定語は含まれていないため、そのままにします。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "metal catch",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 3,
+                "possessor_roles": [
+                  {
+                    "token": "My",
+                    "role": "self"
+                  }
+                ],
+                "key_phrase": "one's ears begin ringing",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "「My」は表現の経験主体自身を指すため、辞書的な一般形「one's」に置き換えます。また、見出し語の形にするため「began」を「begin」にします。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_WINDOW",
+                  "roles_ok": true,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "one's ears begin ringing",
+                  "role_ok_poss": []
+                }
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_0511515f0181956d006adcb5203a8087d080a91aecfed1e6cf"
+        }
+      ],
+      "excluded_phrases_added": [
+        "My ears began ringing"
+      ],
+      "artifacts": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_01/key_phrases/a2/outer_retry/attempt_3"
+    }
+  ],
+  "excluded_phrases": [
+    {
+      "phrase": "froze my blood",
+      "reasons": [
+        "key_phrase(\"freeze someone's blood\")がdisplay_phraseと一致せず、source_span('froze my blood')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+      ],
+      "outer_attempt": 1,
+      "source": "canonicalization_invalid"
+    },
+    {
+      "phrase": "leaving no mark",
+      "reasons": [
+        "key_phrase('leave no mark')がdisplay_phraseと一致せず、source_span('leaving no mark')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+      ],
+      "outer_attempt": 1,
+      "source": "canonicalization_invalid"
+    },
+    {
+      "phrase": "sure of myself",
+      "reasons": [
+        "key_phrase('sure of oneself')がdisplay_phraseと一致せず、source_span('sure of myself')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+      ],
+      "outer_attempt": 2,
+      "source": "canonicalization_invalid"
+    },
+    {
+      "phrase": "My ears began ringing",
+      "reasons": [
+        "key_phrase(\"one's ears begin ringing\")がdisplay_phraseと一致せず、source_span('My ears began ringing')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+      ],
+      "outer_attempt": 3,
+      "source": "canonicalization_invalid"
+    }
+  ]
+}
