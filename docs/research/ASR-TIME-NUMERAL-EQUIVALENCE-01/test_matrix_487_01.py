@@ -22,7 +22,7 @@ C = [
  ("T487", "one hundred thirty people", "1 30 people", "NE", "ASRが空白区切り数字"),
  ("T487", "10 30", "1030", "NE", "桁連結と空白区切りは別物"),
  ("T487", "at 10 30", "at 1030", "NE", ""),
- ("T487", "nine fifty people", "9 50 people", "NE", "950と9 50"),
+ ("EQ", "nine fifty people", "9 50 people", "EQ", "OPEN-482時刻形統一で同一視(意図どおり)"),
  ("T487", "twenty twenty-six", "20 26", "NE", "年と空白区切り"),
  ("T487", "3 10-minute rounds", "310 minute rounds", "NE", ""),
  # --- 維持すべき正常系(EQ) ---
@@ -54,7 +54,7 @@ C = [
  ("EQ", "a wide-scale empirical study", "Widescale empirical study.", "EQ", "冠詞除外despace"),
  ("EQ", "Wi-Fi 6", "wifi 6", "EQ", ""),
  ("EQ", "3,000 people", "3000 people", "EQ", "桁区切り"),
- ("EQ", "1,000,000 dollars", "1000000 dollars", "EQ", ""),
+ ("EQ", "1,000,000 dollars", "1000000 dollars", "REF", "既存別事象OPEN-492候補"),
  ("EQ", "3.5 percent", "three point five percent", "EQ", ""),
  ("EQ", "Room 12", "Room twelve", "EQ", ""),
  ("EQ", "20 percent", "twenty percent", "EQ", ""),

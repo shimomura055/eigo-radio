@@ -1,0 +1,11 @@
+* Z full_story_part2_c8 synthetic(canon=At ten thirty / ASR=At 1030) [桁連結=NG側であるべき] | ('BLOCKED', 'NG_PROTECTED', 'final_gate_value_diff') -> ('BLOCKED', 'NG_PROTECTED', 'p1_value_diff')
+* X full_story_part1 synthetic(+ 'The shop opens at ten thirty.' / ASR '1030')[NG側] | ('BLOCKED', 'NG_PROTECTED', 'final_gate_value_diff') -> ('BLOCKED', 'NG_PROTECTED', 'p1_value_diff')
+* X full_story_part1 OPEN-487 synthetic(+ 'About one hundred thirty people came.' / ASR '1:30 people')[NG側=誤PASS解消] | ('ok', 'PASS', 'primary_pass') -> ('ok', 'NG_SECONDARY_UNAVAILABLE', 'secondary_unavailable')
+  X full_story_part1 OPEN-487 synthetic(+ 'About 130 people came.' / ASR '1:30 people')[X/Z=er109 digits<->H:MM救済PIN] | ('ok', 'PASS', 'primary_pass') -> ('ok', 'PASS', 'primary_pass')
+  X full_story_part1 OPEN-487 synthetic(+ 'It opens at 1030.' / ASR 'It opens at 10:30.')[X/Z=er109 PIN、Legacy=NG] | ('ok', 'PASS', 'primary_pass') -> ('ok', 'PASS', 'primary_pass')
+  X full_story_part1 OPEN-487 synthetic(+ 'The shop opens at ten thirty.' / ASR '10:30')[正常維持] | ('ok', 'PASS', 'primary_pass') -> ('ok', 'PASS', 'primary_pass')
+* ABC(scope外) full_story_part1 OPEN-487 synthetic(+ 'About one hundred thirty people came.' / ASR '1:30 people')[NG側=誤PASS解消] | ('ok', 'PASS', 'primary_pass') -> ('ok', 'NG_SECONDARY_UNAVAILABLE', 'secondary_unavailable')
+* ABC(scope外) full_story_part1 OPEN-487 synthetic(+ 'About 130 people came.' / ASR '1:30 people')[X/Z=er109 digits<->H:MM救済PIN] | ('ok', 'PASS', 'primary_pass') -> ('ok', 'NG_SECONDARY_UNAVAILABLE', 'secondary_unavailable')
+* ABC(scope外) full_story_part1 OPEN-487 synthetic(+ 'It opens at 1030.' / ASR 'It opens at 10:30.')[X/Z=er109 PIN、Legacy=NG] | ('ok', 'PASS', 'primary_pass') -> ('ok', 'NG_SECONDARY_UNAVAILABLE', 'secondary_unavailable')
+  ABC(scope外) full_story_part1 OPEN-487 synthetic(+ 'The shop opens at ten thirty.' / ASR '10:30')[正常維持] | ('ok', 'PASS', 'primary_pass') -> ('ok', 'PASS', 'primary_pass')
+records 61 changed 6 ; 保存entry(variant=stored)の変化: 0 ; api/secondary新規呼出合計 0

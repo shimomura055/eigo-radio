@@ -3,11 +3,16 @@ EQ=最終判定がPASS系 / NE=PASS不可 / PIN=現行挙動(pin値)を固定。
 CASESは docs/research/ASR-TIME-NUMERAL-EQUIVALENCE-01/test_matrix_02.py(修正前/後の実測)からも参照する。"""
 from __future__ import annotations
 
+import os
+import tempfile
 import unittest
+import wave
 from unittest import mock
 
 import er006_preprod_hardening_01_validation as val
+import er006_asr_provider_routing_01 as routing
 import er006_secondary_asr_01 as sec
+import er103_proper_noun_alarm_policy_01 as pol
 import er021_en_asr_semantic_equivalence_production_01 as t1
 import er078_asr_unified_judge_01 as uj
 import er109_xz_scope_01 as xz
@@ -102,6 +107,17 @@ _add("NEG", "Magna Carta in twelve fifteen", "Magna Carta in 1215", "NE")
 # F-1(別commit=委任_02 H): thirty 5 を合成数35として読む修正後はEQ(修正前は分類層が30 5と読んでPIN=NG。TEST_MATRIX_02は修正前のPINで記録)
 _add("F-1", "At 10 thirty 5", "At 10:35", "EQ", note="F-1修正後(commit 2)でEQ")
 _add("F-1", "At 12 forty 5", "At 12:45", "EQ", note="F-1修正後でEQ")
+# OPEN-487(委任_05): despaced()が数字-数字境界の空白を消さない(1:30=`1 30`と`130`を分かち書き差として一致させない)
+_add("O487", "one hundred thirty people", "1:30 people", "NE")
+_add("O487", "1:30 people", "one hundred thirty people", "NE")
+_add("O487", "130 people", "1:30 people", "NE")
+_add("O487", "one hundred thirty people", "1 30 people", "NE")
+_add("O487", "10 30", "1030", "NE")
+_add("O487", "3 10-minute rounds", "310 minute rounds", "NE")
+_add("O487", "storymaking", "story making", "EQ", note="複合語分かち書き差は従来どおり")
+_add("O487", "e mail", "email", "EQ")
+_add("O487", "covid 19", "covid19", "EQ", note="文字-数字境界は不変")
+_add("O487", "a wide-scale empirical study", "Widescale empirical study.", "EQ", note="冠詞除外despace")
 
 
 def judge_primary(canon: str, asr: str, role: str = "FULL_STORY"):
@@ -132,21 +148,68 @@ class TimeNumeralCases(unittest.TestCase):
                     self.assertEqual(got, e[1], f"PIN {c!r}||{x!r}")
 
 
+_WAV = os.path.join(tempfile.gettempdir(), "er021_time_numeral_test_silence.wav")
+with wave.open(_WAV, "wb") as _w:
+    _w.setnchannels(1)
+    _w.setsampwidth(1)
+    _w.setframerate(8000)
+    _w.writeframes(b"\x00" * 8000)
+
+
+def adapter_state(canon: str, asr: str, scope=None) -> str:
+    """正式Primary chain(er006_secondary_asr_01.evaluate_attempt_with_cascade_detail=er109救済を含む)を、Secondary=Primaryと同文のmockで駆動して最終stateを返す
+    (er109_xz_scope_01_test_01.Base.adapterと同じ組立。API 0)。scope in (X, Z)でX/Z run scope内。"""
+    patches = [
+        mock.patch.object(sec, "_resolve_unresolved_entity_for_review", lambda span: {"pronunciation_hint": "", "confidence": "unconfirmed", "sources": []}),
+        mock.patch.object(sec, "_log_human_review", lambda d: None),
+        mock.patch.object(sec.semantic_equivalence, "append_telemetry_log", lambda *a, **k: None),
+        mock.patch.object(routing, "transcribe", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("Primary#2 forbidden"))),
+        mock.patch.object(sec, "get_full_text_via_azure_stt_with_phrase_list", lambda w, language="en-US", phrases=None, **kw: (asr, None)),
+    ]
+    for p in patches:
+        p.start()
+    try:
+        sec.reset_secondary_cache()
+
+        def go():
+            return sec.evaluate_attempt_with_cascade_detail(canon, asr, [], _WAV, language="en-US", cascade_enabled=True,
+                                                            segment_id="full_story_part1", attempt_ctx={"slot": 1, "is_last_slot": True})
+        if scope in ("X", "Z"):
+            with pol.run_scope(scope), xz.run_scope(scope):
+                d = go()
+        else:
+            d = go()
+    finally:
+        for p in reversed(patches):
+            p.stop()
+    return d["asr_judgement"]["state"]
+
+
 class XZScopeEr109(unittest.TestCase):
-    """OF-TN-04: X/Z scope ON(er109同音救済を含む正式経路)でも桁連結/年号形の誤PASSは生じない。#66は承認規則(PIN)。"""
+    """OF-TN-04: X/Z scope ON(er109同音救済を含む正式Primary chain)でも桁連結/年号形の誤PASSは生じない。#66(`1030`<->`10:30`)は承認済みer109規則(PIN)。
+    OPEN-487(委任_05)以降、`1030`<->`10:30`は一次分類(despace偶然一致)ではNGとなり、X/Zはer109が救済、A/B/C Legacyは非救済(開示)。"""
     NE = [("At ten thirty", "At 1030"), ("At 1030", "At ten thirty"), ("At ten thirty five", "At 1035"),
-          ("Chapter eleven fifty is long", "Chapter 1150 is long"), ("Magna Carta in twelve fifteen", "Magna Carta in 1215")]
+          ("Chapter eleven fifty is long", "Chapter 1150 is long"), ("Magna Carta in twelve fifteen", "Magna Carta in 1215"),
+          ("one hundred thirty people", "1:30 people"), ("1:30 people", "one hundred thirty people")]
 
     def test_ne_and_pin_in_scope(self):
         for fam in ("X", "Z"):
-            with xz.run_scope(fam):
-                self.assertTrue(xz.is_active_for_run())
-                for c, x in self.NE:
-                    with self.subTest(fam=fam, canon=c, asr=x):
-                        self.assertFalse(final_pass(c, x), f"{c!r}||{x!r} must stay NG under scope {fam}")
-                with self.subTest(fam=fam, pin="#66"):
-                    self.assertTrue(final_pass("At 1030", "At 10:30"))  # er109承認規則(CURRENT_SPEC.md:2970): 数字1030<->10:30
+            for c, x in self.NE:
+                with self.subTest(fam=fam, canon=c, asr=x):
+                    self.assertNotIn(adapter_state(c, x, fam), PASS_STATES, f"{c!r}||{x!r} must stay NG under scope {fam}")
+            with self.subTest(fam=fam, pin="#66"):
+                with xz.run_scope(fam):
                     self.assertIsNotNone(xz.decision("At 1030", "At 10:30"))
+                self.assertIn(adapter_state("At 1030", "At 10:30", fam), PASS_STATES)   # er109承認規則(CURRENT_SPEC.md:2970): 数字1030<->10:30
+                self.assertIn(adapter_state("At 10:30", "At 1030", fam), PASS_STATES)
+            with self.subTest(fam=fam, pin="digits<->H:MM"):
+                # 同じer109規則(数字列<->H:MM同音)の1桁時: X/Zは従来どおり救済(承認済み規則の範囲、開示)。数詞語(one hundred thirty)<->1:30は救済されない(上のNE)
+                self.assertIn(adapter_state("130 people", "1:30 people", fam), PASS_STATES)
+
+    def test_legacy_not_rescued(self):
+        # A/B/C Legacy(scope外)は非救済(OPEN-487開示): 一次分類NG、Secondaryが同文のためNG確定
+        self.assertNotIn(adapter_state("At 1030", "At 10:30", None), PASS_STATES)
+        self.assertNotIn(adapter_state("130 people", "1:30 people", None), PASS_STATES)
 
 
 class SecondaryPaths(unittest.TestCase):
@@ -223,6 +286,24 @@ class AndSplitOpen489(unittest.TestCase):
         self.assertEqual(n("between ten and twenty"), "between 10 and 20")
         self.assertEqual(n("one hundred and two"), "102")
         self.assertEqual(n("Her husband and two young brothers"), "her husband and 2 young brothers")  # 2026-10-23是正(and+数詞語)を維持
+
+
+class Despace487(unittest.TestCase):
+    """OPEN-487(委任_05): despaced()/冠詞除外despaceは数字-数字境界の空白を残す。文字を含む分かち書き差は不変。"""
+
+    def test_despaced_keeps_digit_digit_boundary(self):
+        self.assertNotEqual(val.despaced("1:30 people"), val.despaced("130 people"))
+        self.assertNotEqual(val.despaced("1 30"), val.despaced("130"))
+        self.assertEqual(val.despaced("web site"), val.despaced("website"))
+        self.assertEqual(val.despaced("story-making"), val.despaced("storymaking"))
+        self.assertEqual(val.despaced("covid 19"), val.despaced("covid19"))   # 文字-数字境界は連結のまま
+        self.assertEqual(val.despaced("blitz scaling"), "blitzscaling")      # 数字を含まない語は不変
+
+    def test_primary_classification_ng_for_time_vs_cardinal(self):
+        for c, x in (("one hundred thirty people", "1:30 people"), ("130 people", "1:30 people"),
+                     ("one hundred thirty people", "1 30 people"), ("10 30", "1030")):
+            with self.subTest(c=c, x=x):
+                self.assertFalse(val.classify_asr_match(c, x).should_pass)
 
 
 if __name__ == "__main__":

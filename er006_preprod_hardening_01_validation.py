@@ -503,10 +503,21 @@ def tokenize(text: str) -> list[str]:
     return normalize_text(text).split()
 
 
+def _join_keep_digit_boundary(tokens: list[str]) -> str:
+    """tokenを空白なしで連結する。ただし『数字で終わるtoken + 数字で始まるtoken』の境界だけは空白を残す
+    (OPEN-487: `1:30`=`1 30` が `130` と despace 一致して誤PASSするのを防ぐ。複合語の分かち書き差=文字語の連結には影響しない)。"""
+    out = []
+    for k, t in enumerate(tokens):
+        if k and out and out[-1][-1:].isdigit() and t[:1].isdigit():
+            out.append(" ")
+        out.append(t)
+    return "".join(out)
+
+
 def despaced(text: str) -> str:
     """複合語の分かち書き差(blitzscaling/blitz scaling/blitz-scaling等)を
-    吸収するため、正規化後さらに空白も除去した比較用文字列。"""
-    return normalize_text(text).replace(" ", "")
+    吸収するため、正規化後さらに空白も除去した比較用文字列(数字と数字の境界だけは残す)。"""
+    return _join_keep_digit_boundary(normalize_text(text).split())
 
 
 # \w相当だがUnicode文字(Malmöのö等)も含めて1語として拾う必要があるため、
@@ -1167,7 +1178,7 @@ def _classify_asr_match_core(canonical_text: str, asr_text: str,
     articles_only = {"a", "an", "the"}
     canon_content_only = [t for t in tokenize(canonical_text) if t not in articles_only]
     asr_content_only = [t for t in tokenize(asr_text) if t not in articles_only]
-    if "".join(canon_content_only) == "".join(asr_content_only) and canon_content_only:
+    if _join_keep_digit_boundary(canon_content_only) == _join_keep_digit_boundary(asr_content_only) and canon_content_only:
         return ClassificationResult("NORMALIZED_MATCH", 1.0, ProtectedCheckResult(passed=True),
                                      should_pass=True, should_retry=False,
                                      reason="冠詞等を除いた内容語の複合語分かち書き差のみ(空白除去後に一致)")

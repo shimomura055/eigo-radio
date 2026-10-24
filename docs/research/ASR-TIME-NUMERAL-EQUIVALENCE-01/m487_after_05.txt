@@ -1,0 +1,57 @@
+OK  T487  exp=NE  NG   NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  cls=TRUE_CONTENT_MISMATCH | 'one hundred thirty people' || '1:30 people' 報告原例
+OK  T487  exp=NE  NG   NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  cls=TRUE_CONTENT_MISMATCH | '1:30 people' || 'one hundred thirty people' 逆向き
+OK  T487  exp=NE  NG   NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  cls=TRUE_CONTENT_MISMATCH | 'one hundred and thirty people' || '1:30 people' 
+OK  T487  exp=NE  NG   NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  cls=TRUE_CONTENT_MISMATCH | '130 people' || '1:30 people' digits<->time+名詞
+OK  T487  exp=NE  NG   NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  cls=TRUE_CONTENT_MISMATCH | 'It was one hundred thirty.' || 'It was 1:30.' 文末
+OK  T487  exp=NE  NG   NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  cls=TRUE_CONTENT_MISMATCH | 'one hundred twenty' || '1:20' 
+OK  T487  exp=NE  NG   NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  cls=TRUE_CONTENT_MISMATCH | 'two hundred fifteen people' || '2:15 people' 
+OK  T487  exp=NE  NG   NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  cls=TRUE_CONTENT_MISMATCH | 'I saw 130 people' || 'I saw 1:30 people' 
+OK  T487  exp=NE  NG   NG_PROTECTED/p1_value_diff vg=DIFF     cls=TRUE_CONTENT_MISMATCH | 'one hundred thirty people' || '1 30 people' ASRが空白区切り数字
+OK  T487  exp=NE  NG   NG_PROTECTED/p1_value_diff vg=DIFF     cls=TRUE_CONTENT_MISMATCH | '10 30' || '1030' 桁連結と空白区切りは別物
+OK  T487  exp=NE  NG   NG_PROTECTED/p1_value_diff vg=DIFF     cls=TRUE_CONTENT_MISMATCH | 'at 10 30' || 'at 1030' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass_approved_equivalence: vg=EQUAL    cls=NUMERIC_EQUIVALENCE_MATCH | 'nine fifty people' || '9 50 people' OPEN-482時刻形統一で同一視(意図どおり)
+OK  T487  exp=NE  NG   NG_PROTECTED/p1_value_diff vg=DIFF     cls=TRUE_CONTENT_MISMATCH | 'twenty twenty-six' || '20 26' 年と空白区切り
+OK  T487  exp=NE  NG   NG_PROTECTED/p1_value_diff vg=DIFF     cls=TRUE_CONTENT_MISMATCH | '3 10-minute rounds' || '310 minute rounds' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass_approved_equivalence: vg=EQUAL    cls=NUMERIC_EQUIVALENCE_MATCH | 'one hundred thirty people' || '130 people' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass_approved_equivalence: vg=EQUAL    cls=NUMERIC_EQUIVALENCE_MATCH | '130 people' || 'one hundred thirty people' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass vg=EQUAL    cls=NORMALIZED_MATCH | 'At ten thirty' || 'At 10:30' OPEN-482
+OK  EQ    exp=EQ  PASS PASS/primary_pass vg=EQUAL    cls=NORMALIZED_MATCH | 'At 10:30' || 'At ten thirty' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass vg=EQUAL    cls=NORMALIZED_MATCH | 'At 10 thirty' || 'At 10:30' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass_approved_equivalence: vg=EQUAL    cls=NUMERIC_EQUIVALENCE_MATCH | 'At ten thirty' || 'At 10 30' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass vg=EQUAL    cls=NORMALIZED_MATCH | 'At 1:30' || 'At one thirty' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass vg=EQUAL    cls=NORMALIZED_MATCH | 'At one thirty' || 'At 1:30' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass vg=EQUAL    cls=NORMALIZED_MATCH | 'At two fifteen' || 'At 2:15' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass vg=UNKNOWN  cls=NORMALIZED_MATCH | 'At nineteen thirty' || 'At 19:30' 24時間表記(現行PASS)
+OK  EQ    exp=EQ  PASS PASS/primary_pass vg=UNKNOWN  cls=NORMALIZED_MATCH | 'At 19:30' || 'At nineteen thirty' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass vg=UNKNOWN  cls=NORMALIZED_MATCH | 'at fourteen fifteen' || 'at 14:15' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass_approved_equivalence: vg=EQUAL    cls=NUMERIC_EQUIVALENCE_MATCH | 'In nineteen ninety nine' || 'In 1999' 年号
+OK  EQ    exp=EQ  PASS PASS/primary_pass_approved_equivalence: vg=EQUAL    cls=NUMERIC_EQUIVALENCE_MATCH | 'In 1999' || 'In nineteen ninety nine' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass_approved_equivalence: vg=EQUAL    cls=NUMERIC_EQUIVALENCE_MATCH | 'In twenty twenty six' || 'In 2026' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass_approved_equivalence: vg=EQUAL    cls=NUMERIC_EQUIVALENCE_MATCH | 'In twenty twenty' || 'In 2020' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass_approved_equivalence: vg=EQUAL    cls=NUMERIC_EQUIVALENCE_MATCH | 'between 9 and 11' || 'between nine and eleven' OPEN-489
+OK  EQ    exp=EQ  PASS PASS/primary_pass_approved_equivalence: vg=EQUAL    cls=NUMERIC_EQUIVALENCE_MATCH | 'one hundred and ten' || '110' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass_approved_equivalence: vg=EQUAL    cls=NUMERIC_EQUIVALENCE_MATCH | 'two thousand and five' || '2005' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass vg=EQUAL    cls=NORMALIZED_MATCH | 'ten thirty five' || '10:35' 
+OK  EQ    exp=REF NG   NG_PROTECTED/p1_value_diff vg=DIFF     cls=TRUE_CONTENT_MISMATCH | 'ten thirty-five' || '1035' ASR桁連結(現行の扱いを観測)
+OK  EQ    exp=EQ  PASS PASS/primary_pass vg=NO_VALUES cls=NORMALIZED_MATCH | 'storymaking' || 'story making' 複合語分かち書き
+OK  EQ    exp=EQ  PASS PASS/primary_pass vg=NO_VALUES cls=NORMALIZED_MATCH | 'blitzscaling' || 'blitz-scaling' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass_approved_equivalence: vg=EQUAL    cls=NUMERIC_EQUIVALENCE_MATCH | 'covid 19' || 'covid19' 文字+数字境界
+OK  EQ    exp=EQ  PASS PASS/primary_pass vg=NO_VALUES cls=NORMALIZED_MATCH | 'e mail' || 'email' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass vg=NO_VALUES cls=NORMALIZED_MATCH | 'a wide-scale empirical study' || 'Widescale empirical study.' 冠詞除外despace
+OK  EQ    exp=EQ  PASS PASS/primary_pass vg=EQUAL    cls=NORMALIZED_MATCH | 'Wi-Fi 6' || 'wifi 6' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass_approved_equivalence: vg=EQUAL    cls=NUMERIC_EQUIVALENCE_MATCH | '3,000 people' || '3000 people' 桁区切り
+OK  EQ    exp=REF NG   NG_PROTECTED/final_gate_value_diff vg=DIFF     cls=NORMALIZED_MATCH | '1,000,000 dollars' || '1000000 dollars' 既存別事象OPEN-492候補
+OK  EQ    exp=EQ  PASS PASS/primary_pass_approved_equivalence: vg=EQUAL    cls=NUMERIC_EQUIVALENCE_MATCH | '3.5 percent' || 'three point five percent' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass_approved_equivalence: vg=EQUAL    cls=NUMERIC_EQUIVALENCE_MATCH | 'Room 12' || 'Room twelve' 
+OK  EQ    exp=EQ  PASS PASS/primary_pass_approved_equivalence: vg=EQUAL    cls=NUMERIC_EQUIVALENCE_MATCH | '20 percent' || 'twenty percent' 
+OK  EQ    exp=REF NG   NG_PROTECTED/p1_value_diff vg=DIFF     cls=TRUE_CONTENT_MISMATCH | 'The 2020s' || 'The twenty twenties' 
+OK  REF   exp=REF NG   NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  cls=TRUE_CONTENT_MISMATCH | 'At 1:30' || 'At 130' ASRが桁連結で書く: 現行は偶然PASS
+OK  REF   exp=REF NG   NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  cls=TRUE_CONTENT_MISMATCH | 'At 130' || 'At 1:30' 
+OK  REF   exp=REF NG   NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  cls=TRUE_CONTENT_MISMATCH | 'At 1030' || 'At 10:30' er109承認同値(X/Z)
+OK  REF   exp=REF NG   NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  cls=TRUE_CONTENT_MISMATCH | 'At 10:30' || 'At 1030' 
+OK  REF   exp=REF NG   NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  cls=TRUE_CONTENT_MISMATCH | 'Room 1030' || 'Room 10:30' 
+OK  REF   exp=REF NG   NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  cls=TRUE_CONTENT_MISMATCH | 'At 3:45' || 'At 345' 
+OK  REF   exp=REF NG   NG_PROTECTED/p1_value_diff vg=DIFF     cls=TRUE_CONTENT_MISMATCH | '3 4 5' || '345' 
+OK  REF   exp=REF NG   NG_PROTECTED/p1_value_diff vg=DIFF     cls=TRUE_CONTENT_MISMATCH | 'tel 555 1234' || 'tel 5551234' 電話番号の分かち書き
+OK  REF   exp=REF NG   NG_PROTECTED/p1_value_diff vg=DIFF     cls=TRUE_CONTENT_MISMATCH | '1 000' || '1000' 桁区切りスペース
+cases 56 mismatch 0
