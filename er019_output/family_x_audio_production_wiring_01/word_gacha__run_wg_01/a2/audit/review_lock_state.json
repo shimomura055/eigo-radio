@@ -1,0 +1,3404 @@
+{
+  "topic_intro": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "260959b82e78fb7fc603877c94c535d77e737c58506634efb03ed3142fb99f3b",
+    "language": "en",
+    "theme_id": "word_gacha__run_wg_01",
+    "level": "a2",
+    "segment_id": "topic_intro",
+    "updated_at": "2026-10-24T18:06:09",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/topic_intro.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 8.16,
+        "asr_text": "Today's topic is, I checked how rare the words were before learning them. Rare word hunting starts with an English word, gotcha.",
+        "asr_text_length": 128,
+        "max_len": 155,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "PASS_WITH_PRONUNCIATION_ALARM",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 96,
+          "sha256": "d16e099cb4f6fd7f87826e48f636c143c31f3c7ad4aaeea13dd3c9ae4a3f724b",
+          "head200": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic."
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Today's topic is, I checked how rare the words were before learning them. Rare word hunting starts with an English word, gotcha.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "tier3_corroboration_secondary",
+            "provider": "azure",
+            "text": "Today's topic is I checked how rare the words were before learning them. Rare word hunting starts with an English word. Gotcha.",
+            "sub_reason": "entity_only",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Today's topic is I checked how rare the words were before learning them. Rare word hunting starts with an English word. Gotcha.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": true,
+            "unified_judge_state": "NG_BOTH",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_PRONUNCIATION_ALARM",
+          "reason_code": "pronunciation_alarm_accept",
+          "slot": 1,
+          "script_version": "v0",
+          "role": "TOPIC_INTRO",
+          "lang": "en",
+          "segment_key": "topic_intro",
+          "audio_sha256": "e70131e07081c34583e195aa635b81655a56d7d86d048b2e235b1e2429ef2123",
+          "primary": {
+            "text": "Today's topic is, I checked how rare the words were before learning them. Rare word hunting starts with an English word, gotcha.",
+            "passed": false,
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": true,
+            "engine": "azure",
+            "text": "Today's topic is I checked how rare the words were before learning them. Rare word hunting starts with an English word. Gotcha.",
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 4,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 128,
+            "secondary_len": 127,
+            "max_len": 155,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": 102,
+            "primary_ok": true
+          },
+          "p3_entry": "p3_primary_ng",
+          "pronunciation_alarm_eval": {
+            "accepted": true,
+            "reason": "ENTITY_ONLY_ACCEPT",
+            "detail": {}
+          },
+          "pronunciation_alarm_records": [
+            {
+              "alarm_id": "pnal_f9b1e13ecc059595",
+              "policy_id": "PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01",
+              "created_at": "2026-10-24T18:06:09",
+              "final_state": "PASS_WITH_PRONUNCIATION_ALARM",
+              "final_state_ja": "アラーム付き完成",
+              "family": "X",
+              "article_id": "",
+              "level": "",
+              "segment_id": "topic_intro",
+              "role": "TOPIC_INTRO",
+              "slot": 1,
+              "proper_noun": "gacha",
+              "tts_input_token": null,
+              "location": {
+                "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/topic_intro.wav",
+                "wav_sha256": "e70131e07081c34583e195aa635b81655a56d7d86d048b2e235b1e2429ef2123",
+                "canonical_sentence": "Today's topic is I Checked How Rare the Words Were Before Learning Them. Rare-Word Hunting Starts with an English Word Gacha.",
+                "tts_input_text": "Today's topic is I Checked How Rare the Words Were Before Learning Them. Rare-Word Hunting Starts with an English Word Gacha.",
+                "char_index": 119,
+                "context": "...ord Hunting Starts with an English Word [[gacha]]....",
+                "approx_seconds": 7.8,
+                "approx_note": "文字位置を音声長で按分した目安(±数秒)。正確な時刻ではありません"
+              },
+              "mismatch": {
+                "canonical": "gacha",
+                "asr_primary": "gotcha",
+                "asr_secondary": "gotcha",
+                "similarity_primary": 0.7273,
+                "similarity_secondary": 0.7273,
+                "proper_noun_evidence": "cmu_oov",
+                "primary_text": "Today's topic is, I checked how rare the words were before learning them. Rare word hunting starts with an English word, gotcha.",
+                "secondary_text": "Today's topic is I checked how rare the words were before learning them. Rare word hunting starts with an English word. Gotcha."
+              },
+              "pronunciation_basis": {
+                "has_basis": true,
+                "evidence_tier": "NAME_IN_CITED_PAGE",
+                "confidence": "medium",
+                "pronunciation_hint": "GOT-chuh",
+                "ipa": "/ˈɡɑː.tʃə/ (US English); /ˈɡætʃ.ə/ (UK English)",
+                "sources": [
+                  "https://dictionary.cambridge.org/us/pronunciation/english/gacha",
+                  "https://dictionary.cambridge.org/zht/%E7%99%BC%E9%9F%B3/%E8%8B%B1%E8%AA%9E/gacha",
+                  "https://www.japantimes.co.jp/life/2026/09/22/language/gacha-chiikawa-vocabulary-plushie/"
+                ],
+                "note": ""
+              },
+              "tts_supply_result": {
+                "supplied": false,
+                "reason": "no_ledger_entry_or_not_planned",
+                "original": "gacha"
+              },
+              "models": {
+                "primary_asr": {
+                  "provider": "openai_asr",
+                  "model": "gpt-4o-mini-transcribe"
+                },
+                "secondary_asr": "azure-speech-stt",
+                "secondary_azure_calls": 0
+              },
+              "reason": "固有名詞の発音不一致のみ(Primary/Secondary両ASRとも他の差なし)。承認済み方針によりHuman Review・再生成なしで完成扱い。",
+              "operator_only": true
+            }
+          ],
+          "pronunciation_alarm": {
+            "policy_id": "PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01",
+            "accepted": true,
+            "reason": "ENTITY_ONLY_ACCEPT",
+            "alarm_ids": [
+              "pnal_f9b1e13ecc059595"
+            ],
+            "nouns": [
+              "gacha"
+            ],
+            "tts_input_text": "Today's topic is I Checked How Rare the Words Were Before Learning Them. Rare-Word Hunting Starts with an English Word Gacha.",
+            "pre_supply_text": "Today's topic is I Checked How Rare the Words Were Before Learning Them. Rare-Word Hunting Starts with an English Word Gacha.",
+            "supply_map": {},
+            "supply_decisions": []
+          },
+          "adapter": {
+            "layers": [
+              "tier3"
+            ],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "topic_intro",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 1,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/attempts/topic_intro_attempt1_custom60a24f1e.wav"
+      }
+    ]
+  },
+  "japanese_title": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "b85b6710233241e0e575b947d2725600b8b1d693a438037f5f6e29e411dd818f",
+    "language": "ja",
+    "theme_id": "word_gacha__run_wg_01",
+    "level": "a2",
+    "segment_id": "japanese_title",
+    "updated_at": "2026-10-24T18:06:12",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/japanese_title.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 5.48,
+        "asr_text": "覚える前にレア度を見た。英単語ガチャで始まる珍語ハント。",
+        "asr_text_length": 28,
+        "max_len": 60,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "6af132dca60defb79800565c53caf1e9574695b6feee035dd9324de5ad36df71",
+          "primary": {
+            "text": "覚える前にレア度を見た。英単語ガチャで始まる珍語ハント。",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 28,
+            "secondary_len": null,
+            "max_len": 60,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 1,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/attempts/japanese_title_attempt1_customb8f0ff16.wav"
+      }
+    ]
+  },
+  "preview": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "f08a03fcb88b8ebf9d26577573bbf2c43eabda352af4b275eb88749e1ebfb2a4",
+    "language": "ja",
+    "theme_id": "word_gacha__run_wg_01",
+    "level": "a2",
+    "segment_id": "preview",
+    "updated_at": "2026-10-24T18:06:17",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/preview.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 11.15,
+        "asr_text": "英単語のカードを集めるガチャゲームを取り上げます。遊びとしての面白さだけでなく、学ぶ道具として見ると、何に気をつけるべきかを考えます。",
+        "asr_text_length": 67,
+        "max_len": 106,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "03d83fe113dc1fd5cff988ddd5a8e63ca8d7daebbad114aa81a7dfeba1450fc0",
+          "primary": {
+            "text": "英単語のカードを集めるガチャゲームを取り上げます。遊びとしての面白さだけでなく、学ぶ道具として見ると、何に気をつけるべきかを考えます。",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 67,
+            "secondary_len": null,
+            "max_len": 106,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 1,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/attempts/preview_attempt1_custom06ec49ff.wav"
+      }
+    ]
+  },
+  "comment_1": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "54b001d449628a4e313f26326ef5a7755f6b1db814e718e67cd0387345e5a44e",
+    "language": "ja",
+    "theme_id": "word_gacha__run_wg_01",
+    "level": "a2",
+    "segment_id": "comment_1",
+    "updated_at": "2026-10-24T18:06:20",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/comment_1.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 6.64,
+        "asr_text": "英単語のガチャが出てくると、学ぶ人の目がどんな言葉に向くのかに注目してください。",
+        "asr_text_length": 40,
+        "max_len": 80,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "408d750654b3ff05deec41afe24644979aeda848686d678ea006f75dae7e7325",
+          "primary": {
+            "text": "英単語のガチャが出てくると、学ぶ人の目がどんな言葉に向くのかに注目してください。",
+            "passed": true,
+            "label": "EXACT_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 40,
+            "secondary_len": null,
+            "max_len": 80,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 1,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/attempts/comment_1_attempt1_custom06ec49ff.wav"
+      }
+    ]
+  },
+  "comment_2": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "072ebde8d8f1a5612b2757e9ab93f9a1ed73a68de63396bd45939b946d87f3eb",
+    "language": "ja",
+    "theme_id": "word_gacha__run_wg_01",
+    "level": "a2",
+    "segment_id": "comment_2",
+    "updated_at": "2026-10-24T18:06:25",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/comment_2.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 13.16,
+        "asr_text": "このゲームでは、あまり使われない単語ほど特別に見えてきます。では、レアカードを引き続けられる仕組みは、英語を学ぶ気持ちにどんな変化を起こすのでしょうか。",
+        "asr_text_length": 76,
+        "max_len": 116,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "330328b0e855e86789723f9724af5d7b199c8bb8f030c639ca1038c54ce42a4b",
+          "primary": {
+            "text": "このゲームでは、あまり使われない単語ほど特別に見えてきます。では、レアカードを引き続けられる仕組みは、英語を学ぶ気持ちにどんな変化を起こすのでしょうか。",
+            "passed": true,
+            "label": "EXACT_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 76,
+            "secondary_len": null,
+            "max_len": 116,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 1,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/attempts/comment_2_attempt1_custom06ec49ff.wav"
+      }
+    ]
+  },
+  "comment_3": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "4cad01ecf7dcd5cdef4eed33a11066b2ae5cb122578ca611fa3b2f513f6cd0f6",
+    "language": "ja",
+    "theme_id": "word_gacha__run_wg_01",
+    "level": "a2",
+    "segment_id": "comment_3",
+    "updated_at": "2026-10-24T18:06:29",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/comment_3.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 14.64,
+        "asr_text": "ここまでで、レアカードを追う楽しさによって、英語を学ぶ目的が変わることがあると見てきました。続きでは、ゲームの面白さと学ぶ順番がどう関係するのかに注目してください。",
+        "asr_text_length": 82,
+        "max_len": 123,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "2f1680c7fc9c33a00d4761d5666677474279057ef9f18e42e84669dd50a34950",
+          "primary": {
+            "text": "ここまでで、レアカードを追う楽しさによって、英語を学ぶ目的が変わることがあると見てきました。続きでは、ゲームの面白さと学ぶ順番がどう関係するのかに注目してください。",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 82,
+            "secondary_len": null,
+            "max_len": 123,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 1,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/attempts/comment_3_attempt1_custom06ec49ff.wav"
+      }
+    ]
+  },
+  "comment_4": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "5609ad8226da203ab8b60ea9530a1fcc9ff7109fa9af59c7d961c4998955819e",
+    "language": "ja",
+    "theme_id": "word_gacha__run_wg_01",
+    "level": "a2",
+    "segment_id": "comment_4",
+    "updated_at": "2026-10-24T18:06:34",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/comment_4.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 10.48,
+        "asr_text": "珍しい単語を引く楽しさを通して、英語の学び方について考える内容でした。最後に、記事の要点を英語で振り返ります。",
+        "asr_text_length": 55,
+        "max_len": 95,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "d26e202389e9335b16597a9101cd04feec8bec570f41a1384da73ba39aea9014",
+          "primary": {
+            "text": "珍しい単語を引く楽しさを通して、英語の学び方について考える内容でした。最後に、記事の要点を英語で振り返ります。",
+            "passed": true,
+            "label": "EXACT_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 55,
+            "secondary_len": null,
+            "max_len": 95,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 1,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/attempts/comment_4_attempt1_custom06ec49ff.wav"
+      }
+    ]
+  },
+  "full_story_part1": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "45c8fcc1e4f75dda6704c0ec12484acbedf665df00842e10f52d5fea101b7f34",
+    "language": "en",
+    "theme_id": "word_gacha__run_wg_01",
+    "level": "a2",
+    "segment_id": "full_story_part1",
+    "updated_at": "2026-10-24T18:07:50",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/full_story_part1.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 55.87,
+        "asr_text": "If you want to learn English words, start with the ones people use often. That is clearly right, and no one can argue with it. Still, when a gotcha appears, the good student in you steps away. Maybe so, but what is the rarest word? Wait, you came here to study today, didn't you? Dopa English word gotcha is just right for distracting you. English word cards have seven levels of rarity. Words used more often have lower levels. Words used less often have higher levels. The words you should learn first seem boring in the game. Surprisingly, useful words and star power do not go together. Usually, you might ask, can I use this in a conversation? But now you may lean forward and ask, what? People hardly ever use this word. You check how rare it is before you read its meaning. You thought you were opening a word book, but in your mind, a send-off for rare word hunters is already starting.",
+        "asr_text_length": 894,
+        "max_len": 948,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "PASS_WITH_PRONUNCIATION_ALARM",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": false,
+          "duration_seconds": 55.87,
+          "method_a_ngram": {
+            "matches": [],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 166,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.9978,
+                "time_a_seconds": 8.25,
+                "time_b_seconds": 22.37,
+                "lag_seconds": 14.12,
+                "run_length_seconds_at_thresh_0.85": 0.03
+              },
+              {
+                "similarity": 0.9968,
+                "time_a_seconds": 16.19,
+                "time_b_seconds": 22.37,
+                "lag_seconds": 6.18,
+                "run_length_seconds_at_thresh_0.85": 0.02
+              },
+              {
+                "similarity": 0.9966,
+                "time_a_seconds": 18.1,
+                "time_b_seconds": 52.63,
+                "lag_seconds": 34.53,
+                "run_length_seconds_at_thresh_0.85": 0.01
+              },
+              {
+                "similarity": 0.9963,
+                "time_a_seconds": 8.25,
+                "time_b_seconds": 18.12,
+                "lag_seconds": 9.87
+              },
+              {
+                "similarity": 0.996,
+                "time_a_seconds": 8.25,
+                "time_b_seconds": 16.19,
+                "lag_seconds": 7.94
+              }
+            ],
+            "best_run_length_seconds": 0.03,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.36,
+            "time_a": 48.81,
+            "lag": 1.65,
+            "similarity_at_start": 0.7329,
+            "best_run_length_seconds": 0.36,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": false
+          },
+          "method_c_v2_window_check": null
+        },
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 177,
+          "sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
+          "head200": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible."
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "If you want to learn English words, start with the ones people use often. That is clearly right, and no one can argue with it. Still, when a gotcha appears, the good student in you steps away. Maybe so, but what is the rarest word? Wait, you came here to study today, didn't you? Dopa English word gotcha is just right for distracting you. English word cards have seven levels of rarity. Words used more often have lower levels. Words used less often have higher levels. The words you should learn first seem boring in the game. Surprisingly, useful words and star power do not go together. Usually, you might ask, can I use this in a conversation? But now you may lean forward and ask, what? People hardly ever use this word. You check how rare it is before you read its meaning. You thought you were opening a word book, but in your mind, a send-off for rare word hunters is already starting.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "If you want to learn English words, start with the ones people use often. That is clearly right and no one can argue with it. Still, when a gacha appears, the good student in you steps away. Maybe so, but what is the rarest word? Wait, you came here to study today, didn't you? Dopa English word gacha is just right for distracting you. English word cards have 7 levels of rarity. Words used more often have lower levels. Words used less often have higher.The words you should learn first seem boring in the game. Surprisingly useful words and star power do not go together. Usually you might ask, can I use this in a conversation? But now you may lean forward and ask what? People hardly ever use this word. You check how rare it is before you read its meaning. You thought you were opening a word book, but in your mind a send off for rare word hunters is already starting.",
+            "classification": "TRUE_CONTENT_MISMATCH",
+            "phrase_list_used": true,
+            "azure_phrase_list_weight": 2.0,
+            "azure_phrase_list": [
+              "gacha"
+            ],
+            "cached": false,
+            "unified_judge_state": "NG_BOTH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_PRONUNCIATION_ALARM",
+          "reason_code": "pronunciation_alarm_accept",
+          "slot": 1,
+          "script_version": "v0",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "full_story_part1",
+          "audio_sha256": "995e8fa2e9a7b5cb328b6012dc06637c0465a83609d8dbf80140ead2b27aefdf",
+          "primary": {
+            "text": "If you want to learn English words, start with the ones people use often. That is clearly right, and no one can argue with it. Still, when a gotcha appears, the good student in you steps away. Maybe so, but what is the rarest word? Wait, you came here to study today, didn't you? Dopa English word gotcha is just right for distracting you. English word cards have seven levels of rarity. Words used more often have lower levels. Words used less often have higher levels. The words you should learn first seem boring in the game. Surprisingly, useful words and star power do not go together. Usually, you might ask, can I use this in a conversation? But now you may lean forward and ask, what? People hardly ever use this word. You check how rare it is before you read its meaning. You thought you were opening a word book, but in your mind, a send-off for rare word hunters is already starting.",
+            "passed": false,
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "If you want to learn English words, start with the ones people use often. That is clearly right and no one can argue with it. Still, when a gacha appears, the good student in you steps away. Maybe so, but what is the rarest word? Wait, you came here to study today, didn't you? Dopa English word gacha is just right for distracting you. English word cards have 7 levels of rarity. Words used more often have lower levels. Words used less often have higher.The words you should learn first seem boring in the game. Surprisingly useful words and star power do not go together. Usually you might ask, can I use this in a conversation? But now you may lean forward and ask what? People hardly ever use this word. You check how rare it is before you read its meaning. You thought you were opening a word book, but in your mind a send off for rare word hunters is already starting.",
+            "label": "TRUE_CONTENT_MISMATCH",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                },
+                {
+                  "src": "7",
+                  "hyp": "7",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                },
+                {
+                  "src": "7",
+                  "hyp": "7",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 55.87,
+            "est_jpy": 2.4889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 25584,
+            "secondary_ms": 25554
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 894,
+            "secondary_len": 875,
+            "max_len": 948,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": 687,
+            "primary_ok": true
+          },
+          "p3_entry": "p3_primary_ng",
+          "pronunciation_alarm_eval": {
+            "accepted": true,
+            "reason": "ENTITY_ONLY_ACCEPT",
+            "detail": {}
+          },
+          "pronunciation_alarm_records": [
+            {
+              "alarm_id": "pnal_f90cb748d56bcb2d",
+              "policy_id": "PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01",
+              "created_at": "2026-10-24T18:07:11",
+              "final_state": "PASS_WITH_PRONUNCIATION_ALARM",
+              "final_state_ja": "アラーム付き完成",
+              "family": "X",
+              "article_id": "",
+              "level": "",
+              "segment_id": "full_story_part1",
+              "role": "FULL_STORY",
+              "slot": 1,
+              "proper_noun": "gacha",
+              "tts_input_token": null,
+              "location": {
+                "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/full_story_part1.wav",
+                "wav_sha256": "995e8fa2e9a7b5cb328b6012dc06637c0465a83609d8dbf80140ead2b27aefdf",
+                "canonical_sentence": "If you want to learn English words, start with the ones people use often. That is clearly right, and no one can argue with it. Still, when a gacha appears, the good student in you steps away. Maybe so, but what is the rarest word? Wait. You came here to study today, didn't you? Dopa English Word Gacha is just right for distracting you. English word cards have 7 levels of rarity. Words used more often have lower levels. Words used less often have higher levels. The words you should learn first seem boring in the game. Surprisingly, useful words and star power do not go together. Usually, you might ask, Can I use this in a conversation? But now you may lean forward and ask, What? People hardly ever use this word! You check how rare it is before you read its meaning. You thought you were opening a word book. But in your mind, a send-off for rare-word hunters is already starting.",
+                "tts_input_text": "If you want to learn English words, start with the ones people use often. That is clearly right, and no one can argue with it. Still, when a gacha appears, the good student in you steps away. Maybe so, but what is the rarest word? Wait. You came here to study today, didn't you? Dopa English Word Gacha is just right for distracting you. English word cards have 7 levels of rarity. Words used more often have lower levels. Words used less often have higher levels. The words you should learn first seem boring in the game. Surprisingly, useful words and star power do not go together. Usually, you might ask, Can I use this in a conversation? But now you may lean forward and ask, What? People hardly ever use this word! You check how rare it is before you read its meaning. You thought you were opening a word book. But in your mind, a send-off for rare-word hunters is already starting.",
+                "char_index": 141,
+                "context": "...no one can argue with it. Still, when a [[gacha]] appears, the good student in you steps ...",
+                "approx_seconds": 8.9,
+                "approx_note": "文字位置を音声長で按分した目安(±数秒)。正確な時刻ではありません"
+              },
+              "mismatch": {
+                "canonical": "gacha",
+                "asr_primary": "gotcha",
+                "asr_secondary": "",
+                "similarity_primary": 0.7273,
+                "similarity_secondary": 1.0,
+                "proper_noun_evidence": "ledger",
+                "primary_text": "If you want to learn English words, start with the ones people use often. That is clearly right, and no one can argue with it. Still, when a gotcha appears, the good student in you steps away. Maybe so, but what is the rarest word? Wait, you came here to study today, didn't you? Dopa English word gotcha is just right for distracting you. English word cards have seven levels of rarity. Words used more often have lower levels. Words used less often have higher levels. The words you should learn first seem boring in the game. Surprisingly, useful words and star power do not go together. Usually, you might ask, can I use this in a conversation? But now you may lean forward and ask, what? People hardly ever use this word. You check how rare it is before you read its meaning. You thought you were opening a word book, but in your mind, a send-off for rare word hunters is already starting.",
+                "secondary_text": "If you want to learn English words, start with the ones people use often. That is clearly right and no one can argue with it. Still, when a gacha appears, the good student in you steps away. Maybe so, but what is the rarest word? Wait, you came here to study today, didn't you? Dopa English word gacha is just right for distracting you. English word cards have 7 levels of rarity. Words used more often have lower levels. Words used less often have higher.The words you should learn first seem boring in the game. Surprisingly useful words and star power do not go together. Usually you might ask, can I use this in a conversation? But now you may lean forward and ask what? People hardly ever use this word. You check how rare it is before you read its meaning. You thought you were opening a word book, but in your mind a send off for rare word hunters is already starting."
+              },
+              "pronunciation_basis": {
+                "has_basis": true,
+                "evidence_tier": "NAME_IN_CITED_PAGE",
+                "confidence": "medium",
+                "pronunciation_hint": "GOT-chuh",
+                "ipa": "/ˈɡɑː.tʃə/ (US English); /ˈɡætʃ.ə/ (UK English)",
+                "sources": [
+                  "https://dictionary.cambridge.org/us/pronunciation/english/gacha",
+                  "https://dictionary.cambridge.org/zht/%E7%99%BC%E9%9F%B3/%E8%8B%B1%E8%AA%9E/gacha",
+                  "https://www.japantimes.co.jp/life/2026/09/22/language/gacha-chiikawa-vocabulary-plushie/"
+                ],
+                "note": ""
+              },
+              "tts_supply_result": {
+                "supplied": false,
+                "reason": "EVIDENCE_NOT_VERIFIED_ESTIMATED",
+                "tier": null,
+                "original": "gacha",
+                "respelling": null,
+                "ledger_id": null,
+                "evidence_tier": null,
+                "human_approved": false,
+                "source_urls": [],
+                "policy_id": "PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01"
+              },
+              "models": {
+                "primary_asr": {
+                  "provider": "openai_asr",
+                  "model": "gpt-4o-mini-transcribe"
+                },
+                "secondary_asr": "azure-speech-stt",
+                "secondary_azure_calls": 1
+              },
+              "reason": "固有名詞の発音不一致のみ(Primary/Secondary両ASRとも他の差なし)。承認済み方針によりHuman Review・再生成なしで完成扱い。",
+              "operator_only": true
+            },
+            {
+              "alarm_id": "pnal_f90cb748d56bcb2d",
+              "policy_id": "PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01",
+              "created_at": "2026-10-24T18:07:11",
+              "final_state": "PASS_WITH_PRONUNCIATION_ALARM",
+              "final_state_ja": "アラーム付き完成",
+              "family": "X",
+              "article_id": "",
+              "level": "",
+              "segment_id": "full_story_part1",
+              "role": "FULL_STORY",
+              "slot": 1,
+              "proper_noun": "gacha",
+              "tts_input_token": null,
+              "location": {
+                "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/full_story_part1.wav",
+                "wav_sha256": "995e8fa2e9a7b5cb328b6012dc06637c0465a83609d8dbf80140ead2b27aefdf",
+                "canonical_sentence": "If you want to learn English words, start with the ones people use often. That is clearly right, and no one can argue with it. Still, when a gacha appears, the good student in you steps away. Maybe so, but what is the rarest word? Wait. You came here to study today, didn't you? Dopa English Word Gacha is just right for distracting you. English word cards have 7 levels of rarity. Words used more often have lower levels. Words used less often have higher levels. The words you should learn first seem boring in the game. Surprisingly, useful words and star power do not go together. Usually, you might ask, Can I use this in a conversation? But now you may lean forward and ask, What? People hardly ever use this word! You check how rare it is before you read its meaning. You thought you were opening a word book. But in your mind, a send-off for rare-word hunters is already starting.",
+                "tts_input_text": "If you want to learn English words, start with the ones people use often. That is clearly right, and no one can argue with it. Still, when a gacha appears, the good student in you steps away. Maybe so, but what is the rarest word? Wait. You came here to study today, didn't you? Dopa English Word Gacha is just right for distracting you. English word cards have 7 levels of rarity. Words used more often have lower levels. Words used less often have higher levels. The words you should learn first seem boring in the game. Surprisingly, useful words and star power do not go together. Usually, you might ask, Can I use this in a conversation? But now you may lean forward and ask, What? People hardly ever use this word! You check how rare it is before you read its meaning. You thought you were opening a word book. But in your mind, a send-off for rare-word hunters is already starting.",
+                "char_index": 141,
+                "context": "...no one can argue with it. Still, when a [[gacha]] appears, the good student in you steps ...",
+                "approx_seconds": 8.9,
+                "approx_note": "文字位置を音声長で按分した目安(±数秒)。正確な時刻ではありません"
+              },
+              "mismatch": {
+                "canonical": "gacha",
+                "asr_primary": "gotcha",
+                "asr_secondary": "",
+                "similarity_primary": 0.7273,
+                "similarity_secondary": 1.0,
+                "proper_noun_evidence": "ledger",
+                "primary_text": "If you want to learn English words, start with the ones people use often. That is clearly right, and no one can argue with it. Still, when a gotcha appears, the good student in you steps away. Maybe so, but what is the rarest word? Wait, you came here to study today, didn't you? Dopa English word gotcha is just right for distracting you. English word cards have seven levels of rarity. Words used more often have lower levels. Words used less often have higher levels. The words you should learn first seem boring in the game. Surprisingly, useful words and star power do not go together. Usually, you might ask, can I use this in a conversation? But now you may lean forward and ask, what? People hardly ever use this word. You check how rare it is before you read its meaning. You thought you were opening a word book, but in your mind, a send-off for rare word hunters is already starting.",
+                "secondary_text": "If you want to learn English words, start with the ones people use often. That is clearly right and no one can argue with it. Still, when a gacha appears, the good student in you steps away. Maybe so, but what is the rarest word? Wait, you came here to study today, didn't you? Dopa English word gacha is just right for distracting you. English word cards have 7 levels of rarity. Words used more often have lower levels. Words used less often have higher.The words you should learn first seem boring in the game. Surprisingly useful words and star power do not go together. Usually you might ask, can I use this in a conversation? But now you may lean forward and ask what? People hardly ever use this word. You check how rare it is before you read its meaning. You thought you were opening a word book, but in your mind a send off for rare word hunters is already starting."
+              },
+              "pronunciation_basis": {
+                "has_basis": true,
+                "evidence_tier": "NAME_IN_CITED_PAGE",
+                "confidence": "medium",
+                "pronunciation_hint": "GOT-chuh",
+                "ipa": "/ˈɡɑː.tʃə/ (US English); /ˈɡætʃ.ə/ (UK English)",
+                "sources": [
+                  "https://dictionary.cambridge.org/us/pronunciation/english/gacha",
+                  "https://dictionary.cambridge.org/zht/%E7%99%BC%E9%9F%B3/%E8%8B%B1%E8%AA%9E/gacha",
+                  "https://www.japantimes.co.jp/life/2026/09/22/language/gacha-chiikawa-vocabulary-plushie/"
+                ],
+                "note": ""
+              },
+              "tts_supply_result": {
+                "supplied": false,
+                "reason": "EVIDENCE_NOT_VERIFIED_ESTIMATED",
+                "tier": null,
+                "original": "gacha",
+                "respelling": null,
+                "ledger_id": null,
+                "evidence_tier": null,
+                "human_approved": false,
+                "source_urls": [],
+                "policy_id": "PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01"
+              },
+              "models": {
+                "primary_asr": {
+                  "provider": "openai_asr",
+                  "model": "gpt-4o-mini-transcribe"
+                },
+                "secondary_asr": "azure-speech-stt",
+                "secondary_azure_calls": 1
+              },
+              "reason": "固有名詞の発音不一致のみ(Primary/Secondary両ASRとも他の差なし)。承認済み方針によりHuman Review・再生成なしで完成扱い。",
+              "operator_only": true
+            }
+          ],
+          "pronunciation_alarm": {
+            "policy_id": "PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01",
+            "accepted": true,
+            "reason": "ENTITY_ONLY_ACCEPT",
+            "alarm_ids": [
+              "pnal_f90cb748d56bcb2d",
+              "pnal_f90cb748d56bcb2d"
+            ],
+            "nouns": [
+              "gacha",
+              "gacha"
+            ],
+            "tts_input_text": "If you want to learn English words, start with the ones people use often. That is clearly right, and no one can argue with it. Still, when a gacha appears, the good student in you steps away. Maybe so, but what is the rarest word? Wait. You came here to study today, didn't you? Dopa English Word Gacha is just right for distracting you. English word cards have 7 levels of rarity. Words used more often have lower levels. Words used less often have higher levels. The words you should learn first seem boring in the game. Surprisingly, useful words and star power do not go together. Usually, you might ask, Can I use this in a conversation? But now you may lean forward and ask, What? People hardly ever use this word! You check how rare it is before you read its meaning. You thought you were opening a word book. But in your mind, a send-off for rare-word hunters is already starting.",
+            "pre_supply_text": "If you want to learn English words, start with the ones people use often. That is clearly right, and no one can argue with it. Still, when a gacha appears, the good student in you steps away. Maybe so, but what is the rarest word? Wait. You came here to study today, didn't you? Dopa English Word Gacha is just right for distracting you. English word cards have 7 levels of rarity. Words used more often have lower levels. Words used less often have higher levels. The words you should learn first seem boring in the game. Surprisingly, useful words and star power do not go together. Usually, you might ask, Can I use this in a conversation? But now you may lean forward and ask, What? People hardly ever use this word! You check how rare it is before you read its meaning. You thought you were opening a word book. But in your mind, a send-off for rare-word hunters is already starting.",
+            "supply_map": {},
+            "supply_decisions": [
+              {
+                "supplied": false,
+                "reason": "EVIDENCE_NOT_VERIFIED_ESTIMATED",
+                "tier": null,
+                "original": "gacha",
+                "respelling": null,
+                "ledger_id": null,
+                "evidence_tier": null,
+                "human_approved": false,
+                "source_urls": [],
+                "policy_id": "PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01"
+              }
+            ]
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "full_story_part1",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 3,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/attempts/full_story_part1_attempt1_customa3c4625e.wav"
+      }
+    ]
+  },
+  "full_story_part2": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "4c989de42b7fc708be251b27b1a08030e2f0b1dd1f01eaf27292b4821ab077da",
+    "language": "en",
+    "theme_id": "word_gacha__run_wg_01",
+    "level": "a2",
+    "segment_id": "full_story_part2",
+    "updated_at": "2026-10-24T18:09:05",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/full_story_part2.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 56.49,
+        "asr_text": "Also, when you draw a card marked UR or higher, a bonus called Jackpot starts. Then you can keep opening packs. You are happy about one rare card, and then you get more time to open packs. Your willpower is just getting up to say, all right, time to review, then just one more pulls at its sleeve. What may happen here is not that you stop liking English words. Instead, the reason for your interest may change. First, you draw a card because you want to learn. Then, you look at words because you want to draw a card. You may still be looking at the same cards, but the person in charge inside your mind has changed. The study worker is no longer in charge. The treasure hunter is. But here is something to mark in red: a rare word does not have to be high on your study list. Rarity is the game's way to sort words. It sorts them by how often people use them. I'm glad I drew it, is one thought. I should learn it first, is another. Even if a word shines, it should not get special treatment in your study order.",
+        "asr_text_length": 1014,
+        "max_len": 1072,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": false,
+          "duration_seconds": 56.49,
+          "method_a_ngram": {
+            "matches": [
+              {
+                "span_text": " you  draw  a  card",
+                "n_words": 4,
+                "category": "phrase",
+                "first_start_s": 0.9,
+                "first_end_s": 1.62,
+                "second_start_s": 24.76,
+                "second_end_s": 25.5,
+                "gap_seconds": 23.14,
+                "canonical_repeat_count": 2,
+                "intentional": true,
+                "flagged": false
+              },
+              {
+                "span_text": " because  you  want  to",
+                "n_words": 4,
+                "category": "phrase",
+                "first_start_s": 25.5,
+                "first_end_s": 26.22,
+                "second_start_s": 27.88,
+                "second_end_s": 28.64,
+                "gap_seconds": 1.66,
+                "canonical_repeat_count": 2,
+                "intentional": true,
+                "flagged": false
+              }
+            ],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 200,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.9979,
+                "time_a_seconds": 32.95,
+                "time_b_seconds": 54.24,
+                "lag_seconds": 21.29,
+                "run_length_seconds_at_thresh_0.85": 0.03
+              },
+              {
+                "similarity": 0.9965,
+                "time_a_seconds": 33.68,
+                "time_b_seconds": 37.57,
+                "lag_seconds": 3.89,
+                "run_length_seconds_at_thresh_0.85": 0.03
+              },
+              {
+                "similarity": 0.9959,
+                "time_a_seconds": 33.69,
+                "time_b_seconds": 39.76,
+                "lag_seconds": 6.07,
+                "run_length_seconds_at_thresh_0.85": 0.01
+              },
+              {
+                "similarity": 0.9958,
+                "time_a_seconds": 21.26,
+                "time_b_seconds": 25.54,
+                "lag_seconds": 4.28
+              },
+              {
+                "similarity": 0.9953,
+                "time_a_seconds": 4.07,
+                "time_b_seconds": 54.25,
+                "lag_seconds": 50.18
+              }
+            ],
+            "best_run_length_seconds": 0.03,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.32,
+            "time_a": 25.91,
+            "lag": 1.31,
+            "similarity_at_start": 0.7978,
+            "best_run_length_seconds": 0.32,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": false
+          },
+          "method_c_v2_window_check": null
+        },
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 177,
+          "sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
+          "head200": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible."
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Also, when you draw a card marked UR or higher, a bonus called Jackpot starts. Then you can keep opening packs. You are happy about one rare card, and then you get more time to open packs. Your willpower is just getting up to say, all right, time to review, then just one more pulls at its sleeve. What may happen here is not that you stop liking English words. Instead, the reason for your interest may change. First, you draw a card because you want to learn. Then, you look at words because you want to draw a card. You may still be looking at the same cards, but the person in charge inside your mind has changed. The study worker is no longer in charge. The treasure hunter is. But here is something to mark in red: a rare word does not have to be high on your study list. Rarity is the game's way to sort words. It sorts them by how often people use them. I'm glad I drew it, is one thought. I should learn it first, is another. Even if a word shines, it should not get special treatment in your study order.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "full_story_part2",
+          "audio_sha256": "c722145b7c3856ff69242b52e822e580855bfdddbd42bebc87d5ae3d5d63a738",
+          "primary": {
+            "text": "Also, when you draw a card marked UR or higher, a bonus called Jackpot starts. Then you can keep opening packs. You are happy about one rare card, and then you get more time to open packs. Your willpower is just getting up to say, all right, time to review, then just one more pulls at its sleeve. What may happen here is not that you stop liking English words. Instead, the reason for your interest may change. First, you draw a card because you want to learn. Then, you look at words because you want to draw a card. You may still be looking at the same cards, but the person in charge inside your mind has changed. The study worker is no longer in charge. The treasure hunter is. But here is something to mark in red: a rare word does not have to be high on your study list. Rarity is the game's way to sort words. It sorts them by how often people use them. I'm glad I drew it, is one thought. I should learn it first, is another. Even if a word shines, it should not get special treatment in your study order.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                },
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                },
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "EQUAL",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 2,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 1014,
+            "secondary_len": null,
+            "max_len": 1072,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "full_story_part2",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 5,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/attempts/full_story_part2_attempt1_customa3c4625e.wav"
+      }
+    ]
+  },
+  "full_story_part3": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "6da8d2f1da2d85f54ac5eb33c0817e0b59bbf159312c8eadafec2d9b6f1c1f04",
+    "language": "en",
+    "theme_id": "word_gacha__run_wg_01",
+    "level": "a2",
+    "segment_id": "full_story_part3",
+    "updated_at": "2026-10-24T18:10:30",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/full_story_part3.wav",
+    "cumulative_tts_attempts": 2,
+    "cumulative_asr_calls": 2,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 49.08,
+        "asr_text": "But does this feeling happen only with English? Wanting a sign of success more than the real thing? Wanting a reward more than reaching your goal? If you have felt this way, you may recognize a little of yourself in the wish to chase rare words. Oh, please don't look at me. Of course, this game alone cannot tell us if people become more interested in opening packs than learning words by heart. Still, it's rare may make you stop and look at a word you might have passed by because it seemed unuseful. That is an interesting way to spark curiosity. It is unexpected to find a gotcha at the entrance, though. What did you learn today? More importantly, ask me what I drew. If you want to say that, you may be a rare word hunter. Before the next card, shall we also check the word's meaning?",
+        "asr_text_length": 791,
+        "max_len": 853,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 177,
+          "sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
+          "head200": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible."
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "But does this feeling happen only with English? Wanting a sign of success more than the real thing? Wanting a reward more than reaching your goal? If you have felt this way, you may recognize a little of yourself in the wish to chase rare words. Oh, please don't look at me. Of course, this game alone cannot tell us if people become more interested in opening packs than learning words by heart. Still, it's rare may make you stop and look at a word you might have passed by because it seemed unuseful. That is an interesting way to spark curiosity. It is unexpected to find a gotcha at the entrance, though. What did you learn today? More importantly, ask me what I drew. If you want to say that, you may be a rare word hunter. Before the next card, shall we also check the word's meaning?",
+            "classification": "TRUE_CONTENT_MISMATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "But does this feeling happen only with English? Wanting a sign of success more than the real thing, Wanting a reward more than reaching your goal? If you have felt this way, you may recognize a little of yourself in the wish to chase rare words. Oh, please don't look at me. Of course, this game alone cannot tell us if people become more interested in opening packs than learning words by heart. Still, it's rare may make you stop and look at a word you might have passed it by. Because.Aimed unuseful. That is an interesting way to spark curiosity. It is unexpected to find a gacha at the entrance, though.What did you learn today? More importantly, ask me what I drew. If you want to say that you may be a rare word hunter before the next card, shall we also check the words meaning?",
+            "classification": "TRUE_CONTENT_MISMATCH",
+            "phrase_list_used": true,
+            "azure_phrase_list_weight": 2.0,
+            "azure_phrase_list": [
+              "gacha"
+            ],
+            "cached": false,
+            "unified_judge_state": "NG_BOTH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 1,
+          "script_version": "v0",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "full_story_part3",
+          "audio_sha256": "5a06542899ae88ab19d8ebdb2d860cb20e2a7decc51b28d94269210751f57a96",
+          "primary": {
+            "text": "But does this feeling happen only with English? Wanting a sign of success more than the real thing? Wanting a reward more than reaching your goal? If you have felt this way, you may recognize a little of yourself in the wish to chase rare words. Oh, please don't look at me. Of course, this game alone cannot tell us if people become more interested in opening packs than learning words by heart. Still, it's rare may make you stop and look at a word you might have passed by because it seemed unuseful. That is an interesting way to spark curiosity. It is unexpected to find a gotcha at the entrance, though. What did you learn today? More importantly, ask me what I drew. If you want to say that, you may be a rare word hunter. Before the next card, shall we also check the word's meaning?",
+            "passed": false,
+            "label": "TRUE_CONTENT_MISMATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "But does this feeling happen only with English? Wanting a sign of success more than the real thing, Wanting a reward more than reaching your goal? If you have felt this way, you may recognize a little of yourself in the wish to chase rare words. Oh, please don't look at me. Of course, this game alone cannot tell us if people become more interested in opening packs than learning words by heart. Still, it's rare may make you stop and look at a word you might have passed it by. Because.Aimed unuseful. That is an interesting way to spark curiosity. It is unexpected to find a gacha at the entrance, though.What did you learn today? More importantly, ask me what I drew. If you want to say that you may be a rare word hunter before the next card, shall we also check the words meaning?",
+            "label": "TRUE_CONTENT_MISMATCH",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 49.08,
+            "est_jpy": 2.2222,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 22093,
+            "secondary_ms": 22067
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 791,
+            "secondary_len": 786,
+            "max_len": 853,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": 617,
+            "primary_ok": true
+          },
+          "p3_entry": "p3_primary_ng",
+          "pronunciation_alarm_eval": {
+            "accepted": false,
+            "reason": "PRIMARY_NOT_ENTITY_ONLY",
+            "detail": {
+              "classification": "TRUE_CONTENT_MISMATCH"
+            }
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "full_story_part3",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 7,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/attempts/full_story_part3_attempt1_customa3c4625e.wav"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "duration_seconds": 45.64,
+        "asr_text": "But does this feeling happen only with English? Wanting a sign of success more than the real thing, wanting a reward more than reaching your goal. If you have felt this way, you may recognize a little of yourself in the wish to chase rare words. Oh, please don't look at me. Of course, this game alone cannot tell us if people become more interested in opening packs than learning words by heart. Still, it's rare may make you stop and look at a word. You might have passed it by because it seemed useful. That is an interesting way to spark curiosity. It is unexpected to find a gotcha at the entrance, though. What did you learn today? More importantly, ask me what I drew. If you want to say that, you may be a rare word hunter. Before the next card, shall we also check the word's meaning?",
+        "asr_text_length": 793,
+        "max_len": 853,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": false,
+          "duration_seconds": 45.64,
+          "method_a_ngram": {
+            "matches": [],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 150,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.9978,
+                "time_a_seconds": 0.17,
+                "time_b_seconds": 29.3,
+                "lag_seconds": 29.13,
+                "run_length_seconds_at_thresh_0.85": 0.04
+              },
+              {
+                "similarity": 0.9969,
+                "time_a_seconds": 29.32,
+                "time_b_seconds": 36.73,
+                "lag_seconds": 7.41,
+                "run_length_seconds_at_thresh_0.85": 0.02
+              },
+              {
+                "similarity": 0.9967,
+                "time_a_seconds": 23.71,
+                "time_b_seconds": 39.33,
+                "lag_seconds": 15.62,
+                "run_length_seconds_at_thresh_0.85": 0.05
+              },
+              {
+                "similarity": 0.9965,
+                "time_a_seconds": 0.05,
+                "time_b_seconds": 2.9,
+                "lag_seconds": 2.85
+              },
+              {
+                "similarity": 0.9962,
+                "time_a_seconds": 29.15,
+                "time_b_seconds": 37.6,
+                "lag_seconds": 8.45
+              }
+            ],
+            "best_run_length_seconds": 0.05,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.39,
+            "time_a": 4.73,
+            "lag": 1.73,
+            "similarity_at_start": 0.7108,
+            "best_run_length_seconds": 0.39,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": false
+          },
+          "method_c_v2_window_check": null
+        },
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 177,
+          "sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
+          "head200": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible."
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "But does this feeling happen only with English? Wanting a sign of success more than the real thing, wanting a reward more than reaching your goal. If you have felt this way, you may recognize a little of yourself in the wish to chase rare words. Oh, please don't look at me. Of course, this game alone cannot tell us if people become more interested in opening packs than learning words by heart. Still, it's rare may make you stop and look at a word. You might have passed it by because it seemed useful. That is an interesting way to spark curiosity. It is unexpected to find a gotcha at the entrance, though. What did you learn today? More importantly, ask me what I drew. If you want to say that, you may be a rare word hunter. Before the next card, shall we also check the word's meaning?",
+            "classification": "TRUE_CONTENT_MISMATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "But does this feeling happen only with English? Wanting a sign of success more than the real thing, wanting a reward more than reaching your goal? If you have felt this way, you may recognize a little of yourself in the wish to chase rare words. Oh, please don't look at me. Of course, this game alone cannot tell us if people become more interested in opening packs than learning words by heart. Still, it's rare may make you stop and look at a word you might have passed it by because it seemed useful.That is an interesting way to spark curiosity. It is unexpected to find a gacha at the entrance though. What did you learn today? More importantly, ask me what I drew. If you want to say that you may be a rare word hunter. Before the next card, shall we also check the words meaning?",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": true,
+            "azure_phrase_list_weight": 2.0,
+            "azure_phrase_list": [
+              "gacha"
+            ],
+            "cached": false,
+            "unified_judge_state": "PASS_WITH_WARNING",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "secondary_confirmed",
+          "slot": 2,
+          "script_version": "v0",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "full_story_part3",
+          "audio_sha256": "f172aeae9505b5f8b84aef3b3a8c15c473de18f940030c3925741d610b49dcbb",
+          "primary": {
+            "text": "But does this feeling happen only with English? Wanting a sign of success more than the real thing, wanting a reward more than reaching your goal. If you have felt this way, you may recognize a little of yourself in the wish to chase rare words. Oh, please don't look at me. Of course, this game alone cannot tell us if people become more interested in opening packs than learning words by heart. Still, it's rare may make you stop and look at a word. You might have passed it by because it seemed useful. That is an interesting way to spark curiosity. It is unexpected to find a gotcha at the entrance, though. What did you learn today? More importantly, ask me what I drew. If you want to say that, you may be a rare word hunter. Before the next card, shall we also check the word's meaning?",
+            "passed": false,
+            "label": "TRUE_CONTENT_MISMATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "But does this feeling happen only with English? Wanting a sign of success more than the real thing, wanting a reward more than reaching your goal? If you have felt this way, you may recognize a little of yourself in the wish to chase rare words. Oh, please don't look at me. Of course, this game alone cannot tell us if people become more interested in opening packs than learning words by heart. Still, it's rare may make you stop and look at a word you might have passed it by because it seemed useful.That is an interesting way to spark curiosity. It is unexpected to find a gacha at the entrance though. What did you learn today? More importantly, ask me what I drew. If you want to say that you may be a rare word hunter. Before the next card, shall we also check the words meaning?",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [
+            "SECONDARY_CONFIRMED"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 45.64,
+            "est_jpy": 2.0444,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 20551,
+            "secondary_ms": 20544
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 793,
+            "secondary_len": 787,
+            "max_len": 853,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 618,
+            "primary_ok": true
+          },
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "full_story_part3",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 9,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/attempts/full_story_part3_attempt2_customa3c4625e.wav"
+      }
+    ]
+  },
+  "in_one_line": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "a73c112dd52ace830406f0e7ebbffb8daf94b17006ca9777fa7ba4bdc744a8f0",
+    "language": "en",
+    "theme_id": "word_gacha__run_wg_01",
+    "level": "a2",
+    "segment_id": "in_one_line",
+    "updated_at": "2026-10-24T18:11:09",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/in_one_line.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 15.75,
+        "asr_text": "A word gotcha makes rare words the prize, though common words are usually better to learn first. Rarity shows how often a word is used, not what learners should study first. The game alone cannot show if players will open more packs than learn words by heart.",
+        "asr_text_length": 259,
+        "max_len": 318,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 47,
+          "transcript": "A  word  gacha  makes  rare  words  the  prize,  though  common  words  are  usually  better  to  learn  first.  Rarity  shows  how  often  a  word  is  used,  not  what  learners  should  study  first.  The  game  alone  cannot  show  if  players  will  open  more  packs  than  learn  words  by  heart.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 266,
+          "sha256": "10e21170b1b13b9f577f1642a987511eaa68eed7334aeb6807ecc2fb4f01b860",
+          "head200": "concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.\nSpeak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversatio"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "A word gotcha makes rare words the prize, though common words are usually better to learn first. Rarity shows how often a word is used, not what learners should study first. The game alone cannot show if players will open more packs than learn words by heart.",
+            "classification": "TRUE_CONTENT_MISMATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "A word gacha makes rare words the prize, though common words are usually better to learn first. Rarity shows how often a word is used, not what learners should study first. The game alone cannot show if players will open more packs than learn words by heart.",
+            "classification": "EXACT_MATCH",
+            "phrase_list_used": true,
+            "azure_phrase_list_weight": 2.0,
+            "azure_phrase_list": [
+              "gacha"
+            ],
+            "cached": false,
+            "unified_judge_state": "PASS_WITH_WARNING",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "secondary_confirmed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": "IN_ONE_LINE",
+          "lang": "en",
+          "segment_key": "in_one_line",
+          "audio_sha256": "7f7fd2a9d9426ed143882ed0dcea4652630e4757598ecb341587bb84cfaafe3c",
+          "primary": {
+            "text": "A word gotcha makes rare words the prize, though common words are usually better to learn first. Rarity shows how often a word is used, not what learners should study first. The game alone cannot show if players will open more packs than learn words by heart.",
+            "passed": false,
+            "label": "TRUE_CONTENT_MISMATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "A word gacha makes rare words the prize, though common words are usually better to learn first. Rarity shows how often a word is used, not what learners should study first. The game alone cannot show if players will open more packs than learn words by heart.",
+            "label": "EXACT_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [
+            "SECONDARY_CONFIRMED"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 15.75,
+            "est_jpy": 0.7111,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 6047,
+            "secondary_ms": 6045
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 259,
+            "secondary_len": 258,
+            "max_len": 318,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 207,
+            "primary_ok": true
+          },
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "in_one_line",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 13,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/attempts/in_one_line_attempt1_custom78daa961.wav"
+      }
+    ]
+  },
+  "kp1_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "07c4601dfc57cf0e39c5c2053054799c83210669fa32ca6656f013601c4cb678",
+    "language": "en",
+    "theme_id": "word_gacha__run_wg_01",
+    "level": "a2",
+    "segment_id": "kp1_en",
+    "updated_at": "2026-10-24T18:11:28",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/kp1_en.wav",
+    "cumulative_tts_attempts": 2,
+    "cumulative_asr_calls": 2,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.28,
+        "asr_text": "Hasebe.",
+        "asr_text_length": 7,
+        "max_len": 20,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "TTS_FAILURE",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Hasebe.",
+            "classification": "TTS_FAILURE",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_vote",
+            "provider": "azure",
+            "text": "Pass it by.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "NG_BOTH",
+            "vote_required": true,
+            "entity_like_source": []
+          },
+          {
+            "step": "whisper_vote",
+            "provider": "faster_whisper",
+            "text": "Hasse it by.",
+            "pass": false,
+            "classification": "TRUE_CONTENT_MISMATCH",
+            "error": null,
+            "memo_hit": false,
+            "model": "small",
+            "unified_judge_state": "NG_BOTH"
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "whisper_ng_1of3",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "bb107a14becd2d09fce18fa40ae755eccc4edfd3d68d85dfa6a36dad36804b77",
+          "primary": {
+            "text": "Hasebe.",
+            "passed": false,
+            "label": "TTS_FAILURE",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Pass it by.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.28,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 2455,
+            "secondary_ms": 536
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 7,
+            "secondary_len": 11,
+            "max_len": 20,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 8,
+            "primary_ok": true
+          },
+          "vote": {
+            "version": "kp_vote_check_v1",
+            "guard_lifted": true,
+            "guard_lifted_version": "kp_vote_guard_lifted_v1",
+            "observed_protected_diff": {
+              "primary": false,
+              "secondary": false,
+              "whisper": false
+            },
+            "required": true,
+            "state": "NG_VOTE_WHISPER_NG",
+            "reason": "whisper_ng_1of3",
+            "row": null,
+            "pass_count": 1,
+            "tiebreak_enabled": true,
+            "primary": {
+              "provider": "openai",
+              "text": "Hasebe.",
+              "pass": false,
+              "available": true,
+              "label": "TTS_FAILURE",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "p3_primary_ng",
+              "rescue_layers": []
+            },
+            "secondary": {
+              "provider": "azure",
+              "text": "Pass it by.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "secondary_accepted",
+              "rescue_layers": []
+            },
+            "secondary_called": true,
+            "whisper": {
+              "provider": "whisper",
+              "text": "Hasse it by.",
+              "pass": false,
+              "available": true,
+              "label": "TRUE_CONTENT_MISMATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": null,
+              "rescue_layers": [],
+              "ms": 1918,
+              "memo_hit": false
+            },
+            "whisper_called": true,
+            "whisper_model": {
+              "model": "small",
+              "compute_type": "int8",
+              "device": "cpu",
+              "library": "faster_whisper"
+            },
+            "ortho_layer_version": "er109_orthographic_equivalence_v2_ukus01",
+            "ortho_scope": "X",
+            "primary_not_pass_reason": "p3_primary_ng",
+            "primary_rescued_by_secondary": false
+          },
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 17,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/attempts/kp1_en_attempt1_custom60ebc452.wav"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "duration_seconds": 1.38,
+        "asr_text": "Pass it by.",
+        "asr_text_length": 11,
+        "max_len": 20,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 3,
+          "transcript": "Pass  it  by.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Pass it by.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_vote",
+            "provider": "azure",
+            "text": "Pass it by.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS",
+            "vote_required": true,
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "dual_agreed",
+          "slot": 2,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "c8257ad78f6a317a88feab8743e3300112f828861c35b56a9e95fb5b513ed01f",
+          "primary": {
+            "text": "Pass it by.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Pass it by.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.38,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 1554,
+            "secondary_ms": 1554
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 11,
+            "secondary_len": 11,
+            "max_len": 20,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 8,
+            "primary_ok": true
+          },
+          "vote": {
+            "version": "kp_vote_check_v1",
+            "guard_lifted": true,
+            "guard_lifted_version": "kp_vote_guard_lifted_v1",
+            "observed_protected_diff": {
+              "primary": false,
+              "secondary": false,
+              "whisper": false
+            },
+            "required": true,
+            "state": "PASS_DUAL",
+            "reason": "dual_agreed",
+            "row": "P+S",
+            "pass_count": 2,
+            "tiebreak_enabled": true,
+            "primary": {
+              "provider": "openai",
+              "text": "Pass it by.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": null,
+              "rescue_layers": []
+            },
+            "secondary": {
+              "provider": "azure",
+              "text": "Pass it by.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "secondary_accepted",
+              "rescue_layers": []
+            },
+            "secondary_called": true,
+            "whisper": null,
+            "whisper_called": false,
+            "whisper_model": null,
+            "ortho_layer_version": "er109_orthographic_equivalence_v2_ukus01",
+            "ortho_scope": "X",
+            "primary_not_pass_reason": null,
+            "primary_rescued_by_secondary": false
+          },
+          "p3_entry": "vote_required",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 19,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/attempts/kp1_en_attempt2_custom60ebc452.wav"
+      }
+    ]
+  },
+  "meaning_1": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "e64df48594b2102ee19868f4735ff4381c08e5fa474a63c72a2054cad85526c7",
+    "language": "ja",
+    "theme_id": "word_gacha__run_wg_01",
+    "level": "a2",
+    "segment_id": "meaning_1",
+    "updated_at": "2026-10-24T18:11:31",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/meaning_1.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.87,
+        "asr_text": "それを見過ごす。",
+        "asr_text_length": 8,
+        "max_len": 37,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "27cb77cec92d4be9f257c22221782eacb3ab99e7e540cd421a9ca59b3c8c77d8",
+          "primary": {
+            "text": "それを見過ごす。",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 8,
+            "secondary_len": null,
+            "max_len": 37,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 19,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/attempts/meaning_1_attempt1_customa6dd8324.wav"
+      }
+    ]
+  },
+  "kp2_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "4902f3b5cbd975f5ceef5f4aec9122328a1dd37701fd965504fd75f754576328",
+    "language": "en",
+    "theme_id": "word_gacha__run_wg_01",
+    "level": "a2",
+    "segment_id": "kp2_en",
+    "updated_at": "2026-10-24T18:11:36",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/kp2_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 2.04,
+        "asr_text": "Spark curiosity.",
+        "asr_text_length": 16,
+        "max_len": 25,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 2,
+          "transcript": "Spark  Curiosity.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Spark curiosity.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_vote",
+            "provider": "azure",
+            "text": "Spark curiosity.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS",
+            "vote_required": true,
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "dual_agreed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "f3bb3e0de8a2dc07ab239576da33e869e07127c2685ff211bfc1f2f1320d7dde",
+          "primary": {
+            "text": "Spark curiosity.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Spark curiosity.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 2.04,
+            "est_jpy": 0.1333,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 545,
+            "secondary_ms": 544
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 16,
+            "secondary_len": 16,
+            "max_len": 25,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 14,
+            "primary_ok": true
+          },
+          "vote": {
+            "version": "kp_vote_check_v1",
+            "guard_lifted": true,
+            "guard_lifted_version": "kp_vote_guard_lifted_v1",
+            "observed_protected_diff": {
+              "primary": false,
+              "secondary": false,
+              "whisper": false
+            },
+            "required": true,
+            "state": "PASS_DUAL",
+            "reason": "dual_agreed",
+            "row": "P+S",
+            "pass_count": 2,
+            "tiebreak_enabled": true,
+            "primary": {
+              "provider": "openai",
+              "text": "Spark curiosity.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": null,
+              "rescue_layers": []
+            },
+            "secondary": {
+              "provider": "azure",
+              "text": "Spark curiosity.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "secondary_accepted",
+              "rescue_layers": []
+            },
+            "secondary_called": true,
+            "whisper": null,
+            "whisper_called": false,
+            "whisper_model": null,
+            "ortho_layer_version": "er109_orthographic_equivalence_v2_ukus01",
+            "ortho_scope": "X",
+            "primary_not_pass_reason": null,
+            "primary_rescued_by_secondary": false
+          },
+          "p3_entry": "vote_required",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 21,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/attempts/kp2_en_attempt1_custom60ebc452.wav"
+      }
+    ]
+  },
+  "meaning_2": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "fc34590649b804b5d6d9db9d7ec4ab146f75368a2970131b63bd320cff5ad5bc",
+    "language": "ja",
+    "theme_id": "word_gacha__run_wg_01",
+    "level": "a2",
+    "segment_id": "meaning_2",
+    "updated_at": "2026-10-24T18:11:39",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/meaning_2.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 2.33,
+        "asr_text": "好奇心をかき立てる",
+        "asr_text_length": 9,
+        "max_len": 39,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "fe8bb582353f855a43e806ad2937e27455cce7468284243df745235924b417e7",
+          "primary": {
+            "text": "好奇心をかき立てる",
+            "passed": true,
+            "label": "EXACT_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 9,
+            "secondary_len": null,
+            "max_len": 39,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 21,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/attempts/meaning_2_attempt1_customa6dd8324.wav"
+      }
+    ]
+  },
+  "kp3_en": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "2e97736841c36bf51e620ebdc6b1a79e894a5c06b4e7ee0f8f0f081057a1172e",
+    "language": "en",
+    "theme_id": "word_gacha__run_wg_01",
+    "level": "a2",
+    "segment_id": "kp3_en",
+    "updated_at": "2026-10-24T18:11:44",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/kp3_en.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.2,
+        "asr_text": "By heart.",
+        "asr_text_length": 9,
+        "max_len": 18,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 2,
+          "transcript": "by  heart.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "By heart.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_vote",
+            "provider": "azure",
+            "text": "By heart.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS",
+            "vote_required": true,
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "dual_agreed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "4251004a0b590c2b7157cbf6958b6119f07746368e46915689e55b260b53fccb",
+          "primary": {
+            "text": "By heart.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "By heart.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.2,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 534,
+            "secondary_ms": 533
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 9,
+            "secondary_len": 9,
+            "max_len": 18,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 7,
+            "primary_ok": true
+          },
+          "vote": {
+            "version": "kp_vote_check_v1",
+            "guard_lifted": true,
+            "guard_lifted_version": "kp_vote_guard_lifted_v1",
+            "observed_protected_diff": {
+              "primary": false,
+              "secondary": false,
+              "whisper": false
+            },
+            "required": true,
+            "state": "PASS_DUAL",
+            "reason": "dual_agreed",
+            "row": "P+S",
+            "pass_count": 2,
+            "tiebreak_enabled": true,
+            "primary": {
+              "provider": "openai",
+              "text": "By heart.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": null,
+              "rescue_layers": []
+            },
+            "secondary": {
+              "provider": "azure",
+              "text": "By heart.",
+              "pass": true,
+              "available": true,
+              "label": "NORMALIZED_MATCH",
+              "observed_protected_diff": false,
+              "rescued": false,
+              "error": null,
+              "technical_failure": false,
+              "note": "secondary_accepted",
+              "rescue_layers": []
+            },
+            "secondary_called": true,
+            "whisper": null,
+            "whisper_called": false,
+            "whisper_model": null,
+            "ortho_layer_version": "er109_orthographic_equivalence_v2_ukus01",
+            "ortho_scope": "X",
+            "primary_not_pass_reason": null,
+            "primary_rescued_by_secondary": false
+          },
+          "p3_entry": "vote_required",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 23,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/attempts/kp3_en_attempt1_custom60ebc452.wav"
+      }
+    ]
+  },
+  "meaning_3": {
+    "state": "RESOLVED",
+    "canonical_text_sha256": "c433d6b130f75080b2dc45eaeb3c2bdb2c759319768b1091016432f4d2dfeaa2",
+    "language": "ja",
+    "theme_id": "word_gacha__run_wg_01",
+    "level": "a2",
+    "segment_id": "meaning_3",
+    "updated_at": "2026-10-24T18:11:46",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
+    "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/meaning_3.wav",
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.28,
+        "asr_text": "暗記して。",
+        "asr_text_length": 5,
+        "max_len": 34,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": null,
+        "style_prefix": null,
+        "cascade_steps": null,
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "ja",
+          "segment_key": "",
+          "audio_sha256": "b13af583a7dbc67042b5dbd347067e78e235217424a65c654e420e9e6428ae48",
+          "primary": {
+            "text": "暗記して。",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 5,
+            "secondary_len": null,
+            "max_len": 34,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "ja-JP",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 23,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/attempts/meaning_3_attempt1_customa6dd8324.wav"
+      }
+    ]
+  }
+}

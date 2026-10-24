@@ -1,0 +1,66 @@
+{
+  "attempt_number": 1,
+  "route": "custom_60a24f1e",
+  "segment_id": "topic_intro",
+  "theme_id": "word_gacha__run_wg_01",
+  "level": "a2",
+  "source_out_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/topic_intro.wav",
+  "saved_at": "2026-10-24T18:06:09",
+  "sha256": "e70131e07081c34583e195aa635b81655a56d7d86d048b2e235b1e2429ef2123",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+  "asr_text": "Today's topic is, I checked how rare the words were before learning them. Rare word hunting starts with an English word, gotcha.",
+  "audio_classification": "PASS_WITH_PRONUNCIATION_ALARM",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": false,
+  "repetition_qa_evidence": null,
+  "scg_info": null,
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": true,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "Today's topic is, I checked how rare the words were before learning them. Rare word hunting starts with an English word, gotcha.",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "entity_like_source": [
+        "capitalized"
+      ]
+    },
+    {
+      "step": "tier3_corroboration_secondary",
+      "provider": "azure",
+      "text": "Today's topic is I checked how rare the words were before learning them. Rare word hunting starts with an English word. Gotcha.",
+      "sub_reason": "entity_only",
+      "entity_like_source": [
+        "capitalized"
+      ]
+    },
+    {
+      "step": "secondary_1",
+      "provider": "azure",
+      "text": "Today's topic is I checked how rare the words were before learning them. Rare word hunting starts with an English word. Gotcha.",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "phrase_list_used": false,
+      "azure_phrase_list_weight": null,
+      "azure_phrase_list": [],
+      "cached": true,
+      "unified_judge_state": "NG_BOTH",
+      "entity_like_source": [
+        "capitalized"
+      ]
+    }
+  ]
+}

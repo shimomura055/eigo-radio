@@ -1,0 +1,74 @@
+以下は、同じ記事から選ばれた3件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。3件から作れる全てのペア(3組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず3組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# I Checked How Rare the Words Were Before Learning Them: “Rare-Word Hunting” Starts with an English Word Gacha
+
+If you want to learn English words, start with the ones people use often. That is clearly right, and no one can argue with it. Still, when a gacha appears, the good student in you steps away. “Maybe so, but what is the rarest word?” Wait. You came here to study today, didn’t you?
+
+“Dopa English Word Gacha” is just right for distracting you. English word cards have seven levels of rarity. Words used more often have lower levels. Words used less often have higher levels. The words you should learn first seem boring in the game. Surprisingly, useful words and star power do not go together.
+
+Usually, you might ask, “Can I use this in a conversation?” But now you may lean forward and ask, “What? People hardly ever use this word!” You check how rare it is before you read its meaning. You thought you were opening a word book. But in your mind, a send-off for rare-word hunters is already starting.
+
+Also, when you draw a card marked “UR” or higher, a bonus called “Jackpot” starts. Then you can keep opening packs. You are happy about one rare card, and then you get more time to open packs. Your willpower is just getting up to say, “All right, time to review.” Then “Just one more” pulls at its sleeve.
+
+What may happen here is not that you stop liking English words. Instead, the reason for your interest may change. First, you draw a card because you want to learn. Then, you look at words because you want to draw a card. You may still be looking at the same cards. But the person in charge inside your mind has changed. The study worker is no longer in charge. The treasure hunter is.
+
+But here is something to mark in red. A rare word does not have to be high on your study list. Rarity is the game’s way to sort words. It sorts them by how often people use them. “I’m glad I drew it” is one thought. “I should learn it first” is another. Even if a word shines, it should not get special treatment in your study order.
+
+But does this feeling happen only with English? Wanting a sign of success more than the real thing. Wanting a reward more than reaching your goal. If you have felt this way, you may recognize a little of yourself in the wish to chase rare words. Oh, please don’t look at me.
+
+Of course, this game alone cannot tell us if people become more interested in opening packs than learning words by heart. Still, “It’s rare!” may make you stop and look at a word. You might have passed it by because it seemed useful. That is an interesting way to spark curiosity. It is unexpected to find a gacha at the entrance, though.
+
+“What did you learn today?”
+“More importantly, ask me what I drew!”
+
+If you want to say that, you may be a rare-word hunter. Before the next card, shall we also check the word’s meaning?
+
+## In one line
+A word gacha makes rare words the prize, though common words are usually better to learn first. Rarity shows how often a word is used, not what learners should study first. The game alone cannot show if players will open more packs than learn words by heart.
+
+【Key Phrase 3件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "pass it by",
+    "japanese_gloss": "それを見過ごす",
+    "source_sentence": "You might have passed it by because it seemed useful"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "spark curiosity",
+    "japanese_gloss": "好奇心をかき立てる",
+    "source_sentence": "That is an interesting way to spark curiosity"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "by heart",
+    "japanese_gloss": "暗記して",
+    "source_sentence": "Of course, this game alone cannot tell us if people become more interested in opening packs than learning words by heart"
+  }
+]

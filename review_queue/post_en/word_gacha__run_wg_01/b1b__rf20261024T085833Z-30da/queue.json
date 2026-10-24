@@ -1,0 +1,686 @@
+{
+  "schema_version": "review_queue_post_en_v1",
+  "article_id": "word_gacha__run_wg_01",
+  "article_level": "b1b",
+  "article_sha256": "a92a8d5d9dbd0f898ca0ffa7c1e3211b69752ecfcaca1fc9b05929309dee31a7",
+  "ledger_sha256": "26c3eb894d155700bc2ce8cde612146f08d4e56b37fb987425674b3d87ac0135",
+  "run_id": "rf20261024T085833Z-30da",
+  "timestamp": "2026-10-24T08:58:33+00:00",
+  "status": "OK",
+  "reason": null,
+  "splitter_version": "en_split_v1",
+  "producer": "deterministic_v2",
+  "run_label": "run_wg_01",
+  "sentence_count": 47,
+  "fact_count": 13,
+  "conditions": [
+    {
+      "model_key": "luna",
+      "condition": "A3",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 4935,
+      "output_tokens": 1916,
+      "cached_tokens": 0,
+      "cost_jpy": 0.23224,
+      "flag_count": 5,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "luna",
+      "condition": "A4",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5085,
+      "output_tokens": 2246,
+      "cached_tokens": 0,
+      "cost_jpy": 0.26104,
+      "flag_count": 9,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A3",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 4539,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.219472,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A4",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 4659,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.225232,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "word_gacha__run_wg_01__b1b__a92a8d5d__rf20261024T085833Z-30da__s2",
+      "article_id": "word_gacha__run_wg_01",
+      "article_level": "b1b",
+      "article_sha256": "a92a8d5d9dbd0f898ca0ffa7c1e3211b69752ecfcaca1fc9b05929309dee31a7",
+      "run_id": "rf20261024T085833Z-30da",
+      "timestamp": "2026-10-24T08:58:33+00:00",
+      "sentence_id": "s2",
+      "sentence_text": "If you’re going to learn English words, start with the ones people use a lot.",
+      "context": {
+        "before": [
+          "# I Checked the Rarity Before Learning the Words: “Rare-Word Hunting” Starts with an English-Word Gacha"
+        ],
+        "after": [
+          "That’s obviously right.",
+          "There’s no arguing with it."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F12"
+      ],
+      "facts": [
+        {
+          "fact_id": "F12",
+          "text": "GIGAZINEの説明ではレア度の基準は単語の使用頻度であり、学習上の重要性を判定する基準とは示されていない。\n  scope: ゲームのレア度説明と、記事内で示された情報\n  conditions: 頻度を基準とする仕様から、学習上の重要度も同じ指標だとは結論できない。\n  date_or_period: 2026-10-23のプレイレビューの記載範囲\n  notes_for_writer: レアな単語を「重要」「役に立つ」と同一視しない。頻度と学習上の重要度は別の軸として扱う。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "『使用頻度が高い単語から学ぶべき』という優先順位は、台帳の『レア度は使用頻度を基準とし、学習上の重要性とは別』という説明からは確認できないのではありませんか。"
+        },
+        {
+          "type": "その他",
+          "question": "「people use a lot」と「start with」が結びつき、使用頻度の高い語を先に学ぶべきだと述べていますが、台帳は使用頻度を学習上の重要性と同一視していないのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.34,
+          "type": "その他",
+          "fact_ids": [
+            "F12"
+          ],
+          "question": "『使用頻度が高い単語から学ぶべき』という優先順位は、台帳の『レア度は使用頻度を基準とし、学習上の重要性とは別』という説明からは確認できないのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        },
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.35,
+          "type": "その他",
+          "fact_ids": [
+            "F12"
+          ],
+          "question": "「people use a lot」と「start with」が結びつき、使用頻度の高い語を先に学ぶべきだと述べていますが、台帳は使用頻度を学習上の重要性と同一視していないのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.35
+    },
+    {
+      "issue_id": "word_gacha__run_wg_01__b1b__a92a8d5d__rf20261024T085833Z-30da__s9",
+      "article_id": "word_gacha__run_wg_01",
+      "article_level": "b1b",
+      "article_sha256": "a92a8d5d9dbd0f898ca0ffa7c1e3211b69752ecfcaca1fc9b05929309dee31a7",
+      "run_id": "rf20261024T085833Z-30da",
+      "timestamp": "2026-10-24T08:58:33+00:00",
+      "sentence_id": "s9",
+      "sentence_text": "The “Dopa English Word Gacha” is just the thing to send your mind off track.",
+      "context": {
+        "before": [
+          "Wait.",
+          "You came here to study today, didn’t you?"
+        ],
+        "after": [
+          "English word cards have seven rarity levels.",
+          "The more often a word is used, the lower its level; the less often it is used, the higher."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F01",
+        "F10"
+      ],
+      "facts": [
+        {
+          "fact_id": "F01",
+          "text": "公式ページのサービス名は「ドパ英単語ガチャ | Dopa Word Gacha」。英単語カードをガチャで集めるゲームとして、GIGAZINEが紹介している。\n  scope: Webサービス\n  conditions: 公式ページ本文は調査時にWeb取得ツールで読み取れず、ゲーム内容の確認は主にGIGAZINEのプレイレビューによる。\n  date_or_period: 2026-10-23のGIGAZINE紹介記事掲載時\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: サービス名・存在の確認に限る。個別機能の裏付けとして公式ページを直接確認できたとは扱わない。"
+        },
+        {
+          "fact_id": "F10",
+          "text": "ゲームの仕組み上、レア度の高い単語カードの獲得がジャックポット・連チャンの開始条件として機能する。一方、プレイヤーが単語学習よりレアカード収集に夢中になるかどうかを示す利用者調査や行動データは、確認した紹介記事には掲載されていない。\n  scope: ゲームの仕組みと、確認した紹介記事の内容\n  conditions: 報酬条件は記事に記されたルール。プレイヤーの動機・行動についての一般化は含まない。\n  date_or_period: 2026-10-23のプレイレビューの記載範囲\n  notes_for_writer: 逆転した面白さはゲームの報酬設計から生じる見方として扱う。利用者全般が学習より収集に熱中すると断定しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "『Dopa English Word Gacha』は、台帳にある公式名『Dopa Word Gacha』とは異なるサービス名を示しているのではありませんか。"
+        },
+        {
+          "type": "その他",
+          "question": "「send your mind off track」は、この仕組みが利用者の関心を学習からそらすと述べていますが、台帳には利用者の動機や行動を示すデータがないのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.43,
+          "type": "その他",
+          "fact_ids": [
+            "F01"
+          ],
+          "question": "『Dopa English Word Gacha』は、台帳にある公式名『Dopa Word Gacha』とは異なるサービス名を示しているのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        },
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.3,
+          "type": "その他",
+          "fact_ids": [
+            "F10"
+          ],
+          "question": "「send your mind off track」は、この仕組みが利用者の関心を学習からそらすと述べていますが、台帳には利用者の動機や行動を示すデータがないのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.43
+    },
+    {
+      "issue_id": "word_gacha__run_wg_01__b1b__a92a8d5d__rf20261024T085833Z-30da__s12",
+      "article_id": "word_gacha__run_wg_01",
+      "article_level": "b1b",
+      "article_sha256": "a92a8d5d9dbd0f898ca0ffa7c1e3211b69752ecfcaca1fc9b05929309dee31a7",
+      "run_id": "rf20261024T085833Z-30da",
+      "timestamp": "2026-10-24T08:58:33+00:00",
+      "sentence_id": "s12",
+      "sentence_text": "The words you’d want to learn first for study end up on the dull side in the gacha.",
+      "context": {
+        "before": [
+          "English word cards have seven rarity levels.",
+          "The more often a word is used, the lower its level; the less often it is used, the higher."
+        ],
+        "after": [
+          "Practical value and star power, surprisingly, live apart.",
+          "Normally, you might think, “Could I use this in conversation?”"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F12"
+      ],
+      "facts": [
+        {
+          "fact_id": "F12",
+          "text": "GIGAZINEの説明ではレア度の基準は単語の使用頻度であり、学習上の重要性を判定する基準とは示されていない。\n  scope: ゲームのレア度説明と、記事内で示された情報\n  conditions: 頻度を基準とする仕様から、学習上の重要度も同じ指標だとは結論できない。\n  date_or_period: 2026-10-23のプレイレビューの記載範囲\n  notes_for_writer: レアな単語を「重要」「役に立つ」と同一視しない。頻度と学習上の重要度は別の軸として扱う。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "『学習で最初に覚えたい単語』が『ガチャで低レア側になる』という関係は、台帳の使用頻度に基づくレア度の説明だけでは確認できないのではありませんか。"
+        },
+        {
+          "type": "その他",
+          "question": "「want to learn first」と「dull side in the gacha」を結びつけていますが、台帳は使用頻度と学習上の重要性を同一視できないとしているのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.36,
+          "type": "その他",
+          "fact_ids": [
+            "F12"
+          ],
+          "question": "『学習で最初に覚えたい単語』が『ガチャで低レア側になる』という関係は、台帳の使用頻度に基づくレア度の説明だけでは確認できないのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        },
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.4,
+          "type": "その他",
+          "fact_ids": [
+            "F12"
+          ],
+          "question": "「want to learn first」と「dull side in the gacha」を結びつけていますが、台帳は使用頻度と学習上の重要性を同一視できないとしているのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.4
+    },
+    {
+      "issue_id": "word_gacha__run_wg_01__b1b__a92a8d5d__rf20261024T085833Z-30da__s17",
+      "article_id": "word_gacha__run_wg_01",
+      "article_level": "b1b",
+      "article_sha256": "a92a8d5d9dbd0f898ca0ffa7c1e3211b69752ecfcaca1fc9b05929309dee31a7",
+      "run_id": "rf20261024T085833Z-30da",
+      "timestamp": "2026-10-24T08:58:33+00:00",
+      "sentence_id": "s17",
+      "sentence_text": "You check the rarity before reading the meaning.",
+      "context": {
+        "before": [
+          "But now you might lean forward and think, “What?",
+          "This word is hardly ever used!”"
+        ],
+        "after": [
+          "You thought you were opening a vocabulary book, but in your mind, a send-off for the rare-word hunters is already underway.",
+          "What’s more, when you draw a card rated “UR” or higher, the bonus “Jackpot” begins, and you can keep opening packs."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F10"
+      ],
+      "facts": [
+        {
+          "fact_id": "F10",
+          "text": "ゲームの仕組み上、レア度の高い単語カードの獲得がジャックポット・連チャンの開始条件として機能する。一方、プレイヤーが単語学習よりレアカード収集に夢中になるかどうかを示す利用者調査や行動データは、確認した紹介記事には掲載されていない。\n  scope: ゲームの仕組みと、確認した紹介記事の内容\n  conditions: 報酬条件は記事に記されたルール。プレイヤーの動機・行動についての一般化は含まない。\n  date_or_period: 2026-10-23のプレイレビューの記載範囲\n  notes_for_writer: 逆転した面白さはゲームの報酬設計から生じる見方として扱う。利用者全般が学習より収集に熱中すると断定しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "『意味を読む前にレア度を確認する』というプレイヤーの行動は、台帳にある紹介記事の記載から確認できないのではありませんか。"
+        },
+        {
+          "type": "その他",
+          "question": "「check the rarity before reading the meaning」はプレイヤーの行動を述べていますが、台帳にはその行動を裏付ける調査やデータがないのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.29,
+          "type": "その他",
+          "fact_ids": [
+            "F10"
+          ],
+          "question": "『意味を読む前にレア度を確認する』というプレイヤーの行動は、台帳にある紹介記事の記載から確認できないのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        },
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.3,
+          "type": "その他",
+          "fact_ids": [
+            "F10"
+          ],
+          "question": "「check the rarity before reading the meaning」はプレイヤーの行動を述べていますが、台帳にはその行動を裏付ける調査やデータがないのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "issue_id": "word_gacha__run_wg_01__b1b__a92a8d5d__rf20261024T085833Z-30da__s23",
+      "article_id": "word_gacha__run_wg_01",
+      "article_level": "b1b",
+      "article_sha256": "a92a8d5d9dbd0f898ca0ffa7c1e3211b69752ecfcaca1fc9b05929309dee31a7",
+      "run_id": "rf20261024T085833Z-30da",
+      "timestamp": "2026-10-24T08:58:33+00:00",
+      "sentence_id": "s23",
+      "sentence_text": "It’s that the reason for your interest changes.",
+      "context": {
+        "before": [
+          "Your willpower is just about to stand up and say, “All right, time to review,” when “Just one more” tugs at its sleeve.",
+          "What might happen here is not that you lose interest in English words."
+        ],
+        "after": [
+          "You go from “I draw a card because I want to learn” to “I look at words because I want to draw a card.”",
+          "Even if you’re looking at the same cards, the person in charge inside your mind has changed from the study worker to the treasure hunter."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F10"
+      ],
+      "facts": [
+        {
+          "fact_id": "F10",
+          "text": "ゲームの仕組み上、レア度の高い単語カードの獲得がジャックポット・連チャンの開始条件として機能する。一方、プレイヤーが単語学習よりレアカード収集に夢中になるかどうかを示す利用者調査や行動データは、確認した紹介記事には掲載されていない。\n  scope: ゲームの仕組みと、確認した紹介記事の内容\n  conditions: 報酬条件は記事に記されたルール。プレイヤーの動機・行動についての一般化は含まない。\n  date_or_period: 2026-10-23のプレイレビューの記載範囲\n  notes_for_writer: 逆転した面白さはゲームの報酬設計から生じる見方として扱う。利用者全般が学習より収集に熱中すると断定しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「the reason for your interest changes」と利用者の関心の変化を述べていますが、台帳には利用者の動機を示す調査や行動データがないのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.3,
+          "type": "その他",
+          "fact_ids": [
+            "F10"
+          ],
+          "question": "「the reason for your interest changes」と利用者の関心の変化を述べていますが、台帳には利用者の動機を示す調査や行動データがないのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "issue_id": "word_gacha__run_wg_01__b1b__a92a8d5d__rf20261024T085833Z-30da__s24",
+      "article_id": "word_gacha__run_wg_01",
+      "article_level": "b1b",
+      "article_sha256": "a92a8d5d9dbd0f898ca0ffa7c1e3211b69752ecfcaca1fc9b05929309dee31a7",
+      "run_id": "rf20261024T085833Z-30da",
+      "timestamp": "2026-10-24T08:58:33+00:00",
+      "sentence_id": "s24",
+      "sentence_text": "You go from “I draw a card because I want to learn” to “I look at words because I want to draw a card.”",
+      "context": {
+        "before": [
+          "What might happen here is not that you lose interest in English words.",
+          "It’s that the reason for your interest changes."
+        ],
+        "after": [
+          "Even if you’re looking at the same cards, the person in charge inside your mind has changed from the study worker to the treasure hunter.",
+          "But here’s something worth underlining in red."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F10"
+      ],
+      "facts": [
+        {
+          "fact_id": "F10",
+          "text": "ゲームの仕組み上、レア度の高い単語カードの獲得がジャックポット・連チャンの開始条件として機能する。一方、プレイヤーが単語学習よりレアカード収集に夢中になるかどうかを示す利用者調査や行動データは、確認した紹介記事には掲載されていない。\n  scope: ゲームの仕組みと、確認した紹介記事の内容\n  conditions: 報酬条件は記事に記されたルール。プレイヤーの動機・行動についての一般化は含まない。\n  date_or_period: 2026-10-23のプレイレビューの記載範囲\n  notes_for_writer: 逆転した面白さはゲームの報酬設計から生じる見方として扱う。利用者全般が学習より収集に熱中すると断定しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「I draw a card because I want to learn」から「I look at words because I want to draw a card」へ動機が変わると述べていますが、台帳は利用者全般の動機の変化を確認していないのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.4,
+          "type": "その他",
+          "fact_ids": [
+            "F10"
+          ],
+          "question": "「I draw a card because I want to learn」から「I look at words because I want to draw a card」へ動機が変わると述べていますが、台帳は利用者全般の動機の変化を確認していないのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.4
+    },
+    {
+      "issue_id": "word_gacha__run_wg_01__b1b__a92a8d5d__rf20261024T085833Z-30da__s25",
+      "article_id": "word_gacha__run_wg_01",
+      "article_level": "b1b",
+      "article_sha256": "a92a8d5d9dbd0f898ca0ffa7c1e3211b69752ecfcaca1fc9b05929309dee31a7",
+      "run_id": "rf20261024T085833Z-30da",
+      "timestamp": "2026-10-24T08:58:33+00:00",
+      "sentence_id": "s25",
+      "sentence_text": "Even if you’re looking at the same cards, the person in charge inside your mind has changed from the study worker to the treasure hunter.",
+      "context": {
+        "before": [
+          "It’s that the reason for your interest changes.",
+          "You go from “I draw a card because I want to learn” to “I look at words because I want to draw a card.”"
+        ],
+        "after": [
+          "But here’s something worth underlining in red.",
+          "Just because a word is rare doesn’t mean it should be high on your study list."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F10"
+      ],
+      "facts": [
+        {
+          "fact_id": "F10",
+          "text": "ゲームの仕組み上、レア度の高い単語カードの獲得がジャックポット・連チャンの開始条件として機能する。一方、プレイヤーが単語学習よりレアカード収集に夢中になるかどうかを示す利用者調査や行動データは、確認した紹介記事には掲載されていない。\n  scope: ゲームの仕組みと、確認した紹介記事の内容\n  conditions: 報酬条件は記事に記されたルール。プレイヤーの動機・行動についての一般化は含まない。\n  date_or_period: 2026-10-23のプレイレビューの記載範囲\n  notes_for_writer: 逆転した面白さはゲームの報酬設計から生じる見方として扱う。利用者全般が学習より収集に熱中すると断定しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「the study worker」から「the treasure hunter」へ内面の主導権が移ると述べていますが、台帳にはこのような利用者の行動や動機を裏付けるデータがないのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.3,
+          "type": "その他",
+          "fact_ids": [
+            "F10"
+          ],
+          "question": "「the study worker」から「the treasure hunter」へ内面の主導権が移ると述べていますが、台帳にはこのような利用者の行動や動機を裏付けるデータがないのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "issue_id": "word_gacha__run_wg_01__b1b__a92a8d5d__rf20261024T085833Z-30da__s38",
+      "article_id": "word_gacha__run_wg_01",
+      "article_level": "b1b",
+      "article_sha256": "a92a8d5d9dbd0f898ca0ffa7c1e3211b69752ecfcaca1fc9b05929309dee31a7",
+      "run_id": "rf20261024T085833Z-30da",
+      "timestamp": "2026-10-24T08:58:33+00:00",
+      "sentence_id": "s38",
+      "sentence_text": "makes you stop and look at a word you would have passed by because it seemed useful, that’s an interesting way to spark curiosity.",
+      "context": {
+        "before": [
+          "Of course, this system alone can’t tell us whether people really get more interested in opening packs than in memorizing words.",
+          "Still, if “It’s rare!”"
+        ],
+        "after": [
+          "It’s unexpected to find a gacha at the entrance, though.",
+          "“What did you learn today?”"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F10"
+      ],
+      "facts": [
+        {
+          "fact_id": "F10",
+          "text": "ゲームの仕組み上、レア度の高い単語カードの獲得がジャックポット・連チャンの開始条件として機能する。一方、プレイヤーが単語学習よりレアカード収集に夢中になるかどうかを示す利用者調査や行動データは、確認した紹介記事には掲載されていない。\n  scope: ゲームの仕組みと、確認した紹介記事の内容\n  conditions: 報酬条件は記事に記されたルール。プレイヤーの動機・行動についての一般化は含まない。\n  date_or_period: 2026-10-23のプレイレビューの記載範囲\n  notes_for_writer: 逆転した面白さはゲームの報酬設計から生じる見方として扱う。利用者全般が学習より収集に熱中すると断定しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「spark curiosity」と好奇心を引き起こす可能性を述べていますが、台帳にはその効果を示す利用者調査や行動データがないのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.25,
+          "type": "その他",
+          "fact_ids": [
+            "F10"
+          ],
+          "question": "「spark curiosity」と好奇心を引き起こす可能性を述べていますが、台帳にはその効果を示す利用者調査や行動データがないのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.25
+    },
+    {
+      "issue_id": "word_gacha__run_wg_01__b1b__a92a8d5d__rf20261024T085833Z-30da__s45",
+      "article_id": "word_gacha__run_wg_01",
+      "article_level": "b1b",
+      "article_sha256": "a92a8d5d9dbd0f898ca0ffa7c1e3211b69752ecfcaca1fc9b05929309dee31a7",
+      "run_id": "rf20261024T085833Z-30da",
+      "timestamp": "2026-10-24T08:58:33+00:00",
+      "sentence_id": "s45",
+      "sentence_text": "An English-word gacha makes rare, less-used words the prize, even though common words are usually better to learn first.",
+      "context": {
+        "before": [
+          "Now, before we move on to the next card, shall we look at the word’s meaning too?",
+          "## In one line"
+        ],
+        "after": [
+          "Rarity reflects word frequency, not what learners should study first.",
+          "The game alone cannot show whether players will focus more on opening packs than memorizing words."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F12"
+      ],
+      "facts": [
+        {
+          "fact_id": "F12",
+          "text": "GIGAZINEの説明ではレア度の基準は単語の使用頻度であり、学習上の重要性を判定する基準とは示されていない。\n  scope: ゲームのレア度説明と、記事内で示された情報\n  conditions: 頻度を基準とする仕様から、学習上の重要度も同じ指標だとは結論できない。\n  date_or_period: 2026-10-23のプレイレビューの記載範囲\n  notes_for_writer: レアな単語を「重要」「役に立つ」と同一視しない。頻度と学習上の重要度は別の軸として扱う。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "『よく使われる単語は通常、先に学ぶ方がよい』という学習上の優先順位は、台帳の『使用頻度と学習上の重要性は別』という説明からは確認できないのではありませんか。"
+        },
+        {
+          "type": "その他",
+          "question": "「common words are usually better to learn first」と述べていますが、台帳は単語の使用頻度から学習上の優先順位を結論できないとしているのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.35,
+          "type": "その他",
+          "fact_ids": [
+            "F12"
+          ],
+          "question": "『よく使われる単語は通常、先に学ぶ方がよい』という学習上の優先順位は、台帳の『使用頻度と学習上の重要性は別』という説明からは確認できないのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        },
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.4,
+          "type": "その他",
+          "fact_ids": [
+            "F12"
+          ],
+          "question": "「common words are usually better to learn first」と述べていますが、台帳は単語の使用頻度から学習上の優先順位を結論できないとしているのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.4
+    }
+  ],
+  "unlocated_flags": [],
+  "model_stats": {
+    "luna": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 10020,
+      "output_tokens": 4162,
+      "cost_jpy": 0.49328,
+      "a3_flag_count": 5,
+      "a4_flag_count": 9,
+      "unique_issue": 9,
+      "overlap_a3_a4": 5,
+      "zero_flag_article": 0
+    },
+    "gemini35fl": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 9198,
+      "output_tokens": 8,
+      "cost_jpy": 0.444704,
+      "a3_flag_count": 0,
+      "a4_flag_count": 0,
+      "unique_issue": 0,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 1
+    },
+    "_all": {
+      "article_level": "b1b",
+      "article_status": "OK",
+      "unique_issue": 9,
+      "cost_jpy": 0.937984,
+      "issues_by_both_models": 0
+    }
+  },
+  "warnings": []
+}

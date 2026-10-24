@@ -1,0 +1,87 @@
+{
+  "alarms": [
+    {
+      "alarm_id": "pnal_f9b1e13ecc059595",
+      "article_id": "",
+      "created_at": "2026-10-24T18:06:09",
+      "entry_key": "segments/topic_intro",
+      "family": "X",
+      "final_state": "PASS_WITH_PRONUNCIATION_ALARM",
+      "final_state_ja": "アラーム付き完成",
+      "inherited": false,
+      "level": "a2",
+      "location": {
+        "approx_note": "文字位置を音声長で按分した目安(±数秒)。正確な時刻ではありません",
+        "approx_seconds": 7.8,
+        "canonical_sentence": "Today's topic is I Checked How Rare the Words Were Before Learning Them. Rare-Word Hunting Starts with an English Word Gacha.",
+        "char_index": 119,
+        "context": "...ord Hunting Starts with an English Word [[gacha]]....",
+        "tts_input_text": "Today's topic is I Checked How Rare the Words Were Before Learning Them. Rare-Word Hunting Starts with an English Word Gacha.",
+        "wav_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/topic_intro.wav",
+        "wav_sha256": "e70131e07081c34583e195aa635b81655a56d7d86d048b2e235b1e2429ef2123"
+      },
+      "mismatch": {
+        "asr_primary": "gotcha",
+        "asr_secondary": "gotcha",
+        "canonical": "gacha",
+        "primary_text": "Today's topic is, I checked how rare the words were before learning them. Rare word hunting starts with an English word, gotcha.",
+        "proper_noun_evidence": "cmu_oov",
+        "secondary_text": "Today's topic is I checked how rare the words were before learning them. Rare word hunting starts with an English word. Gotcha.",
+        "similarity_primary": 0.7273,
+        "similarity_secondary": 0.7273
+      },
+      "models": {
+        "primary_asr": {
+          "model": "gpt-4o-mini-transcribe",
+          "provider": "openai_asr"
+        },
+        "secondary_asr": "azure-speech-stt",
+        "secondary_azure_calls": 0,
+        "tts_model_id": "gemini-3.8-flash-lite-tts",
+        "tts_voice": "Aoede"
+      },
+      "operator_only": true,
+      "policy_id": "PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01",
+      "pronunciation_basis": {
+        "confidence": "medium",
+        "evidence_tier": "NAME_IN_CITED_PAGE",
+        "has_basis": true,
+        "ipa": "/ˈɡɑː.tʃə/ (US English); /ˈɡætʃ.ə/ (UK English)",
+        "note": "",
+        "pronunciation_hint": "GOT-chuh",
+        "sources": [
+          "https://dictionary.cambridge.org/us/pronunciation/english/gacha",
+          "https://dictionary.cambridge.org/zht/%E7%99%BC%E9%9F%B3/%E8%8B%B1%E8%AA%9E/gacha",
+          "https://www.japantimes.co.jp/life/2026/09/22/language/gacha-chiikawa-vocabulary-plushie/"
+        ]
+      },
+      "proper_noun": "gacha",
+      "reason": "固有名詞の発音不一致のみ(Primary/Secondary両ASRとも他の差なし)。承認済み方針によりHuman Review・再生成なしで完成扱い。",
+      "role": "TOPIC_INTRO",
+      "run_dir": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2",
+      "segment_id": "topic_intro",
+      "slot": 1,
+      "tts_input_token": null,
+      "tts_supply_result": {
+        "original": "gacha",
+        "reason": "no_ledger_entry_or_not_planned",
+        "supplied": false
+      }
+    }
+  ],
+  "consistency": {
+    "alarm_state_records": 1,
+    "match": true,
+    "reported": 1
+  },
+  "count": 1,
+  "hr_residual": {
+    "available": true,
+    "hr_asr_uncertain_segments": 0,
+    "of_which_proper_noun_only_outside_alarm_boundary": 0
+  },
+  "operator_only": true,
+  "policy_id": "PROPER-NOUN-PRONUNCIATION-ALARM-POLICY-PRODUCTION-01",
+  "source": "audit/tts_generation_results.json",
+  "supply_applied": []
+}

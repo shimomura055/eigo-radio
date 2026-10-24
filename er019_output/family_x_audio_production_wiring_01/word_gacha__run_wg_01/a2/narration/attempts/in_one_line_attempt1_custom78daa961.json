@@ -1,0 +1,61 @@
+{
+  "attempt_number": 1,
+  "route": "custom_78daa961",
+  "segment_id": "in_one_line",
+  "theme_id": "word_gacha__run_wg_01",
+  "level": "a2",
+  "source_out_path": "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/narration/in_one_line.wav",
+  "saved_at": "2026-10-24T18:11:09",
+  "sha256": "7f7fd2a9d9426ed143882ed0dcea4652630e4757598ecb341587bb84cfaafe3c",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.\nSpeak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional.",
+  "asr_text": "A word gotcha makes rare words the prize, though common words are usually better to learn first. Rarity shows how often a word is used, not what learners should study first. The game alone cannot show if players will open more packs than learn words by heart.",
+  "audio_classification": "EXACT_MATCH",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": true,
+  "disfluency_checked": true,
+  "disfluency_evidence": {
+    "flagged": false,
+    "repeats": [],
+    "word_count": 47,
+    "transcript": "A  word  gacha  makes  rare  words  the  prize,  though  common  words  are  usually  better  to  learn  first.  Rarity  shows  how  often  a  word  is  used,  not  what  learners  should  study  first.  The  game  alone  cannot  show  if  players  will  open  more  packs  than  learn  words  by  heart.",
+    "method": "faster_whisper_small_local_verbatim"
+  },
+  "repetition_qa_checked": false,
+  "repetition_qa_evidence": null,
+  "scg_info": null,
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": true,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "A word gotcha makes rare words the prize, though common words are usually better to learn first. Rarity shows how often a word is used, not what learners should study first. The game alone cannot show if players will open more packs than learn words by heart.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "entity_like_source": []
+    },
+    {
+      "step": "secondary_1",
+      "provider": "azure",
+      "text": "A word gacha makes rare words the prize, though common words are usually better to learn first. Rarity shows how often a word is used, not what learners should study first. The game alone cannot show if players will open more packs than learn words by heart.",
+      "classification": "EXACT_MATCH",
+      "phrase_list_used": true,
+      "azure_phrase_list_weight": 2.0,
+      "azure_phrase_list": [
+        "gacha"
+      ],
+      "cached": false,
+      "unified_judge_state": "PASS_WITH_WARNING",
+      "entity_like_source": []
+    }
+  ]
+}
