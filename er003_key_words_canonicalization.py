@@ -475,6 +475,7 @@ _PERSON_DEPENDENT_TO_GENERIC = {
     "himself": {"oneself"},
     "herself": {"oneself"},
     "themselves": {"oneself"},
+    "myself": {"oneself"},
     "yours": {"one's"},
     "theirs": {"one's"},
 }

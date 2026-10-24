@@ -118,6 +118,14 @@ class PersonReferenceGeneralizationTests(unittest.TestCase):
             normalization_reason="generalize_person_dependent_reference")
         self.assertTrue(result["ok"], result["reasons"])
 
+    def test_accepts_myself_to_oneself_with_correct_reason(self):
+        # FZTTH 委任_04: 閉じた語彙表へmyself->oneselfを追加(yourself等と同系)
+        result = kc.validate_canonicalization_item(
+            "be sure of oneself", "be sure of myself", "be sure of myself",
+            normalization_reason="generalize_person_dependent_reference")
+        self.assertTrue(result["ok"], result["reasons"])
+        self.assertFalse(kc._is_valid_person_generalization("be sure of ourselves", "be sure of myself"))
+
     def test_accepts_your_to_ones_with_correct_reason(self):
         result = kc.validate_canonicalization_item(
             "a piece of one's attention", "a piece of your attention", "a piece of your attention",
