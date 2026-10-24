@@ -67,3 +67,8 @@
 - **Stage 2(non-R 54KP x X2p 1rep)は部分完了**: 21 job/43 KP(未実行11 KP)、4.054円で費用cap(16.0円)HALT。BUDGET_LOG_01.md参照。
 - 決定論集計(Stage 2完了43 KPのみ): gloss==naive_ja **0/43**、文字数比>1.5(対Trial_04 B0 2rep平均) **4/43**、説明文型語尾(こと/もの/ようす等)または30字超 **0/43**、B0のいずれかのrepと同一文字列 18/43、conveys yes/partly/no=6/6/31。validate互換 全74出力(Stage1+2のX2p)不合格0。
 - 盲検表 `fable_blind_05e.md`(**部分表**: 完了43KPのうち、X2p新出文字列で未ラベル=16行。B0の良い方/悪い方rep・Cp_t4と同一文字列は継承)+`fable_blind_05e_key.json`(別ファイル)。残11KPを実行すれば再生成が必要(blind_s2コマンドは完了分のみで生成)。strict(B0良い方rep基準)/lenient(悪い方rep基準)の比較はFable判定後に実施(準備済み: B0_t4/Cp_t4 ref_cells)。VALIDATED判定はしない。
+
+## 委任_28 追記(Stage 2完走・完全版05e。2026-10-24)
+- 残11KP(8 job)を実行し **X2p Stage 2 = 54/54 KP完了**(費用はBUDGET_LOG_01.md。台帳欠落2jobは再起動1回で再生成)。
+- 決定論集計(54KP、API 0): gloss==naive_ja **0/54**、文字数比>1.5(対Trial_04 B0 2rep平均) **7/54**、説明文型語尾または30字超 **0/54**、B0のいずれかのrepと同一文字列 19/54、conveys yes/partly/no=7/8/39。validate互換 X2p全85出力(Stage1+2)不合格0。`metrics_05.md`更新済み。
+- 盲検表 `fable_blind_05e.md`(**完全版**: 54KPのうち05/05c/05dおよびTrial_04確定ラベルと同一でない新出文字列のみ=21行21文字列、arm伏せ)+`fable_blind_05e_key.json`(別ファイル)。再生成コマンド `er112_kp_gm_trial_05_report.py blind_e`。**VALIDATED判定はしない。**

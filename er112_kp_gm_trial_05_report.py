@@ -252,6 +252,52 @@ def cmd_blind_s2(a):
     print("blind_s2 rows", n)
 
 
+def cmd_blind_e(a):
+    """委任_28 Stage 2完全版(54KP): 05/05c/05dラベル継承も除外した05e。旧:委任_23 Stage 2準備(API 0): non-R KP x X2 1rep(新規、T5 results)・B0/CpはTrial_04再利用の盲検表。X2未実行なら件数見積のみ。"""
+    A = T5.all_kps5()
+    st = json.load(open(RD / "TRIAL_04/strata_04.json", encoding="utf-8"))
+    keys = [k for k in st["trial_set"] if k not in T5.R_KEYS]
+    arts = collections.defaultdict(list)
+    for k in keys:
+        arts[G4.art_id(A[k])].append(k)
+    x2 = {k: r for (arm, k, rep), r in new_cells().items() if arm == "X2p" and rep == 1 and k in keys}
+    est = len(arts) * 0.1254
+    print("Stage2 non-R KP %d, X2 calls %d, 見積 %.2f円(X2実測単価0.1254円/call)、X2済み %d KP" % (len(keys), len(arts), est, len(x2)))
+    if len(x2) < len(keys):
+        print("WARN(委任_26): X2p S2が未完(%d/%d KP)。完了済みKPのみで盲検表を生成(部分表)" % (len(x2), len(keys)))
+        keys = [k for k in keys if k in x2]
+    _L=lambda f: json.load(open(RD / 'TRIAL_05' / f, encoding='utf-8'))
+    known, _ = label_lookup(_L('fable_labels_05.json'), _L('fable_labels_05c.json'), _L('fable_labels_05d.json'))
+    rc = ref_cells(set(keys))
+    cells = collections.defaultdict(lambda: collections.defaultdict(list))
+    for k, r in x2.items():
+        cells[k][r["gloss"]].append("X2p_t5/rep1")
+    for (arm, k, rep), g in rc.items():
+        if arm in ("B0_t4", "Cp_t4"):
+            cells[k][g].append("%s/rep%d" % (arm, rep))
+    NL = chr(10)
+    lines = ["# fable_blind_05e: Stage 2 Std日本語gloss盲検表(委任_23準備。arm伏せ。既ラベル済み文字列は継承して非掲載)" + NL,
+             "判定: PASS / 薄(THIN) / FAIL / FAIL_LIT。ラベル形式 {row#:col: LABEL}。keyは fable_blind_05e_key.json。" + NL,
+             "| # | key_phrase | 本文の文 | " + " | ".join(chr(65 + i) for i in range(6)) + " |", "|---|---|---|" + "---|" * 6]
+    keymap = {}
+    n = 0
+    ks = sorted(keys)
+    random.Random("blind05e").shuffle(ks)
+    for k in ks:
+        kp = A[k]
+        strs = [g for g in cells[k] if (kp["key"], kp["sent"], g) not in known]
+        if not strs:
+            continue
+        random.Random("blind05e-" + k).shuffle(strs)
+        strs = strs[:6]
+        n += 1
+        keymap[str(n)] = {"key": k, "cols": {chr(65 + i): dict(gloss=g, cells=cells[k][g]) for i, g in enumerate(strs)}}
+        lines.append("| %d | %s | %s | %s |" % (n, kp["key"], kp["sent"].replace("|", "/")[:160], " | ".join(g.replace("|", "/") for g in strs + [""] * (6 - len(strs)))))
+    (OUT5 / "fable_blind_05e.md").write_text(NL.join(lines) + NL, encoding="utf-8")
+    (OUT5 / "fable_blind_05e_key.json").write_text(json.dumps(keymap, ensure_ascii=False, indent=1), encoding="utf-8")
+    print("blind_e rows", n, "strings", sum(len(v["cols"]) for v in keymap.values()))
+
+
 # ------------------------------------------------------------------ 決定論的集計(0円、OF-KP1-05)
 _EXPL = re.compile(r"(こと|もの|ようす|様子|という|とき|ため|場合|状態|ところ)$")
 
@@ -277,8 +323,8 @@ def cmd_metrics(a):
             continue
         calls = [x for x in ledger if x.get("arm") == arm and x.get("kind") == "gen"]
         cost = sum(x["cost_jpy"] for x in calls) / max(1, len(calls))
-        rt = [x["usage"].get("reasoning_tokens") for x in calls if x["usage"].get("reasoning_tokens") is not None]
-        ot = [x["usage"].get("output_tokens") for x in calls]
+        rt = [(x.get("usage") or {}).get("reasoning_tokens") for x in calls if (x.get("usage") or {}).get("reasoning_tokens") is not None]
+        ot = [(x.get("usage") or {}).get("output_tokens") for x in calls if (x.get("usage") or {}).get("output_tokens") is not None]
         vs = [r["validate"]["valid"] for r in rs if r.get("validate")]
         eq = sum(1 for r in rs if r["fields"].get("naive_ja") and norm(r["fields"]["naive_ja"]) == norm(r["gloss"]))
         has_naive = sum(1 for r in rs if r["fields"].get("naive_ja"))
@@ -305,7 +351,7 @@ def cmd_metrics(a):
         calls = [x for x in ledger if x.get("arm") == arm and x.get("kind") == "gen"]
         if calls:
             lines.append("- %s: %d call、reasoning_tokens平均=%s、output_tokens平均=%.0f、1call平均費用=%.4f円" % (
-                arm, len(calls), ("%.0f" % (sum(x["usage"].get("reasoning_tokens") or 0 for x in calls) / len(calls))), sum(x["usage"].get("output_tokens") or 0 for x in calls) / len(calls),
+                arm, len(calls), ("%.0f" % (sum((x.get("usage") or {}).get("reasoning_tokens") or 0 for x in calls) / len(calls))), sum((x.get("usage") or {}).get("output_tokens") or 0 for x in calls) / len(calls),
                 sum(x["cost_jpy"] for x in calls) / len(calls)))
     (OUT5 / "metrics_05.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
@@ -455,4 +501,4 @@ if __name__ == "__main__":
     ap.add_argument("--labels_c", default="")
     ap.add_argument("--labels_d", default="")
     a = ap.parse_args()
-    {"blind": cmd_blind, "metrics": cmd_metrics, "report": cmd_report, "blind_c": cmd_blind_c, "blind_d": cmd_blind_d, "blind_s2": cmd_blind_s2}[a.cmd](a)
+    {"blind": cmd_blind, "metrics": cmd_metrics, "report": cmd_report, "blind_c": cmd_blind_c, "blind_d": cmd_blind_d, "blind_s2": cmd_blind_s2, "blind_e": cmd_blind_e}[a.cmd](a)
