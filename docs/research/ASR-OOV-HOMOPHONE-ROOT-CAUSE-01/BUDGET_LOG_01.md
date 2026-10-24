@@ -31,3 +31,17 @@
 - 日次(JST 10-24): 把握分約618円+委任_01分(含)+本委任約11.7円=約630円/1,000円。個別Cap 40円内。
 - 共有state: trial02は共有Ledgerを変更しない(Trial用コピー `work/trial02/ledger_trial.json`へ向け、実行前後sha256一致[`shared_state_changed: {}`])。
 - 供給側G 1語あたり約0.94円(Perplexity)。
+
+---
+# 委任_03 追記 (2026-10-24 JST) 上限10円。実費 約3.2円(cost loggerの実記録＋単価換算)
+
+| # | 作業 | API | 内訳 | 費用 | 計測方法 |
+|---|---|---|---|---|---|
+| 10 | E2W fail-closed化・1語位置判定、単体test、本run長segment再評価(Whisper small、20 attempt中E2単独受理3件のみ実行) | なし(ローカル) | 保存wav・保存ASR | 0 | - |
+| 11 | OF-OOV-11: 正例10+負例20 clip TTS(`gemini-3.8-flash-lite-tts`、Aoede/Charon/Erinome)+Primary ASR(`gpt-4o-mini-transcribe`) | Gemini/OpenAI | `cl.install`で実記録(`work/trial03/cost/usage_log.jsonl`: TTS 30呼出・114.2秒・出力2,761token、ASR 30呼出) | 約2.75円 | 音声秒×0.01907円/秒(本run実測単価 17.60円/総TTS秒)=2.18円+ASR 30×0.019円(neg2実測単価)=0.57円。**トークン実記録あり、円額は換算** |
+| 12 | 誤受理3clipの第3エンジン確認(Azure STT、PhraseListなし) | Azure | `cl.install`で実記録(`work/trial03_azure_arbiter/cost/usage_log.jsonl`: 3呼出・9.68秒) | 約0.43円 | 9.68秒×0.0444円/秒 |
+| 合計 | | | | **約3.2円** / 上限10円 | |
+
+- 事前: `stop_check_03.json`(rc=0)、各有料scriptの先頭でも`stop_scope_check_01.py` rc=0。再起動0・外部停止0・原因不明rc≠0 0回。有料run=trial03(1起動、JST 21:42開始)→azure arbiter(1起動、起動間隔>150秒)。他agentの「有料run(TTS)進行中」flagは`docs/pm/ACTIVE_TASK.md`に開始時点で無し(確認のみ・編集0)。
+- 日次(JST 10-24): 把握分約630円+本委任約3.2円=約633円/1,000円。個別Cap 10円内。
+- 共有state: 共有Ledger・Master Audio Store等には触れていない(Trial用Ledgerコピー`work/trial02/ledger_trial.json`を読むのみ)。
