@@ -1,0 +1,308 @@
+{
+ "labels_sha256": "76357591200b73f595d40fa4570e5e69eda8bfeed1e5d23728a847ae08957e8f",
+ "old": {
+  "TP": 56,
+  "FP": 0,
+  "FN": 0,
+  "TN": 66
+ },
+ "new": {
+  "TP": 56,
+  "FP": 0,
+  "FN": 0,
+  "TN": 66
+ },
+ "partial": [
+  {
+   "run_id": 1,
+   "run": "er019_output/coffee_prices/run_fxpw_01",
+   "surface": "2025年2月",
+   "stage": "R0",
+   "label": "partial",
+   "old": false,
+   "new": false
+  },
+  {
+   "run_id": 1,
+   "run": "er019_output/coffee_prices/run_fxpw_01",
+   "surface": "2025年2月",
+   "stage": "R2",
+   "label": "partial",
+   "old": false,
+   "new": false
+  },
+  {
+   "run_id": 17,
+   "run": "er019_output/tesla_spacex_merger_talks/run_nws_01",
+   "surface": "2社",
+   "stage": "R0",
+   "label": "partial",
+   "old": false,
+   "new": false
+  },
+  {
+   "run_id": 17,
+   "run": "er019_output/tesla_spacex_merger_talks/run_nws_01",
+   "surface": "2社",
+   "stage": "R2",
+   "label": "partial",
+   "old": false,
+   "new": false
+  }
+ ],
+ "diff_old_new": [],
+ "weak_new": 0,
+ "errors": [],
+ "synthetic": {
+  "old": {
+   "TP": 10,
+   "FP": 4,
+   "FN": 2,
+   "TN": 5
+  },
+  "new": {
+   "TP": 12,
+   "FP": 0,
+   "FN": 0,
+   "TN": 9
+  },
+  "cases": [
+   {
+    "surface": "約42〜46",
+    "hint": "m",
+    "text": "月の半径は約42から46メートル縮んだと推定された。",
+    "expected": true,
+    "old": true,
+    "new": true,
+    "note": "m->メートル+範囲から"
+   },
+   {
+    "surface": "約42〜46",
+    "hint": "m",
+    "text": "半径は42〜46 m縮んだ。",
+    "expected": true,
+    "old": true,
+    "new": true,
+    "note": "m表記そのまま"
+   },
+   {
+    "surface": "約42〜46",
+    "hint": "m",
+    "text": "半径は約42～46mほど縮んだ。",
+    "expected": true,
+    "old": true,
+    "new": true,
+    "note": "全角波ダッシュ"
+   },
+   {
+    "surface": "25%",
+    "hint": "",
+    "text": "指数は25パーセント下落した。",
+    "expected": true,
+    "old": true,
+    "new": true,
+    "note": "%->パーセント"
+   },
+   {
+    "surface": "25%",
+    "hint": "",
+    "text": "指数は２５％下落した。",
+    "expected": true,
+    "old": true,
+    "new": true,
+    "note": "全角"
+   },
+   {
+    "surface": "約9か月",
+    "hint": "",
+    "text": "反映まで約9カ月かかる。",
+    "expected": true,
+    "old": false,
+    "new": true,
+    "note": "か月->カ月"
+   },
+   {
+    "surface": "約9か月",
+    "hint": "",
+    "text": "反映まで9ヶ月かかる。",
+    "expected": true,
+    "old": false,
+    "new": true,
+    "note": "か月->ヶ月"
+   },
+   {
+    "surface": "約5,470本",
+    "hint": "",
+    "text": "長さ1km超は約5470本だった。",
+    "expected": true,
+    "old": true,
+    "new": true,
+    "note": "カンマ無し"
+   },
+   {
+    "surface": "8,900本超",
+    "hint": "",
+    "text": "8900本を超える崖を記録した。",
+    "expected": true,
+    "old": true,
+    "new": true,
+    "note": "超->を超える"
+   },
+   {
+    "surface": "最大£1,000",
+    "hint": "",
+    "text": "最大1,000ポンドの罰金。",
+    "expected": true,
+    "old": true,
+    "new": true,
+    "note": "£->ポンド"
+   },
+   {
+    "surface": "最大50",
+    "hint": "セント",
+    "text": "増減は10セントずつ、最大50セントまで。",
+    "expected": true,
+    "old": true,
+    "new": true,
+    "note": "単位hint(セント)"
+   },
+   {
+    "surface": "1.1",
+    "hint": "km",
+    "text": "少なくとも約1.1キロメートル縮む。",
+    "expected": true,
+    "old": true,
+    "new": true,
+    "note": "km->キロメートル"
+   },
+   {
+    "surface": "約42〜46",
+    "hint": "m",
+    "text": "約42〜46人が参加した。",
+    "expected": false,
+    "old": true,
+    "new": false,
+    "note": "単位違い(人): 旧=FP候補"
+   },
+   {
+    "surface": "約42〜46",
+    "hint": "m",
+    "text": "半径は約44メートル縮んだ。",
+    "expected": false,
+    "old": false,
+    "new": false,
+    "note": "別の値"
+   },
+   {
+    "surface": "約42〜46",
+    "hint": "m",
+    "text": "傾きの想定範囲は42〜46度だった。",
+    "expected": false,
+    "old": true,
+    "new": false,
+    "note": "単位違い(度): 旧=FP候補"
+   },
+   {
+    "surface": "25%",
+    "hint": "",
+    "text": "25人が反対した。",
+    "expected": false,
+    "old": false,
+    "new": false,
+    "note": "単位違い"
+   },
+   {
+    "surface": "7か月",
+    "hint": "",
+    "text": "7日間で終わった。",
+    "expected": false,
+    "old": false,
+    "new": false,
+    "note": "単位違い"
+   },
+   {
+    "surface": "約9か月",
+    "hint": "",
+    "text": "約9年かかる。",
+    "expected": false,
+    "old": false,
+    "new": false,
+    "note": "単位違い"
+   },
+   {
+    "surface": "3倍",
+    "hint": "",
+    "text": "3人で分けた。",
+    "expected": false,
+    "old": false,
+    "new": false,
+    "note": "単位違い"
+   },
+   {
+    "surface": "最大50",
+    "hint": "セント",
+    "text": "最大50人まで。",
+    "expected": false,
+    "old": true,
+    "new": false,
+    "note": "単位hint(セント)に反する"
+   },
+   {
+    "surface": "約45",
+    "hint": "m",
+    "text": "約45度の傾き。",
+    "expected": false,
+    "old": true,
+    "new": false,
+    "note": "単位違い(度)"
+   }
+  ]
+ },
+ "en_synthetic": [
+  {
+   "surface": "約42〜46",
+   "hint": "m",
+   "text": "shrank by about 42 to 46 meters",
+   "expected": true,
+   "new": true,
+   "old": true,
+   "note": ""
+  },
+  {
+   "surface": "約42〜46",
+   "hint": "m",
+   "text": "about 42 to 46 people came",
+   "expected": false,
+   "new": false,
+   "old": true,
+   "note": ""
+  },
+  {
+   "surface": "25%",
+   "hint": "",
+   "text": "fell 25 percent",
+   "expected": true,
+   "new": true,
+   "old": true,
+   "note": ""
+  },
+  {
+   "surface": "約4億年",
+   "hint": "",
+   "text": "about 400 million years ago",
+   "expected": true,
+   "new": true,
+   "old": true,
+   "note": ""
+  },
+  {
+   "surface": "約4億年",
+   "hint": "",
+   "text": "about 400 million dollars",
+   "expected": false,
+   "new": false,
+   "old": true,
+   "note": ""
+  }
+ ]
+}
