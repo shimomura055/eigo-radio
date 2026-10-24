@@ -21,3 +21,9 @@ call単位の台帳=`er112_output/kp_gm_trial_06/paid_calls.jsonl`(102行、1 AP
 - 本委任の費用 0円(API 0。Opus評価はClaude Code側、OpenAI/TTS呼出なし)。
 - KP案件累計: 314.74円 / 上限500円(63%)。
 - 日次(JST 10-24、Fable把握分): 約433円 / 1,000円(本委任追加0円)。
+
+
+## 委任_35(2026-10-24、X2p' XYZ共通 Production Wiring・記事B最終版再提出)
+- 本委任の実費 **約4.40円**(gpt-6-luna 全call、TTSは変更clipのみ): X KP段(canonicalization 0.42+gloss 0.77+redundancy QA 0.14)=1.33円、X TTS/ASR/NER/Adv解説text=0.62円(Std: kp1_japanese_meaning 0.043・kp3_english+kp3_japanese_meaning 0.28、Adv: kp3_english+KP1〜3解説 約0.35、ret_entity_ner 0.04ほか)、Z KP段(猿の手コピーrun、選定+canonicalization+gloss)=2.45円。内訳=`WIRING_35/cost_summary_35.json`(cost loggerは`x_rerun_kp_35.py`内で`cl.install`、Zはrunner標準のcost_log)。上限25円内。
+- KP案件累計: 314.74 + 4.40 = **約319.1円** / 上限500円(64%)。
+- 日次(JST 10-24、Fable把握分約642円 + 本委任4.40円) = 約646円 / 1,000円(`daily_dev_cost_01.py`未実行の加算見積)。

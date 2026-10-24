@@ -1,0 +1,25 @@
+[GLOSS-ALIGN] 実効flag=ON (source=default, EIGO_KP_GLOSS_ALIGNMENT=None)
+[FAMILY-X-AUDIO-RUNNER][WARN] a2: a2_derived_from_advanced_sha_mismatch(観測のみ)(警告記録のみ)
+[FAMILY-X-AUDIO-RUNNER][rf_guard] a2: 三者sha一致(scaffold == source == Queue)。RF再実行なし。
+[KP-VOTE] whisper preflight: ok=True model=small/int8 cache_present=True load_sec=1.571 error=None
+
+===== 固有名詞発音アラーム報告 (er019_output/family_x_audio_production_wiring_01/uk_train_speaker_playback__run_nws_02/a2) =====
+## 固有名詞発音アラーム(運営責任者向け・一般リスナー非表示)
+0件(固有名詞の発音不一致アラームなし)
+
+### 発音供給の適用一覧(TTS入力へ綴り置換した語。ASR比較は置換後の綴りが基準)
+0件(供給対象なし。A階層の自動供給対象/人承認済みB階層が無い、または該当語が本文に無い)
+
+### Human Review残(受理境界の外): ASR不確実のまま残ったsegment 0件 (うち固有名詞のみ不一致だが境界外=脱落/一般語化等 0件)
+
+注: 日本語音声の固有名詞読みはこのアラーム方針の対象外です(従来の検証・Human Reviewのまま)。
+
+### 実体表(固有名詞と認識した根拠。受理判定用。発音の根拠[Ledger/Perplexity調査]とは別)
+- 実体表: 1件(うち証拠として使用可 0件) / NER call=1 / model=gpt-6-luna / table_sha256=082ee546093c
+- 実体表 place/weak: 1件
+- 証拠にならなかった語(weak/一般語等): UK
+- 除外された候補: Are You Giving That Video an Uninvited Premiere on the Train?[long_phrase], Share the journey, not the noise[long_phrase], Is Your Video Putting on an Unwanted Show on the Train?[long_phrase]
+
+[FAMILY-X-AUDIO-RUNNER][cost] so far=24.59 JPY by_provider={'openai': 1.51, 'gemini': 13.58, 'openai_asr': 3.83, 'azure': 5.59, 'gemini_batch': 0.07} (after tts a2)
+[FAMILY-X-AUDIO-RUNNER][cost] so far=24.59 JPY by_provider={'openai': 1.51, 'gemini': 13.58, 'openai_asr': 3.83, 'azure': 5.59, 'gemini_batch': 0.07} (after tts)
+[FAMILY-X-AUDIO-RUNNER] stage=tts 完了。out_dir=er019_output/family_x_audio_production_wiring_01/uk_train_speaker_playback__run_nws_02 累計費用(JPY)=24.59 by_provider={'openai': 1.51, 'gemini': 13.58, 'openai_asr': 3.83, 'azure': 5.59, 'gemini_batch': 0.07}

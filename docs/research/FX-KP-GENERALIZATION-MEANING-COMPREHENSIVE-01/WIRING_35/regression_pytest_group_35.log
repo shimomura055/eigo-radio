@@ -1,0 +1,117 @@
+........................................................................ [  6%]
+........................................................................ [ 12%]
+........................................................................ [ 19%]
+........................................................................ [ 25%]
+........................................................................ [ 31%]
+........................................................................ [ 38%]
+........................................................................ [ 44%]
+........................................................................ [ 50%]
+.......................................................FFFF....F........ [ 57%]
+........................................................................ [ 63%]
+........................................................................ [ 69%]
+...............F........................................................ [ 76%]
+........................................................................ [ 82%]
+.................................... [ 85%]
+................................... [ 88%]
+........................................................................ [ 94%]
+..................................... [ 98%]
+....................                  [100%]
+================================== FAILURES ===================================
+_ TestInheritance.test_restored_from_saved_entries_llm0_and_ignores_current_table _
+
+self = <er103_run_entity_table_test_01.TestInheritance object at 0x000002AF896887D0>
+
+    def test_restored_from_saved_entries_llm0_and_ignores_current_table(self):
+        entry = _entry_with_table(CANON_B, PRIM_B, PRIM_B, ret.EntityTable([E("Bertie", ["bertie"])]))
+        poison = ret.EntityTable([E("Nothing", ["nothing"])])
+        with pol.run_scope("X"), ret.run_table(poison):                   # 現runの表(別記事)は継承再判定へ混入しない(W-04)
+            r = self._vi().rejudge_with_current_judge(entry, "b1b", "full_story_part1")
+        assert r["ok"] is True and r["secondary_new_calls"] == 0 and r["alarm_rejudge"]["accepted"]
+        rec = r["asr_judgement_inherited"]
+        assert rec["state"] == pol.STATE_ALARM
+>       assert rec["pronunciation_alarm"]["entity_table"]["entries_used"][0]["surface"] == "Bertie"      # 受理時にdetailで更新
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'entity_table'
+
+er103_run_entity_table_test_01.py:498: KeyError
+___________ TestInheritance.test_inherited_block_updated_not_stale ____________
+
+self = <er103_run_entity_table_test_01.TestInheritance object at 0x000002AF89688910>
+
+    def test_inherited_block_updated_not_stale(self):
+        entry = _entry_with_table(CANON_B, PRIM_B, PRIM_B, ret.EntityTable([E("Bertie", ["bertie"])]))
+        entry["asr_judgement"]["pronunciation_alarm"]["entity_table"]["sha256"] = "STALE"
+        with pol.run_scope("X"):
+            r = self._vi().rejudge_with_current_judge(entry, "b1b", "full_story_part1")
+>       assert r["asr_judgement_inherited"]["pronunciation_alarm"]["entity_table"]["sha256"] != "STALE"     # 保存sha不一致でも元の受理と一致(sha非依存)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'entity_table'
+
+er103_run_entity_table_test_01.py:506: KeyError
+___________ TestInheritance.test_rules_version_mismatch_rejudge_ng ____________
+
+self = <er103_run_entity_table_test_01.TestInheritance object at 0x000002AF8965D480>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002B00BA15FD0>
+
+    def test_rules_version_mismatch_rejudge_ng(self, monkeypatch):
+        entry = _entry_with_table(CANON_B, PRIM_B, PRIM_B, ret.EntityTable([E("Bertie", ["bertie"])]))
+        monkeypatch.setattr(ret, "BUILDER_RULES_CONSTANT", "changed")
+        with pol.run_scope("X"):
+            r = self._vi().rejudge_with_current_judge(entry, "b1b", "full_story_part1")
+>       assert r["ok"] is False                                          # 境界を動かした後の古いRET受理は黙って通さない
+        ^^^^^^^^^^^^^^^^^^^^^^^
+E       assert True is False
+
+er103_run_entity_table_test_01.py:513: AssertionError
+_______________ TestInheritance.test_ret_flag_false_rejudge_ng ________________
+
+self = <er103_run_entity_table_test_01.TestInheritance object at 0x000002AF8965D5B0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002B00BA17E70>
+
+    def test_ret_flag_false_rejudge_ng(self, monkeypatch):
+        entry = _entry_with_table(CANON_B, PRIM_B, PRIM_B, ret.EntityTable([E("Bertie", ["bertie"])]))
+        monkeypatch.setattr(ret, "RUN_ENTITY_TABLE_ENABLED", False)
+        with pol.run_scope("X"):
+            r = self._vi().rejudge_with_current_judge(entry, "b1b", "full_story_part1")
+>       assert r["ok"] is False
+E       assert True is False
+
+er103_run_entity_table_test_01.py:520: AssertionError
+___ TestStoreGuard.test_rejudge_ng_blocks_ret_origin_even_if_not_protected ____
+
+self = <er103_run_entity_table_test_01.TestStoreGuard object at 0x000002AF8965D6E0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002AF89642890>
+
+    def test_rejudge_ng_blocks_ret_origin_even_if_not_protected(self, monkeypatch):
+        entry = _entry_with_table(CANON_B, PRIM_B, PRIM_B, ret.EntityTable([E("Bertie", ["bertie"])]))
+        entry["asr_judgement"]["pronunciation_alarm"]["entity_table"]["entries_used"][0]["eligible"] = []     # 復元entryが証拠にならない
+        with pol.run_scope("X"):
+            r = self._g().guard_entry(entry, canonical_text=CANON_B, level="b1b", label="full_story_part1")
+>       assert r["blocked"] and r["reason"].startswith("REJUDGE_NG_ENTITY_TABLE")
+E       assert (False)
+
+er103_run_entity_table_test_01.py:583: AssertionError
+________ test_AST_attempt_ctx_vote_flag_is_forwarded_from_strict_only _________
+
+    def test_AST_attempt_ctx_vote_flag_is_forwarded_from_strict_only():
+        sites = _calls_with_kw("vote_required")
+        where = sorted({(f, fn) for f, fn, _c, _k in sites})
+        assert ("er003_v1_repro01_main_generate.py", "generate_narration_snippet_verified_strict") in where, where
+        for f, fn, _c, k in sites:
+            if isinstance(k.value, ast.Constant) and k.value.value is False:
+                continue   # PNAP gate呼出(KP除外のため常にFalse)は転送ではなくKPでないことの明示
+>           assert f in ("er003_v1_repro01_main_generate.py", "er006_secondary_asr_01.py", "er103_proper_noun_alarm_policy_01.py"), (f, fn)
+E           AssertionError: ('er103_ret_baseline_signature_01.py', 'kwargs_from_record')
+E           assert 'er103_ret_baseline_signature_01.py' in ('er003_v1_repro01_main_generate.py', 'er006_secondary_asr_01.py', 'er103_proper_noun_alarm_policy_01.py')
+
+er104_kp_vote_wiring_test_01.py:747: AssertionError
+---------------------------- Captured stderr call -----------------------------
+<unknown>:6: SyntaxWarning: "\S" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\S"? A raw string is also an option.
+=========================== short test summary info ===========================
+FAILED er103_run_entity_table_test_01.py::TestInheritance::test_restored_from_saved_entries_llm0_and_ignores_current_table
+FAILED er103_run_entity_table_test_01.py::TestInheritance::test_inherited_block_updated_not_stale
+FAILED er103_run_entity_table_test_01.py::TestInheritance::test_rules_version_mismatch_rejudge_ng
+FAILED er103_run_entity_table_test_01.py::TestInheritance::test_ret_flag_false_rejudge_ng
+FAILED er103_run_entity_table_test_01.py::TestStoreGuard::test_rejudge_ng_blocks_ret_origin_even_if_not_protected
+FAILED er104_kp_vote_wiring_test_01.py::test_AST_attempt_ctx_vote_flag_is_forwarded_from_strict_only
+6 failed, 1130 passed, 215 subtests passed in 183.36s (0:03:03)
