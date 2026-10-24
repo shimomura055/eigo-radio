@@ -1,0 +1,111 @@
+# PROMPT_02(Lunaへ渡したuser message全文。developer messageなし、few-shotなし、1 call。Part 1のみTrial-01から差替)
+
+```text
+あなたは英語学習コンテンツの編集者です。下の英語ポッドキャスト台本(Advancedレベル)を読んだ学習者向けに、音声と連動して読む「英語学習テキスト解説」を日本語で書いてください。
+
+# 作品・レベル
+- 作品: The Gift of the Magi(『賢者の贈り物』)
+- レベル: Advanced(CEFR B1を目標に書かれた英文。学習者はB1〜B2相当の日本語話者)
+
+# 本文(段落番号[P1]〜[P30]は参照用。引用では番号を書かない)
+[P1] One dollar and eighty-seven cents. Della counted the coins again, pressing each one against the table. Still the same. And tomorrow was Christmas.
+
+[P2] She had saved every penny she could. How could she buy Jim something worthy of him?
+
+[P3] For a while, she cried on their shabby couch. Then she caught sight of herself in the mirror.
+
+[P4] They owned two things that made them proud. One was Jim’s gold watch, handed down from his grandfather to his father, and then to him. The other was Della’s long brown hair.
+
+[P5] Slowly, she loosened her hair. It fell below her knees, shining in the pale light. She ran her fingers through it once. Then, before she could change her mind, she pulled on her coat.
+
+[P6] Outside a hair-goods shop, she paused just long enough to catch her breath.
+
+[P7] “Will you buy my hair?”
+
+[P8] The owner lifted the heavy waves.
+
+[P9] “Twenty dollars.”
+
+[P10] “Cut it quickly, please.”
+
+[P11] At the first touch of the scissors, Della shut her eyes.
+
+[P12] For two hours afterward, she hurried from shop to shop. Finally, she found it: a simple platinum watch chain. Nothing showy, nothing unnecessary. Like Jim, it needed no decoration to prove its worth.
+
+[P13] It cost twenty-one dollars.
+
+[P14] She carried it home with eighty-seven cents left, imagining Jim replacing his worn leather watch strap with her beautiful gift.
+
+[P15] By seven, dinner was nearly ready. Della had curled her short hair, but she kept returning to the mirror.
+
+[P16] “Please let him still think I’m pretty,” she whispered.
+
+[P17] Footsteps sounded. The door opened.
+
+[P18] Jim stopped.
+
+[P19] His eyes stayed on her hair. Della rushed toward him.
+
+[P20] “I sold it, Jim. I couldn’t let Christmas come without giving you something. It’ll grow again!”
+
+[P21] He put his arms around her. Then he gave her a package.
+
+[P22] Inside were the tortoise-shell combs she had so often admired in a shop window.
+
+[P23] She held them against her chest, smiling through tears.
+
+[P24] “My hair grows quickly.”
+
+[P25] Suddenly remembering, she brought out the chain.
+
+[P26] “Look! Isn’t it perfect? Give me your watch.”
+
+[P27] Jim sat down and smiled gently.
+
+[P28] “I sold the watch to buy your combs.”
+
+[P29] Della sat beside him and took his hand. Her hair was gone; the combs could not hold it. His watch was gone; the chain had nothing to carry. Each had sold their greatest treasure to buy the other a gift.
+
+[P30] The magi were wise men who brought gifts on the first Christmas. Yet here, with gifts they could not use, sat two foolish young people whose love made them the wisest of all gift-givers. They were the magi.
+
+# 既存のKey Phrase(Part 1で使う。新たなフレーズ選定は禁止)
+1. 英語表現: hand down
+   日本語gloss: ～を後の世代に受け継がせる
+   本文の該当文: One was Jim’s gold watch, handed down from his grandfather to his father, and then to him.
+   既存の音声解説(英語・重複回避用): "to pass something to a younger person or a later generation"
+2. 英語表現: catch sight of
+   日本語gloss: ～をふと目にする
+   本文の該当文: Then she caught sight of herself in the mirror.
+   既存の音声解説(英語・重複回避用): "to see something suddenly or by chance"
+3. 英語表現: catch one's breath
+   日本語gloss: 息を整える
+   本文の該当文: Outside a hair-goods shop, she paused just long enough to catch her breath.
+   既存の音声解説(英語・重複回避用): "to pause and breathe normally again after effort"
+
+# 出力する内容(4つのPartをすべて、この順序・この見出しで)
+
+## Part 1. Vocabulary & Expressions
+上のKey Phrase 3件それぞれについて、次を書く: 1 英語表現 / 2 日本語の意味 / 3 本文中の英文(逐語引用) / 4 英文の日本語訳 / 5 実用性を重視した解説。
+実用性重視の解説ルール: その単語・フレーズが、本文以外のどのような日常・仕事・社会的場面で使えるかを、具体的かつ簡潔に説明する。重視する点: 実際にどのような状況で使えるか / その表現を使うと何が伝わるか / 学習者が自分の英語表現に取り入れやすい説明になっているか。文法構造の解説は原則としてPart 2に任せる。「ほかの場面で使うと」という独立した追加例文は書かない。実用場面は日本語の解説文で伝える。
+
+## Part 2. Grammar & Sentence Structure
+本文から、学習価値の高い文法・構文を0〜2個選ぶ。無理に2個選ばない。適切なものがなければ0個とし、その旨を一文で書く。
+- 各項目: 本文の英文の引用+日本語訳、文法・構文の仕組み、本文中での意味・効果。
+- 教科書的な一般説明だけで終わらず、この英文を読み解く助けになる説明にする。
+
+## Part 3. Nuance & Deeper Understanding
+本文から価値のある英語表現・ニュアンスのテーマを0〜1個選ぶ。適切なテーマがなければ0個とし、その旨を一文で書く。
+- 単語の意味だけでは伝わりにくいニュアンス、似た表現との違い、表現による印象の違いなどを深掘りする。
+- Part 1・Part 2と内容を重複させない。
+- 物語の感想や一般論ではなく、英語学習としての価値を重視する。
+
+## Part 4. Think & Express
+作品の内容に関連して、学習者が自分の考えを英語で表現するための問いを1問作る。次の4点を書く: 英語の質問 / その日本語訳 / 英語の回答例 / その日本語訳。回答例は学習者が参考にできる自然な英語にする。
+
+# 制約
+- 本文の英文を引用するときは、本文から一字一句そのまま(逐語)引用する。改変・要約・つなぎ合わせをしない。
+- 本文にない事実・登場人物の言動・表現を作らない。説明は本文の根拠に基づく。
+- 日本語は学習者に読みやすく書く。
+- 理解度チェック・クイズは書かない。
+- 出力はMarkdownのみ。上記の見出し(## Part 1〜4)構成を守り、前置き・後書きは付けない。
+```
