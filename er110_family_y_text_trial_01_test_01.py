@@ -195,6 +195,9 @@ def test_no_production_reference():
     for p in glob.glob("*.py"):
         if os.path.normpath(p) in me:
             continue
+        b = os.path.basename(p)
+        if "_test" in b or b.startswith("test_"):   # 委任_27(2026-10-24): testファイルはProduction到達経路でない(他3つのer110 isolation testと同じ除外)。X/Z側testがY隔離確認のためer110名を文字列で持つ
+            continue
         try:
             txt = open(p, encoding="utf-8").read()
         except Exception:

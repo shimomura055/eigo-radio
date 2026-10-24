@@ -712,6 +712,15 @@ _UNCOUNTABLE = frozenset({
     "knowledge", "evidence", "help", "behavior", "behaviour", "attention", "trust", "work", "homework", "software", "feedback", "damage", "noise",
     "luck", "fun", "water", "air", "time", "energy", "love", "hope", "courage", "pressure", "silence", "sound",
 })
+# W-03(Opus条件C): 時間名詞・same/other/very等(this year / that same X)、直前語の除外(not that bad)、me系固定表現(between you and me / excuse me)
+_TIME_NOUNS = frozenset({
+    "year", "years", "week", "weeks", "weekend", "weekends", "month", "months", "evening", "afternoon", "season", "decade", "century", "minute",
+    "hour", "second", "today", "tonight", "summer", "winter", "spring", "autumn", "fall", "semester", "quarter", "morning", "moment", "time",
+})
+_DEM_NEXT_BLOCK2 = frozenset({"same", "other", "very", "exact", "whole", "only", "first", "last", "next", "previous"})
+_DEM_PREV_BLOCK = frozenset({"not", "all", "quite", "just", "only", "like", "at", "with", "than", "that", "so"})
+_REF_OBJ_PREV_BLOCK = frozenset({"between", "excuse", "beats", "beat", "trust", "lucky", "poor", "pardon", "bless", "dear", "believe", "and", "or", "than",
+                                 "like", "as", "except", "but", "me", "us"})
 _OBJ_HER_FOLLOW = frozenset({
     "the", "a", "an", "this", "that", "these", "those", "some", "any", "my", "your", "his", "our", "their", "to", "for", "with", "up", "down", "off", "out",
     "over", "away", "back", "in", "on", "at", "from", "into", "about", "around", "through", "by", "and", "or", "but", "so", "along", "aside", "apart",
@@ -724,50 +733,74 @@ ROLE_OK_KEY_TOKENS = ("someone's", "somebody's")
 REASON_REFERENCE_WORD = "generalize_reference_word"
 
 
-def starts_with_vowel_sound(word: str) -> bool:
-    """語頭が母音の音か(a/an判定)。本番既存のCMU辞書(`pronouncing`=cmudict 1.1.3、er108と同一)を使う。辞書に無い語は簡易規則(API 0)。"""
+def _first_phone_classes(word: str):
+    """語頭音の分類集合(CMU辞書`pronouncing`=cmudict 1.1.3、er108と同一)。{"vowel"}/{"consonant"}/両方。辞書に無い語・辞書例外は空集合(=判定不能)。
+    W-02(Opus条件C): 簡易綴り規則へのフォールバックは行わない(M2のcmu_post_canonがKP全語のCMU登録を要求するため本番では効かず安全でもない)。"""
     w = (word or "").lower().strip("'")
     if not w:
-        return False
+        return set()
     try:
         import pronouncing
         prons = pronouncing.phones_for_word(w)
-    except Exception:   # noqa: BLE001  辞書が使えない場合も簡易規則で判定(a/anの母音判定のみ)
-        prons = []
-    if prons:
-        return any(ch.isdigit() for ch in prons[0].split()[0])
-    if w.startswith(("hour", "honest", "honor", "honour", "heir")):
-        return True
-    if w.startswith(("uni", "use", "usu", "eu", "one", "once")):
-        return False
-    return w[0] in "aeiou"
+    except Exception:   # noqa: BLE001  辞書が使えない=判定不能(例外は送出せず安全側=不許可)
+        return set()
+    out = set()
+    for pr in prons or []:
+        ph = pr.split()
+        if not ph:
+            return set()
+        out.add("vowel" if any(ch.isdigit() for ch in ph[0]) else "consonant")
+    return out
+
+
+def starts_with_vowel_sound(word: str) -> bool:
+    """全ての発音が母音始まりのときのみTrue(保守的)。辞書に無い語・例外・複数発音で母音/子音が混在する語はFalse。"""
+    return _first_phone_classes(word) == {"vowel"}
+
+
+def starts_with_consonant_sound(word: str) -> bool:
+    """全ての発音が子音始まりのときのみTrue(保守的)。判定不能・混在はFalse。"""
+    return _first_phone_classes(word) == {"consonant"}
 
 
 def _looks_plural(w: str) -> bool:
     return len(w) > 3 and w.endswith("s") and not w.endswith(("ss", "us", "is"))
 
 
-def reference_pair_ok(kt: str, dt: str, idx: int, key_tokens: list, window: list) -> bool:
+def reference_pair_ok(kt: str, dt: str, idx: int, key_tokens: list, window: list, prev_d=None) -> bool:
     """A-1: 参照語の1対1置換が許されるか。指示語this/that->a/an(単数可算名詞の限定詞のときのみ。theは許可しない)、
-    目的格him/me/us->someone/somebody、her->someone/somebody(直後語が_OBJ_HER_FOLLOWのときのみ=所有格herと区別)。"""
+    目的格him/me/us->someone/somebody、her->someone/somebody(直後語が_OBJ_HER_FOLLOWのときのみ=所有格herと区別)。
+    prev_d: windowの直前のdisplay語(窓の外。idx>0なら窓内のwindow[idx-1]を使う)。W-03で追加した除外はいずれも受理範囲を狭めるだけ。"""
     kl, dl = kt.lower(), dt.lower()
     nxt_d = window[idx + 1].lower() if idx + 1 < len(window) else None
+    prev = window[idx - 1].lower() if idx > 0 else (prev_d.lower() if prev_d else None)
     if dl in ("that", "this"):
         if kl not in ("a", "an"):
             return False
         if nxt_d is None or nxt_d in _DEM_FOLLOW_BLOCK or nxt_d in _UNCOUNTABLE or _looks_plural(nxt_d):
             return False
+        if nxt_d in _TIME_NOUNS or nxt_d in _DEM_NEXT_BLOCK2:
+            return False
+        if prev is not None and (prev in _DEM_PREV_BLOCK or prev.endswith("n't")):
+            return False
+        # 不可算名詞は直後語だけでなくthat以降のいずれの語でも却下(take that good advice)。時間名詞もthat以降のいずれでは却下しない(直後のみ)
+        if any(w.lower() in _UNCOUNTABLE for w in window[idx + 1:]):
+            return False
         nxt_k = key_tokens[idx + 1].lower() if idx + 1 < len(key_tokens) else None
         if nxt_k is None:
             return False
-        if kl == "a" and starts_with_vowel_sound(nxt_k):
+        if kl == "a" and not starts_with_consonant_sound(nxt_k):
             return False
         if kl == "an" and not starts_with_vowel_sound(nxt_k):
             return False
         return True
     if dl in ("him", "me", "us"):
+        if prev is not None and prev in _REF_OBJ_PREV_BLOCK:
+            return False
         return kl in ("someone", "somebody")
     if dl == "her":
+        if prev is not None and prev in _REF_OBJ_PREV_BLOCK:
+            return False
         return kl in ("someone", "somebody") and (nxt_d is None or nxt_d in _OBJ_HER_FOLLOW)
     return False
 
@@ -786,7 +819,7 @@ def find_inflection_window(key_phrase: str, display_phrase: str, role_ok_poss=fr
     ok_idx = frozenset(role_ok_poss or ())
     for start in range(0, len(d) - len(k) + 1):
         window = d[start:start + len(k)]
-        if all(_token_pair_ok(kt, dt, i, k) or reference_pair_ok(kt, dt, i, k, window)
+        if all(_token_pair_ok(kt, dt, i, k) or reference_pair_ok(kt, dt, i, k, window, d[start - 1] if start > 0 else None)
                or ((start + i) in ok_idx and dt.lower() in ROLE_OK_DISPLAY_TOKENS and kt.lower() in ROLE_OK_KEY_TOKENS)
                for i, (kt, dt) in enumerate(zip(k, window))) \
                 and any(kt.lower() != dt.lower() for kt, dt in zip(k, window)):

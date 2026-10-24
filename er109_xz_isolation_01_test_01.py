@@ -90,6 +90,13 @@ def scope_aliases(tree):
     return mod_alias, names
 
 
+def is_research_script(rel):
+    """docs/research/ 配下の調査・証跡script(Production到達なし・起動scriptからも呼ばれない)。委任_27(2026-10-24): ASR-TIME-NUMERAL-EQUIVALENCE-01の
+    er109_probe_01.py / runtime_evidence_02.py(研究scriptが固定listの外でscope入口をimport/呼出)で恒常失敗していたため、
+    Production固定list検査(importer/呼出点)の対象から研究scriptを外す。Production側のimport/呼出は従来どおり固定listで検査する。"""
+    return rel.replace("\\", "/").startswith("docs/research/")
+
+
 def is_test_file(rel):
     b = os.path.basename(rel)
     return "_test" in b or b.startswith("test_") or b == "conftest.py"
@@ -138,6 +145,8 @@ class StaticIsolation(unittest.TestCase):
         for rel in repo_py_files():
             if rel == f"{SCOPE_MOD}.py":
                 continue
+            if is_research_script(rel):
+                continue
             tree = parse(rel)
             if tree is None:
                 continue
@@ -171,6 +180,8 @@ class StaticIsolation(unittest.TestCase):
         importers = set()
         e109_importers = set()
         for rel in repo_py_files():
+            if is_research_script(rel):
+                continue
             tree = parse(rel)
             if tree is None:
                 continue

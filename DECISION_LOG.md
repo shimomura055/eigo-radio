@@ -22261,3 +22261,7 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 ## 2026-10-24 FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01 委任_26 Fable判断(Trial_05 gating基準の是正・Stage 2実行)
 - **判断(Fable)**: 事前宣言の「THIN<=B0+1」はB0がhard-coreで10/12 FAIL_LITのため機能しない。Stage 2進行のgating基準を「R 12出力で(FAIL_LIT+FAIL)=0かつTHIN<=2かつ2/3以上失敗KP 0、held-out悪化0」に是正(X2p確定値を見た後の設定である点を開示。Trialの進行判断でありユーザー定義品質水準の変更ではない)。X2p(R PASS11/THIN1/FAIL系0、held-out悪化0)は満たすためStage 2(non-R 54KP x X2p 1rep)を実行。
 - **結果**: 費用cap16.0円で自動HALT、21job/43KP完了(4.054円)、残11KP未実行。VALIDATED判定なし。記録=docs/research/FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01/TRIAL_DESIGN_06.md(4-追記)・TRIAL_05/TRIAL_RESULT_05.md・BUDGET_LOG_01.md。Production変更0。
+
+## 2026-10-24 FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01 委任_27 Fable判断(A-1配線の受入は是正後・配線は維持)
+- **判断(Fable)**: 委任_24照合でOpus条件C必須修正W-03が未充足(validatorが`not that bad`・`between you and me`・`this year`・`that same X`・`take that good advice`・`excuse me/beats me`を受理)。承認済み仕様(A-1)内の不具合是正(区分B)であり、PRODUCTION_WIRED受入は是正後。配線(4128fffeb)は既定ONのまま維持(runtime実測WRONG 0/44で実害観測なし、是正は受理範囲を狭めるだけ)。W-02相違(辞書に無い語の簡易規則フォールバック、複数発音の先頭のみ)もOpus案へ合わせる。
+- **実施(Sonnet)**: er105のreference_pair_okにW-03(a)〜(d)、starts_with_vowel_sound/consonantを保守化(W-02)。replayで変化0、test57件OK、全回帰の他agent起因の恒常失敗を最小修正。記録=docs/research/FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01/PROD_WIRING_EVIDENCE_09.md、docs/research/REGRESSION_BASELINE_2026-10-24.md。Production Prompt/template変更0・API 0。

@@ -141,6 +141,61 @@ class TestA1ReferenceWord(unittest.TestCase):
 # ==================================================================
 # 課題②: possessor_roles検証・role条件付き受理・revertのみ
 # ==================================================================
+class TestA1ValidatorTighteningW03W02(unittest.TestCase):
+    """委任_27: Opus条件C必須修正W-03(置換しない条件のvalidator決定論却下)とW-02(辞書に無い語は不許可・複数発音は保守的)。
+    template(5(a)(b)の『置換しない』列挙)はvalidatorより広くない: validatorはtemplate列挙+時間名詞・same/other/very・me系固定表現・不可算の後方語を追加で却下する(受理範囲を狭めるのみ)。"""
+    NEG = [("not a bad", "not that bad"), ("between someone and someone", "between you and me"), ("between you and someone", "between you and me"),
+           ("a year", "this year"), ("a week", "this week"), ("a weekend", "this weekend"), ("a month", "that month"), ("a morning", "this morning"),
+           ("a same team", "that same team"), ("an other idea", "that other idea"), ("a very day", "that very day"),
+           ("take a good advice", "take that good advice"), ("take a good information", "take that good information"),
+           ("excuse someone", "excuse me"), ("beats someone", "beats me"), ("trust someone", "trust me"), ("lucky someone", "lucky me"),
+           ("isn't a bad", "isn't that bad"), ("all a idea", "all that idea"), ("just a step", "just that step"), ("at a step", "at that step"),
+           ("with a idea", "with that idea"), ("like a line", "like that line"), ("quite a step", "quite that step")]
+    POS = [("draw a line", "draw that line"), ("float an idea", "float that idea"), ("take a step", "take that step"), ("make a call", "make that call"),
+           ("pull someone under", "pulled him under"), ("tell someone the truth", "told her the truth"), ("close around someone", "close around me"),
+           ("give someone a hand", "gave him a hand")]
+
+    def test_negative_cases_rejected(self):
+        for key, disp in self.NEG:
+            with self.subTest(key=key, disp=disp):
+                self.assertFalse(ft.is_valid_inflection_normalization(key, disp))
+                for reason in ("generalize_reference_word", "generalize_person_dependent_reference", "lemma_normalization"):
+                    self.assertFalse(kc._is_valid_fulltext_normalization(key, disp, reason))
+
+    def test_positive_cases_kept(self):
+        for key, disp in self.POS:
+            with self.subTest(key=key):
+                self.assertTrue(ft.is_valid_inflection_normalization(key, disp))
+
+    def test_context_before_window_is_used(self):
+        # 窓の外の直前語でも除外が効く(窓がthatから始まる場合)
+        self.assertFalse(ft.is_valid_inflection_normalization("a bad", "not that bad day"))
+        self.assertTrue(ft.is_valid_inflection_normalization("draw a line", "they draw that line now"))
+
+    def test_w02_unknown_word_is_not_allowed(self):
+        self.assertFalse(ft.starts_with_vowel_sound("zzqxv"))
+        self.assertFalse(ft.starts_with_consonant_sound("zzqxv"))
+        self.assertFalse(ft.is_valid_inflection_normalization("draw a zzqxv", "draw that zzqxv"))
+        self.assertFalse(ft.is_valid_inflection_normalization("draw an zzqxv", "draw that zzqxv"))
+
+    def test_w02_dictionary_exception_is_safe(self):
+        import pronouncing
+        with mock.patch.object(pronouncing, "phones_for_word", side_effect=RuntimeError("boom")):
+            self.assertFalse(ft.starts_with_vowel_sound("idea"))
+            self.assertFalse(ft.starts_with_consonant_sound("line"))
+            self.assertFalse(ft.is_valid_inflection_normalization("draw a line", "draw that line"))
+
+    def test_w02_multiple_pronunciations_must_all_match(self):
+        import pronouncing
+        with mock.patch.object(pronouncing, "phones_for_word", return_value=["AH0 B", "B AH0"]):
+            self.assertFalse(ft.starts_with_vowel_sound("x"))
+            self.assertFalse(ft.starts_with_consonant_sound("x"))
+        with mock.patch.object(pronouncing, "phones_for_word", return_value=["AH0 B", "EY1 B"]):
+            self.assertTrue(ft.starts_with_vowel_sound("x"))
+        with mock.patch.object(pronouncing, "phones_for_word", return_value=["B AH0", "K AH0"]):
+            self.assertTrue(ft.starts_with_consonant_sound("x"))
+
+
 class TestPossessorRolesPostprocess(unittest.TestCase):
     def test_self_one_s_unchanged(self):
         o = [_orig(1, "lost his temper")]

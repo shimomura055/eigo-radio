@@ -699,7 +699,10 @@ class AbcGoldenTests(unittest.TestCase):
                                          "er019_nws2_eval_01.py",
                                          # FAMILY-Y-VOICES-DESIGN-01 委任_05のDEV/Trial専用script(Family Y音声Trial: 完了runのtts_generation_results.jsonの本文segment entryを
                                          # 読むのみ[KP英語Store entryは読まない]。Store entry/Production出力へ書き戻さない。Production到達経路なし=test_no_production_reference)
-                                         "er110_family_y_audio_report_01.py", "er110_family_y_audio_trial_01.py"}, readers)
+                                         "er110_family_y_audio_report_01.py", "er110_family_y_audio_trial_01.py",
+                                         # 委任_27(2026-10-24): Family Y persona音声Trial(DEV/Trial専用)。y_style_gateがY本文4segment(segs[name])のfallback_usedを読むのみ
+                                         # (KP英語Store entryは読まない・書込みなし[書込みはY出力dirのgate結果のみ])。Production到達経路なし
+                                         "er110_family_y_persona_audio_trial_01.py"}, readers)
 
 
 # ============================================================

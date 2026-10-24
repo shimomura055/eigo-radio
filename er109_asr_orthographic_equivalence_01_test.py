@@ -213,7 +213,7 @@ class ProductionIsolation(unittest.TestCase):
         offenders = []
         for p in glob.glob(os.path.join(ROOT, "*.py")):
             base = os.path.basename(p)
-            if base.startswith("er109_"):
+            if base.startswith("er109_") or "_test" in base:   # 委任_27: testファイル(Production外。例: er012_b_open479_xz_segment_id_test_01.py=OPEN-479がrollback flag確認でimport)は対象外
                 continue
             try:
                 tree = ast.parse(open(p, encoding="utf-8").read())

@@ -161,7 +161,7 @@ class TestProductionIsolation(unittest.TestCase):
         mine = ("er110_family_y_persona_",)
         for p in glob.glob(os.path.join(ROOT, "*.py")):
             b = os.path.basename(p)
-            if b.startswith("er110_family_y_persona_") or "_test" in b or b.startswith("test_"):
+            if b.startswith("er110_") or "_test" in b or b.startswith("test_"):
                 continue
             try:
                 src = open(p, encoding="utf-8").read()

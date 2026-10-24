@@ -230,7 +230,7 @@ def test_no_production_reference():
     mods = ("er110_family_y_persona_text_trial_01", "er110_family_y_persona_audio_trial_01")
     allowed = {f"{m}.py" for m in mods} | {f"{m}_run.py" for m in mods} | {f"{m}_test_01.py" for m in mods} | {f"{m}_page_01.py" for m in mods}
     for f in glob.glob("*.py"):
-        if f in allowed or f.startswith("er110_family_y_persona_"):
+        if f in allowed or f.startswith("er110_"):   # 委任_27: er110_*はY自身のDEV/Trial module(例: er110_family_y_opinion_based_01.py。Production到達なし)
             continue
         s = open(f, encoding="utf-8", errors="ignore").read()
         for m in mods:
