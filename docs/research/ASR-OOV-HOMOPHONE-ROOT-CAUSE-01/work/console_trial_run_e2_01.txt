@@ -1,0 +1,31 @@
+== 1. 本run Adv part3 の8 attempt (Primary転写)
+1 TRUE_CONTENT_MISMATCH -> E2_LEDGER_PHONEME_ACCEPT ('gacha', 'gotcha', ['G', 'AA', 'CH', 'AH'])
+2 TRUE_CONTENT_MISMATCH -> E2_LEDGER_PHONEME_ACCEPT ('gacha', 'gotcha', ['G', 'AA', 'CH', 'AH'])
+3 TRUE_CONTENT_MISMATCH -> NOT_SINGLE_REPLACE None
+4 TRUE_CONTENT_MISMATCH -> NOT_SINGLE_REPLACE None
+5 TRUE_CONTENT_MISMATCH -> E2_LEDGER_PHONEME_ACCEPT ('gacha', 'gotcha', ['G', 'AA', 'CH', 'AH'])
+6 TRUE_CONTENT_MISMATCH -> NOT_SINGLE_REPLACE None
+7 TRUE_CONTENT_MISMATCH -> NOT_SINGLE_REPLACE None
+8 TRUE_CONTENT_MISMATCH -> E2_LEDGER_PHONEME_ACCEPT ('gacha', 'gotcha', ['G', 'AA', 'CH', 'AH'])
+== 2. 合成負例
+gacha->gotcha(単独差=正)               base=TRUE_CONTENT_MISMATCH      accepted=True E2_LEDGER_PHONEME_ACCEPT
+gacha->gutter                      base=TRUE_CONTENT_MISMATCH      accepted=False NO_PHONEME_MATCH
+gacha->gadget                      base=TRUE_CONTENT_MISMATCH      accepted=False NO_PHONEME_MATCH
+gacha->gotta                       base=TRUE_CONTENT_MISMATCH      accepted=False NO_PHONEME_MATCH
+gacha->catcher                     base=TRUE_CONTENT_MISMATCH      accepted=False NO_PHONEME_MATCH
+gacha->gatcha(CMU外)                base=TRUE_CONTENT_MISMATCH      accepted=False ASR_WORD_NOT_IN_CMU
+gacha->gaycha(CMU外)                base=TRUE_CONTENT_MISMATCH      accepted=False ASR_WORD_NOT_IN_CMU
+gacha脱落                            base=TRUE_CONTENT_MISMATCH      accepted=False NOT_SINGLE_REPLACE
+gacha->got you(2語)                 base=TRUE_CONTENT_MISMATCH      accepted=False NOT_1TO1
+gacha->gotcha+内容語差                 base=TRUE_CONTENT_MISMATCH      accepted=False NOT_SINGLE_REPLACE
+gacha->gotcha+数値差                  base=TRUE_CONTENT_MISMATCH      accepted=False NOT_ELIGIBLE:TRUE_CONTENT_MISMATCH
+gacha->gotcha+否定                   base=TRUE_CONTENT_MISMATCH      accepted=False NOT_ELIGIBLE:TRUE_CONTENT_MISMATCH
+gacha->gotcha+語脱落(oh)              base=TRUE_CONTENT_MISMATCH      accepted=False NOT_SINGLE_REPLACE
+gacha->gotcha+you've->you          base=TRUE_CONTENT_MISMATCH      accepted=False NOT_SINGLE_REPLACE
+gacha->gotcha gotcha(重複)           base=TRUE_CONTENT_MISMATCH      accepted=False NOT_1TO1
+== 3. 保存済み全Primary非PASS行で再判定(現Ledger全件を『開始前』扱い=最大緩和側)
+Ledger読み付きOOVを含む非PASSユニークペア: 110
+{'NO_PHONEME_MATCH': 39, 'NOT_1TO1': 6, 'NOT_SINGLE_REPLACE': 23, 'ASR_WORD_NOT_IN_CMU': 29, 'E2_LEDGER_PHONEME_ACCEPT': 3, 'NO_C2_CANDIDATE': 4, 'NOT_ELIGIBLE': 4, 'POST_CHECK_FAIL': 1, 'BASE_PASS': 1}
+ ACCEPT ['user_test_news_2ep_01', 'space_weapons'] full_story_part1 2 meink <- mink ['M', 'IH', 'NG', 'K'] ASR_VALIDATION_UNCERTAIN STOPPED
+ ACCEPT ['family_x_audio_production_wiring_01', 'word_gacha__run_wg_01'] topic_intro 1 gacha <- gotcha ['G', 'AA', 'CH', 'AH'] PASS_WITH_PRONUNCIATION_ALARM OK
+ ACCEPT ['family_x_audio_production_wiring_01', 'word_gacha__run_wg_01'] full_story_part3 1 gacha <- gotcha ['G', 'AA', 'CH', 'AH'] TRUE_CONTENT_MISMATCH OK

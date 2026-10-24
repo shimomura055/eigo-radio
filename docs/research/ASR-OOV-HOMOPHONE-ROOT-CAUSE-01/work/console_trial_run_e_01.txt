@@ -1,0 +1,38 @@
+== 1. 本run Adv part3 の8 attempt(Primary転写)
+1 TRUE_CONTENT_MISMATCH -> PROMOTED_BUT_NO_M1:F1_RESIDUAL_CONTENT []
+2 TRUE_CONTENT_MISMATCH -> PROMOTED_BUT_NO_M1:MULTI_CANDIDATE_NO_MATCH []
+3 TRUE_CONTENT_MISMATCH -> UNCHANGED:non_backed_content_diff []
+4 TRUE_CONTENT_MISMATCH -> UNCHANGED:non_backed_content_diff []
+5 TRUE_CONTENT_MISMATCH -> PROMOTED_BUT_NO_M1:MULTI_CANDIDATE_NO_MATCH []
+6 TRUE_CONTENT_MISMATCH -> UNCHANGED:non_backed_content_diff []
+7 TRUE_CONTENT_MISMATCH -> UNCHANGED:non_backed_content_diff []
+8 TRUE_CONTENT_MISMATCH -> PROMOTED_BUT_NO_M1:MULTI_CANDIDATE_NO_MATCH []
+== 2. 合成負例(誤PASS検査): 実際の誤発音/別語/内容差が混じる転写が受理されないこと
+gacha->gotcha(正)                         base=TRUE_CONTENT_MISMATCH        outcome=PROMOTED_BUT_NO_M1:F1_RESIDUAL_CONTENT
+gacha->gutter(別語)                        base=TRUE_CONTENT_MISMATCH        outcome=PROMOTED_BUT_NO_M1:F1_RESIDUAL_CONTENT
+gacha->gadget(別語)                        base=TRUE_CONTENT_MISMATCH        outcome=PROMOTED_BUT_NO_M1:F1_RESIDUAL_CONTENT
+gacha->gotta(別語)                         base=TRUE_CONTENT_MISMATCH        outcome=PROMOTED_BUT_NO_M1:F1_RESIDUAL_CONTENT
+gacha->gatcha(CMU未収録の綴り)                 base=TRUE_CONTENT_MISMATCH        outcome=PROMOTED_BUT_NO_M1:F1_RESIDUAL_CONTENT
+gacha->gaycha(誤発音様・CMU未収録)               base=TRUE_CONTENT_MISMATCH        outcome=PROMOTED_BUT_NO_M1:F1_RESIDUAL_CONTENT
+gacha脱落                                  base=TRUE_CONTENT_MISMATCH        outcome=PROMOTED_BUT_NO_M1:F1_RESIDUAL_CONTENT
+gacha->gotcha + 別の内容語差(rare->rear)       base=TRUE_CONTENT_MISMATCH        outcome=UNCHANGED:non_backed_content_diff
+gacha->gotcha + 数値差                      base=TRUE_CONTENT_MISMATCH        outcome=UNCHANGED:TRUE_CONTENT_MISMATCH
+gacha->gotcha + 否定追加                     base=TRUE_CONTENT_MISMATCH        outcome=PROMOTED_BUT_NO_M1:F1_RESIDUAL_CONTENT
+gacha->got you                           base=TRUE_CONTENT_MISMATCH        outcome=PROMOTED_BUT_NO_M1:F1_RESIDUAL_CONTENT
+gacha->gotcha gotcha(重複)                 base=TRUE_CONTENT_MISMATCH        outcome=PROMOTED_BUT_NO_M1:F1_RESIDUAL_CONTENT
+== 3. 保存済み全Primary NG行(Ledgerに読みがあるOOV語がdiffに関与する行)での再判定
+Ledger読み付きOOV語を含む『Primary非PASS』ユニーク(canonical,asr)ペア: 110
+{'UNCERTAIN_NO_M1': 76, 'UNCHANGED': 20, 'PROMOTED_BUT_NO_M1': 2, 'M1_ACCEPT(existing_gate)': 11, 'BASE_PASS': 1}
+  {'src': 'er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/b1b/audit/tts_generation_results.json', 'seg': 'full_story_part3', 'attempt': 1, 'outcome': 'PROMOTED_BUT_NO_M1:F1_RESIDUAL_CONTENT', 'subs': [], 'stored_cls': 'TRUE_CONTENT_MISMATCH', 'final_status': 'OK'}
+  {'src': 'er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/b1b/audit/tts_generation_results.json', 'seg': 'in_one_line', 'attempt': 1, 'outcome': 'PROMOTED_BUT_NO_M1:F1_RESIDUAL_CONTENT', 'subs': [], 'stored_cls': 'TRUE_CONTENT_MISMATCH', 'final_status': 'OK'}
+  {'src': 'er026_output/family_z_production_e2e_01/melos/run_e2e_01/b1b/audit/tts_generation_results.json', 'seg': 'full_story_part1_c1', 'attempt': 3, 'outcome': 'M1_ACCEPT(existing_gate)', 'subs': [('mello', 'melo', 'melos', 'C2_ledger_alt')], 'stored_cls': 'CONNECTED_SPEECH_ACCEPT', 'final_status': 'OK'}
+  {'src': 'er026_output/family_z_production_e2e_01/melos/run_e2e_01/b1b/audit/tts_generation_results.json', 'seg': 'full_story_part1_c20', 'attempt': 2, 'outcome': 'M1_ACCEPT(existing_gate)', 'subs': [('mellow', 'melo', 'melos', 'C2_ledger_alt')], 'stored_cls': 'CONNECTED_SPEECH_ACCEPT', 'final_status': 'OK'}
+  {'src': 'er026_output/family_z_production_e2e_01/melos/run_e2e_01/b1b/audit/tts_generation_results.json', 'seg': 'full_story_part2_c1', 'attempt': 2, 'outcome': 'M1_ACCEPT(existing_gate)', 'subs': [('mellow', 'melo', 'melos', 'C2_ledger_alt')], 'stored_cls': 'ASR_VALIDATION_UNCERTAIN', 'final_status': 'OK'}
+  {'src': 'er026_output/family_z_production_e2e_01/melos/run_e2e_01/b1b/audit/tts_generation_results.json', 'seg': 'full_story_part2_c2', 'attempt': 1, 'outcome': 'M1_ACCEPT(existing_gate)', 'subs': [('mello', 'melo', 'melos', 'C2_ledger_alt')], 'stored_cls': 'ASR_VALIDATION_UNCERTAIN', 'final_status': 'OK'}
+  {'src': 'er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/audit/tts_generation_results.json', 'seg': 'full_story_part1_c5', 'attempt': 1, 'outcome': 'M1_ACCEPT(existing_gate)', 'subs': [('mello', 'melo', 'melos', 'C2_ledger_alt')], 'stored_cls': 'SECONDARY_ASR_CORROBORATED_MATCH', 'final_status': 'STOPPED'}
+  {'src': 'er026_output/family_z_production_e2e_01/melos/run_e2e_03/a2/audit/tts_generation_results.json', 'seg': 'full_story_part1_c5', 'attempt': 1, 'outcome': 'M1_ACCEPT(existing_gate)', 'subs': [('mello', 'melo', 'melos', 'C2_ledger_alt')], 'stored_cls': 'ASR_VALIDATION_UNCERTAIN', 'final_status': 'OK'}
+  {'src': 'er026_output/family_z_production_e2e_01/melos/run_e2e_03/b1b/audit/tts_generation_results.json', 'seg': 'full_story_part2_c1', 'attempt': 1, 'outcome': 'M1_ACCEPT(existing_gate)', 'subs': [('mello', 'melo', 'melos', 'C2_ledger_alt')], 'stored_cls': 'ASR_VALIDATION_UNCERTAIN', 'final_status': 'OK'}
+  {'src': 'er026_output/family_z_production_e2e_01/melos/run_e2e_06/a2/audit/tts_generation_results.json', 'seg': 'full_story_part1_c5', 'attempt': 1, 'outcome': 'M1_ACCEPT(existing_gate)', 'subs': [('mello', 'melo', 'melos', 'C2_ledger_alt')], 'stored_cls': 'ASR_VALIDATION_UNCERTAIN', 'final_status': 'OK'}
+  {'src': 'er026_output/family_z_production_e2e_01/melos/run_pnap_01/b1b/audit/tts_generation_results.json', 'seg': 'full_story_part1_c5', 'attempt': 1, 'outcome': 'M1_ACCEPT(existing_gate)', 'subs': [('mello', 'melo', 'melos', 'C2_ledger_alt')], 'stored_cls': 'ASR_VALIDATION_UNCERTAIN', 'final_status': 'OK'}
+  {'src': 'er058_output/unified_all_roles_production_wiring_01/evidence_06b/zep2/run/b1b/audit/tts_generation_results.json', 'seg': 'comment_1', 'attempt': 1, 'outcome': 'M1_ACCEPT(existing_gate)', 'subs': [('mello', 'melo', 'melos', 'C2_ledger_alt')], 'stored_cls': 'ASR_VALIDATION_UNCERTAIN', 'final_status': 'OK'}
+  {'src': 'er058_output/unified_all_roles_production_wiring_01/evidence_06b/zep2/run/b1b/audit/tts_generation_results.json', 'seg': 'full_story_part1_c1', 'attempt': 1, 'outcome': 'M1_ACCEPT(existing_gate)', 'subs': [('mello', 'melo', 'melos', 'C2_ledger_alt')], 'stored_cls': 'SECONDARY_ASR_CORROBORATED_MATCH', 'final_status': 'OK'}
