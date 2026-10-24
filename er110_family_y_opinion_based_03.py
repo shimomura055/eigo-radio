@@ -37,7 +37,7 @@ THEME_FILE = "docs/research/FAMILY-Y-VOICES-DESIGN-01/OPINION_BASED_02/THEME_DAT
 RUN_DIRS_03 = {"run_01": "er110_output/family_y_opinion_based_03/redelivery_fee/run_01",
                "run_02": "er110_output/family_y_opinion_based_03/redelivery_fee/run_02"}
 APPROVAL_FILE_03 = "er110_output/family_y_opinion_based_03/BUDGET_APPROVED.json"
-LEDGER_MD_03 = "docs/research/FAMILY-Y-VOICES-DESIGN-01/OPINION_BASED_02/BUDGET_LOG_OB_04.md"
+LEDGER_MD_03 = "docs/research/FAMILY-Y-VOICES-DESIGN-01/OPINION_BASED_02/BUDGET_LOG_OB_05.md"
 
 # Sheetに必須の欄(02のSheetが使う欄を正とする。relevant_termsは任意)
 REQUIRED_SHEET_KEYS = tuple(k for k in ob2.SHEETS_02["voice_2"].keys() if k not in ("tbs_only", "r2plus_only", "relevant_terms"))     # 02が使う全欄(人物像・stake・arcを含む)
