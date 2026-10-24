@@ -68,6 +68,27 @@ load_json, save_json, load_text, save_text = xr.load_json, xr.save_json, xr.load
 
 
 @contextlib.contextmanager
+def local_rewrite_recovery_under_er110(out_root: str = None):
+    """OPEN-493(委任_22): Y Trialが呼ぶ共通音声段(er003_v1_crosslevel_audio_02_common)はLocal Rewrite recoveryの出力先を
+    `er011_output/local_rewrite_recovery/...`に固定しているため、X系の領域を汚していた。with内だけ er020.run_local_rewrite_recovery の
+    out_dir を `<out_root>/local_rewrite_recovery/...`(er110_output配下)へ付け替える。共通module・er020は無変更(withを抜けると復元)。"""
+    import er020_tts_retry_local_rewrite_01 as rp
+    root = out_root or OUT_ROOT
+    orig = rp.run_local_rewrite_recovery
+
+    def _wrapped(*a, **kw):
+        od = kw.get("out_dir")
+        if isinstance(od, str) and od.replace("\\", "/").startswith("er011_output/"):
+            kw["out_dir"] = f"{root}/" + od.replace("\\", "/")[len("er011_output/"):]
+        return orig(*a, **kw)
+    rp.run_local_rewrite_recovery = _wrapped
+    try:
+        yield
+    finally:
+        rp.run_local_rewrite_recovery = orig
+
+
+@contextlib.contextmanager
 def tts_voice(voice_name: str):
     """X本文生成関数が呼出時に読む`p9a.VOICE_NAME`をprocess内で一時差替え(finallyで必ず復元)。Production fileは編集しない。"""
     p9a = xr.p9a
@@ -595,6 +616,11 @@ def assemble_level(theme: str, level: str, source_dir: str, voice_noslow: bool =
 # CLI
 # ============================================================
 def main() -> None:
+    with local_rewrite_recovery_under_er110():
+        _main()
+
+
+def _main() -> None:
     ap = argparse.ArgumentParser(description="Family Y Trial Phase 3 音声段(DEV/Trial専用)")
     ap.add_argument("--cand", required=True, choices=sorted(CANDIDATES))
     ap.add_argument("--stage", required=True, choices=["prep", "tts", "assemble", "all"])

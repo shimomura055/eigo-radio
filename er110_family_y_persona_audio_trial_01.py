@@ -579,6 +579,11 @@ def assemble_level(theme: str, level: str, source_dir: str, voice_noslow: bool =
 # CLI
 # ============================================================
 def main() -> None:
+    with old.local_rewrite_recovery_under_er110(OUT_ROOT):
+        _main()
+
+
+def _main() -> None:
     ap = argparse.ArgumentParser(description="Family Y Persona Trial 音声段(DEV/Trial専用)")
     ap.add_argument("--it", default="it1")
     ap.add_argument("--stage", required=True, choices=["prep", "tts", "assemble", "all"])

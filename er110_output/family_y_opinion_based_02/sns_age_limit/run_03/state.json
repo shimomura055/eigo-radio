@@ -1,0 +1,901 @@
+{
+  "management_id": "FAMILY-Y-VOICES-DESIGN-01",
+  "models": {
+    "writer": "gpt-6.1-sol",
+    "judge": "gpt-6-luna"
+  },
+  "stages": {
+    "gen": {
+      "voice_1": {
+        "text": "うちの小さい子が、刺激の強い動画や課金のしくみを、興味のままに選んでいた。話すと、じゃあやらないとなることも多い。分かってくれるんだと思う。でも、自分で危ないと気づけなかったら、私に助けてとも言えないかもしれない。そこが怖い、というか、放っておけない。動画やメッセージのアプリにも、年齢に応じたはっきりした決まりがほしい。見守りの設定も、もっと簡単だといい。ただ、長い移動で静かにしてほしい時には、子どもが見ていてくれると私も正直助かる。子どもを守るためなら迷わず決められると思うのに、どこまでならいいのか、私もまだすぐには答えが出ない。",
+        "monitors": {
+          "note": "記録専用。合否に使わない",
+          "chars": 269,
+          "sentences": 9,
+          "mean_sentence_chars": 29.9,
+          "max_sentence_chars": 50,
+          "numbers": [],
+          "exclamations": 0,
+          "question_marks": 0,
+          "role_words": [],
+          "interview_expr": [],
+          "self_intro_pattern": false,
+          "first_person_count": 3,
+          "ends_with_question": false,
+          "last_sentence": "子どもを守るためなら迷わず決められると思うのに、どこまでならいいのか、私もまだすぐには答えが出ない。"
+        },
+        "problems_per_try": [
+          []
+        ],
+        "prompt_sha256": "e09f64216f681c2c21ad7bf8e6a6d7890778d17a716dd0fcb8850791c467feb3"
+      },
+      "voice_2": {
+        "text": "年齢だけでSNSを使えなくされるのは、正直嫌だ。僕は高校の友達との連絡にも使っているから、アカウントを持つことまで禁止されるのは反対だ。使い方まで年齢で決められると、自分で考えて使ってみることもできない気がする。何でも自分で決めたいとは思うけど、だからって何があっても自分だけで何とかできるわけじゃなくて、悪口や脅しに遭ったらすぐ大人に頼りたいし、そこは自分でも都合がいいのかもしれない。だから、ただ使えなくするより、安全フィルターをかけて、危ないやり取りを防ぐほうを考えてほしい。友達との連絡は続けられるように、やり方を変えてほしい。",
+        "monitors": {
+          "note": "記録専用。合否に使わない",
+          "chars": 268,
+          "sentences": 6,
+          "mean_sentence_chars": 44.7,
+          "max_sentence_chars": 88,
+          "numbers": [],
+          "exclamations": 0,
+          "question_marks": 0,
+          "role_words": [],
+          "interview_expr": [],
+          "self_intro_pattern": false,
+          "first_person_count": 1,
+          "ends_with_question": false,
+          "last_sentence": "友達との連絡は続けられるように、やり方を変えてほしい。"
+        },
+        "problems_per_try": [
+          []
+        ],
+        "prompt_sha256": "734f2f18c17ca72fa0c84b84bff6427570591089078cdfe51857dadc2fbddd6a"
+      },
+      "voice_3": {
+        "text": "中学生の子どもに、いつ、どこまでSNSを使わせるかは、親のわたしが決めなければならない。年齢は大凡の目安だけれど、成長に合わせて使える範囲を段階的に広げる形がいいと思う。自分で考えられることも、身を守れる範囲も、育つにつれて変わっていくからね。まだ難しいことまで、使える年齢になったからと任せるのは心配なんだ。もし、うちの子が禁止の解ける日まで何の準備もせずにいて、急に使い始めるなら、事故につながる気がする。海に出る前には、泳ぐ練習がいる。誕生日を迎えたというだけで、泳ぎ方も知らないまま放り出される姿は、やはり気にかかる。",
+        "monitors": {
+          "note": "記録専用。合否に使わない",
+          "chars": 263,
+          "sentences": 7,
+          "mean_sentence_chars": 37.6,
+          "max_sentence_chars": 50,
+          "numbers": [],
+          "exclamations": 0,
+          "question_marks": 0,
+          "role_words": [],
+          "interview_expr": [],
+          "self_intro_pattern": false,
+          "first_person_count": 1,
+          "ends_with_question": false,
+          "last_sentence": "誕生日を迎えたというだけで、泳ぎ方も知らないまま放り出される姿は、やはり気にかかる。"
+        },
+        "problems_per_try": [
+          []
+        ],
+        "prompt_sha256": "bcd08246e528f27f07d13cc330fcf3aff4efa688afff6a1a5e0725abd1de6bf3"
+      }
+    },
+    "map1": {
+      "voice_1": {
+        "slot": "voice_1",
+        "n_sentences": 9,
+        "n_unmapped": 0,
+        "unmapped_idx": [],
+        "tbs_only_idx": [
+          7
+        ],
+        "rows": [
+          {
+            "idx": 0,
+            "text": "うちの小さい子が、刺激の強い動画や課金のしくみを、興味のままに選んでいた。",
+            "source_ids": [
+              "ONE_a"
+            ],
+            "supplement_kinds": [
+              "年代・立場の手がかり"
+            ],
+            "is_event_claim": true,
+            "event_like": true,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "選ぶ出来事はONE_aに基づき、「小さい子」は年代の補い。"
+          },
+          {
+            "idx": 1,
+            "text": "話すと、じゃあやらないとなることも多い。",
+            "source_ids": [
+              "ONE_a"
+            ],
+            "supplement_kinds": [],
+            "is_event_claim": true,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "話すとやめることが多いという内容に基づく。"
+          },
+          {
+            "idx": 2,
+            "text": "分かってくれるんだと思う。",
+            "source_ids": [
+              "ONE_a"
+            ],
+            "supplement_kinds": [
+              "感情の言い方"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "やめる反応を受けた理解の実感としての補い。"
+          },
+          {
+            "idx": 3,
+            "text": "でも、自分で危ないと気づけなかったら、私に助けてとも言えないかもしれない。",
+            "source_ids": [
+              "ONE_f"
+            ],
+            "supplement_kinds": [
+              "仮定・意見の言い換え"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "危険に気づけず助けを求められない可能性に基づく。"
+          },
+          {
+            "idx": 4,
+            "text": "そこが怖い、というか、放っておけない。",
+            "source_ids": [
+              "ONE_f"
+            ],
+            "supplement_kinds": [
+              "感情の言い方",
+              "仮定・意見の言い換え"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "危険への懸念を感情と立場の表現にしたもの。"
+          },
+          {
+            "idx": 5,
+            "text": "動画やメッセージのアプリにも、年齢に応じたはっきりした決まりがほしい。",
+            "source_ids": [
+              "ONE_f"
+            ],
+            "supplement_kinds": [
+              "仮定・意見の言い換え"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "危険への懸念に結びつけた決まりへの意見。"
+          },
+          {
+            "idx": 6,
+            "text": "見守りの設定も、もっと簡単だといい。",
+            "source_ids": [
+              "ONE_c"
+            ],
+            "supplement_kinds": [],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "見守り設定を簡単にしてほしいという意見に基づく。"
+          },
+          {
+            "idx": 7,
+            "text": "ただ、長い移動で静かにしてほしい時には、子どもが見ていてくれると私も正直助かる。",
+            "source_ids": [
+              "ONE_d"
+            ],
+            "supplement_kinds": [],
+            "is_event_claim": true,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "長い移動中に子どもが見ていると助かるという内容に基づく。"
+          },
+          {
+            "idx": 8,
+            "text": "子どもを守るためなら迷わず決められると思うのに、どこまでならいいのか、私もまだすぐには答えが出ない。",
+            "source_ids": [
+              "ONE_c",
+              "ONE_d"
+            ],
+            "supplement_kinds": [
+              "仮定・意見の言い換え"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "設定の難しさや制限時の負担を踏まえた迷いの表現。"
+          }
+        ],
+        "stage": "m1"
+      },
+      "voice_2": {
+        "slot": "voice_2",
+        "n_sentences": 6,
+        "n_unmapped": 1,
+        "unmapped_idx": [
+          1
+        ],
+        "tbs_only_idx": [],
+        "rows": [
+          {
+            "idx": 0,
+            "text": "年齢だけでSNSを使えなくされるのは、正直嫌だ。",
+            "source_ids": [
+              "TWO_a"
+            ],
+            "supplement_kinds": [
+              "感情の言い方"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "年齢による制限への反対に基づく。"
+          },
+          {
+            "idx": 1,
+            "text": "僕は高校の友達との連絡にも使っているから、アカウントを持つことまで禁止されるのは反対だ。",
+            "source_ids": [],
+            "supplement_kinds": [
+              "年代・立場の手がかり"
+            ],
+            "is_event_claim": true,
+            "event_like": false,
+            "reasons": [
+              "EVENT_CLAIM_WITHOUT_ID"
+            ],
+            "verdict": "UNMAPPED",
+            "note": "高校の友達との連絡に使っているという個人的経験は根拠メモにない。"
+          },
+          {
+            "idx": 2,
+            "text": "使い方まで年齢で決められると、自分で考えて使ってみることもできない気がする。",
+            "source_ids": [
+              "TWO_a",
+              "TWO_c"
+            ],
+            "supplement_kinds": [
+              "仮定・意見の言い換え"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "年齢制限への反対と、自分で判断する必要があるという意見に基づく。"
+          },
+          {
+            "idx": 3,
+            "text": "何でも自分で決めたいとは思うけど、だからって何があっても自分だけで何とかできるわけじゃなくて、悪口や脅しに遭ったらすぐ大人に頼りたいし、そこは自分でも都合がいいのかもしれない。",
+            "source_ids": [
+              "TWO_c",
+              "TWO_f"
+            ],
+            "supplement_kinds": [
+              "感情の言い方"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "自分で判断することと、悪口や脅しの際に大人につなげる意見に基づく。"
+          },
+          {
+            "idx": 4,
+            "text": "だから、ただ使えなくするより、安全フィルターをかけて、危ないやり取りを防ぐほうを考えてほしい。",
+            "source_ids": [
+              "TWO_a"
+            ],
+            "supplement_kinds": [
+              "仮定・意見の言い換え"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "年齢制限の代わりに安全フィルターを使う意見に基づく。"
+          },
+          {
+            "idx": 5,
+            "text": "友達との連絡は続けられるように、やり方を変えてほしい。",
+            "source_ids": [
+              "TWO_a"
+            ],
+            "supplement_kinds": [
+              "仮定・意見の言い換え"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "SNSでの連絡を保てるよう制限に反対する意見の言い換え。"
+          }
+        ],
+        "stage": "m1"
+      },
+      "voice_3": {
+        "slot": "voice_3",
+        "n_sentences": 7,
+        "n_unmapped": 2,
+        "unmapped_idx": [
+          0,
+          4
+        ],
+        "tbs_only_idx": [],
+        "rows": [
+          {
+            "idx": 0,
+            "text": "中学生の子どもに、いつ、どこまでSNSを使わせるかは、親のわたしが決めなければならない。",
+            "source_ids": [],
+            "supplement_kinds": [],
+            "is_event_claim": true,
+            "event_like": false,
+            "reasons": [
+              "NO_ID_NO_SUPPLEMENT",
+              "EVENT_CLAIM_WITHOUT_ID"
+            ],
+            "verdict": "UNMAPPED",
+            "note": "中学生の子どもを持つ親という個別の立場は根拠メモにない。"
+          },
+          {
+            "idx": 1,
+            "text": "年齢は大凡の目安だけれど、成長に合わせて使える範囲を段階的に広げる形がいいと思う。",
+            "source_ids": [
+              "THREE_a",
+              "THREE_b"
+            ],
+            "supplement_kinds": [],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "年齢を目安としつつ、成長や本人の力に応じて使える範囲を広げる意見。"
+          },
+          {
+            "idx": 2,
+            "text": "自分で考えられることも、身を守れる範囲も、育つにつれて変わっていくからね。",
+            "source_ids": [
+              "THREE_a"
+            ],
+            "supplement_kinds": [
+              "口調・言い回し"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "判断できる範囲と身を守れる範囲が成長段階で変わるという内容。「からね」は口調の補い。"
+          },
+          {
+            "idx": 3,
+            "text": "まだ難しいことまで、使える年齢になったからと任せるのは心配なんだ。",
+            "source_ids": [
+              "THREE_a"
+            ],
+            "supplement_kinds": [
+              "感情の言い方"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "年齢だけで判断を任せることへの心配は、理解できる範囲の違いを踏まえた意見。"
+          },
+          {
+            "idx": 4,
+            "text": "もし、うちの子が禁止の解ける日まで何の準備もせずにいて、急に使い始めるなら、事故につながる気がする。",
+            "source_ids": [],
+            "supplement_kinds": [
+              "仮定・意見の言い換え"
+            ],
+            "is_event_claim": true,
+            "event_like": false,
+            "reasons": [
+              "EVENT_CLAIM_WITHOUT_ID"
+            ],
+            "verdict": "UNMAPPED",
+            "note": "急な利用と事故の懸念はTHREE_dに沿うが、「うちの子」という個別の人物設定が加わっている。"
+          },
+          {
+            "idx": 5,
+            "text": "海に出る前には、泳ぐ練習がいる。",
+            "source_ids": [
+              "THREE_d"
+            ],
+            "supplement_kinds": [],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "SNSに触れる前の準備を、海に出る前の泳ぐ練習にたとえる内容。"
+          },
+          {
+            "idx": 6,
+            "text": "誕生日を迎えたというだけで、泳ぎ方も知らないまま放り出される姿は、やはり気にかかる。",
+            "source_ids": [
+              "THREE_d"
+            ],
+            "supplement_kinds": [
+              "感情の言い方",
+              "仮定・意見の言い換え"
+            ],
+            "is_event_claim": false,
+            "event_like": false,
+            "reasons": [],
+            "verdict": "OK",
+            "note": "準備なしに急に触れることへの懸念を、泳ぎを知らずに海へ出る比喩で言い換えている。"
+          }
+        ],
+        "stage": "m1"
+      }
+    }
+  },
+  "unmapped_regen": {
+    "voice_2": {
+      "before": "年齢だけでSNSを使えなくされるのは、正直嫌だ。僕は高校の友達との連絡にも使っているから、アカウントを持つことまで禁止されるのは反対だ。使い方まで年齢で決められると、自分で考えて使ってみることもできない気がする。何でも自分で決めたいとは思うけど、だからって何があっても自分だけで何とかできるわけじゃなくて、悪口や脅しに遭ったらすぐ大人に頼りたいし、そこは自分でも都合がいいのかもしれない。だから、ただ使えなくするより、安全フィルターをかけて、危ないやり取りを防ぐほうを考えてほしい。友達との連絡は続けられるように、やり方を変えてほしい。",
+      "after": "年齢だけでSNSの使い方をまとめて決められるのは、正直、嫌だ。高校生でもアカウントを持てなくなったら、友達と連絡を取るのに困ると思う。アカウントを持つことまで禁止するのには、僕は反対だ。僕は自分で考えて使いたいし、何をしていいかを大人に決めてもらうばかりでは困ると思うけど、悪口や脅しに遭ったらすぐ大人に頼りたいとも思うから、そこは自分でも都合がいいのかもしれない。危ないことを知らないまま使いたいわけじゃない。まずは安全フィルターをかけるとか、友達と連絡を取れるままで危ないものを避けられるように、使い方のほうを変えてほしい。",
+      "n_unmapped_before": 1,
+      "n_unmapped_after": 0,
+      "problems_per_try": [
+        []
+      ]
+    },
+    "voice_3": {
+      "before": "中学生の子どもに、いつ、どこまでSNSを使わせるかは、親のわたしが決めなければならない。年齢は大凡の目安だけれど、成長に合わせて使える範囲を段階的に広げる形がいいと思う。自分で考えられることも、身を守れる範囲も、育つにつれて変わっていくからね。まだ難しいことまで、使える年齢になったからと任せるのは心配なんだ。もし、うちの子が禁止の解ける日まで何の準備もせずにいて、急に使い始めるなら、事故につながる気がする。海に出る前には、泳ぐ練習がいる。誕生日を迎えたというだけで、泳ぎ方も知らないまま放り出される姿は、やはり気にかかる。",
+      "after": "中学生の子にSNSを使わせるなら、わたしは、その子の力に合うところから始めさせたい。年齢だけで区切るより、できれば、使える機能を少しずつ広げられる形がいいと思う。まだ自分では扱いきれないことまで、急にできるようにしなくていいんだ。気がかりなのは、禁止されていた年齢を過ぎれば、何の準備もなく使い始めることになるんじゃないか、ということだ。ただ触れずにいた間に、使える力までつくとは思えない。そうして急に使い始めれば、事故につながる気がする。海に出る前には泳ぐ練習が要るし、準備のできていない子を送り出すのは、やっぱり心配なんだ。",
+      "n_unmapped_before": 2,
+      "n_unmapped_after": 0,
+      "problems_per_try": [
+        []
+      ]
+    }
+  },
+  "structure": {
+    "tags_before": {
+      "tags": {
+        "voice_1": {
+          "voice": "voice_1",
+          "opening_type": "出来事・場面の描写から",
+          "development_type": "具体例から感情を経て主張へ",
+          "closing_type": "迷いを残して締める",
+          "evidence_ja": "冒頭は「うちの小さい子が、刺激の強い動画や課金のしくみを、興味のままに選んでいた」と状況を描写。締めは「私もまだすぐには答えが出ない」と迷いを残している。"
+        },
+        "voice_2": {
+          "voice": "voice_2",
+          "opening_type": "感情・本音の吐露から",
+          "development_type": "自分への突っ込みと本音を行き来する",
+          "closing_type": "約束・要求で締める",
+          "evidence_ja": "冒頭は「正直、嫌だ」と本音を表明。自分の希望と「そこは自分でも都合がいいのかもしれない」という突っ込みを行き来し、最後は「使い方のほうを変えてほしい」と要求している。"
+        },
+        "voice_3": {
+          "voice": "voice_3",
+          "opening_type": "主張・意見の表明から",
+          "development_type": "主張から具体例へ",
+          "closing_type": "場面・情景で締める",
+          "evidence_ja": "冒頭で「その子の力に合うところから始めさせたい」と主張。最後は「海に出る前には泳ぐ練習が要る」という情景を用いて締めている。"
+        }
+      },
+      "fire": {
+        "fired": false,
+        "pairs": [],
+        "regenerate_slot": null
+      }
+    },
+    "regen": null,
+    "tags_after": null
+  },
+  "gate_status": "SKIPPED_BUDGET",
+  "final_texts": {
+    "voice_1": "うちの小さい子が、刺激の強い動画や課金のしくみを、興味のままに選んでいた。話すと、じゃあやらないとなることも多い。分かってくれるんだと思う。でも、自分で危ないと気づけなかったら、私に助けてとも言えないかもしれない。そこが怖い、というか、放っておけない。動画やメッセージのアプリにも、年齢に応じたはっきりした決まりがほしい。見守りの設定も、もっと簡単だといい。ただ、長い移動で静かにしてほしい時には、子どもが見ていてくれると私も正直助かる。子どもを守るためなら迷わず決められると思うのに、どこまでならいいのか、私もまだすぐには答えが出ない。",
+    "voice_2": "年齢だけでSNSの使い方をまとめて決められるのは、正直、嫌だ。高校生でもアカウントを持てなくなったら、友達と連絡を取るのに困ると思う。アカウントを持つことまで禁止するのには、僕は反対だ。僕は自分で考えて使いたいし、何をしていいかを大人に決めてもらうばかりでは困ると思うけど、悪口や脅しに遭ったらすぐ大人に頼りたいとも思うから、そこは自分でも都合がいいのかもしれない。危ないことを知らないまま使いたいわけじゃない。まずは安全フィルターをかけるとか、友達と連絡を取れるままで危ないものを避けられるように、使い方のほうを変えてほしい。",
+    "voice_3": "中学生の子にSNSを使わせるなら、わたしは、その子の力に合うところから始めさせたい。年齢だけで区切るより、できれば、使える機能を少しずつ広げられる形がいいと思う。まだ自分では扱いきれないことまで、急にできるようにしなくていいんだ。気がかりなのは、禁止されていた年齢を過ぎれば、何の準備もなく使い始めることになるんじゃないか、ということだ。ただ触れずにいた間に、使える力までつくとは思えない。そうして急に使い始めれば、事故につながる気がする。海に出る前には泳ぐ練習が要るし、準備のできていない子を送り出すのは、やっぱり心配なんだ。"
+  },
+  "final_maps": {
+    "voice_1": {
+      "slot": "voice_1",
+      "n_sentences": 9,
+      "n_unmapped": 0,
+      "unmapped_idx": [],
+      "tbs_only_idx": [
+        7
+      ],
+      "rows": [
+        {
+          "idx": 0,
+          "text": "うちの小さい子が、刺激の強い動画や課金のしくみを、興味のままに選んでいた。",
+          "source_ids": [
+            "ONE_a"
+          ],
+          "supplement_kinds": [
+            "年代・立場の手がかり"
+          ],
+          "is_event_claim": true,
+          "event_like": true,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "選んでいた出来事はONE_aに基づき、「小さい子」は立場の補足。"
+        },
+        {
+          "idx": 1,
+          "text": "話すと、じゃあやらないとなることも多い。",
+          "source_ids": [
+            "ONE_a"
+          ],
+          "supplement_kinds": [],
+          "is_event_claim": true,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "話すとやめることも多いという内容に対応。"
+        },
+        {
+          "idx": 2,
+          "text": "分かってくれるんだと思う。",
+          "source_ids": [
+            "ONE_a"
+          ],
+          "supplement_kinds": [
+            "仮定・意見の言い換え"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "やめる反応への受け止めを言い換えている。"
+        },
+        {
+          "idx": 3,
+          "text": "でも、自分で危ないと気づけなかったら、私に助けてとも言えないかもしれない。",
+          "source_ids": [
+            "ONE_f"
+          ],
+          "supplement_kinds": [
+            "仮定・意見の言い換え"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "危険に気づけず助けを求められない可能性に対応。「私に」は語り手を助けの相手とする補足。"
+        },
+        {
+          "idx": 4,
+          "text": "そこが怖い、というか、放っておけない。",
+          "source_ids": [
+            "ONE_f"
+          ],
+          "supplement_kinds": [
+            "感情の言い方"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "危険への懸念を「怖い」「放っておけない」と表現している。"
+        },
+        {
+          "idx": 5,
+          "text": "動画やメッセージのアプリにも、年齢に応じたはっきりした決まりがほしい。",
+          "source_ids": [],
+          "supplement_kinds": [
+            "仮定・意見の言い換え"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "補った表現のみ",
+          "note": "年齢に応じた決まりを求める意見は根拠メモに明記されていない。"
+        },
+        {
+          "idx": 6,
+          "text": "見守りの設定も、もっと簡単だといい。",
+          "source_ids": [
+            "ONE_c"
+          ],
+          "supplement_kinds": [],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "見守り機能の設定を簡単にしてほしいという意見に対応。"
+        },
+        {
+          "idx": 7,
+          "text": "ただ、長い移動で静かにしてほしい時には、子どもが見ていてくれると私も正直助かる。",
+          "source_ids": [
+            "ONE_d"
+          ],
+          "supplement_kinds": [],
+          "is_event_claim": true,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "長い移動中、子どもが見ていると助かるという出来事に対応。"
+        },
+        {
+          "idx": 8,
+          "text": "子どもを守るためなら迷わず決められると思うのに、どこまでならいいのか、私もまだすぐには答えが出ない。",
+          "source_ids": [
+            "ONE_c",
+            "ONE_d",
+            "ONE_f"
+          ],
+          "supplement_kinds": [
+            "仮定・意見の言い換え"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "設定や制限、子どもの保護に関する迷いをまとめた意見。"
+        }
+      ],
+      "stage": "final"
+    },
+    "voice_2": {
+      "slot": "voice_2",
+      "n_sentences": 6,
+      "n_unmapped": 0,
+      "unmapped_idx": [],
+      "tbs_only_idx": [],
+      "rows": [
+        {
+          "idx": 0,
+          "text": "年齢だけでSNSの使い方をまとめて決められるのは、正直、嫌だ。",
+          "source_ids": [
+            "TWO_a"
+          ],
+          "supplement_kinds": [
+            "感情の言い方"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "年齢による制限への反対を、嫌だという言い方にしている。"
+        },
+        {
+          "idx": 1,
+          "text": "高校生でもアカウントを持てなくなったら、友達と連絡を取るのに困ると思う。",
+          "source_ids": [
+            "TWO_a",
+            "TWO_e"
+          ],
+          "supplement_kinds": [
+            "仮定・意見の言い換え"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "高校生のアカウント制限と、SNSで連絡を取ることへの懸念に基づく仮定。"
+        },
+        {
+          "idx": 2,
+          "text": "アカウントを持つことまで禁止するのには、僕は反対だ。",
+          "source_ids": [
+            "TWO_a",
+            "TWO_b"
+          ],
+          "supplement_kinds": [],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "年齢制限やSNS禁止など、強い制限への反対に基づく。"
+        },
+        {
+          "idx": 3,
+          "text": "僕は自分で考えて使いたいし、何をしていいかを大人に決めてもらうばかりでは困ると思うけど、悪口や脅しに遭ったらすぐ大人に頼りたいとも思うから、そこは自分でも都合がいいのかもしれない。",
+          "source_ids": [
+            "TWO_c",
+            "TWO_f"
+          ],
+          "supplement_kinds": [
+            "仮定・意見の言い換え"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "自分で判断することと、被害時に大人へつなぐ必要性を述べている。"
+        },
+        {
+          "idx": 4,
+          "text": "危ないことを知らないまま使いたいわけじゃない。",
+          "source_ids": [
+            "TWO_b"
+          ],
+          "supplement_kinds": [
+            "仮定・意見の言い換え"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "未成年への講習や呼びかけを求める意見を言い換えている。"
+        },
+        {
+          "idx": 5,
+          "text": "まずは安全フィルターをかけるとか、友達と連絡を取れるままで危ないものを避けられるように、使い方のほうを変えてほしい。",
+          "source_ids": [
+            "TWO_a"
+          ],
+          "supplement_kinds": [
+            "聞き手への呼びかけ・つなぎ"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "安全フィルターなどを代替策として求める意見に基づく。"
+        }
+      ],
+      "stage": "final"
+    },
+    "voice_3": {
+      "slot": "voice_3",
+      "n_sentences": 7,
+      "n_unmapped": 0,
+      "unmapped_idx": [],
+      "tbs_only_idx": [],
+      "rows": [
+        {
+          "idx": 0,
+          "text": "中学生の子にSNSを使わせるなら、わたしは、その子の力に合うところから始めさせたい。",
+          "source_ids": [
+            "THREE_b"
+          ],
+          "supplement_kinds": [
+            "年代・立場の手がかり"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "力に合わせて始める意見が根拠。中学生という立場を補っている。"
+        },
+        {
+          "idx": 1,
+          "text": "年齢だけで区切るより、できれば、使える機能を少しずつ広げられる形がいいと思う。",
+          "source_ids": [
+            "THREE_b"
+          ],
+          "supplement_kinds": [],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "子どもの力に合わせて段階的に機能を広げる意見。"
+        },
+        {
+          "idx": 2,
+          "text": "まだ自分では扱いきれないことまで、急にできるようにしなくていいんだ。",
+          "source_ids": [
+            "THREE_a",
+            "THREE_b"
+          ],
+          "supplement_kinds": [
+            "仮定・意見の言い換え"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "判断できる範囲や機能を段階に応じて変える意見の言い換え。"
+        },
+        {
+          "idx": 3,
+          "text": "気がかりなのは、禁止されていた年齢を過ぎれば、何の準備もなく使い始めることになるんじゃないか、ということだ。",
+          "source_ids": [
+            "THREE_d"
+          ],
+          "supplement_kinds": [
+            "感情の言い方"
+          ],
+          "is_event_claim": false,
+          "event_like": true,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "準備なく使い始める懸念が根拠。「気がかり」は感情の表現。"
+        },
+        {
+          "idx": 4,
+          "text": "ただ触れずにいた間に、使える力までつくとは思えない。",
+          "source_ids": [
+            "THREE_d"
+          ],
+          "supplement_kinds": [
+            "仮定・意見の言い換え"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "準備なしに使い始める危険性についての意見を言い換えている。"
+        },
+        {
+          "idx": 5,
+          "text": "そうして急に使い始めれば、事故につながる気がする。",
+          "source_ids": [
+            "THREE_d"
+          ],
+          "supplement_kinds": [
+            "感情の言い方"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "急に使い始めると事故につながるという意見が根拠。「気がする」は言い方の補い。"
+        },
+        {
+          "idx": 6,
+          "text": "海に出る前には泳ぐ練習が要るし、準備のできていない子を送り出すのは、やっぱり心配なんだ。",
+          "source_ids": [
+            "THREE_d"
+          ],
+          "supplement_kinds": [
+            "感情の言い方",
+            "仮定・意見の言い換え"
+          ],
+          "is_event_claim": false,
+          "event_like": false,
+          "reasons": [],
+          "verdict": "OK",
+          "note": "海に出る前の練習という比喩が根拠。送り出す不安は意見の言い換え。"
+        }
+      ],
+      "stage": "final"
+    }
+  },
+  "final_cost_jpy": 23.667,
+  "repetition_02": {
+    "voice_1": {
+      "note": "記録専用。合否に使わない。1サンプルで較正した簡易判定(目視確認なしに結論に使わない)",
+      "threshold": 0.3,
+      "n_sentences": 9,
+      "n_repeat_pairs": 0,
+      "repeat_pairs": [],
+      "contrast_turns": 2,
+      "last_vs_first_echo": false
+    },
+    "voice_2": {
+      "note": "記録専用。合否に使わない。1サンプルで較正した簡易判定(目視確認なしに結論に使わない)",
+      "threshold": 0.3,
+      "n_sentences": 6,
+      "n_repeat_pairs": 1,
+      "repeat_pairs": [
+        {
+          "i": 1,
+          "j": 2,
+          "overlap": 0.33,
+          "a": "高校生でもアカウントを持てなくなったら、友達と連絡を取るのに困ると思う。",
+          "b": "アカウントを持つことまで禁止するのには、僕は反対だ。"
+        }
+      ],
+      "contrast_turns": 3,
+      "last_vs_first_echo": false
+    },
+    "voice_3": {
+      "note": "記録専用。合否に使わない。1サンプルで較正した簡易判定(目視確認なしに結論に使わない)",
+      "threshold": 0.3,
+      "n_sentences": 7,
+      "n_repeat_pairs": 0,
+      "repeat_pairs": [],
+      "contrast_turns": 1,
+      "last_vs_first_echo": false
+    }
+  }
+}

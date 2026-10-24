@@ -187,29 +187,60 @@ def test_budget_cap_applied_from_argument(fake_env):
         ob2.run_pipeline_02(Fake(), rd, cap_jpy=0.2, ledger_md=led)           # 1call(0.5)で到達 -> 次の呼出前に止まる
 
 
-def test_main_requires_budget_approval_run_name_and_refuses_relaunch(tmp_path, monkeypatch):
+def test_main_requires_paid_flag_budget_approval_run_name_and_refuses_relaunch(tmp_path, monkeypatch):
+    import er003_v1_en_direct_vfl_01_generate as vfl01
+    calls = []
+    monkeypatch.setattr(vfl01, "get_client", lambda *a, **k: calls.append("get_client"))            # network/API入口。呼ばれたら記録
+    monkeypatch.setattr(ob2, "run_pipeline_02", lambda *a, **k: calls.append("run_pipeline_02"))
     monkeypatch.setattr(ob2, "APPROVAL_FILE", str(tmp_path / "none.json"))
-    monkeypatch.setattr(ob2, "RUN_DIRS_02", {"run_02a": str(tmp_path / "rd_a"), "run_02b": str(tmp_path / "rd_b")})
-    assert ob2.main("run_02a") == 6 and not os.path.exists(tmp_path / "rd_a")           # 承認が無ければAPI 0・ファイル0
-    assert ob2.main(None) == 7 and ob2.main("run_01") == 7 and ob2.main("../x") == 7      # run名は2つだけ
+    monkeypatch.setattr(ob2, "RUN_DIRS_02", {"run_02a": str(tmp_path / "rd_a"), "run_02b": str(tmp_path / "rd_b"), "run_03": str(tmp_path / "rd_c")})
+    assert ob2.main("run_02a") == 8 and not os.path.exists(tmp_path / "rd_a")           # --paid が無ければ起動しない(承認の有無に関係なくAPI 0・ファイル0)
+    assert ob2.main(None) == 7 and ob2.main("run_01") == 7 and ob2.main("../x") == 7      # run名は許可リストのみ
+    (tmp_path / "ok.json").write_text('{"cap_jpy": 30}', encoding="utf-8")
+    monkeypatch.setattr(ob2, "APPROVAL_FILE", str(tmp_path / "ok.json"))                  # 承認ファイルがあっても --paid が無ければ起動しない
+    assert ob2.main("run_03") == 8 and ob2.main("run_02b") == 8 and not os.path.exists(tmp_path / "rd_c")
+    assert calls == []                                                                     # testはpaid=Trueを与えない。API/network入口は一度も呼ばれない
     (tmp_path / "bad.json").write_text('{"cap_jpy": 0}', encoding="utf-8")
     assert ob2.read_cap(str(tmp_path / "bad.json")) is None and ob2.read_cap(str(tmp_path / "none.json")) is None
-    (tmp_path / "ok.json").write_text('{"cap_jpy": 30}', encoding="utf-8")
     assert ob2.read_cap(str(tmp_path / "ok.json")) == 30.0
     (tmp_path / "ok2.json").write_text('{"cap_jpy": 45, "runs": 2}', encoding="utf-8")
-    assert ob2.read_cap(str(tmp_path / "ok2.json")) == 22.5                              # 合計上限を2runで等分(並列runの合計がcapを超えない)
+    assert ob2.read_cap(str(tmp_path / "ok2.json")) == 22.5
     rd = tmp_path / "rd_a"
     rd.mkdir()
     (rd / "entry_point.json").write_text("{}", encoding="utf-8")
-    monkeypatch.setattr(ob2, "APPROVAL_FILE", str(tmp_path / "ok.json"))
-    assert ob2.main("run_02a") == 5
+    assert ob2.main("run_02a") == 5 and calls == []                                        # 起動済みrunは再起動不可
+
+
+def test_cli_guard_source_fixed():
+    src = open("er110_family_y_opinion_based_02.py", encoding="utf-8").read()
+    assert '"--paid" in _args' in src and "paid: bool = False" in src and "if not paid:" in src
+    assert src.index("if not paid:") < src.index("cap = read_cap()")               # 承認ファイル読取・client生成より前に止める
+
+
+def test_run03_definition_leak_countermeasure():
+    t = ob2.VOICE_PROMPT_OB2
+    assert "D. 【区別の定義】は、用語の意味を取り違えないための前提であり、語る中身ではない" in t and "同じたとえや言い回しは、一度使ったら語りの中で繰り返さない" in t
+    with ob2.patched_ob(10.0):
+        p1 = ob.build_voice_prompt_ob(ob2.WORLD_FRAME_02, "voice_1")
+        p2 = ob.build_voice_prompt_ob(ob2.WORLD_FRAME_02, "voice_2")
+        p3 = ob.build_voice_prompt_ob(ob2.WORLD_FRAME_02, "voice_3")
+    assert "段階的な制限:" not in p1 and "利用禁止:" not in p1 and "年齢による制限:" in p1        # V1には段階的な制限の定義を渡さない
+    assert "利用禁止:" in p2 and "段階的な制限:" not in p2
+    assert "段階的な制限:" in p3
+    assert ob.build_voice_prompt_ob is not ob2.build_voice_prompt_02                             # with を抜けたら元に戻る
+
+
+def test_run03_dirs_inside_er110_output_only():
+    for k, v in ob2.RUN_DIRS_02.items():
+        assert v.startswith("er110_output/"), (k, v)
+    assert "er011_output" not in open("er110_family_y_opinion_based_02.py", encoding="utf-8").read()
 
 
 def test_approval_file_if_present_is_recorded_decision():
     if not os.path.exists(ob2.APPROVAL_FILE):
         return
     d = json.load(open(ob2.APPROVAL_FILE, encoding="utf-8"))
-    assert d["approved_by"] and d["cap_jpy"] <= 45 and d["runs"] == 2
+    assert d["approved_by"] and d["cap_jpy"] <= 45 and d["runs"] in (1, 2)
 
 
 def test_isolation_no_importer_and_api_zero_on_import():
@@ -242,3 +273,21 @@ def test_01_and_existing_modules_unchanged():
     out = subprocess.run(["git", "diff", "--name-only", "HEAD", "--", "er110_family_y_opinion_based_01.py", "er110_family_y_text_trial_01.py",
                           "er110_family_y_persona_text_trial_01.py", "er110_family_y_persona_pipeline_01.py"], capture_output=True, text=True).stdout.strip()
     assert out == "", out
+
+
+def test_open493_local_rewrite_recovery_redirected_under_er110(tmp_path, monkeypatch):
+    """Y音声段は共通moduleが固定する er011_output 出力先を、er110_output配下へ付け替える(API 0)。"""
+    import er020_tts_retry_local_rewrite_01 as rp
+    import er110_family_y_audio_trial_01 as ya
+    import er110_family_y_persona_audio_trial_01 as pa
+    seen = []
+    monkeypatch.setattr(rp, "run_local_rewrite_recovery", lambda *a, **kw: seen.append(kw.get("out_dir")) or {"status": "X"})
+    orig = rp.run_local_rewrite_recovery
+    with ya.local_rewrite_recovery_under_er110(pa.OUT_ROOT):
+        rp.run_local_rewrite_recovery(segment_id="s", out_dir="er011_output/local_rewrite_recovery/t/a2")
+        rp.run_local_rewrite_recovery(segment_id="s", out_dir="er110_output/x/y")        # 既にer110配下ならそのまま
+    assert seen[0] == f"{pa.OUT_ROOT}/local_rewrite_recovery/t/a2" and seen[0].startswith("er110_output/") and seen[1] == "er110_output/x/y"
+    assert rp.run_local_rewrite_recovery is orig                                          # with を抜けたら復元
+    for f in ("er110_family_y_audio_trial_01.py", "er110_family_y_persona_audio_trial_01.py"):
+        src = open(f, encoding="utf-8").read()
+        assert "with local_rewrite_recovery_under_er110" in src or "with old.local_rewrite_recovery_under_er110" in src

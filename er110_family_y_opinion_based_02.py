@@ -29,7 +29,8 @@ import er110_family_y_persona_pipeline_01 as pl
 import er110_family_y_opinion_based_01 as ob
 
 MANAGEMENT_ID = ob.MANAGEMENT_ID
-RUN_DIRS_02 = {"run_02a": "er110_output/family_y_opinion_based_02/sns_age_limit/run_02a", "run_02b": "er110_output/family_y_opinion_based_02/sns_age_limit/run_02b"}
+RUN_DIRS_02 = {"run_02a": "er110_output/family_y_opinion_based_02/sns_age_limit/run_02a", "run_02b": "er110_output/family_y_opinion_based_02/sns_age_limit/run_02b",
+               "run_03": "er110_output/family_y_opinion_based_02/sns_age_limit/run_03"}
 RUN_DIR_02 = RUN_DIRS_02["run_02a"]     # 後方互換(testのmonkeypatch用)。main(run_name)が RUN_DIRS_02 から選ぶ
 LEDGER_DIR_02 = "docs/research/FAMILY-Y-VOICES-DESIGN-01/OPINION_BASED_01"
 APPROVAL_FILE = "er110_output/family_y_opinion_based_02/BUDGET_APPROVED.json"
@@ -163,6 +164,10 @@ def _v3():
 
 
 SHEETS_02 = {"voice_1": _v1(), "voice_2": _v2(), "voice_3": _v3()}
+# 委任_22(run_03): 世界設定の用語定義は、その人物の経験欄・主張に対応する用語だけを渡す(定義の内容がV1の意見として混入するのを防ぐ。Sheetのデータであり、コードに人物名の分岐はない)
+SHEETS_02["voice_1"]["relevant_terms"] = ["年齢による制限"]
+SHEETS_02["voice_2"]["relevant_terms"] = ["年齢による制限", "利用禁止"]
+SHEETS_02["voice_3"]["relevant_terms"] = ["年齢による制限", "段階的な制限"]
 
 for _s in SHEETS_02.values():
     for _x in _s["experiences"]:
@@ -180,7 +185,8 @@ OPENING_GUIDE_02["自分の状況・立場の描写から"] = "語り出しは�
 THINK_BLOCK = """【語る前の考え方(出力には書かない)】
 A. 先に「人物像」を確かめる。この人の立場・日々の関わり→切実なこと→経験→感情→価値観の順に思い浮かべ、その人から主張が出てくる形にする。先に主張があって、人物を当てはめるのではない。聞き手が「この人だから、こう考えるのだな」と感じられることを目指す。
 B. 一般論を並べない。制度や社会全体の説明、「〜するべきだ」の列挙は避け、この人の暮らしの言い方(自分はどうしてほしいか、どう困るか、何が気がかりか)にする。「べき」は、この人の立場からの望みとして言う。
-C. 展開は「立場 → 経験・気持ち → 葛藤(「矛盾・弱さ」がある人だけ) → 結び」の自然な流れにする。同じ主張・同じ葛藤・同じ結論を、言い回しだけ変えて繰り返さない。回数で数えるのではなく、各文が直前までの文に、新しい事実・気持ち・向きのどれかを足しているかで判断する。冒頭で言ったことを結びで言い直さず、結びは冒頭より先へ進んだ一言にする。葛藤は無理に解消せず、抱えたまま終えてよい。
+C. 展開は「立場 → 経験・気持ち → 葛藤(「矛盾・弱さ」がある人だけ) → 結び」の自然な流れにする。同じ主張・同じ葛藤・同じ結論を、言い回しだけ変えて繰り返さない。回数で数えるのではなく、各文が直前までの文に、新しい事実・気持ち・向きのどれかを足しているかで判断する。冒頭で言ったことを結びで言い直さず、結びは冒頭より先へ進んだ一言にする。葛藤は無理に解消せず、抱えたまま終えてよい。同じたとえや言い回しは、一度使ったら語りの中で繰り返さない。
+D. 【区別の定義】は、用語の意味を取り違えないための前提であり、語る中身ではない。定義にある内容(たとえば段階的に広げる形、禁止と制限の区別)を、経験・意見の欄に根拠のない、この人自身の考えとして述べない。この人の考えは、人物の欄の経験・意見・本音・芯にあるものだけで語る。
 
 """
 _RULE3_OLD = "語りの順序や結び方は決めず、この人の話し方から自然に決める。"
@@ -252,7 +258,19 @@ def repetition_report(text: str, threshold: float = REPEAT_OVERLAP_THRESHOLD) ->
 # ============================================================
 # 01 の runner を、02 の Sheet/Prompt/render/予算で動かす(with内だけ差し替え)
 # ============================================================
-_PATCH_KEYS = ("SHEETS", "VOICE_PROMPT_OB", "render_persona_ob", "WHO_JA", "OPENING_GUIDE", "BUDGET_STOP_JPY", "LEDGER_MD")
+_ORIG_BUILD = ob.build_voice_prompt_ob
+
+
+def build_voice_prompt_02(wf: dict, slot: str, emphasize: bool = False) -> str:
+    """区別の定義を、Sheetの relevant_terms にある用語だけに絞って 01 のbuilderへ渡す(relevant_terms未指定のSheetは全件のまま)。"""
+    terms = SHEETS_02[slot].get("relevant_terms")
+    wf2 = copy.deepcopy(wf)
+    if terms is not None:
+        wf2["distinctions"] = [d for d in wf2.get("distinctions", []) if d["term_ja"] in terms]
+    return _ORIG_BUILD(wf2, slot, emphasize)
+
+
+_PATCH_KEYS = ("SHEETS", "VOICE_PROMPT_OB", "render_persona_ob", "WHO_JA", "OPENING_GUIDE", "BUDGET_STOP_JPY", "LEDGER_MD", "build_voice_prompt_ob")
 
 
 @contextlib.contextmanager
@@ -260,6 +278,7 @@ def patched_ob(cap_jpy: float):
     saved = {k: getattr(ob, k) for k in _PATCH_KEYS}
     try:
         ob.SHEETS, ob.VOICE_PROMPT_OB, ob.render_persona_ob = SHEETS_02, VOICE_PROMPT_OB2, render_persona_ob2
+        ob.build_voice_prompt_ob = build_voice_prompt_02
         ob.WHO_JA, ob.OPENING_GUIDE, ob.BUDGET_STOP_JPY, ob.LEDGER_MD = WHO_JA_02, OPENING_GUIDE_02, float(cap_jpy), LEDGER_MD_02
         yield
     finally:
@@ -287,16 +306,19 @@ def read_cap(path: str = None):
         return None
 
 
-def main(run_name=None) -> int:
-    """run_name は RUN_DIRS_02 のキー(run_02a / run_02b)のみ。生成設定は同一で、run先と費用台帳だけが別(APIにseed指定はなく、差はサンプリングのばらつき)。"""
+def main(run_name=None, paid: bool = False) -> int:
+    """run_name は RUN_DIRS_02 のキー(run_02a / run_02b / run_03)のみ。有料runは paid=True(CLI `--paid`)かつ予算承認ファイルがある場合のみ(委任_22 起動ガード)。生成設定は同一で、run先と費用台帳だけが別(APIにseed指定はなく、差はサンプリングのばらつき)。"""
     if run_name not in RUN_DIRS_02:
         print(f"[OB2] run名が不正(run_02a / run_02b のいずれかを引数に指定): {run_name!r}", flush=True)
         return 7
     rd = RUN_DIRS_02[run_name]
-    ledger_md = f"{LEDGER_DIR_02}/BUDGET_LOG_OB_{run_name}.md"
+    ledger_md = f"{LEDGER_DIR_02}/BUDGET_LOG_OB_03.md" if run_name == "run_03" else f"{LEDGER_DIR_02}/BUDGET_LOG_OB_{run_name}.md"
     if os.path.exists(os.path.join(rd, "entry_point.json")):
         print(f"[OB2] already launched: {rd}/entry_point.json exists (再起動不可)", flush=True)
         return 5
+    if not paid:
+        print("[OB2] 有料runには CLI明示flag `--paid` が必要(委任_22の起動ガード)。flagが無いため起動しない(API 0)", flush=True)
+        return 8
     cap = read_cap()
     if cap is None:
         print(f"[OB2] 予算承認ファイル({APPROVAL_FILE})が無い/不正のため、有料runを起動しない(API 0)", flush=True)
@@ -327,4 +349,7 @@ def main(run_name=None) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1] if len(sys.argv) == 2 else None))
+    _args = sys.argv[1:]
+    _paid = "--paid" in _args
+    _pos = [a for a in _args if a != "--paid"]
+    sys.exit(main(_pos[0] if len(_pos) == 1 else None, paid=_paid))
