@@ -62,6 +62,18 @@ B3_ADDENDUM = (
     "数値を増やすために無関係な数値を入れないでください。\n"
     "- numeric_value欄にない数値や、他のFactの補足的な数値は、selected_storylineの1行に含めないでください。"
 )
+# 委任_03 O-1'(Opus OPUS_REVIEW_02): Storylineに入れる数値は「問いへの答えそのものの値」に限る。比較相手(予測値・別の推定・過去の値)は、
+# 比較そのものが答えの場合を除き、数値を入れず言葉で述べる。v1(B3_ADDENDUM)はPhase 1の再現性のため不変で残す。
+B3_ADDENDUM_V2 = (
+    "\n\n【追加の指示: 数値の扱い(Storylineを決めた後の手順)】\n"
+    "上の1〜5で中心Storylineと採用Factを決めた後、selected_storylineの1行を書くときだけ、次に従ってください。Storylineの選び方とFactの採否は、数値の有無で変えないでください(Test4のとおり、「数字がある」だけの理由でFactを残さないこと)。\n"
+    "- そのStorylineの1行が答える中心的な問いに、台帳のnumeric_value欄にある数値で直接答えられる場合は、問いへの答えそのものの値だけを、numeric_value欄の表記のまま、selected_storylineの1行に含めてください(最大2個)。\n"
+    "- 予測値・別の推定・過去の値・基準値など、答えと見比べるための数値(比較相手)は、比較そのものが問いへの答えである場合を除き、selected_storylineの1行に数値で入れず、言葉で述べてください(比較そのものが答えの場合は、比べる2つの値を入れてよい。合わせて最大2個)。\n"
+    "- その数値の解釈に不可欠な前提(推定・仮定・期間・範囲)がある場合は、前提を示す言葉(「推定」「仮定」など)を含めてください。前提の数値を含めてよいのは、それが中心的な問いへの答えの一部である場合だけで、上記の最大2個に含みます。\n"
+    "- 中心的な問いが数値で答えるものでない場合、または入れると文が不自然になる場合は、数値を入れなくてかまいません。数値を増やすために無関係な数値を入れないでください。\n"
+    "- numeric_value欄にない数値や、他のFactの補足的な数値は、selected_storylineの1行に含めないでください。"
+)
+B3_ADDENDA = {"v1": B3_ADDENDUM, "v2": B3_ADDENDUM_V2}
 M1_RETRY_NOTE_TEMPLATE = (
     "\n\n【前回出力の修正指示(数値)】前回のselected_storylineには、次の数値が含まれていましたが、条件に合いません: {problems}。"
     "selected_storylineの1行に含めてよい数値は、台帳のnumeric_value欄にある表記のままの数値だけで、最大2個です。"
@@ -463,6 +475,125 @@ def scan_misreading(text: str, observe_E: list | None = None) -> dict:
 
 
 # ======================================================================================================
+# 委任_03 O-2'(Opus OPUS_REVIEW_02 M1): 同じ単位系の非E中核数値だけを、Writer向けの印で【周辺数値】へ付け替える(DEV wrapper内のみ)
+#   Production derive_ranks・規則5の文言・注記済みB3ファイル(契約sha)は不変。付け替えは契約検証後のメモリ上のnews欄文字列に対してだけ行う。
+#   付け替え対象 = クラスcore・Eの概念でない・magnitude/range・年系/日付でない・単位が取れて、その単位系がEのgate_requiredの単位系と同じ。
+#   残す = 年系(期間・前提)、別の単位系、単位が取れない数値、単位なし小整数(現状のまま)。
+# ======================================================================================================
+DIM_OF_GROUP = {"m": "length", "km": "length", "cm": "length", "mm": "length", "kg": "mass", "g": "mass",
+                "%": "percent", "USD": "currency:USD", "GBP": "currency:GBP", "EUR": "currency:EUR", "JPY": "currency:JPY", "cent": "currency:USD"}
+_RATE_SPLIT_RE = re.compile(r"[/／]|毎|あたり|当たり")
+CORE_MARK, PERIPH_MARK = "【中核数値】", "【周辺数値】"
+
+
+def dimension_of(surface: str, hint: str = "") -> str:
+    """表記(+ニュース欄の直後単位hint)から単位系を返す。取れない/対象外は ''。『cm/100万年』『m/s』等の速度は先頭の単位(長さ)で判定。"""
+    cur = currency_of(surface)
+    if cur:
+        return DIM_OF_GROUP.get(cur, "")
+    u = own_unit_of(surface) or hint or ""
+    head = _RATE_SPLIT_RE.split(nfkc(u).strip())[0].strip()
+    if not head:
+        return ""
+    return DIM_OF_GROUP.get(unit_key(head), "")
+
+
+def plan_o2prime(ann: dict, facts_marked: str, E_info: dict) -> dict:
+    """E(gate_required)と同じ単位系の、E以外の中核数値を列挙する(LLM/API 0)。副作用なし。"""
+    facts_plain = P.strip_marks(w1.strip_tags(facts_marked))
+    gate = list(E_info.get("gate_E") or [])
+    e_concepts = {c["concept"] for c in (E_info.get("candidates") or [])}
+    e_dims = sorted({d for d in (dimension_of(e["news_surface"], e.get("unit_hint", "")) for e in gate) if d})
+    demote, kept = [], []
+    for n in ann.get("numbers", []):
+        if n.get("class") != "core" or list(n.get("ledger_ids") or []) == ["_STORY"]:
+            continue
+        s = n["surface"]
+        if not P.contains(facts_plain, s):
+            continue
+        hint = unit_hint_after(facts_marked, s)
+        kind = P.surface_kind(s)
+        dim = dimension_of(s, hint)
+        rec = {"surface": s, "concept": n.get("concept"), "kind": kind, "unit_hint": hint, "dimension": dim}
+        if n.get("concept") in e_concepts:
+            kept.append({**rec, "why_kept": "in_E"})
+        elif kind not in ("magnitude", "range"):
+            kept.append({**rec, "why_kept": "not_magnitude_or_range"})
+        elif (not dim) and (is_time_premise(s) or re.search(r"(?:万|億|兆)?年|か月|ヶ月|カ月|週間|日間", nfkc(s))):
+            kept.append({**rec, "why_kept": "year_system_or_period"})
+        elif T_is_ambiguous(s):
+            kept.append({**rec, "why_kept": "unitless_small_int"})
+        elif not dim:
+            kept.append({**rec, "why_kept": "unit_unresolved_or_other_system"})
+        elif dim not in e_dims:
+            kept.append({**rec, "why_kept": "different_unit_system_from_E"})
+        else:
+            demote.append(rec)
+    return {"e_dimensions": e_dims, "demote": demote, "kept_core": kept, "applied": bool(e_dims)}
+
+
+def swap_marks(text: str, surfaces) -> tuple:
+    """text中の『<surface>【中核数値】』の印だけを『【周辺数値】』へ付け替える(NFKC一致・数字境界つき)。戻り値=(新text, 付け替え件数)。本文の他の文字は不変。"""
+    norm, idx = P._norm_with_map(text)
+    spans = []
+    for s in surfaces:
+        sn = nfkc(s)
+        for p in P.find_all(norm, sn):
+            q = p + len(sn)
+            if norm.startswith(CORE_MARK, q):
+                spans.append((idx[q], idx[q + len(CORE_MARK) - 1] + 1))
+    spans = sorted(set(spans))
+    out, last = [], 0
+    for a, b in spans:
+        out.append(text[last:a])
+        out.append(PERIPH_MARK)
+        last = b
+    out.append(text[last:])
+    return "".join(out), len(spans)
+
+
+def filter_overlay(overlay, surfaces):
+    """付け替えた表記の【概数表記】行をWriter向けoverlay(メモリ上のコピー)から外す(印と矛盾する制約を残さない)。"""
+    if not overlay:
+        return overlay
+    dem = {nfkc(s) for s in surfaces}
+    ov = copy.deepcopy(overlay)
+    ents = []
+    for e in ov.get("entries", []):
+        e["surfaces"] = [x for x in e.get("surfaces", []) if nfkc(x.get("surface")) not in dem]
+        if e["surfaces"] or e.get("final_decision") != "APPROXIMATE_OK":
+            ents.append(e)
+    ov["entries"] = ents
+    return ov
+
+
+# ======================================================================================================
+# 委任_03 M2(Opus OPUS_REVIEW_02): R1/R2出力の新規数値検出(R0本文にもニュース欄にもない数値。例: 範囲値の中点『約45』)。決定論・LLM 0。
+# ======================================================================================================
+_NUMTOK_RE = re.compile(r"\d[\d,]*(?:\.\d+)?")
+
+
+def _num_tokens(text: str) -> set:
+    return {P.dec(m.group(0).replace(",", "")) for m in _NUMTOK_RE.finditer(nfkc(text or ""))}
+
+
+def new_numbers(stage_text: str, r0_text: str, news_text: str) -> list:
+    """stage_textの数値表記(magnitude/range・単位なし小整数を除く)のうち、数字がR0本文+ニュース欄のどの数字とも一致しないもの。"""
+    allowed = _num_tokens(r0_text) | _num_tokens(news_text)
+    t = re.sub(r"(\d)\s*から\s*(\d)", r"\g<1>〜\g<2>", nfkc(stage_text or ""))
+    out, seen = [], set()
+    for s in P.extract_surfaces(t):
+        k = P.surface_kind(s)
+        if k not in ("magnitude", "range") or T_is_ambiguous(s):
+            continue
+        toks = _num_tokens(s)
+        if toks and not toks <= allowed and s not in seen:
+            seen.add(s)
+            out.append(s)
+    return out
+
+
+# ======================================================================================================
 # W-1 DEV(Production W-1の合成。Prompt定数は変更しない)
 # ======================================================================================================
 class JANumericRetentionStopError(RuntimeError):
@@ -506,13 +637,24 @@ def _sym_of(text):
     return f, safety.symbol_gate_requires_stop(f)
 
 
-def _run_r2(d, fdir, astra, gate_E, approx, ev, budget_check):
+def _new_numbers_m2(text, m2):
+    """M2: m2=None(無効)なら []。有効なら R0本文+ニュース欄に無い数値表記を返す。"""
+    if not m2:
+        return []
+    return new_numbers(text, m2["r0_text"], m2["news_plain"])
+
+
+def _run_r2(d, fdir, astra, gate_E, approx, ev, budget_check, m2ctx=None):
     """R2 + 記号QA + 保持Gate(再実行枠は共有=1回)。成功なら (final, p2, raw2, m2, r2_all)、不足/残存ならSTOP。"""
     budget_check()
     raw2, p2, m2 = astra(os.path.join(fdir, "r1.raw.md"), "w1_astra_r2")
     final = w1.clean_ja_for_next(p2)
     f2, sym2 = _sym_of(final)
     miss2 = check_retention(final, gate_E, approx)
+    new2 = _new_numbers_m2(final, m2ctx)
+    if new2:
+        miss2 = {"missing": list(miss2["missing"]) + [{"news_surface": "NEW:" + x} for x in new2], "detail": miss2.get("detail")}
+    ev.setdefault("new_numbers", {})["r2"] = {"first": new2, "rerun": False}
     ev["symbol_qa"]["r2"] = {"findings_first": f2, "rerun": False}
     ev["retention"]["r2"] = {"missing_first": [e["news_surface"] for e in miss2["missing"]], "rerun": False,
                             "table_case": ("sym+ret" if sym2 and miss2["missing"] else "sym_only" if sym2 else "ret_only" if miss2["missing"] else "ok")}
@@ -525,6 +667,10 @@ def _run_r2(d, fdir, astra, gate_E, approx, ev, budget_check):
         final_b = w1.clean_ja_for_next(p2b)
         f2b, sym2b = _sym_of(final_b)
         miss2b = check_retention(final_b, gate_E, approx)
+        new2b = _new_numbers_m2(final_b, m2ctx)
+        if new2b:
+            miss2b = {"missing": list(miss2b["missing"]) + [{"news_surface": "NEW:" + x} for x in new2b], "detail": miss2b.get("detail")}
+        ev["new_numbers"]["r2"].update({"rerun": True, "after": new2b})
         ev["symbol_qa"]["r2"].update({"rerun": True, "findings_after": f2b})
         ev["retention"]["r2"].update({"rerun": True, "missing_after": [e["news_surface"] for e in miss2b["missing"]]})
         if sym2b or miss2b["missing"]:
@@ -591,7 +737,7 @@ def resume_w1_dev_from_r2(out_dir: str, client, E_info: dict, *, arm: str = "A",
     return _finish(d, ev, r0_calls, r1_all, r2_all, clean0, p1, final)
 
 
-def run_w1_dev(out_dir: str, client, E_info: dict, *, arm: str = "A", budget_check=None) -> dict:
+def run_w1_dev(out_dir: str, client, E_info: dict, *, arm: str = "A", budget_check=None, o2prime: bool = False, m2: bool = False) -> dict:
     """arm A = 範囲正規化(R4) + 保持Gate / arm B = A + R0規則9。ja_writer/ 以下へ Production と同名で出力。
     再実行枠: R0<=2 / R1<=2 / R2<=2 呼出。R0は記号QAと保持を1枠に合流、R2も記号QAと保持で1回を共有(M3)。"""
     assert arm in ("A", "B")
@@ -600,16 +746,34 @@ def run_w1_dev(out_dir: str, client, E_info: dict, *, arm: str = "A", budget_che
     storyline, facts_text = w1.parse_brief_md(annotated.annotated_md_text)
     from er053_b3_deterministic_producer_01 import CONS_HEADING, compose_news_field
     overlay, rounding_ev = rounding.load_overlay_for_writer(out_dir, annotated.annotated_md_sha256)
-    news_text = rounding.news_field_for_writer(annotated.news_field_text, facts_text, annotated.constraints_text, overlay, CONS_HEADING, compose_news_field)
     approx = approx_forms_of(out_dir)
     gate_E = list(E_info.get("gate_E") or [])
+    o2_plan, base_news, facts_for_news = None, annotated.news_field_text, facts_text
+    if o2prime:
+        # O-2'(DEV wrapper内のみ): 契約検証済みの注記済みB3(ファイル・sha)は不変。メモリ上のnews欄/Facts文字列の印だけを付け替える。
+        ann_sc = annotated.sidecar
+        o2_plan = plan_o2prime(ann_sc, facts_text, E_info)
+        dem = [x["surface"] for x in o2_plan["demote"]]
+        if dem:
+            facts_for_news, n_f = swap_marks(facts_text, dem)
+            base_news, n_n = swap_marks(annotated.news_field_text, dem)
+            o2_plan["marks_swapped"] = {"facts_text": n_f, "news_field_text": n_n, "demoted_surfaces": len(dem)}
+            if n_f < len(dem) or n_n < len(dem):
+                wj(os.path.join(out_dir, "o2prime_plan.json"), o2_plan)
+                raise RuntimeError(f"[STOP] O-2' 印の付け替えが想定件数に満たない facts={n_f} news={n_n} demote={len(dem)}(API呼出前)")
+            overlay = filter_overlay(overlay, dem)
+        o2_plan["news_field_sha256_before"] = sha_text(annotated.news_field_text)
+        o2_plan["news_field_sha256_after"] = sha_text(base_news)
+        wj(os.path.join(out_dir, "o2prime_plan.json"), o2_plan)
+    news_text = rounding.news_field_for_writer(base_news, facts_for_news, annotated.constraints_text, overlay, CONS_HEADING, compose_news_field)
     routing_ok = w1.routing.require_model("FAMILY_X_FACTLOCK_R0", w1.R0_MODEL), w1.routing.require_model("FAMILY_X_FACTLOCK_REVISE", w1.ASTRA_MODEL)
     d = os.path.join(out_dir, "ja_writer")
     fdir = os.path.join(d, "factlock")
     ev = {"arm": arm, "chain_method": "W-1_DEV_er115", "post_range_norm": True, "annotated_md_sha256": annotated.annotated_md_sha256,
           "verbatim_shas": w1.verbatim_shas(), "rounding": rounding_ev, "gate_E": gate_E, "observe_E": E_info.get("observe_E"),
           "rule9_text_sha256": sha_text(RULE9_TEXT), "retention_note_template_sha256": sha_text(RETENTION_NOTE_TEMPLATE),
-          "range_norm": True, "retention": {}, "symbol_qa": {}, "model_contract": [str(x) for x in routing_ok],
+          "range_norm": True, "o2prime": bool(o2prime), "m2_new_number_gate": bool(m2), "o2prime_plan": o2_plan,
+          "retention": {}, "symbol_qa": {}, "model_contract": [str(x) for x in routing_ok],
           "started": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")}
     prompt0 = build_r0_prompt_dev(storyline, news_text, overlay, range_norm=True, rule9=(arm == "B"))
     ev["r0_prompt_sha256"] = sha_text(prompt0)
@@ -658,11 +822,16 @@ def run_w1_dev(out_dir: str, client, E_info: dict, *, arm: str = "A", budget_che
                                             "r0_sha256": sha_text(clean0), "r0_prompt_sha256": sha_text(prompt0)})
 
     astra = make_astra(client)
+    m2ctx = {"r0_text": clean0, "news_plain": P.strip_marks(w1.strip_tags(news_text))} if m2 else None
 
     # ---- R1 (保持不足なら1回だけ再実行=新規。記号QAはR1では従来どおり検査なし) ----
     budget_check()
     raw1, p1, m1 = astra(os.path.join(fdir, "r0.md"), "w1_astra_r1")
     miss1 = check_retention(p1, gate_E, approx)
+    new1 = _new_numbers_m2(p1, m2ctx)
+    if new1:
+        miss1 = {"missing": list(miss1["missing"]) + [{"news_surface": "NEW:" + x} for x in new1], "detail": miss1.get("detail")}
+    ev.setdefault("new_numbers", {})["r1"] = {"first": new1, "rerun": False}
     ev["retention"]["r1"] = {"missing_first": [e["news_surface"] for e in miss1["missing"]], "rerun": False}
     r1_all = [m1]
     if miss1["missing"]:
@@ -671,6 +840,10 @@ def run_w1_dev(out_dir: str, client, E_info: dict, *, arm: str = "A", budget_che
         raw1b, p1b, m1b = astra(os.path.join(fdir, "r0.md"), "w1_astra_r1_retention_rerun")
         r1_all.append(m1b)
         miss1b = check_retention(p1b, gate_E, approx)
+        new1b = _new_numbers_m2(p1b, m2ctx)
+        if new1b:
+            miss1b = {"missing": list(miss1b["missing"]) + [{"news_surface": "NEW:" + x} for x in new1b], "detail": miss1b.get("detail")}
+        ev["new_numbers"]["r1"].update({"rerun": True, "after": new1b})
         ev["retention"]["r1"].update({"rerun": True, "missing_after": [e["news_surface"] for e in miss1b["missing"]]})
         if miss1b["missing"]:
             wt(os.path.join(d, "audit", "rejected_w1_r1.md"), p1b)
@@ -683,7 +856,7 @@ def run_w1_dev(out_dir: str, client, E_info: dict, *, arm: str = "A", budget_che
     wt(os.path.join(fdir, "r1.p1.md"), p1)
 
     # ---- R2 (記号QAと保持で再実行枠を共有=1回だけ。helper) ----
-    final, p2, raw2, m2, r2_all = _run_r2(d, fdir, astra, gate_E, approx, ev, budget_check)
+    final, p2, raw2, m2r, r2_all = _run_r2(d, fdir, astra, gate_E, approx, ev, budget_check, m2ctx)
     return _finish(d, ev, r0_calls, r1_all, r2_all, clean0, p1, final)
 
 
@@ -745,12 +918,29 @@ def measure_run(out_dir: str, E_info: dict | None = None) -> dict:
     stages = [s for s in ("R0", "R1", "R2", "EN_Std", "EN_Adv") if texts[s]]
     ev_rows = [r for r in core_rows if not r["ambiguous"]]
     gate_E = [r for r in ev_rows if r["in_E"] and not r["time_premise"] and P.surface_kind(r["surface"]) in ("magnitude", "range")]
+    plan_p = os.path.join(out_dir, "o2prime_plan.json")
+    plan = rj(plan_p) if os.path.exists(plan_p) else None
+    dem_rows = []
+    news_plain = P.strip_marks(w1.strip_tags(facts_marked))
+    if plan:
+        for dsc in plan.get("demote", []):
+            row = {"surface": dsc["surface"], "dimension": dsc["dimension"], "present": {}}
+            for st in ("R0", "R1", "R2"):
+                row["present"][st] = match_core(dsc["surface"], texts[st] or "", dsc.get("unit_hint", ""), [approx.get(nfkc(dsc["surface"]))])["present"] if texts[st] else None
+            for st in ("EN_Std", "EN_Adv"):
+                row["present"][st] = en_present(dsc["surface"], texts[st], dsc.get("unit_hint", "")) if texts[st] else None
+            dem_rows.append(row)
+    new_nums = {st: new_numbers(texts[st], texts["R0"] or "", news_plain) for st in ("R1", "R2") if texts.get(st) and texts.get("R0")}
+    dem_surf = {nfkc(r["surface"]) for r in dem_rows}
     summ = {
+        "o2prime_demoted": [r["surface"] for r in dem_rows], "o2prime_demoted_present": {r["surface"]: r["present"] for r in dem_rows},
+        "new_numbers_vs_r0_news": new_nums,
         "n_core_selected_news_field": len(core_rows), "n_core_evaluable": len(ev_rows), "n_E_candidates": len(E_info["candidates"]),
         "n_E_gate": len(gate_E),
         "E_retained": {st: [r["surface"] for r in gate_E if r["present"].get(st)] for st in stages},
         "E_all_retained": {st: all(r["present"].get(st) for r in gate_E) if gate_E else None for st in stages},
         "non_E_core_included": {st: [r["surface"] for r in ev_rows if (not r["in_E"]) and r["present"].get(st)] for st in stages},
+        "non_E_core_included_excluding_demoted": {st: [r["surface"] for r in ev_rows if (not r["in_E"]) and nfkc(r["surface"]) not in dem_surf and r["present"].get(st)] for st in stages},
         "observe_E_present": {st: {r["surface"]: r["present"].get(st) for r in ev_rows if r["in_E"] and r not in gate_E} for st in stages},
         "peripheral_included": {st: body[st]["peripheral_included"] for st in body},
         "misreading_warn": ({"R2": scan_misreading(texts["R2"])} if texts.get("R2") else {}),
@@ -851,7 +1041,7 @@ def sink_snapshot() -> dict:
     return snap
 
 
-def run_b3_dev(article: str, arm: str, sample: str, *, per_run_cap: float, phase_cap: float, client=None) -> dict:
+def run_b3_dev(article: str, arm: str, sample: str, *, per_run_cap: float, phase_cap: float, client=None, addendum_version: str = "v1") -> dict:
     """B3 DEV(追記ブロック付き) -> 注記producer(決定論) -> M1検査 -> 違反なら B3を1回だけ再実行 -> E確定。丸め・Writerは呼ばない。"""
     out_dir = sample_dir(article, arm, sample)
     info = prepare_dir(article, out_dir)
@@ -860,7 +1050,8 @@ def run_b3_dev(article: str, arm: str, sample: str, *, per_run_cap: float, phase
     client = client or vfl01.get_client()
     guard_budget(out_dir, per_run_cap, phase_cap, "before b3 dev")
     attempts = []
-    addendum = B3_ADDENDUM
+    base_addendum = B3_ADDENDA[addendum_version]
+    addendum = base_addendum
     E_info = None
     for attempt in (1, 2):
         wrapper = _AddendumClient(client, addendum)
@@ -879,10 +1070,10 @@ def run_b3_dev(article: str, arm: str, sample: str, *, per_run_cap: float, phase
             break
         if attempt == 1:
             probs = "、".join(f"{v['surface']}({v['reason']})" for v in E_info["violations"])
-            addendum = B3_ADDENDUM + M1_RETRY_NOTE_TEMPLATE.format(problems=probs)
+            addendum = base_addendum + M1_RETRY_NOTE_TEMPLATE.format(problems=probs)
     final_status = "E_OK" if E_info["ok"] and E_info["gate_E"] else ("E_EMPTY" if E_info["ok"] else "M1_VIOLATION")
     res = {"article": article, "arm": arm, "sample": sample, "status": final_status, "first_pass_ok": attempts[0]["ok"],
-           "b3_rerun": len(attempts) == 2, "attempts": attempts, "E": E_info, "b3_addendum_sha256": sha_text(B3_ADDENDUM),
+           "b3_rerun": len(attempts) == 2, "attempts": attempts, "E": E_info, "b3_addendum_version": addendum_version, "b3_addendum_sha256": sha_text(base_addendum),
            "b3_cost_jpy": ca.compute_stage_cost_breakdown_multi(os.path.join(out_dir, "raw_usage_log.jsonl"))["total_jpy"]}
     wj(os.path.join(out_dir, "m1_result.json"), res)
     print(f"[ER115][b3] {article}/{arm}/{sample} status={final_status} first_pass_ok={res['first_pass_ok']} rerun={res['b3_rerun']} "
@@ -890,7 +1081,8 @@ def run_b3_dev(article: str, arm: str, sample: str, *, per_run_cap: float, phase
     return res
 
 
-def run_chain_dev(article: str, arm: str, sample: str, *, per_run_cap: float, phase_cap: float, client=None, resume_r2: bool = False) -> dict:
+def run_chain_dev(article: str, arm: str, sample: str, *, per_run_cap: float, phase_cap: float, client=None, resume_r2: bool = False,
+                  o2prime: bool = False, m2: bool = False) -> dict:
     out_dir = sample_dir(article, arm, sample)
     m1 = rj(os.path.join(out_dir, "m1_result.json"))
     if m1["status"] != "E_OK":
@@ -915,7 +1107,7 @@ def run_chain_dev(article: str, arm: str, sample: str, *, per_run_cap: float, ph
         if resume_r2:
             wres = resume_w1_dev_from_r2(out_dir, client, E_info, arm=arm, budget_check=_bc)
         else:
-            wres = run_w1_dev(out_dir, client, E_info, arm=arm, budget_check=_bc)
+            wres = run_w1_dev(out_dir, client, E_info, arm=arm, budget_check=_bc, o2prime=o2prime, m2=m2)
     except JANumericRetentionStopError as exc:
         stop = {"stage": exc.stage, "message": str(exc), "missing": [e["news_surface"] for e in exc.missing]}
         wj(os.path.join(out_dir, "stop_record.json"), stop)
@@ -939,20 +1131,42 @@ def run_chain_dev(article: str, arm: str, sample: str, *, per_run_cap: float, ph
     return {"status": "DONE", "metrics": metrics, "cost": cost, "sink_diff": sink_diff}
 
 
+def plan_for_existing(out_dir: str) -> dict:
+    """既存B3標本のannotation/E(m1_result.json)にO-2'の計画だけを当てる(無料)。"""
+    sdir = os.path.join(out_dir, "storyline_b3")
+    ann = rj(os.path.join(sdir, "annotation.json"))
+    _, facts_marked = w1.parse_brief_md(rdt(os.path.join(sdir, "selected_brief_annotated.md")))
+    E_info = derive_E(out_dir)
+    plan = plan_o2prime(ann, facts_marked, E_info)
+    return {"out_dir": os.path.relpath(out_dir, ROOT).replace("\\", "/"), "storyline": E_info["storyline"], "E": [e["news_surface"] for e in E_info["candidates"]],
+            "E_gate": [e["news_surface"] for e in E_info["gate_E"]], "plan": plan}
+
+
 def main():
     ap = argparse.ArgumentParser(description="FX-CORE-NUMERIC-RETENTION-TRIAL-01 DEV runner(Production非接続)")
-    ap.add_argument("cmd", choices=("b3", "chain", "measure"))
+    ap.add_argument("cmd", choices=("b3", "chain", "measure", "plan"))
     ap.add_argument("--article", required=True, choices=sorted(ARTICLES))
     ap.add_argument("--arm", default="A", choices=("A", "B"))
     ap.add_argument("--sample", required=True)
     ap.add_argument("--per-run-cap-jpy", type=float, default=30.0)
     ap.add_argument("--phase-cap-jpy", type=float, default=120.0)
     ap.add_argument("--resume-r2", action="store_true", help="STOP済み標本のR0/R1を再利用しR2から再開(範囲正規化つき)")
+    ap.add_argument("--b3-addendum", default="v1", choices=sorted(B3_ADDENDA), help="B3追記ブロック版(v1=Phase 1 / v2=O-1')")
+    ap.add_argument("--o2prime", action="store_true", help="O-2'(同単位系の非E中核数値を周辺扱い、DEV wrapper内のみ)")
+    ap.add_argument("--m2", action="store_true", help="M2(R1/R2の新規数値検出を保持Gateの再実行枠で行う)")
     a = ap.parse_args()
     if a.cmd == "b3":
-        run_b3_dev(a.article, a.arm, a.sample, per_run_cap=a.per_run_cap_jpy, phase_cap=a.phase_cap_jpy)
+        run_b3_dev(a.article, a.arm, a.sample, per_run_cap=a.per_run_cap_jpy, phase_cap=a.phase_cap_jpy, addendum_version=a.b3_addendum)
     elif a.cmd == "chain":
-        run_chain_dev(a.article, a.arm, a.sample, per_run_cap=a.per_run_cap_jpy, phase_cap=a.phase_cap_jpy, resume_r2=a.resume_r2)
+        run_chain_dev(a.article, a.arm, a.sample, per_run_cap=a.per_run_cap_jpy, phase_cap=a.phase_cap_jpy, resume_r2=a.resume_r2,
+                      o2prime=a.o2prime, m2=a.m2)
+    elif a.cmd == "plan":
+        # 手順(i): 既存B3標本に O-2' を決定論で当て直す(API 0・B3再実行なし・標本のファイルは変更せず別名で保存)
+        d = sample_dir(a.article, a.arm, a.sample)
+        res = plan_for_existing(d)
+        wj(os.path.join(d, "o2prime_plan_offline.json"), res)
+        print("[ER115][plan]", a.article, a.arm, a.sample, "E=", res["E"], "dims=", res["plan"]["e_dimensions"], "demote=", [x["surface"] for x in res["plan"]["demote"]],
+              "kept=", [(x["surface"], x["why_kept"]) for x in res["plan"]["kept_core"]])
     else:
         d = sample_dir(a.article, a.arm, a.sample)
         wj(os.path.join(d, "trial_metrics.json"), measure_run(d))

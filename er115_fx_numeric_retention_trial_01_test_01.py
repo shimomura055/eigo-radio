@@ -357,3 +357,173 @@ def test_origin_claim_negation_detected():
     assert w["origin_claims"] and w["origin_claims"][0]["negated"] and not w["origin_claims_unnegated"]
     w2 = D.scan_misreading("月は誕生以来ずっと縮んでいる。")
     assert w2["origin_claims_unnegated"]
+
+
+# ======================================================================================================
+# 委任_03 M5
+S1 = os.path.join(ROOT, "er115_output", "fx_numeric_retention_trial_01", "moon_shrinking", "A", "s1")
+
+
+def _s1_dir(tmp_path):
+    """Phase 1 標本A/s1(B3 DEV実出力: E={約42〜46}, 約750がニュース欄の中核数値, 約3〜4億年)をtmpへ複製。API 0。"""
+    d = tmp_path / "s1"
+    shutil.copytree(os.path.join(S1, "storyline_b3"), d / "storyline_b3")
+    shutil.copytree(os.path.join(MOON, "research_ledger"), d / "research_ledger")   # prepare_dirと同じ元ledger(dev_source.jsonのsha一致)
+    return str(d), D.derive_E(str(d))
+# O-2'(同単位系の印付け替え)・O-1'・M2(新規数値検出)
+# ======================================================================================================
+def _sidecar_plan(numbers, facts_marked, gate_surface="約42〜46", hint="m", extra_candidates=()):
+    E_info = {"gate_E": [{"news_surface": gate_surface, "unit_hint": hint, "concept": "C1"}],
+              "candidates": [{"news_surface": gate_surface, "concept": "C1"}, *extra_candidates]}
+    return D.plan_o2prime({"numbers": numbers}, facts_marked, E_info)
+
+
+def _num(surface, concept, cls="core", kind=None, ids=("F01",)):
+    return {"surface": surface, "kind": kind or D.P.surface_kind(surface), "class": cls, "concept": concept, "ledger_ids": list(ids), "role": ""}
+
+
+FACTS_MARKED = ("- 【事実1】半径が約42〜46【中核数値】 m縮んだ。約750【中核数値】 m以上の予測があり、約11cm/100万年【中核数値】の速度や約3〜4億年【中核数値】前、"
+                "9.14ドル【中核数値】、約15%【中核数値】、約5,470本【中核数値】、約9か月【中核数値】、約1.1【周辺数値】 kmもある。\n")
+
+
+def test_o2prime_demotes_only_same_unit_system_values():
+    nums = [_num("約42〜46", "C1"), _num("約750", "C2"), _num("約11cm/100万年", "C3"), _num("約3〜4億年", "C4"), _num("9.14ドル", "C5"),
+            _num("約15%", "C6"), _num("約5,470本", "C7"), _num("約9か月", "C8")]
+    plan = _sidecar_plan(nums, FACTS_MARKED)
+    assert plan["e_dimensions"] == ["length"] and plan["applied"]
+    assert sorted(x["surface"] for x in plan["demote"]) == ["約11cm/100万年", "約750"]            # 長さ(m/cm、速度含む)だけ
+    kept = {x["surface"]: x["why_kept"] for x in plan["kept_core"]}
+    assert kept["約3〜4億年"] == "year_system_or_period"                                      # 年系は下げない
+    assert kept["約9か月"] == "year_system_or_period"
+    assert kept["9.14ドル"] == "different_unit_system_from_E" and kept["約15%"] == "different_unit_system_from_E"   # 別の単位系は下げない
+    assert kept["約5,470本"] == "unit_unresolved_or_other_system"                              # 単位が取れない/対象外は下げない
+    assert kept["約42〜46"] == "in_E"
+
+
+def test_o2prime_unit_unresolved_and_small_ints_not_demoted():
+    nums = [_num("約42〜46", "C1"), _num("1", "C2"), _num("約300", "C3")]
+    facts = "- 【事実1】約42〜46【中核数値】 m。長さ1【中核数値】 km超。約300【中核数値】はある。\n"
+    plan = _sidecar_plan(nums, facts)
+    assert plan["demote"] == []
+    kept = {x["surface"]: x["why_kept"] for x in plan["kept_core"]}
+    assert kept["1"] == "unitless_small_int" and kept["約300"] == "unit_unresolved_or_other_system"
+
+
+def test_o2prime_E_members_never_demoted_and_empty_E_demotes_nothing():
+    nums = [_num("約42〜46", "C1"), _num("約750", "C2")]
+    both = D.plan_o2prime({"numbers": nums}, FACTS_MARKED, {"gate_E": [{"news_surface": "約42〜46", "unit_hint": "m"}, {"news_surface": "約750", "unit_hint": "m"}],
+                                                          "candidates": [{"concept": "C1", "news_surface": "約42〜46"}, {"concept": "C2", "news_surface": "約750"}]})
+    assert both["demote"] == []                                     # 750がEに入るs2/s5型: O-2'は効かない(O-1'の担当)
+    empty = D.plan_o2prime({"numbers": nums}, FACTS_MARKED, {"gate_E": [], "candidates": []})
+    assert empty["demote"] == [] and not empty["applied"]            # E空=何も下げない(uk_train型)
+
+
+def test_o2prime_peripheral_numbers_untouched_and_dates_untouched():
+    nums = [_num("約42〜46", "C1"), _num("約1.1", "C2", cls="peripheral"), _num("2026年10月19日", "C3", kind="date_time")]
+    plan = _sidecar_plan(nums, FACTS_MARKED + "2026年10月19日【中核数値】\n")
+    assert plan["demote"] == []
+
+
+def test_swap_marks_changes_only_targeted_marks():
+    t = FACTS_MARKED
+    new, n = D.swap_marks(t, ["約750", "約11cm/100万年"])
+    assert n == 2
+    assert "約750【周辺数値】" in new and "約11cm/100万年【周辺数値】" in new
+    assert re.sub(r"【(?:中核|周辺)数値】", "", new) == re.sub(r"【(?:中核|周辺)数値】", "", t)             # 印以外の文字は不変
+    assert "約42〜46【中核数値】" in new and "約3〜4億年【中核数値】" in new
+    same, n0 = D.swap_marks(t, ["約9999"])
+    assert same == t and n0 == 0
+    assert D.swap_marks(t, ["約75"])[1] == 0                         # 数字境界: 『約75』は『約750』の一部に一致しない
+
+
+def test_o2prime_off_is_byte_identical_and_writes_nothing(tmp_path):
+    d, E = _s1_dir(tmp_path)
+    fc = FakeClient([GOOD, GOOD, GOOD])
+    D.run_w1_dev(d, fc, E)                                          # o2prime既定=False
+    ann = D.contract.validate_annotated_b3(d)
+    story, facts = D.w1.parse_brief_md(ann.annotated_md_text)
+    overlay, _ = D.rounding.load_overlay_for_writer(d, ann.annotated_md_sha256)
+    news = D.rounding.news_field_for_writer(ann.news_field_text, facts, ann.constraints_text, overlay, D.P.CONS_HEADING, D.P.compose_news_field)
+    assert fc.prompts[0] == D.build_r0_prompt_dev(story, news, overlay, range_norm=True)     # OFF=従来DEVとバイト一致
+    assert not os.path.exists(os.path.join(d, "o2prime_plan.json"))
+
+
+def test_o2prime_on_swaps_marks_in_writer_input_only(tmp_path):
+    d, E = _s1_dir(tmp_path)
+    sha_before = hashlib.sha256(open(os.path.join(d, "storyline_b3", "selected_brief_annotated.md"), "rb").read()).hexdigest()
+    fc = FakeClient([GOOD, GOOD, GOOD])
+    r = D.run_w1_dev(d, fc, E, o2prime=True)
+    plan = json.load(open(os.path.join(d, "o2prime_plan.json"), encoding="utf-8"))
+    dem = [x["surface"] for x in plan["demote"]]
+    assert "約750" in dem and "約3〜4億年" not in dem
+    nf = fc.prompts[0].split("[ニュース]", 1)[1]
+    assert "約750【周辺数値】" in nf and "約750【中核数値】" not in nf
+    assert "約3から4億年【中核数値】" in nf and "約42から46【中核数値】" in nf                  # 年系とEは中核のまま
+    assert hashlib.sha256(open(os.path.join(d, "storyline_b3", "selected_brief_annotated.md"), "rb").read()).hexdigest() == sha_before   # 契約済みファイル不変
+    D.contract.validate_annotated_b3(d)                                                       # 契約検証は引き続きPASS
+    assert r["runtime_evidence"]["o2prime"] is True and plan["marks_swapped"]["demoted_surfaces"] == len(dem)
+
+
+# ---- M2: R1/R2の新規数値検出(中点『約45』型) ----
+MID = "月のしわが語ること\n\n月の半径は、後期に約42から46メートル、つまり約45メートル縮んだと推定されている。【事実3】\n"
+
+
+def test_new_numbers_detects_midpoint_and_not_known_values():
+    news = "半径が約42〜46 m縮んだ。約750 m以上の予測。約3〜4億年前。"
+    r0 = "後期に約42から46メートル縮んだと推定されている。"
+    assert D.new_numbers("後期に約42〜46メートル、約45メートル縮んだ。", r0, news) == ["約45"]
+    assert D.new_numbers("後期に約42から46メートル縮んだ。", r0, news) == []
+    assert D.new_numbers("3つの理由がある。", r0, news) == []                                 # 単位なし小整数は対象外
+
+
+def test_m2_off_does_not_check_midpoint_phase1_behavior(tmp_path):
+    d, E = _s1_dir(tmp_path)
+    fc = FakeClient([GOOD, MID, GOOD])
+    r = D.run_w1_dev(d, fc, E)                                       # m2=False: Phase 1と同じ(検出しない)
+    assert r["runtime_evidence"]["calls_count"] == {"r0": 1, "r1": 1, "r2": 1}
+
+
+def test_m2_r1_new_number_shares_single_rerun_then_ok(tmp_path):
+    d, E = _s1_dir(tmp_path)
+    fc = FakeClient([GOOD, MID, GOOD, GOOD])
+    r = D.run_w1_dev(d, fc, E, m2=True)
+    assert r["runtime_evidence"]["calls_count"] == {"r0": 1, "r1": 2, "r2": 1}
+    assert r["runtime_evidence"]["new_numbers"]["r1"]["first"] == ["約45"] and r["runtime_evidence"]["new_numbers"]["r1"]["after"] == []
+
+
+def test_m2_r1_new_number_persists_is_stop(tmp_path):
+    d, E = _s1_dir(tmp_path)
+    fc = FakeClient([GOOD, MID, MID])
+    with pytest.raises(D.JANumericRetentionStopError) as ei:
+        D.run_w1_dev(d, fc, E, m2=True)
+    assert ei.value.stage == "r1" and len(fc.prompts) == 3 and ei.value.missing[0]["news_surface"] == "NEW:約45"
+
+
+def test_m2_r2_new_number_one_rerun_then_stop(tmp_path):
+    d, E = _s1_dir(tmp_path)
+    ok = D.run_w1_dev(d, FakeClient([GOOD, GOOD, MID, GOOD]), E, m2=True)
+    assert ok["runtime_evidence"]["calls_count"]["r2"] == 2
+    d2, E2 = _s1_dir(tmp_path / "x")
+    fc = FakeClient([GOOD, GOOD, MID, MID])
+    with pytest.raises(D.JANumericRetentionStopError) as ei:
+        D.run_w1_dev(d2, fc, E2, m2=True)
+    assert ei.value.stage == "r2" and len(fc.prompts) == 4
+
+
+# ---- O-1' ----
+def test_b3_addendum_v2_text_and_v1_unchanged(tmp_path, monkeypatch):
+    assert "比較相手" in D.B3_ADDENDUM_V2 and "比較そのものが問いへの答えである場合を除き" in D.B3_ADDENDUM_V2
+    assert "答えそのものの値だけ" in D.B3_ADDENDUM_V2 and "最大2個" in D.B3_ADDENDUM_V2
+    assert "比較相手" not in D.B3_ADDENDUM                          # v1(Phase 1)は不変
+    monkeypatch.setattr(D, "OUT_ROOT", str(tmp_path / "out"))
+    monkeypatch.setattr(D.cl, "install", lambda p: None)
+    client, sent = _b3_fake(["月の後期の縮みは、半径で約42〜46 mと推定される。"])
+    res = D.run_b3_dev("moon_shrinking", "A", "t9", per_run_cap=30, phase_cap=120, client=client, addendum_version="v2")
+    assert sent[0].endswith(D.B3_ADDENDUM_V2) and res["b3_addendum_version"] == "v2"
+
+
+def test_isolation_phase1b_flags_have_no_env_or_default_on():
+    import inspect
+    sig = inspect.signature(D.run_w1_dev)
+    assert sig.parameters["o2prime"].default is False and sig.parameters["m2"].default is False
+    assert inspect.signature(D.run_b3_dev).parameters["addendum_version"].default == "v1"
