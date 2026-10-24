@@ -1,6 +1,6 @@
 # TRIAL_RESULT_01 (FX-CORE-NUMERIC-RETENTION-TRIAL-01 委任_02、2026-10-25。ユーザー原文§8の1〜5に対応する**事実**。Status候補はSonnet所見、最終はFable独立評価)
 
-証跡: `PHASE1_RESULT_01.md`(月)、`DESIGN_02.md`、`CALIBRATION_01.md`、`PREREGISTERED_CRITERIA_01.md`、`BUDGET_LOG_01.md`、`er115_output/fx_numeric_retention_trial_01/`(各標本の`m1_result.json`/`trial_metrics.json`/`ja_writer/`/`a2`/`b1b`/`cost.json`)。コード=`er115_fx_numeric_retention_trial_01.py`(DEV専用・test 33 PASS)。
+証跡: `PHASE1_RESULT_01.md`(月)、`DESIGN_02.md`、`CALIBRATION_01.md`、`PREREGISTERED_CRITERIA_01.md`、`BUDGET_LOG_01.md`、`er115_output/fx_numeric_retention_trial_01/`(各標本の`m1_result.json`/`trial_metrics.json`/`ja_writer/`/`a2`/`b1b`/`cost.json`)。コード=`er115_fx_numeric_retention_trial_01.py`(DEV専用・test 32 PASS)。
 
 ## 1. 根本原因と採用候補方式
 - 根本原因(ROOT_CAUSE_02.md)のうち本Trialで**実測により確認/追加**された点:

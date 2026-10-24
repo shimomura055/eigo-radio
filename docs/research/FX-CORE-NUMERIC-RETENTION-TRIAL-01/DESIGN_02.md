@@ -1,6 +1,6 @@
 # DESIGN_02 (DESIGN_01 + Opus条件A必須修正M1〜M5・推奨R1〜R5の反映。2026-10-25、委任_02)
 
-方式の骨格はDESIGN_01のO3(B3 Storylineに答えの数値<=2を入れさせ、E=中核∩Storyline、R0直後に決定論の保持Gate)のまま。DEV実装=`er115_fx_numeric_retention_trial_01.py`(Production非接続)、test=`er115_fx_numeric_retention_trial_01_test_01.py`(28 PASS)。
+方式の骨格はDESIGN_01のO3(B3 Storylineに答えの数値<=2を入れさせ、E=中核∩Storyline、R0直後に決定論の保持Gate)のまま。DEV実装=`er115_fx_numeric_retention_trial_01.py`(Production非接続)、test=`er115_fx_numeric_retention_trial_01_test_01.py`(32 PASS、Phase 1後)。
 
 ## 1. M1〜M5・R1〜R5の反映表
 | ID | 内容 | 反映 | 実装/証跡 |
