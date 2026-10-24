@@ -22306,3 +22306,9 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - **実施(Sonnet)**: approve_regenerate 1回(正規関数、reasonに`FABLE_APPROVE_REGENERATE`記録)→再生成。3テイクNG後にTTS Local Rewrite recoveryが作動しテイク4=PASS_WITH_WARNING、HR Lock=RESOLVED。ただしAdv assembleはStyle Profile Gate(LOCAL_REWRITE_RECOVERY等)でBLOCKED(人間承認が必要、Gate迂回なし)。2回目の再生成は案件上限110円超過見込み(累計104.73円)のため未実施。Production変更0・コード変更0。
 - **費用**: 累計104.73円(audio委任_02分14.70円、うちAzure 8.59円)。Azure Secondary合計36.07円が最大。内訳=RUNTIME_EVIDENCE_01.md。
 - **OPEN**: OPEN-498(借用語gacha型の同音ASR誤認、修正へ進む)、OPEN-499(Adv part3の人間承認/再生成選択)。
+
+## 2026-10-24 FAMILY-X-WORD-GACHA-PRODUCTION-01 委任_04: ユーザー承認(UDR #183 a)・正式組立・公開
+- **ユーザー決定**: Adv `full_story_part3`の現行音声を承認(原文=docs/pm/delegation_log/2026-10-24_FAMILY-X-WORD-GACHA-PRODUCTION-01_USER_02.md §1)。新しいASR救済仕様のProduction採用ではない。OPEN-498案Aの個別登録は採らず包括Trial(別管理ID ASR-OOV-HOMOPHONE-ROOT-CAUSE-01)へ。
+- **実施**: `record_human_approval`正規手順で記録→Style Gate PASS→Adv assemble OK(312.98秒)、Std 320.08秒→試聴ページ公開(https://shimomura055.github.io/eigo-radio/user_test/family_x_word_gacha_01/index.html)→page_verify PASS(47/47)。追加TTS 0、Gate迂回0、Production変更0。commit dffd5b4f4。
+- **費用**: 最終実費104.73円(本委任0円)。OPEN-499 CLOSED、最終試聴PASS可否=UDR #184。
+

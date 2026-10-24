@@ -1,4 +1,4 @@
-# RUNTIME_EVIDENCE_01 (FAMILY-X-WORD-GACHA-PRODUCTION-01 委任_01, 2026-10-24) 【途中状態(委任_02終了時): Std完成・Adv part3はHR解除済みだがStyle Gate(LOCAL_REWRITE_RECOVERY)で組立blocked。ユーザー耳確認(人間承認)待ち】
+# RUNTIME_EVIDENCE_01 (FAMILY-X-WORD-GACHA-PRODUCTION-01 委任_01, 2026-10-24) 【委任_04完了: Std/Adv正式組立・公開page_verify PASS。最終試聴PASS可否=UDR #184待ち】
 
 ## 起動履歴(すべて同一HEAD 00815e4d8、`TTS_EXECUTION_MODE=STANDARD`、`.venv\Scripts\python.exe`、各起動前 stop_scope_check rc=0=stop_check_*.json)
 | # | 起動 | 結果 |
@@ -42,3 +42,15 @@ Research gpt-6-luna、Ledger VERIFIED 13/AMBIGUOUS 0/REJECTED 0。B3(Min2)採用
 ## 未完了(Fableへ)
 1. Adv part3: 新テイクを(a)ユーザー耳確認→`record_human_approval`(Gate指定の人間承認)、(b)approve_regenerate 2回目(約+14.7円、案件上限110円を超える見込みのため上限引上げ要。Local Rewriteに再度なる可能性あり)、(c)GACHA_HOMOPHONE_01.md案A(同音データ追加)を先に実装してから再判定、のいずれか。
 2. Adv assemble→試聴ページ(`er019_nws2_final_page_01.py`)→page_verify→UDR(最終試聴PASS可否)は未実施。
+
+## 委任_04(2026-10-24 JST 20:1x〜): 人間承認の正式記録→Adv組立→試聴ページ公開→page_verify(API 0、追加TTS 0、費用0円)
+- 前提: UDR #183=(a) ユーザー承認(原文=docs/pm/delegation_log/2026-10-24_FAMILY-X-WORD-GACHA-PRODUCTION-01_USER_02.md §1)。起動前 stop_scope_check rc=0(stop_check_d04.json)、tracked .pyの未commit変更0。
+- 人間承認: `er003_v1_n3_01_assemble.record_human_approval(.../b1b, "full_story_part3", <Gateが照合するentry.canonical_text>, approved_by="user (USER_APPROVED 2026-10-24 UDR #183 (a), recorded via Fable delegation 04): ...")` 1回。記録=`er019_output/.../word_gacha__run_wg_01/b1b/audit/human_approved_segments.json`(sha256=12063e23…, approved_at=2026-10-24T20:14:31)。Gate直接編集・迂回なし。
+- Adv `--stage assemble`(1起動、rc=0、console=assemble_adv_final_console.txt): style_profile_gate status BLOCK→**PASS**(human_approved=full_story_part3[FINAL_STYLE_RECORD_MISSING/ADV_STYLE_PREFIX_NOT_PROFILE_PREFIXED/LOCAL_REWRITE_RECOVERY]、blocked 0)。assemble OK 312.98秒、clipping無し、peak 0.95、KP vote audit 3/3、固有名詞アラーム0。
+- 最終秒数: **Standard 320.08秒 / Advanced 312.98秒**。KP: Std= pass it by / spark curiosity / by heart、Adv= star power / spark curiosity / tug at its sleeve(各KP英語3clip OK)。
+- 試聴ページ: https://shimomura055.github.io/eigo-radio/user_test/family_x_word_gacha_01/index.html(Std/Adv切替・通し・パート別・全スクリプト・KP、開発者向け情報なし。`er019_nws2_final_page_01.py`、commit dffd5b4f4)。
+- 公開page_verify(`er019_nws2_play_verify_01.py`、Playwright実再生、証跡=page_verify_01.json): HTTP 200、audio 47/47再生OK、seek OK、full duration Std 320.08/Adv 312.98(期待値一致)、KP table 6、file:///C: 、Style sha露出なし、http>=400 0、console error 0 = **PASS**。
+- PASS_WITH_WARNING一覧(事後耳確認候補、非ブロッキング、全てsecondary_confirmed): Std 3件=full_story_part1/full_story_part3/in_one_line。Adv 7件=topic_intro/preview/comment_1/full_story_part1/full_story_part3(Local Rewrite)/in_one_line/key_phrases/3/english(vote_2of3)。多くは中心語gacha→gotcha転写(Primary)をAzure Secondaryが確認したもの。
+- Local Rewrite 1件の音声/表示差の開示: Adv full_story_part3は音声が`If you have felt that way`(you've→you have、TTS Local Rewrite recovery)。表示スクリプト(正本原稿)は`If you've felt that way`のまま(音声と1語展開の差)。ユーザーはこの差を承知の上で承認(UDR #183 (a)、聴取ポイント(2)に明記)。
+- 実費: 案件累計104.73円(text37.71+audio67.02)、本委任0円(上限110円内、目標70円/セットは超過[+34.73円]、主因Azure Secondary 36.07円)。残: 目標70円超過の恒久対策はASR-OOV-HOMOPHONE-ROOT-CAUSE-01(別管理ID・別agent)。
+
