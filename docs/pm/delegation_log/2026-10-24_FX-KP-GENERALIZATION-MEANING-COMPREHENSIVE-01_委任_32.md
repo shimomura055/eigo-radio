@@ -1,0 +1,18 @@
+FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01 委任_32(Fableから、API 0): Trial_06 盲検表 `TRIAL_06/blind_06b.md` に対するFableのラベル(keyを開く前に付けたもの)を保存し、暫定集計を行う。Opusのラベルは別途届くため、本委任では**Fable単独の暫定集計**まで。
+
+## 1. 保存
+`docs/research/FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01/TRIAL_06/fable_labels_06.json` に以下を逐語で保存(形式 `{"<行>:<列>": LABEL}`):
+{"1:A":"PASS","2:A":"PASS","3:A":"PASS","4:A":"PASS","4:B":"PASS","5:A":"PASS","6:A":"PASS","6:B":"PASS","7:A":"FAIL_LIT","7:B":"PASS","8:A":"PASS","8:B":"PASS","9:A":"PASS","9:B":"PASS","10:A":"PASS","10:B":"PASS","11:A":"PASS","11:B":"PASS","12:A":"PASS","12:B":"PASS","13:A":"PASS","13:B":"PASS","14:A":"PASS","14:B":"PASS","15:A":"PASS","16:A":"PASS","17:A":"THIN","18:A":"PASS","19:A":"PASS","19:B":"PASS","20:A":"PASS","20:B":"PASS","20:C":"PASS","20:D":"PASS","21:A":"PASS","21:B":"PASS","21:C":"PASS","22:A":"PASS","22:B":"PASS","22:C":"PASS","23:A":"PASS","23:B":"PASS","24:A":"PASS","24:B":"THIN","25:A":"PASS","25:B":"PASS","26:A":"PASS","26:B":"PASS","27:A":"PASS","27:B":"PASS","28:A":"PASS","28:B":"PASS","29:A":"PASS","29:B":"PASS","29:C":"PASS","30:A":"PASS","30:B":"PASS","31:A":"PASS","31:B":"PASS","32:A":"PASS","32:B":"PASS","33:A":"PASS","33:B":"THIN","34:A":"PASS","34:B":"PASS","35:A":"PASS","35:B":"PASS","36:A":"PASS","37:A":"PASS","37:B":"PASS","38:A":"PASS","38:B":"PASS","39:A":"PASS","39:B":"FAIL_LIT","40:A":"PASS","40:B":"PASS","41:A":"PASS","41:B":"PASS","41:C":"PASS","41:D":"PASS","42:A":"PASS","43:A":"PASS","43:B":"PASS","44:A":"PASS","44:B":"PASS","45:A":"PASS","45:B":"PASS","45:C":"PASS","45:D":"FAIL_LIT","46:A":"PASS","46:B":"PASS","47:A":"PASS","47:B":"PASS","48:A":"PASS","49:A":"PASS","49:B":"PASS","50:A":"PASS","50:B":"THIN","51:A":"PASS","51:B":"PASS"}
+Fableの理由メモ(`TRIAL_06/FABLE_LABELS_06_NOTES.md`に保存): 7:A カーテンの裏に=字義訳(本文は黒幕の意) / 17:A 賞の形をした問いかけ=比喩像を残した弱い訳(含意欠落) / 24:B 気持ちが軽くなる=本文の主語(胸の重み)の持ち込み / 33:B 二つの異なるペースで進む話=story→話の字義寄り(含意欠落) / 39:B ハンドルを握る=比喩文脈で字義訳 / 45:D 摩擦のように感じる=日本語の「摩擦」は対人衝突の含意で語義ずれ・字義訳 / 50:B 人の財布をびっくりさせる=比喩像のみで意味(高さへの驚き)が弱い / 28:B 支払いに備えて…=慣用句自体の意味の説明であり本文持ち込みではないためPASS / 41 対照KP 4件すべて字義のままでPASS(過剰解釈なし) / 1:A 否定の持ち込みなしPASS。
+JSONのキーが盲検表の空欄セルを**全て**カバーし、継承セル・存在しないセルを含まないことを機械的に検証(過不足があれば報告、Fableのラベルは改変しない)。
+
+## 2. 暫定集計(Fable単独)
+`py er112_kp_gm_trial_06_blind2.py agree --labels1 fable_labels_06.json --labels2 fable_labels_06.json`(または単独用オプションがあればそれ)を実行し、出力を `TRIAL_06/AGREE_06_FABLE_ONLY.md` に保存。`metrics`も実行し結果を添える。keyはこの集計時に初めて開く(集計script内のみ)。
+集計結果をarm別に: HC 9KP(rep別、B0p vs X2pp、対照`sheltered from the rain`の過剰解釈有無)、R退行、Stage 2(B0最良比の PASS→THIN/FAIL、改善件数)、TRIAL_DESIGN_07 §3の事前基準との照合(合否の最終判断はFable。agentは基準値と実測値を並べるだけ)。
+
+## 3. Git
+`git status`でindex確認→`git commit --only -- <本委任の新規/変更ファイル>`→`git push origin HEAD:main`。`git add -A/-u/-f/-N`・amend・rebase・force push・stash・clean・reset --hard・checkout -f禁止(委任_31で`git add -f`が使われた件は、以後禁止を徹底。本委任で追跡が必要な新規ファイルはdocs配下のみ)。secret grep 0件。OPEN-490自動書換えは触らない。
+委任文逐語保存: `py docs/pm/tools/extract_delegation_from_jsonl_01.py --jsonl C:\Users\tensh\.claude\projects\C--Users-tensh-eigo-radio\a66c19e8-1d31-4bc4-b0cb-f15b29248dc1.jsonl --role assistant --tool-use-name Agent --tool-input-field prompt --index N --out docs/pm/delegation_log/2026-10-24_FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01_委任_32.md`(Nは先頭「FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01 委任_32」を含むAgent呼出の0始まり通番。直近は453〜455付近、jsonl検索で特定)。
+
+## 4. handback
+セル網羅の検証結果、arm別分布(B0p/X2pp)、HC/R/S2の事前基準との照合表、Fable単独での暫定所見(数値のみ)、commit hash、raw URL。
