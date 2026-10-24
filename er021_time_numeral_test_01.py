@@ -33,11 +33,39 @@ _add("OF-TN-01", "3 twenty euros", "3 €20", "EQ")
 _add("OF-TN-01", "twelve fifty dollars", "$12.50", "NE")
 # OF-TN-03 and
 _add("OF-TN-03", "between 9 and 10 thirty", "between 9 and ten-thirty", "EQ", note="Opus原例`between nine and ten-thirty`はnine側が別件X-3(数詞run `nine and ten`のmis-parse)で不成立のため9を数字にして分離")
-_add("OF-TN-03", "between 9 and 10 thirty", "between nine and ten-thirty", ("PIN", False), note="X-3(別OPEN): 修正前から`between 9 and 11`<->`between nine and eleven`もNG")
+_add("OF-TN-03", "between 9 and 10 thirty", "between nine and ten-thirty", "EQ", note="OPEN-489修正で解消(旧PIN-。Opus原例)")
 _add("OF-TN-03", "between 9 and ten thirty", "between 9 and 1030", "NE")
 _add("OF-TN-03", "between nine and ten thirty", "between nine and 1030", "NE")
 _add("OF-TN-03", "one hundred and ten", "110", "EQ")
 _add("OF-TN-03", "and ten thirty", "and 1030", "NE")
+# OPEN-489(委任_04): 数詞語runの"and"は『scale語の直後+数詞語が続く』場合だけ数の一部。それ以外は接続詞でrunを分割
+_add("OPEN-489", "between 9 and 11", "between nine and eleven", "EQ", note="報告原例")
+_add("OPEN-489", "between nine and eleven", "between nine and eleven", "EQ")
+_add("OPEN-489", "between nine and eleven", "between 9 and 11", "EQ")
+_add("OPEN-489", "between 9 and 10", "between nine and ten", "EQ", note="ten and ...: 旧は年ペア1010扱い")
+_add("OPEN-489", "between 10 and 11", "between ten and eleven", "EQ", note="旧は1011の年ペア読み")
+_add("OPEN-489", "between 20 and 30", "between twenty and thirty", "EQ", note="旧は2030")
+_add("OPEN-489", "seven and eight children", "7 and 8 children", "EQ")
+_add("OPEN-489", "two and three", "2 and 3", "EQ")
+_add("OPEN-489", "between nine and eleven", "between 9 and 12", "NE")
+_add("OPEN-489", "between nine and eleven", "between 8 and 11", "NE")
+_add("OPEN-489", "between nine and eleven", "between nine and twelve", "NE")
+_add("OPEN-489", "between 9 and 11", "between 9 and 11 and 12", "NE", note="余分な数")
+_add("OPEN-489", "between nine and eleven", "between 11 and 9", "NE", note="順序入替")
+_add("OPEN-489", "between ten and eleven", "between 1011 and", "NE", note="年ペア桁連結と別物")
+_add("OPEN-489", "one hundred and ten", "110", "EQ", note="scale語直後のandは数の一部(維持)")
+_add("OPEN-489", "two thousand and five", "2005", "EQ")
+_add("OPEN-489", "one hundred and ten", "100 and 10", "NE")
+_add("OPEN-489", "one hundred and ten", "1010", "NE")
+_add("OPEN-489", "two hundred and fifty and sixty", "250 and 60", "EQ", note="2つ目のandは接続詞")
+_add("OPEN-489", "between nine and ten thirty", "between 9 and 10:30", "EQ", note="and後の時刻形(_try_clock_pair)と干渉しない")
+_add("OPEN-489", "between nine and ten thirty", "between 9 and 1030", "NE")
+_add("OPEN-489", "between nine and ten-thirty", "between 9 and 10:30", "EQ")
+_add("OPEN-489", "in nineteen ninety and twenty twenty", "in 1990 and 2020", "EQ", note="年号2つ+and")
+_add("OPEN-489", "from 1990 to 2020", "from nineteen ninety to twenty twenty", "EQ", note="年号維持")
+_add("OPEN-489", "five and a half", "5.5", ("PIN", False), note="and a half系は本件対象外(現行値固定)")
+_add("OPEN-489", "ten dollars and fifty cents", "$10 and 50 cents", "EQ", note="金額")
+_add("OPEN-489", "ten dollars and fifty cents", "$10 and 15 cents", "NE")
 # 非Tier1 role(KP)
 _add("KP", "ten thirty", "1030", "NE", "KEY_PHRASE")
 _add("KP", "ten thirty", "10:30", "EQ", "KEY_PHRASE")
@@ -168,6 +196,33 @@ class CanonAtoms(unittest.TestCase):
 
     def test_minute_range_constant(self):
         self.assertEqual((t1._CLOCK_MINUTE_MIN, t1._CLOCK_MINUTE_MAX), (10, 59))
+
+
+
+class AndSplitOpen489(unittest.TestCase):
+    """OPEN-489(委任_04): 数詞語runの`and`はscale語直後だけ数の一部。それ以外は接続詞でrunを分割する(er021 atom化 + er006 正規化)。"""
+
+    def _nums(self, text):
+        return [str(x["value"]) for x in t1._tier1_atoms(text) if x["kind"] == "number"]
+
+    def test_er021_atoms_split_at_conjunction(self):
+        self.assertEqual(self._nums("between nine and eleven"), ["9", "11"])
+        self.assertEqual(self._nums("between ten and eleven"), ["10", "11"])      # 旧: 年ペア読み1011
+        self.assertEqual(self._nums("between twenty and thirty"), ["20", "30"])  # 旧: 2030
+        self.assertEqual(self._nums("seven and eight children"), ["7", "8"])
+
+    def test_er021_scale_word_and_kept(self):
+        self.assertEqual(self._nums("one hundred and ten"), ["110"])
+        self.assertEqual(self._nums("two thousand and five"), ["2005"])
+        self.assertEqual(self._nums("two hundred and fifty and sixty"), ["250", "60"])
+        self.assertEqual(self._nums("in nineteen ninety and twenty twenty"), ["1990", "2020"])
+
+    def test_er006_normalize_splits_not_drops(self):
+        n = val.normalize_numeric
+        self.assertEqual(n("between nine and eleven"), "between 9 and 11")
+        self.assertEqual(n("between ten and twenty"), "between 10 and 20")
+        self.assertEqual(n("one hundred and two"), "102")
+        self.assertEqual(n("Her husband and two young brothers"), "her husband and 2 young brothers")  # 2026-10-23是正(and+数詞語)を維持
 
 
 if __name__ == "__main__":

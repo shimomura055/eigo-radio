@@ -1,0 +1,25 @@
+'At nineteen thirty'        ||'At 19:30'                 vg=UNKNOWN  judge=PASS/primary_pass cls=NORMALIZED_MATCH
+'At 19 30'                  ||'At 19:30'                 vg=EQUAL    judge=PASS/primary_pass cls=NORMALIZED_MATCH
+'At 19:30'                  ||'At 19:30'                 vg=EQUAL    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE cls=NUMERIC_EQUIVALENCE_MATCH
+'At 19:30'                  ||'At nineteen thirty'       vg=UNKNOWN  judge=PASS/primary_pass cls=NORMALIZED_MATCH
+'at fourteen fifteen'       ||'at 14:15'                 vg=UNKNOWN  judge=PASS/primary_pass cls=NORMALIZED_MATCH
+'At 14:30'                  ||'At 2:30 pm'               vg=DIFF     judge=NG_PROTECTED/p1_value_diff cls=TRUE_CONTENT_MISMATCH
+'at ten oh five'            ||'at 10:05'                 vg=DIFF     judge=NG_PROTECTED/p1_value_diff cls=TRUE_CONTENT_MISMATCH
+'at 10:05'                  ||'at ten oh five'           vg=DIFF     judge=NG_PROTECTED/p1_value_diff cls=TRUE_CONTENT_MISMATCH
+'at ten o five'             ||'at 10:05'                 vg=DIFF     judge=NG_PROTECTED/p1_value_diff cls=TRUE_CONTENT_MISMATCH
+'at ten zero five'          ||'at 10:05'                 vg=UNKNOWN  judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable cls=TRUE_CONTENT_MISMATCH
+'at six oh five am'         ||'at 6:05 am'               vg=EQUAL    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE cls=NUMERIC_EQUIVALENCE_MATCH
+'at 6:05'                   ||'at six oh five'           vg=DIFF     judge=NG_PROTECTED/p1_value_diff cls=TRUE_CONTENT_MISMATCH
+'at 6:05'                   ||'at six oh-five'           vg=DIFF     judge=NG_PROTECTED/p1_value_diff cls=TRUE_CONTENT_MISMATCH
+'at 6:05'                   ||'at six five'              vg=UNKNOWN  judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable cls=TRUE_CONTENT_MISMATCH
+'at 10:05'                  ||'at 10:50'                 vg=DIFF     judge=NG_PROTECTED/p1_value_diff cls=TRUE_CONTENT_MISMATCH
+'at 10:05'                  ||'at 10:5'                  vg=DIFF     judge=NG_PROTECTED/p1_value_diff cls=TRUE_CONTENT_MISMATCH
+'at 10:05'                  ||'at ten'                   vg=UNKNOWN  judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable cls=TRUE_CONTENT_MISMATCH
+'at ten oh five'            ||'at 10:50'                 vg=DIFF     judge=NG_PROTECTED/p1_value_diff cls=TRUE_CONTENT_MISMATCH
+'at ten oh five'            ||'at 1005'                  vg=DIFF     judge=NG_PROTECTED/p1_value_diff cls=TRUE_CONTENT_MISMATCH
+'at nine hundred hours'     ||'at 0900'                  vg=UNKNOWN  judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable cls=TRUE_CONTENT_MISMATCH
+'at 09:00'                  ||'at nine'                  vg=UNKNOWN  judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable cls=TRUE_CONTENT_MISMATCH
+'at 12:00'                  ||"at twelve o'clock"        vg=UNKNOWN  judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable cls=TRUE_CONTENT_MISMATCH
+'at nineteen hundred'       ||'at 19:00'                 vg=UNKNOWN  judge=PASS/primary_pass cls=NORMALIZED_MATCH
+'at 19:00'                  ||'at nineteen hundred'      vg=UNKNOWN  judge=PASS/primary_pass cls=NORMALIZED_MATCH
+'at 3:00'                   ||"at three o'clock"         vg=UNKNOWN  judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable cls=TRUE_CONTENT_MISMATCH

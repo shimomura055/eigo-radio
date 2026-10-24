@@ -323,7 +323,12 @@ def _convert_cardinal_words(text: str) -> str:
             core = seq[lead:len(seq) - trail]
             for k, w in enumerate(core):
                 if w == "and" and not (k > 0 and core[k - 1] in ("hundred", "thousand", "million")):
-                    core = []          # 不正な"and"位置の数値語列は変換しない(従来は誤った値へ変換していた)
+                    # OPEN-489(ASR-TIME-NUMERAL-EQUIVALENCE-01 委任_04): 不正な"and"位置は接続詞なので、そこで数値語列を分割する
+                    # (従来は列全体を変換しなかったため `nine and eleven` が `9 and 11` にならず、digit側canonicalと不一致の誤NGになった)。
+                    # 分割後の前半だけをここで変換し、"and"以降は次のloopで(先頭"and"を残して)別の列として処理する。
+                    j = i + lead + k
+                    trail = 0
+                    core = core[:k]
                     break
             if not core or (len(core) == 1 and core[0] == "one"):
                 out.extend(tokens[i:j])

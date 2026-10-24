@@ -1,0 +1,11 @@
+* Z full_story_part2_c8 OPEN-489 synthetic(canon=between 9 and 11 / ASR=between nine and eleven) | ('BLOCKED', 'NG_PROTECTED', 'p1_value_diff') -> ('ok', 'PASS', 'primary_pass')
+  Z full_story_part2_c8 OPEN-489 synthetic(canon=between 9 and 11 / ASR=between 9 and 12)[NG側] | ('BLOCKED', 'NG_PROTECTED', 'p1_value_diff') -> ('BLOCKED', 'NG_PROTECTED', 'p1_value_diff')
+* X full_story_part1 OPEN-489 synthetic(+ 'Prices ran between 9 and 11 dollars.' / ASR 'between nine and eleven') | ('BLOCKED', 'NG_PROTECTED', 'p1_value_diff') -> ('ok', 'PASS', 'primary_pass')
+  X full_story_part1 OPEN-489 synthetic(+ 'Prices ran between nine and eleven dollars.' / ASR 'between 9 and 12')[NG側] | ('BLOCKED', 'NG_PROTECTED', 'p1_value_diff') -> ('BLOCKED', 'NG_PROTECTED', 'p1_value_diff')
+  X full_story_part1 OPEN-489 synthetic(+ 'It cost one hundred and ten dollars.' / ASR '110') | ('BLOCKED', 'NG_PROTECTED', 'p1_value_diff') -> ('BLOCKED', 'NG_PROTECTED', 'p1_value_diff')
+  X full_story_part1 OPEN-489 synthetic(+ 'Seven and eight people came.' / ASR '7 and 8') | ('ok', 'PASS', 'primary_pass') -> ('ok', 'PASS', 'primary_pass')
+* ABC(scope外) full_story_part1 OPEN-489 synthetic(+ 'Prices ran between 9 and 11 dollars.' / ASR 'between nine and eleven') | ('BLOCKED', 'NG_PROTECTED', 'p1_value_diff') -> ('ok', 'PASS', 'primary_pass')
+  ABC(scope外) full_story_part1 OPEN-489 synthetic(+ 'Prices ran between nine and eleven dollars.' / ASR 'between 9 and 12')[NG側] | ('BLOCKED', 'NG_PROTECTED', 'p1_value_diff') -> ('BLOCKED', 'NG_PROTECTED', 'p1_value_diff')
+  ABC(scope外) full_story_part1 OPEN-489 synthetic(+ 'It cost one hundred and ten dollars.' / ASR '110') | ('BLOCKED', 'NG_PROTECTED', 'p1_value_diff') -> ('BLOCKED', 'NG_PROTECTED', 'p1_value_diff')
+  ABC(scope外) full_story_part1 OPEN-489 synthetic(+ 'Seven and eight people came.' / ASR '7 and 8') | ('ok', 'PASS', 'primary_pass') -> ('ok', 'PASS', 'primary_pass')
+records 53 changed 3 ; 保存entry(variant=stored)の変化: 0

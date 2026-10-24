@@ -272,6 +272,16 @@ def _consume_number_word_run(words: list[str], i: int):
         return None
     j = i
     while j < n and words[j].lower() in _NUMBER_VOCAB:
+        # OPEN-489: "and"は英語の基数読みで『scale語(hundred/thousand/...)の直後で、
+        # 後ろに数詞語が続く』場合だけ数の一部("one hundred and ten"=110)。それ以外の
+        # "and"(`nine and eleven`/`ten and twenty`)は接続詞でrunを分割する(従来は
+        # 全体を1つのrunとして解析して失敗し、`nine`が数値化されない/`ten and eleven`が
+        # 年ペア読み1011になる誤NGを生んだ)。
+        if words[j].lower() == "and" and not (
+                j > i and words[j - 1].lower() in _SCALE_WORDS
+                and j + 1 < n and words[j + 1].lower() in _NUMBER_VOCAB
+                and words[j + 1].lower() != "and"):
+            break
         j += 1
     # runの末尾の"and"も含めない(直後が数値語で終わらない場合、"and"だけが
     # 取り残されて誤って数値へ合成されるのを防ぐ)。"one hundred and five"
