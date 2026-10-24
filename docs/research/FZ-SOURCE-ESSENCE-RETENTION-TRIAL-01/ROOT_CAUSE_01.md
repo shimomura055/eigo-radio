@@ -85,3 +85,8 @@ Std/Adv最終本文の特定: `$R/writer/provenance.json`の`adv_final_sha256=9a
 - 「LLMが偶然三人称化した」→反証: 三人称は`r1_prompt.txt:55`で**指示された**出力であり、"housemate"もMust-keepの呼称指示と整合して説明できる。Pure再生成による再現確認は有料のためPhase 0では行わない(API 0)。Phase 1で固定文言を差し替えた対照条件と比較して再現確認する。
 - 「R0の時点で既に三人称寄りだった」→反証: `r0.md`は一人称(43/23)。
 - 「Stdが一人称なのはStd調整Promptが人称を指示したから」→反証: `STD_PROMPT_HEAD/TAIL`(`er062_family_z_writer_01.py`、Std Prompt実物`std_adjust_prompt.txt`)に人称記述なし。偶然(Must-keepの"first-person speaker"語句の影響が最有力、推測)。
+
+## 訂正(2026-10-25 委任_02、Opus条件A見落とし1・2の反映)
+- **§5「過去Trial 0件」は不正確**。`er055_family_z_d_predictive_validation_trial_01.py:135-143`の`NEUTRAL_CONVERSION_PLAN`に汎用文「Keep the original point of view (first person if the original is first person, third person if it is third person)」がある(21節B: **Trial内の汎用文言の先例**。不採用判断の記録ではなく、raw-textモードのconversion planに作品非依存で人称維持を書く試み)。今回のアーム(ii)(Seed欄なしの汎用置換)の対照として使う。
+- **寄与要因の追加(見落とし1)**: `_render_essentials_block`(`er062_family_z_writer_01.py:424`)は`keep_name=false`の人物すべてに「refer to this person by role or relationship, without a name」と描画する。語り手が一人称の作品ではこれが「外から呼称で描け」という指示として働き、"in third person"と合わさって"the old man's housemate"を生んだと読むのが自然(推定。1aアーム(iii)でNarration行をKey people行より前に置く対処の検証対象)。
+- 固定文言の由来: `er059_melos_sol_b3z_trial_01.py:83-87`(Family X W-1文言をメロスA2用に最小変更)。三人称作品ではR0が三人称を書くため念押しにすぎず、外しても挙動はほぼ変わらない見込み(Phase 2で確認)。
