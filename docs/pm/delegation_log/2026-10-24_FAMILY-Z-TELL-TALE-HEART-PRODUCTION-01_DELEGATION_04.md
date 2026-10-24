@@ -1,8 +1,14 @@
 管理ID: FAMILY-Z-TELL-TALE-HEART-PRODUCTION-01 委任_04 — Std KP#2『vulture's』の是正と、Z runnerの`CANONICALIZATION_REVIEW_REQUIRED`自動受理の調査。上限=作品累計70円(既使用36.64円)。
 
-(注: 抽出ツールのindexをsubagentから特定できなかったため、委任文を受領した本文から手で保存。要旨のみ。)
-- Std KP#2『vulture's』(canonicalization QA 4項目FAIL・REVIEW_REQUIRED受理)は承認済み品質未満。試聴提出前に是正。
-- 手順: (1)案B myself→oneself を `_PERSON_DEPENDENT_TO_GENERIC` に追加(影響分析gate: 既存test全PASS・X/Z保存KP replay変化0・他-self形確認、OPEN_KP_MYSELF_IMPACT_01.mdに記録、単独commit)。(2)`--stages kp --regenerate-stage kp_a2` 最大2回(間隔150秒以上)、CANONICALIZATION_PASSのみ採用、REVIEW_REQUIREDでQA FAIL含むなら不採用。(3)PASS後Std KP clipのみTTS→`provision_shell,gate,assemble,pages,page_verify`を1起動→公開差替え→page_verify PASS。
-- 調査(API 0): er026 runner:1712-1713のREVIEW_REQUIRED受理の出自(委任_10コメント、DECISION_LOG/OPEN_ITEMS grep、er003_key_words_canonicalization.py:630-650との関係、X経路の扱い)。承認記録の有無を明記、無ければ新規OPEN(分類「修正へ進む」)登録、修正はしない。保存先 docs/research/FAMILY-Z-TELL-TALE-HEART-PRODUCTION-01/KP_REVIEW_REQUIRED_INVESTIGATION_01.md。
-- 日本語タイトル読み(ASR一次「菅口新造」→二次OK)は試聴確認項目として報告。
-- 制約: stop_scope_check rc=0、cost logger、日次1,000円内、TTS直列化flag、RESTART_STORM回避、--clear-stop禁止、.venv python。完成後RUNTIME_EVIDENCE_01/SOURCE_FIDELITY_CHECK_01更新、OPEN-503・DECISION_LOG・ACTIVE_TASK更新。Git: 自分の変更のみ、案Bは単独commit、push origin HEAD:main。報告 docs/pm/RESULT_PACKET_FZTTH4.md。到達目標「正式完成候補・ユーザー最終試聴待ち」、PASS先取り禁止。
+## Fable判断
+- Std KP#2『vulture's』(単独の所有格、canonicalization QA 4項目FAIL、REVIEW_REQUIRED受理)は学習単位として承認済み品質を満たさない。**試聴提出前に是正する**(ユーザー試聴に不良KPを含めない)。公開ページは是正完了まで現状のままでよいが、報告上は「是正中」。
+- 是正手順: (1)まず案B=`er003_key_words_canonicalization.py` の閉じた語彙表 `_PERSON_DEPENDENT_TO_GENERIC`(464-482行付近)へ `myself→oneself` を追加(既存my→one's等と同系のデータ補完。意味的変更ではない)。実施前に影響分析gate: 既存test全PASS、X/Z保存KP entryへのreplayで結果変化0、他の`-self`形の現状確認(今回は`myself`のみ)。`OPEN_KP_MYSELF_IMPACT_01.md`に記録し**単独commit**。(2)`--stages kp --regenerate-stage kp_a2`でStd再選定を**最大2回**(起動間隔150秒以上)。**`CANONICALIZATION_PASS`のみ採用**。`REVIEW_REQUIRED`で通った場合は、そのKP群のQA項目を確認し、1件でもQA FAILのKPが含まれていれば採用せず次回へ(2回とも不可なら停止・報告)。(3)PASS後、Std KP clipのみTTS(`tts_a2`は変更KPのclipだけ再生成されることを確認、本文segmentは再利用)→`provision_shell,gate,assemble,pages,page_verify`を1起動→公開ページ差替え→page_verify PASS。
+- 調査(API 0): Z runner `er026_family_z_fiction_production_runner_01.py:1712-1713` が`CANONICALIZATION_REVIEW_REQUIRED`を受理する挙動の出自(委任_10のコメント「Z限定・暫定の外側retry」、DECISION_LOG/OPEN_ITEMSを`REVIEW_REQUIRED`でgrep、`er003_key_words_canonicalization.py:630-650`の「自動採用しない。人間確認後に採用可能」との関係、X経路(`er003_v1_n3_01_scaffold_generate.py`)が同statusをどう扱うか)。承認記録があるか/ないかを明記し、**承認記録がなければ新規OPENを分類「修正へ進む」で登録**(今回は修正せず、Fable判断待ち。Production変更はしない)。承認記録があれば「仕様どおり、ただし品質上の弱点」としてOPENに所見のみ。`docs/research/FAMILY-Z-TELL-TALE-HEART-PRODUCTION-01/KP_REVIEW_REQUIRED_INVESTIGATION_01.md`に保存。
+- 日本語タイトル読み(ASR一次「菅口新造」→二次OK)は試聴確認項目として報告に残す(再生成しない)。
+
+## 実行上の制約
+- 本委任文を `docs/pm/delegation_log/2026-10-24_FAMILY-Z-TELL-TALE-HEART-PRODUCTION-01_DELEGATION_04.md` に逐語保存(`py docs/pm/tools/extract_delegation_from_jsonl_01.py --jsonl C:\Users\tensh\.claude\projects\C--Users-tensh-eigo-radio\a66c19e8-1d31-4bc4-b0cb-f15b29248dc1.jsonl --role assistant --tool-use-name Agent --tool-input-field prompt --index <最新(491以降)> --out <path>`、先頭行一致確認)。
+- 起動条件: Z経路import graph clean(案Bはcommit後に起動)、stop_scope_check rc=0、STOPなし、cost logger install、日次1,000円内(並行: X『月の縮小』≤100円)。TTS直列化flag尊重、RESTART_STORM回避、HR Lockは停止・報告、`--clear-stop`禁止、`.venv\Scripts\python.exe`。
+- 完成後、`RUNTIME_EVIDENCE_01.md`・`SOURCE_FIDELITY_CHECK_01.md`を更新(KP一覧差替え、kp再選定回数、費用更新)。OPEN-503・DECISION_LOG・ACTIVE_TASKを更新(別agentが並行編集中: 直前再Read・最小Edit・衝突時再試行)。
+- Git: 自分の変更のみ、案Bは単独commit(`git add <path>`→`git diff --cached --name-status`→`git commit --only -- <path…>`または前例のupdate-index方式)→`git push origin HEAD:main`。wav/raw_usage_log不追跡。禁止: `git add -A/-u/-f/-N`、amend、rebase、force push、stash、clean、reset --hard、checkout -f。secret grep 0件。OPEN-490。
+- 報告 `docs/pm/RESULT_PACKET_FZTTH4.md`: 最終KP一覧(Std/Adv、英語/日本語)、kp再選定の経緯、案Bの影響分析結果、REVIEW_REQUIRED調査結論(承認記録の有無・新規OPEN番号)、Gate結果、費用累計、試聴URL(Std/Adv)、残存事項。到達目標「正式完成候補・ユーザー最終試聴待ち」、PASS先取り禁止。

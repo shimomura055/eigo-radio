@@ -1,0 +1,15 @@
+管理ID: KP-CANON-REVIEW-REQUIRED-FIX-01 委任_01 — OPEN-504(KP正規化 `CANONICALIZATION_REVIEW_REQUIRED` のX/Z自動受理)の是正。承認済み仕様(CURRENT_SPEC 3状態モデル=「REVIEW_REQUIREDは自動採用しない・人間確認後に採用可」、`er003_key_words_canonicalization.py:630-650`)への整合是正=不具合修正(11-8「修正へ進む」)。API上限10円(replay/検証はAPI 0が原則、正式経路の発火evidenceが必要なら最小)。
+
+## Fable判断
+- 調査結果 `docs/research/FAMILY-Z-TELL-TALE-HEART-PRODUCTION-01/KP_REVIEW_REQUIRED_INVESTIGATION_01.md`(承認記録なし、X `er019:350-351`/Z `er026:1712-1713`/共有`er003_v1_n3_01_scaffold_generate.py:520/780/910`が自動受理)を受け、仕様どおりの挙動へ戻す。新仕様ではないのでOpus条件Aは不要と判断(内容は「DECIDED仕様の実装漏れの是正」)。ただし判定フローの変更なので影響分析gateを必須とする。
+- 修正方針: REVIEW_REQUIREDを**INVALIDと同様に除外語付き再選定の対象**にし(既存の外側retry機構を使う。Zは委任_10の外側retry、Xは同等の既存retryがあればそれ、なければ共有module側の最小変更)、上限到達後は自動採用せず**既存のHR(人間確認)停止**へ回す。採用されるのは`CANONICALIZATION_PASS`のみ。Family A/B/C凍結ラインには影響させない(経路確認)。
+- 変更は最小・共通化(Family別の重複実装を避ける)。新flag・Prompt変更・閾値変更なし。
+
+## 作業
+1. 本委任文を `docs/pm/delegation_log/2026-10-25_KP-CANON-REVIEW-REQUIRED-FIX-01_DELEGATION_01.md` に逐語保存(`py docs/pm/tools/extract_delegation_from_jsonl_01.py --jsonl C:\Users\tensh\.claude\projects\C--Users-tensh-eigo-radio\a66c19e8-1d31-4bc4-b0cb-f15b29248dc1.jsonl --role assistant --tool-use-name Agent --tool-input-field prompt --index <最新(494以降。見つからなければjsonlをgrepで特定)> --out <path>`、先頭行一致確認)。併せて、前委任で要旨保存になっていた `docs/pm/delegation_log/2026-10-24_FAMILY-Z-TELL-TALE-HEART-PRODUCTION-01_DELEGATION_04.md` を同ツールで逐語版に上書き(該当Agent呼出のindexをjsonl内の「FAMILY-Z-TELL-TALE-HEART-PRODUCTION-01 委任_04」でgrepして特定)。
+2. **影響分析gate(API 0)** `docs/research/KP-CANON-REVIEW-REQUIRED-FIX-01/IMPACT_01.md`: 受理箇所の全列挙(grep `CANONICALIZATION_REVIEW_REQUIRED`)、X/Z/A/B/C/Y各経路の到達性、保存済みX/Z最終KP(約320ファイル)でREVIEW_REQUIREDだった3件(X 1・Trial 1・Z『メロス』1)の扱い(公開済み作品は再処理しない=OPEN-490同様に記録のみ、理由を明記)、修正後に発生しうるHR停止頻度の見積(3/320)、retry回数上限と費用影響(再選定1回≈1.4円)。
+3. 実装: 共有module/各runnerの最小変更。X側のfail-closed test期待値(`er019`のKPMP-03関連)を仕様どおりに更新(「REVIEW_REQUIREDは採用されない」)。新規test: X/Z両経路でREVIEW_REQUIRED→再選定→PASSなら採用/上限到達→HR停止(fake client、API 0)。既存関連test群(canonicalization・wiring・stop_paths・min_unit・possessor_roles・gloss_alignment)全PASS、全回帰 failed 0/errors 0(他agent起因は列挙)。
+4. runtime evidence: 正式経路でREVIEW_REQUIREDを再現できる保存入力(『告げ口心臓』run_ms…ではなく `er026_output/.../the_tell_tale_heart/_bak_pre04/kp_try1/` の`vulture's`入力、またはX保存入力)をDEV注入で正式KP段に通し、再選定→PASS/HR停止の挙動を記録(API最小、上限10円)。`RUNTIME_EVIDENCE_01.md`。
+5. SSOT: `CURRENT_SPEC.md`の3状態モデル箇所(:1964付近)に「X/Z正式経路での実装状況(再選定→上限後HR)」を1〜2行追記(仕様文は変えない)、`OPEN_ITEMS.md` OPEN-504=FIXED_RECORDED(Fable受入待ち)、`DECISION_LOG.md`1件、`docs/pm/ACTIVE_TASK.md`。
+6. Git: Production変更は単独commit(message に「承認済み3状態モデルへの整合是正、撤退=revert」)、docs/SSOTは別commit。自分の変更のみ(`git add <path>`→`git diff --cached --name-status`→`git commit --only -- <path…>`または前例のupdate-index方式)→`git push origin HEAD:main`。禁止: `git add -A/-u/-f/-N`、amend、rebase、force push、stash、clean、reset --hard、checkout -f。secret grep 0件。OPEN-490。
+7. 報告 `docs/pm/RESULT_PACKET_KCRR1.md`: 変更箇所/影響分析/test・全回帰/runtime evidence/費用/残存(公開済み3件の扱い)。

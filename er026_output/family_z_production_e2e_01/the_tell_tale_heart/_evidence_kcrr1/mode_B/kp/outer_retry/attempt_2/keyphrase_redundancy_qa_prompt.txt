@@ -1,0 +1,86 @@
+以下は、同じ記事から選ばれた2件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。2件から作れる全てのペア(1組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず1組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+I was only nervous, not mad, and I knew it. My illness made all my senses stronger, especially my hearing. I could hear everything in heaven and on earth. Judge how calmly I tell you this whole story.
+
+I loved the old man who shared my home. He never hurt me, and I wanted none of his money. But his pale blue eye had a thin covering, like a vulture’s. It froze my blood. I would kill him and close that eye forever.
+
+For seven nights, I slowly opened his door at midnight. I put my head inside, carrying a covered lantern. I let a thin line of light reach his eye.
+
+The eye was closed every time.
+
+I hated the eye, not him, and could not act. Every morning, I spoke to him warmly.
+
+On night eight, my thumb slipped on the lantern’s metal catch.
+
+“Who is in here?” the old man called out.
+
+I stood still for an hour while he sat listening. A small cry of fear came from his bed.
+
+At last, I let a thin line of lantern light fall across his eye.
+
+This time, his eye was wide open.
+
+Then I heard a low, fast beat, like a watch inside cotton. His heart was beating faster and louder. What if a neighbour heard it?
+
+I shouted and jumped forward, and he screamed once. I dragged him onto the floor and pulled the heavy bed over him. His heart kept beating for a little longer.
+
+At last, there was no sound.
+
+I hid his body under three wooden floorboards. I put them back carefully, leaving no mark.
+
+At four in the morning, three police officers knocked because a neighbour had heard a scream.
+
+I smiled and welcomed them inside. I explained that my scream came from a bad dream. The old man, I said, was away in the country.
+
+After showing them the house, I brought chairs into his bedroom. I sat right above the body, calm and sure of myself. The officers sat down and chatted.
+
+My ears began ringing, so I spoke more loudly. Now the sound was clear: a low, fast beat, like a watch inside cotton.
+
+I got up, walked around, and dragged my chair across the floor. Yet the beating only grew louder.
+
+The officers smiled and talked as if they heard nothing.
+
+But they knew, and their friendly smiles were laughing at me! How could they sit there? I could not bear another second.
+
+“Don’t pretend anymore!” I screamed. “I killed him! Pull up the floorboards here, under my feet! It is his horrible heart beating!”
+
+【Key Phrase 2件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "in heaven and on earth",
+    "japanese_gloss": "意味一",
+    "source_sentence": "I could hear everything in heaven and on earth"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "metal catch",
+    "japanese_gloss": "意味二",
+    "source_sentence": "On night eight, my thumb slipped on the lantern's metal catch"
+  }
+]
