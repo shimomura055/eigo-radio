@@ -1,6 +1,6 @@
 # CP_CHECK_01 (FAMILY-Z-MONKEYS-PAW-PRODUCTION-01 委任_01、2026-10-24)
 
-前半(§A)=着手時の既存仕様整合確認(委任文§0の1〜7)。後半(§B)=原作忠実性チェックポイント(Sonnet記入→Fable確認待ち)。
+前半(§A)=着手時の既存仕様整合確認(委任文§0の1〜7)。後半(§B)=原作忠実性チェックポイント(委任_03で最終稿確定、Fable確認待ち)。
 
 ## §A 着手時の整合確認
 | # | 確認事項 | 結果(照合箇所) |
@@ -26,6 +26,12 @@ r0/r1は中間稿(引用省略、writer/cp_checklist.md参照)。段落数はAdv
 | 6 | 軍曹は役割で表現(無名) | `a retired sergeant-major home from India` / `his friend warned` | `a retired sergeant-major from India` | OK(Morrisの名は出ない) |
 | 7 | 使者は役割で表現(無名) | `a stranger from the firm` | `a man from Herbert’s company` | OK(Maw and Megginsの名は出ない) |
 | 8 | key_causality(猿の手・警告・200ポンドの願い→ねじれる→死と見舞金200ポンド→第二の願い→ノック→第三の最後の願い) | `“It grants three wishes,” he said, “but brings sorrow to anyone who interferes with fate.”`→`“Burn it,” his friend warned. “And don’t blame me if you keep it.”`→`It twisted in his hand.`→`offers you two hundred pounds in compensation`→`“I wish Herbert alive again.”`→`Then came a soft knock.`→`made his third and last wish` | `“The paw gives three wishes,” he said. “But trying to change your fate brings sadness.”`→`“Burn it, or don’t blame me for what happens,” his friend warned.`→`The paw twisted in his hand`→`offers two hundred pounds for your loss`→`“I wish for Herbert to live again.”`→`A quiet knock broke the silence.`→`made his third and last wish` | OK |
+
+## §B 最終稿確定(委任_03、2026-10-24)
+- 引用照合: 上表の8項目に含まれる引用43箇所(Adv r2・Std std_adjust、curly quote正規化のうえ完全一致検索)を `writer/r2.md` / `writer/std.md` に対して機械照合し、**43/43一致・不一致0**(引用の誤記なし)。本文は完成音声・公開ページの原稿(canonical)と同一(`article_text_source=canonical`)。
+- 題名: ページ・音声ファイル名・KP・SSOT(`STORY_REGISTRY["the_monkeys_paw"]`)とも『猿の手 / The Monkey's Paw』。Writer本文題 "The Last Wish" は表示に使われない。
+- 完成音声との差: Std `full_story_part1_c10` のみ Local Rewrite で音声が `guest`->`visitor`(スクリプト表示は原稿の `guest`)。意味・筋は不変(原作忠実性への影響なし)、RUNTIME_EVIDENCE_01.mdに記録。
+- 判定(8項目): 全項目OK(結末の第三の最後の願い/ノックが止む/無人の道=維持、withhold_until_end維持、Mr./Mrs. White・Herbert維持、軍曹・使者は無名役割、因果連鎖維持)。ホラーの緊張感所見=下記A。
 
 ## 所見(軽微・処置不要の範囲、Fable確認)
 - A(ホラーとしての緊張感の所見): 地の文を最小限にし会話と短文で運ぶ構成。(1)冒頭の穏やかな団欒(風・暖炉・チェス)から軍曹の警告、(2)猿の手が手の中で『ねじれる』不穏、(3)使者の登場で一転、(4)第二の願い後の沈黙(`listening to the clock`)→`soft knock`→`The knocking grew louder.`と音で恐怖を積み、(5)妻が椅子に乗ってかんぬきに手を伸ばし、夫が床で手探りする『時間との競争』、(6)最後は『誰もいない・無音』で終わる。語りと会話のみで緊張が増す。効果音語・未承認演出の追加なし。恐怖の山場(ドアの外のものを書かない)は原作どおり維持。台詞が少し説明的になる箇所(`I’m afraid of what might return`)は原作の`could only recognize him by his clothing`を圧縮した代替で、直接描写を避けつつ恐怖を保つ。

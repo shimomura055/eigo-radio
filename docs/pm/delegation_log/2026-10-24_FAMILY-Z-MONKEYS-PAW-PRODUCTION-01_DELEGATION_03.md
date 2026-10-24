@@ -1,0 +1,12 @@
+FAMILY-Z-MONKEYS-PAW-PRODUCTION-01 委任_03(Fableから): 速度仕様v2 Gate停止(Adv `full_story_part3_c5`、原音0.771秒、長さ比0.9670 vs 許容0.93〜0.96)について、Fable判断=(a)該当1 clipの再生成を**1回だけ許可**(既存resume機構で該当clipのみ再生成、他clipは再利用。`tts_b1b`の再起動1回+完成段1起動、間隔150秒以上)。Gateの緩和・仕様変更はしない。再生成後もGateに止まれば再起動せず状態を記録してFableへ。
+
+## 作業
+1. 起動前: `tools/stop_scope_check_01.py --managed-id FAMILY-Z-MONKEYS-PAW-PRODUCTION-01` rc=0、`git status`でZ経路import graphに未commit変更なし。該当clipだけが再生成対象になる起動方法(既存のresume/segment指定)を確認してから起動し、再生成されたclip数を記録(1件であること)。費用上限100円(累計46.65円)。
+2. Gate PASS後、`provision_shell,gate,assemble,pages,page_verify` を1起動。試聴ページ `user_test/family_z_monkeys_paw_01/`、公開page_verify(Playwright実再生)PASS証跡。
+3. OPEN-496(極短clipでの長さ比Gate停止)を11-8で整理: 原因=tempo 1.06変換の固定約19ms誤差が極短clipで比率に大きく出る(期待0.9434 vs 実測0.9670)。X/Z共通Gateの条件変更=品質ライン変更にあたるため**「ユーザー判断要」**に分類し、`docs/research/FAMILY-Z-MONKEYS-PAW-PRODUCTION-01/OPEN496_ANALYSIS_01.md` に: 影響範囲(過去run全Family Z/Xの会話clipで長さ<1.0秒の件数と比率分布、再現頻度)、対策案(A: 極短clipは絶対誤差許容を併用 / B: 極短clipは再生成で対処し現状維持 / C: 比率計算で固定オフセットを補正)とQCD影響、推奨(数値根拠)。実装はしない。ffmpegでの再現は見つかれば実施、無ければ理由を記録。
+4. `RUNTIME_EVIDENCE_01.md` 完成(書式は『賢者の贈り物』: 起動履歴・HEAD・モデル・Voice・構成/再生時間・ASR/TTS/retry/HR・approved equivalence・PASS_WITH_WARNING・KP・page_verify・費用・所要時間、RESTART_STORM事故と再生成許可を含む)。`CP_CHECK_01.md` §B(原作忠実性8項目の引用照合+ホラーの緊張感所見)を最終稿で確定。題名はページ・音声・KP・SSOTで『猿の手 / The Monkey's Paw』であることを確認。
+5. `OPEN_ITEMS.md`: OPEN-495(事故)CLOSED確定、OPEN-496分類反映、UDR待ち項目(非blocking)。`docs/pm/USER_DECISION_REGISTER_01.md` に新規UDR(最終試聴PASS可否、A/B、推奨A、試聴URL、耳確認候補)。OPEN-496の判断事項は同UDRとは別のUDR番号で登録(件名=極短clipの速度Gate条件、選択肢A/B/C、Fable推奨=分析結果に基づく)。`DECISION_LOG.md` 1エントリ(登録・制作・費用・RESTART_STORM事故とFable解除・1clip再生成許可)。
+6. Git: `git status`でindex確認→`git commit --only`→`git push origin HEAD:main`(wav/raw_usage_log/STOP/lock/ACTIVE_TASK/RESULT_PACKET不追跡、OPEN-490不復元、他agent(X)のSSOT差分は巻き込まない=一時index方式)。禁止操作(add -A/-u/-f/-N、amend、rebase、force push、stash、clean、reset --hard、checkout -f)。secret grep 0件。
+7. 委任文逐語保存: `py docs/pm/tools/extract_delegation_from_jsonl_01.py --jsonl C:\Users\tensh\.claude\projects\C--Users-tensh-eigo-radio\a66c19e8-1d31-4bc4-b0cb-f15b29248dc1.jsonl --role assistant --tool-use-name Agent --tool-input-field prompt --index N --out docs/pm/delegation_log/2026-10-24_FAMILY-Z-MONKEYS-PAW-PRODUCTION-01_DELEGATION_03.md`(Nは先頭「FAMILY-Z-MONKEYS-PAW-PRODUCTION-01 委任_03」を含むAgent呼出の0始まり通番、直近465以降)。
+
+## handback(ユーザー原文§6の8項目: 試聴URL/構成・再生時間・Voice/原作忠実性・ホラー所見/KP・固有名詞・発音/retry・再生成・HR/実費・所要時間/経路・runtime evidence/SSOT・Git・Open Item・UDR番号)。未完成なら状態と次の選択肢。RESULT_PACKET 4行、commit hash、raw URL。
