@@ -1,0 +1,122 @@
+以下の各英語key_phraseは、教材として最終確定した英語表現です。current_japanese_glossは、確定前の候補表現(display_phrase_before_canonicalization)を基準に付けた日本語グロスで、確定したkey_phrase全体とは一致していない可能性があります。added_content_wordsは、確定時に候補表現へ新しく加わった内容語です(空の場合があります)。
+
+各項目について、次を行ってください。
+1. current_japanese_glossが、最終的なkey_phrase全体(目的語・補語・修飾語を含むすべての語)の意味と過不足なく一致しているかを判定し(current_gloss_consistent)てください。「～」「〜」を含むかどうかは判定の基準ではありません。key_phrase全体の意味が日本語に表れているかどうかだけで判定してください。
+2. 一致している場合は、japanese_glossにcurrent_japanese_glossをそのまま返してください。一致していない場合は、最終key_phrase全体に一致する日本語グロスを返してください。current_japanese_glossが最終key_phrase全体の意味を既に表している場合は、より自然・より適切と思える言い換えがあっても書き換えず、current_japanese_glossをそのまま返してください。書き換えるのは、key_phraseの語の意味が欠けている・誤っている場合だけです。
+3. added_content_wordsの各語について、japanese_glossの中でその語の意味を表している部分を、japanese_glossからそのまま切り出してadded_word_mappingsに書いてください(english_wordには対応させる英語の語、複数語をまとめた句でもかまいません。japanese_spanにはjapanese_glossに含まれない文字列や、「～」などの記号だけを書かないでください)。複数の英語語が一つの日本語表現でまとめて表されている場合は、同じ部分を複数の語に対応させてかまいません。added_content_wordsが空の項目は、added_word_mappingsを空配列にしてください。
+判定の参考例:
+- key_phrase「based on」にcurrent「～をもとにした」: 辞書的に自然なので一致です。
+- key_phrase「based on interviews」にcurrent「～をもとにした」: interviewsの意味が欠けているので不一致です。「インタビューをもとにした」なら一致です。
+- key_phrase「fall into」にcurrent「～に落ちる」: 意味は表れているので一致です(「～に陥る」へ書き換えません)。
+
+key_phrase単体で他の文脈でも再利用できる自然な訳にし、本文固有の固有名詞・文脈の追加はしないでください。key_phrase全体の意味を反映できている場合のみqa_reflects_all_key_phrase_wordsをPASSにしてください。
+
+【新規生成の規則(current_japanese_glossがnull[未生成]の項目に適用。全文選定で選ばれた表現には、まだ日本語グロスがありません)】
+- current_japanese_glossがnullの項目は、既存グロスの修正ではなく新規生成です。current_gloss_consistentは必ずfalseにし、japanese_glossには最終key_phrase全体の意味に過不足なく一致する日本語グロスを新しく書いてください(上記の指示2の『そのまま返す』は適用されません)。
+- source_sentenceは、辞書に複数の語義がある表現で、そのうちどの語義かを選ぶためだけに使ってください(文中の固有名詞・文脈の追加はしないでください)。
+
+【日本語グロスの規則(承認済み選定Promptと同一)】
+選ぶ表現は必ず本文中の実表現(source_span)に対応させ、短く自然な日本語グロスを付けてください。
+
+日本語グロスは、辞書的に正しいだけでなく、日本人の英語学習者が聞いてすぐ意味を理解できる、自然で平易な現代日本語にしてください。直訳調や、「常態」「是正」のような過度に硬い報道語・漢語、一般的な学習者には伝わりにくい表現は避けてください。
+
+日本語グロスには、括弧（　）を使って別の訳し方・専門用語・補足情報を書き添えないでください。音声だけで聞いてそのまま意味が伝わる、平易な言い換えだけの一文にしてください。
+
+日本語グロスは、辞書的な表記として自然な範囲であれば「～」「〜」を使ってもかまいません(例: 「～を示す」)。ただし「…」のようなプレースホルダー記号は使わないでください。日本語グロスに数字を含める場合は、算用数字(1、2、3…)ではなく漢数字(一、二、三…)で書いてください。
+
+「ソロ旅行を～％とする」のように、数値を補わないと意味が成立しない句・日本語グロス(数値の穴埋めを必要とする不完全な表現)は選ばないでください。それ単体で意味が成立する句・グロスを選んでください。
+
+【対象項目】
+[
+  {
+    "rank": 1,
+    "key_phrase": "sergeant-major",
+    "display_phrase_before_canonicalization": "sergeant-major",
+    "current_japanese_gloss": null,
+    "source_sentence": "An old friend visited them, a retired sergeant-major from India",
+    "added_content_words": []
+  },
+  {
+    "rank": 2,
+    "key_phrase": "take hold of",
+    "display_phrase_before_canonicalization": "took hold of",
+    "current_japanese_gloss": null,
+    "source_sentence": "White took hold of his wife's hand",
+    "added_content_words": [
+      "take"
+    ]
+  },
+  {
+    "rank": 3,
+    "key_phrase": "rise into the night",
+    "display_phrase_before_canonicalization": "rose into the night",
+    "current_japanese_gloss": null,
+    "source_sentence": "Cold wind blew in as her long cry of loss rose into the night",
+    "added_content_words": []
+  }
+]
+
+【記事本文(参考)】
+Wind shook the windows, but a bright fire warmed the room. Mr. White lost at chess to his grown son, Herbert. Mrs. White smiled as she knitted beside them.
+
+An old friend visited them, a retired sergeant-major from India. He showed them a small, dry monkey’s paw.
+
+“The paw gives three wishes,” he said. “But trying to change your fate brings sadness.”
+
+“Did you make any wishes?” Mr. White asked.
+
+“I’ve already used all three wishes.”
+
+The soldier suddenly threw the paw into the fire. Mr. White quickly pulled it out.
+
+“Burn it, or don’t blame me for what happens,” his friend warned.
+
+After their guest left, Herbert joked, “Ask for two hundred pounds, Father! That would pay for the house.”
+
+Mr. White smiled as he raised the paw. “I wish to have two hundred pounds.”
+
+The paw twisted in his hand, and he dropped it with a cry. They watched the floor, but nothing happened.
+
+They laughed about it again over breakfast before Herbert left for work. Mrs. White then cleared the table.
+
+Later, a man from Herbert’s company came to visit.
+
+“Your son died after a machine caught him at work,” the man said.
+
+Mr. White took hold of his wife’s hand.
+
+“The company says it isn’t to blame, but offers two hundred pounds for your loss.”
+
+Mr. White fell off his chair.
+
+A week after the funeral, Mrs. White woke her husband with tears on her face.
+
+“There are still two wishes in the paw! Bring our son back to life!”
+
+He looked away. “You didn’t see him, and I’m afraid of what might return.”
+
+“But he’s our own son!”
+
+Mr. White finally went downstairs and found the paw. His wife followed, and his voice was shaking.
+
+“I wish for Herbert to live again.”
+
+It slipped from his hand as they waited in darkness, listening to the clock.
+
+A quiet knock broke the silence.
+
+“It’s Herbert!” She ran towards the door, pulling free when Mr. White caught her arm.
+
+The knocking became louder as she dragged a chair over. She climbed onto it to reach the high door lock.
+
+Mr. White searched on his knees, feeling across the floorboards. The door shook with each heavy knock.
+
+“Please wait!”
+
+The chair scraped, and the last lock began to slide. Just as she reached to open the door, he grabbed the paw and made his third and last wish.
+
+Suddenly, the terrible knocking ended.
+
+She opened the door, but no one stood outside. Cold wind blew in as her long cry of loss rose into the night.
+
+Across the street, the lamp shone on an empty, silent road.

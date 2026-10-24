@@ -1,0 +1,111 @@
+{
+  "attempt_number": 1,
+  "route": "custom_a3c4625e",
+  "segment_id": "full_story_part1_c1",
+  "theme_id": "run_sf_prod_01",
+  "level": "a2",
+  "source_out_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_sf_prod_01/a2/narration/full_story_part1_c1.wav",
+  "saved_at": "2026-10-24T18:21:32",
+  "sha256": "775b53f26e287b5a08b2a19e48400a8d031b88a842c1ddd790a5d242b14dd3c8",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible.",
+  "asr_text": "Wind shook the windows, but a bright fire warmed the room. Mr. White lost at chess to his grown son Herbert. Mrs. White smiled as she knitted beside them. An old friend visited them, a retired Sergeant Major from India. He showed them a small, dry monkey's paw.",
+  "audio_classification": "NORMALIZED_MATCH",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": false,
+    "duration_seconds": 18.69,
+    "method_a_ngram": {
+      "matches": [],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 48,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.996,
+          "time_a_seconds": 9.83,
+          "time_b_seconds": 17.8,
+          "lag_seconds": 7.97,
+          "run_length_seconds_at_thresh_0.85": 0.03
+        },
+        {
+          "similarity": 0.9947,
+          "time_a_seconds": 12.92,
+          "time_b_seconds": 18.64,
+          "lag_seconds": 5.72,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9933,
+          "time_a_seconds": 1.52,
+          "time_b_seconds": 12.12,
+          "lag_seconds": 10.6,
+          "run_length_seconds_at_thresh_0.85": 0.03
+        },
+        {
+          "similarity": 0.9928,
+          "time_a_seconds": 9.4,
+          "time_b_seconds": 13.68,
+          "lag_seconds": 4.28
+        },
+        {
+          "similarity": 0.9925,
+          "time_a_seconds": 3.39,
+          "time_b_seconds": 17.8,
+          "lag_seconds": 14.41
+        }
+      ],
+      "best_run_length_seconds": 0.03,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": false,
+      "local_asr_confirmation": null,
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.44,
+      "time_a": 1.29,
+      "lag": 1.94,
+      "similarity_at_start": 0.7001,
+      "best_run_length_seconds": 0.44,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  },
+  "scg_info": null,
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": false,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "Wind shook the windows, but a bright fire warmed the room. Mr. White lost at chess to his grown son Herbert. Mrs. White smiled as she knitted beside them. An old friend visited them, a retired Sergeant Major from India. He showed them a small, dry monkey's paw.",
+      "classification": "NORMALIZED_MATCH",
+      "entity_like_source": []
+    }
+  ]
+}
