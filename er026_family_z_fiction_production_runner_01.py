@@ -332,8 +332,45 @@ MONKEYS_PAW_RIGHTS_BLOCK = {
 }
 
 
+# 『告げ口心臓』(Edgar Allan Poe)のrights block(FAMILY-Z-TELL-TALE-HEART-PRODUCTION-01 委任_01、data表の値追加のみ)。
+# 出典・確認日付き。法的最終判断ではない。計算根拠は『二十年後』『賢者の贈り物』『猿の手』と同形式(没年+50年+戦時加算3,794日、米国人著者)。
+# legal_use_basisは『開いた窓』と同じユーザー決定(2026-09-26、REPORT §6)の(1)〜(5)と採用文の逐語転記。
+TELL_TALE_HEART_RIGHTS_BLOCK = {
+    "author": "Edgar Allan Poe (エドガー・アラン・ポー)",
+    "author_death_date": "1849-10-07",
+    "jp_public_domain_basis": (
+        "日本の著作権保護期間は、2018年末のTPP11整備法による70年化以前は"
+        "死後50年だった。Poeは1849-10-07没(米国人、"
+        "en.wikipedia.org/wiki/Edgar_Allan_Poe、確認2026-10-24、HTTP 200)。死後50年は没年の翌年から起算し"
+        "1899-12-31に満了。連合国(米国)国民の著作権には、1941-12-07以前に取得された著作権について"
+        "連合国及び連合国民の著作権の特例に関する法律(昭和27年法律第302号)の戦時加算3,794日が"
+        "加算される(英国・米国・豪州・カナダ・仏等は3,794日、en.wikipedia.org/wiki/Copyright_law_of_Japan、"
+        "確認2026-10-24、HTTP 200)。"
+        "1899-12-31+3,794日=1910-05-22に日本での保護は満了(計算値、保守的な上限)。本作は1843-01に"
+        "The Pioneer誌で発表(en.wikipedia.org/wiki/The_Tell-Tale_Heart、確認2026-10-24、HTTP 200)で"
+        "取得時期は1941-12-07以前。"
+        "2018年末の70年化は、1999〜2018-12-29に満了済みの作品には遡及しない"
+        "(en.wikipedia.org/wiki/Copyright_law_of_Japan、確認2026-10-24、HTTP 200)ため、"
+        "日本において1910-05-22以降パブリックドメイン。"
+        "Project Gutenberg(#2148、'The Works of Edgar Allan Poe - Volume 2'所収)が全文を公開している。最終的な法的判断ではない。"
+    ),
+    "source_url": "https://www.gutenberg.org/cache/epub/2148/pg2148.txt",
+    "source_card_url": "https://www.gutenberg.org/ebooks/2148",
+    "confirmed_date": "2026-10-24",
+    "us_copyright_status_record_only": (
+        "記録事項(必須条件ではない、日本国内向けサービスのため)。1843年発表の"
+        "作品は1931年より前の出版であり、Cornell University Library "
+        "\"Copyright Term and the Public Domain in the United States\" "
+        "チャート(https://copyright.cornell.edu/publicdomain、『二十年後』で確認2026-10-23)で"
+        "「Before 1931: In the public domain」に該当し米国PD。最終的な法的判断ではない。"
+    ),
+    "legal_use_basis": OPEN_WINDOW_RIGHTS_BLOCK["legal_use_basis"],
+    "gate_reference": "FICTION-FAMILY-Z-RIGHTS-RECHECK-01_REPORT.md §6 (2026-09-26); FAMILY-Z-TELL-TALE-HEART-PRODUCTION-01 (2026-10-24)",
+}
+
+
 # ============================================================
-# Story Registry ("melos" / "the_open_window" / "after_twenty_years" / "the_gift_of_the_magi" / "the_monkeys_paw")
+# Story Registry ("melos" / "the_open_window" / "after_twenty_years" / "the_gift_of_the_magi" / "the_monkeys_paw" / "the_tell_tale_heart")
 # ============================================================
 TRIAL_SEED_DIR = (
     "er018_output/fiction_external_seed_selection_criteria_trial_02/"
@@ -460,6 +497,28 @@ STORY_REGISTRY = {
         },
         # 正式Voice表+決定的割当規則(er062 derive_dialogue_voice_tts_names)から導出。speaker_configと同一値。
         "voice_tts_names_plan": _st062.derive_dialogue_voice_tts_names("the_monkeys_paw"),
+    },
+    # 『告げ口心臓』(E. A. Poe、FAMILY-Z-TELL-TALE-HEART-PRODUCTION-01 委任_01、data表の値追加のみ)。一人称語り。語り手(名なし)自身の発話は
+    # narrator(Aoede)が読む。会話話者は老人(old_man)と警官(officer)の2名のみ(Voiceは正式Voice表+決定的割当規則から導出)。
+    "the_tell_tale_heart": {
+        "e2e_management_id": "FAMILY-Z-TELL-TALE-HEART-PRODUCTION-01",
+        "e2e_theme_tag": "FAMILY_Z_TELL_TALE_HEART_PRODUCTION_01",
+        "e2e_pages_dir": "user_test/family_z_tell_tale_heart_01",
+        "page_title_ja": "告げ口心臓",
+        "audio_file_prefix": "TellTaleHeart",
+        "story_type": "literature",
+        "topic_title": "The Tell-Tale Heart",
+        "japanese_title_text": "告げ口心臓(The Tell-Tale Heart)",
+        "japanese_title_tts": "告げ口心臓",
+        "trial_seed_dir": "er026_seeds/the_tell_tale_heart",
+        "rights_block": TELL_TALE_HEART_RIGHTS_BLOCK,
+        "speaker_config": _st062.STORY_SPEAKER_CONFIG["the_tell_tale_heart"],
+        "voice_keywords": {
+            "old_man": ["the old man said", "said the old man", "the old man asked", "asked the old man", "the old man cried", "cried the old man", "the old man replied", "replied the old man", "the old man whispered", "whispered the old man", "the old man shouted", "shouted the old man", "the old man added", "added the old man", "the old man called", "called the old man", "the old man answered", "answered the old man"],
+            "officer": ["the officer said", "said the officer", "the officer asked", "asked the officer", "the officer cried", "cried the officer", "the officer replied", "replied the officer", "the officer whispered", "whispered the officer", "the officer shouted", "shouted the officer", "the officer added", "added the officer", "the officer called", "called the officer", "the officer answered", "answered the officer", "one of the officers said", "said one of the officers", "one of the officers asked", "asked one of the officers", "one of the officers cried", "cried one of the officers", "one of the officers replied", "replied one of the officers", "one of the officers whispered", "whispered one of the officers", "one of the officers shouted", "shouted one of the officers", "one of the officers added", "added one of the officers", "one of the officers called", "called one of the officers", "one of the officers answered", "answered one of the officers", "the policeman said", "said the policeman", "the policeman asked", "asked the policeman", "the policeman cried", "cried the policeman", "the policeman replied", "replied the policeman", "the policeman whispered", "whispered the policeman", "the policeman shouted", "shouted the policeman", "the policeman added", "added the policeman", "the policeman called", "called the policeman", "the policeman answered", "answered the policeman", "the police officer said", "said the police officer", "the police officer asked", "asked the police officer", "the police officer cried", "cried the police officer", "the police officer replied", "replied the police officer", "the police officer whispered", "whispered the police officer", "the police officer shouted", "shouted the police officer", "the police officer added", "added the police officer", "the police officer called", "called the police officer", "the police officer answered", "answered the police officer", "the detective said", "said the detective", "the detective asked", "asked the detective", "the detective cried", "cried the detective", "the detective replied", "replied the detective", "the detective whispered", "whispered the detective", "the detective shouted", "shouted the detective", "the detective added", "added the detective", "the detective called", "called the detective", "the detective answered", "answered the detective"],
+        },
+        # 正式Voice表+決定的割当規則(er062 derive_dialogue_voice_tts_names)から導出。speaker_configと同一値。
+        "voice_tts_names_plan": _st062.derive_dialogue_voice_tts_names("the_tell_tale_heart"),
     },
 }
 

@@ -82,6 +82,11 @@ STORY_VOICE_ROSTER = {
         {"speaker": "visitor", "gender": "male", "order": 4, "first_appearance": "翌日訪れる会社の使者(Herbertの事故と200ポンドを告げる男)"},
         {"speaker": "mrs_white", "gender": "female", "order": 5, "first_appearance": "唯一の女性話者・母Mrs. White(『The paw! We have two wishes left.』。女性Poolの1番目)"},
     ),
+    # 『告げ口心臓』: 一人称語り。語り手(名なし)自身の台詞はnarrator(Aoede)。会話話者は老人と警官のみ(男性2名)。
+    "the_tell_tale_heart": (
+        {"speaker": "old_man", "gender": "male", "order": 1, "first_appearance": "8夜目に目を覚まし『Who's there?』と叫ぶ老人(唯一の最初の他者発話。Writer出力の初出順確認後にplan前に訂正し得る)"},
+        {"speaker": "officer", "gender": "male", "order": 2, "first_appearance": "夜明け前に訪れる3人の警官(原作では会話をほぼ直接話法で書かない。Writerが台詞化した場合の話者)"},
+    ),
 }
 # 作品単位のpin(既存確定値の固定)。メロスは2026-10-21 U:§7「メロス完成版は変更しない」により受入済み成果物のVoiceを
 # 変更しない(pin値=受入済みfamily_z_melos_02の実使用値。規則適用値との差分は仕様差分として報告済み・変更はユーザー承認事項)。
@@ -294,6 +299,33 @@ STORY_SPEAKER_CONFIG = {
         "dialogue_voice_tts_names": derive_dialogue_voice_tts_names("the_monkeys_paw"),
         "speaker_aliases": {"mr_white": "mr_white", "herbert": "herbert", "mrs_white": "mrs_white", "morris": "morris",
                             "visitor": "visitor", "narrator": "narrator"},
+    },
+    # 『告げ口心臓』(E. A. Poe、FAMILY-Z-TELL-TALE-HEART-PRODUCTION-01 委任_01、data表の値追加のみ)。一人称の語り手(名なし)・老人(男)・警官(男、3人まとめて1話者)。
+    # 語り手自身の引用台詞(Villains!...等)はnarrator(Aoede)が読む(一人称語りの地の文と同一人物のため)。Voiceは導出(roster/規則参照)。"other"は想定外話者(Melos同様STOP)。
+    "the_tell_tale_heart": {
+        "speakers": ("old_man", "officer", "other", "narrator"),
+        # 挿入順=判定優先順(old_man->officer)。決定論は明示的な呼称のみ。語り手本人(I)は決定論の対象外(narrator)。
+        "z_voice_keywords": {
+            "old_man": ["the old man said", "said the old man", "the old man asked", "asked the old man", "the old man cried", "cried the old man", "the old man replied", "replied the old man", "the old man whispered", "whispered the old man", "the old man shouted", "shouted the old man", "the old man added", "added the old man", "the old man called", "called the old man", "the old man answered", "answered the old man"],
+            "officer": ["the officer said", "said the officer", "the officer asked", "asked the officer", "the officer cried", "cried the officer", "the officer replied", "replied the officer", "the officer whispered", "whispered the officer", "the officer shouted", "shouted the officer", "the officer added", "added the officer", "the officer called", "called the officer", "the officer answered", "answered the officer", "one of the officers said", "said one of the officers", "one of the officers asked", "asked one of the officers", "one of the officers cried", "cried one of the officers", "one of the officers replied", "replied one of the officers", "one of the officers whispered", "whispered one of the officers", "one of the officers shouted", "shouted one of the officers", "one of the officers added", "added one of the officers", "one of the officers called", "called one of the officers", "one of the officers answered", "answered one of the officers", "the policeman said", "said the policeman", "the policeman asked", "asked the policeman", "the policeman cried", "cried the policeman", "the policeman replied", "replied the policeman", "the policeman whispered", "whispered the policeman", "the policeman shouted", "shouted the policeman", "the policeman added", "added the policeman", "the policeman called", "called the policeman", "the policeman answered", "answered the policeman", "the police officer said", "said the police officer", "the police officer asked", "asked the police officer", "the police officer cried", "cried the police officer", "the police officer replied", "replied the police officer", "the police officer whispered", "whispered the police officer", "the police officer shouted", "shouted the police officer", "the police officer added", "added the police officer", "the police officer called", "called the police officer", "the police officer answered", "answered the police officer", "the detective said", "said the detective", "the detective asked", "asked the detective", "the detective cried", "cried the detective", "the detective replied", "replied the detective", "the detective whispered", "whispered the detective", "the detective shouted", "shouted the detective", "the detective added", "added the detective", "the detective called", "called the detective", "the detective answered", "answered the detective"],
+        },
+        "attr_roster_text": (
+            "- \"old_man\": the old man whom the narrator watches at night and kills (also 'the old fellow'; he speaks, for example, 'Who's there?')\n"
+            "- \"officer\": one of the police officers who come in the early morning to search the house (also 'the officers', 'the policemen', 'the men')\n"
+            "- \"other\": any other speaker (a neighbour, a crowd, etc.)\n"
+            "- \"narrator\": the first-person narrator himself, the 'I' of the story, whose own spoken words are read in the narrator voice (for example, 'Villains!' I shrieked); also a line not spoken by a character"),
+        "attr_caution_text": (
+            "Be careful: this story is told by the narrator in the first person, so '\"Villains!\" I shrieked' and '\"Who's there?\"' differ: the first is the narrator himself (narrator), the second is the old man (old_man) "
+            "even if a nearby sentence says 'I'; a name or role that appears NEAR a quote is not always the speaker (for example, in "
+            "'\"Who's there?\" cried the old man.' the speaker is old_man; in 'The officers asked, \"Who lives here?\"' the speaker is officer; in "
+            "'I said, \"It was a dream.\"' the speaker is the narrator)."),
+        "dialogue_voice_keywords": {
+            "old_man": ["the old man said", "said the old man", "the old man asked", "asked the old man", "the old man cried", "cried the old man", "the old man replied", "replied the old man", "the old man whispered", "whispered the old man", "the old man shouted", "shouted the old man", "the old man added", "added the old man", "the old man called", "called the old man", "the old man answered", "answered the old man"],
+            "officer": ["the officer said", "said the officer", "the officer asked", "asked the officer", "the officer cried", "cried the officer", "the officer replied", "replied the officer", "the officer whispered", "whispered the officer", "the officer shouted", "shouted the officer", "the officer added", "added the officer", "the officer called", "called the officer", "the officer answered", "answered the officer", "one of the officers said", "said one of the officers", "one of the officers asked", "asked one of the officers", "one of the officers cried", "cried one of the officers", "one of the officers replied", "replied one of the officers", "one of the officers whispered", "whispered one of the officers", "one of the officers shouted", "shouted one of the officers", "one of the officers added", "added one of the officers", "one of the officers called", "called one of the officers", "one of the officers answered", "answered one of the officers", "the policeman said", "said the policeman", "the policeman asked", "asked the policeman", "the policeman cried", "cried the policeman", "the policeman replied", "replied the policeman", "the policeman whispered", "whispered the policeman", "the policeman shouted", "shouted the policeman", "the policeman added", "added the policeman", "the policeman called", "called the policeman", "the policeman answered", "answered the policeman", "the police officer said", "said the police officer", "the police officer asked", "asked the police officer", "the police officer cried", "cried the police officer", "the police officer replied", "replied the police officer", "the police officer whispered", "whispered the police officer", "the police officer shouted", "shouted the police officer", "the police officer added", "added the police officer", "the police officer called", "called the police officer", "the police officer answered", "answered the police officer", "the detective said", "said the detective", "the detective asked", "asked the detective", "the detective cried", "cried the detective", "the detective replied", "replied the detective", "the detective whispered", "whispered the detective", "the detective shouted", "shouted the detective", "the detective added", "added the detective", "the detective called", "called the detective", "the detective answered", "answered the detective"],
+        },
+        # 正式Voice表+決定的割当規則から導出(未割当/fail-closedの値Noneは残さない)。
+        "dialogue_voice_tts_names": derive_dialogue_voice_tts_names("the_tell_tale_heart"),
+        "speaker_aliases": {"old_man": "old_man", "officer": "officer", "narrator": "narrator"},
     },
 }
 
@@ -956,6 +988,17 @@ STORY_LINT_CONFIG = {
                        "皮肉な結末", "種明かし"],
         "spoiler_en": ["third wish", "third and last", "last wish", "final wish", "back from the dead", "from the grave",
                        "nobody there", "no one there", "deserted road", "empty road", "turns out", "the twist", "the irony"],
+    },
+    # 『告げ口心臓』(FAMILY-Z-TELL-TALE-HEART-PRODUCTION-01 委任_01): 同一機構(story_key別config)の値。
+    # forbidden_names=原作に人名なし(語り手・老人・警官はすべて無名)。Preview/Commentに固有名詞を出さないよう、空listとし、Writer側の無名ルールで担保する。
+    # spoiler_*=結末(語り手の自白・床板を剥がせ・心臓の音が実は老人のものである/幻聴であること・警官は聞こえていない)を先回りする語(一般語は入れない)。
+    # Comment2/3は『すでに聞いた部分』を踏まえる設計(run_support_*)のため、老人の殺害・床下の隠蔽自体は後半Commentに現れ得る。
+    "the_tell_tale_heart": {
+        "forbidden_names": [],
+        "spoiler_ja": ["自白", "告白する", "罪を認め", "罪を告白", "床板を剥が", "床板をはが", "床を剥が", "自分の心臓", "幻聴", "空耳",
+                       "聞こえていたのは", "老人の心臓の音ではな", "皮肉な結末", "種明かし"],
+        "spoiler_en": ["confess", "confession", "admits the deed", "admit the deed", "tear up the planks", "his own heart",
+                       "own heartbeat", "imagined the sound", "only in his mind", "hallucinat", "turns out", "the twist", "the irony"],
     },
 }
 
