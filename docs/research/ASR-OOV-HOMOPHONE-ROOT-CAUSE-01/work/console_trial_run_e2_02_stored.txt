@@ -1,0 +1,15 @@
+== 1. 本run Adv part3 8 attempt (v2: 位置置換・F1残差0・confidence>=medium・3音素以上・role=FULL_STORY)
+1 {'attempt': 1, 'base': 'TRUE_CONTENT_MISMATCH', 'accepted': True, 'reason': 'E2_LEDGER_PHONEME_ACCEPT', 'primary_asr_has_curly_apostrophe': True}
+2 {'attempt': 2, 'base': 'TRUE_CONTENT_MISMATCH', 'accepted': True, 'reason': 'E2_LEDGER_PHONEME_ACCEPT', 'primary_asr_has_curly_apostrophe': False}
+3 {'attempt': 3, 'base': 'TRUE_CONTENT_MISMATCH', 'accepted': False, 'reason': 'NOT_SINGLE_REPLACE', 'primary_asr_has_curly_apostrophe': False}
+4 {'attempt': 4, 'base': 'TRUE_CONTENT_MISMATCH', 'accepted': False, 'reason': 'NOT_SINGLE_REPLACE', 'primary_asr_has_curly_apostrophe': False}
+5 {'attempt': 5, 'base': 'TRUE_CONTENT_MISMATCH', 'accepted': True, 'reason': 'E2_LEDGER_PHONEME_ACCEPT', 'primary_asr_has_curly_apostrophe': False, 'with_secondary_accepted': False, 'with_secondary_state': 'contradiction:TRUE_CONTENT_MISMATCH', 'with_secondary_reason': 'SECONDARY_CONTRADICTION'}
+6 {'attempt': 6, 'base': 'TRUE_CONTENT_MISMATCH', 'accepted': False, 'reason': 'NOT_SINGLE_REPLACE', 'primary_asr_has_curly_apostrophe': True, 'with_secondary_accepted': False, 'with_secondary_state': None, 'with_secondary_reason': 'NOT_SINGLE_REPLACE'}
+7 {'attempt': 7, 'base': 'TRUE_CONTENT_MISMATCH', 'accepted': False, 'reason': 'NOT_SINGLE_REPLACE', 'primary_asr_has_curly_apostrophe': False, 'with_secondary_accepted': False, 'with_secondary_state': None, 'with_secondary_reason': 'NOT_SINGLE_REPLACE'}
+8 {'attempt': 8, 'base': 'TRUE_CONTENT_MISMATCH', 'accepted': True, 'reason': 'E2_LEDGER_PHONEME_ACCEPT', 'primary_asr_has_curly_apostrophe': False, 'with_secondary_accepted': True, 'with_secondary_state': 'native_pass', 'with_secondary_reason': 'E2_LEDGER_PHONEME_ACCEPT'}
+== 2. 保存全Primary非PASS行(現Ledger全件を『開始前』扱い=最大緩和側)
+Ledger読み付きOOVを含む非PASSユニークペア: 110
+{'NO_PHONEME_MATCH': 3, 'NOT_1TO1': 6, 'NOT_SINGLE_REPLACE': 23, 'ASR_WORD_NOT_IN_CMU': 2, 'CONFIDENCE_TOO_LOW': 64, 'NO_C2_CANDIDATE': 4, 'PROTECTED_FAIL_ORIGINAL': 2, 'E2_LEDGER_PHONEME_ACCEPT': 2, 'POST_CHECK_FAIL': 1, 'BASE_PASS': 1, 'NOT_ELIGIBLE': 2}
+ ACCEPT ['family_x_audio_production_wiring_01', 'word_gacha__run_wg_01'] topic_intro 1 gacha <- gotcha ['G', 'AA', 'CH', 'AH'] PASS_WITH_PRONUNCIATION_ALARM OK m1_already=False
+ ACCEPT ['family_x_audio_production_wiring_01', 'word_gacha__run_wg_01'] full_story_part3 1 gacha <- gotcha ['G', 'AA', 'CH', 'AH'] TRUE_CONTENT_MISMATCH OK m1_already=False
+委任_01版(v1)受理 3件: [('meink', 'mink', 'full_story_part1', 2), ('gacha', 'gotcha', 'topic_intro', 1), ('gacha', 'gotcha', 'full_story_part3', 1)]

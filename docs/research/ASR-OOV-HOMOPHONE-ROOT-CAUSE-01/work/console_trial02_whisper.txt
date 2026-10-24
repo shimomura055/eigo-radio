@@ -1,0 +1,23 @@
+lyft_1 | P: She booked a lift to the airport before sunrise. | W: She booked a lift to the airport before sunrise. | E2_ACCEPT | E2+W: True e2_accept
+lyft_2 | P: The driver of the Lyft waited outside for 10 minutes. | W: The driver of the lift waited outside for 10 minutes. | BASE_PASS(救済不要) | E2+W: False None
+lyft_x2 | P: A lift stopped at the corner, and another lift followed. | W: A lift stopped at the corner, and another lift followed. | NOT_RESCUED:NOT_SINGLE_REPLACE | E2+W: False None
+fyre_1 | P: The Fyre Festival promised luxury but delivered chaos. | W: The fire festival promised luxury but delivered chaos. | BASE_PASS(救済不要) | E2+W: False None
+fyre_2 | P: Many guests still remember the fire story today. | W: Many guests still remember the fire story today. | NOT_RESCUED:CONFIDENCE_TOO_LOW | E2+W: False None
+grindr_1 | P: The Grindr app changed how many people meet each other. | W: The Grinder app changed how many people meet each other. | BASE_PASS(救済不要) | E2+W: False None
+grindr_2 | P: Researchers studied how people use Grindr in big cities. | W: Researchers studied how people use grinder in big cities. | BASE_PASS(救済不要) | E2+W: False None
+thicc_1 | P: Teenagers now say thick to praise a very solid sandwich. | W: Teenagers now say thick to praise a very solid sandwich. | E2_ACCEPT | E2+W: True e2_accept
+thicc_2 | P: The word "thicc" became popular on social media. | W: The word thick became popular on social media. | BASE_PASS(救済不要) | E2+W: False None
+kewl_1 | P: He typed "kewl" under every photo his friend posted. | W: He typed QL under every photo his friend posted. | BASE_PASS(救済不要) | E2+W: False None
+kewl_2 | P: Spelling words like kewl is common in old chat rooms. | W: Spelling words like kewl is common in old chat rooms. | BASE_PASS(救済不要) | E2+W: False None
+skool_1 | P: Her little brother is excited about school this fall. | W: Her little brother is excited about school this fall. | E2_ACCEPT | E2+W: True e2_accept
+skool_2 | P: The sign said School Bus, but the spelling was wrong. | W: The sign said school bus, but the spelling was wrong. | E2_ACCEPT | E2+W: True e2_accept
+skool_x2 | P: School is fun, and every school day starts early. | W: School is fun, and every school day starts early. | NOT_RESCUED:NOT_SINGLE_REPLACE | E2+W: False None
+luv_1 | P: He wrote love at the bottom of every letter. | W: He wrote love at the bottom of every letter. | NOT_RESCUED:CONFIDENCE_TOO_LOW | E2+W: False None
+luv_2 | P: The singer repeated the word "love" in the chorus. | W: The singer repeated the word love in the chorus. | NOT_RESCUED:CONFIDENCE_TOO_LOW | E2+W: False None
+phat_1 | P: In old hip hop slang, fat meant something excellent. | W: In old hip -hop slang, fat meant something excellent. | E2_ACCEPT | E2+W: True e2_accept
+phat_2 | P: People once said, fat beats to praise a good song. | W: People once said fat beats to praise a good song. | E2_ACCEPT | E2+W: True e2_accept
+neg_lyft_loft | P: She booked a Lyft to the airport before sunrise. | W: She booked a lift to the airport before sunrise. | BASE_PASS(救済不要) | E2+W: False None
+neg_skool_scowl | P: Her little brother is excited about scout as fall. | W: Her little brother is excited about Skall this fall. | NOT_RESCUED:NO_PHONEME_MATCH | E2+W: False None
+neg_thicc_thin | P: Teenagers now say thin to praise a very solid sandwich. | W: Teenagers now say thin to praise a very solid sandwich. | NOT_RESCUED:NO_PHONEME_MATCH | E2+W: False None
+neg_kewl_coal | P: He typed "cool" under every photo his friend posted. | W: He typed coal under every photo his friend posted. | E2_ACCEPT | E2+W: False contradiction:TRUE_CONTENT_MISMATCH
+neg_thicc_sick | P: The word sick became popular on social media. | W: The word sick became popular on social media. | NOT_RESCUED:NO_PHONEME_MATCH | E2+W: False None

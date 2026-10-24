@@ -14,3 +14,20 @@
 - 日次(JST 10-24): 把握分約610円+本委任約8円=約618円/1,000円。個別Cap15円内。
 - Azure利用ログ(Trial専用): `work/raw_usage_log_trial.jsonl`(本番logと分離)。
 - 使用モデル: Primary=Production routing(`gpt-4o-mini-transcribe`)、Secondary=Azure Speech STT(Production)、ローカル=faster-whisper small、TTS対照=OpenAI tts-1(旧世代。例外理由=別系統の実発話で「別語を言う音声」を作るためで、比較評価の対象ではない)。
+
+---
+# 委任_02 追記 (2026-10-24 JST) 上限40円。実費 約11.7円(推計含む)
+
+| # | 作業 | API | 内訳 | 費用 | 計測方法 |
+|---|---|---|---|---|---|
+| 5 | F1 ’修正の影響分析、E2 v2実装、全件リスト、保存データ再判定、Whisper局所転写 | なし(ローカル) | 保存データ・Ledger再利用、faster-whisper small | 0 | - |
+| 6 | trial02: Ledger登録8語(既存正式経路、Perplexity sonar) | Perplexity | 8 call、入力4,768/出力2,165 tokens | 約7.5円 | token=cost log実測、request fee($5/1,000件)は公開価格仮定。**cost logger実記録は8件のperplexityのみ** |
+| 7 | trial02: 正例18+負例5 clip TTS(`gemini-3.8-flash-lite-tts`)+Primary ASR(`gpt-4o-mini-transcribe`) | Gemini/OpenAI | 23 clip、合計88.8秒 | 約2.8円(上限推定3.7円) | **cost loggerを `init_logger` のみで起動し `install` を忘れた(私の手順ミス)ため、TTS/ASRの実記録が無い**。同日の実測単価(neg2: TTS 0.10円/clip、ASR 0.019円/clip)とclip秒数からの再構成。やり直しは有料runの再起動に当たるため実施せず |
+| 8 | neg2: 追加音声負例 7 clip(TTS+ASR) | Gemini/OpenAI | `cl.install`で実記録 | **0.84円**(TTS 0.70+ASR 0.13) | cost log実測(`work/trial02_neg2/cost/usage_log.jsonl`) |
+| 9 | azure arbiter: 3エンジン目の聞き取り4 clip | Azure Speech STT | `cl.install`で実記録 | **0.60円** | cost log実測(`work/trial02_azure_arbiter/cost/usage_log.jsonl`) |
+| 合計 | | | | **約11.7円**(最大12.6円) / 上限40円 | |
+
+- 事前: `stop_check_paid_02.json`(rc=0)、各有料scriptの先頭でも `stop_scope_check_01.py` rc=0を確認。再起動0・外部停止0・原因不明rc≠0 0回。有料run=trial02(1起動、JST 21:2x頃終了)→neg2(1起動)→azure arbiter(1起動)。いずれも別目的の新規run(同一runの再起動ではない)。
+- 日次(JST 10-24): 把握分約618円+委任_01分(含)+本委任約11.7円=約630円/1,000円。個別Cap 40円内。
+- 共有state: trial02は共有Ledgerを変更しない(Trial用コピー `work/trial02/ledger_trial.json`へ向け、実行前後sha256一致[`shared_state_changed: {}`])。
+- 供給側G 1語あたり約0.94円(Perplexity)。

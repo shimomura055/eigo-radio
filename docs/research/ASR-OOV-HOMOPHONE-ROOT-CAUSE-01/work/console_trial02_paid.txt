@@ -1,0 +1,46 @@
+{
+ "stop": false,
+ "applicable": [],
+ "notices": [
+  {
+   "path": "C:/Users/tensh/eigo-radio/docs/pm/delegation_log/2026-10-12_FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01_STOP_NOTICE.md",
+   "applies": false,
+   "rule": "a_status_inactive"
+  }
+ ]
+}
+plan: Ledger登録 8語(Perplexity) / 正例 18 clip + 負例 5 clip = TTS 23 + Primary ASR 23。事前概算上限 28.6円 / Cap 40.0円
+LEDGER Lyft RESEARCH medium /lɪft/ [{'model_id': 'sonar', 'input_tokens': 595, 'output_tokens': 221, 'total_tokens': 816, 'success': True}]
+LEDGER Fyre RESEARCH low /ˈfaɪɚ/（General American）; /ˈfaɪə/（British English） [{'model_id': 'sonar', 'input_tokens': 596, 'output_tokens': 343, 'total_tokens': 939, 'success': True}]
+LEDGER Grindr RESEARCH medium /ˈɡraɪndɚ/（米語）; /ˈɡraɪndə/（英語） [{'model_id': 'sonar', 'input_tokens': 596, 'output_tokens': 311, 'total_tokens': 907, 'success': True}]
+LEDGER thicc RESEARCH medium /θɪk/ [{'model_id': 'sonar', 'input_tokens': 596, 'output_tokens': 272, 'total_tokens': 868, 'success': True}]
+LEDGER kewl RESEARCH medium /kjuːl/（有力候補）；/kuːl/（別候補） [{'model_id': 'sonar', 'input_tokens': 597, 'output_tokens': 338, 'total_tokens': 935, 'success': True}]
+LEDGER skool RESEARCH medium /skuːl/ [{'model_id': 'sonar', 'input_tokens': 596, 'output_tokens': 255, 'total_tokens': 851, 'success': True}]
+LEDGER luv RESEARCH low /lʌv/ [{'model_id': 'sonar', 'input_tokens': 596, 'output_tokens': 187, 'total_tokens': 783, 'success': True}]
+LEDGER phat RESEARCH medium /fæt/ [{'model_id': 'sonar', 'input_tokens': 596, 'output_tokens': 238, 'total_tokens': 834, 'success': True}]
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+lyft_1 pos | She booked a lift to the airport before sunrise. | ASR_VALIDATION_UNCERTAIN -> E2_ACCEPT | E2_LEDGER_PHONEME_ACCEPT
+lyft_2 pos | The driver of the Lyft waited outside for 10 minutes. | NUMERIC_EQUIVALENCE_MATCH -> BASE_PASS(救済不要) | None
+lyft_x2 pos_twice | A lift stopped at the corner, and another lift followed. | ASR_VALIDATION_UNCERTAIN -> NOT_RESCUED:NOT_SINGLE_REPLACE | NOT_SINGLE_REPLACE
+fyre_1 pos | The Fyre Festival promised luxury but delivered chaos. | EXACT_MATCH -> BASE_PASS(救済不要) | None
+fyre_2 pos | Many guests still remember the fire story today. | ASR_VALIDATION_UNCERTAIN -> NOT_RESCUED:CONFIDENCE_TOO_LOW | CONFIDENCE_TOO_LOW
+grindr_1 pos | The Grindr app changed how many people meet each other. | EXACT_MATCH -> BASE_PASS(救済不要) | None
+grindr_2 pos | Researchers studied how people use Grindr in big cities. | EXACT_MATCH -> BASE_PASS(救済不要) | None
+thicc_1 pos | Teenagers now say thick to praise a very solid sandwich. | TRUE_CONTENT_MISMATCH -> E2_ACCEPT | E2_LEDGER_PHONEME_ACCEPT
+thicc_2 pos | The word "thicc" became popular on social media. | NORMALIZED_MATCH -> BASE_PASS(救済不要) | None
+kewl_1 pos | He typed "kewl" under every photo his friend posted. | NORMALIZED_MATCH -> BASE_PASS(救済不要) | None
+kewl_2 pos | Spelling words like kewl is common in old chat rooms. | EXACT_MATCH -> BASE_PASS(救済不要) | None
+skool_1 pos | Her little brother is excited about school this fall. | TRUE_CONTENT_MISMATCH -> E2_ACCEPT | E2_LEDGER_PHONEME_ACCEPT
+skool_2 pos | The sign said School Bus, but the spelling was wrong. | TRUE_CONTENT_MISMATCH -> E2_ACCEPT | E2_LEDGER_PHONEME_ACCEPT
+skool_x2 pos_twice | School is fun, and every school day starts early. | ASR_VALIDATION_UNCERTAIN -> NOT_RESCUED:NOT_SINGLE_REPLACE | NOT_SINGLE_REPLACE
+luv_1 pos | He wrote love at the bottom of every letter. | TRUE_CONTENT_MISMATCH -> NOT_RESCUED:CONFIDENCE_TOO_LOW | CONFIDENCE_TOO_LOW
+luv_2 pos | The singer repeated the word "love" in the chorus. | TRUE_CONTENT_MISMATCH -> NOT_RESCUED:CONFIDENCE_TOO_LOW | CONFIDENCE_TOO_LOW
+phat_1 pos | In old hip hop slang, fat meant something excellent. | TRUE_CONTENT_MISMATCH -> E2_ACCEPT | E2_LEDGER_PHONEME_ACCEPT
+phat_2 pos | People once said, fat beats to praise a good song. | TRUE_CONTENT_MISMATCH -> E2_ACCEPT | E2_LEDGER_PHONEME_ACCEPT
+neg_lyft_loft neg | She booked a Lyft to the airport before sunrise. | EXACT_MATCH -> BASE_PASS(救済不要) | None
+neg_skool_scowl neg | Her little brother is excited about scout as fall. | TRUE_CONTENT_MISMATCH -> NOT_RESCUED:NO_PHONEME_MATCH | NO_PHONEME_MATCH
+neg_thicc_thin neg | Teenagers now say thin to praise a very solid sandwich. | TRUE_CONTENT_MISMATCH -> NOT_RESCUED:NO_PHONEME_MATCH | NO_PHONEME_MATCH
+neg_kewl_coal neg | He typed "cool" under every photo his friend posted. | TRUE_CONTENT_MISMATCH -> E2_ACCEPT | E2_LEDGER_PHONEME_ACCEPT
+neg_thicc_sick neg | The word sick became popular on social media. | TRUE_CONTENT_MISMATCH -> NOT_RESCUED:NO_PHONEME_MATCH | NO_PHONEME_MATCH
+shared_state_changed: {}
+done; guard_est 28.65
