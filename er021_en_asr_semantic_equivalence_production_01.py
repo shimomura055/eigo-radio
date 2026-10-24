@@ -301,6 +301,13 @@ def _consume_number_word_run(words: list[str], i: int):
     if integer_words[-1] in _TENS and k < n and re.fullmatch(r"[1-9]", words[k]):
         value += int(words[k])
         k += 1
+    elif integer_words[-1] in _SCALE_WORDS:
+        # OPEN-491: scale語(hundred/thousand/...)で終わる語runの直後の『(and +) TTS入力で数字化された小さな数(2-12)』は同じ数の末尾
+        # (`one hundred and 10`=110、`two thousand and 5`=2005。er003 tts_safe_number_words_enが2-12の語だけ数字化する)。er006 `_convert_cardinal_words`と同じ規則。
+        k2 = k + 1 if (k < n and words[k].lower() == "and") else k
+        if k2 < n and re.fullmatch(r"(?:[2-9]|1[0-2])", words[k2]):
+            value += int(words[k2])
+            k = k2 + 1
     if k < n and words[k].lower() == "point":
         k2 = k + 1
         frac_digits = []
@@ -448,6 +455,12 @@ def _apply_suffixes(atom: dict, words: list[str], idx: int) -> int:
     if idx < n and words[idx].lower() in _SCALE_WORDS:
         atom["value"] = atom["value"] * _SCALE_WORDS[words[idx].lower()]
         idx += 1
+        # OPEN-491: 数字+scale語(`2 hundred`)の直後の『(and +) TTS入力で数字化された小さな数(2-12)』も同じ数の末尾(`2 hundred and 5`=205)。
+        # 語run側(_consume_number_word_run)と同じ規則(`two hundred and five`と同じ読みに揃える)。
+        k2 = idx + 1 if (idx < n and words[idx].lower() == "and") else idx
+        if k2 < n and re.fullmatch(r"(?:[2-9]|1[0-2])", words[k2]):
+            atom["value"] = atom["value"] + int(words[k2])
+            idx = k2 + 1
     if idx < n:
         w = words[idx].lower()
         if w == "percent" and not atom["percent"]:

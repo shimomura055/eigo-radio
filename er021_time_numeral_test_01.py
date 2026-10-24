@@ -118,6 +118,26 @@ _add("O487", "storymaking", "story making", "EQ", note="複合語分かち書き
 _add("O487", "e mail", "email", "EQ")
 _add("O487", "covid 19", "covid19", "EQ", note="文字-数字境界は不変")
 _add("O487", "a wide-scale empirical study", "Widescale empirical study.", "EQ", note="冠詞除外despace")
+# OPEN-491(委任_05): scale語(hundred/thousand/...)+(and)+TTS入力で数字化された小さな数(2-12)は同じ数の末尾(one hundred and 10=110)
+_add("O491", "one hundred and 10", "110", "EQ")
+_add("O491", "one hundred and 10", "one hundred and ten", "EQ")
+_add("O491", "It cost one hundred and 10 dollars", "It cost 110 dollars", "EQ")
+_add("O491", "one hundred and 12 people", "112 people", "EQ")
+_add("O491", "one hundred and 2", "102", "EQ")
+_add("O491", "2 hundred and 5", "205", "EQ")
+_add("O491", "2 hundred and 5", "two hundred and five", "EQ")
+_add("O491", "3 hundred 12", "312", "EQ")
+_add("O491", "two thousand and 5", "2005", "EQ")
+_add("O491", "2 thousand and 5", "2005", "EQ")
+_add("O491", "one hundred and 10", "111", "NE")
+_add("O491", "one hundred and 10", "one hundred and eleven", "NE")
+_add("O491", "one hundred and 10", "100", "NE")
+_add("O491", "2 hundred and 5", "200 and 5", "NE", note="and 5は別の数(200と5)として読むASR")
+_add("O491", "2 hundred and 5", "206", "NE")
+_add("O491", "two thousand and 5", "2006", "NE")
+_add("O491", "seven and 8", "7 and 8", "EQ", note="scale語を伴わない and は接続詞(OPEN-489維持)")
+_add("O491", "ten and 11", "10 and 11", "EQ")
+_add("O491", "between 9 and 11", "between nine and eleven", "EQ", note="OPEN-489維持")
 
 
 def judge_primary(canon: str, asr: str, role: str = "FULL_STORY"):
@@ -304,6 +324,28 @@ class Despace487(unittest.TestCase):
                      ("one hundred thirty people", "1 30 people"), ("10 30", "1030")):
             with self.subTest(c=c, x=x):
                 self.assertFalse(val.classify_asr_match(c, x).should_pass)
+
+
+class ScaleWordDigitTail491(unittest.TestCase):
+    """OPEN-491(委任_05): er021(atom化)とer006(正規化)の2層で『scale語+(and)+数字2-12』を1つの数として読む。"""
+
+    def _nums(self, text):
+        return [str(x["value"]) for x in t1._tier1_atoms(text) if x["kind"] == "number"]
+
+    def test_er021_atoms(self):
+        self.assertEqual(self._nums("one hundred and 10"), ["110"])
+        self.assertEqual(self._nums("two thousand and 5"), ["2005"])
+        self.assertEqual(self._nums("2 hundred and 5"), ["205"])
+        self.assertEqual(self._nums("3 hundred 12"), ["312"])
+        self.assertEqual(self._nums("one hundred and 13"), ["100", "13"])   # 13以上はTTS数字化の対象外(畳まない)
+        self.assertEqual(self._nums("seven and 8"), ["7", "8"])             # scale語なしのandは接続詞
+
+    def test_er006_normalize(self):
+        n = val.normalize_numeric
+        self.assertEqual(n("one hundred and 10"), "110")
+        self.assertEqual(n("two thousand and 5"), "2005")
+        self.assertEqual(n("one hundred and ten"), "110")
+        self.assertEqual(n("seven and 8"), "7 and 8")
 
 
 if __name__ == "__main__":

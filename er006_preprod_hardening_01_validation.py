@@ -345,6 +345,14 @@ def _convert_cardinal_words(text: str) -> str:
             if trail == 0 and core[-1] in _TENS and j < len(tokens) and re.fullmatch(r"[1-9]", tokens[j]):
                 core.append(next(k for k, v in _ONES.items() if v == int(tokens[j])))
                 j += 1
+            elif (core[-1] in _SCALES and trail <= 1 and j < len(tokens)
+                  and re.fullmatch(r"(?:[2-9]|1[0-2])", tokens[j])):
+                # OPEN-491(ASR-TIME-NUMERAL-EQUIVALENCE-01 委任_05): scale語(hundred/thousand/million)で終わる数値語列の直後の『(and +) TTS入力で数字化された
+                # 小さな数(2-12)』(`one hundred and 10`/`two thousand and 5`。er003 tts_safe_number_words_enが2-12の語だけ数字化する)は同じ数の末尾。
+                # 語に戻して同じ数値語列に含める(`and`は数の一部として消費。er021 `_consume_number_word_run`/`_apply_suffixes`と同じ規則)。
+                trail = 0
+                core.append(next(k for k, v in _ONES.items() if v == int(tokens[j])))
+                j += 1
             chunks = [[]]
             for w in core:
                 if (chunks[-1] and chunks[-1][-1] in _ONES
