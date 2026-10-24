@@ -1,4 +1,75 @@
-# TRIAL_RESULT_05 (委任_22: 課題① 字義訳 Trial_05 Stage 1 + held-out の途中結果。**Fable盲検判定前。VALIDATEDの判定はしない**)
+# TRIAL_RESULT_05 確定版(委任_29、2026-10-24。課題① 字義訳 Trial_05: Stage 1 + held-out + Stage 2 の全ラベル確定後の集計。**VALIDATED判定はFable。本書は事実のみ**)
+
+管理ID: FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01 委任_29 / 実行=`er112_kp_gm_trial_05.py`(DEV専用、Production module編集0) / 集計=`er112_kp_gm_trial_05_report.py report --labels fable_labels_05.json --labels_c fable_labels_05c.json --labels_d fable_labels_05d.json --labels_e fable_labels_05e.json`(出力=`report_05_fable_labels_05_withcde.md`、委任_29で`--labels_e`とStage 2表を追加) / ラベル=`fable_labels_05*.json`(Key未開封で確定、注記逐語=`FABLE_BLIND_RESULT_05.md`) / 使用モデル: `gpt-6-luna` effort=high(最新世代の最上位系ではない。理由=評価対象がluna生成の品質そのもの[Production系列と同一条件、25節の例外]。判定=Fable盲検、API 0)。1 rep、Fable単独評価、Sonnet Judgeなし。
+
+## A. 確定サマリ(X2p = 採用候補。X2 = 前版[THIN 4]、Cp = 検出方式の生成転用)
+| 段 | B0(現行Production Prompt) | X2p |
+|---|---|---|
+| Stage 1 R hard-core(4KP x 3rep = 12出力) | PASS 2 / THIN 0 / **FAIL系 10**(2rep以上失敗: unseen clock・trophy・greener grass) | PASS 11 / THIN 1 / **FAIL系 0**(2rep以上失敗KPなし) |
+| R co-KP(3KP x 3rep = 9出力) | 9/9 PASS | PASS 8 / THIN 1(`sound no one asked for` rep1「誰も聞きたくない音」) |
+| held-out(10KP x 1rep) | PASS 8 / THIN 2 | PASS 9 / THIN 1。**B0=PASSからの悪化 0**(`a door inside the pain`はB0もTHIN) |
+| Stage 2 non-R 54KP(1rep) | Trial_04 B0 2rep: 出力108中 PASS 105 / THIN 1 / FAIL 2 | PASS 52 / THIN 2 / FAIL 0 |
+| 全85出力(X2p) | - | PASS 80 / THIN 5 / FAIL系 0。validate互換 85/85。`gloss==naive_ja` 0/85 |
+- R(hard-core)の他arm: M 6/0/6、X1 7/0/5、X2 8/4/0、Cp 9/1/2(PASS/THIN/FAIL系)。Cp_t4(Trial_04のrep1、n=4)は3/1/0。H5(X1対M)はFAIL系 6→5で有意差なし。
+- 注意(委任_26記載の訂正): 委任_26追記の「X2p R co-KP悪化なし」は不正確。co-KP `sound no one asked for` rep1が X2p=THIN(B0=PASS)。同文字列はX2でも THIN(`FABLE_BLIND_RESULT_05.md`)。
+
+## B. Stage 2 確定(non-R 54KP x X2p 1rep、対 B0 = Trial_04 の2rep)
+05eラベル(21文字列: PASS 20 / THIN 1)を加え、54KP全件にラベル確定(未ラベル 0)。
+| 基準 | PASS→FAIL | PASS→THIN | THIN→FAIL | THIN→PASS | FAIL→PASS | FAIL→THIN | 変化なし | 計 |
+|---|---|---|---|---|---|---|---|---|
+| **strict**(B0の良い方のrep基準) | **0** | **2** | 0 | 0 | 0 | 0 | 52 | 54 |
+| lenient(B0の悪い方のrep基準) | 0 | 2 | 0 | 1 | 2 | 0 | 49 | 54 |
+- PASS→THIN(strict/lenient共通 2件): (1) `move in the other direction`: B0「反対の方向に動く」(2rep とも PASS) → X2p「売れ行きは逆に下がった」(THIN。Fable注記: 本文の文脈を補った説明でフレーズの意味より狭く、方向まで断定)。(2) `supply chain`: B0「商品が作られて消費者に届くまでの流れ」/「…届くまでの供給の流れ」(PASS/PASS) → X2p「商品が作られて店に届くまでの流れ」(THIN。同文字列はCp_t4でも THIN)。
+- lenient追加(改善側): THIN→PASS 1(`pump one's fist` B0悪い方「自分の拳を突き上げる」THIN → X2p「喜んでガッツポーズをする」PASS)、FAIL→PASS 2(`reach for someone's wallet` B0「人の財布に手を伸ばす」FAIL → X2p「財布を出してお金を払おうとする」PASS、`settle at` B0悪い方「～で落ち着く」FAIL → X2p「～で取引を終える」PASS)。
+- **事前宣言基準**(`TRIAL_DESIGN_06.md` §4 Stage 2: strict PASS→FAIL 0 かつ PASS→THIN ≦2/57[実際の母数は54])との適合(事実): PASS→FAIL=**0**(基準0に適合)、PASS→THIN=**2**(基準≦2に適合、上限ちょうど)。母数は設計の57ではなく54(Stage 2の確定KP数)。
+- Cp_t4(rep1、n=54)との比較: Cp_t4 は PASS 53 / THIN 1(`supply chain`)。X2p が Cp_t4 より劣る(順位)KPは 1(`move in the other direction`: Cp_t4「逆の動きをする」PASS)、優る KP は 0。
+- 決定論集計(`metrics_05.md`、54KP): `gloss==naive_ja` 0/54、文字数比>1.5(対B0 2rep平均) 7/54、説明文型語尾または30字超 0/54、B0のいずれかのrepと同一文字列 19/54(=35/54は文字列が変化し、変化後もstrict基準でPASS以上は52KP中の該当分)、conveys yes/partly/no = 7/8/39。
+- 観察(判定ではない): 本文の用法に寄せた結果、否定・対象・場面が見出し語より具体になった PASS 文字列がある(`add up`→「つじつまが合わない」[本文は doesn't add up]、`step out`→「人が姿を現す」、`run on`→「別々の時間軸で動いている」、`carry the load`→「必要な荷物を運ぶ役目を担う」)。Fableの水準は「本文での意味」側(PASS)で、`ROOT_CAUSE_04.md` 0-R の「単体で再利用できる訳」との両立不能の設計トレードオフ(承認事項)に当たる。
+
+## C. Before/After 代表例(B0文字列 → X2p文字列 / X2pのFableラベル)
+| KP(種別) | B0 | X2p | X2pラベル |
+|---|---|---|---|
+| draw a line(R hard-core) | 一線を引く / 線を引く(rep3 FAIL_LIT) | はっきりと区別する / 違いをはっきり示す / 区別をはっきりさせる | PASS x3 |
+| an unseen clock(R) | 目に見えない時計(3rep全て FAIL_LIT) | 値札に隠れた独自のタイミング / 値札に隠れた時間のずれ / 表には見えない独自のタイミング | PASS / **THIN** / PASS |
+| question shaped like a trophy(R) | トロフィーの形をした質問(3rep全て FAIL_LIT) | 賞という形で投げかける問い x3 | PASS x3 |
+| greener grass(R) | より青く見える芝生 / より青々とした芝生 x2(FAIL_LIT) | 自分より恵まれて見える他人の暮らし 等 | PASS x3 |
+| sound no one asked for(R co-KP) | 誰も頼んでいない音 / 誰も求めていない音 | 誰も聞きたくない音(rep1)/ 誰も求めていない音 / 誰も頼んでいない音 | **THIN** / PASS / PASS |
+| reach for someone's wallet(S2) | 人の財布に手を伸ばす(FAIL) / 誰かが自分の財布に手を伸ばす(PASS) | 財布を出してお金を払おうとする | PASS |
+| settle at(S2) | ～で取引を終える / ～で落ち着く(FAIL) | ～で取引を終える | PASS |
+| turn on its head(S2) | ～をひっくり返す | 期待をひっくり返す | PASS |
+| take off an ai costume(S2) | AIの衣装を脱ぐ / AIの着ぐるみを脱ぐ | AIの裏に人がいると明かす | PASS |
+| become like porches(held-out) | 玄関先のような場所になる(THIN) | ベンチが人々の憩いや交流の場になる | PASS |
+| move in the other direction(S2、悪化) | 反対の方向に動く | 売れ行きは逆に下がった | **THIN** |
+| supply chain(S2、悪化) | 商品が作られて消費者に届くまでの流れ | 商品が作られて店に届くまでの流れ | **THIN** |
+全KP一覧(Stage 2、B0 2rep・X2p・Cp_t4の文字列とラベル)は `report_05_fable_labels_05_withcde.md` 末尾。
+
+## D. 残存THIN一覧(X2p、全85出力中5件。FAIL系は0)
+| KP | 区分 | X2p文字列 | 性質(Fable注記・事実) |
+|---|---|---|---|
+| an unseen clock rep2 | R hard-core | 値札に隠れた時間のずれ | 「独自のタイミング」より狭い(時間のずれに限定) |
+| sound no one asked for rep1 | R co-KP(B0=PASS、悪化) | 誰も聞きたくない音 | asked for の意味が移動(頼む→聞きたくない)。同文字列はX2でもTHIN |
+| a door inside the pain | held-out | 悲しみの中に見つけた、思い出と向き合い直す道 | 物語解釈を含み長く説明的。B0・X2・CpもTHIN(悪化ではない) |
+| move in the other direction | Stage 2(悪化) | 売れ行きは逆に下がった | 本文の文脈を補い、方向まで断定 |
+| supply chain | Stage 2(悪化) | 商品が作られて店に届くまでの流れ | 「店」に限定(B0は「消費者」)。Cp_t4でも同じ文字列がTHIN |
+
+## E. 新規悪化一覧(B0がPASSでX2pがTHIN以下)
+R co-KP 1(`sound no one asked for` rep1)、Stage 2 strict 2(`move in the other direction`、`supply chain`)、held-out 0、R hard-core 0(`an unseen clock` rep2 の B0 は FAIL_LIT のため悪化ではない)。PASS→FAIL 系はどこにも無い。
+
+## F. 費用台帳合計と所見
+- 台帳 `er112_output/kp_gm_trial_05/paid_calls.jsonl` 累計 **17.401円**(Trial_05全体、個別枠8.33円を超過、Fable委任_25/26/28で承認済みの範囲。`BUDGET_LOG_01.md`)。X2p 計 54 call 約8.6円(1call平均**0.1593円**、reasoning_tokens平均1,343、output_tokens平均1,561、`metrics_05.md`)。委任_29はAPI 0(追加費用0)。
+- 単価(1call): B0 0.0585円(reasoning 304 token)、X1 0.0654、X2 0.1254(1,074)、**X2p 0.1593(1,343)**、**Cp 0.1566(1,340)**。当初の見込み「X2はCpの約半額」はX2pでは成立せず、**X2p と Cp は同程度**(`REASONING_TOKENS_01.md`のCp 0.242円は5 callの少数平均で、24 call平均は0.157円)。
+- 速度: wall-clockの精密実測は無い(workers=2の並列実行)。pilotの逐次4call間隔[B0 約18秒 / X1 約22秒 / Cp 約37秒、出力token 696/955/2,953]から、出力token約1,000増あたり約+8〜9秒/callの粗い見積(実測ではない、runtime evidenceで再測定要)。
+- reasoning_tokens所見: B0 304 → X1 528 → X2 1,074 → X2p 1,343 → Cp 1,340(call平均)。可視欄の追加は推論量を増やし、増分の大半は非可視の推論token(`REASONING_TOKENS_01.md`)。
+
+## G. Fable判定の揺れ(OF-KP1-08)
+control再判定の一致率 **7/10**。不一致3件(`draw a line|区別する` THIN→PASS、`reach for someone's wallet|人の財布に手を伸ばす` FAIL→PASS、`on the throne|トップの座にいて` THIN→PASS)はすべて前回より**緩い**方向。集計は前回ラベル維持(Fable判断)。したがって05d/05eのPASSには「緩め」方向の揺れ余地があり得る(上限の保証ではない)。
+
+## H. 限界(事実)
+1 rep、Fable単独評価(Sonnet Judgeなし)、luna・effort=high固定、held-out 10KP(ZのF型は母集団2件のみ)、Stage 2はB0の良い方基準(Trial_04の2rep)との比較(R・held-outのB0は新規rep)、X2pの設計はR結果を見た後に調整(差分は`TRIAL_DESIGN_06.md` §9)・gating基準もX2p確定値を見た後に是正(同 4-追記)、Trial_02〜04確定ラベルを継承。
+
+---
+(以下は委任_22〜28時点の履歴。逐語を残す。上の確定版が優先する)
+
 
 管理ID: FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01 委任_22 / 設計=`../TRIAL_DESIGN_06.md` / 台帳=`BUDGET_LOG_01.md` / 実行=`er112_kp_gm_trial_05.py`(DEV専用、Production module編集0、Production hash開始=終了一致[`production_hash_start.txt`/`production_hash_end.txt`]) / 使用モデル: `gpt-6-luna`、effort=high固定(最新世代の最上位系ではない。理由=評価対象がluna生成の品質そのもの[Production系列と同一、25節の例外]。判定=Fable盲検、API 0)。
 
@@ -72,3 +143,7 @@
 - 残11KP(8 job)を実行し **X2p Stage 2 = 54/54 KP完了**(費用はBUDGET_LOG_01.md。台帳欠落2jobは再起動1回で再生成)。
 - 決定論集計(54KP、API 0): gloss==naive_ja **0/54**、文字数比>1.5(対Trial_04 B0 2rep平均) **7/54**、説明文型語尾または30字超 **0/54**、B0のいずれかのrepと同一文字列 19/54、conveys yes/partly/no=7/8/39。validate互換 X2p全85出力(Stage1+2)不合格0。`metrics_05.md`更新済み。
 - 盲検表 `fable_blind_05e.md`(**完全版**: 54KPのうち05/05c/05dおよびTrial_04確定ラベルと同一でない新出文字列のみ=21行21文字列、arm伏せ)+`fable_blind_05e_key.json`(別ファイル)。再生成コマンド `er112_kp_gm_trial_05_report.py blind_e`。**VALIDATED判定はしない。**
+
+## 委任_29 追記(05eラベル保存・Stage 2確定)
+- 05eラベル(Key未開封)を `fable_labels_05e.json`、注記を `FABLE_BLIND_RESULT_05.md` 「05e」節に逐語保存。`er112_kp_gm_trial_05_report.py` に `--labels_e`(05eキー適用)と Stage 2 strict/lenient 表(`stage2_table`)を追加(API 0)。確定表=上記 §B、全KP一覧=`report_05_fable_labels_05_withcde.md`。
+- 事前宣言の Stage 2 strict 基準(PASS→FAIL 0、PASS→THIN≦2)への適合=適合(0 / 2)。VALIDATED判定はFable。

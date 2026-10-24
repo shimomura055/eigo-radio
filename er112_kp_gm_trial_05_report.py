@@ -358,7 +358,7 @@ def cmd_metrics(a):
 
 
 # ------------------------------------------------------------------ Fable判定後の集計
-def label_lookup(labels, labels_c=None, labels_d=None):
+def label_lookup(labels, labels_c=None, labels_d=None, labels_e=None):
     A = T5.all_kps5()
     known = known_labels()
     keymap = json.load(open(OUT5 / "fable_blind_05_key.json", encoding="utf-8"))
@@ -389,14 +389,80 @@ def label_lookup(labels, labels_c=None, labels_d=None):
                 lab = labels_d.get("%s:%s" % (rk, col))
                 if lab is not None:
                     tab[(A[v["key"]]["key"], A[v["key"]]["sent"], c["gloss"])] = lab
+    if labels_e:
+        ke = json.load(open(OUT5 / "fable_blind_05e_key.json", encoding="utf-8"))
+        for rk, v in ke.items():
+            for col, c in v["cols"].items():
+                lab = labels_e.get("%s:%s" % (rk, col))
+                if lab is not None:
+                    tab[(A[v["key"]]["key"], A[v["key"]]["sent"], c["gloss"])] = lab
     return tab, ctl
+
+
+def stage2_table(tab, L):
+    """委任_29: Stage 2(non-R 54KP、X2p 1rep) 対 B0_t4(2rep)/Cp_t4。strict=B0の良い方rep基準、lenient=B0の悪い方rep基準。"""
+    A = T5.all_kps5()
+    st = json.load(open(RD / "TRIAL_04/strata_04.json", encoding="utf-8"))
+    keys = [k for k in st["trial_set"] if k not in T5.R_KEYS]
+    nc = new_cells()
+    rc = ref_cells(set(keys))
+    lab = lambda k, g: tab.get((A[k]["key"], A[k]["sent"], g)) if g else None
+    rank = {"PASS": 2, "THIN": 1, "FAIL": 0, "FAIL_LIT": 0}
+    nm = lambda l: "FAIL" if l in ("FAIL", "FAIL_LIT") else l
+    rows = []
+    for k in sorted(keys):
+        x = (nc.get(("X2p", k, 1)) or {}).get("gloss")
+        b = [g for g in (rc.get(("B0_t4", k, r)) for r in (1, 2)) if g]
+        cp = rc.get(("Cp_t4", k, 1))
+        rows.append(dict(k=k, x=x, xl=lab(k, x), b=b, bl=[lab(k, g) for g in b], cp=cp, cpl=lab(k, cp)))
+    unl = [r["k"] for r in rows if r["x"] is None or r["xl"] is None or not r["b"] or any(l is None for l in r["bl"])]
+    L.append("## Stage 2 (non-R %d KP x X2p 1rep) 対 B0(Trial_04 2rep) / Cp_t4(rep1)\n" % len(keys))
+    L.append("未ラベル/欠落KP: %s\n" % (unl or "なし"))
+    for mode, pick in (("strict(B0良い方rep基準)", max), ("lenient(B0悪い方rep基準)", min)):
+        c = collections.Counter()
+        det = collections.defaultdict(list)
+        for r in rows:
+            if r["k"] in unl:
+                continue
+            bl = pick(r["bl"], key=lambda l: rank[l])
+            xl = r["xl"]
+            if rank[xl] == rank[bl]:
+                kind = "same"
+            else:
+                kind = "%s->%s" % (nm(bl), nm(xl))
+            c[kind] += 1
+            if kind != "same":
+                det[kind].append((r["k"], r["b"], r["bl"], r["x"], xl))
+        L.append("### %s\n" % mode)
+        L.append("- PASS->FAIL %d / PASS->THIN %d / THIN->FAIL %d / THIN->PASS %d / FAIL->PASS %d / FAIL->THIN %d / 変化なし(同順位) %d / 計 %d" % (
+            c["PASS->FAIL"], c["PASS->THIN"], c["THIN->FAIL"], c["THIN->PASS"], c["FAIL->PASS"], c["FAIL->THIN"], c["same"], sum(c.values())))
+        for kind in ("PASS->FAIL", "PASS->THIN", "THIN->FAIL", "THIN->PASS", "FAIL->PASS", "FAIL->THIN"):
+            for k, bg, bl, xg, xl in det.get(kind, []):
+                L.append("  - [%s] %s | B0=%s (%s) | X2p=%s (%s)" % (kind, k, " / ".join(bg), "/".join(bl), xg, xl))
+        L.append("")
+    L.append("X2p ラベル分布: %s" % dict(collections.Counter(r["xl"] for r in rows)))
+    L.append("B0_t4 ラベル分布(出力単位): %s" % dict(collections.Counter(l for r in rows for l in r["bl"])))
+    ccp = collections.Counter(r["cpl"] for r in rows if r["cp"])
+    L.append("Cp_t4 ラベル分布(rep1、n=%d): %s" % (sum(ccp.values()), dict(ccp)))
+    diff = [(r["k"], r["cp"], r["cpl"], r["x"], r["xl"]) for r in rows if r["cp"] and r["cpl"] and r["xl"] and rank[r["xl"]] < rank[r["cpl"]]]
+    better = [r["k"] for r in rows if r["cp"] and r["cpl"] and r["xl"] and rank[r["xl"]] > rank[r["cpl"]]]
+    L.append("X2pがCp_t4より劣る(順位): %d件 / 優る: %d件 %s" % (len(diff), len(better), better))
+    for k, cg, cl, xg, xl in diff:
+        L.append("  - %s | Cp_t4=%s (%s) | X2p=%s (%s)" % (k, cg, cl, xg, xl))
+    L.append("\nX2p 残存THIN一覧(Stage 2): %s\n" % [(r["k"], r["x"]) for r in rows if r["xl"] == "THIN"])
+    L.append("Stage 2 全54KP一覧(KP | B0 rep1/rep2 | X2p | Cp_t4):")
+    for r in rows:
+        L.append("  - %s | %s | X2p=%s (%s) | Cp_t4=%s (%s)" % (r["k"], " ; ".join("%s (%s)" % (g, l) for g, l in zip(r["b"], r["bl"])), r["x"], r["xl"], r["cp"], r["cpl"]))
+    L.append("")
+    return rows
 
 
 def cmd_report(a):
     labels = json.load(open(a.labels, encoding="utf-8"))
     labels_c = json.load(open(a.labels_c, encoding="utf-8")) if a.labels_c else None
     labels_d = json.load(open(a.labels_d, encoding="utf-8")) if a.labels_d else None
-    tab, ctl = label_lookup(labels, labels_c, labels_d)
+    labels_e = json.load(open(a.labels_e, encoding="utf-8")) if a.labels_e else None
+    tab, ctl = label_lookup(labels, labels_c, labels_d, labels_e)
     A = T5.all_kps5()
     nc = new_cells()
     rc = ref_cells(set(T5.R_KEYS) | set(T5.heldout_order()))
@@ -490,7 +556,9 @@ def cmd_report(a):
                 w.append(arm)
         L.append("| %s | %s | %s |" % (k, " | ".join(row), ",".join(w) or "なし"))
     L.append("\nheld-out 悪化: X2=%s Cp=%s X2p=%s(基準: 0)\n" % (worse["X2"] or "なし", worse["Cp"] or "なし", worse["X2p"] or "なし"))
-    (OUT5 / ("report_05_%s%s.md" % (os.path.basename(a.labels).replace(".json", ""), ("_withcd" if a.labels_d else "_withc") if a.labels_c else ""))).write_text("\n".join(L) + "\n", encoding="utf-8")
+    if labels_e:
+        stage2_table(tab, L)
+    (OUT5 / ("report_05_%s%s.md" % (os.path.basename(a.labels).replace(".json", ""), ("_withcde" if labels_e else "_withcd" if a.labels_d else "_withc") if a.labels_c else ""))).write_text("\n".join(L) + "\n", encoding="utf-8")
     print("\n".join(L))
 
 
@@ -500,5 +568,6 @@ if __name__ == "__main__":
     ap.add_argument("--labels", default="")
     ap.add_argument("--labels_c", default="")
     ap.add_argument("--labels_d", default="")
+    ap.add_argument("--labels_e", default="")
     a = ap.parse_args()
     {"blind": cmd_blind, "metrics": cmd_metrics, "report": cmd_report, "blind_c": cmd_blind_c, "blind_d": cmd_blind_d, "blind_s2": cmd_blind_s2, "blind_e": cmd_blind_e}[a.cmd](a)
