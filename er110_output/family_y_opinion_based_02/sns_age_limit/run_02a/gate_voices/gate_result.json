@@ -1,0 +1,172 @@
+{
+  "stage": "ob_voices_gate",
+  "kind": "voices",
+  "status": "PASS",
+  "n_judgements": 2,
+  "history": [
+    {
+      "attempt": 1,
+      "sha256": {
+        "voice_1": "58ae31a3fce03bdd5d493eb9edf3c85b5d343ead85467158404c60995ed12018",
+        "voice_2": "18b141a1db42bbb9378180434d0bf168299942ad4457945bd49845663670f21f",
+        "voice_3": "6f23352ee7474b231a18b7bf6be340b2d30d1356a1cd2e780846ed977186aa76"
+      },
+      "check": {
+        "kind": "voices",
+        "model": "gpt-6-luna",
+        "effort": "high",
+        "meta": {
+          "response_id": "resp_022e6ae36eb3f16b006adbf9f53fe487d099e08d489bac49f9",
+          "model": "gpt-6-luna",
+          "usage": {
+            "input_tokens": 1998,
+            "output_tokens": 2891
+          }
+        },
+        "prompt_sha256": "2a10baf13c6b6e7bd788d3cde9a0fc775e19638b91a4c07a4738e18084d98c92",
+        "parsed": {
+          "voice_1": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_position_blur": "PASS",
+            "reasoning": "子どもが刺激の強いものを選んだ経験や、親としての迷いが一人称で描かれている。アカウント禁止へのためらいは自分の立場の葛藤として示され、他のVoiceの中心的な主張を代弁してはいない。",
+            "quoted_evidence": ""
+          },
+          "voice_2": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_position_blur": "PASS",
+            "reasoning": "友達との連絡や、悪口・脅しを受けた際に大人を頼りたい気持ちが、本人の経験や願いとして語られている。支援を求める迷いは相手側の主張の代弁ではなく、自分の立場にある葛藤として自然に収まっている。",
+            "quoted_evidence": ""
+          },
+          "voice_3": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "FAIL",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_position_blur": "PASS",
+            "reasoning": "一人称の枠はあるものの、具体的な親子の経験より、段階的な利用という制度のあり方を一般論として説明・推奨する声が中心で、抽象的な代弁者の解説に寄っている。本人がそのように考えること自体は不自然ではないため、他の項目には当てはめていない。",
+            "quoted_evidence": "できれば、その子が自分で考えて使える範囲に合わせて、使える機能を少しずつ広げたい。ある年齢までアカウントを持たせず、その日が来たら何でも使えるという形には、心配が残る。"
+          }
+        },
+        "flagged_items": [
+          {
+            "section": "voice_3",
+            "fail_fields": [
+              "leak_narrator_analysis"
+            ],
+            "reasoning": "一人称の枠はあるものの、具体的な親子の経験より、段階的な利用という制度のあり方を一般論として説明・推奨する声が中心で、抽象的な代弁者の解説に寄っている。本人がそのように考えること自体は不自然ではないため、他の項目には当てはめていない。",
+            "quoted_evidence": "できれば、その子が自分で考えて使える範囲に合わせて、使える機能を少しずつ広げたい。ある年齢までアカウントを持たせず、その日が来たら何でも使えるという形には、心配が残る。"
+          }
+        ],
+        "any_flagged": true,
+        "n_fail_fields": 1
+      },
+      "rewrite_calls": [
+        {
+          "try": 1,
+          "meta": {
+            "response_id": "resp_048b458ec57e2cb7006adbfa1081dc87d0a6a0cfe176df77f9",
+            "model": "gpt-6.1-sol",
+            "usage": {
+              "input_tokens": 3153,
+              "output_tokens": 468
+            }
+          },
+          "details": {
+            "applied": [
+              "voice_3"
+            ],
+            "errors": []
+          },
+          "raw_rewrites": [
+            {
+              "section": "voice_3",
+              "text": "中学生の子を育てているので、いつ、どこまでSNSを使わせるかは、わたしが考えないといけない。年齢は大まかな目安にはなるけれど、それだけで、うちの子はもう大丈夫だとは思えない。できれば、自分で何を判断できるかに合わせて、使える機能を少しずつ広げてやりたい。もしうちの子が、禁止されている間は何も使わず、使っていい年齢になった途端に何でも使えるようになったら、わたしは心配だ。触ったこともないのに、危ない時に自分を守れるだろうとは思えないから。だから、使える範囲には段階を設けて、その中で覚えていける形がいい。海に出る前に泳ぐ練習をするように、うちの子にも、少しずつ使い方を覚える時間が必要なんだと思う。"
+            }
+          ]
+        }
+      ],
+      "rewritten": [
+        "voice_3"
+      ]
+    },
+    {
+      "attempt": 2,
+      "sha256": {
+        "voice_1": "58ae31a3fce03bdd5d493eb9edf3c85b5d343ead85467158404c60995ed12018",
+        "voice_2": "18b141a1db42bbb9378180434d0bf168299942ad4457945bd49845663670f21f",
+        "voice_3": "0f963e51dd036b155be0f727c7a6995e3c50a587c132375dae6b39d8901fe98c"
+      },
+      "check": {
+        "kind": "voices",
+        "model": "gpt-6-luna",
+        "effort": "high",
+        "meta": {
+          "response_id": "resp_0cade9c1d736988c006adbfa1af0cc87d097f40a82b2c86c33",
+          "model": "gpt-6-luna",
+          "usage": {
+            "input_tokens": 2028,
+            "output_tokens": 950
+          }
+        },
+        "prompt_sha256": "b7a6e13f19ac94d4632763287ba33a58b24255e151edad1df55be27e25bb7900",
+        "parsed": {
+          "voice_1": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_position_blur": "PASS",
+            "reasoning": "調査や統計を根拠にせず、子どもが選ぶ様子や親としての迷い、助かる場面が本人の視点で語られています。アカウント禁止へのためらいは相手側の主張の代弁ではなく、自分の立場の中の葛藤として描かれています。",
+            "quoted_evidence": ""
+          },
+          "voice_2": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_position_blur": "PASS",
+            "reasoning": "友人との連絡や自分で考えたい気持ち、危険に遭ったときの不安が一人称の経験・感情として語られています。大人に頼りたいという迷いは、親側の中心的な主張を引き受けるものではありません。",
+            "quoted_evidence": ""
+          },
+          "voice_3": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_narrator_analysis": "PASS",
+            "leak_unknowable_analysis": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_position_blur": "PASS",
+            "reasoning": "子どもの使い方を考える親自身の心配や希望として、段階的に学ぶ必要性が語られており、外部分析や調査結果の説明にはなっていません。子どもが自分で判断することへの言及も、親としての考えの範囲に収まっています。",
+            "quoted_evidence": ""
+          }
+        },
+        "flagged_items": [],
+        "any_flagged": false,
+        "n_fail_fields": 0
+      }
+    }
+  ],
+  "first_judgement_flagged": true,
+  "first_judgement_n_fail_fields": 1,
+  "final_sha256": {
+    "voice_1": "58ae31a3fce03bdd5d493eb9edf3c85b5d343ead85467158404c60995ed12018",
+    "voice_2": "18b141a1db42bbb9378180434d0bf168299942ad4457945bd49845663670f21f",
+    "voice_3": "0f963e51dd036b155be0f727c7a6995e3c50a587c132375dae6b39d8901fe98c"
+  }
+}

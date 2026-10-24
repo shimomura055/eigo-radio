@@ -10,7 +10,7 @@ FAMILY-Y-VOICES-DESIGN-01 委任_20 Phase 1: 『実在意見ベースの3 Voice�
     呼出で再利用し、(1)新しいPersona Sheet(SHEETS_02) (2)改訂Voice Prompt(人物像を先に確立→一人称の語り→自然な展開) (3)テーマ定義を入れたWorld frame
     (4)同一主張の反復検出(記録専用) だけを差し替える。差し替えは `patched_ob()` のwith内だけで、抜けると元に戻る。
   - **有料runは予算承認ファイルが無い限り起動しない**: `er110_output/family_y_opinion_based_02/BUDGET_APPROVED.json` ({"cap_jpy": <数値>}) が
-    存在する場合のみ main() がAPIを呼ぶ。Phase 1(本委任)では承認が無いので起動しない(API 0)。このfileの存在は『ユーザー承認の記録』であり、agentが作らない。
+    存在する場合のみ main() がAPIを呼ぶ。承認が無い場合は起動しない(API 0)。委任_21ではFableの委任文(ユーザー決定2026-10-24 日次一元管理)を根拠に作成(approved_by記載)。起動はrun_02a/run_02bの各1回(引数はrun名のみ)。
   - 新しい合格基準・閾値は作らない。反復検出は記録専用(合否に使わない)。出典照合・UNMAPPED再生成・予算の歯止めは 01 のまま。
 """
 from __future__ import annotations
@@ -29,7 +29,9 @@ import er110_family_y_persona_pipeline_01 as pl
 import er110_family_y_opinion_based_01 as ob
 
 MANAGEMENT_ID = ob.MANAGEMENT_ID
-RUN_DIR_02 = "er110_output/family_y_opinion_based_02/sns_age_limit/run_01"
+RUN_DIRS_02 = {"run_02a": "er110_output/family_y_opinion_based_02/sns_age_limit/run_02a", "run_02b": "er110_output/family_y_opinion_based_02/sns_age_limit/run_02b"}
+RUN_DIR_02 = RUN_DIRS_02["run_02a"]     # 後方互換(testのmonkeypatch用)。main(run_name)が RUN_DIRS_02 から選ぶ
+LEDGER_DIR_02 = "docs/research/FAMILY-Y-VOICES-DESIGN-01/OPINION_BASED_01"
 APPROVAL_FILE = "er110_output/family_y_opinion_based_02/BUDGET_APPROVED.json"
 LEDGER_MD_02 = "docs/research/FAMILY-Y-VOICES-DESIGN-01/OPINION_BASED_01/BUDGET_LOG_OB_02.md"
 REPEAT_OVERLAP_THRESHOLD = 0.30        # 記録専用。run_01の目視評価(One/Thirdで反復あり)に合わせた1サンプル較正。合否に使わない
@@ -51,69 +53,85 @@ def _it(i, kind, sources, text):
 
 
 # ============================================================
-# Persona Sheet 02(PERSONAS_03.md の機械可読版)。V1は01を継承(ONE_dのTBS由来は最小化の指示付き)。V2は自由重視・年齢による全面禁止に反対へ再選定。
-# V3は『中学生の保護者』本人の声(MR 6件、すべて属性ラベル=中学生の保護者)へ差し替え。
+# Persona Sheet 02(PERSONAS_04.md の機械可読版。委任_21でOpus OF-Y7-01〜05を反映)。V1は01を継承(TBS-07由来はONE_dとcontradictionの2か所のみ)。V2は自由重視・年齢による全面禁止に反対。
+# V3は『中学生の保護者』本人の声(MR 6件、すべて属性ラベル=中学生の保護者)。声は男性(V2と別人として聞き分けるため。出典に性別なし)。
 # ============================================================
 def _v1():
+    """V1(小さい子の親)。委任_21 OF-Y7-01/02: TBS-07由来の内容はONE_dとcontradiction_or_weakness_jaの2か所だけ。ONE_e(MR-T015-10)削除。『自分も例外ではない』『安心』を外す。"""
     s = copy.deepcopy(ob.SHEETS["voice_1"])
+    s["experiences"] = [x for x in s["experiences"] if x["id"] != "ONE_e"]            # OF-Y7-02: 大人を含めた制限の主張であり、子どもの年齢制限の理由に使うと意味が逆向きになる
     for x in s["experiences"]:
         if x["id"] == "ONE_d":
             x["text_ja"] = ("長い移動の時など、静かにしてほしい時に、子どもが見てくれていると正直助かる。制限がかかると、親もしんどくなる時がある。"
                             "(この項目は出典が一件だけ。語りでは一文だけで触れ、言い直しを重ねない)")
-    s["persona_sketch_ja"] = ("小さい子どもを見守る親。子が刺激の強いものを選んでしまうのを見て、守りたい気持ちが強い。ただ、自分の都合で画面に助けられる日があることも、うすうす分かっている。")
-    s["stake_ja"] = "子どもの安全。そして、制限をかけたあとの対応が自分に返ってくること。"
-    s["arc_ja"] = "守る立場の親(冒頭)→子が刺激の強いものを選んだ経験や見守り設定の面倒→制限を望む気持ち→自分も画面に助けられている(1か所だけ。解消しない)→葛藤を抱えたまま、どうしてほしいかを一言で結ぶ(冒頭の主張の言い直しにしない)"
-    s["claim_core_ja"] = "子どもには、はっきりした制限があるほうが安心できる。ただ、自分も画面に助けられている時があって、制限の話は自分にも返ってくる。"
+    s["persona_sketch_ja"] = "小さい子どもを見守る親。子が刺激の強いものを選んでしまうのを見て、守りたい気持ちが強い。見守りの設定が面倒で、もっと簡単だといいとも思っている。"
+    s["stake_ja"] = "子どもの安全。子は危険を危険と気づけず、助けも求められないかもしれないこと。"
+    s["troubles_ja"] = "見守り機能の設定が分かりにくい。時間制限を決めても、子どもがやめられず、終わったあとにイライラする。"
+    s["wishes_honest_ja"] = "年齢に応じた、はっきりした決まりがほしい。見守りの設定は、もっと簡単であってほしい。"
+    s["emotion_habit_ja"] = "事実を短く置いて、言い切らずに言い直す。"
+    s["interests_ja"] = "見守りの設定や、子がどうしても使いたいという時の対応が簡単であってほしい。"
+    s["contradiction_or_weakness_ja"] = "制限を望む一方で、静かにしてほしい時には自分も画面に助けられている(ONE_dの一文だけ。語りでは1か所、解消しない)。"
+    s["speech_style"] = dict(s["speech_style"], assertion_or_hedging_ja="言い切りと言い淀みが半々")
+    s["arc_ja"] = ("守る立場の親(冒頭は出来事の描写から)→刺激の強いものや課金を子が選んだ経験、時間制限でもやめられない様子、見守り設定の面倒→年齢に応じた決まりを望む気持ち→"
+                   "「矛盾・弱さ」欄の葛藤(1か所・一文だけ。解消しない)→**結びは葛藤を抱えたまま、決めきれない気持ちのまま終える(『〜してほしい』と言い切って結ばない。冒頭の主張の言い直しにしない)**")
+    s["claim_core_ja"] = "子には、年齢に応じたはっきりした決まりがほしい。子は危険に気づけず、助けも求められないかもしれないから。ただ、自分の中には割り切れない気持ちも残っている。"
     return s
 
 
-SHEETS_02 = {
-    "voice_1": _v1(),
-    "voice_2": {
+def _v2():
+    """V2(高校生)。OF-Y7-03: wishes_publicを出典のある言い方へ(MR-T041-03除外済み)。OF-Y7-04: 葛藤を『自分で判断したい↔本当に危ない時は大人に頼りたい』へ。監視は任意の理由1か所。"""
+    return {
         "gender": "男性", "age_label": "高校生(学年・年齢は明示しない)",
         "role_ja": "高校生",
         "daily_life_ja": "友達との連絡にSNSを使う年代の高校生(出来事は経験欄にあるものだけ)",
         "contact_point_ja": "年齢による制限や禁止の対象になる側",
-        "persona_sketch_ja": "友達との連絡にSNSを使う高校生。縛られるより、自分で判断する余地がほしい。ただ、本当に困った時に大人に頼れる道は残したいとも思っている。",
+        "persona_sketch_ja": "友達との連絡にSNSを使う高校生。年齢で一律に縛られるのは困る。自分で判断して使う余地がほしい。ただ、本当に危ない時には大人に頼りたいとも思っている。",
         "stake_ja": "友達との連絡や、模試などの登録ができなくなること。自分で考えて使う余地を取り上げられること。",
-        "arc_ja": "高校生としての立場(冒頭は本音から)→連絡や登録に困るという実際の困りごと→自分で判断したいという気持ち→大人に頼れる道は残したいという葛藤(1か所だけ。解消しない)→やり方への注文で結ぶ",
+        "arc_ja": "高校生としての立場(冒頭は本音から)→連絡や登録に困るという実際の困りごと→自分で判断したいという気持ち→本当に危ない時は大人に頼りたいという葛藤(1か所だけ。解消しない)→**結びはやり方への具体的な注文**",
         "experiences": [
             _it("TWO_a", "O", ["MR-T101-02"], "今は子ども同士がSNSのアカウントで連絡を取ることが多いので、年齢で制限をかけることには反対。別の対策として、安全フィルターをかけるなどがいいと思う。"),
             _it("TWO_b", "O", ["MR-T005-06"], "SNSを禁止するような極端な制限は控えたほうがいい。制限だけを一方的にするのではなく、未成年への講習や呼びかけももっと活発にするべきだと思う。"),
             _it("TWO_c", "O", ["MR-T082-02"], "保護者はあくまで保護者で、子どもの人生は子ども本人のもの。中学生くらいから(人によってはもっと前から)は、自分で判断することが、これから生きる上で必要だと思う。"),
             _it("TWO_d", "O", ["MR-T019-03"], "あれもダメこれもダメと制限されると、我慢するばかりで発散する場がなく、制限が外れた時に、今まで我慢していたものが一気に出てしまう。"),
             _it("TWO_e", "E", ["MR-T017-04"], "高校生でアカウントを作れないと、模試などの登録の時に困る。"),
-            _it("TWO_f", "O", ["MR-T010-02"], "親に投稿まで見られる前提だと、SNSの良さが消える気がして、少し嫌。でも、悪口や脅しに遭った時に、すぐ大人につなげることは欠かせないとも思う。難しいが、微調整が必要だと思っている。(親の見守りは、制限への賛否の理由としてだけ語る)"),
+            _it("TWO_f", "O", ["MR-T010-02"], "悪口や脅しに遭った時に、すぐ大人につなげることは欠かせないと思う。難しいが、微調整が必要だと思っている。"
+                                         "(任意・語るなら理由として一か所だけ短く: 親に投稿まで見られる前提だと、SNSの良さが消える気がして少し嫌。ここは主題にしない)"),
             _it("TWO_g", "O", ["MR-T033-02"], "利用する側のことを考えないルールでは、抜け道を探されて、作った意味がなくなる。"),
         ],
-        "troubles_ja": "年齢でアカウントを持てなくなると、友達との連絡や、模試などの登録に困る。かといって、悪口や脅しの時に大人につなげないのも困る。",
-        "wishes_honest_ja": "自分で判断して使う余地がほしい。縛られすぎたくない。",
-        "wishes_public_ja": "未成年だから、ある程度の決まりは仕方がない、とも受け止めている。",
+        "troubles_ja": "年齢でアカウントを持てなくなると、友達との連絡や、模試などの登録に困る。",
+        "wishes_honest_ja": "自分で判断して使う余地がほしい。縛られすぎたくない。ただ、本当に危ない時には、大人に頼れるようにしておきたい。",
+        "wishes_public_ja": "極端に禁止するのでなく、安全フィルターや講習など、別の対策があっていい。",
         "emotion_habit_ja": "嫌だと思う気持ちを口にしながら、言いながら考えて、自分で留保を足す。",
-        "values_ja": "自分で判断する余地があること。ただし、本当に困った時には大人に頼れること。",
+        "values_ja": "自分で判断する余地があること。ただし、本当に危ない時には大人に頼れること。",
         "interests_ja": "友達と連絡が取れること。模試などの登録ができること。極端に禁止されないこと。",
-        "contradiction_or_weakness_ja": "親に見られるのは嫌なのに、悪口や脅しの時には、大人につなげることが欠かせないと思っている。",
+        "contradiction_or_weakness_ja": "自分で判断して使いたいのに、本当に危ない時には大人に頼りたい(語りでは1か所だけ。解消しない)。",
         "speech_style": {
             "first_person": "僕",
             "sentence_length_pattern_ja": "言いながら迷いを重ねる長い一文が1つあり、ほかは短く言い直す(実在の声の、逆接をつないで迷いを言葉にする長い一文を言い換えたもの)",
             "question_back_frequency_ja": "ほとんどしない",
-            "assertion_or_hedging_ja": "留保が多い。禁止への反対は言い切り、最後は、やり方を変えてほしい、のようにやわらかく収める",
+            "assertion_or_hedging_ja": "留保が多い。禁止への反対は言い切り、最後は、やり方を変えてほしい、という具体的な注文で収める",
             "vocabulary_layer_ja": "高校生の普通の話し言葉",
         },
         "entry_mood_ja": "年齢で一律に縛られるのは困る、という本音をそのまま口にするところから入る",
         "opening_type": "感情・本音の吐露から",
         "identity_cue_ja": "高校生であることを、年代や学校への軽い言及で自然に出す(新しい場面・親との会話は足さない)",
-        "claim_core_ja": "年齢で一律に禁止されるのは困る。友達との連絡や登録にも関わるし、自分で判断する余地がほしい。ただ、悪口や脅しの時に大人に頼れる道は残してほしい。",
+        "claim_core_ja": "年齢で一律に禁止されるのは困る。友達との連絡や登録にも関わるし、自分で判断する余地がほしい。ただ、本当に危ない時に大人に頼れる道は残してほしい。",
         "known_fact_id": "", "known_fact_usage_ja": "",
-    },
-    "voice_3": {
-        "gender": "女性", "age_label": "中学生の子どもを育てている親(年齢は明示しない)",
+    }
+
+
+def _v3():
+    """V3(中学生の保護者)。OF-Y7-01: 『全部禁止も全部解禁も違う』はvalues 1か所のみ(補った整理)。OF-Y7-05: 結びはたとえか心配の像、仮定と『うちの子』(細部なし)で語る。声=男性(推奨)。"""
+    return {
+        "gender": "男性", "age_label": "中学生の子どもを育てている親(年齢は明示しない)",
         "role_ja": "中学生の子どもを育てている親",
         "daily_life_ja": "中学生の子どもを育てながら暮らしている(出来事は経験欄にない。意見と気がかりで語る)",
         "contact_point_ja": "子どもに、いつ・どこまでSNSを使わせるかを、親として判断する立場",
-        "persona_sketch_ja": "中学生の子を持つ親。全部を禁止するのも、全部を解禁するのも違うと思っていて、子の成長に合わせて、使える範囲を少しずつ広げていきたい。",
+        "persona_sketch_ja": "中学生の子を持つ親。子の成長に合わせて、使える範囲を少しずつ広げていきたいと考えている。",
         "stake_ja": "子どもに、いつ・どこまで許すかを、親として決めなければならないこと。準備のないまま、急にSNSに触れさせてしまうこと。",
-        "arc_ja": "判断する側の親(冒頭は立場の描写から)→全部禁止も全部解禁も違うという気持ち→子の成長に合わせて広げるという考え(年齢は大凡の目安、できれば力に合わせて)→準備なしに急に触れる心配→広げ方への望みで結ぶ(冒頭の言い直しにしない)",
+        "arc_ja": ("判断する側の親(冒頭は立場の描写から)→子の成長に合わせて広げるという考え(年齢は大凡の目安、できれば力に合わせて)→準備なしに急に触れる心配→"
+                   "**結びは、泳ぐ練習のたとえか、心配の像(例: 準備なしに放り出された子)で終える(『〜してほしい』の望みで結ばない。冒頭の言い直しにしない)**。"
+                   "**出来事は足さない。『もし〜なら』の仮定と、仮定の中での『うちの子』(名前・年齢・出来事・会話の細部なし)だけで具体性を出す**"),
         "experiences": [
             _it("THREE_a", "O", ["MR-T032-03"], "子どもは成長の段階によって、自分で判断できる範囲が大きく変わる。大凡のものでしかないが、年齢に応じて、理解できる物事や、身を守れる行動範囲を変えるべきだ。"),
             _it("THREE_b", "O", ["MR-T003-03"], "年齢で区切るというより、できれば、その子の力に合わせて、ステップアップできるような機能がほしい。"),
@@ -122,11 +140,11 @@ SHEETS_02 = {
             _it("THREE_e", "O", ["MR-T027-05"], "高校生になれば、一定の判断ができる年齢と考えられる。"),
             _it("THREE_f", "O", ["MR-T174-01"], "子どもは、ペアレンタルコントロールを突破するという前提で、ルールを作ってほしい。(元の本文の後半の一文だけ。前半の罰則の話は使わない)"),
         ],
-        "troubles_ja": "禁止が外れる日を境に、準備のないまま急にSNSに触れるのが心配。かといって、子どもは親の制限を突破してしまうものだ、という前提も必要だと思う。",
+        "troubles_ja": "禁止が外れる日を境に、準備のないまま急にSNSに触れるのが心配。年齢だけでは子どもの力は測れないし、子どもは親の制限を突破するものだ、という前提で考えておく必要もあると思っている。",
         "wishes_honest_ja": "子の力に合わせて、少しずつ使える範囲が広がる形がいい。",
         "wishes_public_ja": "年齢や成長に応じて、段階を分けた制限があってほしい。",
-        "emotion_habit_ja": "落ち着いて、考えながら話す。決めきれない所は、気がする、大凡、できれば、と留保を添えるが、全部禁止でも全部解禁でもない、という点は言い切る。親としての心配がにじむ。",
-        "values_ja": "全部禁止でも全部解禁でもなく、子の成長に合わせて少しずつ広げること。準備のないまま急に放り出されないこと。",
+        "emotion_habit_ja": "落ち着いて、考えながら話す。決めきれない所は、気がする、大凡、できれば、と留保を添える。親としての心配がにじむ。",
+        "values_ja": "(補った整理・出典本文にない言い方)全部禁止でも全部解禁でもなく、子の成長に合わせて少しずつ広げること。準備のないまま急に放り出されないこと。",
         "interests_ja": "子が準備なしに放り出されないこと。機能や使える範囲が、段階で広がること。",
         "contradiction_or_weakness_ja": "なし(迷いを告白する人ではない。年齢は大凡の目安、という留保は出典にあるので語ってよいが、自己ツッコミや例外は足さない)",
         "speech_style": {
@@ -138,11 +156,14 @@ SHEETS_02 = {
         },
         "entry_mood_ja": "自分が、子どもにいつ・どこまで使わせるかを判断する側の親だ、という立場を短く置くところから入る",
         "opening_type": "自分の状況・立場の描写から",
-        "identity_cue_ja": "中学生の子どもを育てている親であることを、判断する立場として自然に出す(子の名前・年齢の細部・新しい場面は足さない)",
-        "claim_core_ja": "全部を禁止するのでも、全部を解禁するのでもなく、子の成長や力に合わせて、使える範囲を少しずつ広げてほしい。年齢はあくまで目安で、準備のないまま急に触れるのが心配。",
+        "identity_cue_ja": "中学生の子どもを育てている親であることを、判断する立場として自然に出す。『うちの子』は、もし〜ならという仮定の中でだけ使ってよい(子の名前・年齢の細部・実際の出来事・会話は足さない)",
+        "claim_core_ja": "子の成長や力に合わせて、使える範囲を少しずつ広げてほしい。年齢はあくまで目安で、準備のないまま急に触れるのが心配。",
         "known_fact_id": "", "known_fact_usage_ja": "",
-    },
-}
+    }
+
+
+SHEETS_02 = {"voice_1": _v1(), "voice_2": _v2(), "voice_3": _v3()}
+
 for _s in SHEETS_02.values():
     for _x in _s["experiences"]:
         _x["tbs_only"] = bool(_x["source_ids"]) and all(i.startswith("TBS") for i in _x["source_ids"])
@@ -256,17 +277,23 @@ def run_pipeline_02(client, rd: str, *, cap_jpy: float, ledger_md: str = LEDGER_
     return st
 
 
-def read_cap(path: str = APPROVAL_FILE):
-    """予算承認ファイルから上限を読む。無い・不正なら None(= 有料runを起動しない)。"""
+def read_cap(path: str = None):
+    """予算承認ファイルから「1runあたりの上限」(cap_jpy / runs)を読む。無い・不正なら None(= 有料runを起動しない)。runs省略時は1。"""
     try:
-        v = float(json.load(open(path, encoding="utf-8"))["cap_jpy"])
+        d = json.load(open(path or APPROVAL_FILE, encoding="utf-8"))
+        v = float(d["cap_jpy"]) / max(1, int(d.get("runs", 1)))
         return v if v > 0 else None
     except Exception:  # noqa: BLE001
         return None
 
 
-def main() -> int:
-    rd = RUN_DIR_02
+def main(run_name=None) -> int:
+    """run_name は RUN_DIRS_02 のキー(run_02a / run_02b)のみ。生成設定は同一で、run先と費用台帳だけが別(APIにseed指定はなく、差はサンプリングのばらつき)。"""
+    if run_name not in RUN_DIRS_02:
+        print(f"[OB2] run名が不正(run_02a / run_02b のいずれかを引数に指定): {run_name!r}", flush=True)
+        return 7
+    rd = RUN_DIRS_02[run_name]
+    ledger_md = f"{LEDGER_DIR_02}/BUDGET_LOG_OB_{run_name}.md"
     if os.path.exists(os.path.join(rd, "entry_point.json")):
         print(f"[OB2] already launched: {rd}/entry_point.json exists (再起動不可)", flush=True)
         return 5
@@ -278,11 +305,11 @@ def main() -> int:
     import er005_cost_logger as cl
     import er003_v1_en_direct_vfl_01_generate as vfl01
     cl.install(os.path.join(rd, "raw_usage_log.jsonl"))
-    w1.wj(os.path.join(rd, "entry_point.json"), {"runner": "er110_family_y_opinion_based_02.py", "management_id": MANAGEMENT_ID, "run_dir": rd, "started": pl.now_iso(),
-                                                 "writer_model": ob.MODEL_TOP, "judge_model": ob.MODEL_CHEAP, "budget_stop_jpy": cap, "flags": "なし(予算承認ファイルの金額のみ)"})
+    w1.wj(os.path.join(rd, "entry_point.json"), {"runner": "er110_family_y_opinion_based_02.py", "management_id": MANAGEMENT_ID, "run_name": run_name, "run_dir": rd, "started": pl.now_iso(),
+                                                 "writer_model": ob.MODEL_TOP, "judge_model": ob.MODEL_CHEAP, "budget_stop_jpy_per_run": cap, "flags": "なし(予算承認ファイルの金額のみ。引数はrun名のみ)"})
     try:
         client = vfl01.get_client()
-        st = run_pipeline_02(client, rd, cap_jpy=cap)
+        st = run_pipeline_02(client, rd, cap_jpy=cap, ledger_md=ledger_md)
         w1.wj(os.path.join(rd, "run_status.json"), {"status": "DONE", "gate_status": st.get("gate_status"), "final_cost_jpy": st.get("final_cost_jpy")})
         print("[OB2] DONE", flush=True)
         return 0
@@ -300,4 +327,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1] if len(sys.argv) == 2 else None))

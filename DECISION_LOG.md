@@ -22266,3 +22266,8 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 ## 2026-10-24 FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01 委任_27 Fable判断(A-1配線の受入は是正後・配線は維持)
 - **判断(Fable)**: 委任_24照合でOpus条件C必須修正W-03が未充足(validatorが`not that bad`・`between you and me`・`this year`・`that same X`・`take that good advice`・`excuse me/beats me`を受理)。承認済み仕様(A-1)内の不具合是正(区分B)であり、PRODUCTION_WIRED受入は是正後。配線(4128fffeb)は既定ONのまま維持(runtime実測WRONG 0/44で実害観測なし、是正は受理範囲を狭めるだけ)。W-02相違(辞書に無い語の簡易規則フォールバック、複数発音の先頭のみ)もOpus案へ合わせる。
 - **実施(Sonnet)**: er105のreference_pair_okにW-03(a)〜(d)、starts_with_vowel_sound/consonantを保守化(W-02)。replayで変化0、test57件OK、全回帰の他agent起因の恒常失敗を最小修正。記録=docs/research/FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01/PROD_WIRING_EVIDENCE_09.md、docs/research/REGRESSION_BASELINE_2026-10-24.md。Production Prompt/template変更0・API 0。
+
+## 2026-10-24 FAMILY-Y-VOICES-DESIGN-01 委任_21 Fable判断(OPUS_REVIEW_05反映・改善R0 2本生成・承認ファイル作成)
+- **決定(Fable、委任文=docs/pm/delegation_log/2026-10-24_FAMILY-Y-VOICES-DESIGN-01_委任_21.md §0)**: OPUS_REVIEW_05(条件付きで生成へ進んでよい)の必須修正OF-Y7-01〜05を全て反映し、推奨OF-Y7-06(評価を2種類に分ける)とV3の声=男性も採用。OF-Y6-01〜10は維持。改善R0は2本(run_02a/run_02b)生成し、Family Y累計上限撤廃(2026-10-24ユーザー決定)に伴い日次1,000円管理の範囲で、runner承認ファイル`er110_output/family_y_opinion_based_02/BUDGET_APPROVED.json`(cap 45円・2run)を本委任文を根拠にFableの指示で作成。
+- **実行結果(Sonnet報告)**: 正規2本=40.4円(DONE、gate PASS)。ただしtest実行起因の意図しない有料run2件(約50.6円)が発生し合計約91.1円(承認45円超過)。原因=`read_cap`の既定引数が定義時の実パスに固定されtestのmonkeypatchが効かなかった。修正済み。超過の扱いはFable判断。DEV/Trial限定・Production変更0・VALIDATED判定は未実施。
+
