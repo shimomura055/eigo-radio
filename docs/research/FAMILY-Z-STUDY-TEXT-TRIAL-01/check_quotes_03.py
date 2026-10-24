@@ -8,7 +8,7 @@ TEXT = {"gift": t1.TEXT, "open_window": r3.read(r3.OW), "ig_nobel": r3.read(r3.I
 res = {}
 files = sorted(f for f in os.listdir(BASE) if f.startswith("OUTPUT_") and f.endswith("_RAW.md"))
 for f in files:
-    m = re.match(r"OUTPUT_(02B|02|03cR2|03c|03bR2|03b|03|01)(?:_(gift|ig_nobel|open_window))?_RAW\.md", f)
+    m = re.match(r"OUTPUT_(02B|02|03dR2|03d|03cR2|03c|03bR2|03b|03|01)(?:_(gift|ig_nobel|open_window))?_RAW\.md", f)
     if not m: continue
     work = m.group(2) or "gift"
     src = norm(TEXT[work])

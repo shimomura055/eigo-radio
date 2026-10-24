@@ -41,3 +41,19 @@
 ### Production採用時の量産費用(別掲)
 最終版(03c)の1 call: input約2.6k / output約2.2〜3.9k token(reasoning 1.2〜2.0k)= 約0.22〜0.35円(平均約0.31円)。Trial-02(0.171円)比 約+0.14円/記事セット(Advancedの学習解説テキスト1 callのみ、Standardは対象外)。70円/記事セット目標に対し約0.4%。Part 2の指示増(選定理由・仕組み・比較・焦点の出力項目)でoutputが約1.6倍に増えたことが主因。reasoning指定の有無・出力項目の削減で下げる余地はあるが、品質を優先し今回は調整せず。
 生データ: `usage_02B_*.json` `usage_03*_*.json`(prompt_sha256・response_id・token内訳を含む)。
+
+
+## Trial-03追補(委任_06、2026-10-25)
+| 項目 | 値 |
+|---|---|
+| API call数 | 5(03d: 賢者1、開いた窓2、イグ・ノーベル賞2。1 launch。再送・失敗0、再起動0) |
+| model_id | gpt-6-luna / gpt-6-luna(全call一致) |
+| 追補実費 | **1.376円**(¥160/$。内訳: gift 0.342 / ig_nobel 0.248・0.308 / open_window 0.258・0.219)。個別上限3円の46% |
+| Trial-03累計(委任_05+追補) | 4.905 + 1.376 = **6.281円**(Trial-03上限は委任_05の10円に対し63%、追補上限3円は別枠) |
+| FAMILY-Z-STUDY-TEXT-TRIAL-01 全体累計 | Trial-01 0.230 + Trial-02 0.171 + Trial-03 6.281 = **約6.68円** |
+| STOP確認 | `tools/stop_scope_check_01.py` launch前 rc=0(stop=false、`stop_check_06.json`) |
+| 日次 | 本委任1.4円。日次1,000円内 |
+
+### 量産費用(03d)
+1 call平均 約0.275円(0.219〜0.342円)/記事セット(Advanced学習解説テキストのみ)。Trial-02比 +約0.10円、70円目標の約0.4%。
+生データ: `usage_03d_*.json` `usage_03dR2_*.json`。

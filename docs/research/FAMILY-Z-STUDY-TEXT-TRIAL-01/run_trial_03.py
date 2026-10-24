@@ -56,6 +56,12 @@ P2_03b = """## Part 2. Grammar & Sentence Structure
 - 教科書的な一般説明だけで終わらず、この英文を読み解く助けになる説明にする。
 """
 
+P2_03d = P2_03b.replace("選ぶ文は0〜2個。無理に2個選ばない。適切な文がなければ0個とし、その旨を一文で書く。",
+ "選ぶ文は0〜2個。無理に2個選ばない。")
+P2_03d = P2_03d.replace("選定方針:\n",
+ "選定方針:\n- 候補を検討した結果、Advancedの学習者にとって理解が難しい文が本文にない場合は、Part 2は0個とし、その旨を1文で記す。基礎的な文法項目を埋め草として選ばない(2項目目としても選ばない)。選ぶのは理解の助けになる構文に限る。\n")
+assert P2_03d.count("埋め草") == 1 and "適切な文がなければ0個" not in P2_03d
+
 def sub_once(s, old, new):
     assert s.count(old) == 1, (s.count(old), old[:60])
     return s.replace(old, new)
@@ -105,19 +111,19 @@ def build(work, ver):
         p = sub_once(p, t1.numbered, numbered)
         p = sub_once(p, f"[P1]〜[P{len(t1.body)}]", f"[P1]〜[P{len(body)}]")
         p = sub_once(p, kp_block(t1.KP), kp_block(w["kp"]))
-    if ver in ("03", "03b", "03c"):
+    if ver in ("03", "03b", "03c", "03d"):
         s1 = p.index("## Part 1. Vocabulary"); e1 = p.index("\n## Part 2.")
-        p = p[:s1] + (P1_03c if ver == "03c" else P1_03) + p[e1:]
+        p = p[:s1] + (P1_03c if ver in ("03c", "03d") else P1_03) + p[e1:]
         s2 = p.index("## Part 2. Grammar"); e2 = p.index("\n## Part 3.")
-        p = p[:s2] + (P2_03 if ver == "03" else P2_03b) + p[e2:]
+        p = p[:s2] + (P2_03 if ver == "03" else (P2_03d if ver == "03d" else P2_03b)) + p[e2:]
     return p
 
 def tags():
-    return [("03c", "gift"), ("03c", "ig_nobel"), ("03c", "open_window"), ("03b", "gift"), ("03b", "ig_nobel"), ("03b", "open_window"), ("03", "gift"), ("03", "ig_nobel"), ("03", "open_window"), ("02B", "ig_nobel"), ("02B", "open_window")]
+    return [("03d", "gift"), ("03d", "ig_nobel"), ("03d", "open_window"), ("03dR2", "ig_nobel"), ("03dR2", "open_window"), ("03c", "gift"), ("03c", "ig_nobel"), ("03c", "open_window"), ("03b", "gift"), ("03b", "ig_nobel"), ("03b", "open_window"), ("03", "gift"), ("03", "ig_nobel"), ("03", "open_window"), ("02B", "ig_nobel"), ("02B", "open_window")]
 
 def prompt_for(tag):
     ver, work = tag.split("_", 1)
-    return build(work, "03c" if ver.startswith("03c") else ("03b" if ver.startswith("03b") else ("03" if ver == "03" else "02")))
+    return build(work, "03d" if ver.startswith("03d") else "03c" if ver.startswith("03c") else ("03b" if ver.startswith("03b") else ("03" if ver == "03" else "02")))
 
 def call(tag):
     from dotenv import load_dotenv; load_dotenv(os.path.join(ROOT, ".env"))
