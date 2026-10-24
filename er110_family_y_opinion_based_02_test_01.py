@@ -244,7 +244,8 @@ def test_approval_file_if_present_is_recorded_decision():
 
 
 def test_isolation_no_importer_and_api_zero_on_import():
-    me = {"er110_family_y_opinion_based_02.py", "er110_family_y_opinion_based_02_test_01.py"}
+    me = {"er110_family_y_opinion_based_02.py", "er110_family_y_opinion_based_02_test_01.py",
+          "er110_family_y_opinion_based_03.py", "er110_family_y_opinion_based_03_test_01.py"}      # 03=委任_24のテーマ非依存化(DEV/Trial専用・未配線。02を再利用するだけ)
     bad = []
     for f in glob.glob("*.py") + glob.glob("**/*.py", recursive=True):
         if os.path.basename(f) in me or ".venv" in f or "OPINION_BASED_01" in f:
