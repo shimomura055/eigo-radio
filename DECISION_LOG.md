@@ -22298,3 +22298,10 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 ## 2026-10-24 FAMILY-Z-STUDY-TEXT-TRIAL-01 Trial-01実施・Fable評価・UDR #182
 
 - 内容: 『賢者の贈り物』Adv本文+KP3件からgpt-6-lunaで4Part学習テキストを一発生成(0.230円、commit e3285a2d1、Trial専用・Production変更0)。Fable独立評価=整合性PASS(引用6/6逐語一致、創作なし)、Part1=中・Part2=良・Part3=弱(worthy of/worthは品詞差で基礎的)・Part4=可。Status=USER_DECISION_REQUIRED(VALIDATED/REJECTEDにしない理由は評価書)。改善はPrompt側の選定基準で見込み。UDR #182(A:Prompt改善版N=3約1円[Fable推奨]/B:現PromptでN=3/C:中止)。OPEN-497更新。証跡=docs/research/FAMILY-Z-STUDY-TEXT-TRIAL-01/FABLE_EVAL_01.md。Production採用・配線は未実施(APPROVED_FOR_PRODUCTIONではない)。
+
+## 2026-10-24 FAMILY-X-WORD-GACHA-PRODUCTION-01 委任_01〜02: 制作・HR・Fable approve_regenerate・費用
+- **制作(委任_01)**: ユーザー承認済みテーマ『パケ買いならぬ英単語ガチャ』(X)のtext完了(Research gpt-6-luna・Ledger VERIFIED 13・B3 F03/F06)、Std音声assemble OK(320.08秒)、Adv full_story_part3がHR Lock(ASRが`gacha`を`gotcha`と3回転写、Secondary=Azure NG_BOTH)。費用90.03円(text37.71+audio52.32、目標70円超過)。
+- **Fable判断(委任_02)**: gacha/gotchaはほぼ同音で音声欠陥の証拠なし。approve_regenerateをFable権限で最大2回許可、案件上限100→110円(Fable 7-3自律、日次1,000円内)。原稿改変での回避・新受理クラス実装はしない。
+- **実施(Sonnet)**: approve_regenerate 1回(正規関数、reasonに`FABLE_APPROVE_REGENERATE`記録)→再生成。3テイクNG後にTTS Local Rewrite recoveryが作動しテイク4=PASS_WITH_WARNING、HR Lock=RESOLVED。ただしAdv assembleはStyle Profile Gate(LOCAL_REWRITE_RECOVERY等)でBLOCKED(人間承認が必要、Gate迂回なし)。2回目の再生成は案件上限110円超過見込み(累計104.73円)のため未実施。Production変更0・コード変更0。
+- **費用**: 累計104.73円(audio委任_02分14.70円、うちAzure 8.59円)。Azure Secondary合計36.07円が最大。内訳=RUNTIME_EVIDENCE_01.md。
+- **OPEN**: OPEN-498(借用語gacha型の同音ASR誤認、修正へ進む)、OPEN-499(Adv part3の人間承認/再生成選択)。
