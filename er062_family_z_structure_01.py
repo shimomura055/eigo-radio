@@ -75,6 +75,13 @@ STORY_VOICE_ROSTER = {
         {"speaker": "madame", "gender": "female", "order": 2, "first_appearance": "髪を買うMadame Sofronie(髪飾り店の女主人。『I buy hair.』『Twenty dollars.』)"},
         {"speaker": "jim", "gender": "male", "order": 3, "first_appearance": "夫Jim(部屋に入りDellaの髪を見て『You've cut off your hair?』と言う。唯一の男性話者で男性Poolの1番目)"},
     ),
+    "the_monkeys_paw": (
+        {"speaker": "morris", "gender": "male", "order": 1, "first_appearance": "Adv/Std冒頭の最初の引用(猿の手を持参した退役軍曹[the sergeant-major]『It grants three wishes』。警告者)"},
+        {"speaker": "mr_white", "gender": "male", "order": 2, "first_appearance": "2番目の引用(父Mr. White、『Have you used it?』。三つの願いを唱える主人公)"},
+        {"speaker": "herbert", "gender": "male", "order": 3, "first_appearance": "3番目の話者(息子Herbert、『Ask for two hundred pounds, Father!』)"},
+        {"speaker": "visitor", "gender": "male", "order": 4, "first_appearance": "翌日訪れる会社の使者(Herbertの事故と200ポンドを告げる男)"},
+        {"speaker": "mrs_white", "gender": "female", "order": 5, "first_appearance": "唯一の女性話者・母Mrs. White(『The paw! We have two wishes left.』。女性Poolの1番目)"},
+    ),
 }
 # 作品単位のpin(既存確定値の固定)。メロスは2026-10-21 U:§7「メロス完成版は変更しない」により受入済み成果物のVoiceを
 # 変更しない(pin値=受入済みfamily_z_melos_02の実使用値。規則適用値との差分は仕様差分として報告済み・変更はユーザー承認事項)。
@@ -250,6 +257,43 @@ STORY_SPEAKER_CONFIG = {
         # 正式Voice表+決定的割当規則から導出(未割当/fail-closedの値Noneは残さない)。
         "dialogue_voice_tts_names": derive_dialogue_voice_tts_names("the_gift_of_the_magi"),
         "speaker_aliases": {"della": "della", "madame": "madame", "jim": "jim", "narrator": "narrator"},
+    },
+    # 『猿の手』(W. W. Jacobs、FAMILY-Z-MONKEYS-PAW-PRODUCTION-01 委任_01、data表の値追加のみ)。父Mr. White(男)、息子Herbert(男)、母Mrs. White(女)、
+    # 退役軍曹Morris(男、猿の手の持ち主)、Maw and Megginsの使者(男)。Voiceは導出(roster/規則参照)。"other"は想定外話者(Melos同様STOP)。
+    "the_monkeys_paw": {
+        "speakers": ("mr_white", "herbert", "mrs_white", "morris", "visitor", "other", "narrator"),
+        # 挿入順=判定優先順(mrs_white->mr_white->herbert->morris->visitor)。決定論は明示的な呼称のみ。
+        "z_voice_keywords": {
+            "mrs_white": ["mrs. white said", "said mrs. white", "mrs. white asked", "asked mrs. white", "mrs. white cried", "cried mrs. white", "mrs. white replied", "replied mrs. white", "mrs. white warned", "warned mrs. white", "mrs. white joked", "joked mrs. white", "mrs. white whispered", "whispered mrs. white", "mrs. white shouted", "shouted mrs. white", "mrs. white added", "added mrs. white"],
+            "mr_white": ["mr. white said", "said mr. white", "mr. white asked", "asked mr. white", "mr. white cried", "cried mr. white", "mr. white replied", "replied mr. white", "mr. white warned", "warned mr. white", "mr. white joked", "joked mr. white", "mr. white whispered", "whispered mr. white", "mr. white shouted", "shouted mr. white", "mr. white added", "added mr. white"],
+            "herbert": ["herbert said", "said herbert", "herbert asked", "asked herbert", "herbert cried", "cried herbert", "herbert replied", "replied herbert", "herbert warned", "warned herbert", "herbert joked", "joked herbert", "herbert whispered", "whispered herbert", "herbert shouted", "shouted herbert", "herbert added", "added herbert"],
+            "morris": ["the sergeant-major said", "said the sergeant-major", "the sergeant-major asked", "asked the sergeant-major", "the sergeant-major cried", "cried the sergeant-major", "the sergeant-major replied", "replied the sergeant-major", "the sergeant-major warned", "warned the sergeant-major", "the sergeant-major joked", "joked the sergeant-major", "the sergeant-major whispered", "whispered the sergeant-major", "the sergeant-major shouted", "shouted the sergeant-major", "the sergeant-major added", "added the sergeant-major", "the soldier said", "said the soldier", "the soldier asked", "asked the soldier", "the soldier cried", "cried the soldier", "the soldier replied", "replied the soldier", "the soldier warned", "warned the soldier", "the soldier joked", "joked the soldier", "the soldier whispered", "whispered the soldier", "the soldier shouted", "shouted the soldier", "the soldier added", "added the soldier"],
+            "visitor": ["the man said", "said the man", "the man asked", "asked the man", "the man cried", "cried the man", "the man replied", "replied the man", "the man warned", "warned the man", "the man joked", "joked the man", "the man whispered", "whispered the man", "the man shouted", "shouted the man", "the man added", "added the man", "the stranger said", "said the stranger", "the stranger asked", "asked the stranger", "the stranger cried", "cried the stranger", "the stranger replied", "replied the stranger", "the stranger warned", "warned the stranger", "the stranger joked", "joked the stranger", "the stranger whispered", "whispered the stranger", "the stranger shouted", "shouted the stranger", "the stranger added", "added the stranger", "the visitor said", "said the visitor", "the visitor asked", "asked the visitor", "the visitor cried", "cried the visitor", "the visitor replied", "replied the visitor", "the visitor warned", "warned the visitor", "the visitor joked", "joked the visitor", "the visitor whispered", "whispered the visitor", "the visitor shouted", "shouted the visitor", "the visitor added", "added the visitor"],
+        },
+        "attr_roster_text": (
+            "- \"mr_white\": Mr. White, the father of the family who owns the monkey's paw and makes the wishes (also 'father', 'the old man', 'her husband')\n"
+            "- \"herbert\": Herbert, the Whites' grown son (also 'the son')\n"
+            "- \"mrs_white\": Mrs. White, Herbert's mother and Mr. White's wife (also 'mother', 'the old woman', 'the old lady', 'his wife')\n"
+            "- \"morris\": Sergeant-Major Morris, the old soldier who brings the monkey's paw and warns the family (also 'the sergeant-major', 'the soldier', 'the old friend')\n"
+            "- \"visitor\": the stranger from the firm Maw and Meggins who brings the news about Herbert\n"
+            "- \"other\": any other speaker (a crowd, etc.)\n"
+            "- \"narrator\": the line is not spoken by a character (e.g. a quoted phrase used by the narrator)"),
+        "attr_caution_text": (
+            "Be careful: a name or role that appears NEAR a quote is not always the speaker (for example, in "
+            "'\"Herbert will have some more of his funny remarks,\" she said.' the speaker is mrs_white, who is speaking ABOUT Herbert; in "
+            "'\"Better where you are,\" said the sergeant-major, shaking his head.' the speaker is morris; in "
+            "'\"I wish my son alive again,\" he said.' the speaker is mr_white; decide who \"he\" and \"she\" are from the story)."),
+        "dialogue_voice_keywords": {
+            "mrs_white": ["mrs. white said", "said mrs. white", "mrs. white asked", "asked mrs. white", "mrs. white cried", "cried mrs. white", "mrs. white replied", "replied mrs. white", "mrs. white warned", "warned mrs. white", "mrs. white joked", "joked mrs. white", "mrs. white whispered", "whispered mrs. white", "mrs. white shouted", "shouted mrs. white", "mrs. white added", "added mrs. white"],
+            "mr_white": ["mr. white said", "said mr. white", "mr. white asked", "asked mr. white", "mr. white cried", "cried mr. white", "mr. white replied", "replied mr. white", "mr. white warned", "warned mr. white", "mr. white joked", "joked mr. white", "mr. white whispered", "whispered mr. white", "mr. white shouted", "shouted mr. white", "mr. white added", "added mr. white"],
+            "herbert": ["herbert said", "said herbert", "herbert asked", "asked herbert", "herbert cried", "cried herbert", "herbert replied", "replied herbert", "herbert warned", "warned herbert", "herbert joked", "joked herbert", "herbert whispered", "whispered herbert", "herbert shouted", "shouted herbert", "herbert added", "added herbert"],
+            "morris": ["the sergeant-major said", "said the sergeant-major", "the sergeant-major asked", "asked the sergeant-major", "the sergeant-major cried", "cried the sergeant-major", "the sergeant-major replied", "replied the sergeant-major", "the sergeant-major warned", "warned the sergeant-major", "the sergeant-major joked", "joked the sergeant-major", "the sergeant-major whispered", "whispered the sergeant-major", "the sergeant-major shouted", "shouted the sergeant-major", "the sergeant-major added", "added the sergeant-major", "the soldier said", "said the soldier", "the soldier asked", "asked the soldier", "the soldier cried", "cried the soldier", "the soldier replied", "replied the soldier", "the soldier warned", "warned the soldier", "the soldier joked", "joked the soldier", "the soldier whispered", "whispered the soldier", "the soldier shouted", "shouted the soldier", "the soldier added", "added the soldier"],
+            "visitor": ["the man said", "said the man", "the man asked", "asked the man", "the man cried", "cried the man", "the man replied", "replied the man", "the man warned", "warned the man", "the man joked", "joked the man", "the man whispered", "whispered the man", "the man shouted", "shouted the man", "the man added", "added the man", "the stranger said", "said the stranger", "the stranger asked", "asked the stranger", "the stranger cried", "cried the stranger", "the stranger replied", "replied the stranger", "the stranger warned", "warned the stranger", "the stranger joked", "joked the stranger", "the stranger whispered", "whispered the stranger", "the stranger shouted", "shouted the stranger", "the stranger added", "added the stranger", "the visitor said", "said the visitor", "the visitor asked", "asked the visitor", "the visitor cried", "cried the visitor", "the visitor replied", "replied the visitor", "the visitor warned", "warned the visitor", "the visitor joked", "joked the visitor", "the visitor whispered", "whispered the visitor", "the visitor shouted", "shouted the visitor", "the visitor added", "added the visitor"],
+        },
+        # 正式Voice表+決定的割当規則から導出(未割当/fail-closedの値Noneは残さない)。
+        "dialogue_voice_tts_names": derive_dialogue_voice_tts_names("the_monkeys_paw"),
+        "speaker_aliases": {"mr_white": "mr_white", "herbert": "herbert", "mrs_white": "mrs_white", "morris": "morris",
+                            "visitor": "visitor", "narrator": "narrator"},
     },
 }
 
@@ -900,6 +944,18 @@ STORY_LINT_CONFIG = {
                        "無駄になる", "皮肉な結末"],
         "spoiler_en": ["sold his watch", "sold the watch", "sold his gold watch", "combs", "no watch", "useless gift",
                        "useless gifts", "turns out", "the twist", "the irony"],
+    },
+    # 『猿の手』(FAMILY-Z-MONKEYS-PAW-PRODUCTION-01 委任_01): 同一機構(story_key別config)の値。
+    # forbidden_names=主人公Mr. White・Mrs. White・Herbert(Seed source_essentials.key_roles)以外の人名(Morris、会社名Maw and Meggins、Laburnam Villa等)。
+    # spoiler_*=結末(第三の最後の願い・戻ってきたもの・無人の道)を先回りする語(一般語は入れない)。
+    "the_monkeys_paw": {
+        "forbidden_names": ["Morris", "Meggins", "Laburnam", "モリス", "メギンズ", "ラバーナム"],
+        # Comment2/3は『すでに聞いた部分』を踏まえる設計(run_support_*)のため、Herbertの死・200ポンド・第二の願い自体は後半Commentに現れ得る。
+        # よって先回りを禁じるのは結末(第三の最後の願い・戻ってきたもの・無人の道・種明かし語)に限る(一般語は入れない)。
+        "spoiler_ja": ["三つ目の願い", "3つ目の願い", "三番目の願い", "最後の願い", "最後の三つ目", "墓から", "誰もいな",
+                       "皮肉な結末", "種明かし"],
+        "spoiler_en": ["third wish", "third and last", "last wish", "final wish", "back from the dead", "from the grave",
+                       "nobody there", "no one there", "deserted road", "empty road", "turns out", "the twist", "the irony"],
     },
 }
 

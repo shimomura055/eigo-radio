@@ -295,8 +295,45 @@ GIFT_OF_THE_MAGI_RIGHTS_BLOCK = {
 }
 
 
+# 『猿の手』(W. W. Jacobs)のrights block(FAMILY-Z-MONKEYS-PAW-PRODUCTION-01 委任_01、data表の値追加のみ)。
+# 出典・確認日付き。法的最終判断ではない。計算根拠は『二十年後』『賢者の贈り物』と同形式(没年+50年+戦時加算3,794日、英国人著者)。
+# legal_use_basisは『開いた窓』と同じユーザー決定(2026-09-26、REPORT §6)の(1)〜(5)と採用文の逐語転記。
+MONKEYS_PAW_RIGHTS_BLOCK = {
+    "author": "William Wymark Jacobs (W. W. Jacobs / W・W・ジェイコブズ)",
+    "author_death_date": "1943-09-01",
+    "jp_public_domain_basis": (
+        "日本の著作権保護期間は、2018年末のTPP11整備法による70年化以前は"
+        "死後50年だった。Jacobsは1943-09-01没(英国人、"
+        "en.wikipedia.org/wiki/W._W._Jacobs、確認2026-10-24、HTTP 200)。死後50年は没年の翌年から起算し"
+        "1993-12-31に満了。連合国(英国)国民の著作権には、1941-12-07以前に取得された著作権について"
+        "連合国及び連合国民の著作権の特例に関する法律(昭和27年法律第302号)の戦時加算3,794日が"
+        "加算される(英国・米国・豪州・カナダ・仏等は3,794日、en.wikipedia.org/wiki/Copyright_law_of_Japan、"
+        "確認2026-10-24、HTTP 200)。"
+        "1993-12-31+3,794日=2004-05-21に日本での保護は満了(計算値)。本作は1902-09に"
+        "Harper's Monthly Magazineで発表、同1902年に短編集'The Lady of the Barge'に収録"
+        "(en.wikipedia.org/wiki/The_Monkey%27s_Paw、確認2026-10-24、HTTP 200)で取得時期は1941-12-07以前。"
+        "2018年末の70年化は、1999〜2018-12-29に満了済みの作品には遡及しない"
+        "(en.wikipedia.org/wiki/Copyright_law_of_Japan、確認2026-10-24、HTTP 200)ため、"
+        "日本において2004-05-21以降パブリックドメイン。"
+        "Project Gutenberg(#12122、'The Monkey\'s Paw'、'The Lady of the Barge and Other Stories'より)が全文を公開している。最終的な法的判断ではない。"
+    ),
+    "source_url": "https://www.gutenberg.org/cache/epub/12122/pg12122.txt",
+    "source_card_url": "https://www.gutenberg.org/ebooks/12122",
+    "confirmed_date": "2026-10-24",
+    "us_copyright_status_record_only": (
+        "記録事項(必須条件ではない、日本国内向けサービスのため)。1902年発表の"
+        "作品は1931年より前の出版であり、Cornell University Library "
+        "\"Copyright Term and the Public Domain in the United States\" "
+        "チャート(https://copyright.cornell.edu/publicdomain、『二十年後』で確認2026-10-23)で"
+        "「Before 1931: In the public domain」に該当し米国PD。最終的な法的判断ではない。"
+    ),
+    "legal_use_basis": OPEN_WINDOW_RIGHTS_BLOCK["legal_use_basis"],
+    "gate_reference": "FICTION-FAMILY-Z-RIGHTS-RECHECK-01_REPORT.md §6 (2026-09-26); FAMILY-Z-MONKEYS-PAW-PRODUCTION-01 (2026-10-24)",
+}
+
+
 # ============================================================
-# Story Registry ("melos" / "the_open_window" / "after_twenty_years" / "the_gift_of_the_magi")
+# Story Registry ("melos" / "the_open_window" / "after_twenty_years" / "the_gift_of_the_magi" / "the_monkeys_paw")
 # ============================================================
 TRIAL_SEED_DIR = (
     "er018_output/fiction_external_seed_selection_criteria_trial_02/"
@@ -400,6 +437,29 @@ STORY_REGISTRY = {
         },
         # 正式Voice表+決定的割当規則(er062 derive_dialogue_voice_tts_names)から導出。speaker_configと同一値。
         "voice_tts_names_plan": _st062.derive_dialogue_voice_tts_names("the_gift_of_the_magi"),
+    },
+    "the_monkeys_paw": {
+        "e2e_management_id": "FAMILY-Z-MONKEYS-PAW-PRODUCTION-01",
+        "e2e_theme_tag": "FAMILY_Z_MONKEYS_PAW_PRODUCTION_01",
+        "e2e_pages_dir": "user_test/family_z_monkeys_paw_01",
+        "page_title_ja": "猿の手",
+        "audio_file_prefix": "MonkeysPaw",
+        "story_type": "literature",
+        "topic_title": "The Monkey's Paw",
+        "japanese_title_text": "猿の手(The Monkey's Paw)",
+        "japanese_title_tts": "猿の手",
+        "trial_seed_dir": "er026_seeds/the_monkeys_paw",
+        "rights_block": MONKEYS_PAW_RIGHTS_BLOCK,
+        "speaker_config": _st062.STORY_SPEAKER_CONFIG["the_monkeys_paw"],
+        "voice_keywords": {
+            "mrs_white": ["mrs. white said", "said mrs. white", "mrs. white asked", "asked mrs. white", "mrs. white cried", "cried mrs. white", "mrs. white replied", "replied mrs. white", "mrs. white warned", "warned mrs. white", "mrs. white joked", "joked mrs. white", "mrs. white whispered", "whispered mrs. white", "mrs. white shouted", "shouted mrs. white", "mrs. white added", "added mrs. white"],
+            "mr_white": ["mr. white said", "said mr. white", "mr. white asked", "asked mr. white", "mr. white cried", "cried mr. white", "mr. white replied", "replied mr. white", "mr. white warned", "warned mr. white", "mr. white joked", "joked mr. white", "mr. white whispered", "whispered mr. white", "mr. white shouted", "shouted mr. white", "mr. white added", "added mr. white"],
+            "herbert": ["herbert said", "said herbert", "herbert asked", "asked herbert", "herbert cried", "cried herbert", "herbert replied", "replied herbert", "herbert warned", "warned herbert", "herbert joked", "joked herbert", "herbert whispered", "whispered herbert", "herbert shouted", "shouted herbert", "herbert added", "added herbert"],
+            "morris": ["the sergeant-major said", "said the sergeant-major", "the sergeant-major asked", "asked the sergeant-major", "the sergeant-major cried", "cried the sergeant-major", "the sergeant-major replied", "replied the sergeant-major", "the sergeant-major warned", "warned the sergeant-major", "the sergeant-major joked", "joked the sergeant-major", "the sergeant-major whispered", "whispered the sergeant-major", "the sergeant-major shouted", "shouted the sergeant-major", "the sergeant-major added", "added the sergeant-major", "the soldier said", "said the soldier", "the soldier asked", "asked the soldier", "the soldier cried", "cried the soldier", "the soldier replied", "replied the soldier", "the soldier warned", "warned the soldier", "the soldier joked", "joked the soldier", "the soldier whispered", "whispered the soldier", "the soldier shouted", "shouted the soldier", "the soldier added", "added the soldier"],
+            "visitor": ["the man said", "said the man", "the man asked", "asked the man", "the man cried", "cried the man", "the man replied", "replied the man", "the man warned", "warned the man", "the man joked", "joked the man", "the man whispered", "whispered the man", "the man shouted", "shouted the man", "the man added", "added the man", "the stranger said", "said the stranger", "the stranger asked", "asked the stranger", "the stranger cried", "cried the stranger", "the stranger replied", "replied the stranger", "the stranger warned", "warned the stranger", "the stranger joked", "joked the stranger", "the stranger whispered", "whispered the stranger", "the stranger shouted", "shouted the stranger", "the stranger added", "added the stranger", "the visitor said", "said the visitor", "the visitor asked", "asked the visitor", "the visitor cried", "cried the visitor", "the visitor replied", "replied the visitor", "the visitor warned", "warned the visitor", "the visitor joked", "joked the visitor", "the visitor whispered", "whispered the visitor", "the visitor shouted", "shouted the visitor", "the visitor added", "added the visitor"],
+        },
+        # 正式Voice表+決定的割当規則(er062 derive_dialogue_voice_tts_names)から導出。speaker_configと同一値。
+        "voice_tts_names_plan": _st062.derive_dialogue_voice_tts_names("the_monkeys_paw"),
     },
 }
 
