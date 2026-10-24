@@ -1,0 +1,192 @@
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'At ten thirty' || 'At 10:30'  OPEN-482(1) 純語形
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'At 10:30' || 'At ten thirty'  逆向き
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'At ten-thirty' || 'At 10:30'  ハイフン
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'At ten thirty' || 'At 10 30'  ASRが空白区切り数字
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'At 10 thirty' || 'At ten thirty'  TTS入力の数字化後canon vs ASR語形(実在し得る経路)
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'At ten thirty' || 'At 10 thirty'  
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'At 10 thirty' || 'At 10:30'  c8実経路(第2層修正済み)
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'At ten thirty am' || 'At 10:30 am'  am付き
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'At 10 thirty am' || 'At 10:30 am'  数字化canon+am
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'At 10 thirty pm' || 'At 10:30 pm'  数字化canon+pm(現行は誤NG)
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'At two fifteen' || 'At 2:15'  
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'At 2 fifteen' || 'At 2:15'  
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'At one thirty' || 'At 1:30'  oneは数字化されず純語形で届く
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'At one thirty' || 'At 1 30'  
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'At two thirty' || 'At 2:30'  
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'At ten thirty five' || 'At 10:35'  分が2語
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'At 10 thirty five' || 'At 10:35'  
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'At ten thirty. He left.' || 'At 10:30. He left.'  文末
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'Meet at 10 thirty tomorrow' || 'Meet at ten thirty tomorrow'  
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'At twelve forty five' || 'At 12:45'  
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty' || 'At 1030'  OPEN-482(2) 桁連結は時刻と別物(現行は誤EQUAL)
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At 1030' || 'At ten thirty'  逆向き
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At 10 thirty' || 'At 1030'  数字化canon vs 桁連結
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty' || 'At 10:13'  
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty' || 'At 10:03'  
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty' || 'At 11:30'  
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty' || 'At 40'  合算40
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty' || 'At forty'  
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty' || 'At ten'  分の脱落
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty' || 'At 30'  時の脱落
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty pm' || 'At 10:30 am'  pm/am相違
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At 10 thirty pm' || 'At 10:30 am'  
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty am' || 'At 10:30 pm'  
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty' || 'At 10:30 pm'  原稿にam/pm無し・ASRのみpm(付加は現行NG維持)
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty' || 'At 10:30:15'  
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty' || 'At 20:30'  
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty' || 'At 10:30 and 5'  余分な数値
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At two thirty' || 'At 2:03'  
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At two thirty' || 'At 230'  桁連結
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At seven fifteen' || 'At 7:50'  
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty five' || 'At 10:53'  
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty five' || 'At 1035'  桁連結
+OK  M01      FULL exp=NE    judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=EQUAL    | 'At ten thirty' || 'At 10 apples and 30 pears'  
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'In twenty twenty' || 'In 2020'  年号(20|20は時刻形だが年として維持)
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'In twenty twenty six' || 'In 2026'  
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'In 2026' || 'In twenty twenty six'  
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'In nineteen ninety' || 'In 1990'  分90は時刻不成立
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'In nineteen ninety nine' || 'In 1999'  
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'In 1999' || 'In nineteen ninety nine'  
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'In nineteen seventy five' || 'In 1975'  
+OK  M01      FULL exp=NE    judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  | 'In twenty twenty' || 'In 20:20'  年と時刻を混同しない(現行も非EQUAL)
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'In twenty twenty' || 'In 2021'  
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'In nineteen ninety' || 'In 1991'  
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'twenty one people' || '21 people'  十の位→一の位は通常基数
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'twenty one people' || '20 1 people'  
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'one hundred thirty people' || '130 people'  scale語後の基数
+OK  M01      FULL exp=REF   judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  | 'one hundred thirty people' || '1:30 people'  既存の別の穴X-2: 一次分類のdespace一致(130==1:30の空白除去)+value_guardのUNKNOWN(kind_mismatch)は止めない仕様でPASS。現行も修正後も同じ(本件のscope外、Opus論点)
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'two thousand twenty six' || '2026'  
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'ten people' || '10 people'  単独数
+OK  M01      FULL exp=REF   judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'ten thirty-year-olds' || '10 30-year-olds'  『時 分』隣接でも年齢語の複合 -> 数字化canonと同じ読みなら一致
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'It costs two thirty dollars' || 'It costs 2.30 dollars'  金額読み(2.30)は時刻/桁連結と別物。非EQUAL維持(安全側)
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'It costs two thirty dollars' || 'It costs 230 dollars'  桁連結
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | "twelve o'clock" || "12 o'clock"  o'clock
+OK  M01      FULL exp=REF   judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  | "twelve o'clock" || '12:00'  分を伴わない読みは現行どおり(HP:2970はo'clock <-> 時刻の同値を既承認)
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'At 1030' || 'At 1030'  桁連結が原稿にある場合は同表層でEQUAL
+OK  M01      FULL exp=REF   judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  | 'At 1030' || 'At 10:30'  原稿の桁連結 vs 時刻。er109の承認済み同音規則が1030<->10:30を同値(er109_probe_01: RESCUE)とするため期待値を置かない。現行も修正後も同じ
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'Chapter eleven fifty is long' || 'Chapter 1150 is long'  時分形(11|50)の桁連結は一致させない。現行EQUAL->修正後NG=意図したPASS->NG(論点: 中世年号)
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'Magna Carta in twelve fifteen' || 'Magna Carta in 1215'  中世年号(12|15)も時分形。現行EQUAL->修正後NG=意図したPASS->NG(論点)
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'In ten sixty six' || 'In 1066'  分66は時刻不成立->年読み維持
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'At 3' || 'At three'  単独数
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/final_gate_value_diff vg=DIFF     | 'At five ten fifteen' || 'At 5:10 15'  数詞3連(解釈不能)は安全側
+OK  M01      FULL exp=REF   judge=PASS/primary_pass vg=EQUAL    | 'At 12 forty 5' || 'At 12:45'  TTS数字化後の実canon。vg層はEQUAL(修正後)だが分類層(normalize_numeric)が `forty 5`を40 5と読みNG=既存の別不具合F-1(`thirty 5 people`vs`35 people`も同じ)。本件範囲外
+OK  M01      FULL exp=REF   judge=PASS/primary_pass vg=EQUAL    | 'At 10 thirty 5' || 'At 10:35'  同上 F-1(分類層)
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'At 10 thirty 5' || 'At ten thirty five'  ASRが語形
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'At 10 thirty 5' || 'At 10 35'  
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At 10 thirty 5' || 'At 10:53'  
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At 10 thirty 5' || 'At 1035'  桁連結
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At 10 thirty 5' || 'At 10:30'  分の末尾脱落
+OK  M01      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At 10 thirty 5' || 'At 10:30 5'  
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'At 3 fifteen pm' || 'At 3:15 pm'  
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'At 10 thirty, then 5 people left' || 'At 10:30, then five people left'  時刻の後ろの通常数値は独立
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | '10 thirty people came' || '10 30 people came'  『時 分』形に見えるが数字化canonと同形ならASR数字列と一致
+OK  M01      FULL exp=REF   judge=NG_PROTECTED/final_gate_value_diff vg=DIFF     | 'ten twenty-one people' || '10:21 people'  時刻の直後に可算名詞が続く形は単位付き=数量読みとして_clock_pairが拒否(安全側)。自然な時刻文ではないため期待値を置かない
+OK  M01      FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'I saw 5 ten year olds' || 'I saw 5 10 year olds'  digit+digit列は従来どおり
+OK  OF-TN-02 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'At 10 thirty pm' || 'At 10 30 pm'  
+OK  OF-TN-02 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'At ten thirty pm' || 'At 10 30 pm'  
+OK  OF-TN-02 FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty pm' || 'At 10 30 am'  
+OK  OF-TN-01 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | '10 twenty-dollar bills' || '10 $20 bills'  
+OK  OF-TN-01 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | '2 fifteen percent' || '2 15%'  
+OK  OF-TN-01 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | '3 twenty euros' || '3 €20'  
+OK  OF-TN-01 FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'twelve fifty dollars' || '$12.50'  
+OK  OF-TN-03 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'between 9 and 10 thirty' || 'between 9 and ten-thirty'  Opus原例`between nine and ten-thirty`はnine側が別件X-3(数詞run `nine and ten`のmis-parse)で不成立のため9を数字にして分離
+OK  OF-TN-03 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'between 9 and 10 thirty' || 'between nine and ten-thirty'  OPEN-489修正で解消(旧PIN-。Opus原例)
+OK  OF-TN-03 FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'between 9 and ten thirty' || 'between 9 and 1030'  
+OK  OF-TN-03 FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'between nine and ten thirty' || 'between nine and 1030'  
+OK  OF-TN-03 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'one hundred and ten' || '110'  
+OK  OF-TN-03 FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'and ten thirty' || 'and 1030'  
+OK  OPEN-489 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'between 9 and 11' || 'between nine and eleven'  報告原例
+OK  OPEN-489 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'between nine and eleven' || 'between nine and eleven'  
+OK  OPEN-489 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'between nine and eleven' || 'between 9 and 11'  
+OK  OPEN-489 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'between 9 and 10' || 'between nine and ten'  ten and ...: 旧は年ペア1010扱い
+OK  OPEN-489 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'between 10 and 11' || 'between ten and eleven'  旧は1011の年ペア読み
+OK  OPEN-489 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'between 20 and 30' || 'between twenty and thirty'  旧は2030
+OK  OPEN-489 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'seven and eight children' || '7 and 8 children'  
+OK  OPEN-489 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'two and three' || '2 and 3'  
+OK  OPEN-489 FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'between nine and eleven' || 'between 9 and 12'  
+OK  OPEN-489 FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'between nine and eleven' || 'between 8 and 11'  
+OK  OPEN-489 FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'between nine and eleven' || 'between nine and twelve'  
+OK  OPEN-489 FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'between 9 and 11' || 'between 9 and 11 and 12'  余分な数
+OK  OPEN-489 FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'between nine and eleven' || 'between 11 and 9'  順序入替
+OK  OPEN-489 FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'between ten and eleven' || 'between 1011 and'  年ペア桁連結と別物
+OK  OPEN-489 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'one hundred and ten' || '110'  scale語直後のandは数の一部(維持)
+OK  OPEN-489 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'two thousand and five' || '2005'  
+OK  OPEN-489 FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'one hundred and ten' || '100 and 10'  
+OK  OPEN-489 FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'one hundred and ten' || '1010'  
+OK  OPEN-489 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'two hundred and fifty and sixty' || '250 and 60'  2つ目のandは接続詞
+OK  OPEN-489 FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'between nine and ten thirty' || 'between 9 and 10:30'  and後の時刻形(_try_clock_pair)と干渉しない
+OK  OPEN-489 FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'between nine and ten thirty' || 'between 9 and 1030'  
+OK  OPEN-489 FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'between nine and ten-thirty' || 'between 9 and 10:30'  
+OK  OPEN-489 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'in nineteen ninety and twenty twenty' || 'in 1990 and 2020'  年号2つ+and
+OK  OPEN-489 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'from 1990 to 2020' || 'from nineteen ninety to twenty twenty'  年号維持
+OK  OPEN-489 FULL exp=PIN-  judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'five and a half' || '5.5'  and a half系は本件対象外(現行値固定)
+OK  OPEN-489 FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'ten dollars and fifty cents' || '$10 and 50 cents'  金額
+OK  OPEN-489 FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'ten dollars and fifty cents' || '$10 and 15 cents'  
+OK  KP       KEY_ exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'ten thirty' || '1030'  
+OK  KP       KEY_ exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'ten thirty' || '10:30'  
+OK  KP       KEY_ exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'ten thirty' || '10 30'  
+OK  YEAR     FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'in 1215' || 'in twelve fifteen'  PIN(開示): 年号の語形<->桁連結は不一致側。本文経路では修正前から同じ向き
+OK  YEAR     FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'in 2010' || 'in twenty ten'  
+OK  YEAR     FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'in 1066' || 'in ten sixty six'  
+OK  YEAR     FULL exp=PIN-  judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'in 1905' || 'in nineteen oh five'  
+OK  NOUN     FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'the 10 thirty bus' || 'the 10:30 bus'  
+OK  NOUN     FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'the eleven fifteen train' || 'the 11:15 train'  
+OK  MULTI    FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'from 9 fifteen to 10 thirty' || 'from 9:15 to 10:30'  
+OK  MULTI    FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'at 9 fifteen, 10 thirty' || 'at 9:15, 10:30'  
+OK  BASIC    FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'ten thirty-five' || '10:35'  
+OK  BASIC    FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'ten-thirty a.m.' || '10:30 a.m.'  
+OK  BASIC    FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'one fifteen' || '1:15'  
+OK  BASIC    FULL exp=PIN-  judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  | 'one fifteen' || 'fifteen'  
+OK  BASIC    FULL exp=PIN-  judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'ten oh five' || '10:05'  
+OK  BASIC    FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | "ten o'clock" || "10 o'clock"  
+OK  C8       FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'At 10 thirty' || 'At ten-thirty'  ROOT_CAUSE_01記載の実対
+OK  C8       FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'At ten thirty' || 'At 10:30'  PRODUCTION_PLAN_01記載の実対
+OK  NEG      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty' || 'At 1030'  
+OK  NEG      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At 1030' || 'At ten thirty'  
+OK  NEG      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty five' || 'At 1035'  
+OK  NEG      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty' || 'At 10:13'  
+OK  NEG      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'At ten thirty' || 'At 11:30'  
+OK  NEG      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'Chapter eleven fifty is long' || 'Chapter 1150 is long'  
+OK  NEG      FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'Magna Carta in twelve fifteen' || 'Magna Carta in 1215'  
+OK  F-1      FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'At 10 thirty 5' || 'At 10:35'  F-1修正後(commit 2)でEQ
+OK  F-1      FULL exp=EQ    judge=PASS/primary_pass vg=EQUAL    | 'At 12 forty 5' || 'At 12:45'  F-1修正後でEQ
+OK  O487     FULL exp=NE    judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  | 'one hundred thirty people' || '1:30 people'  
+OK  O487     FULL exp=NE    judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  | '1:30 people' || 'one hundred thirty people'  
+OK  O487     FULL exp=NE    judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=UNKNOWN  | '130 people' || '1:30 people'  
+OK  O487     FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'one hundred thirty people' || '1 30 people'  
+OK  O487     FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | '10 30' || '1030'  
+OK  O487     FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | '3 10-minute rounds' || '310 minute rounds'  
+OK  O487     FULL exp=EQ    judge=PASS/primary_pass vg=NO_VALUES | 'storymaking' || 'story making'  複合語分かち書き差は従来どおり
+OK  O487     FULL exp=EQ    judge=PASS/primary_pass vg=NO_VALUES | 'e mail' || 'email'  
+OK  O487     FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'covid 19' || 'covid19'  文字-数字境界は不変
+OK  O487     FULL exp=EQ    judge=PASS/primary_pass vg=NO_VALUES | 'a wide-scale empirical study' || 'Widescale empirical study.'  冠詞除外despace
+OK  O491     FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'one hundred and 10' || '110'  
+OK  O491     FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'one hundred and 10' || 'one hundred and ten'  
+OK  O491     FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'It cost one hundred and 10 dollars' || 'It cost 110 dollars'  
+OK  O491     FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'one hundred and 12 people' || '112 people'  
+OK  O491     FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'one hundred and 2' || '102'  
+OK  O491     FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | '2 hundred and 5' || '205'  
+OK  O491     FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | '2 hundred and 5' || 'two hundred and five'  
+OK  O491     FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | '3 hundred 12' || '312'  
+OK  O491     FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'two thousand and 5' || '2005'  
+OK  O491     FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | '2 thousand and 5' || '2005'  
+OK  O491     FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'one hundred and 10' || '111'  
+OK  O491     FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'one hundred and 10' || 'one hundred and eleven'  
+OK  O491     FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'one hundred and 10' || '100'  
+OK  O491     FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | '2 hundred and 5' || '200 and 5'  and 5は別の数(200と5)として読むASR
+OK  O491     FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | '2 hundred and 5' || '206'  
+OK  O491     FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'two thousand and 5' || '2006'  
+OK  O491     FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'seven and 8' || '7 and 8'  scale語を伴わない and は接続詞(OPEN-489維持)
+OK  O491     FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'ten and 11' || '10 and 11'  
+OK  O494     FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'It cost 2 hundred dollars.' || 'It cost 200 dollars.'  
+OK  O494     FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'It cost 2 hundred dollars.' || 'It cost two hundred dollars.'  
+BAD O494     FULL exp=EQ    judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=EQUAL    | 'The shop owner walked slowly along a quiet street that morning and explained to everyone nearby that it cost 2 hundred dollars today.' || 'The shop owner walked slowly along the quiet street that morning and explained to everyone nearby that it cost 200 dollars today.'  冠詞差(許容)の混在で分類層が数値token差に依存する形、長いsegment(従来NG_SECONDARY_UNAVAILABLE)
+BAD O494     FULL exp=EQ    judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=EQUAL    | 'The shop owner walked slowly along a quiet street that morning and explained to everyone nearby that it cost 2 hundred dollars today.' || 'The shop owner walked slowly along the quiet street that morning and explained to everyone nearby that it cost two hundred dollars today.'  冠詞差(許容)の混在で分類層が数値token差に依存する形、長いsegment
+BAD O494     FULL exp=EQ    judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=EQUAL    | 'The shop owner walked slowly along a quiet street that morning and explained to everyone nearby that it cost 2 hundred and 5 dollars today.' || 'The shop owner walked slowly along the quiet street that morning and explained to everyone nearby that it cost 205 dollars today.'  冠詞差(許容)の混在で分類層が数値token差に依存する形、長いsegment
+BAD O494     FULL exp=EQ    judge=NG_SECONDARY_UNAVAILABLE/secondary_unavailable vg=EQUAL    | 'The shop owner walked slowly along a quiet street that morning and explained to everyone nearby that there were 3 thousand 12 people today.' || 'The shop owner walked slowly along the quiet street that morning and explained to everyone nearby that there were 3012 people today.'  冠詞差(許容)の混在で分類層が数値token差に依存する形、長いsegment
+OK  O494     FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'The shop owner walked slowly along a quiet street that morning and explained to everyone nearby that it cost 2 hundred dollars today.' || 'The shop owner walked slowly along the quiet street that morning and explained to everyone nearby that it cost 300 dollars today.'  冠詞差(許容)の混在で分類層が数値token差に依存する形、長いsegment、別の数
+OK  O494     FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'The shop owner walked slowly along a quiet street that morning and explained to everyone nearby that it cost 2 hundred and 5 dollars today.' || 'The shop owner walked slowly along the quiet street that morning and explained to everyone nearby that it cost 200 and 5 dollars today.'  冠詞差(許容)の混在で分類層が数値token差に依存する形、205と200+5は別
+OK  O494     FULL exp=NE    judge=NG_PROTECTED/p1_value_diff vg=DIFF     | 'The shop owner walked slowly along a quiet street that morning and explained to everyone nearby that the code is 2 100 today.' || 'The shop owner walked slowly along the quiet street that morning and explained to everyone nearby that the code is 200 today.'  冠詞差(許容)の混在で分類層が数値token差に依存する形、本当に2と100(digitのみ)は統合しない
+OK  O491     FULL exp=EQ    judge=PASS/primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE vg=EQUAL    | 'between 9 and 11' || 'between nine and eleven'  OPEN-489維持
+modules: C:\Users\tensh\eigo-radio\docs\research\ASR-TIME-NUMERAL-EQUIVALENCE-01\base_HEAD07\er021_en_asr_semantic_equivalence_production_01.py
+cases 190 mismatch_vs_expectation 4

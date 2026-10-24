@@ -342,6 +342,13 @@ def _convert_cardinal_words(text: str) -> str:
             # 境界条件に当たらず従来どおり)。数値の検出力は維持(10 30 と 10 13 / 10 / 40 は引き続き別token列)。
             # OPEN-F-1(ASR-TIME-NUMERAL-EQUIVALENCE-01 委任_02 H): 末尾が十の位の語(twenty..ninety)で直後が1桁数字(TTS入力が`thirty five`の
             # `five`だけ数字化した形 `thirty 5`)なら、その数字を同じ数値語列に含めて合成数(35)として読む(下のchunk分割・単独合成の両方に効く)。
+            # OPEN-494(ASR-TIME-NUMERAL-EQUIVALENCE-01 委任_06): 数値語列がscale語(hundred/thousand/million)で始まり、直前が『TTS入力で数字化された小さな数(2-12)』
+            # (`2 hundred`/`3 thousand 12`。er003 tts_safe_number_words_enが2-12の語だけ数字化する)なら、その数字を語に戻して同じ数値語列に含める
+            # (従来は `2 100`/`2 105` と別tokenになり、語側 `two hundred`=200 と一致しなかった)。er021 `_apply_suffixes`(数字+scale語)と同じ読み。
+            if (lead == 0 and core[0] in _SCALES and i > 0 and out and out[-1] == tokens[i - 1]
+                    and re.fullmatch(r"(?:[2-9]|1[0-2])", tokens[i - 1])):
+                core.insert(0, next(k for k, v in _ONES.items() if v == int(tokens[i - 1])))
+                out.pop()
             if trail == 0 and core[-1] in _TENS and j < len(tokens) and re.fullmatch(r"[1-9]", tokens[j]):
                 core.append(next(k for k, v in _ONES.items() if v == int(tokens[j])))
                 j += 1

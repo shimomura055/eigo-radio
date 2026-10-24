@@ -1,0 +1,1751 @@
+# ============================================================
+# er006_preprod_hardening_01_validation.py
+# ER-006-POOL-PREPROD-HARDENING-01: ASR比較の正規化+6分類+Protected Check
+# ============================================================
+# ER-006-POOL-PILOT-COST-ROOTFIX-01で確認した「9件のSTOPPEDは全てSurface-only
+# mismatch」という知見をもとに、canonical textとASR transcriptを単語単位で
+# 整列(word-level diff)し、各差分を
+#   (a) 表記正規化で説明できる差(発音区別符号・ハイフン・複合語分かち書き・
+#       序数・ダッシュ種別・英米綴り)
+#   (b) 数字・年・日付の差
+#   (c) 否定語の有無の差
+#   (d) それ以外の内容語(content word)の置換・欠落・追加
+# へ分類する。(b)(c)(d)が1件でもあれば、全体の類似度がどれだけ高くても
+# 自動PASSしない(TRUE_CONTENT_MISMATCH)。(a)のみで説明できる場合のみ
+# NORMALIZED_MATCHとして扱う。
+#
+# ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01で、英語(language=="en")の
+# retry loop(voice01.py::generate_charon_english、news_tail_fix.py、
+# point_headings_aoede.py、repro01.py::generate_narration_snippet_verified_
+# strict/generate_key_phrase_component_verified、crosslevel_audio_02_
+# common.py::generate_english_segment_with_fallback)へ配線済み(下記の
+# evaluate_attempt()がその統一エントリポイント)。これらは全テーマ
+# (hanshin/health/household含む)で共有される既存モジュール。日本語
+# (language=="ja")の経路は既存のphonetic_verdict方式のまま未変更
+# (このvalidatorは英語専用のため)。
+from __future__ import annotations
+
+import difflib
+import re
+import unicodedata
+from dataclasses import dataclass, field
+
+# PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01
+# (A-1): entity_like判定の一般化(ledger_registered_entity_flags()内でのみ
+# 使用、read-only)。er006_pronunciation_ledger_01はstdlibのみに依存し
+# このファイル(val)を一切importしないため、module-level importでも循環
+# importは発生しない。
+import er006_pronunciation_ledger_01 as pronun_ledger
+import er008_asr_variant_hardening_15_homophone_en as homophone_en
+import er094_multiword_homophone_01 as _mw_homophone   # PNMH-01 多語同音救済(純関数module)
+import er011_b1_connected_speech_validator_01 as connected_speech
+# EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(Phase A+B、ユーザー
+# 正式承認済みAPPROVED_FOR_PRODUCTION 2026-09-27): Tier 1(数値/通貨/%/
+# 年/時刻/分数/ローマ数字/略語の値等価)判定モジュール。このmoduleはval
+# (このファイル自身)を一切importしないため、ここでmodule-level import
+# しても循環import は発生しない(下記classify_asr_match()ラッパー内で
+# 使用)。role gating(resolve_narrative_role/connected_speech_enabled_for)
+# は、er020がこのファイルをimportしているため、呼び出し時点での遅延
+# importにする(下記参照)。
+import er021_en_asr_semantic_equivalence_production_01 as semantic_equivalence
+
+# ------------------------------------------------------------
+# 正規化(ER-006-POOL-PILOT-COST-ROOTFIX-01のer006_cost_rootfix_01_text_
+# normalize.pyを土台に、word-level diff用へ拡張)
+# ------------------------------------------------------------
+BR_AM_SPELLING_PAIRS = [
+    ("cancelling", "canceling"), ("cancelled", "canceled"),
+    ("colour", "color"), ("favourite", "favorite"), ("centre", "center"),
+    ("organise", "organize"), ("organised", "organized"),
+    ("realise", "realize"), ("realised", "realized"),
+    ("travelled", "traveled"), ("travelling", "traveling"),
+    ("labelled", "labeled"), ("modelling", "modeling"),
+]
+
+# ER-006-ASR-VALIDATION-RESIDUAL-02: 英語の住所・地理表現でよく使われる
+# 標準的な省略形(USPSの通り種別略語に代表される、閉じた既知の集合)。
+# ASRが"street"を"St."のように省略形へ書き起こすことが実際に複数回
+# (street furniture、full_story_part1等)観測されている。この略語class
+# 自体は一般的でよく知られたものであり、個別記事・個別語の特例
+# (whitelist)ではない。normalize_text()内でBR_AM_SPELLING_PAIRSと同じ
+# 方式(両側を同じ正規化関数へ通す)で吸収するため、「canonical側が
+# 完全形streetで、ASR側だけがst.と省略した」場合に両者が同じ正規化後
+# トークンへ揃う。"St."は"Saint"の略でもあり得るが、その場合はcanonical
+# 側が"saint"であって"street"ではなく、このmapはstreet→st方向にしか
+# 定義していないため誤って吸収されない(Saint側の語がstへ変換される
+# ことはない)。
+_STREET_SUFFIX_EXPANSIONS = [
+    ("street", "st"), ("avenue", "ave"), ("road", "rd"), ("boulevard", "blvd"),
+    ("drive", "dr"), ("lane", "ln"), ("court", "ct"), ("place", "pl"),
+    ("square", "sq"), ("terrace", "terr"), ("highway", "hwy"), ("parkway", "pkwy"),
+]
+_STREET_SUFFIX_RES = [(full, re.compile(r"\b" + abbr + r"\b")) for full, abbr in _STREET_SUFFIX_EXPANSIONS]
+
+# ============================================================
+# ER-006-VALIDATOR-NUMERIC-COST-RECONCILE-01: 数値正規化の一般化
+# ============================================================
+# 従来は2〜12の単語のみをbareで算用数字へ変換していた(ER-006-ASR-
+# VALIDATION-RESIDUAL-02)。実際にPublic Benches Boavida segmentで
+# "28"(canonical)と"twenty-eight"(Azure ASR)という、値は同じだが
+# 表記が異なるだけの差でsegment全体がTRUE_CONTENT_MISMATCHになる
+# 事例を確認したため、cardinal numberの綴り⇔算用数字変換を一般化する。
+#
+# 安全設計の核心: 「表記が違うだけで値(意味)が同じ」場合のみ吸収し、
+# 「表記は数字っぽいが値や意味が違う」場合は絶対に吸収しない。
+#   - 桁が変わる(three→3:00)・単位が付く(5→5%, 5→$5)・序数と基数が
+#     入れ替わる(28→28th)場合は、後段の`_is_number()`が別トークンだと
+#     判定できるよう、値の変換とは別に区別可能な形へ正規化する
+#     (%/$/小数点は英数字マーカーへ変換して残し、後段の記号除去で
+#     消えないようにする。詳細はnormalize_numeric()内のコメント参照)。
+#   - 序数語(third)は基数(3)ではなく序数表記(3rd)へ変換し、基数と
+#     混同しない。
+#   - 日付の序数接尾辞除去(March 4th→March 4)は、月名が直前にある
+#     場合のみに限定する(過去は"28th"のようにmonth文脈でなくても
+#     一律で"28"へ変換されてしまっており、"28 ≠ 28th"という意味の
+#     違いを見逃す実バグだった。今回修正)。
+_ONES = {
+    "zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7,
+    "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12, "thirteen": 13,
+    "fourteen": 14, "fifteen": 15, "sixteen": 16, "seventeen": 17, "eighteen": 18, "nineteen": 19,
+}
+_TENS = {"twenty": 20, "thirty": 30, "forty": 40, "fifty": 50, "sixty": 60, "seventy": 70,
+         "eighty": 80, "ninety": 90}
+_SCALES = {"hundred": 100, "thousand": 1000, "million": 1000000}
+_NUM_WORD_VOCAB = set(_ONES) | set(_TENS) | set(_SCALES) | {"and"}
+
+# "first"・"second"は、序数(「1番目」)としてだけでなく、"may first run"
+# (=「まず最初に」という副詞)・discourse connector("first, ...second, ...")
+# のような、数とは無関係な非常に高頻度な用法があるため、意図的に対象から
+# 除外する(実際に"a company...may first run at a loss"という副詞用法が、
+# 誤って"May 1st"と一致してしまう実回帰を検出したため)。third以降は
+# 副詞的用法の頻度が大きく下がるため対象に含める。
+# EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02(2026-09-28、分類A技術
+# 修正): 複製ではなく共通化のため、定義自体はer021側(Tier1のordinal atom
+# 認識でも同じ閉じた集合を使う)へ移設し、ここでは参照するだけにする。
+_ORDINAL_WORDS = semantic_equivalence._ORDINAL_WORDS
+_ORDINAL_WORD_RE = re.compile(r"\b(" + "|".join(_ORDINAL_WORDS.keys()) + r")\b", re.IGNORECASE)
+
+# ER-010-DATE-SPOKEN-FORM-POINT-FIX-01(2026-08-27)で発見: 複合序数
+# ("twenty eighth"/"twenty-eighth"のような、十の位の単語+一の位の序数語)
+# は、上記_ORDINAL_WORDS(単純序数のみ)にも_convert_cardinal_words()
+# (cardinal語のみ、"eighth"はvocabに含まれない)にも属さないため、
+# 単独では変換されない。normalize_numeric()の既存の順序(cardinal変換
+# [手順3]が先、ordinal変換[手順7]が後)では、"twenty"だけがcardinal変換で
+# 独立して"20"へ変換され、残った"eighth"がordinal変換で独立して"8th"へ
+# 変換され、"20 8th"という2つの無関係なtokenへ分裂してしまう実バグを、
+# No.5(pool_n5_cafes)B1 full_story_part2の日付発話形修正で発見した。
+# OPEN-58(複合基数のハイフン誤変換)と同じ教訓("tts_safe_number_words_
+# en()のような既存共有regexへの機械的な追加は事故を招きやすい")を踏まえ、
+# 汎用的な書き換えはせず、"十の位の単語+一の位の序数語"という閉じた
+# 具体的パターンのみを対象にした専用ステップを追加する(既存の
+# _DATE_ORDINAL_RE等、他の狭いスコープの日付・数値パターンと同じ設計
+# 方針)。"first"/"second"は_ORDINAL_WORDS側では副詞的用法との曖昧さを
+# 理由に除外されているが、"twenty first"のような複合形での副詞的誤用は
+# 実質的に存在しないため、この専用パターンでは含める。
+_ORDINAL_ONES = {
+    "first": ("1", "st"), "second": ("2", "nd"), "third": ("3", "rd"),
+    "fourth": ("4", "th"), "fifth": ("5", "th"), "sixth": ("6", "th"),
+    "seventh": ("7", "th"), "eighth": ("8", "th"), "ninth": ("9", "th"),
+}
+_COMPOUND_ORDINAL_RE = re.compile(
+    r"\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)[\s-]+"
+    r"(" + "|".join(_ORDINAL_ONES.keys()) + r")\b", re.IGNORECASE)
+
+
+def _convert_compound_ordinal_words(text: str) -> str:
+    """"twenty eighth"/"twenty-eighth" -> "28th"のような、十の位+一の位
+    序数語の複合形だけを対象にした変換(_convert_cardinal_words()・
+    _convert_ordinal_words()より先に呼ぶことで、両者が独立に一部だけ
+    変換してしまう分裂を防ぐ)。"""
+    def _repl(m: "re.Match") -> str:
+        tens_val = _TENS[m.group(1).lower()]
+        ones_digit, suffix = _ORDINAL_ONES[m.group(2).lower()]
+        return f"{tens_val + int(ones_digit)}{suffix}"
+    return _COMPOUND_ORDINAL_RE.sub(_repl, text)
+
+# EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02(2026-09-28、分類A技術
+# 修正): 複製ではなく共通化のため、定義自体はer021_en_asr_semantic_
+# equivalence_production_01.py側へ移設し、ここでは同じオブジェクトを
+# 参照するだけにする(semantic_equivalenceは本ファイル冒頭で既に
+# module-level importしており、val -> er021の一方向importの範囲内)。
+_MONTHS = semantic_equivalence._MONTHS
+_DATE_ORDINAL_RE = semantic_equivalence._DATE_ORDINAL_RE
+
+# ============================================================
+# ER-006-GATE-CALIBRATION-ASR-CASCADE-MATH-VALIDATOR-01: 数式表記の正規化
+# ============================================================
+# No.6 A2 Point One("2 × 10⁻¹⁶"のような科学的記数法)で、TTS音声自体は
+# 正しく("2 times 10 to the minus 16th")読み上げているにもかかわらず、
+# canonical側のUnicode上付き文字(⁻¹⁶等)がnormalize_text()の一般記号
+# 除去([^a-z0-9]+のスペース化)で情報ごと失われ(桁・符号が消える)、
+# ASR側の綴り("...to the minus 16th")と比較不能になっていた実例を
+# 確認した。安全設計の核心は数値正規化と同じ: 「表記が違うだけで意味
+# (底・符号・指数の値)が同じ」場合のみ吸収し、指数の桁・符号が異なる
+# 場合は絶対に吸収しない。xdollarx等と同じマーカー方式で、底(base)と
+# 指数の符号・値を独立したtokenとして保持したまま比較する。
+_SUPERSCRIPT_TRANSLATE = str.maketrans({
+    "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7",
+    "⁸": "8", "⁹": "9", "⁻": "-", "⁺": "+",
+})
+# "10⁻¹⁶"・"10¹⁶"のような、数字に直接続くUnicode上付き文字列(符号+桁)。
+_SUPERSCRIPT_EXPONENT_RE = re.compile(r"(\d+)([⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺]+)")
+# "10^-16"・"10^16"のような、ASCII表記のキャレット指数(ASRが記号のまま
+# 書き起こす場合が実際に観測されている)。
+_CARET_EXPONENT_RE = re.compile(r"(\d+)\^(-?)(\d+)")
+# 話し言葉側: "10 to the minus/negative 16(th)?"(負の指数)。"minus"/
+# "negative"どちらの語も同じ意味で使われる(実際のASR書き起こしで両方
+# 観測済み)。序数接尾辞の有無を問わず、底と指数の桁だけを取り出す。
+_SPOKEN_NEGATIVE_EXPONENT_RE = re.compile(
+    r"\b(\d+)\s+to\s+the\s+(?:minus|negative)\s+(\d+)(?:st|nd|rd|th)?\b", re.IGNORECASE)
+# 話し言葉側: "10 to the 16th"のような正の指数(minusを伴わない)。
+# 上のnegative版を先に適用してから使うため、ここへ到達する時点でminus
+# 付きは既にマーカー化済み。
+_SPOKEN_POSITIVE_EXPONENT_RE = re.compile(
+    r"\b(\d+)\s+to\s+the\s+(\d+)(?:st|nd|rd|th)?\b", re.IGNORECASE)
+
+
+def _normalize_superscript_exponents_early(text: str) -> str:
+    """canonical/ASR両側で使われる記号ベースの指数表記(Unicode上付き文字、
+    ASCIIキャレット"^")を、xexpx(正)/xexpnegx(負)マーカーへ変換する。
+    **normalize_text()のstrip_diacritics()より前に呼ぶこと**:
+    strip_diacritics()のNFKD分解は上付き数字を通常の数字へ分解してしまい
+    (例: "10⁻¹⁶"→"10−16")、「元々上付きだった」という情報(=指数で
+    あるという情報)自体が失われ、この関数が呼ばれる前にもう検出できなく
+    なる実バグを確認したため、あえてstrip_diacritics()より前段の専用
+    ステップとして分離した(キャレット表記はASCII文字でNFKD分解の影響を
+    受けないが、実装を1箇所にまとめるため同じ関数・同じタイミングで
+    処理する)。マーカーはxdollarx等と同じ設計思想で、底・符号・桁を
+    独立したtokenとして保持したまま比較する(10⁻¹⁶と10⁻⁶・10¹⁶を
+    区別可能なまま残す)。"""
+    def _repl_superscript(m: "re.Match") -> str:
+        base = m.group(1)
+        ascii_sup = m.group(2).translate(_SUPERSCRIPT_TRANSLATE)
+        neg = ascii_sup.startswith("-")
+        digits = ascii_sup.lstrip("+-")
+        if not digits.isdigit():
+            return m.group(0)  # 数字化できない場合は変更しない(安全側)
+        marker = "xexpnegx" if neg else "xexpx"
+        return f"{base}{marker}{digits}"
+
+    def _repl_caret(m: "re.Match") -> str:
+        base, sign, digits = m.group(1), m.group(2), m.group(3)
+        marker = "xexpnegx" if sign == "-" else "xexpx"
+        return f"{base}{marker}{digits}"
+
+    text = _SUPERSCRIPT_EXPONENT_RE.sub(_repl_superscript, text)
+    text = _CARET_EXPONENT_RE.sub(_repl_caret, text)
+    return text
+
+
+_DIGIT_X_DIGIT_RE = re.compile(r"(?<=\d)\s*x\s*(?=\d)", re.IGNORECASE)
+
+
+def _normalize_spoken_exponents(text: str) -> str:
+    """ASR側(話し言葉)の"N to the (minus/negative) M(th)?"を、
+    _normalize_superscript_exponents_early()と同じxexpx/xexpnegx
+    マーカーへ変換する。cardinal/ordinal語の変換より後に呼ぶことで、
+    "ten to the minus sixteenth"のように綴られた場合も、先に数字化
+    されてから拾える。さらに、数式でよく使われる記号を、ASR側の話し言葉
+    と綴りが揃うよう共通の語へ変換する:
+      "×" / 数字に挟まれた"x"(掛け算記号のASR書き起こしとして実際に
+        観測された) -> " times "
+      "="(等号) / "is equal to" -> "equals"
+      "<"(不等号) -> " less than "、">"(不等号) -> " greater than "
+    (これをしないと、例えば"*b* = 0.90"の"="は後段の記号除去でただ
+    消えるだけなのに対し、ASR側の"b equals 0.90"は"equals"という語が
+    残ってしまい、意味が同じでも一致しなくなる。"<"/">"も同様)。"""
+    text = _SPOKEN_NEGATIVE_EXPONENT_RE.sub(r"\1xexpnegx\2", text)
+    text = _SPOKEN_POSITIVE_EXPONENT_RE.sub(r"\1xexpx\2", text)
+    text = text.replace("×", " times ")
+    text = _DIGIT_X_DIGIT_RE.sub(" times ", text)
+    text = re.sub(r"\b(?:is|was)\s+equal\s+to\b", "equals", text)
+    text = text.replace("=", " equals ")
+    text = text.replace("<", " less than ")
+    text = text.replace(">", " greater than ")
+    return text
+
+
+def _words_to_number(words: list[str]) -> int | None:
+    """word列(小文字、"and"含む)を1つの整数へ変換する。数値語列として
+    不正な場合はNoneを返す(呼び出し側は元の語をそのまま残すこと)。"""
+    total = 0
+    current = 0
+    seen_any = False
+    for w in words:
+        if w == "and":
+            continue
+        if w in _ONES:
+            current += _ONES[w]
+            seen_any = True
+        elif w in _TENS:
+            current += _TENS[w]
+            seen_any = True
+        elif w == "hundred":
+            current = current * 100 if current else 100
+            seen_any = True
+        elif w in ("thousand", "million"):
+            scale = _SCALES[w]
+            total += (current if current else 1) * scale
+            current = 0
+            seen_any = True
+        else:
+            return None
+    return total + current if seen_any else None
+
+
+def _convert_cardinal_words(text: str) -> str:
+    """text中のcardinal number word列(2語以上の組み合わせ、または
+    hundred/thousand/millionを含む1語)を算用数字へ変換する。
+    "one"は代名詞("the right one"等)としての使用頻度が高く曖昧なため、
+    単独で出現した場合は変換しない(2語以上の並びの一部としてのみ変換
+    対象、例: "one hundred")。"""
+    text = re.sub(r"(?<=[a-zA-Z])-(?=[a-zA-Z])", " ", text)
+    tokens = text.split()
+    lower_tokens = [t.lower() for t in tokens]
+    out = []
+    i = 0
+    while i < len(tokens):
+        if lower_tokens[i] in _NUM_WORD_VOCAB:
+            j = i
+            while j < len(tokens) and lower_tokens[j] in _NUM_WORD_VOCAB:
+                j += 1
+            # 2026-10-23(FAMILY-Z-VOICE-PRODUCTION-WIRING-01、承認済み規則の不具合是正): "and"は数値語列の中では
+            # hundred/thousand/million の直後(one hundred and two)にだけ現れる。"Her husband and two young brothers"の
+            # ように数値語の直前/直後に付いた接続詞"and"を数値語列へ巻き込まず、語として残す(従来は"and two"全体が
+            # "2"になり、digit側(canonical "and 2")とword側(ASR "and two")でtoken数が食い違い、正しく読めた音声が
+            # ASR_VALIDATION_UNCERTAINでHuman Review Lockになっていた)。
+            seq = lower_tokens[i:j]
+            lead, trail = 0, 0
+            while lead < len(seq) and seq[lead] == "and":
+                lead += 1
+            while len(seq) - trail > lead and seq[len(seq) - trail - 1] == "and":
+                trail += 1
+            core = seq[lead:len(seq) - trail]
+            for k, w in enumerate(core):
+                if w == "and" and not (k > 0 and core[k - 1] in ("hundred", "thousand", "million")):
+                    # OPEN-489(ASR-TIME-NUMERAL-EQUIVALENCE-01 委任_04): 不正な"and"位置は接続詞なので、そこで数値語列を分割する
+                    # (従来は列全体を変換しなかったため `nine and eleven` が `9 and 11` にならず、digit側canonicalと不一致の誤NGになった)。
+                    # 分割後の前半だけをここで変換し、"and"以降は次のloopで(先頭"and"を残して)別の列として処理する。
+                    j = i + lead + k
+                    trail = 0
+                    core = core[:k]
+                    break
+            if not core or (len(core) == 1 and core[0] == "one"):
+                out.extend(tokens[i:j])
+                i = j
+                continue
+            # 2026-10-23(OPEN-482、FAMILY-Z-AFTER-TWENTY-YEARS-PRODUCTION-01 委任_03、承認済み規則の不具合是正): 「一の位/10-19の語」
+            # の直後に「十の位(twenty..ninety)または10-19の語」が来る並び(ten thirty/two thirty/seven fifteen)は、英語の
+            # 正しい基数語列ではあり得ない(基数は tens→ones の順)。時刻の読み(10:30/2:30)であり、従来はこれを合算して
+            # 40/32/22にしていたため、ASRの『10:30』(=10 30)と比較して正しく読めた音声が数字不一致のHR Lockになった。
+            # このような境界で別の数値語列へ分割する(正しい合成数 twenty one / one hundred thirty / two hundred and five は
+            # 境界条件に当たらず従来どおり)。数値の検出力は維持(10 30 と 10 13 / 10 / 40 は引き続き別token列)。
+            # OPEN-F-1(ASR-TIME-NUMERAL-EQUIVALENCE-01 委任_02 H): 末尾が十の位の語(twenty..ninety)で直後が1桁数字(TTS入力が`thirty five`の
+            # `five`だけ数字化した形 `thirty 5`)なら、その数字を同じ数値語列に含めて合成数(35)として読む(下のchunk分割・単独合成の両方に効く)。
+            if trail == 0 and core[-1] in _TENS and j < len(tokens) and re.fullmatch(r"[1-9]", tokens[j]):
+                core.append(next(k for k, v in _ONES.items() if v == int(tokens[j])))
+                j += 1
+            elif (core[-1] in _SCALES and trail <= 1 and j < len(tokens)
+                  and re.fullmatch(r"(?:[2-9]|1[0-2])", tokens[j])):
+                # OPEN-491(ASR-TIME-NUMERAL-EQUIVALENCE-01 委任_05): scale語(hundred/thousand/million)で終わる数値語列の直後の『(and +) TTS入力で数字化された
+                # 小さな数(2-12)』(`one hundred and 10`/`two thousand and 5`。er003 tts_safe_number_words_enが2-12の語だけ数字化する)は同じ数の末尾。
+                # 語に戻して同じ数値語列に含める(`and`は数の一部として消費。er021 `_consume_number_word_run`/`_apply_suffixes`と同じ規則)。
+                trail = 0
+                core.append(next(k for k, v in _ONES.items() if v == int(tokens[j])))
+                j += 1
+            chunks = [[]]
+            for w in core:
+                if (chunks[-1] and chunks[-1][-1] in _ONES
+                        and (w in _TENS or (w in _ONES and _ONES[w] >= 10))):
+                    chunks.append([])
+                chunks[-1].append(w)
+            if len(chunks) > 1:
+                vals = [_words_to_number(c) for c in chunks]
+                if any(v is None for v in vals):
+                    out.extend(tokens[i:j])
+                    i = j
+                    continue
+                out.extend(tokens[i:i + lead])
+                out.extend(str(v) for v in vals)
+                out.extend(tokens[j - trail:j])
+                i = j
+                continue
+            val = _words_to_number(core)
+            if val is None or (len(core) == 1 and val < 2):
+                out.extend(tokens[i:j])
+                i = j
+                continue
+            out.extend(tokens[i:i + lead])
+            out.append(str(val))
+            out.extend(tokens[j - trail:j])
+            i = j
+        else:
+            out.append(tokens[i])
+            i += 1
+    return " ".join(out)
+
+
+def _convert_ordinal_words(text: str) -> str:
+    """序数の綴り(third)を算用数字+序数接尾辞(3rd)へ変換する。基数(3)
+    へは変換しない(序数と基数を混同すると"28 ≠ 28th"の区別が壊れる)。"""
+    return _ORDINAL_WORD_RE.sub(lambda m: _ORDINAL_WORDS[m.group(0).lower()], text)
+
+
+def normalize_numeric(text: str, convert_cardinals: bool = True) -> str:
+    """数値表記の意味同一な差(綴り⇔算用数字・桁区切りカンマ・小数点・
+    パーセント・通貨・序数)を吸収する一方、桁や単位が変わる差は区別
+    可能なまま残す。戻り値はさらにnormalize_text()の一般記号除去
+    ([^a-z0-9]+をスペース化)を通ることを前提とする。%/$/小数点は、
+    その除去ステップで消えてしまわないよう英数字のみのマーカー文字列
+    (xdollarx/xpercentx/xdecimalpointx)へ変換しておく(除去後も
+    "5"と"5xdollarx"のように異なるtokenのまま残り、5≠$5を保つ)。
+
+    convert_cardinals=False(既定Trueから変更する場合)は、手順3の
+    cardinal数値語->算用数字変換だけをスキップする(それ以外の正規化
+    [序数・通貨・小数点・複合序数等]は通常通り適用する)。ER-011-KP-
+    VALIDATOR-NUMERIC-HOMOPHONE-AND-GLOSS-RULES-PRODUCTION-WIRING-02
+    (Track B、数字ゲート例外)専用: cardinal変換前の「生語」token列
+    (two/four等がそのまま残る)を得るためだけに使う診断用引数であり、
+    通常のASR比較経路(tokenize()等)は既定値のまま一切変更しない。"""
+    t = text.lower()
+    # 0. 単語末尾に直接くっついた句読点(three.やfive,のような、文末や
+    #    読点で頻発する形)を切り離す。_convert_cardinal_words()は
+    #    空白区切りでtokenを取るため、句読点が単語へ付着したままだと
+    #    "three."が語彙辞書の"three"と一致せず、数値語の並びが途中で
+    #    途切れてしまう実バグがあった(例: "two thousand twenty-three."が
+    #    "2020 three."になってしまっていた)。数字と数字の間の"."(小数点)
+    #    は対象外にする(それは後段のstep 5で別途処理する)。
+    t = re.sub(r"(?<=[a-z])([.,;:!?])", r" \1", t)
+    # 1. 通貨記号(前置$)を、後段の通貨語処理と同じ形へ寄せる。
+    t = re.sub(r"\$\s*(\d+(?:\.\d+)?)", r"\1 dollars", t)
+    # 2. 桁区切りカンマの除去(1,000 -> 1000。3桁区切りの位置のみ対象、
+    #    誤って無関係な数字列を結合しないよう桁数を限定する)。
+    t = re.sub(r"(?<=\d),(?=\d{3}\b)", "", t)
+    # 2.5. 複合序数("twenty eighth"/"twenty-eighth"型)を、後続のcardinal/
+    #      ordinal変換(手順3・7)が独立に分裂させる前に1トークンへ変換する
+    #      (ER-010-DATE-SPOKEN-FORM-POINT-FIX-01)。
+    t = _convert_compound_ordinal_words(t)
+    # 3. cardinal数値語 -> 算用数字(convert_cardinals=Falseの場合はスキップ)。
+    if convert_cardinals:
+        t = _convert_cardinal_words(t)
+    # 4. 通貨語(N dollars/dollar) -> マーカー。
+    t = re.sub(r"\b(\d+(?:\.\d+)?)\s+dollars?\b", r"\1xdollarx", t)
+    t = re.sub(r"\$\s*(\d+(?:\.\d+)?)", r"\1xdollarx", t)
+    # 5. 小数点(digit point digit / digit.digit) -> マーカー。
+    t = re.sub(r"\b(\d+)\s+point\s+(\d+)\b", r"\1xdecimalpointx\2", t)
+    t = re.sub(r"(\d+)\.(\d+)", r"\1xdecimalpointx\2", t)
+    # 6. パーセント(N percent / N%) -> マーカー。
+    t = re.sub(r"\b(\d+(?:xdecimalpointx\d+)?)\s*(?:percent|per cent)\b", r"\1xpercentx", t)
+    t = re.sub(r"(\d+(?:xdecimalpointx\d+)?)\s*%", r"\1xpercentx", t)
+    # 7. 序数語 -> 算用数字+序数接尾辞(基数へは変換しない)。
+    t = _convert_ordinal_words(t)
+    # 8. 日付文脈(月名直後)の序数接尾辞のみ除去。月名が無い"28th"等は
+    #    そのまま残り、"28"(基数)と区別され続ける。
+    t = _DATE_ORDINAL_RE.sub(r"\1 \2", t)
+    # 9. 数式の指数表記(ASR側の"to the (minus) N(th)?"という話し言葉、
+    #    および"×"記号)を、底・符号・桁を保ったままマーカー化する。
+    #    cardinal/ordinal語の変換(手順3・7)より後に置くことで、
+    #    "ten to the minus sixteenth"のように綴られた場合も先に数字化
+    #    されてから拾える。canonical側のUnicode上付き文字は、strip_diacritics()
+    #    によるNFKD分解で情報が失われる前に、normalize_text()の先頭で
+    #    既にマーカー化済み(_normalize_superscript_exponents_early参照)。
+    t = _normalize_spoken_exponents(t)
+    return t
+
+
+_NEGATION_WORDS = {
+    "not", "no", "never", "none", "nobody", "nothing", "nowhere", "neither", "nor",
+    "cannot", "cant", "wont", "isnt", "arent", "wasnt", "werent", "doesnt", "dont",
+    "didnt", "hasnt", "havent", "hadnt", "wouldnt", "shouldnt", "couldnt", "without",
+}
+
+
+def strip_diacritics(text: str) -> str:
+    nfkd = unicodedata.normalize("NFKD", text)
+    return "".join(c for c in nfkd if not unicodedata.combining(c))
+
+
+def normalize_text(text: str, convert_cardinals: bool = True) -> str:
+    """発音上区別できない表記差、および閉じた既知集合の標準的な省略形
+    (通り種別略語等、_STREET_SUFFIX_EXPANSIONS参照)のみを吸収する。
+    任意の単語の置き換えは行わない(BR_AM_SPELLING_PAIRS・略語展開とも、
+    どちらも「同じ語の別表記」という閉じた既知集合に限定している点で
+    従来方針を維持している)。
+
+    convert_cardinals: normalize_numeric()へそのまま渡す(既定Trueで
+    従来通り、FalseはER-011-KP-VALIDATOR-NUMERIC-HOMOPHONE-AND-GLOSS-
+    RULES-PRODUCTION-WIRING-02[Track B]の診断用途のみ、下記
+    _tokenize_raw_no_cardinal_conversion()参照)。"""
+    t = (text or "").lower()
+    # strip_diacritics()のNFKD分解はUnicode上付き数字/マイナスを通常の
+    # 数字へ分解してしまい、「上付きだった」という指数情報自体が失われる
+    # (例: "10⁻¹⁶"→"10−16")。そうなるとxexpx/xexpnegxマーカーへ変換する
+    # 手がかりが消えてしまうため、strip_diacritics()より前のこの時点で
+    # 先にマーカー化しておく。
+    t = _normalize_superscript_exponents_early(t)
+    t = strip_diacritics(t)
+    for br, am in BR_AM_SPELLING_PAIRS:
+        t = t.replace(br, am)
+    t = t.replace("—", "-").replace("–", "-")
+    t = t.replace("’", "'").replace("‘", "'")
+    t = t.replace("“", '"').replace("”", '"')
+    t = normalize_numeric(t, convert_cardinals=convert_cardinals)
+    for full, abbr_re in _STREET_SUFFIX_RES:
+        t = abbr_re.sub(full, t)
+    t = re.sub(r"[^a-z0-9]+", " ", t)  # ハイフン/複合語分かち書き差もここで吸収
+    t = re.sub(r"\s+", " ", t).strip()
+    return t
+
+
+def _tokenize_raw_no_cardinal_conversion(text: str) -> list[str]:
+    """cardinal数値語(two/four等)を算用数字へ変換する前の「生語」token列
+    (それ以外の正規化[序数・通貨・小数点・BR/AM綴り等]は通常のtokenize()
+    と同じく適用したまま)。ER-011-KP-VALIDATOR-NUMERIC-HOMOPHONE-AND-
+    GLOSS-RULES-PRODUCTION-WIRING-02(Track B、数字ゲート例外)専用の
+    診断用ヘルパーであり、通常のASR比較経路(tokenize())はこの関数を
+    経由しない。"""
+    return normalize_text(text, convert_cardinals=False).split()
+
+
+def tokenize(text: str) -> list[str]:
+    return normalize_text(text).split()
+
+
+def _join_keep_digit_boundary(tokens: list[str]) -> str:
+    """tokenを空白なしで連結する。ただし『数字で終わるtoken + 数字で始まるtoken』の境界だけは空白を残す
+    (OPEN-487: `1:30`=`1 30` が `130` と despace 一致して誤PASSするのを防ぐ。複合語の分かち書き差=文字語の連結には影響しない)。"""
+    out = []
+    for k, t in enumerate(tokens):
+        if k and out and out[-1][-1:].isdigit() and t[:1].isdigit():
+            out.append(" ")
+        out.append(t)
+    return "".join(out)
+
+
+def despaced(text: str) -> str:
+    """複合語の分かち書き差(blitzscaling/blitz scaling/blitz-scaling等)を
+    吸収するため、正規化後さらに空白も除去した比較用文字列(数字と数字の境界だけは残す)。"""
+    return _join_keep_digit_boundary(normalize_text(text).split())
+
+
+# \w相当だがUnicode文字(Malmöのö等)も含めて1語として拾う必要があるため、
+# ASCIIの[A-Za-z]ではなくUnicodeの文字クラスを使う([^\W\d_]は「非単語文字でも
+# 数字でも_でもない」= Unicodeの文字)。
+_WORD_RE = re.compile(r"[^\W\d_]+", re.UNICODE)
+
+
+def capitalized_flags(text: str) -> set[str]:
+    """原文で大文字始まりだったトークン(正規化後の小文字形)の集合。
+    固有名詞らしさの粗い判定に使う。
+
+    ER-006-AUDIO-RETRY-CASCADE-PROD-01(2026-08-22)で修正: 従来は
+    「文頭(語index 0)の大文字化は情報にならない」として一律除外していたが、
+    実際のfailure実例("Ottoni and colleagues' 2016 study..."のように、
+    引用の学術者名がsegmentの先頭に来るケース)で、この一律除外により
+    真正の固有名詞がentity_tokensへ入らず、TRUE_CONTENT_MISMATCH(retry
+    対象)のまま扱われてしまう不具合を確認した。文頭語のうち、小文字化
+    した形が既知の一般語(_STOPWORDS、"The"/"It"/"This"等)である場合のみ
+    除外し、それ以外の文頭大文字語(固有名詞である可能性が高い)は通常
+    位置の語と同様にentity候補として扱う。個別固有名詞のwhitelistでは
+    なく、既存の_STOPWORDS(閉じた既知集合)を再利用した一般対策。"""
+    words = _WORD_RE.findall(text)
+    flags = set()
+    for i, w in enumerate(words):
+        if not w[0].isupper():
+            continue
+        if i == 0 and w.lower() in _STOPWORDS:
+            continue  # 文頭の一般語(The/It/This等)は大文字化が情報にならない
+        flags.add(strip_diacritics(w.lower()))
+    return flags
+
+
+# ------------------------------------------------------------
+# PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-
+# LIKE-01(A-1): entity_like判定の一般化。診断(RESULT_PACKET_FXD1 2-3節)
+# で判明した「大文字始まり」ヒューリスティックのみでは、`minaudière`の
+# ような小文字の外来語普通名詞や、Pronunciation Ledgerに既に登録済みの
+# 固有名詞(reactive cascade由来、本文中では大文字始まりでない場合がある)
+# を拾えず、同一発話内で通常の内容語誤りと同時発生するとTRUE_CONTENT_
+# MISMATCH(retry消費・安全弁なし)に格上げされてしまう問題への対応。
+# ここで拾った語は既存のcapitalized_flags()と同じ「entity_tokens」の
+# 語彙集合(diacritics除去済み小文字トークン)へ合流するだけであり、
+# 分類本体(_classify_asr_match_core)側のロジックは無変更(entity_like
+# の対象がやや広がるだけで、数値/否定/一般内容語のTRUE_CONTENT_MISMATCH
+# 検出そのものは一切変更しない)。
+# ------------------------------------------------------------
+def loanword_flags(text: str) -> set[str]:
+    """A-1(b): 大文字始まりではない小文字の外来語(例: "Chanel's novelty
+    minaudière"のように、ブランド名ではなく物品の一般名詞として本文に
+    現れる借用語)は、capitalized_flags()の大文字始まりヒューリスティック
+    では一切拾えない。原文中で非ASCII文字(発音区別符号付きラテン文字等)
+    を1文字でも含む語は、ASR側が正しい綴りを持たない可能性が高い外来語
+    らしい語として扱い、entity_like判定の対象に含める(diacritics除去後
+    の小文字形で返す、capitalized_flagsと同じ語彙形式)。"us"/"mark"の
+    ような通常のASCII一般語は非ASCII文字を含まないため、この関数の対象に
+    は一切ならない(同形一般語ガードを別途必要としない)。"""
+    flags = set()
+    for w in _WORD_RE.findall(text):
+        if any(ord(ch) > 127 for ch in w):
+            flags.add(strip_diacritics(w.lower()))
+    return flags
+
+
+# PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-
+# LIKE-01 修正1回目(ユーザー判断 2026-09-28): A-1(a)(Ledger登録済み
+# surfaceをentity_like判定へ使う経路)は、Production既定では**OFF**にする。
+# Status: DEFERRED / NOT_ADOPTED(将来S1/量産telemetryで「必要」かつ
+# 「安全な追加条件でfalse accept非増加」の証拠が出たら再検討)。
+# ledger_registered_entity_flags()自体はread-only診断ヘルパーとして残す
+# (直接呼び出す既存test・将来の再検討用の実装は削除しない)が、下記の
+# 明示的なフラグがTrueにならない限り、_classify_asr_match_core()の
+# entity_tokens合流箇所には到達しない(=本フラグOFFの間、Ledgerディスク
+# 読込[er006_pronunciation_ledger_01._load()]がこの分類経路から発生する
+# ことは無い)。A-1(b)(loanword_flags、非ASCII外来語)は影響を受けない
+# (別経路のまま変更なし)。Ledger自体は読み解決/Resolverでは引き続き
+# 使用する(この分類目的のフラグとは独立)。
+LEDGER_ENTITY_FLAGS_ENABLED_FOR_CLASSIFICATION = False
+
+
+def ledger_registered_entity_flags(text: str) -> set[str]:
+    """A-1(a): Pronunciation Ledger(er006_pronunciation_ledger_01)に登録
+    済みのsurfaceが本文中に語境界一致(get_low_confidence_entries_for_
+    text()、既存の_surface_matches_textを再利用)で含まれていれば、その
+    surfaceを構成する語をentity_like判定の対象に含める。
+
+    tts_injection_disabledの有無やentity_type(cascade_unresolved_entity
+    を含む)には関わらず「登録事実」のみを使う(TTS事前注入対象からの
+    除外[er006_pronunciation_tts_injection_01.augment_style_prefix_with_
+    pronunciation()の`exclude_entity_types`フィルタ]とは独立のチャンネル
+    であり、この関数はLedgerへ一切書き込まない、read-only診断ヘルパー)。
+
+    同形一般語ガード(タスク仕様で明示的に要求): 本番Ledgerには過去の
+    reactive lookup誤登録(例: surface="us"/canonical_spelling="unknown"
+    [OPEN-207]、surface="plus"/canonical_spelling="cascade"、
+    surface="main story"/canonical_spelling="cascade"、いずれもBLOCKER-1
+    系の既知の混入)が実在し、これらのsurfaceは一般的な英単語と同形である
+    ため、無条件にentity_tokensへ加えると一般語の内容誤り検出力を損なう。
+    ガードとして、surfaceを構成する各語のうち、そのLedger entry自身が
+    記録しているcanonical_spellingの中で「大文字始まり」だった語
+    (capitalized_flags()と同一関数を再利用、判定ロジックを複製しない)
+    としても確認できる語だけをentity_tokensへ加える。上記の誤登録entry
+    はcanonical_spellingが軒並み小文字の一般語(unknown/cascade等)の
+    ため、capitalized_flags()が空集合を返し自動的に除外される
+    (khaite/KHAITE、altuzarra/Altuzarra、familymart/FamilyMart等の正規の
+    entryはcanonical_spellingが大文字始まりのため引き続き救済される)。
+    canonical_spellingが本来lowercaseの外来語普通名詞(例: canelé)である
+    場合はA-1(b)のloanword_flags()側で別途拾われるため、ここで漏れても
+    安全側(entity_like=Falseのまま、従来通りTRUE_CONTENT_MISMATCH側)。"""
+    flags: set[str] = set()
+    try:
+        entries = pronun_ledger.get_low_confidence_entries_for_text(text)
+    except Exception:
+        # read-only診断ヘルパーであり、Ledger読み込み失敗(壊れたJSON等)
+        # によってASR分類全体(retry/Human Reviewの安全動作)を止めては
+        # いけない(fail-safe: 何も追加せず従来の分類のまま)。
+        return flags
+    for entry in entries:
+        surface = (entry.get("surface") or "").strip()
+        if not surface:
+            continue
+        allowed = capitalized_flags(entry.get("canonical_spelling") or "")
+        if not allowed:
+            continue
+        surface_tokens = {strip_diacritics(w.lower()) for w in _WORD_RE.findall(surface)}
+        flags |= (surface_tokens & allowed)
+    return flags
+
+
+# ------------------------------------------------------------
+# Protected check: 数字・否定・内容語の欠落/追加/置換を検出する
+# ------------------------------------------------------------
+@dataclass
+class ProtectedCheckResult:
+    passed: bool
+    number_mismatches: list[tuple[str, str]] = field(default_factory=list)
+    negation_mismatches: list[tuple[str, str]] = field(default_factory=list)
+    content_word_diffs: list[dict] = field(default_factory=list)  # {"type": replace/delete/insert, "canonical": ..., "asr": ...}
+
+
+_STOPWORDS = {
+    "a", "an", "the", "and", "or", "but", "of", "in", "on", "at", "to", "for",
+    "is", "are", "was", "were", "be", "been", "being", "it", "its", "this", "that",
+    "these", "those", "as", "by", "with", "from", "so", "than", "then", "there",
+    # ER-008-N8-FINAL-CONTENT-COMPRESSION-RETRY-22: normalize_text()の
+    # `re.sub(r"[^a-z0-9]+", " ", t)`はアポストロフィも空白へ置換するため、
+    # 短縮形("they're"→"they re")は"re"部分だけが独立したtokenとして残る。
+    # canonical側が展開形("they are"等)の場合、"are"は既にstopwordだが、
+    # ASR側の短縮形の残骸("re")はstopword集合に無いため、内容の変化が
+    # 無いのにcontent_word_diffs(TRUE_CONTENT_MISMATCH)として検出されて
+    # しまうbugがNo.8 B1 full_story_part2("They are"→TTSが自然に
+    # "They're"と発話)で実際に発生した(3回中3回、ASR結果は毎回意味上
+    # 完全に同じだが機械的にretryが続き、最終的にSTOPPEDへ到達した)。
+    # "re"(are由来)は他の一般的な英単語と衝突する可能性が低いため安全に
+    # stopword化できる。"will"/"have"由来の"ll"/"ve"は、"will"/"have"
+    # 自体がstopwordではなく実質的な意味を持つ語のため、同じ対策では
+    # 直らず("we'll"→"we"+"ll" vs canonical"we"+"will"はreplace型diffに
+    # なる)、より広い契約形(contraction)対応の設計が別途必要(本修正の
+    # 対象外、実データでの発生は未確認のため今回は見送る)。
+    "re",
+}
+
+
+# ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01 委任_03(DESIGN_02_ADDENDUM_01 §2、配線と同一commit):
+# normalize_numeric()が%/$/小数点/指数を英数字のみのマーカー(xpercentx/xdollarx/xdecimalpointx/xexpx/xexpnegx)へ
+# 変換した後のtoken(例: "25xpercentx"/"5xdollarx"/"3xdecimalpointx5"/"10xexpnegx16")は、従来`isdigit()`が偽で数値扱い
+# されず、"25%"->"26%"がnumber_mismatchesに掛からず内容語差分へ流れていた(DESIGN_01 §3 穴)。マーカー付きtokenも数値として
+# 認識する。純粋な数字tokenの判定(isdigit)は従来どおり。序数(28th)は別tokenのまま(28との差は従来どおり検出)。
+_MARKED_NUMBER_RE = re.compile(r"^\d+(?:x(?:decimalpoint|exp|expneg)x\d+)*(?:x(?:percent|dollar)x)?$")
+
+
+def _is_number(tok: str) -> bool:
+    return tok.isdigit() or bool(_MARKED_NUMBER_RE.match(tok))
+
+
+def _singularize_simple(word: str) -> str | None:
+    """規則的な複数形のみを単数形へ変換する(不規則複数形は対象外)。
+    誤って無関係な短い語を同一視しないよう、長さと語尾の形を厳格に絞る。
+    Noneは「この語は規則複数形として扱えない」を意味する(安全側)。"""
+    if len(word) > 4 and word.endswith("es") and word[:-2].endswith(("s", "x", "z", "ch", "sh")):
+        return word[:-2]  # matches -> match, boxes -> box
+    if len(word) > 4 and word.endswith("s") and not word.endswith("ss"):
+        return word[:-1]  # results -> result
+    return None
+
+
+def _is_benign_plural_pair(a: str, b: str) -> bool:
+    """"result"/"results"のような、規則的な単数形・複数形の揺れのみの語対を
+    判定する。ASR側が複数形/単数形をどちらで書き起こすかは意味内容の誤りを
+    示さない(cancelling/canceling等の綴り差と同種の、表記上の揺れ)。"""
+    if a == b:
+        return True
+    return _singularize_simple(a) == b or _singularize_simple(b) == a
+
+
+def _is_compound_spacing_only_span(canon_span: list[str], asr_span: list[str]) -> bool:
+    """FAMILY-XZ-ASR-MULTI-DIFF-JUDGE-FIX-01 委任_01(既存承認仕様の不具合是正、新規許容規則ではない):
+    1つのdiff span(SequenceMatcherのopcode単位)が「複合語の分かち書き・ハイフン位置の差のみ」
+    (story-making/storymaking等)かを判定する。_classify_asr_match_core()が全文に対して既に適用している
+    2つの既存規則(despaced()一致、冠詞a/an/theのみを除いた内容語のdespace一致)を、同じ基準のまま
+    **個々のdiff spanにも**適用するだけであり、新しい許容条件・辞書・閾値は追加しない。
+    根本原因: 全文規則は「全差分が分かち書き差のみ」の場合にしか効かず、同一音声内にbyUs→Bias等の
+    別差分が1つでもあると、story making/storymakingのspanがprotected_check()でcontent_word_diffsに
+    計上され(非entity・非homophone)、全体がTRUE_CONTENT_MISMATCHになっていた。
+    安全側の限定: 数値token・否定語を含むspanには適用しない(それらは従来どおりprotected_check()の
+    数値/否定ガードが独立に扱う)。片側が空のspan(語の脱落/追加)にも適用しない。"""
+    if not canon_span or not asr_span:
+        return False
+    if any(_is_number(t) or t in _NEGATION_WORDS for t in list(canon_span) + list(asr_span)):
+        return False
+    if "".join(canon_span) == "".join(asr_span):
+        return True
+    articles_only = {"a", "an", "the"}
+    c = "".join(t for t in canon_span if t not in articles_only)
+    a = "".join(t for t in asr_span if t not in articles_only)
+    return bool(c) and c == a
+
+
+def protected_check(canonical_tokens: list[str], asr_tokens: list[str],
+                     entity_tokens: set[str] | None = None,
+                     entity_tokens_by_source: dict[str, set[str]] | None = None) -> ProtectedCheckResult:
+    """entity_tokens_by_source(PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-
+    WIRING-AND-ASR-ENTITY-LIKE-01 修正1回目、S3、既定None=後方互換):
+    {"capitalized": set(...), "loanword": set(...), ...}形式で、
+    entity_tokensを構成した各カテゴリの語彙集合を渡すと、各content_word_
+    diffsエントリへ`entity_like_source`(entity_like=Trueの根拠となった
+    カテゴリ名のsorted list、observability専用の追加キー)を付与する。
+    分類ロジック本体(entity_like/should_pass/should_retry等)は一切変更
+    しない(既存の同一entity_tokens判定と完全に同じ挙動)。"""
+    entity_tokens = entity_tokens or set()
+    entity_tokens_by_source = entity_tokens_by_source or {}
+    result = ProtectedCheckResult(passed=True)
+    sm = difflib.SequenceMatcher(None, canonical_tokens, asr_tokens, autojunk=False)
+    for tag, i1, i2, j1, j2 in sm.get_opcodes():
+        if tag == "equal":
+            continue
+        canon_span = canonical_tokens[i1:i2]
+        asr_span = asr_tokens[j1:j2]
+
+        canon_numbers = [t for t in canon_span if _is_number(t)]
+        asr_numbers = [t for t in asr_span if _is_number(t)]
+        if canon_numbers != asr_numbers and (canon_numbers or asr_numbers):
+            result.number_mismatches.append((" ".join(canon_numbers), " ".join(asr_numbers)))
+            result.passed = False
+
+        canon_neg = [t for t in canon_span if t in _NEGATION_WORDS]
+        asr_neg = [t for t in asr_span if t in _NEGATION_WORDS]
+        if bool(canon_neg) != bool(asr_neg):
+            result.negation_mismatches.append((" ".join(canon_neg), " ".join(asr_neg)))
+            result.passed = False
+
+        canon_content = [t for t in canon_span if t not in _STOPWORDS and not _is_number(t) and t not in _NEGATION_WORDS]
+        asr_content = [t for t in asr_span if t not in _STOPWORDS and not _is_number(t) and t not in _NEGATION_WORDS]
+        if canon_content or asr_content:
+            if _is_compound_spacing_only_span(canon_span, asr_span):
+                # FAMILY-XZ-ASR-MULTI-DIFF-JUDGE-FIX-01 委任_01: 複合語の分かち書き差のみのspanは
+                # 内容語差分として計上しない(全文規則を個別diffにも適用。他のdiffは通常どおり評価される)。
+                continue
+            if (len(canon_content) == len(asr_content)
+                    and all(_is_benign_plural_pair(c, a) for c, a in zip(canon_content, asr_content))):
+                # 規則的な単数形/複数形の揺れのみ(例: "result"/"results")。
+                # BR/AM綴り差等と同種の表記上の揺れとみなし、content_word_diffs
+                # へは追加しない(内容誤りではないため、後段のcascade判定を
+                # 無関係な複数形差でブロックしない)。
+                continue
+            if canon_content != asr_content:
+                # canonical側の内容語が全て「原文で大文字始まりだった語(固有名詞らしい語)」
+                # なら entity_like=True とする(ASR側がどう書き起こすかは問わない。
+                # 固有名詞の音訳は元々ASR側が正しい表記を持たないことが前提のため)。
+                # 固有名詞の音訳差(Triangeln→Triangle等)はASR_VALIDATION_UNCERTAIN
+                # (retry停止・Review対象)の候補にする一方、通常の内容語(動詞・形容詞・
+                # 名詞)の置換/欠落/追加はentity_like=Falseとし、一致率が高くても
+                # TRUE_CONTENT_MISMATCH(retry対象)のままにする
+                # ("increase"→"decrease"のような対義語誤りを見逃さないため)。
+                entity_like = bool(canon_content) and set(canon_content).issubset(entity_tokens)
+                # S3(observability専用、既定{}なら常に空list): entity_likeの
+                # 根拠となったカテゴリ名(capitalized/loanword等)。分類結果
+                # (entity_like自体)には一切影響しない付加情報。
+                entity_like_source: list[str] = []
+                if entity_like and entity_tokens_by_source:
+                    canon_content_set = set(canon_content)
+                    entity_like_source = sorted(
+                        src for src, toks in entity_tokens_by_source.items()
+                        if canon_content_set & toks)
+                # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part I/J:
+                # 単一語同士の置換差(wait/weight等)で、CMU Pronouncing
+                # Dictionaryの発音(ARPAbet)が完全一致する場合のみ
+                # homophone_candidateとする(削除/追加[canon_content/
+                # asr_contentのどちらかが空]は対象外、entity_likeと同様
+                # 比較可能な1語同士のみを対象にする)。
+                homophone_candidate = False
+                if len(canon_content) == 1 and len(asr_content) == 1:
+                    result_h = homophone_en.homophone_arpabet_equivalent(canon_content[0], asr_content[0])
+                    homophone_candidate = bool(result_h)
+                # PNMH-01 多語同音救済(L1、2026-10-22ユーザー承認APPROVED_FOR_PRODUCTION): 1語<->連続2〜3語の
+                # 発音(CMU)一致のみ。1:1判定の後に1回だけ呼ぶ(判定不能・例外は非救済=fail-closed)。
+                # ロールバック=er094_multiword_homophone_01.MULTIWORD_HOMOPHONE_ENABLED=False(現行とバイト一致)。
+                _mw_hit = False
+                if not homophone_candidate and _mw_homophone.multiword_homophone_candidate(canon_span, asr_span, entity_like):
+                    homophone_candidate = True
+                    _mw_hit = True
+                _diff_entry = {
+                    "type": tag, "canonical": " ".join(canon_content), "asr": " ".join(asr_content),
+                    "entity_like": entity_like, "homophone_candidate": homophone_candidate,
+                    "entity_like_source": entity_like_source,
+                }
+                if _mw_hit:
+                    # additive(一致時のみ付与。非一致/OFF時はキー無し=既存dictとバイト一致)
+                    _diff_entry["multiword_homophone"] = {"canonical_span": list(canon_span), "asr_span": list(asr_span)}
+                result.content_word_diffs.append(_diff_entry)
+    return result
+
+
+def aggregate_multiword_homophone_spans(content_word_diffs: list[dict]) -> list[dict]:
+    """PNMH-01(observability専用・判定不変): 多語同音救済で同音候補になったspanの一覧。
+    該当なし(OFF時含む)は空list。steps側は空のときキー自体を付与しない(バイト一致維持)。"""
+    return [dict(d["multiword_homophone"]) for d in (content_word_diffs or []) if d.get("multiword_homophone")]
+
+
+def multiword_steps_extra(content_word_diffs: list[dict]) -> dict:
+    """steps[*]へ `**` で展開するadditive dict。多語同音一致が無ければ{}(既存stepsと同一)。"""
+    spans = aggregate_multiword_homophone_spans(content_word_diffs)
+    return {"multiword_homophone_spans": spans} if spans else {}
+
+
+def aggregate_entity_like_sources(content_word_diffs: list[dict]) -> list[str]:
+    """S3(observability専用): content_word_diffs全体から、entity_like=True
+    だった各エントリの`entity_like_source`の和集合をsorted listで返す
+    (telemetry/cascade steps/human_review_queueへ additive keyとして
+    伝播させる際の共通ヘルパー、分類ロジックには一切影響しない)。
+    entity_like_sourceキーが無い古いdict[dict形式が変わる前に生成された
+    content_word_diffs]が混ざっていても安全にスキップする(.get使用)。"""
+    sources: set[str] = set()
+    for d in content_word_diffs or []:
+        if d.get("entity_like"):
+            sources |= set(d.get("entity_like_source") or [])
+    return sorted(sources)
+
+
+# ------------------------------------------------------------
+# ER-011-KP-VALIDATOR-NUMERIC-HOMOPHONE-AND-GLOSS-RULES-PRODUCTION-
+# WIRING-02(Track B、数字ゲート例外、Trial-17 Approach2をProduction配線)
+# ------------------------------------------------------------
+# 背景(Opus診断-15、OPEN-116(b)): kp4_en canonical "point to" / ASR
+# "Point two."で、_convert_cardinal_words()がASR側"two"のみを"2"へ変換し、
+# canonical側"to"は_STOPWORDS除外されるため、protected_check()の数字保護
+# ゲートが「canonicalに無い数字」として即TRUE_CONTENT_MISMATCHにしていた。
+# canonical側"to"は既存のhomophone_candidate機構(wait/weight等、1語対1語の
+# content word置換にのみ適用)にも到達しない(stopwordとしてcontent_word_
+# diffsの対象外になるため)。
+#
+# ユーザー正式決定(2026-09-06): 完全同音(CMU辞書ARPAbet完全一致、
+# er008_asr_variant_hardening_15_homophone_en.homophone_arpabet_
+# equivalent()を再利用、新辞書は作らない)のみをPASS対象とする。近似音・
+# 別発音はPASSさせない。
+def _locate_number_mismatch_opcodes(canon_tokens: list[str], asr_tokens: list[str]) -> list[dict]:
+    """protected_check()と全く同じSequenceMatcherを独立に走らせ(読み取り
+    専用、protected_check()自体は呼ばない)、数字不一致を引き起こしている
+    opcodeの位置(cardinal変換後token列でのindex)を特定するためだけに使う
+    (ProtectedCheckResult.number_mismatchesは値のペアのみを保持し、
+    位置情報を持たないため)。"""
+    sm = difflib.SequenceMatcher(None, canon_tokens, asr_tokens, autojunk=False)
+    located = []
+    for tag, i1, i2, j1, j2 in sm.get_opcodes():
+        if tag == "equal":
+            continue
+        canon_span = canon_tokens[i1:i2]
+        asr_span = asr_tokens[j1:j2]
+        canon_numbers = [t for t in canon_span if _is_number(t)]
+        asr_numbers = [t for t in asr_span if _is_number(t)]
+        if canon_numbers != asr_numbers and (canon_numbers or asr_numbers):
+            located.append({"tag": tag, "canon_span": canon_span, "asr_span": asr_span,
+                             "i1": i1, "i2": i2, "j1": j1, "j2": j2})
+    return located
+
+
+def _try_homophone_number_rescue(canonical_text: str, asr_text: str,
+                                  canon_tokens: list[str], asr_tokens: list[str],
+                                  protected: ProtectedCheckResult) -> list[dict] | None:
+    """数字ゲート例外(Trial-17 Approach2、alignment_safeガード付き)。
+    baseline(protected)がTRUE_CONTENT_MISMATCHの原因が数字不一致のみ
+    (否定不一致は無い)であり、かつ数字ゲート以外の内容語差(entity_like・
+    homophone_candidateのいずれでもない差)も無い場合に限り、1トークン
+    対1トークンの置換opcode全てが「cardinal変換前の生語同士でCMU辞書
+    ARPAbet完全同音」であるときだけrescueを許可する(近似音は不可)。
+
+    alignment_safe(テキスト全体でcardinal語変換によるtoken数変化が一切
+    無いこと)を要求する。複合基数(例: "twenty eight"->"28"のような2:1の
+    圧縮)がテキスト中のどこかに1箇所でもあれば、変換後token列のindexが
+    生語token列のindexとズレる(構造的に不健全になる)ため、安全側で
+    rescueを一切試みない(Trial-17でApproach1[グローバルなalignment_safe
+    を要求しない緩い変種]がこの種のindexズレを構造的に抱えることを直接
+    実証したため、Approach2のみを採用する)。
+
+    戻り値: rescue成立時はrescue詳細のlist(non-empty)、不成立時はNone。"""
+    if not protected.number_mismatches or protected.negation_mismatches:
+        return None
+
+    non_entity_non_homophone_diffs = [
+        d for d in protected.content_word_diffs if not d["entity_like"] and not d["homophone_candidate"]
+    ]
+    if non_entity_non_homophone_diffs:
+        return None  # 数字ゲート以外にも真正の内容語差がある場合はrescueしない
+
+    canon_raw = _tokenize_raw_no_cardinal_conversion(canonical_text)
+    asr_raw = _tokenize_raw_no_cardinal_conversion(asr_text)
+    if len(canon_tokens) != len(canon_raw) or len(asr_tokens) != len(asr_raw):
+        return None  # alignment_safeでない(複合基数の圧縮等でindexがズレる)
+
+    located = _locate_number_mismatch_opcodes(canon_tokens, asr_tokens)
+    if not located or len(located) != len(protected.number_mismatches):
+        return None
+
+    rescues = []
+    for loc in located:
+        if loc["tag"] != "replace" or len(loc["canon_span"]) != 1 or len(loc["asr_span"]) != 1:
+            return None  # 1トークン対1トークンの置換以外(欠落・追加・複数語)は対象外
+        raw_c = canon_raw[loc["i1"]]
+        raw_a = asr_raw[loc["j1"]]
+        if homophone_en.homophone_arpabet_equivalent(raw_c, raw_a) is not True:
+            return None  # 完全同音でなければrescueしない(近似音・別発音は不可)
+        rescues.append({"canonical_raw": raw_c, "asr_raw": raw_a,
+                         "canonical_converted": loc["canon_span"][0], "asr_converted": loc["asr_span"][0]})
+    return rescues
+
+
+# ------------------------------------------------------------
+# OPEN-123-TRANSCRIPT-STYLE-NORMALIZATION-PRODUCTION-WIRING-01
+# ------------------------------------------------------------
+# ユーザー正式決定(2026-09-07、APPROVED_FOR_PRODUCTION): 標準contraction
+# 展開(否定を保持したまま縮約⇔展開するペアのみ、"can"⇔"can't"のような
+# 意味反転[肯定⇔否定]は絶対に含まない)を、英語ASR照合の共通正規化層
+# として採用する。範囲は「英語の共通正規化」= A2/B1英語本文に限らず、
+# 英語ASR照合経路全体(classify_asr_match()の全呼び出し元、Key Phrase
+# 英語経路を含む)。"want to"⇔"wanna"等の口語的縮約(方式iv、2語→1語の
+# token数変化を伴う)はユーザー決定により不採用(正規化しない、現状維持)。
+#
+# 採用元: OPEN-123-TRANSCRIPT-STYLE-NORMALIZATION-TRIAL-01_REPORT.md §13
+# (VALIDATED、false accept 0/82[既存NEGATIVE fixture28件+新規Negative
+# Control 54通り]、実証済みfalse reject5/5救済[Trial-08 3回STOPPED+
+# fixture2件])。normalize_text()/tokenize()は本ラベル追加により無変更
+# のまま(下記classify_asr_match()ラッパーが、既存の分類本体
+# [_classify_asr_match_core、Trial時点の既存classify_asr_matchから
+# 無変更]を、展開後の生textで再度呼ぶだけの「外側から包む」設計)。
+_NEGATION_CONTRACTIONS = {
+    "don't": "do not", "doesn't": "does not", "didn't": "did not",
+    "isn't": "is not", "aren't": "are not", "wasn't": "was not", "weren't": "were not",
+    "hasn't": "has not", "haven't": "have not", "hadn't": "had not",
+    "can't": "cannot", "won't": "will not", "wouldn't": "would not",
+    "shouldn't": "should not", "couldn't": "could not",
+    "mustn't": "must not", "needn't": "need not", "shan't": "shall not",
+}
+
+# 非否定の標準contraction(be/have/will/would系)。's/'dは意味的に曖昧
+# (is/has、would/had)だが、下記classify_asr_match()ラッパーの
+# 「展開後に既存Validator(_classify_asr_match_core)が実際にPASSと
+# 判定した場合のみ採用する」という設計により、誤った解釈を選んでも
+# false acceptにはならない(展開後も一致しないまま残るだけ、Trial §10
+# 参照)。この安全設計はTrialでfalse accept 0/82として実証済み。
+_NON_NEGATION_CONTRACTIONS = {
+    "i'm": "i am", "you're": "you are", "we're": "we are", "they're": "they are",
+    "he's": "he is", "she's": "she is", "it's": "it is", "that's": "that is",
+    "there's": "there is", "who's": "who is", "what's": "what is", "here's": "here is",
+    "i've": "i have", "you've": "you have", "we've": "we have", "they've": "they have",
+    "i'll": "i will", "you'll": "you will", "he'll": "he will", "she'll": "she will",
+    "we'll": "we will", "they'll": "they will", "it'll": "it will",
+    "i'd": "i would", "you'd": "you would", "he'd": "he would", "she'd": "she would",
+    "we'd": "we would", "they'd": "they would",
+    "let's": "let us",
+}
+
+_ALL_STANDARD_CONTRACTIONS = {**_NEGATION_CONTRACTIONS, **_NON_NEGATION_CONTRACTIONS}
+_STANDARD_CONTRACTION_RE = re.compile(
+    r"\b(" + "|".join(re.escape(k) for k in sorted(_ALL_STANDARD_CONTRACTIONS, key=len, reverse=True)) + r")\b",
+    re.IGNORECASE)
+
+
+def expand_standard_contractions(text: str) -> str:
+    """標準contraction(否定保持・非否定とも)を完全形へ展開する。
+    "want to"⇔"wanna"等の口語的縮約(方式iv)は対象外(ユーザー決定
+    2026-09-07で不採用、正規化しない)。normalize_text()より前の生
+    テキスト段階で行う前処理であり、normalize_text()/tokenize()自体は
+    一切変更しない。該当パターンが無ければ入力をそのまま返す(副作用
+    なし、既にその表記スタイルで書かれている側には作用しない)。"""
+    if not text:
+        return text
+    t = text.replace("’", "'").replace("‘", "'")
+
+    def _sub(m):
+        return _ALL_STANDARD_CONTRACTIONS[m.group(1).lower()]
+    return _STANDARD_CONTRACTION_RE.sub(_sub, t)
+
+
+# ------------------------------------------------------------
+# 分類本体
+# ------------------------------------------------------------
+VALID_CLASSIFICATIONS = (
+    "EXACT_MATCH", "NORMALIZED_MATCH", "HIGH_SIMILARITY_SAFE",
+    "ASR_VALIDATION_UNCERTAIN", "TRUE_CONTENT_MISMATCH", "TTS_FAILURE",
+    # ER-011-NO18-CONNECTED-SPEECH-READING-RESOLVER-PRODUCTION-WIRING-08:
+    # B1 Connected Speech Validator(OPEN-107撤去に伴う正式採用)。
+    "CONNECTED_SPEECH_ACCEPT", "CONNECTED_SPEECH_PASS_WITH_WARNING",
+    # ER-011-KP-VALIDATOR-NUMERIC-HOMOPHONE-AND-GLOSS-RULES-PRODUCTION-
+    # WIRING-02(Track B、上記_try_homophone_number_rescue参照)。
+    "HOMOPHONE_MATCH_NUMBER_EXCEPTION",
+    # OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01:
+    # 既存3パターンのUNCLASSIFIED後段(A2/B1英語本文segment限定、
+    # er006_secondary_asr_01.evaluate_attempt_with_cascade_detail内で
+    # 生成される。classify_asr_match自体は本ラベルを直接返さない
+    # ——このモジュールでのwav_path非依存の判定[classify_asr_match]は
+    # 常にTRUE_CONTENT_MISMATCHのまま返し、Secondary/local ASR
+    # corroborationを要する最終判定はCascade層側で行う設計のため)。
+    "CONNECTED_SPEECH_EQUIVALENCE_ACCEPT", "CONNECTED_SPEECH_EQUIVALENCE_PASS_WITH_WARNING",
+    # OPEN-123-TRANSCRIPT-STYLE-NORMALIZATION-PRODUCTION-WIRING-01:
+    # 標準contraction展開(否定保持のみ)後に、既存の分類本体
+    # (_classify_asr_match_core)が実際にPASS(should_pass=True)と
+    # 判定した場合にclassify_asr_match()ラッパーが返す(下記参照)。
+    # should_pass=True・should_retry=False(その他のPASS系分類と同じ扱い、
+    # 新規のClassification専用の下流分岐は追加していない)。
+    "TRANSCRIPT_STYLE_NORMALIZED_MATCH",
+    # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(Phase A+B、
+    # APPROVED_FOR_PRODUCTION 2026-09-27): Tier 1数値/通貨/%/年/時刻/
+    # 分数/ローマ数字/略語の値等価(classify_asr_match()ラッパー冒頭の
+    # role gating付きearly-exit、下記参照)。should_pass=True。
+    "NUMERIC_EQUIVALENCE_MATCH",
+    # Tier 3(規則的複数形・固有名詞ASR表記差)のSecondary/Local ASR
+    # corroboration付き救済(er006_secondary_asr_01.evaluate_attempt_
+    # with_cascade_detail内、既存Connected Speech Equivalence Layerの
+    # 後段で判定)。should_pass=True・PASS_WITH_WARNING相当(telemetryへ
+    # warning=Trueを記録)。
+    "SECONDARY_ASR_CORROBORATED_MATCH",
+)
+
+
+@dataclass
+class ClassificationResult:
+    classification: str
+    normalized_ratio: float
+    protected: ProtectedCheckResult
+    should_pass: bool
+    should_retry: bool
+    reason: str
+    # ER-011-NO18-CONNECTED-SPEECH-READING-RESOLVER-PRODUCTION-WIRING-08:
+    # classification が CONNECTED_SPEECH_ACCEPT/CONNECTED_SPEECH_PASS_WITH_
+    # WARNING の場合のみ非Noneになる、判定根拠(rule/expected_phoneme_
+    # boundary/false_accept_risk)。既存呼び出し元は位置引数のみ使うため
+    # 末尾にdefault付きで追加し、後方互換を保つ。
+    connected_speech_info: dict | None = None
+    # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01: classification が
+    # NUMERIC_EQUIVALENCE_MATCH/SECONDARY_ASR_CORROBORATED_MATCH の場合、
+    # または(should_pass=Falseでも)role gatingが適用された呼び出しで
+    # observability用のsub_reason判定を行った場合に非Noneになる、
+    # {tier_applied, sub_reason, corroborated_by, warning}形式のdict。
+    # 同じくdefault付き末尾追加(既存呼び出し元・位置引数は無変更)。
+    semantic_equivalence_info: dict | None = None
+
+
+def _f1_refine_residual_kind(cs: dict, protected) -> str:
+    """F1残差の種別を protected.content_word_diffs(entity_like/homophone_candidate)と照合して確定し、
+    cs["f1_residual_kind"]を更新して返す。none/entity_or_homophone_only/content。
+    全残差が「置換(両側に語あり)」かつ entity_like/homophone_candidate の1:1差と一致する場合のみ
+    entity_or_homophone_only(それ以外はcontent=従来どおりTRUE_CONTENT_MISMATCH側、安全側)。"""
+    res = cs.get("f1_residual") or []
+    if not res:
+        cs["f1_residual_kind"] = "none"
+        return "none"
+    ok_pairs = {(d["canonical"], d["asr"]) for d in protected.content_word_diffs
+                if d.get("entity_like") or d.get("homophone_candidate")}
+    kind = "entity_or_homophone_only"
+    for r in res:
+        c = [w.lower() for w in r.get("canonical") or []]
+        a = [w.lower() for w in r.get("asr") or []]
+        if r.get("op") != "replace" or len(c) != 1 or len(a) != 1 or (c[0], a[0]) not in ok_pairs:
+            kind = "content"
+            break
+    cs["f1_residual_kind"] = kind
+    return kind
+
+
+def _homophone_swap_only_bypass_ratio_gate(canon_tokens: list, asr_tokens: list, protected: "ProtectedCheckResult") -> bool:
+    """B-2(ASR-HOMOPHONE-ORTHOGRAPHIC-VARIANT-COMPREHENSIVE-01 委任_02、既存承認仕様の不具合修正)。
+    承認済みの同音語救済(単一語の置換差、CMU辞書で発音完全一致=homophone_candidate)は、本来ratioゲート(幻聴検出)より
+    前に効くべきだが、1語・短文ではratio<0.4が常に先に成立してTTS_FAILURE(blind retry)になり、救済へ到達できなかった
+    (実害: Z kp3_en `seize`/`sees` が TTS_FAILURE->HUMAN_REVIEW_LOCKED)。
+    ratioゲートを迂回してよいのは、次をすべて満たす場合だけ(それ以外のratio<0.4は従来どおりTTS_FAILURE):
+      (1) token数が同じ (2) 差のある全位置が1:1置換で、承認済みの既存判定(homophone_candidate: CMU辞書で発音完全一致)が成立
+      (3) どの差もentity_likeでなく、多語同音(PNMH)経由でもない (4) 同形異音語・弱形のみ一致・強勢差でない
+      (er008 homophone_en.strict_homophone_pair: canonicalの強勢読みが1つで、ASR語の代表強勢読みと一致=Opus P-01/P-02/P-03)
+      (5) 差のある位置が、content_word_diffsで説明される位置と過不足なく一致(stopword/数/否定の残差が無い)。
+    迂回後の流れは既存の同音語経路(ASR_VALIDATION_UNCERTAIN -> _step_alternate_pass が HOMOPHONE_EQUIVALENT)で、
+    hallucination(別の語への置換)は(2)(4)を満たさないため従来どおり。挙動変化は『不合格->合格』方向のみ。"""
+    if not canon_tokens or len(canon_tokens) != len(asr_tokens):
+        return False
+    diffs = protected.content_word_diffs
+    if not diffs:
+        return False
+    n_diff_positions = sum(1 for c, a in zip(canon_tokens, asr_tokens) if c != a)
+    if n_diff_positions != len(diffs):
+        return False
+    for d in diffs:
+        if d.get("entity_like") or not d.get("homophone_candidate") or d.get("multiword_homophone"):
+            return False
+        c_t, a_t = str(d.get("canonical", "")).split(), str(d.get("asr", "")).split()
+        if len(c_t) != 1 or len(a_t) != 1:
+            return False
+        if homophone_en.homophone_arpabet_equivalent(c_t[0], a_t[0]) is not True:
+            return False
+        if homophone_en.strict_homophone_pair(c_t[0], a_t[0]) is not True:
+            return False
+    return True
+
+
+def _classify_asr_match_core(canonical_text: str, asr_text: str,
+                              high_similarity_threshold: float = 0.98,
+                              uncertain_threshold: float = 0.85,
+                              tts_failure_threshold: float = 0.4) -> ClassificationResult:
+    """分類本体(OPEN-123-TRANSCRIPT-STYLE-NORMALIZATION-PRODUCTION-
+    WIRING-01より前の既存classify_asr_match()と完全に無変更。生text
+    段階のTranscript Style Normalization[標準contraction展開]は、この
+    関数のさらに外側のclassify_asr_match()ラッパー[下記]でのみ行う。"""
+    if asr_text is None:
+        return ClassificationResult("TTS_FAILURE", 0.0, ProtectedCheckResult(passed=False),
+                                     should_pass=False, should_retry=True, reason="ASR書き起こし自体が取得できなかった")
+
+    if canonical_text.strip() == asr_text.strip():
+        return ClassificationResult("EXACT_MATCH", 1.0, ProtectedCheckResult(passed=True),
+                                     should_pass=True, should_retry=False, reason="完全一致")
+
+    canon_tokens = tokenize(canonical_text)
+    asr_tokens = tokenize(asr_text)
+    ratio = difflib.SequenceMatcher(None, canon_tokens, asr_tokens, autojunk=False).ratio()
+
+    if canon_tokens == asr_tokens:
+        return ClassificationResult("NORMALIZED_MATCH", 1.0, ProtectedCheckResult(passed=True),
+                                     should_pass=True, should_retry=False,
+                                     reason="表記正規化(発音区別符号/ハイフン/序数/英米綴り等)後に一致")
+
+    # 複合語の分かち書き差(blitzscaling/blitz scaling等)は、語単位のtoken列では
+    # 一致しないが、空白を除去した文字列としては一致する。短いKey Phrase等で
+    # word-level ratioが不安定になりやすいため、先に判定する。
+    if despaced(canonical_text) == despaced(asr_text):
+        return ClassificationResult("NORMALIZED_MATCH", 1.0, ProtectedCheckResult(passed=True),
+                                     should_pass=True, should_retry=False,
+                                     reason="複合語の分かち書き・ハイフン位置の差のみ(空白除去後に一致)")
+
+    # 冠詞(a/an/the)だけを除いた内容語を despace して比較する版。
+    # 短いKey Phrase(例: canonical="a wide-scale empirical study" vs
+    # asr="Widescale empirical study.")で冠詞の有無自体が表記差の対象外
+    # であるケースを吸収する。
+    # ER-008-N7-CONTENT-AUDIO-QA-02で発見: ここで_STOPWORDS全体(with/by/
+    # from/as等の前置詞も含む)を使うと、"compare poorly with"のような
+    # 前置詞で終わる短いKey Phraseで、実際には"with"が欠落した音声
+    # ("Compare poorly")が、"with"がstopwordとして両側から消えることで
+    # 誤ってNORMALIZED_MATCH判定されてしまう(実際の欠落語を見逃す
+    # Validator gap)。この despace shortcutは冠詞のみを対象とし、
+    # 意味を持つ前置詞・接続詞は_STOPWORDSに含まれていてもここでは
+    # 除去しない(articles_onlyへ限定)。
+    articles_only = {"a", "an", "the"}
+    canon_content_only = [t for t in tokenize(canonical_text) if t not in articles_only]
+    asr_content_only = [t for t in tokenize(asr_text) if t not in articles_only]
+    if _join_keep_digit_boundary(canon_content_only) == _join_keep_digit_boundary(asr_content_only) and canon_content_only:
+        return ClassificationResult("NORMALIZED_MATCH", 1.0, ProtectedCheckResult(passed=True),
+                                     should_pass=True, should_retry=False,
+                                     reason="冠詞等を除いた内容語の複合語分かち書き差のみ(空白除去後に一致)")
+
+    # PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-ASR-ENTITY-
+    # LIKE-01(A-1、修正1回目でLedger条件をOFFに変更): 従来の「大文字始まり」
+    # ヒューリスティック(capitalized_flags)に、(b)小文字外来語(非ASCII
+    # 文字を含む語、loanword_flags)を合流する。(a)Pronunciation Ledger
+    # 登録済みsurface(ledger_registered_entity_flags)は、ユーザー判断
+    # (2026-09-28)によりProduction既定でOFF(LEDGER_ENTITY_FLAGS_ENABLED_
+    # FOR_CLASSIFICATION、Status: DEFERRED/NOT_ADOPTED)。フラグがFalseの
+    # 間はledger_registered_entity_flags()自体を呼ばない(Ledgerディスク
+    # 読込がこの分類経路から発生しないことを保証するため、結果を捨てるの
+    # ではなく呼び出し自体を省略する)。entity_tokensという同一の語彙集合
+    # へ加わるだけで、以降のprotected_check()・分類ロジック自体は無変更
+    # (entity_likeの対象が広がるだけであり、数値/否定/一般内容語の
+    # TRUE_CONTENT_MISMATCH検出は従来通り)。
+    capitalized_set = capitalized_flags(canonical_text)
+    loanword_set = loanword_flags(canonical_text)
+    if LEDGER_ENTITY_FLAGS_ENABLED_FOR_CLASSIFICATION:
+        ledger_set = ledger_registered_entity_flags(canonical_text)
+    else:
+        ledger_set = set()
+    entity_tokens = capitalized_set | loanword_set | ledger_set
+    entity_tokens_by_source = {"capitalized": capitalized_set, "loanword": loanword_set,
+                                "ledger": ledger_set}
+    protected = protected_check(canon_tokens, asr_tokens, entity_tokens=entity_tokens,
+                                 entity_tokens_by_source=entity_tokens_by_source)
+
+    if not protected.passed:
+        # ER-011-KP-VALIDATOR-NUMERIC-HOMOPHONE-AND-GLOSS-RULES-PRODUCTION-
+        # WIRING-02(Track B): 即TRUE_CONTENT_MISMATCHにする前に、狭い
+        # 数字ゲート例外(完全同音のみ、alignment_safe必須)に該当しないか
+        # 確認する。該当しない場合は従来通りfall throughする。
+        rescues = _try_homophone_number_rescue(canonical_text, asr_text, canon_tokens, asr_tokens, protected)
+        if rescues is not None:
+            return ClassificationResult(
+                "HOMOPHONE_MATCH_NUMBER_EXCEPTION", ratio, protected,
+                should_pass=True, should_retry=False,
+                reason=f"数字ゲート例外(Track B): ASR側の数字語と、cardinal変換前のcanonical側の語が"
+                       f"CMU辞書ARPAbet完全同音(厳密一致のみ許容): rescues={rescues}")
+        return ClassificationResult("TRUE_CONTENT_MISMATCH", ratio, protected,
+                                     should_pass=False, should_retry=True,
+                                     reason=f"数字/否定の不一致を検出: numbers={protected.number_mismatches} negation={protected.negation_mismatches}")
+
+    if ratio < tts_failure_threshold and not _homophone_swap_only_bypass_ratio_gate(canon_tokens, asr_tokens, protected):
+        return ClassificationResult("TTS_FAILURE", ratio, protected,
+                                     should_pass=False, should_retry=True,
+                                     reason="全体類似度が著しく低く、TTS生成自体の異常(hallucination/missing speech)が疑われる")
+
+    # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part I/J: homophone_
+    # candidate(発音がCMU辞書上完全一致する単一語の置換差、wait/weight
+    # 等)も、entity_likeと同様に「即TTS retry」の対象からは除外する
+    # (即retryさせると、No.8 wait/weightのように音として正しい可能性が
+    # 高い音声を無駄に何度も作り直してしまうため)。
+    non_entity_diffs = [d for d in protected.content_word_diffs
+                         if not d["entity_like"] and not d["homophone_candidate"]]
+    entity_only_diffs = [d for d in protected.content_word_diffs if d["entity_like"]]
+    homophone_only_diffs = [d for d in protected.content_word_diffs
+                             if d["homophone_candidate"] and not d["entity_like"]]
+
+    if non_entity_diffs:
+        # ER-011-NO18-CONNECTED-SPEECH-READING-RESOLVER-PRODUCTION-WIRING-08:
+        # ASR文字列差分だけを根拠に即座にTRUE_CONTENT_MISMATCHとする前に、
+        # ユーザー正式承認済みの限定connected-speechパターン(歯擦音連続/
+        # 破裂音連続/語境界の再分節)で合理的に説明できるかを確認する
+        # (ER-011-CONNECTED-SPEECH-AND-A2-READING-TRIAL-07 Track AでVALIDATED
+        # 判定、パターンはこの3種以外へ拡張しない)。該当しない場合は、
+        # 従来通り無条件でTRUE_CONTENT_MISMATCHとする(fall through)。
+        cs = connected_speech.classify_connected_speech(canonical_text, asr_text)
+        if cs["new_judgment"] == "CONNECTED_SPEECH_ACCEPT":
+            return ClassificationResult(
+                "CONNECTED_SPEECH_ACCEPT", ratio, protected, should_pass=True, should_retry=False,
+                reason=f"connected speech(語境界の自然な弱化・融合)として説明可能: {cs['rule']} "
+                       f"({cs['expected_phoneme_boundary']})",
+                connected_speech_info=cs)
+        if cs["new_judgment"] == "CONNECTED_SPEECH_RESEGMENTATION":
+            return ClassificationResult(
+                "CONNECTED_SPEECH_PASS_WITH_WARNING", ratio, protected, should_pass=True, should_retry=False,
+                reason=f"語境界の自然な再分節として説明可能(blockingしないが警告を残す): {cs['rule']} "
+                       f"({cs['expected_phoneme_boundary']})",
+                connected_speech_info=cs)
+        # F1(ASR-PHONETIC-EQUIVALENCE-M1-F1-PRODUCTION-WIRING-01 委任_03, OF-161):
+        # F1が最初の差分は連結発音で説明できるが残差(説明できない差分)が固有名詞/同音語のみの
+        # 場合は、従来(F1前)の固有名詞/同音語経路と同じUNCERTAIN(blind retryしない)へ送る。
+        # 内容語の残差が1件でもあれば従来どおりTRUE_CONTENT_MISMATCH。
+        if cs.get("f1_residual") and _f1_refine_residual_kind(cs, protected) == "entity_or_homophone_only":
+            return ClassificationResult("ASR_VALIDATION_UNCERTAIN", ratio, protected,
+                                         should_pass=False, should_retry=False,
+                                         reason=f"F1: 連結発音で説明できない残差が固有名詞/同音語のみ"
+                                                f"(retryでは解決しない可能性が高い): {cs.get('f1_residual')}",
+                                         connected_speech_info=cs)
+        # 固有名詞以外の内容語(動詞・形容詞・名詞等)の置換/欠落/追加は、
+        # 一致率が高くても自動PASSさせず、retry対象のTRUE_CONTENT_MISMATCHのままにする
+        # (例: "increase"→"decrease"、重要語の欠落を見逃さないため)。
+        return ClassificationResult("TRUE_CONTENT_MISMATCH", ratio, protected,
+                                     should_pass=False, should_retry=True,
+                                     reason=f"固有名詞以外の内容語に差がある(内容誤りの可能性): {non_entity_diffs}",
+                                     connected_speech_info=(cs if cs.get("f1_explained") else None))
+
+    if entity_only_diffs:
+        return ClassificationResult("ASR_VALIDATION_UNCERTAIN", ratio, protected,
+                                     should_pass=False, should_retry=False,
+                                     reason=f"固有名詞らしき語にのみ音訳差がある(retryでは解決しない可能性が高い): {entity_only_diffs}")
+
+    if homophone_only_diffs:
+        return ClassificationResult("ASR_VALIDATION_UNCERTAIN", ratio, protected,
+                                     should_pass=False, should_retry=False,
+                                     reason=f"発音が完全一致する同音語らしき語にのみ差がある"
+                                            f"(retryでは解決しない可能性が高い): {homophone_only_diffs}")
+
+    if ratio >= high_similarity_threshold:
+        return ClassificationResult("HIGH_SIMILARITY_SAFE", ratio, protected,
+                                     should_pass=True, should_retry=False,
+                                     reason="内容語の差は無く、表記のみの軽微な揺れ")
+
+    # ER-011-NO18-CONNECTED-SPEECH-READING-RESOLVER-PRODUCTION-WIRING-08:
+    # Pattern C(再分節、例: survey->surveys)は、protected_check()の既存の
+    # _is_benign_plural_pair()吸収(規則的な単数/複数のゆれとして元々
+    # content_word_diffsへ計上しない設計)により、この最終fallback
+    # (content_word_diffsが空、ratioが閾値未満)へ到達することがある
+    # (実データ、OPEN-110 survey_diagnostic_04で確認)。ここでもconnected
+    # speechパターンを確認し、該当すればPASS_WITH_WARNINGとする。
+    cs_fallback = connected_speech.classify_connected_speech(canonical_text, asr_text)
+    if cs_fallback["new_judgment"] == "CONNECTED_SPEECH_RESEGMENTATION":
+        return ClassificationResult(
+            "CONNECTED_SPEECH_PASS_WITH_WARNING", ratio, protected, should_pass=True, should_retry=False,
+            reason=f"語境界の自然な再分節として説明可能(blockingしないが警告を残す): {cs_fallback['rule']} "
+                   f"({cs_fallback['expected_phoneme_boundary']})",
+            connected_speech_info=cs_fallback)
+    if cs_fallback["new_judgment"] == "CONNECTED_SPEECH_ACCEPT":
+        return ClassificationResult(
+            "CONNECTED_SPEECH_ACCEPT", ratio, protected, should_pass=True, should_retry=False,
+            reason=f"connected speech(語境界の自然な弱化・融合)として説明可能: {cs_fallback['rule']} "
+                   f"({cs_fallback['expected_phoneme_boundary']})",
+            connected_speech_info=cs_fallback)
+
+    return ClassificationResult("ASR_VALIDATION_UNCERTAIN", ratio, protected,
+                                 should_pass=False, should_retry=False,
+                                 reason="内容語の差は検出されないが、一致率がPASS基準に届かない")
+
+
+_SEMANTIC_EQUIVALENCE_APPLICABLE_ROLES = semantic_equivalence.FIVE_ROLES_APPLICABLE
+
+
+def _resolve_semantic_equivalence_role(segment_id: str | None, role: str | None) -> str | None:
+    """EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01: role判定は
+    er020_tts_retry_local_rewrite_01.resolve_narrative_role()/
+    connected_speech_enabled_for()と同じ単一関数を使う(role名の判定
+    ロジックをここで重複実装しない)。er020はこのファイル(val)を
+    importしているため、モジュールtop-levelでの相互import(循環import)
+    を避け、この関数が実際に呼ばれるcall-time(両モジュールとも既に
+    ロード済みのタイミング)にのみ遅延importする。segment_id/role両方が
+    Noneの場合は何もimportせずNoneを返す(既存呼び出し元の挙動を一切
+    変えないための最短経路)。"""
+    if role is not None:
+        return role
+    if segment_id is None:
+        return None
+    import er020_tts_retry_local_rewrite_01 as _role_gate
+    return _role_gate.resolve_narrative_role(segment_id)
+
+
+def classify_asr_match(canonical_text: str, asr_text: str,
+                        high_similarity_threshold: float = 0.98,
+                        uncertain_threshold: float = 0.85,
+                        tts_failure_threshold: float = 0.4,
+                        *,
+                        segment_id: str | None = None,
+                        role: str | None = None) -> ClassificationResult:
+    """OPEN-123-TRANSCRIPT-STYLE-NORMALIZATION-PRODUCTION-WIRING-01:
+    既存の分類本体(_classify_asr_match_core、無変更)を「外側から包む」
+    薄いラッパー。この関数名を既存呼び出し元(A2/B1本文・Key Phrase・
+    Cascade層[er006_secondary_asr_01]・homophone/数字ゲート等)が変更
+    無しでそのまま使い続けるため、英語ASR照合経路全体(Key Phrase英語
+    経路を含む)へ共通適用される(新規opt-inフラグは追加していない
+    ——ユーザー決定の採用範囲が「英語の共通正規化」であるため)。
+
+    手順: (1) まず_classify_asr_match_core()をそのまま呼ぶ(baseline)。
+    (2) baseline.should_passがTrueならそのまま返す(介入しない)。
+    (3) should_pass=Falseの場合のみ、標準contraction展開
+    (expand_standard_contractions、否定保持のみ・wanna系は対象外)を
+    canonical_text/asr_text両方へ適用する。どちらの側も変化しなければ
+    (元々contractionが無ければ)介入せずbaselineをそのまま返す(無駄な
+    再帰呼び出しを避ける、かつ無限再帰の防止にもなる)。(4) 展開後の
+    テキストで_classify_asr_match_core()を再度呼び(この呼び出しは
+    contraction展開の余地がもう無いため1回で必ず収束する)、その結果が
+    should_pass=Trueであった場合のみ、新規classification
+    "TRANSCRIPT_STYLE_NORMALIZED_MATCH"としてPASS採用する。それ以外
+    (展開後も一致しない場合)は、baseline(既存の分類・reason)をそのまま
+    返す(should_pass=False/should_retry=Trueも含め、既存のretry/
+    Human Review Lock/Cost Guard/telemetryの挙動を一切変えない)。
+
+    この設計により、's/'dのような曖昧なcontraction(is/has、would/had)を
+    テーブルに含めていても、誤った解釈を選んだ場合は単純に展開後も
+    一致しないままなので安全側(false acceptにはならず、rescueできない
+    だけ)に倒れる(OPEN-123-TRANSCRIPT-STYLE-NORMALIZATION-TRIAL-01_
+    REPORT.md §10/§13で実証済み、false accept 0/82)。
+
+    EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(Phase A、
+    APPROVED_FOR_PRODUCTION 2026-09-27): 上記(1)より前段に、Tier 1
+    (数値/通貨/%/年/時刻/分数/ローマ数字/略語の値等価、
+    er021_en_asr_semantic_equivalence_production_01.tier1_numeric_
+    equivalence())のearly-exitを追加する。適用は5role(Full Story/
+    Comment/Preview/Topic intro/In One Line)限定であり、role gating
+    判定はer020の単一SSOT関数を再利用する(上記_resolve_semantic_
+    equivalence_role参照)。segment_id/roleを渡さない既存の全呼び出し元
+    (約50ファイル)は、この関数呼び出し自体が発生しないため挙動は完全に
+    無変更。role適用対象でもTier 1のパースが両側で完全一致しない限り
+    このearly-exitには入らず、以降は既存の(1)〜(4)の手順を無変更で
+    実行する(Tier 1はearly-exitのみで、既存の分類本体・contraction展開
+    ロジックそのものには一切触れない)。"""
+    resolved_role = _resolve_semantic_equivalence_role(segment_id, role)
+    role_gate_applicable = resolved_role in _SEMANTIC_EQUIVALENCE_APPLICABLE_ROLES
+    if role_gate_applicable and asr_text is not None:
+        tier1 = semantic_equivalence.tier1_numeric_equivalence(canonical_text, asr_text)
+        if tier1 is not None:
+            # EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02修正1回目
+            # (Opus L3所見、ユーザー承認2026-09-28、否定語二重防御):
+            # diff-anchored合成規則(句読点atom局所吸収、tier1["diff_
+            # anchored"]がTrue)を通過した場合に限り、否定語の有無が両側で
+            # 一致することを独立した第二の防御層として追加確認する
+            # (_closed_punctuation_diff_ok()側のBLOCKER-1本体修正で既に
+            # 閉じているはずの経路だが、実装バグ混入時の多重防御として
+            # 保持する)。全体一致経路(diff_anchored=False、従来のall-or-
+            # nothing判定)は無変更のまま即座にearly-exitする。
+            negation_blocked = False
+            if tier1.get("diff_anchored"):
+                neg_check = protected_check(tokenize(canonical_text), tokenize(asr_text))
+                negation_blocked = bool(neg_check.negation_mismatches)
+            if not negation_blocked:
+                return ClassificationResult(
+                    "NUMERIC_EQUIVALENCE_MATCH", 1.0, ProtectedCheckResult(passed=True),
+                    should_pass=True, should_retry=False,
+                    reason="Tier 1(数値/通貨/%/年/時刻/分数/ローマ数字/略語)の値パースが両側で"
+                           f"完全一致(role={resolved_role})",
+                    semantic_equivalence_info={
+                        "tier_applied": "tier1_numeric", "sub_reason": "numeric_only",
+                        "corroborated_by": [], "warning": False, "role": resolved_role,
+                        "diff_spans": tier1,
+                    })
+            # negation_blocked=Trueの場合はearly-exitせず、以降の既存
+            # (1)〜(4)の手順(baseline判定等、protected_checkによる否定語
+            # 保護を含む)へフォールバックする(安全側)。
+
+    baseline = _classify_asr_match_core(
+        canonical_text, asr_text, high_similarity_threshold, uncertain_threshold, tts_failure_threshold)
+    if baseline.should_pass:
+        return baseline
+
+    canon_expanded = expand_standard_contractions(canonical_text)
+    asr_expanded = expand_standard_contractions(asr_text)
+    if canon_expanded == canonical_text and asr_expanded == asr_text:
+        result = baseline  # 展開で何も変わらない(元々contractionが無い) -> 介入不要
+    else:
+        candidate = _classify_asr_match_core(
+            canon_expanded, asr_expanded, high_similarity_threshold, uncertain_threshold, tts_failure_threshold)
+        if not candidate.should_pass:
+            result = baseline  # 展開後も既存Validatorが一致と認めない -> 安全側でbaselineのまま
+        else:
+            result = ClassificationResult(
+                "TRANSCRIPT_STYLE_NORMALIZED_MATCH", candidate.normalized_ratio, candidate.protected,
+                should_pass=True, should_retry=False,
+                reason=f"標準contraction展開(否定保持のみ、can/can't等の反転・wanna系は対象外)後に"
+                       f"PASS(内部classification={candidate.classification}): {candidate.reason}",
+                connected_speech_info=candidate.connected_speech_info)
+
+    # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(Phase Aの観測性
+    # 改善): role適用対象の呼び出しで、なお不合格(should_pass=False)の
+    # 場合のみ、canonical/ASR/diff_span/sub_reasonをtelemetryへ追記する
+    # (挙動変更なし、既存のretry/Human Review Lockには一切影響しない)。
+    if role_gate_applicable and not result.should_pass:
+        canon_tokens = tokenize(canonical_text)
+        asr_tokens = tokenize(asr_text) if asr_text is not None else []
+        sub_reason, diff_loc = semantic_equivalence.determine_sub_reason(
+            classification=result.classification, should_pass=result.should_pass,
+            content_word_diffs=result.protected.content_word_diffs,
+            number_mismatches=result.protected.number_mismatches,
+            negation_mismatches=result.protected.negation_mismatches,
+            canon_tokens=canon_tokens, asr_tokens=asr_tokens)
+        result.semantic_equivalence_info = {
+            "tier_applied": "none", "sub_reason": sub_reason, "corroborated_by": [],
+            "warning": False, "role": resolved_role, "diff_spans": diff_loc,
+        }
+        try:
+            semantic_equivalence.append_telemetry_log({
+                "canonical": canonical_text, "asr": asr_text, "role": resolved_role,
+                "classification": result.classification, "sub_reason": sub_reason,
+                "diff_span": diff_loc,
+                # S3(additive、既存キーは無変更): entity_likeと判定された
+                # content_word_diffsの根拠カテゴリ(capitalized/loanword等)。
+                "entity_like_source": aggregate_entity_like_sources(result.protected.content_word_diffs),
+            })
+        except OSError:
+            pass  # telemetry書き込み失敗は既存の判定・retry挙動に影響させない(安全側)
+    return result
+
+
+# ------------------------------------------------------------
+# Retry Guardrail: 同一signatureが連続した場合の打ち切り判定
+# ------------------------------------------------------------
+def signature(canonical_text: str, asr_text: str) -> str:
+    """同一失敗パターンの検出用キー(正規化済みASR text)。"""
+    return normalize_text(asr_text or "")
+
+
+def should_stop_retrying(attempt_results: list[ClassificationResult], max_same_signature: int = 3) -> bool:
+    """直近max_same_signature件が全てASR_VALIDATION_UNCERTAIN/TRUE_CONTENT_MISMATCH
+    以外へ進展しておらず、かつ正規化後のASR textがほぼ同一(signature一致)なら、
+    これ以上retryしても改善しないと判断して打ち切る。
+    TRUE_CONTENT_MISMATCH/TTS_FAILUREは対象外(retryで直る可能性があるため)。"""
+    if len(attempt_results) < max_same_signature:
+        return False
+    recent = attempt_results[-max_same_signature:]
+    if any(r.classification in ("TRUE_CONTENT_MISMATCH", "TTS_FAILURE") for r in recent):
+        return False
+    if any(r.should_pass for r in recent):
+        return False  # 通常は呼ばれる前にPASS確定しているはずだが念のため
+    return True
+
+
+# ------------------------------------------------------------
+# Production wiring用ヘルパー(ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01で
+# 実際のretry loopへ配線した際に使う統一エントリポイント)
+# ------------------------------------------------------------
+def evaluate_attempt(canonical_text: str, asr_text: str, prior_results: list,
+                      max_same_signature: int = 3, *,
+                      segment_id: str | None = None) -> tuple[bool, bool, "ClassificationResult"]:
+    """1回のTTS attemptの評価結果を返す。
+    prior_resultsは呼び出し側がループの外で初期化し、毎回このリストへ
+    追記していく(同一segment内の履歴、standard/fallback別に分けて渡すこと)。
+
+    戻り値: (verified, stop_retrying, classification)
+      verified=True        → このattemptをそのまま採用してよい(retry不要)
+      stop_retrying=True   → PASSはしないが、これ以上retryしても改善しない
+                              (ASR_VALIDATION_UNCERTAIN、同一signatureが
+                              max_same_signature回連続)。直前に書き込み済みの
+                              audioをそのまま採用し、STATUS="ASR_VALIDATION_
+                              UNCERTAIN"として返すこと(STOPPEDとは区別する)。
+      それ以外              → 通常通りretryを継続する。
+
+    segment_id(EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01で追加、
+    既定None): classify_asr_match()へそのまま転送する(role gating用)。
+    Noneの既存呼び出し元は挙動無変更。
+    """
+    result = classify_asr_match(canonical_text, asr_text, segment_id=segment_id)
+    prior_results.append(result)
+    if result.should_pass:
+        return True, False, result
+    if not result.should_retry and should_stop_retrying(prior_results, max_same_signature=max_same_signature):
+        return False, True, result
+    return False, False, result
+
+
+# ============================================================
+# ER-010-ENTITY-PHONETIC-CORROBORATION-01: 固有名詞ASR表記揺れの
+# 軽量音韻類似度チェック
+# ============================================================
+# 背景(No.5 pool_n5_cafes B1 full_story_part1で発生): entity_only_diffs
+# (上記classify_asr_match、固有名詞らしき語のみの音訳差)はASR_VALIDATION_
+# UNCERTAIN(should_pass=False、retryしても改善しない)としてHuman Review
+# へ回る設計が既にある(is_entity_like_mismatch、er006_secondary_asr_01.py)。
+# しかし「自動PASSさせる」設計は無く、実際には正しく発話されている可能性が
+# 高い音声(例: "L. Mimoun and A. Gruen"という、英語ASRにとって馴染みの
+# 薄い研究者名)が、TTSを何度取り直しても解決しないままHuman Reviewに
+# 滞留する。
+#
+# 新しいresearch工程(発音資料の事前調査)は、全記事・全固有名詞への一律
+# コスト増になるため追加しない(過剰実装の回避)。代わりに、実際に
+# entity_only_diffsが発生した名前**だけ**を対象に、複数の独立したTTS
+# 取り直し(同じ音声の複数回文字起こしではなく、別々に生成されたTTS
+# takeそれぞれのASR結果)を比較し、以下の軽量な音韻類似度チェック
+# (pure Python、新規外部依存なし、日本語側の_reading_equal_allowing_
+# voicing()と同じ発想の英語版)で、明らかに同一固有名詞の音訳揺れだと
+# 判定できる場合のみ自動PASS相当として扱う。
+#
+# 設計上の要点(既存のprotected_check思想[数字/否定/内容語は絶対に
+# 見逃さない]を壊さないための保守的な制約):
+#   1. 各takeごとにentity_only_diffs(数字・否定・非固有名詞内容語の差が
+#      一切無い不一致)かどうかを個別に判定する。数字・否定・非固有名詞
+#      内容語の差を含むtakeは、そのtake単体を判断材料から除外するのみで
+#      (1回だけの無関係な不具合[語の脱落等]は対象entityの音韻評価とは
+#      別問題)、他の独立したtakeがentity-onlyで一貫していれば、その
+#      takeの証拠は引き続き使う(全体を一括拒否しない)。
+#   2. 同じcanonical entity spanについて、複数の独立したTTS take間で
+#      **異なる**ASR書き起こし候補が観測された場合のみ、標準的な閾値
+#      (soundex一致+文字列類似度0.5以上+文字数差2以内+語頭一致)で
+#      音韻類似度を判定する。同じ誤認識が繰り返し観測される場合は、
+#      「ASRのノイズ」ではなく「別の実在する固有名詞として安定して
+#      聞こえている」可能性を排除できないため、自動PASSしない
+#      (例: "Robert"→"Rupert"のような、無関係だが実在する別人名への
+#      置き換わりを拒否するための設計。この2語はsoundexが一致し文字列
+#      類似度も高いため、単発の判定だけでは区別できない)。
+#   3. 1回しか観測されていないentity spanについては、上記2の「異なる
+#      候補の多様性」による裏付けが無いため、より厳しい閾値(文字列
+#      類似度0.75以上+文字数差1以内)を要求する。
+#   4. 複数語からなるentity span(例: "Ralf Rüller")は、canonical/ASR
+#      両方の語数が一致する場合のみ語ごとに判定する(語数が異なる場合
+#      [例: "Neukölln"→"new Cologne"]は、既に別の単語への丸ごと置換
+#      である可能性が高いため対象外とし、Human Reviewのまま維持する)。
+#
+# **既知の限界(正直に記録)**: soundexベースの軽量チェックは、
+# "Robert"/"Rupert"のように無関係な既存の別名同士でもsoundexコードが
+# 一致するケースを完全には排除できない(上記2の多様性要件で緩和して
+# いるが、理論的に完全ではない)。本チェックはあくまで「retry・Human
+# Review滞留を減らすための補助的な最適化」であり、既存の必須プロセス
+# (最終的なユーザー試聴)がこの限界に対する最終的な安全網であり続ける
+# (CURRENT_SPEC.md「最終人間試聴」原則は本チェックの追加によっても
+# 一切変更しない)。
+ASR_VALIDATION_UNCERTAIN_PHONETIC_ACCEPTED = "ASR_VALIDATION_UNCERTAIN_PHONETIC_ACCEPTED"
+
+_SOUNDEX_CODES = {}
+for _ch in "BFPV":
+    _SOUNDEX_CODES[_ch] = "1"
+for _ch in "CGJKQSXZ":
+    _SOUNDEX_CODES[_ch] = "2"
+for _ch in "DT":
+    _SOUNDEX_CODES[_ch] = "3"
+_SOUNDEX_CODES["L"] = "4"
+for _ch in "MN":
+    _SOUNDEX_CODES[_ch] = "5"
+_SOUNDEX_CODES["R"] = "6"
+
+
+def soundex_en(word: str) -> str:
+    """標準的なSoundexアルゴリズム(pure Python、新規外部依存なし)。
+    英字以外は無視する(発音区別符号除去後の語を渡すことを想定)。"""
+    letters = re.sub(r"[^A-Za-z]", "", (word or "")).upper()
+    if not letters:
+        return ""
+    first = letters[0]
+    codes = []
+    prev = _SOUNDEX_CODES.get(first, "")
+    for ch in letters[1:]:
+        code = _SOUNDEX_CODES.get(ch, "")
+        if code and code != prev:
+            codes.append(code)
+        if ch not in "HW":  # H/Wは前の子音との「隣接」を切らない(標準仕様)
+            prev = code
+    return (first + "".join(codes) + "000")[:4]
+
+
+def _phonetic_pair_ok(a: str, b: str, *, strict: bool) -> bool:
+    """1語同士の音韻類似度判定。strict=Trueは単発観測(裏付け無し)向けの
+    厳しい閾値、strict=Falseは複数の異なる候補が観測された場合(多様性
+    そのものが裏付けになる)向けの標準閾値。
+
+    ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 D-1で修正: 従来は先頭
+    文字の"綴り"が完全一致しない場合に即FAILしていたが(`a[0] != b[0]`)、
+    これは"Kristie"(k)と"Christy"(c)のように、綴りは異なっても英語では
+    同じ音(/k/)を表す組の実例(No.8監査)を誤って弾いていた。soundex_en()
+    が単語の残り部分では既にC/G/J/K/Q/S/X/Zを同じ子音グループ"2"として
+    扱っているのと同じ_SOUNDEX_CODESテーブルを、先頭文字の比較にも
+    再利用する(新規のテーブルを追加せず、既存の等価グループをそのまま
+    拡張する)。母音・H・Wのようにテーブルに無い文字は、`.get(ch, ch)`に
+    より従来通り文字そのもので比較され(=綴りが異なれば不一致のまま)、
+    無関係な母音同士まで緩めることはない。"""
+    a, b = a.lower(), b.lower()
+    if a == b:
+        return True
+    if not a or not b:
+        return False
+    if _SOUNDEX_CODES.get(a[0].upper(), a[0]) != _SOUNDEX_CODES.get(b[0].upper(), b[0]):
+        return False
+    # soundex_en()自体は標準Soundex仕様通り先頭文字を常に生の文字で
+    # 残す(K623/C623のように、残りが同じ子音コードでも先頭文字の違いで
+    # 文字列としては不一致になる)。先頭文字の等価性は直前で確認済みの
+    # ため、ここでは残りのコード部分(位置1以降)だけを比較する。
+    if soundex_en(a)[1:] != soundex_en(b)[1:]:
+        return False
+    max_len_diff = 1 if strict else 2
+    min_ratio = 0.75 if strict else 0.5
+    if abs(len(a) - len(b)) > max_len_diff:
+        return False
+    return difflib.SequenceMatcher(None, a, b).ratio() >= min_ratio
+
+
+def _strip_short_tokens(span: str) -> str:
+    """"L."のような1〜2文字の頭文字・略語トークンを取り除く。difflibの
+    word-level diffは、ASR側で頭文字が直後の固有名詞と融合して書き起こ
+    される場合(例: "L. Mimoun"→"Elmi Moon")、canonical側のspan境界に
+    その頭文字を含めるかどうかが試行ごとに揺れる(実データで確認済み:
+    同じ"L. Mimoun"が、あるtakeでは"mimoun"単独、別のtakeでは"l mimoun"
+    という2語spanとして検出された)。この揺れによって同一固有名詞の証拠が
+    別々のspan keyへ分裂するのを防ぐため、grouping key算出時に短い
+    トークンを取り除く(全て短い場合は元のspanのまま返す=安全側)。"""
+    words = [w for w in span.split() if len(w) > 2]
+    return " ".join(words) if words else span
+
+
+def _span_phonetically_ok(canonical_words: list[str], asr_span: str, *, strict: bool) -> bool:
+    """canonical_words(既に短いトークンを除去済みの語列)と、ASR候補
+    spanの語数が一致する場合のみ語ごとに判定する。語数が一致しない場合は
+    「判定不能」を示すNoneではなくFalseを返す(呼び出し側でこの関数を
+    使う前に、比較可能なペアかどうかを別途確認すること)。"""
+    asr_words = asr_span.split()
+    if not canonical_words or len(canonical_words) != len(asr_words):
+        return False
+    return all(_phonetic_pair_ok(c, a, strict=strict) for c, a in zip(canonical_words, asr_words))
+
+
+def aggregate_entity_only_phonetic_corroboration(canonical_text: str, asr_texts: list[str]) -> dict:
+    """複数の独立したTTS take(asr_texts、それぞれ別のTTS生成に対する
+    Primary ASR書き起こし)を、同じcanonical_textに対して再分類し、
+    entity_only_diffsだけが原因の不一致が、音韻的に見て「同じ固有名詞の
+    ASR書き起こし揺れ」だと判定できるかを集約評価する。
+
+    新規TTS/ASR API呼び出しは一切行わない(既に得られたasr_textsを
+    classify_asr_match()で再分類するだけの、ローカルでの後処理)。
+
+    戻り値: {"accept": bool, "reason": str, "spans": {canonical_span: [asr候補,...]}}
+    """
+    if len(asr_texts) < 1:
+        return {"accept": False, "reason": "no attempts provided", "spans": {}}
+
+    spans: dict[str, set[str]] = {}
+    skipped_non_entity = 0
+    for asr_text in asr_texts:
+        cls = classify_asr_match(canonical_text, asr_text)
+        if cls.should_pass:
+            continue  # このtakeは既に合格しているので集約対象外(問題なし)
+        diffs = cls.protected.content_word_diffs
+        if not diffs or not all(d["entity_like"] for d in diffs):
+            # 固有名詞以外の差(数字・否定・通常内容語)を含むtakeは、この
+            # 機構の判断材料としては使わない(そのtakeだけを除外する)。
+            # ただし、他の独立したtakeがentity-onlyで一貫していれば、
+            # その別の1回の失敗を理由に全体を拒否はしない(1回だけの
+            # 無関係な不具合[語の脱落等]は、対象entityの音韻評価とは
+            # 別問題であり、そのentity自体の評価を無効にする理由には
+            # ならないため)。
+            skipped_non_entity += 1
+            continue
+        for d in diffs:
+            key = _strip_short_tokens(d["canonical"])
+            spans.setdefault(key, set()).add(d["asr"])
+
+    if not spans:
+        return {"accept": False,
+                "reason": f"no usable entity-only diffs across the given takes "
+                          f"(skipped {skipped_non_entity} take(s) with non entity-only mismatches)",
+                "spans": {}}
+
+    for canon_span, guesses in spans.items():
+        canon_words = canon_span.split()
+        # 頭文字融合等で語数が対応しない候補は「判定不能」として除外する
+        # (反証にも証拠にもしない)。全候補が語数不一致なら判断材料無し。
+        comparable = [g for g in guesses if len(g.split()) == len(canon_words)]
+        if not comparable:
+            return {"accept": False,
+                    "reason": f"no word-count-comparable candidates for {canon_span!r}: "
+                              f"candidates={sorted(guesses)}",
+                    "spans": {k: sorted(v) for k, v in spans.items()}}
+        strict = len(set(comparable)) < 2  # 単発観測(裏付け無し)は厳しい閾値
+        if not all(_span_phonetically_ok(canon_words, g, strict=strict) for g in comparable):
+            return {"accept": False,
+                    "reason": f"phonetic check failed for {canon_span!r}: candidates={sorted(guesses)}",
+                    "spans": {k: sorted(v) for k, v in spans.items()}}
+
+    return {"accept": True,
+            "reason": "all entity-only spans are phonetically consistent with the canonical spelling "
+                      "across independently generated takes",
+            "spans": {k: sorted(v) for k, v in spans.items()}}

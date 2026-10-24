@@ -137,6 +137,16 @@ _add("O491", "2 hundred and 5", "206", "NE")
 _add("O491", "two thousand and 5", "2006", "NE")
 _add("O491", "seven and 8", "7 and 8", "EQ", note="scale語を伴わない and は接続詞(OPEN-489維持)")
 _add("O491", "ten and 11", "10 and 11", "EQ")
+# OPEN-494(委任_06): 数字2-12+scale語(`2 hundred`)をer006正規化が1つの数として読む(従来は `2 100`/`2 105` と別tokenで、長いsegmentはPrimary PASSにならなかった)
+_add("O494", "It cost 2 hundred dollars.", "It cost 200 dollars.", "EQ")
+_add("O494", "It cost 2 hundred dollars.", "It cost two hundred dollars.", "EQ")
+_add("O494", "The shop owner walked slowly along a quiet street that morning and explained to everyone nearby that it cost 2 hundred dollars today.", "The shop owner walked slowly along the quiet street that morning and explained to everyone nearby that it cost 200 dollars today.", "EQ", note="冠詞差(許容)の混在で分類層が数値token差に依存する形、長いsegment(従来NG_SECONDARY_UNAVAILABLE)")
+_add("O494", "The shop owner walked slowly along a quiet street that morning and explained to everyone nearby that it cost 2 hundred dollars today.", "The shop owner walked slowly along the quiet street that morning and explained to everyone nearby that it cost two hundred dollars today.", "EQ", note="冠詞差(許容)の混在で分類層が数値token差に依存する形、長いsegment")
+_add("O494", "The shop owner walked slowly along a quiet street that morning and explained to everyone nearby that it cost 2 hundred and 5 dollars today.", "The shop owner walked slowly along the quiet street that morning and explained to everyone nearby that it cost 205 dollars today.", "EQ", note="冠詞差(許容)の混在で分類層が数値token差に依存する形、長いsegment")
+_add("O494", "The shop owner walked slowly along a quiet street that morning and explained to everyone nearby that there were 3 thousand 12 people today.", "The shop owner walked slowly along the quiet street that morning and explained to everyone nearby that there were 3012 people today.", "EQ", note="冠詞差(許容)の混在で分類層が数値token差に依存する形、長いsegment")
+_add("O494", "The shop owner walked slowly along a quiet street that morning and explained to everyone nearby that it cost 2 hundred dollars today.", "The shop owner walked slowly along the quiet street that morning and explained to everyone nearby that it cost 300 dollars today.", "NE", note="冠詞差(許容)の混在で分類層が数値token差に依存する形、長いsegment、別の数")
+_add("O494", "The shop owner walked slowly along a quiet street that morning and explained to everyone nearby that it cost 2 hundred and 5 dollars today.", "The shop owner walked slowly along the quiet street that morning and explained to everyone nearby that it cost 200 and 5 dollars today.", "NE", note="冠詞差(許容)の混在で分類層が数値token差に依存する形、205と200+5は別")
+_add("O494", "The shop owner walked slowly along a quiet street that morning and explained to everyone nearby that the code is 2 100 today.", "The shop owner walked slowly along the quiet street that morning and explained to everyone nearby that the code is 200 today.", "NE", note="冠詞差(許容)の混在で分類層が数値token差に依存する形、本当に2と100(digitのみ)は統合しない")
 _add("O491", "between 9 and 11", "between nine and eleven", "EQ", note="OPEN-489維持")
 
 
@@ -346,6 +356,23 @@ class ScaleWordDigitTail491(unittest.TestCase):
         self.assertEqual(n("two thousand and 5"), "2005")
         self.assertEqual(n("one hundred and ten"), "110")
         self.assertEqual(n("seven and 8"), "7 and 8")
+
+
+class DigitScaleWord494(unittest.TestCase):
+    """OPEN-494(委任_06): er006 `_convert_cardinal_words`が直前の数字2-12+scale語を1つの数として読む。"""
+
+    def test_er006_normalize(self):
+        n = val.normalize_numeric
+        self.assertEqual(n("2 hundred"), "200")
+        self.assertEqual(n("2 hundred and 5"), "205")
+        self.assertEqual(n("3 thousand 12"), "3012")
+        self.assertEqual(n("2 hundred thousand"), "200000")
+        self.assertEqual(n("two hundred"), "200")
+        self.assertEqual(n("2 100"), "2 100")                 # 本当に2と100は統合しない
+        self.assertEqual(n("13 hundred"), "13 100")           # 13以上は対象外
+        self.assertEqual(n("2 hundred 30"), "200 30")
+        self.assertEqual(n("a 2 hundred b"), "a 200 b")
+        self.assertEqual(n("hundred dollars"), "100xdollarx")  # 直前が数字でないscale語は不変
 
 
 if __name__ == "__main__":
