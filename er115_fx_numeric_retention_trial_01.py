@@ -1082,10 +1082,11 @@ def run_b3_dev(article: str, arm: str, sample: str, *, per_run_cap: float, phase
 
 
 def run_chain_dev(article: str, arm: str, sample: str, *, per_run_cap: float, phase_cap: float, client=None, resume_r2: bool = False,
-                  o2prime: bool = False, m2: bool = False) -> dict:
+                  o2prime: bool = False, m2: bool = False, allow_empty_E: bool = False) -> dict:
     out_dir = sample_dir(article, arm, sample)
     m1 = rj(os.path.join(out_dir, "m1_result.json"))
-    if m1["status"] != "E_OK":
+    # allow_empty_E: B3 v2がStorylineに数値を入れなかった(E=∅)標本でも、保持Gate無し・O-2'無作用のまま必要数値の掲載を測るために実行(Phase 2の測定用)
+    if m1["status"] != "E_OK" and not (allow_empty_E and m1["status"] == "E_EMPTY"):
         raise RuntimeError(f"[STOP] chain前提不成立: m1 status={m1['status']}")
     if os.path.exists(os.path.join(out_dir, "ja_writer", "revision2.md")):
         raise RuntimeError("[STOP] ja_writer/revision2.md が既にあります(DEV chainは再実行しない)。")
@@ -1153,13 +1154,14 @@ def main():
     ap.add_argument("--resume-r2", action="store_true", help="STOP済み標本のR0/R1を再利用しR2から再開(範囲正規化つき)")
     ap.add_argument("--b3-addendum", default="v1", choices=sorted(B3_ADDENDA), help="B3追記ブロック版(v1=Phase 1 / v2=O-1')")
     ap.add_argument("--o2prime", action="store_true", help="O-2'(同単位系の非E中核数値を周辺扱い、DEV wrapper内のみ)")
+    ap.add_argument("--allow-empty-E", action="store_true", help="B3がStorylineに数値を入れなかった標本(E=∅)でもchainを実行(測定用・Gate無し)")
     ap.add_argument("--m2", action="store_true", help="M2(R1/R2の新規数値検出を保持Gateの再実行枠で行う)")
     a = ap.parse_args()
     if a.cmd == "b3":
         run_b3_dev(a.article, a.arm, a.sample, per_run_cap=a.per_run_cap_jpy, phase_cap=a.phase_cap_jpy, addendum_version=a.b3_addendum)
     elif a.cmd == "chain":
         run_chain_dev(a.article, a.arm, a.sample, per_run_cap=a.per_run_cap_jpy, phase_cap=a.phase_cap_jpy, resume_r2=a.resume_r2,
-                      o2prime=a.o2prime, m2=a.m2)
+                      o2prime=a.o2prime, m2=a.m2, allow_empty_E=a.allow_empty_E)
     elif a.cmd == "plan":
         # 手順(i): 既存B3標本に O-2' を決定論で当て直す(API 0・B3再実行なし・標本のファイルは変更せず別名で保存)
         d = sample_dir(a.article, a.arm, a.sample)

@@ -1,0 +1,110 @@
+{
+ "annotated_md_sha256": "9ab832b11580d140ad8a46a0ec45eae2dd64f6c4b8cc1af339e11c1f3d67f6e8",
+ "core_concept_order": [
+  "C1",
+  "C3",
+  "C4"
+ ],
+ "entries": [
+  {
+   "approved_condition": "精度を変えると、比較対象となる推定値の解釈や事実の忠実性を損なう場合は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F04",
+    "F07"
+   ],
+   "concept": "C1",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2,
+    3
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "range",
+   "ledger_ids": [
+    "F04",
+    "F05"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "推定された範囲そのものが後期収縮量を示しており、丸めると範囲の幅や推定内容を変えるおそれがあります。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "約42〜46"
+    }
+   ]
+  },
+  {
+   "approved_condition": "日付・年代など、精度や範囲が意味を持つ数値は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F05"
+   ],
+   "concept": "C3",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    3
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "range",
+   "ledger_ids": [
+    "F05"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "これは断層形成時期について論文が触れる年代範囲であり、単一の確定年代ではありません。さらに丸めると、示された年代範囲を変えるおそれがあります。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "約3〜4億年"
+    }
+   ]
+  },
+  {
+   "approved_condition": "重要な閾値を隠したり曖昧にしたりする丸めは行わない。",
+   "basis_fact_ids": [
+    "F07"
+   ],
+   "concept": "C4",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    4
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F07"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "「少なくとも約750 m」というモデル予測の下限を表す数値であり、丸めると下限の意味を曖昧にするおそれがあります。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "約750"
+    }
+   ]
+  }
+ ],
+ "judge": {
+  "developer_message_sha256": "8d2618b7cc966affb3567e5ee1354551b92f394462a4786683f8f9a3052a9d3d",
+  "effort": "low",
+  "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
+  "model_requested": "gpt-6-luna",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0ab0a5c33eb75ff7006add3f2a551087d099ab64180ba4cf80",
+  "sec": 7.9,
+  "usage": {
+   "input_tokens": 3732,
+   "output_tokens": 723,
+   "reasoning_tokens": 347
+  },
+  "user_prompt_sha256": "b14db2891f303a7b066b1f67dc86e57da862c30125a2b14057d70d17354fe253"
+ },
+ "n_approximate_ok": 0,
+ "overlay_sha256": "1d16dd7c3f54c26eff82c05fef95ea08e0345a5be0abc875b4edf6cd5980c417",
+ "requested_effort": "low",
+ "requested_model": "gpt-6-luna",
+ "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+ "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
+ "sidecar_sha256": "bb6db77273dfb99f6636c3b2a6b916b3524dca539edfc712936c67314a5be255",
+ "status": "OK",
+ "v8_max_relative_error": "0.10",
+ "violations": []
+}

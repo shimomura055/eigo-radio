@@ -1,0 +1,107 @@
+{
+ "annotated_md_sha256": "df2dc0dfb409f77abff6274a81b7b38d44a276a3e92acd4a7e531ab30451f56a",
+ "core_concept_order": [
+  "C1",
+  "C4",
+  "C6"
+ ],
+ "entries": [
+  {
+   "approved_condition": "日付・記録など、精度自体に意味がある数字は厳密値を維持する。",
+   "basis_fact_ids": [
+    "IG2026-01"
+   ],
+   "concept": "C1",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    1
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "date_time",
+   "ledger_ids": [
+    "IG2026-01"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "授賞式の日付そのものを示すため、日付の精度を保つ必要があります。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "2026年9月3日"
+    }
+   ]
+  },
+  {
+   "approved_condition": "小数を丸めることで測定の解釈や事実の忠実性が損なわれる場合は精度を保つ。",
+   "basis_fact_ids": [
+    "IG2026-02"
+   ],
+   "concept": "C4",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "IG2026-02"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "結晶構造解析の分解能を示す測定値であり、小数を丸めると報告された精度を変えてしまいます。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "1.2"
+    }
+   ]
+  },
+  {
+   "approved_condition": "比較の解釈に必要な精度を維持し、別のFactや指標と統合しない。",
+   "basis_fact_ids": [
+    "IG2026-03"
+   ],
+   "concept": "C6",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    3
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "IG2026-03"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "論文が推定したエネルギー比較の倍率であり、丸める根拠がありません。比較値の意味を保つため、厳密値を維持します。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "3倍"
+    }
+   ]
+  }
+ ],
+ "judge": {
+  "developer_message_sha256": "8d2618b7cc966affb3567e5ee1354551b92f394462a4786683f8f9a3052a9d3d",
+  "effort": "low",
+  "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
+  "model_requested": "gpt-6-luna",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0ecd741b2cd3145c006add4121b7bc87d0aadc5ab66fceba75",
+  "sec": 6.1,
+  "usage": {
+   "input_tokens": 4119,
+   "output_tokens": 470,
+   "reasoning_tokens": 124
+  },
+  "user_prompt_sha256": "7f60f9ebb726447abbe90dfdc2a38d9526e0aabd86ec83afa6069a8e99fa8de1"
+ },
+ "n_approximate_ok": 0,
+ "overlay_sha256": "2793b8efe3ea9c166d420b50373e0c892bc854297f0699d0d57aea32a8af3662",
+ "requested_effort": "low",
+ "requested_model": "gpt-6-luna",
+ "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+ "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
+ "sidecar_sha256": "31588d21bec90d84e236d384ffcdda357bb409edc3b95f2b45d760e1537df284",
+ "status": "OK",
+ "v8_max_relative_error": "0.10",
+ "violations": []
+}

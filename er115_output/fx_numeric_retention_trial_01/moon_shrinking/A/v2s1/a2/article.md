@@ -1,0 +1,20 @@
+# The Moon’s “Wrinkle” Mystery: Is That Jacket Too Thick?
+
+The Moon looks calm in the night sky. But its surface has “wrinkles.” Following the clues leads to a story that makes you ask, “What were you wearing?” The focus is a thick “jacket” made of broken rock.
+
+The research team studied a thick layer of broken rock. It lies on the Moon’s surface and has many gaps. Can rock keep heat in? This layer may work like a warm coat, keeping heat in. It may have made it harder for heat inside the Moon to escape. It may have slowed the Moon’s cooling and shrinking.
+
+Now, let’s return to the Moon’s wrinkles. Its surface has shapes like cliffs. One side is steep, and the other is gentle. They are thought to be marks from faults. Faults are places where blocks of rock push against each other. One block can push up over the other. The Moon did not wrinkle its brow. These marks came from blocks of rock pushing against each other.
+
+Fault maps and other facts helped with the calculations. They show that the Moon’s radius shrank by about 42 to 46 meters. If you thought, “At last, we know the Moon’s diet record!” stop here. This is not the total shrinkage over the Moon’s whole life.
+
+It shows shrinkage in a “later period,” from fairly recent faults. We still do not know for sure when these faults began. It’s like reading pages from the middle of a family budget book. That alone cannot show the family’s spending over its whole life.
+
+Some models follow the Moon’s cooling through its whole history. They predict much more shrinkage. But it is too soon to ask which is right: “the calculations” or “the Moon’s surface.” They cover different times and use different methods. One looks at a long history. The other uses records from young faults.
+
+So the rock jacket may be one clue to this difference. But do not play the “case solved” music yet. Do not say, “Insulation was to blame!” The research team only raised this as a possibility. The jacket’s role has not been confirmed.
+
+Following the Moon’s wrinkles led us to a story about its inner heat and what it wore. Next time you look at the Moon, you may ask, “How long have you worn that jacket?” Even if it gives no answer, the familiar Moon may seem a little more mysterious.
+
+## In one line
+A thick rock layer with many gaps may have kept heat in. Young faults show less shrinkage than some models of the Moon’s full history predict. The rock layer may explain the difference, but this idea is not confirmed.

@@ -1,0 +1,159 @@
+{
+ "annotated_md_sha256": "a631add3daf49b1626f0642459a91c0d019deae5227fa9790a315abaaf414a8b",
+ "core_concept_order": [
+  "C1",
+  "C3",
+  "C7",
+  "C10",
+  "C12"
+ ],
+ "entries": [
+  {
+   "approved_condition": "日付・記録など、精度が意味を持つ数値は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F02"
+   ],
+   "concept": "C1",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    1
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "date_time",
+   "ledger_ids": [
+    "F02"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "史上最高値を記録した時期を特定する日付であり、丸めると時点の特定性が損なわれます。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "2025年2月"
+    }
+   ]
+  },
+  {
+   "approved_condition": "記録など、精度そのものが意味を持つ数値は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F02"
+   ],
+   "concept": "C3",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    1
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F02"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "史上最高値の記録に含まれる価格で、Ledger上の「4.30米ドルを超える」という値を概数化すると、記録の意味を損なうおそれがあります。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "4.30"
+    }
+   ]
+  },
+  {
+   "approved_condition": "余分な小数精度が重要な閾値や解釈に影響しない場合は、意味を保つ範囲で概数化する。",
+   "basis_fact_ids": [
+    "F11"
+   ],
+   "concept": "C7",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    4
+   ],
+   "final_decision": "APPROXIMATE_OK",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F11"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "平均小売価格の規模を伝える数値で、小数第2位までの精度は意味の理解に必須ではありません。小数第1位まで残せば価格の規模を保ちつつ聞き取りやすくできます。",
+   "surfaces": [
+    {
+     "approx": "約9.1",
+     "surface": "9.14"
+    }
+   ]
+  },
+  {
+   "approved_condition": "意味を損なわない範囲では概数を基本とし、聞き取りやすさを優先する。",
+   "basis_fact_ids": [
+    "F11"
+   ],
+   "concept": "C10",
+   "downgrade_reasons": [
+    "3%:V3_not_ordinary_rounding(exact=3,approx=3)"
+   ],
+   "fact_ns": [
+    4
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F11"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "この上昇率を小数精度で区別する必要はなく、概数としても上昇幅の意味は保たれます。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "3%"
+    }
+   ]
+  },
+  {
+   "approved_condition": "余分な精度が重要な差や解釈に影響しない場合は、聞き取りやすい概数を用いる。",
+   "basis_fact_ids": [
+    "F11"
+   ],
+   "concept": "C12",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    4
+   ],
+   "final_decision": "APPROXIMATE_OK",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F11"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "上昇幅の大きさを伝える目的では、41%を約40%としても重要な意味や解釈は変わりません。",
+   "surfaces": [
+    {
+     "approx": "約40%",
+     "surface": "41%"
+    }
+   ]
+  }
+ ],
+ "judge": {
+  "developer_message_sha256": "8d2618b7cc966affb3567e5ee1354551b92f394462a4786683f8f9a3052a9d3d",
+  "effort": "low",
+  "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
+  "model_requested": "gpt-6-luna",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0c3ce8d08a067225006add4121837c87d0b3d3bc35a9666896",
+  "sec": 10.3,
+  "usage": {
+   "input_tokens": 3759,
+   "output_tokens": 923,
+   "reasoning_tokens": 318
+  },
+  "user_prompt_sha256": "58aa211ab09bd04905e3782cc8083613ffd32626f541e943182040f814a03c2d"
+ },
+ "n_approximate_ok": 2,
+ "overlay_sha256": "304ae00c7e903bbc71f0e7e4bceb274a55f8641c92540087c77666f42a80c716",
+ "requested_effort": "low",
+ "requested_model": "gpt-6-luna",
+ "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+ "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
+ "sidecar_sha256": "038d32dda84d0fdcd6ac9ad4f38dedb28360a727a1fc6a7d173522740c45f7d9",
+ "status": "OK",
+ "v8_max_relative_error": "0.10",
+ "violations": []
+}

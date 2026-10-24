@@ -1,4 +1,44 @@
-# TRIAL_RESULT_01 (FX-CORE-NUMERIC-RETENTION-TRIAL-01 委任_02、2026-10-25。ユーザー原文§8の1〜5に対応する**事実**。Status候補はSonnet所見、最終はFable独立評価)
+# TRIAL_RESULT_01 (FX-CORE-NUMERIC-RETENTION-TRIAL-01。ユーザー原文§8の1〜5に対応する**事実**。Status候補はSonnet所見、最終はFable独立評価)
+
+## 【委任_03更新(2026-10-25、最新)】Opus差分レビューM1〜M5反映 → Phase 1b → Phase 2
+証跡: `PHASE1B_RESULT_01.md`、`PHASE2_RESULT_01.md`、`DESIGN_03.md`、`OPUS_REVIEW_02.md`、`PREREGISTERED_CRITERIA_02.md`(生成前commit 25da62900)、`BUDGET_LOG_01.md`、`er115_output/fx_numeric_retention_trial_01/`。コード=`er115_fx_numeric_retention_trial_01.py`(DEV専用・test 46 PASS)。
+
+### 1. 根本原因と採用候補方式(更新)
+- 既存B3の活かし方: B3(Storyline選定)は不変のまま、追記ブロックv2(O-1': 答えそのものの値だけをStorylineへ、比較相手は言葉で)で『Storylineの数値=E』を作る。`derive_ranks`・規則5・R0_PROMPT・R1/R2 Promptは不変(sha固定test)。
+- 改善した箇所: (a)B3追記v2(Eを正しくする)、(b)Writer入力のO-2'(E以外で**Eと同じ単位系**の中核数値だけを【周辺数値】へ付け替え=Writerが使える範囲を正しくする。年系・別単位系・単位不明は残す)、(c)R0/R1/R2直後の保持Gate、(d)R1/R2出力の新規数値検出M2(保持Gateと同じ再実行枠)、(e)R1/R2出力の範囲正規化J2(**Gateより前の決定論の後処理で、正本のR1/R2本文を書き換える**)。
+- 追加の原因確認: Phase 1の不要数値(約750 m)は、B3が『モデル予測との差』を主筋にしStorylineに入れるとEに入る(2/5)ためだった。v2では0/3。規則9(許可の言い方)は効かない(Phase 1実測)→印そのものを変えるO-2'が有効(v2s1/v2s2で750掲載0)。**新たな限界**: B3がStorylineに数値を入れない記事(ig_nobel型)ではEが空で何も保護されない。
+
+### 2. 月の記事の検証結果(Phase 1b、事前登録02)
+- 必須数値(約42〜46 m): B3 v2 3/3でStorylineに入り、フルチェーン2/2でR0〜R2・EN Std・EN Advまで保持(Gate発火0、再生成0、STOP 0)。
+- 不要数値: 付け替えた約750 mの掲載0、周辺数値0、新規数値(中点等)0(2/2)。Phase 1の『約750掲載』『約45追加』は再現せず。
+- 文章品質: 『事件簿』『上着/断熱』『家計簿』の比喩で読み物として成立、数字は42〜46のみ。数値なしのモデル比較が自然に成立(『もっと大きな縮みを予測するモデルもある…期間も調べ方も違う』)。EN: about 42 to 46 metersが正しい。
+- 期間情報: 2/2で『後期』『開始時期は未確定』『誕生以来の総量でない』あり、誤解表現0。約3〜4億年の数値は出ない(使用可・必須でない=O-2'で下げていない)。
+- 基準判定: (i)(ii)(iii)全て合格。
+
+### 3. 過去記事での検証結果(Phase 2、詳細=`PHASE2_RESULT_01.md`)
+| 記事 | B3 E | 必要数 | 最終掲載(R2/Std/Adv) | 不要掲載 | 周辺混入 | 付け替え数値のうち必要数 | 新規数値 | Gate・STOP |
+|---|---|---|---|---|---|---|---|---|
+| coffee_prices p3(比較が答え) | {4.30米ドル/ポンド, 41%} | 2 | **2/2** | 0 | 0 | **0**(付け替え=9.14・3%、いずれも任意) | 0 | 0・0 |
+| coffee_prices p2 | ∅ | 2 | 2/2(Writerが自分で採用) | 0 | 0 | - | 0 | 0・0 |
+| ig_nobel_2026 p2 | ∅ | 1(3倍超) | **0/1(欠落)** | 0 | 0 | - | 0 | 0・0 |
+- ig_nobelはB3のStorylineに数値が入った標本が0/4(v2 3本+v1 1本)。Storylineが『何をどう測ったか/人が飲む乳の試験ではない』を軸にするため。現行Production版(run_nws_02)には『３倍を超える』があるが、今回はWriterが落とした=方式がこの記事型では必要数を守れない。過剰掲載・文章品質低下は確認されず(数字なしで読み物として成立するが、論文の見どころの数値が消える)。semiconductor_earnings(③)は300円上限のため省略。
+
+### 4. QCD影響(更新・実測ベース)
+- 品質上の利点: 数値が答えの記事(月・コーヒー型)では、必要数の全段保持と不要数値の抑制が両立。範囲値の波ダッシュ(R1 3/3・R2書き戻し)はJ2で解消、Production同等の記号QAではSTOPしていた事実を記録。残存リスク: (1)Storylineが数値を要さない記事型で必要数を守れない(ig_nobel 0/4)、(2)標本が少ない(フルチェーン8本、B3 15本)、(3)O-2'は単位系で一律に下げる鈍い規則(任意の長さ系数値も下がる)、(4)J2はOpus条件付き安全判断だがProduction採用は条件A/C再レビュー+ユーザー承認が必要。
+- 生成時間: Gate・O-2'・M2はミリ秒。再実行0のためW-1所要は125〜146秒(Phase 1 B/s1は115秒、LLM応答時間の差)で増分は検出不能。
+- 量産単価増分(実測ベース見積): 追加LLM call 0(再実行: R0再生成 0/8チェーン、R1再実行 0/8、R2再実行 0/8[J2適用後]、M1によるB3再実行 0/15標本)→**点推定 0円/記事**。0/nの95%上限(B3再実行<=18%、R0/R1/R2<=31%)から保守的上限は約6〜7円/記事(2.0+2.2+1.2+1.2)。B3 DEV平均10.9円(v2 8本)、チェーン(B3除く)平均14.0円(5本)は呼出数が1/1/1のままLLM出力量のばらつき(B/s1 12.1円と比較)。
+- Trial実費: 案件累計 **285.68円/上限300円**(Phase 1=120.12、Phase 1b=63.99、Phase 2=101.57)。
+
+### 5. Trial Closeout(Sonnet所見。最終はFable)
+- Status候補: **VALIDATED_LIMITED相当(数値が答えの記事型[月・コーヒー]のみ)だが、ユーザー要求(Family X全体で必要な数字を確実に伝える)に対しては『ig_nobel型で未達』のためUSER_DECISION_REQUIREDの候補**。REJECTED基準(撤退条件)には非該当(月・コーヒーで成立、副作用なし)。根拠は上記§2〜§3と`PHASE2_RESULT_01.md` §5。
+- 次の一手候補(改善見込みの自己評価): (1)R5案=B3のJSONに`answer_numbers`欄を追加(DESIGN_02 §4。B3自身が見出し数値を明示、見込み=中〜高、1サンプル約9〜12円)、(2)Storyline数値が空のときにFact見出し数値を決定論で選ぶ規則(重複選定システム化のリスク、見込み=中)、(3)限定採用(数値が答えの記事型のみ)+ユーザーに『Storylineが数値を要さない記事の見出し数値を必須とみなすか』を確認。
+- Production採用する場合の必要作業・影響範囲: `ADOPTION_NOTE_01.md`(更新)。
+- SSOT/Git反映状況: OPEN-507更新、別件OPEN(範囲値の波ダッシュ=Production既存欠陥)新規、DECISION_LOG 1件、ACTIVE_TASK自行。commit/pushは`RESULT_PACKET_FXNR3.md`参照。
+- 最終Gate: Production採用・配線・月のProduction再実行は未承認のまま(実施なし)。
+
+---
+
+# 以下は委任_02時点(Phase 1)の記録(参考。上の委任_03更新で一部置換)
 
 証跡: `PHASE1_RESULT_01.md`(月)、`DESIGN_02.md`、`CALIBRATION_01.md`、`PREREGISTERED_CRITERIA_01.md`、`BUDGET_LOG_01.md`、`er115_output/fx_numeric_retention_trial_01/`(各標本の`m1_result.json`/`trial_metrics.json`/`ja_writer/`/`a2`/`b1b`/`cost.json`)。コード=`er115_fx_numeric_retention_trial_01.py`(DEV専用・test 32 PASS)。
 

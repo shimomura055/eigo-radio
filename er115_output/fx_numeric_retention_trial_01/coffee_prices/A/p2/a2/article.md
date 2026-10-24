@@ -1,0 +1,22 @@
+# The Coffee Price Case: The “Time Lag” Trick on the Price Tag
+
+“Even coffee is expensive. Tariffs are to blame!” Before deciding that, let’s investigate. The scene is the coffee aisle at a supermarket. The evidence is the price tag. But this price tag does not show only today’s news.
+
+First, let’s check the damage—or, rather, how much prices rose. The Associated Press reported this using government figures. The average price U.S. households paid for ground coffee was up 41%. This was compared with the same month a year earlier. That is enough to wake you right up.
+
+Let’s turn back the clock and look for clues. In February 2025, Arabica coffee futures in New York went above $4.30 per pound. This was an all-time high. Wait—this was the price of futures traded in the market, not coffee in supermarkets. That is an important clue, so remember it.
+
+At the time, the market was worried about bean supplies. Reuters reported drought in Brazil. It weakened hopes that production would recover in the next harvest. This increased worries about supply. An investigation of store shelf tags had led all the way to farms in Brazil.
+
+Then tariffs, looking very suspicious, entered the scene. Reuters reported that the U.S. put tariffs on imports in the summer. They were on imports from coffee-producing countries and elsewhere. These tariffs also pushed up the price of raw coffee beans. “So it was you after all!” But it is too soon to write an arrest warrant.
+
+At the time of Reuters’ report, most U.S. store price rises had two causes. They came from shortages and higher prices for unroasted beans. Both came before the tariffs. The report said the tariffs’ effect had not fully shown up on price tags yet. That was while the beans were making their way to consumers.
+
+In other words, “tariffs made raw beans cost more” is one thing. “Tariffs are the main reason store prices rose” is another. Even with the same coffee, raw bean prices and finished coffee prices change at different times. You cannot line up everyone in this case at the scene at the same time.
+
+The key to solving this mystery is not only “what happened,” but also “when it happened.” Tariffs may become the main story in the news. But they do not always become the main story on price tags right away. The price in front of us showed the earlier bean shortage. But its effect arrived late.
+
+Next time you stop in your tracks at a store, ask the price tag: “What news are you remembering—and from when?” Of course, it will not answer. But the numbers in its silence have a history. There is coffee in the cup. The price tag holds a case file of events that came with a time lag. The investigation during a shopping trip starts there.
+
+## In one line
+U.S. ground coffee prices rose 41% from a year earlier, mostly from earlier shortages and high bean prices. Tariffs raised bean costs too, but shoppers had not yet felt their full effect.

@@ -1,0 +1,157 @@
+{
+ "annotated_md_sha256": "f46d5e4b07b7c6d28d0cea0a33e04a59fc439d7ea16d7f0b0a01cd62e9809ed9",
+ "core_concept_order": [
+  "C1",
+  "C3",
+  "C7",
+  "C10",
+  "C12"
+ ],
+ "entries": [
+  {
+   "approved_condition": "日付・記録など、精度が意味を持つ数字は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F02"
+   ],
+   "concept": "C1",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    1
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "date_time",
+   "ledger_ids": [
+    "F02"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "価格記録が起きた時期を特定する日付であり、期間を変える概数化は避けます。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "2025年2月"
+    }
+   ]
+  },
+  {
+   "approved_condition": "記録や重要な閾値など、精度自体が意味を持つ数字は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F02"
+   ],
+   "concept": "C3",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    1
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F02"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "「4.30米ドル超」は先物価格の記録に関わる値であり、丸めると記録の水準や閾値の意味を変えるおそれがあります。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "4.30"
+    }
+   ]
+  },
+  {
+   "approved_condition": "証拠の解釈に関わる精度は保ち、判断が不確かな場合は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F11"
+   ],
+   "concept": "C7",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    4
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F11"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "米国の挽いたコーヒーの平均小売価格として報告された具体的な統計値であり、金額の精度を保ちます。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "9.14"
+    }
+   ]
+  },
+  {
+   "approved_condition": "健康研究の結果など、精度が意味を持つ結果は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F11"
+   ],
+   "concept": "C10",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    4
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F11"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "前月からの価格変化を示す統計結果です。概数化によって元の報告値を変える必要はありません。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "3%"
+    }
+   ]
+  },
+  {
+   "approved_condition": "結果の解釈に関わる数値は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F11"
+   ],
+   "concept": "C12",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    4
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F11"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "前年同月比の価格上昇率として報告された統計結果なので、元の値を維持します。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "41%"
+    }
+   ]
+  }
+ ],
+ "judge": {
+  "developer_message_sha256": "8d2618b7cc966affb3567e5ee1354551b92f394462a4786683f8f9a3052a9d3d",
+  "effort": "low",
+  "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
+  "model_requested": "gpt-6-luna",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_02a830b661442258006add42aa3e5487d09965e6db8be31915",
+  "sec": 7.5,
+  "usage": {
+   "input_tokens": 3790,
+   "output_tokens": 729,
+   "reasoning_tokens": 195
+  },
+  "user_prompt_sha256": "6c0638545c8b78ebcfddf88078919cbab67250a5b93aed91b99aee31eb650f64"
+ },
+ "n_approximate_ok": 0,
+ "overlay_sha256": "a571a1584abbdfc889ea33e967d927ce0cbdb0c92d569a1fbfad25f0feae94e3",
+ "requested_effort": "low",
+ "requested_model": "gpt-6-luna",
+ "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+ "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
+ "sidecar_sha256": "12c4d5ac4fc4b8536a6d2a103f7151cddcddb3092b7490d2ed8ad82555d6895a",
+ "status": "OK",
+ "v8_max_relative_error": "0.10",
+ "violations": []
+}
