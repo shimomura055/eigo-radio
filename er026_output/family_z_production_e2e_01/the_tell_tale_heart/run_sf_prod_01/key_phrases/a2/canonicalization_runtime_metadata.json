@@ -3,18 +3,16 @@
   "canonicalization_version": "ER-003-KP-02-R1",
   "record_status": "PROTOTYPE",
   "approval_status": "NOT_APPROVED",
-  "final_status": "CANONICALIZATION_REVIEW_REQUIRED",
+  "final_status": "CANONICALIZATION_PASS",
   "model_id": "gpt-6-luna",
-  "response_id": "resp_0bde332e95c4132b006adcb6646d0887d0b47ec1f615a86800",
+  "response_id": "resp_0ab9527006ada006006adcbd72f43887d0bff2d50fe4f26d61",
   "attempts_detail": [
     {
       "attempt": 1,
-      "status": "CANONICALIZATION_REVIEW_REQUIRED",
+      "status": "CANONICALIZATION_PASS",
       "reasons": [],
       "item_reasons": [],
-      "items_requiring_review": [
-        2
-      ],
+      "items_requiring_review": [],
       "parsed": {
         "items": [
           {
@@ -23,7 +21,7 @@
             "key_phrase": "in heaven and on earth",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "慣用的で自然な表現として単独で成立し、変更する必要はありません。",
+            "reasoning": "自然な定型表現で、単独でも「天にも地にも／あらゆる場所に」という意味が伝わるため、変更しません。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -48,38 +46,10 @@
           {
             "rank": 2,
             "possessor_roles": [],
-            "key_phrase": "vulture's",
-            "changed_from_display_phrase": false,
-            "normalization_reason": "none",
-            "reasoning": "名詞の所有格形を単独で自然な学習単位にするには補う語が必要ですが、source_spanにその語は含まれていません。所有格を削ると意味が変わるため、変更せず保持します。",
-            "qa_standalone_natural_unit": "FAIL",
-            "qa_no_residual_context_word": "FAIL",
-            "qa_meaning_or_usage_unchanged": "PASS",
-            "qa_reusable_other_context": "FAIL",
-            "qa_traceable_contiguous_span": "PASS",
-            "qa_listening_blocker_value_preserved": "PASS",
-            "qa_standalone_comprehensibility": "FAIL",
-            "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS",
-            "qa_core_meaning_preserved": "PASS",
-            "qa_no_semantic_role_loss": "PASS",
-            "qa_person_reference_generalized": "PASS",
-            "person_role_repair": {
-              "status": "NO_POSSESSIVE",
-              "roles_ok": null,
-              "roles_reason": "",
-              "repairs": [],
-              "key_before": "vulture's",
-              "role_ok_poss": []
-            }
-          },
-          {
-            "rank": 3,
-            "possessor_roles": [],
             "key_phrase": "metal catch",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "自然な名詞句で、金属製の留め具・仕掛けを表す学習単位として十分です。意味理解に必要な語がそろっているため、そのままにします。",
+            "reasoning": "「金属製の留め具」を表す自然な名詞句で、記事固有の限定語を含まず、学習単位として十分に成立しています。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -100,11 +70,39 @@
               "key_before": "metal catch",
               "role_ok_poss": []
             }
+          },
+          {
+            "rank": 3,
+            "possessor_roles": [],
+            "key_phrase": "sure of oneself",
+            "changed_from_display_phrase": true,
+            "normalization_reason": "generalize_person_dependent_reference",
+            "reasoning": "記事中の語り手を指す再帰代名詞「myself」を、表現の辞書的な一般形「oneself」に置き換えました。",
+            "qa_standalone_natural_unit": "PASS",
+            "qa_no_residual_context_word": "PASS",
+            "qa_meaning_or_usage_unchanged": "PASS",
+            "qa_reusable_other_context": "PASS",
+            "qa_traceable_contiguous_span": "PASS",
+            "qa_listening_blocker_value_preserved": "PASS",
+            "qa_standalone_comprehensibility": "PASS",
+            "qa_not_over_minimized": "PASS",
+            "qa_context_sufficiency": "PASS",
+            "qa_core_meaning_preserved": "PASS",
+            "qa_no_semantic_role_loss": "PASS",
+            "qa_person_reference_generalized": "PASS",
+            "person_role_repair": {
+              "status": "NO_POSSESSIVE",
+              "roles_ok": null,
+              "roles_reason": "",
+              "repairs": [],
+              "key_before": "sure of oneself",
+              "role_ok_poss": []
+            }
           }
         ]
       },
       "model": "gpt-6-luna",
-      "response_id": "resp_0bde332e95c4132b006adcb6646d0887d0b47ec1f615a86800"
+      "response_id": "resp_0ab9527006ada006006adcbd72f43887d0bff2d50fe4f26d61"
     }
   ],
   "template": "fulltext_p2"

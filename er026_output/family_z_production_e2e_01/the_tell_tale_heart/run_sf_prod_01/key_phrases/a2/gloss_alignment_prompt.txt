@@ -2,6 +2,11 @@
 
 日本語グロスは、このkey_phraseが【記事本文】のこの箇所で実際に表している意味を、日本語で短く自然に表したものにしてください。本文固有の固有名詞・数値・この記事だけの出来事はグロスに入れないでください。
 
+【人称・指示対象の規則(indefinite_person_tokens_in_key_phraseを持つ項目に適用。承認済みgloss規則・上記1〜3より優先)】
+- key_phraseの不定の人称(someone's/someone/somebody/one's/oneself等)は、日本語でも不定のまま表してください(例: 『誰かの』『人の』『人を』。one's/oneselfのように主語自身を指す再帰の場合は『自分の』『自分自身を』)。display_phrase_before_canonicalization・source_sentenceにある具体的な人称(あなた・君・私・僕・彼・彼女・彼ら・我々等)を日本語意味へ残してはいけません。不定の人称を具体的な人称で訳すことは『誤っている』に当たります。
+- source_sentenceと前後の文脈は語義と用法を決めるために使い、人称の指示対象を決めるためには使わないでください。
+- 逐語訳は求めません。不定の人称を訳出すると不自然になる場合は、人称を明示しない自然な表現にしてかまいません。(型の例: catch someone's attention -> 『人の注意を引く』であって『あなたの注意を引く』ではない。)
+
 【新規生成の規則】
 - source_sentenceと記事本文の前後の文脈は、key_phraseの語義と用法(字義どおりか、比喩・慣用か)を決めるために使ってください(文中の固有名詞・数値・この記事だけの出来事をグロスに入れないでください)。
 
@@ -42,17 +47,26 @@
   },
   {
     "rank": 2,
-    "key_phrase": "vulture's",
-    "display_phrase_before_canonicalization": "vulture's",
-    "source_sentence": "But his pale blue eye had a thin covering, like a vulture's",
-    "added_content_words": []
-  },
-  {
-    "rank": 3,
     "key_phrase": "metal catch",
     "display_phrase_before_canonicalization": "metal catch",
     "source_sentence": "On night eight, my thumb slipped on the lantern's metal catch",
     "added_content_words": []
+  },
+  {
+    "rank": 3,
+    "key_phrase": "sure of oneself",
+    "display_phrase_before_canonicalization": "sure of myself",
+    "source_sentence": "I sat right above the body, calm and sure of myself",
+    "added_content_words": [],
+    "indefinite_person_tokens_in_key_phrase": [
+      "oneself"
+    ],
+    "person_generalization": [
+      {
+        "from": "myself",
+        "to": "oneself"
+      }
+    ]
   }
 ]
 

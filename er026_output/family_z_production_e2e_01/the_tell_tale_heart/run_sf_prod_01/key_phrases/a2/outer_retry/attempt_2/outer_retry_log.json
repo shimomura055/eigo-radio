@@ -9,8 +9,8 @@
       "selection_status": "KEY_WORDS_STRUCTURE_PASS",
       "selection_phrases": [
         "froze my blood",
-        "sure of myself",
-        "metal catch"
+        "bear another second",
+        "sure of myself"
       ],
       "excluded_phrases_in": [],
       "canonicalization_status": "CANONICALIZATION_INVALID",
@@ -26,13 +26,6 @@
               "reasons": [
                 "key_phrase(\"freeze someone's blood\")がdisplay_phraseと一致せず、source_span('froze my blood')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
               ]
-            },
-            {
-              "index": 1,
-              "rank": 2,
-              "reasons": [
-                "key_phrase('sure of oneself')がdisplay_phraseと一致せず、source_span('sure of myself')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
-              ]
             }
           ],
           "items_requiring_review": [],
@@ -49,7 +42,7 @@
                 "key_phrase": "freeze someone's blood",
                 "changed_from_display_phrase": true,
                 "normalization_reason": "generalize_person_dependent_reference",
-                "reasoning": "myは表現の原因となる主語ではなく、血を凍らされる別の人物を指すためsomeone'sに一般化します。動詞も見出し語の形にしています。",
+                "reasoning": "「my」は動作主ではない人物を指すため、定型表現として一般的な someone’s に置き換えました。あわせて動詞を見出し語形の freeze にしました。",
                 "qa_standalone_natural_unit": "PASS",
                 "qa_no_residual_context_word": "PASS",
                 "qa_meaning_or_usage_unchanged": "PASS",
@@ -74,10 +67,38 @@
               {
                 "rank": 2,
                 "possessor_roles": [],
+                "key_phrase": "bear another second",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "「bear another second」は「もう一秒も耐える」という意味を担う自然な単位で、another second も意味に必要な目的語です。削除や語形変更を行う必要はありません。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "bear another second",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 3,
+                "possessor_roles": [],
                 "key_phrase": "sure of oneself",
                 "changed_from_display_phrase": true,
                 "normalization_reason": "generalize_person_dependent_reference",
-                "reasoning": "myselfは記事中の話者に依存する再帰代名詞なので、表現の意味を保つ一般形oneselfに置き換えます。",
+                "reasoning": "「myself」は記事中の話者に依存する再帰代名詞なので、表現の意味を保ったまま辞書的な一般形 oneself に置き換えました。",
                 "qa_standalone_natural_unit": "PASS",
                 "qa_no_residual_context_word": "PASS",
                 "qa_meaning_or_usage_unchanged": "PASS",
@@ -98,39 +119,11 @@
                   "key_before": "sure of oneself",
                   "role_ok_poss": []
                 }
-              },
-              {
-                "rank": 3,
-                "possessor_roles": [],
-                "key_phrase": "metal catch",
-                "changed_from_display_phrase": false,
-                "normalization_reason": "none",
-                "reasoning": "metal catchは単独でも自然な名詞句で、留め具・掛け金を指す学習単位として成立します。lanternを加えなくても意味は十分に理解できます。",
-                "qa_standalone_natural_unit": "PASS",
-                "qa_no_residual_context_word": "PASS",
-                "qa_meaning_or_usage_unchanged": "PASS",
-                "qa_reusable_other_context": "PASS",
-                "qa_traceable_contiguous_span": "PASS",
-                "qa_listening_blocker_value_preserved": "PASS",
-                "qa_standalone_comprehensibility": "PASS",
-                "qa_not_over_minimized": "PASS",
-                "qa_context_sufficiency": "PASS",
-                "qa_core_meaning_preserved": "PASS",
-                "qa_no_semantic_role_loss": "PASS",
-                "qa_person_reference_generalized": "PASS",
-                "person_role_repair": {
-                  "status": "NO_POSSESSIVE",
-                  "roles_ok": null,
-                  "roles_reason": "",
-                  "repairs": [],
-                  "key_before": "metal catch",
-                  "role_ok_poss": []
-                }
               }
             ]
           },
           "model": "gpt-6-luna",
-          "response_id": "resp_0c0ed020ad49d6a1006adcb5f94a9c87d0976ed0c965225572"
+          "response_id": "resp_01a980cd616cdd21006adcbd38abb087d08915a1cb67da0f22"
         },
         {
           "attempt": 2,
@@ -143,13 +136,6 @@
               "reasons": [
                 "key_phrase(\"freeze someone's blood\")がdisplay_phraseと一致せず、source_span('froze my blood')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
               ]
-            },
-            {
-              "index": 1,
-              "rank": 2,
-              "reasons": [
-                "key_phrase('sure of oneself')がdisplay_phraseと一致せず、source_span('sure of myself')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
-              ]
             }
           ],
           "items_requiring_review": [],
@@ -166,7 +152,7 @@
                 "key_phrase": "freeze someone's blood",
                 "changed_from_display_phrase": true,
                 "normalization_reason": "generalize_person_dependent_reference",
-                "reasoning": "my は血を凍らされる人物を指し、表現の原因・主語とは別の人なので someone's に一般化しました。あわせて froze を見出し語形の freeze にしています。",
+                "reasoning": "“my”は表現の作用を受ける語り手を指すため、一般形 someone’s に置換しました。“froze”も見出し形の “freeze” にしています。",
                 "qa_standalone_natural_unit": "PASS",
                 "qa_no_residual_context_word": "PASS",
                 "qa_meaning_or_usage_unchanged": "PASS",
@@ -191,10 +177,38 @@
               {
                 "rank": 2,
                 "possessor_roles": [],
+                "key_phrase": "bear another second",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "“bear another second”は「もう一秒耐える」という意味が伝わる自然な動詞句で、目的語も含む最小十分な単位です。変更すると表現の形や意味を不必要に変えるため、そのままにしました。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "bear another second",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 3,
+                "possessor_roles": [],
                 "key_phrase": "sure of oneself",
                 "changed_from_display_phrase": true,
                 "normalization_reason": "generalize_person_dependent_reference",
-                "reasoning": "myself は記事の話者に依存する再帰代名詞なので、辞書的な一般形 oneself に置き換えました。",
+                "reasoning": "“myself”は記事中の語り手に依存する再帰代名詞なので、一般的な辞書形 “oneself” に置換しました。“sure of oneself”は自信がある状態を表す自然な単位です。",
                 "qa_standalone_natural_unit": "PASS",
                 "qa_no_residual_context_word": "PASS",
                 "qa_meaning_or_usage_unchanged": "PASS",
@@ -215,44 +229,15 @@
                   "key_before": "sure of oneself",
                   "role_ok_poss": []
                 }
-              },
-              {
-                "rank": 3,
-                "possessor_roles": [],
-                "key_phrase": "metal catch",
-                "changed_from_display_phrase": false,
-                "normalization_reason": "none",
-                "reasoning": "metal catch は「金属製の留め具・掛け金」を表す自然な名詞句で、単独でも学習単位として成立するため変更しません。",
-                "qa_standalone_natural_unit": "PASS",
-                "qa_no_residual_context_word": "PASS",
-                "qa_meaning_or_usage_unchanged": "PASS",
-                "qa_reusable_other_context": "PASS",
-                "qa_traceable_contiguous_span": "PASS",
-                "qa_listening_blocker_value_preserved": "PASS",
-                "qa_standalone_comprehensibility": "PASS",
-                "qa_not_over_minimized": "PASS",
-                "qa_context_sufficiency": "PASS",
-                "qa_core_meaning_preserved": "PASS",
-                "qa_no_semantic_role_loss": "PASS",
-                "qa_person_reference_generalized": "PASS",
-                "person_role_repair": {
-                  "status": "NO_POSSESSIVE",
-                  "roles_ok": null,
-                  "roles_reason": "",
-                  "repairs": [],
-                  "key_before": "metal catch",
-                  "role_ok_poss": []
-                }
               }
             ]
           },
           "model": "gpt-6-luna",
-          "response_id": "resp_057cbf8f2cb4a476006adcb607829087d0a25d1e8292f83cbc"
+          "response_id": "resp_08771c5e55f87b91006adcbd49d65087d09225a06bae5474fb"
         }
       ],
       "excluded_phrases_added": [
-        "froze my blood",
-        "sure of myself"
+        "froze my blood"
       ],
       "artifacts": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_01/key_phrases/a2/outer_retry/attempt_1"
     }
@@ -262,14 +247,6 @@
       "phrase": "froze my blood",
       "reasons": [
         "key_phrase(\"freeze someone's blood\")がdisplay_phraseと一致せず、source_span('froze my blood')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
-      ],
-      "outer_attempt": 1,
-      "source": "canonicalization_invalid"
-    },
-    {
-      "phrase": "sure of myself",
-      "reasons": [
-        "key_phrase('sure of oneself')がdisplay_phraseと一致せず、source_span('sure of myself')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
       ],
       "outer_attempt": 1,
       "source": "canonicalization_invalid"

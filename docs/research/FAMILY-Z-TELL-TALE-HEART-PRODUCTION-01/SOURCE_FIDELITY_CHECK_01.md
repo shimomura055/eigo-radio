@@ -22,3 +22,6 @@
 - 原典からの意図的な圧縮: 遺体解体・血痕を受ける桶の描写は未描写(SOURCE_CHECK_01.md:33のfree_to_cut。維持対象は「殺害→床下隠蔽」)。段落・場面の統合による短縮(Std440語/Adv434語、各約4.5〜4.8分)。
 - 音が現実か妄想かを断定していない(原作どおり): 維持。
 - Local Rewrite(部分再生成)開示: 本run(writer r0→r1→r2→std_adjust)でLocal Rewrite経路の使用なし(Writer自動3段+Std調整のみ)。Writer段の結果は`writer/provenance.json`。ユーザー向けページ(standard/advanced.html)に原作翻案である旨の注記は見当たらない(Grep `Local Rewrite|翻案|原作|Poe` 0件)=Z共通ページ様式のまま、本runでの新設・変更なし。
+
+## 委任_04追補
+- Std KP差替え(vulture's→sure of oneself[source_span=「sure of myself」、本文10行前後の「calm and sure of myself」]。metal catch・in heaven and on earthは本文内の連続span)。KPはいずれも本文のsource_spanに実在し、本文・Adv本文は無変更(本文改変0)。
