@@ -101,7 +101,9 @@ def s_suffix_label_if_match(long_word: str, short_word: str) -> str | None:
 
 
 def tokenize(text: str) -> list[str]:
-    return re.findall(r"[A-Za-z']+", text)
+    # ASRが出す ’(U+2019) を ' に正規化して語構成文字として扱う(他層 er006:497,1022 / er006_m1:60,331 と同じ。
+    # OPEN-500: 未対応だと you’ve が you,ve に割れてF1 residualが偽残差になる)。
+    return re.findall(r"[A-Za-z']+", (text or "").replace("’", "'").replace("‘", "'"))
 
 
 def word_diff(canonical: str, asr: str):
