@@ -347,7 +347,8 @@ def test_gate_rewrite_path(tmp_path):
 # ---------------- 隔離(DefaultOffIsolation相当) ----------------
 def test_isolation_no_importer_and_api_zero_on_import():
     me = {"er110_family_y_persona_pipeline_01.py", "er110_family_y_persona_pipeline_01_run.py", "er110_family_y_persona_pipeline_01_test_01.py",
-          "er110_family_y_opinion_based_01.py", "er110_family_y_opinion_based_01_test_01.py"}      # 委任_18: 実在意見ベースDEV runner(部品を呼出で再利用する別DEV module。Production未参照)を許可リストに追加
+          "er110_family_y_opinion_based_01.py", "er110_family_y_opinion_based_01_test_01.py",
+          "er110_family_y_opinion_based_02.py", "er110_family_y_opinion_based_02_test_01.py"}      # 委任_18: 実在意見ベースDEV runner(部品を呼出で再利用する別DEV module。Production未参照)を許可リストに追加
     bad = []
     for f in glob.glob("*.py") + glob.glob("**/*.py", recursive=True):
         if os.path.basename(f) in me or ".venv" in f:

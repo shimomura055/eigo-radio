@@ -1,0 +1,190 @@
+# -*- coding: utf-8 -*-
+"""er110_family_y_opinion_based_02 の offline test(API 0)。Prompt改訂・Sheet不変条件・反復検出・patchの復元・予算承認ゲート・隔離・fake clientでの通し。"""
+import glob
+import json
+import os
+import re
+import subprocess
+import sys
+
+import pytest
+
+import er110_family_y_opinion_based_01 as ob
+import er110_family_y_opinion_based_02 as ob2
+import er110_family_y_persona_pipeline_01 as pl
+from er110_family_y_opinion_based_01_test_01 import Fake
+
+RUN01_ONE = ("うちの小さい子が、刺激の強いものや課金のあるものを、興味のままに選んでしまったことがある。話をすると、じゃあやらない、となることも多い。"
+             "だから、親が話すだけじゃなくて、SNSには年齢に応じた使い方の決まりがあってほしい。はっきりしているほうが、私は安心できる。"
+             "ただ、長い移動で静かにしてほしい時、動画を見てくれると助かるんだ。正直、助かっている。制限がかかると、私もしんどい時がある。"
+             "子どものために制限してほしいと思っているけど、いや、私の都合では見ていてほしい時もある。"
+             "それでも、小さいうちは、SNSの使い方にはっきりした決まりがあってほしいと思う。")
+
+
+@pytest.fixture
+def fake_env(tmp_path, monkeypatch):
+    st = {"cost": 0.0}
+    monkeypatch.setattr(ob, "cost_jpy", lambda rd: round(st["cost"], 3))
+    monkeypatch.setattr(ob, "stage_costs", lambda rd: {"fake_total": round(st["cost"], 3)})
+    orig = pl.y0.chat
+
+    def chat(client, **kw):
+        st["cost"] += 0.5
+        return orig(client, **kw)
+    monkeypatch.setattr(pl.y0, "chat", chat)
+    return str(tmp_path / "run"), str(tmp_path / "ledger.md")
+
+
+def test_prompt_adds_think_block_and_keeps_source_rules():
+    t = ob2.VOICE_PROMPT_OB2
+    assert "【語る前の考え方(出力には書かない)】" in t and "先に「人物像」を確かめる" in t and "一般論を並べない" in t
+    assert "新しい事実・気持ち・向きのどれかを足している" in t and "回数で数えるのではなく" in t
+    assert t.index("【語る前の考え方") < t.index("【語りの作り方(厳守)】")
+    assert ob2._RULE3_OLD not in t and ob2._RULE3_NEW in t
+    for kept in ("(IDつき)にある内容だけ", "出来事を作らず、仮定", "人物・会話・出来事・場所・物の追加はしない", "約260〜300字", "「です・ます」調にしない", "括弧・コロン・スラッシュ", "自己紹介の文は書かない"):
+        assert kept in t
+    assert "成人" not in t
+    assert "「この前」「ある子が」「友達が」「先生が」のように、欄にない人物や出来事を新しく作らない" in t
+
+
+def test_prompt_base_change_is_detected():
+    with pytest.raises(ValueError):
+        ob2._must_replace("x", "ない文言", "y")
+
+
+def test_build_prompt_with_patch_wires_everything():
+    with ob2.patched_ob(10.0):
+        for s in ob.SLOTS:
+            pr = ob.build_voice_prompt_ob(ob2.WORLD_FRAME_02, s)
+            assert "@@" not in pr and "人物像(最初にここを踏まえる)" in pr and "語りの流れ(目安" in pr
+            assert pr.index("人物像(最初にここを踏まえる)") < pr.index("経験・意見(ここにある内容だけ") < pr.index("この人が言いたいことの芯")     # 人物 -> 経験 -> 主張の順
+            assert "MR-T" not in pr and "TBS-" not in pr and "成人" not in pr and "歳" not in pr
+            assert ob2.SHEETS_02[s]["opening_type"] in pr and ob2.OPENING_GUIDE_02[ob2.SHEETS_02[s]["opening_type"]] in pr
+        assert "段階的な制限" in ob.build_voice_prompt_ob(ob2.WORLD_FRAME_02, "voice_3") and "中心の話題にしない" in ob.build_voice_prompt_ob(ob2.WORLD_FRAME_02, "voice_1")
+
+
+def test_patch_restores_01_globals():
+    before = {k: getattr(ob, k) for k in ob2._PATCH_KEYS}
+    with ob2.patched_ob(7.0):
+        assert ob.SHEETS is ob2.SHEETS_02 and ob.BUDGET_STOP_JPY == 7.0
+    after = {k: getattr(ob, k) for k in ob2._PATCH_KEYS}
+    assert before == after and ob.BUDGET_STOP_JPY == 27.0 and ob.SHEETS["voice_3"]["age_label"].startswith("中学生")
+    with pytest.raises(RuntimeError):
+        with ob2.patched_ob(7.0):
+            raise RuntimeError("x")
+    assert ob.SHEETS is not ob2.SHEETS_02
+
+
+def test_sheet_invariants_02():
+    S = ob2.SHEETS_02
+    ops = [S[s]["opening_type"] for s in ob.SLOTS]
+    assert len(set(ops)) == 3 and all(o in pl.OPENING_TYPES for o in ops) and all(o in ob2.OPENING_GUIDE_02 for o in ops)
+    assert sum(1 for o in ops if o == "言い訳・弁明から") <= 1
+    assert any(S[s]["contradiction_or_weakness_ja"].startswith("なし") for s in ob.SLOTS)          # OF-Y6-03 維持
+    assert len({S[s]["speech_style"]["first_person"] for s in ob.SLOTS}) == 3
+    ids = [x["id"] for s in ob.SLOTS for x in S[s]["experiences"]]
+    assert len(ids) == len(set(ids)) and all(re.fullmatch(r"[A-Za-z_]+", i) for i in ids)
+    for s in ob.SLOTS:
+        for k in ("persona_sketch_ja", "stake_ja", "arc_ja", "claim_core_ja", "entry_mood_ja"):
+            assert S[s][k]
+        for x in S[s]["experiences"]:
+            assert not re.search(r"[0-9０-９]", x["text_ja"]) and "MR-" not in x["text_ja"] and "TBS" not in x["text_ja"], x["id"]
+        assert len([x for x in S[s]["experiences"] if not x["tbs_only"]]) >= 3
+    assert not any(x["tbs_only"] for x in S["voice_2"]["experiences"]) and not any(x["tbs_only"] for x in S["voice_3"]["experiences"])     # TBSのみ根拠はV1のONE_dだけ
+    assert [x["id"] for x in S["voice_1"]["experiences"] if x["tbs_only"]] == ["ONE_d"] and "一文だけで触れ" in [x for x in S["voice_1"]["experiences"] if x["id"] == "ONE_d"][0]["text_ja"]
+    assert all(x["kind"] == "O" for x in S["voice_3"]["experiences"])                              # V3は出来事を作らない
+    assert "MR-T010-17" not in [i for s in ob.SLOTS for x in S[s]["experiences"] for i in x["source_ids"]]
+
+
+def test_attributes_match_source_labels():
+    """発言者属性を変えない: V3の出典はすべて『中学生の保護者』、V2は『高校生』ラベルのMR(sources/が手元にある場合のみ原文で確認)。"""
+    p = "docs/research/FAMILY-Y-VOICES-DESIGN-01/OPINION_BASED_01/sources/mirai_topics/_ops_v2.json"
+    if not os.path.exists(p):
+        pytest.skip("sources/ はgit管理外")
+    d = {e["id"]: e for e in json.load(open(p, encoding="utf-8"))}
+    for x in ob2.SHEETS_02["voice_3"]["experiences"]:
+        for i in x["source_ids"]:
+            assert "中学生" in d[i]["attr"] and "保護者" in d[i]["attr"], (x["id"], i, d[i]["attr"])
+    for x in ob2.SHEETS_02["voice_2"]["experiences"]:
+        for i in x["source_ids"]:
+            assert "高校生" in d[i]["attr"] and "保護者" not in d[i]["attr"], (x["id"], i, d[i]["attr"])
+
+
+def test_repetition_report_flags_run01_one_voice_and_not_clean_text():
+    r = ob2.repetition_report(RUN01_ONE)
+    assert r["n_repeat_pairs"] >= 2 and r["contrast_turns"] >= 3 and "記録専用" in r["note"]
+    clean = "うちの子は、動画をよく見る。私は、見守りの設定が面倒だと感じている。使える時間を決めても、終わるとむくれる。そんな日は、少し疲れる。"
+    assert ob2.repetition_report(clean)["n_repeat_pairs"] == 0
+
+
+def test_world_frame_02_valid():
+    wf = ob2.WORLD_FRAME_02
+    assert wf["status_quo"] == [] and re.search(r"[0-9０-９]", json.dumps(wf, ensure_ascii=False)) is None
+    assert ob.WORLD_FRAME["shared_premise_ja"] != wf["shared_premise_ja"]            # 01側は無変更
+    assert len(ob.WORLD_FRAME["distinctions"]) == 3 and len(wf["distinctions"]) == 4
+
+
+def test_happy_path_with_fake_and_restore(fake_env):
+    rd, led = fake_env
+    fake = Fake()
+    st = ob2.run_pipeline_02(fake, rd, cap_jpy=27.0, ledger_md=led)
+    assert st["gate_status"] == "PASS" and set(st["repetition_02"]) == set(ob.SLOTS)
+    assert os.path.exists(f"{rd}/repetition_report_02.json") and os.path.exists(f"{rd}/article_ja.md")
+    gens = [x for x in fake.prompts if "一人称の語りを1段落だけ" in x]
+    assert len(gens) == 3 and all("【語る前の考え方" in g and "人物像(最初にここを踏まえる)" in g for g in gens)
+    assert ob.SHEETS["voice_3"]["age_label"].startswith("中学生")            # with を抜けたら 01 に戻る
+
+
+def test_budget_cap_applied_from_argument(fake_env):
+    rd, led = fake_env
+    with pytest.raises(pl.PipelineStop):
+        ob2.run_pipeline_02(Fake(), rd, cap_jpy=0.2, ledger_md=led)           # 1call(0.5)で到達 -> 次の呼出前に止まる
+
+
+def test_main_requires_budget_approval_and_refuses_relaunch(tmp_path, monkeypatch):
+    monkeypatch.setattr(ob2, "APPROVAL_FILE", str(tmp_path / "none.json"))
+    monkeypatch.setattr(ob2, "RUN_DIR_02", str(tmp_path / "rd"))
+    assert ob2.main() == 6 and not os.path.exists(tmp_path / "rd")             # 承認が無ければAPI 0・ファイル0
+    (tmp_path / "bad.json").write_text('{"cap_jpy": 0}', encoding="utf-8")
+    assert ob2.read_cap(str(tmp_path / "bad.json")) is None and ob2.read_cap(str(tmp_path / "none.json")) is None
+    (tmp_path / "ok.json").write_text('{"cap_jpy": 30}', encoding="utf-8")
+    assert ob2.read_cap(str(tmp_path / "ok.json")) == 30.0
+    rd = tmp_path / "rd2"
+    rd.mkdir()
+    (rd / "entry_point.json").write_text("{}", encoding="utf-8")
+    monkeypatch.setattr(ob2, "RUN_DIR_02", str(rd))
+    assert ob2.main() == 5
+
+
+def test_default_approval_file_absent_in_repo():
+    assert not os.path.exists(ob2.APPROVAL_FILE)          # Phase 1では承認ファイルが無い(有料runが起動しない既定)
+
+
+def test_isolation_no_importer_and_api_zero_on_import():
+    me = {"er110_family_y_opinion_based_02.py", "er110_family_y_opinion_based_02_test_01.py"}
+    bad = []
+    for f in glob.glob("*.py") + glob.glob("**/*.py", recursive=True):
+        if os.path.basename(f) in me or ".venv" in f or "OPINION_BASED_01" in f:
+            continue
+        try:
+            src = open(f, encoding="utf-8").read()
+        except Exception:
+            continue
+        if re.search(r"^\s*(?:import|from)\s+er110_family_y_opinion_based_02\b", src, re.M):
+            bad.append(f)
+    assert bad == [], bad
+    src = open("er110_family_y_opinion_based_02.py", encoding="utf-8").read()
+    assert "os.environ" not in src and "getenv" not in src and "argparse" not in src and "OpenAI(" not in src
+
+
+def test_import_has_no_side_effect():
+    out = subprocess.run([sys.executable, "-c", "import er110_family_y_opinion_based_02 as o, er110_family_y_opinion_based_01 as b, os; "
+                          "print(b.BUDGET_STOP_JPY, b.SHEETS['voice_3']['age_label'][:3], os.path.exists(o.RUN_DIR_02), os.path.exists(o.APPROVAL_FILE))"],
+                         capture_output=True, text=True, encoding="utf-8", env={**os.environ, "PYTHONIOENCODING": "utf-8"})
+    assert out.stdout.strip() == "27.0 中学生 False False", out.stdout + out.stderr
+
+
+def test_01_and_existing_modules_unchanged():
+    out = subprocess.run(["git", "diff", "--name-only", "HEAD", "--", "er110_family_y_opinion_based_01.py", "er110_family_y_text_trial_01.py",
+                          "er110_family_y_persona_text_trial_01.py", "er110_family_y_persona_pipeline_01.py"], capture_output=True, text=True).stdout.strip()
+    assert out == "", out
