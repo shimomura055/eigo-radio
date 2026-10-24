@@ -1,0 +1,82 @@
+以下は、同じ記事から選ばれた3件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。3件から作れる全てのペア(3組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず3組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+You think I am mad, but my mind is well. My illness made my senses stronger, especially my hearing. I hear everything in heaven and on earth. Listen, and tell me how calmly I explain it.
+
+I loved the old man who shared my house. He never hurt me, and I wanted none of his money. Only his pale blue eye with its cloudy covering troubled me. It looked like a vulture's eye, you understand? I had to get rid of that eye.
+
+At midnight, for seven nights, I silently opened his door. I shone a thin line of light from my lantern. His eye stayed shut, so I could do nothing. You see, I hated his eye, not him.
+
+On night eight, I smiled at how patiently I worked. Then my thumb slipped against the lantern's catch.
+
+He sat up in bed and called, “Who is there?”
+
+You must admire how I stood still for an hour. He stayed awake, listening, then gave a low, frightened groan. I knew that sound from my own nights without sleep.
+
+Finally, I let a little light out of the lantern. It fell straight onto his eye.
+
+That eye was now completely open.
+
+I heard his heart beating softly, but very quickly. It sounded like a watch covered in cotton. It grew faster and louder; a neighbour might hear!
+
+I rushed inside, and he gave one sharp scream. I dragged him down and pulled the heavy bed over him. When his heart stopped, I checked: he was dead.
+
+I hid his body under three boards in the floor. I put them back perfectly, leaving no marks or stains. You wouldn't expect a madman to work so neatly!
+
+Three police officers came knocking at four in the morning. A neighbour had heard a scream, but I welcomed them. I said a bad dream had made me cry out. The old man was visiting the country, I told them.
+
+After showing them every room, I put chairs in his bedroom. I sat right above the body; you see my courage?
+
+As they chatted, a ringing sound began in my ears. Then, below their voices, I heard that soft, quick beating.
+
+I spoke louder, stood up, and walked around the room. I dragged my chair across the boards, but the beating grew louder.
+
+They kept smiling and talking, as if they heard nothing. But they must hear it; they knew what I'd done! Their smiles were laughing at me. How could you expect me to bear it?
+
+“I killed him!” I screamed. “Pull up the floorboards, here under my chair! That is the sound of his horrible heart beating!”
+
+【Key Phrase 3件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "lantern's catch",
+    "japanese_gloss": "ランタンの留め金",
+    "source_sentence": "Then my thumb slipped against the lantern's catch"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "a low, frightened groan",
+    "japanese_gloss": "おびえたような低いうめき声",
+    "source_sentence": "He stayed awake, listening, then gave a low, frightened groan"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "bear it",
+    "japanese_gloss": "それに耐える",
+    "source_sentence": "How could you expect me to bear it"
+  }
+]

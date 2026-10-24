@@ -1,0 +1,58 @@
+以下の記事から、英語上級者が学ぶ価値のある単語・フレーズ・表現・イディオムを**3つ**選んでください。
+
+以下の順序で処理し、上位条件を優先してください。
+
+1. **本文一致（絶対条件）**：本文中の連続した語句だけを抜き出す。変更・言い換え・追加・創作は禁止。
+2. **5語以内（絶対条件）**：スペース区切りで正確に数える。6語以上は出力禁止。
+3. **学習ポイントの明確化と最小化（必須）**：学ぶべき語彙・熟語・表現を明確にし、意味と自然さを保てる最短の形で抽出する。不要な目的語・修飾語・文脈は除く。5語は上限であり、目標ではない。短縮によって学習価値が失われる場合のみ、必要な語を残す。
+4. **上級者向けの学習価値**：上級者でも学ぶ価値のある語彙・イディオム・慣用表現を優先する。
+5. **易しい表現の除外**：基本語だけで構成され、字面どおりに意味が分かる表現や、上級者なら知っている易しい表現は除外する。
+6. **3件選定**：条件を満たす候補から3件選ぶ。適切な候補が不足する場合のみ3件未満とし、数合わせはしない。
+
+**出力直前に各候補を本文と照合し、改変がないこと、5語以内であることを再確認してください。語数も併記してください。**
+
+---
+
+【記事本文】
+You call me mad? I am perfectly sane. My illness sharpened my senses; it did not weaken my mind. I hear everything in heaven and earth. Listen, and judge how calmly I tell you what happened.
+
+The old man shared my house. I loved him; he had never hurt me, and I wanted none of his money. Only his eye troubled me: pale blue, with a cloudy film. A vulture’s eye. You understand? That eye had to go.
+
+For seven nights, at midnight, I opened his bedroom door so slowly that it made no sound. Then I let a thin ray from my lantern touch his face. Always, the eye was closed. What could I do? I hated the eye, not the man.
+
+On the eighth night, I smiled at my own patience. Then my thumb slipped against the lantern fastening.
+
+The old man sat up. “Who’s there?”
+
+I stood still for an hour. Imagine such control! He remained awake, listening. Once, he gave a small groan of terror. I knew that sound from my own sleepless nights.
+
+At last, I opened the lantern a little. The ray fell upon the eye.
+
+Wide open.
+
+Then I heard his heart—a low, quick beat, like a watch wrapped in cotton. It grew faster. Louder. Surely a neighbour would hear!
+
+I rushed in. He shrieked once before I dragged him down and pulled the heavy bed over him. Soon the beating stopped. I checked. He was dead.
+
+I hid his body beneath three floorboards and replaced them perfectly. No stain, no mark. Would a madman have worked so neatly?
+
+At four, three police officers knocked. A neighbour had heard a shriek. I welcomed them. The cry was mine, I explained: a bad dream. The old man was away in the country.
+
+I showed them every room, then brought chairs into his bedroom. My own chair stood directly above the body. You see how little I feared?
+
+They sat chatting. Soon my ears began to ring. Beneath their voices came a low, quick beating.
+
+I talked louder. I stood and paced, scraping my chair across the boards. Still it grew louder. Louder!
+
+The officers went on smiling and talking. Not one seemed to hear. Yet they must hear! They knew. Their easy smiles were mocking me. How could you expect me to sit there and bear it?
+
+“I did it!” I screamed. “Tear up the planks! Here, beneath my chair! It is the beating of his hideous heart!”
+
+---
+
+【前回の選定結果に関する指摘(機械診断)】
+次の語句は、これまでの検証で不適合と確定しています。同じ語句、または同じ理由で不適合になる語句は選ばないでください(条件を満たす別の語句がなければ、無理に3件に揃えず、適切な語句だけを選んでください)。
+- 「my ears began to ring」: key_phrase("one's ears begin to ring")がdisplay_phraseと一致せず、source_span('my ears began to ring')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)
+
+前回の選定結果のうち、次の点が機械検証で不適合でした。該当する語句を、条件を満たす別の語句に置き換えて選び直してください(不適合でなかった語句は、そのまま使ってかまいません)。
+- 「were mocking me」: 有限助動詞を含む(既存canonicalization Validatorが拒否する形)
