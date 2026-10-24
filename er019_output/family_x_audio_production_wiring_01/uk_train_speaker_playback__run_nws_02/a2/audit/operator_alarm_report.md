@@ -7,3 +7,9 @@
 ### Human Review残(受理境界の外): ASR不確実のまま残ったsegment 0件 (うち固有名詞のみ不一致だが境界外=脱落/一般語化等 0件)
 
 注: 日本語音声の固有名詞読みはこのアラーム方針の対象外です(従来の検証・Human Reviewのまま)。
+
+### 実体表(固有名詞と認識した根拠。受理判定用。発音の根拠[Ledger/Perplexity調査]とは別)
+- 実体表: 1件(うち証拠として使用可 0件) / NER call=1 / model=gpt-6-luna / table_sha256=082ee546093c
+- 実体表 place/weak: 1件
+- 証拠にならなかった語(weak/一般語等): UK
+- 除外された候補: Are You Giving That Video an Uninvited Premiere on the Train?[long_phrase], Share the journey, not the noise[long_phrase], Is Your Video Putting on an Unwanted Show on the Train?[long_phrase]

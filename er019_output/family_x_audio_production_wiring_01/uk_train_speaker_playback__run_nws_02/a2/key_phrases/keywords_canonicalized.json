@@ -7,8 +7,8 @@
       "display_phrase": "sound no one asked for",
       "key_phrase": "sound no one asked for",
       "used_form": "sound no one asked for",
-      "japanese_gloss": "誰も求めていない音",
-      "japanese_gloss_tts": "誰も求めていない音",
+      "japanese_gloss": "誰も望んでいない音",
+      "japanese_gloss_tts": "誰も望んでいない音",
       "changed_from_display_phrase": false,
       "normalization_reason": "none",
       "qa": {
@@ -26,7 +26,7 @@
         "qa_person_reference_generalized": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "自然な名詞句として単独で理解でき、語を削ると「誰も求めていない音」という中心的な意味が損なわれるため、そのまま維持します。",
+      "reasoning": "「sound no one asked for」は「誰も求めていない音」を表す自然で十分な名詞句です。askedは関係節内で必要な過去形なので変更しません。",
       "kp_extends_beyond_candidate": false,
       "gloss_review_hint": false,
       "fulltext_source_ref": "fulltext_exact_v1",
@@ -37,12 +37,21 @@
       ],
       "selection_resolution_method": "fulltext_exact_unique",
       "declared_word_count_mismatch": false,
+      "possessor_roles": [],
+      "person_role_repair": {
+        "status": "NO_POSSESSIVE",
+        "roles_ok": null,
+        "roles_reason": "",
+        "repairs": [],
+        "key_before": "sound no one asked for",
+        "role_ok_poss": []
+      },
       "gloss_alignment": {
         "version": "ER-003-KP-GLOSS-ALIGN-02",
         "status": "GLOSS_REALIGNED",
         "original_japanese_gloss": null,
         "current_gloss_consistent_verdict": false,
-        "reasoning": "未生成のため新規作成。「音」と「誰も求めていない」の意味を表しています。",
+        "reasoning": "誰も求めていない迷惑な音を指す表現です。「誰も」で不特定の人を表しています。",
         "adopted_attempt": 1,
         "added_word_mappings": [],
         "machine_check_record_only": {
@@ -55,7 +64,14 @@
           "pass": true,
           "note": "必須内容語なし(機械検査対象外)"
         },
-        "attempts_count": 1
+        "attempts_count": 1,
+        "meaning_stage": "applied",
+        "meaning_stage_path": "newgen_meaning_v1",
+        "meaning_in_text_en": "A sound that nobody requested or wanted to hear.",
+        "naive_ja": "誰も頼まなかった音",
+        "naive_ja_conveys": "yes",
+        "import_flags": [],
+        "gloss_equals_naive_ja": false
       },
       "gloss_alignment_status": "ALIGNED"
     },
@@ -85,7 +101,7 @@
         "qa_person_reference_generalized": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "ここでのyourは特定の人物ではなく読者一般を指すため、辞書的な一般形one'sに置き換えます。reach forとwalletは表現の意味に必要なので維持します。",
+      "reasoning": "yourは動作主自身を指す一般的な二人称なので、辞書的な形のone'sに置き換えます。reach for one's walletは自然な学習単位として意味を保っています。",
       "kp_extends_beyond_candidate": false,
       "gloss_review_hint": false,
       "fulltext_source_ref": "fulltext_exact_v1",
@@ -96,12 +112,26 @@
       ],
       "selection_resolution_method": "fulltext_exact_unique",
       "declared_word_count_mismatch": false,
+      "possessor_roles": [
+        {
+          "token": "your",
+          "role": "self"
+        }
+      ],
+      "person_role_repair": {
+        "status": "NO_CHANGE",
+        "roles_ok": true,
+        "roles_reason": "",
+        "repairs": [],
+        "key_before": "reach for one's wallet",
+        "role_ok_poss": []
+      },
       "gloss_alignment": {
         "version": "ER-003-KP-GLOSS-ALIGN-02",
         "status": "GLOSS_REALIGNED",
         "original_japanese_gloss": null,
         "current_gloss_consistent_verdict": false,
-        "reasoning": "未生成のため新規作成。「自分の」で one's を不定のまま表し、「財布に手を伸ばす」で reach for one's wallet の意味を表しています。",
+        "reasoning": "財布を取り出そうとして手を伸ばす意味です。「自分の」で不特定の人自身の財布を表しています。",
         "adopted_attempt": 1,
         "added_word_mappings": [],
         "machine_check_record_only": {
@@ -114,7 +144,14 @@
           "pass": true,
           "note": "必須内容語なし(機械検査対象外)"
         },
-        "attempts_count": 1
+        "attempts_count": 1,
+        "meaning_stage": "applied",
+        "meaning_stage_path": "newgen_meaning_v1",
+        "meaning_in_text_en": "To move one's hand toward one's wallet, typically to take it out.",
+        "naive_ja": "自分の財布の方へ手を伸ばす",
+        "naive_ja_conveys": "yes",
+        "import_flags": [],
+        "gloss_equals_naive_ja": false
       },
       "gloss_alignment_status": "ALIGNED"
     },
@@ -123,12 +160,12 @@
       "source_span": "draw that line",
       "source_sentence": "The words draw that line simply",
       "display_phrase": "draw that line",
-      "key_phrase": "draw that line",
-      "used_form": "draw that line",
-      "japanese_gloss": "その線を引く",
-      "japanese_gloss_tts": "その線を引く",
-      "changed_from_display_phrase": false,
-      "normalization_reason": "none",
+      "key_phrase": "draw a line",
+      "used_form": "draw a line",
+      "japanese_gloss": "一線を引く",
+      "japanese_gloss_tts": "一線を引く",
+      "changed_from_display_phrase": true,
+      "normalization_reason": "generalize_reference_word",
       "qa": {
         "qa_standalone_natural_unit": "PASS",
         "qa_no_residual_context_word": "PASS",
@@ -144,7 +181,7 @@
         "qa_person_reference_generalized": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "「境界・区別を示す」という意味を持つ自然な表現で、thatを除くと文法的に不自然になります。語を加えたり置き換えたりせず、そのまま維持します。",
+      "reasoning": "thatは特定の対象を指す単数可算名詞lineの前の限定詞なので、一般形のaに置き換えます。draw a lineでも境界や区別を示す意味が保たれます。",
       "kp_extends_beyond_candidate": false,
       "gloss_review_hint": false,
       "fulltext_source_ref": "fulltext_exact_v1",
@@ -155,12 +192,21 @@
       ],
       "selection_resolution_method": "fulltext_exact_unique",
       "declared_word_count_mismatch": false,
+      "possessor_roles": [],
+      "person_role_repair": {
+        "status": "NO_POSSESSIVE",
+        "roles_ok": null,
+        "roles_reason": "",
+        "repairs": [],
+        "key_before": "draw a line",
+        "role_ok_poss": []
+      },
       "gloss_alignment": {
         "version": "ER-003-KP-GLOSS-ALIGN-02",
         "status": "GLOSS_REALIGNED",
         "original_japanese_gloss": null,
         "current_gloss_consistent_verdict": false,
-        "reasoning": "未生成のため新規作成。「その」で that を表し、「線を引く」で draw a line の意味を表しています。",
+        "reasoning": "ここでは字義どおりに線を描くのではなく、異なるものの間に境界を設ける意味です。",
         "adopted_attempt": 1,
         "added_word_mappings": [],
         "machine_check_record_only": {
@@ -173,7 +219,14 @@
           "pass": true,
           "note": "必須内容語なし(機械検査対象外)"
         },
-        "attempts_count": 1
+        "attempts_count": 1,
+        "meaning_stage": "applied",
+        "meaning_stage_path": "newgen_meaning_v1",
+        "meaning_in_text_en": "To establish a boundary that separates two sides or choices.",
+        "naive_ja": "線を描く",
+        "naive_ja_conveys": "no",
+        "import_flags": [],
+        "gloss_equals_naive_ja": false
       },
       "gloss_alignment_status": "ALIGNED"
     }

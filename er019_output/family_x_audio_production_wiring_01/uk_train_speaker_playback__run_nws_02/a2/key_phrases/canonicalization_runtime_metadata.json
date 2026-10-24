@@ -5,7 +5,7 @@
   "approval_status": "NOT_APPROVED",
   "final_status": "CANONICALIZATION_PASS",
   "model_id": "gpt-6-luna",
-  "response_id": "resp_0d0eebf4a51ecfc2006adacb7b276087d0b985526c47d4add2",
+  "response_id": "resp_0c513351c3c02520006adcadaf15d087d08c6b59c678f86443",
   "attempts_detail": [
     {
       "attempt": 1,
@@ -17,10 +17,11 @@
         "items": [
           {
             "rank": 1,
+            "possessor_roles": [],
             "key_phrase": "sound no one asked for",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "自然な名詞句として単独で理解でき、語を削ると「誰も求めていない音」という中心的な意味が損なわれるため、そのまま維持します。",
+            "reasoning": "「sound no one asked for」は「誰も求めていない音」を表す自然で十分な名詞句です。askedは関係節内で必要な過去形なので変更しません。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -32,14 +33,28 @@
             "qa_context_sufficiency": "PASS",
             "qa_core_meaning_preserved": "PASS",
             "qa_no_semantic_role_loss": "PASS",
-            "qa_person_reference_generalized": "PASS"
+            "qa_person_reference_generalized": "PASS",
+            "person_role_repair": {
+              "status": "NO_POSSESSIVE",
+              "roles_ok": null,
+              "roles_reason": "",
+              "repairs": [],
+              "key_before": "sound no one asked for",
+              "role_ok_poss": []
+            }
           },
           {
             "rank": 2,
+            "possessor_roles": [
+              {
+                "token": "your",
+                "role": "self"
+              }
+            ],
             "key_phrase": "reach for one's wallet",
             "changed_from_display_phrase": true,
             "normalization_reason": "generalize_person_dependent_reference",
-            "reasoning": "ここでのyourは特定の人物ではなく読者一般を指すため、辞書的な一般形one'sに置き換えます。reach forとwalletは表現の意味に必要なので維持します。",
+            "reasoning": "yourは動作主自身を指す一般的な二人称なので、辞書的な形のone'sに置き換えます。reach for one's walletは自然な学習単位として意味を保っています。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -51,14 +66,23 @@
             "qa_context_sufficiency": "PASS",
             "qa_core_meaning_preserved": "PASS",
             "qa_no_semantic_role_loss": "PASS",
-            "qa_person_reference_generalized": "PASS"
+            "qa_person_reference_generalized": "PASS",
+            "person_role_repair": {
+              "status": "NO_CHANGE",
+              "roles_ok": true,
+              "roles_reason": "",
+              "repairs": [],
+              "key_before": "reach for one's wallet",
+              "role_ok_poss": []
+            }
           },
           {
             "rank": 3,
-            "key_phrase": "draw that line",
-            "changed_from_display_phrase": false,
-            "normalization_reason": "none",
-            "reasoning": "「境界・区別を示す」という意味を持つ自然な表現で、thatを除くと文法的に不自然になります。語を加えたり置き換えたりせず、そのまま維持します。",
+            "possessor_roles": [],
+            "key_phrase": "draw a line",
+            "changed_from_display_phrase": true,
+            "normalization_reason": "generalize_reference_word",
+            "reasoning": "thatは特定の対象を指す単数可算名詞lineの前の限定詞なので、一般形のaに置き換えます。draw a lineでも境界や区別を示す意味が保たれます。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -70,12 +94,20 @@
             "qa_context_sufficiency": "PASS",
             "qa_core_meaning_preserved": "PASS",
             "qa_no_semantic_role_loss": "PASS",
-            "qa_person_reference_generalized": "PASS"
+            "qa_person_reference_generalized": "PASS",
+            "person_role_repair": {
+              "status": "NO_POSSESSIVE",
+              "roles_ok": null,
+              "roles_reason": "",
+              "repairs": [],
+              "key_before": "draw a line",
+              "role_ok_poss": []
+            }
           }
         ]
       },
       "model": "gpt-6-luna",
-      "response_id": "resp_0d0eebf4a51ecfc2006adacb7b276087d0b985526c47d4add2"
+      "response_id": "resp_0c513351c3c02520006adcadaf15d087d08c6b59c678f86443"
     }
   ],
   "template": "fulltext_p2"

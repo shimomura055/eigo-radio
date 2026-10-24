@@ -26,7 +26,7 @@
         "qa_person_reference_generalized": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "「a blanket ban」は自然な名詞句として単独で成立し、冠詞を含む形が学習単位として適切なため変更しません。",
+      "reasoning": "「a blanket ban」は自然な名詞句で、例外のない全面的な禁止という意味を単独でも理解できるため、そのままにします。",
       "kp_extends_beyond_candidate": false,
       "gloss_review_hint": false,
       "fulltext_source_ref": "fulltext_exact_v1",
@@ -37,12 +37,21 @@
       ],
       "selection_resolution_method": "fulltext_exact_unique",
       "declared_word_count_mismatch": false,
+      "possessor_roles": [],
+      "person_role_repair": {
+        "status": "NO_POSSESSIVE",
+        "roles_ok": null,
+        "roles_reason": "",
+        "repairs": [],
+        "key_before": "a blanket ban",
+        "role_ok_poss": []
+      },
       "gloss_alignment": {
         "version": "ER-003-KP-GLOSS-ALIGN-02",
         "status": "GLOSS_REALIGNED",
         "original_japanese_gloss": null,
         "current_gloss_consistent_verdict": false,
-        "reasoning": "未生成のため新しく作成しました。「blanket」の全面的な範囲と「ban」の禁止を表しています。",
+        "reasoning": "「blanket ban」は対象全体に及ぶ広い禁止を表すため、「全面的な禁止」とした。",
         "adopted_attempt": 1,
         "added_word_mappings": [],
         "machine_check_record_only": {
@@ -55,7 +64,14 @@
           "pass": true,
           "note": "必須内容語なし(機械検査対象外)"
         },
-        "attempts_count": 1
+        "attempts_count": 1,
+        "meaning_stage": "applied",
+        "meaning_stage_path": "newgen_meaning_v1",
+        "meaning_in_text_en": "It means a prohibition that applies broadly to an entire category, not just selected cases.",
+        "naive_ja": "毛布の禁止",
+        "naive_ja_conveys": "no",
+        "import_flags": [],
+        "gloss_equals_naive_ja": false
       },
       "gloss_alignment_status": "ALIGNED"
     },
@@ -66,8 +82,8 @@
       "display_phrase": "reach for your wallet",
       "key_phrase": "reach for one's wallet",
       "used_form": "reach for one's wallet",
-      "japanese_gloss": "自分の財布に手を伸ばす",
-      "japanese_gloss_tts": "自分の財布に手を伸ばす",
+      "japanese_gloss": "お金を払おうとする",
+      "japanese_gloss_tts": "お金を払おうとする",
       "changed_from_display_phrase": true,
       "normalization_reason": "generalize_person_dependent_reference",
       "qa": {
@@ -85,7 +101,7 @@
         "qa_person_reference_generalized": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "「your」は記事の聞き手に向けた表現なので、辞書的な一般形の「one's」に置き換えます。表現の意味と目的語は維持しています。",
+      "reasoning": "「your」は表現の動作主自身を指す人の所有格なので、辞書的な一般形「one's」に置き換えます。動詞はすでに原形で、他の語は変更しません。",
       "kp_extends_beyond_candidate": false,
       "gloss_review_hint": false,
       "fulltext_source_ref": "fulltext_exact_v1",
@@ -96,12 +112,26 @@
       ],
       "selection_resolution_method": "fulltext_exact_unique",
       "declared_word_count_mismatch": false,
+      "possessor_roles": [
+        {
+          "token": "your",
+          "role": "self"
+        }
+      ],
+      "person_role_repair": {
+        "status": "NO_CHANGE",
+        "roles_ok": true,
+        "roles_reason": "",
+        "repairs": [],
+        "key_before": "reach for one's wallet",
+        "role_ok_poss": []
+      },
       "gloss_alignment": {
         "version": "ER-003-KP-GLOSS-ALIGN-02",
         "status": "GLOSS_REALIGNED",
         "original_japanese_gloss": null,
         "current_gloss_consistent_verdict": false,
-        "reasoning": "未生成のため新しく作成しました。「one's」は不定のまま「自分の」とし、財布に手を伸ばす意味を表しています。",
+        "reasoning": "ここでは罰金を払うことを意識させる表現なので、財布に手を伸ばすという字義よりも支払いの意味を示した。",
         "adopted_attempt": 1,
         "added_word_mappings": [],
         "machine_check_record_only": {
@@ -114,7 +144,14 @@
           "pass": true,
           "note": "必須内容語なし(機械検査対象外)"
         },
-        "attempts_count": 1
+        "attempts_count": 1,
+        "meaning_stage": "applied",
+        "meaning_stage_path": "newgen_meaning_v1",
+        "meaning_in_text_en": "It means getting ready to pay money out of one's own funds.",
+        "naive_ja": "自分の財布に手を伸ばす",
+        "naive_ja_conveys": "partly",
+        "import_flags": [],
+        "gloss_equals_naive_ja": false
       },
       "gloss_alignment_status": "ALIGNED"
     },
@@ -123,12 +160,12 @@
       "source_span": "draw that line",
       "source_sentence": "The words draw that line simply",
       "display_phrase": "draw that line",
-      "key_phrase": "draw that line",
-      "used_form": "draw that line",
-      "japanese_gloss": "その境界線を引く",
-      "japanese_gloss_tts": "その境界線を引く",
-      "changed_from_display_phrase": false,
-      "normalization_reason": "none",
+      "key_phrase": "draw a line",
+      "used_form": "draw a line",
+      "japanese_gloss": "境目をはっきりさせる",
+      "japanese_gloss_tts": "境目をはっきりさせる",
+      "changed_from_display_phrase": true,
+      "normalization_reason": "generalize_reference_word",
       "qa": {
         "qa_standalone_natural_unit": "PASS",
         "qa_no_residual_context_word": "PASS",
@@ -144,7 +181,7 @@
         "qa_person_reference_generalized": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "「draw that line」は、示された区別や境界を明確にする意味で自然に理解できるため、そのまま保持します。「that」を削ると表現の自然さや指示対象が損なわれます。",
+      "reasoning": "「that」は単数可算名詞「line」の前の指示限定詞で、特定の文脈に依存しない表現にするため「a」に置き換えます。「draw a line」は境界を引く・区別を設ける表現として自然です。",
       "kp_extends_beyond_candidate": false,
       "gloss_review_hint": false,
       "fulltext_source_ref": "fulltext_exact_v1",
@@ -155,12 +192,21 @@
       ],
       "selection_resolution_method": "fulltext_exact_unique",
       "declared_word_count_mismatch": false,
+      "possessor_roles": [],
+      "person_role_repair": {
+        "status": "NO_POSSESSIVE",
+        "roles_ok": null,
+        "roles_reason": "",
+        "repairs": [],
+        "key_before": "draw a line",
+        "role_ok_poss": []
+      },
       "gloss_alignment": {
         "version": "ER-003-KP-GLOSS-ALIGN-02",
         "status": "GLOSS_REALIGNED",
         "original_japanese_gloss": null,
         "current_gloss_consistent_verdict": false,
-        "reasoning": "未生成のため新しく作成しました。「that」の指す線と、それを引く意味を表しています。",
+        "reasoning": "「線を引く」は日本語でも境界や区別を設ける比喩として通じるため、その意味を自然な表現にした。",
         "adopted_attempt": 1,
         "added_word_mappings": [],
         "machine_check_record_only": {
@@ -173,7 +219,14 @@
           "pass": true,
           "note": "必須内容語なし(機械検査対象外)"
         },
-        "attempts_count": 1
+        "attempts_count": 1,
+        "meaning_stage": "applied",
+        "meaning_stage_path": "newgen_meaning_v1",
+        "meaning_in_text_en": "It means making a clear distinction or boundary between things.",
+        "naive_ja": "線を引く",
+        "naive_ja_conveys": "yes",
+        "import_flags": [],
+        "gloss_equals_naive_ja": false
       },
       "gloss_alignment_status": "ALIGNED"
     }
