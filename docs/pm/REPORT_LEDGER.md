@@ -568,3 +568,5 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-23 | FAMILY-Z-AFTER-TWENTY-YEARS-PRODUCTION-01 委任_03 | OPEN-482影響分析gate通過→ASR正規化(時刻の隣接数詞語)最小修正→c8再生成3回→一次分類はPASSに改善したが最終ゲートvalue_guard(第2層、`10 thirty`対`10:30`)で再HR Lock。第2層修正は委任範囲(1箇所)超のためFable判断待ち。追加費用約1.5円(作品累計約46.5円/上限65円)。報告=docs/pm/RESULT_PACKET_FZ20Y3.md
 
 - 2026-10-24 | FAMILY-Z-AFTER-TWENTY-YEARS-PRODUCTION-01 委任_04 | OPEN-482第2層(value_guard時刻atom)をgate通過後に最小修正→c8再生成1テイクで通過→完成段1起動→試聴ページ公開(公開page_verify PASS)。最終試聴PASS可否=UDR #174。作品累計47.91円(上限65円)。報告=docs/pm/RESULT_PACKET_FZ20Y4.md
+
+- 2026-10-25 | FAMILY-X-NEWS-2ARTICLES-E2E-02 委任_04 | 記事B(uk_train_speaker_playback)Std/Adv最終版=ユーザー試聴PASS・正式承認の記録(CLOSED_USER_PASS)。OPEN-467/UDR #166/DECISION_LOG更新。API 0円・変更0。報告=docs/pm/RESULT_PACKET_FXN2_CO.md
