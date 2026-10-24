@@ -186,8 +186,8 @@ class GateTest(unittest.TestCase):
         legacy_no_profile = {"clip_kind": "dialogue", "status": "OK", "slowdown_applied": None}
         with self.assertRaises(z.FamilyZSlowdownGateStop):
             z.verify_z_speed_profile("b1b", {"full_story_part1_c2": legacy_no_profile}, self._dir(1.0))
-        with self.assertRaises(z.FamilyZSlowdownGateStop):   # 高速化記録はあるが実長が不整合(処理漏れ)
-            z.verify_z_speed_profile("b1b", {"full_story_part1_c2": self._entry("b1b", "dialogue", True, 1.06)}, self._dir(1.0, 1.0))
+        with self.assertRaises(z.FamilyZSlowdownGateStop):   # 高速化記録はあるが実長が不整合(処理漏れ)。原音2.0s(>=1.5s=0.93〜0.96)。<1.5sでは比1.00が許容上限(UDR #181)のため長いclipで検査
+            z.verify_z_speed_profile("b1b", {"full_story_part1_c2": self._entry("b1b", "dialogue", True, 1.06)}, self._dir(2.0, 2.0))
         with self.assertRaises(z.FamilyZSlowdownGateStop):   # 二重適用
             z.verify_z_speed_profile("b1b", {"full_story_part1_c2": self._entry("b1b", "dialogue", True, 1.06)}, self._dir(0.9, 1.06))
 
@@ -402,6 +402,67 @@ class RunnerStagesOptionTest(unittest.TestCase):
         self.assertIn("不正なstage名", err)
         rc, _, err = self._main("--mode", "real", "--stage", "gate", "--stages", "gate", "--approved-budget-jpy", "1")
         self.assertEqual(rc, 2)
+
+
+class ShortClipSpeedGateTest(unittest.TestCase):
+    """極短clip速度Gate(SHORT-CLIP-SPEED-GATE-01、UDR #181): 原音<1.5秒=0.90〜1.00、>=1.5秒=0.93〜0.96(境界厳密)。"""
+    def _check(self, orig_sec, cur_sec):
+        d = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, d, ignore_errors=True)
+        for n in ("c.wav", "c_original.wav"):
+            open(f"{d}/full_story_part1_c2{n[1:]}", "wb").close()
+        durs = {f"{d}/full_story_part1_c2.wav": cur_sec, f"{d}/full_story_part1_c2_original.wav": orig_sec}
+        sp = z.speed_profile_name("b1b", "dialogue")
+        e = {"clip_kind": "dialogue", "status": "OK", "slowdown_applied": True,
+             "speed_profile": {"version": z.Z_SPEED_PROFILE_VERSION, "profile": sp, "applied": True, "tempo": 1.06},
+             "reuse_key": {"speed_profile": f"{z.Z_SPEED_PROFILE_VERSION}:{sp}"}}
+        with mock.patch.object(z, "_wav_duration", side_effect=lambda p: durs[p]):
+            return z.verify_z_speed_profile("b1b", {"full_story_part1_c2": e}, d)
+
+    def _ok(self, o, ratio):
+        return self._check(o, o * ratio)
+
+    def _ng(self, o, ratio):
+        with self.assertRaises(z.FamilyZSlowdownGateStop):
+            self._check(o, o * ratio)
+
+    def test_range_function(self):
+        self.assertEqual(z.adv_dialogue_ratio_range(0.771), (0.90, 1.00))
+        self.assertEqual(z.adv_dialogue_ratio_range(1.4999), (0.90, 1.00))
+        self.assertEqual(z.adv_dialogue_ratio_range(1.5), (0.93, 0.96))
+        self.assertEqual(z.adv_dialogue_ratio_range(3.0), (0.93, 0.96))
+
+    def test_short_clip_uses_090_100(self):
+        for r in (0.90, 0.9434, 0.9670, 1.00):
+            self._ok(1.0, r)
+
+    def test_long_clip_keeps_093_096(self):
+        for r in (0.93, 0.9434, 0.96):
+            self._ok(2.0, r)
+        self._ng(2.0, 0.97)
+        self._ng(2.0, 0.92)
+
+    def test_boundary_1_5_exactly_is_old_range(self):
+        self._ok(1.5, 0.95)
+        self._ng(1.5, 0.97)     # 1.5ちょうど=従来範囲(0.97は短clip範囲内でも不可)
+        self._ok(1.4999, 0.97)  # 直下=短clip範囲
+
+    def test_short_clip_outside_range_is_ng(self):
+        self._ng(1.0, 0.8999)
+        self._ng(1.0, 1.0001)
+
+    def test_monkeys_paw_old_take_wait_passes(self):
+        # 失敗した旧テイク: 原音0.771s・出力0.7455s・比0.9670(旧条件ではNG、新条件でPASS)
+        res = self._check(0.771, 0.7455)
+        d = res["full_story_part1_c2"]
+        self.assertTrue(d["ok"])
+        self.assertEqual(d["ratio_range"], [0.90, 1.00])
+
+    def test_true_anomalies_still_ng(self):
+        self._ng(0.77, 0.85)    # 過剰高速化
+        self._ng(0.77, 1.05)    # 未処理を超える長大化
+        self._ng(2.0, 0.97)     # 長いclipは従来範囲のまま
+        self._ng(2.0, 1.00)     # 未処理(比1.0)は長いclipでNG
 
 
 if __name__ == "__main__":

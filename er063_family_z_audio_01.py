@@ -58,6 +58,18 @@ Z_ADV_DIALOGUE_SPEEDUP_TEMPO = 1.06
 Z_ADV_DIALOGUE_SLOWDOWN_PCT = (1.0 / Z_ADV_DIALOGUE_SPEEDUP_TEMPO - 1.0) * 100.0   # -5.660377... (er008のtempo=1/(1+pct/100)=1.06)
 Z_STD_NARRATOR_SLOWDOWN_PCT = 6.0
 ADV_DIALOGUE_RATIO_MIN, ADV_DIALOGUE_RATIO_MAX = 0.93, 0.96   # 現行wav/原音の長さ比(目標1/1.06=0.9434)
+# 極短clip速度Gate(SHORT-CLIP-SPEED-GATE-01、ユーザー正式採用APPROVED_FOR_PRODUCTION 2026-10-24、UDR #181):
+# 原音(speed調整前)が1.5秒未満なら比の許容は0.90〜1.00(atempoの固定10〜19ms誤差が極短clipで比に大きく出るため)。
+# 1.5秒ちょうど以上は従来の0.93〜0.96。境界は厳密(`< 1.5`のみ短clip扱い)。
+ADV_SHORT_CLIP_ORIGINAL_SECONDS = 1.5
+ADV_SHORT_CLIP_RATIO_MIN, ADV_SHORT_CLIP_RATIO_MAX = 0.90, 1.00
+
+
+def adv_dialogue_ratio_range(original_seconds: float) -> tuple:
+    """Adv会話の wav/original 長さ比の許容範囲。原音<1.5秒=(0.90,1.00)、>=1.5秒=(0.93,0.96)。"""
+    if original_seconds < ADV_SHORT_CLIP_ORIGINAL_SECONDS:
+        return ADV_SHORT_CLIP_RATIO_MIN, ADV_SHORT_CLIP_RATIO_MAX
+    return ADV_DIALOGUE_RATIO_MIN, ADV_DIALOGUE_RATIO_MAX
 STD_DIALOGUE_RATIO_MIN, STD_DIALOGUE_RATIO_MAX = 0.99, 1.01  # Std会話は原音そのまま(_original.wavが残っていれば比≈1)
 
 
@@ -1560,6 +1572,7 @@ def verify_z_speed_profile(level: str, required_clip_entries: dict, narration_di
         want = speed_profile_name(level, kind)
         sp = e.get("speed_profile") or {}
         why = None
+        orig_sec = ratio = None
         if kind == "dialogue":
             key_sp = (e.get("reuse_key") or {}).get("speed_profile")
             if sp.get("profile") != want or sp.get("version") != Z_SPEED_PROFILE_VERSION:
@@ -1569,9 +1582,11 @@ def verify_z_speed_profile(level: str, required_clip_entries: dict, narration_di
         if why is None and kind == "dialogue":
             orig, cur = f"{narration_dir}/{cid}_original.wav", f"{narration_dir}/{cid}.wav"
             ratio = None
+            orig_sec = None
             if os.path.exists(orig) and os.path.exists(cur):
                 try:
-                    ratio = _wav_duration(cur) / _wav_duration(orig)
+                    orig_sec = _wav_duration(orig)
+                    ratio = _wav_duration(cur) / orig_sec
                 except Exception as ex:
                     why = f"duration unreadable: {ex}"
             if why is None and level == "a2":
@@ -1586,12 +1601,18 @@ def verify_z_speed_profile(level: str, required_clip_entries: dict, narration_di
                     why = f"tempo不一致({sp.get('tempo')})"
                 elif ratio is None:
                     why = "_original.wavが無く高速化の証跡を確認できません"
-                elif not (ADV_DIALOGUE_RATIO_MIN <= ratio <= ADV_DIALOGUE_RATIO_MAX):
-                    why = f"Adv会話wav/original長さ比={ratio:.4f}(0.93〜0.96必須)"
+                else:
+                    r_min, r_max = adv_dialogue_ratio_range(orig_sec)
+                    if not (r_min <= ratio <= r_max):
+                        why = f"Adv会話wav/original長さ比={ratio:.4f}({r_min:.2f}〜{r_max:.2f}必須、原音{orig_sec:.3f}秒)"
         elif why is None and kind == "narrator" and level == "b1b":
             if e.get("slowdown_applied") is True:
                 why = "Adv Narratorに速度後処理が掛かっています(変更対象外)"
-        detail[cid] = {"ok": why is None, "why": why or "ok", "profile": want}
+        _d = {"ok": why is None, "why": why or "ok", "profile": want}
+        if kind == "dialogue" and level == "b1b" and orig_sec is not None and ratio is not None:
+            _d.update({"original_seconds": round(orig_sec, 4), "ratio": round(ratio, 4),
+                       "ratio_range": list(adv_dialogue_ratio_range(orig_sec))})
+        detail[cid] = _d
         if why is not None:
             failures.append(f"{cid}({why})")
     if failures:
