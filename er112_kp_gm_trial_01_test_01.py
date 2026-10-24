@@ -19,6 +19,8 @@ ROOT = Path(__file__).resolve().parent
 # Production関数のsource hash(先頭16桁)。DEV側で複製・ラップしている関数が変わったらこのtestが落ち、DEV側の再レビューを強制する(drift guard)。
 # 委任_20(2026-10-24): A-1/課題②がProductionへ配線されたため、Production側4関数のhashを配線後の値へ更新した(DEV複製は配線前の状態のTrial記録として残す。
 # 配線後のDEV installerはtemplate drift guardでfail-closed=二重適用しない。下のDefaultOffIsolation/TemplateEditで固定)。
+# 委任_35(2026-10-24): X2p'(新規生成経路)がProductionへ配線されたため、ga.align_glosses / ga.make_alignment_fn のhashを配線後の値へ更新した
+# (ga.build_user_message_corrected=旧builderは不変。Trialは凍結)。
 PROD_SRC_HASH = {
     "kc._is_valid_fulltext_normalization": ("55dec0fc4327efe7", kc._is_valid_fulltext_normalization),
     "ft.is_valid_inflection_normalization": ("dd0ca4faf3cf389f", ft.is_valid_inflection_normalization),
@@ -27,10 +29,10 @@ PROD_SRC_HASH = {
     "kx._header_for": ("c09cea1aa20d0e15", kx._header_for),
     "kx.build_explanation_user_message": ("2dd4eb620c826216", kx.build_explanation_user_message),
     "kc.run_canonicalization_gate": ("3902ffd14cda8093", kc.run_canonicalization_gate),
-    "ga.align_glosses": ("cbb5a74e7d3ae0a5", ga.align_glosses),
+    "ga.align_glosses": ("4018dfb466aa0aa1", ga.align_glosses),
     "ga.person_generalization_pairs": ("056971b04e3fed77", ga.person_generalization_pairs),
     "kc.make_canonicalization_fn": ("7dbf318990504198", kc.make_canonicalization_fn),
-    "ga.make_alignment_fn": ("94fd639bd6d9e22e", ga.make_alignment_fn),
+    "ga.make_alignment_fn": ("0b50a84be2a257ce", ga.make_alignment_fn),
     "kc.load_prompt_template": ("1f6714df01309fbe", kc.load_prompt_template),
 }
 

@@ -202,12 +202,14 @@ class T06Harness(unittest.TestCase):
         self.assertEqual(rows[0]["meta"]["status"], "ALIGN_PASS")
 
     def test_run_group_b0p_uses_production_path_with_fake_client(self):
+        """委任_35(2026-10-24): X2p'がProductionへ配線されたため、B0p(=Productionのalign_glossesを呼ぶarm)は新規生成経路(X2p')になった。
+        旧Production(B0)のbaselineは再現できない(Trialは凍結。Trial_06の実測結果は成果物として残る)。ここでは新実態をassertする。"""
         g = self._group()
-        fake = _FakeOpenAI(with_meaning=False)
+        fake = _FakeOpenAI(with_meaning=True)
         rows, calls = T6.run_group("B0p", 1, g, "t", T6.RecClient(fake))
         self.assertEqual(len(calls), 1)
-        self.assertEqual(fake.schemas, [ga.GLOSS_ALIGNMENT_JSON_SCHEMA["name"]])          # Production schema
-        self.assertEqual(fake.inputs[0][0], ga.DEVELOPER_MESSAGE)                           # Production developer message
+        self.assertEqual(fake.schemas, [ga.NEWGEN_JSON_SCHEMA["name"]])                      # Production新規生成経路のschema
+        self.assertEqual(fake.inputs[0][0], ga.NEWGEN_DEVELOPER_MESSAGE)                    # Production新規生成経路のdeveloper message
         self.assertIn(ga.preflight(True)["rules_fulltext"], fake.inputs[0][1])              # rules_fulltext自動選択
         self.assertEqual(rows[0]["meta"]["status"], "ALIGN_PASS")
         self.assertTrue(all(r["gloss"] for r in rows))

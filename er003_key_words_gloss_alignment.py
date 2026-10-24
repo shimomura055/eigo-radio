@@ -23,6 +23,7 @@
 # .env経由は保証しない)。無効化は承認済み仕様の無効化であり、起動時に警告+実効値の記録を必須とする。
 from __future__ import annotations
 
+import copy
 import datetime
 import difflib
 import hashlib
@@ -112,6 +113,75 @@ GLOSS_ALIGNMENT_JSON_SCHEMA = {
     },
     "strict": True,
 }
+
+# ============================================================
+# X2p'(本文での語義を確定してから訳す方式)の新規生成経路 -- XYZ共通・Production(APPROVED_FOR_PRODUCTION、UDR #179、2026-10-24)
+# 設計正本=docs/research/FX-KP-GENERALIZATION-MEANING-COMPREHENSIVE-01/WIRING_DESIGN_07.md。
+# 適用範囲: 全文選定由来(fulltext_source_ref)でjapanese_gloss未生成のitem(is_fulltext_gloss_missing)の**新規生成だけ**。
+# A-1(見出し語一般化)・課題②(所有格一般化)・gloss再整合(欠落/人称)・Z repair・A/B/C凍結ラインは従来builder/schema/developerのまま
+# (既存の DEVELOPER_MESSAGE / GLOSS_ALIGNMENT_JSON_SCHEMA / build_user_message_corrected / NEW_GENERATION_TEXT は一字も変えない)。
+# 文面の正=Trial_06で実測したDEV build_x_message06。golden fixtureとのbyte一致をtest(WC-12)で固定する(Productionはer112をimportしない)。
+# 撤退手段=本機能を導入した単一commitのgit revert(EIGO_KP_GLOSS_ALIGNMENTのOFFは「gloss生成の全停止」であり撤退ではない)。
+# ============================================================
+NEWGEN_PATH = "newgen_meaning_v1"
+NEWGEN_DEVELOPER_MESSAGE = "英語学習教材のKey Phraseに付ける日本語グロスを書いてください。"
+NEWGEN_MEANING_FIELDS = ("meaning_in_text_en", "naive_ja", "naive_ja_conveys")
+NEWGEN_CONVEYS_ENUM = ("yes", "partly", "no")
+
+
+class NewGenMessage(str):
+    """新規生成経路のuser message。str継承で、Promptに余計な文字列(マーカー)を入れずに経路情報(path)を持つ。
+    make_alignment_fnがisinstanceで見て、developer/schemaを新規生成用に切替える(呼出側が明示した場合は明示を優先)。
+    strメソッド(+・replace等)を通すと型が失われ旧schemaで呼ばれる→新3欄欠落でINVALID→HR(安全側停止。黙って旧結果は採用しない)。"""
+    path = NEWGEN_PATH
+
+
+NEWGEN_HEAD = ("以下の各英語key_phraseは、教材として最終確定した英語表現です。各項目について、日本語グロス(japanese_gloss)を新しく書いてください(全項目、日本語グロスは未生成です)。\n"
+    "\n"
+    "日本語グロスは、このkey_phraseが【記事本文】のこの箇所で実際に表している意味を、日本語で短く自然に表したものにしてください。本文固有の固有名詞・数値・この記事だけの出来事はグロスに入れないでください。\n"
+    "\n")
+
+NEWGEN_RULE_TEXT = ("【新規生成の規則】\n"
+    "- source_sentenceと記事本文の前後の文脈は、key_phraseの語義と用法(字義どおりか、比喩・慣用か)を決めるために使ってください(文中の固有名詞・数値・この記事だけの出来事をグロスに入れないでください)。\n"
+    "\n")
+
+NEWGEN_SCOPE_TEXT = ("【範囲の規則(meaning_in_text_enとjapanese_glossの両方に適用)】\n"
+    "- 本文で使われている語義・用法(字義どおりか、比喩・慣用か)を選んでください。ただし、japanese_glossが表すのはkey_phraseの範囲だけです。key_phraseに含まれていない、本文側の否定・主語・時制・具体的な対象・場面は、japanese_glossに持ち込まないでください(例: 本文が「the plan did not work out」でkey_phraseが「work out」なら、japanese_glossは「うまくいかなかった」ではなく「うまくいく」)。\n"
+    "\n")
+
+NEWGEN_MEANING_TEXT = ("【意味の決め方(各項目、japanese_glossを書く前に、この順で必ず出力してください)】\n"
+    "- meaning_in_text_en: 【記事本文】のこの箇所(source_sentenceとその前後の文)でkey_phrase【全体】が表している意味を、平易な英語1文で書く。key_phraseの語をそのまま繰り返さず言い換える。本文の話題の一側面(例: 差の大きさ、時間、量など)だけに絞らず、key_phrase全体が何を言っているかを書く。字義どおりの用法なら字義の意味。比喩・慣用・筆者が作った比喩なら、その比喩が指す一般的な意味(what it stands for)を書く。記事固有の固有名詞・数値は入れない。\n"
+    "- naive_ja: key_phraseの英単語を、それぞれ日本語の対応語に置き換えただけの訳を、意味の解釈を加えずに書く。\n"
+    "- naive_ja_conveys: 日本語だけを読む学習者が、naive_jaからmeaning_in_text_enの意味を受け取れるか。yes(同じ意味・同じ比喩が日本語でも通じる、または字義どおりの用法)/ partly(一部が落ちる)/ no(字義の動作・物の像しか伝わらず、本文での意味は伝わらない)。\n"
+    "- japanese_gloss: yesなら、naive_jaをそのまま写さず、自然で平易な訳(英和辞典の定訳や日本語の慣用表現があればそれ)を選ぶ。partly/noのときは、まず、このkey_phraseのこの語義に日本語の定訳(英和辞典の見出し訳や日本語として定着した言い方。例: cut cornersなら「手を抜く」、break evenなら「収支がとんとんになる」)があればそれを優先し、無い場合だけ、naive_jaの字義の像を使わず、meaning_in_text_enの意味【全体】を日本語の慣用表現か平易な短い言い換えで表す(意味の一部だけを取り出した語にしない)。naive_jaの語を別の語に置き換えるときは、動作主(誰が)・動詞の意味を変えない(例: 「誰も出なかった電話」を「誰もかけたくなかった電話」のように、動詞の意味を別の意味にずらさない)。key_phrase全体(目的語・修飾語を含む)の意味を落とさず、key_phraseと同じ品詞・同じ程度の長さの句にする(説明文・定義文にしない)。\n"
+    "\n")
+
+NEWGEN_OUTRULES_TEXT = ("【出力欄の規則】\n"
+    "- current_gloss_consistent: 全項目で必ずfalse(日本語グロスは未生成のため)。\n"
+    "- qa_reflects_all_key_phrase_words: japanese_glossがkey_phrase全体の意味を過不足なく反映できている場合のみPASS。\n"
+    "- added_word_mappings: added_content_wordsの各語について、japanese_glossの中でその語の意味を表している部分を、japanese_glossからそのまま切り出して書いてください(english_wordには対応させる英語の語、複数語をまとめた句でもかまいません。japanese_spanにはjapanese_glossに含まれない文字列や、「～」などの記号だけを書かないでください)。複数の英語語が一つの日本語表現でまとめて表されている場合は、同じ部分を複数の語に対応させてかまいません。added_content_wordsが空の項目は、added_word_mappingsを空配列にしてください。\n"
+    "- reasoning: 判断の根拠を短く書いてください。\n"
+    "\n")
+
+
+
+def _build_newgen_schema() -> dict:
+    s = copy.deepcopy(GLOSS_ALIGNMENT_JSON_SCHEMA)
+    it = s["schema"]["properties"]["items"]["items"]
+    props = {}
+    for k, v in it["properties"].items():
+        if k == "japanese_gloss":
+            props["meaning_in_text_en"] = {"type": "string"}
+            props["naive_ja"] = {"type": "string"}
+            props["naive_ja_conveys"] = {"type": "string", "enum": list(NEWGEN_CONVEYS_ENUM)}
+        props[k] = v
+    it["properties"] = props
+    it["required"] = list(props)
+    s["name"] = "key_phrase_gloss_alignment_corrected_newgen"
+    return s
+
+
+NEWGEN_JSON_SCHEMA = _build_newgen_schema()
 
 _PAREN_RE = re.compile(r"[()（）\[\]［］【】]")
 _ARABIC_DIGIT_RE = re.compile(r"[0-9]")
@@ -397,8 +467,19 @@ class GlossAlignmentModelMismatchError(RuntimeError):
 
 
 def make_alignment_fn(user_message: str, client: Optional[Any] = None, model: str = None,
-                      reasoning_effort: str = "high", developer_message: str = DEVELOPER_MESSAGE,
+                      reasoning_effort: str = "high", developer_message: Optional[str] = None,
                       schema: Optional[dict] = None):
+    # 方式P': user_messageがNewGenMessage(新規生成経路)で、呼出側がdeveloper_message/schemaを明示していないときだけ新規生成用に切替える。
+    # 明示された場合は明示を優先(既存test・golden・hookの契約不変)。NewGenMessageでなければ従来どおり(DEVELOPER_MESSAGE/既存schema)。
+    path = "legacy"
+    if isinstance(user_message, NewGenMessage):
+        path = user_message.path
+        if developer_message is None:
+            developer_message = NEWGEN_DEVELOPER_MESSAGE
+        if schema is None:
+            schema = NEWGEN_JSON_SCHEMA
+    if developer_message is None:
+        developer_message = DEVELOPER_MESSAGE
     if client is None:
         from dotenv import load_dotenv
         load_dotenv()
@@ -429,6 +510,7 @@ def make_alignment_fn(user_message: str, client: Optional[Any] = None, model: st
     fn.last_usage = None
     fn.model = model
     fn.reasoning_effort = reasoning_effort
+    fn.path = path
     return fn
 
 
@@ -625,10 +707,85 @@ def build_user_message_corrected(targets: list, article_text: str, rules: Option
     )
 
 
+def build_user_message_newgen_meaning(targets: list, article_text: str, rules: Optional[str] = None,
+                                      prior: Optional[dict] = None) -> "NewGenMessage":
+    """X2p'(新規生成経路専用)のuser message。DEV build_x_message06(Trial_06)をbyte一致で移植(golden test WC-12)。
+    rules=Noneは全文選定itemが使うrules_fulltext。prior={rank:{gloss,reasons}}はretry時の再提示(build_user_message_corrected同形式)。
+    targetsは全件is_fulltext_gloss_missing(呼出側=gateが分割済み)。current_japanese_glossは持たない(未生成のため)。"""
+    rules = rules if rules is not None else (preflight(True) or {})["rules_fulltext"]
+    items, any_person = [], False
+    for it in targets:
+        d = {"rank": it["rank"], "key_phrase": it["key_phrase"], "display_phrase_before_canonicalization": it.get("display_phrase"),
+             "source_sentence": it.get("source_sentence", ""),
+             "added_content_words": added_content_words(it.get("display_phrase"), it.get("key_phrase"))}
+        ind = indefinite_person_tokens(it.get("key_phrase"))
+        if ind:
+            any_person = True
+            d["indefinite_person_tokens_in_key_phrase"] = ind
+            pairs = person_generalization_pairs(it)
+            if pairs:
+                d["person_generalization"] = pairs
+        if prior and it["rank"] in prior:
+            d["previous_attempt_rejected"] = {"gloss": prior[it["rank"]].get("gloss"),
+                                              "reasons": list(prior[it["rank"]].get("reasons") or [])}
+        items.append(d)
+    person_block = ""
+    if any_person:
+        # 人称規則の文脈限定句置換(新規生成にはcurrent_japanese_glossが無いため、current前提の句を外し語義決定の文脈使用を明示)
+        a1 = "current_japanese_glossがそうなっている場合は、指示2の『書き換えない』の例外として、current_gloss_consistent=falseにして書き換えてください。"
+        a2 = "display_phrase_before_canonicalization・current_japanese_gloss・source_sentenceにある"
+        a3 = ("source_sentenceは、辞書に複数の語義がある表現で、そのうちどの語義かを選ぶためだけに使い、"
+              "人称の指示対象を決めるためには使わないでください。")
+        assert a1 in PERSON_CONSTRAINT_TEXT and a2 in PERSON_CONSTRAINT_TEXT and a3 in PERSON_CONSTRAINT_TEXT
+        person_block = (PERSON_CONSTRAINT_TEXT.replace(a1, "").replace(a2, "display_phrase_before_canonicalization・source_sentenceにある")
+                        .replace(a3, "source_sentenceと前後の文脈は語義と用法を決めるために使い、人称の指示対象を決めるためには使わないでください。"))
+    prior_block = ("previous_attempt_rejected(ある項目のみ)は、前回の応答が検証で却下された理由です。同じ誤りを繰り返さないでください。\n\n"
+                   if prior else "")
+    return NewGenMessage(
+        NEWGEN_HEAD + person_block + NEWGEN_RULE_TEXT + NEWGEN_SCOPE_TEXT + NEWGEN_MEANING_TEXT + NEWGEN_OUTRULES_TEXT + prior_block +
+        "【日本語グロスの規則(承認済み選定Promptと同一)】\n" + rules + "\n\n"
+        "【対象項目】\n" + json.dumps(items, ensure_ascii=False, indent=2) + "\n\n【記事本文(参考)】\n" + article_text)
+
+
 # ---- item単位検証(「～」条件なし) ---------------------------------------------
-def validate_item_corrected(resp: Any, target: dict, mapping_gate: bool = False) -> dict:
+NEG_TOKENS = frozenset({"not", "no", "never", "without", "none", "nothing", "nobody", "cannot", "neither", "nor", "hardly", "barely", "unable"})
+_NEG_JA_RE = re.compile("ない|なかっ|ません|ぬ$|ずに|ず$")
+_PAST_JA_RE = re.compile("(た|だった)$")
+
+
+def detect_import_flags(key_phrase: Optional[str], gloss: Optional[str]) -> list:
+    """記録のみ(合否に使わない): key_phraseに否定語が無いのにglossに否定がある / glossが過去形で終わる(本文側の持ち込みの傾向監視)。
+    補助指標であり品質判定そのものとは扱わない(recall低め・誤検出あり。WIRING_DESIGN_07 持ち込み検出)。"""
+    flags = []
+    toks = re.findall("[a-z']+", (key_phrase or "").lower())
+    kp_neg = any(t in NEG_TOKENS or t.endswith("n't") or (t.startswith("un") and len(t) > 4) for t in toks)
+    g = (gloss or "").strip()
+    if not kp_neg and _NEG_JA_RE.search(g):
+        flags.append("neg_in_gloss_not_in_kp")
+    if _PAST_JA_RE.search(g):
+        flags.append("past_tense_ending")
+    return flags
+
+
+def _validate_newgen_fields(resp: dict, target: dict, out: dict, reasons: list) -> None:
+    mi, nj, nc = (resp.get(k) for k in NEWGEN_MEANING_FIELDS)
+    out["meaning_in_text_en"] = mi
+    out["naive_ja"] = nj
+    out["naive_ja_conveys"] = nc
+    ok = bool(isinstance(mi, str) and mi.strip() and isinstance(nj, str) and nj.strip() and nc in NEWGEN_CONVEYS_ENUM)
+    if not ok:
+        reasons.append("meaning_stage_fields_invalid")
+    g = resp.get("japanese_gloss")
+    gs = g.strip() if isinstance(g, str) else ""
+    out["gloss_equals_naive_ja"] = bool(ok and gs and gs == nj.strip())
+    out["import_flags"] = detect_import_flags(target.get("key_phrase"), gs)
+
+
+def validate_item_corrected(resp: Any, target: dict, mapping_gate: bool = False, newgen: bool = False) -> dict:
     """1 itemの応答を検証する。合否=LLM判定(qa PASS・真偽とglossの整合)+承認規則由来の記号チェック。
-    mappingの機械検査(machine_check)は常に記録し、mapping_gate=Trueの場合のみ合否にも使う(既定record-only)。"""
+    mappingの機械検査(machine_check)は常に記録し、mapping_gate=Trueの場合のみ合否にも使う(既定record-only)。
+    newgen=True(gateが新規生成経路[X2p']を選んだitem): 新3欄(meaning_in_text_en/naive_ja/naive_ja_conveys)が非空・enum内でなければ
+    INVALID(meaning_stage_fields_invalid)。持ち込み検出・gloss==naive_ja・conveysは**記録のみ**(合否に使わない)。既存検査は不変。"""
     rank = target["rank"]
     cur = target.get("japanese_gloss") or ""
     reasons: list = []
@@ -638,6 +795,8 @@ def validate_item_corrected(resp: Any, target: dict, mapping_gate: bool = False)
     if not isinstance(resp, dict):
         reasons.append("応答にこのrankのitemが無い")
         return out
+    if newgen:
+        _validate_newgen_fields(resp, target, out, reasons)
     g = resp.get("japanese_gloss")
     out["current_gloss_consistent"] = resp.get("current_gloss_consistent")
     out["qa"] = resp.get("qa_reflects_all_key_phrase_words")
@@ -686,81 +845,103 @@ def validate_item_corrected(resp: Any, target: dict, mapping_gate: bool = False)
 
 
 def _item_log_entry(attempt: int, v: dict, batch: dict) -> dict:
-    return {"attempt": attempt, "verdict": "VALID" if v["valid"] else "INVALID", "reasons": list(v["reasons"]),
-            "proposed_gloss": v["proposed_gloss"], "current_gloss_consistent": v["current_gloss_consistent"],
-            "qa": v["qa"], "reasoning": v["reasoning"], "added_word_mappings": v["added_word_mappings"],
-            "machine_check": v["machine_check"], "batch_status": batch.get("status"),
-            "batch_cost_jpy": batch.get("cost_jpy"), "model": batch.get("model")}
+    e = {"attempt": attempt, "verdict": "VALID" if v["valid"] else "INVALID", "reasons": list(v["reasons"]),
+         "proposed_gloss": v["proposed_gloss"], "current_gloss_consistent": v["current_gloss_consistent"],
+         "qa": v["qa"], "reasoning": v["reasoning"], "added_word_mappings": v["added_word_mappings"],
+         "machine_check": v["machine_check"], "batch_status": batch.get("status"),
+         "batch_cost_jpy": batch.get("cost_jpy"), "model": batch.get("model")}
+    if "meaning_in_text_en" in v:   # 新規生成経路(X2p')のitemだけ。記録のみ(TTS・表示へは出さない)
+        e.update({"meaning_in_text_en": v["meaning_in_text_en"], "naive_ja": v["naive_ja"],
+                  "naive_ja_conveys": v["naive_ja_conveys"], "import_flags": v.get("import_flags")})
+    return e
 
 
 def run_alignment_gate_corrected(make_factory_for: Callable[[str], Callable], targets: list, article_text: str,
                                  rules: str, mapping_gate: bool = False,
                                  max_attempts: int = MAX_GLOSS_ALIGNMENT_ATTEMPTS) -> dict:
     """item単位retry(OF-KGDC-09): 各attemptは未解決itemのみで入力を再構築し、各itemは最初の有効出力を採用する。
-    上限は既存と同じ2回(MAX_GLOSS_ALIGNMENT_ATTEMPTS)。技術失敗/JSON不正もattemptを消費する。"""
+    上限は既存と同じ2回(MAX_GLOSS_ALIGNMENT_ATTEMPTS)。技術失敗/JSON不正もattemptを消費する。
+    X2p'(WIRING_DESIGN_07 §3): 各attemptのpendingを、gloss未生成の全文選定item(newgen、新builder/新schema/新developer)と
+    それ以外(legacy、現行builder)に分け、非空の集合ごとに1 call(混在attemptは最大2 call。attempt番号・adopted・priorは共有、
+    上限2不変)。legacyだけ/newgenだけのattemptは従来どおり1 call。新経路の失敗が旧builderへ暗黙フォールバックすることは無い。"""
     adopted: dict = {}
     item_log = {t["rank"]: [] for t in targets}
     attempts: list = []
     messages: list = []
+    item_path: dict = {t["rank"]: ("newgen" if is_fulltext_gloss_missing(t) else "legacy") for t in targets}
     pending = list(targets)
     prior: dict = {}   # ITEM1 F1-3: 前回INVALID理由(人称語残存等)を項目単位でretryのuser messageへ渡す
+    n_calls = {"newgen": 0, "legacy": 0}
+    mixed = False
     for attempt in range(1, max_attempts + 1):
         if not pending:
             break
-        msg = build_user_message_corrected(pending, article_text, rules, prior=prior or None)
-        messages.append(msg)
-        fn = make_factory_for(msg)
-        rec = {"attempt": attempt, "target_ranks": [t["rank"] for t in pending]}
-        try:
-            raw, model_id, response_id = fn()
-        except Exception as e:
-            rec.update({"status": "TECHNICAL_FAILED", "error": f"{type(e).__name__}: {e}", **_usage_cost(fn, None)})
-            attempts.append(rec)
-            for t in pending:
-                item_log[t["rank"]].append({"attempt": attempt, "verdict": "TECHNICAL_FAILED", "reasons": [rec["error"]],
-                                            "proposed_gloss": None, "batch_status": rec["status"],
-                                            "batch_cost_jpy": rec.get("cost_jpy")})
-            continue
-        rec.update({"model": model_id, "response_id": response_id, **_usage_cost(fn, model_id)})
-        try:
-            parsed = json.loads(raw)
-        except Exception as e:
-            rec.update({"status": "PARSE_FAILED", "error": str(e)})
-            attempts.append(rec)
-            for t in pending:
-                item_log[t["rank"]].append({"attempt": attempt, "verdict": "PARSE_FAILED", "reasons": [f"JSON不正: {e}"],
-                                            "proposed_gloss": None, "batch_status": rec["status"],
-                                            "batch_cost_jpy": rec.get("cost_jpy"), "model": model_id})
-            continue
-        resp_items = parsed.get("items") if isinstance(parsed, dict) else None
-        if not isinstance(resp_items, list):
-            resp_items = []
-            rec["structure_note"] = "items欠落"
-        by_rank: dict = {}
-        for it in resp_items:
-            if isinstance(it, dict) and isinstance(it.get("rank"), int) and it["rank"] not in by_rank:
-                by_rank[it["rank"]] = it
-        extra = sorted(set(by_rank) - {t["rank"] for t in pending})
-        if extra:
-            rec["extra_ranks_ignored"] = extra
-        n_valid = 0
-        for t in pending:
-            v = validate_item_corrected(by_rank.get(t["rank"]), t, mapping_gate=mapping_gate)
-            item_log[t["rank"]].append(_item_log_entry(attempt, v, {"status": None, "cost_jpy": rec.get("cost_jpy"),
-                                                                    "model": model_id}))
-            if v["valid"]:
-                adopted[t["rank"]] = {**v, "attempt": attempt}
-                n_valid += 1
+        groups = [("newgen", [t for t in pending if item_path[t["rank"]] == "newgen"]),
+                  ("legacy", [t for t in pending if item_path[t["rank"]] == "legacy"])]
+        groups = [(path, g) for path, g in groups if g]
+        if len(groups) > 1:
+            mixed = True
+        for path, group in groups:
+            if path == "newgen":
+                msg = build_user_message_newgen_meaning(group, article_text, rules, prior=prior or None)
             else:
-                prior[t["rank"]] = {"gloss": v.get("proposed_gloss"), "reasons": list(v["reasons"])}
-        rec["status"] = "ALIGN_PASS" if n_valid == len(pending) else ("ALIGN_PARTIAL" if n_valid else "ALIGN_INVALID")
-        rec["n_valid"] = n_valid
-        rec["n_items"] = len(pending)
-        rec["parsed"] = parsed
-        attempts.append(rec)
+                msg = build_user_message_corrected(group, article_text, rules, prior=prior or None)
+            messages.append(msg)
+            n_calls[path] += 1
+            fn = make_factory_for(msg)
+            rec = {"attempt": attempt, "target_ranks": [t["rank"] for t in group]}
+            if path == "newgen" or len(groups) > 1:
+                rec["path"] = NEWGEN_PATH if path == "newgen" else "legacy"
+            try:
+                raw, model_id, response_id = fn()
+            except Exception as e:
+                rec.update({"status": "TECHNICAL_FAILED", "error": f"{type(e).__name__}: {e}", **_usage_cost(fn, None)})
+                attempts.append(rec)
+                for t in group:
+                    item_log[t["rank"]].append({"attempt": attempt, "verdict": "TECHNICAL_FAILED", "reasons": [rec["error"]],
+                                                "proposed_gloss": None, "batch_status": rec["status"],
+                                                "batch_cost_jpy": rec.get("cost_jpy")})
+                continue
+            rec.update({"model": model_id, "response_id": response_id, **_usage_cost(fn, model_id)})
+            try:
+                parsed = json.loads(raw)
+            except Exception as e:
+                rec.update({"status": "PARSE_FAILED", "error": str(e)})
+                attempts.append(rec)
+                for t in group:
+                    item_log[t["rank"]].append({"attempt": attempt, "verdict": "PARSE_FAILED", "reasons": [f"JSON不正: {e}"],
+                                                "proposed_gloss": None, "batch_status": rec["status"],
+                                                "batch_cost_jpy": rec.get("cost_jpy"), "model": model_id})
+                continue
+            resp_items = parsed.get("items") if isinstance(parsed, dict) else None
+            if not isinstance(resp_items, list):
+                resp_items = []
+                rec["structure_note"] = "items欠落"
+            by_rank: dict = {}
+            for it in resp_items:
+                if isinstance(it, dict) and isinstance(it.get("rank"), int) and it["rank"] not in by_rank:
+                    by_rank[it["rank"]] = it
+            extra = sorted(set(by_rank) - {t["rank"] for t in group})
+            if extra:
+                rec["extra_ranks_ignored"] = extra
+            n_valid = 0
+            for t in group:
+                v = validate_item_corrected(by_rank.get(t["rank"]), t, mapping_gate=mapping_gate, newgen=(path == "newgen"))
+                item_log[t["rank"]].append(_item_log_entry(attempt, v, {"status": None, "cost_jpy": rec.get("cost_jpy"),
+                                                                        "model": model_id}))
+                if v["valid"]:
+                    adopted[t["rank"]] = {**v, "attempt": attempt}
+                    n_valid += 1
+                else:
+                    prior[t["rank"]] = {"gloss": v.get("proposed_gloss"), "reasons": list(v["reasons"])}
+            rec["status"] = "ALIGN_PASS" if n_valid == len(group) else ("ALIGN_PARTIAL" if n_valid else "ALIGN_INVALID")
+            rec["n_valid"] = n_valid
+            rec["n_items"] = len(group)
+            rec["parsed"] = parsed
+            attempts.append(rec)
         pending = [t for t in pending if t["rank"] not in adopted]
     return {"adopted": adopted, "unresolved_ranks": [t["rank"] for t in pending], "item_log": item_log,
-            "attempts": attempts, "messages": messages}
+            "attempts": attempts, "messages": messages, "item_path": item_path, "mixed": mixed, "n_calls": n_calls}
 
 
 def apply_alignment_corrected(merged: dict, targets: list, gate: dict) -> dict:
@@ -791,6 +972,15 @@ def apply_alignment_corrected(merged: dict, targets: list, gate: dict) -> dict:
                 "reasoning": a["reasoning"], "adopted_attempt": a["attempt"],
                 "added_word_mappings": a["added_word_mappings"], "machine_check_record_only": a["machine_check"],
                 "attempts_count": len(log)}
+            _path = (gate.get("item_path") or {}).get(r)
+            if _path == "newgen":   # X2p': 本文での語義の確定記録(記録のみ。TTS・表示・validatorへは出さない)
+                new["gloss_alignment"].update({
+                    "meaning_stage": "mixed_split_newgen" if gate.get("mixed") else "applied", "meaning_stage_path": NEWGEN_PATH,
+                    "meaning_in_text_en": a.get("meaning_in_text_en"), "naive_ja": a.get("naive_ja"),
+                    "naive_ja_conveys": a.get("naive_ja_conveys"), "import_flags": a.get("import_flags") or [],
+                    "gloss_equals_naive_ja": a.get("gloss_equals_naive_ja")})
+            elif _path == "legacy" and gate.get("mixed"):
+                new["gloss_alignment"]["meaning_stage"] = "legacy"
             new["gloss_review_hint"] = False
             new["gloss_alignment_status"] = STATUS_ALIGNED
         else:
@@ -808,6 +998,25 @@ def apply_alignment_corrected(merged: dict, targets: list, gate: dict) -> dict:
     if unresolved_list:
         out["gloss_alignment_unresolved"] = unresolved_list
     return out
+
+
+def _meaning_stage_metadata(gate: dict, new_merged: dict, only_ranks: Optional[list]) -> dict:
+    """監視用(記録のみ。WIRING_DESIGN_07 G-8/§7/§8): 経路・call数・schema/developerのsha・持ち込み検出数、repair時のgloss変化件数。"""
+    n_new = (gate.get("n_calls") or {}).get("newgen", 0)
+    n_leg = (gate.get("n_calls") or {}).get("legacy", 0)
+    stage = "legacy" if not n_new else ("mixed_split_newgen" if gate.get("mixed") else "applied")
+    n_import = sum(1 for a in gate["adopted"].values() if a.get("import_flags"))
+    meta = {"stage": stage, "path": NEWGEN_PATH if n_new else "legacy", "n_newgen_calls": n_new, "n_legacy_calls": n_leg,
+            "n_newgen_items": sum(1 for p in (gate.get("item_path") or {}).values() if p == "newgen"),
+            "n_import_flags": n_import,
+            "newgen_schema_sha256": hashlib.sha256(json.dumps(NEWGEN_JSON_SCHEMA, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest(),
+            "newgen_developer_sha256": hashlib.sha256(NEWGEN_DEVELOPER_MESSAGE.encode("utf-8")).hexdigest()}
+    if only_ranks is not None:   # Z repair(current gloss有・新経路0回)の監視: repair件数とgloss変化件数
+        sts = [((it.get("gloss_alignment") or {}).get("status")) for it in new_merged["items"] if it["rank"] in set(only_ranks)]
+        meta["n_repaired"] = len(only_ranks)
+        meta["n_realigned"] = sum(1 for x in sts if x == "GLOSS_REALIGNED")
+        meta["n_already_consistent"] = sum(1 for x in sts if x == "GLOSS_ALREADY_CONSISTENT")
+    return meta
 
 
 def align_glosses(merged: dict, article_text: str, make_factory_for: Callable[[str], Callable],
@@ -835,6 +1044,7 @@ def align_glosses(merged: dict, article_text: str, make_factory_for: Callable[[s
     status = "ALIGN_PASS" if n_unres == 0 else ("ALIGN_FAILED_HUMAN_REVIEW_REQUIRED" if n_unres == len(targets)
                                                 else "ALIGN_PARTIAL_HUMAN_REVIEW_REQUIRED")
     total_cost = round(sum(a.get("cost_jpy") or 0 for a in gate["attempts"]), 4)
+    meaning_meta = _meaning_stage_metadata(gate, new_merged, only_ranks)
     if out_dir:
         os.makedirs(out_dir, exist_ok=True)
         for i, msg in enumerate(gate["messages"], 1):
@@ -843,14 +1053,14 @@ def align_glosses(merged: dict, article_text: str, make_factory_for: Callable[[s
                 f.write(msg)
         with open(f"{out_dir}/gloss_alignment_runtime_metadata.json", "w", encoding="utf-8") as f:
             json.dump({"article_id": article_id, "version": GLOSS_ALIGNMENT_VERSION,
-                       "final_status": status, "targets": [t["rank"] for t in targets],
+                       "meaning_stage": meaning_meta, "final_status": status, "targets": [t["rank"] for t in targets],
                        "unresolved_ranks": gate["unresolved_ranks"], "mapping_gate": mapping_gate,
                        "rules_sha256": rules_sha, "cost_jpy": total_cost,
                        "attempts_detail": [{k: v for k, v in a.items() if k != "parsed"} for a in gate["attempts"]],
                        "item_log": {str(k): v for k, v in gate["item_log"].items()}}, f, ensure_ascii=False, indent=2)
     return {"merged": new_merged, "status": status, "targets": [t["rank"] for t in targets],
             "attempts": gate["attempts"], "item_log": gate["item_log"], "unresolved_ranks": gate["unresolved_ranks"],
-            "cost_jpy": total_cost, "fallback_event": None, "rules_sha256": rules_sha,
+            "cost_jpy": total_cost, "fallback_event": None, "rules_sha256": rules_sha, "meaning_stage": meaning_meta,
             "model_id": next((a.get("model") for a in gate["attempts"] if a.get("model")), None)}
 
 

@@ -105,6 +105,9 @@ def fake_gloss_factory(record=None):
         targets = _parse_items_json(msg, "【対象項目】\n")
         out = [{"rank": t["rank"], "current_gloss_consistent": False, "japanese_gloss": f"意味{'一二三四五'[t['rank'] - 1]}",
                 "qa_reflects_all_key_phrase_words": "PASS", "reasoning": "r", "added_word_mappings": []} for t in targets]
+        if isinstance(msg, ga.NewGenMessage):   # X2p'(委任_35): 新規生成経路のschemaは新3欄を必須とする(実LLM契約と同じ形のfake)
+            for o in out:
+                o.update({"meaning_in_text_en": "meaning", "naive_ja": "字義訳", "naive_ja_conveys": "yes"})
 
         def fn():
             return json.dumps({"items": out}, ensure_ascii=False), "gpt-6-luna", "gloss_resp"
