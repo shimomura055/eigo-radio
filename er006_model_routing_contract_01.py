@@ -124,6 +124,10 @@ PROCESS_MODEL_MAP = {
     # 既存Key Phrase選定(B1_SUPPORT/A2_SUPPORT)と同じSUPPORT_MODELを使う
     # (新規モデル追加なし)。
     "KEY_PHRASE_ADVANCED_EXPLANATION": SUPPORT_MODEL,
+    # FAMILY-Z-STUDY-TEXT-TRIAL-01 委任_14(2026-10-25、ユーザー正式承認APPROVED_FOR_PRODUCTION 案α)で追加(追加のみ、既存キー不変)。
+    # 学習テキスト Part 1「Vocabulary & Expressions」の日本語一般解説(入力=確定KPの英語表現のみ)。KEY_PHRASE_ADVANCED_EXPLANATION
+    # (音声用の英語短文解説)とは別processにして原価・routing監査を分離する。SUPPORT_MODELを参照(Trial-04と同一、新規モデルなし)。
+    "KEY_PHRASE_GENERAL_EXPLANATION": SUPPORT_MODEL,
     # RISK-FLAGGER-PRODUCTION-WIRING-01 Phase 2 C1(2026-10-10、ユーザーGo)で追加(追加のみ、既存キー不変)。
     # model名はリテラル固定(WRITER_MODEL等の他定数を経由しない=他定数の変更に連動しない)。環境変数での上書きなし。
     #   FAMILY_X_RF_LUNA / FAMILY_X_RF_GEMINI : Risk Flagger 4条件(Luna A3/A4・Gemini A3/A4)

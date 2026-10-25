@@ -48,7 +48,7 @@ def kp_block(headers, cells) -> str:
 
 
 def render_standard_page(title: str, levels: list, intro_html: str = "", aux_html: str = "") -> str:
-    """levels=[{id:'std', label:'Standard', full_src, duration, rows:[{part,start,dur,src,blocks:[html...]}]}] (再生順)。
+    """levels=[{id:'std', label:'Standard', full_src, duration, rows:[{part,start,dur,src,blocks:[html...]}], study_html(任意)}] (再生順)。
     aux_html=ASR警告等の補助情報(全レベル節の後ろに置かれる)。"""
     nav = "<nav>" + "".join(f"<a href='#{lv['id']}'>{esc(lv['label'])}</a>" for lv in levels) + "</nav>"
     body = []
@@ -66,7 +66,8 @@ def render_standard_page(title: str, levels: list, intro_html: str = "", aux_htm
             f"<div class='combo'><button class='playall' data-target='{mid}'>&#9654; {esc(lv['label'])} 全編を通し再生</button><br>"
             f"<audio id='{mid}' controls preload='none' src='{esc(lv['full_src'])}'></audio></div>"
             "<table><thead><tr><th>パート</th><th>音声</th><th>Script / Key Phrase</th></tr></thead><tbody>"
-            + "".join(rows) + "</tbody></table>")
+            + "".join(rows) + "</tbody></table>"
+            + lv.get("study_html", ""))   # 任意block(学習テキスト Part 1、<h3>+<div>/<dl>のみ=標準適合checkのtable/h2判定に触れない。未指定=従来とバイト同一)
     pg = (f"<!DOCTYPE html><html lang='ja'><head><meta charset='utf-8'><title>{esc(title)}</title>"
           f"<meta name='viewport' content='width=device-width, initial-scale=1'>{CSS}</head><body>"
           f"<h1>{esc(title)}</h1>{nav}{intro_html}" + "".join(body) + aux_html + _JS + "</body></html>")

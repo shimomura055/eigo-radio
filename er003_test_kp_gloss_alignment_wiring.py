@@ -297,7 +297,10 @@ class XFinalLineRcAndAssemble(_FlagOn):
                 mock.patch.object(x, "stage_assemble_family_x_b1", side_effect=assemble_b1), \
                 mock.patch.object(x, "compute_cost_jpy_so_far", return_value=(0.0, {})), \
                 mock.patch.object(x, "ensure_rf_record"), \
+                mock.patch.object(x, "_require_part1_fresh_x", return_value={}), \
                 contextlib.redirect_stdout(buf):
+            # 委任_14: 後段入口のPart 1(Vocabulary & Expressions)存在確認(Opus M2)は本testの関心(gloss HR)と直交するため無効化。
+            # M2自体は er003_kp_general_explanation_01_runner_integration_test_01.py で検証する。
             try:
                 x.main()
                 rc, exc = 0, None

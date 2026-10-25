@@ -534,7 +534,8 @@ def z_ctx(tmp, kp_calls, fail_levels=("B1",), align_enabled=True):
                 disp = " ".join(s.split()[:-1])     # 候補から末尾語を削ったdisplay_phrase -> KPが伸びた扱い
             items.append({"rank": i, "source_span": s, "source_sentence": s, "display_phrase": disp, "key_phrase": s,
                           "used_form": s, "japanese_gloss": f"意味{i}", "japanese_gloss_tts": f"意味{i}",
-                          "kp_extends_beyond_candidate": disp != s, "gloss_review_hint": False})
+                          "kp_extends_beyond_candidate": disp != s, "gloss_review_hint": False,
+                          "fulltext_source_ref": "fulltext_exact_v1"})   # 委任_14: Production KPは全て全文選定(Part 1の厳格入力が要求)
         merged = {"items": items, "overall_status": "CANONICALIZATION_PASS", "article_id": article_id,
                   "canonicalization_version": "mock", "source_level": source_level}
         fnl = FakeFn([bad(2), bad(2)])
@@ -603,7 +604,8 @@ def pat_z(base):
         res_kp = r.run_stage(ctx, "kp")
     installed = json.load(open(f"{odir}/b1b/key_phrases/keywords_canonicalized.json", encoding="utf-8"))
     _sorted_items = sorted(installed["items"], key=lambda x: x["rank"])
-    _sig_payload = {"display": [it["display_phrase"] for it in _sorted_items],
+    import er019_family_x_kp_explanation_01 as _kexp_t   # 委任_14: fixtureが全文選定item(fulltext_source_ref付き)になったため解説sigは実装どおりexplanation_phrase(=used_form)
+    _sig_payload = {"display": [_kexp_t.explanation_phrase(it) for it in _sorted_items],
                     "gloss": [it.get("japanese_gloss", "") for it in _sorted_items]}
     if any(it.get("source_reference_contract") for it in _sorted_items):
         # 委任_16(SRC D1): 解説sigにsrcが加わる(FZQI委任_06で期待値更新。実装不変)

@@ -384,9 +384,137 @@ def _kp_already_generated(kp_dir: str) -> list[str]:
     return found
 
 
+# ------------------------------------------------------------
+# 学習テキスト Part 1「Vocabulary & Expressions」(FAMILY-Z-STUDY-TEXT-TRIAL-01 委任_14、案α、Advanced=b1bのみ)
+# 設計: docs/research/FAMILY-Z-STUDY-TEXT-TRIAL-01/PART1_WIRING_DESIGN_01.md §13〜§17。共通module=er003_kp_general_explanation_01。
+# 生成点=run_theme_scaffoldのb1b KP PASS後(+`--stage study_text`で単独再実行)。Opus M1: 失敗はKP失敗と分離した専用marker
+# (kp_part1_failed.json)+rc=3、案内は`--stage study_text`(scaffold再実行=support/KP再生成を案内しない)。
+# Opus M2: tts/assemble/player入口で存在と最新性(signature)をfail-closed確認。
+# 訳欄(T1/T2)の判断記録が無い間は、生成・保存のみでplayer.htmlへも描画しない(M3 (ii))。
+# ------------------------------------------------------------
+KP_PART1_FAILED_MARKER = "kp_part1_failed.json"
+
+
+def _part1_gen():
+    import er003_kp_general_explanation_01 as p1
+    return p1
+
+
+def _part1_explanations_path(out_dir: str, level: str = "b1b") -> str:
+    return f"{out_dir}/{level}/key_phrases/{_part1_gen().EXPLANATIONS_FILENAME}"
+
+
+def _part1_failed_markers(out_dir: str, levels: list) -> list:
+    return [f"{out_dir}/{lv}/key_phrases/{KP_PART1_FAILED_MARKER}" for lv in levels
+            if lv == "b1b" and os.path.exists(f"{out_dir}/{lv}/key_phrases/{KP_PART1_FAILED_MARKER}")]
+
+
+def part1_next_command(source_dir: str) -> str:
+    parts = os.path.normpath(source_dir).replace("\\", "/").split("/")
+    slug, run = (parts[-2], parts[-1]) if len(parts) >= 2 else ("<slug>", "<run>")
+    return (f"`--slug {slug} --run {run} --level b1b --stage study_text`(Part 1だけ再生成。support生成・KP選定をやり直す"
+            "scaffold再実行は費用と別KPを生むため行わない)")
+
+
+def _part1_kp_items(out_dir: str) -> list:
+    p = f"{out_dir}/b1b/key_phrases/keywords_canonicalized.json"
+    if not os.path.exists(p):
+        raise RuntimeError(f"[STOP][Part 1] {p}がありません(KP stage未完了)")
+    with open(p, encoding="utf-8") as f:
+        items = (json.load(f).get("items") or [])
+    if not items:
+        raise RuntimeError(f"[STOP][Part 1] {p}のitemsが空です")
+    return sorted(items, key=lambda x: x["rank"])
+
+
+def generate_part1_for_b1b(client, source_dir: str, out_dir: str, *, call_fn=None, budget_check=None) -> dict:
+    """b1bのPart 1解説を生成・保存する(signature一致ならAPI 0で再利用、不一致なら自動再生成=Xの`kp_expl`系と同型)。
+    失敗(技術retry1回後も構造NG・入力不正・model不一致)は専用marker kp_part1_failed.jsonを書き status=KP_PART1_FAILED(...)を返す。
+    成功したらmarkerを削除する。例外(budget等)は握りつぶさない。"""
+    p1 = _part1_gen()
+    kp_dir = f"{out_dir}/b1b/key_phrases"
+    marker = f"{kp_dir}/{KP_PART1_FAILED_MARKER}"
+    path = _part1_explanations_path(out_dir)
+    items = _part1_kp_items(out_dir)
+    cached = None
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            cached = json.load(f)
+    if budget_check is not None:
+        budget_check("before kp_part1")
+    _parts = os.path.normpath(source_dir).replace("\\", "/").split("/")
+    try:
+        with cl.logging_context(_parts[-2] if len(_parts) >= 2 else "part1", "kp_part1"):   # 費用ログのstageタグ(Part 1の原価を単独で集計できる)
+            doc = p1.resolve_general_explanations(items, cached, call_fn=call_fn, client=client)
+    except (p1.KpGeneralExplanationError, p1.KpGeneralExplanationInputError) as exc:
+        os.makedirs(kp_dir, exist_ok=True)
+        status = f"KP_PART1_FAILED({type(exc).__name__})"
+        save_json(marker, {"status": status, "reason": str(exc), "next_command": part1_next_command(source_dir)})
+        return {"status": status, "reason": str(exc)}
+    if not doc.get("reused_from_previous_run"):   # 再利用時は保存済みファイルを書き換えない(生成時のaudit/response_idsを保つ)
+        save_json(path, doc)
+    if os.path.exists(marker):
+        os.remove(marker)
+    return {"status": "OK", "reused": bool(doc.get("reused_from_previous_run")),
+            "total_cost_jpy": (doc.get("audit") or {}).get("total_cost_jpy")}
+
+
+def assemble_part1_for_b1b(source_dir: str, out_dir: str) -> list:
+    """Part 1の組立(決定論)+study_text/保存。存在・最新性(Opus M2)・gloss HR/未評価・引用の逐語実在をSTOPで確認する。訳はnull+PENDING_USER_DECISION。"""
+    p1 = _part1_gen()
+    items = _part1_kp_items(out_dir)
+    doc = _require_part1_fresh_x(source_dir, out_dir, "assemble")
+    try:
+        rows = p1.assemble_part1(items, doc, None, load_text(f"{source_dir}/b1b/article.md"))
+    except p1.KpGeneralExplanationError as exc:
+        raise RuntimeError(f"[STOP][Part 1] 組立NG: {exc}") from exc
+    p1.write_study_text(f"{out_dir}/b1b/study_text", rows)
+    return rows
+
+
+def _require_part1_fresh_x(source_dir: str, out_dir: str, where: str) -> dict:
+    """Opus M2: tts/assemble/player入口の確認(存在+signature一致)。無い/古いならRuntimeError(STOP、次コマンド付き)。"""
+    p1 = _part1_gen()
+    items = _part1_kp_items(out_dir)
+    path = _part1_explanations_path(out_dir)
+    doc = None
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            doc = json.load(f)
+    try:
+        p1.require_fresh_general_explanations(items, doc, where=where, next_command=part1_next_command(source_dir))
+    except p1.KpGeneralExplanationStale as exc:
+        raise RuntimeError(f"[STOP][Part 1] KP_PART1_NOT_READY: {exc}") from exc
+    return doc
+
+
+def run_study_text_stage(client, source_dir: str, out_dir: str, *, call_fn=None, budget_check=None) -> dict:
+    """`--stage study_text`: 既存keywords_canonicalized.jsonからPart 1だけを(再)生成する(KP再選定・support再生成なし)。
+    Opus M1の事前確認: KP stage成功済み(kp_stage_failed.jsonなし・KP成果物あり)。成功でkp_part1_failed.jsonを削除、study_text/を保存。"""
+    kpf = _kp_stage_failed_markers(out_dir, ["b1b"])
+    if kpf:
+        raise RuntimeError(f"[STOP][Part 1] KP_STAGE_FAILED markerあり(旧attemptのKPを使わない): {kpf}")
+    _part1_kp_items(out_dir)   # KP成果物なし/空はSTOP
+    r = generate_part1_for_b1b(client, source_dir, out_dir, call_fn=call_fn, budget_check=budget_check)
+    if r["status"] != "OK":
+        return r
+    assemble_part1_for_b1b(source_dir, out_dir)
+    return r
+
+
+def part1_study_html_for_player(source_dir: str, out_dir: str) -> str:
+    """player.html用のstudy block。M2確認+study_text/保存は常に行い、描画は訳欄の判断記録がある場合のみ(無ければ空文字)。"""
+    p1 = _part1_gen()
+    rows = assemble_part1_for_b1b(source_dir, out_dir)
+    try:
+        return p1.render_html_block(rows)
+    except p1.KpGeneralExplanationError as exc:
+        raise RuntimeError(f"[STOP][Part 1] 描画NG: {exc}") from exc
+
+
 def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
                         scaffold_only: str | None = None, budget_check=None,
-                        kp_backend: str = "fulltext_p2") -> dict:
+                        kp_backend: str = "fulltext_p2", part1_call_fn=None) -> dict:
     """既存sc.run_key_phrases()(選定+canonicalization+redundancy QA)を
     Family X本文へそのまま適用する(記事冒頭Key Phrasesは既存Family A
     既定構成をそのまま再利用する、本委任文の前提どおり)。
@@ -476,9 +604,25 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
                                 "kp_run_status": kp.get("status")})
             result[level]["kp_stage_status"] = _fail
             print(f"[FAMILY-X-AUDIO-SCAFFOLD][STOP] {level}: {_fail}(自動採用しない・HR Lockへ送らない・後段TTS/assemblyは実行しない)")
+        _part1_fail = None
+        if _fail is None and level == "b1b":
+            # 委任_14: 学習テキスト Part 1(Advancedのみ)。KP PASS後・TTS前。失敗はKP失敗と分離した専用marker+part1_stage_status(Opus M1)。
+            _p1r = generate_part1_for_b1b(client, source_dir, out_dir, call_fn=part1_call_fn, budget_check=budget_check)
+            result[level]["part1"] = _p1r
+            if _p1r["status"] != "OK":
+                _part1_fail = _p1r["status"]
+                result[level]["part1_stage_status"] = _part1_fail
+                print(f"[FAMILY-X-AUDIO-SCAFFOLD][STOP] {level}: {_part1_fail}: {_p1r.get('reason')}"
+                      f"(KPは確定済み。TTS前に停止。次の一手: {part1_next_command(source_dir)})")
+            else:
+                try:   # 組立+study_text/保存。gloss HR/未評価はHR経路(既存)で扱うため、ここでは保留にして止めない
+                    assemble_part1_for_b1b(source_dir, out_dir)
+                    result[level]["study_text"] = "saved"
+                except RuntimeError as exc:
+                    result[level]["study_text"] = f"deferred: {exc}"
         if budget_check is not None:
             budget_check(f"after scaffold {level}")
-        if _fail is not None:
+        if _fail is not None or _part1_fail is not None:
             break   # 残levelのAPI呼出をしない(Zはstage失敗で停止)
     save_json(f"{out_dir}/scaffold_run_summary.json", result)
     return result
@@ -2277,7 +2421,7 @@ def _build_level_table(level_dir: str, level: str, japanese_title: str | None = 
     return player_common.render_timeline_table(rows)
 
 
-def build_player_html(theme_out_dir: str, theme_id: str, japanese_title: str | None) -> str:
+def build_player_html(theme_out_dir: str, theme_id: str, japanese_title: str | None, study_html: str = "") -> str:
     abs_url = player_common.abs_file_url
     b1b_summary = _load_assemble_summary(f"{theme_out_dir}/b1b/run_summary_assemble.json")
     a2_summary = _load_assemble_summary(f"{theme_out_dir}/a2/run_summary_assemble.json")
@@ -2322,7 +2466,7 @@ def build_player_html(theme_out_dir: str, theme_id: str, japanese_title: str | N
 <h1>{MANAGEMENT_ID}({theme_id})</h1>
 <p class="note">Family X(Entertainment News)音声構造Stage 3a runtime。
 Comment1→本文1→Comment2→本文2→Comment3→本文3→Comment4→In One Line(Point構造なし)。</p>
-{b1b_audio_html}
+{b1b_audio_html}{study_html}
 {a2_audio_html}
 {pww_sections_html}
 </body></html>
@@ -2344,7 +2488,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--run", required=True, help="例: run_01")
     parser.add_argument("--level", default="both", choices=("a2", "b1b", "both"))
     parser.add_argument("--stage", default="plan",
-                         choices=("plan", "scaffold", "tts", "assemble", "player", "all"))
+                         choices=("plan", "scaffold", "study_text", "tts", "assemble", "player", "all"))
     parser.add_argument("--dry-run", action="store_true",
                          help="API呼び出しを一切行わずplanのみ出力する(--stage plan相当を強制)。")
     parser.add_argument("--out-dir", default=None,
@@ -2715,6 +2859,18 @@ def main() -> None:
                 print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {_kp_fail}: KP stage fail-closed(技術STOP、HR Lockへ送らない)。"
                       "原因確認後に同stageを再実行してください。")
                 sys.exit(3)
+            _p1_fail = {lv: (scaffold_result.get(lv) or {}).get("part1_stage_status") for lv in levels
+                        if (scaffold_result.get(lv) or {}).get("part1_stage_status")}
+            if _p1_fail:   # 委任_14 Opus M1: Part 1失敗はKP失敗と分離(専用marker kp_part1_failed.json)。rc=3、案内は--stage study_text
+                _ep = f"{out_dir}/entry_point.json"
+                if os.path.exists(_ep):
+                    with open(_ep, encoding="utf-8") as f:
+                        _epd = json.load(f)
+                    _epd["part1_stage_status"] = _p1_fail
+                    save_json(_ep, _epd)
+                print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {_p1_fail}: 学習テキスト Part 1の生成に失敗(KPは確定済み・TTS前に停止)。"
+                      f"次の一手: {part1_next_command(source_dir)}。scaffold stageの再実行はしないでください(support/KPが再生成され費用・別KPになります)。")
+                sys.exit(3)
             # 修正1回目(Opus L2所見B2、2026-09-27): scaffold完了後、
             # entry_point.jsonへlevelごとのkp_backend_usedを追記する
             # (per-article traceability、既存フィールドは保持したまま追加)。
@@ -2727,10 +2883,40 @@ def main() -> None:
                 }
                 save_json(entry_point_path, entry_point)
 
+        if args.stage == "study_text":
+            # 委任_14 Opus M1: Part 1だけを(再)生成する単独stage(KP再選定・support再生成なし。API=Part 1の1 call以内)。Advanced(b1b)のみ。
+            if "b1b" not in levels:
+                parser.error("--stage study_textはAdvanced(b1b)のみ対象です(--level b1bまたはboth)。")
+            try:
+                with cl.logging_context(args.slug, "kp_part1"):
+                    _p1r = run_study_text_stage(client, source_dir, out_dir,
+                                                budget_check=lambda note: assert_budget_ok(out_dir, args.budget_jpy, note))
+            except RuntimeError as exc:
+                print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
+                sys.exit(3)
+            assert_budget_ok(out_dir, args.budget_jpy, "after study_text")
+            if _p1r["status"] != "OK":
+                print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {_p1r['status']}: {_p1r.get('reason')}。次の一手: 原因確認後に{part1_next_command(source_dir)}を再実行。")
+                sys.exit(3)
+            print(f"[FAMILY-X-AUDIO-RUNNER] study_text OK: {_p1r}")
+
         if args.stage in ("tts", "assemble", "all"):
             _kpf = _kp_stage_failed_markers(out_dir, levels)
             if _kpf:
                 print(f"[FAMILY-X-AUDIO-RUNNER][STOP] KP_STAGE_FAILED markerあり(旧attemptのKPを後段で使わない): {_kpf}")
+                sys.exit(3)
+            _p1f = _part1_failed_markers(out_dir, levels)
+            if _p1f:
+                print(f"[FAMILY-X-AUDIO-RUNNER][STOP] KP_PART1_FAILED markerあり(Part 1未生成のままTTSへ進まない): {_p1f}。"
+                      f"次の一手: {part1_next_command(source_dir)}")
+                sys.exit(3)
+        if args.stage in ("tts", "assemble", "player", "all") and "b1b" in levels:
+            # 委任_14 Opus M2: Part 1(Vocabulary & Expressions)の存在と最新性を、後段の入口でfail-closed確認する
+            # (Part 1導入前のrun再開・KP変更後の再生成忘れでPart 1なし/古い解説のまま進めない)。
+            try:
+                _require_part1_fresh_x(source_dir, out_dir, f"--stage {args.stage}")
+            except RuntimeError as exc:
+                print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
                 sys.exit(3)
 
         if args.stage in ("tts", "all"):
@@ -2775,7 +2961,15 @@ def main() -> None:
                     print(f"[FAMILY-X-AUDIO-RUNNER][BLOCKED] {level}: {exc}")
 
         if args.stage in ("player", "all"):
-            player_path = build_player_html(out_dir, args.slug, japanese_title)
+            _study_html = ""
+            if "b1b" in levels:   # 委任_14: Part 1 study block(Advancedのみ。訳欄の判断記録が無い間は空文字=従来とバイト同一)
+                try:
+                    _study_html = part1_study_html_for_player(source_dir, out_dir)
+                except RuntimeError as exc:
+                    print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
+                    sys.exit(3)
+            player_path = (build_player_html(out_dir, args.slug, japanese_title, study_html=_study_html) if _study_html
+                           else build_player_html(out_dir, args.slug, japanese_title))
             print(f"[FAMILY-X-AUDIO-RUNNER] player.html: {os.path.abspath(player_path)}")
 
     finally:

@@ -1983,7 +1983,7 @@ def _user_page_rows(run_dir: str, level: str, rows: list, kp_rows: list, audio_r
 
 
 def build_pages(run_dir: str, pages_dir: str = PAGES_DIR, reuse_existing_audio: bool = False, *,
-                page_title: str = "走れメロス", audio_file_prefix: str = "Melos") -> dict:
+                page_title: str = "走れメロス", audio_file_prefix: str = "Melos", study_html: str = "") -> dict:
     """user_test/family_z_melos_02/{index,standard,advanced}.html を生成する(静的ファイルのみ)。
     index.html=ユーザー試聴ページ標準フォーマット(Std/Adv 1ページ、通し再生・再生順スクリプト・KP、ASR警告は補助表示。委任_19、
     er_user_listening_page_common_01)。standard.html/advanced.html=Voice/Style付き詳細確認ページ(開発確認用、従来形式)。
@@ -2012,7 +2012,9 @@ def build_pages(run_dir: str, pages_dir: str = PAGES_DIR, reuse_existing_audio: 
         with open(f"{pages_dir}/{fname}", "w", encoding="utf-8") as f:
             f.write(html_text)
         user_levels.append({"id": "std" if label == "Standard" else "adv", "label": label, "full_src": f"audio_{label.lower()}/{full}", "duration": dur,
-                            "rows": _user_page_rows(run_dir, level, rows, kp_rows, f"audio_{label.lower()}/", audio_dir)})
+                            "rows": _user_page_rows(run_dir, level, rows, kp_rows, f"audio_{label.lower()}/", audio_dir),
+                            # 委任_14: 学習テキストPart 1(Advancedのみ。未指定=従来とバイト同一)
+                            **({"study_html": study_html} if (study_html and label == "Advanced") else {})})
         out[label] = {"page": f"{pages_dir}/{fname}", "rows": len(rows), "kp_rows": len(kp_rows), "lint": lint}
     index_html = build_index_html(user_levels, warn_sections, page_title=page_title)
     lint = lint_page_html(index_html)

@@ -332,7 +332,8 @@ def _make_kp_fn(r, bad_level="a2", bad_rank=2, gloss="あなたの代わりに")
                 reason = ga.PERSON_NORMALIZATION_REASON
             items.append({"rank": i, "source_span": s, "source_sentence": s, "display_phrase": s, "key_phrase": kp,
                           "used_form": kp, "japanese_gloss": g, "japanese_gloss_tts": g, "kp_extends_beyond_candidate": False,
-                          "gloss_review_hint": False, "normalization_reason": reason or "none"})
+                          "gloss_review_hint": False, "normalization_reason": reason or "none",
+                          "fulltext_source_ref": "fulltext_exact_v1"})   # 委任_14: Production KPは全て全文選定(Part 1の厳格入力が要求)
         merged = {"items": items, "overall_status": "CANONICALIZATION_PASS", "article_id": article_id,
                   "canonicalization_version": "mock", "source_level": source_level}
         os.makedirs(kp_dir, exist_ok=True)
