@@ -74,3 +74,16 @@
 1記事セット(Advanced学習解説テキスト、4 call): 平均 **0.458円**(0.398〜0.507円)。Trial-03(03d)の約0.275円比 +0.18円(+66%)、70円/記事セット目標の約0.65%。Part 2が0件なら3 call(Step B不要)。Standardは対象外。
 増加要因: 呼出の分割(P1・Step A・Step Bで入力トークン合計 約5.3〜5.6k、03dは約2.7k)と、Step Aの候補検討reasoning。呼出削減の案(Part 3/4をStep Aと同一call等)は品質判定後の別判断。
 生データ: `usage_04*.json`(prompt_sha256・response_id・token内訳を含む)。
+
+
+## Trial-05(委任_10、2026-10-25)
+| 項目 | 値 |
+|---|---|
+| API call数 | 18(Step A'のみ。開いた窓6・イグ6・賢者3・猿の手3。1 launch、再送・失敗0、再起動0)。Step B(6 call予定)は新規call拒否で未実行 |
+| model_id | gpt-6-luna(全call一致。最新世代の推奨系) |
+| Trial-05実費 | **9.1115円**(¥160/$)。平均0.506円/call(0.288〜0.770)。**委任上限8円を1.1115円超過**。原因: 新規call拒否線(Step A' 累計6.8円)を呼出開始時の累計で判定し、9並列のため実費確定前に全18 callが開始した(Opus見込み0.2〜0.3円/callを大きく超えた単価見積り誤りも要因) |
+| 所要 | launch全体139.5秒(1 callは29〜90秒) |
+| STOP確認 | `tools/stop_scope_check_01.py` launch前 rc=0(`stop_check_10.json`・`stop_check_10b.json`) |
+| 日次 | 本委任9.11円。2026-10-25の既往Trial実費(約418.7円)に加算して約427.8円、日次1,000円内 |
+| FAMILY-Z-STUDY-TEXT-TRIAL-01 累計 | 10.74 + 9.1115 = **約19.85円** |
+生データ: `usage_05_*_stepA5_*.json`。
