@@ -1,0 +1,58 @@
+あなたは英語読解指導の専門家です。下の英語本文(Advancedレベル)から、日本語話者の学習者(B1〜B2相当)が読解でつまずきやすく、文法・構文の解説によって理解が深まる英文を選びます。この工程では解説文は書きません(解説は別の工程が行います)。選定だけを行ってください。
+
+# 作品・レベル
+- 作品: “Cockroach Milk”: Before You Reach for a Cup, Look at How It Stores Food(Family Xの解説記事・イグ・ノーベル賞2026)
+- レベル: Advanced
+
+# 本文(段落番号[P1]〜[P11]は参照用。引用では番号を書かない)
+[P1] If you hear “cockroach milk” and the café in your mind shuts down at once, I get it. But today, let’s put the urgent meeting about whether to drink it on hold. The main story is not its taste or how it feels going down. It’s the surprising way cockroach babies store food, just for them.
+
+[P2] The Ig Nobel Prize went to research on nutrient-rich crystals that had been published earlier. This is not news that cockroach milk has finally made its debut at the dinner table! No one drank it as part of the study, and the study did not test its effects as a food for humans. You can put the cup back on the shelf.
+
+[P3] The study looked at a kind of cockroach that raises its young inside its body. The researchers took out protein crystals containing nutrients from the gut of the unborn young. You may have thought you were heading to the milk aisle, but instead you were shown the food store inside a body.
+
+[P4] The researchers used X-rays to study the shape of the protein inside the crystals. Fats were bound to the protein, and sugars were attached too. If you were expecting a fancy latte, what you got was a map of molecules. Suddenly, we’re in a science lab.
+
+[P5] And the paper includes a striking estimate. The crystals contain more than three times as much energy as the same weight of milk from several kinds of mammals.
+
+[P6] “The final boss of nutrition?”
+
+[P7] At this point, the marketing team might be ready to leap into action, but hold on. The comparison was between “crystals” and “milk.” It does not mean that drinking them would make people three times as energetic. Take that number on its own, and before you know it, a science story can turn into a TV shopping show.
+
+[P8] What’s more interesting is the idea of turning nutrients into crystals and storing them away. No fridge, no lunch box. If tiny crystals can serve as a food store, that’s a pretty clever way to save space.
+
+[P9] The authors also suggest that storing nutrients as crystals may help feed the young. But the role of this process has not been confirmed. Next to “That makes sense!” there should be a sign saying “Still being studied.” The two should be shown together.
+
+[P10] When you come across the phrase “packed with nutrition,” try asking, “Compared with what?” and “For whom?” Behind the flashy number, you may find something else that is interesting.
+
+[P11] Rather than seeing this as a possible breakfast for people, see it as a way to deliver nutrients to young that have not yet been born. You don’t need the courage to drink it. Today, bring your curiosity, not a cup, and take a look inside this little food store.
+
+# 選定の観点
+- 文法・構文の難しさ
+- 文の構造を誤解しやすいか(主語・動詞・修飾関係・情報のつながりをつかみにくいか)
+- 通常の語順・構造との違い
+- 構文によって生じる意味やニュアンス
+- 解説による学習価値(解説を読むと、その文の理解がどれだけ深まるか)
+文法用語の難しさそのものは評価しない。
+- 優先して検討する文の例: 語順が通常と異なる文、長い修飾語句・挿入・省略・並列・比較表現が重なって構造が見えにくい文、字面どおりに読むと意味を取り違えやすく構文の理解が必要な文。これらは例であり、該当する文が本文になければ無理に選ばない。
+- 基礎的な文法項目(命令文、基本的な接続、前置詞句、分詞構文や付帯状況のwithなどの基本形、関係詞の基本用法、基本的な時制・受動態・比較・仮定法など)を説明するだけの選定はしない。特殊な用法や重要な表現効果がある場合に限る。
+- 選ぶ文は0〜2個。解説価値の高い文が本文にない場合は0個とする。基礎的な文法項目を埋め草として選ばない。無理に2個選ばない。
+- 本文全体から候補の文を複数検討し、解説価値が最も高い文を選ぶ。
+
+# 出力(JSONオブジェクト1個のみ。前置き・後書き・コードフェンスなし)
+{
+  "candidates_considered": [{"para": "P4", "note": "検討した候補の文について、採否の理由を1行"}],
+  "selected": [
+    {
+      "para": "P4",
+      "sentence": "選んだ1文を本文から一字一句そのまま(逐語)",
+      "construct_ja": "構文の名前(短く)",
+      "points_ja": ["解説で押さえるべき点(最大3つ、短く)"],
+      "context_ja": "その文の本文中での位置づけを1文で(本文に書かれた事実のみ。解釈や評価は書かない)",
+      "reason_dev": "選定理由(開発者向けの記録。1〜2文。この欄はユーザー向け解説には使われない)"
+    }
+  ],
+  "none_reason_dev": "selectedが空のとき、その理由を1文。空でなければ空文字"
+}
+- candidates_consideredは、検討した候補を最大5件(選んだ文を含む)。
+- selectedは0〜2件。0件なら空配列。

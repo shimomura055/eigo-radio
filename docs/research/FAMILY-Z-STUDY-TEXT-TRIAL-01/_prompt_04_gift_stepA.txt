@@ -1,0 +1,96 @@
+あなたは英語読解指導の専門家です。下の英語本文(Advancedレベル)から、日本語話者の学習者(B1〜B2相当)が読解でつまずきやすく、文法・構文の解説によって理解が深まる英文を選びます。この工程では解説文は書きません(解説は別の工程が行います)。選定だけを行ってください。
+
+# 作品・レベル
+- 作品: The Gift of the Magi(『賢者の贈り物』)
+- レベル: Advanced
+
+# 本文(段落番号[P1]〜[P30]は参照用。引用では番号を書かない)
+[P1] One dollar and eighty-seven cents. Della counted the coins again, pressing each one against the table. Still the same. And tomorrow was Christmas.
+
+[P2] She had saved every penny she could. How could she buy Jim something worthy of him?
+
+[P3] For a while, she cried on their shabby couch. Then she caught sight of herself in the mirror.
+
+[P4] They owned two things that made them proud. One was Jim’s gold watch, handed down from his grandfather to his father, and then to him. The other was Della’s long brown hair.
+
+[P5] Slowly, she loosened her hair. It fell below her knees, shining in the pale light. She ran her fingers through it once. Then, before she could change her mind, she pulled on her coat.
+
+[P6] Outside a hair-goods shop, she paused just long enough to catch her breath.
+
+[P7] “Will you buy my hair?”
+
+[P8] The owner lifted the heavy waves.
+
+[P9] “Twenty dollars.”
+
+[P10] “Cut it quickly, please.”
+
+[P11] At the first touch of the scissors, Della shut her eyes.
+
+[P12] For two hours afterward, she hurried from shop to shop. Finally, she found it: a simple platinum watch chain. Nothing showy, nothing unnecessary. Like Jim, it needed no decoration to prove its worth.
+
+[P13] It cost twenty-one dollars.
+
+[P14] She carried it home with eighty-seven cents left, imagining Jim replacing his worn leather watch strap with her beautiful gift.
+
+[P15] By seven, dinner was nearly ready. Della had curled her short hair, but she kept returning to the mirror.
+
+[P16] “Please let him still think I’m pretty,” she whispered.
+
+[P17] Footsteps sounded. The door opened.
+
+[P18] Jim stopped.
+
+[P19] His eyes stayed on her hair. Della rushed toward him.
+
+[P20] “I sold it, Jim. I couldn’t let Christmas come without giving you something. It’ll grow again!”
+
+[P21] He put his arms around her. Then he gave her a package.
+
+[P22] Inside were the tortoise-shell combs she had so often admired in a shop window.
+
+[P23] She held them against her chest, smiling through tears.
+
+[P24] “My hair grows quickly.”
+
+[P25] Suddenly remembering, she brought out the chain.
+
+[P26] “Look! Isn’t it perfect? Give me your watch.”
+
+[P27] Jim sat down and smiled gently.
+
+[P28] “I sold the watch to buy your combs.”
+
+[P29] Della sat beside him and took his hand. Her hair was gone; the combs could not hold it. His watch was gone; the chain had nothing to carry. Each had sold their greatest treasure to buy the other a gift.
+
+[P30] The magi were wise men who brought gifts on the first Christmas. Yet here, with gifts they could not use, sat two foolish young people whose love made them the wisest of all gift-givers. They were the magi.
+
+# 選定の観点
+- 文法・構文の難しさ
+- 文の構造を誤解しやすいか(主語・動詞・修飾関係・情報のつながりをつかみにくいか)
+- 通常の語順・構造との違い
+- 構文によって生じる意味やニュアンス
+- 解説による学習価値(解説を読むと、その文の理解がどれだけ深まるか)
+文法用語の難しさそのものは評価しない。
+- 優先して検討する文の例: 語順が通常と異なる文、長い修飾語句・挿入・省略・並列・比較表現が重なって構造が見えにくい文、字面どおりに読むと意味を取り違えやすく構文の理解が必要な文。これらは例であり、該当する文が本文になければ無理に選ばない。
+- 基礎的な文法項目(命令文、基本的な接続、前置詞句、分詞構文や付帯状況のwithなどの基本形、関係詞の基本用法、基本的な時制・受動態・比較・仮定法など)を説明するだけの選定はしない。特殊な用法や重要な表現効果がある場合に限る。
+- 選ぶ文は0〜2個。解説価値の高い文が本文にない場合は0個とする。基礎的な文法項目を埋め草として選ばない。無理に2個選ばない。
+- 本文全体から候補の文を複数検討し、解説価値が最も高い文を選ぶ。
+
+# 出力(JSONオブジェクト1個のみ。前置き・後書き・コードフェンスなし)
+{
+  "candidates_considered": [{"para": "P4", "note": "検討した候補の文について、採否の理由を1行"}],
+  "selected": [
+    {
+      "para": "P4",
+      "sentence": "選んだ1文を本文から一字一句そのまま(逐語)",
+      "construct_ja": "構文の名前(短く)",
+      "points_ja": ["解説で押さえるべき点(最大3つ、短く)"],
+      "context_ja": "その文の本文中での位置づけを1文で(本文に書かれた事実のみ。解釈や評価は書かない)",
+      "reason_dev": "選定理由(開発者向けの記録。1〜2文。この欄はユーザー向け解説には使われない)"
+    }
+  ],
+  "none_reason_dev": "selectedが空のとき、その理由を1文。空でなければ空文字"
+}
+- candidates_consideredは、検討した候補を最大5件(選んだ文を含む)。
+- selectedは0〜2件。0件なら空配列。
