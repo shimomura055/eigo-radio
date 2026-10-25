@@ -1,5 +1,6 @@
 # er120_part2_grammar_production_01_test_01.py
-# PART2-GRAMMAR-PRODUCTION-WIRING-01 委任_01: Part 2 Production module のtest(API 0。LLMは全てmock call_fn。実client生成はblock)。
+# PART2-GRAMMAR-PRODUCTION-WIRING-01 委任_01+委任_02: Part 2 Production module のtest(API 0。LLMは全てmock call_fn。実client生成はblock)。
+#  M: 委任_02 Opus条件Aレビュー反映(M-1〜M-7・R-1/R-3/R-4/R-7)のtest(ファイル末尾)
 #  A: Trial-07/08資産との同一性(Prompt byte一致・prompt sha一致・Step B prompt再現)
 #  B: Trial-08結果の回帰(Trial-07/08の全29標本のraw応答 → 本moduleのparse → select_tiered が Trial-08結果と一致)
 #  C: 選定・順位・HR接続(TOP1/TOP2・auto/wait・Human choice・再選定・0件)
@@ -251,15 +252,16 @@ def test_C5_same_sentence_not_listed_twice():
 def test_C6_select_matrix_and_no_silent_final_approval():
     d = _doc(F_INV, F_CLEFT, F_SPEC)
     c1, c2 = d["candidates"][0], d["candidates"][1]
-    rv = lambda ch, sha=None: {"choice": ch, "candidates_sha256": sha or d["candidates_sha256"]}
-    s = m.select_from_candidates(d, None, "auto")
+    rv = lambda ch, sha=None: {"choice": ch, "candidates_sha256": sha or d["candidates_sha256"], "reason": "r"}
+    s = m.select_from_candidates(d, None, AUTO)
     assert s["status"] == "SELECTED" and s["candidate"] == c1 and s["source"] == "auto_top1"          # Human不介入=TOP1(明示auto時のみ)
     s = m.select_from_candidates(d, None, "wait")
     assert s["status"] == "PENDING_REVIEW" and s["candidate"] is None                                  # 既定は待機。勝手に確定しない
     assert m.select_from_candidates(d, rv("top1"), "wait")["candidate"] == c1
     assert m.select_from_candidates(d, rv("top2"), "wait")["candidate"] == c2
-    assert m.select_from_candidates(d, rv("top2"), "auto")["source"] == "human_top2"
-    assert m.select_from_candidates(d, rv("omit"), "wait") == {"status": "ZERO", "candidate": None, "source": "human_omit"}
+    assert m.select_from_candidates(d, rv("top2"), AUTO)["source"] == "human_top2"
+    o = m.select_from_candidates(d, rv("omit"), "wait")
+    assert (o["status"], o["candidate"], o["source"], o["review_status"]) == ("ZERO", None, "human_omit", "REVIEWED")
     assert m.select_from_candidates(d, rv("reselect"), "wait")["status"] == "RESELECT_REQUESTED"
     with pytest.raises(m.Part2ReviewError):
         m.select_from_candidates(d, rv("top3"), "wait")
@@ -267,14 +269,17 @@ def test_C6_select_matrix_and_no_silent_final_approval():
         m.select_from_candidates(d, rv("top1", "0" * 64), "wait")                                      # stale review
     with pytest.raises(m.Part2ReviewError):
         m.select_from_candidates(d, None, "maybe")
+    with pytest.raises(m.Part2ReviewError):
+        m.select_from_candidates(d, None, "auto")                                                       # M-3: 文字列autoは不可
     one = _doc(F_CLEFT)
     with pytest.raises(m.Part2ReviewError):
-        m.select_from_candidates(one, {"choice": "top2", "candidates_sha256": one["candidates_sha256"]}, "wait")
+        m.select_from_candidates(one, {"choice": "top2", "candidates_sha256": one["candidates_sha256"], "reason": "r"}, "wait")
 
 
 def test_C7_zero_candidates_needs_no_review_and_is_not_pending():
     d = _doc()
-    assert m.select_from_candidates(d, None, "wait") == {"status": "ZERO", "candidate": None, "source": "no_candidate"}
+    s = m.select_from_candidates(d, None, "wait")
+    assert (s["status"], s["candidate"], s["source"], s["review_status"]) == ("ZERO", None, "no_candidate", "NO_CANDIDATE_UNREVIEWED")   # M-6: REVIEWEDではない
     rq = m.review_request(d)
     assert rq["choices"] == ["omit"] and rq["ai_recommended"] is None and rq["auto_default"] == "omit"
 
@@ -290,10 +295,10 @@ def test_C8_review_request_for_er119_kind_grammar():
 def test_C9_reselect_is_api_free_and_cumulative_and_exhausts():
     d = _doc(F_INV, F_CLEFT, F_SPEC)
     ids = [c["candidate_id"] for c in d["candidates"]]
-    d2 = m.reselect_candidates(d, [ids[0]])
+    d2 = m.reselect_candidates(d, [ids[0]], reason="r1")
     assert [c["candidate_id"] for c in d2["candidates"]] == ids[1:] and d2["round"] == 2 and d2["rejected_ids"] == [ids[0]]
     assert [c["rank"] for c in d2["candidates"]] == [1, 2] and d2["candidates_sha256"] != d["candidates_sha256"] and not d2.get("exhausted")
-    d3 = m.reselect_candidates(d2, ids[1:])
+    d3 = m.reselect_candidates(d2, ids[1:], reason="r2")
     assert d3["status"] == "NO_CANDIDATE" and d3["exhausted"] is True and d3["rejected_ids"] == ids
     # 再抽出時にrejected_idsを渡すと同じ候補は戻らない
     parsed = m.parse_candidates(_stepa_json(F_INV, F_CLEFT, F_SPEC), PARAS)
@@ -312,6 +317,7 @@ STEPB_OK = ("=====ITEM 1=====\n【日本語訳】\n三月に計画が変わっ�
             "【通常の表現・語順との比較】\n比較用：**The plan changed in March.**\n【意味・ニュアンス・表現効果】\n時期に焦点が当たります。\n")
 TR_OK = json.dumps({"translations": [{"id": 1, "ja": "計画が変わったのは三月のことだった。"}]}, ensure_ascii=False)
 MODEL = routing.SUPPORT_MODEL
+AUTO = {"mode": "auto", "declared_by": "tester", "declared_at": "2026-10-25T00:00:00+0900", "reason": "unit test", "source": "declare_absent_cli"}
 
 
 class LLM:
@@ -328,23 +334,27 @@ class LLM:
 def _run(routed_, **kw):
     ex = kw.pop("ex", LLM(_stepa_json(F_INV, F_CLEFT, F_SPEC)))
     xp = kw.pop("xp", LLM(STEPB_OK))
-    tr = kw.pop("tr", LLM(TR_OK))
-    kw.setdefault("mode", "auto")
-    r = m.run_part2(PARAS, "Test Story", extract_call_fn=ex, explain_call_fn=xp, translate_call_fn=tr, **kw)
+    tr = kw.pop("tr", LLM(TR_OK))        # M-1: T1訳callは廃止。run_part2に渡さず、呼ばれないこと(n==0)をassertする
+    kw.setdefault("mode", AUTO)
+    r = m.run_part2(PARAS, "Test Story", extract_call_fn=ex, explain_call_fn=xp, **kw)
     return r, ex, xp, tr
 
 
-def test_D1_first_run_auto_three_calls_and_result(routed):
+def _fresh(r, nxt="x", paras=PARAS, **kw):
+    m.require_fresh_part2(r["result"], paras, "Test Story", next_command=nxt, candidates_doc=r["candidates"], grammar_review=r["review_record"], **kw)
+
+
+def test_D1_first_run_auto_two_calls_and_result(routed):
     r, ex, xp, tr = _run(routed)
-    assert (ex.n, tr.n, xp.n) == (1, 1, 1) and r["status"] == "SELECTED"
+    assert (ex.n, tr.n, xp.n) == (1, 0, 1) and r["status"] == "SELECTED"                                  # M-1: T1訳call=0
     res = r["result"]
-    assert res["selection"]["feature_class"] == "CLEFT" and res["selection"]["source"] == "auto_top1" and res["translation_source"] == "T1"
-    assert res["translation_ja"] in xp.prompts[0] and "参考訳(別工程で確定済み)" in xp.prompts[0]            # T1訳をStep Bへ参考訳として渡す
+    assert res["selection"]["feature_class"] == "CLEFT" and res["selection"]["source"] == "auto_top1" and res["translation_source"] == "stepB"
+    assert "参考訳(別工程で確定済み)" not in xp.prompts[0] and res["ref_ja"] is None                          # M-1: pool一致なしなら参考訳を渡さない
     assert set(res["sections"]) == {"日本語訳", "文法・構文の仕組み", "通常の表現・語順との比較", "意味・ニュアンス・表現効果"}
     assert res["audit"]["extract"]["model"] == MODEL and res["audit"]["explain"]["process"] == m.PROCESS_EXPLAIN
     assert res["audit"]["explain"]["prompt_template_sha256"] == m.STEPB_PROMPT_SHA256
     assert res["audit"]["extract"]["prompt_template_sha256"] == m.STEPA_PROMPT_SHA256
-    m.require_fresh_part2(res, PARAS, "Test Story", next_command="x")
+    _fresh(r, "x")
 
 
 def test_D2_resume_reuses_everything_api_zero(routed):
@@ -358,20 +368,20 @@ def test_D3_body_change_regenerates_but_label_same(routed):
     r1, *_ = _run(routed)
     paras2 = PARAS[:3] + ["Nothing else happened on that day."]
     ex, xp, tr = LLM(_stepa_json(F_INV, F_CLEFT, F_SPEC)), LLM(STEPB_OK), LLM(TR_OK)
-    r2 = m.run_part2(paras2, "Test Story", mode="auto", cached_candidates=r1["candidates"], cached_result=r1["result"],
-                     extract_call_fn=ex, explain_call_fn=xp, translate_call_fn=tr)
+    r2 = m.run_part2(paras2, "Test Story", mode=AUTO, cached_candidates=r1["candidates"], cached_result=r1["result"],
+                     extract_call_fn=ex, explain_call_fn=xp)
     assert ex.n == 1                                                                                    # 本文shaが違えば再抽出
     with pytest.raises(m.Part2Stale):
-        m.require_fresh_part2(r1["result"], paras2, "Test Story", next_command="cmd")
+        m.require_fresh_part2(r1["result"], paras2, "Test Story", next_command="cmd", candidates_doc=r1["candidates"], grammar_review=r1["review_record"])
 
 
 def test_D4_human_choice_changes_selection_and_regenerates_explanation_only(routed):
     r1, *_ = _run(routed)
     d = r1["candidates"]
     ex, xp, tr = LLM("unused"), LLM(STEPB_OK), LLM(TR_OK)
-    r2 = m.run_part2(PARAS, "Test Story", mode="wait", review={"choice": "top2", "candidates_sha256": d["candidates_sha256"]},
-                     cached_candidates=d, cached_result=r1["result"], extract_call_fn=ex, explain_call_fn=xp, translate_call_fn=tr)
-    assert ex.n == 0 and tr.n == 1 and xp.n == 1                                                         # 候補は再利用・TOP2の解説のみ新規
+    r2 = m.run_part2(PARAS, "Test Story", mode="wait", review={"choice": "top2", "candidates_sha256": d["candidates_sha256"], "reason": "r"},
+                     cached_candidates=d, cached_result=r1["result"], extract_call_fn=ex, explain_call_fn=xp)
+    assert ex.n == 0 and tr.n == 0 and xp.n == 1                                                         # 候補は再利用・TOP2の解説のみ新規
     assert r2["result"]["selection"]["rank"] == 2 and r2["result"]["selection"]["source"] == "human_top2"
 
 
@@ -379,19 +389,22 @@ def test_D5_pending_review_makes_no_paid_downstream_call(routed):
     r, ex, xp, tr = _run(routed, mode="wait")
     assert r["status"] == "PENDING_REVIEW" and r["result"] is None and r["review_request"]["kind"] == "grammar"
     assert (ex.n, tr.n, xp.n) == (1, 0, 0)
+    assert r["selection"]["review_status"] is None and r["review_record"] is None
 
 
 def test_D6_zero_candidates_no_downstream_calls(routed):
     r, ex, xp, tr = _run(routed, ex=LLM(_stepa_json(_feat("P1", PARAS[0], "INV", tv="LOW"))))
     assert r["status"] == "ZERO" and r["result"]["status"] == "ZERO" and r["result"]["zero_reason"] == "no_candidate" and (tr.n, xp.n) == (0, 0)
     assert m.render_markdown(r["result"]).strip().endswith(m.ZERO_P2)
-    m.require_fresh_part2(r["result"], PARAS, "Test Story", next_command="x")
+    _fresh(r)
+    assert r["review_record"]["status"] == "NO_CANDIDATE_UNREVIEWED"                                       # M-6: REVIEWEDではない
 
 
-def test_D7_ref_ja_pool_skips_t1_call(routed):
-    pool = {m._norm_sentence(PARAS[1]): "計画が変わったのは三月だ。"}
+def test_D7_ref_ja_pool_match_passes_reference_to_stepB_only(routed):
+    pool = {PARAS[1]: "計画が変わったのは三月だ。"}
     r, ex, xp, tr = _run(routed, ref_ja_pool=pool)
-    assert tr.n == 0 and r["result"]["translation_source"] == "part1_pool" and "計画が変わったのは三月だ。" in xp.prompts[0]
+    assert tr.n == 0 and r["result"]["ref_ja_source"] == "part1_pool" and "参考訳(別工程で確定済み): 計画が変わったのは三月だ。" in xp.prompts[0]
+    assert r["result"]["translation_ja"] == r["result"]["sections"]["日本語訳"] != "計画が変わったのは三月だ。"       # 画面の訳はStep B自身の訳(Trial-07)
 
 
 def test_D8_technical_retry_once_then_fail_closed(routed):
@@ -430,7 +443,7 @@ def test_D11_model_mismatch_stops_without_retry_or_fallback(routed):
 def test_D12_budget_guard_called_before_each_llm_call(routed):
     seen = []
     _run(routed, budget_guard=lambda stage, est: seen.append((stage, est)))
-    assert [s for s, _ in seen] == ["part2_extract", "part2_translate", "part2_explain"]
+    assert [s for s, _ in seen] == ["part2_extract", "part2_explain"]
 
 
 def test_D13_budget_guard_can_stop_before_api(routed):
@@ -442,9 +455,9 @@ def test_D13_budget_guard_can_stop_before_api(routed):
     assert ex.n == 0
 
 
-def test_D14_t1_failure_is_fail_closed(routed):
-    with pytest.raises(Exception):
-        _run(routed, tr=LLM("garbage", fail_first=99))
+def test_D14_no_t1_translation_function_remains():
+    """M-1: T1訳(Part 2で常時生成)は廃止。translate_sentence / translate_call_fn は存在しない。"""
+    assert not hasattr(m, "translate_sentence") and "translate_call_fn" not in inspect.signature(m.run_part2).parameters
 
 
 # ============================================================
@@ -470,19 +483,20 @@ def test_E3_fresh_check_detects_tampering(routed):
     res = copy.deepcopy(r["result"])
     res["selection"]["sentence"] = "Under the bed lay a small box"                                       # 改変(末尾.欠落でもspanだが候補IDが不一致)
     with pytest.raises(m.Part2Stale):
-        m.require_fresh_part2(res, PARAS, "Test Story", next_command="cmd")
+        m.require_fresh_part2(res, PARAS, "Test Story", next_command="cmd", candidates_doc=r["candidates"], grammar_review=r["review_record"])
     res2 = copy.deepcopy(r["result"])
     res2["explanation_md"] = ""
     with pytest.raises(m.Part2Stale, match="cmd"):
-        m.require_fresh_part2(res2, PARAS, "Test Story", next_command="cmd")
+        m.require_fresh_part2(res2, PARAS, "Test Story", next_command="cmd", candidates_doc=r["candidates"], grammar_review=r["review_record"])
     with pytest.raises(m.Part2Stale):
-        m.require_fresh_part2(None, PARAS, "Test Story", next_command="cmd")
+        m.require_fresh_part2(None, PARAS, "Test Story", next_command="cmd", candidates_doc=r["candidates"], grammar_review=r["review_record"])
 
 
 def test_E4_render_markdown_and_html_conventions(routed):
     r, *_ = _run(routed)
     md = m.render_markdown(r["result"])
     assert md.startswith("# Grammar & Sentence Structure") and "Part 2" not in md and PARAS[1] in md and "**日本語訳**" in md
+    assert r["result"]["translation_ja"] in md                                                                   # 画面の訳=Step B自身の訳(M-1)
     h = m.render_html_block(r["result"])
     assert "<section class='study'>" in h and "<h3>Grammar &amp; Sentence Structure</h3>" in h and "<table" not in h and "<h2" not in h
     assert "<b>It was</b>" in h and PARAS[1] in h and "<style>" in h
@@ -496,8 +510,8 @@ def test_E5_write_and_load_artifacts(routed, tmp_path):
     r, *_ = _run(routed)
     out = m.write_artifacts(str(tmp_path / "study_text"), r["candidates"], r["result"])
     assert os.path.basename(out["candidates"]) == "grammar_candidates.json" and os.path.basename(out["result"]) == "part2_result.json"
-    again = m.run_part2(PARAS, "Test Story", mode="auto", cached_candidates=m.load_json(out["candidates"]), cached_result=m.load_json(out["result"]),
-                        extract_call_fn=LLM("x"), explain_call_fn=LLM("x"), translate_call_fn=LLM("x"))
+    again = m.run_part2(PARAS, "Test Story", mode=AUTO, cached_candidates=m.load_json(out["candidates"]), cached_result=m.load_json(out["result"]),
+                        extract_call_fn=LLM("x"), explain_call_fn=LLM("x"))
     assert again["result"]["reused_from_previous_run"] is True
     assert open(out["md"], encoding="utf-8").read() == m.render_markdown(r["result"])
 
@@ -581,3 +595,375 @@ def test_A5_structure_check_accepts_all_real_trial07_stepB_outputs():
     for f in fs:
         r = m._parse_stepb_checked(open(f, encoding="utf-8").read())
         assert set(r["sections"]) >= set(m.EXPLANATION_REQUIRED), f
+
+
+# ============================================================
+# M: 委任_02 Opus条件Aレビュー反映(M-1〜M-7・R-1/R-3/R-4/R-7)。全てmock・API 0。
+# ============================================================
+PARAS2 = ["Under the bed lay a small box. Nothing else happened that day.", "It was in March that the plan changed."]
+F2_INV = _feat("P1", "Under the bed lay a small box.", "INV")
+F2_SPEC = _feat("P1", "Nothing else happened that day.", "SPEC", mq="Nothing")
+F2_WHOLE = _feat("P1", PARAS2[0], "CLEFT", mq="Under")
+F2_CLEFT = _feat("P2", PARAS2[1], "CLEFT")
+
+
+def _doc2(*feats, ng=(), paras=PARAS2):
+    parsed = m.parse_candidates(_stepa_json(*feats), paras)
+    return m.build_candidates_doc(parsed, paras, "Test Story", ng=ng)
+
+
+def _decision(doc, ch, reason="理由あり", **kw):
+    return dict({"choice": ch, "candidates_sha256": doc["candidates_sha256"], "reason": reason, "by": "tester"}, **kw)
+
+
+def _human(r_or_doc, ch, *, paras=PARAS, xp=None, **kw):
+    """Human確定を適用してrun_part2(候補は再利用=Step A'' 0 call)。"""
+    d = r_or_doc["candidates"] if "review_record" in r_or_doc else r_or_doc
+    return m.run_part2(paras, "Test Story", review=_decision(d, ch, **kw), cached_candidates=d, extract_call_fn=LLM("must-not-be-called"),
+                       explain_call_fn=xp or LLM(STEPB_OK))
+
+
+# ---- M-1: 訳の出所はTrial-07どおり ----
+def test_M1_screen_translation_is_stepB_own_and_ref_ja_only_when_pool_matches(routed):
+    r, ex, xp, tr = _run(routed)
+    assert tr.n == 0 and "参考訳(別工程で確定済み)" not in xp.prompts[0]                                                    # pool無し=参考訳なし・T1 callなし
+    assert r["result"]["translation_ja"] == "三月に計画が変わったのだ。" and r["result"]["ref_ja"] is None
+    assert "三月に計画が変わったのだ。" in m.render_html_block(r["result"]) and "三月に計画が変わったのだ。" in m.render_markdown(r["result"])
+    r2, ex2, xp2, tr2 = _run(routed, ref_ja_pool={PARAS[0]: "別の文の訳"})                                  # 一致しない英文の訳は渡さない
+    assert tr2.n == 0 and "参考訳(別工程で確定済み)" not in xp2.prompts[0] and r2["result"]["ref_ja"] is None
+    r3, ex3, xp3, tr3 = _run(routed, ref_ja_pool={"It was in March that the plan changed.": "計画の変更は三月だった。"})
+    assert tr3.n == 0 and "参考訳(別工程で確定済み): 計画の変更は三月だった。" in xp3.prompts[0] and r3["result"]["ref_ja_source"] == "part1_pool"
+    assert r3["result"]["translation_ja"] == "三月に計画が変わったのだ。"                                   # 表示は常にStep B自身の訳
+
+
+def test_M1_lookup_ref_ja_is_trial07_exact_match_after_quote_normalisation():
+    assert m.lookup_ref_ja("She said “hi”.", {'She said "hi".': "訳"}) == "訳"                             # run_trial_07: _qn(a)==_qn(b)
+    assert m.lookup_ref_ja("She said hi.", {'She said "hi".': "訳"}) is None
+    assert m.lookup_ref_ja("x", None) is None and m.lookup_ref_ja("x", {}) is None
+
+
+@needs_trial
+def test_M1_matches_trial07_ref_ja_rule_source():
+    src = open(os.path.join(TRIAL, "run_trial_07.py"), encoding="utf-8").read()
+    assert 't4._qn(it["sentence"]) == t4._qn(verb): f["ref_ja"] = it["sentence_ja"]' in src                   # 規則の出所(:163)
+
+
+def test_M1_R7_pool_change_invalidates_cached_result_and_fresh_check(routed):
+    pool_a = {PARAS[1]: "訳A"}
+    r1, *_ = _run(routed, ref_ja_pool=pool_a)
+    r_same, ex, xp, tr = _run(routed, ref_ja_pool=pool_a, cached_candidates=r1["candidates"], cached_result=r1["result"])
+    assert (ex.n, xp.n) == (0, 0) and r_same["result"]["reused_from_previous_run"] is True                  # 同じpool=API 0
+    r_diff, ex, xp, tr = _run(routed, ref_ja_pool={PARAS[1]: "訳B"}, cached_candidates=r1["candidates"], cached_result=r1["result"])
+    assert xp.n == 1 and r_diff["result"]["reused_from_previous_run"] is False                              # poolが変われば解説を再生成
+    assert r_diff["result"]["explain_signature"] != r1["result"]["explain_signature"]
+    _fresh(r1, ref_ja_pool=pool_a)
+    with pytest.raises(m.Part2Stale, match="Part 1訳pool"):
+        _fresh(r1, ref_ja_pool={PARAS[1]: "訳B"})
+    with pytest.raises(m.Part2Stale, match="Part 1訳pool"):
+        _fresh(r1, ref_ja_pool={})                                                                         # pool一致が消えた場合も検出
+
+
+# ---- M-2: Human確定・候補docと結びつく ----
+def test_M2_post_review_top2_rejects_old_auto_result_at_every_entrance(routed):
+    r1, *_ = _run(routed)                                                                                  # auto_top1
+    assert r1["review_record"]["status"] == "UNREVIEWED_AUTO_ADOPTED"
+    _fresh(r1)
+    r2 = m.run_part2(PARAS, "Test Story", review=_decision(r1["candidates"], "top2"), cached_candidates=r1["candidates"], extract_call_fn=LLM("x"),
+                     explain_call_fn=LLM(STEPB_OK), prior_history=r1["review_record"]["history"])
+    assert r2["review_record"]["status"] == "REVIEWED" and r2["result"]["selection"]["source"] == "human_top2"
+    _fresh(r2)
+    for where in ("tts", "assemble", "load_level_inputs", "stage_pages", "stage_page_verify", "player"):
+        with pytest.raises(m.Part2Stale, match="cmd"):
+            m.require_fresh_part2(r1["result"], PARAS, "Test Story", next_command="cmd", where=where, candidates_doc=r2["candidates"],
+                                  grammar_review=r2["review_record"])                                        # 古いauto_top1結果 + 新しい確定
+    with pytest.raises(m.Part2Stale):
+        m.require_fresh_part2(r2["result"], PARAS, "Test Story", next_command="cmd", candidates_doc=r1["candidates"], grammar_review=r1["review_record"])
+    assert len(r2["review_record"]["history"]) > len(r1["review_record"]["history"])
+
+
+def test_M2_omit_and_zero_are_bound_to_the_confirmation(routed):
+    r1, *_ = _run(routed)
+    z = _human(r1, "omit")
+    assert z["status"] == "ZERO" and z["result"]["zero_reason"] == "human_omit"
+    _fresh(z)
+    with pytest.raises(m.Part2Stale):                                                                      # omit確定後に旧SELECTED結果は不可
+        m.require_fresh_part2(r1["result"], PARAS, "Test Story", next_command="c", candidates_doc=z["candidates"], grammar_review=z["review_record"])
+    with pytest.raises(m.Part2Stale):                                                                      # omit確定に対しZERO(no_candidate)は不可
+        m.require_fresh_part2(m.zero_result(z["candidates"], "no_candidate"), PARAS, "Test Story", next_command="c",
+                              candidates_doc=z["candidates"], grammar_review=z["review_record"])
+    zero0, ex, xp, tr = _run(routed, ex=LLM(_stepa_json(_feat("P1", PARAS[0], "INV", tv="LOW"))))
+    _fresh(zero0)
+    with pytest.raises(m.Part2Stale):                                                                      # 0件確定にhuman_omit結果は不可
+        m.require_fresh_part2(m.zero_result(zero0["candidates"], "human_omit"), PARAS, "Test Story", next_command="c",
+                              candidates_doc=zero0["candidates"], grammar_review=zero0["review_record"])
+
+
+def test_M2_tampered_review_or_candidates_or_signature_rejected(routed):
+    r, *_ = _run(routed)
+    rv = copy.deepcopy(r["review_record"])
+    rv["status"] = "REVIEWED"                                                                              # AUTOをREVIEWEDへ偽装(署名不一致)
+    with pytest.raises(m.Part2Stale, match="signature"):
+        m.require_fresh_part2(r["result"], PARAS, "Test Story", next_command="c", candidates_doc=r["candidates"], grammar_review=rv)
+    rv = copy.deepcopy(r["review_record"])
+    rv["mode_declaration"] = None                                                                          # auto宣言が無いAUTO採用
+    rv["selection_signature"] = m.grammar_selection_signature(rv)
+    with pytest.raises(m.Part2Stale, match="auto宣言"):
+        m.require_fresh_part2(r["result"], PARAS, "Test Story", next_command="c", candidates_doc=r["candidates"], grammar_review=rv)
+    for st in ("PENDING_REVIEW", "RESELECTION_REQUESTED", "STALE"):
+        rv = copy.deepcopy(r["review_record"])
+        rv["status"] = st
+        rv["selection_signature"] = m.grammar_selection_signature(rv)
+        with pytest.raises(m.Part2Stale, match="前進不可"):
+            m.require_fresh_part2(r["result"], PARAS, "Test Story", next_command="c", candidates_doc=r["candidates"], grammar_review=rv)
+    doc = copy.deepcopy(r["candidates"])
+    doc["candidates"][0]["construct_ja"] = "改変"                                                           # 候補docの材料欄改変(sha不一致)
+    with pytest.raises(m.Part2Stale):
+        m.require_fresh_part2(r["result"], PARAS, "Test Story", next_command="c", candidates_doc=doc, grammar_review=r["review_record"])
+    res = copy.deepcopy(r["result"])
+    res["explain_signature"] = "0" * 64                                                                    # (iv) 材料欄から再計算した署名と不一致
+    with pytest.raises(m.Part2Stale, match="signature"):
+        m.require_fresh_part2(res, PARAS, "Test Story", next_command="c", candidates_doc=r["candidates"], grammar_review=r["review_record"])
+    res = copy.deepcopy(r["result"])
+    res["translation_ja"] = "すり替えた訳"                                                                   # 画面の訳はStep Bの【日本語訳】と一致必須
+    with pytest.raises(m.Part2Stale, match="訳"):
+        m.require_fresh_part2(res, PARAS, "Test Story", next_command="c", candidates_doc=r["candidates"], grammar_review=r["review_record"])
+    with pytest.raises(m.Part2Stale):
+        m.require_fresh_part2(r["result"], PARAS, "Test Story", next_command="c", candidates_doc=None, grammar_review=r["review_record"])
+    with pytest.raises(m.Part2Stale):
+        m.require_fresh_part2(r["result"], PARAS, "Test Story", next_command="c", candidates_doc=r["candidates"], grammar_review=None)
+    with pytest.raises(TypeError):                                                                         # 引数省略は不可(fail-closed)
+        m.require_fresh_part2(r["result"], PARAS, "Test Story", next_command="c")
+
+
+# ---- M-3: autoは明示宣言dictのみ ----
+def test_M3_auto_only_via_er119_declaration_dict():
+    for bad in ("auto", "AUTO", True, {"mode": "auto"}, dict(AUTO, source="runner_arg"), dict(AUTO, reason=""), dict(AUTO, declared_by=None)):
+        with pytest.raises(m.Part2ReviewError):
+            m.normalize_mode(bad)
+    assert m.normalize_mode(AUTO)[0] == "auto" and m.normalize_mode("wait") == ("wait", None) and m.normalize_mode(None) == ("wait", None)
+    for name, fn in inspect.getmembers(m, inspect.isfunction):
+        for p in inspect.signature(fn).parameters.values():
+            assert p.default != "auto" and not (p.name == "mode" and isinstance(p.default, dict)), (name, p.name)
+    src = open(os.path.join(HERE, "er120_part2_grammar_production_01.py"), encoding="utf-8").read()
+    assert "os.environ" not in "\n".join(l for l in src.split("\n") if not l.lstrip().startswith("#"))
+
+
+# ---- M-4: stage来歴・再finalize・PENDING ----
+def test_M4_stage_input_shas_and_refinalize_without_extraction(routed, tmp_path):
+    r1, *_ = _run(routed)
+    c0 = m.cand_stage_input_sha(PARAS, "Test Story")
+    assert c0 == m.cand_stage_input_sha(PARAS, "Test Story") and c0 != m.cand_stage_input_sha(PARAS, "Other") and c0 != m.cand_stage_input_sha(PARAS2, "Test Story")
+    f0 = m.final_stage_input_sha(PARAS, "Test Story", r1["review_record"])
+    xp = LLM(STEPB_OK)
+    r2 = m.finalize_part2(PARAS, "Test Story", candidates_doc=r1["candidates"], review=_decision(r1["candidates"], "top2"), explain_call_fn=xp)
+    assert xp.n == 1 and f0 != m.final_stage_input_sha(PARAS, "Test Story", r2["review_record"])             # 確定が変わるとinput_shaが変わる
+    with pytest.raises(m.Part2Stale):                                                                      # 保存済み候補が無い/古い=再抽出せずStale(API 0)
+        m.finalize_part2(PARAS, "Test Story", candidates_doc=None, mode=AUTO)
+    with pytest.raises(m.Part2Stale):
+        m.finalize_part2(PARAS2, "Test Story", candidates_doc=r1["candidates"], mode=AUTO)
+    xp2 = LLM(STEPB_OK)                                                                                    # PENDING: 専用例外で抜け、出力ファイルを作らない。失敗(Part2Error)ではない
+    with pytest.raises(m.Part2PendingReview) as ei:
+        m.finalize_part2(PARAS, "Test Story", candidates_doc=r1["candidates"], mode="wait", explain_call_fn=xp2)
+    assert ei.value.status == "PENDING_REVIEW" and ei.value.review_request["kind"] == "grammar" and xp2.n == 0
+    assert not issubclass(m.Part2PendingReview, m.Part2Error) and list(tmp_path.iterdir()) == []
+
+
+# ---- M-5: NG ----
+def test_M5_ng_three_way_matching():
+    d = _doc2(F2_INV, F2_CLEFT)
+    c = next(x for x in d["candidates"] if x["feature_class"] == "INV")
+    assert m.ng_match_methods(c, {"candidate_id": c["candidate_id"], "para": "P9", "sentence": "x", "span": None}) == ["candidate_id"]
+    assert m.ng_match_methods(c, {"candidate_id": "gZZZ", "para": "P7", "sentence": "under  the bed lay a SMALL box.", "span": None}) == ["sentence"]   # 段落番号が違っても正規化した文が一致
+    a, b = c["span"]
+    assert m.ng_match_methods(c, {"candidate_id": "g0", "para": c["para"], "sentence": "other", "span": [a + 3, b + 40]}) == ["range"]      # 重なり
+    assert m.ng_match_methods(c, {"candidate_id": "g0", "para": c["para"], "sentence": "other", "span": [a - 5, b + 5]}) == ["range"]       # 包含
+    assert m.ng_match_methods(c, {"candidate_id": "g0", "para": c["para"], "sentence": "other", "span": [b, b + 9]}) == []                # 隣接は重ならない
+    assert m.ng_match_methods(c, {"candidate_id": "g0", "para": "P2", "sentence": "other", "span": [a, b]}) == []                         # 別段落の範囲は無関係
+
+
+def test_M5_ng_persists_across_runs_even_with_different_quote_range():
+    d1 = _doc2(F2_INV, F2_CLEFT)
+    inv = next(c for c in d1["candidates"] if c["feature_class"] == "INV")
+    ng = [m.ng_entry_from_candidate(inv, reason="却下", by="h")]
+    d2 = _doc2(F2_WHOLE, F2_CLEFT, ng=ng)                                                                  # 別run: LLMが段落全体で同じ箇所を引用 -> 範囲の重なりでNG
+    assert [c["feature_class"] for c in d2["candidates"]] == ["CLEFT"] and d2["candidates"][0]["para"] == "P2"
+    assert d2["filtered_by_ng"] and d2["filtered_by_ng"][0]["methods"] == ["range"]
+    d3 = _doc2(F2_INV, ng=[dict(ng[0], para="P5", candidate_id="gOLD", span=None)])                        # 同じ文を別段落番号で出しても文一致でNG
+    assert d3["candidates"] == [] and d3["exhausted"] is True and d3["filtered_by_ng"][0]["methods"] == ["sentence"]
+    d4 = m.apply_ng(d1, ng)                                                                                # 保存済み候補へ後からregistryを適用
+    assert all(c["feature_class"] != "INV" for c in d4["candidates"]) and d4["candidates_sha256"] != d1["candidates_sha256"]
+    assert m.apply_ng(d1, []) is d1
+
+
+def test_M5_exhaustion_never_auto_zero_and_human_rejected_all():
+    d = m.reselect_candidates(_doc2(F2_CLEFT), None, reason="どれも不適切", by="h")
+    assert d["exhausted"] is True and d["candidates"] == [] and d["status"] == "NO_CANDIDATE"
+    for mode in ("wait", AUTO):                                                                            # autoでもHuman却下を『適格なし』にしない
+        s = m.select_from_candidates(d, None, mode)
+        assert s["status"] == "RESELECT_EXHAUSTED" and s["review_status"] is None
+    rq = m.review_request(d)
+    assert rq["exhausted"] is True and rq["choices"] == ["omit", "reextract"] and rq["auto_default"] is None
+    r = m.run_part2(PARAS2, "Test Story", mode=AUTO, cached_candidates=d, extract_call_fn=LLM("x"))
+    assert r["status"] == "RESELECT_EXHAUSTED" and r["result"] is None and r["review_record"] is None
+    z = _human(d, "omit", paras=PARAS2, reason="全候補を却下済みのため省略")
+    assert z["status"] == "ZERO" and z["result"]["zero_reason"] == "human_rejected_all" and z["review_record"]["status"] == "REVIEWED"
+    assert z["review_record"]["selection"]["zero_reason"] == "human_rejected_all"
+    m.require_fresh_part2(z["result"], PARAS2, "Test Story", next_command="c", candidates_doc=z["candidates"], grammar_review=z["review_record"])
+    with pytest.raises(m.Part2ReviewError):
+        m.select_from_candidates(d, _decision(d, "top1"), "wait")                                          # 枯渇時の選択肢はomit/reextractのみ
+    assert m.select_from_candidates(_doc2(), None, "wait")["source"] == "no_candidate"                     # 本当に0件(NGなし)は従来どおりno_candidate
+
+
+def test_M5_reextract_once_then_limit_stop(routed):
+    d = m.reselect_candidates(_doc2(F2_CLEFT), None, reason="r1")
+    ex = LLM(_stepa_json(F2_CLEFT))
+    d2 = m.reextract_candidates(d, PARAS2, "Test Story", reason="再抽出", by="h", call_fn=ex)
+    assert ex.n == 1 and d2["exhausted"] is True and d2["reselect_count"] == 2 and d2["reextract_count"] == 1                     # 同じ候補はNGで戻らない
+    assert d2["round"] == d["round"] + 1 and [e["event"] for e in d2["reselect_log"]] == ["reselect", "reextract"]
+    assert m.review_request(d2)["choices"] == ["omit"]                                                     # 上限到達: 再抽出も再選定も提示しない
+    ex2 = LLM(_stepa_json(F2_CLEFT))
+    with pytest.raises(m.Part2ReselectLimit):
+        m.reextract_candidates(d2, PARAS2, "Test Story", reason="もう一度", call_fn=ex2)
+    with pytest.raises(m.Part2ReselectLimit):
+        m.select_from_candidates(d2, _decision(d2, "reextract"), "wait")
+    assert ex2.n == 0
+    with pytest.raises(m.Part2ReviewError):
+        m.reextract_candidates(_doc2(F2_CLEFT), PARAS2, "Test Story", reason="r", call_fn=LLM("x"))        # 枯渇していなければ不可
+    assert issubclass(m.Part2ReselectLimit, m.Part2Error)                                                  # STOP(Part2Error系)
+
+
+def test_M5_reselect_limit_is_two_and_choice_hidden_afterwards():
+    d = _doc(F_INV, F_CLEFT, F_SPEC, _feat("P4", PARAS[3], "HEAVY", mq="Nothing"))
+    assert m.review_request(d)["choices"] == ["top1", "top2", "reselect", "omit"]
+    e1 = m.reselect_candidates(d, None, reason="r1")
+    e2 = m.reselect_candidates(e1, None, reason="r2")
+    assert e2["reselect_count"] == 2 and "reselect" not in m.review_request(e2)["choices"]
+    with pytest.raises(m.Part2ReselectLimit):
+        m.reselect_candidates(e2, None, reason="r3")
+    big = _doc(F_INV, F_CLEFT, F_SPEC)
+    capped = dict(big, reselect_count=2)                                                                   # 候補が残っていても上限後にreselectを選ぶとSTOP
+    with pytest.raises(m.Part2ReselectLimit):
+        m.select_from_candidates(capped, _decision(capped, "reselect"), "wait")
+
+
+def test_M5_ng_vs_not_selected_distinction(routed):
+    r1, *_ = _run(routed)
+    d = r1["candidates"]
+    ids = [c["candidate_id"] for c in d["candidates"][:2]]
+    r2 = _human(r1, "top2")
+    v = r2["review_record"]["verdicts"]
+    assert v == {ids[0]: "NOT_SELECTED", ids[1]: "SELECTED"} and r2["review_record"]["ng"] == []           # top2を選んだときのTOP1はNGではない
+    assert [c["candidate_id"] for c in r2["candidates"]["candidates"]] == [c["candidate_id"] for c in d["candidates"]]   # NOT_SELECTEDは再選定時も除外されない
+    dd = m.reselect_candidates(d, None, reason="どちらも違う", by="h")                                       # reselectで外したTOP1/TOP2はNG
+    assert {e["candidate_id"] for e in dd["ng"]} == set(ids) and all(e["reason"] == "どちらも違う" for e in dd["ng"])
+    r3 = _human(dd, "top1")
+    v3 = r3["review_record"]["verdicts"]
+    assert v3[ids[0]] == "NG" and v3[ids[1]] == "NG" and r3["review_record"]["reselect_count"] == 1
+    assert m.verdicts_for_choice(d, "omit") == {ids[0]: "NOT_SELECTED", ids[1]: "NOT_SELECTED"}
+
+
+# ---- M-6 ----
+def test_M6_reason_required_and_history_records_rejected_details(routed):
+    d = _doc(F_INV, F_CLEFT, F_SPEC)
+    for ch in ("top2", "reselect", "omit"):
+        for bad in (None, "", "   "):
+            with pytest.raises(m.Part2ReviewError, match="reason"):
+                m.select_from_candidates(d, {"choice": ch, "candidates_sha256": d["candidates_sha256"], "reason": bad}, "wait")
+    assert m.select_from_candidates(d, {"choice": "top1", "candidates_sha256": d["candidates_sha256"]}, "wait")["source"] == "human_top1"   # top1は理由任意
+    with pytest.raises(m.Part2ReviewError):
+        m.reselect_candidates(d, None, reason=" ")
+    d2 = m.reselect_candidates(d, None, reason="TOP1/2が不適切", by="alice")
+    ev = d2["reselect_log"][0]
+    assert ev["reason"] == "TOP1/2が不適切" and ev["by"] == "alice" and len(ev["rejected"]) == 2
+    rj = ev["rejected"][0]
+    assert {"sentence", "feature_class", "tier", "tier_table_row", "candidate_id"} <= set(rj) and rj["tier_table_row"]["eligible"] is True
+    rec = _human(d2, "top1")["review_record"]
+    assert [h["event"] for h in rec["history"]] == ["reselect", "finalize"]
+    assert rec["history"][0]["detail"]["rejected"][0]["sentence"] == rj["sentence"] and rec["history"][0]["detail"]["reason"] == "TOP1/2が不適切"
+
+
+def test_M6_zero_is_never_reviewed_and_auto_never_counted_as_reviewed(routed):
+    z, *_ = _run(routed, ex=LLM(_stepa_json(_feat("P1", PARAS[0], "INV", tv="LOW"))))
+    assert z["review_record"]["status"] == "NO_CANDIDATE_UNREVIEWED" and z["review_record"]["status"] != "REVIEWED"
+    a, *_ = _run(routed)
+    d = a["candidates"]
+    hr = _human(a, "top1")
+    acc = _human(a, "top1", accept_ai=True)
+    assert acc["review_record"]["status"] == "REVIEWED" and acc["review_record"]["accept_ai_default"] is True                  # accept-ai=人が見て了承(AUTOとは区別)
+    assert acc["review_record"]["accepted_candidates_sha256"] == d["candidates_sha256"]
+    assert hr["review_record"]["accept_ai_default"] is False and a["review_record"]["accept_ai_default"] is False
+    s = m.summarize_review_statuses([a["review_record"], z["review_record"], hr["review_record"], acc["review_record"], None])
+    assert s == {"reviewed": 2, "unreviewed_auto_adopted": 1, "no_candidate_unreviewed": 1, "other": 1, "total": 5, "human_reviewed": 2}
+    with pytest.raises(m.Part2ReviewError):
+        m.select_from_candidates(d, _decision(d, "top2", accept_ai=True), "wait")                          # accept_aiはtop1のみ
+    assert a["selection"]["review_status"] == "UNREVIEWED_AUTO_ADOPTED" and a["review_record"]["verdicts"][d["top_ids"][0]] is None   # AUTO=未レビュー(null)
+
+
+# ---- M-7(module側): 失敗後の再開で有料callをやり直さない ----
+def test_M7_resume_after_stepB_failure_does_not_reextract(routed, tmp_path):
+    ex = LLM(_stepa_json(F_INV, F_CLEFT, F_SPEC))
+    doc = m.resolve_candidates(PARAS, "Test Story", None, call_fn=ex)                                      # 抽出stage(1 call)
+    with pytest.raises(m.Part2Error) as ei:
+        m.finalize_part2(PARAS, "Test Story", candidates_doc=doc, mode=AUTO, explain_call_fn=LLM("garbage", fail_first=99))
+    p = m.write_failed_record(str(tmp_path / "study_text"), ei.value, next_command="py er019_x.py --stage study_text", stage="part2")
+    rec = json.load(open(p, encoding="utf-8"))
+    assert rec["next_command"].endswith("--stage study_text") and rec["error_type"] == "Part2Error" and os.path.basename(p) == "part2_failed.json"
+    xp = LLM(STEPB_OK)
+    r = m.finalize_part2(PARAS, "Test Story", candidates_doc=doc, mode=AUTO, explain_call_fn=xp)           # 再開
+    assert ex.n == 1 and xp.n == 1 and r["status"] == "SELECTED"                                           # Step A''は再実行されない
+
+
+# ---- R-1 / R-3 / R-4 ----
+def test_R1_compose_includes_css_when_part1_is_empty(routed):
+    import er003_kp_general_explanation_01 as p1
+    r, *_ = _run(routed)
+    assert m.compose_study_html("", r["result"]).count(p1.STUDY_CSS) == 1 and m.compose_study_html(None, r["result"]).startswith(p1.STUDY_CSS)
+    part1 = p1.STUDY_CSS + "<section class='study'><h3>Vocabulary &amp; Expressions</h3></section>"
+    out = m.compose_study_html(part1, r["result"])
+    assert out.startswith(part1) and out.count(p1.STUDY_CSS) == 1                                           # CSSは1回だけ・Part 1の直後
+    assert out.endswith(m.render_html_block(r["result"], include_css=False))
+
+
+def test_R3_verify_selection_matches_outputs(routed):
+    r, *_ = _run(routed)
+    md, hb = m.render_markdown(r["result"]), m.render_html_block(r["result"], include_css=False)
+    kw = dict(paragraphs=PARAS, label="Test Story", candidates_doc=r["candidates"], grammar_review=r["review_record"], result=r["result"], next_command="cmd")
+    m.verify_selection_matches_outputs(md_text=md, html_text="<html>" + hb + "</html>", **kw)
+    with pytest.raises(m.Part2Stale, match="markdown"):
+        m.verify_selection_matches_outputs(md_text=md.replace(PARAS[1], "tampered"), **kw)
+    with pytest.raises(m.Part2Stale, match="HTML"):
+        m.verify_selection_matches_outputs(html_text="<html>" + hb.replace("仕組み", "x") + "</html>", **kw)
+    with pytest.raises(m.Part2Stale, match="HTML"):
+        m.verify_selection_matches_outputs(html_text="<html></html>", **kw)
+    with pytest.raises(ValueError):
+        m.verify_selection_matches_outputs(kind="kp", **kw)
+    r2 = _human(r, "top2", xp=LLM(STEPB_OK.replace("三月に", "三月には")))
+    kw2 = dict(kw, grammar_review=r2["review_record"], candidates_doc=r2["candidates"], result=r2["result"])
+    m.verify_selection_matches_outputs(md_text=m.render_markdown(r2["result"]), html_text=m.render_html_block(r2["result"], include_css=False), **kw2)
+    with pytest.raises(m.Part2Stale):                                                                      # 確定がtop2になった後に旧(auto_top1)のmd/HTMLが残っていたら拒否
+        m.verify_selection_matches_outputs(md_text=md, html_text="<html>" + hb + "</html>", **kw2)
+
+
+def test_R4_overlapping_ranges_dropped_and_top2_hidden_when_single():
+    d = _doc2(F2_INV, F2_SPEC, F2_WHOLE)                                                                   # P1全体(CLEFT)が部分文2つを包含
+    assert [c["feature_class"] for c in d["candidates"]] == ["CLEFT"]
+    assert m.review_request(d)["choices"] == ["top1", "reselect", "omit"]
+    d2 = _doc2(F2_INV, F2_SPEC)                                                                            # 重ならない2文は両方残る
+    assert [c["feature_class"] for c in d2["candidates"]] == ["SPEC", "INV"]
+    with pytest.raises(m.Part2ReviewError):
+        m.select_from_candidates(d, _decision(d, "top2"), "wait")
+
+
+@needs_trial
+def test_R4_does_not_change_top1_on_29_samples():
+    """R-4(範囲重なり除外)はTOP1(select_tiered)に影響しない。候補数分布を確認(委任_01: 2件以上19/1件4/0件6)。"""
+    _, t7, _ = _trial()
+    dist = {"ge2": 0, "one": 0, "zero": 0}
+    for gen, work, run, path in _samples():
+        parsed = m.parse_candidates(open(path, encoding="utf-8").read(), t7.work_data7(work)["body"])
+        sel, _t = m.select_tiered(parsed["features"])
+        ranked = m.rank_eligible(parsed["features"])
+        assert [(f["para"], f["sentence"]) for f, _ in ranked[:1]] == [(f["para"], f["sentence"]) for f in sel]
+        dist["ge2" if len(ranked) >= 2 else ("one" if len(ranked) == 1 else "zero")] += 1
+    assert sum(dist.values()) == 29 and dist["zero"] == 6
+    print("candidate-count distribution after R-4:", dist)

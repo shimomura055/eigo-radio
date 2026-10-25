@@ -8,6 +8,8 @@
 #   Tier内順位の改善・HIGH判定の安定化・OTHER分類の拡張は承認対象外(本moduleは一切行わない)。
 # 設計: docs/research/PART2-GRAMMAR-PRODUCTION-WIRING-01/DESIGN_01.md。既存仕様の固定: 同EXISTING_SPEC_CHECK_01.md。
 #
+# 委任_02(2026-10-25): Opus条件Aレビュー(docs/research/PART2-GRAMMAR-PRODUCTION-WIRING-01/OPUS_REVIEW_01.md)のM-1〜M-7・R-1/3/4/7をmodule内で反映(DESIGN_02.md)。
+#   M-1でT1訳callを廃止(訳の出所=Trial-07どおりStep B自身。ref_jaはPart 1訳pool一致時のみ)。runner/er119/ページは引き続き無改変。
 # 状態: module本体のみ(委任_01)。runner(er019/er026/er062)・er119(HR共通核)・公開ページへは未配線。
 #   したがって本moduleを呼ぶProduction経路は現時点で存在せず(PRODUCTION_WIREDではない)、API呼出も発生しない。
 #   routing登録(STUDY_TEXT_GRAMMAR_EXTRACT / STUDY_TEXT_GRAMMAR_EXPLAIN → SUPPORT_MODEL)は次委任のer006追記で行う(REQUIRED_ROUTING_ENTRIES)。
@@ -418,13 +420,18 @@ def rank_eligible(feats):
     el = [f for f in feats if eligible7(f)]
     t1 = sorted([f for f in el if not is_inv(f)], key=_order_key)
     t2 = sorted([f for f in el if is_inv(f)], key=_order_key)
-    out, seen = [], set()
+    out, seen, spans = [], set(), []
     for tier, grp in (("T1", t1), ("T2", t2)):
         for f in grp:
             k = (f.get("para"), _qn(f.get("sentence", "")))
             if k in seen:
                 continue
+            sp = f.get("span")
+            if sp and any(p == f.get("para") and sp[0] < q[1] and q[0] < sp[1] for p, q in spans):   # R-4: 同一段落内で範囲が重なる/包含する候補も除外
+                continue
             seen.add(k)
+            if sp:
+                spans.append((f.get("para"), sp))
             out.append((f, tier))
     return out
 
@@ -490,6 +497,7 @@ def parse_candidates(txt: str, paragraphs: list) -> dict:
             f["sentence"] = verb
             f["cross_para_flag"] = flag
             f["single_span_ok"] = verify_single_span(d, f.get("para"), verb)
+            f["span"] = [a, b]                      # 委任_02: 同一段落内の文字範囲(NG範囲照合・TOP2重複除外に使う。M-5/R-4)
             f["prev"], f["next"] = local_context(d, pi, a, b)
             q = (f.get("misread_quote") or "").strip()
             f["misread_quote_in_sentence"] = bool(q) and _qn(q) in _qn(verb)
@@ -522,28 +530,11 @@ def _cand_record(f, tier, rank):
             "teaching_value_ja": f.get("teaching_value_ja", ""), "construct_ja": f.get("construct_ja", ""),
             "points_ja": [str(x) for x in f.get("points_ja", [])], "context_ja": f.get("context_ja", ""),
             "prev": f.get("prev", ""), "next": f.get("next", ""), "cross_para_flag": f.get("cross_para_flag"),
-            "single_span_ok": f.get("single_span_ok")}
+            "single_span_ok": f.get("single_span_ok"), "span": f.get("span")}
 
 
 def candidates_sha256(cands: list) -> str:
     return hashlib.sha256(json.dumps(cands, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()
-
-
-def build_candidates_doc(parsed: dict, paragraphs: list, label: str, *, audit: dict | None = None, round_no: int = 1,
-                         rejected_ids: tuple = ()) -> dict:
-    """parse結果 → `grammar_candidates.json`(順位付きlist。TOP1/TOP2+残り)。rejected_ids(Human NG/再選定で外した候補)は除外する。"""
-    ranked = [(f, t) for f, t in rank_eligible(parsed["features"]) if candidate_id(f["para"], f["sentence"]) not in set(rejected_ids)]
-    cands = [_cand_record(f, t, i) for i, (f, t) in enumerate(ranked, 1)]
-    doc = {"schema": SCHEMA_CANDIDATES, "level": LEVEL, "label": label, "text_sha256": text_sha256(paragraphs),
-           "n_paragraphs": len(paragraphs), "prompt_id": "part2_stepA8", "prompt_template_sha256": STEPA_PROMPT_SHA256,
-           "model": MODEL, "extract_signature": extract_signature(paragraphs, label), "round": round_no,
-           "status": "HAS_CANDIDATES" if cands else "NO_CANDIDATE",
-           "candidates": cands, "top_ids": [c["candidate_id"] for c in cands[:TOP_N]],
-           "n_eligible": len(cands), "rejected_ids": list(rejected_ids),
-           "tier_table": tier_table(parsed["features"]), "no_feature_paras": parsed.get("no_feature_paras", []),
-           "uncovered_paras": parsed.get("uncovered_paras", []), "candidates_sha256": candidates_sha256(cands),
-           "audit": audit or {}}
-    return doc
 
 
 def extract_signature(paragraphs: list, label: str, *, model: str | None = None) -> str:
@@ -631,41 +622,236 @@ def _run_llm(process: str, prompt: str, parse_fn, *, call_fn, client, max_out: i
 
 
 # ------------------------------------------------------------
+# 委任_02 Opus条件Aレビュー反映(M-1〜M-7, R-1/R-3/R-4/R-7)で追加・変更した部分
+#   M-1 訳の出所=Trial-07どおり(Step B自身の【日本語訳】を表示。ref_jaはPart 1のT1訳pool一致時のみStep Bへ渡す。T1 callなし)
+#   M-2 require_fresh_part2をHuman確定(grammar_review)+候補docに結びつける
+#   M-3 mode='auto'は呼出側の文字列では不可(er119の明示宣言dictのみ) / M-4 stage用input_sha・PENDING専用例外・再抽出なしfinalize
+#   M-5 NG照合3方式・枯渇時RESELECT_EXHAUSTED・human_rejected_all・reselect上限・NGとNOT_SELECTEDの区別
+#   M-6 NO_CANDIDATE_UNREVIEWED・reason必須・history・auto_top1をレビュー済みに数えない集計 / M-7 失敗記録(part2_failed.json)
+# ------------------------------------------------------------
+MAX_RESELECT = 2        # M-5(d): reselect_count<=2(次順位への再選定+再抽出の合計)
+MAX_REEXTRACT = 1       # M-5(d): うち再抽出(Step A'' 再call)は最大1回
+ALLOWED_REVIEW_STATUSES = ("REVIEWED", "UNREVIEWED_AUTO_ADOPTED", "NO_CANDIDATE_UNREVIEWED")   # 下流が進めてよいstatus(M-2/M-6)
+AUTO_DECLARATION_SOURCES = ("cli_runner_arg", "declare_absent_cli")                         # KP HR DESIGN_01 b-2: er119のmode_declaration.source
+WAIT_STATUSES = ("PENDING_REVIEW", "RESELECT_REQUESTED", "RESELECT_EXHAUSTED", "REEXTRACT_REQUESTED")
+SCHEMA_REVIEW = "grammar_human_review_v1"
+FAILED_FILENAME = "part2_failed.json"
+HUMAN_REASON_REQUIRED = ("top2", "reselect", "omit", "reextract")   # M-6: 理由必須の選択
+
+
+class Part2ReselectLimit(Part2Error):
+    """M-5(d): 再選定(再抽出含む)の上限超過。STOPして報告する。"""
+
+
+class Part2PendingReview(Exception):
+    """M-4: Human判断待ち(失敗ではない)。ensure_stageは出力ファイルを書く前にこの例外で抜ける。Part2Errorを継承しない(失敗扱いにしない)。"""
+
+    def __init__(self, status, review_request, candidates_doc):
+        super().__init__(f"Part 2はHuman判断待ちです: {status}")
+        self.status, self.review_request, self.candidates_doc = status, review_request, candidates_doc
+
+
+def _now():
+    return time.strftime("%Y-%m-%dT%H:%M:%S%z")
+
+
+def _norm_sentence(s: str) -> str:
+    return re.sub(r"\s+", " ", unicodedata.normalize("NFKC", _qn(s))).strip().casefold()
+
+
+# ---- M-3: mode(auto)は呼出側の文字列では指定できない -------------------------------------
+def normalize_mode(mode):
+    """'wait'(既定。None含む) か、er119の read_mode_declaration() が返す明示宣言dict({'mode':'auto',declared_by,declared_at,reason,source})のみ。
+    文字列 'auto' や宣言欠落dictは拒否(runner引数・hooks・環境変数・設定dictからautoにできない)。戻り値: ('wait'|'auto', declaration|None)"""
+    if mode is None or mode == "wait":
+        return "wait", None
+    if isinstance(mode, dict) and mode.get("mode") == "auto":
+        for k in ("declared_by", "declared_at", "reason", "source"):
+            if not (isinstance(mode.get(k), str) and mode[k].strip()):
+                raise Part2ReviewError(f"auto宣言に {k} がありません(er119のmode_declarationのみ有効)")
+        if mode["source"] not in AUTO_DECLARATION_SOURCES:
+            raise Part2ReviewError(f"auto宣言のsourceが不正: {mode['source']!r}")
+        return "auto", dict(mode)
+    raise Part2ReviewError("modeは 'wait' か er119 の明示宣言dict のみ。文字列 'auto' は受け付けません(M-3)")
+
+
+# ---- M-5(b): NG(却下)照合 3方式 ----------------------------------------------------------
+def _span_of(x):
+    s = x.get("span")
+    if isinstance(s, (list, tuple)) and len(s) == 2:
+        try:
+            return int(s[0]), int(s[1])
+        except (TypeError, ValueError):
+            return None
+    return None
+
+
+def ng_entry_from_candidate(c: dict, *, reason: str, by: str = "", source: str = "human_reselect") -> dict:
+    return {"candidate_id": c["candidate_id"], "para": c["para"], "sentence": c["sentence"], "span": c.get("span"),
+            "feature_class": c.get("feature_class"), "tier": c.get("tier"), "reason": reason, "by": by, "source": source, "at": _now()}
+
+
+def ng_match_methods(cand: dict, entry: dict) -> list:
+    """候補がNG entryに該当する方式のlist: candidate_id / sentence(正規化。段落番号は見ない) / range(同一段落内の文字範囲の重なり・包含)。"""
+    ms = []
+    if entry.get("candidate_id") and cand["candidate_id"] == entry["candidate_id"]:
+        ms.append("candidate_id")
+    if entry.get("sentence") and _norm_sentence(cand["sentence"]) == _norm_sentence(entry["sentence"]):
+        ms.append("sentence")
+    a, b = _span_of(cand), _span_of(entry)
+    if a and b and cand.get("para") == entry.get("para") and a[0] < b[1] and b[0] < a[1]:
+        ms.append("range")
+    return ms
+
+
+def filter_ng(cands: list, ng_entries) -> tuple:
+    """(kept, dropped)。dropped=[{candidate_id, methods, ng_candidate_id}]"""
+    kept, dropped = [], []
+    for c in cands:
+        hit = None
+        for e in ng_entries or ():
+            ms = ng_match_methods(c, e)
+            if ms:
+                hit = (e, ms)
+                break
+        if hit:
+            dropped.append({"candidate_id": c["candidate_id"], "methods": hit[1], "ng_candidate_id": hit[0].get("candidate_id")})
+        else:
+            kept.append(c)
+    return kept, dropped
+
+
+def _merge_ng(*lists) -> list:
+    out, seen = [], set()
+    for lst in lists:
+        for e in lst or ():
+            k = (e.get("candidate_id"), _norm_sentence(e.get("sentence", "")), tuple(e.get("span") or ()), e.get("para"))
+            if k in seen:
+                continue
+            seen.add(k)
+            out.append(e)
+    return out
+
+
+def _rebuild(doc: dict, cands: list, *, ng: list, filtered: list, **upd) -> dict:
+    cands = [dict(c, rank=i) for i, c in enumerate(cands, 1)]
+    new = dict(doc)
+    new.update(upd)
+    new.update({"candidates": cands, "top_ids": [c["candidate_id"] for c in cands[:TOP_N]], "n_eligible": len(cands),
+                "ng": ng, "filtered_by_ng": filtered, "rejected_ids": list(dict.fromkeys([e["candidate_id"] for e in ng if e.get("candidate_id")])),
+                "candidates_sha256": candidates_sha256(cands), "status": "HAS_CANDIDATES" if cands else "NO_CANDIDATE",
+                "exhausted": (not cands) and bool(filtered)})
+    return new
+
+
+def build_candidates_doc(parsed: dict, paragraphs: list, label: str, *, audit: dict | None = None, round_no: int = 1,
+                         rejected_ids: tuple = (), ng=(), reselect_count: int = 0, reextract_count: int = 0) -> dict:
+    """parse結果 → `grammar_candidates.json`(順位付きlist。TOP1/TOP2+残り)。rejected_ids(id一致のみ)とng(3方式照合のNG entry)に該当する候補は除外し、
+    除外理由を filtered_by_ng に残す。全候補がNGで尽きたら exhausted=True(『適格なし』ではない=M-5(c))。"""
+    ranked = rank_eligible(parsed["features"])
+    cands = [_cand_record(f, t, i) for i, (f, t) in enumerate(ranked, 1)]
+    rej = set(rejected_ids)
+    dropped = [{"candidate_id": c["candidate_id"], "methods": ["candidate_id"], "ng_candidate_id": c["candidate_id"]} for c in cands if c["candidate_id"] in rej]
+    cands = [c for c in cands if c["candidate_id"] not in rej]
+    ng = _merge_ng(ng)
+    cands, d2 = filter_ng(cands, ng)
+    filtered = dropped + d2
+    doc = {"schema": SCHEMA_CANDIDATES, "level": LEVEL, "label": label, "text_sha256": text_sha256(paragraphs),
+           "n_paragraphs": len(paragraphs), "prompt_id": "part2_stepA8", "prompt_template_sha256": STEPA_PROMPT_SHA256,
+           "model": MODEL, "extract_signature": extract_signature(paragraphs, label), "round": round_no,
+           "tier_table": tier_table(parsed["features"]), "no_feature_paras": parsed.get("no_feature_paras", []),
+           "uncovered_paras": parsed.get("uncovered_paras", []), "audit": audit or {},
+           "reselect_count": reselect_count, "reextract_count": reextract_count, "reselect_log": []}
+    return _rebuild(doc, cands, ng=ng, filtered=filtered)
+
+
+def apply_ng(doc: dict, ng_entries) -> dict:
+    """保存済み候補docへ(共有registry等の)NGを再適用する。変化が無ければ同一docを返す。"""
+    merged = _merge_ng(doc.get("ng", []), ng_entries)
+    kept, dropped = filter_ng(doc["candidates"], merged)
+    if not dropped and len(merged) == len(doc.get("ng", [])):
+        return doc
+    return _rebuild(doc, kept, ng=merged, filtered=list(doc.get("filtered_by_ng", [])) + dropped)
+
+
+# ------------------------------------------------------------
 # 工程1: 候補抽出(Step A'' + 決定論のTier順位付け)
 # ------------------------------------------------------------
 def extract_candidates(paragraphs: list, label: str, *, call_fn=None, client=None, budget_guard=None, round_no: int = 1,
-                       rejected_ids: tuple = ()) -> dict:
+                       rejected_ids: tuple = (), ng=(), reselect_count: int = 0, reextract_count: int = 0) -> dict:
     """1 call(Step A'')。応答不正は技術retry1回→fail-closed。parse不能を『0件』として扱わない(Trialのparse_errorは0件化したがProductionは止める)。"""
     prompt = stepa_prompt(paragraphs, label)
     parsed, audit = _run_llm(PROCESS_EXTRACT, prompt, lambda t: parse_candidates(t, paragraphs), call_fn=call_fn, client=client,
                              max_out=MAXOUT_EXTRACT, budget_guard=budget_guard, est_jpy=0.5, stage="part2_extract")
     audit["prompt_template_sha256"] = STEPA_PROMPT_SHA256
-    return build_candidates_doc(parsed, paragraphs, label, audit=audit, round_no=round_no, rejected_ids=rejected_ids)
+    return build_candidates_doc(parsed, paragraphs, label, audit=audit, round_no=round_no, rejected_ids=rejected_ids, ng=ng,
+                                reselect_count=reselect_count, reextract_count=reextract_count)
 
 
-def resolve_candidates(paragraphs: list, label: str, cached: dict | None, *, call_fn=None, client=None, budget_guard=None) -> dict:
-    """resume: 本文sha・Prompt・modelが同じ保存済み候補はAPI 0で再利用。違えば再抽出。"""
+def resolve_candidates(paragraphs: list, label: str, cached: dict | None, *, call_fn=None, client=None, budget_guard=None, ng=(),
+                       allow_extract: bool = True) -> dict:
+    """resume: 本文sha・Prompt・modelが同じ保存済み候補はAPI 0で再利用(共有registryのNGは再適用)。違えば再抽出。
+    allow_extract=False(再finalize用、M-4)では再抽出せず、無い/古いなら Part2Stale。"""
     sig = extract_signature(paragraphs, label)
     if cached and cached.get("schema") == SCHEMA_CANDIDATES and cached.get("extract_signature") == sig \
             and cached.get("candidates_sha256") == candidates_sha256(cached.get("candidates", [])):
-        out = json.loads(json.dumps(cached))
+        out = apply_ng(json.loads(json.dumps(cached)), ng)
         out["reused_from_previous_run"] = True
         return out
-    out = extract_candidates(paragraphs, label, call_fn=call_fn, client=client, budget_guard=budget_guard)
+    if not allow_extract:
+        raise Part2Stale("保存済みの候補がない、または現在の本文・label・Prompt・modelと一致しません。再抽出はreselect/抽出stageだけで行います(再finalizeでは再抽出しない)")
+    out = extract_candidates(paragraphs, label, call_fn=call_fn, client=client, budget_guard=budget_guard, ng=ng)
     out["reused_from_previous_run"] = False
     return out
 
 
-def reselect_candidates(doc: dict, rejected_ids) -> dict:
-    """Human「再選定」(API 0): 却下した候補を除いた同一抽出内の次順位で新しいTOP1/TOP2を作る。候補が尽きたらexhausted=True
-    (呼出側が extract_candidates(..., rejected_ids=..., round_no+1) で再抽出するかを決める)。却下は累積。"""
-    rej = list(dict.fromkeys(list(doc.get("rejected_ids", [])) + list(rejected_ids)))
-    keep = [c for c in doc["candidates"] if c["candidate_id"] not in set(rej)]
-    cands = [dict(c, rank=i) for i, c in enumerate(keep, 1)]
-    new = dict(doc)
-    new.update({"candidates": cands, "top_ids": [c["candidate_id"] for c in cands[:TOP_N]], "n_eligible": len(cands), "rejected_ids": rej,
-                "round": doc.get("round", 1) + 1, "candidates_sha256": candidates_sha256(cands),
-                "status": "HAS_CANDIDATES" if cands else "NO_CANDIDATE", "exhausted": not cands})
+def rejection_detail(doc: dict, c: dict) -> dict:
+    """却下候補の記録(M-6): 文・分類・tier・tier_tableの行を一緒に残す。"""
+    row = next((t for t in doc.get("tier_table", []) if t.get("para") == c["para"] and _qn(t.get("sentence") or "") == _qn(c["sentence"])), None)
+    return {"candidate_id": c["candidate_id"], "para": c["para"], "sentence": c["sentence"], "feature_class": c["feature_class"],
+            "tier": c["tier"], "rank": c.get("rank"), "teaching_value_ja": c.get("teaching_value_ja"), "tier_table_row": row}
+
+
+def reselect_candidates(doc: dict, rejected_ids=None, *, reason: str, by: str = "") -> dict:
+    """Human「再選定」(API 0): 却下した候補(既定=表示中のTOP1/TOP2)をNGとして記録し、除いた同一抽出内の次順位で新しいTOP1/TOP2を作る。
+    reasonは必須(M-6)。reselect_count>MAX_RESELECT でPart2ReselectLimit(STOP)。尽きたら exhausted=True(自動ZEROにしない。M-5(c))。"""
+    if not (isinstance(reason, str) and reason.strip()):
+        raise Part2ReviewError("再選定の理由(reason)は必須です(M-6)")
+    if doc.get("reselect_count", 0) + 1 > MAX_RESELECT:
+        raise Part2ReselectLimit(f"再選定の上限({MAX_RESELECT}回)を超えます。STOPして報告します")
+    ids = list(rejected_ids) if rejected_ids is not None else list(doc.get("top_ids", []))
+    by_id = {c["candidate_id"]: c for c in doc["candidates"]}
+    bad = [i for i in ids if i not in by_id]
+    if bad or not ids:
+        raise Part2ReviewError(f"再選定の対象が候補にありません: {bad or 'なし'}")
+    new_ng = [ng_entry_from_candidate(by_id[i], reason=reason, by=by) for i in ids]
+    merged = _merge_ng(doc.get("ng", []), new_ng)
+    kept, dropped = filter_ng(doc["candidates"], merged)
+    log = list(doc.get("reselect_log", [])) + [{"at": _now(), "event": "reselect", "by": by, "reason": reason, "kind": "next_rank",
+                                                 "rejected": [rejection_detail(doc, by_id[i]) for i in ids]}]
+    return _rebuild(doc, kept, ng=merged, filtered=list(doc.get("filtered_by_ng", [])) + dropped, round=doc.get("round", 1) + 1,
+                    reselect_count=doc.get("reselect_count", 0) + 1, reselect_log=log)
+
+
+def reextract_candidates(doc: dict, paragraphs: list, label: str, *, reason: str, by: str = "", ng_registry=(), call_fn=None,
+                         client=None, budget_guard=None) -> dict:
+    """枯渇(全候補をHumanがNG)後のStep A'' 再抽出(最大1回、MAX_RESELECTに算入)。NGは3方式で再適用されるので同じ候補は戻らない。"""
+    if not (isinstance(reason, str) and reason.strip()):
+        raise Part2ReviewError("再抽出の理由(reason)は必須です(M-6)")
+    if not doc.get("exhausted"):
+        raise Part2ReviewError("再抽出は候補が尽きた(exhausted)ときだけです")
+    if doc["text_sha256"] != text_sha256(paragraphs):
+        raise Part2Stale("候補docが現在の本文と一致しません")
+    if doc.get("reextract_count", 0) + 1 > MAX_REEXTRACT or doc.get("reselect_count", 0) + 1 > MAX_RESELECT:
+        raise Part2ReselectLimit(f"再抽出の上限(再抽出{MAX_REEXTRACT}回・再選定合計{MAX_RESELECT}回)を超えます。STOPして報告します")
+    merged = _merge_ng(doc.get("ng", []), ng_registry)
+    new = extract_candidates(paragraphs, label, call_fn=call_fn, client=client, budget_guard=budget_guard, round_no=doc.get("round", 1) + 1,
+                             ng=merged, reselect_count=doc.get("reselect_count", 0) + 1, reextract_count=doc.get("reextract_count", 0) + 1)
+    new["reselect_log"] = list(doc.get("reselect_log", [])) + [{"at": _now(), "event": "reextract", "by": by, "reason": reason, "kind": "reextract",
+                                                                "rejected": []}]
+    new["filtered_by_ng"] = list(doc.get("filtered_by_ng", [])) + new.get("filtered_by_ng", [])
+    new["exhausted"] = (not new["candidates"]) and bool(new["filtered_by_ng"])
+    new["reused_from_previous_run"] = False
     return new
 
 
@@ -673,51 +859,156 @@ def reselect_candidates(doc: dict, rejected_ids) -> dict:
 # 工程2: 選定(Human Review接続点。kind="grammar")
 # ------------------------------------------------------------
 REVIEW_CHOICES = ("top1", "top2", "reselect", "omit")
+EXHAUSTED_CHOICES = ("omit", "reextract")
 
 
 def review_request(doc: dict) -> dict:
-    """er119共通核(kind="grammar")へ渡す提示内容。TOP1/TOP2(順位付き)と残り件数。AI推奨=TOP1。"""
-    top = doc["candidates"][:TOP_N]
-    return {"kind": "grammar", "candidates_sha256": doc["candidates_sha256"], "round": doc.get("round", 1),
+    """er119共通核(kind="grammar")へ渡す提示内容。TOP1/TOP2(順位付き)と残り件数。AI推奨=TOP1。
+    候補1件ならtop2を外す(R-4)。再選定は上限内のみ提示。枯渇時はomit/reextractのみ(自動ZEROにしない。M-5(c))。"""
+    cands = doc["candidates"]
+    top = cands[:TOP_N]
+    exhausted = bool(doc.get("exhausted"))
+    reselect_ok = doc.get("reselect_count", 0) < MAX_RESELECT
+    if top:
+        choices = ["top1"] + (["top2"] if len(top) >= 2 else []) + (["reselect"] if reselect_ok else []) + ["omit"]
+    elif exhausted:
+        choices = ["omit"] + (["reextract"] if reselect_ok and doc.get("reextract_count", 0) < MAX_REEXTRACT else [])
+    else:
+        choices = ["omit"]
+    return {"kind": "grammar", "candidates_sha256": doc["candidates_sha256"], "round": doc.get("round", 1), "exhausted": exhausted,
+            "reselect_count": doc.get("reselect_count", 0), "reextract_count": doc.get("reextract_count", 0),
             "top": [{"candidate_id": c["candidate_id"], "rank": c["rank"], "tier": c["tier"], "feature_class": c["feature_class"],
                      "para": c["para"], "sentence": c["sentence"], "teaching_value_ja": c["teaching_value_ja"],
                      "construct_ja": c["construct_ja"], "misread_ja": c["misread_ja"]} for c in top],
-            "n_more": max(0, len(doc["candidates"]) - len(top)), "ai_recommended": top[0]["candidate_id"] if top else None,
-            "choices": list(REVIEW_CHOICES) if top else ["omit"], "auto_default": "top1" if top else "omit"}
+            "n_more": max(0, len(cands) - len(top)), "ai_recommended": top[0]["candidate_id"] if top else None,
+            "choices": choices, "auto_default": "top1" if top else (None if exhausted else "omit"),
+            "reason_required_for": list(HUMAN_REASON_REQUIRED)}
 
 
-def select_from_candidates(doc: dict, review: dict | None, mode: str) -> dict:
-    """戻り値: {"status": SELECTED|ZERO|PENDING_REVIEW|RESELECT_REQUESTED, "candidate": dict|None, "source": str}。
-    - 候補0件 → ZERO(no_candidate。Trial-07の0件許容。Humanに判断対象がないので待機しない)
-    - review有り(Human): choice=top1/top2/omit/reselect。candidates_sha256が違えばPart2ReviewError(stale)
-    - review無し: mode="auto"(呼出側/er119が明示宣言した場合のみ)→ TOP1自動採用 / mode="wait" → PENDING_REVIEW(有料のStep Bへ進まない)
-    未レビューを最終承認扱いにしない: sourceに auto_top1 / human_top1 等を残す。"""
-    if mode not in ("auto", "wait"):
-        raise Part2ReviewError(f"modeは auto|wait のみ: {mode!r}")
+def _check_decision(doc: dict, review: dict) -> str:
+    ch = review.get("choice")
+    allowed = EXHAUSTED_CHOICES if doc.get("exhausted") else REVIEW_CHOICES
+    if ch not in allowed:
+        raise Part2ReviewError(f"choiceは {allowed} のいずれか: {ch!r}")
+    if review.get("candidates_sha256") != doc["candidates_sha256"]:
+        raise Part2ReviewError("reviewが古い候補listに対するものです(candidates_sha256不一致)。再レビューが必要です")
+    if ch in HUMAN_REASON_REQUIRED and not (isinstance(review.get("reason"), str) and review["reason"].strip()):
+        raise Part2ReviewError(f"{ch} の理由(reason)は必須です(M-6。修正内容・理由を記録する)")
+    if review.get("accept_ai") and ch != "top1":
+        raise Part2ReviewError("accept_aiはtop1(AI推奨の了承)のときだけ")
+    return ch
+
+
+def select_from_candidates(doc: dict, review: dict | None, mode) -> dict:
+    """戻り値: {"status": SELECTED|ZERO|PENDING_REVIEW|RESELECT_REQUESTED|RESELECT_EXHAUSTED|REEXTRACT_REQUESTED,
+                "candidate", "source", "review_status"(REVIEWED|UNREVIEWED_AUTO_ADOPTED|NO_CANDIDATE_UNREVIEWED|None), "mode_declaration"}。
+    - 候補0件かつNGで尽きていない → ZERO(no_candidate)。Humanに判断対象がないので待機しないが review_status は NO_CANDIDATE_UNREVIEWED(REVIEWEDにしない。M-6)
+    - 候補がNGで尽きた(exhausted) → Human無しではRESELECT_EXHAUSTEDで待機(自動ZEROにしない。M-5(c))。omit→ZERO(human_rejected_all) / reextract→REEXTRACT_REQUESTED
+    - review有り(Human): choice=top1/top2/omit/reselect。candidates_sha256が違えばPart2ReviewError(stale)。top2/reselect/omit/reextractはreason必須
+    - review無し: mode=er119の明示auto宣言dictのみ → TOP1自動採用(UNREVIEWED_AUTO_ADOPTED) / 'wait' → PENDING_REVIEW(有料のStep Bへ進まない)"""
+    mode_kind, decl = normalize_mode(mode)
     cands = doc.get("candidates", [])
-    if not cands:
-        return {"status": "ZERO", "candidate": None, "source": "no_candidate"}
-    if review is not None:
-        ch = review.get("choice")
-        if ch not in REVIEW_CHOICES:
-            raise Part2ReviewError(f"choiceは {REVIEW_CHOICES} のいずれか: {ch!r}")
-        if review.get("candidates_sha256") != doc["candidates_sha256"]:
-            raise Part2ReviewError("reviewが古い候補listに対するものです(candidates_sha256不一致)。再レビューが必要です")
+    if not cands and not doc.get("exhausted"):
+        return {"status": "ZERO", "candidate": None, "source": "no_candidate", "review_status": "NO_CANDIDATE_UNREVIEWED", "mode_declaration": None}
+    if doc.get("exhausted"):
+        if review is None:
+            return {"status": "RESELECT_EXHAUSTED", "candidate": None, "source": "pending", "review_status": None, "mode_declaration": None}
+        ch = _check_decision(doc, review)
         if ch == "omit":
-            return {"status": "ZERO", "candidate": None, "source": "human_omit"}
+            return {"status": "ZERO", "candidate": None, "source": "human_rejected_all", "review_status": "REVIEWED", "mode_declaration": None}
+        if doc.get("reselect_count", 0) + 1 > MAX_RESELECT or doc.get("reextract_count", 0) + 1 > MAX_REEXTRACT:
+            raise Part2ReselectLimit("再抽出の上限を超えます。STOPして報告します")
+        return {"status": "REEXTRACT_REQUESTED", "candidate": None, "source": "human_reextract", "review_status": None, "mode_declaration": None}
+    if review is not None:
+        ch = _check_decision(doc, review)
+        if ch == "omit":
+            return {"status": "ZERO", "candidate": None, "source": "human_omit", "review_status": "REVIEWED", "mode_declaration": None}
         if ch == "reselect":
-            return {"status": "RESELECT_REQUESTED", "candidate": None, "source": "human_reselect"}
+            if doc.get("reselect_count", 0) + 1 > MAX_RESELECT:
+                raise Part2ReselectLimit(f"再選定の上限({MAX_RESELECT}回)を超えます。STOPして報告します")
+            return {"status": "RESELECT_REQUESTED", "candidate": None, "source": "human_reselect", "review_status": None, "mode_declaration": None}
         idx = 0 if ch == "top1" else 1
         if idx >= len(cands):
             raise Part2ReviewError("TOP2が存在しません(候補が1件のみ)")
-        return {"status": "SELECTED", "candidate": cands[idx], "source": f"human_{ch}"}
-    if mode == "auto":
-        return {"status": "SELECTED", "candidate": cands[0], "source": "auto_top1"}
-    return {"status": "PENDING_REVIEW", "candidate": None, "source": "pending"}
+        return {"status": "SELECTED", "candidate": cands[idx], "source": f"human_{ch}", "review_status": "REVIEWED", "mode_declaration": None}
+    if mode_kind == "auto":
+        return {"status": "SELECTED", "candidate": cands[0], "source": "auto_top1", "review_status": "UNREVIEWED_AUTO_ADOPTED", "mode_declaration": decl}
+    return {"status": "PENDING_REVIEW", "candidate": None, "source": "pending", "review_status": None, "mode_declaration": None}
+
+
+# ---- Human確定record(er119 kind="grammar" の確定docと同形。M-2/M-6) ---------------------------
+def verdicts_for_choice(doc: dict, choice: str) -> dict:
+    """M-5(e)/M-6: top1/top2=SELECTED+見たが選ばなかった側はNOT_SELECTED(NGではない)。omit=全てNOT_SELECTED。reselectで外した候補は doc['ng'] 側(NG)。"""
+    ids = [c["candidate_id"] for c in doc["candidates"][:TOP_N]]
+    if choice == "top1":
+        return {ids[0]: "SELECTED", **{i: "NOT_SELECTED" for i in ids[1:]}}
+    if choice == "top2":
+        return {ids[0]: "NOT_SELECTED", ids[1]: "SELECTED"}
+    if choice == "omit":
+        return {i: "NOT_SELECTED" for i in ids}
+    return {}
+
+
+def grammar_selection_signature(review: dict) -> str:
+    sel = review.get("selection", {})
+    payload = {"kind": "grammar", "level": review.get("level"), "text_sha256": review.get("text_sha256"),
+               "candidates_sha256": review.get("candidates_sha256"), "status": review.get("status"),
+               "selection": {"choice": sel.get("choice"), "candidate_id": sel.get("candidate_id"), "zero_reason": sel.get("zero_reason")},
+               "verdicts": review.get("verdicts", {}), "mode_declaration": review.get("mode_declaration"), "ng": sorted(str(e.get("candidate_id")) for e in review.get("ng", []))}
+    return hashlib.sha256(json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()
+
+
+def finalize_review_record(doc: dict, sel: dict, *, decision: dict | None = None, by: str = "", prior_history: list | None = None) -> dict:
+    """確定record(kp_human_review_v1と同形、kind="grammar")。er119が永続化する(本関数は単一builder=I/Fの正本。er119が独自に作る場合も同形・同署名関数を使う)。
+    status: REVIEWED(Humanが見て決めた) / UNREVIEWED_AUTO_ADOPTED(明示auto宣言でTOP1採用) / NO_CANDIDATE_UNREVIEWED(適格0件で待たずに確定。REVIEWEDではない)。"""
+    if sel["status"] not in ("SELECTED", "ZERO") or sel.get("review_status") not in ALLOWED_REVIEW_STATUSES:
+        raise Part2ReviewError(f"確定できない状態です: {sel.get('status')}")
+    src = sel["source"]
+    choice = {"auto_top1": "top1", "human_top1": "top1", "human_top2": "top2", "human_omit": "omit", "human_rejected_all": "omit",
+              "no_candidate": "none"}[src]
+    cand = sel.get("candidate")
+    verdicts = {e["candidate_id"]: "NG" for e in doc.get("ng", []) if e.get("candidate_id")}
+    if sel["review_status"] == "REVIEWED" and choice in ("top1", "top2", "omit"):
+        if doc["candidates"]:
+            verdicts.update(verdicts_for_choice(doc, choice))
+    elif sel["review_status"] == "UNREVIEWED_AUTO_ADOPTED":
+        verdicts.update({c["candidate_id"]: None for c in doc["candidates"][:TOP_N]})            # AUTO=全て未レビュー(null)
+    history = list(prior_history or [])
+    for ev in doc.get("reselect_log", []):
+        history.append({"at": ev["at"], "event": ev["event"], "by": ev.get("by", ""), "detail": {k: v for k, v in ev.items() if k not in ("at", "event", "by")}})
+    d = decision or {}
+    history.append({"at": _now(), "event": "finalize", "by": by or d.get("by", ""),
+                    "detail": {"source": src, "status": sel["review_status"], "choice": choice, "reason": d.get("reason"),
+                               "round": doc.get("round", 1), "candidates_sha256": doc["candidates_sha256"],
+                               "mode_declaration": sel.get("mode_declaration"),
+                               "not_selected": [rejection_detail(doc, c) for c in doc["candidates"][:TOP_N]
+                                                if choice in ("top1", "top2") and cand and c["candidate_id"] != cand["candidate_id"]]}})
+    rec = {"schema": SCHEMA_REVIEW, "kind": "grammar", "level": LEVEL, "text_sha256": doc["text_sha256"],
+           "candidates_sha256": doc["candidates_sha256"], "status": sel["review_status"],
+           "mode_declaration": sel.get("mode_declaration"),
+           "selection": {"choice": choice, "candidate_id": cand["candidate_id"] if cand else None,
+                         "zero_reason": src if sel["status"] == "ZERO" else None},
+           "accept_ai_default": bool(d.get("accept_ai")), "accepted_candidates_sha256": d.get("candidates_sha256") if d.get("accept_ai") else None,
+           "verdicts": verdicts, "ng": list(doc.get("ng", [])), "reselect_count": doc.get("reselect_count", 0),
+           "reextract_count": doc.get("reextract_count", 0), "history": history}
+    rec["selection_signature"] = grammar_selection_signature(rec)
+    return rec
+
+
+def summarize_review_statuses(reviews) -> dict:
+    """M-6: closeout・evidenceの集計。UNREVIEWED_AUTO_ADOPTED(auto_top1)とNO_CANDIDATE_UNREVIEWEDは『レビュー済み』に数えない。"""
+    out = {"reviewed": 0, "unreviewed_auto_adopted": 0, "no_candidate_unreviewed": 0, "other": 0, "total": 0}
+    for r in reviews:
+        out["total"] += 1
+        k = {"REVIEWED": "reviewed", "UNREVIEWED_AUTO_ADOPTED": "unreviewed_auto_adopted",
+             "NO_CANDIDATE_UNREVIEWED": "no_candidate_unreviewed"}.get((r or {}).get("status"), "other")
+        out[k] += 1
+    out["human_reviewed"] = out["reviewed"]
+    return out
 
 
 # ------------------------------------------------------------
-# 工程3: 日本語訳(T1)+ Step B 解説
+# 工程3: 日本語訳(Trial-07どおり。Step B自身の訳を表示。M-1)+ Step B 解説
 # ------------------------------------------------------------
 def stepb_item(cand: dict, ref_ja: str | None) -> dict:
     s = {"para": cand["para"], "sentence": cand["sentence"], "construct_ja": cand["construct_ja"],
@@ -747,7 +1038,7 @@ def stepb_prompt(selected: list) -> str:
     return STEPB_PROMPT.format(items=stepb_items_text(selected))
 
 
-_CJK_RE = re.compile(r"[　-〿぀-ヿ㐀-䶿一-鿿豈-﫿＀-￯]")
+_CJK_RE = re.compile(r"[　-〿぀-ヿ㐀-䶿一-鿿豈-﫿＀-￯]")
 _ITEM_RE = re.compile(r"(?m)^=====ITEM (\d+)=====\s*$")
 _HEAD_RE = re.compile(r"(?m)^【(.+?)】\s*$")
 
@@ -792,23 +1083,20 @@ def _parse_stepb_checked(txt: str) -> dict:
     return {"markdown": md, "sections": split_sections(md)}
 
 
-def _norm_sentence(s: str) -> str:
-    return re.sub(r"\s+", " ", unicodedata.normalize("NFKC", _qn(s))).strip().casefold()
-
-
-def translate_sentence(sentence: str, *, call_fn=None, client=None, ref_ja_pool: dict | None = None) -> dict:
-    """引用英文のみを入力とするT1訳(er003_kp_source_sentence_ja_01.generate_translations を再利用。Part 1と同一工程・同一Prompt)。
-    Part 1で同じ英文を訳済み(ref_ja_pool)ならAPI 0で再利用(Part 1/Part 2で同一英文に食い違う訳を出さない)。"""
-    if ref_ja_pool:
-        hit = ref_ja_pool.get(_norm_sentence(sentence))
-        if hit:
-            return {"ja": hit, "source": "part1_pool", "audit": None}
-    import er003_kp_source_sentence_ja_01 as ja
-    res = ja.generate_translations([sentence], call_fn=call_fn, client=client)
-    return {"ja": res["items"][0]["source_sentence_ja"], "source": "T1", "audit": res["audit"]}
+def lookup_ref_ja(sentence: str, ref_ja_pool: dict | None) -> str | None:
+    """Trial-07の規則(run_trial_07.py:161-163): Part 1で訳済みの英文と一致(_qn正規化の完全一致)したときだけ、その訳を参考訳(ref_ja)として返す。
+    一致しなければ None(T1 callもしない。画面の【日本語訳】はStep B自身の訳=M-1)。"""
+    if not ref_ja_pool:
+        return None
+    key = _qn(sentence).strip()
+    for k, v in ref_ja_pool.items():
+        if v and _qn(k).strip() == key:
+            return v
+    return None
 
 
 def explain_signature(cand: dict, ref_ja: str | None) -> str:
+    """解説signature。ref_ja(pool一致の参考訳)を含むので、pool側が変われば失効を検出できる(R-7)。"""
     sel = stepb_item(cand, ref_ja)
     return hashlib.sha256(json.dumps({"item": sel, "candidate_id": cand["candidate_id"], "stepb": STEPB_PROMPT_SHA256, "model": MODEL},
                                      ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()
@@ -828,86 +1116,201 @@ def generate_explanation(cand: dict, ref_ja: str | None, *, call_fn=None, client
 def zero_result(doc: dict, source: str) -> dict:
     return {"schema": SCHEMA_RESULT, "level": LEVEL, "status": "ZERO", "zero_reason": source, "selection": {"source": source},
             "text_sha256": doc["text_sha256"], "extract_signature": doc["extract_signature"], "candidates_sha256": doc["candidates_sha256"],
-            "round": doc.get("round", 1), "generated_at": time.strftime("%Y-%m-%dT%H:%M:%S%z")}
+            "round": doc.get("round", 1), "generated_at": _now()}
 
 
-def build_result(doc: dict, sel: dict, translation: dict, expl: dict) -> dict:
+def build_result(doc: dict, sel: dict, ref_ja: str | None, expl: dict) -> dict:
     c = sel["candidate"]
     return {"schema": SCHEMA_RESULT, "level": LEVEL, "status": "SELECTED", "zero_reason": None,
             "selection": {"source": sel["source"], "candidate_id": c["candidate_id"], "rank": c["rank"], "tier": c["tier"],
                           "feature_class": c["feature_class"], "para": c["para"], "sentence": c["sentence"],
                           "construct_ja": c["construct_ja"], "teaching_value_ja": c["teaching_value_ja"]},
             "text_sha256": doc["text_sha256"], "extract_signature": doc["extract_signature"], "candidates_sha256": doc["candidates_sha256"],
-            "round": doc.get("round", 1), "translation_ja": translation["ja"], "translation_source": translation["source"],
-            "explain_signature": explain_signature(c, translation["ja"]), "explanation_md": expl["markdown"], "sections": expl["sections"],
-            "audit": {"extract": doc.get("audit"), "translate": translation["audit"], "explain": expl["audit"]},
-            "generated_at": time.strftime("%Y-%m-%dT%H:%M:%S%z")}
+            "round": doc.get("round", 1), "translation_ja": expl["sections"]["日本語訳"], "translation_source": "stepB",
+            "ref_ja": ref_ja, "ref_ja_source": "part1_pool" if ref_ja else None,
+            "explain_signature": explain_signature(c, ref_ja), "explanation_md": expl["markdown"], "sections": expl["sections"],
+            "audit": {"extract": doc.get("audit"), "explain": expl["audit"]}, "generated_at": _now()}
 
 
-def run_part2(paragraphs: list, label: str, *, review: dict | None = None, mode: str = "wait", cached_candidates: dict | None = None,
+def run_part2(paragraphs: list, label: str, *, review: dict | None = None, mode="wait", cached_candidates: dict | None = None,
               cached_result: dict | None = None, ref_ja_pool: dict | None = None, extract_call_fn=None, explain_call_fn=None,
-              translate_call_fn=None, client=None, budget_guard=None) -> dict:
-    """純関数的なorchestrator(ファイルI/Oは呼出側。write_artifacts/load_artifactsを使う)。
-    戻り値: {"status": SELECTED|ZERO|PENDING_REVIEW|RESELECT_REQUESTED, "candidates": doc, "result": dict|None, "review_request": dict|None}
-    PENDING_REVIEWでは有料のStep B・訳を呼ばない。ZERO/SELECTED以外ではresultはNone(下流はfail-closed)。"""
+              client=None, budget_guard=None, ng=(), allow_extract: bool = True, prior_history: list | None = None) -> dict:
+    """orchestrator(ファイルI/Oは呼出側。write_artifacts/load_artifactsを使う)。LLM callは最大2(Step A''・Step B)。T1訳callはない(M-1)。
+    戻り値: {"status": SELECTED|ZERO|WAIT_STATUSES…, "candidates": doc, "result": dict|None, "review_request": dict|None, "selection": sel, "review_record": dict|None}
+    待機系ではresultはNone(下流はfail-closed)。PENDING_REVIEWでは有料のStep Bを呼ばない。"""
     paragraphs = _check_paragraphs(paragraphs)
-    doc = resolve_candidates(paragraphs, label, cached_candidates, call_fn=extract_call_fn, client=client, budget_guard=budget_guard)
+    doc = resolve_candidates(paragraphs, label, cached_candidates, call_fn=extract_call_fn, client=client, budget_guard=budget_guard, ng=ng,
+                             allow_extract=allow_extract)
     sel = select_from_candidates(doc, review, mode)
-    if sel["status"] in ("PENDING_REVIEW", "RESELECT_REQUESTED"):
-        return {"status": sel["status"], "candidates": doc, "result": None, "review_request": review_request(doc)}
+    if sel["status"] in WAIT_STATUSES:
+        return {"status": sel["status"], "candidates": doc, "result": None, "review_request": review_request(doc), "selection": sel, "review_record": None}
+    rec = finalize_review_record(doc, sel, decision=review, prior_history=prior_history)
     if sel["status"] == "ZERO":
-        return {"status": "ZERO", "candidates": doc, "result": zero_result(doc, sel["source"]), "review_request": None}
+        return {"status": "ZERO", "candidates": doc, "result": zero_result(doc, sel["source"]), "review_request": None, "selection": sel, "review_record": rec}
     c = sel["candidate"]
+    ref_ja = lookup_ref_ja(c["sentence"], ref_ja_pool)
     if cached_result and cached_result.get("schema") == SCHEMA_RESULT and cached_result.get("status") == "SELECTED" \
             and cached_result.get("selection", {}).get("candidate_id") == c["candidate_id"] \
             and cached_result.get("candidates_sha256") == doc["candidates_sha256"] \
-            and cached_result.get("explain_signature") == explain_signature(c, cached_result.get("translation_ja")) and cached_result.get("explanation_md"):
+            and cached_result.get("explain_signature") == explain_signature(c, ref_ja) and cached_result.get("explanation_md"):
         res = json.loads(json.dumps(cached_result))
         res["selection"]["source"] = sel["source"]
         res["reused_from_previous_run"] = True
-        return {"status": "SELECTED", "candidates": doc, "result": res, "review_request": None}
-    if budget_guard is not None:
-        budget_guard("part2_translate", 0.1)
-    tr = translate_sentence(c["sentence"], call_fn=translate_call_fn, client=client, ref_ja_pool=ref_ja_pool)
-    expl = generate_explanation(c, tr["ja"], call_fn=explain_call_fn, client=client, budget_guard=budget_guard)
-    res = build_result(doc, sel, tr, expl)
+        return {"status": "SELECTED", "candidates": doc, "result": res, "review_request": None, "selection": sel, "review_record": rec}
+    expl = generate_explanation(c, ref_ja, call_fn=explain_call_fn, client=client, budget_guard=budget_guard)
+    res = build_result(doc, sel, ref_ja, expl)
     res["reused_from_previous_run"] = False
-    return {"status": "SELECTED", "candidates": doc, "result": res, "review_request": None}
+    return {"status": "SELECTED", "candidates": doc, "result": res, "review_request": None, "selection": sel, "review_record": rec}
 
 
-def require_fresh_part2(result: dict | None, paragraphs: list, label: str, *, next_command: str, where: str = "") -> None:
-    """使う側(TTS/assembly/pages/player)のfail-closed確認。無い/古い/不整合ならPart2Stale(次コマンド付き)。
-    ZERO(0件)は正当な最終状態として通す。SELECTEDは: 本文sha・抽出signature一致、選定文が単一段落の逐語span、解説signature一致、解説非空。"""
+def _no_extract(prompt):
+    raise Part2Error("finalizeではStep A''(再抽出)を呼びません")
+
+
+def finalize_part2(paragraphs: list, label: str, *, candidates_doc: dict, review: dict | None = None, mode="wait", cached_result: dict | None = None,
+                   ref_ja_pool: dict | None = None, explain_call_fn=None, client=None, budget_guard=None, ng=(), prior_history: list | None = None) -> dict:
+    """M-4: 保存済み候補と現在の確定からの再finalize(再抽出なし。Step A''は絶対に呼ばない)。待機系ならPart2PendingReviewで抜ける(出力ファイルを作らない)。"""
+    r = run_part2(paragraphs, label, review=review, mode=mode, cached_candidates=candidates_doc, cached_result=cached_result, ref_ja_pool=ref_ja_pool,
+                  extract_call_fn=_no_extract, explain_call_fn=explain_call_fn, client=client, budget_guard=budget_guard, ng=ng,
+                  allow_extract=False, prior_history=prior_history)
+    if r["status"] in WAIT_STATUSES:
+        raise Part2PendingReview(r["status"], r["review_request"], r["candidates"])
+    return r
+
+
+def cand_stage_input_sha(paragraphs: list, label: str) -> str:
+    """M-4: Z `part2_cand_b1b` のinput_sha(本文sha+label+抽出signature[Prompt・model])。"""
+    return hashlib.sha256(f"{text_sha256(paragraphs)}|{label}|{extract_signature(paragraphs, label)}".encode("utf-8")).hexdigest()
+
+
+def final_stage_input_sha(paragraphs: list, label: str, grammar_review: dict) -> str:
+    """M-4: Z `part2_b1b` のinput_sha = sha(text_sha|label|文法の確定selection_signature)。確定が変われば変わる(再finalize対象)。"""
+    return hashlib.sha256(f"{text_sha256(paragraphs)}|{label}|{grammar_review['selection_signature']}".encode("utf-8")).hexdigest()
+
+
+# ---- M-2: 使う側のfail-closed確認(Human確定・候補docと結びつける) -----------------------------
+def _expected_outcome(doc: dict, review: dict, where: str, nxt: str):
+    """確定recordと候補docから期待される結果を導く: ('SELECTED', cand, source) | ('ZERO', None, zero_reason)。不整合はPart2Stale。"""
     w = f"[{where}] " if where else ""
+    st, sel = review.get("status"), review.get("selection") or {}
+    cands = doc.get("candidates", [])
+    ch = sel.get("choice")
+
+    def stale(msg):
+        return Part2Stale(f"{w}{msg}。次の一手: {nxt}")
+    if st == "NO_CANDIDATE_UNREVIEWED":
+        if cands or doc.get("filtered_by_ng") or ch != "none" or sel.get("candidate_id") or sel.get("zero_reason") != "no_candidate":
+            raise stale("Part 2の確定(NO_CANDIDATE_UNREVIEWED)が候補docと一致しません")
+        return "ZERO", None, "no_candidate"
+    if st == "UNREVIEWED_AUTO_ADOPTED":
+        try:
+            if normalize_mode(review.get("mode_declaration"))[0] != "auto":
+                raise Part2ReviewError("宣言なし")
+        except Part2ReviewError as e:
+            raise stale(f"Part 2の自動採用にer119の明示auto宣言がありません({e})")
+        if not cands or ch != "top1" or sel.get("candidate_id") != cands[0]["candidate_id"]:
+            raise stale("Part 2の自動採用(auto_top1)が現在の候補docのTOP1と一致しません")
+        return "SELECTED", cands[0], "auto_top1"
+    if st == "REVIEWED":
+        if ch in ("top1", "top2"):
+            idx = 0 if ch == "top1" else 1
+            if idx >= len(cands) or sel.get("candidate_id") != cands[idx]["candidate_id"]:
+                raise stale(f"Part 2のHuman確定({ch})が現在の候補docと一致しません")
+            return "SELECTED", cands[idx], f"human_{ch}"
+        if ch == "omit":
+            zr = sel.get("zero_reason")
+            if (zr == "human_omit" and cands) or (zr == "human_rejected_all" and not cands and doc.get("exhausted")):
+                return "ZERO", None, zr
+            raise stale("Part 2のHuman省略(omit)が現在の候補docと一致しません")
+    raise stale(f"Part 2の確定statusが不正または前進不可です: {st}/{ch}")
+
+
+def require_fresh_part2(result: dict | None, paragraphs: list, label: str, *, next_command: str, where: str = "",
+                        candidates_doc: dict | None, grammar_review: dict | None, ref_ja_pool: dict | None = None) -> None:
+    """使う側(TTS/assembly/pages/player/公開ページbuilder)のfail-closed確認。無い/古い/不整合ならPart2Stale(次コマンド付き)。
+    M-2: 本文sha・抽出signatureに加え、(i)確定statusが前進可 (ii)result.candidates_sha256==現在の候補doc (iii)result.selection==確定のchoiceに対応する候補
+    (iv)候補docの材料欄でexplain_signatureを再計算して一致 (v)確定のselection_signatureを再計算して一致。ZEROも確定と候補docに結びつく。
+    事後レビューでTOP2へ変えた後・reselect/omit後の古い結果(auto_top1等)は拒否される。candidates_doc/grammar_reviewは必須(省略不可)。"""
+    w = f"[{where}] " if where else ""
+    nxt = next_command
     if not result or result.get("schema") != SCHEMA_RESULT:
-        raise Part2Stale(f"{w}Part 2 artifactがありません。次の一手: {next_command}")
+        raise Part2Stale(f"{w}Part 2 artifactがありません。次の一手: {nxt}")
     paragraphs = _check_paragraphs(paragraphs)
     if result.get("text_sha256") != text_sha256(paragraphs) or result.get("extract_signature") != extract_signature(paragraphs, label):
-        raise Part2Stale(f"{w}Part 2が現在の本文・Prompt・modelと一致しません(古い)。次の一手: {next_command}")
-    if result.get("status") == "ZERO":
+        raise Part2Stale(f"{w}Part 2が現在の本文・Prompt・modelと一致しません(古い)。次の一手: {nxt}")
+    if not candidates_doc or candidates_doc.get("schema") != SCHEMA_CANDIDATES:
+        raise Part2Stale(f"{w}Part 2の候補docがありません。次の一手: {nxt}")
+    if candidates_doc.get("text_sha256") != text_sha256(paragraphs) or candidates_doc.get("extract_signature") != extract_signature(paragraphs, label) \
+            or candidates_doc.get("candidates_sha256") != candidates_sha256(candidates_doc.get("candidates", [])):
+        raise Part2Stale(f"{w}Part 2の候補docが現在の本文と一致、または自己整合していません。次の一手: {nxt}")
+    if not grammar_review or grammar_review.get("schema") != SCHEMA_REVIEW or grammar_review.get("kind") != "grammar":
+        raise Part2Stale(f"{w}Part 2のHuman確定recordがありません。次の一手: {nxt}")
+    if grammar_review.get("status") not in ALLOWED_REVIEW_STATUSES:
+        raise Part2Stale(f"{w}Part 2の確定statusが前進不可です: {grammar_review.get('status')}(判断待ち・再選定中・stale)。次の一手: {nxt}")
+    if grammar_review.get("candidates_sha256") != candidates_doc["candidates_sha256"] or grammar_review.get("text_sha256") != candidates_doc["text_sha256"]:
+        raise Part2Stale(f"{w}Part 2の確定が現在の候補docに対するものではありません。次の一手: {nxt}")
+    if grammar_review.get("selection_signature") != grammar_selection_signature(grammar_review):
+        raise Part2Stale(f"{w}Part 2の確定のselection_signatureが一致しません(手編集の疑い)。次の一手: {nxt}")
+    kind, cand, source = _expected_outcome(candidates_doc, grammar_review, where, nxt)
+    if result.get("candidates_sha256") != candidates_doc["candidates_sha256"]:
+        raise Part2Stale(f"{w}Part 2の結果が現在の候補docから作られたものではありません(再選定・再抽出後の古い結果)。次の一手: {nxt}")
+    if kind == "ZERO":
+        if result.get("status") != "ZERO" or result.get("zero_reason") != source:
+            raise Part2Stale(f"{w}Part 2の結果が確定(省略/適格なし: {source})と一致しません。次の一手: {nxt}")
         return
     if result.get("status") != "SELECTED":
-        raise Part2Stale(f"{w}Part 2のstatusが不正: {result.get('status')}。次の一手: {next_command}")
+        raise Part2Stale(f"{w}Part 2のstatusが確定(選定)と一致しません: {result.get('status')}。次の一手: {nxt}")
     sel = result["selection"]
-    d = {"body": paragraphs}
-    if not verify_single_span(d, sel.get("para"), sel.get("sentence")):
-        raise Part2Stale(f"{w}Part 2の選定文が本文の単一段落の逐語spanではありません。次の一手: {next_command}")
-    if not result.get("explanation_md") or not result.get("translation_ja") or not result.get("sections"):
-        raise Part2Stale(f"{w}Part 2の解説または訳が欠落しています。次の一手: {next_command}")
-    ref = result["translation_ja"]
-    cand = {"candidate_id": sel["candidate_id"], "para": sel["para"], "sentence": sel["sentence"]}
-    # 解説signatureは材料欄込みで保存されている。ここでは保存値の存在と選定文の同一性を確認する(材料の再計算は候補docを持つ呼出側のrun_part2で行う)
-    if not result.get("explain_signature") or result["selection"]["candidate_id"] != candidate_id(cand["para"], cand["sentence"]):
-        raise Part2Stale(f"{w}Part 2の解説signature/候補IDが不整合です。次の一手: {next_command}")
-    if PAGE_FORBIDDEN_RE.search(result["explanation_md"]) or not ref:
-        raise Part2Stale(f"{w}Part 2の解説にページ非表示語が含まれます。次の一手: {next_command}")
+    if sel.get("candidate_id") != cand["candidate_id"] or sel.get("source") != source \
+            or sel.get("para") != cand["para"] or sel.get("sentence") != cand["sentence"]:
+        raise Part2Stale(f"{w}Part 2の結果の選定が確定した候補({source})と一致しません。次の一手: {nxt}")
+    if not verify_single_span({"body": paragraphs}, sel.get("para"), sel.get("sentence")):
+        raise Part2Stale(f"{w}Part 2の選定文が本文の単一段落の逐語spanではありません。次の一手: {nxt}")
+    if candidate_id(sel["para"], sel["sentence"]) != sel["candidate_id"]:
+        raise Part2Stale(f"{w}Part 2の候補IDが不整合です。次の一手: {nxt}")
+    secs = result.get("sections") or {}
+    if not result.get("explanation_md") or not secs or not secs.get("日本語訳") or result.get("translation_ja") != secs.get("日本語訳"):
+        raise Part2Stale(f"{w}Part 2の解説または訳(Step Bの【日本語訳】)が欠落・不整合です。次の一手: {nxt}")
+    if result.get("explain_signature") != explain_signature(cand, result.get("ref_ja")):
+        raise Part2Stale(f"{w}Part 2の解説signatureが候補docの材料欄から再計算した値と一致しません。次の一手: {nxt}")
+    if ref_ja_pool is not None and result.get("ref_ja") != lookup_ref_ja(sel["sentence"], ref_ja_pool):
+        raise Part2Stale(f"{w}Part 2の参考訳が現在のPart 1訳poolと一致しません(再生成が必要)。次の一手: {nxt}")
+    if PAGE_FORBIDDEN_RE.search(result["explanation_md"]):
+        raise Part2Stale(f"{w}Part 2の解説にページ非表示語が含まれます。次の一手: {nxt}")
+
+
+# ---- R-3: 確定 <-> part2_result.json <-> study_text/*.md <-> 公開HTML の一致検証(module側) ------------------
+def verify_selection_matches_outputs(*, kind: str = "grammar", paragraphs: list, label: str, candidates_doc: dict, grammar_review: dict,
+                                     result: dict, md_text: str | None = None, html_text: str | None = None, next_command: str,
+                                     where: str = "", ref_ja_pool: dict | None = None) -> None:
+    """kind='grammar'のみ。不一致はPart2Stale。md_text/html_textを渡した場合は決定論の描画(render_markdown / render_html_block)と照合する。
+    html_textは『render_html_block(include_css=False)の出力を部分文字列として含む』ことを確認(ページbuilderが包む前提。包み方は呼出側)。"""
+    if kind != "grammar":
+        raise ValueError(f"このmoduleが検証できるのは kind='grammar' のみ: {kind!r}")
+    require_fresh_part2(result, paragraphs, label, next_command=next_command, where=where, candidates_doc=candidates_doc,
+                        grammar_review=grammar_review, ref_ja_pool=ref_ja_pool)
+    w = f"[{where}] " if where else ""
+    if md_text is not None and md_text != render_markdown(result):
+        raise Part2Stale(f"{w}study_text/のPart 2 markdownが確定結果(part2_result.json)と一致しません。次の一手: {next_command}")
+    if html_text is not None and render_html_block(result, include_css=False) not in html_text:
+        raise Part2Stale(f"{w}公開HTMLのPart 2ブロックが確定結果(part2_result.json)と一致しません。次の一手: {next_command}")
+
+
+# ---- M-7: 失敗の記録(part2_failed.json。有料工程をやり直させない案内用) --------------------------
+def write_failed_record(dir_path: str, exc: BaseException, *, next_command: str, stage: str = "") -> str:
+    os.makedirs(dir_path, exist_ok=True)
+    p = f"{dir_path}/{FAILED_FILENAME}"
+    with open(p, "w", encoding="utf-8", newline="\n") as f:
+        json.dump({"schema": "part2_failed_v1", "stage": stage, "error_type": type(exc).__name__, "error": str(exc)[:500],
+                   "next_command": next_command, "at": _now()}, f, ensure_ascii=False, indent=2)
+    return p
 
 
 # ------------------------------------------------------------
 # 保存・描画
 # ------------------------------------------------------------
 def write_artifacts(dir_path: str, doc: dict | None, result: dict | None) -> dict:
-    """study_text/ へ grammar_candidates.json / part2_result.json / .md を保存(UTF-8, LF)。"""
+    """study_text/ へ grammar_candidates.json / part2_result.json / .md を保存(UTF-8, LF)。待機系(result=None)ではresult/mdを作らない(M-4)。"""
     os.makedirs(dir_path, exist_ok=True)
     out = {}
     if doc is not None:
@@ -933,33 +1336,39 @@ def load_json(path: str) -> dict | None:
 
 
 def render_markdown(result: dict) -> str:
-    """Part 1と同じく節見出しにPart番号を出さない(Part 3/4未採用の番号参照=Dangling防止)。0件はTrialと同じ固定文面。"""
+    """Part 1と同じく節見出しにPart番号を出さない(Part 3/4未採用の番号参照=Dangling防止)。0件はTrialと同じ固定文面。
+    【日本語訳】はStep B自身の訳(Trial-07どおり。M-1)。"""
     L = ["# Grammar & Sentence Structure", ""]
     if result.get("status") != "SELECTED":
         return "\n".join(L + [ZERO_P2, ""])
     s = result["selection"]
-    L += ["## 対象となる本文英文", "", f"> {s['sentence']}", "", f"**日本語訳**\n{result['translation_ja']}", ""]
+    L += ["## 対象となる本文英文", "", f"> {s['sentence']}", ""]
     sec = result["sections"]
-    for h in EXPLANATION_HEADINGS[1:]:
+    for h in EXPLANATION_HEADINGS:
         if h in sec:
             L += [f"**{h}**", sec[h], ""]
     return "\n".join(L)
 
 
 def render_html_block(result: dict, *, include_css: bool = True) -> str:
-    """ページ用のstudy block(Part 1の `<section class='study'>` と同じ規約。<table>/<h2>不使用)。Part 1ブロックの直後に連結して使う
-    (その場合 include_css=False)。0件は固定文面を載せる。LLM出力はHTMLエスケープ後に**→<b>。"""
+    """ページ用のstudy block(Part 1の `<section class='study'>` と同じ規約。<table>/<h2>不使用)。0件は固定文面を載せる。
+    LLM出力はHTMLエスケープ後に**→<b>。Part 1ブロックの直後に連結する場合は compose_study_html を使う(R-1)。"""
     import er003_kp_general_explanation_01 as p1
     parts = ["<section class='study'><h3>Grammar &amp; Sentence Structure</h3>"]
     if result.get("status") != "SELECTED":
         parts.append(f"<div class='study-item'><p>{html.escape(ZERO_P2, quote=False)}</p></div>")
     else:
         s, sec = result["selection"], result["sections"]
-        dl = [f"<dt>対象となる本文英文</dt><dd>{html.escape(s['sentence'], quote=False)}</dd>",
-              f"<dt>日本語訳</dt><dd>{html.escape(result['translation_ja'], quote=False)}</dd>"]
-        for h in EXPLANATION_HEADINGS[1:]:
+        dl = [f"<dt>対象となる本文英文</dt><dd>{html.escape(s['sentence'], quote=False)}</dd>"]
+        for h in EXPLANATION_HEADINGS:
             if h in sec:
                 dl.append(f"<dt>{html.escape(h, quote=False)}</dt><dd>{p1._paragraphs_html(sec[h])}</dd>")
         parts.append(f"<div class='study-item'><dl>{''.join(dl)}</dl></div>")
     parts.append("</section>")
     return (p1.STUDY_CSS if include_css else "") + "".join(parts)
+
+
+def compose_study_html(part1_html: str, result: dict) -> str:
+    """R-1: Part 1ブロックの直後にPart 2を連結。Part 1が空(判断記録なし等)のときはCSSを含める(include_css = not part1_html)。"""
+    part1_html = part1_html or ""
+    return part1_html + render_html_block(result, include_css=not part1_html)
