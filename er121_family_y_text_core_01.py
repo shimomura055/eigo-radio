@@ -22,6 +22,7 @@ import itertools
 import json
 import os
 import re
+import time
 import unicodedata
 
 import er003_audio_tts_asr_safety as safety
@@ -425,8 +426,22 @@ def _voice_item_line(name: str) -> str:
 # 『上記と同じ意味』の参照先(Voice用の定義)を、そのままの文言で展開する。展開以外の変更なし。
 _REF_EXPANDED = (_voice_item_line("leak_evidence_subject") + _voice_item_line("leak_discovery_syntax") + _voice_item_line("leak_evidence_memorable")
                  + "(上の3項目は、最終パート本文に対して判定する)\n")
+# 委任_05(ユーザー正式承認 2026-10-25 USER_03 §2=選択肢(a)、APPROVED_FOR_PRODUCTION): Family YのClosing(Tension)判定の `leak_discovery_syntax` 定義にだけ補足を足す。
+# Prompt 02(承認済みClosing生成prompt)は「3人の言葉から見えてくることとして示す」と指示するため、その指示どおりの提示表現だけを理由にFAILしない。
+# 範囲: Tension判定promptの当該項目の末尾のみ。`_VOICE_ITEMS`(Voice判定)・`leak_tension_reverts_to_research`・DEV・他Familyは不変。Prompt 02の本文/sha不変。
+# 文言=ユーザー承認原文(USER_03 §2)の補足一文そのまま。委任文は後半に「ただし、3人の語りに根拠がない解釈、不要な一般化、研究・調査の説明への逆戻りは引き続きFAIL。」を
+# 付す案だったが、較正(GATE_CALIBRATION_02)でこの後半を足すとdiscovery_syntax判定が『一般化』を理由に広がり、案B(承認本文)が3/3でdiscovery_syntax FAIL
+# (=USER_03 §1の救済条件を満たさずSTOP)・無関係な本文の誤FAILも増えたため採用しない。『引き続きNG』の担保は文言ではなく、既存の他項目
+# (leak_evidence_memorable / leak_tension_reverts_to_research / leak_evidence_subject等=不変)が引き続き判定すること(合成負例3本は補足後も3/3 FAIL)。
+DISCOVERY_SYNTAX_SUPPLEMENT = "Prompt指示に基づく『〜から見えてくる』という提示表現は解釈語と見なさない。"
+_DISCOVERY_LINE_M1 = _voice_item_line("leak_discovery_syntax")           # M-1展開(補足なし)の当該行。末尾は改行
+_DISCOVERY_LINE_SUPPLEMENTED = _DISCOVERY_LINE_M1[:-1] + "。" + DISCOVERY_SYNTAX_SUPPLEMENT + "\n"
+_REF_EXPANDED_M1 = _REF_EXPANDED                                           # 補足前(委任_02A M-1)の展開。比較・回帰test用に保持
+_REF_EXPANDED = _REF_EXPANDED_M1.replace(_DISCOVERY_LINE_M1, _DISCOVERY_LINE_SUPPLEMENTED)
+assert _REF_EXPANDED != _REF_EXPANDED_M1 and _REF_EXPANDED.count(DISCOVERY_SYNTAX_SUPPLEMENT) == 1
 _TENSION_ITEMS = _TENSION_ITEMS_DEV_ORIGINAL.replace(_REF_LINE, _REF_EXPANDED)
 assert _TENSION_ITEMS != _TENSION_ITEMS_DEV_ORIGINAL
+_TENSION_ITEMS_M1 = _TENSION_ITEMS_DEV_ORIGINAL.replace(_REF_LINE, _REF_EXPANDED_M1)        # 補足前のTension定義(較正の『変更前』再現用)
 
 _FOOT = "\nreasoningには、判定理由を1〜2文の日本語で書いてください。FAILの場合はquoted_evidenceに該当する原文を引用してください。PASSの場合quoted_evidenceは空文字列にしてください。\n"
 
@@ -451,20 +466,22 @@ def leak_schema_for(kind: str) -> dict:
             "schema": {"type": "object", "properties": {k: item(v) for k, v in secs.items()}, "required": list(secs), "additionalProperties": False}}
 
 
-def build_leak_prompt(kind: str, sections: dict, language_note: str = "日本語") -> str:
+def build_leak_prompt(kind: str, sections: dict, language_note: str = "日本語", discovery_supplement: bool = True) -> str:
+    """discovery_supplement: Tension判定(=Closing)の `leak_discovery_syntax` 補足(委任_05 ②)を含めるか。既定True=Closing判定。
+    Lead/人物紹介の補助適用(run_leadintro_gate)はFalse=補足なしのM-1定義のまま(補足の対象はClosing判定のみ)。Voice判定(kind='voices')は常に不変。"""
     if kind == "voices":
         head = (f"以下は、ある Voices型記事(3人の人物がそれぞれ一人称で語る)の3つのVoiceセクション本文です(本文の言語: {language_note})。"
                 "それぞれについて、指定された項目を判定してください(それぞれPASS/FAIL)。\n\n" + _VOICE_ITEMS + _FOOT)
         body = "\n".join(f"【Voice {i + 1}本文】\n{sections[s]}\n" for i, s in enumerate(SLOTS))
     else:
         head = (f"以下は、ある Voices型記事(3人の人物がそれぞれ一人称で語った後の)最終パート[Tension]の本文です(本文の言語: {language_note})。"
-                "指定された項目を判定してください(それぞれPASS/FAIL)。\n\n" + _TENSION_ITEMS + _FOOT)
+                "指定された項目を判定してください(それぞれPASS/FAIL)。\n\n" + (_TENSION_ITEMS if discovery_supplement else _TENSION_ITEMS_M1) + _FOOT)
         body = f"【最終パート(Tension)本文】\n{sections['tension']}\n"
     return head + "\n" + body
 
 
-def run_leak(client, kind: str, sections: dict, *, stage: str, language_note: str = "日本語", guard=None) -> dict:
-    prompt = build_leak_prompt(kind, sections, language_note)
+def run_leak(client, kind: str, sections: dict, *, stage: str, language_note: str = "日本語", guard=None, discovery_supplement: bool = True) -> dict:
+    prompt = build_leak_prompt(kind, sections, language_note, discovery_supplement)
     resp = chat(client, route_key="FAMILY_Y_LEAK_JUDGE", user=prompt, developer=LEAKAGE_DEVELOPER_JA, schema=leak_schema_for(kind), stage=stage, guard=guard)
     text = getattr(resp, "output_text", None)
     if not text or not text.strip():
@@ -755,6 +772,16 @@ FIXED_CLOSING_REGISTRY = {
         "approved_on": "2026-10-25",
         "scope": "redelivery_fee のみ(他記事への流用不可)",
         "prior_gate_record": "er110_output/family_y_redelivery_audio_01/revision_01/closing_B/gate/gate_result.json",
+        # 委任_05(ユーザー正式承認 2026-10-25 USER_03 §1=選択肢Ⅱ、APPROVED_FOR_PRODUCTION): 案Bに限る個別Human承認。汎用の例外機構ではない
+        # (適用条件の判定は evaluate_case_b_human_approval 1箇所。条件を一つでも欠くと従来どおり FIXED_CLOSING_RESIDUAL_FAIL=STOP)。
+        "human_approval": {
+            "approval_ref": "docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER_03.md §1 (案Bの個別Human承認・選択肢Ⅱ。APPROVED_FOR_PRODUCTION)",
+            "approved_by": "user(2026-10-25 USER_03 §1 選択肢Ⅱ正式承認)",
+            "approved_on": "2026-10-25",
+            "slug": "redelivery_fee",
+            "items": ("leak_evidence_memorable",),
+            "scope": "redelivery_fee の承認済み案B本文(byte一致)×leak_evidence_memorable のFAILのみ。他項目・他記事・他Closing・本文変更/再生成/局所書換え後には適用しない",
+        },
     },
 }
 
@@ -790,6 +817,142 @@ def reusable_prior_gate(ent: dict, tension_text: str, current_prompt_sha: str, p
 
 
 # ============================================================
+# 委任_05 ①: 案Bの個別Human承認(ユーザー正式承認 USER_03 §1)。既存のHuman個別承認機構(er003_v1_n3_01_assemble.record_human_approval の
+# 記録形式: <segment_key>: {canonical_text_sha256, approved_at, approved_by})と同形の記録を `human_approved_closing.json` に書く(追加fieldあり)。
+# 汎用の例外機構は作らない: 適用可否はこの1関数だけが判断し、条件は全て「かつ」。元のGate判定結果(leak_check_N.json・gate_result.json)は一切書換えず、
+# 別ファイルにHuman承認記録と元判定のsnapshotを残す。
+# ============================================================
+HUMAN_APPROVED_CLOSING_FILE = "human_approved_closing.json"
+HUMAN_APPROVAL_SEGMENT_KEY = "closing"
+PASS_BY_HUMAN_APPROVAL = "PASS_BY_HUMAN_APPROVAL"
+
+
+def evaluate_case_b_human_approval(slug: str, text: str, gate_result: dict, registry: dict = None) -> dict:
+    """案BのGateが残存FAIL(LEAKAGE_RESIDUAL_STOP)のとき、個別Human承認が適用できるかを判定する(副作用なし)。
+    適用条件(全て満たす場合のみ applies=True): registryにhuman_approvalがある案Bのslug / 本文がregistryの承認本文とbyte一致(sha一致も) /
+    全判定の本文shaが承認本文と同一(書換えなし)・rewritten=False / 判定がmax回すべてFAILで残存 / 全判定を通じたFAIL項目の集合が承認済み項目のみ
+    (他項目が1件でもFAILしたら救済しない)。それ以外は applies=False と理由を返す。"""
+    reg = FIXED_CLOSING_REGISTRY if registry is None else registry
+    ent = reg.get(slug)
+    reasons = []
+    ha = (ent or {}).get("human_approval")
+    if not ent or not ha:
+        return {"applies": False, "reasons": ["NO_HUMAN_APPROVAL_FOR_SLUG"], "fail_items_union": []}
+    if ha.get("slug") != slug:
+        reasons.append("APPROVAL_SLUG_MISMATCH")
+    if text.encode("utf-8") != ent["text"].encode("utf-8") or w1.sha_text(text) != ent["text_sha256"]:
+        reasons.append("TEXT_NOT_BYTE_IDENTICAL_TO_APPROVED_CASE_B")
+    hist = gate_result.get("history") or []
+    if gate_result.get("kind") != "tension" or gate_result.get("status") != "LEAKAGE_RESIDUAL_STOP":
+        reasons.append("GATE_NOT_RESIDUAL_FAIL")
+    if gate_result.get("rewritten") or any(("rewritten" in h) or ("rewrite_calls" in h) for h in hist):
+        reasons.append("REWRITTEN")
+    if not hist or len(hist) != FIXED_CLOSING_MAX_JUDGEMENTS or not all(h["check"].get("any_flagged") for h in hist):
+        reasons.append("NOT_ALL_JUDGEMENTS_FAILED")
+    if any((h.get("sha256") or {}).get("tension") != ent["text_sha256"] for h in hist):
+        reasons.append("JUDGED_TEXT_NOT_APPROVED_TEXT")
+    union = sorted({ff for h in hist for f in h["check"].get("flagged_items") or [] for ff in f["fail_fields"]})
+    sections = {f["section"] for h in hist for f in h["check"].get("flagged_items") or []}
+    if sections - {"tension"}:
+        reasons.append("UNEXPECTED_SECTION_FLAGGED")
+    if set(union) != set(ha["items"]):
+        reasons.append("FAIL_ITEMS_NOT_EXACTLY_APPROVED_ITEMS")
+    return {"applies": not reasons, "reasons": reasons, "fail_items_union": union, "approved_items": list(ha["items"])}
+
+
+def _file_sha(path: str) -> str:
+    return hashlib.sha256(_read_bytes(path)).hexdigest()
+
+
+def archive_prior_gate_dir(gate_dir: str):
+    """再実行(resume/retry/regenerate)でleak_check_N.jsonが上書きされて過去のFAIL記録が失われないよう、既存のgate_dirの判定記録を
+    `<gate_dir>_prior_runs/<内容sha12>/` へ退避する(同一内容は二重に作らない・既存は上書きしない)。gate_dir自体は触らない。"""
+    if not os.path.isdir(gate_dir):
+        return None
+    files = sorted(f for f in os.listdir(gate_dir) if f.endswith(".json"))
+    if not files:
+        return None
+    key = hashlib.sha256("".join(f + _file_sha(os.path.join(gate_dir, f)) for f in files).encode("utf-8")).hexdigest()[:12]
+    dst = f"{gate_dir}_prior_runs/{key}"
+    if not os.path.exists(dst):
+        os.makedirs(dst)
+        for f in files:
+            with open(os.path.join(gate_dir, f), "rb") as r, open(os.path.join(dst, f), "xb") as w:
+                w.write(r.read())
+    return dst
+
+
+def write_human_approved_closing(out_dir: str, slug: str, gate_dir: str, gate_result: dict, verdict: dict) -> dict:
+    """Human承認記録(`human_approved_closing.json`)を書く。過去の承認記録は previous_entries へ積んで残す(上書き・削除しない)。
+    元のGate判定ファイルのsnapshotを `human_approval_gate_snapshot/<gate_result_sha12>/` へ複写し、path+sha256を記録に残す。"""
+    ent = FIXED_CLOSING_REGISTRY[slug]
+    ha = ent["human_approval"]
+    gr_path = os.path.join(gate_dir, "gate_result.json")
+    snap = os.path.join(out_dir, "human_approval_gate_snapshot", _file_sha(gr_path)[:12])
+    os.makedirs(snap, exist_ok=True)
+    judgements = []
+    for i, h in enumerate(gate_result["history"], start=1):
+        src = os.path.join(gate_dir, f"leak_check_{i}.json")
+        dst = os.path.join(snap, f"leak_check_{i}.json")
+        if not os.path.exists(dst):
+            with open(src, "rb") as r, open(dst, "xb") as w:
+                w.write(r.read())
+        judgements.append({"attempt": i, "path": src, "snapshot_path": dst, "sha256": _file_sha(dst),
+                           "fail_fields": sorted({ff for f in h["check"]["flagged_items"] for ff in f["fail_fields"]}),
+                           "reasoning": [f["reasoning"] for f in h["check"]["flagged_items"]], "quoted_evidence": [f["quoted_evidence"] for f in h["check"]["flagged_items"]],
+                           "prompt_sha256": h["check"].get("prompt_sha256"), "model": h["check"].get("model")})
+    gr_snap = os.path.join(snap, "gate_result.json")
+    if not os.path.exists(gr_snap):
+        with open(gr_path, "rb") as r, open(gr_snap, "xb") as w:
+            w.write(r.read())
+    path = os.path.join(out_dir, HUMAN_APPROVED_CLOSING_FILE)
+    prev = _read_json(path).get(HUMAN_APPROVAL_SEGMENT_KEY) if os.path.exists(path) else None
+    entry = {"canonical_text_sha256": ent["text_sha256"], "approved_at": time.strftime("%Y-%m-%dT%H:%M:%S"), "approved_by": ha["approved_by"],
+             "approval_ref": ha["approval_ref"], "approved_on": ha["approved_on"], "slug": slug, "approved_items": list(ha["items"]), "scope": ha["scope"],
+             "fail_items_union": verdict["fail_items_union"], "n_judgements": gate_result["n_judgements"], "rewritten": False,
+             "original_gate_status": gate_result["status"], "gate_result_path": gr_path, "gate_result_snapshot_path": gr_snap, "gate_result_sha256": _file_sha(gr_snap),
+             "judgements": judgements, "registry_sha256": registry_sha(),
+             "note": "Gate判定結果・FAIL理由は改変なし(別ファイルのHuman承認記録)。この承認は案B本文×leak_evidence_memorableのFAILに限る個別例外で、Gateの緩和ではない。"}
+    if prev:
+        entry["previous_entries"] = list(prev.get("previous_entries") or []) + [{k: v for k, v in prev.items() if k != "previous_entries"}]
+    w1.wj(path, {HUMAN_APPROVAL_SEGMENT_KEY: entry})
+    return {"path": path, "sha256": _file_sha(path), "entry": entry}
+
+
+def verify_human_approval_record(out_dir: str, slug: str, final_text: str) -> dict:
+    """Human承認が現在の本文に有効かの来歴検査(resume/cache再利用時にも呼ぶ)。承認記録のsha・slug・項目・元判定snapshotのshaを現registryと突き合わせ、
+    1つでも違えばYStop(承認を黙って使い回さない)。有効なら記録entryを返す。"""
+    ent = FIXED_CLOSING_REGISTRY.get(slug)
+    path = os.path.join(out_dir, HUMAN_APPROVED_CLOSING_FILE)
+    if not ent or not ent.get("human_approval"):
+        raise YStop("HUMAN_APPROVAL_NOT_ALLOWED_FOR_SLUG", f"{slug}: Human個別承認の対象外")
+    if not os.path.exists(path):
+        raise YStop("HUMAN_APPROVAL_RECORD_MISSING", f"{path}がありません")
+    e = _read_json(path).get(HUMAN_APPROVAL_SEGMENT_KEY) or {}
+    ha = ent["human_approval"]
+    bad = []
+    if e.get("slug") != slug or ha["slug"] != slug:
+        bad.append("slug")
+    if e.get("canonical_text_sha256") != ent["text_sha256"] or w1.sha_text(final_text) != ent["text_sha256"] or final_text.encode("utf-8") != ent["text"].encode("utf-8"):
+        bad.append("text_sha")
+    if sorted(e.get("approved_items") or []) != sorted(ha["items"]) or sorted(e.get("fail_items_union") or []) != sorted(ha["items"]):
+        bad.append("items")
+    if e.get("rewritten") is not False:
+        bad.append("rewritten")
+    if e.get("original_gate_status") != "LEAKAGE_RESIDUAL_STOP":
+        bad.append("original_gate_status")
+    snaps = list(e.get("judgements") or [])
+    if len(snaps) != FIXED_CLOSING_MAX_JUDGEMENTS or any(not os.path.exists(j.get("snapshot_path", "")) or _file_sha(j["snapshot_path"]) != j.get("sha256") for j in snaps):
+        bad.append("judgement_snapshots")
+    gsp = e.get("gate_result_snapshot_path", "")
+    if not os.path.exists(gsp) or _file_sha(gsp) != e.get("gate_result_sha256"):
+        bad.append("gate_result_snapshot")
+    if bad:
+        raise YStop("HUMAN_APPROVAL_PROVENANCE_MISMATCH", f"{path}: 承認記録が現在の案B/registryと一致しません {bad}(承認を適用せず停止)", bad)
+    return e
+
+
+# ============================================================
 # Closing stage: 固定注入 or 一般化 → Gate → Gate後検査 → closing_record
 # ============================================================
 FIXED_CLOSING_MAX_JUDGEMENTS = 3      # 案B(USER_02 ②): 既存の再判定機構の上限(判定≤3回)。書換えは行わない
@@ -820,25 +983,49 @@ def produce_closing(client, *, slug: str, inp: dict, theme_package_sha256: str, 
             w1.wj(os.path.join(gate_dir, "final_texts.json"), {"tension": text})
             gate = {"status": "PASS", "n_judgements": 1, "rewritten": False, "source": "reused_prior_pass_record", "judgements": _fixed_closing_judgement_summary(prior["history"])}
         else:
+            archive_prior_gate_dir(gate_dir)                    # 再実行で過去のGate判定(FAIL記録を含む)が上書きされて失われないよう退避(委任_05)
             r = run_gate(client, kind="tension", stage="yp_closing_fixed", texts={"tension": text}, out_dir=gate_dir, voices_ctx=voices,
                          allow_rewrite=False, rejudge_without_rewrite=True, max_judgements=FIXED_CLOSING_MAX_JUDGEMENTS, guard=guard)
             judgements = _fixed_closing_judgement_summary(r["history"])
             if r["status"] != "PASS":
-                w1.wj(os.path.join(out_dir, "closing_record.json"), {"source": "fixed_user_approved", "status": "FIXED_CLOSING_RESIDUAL_FAIL", "slug": slug,
-                                                                      "text_sha256": ent["text_sha256"], "n_judgements": r["n_judgements"], "judgements": judgements,
-                                                                      "rewritten": False, "gate_history_dir": gate_dir})
-                raise YStop("FIXED_CLOSING_RESIDUAL_FAIL", f"案B(ユーザー承認本文)が{r['n_judgements']}回の再判定後もLeakage判定でFAIL。承認本文は書換えず、記事は公開せず停止"
-                                                           "(承認本文とGateの衝突=ユーザー判断。Gate緩和・Prompt変更・本文変更はしない)", r["history"])
-            gate = {"status": "PASS", "n_judgements": r["n_judgements"], "rewritten": False, "source": "judged_this_run", "judgements": judgements}
-        final = load_gated_or_stop(gate_dir)["tension"]
+                verdict = evaluate_case_b_human_approval(slug, text, r)
+                if verdict["applies"]:
+                    # 委任_05 ①: 案Bの個別Human承認(USER_03 §1)。元のGate判定(gate_result.json=LEAKAGE_RESIDUAL_STOP・leak_check_N.json)は改変せず、
+                    # 別ファイルの承認記録+snapshotを残してPASS_BY_HUMAN_APPROVAL扱いにする。final_texts.json(Gate PASSの印)は作らない。
+                    human_entry = write_human_approved_closing(out_dir, slug, gate_dir, r, verdict)
+                    gate = {"status": "FAIL_RESIDUAL_ACCEPTED_BY_HUMAN_APPROVAL", "original_gate_status": r["status"], "n_judgements": r["n_judgements"], "rewritten": False,
+                            "source": "judged_this_run", "judgements": judgements, "fail_items_union": verdict["fail_items_union"],
+                            "human_approval_record": human_entry["path"], "human_approval_record_sha256": human_entry["sha256"]}
+                else:
+                    w1.wj(os.path.join(out_dir, "closing_record.json"), {"source": "fixed_user_approved", "status": "FIXED_CLOSING_RESIDUAL_FAIL", "slug": slug,
+                                                                          "text_sha256": ent["text_sha256"], "n_judgements": r["n_judgements"], "judgements": judgements,
+                                                                          "rewritten": False, "gate_history_dir": gate_dir,
+                                                                          "human_approval_checked": {"applies": False, "reasons": verdict["reasons"], "fail_items_union": verdict["fail_items_union"]}})
+                    raise YStop("FIXED_CLOSING_RESIDUAL_FAIL", f"案B(ユーザー承認本文)が{r['n_judgements']}回の再判定後もLeakage判定でFAIL。承認本文は書換えず、記事は公開せず停止"
+                                                               "(承認本文とGateの衝突=ユーザー判断。Gate緩和・Prompt変更・本文変更はしない)。"
+                                                               f"個別Human承認(leak_evidence_memorableのみ)の適用条件を満たさない: {verdict['reasons']}", r["history"])
+            else:
+                gate = {"status": "PASS", "n_judgements": r["n_judgements"], "rewritten": False, "source": "judged_this_run", "judgements": judgements}
+        if gate["status"] == "FAIL_RESIDUAL_ACCEPTED_BY_HUMAN_APPROVAL":
+            final = text                                         # 本文は承認本文そのもの(上でbyte一致を確認済み)。Gate PASSではなくHuman承認で採用
+        else:
+            final = load_gated_or_stop(gate_dir)["tension"]
         if final != text:
             raise YStop("FIXED_CLOSING_MUTATED", "固定注入本文が変更されている")
         rec = {"source": "fixed_user_approved", "general_method_used": False, "slug": slug, "approval_ref": ent["approval_ref"],
                "text_sha256": ent["text_sha256"], "registry_sha256": registry_sha(), "theme_package_sha256": theme_package_sha256,
                "voice_r0_sha256": voice_r0_sha256, "generation_sha256": ent["text_sha256"], "final_sha256": w1.sha_text(final),
                "rewritten": False, "gate": gate, "n_judgements": gate["n_judgements"], "judgements": gate["judgements"], "model_id": None, "routing_key": None, "prompt_sha256": None,
+               "status": PASS_BY_HUMAN_APPROVAL if gate["status"] == "FAIL_RESIDUAL_ACCEPTED_BY_HUMAN_APPROVAL" else "PASS",
                "note": "案B固定注入。Prompt 02による一般化生成は使っていない(受入条件3は別記事の一般化経路evidenceで担保)。"
-                       "Gate: 既存の再判定機構(判定<=3回・本文書換えなし・残存FAILは公開せずFIXED_CLOSING_RESIDUAL_FAIL=STOP。USER_02 ②)"}
+                       "Gate: 既存の再判定機構(判定<=3回・本文書換えなし・残存FAILは公開せずFIXED_CLOSING_RESIDUAL_FAIL=STOP。USER_02 ②)。"
+                       "例外: 残存FAIL項目が承認済みの leak_evidence_memorable のみ・本文byte一致・書換えなしの場合に限り、個別Human承認(USER_03 §1)でPASS_BY_HUMAN_APPROVAL"}
+        if rec["status"] == PASS_BY_HUMAN_APPROVAL:
+            rec["human_approval_ref"] = ent["human_approval"]["approval_ref"]
+            rec["human_approval_record"] = gate["human_approval_record"]
+            rec["human_approval_record_sha256"] = gate["human_approval_record_sha256"]
+            rec["original_gate_result"] = {"status": gate["original_gate_status"], "path": os.path.join(gate_dir, "gate_result.json"), "fail_items_union": gate["fail_items_union"]}
+            verify_human_approval_record(out_dir, slug, final)    # 書いた記録を直ちに来歴検査(自己検査)
     else:
         parts = parts or load_prompt_parts()
         g = generate_closing_general(client, inp, os.path.join(out_dir, "gen"), parts=parts, guard=guard)
@@ -1515,7 +1702,7 @@ def run_leadintro_gate(client, lead: str, intros: dict, out_dir: str, guard=None
     適用対象項目にFAILがあれば LEADINTRO_LEAKAGE_FLAGGED でSTOP(本文を手で直さない。再生成は呼出側の明示操作)。"""
     os.makedirs(out_dir, exist_ok=True)
     comb = "\n".join([lead] + [intros[s] for s in SLOTS])
-    chk = run_leak(client, "tension", {"tension": comb}, stage="yp_leadintro_leak", guard=guard)
+    chk = run_leak(client, "tension", {"tension": comb}, stage="yp_leadintro_leak", guard=guard, discovery_supplement=False)     # 補足(委任_05 ②)はClosing判定のみ
     res = split_leadintro_flags(chk, LEADINTRO_NA_FIELDS_PROD)
     rec = {"text_sha256": w1.sha_text(comb), "na_fields": list(LEADINTRO_NA_FIELDS_PROD), "applicable_flagged": res["applicable_flagged"],
            "not_applicable_flagged": res["not_applicable_flagged"], "any_flagged_raw": chk["any_flagged"], "prompt_sha256": chk["prompt_sha256"],
@@ -1878,6 +2065,8 @@ def _produce_article(client, *, slug, theme_package, out_dir, guard, reuse, them
     cres, ccached = _stage_cached(os.path.join(out_dir, "closing", "stage_closing.json"), ckey, lambda: produce_closing(
         client, slug=slug, inp=inp, theme_package_sha256=pkg_sha, voice_r0_sha256=voice_r0_sha, out_dir=os.path.join(out_dir, "closing"), guard=guard))
     closing, crec = cres["text"], cres["record"]
+    if crec.get("status") == PASS_BY_HUMAN_APPROVAL:               # 委任_05: Human個別承認は再利用(cache/resume)時にも来歴を再検査する(使い回し防止)
+        verify_human_approval_record(os.path.join(out_dir, "closing"), slug, closing)
     stages_done.append("closing(cached)" if ccached else "closing")
 
     # ---- 4. 組立・契約検査・出典連続一致 ----

@@ -780,7 +780,8 @@ class TestReusePath(Routed):
 
     def test_plan_b_gate_fail_rejudges_three_times_without_rewrite_then_stops_and_no_closing_final(self):
         """OT-27改訂(委任_04, USER_02 ②): 案Bは既存の再判定機構(判定<=3回)を使うが承認本文は書換えない。3回判定後もFAILなら公開せずSTOP(ユーザー承認本文とGateの衝突としてユーザー判断へ)。"""
-        fail = leak_fail("tension", {"tension": ["leak_evidence_memorable"]})
+        # 委任_05: leak_evidence_memorable単独のFAILは個別Human承認(USER_03 §1)で救済されるため、STOP側の検証には承認対象外の別項目を使う
+        fail = leak_fail("tension", {"tension": ["leak_discovery_syntax"]})
         fc = Smart(overrides=[(when(name="family_y_persona_leakage_tension"), lambda kw: Resp(leak_obj("tension"), model="gpt-6-luna-2026")),      # Lead/紹介判定=PASS
                               (when(name="family_y_persona_leakage_tension"), fail), (when(name="family_y_persona_leakage_tension"), fail),
                               (when(name="family_y_persona_leakage_tension"), fail)])                                                              # 案B判定=3回ともFAIL
@@ -795,6 +796,37 @@ class TestReusePath(Routed):
         st = self.rj("text", "article_status.json")
         self.assertEqual((st["status"], st["code"]), ("STOP", "FIXED_CLOSING_RESIDUAL_FAIL"))
         self.assertTrue(os.path.exists(os.path.join(self.d, "text", "lead_intro", "stage_lead_intro.json")))      # 再開時にLead/紹介は再課金しない
+
+    def _mem_fail_overrides(self):
+        mem = leak_fail("tension", {"tension": ["leak_evidence_memorable"]})
+        nm = "family_y_persona_leakage_tension"
+        return [(when(name=nm), lambda kw: Resp(leak_obj("tension"), model="gpt-6-luna-2026")),      # Lead/紹介判定=PASS
+                (when(name=nm), mem), (when(name=nm), mem), (when(name=nm), mem)]                  # 案B判定=3回ともleak_evidence_memorableのみFAIL
+
+    def test_plan_b_memorable_only_fail_is_accepted_by_human_approval_end_to_end_and_cached_resume_reverifies(self):
+        """委任_05 ①(USER_03 §1): 案Bが3判定ともleak_evidence_memorableのみFAIL→PASS_BY_HUMAN_APPROVALで記事組立まで進む。再実行(cache)でも来歴を再検査する。"""
+        fc = Smart(overrides=self._mem_fail_overrides())
+        res = self.run_red(fc)
+        self.assertEqual(res["closing"], c.FIXED_CLOSING_REGISTRY["redelivery_fee"]["text"])
+        self.assertEqual(len(fc.calls), 4)                                                            # Lead/紹介1+案B判定3。書換え0
+        self.assertEqual([k for k in fc.calls if self.is_rewrite(k)], [])
+        rec = self.rj("text", "article_record.json")
+        self.assertEqual(rec["closing"]["status"], c.PASS_BY_HUMAN_APPROVAL)
+        self.assertIn("USER_03.md", rec["closing"]["human_approval_ref"])
+        self.assertEqual(self.rj("text", "closing", "gate", "gate_result.json")["status"], "LEAKAGE_RESIDUAL_STOP")      # 元のGate結果は保持
+        self.assertTrue(os.path.exists(os.path.join(self.d, "text", "closing", c.HUMAN_APPROVED_CLOSING_FILE)))
+        # cache再利用(API 0)。承認記録の来歴が現在の案Bと一致する限り同じ結果
+        fc2 = Smart()
+        res2 = self.run_red(fc2)
+        self.assertEqual(fc2.calls, [])
+        self.assertEqual(res2["closing_record"]["status"], c.PASS_BY_HUMAN_APPROVAL)
+        # 承認記録の元判定snapshotが改変されていたら、cacheがあっても承認を使い回さず停止
+        ha_path = os.path.join(self.d, "text", "closing", c.HUMAN_APPROVED_CLOSING_FILE)
+        snap = json.load(open(ha_path, encoding="utf-8"))["closing"]["judgements"][0]["snapshot_path"]
+        open(snap, "ab").write(b" ")
+        with self.assertRaises(c.YStop) as e:
+            self.run_red(Smart())
+        self.assertEqual(e.exception.code, "HUMAN_APPROVAL_PROVENANCE_MISMATCH")
 
     @staticmethod
     def is_rewrite(kw):

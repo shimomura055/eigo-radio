@@ -1,0 +1,28 @@
+管理ID: FAMILY-Y-PRODUCTION-LAUNCH-01 委任_05(ユーザー承認2件のProduction反映: ①案Bの個別Human承認、②`leak_discovery_syntax`判定定義の補足+較正。有料は較正の判定callのみ[数円、Cap 170円内]。委任_03(別agent)が`er121_family_y_runner_01.py`(+runner test)・`er006`・`.gitattributes`・OPEN-520を編集中=**編集禁止**。本委任所有: `er121_family_y_text_core_01.py`(+test)、`er121_family_y_structure_01.py`、`er020_tts_retry_local_rewrite_01.py`(Yパターンのみ)、`er117_chunk_tts_production_01_test_01.py`(y_除外のみ)、`docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/{GATE_CALIBRATION_02,HUMAN_APPROVAL_CASE_B_01,DESIGN_02(追記節),SPEC_LEDGER_04(+json),OPEN_TRACKING_04}.md`、CURRENT_SPEC(Y Closing Gate節の新設/追記のみ)、DECISION_LOG(1件)、delegation_log)。
+
+## 0. ユーザー原文の逐語保存(最初に)
+jsonl `C:\Users\tensh\.claude\projects\C--Users-tensh-eigo-radio\a66c19e8-1d31-4bc4-b0cb-f15b29248dc1.jsonl`末尾付近のuser行で「Family Y｜Closing品質Gate 2項目の正式承認・Production反映」を含む行を`<pasted_content>`ごと無改変で`docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER_03.md`へ保存。要旨:
+- ①選択肢Ⅱ正式承認: 『宅配の再配達』の承認済み案Bに限定。`leak_evidence_memorable`がFAILしても既存のHuman個別承認記録で当該本文を採用可。厳守: 承認済み案B本文と**完全一致**の場合のみ/対象Gate項目は`leak_evidence_memorable`のみ/他項目FAILは救済しない/Gate判定結果・FAIL理由・Human承認記録をすべて保持/過去FAIL記録を削除・改変しない/他記事・他Closingへ拡大しない/本文変更・再生成・局所書換え後には自動適用しない/既存Human個別承認機構を再利用し新たな汎用例外機構を増やさない。
+- ②選択肢(a)正式承認: `leak_discovery_syntax`の判定定義に補足「Prompt指示に基づく『〜から見えてくる』という提示表現は解釈語と見なさない」を追加。厳守: Prompt 02本文・意味・hash不変/対象はFamily YのClosing判定/表現を使っただけでPASSにしない/3人のVoiceに根拠がない解釈・不要な一般化・Research逆戻りは引き続きNG/必要最小限の定義変更/他FamilyのGateを無断変更しない。`leak_tension_reverts_to_research`の変更は含まれない。
+- 検証①: 案B本文・対象項目に限り救済/他項目FAILでSTOP/本文変更で不適用/他記事不適用/承認記録と元Gate結果の両方保存/retry・resume・regenerationで適用範囲不変。検証②: 過去の「見えてくる」型FAIL事例を再判定/根拠ある表現が表現だけでFAILしない/根拠なし解釈・Research逆戻りは引き続きFAIL/既存正例・負例に悪影響なし/Prompt 02 byte一致・hash維持。必要十分な較正・Regressionで終了。
+- 予算: 既存Y立上げ枠内、較正データ・Gate結果を最大限再利用。SSOT(CURRENT_SPEC/DECISION_LOG/OPEN_ITEMS)+test+証跡+Git。コード・単体testのみでPRODUCTION_WIREDとしない。Chunk X方式のY配線を忘れない。追加の採用確認は不要。別のGate条件変更・新例外が必要なら独断せずユーザー判断。
+
+## 1. 読むもの
+`docs/pm/PM_BRIEF.md`、`docs/pm/ACTIVE_TASK.md`(本案件節のみ・直前再Read)、`docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/{DESIGN_02(§12・§13),GATE_CALIBRATION_01,REWRITE_EVIDENCE_01,SPEC_LEDGER_03,OPEN_TRACKING_03,BUDGET_PLAN_04}.md`、`er121_family_y_text_core_01.py`(`FIXED_CLOSING_REGISTRY`、案B判定≤3、`build_leak_prompt`のProduction tension定義、`run_gate`、`closing_record`)、既存Human個別承認機構: `er019_fx_moon_title_individual_approval_01.py`・`record_human_approval()`・`human_approved_segments.json`の形式(Grepで正本を特定)、案B正本 `docs/research/FAMILY-Y-VOICES-DESIGN-01/REDELIVERY_REVISION_01/REVISION_SCRIPT_01.md`(案B本文)とregistryのsha、過去Gate結果(`closing_B/gate/`、Round 1/2の`gate_leak_check.json`、較正の`GATE_CALIBRATION_01`の判定ファイル)。
+
+## 2. 実装
+①案B個別Human承認(text core): 案B固定経路で判定≤3後に残存FAILがある場合、**FAIL項目集合=={leak_evidence_memorable} かつ 本文sha==registryの承認本文sha(byte一致) かつ slug一致 かつ rewritten==false** のときのみ、既存機構と同形式のHuman承認記録(`human_approved_closing.json`: approved_by=ユーザー(USER_03 §1)、approval_ref、対象項目、本文sha、各判定結果のパス、作成日時)を書き、closing_recordに`status=PASS_BY_HUMAN_APPROVAL`・`human_approval_ref`・元の判定結果(改変なし)を保持してPASS扱いにする。他項目FAILを含む場合は従来どおり`FIXED_CLOSING_RESIDUAL_FAIL`でSTOP。他slug・本文不一致・rewritten=trueでは発動しない。承認記録は過去FAIL記録を上書きしない(別ファイル)。regenerate/resumeで再評価しても同一結果(来歴検査)。
+②`leak_discovery_syntax`補足(text core): Production tension判定promptの当該項目定義末尾に「Prompt指示に基づく『〜から見えてくる』という提示表現は解釈語と見なさない。ただし、3人の語りに根拠がない解釈、不要な一般化、研究・調査の説明への逆戻りは引き続きFAIL。」を追加(Family Y Closing判定のみ。DEV不変、Voice判定不変、他Family不変、Prompt 02 byte/sha不変=testで固定)。`leak_tension_reverts_to_research`は触らない。
+③較正(有料・判定のみ、`.venv\Scripts\python.exe`、`py tools/stop_scope_check_01.py --managed-id FAMILY-Y-PRODUCTION-LAUNCH-01 ...`後): 対象=過去の「見えてくる」型FAIL(R2宅配H2、案A初回、他該当)+既存正例・負例(Round 1/2の10本、案A/B/C、GATE_CALIBRATION_01の対象、Research逆戻り/根拠なし解釈の負例があれば含める。無ければ合成負例2〜3本を作成[生成はせず手書き短文])を、補足後の判定promptで各1〜2回判定。`GATE_CALIBRATION_02.md`(前後比較表、「表現だけでPASSしない」証拠、正例悪影響0、費用)。
+④er020の`_FAMILY_Y_SEGMENT_PATTERN`に`(?:_k[1-9][0-9]*)?`を追加+自己検査に`y_voice_2_k1`(既存ID不変、test)。er117 testの`test_existing_ids_unchanged_over_all_results_on_disk`に`y_`除外(理由コメント)。
+⑤runnerへの要求(編集しない。報告に記載): `"chunk_tts":"not_applicable_Y"`→`"applied_X_method"`(668,765行+test 118行)、案B承認経路のstatus取り扱い。
+⑥test(`.venv`・遮断harness): ①の6検証項目、②のprompt差分(補足のみ)・Prompt 02 sha・Voice/他Family不変、既存130件回帰、er020/er117関連。
+⑦SSOT: CURRENT_SPECにFamily Y Closing Gate節(①個別例外の条件・②補足文言・承認日・USER_03参照)を新設または追記(最小)/DECISION_LOG 1件/台帳YL-C05・E02更新(`SPEC_LEDGER_04`+json)/OPEN_TRACKING_04(OT-27をCLOSE候補、新OT)/OPEN-520は委任_03所有のため触らず、必要なら報告で依頼。直前再Read・最小Edit・バックアップ。
+⑧Git: 対象pathのみ(`git commit --only`または一時index)→`git push origin HEAD:main`(non-fast-forwardならfetch→`git merge --no-edit origin/main`→push、競合は両方残しSTOP報告。他agentの未commit差分を巻き込まない)。禁止: `git add -A/-u`・amend・rebase・force・stash・reset --hard。secret grep 0件。
+⑨委任文逐語保存: `py docs/pm/tools/extract_delegation_from_jsonl_01.py --jsonl <上記jsonl> --role assistant --tool-use-name Agent --tool-input-field prompt --index N --out docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_DELEGATION_05.md`(Nは602前後、先頭「管理ID: FAMILY-Y-PRODUCTION-LAUNCH-01 委任_05」を596〜650で走査)。
+
+## 3. 禁止
+Prompt 02・案B本文・`leak_tension_reverts_to_research`・他Family Gate・DEV(`er110_*`)の変更。汎用例外機構の新設。較正以外の有料呼出。runner/er006/OPEN-520の編集。日次1,500円(本日JST 10/25はユーザー承認済み)・Cap 170円超過(起動前に`py docs/pm/tools/daily_dev_cost_01.py`+94.28円で確認)。
+
+## 4. 報告(RESULT_PACKET_YPL5.md+口頭要約)
+①の適用条件と6検証結果、②の変更前後の判定結果(表)、正例・負例・Regression、Prompt 02同一性、費用、runnerへの要求、SSOT差分、commit hash・raw URL、RESULT_PACKET 4行+判定整合、判断候補(27-3)。

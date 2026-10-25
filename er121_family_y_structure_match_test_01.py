@@ -201,8 +201,11 @@ class SegmentIds(unittest.TestCase):
         for sid in ys.Y_SEGMENT_IDS:
             self.assertEqual(er020.resolve_narrative_role(sid), "FULL_STORY", sid)
             self.assertTrue(er020.connected_speech_enabled_for(sid), sid)
-        for sid in ("y_voice_4", "y_voice_1_original", "y_lead_k1", "y_intro_0", "y_closing_2", "Y_LEAD", "y_voice_"):
+        # 委任_05(OT-44): chunk ID `y_<segment>_k<1以上>` はFULL_STORYへ解決する(共通er020へ追加。USER_02 ①のX方式chunk)。k0・先頭ゼロ・接尾辞違いは解決しない
+        for sid in ("y_voice_4", "y_voice_1_original", "y_lead_k0", "y_lead_k01", "y_lead_k", "y_intro_0", "y_closing_2", "Y_LEAD", "y_voice_", "y_lead_k1_original"):
             self.assertIsNone(er020.resolve_narrative_role(sid), sid)
+        for sid in ("y_lead_k1", "y_voice_2_k3", "y_closing_k10"):
+            self.assertEqual(er020.resolve_narrative_role(sid), "FULL_STORY", sid)
 
     def test_x_z_segment_resolution_unchanged(self):
         import er020_tts_retry_local_rewrite_01 as er020

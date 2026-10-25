@@ -229,3 +229,27 @@
 ### 13-4. 配線漏れ防止(U2 §3)
 
 - 台帳を66行へ更新(SPEC_LEDGER_03)、PM Closeout Mandatory Checkに項目33(共通仕様のX/Y/Z配線Status確認)を追加(`PM_GOVERNANCE.md` 3節)。未承認仕様(NO_PREADOPT 4件)は先行採用しない。
+
+## 14. 追加承認2件の反映(委任_05、2026-10-25。ユーザー正式承認 USER_03 §1・§2)
+
+原文=`docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER_03.md`(取得元jsonlで末尾が文字化け。無改変保存)。台帳=`SPEC_LEDGER_04.md`、追跡=`OPEN_TRACKING_04.md`、案B承認の詳細=`HUMAN_APPROVAL_CASE_B_01.md`、補足の較正=`GATE_CALIBRATION_02.md`。以降、§13-2の「Gate文言補足(G-2)は行わない」「案Bは3回FAILなら常に`FIXED_CLOSING_RESIDUAL_FAIL`でSTOP」は**本節が優先**する(§13-2のうち、他項目FAIL時のSTOP・書換えなし・判定<=3・過去記録保持は維持)。
+
+### 14-1. ① 案Bの個別Human承認(`er121_family_y_text_core_01.py`)
+
+- 適用条件(全て「かつ」。判定は`evaluate_case_b_human_approval`1関数): registryに`human_approval`がある案B slug(`redelivery_fee`のみ)/本文byte一致/Gate=`LEAKAGE_RESIDUAL_STOP`・書換えなし・3判定すべてFAIL/全判定の本文sha=承認本文sha/FAIL項目の和集合=={`leak_evidence_memorable`}/FAIL sectionが`tension`のみ。
+- 発動時: Gate判定ファイル(`leak_check_N.json`・`gate_result.json`)は改変せず、別ファイル`human_approved_closing.json`(既存`record_human_approval`と同形のキー+approval_ref=USER_03 §1・各判定のFAIL理由/引用/snapshot sha)を書く。`closing_record.status=PASS_BY_HUMAN_APPROVAL`・`human_approval_ref`・`original_gate_result`・`judgements[]`。Gate PASSの印`final_texts.json`は作らない。再実行時は`gate_prior_runs/`へ過去判定を退避、旧承認記録は`previous_entries`へ。cache/resume再利用時も`verify_human_approval_record`で来歴(本文sha・項目・snapshot sha)を再検査し、不一致は`HUMAN_APPROVAL_PROVENANCE_MISMATCH`でSTOP。
+- 適用しない場合: 従来どおり`FIXED_CLOSING_RESIDUAL_FAIL`でSTOP(`closing_record.human_approval_checked.reasons`に理由コード)。一般化Closing経路・他slug・本文変更/再生成/局所書換え後は対象外。新しいflag・env・CLI・設定dictなし(registry定数のみ)。
+
+### 14-2. ② `leak_discovery_syntax`の判定定義の補足
+
+- 文言=ユーザー承認原文の一文: 「Prompt指示に基づく『〜から見えてくる』という提示表現は解釈語と見なさない。」。Tension判定prompt(Closing判定)の当該項目定義の末尾にのみ付加(`DISCOVERY_SYNTAX_SUPPLEMENT`・`build_leak_prompt(..., discovery_supplement=True)`)。Lead/人物紹介の補助判定は`discovery_supplement=False`(補足なし=M-1定義のまま)、Voice判定(`_VOICE_ITEMS`)・DEV・他Family・`leak_tension_reverts_to_research`・Prompt 02(sha 4713ceff…)は不変(test固定)。
+- 委任文の後半「ただし、3人の語りに根拠がない解釈、不要な一般化、研究・調査の説明への逆戻りは引き続きFAIL。」は**較正により不採用**(GATE_CALIBRATION_02 §0-2: 案Bが`leak_discovery_syntax`で3/3 FAILし①の救済条件を壊す、無関係な本文のFAILが増える)。『引き続きNG』の担保は既存の他項目(不変)。
+
+### 14-3. ④ 共通`er020`のY chunk ID解決(OT-44(a))
+
+- `_FAMILY_Y_SEGMENT_PATTERN`へ`(?:_k[1-9][0-9]*)?`を追加(import時自己検査に`y_voice_2_k1`・`y_closing_k12`)。`er121_family_y_structure_01.Y_CHUNK_ID_RE`と同形(test固定)。`er117`の既存ID不変testは`y_`始まりを除外(Yの解決は`er121_family_y_text_core_01_test_01.py::TestEr020YChunkPattern`で固定)。`er121_family_y_structure_match_test_01.py`の旧負例`y_lead_k1`は意図した変更に合わせて更新。
+
+### 14-4. runnerへの要求(委任_03所有。本委任では編集しない)
+
+- `"chunk_tts": "not_applicable_Y"` → `"applied_X_method"`(`er121_family_y_runner_01.py` 984行・1181行、`er121_family_y_runner_01_test_01.py` 118行)。`chunk_tts_decision.json`(`ys.chunk_decision_record`)の`decision=applied_X_method`と整合させる。
+- `closing_record.status=PASS_BY_HUMAN_APPROVAL`の取り扱い: runnerは`closing_record.source`/`final_sha256`だけを読むため無改変で動くが、最終manifest/EVIDENCEへ`status`・`human_approval_ref`・`original_gate_result`を転記するのが望ましい(受入12項目の「Gate結果の記録」)。

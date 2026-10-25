@@ -207,13 +207,16 @@ class TestEqualsTrial(unittest.TestCase):
         prod = c.build_leak_prompt("tension", sec)
         dev = self.p.build_leak_prompt("tension", sec)
         self.assertNotEqual(prod, dev)
-        self.assertEqual(prod.replace(c._REF_EXPANDED, c._REF_LINE), dev)
+        self.assertEqual(prod.replace(c._REF_EXPANDED, c._REF_LINE), dev)         # 委任_05: _REF_EXPANDEDはM-1展開+leak_discovery_syntax補足(補足のみの差は TestDiscoverySupplement で固定)
         self.assertIn(c._REF_LINE, dev)
         self.assertNotIn("上記と同じ意味", prod)
         # 展開した定義3行は、Voice用定義と一字一句同じ(新しい基準を足さない)
         for name in ("leak_evidence_subject", "leak_discovery_syntax", "leak_evidence_memorable"):
             line = [ln for ln in self.p._VOICE_ITEMS.split("\n") if ln.startswith(f"- {name}:")][0]
-            self.assertIn(line + "\n", prod)
+            if name == "leak_discovery_syntax":      # 委任_05 ②: 末尾に補足だけが付く(定義本体は一字一句同じ)
+                self.assertIn(line + "。" + c.DISCOVERY_SYNTAX_SUPPLEMENT + "\n", prod)
+            else:
+                self.assertIn(line + "\n", prod)
         # 6項目の残り(数字・research・camp)の定義は不変
         for ln in self.p._TENSION_ITEMS.split("\n"):
             if ln.startswith("- leak_numbers_foreground") or ln.startswith("- leak_tension_reverts") or ln.startswith("- leak_binary_camp_split"):
@@ -671,6 +674,286 @@ class TestProduceClosing(RoutedCase):
             r = c.produce_closing(fc, slug="redelivery_fee", inp=INP, theme_package_sha256=PKG, voice_r0_sha256=R0, out_dir=os.path.join(self.d, "c"))
         self.assertEqual(fc.calls, [])
         self.assertEqual(r["record"]["gate"]["source"], "reused_prior_pass_record")
+
+
+class TestDiscoverySupplement(RoutedCase):
+    """委任_05 ②(ユーザー正式承認 USER_03 §2): leak_discovery_syntax補足。Closing(Tension)判定だけ。Prompt 02・Voice判定・DEV・他Familyは不変。"""
+    # ユーザー承認原文(USER_03 §2)の補足一文そのまま。委任文の「ただし…引き続きFAIL」後半は較正(GATE_CALIBRATION_02)で案Bの救済条件と衝突したため不採用
+    SUPP = "Prompt指示に基づく『〜から見えてくる』という提示表現は解釈語と見なさない。"
+
+    def test_supplement_text_exact_and_only_in_tension_discovery_line(self):
+        self.assertEqual(c.DISCOVERY_SYNTAX_SUPPLEMENT, self.SUPP)
+        prompt = c.build_leak_prompt("tension", {"tension": "本文"})
+        self.assertEqual(prompt.count(self.SUPP), 1)
+        line = [ln for ln in prompt.split("\n") if ln.startswith("- leak_discovery_syntax:")][0]
+        self.assertTrue(line.endswith(self.SUPP))                                  # 当該項目定義の末尾
+        self.assertEqual(sum(1 for ln in prompt.split("\n") if self.SUPP in ln), 1)
+
+    def test_supplement_is_the_user_approved_sentence_only_and_adds_no_new_fail_criteria(self):
+        """較正で後半(根拠なし解釈・一般化をFAIL)を足すと案Bがdiscovery_syntaxで3/3 FAILした。補足は『解釈語と見なさない』という緩め方向の一文だけ(新しいFAIL基準を足さない)。"""
+        for ng in ("ただし", "引き続きFAIL", "一般化", "逆戻り", "根拠"):
+            self.assertNotIn(ng, c.DISCOVERY_SYNTAX_SUPPLEMENT)
+        self.assertEqual(c.DISCOVERY_SYNTAX_SUPPLEMENT.count("。"), 1)
+
+    def test_diff_against_pre_supplement_prompt_is_the_supplement_only(self):
+        sec = {"tension": "最終パート本文"}
+        new = c.build_leak_prompt("tension", sec)
+        old = c.build_leak_prompt("tension", sec, discovery_supplement=False)            # 補足前(M-1)と同一
+        self.assertEqual(new.replace("。" + self.SUPP, "", 1), old)
+        self.assertNotEqual(new, old)
+        self.assertIn(c._REF_EXPANDED_M1, old)
+        self.assertEqual(old.replace(c._REF_EXPANDED_M1, c._REF_LINE), c.build_leak_prompt("tension", sec, discovery_supplement=False).replace(c._REF_EXPANDED_M1, c._REF_LINE))
+
+    def test_other_tension_items_and_voice_prompt_unchanged(self):
+        new = c.build_leak_prompt("tension", {"tension": "x"})
+        for name in ("leak_evidence_subject", "leak_evidence_memorable", "leak_numbers_foreground", "leak_tension_reverts_to_research", "leak_binary_camp_split"):
+            lines_new = [ln for ln in new.split("\n") if ln.startswith(f"- {name}")]
+            lines_dev = [ln for ln in c._TENSION_ITEMS_M1.split("\n") if ln.startswith(f"- {name}")]
+            self.assertEqual(lines_new, lines_dev, name)
+        self.assertNotIn(self.SUPP, c._VOICE_ITEMS)
+        self.assertNotIn(self.SUPP, c.build_leak_prompt("voices", {s: "本文" for s in c.SLOTS}))
+        self.assertEqual(c.VOICE_FIELDS, ("leak_evidence_subject", "leak_numbers_foreground", "leak_narrator_analysis", "leak_unknowable_analysis", "leak_discovery_syntax", "leak_evidence_memorable", "leak_position_blur"))
+        self.assertEqual(c.TENSION_FIELDS, ("leak_evidence_subject", "leak_numbers_foreground", "leak_discovery_syntax", "leak_evidence_memorable", "leak_tension_reverts_to_research", "leak_binary_camp_split"))
+
+    def test_prompt_02_bytes_and_sha_unchanged(self):
+        raw = open(c.PROMPT_FILE, "rb").read()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), "4713ceff2dd00a2f67eb9313ae9e206a4a3236c5b158e624c10ccf6fc20e5f07")
+        self.assertEqual(c.PROMPT_SHA256, "4713ceff2dd00a2f67eb9313ae9e206a4a3236c5b158e624c10ccf6fc20e5f07")
+        self.assertEqual(raw, open(DEV_PROMPT, "rb").read())
+        self.assertNotIn("解釈語と見なさない".encode("utf-8"), raw)
+
+    def test_supplement_text_exists_only_in_the_production_text_core(self):
+        """他Family・DEVのGateへ補足が漏れていない(production/DEVの*.pyを走査。testとevidence runnerは除外)。"""
+        hits = []
+        for fn in os.listdir(ROOT):
+            if fn.endswith(".py") and "_test" not in fn and "calibration" not in fn:
+                if "解釈語と見なさない" in open(os.path.join(ROOT, fn), encoding="utf-8", errors="replace").read():
+                    hits.append(fn)
+        self.assertEqual(hits, ["er121_family_y_text_core_01.py"])
+
+    def test_lead_intro_gate_prompt_has_no_supplement_but_closing_gate_has(self):
+        seen = []
+
+        def spy(kw):
+            seen.append(kw["input"][-1]["content"])
+            return Resp(leak_obj("tension"), model="gpt-6-luna-2026")
+        fc = FakeClient([spy])
+        c.run_leadintro_gate(fc, "リード文。", {s: f"{s}の紹介。" for s in c.SLOTS}, os.path.join(self.d, "li"))
+        self.assertEqual(len(seen), 1)
+        self.assertNotIn(self.SUPP, seen[0])                                       # 補足はClosing判定のみ
+        fc2 = FakeClient([spy])
+        c.run_gate(fc2, kind="tension", stage="t", texts={"tension": GOOD}, out_dir=os.path.join(self.d, "g"), voices_ctx=VOICES, selected=SEL, rules_section=RULES)
+        self.assertIn(self.SUPP, seen[1])
+
+    def test_dev_trial_definitions_have_no_supplement(self):
+        import er110_family_y_persona_text_trial_01 as p
+        self.assertNotIn("解釈語と見なさない", p._TENSION_ITEMS)
+        self.assertNotIn("解釈語と見なさない", p._VOICE_ITEMS)
+
+
+class TestCaseBHumanApproval(RoutedCase):
+    """委任_05 ①(ユーザー正式承認 USER_03 §1): 案Bの個別Human承認。leak_evidence_memorableのFAILだけ・本文byte一致・書換えなしの場合に限る。"""
+    MEM = {"tension": ["leak_evidence_memorable"]}
+
+    def _fixed(self, fc, out="c", slug="redelivery_fee"):
+        with mock.patch.object(c, "reusable_prior_gate", lambda *a, **k: None):
+            return c.produce_closing(fc, slug=slug, inp=INP, theme_package_sha256=PKG, voice_r0_sha256=R0, out_dir=os.path.join(self.d, out))
+
+    def _rj(self, *p):
+        return json.load(open(os.path.join(self.d, *p), encoding="utf-8"))
+
+    def test_memorable_only_fail_three_times_is_accepted_by_human_approval_with_all_records_kept(self):
+        fc = FakeClient([luna("tension", self.MEM, "引用A"), luna("tension", self.MEM, "引用B"), luna("tension", self.MEM, "引用C")])
+        r = self._fixed(fc)
+        self.assertEqual(len(fc.calls), 3)                                           # 判定3回。書換えcall 0
+        self.assertTrue(all(k["model"] == "gpt-6-luna" for k in fc.calls))
+        self.assertEqual(r["text"], B_TEXT)
+        rec = r["record"]
+        self.assertEqual((rec["status"], rec["source"], rec["rewritten"], rec["general_method_used"]), (c.PASS_BY_HUMAN_APPROVAL, "fixed_user_approved", False, False))
+        self.assertIn("USER_03.md", rec["human_approval_ref"])
+        self.assertEqual(rec["final_sha256"], rec["text_sha256"])
+        self.assertEqual([j["fail_fields"] for j in rec["judgements"]], [["leak_evidence_memorable"]] * 3)    # 元の判定結果を保持
+        self.assertEqual(rec["original_gate_result"]["status"], "LEAKAGE_RESIDUAL_STOP")
+        self.assertTrue(os.path.exists(os.path.join(self.d, "c", "closing_final.txt")))
+        # 元のGate記録は改変なし: gate_result=FAILのまま・Gate PASSの印(final_texts.json)は作らない
+        gr = self._rj("c", "gate", "gate_result.json")
+        self.assertEqual((gr["status"], gr["n_judgements"], gr["rewritten"]), ("LEAKAGE_RESIDUAL_STOP", 3, False))
+        self.assertFalse(os.path.exists(os.path.join(self.d, "c", "gate", "final_texts.json")))
+        self.assertEqual([self._rj("c", "gate", f"leak_check_{i}.json")["flagged_items"][0]["quoted_evidence"] for i in (1, 2, 3)], ["引用A", "引用B", "引用C"])
+        # Human承認記録(別ファイル。既存record_human_approvalと同形のキー+来歴)
+        ha = self._rj("c", c.HUMAN_APPROVED_CLOSING_FILE)["closing"]
+        for k in ("canonical_text_sha256", "approved_at", "approved_by"):
+            self.assertIn(k, ha)
+        self.assertEqual(ha["canonical_text_sha256"], c.FIXED_CLOSING_REGISTRY["redelivery_fee"]["text_sha256"])
+        self.assertEqual((ha["approved_items"], ha["fail_items_union"], ha["n_judgements"], ha["rewritten"]), (["leak_evidence_memorable"], ["leak_evidence_memorable"], 3, False))
+        self.assertIn("USER_03.md", ha["approval_ref"])
+        self.assertEqual(len(ha["judgements"]), 3)
+        self.assertEqual(ha["judgements"][0]["quoted_evidence"], ["引用A"])
+        for j in ha["judgements"]:
+            self.assertEqual(hashlib.sha256(open(j["snapshot_path"], "rb").read()).hexdigest(), j["sha256"])
+        self.assertEqual(rec["human_approval_record_sha256"], hashlib.sha256(open(os.path.join(self.d, "c", c.HUMAN_APPROVED_CLOSING_FILE), "rb").read()).hexdigest())
+        c.verify_human_approval_record(os.path.join(self.d, "c"), "redelivery_fee", r["text"])
+
+    def test_other_item_fail_in_any_judgement_stops(self):
+        seqs = ([self.MEM, self.MEM, {"tension": ["leak_evidence_memorable", "leak_discovery_syntax"]}],
+                [{"tension": ["leak_tension_reverts_to_research"]}, self.MEM, self.MEM],
+                [{"tension": ["leak_discovery_syntax"]}] * 3,
+                [{"tension": ["leak_binary_camp_split", "leak_evidence_memorable"]}, self.MEM, self.MEM])
+        for n, seq in enumerate(seqs):
+            fc = FakeClient([luna("tension", f) for f in seq])
+            out = f"c{n}"
+            with self.assertRaises(c.YStop) as e:
+                self._fixed(fc, out)
+            self.assertEqual(e.exception.code, "FIXED_CLOSING_RESIDUAL_FAIL")
+            self.assertFalse(os.path.exists(os.path.join(self.d, out, "closing_final.txt")))
+            self.assertFalse(os.path.exists(os.path.join(self.d, out, c.HUMAN_APPROVED_CLOSING_FILE)))
+            rec = self._rj(out, "closing_record.json")
+            self.assertEqual(rec["status"], "FIXED_CLOSING_RESIDUAL_FAIL")
+            self.assertIn("FAIL_ITEMS_NOT_EXACTLY_APPROVED_ITEMS", rec["human_approval_checked"]["reasons"])
+            self.assertEqual(len(rec["judgements"]), 3)                              # 元の判定結果は残る
+
+    def test_rejudge_pass_before_third_needs_no_approval(self):
+        fc = FakeClient([luna("tension", self.MEM), luna("tension")])
+        r = self._fixed(fc)
+        self.assertEqual((r["record"]["status"], r["record"]["n_judgements"]), ("PASS", 2))
+        self.assertFalse(os.path.exists(os.path.join(self.d, "c", c.HUMAN_APPROVED_CLOSING_FILE)))
+
+    def _gate_result(self, fails=("leak_evidence_memorable",), n=3, rewritten=False, sha=None, section="tension"):
+        sha = sha or c.w1.sha_text(B_TEXT)
+        hist = [{"attempt": i, "sha256": {"tension": sha},
+                 "check": {"any_flagged": True, "flagged_items": [{"section": section, "fail_fields": list(fails), "reasoning": "r", "quoted_evidence": "q"}]}} for i in range(1, n + 1)]
+        if rewritten:
+            hist[0]["rewritten"] = ["tension"]
+        return {"kind": "tension", "status": "LEAKAGE_RESIDUAL_STOP", "n_judgements": n, "history": hist, "rewritten": rewritten}
+
+    def test_applicability_function_each_condition(self):
+        ok = c.evaluate_case_b_human_approval("redelivery_fee", B_TEXT, self._gate_result())
+        self.assertTrue(ok["applies"], ok)
+        cases = [("TEXT_NOT_BYTE_IDENTICAL_TO_APPROVED_CASE_B", B_TEXT + "。", {}),
+                 ("TEXT_NOT_BYTE_IDENTICAL_TO_APPROVED_CASE_B", B_TEXT.replace("再配達", "再配逹"), {}),
+                 ("REWRITTEN", B_TEXT, dict(rewritten=True)),
+                 ("NOT_ALL_JUDGEMENTS_FAILED", B_TEXT, dict(n=2)),
+                 ("JUDGED_TEXT_NOT_APPROVED_TEXT", B_TEXT, dict(sha="0" * 64)),
+                 ("FAIL_ITEMS_NOT_EXACTLY_APPROVED_ITEMS", B_TEXT, dict(fails=("leak_evidence_memorable", "leak_numbers_foreground"))),
+                 ("FAIL_ITEMS_NOT_EXACTLY_APPROVED_ITEMS", B_TEXT, dict(fails=("leak_discovery_syntax",))),
+                 ("UNEXPECTED_SECTION_FLAGGED", B_TEXT, dict(section="voice_1"))]
+        for want, text, kw in cases:
+            v = c.evaluate_case_b_human_approval("redelivery_fee", text, self._gate_result(**kw))
+            self.assertFalse(v["applies"], (want, kw))
+            self.assertIn(want, v["reasons"], (want, v))
+        g = self._gate_result()
+        g["status"] = "PASS"
+        self.assertIn("GATE_NOT_RESIDUAL_FAIL", c.evaluate_case_b_human_approval("redelivery_fee", B_TEXT, g)["reasons"])
+
+    def test_other_slug_and_missing_registry_approval_never_apply(self):
+        for slug in ("sns_age_limit", "redelivery_fee2", "", "closing"):
+            v = c.evaluate_case_b_human_approval(slug, B_TEXT, self._gate_result())
+            self.assertEqual((v["applies"], v["reasons"]), (False, ["NO_HUMAN_APPROVAL_FOR_SLUG"]), slug)
+        reg = copy.deepcopy(c.FIXED_CLOSING_REGISTRY)
+        del reg["redelivery_fee"]["human_approval"]
+        self.assertFalse(c.evaluate_case_b_human_approval("redelivery_fee", B_TEXT, self._gate_result(), registry=reg)["applies"])
+        with mock.patch.object(c, "FIXED_CLOSING_REGISTRY", reg):
+            fc = FakeClient([luna("tension", self.MEM)] * 3)
+            with self.assertRaises(c.YStop) as e:
+                self._fixed(fc)
+            self.assertEqual(e.exception.code, "FIXED_CLOSING_RESIDUAL_FAIL")             # 承認がregistryに無ければ従来どおりSTOP
+        # registryの承認が付いているのは案Bのslug 1件だけ(汎用化していない)
+        self.assertEqual([k for k, v in c.FIXED_CLOSING_REGISTRY.items() if v.get("human_approval")], ["redelivery_fee"])
+        self.assertEqual(c.FIXED_CLOSING_REGISTRY["redelivery_fee"]["human_approval"]["items"], ("leak_evidence_memorable",))
+
+    def test_general_path_never_uses_human_approval(self):
+        f = self.MEM
+        fc = FakeClient([sol(analysis()), luna("tension", f), rewrite_resp(FIXED_GOOD), luna("tension", f), rewrite_resp(FIXED_GOOD), luna("tension", f)])
+        with self.assertRaises(c.YStop) as e:
+            c.produce_closing(fc, slug="sns_age_limit", inp=INP, theme_package_sha256="a" * 64, voice_r0_sha256="b" * 64, out_dir=os.path.join(self.d, "g"))
+        self.assertEqual(e.exception.code, "LEAKAGE_RESIDUAL_STOP")
+        self.assertFalse(os.path.exists(os.path.join(self.d, "g", c.HUMAN_APPROVED_CLOSING_FILE)))
+        self.assertFalse(os.path.exists(os.path.join(self.d, "g", "closing_final.txt")))
+
+    def test_changed_text_registry_or_voice_is_never_covered(self):
+        reg = copy.deepcopy(c.FIXED_CLOSING_REGISTRY)
+        reg["redelivery_fee"]["text"] = B_TEXT.replace("再配達", "再配逹")
+        with mock.patch.object(c, "FIXED_CLOSING_REGISTRY", reg):
+            with self.assertRaises(c.YStop) as e:
+                self._fixed(FakeClient([]))
+        self.assertEqual(e.exception.code, "FIXED_CLOSING_TEXT_SHA_MISMATCH")
+        with self.assertRaises(c.YStop) as e:
+            c.produce_closing(FakeClient([]), slug="redelivery_fee", inp=INP, theme_package_sha256=PKG, voice_r0_sha256="0" * 64, out_dir=os.path.join(self.d, "v"))
+        self.assertEqual(e.exception.code, "FIXED_CLOSING_PROVENANCE_MISMATCH")
+
+    def test_retry_resume_regeneration_keep_scope_and_preserve_past_fail_records(self):
+        r1 = self._fixed(FakeClient([luna("tension", self.MEM, "初回1"), luna("tension", self.MEM, "初回2"), luna("tension", self.MEM, "初回3")]))
+        first = {i: open(os.path.join(self.d, "c", "gate", f"leak_check_{i}.json"), "rb").read() for i in (1, 2, 3)}
+        self.assertEqual(r1["record"]["status"], c.PASS_BY_HUMAN_APPROVAL)
+        # retry/resume(同じout_dirで再実行。再判定の結果が同じなら同じ結果。承認の範囲は変わらない)
+        r2 = self._fixed(FakeClient([luna("tension", self.MEM, "再実行1"), luna("tension", self.MEM, "再実行2"), luna("tension", self.MEM, "再実行3")]))
+        self.assertEqual((r2["record"]["status"], r2["text"]), (c.PASS_BY_HUMAN_APPROVAL, B_TEXT))
+        prior_root = os.path.join(self.d, "c", "gate_prior_runs")
+        self.assertTrue(os.path.isdir(prior_root))                                     # 上書き前の過去FAIL記録を退避
+        saved = [open(os.path.join(prior_root, k, "leak_check_1.json"), "rb").read() for k in os.listdir(prior_root)]
+        self.assertIn(first[1], saved)
+        ha = self._rj("c", c.HUMAN_APPROVED_CLOSING_FILE)["closing"]
+        self.assertEqual(len(ha["previous_entries"]), 1)                               # 過去の承認記録も消さずに残す
+        self.assertEqual(ha["previous_entries"][0]["judgements"][0]["quoted_evidence"], ["初回1"])
+        # 再実行で他項目がFAILしたら、承認は使い回さず停止
+        with self.assertRaises(c.YStop) as e:
+            self._fixed(FakeClient([luna("tension", self.MEM), luna("tension", {"tension": ["leak_evidence_memorable", "leak_discovery_syntax"]}), luna("tension", self.MEM)]))
+        self.assertEqual(e.exception.code, "FIXED_CLOSING_RESIDUAL_FAIL")
+
+    def test_verify_rejects_tampered_or_stale_approval(self):
+        r = self._fixed(FakeClient([luna("tension", self.MEM)] * 3))
+        out = os.path.join(self.d, "c")
+        c.verify_human_approval_record(out, "redelivery_fee", r["text"])
+        with self.assertRaises(c.YStop) as e:
+            c.verify_human_approval_record(out, "redelivery_fee", r["text"] + "。")      # 本文が変わっていれば承認は無効
+        self.assertEqual(e.exception.code, "HUMAN_APPROVAL_PROVENANCE_MISMATCH")
+        with self.assertRaises(c.YStop) as e:
+            c.verify_human_approval_record(out, "sns_age_limit", r["text"])
+        self.assertEqual(e.exception.code, "HUMAN_APPROVAL_NOT_ALLOWED_FOR_SLUG")
+        p = os.path.join(out, c.HUMAN_APPROVED_CLOSING_FILE)
+        d = json.load(open(p, encoding="utf-8"))
+        d["closing"]["fail_items_union"] = ["leak_evidence_memorable", "leak_discovery_syntax"]
+        json.dump(d, open(p, "w", encoding="utf-8"), ensure_ascii=False)
+        with self.assertRaises(c.YStop):
+            c.verify_human_approval_record(out, "redelivery_fee", r["text"])
+        d["closing"]["fail_items_union"] = ["leak_evidence_memorable"]
+        snap = d["closing"]["judgements"][0]["snapshot_path"]
+        json.dump(d, open(p, "w", encoding="utf-8"), ensure_ascii=False)
+        c.verify_human_approval_record(out, "redelivery_fee", r["text"])
+        open(snap, "ab").write(b" ")                                                   # 元判定のsnapshotが改変された
+        with self.assertRaises(c.YStop) as e:
+            c.verify_human_approval_record(out, "redelivery_fee", r["text"])
+        self.assertEqual(e.exception.code, "HUMAN_APPROVAL_PROVENANCE_MISMATCH")
+        os.remove(p)
+        with self.assertRaises(c.YStop) as e:
+            c.verify_human_approval_record(out, "redelivery_fee", r["text"])
+        self.assertEqual(e.exception.code, "HUMAN_APPROVAL_RECORD_MISSING")
+
+
+class TestEr020YChunkPattern(unittest.TestCase):
+    """委任_05(OT-44): 共通er020のY本文segment patternへchunk接尾辞を追加。Y_CHUNK_ID_REと同形。X/Zの既存IDは不変。"""
+
+    def test_y_chunk_ids_resolve_full_story_and_match_structure_regex(self):
+        import er020_tts_retry_local_rewrite_01 as er020
+        import er121_family_y_structure_01 as ys
+        parents = ("y_lead", "y_closing", "y_intro_1", "y_intro_2", "y_intro_3", "y_voice_1", "y_voice_2", "y_voice_3")
+        for p in parents:
+            self.assertEqual(er020.resolve_narrative_role(p), "FULL_STORY", p)
+            for k in ("_k1", "_k2", "_k9", "_k10", "_k123"):
+                s = p + k
+                self.assertEqual(er020.resolve_narrative_role(s), "FULL_STORY", s)
+                self.assertIsNotNone(ys.parse_y_chunk_id(s), s)
+            for bad in ("_k0", "_k01", "_k", "_kk1", "_k1x", "_k1_original", "_c1_k1", "_x"):
+                s = p + bad
+                self.assertIsNone(er020.resolve_narrative_role(s), s)
+                self.assertIsNone(ys.parse_y_chunk_id(s), s)
+        self.assertEqual(er020.connected_speech_enabled_for("y_voice_2_k1"), True)
+        for other in ("y_voice_4_k1", "y_intro_0_k1", "y_foo_k1", "xy_voice_1_k1", "y_voice_1_k1_heading"):
+            self.assertIsNone(er020.resolve_narrative_role(other), other)
+        for s in ("full_story_part1", "full_story_part1_k2", "full_story_part2_c1_k3", "point_one"):
+            self.assertEqual(er020.resolve_narrative_role(s), "FULL_STORY", s)
+        self.assertEqual(er020.resolve_narrative_role("comment_1"), "COMMENT")
+        self.assertIsNone(er020.resolve_narrative_role("full_story_part1_k0"))
 
 
 if __name__ == "__main__":

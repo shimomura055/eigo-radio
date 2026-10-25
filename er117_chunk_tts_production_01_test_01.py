@@ -218,13 +218,15 @@ class TRoleResolution(unittest.TestCase):
                 break
         self.assertGreater(len(ids), 20)
         for s in sorted(ids):
-            if core.parse_chunk_id(s):
+            if core.parse_chunk_id(s) or s.startswith("y_"):
                 continue
             if self._legacy(s) == "FULL_STORY":
                 self.assertEqual(er020.resolve_narrative_role(s), "FULL_STORY", s)
         # chunk形でないfull_story系IDが新たにFULL_STORYへ解決されていないこと
+        # 委任_05: Family YのID(`y_lead`/`y_voice_N`等とそのchunk `_kN`)は委任_02B/05で意図的にFULL_STORYへ追加した(X/Z既存IDとは別名前空間)。
+        # 『X/Z既存IDの解決が不変』の検査対象から除外する。Yの解決は er121_family_y_text_core_01_test_01.py で固定。
         for s in sorted(ids):
-            if core.parse_chunk_id(s):
+            if core.parse_chunk_id(s) or s.startswith("y_"):
                 continue
             if er020.resolve_narrative_role(s) == "FULL_STORY":
                 self.assertEqual(self._legacy(s), "FULL_STORY", s)
