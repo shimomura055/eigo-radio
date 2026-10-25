@@ -335,6 +335,34 @@ class DryRunAndCliTest(unittest.TestCase):
         self.assertFalse(a.ack_warn_threshold)
         self.assertEqual(a.warn_threshold_jpy, 200.0)
 
+    def test_pages_dir_arg_default_none_keeps_registry_dir(self):
+        # FXZC委任_04: --pages-dir未指定=None(従来どおりSTORY_REGISTRYの公開dir)。
+        a = r.build_parser().parse_args(["--story", "the_tell_tale_heart"])
+        self.assertIsNone(a.pages_dir)
+        ctx = r.E2EContext(story_key="the_tell_tale_heart", run="run_x")
+        self.assertEqual(ctx.pages_dir, r.STORY_REGISTRY["the_tell_tale_heart"]["e2e_pages_dir"])
+
+    def test_pages_dir_arg_overrides_context_pages_dir(self):
+        a = r.build_parser().parse_args(["--story", "the_tell_tale_heart", "--pages-dir", "user_test/x_candidate"])
+        self.assertEqual(a.pages_dir, "user_test/x_candidate")
+        import tempfile
+        captured = {}
+        with tempfile.TemporaryDirectory() as td, forbid_real_apis():
+            def fake_mock_ctx(root, run="run_mock", pages_dir=None, story_key="melos", slug=None):
+                c = r.E2EContext(story_key=story_key, slug="s", run="r", mode="mock", run_root=td)
+                c.pages_dir = pages_dir
+                return c
+
+            def fake_run_stages(ctx, stages):
+                captured["pages_dir"] = ctx.pages_dir
+                return {}
+            with mock.patch.object(r, "build_mock_context", fake_mock_ctx), \
+                 mock.patch.object(r, "_launch_guard"), mock.patch.object(r, "write_voice_assignment"), \
+                 mock.patch.object(r, "run_stages", fake_run_stages):
+                _c, _o, _e = self._main(["--mode", "mock", "--story", "the_tell_tale_heart", "--stages", "pages", "--run", "t_pd",
+                            "--pages-dir", "user_test/x_candidate"])
+        self.assertEqual(captured.get("pages_dir"), "user_test/x_candidate", _e)
+
 
 class StageOrderTest(unittest.TestCase):
     def test_run_stages_executes_in_given_order_and_stops_on_error(self):

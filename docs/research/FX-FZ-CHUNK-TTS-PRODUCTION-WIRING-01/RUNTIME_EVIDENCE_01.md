@@ -26,6 +26,7 @@ Status候補: X=WIRED_PENDING_FABLE / Z=WIRED_PENDING_FABLE(PRODUCTION_WIREDはF
 - 組立: `b1b/assembly/timeline.json`の`chunk_tts`にchunk別gain(part2_c1: 1.1303/0.9690、part3_c1: 1.2536/0.8462)・peak_capped false・0.2秒gap(episode内188.516〜188.716秒/249.376〜249.576秒、実測max|x|≤0.0004)。Advanced 280.6秒、headroom適用なし。
 - 候補ページ: `user_test/family_z_tell_tale_heart_chunk_01/`(`stage_pages`をpages_dir上書きのctxで実行、API 0)、標準適合check overall=PASS。公開ページ(`user_test/family_z_tell_tale_heart_01`)は未変更。
 - 実費: 16.67円(kp 0.14 + tts_b1b 6.85 + tts_a2 9.68)。Cap 60円内。
+- 候補ページpage_verify(委任_04、2026-10-25 14:43〜14:45 JST、API 0): er026 runnerへ`--pages-dir`(未指定=従来の公開dir)を追加し、`--story the_tell_tale_heart --run run_chunk_01 --mode real --approved-budget-jpy 1 --stages pages,page_verify --pages-dir user_test/family_z_tell_tale_heart_chunk_01`を1起動で実行(rc=0、cost_log追記0・spent 16.6657円のまま)。pages再生成後も候補ページはgit差分0・audio_standard/audio_advanced 55ファイルのsha256が実行前と同一。公開ページ`user_test/family_z_tell_tale_heart_01`はgit status差分0(実行前後)。page_verify(Playwright --local、`run_chunk_01/page_verify_local.json`、控え=`page_verify_local_z_chunk_01.json`): index(audio 34・plays_ok 34)/standard(audio 26・plays_ok 26)/advanced(audio 24・plays_ok 24)すべてhttp 200・plays_failed 0・console_errors 0・http_ge400 0、標準適合check overall=PASS。seek_ok_all=Falseはhttp.serverがRange非対応による既知の偽陰性(合否に含めない、evaluate_page_verify仕様)。
 
 ## 3. 費用・日次
 - 起動前の日次(JST 2026-10-25、`daily_dev_cost_01.py`): X前 838.7円 → Z前 845.35円(他agent分含む)。本委任の実費合計=約19.3円(X 2.64+Z 16.67)。日次1,000円内。

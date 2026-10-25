@@ -2928,7 +2928,7 @@ OPEN-178/179・既存Topic Discovery Trial結果を上書きしない。
 
 ## Family X・Z Advanced地の文/本文のchunk TTS(X=段落+0.2秒 B0.2 / Z=B_r1。2026-10-25ユーザー正式採用`APPROVED_FOR_PRODUCTION`、`FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01` 委任_02)
 
-- **Status**: X=`WIRED_PENDING_FABLE` / Z=`WIRED_PENDING_FABLE`(PRODUCTION_WIREDはFable判定。OPEN-506/510)。flagなし(既定で有効)。承認原文=`docs/pm/delegation_log/2026-10-25_FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01_USER.md`。
+- **Status**: X=`PRODUCTION_WIRED` / Z=`PRODUCTION_WIRED`(Fable受入2026-10-25 委任_04、X=段落分割+0.2秒 / Z=B_r1。OPEN-506/510)。flagなし(既定で有効)。承認原文=`docs/pm/delegation_log/2026-10-25_FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01_USER.md`。
 - **対象**: Family X Advanced(b1b)のFull Story本文3 part(段落ごとchunk、段落が1つのpartは分割なし)。Family Z Advanced(b1b)のnarrator story clipのうち100語超(k=ceil(語数/100)、段落境界>文境界、最小25語、引用途中で切らない)。**対象外**: Standard(a2)・Dialogue・100語以下のnarrator・KP・Preview・Comment・Family Y。Zの既存150語超分割(er013)は不変で先に走り、その後段で本ルールがAdv narrator clip内を分割する。
 - **音声**: chunkを個別にTTS(chunkは通常のsegment/clip entry。X=`full_story_part{n}_k{j}`、Z=`full_story_part{n}_c{k}_k{j}`)し、chunk間に0.2秒(24kHzで4800 sample)の無音を挟む。親wav=chunk raw PCM16のバイト一致連結+無音(RMSは無音を含むため約0.06dB低い)。組立はchunk別scalar gain(target_rmsは従来式[(preview+part1または先頭clip)/2]のまま、peak≤0.95)→0.2秒pad→crossfadeなし→48kHzステレオ変換。
 - **親集約entry**: `status`/`canonical_text`/`path`/`sha256`/`voice`/`style`+`chunk_tts`(chunk_ids・語数・boundary_kinds・chunk_gate_statuses・human_approved_chunks・deviation_chunks・raw_parent_sha256)。statusは全chunkが共有Gate判定(`_segment_gate_status`)でVALIDATED/HUMAN_APPROVEDのときのみ`OK`、それ以外は`CHUNKS_NOT_ALL_VALIDATED`(共有Gateの承認参照対象外=親idの承認でGateを迂回できない)。
