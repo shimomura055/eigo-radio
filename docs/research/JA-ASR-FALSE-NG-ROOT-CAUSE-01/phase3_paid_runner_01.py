@@ -105,6 +105,8 @@ def run_stage(stage: str, *, azure_fn=None, openai_fn=None, tts_fn=None) -> dict
     if live:
         from dotenv import load_dotenv
         load_dotenv()
+        import er005_cost_logger as _cl
+        _cl.init_logger(os.path.join(ROOT, RUN_DIR, "raw_usage_log.jsonl"))  # 委任_03: A1初回でinit未実施のRuntimeErrorを検出し追加(live経路の欠陥修正)
         import er007_ja_secondary_asr_01 as sec
         import er006_asr_provider_routing_01 as asr
         azure_fn = azure_fn or (lambda wav: sec._azure_stt_strict(wav, language="ja-JP"))
@@ -120,6 +122,7 @@ def run_stage(stage: str, *, azure_fn=None, openai_fn=None, tts_fn=None) -> dict
         t0 = time.time()
         rec = {"stage": stage, "item": it["id"], "model": it.get("model")}
         if stage == "N3_tts":
+            os.makedirs(os.path.dirname(it["out"]), exist_ok=True)  # 委任_03: n3出力dir未作成でwav書込失敗したため追加
             r = tts_fn(it["tts_input"], it["out"]); rec.update(result=str(r)[:200], est_jpy=sum(TTS_JPY_PER_CLIP) / 2)
         elif STAGES[stage]["kind"] == "azure":
             t, e = azure_fn(it["wav"]); rec.update(text=t, error=e, est_jpy=it.get("sec", 7.0) * AZURE_JPY_PER_SEC)
