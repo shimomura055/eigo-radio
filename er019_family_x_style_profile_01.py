@@ -33,6 +33,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import time
 
 DESIGN_ID = "COFFEE-P8-PRODUCTION-WIRING-DESIGN-02"
@@ -633,6 +634,27 @@ def _approved(approvals: dict, name: str, entry: dict) -> bool:
     return approval.get("canonical_text_sha256") == sha256_text(canon)
 
 
+_CHUNK_ID_RE = re.compile(r"(full_story_part[1-3])_k([1-9][0-9]*)")
+
+
+def _chunk_names_for(name: str, segments: dict) -> list:
+    """FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01(M1、Opus条件A最重要): 本文partがchunk化されているとき、gate対象は親集約entryではなく
+    『chunk entry』(full_story_part{n}_k{j})。親には style_prefix/style_profile が無く、chunk1の値を親へコピーすると
+    chunk2以降の minimal_fallback / Local Rewrite が黙って通るため、親はM3の対象外とし全chunkを検査する。
+    親entryのchunk_tts.chunk_ids(planから導出・失敗時も常に書かれる)を正とし、無ければ結果に存在する chunk id を番号順に列挙する。
+    chunk化されていなければ [] (従来どおり親そのものを検査)。"""
+    parent = segments.get(name) or {}
+    ids = (parent.get("chunk_tts") or {}).get("chunk_ids")
+    if ids:
+        return list(ids)
+    found = []
+    for k in segments:
+        m = _CHUNK_ID_RE.fullmatch(k)
+        if m and m.group(1) == name:
+            found.append((int(m.group(2)), k))
+    return [k for _, k in sorted(found)]
+
+
 def _gate_targets(profile_id: str, level: str, results: dict) -> list[tuple[str, str, dict | None]]:
     """(gate上の名前, role, entry or None)の列。KP英英解説はkey_phrases[rank]["explanation"]から取る。"""
     segments = (results or {}).get("segments") or {}
@@ -651,6 +673,11 @@ def _gate_targets(profile_id: str, level: str, results: dict) -> list[tuple[str,
                 targets.append((f"kp{rank}_{rkey}", role, (kps[rank] or {}).get(rkey)))
             continue
         for name in ROLE_SEGMENTS.get(role, ()):
+            chunk_names = _chunk_names_for(name, segments) if role == "FULL_STORY" else []
+            if chunk_names:
+                for cname in chunk_names:           # chunk entryが無い(未生成)chunkは entry=None → NO_SEGMENT_RECORD でBLOCK
+                    targets.append((cname, role, segments.get(cname)))
+                continue
             targets.append((name, role, segments.get(name)))
     return targets
 
