@@ -120,6 +120,10 @@ NON_APPLICABLE_SEGMENT_IDS = frozenset({
 })
 _KEY_PHRASE_PATTERN = re.compile(r"^kp\d+_(en|ja)")
 _FAMILY_Z_STORY_CLIP_PATTERN = re.compile(r"full_story_part[1-3]_c[0-9]+")
+# FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01 委任_02(C4): chunk TTS(X=段落単位/Z=Adv narrator 100語超)のchunk ID。
+# X `full_story_part{n}_k{j}` / Z `full_story_part{n}_c{k}_k{j}` をFULL_STORYへ解決する(追加のみ。既存ID・fullmatch挙動は不変)。
+# er117_chunk_tts_production_01.X_CHUNK_ID_RE / Z_CHUNK_ID_RE と同形(testで一致を固定)。
+_CHUNK_TTS_SEGMENT_PATTERN = re.compile(r"full_story_part[1-3](?:_c[0-9]+)?_k[1-9][0-9]*")
 
 
 def resolve_narrative_role(segment_id: str | None) -> str | None:
@@ -135,6 +139,8 @@ def resolve_narrative_role(segment_id: str | None) -> str | None:
     # Xは_cN付きIDを生成しない)。fullmatchのため `_original`/`_heading` 等の接尾辞は不一致。
     if _FAMILY_Z_STORY_CLIP_PATTERN.fullmatch(segment_id):
         return "FULL_STORY"
+    if _CHUNK_TTS_SEGMENT_PATTERN.fullmatch(segment_id):
+        return "FULL_STORY"
     if segment_id in ("comment_1", "comment_2", "comment_3", "comment_4"):
         return "COMMENT"
     if segment_id == "preview":
@@ -148,6 +154,13 @@ def resolve_narrative_role(segment_id: str | None) -> str | None:
     if _KEY_PHRASE_PATTERN.match(segment_id or ""):
         return "KEY_PHRASE"
     return None
+
+
+# I4(Opus条件A): import時の自己検査。C4の入れ忘れ・正規表現の改変を即時に検出する(roleはer006_secondary_asr_01のjudge roleでも使われる)。
+for _chunk_seg_id in ("full_story_part1_k1", "full_story_part3_k10", "full_story_part2_c1_k2"):
+    if resolve_narrative_role(_chunk_seg_id) != "FULL_STORY":
+        raise RuntimeError(f"chunk TTS segment_id={_chunk_seg_id!r} が resolve_narrative_role() で FULL_STORY に解決されません"
+                           "(FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01 C4)")
 
 
 NARRATIVE_ENGLISH_ROLE_LABELS = {

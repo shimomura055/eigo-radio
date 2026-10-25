@@ -1,7 +1,42 @@
 # WIRING_DESIGN_01 (FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01 委任_01 Phase 0、設計のみ。API 0・Production file編集0)
 
-Status: APPROVED_FOR_PRODUCTION(ユーザー2026-10-25)・**配線設計中・未配線(PRODUCTION_WIREDではない)**。Opus条件Aレビュー待ち(`OPUS_REVIEW_REQUEST_01.md`)。
+Status: APPROVED_FOR_PRODUCTION(ユーザー2026-10-25)・**実装中(委任_02)→WIRED_PENDING_FABLE止まり(PRODUCTION_WIRED判定はFable)**。Opus条件Aレビュー=条件付き(`OPUS_REVIEW_01.md`、M1〜M4必須・I1〜I11・R1〜R4)。**下の§R(改訂)が本文に優先する**。
 照合: `EXISTING_SPEC_CHECK_01.md`(経路図・配線点X1〜X4/Z1〜Z5・差分表)。ドラフト実装+test=`chunk_tts_core_draft_01.py`・`tests_draft_01.py`(24 PASS、採用Trial plannerと実runで出力一致を確認済み)。
+
+## §R. 改訂(委任_02、Opus条件A M1〜M4・I1〜I11・R1〜R4の反映。本節が下の旧本文と食い違う場合は本節を正とする)
+
+実装: 共通module `er117_chunk_tts_production_01.py`(+`er117_chunk_tts_production_01_test_01.py` 41 test)、`er020`の`resolve_narrative_role`にchunk ID形+import時自己検査(I4)、期待値凍結 `planner_fixture_01.json`(生成=`freeze_planner_fixture_01.py`)。X/Z配線は§R-X/§R-Z。
+
+| ID | 反映内容(実装の置き場) |
+|---|---|
+| M1 | X `er019_family_x_style_profile_01._gate_targets`/関連検査をchunk entryを列挙するよう拡張(親aggregateはM3の対象外。親には`style_profile`が無いのでコピーもしない)。`attach_segment_profile_record`は**chunkごと**に呼ぶ。C8の編集表に`er019_family_x_style_profile_01.py`を追加。test「chunk k2だけminimal_fallback→BLOCK」「親の値をchunk1からコピーしても素通りしない」 |
+| M2(a) | `er117.refresh_parent_status`は**失敗・未生成でも親を常に書く**。statusは`derive_parent_status`がplanのchunk id一覧から導出(entry無し=`status_fn(None)`=UNVALIDATED)。非全合格は status=`CHUNKS_NOT_ALL_VALIDATED`(共有Gate `_segment_gate_status`の承認照会対象外の値。**親idへ人間承認を記録してもGateを迂回できない**=test固定) |
+| M2(b) | 全chunk wavが揃っていれば親wavを(欠落・古い場合は)再合成しsha更新。一部欠けなら親wavに触れずsha=None(Gateはstatusで止める) |
+| M2(c) | X: `stage_assemble_family_x_b1`の`_style_profile_gate_blocked_summary`より前。Z: `run_audio_gate`冒頭と`run_assembly`。いずれも`verify_parent_integrity`(+`verify_raw_parent`)を音声を読む前に実行 |
+| M2(d) | 親`chunk_tts.human_approved_chunks`を記録(statusはOKに丸まるが事実は残る)。`chunk_gate_statuses`・`deviation_chunks`も記録 |
+| M3 | Z evidenceは案A不可。`copy_reusable_run_assets`でテキスト系のみ複製した新runを作り`tts_a2,tts_b1b,provision_shell,gate,assemble,pages,page_verify`を**1起動**(両level)。費用見積 約30〜40円。他agentのer026 Part 1配線commit後に起動 |
+| M4 | X evidenceは`theme_out_dir`全体を複製(entry_point.json・theme直下`audit/style_profile.json`を含む)。起動前に記録profile==現行Production profile、M3 `checked`にchunk idを含むことをevidenceへ |
+| I1 | `er117.drop_stale_chunk_entries`(planner_versionが現行と異なる/無いchunk idの前回entryは再利用しない)をXの`_cached`読込直後に適用。Zはreuse_keyに`chunk_tts.planner_version`を含むので自動 |
+| I2 | `er117.compose_gained_parent(..., gain_fn=p9a.compute_gain_for_target_rms, rms_fn=p9a.rms, peak_fn=p9a.peak)`。gain式は再実装しない(testでp9a直接呼出と一致) |
+| I3 | `planner_fixture_01.json`: ディスク上の全Z run(16 run・385 clip・split 15 clip)と全X parts.json(421)のTrial planner出力(chunk本文sha・語数・boundary_kind・first/last段落・paragraph_info_lost)を凍結。Production testはDEVのer113/er114をimportしない(凍結スクリプトのみTrialをimport。`docs/research`配下) |
+| I4 | `er020`のimport時自己検査(`full_story_part1_k1`・`full_story_part3_k10`・`full_story_part2_c1_k2`がFULL_STORYへ解決されなければimport失敗)。X runnerの既存import時検査(`_REQUIRED_FULL_STORY_SEGMENT_IDS`)にchunk IDを追加 |
+| I5 | X `_VALID_ONLY_SEGMENT_RE`: `full_story_part[1-9]\d*(_k[1-9]\d*)?`(`_k`は本文partにのみ)。`--level a2`で`_k`指定は`validate_only_segments_args`で拒否。親名指定=当該partの全chunkに展開 |
+| I6 | Z `run_assembly(..., chunk_plans=)`に`load_level_inputs`のplanを渡し、`verify_parent_integrity`を実行 |
+| I7 | 親aggregateに`voice`/`style.instruction_label`/`canonical_text`(+`clip_kind`/`role`等)を持たせる(`display`引数)。ページ行は親entryを読んでも「-」にならない。chunkの`audio_text_deviation`は親`deviation_chunks`からページ注記へ。gain_report親keyには値を書かず`chunk_tts.<親>`にchunk別gainを記録 |
+| I8 | 合成長は整数サンプル一致(`verify_composed_samples`)。親wavは**PCM16のバイト連結**で書く(float往復の1LSBずれを作らない)。組立時`verify_raw_parent`(親wav==ディスク上chunk wavの生連結)に合格してから親wavをtarget_rms基準に使う |
+| I9 | Zのchunk本文は`normalize_for_tts`後(引用符の直線化・`**`除去)。clip.textが既に正規化済みかは全run実データで確認(§R-Z) |
+| I10 | 回帰はclean worktree(HEAD+自変更のみ)で取る |
+| I11 | `er019_family_x_validation_inheritance_01.derive_expected_texts`(手動CLI): chunk labelを導出できる拡張は行わず**既知の制限として記録**(§R-X。chunk idの`SKIPPED_NOT_SELECTED`継承は`try_inherit_from_cached`が汎用なので動くが、手動CLIの期待text導出はpart単位のまま) |
+| R1 | **採用**: X/Zともchunk失敗後も後続chunkの生成を続ける(旧設計(b)の「失敗chunkでループ停止」は撤回)。OK chunkは再利用されるので無駄な再課金は無く、未生成entryという余計な状態を作らない |
+| R2 | Zは`_CLIP_ID_RE`を広げず、Gate箇所(`verify_z_speed_profile`・`verify_std_english_slowdown`・`run_audio_gate`)専用の別正規表現`_CLIP_OR_CHUNK_ID_RE`を追加。入力検証(`build_level_plan`の story clip id)・`comment_after_segment_ids`・`part_to_clip_id`は厳密なまま |
+| R3 | pww警告→ページ行の紐付け(`_warn_entry_to_clip_id`)で`_k\d+`を親clipへ対応 |
+| R4 | role解決の不変testは手書き一覧でなく既存`*_output`の全results segment idで比較(`TRoleResolution`) |
+
+### §R-共通の設計確定事項
+- **親wav定義(仕様)**: 親wav=「生chunk(gain前)を0.2秒(4800 sample@24kHz)の無音で連結した24kHz mono PCM16」。X `apply_family_x_b1_gain`/Z `run_assembly`のtarget_rms基準に使われる(`(rms(preview)+rms(part1_または_c1))/2`の式は無変更)。**0.2秒の無音を含めて計算するためRMSが生chunk平均より約0.06dB小さい**(Opus論点2。仕様として記録)。peak cap(0.95)発動chunkは`compose_gained_parent`の`peak_capped`とevidenceに記録するのみ(新Gateは作らない)。
+- **planner**: 単一の`CHUNK_PLANNER_VERSION="chunk_tts_v1_x_paragraph_z_r1_20261025"`。規則を変えたら必ず更新(reuse_key/chunk entry/親entry/保存plan/整合検査が版で旧chunkを拒否)。
+- **resume**: planは純関数。`audit/chunk_plan_<level>.json`に保存し、同一本文sha・同一版で分割が食い違えばSTOP(`reconcile_saved_plan`)。
+- **対象外**: X Std(a2)本文・in_one_line・他segment、Z Std全clip・Dialogue・100語以下narrator・KP・Comment・Preview・Topic intro。経路は`chunked=False`/対象外で分岐前に従来関数へ抜ける(バイト不変testで固定)。
 
 ## 0. 設計方針(要点)
 1. **chunkは「既存のsegment/clip entryと同じ型の1 entry」にする**。これにより既存のGate・HR Lock・ASR telemetry・費用ログ・sha stale検知・checkpoint/resume・STOP/Budget guardが**共有コードを変更せず**chunk単位に効く。新しい安全装置は作らず、既存の上限(`PRODUCTION_MAX_TTS_ATTEMPTS`=3等)も回避しない。
@@ -66,7 +101,7 @@ X `er019:1767`・Z `er063:1761`の式は**無変更**。Trial(固定値)との�
 ### (a) 分割planner
 `plan_x_part(parts["partN"], "full_story_partN")`: 空行区切りの段落=1 chunk(10段落→4/3/3 chunk、Trial `er113 build_chunk_plan`と一致をtest済)。**段落が1つのpartは分割しない**(従来の1 call)。可逆性は空白正規化後の一致で検証(`tts_safe_news_en`は改行を空白へ畳むので段落ごとに掛けて連結=全体適用と完全一致、Trial test済)。短段落の併合・最小語数は**設けない**(Trial条件=段落単位。最短14語chunkまで実証。chunk語数はevidenceに記録のみ)。
 ### (b) 生成
-`_generate_body_part_chunked(name, text, cached, …)`: 各chunkで既存と**同じ呼出**(`_pnap_supply(chunk.text, tts_safe_news_en(chunk.text))`→`news_tail_fix.generate_news_narration_wide_margin(…, enable_connected_speech_equivalence_layer=cs(chunk_id), enable_repetition_qa=True, enable_pronunciation_resolver=True, style_prefix_override=_role_style("FULL_STORY"), tts_backend)`)。出力`narration/<name>_k<j>.wav`。Voice/Style/modelは不変(`_role_style`・`tts_backend`を共有)。**直列**(chunk順)。chunkのGate失敗(`status!=OK`)は**そのchunkでループを止める**(後続chunkを生成しない=無駄な課金を避ける、HR Lockはchunk単位)。retry/fallback/Local Rewrite/cool-downは関数内の既存規約をそのまま踏襲。全chunk OKなら親wav(生連結)+親集約entryを書く。
+`_generate_body_part_chunked(name, text, cached, …)`: 各chunkで既存と**同じ呼出**(`_pnap_supply(chunk.text, tts_safe_news_en(chunk.text))`→`news_tail_fix.generate_news_narration_wide_margin(…, enable_connected_speech_equivalence_layer=cs(chunk_id), enable_repetition_qa=True, enable_pronunciation_resolver=True, style_prefix_override=_role_style("FULL_STORY"), tts_backend)`)。出力`narration/<name>_k<j>.wav`。Voice/Style/modelは不変(`_role_style`・`tts_backend`を共有)。**直列**(chunk順)。~~chunkのGate失敗でループを止める~~ → **§R R1: 失敗後も後続chunkの生成を続ける**(HR Lockはchunk単位)。retry/fallback/Local Rewrite/cool-downは関数内の既存規約をそのまま踏襲。親集約entryは失敗時も常に書く(§R M2。statusはplanから導出)。
 ### (c) 組立
 `load_family_x_b1_sources`: チャンク化したpartは`narration/<name>_k*.wav`を計画順に読み`sources["body_chunks"][name]=[mono…]`、`b1_segments[name]`(target_rms用)=親wav(生連結)。`apply_family_x_b1_gain`: `name in body_chunks`なら `compose_gained_parent`(chunk別gain→0.2秒→連結)→`mono_24k_to_stereo_target`。それ以外のsegmentは従来関数のまま。本文part間の既存gap(`build_family_x_b1_timeline`)は不変(親=1 timelineエントリ)。ヘッドルーム弁は既存。gain_reportへ`b1_<name>_chunks`を追加(既存keyは不変)。
 ### (d) Store/reuse
