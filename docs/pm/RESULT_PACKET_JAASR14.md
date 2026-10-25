@@ -1,0 +1,12 @@
+# RESULT_PACKET 委任_14 JA-ASR-FALSE-NG-ROOT-CAUSE-01 OPEN-333 E4 Production適用(API 0・実費0円)
+- 変更: er011 +18行(定数`CANDIDATE_E_CASCADE_DIFF_RETURN=True`+E分岐)、er007_secondary +5(`candidate_e_cascade_return`複写)、er007_validator +コメント/docstring。M-1: try/exceptはcascade_diffs計算・記録のみ、E3拒否は囲まず。
+- test: 新規14件PASS(M-1/M-3/M-4含む)。回帰43 file 1,104 passed/8 failed(委任_12既知8件と同一)。
+- 一致: 4,230キー on≡proto 0差・off≡HEAD 0差(asr_judgement key集合含む)・HEAD比 非PASS→PASS 0・Secondary受理変化0。
+- 発火(注入、API 0): 1,514 attempt中74発火(実データ4)、Azure原稿どおり→PASS_WITH_WARNING 74/74、同じ誤り→NG_BOTH 74/74。
+- tally拡張: e4_fired/e4_outcomes。報告条件=1run 3件超、またはHR到達は1件でも(対処は表記正規化の検討、E4 rollbackではない)。
+- (1) 既存仕様整合: er007_ja_asr_validator_01.py:407-414(cascade_eligible→Cascade)、er011:304-306(_cascade)、OPEN-333/DECISION_LOG委任_12・13、Opus M-1〜M-4。
+- (2) 未承認機能の既定値: 該当なし(承認済み不具合是正、新仕様なし)。定数既定True、rollback=False。env/引数切替不可はtestで固定。
+- (3) 失敗終了時の最終成果物: 発火行はUNCERTAIN→既存Cascade(Azure不在/不一致→再生成→上限でHR)。成功終了。ユーザー原文=委任文(DELEGATION_14.md)の目的『E4適用』を満たす。
+- (4) 撤去・残置: 撤去なし。旧規則残存=E3定数2つ(維持)。Grep `CANDIDATE_E_CASCADE_DIFF_RETURN`はer011と新testのみ。
+- 判定整合: 重大NG=なし
+- 残課題: Candidate E本体が同形異音でPASSし得る(実害なし・別件観察)。E4-Nは見送り(再検討=A4見直しのユーザー判断D)。

@@ -22476,3 +22476,13 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - **R2再生成の結果**: Fable権限1回の`approve_regenerate`後もb1b `comment_4`が`now. Now,`でdisfluency再Lock(3 attempt、ASRはPASS)。再承認せず途中停止として記録。分類=修正へ進む(台本側の語反復の可能性、Gate・閾値は無変更)、別委任。
 - **費用**: 本委任3.28円(R3 2.78・R2 0.50)、KP HR案件累計≤73.72円/300円。
 - 詳細=`docs/research/KP-GRAMMAR-HUMAN-REVIEW-PRODUCTION-01/EVIDENCE_01.md`§11・`docs/pm/RESULT_PACKET_KPHR5.md`。
+
+## JA-ASR-FALSE-NG-ROOT-CAUSE-01 委任_14: OPEN-333 便乗PASS是正E4をProduction適用(Opus短縮レビューM-1〜M-4反映・E4-N見送り)(2026-10-26、API 0・実費0円)
+
+- **区分**: 承認済み不具合是正(PM_GOVERNANCE 11-8)。承認済み安全条件『entity_like/濁点差はCascade(Azure再確認)へ』の便乗PASS(Candidate Eがnon-cascade差分のみ検査しcascade_eligible差分を未検査でPASS)の是正。新しい受理クラス・新規PASS経路なし(PASS集合は縮むのみ)。Opus短縮レビュー(条件C、`docs/research/JA-ASR-FALSE-NG-ROOT-CAUSE-01/OPUS_REVIEW_02_OPEN333_E4.md`)は条件付き同意、M-1〜M-4を反映。
+- **内容**: `er011`のCandidate E分岐で、E3の`_rej`判定の後・`_pass`の前に、`content_diffs`のcascade_eligible差分が残れば既存`_cascade()`を返す。rollback定数`CANDIDATE_E_CASCADE_DIFF_RETURN=True`(env/flag/引数で切替不可)。監視field`asr_judgement.candidate_e_cascade_return`(発火時のみ・判定不変)。M-1: try/exceptはcascade_diffsの計算・記録のみ、E3拒否は囲まずE3 helper例外は従来どおりNone(TCM)でtestに固定。
+- **E4-N**: 見送り(実効が数値entryのA4_C2_HOMOGRAPH除外解除=2026-10-11ユーザー採用の安全条件に触れるため)。再検討は『A4の見直し』としてユーザー判断D。
+- **検証**: 新規test 14件PASS(M-1/M-3/M-4含む)。proto↔Production 4,230キー(asr_judgement key集合含む)で on≡proto 差0・off≡HEAD 差0、HEAD比 非PASS→PASS 0・Secondary受理変化0。回帰43 file 1,104 passed/8 failed(8件は委任_12既知と同一)。runtime発火(API 0、保存転写1,514をadapterへ注入): 発火74(実データ4)、Azure原稿どおり→PASS_WITH_WARNING 74/74、同じ誤り→NG_BOTH 74/74。
+- **監視**: `open333_first_run_tally_01.py`を拡張(E4発火件数と最終結果区分)。1run 3件超→報告、E4発火行がHRに到達したら1件でも報告(対処はE4 rollbackではなく表記正規化=ユーザー承認が必要な別件の検討)。
+- **別件観察(実害なし)**: Candidate E本体は同形異音(今日→こんにち等)でもPASSし得る(承認済み挙動)。
+- 詳細=`docs/research/JA-ASR-FALSE-NG-ROOT-CAUSE-01/OPEN333_E4_APPLY_RESULT_01.md`、`docs/pm/RESULT_PACKET_JAASR14.md`。

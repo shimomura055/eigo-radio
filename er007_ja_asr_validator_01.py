@@ -388,6 +388,9 @@ def classify_ja_asr_match(canonical_text: str, asr_text: str | None,
         # 戻すため、er011 try_rescue_before_resolver のE分岐が数値entryに限り
         # 数値span除去後の非数値差を全件再検査する(rollback定数
         # er011.CANDIDATE_E_FULL_DIFF_CHECK / CANDIDATE_E_VALUE_GUARD_CHECK)。
+        # 【2026-10-26 委任_14 OPEN-333 E4】Eが救済しても content_diffs に cascade_eligible 差分(カタカナ/略語・濁点のみ差)が
+        # 残る場合は、er011 のE分岐が既存の _cascade()(ASR_VALIDATION_UNCERTAIN→Azure再確認)を返す(rollback定数
+        # er011.CANDIDATE_E_CASCADE_DIFF_RETURN)。なお is_entity_like_mismatch_ja は混在diffsでFalseだが統一judge経路では未使用。
         if protected.number_mismatches and not protected.negation_mismatches:
             import er011_ja_asr_variant_layer_01 as ja_variant_layer
             variant_result = ja_variant_layer.try_rescue_before_resolver(
@@ -520,7 +523,8 @@ def is_entity_like_mismatch_ja(result: ClassificationResultJA) -> bool:
     is_entity_like_mismatch()と同じ役割)。ER-007-JA-ASR-TTS-RETRY-
     PATH-FIX-01時点で、固有名詞・略語らしき表記ゆれ(entity_like)だけで
     なく、濁点/半濁点の有無だけが異なる読みゆれ(phonetic_uncertain)も
-    対象に含む(関数名は既存呼び出し元との互換のため変更していない)。"""
+    対象に含む(関数名は既存呼び出し元との互換のため変更していない)。
+    注記(委任_14 OPEN-333 E4): 混在diffs(non-cascade差を含むE由来のUNCERTAIN等)ではFalseになる。統一judge経路(er078/adapter)では未使用。"""
     if result.classification != "ASR_VALIDATION_UNCERTAIN":
         return False
     diffs = result.protected.content_diffs

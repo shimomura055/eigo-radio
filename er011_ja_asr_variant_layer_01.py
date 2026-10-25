@@ -377,6 +377,22 @@ def try_rescue_before_resolver(canonical_text: str, asr_text: str,
         if _rej:
             protected.candidate_e_rejections = _rej
             return None
+        # 【2026-10-26 委任_14 OPEN-333 E4、承認済み不具合是正】上のEの検査は non-cascade 差分(remaining_diffs)だけを見る。
+        # cascade_eligible 差分(カタカナ/略語・濁点のみ差。承認済み仕様『entity_like/濁点差はCascade(Azure再確認)へ』)が
+        # content_diffs に残っているのにPASSすると、Cascadeを経ない便乗PASSになる。残っていれば既存 _cascade() を返す
+        # (PASS集合は縮むのみ。新しい受理クラスなし)。try/exceptは cascade_diffs の計算・記録だけを囲む(Opus M-1)。
+        # E3の拒否判定(_rej)は囲まない: E3 helper例外は従来どおり return None(TCM)で、_cascadeへ変えない(A4迂回の防止)。
+        # rollback定数 CANDIDATE_E_CASCADE_DIFF_RETURN=False で HEAD と完全に同じ挙動。
+        if CANDIDATE_E_CASCADE_DIFF_RETURN:
+            try:
+                _cd = [d for d in protected.content_diffs if d.get("cascade_eligible", True)]
+                if _cd:
+                    protected.candidate_e_cascade_diffs = [[d["canonical"], d["asr"]] for d in _cd]
+            except Exception:  # noqa: BLE001 fail-closed: 判定不能=PASSにせずCascadeへ
+                _cd = [None]
+            if _cd:
+                return _cascade("(JA ASR Variant Layer/Candidate E)残差分は読みで説明できたが、cascade_eligible差分"
+                                "(カタカナ/略語・濁点のみ差)が未検査で残るため、即PASSにせずCascade(Azure再確認)対象")
         return _pass("PHONETIC_MATCH",
                      "(JA ASR Variant Layer/Candidate E)残っていた差分箇所について、漢字候補読み"
                      "(pykakasi内蔵辞書由来)の総当たりで、canonical/ASR双方に共通する読みが"
@@ -391,6 +407,8 @@ def try_rescue_before_resolver(canonical_text: str, asr_text: str,
 # rollback定数(env/flag/引数で切替不可。変更はこのソース1行のみ。既定ON=是正有効)。
 #   CANDIDATE_E_FULL_DIFF_CHECK=False  -> 数値entryの非数値差の再検査を行わない(HEADと完全に同じ挙動)
 #   CANDIDATE_E_VALUE_GUARD_CHECK=False -> 数値entryで値ガード(最終Gateと同じF2付き)がDIFF/UNKNOWNのEを拒否する多層防御(R-6)を行わない
+# 【委任_14 OPEN-333 E4】CANDIDATE_E_CASCADE_DIFF_RETURN=False -> Eが cascade_eligible 差分を残したままPASSする(HEADと完全に同じ。env/flag/引数で切替不可)
+CANDIDATE_E_CASCADE_DIFF_RETURN = True
 CANDIDATE_E_FULL_DIFF_CHECK = True
 CANDIDATE_E_VALUE_GUARD_CHECK = True
 _E_VALUE_PLACEHOLDER = ""
