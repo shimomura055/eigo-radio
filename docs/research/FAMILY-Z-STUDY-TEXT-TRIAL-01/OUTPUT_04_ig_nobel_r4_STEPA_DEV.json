@@ -1,0 +1,59 @@
+{
+ "candidates_considered": [
+  {
+   "para": "P2",
+   "note": "news that以下がnewsの内容を示す節であり、関係詞節との区別が理解に関わるため採用。"
+  },
+  {
+   "para": "P3",
+   "note": "containing nutrientsの修飾先とfrom the gutの係り先を確認できるが、構造は比較的追いやすいため不採用。"
+  },
+  {
+   "para": "P5",
+   "note": "倍数表現に比較対象の省略が重なり、何と何のエネルギー量を比べているかが重要なため採用。"
+  },
+  {
+   "para": "P8",
+   "note": "What節が主語となる構造を含むが、文意は比較的つかみやすいため不採用。"
+  },
+  {
+   "para": "P11",
+   "note": "関係詞節がyoungを修飾するが、基本的な関係詞の用法にとどまるため不採用。"
+  }
+ ],
+ "selected": [
+  {
+   "para": "P2",
+   "sentence": "This is not news that cockroach milk has finally made its debut at the dinner table!",
+   "construct_ja": "名詞を補うthat節",
+   "points_ja": [
+    "that以下はnewsの内容を示し、関係詞節ではない",
+    "「コオロギミルクが食卓に登場したというニュース」というまとまり",
+    "not news that ...で、そのような食用デビューの知らせではないと述べる"
+   ],
+   "context_ja": "研究は食用としての効果を調べたものではなく、研究の一環で誰かが飲んだわけでもないと述べている。",
+   "reason_dev": "名詞newsの内容を示すthat節を関係詞節と取り違えやすく、節の役割を押さえることで文全体の否定の範囲が明確になる。",
+   "sentence_llm_raw": "This is not news that cockroach milk has finally made its debut at the dinner table!",
+   "sentence_replaced_by_body": false,
+   "prev": "The Ig Nobel Prize went to research on nutrient-rich crystals that had been published earlier.",
+   "next": "No one drank it as part of the study, and the study did not test its effects as a food for humans."
+  },
+  {
+   "para": "P5",
+   "sentence": "The crystals contain more than three times as much energy as the same weight of milk from several kinds of mammals.",
+   "construct_ja": "倍数比較と比較対象の省略",
+   "points_ja": [
+    "more than three times as much energy as ...で、エネルギー量を比較する",
+    "比較対象は哺乳類のミルク全体ではなく、同じ重量のミルク",
+    "milkの側にも同量のenergyが含まれるという比較が省略されている"
+   ],
+   "context_ja": "論文には、結晶が複数種の哺乳類のミルクと比べて、同じ重量あたり3倍を超えるエネルギーを含むという推定が記されている。",
+   "reason_dev": "倍数比較にas muchの量比較とsame weightという比較条件が重なり、比較の基準を取り違えると数値の意味を誤読しやすい。",
+   "sentence_llm_raw": "The crystals contain more than three times as much energy as the same weight of milk from several kinds of mammals.",
+   "sentence_replaced_by_body": false,
+   "prev": "And the paper includes a striking estimate.",
+   "next": "“The final boss of nutrition?”"
+  }
+ ],
+ "none_reason_dev": ""
+}

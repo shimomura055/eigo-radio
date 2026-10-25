@@ -57,3 +57,20 @@
 ### 量産費用(03d)
 1 call平均 約0.275円(0.219〜0.342円)/記事セット(Advanced学習解説テキストのみ)。Trial-02比 +約0.10円、70円目標の約0.4%。
 生データ: `usage_03d_*.json` `usage_03dR2_*.json`。
+
+
+## Trial-04(委任_09、2026-10-25)
+| 項目 | 値 |
+|---|---|
+| API call数 | 36(1 launch。完成6セット[3作品×r1/r2、各P1α・Step A・Step B・Part 3/4]=24 call + β腕P1 6 call + Step A追加[r3/r4] 6 call。再送・失敗0、再起動0) |
+| model_id | gpt-6-luna / gpt-6-luna(全call一致。最新世代の推奨系) |
+| Trial-04実費 | 合計 **4.0605円**(¥160/$)。内訳: 完成6セット2.746円 / β腕P1 0.478円 / Step A追加(R5) 0.836円。委任_09上限20円の20%(安全線18円未到達) |
+| 所要 | launch全体 約70秒(9並列job)。1記事セットのクリティカルパス 平均38.0秒(32〜47秒、P1∥Step A→Step B∥Part 3/4) |
+| STOP確認 | `tools/stop_scope_check_01.py` launch前 rc=0(`stop_check_09.json`・`stop_check_09b.json`) |
+| 日次 | 本委任4.06円。2026-10-25の既往Trial実費合計(ACTIVE_TASK記載414.66円)に加算して約418.7円、日次1,000円内 |
+| FAMILY-Z-STUDY-TEXT-TRIAL-01 累計 | Trial-01 0.230 + 02 0.171 + 03 6.281 + 04 4.061 = **約10.74円** |
+
+### 量産費用(Trial-04、α腕)
+1記事セット(Advanced学習解説テキスト、4 call): 平均 **0.458円**(0.398〜0.507円)。Trial-03(03d)の約0.275円比 +0.18円(+66%)、70円/記事セット目標の約0.65%。Part 2が0件なら3 call(Step B不要)。Standardは対象外。
+増加要因: 呼出の分割(P1・Step A・Step Bで入力トークン合計 約5.3〜5.6k、03dは約2.7k)と、Step Aの候補検討reasoning。呼出削減の案(Part 3/4をStep Aと同一call等)は品質判定後の別判断。
+生データ: `usage_04*.json`(prompt_sha256・response_id・token内訳を含む)。
