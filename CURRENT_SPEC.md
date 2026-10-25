@@ -2924,6 +2924,19 @@ OPEN-178/179・既存Topic Discovery Trial結果を上書きしない。
 - **撤去・残置**: Productionへ移したのはv4・M1構造検査・E=欄・Gate・O-2'・M2・J2(+R4)のみ。v1〜v3指示文・Storyline由来E・RULE9・`resume_w1_dev_from_r2`・C-1(`field_priority_*`)は`er115_fx_numeric_retention_trial_01.py`(Trialの記録)に残置し、er116はer115をimportしない。旧Productionの記号QA再生成/再実行枠は共有して維持(重複検査なし)。
 - **test**: `er116_fx_core_numeric_retention_01_test_01.py`(Gate発火→再生成→STOP、E=∅各経路、M1最終違反+WARN、J2、resume再構成、旧記事E=∅、B3 variantバイト一致、Trial保存済み14標本のE/O-2'再適用一致と最終本文のGate適用、Isolation[Y/Z/Trialから到達しない])。
 
+## Family X・Z Advanced地の文/本文のchunk TTS(X=段落+0.2秒 B0.2 / Z=B_r1。2026-10-25ユーザー正式採用`APPROVED_FOR_PRODUCTION`、`FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01` 委任_02)
+
+- **Status**: X=`WIRED_PENDING_FABLE` / Z=`WIRED_PENDING_FABLE`(PRODUCTION_WIREDはFable判定。OPEN-506/510)。flagなし(既定で有効)。承認原文=`docs/pm/delegation_log/2026-10-25_FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01_USER.md`。
+- **対象**: Family X Advanced(b1b)のFull Story本文3 part(段落ごとchunk、段落が1つのpartは分割なし)。Family Z Advanced(b1b)のnarrator story clipのうち100語超(k=ceil(語数/100)、段落境界>文境界、最小25語、引用途中で切らない)。**対象外**: Standard(a2)・Dialogue・100語以下のnarrator・KP・Preview・Comment・Family Y。Zの既存150語超分割(er013)は不変で先に走り、その後段で本ルールがAdv narrator clip内を分割する。
+- **音声**: chunkを個別にTTS(chunkは通常のsegment/clip entry。X=`full_story_part{n}_k{j}`、Z=`full_story_part{n}_c{k}_k{j}`)し、chunk間に0.2秒(24kHzで4800 sample)の無音を挟む。親wav=chunk raw PCM16のバイト一致連結+無音(RMSは無音を含むため約0.06dB低い)。組立はchunk別scalar gain(target_rmsは従来式[(preview+part1または先頭clip)/2]のまま、peak≤0.95)→0.2秒pad→crossfadeなし→48kHzステレオ変換。
+- **親集約entry**: `status`/`canonical_text`/`path`/`sha256`/`voice`/`style`+`chunk_tts`(chunk_ids・語数・boundary_kinds・chunk_gate_statuses・human_approved_chunks・deviation_chunks・raw_parent_sha256)。statusは全chunkが共有Gate判定(`_segment_gate_status`)でVALIDATED/HUMAN_APPROVEDのときのみ`OK`、それ以外は`CHUNKS_NOT_ALL_VALIDATED`(共有Gateの承認参照対象外=親idの承認でGateを迂回できない)。
+- **Gate/ASR/HR/Local Rewrite**: chunk単位で従来どおり(共有Gate、Human Review Lock、Local Rewrite、telemetry、sha stale検知、resume)。retry/fallback/Local Rewrite上限は不変(chunkごとに3 attempt)。chunk失敗は後続chunkを止めない。XのStyle profile M3 Gateはchunk entryを列挙し親は対象外(M1)。
+- **整合・再計画制御**: `verify_parent_integrity`(chunk集合・順序・語数・planner版・本文)をaudio読込前に、`verify_raw_parent`(整数sample一致)をtarget_rms算出前に実行。`CHUNK_PLANNER_VERSION=chunk_tts_v1_x_paragraph_z_r1_20261025`。`audit/chunk_plan_<level>.json`を保存し、同一本文・同一版で分割が変わる場合はSTOP(replan禁止)。旧版chunk entryは破棄(I1)。Zのreuse_keyはchunk specにのみ`chunk_tts`項目を追加(非chunk keyはバイト不変)。
+- **legacy互換**: chunk entryなし・親entryのみの既存結果は、gate/assemble/pagesでは従来経路のまま(既存run・公開済みepisodeの再組立を壊さない)。TTS stageは常にchunk化する。
+- **量産単価**: 追加LLM call 0。chunk数分のTTS call増(X 10 call、Z 4 call/作品)。実測=X『英国の電車マナー』Adv TTS 2.51円、Z『告げ口心臓』Std+Adv全TTS+KP 16.67円(参考: run_sf_prod_02 34.64円は別構成)。
+- **runtime evidence**: `docs/research/FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01/RUNTIME_EVIDENCE_01.md`(X/Zとも全chunk OK・LR/HR/fallback 0・共有Gate PASS・0.2秒gap実測・親wav整数sample一致)。
+- **test**: `er117_chunk_tts_production_01_test_01.py`(43)・`er117_x_chunk_wiring_test_01.py`(25)・`er117_z_chunk_wiring_test_01.py`(21)。planner凍結fixture(`planner_fixture_01.json`)は承認Trial planner出力(Z 16 run/385 clip/15分割clip、X parts.json 421)と本文sha・語数・boundary_kind・境界段落まで一致を検査。
+
 ## 参照元
 
 [ER-003-A2-00_SPEC_AUDIT.md](ER-003-A2-00_SPEC_AUDIT.md)、

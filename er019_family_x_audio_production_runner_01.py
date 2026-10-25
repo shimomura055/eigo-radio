@@ -1379,7 +1379,7 @@ def generate_family_x_b1_segments(
     # 追従する(a2側のkp_status["ja"]表記は無変更、別関数)。
     kp_status = {r: {"en": v["english"].get("status"), "explanation": v["explanation"].get("status")}
                  for r, v in kp_results.items()}
-    if any(pl.get("chunked") for pl in _chunk_plans.values()):   # C7: chunk TTSのruntime evidence(分割位置・種別・attempts/fallback/Local Rewrite/ASR判定)
+    if any(pl.get("chunked") for pl in _chunk_plans.values()):   # C7: chunk TTSのruntime evidence(分割位置・種別・attempts/fallback/LR/ASR判定)
         save_json(f"{out_dir}/audit/chunk_tts_evidence_b1b.json",
                   {"planner_version": chunk_tts.CHUNK_PLANNER_VERSION, "style_profile": style_profile, "tts_backend": tts_backend,
                    "parents": {pid: chunk_tts.evidence_record(pl, results) for pid, pl in _chunk_plans.items() if pl.get("chunked")}})

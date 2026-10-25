@@ -1,0 +1,101 @@
+{
+  "scope": "KP外側retry(全文選定backend、X/Z共通)",
+  "max_outer": 3,
+  "generic_note": "",
+  "attempts": [
+    {
+      "outer_attempt": 1,
+      "note_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+      "selection_phrases": [
+        "a blanket ban",
+        "reach for your wallet",
+        "draw that line"
+      ],
+      "excluded_phrases_in": [],
+      "canonicalization_status": "CANONICALIZATION_PASS",
+      "canonicalization_attempts": [
+        {
+          "attempt": 1,
+          "status": "CANONICALIZATION_PASS",
+          "reasons": [],
+          "item_reasons": [],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "key_phrase": "a blanket ban",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "「a blanket ban」は自然な名詞句として単独で成立し、冠詞を含む形が学習単位として適切なため変更しません。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 2,
+                "key_phrase": "reach for one's wallet",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "「your」は記事の聞き手に向けた表現なので、辞書的な一般形の「one's」に置き換えます。表現の意味と目的語は維持しています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 3,
+                "key_phrase": "draw that line",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "「draw that line」は、示された区別や境界を明確にする意味で自然に理解できるため、そのまま保持します。「that」を削ると表現の自然さや指示対象が損なわれます。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_045b3f9e8dd61e93006adacbaef5b487d0bf9053f2aaea5081"
+        }
+      ],
+      "cmu_post_canon": {
+        "version": "kp_cmu_lexicon_gate_v1",
+        "ok": true,
+        "checked": 3,
+        "bad": []
+      },
+      "redundancy_status": "REDUNDANCY_PASS",
+      "symbol_flagged": false,
+      "artifacts": "er019_output/family_x_audio_production_wiring_01/uk_train_speaker_playback__run_nws_02/b1b/key_phrases/outer_retry/attempt_1"
+    }
+  ],
+  "excluded_phrases": []
+}

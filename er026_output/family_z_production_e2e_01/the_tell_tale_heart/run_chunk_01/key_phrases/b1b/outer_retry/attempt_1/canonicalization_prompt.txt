@@ -1,0 +1,119 @@
+以下は、英語ポッドキャストの記事全文から、英語上級者が学ぶ価値のある語句として既に選ばれたKey Phrase候補です。各候補は本文中の連続した語句(表層形)のまま、記事全文からの直接選定で選ばれています(この工程では選定そのものを変更しません)。
+
+あなたの仕事は、各候補の表示形(display_phrase)を、学習教材として提示するのに最も自然な学習単位(key_phrase)へ正規化することです。**目標は「できるだけ短くすること」ではなく、「1〜5語の範囲で、意味理解に必要十分な自然な単位にすること」です(最小十分、Minimal Sufficient Unit)。**
+
+**最重要の前提: display_phraseは本文中の表層形のままです(時制・単数複数・語順は本文のとおり。例: 本文の"pushed prices up"、"took a sharp turn")。学習教材では、辞書の見出し語に近い形で提示します。**
+
+判断の優先順位は次のとおりです。**まず「display_phraseは既にそのままで自然で、単独で聞いても意味が分かる、最小十分な単位か?」を自問してください。YESであれば、key_phraseはdisplay_phraseと完全に同じにしてください(動詞の活用形・名詞の複数形も下の規則4に当てはまらない場合は変更しません)。** 変更してよいのは、以下の具体的な理由がある場合のみです。**ただし、display_phraseに下の規則5に該当する参照語(指示語this/that、目的格のhim/her/me/us)が含まれる場合は「そのままで自然」とはみなさず、規則5を先に検討してください(規則5の例外に当たる場合のみ無変更でかまいません)。**
+
+1. 文脈限定語の除去: display_phraseの先頭・末尾に、この記事の文脈だけで必要な限定語(the, a, an, this, that, these, those, 所有限定詞など)が残っており、それを除いても意味・自然さが保てる場合。
+2. 意味理解に必要な語の復元: display_phraseが既に削りすぎていて、単独で聞いたときに「何をする/何に対する」が欠けて意味が抽象的になる場合、source_span(本文中の元のspan)から**必要最小限の語だけ**を復元する。ただし記事固有の情報まで必要以上に抱え込まない(source_sentence全体に近い長さまで復元するのは不可)。
+3. 人称代名詞・所有格の一般化: display_phraseに、本文中の特定の人物・立場に依存した人称代名詞・所有格(my/your/his/her/their/our/its、you/they/he/she、yourself/himself/herself/themselves等)が含まれており、それが記事固有の誰か(例: この記事の「あなた」「彼ら」)を指しているに過ぎない場合、辞書の見出し語として使われる標準的な一般形(one's/someone's/somebody's、someone/somebody/one、oneself等、英語学習辞書がこの種の表現を掲載する際に使う慣例的な形)へ**置換**してください(削除ではありません)。例(動作主自身の所有=self): "lost his temper"→"lose one's temper"。(動作主とは別の人の所有=other_person): "praised their effort"→"praise someone's effort"。(所有者が人でない=non_person): "challenged its conclusions"→"challenge its conclusions"(置換しない)。**ただし、特定の代名詞を含むこと自体がその表現の意味・用法として必要な場合(例: 相互性を表すeach other、その記事の主題人物を指すことが表現の一部として本質的な場合、決まった一人称・二人称の慣用句など)は、機械的に一般形へ変換しないでください。** 迷う場合は、reasoningで根拠を説明した上で、置換せずdisplay_phraseの語のまま残してください(所有格はこの後のrole判定の規則に従います)。   **所有格のrole判定(置換を決める前に必ず行い、出力のpossessor_rolesに記録します)**: display_phraseに所有格(my/your/his/her/its/their/our)が含まれる場合、出現順にすべての所有格について、possessor_rolesへ1要素ずつ{token, role}を書いてください(display_phraseに所有格が無ければ空配列[])。目的格のher(told her the truthのher)など、所有格として働かないhis/herは、role=noneで1要素記録します。判定は次の2つの問いで行います。(1)その所有格が指す対象は、この表現の動作主(または表現が述べる経験・所有の主体)自身か。(2)その対象は人(擬人化された人称的な存在を含む)か、物・組織・場所・研究・概念か。role=self: 動作主自身を指す人(擬人化を含む)/ role=other_person: 動作主とは別の人 / role=non_person: 人でないもの(動作主自身であっても物・組織ならnon_person)/ role=none: 所有格として働かない。置換してよいのは、role=selfならone's、role=other_personならsomeone'sまたはsomebody'sだけです。role=non_person・noneの所有格は置換せず、そのまま残してください(物が動作主の決まった定型表現もそのまま残します)。**置換しない(display_phraseの語のまま残す)ことは、どのroleでも常に許されます**。判定に迷う場合、または特定の所有格を含むこと自体が表現の一部である場合は、置換しないでください。再帰代名詞(yourself/himself/herself/themselves)を一般化する場合は、roleにかかわらずoneselfにします。
+   この置換は必ずnormalization_reason="generalize_person_dependent_reference"を使い、人称代名詞・所有格以外の語は一切変更しないでください。**この規則3で一般化してよい代名詞は上に列挙した語(my/your/his/her/their/our/its、you/they/he/she、yourself/himself/herself/themselves等)だけです。目的格のhim/her/me/usは下の規則5(b)で扱います。them/it等のその他の代名詞は、記事の登場人物を指していても一般形(someone等)へ置換せず、そのまま残してください(列挙外の置換は決定論検証で却下されます)。**
+4. 語形の基本形化(lemma): 辞書の見出し語として提示するため、**動詞の活用形(過去形・過去分詞・三人称単数・-ing形)を原形(基本形)に直してよい**。また、自然な場合に限り**名詞の複数形を単数形に直してよい**。例: "pushed prices up"→"push prices up"、"gave back some gains"→"give back"(範囲は連続した語句のまま)、"lost his temper"→"lose his temper"(人称の一般化と併用する場合は、規則3のpossessor_rolesに従い"lose one's temper")、"hands the baton"→"hand the baton"。**変更してよいのは「同じ語の語形」だけです。語順の入れ替え、語の追加・削除、別の語への置き換え、本文に無い別の辞書形の創作は禁止です。** 形容詞として働く分詞(heated debate、mixed feelings、rising prices、limited resources等)は動詞の活用形ではないので原形にしないでください。単数にすると意味が変わる複数名詞(news、goods、means、sales、savings等)は単数にしないでください。この変更は必ずnormalization_reason="lemma_normalization"を使ってください(人称の一般化と同時に行う場合は"generalize_person_dependent_reference"でもかまいません)。
+
+5. 参照語の不定化(置換): display_phraseに、この記事の特定の対象を指しているだけの次の参照語が含まれる場合、学習用の一般形へ**置換**してください(削除ではありません。語数は変わりません)。
+   (a) 指示語this/thatが、単数の可算名詞の直前に置かれた限定詞のとき: aに置換します(直後の語が母音で始まる音ならan)。theは使いません。例: "draw that line"→"draw a line"、"float that idea"→"float an idea"、"take that step"→"take a step"。この置換にはnormalization_reason="generalize_reference_word"を使ってください。
+   (b) 目的格の人称代名詞him/her/me/usが、この記事の特定の人物を指しているだけの場合: someoneに置換します(動詞の語形は規則4で別途基本形にできます)。例: "pulled him under"→"pull someone under"、"told her the truth"→"tell someone the truth"、"close around me"→"close around someone"。herが所有格(her jobのように名詞が続く場合)のときは規則3の扱い(one's/someone's)です。この置換にはnormalization_reason="generalize_person_dependent_reference"を使ってください。
+   **次の場合は規則5(a)(b)を適用せず、該当語をそのまま残してください**: 指示語が代名詞・副詞・接続詞として働く場合(句末のthat、that much、not that bad、so that…)、不可算名詞の前(that advice等)、固定表現で指示語・代名詞が意味の一部になっているもの(that said、at that point、in that case、this time、like that、between you and me、all that等)、およびit/them/these/those。置換しても意味・自然さが保てるか迷う場合は置換しません。
+   この規則5が置換してよい語はthis/that/him/her/me/usだけで、それ以外の語は規則4の語形変化以外一切変更しません。また、上の『置換しない』の判断は規則5の対象語(this/that/him/her/me/us)にだけ適用してください。規則3(my/your/his/their/our/its、yourself/himself等の人称・所有格の一般化)は、従来どおり規則3自身の基準で判断し、規則5があることを理由に控えめにしたり、規則4(語形の基本形化)を広げたりしないでください(例: 形容詞的に使われる分詞は原形にしない)。
+
+この規則(1〜5)のいずれにも該当しない場合(display_phraseが既に自然な最小十分の単位である場合)は、**時制・単複・語順・大文字小文字を含め、一切変更しないでください。** "本文により忠実な形に戻す"という理由だけでの変更は禁止です。
+
+その他の規則:
+
+- 冠詞・限定詞そのものが表現の一部になっている固定表現(例: a lot of, a number of, at the same time, on the other hand, the same as)は、絶対に壊さないでください。この場合、display_phraseをそのままkey_phraseにしてください。
+- 前置詞・不定詞のto・句動詞の粒子など、意味を構成する機能語(例: opt out, depend on, lead to, in charge of, urge to watch)は、不用意に削除しないでください。
+- key_phraseは、原則としてdisplay_phraseと同じか、display_phraseから文脈限定語を除いた形か、source_span内に連続した文字列として存在する形か、上記規則4(語形の基本形化)・規則3(人称の一般化)・規則5(参照語の不定化)に従った同じ語の語形変化または1対1の置換のいずれかでなければなりません。source_spanにも本文にもdisplay_phraseにも存在しない別の辞書形を、勝手に生成してはいけません。
+- 短くする、または語を復元しないことで、学習価値や意味が失われる場合は、そのままにしないでください(例: digital switch-off periodをswitch offへ変更しない)。
+- key_phraseに「～」「〜」「…」のようなプレースホルダー記号を一切使わないでください。目的語や補語を省略した形にしたい場合でも、省略記号に頼らず、文法的に完結した自然な英語表現(display_phraseのまま維持する、またはsource_span内から必要な語を復元する)にしてください。
+
+**Meaning Preservation Rule(意味保持の原則、最重要): display_phraseからさらに語を削る場合、その削除によって中心的な意味・文法機能・学習価値が失われていないか、必ず明示的に確認してください。** 特に、意味の核を担う語(例: risk, possibility, obligation, pressure, attempt, refusal のような、リスク・可能性・義務・圧力・試み・拒否といった意味役割を表す語)を削ると、残った部分だけでは全く別の意味になることがあります。例: "the risk of losing jobs"から"the"を除くのはよいですが、"risk of"や"risk"自体を落として"losing jobs"にしてはいけません("失業すること"という意味に変わってしまい、「リスク」という中心的な意味が失われるためです)。これは特定の単語のリストで機械的に判定するのではなく、その都度「この語を削ると意味が変わるか」を考えて判断してください。
+
+各候補について、以下を判定してください(それぞれPASSまたはFAIL)。
+
+- qa_standalone_natural_unit: key_phrase単独で自然な英語学習単位として成立するか
+- qa_no_residual_context_word: key_phraseの先頭・末尾に、この文脈だけで必要な不要語が残っていないか
+- qa_meaning_or_usage_unchanged: 語を削ったことで意味または用法が変化していないか(変化していなければPASS)。**規則4による語形の基本形化(時制・単複を見出し語の形にすること)そのものは、意味・用法の変化としてFAILにしないでください。**
+- qa_reusable_other_context: 別の文脈でも再利用可能な表現か
+- qa_traceable_contiguous_span: key_phraseがsource_spanから追跡可能か。**次のいずれかであればPASS**: (a) key_phraseがdisplay_phraseと完全一致する、(b) key_phraseがsource_span内の連続した文字列として存在する、(c) key_phraseが上記規則3(人称代名詞・所有格の一般化)に従って生成されたものである、(d) key_phraseが上記規則4(語形の基本形化)に従って生成されたもの(表層形と同じ語の語形変化だけの違い)である、(e) key_phraseが上記規則5に従って生成されたもの(this/that→a/an、him/her/me/us→someone)である。(c)(d)(e)の場合、一般化後・基本形化後・不定化後の語がsource_span中の語と文字列として一致しないのは意図した正当な変換であり、それを理由にFAILにしないでください。
+- qa_listening_blocker_value_preserved: **この候補が持っていた学習価値(上級者が学ぶ価値のある語彙・表現としての価値)を、key_phraseが維持しているか。** (旧称のまま「初回リスニングで意味を取れない表現としての価値」ではなく、学習価値の維持を判定します。)
+- qa_standalone_comprehensibility: このkey_phraseをKey Phrasesセクションで単独提示した際、学習者が何を意味する表現なのか十分に理解できるか
+- qa_not_over_minimized: source_spanから語を削りすぎたことで、意味が抽象化・不完全化していないか(削りすぎていなければPASS)
+- qa_context_sufficiency: source_span内の語を1〜5語制限内で追加保持することで、より自然で理解しやすい学習単位になる余地を検討したか(検討した上で現在の形が適切ならPASS)
+- qa_core_meaning_preserved: display_phrase(またはsource_span)が持っていた中心的な意味が、key_phraseでも保持されているか(Meaning Preservation Rule参照)
+- qa_no_semantic_role_loss: risk/possibility/obligation/pressure/attempt/refusalのような意味役割を表す語を削ったことで、その意味役割そのものが消えていないか(消えていなければPASS)
+- qa_person_reference_generalized: display_phraseに記事固有の人称代名詞・所有格が含まれる場合、それが上記規則3(目的格のhim/her/me/usは規則5(b))に従って辞書的な一般形に正しく置換されているか、または特定の代名詞を保持する必要性がreasoningで説明されているか(display_phraseに元々人称代名詞・所有格が含まれない場合は、該当なしとして常にPASS。possessor_rolesに従って一般化しなかった場合[non_person・none、または置換しない選択]もPASS)
+
+normalization_reasonには、display_phraseからkey_phraseへの変換の種類を、次のいずれか一つで示してください: "none"(無変更)/ "remove_contextual_determiner"(文脈限定詞の除去)/ "restore_semantic_complement"(意味理解に必要な語をsource_spanから復元)/ "generalize_person_dependent_reference"(人称代名詞・所有格の一般化[上記規則3]、および目的格him/her/me/usのsomeoneへの置換[上記規則5(b)])/ "generalize_reference_word"(指示語this/thatのa/anへの置換、上記規則5(a))/ "lemma_normalization"(語形の基本形化、上記規則4)/ "inherit_selection_normalization"(無変更だが、display_phrase自体が既に基本形である)/ "other"(その他、reasoningで説明)。
+
+changed_from_display_phraseには、key_phraseがdisplay_phraseと完全一致しない場合はtrue、完全一致する場合はfalseを入れてください。reasoningには、判定理由を1〜2文の日本語で書いてください(特に、source_spanから語を復元した場合、削った場合、語形を基本形化した場合はその理由を明記してください)。
+
+どの語句を選ぶか(選定)・候補の順序・件数はこの工程の対象外です。変更しないでください。
+
+【記事本文(参考、文脈確認用)】
+You call me mad. No. Nervous, perhaps, but perfectly sane. My illness sharpened my senses, especially my hearing. I hear everything in heaven and earth. Listen to my calm voice, and judge for yourself.
+
+I loved the old man who shared my home. He had never hurt me; I wanted none of his money. But his eye! Pale blue, covered by a cloudy film—a vulture’s eye. Whenever it turned towards me, my blood went cold. I had to be free of it.
+
+For seven nights, at midnight, I lifted his latch. You should have seen my patience! I eased the door open so slowly he never stirred, then let one thin ray escape my lantern.
+
+The eye was always closed.
+
+So I could do nothing. You understand: I hated the eye, not the man. Each morning I kindly asked how he had slept.
+
+On the eighth night, I nearly laughed at my cleverness. Then my thumb slipped against the lantern’s fastening.
+
+“Who’s there?” he cried.
+
+I stood motionless. For an hour he sat in bed, listening. At last he groaned softly. Not pain—terror. I knew that sound.
+
+I uncovered the lantern. Its narrow beam found the eye.
+
+Wide open.
+
+A low, quick beating reached me, like a watch wrapped in cotton. His heart! Faster it went, and louder. What if a neighbour heard?
+
+I rushed forward. He shrieked once. I dragged him down and pulled the heavy bed over him. Finally, the beating stopped. I checked his pulse. Nothing.
+
+I hid his body beneath three floorboards and fitted them back exactly. Not a mark! You could have searched all night.
+
+At four in the morning, three police officers knocked. A neighbour had heard a shriek.
+
+I welcomed them. A bad dream, I explained; the cry was mine. The old man was away in the country. I showed them every room, then brought chairs into his bedroom. I sat directly above the body. You see how little I feared?
+
+They chatted pleasantly. I smiled.
+
+Then my head began to ache. A ringing filled my ears—but no. That low, quick beating again.
+
+I spoke louder. It grew louder too.
+
+I paced and scraped my chair across the boards. Still they chatted. Still they smiled.
+
+Louder. Louder!
+
+Could you have borne it? They heard! They knew! Their smiles were mocking me. I could bear no more.
+
+“I did it!” I screamed. “Tear up the planks! Here! It is the beating of his hideous heart!”
+
+【Key Phrase候補(JSON)】
+[
+  {
+    "rank": 1,
+    "display_phrase": "sharpened my senses",
+    "source_span": "sharpened my senses",
+    "source_sentence": "My illness sharpened my senses, especially my hearing"
+  },
+  {
+    "rank": 2,
+    "display_phrase": "my blood went cold",
+    "source_span": "my blood went cold",
+    "source_sentence": "Whenever it turned towards me, my blood went cold"
+  },
+  {
+    "rank": 3,
+    "display_phrase": "never stirred",
+    "source_span": "never stirred",
+    "source_sentence": "I eased the door open so slowly he never stirred, then let one thin ray escape my lantern"
+  }
+]
