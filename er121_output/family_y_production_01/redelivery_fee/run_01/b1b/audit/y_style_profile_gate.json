@@ -1,5 +1,5 @@
 {
-  "status": "PASS",
+  "status": "BLOCK",
   "x_gate_blocked_after_filter": [],
   "y_body_checks": [
     {
@@ -12,7 +12,9 @@
     },
     {
       "segment": "y_voice_1",
-      "violations": []
+      "violations": [
+        "LOCAL_REWRITE_RECOVERY"
+      ]
     },
     {
       "segment": "y_intro_2",
@@ -35,7 +37,14 @@
       "violations": []
     }
   ],
-  "y_body_blocked": [],
+  "y_body_blocked": [
+    {
+      "segment": "y_voice_1",
+      "violations": [
+        "LOCAL_REWRITE_RECOVERY"
+      ]
+    }
+  ],
   "x_gate": {
     "status": "PASS",
     "checked": [],

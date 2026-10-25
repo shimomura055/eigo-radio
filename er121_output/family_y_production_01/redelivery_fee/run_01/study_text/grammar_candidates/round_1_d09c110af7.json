@@ -1,0 +1,163 @@
+{
+  "schema": "grammar_candidates_v1",
+  "level": "Advanced",
+  "label": "Package Redelivery: Different Voices",
+  "text_sha256": "f4f19da3217ae2ebdc415c237036b909d68dd080ba3851dd6c01917080fd89a5",
+  "n_paragraphs": 5,
+  "prompt_id": "part2_stepA8",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+  "model": "gpt-6-luna",
+  "extract_signature": "0e9c5d374625c1937afbd789719745065471de372fd2f9533654b3bd4125a6fe",
+  "round": 1,
+  "tier_table": [
+    {
+      "para": "P4",
+      "cls": "CMP",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "asの後に人などが続く比較では、何と何を比べているかを補って読む。",
+      "front_kind": "",
+      "sentence": "Still, I take the trouble to think about how to receive my packages, so honestly, I think it’s wrong that I pay the same fee as people who are always away and ask for redelivery.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P4",
+      "cls": "ELL",
+      "tier": null,
+      "eligible": false,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "比較表現では、asの後に別の主語だけがあり、動詞が省略されている場合に補って読む。",
+      "front_kind": "",
+      "sentence": "Still, I take the trouble to think about how to receive my packages, so honestly, I think it’s wrong that I pay the same fee as people who are always away and ask for redelivery.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P5",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "動名詞節が文全体の主語になり、その中に目的語と原形不定詞を含む場合も、節のまとまりを見極める。",
+      "front_kind": "",
+      "sentence": "But having the person receiving the package pay won’t change late deliveries or how arrival times are shared.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
+  "no_feature_paras": [
+    "P1",
+    "P2",
+    "P3"
+  ],
+  "uncovered_paras": [],
+  "audit": {
+    "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+    "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+    "model": "gpt-6-luna",
+    "requested_model": "gpt-6-luna",
+    "prompt_sha256": "6e08e55a20fdb614552e25f10edc838041ed6960bbbe319578a074ef20737bd7",
+    "response_ids": [
+      "resp_05ff2df11a723816006addfd1232ac87d0a91b5621d013b172"
+    ],
+    "calls": [
+      {
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3790,
+          "output_tokens": 5256,
+          "cached_input_tokens": 0,
+          "reasoning_tokens": 4267
+        },
+        "response_id": "resp_05ff2df11a723816006addfd1232ac87d0a91b5621d013b172",
+        "elapsed_sec": 44.0,
+        "cost_jpy": 0.4811
+      }
+    ],
+    "retried_for_parse": false,
+    "total_cost_jpy": 0.4811,
+    "generated_at": "2026-10-25T21:59:41+0900",
+    "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+  },
+  "reselect_count": 0,
+  "reextract_count": 0,
+  "reselect_log": [],
+  "candidates": [
+    {
+      "candidate_id": "g1de62b0de2",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "CMP",
+      "para": "P4",
+      "sentence": "Still, I take the trouble to think about how to receive my packages, so honestly, I think it’s wrong that I pay the same fee as people who are always away and ask for redelivery.",
+      "front_kind": "",
+      "misread_target": "OMITTED",
+      "misread_quote": "the same fee as people",
+      "misread_ja": "比較対象を人そのものと捉え、相手が支払う料金との比較だと補えないことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "asの後に人などが続く比較では、何と何を比べているかを補って読む。",
+      "construct_ja": "asを用いた比較",
+      "points_ja": [
+        "比較されているのは自分が払う料金と相手が払う料金。",
+        "asの後には相手が払う料金を表す部分が省略されている。"
+      ],
+      "context_ja": "話し手は、自分が再配達を避ける工夫をしているのに、再配達を頼む人と同じ料金を払うのはおかしいと述べている。",
+      "prev": "And even when I ask for a package to be sent to a delivery office, it may arrive late, so I sometimes end up receiving it in person after all.",
+      "next": "Redelivery takes up the delivery worker’s time, so it’s fine to charge for it.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        452,
+        630
+      ]
+    },
+    {
+      "candidate_id": "g9ac633b1ff",
+      "rank": 2,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P5",
+      "sentence": "But having the person receiving the package pay won’t change late deliveries or how arrival times are shared.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "having the person receiving the package pay",
+      "misread_ja": "長い動名詞節の中のthe personを主語と捉え、文全体の主語と述語のつながりを取り違えることがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "動名詞節が文全体の主語になり、その中に目的語と原形不定詞を含む場合も、節のまとまりを見極める。",
+      "construct_ja": "動名詞節主語",
+      "points_ja": [
+        "文全体の主語はhavingからpayまで。",
+        "節内ではthe personがhaveの目的語、payが目的語に続く原形。"
+      ],
+      "context_ja": "本文は、受取人に料金を負担させても、遅配や到着時刻の共有方法は変わらないと述べている。",
+      "prev": "For people who can choose how to receive packages, a redelivery fee can be a signal that encourages them to make an effort.",
+      "next": "The person receiving the package can’t change how much shipping costs or how much of it goes to the people who deliver the packages, either.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        222,
+        331
+      ]
+    }
+  ],
+  "top_ids": [
+    "g1de62b0de2",
+    "g9ac633b1ff"
+  ],
+  "n_eligible": 2,
+  "ng": [],
+  "filtered_by_ng": [],
+  "rejected_ids": [],
+  "candidates_sha256": "d09c110af7ada425b97589d0b2e6d4950a931b577c33f83913f8ffe24a7b5fcd",
+  "status": "HAS_CANDIDATES",
+  "exhausted": false,
+  "reused_from_previous_run": false
+}

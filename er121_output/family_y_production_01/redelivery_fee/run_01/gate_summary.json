@@ -1,7 +1,14 @@
 {
   "b1b": {
-    "status": "PASS",
-    "y_body_blocked": [],
+    "status": "BLOCK",
+    "y_body_blocked": [
+      {
+        "segment": "y_voice_1",
+        "violations": [
+          "LOCAL_REWRITE_RECOVERY"
+        ]
+      }
+    ],
     "x_gate_blocked_after_filter": []
   },
   "a2": {
@@ -10,13 +17,8 @@
       {
         "segment": "y_voice_1",
         "violations": [
-          "STD_FALLBACK_USED_OR_UNKNOWN"
-        ]
-      },
-      {
-        "segment": "y_voice_1",
-        "violations": [
-          "Y_MISSING_MANDATORY_A2_SLOWDOWN"
+          "STD_FALLBACK_USED_OR_UNKNOWN",
+          "LOCAL_REWRITE_RECOVERY"
         ]
       }
     ],

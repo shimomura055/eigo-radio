@@ -10,7 +10,7 @@ Zのstage framework(er026_family_z_fiction_production_runner_01)と同型の骨�
 - mode: dry-run(副作用0・API 0)/ mock(偽client・偽TTS。実APIへ出ない)/ real(承認予算内のみ。本委任では起動しない)。
 - Part 1(Vocabulary & Expressions)・Part 2(Grammar & Sentence Structure)は委任_06でX/Zと同形に接続済み(Advancedのみ。kp stage内でKP/文法のHR待機点を共有し、
   使う側[tts_b1b/gate/assemble/pages/page_verify]の入口でfail-closed確認。共通核はer119/er120/er003_kp_*を呼ぶだけで再実装しない)。接続状態は study_text_slots.json に記録する。
-- 隔離: 本ファイルはYの新入口。X/Zのruntime・既存Prompt・閾値・辞書は無変更。Chunk TTS・中核数値v4/J2はY非適用。
+- 隔離: 本ファイルはYの新入口。X/Zのruntime・既存Prompt・閾値・辞書は無変更。中核数値v4/J2はY非適用。Chunk TTSはX方式を正式採用(委任_04、USER_02 ①。分割判定はaudio層の audit/chunk_tts_decision.json)。
 """
 from __future__ import annotations
 
@@ -311,6 +311,7 @@ def stage_seed_check(ctx) -> dict:
 
 STUDY_TEXT_SLOTS = {"part1_vocabulary_expressions": "接続済み(委任_06。Advancedのみ・5件[vocab_confirmed.json]・kp stage内で生成・使う側入口でfail-closed)",
                     "part2_grammar": "接続済み(委任_06。Advancedのみ・KP候補生成と同じ待機点の前に候補抽出・KPと1つのreview_request.md/rc=4・確定後Step B)"}
+CHUNK_TTS_MANIFEST = "applied_X_method"      # 委任_04/OT-44(b): X方式Chunk TTSをYへ正式採用(分割の有無は各levelの audit/chunk_tts_decision.json。1段落segmentは分割0)
 PART1_STAGE, PART1_JA_STAGE = "kp_part1_b1b", "kp_part1_ja_b1b"
 PART2_CAND_STAGE, PART2_FINAL_STAGE = "part2_cand_b1b", "part2_b1b"
 
@@ -981,7 +982,7 @@ def stage_tts(ctx, lv: str) -> dict:
                 s = ya.generate_y_a2_segments(ctx.out_dir, ja_title, style_profile=STYLE_PROFILE, guard=guard)
         res_path = f"{ctx.out_dir}/{lv}/audit/tts_generation_results.json"
         return json.dumps({"summary": s, "results_sha256": w62.file_sha(res_path)}, ensure_ascii=False, indent=2), \
-            {"tts_backend": ya.TTS_BACKEND, "narrator_voice": ya.narrator_voice(), "voices": ya.segment_voice_map(), "chunk_tts": "not_applicable_Y"}
+            {"tts_backend": ya.TTS_BACKEND, "narrator_voice": ya.narrator_voice(), "voices": ya.segment_voice_map(), "chunk_tts": CHUNK_TTS_MANIFEST}
 
     r = _ensure(ctx, prov, unit, _tts_input_sha(ctx, lv), f"{ctx.out_dir}/tts_{lv}_stage.json", runner)
     return {"status": r["status"], "unit": unit}
@@ -1157,6 +1158,7 @@ def write_final_manifest(ctx) -> str:
         models = _unit_models(n, by_tag)
         if models:
             ent["models_used"] = models                    # 費用ログ由来(実際に呼ばれたmodel_idと呼出数。LLM+TTS+ASRを含む)
+            ent["models_used_scope"] = "費用ログのstageタグ単位の集計(同じタグを共有するunit[translate/support/kp系]は同じ値)"
             llm = [m for m in models if not m.startswith(("gemini", "azure", "gpt-4o"))]
             if ent["actual_model_id"] is None and len(llm) == 1:
                 ent["actual_model_id"] = llm[0]
@@ -1178,7 +1180,7 @@ def write_final_manifest(ctx) -> str:
            "assembled": {lv: _glob_one(f"{ctx.out_dir}/{lv}/assembled/*.wav") for lv in LEVELS},
            "ja_article": _ja_path(ctx), "closing_record": tr.get("closing_record"),
            "stage_entries": entries,
-           "study_text_slots": STUDY_TEXT_SLOTS, "chunk_tts": "not_applicable_Y", "core_numeric_v4_j2": "not_applicable_Y",
+           "study_text_slots": STUDY_TEXT_SLOTS, "chunk_tts": CHUNK_TTS_MANIFEST, "core_numeric_v4_j2": "not_applicable_Y",
            "spent_jpy": round(ctx.budget.spent(), 4) if ctx.budget is not None else None}
     path = f"{ctx.out_dir}/final_manifest.json"
     _wj(path, man)

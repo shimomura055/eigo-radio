@@ -1728,24 +1728,24 @@
     ]
   },
   "y_voice_1": {
-    "state": "HUMAN_REVIEW_REQUIRED",
+    "state": "RESOLVED",
     "canonical_text_sha256": "e1c6b1f16f7f8cd804d268f7738059b8f62a40466e01bb87e312a68935f6f87a",
     "language": "en",
     "theme_id": "run_01",
     "level": "b1b",
     "segment_id": "y_voice_1",
-    "updated_at": "2026-10-25T21:11:34",
-    "reason": "最終status=STOPPED。3回試行してもASR検証に合格しませんでした",
-    "final_status": "STOPPED",
+    "updated_at": "2026-10-25T22:18:31",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
     "wav_path": "er121_output/family_y_production_01/redelivery_fee/run_01/b1b/narration/y_voice_1.wav",
-    "cumulative_tts_attempts": 3,
-    "cumulative_asr_calls": 3,
+    "cumulative_tts_attempts": 7,
+    "cumulative_asr_calls": 7,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
         "attempt": 1,
         "status": "OK",
-        "asr_text": "When I leave a notice saying nobody was home and head off, I feel a little down, too. But then I go to the next house. I really would like to see fewer redeliveries, and they are hard on us, too. Even so, I can't just say that customers should pay the cost. I think it makes more sense to cover the cost through the overall fee for carrying packages than to charge each customer who wasn't home for the cost of that redelivery. To do that, I want the company to think about whether free shipping for online orders should stay as it is. If they review shipping fees, I want them to review how the fees are set, too, so that the money really reaches the people who deliver the packages.",
+        "asr_text": "When I leave a notice saying nobody was home and head off, I feel a little down, too. But then I go to the next house. I really would like to see fewer re-deliveries, and they are hard on us, too. Even so, I can't just say that customers should pay the cost. I think it makes more sense to cover the cost through the overall fee for carrying packages than to charge each customer who wasn't home for the cost of that re-delivery. To do that, I want the company to think about whether free shipping for online orders should stay as it is. If they review shipping fees, I want them to review how the fees are set, too, so that the money really reaches the people who deliver the packages.",
         "asr_judgement": {
           "state": "PASS",
           "reason_code": "primary_pass",
@@ -1754,363 +1754,9 @@
           "role": "FULL_STORY",
           "lang": "en",
           "segment_key": "y_voice_1",
-          "audio_sha256": "5f440af044f8e55664fc230f348028a87b76a7588328083c2ca7310eefb4c8cd",
+          "audio_sha256": "ff5096e840c5944f2ec890449d9ce86f6f317c42bab7334188c848f10041d658",
           "primary": {
-            "text": "When I leave a notice saying nobody was home and head off, I feel a little down, too. But then I go to the next house. I really would like to see fewer redeliveries, and they are hard on us, too. Even so, I can't just say that customers should pay the cost. I think it makes more sense to cover the cost through the overall fee for carrying packages than to charge each customer who wasn't home for the cost of that redelivery. To do that, I want the company to think about whether free shipping for online orders should stay as it is. If they review shipping fees, I want them to review how the fees are set, too, so that the money really reaches the people who deliver the packages.",
-            "passed": true,
-            "label": "EXACT_MATCH",
-            "equivalence_basis": null,
-            "warning_labels": []
-          },
-          "secondary": {
-            "called": false,
-            "cached": false,
-            "engine": "azure",
-            "text": null,
-            "label": "",
-            "accepted": null,
-            "error": null,
-            "unavailable": false
-          },
-          "value_guard": {
-            "primary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            }
-          },
-          "negation_guard": {
-            "primary": false
-          },
-          "final_gate": {
-            "applied": true,
-            "value_guard": "NO_VALUES",
-            "negation_diff": false
-          },
-          "warnings": [],
-          "exclusion_rule": null,
-          "cost": {
-            "azure_calls": 0,
-            "azure_seconds": null,
-            "est_jpy": 0.0
-          },
-          "timing": {
-            "total_ms": 1,
-            "secondary_ms": 0
-          },
-          "technical_stop": null,
-          "length": {
-            "applied": true,
-            "primary_len": 684,
-            "secondary_len": null,
-            "max_len": 699,
-            "adopted_from": "primary",
-            "adopted_ok": true,
-            "surface_len": null,
-            "primary_ok": true
-          },
-          "adapter": {
-            "layers": [],
-            "azure_real_calls": 0,
-            "cost_guard_triggered": false,
-            "language": "en-US",
-            "segment_id": "y_voice_1",
-            "asr_text_present": true,
-            "cache": {
-              "calls": 0,
-              "hits": 0
-            }
-          }
-        },
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "EXACT_MATCH",
-        "connected_speech_info": null,
-        "semantic_equivalence_info": null,
-        "length_ok": true,
-        "final_length_ok": true,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 44.56,
-          "raw_leading_silence_seconds": 0.2,
-          "raw_trailing_silence_seconds": 0.28,
-          "trimmed_duration_seconds": 44.56,
-          "leading_margin_retained_seconds": 0.2,
-          "trailing_margin_retained_seconds": 0.28
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": true,
-        "repetition_qa_evidence": {
-          "flagged": true,
-          "duration_seconds": 44.56,
-          "method_a_ngram": {
-            "matches": [],
-            "flagged": false,
-            "flagged_matches": [],
-            "word_count": 135,
-            "canonical_known": true,
-            "min_words": 3
-          },
-          "method_d_spectral_long_lag": {
-            "top_matches": [
-              {
-                "similarity": 0.9949,
-                "time_a_seconds": 1.53,
-                "time_b_seconds": 22.89,
-                "lag_seconds": 21.36,
-                "run_length_seconds_at_thresh_0.85": 0.04
-              },
-              {
-                "similarity": 0.9947,
-                "time_a_seconds": 1.54,
-                "time_b_seconds": 37.07,
-                "lag_seconds": 35.53,
-                "run_length_seconds_at_thresh_0.85": 0.04
-              },
-              {
-                "similarity": 0.9944,
-                "time_a_seconds": 10.29,
-                "time_b_seconds": 31.26,
-                "lag_seconds": 20.97,
-                "run_length_seconds_at_thresh_0.85": 0.01
-              },
-              {
-                "similarity": 0.994,
-                "time_a_seconds": 22.89,
-                "time_b_seconds": 37.07,
-                "lag_seconds": 14.18
-              },
-              {
-                "similarity": 0.993,
-                "time_a_seconds": 10.14,
-                "time_b_seconds": 37.08,
-                "lag_seconds": 26.94
-              }
-            ],
-            "best_run_length_seconds": 0.04,
-            "min_lag_seconds": 1.0,
-            "sim_threshold": 0.85,
-            "decision_threshold_seconds": 0.12,
-            "acoustic_flagged": false,
-            "local_asr_confirmation": null,
-            "flagged": false
-          },
-          "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.61,
-            "time_a": 10.04,
-            "lag": 1.19,
-            "similarity_at_start": 0.7644,
-            "best_run_length_seconds": 0.61,
-            "lag_range_seconds": [
-              0.5,
-              2.0
-            ],
-            "sim_threshold": 0.7,
-            "decision_threshold_seconds": 0.6,
-            "flagged": true
-          },
-          "method_c_v2_window_check": null
-        },
-        "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_01/b1b/narration/attempts/y_voice_1_attempt1_englishstyleprefixwidemargin.wav"
-      },
-      {
-        "attempt": 2,
-        "status": "OK",
-        "asr_text": "When I leave a notice saying nobody was home and head off, I feel a little down, too. But then I go to the next house. I really would like to see fewer redeliveries, and they are hard on us, too. Even so, I can't just say that customers should pay the cost. I think it makes more sense to cover the cost through the overall fee for carrying packages than to charge each customer who wasn't home for the cost of that redelivery. To do that, I want the company to think about whether free shipping for online orders should stay as it is. If they review shipping fees, I want them to review how the fees are set, too, so that the money really reaches the people who deliver the packages.",
-        "asr_judgement": {
-          "state": "PASS",
-          "reason_code": "primary_pass",
-          "slot": 2,
-          "script_version": "v0",
-          "role": "FULL_STORY",
-          "lang": "en",
-          "segment_key": "y_voice_1",
-          "audio_sha256": "9f61e0c88f9cd72a4d897fd4b18d7479c3d25285cb68e4158f6d2d4a6b4bdfc4",
-          "primary": {
-            "text": "When I leave a notice saying nobody was home and head off, I feel a little down, too. But then I go to the next house. I really would like to see fewer redeliveries, and they are hard on us, too. Even so, I can't just say that customers should pay the cost. I think it makes more sense to cover the cost through the overall fee for carrying packages than to charge each customer who wasn't home for the cost of that redelivery. To do that, I want the company to think about whether free shipping for online orders should stay as it is. If they review shipping fees, I want them to review how the fees are set, too, so that the money really reaches the people who deliver the packages.",
-            "passed": true,
-            "label": "EXACT_MATCH",
-            "equivalence_basis": null,
-            "warning_labels": []
-          },
-          "secondary": {
-            "called": false,
-            "cached": false,
-            "engine": "azure",
-            "text": null,
-            "label": "",
-            "accepted": null,
-            "error": null,
-            "unavailable": false
-          },
-          "value_guard": {
-            "primary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            }
-          },
-          "negation_guard": {
-            "primary": false
-          },
-          "final_gate": {
-            "applied": true,
-            "value_guard": "NO_VALUES",
-            "negation_diff": false
-          },
-          "warnings": [],
-          "exclusion_rule": null,
-          "cost": {
-            "azure_calls": 0,
-            "azure_seconds": null,
-            "est_jpy": 0.0
-          },
-          "timing": {
-            "total_ms": 2,
-            "secondary_ms": 0
-          },
-          "technical_stop": null,
-          "length": {
-            "applied": true,
-            "primary_len": 684,
-            "secondary_len": null,
-            "max_len": 699,
-            "adopted_from": "primary",
-            "adopted_ok": true,
-            "surface_len": null,
-            "primary_ok": true
-          },
-          "adapter": {
-            "layers": [],
-            "azure_real_calls": 0,
-            "cost_guard_triggered": false,
-            "language": "en-US",
-            "segment_id": "y_voice_1",
-            "asr_text_present": true,
-            "cache": {
-              "calls": 0,
-              "hits": 0
-            }
-          }
-        },
-        "instruction_type": "english_style_prefix_wide_margin",
-        "audio_classification": "EXACT_MATCH",
-        "connected_speech_info": null,
-        "semantic_equivalence_info": null,
-        "length_ok": true,
-        "final_length_ok": true,
-        "verified": false,
-        "trim_info": {
-          "raw_duration_seconds": 44.08,
-          "raw_leading_silence_seconds": 0.24,
-          "raw_trailing_silence_seconds": 0.32,
-          "trimmed_duration_seconds": 44.08,
-          "leading_margin_retained_seconds": 0.24,
-          "trailing_margin_retained_seconds": 0.32
-        },
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": true,
-        "repetition_qa_evidence": {
-          "flagged": true,
-          "duration_seconds": 44.08,
-          "method_a_ngram": {
-            "matches": [],
-            "flagged": false,
-            "flagged_matches": [],
-            "word_count": 136,
-            "canonical_known": true,
-            "min_words": 3
-          },
-          "method_d_spectral_long_lag": {
-            "top_matches": [
-              {
-                "similarity": 0.9943,
-                "time_a_seconds": 25.14,
-                "time_b_seconds": 31.28,
-                "lag_seconds": 6.14,
-                "run_length_seconds_at_thresh_0.85": 0.07
-              },
-              {
-                "similarity": 0.9941,
-                "time_a_seconds": 27.36,
-                "time_b_seconds": 42.72,
-                "lag_seconds": 15.36,
-                "run_length_seconds_at_thresh_0.85": 0.15
-              },
-              {
-                "similarity": 0.9938,
-                "time_a_seconds": 32.27,
-                "time_b_seconds": 36.42,
-                "lag_seconds": 4.15,
-                "run_length_seconds_at_thresh_0.85": 0.06
-              },
-              {
-                "similarity": 0.9936,
-                "time_a_seconds": 11.66,
-                "time_b_seconds": 19.36,
-                "lag_seconds": 7.7
-              },
-              {
-                "similarity": 0.9926,
-                "time_a_seconds": 10.66,
-                "time_b_seconds": 15.81,
-                "lag_seconds": 5.15
-              }
-            ],
-            "best_run_length_seconds": 0.15,
-            "min_lag_seconds": 1.0,
-            "sim_threshold": 0.85,
-            "decision_threshold_seconds": 0.12,
-            "acoustic_flagged": true,
-            "local_asr_confirmation": {
-              "confirmed": false,
-              "overlap_ratio": 0.1818,
-              "lcs_words": 1,
-              "window_half_seconds_a": 1.5,
-              "window_half_seconds_b": 1.5,
-              "fragment_a": "to charge each customer who wasn't home for the cost",
-              "fragment_b": "I want the company to think about whether free shipping for online",
-              "overlap_ratio_threshold": 0.5,
-              "lcs_words_threshold": 3
-            },
-            "flagged": false
-          },
-          "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.67,
-            "time_a": 10.26,
-            "lag": 1.08,
-            "similarity_at_start": 0.709,
-            "best_run_length_seconds": 0.67,
-            "lag_range_seconds": [
-              0.5,
-              2.0
-            ],
-            "sim_threshold": 0.7,
-            "decision_threshold_seconds": 0.6,
-            "flagged": true
-          },
-          "method_c_v2_window_check": null
-        },
-        "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_01/b1b/narration/attempts/y_voice_1_attempt2_englishstyleprefixwidemargin.wav"
-      },
-      {
-        "attempt": 3,
-        "status": "OK",
-        "asr_text": "When I leave a notice saying nobody was home and head off, I feel a little down too, but then I go to the next house. I really would like to see fewer redeliveries, and they are hard on us, too. Even so, I can't just say that customers should pay the cost. I think it makes more sense to cover the cost through the overall fee for carrying packages than to charge each customer who wasn't home for the cost of that redelivery. To do that, I want the company to think about whether free shipping for online orders should stay as it is. If they review shipping fees, I want them to review how the fees are set too, so that the money really reaches the people who deliver the packages.",
-        "asr_judgement": {
-          "state": "PASS",
-          "reason_code": "primary_pass",
-          "slot": 3,
-          "script_version": "v0",
-          "role": "FULL_STORY",
-          "lang": "en",
-          "segment_key": "y_voice_1",
-          "audio_sha256": "bc73f2fd02d359a25d2e3530fe074267eeecbcb191cdde033c64efef7aeb659e",
-          "primary": {
-            "text": "When I leave a notice saying nobody was home and head off, I feel a little down too, but then I go to the next house. I really would like to see fewer redeliveries, and they are hard on us, too. Even so, I can't just say that customers should pay the cost. I think it makes more sense to cover the cost through the overall fee for carrying packages than to charge each customer who wasn't home for the cost of that redelivery. To do that, I want the company to think about whether free shipping for online orders should stay as it is. If they review shipping fees, I want them to review how the fees are set too, so that the money really reaches the people who deliver the packages.",
+            "text": "When I leave a notice saying nobody was home and head off, I feel a little down, too. But then I go to the next house. I really would like to see fewer re-deliveries, and they are hard on us, too. Even so, I can't just say that customers should pay the cost. I think it makes more sense to cover the cost through the overall fee for carrying packages than to charge each customer who wasn't home for the cost of that re-delivery. To do that, I want the company to think about whether free shipping for online orders should stay as it is. If they review shipping fees, I want them to review how the fees are set, too, so that the money really reaches the people who deliver the packages.",
             "passed": true,
             "label": "NORMALIZED_MATCH",
             "equivalence_basis": null,
@@ -2156,7 +1802,7 @@
           "technical_stop": null,
           "length": {
             "applied": true,
-            "primary_len": 682,
+            "primary_len": 686,
             "secondary_len": null,
             "max_len": 699,
             "adopted_from": "primary",
@@ -2185,19 +1831,19 @@
         "final_length_ok": true,
         "verified": false,
         "trim_info": {
-          "raw_duration_seconds": 45.56,
-          "raw_leading_silence_seconds": 0.34,
-          "raw_trailing_silence_seconds": 0.32,
-          "trimmed_duration_seconds": 45.56,
-          "leading_margin_retained_seconds": 0.34,
-          "trailing_margin_retained_seconds": 0.32
+          "raw_duration_seconds": 42.32,
+          "raw_leading_silence_seconds": 0.28,
+          "raw_trailing_silence_seconds": 0.3,
+          "trimmed_duration_seconds": 42.32,
+          "leading_margin_retained_seconds": 0.28,
+          "trailing_margin_retained_seconds": 0.3
         },
         "disfluency_checked": false,
         "disfluency_evidence": null,
         "repetition_qa_checked": true,
         "repetition_qa_evidence": {
           "flagged": true,
-          "duration_seconds": 45.56,
+          "duration_seconds": 42.32,
           "method_a_ngram": {
             "matches": [],
             "flagged": false,
@@ -2209,62 +1855,52 @@
           "method_d_spectral_long_lag": {
             "top_matches": [
               {
-                "similarity": 0.9947,
-                "time_a_seconds": 39.28,
-                "time_b_seconds": 43.05,
-                "lag_seconds": 3.77,
-                "run_length_seconds_at_thresh_0.85": 0.12
+                "similarity": 0.9951,
+                "time_a_seconds": 0.28,
+                "time_b_seconds": 22.41,
+                "lag_seconds": 22.13,
+                "run_length_seconds_at_thresh_0.85": 0.04
               },
               {
-                "similarity": 0.994,
-                "time_a_seconds": 41.2,
-                "time_b_seconds": 45.3,
-                "lag_seconds": 4.1,
+                "similarity": 0.993,
+                "time_a_seconds": 21.14,
+                "time_b_seconds": 34.72,
+                "lag_seconds": 13.58,
                 "run_length_seconds_at_thresh_0.85": 0.03
               },
               {
-                "similarity": 0.9939,
-                "time_a_seconds": 30.2,
-                "time_b_seconds": 32.0,
-                "lag_seconds": 1.8,
-                "run_length_seconds_at_thresh_0.85": 0.01
+                "similarity": 0.993,
+                "time_a_seconds": 21.14,
+                "time_b_seconds": 31.28,
+                "lag_seconds": 10.14,
+                "run_length_seconds_at_thresh_0.85": 0.04
               },
               {
-                "similarity": 0.9938,
-                "time_a_seconds": 1.99,
-                "time_b_seconds": 22.32,
-                "lag_seconds": 20.33
+                "similarity": 0.9928,
+                "time_a_seconds": 22.41,
+                "time_b_seconds": 39.54,
+                "lag_seconds": 17.13
               },
               {
-                "similarity": 0.9938,
-                "time_a_seconds": 17.18,
-                "time_b_seconds": 22.32,
-                "lag_seconds": 5.14
+                "similarity": 0.9927,
+                "time_a_seconds": 29.83,
+                "time_b_seconds": 34.14,
+                "lag_seconds": 4.31
               }
             ],
-            "best_run_length_seconds": 0.12,
+            "best_run_length_seconds": 0.04,
             "min_lag_seconds": 1.0,
             "sim_threshold": 0.85,
             "decision_threshold_seconds": 0.12,
-            "acoustic_flagged": true,
-            "local_asr_confirmation": {
-              "confirmed": false,
-              "overlap_ratio": 0.0952,
-              "lcs_words": 1,
-              "window_half_seconds_a": 1.5,
-              "window_half_seconds_b": 1.5,
-              "fragment_a": "fees, I want them to review how the fees are",
-              "fragment_b": "so that the money really reaches the people who deliver the",
-              "overlap_ratio_threshold": 0.5,
-              "lcs_words_threshold": 3
-            },
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
             "flagged": false
           },
           "method_d_prime_spectral_short_lag": {
             "run_length_seconds": 0.83,
-            "time_a": 42.46,
-            "lag": 1.39,
-            "similarity_at_start": 0.8734,
+            "time_a": 2.12,
+            "lag": 1.85,
+            "similarity_at_start": 0.741,
             "best_run_length_seconds": 0.83,
             "lag_range_seconds": [
               0.5,
@@ -2276,7 +1912,525 @@
           },
           "method_c_v2_window_check": null
         },
-        "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_01/b1b/narration/attempts/y_voice_1_attempt3_englishstyleprefixwidemargin.wav"
+        "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_01/b1b/narration/attempts/y_voice_1_attempt4_englishstyleprefixwidemargin.wav"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "asr_text": "When I leave a notice saying nobody was home and head off, I feel a little down, too. But then I go to the next house. I really would like to see fewer redeliveries, and they are hard on us, too. Even so, I can't just say that customers should pay the cost. I think it makes more sense to cover the cost through the overall fee for carrying packages than to charge each customer who wasn't home for the cost of that redelivery. To do that, I want the company to think about whether free shipping for online orders should stay as it is. If they review shipping fees, I want them to review how the fees are set, too, so that the money really reaches the people who deliver the packages.",
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 2,
+          "script_version": "v0",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "y_voice_1",
+          "audio_sha256": "1dd824252c695d05115a47a3996f13efe8b6cdd2cc7e6747808a22712c24dfd0",
+          "primary": {
+            "text": "When I leave a notice saying nobody was home and head off, I feel a little down, too. But then I go to the next house. I really would like to see fewer redeliveries, and they are hard on us, too. Even so, I can't just say that customers should pay the cost. I think it makes more sense to cover the cost through the overall fee for carrying packages than to charge each customer who wasn't home for the cost of that redelivery. To do that, I want the company to think about whether free shipping for online orders should stay as it is. If they review shipping fees, I want them to review how the fees are set, too, so that the money really reaches the people who deliver the packages.",
+            "passed": true,
+            "label": "EXACT_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 1,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 684,
+            "secondary_len": null,
+            "max_len": 699,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "y_voice_1",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 0,
+              "hits": 0
+            }
+          }
+        },
+        "instruction_type": "english_style_prefix_wide_margin",
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "semantic_equivalence_info": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "verified": false,
+        "trim_info": {
+          "raw_duration_seconds": 44.12,
+          "raw_leading_silence_seconds": 0.26,
+          "raw_trailing_silence_seconds": 0.36,
+          "trimmed_duration_seconds": 44.11,
+          "leading_margin_retained_seconds": 0.26,
+          "trailing_margin_retained_seconds": 0.35
+        },
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": true,
+          "duration_seconds": 44.11,
+          "method_a_ngram": {
+            "matches": [],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 135,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.997,
+                "time_a_seconds": 10.53,
+                "time_b_seconds": 42.5,
+                "lag_seconds": 31.97,
+                "run_length_seconds_at_thresh_0.85": 0.01
+              },
+              {
+                "similarity": 0.9951,
+                "time_a_seconds": 29.11,
+                "time_b_seconds": 42.48,
+                "lag_seconds": 13.37,
+                "run_length_seconds_at_thresh_0.85": 0.03
+              },
+              {
+                "similarity": 0.9946,
+                "time_a_seconds": 16.91,
+                "time_b_seconds": 29.09,
+                "lag_seconds": 12.18,
+                "run_length_seconds_at_thresh_0.85": 0.04
+              },
+              {
+                "similarity": 0.9945,
+                "time_a_seconds": 40.56,
+                "time_b_seconds": 42.48,
+                "lag_seconds": 1.92
+              },
+              {
+                "similarity": 0.9943,
+                "time_a_seconds": 29.08,
+                "time_b_seconds": 33.62,
+                "lag_seconds": 4.54
+              }
+            ],
+            "best_run_length_seconds": 0.04,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.61,
+            "time_a": 31.0,
+            "lag": 1.62,
+            "similarity_at_start": 0.7074,
+            "best_run_length_seconds": 0.61,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": true
+          },
+          "method_c_v2_window_check": null
+        },
+        "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_01/b1b/narration/attempts/y_voice_1_attempt5_englishstyleprefixwidemargin.wav"
+      },
+      {
+        "attempt": 3,
+        "status": "OK",
+        "asr_text": "When I leave a notice saying nobody was home and head off, I feel a little down too. But then I go to the next house. I really would like to see fewer re-deliveries, and they are hard on us too. Even so, I can't just say that customers should pay the cost. I think it makes more sense to cover the cost through the overall fee for carrying packages than to charge each customer who wasn't home for the cost of that re-delivery. To do that, I want the company to think about whether free shipping for online orders should stay as it is. If they review shipping fees, I want them to review how the fees are set too, so that the money really reaches the people who deliver the packages.",
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 3,
+          "script_version": "v0",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "y_voice_1",
+          "audio_sha256": "821f2c180ec0cea702ddd6b4ec3bd2cb873dfbc5123b842f4db5e1a9cb6db6cb",
+          "primary": {
+            "text": "When I leave a notice saying nobody was home and head off, I feel a little down too. But then I go to the next house. I really would like to see fewer re-deliveries, and they are hard on us too. Even so, I can't just say that customers should pay the cost. I think it makes more sense to cover the cost through the overall fee for carrying packages than to charge each customer who wasn't home for the cost of that re-delivery. To do that, I want the company to think about whether free shipping for online orders should stay as it is. If they review shipping fees, I want them to review how the fees are set too, so that the money really reaches the people who deliver the packages.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 1,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 683,
+            "secondary_len": null,
+            "max_len": 699,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "y_voice_1",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 0,
+              "hits": 0
+            }
+          }
+        },
+        "instruction_type": "english_style_prefix_wide_margin",
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "semantic_equivalence_info": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "verified": false,
+        "trim_info": {
+          "raw_duration_seconds": 44.36,
+          "raw_leading_silence_seconds": 0.22,
+          "raw_trailing_silence_seconds": 0.22,
+          "trimmed_duration_seconds": 44.36,
+          "leading_margin_retained_seconds": 0.22,
+          "trailing_margin_retained_seconds": 0.22
+        },
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": true,
+          "duration_seconds": 44.36,
+          "method_a_ngram": {
+            "matches": [],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 135,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.994,
+                "time_a_seconds": 24.11,
+                "time_b_seconds": 29.27,
+                "lag_seconds": 5.16,
+                "run_length_seconds_at_thresh_0.85": 0.01
+              },
+              {
+                "similarity": 0.9939,
+                "time_a_seconds": 29.42,
+                "time_b_seconds": 42.93,
+                "lag_seconds": 13.51,
+                "run_length_seconds_at_thresh_0.85": 0.04
+              },
+              {
+                "similarity": 0.9938,
+                "time_a_seconds": 1.92,
+                "time_b_seconds": 31.31,
+                "lag_seconds": 29.39,
+                "run_length_seconds_at_thresh_0.85": 0.02
+              },
+              {
+                "similarity": 0.9917,
+                "time_a_seconds": 20.22,
+                "time_b_seconds": 26.08,
+                "lag_seconds": 5.86
+              },
+              {
+                "similarity": 0.9913,
+                "time_a_seconds": 19.87,
+                "time_b_seconds": 26.45,
+                "lag_seconds": 6.58
+              }
+            ],
+            "best_run_length_seconds": 0.04,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.6,
+            "time_a": 31.16,
+            "lag": 1.45,
+            "similarity_at_start": 0.766,
+            "best_run_length_seconds": 0.6,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": true
+          },
+          "method_c_v2_window_check": null
+        },
+        "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_01/b1b/narration/attempts/y_voice_1_attempt6_englishstyleprefixwidemargin.wav"
+      },
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "When I leave a notice saying nobody was home and head off, I feel a little down, too. But then I go to the next house. I really would like to see fewer repeat deliveries, and they are hard on us, too. Even so, I can't just say that customers should pay the cost. I think it makes more sense to cover the cost through the overall fee for carrying packages than to charge each customer who wasn't home for the cost of that redelivery. To do that, I want the company to think about whether free shipping for online orders should stay as it is. If they review shipping fees, I want them to review how the fees are set, too, so that the money really reaches the people who deliver the packages.",
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v1",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "y_voice_1",
+          "audio_sha256": "2c8e4b6eac2102a275af69b79adb5cf65a84c374a45d967117051bc316bd9e48",
+          "primary": {
+            "text": "When I leave a notice saying nobody was home and head off, I feel a little down, too. But then I go to the next house. I really would like to see fewer repeat deliveries, and they are hard on us, too. Even so, I can't just say that customers should pay the cost. I think it makes more sense to cover the cost through the overall fee for carrying packages than to charge each customer who wasn't home for the cost of that redelivery. To do that, I want the company to think about whether free shipping for online orders should stay as it is. If they review shipping fees, I want them to review how the fees are set, too, so that the money really reaches the people who deliver the packages.",
+            "passed": true,
+            "label": "EXACT_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [
+            "LR_REWRITTEN"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 1,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 689,
+            "secondary_len": null,
+            "max_len": 704,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "y_voice_1",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 0,
+              "hits": 0
+            }
+          }
+        },
+        "instruction_type": "english_style_prefix_wide_margin",
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "semantic_equivalence_info": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "verified": true,
+        "trim_info": {
+          "raw_duration_seconds": 42.96,
+          "raw_leading_silence_seconds": 0.28,
+          "raw_trailing_silence_seconds": 0.42,
+          "trimmed_duration_seconds": 42.89,
+          "leading_margin_retained_seconds": 0.28,
+          "trailing_margin_retained_seconds": 0.35
+        },
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": false,
+          "duration_seconds": 42.89,
+          "method_a_ngram": {
+            "matches": [],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 135,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.9951,
+                "time_a_seconds": 21.46,
+                "time_b_seconds": 27.0,
+                "lag_seconds": 5.54,
+                "run_length_seconds_at_thresh_0.85": 0.02
+              },
+              {
+                "similarity": 0.9934,
+                "time_a_seconds": 30.77,
+                "time_b_seconds": 41.86,
+                "lag_seconds": 11.09,
+                "run_length_seconds_at_thresh_0.85": 0.02
+              },
+              {
+                "similarity": 0.9925,
+                "time_a_seconds": 17.42,
+                "time_b_seconds": 21.47,
+                "lag_seconds": 4.05,
+                "run_length_seconds_at_thresh_0.85": 0.02
+              },
+              {
+                "similarity": 0.9922,
+                "time_a_seconds": 21.47,
+                "time_b_seconds": 40.87,
+                "lag_seconds": 19.4
+              },
+              {
+                "similarity": 0.9922,
+                "time_a_seconds": 21.47,
+                "time_b_seconds": 33.72,
+                "lag_seconds": 12.25
+              }
+            ],
+            "best_run_length_seconds": 0.02,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.54,
+            "time_a": 25.34,
+            "lag": 1.59,
+            "similarity_at_start": 0.722,
+            "best_run_length_seconds": 0.54,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": false
+          },
+          "method_c_v2_window_check": null
+        },
+        "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_01/b1b/narration/attempts/y_voice_1_attempt7_englishstyleprefixwidemargin.wav"
       }
     ]
   },

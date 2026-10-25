@@ -115,7 +115,7 @@ class FullMockRun(unittest.TestCase):
     def test_all_stages_completed_and_manifest(self):
         man = json.load(open(f"{self.out}/final_manifest.json", encoding="utf-8"))
         self.assertEqual(man["entry_status"], "FAMILY_Y_PRODUCTION")
-        self.assertEqual(man["chunk_tts"], "not_applicable_Y")
+        self.assertEqual(man["chunk_tts"], "applied_X_method")     # OT-44(b): USER_02 ①でX方式Chunkを正式採用した後の表記
         self.assertEqual(man["core_numeric_v4_j2"], "not_applicable_Y")
         self.assertTrue(man["closing_record"]["routing_key"])           # closing_record(実model/routing/prompt sha)が最終成果物に残る
         self.assertTrue(man["closing_record"]["prompt_sha256"])

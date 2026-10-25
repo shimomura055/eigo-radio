@@ -1,9 +1,67 @@
 {
   "family": "Y",
   "level": "b1b",
-  "chunk_tts_applicable": false,
-  "note": "Family Y: Chunk TTSは非適用(ユーザー承認原文2026-10-25 FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01はFamily X/Zのみ。YL-B08=判断待ち/OPEN-520)。Yの各Voiceパートは1段落でありXの段落単位chunkの前提(2段落以上のpart)に該当しない。承認時は適用コードを新設する(本実装にはYのchunk分割コードを持たない)。",
+  "chunk_tts_applicable": true,
+  "chunk_tts_applied_at_this_level": true,
+  "method": "X_paragraph_0.2s",
+  "decision": "applied_X_method",
+  "approval": "APPROVED_FOR_PRODUCTION",
+  "approval_ref": "docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER_02.md §1-① (Family X方式のY正式採用、APPROVED_FOR_PRODUCTION)",
+  "z_b_r1_adopted": false,
+  "note": "Family Y: Chunk TTSはX方式(段落単位chunk+0.2秒ポーズ)を正式採用(USER_02 ①)。分割は各Y segment(lead/intro/voice/closing)の段落単位に限り、segment境界(話者切替=intro→voice、voice→次のintro)は結合しない。段落が1つのsegmentは分割しない(X規則どおり=従来の1 call)。",
   "ledger_ids": [
     "YL-B08"
-  ]
+  ],
+  "segments": {
+    "y_lead": {
+      "chunked": false,
+      "paragraphs": 1,
+      "reason": "paragraphs=1<2",
+      "chunk_ids": []
+    },
+    "y_intro_1": {
+      "chunked": false,
+      "paragraphs": 1,
+      "reason": "paragraphs=1<2",
+      "chunk_ids": []
+    },
+    "y_voice_1": {
+      "chunked": false,
+      "paragraphs": 1,
+      "reason": "paragraphs=1<2",
+      "chunk_ids": []
+    },
+    "y_intro_2": {
+      "chunked": false,
+      "paragraphs": 1,
+      "reason": "paragraphs=1<2",
+      "chunk_ids": []
+    },
+    "y_voice_2": {
+      "chunked": false,
+      "paragraphs": 1,
+      "reason": "paragraphs=1<2",
+      "chunk_ids": []
+    },
+    "y_intro_3": {
+      "chunked": false,
+      "paragraphs": 1,
+      "reason": "paragraphs=1<2",
+      "chunk_ids": []
+    },
+    "y_voice_3": {
+      "chunked": false,
+      "paragraphs": 1,
+      "reason": "paragraphs=1<2",
+      "chunk_ids": []
+    },
+    "y_closing": {
+      "chunked": false,
+      "paragraphs": 1,
+      "reason": "paragraphs=1<2",
+      "chunk_ids": []
+    }
+  },
+  "planner_version": "chunk_tts_v1_x_paragraph_z_r1_20261025",
+  "extra_pause_seconds": 0.2
 }
