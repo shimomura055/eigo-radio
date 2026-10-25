@@ -571,3 +571,4 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 
 - 2026-10-25 | FAMILY-X-NEWS-2ARTICLES-E2E-02 委任_04 | 記事B(uk_train_speaker_playback)Std/Adv最終版=ユーザー試聴PASS・正式承認の記録(CLOSED_USER_PASS)。OPEN-467/UDR #166/DECISION_LOG更新。API 0円・変更0。報告=docs/pm/RESULT_PACKET_FXN2_CO.md
 - 2026-10-26 | FAMILY-Y-PRODUCTION-LAUNCH-01 委任_09 | E-1(宅配 redelivery_fee run_01)のユーザー試聴承認3 segmentを正式経路へ反映→gate PASS・assemble・pages・page_verify ok・限定公開まで完走。Y Part 2実走確認・OPEN-517 Y tally(F1/F2発火0、READING_MATCH適用0=runtime未確認)。API 0円。報告=docs/pm/RESULT_PACKET_YPL9.md
+- 2026-10-26 | FAMILY-Y-PRODUCTION-LAUNCH-01 委任_10 | 委任_09のFable受入判定: Part 2実走=commit(d2bbce56c)後の正式経路(a)と確認、Y列=Part 2/Trial-08 PRODUCTION_WIRED(Y)、KP/文法HR=限定PRODUCTION_WIRED(HRなし経路)、OPEN-517 Y=配線済み・runtime未確認。API 0・費用0円。報告=docs/pm/RESULT_PACKET_YPL10.md
