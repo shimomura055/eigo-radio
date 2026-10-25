@@ -1,0 +1,73 @@
+以下の各英語key_phraseは、教材として最終確定した英語表現です。各項目について、日本語グロス(japanese_gloss)を新しく書いてください(全項目、日本語グロスは未生成です)。
+
+日本語グロスは、このkey_phraseが【記事本文】のこの箇所で実際に表している意味を、日本語で短く自然に表したものにしてください。本文固有の固有名詞・数値・この記事だけの出来事はグロスに入れないでください。
+
+【新規生成の規則】
+- source_sentenceと記事本文の前後の文脈は、key_phraseの語義と用法(字義どおりか、比喩・慣用か)を決めるために使ってください(文中の固有名詞・数値・この記事だけの出来事をグロスに入れないでください)。
+
+【範囲の規則(meaning_in_text_enとjapanese_glossの両方に適用)】
+- 本文で使われている語義・用法(字義どおりか、比喩・慣用か)を選んでください。ただし、japanese_glossが表すのはkey_phraseの範囲だけです。key_phraseに含まれていない、本文側の否定・主語・時制・具体的な対象・場面は、japanese_glossに持ち込まないでください(例: 本文が「the plan did not work out」でkey_phraseが「work out」なら、japanese_glossは「うまくいかなかった」ではなく「うまくいく」)。
+
+【意味の決め方(各項目、japanese_glossを書く前に、この順で必ず出力してください)】
+- meaning_in_text_en: 【記事本文】のこの箇所(source_sentenceとその前後の文)でkey_phrase【全体】が表している意味を、平易な英語1文で書く。key_phraseの語をそのまま繰り返さず言い換える。本文の話題の一側面(例: 差の大きさ、時間、量など)だけに絞らず、key_phrase全体が何を言っているかを書く。字義どおりの用法なら字義の意味。比喩・慣用・筆者が作った比喩なら、その比喩が指す一般的な意味(what it stands for)を書く。記事固有の固有名詞・数値は入れない。
+- naive_ja: key_phraseの英単語を、それぞれ日本語の対応語に置き換えただけの訳を、意味の解釈を加えずに書く。
+- naive_ja_conveys: 日本語だけを読む学習者が、naive_jaからmeaning_in_text_enの意味を受け取れるか。yes(同じ意味・同じ比喩が日本語でも通じる、または字義どおりの用法)/ partly(一部が落ちる)/ no(字義の動作・物の像しか伝わらず、本文での意味は伝わらない)。
+- japanese_gloss: yesなら、naive_jaをそのまま写さず、自然で平易な訳(英和辞典の定訳や日本語の慣用表現があればそれ)を選ぶ。partly/noのときは、まず、このkey_phraseのこの語義に日本語の定訳(英和辞典の見出し訳や日本語として定着した言い方。例: cut cornersなら「手を抜く」、break evenなら「収支がとんとんになる」)があればそれを優先し、無い場合だけ、naive_jaの字義の像を使わず、meaning_in_text_enの意味【全体】を日本語の慣用表現か平易な短い言い換えで表す(意味の一部だけを取り出した語にしない)。naive_jaの語を別の語に置き換えるときは、動作主(誰が)・動詞の意味を変えない(例: 「誰も出なかった電話」を「誰もかけたくなかった電話」のように、動詞の意味を別の意味にずらさない)。key_phrase全体(目的語・修飾語を含む)の意味を落とさず、key_phraseと同じ品詞・同じ程度の長さの句にする(説明文・定義文にしない)。
+
+【出力欄の規則】
+- current_gloss_consistent: 全項目で必ずfalse(日本語グロスは未生成のため)。
+- qa_reflects_all_key_phrase_words: japanese_glossがkey_phrase全体の意味を過不足なく反映できている場合のみPASS。
+- added_word_mappings: added_content_wordsの各語について、japanese_glossの中でその語の意味を表している部分を、japanese_glossからそのまま切り出して書いてください(english_wordには対応させる英語の語、複数語をまとめた句でもかまいません。japanese_spanにはjapanese_glossに含まれない文字列や、「～」などの記号だけを書かないでください)。複数の英語語が一つの日本語表現でまとめて表されている場合は、同じ部分を複数の語に対応させてかまいません。added_content_wordsが空の項目は、added_word_mappingsを空配列にしてください。
+- reasoning: 判断の根拠を短く書いてください。
+
+【日本語グロスの規則(承認済み選定Promptと同一)】
+選ぶ表現は必ず本文中の実表現(source_span)に対応させ、短く自然な日本語グロスを付けてください。
+
+日本語グロスは、辞書的に正しいだけでなく、日本人の英語学習者が聞いてすぐ意味を理解できる、自然で平易な現代日本語にしてください。直訳調や、「常態」「是正」のような過度に硬い報道語・漢語、一般的な学習者には伝わりにくい表現は避けてください。
+
+日本語グロスには、括弧（　）を使って別の訳し方・専門用語・補足情報を書き添えないでください。音声だけで聞いてそのまま意味が伝わる、平易な言い換えだけの一文にしてください。
+
+日本語グロスは、辞書的な表記として自然な範囲であれば「～」「〜」を使ってもかまいません(例: 「～を示す」)。ただし「…」のようなプレースホルダー記号は使わないでください。日本語グロスに数字を含める場合は、算用数字(1、2、3…)ではなく漢数字(一、二、三…)で書いてください。
+
+「ソロ旅行を～％とする」のように、数値を補わないと意味が成立しない句・日本語グロス(数値の穴埋めを必要とする不完全な表現)は選ばないでください。それ単体で意味が成立する句・グロスを選んでください。
+
+【対象項目】
+[
+  {
+    "rank": 1,
+    "key_phrase": "take the trouble",
+    "display_phrase_before_canonicalization": "takes the trouble",
+    "source_sentence": "I'm the one who thinks about how to get my packages and takes the trouble",
+    "added_content_words": []
+  },
+  {
+    "rank": 2,
+    "key_phrase": "ahead of time",
+    "display_phrase_before_canonicalization": "ahead of time",
+    "source_sentence": "So you don't know ahead of time when they'll arrive",
+    "added_content_words": []
+  },
+  {
+    "rank": 3,
+    "key_phrase": "delivery time slot",
+    "display_phrase_before_canonicalization": "delivery time slot",
+    "source_sentence": "But once, I chose a morning delivery time slot, and the package didn't come",
+    "added_content_words": []
+  }
+]
+
+【記事本文(参考)】
+# Package Redelivery: Different Voices
+
+If you’re not home when a package comes, you can have it delivered again. What if the person getting it had to pay for this, as well as the usual delivery fee? Here are the views of three people with different lives and points of view. These are not stories about specific real people. They are voices made from several opinions shared online and in other places.
+
+When I leave a delivery notice and head off, I do feel a little down. But then I go on to the next house. I wish there were fewer redeliveries, if possible. They really are hard on us. Even so, I can’t just say customers should pay for them. I think it makes more sense to put the cost into the overall fee for package delivery. That is better than charging each customer who missed a delivery for redelivery. I’d also like companies to think about free shipping on online orders. Should it stay as it is? If they look again at shipping fees, I want them to look at how the fees are set, too. I want the money to really go to the people delivering the packages.
+
+It just doesn’t feel right to me to pay for redelivery. My husband and I are both out of the house for work. For packages where I can choose, I pick a day and time when I know I’ll be home. But once, I chose a morning delivery time slot, and the package didn’t come. I went out to do an errand. When I got back, there was a delivery notice. Many packages don’t let you choose a delivery time, either. So you don’t know ahead of time when they’ll arrive. Before they charge us, I want them to first do a better job of coming at the time we chose. I also want them to tell us when the package will arrive. The delivery workers are probably having a hard time because there are too few of them. Maybe nothing can be done about that. But I can’t accept having to pay for it. Am I wrong to feel that way?
+
+I try to pick up packages at a delivery office or a pickup locker. That way, I don’t cause trouble with redelivery. It’s handy to pick them up when it works for me. But some products can’t be sent to a pickup locker. Even if I ask for a package to go to a delivery office, it can arrive late. So sometimes, in the end, I have to receive it in person. Still, I honestly think it’s wrong that I pay the same fee as people who are always out and ask for redelivery. I’m the one who thinks about how to get my packages and takes the trouble. Redelivery uses the delivery worker’s time, so I think it’s fine to charge for it. I’d be okay with making the first redelivery free. People who are repeatedly out could pay for it. Maybe that’s only my view, though, because the delivery office is nearby and I can choose how to get my packages.
+
+The person who leaves a delivery notice, the person who comes back and sees it, and the person who stops at a pickup locker all want fewer redeliveries. They care about different things: money for package delivery workers, waiting for a promised morning delivery, and how the effort of going to a pickup locker is rewarded. They disagree about whether people who are repeatedly out should pay, or whether the cost should be covered by the overall shipping fee. Some packages do not arrive in the morning. Some cannot be sent to pickup lockers. The person receiving them cannot solve these problems alone. On the day your next package is supposed to arrive, where will you be? What will you be doing while you wait?
+
+## In one line
+Three people all want fewer package redeliveries, but they do not agree on who should pay. Customers cannot always prevent redeliveries on their own. Packages may not arrive at the promised time, and some cannot be sent to a pickup locker.

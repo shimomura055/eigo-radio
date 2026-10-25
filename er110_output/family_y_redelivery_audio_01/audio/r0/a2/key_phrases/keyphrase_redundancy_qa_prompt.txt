@@ -1,0 +1,63 @@
+以下は、同じ記事から選ばれた3件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。3件から作れる全てのペア(3組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず3組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Package Redelivery: Different Voices
+
+If you’re not home when a package comes, you can have it delivered again. What if the person getting it had to pay for this, as well as the usual delivery fee? Here are the views of three people with different lives and points of view. These are not stories about specific real people. They are voices made from several opinions shared online and in other places.
+
+When I leave a delivery notice and head off, I do feel a little down. But then I go on to the next house. I wish there were fewer redeliveries, if possible. They really are hard on us. Even so, I can’t just say customers should pay for them. I think it makes more sense to put the cost into the overall fee for package delivery. That is better than charging each customer who missed a delivery for redelivery. I’d also like companies to think about free shipping on online orders. Should it stay as it is? If they look again at shipping fees, I want them to look at how the fees are set, too. I want the money to really go to the people delivering the packages.
+
+It just doesn’t feel right to me to pay for redelivery. My husband and I are both out of the house for work. For packages where I can choose, I pick a day and time when I know I’ll be home. But once, I chose a morning delivery time slot, and the package didn’t come. I went out to do an errand. When I got back, there was a delivery notice. Many packages don’t let you choose a delivery time, either. So you don’t know ahead of time when they’ll arrive. Before they charge us, I want them to first do a better job of coming at the time we chose. I also want them to tell us when the package will arrive. The delivery workers are probably having a hard time because there are too few of them. Maybe nothing can be done about that. But I can’t accept having to pay for it. Am I wrong to feel that way?
+
+I try to pick up packages at a delivery office or a pickup locker. That way, I don’t cause trouble with redelivery. It’s handy to pick them up when it works for me. But some products can’t be sent to a pickup locker. Even if I ask for a package to go to a delivery office, it can arrive late. So sometimes, in the end, I have to receive it in person. Still, I honestly think it’s wrong that I pay the same fee as people who are always out and ask for redelivery. I’m the one who thinks about how to get my packages and takes the trouble. Redelivery uses the delivery worker’s time, so I think it’s fine to charge for it. I’d be okay with making the first redelivery free. People who are repeatedly out could pay for it. Maybe that’s only my view, though, because the delivery office is nearby and I can choose how to get my packages.
+
+The person who leaves a delivery notice, the person who comes back and sees it, and the person who stops at a pickup locker all want fewer redeliveries. They care about different things: money for package delivery workers, waiting for a promised morning delivery, and how the effort of going to a pickup locker is rewarded. They disagree about whether people who are repeatedly out should pay, or whether the cost should be covered by the overall shipping fee. Some packages do not arrive in the morning. Some cannot be sent to pickup lockers. The person receiving them cannot solve these problems alone. On the day your next package is supposed to arrive, where will you be? What will you be doing while you wait?
+
+## In one line
+Three people all want fewer package redeliveries, but they do not agree on who should pay. Customers cannot always prevent redeliveries on their own. Packages may not arrive at the promised time, and some cannot be sent to a pickup locker.
+
+【Key Phrase 3件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "take the trouble",
+    "japanese_gloss": "わざわざ手間をかける",
+    "source_sentence": "I'm the one who thinks about how to get my packages and takes the trouble"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "ahead of time",
+    "japanese_gloss": "前もって",
+    "source_sentence": "So you don't know ahead of time when they'll arrive"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "delivery time slot",
+    "japanese_gloss": "配達時間帯",
+    "source_sentence": "But once, I chose a morning delivery time slot, and the package didn't come"
+  }
+]
