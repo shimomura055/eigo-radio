@@ -132,3 +132,10 @@ def test_score_diff_counts_added_removed():
     a = S.classify_ja("約42から46メートル", "moon_shrinking")
     d = S.diff_before_after(b, a)
     assert d["unneeded_delta"] == -1 and d["must"]["added"] == ["約42〜46"]
+
+
+def test_v4_addendum_extends_v2_not_v3_and_v3_unchanged():
+    assert D.B3_ADDENDUM_V4.startswith(D.B3_ADDENDUM_V2) and D.B3_ADDENDUM_V3.startswith(D.B3_ADDENDUM_V2)
+    assert D.B3_ADDENDUM_V4 != D.B3_ADDENDUM_V3 and "すべて満たす" in D.B3_ADDENDUM_V3_FIELD
+    assert "①〜③のどれか" in D.B3_ADDENDUM_V4_FIELD and "最大2個" in D.B3_ADDENDUM_V4_FIELD and "空の配列" in D.B3_ADDENDUM_V4_FIELD
+    assert D.B3_ADDENDA["v4"] is D.B3_ADDENDUM_V4

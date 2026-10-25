@@ -87,8 +87,23 @@ B3_ADDENDUM_V3_FIELD = (
     "最大2個です。採用したFact(selected_fact_ids)に含まれる台帳の数値だけを入れてください。必要な数値がない記事は空の配列[]にしてください(無理に入れない)。この欄の数値をselected_storylineの1行に自然に含められる場合は含めてかまいませんが、含めなくてもかまいません。"
 )
 B3_ADDENDUM_V3 = B3_ADDENDUM_V2 + B3_ADDENDUM_V3_FIELD
+# 委任_04 v4(1回だけの指示文修正、PREREGISTERED_CRITERIA_03 追補): v3の判断基準が『すべてを満たす(AND)』と読まれ、ig_nobelで欄が2/2空だったため、
+# ユーザー原文§3の5観点を『①〜③のどれか かつ ④⑤』の論理構造に整理。v3は不変で残す。
+B3_ADDENDUM_V4_FIELD = (
+    "\n\n【追加の指示2: reader_must_hear_numbers欄(出力JSONの追加フィールド)】\n"
+    "出力JSONのreader_must_hear_numbers(文字列の配列)に、「この記事を聞く人に必ず伝えるべき重要数値」を、台帳のnumeric_value欄にある数値の表記のまま(単位・倍率語を含めて)入れてください(例の形式: 「12.5%」「約3万人」「4.5倍」)。selected_storylineに数値を入れるかどうかとは別に、記事全体として判断します。Storylineの選び方とFactの採否は、この欄のために変えないでください。\n"
+    "次の①〜③のどれかに強く当てはまり、かつ④⑤の問題がない数値だけを入れてください。重要なほど多く入れるのではなく、本当に必要なものに絞ってください。\n"
+    "① その数値がないと、記事の中心的な発見・事実が伝わりにくくなる。\n"
+    "② その数値が、記事の驚きや面白さを支えている。\n"
+    "③ その数値が、論旨や比較の説得力を支えている。\n"
+    "④ 言葉による説明だけでは、同じ具体性が出せない(「大きい」「多い」「はるかに」などの言葉では、聞き手が量や程度をつかめない)。\n"
+    "⑤ 本文に入れても、読みやすさやストーリーの流れが損なわれない。\n"
+    "入れない数値: 日付・年・序数、背景や補足の数値、他の数値の言い換えや内訳、比較の相手側の値や付随する条件の数値、台帳に出てくるだけで記事の中心でない数値(比較の結果の倍率や差そのものが記事の中心的な発見なら、その倍率や差は入れてよい)。\n"
+    "最大2個です。採用したFact(selected_fact_ids)に含まれる台帳の数値だけを入れてください。必要な数値がない記事は空の配列[]にしてください(無理に入れない)。この欄の数値をselected_storylineの1行に自然に含められる場合は含めてかまいませんが、含めなくてもかまいません。"
+)
+B3_ADDENDUM_V4 = B3_ADDENDUM_V2 + B3_ADDENDUM_V4_FIELD
 B3_FIELD_NAME = "reader_must_hear_numbers"
-B3_ADDENDA = {"v1": B3_ADDENDUM, "v2": B3_ADDENDUM_V2, "v3": B3_ADDENDUM_V3}
+B3_ADDENDA = {"v1": B3_ADDENDUM, "v2": B3_ADDENDUM_V2, "v3": B3_ADDENDUM_V3, "v4": B3_ADDENDUM_V4}
 M1_RETRY_NOTE_TEMPLATE = (
     "\n\n【前回出力の修正指示(数値)】前回のselected_storylineには、次の数値が含まれていましたが、条件に合いません: {problems}。"
     "selected_storylineの1行に含めてよい数値は、台帳のnumeric_value欄にある表記のままの数値だけで、最大2個です。"
@@ -1136,7 +1151,7 @@ def run_b3_dev(article: str, arm: str, sample: str, *, per_run_cap: float, phase
     base_addendum = B3_ADDENDA[addendum_version]
     addendum = base_addendum
     E_info = None
-    r5 = addendum_version == "v3"
+    r5 = addendum_version in ("v3", "v4")
     for attempt in (1, 2):
         wrapper = _AddendumClient(client, addendum, field_schema=r5)
         if attempt == 2:
@@ -1209,7 +1224,7 @@ def run_chain_dev(article: str, arm: str, sample: str, *, per_run_cap: float, ph
         with cl.logging_context(TRIAL_TAG, lvl):
             efam.run_writer_stage(client, theme, wres["ja_text"], src_info["ledger_text"], per_run_cap, only=lvl)
         guard_budget(out_dir, per_run_cap, phase_cap, f"after {lvl}")
-    metrics = measure_run(out_dir, E_info if m1.get("b3_addendum_version") == "v3" else derive_E(out_dir))
+    metrics = measure_run(out_dir, E_info if m1.get("b3_addendum_version") in ("v3", "v4") else derive_E(out_dir))
     wj(os.path.join(out_dir, "trial_metrics.json"), metrics)
     after = sink_snapshot()
     sink_diff = {k: (before.get(k), after.get(k)) for k in set(before) | set(after) if before.get(k) != after.get(k)}
