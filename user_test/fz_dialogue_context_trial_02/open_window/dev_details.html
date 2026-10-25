@@ -1,0 +1,2099 @@
+<!DOCTYPE html><html lang='ja'><head><meta charset='utf-8'><meta name='robots' content='noindex,nofollow'><title>dev details</title><style>body{font-family:sans-serif;max-width:980px;margin:16px auto;padding:0 12px;color:#222}
+h1{font-size:1.25rem}.note{background:#fff8e1;border:1px solid #e6c200;padding:8px 12px;border-radius:6px;font-size:.9rem;margin:8px 0}
+.card{border:1px solid #ccc;border-radius:8px;padding:10px 14px;margin:14px 0}.card h2{font-size:1rem;margin:0 0 4px}
+.scene{color:#444;font-size:.92rem;margin:4px 0}.en{font-size:1.05rem;font-weight:bold;margin:6px 0}.llm{background:#eef6ff;border-radius:6px;padding:4px 8px;font-size:.88rem;margin:4px 0}
+.row{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px}.col{flex:1;min-width:260px}.lab{font-size:.85rem;color:#555}
+.na{color:#a00;font-size:.85rem}details{margin:6px 0;font-size:.88rem}audio{width:100%}pre{white-space:pre-wrap;font-size:.8rem}</style></head><body><h1>開発者向け詳細（Trial）</h1><pre>{
+ &quot;managed_id&quot;: &quot;FZ-DIALOGUE-TTS-CONTEXT-EMOTION-TRIAL-01&quot;,
+ &quot;target_rms&quot;: 0.08116,
+ &quot;arms&quot;: [
+  &quot;base_t1&quot;,
+  &quot;ctx_t1&quot;,
+  &quot;ctx_t2&quot;
+ ],
+ &quot;clips&quot;: {
+  &quot;full_story_part1_c7&quot;: {
+   &quot;text&quot;: &quot;\&quot;Her great tragedy happened three years ago today.\&quot;&quot;,
+   &quot;voice&quot;: &quot;Zephyr&quot;,
+   &quot;existing_A&quot;: {
+    &quot;duration_s&quot;: 4.241,
+    &quot;words&quot;: 8,
+    &quot;total_wpm&quot;: 113.18,
+    &quot;articulation_wpm_300&quot;: 133.67,
+    &quot;mid_pause_300&quot;: 0,
+    &quot;max_mid_pause_s&quot;: 0.0,
+    &quot;rms_dbfs&quot;: -20.01,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 233,
+     &quot;median_hz&quot;: 203.4,
+     &quot;range_semitones_p10_p90&quot;: 9.95
+    },
+    &quot;asr_text&quot;: &quot;Her great tragedy happened three years ago today.&quot;,
+    &quot;rms_lin&quot;: 0.099885,
+    &quot;mp3_final&quot;: {
+     &quot;gain&quot;: 0.8113,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.5675
+    }
+   },
+   &quot;base_t1&quot;: {
+    &quot;duration_s&quot;: 4.281,
+    &quot;words&quot;: 8,
+    &quot;total_wpm&quot;: 112.12,
+    &quot;articulation_wpm_300&quot;: 112.12,
+    &quot;mid_pause_300&quot;: 0,
+    &quot;max_mid_pause_s&quot;: 0.0,
+    &quot;rms_dbfs&quot;: -20.19,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 245,
+     &quot;median_hz&quot;: 198.3,
+     &quot;range_semitones_p10_p90&quot;: 6.6
+    },
+    &quot;rms_lin&quot;: 0.097836,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;Her great tragedy happened three years ago today.&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 8,
+       &quot;target_words&quot;: 8
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 8,
+      &quot;target_words&quot;: 8
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;9a10abe9b687ee4c38a0e2c1c007899380a88d48d27bf782744e000ed2b32f57&quot;,
+    &quot;style_sha256&quot;: &quot;add26d27a79c2cbee982eb5ddc32616b8294494a316b973215c94cccc76ede26&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -5.491,
+     &quot;src_duration_seconds&quot;: 4.281,
+     &quot;dst_duration_seconds&quot;: 4.046
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.8312,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.5796
+    }
+   },
+   &quot;ctx_t1&quot;: {
+    &quot;duration_s&quot;: 4.781,
+    &quot;words&quot;: 8,
+    &quot;total_wpm&quot;: 100.4,
+    &quot;articulation_wpm_300&quot;: 100.4,
+    &quot;mid_pause_300&quot;: 0,
+    &quot;max_mid_pause_s&quot;: 0.0,
+    &quot;rms_dbfs&quot;: -20.9,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 280,
+     &quot;median_hz&quot;: 228.6,
+     &quot;range_semitones_p10_p90&quot;: 6.94
+    },
+    &quot;rms_lin&quot;: 0.090157,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;Her great tragedy happened three years ago today.&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 8,
+       &quot;target_words&quot;: 8
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 8,
+      &quot;target_words&quot;: 8
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;111a2d34e59c829ca2d361a06d0002e26f8d7ef726377f784649a1223524ee7c&quot;,
+    &quot;style_sha256&quot;: &quot;362926a1b1da7e47f77938ffa9c337205f317a79ee119b38a75620797fc3e737&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -5.403,
+     &quot;src_duration_seconds&quot;: 4.781,
+     &quot;dst_duration_seconds&quot;: 4.523
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.9066,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.6343
+    },
+    &quot;length_needs_listen&quot;: false
+   },
+   &quot;ctx_t2&quot;: {
+    &quot;duration_s&quot;: 4.771,
+    &quot;words&quot;: 8,
+    &quot;total_wpm&quot;: 100.61,
+    &quot;articulation_wpm_300&quot;: 100.61,
+    &quot;mid_pause_300&quot;: 0,
+    &quot;max_mid_pause_s&quot;: 0.0,
+    &quot;rms_dbfs&quot;: -17.05,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 282,
+     &quot;median_hz&quot;: 200.0,
+     &quot;range_semitones_p10_p90&quot;: 6.49
+    },
+    &quot;rms_lin&quot;: 0.140443,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;Her great tragedy happened three years ago today.&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 8,
+       &quot;target_words&quot;: 8
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 8,
+      &quot;target_words&quot;: 8
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;147bb8ade5f0071e51ef9c2b146fd9e9d31beafa11116b4f9a7493f58a5ffbfd&quot;,
+    &quot;style_sha256&quot;: &quot;362926a1b1da7e47f77938ffa9c337205f317a79ee119b38a75620797fc3e737&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -5.587,
+     &quot;src_duration_seconds&quot;: 4.771,
+     &quot;dst_duration_seconds&quot;: 4.504
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.5817,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.4065
+    },
+    &quot;length_needs_listen&quot;: false
+   }
+  },
+  &quot;full_story_part1_c10&quot;: {
+   &quot;text&quot;: &quot;\&quot;How terrible,\&quot;&quot;,
+   &quot;voice&quot;: &quot;Algieba&quot;,
+   &quot;existing_A&quot;: {
+    &quot;duration_s&quot;: 1.841,
+    &quot;words&quot;: 2,
+    &quot;total_wpm&quot;: 65.18,
+    &quot;articulation_wpm_300&quot;: 79.42,
+    &quot;mid_pause_300&quot;: 0,
+    &quot;max_mid_pause_s&quot;: 0.0,
+    &quot;rms_dbfs&quot;: -19.71,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 55,
+     &quot;median_hz&quot;: 139.5,
+     &quot;range_semitones_p10_p90&quot;: 10.86
+    },
+    &quot;asr_text&quot;: &quot;How terrible!&quot;,
+    &quot;rms_lin&quot;: 0.103395,
+    &quot;mp3_final&quot;: {
+     &quot;gain&quot;: 0.7884,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.5514
+    }
+   },
+   &quot;base_t1&quot;: {
+    &quot;duration_s&quot;: 1.921,
+    &quot;words&quot;: 2,
+    &quot;total_wpm&quot;: 62.47,
+    &quot;articulation_wpm_300&quot;: 94.42,
+    &quot;mid_pause_300&quot;: 0,
+    &quot;max_mid_pause_s&quot;: 0.0,
+    &quot;rms_dbfs&quot;: -17.9,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 72,
+     &quot;median_hz&quot;: 195.9,
+     &quot;range_semitones_p10_p90&quot;: 16.41
+    },
+    &quot;rms_lin&quot;: 0.12735,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;How terrible!&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 2,
+       &quot;target_words&quot;: 2
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 2,
+      &quot;target_words&quot;: 2
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;f98749293e7bece77644be83eef9c7acbb2eb1dd9798bc35303bf9f9f14ce31e&quot;,
+    &quot;style_sha256&quot;: &quot;add26d27a79c2cbee982eb5ddc32616b8294494a316b973215c94cccc76ede26&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -4.657,
+     &quot;src_duration_seconds&quot;: 1.921,
+     &quot;dst_duration_seconds&quot;: 1.831
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.6442,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.4503
+    }
+   },
+   &quot;ctx_t1&quot;: {
+    &quot;duration_s&quot;: 1.761,
+    &quot;words&quot;: 2,
+    &quot;total_wpm&quot;: 68.14,
+    &quot;articulation_wpm_300&quot;: 84.45,
+    &quot;mid_pause_300&quot;: 0,
+    &quot;max_mid_pause_s&quot;: 0.0,
+    &quot;rms_dbfs&quot;: -21.72,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 37,
+     &quot;median_hz&quot;: 120.6,
+     &quot;range_semitones_p10_p90&quot;: 18.73
+    },
+    &quot;rms_lin&quot;: 0.082035,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;How terrible!&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 2,
+       &quot;target_words&quot;: 2
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 2,
+      &quot;target_words&quot;: 2
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;b15ee36546e0fe535414d96f94bfa9d30d7f8cc5937364bde515b6a1d5d00218&quot;,
+    &quot;style_sha256&quot;: &quot;39703380ad2f43951626440ecc15c6cba276badfb869184a6bb4540515bfe7f0&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -5.179,
+     &quot;src_duration_seconds&quot;: 1.761,
+     &quot;dst_duration_seconds&quot;: 1.67
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.9966,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.6967
+    },
+    &quot;length_needs_listen&quot;: false
+   },
+   &quot;ctx_t2&quot;: {
+    &quot;duration_s&quot;: 2.011,
+    &quot;words&quot;: 2,
+    &quot;total_wpm&quot;: 59.67,
+    &quot;articulation_wpm_300&quot;: 90.16,
+    &quot;mid_pause_300&quot;: 0,
+    &quot;max_mid_pause_s&quot;: 0.0,
+    &quot;rms_dbfs&quot;: -21.74,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 41,
+     &quot;median_hz&quot;: 153.8,
+     &quot;range_semitones_p10_p90&quot;: 13.5
+    },
+    &quot;rms_lin&quot;: 0.081846,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;How terrible!&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 2,
+       &quot;target_words&quot;: 2
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 2,
+      &quot;target_words&quot;: 2
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;9c50240c08bb8c1f3427edcac77f1f103c5c54e7fff64541e9a349578842b0a1&quot;,
+    &quot;style_sha256&quot;: &quot;39703380ad2f43951626440ecc15c6cba276badfb869184a6bb4540515bfe7f0&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -4.859,
+     &quot;src_duration_seconds&quot;: 2.011,
+     &quot;dst_duration_seconds&quot;: 1.913
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.9993,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.6965
+    },
+    &quot;length_needs_listen&quot;: false
+   }
+  },
+  &quot;full_story_part1_c12&quot;: {
+   &quot;text&quot;: &quot;\&quot;My aunt still thinks they&#x27;ll come back. She keeps the window open until dark, waiting for them.\&quot;&quot;,
+   &quot;voice&quot;: &quot;Zephyr&quot;,
+   &quot;existing_A&quot;: {
+    &quot;duration_s&quot;: 6.171,
+    &quot;words&quot;: 17,
+    &quot;total_wpm&quot;: 165.29,
+    &quot;articulation_wpm_300&quot;: 176.14,
+    &quot;mid_pause_300&quot;: 1,
+    &quot;max_mid_pause_s&quot;: 0.38,
+    &quot;rms_dbfs&quot;: -19.55,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 300,
+     &quot;median_hz&quot;: 190.5,
+     &quot;range_semitones_p10_p90&quot;: 6.91
+    },
+    &quot;asr_text&quot;: &quot;My aunt still thinks they&#x27;ll come back. She keeps the window open until dark, waiting for them.&quot;,
+    &quot;rms_lin&quot;: 0.105317,
+    &quot;mp3_final&quot;: {
+     &quot;gain&quot;: 0.7711,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.5358
+    }
+   },
+   &quot;base_t1&quot;: {
+    &quot;duration_s&quot;: 6.691,
+    &quot;words&quot;: 17,
+    &quot;total_wpm&quot;: 152.44,
+    &quot;articulation_wpm_300&quot;: 180.5,
+    &quot;mid_pause_300&quot;: 1,
+    &quot;max_mid_pause_s&quot;: 0.69,
+    &quot;rms_dbfs&quot;: -22.04,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 281,
+     &quot;median_hz&quot;: 180.5,
+     &quot;range_semitones_p10_p90&quot;: 5.39
+    },
+    &quot;rms_lin&quot;: 0.079068,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;My aunt still thinks they&#x27;ll come back. She keeps the window open until dark, waiting for them.&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 17,
+       &quot;target_words&quot;: 17
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 17,
+      &quot;target_words&quot;: 17
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;23bdb788f49092d13b41ce6380f72c6599aa1c4b4734bba0b18f0913aaf13fc2&quot;,
+    &quot;style_sha256&quot;: &quot;add26d27a79c2cbee982eb5ddc32616b8294494a316b973215c94cccc76ede26&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -5.48,
+     &quot;src_duration_seconds&quot;: 6.691,
+     &quot;dst_duration_seconds&quot;: 6.324
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 1.0202,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.713
+    }
+   },
+   &quot;ctx_t1&quot;: {
+    &quot;duration_s&quot;: 6.681,
+    &quot;words&quot;: 17,
+    &quot;total_wpm&quot;: 152.67,
+    &quot;articulation_wpm_300&quot;: 182.76,
+    &quot;mid_pause_300&quot;: 1,
+    &quot;max_mid_pause_s&quot;: 0.45,
+    &quot;rms_dbfs&quot;: -18.58,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 303,
+     &quot;median_hz&quot;: 195.1,
+     &quot;range_semitones_p10_p90&quot;: 6.2
+    },
+    &quot;rms_lin&quot;: 0.117761,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;My aunt still thinks they&#x27;ll come back. She keeps the window open until dark, waiting for them.&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 17,
+       &quot;target_words&quot;: 17
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 17,
+      &quot;target_words&quot;: 17
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;0bf265414a948fef83d035055af640bc89a39588e14576980a003ab8aec4fced&quot;,
+    &quot;style_sha256&quot;: &quot;4843e5095883d79200d9617dfb6ef56110df9eb258308a57b41dd0dddea52cfc&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -5.52,
+     &quot;src_duration_seconds&quot;: 6.681,
+     &quot;dst_duration_seconds&quot;: 6.312
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.684,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.478
+    },
+    &quot;length_needs_listen&quot;: false
+   },
+   &quot;ctx_t2&quot;: {
+    &quot;duration_s&quot;: 7.131,
+    &quot;words&quot;: 17,
+    &quot;total_wpm&quot;: 143.04,
+    &quot;articulation_wpm_300&quot;: 152.22,
+    &quot;mid_pause_300&quot;: 1,
+    &quot;max_mid_pause_s&quot;: 0.43,
+    &quot;rms_dbfs&quot;: -19.22,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 309,
+     &quot;median_hz&quot;: 201.7,
+     &quot;range_semitones_p10_p90&quot;: 10.0
+    },
+    &quot;rms_lin&quot;: 0.109396,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;My aunt still thinks they&#x27;ll come back. She keeps the window open until dark, waiting for them.&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 17,
+       &quot;target_words&quot;: 17
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 17,
+      &quot;target_words&quot;: 17
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;4f919d69045e3e0dfe5f428fc186091bf5f179828897ecf70bbae4fecc96977a&quot;,
+    &quot;style_sha256&quot;: &quot;4843e5095883d79200d9617dfb6ef56110df9eb258308a57b41dd0dddea52cfc&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -5.667,
+     &quot;src_duration_seconds&quot;: 7.131,
+     &quot;dst_duration_seconds&quot;: 6.727
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.7405,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.5175
+    },
+    &quot;length_needs_listen&quot;: false
+   }
+  },
+  &quot;full_story_part2_c4&quot;: {
+   &quot;text&quot;: &quot;\&quot;I hope Vera has kept you company! You don&#x27;t mind the open window? My husband and brothers will be back soon. They&#x27;ve been shooting. Their boots will be covered in mud, of course!\&quot;&quot;,
+   &quot;voice&quot;: &quot;Kore&quot;,
+   &quot;existing_A&quot;: {
+    &quot;duration_s&quot;: 12.091,
+    &quot;words&quot;: 33,
+    &quot;total_wpm&quot;: 163.76,
+    &quot;articulation_wpm_300&quot;: 195.63,
+    &quot;mid_pause_300&quot;: 4,
+    &quot;max_mid_pause_s&quot;: 0.59,
+    &quot;rms_dbfs&quot;: -19.87,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 663,
+     &quot;median_hz&quot;: 210.5,
+     &quot;range_semitones_p10_p90&quot;: 12.12
+    },
+    &quot;asr_text&quot;: &quot;I hope Vera has kept you company. You don&#x27;t mind the open window. My husband and brothers will be back soon. They&#x27;ve been shooting. Their boots will be covered in mud, of course.&quot;,
+    &quot;rms_lin&quot;: 0.101508,
+    &quot;mp3_final&quot;: {
+     &quot;gain&quot;: 0.7943,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.5552
+    }
+   },
+   &quot;base_t1&quot;: {
+    &quot;duration_s&quot;: 12.131,
+    &quot;words&quot;: 33,
+    &quot;total_wpm&quot;: 163.22,
+    &quot;articulation_wpm_300&quot;: 186.6,
+    &quot;mid_pause_300&quot;: 4,
+    &quot;max_mid_pause_s&quot;: 0.52,
+    &quot;rms_dbfs&quot;: -21.15,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 703,
+     &quot;median_hz&quot;: 179.1,
+     &quot;range_semitones_p10_p90&quot;: 10.07
+    },
+    &quot;rms_lin&quot;: 0.087599,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;I hope Vera has kept you company. You don&#x27;t mind the open window. My husband and brothers will be back soon. They&#x27;ve been shooting. Their boots will be covered in mud, of course.&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 33,
+       &quot;target_words&quot;: 33
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 33,
+      &quot;target_words&quot;: 33
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;eb9a83f03785424f1e346508e8857426ec58bd2744fd9207641fc223397bf5a8&quot;,
+    &quot;style_sha256&quot;: &quot;add26d27a79c2cbee982eb5ddc32616b8294494a316b973215c94cccc76ede26&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -5.556,
+     &quot;src_duration_seconds&quot;: 12.131,
+     &quot;dst_duration_seconds&quot;: 11.457
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.9198,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.6433
+    }
+   },
+   &quot;ctx_t1&quot;: {
+    &quot;duration_s&quot;: 11.811,
+    &quot;words&quot;: 33,
+    &quot;total_wpm&quot;: 167.64,
+    &quot;articulation_wpm_300&quot;: 185.38,
+    &quot;mid_pause_300&quot;: 2,
+    &quot;max_mid_pause_s&quot;: 0.45,
+    &quot;rms_dbfs&quot;: -21.03,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 656,
+     &quot;median_hz&quot;: 181.1,
+     &quot;range_semitones_p10_p90&quot;: 9.87
+    },
+    &quot;rms_lin&quot;: 0.088818,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;I hope Vera has kept you company. You don&#x27;t mind the open window. My husband and brothers will be back soon. They&#x27;ve been shooting. Their boots will be covered in mud, of course.&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 33,
+       &quot;target_words&quot;: 33
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 33,
+      &quot;target_words&quot;: 33
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;2a03979425edcf5b84d57c4eef8e3d39ba12676979cf3960edd120a5d4530c89&quot;,
+    &quot;style_sha256&quot;: &quot;164c8efb28104e803f697d7a72d9b7d49f52d05c6d0ad59c70b5296636306a39&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -5.974,
+     &quot;src_duration_seconds&quot;: 11.811,
+     &quot;dst_duration_seconds&quot;: 11.105
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.9047,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.6329
+    },
+    &quot;length_needs_listen&quot;: false
+   },
+   &quot;ctx_t2&quot;: {
+    &quot;duration_s&quot;: 11.971,
+    &quot;words&quot;: 33,
+    &quot;total_wpm&quot;: 165.4,
+    &quot;articulation_wpm_300&quot;: 190.37,
+    &quot;mid_pause_300&quot;: 4,
+    &quot;max_mid_pause_s&quot;: 0.44,
+    &quot;rms_dbfs&quot;: -20.96,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 669,
+     &quot;median_hz&quot;: 206.9,
+     &quot;range_semitones_p10_p90&quot;: 11.67
+    },
+    &quot;rms_lin&quot;: 0.089536,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;I hope Vera has kept you company. You don&#x27;t mind the open window? My husband and brothers will be back soon. They&#x27;ve been shooting. Their boots will be covered in mud, of course.&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 33,
+       &quot;target_words&quot;: 33
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 33,
+      &quot;target_words&quot;: 33
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;2f10e4bdcf95aef549942d1ddf787baf5202501f275f2654524da7ded4b4cd9f&quot;,
+    &quot;style_sha256&quot;: &quot;164c8efb28104e803f697d7a72d9b7d49f52d05c6d0ad59c70b5296636306a39&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -5.567,
+     &quot;src_duration_seconds&quot;: 11.971,
+     &quot;dst_duration_seconds&quot;: 11.305
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.8975,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.6277
+    },
+    &quot;length_needs_listen&quot;: false
+   }
+  },
+  &quot;full_story_part2_c6&quot;: {
+   &quot;text&quot;: &quot;\&quot;Here they are at last!\&quot;&quot;,
+   &quot;voice&quot;: &quot;Kore&quot;,
+   &quot;existing_A&quot;: {
+    &quot;duration_s&quot;: 2.531,
+    &quot;words&quot;: 5,
+    &quot;total_wpm&quot;: 118.53,
+    &quot;articulation_wpm_300&quot;: 118.53,
+    &quot;mid_pause_300&quot;: 0,
+    &quot;max_mid_pause_s&quot;: 0.0,
+    &quot;rms_dbfs&quot;: -17.21,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 123,
+     &quot;median_hz&quot;: 214.3,
+     &quot;range_semitones_p10_p90&quot;: 11.31
+    },
+    &quot;asr_text&quot;: &quot;Here they are at last!&quot;,
+    &quot;rms_lin&quot;: 0.13788,
+    &quot;mp3_final&quot;: {
+     &quot;gain&quot;: 0.5903,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.413
+    }
+   },
+   &quot;base_t1&quot;: {
+    &quot;duration_s&quot;: 2.411,
+    &quot;words&quot;: 5,
+    &quot;total_wpm&quot;: 124.43,
+    &quot;articulation_wpm_300&quot;: 124.43,
+    &quot;mid_pause_300&quot;: 0,
+    &quot;max_mid_pause_s&quot;: 0.0,
+    &quot;rms_dbfs&quot;: -18.69,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 113,
+     &quot;median_hz&quot;: 289.2,
+     &quot;range_semitones_p10_p90&quot;: 10.48
+    },
+    &quot;rms_lin&quot;: 0.116279,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;Here they are at last!&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 5,
+       &quot;target_words&quot;: 5
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 5,
+      &quot;target_words&quot;: 5
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;ec275a2907c12de0f0af4cf709cbd5111a8533af3b4fca24f4caa604a489599d&quot;,
+    &quot;style_sha256&quot;: &quot;add26d27a79c2cbee982eb5ddc32616b8294494a316b973215c94cccc76ede26&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -5.026,
+     &quot;src_duration_seconds&quot;: 2.411,
+     &quot;dst_duration_seconds&quot;: 2.29
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.6997,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.4892
+    }
+   },
+   &quot;ctx_t1&quot;: {
+    &quot;duration_s&quot;: 1.961,
+    &quot;words&quot;: 5,
+    &quot;total_wpm&quot;: 152.99,
+    &quot;articulation_wpm_300&quot;: 152.99,
+    &quot;mid_pause_300&quot;: 0,
+    &quot;max_mid_pause_s&quot;: 0.0,
+    &quot;rms_dbfs&quot;: -18.73,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 103,
+     &quot;median_hz&quot;: 158.9,
+     &quot;range_semitones_p10_p90&quot;: 11.49
+    },
+    &quot;rms_lin&quot;: 0.115744,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;Here they are at last.&quot;,
+    &quot;n_tts_calls&quot;: 2,
+    &quot;request_prompt_matches_expected&quot;: [
+     true,
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 5,
+       &quot;target_words&quot;: 5
+      },
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 5,
+       &quot;target_words&quot;: 5
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 5,
+      &quot;target_words&quot;: 5
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;3818006ca767030621983addf084dd1b4ddbe7c1935ed350c924c16695185fd0&quot;,
+    &quot;style_sha256&quot;: &quot;bdfc1f8348ad4f76218e352768ed1c4052dca88cbed3b8ed531ea1f2d7328d72&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -4.998,
+     &quot;src_duration_seconds&quot;: 1.961,
+     &quot;dst_duration_seconds&quot;: 1.863
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.6998,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.4893
+    },
+    &quot;length_needs_listen&quot;: false
+   },
+   &quot;ctx_t2&quot;: {
+    &quot;duration_s&quot;: 1.931,
+    &quot;words&quot;: 5,
+    &quot;total_wpm&quot;: 155.36,
+    &quot;articulation_wpm_300&quot;: 155.36,
+    &quot;mid_pause_300&quot;: 0,
+    &quot;max_mid_pause_s&quot;: 0.0,
+    &quot;rms_dbfs&quot;: -16.54,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 113,
+     &quot;median_hz&quot;: 260.9,
+     &quot;range_semitones_p10_p90&quot;: 11.11
+    },
+    &quot;rms_lin&quot;: 0.148936,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;Here they are at last!&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 5,
+       &quot;target_words&quot;: 5
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 5,
+      &quot;target_words&quot;: 5
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;0f263012da2b7a6f85b54fa2a22f56f18b13782bb9e4fc0563bc741e9582fbce&quot;,
+    &quot;style_sha256&quot;: &quot;bdfc1f8348ad4f76218e352768ed1c4052dca88cbed3b8ed531ea1f2d7328d72&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -4.816,
+     &quot;src_duration_seconds&quot;: 1.931,
+     &quot;dst_duration_seconds&quot;: 1.838
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.5486,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.3834
+    },
+    &quot;length_needs_listen&quot;: false
+   }
+  },
+  &quot;full_story_part3_c8&quot;: {
+   &quot;text&quot;: &quot;\&quot;He talked about his nerves, then suddenly ran away.\&quot;&quot;,
+   &quot;voice&quot;: &quot;Kore&quot;,
+   &quot;existing_A&quot;: {
+    &quot;duration_s&quot;: 4.691,
+    &quot;words&quot;: 9,
+    &quot;total_wpm&quot;: 115.12,
+    &quot;articulation_wpm_300&quot;: 115.12,
+    &quot;mid_pause_300&quot;: 0,
+    &quot;max_mid_pause_s&quot;: 0.0,
+    &quot;rms_dbfs&quot;: -20.5,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 309,
+     &quot;median_hz&quot;: 222.2,
+     &quot;range_semitones_p10_p90&quot;: 12.92
+    },
+    &quot;asr_text&quot;: &quot;He talked about his nerves, then suddenly ran away.&quot;,
+    &quot;rms_lin&quot;: 0.094406,
+    &quot;mp3_final&quot;: {
+     &quot;gain&quot;: 0.8583,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.6002
+    }
+   },
+   &quot;base_t1&quot;: {
+    &quot;duration_s&quot;: 4.291,
+    &quot;words&quot;: 9,
+    &quot;total_wpm&quot;: 125.85,
+    &quot;articulation_wpm_300&quot;: 135.65,
+    &quot;mid_pause_300&quot;: 0,
+    &quot;max_mid_pause_s&quot;: 0.0,
+    &quot;rms_dbfs&quot;: -19.91,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 249,
+     &quot;median_hz&quot;: 195.1,
+     &quot;range_semitones_p10_p90&quot;: 14.06
+    },
+    &quot;rms_lin&quot;: 0.101042,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;He talked about his nerves, then suddenly ran away.&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 9,
+       &quot;target_words&quot;: 9
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 9,
+      &quot;target_words&quot;: 9
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;780150c6d528136f3f9e5a340a9c24f7afe631b8c215dfa6a7c745d8221c9ddf&quot;,
+    &quot;style_sha256&quot;: &quot;add26d27a79c2cbee982eb5ddc32616b8294494a316b973215c94cccc76ede26&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -5.306,
+     &quot;src_duration_seconds&quot;: 4.291,
+     &quot;dst_duration_seconds&quot;: 4.063
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.802,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.5611
+    }
+   },
+   &quot;ctx_t1&quot;: {
+    &quot;duration_s&quot;: 4.681,
+    &quot;words&quot;: 9,
+    &quot;total_wpm&quot;: 115.36,
+    &quot;articulation_wpm_300&quot;: 135.65,
+    &quot;mid_pause_300&quot;: 1,
+    &quot;max_mid_pause_s&quot;: 0.39,
+    &quot;rms_dbfs&quot;: -20.56,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 252,
+     &quot;median_hz&quot;: 235.3,
+     &quot;range_semitones_p10_p90&quot;: 6.77
+    },
+    &quot;rms_lin&quot;: 0.093756,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;He talked about his nerves, then suddenly ran away.&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 9,
+       &quot;target_words&quot;: 9
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 9,
+      &quot;target_words&quot;: 9
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;86350be0c4d2ccba4658e7b5c1d59494dc412d070672e23a1e4befec3fbec364&quot;,
+    &quot;style_sha256&quot;: &quot;9decfbd509968c80e91d33eaf2348042856b098e4b1a7ed5db8012435f5cd2b2&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -5.31,
+     &quot;src_duration_seconds&quot;: 4.681,
+     &quot;dst_duration_seconds&quot;: 4.432
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.8622,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.6026
+    },
+    &quot;length_needs_listen&quot;: false
+   },
+   &quot;ctx_t2&quot;: {
+    &quot;duration_s&quot;: 4.451,
+    &quot;words&quot;: 9,
+    &quot;total_wpm&quot;: 121.32,
+    &quot;articulation_wpm_300&quot;: 121.32,
+    &quot;mid_pause_300&quot;: 0,
+    &quot;max_mid_pause_s&quot;: 0.0,
+    &quot;rms_dbfs&quot;: -18.22,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 287,
+     &quot;median_hz&quot;: 233.0,
+     &quot;range_semitones_p10_p90&quot;: 11.1
+    },
+    &quot;rms_lin&quot;: 0.122744,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;He talked about his nerves, then suddenly ran away.&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 9,
+       &quot;target_words&quot;: 9
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 9,
+      &quot;target_words&quot;: 9
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;8e6a450ab541ff16d6ba17709641dfcec3ce24039426911f59fe21c1e10fb087&quot;,
+    &quot;style_sha256&quot;: &quot;9decfbd509968c80e91d33eaf2348042856b098e4b1a7ed5db8012435f5cd2b2&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -5.247,
+     &quot;src_duration_seconds&quot;: 4.451,
+     &quot;dst_duration_seconds&quot;: 4.217
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.6599,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.4612
+    },
+    &quot;length_needs_listen&quot;: false
+   }
+  },
+  &quot;full_story_part3_c9&quot;: {
+   &quot;text&quot;: &quot;\&quot;It was the spaniel,\&quot;&quot;,
+   &quot;voice&quot;: &quot;Zephyr&quot;,
+   &quot;existing_A&quot;: {
+    &quot;duration_s&quot;: 2.171,
+    &quot;words&quot;: 4,
+    &quot;total_wpm&quot;: 110.55,
+    &quot;articulation_wpm_300&quot;: 128.97,
+    &quot;mid_pause_300&quot;: 0,
+    &quot;max_mid_pause_s&quot;: 0.0,
+    &quot;rms_dbfs&quot;: -18.77,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 103,
+     &quot;median_hz&quot;: 205.1,
+     &quot;range_semitones_p10_p90&quot;: 9.4
+    },
+    &quot;asr_text&quot;: &quot;It was the spaniel.&quot;,
+    &quot;rms_lin&quot;: 0.115213,
+    &quot;mp3_final&quot;: {
+     &quot;gain&quot;: 0.6918,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.4841
+    }
+   },
+   &quot;base_t1&quot;: {
+    &quot;duration_s&quot;: 2.161,
+    &quot;words&quot;: 4,
+    &quot;total_wpm&quot;: 111.06,
+    &quot;articulation_wpm_300&quot;: 130.37,
+    &quot;mid_pause_300&quot;: 0,
+    &quot;max_mid_pause_s&quot;: 0.0,
+    &quot;rms_dbfs&quot;: -19.13,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 94,
+     &quot;median_hz&quot;: 205.1,
+     &quot;range_semitones_p10_p90&quot;: 11.85
+    },
+    &quot;rms_lin&quot;: 0.110535,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;It was the spaniel.&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 4,
+       &quot;target_words&quot;: 4
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 4,
+      &quot;target_words&quot;: 4
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;62e83707e12b0501b09b4147958eba1f0a6f18588db2756a885b4d533482e2dd&quot;,
+    &quot;style_sha256&quot;: &quot;add26d27a79c2cbee982eb5ddc32616b8294494a316b973215c94cccc76ede26&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -4.834,
+     &quot;src_duration_seconds&quot;: 2.161,
+     &quot;dst_duration_seconds&quot;: 2.057
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.7345,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.5139
+    }
+   },
+   &quot;ctx_t1&quot;: {
+    &quot;duration_s&quot;: 1.531,
+    &quot;words&quot;: 4,
+    &quot;total_wpm&quot;: 156.76,
+    &quot;articulation_wpm_300&quot;: 156.76,
+    &quot;mid_pause_300&quot;: 0,
+    &quot;max_mid_pause_s&quot;: 0.0,
+    &quot;rms_dbfs&quot;: -18.54,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 87,
+     &quot;median_hz&quot;: 216.2,
+     &quot;range_semitones_p10_p90&quot;: 7.67
+    },
+    &quot;rms_lin&quot;: 0.118304,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;It was the spaniel.&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 4,
+       &quot;target_words&quot;: 4
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 4,
+      &quot;target_words&quot;: 4
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;595d1f50138588c2783a6515e4aae193ad5983ec74ef0ab6e5da00c49f9e46c0&quot;,
+    &quot;style_sha256&quot;: &quot;77db70ec5336fc974162ee6bea362281472cd2f6fd841d4d551b0b25d1ee28cd&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -4.531,
+     &quot;src_duration_seconds&quot;: 1.531,
+     &quot;dst_duration_seconds&quot;: 1.462
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.682,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.4755
+    },
+    &quot;length_needs_listen&quot;: false
+   },
+   &quot;ctx_t2&quot;: {
+    &quot;duration_s&quot;: 1.411,
+    &quot;words&quot;: 4,
+    &quot;total_wpm&quot;: 170.1,
+    &quot;articulation_wpm_300&quot;: 170.1,
+    &quot;mid_pause_300&quot;: 0,
+    &quot;max_mid_pause_s&quot;: 0.0,
+    &quot;rms_dbfs&quot;: -16.06,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 61,
+     &quot;median_hz&quot;: 187.5,
+     &quot;range_semitones_p10_p90&quot;: 4.94
+    },
+    &quot;rms_lin&quot;: 0.157398,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;It was the spaniel.&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 4,
+       &quot;target_words&quot;: 4
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 4,
+      &quot;target_words&quot;: 4
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;8c941bb983c034d1c29578906337c269961d44d81ccfcbd6bb620392d3a72ebd&quot;,
+    &quot;style_sha256&quot;: &quot;77db70ec5336fc974162ee6bea362281472cd2f6fd841d4d551b0b25d1ee28cd&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -5.082,
+     &quot;src_duration_seconds&quot;: 1.411,
+     &quot;dst_duration_seconds&quot;: 1.339
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.5073,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.3549
+    },
+    &quot;length_needs_listen&quot;: false
+   }
+  },
+  &quot;full_story_part3_c11&quot;: {
+   &quot;text&quot;: &quot;\&quot;He told me he was terrified of dogs. In India, a pack chased him into an empty grave. He spent the whole night there, with them snarling above him.\&quot;&quot;,
+   &quot;voice&quot;: &quot;Zephyr&quot;,
+   &quot;existing_A&quot;: {
+    &quot;duration_s&quot;: 11.761,
+    &quot;words&quot;: 29,
+    &quot;total_wpm&quot;: 147.95,
+    &quot;articulation_wpm_300&quot;: 161.1,
+    &quot;mid_pause_300&quot;: 2,
+    &quot;max_mid_pause_s&quot;: 0.57,
+    &quot;rms_dbfs&quot;: -20.93,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 535,
+     &quot;median_hz&quot;: 203.4,
+     &quot;range_semitones_p10_p90&quot;: 10.34
+    },
+    &quot;asr_text&quot;: &quot;He told me he was terrified of dogs. In India, a pack chased him into an empty grave. He spent the whole night there with them snarling above him.&quot;,
+    &quot;rms_lin&quot;: 0.089846,
+    &quot;mp3_final&quot;: {
+     &quot;gain&quot;: 0.9007,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.63
+    }
+   },
+   &quot;base_t1&quot;: {
+    &quot;duration_s&quot;: 11.251,
+    &quot;words&quot;: 29,
+    &quot;total_wpm&quot;: 154.65,
+    &quot;articulation_wpm_300&quot;: 181.61,
+    &quot;mid_pause_300&quot;: 3,
+    &quot;max_mid_pause_s&quot;: 0.52,
+    &quot;rms_dbfs&quot;: -22.23,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 544,
+     &quot;median_hz&quot;: 214.3,
+     &quot;range_semitones_p10_p90&quot;: 8.77
+    },
+    &quot;rms_lin&quot;: 0.077357,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;He told me he was terrified of dogs. In India, a pack chased him into an empty grave. He spent the whole night there, with them snarling above him.&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 29,
+       &quot;target_words&quot;: 29
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 29,
+      &quot;target_words&quot;: 29
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;ab4267478538ca530dbe2c1a8aa195343afa17d189ece3be17d0a8d840ac7cef&quot;,
+    &quot;style_sha256&quot;: &quot;add26d27a79c2cbee982eb5ddc32616b8294494a316b973215c94cccc76ede26&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -5.575,
+     &quot;src_duration_seconds&quot;: 11.251,
+     &quot;dst_duration_seconds&quot;: 10.624
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 1.0477,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.7322
+    }
+   },
+   &quot;ctx_t1&quot;: {
+    &quot;duration_s&quot;: 11.801,
+    &quot;words&quot;: 29,
+    &quot;total_wpm&quot;: 147.45,
+    &quot;articulation_wpm_300&quot;: 153.56,
+    &quot;mid_pause_300&quot;: 1,
+    &quot;max_mid_pause_s&quot;: 0.47,
+    &quot;rms_dbfs&quot;: -20.03,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 553,
+     &quot;median_hz&quot;: 214.3,
+     &quot;range_semitones_p10_p90&quot;: 13.05
+    },
+    &quot;rms_lin&quot;: 0.099655,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;He told me he was terrified of dogs. In India, a pack chased him into an empty grave. He spent the whole night there with them snarling above him.&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 29,
+       &quot;target_words&quot;: 29
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 29,
+      &quot;target_words&quot;: 29
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;4679505edc29a7a85c4e957c31990ca460f23aa1ef9ee06e8f257b1061916bf0&quot;,
+    &quot;style_sha256&quot;: &quot;55d24c3cdef5505b0fe1656a5bb5cb7716ee295814d4c742e22135c28d5baf5f&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -5.547,
+     &quot;src_duration_seconds&quot;: 11.801,
+     &quot;dst_duration_seconds&quot;: 11.146
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.8061,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.5633
+    },
+    &quot;length_needs_listen&quot;: false
+   },
+   &quot;ctx_t2&quot;: {
+    &quot;duration_s&quot;: 12.601,
+    &quot;words&quot;: 29,
+    &quot;total_wpm&quot;: 138.08,
+    &quot;articulation_wpm_300&quot;: 159.18,
+    &quot;mid_pause_300&quot;: 3,
+    &quot;max_mid_pause_s&quot;: 0.46,
+    &quot;rms_dbfs&quot;: -20.66,
+    &quot;peak&quot;: 0.6999,
+    &quot;f0&quot;: {
+     &quot;n_voiced&quot;: 541,
+     &quot;median_hz&quot;: 201.7,
+     &quot;range_semitones_p10_p90&quot;: 9.63
+    },
+    &quot;rms_lin&quot;: 0.092683,
+    &quot;status&quot;: &quot;OK&quot;,
+    &quot;asr_ok&quot;: true,
+    &quot;asr_text&quot;: &quot;He told me he was terrified of dogs. In India, a pack chased him into an empty grave. He spent the whole night there with them snarling above him.&quot;,
+    &quot;n_tts_calls&quot;: 1,
+    &quot;request_prompt_matches_expected&quot;: [
+     true
+    ],
+    &quot;comparison_valid&quot;: true,
+    &quot;final_instruction_type&quot;: &quot;english_style_prefix_wide_margin&quot;,
+    &quot;n_tts_calls_undercount_possible&quot;: false,
+    &quot;verbatim&quot;: {
+     &quot;token_equal&quot;: true,
+     &quot;token_similarity&quot;: 1.0
+    },
+    &quot;leakage&quot;: {
+     &quot;leakage_any_attempt&quot;: false,
+     &quot;leakage_final&quot;: false,
+     &quot;needs_listen_any_attempt&quot;: false,
+     &quot;per_attempt&quot;: [
+      {
+       &quot;flagged&quot;: false,
+       &quot;needs_listen&quot;: false,
+       &quot;extra_tokens&quot;: [],
+       &quot;extra_runs&quot;: [],
+       &quot;max_extra_run&quot;: 0,
+       &quot;context_only_hits&quot;: [],
+       &quot;asr_words&quot;: 29,
+       &quot;target_words&quot;: 29
+      }
+     ],
+     &quot;final&quot;: {
+      &quot;flagged&quot;: false,
+      &quot;needs_listen&quot;: false,
+      &quot;extra_tokens&quot;: [],
+      &quot;extra_runs&quot;: [],
+      &quot;max_extra_run&quot;: 0,
+      &quot;context_only_hits&quot;: [],
+      &quot;asr_words&quot;: 29,
+      &quot;target_words&quot;: 29
+     }
+    },
+    &quot;wav_sha256&quot;: &quot;06ac8d56c9480562a5be97475d4aa6391929c896651e888bc27e016eb7f1dcf2&quot;,
+    &quot;style_sha256&quot;: &quot;55d24c3cdef5505b0fe1656a5bb5cb7716ee295814d4c742e22135c28d5baf5f&quot;,
+    &quot;final_equiv&quot;: {
+     &quot;slowdown_pct_target&quot;: -5.660377358490576,
+     &quot;slowdown_pct_actual&quot;: -5.558,
+     &quot;src_duration_seconds&quot;: 12.601,
+     &quot;dst_duration_seconds&quot;: 11.901
+    },
+    &quot;mp3_final_equiv&quot;: {
+     &quot;gain&quot;: 0.8806,
+     &quot;rms_after_dbfs&quot;: -21.81,
+     &quot;peak_after&quot;: 0.616
+    },
+    &quot;length_needs_listen&quot;: false
+   }
+  }
+ },
+ &quot;cost_jpy&quot;: 27.989638222222226,
+ &quot;evaluation&quot;: {
+  &quot;separation&quot;: {
+   &quot;full_story_part1_c10&quot;: {
+    &quot;evaluable&quot;: true,
+    &quot;forward&quot;: true,
+    &quot;reverse&quot;: false,
+    &quot;ctx&quot;: [
+     -21.72,
+     -21.74
+    ],
+    &quot;ref&quot;: [
+     -19.71,
+     -17.9
+    ],
+    &quot;metric&quot;: &quot;rms_dbfs&quot;,
+    &quot;direction&quot;: &quot;down&quot;
+   },
+   &quot;full_story_part2_c4&quot;: {
+    &quot;evaluable&quot;: true,
+    &quot;forward&quot;: false,
+    &quot;reverse&quot;: false,
+    &quot;ctx&quot;: [
+     185.38,
+     190.37
+    ],
+    &quot;ref&quot;: [
+     195.63,
+     186.6
+    ],
+    &quot;metric&quot;: &quot;articulation_wpm_300&quot;,
+    &quot;direction&quot;: &quot;up&quot;
+   },
+   &quot;full_story_part2_c6&quot;: {
+    &quot;evaluable&quot;: true,
+    &quot;forward&quot;: false,
+    &quot;reverse&quot;: false,
+    &quot;ctx&quot;: [
+     158.9,
+     260.9
+    ],
+    &quot;ref&quot;: [
+     214.3,
+     289.2
+    ],
+    &quot;metric&quot;: &quot;f0_median_hz&quot;,
+    &quot;direction&quot;: &quot;up&quot;
+   },
+   &quot;full_story_part3_c9&quot;: {
+    &quot;evaluable&quot;: true,
+    &quot;forward&quot;: false,
+    &quot;reverse&quot;: true,
+    &quot;ctx&quot;: [
+     156.76,
+     170.1
+    ],
+    &quot;ref&quot;: [
+     128.97,
+     130.37
+    ],
+    &quot;metric&quot;: &quot;articulation_wpm_300&quot;,
+    &quot;direction&quot;: &quot;down&quot;
+   },
+   &quot;full_story_part3_c11&quot;: {
+    &quot;evaluable&quot;: true,
+    &quot;forward&quot;: true,
+    &quot;reverse&quot;: false,
+    &quot;ctx&quot;: [
+     153.56,
+     159.18
+    ],
+    &quot;ref&quot;: [
+     161.1,
+     181.61
+    ],
+    &quot;metric&quot;: &quot;articulation_wpm_300&quot;,
+    &quot;direction&quot;: &quot;down&quot;
+   }
+  },
+  &quot;n_forward_separation&quot;: 2,
+  &quot;n_reverse_separation&quot;: 1,
+  &quot;n_directional_clips&quot;: 5,
+  &quot;d_verdict_mechanical&quot;: &quot;hold&quot;,
+  &quot;overact_watch&quot;: {
+   &quot;full_story_part1_c7&quot;: {
+    &quot;ctx_f0_range&quot;: [
+     6.94,
+     6.49
+    ],
+    &quot;ref_f0_range&quot;: [
+     9.95,
+     6.6
+    ],
+    &quot;overact_suspect&quot;: false
+   },
+   &quot;full_story_part1_c12&quot;: {
+    &quot;ctx_f0_range&quot;: [
+     6.2,
+     10.0
+    ],
+    &quot;ref_f0_range&quot;: [
+     6.91,
+     5.39
+    ],
+    &quot;overact_suspect&quot;: false
+   }
+  },
+  &quot;stability_watch&quot;: {
+   &quot;duration_s&quot;: {
+    &quot;ctx&quot;: [
+     4.681,
+     4.451
+    ],
+    &quot;ref&quot;: [
+     4.691,
+     4.291
+    ],
+    &quot;within_pm20&quot;: true
+   },
+   &quot;articulation_wpm_300&quot;: {
+    &quot;ctx&quot;: [
+     135.65,
+     121.32
+    ],
+    &quot;ref&quot;: [
+     115.12,
+     135.65
+    ],
+    &quot;within_pm20&quot;: true
+   },
+   &quot;f0_range&quot;: {
+    &quot;ctx&quot;: [
+     6.77,
+     11.1
+    ],
+    &quot;ref&quot;: [
+     12.92,
+     14.06
+    ],
+    &quot;within_pm20&quot;: false
+   },
+   &quot;rms_lin&quot;: {
+    &quot;ctx&quot;: [
+     0.093756,
+     0.122744
+    ],
+    &quot;ref&quot;: [
+     0.094406,
+     0.101042
+    ],
+    &quot;within_pm20&quot;: false
+   },
+   &quot;all_within_pm20&quot;: false
+  },
+  &quot;conditions_abcefg&quot;: {
+   &quot;a_all_ctx_ok_verbatim_asr&quot;: true,
+   &quot;b_no_leakage_final&quot;: true,
+   &quot;c_no_pronunciation_regression_asr_gate&quot;: true,
+   &quot;e_madame_no_overchange&quot;: false,
+   &quot;f_conditions_identical_and_prompt_sha_match&quot;: true,
+   &quot;g_cost_within_cap&quot;: true
+  },
+  &quot;all_abcefg&quot;: false,
+  &quot;leakage_any_attempt_clips&quot;: [],
+  &quot;needs_listen_clips&quot;: [],
+  &quot;status_candidate&quot;: &quot;REJECTED(下位ラベル=TRIAL_FAILED_QUALITY相当。再Trial要否はFable判断)&quot;,
+  &quot;status_note&quot;: &quot;VALIDATEDはユーザー試聴で改善と判断された場合のみ(Production採用ではない)。(d)の機械的効果は補助証拠で必須条件ではない。&quot;
+ }
+}</pre></body></html>
