@@ -405,13 +405,13 @@ def refresh_parent_status(plan: dict, segments: dict, approvals: dict, status_fn
 # ------------------------------------------------------------------ (e) 整合性検査
 def verify_parent_integrity(plan: dict, parent_text: str, chunk_entries: list, parent_entry: dict | None) -> dict:
     """欠落・重複・順序変更・版不整合を検知(fail-closed)。plan=再計算したplan(決定論)。
-    chunk_entries=results上のchunk entry(segment_idを持つ。順不同可)。parent_entry=親集約entry。音声を読む前に実行すること。"""
+    chunk_entries={chunk_id: entry}(またはsegment_idを持つentryのlist。順不同可)。parent_entry=親集約entry。音声を読む前に実行すること。"""
     if not plan.get("chunked"):
         if parent_entry and parent_entry.get("chunk_tts"):
             raise ChunkIntegrityError("planはchunk無しだが親entryがchunk方式(本文変更後の再計画漏れ)")
         return {"ok": True, "chunked": False}
     want = chunk_ids(plan)
-    by_id = {e["segment_id"]: e for e in chunk_entries}
+    by_id = dict(chunk_entries) if isinstance(chunk_entries, dict) else {e["segment_id"]: e for e in chunk_entries}
     if sorted(by_id) != sorted(want):
         raise ChunkIntegrityError(f"chunk集合が計画と不一致 missing={sorted(set(want) - set(by_id))} extra={sorted(set(by_id) - set(want))}")
     for c in plan["chunks"]:
@@ -473,3 +473,24 @@ def evidence_record(plan: dict, segments: dict, compose_report: dict | None = No
         })
     return {"parent_id": plan.get("parent_id"), "family": plan.get("family"), "planner_version": CHUNK_PLANNER_VERSION,
             "chunk_count": len(rows), "extra_pause_seconds": EXTRA_PAUSE_SECONDS, "chunks": rows, "assembly": compose_report}
+
+
+# ------------------------------------------------------------------ (f) 旧(非chunk)結果との互換
+def is_legacy_unchunked(plan: dict, segments: dict) -> bool:
+    """本module導入前に生成された結果か: 親entryが存在し(chunk_ttsなし)、かつ同親のchunk idのentryが1件も無い。
+    gate/assemble/pagesの再実行(既存run・公開済みepisodeの再組立)を従来経路のままにする判定に使う。TTS(生成)stageでは使わない
+    (生成は常にplanどおりchunk化する)。chunk entryが1件でもあれば新方式とみなし、欠落はfail-closed(Gate/整合検査が止める)。"""
+    pid = plan.get("parent_id")
+    parent = (segments or {}).get(pid)
+    if not parent or parent.get("chunk_tts") is not None:
+        return False
+    prefix = f"{pid}_k"
+    return not any(k.startswith(prefix) and parse_chunk_id(k) for k in (segments or {}))
+
+
+def effective_plan(plan: dict, segments: dict) -> dict:
+    """legacy結果なら chunked=False のplan(従来経路)に差し替える。それ以外は元のplan。"""
+    if plan.get("chunked") and is_legacy_unchunked(plan, segments):
+        return {**plan, "chunked": False, "chunks": [], "legacy_unchunked": True,
+                "reason": "legacy(本方式導入前に生成された親entry。chunk entryなし)→従来経路"}
+    return plan

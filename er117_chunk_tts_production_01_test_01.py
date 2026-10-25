@@ -524,5 +524,28 @@ class TReuseAndResume(unittest.TestCase):
             shutil.rmtree(tmp, ignore_errors=True)
 
 
+class TLegacyCompat(unittest.TestCase):
+    """本方式導入前に生成された結果(親entryのみ)は従来経路のまま扱う(gate/assemble/pagesの再実行を壊さない)。"""
+
+    def test_legacy_detection_and_effective_plan(self):
+        plan = core.plan_x_part("A a.\n\nB b.", "full_story_part1")
+        legacy = {"full_story_part1": {"status": "OK"}}
+        self.assertTrue(core.is_legacy_unchunked(plan, legacy))
+        eff = core.effective_plan(plan, legacy)
+        self.assertFalse(eff["chunked"])
+        self.assertTrue(eff["legacy_unchunked"])
+        self.assertFalse(core.is_legacy_unchunked(plan, {}))                                              # 親も無い=未生成(legacyではない)
+        self.assertFalse(core.is_legacy_unchunked(plan, {"full_story_part1": {"status": "OK", "chunk_tts": {}}}))
+        self.assertFalse(core.is_legacy_unchunked(plan, dict(legacy, full_story_part1_k1={"status": "OK"})))   # chunk entryが1件でもあれば新方式
+        self.assertIs(core.effective_plan(plan, {}), plan)
+
+    def test_integrity_accepts_dict_form_entries(self):
+        paras = [("Alpha beta gamma delta. " * 11).strip(), ("Eps zeta eta theta. " * 11).strip(), ("Iota kappa lambda mu. " * 11).strip()]
+        c = _clip(" ".join(paras))
+        p = core.plan_z_clip(c, paras)
+        ents = {ch["chunk_id"]: {"canonical_text": ch["text"], "chunk_tts": {"planner_version": core.CHUNK_PLANNER_VERSION}} for ch in p["chunks"]}
+        self.assertTrue(core.verify_parent_integrity(p, c["text"], ents, None)["ok"])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -68,6 +68,7 @@ import er013_family_c_production_01 as fam_c
 import er018_fiction_external_seed_selection_criteria_trial_02 as trial02
 import er062_family_z_structure_01 as _st062   # story別roster(STORY_SPEAKER_CONFIG)の出所。LLM呼出なし・純粋関数module(軽量)
 import er020_tts_retry_local_rewrite_01 as tts_role  # read-only参照のみ
+import er117_chunk_tts_production_01 as chunk_tts   # FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01(Z Adv narrator 100語超=chunk TTS+0.2秒、APPROVED_FOR_PRODUCTION 2026-10-25 B_r1)。numpyのみの軽量module
 
 MANAGEMENT_ID = "FICTION-FAMILY-Z-PRODUCTION-E2E-01"
 THEME_TAG = "FAMILY_Z_FICTION_PRODUCTION_E2E_01"
@@ -1924,8 +1925,11 @@ def _stage_kp_part1_ja(ctx, prov, items: list) -> str:
     return r["status"]
 
 
-def load_level_inputs(ctx, level: str) -> dict:
-    """TTS/Gate/Assemblyが共有する決定論的入力(ファイルから再構成するので各stageを独立に実行できる)。"""
+def load_level_inputs(ctx, level: str, *, for_tts: bool = False) -> dict:
+    """TTS/Gate/Assemblyが共有する決定論的入力(ファイルから再構成するので各stageを独立に実行できる)。
+    FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01: Advanced(b1b)のnarrator story clipのうち100語超は、原稿(段落構造)から決定論的にchunk planを作り、
+    ClipSpecをchunk(clip_id=<親>_k<j>)へ展開する。for_tts=True(生成)は常にplanどおりchunk化。gate/assemble/pages(for_tts=False)は、
+    本方式導入前に生成された結果(親entryのみ・chunk entryなし)を従来経路のまま扱う(既存run・公開済みepisodeの再組立を壊さない)。"""
     m = _m()
     w62, a63 = m.w62, m.a63
     out = ctx.out_dir
@@ -1960,11 +1964,17 @@ def load_level_inputs(ctx, level: str) -> dict:
     cfg = STORY_REGISTRY[ctx.story_key]
     comments = {int(n): t for n, t in support["comments"].items()}
     story_clips = plan["clips"]
+    _t, _body = m.st.split_title_body(text)
+    chunk_plans = chunk_tts.plan_z_level(story_clips, m.st.clean_body_paragraphs(_body), level)   # I9: clip.text/段落はnormalize_for_tts後の表記でchunk化(語数定義はer013と一致)
+    if not for_tts:
+        _segs = ((a63.load_results(f"{out}/{level}") or {}).get("segments")) or {}
+        chunk_plans = {cid: chunk_tts.effective_plan(pl, _segs) for cid, pl in chunk_plans.items()}
     spec_plan = a63.build_level_plan(
         level, story_clips, support["preview"], comments, kp_items, cfg["topic_title"],
-        cfg.get("japanese_title_tts") if level == "a2" else None, kp_explanations=expl, story_key=ctx.story_key)
+        cfg.get("japanese_title_tts") if level == "a2" else None, kp_explanations=expl, story_key=ctx.story_key,
+        chunk_plans=chunk_plans)
     return {"plan": spec_plan, "story_clips": story_clips, "kp_items": kp_items, "kp_explanations": expl,
-            "article_text": canonical_article_text(text),
+            "article_text": canonical_article_text(text), "chunk_plans": a63.chunk_plans_from_specs(spec_plan),
             "shell_names": list(a63.SHELL_ASSET_SOURCES) + [f"kp{it['rank']}_number" for it in kp_items]}
 
 
@@ -1993,7 +2003,7 @@ def wrap_generators_with_budget(gens: dict, budget, est_clip_jpy: float = E2E_TT
 
 def stage_tts(ctx, level: str) -> dict:
     m = _m()
-    inp = load_level_inputs(ctx, level)
+    inp = load_level_inputs(ctx, level, for_tts=True)
     _guard(ctx, f"tts_{level}", E2E_TTS_CLIP_EST_JPY)
     gens = ctx.hooks.get("tts_generators") or m.a63.real_generators()
     state = {}
@@ -2039,7 +2049,7 @@ def stage_assemble(ctx) -> dict:
     for lv in LEVELS:
         inp = load_level_inputs(ctx, lv)
         tl = m.a63.run_assembly(ctx.out_dir, lv, inp["story_clips"], inp["kp_items"], story_key=ctx.slug,
-                                kp_third="explanation" if lv == "b1b" else "japanese")
+                                kp_third="explanation" if lv == "b1b" else "japanese", chunk_plans=inp["chunk_plans"])
         res[lv] = {"duration_seconds": round(tl["duration_seconds"], 2), "wav": tl["wav"],
                    "headroom": tl["headroom"]}
     return res

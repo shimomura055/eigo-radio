@@ -34,6 +34,7 @@ import er109_xz_scope_01 as er109_scope  # ASR-HOMOPHONE 委任_04: er109(表記
 # 参照しない(X既定の変更がZへ無言で波及しない。Opus R-C1)。er019のimportは標準ライブラリ+er002_commonのみで循環しない。
 import er019_family_x_style_profile_01 as _xs
 import er062_family_z_structure_01 as _st   # story別roster/Voice表の出所(LLM呼出なし・純粋関数module)
+import er117_chunk_tts_production_01 as chunk_tts   # FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01(Z Adv narrator 100語超=chunk TTS+0.2秒、APPROVED_FOR_PRODUCTION 2026-10-25 B_r1)
 
 MANAGEMENT_ID = "FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01"
 SUB_TASK_ID = "04C"
@@ -80,6 +81,9 @@ def speed_profile_name(level: str, kind: str):
     return table.get((level, kind))
 
 _CLIP_ID_RE = re.compile(r"full_story_part([1-3])_c([0-9]+)")
+# R2(Opus条件A): chunk id(full_story_part{n}_c{k}_k{j})を含めるのはGate箇所(速度Gate)だけ。入力検証(build_level_planのstory clip id)・
+# comment_after_segment_ids・part_to_clip_idは厳密な_CLIP_ID_REのまま(親clip idだけを受ける)。group 1,2の位置は_CLIP_ID_REと同じ。
+_CLIP_OR_CHUNK_ID_RE = re.compile(r"full_story_part([1-3])_c([0-9]+)(?:_k([1-9][0-9]*))?")
 
 
 # ============================================================
@@ -545,9 +549,11 @@ def role_key_for(kind: str, level: str, speaker: str = "narrator") -> str:
 
 def build_level_plan(level: str, story_clips: list, preview_text: str, comments: dict, kp_items: list,
                      topic_title: str, japanese_title_text: str | None = None,
-                     kp_explanations: dict | None = None, story_key: str = "melos") -> list:
+                     kp_explanations: dict | None = None, story_key: str = "melos", chunk_plans: dict | None = None) -> list:
     """生成が必要なClipSpec列を組む。story_clips=[{id,part,voice(speaker key or 'narrator'),text}]。
-    shell/番号(welcome等)は provision_shell_assets で別途コピー(TTSなし)。"""
+    shell/番号(welcome等)は provision_shell_assets で別途コピー(TTSなし)。
+    chunk_plans(FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01): {親clip_id: chunk plan}。chunked=Trueの親(Adv narrator 100語超)は親ClipSpecを作らず、
+    chunk ClipSpec(clip_id=<親>_k<j>、kind=narrator、extra.chunk=…)へ展開する。None/空/chunked=Falseなら従来と同一(バイト不変)。"""
     plan = []
     adv = level == "b1b"
     plan.append(ClipSpec("topic_intro_en", level, "topic_intro", f"Today's topic is {topic_title}.",
@@ -583,9 +589,63 @@ def build_level_plan(level: str, story_clips: list, preview_text: str, comments:
         speaker = normalize_speaker(c.get("speaker") or c.get("voice_role") or c.get("voice") or "narrator", story_key)
         kind = "narrator" if speaker == "narrator" else "dialogue"
         voice = resolve_dialogue_voice(speaker, story_key)
+        cp = (chunk_plans or {}).get(c["id"])
+        if cp and cp.get("chunked") and kind == "narrator" and level == "b1b":
+            n = len(cp["chunks"])
+            for ch in cp["chunks"]:
+                plan.append(ClipSpec(ch["chunk_id"], level, kind, ch["text"], voice=voice, speaker=speaker,
+                                     role_key=role_key_for(kind, level, speaker), part=int(m.group(1)), language="en",
+                                     extra={"chunk": {"parent_id": c["id"], "index": ch["index"], "count": n, "words": ch["words"],
+                                                      "boundary_kind": ch["boundary_kind"], "planner_version": cp["planner_version"],
+                                                      "parent_text": c["text"], "paragraph_info_lost": cp.get("paragraph_info_lost")}}))
+            continue
         plan.append(ClipSpec(c["id"], level, kind, c["text"], voice=voice, speaker=speaker,
                              role_key=role_key_for(kind, level, speaker), part=int(m.group(1)), language="en"))
     return plan
+
+
+def chunk_plans_from_specs(plan: list) -> dict:
+    """ClipSpec列から {親clip_id: chunk plan dict} を再構成する(chunk specだけ。plan(原稿)から導出するので保存済みplanは不要)。"""
+    out = {}
+    for s in plan:
+        ch = (s.extra or {}).get("chunk")
+        if not ch:
+            continue
+        p = out.setdefault(ch["parent_id"], {
+            "parent_id": ch["parent_id"], "family": "Z", "chunked": True, "planner_version": ch["planner_version"],
+            "parent_text": ch["parent_text"], "parent_text_sha256": _sha256_text(ch["parent_text"]),
+            "extra_pause_seconds": chunk_tts.EXTRA_PAUSE_SECONDS, "paragraph_info_lost": ch.get("paragraph_info_lost"), "chunks": [],
+            "level": s.level, "voice": s.voice, "speaker": s.speaker, "role_key": s.role_key})
+        p["chunks"].append({"chunk_id": s.clip_id, "index": ch["index"], "text": s.text, "words": ch["words"], "boundary_kind": ch["boundary_kind"]})
+    for p in out.values():
+        p["chunks"].sort(key=lambda c: c["index"])
+    return out
+
+
+def _z_chunk_parent_display(plan: dict, segments: dict) -> dict:
+    """I7: 親集約entryの表示用項目(ページ行が「-」「未取得」にならない)。Style記録はchunk側が正(親へ複製しない)。"""
+    rk = plan["role_key"]
+    first = segments.get(plan["chunks"][0]["chunk_id"]) or {}
+    sha = ((first.get("style") or {}).get("style_prefix_sha256"))
+    return {"voice": plan["voice"], "speaker": plan["speaker"], "clip_kind": "narrator", "role_style_key": rk,
+            "role": "FULL_STORY", "tts_backend": TTS_BACKEND, "slowdown_applied": None,
+            "style": {"instruction_label": FAMILY_Z_ROLE_STYLE[rk]["style_label"] + "(chunked, see chunk_tts)", "style_prefix_sha256": sha},
+            "z_adoption": "adopted" if all((segments.get(c["chunk_id"]) or {}).get("z_adoption") in ("adopted", "human_review_adopted")
+                                           for c in plan["chunks"]) else "failed"}
+
+
+def refresh_chunk_parents(level_dir: str, plan: list, segments: dict) -> dict:
+    """M2(a)(b)(d): chunk化した親clipの集約entryを(再)構築して segments に書く(冪等。失敗・未生成でも常に書く)。TTS stage末尾と、
+    gate/assembleの入口で呼ぶ(STOPPED chunkの人間承認後に親entry・親wavが古い/無いのを防ぐ)。"""
+    import er003_v1_n3_01_assemble as asm
+    ap = f"{level_dir}/audit/human_approved_segments.json"
+    approvals = _read_json(ap) if os.path.exists(ap) else {}
+    out = {}
+    narr = f"{level_dir}/narration"
+    for pid, pl in chunk_plans_from_specs(plan).items():
+        out[pid] = chunk_tts.refresh_parent_status(pl, segments, approvals, asm._segment_gate_status, narration_dir=narr,
+                                                   parent_text=pl["parent_text"], display=_z_chunk_parent_display(pl, segments))
+    return out
 
 
 # ============================================================
@@ -747,6 +807,10 @@ def build_reuse_key(spec: ClipSpec) -> dict:
         # 速度仕様v2(会話のみ速度処理が変わった)。旧仕様(Std=6%減速済み/Adv=未処理)の保存音声はこのkeyを持たず、不一致=新仕様として再利用されない。
         # 会話以外(Narrator・Preview・KP等)は速度処理が不変のため、keyを変えず既存の再利用を維持する。
         key["speed_profile"] = f"{Z_SPEED_PROFILE_VERSION}:{speed_profile_name(spec.level, spec.kind)}"
+    ch = (spec.extra or {}).get("chunk")
+    if ch:
+        # chunk specにのみ追加(planner版・親・index・chunk数・ポーズ)。非chunk specのkeyはバイト不変=従来の再利用を壊さない。
+        key.update(chunk_tts.chunk_reuse_key_fields(ch["parent_id"], {"index": ch["index"]}, ch["count"]))
     return key
 
 
@@ -1335,6 +1399,13 @@ def _run_tts_stage_impl(run_dir: str, level: str, plan: list, *, generators: dic
                 "style_record": inspect_run_style_record(level_dir, level)}
     # 委任_15(Opus R-C4): 生成器(TTS client)を作る前・課金前に、run単位の全Role Style記録(不一致/記録なし+結果ファイル有り=STOP)を確認する。
     assert_run_style_record(level_dir, level, write=False)
+    _chunk_plans = chunk_plans_from_specs(plan)
+    if only_clips and _chunk_plans:
+        # --only-clips <親id> は当該親の全chunkへ展開(<chunk id>直接指定も可)
+        only_clips = set(only_clips) | {s.clip_id for s in plan if ((s.extra or {}).get("chunk") or {}).get("parent_id") in only_clips}
+    if _chunk_plans:
+        # 再計画禁止(resume): 同一本文・同一版で保存済みplanと分割が食い違えば課金前にSTOP(planは原稿の純関数)
+        chunk_tts.reconcile_saved_plan(f"{level_dir}/audit/chunk_plan_{level}.json", _chunk_plans)
     cached = load_results(level_dir)
     cached = _merge_checkpoint(cached, load_checkpoint(level_dir))   # 委任_10: process中断時もOK clipを再利用(再課金しない)
     cached, _speed_migration = migrate_legacy_dialogue_speed(cached, plan, run_dir, level)   # 速度仕様v2: 旧会話entryをTTS再生成なしで移行(ASRはAdvのみ)
@@ -1369,6 +1440,9 @@ def _run_tts_stage_impl(run_dir: str, level: str, plan: list, *, generators: dic
             except FamilyZLocalRewriteStop as e:
                 deferred_stop = e  # 監査記録を書き終えてからSTOPする(実費をかけた生成結果を失わない)
         entry = normalize_technical_stop_entry(spec, out_path, entry)
+        _ch = (spec.extra or {}).get("chunk")
+        if _ch:
+            chunk_tts.attach_chunk_meta(entry, _ch["parent_id"], {"index": _ch["index"], "words": _ch["words"], "boundary_kind": _ch["boundary_kind"]}, _ch["count"])
         _store(segments, key_phrases, spec, entry)
         evidence.append(_evidence_row(spec, out_path, entry))
         save_checkpoint(level_dir, segments, key_phrases)
@@ -1376,6 +1450,12 @@ def _run_tts_stage_impl(run_dir: str, level: str, plan: list, *, generators: dic
             break
     import er011_human_review_lock_01 as review_lock
     results_path = f"{level_dir}/audit/tts_generation_results.json"
+    if _chunk_plans:
+        # M2(a)(b)(d): chunk親集約entry(失敗・未生成でも常に書く)+親wav(生連結)。C7: chunk TTSのruntime evidence
+        refresh_chunk_parents(level_dir, plan, segments)
+        _write_json(f"{level_dir}/audit/chunk_tts_evidence_{level}.json", {
+            "level": level, "planner_version": chunk_tts.CHUNK_PLANNER_VERSION, "tts_backend": TTS_BACKEND,
+            "parents": {pid: chunk_tts.evidence_record(pl, segments) for pid, pl in _chunk_plans.items()}})
     review_lock.archive_prior_tts_results(results_path)
     doc = {"segments": segments, "key_phrases": key_phrases, "tts_backend": TTS_BACKEND,
            "style_version": FAMILY_Z_ROLE_STYLE_VERSION, "management_id": MANAGEMENT_ID, "level": level}
@@ -1567,7 +1647,7 @@ def verify_z_speed_profile(level: str, required_clip_entries: dict, narration_di
     for cid, e in required_clip_entries.items():
         e = e or {}
         kind = e.get("clip_kind")
-        if kind not in ("narrator", "dialogue") or not _CLIP_ID_RE.fullmatch(cid):
+        if kind not in ("narrator", "dialogue") or not _CLIP_OR_CHUNK_ID_RE.fullmatch(cid):   # R2: chunk idもAdv narrator(処理なし)の検査対象
             continue
         want = speed_profile_name(level, kind)
         sp = e.get("speed_profile") or {}
@@ -1650,12 +1730,20 @@ def run_audio_gate(run_dir: str, level: str, plan: list, shell_names: list, *, a
     asm.verify_episode_audio_validation_gate(KP source gate含む)を呼ぶ。article_textは原稿(canonical)のまま渡す
     (Local Rewriteの音声書換テキストは渡さない)。"""
     level_dir = f"{run_dir}/{level}"
+    if chunk_plans_from_specs(plan):
+        # M2(c): Gate・存在assertより前に、chunk親集約entry(status・親wav・human_approved_chunks)を再構築して保存する
+        # (STOPPED chunkの人間承認後は、親entry/親wavが古いまま・無いままになるため)。chunk化したclipが無い(legacy含む)ならファイルに触れない。
+        _rp = f"{level_dir}/audit/tts_generation_results.json"
+        if os.path.exists(_rp):
+            _doc = _read_json(_rp)
+            refresh_chunk_parents(level_dir, plan, _doc.setdefault("segments", {}))
+            _write_json(_rp, _doc)
     ids = required_clip_ids(plan, shell_names)
     m2 = assert_tts_results_complete(level_dir, ids)
     data = _read_json(f"{level_dir}/audit/tts_generation_results.json")
     entries = {cid: _lookup_entry(data, cid) for cid in ids}
     slow = None
-    speed = verify_z_speed_profile(level, {k: v for k, v in entries.items() if _CLIP_ID_RE.fullmatch(k)}, f"{level_dir}/narration")
+    speed = verify_z_speed_profile(level, {k: v for k, v in entries.items() if _CLIP_OR_CHUNK_ID_RE.fullmatch(k)}, f"{level_dir}/narration")
     if level == "a2":
         slow = verify_std_english_slowdown(level_dir, {k: v for k, v in entries.items() if _CLIP_ID_RE.fullmatch(k)})
     problems = check_clip_audio_quality(f"{level_dir}/narration", {k: v for k, v in entries.items() if v and v.get("clip_kind")})
@@ -1741,8 +1829,10 @@ def build_z_sequence(narr_dir: str, *, level: str, story_clips: list, kp_items: 
 
 
 def run_assembly(run_dir: str, level: str, story_clips: list, kp_items: list, *, story_key: str = DEFAULT_SLUG,
-                 kp_third: str = "japanese") -> dict:
-    """gain -> sequence -> assemble_with_timeline -> headroom safety valve -> wav + timeline.json。"""
+                 kp_third: str = "japanese", chunk_plans: dict | None = None) -> dict:
+    """gain -> sequence -> assemble_with_timeline -> headroom safety valve -> wav + timeline.json。
+    chunk_plans(I6): {親clip_id: chunk plan}(chunk_plans_from_specs(plan))。chunk化した親は、音声を読む前に整合検査(chunk集合・順序・語数・版・本文)と
+    『親wav==ディスク上chunk wavの生連結』を確認し、gain適用時に chunk別gain→0.2秒無音→連結へ差し替える(timelineは親1エントリのまま)。"""
     import numpy as np
     import er002_common as common
     import er003_b1_p9a_audio as p9a
@@ -1754,6 +1844,16 @@ def run_assembly(run_dir: str, level: str, story_clips: list, kp_items: list, *,
     outro = p9a.load_and_resample_to_target(p9a.OUTRO_MP3_PATH)
     notif = p9a.load_and_resample_to_target(p9a.NOTIFICATION_MP3_PATH)
     gain_report = {}
+    chunk_plans = {pid: pl for pid, pl in (chunk_plans or {}).items() if pl.get("chunked")}
+    chunk_gain = {}
+    if chunk_plans:
+        _res = _read_json(f"{level_dir}/audit/tts_generation_results.json")
+        _segs = _res.get("segments") or {}
+        _text_of = {c["id"]: c["text"] for c in story_clips}
+        for pid, pl in chunk_plans.items():
+            _ids = chunk_tts.chunk_ids(pl)
+            chunk_tts.verify_parent_integrity(pl, _text_of[pid], {i: _segs[i] for i in _ids if i in _segs}, _segs.get(pid))
+            chunk_tts.verify_raw_parent(f"{narr}/{pid}.wav", [f"{narr}/{i}.wav" for i in _ids])
 
     def load_mono(path):
         return common.read_wav_float(path)[0]
@@ -1762,6 +1862,15 @@ def run_assembly(run_dir: str, level: str, story_clips: list, kp_items: list, *,
     gain_report["target_rms"] = round(float(target_rms), 5)
 
     def gs(mono, label):
+        if label in chunk_plans:
+            # chunk別gain(同一target_rms、peak<=0.95、式はp9a.compute_gain_for_target_rmsを引数で共用=I2)→0.2秒無音→連結→既存と同じ48kHz stereo化。
+            # 親全体のgainは掛けていないので親keyにgain値を書かない(I7)。
+            monos = [load_mono(f"{narr}/{i}.wav") for i in chunk_tts.chunk_ids(chunk_plans[label])]
+            composed, rep_ = chunk_tts.compose_gained_parent(monos, target_rms, gain_fn=p9a.compute_gain_for_target_rms,
+                                                              rms_fn=p9a.rms, peak_fn=p9a.peak)
+            chunk_gain[label] = rep_
+            gain_report[label] = {"chunked": True, "note": "親全体のgainは掛けていない。chunk別gain・RMS・peakは chunk_tts を参照"}
+            return p9a.mono_24k_to_stereo_target(composed)
         gain = p9a.compute_gain_for_target_rms(mono, target_rms)
         gained = mono * gain
         gain_report[label] = {"gain": round(float(gain), 4), "rms_after": round(p9a.rms(gained), 5), "peak_after": round(p9a.peak(gained), 5)}
@@ -1788,6 +1897,16 @@ def run_assembly(run_dir: str, level: str, story_clips: list, kp_items: list, *,
     timeline = {"story_key": story_key, "level": level, "wav": wav, "duration_seconds": res["total_duration_seconds"],
                 "timeline": res["timeline"], "headroom": safety["report"], "gain_report": gain_report,
                 "sequence_order": [n for n, _ in seq if not n.startswith("_silence_")]}
+    if chunk_gain:
+        _starts = {e["part"]: e["start_seconds"] for e in res["timeline"]}
+        timeline["chunk_tts"] = {"planner_version": chunk_tts.CHUNK_PLANNER_VERSION, "extra_pause_seconds": chunk_tts.EXTRA_PAUSE_SECONDS, "parents": {
+            pid: {"chunk_ids": chunk_tts.chunk_ids(chunk_plans[pid]), "words": [c["words"] for c in chunk_plans[pid]["chunks"]],
+                  "boundary_kinds": [c["boundary_kind"] for c in chunk_plans[pid]["chunks"]], "part_start_in_episode_s": _starts.get(pid),
+                  "gap_offsets_in_part_s": rep_["boundary_offsets_s"],
+                  "gap_offsets_in_episode_s": ([[round(_starts[pid] + a, 4), round(_starts[pid] + b, 4)] for a, b in rep_["boundary_offsets_s"]]
+                                                if pid in _starts else None),
+                  "gains": rep_["gains"], "pre_rms": rep_["pre_rms"], "post_rms": rep_["post_rms"], "peak_after": rep_["peak_after"],
+                  "peak_capped": rep_["peak_capped"], "chunk_samples": rep_["chunk_samples"]} for pid, rep_ in chunk_gain.items()}}
     _write_json(f"{level_dir}/assembly/timeline.json", timeline)
     return timeline
 
@@ -1897,6 +2016,9 @@ def build_page_rows(run_dir: str, level: str, audio_rel_prefix: str, audio_out_d
                 row["notes"].append(f"{_label}適用(比 {entry.get('slowdown_ratio')})" if entry.get("slowdown_ratio") else f"{_label}適用")
             if entry.get("audio_text_deviation"):
                 row["notes"].append("Local Rewrite採用(音声は原稿から変更: " + entry["audio_text_deviation"].get("diff_summary", "") + ")")
+            for _dc in (entry.get("chunk_tts") or {}).get("deviation_chunks") or []:   # I7: chunkのLocal Rewrite注記も親行に出す
+                _dv = ((data.get("segments") or {}).get(_dc) or {}).get("audio_text_deviation") or {}
+                row["notes"].append(f"Local Rewrite採用({_dc}: 音声は原稿から変更: " + _dv.get("diff_summary", "") + ")")
         if part.startswith("key_phrase_"):
             n = part.split("_")[-1]
             kp = (data.get("key_phrases") or {}).get(n) or {}
@@ -2033,7 +2155,8 @@ def _warn_entry_to_clip_id(entry_key: str):
     対応するrow(mp3)が無いものはNone(リンクなし表示)。"""
     parts = entry_key.split("/")
     if len(parts) == 2 and parts[0] == "segments":
-        return parts[1]
+        m = re.fullmatch(r"(full_story_part[1-3]_c[0-9]+)_k[1-9][0-9]*", parts[1])   # R3: chunkの警告は親clip行へ対応づける
+        return m.group(1) if m else parts[1]
     if len(parts) == 3 and parts[0] == "key_phrases" and parts[2] == "english":
         return f"kp{parts[1]}_en"
     return None
