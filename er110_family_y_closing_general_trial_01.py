@@ -69,9 +69,7 @@ SCHEMA = {"name": "family_y_closing_general", "strict": True, "schema": {
 # Prompt(ファイルから読み、sha固定)
 # ============================================================
 def load_prompt_parts(path: str = PROMPT_FILE) -> dict:
-    raw = open(path, "rb").read().replace(b"
-", b"
-")      # 改行コード差(CRLF変換)でshaが変わらないようLFへ正規化
+    raw = open(path, "rb").read().replace(bytes([13, 10]), bytes([10]))      # 改行コード差(CRLF変換)でshaが変わらないようLFへ正規化
     text = raw.decode("utf-8")
     m = re.match(r"=====DEVELOPER=====\n(.*?)\n=====USER=====\n(.*)\Z", text, re.S)
     if not m:
