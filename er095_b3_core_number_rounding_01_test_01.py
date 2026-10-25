@@ -526,6 +526,9 @@ class TestJudgeCallMock(unittest.TestCase):
 # ===================== (E) DefaultOffIsolation(C-1: 未配線) =====================
 class TestIsolation(unittest.TestCase):
     PROD_ALLOWED_C2 = {"er019_family_x_entertainment_production_runner_01.py", "er053_family_x_factlock_ja_writer_01.py"}
+    # PM-REGRESSION-ISOLATION-HYGIENE-01 委任_01: DEV/Trial-only, not production-reachable(具体ファイル名のみ。glob・接頭辞での拡張禁止)。
+    # FX-CORE-NUMERIC-RETENTION-TRIAL-01のTrial harness。Production到達不能であることは下のtestでimport元の検査により確認する。
+    DEV_TRIAL_ONLY_SCRIPTS = {"er115_fx_numeric_retention_trial_01.py"}
 
     def test_not_imported_by_any_production_py_in_c1(self):
         hits = []
@@ -537,7 +540,18 @@ class TestIsolation(unittest.TestCase):
             if "er095_b3_core_number_rounding_01" in open(p, encoding="utf-8", errors="replace").read():
                 hits.append(b)
         # C-2配線後: importするProductionファイルは Family X runner と Writer(w1)のみ(Family Z・他Familyのrunnerは不許可)。
-        self.assertEqual(set(hits), self.PROD_ALLOWED_C2, hits)
+        dev_hits = {b for b in hits if b in self.DEV_TRIAL_ONLY_SCRIPTS}
+        self.assertEqual(set(hits) - dev_hits, self.PROD_ALLOWED_C2, hits)
+
+    def test_dev_trial_only_scripts_are_not_imported_by_anything_but_tests_and_themselves(self):
+        import re
+        for dev in self.DEV_TRIAL_ONLY_SCRIPTS:
+            pat = re.compile(r"^\s*(?:import|from)\s+" + re.escape(dev[:-3]) + r"\b", re.M)
+            for p in glob.glob(os.path.join(HERE, "*.py")):
+                b = os.path.basename(p)
+                if b in self.DEV_TRIAL_ONLY_SCRIPTS or b.startswith(dev[:5]) or "_test" in b or b.startswith("test_"):    # 同一Trial系列(er115_*)のDEV script同士は可
+                    continue
+                self.assertIsNone(pat.search(open(p, encoding="utf-8", errors="replace").read()), f"{b} imports DEV/Trial-only {dev}")
 
     def test_family_z_runners_never_reference_module(self):
         for p in glob.glob(os.path.join(HERE, "er02[6-9]*.py")) + glob.glob(os.path.join(HERE, "*family_z*.py")):

@@ -33,6 +33,10 @@ PRODUCTION_SCOPE_IMPORTERS = {
     "er109_hr_lock_rejudge_01.py", "er109_wiring_signature_01.py", "er109_runtime_evidence_04_01.py",
     "er012_b_family_voices_production_01.py",   # OPEN-479(Fable承認2026-10-23): is_active_for_run()の読取のみ(scope入口は呼ばない)。会話clipのsegment_idをX/Z scope内だけに限定するため
 }
+# PM-REGRESSION-ISOLATION-HYGIENE-01 委任_01: DEV/Trial-only, not production-reachable(具体ファイル名のみ。glob・接頭辞での拡張禁止)。
+# Trial harness(X/Z限定の実生成と同じscopeをかぶせて再利用する隔離DEV runner)。Productionから参照されないことは下のtestで確認する。
+#   er113_fx_paragraph_chunk_trial_01.py = FX-PARAGRAPH-CHUNK-TTS-TRIAL-01 / er114_fz_narration_chunk_trial_02.py = FZ-NARRATION-CHUNK-TTS-TRIAL-01
+DEV_TRIAL_SCOPE_SCRIPTS = {"er113_fx_paragraph_chunk_trial_01.py", "er114_fz_narration_chunk_trial_02.py"}
 # OPEN-479: 共有leaf er012_b だけは scope module の「読取関数」importを許可(er109純関数・scope入口呼出は引き続き禁止)
 ABC_SCOPE_READER_ALLOWED = {"er012_b_family_voices_production_01.py": SCOPE_MOD}
 # 絶対にer109/scope moduleをimportしてはならないA/B/C系Production(共有leafは除く: leaf自体はadapter経由で間接的に効くがimportしない)
@@ -150,6 +154,7 @@ class StaticIsolation(unittest.TestCase):
             tree = parse(rel)
             if tree is None:
                 continue
+            dev_script = os.path.basename(rel) in DEV_TRIAL_SCOPE_SCRIPTS
             mod_alias, names = scope_aliases(tree)
             if not mod_alias and not names:
                 continue
@@ -171,6 +176,8 @@ class StaticIsolation(unittest.TestCase):
                     if is_test_file(rel):
                         continue
                     self.assertIn(lit, ("X", "Z"), f"{rel}: {fname}の引数はリテラル'X'/'Z'のみ")
+                    if dev_script:
+                        continue    # DEV/Trial専用script: リテラル検査は行うが、Production固定リスト(EXPECTED_SCOPE_CALLS)には数えない
                     found[(os.path.basename(rel), fname, lit)] += 1
         # HR CLI/署名toolは存在する場合のみ許容(本testはその有無に依らず固定リストと一致を要求する)
         expected = collections.Counter({k: v for k, v in EXPECTED_SCOPE_CALLS.items() if os.path.exists(os.path.join(ROOT, k[0]))})
@@ -178,7 +185,9 @@ class StaticIsolation(unittest.TestCase):
 
     def test_importers_of_scope_module_are_a_fixed_production_list(self):
         importers = set()
+        dev_importers = set()
         e109_importers = set()
+        all_modules_imported = collections.defaultdict(set)    # import先module名 -> importしたfile(非test)
         for rel in repo_py_files():
             if is_research_script(rel):
                 continue
@@ -192,11 +201,22 @@ class StaticIsolation(unittest.TestCase):
                     mods = [a.name for a in n.names]
                 elif isinstance(n, ast.ImportFrom) and n.module:
                     mods = [n.module]
+                if not is_test_file(rel):
+                    for mm in mods:
+                        all_modules_imported[mm].add(b)
                 if SCOPE_MOD in mods and not is_test_file(rel) and b != f"{SCOPE_MOD}.py":
-                    importers.add(b)
+                    if b in DEV_TRIAL_SCOPE_SCRIPTS:
+                        dev_importers.add(b)
+                    else:
+                        importers.add(b)
                 if E109_MOD in mods and not is_test_file(rel):
                     e109_importers.add(b)
         self.assertTrue(importers <= PRODUCTION_SCOPE_IMPORTERS, importers - PRODUCTION_SCOPE_IMPORTERS)
+        # DEV allow-listの前提確認: DEV/Trial専用scriptは固定の具体名のみ、かつProduction/他の非test fileからimportされていない
+        self.assertTrue(dev_importers <= DEV_TRIAL_SCOPE_SCRIPTS, dev_importers - DEV_TRIAL_SCOPE_SCRIPTS)
+        for dev in DEV_TRIAL_SCOPE_SCRIPTS:
+            outside = {x for x in all_modules_imported.get(dev[:-3], set()) if x not in DEV_TRIAL_SCOPE_SCRIPTS and not x.startswith(dev[:5])}   # 同一Trial系列(er113_*/er114_*)のDEV script同士は可
+            self.assertEqual(outside, set(), f"{dev} をProduction側がimportしている")
         # 純関数moduleを直接importするProduction .pyは scope module(と判定のみのer109_*研究tool・scope/golden tool)だけ
         allowed_e109 = {f"{SCOPE_MOD}.py"}
         # ②UKUS(Production化済み): er109_ukus_*.py は er109_ 接頭で上の判定対象外。Trial(er111_ukus_*)は撤去済み(Productionからのimport 0を er109_ukus_spelling_01_test_01 が固定)。

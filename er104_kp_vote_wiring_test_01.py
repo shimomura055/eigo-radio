@@ -737,6 +737,12 @@ def test_AST_no_literal_true_for_vote_anywhere_in_production():
                 raise AssertionError(f"literal vote_required=True in {f}")
 
 
+# PM-REGRESSION-ISOLATION-HYGIENE-01 委任_01: DEV/Trial-only, not production-reachable(具体ファイル名のみ)。
+# er103_ret_baseline_signature_01.py = ASR-QUALITY PN 委任_04(78a2c7c6e)のRET baseline署名凍結tool。呼出記録をvote_required=…で
+# 直列化するだけの証跡script(判定・転送を行わない)。importするのはtestと docs/research の証跡scriptのみ。
+DEV_RECORD_ONLY_SCRIPTS = ("er103_ret_baseline_signature_01.py",)
+
+
 def test_AST_attempt_ctx_vote_flag_is_forwarded_from_strict_only():
     sites = _calls_with_kw("vote_required")
     where = sorted({(f, fn) for f, fn, _c, _k in sites})
@@ -744,7 +750,16 @@ def test_AST_attempt_ctx_vote_flag_is_forwarded_from_strict_only():
     for f, fn, _c, k in sites:
         if isinstance(k.value, ast.Constant) and k.value.value is False:
             continue   # PNAP gate呼出(KP除外のため常にFalse)は転送ではなくKPでないことの明示
+        if f in DEV_RECORD_ONLY_SCRIPTS:
+            continue
         assert f in ("er003_v1_repro01_main_generate.py", "er006_secondary_asr_01.py", "er103_proper_noun_alarm_policy_01.py"), (f, fn)
+    # DEV allow-listの前提確認: DEV/証跡scriptはProduction(_production_py_files)のどのfileからもimportされていない
+    for dev in DEV_RECORD_ONLY_SCRIPTS:
+        pat = re.compile(r"^\s*(?:import|from)\s+" + re.escape(dev[:-3]) + r"\b", re.M)
+        for f in _production_py_files():
+            if f in DEV_RECORD_ONLY_SCRIPTS:
+                continue
+            assert not pat.search(open(os.path.join(ROOT, f), encoding="utf-8", errors="ignore").read()), (f, dev)
 
 
 def test_flag_is_only_read_via_vote_enabled_and_cannot_be_forced_on_by_mode_arg_or_dict():
