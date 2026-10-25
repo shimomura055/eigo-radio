@@ -1,59 +1,72 @@
-# ADOPTION_NOTE_01 (Production採用する場合の必要作業・影響範囲。**未承認・参考**。Trial結果は`TRIAL_RESULT_01.md`。委任_03で更新、2026-10-25)
+# ADOPTION_NOTE_01 (Production採用する場合の必要作業・影響範囲・採用判断パッケージ。**未承認・参考**。委任_06で全面改訂、2026-10-25)
 
-Status(Sonnet所見): 採用判断前。月・コーヒー型(数値が答えの記事)では事前登録基準を満たしたが、ig_nobel型(B3がStorylineに数値を入れない記事)では必要数値を守れない(`PHASE2_RESULT_01.md`)。以下は「採用する場合」に必要になる作業の整理であり、採用推奨ではない。
+Status(Sonnet所見): **VALIDATED(Trial)**。方式=R5 v4(B3の同じ呼出で『読者が聞くべき重要数値』欄を出し、E=欄の数値とし、その上に保持Gate・O-2'・M2を置く)。月・コーヒー・半導体・イグ・ノーベルの4記事型すべてで、B3が選んだ切り口に対する重要数値の選定・保持・整理が成立した(`PHASE4_RESULT_01.md`・`COMPARISON_05.md`)。Opus条件Cレビュー(`OPUS_REVIEW_03.md`)は「条件付き」で、C-1(0円)・C-2(対照標本)・C-3(本資料修正)を済ませた(`C1_REAPPLY_01.md`・`PHASE5_RESULT_01.md`)。**ユーザー正式承認なしにProductionへ配線しない**(VALIDATED≠APPROVED_FOR_PRODUCTION≠PRODUCTION_WIRED)。数値が中心でない記事の対照確認(C-2)の最終判定はFable。
 
-## 1. 変更が必要になるファイル(Family X専用。Z/Yは到達させない)
-| 機能 | 変更候補ファイル | 分類 |
+## 0. 採用判断パッケージ(ユーザー判断事項1〜6を1枚に整理。推奨はSonnet所見、決定はユーザー)
+採用の可否そのものを含め、以下はいずれも「新仕様の採用/承認済み仕様の変更」にあたり、AI単独では決めない。1〜5は1つの承認パッケージにまとめて判断できる(依存あり: 4はR5を役立てる前提条件、5は1と同時)。
+
+| # | 判断事項 | 選択肢 | 推奨 | QCD影響 |
+|---|---|---|---|---|
+| 1 | **B3 Promptとschemaの意味的変更(J1)**。範囲=**V2(Storylineに入れる数値の規則O-1')+v4の欄指示**の両方(検証済みなのはこの組合せ)。schemaに`reader_must_hear_numbers`(<=2、空可、required)を足す | (a)承認(flag関数でdeepcopyに欄を足す形。schema定数は直接変更しない) / (b)不承認(現行維持=数値脱落リスクが残る。OPEN-505の月で実害あり) / (c)欄のみ(V2なし)=未検証のため非推奨 | (a) | Q↑(必要数値の脱落を防ぐ。4記事型で保持)。C: 追加LLM call 0、増分は#5次第(約0〜4円/記事)。D: 配線実装+Isolation testの工数。リスク: B3のFact選定がB3 LLM判断に依存(欄は毎回の判断) |
+| 2 | **規則5の運用変更**: Eに入った数値は必須。Eが空でなければ、同じ単位系の非E中核数値は周辺扱い(O-2')。Writer入力のメモリ上の付け替えだけで実現し、規則5の文言・R0 Prompt・注記済みB3ファイルは変えない | (a)承認(Eの必須化+O-2') / (b)Eの必須化のみ(O-2'なし): 不要数値(月の750 m、コーヒーの3%/8.7%、半導体の54%)がWriterに残り得る | (a)。ただし**配線前にO-2'の単位系の穴を直す**(§2-3: 億ドル等でO-2'が休眠) | Q↑(不要数値の抑制)/注意: 付け替えは単位系で一律のため任意の同系数値も下がる(月・コーヒー・半導体では必要数に影響なし) |
+| 3 | **保持Gateが不足したときの既定(J3)と、M1が最終的に違反したときの扱い** | Gate: (a)STOP→既存HRキュー(推奨) / (b)WARNで続行(品質低下。非推奨)。M1最終違反: (a)E=∅で続行+WARN+runtime evidence(現行の承認済み品質と同じ) / (b)STOP→HR | Gate=(a)、M1最終違反=(a)(C-1採用ならM1は構造違反だけを見るため稀) | Q: Gate STOPは品質優先。C: Gate由来STOPはPhase 1〜4のフルチェーン計16本(8+2+6)で0(再生成コストは§5)。注: Gateの再生成→STOP経路は実データでは未発動(§4-7) |
+| 4 | **OPEN-509(UDR #195)の結論=J2(範囲値の波ダッシュ正規化)**。Family XのWriter出力後処理で1か所だけ配線(R4=入力側の範囲正規化も同判断に含む)。R5のflagの中には置かない | (a)承認(J2をOPEN-509の修正として配線) / (b)不承認(範囲値がEに入る記事でR2が記号QAでSTOP=月で実測。R5採用の前提条件が崩れる) | (a) | Q↑/D: 範囲値の記事のSTOP回避。`normalize_tilde_placeholder_ja`(TTS用の使い捨てコピー、『42なになに46』と読ませる)と二重化しない。J2が先に『から』へ変換すれば、範囲値ではこのNormalizer欠陥は表に出なくなる(OPEN-509に記録) |
+| 5 | **C-1の採用=derive_ranksの入力に『欄の数値』を足す(中核の選び方の意味が変わる)** | (a)採用(欄の数値をStoryline同等として渡す。derive_ranks本体は不変) / (b)不採用(現行のM1再実行依存=再実行率3/9、約4円/記事増、逆方向リスク(§2-2)が残る) | (a) | C↓(約4円→約0〜1円/記事)/Q: 「Eが常に中核に入る」ことを構造で保証。9標本9/9 E_OK・最終6本は回帰0(`C1_REAPPLY_01.md`)。1と同じ承認パッケージ |
+| 6 | **追加証拠で案件上限580円を超える場合の費用承認** | (a)追加なしで判断(現状: 案件累計570.93円/580円、C-2は2標本、coffee 8.7%+0.6%型の本文化は未検証) / (b)追加承認(約22円目安: 再現のuk 1本約9円+任意chain 1本約13円) | (a)。C-2のmanga標本をFableが『境界→要確認』とした場合のみ(b) | C: (b)は約22円 / Q: 未検証の型(8.7%+0.6%)が残る。ユーザー判断は費用>300円か上限超過見込みのときのみ(7-7) |
+
+## 1. 方式の骨格(R5 v4)
+1. B3の同じ呼出(Production B3関数をclientラッパで呼ぶだけ)で、出力JSONに`reader_must_hear_numbers`(文字列配列、最大2、空可)を足す。指示=V2(O-1': Storylineに入れる数値は『問いへの答えそのものの値』<=2。比較相手は言葉で)+v4の欄指示(①〜③のどれかに強く当てはまり、かつ④⑤の問題がない数値だけ)。
+2. 欄の各項目を、ニュース欄の【中核数値】へ写像する構造検査(M1)にかけ、**E=欄の数値**とする。M1は構造上の違反だけを見る(写像できない/_STORYのみ/2個超/数値表記なし/年・序数)。
+3. **保持Gate**(R0/R1/R2直後の決定論検査、本文は自動で書き換えない、不足時は既存の再生成枠で1回、なお不足ならSTOP→HR)・**O-2'**(Eと同単位系の非E中核数値を周辺扱い)・**M2**(R1/R2の新規数値検出)。
+4. 英訳(Std/Adv)の数値照合は**観察のみのWARN**(Gate化しない。新Gateは承認事項になる)。C-3で`EN_UNIT_RE`に倍率語(times/fold等)を追加、単位なしの『3』が『3D』に一致する誤りを除外した。
+
+## 2. C-1の事実(Opus条件C-1)と推奨配線
+### 2-1. 事実
+- B3の1回目の欄がM1違反になった3件(コーヒーr6c2、半導体r6s1/r6s2)は、全て`peripheral_number_in_storyline`。これは**意味判断ではなく『欄の数値がderive_ranksの上限capからあふれたか』の検査**。derive_ranksは中核の数を`cap_of`(最低3、最大6)に制限し、どれを中核にするかは『Storylineに出るか』と出現順だけで決まる(欄の数値は優先されない)。r6s1の1回目はcap=3・概念7個で217億ドルがあふれ、2回目はStorylineに221%が入ってcap=4になって通った(`er053_b3_deterministic_producer_01.py:450-451,535-541`)。
+- 再実行時の修正指示はB3に理由を伝えられない(B3は中核/周辺の印を見ない)ので、実質は引き直し。**「B3再実行率3/9」と「約4円/記事の費用増」は、この食い違い由来の値**。ユーザーは167億+217億の組合せを妥当と評価済み(`USER_03.md:47`)。
+### 2-2. 現状のまま提案する場合に正しく書くべき性質((i)〜(iii))
+(i) 再実行率と費用増はこの食い違いの値(意味判断による是正ではない)。(ii) 逆向きのリスク: 数値の多い記事で、本当に必要な欄の数値がStorylineに無く出現順も遅いと、M1が誤って落とし、再実行後も駄目ならM1_VIOLATIONでchainが止まる。(iii) 決算のように数値が多い記事ではcapが最大6まで上がり、217億ドル型の数値はM1を素通りする=『M1による是正』は記事の数値の量しだいで効いたり効かなかったりする。
+### 2-3. 推奨配線(C-1)と再適用結果
+- 欄の数値を、derive_ranksへ渡す`storyline`引数の文字列に足す(Fact本文または元Storylineに写像できる数値だけ。写像できない値は優先化せず従来どおり構造違反)。derive_ranks本体・Production moduleは変更しない。DEV実装=`er115`の`field_priority_*`/`reapply_field_priority`(既定OFF、`with`内だけ`P.ddet`を差替え、例外時も復元)。
+- 結果(`C1_REAPPLY_01.md`): 保存済み9標本が**9/9 E_OK**(現行6/9)。最終採用6本は回帰0。1回目の3本はM1違反が解消し、欄の値(8.7%/0.6%、167億/217億)がそのまま通る。中核集合の変化は、欄にない周辺寄りの数値(7.1%/54%)が押し出される形のみ。
+- **副次発見(O-2'の穴、分類=修正へ進む)**: E=167億ドル+217億ドル型では、`dimension_of`が『億ドル』等の桁付き通貨を通貨系に写像しないため、O-2'の単位系が取れず(e_dimensions=[])、非Eの221%が中核のまま残る。最終採用の半導体2本はEに221%(percent)が入りO-2'が効いたため顕在化しなかった。**O-2'を採用するなら、配線前にDEVで`dimension_of`に桁付き通貨(億/万+ドル/円等)の写像を足して再評価する**(次委任案、API 0〜小額)。
+- 期待効果: B3再実行がほぼ0、費用増約4円→約0〜1円/記事。未検証: coffee r6c2 1回目型(8.7%+0.6%)の本文化(任意chain約13円は予算のため未実施)。
+
+## 3. 変更が必要になるファイル(Family X専用。Z/Yは到達させない)
+| 機能 | 変更候補 | 分類 |
 |---|---|---|
-| **B3追記ブロックv2**(Storylineに『答えそのものの値』<=2。比較相手は言葉で。`er115.B3_ADDENDUM_V2`) | `er019_family_x_storyline_b3_fact_selection_01.py`(`USER_PROMPT_TEMPLATE`の追記)またはrunnerのextra_note | J1: B3 Promptの意味的変更=ユーザー承認事項 |
-| M1検査(Storyline数値の検証・B3再実行1回)・E導出(`derive_E`) | 新module+`er019_family_x_entertainment_production_runner_01.py`のB3段後 | 新規 |
-| **印の付け替えO-2'**(E非空のとき、非Eで同単位系の中核数値を【周辺数値】へ。`plan_o2prime`/`swap_marks`/`filter_overlay`) | `er053_family_x_factlock_ja_writer_01.py`の`run_w1_writer`(news欄/Facts文字列のメモリ上のみ。注記済みB3ファイル・manifest shaは不変) | **規則5の運用変更**(中核数値=Writerが使ってよい、に『E非空なら同単位系の非Eは使わない』が加わる)=ユーザー承認事項。`derive_ranks`・規則5の文言は変更不要 |
-| 範囲値正規化(入力側R4) | `er053_family_x_factlock_ja_writer_01.py`の`run_w1_writer`(ニュース欄・テーマ行) | J2(承認済み規則同士の矛盾の是正) |
-| 範囲値正規化(**出力側**R1/R2) | `er053_family_x_factlock_ja_writer_01.py`の`astra_stage` | J2: **Gateより前の決定論の後処理だが正本のR1/R2本文を書き換える**(`normalize_tilde_placeholder_ja`はTTS用の使い捨てコピーのみ)。Opus条件付き安全判断(`OPUS_REVIEW_02.md` (c))。Production採用時は条件A/Cの再レビュー+ユーザー承認。記号QAのSTOPを避けるため必須(実測)。**採用しない場合でも下記OPEN(別件)の欠陥は残る** |
-| 保持Gate(R0/R1/R2)・段限定再実行・STOP | `er053_family_x_factlock_ja_writer_01.py` | J3: STOP→HRの既定をユーザー判断 |
-| **新規数値検出M2**(R1/R2出力のうちR0本文・ニュース欄に無い数値。`new_numbers`) | 同上 | 保持Gateと同じ再実行枠(1回)を共有、解消しなければSTOP。LLM追加call 0 |
-| 較正済み照合・単位言い換え表 | 新module(`match_core`/`dimension_of`) | 新規 |
-| 計測(選定数/必要数/掲載数/不要数/付け替え掲載/新規数値) | `er114`/`er115` | 運用ツール |
-| CURRENT_SPEC.md / DECISION_LOG.md / OPEN_ITEMS.md | 規則5(許可のみ→Eは必須、E非空なら同単位系の非Eは周辺扱い)、B3契約、範囲値規則 | ドキュメント |
-- **撤退(revert)**: 上記は追記型・flag/既定OFF(採用時は単一flag読取関数)で、OFF時にProductionと入力バイト一致(`test_o2prime_off_is_byte_identical_and_writes_nothing`等)を保つ設計。撤退は`git revert`で済み、既存公開記事は不変(再生成しない限り)。
+| B3 Prompt: V2+欄指示 | `er019_family_x_storyline_b3_fact_selection_01.py`(`USER_PROMPT_TEMPLATE`)またはrunnerのextra_note。**flagがONのときだけ追記** | J1: 意味的変更=ユーザー承認(#1)。V2側の意味的変更も含む |
+| B3 schema: 欄追加 | `with_field_schema`相当の**flagがONのときだけdeepcopyに欄を足す関数**。`STORYLINE_B3_JSON_SCHEMA`定数(`:118-155`、`strict`/`additionalProperties:False`)は**直接書き換えない**。Y Trial(`er036_*`ほか)・`er082`等がimportしているため、定数にrequiredを足すとYの出力契約が変わる | J1 |
+| E導出(欄→M1の構造検査)+C-1(欄優先のderive_ranks入力) | 新module+runnerのB3段後 | 新規(#5) |
+| O-2'(Writer入力のメモリ上の付け替え) | `er053_family_x_factlock_ja_writer_01.py`の`run_w1_writer` | 規則5の運用変更(#2)。規則5の文言(`:87-93`)・R0 Prompt(`er019_family_x_ja_writer_o_r1_r2_01.py:51`)は不変 |
+| 保持Gate・段限定再実行・STOP→HR・M2 | 同`er053`のW-1 | J3(#3) |
+| 範囲値の正規化(R4入力側・J2出力側) | **R5のflagの外**。OPEN-509の修正としてFamily XのWriter出力後処理で1か所だけ | #4 |
+| 較正済み照合・単位言い換え表(`match_core`/`dimension_of`) | 新module | 新規(O-2'の穴を先に修正) |
+| CURRENT_SPEC.md | 規則5の運用: 『Eに入った数値は必須。Eが空でなければ、同じ単位系の非E中核数値は周辺扱い』を書き足す(Writer入力のメモリ上の付け替えだけで実現、と明記) | ドキュメント |
 
-## 2. 影響範囲・確認事項
-- B3 PromptファイルはFamily Xの名前だがY Trial(`er036_family_y_voice_structure_trial_01.py:33`ほか)から多数importされている(Opus所見)。Productionに入れる場合は、Y/ZのProduction経路が`USER_PROMPT_TEMPLATE`/`selected_storyline`を使っていないことのGrepをIsolation testに含める。
-- 月のProduction再実行は採用判断後(未承認)。
-- Isolation test(採用時): (a)OFF時`build_r0_prompt`バイト一致、(b)Z/Yのimport・参照0のGrep、(c)flag未設定でAPI呼出0・出力不変(DefaultOffIsolation型)、(d)起動script/.envで暗黙にONにしない、(e)O-2'がOFF時にnews欄を変更しない・ON時もB3注記ファイルのshaが不変。
-- 量産単価増分: `TRIAL_RESULT_01.md` 委任_03更新 §4(点推定0円、保守的上限約6〜7円/記事)。HR増加量はSTOP率(Phase 1/1b/2のGate由来STOP 0/8チェーン)。
-- **X専用の確認**: Family Z(英語学習解説)・Yの経路にB3追記・E・Gate・O-2'を到達させない。
+## 4. 配線時の必須要件(Opus条件C「配線実装時に必須1〜8」を受入条件へ反映)
+1. **schema定数を直接書き換えない**(上記§3)。flag関数でdeepcopyに足す。Y/Z経路から欄・V2・Gateに到達しないことのGrep+Isolation test。
+2. **B3 Prompt変更範囲を承認パッケージに明記**: V2(Storylineの数値規則)+欄指示の両方(判断事項#1)。
+3. **E=∅の経路とM1最終違反時の扱い**: 欄が空=Gateなし・O-2'なしで現行Productionと同じ(問題なし)。再実行後もM1違反=Productionでは『E=∅で続行+WARN+runtime evidence』(現行の承認済み品質と同じ)か『STOP→HR』を選ぶ(判断事項#3)。C-1採用ならM1違反は構造違反だけでほぼ起きない。
+4. **J2はR5 flagの中に置かない**: OPEN-509の修正として1か所配線。J2が無いと、範囲値がEに入った記事でR2が記号QAでSTOP(実測`DESIGN_03.md:11`)=R5採用はOPEN-509の結論に依存。`normalize_tilde_placeholder_ja`(`er003_audio_tts_asr_safety.py:898-907`、TTS用の使い捨てコピー・『42なになに46』)とは二重化しない。R4(`build_r0_prompt_dev`の`range_norm=True`)も同判断に含める。
+5. **retry・再開(resume)・再生成との整合**: (a)B3の再実行1回、R0/R1/R2の各1枠が記号QAの既存枠と共有になること(DESIGN_03 §3)。R1の再実行は新しい仕組み。(b)再生成を途中の段から始める場合は、保存済み`reader_must_hear_numbers.json`からEを決定論で作り直し、**B3は呼び直さない**。(c)欄ができる前の旧記事を再生成する場合は、欄が無い=E=∅として扱う(現行Productionと同じ)。(d)記事あたり費用上限(§5)。
+6. **runtime evidence**: COMPARISON_05の『rerun=None』は集計表示の不具合で、実データは`b3_rerun:true`(**C-3で修正済み**、`er115_fx_numeric_r5_comparison_fix_01.py`)。Productionでは`b3_rerun`・違反理由・欄の1回目の値(`first_pass_field_items`)・Gateの発火段・O-2'の付け替え・M2を、run単位で必ず記録する。
+7. **Gate経路の検証**: 今回の9標本ではGateは一度も発火しなかった(0/9)=R0が自然に数値を保持するという結果で、『再生成→STOP』の経路は実データではまだ動いていない(R0の欠落率の95%上限は約30%)。この経路は、mockを使った既存test(`er115_fx_numeric_retention_trial_01_test_01.py`のGate/STOP系)をProduction側へ移して担保する。STOPの行き先が既存のHRキューにつながることを、DefaultOffIsolationと同じく0円のtestで確認する。
+8. **撤去と残置**: Productionに移すのは**v4・M1の構造検査・E=欄・Gate・O-2'・M2・C-1(欄優先導出)**だけ。次はer115(Trialの記録)に残し、**Production側からimportしない**(Grepで確認): v1〜v3の指示文、Storyline由来のE(`derive_E`のsurfaces=None経路)、RULE9(アームB)、`resume_w1_dev_from_r2`。PREREGISTERED_CRITERIA_03 §1の固定表は参考情報(合否に使わない)。
+- 受入条件(全体): (1)B3 Prompt/schema/Writer契約の変更範囲をFamily X専用に限定、Z/Yへ到達させない。(2)単一flag読取関数・既定OFF・起動script/.envで暗黙にONにしない・DefaultOffIsolation test(flag未設定でAPI呼出0・出力不変・副作用ファイル0)。(3)導入後の最初の数記事で、欄の数値・保持・不要数値・文章をFableが全文確認(固定表でなく切り口基準)。(4)B3再実行率・費用増の実績を記録。再評価の閾値は**C-1採用なら約3円/記事**(現状案の8円から低減)、超えたら再評価。追加で見る指標=欄の初回で3個以上が出た割合(`first_pass_field_items`)と、O-2'で付け替えられた数値の中にあとから必要と分かったものがあるか。(5)Opus条件C(**済み、本改訂で反映**)。
 
-## 3. 採用前に残る課題(委任_03結果より)
-1. **Storylineが数値を要さない記事型(ig_nobel型)**: B3が4/4標本でStorylineに数値を入れず、E=∅で必要数『3倍超』が最終本文から欠落した(現行版にはあった)。選択肢: (a)R5案=B3 JSONに`answer_numbers`欄を追加、(b)Storyline数値が空のときにFact見出し数値を決定論で選ぶ(重複選定システム化のリスク)、(c)この記事型は対象外として限定採用+ユーザーに必要数値の範囲を確認。いずれも新仕様(未Trial)。
-2. O-2'は単位系で一律に下げる鈍い規則(任意の長さ系数値も下がる。月・コーヒーでは必要数に影響なし)。比較が答えの記事は、B3がStorylineに比較の2値を入れたとき(coffee p3)に両方Eに入り救われたが、B3がどちらか1つしか入れなかった場合の副作用は未検証(coffee p2はE=∅)。
-3. n小(フルチェーン8本、B3 15本、記事は月・コーヒー・イグ・ノーベル賞。semiconductor_earningsは未実施)。
-4. 範囲値の波ダッシュ欠陥はProduction既存問題(OPEN別件)。J2採用の有無と独立にユーザー判断対象。
+## 5. 量産単価見込みと記事あたり費用上限
+- 追加LLM call 0(欄はB3の同一呼出のJSON欄)。B3のトークン増はほぼ検出不能(単発B3 8.1〜12.9円、Production参照12.07円と同水準)。
+- **増分の主因=M1によるB3再実行**(v4全9標本で3/9、1回約13円)。現状案(C-1なし)=期待増分3/9×約13円≒**約4円/記事**(70円目標の約6%)。**C-1採用時は約0〜1円/記事**(9標本で再実行0、構造違反が出た場合のみ)。
+- **Production既存の記事あたり費用上限**: `er019_family_x_entertainment_production_runner_01.py:434`の`--budget-jpy`既定=**150円**(`efam.assert_budget_ok`、`er012_e_family_entertainment_two_level_runner_01.py:166-171`が実行中のout_dir累計を各段後に検査)。Family X月のProduction実績: run_ms_01=49.756円(research 5.8+ledger 9.1+B3 12.1+R0 7.8+R0記号再生成6.2+R1 3.6+R2 2.5+EN・risk flag等、`er019_output/moon_shrinking/run_ms_01/raw_usage_log.jsonl`)。
+- **最悪ケース見積**(R5追加分): B3再実行+約12〜13円(C-1採用で≒0) + 保持Gateの段限定再実行 R0約7.8+R1約3.6+R2約2.5≒約14円(各1枠、記号QAと共有) ≒ **約26〜28円**。run_ms_01実績49.8円に加えても**約76円、上限150円の約51%**で収まる。DEVのr6c2が48円(`COMPARISON_05.md:267`)になったのは、B3再実行(26.96円)に加えDEVの1run上限30円による中断・chain再実行でR0が重複(約7.4円)した結果で、Production上限150円では同じ重複が起きても約84円。**Productionの記事上限に収まる**(確認済み)。
 
-## 4. 【委任_04追記】R5(`reader_must_hear_numbers`欄)を採用する場合の必要作業(**未承認・参考**。詳細`DESIGN_04.md`)
-- B3 schema変更: `er019_family_x_storyline_b3_fact_selection_01.py`の`STORYLINE_B3_JSON_SCHEMA`に`reader_must_hear_numbers`(配列、required)を追加+`validate_selection_output`・出力保存(`fact_selection_evidence.json`)・USER_PROMPT_TEMPLATEの追加指示(v4文)=**Production B3の意味的変更(J1、ユーザー承認事項)**。Opus条件C(Production採用提案前)。Y Trialが同moduleをimportしているため、Y/Zへ到達しないことのGrep・Isolation testが必要。
-- E導出: `derive_E_r5`(欄→従来M1と同じ写像規則)をrunnerのB3段後へ。欄とStorylineの不一致=欄優先・記録のみ(事前登録)。
-- Writer契約: 現状は【中核数値】印・保持Gate・O-2'のみでR0 Promptは不変。ig_nobelでは欄の数値がR0初稿に自然に入った(Gate発火0)が、保証ではなくGate(R0/R1/R2直後の決定論検査+既存の再生成枠)が最終防御。
-- X専用・既定OFFの単一flag・撤退=revert。月のProduction再実行は採用判断後。
-- **採用前の未解決**: (1)過剰選定(semi: 実績+見通しの対を欄に入れ事前登録表で不要+1、1標本)の再現性と対策(指示文の追加修正は未実施・見込みは中)、(2)月・コーヒーのR5回帰(未実施)、(3)B3のFact選定が標本ごとに変わるため必須/不要の判定基準が記事構成に依存する点の運用定義(ユーザー判断候補)、(4)n小(R5 B3 6本、チェーン2本)。
+## 6. 残るリスク・未検証
+- B3の必要性判断が毎回のLLM判断に依存(固定規則でない)。数値が中心でない記事でもv4は欄を1個埋める傾向がある(C-2: 2/2、いずれもB3が論旨/範囲の境界条件として自覚して採用。uk=£1,000は合格(b)、manga=『2作品、4人』は境界でFable判定待ち。誘惑数値の混入0)。
+- Gateの『再生成→STOP』経路は実データで未発動(mock testで担保)。型あたりn=1〜2、C-2は2標本(予算のため3本目未実施)。
+- コーヒー1回目型(8.7%+0.6%)の本文化は未検証。7.1%・221%は境界例(切り口基準で許容範囲)、月r6m1の孤立読点はR1の既存挙動で本件と無関係。
+- 上限2個の妥当性(決算記事): 公開版の半導体は数値3個。ユーザーは今回の2個を妥当と評価済み。
+- 論点(c)『見通し値は入れない』の指示文追加は**採用前に行わない**(v4に『比較の相手側の値は入れない』が既にあり、ユーザーは217億を含む組合せを妥当と評価済み。追加は評価済み基準の独断引き締めになる=Charter原則1。C-1で再実行を減らす方が効果大)。
 
-## 5. 【委任_05追記・Closeout】Production採用する場合の設計・受入条件案・量産単価(**未承認・参考**。Trial結果=`PHASE4_RESULT_01.md`・`TRIAL_RESULT_01.md`)
-Status候補=VALIDATED(Sonnet所見、最終Fable)。ユーザー正式承認なしにProductionへ配線しない。
-### 5-1. 量産単価増分(実測ベース、n小)
-- 追加LLM call 0。B3の出力フィールド追加によるトークン増はほぼ検出不能(v4のB3再実行なし時: 8.1〜12.9円、委任_03のv2平均10.9円・Production参照12.07円と同水準)。chain(R0〜EN)は標本11〜13円(委任_03のB/s1 12.1円と同等)。
-- 増分の主因=**M1によるB3再実行**: v4の全9標本(r5b1,r5b2,r5s2,r6×6)で3/9(半導体2/2が1回目に217億ドルを欄へ、コーヒー1本が周辺数値0.6%)。1回あたり約13円 → 期待増分=3/9×約13円≒**約4円/記事**(95%信頼幅は広い。0〜約8円)。70円目標に対し約6%。保持Gate再生成(R0〜R2)は9標本中0。
-- 改善余地(Prompt変更を伴うため別承認): 半導体で1回目に217億ドル(見通し側の値)を欄へ入れる傾向への対策(v4の『比較の相手側の値は入れない』の強調等)はM1再実行を減らす可能性があるが、今回は指示文を触らない方針(ユーザー原文§6)のため未実施。
-### 5-2. 採用時の設計(要素と役割。実装は未承認)
-1. **B3 schemaの欄追加**(`reader_must_hear_numbers`、<=2、空可)+v4指示文(5観点の整理版、記事固有語なし)。
-2. **E=欄**(従来Storyline由来から変更)。欄とStorylineの不一致は欄優先・記録のみ。
-3. **保持Gate**(R0/R1/R2直後の決定論検査、不足時は既存の再生成枠で1回)。今回の再生成発動0。
-4. **O-2'**(Eと同単位系の非E中核数値を周辺扱い、本文に出さない)。今回の発動: 月1/2(750)、コーヒー2本中c1(3%)・c2(8.7%)、半導体2/2(54%)。
-5. **M2**(R1/R2の新規数値検出)。今回の新規数値0。
-6. **J2**(範囲値の波ダッシュ出力側正規化)。OPEN-509(ユーザー判断要、UDR #195のまま)に依存。DEVのみ継続。
-7. **M1**(欄の周辺数値検査+B3再実行1回)。B3の1回目の過剰選定の是正に実際に効いた(6本中3本)。
-### 5-3. Production配線時の受入条件案(新仕様のためユーザー判断)
-(1)B3 Prompt/schema/Writer契約の変更範囲をFamily X専用に限定し、Z/Yへ到達させない。(2)単一flag・既定OFF・DefaultOffIsolation test(flag未設定でAPI呼出0・出力不変)。(3)導入後の最初の数記事で、欄の数値・保持・不要数値・文章をFableが全文で確認(固定表の合否ではなく切り口基準)。(4)B3再実行率・費用増の実績を記録し、約8円/記事を超える場合は再評価。(5)Opus条件C(Production採用提案前)のレビュー。
-### 5-4. Opus条件C依頼書の骨子
-- 論点: 方式のProduction採用の可否(B3 schema変更・E=欄・Gate/O-2'/M2/J2の配線)。根拠=`TRIAL_RESULT_01.md`(委任_05更新)、`PHASE4_RESULT_01.md`、`COMPARISON_05.md`。
-- 観点: (a)欄の必要性判断がB3 LLMの毎回の判断に依存する(固定規則でない)ことの品質リスク、(b)M1再実行に依存した是正が効かないケース(見通し値が選定Factの核数値)の残存、(c)J2/OPEN-509の扱い、(d)n=型あたり1〜2の統計的な弱さ、(e)ZやYへの波及なしの確認、(f)撤退条件(revert単位)。
-- 不要例: 文章の表現調整、Writer Promptの全面変更。
+## 7. 撤退(revert単位)
+追加型・単一flag・既定OFF・OFF時は入力バイト一致(`test_o2prime_off_is_byte_identical_and_writes_nothing`等)。撤退は`git revert`で済み、既存公開記事は不変(再生成しない限り)。月のProduction再実行は採用判断後(未承認)。

@@ -1,5 +1,11 @@
 # TRIAL_RESULT_01 (FX-CORE-NUMERIC-RETENTION-TRIAL-01。ユーザー原文§8の1〜5に対応する**事実**。Status候補はSonnet所見、最終はFable独立評価)
 
+## 【委任_06更新(2026-10-25、最新)】Opus条件Cレビュー反映: C-1オフライン再適用・C-2対照標本・C-3資料修正
+(証跡=`OPUS_REVIEW_03.md`・`C1_REAPPLY_01.md/.json`・`PREREGISTERED_CRITERIA_05.md`[生成前commit 48341a01e]・`PHASE5_RESULT_01.md`・`ADOPTION_NOTE_01.md`[全面改訂]。Production採用・配線は未承認。)
+- **C-1(API 0)**: 「M1の再実行が過剰選定を直した」は誤り=M1違反3件は全て『欄の数値がderive_ranksの上限capからあふれただけ』(意味判断でない)。欄の数値をderive_ranksでStorylineと同等に扱う(DEV専用関数)と、**保存済み9標本が9/9 E_OK**(現行は6/9)。最終採用6本は欄・E・中核・O-2'とも完全一致(回帰0)。B3再実行3/9と費用増約4円/記事はこの食い違い由来で、欄優先化でほぼ消える見込み(約0〜1円)。副次発見: 億ドル等の桁付き通貨でO-2'の単位系が取れない(半導体1回目型でO-2'が休眠)。
+- **C-2(約27円、2標本)**: 数値が中心でない記事(uk_train・manga_ai_chat)でもv4は欄に数値を1個入れた(2/2、欄[]=0/2)。uk=『最大£1,000』(論旨の一部=合格(b))、manga=『2作品、4人』(提供範囲の境界条件=境界、Fable判定待ち)。誘惑数値の混入0。予算残のため3本目は未実施。案件累計570.93円/580円。
+- **C-3**: ADOPTION_NOTE全面改訂、COMPARISON_05の表示不具合(rerun=None→b3_rerun)修正、EN照合に倍率語追加・『3D』誤一致除外(観察用WARNのまま)。
+
 ## 【委任_05更新(2026-10-25、最新・Closeout)】追加検証(月・コーヒー・半導体の新規6標本、R5 v4、評価=B3が選んだ切り口基準)
 (追加予算200円承認・案件上限580円。証跡=`PREREGISTERED_CRITERIA_04.md`[生成前commit c20ae9617]・`PHASE4_RESULT_01.md`・`COMPARISON_05.md`・`BUDGET_LOG_01.md`。Production採用・配線は未承認。)
 ユーザー原文§7の項目順:
