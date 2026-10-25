@@ -1,0 +1,104 @@
+あなたは英語読解指導の専門家です。下の英語本文(Advancedレベル)を、日本語話者の学習者(B1〜B2相当)の読解の観点で点検します。この工程の仕事は、(1)本文の全文を見て、構文上の特徴のある文を漏れなく洗い出すこと、(2)洗い出した文を1文ずつ絶対的に判定することです。解説文は書きません(解説は別の工程が行います)。
+
+# 作品・レベル
+- 作品: The Open Window(『開いた窓』)
+- レベル: Advanced
+
+# 本文(段落番号[P1]〜[P29]は参照用。引用では番号を書かない)
+[P1] Framton sat on the edge of his chair, turning his letter of introduction between his fingers. His doctor had recommended peace and country air, but visiting strangers was hardly peaceful.
+
+[P2] “My aunt will be down soon,” said Vera, her fifteen-year-old niece. “Do you know much about her?”
+
+[P3] “Almost nothing,” he admitted.
+
+[P4] Vera glanced towards the French window, which stood wide open to the lawn.
+
+[P5] “Her great tragedy happened three years ago today.”
+
+[P6] Framton stopped turning the letter.
+
+[P7] “Her husband and her two young brothers went out shooting through that window. Their little brown spaniel went with them. They tried to cross a bog, but the ground gave way beneath them. They all disappeared. Their bodies were never found.”
+
+[P8] “How terrible,” Framton murmured.
+
+[P9] “My aunt still thinks they’ll come back. She keeps the window open until dark, waiting for them.” Vera’s voice grew quieter. “Her husband had his white coat over his arm. Her youngest brother was singing, ‘Bertie, why do you bound?’ He always sang it to tease her.”
+
+[P10] She looked out across the empty lawn.
+
+[P11] “Sometimes, on evenings like this, I almost expect to see them.”
+
+[P12] Before Framton could reply, her aunt hurried into the room.
+
+[P13] “I hope Vera has kept you company! You don’t mind the open window? My husband and brothers will be back soon. They’ve been shooting. Their boots will be covered in mud, of course!”
+
+[P14] Framton felt a chill. So she really was waiting.
+
+[P15] He began describing his illness, trying to keep his eyes away from the window. His hostess listened with only half her attention. Again and again, she looked past him towards the lawn.
+
+[P16] Then her face brightened.
+
+[P17] “Here they are at last!”
+
+[P18] Vera stared outside, her eyes wide with horror.
+
+[P19] Framton turned.
+
+[P20] Three figures were crossing the lawn in the fading light, carrying guns. A white coat hung over one man’s arm. A brown spaniel followed close behind.
+
+[P21] Across the quiet garden came a young voice:
+
+[P22] “Bertie, why do you bound?”
+
+[P23] Framton could scarcely breathe. The dead were coming towards the house.
+
+[P24] He grabbed his hat and stick and rushed out. Within seconds, he was running down the drive.
+
+[P25] The men stepped through the window, muddy and hungry.
+
+[P26] “Who was that?” asked the husband.
+
+[P27] “A most peculiar visitor,” his wife said. “He talked about his nerves, then suddenly ran away.”
+
+[P28] “It was the spaniel,” Vera said calmly. “He told me he was terrified of dogs. In India, a pack chased him into an empty grave. He spent the whole night there, with them snarling above him.”
+
+[P29] Inventing convincing stories at a moment’s notice was Vera’s speciality.
+
+# 手順
+1. 本文を最初から最後まで、すべての文について、下の「価値のある特徴の分類」に該当するかを確認する。該当する文は、数に上限を設けず、すべてfeaturesに列挙する(1段落に複数あれば文ごとに列挙)。どの文にも該当しない段落は、段落番号をno_feature_parasに書く(featuresに載せた段落は書かない)。
+2. featuresの各文を、その文だけを見て絶対的に判定する。本文中の他の文との比較や、何件選ぶかを考えて判定を調整してはならない。
+
+# 価値のある特徴の分類(feature_classに書くコード)
+- INV: 倒置。場所・方向・否定・時を表す副詞句が文頭に出て、動詞が主語の前に来る(例: Under the bed lay a small box. / Never had she seen such a place.)。伝達部の倒置(said Vera の型)は含まない。
+- CLEFT: 疑似分裂文・分裂文(What … is …. / It is … that …. の型)。
+- CMP: 比較の省略・倍数比較など、何と何を比べているか(比較の基準)が見えにくい比較。
+- HEAVY: 主語が長い・重い。主語の中心から動詞までが離れている、または主語が節・長い句で、動詞を見つけにくい。
+- POSTMOD: 名詞から離れた、または重なった後置修飾(後置の分詞句・関係節・前置詞句など)で、修飾先を取り違えやすい。
+- FRONT: 文頭に置かれた修飾要素(分詞句・前置詞句・副詞節など)のために、主節の主語や動詞を取り違えやすい。
+- APPOS: 同格・挿入・コンマで区切られた要素のため、構造が複数に読める。
+- ELL: 省略(動詞・主語・語句の省略、断片文、並列での省略)で、補い方を取り違えやすい。
+- SPEC: 特殊な文型(SVOC・二重目的語・使役/知覚動詞+目的語+補語など)で、語の働きを取り違えやすい。
+- OTHER: 上記以外の構文上の特徴。other_descに短く書く。
+
+# 基礎項目(これだけで説明が済む文は価値なしとして扱う。作品に関係なく共通)
+命令文(命令文+and/orを含む)/ 基本的な接続(and・but・or・so・because・when・if・while・although)/ 前置詞句 / 分詞構文・付帯状況のwithの基本形 / 関係詞の基本用法(whose・関係副詞を含む)/ 基本時制・進行形・完了形・受動態 / 比較級・最上級・as…asの基本形 / 仮定法の基本形 / 動名詞主語の単純形 / the+形容詞 / 伝達部の倒置(said X)/ 疑問文・感嘆文・there is構文・It is…to…の基本形 / to不定詞・動名詞・分詞の基本用法。
+- 基礎項目を含む文でも、上の「価値のある特徴の分類」に該当する特徴が文中にあれば、その特徴について判定する(basic_onlyはfalse)。分類に該当する特徴がないのに、基礎項目の「特殊な用法」「重要な表現効果」を理由に価値ありと判定してはならない。
+- 基礎項目だけの文はfeaturesに載せなくてよい(載せる場合はtierをC、basic_onlyをtrueにする)。
+
+# featuresの各項目の書き方
+- para: 段落番号(例: "P4")。sentence: その文を本文から一字一句そのまま(逐語)。
+- feature_class: 上のコード。
+- misread_ja: 学習者がこの文の構造をどう取り違えうるかの具体例を日本語で。どの語を主語・動詞・修飾先と誤るか、または省略をどう補い誤るかを、本文の該当語句を引用して書く。構造の取り違えに限る。単語の意味が分からないこと(語彙の誤読)は書かない。具体的に書けない場合は空文字にする。
+- misread_quote: 取り違えの起点になる本文中の語句を一字一句そのまま(1〜8語)。書けなければ空文字。
+- correct_structure_ja: 正しい構造(主語・動詞・修飾関係)を短く。
+- basic_only: この文の説明が上の基礎項目だけで済むならtrue、価値のある特徴の分類に該当する特徴があるならfalse。
+- tier: A=構造を取り違えると文意が取れない、または大きく誤る読解上の難所 / B=構造に特徴はあるが、取り違えても大意は文脈からつかめる / C=基礎的で説明の価値が小さい。
+- rank: tierがAの項目だけに、tier Aの項目同士の優先順位(1が最優先、整数、重複なし)。A以外はnull。
+- construct_ja / points_ja / context_ja: tierがAでbasic_onlyがfalseの項目だけに書く(それ以外は空文字・空配列)。construct_ja=構文の名前(短く)。points_ja=解説で押さえるべき点(最大3つ、短く)。context_ja=その文の本文中での位置づけを1文で(本文に書かれた事実のみ。解釈や評価は書かない)。これらにはユーザー向け解説の材料になるため、難易度・誤解しやすさ・学習価値などの評価語を入れない。
+
+# 出力(JSONオブジェクト1個のみ。前置き・後書き・コードフェンスなし)
+{
+  "features": [
+    {"para": "P4", "sentence": "…", "feature_class": "INV", "other_desc": "", "misread_ja": "…", "misread_quote": "…", "correct_structure_ja": "…", "basic_only": false, "tier": "A", "rank": 1, "construct_ja": "…", "points_ja": ["…"], "context_ja": "…"}
+  ],
+  "no_feature_paras": ["P1", "P2"]
+}
