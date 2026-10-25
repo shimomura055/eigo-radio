@@ -487,6 +487,9 @@ def cmd_gen(args) -> None:
     arm = args.arm
     assert arm in EST_JPY, arm
     assert_cwd_is_root()
+    # TTS実行mode: Z production runnerの既定(--tts-execution-mode STANDARD、er026:2315)と同一にそろえる。
+    # 未設定だとer006_batch_tts_wiringの既定=BATCHになり、Aと条件が違う(委任_02で初回起動時に発見・修正)。
+    os.environ["TTS_EXECUTION_MODE"] = "STANDARD"
     # --- 起動前: STOP / 他Z TTS / module未commit(待機)---
     stop_check(arm)
     others = other_z_tts_processes()
@@ -521,8 +524,10 @@ def cmd_gen(args) -> None:
     # --- 隔離・audit hook ---
     before = snapshot()
     since_ts = time.time()
-    install_audit([OUT])
-    res = {"arm": arm, "started_jst": now_jst(), "spent_before": round(spent0, 3), "reserve": reserve, "chunks": {}}
+    # 許可root: OUT + HuggingFace model cache(Production secondary ASRのfaster-whisper small読込がrefs/lockを触る。公開モデルのcacheでrepo/Production状態ではない。初回起動で発見)
+    install_audit([OUT], [os.path.join(os.path.expanduser("~"), ".cache", "huggingface")])
+    res = {"arm": arm, "started_jst": now_jst(), "spent_before": round(spent0, 3), "reserve": reserve, "chunks": {},
+           "tts_execution_mode": os.environ.get("TTS_EXECUTION_MODE")}
     items = arm_items(arm)
     import er063_family_z_audio_01 as z
     import er078_secondary_run_scope_01 as secondary_run_scope
