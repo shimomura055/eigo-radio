@@ -1,0 +1,219 @@
+{
+  "stage": "rwe_R2_redelivery_high2",
+  "kind": "tension",
+  "status": "PASS",
+  "n_judgements": 3,
+  "history": [
+    {
+      "attempt": 1,
+      "sha256": {
+        "tension": "9312bb60ef11639d2896a2b9c7394660169c57a31ed7f6176a33257f59cb7f78"
+      },
+      "check": {
+        "kind": "tension",
+        "route_key": "FAMILY_Y_LEAK_JUDGE",
+        "model": "gpt-6-luna",
+        "effort": "high",
+        "meta": {
+          "response_id": "resp_0c905cc5e33b193d006addde692d4887d0b66552869c277ef6",
+          "model": "gpt-6-luna",
+          "usage": {
+            "input_tokens": 1042,
+            "output_tokens": 3094
+          }
+        },
+        "prompt_sha256": "55657c00f14a996020f37178d7515e79333c6900ea0932b1904dd6b621f482cb",
+        "parsed": {
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "PASS",
+            "leak_binary_camp_split": "PASS",
+            "reasoning": "調査・数字の説明や2対1の陣営分けはなく、受取人が手間を認めてほしいという思いが中心です。一方、「思いが料金の話から見えてくる」は、語り手が発見を報じる構文になっています。",
+            "quoted_evidence": "「受け取るためにかけた手間も認めてほしいという思いが、料金の話から見えてくる。」"
+          }
+        },
+        "flagged_items": [
+          {
+            "section": "tension",
+            "fail_fields": [
+              "leak_discovery_syntax"
+            ],
+            "reasoning": "調査・数字の説明や2対1の陣営分けはなく、受取人が手間を認めてほしいという思いが中心です。一方、「思いが料金の話から見えてくる」は、語り手が発見を報じる構文になっています。",
+            "quoted_evidence": "「受け取るためにかけた手間も認めてほしいという思いが、料金の話から見えてくる。」"
+          }
+        ],
+        "any_flagged": true,
+        "n_fail_fields": 1
+      },
+      "rewrite_calls": [
+        {
+          "try": 1,
+          "route_key": "FAMILY_Y_CLOSING_REWRITE",
+          "meta": {
+            "response_id": "resp_0483561f6dd34f98006addde89120887d0b31cc5cad05d12fd",
+            "model": "gpt-6.1-sol",
+            "usage": {
+              "input_tokens": 2764,
+              "output_tokens": 910
+            }
+          },
+          "prompt_sha256": "75eecb5778240ac35f839ab3cec8d1430127fb126da35108a43cd662b3e5db48",
+          "details": {
+            "applied": [
+              "tension"
+            ],
+            "errors": [],
+            "scope_checks": {
+              "tension": {
+                "checked": true,
+                "target_sentence_idx": [
+                  3
+                ],
+                "violations": []
+              }
+            }
+          },
+          "raw_rewrites": [
+            {
+              "section": "tension",
+              "text": "「受け取り方を考えて手間をかけている」と、営業所を使う受取人は言う。時間を指定して待っても、営業所で受け取ろうとしても、予定通りにいかないことがある。再配達になったかどうかという結果だけでは、受け取ろうとした手間までは分からない。料金の話には、受け取るための手間も認めてほしいという思いが重なっているのだろう。あなたが最近荷物を受け取った場面なら、再配達料を決める人にどんな手間を伝えたい？"
+            }
+          ]
+        }
+      ],
+      "rewritten": [
+        "tension"
+      ]
+    },
+    {
+      "attempt": 2,
+      "sha256": {
+        "tension": "9655bc3baf617ebbdeced24874c1ad09afc8a706434af93b6a90b9079185bc6b"
+      },
+      "check": {
+        "kind": "tension",
+        "route_key": "FAMILY_Y_LEAK_JUDGE",
+        "model": "gpt-6-luna",
+        "effort": "high",
+        "meta": {
+          "response_id": "resp_020783de3d62d0df006addde98687c87d08b006ce33298e757",
+          "model": "gpt-6-luna",
+          "usage": {
+            "input_tokens": 1043,
+            "output_tokens": 1183
+          }
+        },
+        "prompt_sha256": "4a85efbe55db60f6326bb664dd901b7087a76d31d3484060e7a55e9b8328a897",
+        "parsed": {
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "FAIL",
+            "leak_binary_camp_split": "PASS",
+            "reasoning": "調査や数字を説明する文はなく、発見・傾向を報じる文体や2対1の陣営分けもありません。一方、本文は受取人一人の手間と読者への問いにとどまり、3人が異なる答えに至る理由を掘り下げていません。",
+            "quoted_evidence": "「料金の話には、受け取るための手間も認めてほしいという思いが重なっているのだろう。あなたが最近荷物を受け取った場面なら、再配達料を決める人にどんな手間を伝えたい？」"
+          }
+        },
+        "flagged_items": [
+          {
+            "section": "tension",
+            "fail_fields": [
+              "leak_tension_reverts_to_research"
+            ],
+            "reasoning": "調査や数字を説明する文はなく、発見・傾向を報じる文体や2対1の陣営分けもありません。一方、本文は受取人一人の手間と読者への問いにとどまり、3人が異なる答えに至る理由を掘り下げていません。",
+            "quoted_evidence": "「料金の話には、受け取るための手間も認めてほしいという思いが重なっているのだろう。あなたが最近荷物を受け取った場面なら、再配達料を決める人にどんな手間を伝えたい？」"
+          }
+        ],
+        "any_flagged": true,
+        "n_fail_fields": 1
+      },
+      "rewrite_calls": [
+        {
+          "try": 1,
+          "route_key": "FAMILY_Y_CLOSING_REWRITE",
+          "meta": {
+            "response_id": "resp_067ed149e943881a006adddea56d9887d08d7fc8ca1a93139f",
+            "model": "gpt-6.1-sol",
+            "usage": {
+              "input_tokens": 2807,
+              "output_tokens": 1236
+            }
+          },
+          "prompt_sha256": "4b56f035a12dcf0fc9d5df4dfeb4281a57ccdda0bac551b7d80e61f3a993ffab",
+          "details": {
+            "applied": [
+              "tension"
+            ],
+            "errors": [],
+            "scope_checks": {
+              "tension": {
+                "checked": true,
+                "target_sentence_idx": [
+                  3,
+                  4
+                ],
+                "violations": []
+              }
+            }
+          },
+          "raw_rewrites": [
+            {
+              "section": "tension",
+              "text": "「受け取り方を考えて手間をかけている」と、営業所を使う受取人は言う。時間を指定して待っても、営業所で受け取ろうとしても、予定通りにいかないことがある。再配達になったかどうかという結果だけでは、受け取ろうとした手間までは分からない。配るきつさに、待った手間や受け取り方を選んだ手間が重なる。どの手間を料金で受け止めてほしいかが、違う答えにつながっていそうだ。あなたが最近荷物を受け取った場面なら、再配達料を決める人にどんな手間を伝えたい？"
+            }
+          ]
+        }
+      ],
+      "rewritten": [
+        "tension"
+      ]
+    },
+    {
+      "attempt": 3,
+      "sha256": {
+        "tension": "2cfc6f3833c0a1354409ee6196fe76d455245f984253f4c5ba6648f8d0bd645e"
+      },
+      "check": {
+        "kind": "tension",
+        "route_key": "FAMILY_Y_LEAK_JUDGE",
+        "model": "gpt-6-luna",
+        "effort": "high",
+        "meta": {
+          "response_id": "resp_0a1b29c05dd283a5006adddebe7ed887d08b658f68a45e1c4f",
+          "model": "gpt-6-luna",
+          "usage": {
+            "input_tokens": 1065,
+            "output_tokens": 811
+          }
+        },
+        "prompt_sha256": "d45f60a7c2bbb28721826f5ff427fdb36b1a27808fd8e367c648a712dbb47d80",
+        "parsed": {
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "PASS",
+            "leak_binary_camp_split": "PASS",
+            "reasoning": "調査・データや具体的な数字を説明するのではなく、受け取る側の手間と配る側のきつさを描き、異なる答えにつながる理由を掘り下げています。3人を二つの陣営に分ける構図にもなっていません。",
+            "quoted_evidence": ""
+          }
+        },
+        "flagged_items": [],
+        "any_flagged": false,
+        "n_fail_fields": 0
+      }
+    }
+  ],
+  "first_judgement_flagged": true,
+  "first_judgement_n_fail_fields": 1,
+  "final_sha256": {
+    "tension": "2cfc6f3833c0a1354409ee6196fe76d455245f984253f4c5ba6648f8d0bd645e"
+  },
+  "rewritten": true
+}

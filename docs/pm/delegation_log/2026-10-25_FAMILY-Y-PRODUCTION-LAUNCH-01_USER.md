@@ -1,4 +1,3 @@
-<pasted_content id="a638">
 # Claude Codeへの指示
 ## Family Y Production正式立ち上げ・XYZ共通仕様統合・差分追跡
 
@@ -465,4 +464,3 @@ Family YのPRODUCTION_WIRED判定には以下を必須とする。
 ただし、現在検討中で未承認の仕様は先行採用せず、正式採用された時点でFamily Yへ確実に適用する追跡管理を行うこと。
 
 品質を守りながら、可能な限り最速で完了させてください。
-</pasted_content id="a638">

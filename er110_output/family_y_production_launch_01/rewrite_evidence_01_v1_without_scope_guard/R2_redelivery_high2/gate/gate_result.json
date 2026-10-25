@@ -1,0 +1,126 @@
+{
+  "stage": "rwe_R2_redelivery_high2",
+  "kind": "tension",
+  "status": "PASS",
+  "n_judgements": 2,
+  "history": [
+    {
+      "attempt": 1,
+      "sha256": {
+        "tension": "9312bb60ef11639d2896a2b9c7394660169c57a31ed7f6176a33257f59cb7f78"
+      },
+      "check": {
+        "kind": "tension",
+        "route_key": "FAMILY_Y_LEAK_JUDGE",
+        "model": "gpt-6-luna",
+        "effort": "high",
+        "meta": {
+          "response_id": "resp_0b2fd3c472782078006addddf1b58c87d0a784f8bbff616a51",
+          "model": "gpt-6-luna",
+          "usage": {
+            "input_tokens": 1042,
+            "output_tokens": 1609
+          }
+        },
+        "prompt_sha256": "55657c00f14a996020f37178d7515e79333c6900ea0932b1904dd6b621f482cb",
+        "parsed": {
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "FAIL",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "FAIL",
+            "leak_binary_camp_split": "PASS",
+            "reasoning": "調査・データを主語にした文や数字はなく、手間への思いが中心です。一方、「見えてくる」は発見を報じる構文で、内容も営業所を使う受取人一人の思いに収束し、3人が異なる答えに至る理由を掘り下げていません。",
+            "quoted_evidence": "「受け取るためにかけた手間も認めてほしいという思いが、料金の話から見えてくる。」"
+          }
+        },
+        "flagged_items": [
+          {
+            "section": "tension",
+            "fail_fields": [
+              "leak_discovery_syntax",
+              "leak_tension_reverts_to_research"
+            ],
+            "reasoning": "調査・データを主語にした文や数字はなく、手間への思いが中心です。一方、「見えてくる」は発見を報じる構文で、内容も営業所を使う受取人一人の思いに収束し、3人が異なる答えに至る理由を掘り下げていません。",
+            "quoted_evidence": "「受け取るためにかけた手間も認めてほしいという思いが、料金の話から見えてくる。」"
+          }
+        ],
+        "any_flagged": true,
+        "n_fail_fields": 2
+      },
+      "rewrite_calls": [
+        {
+          "try": 1,
+          "route_key": "FAMILY_Y_CLOSING_REWRITE",
+          "meta": {
+            "response_id": "resp_05bb7219c309be80006addde033d2087d09dd4f1c880025356",
+            "model": "gpt-6.1-sol",
+            "usage": {
+              "input_tokens": 2776,
+              "output_tokens": 945
+            }
+          },
+          "prompt_sha256": "2495221f49f1411583443132f10ac1b37e90b22b29a32b3427ee622eb728530f",
+          "details": {
+            "applied": [
+              "tension"
+            ],
+            "errors": []
+          },
+          "raw_rewrites": [
+            {
+              "section": "tension",
+              "text": "配り直す手間を、料金全体で受け止めたいと配達員は言う。時間を指定して待っても、営業所で受け取ろうとしても、予定通りにいかないことがある。再配達になったかどうかという結果だけでは、受け取ろうとした手間までは分からない。料金の話には、受け取る側の手間も認めてほしい思いが重なるのかもしれない。あなたが最近荷物を受け取った場面なら、再配達料を決める人にどんな手間を伝えたい？"
+            }
+          ]
+        }
+      ],
+      "rewritten": [
+        "tension"
+      ]
+    },
+    {
+      "attempt": 2,
+      "sha256": {
+        "tension": "9d8bf9ede706626e931a697b7148861fd717a7772b46c87fb24d269e590abcd6"
+      },
+      "check": {
+        "kind": "tension",
+        "route_key": "FAMILY_Y_LEAK_JUDGE",
+        "model": "gpt-6-luna",
+        "effort": "high",
+        "meta": {
+          "response_id": "resp_0593faeb2827f835006addde17fe6087d0a6729c0963f6a7c0",
+          "model": "gpt-6-luna",
+          "usage": {
+            "input_tokens": 1037,
+            "output_tokens": 319
+          }
+        },
+        "prompt_sha256": "137efab3b2ec1c0425aa58cdf51e19186d43261098e877b1a8d655ad46aa8b01",
+        "parsed": {
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "PASS",
+            "leak_binary_camp_split": "PASS",
+            "reasoning": "調査・データや具体的な数値の説明はなく、配達員や受け取る側の手間と気持ちを軸に書かれています。3人を対称的な2対1の陣営に分ける描写もありません。",
+            "quoted_evidence": ""
+          }
+        },
+        "flagged_items": [],
+        "any_flagged": false,
+        "n_fail_fields": 0
+      }
+    }
+  ],
+  "first_judgement_flagged": true,
+  "first_judgement_n_fail_fields": 2,
+  "final_sha256": {
+    "tension": "9d8bf9ede706626e931a697b7148861fd717a7772b46c87fb24d269e590abcd6"
+  },
+  "rewritten": true
+}
