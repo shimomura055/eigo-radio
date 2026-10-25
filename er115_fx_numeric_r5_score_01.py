@@ -102,13 +102,14 @@ def classify_ja(text: str, article: str) -> dict:
     return out
 
 
-_EN_NUM = re.compile(r"\$?\d[\d,]*(?:\.\d+)?\s*(?:%|percent|times|x|billion|million|trillion|meters?|m|km|cm|kg|years?)?", re.I)
+_EN_NUM = re.compile(r"\$?\d[\d,]*(?:\.\d+)?(?!(?-i:[A-Z])\b)\s*(?:%|percent|times|x|billion|million|trillion|meters?|m|km|cm|kg|years?)?", re.I)
 
 
 def en_tokens(text: str) -> list:
     return [m.group(0).strip() for m in _EN_NUM.finditer(text or "")]
 
 
+# 委任_06: 数字直後の大文字1字(3D/5G)は数値トークンにしない(上の_EN_NUMの先読み)。
 # 英訳側の必須数値の存在判定(決定論の正規表現。ig『3倍超』は較正済みen_presentが偽陽性[three dimensions]を出すため使わない)
 EN_MUST_PATTERNS = {
     "3倍超": r"(?:\b(?:three|3)[\s-]*(?:times|x\b|fold)|\btriple|\bthreefold)",

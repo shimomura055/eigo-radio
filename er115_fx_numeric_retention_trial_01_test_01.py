@@ -527,3 +527,106 @@ def test_isolation_phase1b_flags_have_no_env_or_default_on():
     sig = inspect.signature(D.run_w1_dev)
     assert sig.parameters["o2prime"].default is False and sig.parameters["m2"].default is False
     assert inspect.signature(D.run_b3_dev).parameters["addendum_version"].default == "v1"
+
+
+# ======================================================================================================
+# 委任_06 C-1(欄の数値をderive_ranksのStoryline同等に扱う。DEV専用・API 0)/ C-3(EN照合: 倍率語・3D誤一致)
+# ======================================================================================================
+SEMI = os.path.join(D.OUT_ROOT, "semiconductor_earnings", "A")
+COFFEE = os.path.join(D.OUT_ROOT, "coffee_prices", "A")
+needs_artifacts = pytest.mark.skipif(not os.path.isdir(os.path.join(SEMI, "r6s1", "storyline_b3_attempt1")), reason="Trial artifactなし")
+
+
+def test_c1_production_ddet_untouched_and_restored():
+    orig = D.P.ddet
+    with D.field_priority_ddet(["167億ドル"]):
+        assert D.P.ddet is not orig
+    assert D.P.ddet is orig
+    with pytest.raises(RuntimeError):
+        with D.field_priority_ddet([]):
+            raise RuntimeError("x")
+    assert D.P.ddet is orig     # 例外時も必ず復元
+
+
+def test_c1_field_priority_story_adds_only_mappable_surfaces():
+    facts = "- 売上は167億ドルで、前年比221％増。"
+    sf = D.field_priority_surfaces(["167億ドル", "999億ドル", "2025年"], facts, "story")
+    assert sf["kept"] == ["167億ドル"] and sf["unmapped"] == ["999億ドル"]       # 年系は対象外・写像できない値はunmapped
+    assert D.field_priority_story("元の一文", ["167億ドル"], facts) == "元の一文\n167億ドル"
+    assert D.field_priority_story("元の一文", [], facts) == "元の一文"              # 欄が空なら元と同一(E=∅は現行と同じ)
+
+
+@needs_artifacts
+def test_c1_reapply_makes_attempt1_samples_e_ok_and_keeps_finals(tmp_path):
+    r = D.reapply_field_priority(os.path.join(SEMI, "r6s1"), str(tmp_path / "s1a1"), attempt1=True)
+    assert r["base"]["status"] == "M1_VIOLATION" and r["base"]["violations"][0]["reason"] == "peripheral_number_in_storyline"
+    assert r["new"]["status"] == "E_OK" and len(r["new"]["E"]) == 2
+    assert any("217" in s for s in r["core_added"])
+    # 最終採用側(2回目)は結果が変わらない(回帰なし)
+    f = D.reapply_field_priority(os.path.join(SEMI, "r6s1"), str(tmp_path / "s1f"), attempt1=False)
+    assert f["base"]["status"] == f["new"]["status"] == "E_OK" and f["core_added"] == [] and f["core_removed"] == []
+
+
+@needs_artifacts
+def test_c1_reapply_does_not_modify_source_sample(tmp_path):
+    src = os.path.join(SEMI, "r6s1", "storyline_b3_attempt1", "annotation.json")
+    before = hashlib.sha256(open(src, "rb").read()).hexdigest()
+    D.reapply_field_priority(os.path.join(SEMI, "r6s1"), str(tmp_path / "x"), attempt1=True)
+    assert hashlib.sha256(open(src, "rb").read()).hexdigest() == before
+
+
+@needs_artifacts
+def test_c1_coffee_attempt1_pair_becomes_ok(tmp_path):
+    r = D.reapply_field_priority(os.path.join(COFFEE, "r6c2"), str(tmp_path / "c"), attempt1=True)
+    assert r["base"]["status"] == "M1_VIOLATION" and r["new"]["status"] == "E_OK"
+    assert r["new"]["E"] == ["8.7%", "0.6%"]
+
+
+@needs_artifacts
+def test_c1_unmapped_field_value_still_m1_violation(tmp_path):
+    # 欄にFact本文へ写像できない数値があれば、優先化せず従来どおり構造違反(unmapped_to_news_field)のまま
+    import shutil as _sh
+    src = os.path.join(SEMI, "r6s1")
+    dst = str(tmp_path / "u")
+    r = D.reapply_field_priority(src, dst, attempt1=True)
+    p = os.path.join(dst, "new", "storyline_b3", "reader_must_hear_numbers.json")
+    obj = json.load(open(p, encoding="utf-8"))
+    obj["items"] = ["167億ドル", "9999億ドル"]
+    json.dump(obj, open(p, "w", encoding="utf-8"), ensure_ascii=False)
+    with D.field_priority_ddet(obj["items"]):
+        D.P.produce_annotated_b3(os.path.join(dst, "new"))
+    E = D.derive_E_r5(os.path.join(dst, "new"))
+    assert not E["ok"] and any(v["reason"] == "unmapped_to_news_field" for v in E["violations"])
+    assert r["new"]["status"] == "E_OK"
+
+
+def test_c3_en_present_times_fold_and_3d():
+    assert D.en_present("3倍超", "it holds three times the energy") is True
+    assert D.en_present("3倍超", "over 3x more") is True
+    assert D.en_present("3倍", "it has three dimensions") is False          # 語数詞の誤一致なし
+    assert D.en_present("3倍", "a 3D structure") is False                    # 単位なしの3が3Dに一致しない
+    assert D.en_present("3倍", "He has 3 dogs") is False
+    assert D.en_present("10 m", "10m away") is True                          # 小文字mは数値+単位として維持
+    assert D.en_present("167億ドル", "$16.7 billion") is True               # 既存(億ドル→billion)は不変
+
+
+def test_c3_en_tokens_exclude_3d():
+    import er115_fx_numeric_r5_score_01 as S
+    assert S.en_tokens("a 3D crystal, 3 times more, 41%, $16.7 billion, 10 m") == ["3 times", "41%", "$16.7 billion", "10 m"]
+
+
+def test_c3_comparison_fix_script_idempotent_and_uses_b3_rerun():
+    src = open(os.path.join(ROOT, "er115_fx_numeric_r5_comparison_fix_01.py"), encoding="utf-8").read()
+    assert "b3_rerun" in src and "rerun=None" in src       # 旧表示を置換する対象としてだけ登場
+    md = open(os.path.join(ROOT, "docs", "research", "FX-CORE-NUMERIC-RETENTION-TRIAL-01", "COMPARISON_05.md"), encoding="utf-8").read()
+    assert "first_pass_ok=False b3_rerun=True" in md and "first_pass_ok=False rerun=None" not in md
+
+
+def test_c1_default_off_no_global_flag():
+    # 既定OFF: P.ddet は未差替え、er115以外のmoduleがC-1関数を参照しない(Production非接続)
+    for p in glob.glob(os.path.join(ROOT, "*.py")):
+        base = os.path.basename(p)
+        if base.startswith("er115_"):
+            continue
+        txt = open(p, encoding="utf-8", errors="replace").read()
+        assert "field_priority_ddet" not in txt and "reapply_field_priority" not in txt, base

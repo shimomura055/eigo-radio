@@ -300,6 +300,8 @@ EN_UNIT_RE = {
     "m": r"\b(?:m|meters?|metres?)\b", "km": r"\b(?:km|kilomet(?:er|re)s?)\b", "cm": r"\b(?:cm|centimet(?:er|re)s?)\b",
     "mm": r"\b(?:mm|millimet(?:er|re)s?)\b", "%": r"percent|%", "USD": r"dollars?|[$]", "GBP": r"pounds?|£", "EUR": r"euros?|€",
     "month": r"months?", "年": r"years?", "億年": r"years?", "万年": r"years?", "年前": r"years?", "cent": r"cents?",
+    # 委任_06 C-3(Opus条件C推奨): 倍率語。『三倍→three times』『3倍→3x/threefold/triple』(観察用WARNのみ・Gate化しない)
+    "倍": r"times|fold\b|x\b|×|triple|double|quadruple",
 }
 _WORD_NUM = {w: i for i, w in enumerate(
     "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty".split())}
@@ -310,7 +312,8 @@ _SCALE = {"thousand": 10 ** 3, "million": 10 ** 6, "billion": 10 ** 9, "trillion
 def en_values(text):
     t = nfkc(text).replace(",", "")
     ctx = []
-    for m in re.finditer(r"(?<![\w.])(\d+(?:\.\d+)?)\s*(thousand|million|billion|trillion)?", t, re.I):
+    # 委任_06: 数字の直後に大文字1字が続く語(3D/5G/4K)は数値でない(単位なしの『3』が『3D』に誤一致するのを除外)。小数の途中で切れる誤分割も除外。
+    for m in re.finditer(r"(?<![\w.])(\d+(?:\.\d+)?)(?!\d|\.\d)(?!(?-i:[A-Z])\b)\s*(thousand|million|billion|trillion)?", t, re.I):
         v = P.dec(repr(float(m.group(1)) * (_SCALE[m.group(2).lower()] if m.group(2) else 1)))
         ctx.append((v, t[m.end(): m.end() + 30].lower()))
     for m in re.finditer(r"\b(" + "|".join(sorted(_WORD_NUM, key=len, reverse=True)) + r")\b(?:\s+(thousand|million|billion|trillion))?", t, re.I):
@@ -1139,7 +1142,7 @@ def sink_snapshot() -> dict:
     return snap
 
 
-def run_b3_dev(article: str, arm: str, sample: str, *, per_run_cap: float, phase_cap: float, client=None, addendum_version: str = "v1") -> dict:
+def run_b3_dev(article: str, arm: str, sample: str, *, per_run_cap: float, phase_cap: float, client=None, addendum_version: str = "v1", max_attempts: int = 2) -> dict:
     """B3 DEV(追記ブロック付き) -> 注記producer(決定論) -> M1検査 -> 違反なら B3を1回だけ再実行 -> E確定。丸め・Writerは呼ばない。"""
     out_dir = sample_dir(article, arm, sample)
     info = prepare_dir(article, out_dir)
@@ -1152,7 +1155,7 @@ def run_b3_dev(article: str, arm: str, sample: str, *, per_run_cap: float, phase
     addendum = base_addendum
     E_info = None
     r5 = addendum_version in ("v3", "v4")
-    for attempt in (1, 2):
+    for attempt in range(1, max_attempts + 1):   # 既定2=従来(M1違反時にB3を1回だけ再実行)。委任_06 C-2は費用予約のため1(再実行なし)で呼ぶ
         wrapper = _AddendumClient(client, addendum, field_schema=r5)
         if attempt == 2:
             # 1回目のartifactを退避(上書きしない)
@@ -1236,6 +1239,113 @@ def run_chain_dev(article: str, arm: str, sample: str, *, per_run_cap: float, ph
     return {"status": "DONE", "metrics": metrics, "cost": cost, "sink_diff": sink_diff}
 
 
+# ======================================================================================================
+# 委任_06 C-1(Opus条件C): 欄(reader_must_hear_numbers)の数値をderive_ranksで『Storylineの数値』と同等以上に扱う(DEV専用・既定OFF)
+#   事実(OPUS_REVIEW_03 C-1): M1違反3件は全て peripheral_number_in_storyline = 欄の数値がderive_ranksのcap(最低3)からあふれただけで、意味判断ではない。
+#   方式: derive_ranks本体は変えず、storyline引数に渡す文字列へ欄の数値(Fact本文に写像できるものだけ)を足す。Production moduleは編集しない。
+#   この関数群は呼び出されない限り何も起きない(Productionからimportされない=test_isolationで確認、flag/環境変数なし)。
+# ======================================================================================================
+def field_priority_surfaces(items, facts_all_text: str, story: str) -> dict:
+    """欄の各項目から数値表記を抽出し、Fact本文(または元Storyline)に写像できるものだけを優先対象にする。写像できないものは unmapped(M1の構造検査が違反として扱う)。"""
+    kept, unmapped = [], []
+    for it in items or []:
+        for s in P.extract_surfaces(str(it)):
+            if P.surface_kind(s) in ("year", "ordinal", "name_embedded") or T_is_ambiguous(s):
+                continue
+            if P.contains(facts_all_text, s) or P.contains(story or "", s):
+                kept.append(s)
+            else:
+                unmapped.append(s)
+    return {"kept": list(dict.fromkeys(kept)), "unmapped": list(dict.fromkeys(unmapped))}
+
+
+def field_priority_story(story: str, items, facts_all_text: str) -> str:
+    """derive_ranksへ渡す『Storyline相当文字列』= 元Storyline + 欄の数値(写像可能なもの)。元Storylineの文字列自体(出力・Writerに渡る文)は変えない。"""
+    sf = field_priority_surfaces(items, facts_all_text, story)
+    return (story or "") + ("\n" + " ".join(sf["kept"]) if sf["kept"] else "")
+
+
+def make_field_priority_ddet(items):
+    """P.ddet と同じ戻り値のdet関数(欄の数値をStoryline同等として導出)。"""
+    def ddet(ledger, ids, story, assembled_text=True):
+        ids2 = [i for i in ids if i in P.B1.parse_ledger(ledger)[0]]
+        tb = P.line_texts(P.B1.assemble_D(ledger, ids2, story, P.BASE_VARIANT)) if assembled_text else None
+        facts_all = "\n".join((tb or {}).values())
+        aug = field_priority_story(story, items, facts_all)
+        return P.RK.derive_ranks(ledger, ids2, aug, with_story=True, text_by_fact=tb)
+    return ddet
+
+
+class field_priority_ddet:
+    """contextmanager: with内だけ P.ddet を差し替える(終了時に必ず復元)。produce_annotated_b3 が module-global の ddet を呼ぶことを利用(Production moduleのファイルは不変)。"""
+
+    def __init__(self, items):
+        self.items, self._orig = list(items or []), None
+
+    def __enter__(self):
+        self._orig = P.ddet
+        P.ddet = make_field_priority_ddet(self.items)
+        return self
+
+    def __exit__(self, *exc):
+        P.ddet = self._orig
+        return False
+
+
+def _core_summary(out_dir: str) -> dict:
+    sdir = os.path.join(out_dir, "storyline_b3")
+    ann = rj(os.path.join(sdir, "annotation.json"))
+    man = rj(os.path.join(sdir, "annotation_manifest.json"))
+    notes = ann.get("annotation_notes") or []
+    return {"cap": man.get("cap"), "n_concepts": man.get("n_concepts"),
+            "core": sorted({n["surface"] for n in ann["numbers"] if n.get("class") == "core"}),
+            "peripheral_capped_off": notes}
+
+
+def reapply_field_priority(sample_path: str, dst_dir: str, *, attempt1: bool = False) -> dict:
+    """保存済みB3出力に、(base) 現行方式の導出と (new) 欄優先の導出を決定論で当てる。API 0。元標本は変更せず dst_dir/{base,new} に複製して行う。"""
+    src_b3 = os.path.join(sample_path, "storyline_b3_attempt1" if attempt1 else "storyline_b3")
+    res = {"sample": os.path.relpath(sample_path, OUT_ROOT).replace("\\", "/") + ("#attempt1" if attempt1 else "")}
+    for variant in ("base", "new"):
+        d = os.path.join(dst_dir, variant)
+        if os.path.exists(d):
+            shutil.rmtree(d)
+        os.makedirs(d)
+        shutil.copytree(os.path.join(sample_path, "research_ledger"), os.path.join(d, "research_ledger"))
+        shutil.copytree(src_b3, os.path.join(d, "storyline_b3"))
+    items = read_field_items(os.path.join(dst_dir, "base"))
+    res["field_items"] = items
+    res["storyline"] = (rj(os.path.join(dst_dir, "base", "storyline_b3", "fact_selection_evidence.json")).get("selected_storyline") or "").strip()
+    out = {}
+    for variant in ("base", "new"):
+        d = os.path.join(dst_dir, variant)
+        err = None
+        try:
+            if variant == "new":
+                with field_priority_ddet(items):
+                    P.produce_annotated_b3(d)
+            else:
+                P.produce_annotated_b3(d)     # baseline再導出(現行Production導出。保存済み注記と一致することを確認する)
+            E = derive_E_r5(d)
+            ann = rj(os.path.join(d, "storyline_b3", "annotation.json"))
+            _, fm = w1.parse_brief_md(rdt(os.path.join(d, "storyline_b3", "selected_brief_annotated.md")))
+            plan = plan_o2prime(ann, fm, E)
+            out[variant] = {"status": "E_OK" if E["ok"] and E["gate_E"] else ("E_EMPTY" if E["ok"] else "M1_VIOLATION"),
+                            "violations": E["violations"], "E": [c["news_surface"] for c in E["candidates"]],
+                            "E_gate": [c["news_surface"] for c in E["gate_E"]], "ranks": _core_summary(d),
+                            "o2prime_demote": [x["surface"] for x in plan["demote"]], "o2prime_dims": plan["e_dimensions"]}
+        except Exception as ex:   # noqa: BLE001  producer失敗も結果として残す(fail-closed)
+            err = f"{type(ex).__name__}: {ex}"
+            out[variant] = {"status": "PRODUCER_ERROR", "error": err}
+    res.update(out)
+    b, n = out["base"], out["new"]
+    if b.get("ranks") and n.get("ranks"):
+        res["core_added"] = sorted(set(n["ranks"]["core"]) - set(b["ranks"]["core"]))
+        res["core_removed"] = sorted(set(b["ranks"]["core"]) - set(n["ranks"]["core"]))
+        res["demote_changed"] = {"base": b["o2prime_demote"], "new": n["o2prime_demote"]}
+    return res
+
+
 def plan_for_existing(out_dir: str) -> dict:
     """既存B3標本のannotation/E(m1_result.json)にO-2'の計画だけを当てる(無料)。"""
     sdir = os.path.join(out_dir, "storyline_b3")
@@ -1259,10 +1369,11 @@ def main():
     ap.add_argument("--b3-addendum", default="v1", choices=sorted(B3_ADDENDA), help="B3追記ブロック版(v1=Phase 1 / v2=O-1')")
     ap.add_argument("--o2prime", action="store_true", help="O-2'(同単位系の非E中核数値を周辺扱い、DEV wrapper内のみ)")
     ap.add_argument("--allow-empty-E", action="store_true", help="B3がStorylineに数値を入れなかった標本(E=∅)でもchainを実行(測定用・Gate無し)")
+    ap.add_argument("--max-attempts", type=int, default=2, choices=(1, 2), help="b3のみ: 1=M1違反でもB3を再実行しない(委任_06 C-2。既定2=従来)")
     ap.add_argument("--m2", action="store_true", help="M2(R1/R2の新規数値検出を保持Gateの再実行枠で行う)")
     a = ap.parse_args()
     if a.cmd == "b3":
-        run_b3_dev(a.article, a.arm, a.sample, per_run_cap=a.per_run_cap_jpy, phase_cap=a.phase_cap_jpy, addendum_version=a.b3_addendum)
+        run_b3_dev(a.article, a.arm, a.sample, per_run_cap=a.per_run_cap_jpy, phase_cap=a.phase_cap_jpy, addendum_version=a.b3_addendum, max_attempts=a.max_attempts)
     elif a.cmd == "chain":
         run_chain_dev(a.article, a.arm, a.sample, per_run_cap=a.per_run_cap_jpy, phase_cap=a.phase_cap_jpy, resume_r2=a.resume_r2,
                       o2prime=a.o2prime, m2=a.m2, allow_empty_E=a.allow_empty_E)

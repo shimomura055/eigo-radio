@@ -1,0 +1,132 @@
+{
+ "annotated_md_sha256": "36070e6f6aa0af8ba10d9e364e8f20bc6da3ba54e0e11b42e002840eecc72cb0",
+ "core_concept_order": [
+  "C2",
+  "C3",
+  "C4",
+  "C6"
+ ],
+ "entries": [
+  {
+   "approved_condition": "追加の精度がストーリー上の重要な規模や解釈に影響しない場合は、聞き取りやすい概数を用いてよい。",
+   "basis_fact_ids": [
+    "F3"
+   ],
+   "concept": "C2",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    1
+   ],
+   "final_decision": "APPROXIMATE_OK",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F3"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "この金額はCEO発言でも10億ドル単位に丸めて示されており、さらに概数化しても売上規模の理解を損ないません。",
+   "surfaces": [
+    {
+     "approx": "約170億ドル",
+     "surface": "167億ドル"
+    }
+   ]
+  },
+  {
+   "approved_condition": "精度自体が重要でなく、丸めても比較の方向や重要な規模が変わらない場合は概数化してよい。",
+   "basis_fact_ids": [
+    "F3"
+   ],
+   "concept": "C3",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    1
+   ],
+   "final_decision": "APPROXIMATE_OK",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F3"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "前年同期比の大幅な伸びという意味は、約220％としても変わりません。",
+   "surfaces": [
+    {
+     "approx": "約220％",
+     "surface": "221％"
+    }
+   ]
+  },
+  {
+   "approved_condition": "丸めによって重要な規模や数値の解釈が変わるおそれがある場合は、厳密値を維持する。",
+   "basis_fact_ids": [
+    "F3"
+   ],
+   "concept": "C4",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    1
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F3"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "前四半期比の伸び率として報告された数値であり、50％に丸めると差が相対的に大きく、聞き手に伝わる成長幅を変えかねません。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "54％"
+    }
+   ]
+  },
+  {
+   "approved_condition": "丸めが見通しの意味に影響する可能性があり、判断が不確かな場合は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F4"
+   ],
+   "concept": "C6",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F4"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "これは次四半期の会社見通しとして示された金額です。約350億ドルへの丸めは見通しの金額を2億ドル変えるため、判断が不確かな場合の安全側として表記を維持します。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "約348億ドル"
+    }
+   ]
+  }
+ ],
+ "judge": {
+  "developer_message_sha256": "8d2618b7cc966affb3567e5ee1354551b92f394462a4786683f8f9a3052a9d3d",
+  "effort": "low",
+  "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
+  "model_requested": "gpt-6-luna",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_093256ce9ab953b7006add5f58766887d087eb67eed8ffb169",
+  "sec": 9.7,
+  "usage": {
+   "input_tokens": 3061,
+   "output_tokens": 862,
+   "reasoning_tokens": 352
+  },
+  "user_prompt_sha256": "ecbfa5dbed3a9ca3f71a0652bbaf7aa59bfa920e8e8656dbda55afa9a9e438ad"
+ },
+ "n_approximate_ok": 2,
+ "overlay_sha256": "b654ccaab56e0bfc052f087ddede5f8f7bed9e0e1132dcd12347b5de4dfa2715",
+ "requested_effort": "low",
+ "requested_model": "gpt-6-luna",
+ "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+ "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
+ "sidecar_sha256": "16eb13d294cb84f7d93c90102e7477a8fb14abcd3b34ad24d081fdfa02a698c3",
+ "status": "OK",
+ "v8_max_relative_error": "0.10",
+ "violations": []
+}

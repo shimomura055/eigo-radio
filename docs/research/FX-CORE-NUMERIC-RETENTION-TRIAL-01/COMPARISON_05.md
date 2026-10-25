@@ -1,5 +1,9 @@
 # COMPARISON_05 (FX-CORE-NUMERIC-RETENTION-TRIAL-01 委任_05、R5 v4追加検証)
 
+<!-- 委任_06 C-3 修正 -->
+> 委任_06 C-3(Opus条件C)で表示不具合2件を修正して再生成(`er115_fx_numeric_r5_comparison_fix_01.py`、API 0): (1) 欄行の『rerun=None』はm1_result.jsonのキー名誤りによる表示不具合で、実データは`b3_rerun`(再実行あり=True、1回目の欄と違反理由を併記)。 (2) EN数値トークンの単位なし『3』は『3D』への誤一致で、先読みで除外(修正前=ig r5b1 EN_Std ['3'] → 修正後 []。判定には使っておらず表示のみ)。
+
+
 評価基準は`PREREGISTERED_CRITERIA_04.md`(B3が選んだ切り口基準)。固定表(`PREREGISTERED_CRITERIA_03.md` §1)による分類は**参考情報**で合否に使わない。数値分類は決定論の機械分類、「切り口への必要性」はSonnet所見(Fable独立レビュー対象)。
 
 
@@ -19,7 +23,7 @@
 
 ### 月 r6m1 (`er115_output\fx_numeric_retention_trial_01\moon_shrinking\A\r6m1`)
 - B3 Storyline: 月の「しわ」が記録する後期の半径収縮は約42〜46 mとの推定で、熱史モデルの累積予測より小さく、表層の断熱作用や断層のできにくさが関わる可能性はあるものの、理由は未解明だ。
-- 欄(reader_must_hear_numbers): ['約42〜46 m'] / M1=E_OK first_pass_ok=True rerun=None
+- 欄(reader_must_hear_numbers): ['約42〜46 m'] / M1=E_OK first_pass_ok=True b3_rerun=False
 - 欄とStoryline整合: {'storyline_numbers': ['約42〜46'], 'field_numbers': ['約42〜46'], 'storyline_not_in_field(record_only)': [], 'field_not_in_storyline': [], 'storyline_m1_violations_record_only': [], 'match': True}
 - 費用: {"storyline_b3": 12.356, "b3_core_number_rounding": 0.125, "w1_r0": 6.9, "w1_astra_r1": 2.172, "w1_astra_r2": 2.374, "advanced": 0.319, "standard": 0.334} total=24.58
 - E保持(R0/R1/R2/Std/Adv): {'R0': ['約42〜46'], 'R1': ['約42〜46'], 'R2': ['約42〜46'], 'EN_Std': ['約42〜46'], 'EN_Adv': ['約42〜46']} all={'R0': True, 'R1': True, 'R2': True, 'EN_Std': True, 'EN_Adv': True}
@@ -91,7 +95,7 @@ EN Adv 数値含有文:
 
 ### 月 r6m2 (`er115_output\fx_numeric_retention_trial_01\moon_shrinking\A\r6m2`)
 - B3 Storyline: 月面の「しわ」から推定された数億年規模の後期の半径収縮は約42〜46 mで、熱史モデルの累積予測より小さく、表層の断熱作用や断層のできにくさが差に関わる可能性はあるが、理由はまだ決着していない。
-- 欄(reader_must_hear_numbers): ['約42〜46 m'] / M1=E_OK first_pass_ok=True rerun=None
+- 欄(reader_must_hear_numbers): ['約42〜46 m'] / M1=E_OK first_pass_ok=True b3_rerun=False
 - 欄とStoryline整合: {'storyline_numbers': ['約42〜46'], 'field_numbers': ['約42〜46'], 'storyline_not_in_field(record_only)': [], 'field_not_in_storyline': [], 'storyline_m1_violations_record_only': [], 'match': True}
 - 費用: {"storyline_b3": 11.799, "b3_core_number_rounding": 0.125, "w1_r0": 6.969, "w1_astra_r1": 2.128, "w1_astra_r2": 1.994, "advanced": 0.309, "standard": 0.335} total=23.659
 - E保持(R0/R1/R2/Std/Adv): {'R0': ['約42〜46'], 'R1': ['約42〜46'], 'R2': ['約42〜46'], 'EN_Std': ['約42〜46'], 'EN_Adv': ['約42〜46']} all={'R0': True, 'R1': True, 'R2': True, 'EN_Std': True, 'EN_Adv': True}
@@ -156,7 +160,7 @@ EN Adv 数値含有文:
 
 ### コーヒー r6c1 (`er115_output\fx_numeric_retention_trial_01\coffee_prices\A\r6c1`)
 - B3 Storyline: 米国の挽いたコーヒーの平均小売価格が前年同月比+41%に上昇した主因は関税以前の供給不足と生豆高で、関税撤回後も豆価格の変化が小売に届くまでには時間差がある。
-- 欄(reader_must_hear_numbers): ['前年同月比+41%', '少なくとも約9か月'] / M1=E_OK first_pass_ok=True rerun=None
+- 欄(reader_must_hear_numbers): ['前年同月比+41%', '少なくとも約9か月'] / M1=E_OK first_pass_ok=True b3_rerun=False
 - 欄とStoryline整合: {'storyline_numbers': ['41%'], 'field_numbers': ['41%', '約9か月'], 'storyline_not_in_field(record_only)': [], 'field_not_in_storyline': ['約9か月'], 'storyline_m1_violations_record_only': [], 'match': False}
 - 費用: {"storyline_b3": 12.916, "b3_core_number_rounding": 0.134, "w1_r0": 6.667, "w1_astra_r1": 2.771, "w1_astra_r2": 2.136, "advanced": 0.499, "standard": 0.388} total=25.511
 - E保持(R0/R1/R2/Std/Adv): {'R0': ['約9か月', '41%'], 'R1': ['約9か月', '41%'], 'R2': ['約9か月', '41%'], 'EN_Std': ['約9か月', '41%'], 'EN_Adv': ['約9か月', '41%']} all={'R0': True, 'R1': True, 'R2': True, 'EN_Std': True, 'EN_Adv': True}
@@ -214,7 +218,7 @@ EN Adv 数値含有文:
 
 ### コーヒー r6c2 (`er115_output\fx_numeric_retention_trial_01\coffee_prices\A\r6c2`)
 - B3 Storyline: 国際相場が下落する一方、米国のコーヒーCPIは前年同月比+7.1%となっており、過去の供給不足による生豆高と、小売への反映に推定で少なくとも約9か月かかる時間差を手掛かりに、値下がりしにくさを読み解く。
-- 欄(reader_must_hear_numbers): ['+7.1%', '少なくとも約9か月'] / M1=E_OK first_pass_ok=False rerun=None
+- 欄(reader_must_hear_numbers): ['+7.1%', '少なくとも約9か月'] / M1=E_OK first_pass_ok=False b3_rerun=True(1回目の欄=['前月比8.7%下落', '前月比+0.6%'] 違反=[('0.6%', 'peripheral_number_in_storyline')])
 - 欄とStoryline整合: {'storyline_numbers': ['7.1%', '約9か月'], 'field_numbers': ['7.1%', '約9か月'], 'storyline_not_in_field(record_only)': [], 'field_not_in_storyline': [], 'storyline_m1_violations_record_only': [], 'match': True}
 - 費用: {"storyline_b3": 26.957, "b3_core_number_rounding": 0.126, "w1_r0": 14.838, "w1_astra_r1": 1.907, "w1_astra_r2": 3.824, "advanced": 0.233, "standard": 0.364} total=48.248
 - E保持(R0/R1/R2/Std/Adv): {'R0': ['約9か月', '7.1%'], 'R1': ['約9か月', '7.1%'], 'R2': ['約9か月', '7.1%'], 'EN_Std': ['約9か月', '7.1%'], 'EN_Adv': ['約9か月', '7.1%']} all={'R0': True, 'R1': True, 'R2': True, 'EN_Std': True, 'EN_Adv': True}
@@ -283,7 +287,7 @@ EN Adv 数値含有文:
 
 ### 半導体 r6s1 (`er115_output\fx_numeric_retention_trial_01\semiconductor_earnings\A\r6s1`)
 - B3 Storyline: Broadcomは第3四半期のAI半導体売上高167億ドル（前年同期比+221％）を報告し、CEOがカスタムAIアクセラレーターとネットワーキングの強い需要を指摘するなか、翌四半期の全社売上高も大幅増を見込んだ。
-- 欄(reader_must_hear_numbers): ['167億ドル', '+221％'] / M1=E_OK first_pass_ok=False rerun=None
+- 欄(reader_must_hear_numbers): ['167億ドル', '+221％'] / M1=E_OK first_pass_ok=False b3_rerun=True(1回目の欄=['167億ドル', '217億ドル'] 違反=[('217億ドル', 'peripheral_number_in_storyline')])
 - 欄とStoryline整合: {'storyline_numbers': ['167億ドル', '221%'], 'field_numbers': ['167億ドル', '221%'], 'storyline_not_in_field(record_only)': [], 'field_not_in_storyline': [], 'storyline_m1_violations_record_only': [{'surface': '第3四半期', 'reason': 'peripheral_number_in_storyline'}], 'match': True}
 - 費用: {"storyline_b3": 14.705, "b3_core_number_rounding": 0.118, "w1_r0": 5.078, "w1_astra_r1": 2.85, "w1_astra_r2": 2.228, "advanced": 0.331, "standard": 0.291} total=25.602
 - E保持(R0/R1/R2/Std/Adv): {'R0': ['167億ドル', '221％'], 'R1': ['167億ドル', '221％'], 'R2': ['167億ドル', '221％'], 'EN_Std': ['167億ドル', '221％'], 'EN_Adv': ['167億ドル', '221％']} all={'R0': True, 'R1': True, 'R2': True, 'EN_Std': True, 'EN_Adv': True}
@@ -349,7 +353,7 @@ EN Adv 数値含有文:
 
 ### 半導体 r6s2 (`er115_output\fx_numeric_retention_trial_01\semiconductor_earnings\A\r6s2`)
 - B3 Storyline: Broadcomは第3四半期のAI半導体売上高が167億ドルに拡大し、CEOがカスタムAIアクセラレーターとネットワーキングの強い需要を説明するなか、次四半期も連結売上高の大幅増を見込んだ。
-- 欄(reader_must_hear_numbers): ['167億ドル', '+221％'] / M1=E_OK first_pass_ok=False rerun=None
+- 欄(reader_must_hear_numbers): ['167億ドル', '+221％'] / M1=E_OK first_pass_ok=False b3_rerun=True(1回目の欄=['167億ドル', '217億ドル'] 違反=[('217億ドル', 'peripheral_number_in_storyline')])
 - 欄とStoryline整合: {'storyline_numbers': ['167億ドル'], 'field_numbers': ['167億ドル', '221%'], 'storyline_not_in_field(record_only)': [], 'field_not_in_storyline': ['221%'], 'storyline_m1_violations_record_only': [{'surface': '第3四半期', 'reason': 'peripheral_number_in_storyline'}], 'match': False}
 - 費用: {"storyline_b3": 14.58, "b3_core_number_rounding": 0.121, "w1_r0": 6.463, "w1_astra_r1": 2.634, "w1_astra_r2": 2.131, "advanced": 0.297, "standard": 0.381} total=26.609
 - E保持(R0/R1/R2/Std/Adv): {'R0': ['167億ドル', '221％'], 'R1': ['167億ドル', '221％'], 'R2': ['167億ドル', '221％'], 'EN_Std': ['167億ドル', '221％'], 'EN_Adv': ['167億ドル', '221％']} all={'R0': True, 'R1': True, 'R2': True, 'EN_Std': True, 'EN_Adv': True}
@@ -409,7 +413,7 @@ EN Adv 数値含有文:
   - EN_Adv: 必須の存在={'3倍超': True} 数値トークン=[]
 ### イグ r5b1(R5 v4、委任_04で取得済み・再利用) (`er115_output\fx_numeric_retention_trial_01\ig_nobel_2026\A\r5b1`)
 - B3 Storyline: 今年のイグ・ノーベル賞を受賞した「ゴキブリのミルク」研究は、胚の栄養結晶の構造を解き、結晶として栄養を蓄える仕組みが胚を養ううえで持つ意義を論じた。
-- 欄(reader_must_hear_numbers): ['同質量の哺乳類の乳の3倍超'] / M1=E_OK first_pass_ok=True rerun=None
+- 欄(reader_must_hear_numbers): ['同質量の哺乳類の乳の3倍超'] / M1=E_OK first_pass_ok=True b3_rerun=False
 - 欄とStoryline整合: {'storyline_numbers': [], 'field_numbers': ['3倍'], 'storyline_not_in_field(record_only)': [], 'field_not_in_storyline': ['3倍'], 'storyline_m1_violations_record_only': [], 'match': False}
 - 費用: {"storyline_b3": 10.143, "b3_core_number_rounding": 0.096, "w1_r0": 5.501, "w1_astra_r1": 2.869, "w1_astra_r2": 3.711, "advanced": 0.436, "standard": 0.323} total=23.08
 - E保持(R0/R1/R2/Std/Adv): {'R0': ['3倍'], 'R1': ['3倍'], 'R2': ['3倍'], 'EN_Std': ['3倍'], 'EN_Adv': ['3倍']} all={'R0': True, 'R1': True, 'R2': True, 'EN_Std': True, 'EN_Adv': True}
@@ -418,7 +422,7 @@ EN Adv 数値含有文:
 - 固定表分類 R0: 必須[3倍] / 任意[なし] / 不要(表)[なし] / 不要(未分類)[なし] / 文脈[なし] / 不要数=0 ユニーク数値表記数=1
 - 固定表分類 R1: 必須[3倍] / 任意[なし] / 不要(表)[なし] / 不要(未分類)[なし] / 文脈[なし] / 不要数=0 ユニーク数値表記数=1
 - 固定表分類 R2: 必須[3倍] / 任意[なし] / 不要(表)[なし] / 不要(未分類)[なし] / 文脈[なし] / 不要数=0 ユニーク数値表記数=1
-- EN_Std: 数値トークン=['3']
+- EN_Std: 数値トークン=[]
 - EN_Adv: 数値トークン=[]
 
 日本語R2本文:

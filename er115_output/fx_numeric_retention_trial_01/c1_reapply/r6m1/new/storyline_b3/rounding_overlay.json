@@ -1,0 +1,111 @@
+{
+ "annotated_md_sha256": "6e02f92e619b0a04d872ff726eadf125efd8f87f1f6fd3df17530dabc5fb23a5",
+ "core_concept_order": [
+  "C1",
+  "C3",
+  "C4"
+ ],
+ "entries": [
+  {
+   "approved_condition": "小数や値の精度が証拠の解釈に関わる場合は維持する。",
+   "basis_fact_ids": [
+    "F04"
+   ],
+   "concept": "C1",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2,
+    3
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "range",
+   "ledger_ids": [
+    "F04",
+    "F05"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "これは後期の半径収縮の推定範囲で、範囲自体が推定の幅を示す中核的な結果です。丸めるとその幅や推定値の理解を変えるおそれがあるため、厳密な表記を維持します。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "約42〜46"
+    }
+   ]
+  },
+  {
+   "approved_condition": "日付・研究結果など、精度や範囲が解釈に関わる場合は維持する。",
+   "basis_fact_ids": [
+    "F05"
+   ],
+   "concept": "C3",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    3
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "range",
+   "ledger_ids": [
+    "F05"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "研究が触れる形成時期の範囲であり、単一の確定年代ではないことを伝えるため、幅を維持します。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "約3〜4億年"
+    }
+   ]
+  },
+  {
+   "approved_condition": "余分な精度が比較の方向や重要な規模を変えない場合は、聞き取りやすい概数にできる。",
+   "basis_fact_ids": [
+    "F07"
+   ],
+   "concept": "C4",
+   "downgrade_reasons": [
+    "約750:V8b_already_approximate_not_rerounded"
+   ],
+   "fact_ns": [
+    4
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F07"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "モデル予測の規模を示す値であり、約800としても、後期収縮量より大きいという比較の方向や大きさは変わりません。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "約750"
+    }
+   ]
+  }
+ ],
+ "judge": {
+  "developer_message_sha256": "8d2618b7cc966affb3567e5ee1354551b92f394462a4786683f8f9a3052a9d3d",
+  "effort": "low",
+  "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
+  "model_requested": "gpt-6-luna",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0a58c30bcc0347cd006add5f5abb4887d0ae7919aec0f7a099",
+  "sec": 15.9,
+  "usage": {
+   "input_tokens": 3732,
+   "output_tokens": 821,
+   "reasoning_tokens": 441
+  },
+  "user_prompt_sha256": "acafd50dc77b9290dd01d98dcb0c7674e974fefb9903397aa728369832530f1f"
+ },
+ "n_approximate_ok": 0,
+ "overlay_sha256": "742c4588c7a4f3bf162ea2e498b8ae8be4fe0c8fac5abab9fc9d0aa1387aff3c",
+ "requested_effort": "low",
+ "requested_model": "gpt-6-luna",
+ "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+ "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
+ "sidecar_sha256": "ef53d0092a0c44672ea5da322ed380b3c75e6f888c6ffabc361a06b44943dccc",
+ "status": "OK",
+ "v8_max_relative_error": "0.10",
+ "violations": []
+}

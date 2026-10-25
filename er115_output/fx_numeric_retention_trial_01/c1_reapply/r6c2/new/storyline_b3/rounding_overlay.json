@@ -1,0 +1,132 @@
+{
+ "annotated_md_sha256": "4fdd8b81a1bdfe2ec8d5242040ffc6ddb1de62051994797ab841f980533968af",
+ "core_concept_order": [
+  "C2",
+  "C4",
+  "C7",
+  "C8"
+ ],
+ "entries": [
+  {
+   "approved_condition": "追加ルールの既定に従い、意味を損なわない範囲で聞き取りやすい概数にする。",
+   "basis_fact_ids": [
+    "F03"
+   ],
+   "concept": "C2",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    1
+   ],
+   "final_decision": "APPROXIMATE_OK",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F03"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "小数部分は指標の水準を理解するうえで重要ではなく、整数に丸めても意味を損ないません。",
+   "surfaces": [
+    {
+     "approx": "約262",
+     "surface": "262.18"
+    }
+   ]
+  },
+  {
+   "approved_condition": "余分な小数精度が比較の方向や重要な規模に影響しない場合は丸めてよい。",
+   "basis_fact_ids": [
+    "F03"
+   ],
+   "concept": "C4",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    1
+   ],
+   "final_decision": "APPROXIMATE_OK",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F03"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "下落幅の概略を示す数値であり、約9%としても比較の方向や重要な規模は変わりません。",
+   "surfaces": [
+    {
+     "approx": "約9%",
+     "surface": "8.7%"
+    }
+   ]
+  },
+  {
+   "approved_condition": "不確かな場合は厳密値を維持する。期間の意味を損なう丸めは行わない。",
+   "basis_fact_ids": [
+    "F10"
+   ],
+   "concept": "C7",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    3
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F10"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "小売への伝達にかかる期間の推定値で、遅れの大きさを示す中核です。すでに概数表現であり、さらに変更する必要はありません。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "約9か月"
+    }
+   ]
+  },
+  {
+   "approved_condition": "精度自体が意味を持たない場合は、意味を損なわない範囲で概数を基本とする。",
+   "basis_fact_ids": [
+    "F13"
+   ],
+   "concept": "C8",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    4
+   ],
+   "final_decision": "APPROXIMATE_OK",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F13"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "前年同月比の上昇率は約7%としても上昇の解釈や規模を損ないません。",
+   "surfaces": [
+    {
+     "approx": "約7%",
+     "surface": "7.1%"
+    }
+   ]
+  }
+ ],
+ "judge": {
+  "developer_message_sha256": "8d2618b7cc966affb3567e5ee1354551b92f394462a4786683f8f9a3052a9d3d",
+  "effort": "low",
+  "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
+  "model_requested": "gpt-6-luna",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_061f4938debd2726006add5f56182487d0a9e2d8c22bdff14c",
+  "sec": 10.0,
+  "usage": {
+   "input_tokens": 3900,
+   "output_tokens": 796,
+   "reasoning_tokens": 330
+  },
+  "user_prompt_sha256": "631f3925b9c70b089a0721060b9bf040953ba5caa3145dc5da391cad02b028c1"
+ },
+ "n_approximate_ok": 3,
+ "overlay_sha256": "6d3796c4c01599f77ccbbff864c833bc46eb7865046dae373554cb6272b80708",
+ "requested_effort": "low",
+ "requested_model": "gpt-6-luna",
+ "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+ "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
+ "sidecar_sha256": "321506249cc7786a0d0ce1c32067b2057b8524ecf9130161be6847139065294e",
+ "status": "OK",
+ "v8_max_relative_error": "0.10",
+ "violations": []
+}

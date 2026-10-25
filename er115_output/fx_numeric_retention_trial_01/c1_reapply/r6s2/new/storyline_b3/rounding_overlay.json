@@ -1,0 +1,134 @@
+{
+ "annotated_md_sha256": "d09215722023723b5d4830212c00665fb4d1b51f881771b7dc21b296846fadbe",
+ "core_concept_order": [
+  "C2",
+  "C3",
+  "C4",
+  "C5"
+ ],
+ "entries": [
+  {
+   "approved_condition": "追加ルールの既定に従い、意味や重要な比較を損なわない範囲で、不要な精度を丸める。",
+   "basis_fact_ids": [
+    "F2"
+   ],
+   "concept": "C2",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    1
+   ],
+   "final_decision": "APPROXIMATE_OK",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F2"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "百万ドル単位の精度は、聞き手が四半期売上高の規模を理解するうえで重要ではなく、約296億ドルとしても意味を損ないません。",
+   "surfaces": [
+    {
+     "approx": "約296億ドル",
+     "surface": "295億9,100万ドル"
+    }
+   ]
+  },
+  {
+   "approved_condition": "精度自体が重要でない場合は、聞き取りやすさを優先した概数を用いてよい。",
+   "basis_fact_ids": [
+    "F3"
+   ],
+   "concept": "C3",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2
+   ],
+   "final_decision": "APPROXIMATE_OK",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F3"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "CEO発言の金額はもともと10億ドル単位に丸めて示されており、約170億ドルでも売上高の規模を理解するうえで意味は変わりません。",
+   "surfaces": [
+    {
+     "approx": "約170億ドル",
+     "surface": "167億ドル"
+    }
+   ]
+  },
+  {
+   "approved_condition": "精度が比較や解釈に実質的な影響を与えない場合は、聞き取りやすい概数にしてよい。",
+   "basis_fact_ids": [
+    "F3"
+   ],
+   "concept": "C4",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2
+   ],
+   "final_decision": "APPROXIMATE_OK",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F3"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "前年同期比の増加幅を示す数値であり、221％を約220％としても比較の方向や大きさの理解は変わりません。",
+   "surfaces": [
+    {
+     "approx": "約220％",
+     "surface": "221％"
+    }
+   ]
+  },
+  {
+   "approved_condition": "精度が比較や解釈に実質的な影響を与えない場合は、聞き取りやすい概数にしてよい。",
+   "basis_fact_ids": [
+    "F3"
+   ],
+   "concept": "C5",
+   "downgrade_reasons": [
+    "54％:V3_not_ordinary_rounding(exact=54,approx=55)"
+   ],
+   "fact_ns": [
+    2
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F3"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "前四半期比の増加幅は約55％としても規模の理解を損なわず、54％の小数のない一桁精度を維持する必要はありません。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "54％"
+    }
+   ]
+  }
+ ],
+ "judge": {
+  "developer_message_sha256": "8d2618b7cc966affb3567e5ee1354551b92f394462a4786683f8f9a3052a9d3d",
+  "effort": "low",
+  "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
+  "model_requested": "gpt-6-luna",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0e651b07e3e2bed7006add5f5a7a7087d093352d885b6bfb45",
+  "sec": 9.6,
+  "usage": {
+   "input_tokens": 3284,
+   "output_tokens": 858,
+   "reasoning_tokens": 337
+  },
+  "user_prompt_sha256": "58fe91197fc9541eda9256dbef6097b815a192bd2e4cfb2c2b0286d95dba78a9"
+ },
+ "n_approximate_ok": 3,
+ "overlay_sha256": "cfb0b99461445f27f0d2bccea08aab674684aeafe79bb1b4a760774de74ef8a7",
+ "requested_effort": "low",
+ "requested_model": "gpt-6-luna",
+ "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+ "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
+ "sidecar_sha256": "6003d6bf12c68dfc9729f4b523522d42f82cf573c83f845aca9f26abc915b121",
+ "status": "OK",
+ "v8_max_relative_error": "0.10",
+ "violations": []
+}
