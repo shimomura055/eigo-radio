@@ -274,6 +274,10 @@ class MainStageTests(Base):
             mock.patch.object(runner.sc, "run_key_phrases", fake_sc),
             mock.patch.object(runner, "run_family_x_b1_scaffold", lambda c, p, d: {}),
             mock.patch.object(runner, "run_family_x_a2_scaffold", lambda c, p, d: {}),
+            # 委任_14: 学習テキスト Part 1(scaffoldの生成・後段入口のM2確認)は本test(RF/三者sha照合)の関心と直交。別testで検証
+            mock.patch.object(runner, "generate_part1_for_b1b", lambda *a, **k: {"status": "OK"}),
+            mock.patch.object(runner, "_require_part1_fresh_x", lambda *a, **k: {}),
+            mock.patch.object(runner, "part1_study_html_for_player", lambda *a, **k: ""),
             mock.patch.object(runner, "generate_family_x_b1_segments",
                               lambda *a, **k: events.append(("tts", "b1b", dict(cl._CONTEXT)))),
             mock.patch.object(runner, "generate_family_x_a2_segments",
@@ -341,6 +345,7 @@ class MainStageTests(Base):
                 mock.patch.object(vfl01, "get_client", lambda: object()), mock.patch.object(rq, "QUEUE_ROOT", self.qroot), \
                 mock.patch.object(rf, "default_call_fn", down), \
                 mock.patch.object(rf.time, "sleep", lambda s: None), \
+                mock.patch.object(runner, "_require_part1_fresh_x", lambda *a, **k: {}), \
                 mock.patch.object(runner, "generate_family_x_b1_segments", lambda *a, **k: events.append("tts_b1b")), \
                 mock.patch.object(runner, "generate_family_x_a2_segments", lambda *a, **k: events.append("tts_a2")):
             runner.main()
