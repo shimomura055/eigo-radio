@@ -153,3 +153,43 @@ SSOT更新案:
 - `OPEN_ITEMS.md`: OPEN-497へStatus追記+**新規OPEN-512**(下)。
   - **OPEN-512 「FAMILY-XZ-STUDY-TEXT-PART1-PRODUCTION-WIRING-PENDING-01」[承認済み・未配線、PRODUCTION_WIREDと呼ばない]**: 分類=**修正へ進む**(次委任=Opus条件Aレビュー後の実装)。解消条件=ユーザー原文§2の受入条件1〜9。
   - 付随(11-8分類): (i) 引用英文の日本語訳の生成元=**ユーザー判断要**(T1/T2、分類D)。(ii) Xのper-article公開ページへのPart 1組込み=**修正へ進む**(次々委任、非blocking)。(iii) 既公開Zページ(例: 告げ口心臓)へのblock追加と再公開=**Fable判断**(公開作業、UDR #193の再公開と同時実施が合理的)。(iv) Standard(a2)へのPart 1拡張=新仕様のため**実装しない・実害なし**(必要ならユーザー判断)。(v) gloss核意味の質(例 `at a moment's notice`の即応寄り)=ADOPTION_NOTE_04 §3の既存判断候補(分類C、現タスクと独立・追加Trial不要とユーザー明示)。
+
+
+---
+# 追補(委任_14、2026-10-25): Opus条件Aレビュー反映(M1〜M4・実装時必須1〜10)・M3(ii)描画停止・X公開ページ・CURRENT_SPEC記載案
+Opus結果の逐語=`PART1_WIRING_OPUS_REVIEW_01.md`(判定=条件付きで実装へ進んでよい)。以下§13〜§17が§1〜§12への修正・追記で、**矛盾する場合は本追補が優先**。
+
+## 13. 実装前必須M1〜M4の反映(設計修正)
+| ID | §1〜§12の旧記述 | 修正後(実装する内容) |
+|---|---|---|
+| M1 | §2 X失敗を`kp_stage_status=KP_PART1_FAILED`でrc=3(KP失敗markerと同系) | **KP失敗と分離**。専用marker `<out>/<level>/key_phrases/kp_part1_failed.json`(`KP_PART1_FAILED_MARKER`)。Part1失敗時は`kp_stage_status`を使わず、scaffold結果に`part1_stage_status`を載せ`main()`がrc=3・メッセージに**`--stage study_text`**を案内(scaffold再実行=support/KP再生成を明示的に非推奨)。`--stage study_text`成功でmarker削除。`study_text`実行前に「KP PASS・`kp_stage_failed.json`なし・gloss HR/未評価なし」を確認(STOP)。`--scaffold-only kp`も同じ呼出点を通る |
+| M2 | §2 生成点は各Familyの1箇所のみ | **使う側のfail-closed確認**を追加。Z=`load_level_inputs`(b1b)(TTS/Gate/Assembly共有)と`stage_pages`。X=`tts`/`assemble`/`player`の入口(既存`_kp_stage_failed_markers`確認の隣)。確認=(a)`kp_general_explanations.json`が存在 (b)保存済み`phrases_signature`==現在KPの`phrases_signature`。不一致/欠落はSTOP+次コマンド(Z=`--regenerate-stage kp_part1_b1b`または`--stage kp`、X=`--stage study_text`)。共通関数`require_fresh_general_explanations(items, doc, *, next_command)` |
+| M3 | §11 訳はNone許容で項目1/2/3/5を先行配線 | **(ii)採用**: 訳欄(`source_sentence_ja`)は`null`+`translation_status: "PENDING_USER_DECISION"`で**生成・保存まで**行い、**ページ(index.html / X player.html)への描画は止める**。描画有効化条件=run-time条件「訳欄の判断記録`docs/pm/decisions/part1_translation_decision.json`が存在し`decision`が`T1`または`T2`」。環境変数・flag・関数引数・設定dictではONにできない(読取関数`translation_decision_record()`が唯一の入口、記録pathはmodule定数)。T2=訳欄なしで描画、T1=全行`source_sentence_ja`が非nullでなければSTOP(T1訳call未実装の間は描画不可=fail-closed)。判断記録が無い間はページ出力がバイト同一(DefaultOffIsolation test) |
+| M4 | §2 入力=`explanation_phrase(it)` | `explanation_phrase`は使わない。**Part 1専用の厳格版`strict_phrase(item)`**: `fulltext_source_ref`が真かつ`used_form`が空でない文字列でなければ`KpGeneralExplanationInputError`(課金前STOP)。`display_phrase`へのfallback禁止。`phrases_signature`・`generate_for_kp_items`・`assemble_part1`すべて同関数経由 |
+
+## 14. 実装時必須1〜10の反映(対応表)
+| # | 実装内容 |
+|---|---|
+| 1 | 見出し照合は`normalize_heading`(NFKC・`*`/括弧/引用符除去・`’`→`'`・小文字・空白圧縮)を両辺へ適用。**表示見出し=入力`used_form`**(LLM見出しは使わない)。本文判定=「CJKを含み30字以上」(Trial-04実出力6件で較正: 最短の本文でも約60字、全6件とも充足。較正結果はEVIDENCE_01) |
+| 2 | リーク検査は可変部(列挙部)のみ: `build_prompt(phrases) == HEAD+"\n# 解説する英語表現\n"+列挙+"\n"+BODY`の決定論再構成をassert、列挙部にCJKなし、item内の全文字列値(入れ子も汎用収集、`used_form`等の表現そのものと同一/部分文字列になるものは除外)が列挙部に含まれない(含めば`KpIsolationViolation`、API前) |
+| 3 | `validate_phrases`: 拒否=空/CJK/改行・制御文字/60字超/10語超/Prompt区切りに使う`#`始まり。許可=英字(アクセント付き含む)・数字・空白・`' ’ - . , / ( ) & :`等。**実データ較正**: 全`keywords_canonicalized.json`(fulltext_source_ref付き1792件)の`used_form`が全件通ること(testで固定、最大35字・5語) |
+| 4 | study blockは`<section class='study'>`+`<h3>`+`<div>`/`<dl>`のみ(`<table>`・`<h2>`不使用)。LLM出力はHTMLエスケープ後に`**`→`<b>`、`*`→`<i>`、段落`<p>`。ラベル=「本文中の意味」「本文の英文」「日本語訳」(T1/T2判断後・コロン無し)「解説」(禁止regex非該当)。生成時にも`\(A2\)\|\(B1\)\|B1B\|English:\|英語:\|EN:\|日本語:\|JA:`を解説文へ適用し構造失敗(=retry対象)にする |
+| 5 | `er006` `PROCESS_MODEL_MAP`へ`KEY_PHRASE_GENERAL_EXPLANATION`1行、`er054_..._test_01.py`の`LATER_APPROVED_PRODUCTION_KEYS`へ追加、`er009_..._open251_test.py`の`TABLE_PATH_PROCESSES`確認、`er053_cost_aggregate_01_test_01.py`はcommit前の作業ツリーでFAILするため実行順序に注意(commit後に確認) |
+| 6 | Zのmock/dry-runでhook(`part1_call_fn`)が無ければ実APIを呼ばず`FamilyZE2EStop`(`_person_repair_factory`と同型)。実callは既存SDK入口のcost logger(`cl.install`)経由で`cost_log.jsonl`/`raw_usage_log.jsonl`に載り、Zは`_guard(ctx,"kp_part1_b1b",0.5)`、Xは`budget_check`。Xの`--stage study_text`は`cl.logging_context(slug,"kp_part1")`で包む |
+| 7 | signature=`sha256(json.dumps({"phrases":[strict_phrase…rank昇順],"prompt_sha256":PROMPT_TEMPLATE_SHA256,"model":MODEL}))`(X/Z共通)。Zの`ensure_stage`のinput_shaにもこのsignatureを使う。ensure_stageのentry fieldsへ`model/prompt_sha256/cost_jpy/retried_for_parse/response_ids`を載せる |
+| 8 | 逐語照合は`er003_key_words_min_unit._normalize_for_match`(NFKC・引用符統一・空白圧縮・小文字=KP選定/SRC D1/KP source gateが使う既存基準)で`source_sentence ⊂ article_text`を確認(新ロジックを作らない)。Z=`canonical_article_text`後の本文、X=`article.md`本文 |
+| 9 | STOPメッセージに次コマンドを明記: Z `kp_expl_b1b`不一致→`--regenerate-stage kp_expl_b1b`の後に`--stage kp`、`kp_part1_b1b`不一致→`--regenerate-stage kp_part1_b1b`(`FamilyZProvenanceMismatchStop`を包んでhintを付ける)。X→`--stage study_text`(scaffold再実行は非推奨と明記) |
+| 10 | E2E前事前確認: 複製runの`kp_expl_b1b`がreuse(ProvenanceMismatchなし)・人称関所CLEAN(修復call・artifact書換なし)であることを`--dry-run`/読取で確認してから`--stage kp`を実行(EVIDENCE_01に記録) |
+
+## 15. 影響範囲(Opus推奨の反映)
+- `DEPENDENTS`へ`kp_b1b→kp_part1_b1b`は**追加しない**(Opus推奨どおり)。Z=明示再生成/X=自動再生成の差は`kp_expl`系と同型。
+- gloss更新・HR解決では再生成しない(解説入力は表現のみ、glossは描画時に現在値)。
+- Advanced(b1b)のみ。ユーザー報告で「Advancedのみ表示」と明記する。
+- Standard(a2)・A/B/C(strategy_l)・Y: 無変更・非適用。
+
+## 16. Xユーザー向け公開ページの扱い(委任_14 Fable判断(4))
+- Xのユーザー向け公開ページは共通builderが無くper-article scriptで作られる(`er_user_listening_page_common_01`を使うのはZ/Yのみ。root直下にX用の共通page builderは存在しない)。本配線は**runner内部の`player.html`のAdvanced節**に同じ`render_html_block`を差し込む(描画条件はZと同じ=判断記録あり)ところまで実施。
+- per-article scriptへの組込みは、同一module経路の最小追加では実現できない(builder新設またはX公開pageをcommonへ移行する別タスクになる)ため、**X=`WIRED_EXCEPT_USER_PAGE`**として報告し、PRODUCTION_WIREDとは呼ばない。見積は結果報告(RESULT_PACKET_FZST14)に記載。
+
+## 17. CURRENT_SPEC記載案(Opus要旨をそのまま採用)
+節名「Family X/Z 学習テキスト Vocabulary & Expressions(Advancedのみ)」。案α採用・入力=確定KPの`used_form`のみ・生成はKP確定後TTS前に1 call(`KEY_PHRASE_GENERAL_EXPLANATION`=gpt-6-luna、Trial-04 Promptとバイト一致)・再生成キー=表現・順序・Prompt sha・model・使う側で存在と最新性確認・技術retry1回→fail-closed・表示=KP/本文中の意味/本文引用英文(逐語照合)/訳(T1/T2判断に従う=**判断待ち・描画停止中**)/解説・費用約0.08円/set・時間+約11〜14秒。
