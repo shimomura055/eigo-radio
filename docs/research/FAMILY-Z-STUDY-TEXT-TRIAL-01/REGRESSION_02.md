@@ -21,3 +21,8 @@
 ## 3. Dangling Reference・撤去
 - 撤去した旧規則: なし(旧T1相当のコード・Promptは存在しなかった)。置換した記述: `er003_kp_general_explanation_01.py`ヘッダの「訳欄はユーザー判断待ち」コメント(今回T1承認で更新)、旧期待値test 2件(PENDING_USER_DECISION前提→PROVIDED前提)。
 - Grep: `grep -n "PENDING_USER_DECISION\|WIRED_EXCEPT_USER_PAGE" er0*.py`→残存は`assemble_part1`の訳なし経路(T2/将来用の機構[条件分岐として保持。Production経路ではT1訳が常に渡る])と`TRANSLATION_PENDING`定数・`render_markdown`の`null(PENDING_USER_DECISION)`表示のみ。`WIRED_EXCEPT_USER_PAGE`はdocs(履歴)にのみ残る。
+
+## 4. 委任_17 再実行記録(2026-10-25、Part 1関連のみ。全件回帰は未再実行=上記7,192/7,207は委任_16報告値)
+- 実行環境: Production `.venv`(`.venv/Scripts/python.exe -m pytest`、`PYTHONUTF8=1`)。`py`既定のPython 3.14には`google-genai`が無くrunner integration testがcollection ImportErrorになる(環境差、T1と無関係)。
+- main checkout(作業ブランチ`work/post-merge-01`、他agent未commit差分あり)で `er003_kp_source_sentence_ja_01_test_01.py`+`er003_kp_general_explanation_01_test_01.py`+`..._runner_integration_test_01.py`+`er109_xz_isolation_01_test_01.py`: **133 PASS / 1 FAIL**。FAIL=`er109 StaticIsolation::test_m3_scope_entry_call_sites_are_fixed_and_literal`(`er019_family_x_validation_inheritance_01.py` family_scope X の呼出数4≠期待2)。clean worktree(origin/main `eb10aa06c`)ではer109はPASS=作業ツリー側の他agent差分起因と推定(Part 1無関係。原因未特定、委任外)。
+- clean worktree(origin/main)では同4ファイルで121 PASS / 13 FAIL。13件はすべて`ZPart1Tests`の`FAMILY_Z_SEED_SHA_MISMATCH`(autocrlfによる凍結seed sha差。上記§2「clean worktreeでの再現の限界」と同一・既知の環境起因)。
