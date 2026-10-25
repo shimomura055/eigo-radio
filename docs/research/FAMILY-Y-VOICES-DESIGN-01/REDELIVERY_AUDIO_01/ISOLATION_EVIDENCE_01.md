@@ -75,3 +75,9 @@
 - 有料前のbytes=1,333,551 → 現在 1,339,433。追記は10行で、全行が `moon_shrinking__run_ms_03`(Family X『月が縮む』の並行agent run、`er019_output/family_x_audio_production_wiring_01/...`)のreused event。`redelivery`/`family_y`を含む行は0件。
 - 本Trialは `er006_master_audio_store_01.TELEMETRY_PATH` を Trial名前空間 `audio/master_store_trial_r0/reuse_telemetry.jsonl` に差し替えて動作したため、Production側への書込みは無い。Production `manifest.json`・`pronunciation_ledger_01/ledger.json` は有料前後で sha256 完全一致、Production store の audio 件数も 489 → 489。
 - 結論: 本Trial起因のProduction書込み=0。変化は並行agentによる。
+
+## 7. 共有moduleのコード同一性(並行agentのcommit/編集との関係)
+- 本Trialの音声process(起動 11:18:39 JST、完了 12:45)は、`er019_family_x_audio_production_runner_01.py`・`er020_tts_retry_local_rewrite_01.py`等をprocess起動時にimportしており、実行中の後続編集は反映されない(Pythonは起動時にmoduleを読む)。
+- 並行agent(FAMILY-Z-STUDY-TEXT Part 1配線)のcommitが実行中に入った: `er019_family_x_audio_production_runner_01.py`・`er003_kp_general_explanation_01.py`=12:27:09(commit 22d6b51ef)、`er020_tts_retry_local_rewrite_01.py`=12:45:19(commit 249e665a0)。**いずれも本Trialのprocess起動(11:18:39)より後**で、本Trialの生成・検査にはそれ以前の版が使われた。さらに12:54に同runner/KPの未commit編集が追加で入っている(別agent)。
+- 本Trialは上記の既存.pyを一切編集していない(`git status`上の変更は全て他agent)。本Trialのcommit(c9083894a・803882ded)は`git commit --only`で自分のpathだけを含み、他agentの編集を含まない。
+- 参考として、本Trialの結果(音声・Gate判定)は起動時点のcode版に依存する。後続の他agent変更(X Part 1 KP日本語訳など)はXのPart 1専用の機能で、Y Trial経路は呼ばない(`generate_part1_ja_for_b1b`はY moduleから呼ばれない)。
