@@ -30,3 +30,18 @@
 
 ## 3. 完了条件の更新
 OT-01〜07・22〜24が揃い、OT-12〜13の接続点が結線され、**OT-27(案B判断)**・OT-28が解消し、E-1〜E-5が完了した時点で`PRODUCTION_WIRED`の検討(判定はFable、ユーザー最終試聴PASSは別Status)。
+
+## 4. 委任_02C更新(2026-10-25。`produce_article`実装・Fable判断の反映)
+
+| ID | 更新内容 | 現Status(2026-10-25 02C) | 11-8分類 |
+|---|---|---|---|
+| OT-07 | テキストcoreの残り(Voice生成+Voice Gate+Lead+人物紹介+補助Gate+記事組立)を`produce_article`として実装(新規test 72件+既存56件=128 PASS、接続試行0)。`FAMILY_Y_TEXT_CORE_NOT_CONNECTED`は解消(runnerとの結線をoffline smokeで確認) | **実装済み。Production runtime evidence未取得**(E-1/E-3で取得) | 修正へ進む(継続) |
+| OT-27 | **案Iを採用=進める**(Fable判断)。E-1実走時、案Bは1回判定しFAILならSTOP→ユーザー判断(推奨案=既存Human個別承認記録機構でGate FAILをユーザー承認で上書き)。書換え禁止・判定再試行禁止(I-4)維持。test固定(`test_plan_b_gate_fail_stops_without_rewrite_or_retry_and_no_closing_final`) | 判断済み(実走待ち) | 修正へ進む(E-1で結果次第) |
+| OT-28 | **解消**: Lead/紹介の補助適用から`leak_evidence_memorable`も除外(`LEADINTRO_NA_FIELDS_PROD`)。承認済みGate定義の変更ではなくY固有パートへの適用範囲の確定(Fable権限)。決定論検査(主張先取り語・10字連続一致・字数)は必須のまま。test固定(適用外3項目のみFAIL→PASS、`evidence_subject`/`discovery_syntax`/`numbers_foreground`のFAIL→`LEADINTRO_LEAKAGE_FLAGGED`) | 解消 | クローズ |
+| OT-34 | **解消**: 個別Cap 150→170円(7-7の自律範囲)。`BUDGET_PLAN_03.md`。上限見積160円に対し約10円の余裕 | 解消 | クローズ |
+| OT-35 | **新規(02Bへの要求)**: routing key 2本(`FAMILY_Y_VOICE_PROVENANCE_MAP`/`FAMILY_Y_VOICE_STRUCTURE_TAG`、gpt-6-luna/medium)のer006登録+pricing。未登録のままE-3を実行するとpreflightで費用0のまま停止(fail-closed) | 未登録(02B待ち) | 修正へ進む(02B) |
+| OT-36 | **新規(02Bへの要求)**: runner `stage_text`へ`theme_package_path=`と`--reuse-manifest`(`reuse=`)の受け渡しを追加。無いとE-1は案B registryのsha照合が成立せずAPI 0で停止する | 未対応(02B待ち) | 修正へ進む(02B) |
+| OT-37 | **新規(実害なし・記録)**: Voice生成は逐次実行(DEVは3並列)。cost loggerのstageタグがprocess globalで競合するため。Voice段の所要時間が約3倍(費用は同じ)。Fableが並列化を望む場合は、stageタグのthread-local化(共有file `er005_cost_logger.py`の変更)が前提で別案件 | 記録 | 実害なし |
+| OT-38 | **新規(実害なし・記録)**: Lead/紹介のGate FAIL時の自動再生成はしない(DEVと同じ=STOP。再開は明示操作)。1回の自動再生成を許す案は仕様候補(未実装、Fable判断) | 記録 | 実害なし |
+| OT-39 | **新規(実害なし・記録)**: 人物紹介は「1人につき1〜2文・改行なし・字数32〜62」(DEV委任_28どおり)。委任文の「1文」はDEVの単一行契約と解釈した。厳密な1文化はPrompt/検査の意味変更になるため実施せず | 記録 | 実害なし |
+| OT-40 | **新規(修正へ進む・Fable判断不要)**: `source_dir`が無いTheme Packageでは出典連続一致を「未確認」と記録(STOPしない)。SNSパッケージ(`OPINION_BASED_01/sources`)・宅配manifest(`OPINION_BASED_02/sources`)には設定済み。新テーマ追加時は`source_dir`を必ず設定すること(運用手順としてOPERATIONSへ追記は02B) | 記録 | 修正へ進む(運用手順) |

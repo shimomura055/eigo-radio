@@ -1,0 +1,31 @@
+{
+  "schema": "y_reuse_v1",
+  "slug": "redelivery_fee",
+  "note": "FAMILY-Y-PRODUCTION-LAUNCH-01 委任_02C: 『宅配の再配達』E-1用の再利用manifest。Voice=委任_25 R0(Gate PASS・byte一致をproduce_articleが検証)、Lead/人物紹介=委任_28 revision_01(Productionの決定論検査を再度通す)。intro_checksはDEV rev.INTRO_ROLE_RE/INTRO_OBJECT_WORDS/CLAIM_WORDS_REと逐語同一(宅配用の検査語。コードに持たずデータで渡す)。",
+  "voice_r0_article": "er110_output/family_y_opinion_based_03/redelivery_fee/run_01/article_ja.md",
+  "voice_gate_dir": "er110_output/family_y_opinion_based_03/redelivery_fee/run_01/gate_voices",
+  "lead_file": "er110_output/family_y_redelivery_audio_01/revision_01/lead/lead.txt",
+  "intros_file": "er110_output/family_y_redelivery_audio_01/revision_01/intro/intros.json",
+  "source_dir": "docs/research/FAMILY-Y-VOICES-DESIGN-01/OPINION_BASED_02/sources",
+  "intro_checks": {
+    "role_patterns": {
+      "voice_1": "(ドライバー|配達|配って|荷物を運)",
+      "voice_2": "(共働き|仕事|家を空け|留守)",
+      "voice_3": "(ロッカー|営業所|宅配ボックス|受け取り方|受け取る)"
+    },
+    "object_words": [
+      "宅配ボックス",
+      "置き配",
+      "ロッカー",
+      "営業所",
+      "時間指定",
+      "指定",
+      "不在票",
+      "送料",
+      "コンビニ"
+    ],
+    "claim_pattern": "(有料|賛成|反対|請求|払う|払っ|払わ|料金|負担すべき|べきだ)",
+    "claim_words_prompt": "「有料」「料金」「賛成」「反対」「払う」「請求」",
+    "object_examples_prompt": "宅配ボックス・置き配・ロッカー・営業所・時間指定・不在票"
+  }
+}

@@ -102,7 +102,7 @@
 - `inp`はTheme Package→`normalize_input(question, premise, distinctions, personas, voices)`で作る(adapterはrunner側)。`theme_package_sha256`/`voice_r0_sha256`はファイルbytesのsha256(registry照合用)。
 - 返り値: `{"text": <最終Closing>, "record": <closing_record>}`。STOP時は`er121…YStop`(`.code`: `CLOSING_GENERAL_CONTRACT_STOP`/`REWRITE_STOP`/`LEAKAGE_RESIDUAL_STOP`/`CLOSING_POST_GATE_STOP`/`FIXED_CLOSING_*`/`PROMPT_SHA_MISMATCH`)。runnerは`code`を`run_status.json`へ書く。
 - **`guard`引数**: `produce_closing`/`generate_closing_general`/`run_gate`/`run_leak`/`chat`は`guard=callable(stage_label)`を受け取り、**各API呼出の直前(routing照合の後)に1回呼ぶ**(例外ならAPIを呼ばない)。runnerの`_guard(ctx, label, est)`を包んで渡す(test: `TestGuard`)。ラベル例: `yp_closing_gen`/`yp_closing_leak1`/`yp_closing_rewrite1`。
-- **`produce_article`は02Aでは未実装**(02B runnerは`produce_article(client, slug=, theme_package=, out_dir=, guard=)`→`{title, lead, intros, voices, closing, closing_record}`を期待し、無ければ`FAMILY_Y_TEXT_CORE_NOT_CONNECTED`でSTOPする=安全側)。Voice生成・Lead・人物紹介・見出しの生成関数が未実装のため、記事全体の組立は**次の02委任(Voice/Lead/紹介生成の移植)**で実装して接続する。`produce_closing`はそのClosing部として使われる。`closing_record`は`produce_closing`が返すものをそのまま渡す。
+- **(委任_02Cで実装済み→§12。以下は02A時点の記述)`produce_article`は02Aでは未実装**(02B runnerは`produce_article(client, slug=, theme_package=, out_dir=, guard=)`→`{title, lead, intros, voices, closing, closing_record}`を期待し、無ければ`FAMILY_Y_TEXT_CORE_NOT_CONNECTED`でSTOPする=安全側)。Voice生成・Lead・人物紹介・見出しの生成関数が未実装のため、記事全体の組立は**次の02委任(Voice/Lead/紹介生成の移植)**で実装して接続する。`produce_closing`はそのClosing部として使われる。`closing_record`は`produce_closing`が返すものをそのまま渡す。
 - 追加routing key `FAMILY_Y_CLOSING_REWRITE`は02B登録済み。`ROUTE`のeffortをer006が持たないことに注意。
 - **Lead/紹介のGate(補助適用)の扱いは判断待ち**(GATE_CALIBRATION_01 §4)。Lead/紹介の生成関数は未実装(次委任)。
 
@@ -126,3 +126,76 @@
 2. **判断候補(Fable判断)**: Lead/紹介の補助適用で`leak_evidence_memorable`が3/4 FAIL → 適用対象外にするか(承認Gate定義は不変、補助適用の範囲設定)。
 3. 既知(ユーザー判断候補G-1/G-2): R2宅配H2の`leak_discovery_syntax`は定義補完で消えない(3/3)。G-2は不要になるどころか必要性が裏づけられた。
 4. 未確認: `run_kp_with_review`のfamily="Y"受理、gloss HR、予算wrapperのimport可否、cached_tokens/flex/Batch(R-6)、Z audio関数のY segment適合。
+
+## 11. Fable判断(委任_02C、2026-10-25。委任文の転記)
+
+| ID | 判断 | 内容 |
+|---|---|---|
+| OT-27 | **案Iを採用=進める** | 案B(固定Closing)はE-1実走時に**1回だけ判定**し、FAILなら**STOPして**「ユーザー承認済み本文とGateの衝突」としてユーザー判断へ上げる。推奨案として、既存のHuman個別承認記録機構(`record_human_approval`型)でGate FAILをユーザー承認で上書きする案を提示する予定。書換え禁止・判定再試行禁止(I-4)は維持。 |
+| OT-28 | Lead/人物紹介の補助適用範囲を確定(Fable権限) | Lead/紹介はナレーター文であり、Voice用の`leak_evidence_memorable`(人物の経験・感情の具体性)は性質上適合しないため**非適用**。適用するのは出所・創作・一人称・Tension専用2項目を除く「ナレーター文に意味を持つ項目」のみ。これは承認済みGate定義の変更ではなく、Y固有の新パート(Lead/紹介)への適用範囲の確定。委任_28で用いた決定論検査(主張先取り語禁止・本人語りとの10字連続一致なし・字数)は必須のまま。 |
+| 個別Cap | 150→**170円** | 7-7の自律範囲(300円以下)。`BUDGET_PLAN_03.md`。 |
+| E-3 voices段 | SNS Theme Packageから**実生成** | Opus M-6どおり。R0再利用ではProduction runtime evidenceにならない。 |
+| `rewrite_scope_check` | 維持 | 緩和は運用実績後。 |
+| G-2 | 変更しない | `leak_discovery_syntax`が「見えてくる」を3/3 FAIL(台帳YL-E02)。Gate文言の補足はユーザー判断事項として提示。 |
+
+## 12. 委任_02C: 記事全体の実装(`produce_article`。Status=実装・offline test済み。**Production runtime evidence未取得**)
+
+### 12-1. 実装範囲(`er121_family_y_text_core_01.py`に追加。DEV `er110_*`は無変更・非import)
+
+| 機能 | 関数 | DEV移植元 | 備考 |
+|---|---|---|---|
+| Theme Package検査・sha | `validate_theme_package`/`load_theme_package` | `opinion_based_03.validate_theme/load_theme` | shaは案B registryと同じ算出(ファイルbytes)。dictのみ渡すとcanonical JSON shaになり案Bは注入されない(fail-closed) |
+| Voice生成 | `build_voice_prompt`/`render_persona`/`generate_voice` | `opinion_based_01.build_voice_prompt_ob`+`02.VOICE_PROMPT_OB2/render_persona_ob2`+`03`の`relevant_terms`絞り込み | Prompt=`er121_prompts/voice_generate_02.txt`(sha48645f1d…)。構造契約違反は1回だけ再生成、残れば`VOICE_CONTRACT_STOP` |
+| Voice出典付番・UNMAPPED再生成 | `build_map_prompt`/`check_mapping`/`map_voice`/`unmapped_extra` | `opinion_based_01`(OF-Y6-07) | luna/medium。再生成後の残りは記録のみ(DEVと同じ。検証済みR0でも最終付番に1件残る実績があるため、STOPにしない) |
+| 構造タグ | `tag_structure`/`structure_fire` | `persona_pipeline`(OF-Y5-06) | luna/medium。発火なら該当1本だけ1回再生成。記録のみ |
+| Voice Gate | `run_gate(kind="voices")`(02A) | — | 判定≤3・局所書換え(`FAMILY_Y_VOICE_REWRITE`)・`gate_history`全保存。残存FAILは`VOICE_RESIDUAL_STOP`(`final_texts.json`を作らず後続へ流さない)。**予算によるGate skipは移植していない** |
+| Lead | `build_lead_prompt`/`check_lead`/`generate_lead` | `redelivery_revision_01`(委任_28) | Prompt=`lead_generate_01.txt`(sha76282235…)。AI編集説明なし(検査`HAS_AI_EDIT_ANNOUNCEMENT`)。字数115〜160 |
+| 人物紹介(3本1 call) | `build_intro_prompt`/`check_intro`/`generate_intros` | 同(委任_28) | Prompt=`persona_intro_01.txt`(sha787794d6…。題材固有の2箇所だけplaceholder化し、DEVの宅配用語を代入するとDEV版とバイト一致)。主張先取り語禁止・本人語りとの10字連続一致なし・字数32〜62。紹介は「1人につき1〜2文・改行なし」(DEVどおり。委任文の「1文」はDEVの1行=単一行契約と解釈。厳密な1文化は仕様変更になるため行わず報告) |
+| 補助Gate | `run_leadintro_gate`/`split_leadintro_flags(na_fields=)`/`LEADINTRO_NA_FIELDS_PROD` | `rev.LEADINTRO_NA_FIELDS`+OT-28 | Tension判定を1回。適用外=`leak_tension_reverts_to_research`/`leak_binary_camp_split`/`leak_evidence_memorable`。適用対象FAILは`LEADINTRO_LEAKAGE_FLAGGED`でSTOP(本文を手で直さない) |
+| 再利用(E-1) | `load_reuse`/`reuse_voices`/`reusable_prior_voice_gate` | `redelivery_audio.load_r0` | R0 article↔Gate最終本文のbyte一致を検証。Gateは来歴検査付き既存PASS記録を再利用(判定prompt shaが一致する場合のみ)、使えなければ判定1回(書換えなし。FAILは`REUSED_VOICE_GATE_FAIL`)。再利用Lead/紹介は本Productionの決定論検査を再度通す |
+| 出典連続一致 | `verbatim_report`/`shingle_hits_ja` | `redelivery_audio.shingle_hits_ja` | Theme Packageの`source_dir`(または再利用manifestの`source_dir`)がある場合のみ検査。1件でも→`SOURCE_VERBATIM_STOP`。無い場合は「未確認」と記録 |
+| 組立・契約検査 | `render_article_text`/`check_article_parts` | `rev.render_revised/check_revised` | 5パート(Lead/[紹介+Voice]×3/Closing)、In One Line不在、AI編集説明不在、Voice本文がGate最終とbyte一致 |
+| 一括 | `produce_article(client, *, slug, theme_package, out_dir, guard=None, reuse=None, theme_package_path=None)` | — | 返り値`{title, lead, intros, voices, closing, closing_record, records}`(02B runnerの`stage_text`が期待する形。runner+実coreの結線をoffline smokeで確認済み) |
+| routing | `ROUTE_AUX`/`preflight_routes` | — | 付番・構造タグ用に**新key 2本**(下記)。`produce_article`は最初のAPI呼出の前に使用予定の全keyを`require_model`で照合(未登録なら費用0で停止) |
+
+- **サブステージ再開(二重課金防止)**: `voices/`・`lead_intro/`・`closing/`の各`stage_*.json`に入力key(Theme Package sha・slug・Prompt sha・再利用manifest・module sha)を保存し、一致すればAPI 0で再利用する。Closing STOP後の再実行でVoice/Lead/紹介を再課金しない(test固定)。
+- **逐次実行**: Voice生成を3本並列にしない。`er005_cost_logger.logging_context`がprocess globalでstageタグが競合するため(DEVは並列で混在し得た)。時間はVoice段が約3倍、費用への影響なし。
+
+### 12-2. 新routing key(02Bへの要求。er006登録+pricing)
+
+| key | model | effort | 用途 |
+|---|---|---|---|
+| `FAMILY_Y_VOICE_PROVENANCE_MAP` | gpt-6-luna | medium | Voice出典付番(DEV `ob_map_*`と同一設定) |
+| `FAMILY_Y_VOICE_STRUCTURE_TAG` | gpt-6-luna | medium | 構造タグ(DEV `ob_structure*`と同一設定) |
+
+02Bの`test_text_core_route_table_matches_contract_no_drift`(`tc.ROUTE`全件のdrift検査)を壊さないため、`ROUTE`本体ではなく`ROUTE_AUX`に置いた(登録後に`ROUTE`へ統合してよい)。`chat`は両表を引く。**未登録のままE-3を実行すると`produce_article`冒頭のpreflightで`ModelContractViolation`となりAPI呼出0で停止する**(Voice生成の費用が発生する前)。
+
+### 12-3. 02Bのrunnerへの要求(02Cは編集しない)
+
+1. `stage_text`の`fn(...)`呼出に`theme_package_path=ctx.theme_package_path`を追加(dictのみだと案B registryのsha照合が成立せず、E-1が`FIXED_CLOSING_PROVENANCE_MISMATCH`/`REQUIRES_R0_REUSE`で停止する)。
+2. `--reuse-manifest <json>`(任意)を追加し`reuse=`として渡す。manifest例=`theme_packages/redelivery_fee_reuse_01.json`(schema=`y_reuse_v1`)。
+3. 出力dir衝突なし(02C: `text/{voices,lead_intro,closing}/`・`article_record.json`・`article_status.json`・`article_assembled.md`。runner: `text/article_ja.md`・`text/text_records.json`)。`res["records"]`は`text_records.json`に保存される。
+4. Closing再生成が`--regenerate-stage`の明示のみ(DESIGN_01 §3)にするには、`text`段を`voices`/`lead_intro`/`closing`の3段に分けて公開関数(`produce_voices`/`reuse_voices`/`generate_lead`/`generate_intros`/`run_leadintro_gate`/`produce_closing`)を直接呼ぶ方式も可(現状の`produce_article`は一括。サブステージ再開で費用の二重払いは防いでいる)。
+
+### 12-4. Theme Package / 再利用manifest
+
+- Theme Package=`THEME_DATA`形式(`theme_id`/`world_frame`/`sheets`×3/`who_ja`/`restricted_voice_ids`)。任意の追加欄: `lead_premise_ja`/`lead_scope_lines`(無ければ`question_ja`と`distinctions`から機械的に作る=新しい事実を足さない)、`intro_checks`(役割語・具体物・主張先取り語。無ければ汎用導出し`check_mode=derived`と記録)、`source_dir`。
+- SNS年齢制限: `theme_packages/sns_age_limit_package_01.json`(sha aa37a1e1…)。DEV `WORLD_FRAME_02`/`SHEETS_02`/`WHO_JA_02`の機械転記(testで内容一致を固定)。E-3のvoices段入力。
+- 宅配: 既存`OPINION_BASED_02/THEME_DATA_02.json`(sha f0d0af36…、registry登録済み・無変更)+`theme_packages/redelivery_fee_reuse_01.json`(R0 Voice・改訂Lead・人物紹介・`intro_checks`・`source_dir`)。
+
+### 12-5. 失敗終了時の最終成果物(目的要件との照合)
+
+| STOP | 残る成果物 | 目的要件(完成音声+限定試聴ページ)に対して |
+|---|---|---|
+| `THEME_PACKAGE_INVALID`/`FIXED_CLOSING_REQUIRES_R0_REUSE`/`REUSE_MISMATCH`/routing未登録 | `article_status.json`のみ(API 0・費用0) | 未着手と明示 |
+| `VOICE_CONTRACT_STOP`/`VOICE_RESIDUAL_STOP`/`REWRITE_STOP` | `voices/voices_partial.json`(確定稿ではない)・`gate_voices/`全履歴・`article_status.json`。`voices_final.json`/`final_texts.json`は作らない | 未完成と明示。Lead/紹介/Closing/音声へ進まない |
+| `LEAD_CONTRACT_STOP`/`INTRO_CONTRACT_STOP`/`LEADINTRO_LEAKAGE_FLAGGED` | Voice確定稿(`voices_final.json`)+Lead/紹介の試行記録。再開時Voiceは再課金なし | 未完成。Closingへ進まない |
+| `FIXED_CLOSING_GATE_FAIL`(OT-27) | Voice・Lead・紹介の確定稿+`closing/gate/`判定記録。`closing_final.txt`なし | ユーザー承認本文とGateの衝突=ユーザー判断へ。暫定版を作らない |
+| `CLOSING_*`/`LEAKAGE_RESIDUAL_STOP` | 02Aの規定どおり(`closing_record.json`にstatus・`gen/`・`gate/`)。Voice/Lead/紹介は確定稿を保存 | 未完成 |
+| `ARTICLE_ASSEMBLY_STOP`/`SOURCE_VERBATIM_STOP` | `article_assembled.md`(確定稿ではない)・`verbatim_hits.json`。`article_record.json`は作らない | 公開しない(権利確認の対象) |
+
+### 12-6. E-1〜E-3の実行に必要な残作業
+
+- **E-3(SNS一般化+voices実生成)**: ①02Bのer006登録(`FAMILY_Y_*` 9キー+上記新2キー+pricing) ②runnerの`stage_text`が`produce_article`を呼ぶ(現状でも呼べる。`theme_package_path`は任意) ③`--approved-budget-jpy`と日次予算確認 ④英訳以降(02B)。voices段〜closingまでは**今すぐ実行可能な状態**(runner経由でなくても`produce_article(client, slug="sns_age_limit", theme_package=<SNS pkg path>, out_dir=…)`で単独実行できる)。見積39〜48円(`BUDGET_PLAN_03.md`)。
+- **E-1(宅配+案B)**: ①上記01〜02の要求(`theme_package_path`・`--reuse-manifest`) ②案BのGate判定(1回)でFAILすればSTOP→ユーザー判断(OT-27 案I)。③英訳以降(02B)。
+- 未確認(02B領域): `run_kp_with_review`のfamily="Y"受理、gloss HR、予算wrapperのimport、Z audio関数のY segment適合、cached_tokens/flex/Batch。
