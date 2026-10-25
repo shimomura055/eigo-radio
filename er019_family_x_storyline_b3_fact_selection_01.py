@@ -247,14 +247,21 @@ def validate_selection_output(parsed: dict, ledger_fact_ids: list) -> list:
 
 
 def _call_once(client, topic: str, ledger_text: str, model: str, effort: str,
-                stage_tag: str, extra_note: str = "") -> dict:
+                stage_tag: str, extra_note: str = "", variant: dict | None = None) -> dict:
     user_prompt = build_user_prompt(topic, ledger_text) + extra_note
+    text_kw = {"format": {"type": "json_schema", **STORYLINE_B3_JSON_SCHEMA}}
+    if variant is not None:
+        # FX-CORE-NUMERIC-RETENTION-TRIAL-01 委任_07(APPROVED_FOR_PRODUCTION 2026-10-25): Family Xのnews runnerだけが渡す
+        # v4 variant(er116.variant())。user message末尾へ指示文を追記し、schemaは**deepcopyへ**欄を足す(STORYLINE_B3_JSON_SCHEMA定数は不変=
+        # Y Trial等のimport契約を変えない)。variant=None(既定)は従来とバイト同一。
+        user_prompt = user_prompt + variant["addendum"]
+        text_kw = variant["text_transform"](text_kw)
     t0 = time.time()
     with cl.logging_context(THEME_TAG, stage_tag):
         response = client.responses.create(
             model=model,
             reasoning={"effort": effort},
-            text={"format": {"type": "json_schema", **STORYLINE_B3_JSON_SCHEMA}},
+            text=text_kw,
             input=[
                 {"role": "developer", "content": DEVELOPER_MESSAGE},
                 {"role": "user", "content": user_prompt},
@@ -284,7 +291,7 @@ def _stop_record(reason: str, ledger_text: str, parsed: dict | None, extra: dict
 
 
 def _technical_attempts(client, topic: str, ledger_text: str, model: str, effort: str,
-                         ledger_fact_ids: list) -> dict:
+                         ledger_fact_ids: list, variant: dict | None = None) -> dict:
     """初回選定(技術retry最大2 attempt、従来どおり)。技術的に2回とも失敗した場合はRuntimeErrorをSTOPとして送出する。"""
     attempts_log = []
     last_exc = None
@@ -292,7 +299,7 @@ def _technical_attempts(client, topic: str, ledger_text: str, model: str, effort
         extra_note = "" if attempt == 1 else RETRY_APPEND_NOTE
         try:
             result = _call_once(client, topic, ledger_text, model, effort,
-                                 stage_tag="storyline_b3", extra_note=extra_note)
+                                 stage_tag="storyline_b3", extra_note=extra_note, variant=variant)
         except (json.JSONDecodeError, Exception) as exc:  # noqa: BLE001
             attempts_log.append({"attempt": attempt, "error": str(exc)[:500]})
             last_exc = exc
@@ -312,7 +319,8 @@ def _technical_attempts(client, topic: str, ledger_text: str, model: str, effort
 
 def run_storyline_b3_selection(client, topic: str, ledger_text: str,
                                 model: str, effort: str,
-                                min_verified_selected: int | None = MIN_VERIFIED_SELECTED_DEFAULT) -> dict:
+                                min_verified_selected: int | None = MIN_VERIFIED_SELECTED_DEFAULT,
+                                variant: dict | None = None) -> dict:
     """戻り値: {"parsed", "model", "response_id", "latency_seconds",
     "attempts", "retried", "validation_errors_by_attempt", "prompt_shas", "min2_policy", ...}
     技術的に2回とも失敗した場合はRuntimeErrorをSTOPとして送出する。
@@ -331,7 +339,7 @@ def run_storyline_b3_selection(client, topic: str, ledger_text: str,
             f"(verified={verified_fact_ids(ledger_text)})。",
             _stop_record("LEDGER_VERIFIED_LT2", ledger_text, None))
 
-    first = _technical_attempts(client, topic, ledger_text, model, effort, ledger_fact_ids)
+    first = _technical_attempts(client, topic, ledger_text, model, effort, ledger_fact_ids, variant=variant)
     result, attempt = first["result"], first["attempt"]
     attempts_log = list(first["attempts_log"])
     errors = first["errors"]
@@ -352,7 +360,7 @@ def run_storyline_b3_selection(client, topic: str, ledger_text: str,
             "response_id": result.get("response_id")}
         try:
             re_result = _call_once(client, topic, ledger_text, model, effort, stage_tag="storyline_b3",
-                                    extra_note=build_reeval_note(first_parsed))
+                                    extra_note=build_reeval_note(first_parsed), variant=variant)
         except (json.JSONDecodeError, Exception) as exc:  # noqa: BLE001
             attempts_log.append({"attempt": "reeval", "error": str(exc)[:500]})
             raise B3MinFactsStop(

@@ -39,6 +39,7 @@ import argparse
 import hashlib
 import json
 import os
+import shutil
 import time
 
 import er003_v1_en_direct_vfl_01_generate as vfl01
@@ -51,6 +52,7 @@ import er053_b3_deterministic_producer_01 as annot
 import er053_cost_aggregate_01 as ca
 import er053_family_x_factlock_ja_writer_01 as w1
 import er053_review_queue_01 as rq
+import er116_fx_core_numeric_retention_01 as numret   # 委任_07(2026-10-25 APPROVED_FOR_PRODUCTION): 中核数値保持方式v4+J2(Family X専用)
 import er095_b3_core_number_rounding_01 as rounding   # 委任_06 C-2: Family X中核数値丸め(Family Zのrunnerからは参照しない)
 import er053_risk_flagger_production_01 as rf
 
@@ -145,7 +147,9 @@ def run_research_and_ledger(client, topic: str, ledger_dir: str) -> dict:
 # ------------------------------------------------------------
 # Stage 2: AI Storyline決定 + B3 4テスト(LLM 1 call)
 # ------------------------------------------------------------
-def run_storyline_b3(client, topic: str, ledger_text: str, out_dir: str) -> dict:
+def run_storyline_b3(client, topic: str, ledger_text: str, out_dir: str, numeric_variant: dict | None = None) -> dict:
+    """numeric_variant: FX-CORE-NUMERIC-RETENTION-TRIAL-01 委任_07。Family X newsのmain()だけが `numret.variant()` を渡す(v4指示文+欄schema、
+    B3の同一callで reader_must_hear_numbers を得る)。None(既定。Y Trial等)=従来とバイト同一。"""
     stage_dir = f"{out_dir}/storyline_b3"
     os.makedirs(stage_dir, exist_ok=True)
     # FAMILY-X-JA-MODEL-ALLOCATION-SOL61-PRODUCTION-WIRING-01(2026-10-11、E案): B3はroutingキー
@@ -156,7 +160,7 @@ def run_storyline_b3(client, topic: str, ledger_text: str, out_dir: str) -> dict
     try:
         selection = b3.run_storyline_b3_selection(
             client, topic, ledger_text, model=b3_model, effort=vfl01.REASONING_EFFORT,
-            min_verified_selected=b3.MIN_VERIFIED_SELECTED_DEFAULT)
+            min_verified_selected=b3.MIN_VERIFIED_SELECTED_DEFAULT, variant=numeric_variant)
     except b3.B3MinFactsStop as stop:
         # FAMILY-X-B3-FACT-MIN2-PRODUCTION-01(M4): 3ケース(LEDGER_VERIFIED_LT2/REEVAL_STILL_LT2/REEVAL_INVALID)全てでSTOP記録を
         # 書いてから再送出する。selected_brief.md/fact_selection_evidence.json/注記artifactには触れない(旧版を新版として扱わない)。
@@ -193,6 +197,13 @@ def run_storyline_b3(client, topic: str, ledger_text: str, out_dir: str) -> dict
         "retried": selection["retried"], "prompt_shas": selection["prompt_shas"],
         "attempts_log": selection["attempts_log"],
     }
+    if numeric_variant is not None:
+        # 委任_07: 欄(採用されたB3出力の同一call)を保存。resume/再生成時はこのファイルからEを決定論で再構成する(B3は呼び直さない)。
+        field_rec = numret.save_field(stage_dir, selection["parsed"], selection["response_id"])
+        runtime_evidence["numeric_retention_b3"] = {
+            "variant": numeric_variant["name"], "addendum_sha256": numeric_variant["addendum_sha256"],
+            "base_addendum_sha256": numeric_variant["base_addendum_sha256"], "m1_retry": numeric_variant["m1_retry"],
+            "field_items": field_rec["items"], "field_present_in_output": field_rec["field_present_in_output"]}
     save_json(f"{stage_dir}/runtime_evidence.json", runtime_evidence)
     return {
         "selected_storyline": selection["parsed"]["selected_storyline"],
@@ -261,6 +272,45 @@ def run_annotation_producer(out_dir: str) -> dict:
     return result
 
 
+def run_numeric_field_step(client, topic: str, ledger_text: str, out_dir: str, budget_jpy: float, fresh_b3: bool) -> dict:
+    """委任_07 M1: B3確定・注記producer直後に、欄(reader_must_hear_numbers)の構造検査(M1)を行いE=欄を確定する(LLM 0)。
+    fresh_b3=True(今回B3を新規実行した)かつM1違反なら、B3を**1回だけ**再実行(修正指示つき、1回目のartifactは storyline_b3_attempt1 へ退避)。
+    再実行後も違反ならE=∅で続行+WARN+runtime evidence(現行Production同等。新しい既定動作を作らない)。
+    fresh_b3=False(既存B3の再利用・途中段からの再開)は、保存済みの欄からEを決定論で再構成するだけでB3は呼ばない。欄ファイルなし(旧記事)=E=∅。
+    証跡: storyline_b3/numeric_retention_b3.json(b3_rerun・違反理由・欄の1回目/最終値・E・mode)。"""
+    sdir = f"{out_dir}/storyline_b3"
+    ev = {"rule_version": numret.RULE_VERSION, "fresh_b3": fresh_b3, "b3_rerun": False, "first_pass": None, "attempts": []}
+    field_path = f"{sdir}/{numret.B3_FIELD_NAME}.json"
+    if os.path.exists(field_path):
+        E1 = numret.derive_E_from_field(out_dir)
+        ev["first_pass"] = {"field_items": E1["field_items"], "ok": E1["ok"], "violations": E1["violations"],
+                            "E": [c["news_surface"] for c in E1["candidates"]]}
+        ev["attempts"].append(ev["first_pass"])
+        if (not E1["ok"]) and fresh_b3:
+            probs = numret.m1_problem_text(E1)
+            print(f"[B3-RUNNER][numeric_field] M1違反: {probs}。B3を1回だけ再実行します(1回目は storyline_b3_attempt1 へ退避)。")
+            # 1回目のartifactを退避(上書きしない)。B3 artifactだけを入れ替える(research_ledger等は触れない)。
+            att1 = f"{out_dir}/storyline_b3_attempt1"
+            if os.path.exists(att1):
+                os.replace(att1, f"{att1}_prev_{time.strftime('%Y%m%dT%H%M%S')}")
+            shutil.copytree(sdir, att1)
+            shutil.rmtree(sdir)
+            run_storyline_b3(client, topic, ledger_text, out_dir, numeric_variant=numret.variant(retry_problems=probs))
+            efam.assert_budget_ok(out_dir, budget_jpy, "after storyline_b3 (M1 rerun)")
+            assert_b3_min_verified(out_dir)
+            run_annotation_producer(out_dir)
+            ev["b3_rerun"] = True
+            E2 = numret.derive_E_from_field(out_dir)
+            ev["attempts"].append({"field_items": E2["field_items"], "ok": E2["ok"], "violations": E2["violations"],
+                                   "E": [c["news_surface"] for c in E2["candidates"]]})
+    ctx = numret.NumericRetention.from_out_dir(out_dir)
+    ev.update({"mode": ctx.mode, "E": ctx.ev["E"], "gate_E": ctx.ev["gate_E"], "observe_E": ctx.ev["observe_E"], "final_field_items": ctx.ev["field_items"],
+               "final_m1_violations": ctx.ev["m1_violations"], "warn": ctx.ev["warn"]})
+    save_json(f"{sdir}/numeric_retention_b3.json", ev)
+    print(f"[B3-RUNNER][numeric_field] mode={ctx.mode} E={ev['E']} gate_E={ev['gate_E']} b3_rerun={ev['b3_rerun']}")
+    return ev
+
+
 def run_core_number_rounding(client, out_dir: str, ledger_text: str, args, stage: str) -> dict:
     """委任_06 C-2 W1(1行helper): B3確定・注記producer直後に中核数値丸め(overlay)を作る/再利用する。
     新規判断を許すのは JA Writerが実際に走る経路のみ(JA再利用経路=既存revision2.mdあり かつ stage!=writer かつ regenerate!=writerでは
@@ -288,7 +338,8 @@ def run_ja_writer(client, out_dir: str, budget_jpy: float) -> dict:
     try:
         result = w1.run_w1_writer(
             out_dir, client=client,
-            budget_check=lambda: efam.assert_budget_ok(out_dir, budget_jpy, "w1 writer"))
+            budget_check=lambda: efam.assert_budget_ok(out_dir, budget_jpy, "w1 writer"),
+            numeric=numret.NumericRetention.from_out_dir(out_dir))     # 委任_07: 保存済みの欄からEを決定論で再構成(B3は呼ばない)+R4/J2常時有効
     except w1.JASymbolCheckStopError as exc:
         # JA_SYMBOL_CHECK_STOP(技術QA、記号Validator): rejected本文はW-1側がja_writer/auditへ保存済み。
         raise RuntimeError(str(exc)) from exc
@@ -490,10 +541,11 @@ def main() -> None:
             print(f"[B3-RUNNER][storyline_b3] 既存Selected Fact Briefを再利用: {storyline_dir}")
             storyline_result = None     # Writerの入力は注記済みB3 artifact(契約検証)であり、本結果は渡さない
         else:
-            storyline_result = run_storyline_b3(client, args.theme, ledger_text, out_dir)
+            storyline_result = run_storyline_b3(client, args.theme, ledger_text, out_dir, numeric_variant=numret.variant())   # 委任_07: v4(欄つき)
             efam.assert_budget_ok(out_dir, args.budget_jpy, "after storyline_b3")
         assert_b3_min_verified(out_dir)     # FAMILY-X-B3-FACT-MIN2-PRODUCTION-01 M2: 全経路の合流点(producer/契約の手前)で採用VERIFIED>=2を確認
         run_annotation_producer(out_dir)    # C4: 初回・regeneration・resume・再利用のすべてで storyline_b3 確定直後(Writer/契約検証の前)に呼ぶ
+        run_numeric_field_step(client, args.theme, ledger_text, out_dir, args.budget_jpy, fresh_b3=storyline_result is not None)   # 委任_07 M1(B3再実行は新規B3のときだけ1回)
         run_core_number_rounding(client, out_dir, ledger_text, args, stage)   # 委任_06 C-2 W1: 中核数値丸め判断(Luna low、失敗=丸めなしで続行)
         if stage == "storyline_b3" or args.stop_after == "storyline_b3":
             print("[B3-RUNNER] stage=storyline_b3で停止(--stop-after storyline_b3)。")
@@ -542,6 +594,7 @@ def main() -> None:
         run_post_en_risk_flag(out_dir, "a2", args.budget_jpy, run_label=args.run_label or None)
         efam.assert_budget_ok(out_dir, args.budget_jpy, "after risk_flag a2")
 
+    numret.observe_en(out_dir)       # 委任_07: 英訳(Std/Adv)のE数値の観察のみ(WARN。Gate化なし・例外を出さない)
     print("[B3-RUNNER] Standardまで完了。Mandatory STOP(ユーザー確認前に後工程[scaffold/tts/"
           "assemble/player]へは進みません。本runnerにはそれらのstage自体が実装されていません)。")
     _write_cost_json(out_dir)

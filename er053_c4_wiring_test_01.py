@@ -68,7 +68,7 @@ class Harness:
         return {"ledger_text": open(os.path.join(ledger_dir, "verified_fact_ledger.txt"), encoding="utf-8").read()
                 if os.path.exists(os.path.join(ledger_dir, "verified_fact_ledger.txt")) else ""}
 
-    def storyline(self, client, topic, ledger_text, out_dir):
+    def storyline(self, client, topic, ledger_text, out_dir, numeric_variant=None):
         self.events.append("storyline")
         adapter.copy_inputs(self.theme, out_dir)             # B3出力(台帳・selected_brief.md・evidence)の複製のみ。注記は作らない
         return {}
@@ -154,7 +154,7 @@ class FourPathOrderTests(unittest.TestCase):
         # R0のニュース欄は 注記済みFacts + 制約ブロック(producer出力)
         a = contract.validate_annotated_b3(self.out)
         self.assertTrue(a.constraints_text)
-        self.assertIn(a.news_field_text, h.client.prompts[0])
+        self.assertIn(runner.numret.normalize_ranges(a.news_field_text), h.client.prompts[0])   # 委任_07: R4(入力側の範囲値「A〜B」→「AからB」)後の欄がR0 Promptに入る
         self.assertEqual(a.producer, "deterministic_v2")
         pev = json.load(open(os.path.join(self.out, "storyline_b3", "audit", "annotation_producer_evidence.json"), encoding="utf-8"))
         self.assertEqual((pev["producer"], pev["llm_calls"]), ("deterministic_v2", 0))
@@ -243,7 +243,7 @@ class NoFallbackAstTests(unittest.TestCase):
         self.assertLess(prod_lines[0], min(writer_lines))
         # producer呼出は storyline_b3 の if/else の後・--stop-after の前(全分岐を通る位置)
         src = open(RUNNER_PY, encoding="utf-8").read().split("\n")
-        i = next(k for k, ln in enumerate(src, 1) if "run_annotation_producer(out_dir)" in ln and "def " not in ln)
+        i = [k for k, ln in enumerate(src, 1) if "run_annotation_producer(out_dir)" in ln and "def " not in ln][-1]   # 委任_07: 先にrun_numeric_field_step内の呼出があるため、main()内(最後)を見る
         self.assertIn("storyline_b3", "\n".join(src[i:i + 4]))                  # 直後が stage==storyline_b3 の早期return判定
 
     def test_writer_is_only_reached_through_contract_validation_and_never_with_plain_b3(self):

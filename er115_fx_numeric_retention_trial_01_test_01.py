@@ -23,10 +23,11 @@ def test_isolation_no_production_reference():
     hits = []
     for p in glob.glob(os.path.join(ROOT, "*.py")):
         base = os.path.basename(p)
-        if base.startswith("er115_"):
+        if base.startswith(("er115_", "er116_")) or base.endswith(("_test_01.py", "_test.py")):     # testファイルは許可リストでer115_を名指しするため対象外(Production module判定)。er116_ = 委任_07のProduction module/test(test側がTrialとのsource同一性検査のためer115をimport。moduleはer115を参照しない=er116 testで確認)
             continue
         txt = open(p, encoding="utf-8", errors="replace").read()
-        if "er115_" in txt or "JANumericRetentionStopError" in txt or "B3_ADDENDUM" in txt:
+        # 委任_07: Productionは自前のJANumericRetentionStopError(er053)・B3_ADDENDUM_V4(er116)を持つため、Trial固有名はer115_の参照のみで判定する
+        if "er115_" in txt:
             hits.append(base)
     assert hits == [], hits
 
@@ -626,7 +627,7 @@ def test_c1_default_off_no_global_flag():
     # 既定OFF: P.ddet は未差替え、er115以外のmoduleがC-1関数を参照しない(Production非接続)
     for p in glob.glob(os.path.join(ROOT, "*.py")):
         base = os.path.basename(p)
-        if base.startswith("er115_"):
+        if base.startswith(("er115_", "er116_")) or base.endswith(("_test_01.py", "_test.py")):     # testファイルは許可リストでer115_を名指しするため対象外(Production module判定)。er116_ testは『Productionに移植しない』ことをAST名で検査するため名前を含む
             continue
         txt = open(p, encoding="utf-8", errors="replace").read()
         assert "field_priority_ddet" not in txt and "reapply_field_priority" not in txt, base

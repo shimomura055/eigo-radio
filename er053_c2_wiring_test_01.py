@@ -53,7 +53,7 @@ class Rec:
                 f.write("[VERIFIED] S01: stub one." + chr(10) + "  scope: x" + chr(10) + chr(10) + "[VERIFIED] S02: stub two." + chr(10) + "  scope: x" + chr(10))
         return {"ledger_text": "LEDGER"}
 
-    def storyline(self, client, topic, ledger_text, out_dir):
+    def storyline(self, client, topic, ledger_text, out_dir, numeric_variant=None):
         self.events.append("storyline_b3")
         ep = os.path.join(out_dir, "storyline_b3", "fact_selection_evidence.json")
         if not os.path.exists(ep):    # ガード用の最小evidence(採用VERIFIED 2件)。既存があれば触れない

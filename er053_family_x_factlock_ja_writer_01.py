@@ -60,6 +60,12 @@ class JASymbolCheckStopError(RuntimeError):
         self.stage, self.rejected_text, self.findings = stage, rejected_text, findings
 
 
+class JANumericRetentionStopError(JASymbolCheckStopError):
+    """FX-CORE-NUMERIC-RETENTION-TRIAL-01 委任_07(J3): 中核数値の保持Gate(R0/R1/R2/M2)が、既存の再生成枠1回の後も不足した(STOP。本文を手で直さない)。
+    既存のSTOP枠(JASymbolCheckStopError)のサブクラス=runnerの`except w1.JASymbolCheckStopError`へそのまま入り、EN/TTS以降へ進まない。
+    findings=不足した数値表記のリスト。"""
+
+
 # ---- 移植元: er052_factlock_astra_e2e_runner_01.py (USER_TMPL=系列Xユーザーメッセージ逐語。変更禁止) ----
 USER_TMPL = "以下の記事:\n\n{body}\n\n事実は変えずにエンターテイメント性をもっと上げた記事にReviseください。長さは800〜1000字程度でお願いします。"
 
@@ -318,13 +324,31 @@ def _noop():
     return None
 
 
-def run_w1_writer(out_dir: str, client=None, budget_check=None) -> dict:
+def _numeric_stop(nr, d: str, stage: str, first_text: str, rerun_text: str, missing: list) -> None:
+    """J3: 保持Gateが既存の再生成枠1回の後も不足 => STOP(JANumericRetentionStopError、既存のJA記号QA STOPと同じ枠)。
+    rejected本文とstop時のevidenceを残し、本文は手で直さない。"""
+    miss = [e["news_surface"] for e in missing]
+    wt(os.path.join(d, "audit", f"rejected_w1_{stage}_numeric_first.md"), first_text)
+    wt(os.path.join(d, "audit", f"rejected_w1_{stage}_numeric_rerun.md"), rerun_text)
+    nr.write_evidence(extra={"stopped": {"stage": stage, "missing": miss}})
+    wj(os.path.join(d, "runtime_evidence_stopped.json"), {"chain_method": CHAIN_METHOD, "stop": "JA_NUMERIC_RETENTION_STOP", "stage": stage,
+                                                         "missing": miss, "numeric_retention": nr.ev})
+    raise JANumericRetentionStopError(
+        f"numeric_{stage}", f"[STOP] JA_NUMERIC_RETENTION_STOP: W-1 {stage.upper()}の中核数値保持Gateが、既存の再生成枠1回の後も不足/新規数値あり({miss})。"
+        "本文を手で直さずSTOPします(人間確認へ)。", rerun_text, miss)
+
+
+def run_w1_writer(out_dir: str, client=None, budget_check=None, numeric=None) -> dict:
     """W-1 を実行し、out_dir/ja_writer/ に original.md / revision1.md / revision2.md / runtime_evidence.json
     (+ factlock/ 以下の生ファイル)を書く。
 
     入口は **注記済みB3の契約検証(validate_annotated_b3)のみ**。契約違反は API呼出前に AnnotatedB3ContractViolation(STOP)。
     注記なしB3を渡す経路・switch・fallbackは存在しない。
     budget_check: 呼出側が渡す予算ガード(例: efam.assert_budget_ok のラッパ)。R0前・R1前・R2前・R2再実行後に呼ぶ(例外は伝播)。
+    numeric: FX-CORE-NUMERIC-RETENTION-TRIAL-01 委任_07の文脈(`er116_fx_core_numeric_retention_01.NumericRetention`、Family X newsのrunnerだけが渡す)。
+      None(既定)=従来とバイト同一(Trial/Y/Z)。渡すと R4(入力の範囲正規化)・J2(R0/R1/R2出力の範囲正規化)が常に有効、
+      numeric.active(=Eにgate対象あり)のときだけ O-2'(Writer入力のメモリ上の付け替え)・保持Gate(R0/R1/R2、再生成は既存枠で1回)・M2。
+      再生成後もなお不足ならJANumericRetentionStopError(STOP)。
     戻り値: {"ja_text", "title", "runtime_evidence", "paths"}"""
     from er053_b3_annotation_contract_01 import validate_annotated_b3   # 遅延import(循環回避)
 
@@ -334,8 +358,14 @@ def run_w1_writer(out_dir: str, client=None, budget_check=None) -> dict:
     # 委任_06 C-2 W2: 中核数値丸め(overlay読込は load_overlay_for_writer の1か所のみ。概数可0件/None=契約検証済みnews_field_textをそのまま使う=P-07)
     from er053_b3_deterministic_producer_01 import CONS_HEADING, compose_news_field   # 遅延import(契約moduleと同じ連結関数・見出し)
     rounding_overlay, rounding_ev = rounding.load_overlay_for_writer(out_dir, annotated.annotated_md_sha256)
-    news_text = rounding.news_field_for_writer(annotated.news_field_text, facts_text, annotated.constraints_text, rounding_overlay,
+    nr = numeric
+    if nr is not None:     # O-2'(activeのときだけ): 契約検証済みnews欄/Factsのメモリ上コピーの印だけを付け替える(ファイル・契約shaは不変)
+        base_news, facts_for_news, rounding_overlay = nr.apply_o2prime(annotated, facts_text, annotated.news_field_text, rounding_overlay)
+    else:
+        base_news, facts_for_news = annotated.news_field_text, facts_text
+    news_text = rounding.news_field_for_writer(base_news, facts_for_news, annotated.constraints_text, rounding_overlay,
                                                CONS_HEADING, compose_news_field)
+    storyline_in, news_in = (nr.normalize_inputs(storyline, news_text) if nr is not None else (storyline, news_text))   # R4(範囲値の波ダッシュ→から、入力側)
     budget_check = budget_check or _noop
     # model contractはAPI call前に確認(R0/Astra共に)
     routing.require_model("FAMILY_X_FACTLOCK_R0", R0_MODEL)
@@ -350,12 +380,13 @@ def run_w1_writer(out_dir: str, client=None, budget_check=None) -> dict:
           "writer_constraints_sha256": sha_text(annotated.constraints_text), "news_field_sha256": sha_text(news_text),
           "annotation_rule_version": annotated.manifest.get("rule_version"), "annotation_rules_sha256": annotated.manifest.get("rules_sha256"),
           "annotation_input_shas": annotated.manifest.get("input_shas"), "symbol_qa": {},
+          "numeric_retention": None,   # 委任_07: numeric(ctx)を渡した場合のみ後段で設定(None=従来)
           "rounding": None,           # W4: R0 Prompt生成後に確定(下記)。再利用時の来歴照合(runner W5)が読む
           "started": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")}
 
     # ---------------- R0 (Luna, Fact Lock) ----------------
     budget_check()
-    prompt0 = build_r0_prompt(storyline, news_text, rounding_overlay)
+    prompt0 = build_r0_prompt(storyline_in, news_in, rounding_overlay)
     _rs = rounding.summarize_for_run(out_dir)
     ev["rounding"] = {**rounding_ev, "overlay_status": _rs["status"], "judge_model_returned": _rs["model_returned"], "judge_effort": _rs["effort"],
                       "rule8_in_prompt": prompt0.endswith(rounding.RULE8_TEXT), "rule8_text_sha256": sha_text(rounding.RULE8_TEXT),
@@ -363,23 +394,46 @@ def run_w1_writer(out_dir: str, client=None, budget_check=None) -> dict:
                       "r0_prompt_sha256": sha_text(prompt0), "role_key": rounding.ROLE_KEY}
     resp0 = call_luna_r0(client, prompt0, "w1_r0")
     text0 = resp0.output_text.strip()
+    if nr is not None:
+        text0, _n_j2 = nr.normalize_output(text0, "r0")        # J2: R0出力の範囲値「A〜B」→「AからB」(記号QA・Gateより前の決定論後処理)
     r0_calls = [{"stage": "w1_r0", **_resp_meta(resp0), "prompt_sha256": sha_text(prompt0)}]
     # 記号QA(Layer2)。判定はタグ除去**前**のタグ付きR0本文。1回だけ再生成、残ればSTOP
     f0 = safety.detect_prohibited_symbols(text0, language="ja")
     ev["symbol_qa"]["r0"] = {"findings_first": f0, "regenerated": False}
-    if safety.symbol_gate_requires_stop(f0):
-        print(f"[W1][r0] 音声化禁止記号を検出。1回だけ再生成します(count={len(f0)})...")
+    miss0 = nr.missing(strip_tags(text0), "r0") if nr is not None else []          # 保持Gate(activeのときだけ。本文は書き換えない)
+    sym0 = safety.symbol_gate_requires_stop(f0)
+    if sym0 or miss0:
+        if sym0:
+            print(f"[W1][r0] 音声化禁止記号を検出。1回だけ再生成します(count={len(f0)})...")
+        if miss0:
+            print(f"[W1][r0] 中核数値の保持不足を検出。1回だけ再生成します(missing={[e['news_surface'] for e in miss0]})...")
         budget_check()
-        prompt0b = build_r0_symbol_regen_prompt(storyline, news_text, f0, rounding_overlay)
-        resp0b = call_luna_r0(client, prompt0b, "w1_r0_symbol_regen")
+        if miss0:
+            # 記号QAと保持を1枠に合流(DESIGN_03 §3)。symのみの場合は従来のbuild_r0_symbol_regen_promptと同一文字列
+            prompt0b = prompt0
+            if sym0:
+                prompt0b += "\n\n" + safety.build_symbol_violation_prompt_note(f0)
+            prompt0b += "\n\n" + nr.retention_note(miss0)
+            tag0b = "w1_r0_retention_regen"
+        else:
+            prompt0b = build_r0_symbol_regen_prompt(storyline_in, news_in, f0, rounding_overlay)
+            tag0b = "w1_r0_symbol_regen"
+        resp0b = call_luna_r0(client, prompt0b, tag0b)
         text0b = resp0b.output_text.strip()
-        r0_calls.append({"stage": "w1_r0_symbol_regen", **_resp_meta(resp0b), "prompt_sha256": sha_text(prompt0b)})
+        if nr is not None:
+            text0b, _n_j2b = nr.normalize_output(text0b, "r0_regen")
+        r0_calls.append({"stage": tag0b, **_resp_meta(resp0b), "prompt_sha256": sha_text(prompt0b)})
         f0b = safety.detect_prohibited_symbols(text0b, language="ja")
         ev["symbol_qa"]["r0"].update({"regenerated": True, "findings_after": f0b, "pre_regen_response_id": r0_calls[0]["response_id"]})
+        miss0b = nr.missing(strip_tags(text0b), "r0") if nr is not None else []
+        if nr is not None and nr.active:
+            nr.mark("r0", regenerated=True, regen_stage_tag=tag0b)
         if safety.symbol_gate_requires_stop(f0b):
             wt(os.path.join(d, "audit", "rejected_w1_r0_symbol.md"), text0b)
             raise JASymbolCheckStopError("r0_symbol", "[STOP] JA_SYMBOL_CHECK_STOP: W-1 R0音声化禁止記号Check、"
                                          f"再生成後も禁止記号が残りました(findings={f0b})。本文を手で直さずSTOPします。", text0b, f0b)
+        if miss0b:
+            _numeric_stop(nr, d, "r0", text0, text0b, miss0b)
         text0 = text0b
     for c in r0_calls:                     # model_id requested/returned を記録(返却model不一致はcall_luna_r0でSTOP済み)
         c["model_requested"] = R0_MODEL
@@ -397,6 +451,9 @@ def run_w1_writer(out_dir: str, client=None, budget_check=None) -> dict:
     if r0_meta["approx_marks_echoed"]:        # S5/P-08: 【概数表記】の書き写しは除去して続行(STOPしない)。件数を可視化
         print(f"[WARN][W1][r0] 【概数表記】の印をR0が本文へ書き写しました(除去して続行、count={r0_meta['approx_marks_echoed']})")
 
+    if nr is not None:
+        nr.set_m2_context(clean0, news_text)       # M2(R1/R2の新規数値検出)の基準=R0本文+ニュース欄(activeのときだけ)
+
     # ---------------- R1 / R2 (Astra) ----------------
     def astra_stage(which: str, src_path: str, stage_tag: str):
         src = rdt(src_path)
@@ -404,19 +461,38 @@ def run_w1_writer(out_dir: str, client=None, budget_check=None) -> dict:
         t0 = time.time()
         resp = call_astra(client, user, stage_tag)
         raw = (resp.output_text or "").strip()
+        n_j2, raw_sha_before = 0, None
+        if nr is not None:     # J2: R1/R2出力の範囲値「A〜B」→「AからB」(数字・桁不変、正本の本文を書き換える決定論の後処理。件数と変換前shaを記録)
+            raw_sha_before = sha_text(raw)
+            raw, n_j2 = nr.normalize_output(raw, stage_tag)
         p = postprocess_ja(raw)
         meta = {"requested_model": ASTRA_MODEL, "model": resp.model, "reasoning": {"effort": ASTRA_EFFORT},
                 "previous_response_id_used": False, "developer_message": None, "service_tier": None,
                 "user_message_sha256": sha_text(user), "response_id": resp.id, "sec": round(time.time() - t0, 1),
                 "output_chars": len(raw),
+                **({"range_wave_normalized": n_j2, "raw_sha256_before_norm": raw_sha_before} if nr is not None else {}),
                 "usage": {"input_tokens": getattr(resp.usage, "input_tokens", None),
                           "output_tokens": getattr(resp.usage, "output_tokens", None)}}
         return raw, p, meta
 
     budget_check()
     raw1, p1, m1 = astra_stage("r1", os.path.join(fdir, "r0.md"), "w1_astra_r1")
+    r1_all = [m1]
+    miss1 = nr.missing(p1, "r1", m2=True) if nr is not None else []        # 保持Gate+M2(activeのときだけ)。不足なら再実行枠1回(新規)
+    if miss1:
+        print(f"[W1][r1] 中核数値の保持不足/新規数値を検出。R1を1回だけ再実行します(missing={[e['news_surface'] for e in miss1]})...")
+        wt(os.path.join(fdir, "r1.first.raw.md"), raw1)
+        budget_check()
+        raw1b, p1b, m1b = astra_stage("r1", os.path.join(fdir, "r0.md"), "w1_astra_r1_retention_rerun")
+        r1_all.append(m1b)
+        miss1b = nr.missing(p1b, "r1", m2=True)
+        nr.mark("r1", rerun=True)
+        if miss1b:
+            wt(os.path.join(d, "audit", "rejected_w1_r1.md"), p1b)
+            _numeric_stop(nr, d, "r1", p1, p1b, miss1b)
+        raw1, p1, m1 = raw1b, p1b, m1b
     wt(os.path.join(fdir, "r1.raw.md"), raw1)                  # R2の入力=R1の生出力(後処理前)。ファイル往復でCRLF->LFもTrialと同一
-    wj(os.path.join(fdir, "r1.response.json"), m1)
+    wj(os.path.join(fdir, "r1.response.json"), (r1_all if len(r1_all) > 1 else m1))      # 再実行なし=従来と同形式(dict)
     wt(os.path.join(fdir, "r1.p1.md"), p1)
 
     budget_check()                                              # R1/R2間
@@ -429,23 +505,35 @@ def run_w1_writer(out_dir: str, client=None, budget_check=None) -> dict:
     ev["symbol_qa"]["r2"] = {"method": "A_rerun_r2_once_same_r1_raw", "findings_first": f2, "rerun": False,
                              "response_ids": [m2["response_id"]]}
     r2_meta_all = [m2]
-    if safety.symbol_gate_requires_stop(f2):
-        print(f"[W1][r2] 音声化禁止記号を検出。R2のみ同一R1生出力で1回だけ再実行します(count={len(f2)})...")
+    sym2 = safety.symbol_gate_requires_stop(f2)
+    miss2 = nr.missing(final, "r2", m2=True) if nr is not None else []     # 保持Gate+M2(activeのときだけ)。記号QAと再実行枠を共有(1回)
+    if sym2 or miss2:
+        if sym2:
+            print(f"[W1][r2] 音声化禁止記号を検出。R2のみ同一R1生出力で1回だけ再実行します(count={len(f2)})...")
+        if miss2:
+            print(f"[W1][r2] 中核数値の保持不足/新規数値を検出。R2のみ同一R1生出力で1回だけ再実行します(missing={[e['news_surface'] for e in miss2]})...")
         wt(os.path.join(fdir, "r2.first.raw.md"), raw2)
         wt(os.path.join(fdir, "r2.first.final_rejected.md"), final)
         budget_check()                                          # やり直し前
-        raw2b, p2b, m2b = astra_stage("r2", os.path.join(fdir, "r1.raw.md"), "w1_astra_r2_symbol_rerun")
+        tag2b = "w1_astra_r2_retention_rerun" if miss2 else "w1_astra_r2_symbol_rerun"
+        raw2b, p2b, m2b = astra_stage("r2", os.path.join(fdir, "r1.raw.md"), tag2b)
         wt(os.path.join(fdir, "r2.rerun.raw.md"), raw2b)
         wj(os.path.join(fdir, "r2.rerun.response.json"), m2b)
         r2_meta_all.append(m2b)
         final_b = clean_ja_for_next(p2b)
         f2b = safety.detect_prohibited_symbols(final_b, language="ja")
         ev["symbol_qa"]["r2"].update({"rerun": True, "findings_after": f2b, "response_ids": [m2["response_id"], m2b["response_id"]]})
+        miss2b = nr.missing(final_b, "r2", m2=True) if nr is not None else []
+        if nr is not None and nr.active:
+            nr.mark("r2", rerun=True, rerun_stage_tag=tag2b)
         budget_check()                                          # やり直し後
         if safety.symbol_gate_requires_stop(f2b):
             wt(os.path.join(d, "audit", "rejected_w1_r2_symbol.md"), final_b)
             raise JASymbolCheckStopError("r2_symbol", "[STOP] JA_SYMBOL_CHECK_STOP: W-1 R2(Astra)音声化禁止記号Check、"
                                          f"同一入力での再実行後も禁止記号が残りました(findings={f2b})。本文を手で直さずSTOPします。", final_b, f2b)
+        if miss2b:
+            wt(os.path.join(d, "audit", "rejected_w1_r2.md"), final_b)
+            _numeric_stop(nr, d, "r2", final, final_b, miss2b)
         final, p2, m2 = final_b, p2b, m2b
 
     # Astra返却model不一致はSTOP(call_astra内で検査済み。ここでは記録)
@@ -459,6 +547,10 @@ def run_w1_writer(out_dir: str, client=None, budget_check=None) -> dict:
                "r1": m1, "r2": m2, "r2_all_attempts": r2_meta_all, "r2_echo_after_revision": echo,
                "title": extract_title(final), "ja_text_sha256": sha_text(final), "finished":
                datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")})
+    if nr is not None:
+        ev["numeric_retention"] = nr.write_evidence(extra={
+            "r0_news_field_sha256_after_o2prime_r4": sha_text(news_in), "r0_prompt_sha256": sha_text(prompt0),
+            "model_ids": {"r0": [c["model"] for c in r0_calls], "r1": [m["model"] for m in r1_all], "r2": [m["model"] for m in r2_meta_all]}})
     # F6: 来歴(runtime_evidence.json)を revision2.md より先に書く。revision2.mdだけ残って来歴が無い状態を作らない
     # (途中中断時は来歴のみが残り、load_reused_ja_text は revision2.md 不在でSTOP/再生成になる=安全側)
     wj(os.path.join(d, "runtime_evidence.json"), ev)

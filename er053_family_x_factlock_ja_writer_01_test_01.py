@@ -567,7 +567,7 @@ class StaticTests(unittest.TestCase):
         self.assertEqual(list(inspect.signature(contract.validate_annotated_b3).parameters), ["out_dir"])
 
     def test_w1_main_entry_params(self):
-        self.assertEqual(list(inspect.signature(w1.run_w1_writer).parameters), ["out_dir", "client", "budget_check"])
+        self.assertEqual(list(inspect.signature(w1.run_w1_writer).parameters), ["out_dir", "client", "budget_check", "numeric"])   # 委任_07: numeric=None(既定)は従来と同一
 
     def _root_py_files(self):
         out = []
@@ -594,10 +594,21 @@ class StaticTests(unittest.TestCase):
         # FAMILY-Y-VOICES-DESIGN-01 委任_04: er110_(Family Y統合Trial=DEV/Trial専用harness。Production module[W-1・RF・Queue・契約]を読み取り専用importする。
         # Production runnerへの配線ではなく、Yは未採用。test側のallowlist追加のみ=er090_等と同型)
         TRIAL_HARNESS_PREFIXES = ("er082_", "er083_", "er086_", "er087_", "er090_", "er095_", "er110_")
+        # FX-CORE-NUMERIC-RETENTION-TRIAL-01 委任_07: er116_(中核数値保持方式v4+J2のProduction補助module)は、entertainment runnerだけがimportし、
+        # w1のparse_brief_md/strip_tags等を読み取り参照する。W-1の呼出配線(run_w1_writer)はrunnerのみ(numeric=ctx)=allowlist追加はtest側のみ
+        allowed = allowed | {"er116_fx_core_numeric_retention_01.py"}
         audio_allowed = {"er053_risk_flagger_production_01", "er053_review_queue_01"}
+        # PM-REGRESSION-ISOLATION-HYGIENE-01 委任_01: DEV/Trial専用scriptの明示allow-list(DEV/Trial-only, not production-reachable)。
+        # 具体ファイル名のみ列挙(glob・接頭辞での拡張は禁止)。FX-CORE-NUMERIC-RETENTION-TRIAL-01のTrial harness(Production runnerへ配線されていない)。
+        # 下の「Production/他fileからこのDEV scriptをimportしていない」assertで到達不能性を同test内で確認する。
+        # 委任_07: er115系のDEV/Trial専用script(委任_06で増えたC-1再適用・R5採点・比較修正・較正を含む。いずれもProductionからimportされない)
+        DEV_TRIAL_ONLY_SCRIPTS = ("er115_fx_numeric_retention_trial_01.py", "er115_fx_numeric_c1_reapply_01.py", "er115_fx_numeric_r5_comparison_fix_01.py",
+                                  "er115_fx_numeric_r5_score_01.py", "er115_fx_numeric_retention_calibration_01.py")
         for f in self._root_py_files():
             b = os.path.basename(f)
             src = open(f, encoding="utf-8", errors="replace").read()
+            if b in DEV_TRIAL_ONLY_SCRIPTS:
+                continue
             for m in ("er053_family_x_factlock_ja_writer_01", "er053_risk_flagger_production_01", "er053_review_queue_01",
                       "er053_b3_annotation_contract_01"):
                 if b in allowed:
@@ -611,6 +622,14 @@ class StaticTests(unittest.TestCase):
                 if b == "er019_family_x_audio_production_runner_01.py" and m in audio_allowed:
                     continue
                 self.assertNotIn(m, src, f"{b} references {m} (only the entertainment runner may wire it; audio runner: RF+Queue only [C3])")
+        # DEV allow-listの前提確認: DEV scriptはProduction(非test・非DEV)のどのfileからもimportされていない
+        for dev in DEV_TRIAL_ONLY_SCRIPTS:
+            pat = re.compile(r"^\s*(?:import|from)\s+" + re.escape(dev[:-3]) + r"\b", re.M)
+            for f in self._root_py_files():
+                b = os.path.basename(f)
+                if b in DEV_TRIAL_ONLY_SCRIPTS or b.startswith(dev[:5]):    # 同一Trial系列(er115_*)のDEV script同士の再利用は可。Production fileは接頭辞が異なる
+                    continue
+                self.assertIsNone(pat.search(open(f, encoding="utf-8", errors="replace").read()), f"{b} imports DEV/Trial-only {dev}")
         src = open(os.path.join(HERE, "er019_family_x_entertainment_production_runner_01.py"), encoding="utf-8").read()
         for m in ("er053_family_x_factlock_ja_writer_01", "er053_risk_flagger_production_01", "er053_review_queue_01",
                   "er053_b3_annotation_contract_01"):

@@ -74,7 +74,7 @@ class RunJaWriterTests(unittest.TestCase):
     def test_calls_w1_with_out_dir_only_and_budget_hook_uses_efam_assert_budget_ok(self):
         captured = {}
 
-        def fake_w1(out_dir, client=None, budget_check=None):
+        def fake_w1(out_dir, client=None, budget_check=None, numeric=None):
             captured.update(out_dir=out_dir, client=client, budget_check=budget_check)
             return {"ja_text": "JA", "title": "T", "runtime_evidence": {"chain_method": "W-1"}}
 
@@ -92,7 +92,7 @@ class RunJaWriterTests(unittest.TestCase):
         self.assertEqual(args[1], 77.0)
 
     def test_budget_hook_exception_is_not_swallowed(self):
-        def fake_w1(out_dir, client=None, budget_check=None):
+        def fake_w1(out_dir, client=None, budget_check=None, numeric=None):
             budget_check()
             return {}
 
