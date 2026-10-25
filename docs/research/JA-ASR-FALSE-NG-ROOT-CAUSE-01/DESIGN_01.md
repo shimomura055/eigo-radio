@@ -2,6 +2,24 @@
 
 方針: 品質基準は下げない。**「ASRが書いた文字」ではなく「音(かな)と値」で比べる**ことで、①文字の選び方だけが違う正常音声のNGを減らし、②音が違う(わ脱落、値違い、否定、別語)ものは従来どおりNGにする。既存機構(`_numeric_value_equivalence`型のadapter層)を拡張し、新しい判定系統は作らない。
 
+## 改訂(委任_02、2026-10-25。Opus条件Aレビュー`OPUS_REVIEW_01.md`の反映。以下が下の旧記述に優先する)
+| 項目 | 改訂内容 |
+|---|---|
+| M1 | A3(Primary・Secondaryとも)でA7登録読み不一致・C2同形異音候補(順方向=Production`_scg_c2_candidate`+span別、逆方向=ASR側漢字spanが複数読みで原稿読みがその1つ)があれば救済しない。`expected_readings`を渡す |
+| M2 | 新分類名`JA_PRON_VALUE_EQUIVALENT_MATCH`。`READING_MATCH`根拠にしない=最終ANDゲートが走る(「最終ゲートapplied=True」test済み)。値のみ一致は既存`NUMERIC_VALUE_EQUIVALENT_MATCH` |
+| M3 | `number_mismatches`ありは値ガードEQUALのみ。NO_VALUESは数字差が無いTCMのときだけ。否定差/否定マーカー差(P1保護差)は救済しない。**P1の値DIFF即NGは維持** |
+| M4 | **A4(a)=Secondary転写への値等価のみ(L2865が明記=不具合是正)**と**A4(b)=Secondary転写への発音一致(助詞読み含む)=新仕様候補(ユーザー判断)**に分離。(b)はL2179「PHONETIC_MATCH自動PASS未採用」・L2856「読みでの受理禁止」に触れる。Primary側A3は承認済み2機構の組合せとして説明できるが、「助詞差」が2026-10-11未採用リストにあるため採否提示で明示開示する |
+| M5/M6/M7 | 事前登録`_02`に反映(誤PASS 2本立て・N-3 30 clip・評価=配線候補コード同一[Production関数を直接import+parity test]) |
+| R1 | **B-lightは保留**(重大: KP3Vより弱い・承認済みP1の意味変更・効果小)。ユーザーへ提示しない。A-1(約¥0.6)は情報取得のみ。再検討時はKP3Vと同等強度で設計し直す |
+| R2 | 不規則読み警告`JA_NUMERIC_IRREGULAR_READING`はv1経路でも残る(test済み)。Primary側A3救済にも非ブロッキングwarning`JA_PRON_EQUIVALENT`を付与(試聴リスト対象) |
+| R3 | **A1(桁区切りstrip)は不要と確認**: `extract_atoms_ja`は`8,900`を1 atom(value=8900)にする。`売上は1,200円です`/`…1200円です`が現行NGなのは、`_numeric_value_equivalence`の`number_mismatches`非空ゲート(桁区切りの`,`はcontent_diffであってnumber_mismatchではない)が原因。v1はこのゲートを外す(値ガードEQUAL+残り完全一致は維持)。副次効果で`20％`/`20パーセント`も受理(正例対照+2、回帰0) |
+| R4 | flipを原因別に集計(A1/A2/A3合成/エンジン差)。API 0評価でエンジン差flip=0 |
+| R5 | `三日間の猶予`/`三日目の猶予`が現行`PHONETIC_MATCH`でPASSし、READING_MATCHは最終値ゲートをskipする既存問題は別OPENに分離(本タスクで直さない) |
+| R6 | 配線形=`er109_xz_scope_01.is_active_for_run()`再利用+単一flag読取関数(既定OFF)。配線時test=HR Lock済みsegmentの自動解除なし/reuse・resume・継承で新ラベル可読/旧reader不破壊/試聴リスト再導出で新warning拾得/flag OFFで従来挙動 |
+| R7 | `超`/`超え`の許容表は入れない(`ちょう`と`こえ`は発音不一致のまま=正しい挙動) |
+| O1〜O3 | O1(書式prompt・`gpt-4o-transcribe`並置、約¥1、採用はユーザー判断)・O2(Azure単独判定を副次記録)・O3(現行PHONETICの助詞`は`=ha読み盲点を既知の制約として記録)を`PREREGISTERED_CRITERIA_02.md`/`BUDGET_PLAN_02.md`に記録 |
+**誤PASS表への追加(Opusが指摘した、旧表に無かった新規経路)**: ①C2同形異音×数値を含む文(v1:C2で止める)②A7登録読みの迂回(v1:止める)③数字差があるのに値ガードNO_VALUES/UNKNOWN(v1:止める)。④読みエンジン差(v1:API 0評価でflip 0)。⑤助詞読みの新規開口範囲=「原稿が非助詞のワ/エ音語で実音声がha/he、ASRが助詞は/へ」はテキストでは正例と区別不能(EVAL_01 §5・事前登録§1に例外として明記し、N-3実音声で物理的前提を確認)。
+
 ## 推奨: 案A(必須・低リスク・API 0) + 案B-light(条件付き・Phase 3のAzure実測後に採否)
 
 ### 案A「日本語 発音・値一致層」(既存の欠陥3つの是正+適用漏れ1つ)

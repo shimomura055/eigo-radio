@@ -1,0 +1,52 @@
+N-1: 151 pairs (er066 88 / new 62)
+  incremental false PASS (base NG -> v1 PASS): 0
+  structural (same text pair as the P-1 positive; cannot be separated by text; reported separately): [('月のしわ', '月の詩は', True)]
+  existing false PASS (base already PASS; report only): 23
+    N1-er066a-028 別語 三日間 | 三日目 PHONETIC_MATCH
+    N1-er066b-020 逆方向: 序数->期間 三日目 | 3日間 PHONETIC_MATCH
+    N1-er066b-022 逆方向 三日目 | 三日間 PHONETIC_MATCH
+    N1-er066b-025 N分の: 曖昧語として救済しない 三分の一 | 3分の1 NUMERIC_VALUE_EQUIVALENT_MATCH
+    N1-er066b-026 N分の: 曖昧語として救済しない 3分の一 | 三分の1 NUMERIC_VALUE_EQUIVALENT_MATCH
+    N1-prodbug-006 範囲: ASCII ~ (PHONETIC_MATCH経由) 3~5日待つ | 35日待つ PHONETIC_MATCH
+    N1-prodbug-007 範囲: 全角～ (NFKC->~ ->PHONETIC_MATCH経由) 3～5日待つ | 35日待つ PHONETIC_MATCH
+    N1-ambig-003 曖昧 三分の一 | 3分の1 NUMERIC_VALUE_EQUIVALENT_MATCH
+    N1-new-032 同形異音(今日)+数: ASR読み 3人で今日話した | 三人でこんにち話した PHONETIC_MATCH
+    N1-new-033 同形異音(市場)+数 2人でいちばに行った | 二人で市場に行った PHONETIC_MATCH
+    N1-new-034 同形異音(市場)+数 2人で市場に行った | 2人でいちばに行った PHONETIC_MATCH
+    N1-new-035 同形異音(一日)+数 3人でついたちに会った | 三人で一日に会った NUMERIC_VALUE_EQUIVALENT_MATCH
+    N1-new-036 同形異音(今日) 今日は晴れです | こんにちは晴れです PHONETIC_MATCH
+    N1-new-037 同形異音(市場) 市場で買う | いちばで買う PHONETIC_MATCH
+    N1-new-038 同形異音(一日) 一日で終わった | ついたちで終わった PHONETIC_MATCH
+    N1-new-039 同形異音(上手) 彼は上手に話す | 彼はうわてに話す PHONETIC_MATCH
+    N1-new-042 音便誤読(一分) 一分待つ | いちふん待つ PHONETIC_MATCH
+    N1-new-044 不規則読み誤読(三日) 三日待った | さんにち待った PHONETIC_MATCH
+    N1-new-046 助詞誤読(月は→つきハ) 月は丸い | 月ハ丸い PHONETIC_MATCH
+    N1-new-047 助詞誤読(町へ→まちヘ) 町へ行く | 町ヘ行く PHONETIC_MATCH
+    N1-new-048 助詞誤読(ASRかな) 月は丸い | つきはまるい PHONETIC_MATCH
+    N1-new-057 間→目 三日間の猶予 | 三日目の猶予 PHONETIC_MATCH
+    N1-new-061 同音異義 七晩を過ごす | 七番を過ごす PHONETIC_MATCH
+  Secondary-side: A4(a) value-only accept: 4 / A4(b) pron accept: 0
+    N1-er066b-025 N分の: 曖昧語として救済しない 三分の一 | 3分の1 a4a
+    N1-er066b-026 N分の: 曖昧語として救済しない 3分の一 | 三分の1 a4a
+    N1-ambig-003 曖昧 三分の一 | 3分の1 a4a
+    N1-new-035 同形異音(一日)+数 3人でついたちに会った | 三人で一日に会った a4a
+  v1 blocked_by counts: {'value_guard': 80, 'negation': 5, 'C2_heterophone': 1}
+Positive controls (er066 POSITIVE+02): 47; base PASS 37, v1 PASS 39, v1 regressions (base PASS -> v1 NG): 0
+Moon title:
+   attempt1 Primary {'base': ['NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH'], 'v1': ['NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH', [], 'value_guard=DIFF']}
+   attempt2 Primary {'base': ['NG_SECONDARY_UNAVAILABLE', 'secondary_unavailable', 'TRUE_CONTENT_MISMATCH'], 'v1': ['PASS', 'primary_pass', 'JA_PRON_VALUE_EQUIVALENT_MATCH', ['JA_PRON_EQUIVALENT'], 'pron_equal_after_value_form']}
+   attempt3 Primary {'base': ['NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH'], 'v1': ['NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH', [], 'value_guard=DIFF']}
+   attempt2 Azure(Secondary) {'base_accept': False, 'A4a': False, 'A4b': True, 'v1': 'pron_equal_after_value_form', 'cause': 'A3_value+A2_particle'}
+P-3 NG pool: 150 texts; flips: 8 (primary 2, secondary 6)
+   primary japanese_title A3_value+A2_particle PRON | 月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密 | 月の死は八千九百本超。その奥に潜む岩の上着の秘密。
+   secondary japanese_title A3_value+A2_particle PRON | 月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密 | 月の詩は8900本超。その奥に潜む岩の上着の秘密。
+   secondary comment_2 A1_value_notation VALUE_ONLY | 橋のない川を渡り、道をふさいだ三人から逃げた彼は、午後には足 | 橋のない川を渡り道をふさいだ3人から逃げた彼は、午後には足が血だらけになり、岩のそばで立てなくなりま
+   secondary comment_2 A1_value_notation VALUE_ONLY | 橋のない川を渡り、道をふさいだ三人から逃げた彼は、午後には足 | 橋のない川を渡り道をふさいだ3人から逃げた彼は、午後には足が血だらけになり、岩のそばで立てなくなりま
+   secondary comment_2 A1_value_notation VALUE_ONLY | 橋のない川を渡り、道をふさいだ三人から逃げた彼は、午後には足 | 橋のない川を渡り道をふさいだ3人から逃げた彼は、午後には足が血だらけになり、岩のそばで立てなくなりま
+   primary preview A3_value+pron PRON | 結婚式を終えたメロスは、三日目の夜明け前に町へ戻り始めます。 | 結婚式を終えたメロスは、3日目の夜明け前に町へ戻り始めます。帰り道には、橋のない川と道を塞ぐ男たちが
+   secondary comment_2 A1_value_notation VALUE_ONLY | 橋のない川を渡り、道をふさいだ三人から逃げた彼は、午後には足 | 橋のない川を渡り道をふさいだ3人から逃げた彼は、午後には足が血だらけになり、岩のそばで立てなくなりま
+   secondary comment_2 A1_value_notation VALUE_ONLY | 橋のない川を渡り、道をふさいだ三人から逃げた彼は、午後には足 | 橋のない川を渡り道をふさいだ3人から逃げた彼は、午後には足が血だらけになり、岩のそばで立てなくなりま
+  flip causes: {('primary', 'A3_value+A2_particle'): 1, ('secondary', 'A3_value+A2_particle'): 1, ('secondary', 'A1_value_notation'): 5, ('primary', 'A3_value+pron'): 1}
+P-4 attempts: 421 unique (canon,primary) pairs; base PASS 334; regressions (PASS changed): 0; new flips (NG->PASS): 2
+  flip japanese_title A3_value+A2_particle PRON | 月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密 | 月の死は八千九百本超。その奥に潜む岩の上着の秘密。
+  flip preview A3_value+pron PRON | 結婚式を終えたメロスは、三日目の夜明け前に町へ戻り始めます。 | 結婚式を終えたメロスは、3日目の夜明け前に町へ戻り始めます。帰り道には、橋のない川と道を塞ぐ男たちが
