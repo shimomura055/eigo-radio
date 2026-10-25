@@ -1,0 +1,169 @@
+{
+  "article": "coffee_prices",
+  "arm": "A",
+  "sample": "r6c2",
+  "status": "E_OK",
+  "first_pass_ok": false,
+  "b3_rerun": true,
+  "attempts": [
+    {
+      "attempt": 1,
+      "storyline": "国際コーヒー相場の下落と米国小売価格の上昇が並存する局面を、過去の供給不足による生豆高と、専門家が指摘する価格転嫁の時間差から読み解く。",
+      "ok": false,
+      "violations": [
+        {
+          "surface": "0.6%",
+          "reason": "peripheral_number_in_storyline"
+        }
+      ],
+      "candidates": [
+        {
+          "concept": "C4",
+          "story_surface": "8.7%",
+          "news_surface": "8.7%",
+          "kind": "magnitude",
+          "unit_hint": "",
+          "time_premise": false,
+          "gate_required": true
+        }
+      ],
+      "user_prompt_sha256": [
+        "c5f087043a79abafc303bddf5d98e37ab343d7d09fe5c2995d19f568e465751e"
+      ],
+      "field_items": [
+        "前月比8.7%下落",
+        "前月比+0.6%"
+      ],
+      "storyline_consistency": {
+        "storyline_numbers": [],
+        "field_numbers": [
+          "8.7%"
+        ],
+        "storyline_not_in_field(record_only)": [],
+        "field_not_in_storyline": [
+          "8.7%"
+        ],
+        "storyline_m1_violations_record_only": [],
+        "match": false
+      }
+    },
+    {
+      "attempt": 2,
+      "storyline": "国際相場が下落する一方、米国のコーヒーCPIは前年同月比+7.1%となっており、過去の供給不足による生豆高と、小売への反映に推定で少なくとも約9か月かかる時間差を手掛かりに、値下がりしにくさを読み解く。",
+      "ok": true,
+      "violations": [],
+      "candidates": [
+        {
+          "concept": "C8",
+          "story_surface": "7.1%",
+          "news_surface": "7.1%",
+          "kind": "magnitude",
+          "unit_hint": "",
+          "time_premise": false,
+          "gate_required": true
+        },
+        {
+          "concept": "C7",
+          "story_surface": "約9か月",
+          "news_surface": "約9か月",
+          "kind": "magnitude",
+          "unit_hint": "",
+          "time_premise": false,
+          "gate_required": true
+        }
+      ],
+      "user_prompt_sha256": [
+        "06d20eef88cff65e639be7af16cf999e20626201cc75d3789f64db58caa80f41"
+      ],
+      "field_items": [
+        "+7.1%",
+        "少なくとも約9か月"
+      ],
+      "storyline_consistency": {
+        "storyline_numbers": [
+          "7.1%",
+          "約9か月"
+        ],
+        "field_numbers": [
+          "7.1%",
+          "約9か月"
+        ],
+        "storyline_not_in_field(record_only)": [],
+        "field_not_in_storyline": [],
+        "storyline_m1_violations_record_only": [],
+        "match": true
+      }
+    }
+  ],
+  "E": {
+    "storyline": "国際相場が下落する一方、米国のコーヒーCPIは前年同月比+7.1%となっており、過去の供給不足による生豆高と、小売への反映に推定で少なくとも約9か月かかる時間差を手掛かりに、値下がりしにくさを読み解く。",
+    "ok": true,
+    "violations": [],
+    "candidates": [
+      {
+        "concept": "C8",
+        "story_surface": "7.1%",
+        "news_surface": "7.1%",
+        "kind": "magnitude",
+        "unit_hint": "",
+        "time_premise": false,
+        "gate_required": true
+      },
+      {
+        "concept": "C7",
+        "story_surface": "約9か月",
+        "news_surface": "約9か月",
+        "kind": "magnitude",
+        "unit_hint": "",
+        "time_premise": false,
+        "gate_required": true
+      }
+    ],
+    "gate_E": [
+      {
+        "concept": "C8",
+        "story_surface": "7.1%",
+        "news_surface": "7.1%",
+        "kind": "magnitude",
+        "unit_hint": "",
+        "time_premise": false,
+        "gate_required": true
+      },
+      {
+        "concept": "C7",
+        "story_surface": "約9か月",
+        "news_surface": "約9か月",
+        "kind": "magnitude",
+        "unit_hint": "",
+        "time_premise": false,
+        "gate_required": true
+      }
+    ],
+    "observe_E": [],
+    "ignored": [],
+    "ambiguous_small_ints": [],
+    "storyline_has_no_numbers": false,
+    "source": "reader_must_hear_numbers",
+    "field_items": [
+      "+7.1%",
+      "少なくとも約9か月"
+    ],
+    "storyline_consistency": {
+      "storyline_numbers": [
+        "7.1%",
+        "約9か月"
+      ],
+      "field_numbers": [
+        "7.1%",
+        "約9か月"
+      ],
+      "storyline_not_in_field(record_only)": [],
+      "field_not_in_storyline": [],
+      "storyline_m1_violations_record_only": [],
+      "match": true
+    }
+  },
+  "b3_addendum_version": "v4",
+  "b3_addendum_sha256": "a7b643ba41d618c545ab087e06c08a6400988970132e9e3bccce88802c63cc81",
+  "b3_cost_jpy": 26.957
+}

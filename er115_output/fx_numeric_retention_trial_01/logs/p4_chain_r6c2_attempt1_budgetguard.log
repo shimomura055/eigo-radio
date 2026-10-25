@@ -1,0 +1,28 @@
+[E-FAMILY-RUNNER][cost] so far=26.96 JPY by_provider={'openai': 26.96} (before chain)
+[E-FAMILY-RUNNER][cost] so far=27.08 JPY by_provider={'openai': 27.08} (after core_number_rounding)
+[B3-RUNNER][core_number_rounding] status=OK api_calls=1 reused=False n_approximate_ok=3
+[E-FAMILY-RUNNER][cost] so far=27.08 JPY by_provider={'openai': 27.08} (w1 dev)
+[E-FAMILY-RUNNER][cost] so far=33.95 JPY by_provider={'openai': 33.95} (w1 dev)
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er115_fx_numeric_retention_trial_01.py", line 1283, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er115_fx_numeric_retention_trial_01.py", line 1267, in main
+    run_chain_dev(a.article, a.arm, a.sample, per_run_cap=a.per_run_cap_jpy, phase_cap=a.phase_cap_jpy, resume_r2=a.resume_r2,
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                  o2prime=a.o2prime, m2=a.m2, allow_empty_E=a.allow_empty_E)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er115_fx_numeric_retention_trial_01.py", line 1215, in run_chain_dev
+    wres = run_w1_dev(out_dir, client, E_info, arm=arm, budget_check=_bc, o2prime=o2prime, m2=m2)
+  File "C:\Users\tensh\eigo-radio\er115_fx_numeric_retention_trial_01.py", line 896, in run_w1_dev
+    budget_check()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\tensh\eigo-radio\er115_fx_numeric_retention_trial_01.py", line 1211, in <lambda>
+    _bc = lambda: guard_budget(out_dir, per_run_cap, phase_cap, "w1 dev")   # noqa: E731
+                  ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er115_fx_numeric_retention_trial_01.py", line 1123, in guard_budget
+    efam.assert_budget_ok(out_dir, per_run_cap, note)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er012_e_family_entertainment_two_level_runner_01.py", line 171, in assert_budget_ok
+    raise RuntimeError(f"[BUDGET_GUARD] cost so far {jpy:.2f} JPY > cap {budget_jpy} JPY. Stopping ({note}).")
+RuntimeError: [BUDGET_GUARD] cost so far 33.95 JPY > cap 30.0 JPY. Stopping (w1 dev).

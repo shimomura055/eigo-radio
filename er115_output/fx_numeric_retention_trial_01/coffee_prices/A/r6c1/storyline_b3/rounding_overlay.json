@@ -1,0 +1,160 @@
+{
+ "annotated_md_sha256": "7436afe15315266079ef6c5ccf72ce7e9fcf321511659852e43035db13e9b6c5",
+ "core_concept_order": [
+  "C3",
+  "C5",
+  "C6",
+  "C9",
+  "C11"
+ ],
+ "entries": [
+  {
+   "approved_condition": "精度自体に意味がない推定値は、聞き取りやすさを優先して概数化できる。",
+   "basis_fact_ids": [
+    "F10"
+   ],
+   "concept": "C3",
+   "downgrade_reasons": [
+    "約9か月:V3_approx_equals_exact",
+    "約9か月:V3_not_ordinary_rounding(exact=9,approx=9)"
+   ],
+   "fact_ns": [
+    2
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F10"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "これは専門家らによる推定期間で、企業や商品ごとの確定値ではないため、概数で示せます。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "約9か月"
+    }
+   ]
+  },
+  {
+   "approved_condition": "比較の解釈に必要な日付・期間は維持する。",
+   "basis_fact_ids": [
+    "F11"
+   ],
+   "concept": "C5",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    3
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "date_time",
+   "ledger_ids": [
+    "F11"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "価格の比較対象を特定する観測時点であり、月を丸めると事実の期間が変わります。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "2025年9月"
+    }
+   ]
+  },
+  {
+   "approved_condition": "余分な小数精度が重要な比較や解釈に影響しない場合は、必要な精度に限って概数化する。",
+   "basis_fact_ids": [
+    "F11"
+   ],
+   "concept": "C6",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    3
+   ],
+   "final_decision": "APPROXIMATE_OK",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F11"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "平均価格の小数第2位までの精度は、記事の意味を理解するうえで必須ではなく、小数第1位に丸めても価格の大きさを保てます。",
+   "surfaces": [
+    {
+     "approx": "約9.1",
+     "surface": "9.14"
+    }
+   ]
+  },
+  {
+   "approved_condition": "結果の解釈に関わる観測値は、意味を損なう丸めをしない。",
+   "basis_fact_ids": [
+    "F11"
+   ],
+   "concept": "C9",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    3
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F11"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "前月比の変化として報告された具体的な結果であり、これ以上丸めると数値表現が変わります。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "3%"
+    }
+   ]
+  },
+  {
+   "approved_condition": "余分な精度がストーリー上の重要な大きさや解釈に影響しない場合は、聞き取りやすい概数を優先する。",
+   "basis_fact_ids": [
+    "F11"
+   ],
+   "concept": "C11",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    3
+   ],
+   "final_decision": "APPROXIMATE_OK",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F11"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "前年同月比の上昇幅は概ね4割という大きさが要点で、41%を約40%としてもストーリー上の意味を損ないません。",
+   "surfaces": [
+    {
+     "approx": "約40%",
+     "surface": "41%"
+    }
+   ]
+  }
+ ],
+ "judge": {
+  "developer_message_sha256": "8d2618b7cc966affb3567e5ee1354551b92f394462a4786683f8f9a3052a9d3d",
+  "effort": "low",
+  "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
+  "model_requested": "gpt-6-luna",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_099671697c208b74006add5f54b0d887d092ea0e5202f38fa0",
+  "sec": 11.0,
+  "usage": {
+   "input_tokens": 3617,
+   "output_tokens": 952,
+   "reasoning_tokens": 378
+  },
+  "user_prompt_sha256": "6f2ba9c73a9a4516d30923fc63f8e61f9966e289fb1ab8d9c7ea40dd53db9f73"
+ },
+ "n_approximate_ok": 2,
+ "overlay_sha256": "e58b9df610a174891a6c495fd8070508e9c568d10de6039f3b8780ecf7fb92b0",
+ "requested_effort": "low",
+ "requested_model": "gpt-6-luna",
+ "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+ "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
+ "sidecar_sha256": "fc032d00172317d4b0a2e0583230ceb4c9f625d036e931b1e128da59ac946b3b",
+ "status": "OK",
+ "v8_max_relative_error": "0.10",
+ "violations": []
+}
