@@ -36,7 +36,7 @@
 
 ## 5. 公開・page_verify
 - `user_test/family_z_tell_tale_heart_01/`(index/standard/advanced.html + audio_standard 28 + audio_advanced 27 mp3)を`pages`段が再生成。旧版はscratchpadへ退避済み(退避→再生成)。**旧58ファイルと新58ファイルのsha一致=0(全ファイルがrun_sf_prod_02由来、旧ファイル残存0)**、ファイル集合は旧新で同一(欠落・余剰なし)。`housemate`: advanced/standard/index.htmlとも0件。
-- `page_verify_local.json`(runner、Playwright): index/standard/advanced HTTP200、console_errors=[]、plays_failed=[]、`user_page_standard_check` overall=PASS(seek_ok_allはrun_sf_prod_01と同じfalse=既存仕様)。公開URL(HTTP 200、push後)は§6に追記。
+- `page_verify_local.json`(runner、Playwright): index/standard/advanced HTTP200、console_errors=[]、plays_failed=[]、`user_page_standard_check` overall=PASS(seek_ok_allはrun_sf_prod_01と同じfalse=既存仕様)。**公開URL検証(push後、GitHub Pages反映は約8〜10分遅延)**: `https://shimomura055.github.io/eigo-radio/user_test/family_z_tell_tale_heart_01/{index,standard,advanced}.html`=HTTP 200、`housemate`0件、advanced.htmlに新本文『You call me mad.』を確認。audio_advanced 27 + audio_standard 28 の計55 mp3を公開URLから取得しlocalのsha256と全件一致(不一致0)。
 - 一人称'I'/聞き手'you'の本文引用=`COMPARISON_03.md`の「公開ページ本文からの引用」(Fable目視用。自動判定なし)。
 
 ## 6. 費用(実費)
