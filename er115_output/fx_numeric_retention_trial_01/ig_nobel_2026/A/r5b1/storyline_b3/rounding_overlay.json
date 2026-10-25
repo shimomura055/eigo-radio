@@ -1,0 +1,107 @@
+{
+ "annotated_md_sha256": "94734e0f223d8334921aff803e42d8a2a4dfe7987fc755180abee2406e2fafff",
+ "core_concept_order": [
+  "C1",
+  "C4",
+  "C6"
+ ],
+ "entries": [
+  {
+   "approved_condition": "日付など、精度自体に意味がある数字はEXACT_REQUIREDのまま維持する。",
+   "basis_fact_ids": [
+    "IG2026-01"
+   ],
+   "concept": "C1",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    1
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "date_time",
+   "ledger_ids": [
+    "IG2026-01"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "授賞式の日付を特定する数値のため、日付の精度を維持します。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "2026年9月3日"
+    }
+   ]
+  },
+  {
+   "approved_condition": "研究結果など、精度自体が意味を持つ数字はEXACT_REQUIREDのまま維持する。",
+   "basis_fact_ids": [
+    "IG2026-02"
+   ],
+   "concept": "C4",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "IG2026-02"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "結晶構造解析で報告された分解能であり、小数を丸めると研究結果の精度を損ないます。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "1.2"
+    }
+   ]
+  },
+  {
+   "approved_condition": "研究結果や比較の解釈に関わる精度は、意味を損なわないと判断できない場合は維持する。",
+   "basis_fact_ids": [
+    "IG2026-03"
+   ],
+   "concept": "C6",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    3
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "IG2026-03"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "論文が推定したエネルギー含量の比較を示す中心的な数値であり、概数化せず維持します。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "3倍"
+    }
+   ]
+  }
+ ],
+ "judge": {
+  "developer_message_sha256": "8d2618b7cc966affb3567e5ee1354551b92f394462a4786683f8f9a3052a9d3d",
+  "effort": "low",
+  "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
+  "model_requested": "gpt-6-luna",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_016b1bd7b686c897006add5626586887d0a34f818d684160ca",
+  "sec": 5.2,
+  "usage": {
+   "input_tokens": 3607,
+   "output_tokens": 474,
+   "reasoning_tokens": 144
+  },
+  "user_prompt_sha256": "fadcceecebe22f81db019dadf1569d0b8f2e717b5ff1f126411e4a6e834c37a1"
+ },
+ "n_approximate_ok": 0,
+ "overlay_sha256": "ee351bc1ff70dd7808489a17d0a770bd9f73d9ebfce413ab5865c3d9c9ce89f4",
+ "requested_effort": "low",
+ "requested_model": "gpt-6-luna",
+ "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+ "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
+ "sidecar_sha256": "87ddf1b2893a165f814ec341b2a759bfd6ae5f57b583d6c9bf9a738a448d75b6",
+ "status": "OK",
+ "v8_max_relative_error": "0.10",
+ "violations": []
+}

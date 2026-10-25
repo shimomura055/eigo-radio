@@ -29,3 +29,10 @@ Status(Sonnet所見): 採用判断前。月・コーヒー型(数値が答えの
 2. O-2'は単位系で一律に下げる鈍い規則(任意の長さ系数値も下がる。月・コーヒーでは必要数に影響なし)。比較が答えの記事は、B3がStorylineに比較の2値を入れたとき(coffee p3)に両方Eに入り救われたが、B3がどちらか1つしか入れなかった場合の副作用は未検証(coffee p2はE=∅)。
 3. n小(フルチェーン8本、B3 15本、記事は月・コーヒー・イグ・ノーベル賞。semiconductor_earningsは未実施)。
 4. 範囲値の波ダッシュ欠陥はProduction既存問題(OPEN別件)。J2採用の有無と独立にユーザー判断対象。
+
+## 4. 【委任_04追記】R5(`reader_must_hear_numbers`欄)を採用する場合の必要作業(**未承認・参考**。詳細`DESIGN_04.md`)
+- B3 schema変更: `er019_family_x_storyline_b3_fact_selection_01.py`の`STORYLINE_B3_JSON_SCHEMA`に`reader_must_hear_numbers`(配列、required)を追加+`validate_selection_output`・出力保存(`fact_selection_evidence.json`)・USER_PROMPT_TEMPLATEの追加指示(v4文)=**Production B3の意味的変更(J1、ユーザー承認事項)**。Opus条件C(Production採用提案前)。Y Trialが同moduleをimportしているため、Y/Zへ到達しないことのGrep・Isolation testが必要。
+- E導出: `derive_E_r5`(欄→従来M1と同じ写像規則)をrunnerのB3段後へ。欄とStorylineの不一致=欄優先・記録のみ(事前登録)。
+- Writer契約: 現状は【中核数値】印・保持Gate・O-2'のみでR0 Promptは不変。ig_nobelでは欄の数値がR0初稿に自然に入った(Gate発火0)が、保証ではなくGate(R0/R1/R2直後の決定論検査+既存の再生成枠)が最終防御。
+- X専用・既定OFFの単一flag・撤退=revert。月のProduction再実行は採用判断後。
+- **採用前の未解決**: (1)過剰選定(semi: 実績+見通しの対を欄に入れ事前登録表で不要+1、1標本)の再現性と対策(指示文の追加修正は未実施・見込みは中)、(2)月・コーヒーのR5回帰(未実施)、(3)B3のFact選定が標本ごとに変わるため必須/不要の判定基準が記事構成に依存する点の運用定義(ユーザー判断候補)、(4)n小(R5 B3 6本、チェーン2本)。

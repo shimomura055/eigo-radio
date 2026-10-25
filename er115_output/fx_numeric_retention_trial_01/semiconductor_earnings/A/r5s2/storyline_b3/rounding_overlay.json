@@ -1,0 +1,107 @@
+{
+ "annotated_md_sha256": "8fb765fd793f3e8c552ee91bf3ad4662d1e760b95dbc222a910f3278cacf5fed",
+ "core_concept_order": [
+  "C2",
+  "C3",
+  "C6"
+ ],
+ "entries": [
+  {
+   "approved_condition": "追加の小数精度が意味・比較・判断を実質的に変えない場合は、聞き取りやすい概数を優先する。",
+   "basis_fact_ids": [
+    "F3"
+   ],
+   "concept": "C2",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    1
+   ],
+   "final_decision": "APPROXIMATE_OK",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F3"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "これは報告されたAI半導体売上高の規模を示す数値で、億ドル単位までの精度が意味を大きく変えるとは言いにくいため、聞き取りやすい概数にできます。",
+   "surfaces": [
+    {
+     "approx": "約170億ドル",
+     "surface": "167億ドル"
+    }
+   ]
+  },
+  {
+   "approved_condition": "精度そのものが意味を持たず、丸めても比較の方向や重要な規模が変わらない場合は概数化できる。",
+   "basis_fact_ids": [
+    "F3"
+   ],
+   "concept": "C3",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    1
+   ],
+   "final_decision": "APPROXIMATE_OK",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F3"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "前年同期比の増加率は大きさを伝える数値で、221％から220％への丸めで比較の方向や解釈は変わりません。",
+   "surfaces": [
+    {
+     "approx": "約220％",
+     "surface": "221％"
+    }
+   ]
+  },
+  {
+   "approved_condition": "精度そのものが意味を持たず、丸めても重要な比較や解釈が変わらない場合は概数化できる。",
+   "basis_fact_ids": [
+    "F5"
+   ],
+   "concept": "C6",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2
+   ],
+   "final_decision": "APPROXIMATE_OK",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F5"
+   ],
+   "llm_decision": "APPROXIMATE_OK",
+   "reason": "会社の次四半期の見通しの規模を示す数値で、217億ドルから220億ドルへの丸めで実績との区別や見通しの解釈は変わりません。",
+   "surfaces": [
+    {
+     "approx": "約220億ドル",
+     "surface": "217億ドル"
+    }
+   ]
+  }
+ ],
+ "judge": {
+  "developer_message_sha256": "8d2618b7cc966affb3567e5ee1354551b92f394462a4786683f8f9a3052a9d3d",
+  "effort": "low",
+  "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
+  "model_requested": "gpt-6-luna",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_04635c00db85e327006add5627b4f887d089592bc628ba5b99",
+  "sec": 8.6,
+  "usage": {
+   "input_tokens": 2965,
+   "output_tokens": 662,
+   "reasoning_tokens": 251
+  },
+  "user_prompt_sha256": "98b7de55a7e1f9ef5c4bb6bad13ba934fc04e1f2607f233a3eededa9e5621c8a"
+ },
+ "n_approximate_ok": 3,
+ "overlay_sha256": "f69225b83d5e69a0bfab79a560fb3174059ba7a71a33e24af5fe427be3c5c928",
+ "requested_effort": "low",
+ "requested_model": "gpt-6-luna",
+ "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+ "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
+ "sidecar_sha256": "fee964f1947c9eb7f6ad4a24ddf1e452ab24b8e604aa501f5d9523029b80412e",
+ "status": "OK",
+ "v8_max_relative_error": "0.10",
+ "violations": []
+}

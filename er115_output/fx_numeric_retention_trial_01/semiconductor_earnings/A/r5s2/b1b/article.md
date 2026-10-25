@@ -1,0 +1,24 @@
+# Who Is the Star of AI? Let’s Shine a Spotlight on the Ones Who Connect Things, Too
+
+If AI news were made into a movie, a shiny semiconductor would surely be in the middle of the poster. It would handle hard calculations with ease, with a look that seems to say, “Leave the future to me.” But when I read about Broadcom, my attention went to the one beside it. Wait a minute. Network, you seem to have a lot of screen time too, don’t you?
+
+The company’s CEO said demand for custom AI accelerators and networking remains very strong. In other words, both AI chips made for specific uses and products related to networks are in high demand.
+
+It would be a shame to leave thinking, “As expected, AI chips are popular,” and go home. Wouldn’t that be like two performers taking the stage together, but giving a bouquet to only one?
+
+Of course, the impressive numbers should not be overlooked. Broadcom reported $16.7 billion in AI semiconductor sales for the current quarter. The CEO said the company expects $21.7 billion in the next quarter.
+
+Wow, the sequel is bigger still. But we should not confuse the trailer with the movie itself. The $16.7 billion is the actual result for the current quarter. The $21.7 billion is the outlook for the next quarter, not sales that have already been made.
+
+Also, neither number is the company’s total sales. Both are for AI semiconductor sales. When the numbers are big, it is easy to clap and say only, “Wow!” But we should check the subtitles to see exactly what the numbers refer to.
+
+Now that the numbers have caught our attention, let’s return to what the CEO said. The CEO’s explanation lists not only custom AI accelerators, but “networking” too.
+
+That does not mean it is time to turn this into a surprise ending: “The network was the real star all along!” This news alone does not tell us how much of AI semiconductor sales came from network-related products. We can confirm the performers’ names, but not how long they are on stage.
+
+Even so, we can change where we, the audience, look. When we hear AI, instead of focusing only on what produces answers, we can also look at the things around it that “connect” things. We do not need to lose sight of the main star. We just need to pull the camera back a little.
+
+$16.7 billion, and next, $21.7 billion. After being surprised by how big those numbers are, let’s pay attention to the performer beside them too. What is happening at the center of the spotlight? And what is in demand beside it? AI news becomes much more interesting when we look at the supporting cast too.
+
+## In one line
+Broadcom’s CEO says demand remains very strong for both custom AI accelerators and networking. The article urges readers to look beyond AI chips to networking, while noting it does not show networking’s share of AI semiconductor sales.

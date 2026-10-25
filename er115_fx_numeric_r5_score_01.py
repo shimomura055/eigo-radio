@@ -184,3 +184,51 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# ---------------- COMPARISON_04.md 生成(Fable読み用: 数値に印を付けた一覧+R2本文) ----------------
+def _fmt_cls(c: dict) -> str:
+    def j(x):
+        return "、".join(x) if x else "なし"
+    return (f"必須[{j(c['must'])}] / 任意[{j(c['optional'])}] / 不要(表)[{j(c['unneeded_listed'])}] / 不要(未分類)[{j(c['unneeded_unlisted'])}] / 文脈[{j(c['context'])}]"
+            f" / 不要数={c['unneeded_total']} ユニーク数値表記数={c['unique_numeric_surfaces']}")
+
+
+def render_block(label: str, d: str, article: str) -> str:
+    dd = d if os.path.isabs(d) else os.path.join(ROOT, d)
+    sc = score_dir(dd, article)
+    lines = [f"### {label}", f"- dir: `{sc['dir']}`"]
+    for st in ("R0", "R1", "R2"):
+        c = sc["stages"].get(st)
+        lines.append(f"- {st}: " + (_fmt_cls(c) + f" / 必須の存在={c['must_present']}" if c else "(なし)"))
+    for st in ("EN_Std", "EN_Adv"):
+        c = sc["stages"].get(st)
+        lines.append(f"- {st}: " + (f"必須の存在={c['must_present']} / 数値トークン={c['en_tokens']}" if c else "(なし)"))
+    r2 = rdt(os.path.join(dd, "ja_writer/revision2.md"))
+    lines += ["", "日本語最終(R2)本文:", "", "```", (r2 or "(なし)").strip(), "```", ""]
+    return "\n".join(lines), sc
+
+
+def render_comparison(spec: list, out_path: str):
+    """spec = [(article, [(label, dir), ...], after_label)]"""
+    md = ["# COMPARISON_04 (FX-CORE-NUMERIC-RETENTION-TRIAL-01 委任_04、R5)", "",
+          "数値の分類は`PREREGISTERED_CRITERIA_03.md` §1の表(生成前固定)による決定論の機械分類。『文脈』=年・日付・序数・単位なし小整数。Fableが本文を読んで妥当性を判断する。", ""]
+    for article, items, after_label in spec:
+        md.append(f"## {article}")
+        scs = {}
+        for label, d in items:
+            blk, sc = render_block(label, d, article)
+            md.append(blk)
+            scs[label] = sc
+        if after_label in scs:
+            a2 = scs[after_label]["stages"].get("R2")
+            for label, sc in scs.items():
+                if label == after_label or not sc["stages"].get("R2") or not a2:
+                    continue
+                df = diff_before_after(sc["stages"]["R2"], a2)
+                md.append(f"**{label} → {after_label}(R2)**: 必須 追加{df['must']['added']}/削除{df['must']['removed']}、任意 追加{df['optional']['added']}/削除{df['optional']['removed']}、"
+                          f"不要(表) 追加{df['unneeded_listed']['added']}/削除{df['unneeded_listed']['removed']}、不要(未分類) 追加{df['unneeded_unlisted']['added']}/削除{df['unneeded_unlisted']['removed']}、"
+                          f"文脈 追加{df['context']['added']}/削除{df['context']['removed']}、不要数 {df['unneeded_total_before']}→{df['unneeded_total_after']}(増減{df['unneeded_delta']:+d})、"
+                          f"ユニーク数値表記数 {df['unique_before']}→{df['unique_after']}")
+                md.append("")
+    open(out_path, "w", encoding="utf-8").write("\n".join(md))

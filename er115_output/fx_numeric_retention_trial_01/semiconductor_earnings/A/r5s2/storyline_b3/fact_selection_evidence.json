@@ -1,0 +1,98 @@
+{
+  "selected_storyline": "Broadcomは、CEOが説明するカスタムAIアクセラレーターとネットワーキング需要の強さを背景に、当四半期のAI半導体売上高167億ドルを報告し、次四半期は217億ドルを見込んだ。",
+  "full_ledger_fact_ids": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6"
+  ],
+  "fact_tests": [
+    {
+      "fact_id": "F1",
+      "test1_answer": "YES",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "YES",
+      "decision": "excluded",
+      "reason": "企業名と対象期間は採用Factのscope・date_or_periodで示せるため、独立したFactとしては不要。残す理由は発表日の補足にとどまる。また、Broadcomが対象範囲で「最も最近の決算発表」に当たるかは未確定であり、そうした位置付けは断定しない。"
+    },
+    {
+      "fact_id": "F2",
+      "test1_answer": "YES",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "YES",
+      "decision": "excluded",
+      "reason": "中心筋をAI半導体事業の実績、需要説明、次四半期見通しに限定するため、連結売上高を削っても理解できる。全社規模を示す背景情報としては有用だが、この筋の因果説明には使わない。"
+    },
+    {
+      "fact_id": "F3",
+      "test1_answer": "NO",
+      "test2_answer": "YES",
+      "test3_answer": "YES",
+      "test4_answer": "NO",
+      "decision": "selected",
+      "reason": "AI需要の強さが同社の足元の売上成長にどう表れているかを示す実績側の根拠。需要評価だけでなく、なぜAI事業の成長継続が決算の焦点になるのかを説明するために必要であり、単なる数値の追加ではない。"
+    },
+    {
+      "fact_id": "F4",
+      "test1_answer": "YES",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "YES",
+      "decision": "excluded",
+      "reason": "次四半期の見通しは、中心筋と同じ対象範囲であるAI半導体売上高のF5で示す。連結売上高見通しまで加えると対象範囲が広がり、この筋では補足情報となる。"
+    },
+    {
+      "fact_id": "F5",
+      "test1_answer": "NO",
+      "test2_answer": "YES",
+      "test3_answer": "NO",
+      "test4_answer": "NO",
+      "decision": "selected",
+      "reason": "強い需要という会社説明に対応する、次四半期の予想結果として必要。需要が強い理由自体を説明するFactではないためTest3はNOだが、削除すると中心筋の到達点であるAI事業の需要持続見通しが失われるため採用する。実績やアナリスト予想とは区別する。"
+    },
+    {
+      "fact_id": "F6",
+      "test1_answer": "NO",
+      "test2_answer": "YES",
+      "test3_answer": "YES",
+      "test4_answer": "NO",
+      "decision": "selected",
+      "reason": "実績と次四半期見通しをつなぐ需要面の説明であり、何が成長を支えているのかという中心的な「なぜ」に答える。CEOの定性的評価として帰属させ、市場全体について独立確認された事実には広げない。"
+    }
+  ],
+  "selected_fact_ids": [
+    "F3",
+    "F5",
+    "F6"
+  ],
+  "selected_fact_brief_text": "Broadcomは、CEOが説明するカスタムAIアクセラレーターとネットワーキング需要の強さを背景に、当四半期のAI半導体売上高167億ドルを報告し、次四半期は217億ドルを見込んだ。\n\n【実績／F3】2026年度第3四半期（2026年8月2日終了）のAI半導体売上高は167億ドル。CEOは前年同期・前四半期のいずれからも増加したと説明した。連結売上高や半導体ソリューション部門全体の売上高とは区別する。\n【会社見通し／F5】CEOは2026年度第4四半期（2026年11月1日終了予定）のAI半導体売上高を217億ドルと予想した。確定実績でもアナリスト予想でもない。\n【需要の説明／F6】CEOはカスタムAIアクセラレーターとネットワーキングへの需要が引き続き非常に強いと述べた。成長を支える需要の説明は経営陣の評価として扱う。\n【執筆上の範囲】AI半導体事業の実績と会社見通しに絞る。「主要半導体企業の中で最新」とは断定せず、利益額、アナリスト予想、輸出規制・供給制約の具体情報は補わない。",
+  "recheck_note": null,
+  "soft_warnings": [],
+  "min2_policy": {
+    "floor": 2,
+    "counted": "VERIFIED",
+    "enforced": true,
+    "first_pass_selected_ids": [
+      "F3",
+      "F5",
+      "F6"
+    ],
+    "first_pass_verified_n": 3,
+    "reevaluated": false,
+    "reeval_note_sha256": "dcf4f2b40a9ddaccf6121ae39c6b5ccf1bd31edab3b012d7a65d8da05d4142dd",
+    "final_selected_ids": [
+      "F3",
+      "F5",
+      "F6"
+    ],
+    "final_verified_n": 3
+  },
+  "deterministic_selected_fact_brief_text": "- Broadcomの第3四半期のAI半導体売上高は167億ドル。CEOは前年同期比221％増、前四半期比54％増と説明した。（範囲：AI半導体売上高。Broadcom全体の純売上高や半導体部門全体とは別の数値。条件：金額はCEO発言で10億ドル単位に丸めて示された）\n- BroadcomのCEOは、次の四半期のAI半導体売上高を217億ドルと見込み、前年同期比236％増になると述べた。（範囲：BroadcomのAI半導体売上高。連結売上高見通しとは別の数値。条件：会社CEOによる決算リリース時点の見通し）\n- BroadcomのCEOは、カスタムAIアクセラレーターとネットワーキングへの需要が引き続き非常に強いと述べた。（範囲：同社のカスタムAIアクセラレーターおよびネットワーキングに対する需要についてのCEOの説明。条件：経営陣による定性的な評価）\n",
+  "deterministic_selected_fact_brief_text_source": "deterministic_v2",
+  "writer_constraints_text": "Writerへの注意(事実ではありません)：\n- 事実1について：「AI半導体売上高」と記し、半導体ソリューション部門全体の売上高と混同しない。\n- 事実2について：会社の見通しとして記載し、実績値と混同しない。\n- 事実3について：会社CEOの評価として帰属を明記し、独立に確認された市場全体の需要事実として一般化しない。\n",
+  "writer_news_field_text": "- Broadcomの第3四半期のAI半導体売上高は167億ドル。CEOは前年同期比221％増、前四半期比54％増と説明した。（範囲：AI半導体売上高。Broadcom全体の純売上高や半導体部門全体とは別の数値。条件：金額はCEO発言で10億ドル単位に丸めて示された）\n- BroadcomのCEOは、次の四半期のAI半導体売上高を217億ドルと見込み、前年同期比236％増になると述べた。（範囲：BroadcomのAI半導体売上高。連結売上高見通しとは別の数値。条件：会社CEOによる決算リリース時点の見通し）\n- BroadcomのCEOは、カスタムAIアクセラレーターとネットワーキングへの需要が引き続き非常に強いと述べた。（範囲：同社のカスタムAIアクセラレーターおよびネットワーキングに対する需要についてのCEOの説明。条件：経営陣による定性的な評価）\n\nWriterへの注意(事実ではありません)：\n- 事実1について：「AI半導体売上高」と記し、半導体ソリューション部門全体の売上高と混同しない。\n- 事実2について：会社の見通しとして記載し、実績値と混同しない。\n- 事実3について：会社CEOの評価として帰属を明記し、独立に確認された市場全体の需要事実として一般化しない。\n"
+}

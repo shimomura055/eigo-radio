@@ -1,6 +1,17 @@
 # TRIAL_RESULT_01 (FX-CORE-NUMERIC-RETENTION-TRIAL-01。ユーザー原文§8の1〜5に対応する**事実**。Status候補はSonnet所見、最終はFable独立評価)
 
-## 【委任_03更新(2026-10-25、最新)】Opus差分レビューM1〜M5反映 → Phase 1b → Phase 2
+## 【委任_04更新(2026-10-25、最新)】R5=B3に『読者が聞くべき重要数値』欄を追加(追加予算80円・案件380円)
+証跡: `PHASE3_RESULT_01.md`、`DESIGN_04.md`、`PREREGISTERED_CRITERIA_03.md`、`COMPARISON_04.md`、`BUDGET_LOG_01.md`。コード=`er115_fx_numeric_retention_trial_01.py`(R5=`--b3-addendum v3|v4`)・`er115_fx_numeric_r5_score_01.py`(3分類の決定論集計)、test=`er115_fx_numeric_r5_test_01.py`(12)+既存46 全PASS。
+- **ig_nobel型は解決**: v3(5条件AND)は欄が2/2空だったが、判断基準を原文§3の5観点の論理構造(①〜③のどれか かつ ④⑤)へ整理した**v4(指示文の修正は1回のみ)でB3の欄に『3倍超』が2/2入り**、フルチェーン(r5b1)でR0(初稿)〜R1〜R2〜EN Std〜EN Advの全段保持、Gate発火0、不要数値0、新規数値0、人への効果3倍の誤解なし(日英とも明示的に否定)。Storylineに数値が無くてもR0に入った(Storyline非依存)。
+- **過剰掲載(半導体)は未解決**: B3が欄に『実績167億ドル+見通し217億ドル』の対を選び(v3の1回目・v4の2/3呼出)、事前登録表で不要の217億ドルが+1、Beforeの必須(約348億ドル)は選定Factが変わり欠落(Beforeの記事構成基準で判定)。数字は3→2個で羅列なし・文章は自然。修正再検証は残予算不足(10.19円)のため未実施。
+- **月・コーヒーのR5回帰は未実施**(380円超過見込みで停止)。→ Family X全体の成功は判定不可。
+- 費用: 委任_04 84.13円、案件累計369.81円/380円。再起動0。追加LLM call 0、B3再実行 1/6。
+- Status候補(Sonnet所見): **USER_DECISION_REQUIRED(部分達成)**。ig_nobel型は達成、過剰掲載検証は不合格(1標本)、回帰は未実施。REJECTED基準には非該当。次の一手候補・見込みは `PHASE3_RESULT_01.md` §5・`RESULT_PACKET_FXNR4.md`。
+
+---
+
+
+## 【委任_03更新(2026-10-25)】Opus差分レビューM1〜M5反映 → Phase 1b → Phase 2
 証跡: `PHASE1B_RESULT_01.md`、`PHASE2_RESULT_01.md`、`DESIGN_03.md`、`OPUS_REVIEW_02.md`、`PREREGISTERED_CRITERIA_02.md`(生成前commit 25da62900)、`BUDGET_LOG_01.md`、`er115_output/fx_numeric_retention_trial_01/`。コード=`er115_fx_numeric_retention_trial_01.py`(DEV専用・test 46 PASS)。
 
 ### 1. 根本原因と採用候補方式(更新)

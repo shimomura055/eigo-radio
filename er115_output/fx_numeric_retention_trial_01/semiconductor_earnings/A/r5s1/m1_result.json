@@ -1,0 +1,136 @@
+{
+  "article": "semiconductor_earnings",
+  "arm": "A",
+  "sample": "r5s1",
+  "status": "E_OK",
+  "first_pass_ok": false,
+  "b3_rerun": true,
+  "attempts": [
+    {
+      "attempt": 1,
+      "storyline": "BroadcomのAI半導体売上高は167億ドルとなり、CEOはカスタムAIアクセラレーターとネットワーキングの需要が引き続き非常に強いとして、次四半期も拡大を見込んだ。",
+      "ok": false,
+      "violations": [
+        {
+          "surface": "217億ドル",
+          "reason": "peripheral_number_in_storyline"
+        }
+      ],
+      "candidates": [
+        {
+          "concept": "C2",
+          "story_surface": "167億ドル",
+          "news_surface": "167億ドル",
+          "kind": "magnitude",
+          "unit_hint": "",
+          "time_premise": false,
+          "gate_required": true
+        }
+      ],
+      "user_prompt_sha256": [
+        "5d5946154c4903a9bf4bc39bea7dbad1eb31e7c8d931c4af06216cfcd0a1855a"
+      ],
+      "field_items": [
+        "167億ドル",
+        "217億ドル"
+      ],
+      "storyline_consistency": {
+        "storyline_numbers": [
+          "167億ドル"
+        ],
+        "field_numbers": [
+          "167億ドル"
+        ],
+        "storyline_not_in_field(record_only)": [],
+        "field_not_in_storyline": [],
+        "storyline_m1_violations_record_only": [],
+        "match": true
+      }
+    },
+    {
+      "attempt": 2,
+      "storyline": "CEOが強いとするカスタムAIアクセラレーターとネットワーキングへの需要を背景に、BroadcomのAI半導体売上高は前年同期比+221％と急増し、同社は次四半期も拡大を見込んだ。",
+      "ok": true,
+      "violations": [],
+      "candidates": [
+        {
+          "concept": "C3",
+          "story_surface": "221%",
+          "news_surface": "221％",
+          "kind": "magnitude",
+          "unit_hint": "",
+          "time_premise": false,
+          "gate_required": true
+        }
+      ],
+      "user_prompt_sha256": [
+        "283f2078c17fd5232cc1047528e111a3689b36fe403a4b41f9931be46637dbd4"
+      ],
+      "field_items": [
+        "前年同期比+221％"
+      ],
+      "storyline_consistency": {
+        "storyline_numbers": [
+          "221%"
+        ],
+        "field_numbers": [
+          "221%"
+        ],
+        "storyline_not_in_field(record_only)": [],
+        "field_not_in_storyline": [],
+        "storyline_m1_violations_record_only": [],
+        "match": true
+      }
+    }
+  ],
+  "E": {
+    "storyline": "CEOが強いとするカスタムAIアクセラレーターとネットワーキングへの需要を背景に、BroadcomのAI半導体売上高は前年同期比+221％と急増し、同社は次四半期も拡大を見込んだ。",
+    "ok": true,
+    "violations": [],
+    "candidates": [
+      {
+        "concept": "C3",
+        "story_surface": "221%",
+        "news_surface": "221％",
+        "kind": "magnitude",
+        "unit_hint": "",
+        "time_premise": false,
+        "gate_required": true
+      }
+    ],
+    "gate_E": [
+      {
+        "concept": "C3",
+        "story_surface": "221%",
+        "news_surface": "221％",
+        "kind": "magnitude",
+        "unit_hint": "",
+        "time_premise": false,
+        "gate_required": true
+      }
+    ],
+    "observe_E": [],
+    "ignored": [],
+    "ambiguous_small_ints": [],
+    "storyline_has_no_numbers": false,
+    "source": "reader_must_hear_numbers",
+    "field_items": [
+      "前年同期比+221％"
+    ],
+    "storyline_consistency": {
+      "storyline_numbers": [
+        "221%"
+      ],
+      "field_numbers": [
+        "221%"
+      ],
+      "storyline_not_in_field(record_only)": [],
+      "field_not_in_storyline": [],
+      "storyline_m1_violations_record_only": [],
+      "match": true
+    }
+  },
+  "b3_addendum_version": "v3",
+  "b3_addendum_sha256": "ea58d3f11e9ac0f512ae0aa4b6c9ac32a2591e6552060344c2b2301fa879220b",
+  "b3_cost_jpy": 15.237
+}
