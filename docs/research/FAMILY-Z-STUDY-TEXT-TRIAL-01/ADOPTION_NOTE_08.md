@@ -18,3 +18,5 @@ Part 2の選定順を「Tier1=倒置以外の適格 → Tier2=適格な倒置 �
 
 ## 4. 未承認事項
 本Trialの規則・Promptは未承認。`run_trial_08.py` はDEV専用で、Production file・Prompt・閾値・flagの変更は0。
+
+Status: VALIDATED(限定)、Fable受入2026-10-25 委任_19、Production未配線。
