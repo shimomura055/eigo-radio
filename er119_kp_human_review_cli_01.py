@@ -9,7 +9,14 @@
   py er119_kp_human_review_cli_01.py reselect --run <run_dir> --level b1b --ng 4:理由 --by <名前>
   py er119_kp_human_review_cli_01.py ng|unng|resolve-gloss|mark-published ...
   py er119_kp_human_review_cli_01.py declare-absent --runs <dir>[,<dir>] --reason ... --by ... [--user-ref ...]
-  py er119_kp_human_review_cli_01.py declare-absent --scope-family x --scope-date 2026-10-26 [--until ...] --reason ... --by ... [--user-ref ...]
+
+Part 2(文法)の操作(kind="grammar"。API 0。再抽出は次回起動でStep A'' 1 call):
+  py er119_kp_human_review_cli_01.py grammar-show --run <run_dir>
+  py er119_kp_human_review_cli_01.py grammar-select --run <run_dir> --choice top1 --accept-ai --candidates-sha <表示sha> --by <名前>
+  py er119_kp_human_review_cli_01.py grammar-select --run <run_dir> --choice top2|reselect|omit|reextract --reason <理由> --candidates-sha <表示sha> --by <名前>
+  py er119_kp_human_review_cli_01.py grammar-ng --run <run_dir> --rank N --reason ... --by ...
+  py er119_kp_human_review_cli_01.py grammar-unng --run <run_dir> --sentence "<英文>"|--candidate-id <id> --reason ... --by ...
+  (status は KP と文法の両方を表示。不在宣言 declare-absent はKPと文法の両方に効く[このrun・この候補round限り])
 
 番号=kp_human_review_request.mdの表の「番号」(ai_rank)。直接 kp_human_review.json を手編集すると署名不一致で全消費者がSTOPする。
 """
@@ -19,7 +26,9 @@ import argparse
 import json
 import sys
 
+import er119_grammar_review_01 as gr
 import er119_kp_human_review_01 as rv
+import er120_part2_grammar_production_01 as g
 
 
 def _parse_ng(items: list) -> dict:
@@ -89,11 +98,28 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--rank", type=int, required=True)
     p.add_argument("--gloss", required=True)
     p.add_argument("--by", required=True)
+    p = sub.add_parser("grammar-show")
+    common(p, level=False)
+    p = sub.add_parser("grammar-select")
+    common(p, level=False)
+    p.add_argument("--choice", required=True, choices=("top1", "top2", "omit", "reselect", "reextract"))
+    p.add_argument("--candidates-sha", required=True, help="表示した候補のcandidates_sha256(古い候補への操作を拒否する)")
+    p.add_argument("--reason", default="", help="top2/reselect/omit/reextractは必須")
+    p.add_argument("--accept-ai", action="store_true", help="AI推奨(TOP1)の了承。--choice top1 のときだけ")
+    p.add_argument("--by", required=True)
+    p = sub.add_parser("grammar-ng")
+    common(p, level=False)
+    p.add_argument("--rank", type=int, required=True)
+    p.add_argument("--reason", required=True)
+    p.add_argument("--by", required=True)
+    p = sub.add_parser("grammar-unng")
+    common(p, level=False)
+    p.add_argument("--sentence", default=None)
+    p.add_argument("--candidate-id", default=None)
+    p.add_argument("--reason", required=True)
+    p.add_argument("--by", required=True)
     p = sub.add_parser("declare-absent")
-    p.add_argument("--runs", default=None, help="カンマ区切りのrun dir(個別run宣言)")
-    p.add_argument("--scope-family", default=None, choices=("x", "z"))
-    p.add_argument("--scope-date", default=None, help="YYYY-MM-DD(その日だけ有効。範囲宣言)")
-    p.add_argument("--until", default=None, help="ISO日時(これを過ぎたら失効)")
+    p.add_argument("--runs", required=True, help="カンマ区切りのrun dir(個別run宣言。範囲・期限付きの宣言は受け付けない)")
     p.add_argument("--rounds", default="1", help="宣言が効く候補round(既定=1。再選定後のroundは別途明示宣言)")
     p.add_argument("--candidates-sha", default=None)
     p.add_argument("--reason", required=True)
@@ -113,18 +139,38 @@ def run(argv=None) -> int:
         if a.cmd == "status":
             dirs = rv.discover_kp_dirs(a.run)
             rows = [rv.status_of(d) for d in dirs]
-            _print({"run": a.run, "levels": rows,
-                    "pending": [r["level"] for r in rows if r.get("status") == rv.ST_PENDING]})
+            grows = [gr.status_of(d) for d in gr.discover_dirs(a.run)]
+            _print({"run": a.run, "levels": rows, "grammar": grows,
+                    "pending": [r["level"] for r in rows if r.get("status") == rv.ST_PENDING],
+                    "grammar_pending": [r["study_dir"] for r in grows if r.get("status") in rv.GRAMMAR_WAIT_STATUSES]})
             return 0
+        if a.cmd.startswith("grammar-"):
+            gdirs = gr.discover_dirs(a.run)
+            if not gdirs:
+                raise rv.KpReviewError(f"{a.run}に文法(Part 2)のreview/候補が見つかりません(制作を実行して候補を生成してください)")
+            gd = gdirs[0]
+            if a.cmd == "grammar-show":
+                doc, review = gr.load_candidates(gd), gr.load_review(gd)
+                print(gr.render_request_md(doc, review, run_hint=a.run))
+                return 0
+            if a.cmd == "grammar-select":
+                review = gr.op_decide(gd, choice=a.choice, candidates_sha256=a.candidates_sha, reason=a.reason, by=a.by, accept_ai=a.accept_ai)
+                _print({"status": review["status"], "selection": review.get("selection"), "revision": review["revision"],
+                        "next": ("再抽出が要求されました。制作コマンドを同じまま再実行すると候補を再抽出します(Step A'' 1 call)" if review["status"] == rv.ST_REEXTRACT_REQUESTED
+                                 else "制作コマンドを同じまま再実行してください(finalize→後続が進みます)")})
+                return 0
+            if a.cmd == "grammar-ng":
+                review = gr.op_ng(gd, rank=a.rank, reason=a.reason, by=a.by)
+                _print({"status": review["status"], "next": "候補listが更新されました。依頼書(grammar-show)を再確認してください"})
+                return 0
+            if a.cmd == "grammar-unng":
+                _print({"removed": gr.op_unng(gd, sentence=a.sentence, candidate_id=a.candidate_id, reason=a.reason, by=a.by),
+                        "note": "現在の候補listには戻りません(次の新規抽出/reextractから効きます)"})
+                return 0
         if a.cmd == "declare-absent":
             runs = [x.strip() for x in (a.runs or "").split(",") if x.strip()]
-            scope = None
-            if a.scope_family:
-                scope = {"family": a.scope_family}
-                if a.scope_date:
-                    scope["date"] = a.scope_date
-            ids = rv.add_declaration(run_dirs=runs or None, scope=scope, by=a.by, reason=a.reason, user_ref=a.user_ref,
-                                     until=a.until, rounds=_ints(a.rounds), candidates_sha256=a.candidates_sha)
+            ids = rv.add_declaration(run_dirs=runs, by=a.by, reason=a.reason, user_ref=a.user_ref,
+                                     rounds=_ints(a.rounds), candidates_sha256=a.candidates_sha)
             _print({"declared": ids, "note": "宣言は、この後のHuman操作(select/reselect/ng/unng/resolve-gloss)で失効します。再選定後のroundには効きません。"})
             return 0
         kp_dir = _kp_dir_for(a.run, a.level)
@@ -170,7 +216,7 @@ def run(argv=None) -> int:
             c = rv.op_resolve_gloss(kp_dir, rank=a.rank, gloss=a.gloss, by=a.by)
             _print({"resolved": c["candidate_id"], "japanese_gloss": c["japanese_gloss"]})
             return 0
-    except (rv.KpReviewError, rv.KpReviewPending, ValueError) as e:
+    except (rv.KpReviewError, rv.KpReviewPending, ValueError, g.Part2Error) as e:
         print(f"[KP_REVIEW_CLI][REFUSED] {type(e).__name__}: {e}", file=sys.stderr)
         return 2
     return 2

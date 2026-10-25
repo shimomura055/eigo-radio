@@ -22,11 +22,24 @@ import er062_family_z_structure_01 as st62
 import er063_family_z_audio_01 as a63
 from er119_test_support_01 import declare_ctx as _declare_ctx  # noqa: E402
 import er119_kp_wiring_01 as _kpw  # noqa: E402
+import er119_kp_human_review_01 as _rv  # noqa: E402
+import er120_part2_grammar_production_01 as _g2  # noqa: E402
+import er120_part2_mock_01 as _pm  # noqa: E402
+
+
+def isolate_part2(test):
+    """委任_03: Part 2(文法)が本文確定後に必ず走るため、(1)共有NG storeをtmpへ隔離 (2)Step A''/Step Bのclient経路をAPI 0のmockへ置換する。"""
+    d = tempfile.mkdtemp()
+    test.addCleanup(shutil.rmtree, d, True)
+    for p in (mock.patch.object(_rv, "STORE_ROOT", os.path.join(d, "store")),
+              mock.patch.object(_g2, "_resolve_call_fn", lambda call_fn, client, model, max_out: call_fn or _pm.factory(client, model, max_out))):
+        p.start()
+        test.addCleanup(p.stop)
 
 QUOTE1 = "They tried to cross a bog, but the ground gave way beneath them."
 QUOTE2 = "Inventing convincing stories at a moment's notice was Vera's speciality."
 QUOTE3 = "She would catch her breath before the long walk home."
-XARTICLE = f"{QUOTE1}\n\n{QUOTE2}\n\n{QUOTE3}\n\nA fourth paragraph closes the story.\n"
+XARTICLE = f"# The Bog\n\n{QUOTE1}\n\n{QUOTE2}\n\n{QUOTE3}\n\nA fourth paragraph closes the story.\n"
 X_ITEMS = [
     {"rank": 1, "source_span": "gave way", "source_sentence": QUOTE1, "display_phrase": "gave way", "key_phrase": "give way", "used_form": "give way",
      "japanese_gloss": "崩れる", "fulltext_source_ref": "fulltext_exact_v1", "gloss_alignment_status": "ALIGN_PASS"},
@@ -116,6 +129,9 @@ def quiet(fn, *a, **k):
 # Z
 # ============================================================
 class ZPart1Tests(Tmp, unittest.TestCase):
+    def setUp(self):
+        isolate_part2(self)
+
     PRE = ["seed_check", "writer", "std_adjust", "plan", "support", "kp"]
 
     def _ctx_through_kp(self):
@@ -224,11 +240,14 @@ class ZPart1Tests(Tmp, unittest.TestCase):
         rest = [s for s in zr.E2E_STAGES if s not in self.PRE and s != "page_verify"]
         quiet(zr.run_stages, ctx, rest)
         index = open(f"{ctx.pages_dir}/index.html", encoding="utf-8").read()
-        self.assertNotIn("class='study'", index)
+        # 委任_03: Part 1の判断記録がなければPart 1ブロックは出ない(従来どおり)。Part 2(文法。承認済み)のブロックだけがAdvancedに載る
+        self.assertEqual(index.count("<section class='study'>"), 1)
+        self.assertIn("Grammar &amp; Sentence Structure", index)
         self.assertNotIn("Vocabulary", index)
-        # 従来経路(study_html未指定)で直接buildしたものとバイト同一(判断記録なし=従来と完全に同じ出力)
+        # Part 1の判断記録なし=『Part 2だけを渡して直接buildしたもの』とバイト同一
+        p2 = zr._p2w().compose_page_html("", zr._assert_part2_final(ctx, "test"))
         a63.build_pages(ctx.out_dir, ctx.pages_dir, page_title=zr.STORY_REGISTRY[ctx.story_key]["page_title_ja"],
-                        audio_file_prefix=zr.STORY_REGISTRY[ctx.story_key]["audio_file_prefix"], reuse_existing_audio=True)
+                        audio_file_prefix=zr.STORY_REGISTRY[ctx.story_key]["audio_file_prefix"], reuse_existing_audio=True, study_html=p2)
         self.assertEqual(index, open(f"{ctx.pages_dir}/index.html", encoding="utf-8").read())
         # study_text/は保存されている(生成・保存まで行う)
         self.assertTrue(os.path.exists(f"{ctx.out_dir}/study_text/part1_vocabulary_expressions.md"))
@@ -239,7 +258,7 @@ class ZPart1Tests(Tmp, unittest.TestCase):
         rest = [s for s in zr.E2E_STAGES if s not in self.PRE and s != "page_verify"]
         quiet(zr.run_stages, ctx, rest)          # build_pages内でlint+標準適合checkがPASSしなければFamilyZAudioStop
         index = open(f"{ctx.pages_dir}/index.html", encoding="utf-8").read()
-        self.assertEqual(index.count("<section class='study'>"), 1)
+        self.assertEqual(index.count("<section class='study'>"), 2)   # Part 1 + Part 2(委任_03)
         adv_pos, study_pos = index.index("id='adv'"), index.index("<section class='study'>")
         self.assertGreater(study_pos, adv_pos)                                  # Advanced節の中
         self.assertNotIn("class='study'", open(f"{ctx.pages_dir}/standard.html", encoding="utf-8").read())
@@ -253,7 +272,8 @@ class ZPart1Tests(Tmp, unittest.TestCase):
         ctx = self._ctx_through_kp()
         with mock.patch.object(a63, "build_pages", return_value={}) as bp:
             zr.stage_pages(ctx)
-        self.assertNotIn("study_html", bp.call_args.kwargs)             # 判断記録なし=従来と同一の呼出(DefaultOffIsolation)
+        self.assertIn("Grammar &amp; Sentence Structure", bp.call_args.kwargs["study_html"])   # 委任_03: Part 2(承認済み)は常に渡る
+        self.assertNotIn("Vocabulary", bp.call_args.kwargs["study_html"])                        # Part 1は判断記録なし=渡らない
         decision_record(self, "T2")
         with mock.patch.object(a63, "build_pages", return_value={}) as bp:
             zr.stage_pages(ctx)
@@ -324,6 +344,7 @@ def _x_setup(levels=("b1b",)):
     for lv in ("a2", "b1b"):
         os.makedirs(f"{src}/{lv}")
         open(f"{src}/{lv}/article.md", "w", encoding="utf-8").write(XARTICLE)
+    _rv.add_declaration(run_dirs=[out], by="test-fixture", reason="既存mock X testのfixture(Human不在を明示宣言)")
     return work, src, out
 
 
@@ -350,6 +371,9 @@ def _scaffold(src, out, levels, part1_call_fn, kp=None, ja_call_fn=None):
 
 
 class XPart1ScaffoldTests(Tmp, unittest.TestCase):
+    def setUp(self):
+        isolate_part2(self)
+
     def test_scaffold_runs_part1_only_for_b1b_after_kp_pass_and_saves(self):
         no_decision_record(self)
         work, src, out = _x_setup()
@@ -407,6 +431,7 @@ class XPart1MainTests(Tmp, unittest.TestCase):
     def setUp(self):
         self._cwd = os.getcwd()
         self.addCleanup(os.chdir, self._cwd)
+        isolate_part2(self)
         no_decision_record(self)
 
     def _main(self, work, out, stage, *, client=None, extra=()):

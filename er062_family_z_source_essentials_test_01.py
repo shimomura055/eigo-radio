@@ -352,7 +352,8 @@ class PropagationAndFingerprintTest(unittest.TestCase):
     def test_no_new_stage_or_validator_added(self):
         self.assertEqual(w.CHAIN_STAGES, ("r0", "r1", "r2", "std_adjust"))
         self.assertEqual(w.ALL_STAGE_NAMES, ("r0", "r1", "r2", "std_adjust", "plan_b1b", "plan_a2",
-                                             "support_b1b", "support_a2", "kp_b1b", "kp_a2"))
+                                             "support_b1b", "support_a2", "kp_b1b", "kp_a2",
+                                             "part2_cand_b1b", "part2_b1b"))   # Part 2(文法)の2 stageを追加(PART2-GRAMMAR委任_03。CHAIN_STAGES/STAGE_KEYは不変)
         self.assertEqual(set(w.STAGE_KEY.values()), {"FAMILY_Z_WRITER_ADV_R0", "FAMILY_Z_WRITER_ADV_R1",
                                                       "FAMILY_Z_WRITER_ADV_R2", "FAMILY_Z_STD_ADJUST"})
 

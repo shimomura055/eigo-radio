@@ -546,13 +546,16 @@ def test_E8_input_validation_before_any_call(routed):
 # ============================================================
 # P: Production境界
 # ============================================================
-def test_P1_unregistered_routing_is_fail_closed_before_api():
-    ex = LLM(_stepa_json(F_CLEFT))
-    with pytest.raises(routing.ModelContractViolation):
-        m.extract_candidates(PARAS, "x", call_fn=ex)
-    assert ex.n == 0
-    assert m.PROCESS_EXTRACT not in routing.PROCESS_MODEL_MAP and m.PROCESS_EXPLAIN not in routing.PROCESS_MODEL_MAP   # 次委任でer006へ追記(本委任はer006無変更)
+def test_P1_routing_is_registered_and_model_mismatch_is_fail_closed():
+    """委任_03(W1): er006へ2 processを登録済み(SUPPORT_MODEL)。登録後も、応答モデルが違えばfallbackせずSTOP(API前の契約検証+応答後の不一致検証)。"""
+    assert routing.PROCESS_MODEL_MAP[m.PROCESS_EXTRACT] == routing.SUPPORT_MODEL
+    assert routing.PROCESS_MODEL_MAP[m.PROCESS_EXPLAIN] == routing.SUPPORT_MODEL
     assert m.REQUIRED_ROUTING_ENTRIES == {m.PROCESS_EXTRACT: "SUPPORT_MODEL", m.PROCESS_EXPLAIN: "SUPPORT_MODEL"}
+
+    def wrong_model(prompt):
+        return _stepa_json(F_CLEFT), "some-other-model", {"input_tokens": 1, "output_tokens": 1, "cached_input_tokens": 0}, "r1"
+    with pytest.raises(m.Part2Error):
+        m.extract_candidates(PARAS, "x", call_fn=wrong_model)
 
 
 def test_P2_module_does_not_reference_trial_assets():
@@ -563,15 +566,18 @@ def test_P2_module_does_not_reference_trial_assets():
     assert not re.search(r"os\.environ", body)                                                           # 環境変数でON/OFFを変えない
 
 
-def test_P3_no_production_file_imports_the_module_yet():
-    """委任_01時点では未配線(runner/er119/ページ無改変)。次委任でhookを入れる際はこのtestを『配線済み』assertへ置換する。"""
+def test_P3_only_wiring_and_review_modules_import_the_module():
+    """委任_03: 配線済み。このmoduleをimportしてよいのは文法review核(er119_grammar_review_01)・KP/文法共通核(er119_kp_human_review_01/_cli)・
+    配線module(er120_part2_wiring_01/_mock_01)だけ。X/Z runnerはwiring module経由(直接importしない)。"""
     me = os.path.basename(__file__)
+    allowed = {"er119_grammar_review_01.py", "er119_kp_human_review_01.py", "er119_kp_human_review_cli_01.py",
+               "er120_part2_wiring_01.py", "er120_part2_mock_01.py"}
     offenders = []
     for f in glob.glob(os.path.join(HERE, "*.py")):
         b = os.path.basename(f)
-        if b in (me, "er120_part2_grammar_production_01.py"):
+        if b in (me, "er120_part2_grammar_production_01.py") or "test" in b:
             continue
-        if "er120_part2_grammar_production_01" in open(f, encoding="utf-8", errors="ignore").read():
+        if "er120_part2_grammar_production_01" in open(f, encoding="utf-8", errors="ignore").read() and b not in allowed:
             offenders.append(b)
     assert offenders == [], offenders
 

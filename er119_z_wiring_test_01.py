@@ -60,6 +60,18 @@ class ZBase(unittest.TestCase):
             return 0
         return sum(1 for line in rd(p).splitlines() if '"kind": "kp"' in line)
 
+    def _kind_calls(self, kind):
+        p = self.ctx.mock_api.path
+        if not os.path.exists(p):
+            return 0
+        return sum(1 for line in rd(p).splitlines() if f'"kind": "{kind}"' in line)
+
+    def extract_calls(self):
+        return self._kind_calls("part2_extract")
+
+    def explain_calls(self):
+        return self._kind_calls("part2_explain")
+
     def declare(self):
         return rv.add_declaration(run_dirs=[self.ctx.out_dir], by="test-fixture", reason="Human不在(明示宣言)")
 
@@ -69,7 +81,8 @@ class TestZWait(ZBase):
         n_before = len(rd(self.ctx.mock_api.path).splitlines())
         with self.assertRaises(r.FamilyZKpReviewPending) as cm:
             _quiet(r.run_stage, self.ctx, "kp")
-        self.assertEqual(sorted(p["level"] for p in cm.exception.pending), ["a2", "b1b"])   # 両レベルの候補を先に作ってからまとめて1回待機
+        self.assertEqual(sorted(p["level"] for p in cm.exception.pending if p.get("kind") != "grammar"), ["a2", "b1b"])   # 両レベルの候補を先に作ってからまとめて1回待機
+        self.assertEqual([p["kind"] for p in cm.exception.pending if p.get("kind") == "grammar"], ["grammar"])        # 委任_03: 文法(Part 2)も同じ1回の待機に載る
         for lv in ("b1b", "a2"):
             self.assertEqual(rv.load_review(self.src[lv])["status"], rv.ST_PENDING)
             self.assertTrue(os.path.exists(rv.paths(self.src[lv])["request"]))
@@ -80,7 +93,7 @@ class TestZWait(ZBase):
         self.assertEqual(self.kp_calls(), 2)
         # 有料の後続(Adv解説・Part 1・TTS)のmock API呼出は0: kp stage開始後に増えたcallは候補生成(kp)だけ
         after = [json.loads(l)["kind"] for l in rd(self.ctx.mock_api.path).splitlines()][n_before:]
-        self.assertEqual(set(after), {"kp"}, after)
+        self.assertEqual(set(after), {"kp", "part2_extract"}, after)   # 委任_03: 文法の候補抽出(Step A'')も確認前に1回走る。Step B(解説)は走らない
 
     def test_rerun_while_pending_makes_no_new_generation_call(self):
         with self.assertRaises(r.FamilyZKpReviewPending):
@@ -112,8 +125,14 @@ class TestZWait(ZBase):
             _quiet(r.run_stage, self.ctx, "kp")
         for lv in ("b1b", "a2"):
             rv.op_select(self.src[lv], kp_ranks=[1, 2, 3], vocab_ranks=([1, 2, 3, 4, 5] if lv == "b1b" else None), by="human")
+        import er119_grammar_review_01 as gr   # 委任_03: 文法(Part 2)の確認も同じ待機点
+        sd = r._part2_dir(self.ctx)
+        self.assertEqual(self.explain_calls(), 0)
+        gr.op_decide(sd, choice="top1", accept_ai=True, candidates_sha256=gr.load_candidates(sd)["candidates_sha256"], by="human")
         _quiet(r.run_stage, self.ctx, "kp")
         self.assertEqual(self.kp_calls(), 2)
+        self.assertEqual(self.extract_calls(), 1)    # 再開でStep A''を呼び直さない
+        self.assertEqual(self.explain_calls(), 1)    # 確定後のStep Bだけ1 call
         for lv in ("b1b", "a2"):
             self.assertEqual(rv.load_review(self.src[lv])["status"], rv.ST_REVIEWED)
 

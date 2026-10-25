@@ -9,7 +9,8 @@
     環境変数・設定dict・関数既定値・.envから auto にすることはできない(本moduleは環境変数を一切参照しない)。
   - 再選定は reselect(CLI)だけ。resume/regenerate/外側retry は確定済みreviewを再選定しない(M-3b)。
   - NG registry は run ではなく family+slug+level 単位の共有store(M-5)。
-  - 共通核は kind 非依存("kp" / "grammar")。grammar は fixture test のみで Production 配線なし(G-1)。
+  - 共通核は kind 非依存("kp" / "grammar")。grammar(Part 2文法)は委任_03でProduction配線(er119_grammar_review_01 / er120_part2_wiring_01)。
+  - 不在宣言は『個別run・候補sha・roundに紐づく明示宣言』のみ。期限付き/範囲付き(family・日付)宣言は不採用(ユーザー決定2026-10-25、R-7撤去)。
 共有関数 sc.run_key_phrases は本moduleから呼ばない/変更しない(A/B/C・Y Trial不変)。
 """
 from __future__ import annotations
@@ -28,14 +29,19 @@ SCHEMA_REVIEW = "kp_human_review_v1"
 SCHEMA_FINAL = "kp_selection_final_v1"
 
 KIND_KP = "kp"
-KIND_GRAMMAR = "grammar"   # fixture testのみ(G-1: Part 2 Production採用の確認まで配線しない)
+KIND_GRAMMAR = "grammar"   # Part 2文法(委任_03で配線。状態/操作はer119_grammar_review_01、確定recordの署名はer120.grammar_selection_signature)
 
 ST_PENDING = "PENDING_REVIEW"
 ST_REVIEWED = "REVIEWED"
 ST_AUTO = "UNREVIEWED_AUTO_ADOPTED"
 ST_RESELECT = "RESELECTION_REQUESTED"
 ST_STALE = "STALE"
+ST_NO_CANDIDATE = "NO_CANDIDATE_UNREVIEWED"   # grammar専用: 適格0件で待たずに確定(REVIEWEDではない。M-6)
+ST_RESELECT_EXHAUSTED = "RESELECT_EXHAUSTED"   # grammar専用: 全候補をNGにして尽きた(Humanのomit/reextract待ち。自動ZEROにしない)
+ST_REEXTRACT_REQUESTED = "REEXTRACT_REQUESTED"  # grammar専用: Humanが再抽出を選んだ(次回起動でStep A'' 1 call)
 FORWARD_STATUSES = (ST_REVIEWED, ST_AUTO)
+FORWARD_STATUSES_BY_KIND = {"kp": (ST_REVIEWED, ST_AUTO), "grammar": (ST_REVIEWED, ST_AUTO, ST_NO_CANDIDATE)}
+GRAMMAR_WAIT_STATUSES = (ST_PENDING, ST_RESELECT, ST_RESELECT_EXHAUSTED, ST_REEXTRACT_REQUESTED, ST_STALE)   # 下流はfail-closed
 
 EXIT_CODE_PENDING = 4          # KP_REVIEW_PENDING(失敗ではなく待機)。ZではRUN_LOCK(rc=4)と共有 -> stdoutの[KP_REVIEW_PENDING]で区別する
 PENDING_MARKER = "[KP_REVIEW_PENDING]"
@@ -47,7 +53,7 @@ RESELECT_MAX = 2               # 再選定上限(レベル/run)
 AUTO_QA_ADVANCE_MAX = 3        # AUTOで確定集合のRedundancy QAがNGのとき、次候補へ繰り上げる上限
 LOCK_STALE_SEC = 600
 
-STORE_ROOT = os.path.join("er119_output", "kp_human_review_store_01")   # 共有store(NG registry・範囲宣言)。testはここを差し替える
+STORE_ROOT = os.path.join("er119_output", "kp_human_review_store_01")   # 共有store(NG registryのみ。宣言はrun dirのkp_review_mode.json)。testはここを差し替える
 
 _AI_BY_PREFIXES = ("fable", "claude", "ai", "sonnet", "opus", "haiku", "agent", "assistant")
 
@@ -97,10 +103,6 @@ _JST = datetime.timezone(datetime.timedelta(hours=9))
 
 def _now() -> str:
     return datetime.datetime.now(_JST).isoformat(timespec="microseconds")
-
-
-def _today_jst() -> str:
-    return datetime.datetime.now(_JST).date().isoformat()
 
 
 def sha256_text(s: str) -> str:
@@ -185,10 +187,11 @@ def candidates_sha256(doc: dict) -> str:
 # 排他lock + 版番号比較更新(R-3)
 # ============================================================
 class review_lock:
-    """O_EXCLの排他lockファイル。保持中は他者が更新を拒否される(ReviewLockHeld)。stale(LOCK_STALE_SEC超)は引き継ぐ。"""
+    """O_EXCLの排他lockファイル。保持中は他者が更新を拒否される(ReviewLockHeld)。stale(LOCK_STALE_SEC超)は引き継ぐ。
+    lock_path を渡すとそのpathを使う(共有NG registryの排他。KPと文法で共通の実装)。"""
 
-    def __init__(self, kp_dir: str, kind: str = KIND_KP, who: str = ""):
-        self.path = paths(kp_dir, kind)["lock"]
+    def __init__(self, kp_dir: str, kind: str = KIND_KP, who: str = "", *, lock_path: Optional[str] = None):
+        self.path = lock_path or paths(kp_dir, kind)["lock"]
         self.who = who
         self.fd = None
 
@@ -253,7 +256,8 @@ def save_review(kp_dir: str, review: dict, *, expected_revision: Optional[int], 
             raise ReviewConflict(f"review版番号が一致しません(期待={expected_revision}, 現在={None if cur is None else cur.get('revision')})。"
                                  "他の操作が先に更新しました。statusを確認して再実行してください")
         review["revision"] = expected_revision + 1
-    review["selection_signature"] = selection_signature(review) if review.get("status") in FORWARD_STATUSES else None
+    review["kind"] = review.get("kind", kind)
+    review["selection_signature"] = selection_signature(review) if review.get("status") in FORWARD_STATUSES_BY_KIND.get(kind, FORWARD_STATUSES) else None
     _write_json_atomic(p, review)
     return review
 
@@ -265,51 +269,62 @@ def _slugsafe(s: str) -> str:
     return re.sub(r"[^A-Za-z0-9_.-]+", "_", s or "x")
 
 
-def store_ng_path(family: str, slug: str, level: str) -> str:
-    return os.path.join(STORE_ROOT, "ng", f"{_slugsafe(family)}__{_slugsafe(slug)}__{_slugsafe(level)}.json")
+def store_ng_path(family: str, slug: str, level: str, kind: str = KIND_KP) -> str:
+    """共有NG registryのpath。key=family+slug+level(+kind: grammarはKPとentry形式が違うため別file)。run dirに依存しない=copy-runが自動で引き継ぐ。"""
+    suffix = "" if kind == KIND_KP else f"__{_slugsafe(kind)}"
+    return os.path.join(STORE_ROOT, "ng", f"{_slugsafe(family)}__{_slugsafe(slug)}__{_slugsafe(level)}{suffix}.json")
 
 
-def store_load_ng(family: str, slug: str, level: str) -> list:
-    p = store_ng_path(family, slug, level)
+def store_lock(family: str, slug: str, level: str, kind: str = KIND_KP, who: str = "") -> review_lock:
+    """共有NG registryの書込排他lock(KPと文法で共通の実装。read-modify-writeの競合を防ぐ)。"""
+    return review_lock("", kind, who, lock_path=store_ng_path(family, slug, level, kind) + ".lock")
+
+
+def store_load_ng(family: str, slug: str, level: str, kind: str = KIND_KP) -> list:
+    p = store_ng_path(family, slug, level, kind)
     if not os.path.exists(p):
         return []
     return [e for e in (_read_json(p).get("entries") or []) if e.get("active", True)]
 
 
-def _store_all(family: str, slug: str, level: str) -> dict:
-    p = store_ng_path(family, slug, level)
+def _store_all(family: str, slug: str, level: str, kind: str = KIND_KP) -> dict:
+    p = store_ng_path(family, slug, level, kind)
     if os.path.exists(p):
         return _read_json(p)
-    return {"schema": "kp_ng_registry_v1", "family": family, "slug": slug, "level": level, "entries": []}
+    return {"schema": "kp_ng_registry_v1", "family": family, "slug": slug, "level": level, "kind": kind, "entries": []}
 
 
-def store_add_ng(family: str, slug: str, level: str, entry: dict) -> None:
-    doc = _store_all(family, slug, level)
-    for e in doc["entries"]:
-        if e.get("active", True) and e["candidate_id"] == entry["candidate_id"]:
-            return
-    e2 = dict(entry)
-    e2["active"] = True
-    doc["entries"].append(e2)
-    _write_json_atomic(store_ng_path(family, slug, level), doc)
+def store_add_ng(family: str, slug: str, level: str, entry: dict, kind: str = KIND_KP) -> None:
+    with store_lock(family, slug, level, kind, "add_ng"):
+        doc = _store_all(family, slug, level, kind)
+        for e in doc["entries"]:
+            if e.get("active", True) and e["candidate_id"] == entry["candidate_id"]:
+                return
+        e2 = dict(entry)
+        e2["active"] = True
+        doc["entries"].append(e2)
+        _write_json_atomic(store_ng_path(family, slug, level, kind), doc)
 
 
-def store_remove_ng(family: str, slug: str, level: str, *, candidate_id: str = None, phrase: str = None, reason: str, by: str) -> list:
-    """unng: 理由・記録必須。解除は削除でなくactive=falseとremovedの記録を残す。"""
+def store_remove_ng(family: str, slug: str, level: str, *, candidate_id: str = None, phrase: str = None, reason: str, by: str,
+                    kind: str = KIND_KP, sentence_key: str = None) -> list:
+    """unng: 理由・記録必須。解除は削除でなくactive=falseとremovedの記録を残す。grammarはsentence_key(正規化済みの文)でも指定できる。"""
     if not (reason or "").strip() or not (by or "").strip():
         raise KpReviewError("unngは --reason と --by が必須です(記録必須)")
-    doc = _store_all(family, slug, level)
-    removed = []
-    for e in doc["entries"]:
-        if not e.get("active", True):
-            continue
-        if (candidate_id and e["candidate_id"] == candidate_id) or (phrase and e.get("phrase_key") == phrase_key(phrase)):
-            e["active"] = False
-            e["removed"] = {"at": _now(), "by": by, "reason": reason}
-            removed.append(e["candidate_id"])
-    if removed:
-        _write_json_atomic(store_ng_path(family, slug, level), doc)
-    return removed
+    with store_lock(family, slug, level, kind, "remove_ng"):
+        doc = _store_all(family, slug, level, kind)
+        removed = []
+        for e in doc["entries"]:
+            if not e.get("active", True):
+                continue
+            if (candidate_id and e["candidate_id"] == candidate_id) or (phrase and e.get("phrase_key") == phrase_key(phrase)) \
+                    or (sentence_key and e.get("sentence_key") == sentence_key):
+                e["active"] = False
+                e["removed"] = {"at": _now(), "by": by, "reason": reason}
+                removed.append(e["candidate_id"])
+        if removed:
+            _write_json_atomic(store_ng_path(family, slug, level, kind), doc)
+        return removed
 
 
 def make_ng_entry(cand: dict, reason: str, by: str) -> dict:
@@ -363,103 +378,76 @@ def declarations_path(run_dir: str) -> str:
     return os.path.join(run_dir, "kp_review_mode.json")
 
 
-def scoped_declarations_dir() -> str:
-    return os.path.join(STORE_ROOT, "declarations")
+# 宣言のsource(er120.AUTO_DECLARATION_SOURCESと一致。突合testで固定)
+DECLARATION_SOURCES = ("cli_runner_arg", "declare_absent_cli")
 
 
-def add_declaration(*, run_dirs: Optional[list] = None, scope: Optional[dict] = None, by: str, reason: str,
-                    user_ref: str = "", source: str = "declare_absent_cli", until: Optional[str] = None,
+def add_declaration(*, run_dirs: list, by: str, reason: str, user_ref: str = "", source: str = "declare_absent_cli",
                     rounds: Optional[list] = None, candidates_sha256: Optional[str] = None) -> list:
-    """明示的な不在宣言を記録する(自動確定の唯一の入口)。declared_by・reasonは必須。AI(Fable等)が宣言する場合はユーザー発言の参照(user_ref)が必須。
-    run_dirs=個別run宣言 / scope={"family":"x|z","date":"YYYY-MM-DD"}=範囲宣言(date か until のどちらかが必須=時間境界)。"""
+    """明示的な不在宣言を記録する(自動確定の唯一の入口)。**個別run・round・候補shaに紐づく宣言のみ**(期限付き/範囲付き宣言は不採用=R-7撤去)。
+    declared_by・reasonは必須。AI(Fable等)が宣言する場合はユーザー発言の参照(user_ref)が必須(AIの『不在とみなした』を自動確定の経路にしない)。"""
     if not (by or "").strip():
         raise KpReviewError("不在宣言には --by(宣言者)が必須です")
     if not (reason or "").strip():
         raise KpReviewError("不在宣言には --reason が必須です")
     if _requires_user_ref(by) and not (user_ref or "").strip():
         raise KpReviewError("AIが宣言する場合は --user-ref(ユーザー発言の参照)が必須です(AIの『不在とみなした』を自動確定の経路にしない)")
-    if bool(run_dirs) == bool(scope):
-        raise KpReviewError("run_dirs か scope のどちらか一方だけを指定してください")
-    if scope:
-        if not scope.get("family"):
-            raise KpReviewError("範囲宣言には scope.family が必須です")
-        if not scope.get("date") and not until:
-            raise KpReviewError("範囲宣言には scope.date か until のどちらか(時間境界)が必須です")
+    if source not in DECLARATION_SOURCES:
+        raise KpReviewError(f"宣言のsourceが不正です: {source!r}(許可={DECLARATION_SOURCES})")
+    if not run_dirs:
+        raise KpReviewError("不在宣言には対象のrun dir(--runs)が必須です(範囲・期限付きの宣言は受け付けません)")
     rec = {"mode": "auto", "declared_by": by, "declared_at": _now(), "source": source, "reason": reason,
-           "user_ref": user_ref or "", "until": until, "rounds": list(rounds) if rounds else [1],
+           "user_ref": user_ref or "", "rounds": list(rounds) if rounds else [1],
            "candidates_sha256": candidates_sha256}
     ids = []
-    if run_dirs:
-        for rd in run_dirs:
-            r = dict(rec)
-            r["declaration_id"] = "d_" + jsha([rec, _run_key(rd), time.time()])[:12]
-            r["scope"] = {"run": _run_key(rd)}
-            path = declarations_path(rd)
-            doc = _read_json(path) if os.path.exists(path) else {"schema": "kp_review_mode_v1", "declarations": []}
-            doc["declarations"].append(r)
-            _write_json_atomic(path, doc)
-            ids.append(r["declaration_id"])
-    else:
+    for rd in run_dirs:
         r = dict(rec)
-        r["declaration_id"] = "d_" + jsha([rec, scope, time.time()])[:12]
-        r["scope"] = dict(scope)
-        _write_json_atomic(os.path.join(scoped_declarations_dir(), r["declaration_id"] + ".json"), r)
+        r["declaration_id"] = "d_" + jsha([rec, _run_key(rd), time.time()])[:12]
+        r["scope"] = {"run": _run_key(rd)}
+        path = declarations_path(rd)
+        doc = _read_json(path) if os.path.exists(path) else {"schema": "kp_review_mode_v1", "declarations": []}
+        doc["declarations"].append(r)
+        _write_json_atomic(path, doc)
         ids.append(r["declaration_id"])
     return ids
 
 
-def _decl_valid(d: dict, *, run_dir: str, family: str, level: str, review: Optional[dict], round_no: int,
-                cands_sha: Optional[str], now_iso: str) -> bool:
+def _decl_valid(d: dict, *, run_dir: str, review: Optional[dict], round_no: int, cands_sha: Optional[str]) -> bool:
     if d.get("mode") != "auto" or not d.get("declared_by") or not d.get("reason"):
+        return False
+    if d.get("source") not in DECLARATION_SOURCES:
         return False
     if _requires_user_ref(d.get("declared_by")) and not d.get("user_ref"):
         return False
-    sc = d.get("scope") or {}
-    if "run" in sc:
-        if sc["run"] != _run_key(run_dir):
-            return False
-    else:
-        if sc.get("family") != family:
-            return False
-        if sc.get("date") and sc["date"] != _today_jst():
-            return False
-    if d.get("until") and now_iso > d["until"]:
+    if (d.get("scope") or {}).get("run") != _run_key(run_dir):
         return False
     if d.get("rounds") and round_no not in d["rounds"]:
         return False
     if d.get("candidates_sha256") and d["candidates_sha256"] != cands_sha:
         return False
-    # M-6: Humanの操作(select/reselect/ng/unng/resolve-gloss)があった時点で、それ以前の宣言は失効する
+    # M-6: Humanの操作(select/reselect/ng/unng/resolve-gloss等)があった時点で、それ以前の宣言は失効する
     last_human = (review or {}).get("last_human_op_at")
     if last_human and d.get("declared_at", "") <= last_human:
         return False
     return True
 
 
-def read_mode_declaration(run_dir: str, *, family: str, level: str, review: Optional[dict], round_no: int,
+def read_mode_declaration(run_dir: str, *, level: str = "", review: Optional[dict], round_no: int,
                           cands_sha: Optional[str]) -> Optional[dict]:
-    """自動確定モードの**単一読取点**。有効な宣言があればそのdictを返し、無ければNone(=待機)。
-    環境変数・関数引数・設定dict・hooks・既定値は読まない(宣言ファイルのみ)。"""
-    now_iso = _now()
-    cands = []
+    """自動確定モードの**単一読取点**(KP・文法で共通)。有効な宣言があれば下記dict形を返し、無ければNone(=待機)。
+    dict形: {mode:"auto", declared_by, declared_at, reason, source∈DECLARATION_SOURCES, user_ref, declaration_id, rounds, candidates_sha256}
+    (er120.normalize_modeが受け付ける形)。環境変数・関数引数・設定dict・hooks・既定値は読まない(run dirの宣言ファイルのみ)。"""
     p = declarations_path(run_dir)
-    if os.path.exists(p):
-        try:
-            cands += list(_read_json(p).get("declarations") or [])
-        except (OSError, ValueError):
-            pass
-    sd = scoped_declarations_dir()
-    if os.path.isdir(sd):
-        for fn in sorted(os.listdir(sd)):
-            if fn.endswith(".json"):
-                try:
-                    cands.append(_read_json(os.path.join(sd, fn)))
-                except (OSError, ValueError):
-                    continue
+    if not os.path.exists(p):
+        return None
+    try:
+        cands = list(_read_json(p).get("declarations") or [])
+    except (OSError, ValueError):
+        return None
     for d in cands:
-        if _decl_valid(d, run_dir=run_dir, family=family, level=level, review=review, round_no=round_no,
-                       cands_sha=cands_sha, now_iso=now_iso):
-            return d
+        if _decl_valid(d, run_dir=run_dir, review=review, round_no=round_no, cands_sha=cands_sha):
+            return {k: d.get(k) for k in ("mode", "declared_by", "declared_at", "reason", "source", "user_ref", "declaration_id",
+                                          "rounds", "candidates_sha256")}
     return None
 
 
@@ -565,6 +553,9 @@ def auto_select(cands: dict, *, level: str, kind: str = KIND_KP, ng_entries: Opt
 
 
 def selection_signature(review: dict) -> str:
+    if review.get("kind") == KIND_GRAMMAR:   # 突合: 文法の確定recordの署名はer120の単一関数(同一payload)
+        import er120_part2_grammar_production_01 as _g
+        return _g.grammar_selection_signature(review)
     sel = review.get("selection") or {}
     ng = sorted(f"{e['candidate_id']}|{e.get('phrase_key')}" for e in (review.get("ng") or []) if e.get("active", True))
     return jsha({"kind": review.get("kind", KIND_KP), "text_sha256": review.get("text_sha256"),
@@ -1228,7 +1219,7 @@ def render_request_md(cands: dict, review: dict, *, run_hint: str, ng_entries: O
               f"- AI推奨を了承: `{p} select --run {run_hint} --level {level} --accept-ai --candidates-sha {cands['candidates_sha256']} --by <名前>`",
               f"- 選択: `{p} select --run {run_hint} --level {level} --kp 1,2,3" + (" --vocab 1,2,3,4,5" if level == "b1b" else "") + " [--ng 6:理由] --by <名前>`",
               f"- 選び直し(NG付き): `{p} reselect --run {run_hint} --level {level} --ng 4:理由 --by <名前>`(上限{RESELECT_MAX}回)",
-              f"- 不在として進める(明示宣言): `{p} declare-absent --runs {run_hint} --reason <理由> --by <名前> [--user-ref <ユーザー発言の参照>]`",
+              f"- 不在として進める(明示宣言。このrun・この候補round限り): `{p} declare-absent --runs {run_hint} --reason <理由> --by <名前> [--user-ref <ユーザー発言の参照>]`",
               "", "再開: 上の操作の後、制作コマンドを**同じコマンドのまま**再実行してください(supportの再生成・再選定は行われません)。"]
     return "\n".join(lines) + "\n"
 
@@ -1318,7 +1309,7 @@ def ensure_kp_review(kp_dir: str, *, run_dir: str, family: str, slug: str, level
         cands, review, generated = doc, rv, True
     # PENDING: 明示宣言があればAUTO
     if review["status"] == ST_PENDING:
-        decl = read_mode_declaration(run_dir, family=family, level=level, review=review, round_no=review.get("round", 1),
+        decl = read_mode_declaration(run_dir, level=level, review=review, round_no=review.get("round", 1),
                                      cands_sha=review["candidates_sha256"])
         if decl is not None:
             ng_ent = ng_entries_of(review, family, slug, level)

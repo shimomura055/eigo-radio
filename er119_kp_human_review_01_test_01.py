@@ -362,35 +362,31 @@ class TestDeclarationScope(KpTestCase):
             kp = jl(f"{self.kp_dir}/keywords_canonicalized.json")
             self.assertNotIn("pushed prices up", [i["used_form"] for i in kp["items"]])   # round1でNGにした句は復活しない
 
-    def test_ai_declaration_requires_user_ref_and_scoped_requires_time_bound(self):
+    def test_ai_declaration_requires_user_ref(self):
         with Env(self.tmp):
             with self.assertRaises(rv.KpReviewError):
                 rv.add_declaration(run_dirs=[self.run_dir], by="Fable", reason="不在")
             rv.add_declaration(run_dirs=[self.run_dir], by="Fable", reason="不在", user_ref="ユーザー2026-10-26発言「今日は見ない」")
             with self.assertRaises(rv.KpReviewError):
-                rv.add_declaration(scope={"family": "x"}, by="user", reason="r")   # 時間境界なし
-            with self.assertRaises(rv.KpReviewError):
                 rv.add_declaration(run_dirs=[self.run_dir], by="", reason="r")
             with self.assertRaises(rv.KpReviewError):
                 rv.add_declaration(run_dirs=[self.run_dir], by="user", reason="")
 
-    def test_scoped_declaration_family_date_applies_and_expires(self):
-        with Env(self.tmp) as env:
-            rv.add_declaration(scope={"family": "x", "date": rv._today_jst()}, by="user", reason="1日不在")
-            r = self.ensure(env)
-            self.assertEqual(r["state"], "FINALIZED")
-        self.setUp()
-        with Env(self.tmp) as env:
-            rv.add_declaration(scope={"family": "z", "date": rv._today_jst()}, by="user", reason="Zのみ")
-            self.assertEqual(self.ensure(env)["state"], "PENDING")      # family不一致
-        self.setUp()
-        with Env(self.tmp) as env:
-            rv.add_declaration(scope={"family": "x", "date": "2000-01-01"}, by="user", reason="過去日")
-            self.assertEqual(self.ensure(env)["state"], "PENDING")      # 日付不一致
-        self.setUp()
-        with Env(self.tmp) as env:
-            rv.add_declaration(scope={"family": "x"}, until="2000-01-01T00:00:00+09:00", by="user", reason="期限切れ")
-            self.assertEqual(self.ensure(env)["state"], "PENDING")
+    def test_R7_period_or_range_declarations_are_removed(self):
+        """委任_03(ユーザー決定2026-10-25): 期限付き/範囲付き(family・日付)の不在宣言は不採用。APIにも読取点にも残っていない。"""
+        import inspect
+        params = inspect.signature(rv.add_declaration).parameters
+        for k in ("scope", "until"):
+            self.assertNotIn(k, params)
+        with self.assertRaises(TypeError):
+            rv.add_declaration(scope={"family": "x"}, until="2999-01-01T00:00:00+09:00", by="user", reason="r")
+        self.assertFalse(hasattr(rv, "_today_jst"))
+        src = inspect.getsource(rv)
+        for needle in ("scope_family", "scope-family", "_today_jst", "until"):
+            self.assertNotIn(needle, src, needle)
+        # run_dirsなしの宣言は作れない(範囲宣言の入口がない)
+        with self.assertRaises((KeyError, TypeError, rv.KpReviewError)):
+            rv.add_declaration(by="user", reason="r")
 
     def test_declaration_for_other_run_does_not_apply(self):
         with Env(self.tmp) as env:

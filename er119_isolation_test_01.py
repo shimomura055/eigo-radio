@@ -38,7 +38,8 @@ class TestSharedFunctionsUnchanged(unittest.TestCase):
 
 
 class TestImportersAreOnlyXZRunners(unittest.TestCase):
-    ALLOWED = {"er019_family_x_audio_production_runner_01.py", "er026_family_z_fiction_production_runner_01.py"}
+    ALLOWED = {"er019_family_x_audio_production_runner_01.py", "er026_family_z_fiction_production_runner_01.py",
+               "er120_part2_wiring_01.py"}   # 委任_03: 文法(Part 2)配線module(X/Z runner共通の1経路)
 
     def test_only_x_z_runners_import_er119(self):
         offenders = []
@@ -52,7 +53,7 @@ class TestImportersAreOnlyXZRunners(unittest.TestCase):
         self.assertEqual(offenders, [])
 
     def test_grammar_kind_not_referenced_by_production(self):
-        for b in self.ALLOWED:
+        for b in ("er019_family_x_audio_production_runner_01.py", "er026_family_z_fiction_production_runner_01.py"):   # 委任_03: runner本体は文法kindを直接参照しない(配線moduleだけが扱う)
             with open(os.path.join(ROOT, b), encoding="utf-8", errors="ignore") as f:
                 self.assertNotIn("KIND_GRAMMAR", f.read(), b)
 

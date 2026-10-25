@@ -61,12 +61,15 @@ STAGE_KEY = {"r0": "FAMILY_Z_WRITER_ADV_R0", "r1": "FAMILY_Z_WRITER_ADV_R1",
              "r2": "FAMILY_Z_WRITER_ADV_R2", "std_adjust": "FAMILY_Z_STD_ADJUST"}
 STAGE_FILE = {"r0": "r0.md", "r1": "r1.md", "r2": "r2.md", "std_adjust": "std.md"}
 # 依存(親→子)。regenerate時は推移的な子孫をstale扱いにする。
+# Part 2(文法、PART2-GRAMMAR-PRODUCTION-WIRING-01 委任_03、Advanced=b1bのみ): part2_cand_b1b(候補抽出Step A'')→part2_b1b(確定後のStep B)。
+# r2(本文)が変われば両方stale。kp_b1b(KP選定)は依存させない(part2_b1bの入力は本文sha+label+文法確定署名。Part 1の訳は参考訳であり確定には入らない)。
 DEPENDENTS = {
-    "r0": ["r1"], "r1": ["r2"], "r2": ["std_adjust", "plan_b1b", "kp_b1b"],
+    "r0": ["r1"], "r1": ["r2"], "r2": ["std_adjust", "plan_b1b", "kp_b1b", "part2_cand_b1b"],
     "std_adjust": ["plan_a2", "kp_a2"], "plan_b1b": ["plan_a2", "support_b1b"], "plan_a2": ["support_a2"],
+    "part2_cand_b1b": ["part2_b1b"],
 }
 ALL_STAGE_NAMES = ("r0", "r1", "r2", "std_adjust", "plan_b1b", "plan_a2",
-                   "support_b1b", "support_a2", "kp_b1b", "kp_a2")
+                   "support_b1b", "support_a2", "kp_b1b", "kp_a2", "part2_cand_b1b", "part2_b1b")
 
 # ------------------------------------------------------------
 # Prompt(Trial②正式化)

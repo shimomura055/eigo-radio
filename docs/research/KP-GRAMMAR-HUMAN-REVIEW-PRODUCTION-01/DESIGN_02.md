@@ -14,7 +14,7 @@
 | 5 | `--regenerate-stage kp_<lv>` | 確定済みならSTOP | **現在のreviewからの再finalize(再選定なし)+子孫stale化**。再選定は`reselect` CLIだけ。既存STOP文言の「--regenerate-stage kp_*」案内は「再選定」の意味を外した | M-3(b) |
 | 6 | X再開 | 規定なし | review/候補が有効(本文sha一致)なら通常のscaffold/allでも**support(有料)を再生成せずKPはfinalizeのみ**。support成果物が無ければSTOP。rc=4には正確な再開コマンドを1つだけ表示 | M-4 |
 | 7 | NG registry | 記事ID単位(run dir名を含むIDで実装すると新run dirで消える) | **`family+slug+level`キー、run dirの外の共有store**(`er119_output/kp_human_review_store_01/`)。run内に参照とコピー | M-5 |
-| 8 | 不在宣言 | runに1つのmode file | **round/`candidates_sha256`に結びつけ、Humanの操作(select/reselect/ng/unng/resolve-gloss)で失効**。`declared_by`と出所を必須。AIが宣言する場合は`user_ref`(ユーザー発言の参照)必須。範囲宣言(`--scope-family/--scope-date/--until`)はCLIで可・既定では使わない(R-7) | M-6、R-7 |
+| 8 | 不在宣言 | runに1つのmode file | **round/`candidates_sha256`に結びつけ、Humanの操作(select/reselect/ng/unng/resolve-gloss)で失効**。`declared_by`と出所を必須。AIが宣言する場合は`user_ref`(ユーザー発言の参照)必須。期限付き/範囲付き(family・日付)の宣言は**不採用**(ユーザー決定2026-10-25。委任_03でCLI・核・testから撤去。次のrunにも不在を宣言するなら起動ごとに宣言/`--kp-review auto`) | M-6、R-7(撤去) |
 | 9 | item単位除外 | 「目標数未満ならretry」と「shortfall許容」が混在 | (a)canonicalization INVALIDは`item_reasons`のあるitemを除外し**残りで再実行、全体PASSのみ受理** (b)SRC D1(Z)・人称整合(Z)は候補単位に写す(不成立=`dropped(src_d1)`/`gloss_hr_pending`) (c)**外側retryは「AUTO採用可能な有効件数が3未満、かつGate除外が発生」した場合のみ**。retryは候補list全体を置換、vocabの4〜5件目不足はshortfallとして受容 | M-7 |
 | 10 | Redundancy QA | 候補全体(≤8)の1回のみ | 候補全体は**提示用の旗**として残し、加えて**finalizeで確定KP集合(Advはvocab集合も)へ1回再適用**(費用約0.02〜0.1円/レベル)。NGはAUTO=次候補へ繰り上げて再判定、Human=PENDINGへ戻る | M-8 |
 | 11 | `part1_items` | vocab欠落時は3件へfallback | **reviewが存在するなら`vocab_confirmed.json`必須(fail-closed)**。fallbackは`kp_human_review.json`の無い旧runだけ。`require_final_consistent`でvocab itemにも既存の消費側検査(`collect_unresolved`/`select_consumer_unevaluated`/Z `has_contract`)を適用。Part 1はvocabの連番rankで結合(KP側rankで結合しない) | M-9 |
@@ -59,4 +59,14 @@ REVIEWED/AUTO --reselect(NG付与可、上限2回)--> RESELECTION_REQUESTED --�
 ## 5. 残課題(実装に含めず記録)
 1. 公開済みXの**post-publication segment失効**(事後Reviewで確定が変わったときのsegment invalidate)はX側未実装。現状は`mark-published`+差の表示まで(Zは`mark_stale_descendants`の既存機構)。→ 次委任案(R1で必要性を確認)。
 2. 実API run(R1〜R4)は翌日JST 10/26以降。mockでは実LLMの出力品質(8件のcanonicalization・Gate除外率・Human負担)は未検証。
-3. Part 2文法層、Y入口はScope外(OPEN-484(g)で追跡、PRODUCTION_WIREDにしない)。
+3. ~~Part 2文法層はScope外~~ → 委任_03で統合済み(下記「委任_03追記」)。Y入口はScope外(OPEN-484(g)・OPEN-520で追跡、PRODUCTION_WIREDにしない)。
+
+## 6. 委任_03追記(2026-10-25): 文法(Part 2)の統合・R-7撤去
+- **R-7撤去(ユーザー決定: 不採用)**: 期限付き/範囲付きの不在宣言は作らない。残すのは(i)宣言なし=待機 (ii)明示宣言は候補sha・roundに結びつく (iii)Human操作で以後のroundの宣言は失効 (iv)`declared_by`・出所必須、AI宣言は`user_ref`必須だけ。`add_declaration`から`scope`/`until`、CLIから`--scope-family/--scope-date/--until`、核から`scoped_declarations_dir`/`_today_jst`を削除(残存Grep=0はRESULT_PACKET_KPHR3.md)。
+- **文法のHuman Review統合**: er119共通核を`kind="grammar"`で使う(`er119_grammar_review_01.py`)。状態機械・NG registry(`family+slug+level`、文法は別file)・排他lock・revision CAS・単一読取点`read_mode_declaration`(KPと文法で同じ宣言を共有)はKPと同一。待機は**1回**: 統合依頼書`<run>/review_request.md`+`[KP_REVIEW_PENDING]`1つ+rc=4(Z=`FamilyZKpReviewPending`)。
+- **er120 DESIGN_02 §3の6要望との対応**: ①確定statusの受理集合=`REVIEWED`/`UNREVIEWED_AUTO_ADOPTED`/`NO_CANDIDATE_UNREVIEWED`(`FORWARD_STATUSES_BY_KIND["grammar"]`) ②`finalize_review_record`が確定署名`selection_signature`を作り、Zの`part2_b1b`のinput shaと使う側の入口(`require_fresh_part2`)が同じ署名を検証 ③候補docのNG再適用(新NGで候補が変われば新review) ④`NO_CANDIDATE_UNREVIEWED`=待たずに確定・レビュー済みに数えない ⑤KP+文法の統合依頼書・rc=4を1回 ⑥事後Review=`grammar-select`で変更→署名変化→Z=`part2_b1b`が親sha不一致でSTOP→`--stage kp --regenerate-stage part2_b1b`(再finalizeのみ・再抽出なし)/X=`--stage study_text`。
+- **Z来歴**: `part2_cand_b1b`(入力=本文sha+label)、`part2_b1b`(入力=sha(本文sha|label|文法の確定署名))。いずれも`ensure_stage`を通り、有料呼出の前に同じ規則のpre-checkを行う。`DEPENDENTS`は`r2→part2_cand_b1b→part2_b1b`のみ(`kp_b1b→part2_b1b`は**置かない**: Part 2の確定はKP選定に依存せず、Part 1の訳は参考訳でしかない)。
+- **X**: Step A''はb1b scaffoldの先頭(support・KPより前)。未確定は文法/KPのどちらでもPart 1・Step Bを呼ばずrc=4。確定後の同じコマンド再実行でStep B(+Part 1)。失敗は`part2_failed.json`+rc=3、案内は`--stage study_text`の1つ(`--stage scaffold`/`all`は案内しない)。
+- **ページ**: Part 2はAdvancedだけ(X=player.html、Z=index.htmlのAdvancedの節。standard/advanced.htmlの開発確認ページには出さない)。描画は`compose_page_html`(=`g.compose_study_html`)の1関数。X公開ページ用の`er120_part2_wiring_01.public_study_html`が同じ関数を通り、Part 1の入力は`part1_items`(vocab_confirmed.json、最大5件)。`study_html_for_audio_dir`は従来経路(items未指定)を無改変で残し、`items=`を渡す呼出だけがvocab5件を使う。
+- **0件の表示**: DESIGN_01 §kの旧記述『Part 2コーナーなし』を撤去し、Trialの実出力どおり`ZERO_P2`(固定文面)をページ・md・htmlに載せる(適格0件=`NO_CANDIDATE_UNREVIEWED`、または全候補NG後にHumanが`omit`)。
+- **W1**: `STUDY_TEXT_GRAMMAR_EXTRACT`/`STUDY_TEXT_GRAMMAR_EXPLAIN`をer006の`PROCESS_MODEL_MAP`へ登録(SUPPORT_MODEL=gpt-6-luna。登録前のfail-closed testはP1[登録済み+応答モデル不一致でSTOP]へ置換)。

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import test_state_isolation_01  # noqa: F401
 
+import argparse
 import contextlib
 import io
 import json
@@ -109,10 +110,14 @@ class TestCli(KpTestCase):
         d = jl(os.path.join(self.run_dir, "kp_review_mode.json"))
         self.assertEqual(d["declarations"][0]["rounds"], [1])
         self.assertEqual(d["declarations"][0]["source"], "declare_absent_cli")
-        rc, out, err = run_cli(["declare-absent", "--scope-family", "x", "--reason", "r", "--by", "user"])   # 時間境界なし
-        self.assertEqual(rc, 2)
-        rc, out, err = run_cli(["declare-absent", "--scope-family", "x", "--scope-date", rv._today_jst(), "--reason", "1日不在", "--by", "user"])
-        self.assertEqual(rc, 0, err)
+        # 委任_03(R-7撤去): 範囲/期限の宣言引数はCLIに存在しない(argparseが拒否。宣言ファイルも増えない)
+        before = open(os.path.join(self.run_dir, "kp_review_mode.json"), encoding="utf-8").read()
+        for bad in (["--scope-family", "x"], ["--scope-date", "2026-10-26"], ["--until", "2999-01-01T00:00:00+09:00"]):
+            with self.assertRaises((SystemExit, argparse.ArgumentError)):
+                run_cli(["declare-absent", "--runs", self.run_dir, *bad, "--reason", "r", "--by", "user"])
+        with self.assertRaises((SystemExit, argparse.ArgumentError)):   # runs必須
+            run_cli(["declare-absent", "--reason", "r", "--by", "user"])
+        self.assertEqual(before, open(os.path.join(self.run_dir, "kp_review_mode.json"), encoding="utf-8").read())
 
     def test_declare_then_run_auto_then_status(self):
         env = Env(self.tmp)

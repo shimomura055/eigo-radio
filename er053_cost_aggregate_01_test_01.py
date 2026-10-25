@@ -71,7 +71,8 @@ class AggTests(unittest.TestCase):
 class PricingRoutingAdditionTests(unittest.TestCase):
     NEW_MODEL = "gemini-3.5-flash-lite"
     # 閉集合更新(委任_06 C-2、2026-10-22): FAMILY_X_B3_CORE_NUMBER_ROUNDING(gpt-6-luna、追加のみ)を追加
-    NEW_KEYS = {"FAMILY_X_RF_LUNA", "FAMILY_X_RF_GEMINI", "FAMILY_X_FACTLOCK_R0", "FAMILY_X_FACTLOCK_REVISE", "FAMILY_X_B3_CORE_NUMBER_ROUNDING"}
+    NEW_KEYS = {"FAMILY_X_RF_LUNA", "FAMILY_X_RF_GEMINI", "FAMILY_X_FACTLOCK_R0", "FAMILY_X_FACTLOCK_REVISE", "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+                "STUDY_TEXT_GRAMMAR_EXTRACT", "STUDY_TEXT_GRAMMAR_EXPLAIN"}   # 委任_03(2026-10-25): Part 2文法の2 process(SUPPORT_MODEL)
 
     def test_pricing_addition_only_and_existing_entries_untouched(self):
         """git HEAD(C1適用前でもC1 commit後でも成立する形): gemini-3.5-flash-lite以外のエントリはHEADと完全一致、

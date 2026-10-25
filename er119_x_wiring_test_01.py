@@ -118,7 +118,7 @@ class TestXWaitAndResume(XMainBase):
         self.assertIsNone(rc)
         self.assertEqual(rv.load_review(self.kp_dir)["status"], rv.ST_AUTO)
         decl = jl(os.path.join(self.out, "kp_review_mode.json"))["declarations"][0]
-        self.assertEqual(decl["source"], "runner_arg")
+        self.assertEqual(decl["source"], "cli_runner_arg")
 
     def test_kp_review_auto_requires_by_and_reason(self):
         rc, _ = self.main("scaffold", "--kp-review", "auto")

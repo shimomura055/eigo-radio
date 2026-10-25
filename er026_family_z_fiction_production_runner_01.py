@@ -1544,6 +1544,170 @@ def _part1_items_b1b(ctx) -> list:
         raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_ITEMS_NOT_READY: {e}") from e
 
 
+# ------------------------------------------------------------
+# Part 2「Grammar & Sentence Structure」(PART2-GRAMMAR-PRODUCTION-WIRING-01 委任_03 / KP-GRAMMAR-HUMAN-REVIEW-PRODUCTION-01 委任_03、
+# ユーザーAPPROVED_FOR_PRODUCTION 2026-10-25。Advanced=b1bのみ・Standardページには出さない)
+# stage: part2_cand_b1b(候補抽出Step A''。KP候補生成と同じ待機点の前) → [文法Human確認 or 明示の不在宣言] → part2_b1b(確定後のStep B。再抽出なし)
+# 使う側(load_level_inputs[TTS/Gate/Assembly共有]・stage_pages・stage_page_verify)で存在と最新性・確定との一致をfail-closed確認する。
+# 設計: docs/research/PART2-GRAMMAR-PRODUCTION-WIRING-01/DESIGN_02.md §3〜§4
+# ------------------------------------------------------------
+PART2_CAND_STAGE, PART2_FINAL_STAGE = "part2_cand_b1b", "part2_b1b"
+
+
+def _p2w():
+    import er120_part2_wiring_01 as p2w
+    return p2w
+
+
+def _part2_dir(ctx) -> str:
+    return f"{ctx.out_dir}/study_text"
+
+
+def _part2_inputs(ctx):
+    """(段落list, label)。段落=canonical_article_text(b1b)の空行区切り(er120 docstring: melos r2で29段落一致)、label=作品名(topic_title)。"""
+    text = canonical_article_text(_m().w62.rd(_level_text_path(ctx, "b1b")))
+    return text.split("\n\n"), STORY_REGISTRY[ctx.story_key]["topic_title"]
+
+
+def _part2_next(ctx, regen: str = PART2_FINAL_STAGE) -> str:
+    return (f"{_part1_cli_hint(ctx, regen)}(Part 2だけ再finalize。本文・KP・TTSはやり直さない。再抽出はしない)。"
+            f"未確定なら `py er119_kp_human_review_cli_01.py grammar-select --run {ctx.out_dir} ...` で決めてから `--stage kp` を同じまま再実行")
+
+
+def _stage_precheck(prov, name: str, input_sha: str, force: bool) -> None:
+    """有料呼出の前に、ensure_stageと同じ来歴規則(stale/親sha不一致)で止める(確認前に抽出・解説を発注しない)。"""
+    if force:
+        return
+    w62 = _m().w62
+    if name in prov.data["downstream_stale"]:
+        raise w62.FamilyZProvenanceMismatchStop(f"{name}はstale(親の再生成後)。明示 --regenerate-stage {name} が必要(自動再生成しない)")
+    entry = prov.stage_entry(name)
+    if entry is not None and entry["input_sha256"] != input_sha:
+        raise w62.FamilyZProvenanceMismatchStop(f"{name}: 親sha不一致 entry.input={entry['input_sha256'][:12]} 現在={input_sha[:12]}")
+
+
+def _part2_hook(ctx, key: str):
+    hook = ctx.hooks.get(key)
+    if hook is None and ctx.mode != "real":
+        raise FamilyZE2EStop(f"FAMILY_Z_PART2_NO_HOOK: mock/dry-runではhooks.{key}が必要(実APIへは出さない)")
+    return hook
+
+
+def _part2_cand_step(ctx, prov) -> dict:
+    """候補抽出(または保存済みの再利用)→Human確認/明示宣言/適格0件の即確定の評価。KP候補生成と同じ待機点の前に呼ぶ。
+    returns er119_grammar_review_01.ensure_grammar_review の戻り値({"state":"READY"|"PENDING",...})。失敗は part2_failed.json + FamilyZE2EStop。"""
+    p2w = _p2w()
+    g = p2w.g
+    w62 = _m().w62
+    paragraphs, label = _part2_inputs(ctx)
+    sd = _part2_dir(ctx)
+    force = ctx.regenerate_stage == PART2_CAND_STAGE
+    _stage_precheck(prov, PART2_CAND_STAGE, g.cand_stage_input_sha(paragraphs, label), force)
+    hook = _part2_hook(ctx, "part2_extract_call_fn")
+    try:
+        with ctx.stage_context("part2_cand"):
+            res = p2w.candidate_stage(sd, run_dir=ctx.out_dir, family="z", slug=ctx.slug, paragraphs=paragraphs, label=label, run_hint=ctx.out_dir,
+                                      extract_call_fn=hook, client=ctx.llm_client, budget_guard=lambda stage, est: _guard(ctx, f"part2_{stage}", est),
+                                      force_extract=force)
+    except (g.Part2Error, g.Part2InputError) as e:
+        g.write_failed_record(sd, e, next_command=_part2_next(ctx, PART2_CAND_STAGE), stage=PART2_CAND_STAGE)
+        raise FamilyZE2EStop(f"FAMILY_Z_PART2_NOT_OK({PART2_CAND_STAGE}): {e}(候補抽出に失敗。TTSへ渡さずSTOP。記録={sd}/{g.FAILED_FILENAME}。"
+                             f"次の一手: {_part2_next(ctx, PART2_CAND_STAGE)})") from e
+    w62.ensure_stage(prov, PART2_CAND_STAGE, g.cand_stage_input_sha(paragraphs, label), f"{sd}/part2_cand_stage.json",
+                     lambda: (p2w.cand_marker(sd, paragraphs, label), {"label": label}), regenerate=force)
+    return res
+
+
+def _part2_final_step(ctx, prov, p1_items: list) -> str:
+    """確定済みの文法reviewから Step B(再抽出なし)。part2_b1bのinput_sha=sha(text_sha|label|文法の確定selection_signature)。
+    確定が事後に変わると親sha不一致でSTOPし、`--regenerate-stage part2_b1b`(再finalize)を要求する。"""
+    p2w = _p2w()
+    g = p2w.g
+    w62 = _m().w62
+    paragraphs, label = _part2_inputs(ctx)
+    sd = _part2_dir(ctx)
+    doc, review, _res = p2w.load_state(sd)
+    if doc is None or review is None:
+        raise FamilyZE2EStop("FAMILY_Z_PART2_NOT_READY: 文法の候補/reviewがありません(part2_cand_b1bが未実行)")
+    if review["status"] not in _khr().FORWARD_STATUSES_BY_KIND["grammar"]:
+        raise FamilyZKpReviewPending(f"{_khr().PENDING_MARKER} Part 2(文法)のHuman確認待ち: status={review['status']}", [p2w.gr.pending_summary(sd, review)])
+    ja_doc = _m().w62.rj(_part1_ja_path(ctx)) if os.path.exists(_part1_ja_path(ctx)) else None
+    pool = p2w.part1_ref_ja_pool(p1_items, ja_doc)
+    input_sha = g.final_stage_input_sha(paragraphs, label, review)
+    force = ctx.regenerate_stage == PART2_FINAL_STAGE
+    try:
+        _stage_precheck(prov, PART2_FINAL_STAGE, input_sha, force)
+    except w62.FamilyZProvenanceMismatchStop as e:
+        raise type(e)(f"{e} 次の一手: {_part2_next(ctx)}") from e
+    hook = _part2_hook(ctx, "part2_explain_call_fn")
+
+    def runner():
+        try:
+            with ctx.stage_context("part2_final"):
+                out = p2w.finalize_stage(sd, paragraphs=paragraphs, label=label, ref_ja_pool=pool, explain_call_fn=hook, client=ctx.llm_client,
+                                         budget_guard=lambda stage, est: _guard(ctx, f"part2_{stage}", est), write=False)
+        except g.Part2PendingReview as e:
+            raise FamilyZKpReviewPending(f"{_khr().PENDING_MARKER} Part 2(文法)のHuman確認待ち: {e.status}", [p2w.gr.pending_summary(sd, review)]) from e
+        except (g.Part2Error, g.Part2InputError) as e:
+            g.write_failed_record(sd, e, next_command=_part2_next(ctx), stage=PART2_FINAL_STAGE)
+            raise FamilyZE2EStop(f"FAMILY_Z_PART2_NOT_OK({PART2_FINAL_STAGE}): {e}(解説生成に失敗。TTSへ渡さずSTOP。記録={sd}/{g.FAILED_FILENAME}。"
+                                 f"次の一手: {_part2_next(ctx)})") from e
+        res = out["result"]
+        p2w.write_md(sd, res)
+        return json.dumps(res, ensure_ascii=False, indent=2), {"part2_status": res.get("status"), "review_status": review["status"],
+                                                                "grammar_selection_signature": review["selection_signature"]}
+
+    r = w62.ensure_stage(prov, PART2_FINAL_STAGE, input_sha, f"{sd}/{g.RESULT_FILENAME}", runner, regenerate=force)
+    fp = f"{sd}/{g.FAILED_FILENAME}"
+    if os.path.exists(fp):
+        os.replace(fp, fp.replace(".json", ".resolved.json"))   # 成功したら失敗記録は解決済みへ退避(削除しない)
+    return r["status"]
+
+
+def _part2_pool(ctx) -> dict:
+    p = _part1_ja_path(ctx)
+    return _p2w().part1_ref_ja_pool(_part1_items_b1b(ctx), _m().w62.rj(p) if os.path.exists(p) else None)
+
+
+def _assert_part2_final(ctx, where: str) -> dict:
+    """Part 2を使う側の入口(M-2): 無い/古い/確定不一致=FamilyZE2EStop、文法のHuman確認待ち=FamilyZKpReviewPending(rc=4)。resultを返す。"""
+    p2w = _p2w()
+    g = p2w.g
+    paragraphs, label = _part2_inputs(ctx)
+    try:
+        return p2w.require_final(_part2_dir(ctx), paragraphs, label, next_command=_part2_next(ctx), where=where, ref_ja_pool=_part2_pool(ctx))
+    except p2w.Part2NotConfirmed as e:
+        raise FamilyZKpReviewPending(str(e), e.pending) from e
+    except (g.Part2Error, g.Part2InputError) as e:
+        raise FamilyZE2EStop(f"FAMILY_Z_PART2_NOT_READY({where}): {e}") from e
+
+
+def _verify_part2_outputs(ctx) -> dict:
+    """R-3: 確定 <-> part2_result.json <-> study_text/*.md <-> 試聴ページ(index.html。build_pagesはstudy_htmlをAdvancedの節にだけ載せる)を照合。
+    Standardには出ていないこと(開発確認用のstandard.html/advanced.htmlにも出ない・index.htmlに1回だけ)も確認する。"""
+    p2w = _p2w()
+    g = p2w.g
+    paragraphs, label = _part2_inputs(ctx)
+    idx = f"{ctx.pages_dir}/index.html"
+    with open(idx, encoding="utf-8") as f:
+        idx_html = f.read()
+    try:
+        p2w.verify_outputs(_part2_dir(ctx), paragraphs, label, next_command=_part2_next(ctx), where="stage_page_verify", ref_ja_pool=_part2_pool(ctx),
+                           md_path=f"{_part2_dir(ctx)}/{g.PART2_FILE_STEM}.md", html_text=idx_html)
+    except (g.Part2Error, g.Part2InputError) as e:
+        raise FamilyZE2EStop(f"FAMILY_Z_PART2_OUTPUT_MISMATCH: {e}") from e
+    marker = "Grammar &amp; Sentence Structure"
+    if idx_html.count(marker) != 1:
+        raise FamilyZE2EStop(f"FAMILY_Z_PART2_OUTPUT_MISMATCH: index.htmlのPart 2ブロックが{idx_html.count(marker)}個です(Advancedの節に1個だけのはず)")
+    for fn in ("standard.html", "advanced.html"):
+        p = f"{ctx.pages_dir}/{fn}"
+        if os.path.exists(p):
+            with open(p, encoding="utf-8") as f:
+                if marker in f.read():
+                    raise FamilyZE2EStop(f"FAMILY_Z_PART2_ON_STANDARD_PAGE: {fn}にPart 2が載っています(Part 2は試聴ページ index.html のAdvancedの節だけ)")
+    return {"index_page": "OK", "blocks_in_index": 1, "standard_page_has_part2": False}
+
+
 def _kp_fn_for_ctx(ctx):
     """hook or w62.run_kp_with_outer_retry。canonicalization(canon_fn既定=sc.run_key_phrase_canonicalization)の中で
     gloss再整合が既定ON・無条件で走る(KGCPW)。"""
@@ -1844,6 +2008,11 @@ def stage_kp(ctx) -> dict:
     prov = _prov(ctx)
     summary = {}
     pending = []
+    # Part 2(文法): 候補抽出(Step A'')をKP候補生成と同じ待機点の前に実行する(未確定ならKPのpendingと1回にまとめて待機)。resumeはAPI 0。
+    _p2c = _part2_cand_step(ctx, prov)
+    summary["part2_cand_b1b"] = {"state": _p2c["state"], "status": _p2c["review"]["status"], "generated": _p2c["generated"]}
+    if _p2c["state"] == "PENDING":
+        pending.append(_p2c["pending"])
     for lv in ("b1b", "a2"):
         text = canonical_article_text(w62.rd(_level_text_path(ctx, lv)))
         # KP Human Review(2026-10-25、ユーザーAPPROVED_FOR_PRODUCTION): 候補(最大8)生成→Human確認/明示の不在宣言→finalize。両レベルの候補を
@@ -1908,7 +2077,7 @@ def stage_kp(ctx) -> dict:
         os.makedirs(ctx.out_dir, exist_ok=True)
         with open(f"{ctx.out_dir}/kp_review_pending.json", "w", encoding="utf-8") as f:
             json.dump({"pending": pending, "summary": summary}, f, ensure_ascii=False, indent=2)
-        raise FamilyZKpReviewPending(f"{_khr().PENDING_MARKER} KP Human Review待ち: " + ", ".join(p["level"] for p in pending), pending)
+        raise FamilyZKpReviewPending(f"{_khr().PENDING_MARKER} Human Review待ち: " + ", ".join((p.get("level") or p.get("kind", "?")) for p in pending), pending)
     # 方針6: Adv KP第3segment=英語解説(Coffee最終v3 Adv / X B1と同一構成)。
     kp = w62.rj(f"{_kp_assets_dir(ctx, 'b1b')}/keywords_canonicalized.json")
     items = sorted(kp["items"], key=lambda x: x["rank"])
@@ -1951,6 +2120,7 @@ def stage_kp(ctx) -> dict:
     summary["kp_part1_b1b"] = _stage_kp_part1(ctx, prov, p1_items)
     summary["kp_part1_ja_b1b"] = _stage_kp_part1_ja(ctx, prov, p1_items)   # 委任_16 T1: 解説とは独立の別stage・別call(引用英文のみ入力)
     _assemble_study_rows(ctx, p1_items)   # 組立検証(gloss HR/未評価・引用の逐語実在・訳の最新性)+study_text/保存
+    summary["part2_b1b"] = _part2_final_step(ctx, prov, p1_items)   # Part 2の確定(文法Human確認 or 明示宣言)からStep B。再抽出なし。Part 1の訳が参考訳pool
     return summary
 
 
@@ -2124,6 +2294,7 @@ def load_level_inputs(ctx, level: str, *, for_tts: bool = False) -> dict:
         _p1_items = _part1_items_b1b(ctx)   # M-9: Part 1の入力はvocab(最大5件)。KP側rankで結合しない
         _require_part1_fresh(ctx, _p1_items, "load_level_inputs(b1b)")
         _require_part1_ja_fresh(ctx, _p1_items, "load_level_inputs(b1b)")   # 委任_16 T1: 訳も同様にfail-closed確認
+        _assert_part2_final(ctx, "load_level_inputs(b1b)")   # Part 2(文法): 確定・結果の存在と最新性(M-2)。未確定=rc=4待機、古い/不整合=STOP
     kp_items = [{"rank": it["rank"], "used_form": it["used_form"], "japanese_gloss": it.get("japanese_gloss", ""),
                  "display_phrase": it["display_phrase"]} for it in items]
     expl = None
@@ -2235,7 +2406,9 @@ def stage_pages(ctx) -> dict:
         study_html = _p1().render_html_block(rows)
     except _p1().KpGeneralExplanationError as e:
         raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_RENDER_NOT_OK: {e}") from e
-    extra = {"study_html": study_html} if study_html else {}
+    _p2res = _assert_part2_final(ctx, "stage_pages")   # Part 2(文法)の存在・最新性・確定との一致
+    study_html = _p2w().compose_page_html(study_html, _p2res)   # R-1/R-2: Part 1ブロック直後にPart 2(共通builder1つ)。build_pagesはAdvancedにだけ載せる
+    extra = {"study_html": study_html}
     return _m().a63.build_pages(ctx.out_dir, ctx.pages_dir, page_title=cfg["page_title_ja"],
                                 audio_file_prefix=cfg["audio_file_prefix"], **extra)
 
@@ -2301,6 +2474,7 @@ def stage_page_verify(ctx) -> dict:
         except khr.KpReviewInconsistent as e:
             raise FamilyZE2EStop(f"FAMILY_Z_KP_SELECTION_OUTPUT_MISMATCH({lv}): {e}") from e
     res["kp_selection_verified"] = sel_report
+    res["part2_verified"] = _verify_part2_outputs(ctx)   # R-3: 確定 <-> part2_result.json <-> md <-> ページ(Advancedのみ)
     _m().w62.wj(f"{ctx.out_dir}/page_verify_local.json", res)
     problems = evaluate_page_verify(res)
     if std["overall"] != "PASS":
@@ -2593,6 +2767,11 @@ class MockApi:
         return w
 
 
+def _p2mock():
+    import er120_part2_mock_01 as mk
+    return mk
+
+
 def build_mock_context(run_root: str, run: str = "run_mock", pages_dir: str | None = None,
                        writer_hook=None, tts_generators=None, story_key: str = "melos", slug: str | None = None) -> E2EContext:
     m = _m()
@@ -2608,6 +2787,8 @@ def build_mock_context(run_root: str, run: str = "run_mock", pages_dir: str | No
                  "expl_call_fn": api.wrap("kp_expl", mock_expl_call_fn),
                  "part1_call_fn": api.wrap("kp_part1", mock_part1_call_fn),
                  "part1_ja_call_fn": api.wrap("kp_part1_ja", mock_part1_ja_call_fn),
+                 "part2_extract_call_fn": api.wrap("part2_extract", _p2mock().mock_extract_call_fn),   # Part 2(文法)のmock(API 0)
+                 "part2_explain_call_fn": api.wrap("part2_explain", _p2mock().mock_explain_call_fn),
                  "tts_generators": {k: api.wrap(f"tts:{k}", f) for k, f in gens.items()}}
     ctx.budget = E2EBudget(E2E_APPROVED_BUDGET_MAX_JPY, E2E_WARN_THRESHOLD_JPY, spent_fn=lambda: 0.0)
     return ctx
@@ -2798,7 +2979,7 @@ def main(argv=None):
         return 0
     except FamilyZKpReviewPending as e:    # KP Human Review待ち(失敗ではない)。rc=4(ZではRUN_LOCKと同じ番号のため、stdoutの[KP_REVIEW_PENDING]で区別する)
         import er119_kp_wiring_01 as _kw
-        print(_kw.pending_banner(e.pending, restart_command="py " + " ".join(sys.argv)))
+        print(_kw.pending_banner(e.pending, restart_command="py " + " ".join(sys.argv), run_dir=ctx.out_dir))
         return _khr().EXIT_CODE_PENDING
     except (_m().st.FamilyZStopSentinel, _m().st.FamilyZStopSentinelAbort) as e:   # STOPセンチネル。監査記録済み。rc=3(自動再開しない)
         print(f"[STOP_SENTINEL] {e}", file=sys.stderr)

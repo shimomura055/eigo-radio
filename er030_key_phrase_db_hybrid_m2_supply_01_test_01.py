@@ -476,7 +476,10 @@ class ScaffoldOnlyKpTests(unittest.TestCase):
         self._put_support(["a2", "b1b"])
         calls = []
         budget_notes = []
-        with mock.patch.object(self.runner.sc, "run_key_phrases", side_effect=lambda *a, **k: (calls.append((a, k)), self._kp_result())[1]), \
+        # 委任_03(OPEN-518の再発防止): X Production(kp_backend=fulltext_p2)のKP入口は run_kp_with_review(Human確認付き)。旧`sc.run_key_phrases`のmockだと
+        # 実LLMへ到達する(mock漏れ)ので、実際の入口をmockする(API 0)。
+        import er119_kp_wiring_01 as _kpw
+        with mock.patch.object(_kpw, "run_kp_with_review", side_effect=lambda **k: (calls.append(k), self._kp_result())[1]), \
                 mock.patch.object(self.runner, "run_family_x_a2_scaffold") as ma2, \
                 mock.patch.object(self.runner, "run_family_x_b1_scaffold") as mb1, \
                 mock.patch.object(self.runner, "generate_part1_for_b1b", return_value={"status": "OK"}), \
@@ -486,9 +489,8 @@ class ScaffoldOnlyKpTests(unittest.TestCase):
         ma2.assert_not_called()
         mb1.assert_not_called()                                    # support(Preview/Comment)は再生成しない
         self.assertEqual(len(calls), 2)                            # Std -> Adv 直列で各1回
-        for (a, k), lv in zip(calls, ("a2", "b1b")):
-            self.assertEqual(k.get("kp_backend"), "fulltext_p2")   # 既存と同じ呼出(kp_backend引数)。KPFT 委任_02: 既定=全文選定
-            self.assertEqual(a[3], lv)
+        for k, lv in zip(calls, ("a2", "b1b")):
+            self.assertEqual((k["family"], k["level"]), ("x", lv))   # KPFT 委任_02: 既定=全文選定(fulltext_p2)→KP Human Review入口
         self.assertEqual(res["a2"]["kp_backend_used"], "fulltext_p2")
         self.assertEqual(res["b1b"]["scaffold_only"], "kp")
         self.assertTrue(os.path.exists(f"{self.out}/audit/scaffold_article_sha256.json"))     # (ii)
@@ -516,7 +518,8 @@ class ScaffoldOnlyKpTests(unittest.TestCase):
 
     def test_default_scaffold_unchanged_generates_support(self):
         # scaffold_only未指定は従来どおりsupport生成を呼ぶ(挙動不変)
-        with mock.patch.object(self.runner.sc, "run_key_phrases", return_value=self._kp_result()), \
+        import er119_kp_wiring_01 as _kpw   # 委任_03: X Productionの実入口をmock(旧sc.run_key_phrasesのmockでは実LLMへ到達していた)
+        with mock.patch.object(_kpw, "run_kp_with_review", return_value=self._kp_result()), \
                 mock.patch.object(self.runner, "run_family_x_a2_scaffold", return_value={"preview": {"status": "OK"}}) as ma2:
             res = self.runner.run_theme_scaffold(None, self.SRC_DIR, self.out, ["a2"])
         ma2.assert_called_once()

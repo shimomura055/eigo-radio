@@ -131,6 +131,10 @@ PROCESS_MODEL_MAP = {
     # FAMILY-Z-STUDY-TEXT-TRIAL-01 委任_16(2026-10-25、ユーザーT1正式承認)で追加(追加のみ、既存キー不変)。Part 1の本文引用英文の日本語訳
     # (入力=引用英文のみ、解説LLMとは独立call)。SUPPORT_MODELを参照(新規モデルなし)。
     "KEY_PHRASE_SOURCE_SENTENCE_JA": SUPPORT_MODEL,
+    # PART2-GRAMMAR-PRODUCTION-WIRING-01 委任_03(2026-10-25、Part 2 Grammar & Sentence Structure、ユーザーAPPROVED_FOR_PRODUCTION)で追加(追加のみ、既存キー不変)。
+    # 候補抽出(Step A'')と解説生成(Step B)。SUPPORT_MODEL=gpt-6-luna(Trial-07/08と同一、新規モデルなし)。
+    "STUDY_TEXT_GRAMMAR_EXTRACT": SUPPORT_MODEL,
+    "STUDY_TEXT_GRAMMAR_EXPLAIN": SUPPORT_MODEL,
     # RISK-FLAGGER-PRODUCTION-WIRING-01 Phase 2 C1(2026-10-10、ユーザーGo)で追加(追加のみ、既存キー不変)。
     # model名はリテラル固定(WRITER_MODEL等の他定数を経由しない=他定数の変更に連動しない)。環境変数での上書きなし。
     #   FAMILY_X_RF_LUNA / FAMILY_X_RF_GEMINI : Risk Flagger 4条件(Luna A3/A4・Gemini A3/A4)

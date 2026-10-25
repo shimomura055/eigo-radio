@@ -616,6 +616,9 @@ def pat_z(base):
             rl.run_stage(ctxl, "kp")
         except rl.FamilyZKpReviewPending:
             pass
+    import er119_grammar_review_01 as _gr_t   # 委任_03: Part 2(文法)もHuman確認待ち。KPと同じ待機点でAI推奨(TOP1)を了承する
+    _sdl = rl._part2_dir(ctxl)
+    _gr_t.op_decide(_sdl, choice="top1", accept_ai=True, candidates_sha256=_gr_t.load_candidates(_sdl)["candidates_sha256"], by="t3_mock")
     kdl = f"{ctxl.out_dir}/key_phrases/b1b"
     hr_l = [c for c in rv.load_candidates(kdl)["candidates"] if c["flags"]["gloss_hr_pending"]][0]
     rv.op_resolve_gloss(kdl, rank=hr_l["ai_rank"], gloss="人間が確定した意味", by="t3_mock")

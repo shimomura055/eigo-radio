@@ -497,7 +497,7 @@ def render_html_block(rows: list) -> str:
 # ------------------------------------------------------------
 # Family X 公開ページ(per-article script)用の共通builder(委任_16、API 0)
 # ------------------------------------------------------------
-def study_html_for_audio_dir(audio_dir: str) -> str:
+def study_html_for_audio_dir(audio_dir: str, *, items: "list | None" = None) -> str:
     """Xの試聴/公開ページ生成script(例 er019_nws2_final_page_01.py)が1行で呼ぶ共通関数。
     入力=Production runnerのaudio出力dir(`<audio_dir>/b1b/{key_phrases,study_text}`)。保存済みstudy_text(組立時に本文との逐語照合済み)が、
     現在のKP・解説・訳(いずれもsignature最新)・gloss現在値と一致することを確認してから描画する。
@@ -506,8 +506,11 @@ def study_html_for_audio_dir(audio_dir: str) -> str:
     b = f"{audio_dir}/b1b"
     kp_path = f"{b}/key_phrases/keywords_canonicalized.json"
     try:
-        with open(kp_path, encoding="utf-8") as f:
-            items = sorted_items(json.load(f).get("items") or [])
+        if items is None:   # 従来経路(KP Human Review導入前のrun=KP3件)。itemsを渡す呼出(er120_part2_wiring_01.public_study_html)はvocab5件(part1_items)
+            with open(kp_path, encoding="utf-8") as f:
+                items = sorted_items(json.load(f).get("items") or [])
+        else:
+            items = sorted_items(items)
         with open(f"{b}/key_phrases/{EXPLANATIONS_FILENAME}", encoding="utf-8") as f:
             ex = json.load(f)
         with open(f"{b}/key_phrases/{ja.TRANSLATIONS_FILENAME}", encoding="utf-8") as f:

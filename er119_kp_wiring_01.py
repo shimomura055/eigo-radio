@@ -28,7 +28,7 @@ def review_resume_valid(kp_dir: str, text: str) -> bool:
 
 def declare_from_runner_args(out_dir: str, *, by: str, reason: str, user_ref: str = "") -> list:
     """runner引数 `--kp-review auto` の記録化。明示引数が与えられたときだけ呼ぶ(宣言ファイルへ書く=単一読取点が読む)。"""
-    return rv.add_declaration(run_dirs=[out_dir], by=by, reason=reason, user_ref=user_ref, source="runner_arg", rounds=[1])
+    return rv.add_declaration(run_dirs=[out_dir], by=by, reason=reason, user_ref=user_ref, source="cli_runner_arg", rounds=[1])
 
 
 def _shape_final(kp_dir: str, article_id: str, level: str, step: dict) -> dict:
@@ -96,12 +96,51 @@ def run_kp_with_review(*, text: str, kp_dir: str, run_dir: str, family: str, slu
     return _shape_final(kp_dir, article_id, level, step)
 
 
-def pending_banner(pending: list, *, restart_command: str) -> str:
-    """rc=4時のstdout(正確な再開コマンドを1つだけ出す=M-4)。"""
-    lines = [f"{rv.PENDING_MARKER} KP Human Review待ちです(失敗ではありません。有料の後続工程には進みません)。"]
+UNIFIED_REQUEST = "review_request.md"
+
+
+def write_unified_request(run_dir: str, pending: list) -> Optional[str]:
+    """KP(level別)と文法(Part 2)のpendingを**1つの** `<run>/review_request.md` にまとめる(M-3: 人の待機は1回)。
+    pending=[{kind?("kp"|"grammar"),level?,request_md,...}]。各個別依頼書(kp_human_review_request.md / grammar_human_review_request.md)の本文を連結する。"""
+    if not pending:
+        return None
+    lines = ["# Human Review 依頼(統合)", "",
+             "待機は1回です。下のKP(単語・表現)と文法(Part 2)の**すべて**に操作してから、制作コマンドを**同じまま1回だけ**再実行してください。",
+             "(不在なら明示宣言: `py er119_kp_human_review_cli_01.py declare-absent --runs <run> --reason <理由> --by <名前> [--user-ref <ユーザー発言の参照>]`。"
+             "この宣言はKPと文法の両方に、このrunのこの候補roundだけ効きます)", ""]
     for p in pending:
-        lines.append(f"  - level={p.get('level')}: 依頼書 {p.get('request_md')}")
-    lines.append("  次の一手: 依頼書の表を見て `py er119_kp_human_review_cli_01.py select ...` で選ぶ(または明示の `declare-absent`)。")
+        kind = p.get("kind") or "kp"
+        title = "文法(Part 2)" if kind == "grammar" else f"KP(level={p.get('level')})"
+        lines += ["---", f"## {title}", f"(個別の依頼書: {p.get('request_md')})", ""]
+        try:
+            with open(p["request_md"], encoding="utf-8") as f:
+                body = f.read()
+        except (OSError, KeyError):
+            body = "(依頼書を読めません。`status`を実行してください)"
+        lines += [body.rstrip(), ""]
+    path = f"{run_dir}/{UNIFIED_REQUEST}"
+    os.makedirs(run_dir, exist_ok=True)
+    tmp = f"{path}.tmp{os.getpid()}"
+    with open(tmp, "w", encoding="utf-8", newline="\n") as f:
+        f.write("\n".join(lines) + "\n")
+    os.replace(tmp, path)
+    return path
+
+
+def pending_banner(pending: list, *, restart_command: str, run_dir: Optional[str] = None) -> str:
+    """rc=4時のstdout(KPと文法を1つのbannerにまとめ、正確な再開コマンドを1つだけ出す=M-3/M-4)。run_dirを渡すと統合依頼書 review_request.md も書く。"""
+    unified = write_unified_request(run_dir, pending) if run_dir else None
+    kinds = sorted({(p.get("kind") or "kp") for p in pending})
+    what = " + ".join({"kp": "KP", "grammar": "文法(Part 2)"}[k] for k in kinds) or "KP"
+    lines = [f"{rv.PENDING_MARKER} Human Review待ちです: {what}(失敗ではありません。有料の後続工程には進みません)。"]
+    for p in pending:
+        if (p.get("kind") or "kp") == "grammar":
+            lines.append(f"  - 文法(Part 2): 依頼書 {p.get('request_md')}")
+        else:
+            lines.append(f"  - level={p.get('level')}: 依頼書 {p.get('request_md')}")
+    if unified:
+        lines.append(f"  まとめ(統合依頼書): {unified}")
+    lines.append("  次の一手: 依頼書の表を見て `py er119_kp_human_review_cli_01.py select ...`(KP)/`grammar-select ...`(文法)で決める(または明示の `declare-absent`)。")
     lines.append(f"  再開コマンド(同じコマンドを1つだけ再実行): {restart_command}")
     lines.append("  注意: 直近5分以内に同じrunを3回起動するとRESTART_STORM保護で自動停止します(select/reselect後は数分あけて再開)。")
     return "\n".join(lines)

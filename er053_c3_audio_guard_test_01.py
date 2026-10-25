@@ -28,6 +28,7 @@ import er005_cost_logger as cl
 import er006_model_routing_contract_01 as routing
 import er019_family_x_audio_production_runner_01 as runner
 import er019_family_x_entertainment_production_runner_01 as ent
+import er119_kp_wiring_01 as _kpw
 import er053_cost_aggregate_01 as ca
 import er053_review_queue_01 as rq
 import er053_risk_flagger_production_01 as rf
@@ -272,12 +273,18 @@ class MainStageTests(Base):
             mock.patch.object(rq, "QUEUE_ROOT", self.qroot),
             mock.patch.object(rf, "run_risk_flagger", fake_rf),
             mock.patch.object(runner.sc, "run_key_phrases", fake_sc),
+            # 委任_03: X Production(fulltext_p2)のKP入口はrun_kp_with_review。旧sc.run_key_phrasesのmockだけだと実LLMへ到達する(mock漏れ)ので実入口もmockする。
+            # Part 2(文法)の候補抽出/Step Bは本test(RF/三者sha照合)の関心と直交。別test(er120_part2_wiring_integration_test_01)で検証。
+            mock.patch.object(_kpw, "run_kp_with_review", lambda **k: fake_sc()),
+            mock.patch.object(runner, "run_part2_candidates_x", lambda *a, **k: {"status": "OK", "state": "READY", "pending": None}),
+            mock.patch.object(runner, "run_part2_final_x", lambda *a, **k: {"status": "OK", "part2_status": "SELECTED", "reused": True}),
             mock.patch.object(runner, "run_family_x_b1_scaffold", lambda c, p, d: {}),
             mock.patch.object(runner, "run_family_x_a2_scaffold", lambda c, p, d: {}),
             # 委任_14: 学習テキスト Part 1(scaffoldの生成・後段入口のM2確認)は本test(RF/三者sha照合)の関心と直交。別testで検証
             mock.patch.object(runner, "generate_part1_for_b1b", lambda *a, **k: {"status": "OK"}),
             mock.patch.object(runner, "generate_part1_ja_for_b1b", lambda *a, **k: {"status": "OK"}),   # 委任_16: T1訳工程も同様に直交
             mock.patch.object(runner, "_require_part1_fresh_x", lambda *a, **k: {}),
+            mock.patch.object(runner, "_require_part2_fresh_x", lambda *a, **k: {}),
             mock.patch.object(runner, "_require_part1_ja_fresh_x", lambda *a, **k: {}),
             mock.patch.object(runner, "part1_study_html_for_player", lambda *a, **k: ""),
             mock.patch.object(runner, "generate_family_x_b1_segments",
@@ -328,11 +335,18 @@ class MainStageTests(Base):
         self.assertLess(kinds.index(("rf", "b1b")), kinds.index(("tts", "b1b")))
         self.assertEqual(len(rq.read_index(self.qroot)), 2)
 
+    def _fake_player(self, *a, **k):   # 委任_03: playerのPart 2照合(R-3)が実ファイルを読むため、最小のplayer.htmlを書く
+        path = os.path.join(self.out, "player.html")
+        with open(path, "w", encoding="utf-8") as f:
+            f.write("<html></html>")
+        return path
+
     def _drive_all(self):
         # all は assemble/player まで走るため、それらも無効化して scaffold -> tts までを観測する
         with mock.patch.object(runner, "stage_assemble_family_x_b1", lambda *a, **k: None), \
                 mock.patch.object(runner, "stage_assemble_family_x_a2", lambda *a, **k: None), \
-                mock.patch.object(runner, "build_player_html", lambda *a, **k: os.path.join(self.out, "player.html")), \
+                mock.patch.object(runner, "build_player_html", self._fake_player), \
+                mock.patch("er120_part2_wiring_01.verify_outputs", lambda *a, **k: None), \
                 mock.patch.object(runner, "derive_japanese_title", lambda sd: {"japanese_title": "題", "source": "test"}):
             return self._drive("all")
 
@@ -348,6 +362,7 @@ class MainStageTests(Base):
                 mock.patch.object(rf, "default_call_fn", down), \
                 mock.patch.object(rf.time, "sleep", lambda s: None), \
                 mock.patch.object(runner, "_require_part1_fresh_x", lambda *a, **k: {}), \
+                mock.patch.object(runner, "_require_part2_fresh_x", lambda *a, **k: {}), \
                 mock.patch.object(runner, "_require_part1_ja_fresh_x", lambda *a, **k: {}), \
                 mock.patch.object(runner, "generate_family_x_b1_segments", lambda *a, **k: events.append("tts_b1b")), \
                 mock.patch.object(runner, "generate_family_x_a2_segments", lambda *a, **k: events.append("tts_a2")):

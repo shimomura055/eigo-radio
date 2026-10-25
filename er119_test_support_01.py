@@ -210,8 +210,7 @@ class KpTestCase(unittest.TestCase):
         self._tmp = tempfile.TemporaryDirectory()
         self.tmp = self._tmp.name
         self.addCleanup(self._tmp.cleanup)
-        # 共有NG/範囲宣言のstoreは常にtmpへ(実リポジトリの`er119_output/`へ書かない。範囲宣言[family+日付]が残ると当日の実runが
-        # 自動確定されうるため、全testで隔離する)
+        # 共有NG registryのstoreは常にtmpへ(実リポジトリの`er119_output/`へ書かない。実storeのNGが当日の実runの候補に効くのを防ぐため、全testで隔離する)
         p = mock.patch.object(rv, "STORE_ROOT", os.path.join(self.tmp, "store"))
         p.start()
         self.addCleanup(p.stop)

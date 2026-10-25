@@ -307,6 +307,7 @@ class XFinalLineRcAndAssemble(_FlagOn):
                 mock.patch.object(x, "compute_cost_jpy_so_far", return_value=(0.0, {})), \
                 mock.patch.object(x, "ensure_rf_record"), \
                 mock.patch.object(x, "_require_part1_fresh_x", return_value={}), \
+                mock.patch.object(x, "_require_part2_fresh_x", return_value={}), \
                 mock.patch.object(x, "_require_part1_ja_fresh_x", return_value={}), \
                 contextlib.redirect_stdout(buf):
             # 委任_14: 後段入口のPart 1(Vocabulary & Expressions)存在確認(Opus M2)は本testの関心(gloss HR)と直交するため無効化。

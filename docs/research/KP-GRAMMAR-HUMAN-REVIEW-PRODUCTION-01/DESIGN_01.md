@@ -9,7 +9,7 @@
 3. **自動確定は明示宣言のみ**: 既定は待機(STOP)。期限による自動切替・環境変数/起動script/`.env`による暗黙ONは作らない。
 4. **既存Gateは省略しない**: validate/CMU/canonicalization/gloss/Redundancy/記号を**候補段階で適用**し、不合格は順位から除外して記録。AUTOは合格候補だけを順位順に採用。
 5. **共有関数 `sc.run_key_phrases` の既定動作は変えない**(A/B/C・Y Trial無影響。27-7)。新module(`er119_kp_human_review_01.py`、名称は実装時に衝突確認)をX/Z runnerからだけ呼ぶ。
-6. **文法(Part 2)は同じ核を `kind="grammar"` で使えるが、Part 2のProduction採用が確認されるまで配線しない**(§k)。
+6. **文法(Part 2)は同じ核を `kind="grammar"` で使う**(§k)。〔2026-10-25 委任_03で配線。Part 2のProduction採用はユーザー承認済み。〕
 
 ## a. 候補生成(TOP 8)
 ### a-1. 選定(Prompt 2-R)
@@ -142,7 +142,7 @@
 - 起動script・`.env`で暗黙ONにしない。違反時は11-7の失効規則ではなく**APPROVED_FOR_PRODUCTION仕様の逸脱=不具合(11-8)**として是正する。
 
 ## k. 文法(Part 2)の分離構造とHR負担
-- 共通核 `er119_kp_human_review_01.py` は `kind`(`"kp"`/`"grammar"`)を持つ汎用の候補・review・署名・NG・遷移を実装。grammar固有は薄い層: `grammar_candidates.json`(≤2、`rank`・クラス・`teaching_value_ja`・出典文・適格根拠)、`grammar_human_review.json`(`choice: top1|top2|reselect|omit`)。AUTO=TOP1(適格のみ。適格0なら**Part 2コーナーなし**=Trial-07の0件規則。ただしProduction承認の根拠はG-1/G-3の確認待ち)。
+- 共通核 `er119_kp_human_review_01.py` は `kind`(`"kp"`/`"grammar"`)を持つ汎用の候補・review・署名・NG・遷移を実装。grammar固有は薄い層: `grammar_candidates.json`(≤2、`rank`・クラス・`teaching_value_ja`・出典文・適格根拠)、`grammar_human_review.json`(`choice: top1|top2|reselect|omit`)。AUTO=TOP1(適格のみ)。適格0件なら**待たずに確定(`NO_CANDIDATE_UNREVIEWED`、レビュー済みに数えない)**し、Part 2は『コーナーなし』ではなく **er120の0件固定文面 `ZERO_P2`(「今回の本文には、このPartで特に取り上げる難所となる構文はありませんでした。」、Trial-04/07由来)をページ・md・htmlに表示する**(Trialの実出力どおり)。〔委任_03で整合。旧記述「Part 2コーナーなし」は撤去〕
 - **配線の前提(Part 2のProduction配線そのもの)**: Step A''抽出・`eligible7`・`select_tiered`・Step B・Part 2描画・ページ組込みはProductionに存在しない。TOP 2は`select_tiered`の順序の先頭2件(追加LLM callなし、「2位=同一文を除く次の適格」を既定案)。**G-1(Part 2採用の明示承認)が得られるまで文法は実装しない**。得られた後は同じ核+薄い層+Part 2配線を別委任で実装。
 - 本委任の構造要件: 核を`kind`非依存に作る / grammarの空実装(層)は作らない(未使用コードをProductionに置かない)、核のunit testだけ`kind="grammar"`の合成fixtureで状態機械を検証する。
 - **HR負担見積(推定、未測定)**: 1記事あたりの判断=Std KP(8→3)1回+Adv KP+vocab(8→3+5)1回(+Part 2採用後は文法1回)。1回の判断は表を読み番号を打つ作業で約1〜2分(AI推奨了承`--accept-ai`なら数十秒)。→ 2〜3判断/記事=約3〜6分/記事、**9記事/日で約30〜55分/日**(最大)。軽減策: (1)推奨印+`--accept-ai`、(2)`status`の一覧でまとめて処理、(3)不在宣言で0分、(4)gloss HR/qa_fail旗は該当候補のみ強調して読む対象を絞る。

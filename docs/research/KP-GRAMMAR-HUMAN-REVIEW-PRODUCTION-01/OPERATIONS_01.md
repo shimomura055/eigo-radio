@@ -1,7 +1,7 @@
 # OPERATIONS_01(KP Human Review 運用手順。Human(担当者)・Fable/運用AI向け)
 
-管理ID: KP-GRAMMAR-HUMAN-REVIEW-PRODUCTION-01 委任_02 / 日付: 2026-10-25 / 対象: Family X・Z(Y・文法Part 2は本手順の対象外)
-設計: `DESIGN_02.md`、コード: `er119_kp_human_review_cli_01.py`ほか。実API runでの確認(R1〜R4)は翌日JST 10/26以降の別委任。
+管理ID: KP-GRAMMAR-HUMAN-REVIEW-PRODUCTION-01 委任_02/委任_03 / 日付: 2026-10-25 / 対象: Family X・Z。**KP(§1〜§7)に加え、委任_03でPart 2文法(§8)を同じ待機点・同じrc=4に統合**(Yは正式入口未整備のため対象外)
+設計: `DESIGN_02.md`、コード: `er119_kp_human_review_cli_01.py`ほか。実API runでの確認(R1〜R4)は同日(JST 10/25)中の別委任(`EVIDENCE_PLAN_01.md`)。
 
 ## 1. 全体像(1行)
 制作コマンドを実行 → KP候補(最大8件)が作られて**止まる(rc=4。失敗ではない)** → Humanが候補表を見て選ぶ(または「不在として進める」を明示宣言)→ **同じ制作コマンドをそのまま再実行**して先へ進む。
@@ -51,18 +51,18 @@
 
 ## 5. 「不在として進める」宣言(自動確定。Humanが見ないまま上位をAI採用)
 - 位置づけ: **明示宣言**。期限による自動切替・環境変数・起動script・`.env`・hooksからは自動確定になりません。
-- 宣言の記録先: `<run>/kp_review_mode.json`(runごと)、または範囲宣言は共有store `er119_output/kp_human_review_store_01/`。自動確定の判断は`read_mode_declaration()`(単一読取点)だけが宣言ファイルを読んで行います。
+- 宣言の記録先: `<run>/kp_review_mode.json`(**runごとだけ**)。自動確定の判断は`read_mode_declaration()`(単一読取点)だけが宣言ファイルを読んで行います。**期限付き/範囲付き(family・日付)の不在宣言は不採用**です(ユーザー決定2026-10-25。委任_03でCLI・核・testから撤去)。
 - 書式(CLI):
   ```
   py er119_kp_human_review_cli_01.py declare-absent --runs <run>[,<run>] --reason "<理由>" --by "<名前>" [--user-ref "<ユーザー発言の参照>"] [--rounds 1]
-  py er119_kp_human_review_cli_01.py declare-absent --scope-family x --scope-date 2026-10-26 [--until <ISO日時>] --reason "<理由>" --by "<名前>" [--user-ref ...]
   ```
   runner引数で同時に宣言する場合: `--kp-review auto --kp-review-by <名前> --kp-review-reason "<理由>" [--kp-review-user-ref <参照>]`(`--kp-review wait`または省略=宣言なし=待機)。
 - 規則(M-6):
   - 宣言は**round(=その候補sha)に結びつく**。既定は round 1 のみ有効。`reselect`した新しいroundは**宣言が失効して再び待機**します(Humanが見ていない候補を自動確定しない)。
   - Humanの操作(`select`/`reselect`/`ng`/`unng`/`resolve-gloss`)があった時点で、以後の宣言は失効します。
   - `--by`と出所の記録は必須。**AI(Fable/Claude/Opus/Sonnet等)が`--by`の場合は`--user-ref`(ユーザー発言の参照)が必須**です(AIが「不在とみなした」ことを自動確定の新しい経路にしない)。
-  - 範囲宣言(`--scope-family`/`--scope-date`/`--until`)はCLIで可能ですが、**時間境界のない範囲宣言は拒否**されます。既定の運用では使いません(R-7: 使う場合はユーザーが期限付きで出す)。
+  - 宣言は**このrunのこの候補round(既定round 1)・候補shaだけ**に効きます。「しばらく不在」「今日は全記事」のような期限・範囲の宣言は受け付けません(`--scope-family`/`--scope-date`/`--until`はCLIから無くなりました)。次のrunにも不在を宣言するなら、そのrunごとに宣言します(runner引数 `--kp-review auto ...` なら起動1回に収まります)。
+  - 宣言はKPと文法(Part 2)の**両方**に、同じ条件(run・round・Human操作で失効)で効きます。
 - 自動確定の結果: status=`UNREVIEWED_AUTO_ADOPTED`(未レビュー≠NG)。KP=AI順位の上位3件(`auto_eligible`外[qa_fail/gloss要確認/NG/NG類似/重複ペア片方]を飛ばす)、Advのvocab=上位5件。0件ならSTOP。
 - 事後Review(公開後など): `select`で内容を変えると REVIEWED になります。公開した版の署名を残すには `mark-published --run <run> --level <lv> --by <名前>`。公開版と確定版が異なる場合は`status`に差が表示されますが、**自動では差し替えません**(差替えは別の明示操作)。
 
@@ -100,5 +100,34 @@
 ## 7. 注意
 - 公開ページは本番公開先へ自動では書かれません。事後Reviewで公開済みページを差し替える場合は別途の明示操作です。
 - X: 公開後のsegment失効(事後Reviewで確定が変わったときの音声segment再生成)は本版では未実装です(`mark-published`と差の表示まで)。
-- 文法(Part 2)・Y入口はこの手順の対象外です。
-- 有料の後続(TTS、解説、Part 1)は、全レベルの確定後にだけ進みます。待機中(rc=4)に有料の後続は実行されません。
+- Y入口はこの手順の対象外です(別案件`FAMILY-Y-PRODUCTION-LAUNCH-01`)。文法(Part 2)は§8。
+- 有料の後続(TTS、解説、Part 1、Part 2のStep B)は、全レベルのKPと文法の確定後にだけ進みます。待機中(rc=4)に有料の後続は実行されません。
+
+## 8. Part 2(文法)の運用(委任_03で追加。KPと同じ待機点・同じrc=4・同じ宣言)
+- 候補抽出(Step A'')は本文確定直後・KP候補生成の前に1回実行され(再開はAPI 0)、**KPの待機と1回にまとめて**止まります。標準出力は次の1つ(KPがあるときは「文法(Part 2) + KP」)、統合依頼書は `<run>/review_request.md`(個別: `<study_text>/grammar_human_review_request.md`)です。
+  ```
+  [KP_REVIEW_PENDING] Human Review待ちです: 文法(Part 2) + KP(失敗ではありません。有料の後続工程には進みません)。
+    - level=b1b: 依頼書 .../kp_human_review_request.md
+    - 文法(Part 2): 依頼書 .../grammar_human_review_request.md
+    まとめ(統合依頼書): <run>/review_request.md
+    再開コマンド(同じコマンドを1つだけ再実行): <実行したコマンドそのまま>
+  ```
+- 文法の表示: TOP1(AI推奨)とTOP2(順位・分類・本文の英文・教える価値・読み違えやすい点)。**TOP2は候補が2件以上のときだけ**。再選定には上限があります(再選定+再抽出で合計2回、再抽出は最大1回)。
+- 文法の操作(`<run>`はKPと同じrun dir。`--candidates-sha`は依頼書に表示されたsha[古い候補への操作を拒否]):
+  ```
+  py er119_kp_human_review_cli_01.py status --run <run>                  # KPと文法の両方
+  py er119_kp_human_review_cli_01.py grammar-show --run <run>
+  py er119_kp_human_review_cli_01.py grammar-select --run <run> --choice top1 --accept-ai --candidates-sha <sha> --by <名前>     # AI推奨(TOP1)を了承
+  py er119_kp_human_review_cli_01.py grammar-select --run <run> --choice top2 --reason "<理由>" --candidates-sha <sha> --by <名前>
+  py er119_kp_human_review_cli_01.py grammar-select --run <run> --choice reselect --reason "<理由>" --candidates-sha <sha> --by <名前>   # TOP1/TOP2をNGにして次順位が新TOP1/TOP2(API 0)
+  py er119_kp_human_review_cli_01.py grammar-select --run <run> --choice omit --reason "<理由>" --candidates-sha <sha> --by <名前>       # 今回は解説を出さない
+  py er119_kp_human_review_cli_01.py grammar-select --run <run> --choice reextract --reason "<理由>" --candidates-sha <sha> --by <名前>   # 候補が尽きたときだけ。次回起動でStep A'' 1 call
+  py er119_kp_human_review_cli_01.py grammar-ng --run <run> --rank N --reason "<理由>" --by <名前>
+  py er119_kp_human_review_cli_01.py grammar-unng --run <run> --sentence "<英文>" --reason "<理由>" --by <名前>     # NG解除(記録必須。現在の候補には戻らず、次の新規抽出から効く)
+  ```
+  `top2`/`reselect`/`omit`/`reextract`は`--reason`必須(理由なし・sha不一致・`--accept-ai`をtop1以外に付ける、は拒否されて状態は変わりません)。
+- NGは `family+slug+level` の共有registry(文法はKPと別file: `er119_output/kp_human_review_store_01/ng/<family>__<slug>__b1b__grammar.json`)に入り、同じ記事の別run(copy-run)の新規抽出でも自動で除外されます(3方式の照合: 候補ID/正規化した文/同一段落内の範囲の重なり)。登録・解除は排他lockで直列化されます。
+- 状態: `REVIEWED`(Human確定) / `UNREVIEWED_AUTO_ADOPTED`(明示宣言のTOP1採用。レビュー済みに数えない) / `NO_CANDIDATE_UNREVIEWED`(適格0件で待たずに確定。ページにはTrial-07の固定文面「今回の本文には、このPartで特に取り上げる難所となる構文はありませんでした。」。レビュー済みに数えない)だけが下流を進めます。`PENDING_REVIEW`/`RESELECT_EXHAUSTED`(全候補をNG)/`REEXTRACT_REQUESTED`/`STALE`は下流(TTS・組立・ページ・player)がfail-closedで止まります(待機はrc=4)。候補が尽きたときは**自動ZEROにしません**(omitかreextractをHumanが選ぶ。auto宣言があっても自動確定しません)。
+- 再開: KPと同じ「同じ制作コマンドを1つだけ再実行」。Step A''・supportは再生成されず、確定後のStep B(解説)が1 call走ります。失敗時は `<study_text>/part2_failed.json`+rc=3、案内は**1つだけ**(X: `--stage study_text`、Z: `--stage kp ... --regenerate-stage part2_b1b`)です。XでscaffoldやallをやりなおすとsupportとKPが再生成されるため案内しません。
+- 事後Review(確定後に別の選択へ変える): 同じ`grammar-select`で変更できますが、確定署名が変わるので、Zは `part2_b1b` が親sha不一致でSTOPし `--stage kp --regenerate-stage part2_b1b`(再finalize・再抽出なし)を要求します。Xは `--stage study_text` で再finalizeします。
+- Standard(a2)ページには出ません(Advancedのみ)。Part 1のブロックの直後に、同じページ(X: player.html、Z: 試聴ページ index.html のAdvancedの節)へ載ります。
