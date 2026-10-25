@@ -50,6 +50,39 @@ class T(unittest.TestCase):
         # 既存のDialogue/話者切替clipは不変
         self.assertTrue(all(not c["split"] for c in r["clips"] if c["clip_id"] in ("full_story_part2_c1", "full_story_part2_c2")))
 
+    @unittest.skipUnless(os.path.exists(TTH + "/segment_plan_b1b.json"), "1b_s1 dir missing")
+    def test_tth_b_fine_expected(self):
+        r = m.plan_run(TTH, "b1b", "writer/r2.md", target_words=50)
+        got = {c["clip_id"]: [x["words"] for x in c["chunks"]] for c in r["clips"] if c["split"]}
+        self.assertEqual(got, {"full_story_part1_c1": [36, 42, 63], "full_story_part2_c3": [44, 25, 49], "full_story_part3_c1": [57, 35, 56]})
+        for c in r["clips"]:
+            if c["split"]:
+                self.assertEqual(sum(x["words"] for x in c["chunks"]), next(w for w in (141, 118, 148) if sum(x["words"] for x in c["chunks"]) == w))
+
+    @unittest.skipUnless(os.path.exists(TTH + "/segment_plan_b1b.json"), "1b_s1 dir missing")
+    def test_tth_b_alt_manual_expected_and_paragraph_info(self):
+        r = m.plan_run(TTH, "b1b", "writer/r2.md", manual_cuts={"full_story_part2_c3": [2], "full_story_part3_c1": [1]})
+        got = {c["clip_id"]: [x["words"] for x in c["chunks"]] for c in r["clips"] if c["split"]}
+        self.assertEqual(got, {"full_story_part2_c3": [46, 72], "full_story_part3_c1": [57, 91]})
+        self.assertTrue(all(c["paragraph_info_lost"] is False for c in r["clips"] if c["split"]))
+        c = next(c for c in r["clips"] if c["clip_id"] == "full_story_part2_c3")
+        self.assertTrue(c["chunks"][0]["text"].endswith("Wide open."))
+        c = next(c for c in r["clips"] if c["clip_id"] == "full_story_part3_c1")
+        self.assertTrue(c["chunks"][0]["text"].endswith("how little I feared?"))
+
+    def test_manual_rejects_last_paragraph_cut(self):
+        paras = ["One two three. " * 20, "Four five six. " * 20]
+        c = _clip(" ".join(paras))
+        with self.assertRaises(AssertionError):
+            m.plan_clip_chunks_manual(c, paras, [1])
+
+    def test_default_target_unchanged_and_sum(self):
+        paras = [("Alpha beta gamma delta. " * 11).strip(), ("Eps zeta eta theta. " * 11).strip(), ("Iota kappa lambda mu. " * 11).strip()]
+        c = _clip(" ".join(paras))
+        r = m.plan_clip_chunks(c, paras)
+        self.assertEqual(sum(x["words"] for x in r["chunks"]), c["word_count"])
+        self.assertEqual(r["target_words"], 100)
+
 
 if __name__ == "__main__":
     unittest.main()

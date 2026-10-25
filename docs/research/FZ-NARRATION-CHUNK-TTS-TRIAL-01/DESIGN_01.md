@@ -106,3 +106,56 @@
 2. 1b_s1・`run_sf_prod_01`の`style_record.json`から`style_text_for`のshaが現行と一致(Style同一性)。
 3. 別案件のZ TTSプロセスが走っていないことの確認(`stop_scope_check_01.py`、プロセス一覧)。
 4. PROTECTED_STORES/TREESのbefore snapshot。
+
+---
+
+# 委任_02 改訂(2026-10-25、Phase 1。Opus条件Aレビュー結果=OPUS_REVIEW_01.md反映。**有料生成の前に固定**)
+
+状態: Status=`TRIAL_PAID_RUN_PENDING`(commit後に有料生成)。以下の§9〜§13が§3〜§6を上書きする箇所は明示する。Trialであり`APPROVED_FOR_PRODUCTION`ではない。上限30円(ユーザー承認)。
+
+## 9. arm構成(Fable決定、事前固定)
+| arm | 内容 | 音声 | 見積 |
+|---|---|---|---|
+| A | 既存1b_s1 Adv(1 call通し、生成済み・status OK・Gate RESOLVED) | 再利用のみ(新規0) | 0 |
+| A_r2 | Aと同条件の別take(3 clipを各1 call)。take間ばらつきの基準 | 新規 | 約4.0円 |
+| B_r1 | 主規則: k=ceil(語数/100)・最小25語・段落境界>文境界・引用途中除外 +0.2秒(3 clip→6 chunk[78/63,69/49,74/74]) | 新規 | 約4.3円 |
+| B_fine | 細分割: k=ceil(語数/50)・最小25語・同じ優先順 +0.2秒(3 clip→9 chunk[36/42/63,44/25/49,57/35/56]) | 新規 | 約4.3円 |
+| B_alt | part2_c3・part3_c1だけR1の代替切断(手動plan、段落境界)で切り直し。part1_c1はB_r1のchunk音声を再利用 | 新規(4 chunk) | 約3.0円 |
+- B_r2(主規則の別take)は行わない。plannerの決定論規則は不変(`target_words`引数とmanual関数の追加のみ。既定値=従来と同一)。
+- B_altの手動plan(事前登録): `chunk_plan_tth_1b_s1_adv_B_alt_manual_01.json`。part2_c3は段落P5〜P10[30/14/2/23/27/22語]の**P7「Wide open.」の直後**で切る→46語/72語。part3_c1は段落P11〜P16[32/25/17/18/35/21語]の**P12「You see how little I feared?」の直後**で切る→57語/91語。いずれも段落境界・引用外。切断位置は本文(1b_s1/writer/r2.md)を見て、Opusが挙げた「約43/75」「約57/91」に最も近い段落境界として固定した(結果を見て変えない)。
+- 実行順: 無料修正→commit→①B_r1+A_r2→計測→②B_fine→③B_alt。**各arm起動前に累計+予約額(見積x1.5)が30円を超える起動はしない**。同一runの再起動なし(各armは1起動)。
+- 合計見積約15.6円(予約額ベースでも30円内)。
+
+## 10. Opus必須N1〜N4の反映(対応表)
+| ID | 反映内容 | 実装 |
+|---|---|---|
+| N1 | X隔離M1〜M3を引継ぎ(新規実装しない): `redirect_production_sinks`(er113)を再利用=sink4種+Pronunciation Ledgerのコピー切替(negative_cacheも追随)+`run_local_rewrite_recovery` wrapperでout_dirをDEV化。cwd==ROOT assert。Ledger hint/low-confidenceの事前計算(Z TTS入力・Z Styleで全chunk+A_r2)が空でなければSTOP。監視に`negative_cache.json`・`er009…human_review_queue`・`er011_output/local_rewrite_recovery`tree。gen_resultに`instruction_type`/`local_rewrite_recovery`/`canonical_text_before_local_rewrite`/`style_prefix(sha)`/`tts_model_id`を記録 | `er114_fz_narration_chunk_trial_02.py` `cmd_gen`/`ledger_preflight`、`X.PROTECTED_STORES`(再利用) |
+| N2 | `sys.addaudithook`で自プロセスの書込みopen/remove/rename/mkdir/copy/Popenを記録、許可dir(`OUT`、postは+`PAGE_DIR`・HFcache・temp)外は例外で阻止+即STOP。mtime走査・sha比較は補助(差分→STOP・事実報告、自動続行なし)。起動時にimportされる全repo module(約130)のsha256とgit未commit差分を記録、TTS/組立経路moduleが未commitなら5分間隔で最大30分待ち、解消しなければSTOP。終了時に再確認 | `_audit_hook`/`module_identity`/`wait_modules_clean` |
+| N3 | (1)target_rms=1b_s1 `timeline.json` gain_report.target_rms(0.07332)に固定(再計算しない。参考として(preview+part1_c1)/2との差を記録)。(2)展開後の並びを`k1, _silence_0.2, k2, (既存0.5/1.0), Comment 2`とassert。(3)A_r2の音声sha256≠Aのsha(Aの`61957c46…`ほか)をassert・記録 | `dev_assemble`/`cmd_post` n3 |
+| N4 | 判定基準の基準点をAの同じ段落境界位置に変更(§12) | `judge_all` |
+| R1 | B_alt arm(手動plan事前登録)。試聴ページに「part2_c3/part3_c1の切断はクライマックス直前の最悪ケース負荷テスト」と明記。不合格でも方式全体のREJECTと即断しない | §9 |
+| R2 | 閾値100語の正当化に本Trialの結果を使わない(1b_s1の3 clip[141/118/148語]は閾値を6〜117語のどこに置いても同じ分割対象)。検証対象は『約70語のchunk+0.2秒』と『約47語のchunk+0.2秒』 | §12末尾 |
+| R3 | B_fine arm採用 | §9 |
+| R4 | chunkごとの中央値F0・スペクトル重心をAの同じ区間と並べて「参考値・判定なし」で表示(自己相関簡易推定、閾値/Gateにしない) | `f0_and_centroid` |
+| R5 | plannerに`paragraph_info_lost`フラグ、`sum(chunk words)==clip word_count` assert(test追加) | er114_fz_narration_chunk_trial_01.py |
+| R6 | 試聴ページに「OPEN-508案A本文の試聴とは別ページ」「本文はTrial版で正式再生成版とは異なる。本ページは読み上げ方式の比較のみ」「本文の良し悪しはここでは判断しない」を明記 | `build_page` |
+
+## 11. DEV assembler(N3)・書込み先
+- 組立: A側run_assemblyのDEV版(`dev_assemble`)。A側`build_z_sequence`(既存関数)でsequenceを作り、対象clipのentryをarmの音声へ差替え(chunk間は`_silence_0.2`)。`assemble_with_timeline`・`apply_headroom_safety_valve`は既存のまま。**Aのみ再組立してオリジナルのtimeline(全長273.789秒・各pieceのstart)と一致することを検証済み**(無料)。
+- 書込み先は`er026_output/family_z_dev_trials/fz_narration_chunk_01/`と`user_test/fz_narration_chunk_trial_01/`のみ。Productionのrun dir・store・公開ページ・並行案件の`run_sf_prod_02`へは書かない。Xの比較ページ(`user_test/fx_paragraph_chunk_trial_01/`)は**編集しない**(Zページ→Xページの片方向リンク。Xページ側からZへのリンクは書込み先限定のため追加しない)。
+
+## 12. 判定基準(事前固定。N4反映。合否でなく『基準到達/未達/判定不能』の機械判定)
+1. **速度**: 段落単位span(16段落=3 clipの段落、X M4と同じ考え方)で比較。
+   - 基準ノイズ D_noise = 平均(段落span比 A_r2/A) − 1(同一方式の別takeとの差=take間ノイズ)。
+   - 「基準到達(減速効果あり)」= art300(B)/art300(A) ≤ 0.97(3%以上遅い) かつ 段落span平均比(B/A)−1 > 0(Bが遅い方向で一致) かつ |D_B| > |D_noise|。
+   - 「未達」= Bが速くなる/同じ(art300比>1.0かつ段落span比<1)。それ以外(閾値到達と段落spanの方向が不一致、またはノイズ以内)=「判定不能」。
+   - 全体WPM・art300・art500は参考併記。M4分解(Δ全長=Σ発話差+Σgap差+両端差)を併記。
+2. **境界音量差(N4)**: Bの各chunk境界(前chunk末尾発話1秒 vs 次chunk先頭発話1秒のRMS差dB)を、**Aの同じ段落境界位置**(段落末尾1秒 vs 次段落先頭1秒、ASR整列で位置決定、A・Bとも同じ方法)と比較。「基準到達」= 全境界で |B − A同位置| ≤ 3.0 dB。3.0dB=一般に音量差として気づかれにくい下限の目安として**本Trialで事前固定する評価用の値**(Xの実測≤5.8dB[境界差の絶対値]は外挿しない)。A_r2のA同位置差(take間ノイズ)と、Aのpart/clip境界値は参考併記。判定対象外=内容によるA内の差。
+3. **欠落・二重再生**: 各clip・各armで ASR語数/台本語数 ∈ [0.97, 1.03]、全段落が整列(`all_paragraphs_aligned`)、match_ratio ≥ A − 0.02。
+4. **Gate/条件**: 全chunkの`status=OK`、`condition_diff`(local_rewrite/text_changed/minimal_fallback/pronunciation_hint)空、Style sha・model・Voice一致。
+5. **声質・緊張感・クライマックスの連続性**: 機械判定しない(ユーザー試聴)。R4のF0/重心は参考値・判定なし。
+6. 上記を満たしても**音質改善とは断定しない**。ユーザー試聴で採否判断(Production採用はユーザーのみ)。基準未達は『REJECTED候補』ではなくFableが再計画を判断。
+7. R2: 本Trialの結果を閾値100語の正当化に使わない。閾値100の根拠は既存`target_words=100`との同値性とユーザー指示「長く続く区間のみ」のみ。
+
+## 13. STOP条件(即停止・事実報告、自動続行なし)
+Ledger事前計算が空でない / TTS・組立経路moduleに未commit変更が30分解消しない / audit hookが許可dir外書込みを検知 / 保護store sha変化 / 上限30円超過見込み(予約方式) / 他Z TTSが稼働中で直列化できない(待機は可) / Production file差分が生じた / chunkのstatus≠OK(自動再実行しない)。

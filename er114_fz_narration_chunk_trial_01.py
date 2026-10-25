@@ -64,9 +64,10 @@ def _candidates(paragraph_texts: list) -> list:
     return cands
 
 
-def plan_clip_chunks(clip: dict, paragraph_texts: list) -> dict:
+def plan_clip_chunks(clip: dict, paragraph_texts: list, target_words: int = SPLIT_THRESHOLD_WORDS) -> dict:
     """1 clipの追加分割計画。narrator以外/閾値以下は分割しない(unchanged)。
     clip: {id, voice, word_count, source_paragraph_indices, text}。paragraph_texts: そのclipに含まれる段落の生テキスト(順)。
+    target_words: chunk数 k=ceil(語数/target_words)の分母(既定=閾値100=主規則B_r1、50=細分割B_fine。分割対象かの閾値は常にSPLIT_THRESHOLD_WORDS)。
     戻り値: {clip_id, split: bool, reason, chunks:[{chunk_id, words, text, first_para, last_para}], cuts:[...]}"""
     cid, wc = clip["id"], clip["word_count"]
     if clip.get("voice") != "narrator":
@@ -76,7 +77,7 @@ def plan_clip_chunks(clip: dict, paragraph_texts: list) -> dict:
     # 文単位テキスト列(結合 = 現行clip.textと同一になることを検証する)
     joined = normalize_for_tts(" ".join(paragraph_texts))
     assert joined == normalize_for_tts(clip["text"]), "clip.textと段落テキストが一致しない(planとの不整合)"
-    k = math.ceil(wc / SPLIT_THRESHOLD_WORDS)
+    k = math.ceil(wc / target_words)
     cands = _candidates(paragraph_texts)
     cuts, prev, used = [], 0, set()
     for i in range(1, k):
@@ -114,14 +115,42 @@ def plan_clip_chunks(clip: dict, paragraph_texts: list) -> dict:
         text = " ".join(u for _, _, u in ch)
         out.append({"chunk_id": f"{cid}_k{j + 1}", "words": _wc(text), "text": text, "first_para": ch[0][0], "last_para": ch[-1][0]})
     assert normalize_for_tts(" ".join(c["text"] for c in out)) == joined, "chunk結合が元clipと一致しない(欠落/重複)"
-    return {"clip_id": cid, "split": True, "reason": f"narrator words={wc}>{SPLIT_THRESHOLD_WORDS}: {k} chunks, "
+    assert sum(c["words"] for c in out) == wc, "R5: sum(chunk words)!=clip word_count"
+    return {"clip_id": cid, "split": True, "target_words": target_words, "reason": f"narrator words={wc}>{SPLIT_THRESHOLD_WORDS}: {k} chunks(target_words={target_words}), "
             + "/".join("段落境界" if c["priority"] == 0 else "文境界" for c in cuts),
             "chunks": out, "cuts": [{"after_paragraph": c["after_paragraph"], "after_sentence": c["after_sentence"],
                                      "cum_words": c["cum_words"], "priority": c["priority"]} for c in cuts],
             "extra_pause_seconds": EXTRA_PAUSE_SECONDS}
 
 
-def plan_run(run_dir: str, level: str, article_md_relpath: str) -> dict:
+def plan_clip_chunks_manual(clip: dict, paragraph_texts: list, after_paragraphs: list) -> dict:
+    """R1 B_alt用: 手動の切断位置(clip内の段落index[0始まり、その段落の直後で切る])を事前登録して同じ形式のplanにする。
+    plannerの決定論規則は変更しない。切断は段落境界のみ(文・引用の途中は不可)。"""
+    cid, wc = clip["id"], clip["word_count"]
+    joined = normalize_for_tts(" ".join(paragraph_texts))
+    assert joined == normalize_for_tts(clip["text"]), "clip.textと段落テキストが一致しない"
+    cuts = sorted(after_paragraphs)
+    assert all(0 <= c < len(paragraph_texts) - 1 for c in cuts), "切断位置は最終段落の手前まで"
+    groups, cur = [], []
+    for pi, para in enumerate(paragraph_texts):
+        cur.append(para)
+        if pi in cuts:
+            groups.append(cur)
+            cur = []
+    groups.append(cur)
+    out, first = [], 0
+    for j, g in enumerate(groups):
+        text = normalize_for_tts(" ".join(g))
+        out.append({"chunk_id": f"{cid}_k{j + 1}", "words": _wc(text), "text": text, "first_para": first, "last_para": first + len(g) - 1})
+        first += len(g)
+    assert normalize_for_tts(" ".join(c["text"] for c in out)) == joined
+    assert sum(c["words"] for c in out) == wc, "R5: sum(chunk words)!=clip word_count"
+    assert all(c["text"].count('"') % 2 == 0 for c in out), "引用の途中で切れている"
+    return {"clip_id": cid, "split": True, "manual": True, "reason": f"manual(R1 B_alt): 段落境界 after_paragraph={cuts}", "chunks": out,
+            "cuts": [{"after_paragraph": c, "priority": 0} for c in cuts], "extra_pause_seconds": EXTRA_PAUSE_SECONDS}
+
+
+def plan_run(run_dir: str, level: str, article_md_relpath: str, target_words: int = SPLIT_THRESHOLD_WORDS, manual_cuts: dict | None = None) -> dict:
     """読取専用: run_dirのsegment_plan_<level>.json と 記事md(writer/r2.md等)から、全clipの追加分割planを作る。"""
     import sys
     root = os.path.dirname(os.path.abspath(__file__))
@@ -133,14 +162,21 @@ def plan_run(run_dir: str, level: str, article_md_relpath: str) -> dict:
     paras = st.clean_body_paragraphs(body)
     res = []
     for c in plan["clips"]:
+        info_lost = False
         ptexts = [paras[i] for i in c["source_paragraph_indices"]]
         # 段落が複数clipに跨る(セリフ混在)場合は narrator のみ対象で、段落の一部だけがnarrator clipに入る。
         # その場合は clip.text を唯一の正として段落代わりに扱う(段落境界情報は失うため文境界のみ)
         joined = normalize_for_tts(" ".join(ptexts))
         if joined != normalize_for_tts(c["text"]):
             ptexts = [c["text"]]
-        res.append(plan_clip_chunks(c, ptexts))
-    return {"run_dir": run_dir, "level": level, "threshold_words": SPLIT_THRESHOLD_WORDS, "min_chunk_words": MIN_CHUNK_WORDS,
+            info_lost = True   # R5: 段落結合が一致せず文境界のみの分割に落ちる(黙って落とさず出力に残す)
+        if manual_cuts is not None:
+            r = plan_clip_chunks_manual(c, ptexts, manual_cuts[c["id"]]) if c["id"] in manual_cuts else                 {"clip_id": c["id"], "split": False, "reason": "manual_plan: 対象外clip(B_r1の音声を再利用 or 不変)", "chunks": [], "cuts": []}
+        else:
+            r = plan_clip_chunks(c, ptexts, target_words)
+        r["paragraph_info_lost"] = info_lost
+        res.append(r)
+    return {"run_dir": run_dir, "level": level, "threshold_words": SPLIT_THRESHOLD_WORDS, "target_words": target_words, "min_chunk_words": MIN_CHUNK_WORDS,
             "extra_pause_seconds": EXTRA_PAUSE_SECONDS, "clips": res}
 
 
@@ -161,3 +197,14 @@ if __name__ == "__main__":
         with open(f"{out_dir}/chunk_plan_{name}_01.json", "w", encoding="utf-8") as f:
             json.dump(r, f, ensure_ascii=False, indent=1)
         print(name, [(c["clip_id"], [x["words"] for x in c["chunks"]] if c["split"] else "-") for c in r["clips"] if c["split"]])
+    # 委任_02(Fable決定): B_fine(k=ceil(語数/50)、最小25語、同優先順)・B_alt(R1: part2_c3='Wide open.'の後=段落P7の直後、part3_c1='how little I feared?'の後=段落P12の直後)
+    rd, lv, md = targets["tth_1b_s1_adv"]
+    fine = plan_run(rd, lv, md, target_words=50)
+    with open(f"{out_dir}/chunk_plan_tth_1b_s1_adv_B_fine_01.json", "w", encoding="utf-8") as f:
+        json.dump(fine, f, ensure_ascii=False, indent=1)
+    print("B_fine", [(c["clip_id"], [x["words"] for x in c["chunks"]]) for c in fine["clips"] if c["split"]])
+    # clip内の段落index(0始まり): part2_c3は[P5..P10]なのでP7=index2、part3_c1は[P11..P16]なのでP12=index1
+    alt = plan_run(rd, lv, md, manual_cuts={"full_story_part2_c3": [2], "full_story_part3_c1": [1]})
+    with open(f"{out_dir}/chunk_plan_tth_1b_s1_adv_B_alt_manual_01.json", "w", encoding="utf-8") as f:
+        json.dump(alt, f, ensure_ascii=False, indent=1)
+    print("B_alt", [(c["clip_id"], [x["words"] for x in c["chunks"]]) for c in alt["clips"] if c["split"]])

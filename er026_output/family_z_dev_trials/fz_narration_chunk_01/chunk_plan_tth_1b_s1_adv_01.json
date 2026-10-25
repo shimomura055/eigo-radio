@@ -2,13 +2,15 @@
  "run_dir": "er026_output/family_z_dev_trials/fz_essence_01/the_tell_tale_heart/1b_s1",
  "level": "b1b",
  "threshold_words": 100,
+ "target_words": 100,
  "min_chunk_words": 25,
  "extra_pause_seconds": 0.2,
  "clips": [
   {
    "clip_id": "full_story_part1_c1",
    "split": true,
-   "reason": "narrator words=141>100: 2 chunks, 段落境界",
+   "target_words": 100,
+   "reason": "narrator words=141>100: 2 chunks(target_words=100), 段落境界",
    "chunks": [
     {
      "chunk_id": "full_story_part1_c1_k1",
@@ -33,26 +35,30 @@
      "priority": 0
     }
    ],
-   "extra_pause_seconds": 0.2
+   "extra_pause_seconds": 0.2,
+   "paragraph_info_lost": false
   },
   {
    "clip_id": "full_story_part2_c1",
    "split": false,
    "reason": "words=5<=閾値100",
    "chunks": [],
-   "cuts": []
+   "cuts": [],
+   "paragraph_info_lost": true
   },
   {
    "clip_id": "full_story_part2_c2",
    "split": false,
    "reason": "not_narrator(話者切替/セリフclipは不変)",
    "chunks": [],
-   "cuts": []
+   "cuts": [],
+   "paragraph_info_lost": true
   },
   {
    "clip_id": "full_story_part2_c3",
    "split": true,
-   "reason": "narrator words=118>100: 2 chunks, 段落境界",
+   "target_words": 100,
+   "reason": "narrator words=118>100: 2 chunks(target_words=100), 段落境界",
    "chunks": [
     {
      "chunk_id": "full_story_part2_c3_k1",
@@ -77,12 +83,14 @@
      "priority": 0
     }
    ],
-   "extra_pause_seconds": 0.2
+   "extra_pause_seconds": 0.2,
+   "paragraph_info_lost": false
   },
   {
    "clip_id": "full_story_part3_c1",
    "split": true,
-   "reason": "narrator words=148>100: 2 chunks, 段落境界",
+   "target_words": 100,
+   "reason": "narrator words=148>100: 2 chunks(target_words=100), 段落境界",
    "chunks": [
     {
      "chunk_id": "full_story_part3_c1_k1",
@@ -107,7 +115,8 @@
      "priority": 0
     }
    ],
-   "extra_pause_seconds": 0.2
+   "extra_pause_seconds": 0.2,
+   "paragraph_info_lost": false
   }
  ]
 }
