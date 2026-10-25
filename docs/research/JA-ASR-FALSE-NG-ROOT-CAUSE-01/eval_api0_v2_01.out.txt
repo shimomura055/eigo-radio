@@ -1,0 +1,208 @@
+N-1: 151 pairs (er066 88 / new 62)
+  incremental false PASS (base NG -> v1 PASS): 0
+  structural (same text pair as the P-1 positive; cannot be separated by text; reported separately): [('月のしわ', '月の詩は', True)]
+  existing false PASS (base already PASS; report only): 23
+    N1-er066a-028 別語 三日間 | 三日目 PHONETIC_MATCH
+    N1-er066b-020 逆方向: 序数->期間 三日目 | 3日間 PHONETIC_MATCH
+    N1-er066b-022 逆方向 三日目 | 三日間 PHONETIC_MATCH
+    N1-er066b-025 N分の: 曖昧語として救済しない 三分の一 | 3分の1 NUMERIC_VALUE_EQUIVALENT_MATCH
+    N1-er066b-026 N分の: 曖昧語として救済しない 3分の一 | 三分の1 NUMERIC_VALUE_EQUIVALENT_MATCH
+    N1-prodbug-006 範囲: ASCII ~ (PHONETIC_MATCH経由) 3~5日待つ | 35日待つ PHONETIC_MATCH
+    N1-prodbug-007 範囲: 全角～ (NFKC->~ ->PHONETIC_MATCH経由) 3～5日待つ | 35日待つ PHONETIC_MATCH
+    N1-ambig-003 曖昧 三分の一 | 3分の1 NUMERIC_VALUE_EQUIVALENT_MATCH
+    N1-new-032 同形異音(今日)+数: ASR読み 3人で今日話した | 三人でこんにち話した PHONETIC_MATCH
+    N1-new-033 同形異音(市場)+数 2人でいちばに行った | 二人で市場に行った PHONETIC_MATCH
+    N1-new-034 同形異音(市場)+数 2人で市場に行った | 2人でいちばに行った PHONETIC_MATCH
+    N1-new-035 同形異音(一日)+数 3人でついたちに会った | 三人で一日に会った NUMERIC_VALUE_EQUIVALENT_MATCH
+    N1-new-036 同形異音(今日) 今日は晴れです | こんにちは晴れです PHONETIC_MATCH
+    N1-new-037 同形異音(市場) 市場で買う | いちばで買う PHONETIC_MATCH
+    N1-new-038 同形異音(一日) 一日で終わった | ついたちで終わった PHONETIC_MATCH
+    N1-new-039 同形異音(上手) 彼は上手に話す | 彼はうわてに話す PHONETIC_MATCH
+    N1-new-042 音便誤読(一分) 一分待つ | いちふん待つ PHONETIC_MATCH
+    N1-new-044 不規則読み誤読(三日) 三日待った | さんにち待った PHONETIC_MATCH
+    N1-new-046 助詞誤読(月は→つきハ) 月は丸い | 月ハ丸い PHONETIC_MATCH
+    N1-new-047 助詞誤読(町へ→まちヘ) 町へ行く | 町ヘ行く PHONETIC_MATCH
+    N1-new-048 助詞誤読(ASRかな) 月は丸い | つきはまるい PHONETIC_MATCH
+    N1-new-057 間→目 三日間の猶予 | 三日目の猶予 PHONETIC_MATCH
+    N1-new-061 同音異義 七晩を過ごす | 七番を過ごす PHONETIC_MATCH
+  Secondary-side: A4(a) value-only accept: 3 / A4(b) pron accept: 0
+    N1-er066b-025 N分の: 曖昧語として救済しない 三分の一 | 3分の1 a4a
+    N1-er066b-026 N分の: 曖昧語として救済しない 3分の一 | 三分の1 a4a
+    N1-ambig-003 曖昧 三分の一 | 3分の1 a4a
+  v1 blocked_by counts: {'value_guard': 80, 'negation': 5, 'C2_heterophone': 1}
+Positive controls (er066 POSITIVE+02): 47; base PASS 37, v1 PASS 39, v1 regressions (base PASS -> v1 NG): 0
+Moon title:
+   attempt1 Primary {'base': ['NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH'], 'v1': ['NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH', [], 'value_guard=DIFF']}
+   attempt2 Primary {'base': ['NG_SECONDARY_UNAVAILABLE', 'secondary_unavailable', 'TRUE_CONTENT_MISMATCH'], 'v1': ['PASS', 'primary_pass', 'JA_PRON_VALUE_EQUIVALENT_MATCH', ['JA_PRON_EQUIVALENT'], 'pron_equal_after_value_form']}
+   attempt3 Primary {'base': ['NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH'], 'v1': ['NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH', [], 'value_guard=DIFF']}
+   attempt2 Azure(Secondary) {'base_accept': False, 'A4a': False, 'A4b': True, 'v1': 'pron_equal_after_value_form', 'cause': 'A3_value+A2_particle'}
+P-3 NG pool: 150 texts; flips: 8 (primary 2, secondary 6)
+   primary japanese_title A3_value+A2_particle PRON | 月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密 | 月の死は八千九百本超。その奥に潜む岩の上着の秘密。
+   secondary japanese_title A3_value+A2_particle PRON | 月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密 | 月の詩は8900本超。その奥に潜む岩の上着の秘密。
+   secondary comment_2 A1_value_notation VALUE_ONLY | 橋のない川を渡り、道をふさいだ三人から逃げた彼は、午後には足 | 橋のない川を渡り道をふさいだ3人から逃げた彼は、午後には足が血だらけになり、岩のそばで立てなくなりま
+   secondary comment_2 A1_value_notation VALUE_ONLY | 橋のない川を渡り、道をふさいだ三人から逃げた彼は、午後には足 | 橋のない川を渡り道をふさいだ3人から逃げた彼は、午後には足が血だらけになり、岩のそばで立てなくなりま
+   secondary comment_2 A1_value_notation VALUE_ONLY | 橋のない川を渡り、道をふさいだ三人から逃げた彼は、午後には足 | 橋のない川を渡り道をふさいだ3人から逃げた彼は、午後には足が血だらけになり、岩のそばで立てなくなりま
+   primary preview A3_value+pron PRON | 結婚式を終えたメロスは、三日目の夜明け前に町へ戻り始めます。 | 結婚式を終えたメロスは、3日目の夜明け前に町へ戻り始めます。帰り道には、橋のない川と道を塞ぐ男たちが
+   secondary comment_2 A1_value_notation VALUE_ONLY | 橋のない川を渡り、道をふさいだ三人から逃げた彼は、午後には足 | 橋のない川を渡り道をふさいだ3人から逃げた彼は、午後には足が血だらけになり、岩のそばで立てなくなりま
+   secondary comment_2 A1_value_notation VALUE_ONLY | 橋のない川を渡り、道をふさいだ三人から逃げた彼は、午後には足 | 橋のない川を渡り道をふさいだ3人から逃げた彼は、午後には足が血だらけになり、岩のそばで立てなくなりま
+  flip causes: {('primary', 'A3_value+A2_particle'): 1, ('secondary', 'A3_value+A2_particle'): 1, ('secondary', 'A1_value_notation'): 5, ('primary', 'A3_value+pron'): 1}
+P-4 attempts: 421 unique (canon,primary) pairs; base PASS 334; regressions (PASS changed): 0; new flips (NG->PASS): 2
+  flip japanese_title A3_value+A2_particle PRON | 月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密 | 月の死は八千九百本超。その奥に潜む岩の上着の秘密。
+  flip preview A3_value+pron PRON | 結婚式を終えたメロスは、三日目の夜明け前に町へ戻り始めます。 | 結婚式を終えたメロスは、3日目の夜明け前に町へ戻り始めます。帰り道には、橋のない川と道を塞ぐ男たちが
+== moon ==
+A1_azure_moon japanese_title_attempt1_customb8f0ff16.w | 月野市は8900本越え。その奥に潜む岩の上着の秘密。 | base False v1 False v1+a4b False None
+A1_azure_moon japanese_title_attempt3_minimalfallback. | 杉野氏は8900本超。その奥に潜む岩の上着の秘密。 | base False v1 False v1+a4b False None
+A2_openai_moon_x3 japanese_title_attempt1_customb8f0ff16.w | 月野詩は8,900本超え。その奥に潜む岩の上着の秘密。 | base False v1 False v1+a4b False TRUE_CONTENT_MISMATCH
+A2_openai_moon_x3 japanese_title_attempt1_customb8f0ff16.w | 月野詩は8,900本超え。その奥に潜む岩の上着の秘密。 | base False v1 False v1+a4b False TRUE_CONTENT_MISMATCH
+A2_openai_moon_x3 japanese_title_attempt1_customb8f0ff16.w | 好きの詩は8000900本超え。その奥に潜む岩の上着の秘密。 | base False v1 False v1+a4b False TRUE_CONTENT_MISMATCH
+A2_openai_moon_x3 japanese_title_attempt2_customb8f0ff16.w | 月の島は千九百本超。その奥に潜む岩の上着の秘密。 | base False v1 False v1+a4b False TRUE_CONTENT_MISMATCH
+A2_openai_moon_x3 japanese_title_attempt2_customb8f0ff16.w | 月の島は千九百本超。その奥に潜む岩の上着の秘密。 | base False v1 False v1+a4b False TRUE_CONTENT_MISMATCH
+A2_openai_moon_x3 japanese_title_attempt2_customb8f0ff16.w | 月の島は千九百本超。その奥に潜む岩の上着の秘密。 | base False v1 False v1+a4b False TRUE_CONTENT_MISMATCH
+A2_openai_moon_x3 japanese_title_attempt3_minimalfallback. | 月野氏は八千九百本超、その奥に潜む岩の上着の秘密。 | base False v1 True v1+a4b True JA_PRON_VALUE_EQUIVALENT_MATCH
+A2_openai_moon_x3 japanese_title_attempt3_minimalfallback. | 月の詩は八千九百本長。その奥に潜む岩の上着の秘密。 | base True v1 True v1+a4b True PHONETIC_MATCH
+A2_openai_moon_x3 japanese_title_attempt3_minimalfallback. | 月のシワ、8000九百本超。その奥に潜む岩の上着の秘密。 | base True v1 True v1+a4b True PHONETIC_MATCH
+A3_azure_flip japanese_title_attempt2_customb8f0ff16.w | 月の詩は8900本超。その奥に潜む岩の上着の秘密。 | base False v1 False v1+a4b True None
+O1_format_prompt japanese_title_attempt1_customb8f0ff16.w | 月野氏は8,900本超え。その奥に潜む岩の上着の秘密。 | base False v1 False v1+a4b False TRUE_CONTENT_MISMATCH
+O1_format_prompt japanese_title_attempt1_customb8f0ff16.w | 隙の師は8,900本超え。その奥に潜む岩の上着の秘密。 | base False v1 False v1+a4b False TRUE_CONTENT_MISMATCH
+O1_format_prompt japanese_title_attempt2_customb8f0ff16.w | 月の島は千九百本超。その奥に潜む岩の上着の秘密。 | base False v1 False v1+a4b False TRUE_CONTENT_MISMATCH
+O1_format_prompt japanese_title_attempt2_customb8f0ff16.w | 月の枝は八千九百本超。その奥に潜む岩の上着の秘密。 | base False v1 False v1+a4b False TRUE_CONTENT_MISMATCH
+O1_format_prompt japanese_title_attempt3_minimalfallback. | 月の詩は800年本朝、その奥に潜む岩の上着の秘密。 | base False v1 False v1+a4b False TRUE_CONTENT_MISMATCH
+O1_format_prompt japanese_title_attempt3_minimalfallback. | 杉の枝は8000900本超。その奥に潜む岩の上着の秘密。 | base False v1 False v1+a4b False TRUE_CONTENT_MISMATCH
+== melos preview == 結婚式を終えたメロスは、三日目の夜明け前に町へ戻り始めます。帰り道には、橋のない | P: 結婚式を終えたメロスは、3日目の夜明け前に町へ戻り始めます。帰り道には、橋のない | A: 結婚式を終えたメロスは、 3日目の夜明け前に街へ戻り始めます。帰り道には、橋のない川と道をふさぐ男たちがいます。川は雨で
+{'base_pass': False, 'v1_pass': True, 'v1_incl_a4b_pass': True, 'primary_base': [False, 'TRUE_CONTENT_MISMATCH', 'NG_SECONDARY_UNAVAILABLE'], 'primary_v1': [True, 'JA_PRON_VALUE_EQUIVALENT_MATCH', 'PASS_WITH_WARNING', ['JA_NUMERIC_IRREGULAR_READING', 'JA_PRON_EQUIVALENT']], 'sec': {'base': False, 'a4a': False, 'a4b': False}, 'v1why': 'pron_equal_after_value_form', 'v1cause': 'A3_value+pron'}
+== N-3 == 30 clips
+N3-01 既存縮小: 値違い | 月のしわ、8,900本超 | 好きの詩は八千八百本超。 | 月の詩は8800本町。 | base False v1 False v1+a4b False
+N3-02 既存縮小: 桁違い | 月のしわ、8,900本超 | 月野氏は八万九千本町。 | 月野氏は、 8万9千本町。 | base True v1 True v1+a4b True
+N3-03 既存縮小: わ脱落 | 月のしわ、8,900本超 | 月の詩八千九百本章。 | 月野市、 8900、本町。 | base False v1 False v1+a4b False
+N3-04 既存縮小: へ→に | 駅へ向かう | 駅に向かう。 | 駅に向かう。 | base False v1 False v1+a4b False
+N3-05 既存縮小: 本→冊 | 本を三冊買う | 本を三本買う。 | 本を三本買う。 | base False v1 False v1+a4b False
+N3-06 既存縮小: 否定反転 | 彼女は来ない | 彼女は来る。 | 彼女は来る。 | base False v1 False v1+a4b False
+N3-07 既存縮小: 近音(しわ→すわ) | 月のしわ、8,900本超 | 月の巣は八千九百本長。 | Tsukino巣は8900、本町。 | base True v1 True v1+a4b True
+N3-08 既存縮小: 近音(しわ→しば) | 月のしわ、8,900本超 | 月野芝は八千九百本超。 | 月の芝は8900本町。 | base False v1 False v1+a4b False
+N3-09 M6 同形異音(今日) | 今日、話した | こんにちは、話した。 | 今日、話した。 | base True v1 True v1+a4b True
+N3-10 M6 同形異音(市場) | 魚を市場で買う | 魚を市場で買う。 | 魚を市場で買う。 | base True v1 True v1+a4b True
+N3-11 M6 同形異音(行った) | 駅まで行った | 駅まで行った。 | 駅まで行った。 | base True v1 True v1+a4b True
+N3-12 M6 同形異音(一日・ついたち) | 十月一日に会う | 10月1日に会う。 | 10月1日に会う。 | base True v1 True v1+a4b True
+N3-13 M6 同形異音(一日・いちにち) | 一日中雨だった | ついたち中は雨だった。 | 一日中は雨だった。 | base False v1 False v1+a4b False
+N3-14 M6 同形異音(人気) | 人気のない道 | 人気のない道。 | 人気のない道。 | base True v1 True v1+a4b True
+N3-15 M6 数値+同形異音(きょう) | 3人できょう話した | 三人でこんにちは話した。 | 3人でこんにち話した。 | base False v1 False v1+a4b False
+N3-16 M6 数値+同形異音(市場) | 二人で市場に行った | 二人で市場に行った。 | 2人で市場に行った。 | base True v1 True v1+a4b True
+N3-17 M6 数値+同形異音(今日) | 2人で今日行った | 둘이서 건넸다? | 2人でこんにち行った。 | base False v1 False v1+a4b False
+N3-18 M6 連濁誤読(三本) | 三本ください | 3本ください。 | 三本ください。 | base True v1 True v1+a4b True
+N3-19 M6 音便誤読(一分) | 一分待つ | 1分待つ。 | 1分粉末。 | base False v1 False v1+a4b False
+N3-20 M6 連濁誤読(六百) | 六百円です | 六百円です。 | 600円。 | base True v1 True v1+a4b True
+N3-21 M6 不規則読み誤読(三日) | 三日待った | 三日間待った。 | 3日待った。 | base False v1 False v1+a4b False
+N3-22 M6 不規則読み誤読(二十歳) | 二十歳になった | 20歳になった。 | 20歳になった。 | base True v1 True v1+a4b True
+N3-23 M6 助詞誤読(月は) | 月は丸い | 月は丸い。 | 月は、丸。 | base True v1 True v1+a4b True
+N3-24 M6 助詞誤読(町へ) | 町へ行く | 待ちへ行く | 町栄育。 | base True v1 True v1+a4b True
+N3-25 M6 助詞誤読(私は) | 私は学生です | 私は学生です。 | 私は学生です。 | base True v1 True v1+a4b True
+N3-26 M6 非助詞わ×助詞読み | 月のしわが多い | 好きの手話が多い。 | 月のしわが多い。 | base True v1 True v1+a4b True
+N3-27 M6 非助詞え×助詞読み | 絵を描く | 絵を描く | 屁を書く。 | base True v1 True v1+a4b True
+N3-28 M6 否定反転+数 | 三人は行かない | 三人は行く。 | 3人は。 | base False v1 False v1+a4b False
+N3-29 M6 助数詞違い(匹→頭) | 犬が三匹いる | 犬が三頭いる。 | 犬が三頭いる。 | base False v1 False v1+a4b False
+N3-30 M6 長音差(超→こえ) | 月のしわ、8,900本超 | 好きの詩は8,900本超え。 | 月野詩は、 8900。 | base False v1 False v1+a4b False
+N-3 incremental false PASS (v1; includes A4a): []
+N-3 incremental incl A4(b) (new-spec candidate): []
+N-3 existing false PASS (report only): [('N3-02', '既存縮小: 桁違い'), ('N3-07', '既存縮小: 近音(しわ→すわ'), ('N3-09', 'M6 同形異音(今日)'), ('N3-10', 'M6 同形異音(市場)'), ('N3-11', 'M6 同形異音(行った)'), ('N3-12', 'M6 同形異音(一日・ついた'), ('N3-14', 'M6 同形異音(人気)'), ('N3-16', 'M6 数値+同形異音(市場)'), ('N3-18', 'M6 連濁誤読(三本)'), ('N3-20', 'M6 連濁誤読(六百)'), ('N3-22', 'M6 不規則読み誤読(二十歳'), ('N3-23', 'M6 助詞誤読(月は)'), ('N3-24', 'M6 助詞誤読(町へ)'), ('N3-25', 'M6 助詞誤読(私は)'), ('N3-26', 'M6 非助詞わ×助詞読み'), ('N3-27', 'M6 非助詞え×助詞読み')]
+== v1 -> v2 diff ==
+{
+ "n1": [
+  {
+   "id": "N1-new-035",
+   "canon": "3人でついたちに会った",
+   "asr": "三人で一日に会った",
+   "v1": [
+    true,
+    true,
+    false
+   ],
+   "v2": [
+    true,
+    false,
+    false
+   ]
+  }
+ ],
+ "p3": {
+  "v1": 4,
+  "v2": 4,
+  "lost": [],
+  "gained": []
+ },
+ "p4": {
+  "unique_pairs": 421,
+  "base_pass": 334,
+  "v1_regressions": 0,
+  "v2_regressions": 0,
+  "flips_v1": 2,
+  "flips_v2": 2,
+  "lost": [],
+  "gained": []
+ },
+ "n3": [
+  {
+   "id": "N3-21",
+   "canon": "三日待った",
+   "openai": "三日間待った。",
+   "azure": "3日待った。",
+   "base": false,
+   "v1": true,
+   "v2": false
+  }
+ ],
+ "moon": [],
+ "melos": {
+  "v1": [
+   true,
+   [
+    true,
+    "JA_PRON_VALUE_EQUIVALENT_MATCH",
+    "PASS_WITH_WARNING",
+    [
+     "JA_NUMERIC_IRREGULAR_READING",
+     "JA_PRON_EQUIVALENT"
+    ]
+   ],
+   {
+    "base": false,
+    "a4a": false,
+    "a4b": false
+   }
+  ],
+  "v2": [
+   true,
+   [
+    true,
+    "JA_PRON_VALUE_EQUIVALENT_MATCH",
+    "PASS_WITH_WARNING",
+    [
+     "JA_NUMERIC_IRREGULAR_READING",
+     "JA_PRON_EQUIVALENT"
+    ]
+   ],
+   {
+    "base": false,
+    "a4a": false,
+    "a4b": false
+   }
+  ]
+ },
+ "summary": {
+  "n1_incremental_false_pass_incl_a4_v1": [],
+  "n1_incremental_false_pass_incl_a4_v2": [],
+  "n1_secondary_a4a_accepts_v1(already Primary base PASS)": [
+   "N1-er066b-025",
+   "N1-er066b-026",
+   "N1-ambig-003",
+   "N1-new-035"
+  ],
+  "n1_secondary_a4a_accepts_v2": [
+   "N1-er066b-025",
+   "N1-er066b-026",
+   "N1-ambig-003"
+  ],
+  "n3_incremental_false_pass_incl_a4a_v2": [],
+  "n3_incremental_incl_a4b_v2": [],
+  "n3_existing_false_pass": 16
+ }
+}

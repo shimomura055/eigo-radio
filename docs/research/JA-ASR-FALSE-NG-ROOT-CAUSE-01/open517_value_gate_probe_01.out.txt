@@ -1,0 +1,13 @@
+READING_MATCH PASS total: 155 by src: {'P4': 133, 'N1': 19, 'N3': 3}
+value_guard kind x negation_diff: {"('P4', 'NO_VALUES', False)": 103, "('P4', 'EQUAL', False)": 28, "('P4', 'DIFF', False)": 1, "('P4', 'UNKNOWN', False)": 1, "('N1', 'DIFF', False)": 7, "('N1', 'EQUAL', False)": 4, "('N1', 'NO_VALUES', False)": 6, "('N1', 'AMBIGUOUS', False)": 1, "('N1', 'UNKNOWN', False)": 1, "('N3', 'DIFF', False)": 1, "('N3', 'EQUAL', False)": 1, "('N3', 'NO_VALUES', False)": 1}
+would become NG under the proposed fix: 10
+  P4 er014_output/four_type_observation_01/discovery/audio/a2_before_regeneration_604w/narration/attempts/comment_4_attempt1_standard.json:comment_4 PHONETIC_MATCH DIFF False | ここまで見てきたのは、静かだからといって、体の活動がいちばん低いとは限らないとい | ここまで見てきたのは、静かだからといって体の活動が一番低いとは限らないということ
+  N1 N1-er066a-028 PHONETIC_MATCH DIFF False | 三日間 | 三日目
+  N1 N1-er066b-020 PHONETIC_MATCH DIFF False | 三日目 | 3日間
+  N1 N1-er066b-022 PHONETIC_MATCH DIFF False | 三日目 | 三日間
+  N1 N1-prodbug-006 PHONETIC_MATCH DIFF False | 3~5日待つ | 35日待つ
+  N1 N1-prodbug-007 PHONETIC_MATCH DIFF False | 3～5日待つ | 35日待つ
+  N1 N1-new-042 PHONETIC_MATCH AMBIGUOUS False | 一分待つ | いちふん待つ
+  N1 N1-new-044 PHONETIC_MATCH DIFF False | 三日待った | さんにち待った
+  N1 N1-new-057 PHONETIC_MATCH DIFF False | 三日間の猶予 | 三日目の猶予
+  N3 N3-02 PHONETIC_MATCH DIFF False | 月のしわ、8,900本超 | 月野氏は八万九千本町。

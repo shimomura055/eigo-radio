@@ -43,3 +43,14 @@ v2案(厳格化方向・API 0で再評価可): A4(a)で`JA_NUMERIC_IRREGULAR_REA
 - 最終Statusは Fable。
 ## 6. 試聴素材
 Melos preview attempt2 wav(推定正例の確認用): `er026_output/family_z_production_e2e_01/melos/run_kgcpw_z_e2e_01/a2/narration/attempts/preview_attempt2_custom99dc82e9.wav`(リポジトリ内ローカルpath。公開不要)。N-3の誤読wav 30本=`phase3_run/n3/N3-*.wav`(ローカルのみ・不追跡)。
+
+## 7. Fable評価(2026-10-25 委任_04転記。逐語)
+**Fable(2026-10-25 委任_04転記)**
+- 原因: 月題の誤NGは「ASR数詞崩れ(転写ごとに変わる)×同音異字(しわ→詩/死/氏)」の重なりで、Production側の正規化規則だけでは安定して直せないことが実測で確認された(Sonnet所見に同意)。Azureは値を正しく転写するが読みが合わず、既存仕様ではSecondaryの値一致だけで救済できない(R4)。
+- 対策の評価: 案A(Primary層の値atom化+読み一致)は安全側(増分誤PASS 0/180、回帰0)だが、救済効果は月題12転写中1件にとどまり、月題の誤NGを安定解消する効果は未確認。A4(a)(Secondary値のみ一致)はN3-21「三日/さんにち」で増分誤PASS 1件=事前登録§1により**v1は不合格**。O1(書式prompt)・gpt-4o-transcribe切替は効果なし(採用提案しない)。
+- Status: **v1=REJECTED(事前登録写像どおり。再凍結して再評価)**。案A Primary層のみは「安全性はVALIDATED(限定)・効果は限定的」と記録。Phase 4(Production適用)は提案段階にない。
+- 重要な副次発見(Fable所見): N-3で既存Productionの誤PASS 16/30件が実音声で確認された。特にN3-02(音声89,000 vs 原稿8,900が`PHONETIC_MATCH`でPASS=値が10倍違うのに通る)とN3-07(しわ→すわがPASS)は、承認済み安全条件(CURRENT_SPEC/SCG「値・否定の最終確認」)との矛盾であり、本Trialの範囲外だが**優先度の高い不具合**としてOPEN-517で是正へ進める。
+- 次の一手(Fable判断): v2=A4(a)から不規則読み値(三日・二十歳・一日・二日・七日等の数詞の特殊読み)を除外する厳格化。保存済み転写でAPI 0再評価。Melos「三日目」(Primary側PASS_WITH_WARNING)への副作用とN-3再評価を確認。
+- ユーザー判断事項(27-3 D、後述の報告で提示): 月題の数詞崩れの安定解消にはB-light(Azure値+読み等価)やAzure併用が必要=UDR #136に関わる。Phase 4採用はv2が事前登録を満たしてから。
+
+v2再評価=`EVAL_03.md`。
