@@ -3,7 +3,12 @@
 import os, sys, glob, json
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import fz_essence_dev_runner_01 as r      # noqa: E402  (chdir to ROOT)
+import pytest                              # noqa: E402
+try:
+    import fz_essence_dev_runner_01 as r  # noqa: E402  (chdir to ROOT)
+except SystemExit as _e:                  # 案A昇格後は歴史的runnerがimport時に停止する(fail-fast guard、Opus必須修正5)
+    pytest.skip("歴史的DEV runner(案A昇格済み): 本体への移植先=er062_family_z_source_essentials_test_01.py(narration系test)。理由: " + str(_e)[:80],
+                allow_module_level=True)
 import er062_family_z_writer_01 as w      # noqa: E402
 
 PROD = "er026_output/family_z_production_e2e_01"

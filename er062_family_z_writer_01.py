@@ -382,6 +382,12 @@ _REVISE_NAME_SENT_KEEP = ("and only {main_character} and the people marked \"kee
                           "(keep those names as they are; use no other personal names; use only one of the two names (first or last) "
                           "of a person, consistently).")
 _REVISE_TAIL = " Output the title and the story only."
+# 案A(2026-10-25ユーザー正式承認, FZ-SOURCE-ESSENCE-RETENTION-TRIAL-01): 語り口(人称・視点・語り手の立場)をSeedのnarration_voiceで維持する。
+_REVISE_THIRD = "in third person, "
+_REVISE_NARR = "in the narration described in the Must-keep section below, "
+_NARR_LINE = ("- Narration: {voice} Keep this narration throughout: the same person, point of view and narrator's stance "
+              "(including how the narrator speaks to the listener); wording, length and sentence structure may change. "
+              "The role descriptions of people below do not change who is telling the story.")
 _STD_ANCHOR = "\n\nKeep the essence of the source story"
 
 
@@ -392,6 +398,9 @@ def _esc(s: str) -> str:
 class Essentials:
     """Seedのsource_essentialsから決定論的に作る全段共通のMust-keep情報(純粋データ)。"""
     def __init__(self, ess: dict):
+        nv = ess.get("narration_voice")
+        if not (isinstance(nv, str) and nv.strip()):
+            raise FamilyZSeedEssentialsStop("FAMILY_Z_SEED_ESSENTIALS_INVALID: narration_voice(必須)")
         self.ess = ess
         self.keep_names = [r["name"] for r in (ess.get("key_roles") or []) if r.get("keep_name") and r.get("name")]
         self.block_full = _render_essentials_block(ess, "full")
@@ -404,6 +413,7 @@ def _render_essentials_block(ess: dict, mode: str) -> str:
     """mode='full': R0/R1/R2用。'std': Std調整用(結末前の示唆禁止は不要。最終行は要約でないことを明示)。Trial(sftrial_dev_runner_01)と同一文面。"""
     L = ["[Must-keep -- story essentials]",
          "These are the points that make this story work. Keep their meaning (your own words are fine); everything not listed here may be shortened or reshaped."]
+    L.append(_NARR_LINE.format(voice=ess["narration_voice"].strip()))
     er = ess.get("ending_reveal")
     if er:
         q = (' (the original\'s own last sentence: "' + er["source_quote"] + '").') if er.get("source_quote") else "."
@@ -472,6 +482,9 @@ def validate_source_essentials(seed: dict, story_key: str, seed_dir: str | None 
             why.append("key_roles keep_name=trueにname無し")
     if not (isinstance(ess.get("free_to_cut"), list) and ess["free_to_cut"]):
         why.append("free_to_cut(必須)")
+    nv = ess.get("narration_voice")
+    if not (isinstance(nv, str) and nv.strip()):
+        why.append("narration_voice(必須: 語り手の自称・立場を第1項目に記述)")
     n_items = ((1 if er else 0) + len(ess.get("setups_and_payoffs") or []) + len(ess.get("key_causality") or [])
                + sum(1 for r in roles if isinstance(r, dict) and r.get("keep_name")))
     if n_items > ESSENTIALS_MAX_ITEMS:
@@ -488,6 +501,7 @@ def validate_source_essentials(seed: dict, story_key: str, seed_dir: str | None 
         raise FamilyZSeedEssentialsStop("FAMILY_Z_SEED_ESSENTIALS_INVALID: " + " / ".join(why))
     return {"present": True, "exempt": story_key in ESSENTIALS_EXEMPT_STORIES, "items": n_items,
             "keep_names": [r["name"] for r in roles if r.get("keep_name")], "source_quote_checked_vs_last_paragraph": quote_checked,
+            "narration_voice": nv,
             "essentials_sha256": Essentials(ess).sha256}
 
 
@@ -536,6 +550,8 @@ def build_revise_prompt(body: str, story_key: str = "melos", essentials: "Essent
         if essentials.keep_names:
             assert _REVISE_NAME_SENT in tmpl
             tmpl = tmpl.replace(_REVISE_NAME_SENT, _REVISE_NAME_SENT_KEEP)
+        assert _REVISE_THIRD in tmpl
+        tmpl = tmpl.replace(_REVISE_THIRD, _REVISE_NARR, 1)
         assert _REVISE_TAIL in tmpl
         tmpl = tmpl.replace(_REVISE_TAIL, "\n\n" + _esc(essentials.block_full) + "\n\n" + _REVISE_TAIL.strip())
     return tmpl.format(body=body.strip(), main_character=STORY_MAIN_CHARACTER[story_key])
@@ -801,8 +817,9 @@ def run_writer_chain(llm: LLM, out_dir: str, seed_dir: str, *, stages=("r0", "r1
 #  - essentialsから項目別の確認欄(本文該当引用の必須欄)を決定論で作る。自動判定・LLM検査・retryは無い(記入・判定はFable/CP担当)。
 # ------------------------------------------------------------
 CP_TREATMENT_RULE = (
-    "処置規則(ユーザー承認2026-10-23): (A)重大=ending_reveal・key_roles(keep_name人物の脱落/他人名の増加)・key_causality・"
-    "setups_and_payoffsのいずれかの欠落 -> CP不合格。TTS前に修正(Writer再実行=承認済みの明示--regenerate-stage、または決定論パッチ)し、"
+    "処置規則(ユーザー承認2026-10-23。narrationを(A)へ追加=案A承認2026-10-25の§1語り口維持・§6 PRODUCTION_WIRED条件との整合): "
+    "(A)重大=ending_reveal・key_roles(keep_name人物の脱落/他人名の増加)・key_causality・"
+    "setups_and_payoffs・narration(人称・視点・語り手の立場の変更)のいずれかの欠落 -> CP不合格。TTS前に修正(Writer再実行=承認済みの明示--regenerate-stage、または決定論パッチ)し、"
     "原因分析を記録し、C案(軽量事後確認)要否をユーザーへ提示する(報告で`判断候補`)。"
     "(B)軽微=結末直前の付加文など、結末前の示唆(withhold_until_end)を希釈する不要文のみ -> 決定論の削除パッチ(exact文字列の削除)を適用し、"
     "削除した文・理由・前後sha・対象stageを記録する。所見を処置せずTTSへ進めてはならない。自動判定・LLM検査・retry・Human Reviewは無い。")
@@ -839,6 +856,7 @@ def build_cp_checklist(seed: dict, story_key: str, stage_texts: dict) -> str:
             items.append(("重大", "key_role(役割・関係で表され名前が付いていない)", r["role"]))
     for c in ess.get("key_causality") or []:
         items.append(("重大", "key_causality", c))
+    items.append(("重大", "narration(人称・語り手の立場が各stageで保たれている)", ess["narration_voice"]))
     L.append("| # | 深刻度 | 項目 | 内容 | " + " | ".join(f"本文の該当引用({s})" for s in stages) + " | 判定 |")
     L.append("|---|---|---|---|" + "---|" * len(stages) + "---|")
     for i, (sev, name, body) in enumerate(items, 1):

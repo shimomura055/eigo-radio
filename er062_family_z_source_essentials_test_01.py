@@ -24,6 +24,9 @@ OW_SEED = f"{RUN}/the_open_window/seed"
 T2_SEED = "docs/research/FAMILY-Z-SOURCE-FIDELITY-AND-PROPER-NOUN-01/sftrial_seeds/t2/seed.json"
 T2_R0 = f"{RUN}/the_open_window/run_sftrial_t2_01/writer/r0_prompt.txt"
 T3 = [f"{RUN}/the_open_window/run_sftrial_t3_0{i}/writer" for i in (1, 2)]
+# 案A(2026-10-25)込みで実際にLLMへ送られたTrial Phase 2のPrompt dump(Production Promptと完全byte一致する根拠)
+P2_DUMP = "er026_output/family_z_dev_trials/fz_essence_01/{story}/{run}/writer/{stage}_prompt.txt"
+P2_RUN = {"the_gift_of_the_magi": "p2_s1", "the_open_window": "p2_s1", "the_monkeys_paw": "p2_s1", "the_tell_tale_heart": "1b_s1"}
 
 S = lambda x: hashlib.sha256(x.encode("utf-8")).hexdigest()
 
@@ -83,8 +86,12 @@ class MelosUnchangedTest(unittest.TestCase):
 
 
 class ProductionSeedTest(unittest.TestCase):
-    def test_production_seed_equals_t2_trial_seed(self):
-        self.assertEqual(_rd(f"{OW_SEED}/seed.json"), _rd(T2_SEED))
+    def test_production_seed_equals_t2_trial_seed_plus_narration_voice(self):
+        """案A導入後: Production Seed = T2 Trial Seed + source_essentials.narration_voice 1キーのみ(旧: byte一致)。"""
+        prod, t2 = _rj(f"{OW_SEED}/seed.json"), _rj(T2_SEED)
+        nv = prod["source_essentials"].pop("narration_voice")
+        self.assertTrue(nv.startswith("The story is told in the third person by an outside narrator"))
+        self.assertEqual(prod, t2)
         prov = _rj(f"{OW_SEED}/SEED_PROVENANCE.json")
         with open(f"{OW_SEED}/seed.json", "rb") as f:
             self.assertEqual(prov["files"]["seed.json"]["sha256"], hashlib.sha256(f.read()).hexdigest())
@@ -157,16 +164,28 @@ class TrialPromptMatchTest(unittest.TestCase):
         self.seed = _rj(f"{OW_SEED}/seed.json")
         self.ess = w.build_essentials(self.seed)
 
-    def test_r0_byte_identical_to_t2_and_t3_dumps(self):
+    # 案A導入後の意図した差分(2点のみ): (1)導入2行の直後にNarration行が1行入る (2)REVISEの"in third person, "が欄参照句に置換される
+    INTRO = ("These are the points that make this story work. Keep their meaning (your own words are fine); "
+             "everything not listed here may be shortened or reshaped.\n")
+
+    def _narr_expect(self, dump, revise=False):
+        self.assertIn(self.INTRO, dump)
+        out = dump.replace(self.INTRO, self.INTRO + w._NARR_LINE.format(voice=self.ess.ess["narration_voice"].strip()) + "\n", 1)
+        if revise:
+            self.assertIn(w._REVISE_THIRD, out)
+            out = out.replace(w._REVISE_THIRD, w._REVISE_NARR, 1)
+        return out
+
+    def test_r0_matches_t2_and_t3_dumps_except_narration_line(self):
         prompt, _ = w.build_r0_prompt(self.seed, essentials=self.ess)
         got = w.WRITER_DEVELOPER_MESSAGE + "\n\n---\n\n" + prompt
-        self.assertEqual(got, _rd(T2_R0))
+        self.assertEqual(got, self._narr_expect(_rd(T2_R0)))
         for d in T3:
-            self.assertEqual(got, _rd(f"{d}/r0_prompt.txt"), d)
+            self.assertEqual(got, self._narr_expect(_rd(f"{d}/r0_prompt.txt")), d)
 
     def _revise_expect(self, dump):
         self.assertIn(self.TRIAL_REV_NAME, dump)
-        return dump.replace(self.TRIAL_REV_NAME, self.PROD_REV_NAME)
+        return self._narr_expect(dump.replace(self.TRIAL_REV_NAME, self.PROD_REV_NAME), revise=True)
 
     def test_r1_r2_match_t3_dumps_except_intended_name_diff(self):
         for d in T3:
@@ -178,12 +197,12 @@ class TrialPromptMatchTest(unittest.TestCase):
                 self.assertEqual(got, self._revise_expect(dump), (d, stage))
                 self.assertNotIn("Nuttel", got.split("Without changing")[1])   # フルネームは指示文に無い
 
-    def test_std_byte_identical_to_t3_dumps(self):
+    def test_std_matches_t3_dumps_except_narration_line(self):
         for d in T3:
             dump = _rd(f"{d}/std_adjust_prompt.txt")
             adv = dump.split("[Story]\n", 1)[1]
             got = w.std_developer() + "\n\n---\n\n" + w.build_std_prompt(adv, essentials=self.ess)
-            self.assertEqual(got, dump, d)
+            self.assertEqual(got, self._narr_expect(dump), d)
 
     def test_std_prompt_states_final_reveal_is_not_a_closing_summary(self):
         p = w.build_std_prompt(_story(8, 60), essentials=self.ess)
@@ -344,7 +363,7 @@ class CpChecklistAndPatchTest(unittest.TestCase):
         texts = {"r2": "# T\n\nA.\n\nExtra line here.\n\nRomance at short notice was Vera's speciality.\n",
                  "std_adjust": "# T\n\nA.\n\nVera was good at stories.\n"}
         md = w.build_cp_checklist(seed, "the_open_window", texts)
-        for needle in ("ending_reveal", "withhold_until_end", "setup と payoff", "keep_name=Framton", "keep_name=Vera",
+        for needle in ("narration", "ending_reveal", "withhold_until_end", "setup と payoff", "keep_name=Framton", "keep_name=Vera",
                        "key_causality", "本文の該当引用(r2)", "本文の該当引用(std_adjust)", "処置規則", "重大", "軽微",
                        "Romance at short notice was her speciality.", "Extra line here."):
             self.assertIn(needle, md, needle)
@@ -370,6 +389,173 @@ class CpChecklistAndPatchTest(unittest.TestCase):
             out = w.run_writer_chain(llm2, d, OW_SEED, stages=("r0", "r1", "r2"), story_key="the_open_window")
             self.assertEqual(len(llm2.client.responses.calls), 0)
             self.assertTrue(all(v["status"] == "reused" for v in out["stages"].values()))
+
+
+def _prompt_for(story, stage, body=None):
+    """Production経路のbuilderで『stage dumpと同じ形式』のPromptを組む(dev + 区切り + user)。"""
+    d = f"{RUN}/{story}/seed"
+    seed = _rj(f"{d}/seed.json")
+    ess = w.build_essentials(seed)
+    if stage == "r0":
+        return w.WRITER_DEVELOPER_MESSAGE + "\n\n---\n\n" + w.build_r0_prompt(seed, essentials=ess)[0]
+    if stage in ("r1", "r2"):
+        return w.build_revise_prompt(body, story, essentials=ess)
+    return w.std_developer() + "\n\n---\n\n" + w.build_std_prompt(body, essentials=ess)
+
+
+class NarrationVoiceWiringTest(unittest.TestCase):
+    """案A(2026-10-25 APPROVED_FOR_PRODUCTION): narration_voiceの配線。課金0。"""
+    STORIES = ("the_tell_tale_heart", "the_gift_of_the_magi", "the_open_window", "the_monkeys_paw", "after_twenty_years")
+
+    def _seed(self, story):
+        return _rj(f"{RUN}/{story}/seed/seed.json")
+
+    def test_narration_line_position_once_before_ending_and_key_people(self):
+        for story in self.STORIES:
+            ess = w.build_essentials(self._seed(story))
+            for blk in (ess.block_full, ess.block_std):
+                lines = blk.split("\n")
+                idx = [i for i, l in enumerate(lines) if l.startswith("- Narration: ")]
+                self.assertEqual(idx, [2], story)                       # 導入2行(見出し+説明)の直後
+                self.assertTrue(lines[3].startswith("- Ending (required)"), story)
+                self.assertLess(idx[0], next(i for i, l in enumerate(lines) if l.startswith("- Key people:")))
+
+    def test_std_prompt_carries_narration_line(self):
+        for story in self.STORIES:
+            ess = w.build_essentials(self._seed(story))
+            p = w.build_std_prompt(_story(8, 60), essentials=ess)
+            self.assertEqual(p.count("- Narration: "), 1, story)
+
+    def test_revise_replaces_third_person_when_essentials_exist(self):
+        for story in self.STORIES:
+            ess = w.build_essentials(self._seed(story))
+            p = w.build_revise_prompt("BODY", story, essentials=ess)
+            self.assertNotIn("in third person", p, story)
+            self.assertEqual(p.count("in the narration described in the Must-keep section below,"), 1, story)
+            self.assertEqual(p.count("- Narration: "), 1, story)
+        # essentials無し(Melos専用経路)は従来の文言のまま
+        self.assertIn("in third person, ", w.build_revise_prompt("BODY", "melos", essentials=None))
+
+    def test_r0_prompts_have_narration_for_essentials_works(self):
+        for story in self.STORIES:
+            seed = self._seed(story)
+            p = w.build_r0_prompt(seed, essentials=w.build_essentials(seed))[0]
+            self.assertEqual(p.count("- Narration: "), 1, story)
+
+    def test_narration_voice_required_fail_closed(self):
+        base = self._seed("the_tell_tale_heart")
+        for bad in (None, "", "   ", 123, ["x"]):
+            seed = copy.deepcopy(base)
+            if bad is None:
+                del seed["source_essentials"]["narration_voice"]
+            else:
+                seed["source_essentials"]["narration_voice"] = bad
+            with self.subTest(bad=bad):
+                with self.assertRaises(w.FamilyZSeedEssentialsStop) as cm:
+                    w.validate_source_essentials(seed, "the_tell_tale_heart", f"{RUN}/the_tell_tale_heart/seed")
+                self.assertIn("narration_voice", str(cm.exception))
+                with self.assertRaises(w.FamilyZSeedEssentialsStop) as cm2:
+                    w.Essentials(seed["source_essentials"])
+                self.assertIn("narration_voice", str(cm2.exception))
+                with self.assertRaises(w.FamilyZSeedEssentialsStop):
+                    w.build_essentials(seed)
+        self.assertEqual(w.validate_source_essentials(_rj(f"{MELOS_SEED}/seed.json"), "melos", MELOS_SEED), {"present": False, "exempt": True})
+
+    def test_validate_returns_narration_voice_for_stage_log(self):
+        r = w.validate_source_essentials(self._seed("the_tell_tale_heart"), "the_tell_tale_heart", f"{RUN}/the_tell_tale_heart/seed")
+        self.assertTrue(r["narration_voice"].startswith("The narrator speaks as 'I'"))
+        self.assertLessEqual(r["items"], w.ESSENTIALS_MAX_ITEMS)             # narration_voiceは5件上限に数えない
+
+    def test_all_stage_prompts_dumped_with_narration_incl_regenerate_and_partial(self):
+        """通常/regenerate/部分runのいずれでも、各stage Prompt dumpに Narration行(R1/R2は置換句)が入る。"""
+        story = "the_tell_tale_heart"
+        sd = f"{RUN}/{story}/seed"
+        with tempfile.TemporaryDirectory() as d:
+            def chain(**kw):
+                return w.run_writer_chain(w.LLM(w.MockClient(None), w.Budget(1e9)), d, sd, story_key=story, **kw)
+            chain(stages=("r0", "r1", "r2", "std_adjust"))
+            for stage in ("r0", "r1", "r2", "std_adjust"):
+                self.assertEqual(_rd(f"{d}/writer/{stage}_prompt.txt").count("- Narration: "), 1, stage)
+            for stage in ("r1", "r2"):
+                t = _rd(f"{d}/writer/{stage}_prompt.txt")
+                self.assertIn("in the narration described in the Must-keep section below,", t)
+                self.assertNotIn("in third person", t)
+            chain(stages=("r1",), regenerate_stage="r1")
+            self.assertEqual(_rd(f"{d}/writer/r1_prompt.txt").count("- Narration: "), 1)
+            chain(stages=("r2",), regenerate_stage="r2")
+            self.assertEqual(_rd(f"{d}/writer/r2_prompt.txt").count("- Narration: "), 1)
+            chain(stages=("std_adjust",), regenerate_stage="std_adjust")
+            self.assertEqual(_rd(f"{d}/writer/std_adjust_prompt.txt").count("- Narration: "), 1)
+
+    def test_narration_voice_change_stops_resume(self):
+        story = "the_tell_tale_heart"
+        sd0 = f"{RUN}/{story}/seed"
+        with tempfile.TemporaryDirectory() as d, tempfile.TemporaryDirectory() as sd:
+            w.run_writer_chain(w.LLM(w.MockClient(None), w.Budget(1e9)), d, sd0, stages=("r0",), story_key=story)
+            seed = copy.deepcopy(self._seed(story))
+            seed["source_essentials"]["narration_voice"] += " Changed."
+            shutil.copy(f"{sd0}/primary_text_excerpt.md", f"{sd}/primary_text_excerpt.md")
+            with open(f"{sd}/seed.json", "w", encoding="utf-8") as f:
+                json.dump(seed, f, ensure_ascii=False, indent=1)
+            sha = hashlib.sha256(open(f"{sd}/seed.json", "rb").read()).hexdigest()
+            with open(f"{sd}/SEED_PROVENANCE.json", "w", encoding="utf-8") as f:
+                json.dump({"files": {"seed.json": {"sha256": sha}}}, f)
+            with self.assertRaises(w.FamilyZProvenanceMismatchStop):
+                w.run_writer_chain(w.LLM(w.MockClient(None), w.Budget(1e9)), d, sd, stages=("r0",), story_key=story)
+
+    def test_in_third_person_remains_only_in_revise_base_template(self):
+        """旧固定文言の撤去確認: 『in third person』はREVISE_USER_TMPLのベース文言1か所(essentials無し=Melos専用経路)と置換元定数のみ。"""
+        src = _rd("er062_family_z_writer_01.py")
+        self.assertEqual(w.REVISE_USER_TMPL.count("in third person"), 1)
+        self.assertEqual(w.ESSENTIALS_EXEMPT_STORIES, ("melos",))          # 推奨1: Melos以外へ広がらないことを固定
+        self.assertIn("assert _REVISE_THIRD in tmpl", src)
+        hits = [l.strip() for l in src.split("\n") if "in third person" in l]
+        self.assertTrue(all(("_REVISE_THIRD" in h or "Keep it at a natural upper-intermediate" in h or h.startswith("#")) for h in hits), hits)
+
+    def test_seed_narration_rules_structure(self):
+        """記入規則の軽い構造検査(本文Validatorではない): 非空・第1文に自称・free_to_cutに丸ごと入っていない。"""
+        for story in self.STORIES:
+            e = self._seed(story)["source_essentials"]
+            nv = e["narration_voice"]
+            self.assertTrue(nv.strip(), story)
+            self.assertTrue(("told in the third person by an outside narrator" in nv.split(".")[0]) or ("speaks as 'I'" in nv.split(";")[0]), story)
+            self.assertFalse(any(nv in f or f in nv for f in e["free_to_cut"]), story)
+
+    def test_cp_checklist_has_narration_row_severe_and_treatment_rule(self):
+        seed = self._seed("the_tell_tale_heart")
+        md = w.build_cp_checklist(seed, "the_tell_tale_heart", {"r2": "# T\n\nI am calm.\n\nYou see.\n"})
+        row = [l for l in md.split("\n") if "narration(人称・語り手の立場が各stageで保たれている)" in l]
+        self.assertEqual(len(row), 1)
+        self.assertIn("| 重大 |", row[0])
+        self.assertIn(seed["source_essentials"]["narration_voice"].replace("|", "/"), row[0])
+        self.assertIn("narration(人称・視点・語り手の立場の変更)", w.CP_TREATMENT_RULE)    # (A)重大の列挙とW6の整合(Opus必須修正4)
+
+    def test_no_dev_runner_reference_from_production(self):
+        """Production本体はDEV/Trial runnerを参照しない(Opus確認事項: 本番→DEV参照0件)。"""
+        for f in ("er062_family_z_writer_01.py", "er026_family_z_fiction_production_runner_01.py", "er062_family_z_structure_01.py"):
+            self.assertNotIn("fz_essence_dev_runner", _rd(f), f)
+
+    def test_historical_dev_runner_fail_fast_guard(self):
+        """DEV runnerは案A昇格後はimport時に停止する(二重注入防止、Opus必須修正5)。"""
+        import subprocess, sys
+        r = subprocess.run([sys.executable, "-c",
+                            "import sys; sys.path.insert(0,'docs/research/FZ-SOURCE-ESSENCE-RETENTION-TRIAL-01'); import fz_essence_dev_runner_01"],
+                           capture_output=True, encoding="utf-8", errors="replace", env={**os.environ, "PYTHONIOENCODING": "utf-8"})
+        self.assertNotEqual(r.returncode, 0)
+        self.assertIn("HISTORICAL_RUNNER", (r.stderr or "") + (r.stdout or ""))
+
+    def test_four_works_prompts_match_trial_dumps_byte_for_byte(self):
+        """Production builder(実Seed)のR0/R1/R2/Std PromptがTrialが実際に送信したPrompt dumpとbyte一致(Trial結果再利用の根拠)。
+        賢者/開いた窓/猿の手=p2_s1、告げ口心臓=1b_s1。二十年後はTrial dumpが無く構造検査のみ(上のtest)。"""
+        for story, run in P2_RUN.items():
+            dumps = {s_: _rd(P2_DUMP.format(story=story, run=run, stage=s_)) for s_ in ("r0", "r1", "r2", "std_adjust")}
+            self.assertEqual(_prompt_for(story, "r0"), dumps["r0"], (story, "r0"))
+            for stage in ("r1", "r2"):
+                m = re.match(r"Here is a short story:\n\n(.*)\n\nWithout changing", dumps[stage], re.S)
+                self.assertTrue(m, (story, stage))
+                self.assertEqual(_prompt_for(story, stage, m.group(1)), dumps[stage], (story, stage))
+            adv = dumps["std_adjust"].split("[Story]\n", 1)[1]
+            self.assertEqual(_prompt_for(story, "std_adjust", adv), dumps["std_adjust"], (story, "std_adjust"))
 
 
 if __name__ == "__main__":

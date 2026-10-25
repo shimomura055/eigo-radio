@@ -15,6 +15,12 @@ sys.path.insert(0, ROOT)
 os.chdir(ROOT)
 import er062_family_z_writer_01 as w          # noqa: E402  (Production module。import only、file無変更)
 
+# 歴史的runner(案A昇格後は使用不可。Opus条件A必須修正5、2026-10-25): 案Aは委任_04でProductionへ昇格済み(writerが_NARR_LINEを持つ)。
+# 昇格後にこのrunnerを動かすとNarration行が二重に入り、revise_devのテンプレ置換でProductionのW3 assertも失敗するため、import時点で停止する。
+if hasattr(w, "_NARR_LINE"):
+    raise SystemExit("HISTORICAL_RUNNER: fz_essence_dev_runner_01は案A昇格前のTrial専用(歴史的)。Production writerが_NARR_LINEを持つため停止する。"
+                     "再現にはTrial時点のcommit(547074875以前)を使うこと。")
+
 OUT_ROOT = "er026_output/family_z_dev_trials/fz_essence_01"
 PROD_RUN_ROOT = "er026_output/family_z_production_e2e_01"
 DEV_SEED_TTH = "docs/research/FZ-SOURCE-ESSENCE-RETENTION-TRIAL-01/dev_seed/the_tell_tale_heart"
