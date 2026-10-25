@@ -210,7 +210,7 @@ class TestPrompt02(unittest.TestCase):
 
 class TestRound2Plumbing(unittest.TestCase):
     def test_effort_est_and_choices(self):
-        self.assertEqual(g.GEN_EST_BY_EFFORT, {"high": 20.0, "medium": 14.0})
+        self.assertEqual(g.GEN_EST_BY_EFFORT, {"high": 20.0, "medium": 9.0})
         self.assertEqual(g.EFFORTS, ("high", "medium"))
         self.assertEqual(g.GEN_EST_JPY, 20.0)
 
@@ -232,8 +232,8 @@ class TestRound2Plumbing(unittest.TestCase):
         self.assertIn("style", meta)
 
     def test_medium_reserve_uses_medium_estimate(self):
-        """cap 40: medium(14)なら spent 25 は通り 27 は停止、high(20)なら spent 21 で停止。"""
-        for eff, spent, expect_stop in (("medium", 25.0, False), ("medium", 27.0, True), ("high", 21.0, True)):
+        """cap 40: medium(9)なら spent 30 は通り 32 は停止、high(20)なら spent 21 で停止。"""
+        for eff, spent, expect_stop in (("medium", 30.0, False), ("medium", 32.0, True), ("high", 21.0, True)):
             with tempfile.TemporaryDirectory() as d:
                 try:
                     g.generate_one(None, theme="redelivery_fee", gen_idx="x", inp=g.load_input("redelivery_fee"), theme_cap=40.0,
