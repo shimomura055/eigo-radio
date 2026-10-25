@@ -74,3 +74,23 @@ Use this only to choose a natural tone, pace, and energy for this one line, as a
 ## 8. 将来のProduction化時に必要になる変更(参考。本Trialでは実装しない)
 
 `build_reuse_key`のdialogueにcontext/style hash追加(再利用仕様の変更=ユーザー承認+Opus条件A)/文脈・感情抽出のrun段組込み/leakage検査のGate化(新Gate=ユーザー承認)。DEV結果がVALIDATEDでもこれらは採用判断後。
+
+## 9. 改訂履歴(委任_02、2026-10-25。Opus独立レビュー `OPUS_REVIEW_01.md` の M1〜M6・R1〜R4 反映。LLM・TTS未観測)
+
+事前登録は `PREREGISTERED_CRITERIA_02.md` で置換。以下が01からの差分(実装 `er118_fz_dialogue_context_tts_trial_01.py`、test 43件PASS)。
+
+| ID | 反映内容 | 実装箇所 |
+|---|---|---|
+| M1 | `leakage_check` を difflib アライメント方式へ差替え(余分token連続長≥2、またはCONTEXT専用語に該当でflagged、余分token有で needs_listen)。全attemptのASRを検査し `leakage_any_attempt`/`leakage_final` を分離。base armにも適用。単語境界(token単位)。長さ補助フラグ(>1.4×median[①,base]かつ+0.6秒超) | `leakage_check` / `leakage_all_attempts` / `length_listen_flag` |
+| M2 | NO_EXPLICIT_CUE/DISCARDED/None のとき `Speaker's state of mind` 行自体を出さない。旧 `EMOTION_FALLBACK_STATE`(「deliver it plainly」=平板化指示)を撤去 | `validate_emotion_items` / `build_context_block` |
+| M3 | CONTEXT_HEAD/TAIL をOpus差分の文言で逐語置換。演出文の逐語行を撤去し `Manner words from the narration: ...` 行のみ。会話タグ(小文字始まり5語以下の文)は逐語で入れない。前後セリフは引用符なしで `Spoken line before (said by X; not part of this line): ...` | `CONTEXT_HEAD`/`CONTEXT_TAIL`/`build_context_block`/`is_dialogue_tag` |
+| M4 | 事前登録02(Status 3値写像、(d)補助、clip別主指標、完全分離、3/5・1以下、逆向き記録) | `PREREGISTERED_CRITERIA_02.md` / `evaluate_trial` |
+| M5 | `comparison_valid`(final instruction_type≠minimal_fallback かつ最終実送信prompt shaが期待値一致)、`n_tts_calls_undercount_possible`、1 clipがNGでも中断せず続行(中断はcap・protected diff・STOP通知のみ) | `comparison_validity` / `generate_arm` |
+| M6 | `EMOTION_DEVELOPER` に rule 8〜10 追加、強度語(語幹)deny→`DISCARDED(intensity_word)`、`llm/emotion_review.json`(Fable判定 accept/discard。未設定だとctx armの有料生成を拒否) | `EMOTION_DEVELOPER`/`INTENSITY_STEMS`/`load_reviewed_notes` |
+| R1 | 3armを同一セッションで `ctx_t1 → base_t1 → ctx_t2` 連続実行(`gen-session`)。TTS model名を記録(SDK応答のmodel_versionはProduction wrapperがbytesのみ返すため取得不能=base armの①との差で検出する旨を記録) | `run_session` / `SESSION_ORDER` |
+| R2 | **可能**。速度加工は純関数 `er008_a2_postprocess_slowdown_01.apply_a2_slowdown(src,dst,pct)`(ffmpeg atempo、API 0)で、Production Adv会話が使うpct=`er063.Z_ADV_DIALOGUE_SLOWDOWN_PCT`(atempo=1.06)をそのまま呼べる。試聴の主音声は最終相当音声(加工後ASR再検証なしは限界として報告) | `make_final_equivalent` |
+| R3 | er113のrepo全体mtime走査(`scan_new_files`)を流用(除外dirに本Trial出力先を追加)。結果は各armのsummaryに記録(suspiciousの扱いはFable) | `scan_repo_mtime` |
+| R4 | 試聴ページ: 音量注記、A/B/A'/B'の名称、各カードにLLM出力(状態・場面)の日本語短い要約欄(`emotion_review.json` の `summary_ja`、accept時のみ表示) | `build_page` |
+
+最終 EMOTION_DEVELOPER sha256 = `035b54ff44b28d645e831cd0266c47fd2691f0268d606de0a0bea3d6ecd39cab`(`emotion_prompt_sha()`[schema込み]=`8bc8c816d5187ff060c438bce09b03e21492c7e44806241763631e55db291dce`)。
+任意O1(A/B伏せ切替・決定論のみarm②')は今回不採用(②の効果確認後に別検討)。

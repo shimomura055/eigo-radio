@@ -134,7 +134,7 @@ class EmotionValidationTests(unittest.TestCase):
         v = t.validate_emotion_items(raw, self.ctxs)
         self.assertEqual(v["full_story_part2_c7"]["status"], "ACCEPTED")
         self.assertEqual(v["full_story_part2_c4"]["status"], "NO_EXPLICIT_CUE")
-        self.assertEqual(v["full_story_part2_c4"]["state"], t.EMOTION_FALLBACK_STATE)
+        self.assertEqual(v["full_story_part2_c4"]["state"], "")   # Opus M2: 中立は状態行を出さない
 
     def test_discard_non_verbatim_evidence_and_invented_names(self):
         raw = [{"clip_id": "full_story_part2_c7", "speaker_state": "Della is terrified.", "scene": "x", "reaction_to_previous": "",
@@ -146,7 +146,7 @@ class EmotionValidationTests(unittest.TestCase):
         self.assertTrue(any(r.startswith("evidence_not_verbatim") for r in v["full_story_part2_c7"]["discard_reasons"]))
         self.assertEqual(v["full_story_part2_c4"]["status"], "DISCARDED")
         self.assertTrue(any("new_proper_noun" in r for r in v["full_story_part2_c4"]["discard_reasons"]))
-        self.assertEqual(v["full_story_part2_c7"]["state"], t.EMOTION_FALLBACK_STATE)
+        self.assertEqual(v["full_story_part2_c7"]["state"], "")
 
     def test_missing_item_and_overlong_discarded(self):
         v = t.validate_emotion_items([], self.ctxs)
@@ -158,22 +158,203 @@ class EmotionValidationTests(unittest.TestCase):
 
 
 class LeakageTests(unittest.TestCase):
+    """Opus M1: アライメント方式(difflib)、全attempt、単語境界、長さ補助フラグ。"""
     def setUp(self):
-        plan = t.load_plan()
-        self.ctx = t.extract_context(plan, "full_story_part2_c7")
+        self.plan = t.load_plan()
+        self.c7 = t.extract_context(self.plan, "full_story_part2_c7")
+        self.c2 = t.extract_context(self.plan, "full_story_part2_c2")
 
     def test_clean_asr_not_flagged(self):
-        r = t.leakage_check("Please let him still think I'm pretty.", self.ctx, None)
+        r = t.leakage_check("Please let him still think I'm pretty.", self.c7, None)
         self.assertFalse(r["flagged"])
-        self.assertTrue(t.verbatim_check("Please let him still think I'm pretty.", self.ctx["text"])["token_equal"])
+        self.assertFalse(r["needs_listen"])
+        self.assertTrue(t.verbatim_check("Please let him still think I'm pretty.", self.c7["text"])["token_equal"])
 
-    def test_context_words_flagged(self):
-        r = t.leakage_check("Please let him still think I'm pretty. Narration just before dinner was nearly ready", self.ctx, None)
+    def test_m1_c7_trailing_dialogue_tag_she_whispered_is_flagged(self):
+        # 旧実装は見逃した最危険ケース(末尾が読点+CONTEXTに会話タグが入っている状況)
+        r = t.leakage_check("Please let him still think I'm pretty, she whispered.", self.c7, None)
         self.assertTrue(r["flagged"])
-        r3 = t.leakage_check("Please let him still think I'm pretty. By seven, dinner was nearly ready.", self.ctx, None)
-        self.assertTrue(r3["flagged"])
-        r4 = t.leakage_check("Please let him still think I'm pretty. She whispered.", self.ctx, None)
-        self.assertTrue(r4["flagged"] or r4["surplus_words"] > 0)
+        self.assertEqual(r["extra_tokens"], ["she", "whispered"])
+
+    def test_m1_c2_next_line_leak_is_flagged(self):
+        txt = self.c2["text"]
+        r = t.leakage_check(txt + " Twenty dollars.", self.c2, None)
+        self.assertTrue(r["flagged"])
+        self.assertIn("twenty", r["extra_tokens"])
+        self.assertTrue(r["context_only_hits"])      # 『twenty』はCONTEXTにだけある語
+
+    def test_m1_single_speaker_label_is_flagged(self):
+        r = t.leakage_check("Della " + self.c2["text"], self.c2, None)
+        self.assertTrue(r["flagged"])
+        self.assertEqual(r["extra_tokens"], ["della"])
+        self.assertIn("della", r["context_only_hits"])
+
+    def test_m1_homophone_replacement_not_extra(self):
+        r = t.leakage_check("Please let him still think I'm pritty.", self.c7, None)   # 同数の置換=ASR揺れ
+        self.assertFalse(r["flagged"])
+        self.assertFalse(r["needs_listen"])
+
+    def test_m1_single_extra_noncontext_word_needs_listen_only(self):
+        r = t.leakage_check("Oh please let him still think I'm pretty.", self.c7, None)
+        self.assertEqual(r["extra_tokens"], ["oh"])
+        self.assertTrue(r["needs_listen"])
+        self.assertFalse(r["flagged"])               # 1語かつCONTEXT専用語でない
+
+    def test_m1_all_attempts_checked_and_final_separated(self):
+        r = t.leakage_all_attempts(["Please let him still think I'm pretty, she whispered.", "Please let him still think I'm pretty."],
+                                   "Please let him still think I'm pretty.", self.c7, None)
+        self.assertTrue(r["leakage_any_attempt"])    # 途中attemptの混入はretryで隠れない
+        self.assertFalse(r["leakage_final"])
+
+    def test_m1_length_listen_flag(self):
+        self.assertTrue(t.length_listen_flag(4.0, [2.0, 2.2]))
+        self.assertFalse(t.length_listen_flag(2.7, [2.0, 2.2]))      # 1.4x未満
+        self.assertFalse(t.length_listen_flag(1.0, [0.5, 0.5]))      # 1.4x超だが差が0.6秒以下
+
+    def test_leak_flag_applies_to_base_arm_too(self):
+        r = t.leakage_check("Della Please let him still think I'm pretty.", self.c7, None)   # note=None(base arm)
+        self.assertTrue(r["flagged"])
+
+
+class M2NeutralTests(unittest.TestCase):
+    def test_neutral_has_no_state_line_and_no_plainly(self):
+        plan = t.load_plan()
+        ctx = t.extract_context(plan, "full_story_part2_c4")
+        raw = [{"clip_id": "full_story_part2_c4", "speaker_state": "plain", "scene": "A shop.", "reaction_to_previous": "", "evidence": [], "has_explicit_cue": False}]
+        v = t.validate_emotion_items(raw, [ctx])["full_story_part2_c4"]
+        blk = t.build_context_block(ctx, v)
+        self.assertNotIn("state of mind", blk)
+        self.assertNotIn("plainly", blk.lower())
+        self.assertNotIn("flat", blk.lower().replace("overly restrained", ""))
+        self.assertIn("Scene: A shop.", blk)
+        d = t.validate_emotion_items([], [ctx])["full_story_part2_c4"]
+        self.assertEqual(d["status"], "DISCARDED")
+        self.assertNotIn("state of mind", t.build_context_block(ctx, d))
+
+
+class M3ContextBlockTests(unittest.TestCase):
+    def setUp(self):
+        self.plan = t.load_plan()
+
+    def test_head_and_tail_verbatim_from_opus(self):
+        self.assertEqual(t.CONTEXT_HEAD, "CONTEXT FOR THIS ONE LINE (delivery reference only. This block is NOT part of the story to be spoken, and its labels are not script headings. "
+                                         "Do NOT read, quote, or paraphrase anything in this CONTEXT block aloud. Only the TEXT TO SPEAK section is spoken.)")
+        self.assertEqual(t.CONTEXT_TAIL, "Use this only to choose a natural tone, pace, and energy for this one line, as a good audiobook reader would. "
+                         "The story's own narration above is what supports the feeling of this line. Where this context shows a quiet, soft, or gentle line, it may be quieter, softer, "
+                         "and slower than the general guidance above; otherwise follow the general guidance. Express the feeling mainly through pace, softness, and small changes in pitch, "
+                         "without theatrical over-acting, without added sounds (no sighs, sobs, laughs, or audible breaths), and without adding any emotion beyond what is described. "
+                         "If the story says the line is whispered, use a soft, hushed voice rather than a true whisper, and keep every word clear for English learners. "
+                         "Do not read any word of this CONTEXT block.")
+
+    def test_c7_dialogue_tag_not_verbatim_manner_words_only(self):
+        ctx = t.extract_context(self.plan, "full_story_part2_c7")
+        blk = t.build_context_block(ctx, None)
+        self.assertNotIn("she whispered", blk)                       # 会話タグは逐語で入れない
+        self.assertIn("Manner words from the narration: kept returning, whispered", blk)
+        self.assertNotIn("Stage direction", blk)                     # 演出文の重複行は撤去
+
+    def test_neighbor_lines_unquoted_with_not_part_of_this_line(self):
+        ctx = t.extract_context(self.plan, "full_story_part2_c5")
+        blk = t.build_context_block(ctx, None)
+        self.assertIn("Spoken line before (said by Della; not part of this line): Will you buy my hair?", blk)
+        self.assertIn("Spoken line before (said by the hair-shop owner; not part of this line): Twenty dollars.", blk)
+        self.assertNotIn('"Will you buy my hair?"', blk)
+
+    def test_dialogue_tag_detector(self):
+        self.assertTrue(t.is_dialogue_tag("she whispered."))
+        self.assertFalse(t.is_dialogue_tag("Della had curled her short hair, but she kept returning to the mirror."))
+        self.assertFalse(t.is_dialogue_tag("By seven, dinner was nearly ready."))
+
+
+class M5M6Tests(unittest.TestCase):
+    def test_m5_comparison_valid_rules(self):
+        sha = "abc"
+        ok = t.comparison_validity({"status": "OK", "instruction_type": "english_style_prefix_wide_margin", "attempts_log": [{}]}, [{"prompt_sha256": sha}], sha)
+        self.assertTrue(ok["comparison_valid"])
+        fb = t.comparison_validity({"status": "OK", "instruction_type": "minimal_fallback", "attempts_log": [{}, {}]}, [{"prompt_sha256": sha}], sha)
+        self.assertFalse(fb["comparison_valid"])
+        self.assertTrue(fb["n_tts_calls_undercount_possible"])
+        bad = t.comparison_validity({"status": "OK", "instruction_type": "english_style_prefix_wide_margin", "attempts_log": [{}]}, [{"prompt_sha256": "zzz"}], sha)
+        self.assertFalse(bad["comparison_valid"])
+        self.assertFalse(t.comparison_validity({"status": "STOPPED"}, [], sha)["comparison_valid"])
+
+    def test_m6_intensity_words_discarded(self):
+        plan = t.load_plan()
+        ctx = t.extract_context(plan, "full_story_part2_c7")
+        raw = [{"clip_id": ctx["clip_id"], "speaker_state": "Della is devastated and desperate.", "scene": "", "reaction_to_previous": "",
+                "evidence": ["she whispered"], "has_explicit_cue": True}]
+        v = t.validate_emotion_items(raw, [ctx])[ctx["clip_id"]]
+        self.assertEqual(v["status"], "DISCARDED")
+        self.assertTrue(any(r.startswith("intensity_word") for r in v["discard_reasons"]))
+        self.assertEqual(v["state"], "")
+        mild = [{"clip_id": ctx["clip_id"], "speaker_state": "Della is quietly hopeful.", "scene": "", "reaction_to_previous": "", "evidence": ["she whispered"], "has_explicit_cue": True}]
+        self.assertEqual(t.validate_emotion_items(mild, [ctx])[ctx["clip_id"]]["status"], "ACCEPTED")
+
+    def test_m6_developer_rules_8_to_10_present(self):
+        d = t.EMOTION_DEVELOPER
+        self.assertIn("8. Use mild, plain wording", d)
+        self.assertIn("9. Describe the feeling, not acting instructions", d)
+        self.assertIn("10. At least one evidence quote must come from the narration", d)
+        self.assertIn("despair, devastated, terrified", d)
+
+    def test_m6_review_gate_blocks_until_decided(self):
+        d = "er118_output/_unit_review_tmp/llm"
+        try:
+            t.save_json(f"{d}/emotion_notes.json", {"validated": {"a": {"state": "s", "scene": "x", "reaction": "", "status": "ACCEPTED"}}})
+            with self.assertRaises(SystemExit):
+                t.load_reviewed_notes(f"{d}/emotion_notes.json", f"{d}/emotion_review.json")      # reviewファイル無し
+            t.save_json(f"{d}/emotion_review.json", {"items": {"a": {"fable_decision": None}}})
+            with self.assertRaises(SystemExit):
+                t.load_reviewed_notes(f"{d}/emotion_notes.json", f"{d}/emotion_review.json")      # 未決
+            t.save_json(f"{d}/emotion_review.json", {"items": {"a": {"fable_decision": "discard"}}})
+            n = t.load_reviewed_notes(f"{d}/emotion_notes.json", f"{d}/emotion_review.json")
+            self.assertEqual((n["a"]["state"], n["a"]["scene"]), ("", ""))
+            t.save_json(f"{d}/emotion_review.json", {"items": {"a": {"fable_decision": "accept"}}})
+            self.assertEqual(t.load_reviewed_notes(f"{d}/emotion_notes.json", f"{d}/emotion_review.json")["a"]["state"], "s")
+        finally:
+            shutil.rmtree(os.path.join(t.ROOT, "er118_output/_unit_review_tmp"), ignore_errors=True)
+
+    def test_r1_session_order(self):
+        self.assertEqual(t.SESSION_ORDER, (("ctx", 1), ("base", 1), ("ctx", 2)))
+
+
+class R2FinalEquivalentTests(unittest.TestCase):
+    def test_final_equiv_duration_ratio_is_1_over_1_06(self):
+        import soundfile as sf
+        d = "er118_output/_unit_fe_tmp"
+        try:
+            os.makedirs(os.path.join(t.ROOT, d), exist_ok=True)
+            sf.write(os.path.join(t.ROOT, d, "a.wav"), (np.sin(np.arange(48000) / 20) * 0.1).astype("float32"), 24000)
+            info = t.make_final_equivalent(f"{d}/a.wav", f"{d}/a_fe.wav")
+            self.assertAlmostEqual(info["dst_duration_seconds"] / info["src_duration_seconds"], 1 / 1.06, delta=0.01)
+        finally:
+            shutil.rmtree(os.path.join(t.ROOT, d), ignore_errors=True)
+
+
+class EvaluateTests(unittest.TestCase):
+    def _clips(self, ctx_vals, ref_vals):
+        def row(v):
+            return {"rms_dbfs": v, "rms_lin": 10 ** (v / 20), "duration_s": 3.0, "articulation_wpm_300": 150.0, "f0": {"median_hz": 200.0, "range_semitones_p10_p90": 5.0}}
+        return {"full_story_part2_c7": {"existing_A": row(ref_vals[0]), "base_t1": row(ref_vals[1]), "ctx_t1": row(ctx_vals[0]), "ctx_t2": row(ctx_vals[1])}}
+
+    def test_complete_separation_forward_and_reverse(self):
+        e = t.evaluate_trial(self._clips([-30.0, -31.0], [-24.0, -25.0]), 10.0)["separation"]["full_story_part2_c7"]
+        self.assertTrue(e["forward"])
+        self.assertFalse(e["reverse"])
+        e2 = t.evaluate_trial(self._clips([-20.0, -21.0], [-24.0, -25.0]), 10.0)["separation"]["full_story_part2_c7"]
+        self.assertFalse(e2["forward"])
+        self.assertTrue(e2["reverse"])                 # 逆向きの完全分離も記録
+        e3 = t.evaluate_trial(self._clips([-30.0, -24.5], [-24.0, -25.0]), 10.0)["separation"]["full_story_part2_c7"]
+        self.assertFalse(e3["forward"] or e3["reverse"])
+
+    def test_verdict_thresholds(self):
+        ev = t.evaluate_trial(self._clips([-30.0, -31.0], [-24.0, -25.0]), 10.0)
+        self.assertEqual(ev["d_verdict_mechanical"], "no_effect_mechanical")      # 方向あり1件のみ分離(<=1)
+
+    def test_status_candidate_requires_conditions(self):
+        ev = t.evaluate_trial(self._clips([-30.0, -31.0], [-24.0, -25.0]), 99.0)
+        self.assertFalse(ev["conditions_abcefg"]["g_cost_within_cap"])
+        self.assertTrue(ev["status_candidate"].startswith("REJECTED"))
 
 
 class CaptureTests(unittest.TestCase):
@@ -272,21 +453,42 @@ class GenerateArmInjectionTests(unittest.TestCase):
         self.assertEqual(rec["reuse_key_trial"]["arm"], "ctx")
 
 
+    def test_m5_ng_clip_does_not_abort_remaining_clips(self):
+        import soundfile as sf
+        calls = []
+
+        def gen(text, out_path, voice, **kw):
+            calls.append(text)
+            sf.write(out_path, (np.sin(np.arange(24000) / 20) * 0.1).astype("float32"), 24000)
+            if len(calls) == 2:
+                return {"status": "STOPPED", "reason": "x", "attempts_log": [{"attempt": 1, "status": "OK", "asr_text": "bad"}]}
+            return {"status": "OK", "asr_text": text.strip('"'), "instruction_type": "english_style_prefix_wide_margin",
+                    "attempts_log": [{"attempt": 1, "status": "OK", "asr_text": text.strip('"')}]}
+        r = t.generate_arm("base", 1, gen_fn=gen)
+        self.assertEqual(len(calls), 8)                     # NGの後も全8件を実行
+        self.assertEqual(sum(1 for v in r.values() if v["status"] != "OK"), 1)
+        bad = [v for v in r.values() if v["status"] != "OK"][0]
+        self.assertFalse(bad["comparison_valid"])
+        self.assertIn("leakage", bad)
+        self.assertIn("attempts_asr_texts", bad)
+
     def test_analyze_all_end_to_end_with_fake_generation(self):
         t.build_phase0_artifacts()
         t.generate_arm("base", 1, gen_fn=self._fake([]))
         t.generate_arm("ctx", 1, gen_fn=self._fake([]))
+        t.generate_arm("ctx", 2, gen_fn=self._fake([]))
         page = "er118_output/_unit_page_tmp2"
         try:
             a = t.analyze_all(out_dir=t.OUT_DIR, page_dir=page)
-            self.assertEqual(a["arms"], ["base_t1", "ctx_t1"])
+            self.assertEqual(a["arms"], ["base_t1", "ctx_t1", "ctx_t2"])
             row = a["clips"]["full_story_part2_c7"]
             self.assertTrue(row["ctx_t1"]["verbatim"]["token_equal"])
-            self.assertFalse(row["ctx_t1"]["leakage"]["flagged"])
+            self.assertFalse(row["ctx_t1"]["leakage"]["leakage_final"])
             self.assertTrue(os.path.isfile(os.path.join(t.ROOT, page, "audio", "ctx_t1_full_story_part2_c7.mp3")))
             with open(os.path.join(t.ROOT, page, "index.html"), encoding="utf-8") as f:
                 doc = f.read()
-            self.assertIn("参考take: base_t1", doc)
+            self.assertIn("A' 現行方式の別take", doc)
+            self.assertIn("音量の大小ではなく", doc)
             self.assertEqual(doc.count("未生成"), 0)
         finally:
             shutil.rmtree(os.path.join(t.ROOT, page), ignore_errors=True)
@@ -308,7 +510,7 @@ class MeasureAndPageTests(unittest.TestCase):
                 doc = f.read()
             self.assertIn("noindex", doc)
             self.assertEqual(doc.count("<audio"), 1)
-            self.assertEqual(doc.count("未生成"), 15)    # 8*2 - 1
+            self.assertEqual(doc.count("未生成"), 31)    # 8*4 - 1
         finally:
             shutil.rmtree(os.path.join(t.ROOT, tmp), ignore_errors=True)
 

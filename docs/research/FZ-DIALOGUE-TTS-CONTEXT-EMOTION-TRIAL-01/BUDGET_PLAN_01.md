@@ -30,3 +30,11 @@ Cap超過見込み無し。生成関数は`PHASE1_GO.json`の`cap_jpy`(≤30)を
 - 追加LLM: 作品あたり感情情報1 call(約0.3〜0.5円、Advのdialogue clip数に依らずほぼ一定)。
 - Z作品のdialogue clip数は1〜19(Adv。Open Window 17、After Twenty Years 19、Monkey's Paw 17、Magi 8、Melos 11)。1作品(Adv+Stdの2レベル)で**概算+1〜3円/作品**。目標70円/記事セットに対し+約1.5〜4%。ただしZ作品はVoicesのような70円目標の対象とは別の単価体系の可能性があり、正確な比較は採用判断時に別途算出する。
 - retryが増える場合(leakage→再生成)はその分上振れ。Trialで`attempts`・leakage率を測り、Phase 1の結果に基づいて再見積する。
+
+## 3. 更新(委任_02、2026-10-25。Opusレビュー反映)
+
+- **arm構成を確定: ② ctx × 2 take + 対照 base × 1 take(上表の(C)案)**。実行順は同一セッション連続の `ctx_t1 → base_t1 → ctx_t2`(Opus R1)。
+- 見積: LLM感情情報1 call 約0.5円(Phase 1a) + TTS/ASR 約15.5円(②2 take 約10.4円 + base 1 take約4.7円) = **約16円**、retry予備込み**約19.5円**。個別Cap 30円に対し余裕あり。
+- M3(CONTEXT表現の再設計)でCONTEXT文字数は微減〜同等(演出文の逐語行を撤去し、TAILが約230字増)。TTS入力の差は1 clipあたり±0.01円未満で見積に影響しない。
+- Phase 1aの実費は `raw_usage_log.jsonl` から確定し `RESULT_PACKET_FZDC2.md` に記載。Phase 1b(TTS)は本委任に含めない(Fableが感情情報8件をレビューしてから別委任で起動、Opus M6)。
+- 任意の決定論のみarm②'(+約5円)は別Trial(本Trialの枠外)。
