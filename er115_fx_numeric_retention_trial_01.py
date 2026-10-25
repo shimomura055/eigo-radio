@@ -73,12 +73,32 @@ B3_ADDENDUM_V2 = (
     "- 中心的な問いが数値で答えるものでない場合、または入れると文が不自然になる場合は、数値を入れなくてかまいません。数値を増やすために無関係な数値を入れないでください。\n"
     "- numeric_value欄にない数値や、他のFactの補足的な数値は、selected_storylineの1行に含めないでください。"
 )
-B3_ADDENDA = {"v1": B3_ADDENDUM, "v2": B3_ADDENDUM_V2}
+# 委任_04 R5(Opus OPUS_REVIEW_01 R5: B3の同一呼出のJSONに欄を足す案): v2の本文に、reader_must_hear_numbers欄の指示を足す。
+# Production B3 Prompt本体・STORYLINE_B3_JSON_SCHEMA定数は不変(欄の追加はDEV wrapperが送信直前にschemaのコピーへ足す)。
+B3_ADDENDUM_V3_FIELD = (
+    "\n\n【追加の指示2: reader_must_hear_numbers欄(出力JSONの追加フィールド)】\n"
+    "出力JSONのreader_must_hear_numbers(文字列の配列)に、「この記事を聞く人に必ず伝えるべき重要数値」を、台帳のnumeric_value欄にある数値の表記のまま(単位・倍率語を含めて)入れてください(例の形式: 「12.5%」「約3万人」「4.5倍」)。selected_storylineに数値を入れるかどうかとは別に、記事全体として判断します。Storylineの選び方とFactの採否は、この欄のために変えないでください。\n"
+    "入れてよいのは、次をすべて満たす数値だけです。重要なほど多く入れるのではなく、本当に必要なものに絞ってください。\n"
+    "- その数値がないと、記事の中心的な発見・事実が伝わりにくくなる。\n"
+    "- その数値が、記事の驚きや面白さ、論旨や比較の説得力を支えている。\n"
+    "- 言葉による説明では十分に代替できない。\n"
+    "- その数値を本文に入れても、読みやすさやストーリーの流れが損なわれない。\n"
+    "入れない数値: 日付・年・序数、背景や補足の数値、他の数値の言い換えや内訳、比較の相手側の値や付随する条件の数値、台帳に出てくるだけで記事の中心でない数値(比較の結果の倍率や差そのものが記事の中心的な発見なら、その倍率や差は入れてよい)。\n"
+    "最大2個です。採用したFact(selected_fact_ids)に含まれる台帳の数値だけを入れてください。必要な数値がない記事は空の配列[]にしてください(無理に入れない)。この欄の数値をselected_storylineの1行に自然に含められる場合は含めてかまいませんが、含めなくてもかまいません。"
+)
+B3_ADDENDUM_V3 = B3_ADDENDUM_V2 + B3_ADDENDUM_V3_FIELD
+B3_FIELD_NAME = "reader_must_hear_numbers"
+B3_ADDENDA = {"v1": B3_ADDENDUM, "v2": B3_ADDENDUM_V2, "v3": B3_ADDENDUM_V3}
 M1_RETRY_NOTE_TEMPLATE = (
     "\n\n【前回出力の修正指示(数値)】前回のselected_storylineには、次の数値が含まれていましたが、条件に合いません: {problems}。"
     "selected_storylineの1行に含めてよい数値は、台帳のnumeric_value欄にある表記のままの数値だけで、最大2個です。"
     "周辺的な数値や、numeric_value欄にない数値は含めないでください。数値を入れなくても構いません。"
     "Storylineの選び方・Factの採否はこのために変えないでください。"
+)
+M1_RETRY_NOTE_V3_TEMPLATE = (
+    "\n\n【前回出力の修正指示(reader_must_hear_numbers)】前回のreader_must_hear_numbersには、次の項目が条件に合いませんでした: {problems}。"
+    "この欄に入れてよいのは、採用Factに含まれる台帳numeric_value欄の数値(表記のまま、最大2個)だけです。"
+    "条件に合う数値がなければ空の配列[]にしてください。Storylineの選び方・Factの採否はこのために変えないでください。"
 )
 RULE9_TEXT = (
     "\n9. 「テーマ：」の文に含まれる数字は、記事の中心的な問いに答える数字です。本文で必ず述べてください"
@@ -345,9 +365,10 @@ def is_time_premise(surface: str) -> bool:
     return k == "magnitude" and bool(TIME_PREMISE_UNIT_RE.fullmatch(P.unit_of(surface) or ""))
 
 
-def derive_E(out_dir: str) -> dict:
+def derive_E(out_dir: str, *, surfaces=None, extra_violations=None, item_count=None) -> dict:
     """producer出力(annotation.json / selected_brief_annotated.md)から M1検査とEを決定論で得る。LLM/APIなし。
-    違反(violations)があれば E は空にせず candidates に残すが、gate_E は空(呼出側がB3再実行/記録/STOPを判断)。"""
+    違反(violations)があれば E は空にせず candidates に残すが、gate_E は空(呼出側がB3再実行/記録/STOPを判断)。
+    surfaces: 指定時は Storylineからでなく、その表記リスト(R5=reader_must_hear_numbers欄)を同じ規則で検査・写像する。"""
     sdir = os.path.join(out_dir, "storyline_b3")
     ann = rj(os.path.join(sdir, "annotation.json"))
     ev = rj(os.path.join(sdir, "fact_selection_evidence.json"))
@@ -358,7 +379,7 @@ def derive_E(out_dir: str) -> dict:
     nums = ann["numbers"]
     violations, ignored, ambiguous, candidates = [], [], [], []
     seen_concepts = {}
-    for s in dict.fromkeys(P.extract_surfaces(story)):
+    for s in dict.fromkeys(P.extract_surfaces(story) if surfaces is None else surfaces):
         kind = P.surface_kind(s)
         if kind in ("year", "ordinal", "name_embedded"):
             ignored.append({"surface": s, "kind": kind, "reason": "never_core_kind"})
@@ -397,11 +418,43 @@ def derive_E(out_dir: str) -> dict:
         candidates.append(rec)
     if len(candidates) > MAX_E:
         violations.append({"surface": [c["story_surface"] for c in candidates], "reason": f"too_many_numbers(>{MAX_E})"})
+    if item_count is not None and item_count > MAX_E:
+        violations.append({"surface": f"{item_count} items", "reason": f"too_many_field_items(>{MAX_E})"})
+    violations.extend(extra_violations or [])
     ok = not violations
     return {"storyline": story, "ok": ok, "violations": violations, "candidates": candidates,
             "gate_E": [c for c in candidates if c["gate_required"]] if ok else [],
             "observe_E": [c for c in candidates if not c["gate_required"]] if ok else candidates,
             "ignored": ignored, "ambiguous_small_ints": ambiguous, "storyline_has_no_numbers": not candidates and not violations}
+
+
+def read_field_items(out_dir: str) -> list:
+    p = os.path.join(out_dir, "storyline_b3", B3_FIELD_NAME + ".json")
+    return [str(x) for x in (rj(p).get("items") or [])] if os.path.exists(p) else []
+
+
+def derive_E_r5(out_dir: str) -> dict:
+    """R5(委任_04): E = reader_must_hear_numbers欄(B3自身の判断)。Storyline由来のE(従来)は整合の記録だけ(欄を優先、Storyline数値が欄に無くても記録のみ)。
+    欄の各項目は従来のM1検査と同じ写像規則(ニュース欄の中核数値・_STORYのみは不可・同一概念は1個・最大2個)を通す。LLM/APIなし。"""
+    items = read_field_items(out_dir)
+    pre, surfs = [], []
+    for it in items:
+        ss = P.extract_surfaces(it)
+        if not ss:
+            pre.append({"surface": it, "reason": "field_item_no_numeric_surface"})
+        surfs.extend(ss)
+    E = derive_E(out_dir, surfaces=list(dict.fromkeys(surfs)), extra_violations=pre, item_count=len(items))
+    story = derive_E(out_dir)   # Storyline由来(記録用)
+    f_news = {nfkc(c["news_surface"]) for c in E["candidates"]}
+    s_news = {nfkc(c["news_surface"]) for c in story["candidates"]}
+    E["source"] = B3_FIELD_NAME
+    E["field_items"] = items
+    E["storyline_consistency"] = {
+        "storyline_numbers": sorted(s_news), "field_numbers": sorted(f_news),
+        "storyline_not_in_field(record_only)": sorted(s_news - f_news), "field_not_in_storyline": sorted(f_news - s_news),
+        "storyline_m1_violations_record_only": story["violations"], "match": s_news == f_news}
+    E["storyline_has_no_numbers"] = story["storyline_has_no_numbers"]
+    return E
 
 
 def T_is_ambiguous(s: str) -> bool:
@@ -963,11 +1016,36 @@ ARTICLES = {
 }
 
 
+def with_field_schema(text_kw: dict) -> dict:
+    """text={"format":{"type":"json_schema",...}} のコピーへ reader_must_hear_numbers(文字列配列)を足す。元のdict/Production定数は変更しない。"""
+    t = copy.deepcopy(text_kw)
+    sch = t["format"]["schema"]
+    assert B3_FIELD_NAME not in sch["properties"]
+    sch["properties"][B3_FIELD_NAME] = {"type": "array", "items": {"type": "string"}}
+    sch["required"] = list(sch["required"]) + [B3_FIELD_NAME]
+    return t
+
+
+def save_field_from_calls(out_dir: str, wrapper) -> dict:
+    """最終採用されたB3 call(runtime_evidence.jsonのresponse_id)の出力JSONからreader_must_hear_numbersを保存する。全call分も証跡に残す。"""
+    rid = rj(os.path.join(out_dir, "storyline_b3", "runtime_evidence.json")).get("response_id")
+    hit = next((c for c in reversed(wrapper.field_log) if c["response_id"] == rid), None) or (wrapper.field_log[-1] if wrapper.field_log else None)
+    if hit is None:
+        raise RuntimeError("[STOP] R5: B3のcall記録がありません")
+    obj = json.loads(hit["output_text"])
+    rec = {"items": list(obj.get(B3_FIELD_NAME) or []), "response_id": hit["response_id"], "matched_final_response": hit["response_id"] == rid,
+           "all_calls": [{"response_id": c["response_id"], "items": (json.loads(c["output_text"]).get(B3_FIELD_NAME) if c["output_text"] else None)} for c in wrapper.field_log]}
+    wj(os.path.join(out_dir, "storyline_b3", B3_FIELD_NAME + ".json"), rec)
+    return rec
+
+
 class _AddendumClient:
     """B3のuser messageの末尾へ追記ブロックを足すだけのclientラッパ(Production B3関数をそのまま呼ぶため)。"""
 
-    def __init__(self, client, addendum: str):
+    def __init__(self, client, addendum: str, field_schema: bool = False):
+        # field_schema=True(R5): 送信直前に、STORYLINE_B3_JSON_SCHEMAのdeepcopyへreader_must_hear_numbers欄を足す(Production定数は不変)。
         self._c, self.addendum, self.sent_user_shas = client, addendum, []
+        self.field_schema, self.field_log = field_schema, []
         outer = self
 
         class _Resp:
@@ -977,7 +1055,12 @@ class _AddendumClient:
                     inp[-1]["content"] = inp[-1]["content"] + outer.addendum
                     outer.sent_user_shas.append(sha_text(inp[-1]["content"]))
                 kw["input"] = inp
-                return outer._c.responses.create(**kw)
+                if outer.field_schema:
+                    kw["text"] = with_field_schema(kw.get("text"))
+                resp = outer._c.responses.create(**kw)
+                if outer.field_schema:
+                    outer.field_log.append({"response_id": getattr(resp, "id", None), "output_text": getattr(resp, "output_text", None)})
+                return resp
 
             def __getattr__(self_inner, name):
                 return getattr(outer._c.responses, name)
@@ -1053,8 +1136,9 @@ def run_b3_dev(article: str, arm: str, sample: str, *, per_run_cap: float, phase
     base_addendum = B3_ADDENDA[addendum_version]
     addendum = base_addendum
     E_info = None
+    r5 = addendum_version == "v3"
     for attempt in (1, 2):
-        wrapper = _AddendumClient(client, addendum)
+        wrapper = _AddendumClient(client, addendum, field_schema=r5)
         if attempt == 2:
             # 1回目のartifactを退避(上書きしない)
             shutil.copytree(os.path.join(out_dir, "storyline_b3"), os.path.join(out_dir, "storyline_b3_attempt1"))
@@ -1063,14 +1147,19 @@ def run_b3_dev(article: str, arm: str, sample: str, *, per_run_cap: float, phase
         guard_budget(out_dir, per_run_cap, phase_cap, f"after b3 dev attempt{attempt}")
         runner.assert_b3_min_verified(out_dir)
         runner.run_annotation_producer(out_dir)
-        E_info = derive_E(out_dir)
+        if r5:
+            save_field_from_calls(out_dir, wrapper)
+            E_info = derive_E_r5(out_dir)
+        else:
+            E_info = derive_E(out_dir)
         attempts.append({"attempt": attempt, "storyline": E_info["storyline"], "ok": E_info["ok"], "violations": E_info["violations"],
-                         "candidates": E_info["candidates"], "user_prompt_sha256": wrapper.sent_user_shas})
+                         "candidates": E_info["candidates"], "user_prompt_sha256": wrapper.sent_user_shas,
+                         **({"field_items": E_info["field_items"], "storyline_consistency": E_info["storyline_consistency"]} if r5 else {})})
         if E_info["ok"]:
             break
         if attempt == 1:
             probs = "、".join(f"{v['surface']}({v['reason']})" for v in E_info["violations"])
-            addendum = base_addendum + M1_RETRY_NOTE_TEMPLATE.format(problems=probs)
+            addendum = base_addendum + (M1_RETRY_NOTE_V3_TEMPLATE if r5 else M1_RETRY_NOTE_TEMPLATE).format(problems=probs)
     final_status = "E_OK" if E_info["ok"] and E_info["gate_E"] else ("E_EMPTY" if E_info["ok"] else "M1_VIOLATION")
     res = {"article": article, "arm": arm, "sample": sample, "status": final_status, "first_pass_ok": attempts[0]["ok"],
            "b3_rerun": len(attempts) == 2, "attempts": attempts, "E": E_info, "b3_addendum_version": addendum_version, "b3_addendum_sha256": sha_text(base_addendum),
@@ -1120,7 +1209,7 @@ def run_chain_dev(article: str, arm: str, sample: str, *, per_run_cap: float, ph
         with cl.logging_context(TRIAL_TAG, lvl):
             efam.run_writer_stage(client, theme, wres["ja_text"], src_info["ledger_text"], per_run_cap, only=lvl)
         guard_budget(out_dir, per_run_cap, phase_cap, f"after {lvl}")
-    metrics = measure_run(out_dir, derive_E(out_dir))
+    metrics = measure_run(out_dir, E_info if m1.get("b3_addendum_version") == "v3" else derive_E(out_dir))
     wj(os.path.join(out_dir, "trial_metrics.json"), metrics)
     after = sink_snapshot()
     sink_diff = {k: (before.get(k), after.get(k)) for k in set(before) | set(after) if before.get(k) != after.get(k)}
