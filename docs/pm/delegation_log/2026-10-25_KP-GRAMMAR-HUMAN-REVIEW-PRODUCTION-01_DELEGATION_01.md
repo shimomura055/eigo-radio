@@ -1,0 +1,31 @@
+KP-GRAMMAR-HUMAN-REVIEW-PRODUCTION-01 委任_01(Phase 0: 既存仕様調査・設計・Opusレビュー依頼書。**API 0、Production file変更禁止**。実装はOpus条件Aレビュー後の別委任)
+
+## ユーザー指示(2026-10-25、Status=APPROVED_FOR_PRODUCTION、目標PRODUCTION_WIRED(X/Y/Z)。逐語はStep 0で保存)— 要点
+- 目的: Key Phrase・単語解説・文法解説について、AIが候補を順位付きで選定し原則Humanが最終判断する方式をProductionへ導入。Humanがレビューできない場合も承認済み品質を維持しつつAI選定で制作継続。Q>D>C。X/Y/Z共通、今後のTrial記事にも適用。Family Yは現行Production実装状況を確認し未整備経路は未完了として追跡(未実装をPRODUCTION_WIREDとしない)。
+- KP・単語解説: AIが本文から学習価値の高い候補を**TOP 8順位付き**で選定(既存品質条件維持: 本文実在/5語以下/Std・Advレベル適合/汎用性・学習価値・自然さ・文脈/件数埋めの低価値採用禁止/重複・不一致防止/既存Validator整合)。A. Humanあり(原則): TOP 8を提示、Humanが「KPコーナー3件」と「それを含む単語解説コーナー合計5件」を選択。再選定・修正依頼可。**HumanがNGとした候補を自動採用しない**。B. Humanなし: KP=TOP 1〜3、単語解説=TOP 1〜5を自動採用。既存品質Gateは省略しない。**未レビューとNG判定を区別**。未実施を理由に停止させない/不合格候補を無条件採用もしない。
+- 文法解説: AIが**TOP 2順位付き**で選定(既存の文法選定・難易度・品質基準維持)。A. Humanあり: TOP 2提示、Humanは①TOP 1採用(基本)②TOP 2採用③再選定・修正④その記事の文法コーナー省略 を選べる。B. Humanなし: TOP 1自動採用、品質Gate不合格を強制採用しない。基準を満たす候補が無い場合の扱いは既存承認仕様を確認し、未規定の自動省略ルールを独断で追加しない。
+- Human Review工程: 原則、KP・文法候補生成後・音声化前に配置。必要動作: 順位付き提示/Humanの選定・変更・差戻し・文法省略の反映/未レビュー時はAI順位で継続/確定結果を後続(原稿・解説・TTS・公開)へ確実に引継ぎ/NG候補をretry・fallback・regeneration・resumeで復活させない/Review済み・未レビュー・NG・再選定待ちの区別/選定結果と実際に音声化・公開された内容の一致検証。**Human不在時に無期限停止しない設計**、ただし「判断待ち」と「不在としてAI選定で進める」を区別する切替(既存運用を確認し必要十分な仕組み)。本格UIはScope外、既存機能での簡易運用、将来のUI追加を妨げない構造。
+- 整合: 変更前にCURRENT_SPEC/DECISION_LOG/OPEN_ITEMS/PM_GOVERNANCE/既存コード・過去Trialを確認。X/Y/Zの現行KP・文法仕様、レベル別差異、選定数・解説数・音声生成順序、既存HR・Validatorとの重複、公開ページの表示・音声構成、retry/fallback/regeneration/resume、Trial専用経路と正式経路の差異。矛盾する旧ルールは必要性確認のうえ整理。承認外の音声構成・説明文品質基準・TTSモデル等は変更しない。
+- 制作量前提: X 6/Y 1/Z 2=9記事/日。HR負担・停止リスク・API費用の最小化(ただし量産体制全体の構築はScope外)。
+- 検証7点: 1.TOP 8/TOP 2が仕様どおり選定・保存 2.Human選定が最終出力へ反映 3.未レビュー時 KP TOP 3/解説TOP 5/文法TOP 1で継続 4.NG候補は自動採用されない 5.再生成・再開時も選定結果保持 6.各Familyの正式経路で機能 7.既存Gate・音声構成に意図しない変更なし。
+- PRODUCTION_WIRED判定(Family別): 正式初回経路実装/retry等整合/正式runtime発火証拠/Regression・Validator・integration PASS/実際の選定・Human介入・自動継続の証拠/SSOT更新/Git/ユーザー承認仕様との一致。Fable独立受入。
+- STOP: 承認済み品質基準の変更が必要/Scope外のProduction仕様変更/予算超過/重大問題/Human不在時処理で既存仕様では解決できない重要判断/Production経路の不存在で配線不可。
+- (§7『告げ口心臓』KP差替えは別委任で並行)
+
+## Fableからの重要注意(Phase 0で事実確認し報告に明記)
+- **文法解説(Part 2 Grammar & Sentence Structure)は現時点でTrial段階(Trial-07/08=VALIDATED(限定)、ユーザー指示で配線禁止、OPEN-497)**。本指示の§3が「既存の文法選定・難易度・品質基準を維持」と書く「既存」が何を指すか(Trial-07の強クラス優先か、Trial-08の倒置第2優先か、Step B解説生成の仕様)を事実として整理し、**Part 2のProduction採用の明示承認が別途必要か**をFableが判断できる材料(現Status・承認履歴・差分)を`EXISTING_SPEC_CHECK_01.md`に書く。設計はKP部分を先行可能にし、文法部分はユーザー確認後に実装できる分離構造にする。
+- 単語解説コーナー=Part 1(Vocabulary & Expressions、PRODUCTION_WIRED、現在はKP 3件に対応する3項目)。新仕様では5件(KP 3件を含む)。Part 1の出力件数変更の影響(X公開ページ・Z pages・T1訳・解説callの件数・費用)を整理。
+- Family Y: 正式経路なし(OPEN-484)。KP工程の有無を確認し、未整備として追跡する形を設計。
+
+## 成果物(`docs/research/KP-GRAMMAR-HUMAN-REVIEW-PRODUCTION-01/`)
+Step 0: ユーザー指示原文を逐語保存(jsonl `C:\Users\tensh\.claude\projects\C--Users-tensh-eigo-radio\a66c19e8-1d31-4bc4-b0cb-f15b29248dc1.jsonl` role=user、冒頭「# Claude Codeへの指示\n## Family XYZ共通｜Key Phrase・文法 Human Review正式導入」→ `docs/pm/delegation_log/2026-10-25_KP-GRAMMAR-HUMAN-REVIEW-PRODUCTION-01_USER.md`。抽出toolがuser非対応なら`py`で直接走査しtextを無変更で書き出す)。
+1. `EXISTING_SPEC_CHECK_01.md`: X/Y/Zの現行KP選定(module・Prompt・件数・Validator・KP vote機構`er104`等・ranking有無・`used_form`/gloss確定工程・KP音声(Std/Advのkp segment構成、`key_phrases/N/english|meaning`)・Part 1(解説・T1)・公開ページ表示)、文法(Part 2 Trial-07/08の選定・Step B・Status・承認履歴・配線禁止の原文)、既存Human Review機構(er011 HR Lock=音声用、`record_human_approval`、approve_regenerate、HRキュー、ACTIVE_TASKでの運用)、retry/fallback/regeneration/resume・signature・reuse keyの該当箇所、Trial経路と正式経路の差。レベル別差異(StdとAdvでKPは別選定か共通か)。制作順序(scaffold→KP確定→study_text→tts)。
+2. `DESIGN_01.md`: (a)候補生成: 既存KP選定を拡張しTOP 8を順位・理由・レベル適合付きで保存(`kp_candidates.json`)。既存Validator/Gateは候補段階で適用(不合格候補は順位から除外し記録)。文法TOP 2も同様(`grammar_candidates.json`、Part 2採用確認後に有効化できる構造)。(b)Review状態機械: `kp_review.json`(状態=PENDING_REVIEW/REVIEWED/AUTO_ADOPTED(未レビュー)/RESELECTION_REQUESTED、Humanの選択=kp3+vocab5(kp3⊂vocab5)、NG集合、reviewer・時刻・根拠)、文法も同様(選択=TOP1/TOP2/再選定/省略)。切替方法: 「判断待ち」と「不在として進める」の区別を、runごとの明示指定(例: 起動引数`--kp-review wait|auto`、またはrun dirの`REVIEW_MODE.json`をFable/ユーザーが置く)で行い、未指定=待機(STOP、次コマンド案内)。既定を自動確定にしない理由を書く。期限付き自動切替は採用しない(ユーザー指示「誤った自動確定が起きない」)。(c)引継ぎ: 確定結果を後続(gloss確定・Part 1解説・T1・KP TTS・pages)へ渡す単一の正本(review確定JSON)+signature(確定集合のhash)で、retry/regeneration/resumeで候補を再選定・復活させない(NG集合は再選定時も除外)。再選定依頼時の動作(TOP 8再生成、NG除外、回数上限は既存retry枠)。(d)一致検証: 公開ページ・音声・解説の内容が確定JSONと一致する検査(既存の一致検査の拡張)。(e)Family別適用: X(er019 runner/scaffold)、Z(er026 runner `kp` stage)、Y(経路なし→OPEN追跡、設計のみ)。(f)Part 1件数3→5の変更点と費用(解説+T1 call増)。(g)簡易運用: CLI/JSON編集による選定入力(例: `kp_review_01.py --run … --kp 1,3,5 --vocab 1,2,3,5,7 --ng 4`)。(h)旧ルール整理候補(例: 固定3件選定)。(i)費用・時間影響(TOP 8生成の追加token、解説5件化)。(j)DefaultOffIsolation: 新経路は既定でON(APPROVED_FOR_PRODUCTION済み)だが、Human不在の自動確定は明示指定時のみ。(k)量産前提(9記事/日)でのHR負担見積(1記事あたりの判断項目数・所要)。
+3. `OPUS_REVIEW_REQUEST_01.md`(条件A): 状態機械の安全性(NG復活防止・未レビューとNGの区別・誤自動確定の防止)、既存KP vote/Validatorとの重複、signature/reuse整合、Part 1 5件化の副作用、文法部分の分離可否、Y未整備の扱い、運用切替の妥当性。
+4. `TEST_PLAN_01.md`(検証7点に対応するtest・runtime evidence計画、Family別)。`BUDGET_PLAN_01.md`(evidence run費用見積: X 1記事・Z 1作品で各HRあり/なしの2経路=約4 run、既存音声再利用でTTSは差分のみ)。
+5. OPEN登録: `OPEN_ITEMS.md`に新規OPEN(採番規則、11-8分類、Status=APPROVED_FOR_PRODUCTION・DESIGN)1行。Family Y未整備の追跡はOPEN-484に1行。`docs/pm/ACTIVE_TASK.md`。
+6. 委任文逐語 `py docs/pm/tools/extract_delegation_from_jsonl_01.py --jsonl <同jsonl> --role assistant --tool-use-name Agent --tool-input-field prompt --index N --out docs/pm/delegation_log/2026-10-25_KP-GRAMMAR-HUMAN-REVIEW-PRODUCTION-01_DELEGATION_01.md`(冒頭「KP-GRAMMAR-HUMAN-REVIEW-PRODUCTION-01 委任_01」、index 570〜610を走査。`--index -1`不可)。
+Git: 禁止=`git add -A/-u/-f`、amend/rebase/force push/stash/clean/reset/checkout -f/`git checkout -- <file>`。新規ファイル+OPEN_ITEMS行のみ `git commit --only`→`git push origin HEAD:main`(non-fast-forwardなら fetch→`git merge --no-edit origin/main`[競合は両方残す]→push)。secret grep 0件。並行agent稼働中(SSOTは最後に直前再Read・最小Edit)。
+
+## 報告(`docs/pm/RESULT_PACKET_KPHR1.md`+返答)
+既存仕様の要点(Family別表)、Part 2のStatusと「既存」の解釈の選択肢、設計の骨子(状態機械・切替・引継ぎ)、Opus論点、test/evidence計画、費用見積、commit hash・raw URL、RESULT_PACKET 4行。判断を要する点は推測で進めず列挙。
