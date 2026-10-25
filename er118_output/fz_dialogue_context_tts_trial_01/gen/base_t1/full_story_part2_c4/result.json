@@ -1,0 +1,220 @@
+{
+ "clip_id": "full_story_part2_c4",
+ "arm": "base",
+ "take": 1,
+ "status": "OK",
+ "wav": "er118_output/fz_dialogue_context_tts_trial_01/gen/base_t1/full_story_part2_c4/b1b/narration/full_story_part2_c4.wav",
+ "wav_sha256": "e87f0b882faf55604970396a86f5946859300d017eaee341c4535d17e22a32a5",
+ "voice": "Kore",
+ "tts_text": "\"Twenty dollars.\"",
+ "style_sha256": "add26d27a79c2cbee982eb5ddc32616b8294494a316b973215c94cccc76ede26",
+ "prompt_expected_sha256": "80dfaeff1998c98c80d1f26671dde5f1050c47756699c34b635ac722a71c34e0",
+ "requests_sent": [
+  {
+   "label": "base_t1:full_story_part2_c4",
+   "ts": "2026-10-25T17:05:16+09:00",
+   "model": "gemini-2.5-pro-preview-tts",
+   "voice": "Kore",
+   "tts_execution_mode": "STANDARD",
+   "speech_config": {
+    "voice_config": {
+     "replicated_voice_config": null,
+     "prebuilt_voice_config": {
+      "voice_name": "Kore"
+     },
+     "voice": null
+    },
+    "language_code": "en-us",
+    "multi_speaker_voice_config": null
+   },
+   "response_modalities": [
+    "AUDIO"
+   ],
+   "temperature": null,
+   "temperature_note": "未指定(SDK/モデル既定)。Production Z実行と同一コード経路 er003_b1_p7a_audio.make_tts_call_fn_for_model",
+   "http_timeout_ms": 150000,
+   "prompt_sha256": "80dfaeff1998c98c80d1f26671dde5f1050c47756699c34b635ac722a71c34e0",
+   "prompt_chars": 2271
+  }
+ ],
+ "request_prompt_matches_expected": [
+  true
+ ],
+ "n_tts_calls": 1,
+ "asr_text": "twenty dollars",
+ "attempts_asr_texts": [
+  "twenty dollars"
+ ],
+ "audio_classification": "TRUE_CONTENT_MISMATCH",
+ "asr_judgement": {
+  "state": "PASS",
+  "reason_code": "primary_pass",
+  "slot": 1,
+  "script_version": "v0",
+  "role": "FULL_STORY",
+  "lang": "en",
+  "segment_key": "full_story_part2_c4",
+  "audio_sha256": "e87f0b882faf55604970396a86f5946859300d017eaee341c4535d17e22a32a5",
+  "primary": {
+   "text": "twenty dollars",
+   "passed": true,
+   "label": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+   "equivalence_basis": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+   "warning_labels": []
+  },
+  "secondary": {
+   "called": false,
+   "cached": false,
+   "engine": "azure",
+   "text": null,
+   "label": "",
+   "accepted": null,
+   "error": null,
+   "unavailable": false
+  },
+  "value_guard": {
+   "primary": {
+    "kind": "EQUAL",
+    "pairs": [
+     {
+      "src": "20",
+      "hyp": "20",
+      "verdict": "EQUAL",
+      "reason": "same_surface"
+     }
+    ],
+    "reasons": [],
+    "warnings": []
+   }
+  },
+  "negation_guard": {
+   "primary": false
+  },
+  "final_gate": {
+   "applied": true,
+   "value_guard": "EQUAL",
+   "negation_diff": false
+  },
+  "warnings": [],
+  "exclusion_rule": null,
+  "cost": {
+   "azure_calls": 0,
+   "azure_seconds": null,
+   "est_jpy": 0.0
+  },
+  "timing": {
+   "total_ms": 0,
+   "secondary_ms": 0
+  },
+  "technical_stop": null,
+  "length": {
+   "applied": true,
+   "primary_len": 14,
+   "secondary_len": null,
+   "max_len": 32,
+   "adopted_from": "primary",
+   "adopted_ok": true,
+   "surface_len": null,
+   "primary_ok": true
+  },
+  "orthographic_equivalence": {
+   "applied": true,
+   "version": "er109_orthographic_equivalence_v2_ukus01",
+   "scope": "Z",
+   "label": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+   "sites": [
+    {
+     "site": "primary",
+     "text": "twenty dollars",
+     "verdict": "PASS",
+     "warnings": [],
+     "er109": {
+      "version": "er109_orthographic_equivalence_v2_ukus01",
+      "flag_enabled": true,
+      "stress_mode": "binary_stressed_vs_unstressed",
+      "equivalent": true,
+      "verdict": "PASS",
+      "reason": "surface_equal_after_normalization",
+      "rules": [],
+      "warnings": [],
+      "contraction_expanded": false,
+      "spans": []
+     }
+    }
+   ],
+   "warnings": []
+  },
+  "adapter": {
+   "layers": [
+    "orthographic_er109"
+   ],
+   "azure_real_calls": 0,
+   "cost_guard_triggered": false,
+   "language": "en-US",
+   "segment_id": "full_story_part2_c4",
+   "asr_text_present": true,
+   "cache": {
+    "calls": 0,
+    "hits": 0
+   }
+  }
+ },
+ "attempts_log_n": 1,
+ "instruction_type": "english_style_prefix_wide_margin",
+ "repetition_qa_checked": true,
+ "trim_info": {
+  "raw_duration_seconds": 1.691,
+  "raw_leading_silence_seconds": 0.18,
+  "raw_trailing_silence_seconds": 0.28,
+  "trimmed_duration_seconds": 1.691,
+  "leading_margin_retained_seconds": 0.18,
+  "trailing_margin_retained_seconds": 0.28
+ },
+ "reuse_key_trial": {
+  "managed_id": "FZ-DIALOGUE-TTS-CONTEXT-EMOTION-TRIAL-01",
+  "arm": "base",
+  "take": 1,
+  "canonical_text_sha256": "f7873949b776ccaa78f51399d1cb6dc532b27e58588a72d19055d629996ed61d",
+  "voice": "Kore",
+  "model": "gemini-2.5-pro-preview-tts",
+  "style_sha256": "add26d27a79c2cbee982eb5ddc32616b8294494a316b973215c94cccc76ede26",
+  "tts_backend_note": "gemini_standard_sync(Production Z実行と同じSTANDARD)"
+ },
+ "leakage": {
+  "leakage_any_attempt": false,
+  "leakage_final": false,
+  "needs_listen_any_attempt": false,
+  "per_attempt": [
+   {
+    "flagged": false,
+    "needs_listen": false,
+    "extra_tokens": [],
+    "extra_runs": [],
+    "max_extra_run": 0,
+    "context_only_hits": [],
+    "asr_words": 2,
+    "target_words": 2
+   }
+  ],
+  "final": {
+   "flagged": false,
+   "needs_listen": false,
+   "extra_tokens": [],
+   "extra_runs": [],
+   "max_extra_run": 0,
+   "context_only_hits": [],
+   "asr_words": 2,
+   "target_words": 2
+  }
+ },
+ "comparison_valid": true,
+ "final_instruction_type": "english_style_prefix_wide_margin",
+ "last_request_prompt_matches_expected": true,
+ "attempts_logged": 1,
+ "n_tts_calls_captured": 1,
+ "n_tts_calls_undercount_possible": false,
+ "tts_model_requested": "gemini-2.5-pro-preview-tts",
+ "tts_model_version_note": "Production wrapperはbytesのみ返しSDK応答のmodel_versionは取得不能。モデル更新はbase armの①との差で検出する(Opus R1)",
+ "elapsed_s": 6.57,
+ "saved_at": "2026-10-25T17:05:22+09:00"
+}

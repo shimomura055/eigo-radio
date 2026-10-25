@@ -1,0 +1,184 @@
+{
+ "clip_id": "full_story_part3_c8",
+ "arm": "ctx",
+ "take": 2,
+ "status": "OK",
+ "wav": "er118_output/fz_dialogue_context_tts_trial_01/gen/ctx_t2/full_story_part3_c8/b1b/narration/full_story_part3_c8.wav",
+ "wav_sha256": "b16a9456a8c3743bd8b9b08c3c1ae67464101cb3bfc981a87b6c33fd4230849c",
+ "voice": "Algieba",
+ "tts_text": "\"I sold the watch to buy your combs.\"",
+ "style_sha256": "cb8186f803a8eae9346f68316526d729b9f963a00437eb791a5934d7025c25fc",
+ "prompt_expected_sha256": "66916118476b37e804d01bd8b7ed46598295adda85d535c60f7a128d46353ed9",
+ "requests_sent": [
+  {
+   "label": "ctx_t2:full_story_part3_c8",
+   "ts": "2026-10-25T17:07:35+09:00",
+   "model": "gemini-2.5-pro-preview-tts",
+   "voice": "Algieba",
+   "tts_execution_mode": "STANDARD",
+   "speech_config": {
+    "voice_config": {
+     "replicated_voice_config": null,
+     "prebuilt_voice_config": {
+      "voice_name": "Algieba"
+     },
+     "voice": null
+    },
+    "language_code": "en-us",
+    "multi_speaker_voice_config": null
+   },
+   "response_modalities": [
+    "AUDIO"
+   ],
+   "temperature": null,
+   "temperature_note": "未指定(SDK/モデル既定)。Production Z実行と同一コード経路 er003_b1_p7a_audio.make_tts_call_fn_for_model",
+   "http_timeout_ms": 150000,
+   "prompt_sha256": "66916118476b37e804d01bd8b7ed46598295adda85d535c60f7a128d46353ed9",
+   "prompt_chars": 3953
+  }
+ ],
+ "request_prompt_matches_expected": [
+  true
+ ],
+ "n_tts_calls": 1,
+ "asr_text": "I sold the watch to buy your combs.",
+ "attempts_asr_texts": [
+  "I sold the watch to buy your combs."
+ ],
+ "audio_classification": "NORMALIZED_MATCH",
+ "asr_judgement": {
+  "state": "PASS",
+  "reason_code": "primary_pass",
+  "slot": 1,
+  "script_version": "v0",
+  "role": "FULL_STORY",
+  "lang": "en",
+  "segment_key": "full_story_part3_c8",
+  "audio_sha256": "b16a9456a8c3743bd8b9b08c3c1ae67464101cb3bfc981a87b6c33fd4230849c",
+  "primary": {
+   "text": "I sold the watch to buy your combs.",
+   "passed": true,
+   "label": "NORMALIZED_MATCH",
+   "equivalence_basis": null,
+   "warning_labels": []
+  },
+  "secondary": {
+   "called": false,
+   "cached": false,
+   "engine": "azure",
+   "text": null,
+   "label": "",
+   "accepted": null,
+   "error": null,
+   "unavailable": false
+  },
+  "value_guard": {
+   "primary": {
+    "kind": "NO_VALUES",
+    "pairs": [],
+    "reasons": [],
+    "warnings": []
+   }
+  },
+  "negation_guard": {
+   "primary": false
+  },
+  "final_gate": {
+   "applied": true,
+   "value_guard": "NO_VALUES",
+   "negation_diff": false
+  },
+  "warnings": [],
+  "exclusion_rule": null,
+  "cost": {
+   "azure_calls": 0,
+   "azure_seconds": null,
+   "est_jpy": 0.0
+  },
+  "timing": {
+   "total_ms": 0,
+   "secondary_ms": 0
+  },
+  "technical_stop": null,
+  "length": {
+   "applied": true,
+   "primary_len": 35,
+   "secondary_len": null,
+   "max_len": 52,
+   "adopted_from": "primary",
+   "adopted_ok": true,
+   "surface_len": null,
+   "primary_ok": true
+  },
+  "adapter": {
+   "layers": [],
+   "azure_real_calls": 0,
+   "cost_guard_triggered": false,
+   "language": "en-US",
+   "segment_id": "full_story_part3_c8",
+   "asr_text_present": true,
+   "cache": {
+    "calls": 0,
+    "hits": 0
+   }
+  }
+ },
+ "attempts_log_n": 1,
+ "instruction_type": "english_style_prefix_wide_margin",
+ "repetition_qa_checked": true,
+ "trim_info": {
+  "raw_duration_seconds": 3.691,
+  "raw_leading_silence_seconds": 0.24,
+  "raw_trailing_silence_seconds": 0.3,
+  "trimmed_duration_seconds": 3.691,
+  "leading_margin_retained_seconds": 0.24,
+  "trailing_margin_retained_seconds": 0.3
+ },
+ "reuse_key_trial": {
+  "managed_id": "FZ-DIALOGUE-TTS-CONTEXT-EMOTION-TRIAL-01",
+  "arm": "ctx",
+  "take": 2,
+  "canonical_text_sha256": "1a49faa20df26a70b816b365bebba138b49876f9e297da2907ae716da0e37807",
+  "voice": "Algieba",
+  "model": "gemini-2.5-pro-preview-tts",
+  "style_sha256": "cb8186f803a8eae9346f68316526d729b9f963a00437eb791a5934d7025c25fc",
+  "tts_backend_note": "gemini_standard_sync(Production Z実行と同じSTANDARD)"
+ },
+ "leakage": {
+  "leakage_any_attempt": false,
+  "leakage_final": false,
+  "needs_listen_any_attempt": false,
+  "per_attempt": [
+   {
+    "flagged": false,
+    "needs_listen": false,
+    "extra_tokens": [],
+    "extra_runs": [],
+    "max_extra_run": 0,
+    "context_only_hits": [],
+    "asr_words": 8,
+    "target_words": 8
+   }
+  ],
+  "final": {
+   "flagged": false,
+   "needs_listen": false,
+   "extra_tokens": [],
+   "extra_runs": [],
+   "max_extra_run": 0,
+   "context_only_hits": [],
+   "asr_words": 8,
+   "target_words": 8
+  }
+ },
+ "comparison_valid": true,
+ "final_instruction_type": "english_style_prefix_wide_margin",
+ "last_request_prompt_matches_expected": true,
+ "attempts_logged": 1,
+ "n_tts_calls_captured": 1,
+ "n_tts_calls_undercount_possible": false,
+ "tts_model_requested": "gemini-2.5-pro-preview-tts",
+ "tts_model_version_note": "Production wrapperはbytesのみ返しSDK応答のmodel_versionは取得不能。モデル更新はbase armの①との差で検出する(Opus R1)",
+ "elapsed_s": 8.0,
+ "saved_at": "2026-10-25T17:07:43+09:00"
+}

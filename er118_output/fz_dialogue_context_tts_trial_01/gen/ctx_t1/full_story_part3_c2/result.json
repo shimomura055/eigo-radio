@@ -1,0 +1,184 @@
+{
+ "clip_id": "full_story_part3_c2",
+ "arm": "ctx",
+ "take": 1,
+ "status": "OK",
+ "wav": "er118_output/fz_dialogue_context_tts_trial_01/gen/ctx_t1/full_story_part3_c2/b1b/narration/full_story_part3_c2.wav",
+ "wav_sha256": "83b9f059d3155230c70a05dfe392675c8858659fb05007b145d2240346c11fdb",
+ "voice": "Zephyr",
+ "tts_text": "\"I sold it, Jim. I couldn't let Christmas come without giving you something. It'll grow again!\"",
+ "style_sha256": "a25be498065dca2cc7a51d3dd4796c24e03b80f8e225f5e9801c6ec7f328b537",
+ "prompt_expected_sha256": "ed9f520382cf33337d0dddd45b0a39e25443221c8a6f6f7c1090a6b528c71b5a",
+ "requests_sent": [
+  {
+   "label": "ctx_t1:full_story_part3_c2",
+   "ts": "2026-10-25T17:03:50+09:00",
+   "model": "gemini-2.5-pro-preview-tts",
+   "voice": "Zephyr",
+   "tts_execution_mode": "STANDARD",
+   "speech_config": {
+    "voice_config": {
+     "replicated_voice_config": null,
+     "prebuilt_voice_config": {
+      "voice_name": "Zephyr"
+     },
+     "voice": null
+    },
+    "language_code": "en-us",
+    "multi_speaker_voice_config": null
+   },
+   "response_modalities": [
+    "AUDIO"
+   ],
+   "temperature": null,
+   "temperature_note": "未指定(SDK/モデル既定)。Production Z実行と同一コード経路 er003_b1_p7a_audio.make_tts_call_fn_for_model",
+   "http_timeout_ms": 150000,
+   "prompt_sha256": "ed9f520382cf33337d0dddd45b0a39e25443221c8a6f6f7c1090a6b528c71b5a",
+   "prompt_chars": 4120
+  }
+ ],
+ "request_prompt_matches_expected": [
+  true
+ ],
+ "n_tts_calls": 1,
+ "asr_text": "I sold it, Jim. I couldn't let Christmas come without giving you something. It'll grow again.",
+ "attempts_asr_texts": [
+  "I sold it, Jim. I couldn't let Christmas come without giving you something. It'll grow again."
+ ],
+ "audio_classification": "NORMALIZED_MATCH",
+ "asr_judgement": {
+  "state": "PASS",
+  "reason_code": "primary_pass",
+  "slot": 1,
+  "script_version": "v0",
+  "role": "FULL_STORY",
+  "lang": "en",
+  "segment_key": "full_story_part3_c2",
+  "audio_sha256": "83b9f059d3155230c70a05dfe392675c8858659fb05007b145d2240346c11fdb",
+  "primary": {
+   "text": "I sold it, Jim. I couldn't let Christmas come without giving you something. It'll grow again.",
+   "passed": true,
+   "label": "NORMALIZED_MATCH",
+   "equivalence_basis": null,
+   "warning_labels": []
+  },
+  "secondary": {
+   "called": false,
+   "cached": false,
+   "engine": "azure",
+   "text": null,
+   "label": "",
+   "accepted": null,
+   "error": null,
+   "unavailable": false
+  },
+  "value_guard": {
+   "primary": {
+    "kind": "NO_VALUES",
+    "pairs": [],
+    "reasons": [],
+    "warnings": []
+   }
+  },
+  "negation_guard": {
+   "primary": false
+  },
+  "final_gate": {
+   "applied": true,
+   "value_guard": "NO_VALUES",
+   "negation_diff": false
+  },
+  "warnings": [],
+  "exclusion_rule": null,
+  "cost": {
+   "azure_calls": 0,
+   "azure_seconds": null,
+   "est_jpy": 0.0
+  },
+  "timing": {
+   "total_ms": 0,
+   "secondary_ms": 0
+  },
+  "technical_stop": null,
+  "length": {
+   "applied": true,
+   "primary_len": 93,
+   "secondary_len": null,
+   "max_len": 110,
+   "adopted_from": "primary",
+   "adopted_ok": true,
+   "surface_len": null,
+   "primary_ok": true
+  },
+  "adapter": {
+   "layers": [],
+   "azure_real_calls": 0,
+   "cost_guard_triggered": false,
+   "language": "en-US",
+   "segment_id": "full_story_part3_c2",
+   "asr_text_present": true,
+   "cache": {
+    "calls": 0,
+    "hits": 0
+   }
+  }
+ },
+ "attempts_log_n": 1,
+ "instruction_type": "english_style_prefix_wide_margin",
+ "repetition_qa_checked": true,
+ "trim_info": {
+  "raw_duration_seconds": 6.531,
+  "raw_leading_silence_seconds": 0.18,
+  "raw_trailing_silence_seconds": 0.46,
+  "trimmed_duration_seconds": 6.421,
+  "leading_margin_retained_seconds": 0.18,
+  "trailing_margin_retained_seconds": 0.35
+ },
+ "reuse_key_trial": {
+  "managed_id": "FZ-DIALOGUE-TTS-CONTEXT-EMOTION-TRIAL-01",
+  "arm": "ctx",
+  "take": 1,
+  "canonical_text_sha256": "1e748da23f3d0153e29df8eae550b8a2c222c27e8d7708b6d6df2979296d3577",
+  "voice": "Zephyr",
+  "model": "gemini-2.5-pro-preview-tts",
+  "style_sha256": "a25be498065dca2cc7a51d3dd4796c24e03b80f8e225f5e9801c6ec7f328b537",
+  "tts_backend_note": "gemini_standard_sync(Production Z実行と同じSTANDARD)"
+ },
+ "leakage": {
+  "leakage_any_attempt": false,
+  "leakage_final": false,
+  "needs_listen_any_attempt": false,
+  "per_attempt": [
+   {
+    "flagged": false,
+    "needs_listen": false,
+    "extra_tokens": [],
+    "extra_runs": [],
+    "max_extra_run": 0,
+    "context_only_hits": [],
+    "asr_words": 16,
+    "target_words": 16
+   }
+  ],
+  "final": {
+   "flagged": false,
+   "needs_listen": false,
+   "extra_tokens": [],
+   "extra_runs": [],
+   "max_extra_run": 0,
+   "context_only_hits": [],
+   "asr_words": 16,
+   "target_words": 16
+  }
+ },
+ "comparison_valid": true,
+ "final_instruction_type": "english_style_prefix_wide_margin",
+ "last_request_prompt_matches_expected": true,
+ "attempts_logged": 1,
+ "n_tts_calls_captured": 1,
+ "n_tts_calls_undercount_possible": false,
+ "tts_model_requested": "gemini-2.5-pro-preview-tts",
+ "tts_model_version_note": "Production wrapperはbytesのみ返しSDK応答のmodel_versionは取得不能。モデル更新はbase armの①との差で検出する(Opus R1)",
+ "elapsed_s": 17.4,
+ "saved_at": "2026-10-25T17:04:08+09:00"
+}

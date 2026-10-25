@@ -1,0 +1,184 @@
+{
+ "clip_id": "full_story_part2_c7",
+ "arm": "ctx",
+ "take": 1,
+ "status": "OK",
+ "wav": "er118_output/fz_dialogue_context_tts_trial_01/gen/ctx_t1/full_story_part2_c7/b1b/narration/full_story_part2_c7.wav",
+ "wav_sha256": "6fc190332f04dd85c550805e14b1a0fc34408152e3f2cc0726fb337c3aa1635e",
+ "voice": "Zephyr",
+ "tts_text": "\"Please let him still think I'm pretty,\"",
+ "style_sha256": "ceafd70b2c88726fb1f61a3914ff490ae4ac51c784f23723deee70523866402c",
+ "prompt_expected_sha256": "a43fd80f37b2ca2deeefdf390a74fde298e8b5022a5ee711854709b011197d2f",
+ "requests_sent": [
+  {
+   "label": "ctx_t1:full_story_part2_c7",
+   "ts": "2026-10-25T17:03:41+09:00",
+   "model": "gemini-2.5-pro-preview-tts",
+   "voice": "Zephyr",
+   "tts_execution_mode": "STANDARD",
+   "speech_config": {
+    "voice_config": {
+     "replicated_voice_config": null,
+     "prebuilt_voice_config": {
+      "voice_name": "Zephyr"
+     },
+     "voice": null
+    },
+    "language_code": "en-us",
+    "multi_speaker_voice_config": null
+   },
+   "response_modalities": [
+    "AUDIO"
+   ],
+   "temperature": null,
+   "temperature_note": "未指定(SDK/モデル既定)。Production Z実行と同一コード経路 er003_b1_p7a_audio.make_tts_call_fn_for_model",
+   "http_timeout_ms": 150000,
+   "prompt_sha256": "a43fd80f37b2ca2deeefdf390a74fde298e8b5022a5ee711854709b011197d2f",
+   "prompt_chars": 3875
+  }
+ ],
+ "request_prompt_matches_expected": [
+  true
+ ],
+ "n_tts_calls": 1,
+ "asr_text": "Please let him still think I'm pretty.",
+ "attempts_asr_texts": [
+  "Please let him still think I'm pretty."
+ ],
+ "audio_classification": "NORMALIZED_MATCH",
+ "asr_judgement": {
+  "state": "PASS",
+  "reason_code": "primary_pass",
+  "slot": 1,
+  "script_version": "v0",
+  "role": "FULL_STORY",
+  "lang": "en",
+  "segment_key": "full_story_part2_c7",
+  "audio_sha256": "6fc190332f04dd85c550805e14b1a0fc34408152e3f2cc0726fb337c3aa1635e",
+  "primary": {
+   "text": "Please let him still think I'm pretty.",
+   "passed": true,
+   "label": "NORMALIZED_MATCH",
+   "equivalence_basis": null,
+   "warning_labels": []
+  },
+  "secondary": {
+   "called": false,
+   "cached": false,
+   "engine": "azure",
+   "text": null,
+   "label": "",
+   "accepted": null,
+   "error": null,
+   "unavailable": false
+  },
+  "value_guard": {
+   "primary": {
+    "kind": "NO_VALUES",
+    "pairs": [],
+    "reasons": [],
+    "warnings": []
+   }
+  },
+  "negation_guard": {
+   "primary": false
+  },
+  "final_gate": {
+   "applied": true,
+   "value_guard": "NO_VALUES",
+   "negation_diff": false
+  },
+  "warnings": [],
+  "exclusion_rule": null,
+  "cost": {
+   "azure_calls": 0,
+   "azure_seconds": null,
+   "est_jpy": 0.0
+  },
+  "timing": {
+   "total_ms": 0,
+   "secondary_ms": 0
+  },
+  "technical_stop": null,
+  "length": {
+   "applied": true,
+   "primary_len": 38,
+   "secondary_len": null,
+   "max_len": 55,
+   "adopted_from": "primary",
+   "adopted_ok": true,
+   "surface_len": null,
+   "primary_ok": true
+  },
+  "adapter": {
+   "layers": [],
+   "azure_real_calls": 0,
+   "cost_guard_triggered": false,
+   "language": "en-US",
+   "segment_id": "full_story_part2_c7",
+   "asr_text_present": true,
+   "cache": {
+    "calls": 0,
+    "hits": 0
+   }
+  }
+ },
+ "attempts_log_n": 1,
+ "instruction_type": "english_style_prefix_wide_margin",
+ "repetition_qa_checked": true,
+ "trim_info": {
+  "raw_duration_seconds": 3.171,
+  "raw_leading_silence_seconds": 0.36,
+  "raw_trailing_silence_seconds": 0.24,
+  "trimmed_duration_seconds": 3.161,
+  "leading_margin_retained_seconds": 0.35,
+  "trailing_margin_retained_seconds": 0.24
+ },
+ "reuse_key_trial": {
+  "managed_id": "FZ-DIALOGUE-TTS-CONTEXT-EMOTION-TRIAL-01",
+  "arm": "ctx",
+  "take": 1,
+  "canonical_text_sha256": "21dea12bfa8fcdc2532cb17eb47abbc959b108c467b0e841a1a6b96aa375b8cb",
+  "voice": "Zephyr",
+  "model": "gemini-2.5-pro-preview-tts",
+  "style_sha256": "ceafd70b2c88726fb1f61a3914ff490ae4ac51c784f23723deee70523866402c",
+  "tts_backend_note": "gemini_standard_sync(Production Z実行と同じSTANDARD)"
+ },
+ "leakage": {
+  "leakage_any_attempt": false,
+  "leakage_final": false,
+  "needs_listen_any_attempt": false,
+  "per_attempt": [
+   {
+    "flagged": false,
+    "needs_listen": false,
+    "extra_tokens": [],
+    "extra_runs": [],
+    "max_extra_run": 0,
+    "context_only_hits": [],
+    "asr_words": 7,
+    "target_words": 7
+   }
+  ],
+  "final": {
+   "flagged": false,
+   "needs_listen": false,
+   "extra_tokens": [],
+   "extra_runs": [],
+   "max_extra_run": 0,
+   "context_only_hits": [],
+   "asr_words": 7,
+   "target_words": 7
+  }
+ },
+ "comparison_valid": true,
+ "final_instruction_type": "english_style_prefix_wide_margin",
+ "last_request_prompt_matches_expected": true,
+ "attempts_logged": 1,
+ "n_tts_calls_captured": 1,
+ "n_tts_calls_undercount_possible": false,
+ "tts_model_requested": "gemini-2.5-pro-preview-tts",
+ "tts_model_version_note": "Production wrapperはbytesのみ返しSDK応答のmodel_versionは取得不能。モデル更新はbase armの①との差で検出する(Opus R1)",
+ "elapsed_s": 8.71,
+ "saved_at": "2026-10-25T17:03:50+09:00"
+}

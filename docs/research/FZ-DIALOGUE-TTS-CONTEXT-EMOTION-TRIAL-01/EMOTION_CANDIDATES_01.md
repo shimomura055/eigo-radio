@@ -266,3 +266,6 @@ Use this only to choose a natural tone, pace, and energy for this one line, as a
 ## レビューの付け方
 
 `er118_output/fz_dialogue_context_tts_trial_01/llm/emotion_review.json` の各 `fable_decision` を `accept` か `discard` にする。discardはLLM由来の項目(状態・場面・返答)を全て外して中立にする。`summary_ja` は試聴ページ用の日本語要約(Sonnet下書き入り。accept時のみ表示)。全8件が埋まるまで ctx arm の有料生成は起動しない。
+
+## Fableレビュー結果(2026-10-25)
+8件すべて accept。ACCEPTED 3件(part2_c7/part3_c2/part3_c6)は原文(whispered・kept returning to the mirror / rushed toward him・It'll grow again! / Look! Isn't it perfect?)から妥当に導ける穏当な表現で創作なし。NO_EXPLICIT_CUE 5件(part2_c2/c4/c5、part3_c4/c8)は仕様どおり状態行を出さず、scene・reaction・manner_words・地の文引用で演出を伝える形を採用(結果後の検査ルール変更・LLM再呼出なし=事前登録遵守)。summary_jaはFable確認済み。
