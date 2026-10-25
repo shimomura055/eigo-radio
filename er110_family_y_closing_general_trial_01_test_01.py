@@ -129,6 +129,153 @@ class TestPromptRevision02(unittest.TestCase):
         self.assertNotIn("LENGTH=", users[1])
 
 
+
+class TestPrompt02(unittest.TestCase):
+    """委任_32: Prompt 02(P1〜P5)。01は残置。sha固定・記事固有語0・入力ブロック以外同一・旧表現撤去。"""
+
+    def setUp(self):
+        self.parts = g.load_versioned("02")
+        self.u = self.parts["user_template"]
+
+    def test_sha_pinned_02(self):
+        self.assertEqual(self.parts["sha256"], "4713ceff2dd00a2f67eb9313ae9e206a4a3236c5b158e624c10ccf6fc20e5f07")
+        g.check_prompt_sha(self.parts)
+        self.assertNotEqual(self.parts["sha256"], g.PROMPT_SHA256)
+
+    def test_01_kept_unchanged(self):
+        g.check_prompt_sha(g.load_versioned("01"))
+        self.assertEqual(g.load_prompt_parts()["sha256"], g.PROMPT_SHA256)
+
+    def test_02_sha_mismatch_detected(self):
+        with self.assertRaises(RuntimeError):
+            g.check_prompt_sha(dict(self.parts, sha256="0" * 64))
+        with self.assertRaises(RuntimeError):      # 02の内容を01のshaで通せない
+            g.check_prompt_sha(dict(self.parts, expected_sha256=g.PROMPT_SHA256))
+
+    def test_no_topic_words_02(self):
+        blob = self.parts["developer"] + self.u + json.dumps(g.SCHEMA, ensure_ascii=False)
+        self.assertEqual([w for w in TOPIC_WORDS if w in blob], [])
+
+    def test_no_fixed_categories_02(self):
+        for w in ("パターン", "次のいずれか", "3つの型", "型から選", "問い直す", "変えられる", "変えられない", "歩み寄"):
+            self.assertNotIn(w, self.u)
+
+    def test_p1_to_p5_and_selection_present(self):
+        for s in ("出所の曖昧な言い方をしない",                                   # P1
+                  "「誰が」「誰に」答える問いなのか", "問いの形は固定せず",           # P2
+                  "言い切らないことと、推量語を重ねることは別", "最終パート全体で1文までにする", "逆接を、文と文をつなぐ定型として使わない",  # P3
+                  "語りより強い言葉", "語りの言葉の範囲にとどめる",                  # P4
+                  "鉤括弧「」だけは使ってよい", "丸括弧・角括弧・コロン",              # P5
+                  "すべての候補に1位から順位をつけ"):                               # 選定の順位付け
+            self.assertIn(s, self.u)
+
+    def test_question_form_not_enumerated(self):
+        """問いの型を列挙・例示しない(型を指定しない)。"""
+        for w in ("どんな", "何を知って", "してほしい？", "したい？", "次のような問い"):
+            self.assertNotIn(w, self.u)
+
+    def test_old_expressions_removed_02(self):
+        for s in ("仮定は「もし〜なら」の問いの形でだけ使う", "- 括弧・コロン・スラッシュ・三点リーダー・波ダッシュ・絵文字を使わない。",
+                  "選んだ候補の listener_question を、耳で一度聞いて分かる形に磨いたものにします。",
+                  "selection_reason には、選んだ理由、見送った"):
+            self.assertNotIn(s, self.u)
+        # 01で入れたM1〜M4等は維持(撤去しない)
+        for s in ("人物像の欄は人物を理解するための参考", "並べた順番は選び方に関係しません", "哲学的な一般化", "算用数字を使わない"):
+            self.assertIn(s, self.u)
+
+    def test_same_prompt_across_themes_only_input_differs_02(self):
+        base = None
+        for t in g.THEMES:
+            inp = g.load_input(t)
+            u = g.build_prompt(inp, self.parts)["user"]
+            for blk in g.render_blocks(inp).values():
+                u = u.replace(blk, "@@BLOCK@@")
+            if base is None:
+                base = u
+            self.assertEqual(base, u)
+
+    def test_prompt_symbol_rule_matches_check(self):
+        """P5: Promptが許す鉤括弧は記号gateでも通り、禁止する記号は検査でも止まる(検査は緩めていない)。"""
+        import er003_audio_tts_asr_safety as safety
+        ok = "「手間をかけているのに」という言葉が残る。"
+        self.assertFalse(safety.symbol_gate_requires_stop(safety.detect_prohibited_symbols(ok, language="ja")))
+        for bad in ("彼は（笑）言った。", "A：B。", "a/b。", "待つ…。", "あ〜。"):
+            self.assertTrue(safety.symbol_gate_requires_stop(safety.detect_prohibited_symbols(bad, language="ja")), bad)
+
+    def test_check_closing_ranges_unchanged(self):
+        """P5は検査を緩めない: 字数175〜245・1文55字(旧規則水準)のまま。"""
+        import er110_family_y_redelivery_revision_01 as rv
+        self.assertEqual((rv.CLOSING_RANGE, rv.MAX_SENT), ((175, 245), 55))
+
+
+class TestRound2Plumbing(unittest.TestCase):
+    def test_effort_est_and_choices(self):
+        self.assertEqual(g.GEN_EST_BY_EFFORT, {"high": 20.0, "medium": 14.0})
+        self.assertEqual(g.EFFORTS, ("high", "medium"))
+        self.assertEqual(g.GEN_EST_JPY, 20.0)
+
+    def test_effort_passed_to_chat_and_recorded(self):
+        seen = {}
+
+        def fake_chat(client, **kw):
+            seen["effort"] = kw["effort"]
+            return FakeResp(fake_obj(GOOD))
+        with tempfile.TemporaryDirectory() as d:
+            od = os.path.join(d, "t", "gen_medium_1")
+            g.generate_one(None, theme="redelivery_fee", gen_idx="medium_1", inp=g.load_input("redelivery_fee"), theme_cap=40.0, out_dir=od,
+                           chat=fake_chat, spent_fn=lambda _d: 0.0, leak=lambda *a, **k: {"any_flagged": False, "flagged_items": []},
+                           effort="medium", prompt_version="02")
+            meta = json.load(open(os.path.join(od, "gen_meta.json"), encoding="utf-8"))
+        self.assertEqual(seen["effort"], "medium")
+        self.assertEqual((meta["effort"], meta["prompt_version"]), ("medium", "02"))
+        self.assertEqual(meta["prompt_sha256"], g.PROMPT_VERSIONS["02"]["sha256"])
+        self.assertIn("style", meta)
+
+    def test_medium_reserve_uses_medium_estimate(self):
+        """cap 40: medium(14)なら spent 25 は通り 27 は停止、high(20)なら spent 21 で停止。"""
+        for eff, spent, expect_stop in (("medium", 25.0, False), ("medium", 27.0, True), ("high", 21.0, True)):
+            with tempfile.TemporaryDirectory() as d:
+                try:
+                    g.generate_one(None, theme="redelivery_fee", gen_idx="x", inp=g.load_input("redelivery_fee"), theme_cap=40.0,
+                                   out_dir=os.path.join(d, "t", "g"), chat=lambda c, **kw: FakeResp(fake_obj(GOOD)), spent_fn=lambda _d, s=spent: s,
+                                   leak=lambda *a, **k: {"any_flagged": False, "flagged_items": []}, effort=eff, prompt_version="02")
+                    stopped = False
+                except RuntimeError as e:
+                    stopped = "BUDGET_RESERVE_STOP" in str(e)
+            self.assertEqual(stopped, expect_stop, (eff, spent))
+
+    def test_bad_effort_rejected_without_call(self):
+        calls = []
+        with tempfile.TemporaryDirectory() as d:
+            with self.assertRaises(ValueError):
+                g.generate_one(None, theme="redelivery_fee", gen_idx=1, inp=g.load_input("redelivery_fee"), theme_cap=40.0, out_dir=os.path.join(d, "t", "g"),
+                               chat=lambda *a, **k: calls.append(1), spent_fn=lambda _d: 0.0, effort="low")
+        self.assertEqual(calls, [])
+
+    def test_round2_requires_paid_and_approval_no_side_effect(self):
+        r2 = os.path.join(ROOT, g.PROMPT_VERSIONS["02"]["root"])
+        before = os.path.exists(r2)
+        with self.assertRaises(RuntimeError):
+            g.cmd_gen(argparse.Namespace(paid=False, theme="redelivery_fee", gens=1, effort="medium", prompt_version="02"))
+        if not os.path.exists(os.path.join(r2, "BUDGET_APPROVED.json")):      # 承認ファイル(Fableが起動時に作る)が無い間は--paidでも起動しない
+            with self.assertRaises(RuntimeError):
+                g.cmd_gen(argparse.Namespace(paid=True, theme="redelivery_fee", gens=1, effort="medium", prompt_version="02"))
+            self.assertEqual(before, os.path.exists(r2))
+
+    def test_cli_defaults_are_round1(self):
+        """CLI既定は 01 / high(=Round 1と同一挙動)。02やmediumは明示指定が必要。"""
+        s = open(SRC, encoding="utf-8").read()
+        self.assertIn('default="01"', s)
+        self.assertIn('default="high"', s)
+
+    def test_style_report(self):
+        r = g.style_report("声があった。けれど、そうかもしれない。もし自分なら、何を伝えたい？")
+        self.assertEqual(r["gyakusetsu_count"], 1)
+        self.assertGreaterEqual(r["suiryo_sentences"], 1)
+        self.assertTrue(r["question_starts_with_moshi"])
+        self.assertEqual(g.style_report("という声があった。")["ambiguous_source_phrases"], ["という声があった"])
+
+
 class TestIsolation(unittest.TestCase):
     def test_no_production_reference(self):
         bad = []

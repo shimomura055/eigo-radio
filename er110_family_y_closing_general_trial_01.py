@@ -35,9 +35,18 @@ ROOT = "er110_output/family_y_closing_general_01"
 APPROVAL_FILE = f"{ROOT}/BUDGET_APPROVED.json"
 PROMPT_FILE = "docs/research/FAMILY-Y-VOICES-DESIGN-01/CLOSING_GENERAL_01/prompt_closing_general_01.txt"
 PROMPT_SHA256 = "fd3dc62e67ce661e675b648d5b9207d41e2f9bb20425bbe4c6cbcd597af479b8"
+# 委任_32: Round 2 用の版管理。01は残置(Round 1の再現・test用)。02はP1〜P5改訂版(DESIGN_01.md 9節)。
+PROMPT_DIR = "docs/research/FAMILY-Y-VOICES-DESIGN-01/CLOSING_GENERAL_01"
+PROMPT_VERSIONS = {
+    "01": {"file": PROMPT_FILE, "sha256": PROMPT_SHA256, "root": ROOT},
+    "02": {"file": f"{PROMPT_DIR}/prompt_closing_general_02.txt", "sha256": "4713ceff2dd00a2f67eb9313ae9e206a4a3236c5b158e624c10ccf6fc20e5f07",
+           "root": "er110_output/family_y_closing_general_02"},
+}
+EFFORTS = ("high", "medium")
 SLOTS = ("voice_1", "voice_2", "voice_3")
 THEMES = ("redelivery_fee", "sns_age_limit")
 GEN_EST_JPY = 20.0       # 委任_31: 委任_30実測(1生成≒19.5円、出力約11.4k tok)に基づく予約見積
+GEN_EST_BY_EFFORT = {"high": 20.0, "medium": 14.0}     # 委任_32: mediumは未実測の予約見積(実測後に更新)
 GATE_EST_JPY = 0.8       # Leakage判定(luna, high)1回の予約見積(委任_28実績 0.05〜0.6円)
 THEME_DATA_REDELIVERY = rev.THEME_DATA
 SNS_VOICES = "er110_output/family_y_opinion_based_02/sns_age_limit/run_03/voices_final.json"
@@ -77,9 +86,20 @@ def load_prompt_parts(path: str = PROMPT_FILE) -> dict:
     return {"developer": m.group(1).strip(), "user_template": m.group(2).rstrip("\n"), "sha256": hashlib.sha256(raw).hexdigest()}
 
 
+def load_versioned(version: str) -> dict:
+    """版(01/02)を指定してPromptを読む。期待shaを持たせ、build_promptで照合する。"""
+    if version not in PROMPT_VERSIONS:
+        raise ValueError(f"unknown prompt version {version}")
+    v = PROMPT_VERSIONS[version]
+    parts = load_prompt_parts(v["file"])
+    parts.update(version=version, expected_sha256=v["sha256"])
+    return parts
+
+
 def check_prompt_sha(parts: dict):
-    if parts["sha256"] != PROMPT_SHA256:
-        raise RuntimeError(f"[PROMPT_SHA_MISMATCH] {parts['sha256']} != {PROMPT_SHA256}(Promptを変更した場合は版を改めて記録すること)")
+    expected = parts.get("expected_sha256", PROMPT_SHA256)
+    if parts["sha256"] != expected:
+        raise RuntimeError(f"[PROMPT_SHA_MISMATCH] {parts['sha256']} != {expected}(Promptを変更した場合は版を改めて記録すること)")
 
 
 # ============================================================
@@ -226,20 +246,43 @@ def reserve(theme_dir: str, est_jpy: float, theme_cap: float, note: str, spent_f
     return s
 
 
-def generate_one(client, *, theme: str, gen_idx: int, inp: dict, theme_cap: float, out_dir: str, chat=None, spent_fn=spent_jpy, leak=None) -> dict:
+# ============================================================
+# 文体指標(記録専用・合否に使わない。品質基準は引き上げない。Round 2の型の多様性・推量語・逆接の評価用)
+# ============================================================
+_SUIRYO_RE = re.compile(r"(かもしれ|そうだ|ようだ|らしい|気がする|のではないか|だろう|ではなさそう|にも思え)")
+_GYAKUSETSU_RE = re.compile(r"(^|[。？])(けれど|けれども|でも|だが|しかし|ただ)")
+_AMBIG_SOURCE_RE = re.compile(r"(という|との)(声|話|意見|指摘)(が|も|は)(あった|ある|出て|聞こえ)")
+_Q_MOSHI_RE = re.compile(r"もし")
+
+
+def style_report(text: str) -> dict:
+    sents = [x for x in re.split(r"(?<=[。！？])", text or "") if x.strip()]
+    last = sents[-1] if sents else ""
+    return {"suiryo_sentences": sum(1 for x in sents if _SUIRYO_RE.search(x)),
+            "gyakusetsu_count": len(_GYAKUSETSU_RE.findall(text or "")),
+            "ambiguous_source_phrases": ["".join(m) for m in _AMBIG_SOURCE_RE.findall(text or "")],
+            "question_starts_with_moshi": bool(_Q_MOSHI_RE.search(last)),
+            "last_sentence": last}
+
+
+def generate_one(client, *, theme: str, gen_idx, inp: dict, theme_cap: float, out_dir: str, chat=None, spent_fn=spent_jpy, leak=None,
+                 effort: str = "high", prompt_version: str = "01") -> dict:
     """1生成(+決定論検査違反時のみ再生成1回)→ Leakage判定(1回・書き換えなし)。"""
     import er003_audio_tts_asr_safety as safety
     chat = chat or y0.chat
     leak = leak or p.run_leak
     theme_dir = os.path.dirname(out_dir)
     os.makedirs(out_dir, exist_ok=True)
-    pr = build_prompt(inp)
+    if effort not in EFFORTS:
+        raise ValueError(f"effort must be one of {EFFORTS}")
+    gen_est = GEN_EST_BY_EFFORT[effort]
+    pr = build_prompt(inp, load_versioned(prompt_version))
     w1.wt(os.path.join(out_dir, "prompt_developer.txt"), pr["developer"])
     w1.wt(os.path.join(out_dir, "prompt_user.txt"), pr["user"])
     hist, calls, cur = [], [], pr["user"]
     for k in (1, 2):
-        reserve(theme_dir, GEN_EST_JPY, theme_cap, f"{theme} gen{gen_idx} try{k}", spent_fn)
-        resp = chat(client, model=y0.MODEL_TOP, effort="high", user=cur, developer=pr["developer"], schema=SCHEMA,
+        reserve(theme_dir, gen_est, theme_cap, f"{theme} gen{gen_idx} {effort} try{k}", spent_fn)
+        resp = chat(client, model=y0.MODEL_TOP, effort=effort, user=cur, developer=pr["developer"], schema=SCHEMA,
                     stage=f"ycg_{theme}_g{gen_idx}" + ("" if k == 1 else "_regen"))
         calls.append({**y0.resp_meta(resp), "user_sha256": w1.sha_text(cur)})
         obj = json.loads(resp.output_text)
@@ -259,7 +302,7 @@ def generate_one(client, *, theme: str, gen_idx: int, inp: dict, theme_cap: floa
         if k == 1:
             cur = pr["user"] + "\n\n【前回の出力の問題(今回は避けてください)】\n" + "\n".join(f"- {explain_problem(x)}" for x in probs)
     else:
-        w1.wj(os.path.join(out_dir, "gen_meta.json"), {"calls": calls, "problems_per_try": hist, "status": "CONTRACT_STOP"})
+        w1.wj(os.path.join(out_dir, "gen_meta.json"), {"calls": calls, "problems_per_try": hist, "status": "CONTRACT_STOP", "effort": effort, "prompt_version": prompt_version})
         raise y0.YStop("CLOSING_GENERAL_CONTRACT_STOP", f"{theme} gen{gen_idx}: 再生成後も契約違反 {hist[-1]}", hist)
     w1.wt(os.path.join(out_dir, "closing_final.txt"), final + "\n")
     w1.wj(os.path.join(out_dir, "analysis_final.json"), obj)
@@ -268,6 +311,7 @@ def generate_one(client, *, theme: str, gen_idx: int, inp: dict, theme_cap: floa
     chk = leak(client, "tension", {"tension": final}, model=y0.MODEL_CHEAP, effort="high", stage=f"ycg_{theme}_g{gen_idx}_gate_leak")
     w1.wj(os.path.join(out_dir, "gate_leak_check.json"), {**chk, "note": "既存Tension項目セットを1回判定のみ(書き換えなし)。FAILの分類はEVALで行う"})
     meta = {"calls": calls, "problems_per_try": hist, "status": "DONE", "chars": len(final), "prompt_sha256": pr["prompt_sha256"],
+            "effort": effort, "prompt_version": prompt_version, "style": style_report(final),
             "gate_any_flagged": chk["any_flagged"], "gate_flagged": [{"fields": f["fail_fields"], "reasoning": f["reasoning"]} for f in chk["flagged_items"]],
             "selected_id": obj["selected_id"]}
     w1.wj(os.path.join(out_dir, "gen_meta.json"), meta)
@@ -279,38 +323,48 @@ def generate_one(client, *, theme: str, gen_idx: int, inp: dict, theme_cap: floa
 # ============================================================
 def cmd_dryrun(a):
     """API 0・副作用0: Prompt sha・両テーマの組立Promptの差分(入力ブロックのみ)・見積を表示。"""
-    parts = load_prompt_parts()
+    ver = getattr(a, "prompt_version", "01")
+    parts = load_versioned(ver)
     check_prompt_sha(parts)
     for t in THEMES:
         pr = build_prompt(load_input(t), parts)
         print(t, "user_chars=", len(pr["user"]), "user_sha256=", pr["user_sha256"][:16])
     print("prompt_sha256", parts["sha256"])
-    print("est per theme (gens=%d): %.1f JPY" % (a.gens, a.gens * (GEN_EST_JPY + GATE_EST_JPY)))
+    eff = getattr(a, "effort", "high")
+    print("prompt_version", ver, "effort", eff)
+    print("est per theme (gens=%d): %.1f JPY" % (a.gens, a.gens * (GEN_EST_BY_EFFORT[eff] + GATE_EST_JPY)))
 
 
 def cmd_gen(a):
     import er005_cost_logger as cl
     import er003_v1_en_direct_vfl_01_generate as vfl01
-    cap = require_paid(a.paid)["cap_jpy"]
+    ver = getattr(a, "prompt_version", "01")
+    effort = getattr(a, "effort", "high")
+    vroot = PROMPT_VERSIONS[ver]["root"]
+    cap = require_paid(a.paid, f"{vroot}/BUDGET_APPROVED.json")["cap_jpy"]
     theme_cap = cap / len(THEMES)
-    theme_dir = f"{ROOT}/{a.theme}"
+    theme_dir = f"{vroot}/{a.theme}"
     os.makedirs(theme_dir, exist_ok=True)
-    cl.install(f"{theme_dir}/raw_usage_log.jsonl")
+    # 01は従来のログ名。02は effort別ログ(並列processが同一ファイルへ書かない。費用集計は raw_usage_log*.jsonl を全て合算)
+    cl.install(f"{theme_dir}/raw_usage_log.jsonl" if ver == "01" else f"{theme_dir}/raw_usage_log_{effort}.jsonl")
     client = vfl01.get_client()
     inp = load_input(a.theme)
     w1.wj(f"{theme_dir}/entry_point.json", {"runner": "er110_family_y_closing_general_trial_01.py", "management_id": MANAGEMENT_ID, "theme": a.theme,
                                             "production_reachable": False, "writer_model": y0.MODEL_TOP, "judge_model": y0.MODEL_CHEAP, "cap_jpy_total": cap,
-                                            "theme_cap_jpy": theme_cap, "gens": a.gens, "prompt_sha256": PROMPT_SHA256,
+                                            "theme_cap_jpy": theme_cap, "gens": a.gens, "prompt_version": ver, "effort": effort,
+                                            "prompt_sha256": PROMPT_VERSIONS[ver]["sha256"],
                                             "module_sha256": hashlib.sha256(open("er110_family_y_closing_general_trial_01.py", "rb").read()).hexdigest()})
     prev = y0.THEME_TAG
     y0.THEME_TAG = THEME_TAG
     try:
         for g in range(1, a.gens + 1):
-            od = f"{theme_dir}/gen_{g}"
+            tag = f"{g}" if ver == "01" else f"{effort}_{g}"
+            od = f"{theme_dir}/gen_{tag}"
             if os.path.exists(f"{od}/gen_meta.json") and json.load(open(f"{od}/gen_meta.json", encoding="utf-8")).get("status") == "DONE":
                 print("skip(done)", a.theme, g)
                 continue
-            r = generate_one(client, theme=a.theme, gen_idx=g, inp=inp, theme_cap=theme_cap, out_dir=od)
+            r = generate_one(client, theme=a.theme, gen_idx=tag, inp=inp, theme_cap=theme_cap, out_dir=od,
+                             effort=effort, prompt_version=ver)
             print(f"[Y-CLOSING-GENERAL] {a.theme} gen{g} chars={r['meta']['chars']} gate_flagged={r['meta']['gate_any_flagged']}")
     finally:
         y0.THEME_TAG = prev
@@ -321,6 +375,8 @@ def main():
     ap.add_argument("cmd", choices=("dryrun", "gen"))
     ap.add_argument("--theme", choices=THEMES)
     ap.add_argument("--gens", type=int, default=2)
+    ap.add_argument("--effort", choices=EFFORTS, default="high", help="生成callのreasoning effort(Round 2比較用。既定high)")
+    ap.add_argument("--prompt-version", dest="prompt_version", choices=tuple(PROMPT_VERSIONS), default="01", help="Prompt版(Round 2は02)")
     ap.add_argument("--paid", action="store_true", help="有料run。予算承認ファイルも必要")
     a = ap.parse_args()
     if a.cmd == "gen" and not a.theme:
