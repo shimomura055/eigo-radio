@@ -15,6 +15,7 @@ import er121_family_y_structure_01 as ys
 
 RUN = "er121_output/family_y_production_01/redelivery_fee/run_01"
 OUT = "user_test/family_y_production_redelivery_fee_01/listening"
+RECHECK_JSON = f"{RUN}/a2/hr_adopt_prep/y_voice_1_slowed_asr_recheck.json"
 WORK = f"{RUN}/hr_listening"           # 減速版wavの置き場(commitしない)
 D_PRIME_THRESHOLD_SEC = 0.6
 
@@ -104,6 +105,10 @@ def _html(infos: list) -> str:
         parts.append(f"<h3>NGになった理由</h3><p>{_esc(_reason(i))}</p>")
         parts.append(f"<p class='sec'>自動判定: {_esc(str(i['classification']))}"
                      + (f" / D'最長run={i['d_prime_sec']}秒(閾値{D_PRIME_THRESHOLD_SEC}秒)" if i.get("d_prime_sec") is not None else "") + "</p>")
+        if i["level"] == "a2" and i["sid"] == "y_voice_1" and os.path.isfile(RECHECK_JSON):     # 委任_08: 減速後ASR再検証の実測結果(別ファイル)を1行表示
+            _rc = json.load(open(RECHECK_JSON, encoding="utf-8"))
+            parts.append(f"<p class='sec'>減速後ASR再検証(6%減速後の音に対し、正式経路と同じ関数で実測): 判定={_esc(str(_rc.get('post_slowdown_final_classification')))}"
+                         f"(PASS・ASR一致、ハイフン表記差のみ)、ASR={_esc(str(_rc.get('asr_model_id')))}、減速後wav sha256={_esc(str(_rc.get('slowed_wav_sha256'))[:12])}…(上の試聴音と一致)。</p>")
         parts.append("<p><b>状態: ユーザー承認待ち</b></p></div>")
     parts.append("</body></html>")
     return "".join(parts)

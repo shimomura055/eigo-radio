@@ -1,0 +1,115 @@
+{
+  "segment": "y_voice_1",
+  "attempt": 5,
+  "source_attempt_wav": "er121_output/family_y_production_01/redelivery_fee/run_01/a2/narration/attempts/y_voice_1_attempt5_custom53fd514d.wav",
+  "source_attempt_sha256": "3a5736fc9a53570deca949c0386304810b1d19330e3c50d1e758c4ee129d6382",
+  "slowed_wav_sha256": "c3f59b0040d99d02a7eadddf10ffc7661ebea31c3bb893c4c435b96996c1e773",
+  "function": "er003_v1_n3_01_tts_generate.apply_a2_slowdown_postprocess(slowdown_pct=None, is_last_slot=True, log_human_review=False)",
+  "expected_text_canonical_sha256": "624fb25453fc68b86f16a25ebdec1ee2ae275d1e0dee9f335f3bfd5ffc0d2404",
+  "tts_input_text": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+  "status": "OK",
+  "asr_verified": true,
+  "post_slowdown_classification": "NORMALIZED_MATCH",
+  "post_slowdown_final_classification": "NORMALIZED_MATCH",
+  "post_slowdown_asr_text": "When I leave a note saying no one was home, I feel a little sad too. But then I go to the next house. I really want fewer re-deliveries. They are hard on us, too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their re-delivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+  "post_slowdown_cascade_accepted": null,
+  "post_slowdown_cascade": null,
+  "slowdown_info": {
+    "slowdown_pct_target": 6.0,
+    "slowdown_pct_actual": 5.964,
+    "src_duration_seconds": 43.85,
+    "dst_duration_seconds": 46.465,
+    "src_path": "er121_output/family_y_production_01/redelivery_fee/run_01/a2/hr_adopt_prep/slow_recheck_work/y_voice_1_original.wav",
+    "dst_path": "er121_output/family_y_production_01/redelivery_fee/run_01/a2/hr_adopt_prep/slow_recheck_work/y_voice_1.wav"
+  },
+  "reason": null,
+  "asr_judgement": {
+    "state": "PASS",
+    "reason_code": "primary_pass",
+    "slot": 1,
+    "script_version": "v0",
+    "role": "FULL_STORY",
+    "lang": "en",
+    "segment_key": "y_voice_1",
+    "audio_sha256": "c3f59b0040d99d02a7eadddf10ffc7661ebea31c3bb893c4c435b96996c1e773",
+    "primary": {
+      "text": "When I leave a note saying no one was home, I feel a little sad too. But then I go to the next house. I really want fewer re-deliveries. They are hard on us, too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their re-delivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+      "passed": true,
+      "label": "NORMALIZED_MATCH",
+      "equivalence_basis": null,
+      "warning_labels": []
+    },
+    "secondary": {
+      "called": false,
+      "cached": false,
+      "engine": "azure",
+      "text": null,
+      "label": "",
+      "accepted": null,
+      "error": null,
+      "unavailable": false
+    },
+    "value_guard": {
+      "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+          {
+            "src": "1",
+            "hyp": "1",
+            "verdict": "EQUAL",
+            "reason": "same_surface"
+          }
+        ],
+        "reasons": [],
+        "warnings": []
+      }
+    },
+    "negation_guard": {
+      "primary": false
+    },
+    "final_gate": {
+      "applied": true,
+      "value_guard": "EQUAL",
+      "negation_diff": false
+    },
+    "warnings": [],
+    "exclusion_rule": null,
+    "cost": {
+      "azure_calls": 0,
+      "azure_seconds": null,
+      "est_jpy": 0.0
+    },
+    "timing": {
+      "total_ms": 1,
+      "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "length": {
+      "applied": false,
+      "primary_len": null,
+      "secondary_len": null,
+      "max_len": null,
+      "adopted_from": "primary",
+      "adopted_ok": null,
+      "surface_len": null,
+      "primary_ok": null
+    },
+    "adapter": {
+      "layers": [],
+      "azure_real_calls": 0,
+      "cost_guard_triggered": false,
+      "language": "en-US",
+      "segment_id": "y_voice_1",
+      "asr_text_present": true,
+      "cache": {
+        "calls": 0,
+        "hits": 0
+      }
+    }
+  },
+  "recheck_pass": true,
+  "recorded_at": "2026-10-25T23:20:25",
+  "asr_model_id": "gpt-4o-mini-transcribe",
+  "cost_estimate_jpy": 0.4,
+  "cost_note": "cl.install未実行のためcost_log未記録。gpt-4o-mini-transcribe 46.5秒1呼出の推定(Secondary未呼出=Azure 0)。過去実測0.531円/clip(同系)を上限目安"
+}

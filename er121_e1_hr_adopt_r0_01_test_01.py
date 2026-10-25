@@ -100,5 +100,71 @@ class AdoptTest(unittest.TestCase):
         self.assertTrue(os.path.exists(f"{L}/audit/ypl7_user_approval_record_y_voice_1.json"))
 
 
+class A2SlowdownRecheckGateTest(unittest.TestCase):
+    """a2 y_voice_1: 減速後ASR再検証の実測PASSがあるときだけ採用可(NOT_RUN代替なし)。ffmpegで実際に減速する(API 0)。"""
+
+    def setUp(self):
+        import er008_a2_postprocess_slowdown_01 as slow
+        self.tmp = tempfile.TemporaryDirectory()
+        self.run = self.tmp.name.replace("\\", "/") + "/run"
+        L = f"{self.run}/a2"
+        self.att_wav = f"{L}/narration/attempts/y_voice_1_attempt5_custom53fd514d.wav"
+        _wav(self.att_wav, n=48000, val=1000)
+        _w(self.att_wav[:-4] + ".json", {"sha256": _sha(self.att_wav), "asr_text": "r0 asr"})
+        _wav(f"{L}/narration/y_voice_1.wav", val=-100)
+        self.canon = "I want fewer redeliveries."
+        _w(f"{L}/audit/tts_generation_results.json", {"segments": {"y_voice_1": {
+            "status": "OK", "text": self.canon, "canonical_text": self.canon, "sha256": "old"}}})
+        _w(f"{L}/audit/review_lock_state.json", {"y_voice_1": {"state": "HUMAN_REVIEW_REQUIRED", "final_status": "NG"}})
+        self.stmt = self.tmp.name + "/stmt.md"
+        open(self.stmt, "w", encoding="utf-8").write("対象: a2 y_voice_1 テスト用の擬似")
+        exp = self.tmp.name + "/exp.wav"
+        slow.apply_a2_slowdown(self.att_wav, exp)
+        self.slowed_sha = _sha(exp)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def _recheck(self, **kw):
+        d = {"recheck_pass": True, "asr_verified": True, "status": "OK", "post_slowdown_final_classification": "NORMALIZED_MATCH",
+             "source_attempt_sha256": _sha(self.att_wav), "slowed_wav_sha256": self.slowed_sha, "asr_model_id": "m"}
+        d.update(kw)
+        _w(f"{self.run}/a2/hr_adopt_prep/y_voice_1_slowed_asr_recheck.json", d)
+
+    def _main(self):
+        return ad.main(["--run-dir", self.run, "--level", "a2", "--segment", "y_voice_1", "--apply", "--user-statement-ref", self.stmt])
+
+    def _untouched(self):
+        self.assertFalse(os.path.exists(f"{self.run}/a2/audit/human_approved_segments.json"))
+
+    def test_pass_allows_adoption_and_records_reference(self):
+        self._recheck()
+        self.assertEqual(self._main(), 0)
+        ent = json.load(open(f"{self.run}/a2/audit/tts_generation_results.json", encoding="utf-8"))["segments"]["y_voice_1"]
+        ref = ent["post_slowdown_asr_recheck"]
+        self.assertIsInstance(ref, dict)
+        self.assertEqual(ref["judgement"], "NORMALIZED_MATCH")
+        self.assertTrue(ref["path"].endswith("y_voice_1_slowed_asr_recheck.json"))
+        self.assertNotIn("NOT_RUN", json.dumps(ent, ensure_ascii=False))
+        self.assertEqual(_sha(f"{self.run}/a2/narration/y_voice_1.wav"), self.slowed_sha)
+
+    def test_missing_recheck_refused(self):
+        self.assertEqual(self._main(), 2)
+        self._untouched()
+
+    def test_non_pass_recheck_refused(self):
+        self._recheck(recheck_pass=False, asr_verified=False, status="STOPPED", post_slowdown_final_classification="MISMATCH")
+        self.assertEqual(self._main(), 2)
+        self._untouched()
+
+    def test_recheck_for_other_audio_refused(self):
+        self._recheck(slowed_wav_sha256="0" * 64)
+        self.assertEqual(self._main(), 2)
+        self._untouched()
+        self._recheck(source_attempt_sha256="1" * 64)
+        self.assertEqual(self._main(), 2)
+        self._untouched()
+
+
 if __name__ == "__main__":
     unittest.main()

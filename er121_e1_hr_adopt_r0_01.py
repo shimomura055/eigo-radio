@@ -6,7 +6,8 @@
 **承認の主体はユーザーのみ**: --apply は、ユーザー本人の承認発言を逐語保存したファイル(--user-statement-ref)が存在し、そこに対象segmentの
 識別子が書かれている場合にだけ働く(AI/Fableは承認を代行しない。この条件を満たさない呼出はrc=2で何も書かない)。既定はdry-run(何も書かない)。
 採用対象は er121_e1_hr_listening_page_01.TARGETS の3 segment・試聴ページと同一attemptのみ(attempt番号は引数にできない)。
-a2 y_voice_1 は採用時に6%減速(ffmpeg atempo、API 0)を適用する(ユーザーが聴いた音=採用される音。減速後ASR再検証は『ユーザー試聴承認で代替』と記録)。"""
+a2 y_voice_1 は採用時に6%減速(ffmpeg atempo、API 0)を適用する(ユーザーが聴いた音=採用される音)。減速後ASR再検証は代替せず、正式経路と同じ`apply_a2_slowdown_postprocess`で実測した結果
+(`er121_e1_slowed_asr_recheck_01.py`が`<run>/a2/hr_adopt_prep/y_voice_1_slowed_asr_recheck.json`へ記録)がPASSで、かつ採用候補wav・減速後wavのsha256が一致する場合にのみ採用できる(それ以外はrc=2で何も書かない)。"""
 from __future__ import annotations
 import argparse
 import hashlib
@@ -21,6 +22,7 @@ import er121_e1_hr_listening_page_01 as lp
 DEFAULT_RUN = lp.RUN
 APPROVED_BY = "user"
 TAG = "ypl7"
+RECHECK_REL = "a2/hr_adopt_prep/y_voice_1_slowed_asr_recheck.json"
 
 
 def _sha(p):
@@ -59,6 +61,29 @@ def plan(run: str, level: str, segment: str) -> dict:
             "current_dst_sha256": _sha(f"{narr}/{segment}.wav") if os.path.exists(f"{narr}/{segment}.wav") else None}
 
 
+def check_slowed_recheck(run: str, p: dict) -> dict:
+    """a2 y_voice_1の採用ゲート: 減速後ASR再検証の実測結果(別ファイル)がPASSで、再検証対象が採用候補・採用される減速後音声と同一であること。
+    満たさなければSystemExit(rc=2、何も書かない)。NOT_RUN代替は存在しない。"""
+    path = f"{run}/{RECHECK_REL}"
+    if not os.path.isfile(path):
+        raise SystemExit(f"[REFUSED] 減速後ASR再検証の実測結果がありません: {path}(er121_e1_slowed_asr_recheck_01.pyで実測してから採用する)")
+    rc = _lj(path)
+    if rc.get("recheck_pass") is not True or rc.get("asr_verified") is not True or rc.get("status") != "OK":
+        raise SystemExit(f"[REFUSED] 減速後ASR再検証がPASSでないため採用できません: status={rc.get('status')} label={rc.get('post_slowdown_final_classification')}")
+    if rc.get("source_attempt_sha256") != p["attempt_wav_sha256"]:
+        raise SystemExit("[REFUSED] 減速後ASR再検証の対象wavが採用候補attemptと不一致")
+    import tempfile
+    import er008_a2_postprocess_slowdown_01 as slow
+    with tempfile.TemporaryDirectory() as td:
+        tmp = os.path.join(td, "chk.wav")
+        slow.apply_a2_slowdown(p["attempt_wav"], tmp)
+        if _sha(tmp) != rc.get("slowed_wav_sha256"):
+            raise SystemExit("[REFUSED] 採用時に生成される減速後wavが、再検証したwavとsha256不一致(検証した音と違う音は採用しない)")
+    return {"path": path, "judgement": rc.get("post_slowdown_final_classification"), "status": rc.get("status"),
+            "asr_verified": rc.get("asr_verified"), "slowed_wav_sha256": rc.get("slowed_wav_sha256"),
+            "model_id": rc.get("asr_model_id"), "recorded_at": rc.get("recorded_at")}
+
+
 def apply(run: str, level: str, segment: str, statement_ref: str) -> dict:
     import er003_v1_n3_01_assemble as asm
     p = plan(run, level, segment)
@@ -70,6 +95,7 @@ def apply(run: str, level: str, segment: str, statement_ref: str) -> dict:
         stmt = f.read()
     if segment not in stmt or level not in stmt:
         raise SystemExit(f"[REFUSED] ユーザー承認発言ファイルに対象({level}/{segment})の記載がありません: {statement_ref}")
+    recheck_ref = check_slowed_recheck(run, p) if p["needs_a2_slowdown"] else None
     lvdir = f"{run}/{level}"
     res_path, lock_path = f"{lvdir}/audit/tts_generation_results.json", f"{lvdir}/audit/review_lock_state.json"
     for path in (res_path, lock_path):
@@ -120,7 +146,7 @@ def apply(run: str, level: str, segment: str, statement_ref: str) -> dict:
         ent["local_rewrite_audio_superseded_by_human_approval"] = True
     if slow_info:
         ent["slowdown_applied"], ent["slowdown_info"], ent["original_path"] = True, slow_info, dst.replace(".wav", "_original.wav")
-        ent["post_slowdown_asr_recheck"] = "NOT_RUN: ユーザーが減速後の音を試聴して承認(減速後ASR再検証の代替)"
+        ent["post_slowdown_asr_recheck"] = recheck_ref      # 実測結果への参照(path+判定)
         ent["duration_seconds"] = slow_info["dst_duration_seconds"]
     res["segments"][segment] = ent
     _sj(res_path, res)

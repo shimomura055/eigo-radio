@@ -36,7 +36,7 @@ py -I tools\y_page_notice_check_01.py --page user_test\family_y_production_redel
 # 両方rc=0を確認後、対象pathのみ git add → commit → git push origin HEAD:main
 ```
 - 採用スクリプトがやること(既存機構の適用。新Gate・flag・迂回なし。先例: `er019_fx_moon_title_individual_approval_01.py`、`er011_discovery_generalization_towels_trial_11_audio_03_b1b_individual_approval_and_assemble_01.py`): ①R0のattempt wavを`narration/<segment>.wav`へ配置(置換前の書換え版/最終fallback版は`<segment>.pre_ypl7_adopt.wav`で保全。a2 `y_voice_1`は`_original.wav`へR0を置き**ffmpeg atempoで6%減速**=API 0) ②既存`er003_v1_n3_01_assemble.record_human_approval(<level dir>, <segment>, <entry.canonical_text>, approved_by="user")` ③`review_lock_state.json`を`RESOLVED/HUMAN_APPROVED`へ(旧stateは`prior_state`に残す) ④`tts_generation_results.json`のentryにnote・採用wav sha・R0 textを記録(ASR/QAのNG記録=attempts_log/attempt_history/human_review_queueは**そのまま保存**。`local_rewrite_recovery`記録も削除せず`local_rewrite_audio_superseded_by_human_approval=true`を付与)。バックアップ=`*.pre_ypl7_adopt_backup.json`。承認の範囲は**この1segment・1attemptのみ**で、ASR/Repetition QA検査の一般免除ではない。
-- **a2 `y_voice_1`の減速後ASR再検証**は実施しない(`post_slowdown_asr_recheck=NOT_RUN`と記録)。ユーザーが試聴した音=減速後の音を承認する形のため。これを避ける場合は有料のASR再検証(1〜2呼出、概ね1円未満)を別途実施できる(新機構ではなく既存`apply_a2_slowdown_postprocess`の再利用)。
+- **a2 `y_voice_1`の減速後ASR再検証**: 委任_07の『ユーザー試聴承認で代替(NOT_RUN)』は撤回(Fable判断)。委任_08で実測した(下記『8. 減速後ASR再検証(委任_08)』)。採用スクリプトはこの実測PASSが無ければa2 `y_voice_1`を採用しない(rc=2)。
 - **リハーサル結果(本委任、API 0、承認ではない)**: run_01を別名dirへ複製し3 segmentの採用をダミー発言ファイルで実行→上記手順2の`gate,assemble,pages,page_verify`を1起動で実行: **gate b1b/a2=PASS、assemble b1b OK 330.1秒/a2 OK 347.0秒、pages生成、page_verify ok、final_manifest.json生成、`user_test_page_standard_check_01` overall=PASS、`y_page_notice_check_01` ok**(所要約20秒)。リハーサルdirは削除済み(run_01は無変更で、この時点で未承認)。
 
 ## 3. 残工程・見積費用
@@ -62,3 +62,11 @@ py -I tools\y_page_notice_check_01.py --page user_test\family_y_production_redel
   - **b1b `y_voice_1`**: 是正前=NG span`redeliveries`→Local Rewrite起動(保存結果`RESOLVED_BY_LOCAL_REWRITE`)。是正後=`found=false`→**Local Rewriteは起動せず**`HUMAN_REVIEW_LOCKED_NO_NG_SPAN`で止まる(書換えなし。1回目のb1b launchと同じ挙動)。
   - **a2 `y_voice_1`**: 保存された最終attempt(minimal fallback、`TRUE_CONTENT_MISMATCH`)の転写には、ハイフン差とは別に**実際の読み違い**(`their→the`、`can→could`)がある。是正後も`found=true`(最初の差=`their redelivery`↔`the re delivery`)。ハイフン差が原因のLRは起こらなくなるが、**本物の読み違いが残るこの最終attemptではLocal Rewriteは正当に起動し得る**(R0 attempt5の`NORMALIZED_MATCH`音声は別attempt)。
 - X/Z runner processの確認: er020編集前に`Get-CimInstance Win32_Process`で確認。X runner(`er019_family_x_audio_production_runner_01.py --slug part2_hr_evidence_01 --run run_r2`、PID 44280/42716)が編集前に稼働中→約5分(285秒)待機→消滅を確認(RUN_LOCKファイル0・X/Z runner系process 0)してから編集。
+
+## 8. 減速後ASR再検証(委任_08、a2 `y_voice_1` attempt5、有料1呼出)
+- 方法: 正式経路と同じ関数 `er003_v1_n3_01_tts_generate.apply_a2_slowdown_postprocess(slowdown_pct=None, is_last_slot=True, log_human_review=False)`(6%減速+統一judge)を、Y用run scope(`family_scope("Y")`+`with_secondary_run`)内でattempt5のwavに1回実行。期待原稿=R0 canonical_textをY本流と同じ`_pnap_supply(tts_safe_news_en())`で整形。起動1回(`er121_e1_slowed_asr_recheck_01.py`、`.venv`)。
+- 結果: **PASS**。status=OK・asr_verified=True・Primary label=`NORMALIZED_MATCH`(final=`NORMALIZED_MATCH`、reason_code=`primary_pass`、Secondary呼出なし)。ASR model_id=`gpt-4o-mini-transcribe`。転写は本文と一致(`re-deliveries`/`re-delivery`のハイフン表記差のみ、`sad too`のカンマ差)。
+- 減速後wav sha256=`c3f59b0040d99d02a7eadddf10ffc7661ebea31c3bb893c4c435b96996c1e773`(試聴mp3の元wav `hr_listening/a2_y_voice_1_attempt5_slowed6pct.wav` と一致=ユーザーが聴く音と同一)。attempt5元wav sha256=`3a5736fc9a53570deca949c0386304810b1d19330e3c50d1e758c4ee129d6382`。減速率=実測5.964%(46.465秒)。
+- 費用: 推定0.4円(1呼出、上限3円内。`cl.install`未実行でcost_log未記録=過去実測0.531円/clipを上限目安)。
+- 記録: `er121_output/family_y_production_01/redelivery_fee/run_01/a2/hr_adopt_prep/y_voice_1_slowed_asr_recheck.json`(run_01の判定ファイルは未改変)。wavは作業dir(`.gitignore`の`*.wav`でuntracked)。
+- 採用スクリプト(`er121_e1_hr_adopt_r0_01.py`)の変更: NOT_RUN分岐を撤去。a2 `y_voice_1`の`--apply`は、上記JSONが存在し`recheck_pass`・`asr_verified`・`status=OK`で、かつ対象wavのsha(採用候補・採用時に生成される減速後wav)が一致する場合のみ許可(それ以外rc=2で何も書かない)。採用後の`post_slowdown_asr_recheck`は実測結果の参照(path+判定)。
