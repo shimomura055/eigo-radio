@@ -32,7 +32,7 @@ def main(check=False):
         try:
             r = t114.plan_run(run, "b1b", "writer/r2.md")
         except AssertionError as e:   # Trial自身が失敗するrun(別途の既知)は凍結対象外
-            fx["z_runs"][run] = {"input_sha": sha(raw_sp + raw_art), "trial_error": str(e)[:80]}
+            fx["z_runs"][run] = {"input_sha": sha(raw_sp.replace(b"\r\n", b"\n") + raw_art.replace(b"\r\n", b"\n")), "trial_error": str(e)[:80]}
             continue
         clips = {}
         for c in r["clips"]:
@@ -43,7 +43,7 @@ def main(check=False):
                     kind = "paragraph" if (j == n or c["cuts"][j - 1]["priority"] == 0) else "sentence"
                     ch.append([x["words"], kind, hashlib.sha256(x["text"].encode("utf-8")).hexdigest(), x["first_para"], x["last_para"]])
             clips[c["clip_id"]] = {"chunks": ch, "paragraph_info_lost": c["paragraph_info_lost"]}
-        fx["z_runs"][run] = {"input_sha": sha(raw_sp + raw_art), "clips": clips}
+        fx["z_runs"][run] = {"input_sha": sha(raw_sp.replace(b"\r\n", b"\n") + raw_art.replace(b"\r\n", b"\n")), "clips": clips}
     for pj in sorted(glob.glob("er0*_output/**/parts.json", recursive=True)) + sorted(glob.glob("er1*_output/**/parts.json", recursive=True)):
         pj = pj.replace("\\", "/")
         try:
@@ -53,7 +53,7 @@ def main(check=False):
             plan = t113.build_chunk_plan(parts)
         except Exception as e:
             continue
-        fx["x_parts"][pj] = {"input_sha": sha(open(pj, "rb").read()),
+        fx["x_parts"][pj] = {"input_sha": sha(open(pj, "rb").read().replace(b"\r\n", b"\n")),
                               "chunks": [[c["part"], c["index"], c["words"], hashlib.sha256(c["text"].encode("utf-8")).hexdigest()] for c in plan]}
     if check:
         old = json.load(open(OUT, encoding="utf-8"))

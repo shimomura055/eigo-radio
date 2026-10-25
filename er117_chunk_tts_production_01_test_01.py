@@ -26,6 +26,11 @@ def _clip(text, voice="narrator", cid="full_story_part1_c1"):
     return {"id": cid, "voice": voice, "word_count": len(t.split()), "text": t}
 
 
+def _lf(b):
+    """入力ファイルのsha比較は改行正規化(Windows autocrlfのCRLF作業コピーとLFで同値にする)。"""
+    return b.replace(b"\r\n", b"\n")
+
+
 def _sha(b):
     return hashlib.sha256(b).hexdigest()
 
@@ -126,7 +131,7 @@ class TFrozenPlannerFixture(unittest.TestCase):
             sp, art = os.path.join(ROOT, run, "segment_plan_b1b.json"), os.path.join(ROOT, run, "writer", "r2.md")
             if not (os.path.exists(sp) and os.path.exists(art)) or "clips" not in v:
                 continue
-            if _sha(open(sp, "rb").read() + open(art, "rb").read()) != v["input_sha"]:
+            if _sha(_lf(open(sp, "rb").read()) + _lf(open(art, "rb").read())) != v["input_sha"]:
                 continue                                  # 入力が後から変わったrunは比較しない(下で最低件数を要求)
             plan = json.load(open(sp, encoding="utf-8"))
             _, body = st.split_title_body(open(art, encoding="utf-8").read())
@@ -151,7 +156,7 @@ class TFrozenPlannerFixture(unittest.TestCase):
         checked = chunked_parts = 0
         for pj, v in sorted(self.fx["x_parts"].items()):
             path = os.path.join(ROOT, pj)
-            if not os.path.exists(path) or _sha(open(path, "rb").read()) != v["input_sha"]:
+            if not os.path.exists(path) or _sha(_lf(open(path, "rb").read())) != v["input_sha"]:
                 continue
             parts = json.load(open(path, encoding="utf-8"))
             plans = core.plan_x_parts(parts)
