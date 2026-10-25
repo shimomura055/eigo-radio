@@ -42,7 +42,12 @@ def tally(run_dirs):
             for key, s in segs.items():
                 if not isinstance(s, dict):
                     continue
-                for a in s.get("attempts_log") or []:
+                # X/Y/legacy形式=attempts_log[*].asr_judgement。Z形式(er063 build_entry)=segment直下の asr_judgement(attempts_logなし)。
+                # asr_judgement_inherited(前回run継承。今回判定ではない)は数えない。
+                _alog = [a for a in (s.get("attempts_log") or []) if isinstance(a, dict)]
+                if not any(isinstance(a.get("asr_judgement"), dict) for a in _alog) and isinstance(s.get("asr_judgement"), dict):
+                    _alog = [{"attempt": None, "asr_judgement": s["asr_judgement"]}]
+                for a in _alog:
                     j = a.get("asr_judgement")
                     if not isinstance(j, dict):
                         continue

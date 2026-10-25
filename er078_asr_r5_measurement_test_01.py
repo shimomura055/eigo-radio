@@ -123,11 +123,11 @@ def test_secondary_provenance_recorded_only_when_called(tmp_path, monkeypatch):
 
 def test_provenance_incomplete_when_sha_is_placeholder_or_transcript_missing():
     pr = uj.PrimaryResult(False, "x", "L", None)
-    audit = {"state": "NG_SECONDARY_UNAVAILABLE", "reason_code": "secondary_unavailable", "secondary": {"called": True, "engine": "azure", "text": None, "error": "boom"},
+    audit = {"lang": "ja", "state": "NG_SECONDARY_UNAVAILABLE", "reason_code": "secondary_unavailable", "secondary": {"called": True, "engine": "azure", "text": None, "error": "boom"},
              "audio_sha256": "nosha:x", "value_guard": {}}
     uj._r5_record(audit, None, pr, "canon", {})
     assert audit["secondary"]["provenance_complete"] is False
-    audit = {"state": "PASS_WITH_WARNING", "reason_code": "secondary_confirmed", "secondary": {"called": True, "engine": "azure", "text": "t", "error": None},
+    audit = {"lang": "ja", "state": "PASS_WITH_WARNING", "reason_code": "secondary_confirmed", "secondary": {"called": True, "engine": "azure", "text": "t", "error": None},
              "audio_sha256": "a" * 64, "value_guard": {}}
     uj._r5_record(audit, None, pr, "canon", {})
     assert audit["secondary"]["provenance_complete"] is True
@@ -156,6 +156,14 @@ def test_demote_p3_is_recorded_for_reading_match_when_demoted():
         assert a["r5"]["f1"]["demoted_p3"] is True and a["r5"]["f1"]["would_have_passed_before_f1"] is True
     else:
         assert a["r5"]["f1"]["demoted_p3"] is False
+
+
+def test_english_judgement_is_unchanged_no_r5_keys():
+    # R-5はJAのみ。ENのasr_judgementには r5 / canonical_text を足さない(A/B/C・EN KPの保存形式不変)
+    ctx = uj.AttemptCtx(canonical_text="Hello world.", wav_sha256="c" * 64, engine="azure")
+    pr = uj.PrimaryResult(True, "Hello world.", "EXACT_MATCH", None)
+    a = uj.unified_judge(ctx, pr, lambda c: uj.SecondaryOutcome(None, error="x"), lang="en", role=None).audit_record
+    assert "r5" not in a and "canonical_text" not in a and a["state"] == uj.PASS
 
 
 def test_unknown_keys_are_not_read_by_registry():

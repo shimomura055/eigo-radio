@@ -1,0 +1,383 @@
+{
+ "segments": {
+  "ja_asr_ev_comment_1": {
+   "status": "OK",
+   "path": "er078_output/open517_runtime_evidence_01/z_one_clip/a2/narration/ja_asr_ev_comment_1.wav",
+   "sha256": "f416c5b83cc12013622646ae9e83cd4e0d7fb7eea76a4ad74f85f07ae90486c2",
+   "canonical_text": "メロスは三日の期限までに、二十キロの道を走り抜きました。",
+   "text": "メロスは三日の期限までに、二十キロの道を走り抜きました。",
+   "disfluency_checked": false,
+   "asr_text": "メロスは三日の期限までに二十キロの道を走り抜きました。",
+   "slowdown_applied": null,
+   "z_adoption": "adopted",
+   "segment_id": "ja_asr_ev_comment_1",
+   "narration_path": "er078_output/open517_runtime_evidence_01/z_one_clip/a2/narration/ja_asr_ev_comment_1.wav",
+   "role": null,
+   "connected_speech_enabled": false,
+   "tts_backend": "speech_metadata_flash_lite",
+   "voice": "Aoede",
+   "speaker": "narrator",
+   "clip_kind": "comment",
+   "role_style_key": "STD_JA_COMMENT",
+   "model_ids_measured": [
+    "gemini-3.8-flash-lite-tts"
+   ],
+   "style": {
+    "instruction_label": "S3",
+    "style_prefix_sha256": "060c08fde003cf7c2d15c654da96d3f857b8e7a9bd79eac31814ceaf7c923f33",
+    "effective_style_prefix_sha256": "060c08fde003cf7c2d15c654da96d3f857b8e7a9bd79eac31814ceaf7c923f33",
+    "fallback_used": false,
+    "fallback_attempts": []
+   },
+   "reuse_key": {
+    "canonical_text_sha256": "bfe8cf632d2d4f67c43f890feb4a7ac21c6b116d8c4bdc25b4012940b1ed09b7",
+    "role_style_version": "z_v2_pd8_r2_e1_e2up_k2_m2_kpx_20261012",
+    "voice": "Aoede",
+    "style_prefix_sha256": "060c08fde003cf7c2d15c654da96d3f857b8e7a9bd79eac31814ceaf7c923f33",
+    "tts_backend": "speech_metadata_flash_lite"
+   },
+   "slowdown_ratio": null,
+   "speed_profile": null,
+   "attempts": [
+    {
+     "phase": "standard",
+     "attempt": 1,
+     "instruction_type": null,
+     "instruction_label": null,
+     "style_prefix_sha256": null,
+     "style_prefix_head": null,
+     "tts_model_id": "gemini-3.8-flash-lite-tts",
+     "voice": "Aoede",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "verified": false,
+     "asr_text": "メロスは三日の期限までに、二十キロの道を走り抜けました。"
+    },
+    {
+     "phase": "standard",
+     "attempt": 2,
+     "instruction_type": null,
+     "instruction_label": null,
+     "style_prefix_sha256": null,
+     "style_prefix_head": null,
+     "tts_model_id": "gemini-3.8-flash-lite-tts",
+     "voice": "Aoede",
+     "audio_classification": "NORMALIZED_MATCH",
+     "verified": true,
+     "asr_text": "メロスは三日の期限までに二十キロの道を走り抜きました。"
+    }
+   ],
+   "cooldown_occurred": false,
+   "cooldown_events": [],
+   "audio_text_deviation": null,
+   "tts_generations_used": null,
+   "asr_judgement": {
+    "state": "PASS",
+    "reason_code": "primary_pass",
+    "slot": 2,
+    "script_version": "v0",
+    "role": null,
+    "lang": "ja",
+    "segment_key": "",
+    "audio_sha256": "f416c5b83cc12013622646ae9e83cd4e0d7fb7eea76a4ad74f85f07ae90486c2",
+    "primary": {
+     "text": "メロスは三日の期限までに二十キロの道を走り抜きました。",
+     "passed": true,
+     "label": "NORMALIZED_MATCH",
+     "equivalence_basis": null,
+     "warning_labels": []
+    },
+    "secondary": {
+     "called": false,
+     "cached": false,
+     "engine": "azure",
+     "text": null,
+     "label": "",
+     "accepted": null,
+     "error": null,
+     "unavailable": false
+    },
+    "value_guard": {
+     "primary": {
+      "kind": "EQUAL",
+      "pairs": [
+       {
+        "src": "三日",
+        "hyp": "三日",
+        "verdict": "EQUAL",
+        "reason": "same_surface"
+       },
+       {
+        "src": "二十キロ",
+        "hyp": "二十キロ",
+        "verdict": "EQUAL",
+        "reason": "same_surface"
+       }
+      ],
+      "reasons": [],
+      "warnings": []
+     }
+    },
+    "negation_guard": {
+     "primary": false
+    },
+    "final_gate": {
+     "applied": true,
+     "value_guard": "EQUAL",
+     "negation_diff": false
+    },
+    "warnings": [],
+    "exclusion_rule": null,
+    "cost": {
+     "azure_calls": 0,
+     "azure_seconds": null,
+     "est_jpy": 0.0
+    },
+    "timing": {
+     "total_ms": 0,
+     "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "length": {
+     "applied": true,
+     "primary_len": 27,
+     "secondary_len": null,
+     "max_len": 68,
+     "adopted_from": "primary",
+     "adopted_ok": true,
+     "surface_len": null,
+     "primary_ok": true
+    },
+    "r5": {
+     "version": "r5_v1",
+     "measurement_error": null,
+     "f1": {
+      "rollback_const_READING_MATCH_FINAL_GATE": true,
+      "reading_match_primary_pass": false,
+      "final_gate_rejected": false,
+      "demoted_p3": false,
+      "would_have_passed_before_f1": false,
+      "reason_code": null,
+      "pair_reasons": []
+     },
+     "f2": {
+      "enabled": false,
+      "fired": false,
+      "fallback": null,
+      "replaced": null,
+      "canon_before": null,
+      "canon_after": null,
+      "text_before": null,
+      "text_after": null,
+      "state_after": null
+     },
+     "o524_part_of_larger_pairs": 0,
+     "o523_weak_kana_diff_pairs": 0,
+     "models": {
+      "primary": {
+       "provider": "openai_asr",
+       "model": "gpt-4o-mini-transcribe"
+      },
+      "secondary": null
+     }
+    },
+    "canonical_text": "メロスは三日の期限までに、二十キロの道を走り抜きました。",
+    "adapter": {
+     "layers": [],
+     "azure_real_calls": 0,
+     "cost_guard_triggered": false,
+     "language": "ja-JP",
+     "asr_text_present": true,
+     "cache": {
+      "calls": 0,
+      "hits": 0
+     }
+    }
+   },
+   "duration_seconds": 5.95
+  },
+  "ja_asr_ev_comment_2": {
+   "status": "OK",
+   "path": "er078_output/open517_runtime_evidence_01/z_one_clip/a2/narration/ja_asr_ev_comment_2.wav",
+   "sha256": "e6d1a1e7ea18582d7ff9d16a336372b9fa14831a915c167c2929a990c189c3a6",
+   "canonical_text": "王は八千人の民の前で、三人の約束を聞きました。",
+   "text": "王は八千人の民の前で、三人の約束を聞きました。",
+   "disfluency_checked": false,
+   "asr_text": "王は八千人の民の前で三人の約束を聞きました。",
+   "slowdown_applied": null,
+   "z_adoption": "adopted",
+   "segment_id": "ja_asr_ev_comment_2",
+   "narration_path": "er078_output/open517_runtime_evidence_01/z_one_clip/a2/narration/ja_asr_ev_comment_2.wav",
+   "role": null,
+   "connected_speech_enabled": false,
+   "tts_backend": "speech_metadata_flash_lite",
+   "voice": "Aoede",
+   "speaker": "narrator",
+   "clip_kind": "comment",
+   "role_style_key": "STD_JA_COMMENT",
+   "model_ids_measured": [
+    "gemini-3.8-flash-lite-tts"
+   ],
+   "style": {
+    "instruction_label": "S3",
+    "style_prefix_sha256": "060c08fde003cf7c2d15c654da96d3f857b8e7a9bd79eac31814ceaf7c923f33",
+    "effective_style_prefix_sha256": "060c08fde003cf7c2d15c654da96d3f857b8e7a9bd79eac31814ceaf7c923f33",
+    "fallback_used": false,
+    "fallback_attempts": []
+   },
+   "reuse_key": {
+    "canonical_text_sha256": "003cf8bf5cdcec0234187c4d8a2ff3140af9a38a22eb46eae89c4e2fc369ccc2",
+    "role_style_version": "z_v2_pd8_r2_e1_e2up_k2_m2_kpx_20261012",
+    "voice": "Aoede",
+    "style_prefix_sha256": "060c08fde003cf7c2d15c654da96d3f857b8e7a9bd79eac31814ceaf7c923f33",
+    "tts_backend": "speech_metadata_flash_lite"
+   },
+   "slowdown_ratio": null,
+   "speed_profile": null,
+   "attempts": [
+    {
+     "phase": "standard",
+     "attempt": 1,
+     "instruction_type": null,
+     "instruction_label": null,
+     "style_prefix_sha256": null,
+     "style_prefix_head": null,
+     "tts_model_id": "gemini-3.8-flash-lite-tts",
+     "voice": "Aoede",
+     "audio_classification": "NORMALIZED_MATCH",
+     "verified": true,
+     "asr_text": "王は八千人の民の前で三人の約束を聞きました。"
+    }
+   ],
+   "cooldown_occurred": false,
+   "cooldown_events": [],
+   "audio_text_deviation": null,
+   "tts_generations_used": null,
+   "asr_judgement": {
+    "state": "PASS",
+    "reason_code": "primary_pass",
+    "slot": 1,
+    "script_version": "v0",
+    "role": null,
+    "lang": "ja",
+    "segment_key": "",
+    "audio_sha256": "e6d1a1e7ea18582d7ff9d16a336372b9fa14831a915c167c2929a990c189c3a6",
+    "primary": {
+     "text": "王は八千人の民の前で三人の約束を聞きました。",
+     "passed": true,
+     "label": "NORMALIZED_MATCH",
+     "equivalence_basis": null,
+     "warning_labels": []
+    },
+    "secondary": {
+     "called": false,
+     "cached": false,
+     "engine": "azure",
+     "text": null,
+     "label": "",
+     "accepted": null,
+     "error": null,
+     "unavailable": false
+    },
+    "value_guard": {
+     "primary": {
+      "kind": "EQUAL",
+      "pairs": [
+       {
+        "src": "八千人",
+        "hyp": "八千人",
+        "verdict": "EQUAL",
+        "reason": "same_surface"
+       },
+       {
+        "src": "三人",
+        "hyp": "三人",
+        "verdict": "EQUAL",
+        "reason": "same_surface"
+       }
+      ],
+      "reasons": [],
+      "warnings": []
+     }
+    },
+    "negation_guard": {
+     "primary": false
+    },
+    "final_gate": {
+     "applied": true,
+     "value_guard": "EQUAL",
+     "negation_diff": false
+    },
+    "warnings": [],
+    "exclusion_rule": null,
+    "cost": {
+     "azure_calls": 0,
+     "azure_seconds": null,
+     "est_jpy": 0.0
+    },
+    "timing": {
+     "total_ms": 0,
+     "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "length": {
+     "applied": true,
+     "primary_len": 22,
+     "secondary_len": null,
+     "max_len": 63,
+     "adopted_from": "primary",
+     "adopted_ok": true,
+     "surface_len": null,
+     "primary_ok": true
+    },
+    "r5": {
+     "version": "r5_v1",
+     "measurement_error": null,
+     "f1": {
+      "rollback_const_READING_MATCH_FINAL_GATE": true,
+      "reading_match_primary_pass": false,
+      "final_gate_rejected": false,
+      "demoted_p3": false,
+      "would_have_passed_before_f1": false,
+      "reason_code": null,
+      "pair_reasons": []
+     },
+     "f2": {
+      "enabled": false,
+      "fired": false,
+      "fallback": null,
+      "replaced": null,
+      "canon_before": null,
+      "canon_after": null,
+      "text_before": null,
+      "text_after": null,
+      "state_after": null
+     },
+     "o524_part_of_larger_pairs": 0,
+     "o523_weak_kana_diff_pairs": 0,
+     "models": {
+      "primary": {
+       "provider": "openai_asr",
+       "model": "gpt-4o-mini-transcribe"
+      },
+      "secondary": null
+     }
+    },
+    "canonical_text": "王は八千人の民の前で、三人の約束を聞きました。",
+    "adapter": {
+     "layers": [],
+     "azure_real_calls": 0,
+     "cost_guard_triggered": false,
+     "language": "ja-JP",
+     "asr_text_present": true,
+     "cache": {
+      "calls": 0,
+      "hits": 0
+     }
+    }
+   },
+   "duration_seconds": 5.39
+  }
+ },
+ "management_id": "JA-ASR-FALSE-NG-ROOT-CAUSE-01",
+ "level": "a2"
+}

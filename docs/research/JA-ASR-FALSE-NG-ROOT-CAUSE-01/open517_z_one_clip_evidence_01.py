@@ -8,10 +8,14 @@ import argparse, datetime, json, os, subprocess, sys, time
 
 sys.path.insert(0, ".")
 
-CLIPS = [
-    ("ja_asr_ev_comment_1", "comment", "メロスは三日の期限までに、二十キロの道を走り抜きました。"),
-    ("ja_asr_ev_comment_2", "comment", "王は八千人の民の前で、三人の約束を聞きました。"),
-]
+CLIP_SETS = {
+    1: [("ja_asr_ev_comment_1", "comment", "メロスは三日の期限までに、二十キロの道を走り抜きました。"),
+        ("ja_asr_ev_comment_2", "comment", "王は八千人の民の前で、三人の約束を聞きました。")],
+    # set 2: 固有名詞・難読語を含めて READING_MATCH(PHONETIC_MATCH)経路[F1最終ゲート/F2]を踏ませる狙い(set 1 は転写が表層一致で F1/F2 の対象外だった)
+    2: [("ja_asr_ev_comment_3", "comment", "メロスは邪智暴虐の王を許せず、三日の約束で親友のセリヌンティウスを人質に残しました。"),
+        ("ja_asr_ev_comment_4", "comment", "夕暮れの街道で、メロスは十人の山賊に囲まれ、八日ぶりの雨に濡れました。")],
+}
+CLIPS = CLIP_SETS[1]
 
 
 def main():
@@ -19,7 +23,10 @@ def main():
     ap.add_argument("--out-dir", required=True)
     ap.add_argument("--approved-budget-jpy", type=float, default=20.0)
     ap.add_argument("--max-clips", type=int, default=2)
+    ap.add_argument("--clip-set", type=int, default=1, choices=sorted(CLIP_SETS))
     a = ap.parse_args()
+    global CLIPS
+    CLIPS = CLIP_SETS[a.clip_set]
     started = datetime.datetime.now().astimezone()
     out = a.out_dir.replace("\\", "/")
     import er062_family_z_structure_01 as st

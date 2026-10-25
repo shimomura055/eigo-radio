@@ -467,6 +467,8 @@ _R5_WEAK_KANA_MARKS = tuple(getattr(vg, "WEAK_KANA_NUMERALS", ()))
 
 def _r5_record(audit: dict, ctx, pr, canon: str, r5_state: dict) -> None:
     """audit(確定済み)へ`canonical_text`・`secondary.provenance_complete`・`r5`を加算記録する。判定フィールドは読むだけ。"""
+    if audit.get("lang") != "ja":
+        return   # R-5はJA判定のみ(ENのasr_judgementスキーマは不変。A/B/C・EN KP等の保存形式を変えない)
     try:
         state, reason = audit.get("state"), audit.get("reason_code") or ""
         reading_match = bool(pr.passed and pr.equivalence_basis == READING_MATCH_BASIS)
