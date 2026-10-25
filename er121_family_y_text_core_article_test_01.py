@@ -778,18 +778,22 @@ class TestReusePath(Routed):
         self.assertEqual(rec["theme_package_sha256"], c.FIXED_CLOSING_REGISTRY["redelivery_fee"]["theme_package_sha256"])
         self.assertIn("Production runtime evidenceではない", rec["voices"]["note"])
 
-    def test_plan_b_gate_fail_stops_without_rewrite_or_retry_and_no_closing_final(self):
-        """OT-27(案I): 案Bは1回判定。FAILなら書換え禁止・判定再試行禁止でSTOP(ユーザー承認本文とGateの衝突としてユーザー判断へ)。"""
+    def test_plan_b_gate_fail_rejudges_three_times_without_rewrite_then_stops_and_no_closing_final(self):
+        """OT-27改訂(委任_04, USER_02 ②): 案Bは既存の再判定機構(判定<=3回)を使うが承認本文は書換えない。3回判定後もFAILなら公開せずSTOP(ユーザー承認本文とGateの衝突としてユーザー判断へ)。"""
+        fail = leak_fail("tension", {"tension": ["leak_evidence_memorable"]})
         fc = Smart(overrides=[(when(name="family_y_persona_leakage_tension"), lambda kw: Resp(leak_obj("tension"), model="gpt-6-luna-2026")),      # Lead/紹介判定=PASS
-                              (when(name="family_y_persona_leakage_tension"), leak_fail("tension", {"tension": ["leak_evidence_memorable"]}))])     # 案B判定=FAIL
+                              (when(name="family_y_persona_leakage_tension"), fail), (when(name="family_y_persona_leakage_tension"), fail),
+                              (when(name="family_y_persona_leakage_tension"), fail)])                                                              # 案B判定=3回ともFAIL
         with self.assertRaises(c.YStop) as e:
             self.run_red(fc)
-        self.assertEqual(e.exception.code, "FIXED_CLOSING_GATE_FAIL")
-        self.assertEqual(len(fc.calls), 2)                                                            # 判定はそれ以上呼ばない
+        self.assertEqual(e.exception.code, "FIXED_CLOSING_RESIDUAL_FAIL")
+        self.assertEqual(len(fc.calls), 4)                                                            # Lead/紹介1+案B判定3。それ以上は呼ばない
         self.assertEqual([k for k in fc.calls if self.is_rewrite(k)], [])
         self.assertFalse(os.path.exists(os.path.join(self.d, "text", "closing", "closing_final.txt")))
+        rec = self.rj("text", "closing", "closing_record.json")
+        self.assertEqual((rec["status"], rec["n_judgements"], rec["rewritten"]), ("FIXED_CLOSING_RESIDUAL_FAIL", 3, False))
         st = self.rj("text", "article_status.json")
-        self.assertEqual((st["status"], st["code"]), ("STOP", "FIXED_CLOSING_GATE_FAIL"))
+        self.assertEqual((st["status"], st["code"]), ("STOP", "FIXED_CLOSING_RESIDUAL_FAIL"))
         self.assertTrue(os.path.exists(os.path.join(self.d, "text", "lead_intro", "stage_lead_intro.json")))      # 再開時にLead/紹介は再課金しない
 
     @staticmethod

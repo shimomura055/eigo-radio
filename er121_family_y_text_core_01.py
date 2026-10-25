@@ -663,13 +663,18 @@ def apply_rewrites(cur: dict, rewrites: list, flagged_keys: set, *, kind: str, f
 
 
 def run_gate(client, *, kind: str, stage: str, texts: dict, out_dir: str, voices_ctx: dict = None, selected: dict = None, rules_section: str = None,
-             shared_premise: str = "", personas_text: dict = None, first_persons: dict = None, max_judgements: int = 3, allow_rewrite: bool = True, guard=None) -> dict:
+             shared_premise: str = "", personas_text: dict = None, first_persons: dict = None, max_judgements: int = 3, allow_rewrite: bool = True,
+             rejudge_without_rewrite: bool = False, guard=None) -> dict:
     """Leakage判定 → 局所書換え → 再判定(判定最大3回=初回+書換え2回)。残ればLEAKAGE_RESIDUAL_STOP(全文書き直しに戻さない)。
-    judge/rewriteの履歴を gate_history として全保存。allow_rewrite=False(案B固定)は判定1回のみでFAILならSTOP(書換えない)。"""
+    judge/rewriteの履歴を gate_history として全保存。allow_rewrite=False は判定1回のみでFAILならSTOP(書換えない。再利用Voice用)。
+    rejudge_without_rewrite=True(案B固定。USER_02 ②『既存の局所修正・再判定機構を利用』+承認本文の保護): 本文は書換えず、同一本文を最大max_judgements回判定する
+    (初回PASSなら即終了。FAILは再判定し、3回判定後もFAILならLEAKAGE_RESIDUAL_STOP=公開しない)。書換えcall・本文変更は常に0。"""
     os.makedirs(out_dir, exist_ok=True)
     cur = dict(texts)
     history, status = [], None
-    for attempt in range(1, (max_judgements if allow_rewrite else 1) + 1):
+    if rejudge_without_rewrite and allow_rewrite:
+        raise YStop("GATE_MODE_CONFLICT", "rejudge_without_rewrite(案B固定=書換えなし)はallow_rewrite=Falseと併用する")
+    for attempt in range(1, (max_judgements if (allow_rewrite or rejudge_without_rewrite) else 1) + 1):
         chk = run_leak(client, kind, cur, stage=f"{stage}_leak{attempt}", guard=guard)
         w1.wj(os.path.join(out_dir, f"leak_check_{attempt}.json"), chk)
         entry = {"attempt": attempt, "sha256": {k: w1.sha_text(v) for k, v in cur.items()}, "check": chk}
@@ -677,9 +682,11 @@ def run_gate(client, *, kind: str, stage: str, texts: dict, out_dir: str, voices
         if not chk["any_flagged"]:
             status = "PASS"
             break
-        if not allow_rewrite or attempt == max_judgements:
+        if attempt == max_judgements or (not allow_rewrite and not rejudge_without_rewrite):
             status = "LEAKAGE_RESIDUAL_STOP"
             break
+        if rejudge_without_rewrite:        # 書換えない: 同一本文を再判定(本文sha不変)
+            continue
         keys = {f["section"] for f in chk["flagged_items"]}
         new = None
         for rw_try in (1, 2):
@@ -785,6 +792,17 @@ def reusable_prior_gate(ent: dict, tension_text: str, current_prompt_sha: str, p
 # ============================================================
 # Closing stage: 固定注入 or 一般化 → Gate → Gate後検査 → closing_record
 # ============================================================
+FIXED_CLOSING_MAX_JUDGEMENTS = 3      # 案B(USER_02 ②): 既存の再判定機構の上限(判定≤3回)。書換えは行わない
+
+
+def _fixed_closing_judgement_summary(history: list) -> list:
+    """案Bの各判定の結果(closing_recordへ残す): 試行番号・本文sha(不変)・flag有無・FAIL項目数・FAIL項目・判定model/prompt sha。"""
+    return [{"attempt": h.get("attempt", i), "tension_sha256": (h.get("sha256") or {}).get("tension"), "any_flagged": h["check"].get("any_flagged"),
+             "n_fail_fields": h["check"].get("n_fail_fields"),
+             "fail_fields": sorted({ff for f in h["check"].get("flagged_items") or [] for ff in f["fail_fields"]}),
+             "model": h["check"].get("model"), "effort": h["check"].get("effort"), "prompt_sha256": h["check"].get("prompt_sha256")} for i, h in enumerate(history, start=1)]
+
+
 def produce_closing(client, *, slug: str, inp: dict, theme_package_sha256: str, voice_r0_sha256: str, out_dir: str, parts: dict = None, guard=None) -> dict:
     os.makedirs(out_dir, exist_ok=True)
     voices = {s: inp["voices"][s] for s in SLOTS}
@@ -800,20 +818,27 @@ def produce_closing(client, *, slug: str, inp: dict, theme_package_sha256: str, 
             os.makedirs(gate_dir, exist_ok=True)
             w1.wj(os.path.join(gate_dir, "gate_result.json"), {**{k: prior[k] for k in ("stage", "kind", "status", "n_judgements", "final_sha256")}, "reused_from": ent["prior_gate_record"]})
             w1.wj(os.path.join(gate_dir, "final_texts.json"), {"tension": text})
-            gate = {"status": "PASS", "n_judgements": 1, "rewritten": False, "source": "reused_prior_pass_record"}
+            gate = {"status": "PASS", "n_judgements": 1, "rewritten": False, "source": "reused_prior_pass_record", "judgements": _fixed_closing_judgement_summary(prior["history"])}
         else:
-            r = run_gate(client, kind="tension", stage="yp_closing_fixed", texts={"tension": text}, out_dir=gate_dir, voices_ctx=voices, allow_rewrite=False, guard=guard)
+            r = run_gate(client, kind="tension", stage="yp_closing_fixed", texts={"tension": text}, out_dir=gate_dir, voices_ctx=voices,
+                         allow_rewrite=False, rejudge_without_rewrite=True, max_judgements=FIXED_CLOSING_MAX_JUDGEMENTS, guard=guard)
+            judgements = _fixed_closing_judgement_summary(r["history"])
             if r["status"] != "PASS":
-                raise YStop("FIXED_CLOSING_GATE_FAIL", "案B(ユーザー承認本文)がLeakage判定でFAIL。書換えず停止(同一本文の判定再試行で通さない)", r["history"])
-            gate = {"status": "PASS", "n_judgements": r["n_judgements"], "rewritten": False, "source": "judged_this_run"}
+                w1.wj(os.path.join(out_dir, "closing_record.json"), {"source": "fixed_user_approved", "status": "FIXED_CLOSING_RESIDUAL_FAIL", "slug": slug,
+                                                                      "text_sha256": ent["text_sha256"], "n_judgements": r["n_judgements"], "judgements": judgements,
+                                                                      "rewritten": False, "gate_history_dir": gate_dir})
+                raise YStop("FIXED_CLOSING_RESIDUAL_FAIL", f"案B(ユーザー承認本文)が{r['n_judgements']}回の再判定後もLeakage判定でFAIL。承認本文は書換えず、記事は公開せず停止"
+                                                           "(承認本文とGateの衝突=ユーザー判断。Gate緩和・Prompt変更・本文変更はしない)", r["history"])
+            gate = {"status": "PASS", "n_judgements": r["n_judgements"], "rewritten": False, "source": "judged_this_run", "judgements": judgements}
         final = load_gated_or_stop(gate_dir)["tension"]
         if final != text:
             raise YStop("FIXED_CLOSING_MUTATED", "固定注入本文が変更されている")
         rec = {"source": "fixed_user_approved", "general_method_used": False, "slug": slug, "approval_ref": ent["approval_ref"],
                "text_sha256": ent["text_sha256"], "registry_sha256": registry_sha(), "theme_package_sha256": theme_package_sha256,
                "voice_r0_sha256": voice_r0_sha256, "generation_sha256": ent["text_sha256"], "final_sha256": w1.sha_text(final),
-               "rewritten": False, "gate": gate, "model_id": None, "routing_key": None, "prompt_sha256": None,
-               "note": "案B固定注入。Prompt 02による一般化生成は使っていない(受入条件3は別記事の一般化経路evidenceで担保)"}
+               "rewritten": False, "gate": gate, "n_judgements": gate["n_judgements"], "judgements": gate["judgements"], "model_id": None, "routing_key": None, "prompt_sha256": None,
+               "note": "案B固定注入。Prompt 02による一般化生成は使っていない(受入条件3は別記事の一般化経路evidenceで担保)。"
+                       "Gate: 既存の再判定機構(判定<=3回・本文書換えなし・残存FAILは公開せずFIXED_CLOSING_RESIDUAL_FAIL=STOP。USER_02 ②)"}
     else:
         parts = parts or load_prompt_parts()
         g = generate_closing_general(client, inp, os.path.join(out_dir, "gen"), parts=parts, guard=guard)

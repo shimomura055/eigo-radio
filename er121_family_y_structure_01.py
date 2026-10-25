@@ -12,7 +12,8 @@
 #     コードに固定せず、Xの既存Full Story設定(er003_b1_p9a_audio.VOICE_NAME)を実行時に読む(audio module)。
 #   - 公開ページ注意書き(YL-C07): PAGE_NOTICE_JA(本文外・音声にアナウンスなし)。
 #   - Comment 2/3のY版role文(YL-C09): DEV Trial(er110_family_y_text_trial_01.Y_COMMENT_2/3_ROLE)と逐語一致(testで固定。Productionはer110をimportしない)。
-#   - Chunk TTS: Y=非適用(承認原文はX/Zのみ。YL-B08)。適用可否表 CHUNK_TTS_SCOPE と判定関数のみ(Yの分割コードは存在しない)。
+#   - Chunk TTS: Y=適用(X方式=段落単位chunk+0.2秒。ユーザー正式決定2026-10-25 USER_02 ①、APPROVED_FOR_PRODUCTION。YL-B08)。ZのB_r1方式は不採用。
+#     適用可否表 CHUNK_TTS_SCOPE・Y chunk ID規則・決定記録のみここに置き、分割/生成/組立はaudit moduleが共通er117を直接importして行う。
 # DEV Trial(er110_*)はimportしない(隔離: test固定)。
 # ============================================================
 from __future__ import annotations
@@ -103,21 +104,33 @@ def notice_html() -> str:
 
 
 # ------------------------------------------------------------
-# Chunk TTS適用範囲(YL-B08: 承認原文はX/Zのみ。Yは「除外+OPEN記録」)
+# Chunk TTS適用範囲(YL-B08: ユーザー正式決定2026-10-25 USER_02 ①=Family X方式[段落分割+0.2秒]をYへ正式採用。APPROVED_FOR_PRODUCTION)
 # ------------------------------------------------------------
-CHUNK_TTS_SCOPE = {"X": True, "Z": True, "Y": False}
-CHUNK_TTS_Y_EXCLUSION_NOTE = ("Family Y: Chunk TTSは非適用(ユーザー承認原文2026-10-25 FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01はFamily X/Zのみ。YL-B08=判断待ち/OPEN-520)。"
-                              "Yの各Voiceパートは1段落でありXの段落単位chunkの前提(2段落以上のpart)に該当しない。承認時は適用コードを新設する(本実装にはYのchunk分割コードを持たない)。")
+CHUNK_TTS_SCOPE = {"X": True, "Z": True, "Y": True}
+CHUNK_TTS_Y_METHOD = "X_paragraph_0.2s"          # ZのB_r1(narrator>100語分割)は採用しない(USER_02 ①)
+CHUNK_TTS_Y_LEVELS = ("b1b",)                    # X同様Advanced(b1b)本文のみ。Std(a2)本文はchunk化しない
+CHUNK_TTS_Y_APPROVAL_REF = "docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER_02.md §1-① (Family X方式のY正式採用、APPROVED_FOR_PRODUCTION)"
+CHUNK_TTS_Y_NOTE = ("Family Y: Chunk TTSはX方式(段落単位chunk+0.2秒ポーズ)を正式採用(USER_02 ①)。分割は各Y segment(lead/intro/voice/closing)の"
+                    "段落単位に限り、segment境界(話者切替=intro→voice、voice→次のintro)は結合しない。段落が1つのsegmentは分割しない(X規則どおり=従来の1 call)。")
+Y_CHUNK_ID_RE = re.compile(r"(y_(?:lead|closing|intro_[1-3]|voice_[1-3]))_k([1-9][0-9]*)")
+
+
+def parse_y_chunk_id(segment_id: str):
+    """Y chunk id(`y_voice_1_k2`等)なら (親segment_id, index)。chunkでなければNone。"""
+    m = Y_CHUNK_ID_RE.fullmatch(segment_id or "")
+    return (m.group(1), int(m.group(2))) if m else None
 
 
 def chunk_tts_applicable(family: str) -> bool:
-    """Chunk TTS共通hookの適用判定。X/Z=True、Y=False(承認前)。未知のFamilyはFalse(fail-closed)。"""
+    """Chunk TTS共通hookの適用判定。X/Z/Y=True(Yは2026-10-25 USER_02 ①で承認)。未知のFamilyはFalse(fail-closed)。"""
     return bool(CHUNK_TTS_SCOPE.get(family, False))
 
 
 def chunk_decision_record(level: str) -> dict:
-    return {"family": FAMILY, "level": level, "chunk_tts_applicable": chunk_tts_applicable(FAMILY), "note": CHUNK_TTS_Y_EXCLUSION_NOTE,
-            "ledger_ids": ["YL-B08"]}
+    applies = chunk_tts_applicable(FAMILY) and level in CHUNK_TTS_Y_LEVELS
+    return {"family": FAMILY, "level": level, "chunk_tts_applicable": chunk_tts_applicable(FAMILY), "chunk_tts_applied_at_this_level": applies,
+            "method": CHUNK_TTS_Y_METHOD, "decision": "applied_X_method", "approval": "APPROVED_FOR_PRODUCTION",
+            "approval_ref": CHUNK_TTS_Y_APPROVAL_REF, "z_b_r1_adopted": False, "note": CHUNK_TTS_Y_NOTE, "ledger_ids": ["YL-B08"]}
 
 
 # 中核数値保持v4/J2(YL-B05)はY対象外(承認でY/Z対象外と明記)。runnerはJ2/中核数値の入口を呼ばない(testで固定)。

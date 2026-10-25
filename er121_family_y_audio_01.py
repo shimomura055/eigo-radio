@@ -12,7 +12,9 @@
 #   - segment ID: y_lead / y_intro_1..3 / y_voice_1..3 / y_closing(er020.resolve_narrative_role がFULL_STORYへ解決)。
 #   - Voice: voice_n=固定割当(Algieba/Zephyr/Schedar)。ナレーター=Xの既存Full Story設定 `er003_b1_p9a_audio.VOICE_NAME` を実行時に読む(コードに固定しない)。
 #   - 固有名詞アラーム(PNAP)/Run Entity Table/er109 scope は "Y" で入る(Family非依存の仕組み。er103/er109 の APPROVED_SCOPES に "Y" 追加済み)。
-#   - Chunk TTS: Y=非適用(YL-B08)。共通のChunk判定(適用可否表)を参照し、非適用をauditへ記録する(Yの分割コードは持たない)。
+#   - Chunk TTS: Y=適用(X方式=段落単位chunk+0.2秒ポーズ。ユーザー正式決定2026-10-25 USER_02 ①、YL-B08)。分割・親wav連結・親集約entry・整合検査・
+#     chunk別gain+0.2秒組立は共通module er117(chunk_tts)を直接importして呼ぶ(Yは segment ID規則と segment単位の呼出し配線のみ)。
+#     Adv(b1b)本文のみ(X同様、Std本文はchunk化しない)。分割はsegment内の段落単位。segment境界(話者切替)は結合しない。ZのB_r1方式は不採用。
 #   - 中核数値v4/J2: 呼ばない(YL-B05)。In One Line/Comment 4/RF(Risk Flagger): 呼ばない(YL-C08/YL-C09/YL-B02)。
 #   - Std(a2)本文は X準拠で全segmentに6%減速(YL-A02)。共有 A2_SLOWDOWN_TARGET_SEGMENTS はYのIDを持たないため、Y独自の必須確認(check_std_slowdown)を行う。
 # ============================================================
@@ -40,6 +42,7 @@ import er019_family_x_validation_inheritance_01 as validation_inheritance
 import er020_tts_retry_local_rewrite_01 as retry_primitive
 import er078_pass_with_warning_registry_01 as pww_registry
 import er078_secondary_run_scope_01 as secondary_run_scope
+import er117_chunk_tts_production_01 as chunk_tts   # 委任_04(USER_02 ①): X方式Chunk TTSの共通module(importのみ・変更しない)
 import er103_pnap_runner_hooks_01 as pnap_hooks
 import er103_pronunciation_tts_supply_01 as pnap_supply   # noqa: F401  (PNAP供給はxr._pnap_supply経由で呼ぶ。共通moduleの存在・scope連動をtestで確認)
 import er109_xz_scope_01 as er109_scope
@@ -92,7 +95,7 @@ def only_segments_scope(selected):
         xr._ONLY_SEGMENTS = prev
 
 
-_ONLY_OK_RE = re.compile(r"^(topic_intro|japanese_title|preview|comment_[1-3]|y_(?:lead|closing|intro_[1-3]|voice_[1-3])|kp[1-5]_(english|explanation|japanese_meaning))$")
+_ONLY_OK_RE = re.compile(r"^(topic_intro|japanese_title|preview|comment_[1-3]|y_(?:lead|closing|intro_[1-3]|voice_[1-3])(?:_k[1-9][0-9]*)?|kp[1-5]_(english|explanation|japanese_meaning))$")
 
 
 def validate_only_segments(raw: str, level: str):
@@ -105,6 +108,9 @@ def validate_only_segments(raw: str, level: str):
     bad = sorted(x for x in sel if not _ONLY_OK_RE.match(x))
     if bad:
         return None, f"--only-segmentsに未知/対象外のsegment名があります: {bad}"
+    k_sel = sorted(x for x in sel if ys.parse_y_chunk_id(x))
+    if k_sel and level not in ys.CHUNK_TTS_Y_LEVELS:   # X同様: chunk TTSはAdvanced(b1b)本文のみ。Std(a2)に_k指定は無い
+        return None, f"--only-segmentsの_k指定(chunk)は--level b1bのみです(Std本文はchunk化しません): {k_sel}"
     return sel, None
 
 
@@ -191,6 +197,12 @@ def voice_guard_cached(cached: dict | None) -> dict | None:
         if e is not None and e.get("y_tts_voice_requested") != voice:
             segs.pop(sid)
             dropped.append(sid)
+    vmap = segment_voice_map()
+    for k in list(segs):                                  # 委任_04: chunk entryも『親segmentの要求Voiceが記録され一致する』場合だけ再利用
+        pc = ys.parse_y_chunk_id(k)
+        if pc is not None and (segs[k] or {}).get("y_tts_voice_requested") != vmap.get(pc[0]):
+            segs.pop(k)
+            dropped.append(k)
     out = dict(cached)
     out["segments"] = segs
     if dropped:
@@ -245,12 +257,132 @@ def _guarded(guard, label, fn):
     return wrapped
 
 
-def _record_chunk_decision(out_dir: str, level: str) -> None:
-    """Chunk TTSの共通hook判定(適用可否表)。Y=非適用をauditに残す。適用扱いに変えられた場合は、Yの分割コードが無いため課金前にSTOP。"""
-    if ys.chunk_tts_applicable(ys.FAMILY):
-        raise YAudioStop("FAMILY_Y_CHUNK_TTS_NOT_IMPLEMENTED: Chunk TTSのY適用は未承認で、Yの分割コードは存在しません(YL-B08)。課金前にSTOP")
+# ============================================================
+# Chunk TTS(X方式=段落単位chunk+0.2秒。USER_02 ①、YL-B08)
+# 共通er117を直接importして呼ぶ。Yが持つのは(1)Y segment単位の呼出し配線 (2)Y chunk ID規則(ys.Y_CHUNK_ID_RE) だけ。
+# ============================================================
+def plan_y_chunks(parts: dict) -> dict:
+    """Adv(b1b)Y本文8 segmentそれぞれに、X規則(空行区切りの段落が2つ以上のときだけ段落単位chunk。1段落=従来の1 call)を適用する決定論plan。
+    親id=segment_id(chunk id=`<segment_id>_k<j>`)。分割はsegmentの内側だけ=segment境界(話者切替)は構造上結合も分割もされない。"""
+    segs = parts.get("segments") or {}
+    out = {}
+    for sid in ys.Y_SEGMENT_IDS:
+        pl = chunk_tts.plan_x_part(segs[sid], sid)
+        out[sid] = {**pl, "family": ys.FAMILY, "split_method": ys.CHUNK_TTS_Y_METHOD}
+    return out
+
+
+def _assert_chunk_roles(plans: dict) -> None:
+    """chunk idが共通role判定でFULL_STORYへ解決されること(ASR/Style/Local Rewrite/Connected Speechの共通機構が正しく掛かる前提)。
+    解決されない場合は課金前にSTOP(fail-closed。黙ってrole無しで生成しない)。共通er020のY chunk ID正規表現が未追加のときに発火する。"""
+    bad = [c["chunk_id"] for pl in plans.values() if pl.get("chunked") for c in pl["chunks"]
+           if retry_primitive.resolve_narrative_role(c["chunk_id"]) != "FULL_STORY"]
+    if bad:
+        raise YAudioStop(f"FAMILY_Y_CHUNK_ID_ROLE_UNRESOLVED: Y chunk id {bad} が resolve_narrative_role() でFULL_STORYへ解決されません"
+                         "(共通er020の_FAMILY_Y_SEGMENT_PATTERNにchunk接尾辞[_k<j>]の追加が必要=委任_04からの要求)。課金前にSTOP")
+
+
+def _record_chunk_decision(out_dir: str, level: str) -> dict:
+    """Chunk TTSの決定記録(audit/chunk_tts_decision.json)+plan(audit/chunk_plan_<level>.json)。戻り値=plan辞書(a2・非適用levelは{})。
+    適用可否表がYを非適用に戻されている場合は、承認済み仕様(USER_02 ①)からの逸脱として課金前にSTOP。"""
+    if not ys.chunk_tts_applicable(ys.FAMILY):
+        raise YAudioStop("FAMILY_Y_CHUNK_TTS_SCOPE_REVERTED: Chunk TTSのY適用はUSER_02 ①でAPPROVED_FOR_PRODUCTION。適用可否表がYを非適用にしています。課金前にSTOP")
     os.makedirs(f"{out_dir}/audit", exist_ok=True)
-    save_json(f"{out_dir}/audit/chunk_tts_decision.json", ys.chunk_decision_record(level))
+    rec = ys.chunk_decision_record(level)
+    plans: dict = {}
+    if level in ys.CHUNK_TTS_Y_LEVELS:
+        parts = load_json(f"{out_dir}/parts.json")
+        plans = plan_y_chunks(parts)
+        _assert_chunk_roles(plans)
+        try:
+            chunk_tts.reconcile_saved_plan(f"{out_dir}/audit/chunk_plan_{level}.json", plans)
+        except chunk_tts.ChunkIntegrityError as exc:
+            raise YAudioStop(f"FAMILY_Y_CHUNK_PLAN_RECONCILE: {exc}") from exc
+        rec["segments"] = {sid: {"chunked": pl["chunked"], "paragraphs": len(chunk_tts.split_x_paragraphs(parts["segments"][sid])),
+                                 "reason": pl.get("reason"), "chunk_ids": chunk_tts.chunk_ids(pl)} for sid, pl in plans.items()}
+        rec["planner_version"] = chunk_tts.CHUNK_PLANNER_VERSION
+        rec["extra_pause_seconds"] = chunk_tts.EXTRA_PAUSE_SECONDS
+    else:
+        rec["not_applied_reason"] = "Std(a2)本文はX同様chunk化しない"
+    save_json(f"{out_dir}/audit/chunk_tts_decision.json", rec)
+    return plans
+
+
+def _drop_stale_chunk_cache(cached, plans: dict):
+    """前回resultsのうち (a)planner_versionが現行と異なるY chunk entry (b)chunk化しなくなったsegmentの前回chunk集約entry は再利用しない。"""
+    if not cached:
+        return cached
+    segs = dict(cached.get("segments") or {})
+    drop = [k for k, v in segs.items() if ys.parse_y_chunk_id(k) and ((v or {}).get("chunk_tts") or {}).get("planner_version") != chunk_tts.CHUNK_PLANNER_VERSION]
+    drop += [sid for sid, p in plans.items() if not p.get("chunked") and (segs.get(sid) or {}).get("chunk_tts")]
+    if not drop:
+        return cached
+    out = dict(cached)
+    out["segments"] = {k: v for k, v in segs.items() if k not in drop}
+    return out
+
+
+@contextlib.contextmanager
+def _only_includes_chunks(plans: dict):
+    """`--only-segments y_voice_1` のとき、親が選択されていればそのchunk id(`y_voice_1_k<j>`)も選択扱いにする(共通runnerの_only_segments_skipは
+    Xのchunk id形式しか親選択を解釈しないため、Yではchunk idを選択集合へ展開する。xr._ONLY_SEGMENTSをfinallyで復元)。"""
+    prev = xr._ONLY_SEGMENTS
+    if prev is not None:
+        extra = {c["chunk_id"] for sid, pl in plans.items() if pl.get("chunked") and sid in prev for c in pl["chunks"]}
+        xr._ONLY_SEGMENTS = set(prev) | extra
+    try:
+        yield
+    finally:
+        xr._ONLY_SEGMENTS = prev
+
+
+def _y_chunk_parent_display(plan: dict, segments: dict, voice: str) -> dict:
+    d = xr._x_chunk_parent_display(plan, segments)    # 共通の表示用項目(voice/model/style要約・asr_verified。style_profile/prefixはchunk側が正=M1)
+    d["y_tts_voice_requested"] = voice
+    d["y_role"] = "voice" if plan["parent_id"] in ys.Y_VOICE_IDS else "narrator"
+    d["y_chunked"] = True
+    return d
+
+
+def refresh_y_chunk_parents(out_dir: str, parts: dict, segments: dict, plans: dict) -> dict:
+    """chunk化したsegmentの親集約entry(status=planのchunk id一覧から導出。失敗・未生成でも常に書く)+親wav(生連結)を(再)構築する(冪等)。
+    generate末尾と、assembleのGate前で呼ぶ(人間承認後の再assembleで親も通る)。親statusはCHUNKS_NOT_ALL_VALIDATED(共有Gateで必ずブロック)かOK。"""
+    ap = asm.human_approval_path(out_dir)
+    approvals = load_json(ap) if os.path.exists(ap) else {}
+    vmap = segment_voice_map()
+    out = {}
+    for sid, plan in plans.items():
+        if not plan.get("chunked"):
+            continue
+        out[sid] = chunk_tts.refresh_parent_status(
+            plan, segments, approvals, asm._segment_gate_status, narration_dir=f"{out_dir}/narration",
+            parent_text=parts["segments"][sid], display=_y_chunk_parent_display(plan, segments, vmap[sid]))
+    return out
+
+
+def _generate_y_body_segment_chunked(plan: dict, cached, narration_dir: str, results: dict, voice: str, role_style, style_profile: str,
+                                     tts_backend: str, guard) -> None:
+    """chunkごとに、非chunkの本文segmentと『同じ呼出』(news_tail_fix.generate_news_narration_wide_margin。同一Voice/Style/model/Gate/retry/fallback)。
+    chunk失敗(status!=OK)後も後続chunkの生成を続ける(OK chunkは再利用されるので再課金は無く、未生成entryを作らない)。直列(chunk順)。"""
+    n = len(plan["chunks"])
+    for c in plan["chunks"]:
+        cid, ctext = c["chunk_id"], c["text"]
+        with cl.segment_context(cid):
+            def _gen(ctext=ctext, cid=cid):
+                with tts_voice(voice):
+                    return news_tail_fix.generate_news_narration_wide_margin(
+                        xr._pnap_supply(ctext, n3_tts.tts_safe_news_en(ctext)), f"{narration_dir}/{cid}.wav",
+                        disfluency_qa=False,
+                        enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(cid),
+                        enable_repetition_qa=True, enable_pronunciation_resolver=True,
+                        style_prefix_override=role_style("FULL_STORY"), tts_backend=tts_backend)
+            results[cid] = xr._generate_or_reuse(cached, cid, f"{narration_dir}/{cid}.wav", _guarded(guard, cid, _gen), expected_text=ctext)
+        results[cid]["canonical_text"] = ctext
+        results[cid]["y_tts_voice_requested"] = voice
+        results[cid]["y_role"] = "voice" if plan["parent_id"] in ys.Y_VOICE_IDS else "narrator"
+        chunk_tts.attach_chunk_meta(results[cid], plan["parent_id"], c, n)
+        if not validation_inheritance.is_untouched_entry(results[cid]):     # Style profile記録は『chunkごと』(親へコピーしない)
+            style_profile_mod.attach_segment_profile_record(results[cid], style_profile, "FULL_STORY", role_style("FULL_STORY"))
 
 
 @secondary_run_scope.with_secondary_run   # AUW 委任_05: run単位SecondaryCache+circuit breaker(Xと同じ共通hook)
@@ -262,14 +394,14 @@ def generate_y_b1_segments(theme_out_dir: str, *, tts_backend: str = TTS_BACKEND
     out_dir = f"{theme_out_dir}/b1b"
     narration_dir = f"{out_dir}/narration"
     os.makedirs(narration_dir, exist_ok=True)
-    _record_chunk_decision(out_dir, "b1b")
+    chunk_plans = _record_chunk_decision(out_dir, "b1b")      # 課金前: 適用表・plan・role解決・保存済みplanとの一致を確認(違反はSTOP)
     parts = load_json(f"{out_dir}/parts.json")
     support = load_json(f"{out_dir}/support_texts.json")
     kp_path = f"{out_dir}/key_phrases/keywords_canonicalized.json"
     kp = load_json(kp_path) if os.path.exists(kp_path) else None
     shared_raw = ({} if xr._ONLY_SEGMENTS is not None else shared_narration.ensure_all_shared_narration_b1(narration_dir, tts_backend=tts_backend))
     shared_status = xr._summarize_shared_narration(shared_raw)
-    cached = voice_guard_cached(xr._load_cached_tts_results(out_dir))
+    cached = _drop_stale_chunk_cache(voice_guard_cached(xr._load_cached_tts_results(out_dir)), chunk_plans)
     if kp is not None:
         expl_path = f"{theme_out_dir}/key_phrases/b1b/kp_explanations.json"
         cached = seed_kp_explanations_cache(cached, kp, load_json(expl_path) if os.path.exists(expl_path) else None)
@@ -304,6 +436,10 @@ def generate_y_b1_segments(theme_out_dir: str, *, tts_backend: str = TTS_BACKEND
     for name in ys.Y_SEGMENT_IDS:
         text = parts["segments"][name]
         voice = vmap[name]
+        if chunk_plans[name]["chunked"]:       # 段落が2つ以上のsegment: 段落単位chunk(親集約entryはループ後に常に書く)。1段落=下の従来経路(1 call)
+            with _only_includes_chunks(chunk_plans):
+                _generate_y_body_segment_chunked(chunk_plans[name], cached, narration_dir, results, voice, _role_style, style_profile, tts_backend, guard)
+            continue
         with cl.segment_context(name):
             def _gen(text=text, name=name, voice=voice):
                 with tts_voice(voice):
@@ -320,6 +456,11 @@ def generate_y_b1_segments(theme_out_dir: str, *, tts_backend: str = TTS_BACKEND
         if not validation_inheritance.is_untouched_entry(results[name]):
             style_profile_mod.attach_segment_profile_record(results[name], style_profile, "FULL_STORY", _role_style("FULL_STORY"))
 
+    refresh_y_chunk_parents(out_dir, parts, results, chunk_plans)       # chunk親集約entry(失敗・未生成でも常に書く)+親wav(生連結)
+    if any(pl.get("chunked") for pl in chunk_plans.values()):          # chunk TTSのruntime evidence(分割位置・種別・attempts/fallback/LR/ASR判定)
+        save_json(f"{out_dir}/audit/chunk_tts_evidence_b1b.json",
+                  {"planner_version": chunk_tts.CHUNK_PLANNER_VERSION, "family": ys.FAMILY, "style_profile": style_profile, "tts_backend": tts_backend,
+                   "parents": {sid: chunk_tts.evidence_record(pl, results) for sid, pl in chunk_plans.items() if pl.get("chunked")}})
     if kp is not None:
         kp_results, kp_bundle = xr._generate_key_phrase_segments_b1(kp, narration_dir, cached, tts_backend=tts_backend, style_profile=style_profile)
     else:
@@ -486,7 +627,12 @@ def y_style_gate(theme_out_dir: str, level: str, style_profile: str) -> dict:
     segs = results.get("segments") or {}
     prof = sp.get_profile(style_profile)["overrides"].get("FULL_STORY")
     exp_text = prof["text"] if prof else None
-    for name in ys.Y_SEGMENT_IDS:
+    plans = plan_y_chunks(load_json(f"{out_dir}/parts.json")) if level in ys.CHUNK_TTS_Y_LEVELS and os.path.exists(f"{out_dir}/parts.json") else {}
+    targets = []
+    for sid in ys.Y_SEGMENT_IDS:     # chunk化したsegmentは『親ではなく全chunk』を検査する(親にはstyle記録が無く、chunk1の値を親へ写すとchunk2以降の違反が通るため)
+        pl = plans.get(sid)
+        targets += chunk_tts.chunk_ids(pl) if pl and pl.get("chunked") else [sid]
+    for name in targets:
         entry = segs.get(name)
         viol = []
         if entry is None:
@@ -526,6 +672,36 @@ def _read(narration_dir, name):
     return mono
 
 
+def _load_y_body_chunks(out_dir: str) -> tuple:
+    """chunk化したsegmentについて、音声を読む前に整合検査(chunk集合・順序・語数・版・本文)と『親wav==ディスク上のchunk wavの生連結』
+    (整数サンプル完全一致)を確認し、chunk別monoを返す(共通er117の関数。X組立と同じ手順)。戻り値=(body_chunks, plans_used)。"""
+    nd = f"{out_dir}/narration"
+    parts_json = load_json(f"{out_dir}/parts.json")
+    plans = plan_y_chunks(parts_json)
+    rp = f"{out_dir}/audit/tts_generation_results.json"
+    segs = (load_json(rp).get("segments") or {}) if os.path.exists(rp) else {}
+    body_chunks, used = {}, {}
+    for sid, plan in plans.items():
+        text = parts_json["segments"][sid]
+        ids = chunk_tts.chunk_ids(plan)
+        try:
+            chunk_tts.verify_parent_integrity(plan, text, {i: segs[i] for i in ids if i in segs}, segs.get(sid))
+            if not plan.get("chunked"):
+                continue
+            paths = [f"{nd}/{i}.wav" for i in ids]
+            chunk_tts.verify_raw_parent(f"{nd}/{sid}.wav", paths)
+        except chunk_tts.ChunkIntegrityError as exc:
+            raise YAudioStop(f"FAMILY_Y_CHUNK_INTEGRITY({sid}): {exc}") from exc
+        monos = []
+        for pth in paths:
+            m_, sr_, _, _ = xr.common.read_wav_float(pth)
+            assert sr_ == xr.common.SAMPLE_RATE
+            monos.append(m_)
+        body_chunks[sid] = monos
+        used[sid] = plan
+    return body_chunks, used
+
+
 def load_y_sources(theme_out_dir: str, level: str, article_text: str | None = None) -> dict:
     out_dir = f"{theme_out_dir}/{level}"
     nd = f"{out_dir}/narration"
@@ -544,7 +720,9 @@ def load_y_sources(theme_out_dir: str, level: str, article_text: str | None = No
         segs["full_story_part1"] = segs[ys.Y_LEAD]       # 共通gain関数のRMSアンカー用alias(gain後に除去する。出力には残さない)
         comp = {it["rank"]: _read(nd, f"kp{it['rank']}_en") for it in items}
         mean = {it["rank"]: _read(nd, f"kp{it['rank']}_explanation_en") for it in items}
-        return {**common_in, "narration": narration, "b1_segments": segs, "key_phrase_components": comp, "key_phrase_meanings": mean}
+        body_chunks, chunk_plan_used = _load_y_body_chunks(out_dir)
+        return {**common_in, "narration": narration, "b1_segments": segs, "key_phrase_components": comp, "key_phrase_meanings": mean,
+                "body_chunks": body_chunks, "chunk_plans": chunk_plan_used}
     preview_mono = _read(nd, "preview")
     narration = {n: _read(nd, n) for n in ("welcome", "preview_intro", "key_phrases_intro", "full_story_intro", *nums, "topic_intro", "japanese_title")}
     comp = {}
@@ -618,6 +796,42 @@ def build_y_timeline(level: str, parts: dict) -> list:
     return seq
 
 
+def _chunk_assembly_summary_y(plans: dict, gain_chunks: dict, timeline: list) -> dict:
+    """組立のruntime evidence: 分割位置・種別・chunk数・0.2秒の実測offset(segment内/episode内)・chunk別gain/RMS/peak(cap発動を含む)。"""
+    starts = {}
+    label_to_sid = {v: k for k, v in ys.PAGE_LABEL.items()}
+    for item in timeline:
+        sid = label_to_sid.get(item.get("part", ""))
+        if sid:
+            starts[sid] = item["start_seconds"]
+    out = {"planner_version": chunk_tts.CHUNK_PLANNER_VERSION, "extra_pause_seconds": chunk_tts.EXTRA_PAUSE_SECONDS, "family": ys.FAMILY,
+           "method": ys.CHUNK_TTS_Y_METHOD, "parents": {}}
+    for sid, plan in plans.items():
+        rep_ = gain_chunks.get(sid) or {}
+        base = starts.get(sid)
+        out["parents"][sid] = {
+            "chunk_ids": chunk_tts.chunk_ids(plan), "words": [c["words"] for c in plan["chunks"]],
+            "boundary_kinds": [c["boundary_kind"] for c in plan["chunks"]],
+            "segment_start_in_episode_s": base, "gap_offsets_in_segment_s": rep_.get("boundary_offsets_s"),
+            "gap_offsets_in_episode_s": ([[round(base + a, 4), round(base + b, 4)] for a, b in rep_.get("boundary_offsets_s") or []] if base is not None else None),
+            "gains": rep_.get("gains"), "pre_rms": rep_.get("pre_rms"), "post_rms": rep_.get("post_rms"),
+            "peak_after": rep_.get("peak_after"), "peak_capped": rep_.get("peak_capped"), "chunk_samples": rep_.get("chunk_samples")}
+    return out
+
+
+def _refresh_y_chunk_parents_on_disk(out_dir: str) -> None:
+    """tts_generation_results.json上のchunk親集約entryを(再)構築して保存する(chunk化したsegmentが無ければファイルに触れない)。"""
+    rp, pp = f"{out_dir}/audit/tts_generation_results.json", f"{out_dir}/parts.json"
+    if not (os.path.exists(rp) and os.path.exists(pp)):
+        return
+    data, parts = load_json(rp), load_json(pp)
+    plans = plan_y_chunks(parts)
+    if not any(pl.get("chunked") for pl in plans.values()):
+        return
+    refresh_y_chunk_parents(out_dir, parts, data.setdefault("segments", {}), plans)
+    save_json(rp, data)
+
+
 def assemble_level(theme_out_dir: str, level: str, *, style_profile: str, slug: str, article_text: str | None = None) -> dict:
     """Y組立(Audio Validation Gate→Y style gate→gain→timeline→headroom→wav)。Gate不合格は組み立てない(BLOCKED_*。回避しない)。"""
     out_dir = f"{theme_out_dir}/{level}"
@@ -632,6 +846,8 @@ def assemble_level(theme_out_dir: str, level: str, *, style_profile: str, slug: 
     if shared_blocked is not None:
         save_json(f"{out_dir}/run_summary_assemble.json", shared_blocked)
         return shared_blocked
+    if level in ys.CHUNK_TTS_Y_LEVELS:      # Style Gate・共有Gateより前に、chunk親集約entry(status・親wav・human_approved_chunks)を再構築する(人間承認後の再assembleで親も通る)
+        _refresh_y_chunk_parents_on_disk(out_dir)
     gate = y_style_gate(theme_out_dir, level, style_profile)
     if gate["status"] != "PASS":
         s = {"status": "BLOCKED_STYLE_PROFILE_GATE", "gate": gate}
@@ -652,6 +868,9 @@ def assemble_level(theme_out_dir: str, level: str, *, style_profile: str, slug: 
     summary = {"status": "OK", "out_path": out_path, "duration_seconds": result["total_duration_seconds"],
                "clipping_detected": metrics["clipping_detected"], "peak": round(xr.p9a.peak(assembled), 5),
                "sample_rate": xr.SR, "channels": 2, "headroom_safety_valve": headroom["report"], "family": ys.FAMILY}
+    if sources.get("body_chunks"):
+        summary["chunk_tts"] = _chunk_assembly_summary_y(sources["chunk_plans"], parts["gain_report"].get("chunk_tts") or {}, result["timeline"])
+        save_json(f"{out_dir}/audit/chunk_tts_assembly_b1b.json", summary["chunk_tts"])
     xr._attach_kp_vote_audit(summary, out_dir, level)
     pnap_hooks.attach_alarm_audit(summary, out_dir, level)
     save_json(f"{out_dir}/run_summary_assemble.json", summary)

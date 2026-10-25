@@ -48,9 +48,11 @@ def _callees(path, fnames=None):
 
 # X音声層にあってYに無いことを許す呼出し(台帳ID付き)。これ以外が増減したらこのtestが落ちる(Xに共通呼出しが増えたらYも追従する)。
 ALLOWED_X_ONLY = {
-    "_chunk_plans.items": "Y-DIFF-CHUNK", "_chunk_plans.values": "Y-DIFF-CHUNK", "_generate_x_body_part_chunked": "Y-DIFF-CHUNK",
-    "_refresh_x_chunk_parents": "Y-DIFF-CHUNK", "_x_chunk_plans": "Y-DIFF-CHUNK", "_x_drop_chunked_parent_cache": "Y-DIFF-CHUNK",
-    "chunk_tts.drop_stale_chunk_entries": "Y-DIFF-CHUNK", "chunk_tts.evidence_record": "Y-DIFF-CHUNK", "chunk_tts.reconcile_saved_plan": "Y-DIFF-CHUNK",
+    # 委任_04(USER_02 ①): YはX方式Chunkを採用。X固有のID(full_story_part{n})を前提にした下記はY IDで再配線(plan_y_chunks/_generate_y_body_segment_chunked/
+    # refresh_y_chunk_parents/_drop_stale_chunk_cache)。共通er117の evidence_record/reconcile_saved_plan/plan_x_part 等はYも直接呼ぶ。
+    "_chunk_plans.items": "Y-DIFF-CHUNK-ID", "_chunk_plans.values": "Y-DIFF-CHUNK-ID", "_generate_x_body_part_chunked": "Y-DIFF-CHUNK-ID",
+    "_refresh_x_chunk_parents": "Y-DIFF-CHUNK-ID", "_x_chunk_plans": "Y-DIFF-CHUNK-ID", "_x_drop_chunked_parent_cache": "Y-DIFF-CHUNK-ID",
+    "chunk_tts.drop_stale_chunk_entries": "Y-DIFF-CHUNK-ID(Y chunk idはer117.parse_chunk_idが解釈しないため_drop_stale_chunk_cacheで同等処理)",
     "fx_iol.family_x_in_one_line_scope": "Y-DIFF-IOL(YL-C08)",
     "pnap_hooks.family_scope": "Y-DIFF-RET-PROVIDER(Yはrun_with_alarm_hookを直接呼ぶ)",
     "_base_role_style": "Y-DIFF-ROLE-STYLE-HELPER(Yは_style_resolversへ集約)",
@@ -82,11 +84,16 @@ class StructureMatch(unittest.TestCase):
     def test_y_does_not_call_x_only_features(self):
         names = _callees("er121_family_y_audio_01.py")
         for n in names:
-            self.assertFalse(n.startswith(("chunk_tts.", "fx_iol.")), n)
+            self.assertFalse(n.startswith("fx_iol."), n)
+        # 委任_04: Chunk TTSはX方式を採用(USER_02 ①)。共通er117の関数を直接呼ぶ(Yで再実装しない)。ZのB_r1 planner(plan_z_*)は呼ばない
+        for must in ("chunk_tts.plan_x_part", "chunk_tts.refresh_parent_status", "chunk_tts.verify_parent_integrity", "chunk_tts.verify_raw_parent",
+                     "chunk_tts.reconcile_saved_plan", "chunk_tts.evidence_record", "chunk_tts.attach_chunk_meta"):
+            self.assertIn(must, names, must)
+        self.assertFalse([n for n in names if n.startswith("chunk_tts.plan_z") or n.startswith("chunk_tts.paragraph_texts_for_clip")], "ZのB_r1 plannerは不採用")
         tree = ast.parse(_src("er121_family_y_audio_01.py"))
         idents = {n.id for n in ast.walk(tree) if isinstance(n, ast.Name)} | {n.attr for n in ast.walk(tree) if isinstance(n, ast.Attribute)}
-        for banned in ("fx_iol", "chunk_tts", "round_core_number", "core_number", "in_one_line_scope"):
-            self.assertFalse([i for i in idents if banned in i and i not in ("chunk_tts_applicable", "chunk_decision_record")], f"er121_family_y_audio_01.py がX専用/対象外機構 {banned} を参照")
+        for banned in ("fx_iol", "round_core_number", "core_number", "in_one_line_scope", "plan_z_clip", "plan_z_level", "Z_SPLIT_THRESHOLD_WORDS"):
+            self.assertFalse([i for i in idents if banned in i], f"er121_family_y_audio_01.py がX専用/対象外機構 {banned} を参照")
 
     def test_assembly_uses_shared_gain_and_timeline_functions(self):
         names = _callees("er121_family_y_audio_01.py")
@@ -294,7 +301,7 @@ class Contract(unittest.TestCase):
         self.assertEqual(r.build_parser().parse_args([]).mode, "dry-run")
         self.assertIsNone(r.build_parser().parse_args([]).kp_review)
         self.assertIs(ys.CORE_NUMERIC_APPLICABLE, False)
-        self.assertFalse(ys.chunk_tts_applicable("Y"))
+        self.assertTrue(ys.chunk_tts_applicable("Y"))      # 委任_04: USER_02 ①でX方式Chunkを正式採用
         self.assertTrue(ys.chunk_tts_applicable("X") and ys.chunk_tts_applicable("Z"))
         self.assertFalse(ys.chunk_tts_applicable("unknown"))
 

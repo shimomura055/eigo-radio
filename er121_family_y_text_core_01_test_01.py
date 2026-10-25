@@ -578,14 +578,44 @@ class TestProduceClosing(RoutedCase):
         self.assertIn("USER.md", rec["approval_ref"])
         self.assertEqual(rec["gate"]["source"], "judged_this_run")
 
-    def test_fixed_gate_fail_stops_without_rewrite_or_retry(self):
-        fc = FakeClient([luna("tension", {"tension": ["leak_discovery_syntax"]})])
+    def _fixed(self, fc):
         with mock.patch.object(c, "reusable_prior_gate", lambda *a, **k: None):
-            with self.assertRaises(c.YStop) as e:
-                c.produce_closing(fc, slug="redelivery_fee", inp=INP, theme_package_sha256=PKG, voice_r0_sha256=R0, out_dir=os.path.join(self.d, "c"))
-        self.assertEqual(e.exception.code, "FIXED_CLOSING_GATE_FAIL")
-        self.assertEqual(len(fc.calls), 1)                       # 書換えも判定再試行もしない
+            return c.produce_closing(fc, slug="redelivery_fee", inp=INP, theme_package_sha256=PKG, voice_r0_sha256=R0, out_dir=os.path.join(self.d, "c"))
+
+    def test_fixed_gate_rejudges_three_times_without_rewrite_then_residual_fail_stop(self):
+        """委任_04(USER_02 ②): 案Bは既存の再判定機構(判定<=3回)を使うが、承認本文は書換えない。3回判定後もFAILなら公開せずSTOP。"""
+        f = {"tension": ["leak_discovery_syntax"]}
+        fc = FakeClient([luna("tension", f), luna("tension", f), luna("tension", f)])
+        with self.assertRaises(c.YStop) as e:
+            self._fixed(fc)
+        self.assertEqual(e.exception.code, "FIXED_CLOSING_RESIDUAL_FAIL")
+        self.assertEqual(len(fc.calls), 3)                       # 判定3回。4回目は呼ばない
+        self.assertTrue(all(k["model"] == "gpt-6-luna" for k in fc.calls))     # 書換え(別model/別schema)callは0
+        self.assertFalse(any((k.get("text") or {}).get("format", {}).get("name") == "family_y_persona_rewrite" for k in fc.calls))
         self.assertFalse(os.path.exists(os.path.join(self.d, "c", "closing_final.txt")))
+        self.assertFalse(os.path.exists(os.path.join(self.d, "c", "gate", "final_texts.json")))     # FAIL稿は後続へ流さない
+        rec = json.load(open(os.path.join(self.d, "c", "closing_record.json"), encoding="utf-8"))
+        self.assertEqual((rec["status"], rec["n_judgements"], rec["rewritten"]), ("FIXED_CLOSING_RESIDUAL_FAIL", 3, False))
+        self.assertEqual([j["attempt"] for j in rec["judgements"]], [1, 2, 3])
+        self.assertEqual(len({j["tension_sha256"] for j in rec["judgements"]}), 1)       # 本文は3回とも同一(書換えなし)
+        self.assertTrue(all(j["any_flagged"] and j["fail_fields"] == ["leak_discovery_syntax"] for j in rec["judgements"]))
+
+    def test_fixed_gate_pass_on_rejudge_records_each_judgement_and_never_mutates_text(self):
+        f = {"tension": ["leak_discovery_syntax"]}
+        fc = FakeClient([luna("tension", f), luna("tension")])
+        r = self._fixed(fc)
+        self.assertEqual(len(fc.calls), 2)
+        self.assertEqual(r["text"], B_TEXT)
+        rec = r["record"]
+        self.assertEqual((rec["n_judgements"], rec["rewritten"], rec["gate"]["source"]), (2, False, "judged_this_run"))
+        self.assertEqual([j["any_flagged"] for j in rec["judgements"]], [True, False])
+        self.assertEqual(rec["final_sha256"], rec["text_sha256"])
+
+    def test_fixed_gate_mode_conflict_is_rejected(self):
+        with self.assertRaises(c.YStop) as e:
+            c.run_gate(FakeClient([]), kind="tension", stage="t", texts={"tension": GOOD}, out_dir=os.path.join(self.d, "g3"), voices_ctx=VOICES,
+                       allow_rewrite=True, rejudge_without_rewrite=True)
+        self.assertEqual(e.exception.code, "GATE_MODE_CONFLICT")
 
     def test_voice_or_package_change_stops_before_any_api(self):
         for pkg, r0 in ((PKG, "0" * 64), ("0" * 64, R0)):

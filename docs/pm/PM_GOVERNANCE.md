@@ -615,6 +615,15 @@ PM-CLOSEOUT-CONSOLIDATION-59)。
     目的達成度(達成/部分達成/未達)を明記する。受入記録の「目的要件との
     一致/不一致」(`sandwich-pm.md`手順4-2)およびRESULT_PACKET(3)は
     本区別の記載場所であり、新Gate・新報告工程ではない。
+33. **共通仕様のX/Y/Z配線Status確認**(2026-10-25ユーザー決定、
+    `FAMILY-Y-PRODUCTION-LAUNCH-01`追加指示§3[`docs/pm/delegation_log/
+    2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER_02.md`]。28節[Cross-Family
+    同時Production配線原則]の実装であり、新Gate・新報告工程ではない):
+    全Family共通仕様の採用・Production配線・Closeout時に、`CURRENT_SPEC.md`
+    「共通仕様のFamily別配線Status表」でX/Y/Zの配線Statusを確認し、未配線の
+    Familyがあれば理由・残作業・解消条件を`OPEN_ITEMS.md`に記録したか
+    (記録なしに「完了」としない。Family固有仕様・ユーザー明示不採用は例外で、
+    例外の根拠を同表に残す。28-2の6)。
 
 ## 4. 「1記事ずつ完結させる」原則と例外
 

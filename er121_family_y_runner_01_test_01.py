@@ -179,7 +179,8 @@ class FullMockRun(unittest.TestCase):
                 self.assertEqual(e["y_tts_voice_requested"], vm[sid])
             self.assertFalse({"full_story_part1", "comment_4", "in_one_line"} & set(res["segments"]))
             dec = json.load(open(f"{self.out}/{lv}/audit/chunk_tts_decision.json", encoding="utf-8"))
-            self.assertIs(dec.get("chunk_tts_applicable"), False)
+            self.assertIs(dec.get("chunk_tts_applicable"), True)      # 委任_04: USER_02 ①でX方式Chunkを正式採用(APPROVED_FOR_PRODUCTION)
+            self.assertEqual((dec.get("method"), dec.get("approval"), dec.get("z_b_r1_adopted")), ("X_paragraph_0.2s", "APPROVED_FOR_PRODUCTION", False))
 
     def test_std_slowdown_for_all_y_body_segments(self):
         res = json.load(open(f"{self.out}/a2/audit/tts_generation_results.json", encoding="utf-8"))
@@ -483,7 +484,7 @@ class SelfConsistency(unittest.TestCase):
                 self.assertIn(x, r.UNIT_NAMES)
 
     def test_no_er110_import_and_no_chunk_or_core_numeric_import(self):
-        banned_prefix = ("er110_", "er117_", "er095_", "er118_")
+        banned_prefix = ("er110_", "er095_", "er118_")      # 委任_04: er117(X方式Chunk共通module)はUSER_02 ①で採用。importしてよいのはaudit moduleのみ(下で固定)
         for fn in ("er121_family_y_runner_01.py", "er121_family_y_audio_01.py", "er121_family_y_structure_01.py", "er121_family_y_mock_01.py"):
             tree = ast.parse(open(os.path.join(ROOT, fn), encoding="utf-8").read())
             for n in ast.walk(tree):

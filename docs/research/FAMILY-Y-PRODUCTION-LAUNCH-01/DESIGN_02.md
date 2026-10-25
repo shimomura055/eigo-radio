@@ -199,3 +199,33 @@
 - **E-3(SNS一般化+voices実生成)**: ①02Bのer006登録(`FAMILY_Y_*` 9キー+上記新2キー+pricing) ②runnerの`stage_text`が`produce_article`を呼ぶ(現状でも呼べる。`theme_package_path`は任意) ③`--approved-budget-jpy`と日次予算確認 ④英訳以降(02B)。voices段〜closingまでは**今すぐ実行可能な状態**(runner経由でなくても`produce_article(client, slug="sns_age_limit", theme_package=<SNS pkg path>, out_dir=…)`で単独実行できる)。見積39〜48円(`BUDGET_PLAN_03.md`)。
 - **E-1(宅配+案B)**: ①上記01〜02の要求(`theme_package_path`・`--reuse-manifest`) ②案BのGate判定(1回)でFAILすればSTOP→ユーザー判断(OT-27 案I)。③英訳以降(02B)。
 - 未確認(02B領域): `run_kp_with_review`のfamily="Y"受理、gloss HR、予算wrapperのimport、Z audio関数のY segment適合、cached_tokens/flex/Batch。
+
+## 13. 追加決定反映(委任_04、2026-10-25。ユーザー追加決定USER_02 ①②③)
+
+原文=`docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER_02.md`。台帳=`SPEC_LEDGER_03.md`、追跡=`OPEN_TRACKING_03.md`、費用=`BUDGET_PLAN_04.md`。以降、§1〜12の記述のうち下記と矛盾する箇所(§3の`chunk_tts.*`許可リスト、§12の案B「判定1回」、OT-21/OT-27等)は**本節が優先**する。
+
+### 13-1. ① Chunk TTS(X方式をY正式採用。YL-B08)
+
+- 方式: 共通`er117_chunk_tts_production_01`の**X方式(段落単位chunk+0.2秒ポーズ)を直接import**して使う(Yで再実装しない)。ZのB_r1は採用しない。
+- 適用単位: Y本文8 segment(`y_lead`/`y_intro_1..3`/`y_voice_1..3`/`y_closing`)それぞれに`chunk_tts.plan_x_part`を適用(`plan_y_chunks`)。段落が2つ以上のsegmentだけ分割、1段落は従来の1 call(X規則)。chunk ID=`<segment_id>_k<j>`(`ys.Y_CHUNK_ID_RE`)。**分割はsegmentの内側だけ**=話者切替(intro→voice、voice→次のintro)は別segmentなので結合も分割もされない(testで固定)。
+- level: Adv(b1b)本文のみ(X同様。Std[a2]は非chunk)。
+- 経路: 生成=`_generate_y_body_segment_chunked`(chunkごとに従来本文と同一呼出し`generate_news_narration_wide_margin`、同一Voice/Style/model/ASR/retry/fallback、chunk失敗後も後続chunkを続行、Style記録はchunkごと)→親集約entry(`chunk_tts.refresh_parent_status`。statusは`OK`か`CHUNKS_NOT_ALL_VALIDATED`。共有Audio Validation Gateで必ずブロック)+親wav(生連結)→gate(`y_style_gate`は親でなく**全chunk**を検査、planにあるのにentryが無いchunkはBLOCK)→組立(`_load_y_body_chunks`が`verify_parent_integrity`+`verify_raw_parent`を音声読込前に実行→共通`apply_family_x_b1_gain`がchunk別gain+0.2秒無音で連結)。resume: 版違い・Voice不一致のchunk entryは再利用しない、保存済みplanと不一致ならSTOP(`reconcile_saved_plan`)。
+- fail-closed: (a)適用可否表がYを非適用に戻されたら課金前STOP(`FAMILY_Y_CHUNK_TTS_SCOPE_REVERTED`) (b)chunk idが共通role判定でFULL_STORYに解決されなければ課金前STOP(`FAMILY_Y_CHUNK_ID_ROLE_UNRESOLVED`。共通er020の正規表現追加が必要=OT-44)。
+- `--only-segments y_voice_2`は親が選択されていればchunk idも選択扱いにする(`_only_includes_chunks`。共通runnerのXのchunk id形式しか解釈しない`_only_segments_skip`を共通module変更なしで補う)。
+- 記録: `audit/chunk_tts_decision.json`(decision=`applied_X_method`、approval=APPROVED_FOR_PRODUCTION、z_b_r1_adopted=false、segmentごとの段落数・chunk id)、`audit/chunk_plan_b1b.json`、`audit/chunk_tts_evidence_b1b.json`(分割がある場合)、`audit/chunk_tts_assembly_b1b.json`(0.2秒の実測offset・chunk別gain/RMS/peak)。
+- 重要な事実(OT-42): 現行のY本文契約はsegmentごとに**1段落**(check_voice_pl/closing/lead/intro)のため、通常の記事では分割が発火せず従来の1 callになる。分割機構は複数段落segmentで機能することをofflineで検証済み。
+
+### 13-2. ② Closing Prompt/Gate(Prompt 02・既存Gate不変。案Bの再判定仕様の更新)
+
+- Prompt 02+gpt-6.1-sol/high、Gate基準、Tension判定prompt(M-1定義展開版)は**変更しない**。Prompt 03・Gate緩和・Gate文言補足(G-2)は行わない(OT-20)。
+- 一般Closing: 従来どおり`run_gate`(判定<=3+局所書換え、残存FAILは`LEAKAGE_RESIDUAL_STOP`=公開しない)。
+- 案B(`redelivery_fee`のみ・他記事へ拡張しない): `run_gate(allow_rewrite=False, rejudge_without_rewrite=True, max_judgements=3)`。承認本文は書換えない。同一本文を最大3回判定し、PASSした時点で終了、3回ともFAILなら`FIXED_CLOSING_RESIDUAL_FAIL`でSTOP(`closing_record.json`にstatus・n_judgements・judgements[]を残し、`closing_final.txt`は作らない)。PASS時も各判定の結果(attempt・本文sha・flag有無・FAIL項目・model・prompt sha)を`closing_record.judgements`へ記録(OT-45)。過去の来歴検査付きPASS記録の再利用(`reusable_prior_gate`)は従来どおり。
+- 置換: `FIXED_CLOSING_GATE_FAIL`(判定1回で即STOP)は廃止し`FIXED_CLOSING_RESIDUAL_FAIL`へ(残存Grepは`er121_*.py`で0件)。
+
+### 13-3. ③ Voice生成方式(YL-C03=APPROVED_FOR_PRODUCTION)
+
+- 実装(`produce_voices`/Voice Gate)に変更なし。承認Statusのみ更新。公開前条件(出典・利用許諾、V1根拠R2+のみ/人手収集約25分/目視1名/V2単一出典例外)は省略せず継続管理(OT-46)。意見収集の自動化はScope外。
+
+### 13-4. 配線漏れ防止(U2 §3)
+
+- 台帳を66行へ更新(SPEC_LEDGER_03)、PM Closeout Mandatory Checkに項目33(共通仕様のX/Y/Z配線Status確認)を追加(`PM_GOVERNANCE.md` 3節)。未承認仕様(NO_PREADOPT 4件)は先行採用しない。
