@@ -250,6 +250,8 @@ class NoticeDisplay(unittest.TestCase):
             for p in glob.glob(os.path.join(ROOT, pat), recursive=True):
                 if os.sep + "family_y_production_01" + os.sep in p or "er121_output" in p:
                     continue
+                if (os.sep + "user_test" + os.sep + "family_y_") in p:       # Yの限定公開dir(user_test/family_y_*)はY自身の公開物(委任_06で許可リスト化)
+                    continue
                 try:
                     t = open(p, encoding="utf-8", errors="ignore").read()
                 except OSError:

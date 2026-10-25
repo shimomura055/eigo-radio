@@ -134,7 +134,7 @@ class FullMockRun(unittest.TestCase):
 
     def test_api_boundary_only_mock_kinds_and_no_real_client(self):
         kinds = {json.loads(l)["kind"] for l in open(f"{self.out}/mock_api_calls.jsonl", encoding="utf-8")}
-        self.assertTrue(kinds <= {"llm", "text_core", "kp", "kp_expl", "tts", "tts_shared", "tts_kp"}, kinds)
+        self.assertTrue(kinds <= {"llm", "text_core", "kp", "kp_expl", "kp_part1", "kp_part1_ja", "part2_extract", "part2_explain", "tts", "tts_shared", "tts_kp"}, kinds)
         self.assertEqual(BLOCK["client"], 0)
         self.assertEqual(BLOCK["net"], 0)
 
@@ -209,10 +209,11 @@ class FullMockRun(unittest.TestCase):
                 self.assertIn(f"{lv}:{sid}", ids)
         self.assertEqual(extra, [])
 
-    def test_study_text_slots_recorded_as_unconnected(self):
-        d = json.load(open(f"{self.out}/study_text_slots.json", encoding="utf-8"))
-        self.assertIn("未接続", d["part2_grammar"])
-        self.assertIn("未接続", d["part1_vocabulary_expressions"])
+    def test_study_text_slots_recorded_as_connected(self):
+        d = json.load(open(f"{self.out}/study_text_slots.json", encoding="utf-8"))          # 委任_06でPart 1/Part 2を接続(旧『未接続』の記録は撤去)
+        self.assertIn("接続済み", d["part2_grammar"])
+        self.assertIn("接続済み", d["part1_vocabulary_expressions"])
+        self.assertNotIn("未接続", json.dumps(d, ensure_ascii=False))
 
 
 class StageFramework(unittest.TestCase):
@@ -474,6 +475,286 @@ class StageFramework(unittest.TestCase):
             with _quiet():
                 self.assertEqual(r.main(["--clear-stop", "--slug", "mock_slug", "--run", "run_c"]), 2)
 
+
+
+def _kinds(ctx):
+    p = f"{ctx.out_dir}/mock_api_calls.jsonl"
+    if not os.path.exists(p):
+        return []
+    return [json.loads(l)["kind"] for l in open(p, encoding="utf-8")]
+
+
+def _html(ctx):
+    return open(f"{ctx.out_dir}/pages/index.html", encoding="utf-8").read()
+
+
+class StudyTextWiring(unittest.TestCase):
+    """委任_06: Part 1(Vocabulary & Expressions)/Part 2(文法)/文法HRのY runner接続(X/Zと同形。API 0・遮断harness)。"""
+
+    def setUp(self):
+        self.root = tempfile.mkdtemp(prefix="y_study_")
+
+    def tearDown(self):
+        shutil.rmtree(self.root, ignore_errors=True)
+
+    def _upto_support(self, ctx):
+        with _quiet():
+            r.run_stages(ctx, ["seed_check", "text", "translate", "support"])
+
+    def _grammar_dir(self, ctx):
+        return f"{ctx.out_dir}/study_text"
+
+    def _decide_grammar(self, ctx, by="test-human"):
+        import er119_grammar_review_01 as gr
+        sd = self._grammar_dir(ctx)
+        doc = gr.load_candidates(sd)
+        return gr.op_decide(sd, choice="top1", candidates_sha256=doc["candidates_sha256"], by=by, accept_ai=True)
+
+    def test_single_wait_for_kp_and_grammar_with_no_paid_call_after(self):
+        ctx = _ctx(self.root)
+        self._upto_support(ctx)
+        n0 = _kinds(ctx).count("llm")
+        with self.assertRaises(r.YKpReviewPending) as cm:
+            with _quiet():
+                r.run_stages(ctx, ["kp"])
+        kinds_pending = sorted({(p.get("kind") or "kp") for p in cm.exception.pending})
+        self.assertEqual(kinds_pending, ["grammar", "kp"])                                  # KP(b1b/a2)と文法が1つの待機にまとまる
+        k = _kinds(ctx)
+        self.assertEqual(k.count("part2_extract"), 1)                                       # 候補抽出はKP候補生成と同じ待機点で1回
+        for banned in ("part2_explain", "kp_part1", "kp_part1_ja", "kp_expl", "tts", "tts_shared", "tts_kp"):
+            self.assertNotIn(banned, k, f"確定前に{banned}の有料呼出に進んだ")               # 確定前のStep B・Part 1・TTSは0 call
+        self.assertEqual(k.count("llm"), n0)
+        # 同じ起動で統合依頼書(1ファイル)にKPと文法が両方入る
+        out = io.StringIO()
+        with mock.patch.object(r, "RUN_ROOT", self.root):
+            with contextlib.redirect_stdout(out), contextlib.redirect_stderr(io.StringIO()):
+                rc = r.main(["--mode", "mock", "--slug", "mock_slug", "--run", "run_w", "--stages", "text,translate,support,kp,tts_b1b",
+                             "--theme-package", _theme(self.root)])
+        self.assertEqual(rc, 4)
+        self.assertIn("[KP_REVIEW_PENDING]", out.getvalue())
+        self.assertIn("文法(Part 2)", out.getvalue())
+        req = open(f"{self.root}/mock_slug/run_w_mock/review_request.md", encoding="utf-8").read()
+        self.assertIn("文法(Part 2)", req)
+        self.assertIn("KP(level=b1b)", req)
+        self.assertFalse(os.path.exists(f"{self.root}/mock_slug/run_w_mock/b1b/audit/tts_generation_results.json"))
+
+    def test_hr_path_resume_calls_step_b_once_and_part1_once_then_resume_is_api0(self):
+        ctx = _ctx(self.root)
+        self._upto_support(ctx)
+        with self.assertRaises(r.YKpReviewPending):
+            with _quiet():
+                r.run_stages(ctx, ["kp"])
+        self._decide_grammar(ctx)                       # HRあり: 文法をHumanがAI推奨のまま了承(REVIEWED)
+        _declare(ctx)                                   # KP側は不在宣言(文法はすでに確定済み)
+        with _quiet():
+            res = r.run_stages(ctx, ["kp"])
+        k = _kinds(ctx)
+        self.assertEqual((k.count("part2_extract"), k.count("part2_explain"), k.count("kp_part1"), k.count("kp_part1_ja")), (1, 1, 1, 1))
+        self.assertEqual(res["kp"][r.PART2_FINAL_STAGE], "generated")
+        rev = json.load(open(f"{self._grammar_dir(ctx)}/grammar_human_review.json", encoding="utf-8"))
+        self.assertEqual(rev["status"], "REVIEWED")
+        before = _calls(ctx)
+        with _quiet():
+            res2 = r.run_stages(ctx, ["kp"])
+        self.assertEqual(_calls(ctx), before, "再開(resume)でAPI境界を通った")
+        self.assertEqual((res2["kp"][r.PART1_STAGE], res2["kp"][r.PART1_JA_STAGE], res2["kp"][r.PART2_FINAL_STAGE]), ("reused", "reused", "reused"))
+
+    def test_no_hr_declaration_auto_adopts_grammar_and_records_it(self):
+        ctx = _ctx(self.root)
+        self._upto_support(ctx)
+        _declare(ctx)
+        with _quiet():
+            r.run_stages(ctx, ["kp"])
+        rev = json.load(open(f"{self._grammar_dir(ctx)}/grammar_human_review.json", encoding="utf-8"))
+        self.assertEqual(rev["status"], "UNREVIEWED_AUTO_ADOPTED")                          # 未レビュー自動採用(REVIEWED/NGと区別)
+        self.assertTrue(rev["mode_declaration"]["declaration_id"])
+        self.assertIsNone(rev.get("last_human_op_at"))
+
+    def test_page_shows_part1_then_part2_in_advanced_only_and_vocab_is_five_adv_only(self):
+        ctx = _ctx(self.root)
+        self._upto_support(ctx)
+        _declare(ctx)
+        with _quiet():
+            r.run_stages(ctx, ["kp", "tts_b1b", "tts_a2", "gate", "assemble", "pages", "page_verify"])
+        html = _html(ctx)
+        i_adv = html.index("id='advanced'")
+        std_part, adv_part = html[:i_adv], html[i_adv:]
+        for mk in (r.PART1_MARKER, r.PART2_MARKER):
+            self.assertNotIn(mk, std_part, "Standardの節に学習テキストが出ている")
+            self.assertEqual(adv_part.count(mk), 1, mk)
+        self.assertLess(adv_part.index(r.PART1_MARKER), adv_part.index(r.PART2_MARKER))      # Part 1の直後にPart 2
+        p1 = json.load(open(f"{ctx.out_dir}/study_text/part1_vocabulary_expressions.json", encoding="utf-8"))
+        rows = p1 if isinstance(p1, list) else (p1.get("rows") or p1.get("items") or [])
+        self.assertLessEqual(len(rows), 5)
+        self.assertGreaterEqual(len(rows), 3)
+        self.assertTrue(json.load(open(f"{ctx.out_dir}/page_verify_local.json", encoding="utf-8"))["ok"])
+        v = json.load(open(f"{ctx.out_dir}/page_verify_local.json", encoding="utf-8"))
+        self.assertEqual(v["part2_verified"]["part2_blocks"], 1)
+        self.assertEqual(set(v["kp_selection_verified"]), {"b1b", "a2"})
+        slots = json.load(open(f"{ctx.out_dir}/study_text_slots.json", encoding="utf-8"))
+        self.assertIn("接続済み", slots["part2_grammar"])
+        self.assertNotIn("未接続", json.dumps(slots, ensure_ascii=False))
+
+    def test_zero_candidates_uses_fixed_text_without_waiting(self):
+        import er120_part2_grammar_production_01 as g
+
+        def zero_extract(prompt):
+            import er006_model_routing_contract_01 as routing
+            return json.dumps({"features": [], "no_feature_paras": []}), routing.SUPPORT_MODEL, {"input_tokens": 1, "output_tokens": 1, "cached_input_tokens": 0}, "mock_zero"
+        ctx = _ctx(self.root)
+        ctx.hooks["part2_extract_call_fn"] = ctx.mock_api.wrap("part2_extract", zero_extract)
+        self._upto_support(ctx)
+        _declare(ctx)
+        with _quiet():
+            r.run_stages(ctx, ["kp", "tts_b1b", "tts_a2", "gate", "assemble", "pages", "page_verify"])
+        rev = json.load(open(f"{self._grammar_dir(ctx)}/grammar_human_review.json", encoding="utf-8"))
+        self.assertEqual(rev["status"], "NO_CANDIDATE_UNREVIEWED")                         # 適格0件=待たずに確定(REVIEWEDにしない)
+        self.assertIn(g.ZERO_P2, _html(ctx).replace("&#x27;", "'"))
+
+    def test_consumer_entrances_fail_closed_when_part1_or_part2_missing(self):
+        ctx = _ctx(self.root)
+        self._upto_support(ctx)
+        # (a) 未確定(待機)中は全consumerがrc=4相当の待機で止まり、TTS/組立/ページへ進まない
+        for fn in (lambda: r.stage_tts(ctx, "b1b"), lambda: r.stage_gate(ctx), lambda: r.stage_assemble(ctx), lambda: r.stage_pages(ctx),
+                   lambda: r.stage_page_verify(ctx)):
+            with self.assertRaises((r.YKpReviewPending, r.YE2EStop)):
+                with _quiet():
+                    fn()
+        _declare(ctx)
+        with _quiet():
+            r.run_stages(ctx, ["kp", "tts_b1b", "tts_a2", "gate", "assemble", "pages", "page_verify"])
+        sd = self._grammar_dir(ctx)
+        # (b) Part 2結果が消えた/古い → 使う側の入口でSTOP
+        res_path = f"{sd}/part2_result.json"
+        keep = open(res_path, encoding="utf-8").read()
+        os.remove(res_path)
+        for name, fn in (("tts_b1b", lambda: r.stage_tts(ctx, "b1b")), ("gate", lambda: r.stage_gate(ctx)), ("assemble", lambda: r.stage_assemble(ctx)),
+                         ("pages", lambda: r.stage_pages(ctx)), ("page_verify", lambda: r.stage_page_verify(ctx))):
+            with self.assertRaises((r.YE2EStop, r.YKpReviewPending), msg=name):
+                with _quiet():
+                    fn()
+        open(res_path, "w", encoding="utf-8").write(keep)
+        # (c) Part 1の解説が消えた → STOP(次コマンド付き)
+        p1 = f"{ctx.out_dir}/key_phrases/b1b/kp_general_explanations.json"
+        keep1 = open(p1, encoding="utf-8").read()
+        os.remove(p1)
+        with self.assertRaises(r.YE2EStop) as cm:
+            with _quiet():
+                r.stage_pages(ctx)
+        self.assertIn("PART1", str(cm.exception))
+        self.assertIn("--regenerate-stage", str(cm.exception))
+        open(p1, "w", encoding="utf-8").write(keep1)
+        with _quiet():
+            r.stage_pages(ctx)                                                                # 復元後は通る(回帰)
+
+    def test_part2_regenerate_marks_final_stale_and_text_change_marks_part2_stale(self):
+        ctx = _ctx(self.root)
+        self._upto_support(ctx)
+        _declare(ctx)
+        with _quiet():
+            r.run_stages(ctx, ["kp"])
+        ctx.regenerate_stage = "translate_b1b"
+        w62 = r._m().w62
+        with self.assertRaises(w62.FamilyZProvenanceMismatchStop):
+            with _quiet():
+                r.stage_translate(ctx)
+        prov = json.load(open(f"{ctx.out_dir}/provenance.json", encoding="utf-8"))
+        self.assertIn("part2_cand_b1b", prov["downstream_stale"])
+        self.assertIn("part2_b1b", prov["downstream_stale"])
+
+    def test_study_units_are_regenerate_choices(self):
+        for u in (r.PART1_STAGE, r.PART1_JA_STAGE, r.PART2_CAND_STAGE, r.PART2_FINAL_STAGE):
+            self.assertIn(u, r.UNIT_NAMES)
+            r.build_parser().parse_args(["--regenerate-stage", u])
+
+
+class StudyTextStructureMatchWithXZ(unittest.TestCase):
+    """Part 1/Part 2の共通呼出しがZ runner(er026)と一致すること(許可リストは台帳ID付き。Zに共通呼出しが増えたらYも追従する)。"""
+
+    ZFUNCS = ("_part2_cand_step", "_part2_final_step", "_assert_part2_final", "_verify_part2_outputs", "_stage_kp_part1", "_stage_kp_part1_ja",
+              "_assemble_study_rows", "_require_part1_fresh", "_require_part1_ja_fresh", "_part1_items_b1b", "_stage_precheck")
+    ALLOWED_Z_ONLY = {
+        "m._m": "Y-DIFF-MODULE-ALIAS(Zのm=_m()の別名参照。Yは_m()を直接呼ぶ)",
+        "m.w62.rj": "Y-DIFF-MODULE-ALIAS", "_m().w62.rj": "Y-DIFF-MODULE-ALIAS",
+        "canonical_article_text": "Y-DIFF-TEXT-INPUT(Yはys.canonical_body)", "_m().w62.rd": "Y-DIFF-MODULE-ALIAS",
+        "_part1_cli_hint": "Y-DIFF-CLI-HINT(Yは_cli_hint)", "FamilyZE2EStop": "Y-DIFF-EXC(YE2EStop)", "FamilyZKpReviewPending": "Y-DIFF-EXC(YKpReviewPending)",
+        "STORY_REGISTRY": "Y-DIFF-LABEL(Zは作品名label、Yはタイトル行)",
+        "w62.FamilyZProvenanceMismatchStop": "Y-DIFF-MODULE-ALIAS", "w62.ensure_stage": "Y-DIFF-ENSURE(Yは_ensure経由またはw62.ensure_stage)",
+        "m.w62.FamilyZProvenanceMismatchStop": "Y-DIFF-MODULE-ALIAS",
+        "_m().w62.rj_or": "unused",
+    }
+
+    @staticmethod
+    def _callees(path, names):
+        tree = ast.parse(open(os.path.join(ROOT, path), encoding="utf-8").read())
+        out = set()
+        for fn in [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef) and n.name in names]:
+            for c in ast.walk(fn):
+                if isinstance(c, ast.Call):
+                    f, parts = c.func, []
+                    while isinstance(f, ast.Attribute):
+                        parts.append(f.attr)
+                        f = f.value
+                    if isinstance(f, ast.Name):
+                        parts.append(f.id)
+                    out.add(".".join(reversed(parts)))
+        return out
+
+    def test_common_core_calls_match_z(self):
+        z = self._callees("er026_family_z_fiction_production_runner_01.py", set(self.ZFUNCS))
+        y_funcs = {n for n in self.ZFUNCS} | {"stage_pages", "stage_kp", "_assert_study_ready"}
+        y = self._callees("er121_family_y_runner_01.py", y_funcs)
+        core = {n for n in z if n.split(".")[0] in ("p2w", "g", "p1", "ja", "khr", "gr", "_p1", "_p2w", "_p1ja", "_khr") or n.startswith(("p2w.", "g.", "p1.", "ja.", "_p1().", "_p2w().", "_p1ja().", "_khr()."))}
+        core = {n.replace("_p2w().", "p2w.").replace("_p1().", "p1.").replace("_p1ja().", "ja.").replace("_khr().", "khr.") for n in core}
+        y_norm = {n.replace("_p2w().", "p2w.").replace("_p1().", "p1.").replace("_p1ja().", "ja.").replace("_khr().", "khr.") for n in y}
+        missing = {n for n in core if n not in y_norm and n not in self.ALLOWED_Z_ONLY}
+        self.assertEqual(missing, set(), f"Zの共通核(er119/er120/er003_kp_*)呼出しがYに無い: {sorted(missing)}")
+        for must in ("p2w.candidate_stage", "p2w.finalize_stage", "p2w.require_final", "p2w.verify_outputs", "compose_page_html", "p2w.part1_ref_ja_pool",
+                     "p1.generate_for_kp_items", "ja.generate_for_kp_items", "p1.assemble_part1", "p1.write_study_text", "render_html_block", "khr.part1_items"):
+            self.assertIn(must, y_norm, must)
+
+    def test_consumer_entrances_call_assert_study_ready(self):
+        src = open(os.path.join(ROOT, "er121_family_y_runner_01.py"), encoding="utf-8").read()
+        tree = ast.parse(src)
+        want = {"stage_tts": 1, "stage_gate": 1, "stage_assemble": 1, "stage_pages": 1, "stage_page_verify": 1}
+        for fn in [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef) and n.name in want]:
+            calls = [c for c in ast.walk(fn) if isinstance(c, ast.Call) and isinstance(c.func, ast.Name) and c.func.id == "_assert_study_ready"]
+            self.assertGreaterEqual(len(calls), 1, f"{fn.name}の入口で_assert_study_readyを呼んでいない(Part 1/2のfail-closed確認漏れ)")
+
+
+class ManifestModelTransfer(unittest.TestCase):
+    def test_unit_models_are_transferred_from_cost_log_tags(self):
+        by_tag = {"yp_voice_voice_1": {"gpt-6.1-sol": 1}, "yp_vmap_voice_1_m1": {"gpt-6-luna": 1}, "support": {"gpt-6-luna": 8}, "kp": {"gpt-6-luna": 12},
+                  "tts_b1b": {"gpt-6-luna": 1, "gemini-3.8-flash-lite-tts": 20}, "kp_part1": {"gpt-6-luna": 1}, "part2_final": {"gpt-6-luna": 1}}
+        self.assertEqual(r._unit_models("text", by_tag), {"gpt-6.1-sol": 1, "gpt-6-luna": 1})
+        self.assertEqual(r._unit_models("support_b1b", by_tag), {"gpt-6-luna": 8})
+        self.assertEqual(r._unit_models("kp_b1b", by_tag), {"gpt-6-luna": 12})
+        self.assertEqual(r._unit_models("kp_part1_b1b", by_tag), {"gpt-6-luna": 1})
+        self.assertEqual(r._unit_models("part2_b1b", by_tag), {"gpt-6-luna": 1})
+        self.assertEqual(r._unit_models("translate_a2", by_tag), {})
+
+    def test_final_manifest_has_model_fields_for_support_kp_when_cost_log_exists(self):
+        root = tempfile.mkdtemp(prefix="y_man_")
+        try:
+            ctx = _ctx(root)
+            with _quiet():
+                r.run_stages(ctx, ["text", "translate", "support"])
+                _declare(ctx)
+                r.run_stages(ctx, ["kp", "tts_b1b", "tts_a2", "gate", "assemble", "pages"])
+            with open(f"{ctx.out_dir}/cost_log.jsonl", "w", encoding="utf-8") as f:
+                for tag, mid in (("support", "gpt-6-luna"), ("kp", "gpt-6-luna"), ("yp_closing_gen", "gpt-6.1-sol"), ("yp_closing_leak1", "gpt-6-luna")):
+                    f.write(json.dumps({"stage": tag, "model_id": mid}) + "\n")
+            with _quiet():
+                r.write_final_manifest(ctx)
+            man = json.load(open(f"{ctx.out_dir}/final_manifest.json", encoding="utf-8"))
+            for u in ("support_b1b", "support_a2", "kp_b1b", "kp_a2", "kp_expl_b1b"):
+                self.assertEqual(man["stage_entries"][u]["actual_model_id"], "gpt-6-luna", u)
+            self.assertIsNone(man["stage_entries"]["text"]["actual_model_id"])               # textは複数model(sol+luna)=単一値にしない
+            self.assertEqual(man["stage_entries"]["text"]["models_used"], {"gpt-6.1-sol": 1, "gpt-6-luna": 1})
+            self.assertIn("closing", man["stage_entries"]["text"]["routes"])
+            self.assertTrue(man["stage_entries"]["kp_part1_b1b"]["actual_model_id"])          # Part 1はentryのmodelを転記
+        finally:
+            shutil.rmtree(root, ignore_errors=True)
 
 
 class SelfConsistency(unittest.TestCase):

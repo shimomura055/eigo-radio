@@ -261,8 +261,29 @@ def fake_tts(api: MockApi):
     _ = ya
 
 
+def mock_part1_call_fn(prompt: str):
+    """Part 1(Vocabulary & Expressions)のmock call_fn。Promptの列挙行から表現を取り、構造検査を通る日本語解説を返す(X/Z mockと同形)。"""
+    import er003_kp_general_explanation_01 as p1
+    phrases = re.findall(r"^\d+\. 英語表現: (.*)$", prompt, re.M)
+    text = "\n".join(f"### {i}. {p}\n{p} の一般的な解説(mock)です。核となる意味と主要な使い方を説明します。" for i, p in enumerate(phrases, 1))
+    return text, p1.MODEL, {"input_tokens": 100, "cached_input_tokens": 0, "output_tokens": 50}, "mock_part1"
+
+
+def mock_part1_ja_call_fn(prompt: str):
+    """Part 1 T1(引用英文の日本語訳)のmock call_fn。"""
+    import er003_kp_source_sentence_ja_01 as ja
+    sents = ja._variable_part(prompt)
+    text = json.dumps({"translations": [{"id": i, "ja": f"これは{i}番の英文のmock日本語訳です。"} for i, _ in enumerate(sents, 1)]}, ensure_ascii=False)
+    return text, ja.MODEL, {"input_tokens": 50, "cached_input_tokens": 0, "output_tokens": 30}, "mock_part1_ja"
+
+
 def default_hooks(api: MockApi) -> dict:
+    import er120_part2_mock_01 as p2mock
     return {"text_core": FakeTextCore(api),
             "kp_fn": api.wrap("kp", lambda *a, **k: mock_kp_fn(*a, n_max=8, **k)),
             "expl_call_fn": api.wrap("kp_expl", mock_expl_call_fn),
+            "part1_call_fn": api.wrap("kp_part1", mock_part1_call_fn),
+            "part1_ja_call_fn": api.wrap("kp_part1_ja", mock_part1_ja_call_fn),
+            "part2_extract_call_fn": api.wrap("part2_extract", p2mock.mock_extract_call_fn),      # Part 2(文法)のmock(API 0)
+            "part2_explain_call_fn": api.wrap("part2_explain", p2mock.mock_explain_call_fn),
             "tts_patch": lambda: fake_tts(api)}

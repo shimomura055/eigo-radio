@@ -8,7 +8,8 @@ Zのstage framework(er026_family_z_fiction_production_runner_01)と同型の骨�
 - KP Human Review: 最初から er119_kp_wiring_01.run_kp_with_review 経由(Human確認 or 明示の不在宣言まで rc=4 で待機。有料の後続工程へ進まない)。
 - 実modelの記録: 各stageの来歴entryに routing_key / requested_model / actual_model_id / response_id / prompt_sha256 / cost を残す(closing_recordはtext stage)。
 - mode: dry-run(副作用0・API 0)/ mock(偽client・偽TTS。実APIへ出ない)/ real(承認予算内のみ。本委任では起動しない)。
-- Part 2(文法)・Part 1(Vocabulary & Expressions)は『未接続スロット』として study_text_slots.json に記録する(PART2-GRAMMAR-PRODUCTION-WIRING-01 は別案件で未配線)。
+- Part 1(Vocabulary & Expressions)・Part 2(Grammar & Sentence Structure)は委任_06でX/Zと同形に接続済み(Advancedのみ。kp stage内でKP/文法のHR待機点を共有し、
+  使う側[tts_b1b/gate/assemble/pages/page_verify]の入口でfail-closed確認。共通核はer119/er120/er003_kp_*を呼ぶだけで再実装しない)。接続状態は study_text_slots.json に記録する。
 - 隔離: 本ファイルはYの新入口。X/Zのruntime・既存Prompt・閾値・辞書は無変更。Chunk TTS・中核数値v4/J2はY非適用。
 """
 from __future__ import annotations
@@ -37,11 +38,13 @@ STYLE_PROFILE = "default"
 LEVELS = ("b1b", "a2")
 
 # 来歴(provenance)の単位。CLIのstageより細かい。--regenerate-stage の許可値でもある。
-UNIT_NAMES = ("text", "translate_b1b", "translate_a2", "support_b1b", "support_a2", "kp_b1b", "kp_a2", "kp_expl_b1b", "tts_b1b", "tts_a2")
+UNIT_NAMES = ("text", "translate_b1b", "translate_a2", "support_b1b", "support_a2", "kp_b1b", "kp_a2", "kp_expl_b1b", "tts_b1b", "tts_a2",
+              "kp_part1_b1b", "kp_part1_ja_b1b", "part2_cand_b1b", "part2_b1b")
 # 親→子。親を明示再生成すると、推移的な子孫がstaleになり、明示 --regenerate-stage が無い限りSTOP(自動再生成しない)。
 DEPENDENTS = {
     "text": ["translate_b1b"],
-    "translate_b1b": ["translate_a2", "support_b1b", "kp_b1b", "tts_b1b"],
+    "translate_b1b": ["translate_a2", "support_b1b", "kp_b1b", "tts_b1b", "part2_cand_b1b"],     # Part 2(文法)の候補は英訳Advancedの本文に依存(X/Zと同じ)
+    "part2_cand_b1b": ["part2_b1b"],
     "translate_a2": ["support_a2", "kp_a2", "tts_a2"],
     "support_b1b": ["tts_b1b"], "support_a2": ["tts_a2"],
     "kp_b1b": ["kp_expl_b1b", "tts_b1b"], "kp_a2": ["tts_a2"], "kp_expl_b1b": ["tts_b1b"],
@@ -289,7 +292,7 @@ def stage_seed_check(ctx) -> dict:
     res["voice_assignment"] = ys.verify_voice_assignment()
     keys = ("FAMILY_Y_CLOSING_GENERATE", "FAMILY_Y_CLOSING_REWRITE", "FAMILY_Y_LEAK_JUDGE", "FAMILY_Y_VOICE_GENERATE", "FAMILY_Y_VOICE_REWRITE",
             "FAMILY_Y_LEAD_GENERATE", "FAMILY_Y_PERSONA_INTRO", "FAMILY_Y_TRANSLATE_ADV", "FAMILY_Y_TRANSLATE_STD",
-            "FAMILY_Y_VOICE_PROVENANCE_MAP", "FAMILY_Y_VOICE_STRUCTURE_TAG")
+            "FAMILY_Y_VOICE_PROVENANCE_MAP", "FAMILY_Y_VOICE_STRUCTURE_TAG", "STUDY_TEXT_GRAMMAR_EXTRACT", "STUDY_TEXT_GRAMMAR_EXPLAIN")
     res["routing"] = {k: routing.PROCESS_MODEL_MAP.get(k) for k in keys}
     missing = [k for k, v in res["routing"].items() if not v]
     if missing:
@@ -306,7 +309,10 @@ def stage_seed_check(ctx) -> dict:
     return res
 
 
-STUDY_TEXT_SLOTS = {"part1_vocabulary_expressions": "未接続(Yへは未配線。別案件)", "part2_grammar": "未接続(PART2-GRAMMAR-PRODUCTION-WIRING-01はX/Zのみ。Y接続は別案件)"}
+STUDY_TEXT_SLOTS = {"part1_vocabulary_expressions": "接続済み(委任_06。Advancedのみ・5件[vocab_confirmed.json]・kp stage内で生成・使う側入口でfail-closed)",
+                    "part2_grammar": "接続済み(委任_06。Advancedのみ・KP候補生成と同じ待機点の前に候補抽出・KPと1つのreview_request.md/rc=4・確定後Step B)"}
+PART1_STAGE, PART1_JA_STAGE = "kp_part1_b1b", "kp_part1_ja_b1b"
+PART2_CAND_STAGE, PART2_FINAL_STAGE = "part2_cand_b1b", "part2_b1b"
 
 
 # ------------------------------------------------------------
@@ -566,6 +572,11 @@ def stage_kp(ctx) -> dict:
     prov = _prov(ctx)
     st = _m().st
     summary, pending = {}, []
+    # Part 2(文法): 候補抽出(Step A'')をKP候補生成と同じ待機点の前に実行する(未確定ならKPのpendingと1回にまとめて待機)。resumeはAPI 0。
+    p2c = _part2_cand_step(ctx, prov)
+    summary[PART2_CAND_STAGE] = {"state": p2c["state"], "status": p2c["review"]["status"], "generated": p2c["generated"]}
+    if p2c["state"] == "PENDING":
+        pending.append(p2c["pending"])
     for lv in LEVELS:
         text = ys.canonical_body(_rd(_level_text_path(ctx, lv)))
         review_res = _kp_review_step(ctx, lv, text)
@@ -614,8 +625,311 @@ def stage_kp(ctx) -> dict:
     except _m().w62.FamilyZProvenanceMismatchStop as e:
         raise type(e)(f"{e} 次の一手: `--regenerate-stage kp_expl_b1b` を1回だけ明示して再実行(KP表現が変わった場合)") from e
     summary["kp_explanations_b1b"] = r["status"]
-    _wj(f"{ctx.out_dir}/study_text_slots.json", STUDY_TEXT_SLOTS)
+    p1_items = _part1_items_b1b(ctx)     # M-9: Part 1の入力=vocab_confirmed.json(最大5件、KP3件を含む)。KP(音声・Adv解説)は3件のまま
+    summary[PART1_STAGE] = _stage_kp_part1(ctx, prov, p1_items)
+    summary[PART1_JA_STAGE] = _stage_kp_part1_ja(ctx, prov, p1_items)     # 解説とは独立の別stage・別call(引用英文のみ入力)
+    _assemble_study_rows(ctx, p1_items)                                   # 組立検証(gloss HR/未評価・引用の逐語実在・訳の最新性)+study_text/保存
+    summary[PART2_FINAL_STAGE] = _part2_final_step(ctx, prov, p1_items)    # Part 2の確定(文法Human確認 or 明示宣言)からStep B。再抽出なし
+    _wj(f"{ctx.out_dir}/study_text_slots.json", {**STUDY_TEXT_SLOTS, "state": {PART1_STAGE: summary[PART1_STAGE], PART1_JA_STAGE: summary[PART1_JA_STAGE],
+                                                                              PART2_FINAL_STAGE: summary[PART2_FINAL_STAGE]}})
     return summary
+
+
+# ------------------------------------------------------------
+# 学習テキスト Part 1「Vocabulary & Expressions」/ Part 2「Grammar & Sentence Structure」(Advancedのみ。X/Zと同形・共通核を呼ぶだけ)
+# 共通核: er003_kp_general_explanation_01(Part 1解説)/er003_kp_source_sentence_ja_01(引用英文の訳)/er120_part2_wiring_01(Part 2)/er119(KP/文法HR)。
+# 使う側(tts_b1b/gate/assemble/pages/page_verify)で存在・最新性・確定との一致をfail-closed確認する(_assert_study_ready)。
+# ------------------------------------------------------------
+def _p1():
+    import er003_kp_general_explanation_01 as p1
+    return p1
+
+
+def _p1ja():
+    import er003_kp_source_sentence_ja_01 as ja
+    return ja
+
+
+def _p2w():
+    import er120_part2_wiring_01 as p2w
+    return p2w
+
+
+def _part1_items_b1b(ctx) -> list:
+    """Part 1の入力の単一アクセサ(M-9)。reviewがあればvocab_confirmed.json(最大5件)が必須(fail-closed)。KP側rankで他ファイルと結合しない。"""
+    khr = _khr()
+    try:
+        return khr.part1_items(_kp_src_dir(ctx, "b1b"))
+    except khr.KpReviewError as e:
+        raise YE2EStop(f"FAMILY_Y_KP_PART1_ITEMS_NOT_READY: {e}") from e
+
+
+def _part1_path(ctx) -> str:
+    return f"{_kp_src_dir(ctx, 'b1b')}/{_p1().EXPLANATIONS_FILENAME}"
+
+
+def _part1_ja_path(ctx) -> str:
+    return f"{_kp_src_dir(ctx, 'b1b')}/{_p1ja().TRANSLATIONS_FILENAME}"
+
+
+def _cli_hint(ctx, regen_name: str) -> str:
+    tp = f" --theme-package {ctx.theme_package_path}" if ctx.theme_package_path else ""
+    return f"`--mode real --slug {ctx.slug} --run {ctx.run}{tp} --stage kp --regenerate-stage {regen_name} --approved-budget-jpy <承認額>`"
+
+
+def _require_part1_fresh(ctx, items: list, where: str) -> dict:
+    p1 = _p1()
+    path = _part1_path(ctx)
+    doc = _rj(path) if os.path.exists(path) else None
+    try:
+        p1.require_fresh_general_explanations(items, doc, where=where,
+                                              next_command=f"{_cli_hint(ctx, PART1_STAGE)}(Part 1だけ再生成。KP選定・TTSはやり直さない。KP表現が変わっている場合は先に kp_expl_b1b)")
+    except p1.KpGeneralExplanationStale as e:
+        raise YE2EStop(f"FAMILY_Y_KP_PART1_NOT_READY: {e}") from e
+    return doc
+
+
+def _require_part1_ja_fresh(ctx, items: list, where: str) -> dict:
+    ja = _p1ja()
+    path = _part1_ja_path(ctx)
+    doc = _rj(path) if os.path.exists(path) else None
+    try:
+        ja.require_fresh_translations(items, doc, where=where, next_command=f"{_cli_hint(ctx, PART1_JA_STAGE)}(訳だけ再生成。KP選定・TTS・解説はやり直さない)")
+    except ja.KpSourceSentenceJaStale as e:
+        raise YE2EStop(f"FAMILY_Y_KP_PART1_JA_NOT_READY: {e}") from e
+    return doc
+
+
+def _assemble_study_rows(ctx, items: list) -> list:
+    p1 = _p1()
+    doc = _require_part1_fresh(ctx, items, "assemble")
+    ja_doc = _require_part1_ja_fresh(ctx, items, "assemble")
+    text = ys.canonical_body(_rd(_level_text_path(ctx, "b1b")))
+    try:
+        rows = p1.assemble_part1(items, doc, _p1ja().translations_by_rank(ja_doc), text)
+    except p1.KpGeneralExplanationError as e:
+        raise YE2EStop(f"FAMILY_Y_KP_PART1_ASSEMBLE_NOT_OK: {e}") from e
+    p1.write_study_text(f"{ctx.out_dir}/study_text", rows)
+    return rows
+
+
+def _stage_kp_part1(ctx, prov, items: list) -> str:
+    st = _m().st
+    p1 = _p1()
+    try:
+        sig = p1.phrases_signature(items)
+    except p1.KpGeneralExplanationInputError as e:
+        raise YE2EStop(f"FAMILY_Y_KP_GENERAL_EXPLANATION_INPUT_INVALID: {e}(Part 1の入力は全文選定KP[fulltext_source_ref+used_form]のみ。TTSへ進まない)") from e
+
+    def runner_p1():
+        _guard(ctx, PART1_STAGE, 0.5)
+        hook = ctx.hooks.get("part1_call_fn")
+        if hook is None and ctx.mode != "real":
+            raise YE2EStop("FAMILY_Y_KP_PART1_NO_HOOK: mock/dry-runではhooks.part1_call_fnが必要(実APIへは出さない)")
+        try:
+            with ctx.stage_context("kp_part1"):
+                res = p1.generate_for_kp_items(items, call_fn=hook, client=ctx.llm_client)
+        except p1.KpGeneralExplanationError as e:
+            raise YE2EStop(f"FAMILY_Y_KP_GENERAL_EXPLANATION_NOT_OK: {e}(旧方式fallbackなし・空欄続行なし。TTSへ渡さずSTOP。次の一手: 原因確認後に{_cli_hint(ctx, PART1_STAGE)})") from e
+        a = res["audit"]
+        return st.dumps(res), {"model": a["model"], "prompt_sha256": a["prompt_sha256"], "total_cost_jpy": a["total_cost_jpy"],
+                               "retried_for_parse": a["retried_for_parse"], "response_ids": a["response_ids"]}
+
+    try:
+        r = _ensure(ctx, prov, PART1_STAGE, sig, _part1_path(ctx), runner_p1)
+    except _m().w62.FamilyZProvenanceMismatchStop as e:
+        raise type(e)(f"{e} 次の一手: {_cli_hint(ctx, PART1_STAGE)}(KP表現・順序・Prompt・modelが変わった場合は明示再生成。自動再生成しない)") from e
+    return r["status"]
+
+
+def _stage_kp_part1_ja(ctx, prov, items: list) -> str:
+    """引用英文のみを入力に日本語訳を1 callで生成(解説stageとは独立)。"""
+    st = _m().st
+    ja = _p1ja()
+    try:
+        sig = ja.translations_signature(items)
+    except ja.KpSourceSentenceJaInputError as e:
+        raise YE2EStop(f"FAMILY_Y_KP_PART1_JA_INPUT_INVALID: {e}(訳の入力は本文引用英文のみ。TTSへ進まない)") from e
+
+    def runner_ja():
+        _guard(ctx, PART1_JA_STAGE, 0.3)
+        hook = ctx.hooks.get("part1_ja_call_fn")
+        if hook is None and ctx.mode != "real":
+            raise YE2EStop("FAMILY_Y_KP_PART1_JA_NO_HOOK: mock/dry-runではhooks.part1_ja_call_fnが必要(実APIへは出さない)")
+        text = ys.canonical_body(_rd(_level_text_path(ctx, "b1b")))
+        try:
+            with ctx.stage_context("kp_part1_ja"):
+                res = ja.generate_for_kp_items(items, call_fn=hook, client=ctx.llm_client, article_text=text)
+        except (ja.KpSourceSentenceJaError, ja.KpSourceSentenceJaInputError) as e:
+            raise YE2EStop(f"FAMILY_Y_KP_PART1_JA_NOT_OK: {e}(旧方式fallbackなし・空欄続行なし。TTSへ渡さずSTOP。次の一手: 原因確認後に{_cli_hint(ctx, PART1_JA_STAGE)})") from e
+        a = res["audit"]
+        return st.dumps(res), {"model": a["model"], "prompt_sha256": a["prompt_sha256"], "total_cost_jpy": a["total_cost_jpy"],
+                               "retried_for_parse": a["retried_for_parse"], "response_ids": a["response_ids"]}
+
+    try:
+        r = _ensure(ctx, prov, PART1_JA_STAGE, sig, _part1_ja_path(ctx), runner_ja)
+    except _m().w62.FamilyZProvenanceMismatchStop as e:
+        raise type(e)(f"{e} 次の一手: {_cli_hint(ctx, PART1_JA_STAGE)}(引用英文・Prompt・modelが変わった場合は明示再生成。自動再生成しない)") from e
+    return r["status"]
+
+
+# --- Part 2(文法) ---
+def _part2_dir(ctx) -> str:
+    return f"{ctx.out_dir}/study_text"
+
+
+def _part2_inputs(ctx):
+    """(段落list, label)。段落=ys.canonical_body(b1b)の空行区切り(KP/Part 1と同じ入力。Voiceの紹介行+本文は1段落に結合)、label=Advanced英訳のタイトル行。"""
+    text = _rd(_level_text_path(ctx, "b1b"))
+    return ys.canonical_body(text).split("\n\n"), _p2w().label_for(text)
+
+
+def _part2_next(ctx, regen: str = PART2_FINAL_STAGE) -> str:
+    return (f"{_cli_hint(ctx, regen)}(Part 2だけ再finalize。本文・KP・TTSはやり直さない。再抽出はしない)。"
+            f"未確定なら `py er119_kp_human_review_cli_01.py grammar-select --run {ctx.out_dir} ...` で決めてから `--stage kp` を同じまま再実行")
+
+
+def _stage_precheck(prov, name: str, input_sha: str, force: bool) -> None:
+    """有料呼出の前に、ensure_stageと同じ来歴規則(stale/親sha不一致)で止める(確認前に抽出・解説を発注しない)。"""
+    if force:
+        return
+    w62 = _m().w62
+    if name in prov.data["downstream_stale"]:
+        raise w62.FamilyZProvenanceMismatchStop(f"{name}はstale(親の再生成後)。明示 --regenerate-stage {name} が必要(自動再生成しない)")
+    entry = prov.stage_entry(name)
+    if entry is not None and entry["input_sha256"] != input_sha:
+        raise w62.FamilyZProvenanceMismatchStop(f"{name}: 親sha不一致 entry.input={entry['input_sha256'][:12]} 現在={input_sha[:12]}")
+
+
+def _part2_hook(ctx, key: str):
+    hook = ctx.hooks.get(key)
+    if hook is None and ctx.mode != "real":
+        raise YE2EStop(f"FAMILY_Y_PART2_NO_HOOK: mock/dry-runではhooks.{key}が必要(実APIへは出さない)")
+    return hook
+
+
+def _part2_cand_step(ctx, prov) -> dict:
+    """候補抽出(または保存済みの再利用)→Human確認/明示宣言/適格0件の即確定の評価。KP候補生成と同じ待機点の前に呼ぶ。"""
+    p2w = _p2w()
+    g = p2w.g
+    paragraphs, label = _part2_inputs(ctx)
+    sd = _part2_dir(ctx)
+    force = ctx.regenerate_stage == PART2_CAND_STAGE
+    _stage_precheck(prov, PART2_CAND_STAGE, g.cand_stage_input_sha(paragraphs, label), force)
+    hook = _part2_hook(ctx, "part2_extract_call_fn")
+    try:
+        with ctx.stage_context("part2_cand"):
+            res = p2w.candidate_stage(sd, run_dir=ctx.out_dir, family="y", slug=ctx.slug, paragraphs=paragraphs, label=label, run_hint=ctx.out_dir,
+                                      extract_call_fn=hook, client=ctx.llm_client, budget_guard=lambda stage, est: _guard(ctx, f"part2_{stage}", est),
+                                      force_extract=force)
+    except (g.Part2Error, g.Part2InputError) as e:
+        g.write_failed_record(sd, e, next_command=_part2_next(ctx, PART2_CAND_STAGE), stage=PART2_CAND_STAGE)
+        raise YE2EStop(f"FAMILY_Y_PART2_NOT_OK({PART2_CAND_STAGE}): {e}(候補抽出に失敗。TTSへ渡さずSTOP。記録={sd}/{g.FAILED_FILENAME}。"
+                       f"次の一手: {_part2_next(ctx, PART2_CAND_STAGE)})") from e
+    _m().w62.ensure_stage(prov, PART2_CAND_STAGE, g.cand_stage_input_sha(paragraphs, label), f"{sd}/part2_cand_stage.json",
+                          lambda: (p2w.cand_marker(sd, paragraphs, label), {"label": label}), regenerate=force)
+    return res
+
+
+def _part2_final_step(ctx, prov, p1_items: list) -> str:
+    """確定済みの文法reviewから Step B(再抽出なし)。part2_b1bのinput_sha=sha(text_sha|label|文法の確定selection_signature)。"""
+    p2w = _p2w()
+    g = p2w.g
+    w62 = _m().w62
+    khr = _khr()
+    paragraphs, label = _part2_inputs(ctx)
+    sd = _part2_dir(ctx)
+    doc, review, _res = p2w.load_state(sd)
+    if doc is None or review is None:
+        raise YE2EStop("FAMILY_Y_PART2_NOT_READY: 文法の候補/reviewがありません(part2_cand_b1bが未実行)")
+    if review["status"] not in khr.FORWARD_STATUSES_BY_KIND["grammar"]:
+        raise YKpReviewPending(f"{khr.PENDING_MARKER} Part 2(文法)のHuman確認待ち: status={review['status']}", [p2w.gr.pending_summary(sd, review)])
+    ja_doc = _rj(_part1_ja_path(ctx)) if os.path.exists(_part1_ja_path(ctx)) else None
+    pool = p2w.part1_ref_ja_pool(p1_items, ja_doc)
+    input_sha = g.final_stage_input_sha(paragraphs, label, review)
+    force = ctx.regenerate_stage == PART2_FINAL_STAGE
+    try:
+        _stage_precheck(prov, PART2_FINAL_STAGE, input_sha, force)
+    except w62.FamilyZProvenanceMismatchStop as e:
+        raise type(e)(f"{e} 次の一手: {_part2_next(ctx)}") from e
+    hook = _part2_hook(ctx, "part2_explain_call_fn")
+
+    def runner():
+        try:
+            with ctx.stage_context("part2_final"):
+                out = p2w.finalize_stage(sd, paragraphs=paragraphs, label=label, ref_ja_pool=pool, explain_call_fn=hook, client=ctx.llm_client,
+                                         budget_guard=lambda stage, est: _guard(ctx, f"part2_{stage}", est), write=False)
+        except g.Part2PendingReview as e:
+            raise YKpReviewPending(f"{khr.PENDING_MARKER} Part 2(文法)のHuman確認待ち: {e.status}", [p2w.gr.pending_summary(sd, review)]) from e
+        except (g.Part2Error, g.Part2InputError) as e:
+            g.write_failed_record(sd, e, next_command=_part2_next(ctx), stage=PART2_FINAL_STAGE)
+            raise YE2EStop(f"FAMILY_Y_PART2_NOT_OK({PART2_FINAL_STAGE}): {e}(解説生成に失敗。TTSへ渡さずSTOP。記録={sd}/{g.FAILED_FILENAME}。"
+                           f"次の一手: {_part2_next(ctx)})") from e
+        res = out["result"]
+        p2w.write_md(sd, res)
+        return json.dumps(res, ensure_ascii=False, indent=2), {"part2_status": res.get("status"), "review_status": review["status"],
+                                                              "grammar_selection_signature": review["selection_signature"]}
+
+    r = _ensure(ctx, prov, PART2_FINAL_STAGE, input_sha, f"{sd}/{g.RESULT_FILENAME}", runner)
+    fp = f"{sd}/{g.FAILED_FILENAME}"
+    if os.path.exists(fp):
+        os.replace(fp, fp.replace(".json", ".resolved.json"))     # 成功したら失敗記録は解決済みへ退避(削除しない)
+    return r["status"]
+
+
+def _part2_pool(ctx) -> dict:
+    p = _part1_ja_path(ctx)
+    return _p2w().part1_ref_ja_pool(_part1_items_b1b(ctx), _rj(p) if os.path.exists(p) else None)
+
+
+def _assert_part2_final(ctx, where: str) -> dict:
+    """Part 2を使う側の入口: 無い/古い/確定不一致=YE2EStop、文法のHuman確認待ち=YKpReviewPending(rc=4)。resultを返す。"""
+    p2w = _p2w()
+    g = p2w.g
+    paragraphs, label = _part2_inputs(ctx)
+    try:
+        return p2w.require_final(_part2_dir(ctx), paragraphs, label, next_command=_part2_next(ctx), where=where, ref_ja_pool=_part2_pool(ctx))
+    except p2w.Part2NotConfirmed as e:
+        raise YKpReviewPending(str(e), e.pending) from e
+    except (g.Part2Error, g.Part2InputError) as e:
+        raise YE2EStop(f"FAMILY_Y_PART2_NOT_READY({where}): {e}") from e
+
+
+def _assert_study_ready(ctx, where: str) -> dict:
+    """使う側(tts_b1b/gate/assemble/pages/page_verify)の入口: KP確定+Part 1(解説・訳)の存在と最新性+Part 2(文法)の確定・最新性。未確定=rc=4待機、古い/不整合=STOP。"""
+    _assert_kp_review_consistent(ctx, "b1b", where)
+    items = _part1_items_b1b(ctx)
+    _require_part1_fresh(ctx, items, where)
+    _require_part1_ja_fresh(ctx, items, where)
+    return _assert_part2_final(ctx, where)
+
+
+PART1_MARKER = "Vocabulary &amp; Expressions"
+PART2_MARKER = "Grammar &amp; Sentence Structure"
+
+
+def _verify_part2_outputs(ctx) -> dict:
+    """確定 <-> part2_result.json <-> study_text/*.md <-> 試聴ページ(index.html。Advancedの節に1個だけ・Part 1の直後)を照合(kind="grammar")。"""
+    p2w = _p2w()
+    g = p2w.g
+    paragraphs, label = _part2_inputs(ctx)
+    idx = f"{ctx.pages_dir}/index.html"
+    with open(idx, encoding="utf-8") as f:
+        idx_html = f.read()
+    try:
+        p2w.verify_outputs(_part2_dir(ctx), paragraphs, label, next_command=_part2_next(ctx), where="stage_page_verify", ref_ja_pool=_part2_pool(ctx),
+                           md_path=f"{_part2_dir(ctx)}/{g.PART2_FILE_STEM}.md", html_text=idx_html)
+    except (g.Part2Error, g.Part2InputError) as e:
+        raise YE2EStop(f"FAMILY_Y_PART2_OUTPUT_MISMATCH: {e}") from e
+    n1, n2 = idx_html.count(PART1_MARKER), idx_html.count(PART2_MARKER)
+    if n2 != 1:
+        raise YE2EStop(f"FAMILY_Y_PART2_OUTPUT_MISMATCH: index.htmlのPart 2ブロックが{n2}個です(Advancedの節に1個だけのはず)")
+    if n1 > 1 or (n1 == 1 and idx_html.index(PART1_MARKER) > idx_html.index(PART2_MARKER)):
+        raise YE2EStop(f"FAMILY_Y_PART2_OUTPUT_MISMATCH: Part 1({n1}個)がPart 2の直前(Part 1→Part 2の順)にありません")
+    adv_at = idx_html.find("id='advanced'")
+    if adv_at < 0 or idx_html.index(PART2_MARKER) < adv_at:
+        raise YE2EStop("FAMILY_Y_PART2_ON_STANDARD_PAGE: Part 2がAdvancedの節より前(Standard側)にあります")
+    return {"index_page": "OK", "part1_blocks": n1, "part2_blocks": n2}
 
 
 # ------------------------------------------------------------
@@ -649,6 +963,8 @@ def stage_tts(ctx, lv: str) -> dict:
     w62 = _m().w62
     prov = _prov(ctx)
     _assert_kp_review_consistent(ctx, lv, f"tts_{lv}")
+    if lv == "b1b":
+        _assert_study_ready(ctx, "tts_b1b")        # Part 1/Part 2(Advancedのみ)の存在・最新性・確定を使う側の入口で確認(未確定=rc=4待機、古い=STOP)
     text = _rd(_level_text_path(ctx, lv))
     parsed = ys.split_y_article(text)
     support = _rj(f"{ctx.out_dir}/support/{lv}_support.json")
@@ -682,6 +998,9 @@ def _require_fresh(prov, name):
 def stage_gate(ctx) -> dict:
     ya = _ya()
     prov = _prov(ctx)
+    for lv in LEVELS:
+        _require_fresh(prov, f"tts_{lv}")
+    _assert_study_ready(ctx, "gate")
     out = {}
     for lv in LEVELS:
         _require_fresh(prov, f"tts_{lv}")
@@ -697,6 +1016,9 @@ def stage_gate(ctx) -> dict:
 def stage_assemble(ctx) -> dict:
     ya = _ya()
     prov = _prov(ctx)
+    for lv in LEVELS:
+        _require_fresh(prov, f"tts_{lv}")
+    _assert_study_ready(ctx, "assemble")
     out = {}
     for lv in LEVELS:
         _require_fresh(prov, f"tts_{lv}")
@@ -713,9 +1035,20 @@ def stage_pages(ctx) -> dict:
     ya = _ya()
     ja_segs = ys.split_y_article(_rd(_ja_path(ctx)))["segments"]
     title = ys.split_y_article(_rd(_ja_path(ctx)))["title"]
+    _assert_kp_review_consistent(ctx, "a2", "stage_pages")
+    p2res = _assert_study_ready(ctx, "stage_pages")           # Part 1/Part 2の存在・最新性・確定との一致(未確定=rc=4、古い=STOP)
+    rows = _assemble_study_rows(ctx, _part1_items_b1b(ctx))     # study_text/は毎回再組立して保存(本文・gloss更新に追従)
+    try:
+        study_html = _p1().render_html_block(rows)
+    except _p1().KpGeneralExplanationError as e:
+        raise YE2EStop(f"FAMILY_Y_KP_PART1_RENDER_NOT_OK: {e}") from e
+    study_html = _p2w().compose_page_html(study_html, p2res)    # 共通builder1つ: Part 1ブロック直後にPart 2(0件は固定文面)。Advancedの節にだけ載せる
     audio_dir = f"{ctx.pages_dir}/audio"
     os.makedirs(audio_dir, exist_ok=True)
     levels = [ya.build_page_rows(ctx.out_dir, lv, audio_dir, "audio", ja_paragraphs=ja_segs) for lv in ("a2", "b1b")]     # Standard, Advanced の順
+    for lvd in levels:
+        if lvd["id"] == "advanced" and study_html:
+            lvd["study_html"] = study_html
     html_text = ya.render_y_page(title, levels)
     page = f"{ctx.pages_dir}/index.html"
     with open(page, "w", encoding="utf-8") as f:
@@ -734,6 +1067,22 @@ def evaluate_page_verify(html_text: str, base_dir: str) -> list:
     return v
 
 
+def _verify_kp_selection(ctx, html_text: str) -> dict:
+    """KP Human Review検証5: 確定KP <-> KP artifact <-> TTS結果 <-> study_text(Part 1) <-> 試聴ページ。不一致=STOP。"""
+    khr = _khr()
+    out = {}
+    for lv in LEVELS:
+        try:
+            out[lv] = khr.verify_selection_matches_outputs(
+                _kp_src_dir(ctx, lv), level=lv, tts_results_path=f"{ctx.out_dir}/{lv}/audit/tts_generation_results.json",
+                study_text_json=(f"{ctx.out_dir}/study_text/{_p1().PART1_FILE_STEM}.json" if lv == "b1b" else None),
+                page_paths=[f"{ctx.pages_dir}/index.html"], vocab_page_paths=([f"{ctx.pages_dir}/index.html"] if lv == "b1b" and PART1_MARKER in html_text else None),
+                require_src_contract=False)
+        except khr.KpReviewInconsistent as e:
+            raise YE2EStop(f"FAMILY_Y_KP_SELECTION_OUTPUT_MISMATCH({lv}): {e}") from e
+    return out
+
+
 def stage_page_verify(ctx) -> dict:
     page = f"{ctx.pages_dir}/index.html"
     if not os.path.exists(page):
@@ -741,12 +1090,54 @@ def stage_page_verify(ctx) -> dict:
     with open(page, encoding="utf-8") as f:
         html_text = f.read()
     viol = evaluate_page_verify(html_text, ctx.pages_dir)
+    _assert_study_ready(ctx, "stage_page_verify")
     rec = {"page": page, "violations": viol, "ok": not viol}
+    rec["part2_verified"] = _verify_part2_outputs(ctx)           # 確定 <-> part2_result.json <-> md <-> ページ(Advancedのみ・Part 1直後)
+    rec["kp_selection_verified"] = _verify_kp_selection(ctx, html_text)
     _wj(f"{ctx.out_dir}/page_verify_local.json", rec)
     if viol:
         raise YE2EStop(f"FAMILY_Y_PAGE_VERIFY_FAILED: {viol}")
     write_final_manifest(ctx)
     return rec
+
+
+# unit -> 費用ログ(cost_log.jsonl)のstageタグ。モデルを来歴entryへ転記する(委任_06: text/kp/supportのmodel欄nullの是正。API 0・記録の転記のみ)
+UNIT_COST_TAGS = {"text": ("yp_",), "translate_b1b": ("translate",), "translate_a2": ("translate",), "support_b1b": ("support",), "support_a2": ("support",),
+                  "kp_b1b": ("kp", "kp_gloss_alignment"), "kp_a2": ("kp", "kp_gloss_alignment"), "kp_expl_b1b": ("kp",), "kp_part1_b1b": ("kp_part1",),
+                  "kp_part1_ja_b1b": ("kp_part1_ja",), "part2_cand_b1b": ("part2_cand",), "part2_b1b": ("part2_final",),
+                  "tts_b1b": ("tts_b1b",), "tts_a2": ("tts_a2",)}
+_TEXT_ROUTE_PARTS = ("voice_generate", "lead", "intros", "closing")
+
+
+def _cost_models_by_tag(ctx) -> dict:
+    """{stageタグ: {model_id: 呼出数}}(費用ログの転記。無ければ空)。"""
+    path = f"{ctx.out_dir}/cost_log.jsonl"
+    out = {}
+    if not os.path.exists(path):
+        return out
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                r = json.loads(line)
+            except ValueError:
+                continue
+            tag, mid = r.get("stage") or "", r.get("model_id")
+            if mid:
+                out.setdefault(tag, {})
+                out[tag][mid] = out[tag].get(mid, 0) + 1
+    return out
+
+
+def _unit_models(unit: str, by_tag: dict) -> dict:
+    agg = {}
+    for tag, models in by_tag.items():
+        if any((tag == pat) or (pat.endswith("_") and tag.startswith(pat)) for pat in UNIT_COST_TAGS.get(unit, ())):
+            for m, n in models.items():
+                agg[m] = agg.get(m, 0) + n
+    return agg
 
 
 def write_final_manifest(ctx) -> str:
@@ -756,12 +1147,37 @@ def write_final_manifest(ctx) -> str:
     p = f"{ctx.out_dir}/text/text_records.json"
     if os.path.exists(p):
         tr = _rj(p)
+    by_tag = _cost_models_by_tag(ctx)
+    entries = {}
+    for n in UNIT_NAMES:
+        e = prov.stage_entry(n)
+        if e is None:
+            continue
+        ent = {k: e.get(k) for k in ("routing_key", "requested_model", "actual_model_id", "response_id", "prompt_sha256", "cost_jpy", "input_sha256", "output_sha256")}
+        models = _unit_models(n, by_tag)
+        if models:
+            ent["models_used"] = models                    # 費用ログ由来(実際に呼ばれたmodel_idと呼出数。LLM+TTS+ASRを含む)
+            llm = [m for m in models if not m.startswith(("gemini", "azure", "gpt-4o"))]
+            if ent["actual_model_id"] is None and len(llm) == 1:
+                ent["actual_model_id"] = llm[0]
+        if n == "text":
+            routes = {}
+            for part in _TEXT_ROUTE_PARTS:
+                rec = tr.get("closing_record") if part == "closing" else (tr.get("records") or {}).get(part)
+                if rec:
+                    routes[part] = {k: rec.get(k) for k in ("routing_key", "model_id", "expected_model", "effort", "prompt_sha256")}
+            if routes:
+                ent["routes"] = routes
+        if e.get("model") and ent["actual_model_id"] is None:      # Part 1/訳など、entryがmodelを`model`として持つ場合
+            ent["actual_model_id"] = e.get("model")
+        if e.get("model") and ent["prompt_sha256"] is None:
+            ent["prompt_sha256"] = e.get("prompt_sha256")
+        entries[n] = ent
     man = {"management_id": MANAGEMENT_ID, "slug": ctx.slug, "run": ctx.run, "mode": ctx.mode, "entry_status": ys.ENTRY_STATUS,
            "page": f"{ctx.pages_dir}/index.html",
            "assembled": {lv: _glob_one(f"{ctx.out_dir}/{lv}/assembled/*.wav") for lv in LEVELS},
            "ja_article": _ja_path(ctx), "closing_record": tr.get("closing_record"),
-           "stage_entries": {n: {k: e.get(k) for k in ("routing_key", "requested_model", "actual_model_id", "response_id", "prompt_sha256", "cost_jpy", "input_sha256", "output_sha256")}
-                             for n in UNIT_NAMES if (e := prov.stage_entry(n)) is not None},
+           "stage_entries": entries,
            "study_text_slots": STUDY_TEXT_SLOTS, "chunk_tts": "not_applicable_Y", "core_numeric_v4_j2": "not_applicable_Y",
            "spent_jpy": round(ctx.budget.spent(), 4) if ctx.budget is not None else None}
     path = f"{ctx.out_dir}/final_manifest.json"
