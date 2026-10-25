@@ -1,0 +1,18 @@
+[Y-CLOSING-GENERAL] reserve ok: spent 0.0 + est 12.0 <= 30.0 (redelivery_fee gen1 try1)
+[Y-CLOSING-GENERAL] reserve ok: spent 19.466 + est 0.8 <= 30.0 (redelivery_fee gen1 gate)
+[Y-CLOSING-GENERAL] redelivery_fee gen1 chars=201 gate_flagged=True
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er110_family_y_closing_general_trial_01.py", line 332, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er110_family_y_closing_general_trial_01.py", line 328, in main
+    {"dryrun": cmd_dryrun, "gen": cmd_gen}[a.cmd](a)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\tensh\eigo-radio\er110_family_y_closing_general_trial_01.py", line 313, in cmd_gen
+    r = generate_one(client, theme=a.theme, gen_idx=g, inp=inp, theme_cap=theme_cap, out_dir=od)
+  File "C:\Users\tensh\eigo-radio\er110_family_y_closing_general_trial_01.py", line 241, in generate_one
+    reserve(theme_dir, GEN_EST_JPY, theme_cap, f"{theme} gen{gen_idx} try{k}", spent_fn)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er110_family_y_closing_general_trial_01.py", line 224, in reserve
+    raise RuntimeError(f"[BUDGET_RESERVE_STOP] spent {s} + est {est_jpy} > theme cap {theme_cap} JPY ({note})")
+RuntimeError: [BUDGET_RESERVE_STOP] spent 19.657 + est 12.0 > theme cap 30.0 JPY (redelivery_fee gen2 try1)
