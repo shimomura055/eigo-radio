@@ -457,6 +457,53 @@ def _mk_primary(p) -> PrimaryResult:
                          dict(getattr(p, "signals", {}) or {}), getattr(p, "adopted_text", None))
 
 
+# ---- OPEN-517 R-5 計測(JA-ASR-FALSE-NG-ROOT-CAUSE-01 委任_09。仕様=docs/research/JA-ASR-FALSE-NG-ROOT-CAUSE-01/R5_MEASUREMENT_SPEC_01.md) ----
+# 判定が確定した**後**に(done()の最後で)asr_judgementへ読取専用の記録を足すだけ。state/reason_code/warnings/attempt数/HR Lock/retryは一切変えない。
+# 計測の例外は握りつぶさず`measurement_error`に記録するのみ(判定側へ波及させない)。新flagなし(read-only記録)。キー追加はadditive(未知キーを既存consumerは無視する)。
+R5_MEASUREMENT_VERSION = "r5_v1"
+_R5_FINAL_GATE_REASONS = ("final_gate_value_diff", "final_gate_negation_diff")
+_R5_WEAK_KANA_MARKS = tuple(getattr(vg, "WEAK_KANA_NUMERALS", ()))
+
+
+def _r5_record(audit: dict, ctx, pr, canon: str, r5_state: dict) -> None:
+    """audit(確定済み)へ`canonical_text`・`secondary.provenance_complete`・`r5`を加算記録する。判定フィールドは読むだけ。"""
+    try:
+        state, reason = audit.get("state"), audit.get("reason_code") or ""
+        reading_match = bool(pr.passed and pr.equivalence_basis == READING_MATCH_BASIS)
+        rejected = bool(reading_match and state == NG_PROTECTED and reason in _R5_FINAL_GATE_REASONS)      # F1がNG化(旧規則=approved基底ならskipしてPASS)
+        demoted = bool(reading_match and audit.get("p3_entry") == "primary_pass_demoted_ambiguous_value")     # F1がP3へ降格(旧規則なら降格せずPASS)
+        vgp = (audit.get("value_guard") or {}).get("primary") or {}
+        vgs = (audit.get("value_guard") or {}).get("secondary") or {}
+        pairs = list(vgp.get("pairs") or []) + list(vgs.get("pairs") or [])
+        ku = (audit.get("value_guard") or {}).get("kana_unify") or {}
+        weak_diff = [p for p in pairs if p.get("verdict") == vg.DIFF and any(w in str(p.get("src")) + str(p.get("hyp")) for w in _R5_WEAK_KANA_MARKS)]
+        o524 = [p for p in pairs if "kana_numeral_part_of_larger_reading" in str(p.get("reason"))]
+        r5 = {
+            "version": R5_MEASUREMENT_VERSION, "measurement_error": None,
+            "f1": {"rollback_const_READING_MATCH_FINAL_GATE": bool(READING_MATCH_FINAL_GATE), "reading_match_primary_pass": reading_match,
+                   "final_gate_rejected": rejected, "demoted_p3": demoted, "would_have_passed_before_f1": bool(rejected or demoted),
+                   "reason_code": reason if (rejected or demoted) else None,
+                   "pair_reasons": [str(p.get("reason")) for p in (vgp.get("pairs") or [])] if (rejected or demoted) else []},
+            "f2": {"enabled": bool(r5_state.get("kana_unify")), "fired": bool(ku.get("fired")), "fallback": ku.get("fallback"), "replaced": ku.get("replaced"),
+                   "canon_before": canon if ku else None, "canon_after": ku.get("canon2") if ku else None,
+                   "text_before": r5_state.get("gate_text") if ku else None, "text_after": ku.get("text2") if ku else None,
+                   "state_after": state if ku else None},
+            "o524_part_of_larger_pairs": len(o524), "o523_weak_kana_diff_pairs": len(weak_diff),
+        }
+        audit["r5"] = r5
+        audit["canonical_text"] = canon
+        sec = audit.get("secondary") or {}
+        if sec.get("called") or sec.get("cached") or sec.get("error"):
+            sha = audit.get("audio_sha256")
+            stext = sec.get("text")
+            sec["provenance_complete"] = bool(stext) and bool(sec.get("engine")) and bool(sha) and not str(sha).startswith("nosha:")
+    except Exception as e:   # noqa: BLE001  計測の失敗は判定へ波及させない(記録のみ)
+        try:
+            audit["r5"] = {"version": R5_MEASUREMENT_VERSION, "measurement_error": f"{type(e).__name__}: {e}"}
+        except Exception:   # noqa: BLE001
+            pass
+
+
 def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, role: str | None,
                   final_and_gate: bool = True, secondary_accept_fn=None) -> JudgeResult:
     """1音声=1 attemptの統一判定。純粋: API呼出は`secondary_fn`(注入)経由のみ。
@@ -471,6 +518,7 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
     canon = ctx.canonical_text
     rs = ctx.run_state
     cache = ctx.cache if ctx.cache is not None else SecondaryCache()
+    r5_state: dict = {}   # R-5計測用(読取専用)。判定には使わない
     audit = {
         "state": None, "reason_code": "", "slot": ctx.slot, "script_version": ctx.script_version, "role": role, "lang": lang,
         "segment_key": ctx.segment_key, "audio_sha256": None,
@@ -514,6 +562,7 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
         audit["warnings"] = wl
         audit["secondary"]["unavailable"] = unavailable
         audit["timing"]["total_ms"] = int((time.time() - t0) * 1000)
+        _r5_record(audit, ctx, pr, canon, r5_state)   # R-5: 判定確定後の読取専用記録(失敗しても判定は不変)
         return JudgeResult(state, wl, audit, reason, unavailable)
 
     # ---- Primary ASR取得失敗 ----
@@ -525,6 +574,7 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
     # OPEN-517(F1+F2): READING_MATCHのPrimary PASSは最終ANDゲートを受け、そのゲートの値ガードにだけF2(かな数詞の表記統一)を許す。Primary NG・Secondaryは対象外。
     kana_unify = bool(READING_MATCH_FINAL_GATE and pr.passed and pr.equivalence_basis == READING_MATCH_BASIS)
     f2_info: dict = {}
+    r5_state.update(kana_unify=kana_unify, gate_text=gate_text)
     pvg, pneg = _protected(canon, gate_text, lang, kana_unify=kana_unify, info_out=f2_info)
     audit["value_guard"] = {"primary": pvg.to_dict()}
     if kana_unify and f2_info.get("replaced"):

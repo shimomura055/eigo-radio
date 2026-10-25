@@ -7,6 +7,9 @@
 #   (c) (a)(b)のうち当該segmentが最終slot到達でHR Lock入りしたもの(review_lock_state.json に segment key があるもの)
 #   (d) F2発動: value_guard.kana_unify.fired==True の件数、およびPASS_WITH_WARNING で JA_NUMERIC_IRREGULAR_READING が付いた件数
 #   (e) OPEN-524/523由来: value_guard.primary.pairs の reason に kana_numeral_part_of_larger_reading を含む件数 / 弱いかな数詞を含む pair の DIFF 件数
+# R-5(委任_09)追加: `asr_judgement.r5`(er078 `_r5_record`。判定確定後の読取専用記録)があれば、その項目も集計する(旧run=r5なしでも動く):
+#   r5_present / r5_f1_rejected(f1.final_gate_rejected) / r5_f1_demoted(f1.demoted_p3) / r5_f2_enabled / r5_f2_fired / r5_o523_weak_diff / r5_o524_part_of_larger /
+#   r5_measurement_errors / r5_secondary_provenance_incomplete(secondary.provenance_complete==False) / r5_models(primary/secondary model の出現数)
 # 異常値の目安: (a)が1runで3件超ならrollback定数(er078_asr_unified_judge_01.READING_MATCH_FINAL_GATE)の検討をFableへ報告(自動rollbackはしない)。
 import glob, json, os, sys
 
@@ -15,7 +18,9 @@ PASSING = ("PASS", "PASS_WITH_WARNING")
 
 def tally(run_dirs):
     out = {"a_final_gate_diff": 0, "b_demote_p3": 0, "c_hr_lock": 0, "d_f2_fired": 0, "d_warn_irregular": 0, "e_part_of_larger": 0, "e_weak_diff": 0,
-           "attempts_scanned": 0, "reading_match_attempts": 0, "details": []}
+           "attempts_scanned": 0, "reading_match_attempts": 0, "details": [],
+           "r5_present": 0, "r5_f1_rejected": 0, "r5_f1_demoted": 0, "r5_f2_enabled": 0, "r5_f2_fired": 0, "r5_o523_weak_diff": 0, "r5_o524_part_of_larger": 0,
+           "r5_measurement_errors": 0, "r5_secondary_provenance_incomplete": 0, "r5_models": {}, "head_evidence": {}}
     for rd in run_dirs:
         locked = set()
         for lp in glob.glob(os.path.join(rd, "**", "review_lock_state.json"), recursive=True):
@@ -66,10 +71,29 @@ def tally(run_dirs):
                         out["e_part_of_larger"] += 1
                     if any(q.get("verdict") == "DIFF" and any(w in str(q.get("src")) + str(q.get("hyp")) for w in ("なのか", "ようか", "とお")) for q in pairs):
                         out["e_weak_diff"] += 1
+                    r5 = j.get("r5")
+                    if isinstance(r5, dict):
+                        out["r5_present"] += 1
+                        f1, f2 = r5.get("f1") or {}, r5.get("f2") or {}
+                        out["r5_f1_rejected"] += int(bool(f1.get("final_gate_rejected")))
+                        out["r5_f1_demoted"] += int(bool(f1.get("demoted_p3")))
+                        out["r5_f2_enabled"] += int(bool(f2.get("enabled")))
+                        out["r5_f2_fired"] += int(bool(f2.get("fired")))
+                        out["r5_o523_weak_diff"] += int(r5.get("o523_weak_kana_diff_pairs") or 0)
+                        out["r5_o524_part_of_larger"] += int(r5.get("o524_part_of_larger_pairs") or 0)
+                        out["r5_measurement_errors"] += int(bool(r5.get("measurement_error")))
+                        for side, m in (r5.get("models") or {}).items():
+                            if isinstance(m, dict):
+                                mk = side + ":" + str(m.get("model") or m.get("model_id"))
+                                out["r5_models"][mk] = out["r5_models"].get(mk, 0) + 1
+                        out["head_evidence"]["READING_MATCH_FINAL_GATE"] = (f1 or {}).get("rollback_const_READING_MATCH_FINAL_GATE")
+                    if (j.get("secondary") or {}).get("provenance_complete") is False:
+                        out["r5_secondary_provenance_incomplete"] += 1
                     if hit or ku.get("fired"):
                         out["details"].append({"file": p.replace("\\", "/"), "segment": key, "attempt": a.get("attempt"), "hit": hit, "reason": rs,
                                                "canon": s.get("canonical_text") or s.get("text"), "asr": (j.get("primary") or {}).get("text")})
     out["alert_rollback_review"] = out["a_final_gate_diff"] > 3
+    out["alert_demote_review"] = out["b_demote_p3"] > 3   # 07A開示リスク: 期待読み表に無い正しい読みのDEMOTEが1 runで3件超 -> Fableへ即報告
     return out
 
 

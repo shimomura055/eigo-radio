@@ -728,6 +728,19 @@ def evaluate_attempt_ja_with_cascade_detail(
             result["technical_stop_status"] = "TECHNICAL_STOP_SECONDARY_UNAVAILABLE"
         if bool(actx.get("is_last_slot", False)) and not _tech_only:
             result["human_review_required"] = True
+    # OPEN-517 R-5(委任_09、読取専用の記録のみ): Secondaryを使ったattemptにmodel_idを複写し、PrimaryのASR routing(SSOT)を記録する。判定結果には関与しない。
+    try:
+        if secondary_ran:
+            sec["model_id"] = "azure-speech-stt"
+        _r5 = audit.get("r5")
+        if isinstance(_r5, dict) and _r5.get("measurement_error") is None:
+            from er006_asr_provider_routing_01 import require_asr_route as _rar
+            _pm = _rar("ja")
+            _r5["models"] = {"primary": {"provider": _pm.get("provider"), "model": _pm.get("model")},
+                             "secondary": {"provider": "azure", "model_id": "azure-speech-stt"} if secondary_ran else None}
+    except Exception as _e:   # noqa: BLE001  計測の失敗は判定へ波及させない
+        if isinstance(audit.get("r5"), dict):
+            audit["r5"]["measurement_error"] = f"{type(_e).__name__}: {_e}"
     audit["adapter"] = {"layers": (["numeric_value_equivalence"] if eq_cls is not None else []),
                         "azure_real_calls": 1 if sec.get("called") else 0, "cost_guard_triggered": state["cost_guard"],
                         "language": "ja-JP", "asr_text_present": primary_asr_text is not None,
