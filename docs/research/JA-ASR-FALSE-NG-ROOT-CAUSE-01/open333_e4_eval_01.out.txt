@@ -1,0 +1,150 @@
+[実データ+SYN] 行数 1327 / 保存Secondary転写あり 193 / [parity] HEAD(E3適用済み) vs 前回評価E3V(eval_04保存)の不一致 0
+HEAD: 全PASS 708 / 負例以外のPASS 676 / Cascade到達 399 / 即NG 220
+[実データ] HEADとの遷移種別: {"F05_E4": {"不変": 1323, "PASS→Cascade": 4}, "F06_E4": {"不変": 1323, "PASS→Cascade": 4}, "F06_E4N": {"不変": 1327}, "F06_E4_E4N": {"不変": 1323, "PASS→Cascade": 4}}
+
+== 実データ F05_E4: HEADから変わる行 4 ==
+   P4    mpt1_customb8f0ff16.json:comment_3 | ここまでのポイントは、AIの通話に人が加わる場合、そ | ここまでのポイントは、AIの通話に人が加わる場合、そ | PASS→Cascade | PASS/primary_pass -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable | casc=[('muse', 'ミューズ', True, False)]
+   P4    customb8f0ff16.json:japanese_title | 走れメロス | 走レメラス | PASS→Cascade | PASS/primary_pass -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable | casc=[('ロ', 'ラ', True, False)]
+   P4    mpt1_custom06ec49ff.json:comment_2 | ヴェラは、叔母が夫たちの帰りを今も待っていると話しま | ベラは、叔母が夫たちの帰りを今も待っていると話しまし | PASS→Cascade | PASS/primary_pass -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable | casc=[('ヴェ', 'ベ', True, False)]
+   U:legacy/other ase2_ja_evidence_01/result.json#s4 | AIからの電話だと思ったら…中に“人”がいた？　Me | AIからの電話だと思ったら、中に人がいた? メタのミ | PASS→Cascade | PASS/primary_pass -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable | casc=[('meta', 'メタ', True, False), ('museで起き', 'ミューゼンロを着', True, False)]
+
+== 実データ F06_E4: HEADから変わる行 4 ==
+   P4    mpt1_customb8f0ff16.json:comment_3 | ここまでのポイントは、AIの通話に人が加わる場合、そ | ここまでのポイントは、AIの通話に人が加わる場合、そ | PASS→Cascade | PASS/primary_pass -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable | casc=[('muse', 'ミューズ', True, False)]
+   P4    customb8f0ff16.json:japanese_title | 走れメロス | 走レメラス | PASS→Cascade | PASS/primary_pass -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable | casc=[('ロ', 'ラ', True, False)]
+   P4    mpt1_custom06ec49ff.json:comment_2 | ヴェラは、叔母が夫たちの帰りを今も待っていると話しま | ベラは、叔母が夫たちの帰りを今も待っていると話しまし | PASS→Cascade | PASS/primary_pass -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable | casc=[('ヴェ', 'ベ', True, False)]
+   U:legacy/other ase2_ja_evidence_01/result.json#s4 | AIからの電話だと思ったら…中に“人”がいた？　Me | AIからの電話だと思ったら、中に人がいた? メタのミ | PASS→Cascade | PASS/primary_pass -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable | casc=[('meta', 'メタ', True, False), ('museで起き', 'ミューゼンロを着', True, False)]
+
+== 実データ F06_E4N: HEADから変わる行 0 ==
+
+== 実データ F06_E4_E4N: HEADから変わる行 4 ==
+   P4    mpt1_customb8f0ff16.json:comment_3 | ここまでのポイントは、AIの通話に人が加わる場合、そ | ここまでのポイントは、AIの通話に人が加わる場合、そ | PASS→Cascade | PASS/primary_pass -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable | casc=[('muse', 'ミューズ', True, False)]
+   P4    customb8f0ff16.json:japanese_title | 走れメロス | 走レメラス | PASS→Cascade | PASS/primary_pass -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable | casc=[('ロ', 'ラ', True, False)]
+   P4    mpt1_custom06ec49ff.json:comment_2 | ヴェラは、叔母が夫たちの帰りを今も待っていると話しま | ベラは、叔母が夫たちの帰りを今も待っていると話しまし | PASS→Cascade | PASS/primary_pass -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable | casc=[('ヴェ', 'ベ', True, False)]
+   U:legacy/other ase2_ja_evidence_01/result.json#s4 | AIからの電話だと思ったら…中に“人”がいた？　Me | AIからの電話だと思ったら、中に人がいた? メタのミ | PASS→Cascade | PASS/primary_pass -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable | casc=[('meta', 'メタ', True, False), ('museで起き', 'ミューゼンロを着', True, False)]
+
+== 保存Secondary転写がある行: 転写注入後の最終判定のHEADとの差 ==
+ F05_E4: 対象193行 / 判定が変わる0 / 非PASS→PASS 0 / PASS→非PASS 0
+ F06_E4: 対象193行 / 判定が変わる0 / 非PASS→PASS 0 / PASS→非PASS 0
+ F06_E4N: 対象193行 / 判定が変わる0 / 非PASS→PASS 0 / PASS→非PASS 0
+ F06_E4_E4N: 対象193行 / 判定が変わる0 / 非PASS→PASS 0 / PASS→非PASS 0
+
+== sweep(M-3 40 + 旧29) ==
+ M-3 sweep 40件: HEAD PASS 11 / 遷移 {"F05_E4": {"不変": 40}, "F06_E4": {"不変": 40}, "F06_E4N": {"不変": 40}, "F06_E4_E4N": {"不変": 40}}
+ 旧v2 sweep 29件: HEAD PASS 5 / 遷移 {"F05_E4": {"不変": 29}, "F06_E4": {"不変": 29}, "F06_E4N": {"不変": 29}, "F06_E4_E4N": {"不変": 29}}
+
+== E4/E4-N 行 242件 ==
+ kind=ctrl            entry=txt n=  5 | HEAD: PASS=5 Cascade=0 即NG=0
+      F05_E4     : PASS=5 Cascade=0 即NG=0  遷移={'不変': 5}
+      F06_E4     : PASS=5 Cascade=0 即NG=0  遷移={'不変': 5}
+      F06_E4N    : PASS=5 Cascade=0 即NG=0  遷移={'不変': 5}
+      F06_E4_E4N : PASS=5 Cascade=0 即NG=0  遷移={'不変': 5}
+ kind=neg             entry=txt n= 55 | HEAD: PASS=46 Cascade=6 即NG=3
+      F05_E4     : PASS=0 Cascade=52 即NG=3  遷移={'PASS→Cascade': 46, '不変': 9}
+      F06_E4     : PASS=0 Cascade=52 即NG=3  遷移={'PASS→Cascade': 46, '不変': 9}
+      F06_E4N    : PASS=46 Cascade=6 即NG=3  遷移={'不変': 55}
+      F06_E4_E4N : PASS=0 Cascade=52 即NG=3  遷移={'PASS→Cascade': 46, '不変': 9}
+ kind=cost            entry=txt n= 25 | HEAD: PASS=24 Cascade=1 即NG=0
+      F05_E4     : PASS=1 Cascade=24 即NG=0  遷移={'PASS→Cascade': 23, '不変': 2}
+      F06_E4     : PASS=1 Cascade=24 即NG=0  遷移={'PASS→Cascade': 23, '不変': 2}
+      F06_E4N    : PASS=24 Cascade=1 即NG=0  遷移={'不変': 25}
+      F06_E4_E4N : PASS=1 Cascade=24 即NG=0  遷移={'PASS→Cascade': 23, '不変': 2}
+ kind=ctrl            entry=num n=  5 | HEAD: PASS=5 Cascade=0 即NG=0
+      F05_E4     : PASS=5 Cascade=0 即NG=0  遷移={'不変': 5}
+      F06_E4     : PASS=5 Cascade=0 即NG=0  遷移={'不変': 5}
+      F06_E4N    : PASS=5 Cascade=0 即NG=0  遷移={'不変': 5}
+      F06_E4_E4N : PASS=5 Cascade=0 即NG=0  遷移={'不変': 5}
+ kind=neg             entry=num n= 55 | HEAD: PASS=0 Cascade=22 即NG=33
+      F05_E4     : PASS=0 Cascade=22 即NG=33  遷移={'不変': 55}
+      F06_E4     : PASS=0 Cascade=22 即NG=33  遷移={'不変': 55}
+      F06_E4N    : PASS=0 Cascade=52 即NG=3  遷移={'同種内変化(CASC)': 20, '不変': 5, '拒否→Cascade': 30}
+      F06_E4_E4N : PASS=0 Cascade=52 即NG=3  遷移={'同種内変化(CASC)': 20, '不変': 5, '拒否→Cascade': 30}
+ kind=cost            entry=num n= 25 | HEAD: PASS=1 Cascade=10 即NG=14
+      F05_E4     : PASS=0 Cascade=11 即NG=14  遷移={'不変': 24, 'PASS→Cascade': 1}
+      F06_E4     : PASS=0 Cascade=11 即NG=14  遷移={'不変': 24, 'PASS→Cascade': 1}
+      F06_E4N    : PASS=1 Cascade=24 即NG=0  遷移={'同種内変化(CASC)': 10, '拒否→Cascade': 14, '不変': 1}
+      F06_E4_E4N : PASS=0 Cascade=25 即NG=0  遷移={'同種内変化(CASC)': 10, '拒否→Cascade': 14, 'PASS→Cascade': 1}
+ kind=neg_hira        entry=txt n= 25 | HEAD: PASS=0 Cascade=12 即NG=13
+      F05_E4     : PASS=0 Cascade=12 即NG=13  遷移={'不変': 25}
+      F06_E4     : PASS=0 Cascade=12 即NG=13  遷移={'不変': 25}
+      F06_E4N    : PASS=0 Cascade=12 即NG=13  遷移={'不変': 25}
+      F06_E4_E4N : PASS=0 Cascade=12 即NG=13  遷移={'不変': 25}
+ kind=neg_hira        entry=num n= 25 | HEAD: PASS=0 Cascade=8 即NG=17
+      F05_E4     : PASS=0 Cascade=8 即NG=17  遷移={'不変': 25}
+      F06_E4     : PASS=0 Cascade=8 即NG=17  遷移={'不変': 25}
+      F06_E4N    : PASS=0 Cascade=8 即NG=17  遷移={'不変': 25}
+      F06_E4_E4N : PASS=0 Cascade=8 即NG=17  遷移={'不変': 25}
+ kind=out_of_scope    entry=num n= 16 | HEAD: PASS=0 Cascade=16 即NG=0
+      F05_E4     : PASS=0 Cascade=16 即NG=0  遷移={'不変': 16}
+      F06_E4     : PASS=0 Cascade=16 即NG=0  遷移={'不変': 16}
+      F06_E4N    : PASS=0 Cascade=16 即NG=0  遷移={'不変': 16}
+      F06_E4_E4N : PASS=0 Cascade=16 即NG=0  遷移={'不変': 16}
+ kind=e4n_keep_reject entry=num n=  6 | HEAD: PASS=0 Cascade=6 即NG=0
+      F05_E4     : PASS=0 Cascade=6 即NG=0  遷移={'不変': 6}
+      F06_E4     : PASS=0 Cascade=6 即NG=0  遷移={'不変': 6}
+      F06_E4N    : PASS=0 Cascade=6 即NG=0  遷移={'不変': 6}
+      F06_E4_E4N : PASS=0 Cascade=6 即NG=0  遷移={'不変': 6}
+
+ -- ラベル別(neg/neg_hira): HEAD PASS数 → 各arm PASS数 / Cascade数 --
+   neg      acronym_misread                n=10 HEAD_PASS= 5 F05_E4:P0/C7 F06_E4:P0/C7 F06_E4N:P5/C5 F06_E4_E4N:P0/C10
+   neg      acronym_vs_other_name          n=10 HEAD_PASS= 5 F05_E4:P0/C7 F06_E4:P0/C7 F06_E4N:P5/C5 F06_E4_E4N:P0/C10
+   neg      kata_consonant(ン→ル)            n=10 HEAD_PASS= 5 F05_E4:P0/C7 F06_E4:P0/C7 F06_E4N:P5/C5 F06_E4_E4N:P0/C10
+   neg      kata_shape(ミューズ→ミーザ)           n=10 HEAD_PASS= 0 F05_E4:P0/C4 F06_E4:P0/C4 F06_E4N:P0/C4 F06_E4_E4N:P0/C4
+   neg      kata_vowel(ウ→ア)                n=10 HEAD_PASS= 5 F05_E4:P0/C7 F06_E4:P0/C7 F06_E4N:P5/C5 F06_E4_E4N:P0/C10
+   neg      kata_vowel(ニ→ネ)                n=10 HEAD_PASS= 5 F05_E4:P0/C7 F06_E4:P0/C7 F06_E4N:P5/C5 F06_E4_E4N:P0/C10
+   neg      kata_vowel(ベ→ボ)                n=10 HEAD_PASS= 5 F05_E4:P0/C7 F06_E4:P0/C7 F06_E4N:P5/C5 F06_E4_E4N:P0/C10
+   neg      kata_vowel(メ→ム)                n=10 HEAD_PASS= 5 F05_E4:P0/C7 F06_E4:P0/C7 F06_E4N:P5/C5 F06_E4_E4N:P0/C10
+   neg      kata_vowel(ロ→ラ)                n=10 HEAD_PASS= 5 F05_E4:P0/C7 F06_E4:P0/C7 F06_E4N:P5/C5 F06_E4_E4N:P0/C10
+   neg      voicing_only_kata(ク→グ)         n=10 HEAD_PASS= 3 F05_E4:P0/C7 F06_E4:P0/C7 F06_E4N:P3/C7 F06_E4_E4N:P0/C10
+   neg      voicing_only_kata(テ→デ)         n=10 HEAD_PASS= 3 F05_E4:P0/C7 F06_E4:P0/C7 F06_E4N:P3/C7 F06_E4_E4N:P0/C10
+   neg_hira hira_voicing(か→が)              n=10 HEAD_PASS= 0 F05_E4:P0/C5 F06_E4:P0/C5 F06_E4N:P0/C5 F06_E4_E4N:P0/C5
+   neg_hira hira_voicing(さ→ざ)              n=10 HEAD_PASS= 0 F05_E4:P0/C5 F06_E4:P0/C5 F06_E4N:P0/C5 F06_E4_E4N:P0/C5
+   neg_hira hira_voicing(た→だ)              n=10 HEAD_PASS= 0 F05_E4:P0/C5 F06_E4:P0/C5 F06_E4N:P0/C5 F06_E4_E4N:P0/C5
+   neg_hira hira_voicing(は→ば)              n=10 HEAD_PASS= 0 F05_E4:P0/C5 F06_E4:P0/C5 F06_E4N:P0/C5 F06_E4_E4N:P0/C5
+   neg_hira hira_voicing(ひ→び)              n=10 HEAD_PASS= 0 F05_E4:P0/C0 F06_E4:P0/C0 F06_E4N:P0/C0 F06_E4_E4N:P0/C0
+
+ -- cost(正常な等価表記): ラベル別 HEAD→arm --
+   acronym_reading(IBM→アイビーエム) txt n=5 HEAD:[PASS=5 Cascade=0 即NG=0] F06_E4:[PASS=0 Cascade=5 即NG=0] F06_E4_E4N:[PASS=0 Cascade=5 即NG=0]
+   acronym_reading(IBM→アイビーエム) num n=5 HEAD:[PASS=0 Cascade=2 即NG=3] F06_E4:[PASS=0 Cascade=2 即NG=3] F06_E4_E4N:[PASS=0 Cascade=5 即NG=0]
+   acronym_reading(NASA→ナサ) txt n=5 HEAD:[PASS=5 Cascade=0 即NG=0] F06_E4:[PASS=1 Cascade=4 即NG=0] F06_E4_E4N:[PASS=1 Cascade=4 即NG=0]
+   acronym_reading(NASA→ナサ) num n=5 HEAD:[PASS=1 Cascade=2 即NG=2] F06_E4:[PASS=0 Cascade=3 即NG=2] F06_E4_E4N:[PASS=0 Cascade=5 即NG=0]
+   latin→kata(muse→ミューズ)    txt n=5 HEAD:[PASS=5 Cascade=0 即NG=0] F06_E4:[PASS=0 Cascade=5 即NG=0] F06_E4_E4N:[PASS=0 Cascade=5 即NG=0]
+   latin→kata(muse→ミューズ)    num n=5 HEAD:[PASS=0 Cascade=2 即NG=3] F06_E4:[PASS=0 Cascade=2 即NG=3] F06_E4_E4N:[PASS=0 Cascade=5 即NG=0]
+   ヴァ↔バ(等価表記)               txt n=5 HEAD:[PASS=4 Cascade=1 即NG=0] F06_E4:[PASS=0 Cascade=5 即NG=0] F06_E4_E4N:[PASS=0 Cascade=5 即NG=0]
+   ヴァ↔バ(等価表記)               num n=5 HEAD:[PASS=0 Cascade=2 即NG=3] F06_E4:[PASS=0 Cascade=2 即NG=3] F06_E4_E4N:[PASS=0 Cascade=5 即NG=0]
+   ヴェ↔ベ(等価表記)               txt n=5 HEAD:[PASS=5 Cascade=0 即NG=0] F06_E4:[PASS=0 Cascade=5 即NG=0] F06_E4_E4N:[PASS=0 Cascade=5 即NG=0]
+   ヴェ↔ベ(等価表記)               num n=5 HEAD:[PASS=0 Cascade=2 即NG=3] F06_E4:[PASS=0 Cascade=2 即NG=3] F06_E4_E4N:[PASS=0 Cascade=5 即NG=0]
+
+ -- e4n_keep_reject(名の差+しわ→すわ型): arm別 --
+    メロスの月のしわ、8,900本超 | メラスの月のすわ、八千九百本超 | HEAD=NG_SECONDARY_UNAVAILABLE/secondary_unavailable E4N=NG_SECONDARY_UNAVAILABLE/secondary_unavailable items=[('ロ', 'ラ', True), ('し', 'す', False)]
+    メロスの月のしわ、8,900本超 | ムロスの月のすわ、八千九百本超 | HEAD=NG_SECONDARY_UNAVAILABLE/secondary_unavailable E4N=NG_SECONDARY_UNAVAILABLE/secondary_unavailable items=[('メ', 'ム', True), ('し', 'す', False)]
+    ディオニスの月のしわ、8,900本超 | ディオネスの月のすわ、八千九百本超 | HEAD=NG_SECONDARY_UNAVAILABLE/secondary_unavailable E4N=NG_SECONDARY_UNAVAILABLE/secondary_unavailable items=[('ニ', 'ネ', True), ('し', 'す', False)]
+    セリヌンティウスの月のしわ、8,900本超 | セリヌンティアスの月のすわ、八千九百本超 | HEAD=NG_SECONDARY_UNAVAILABLE/secondary_unavailable E4N=NG_SECONDARY_UNAVAILABLE/secondary_unavailable items=[('ウ', 'ア', True), ('し', 'す', False)]
+    ミューズの月のしわ、8,900本超 | ミーザの月のすわ、八千九百本超 | HEAD=NG_SECONDARY_UNAVAILABLE/secondary_unavailable E4N=NG_SECONDARY_UNAVAILABLE/secondary_unavailable items=[('ュ', '', False), ('ズ', 'ザ', True), ('し', 'す', False)]
+    ベラの月のしわ、8,900本超 | ボラの月のすわ、八千九百本超 | HEAD=NG_SECONDARY_UNAVAILABLE/secondary_unavailable E4N=NG_SECONDARY_UNAVAILABLE/secondary_unavailable items=[('ベ', 'ボ', True), ('し', 'す', False)]
+
+ -- out_of_scope(乗り物なし数値entryのcascade差): 不変であるべき --
+   遷移: {"F05_E4": {"不変": 16}, "F06_E4": {"不変": 16}, "F06_E4N": {"不変": 16}, "F06_E4_E4N": {"不変": 16}} / HEAD分布: PASS=0 Cascade=16 即NG=0
+ E4行 非PASS→PASS: 0 / ctrl の変化: 0
+ 負例(neg 110 + neg_hira 50): HEAD PASS 46 / F05_E4 PASS=0 F06_E4 PASS=0 F06_E4N PASS=46 F06_E4_E4N PASS=0
+
+[同値性] F05_E4 と F06_E4 の判定key一致: 1638/1638
+
+== 全母集団(実データ+SYN+sweep+旧sweep+E4行)のHEADとの遷移種別 ==
+ F05_E4: {"不変": 1564, "PASS→Cascade": 74}
+ F06_E4: {"不変": 1564, "PASS→Cascade": 74}
+ F06_E4N: {"不変": 1564, "同種内変化(CASC)": 30, "拒否→Cascade": 44}
+ F06_E4_E4N: {"不変": 1490, "PASS→Cascade": 74, "同種内変化(CASC)": 30, "拒否→Cascade": 44}
+ 違反(非PASS→PASS / PASS→即NG / Cascade→即NG)件数: {'F05_E4': 0, 'F06_E4': 0, 'F06_E4N': 0, 'F06_E4_E4N': 0}
+
+== QCD(実データ1,327行ベース。Cascade 1回=0.2667円) ==
+  F05_E4 {"pass_to_cascade_all": 4, "reject_to_cascade_all": 0, "pass_to_cascade_nonneg": 4, "cascade_yen_per_segment_nonneg": 0.00158, "pass_to_cascade_pct_of_nonneg_pass": 0.592}
+  F06_E4 {"pass_to_cascade_all": 4, "reject_to_cascade_all": 0, "pass_to_cascade_nonneg": 4, "cascade_yen_per_segment_nonneg": 0.00158, "pass_to_cascade_pct_of_nonneg_pass": 0.592}
+  F06_E4N {"pass_to_cascade_all": 0, "reject_to_cascade_all": 0, "pass_to_cascade_nonneg": 0, "cascade_yen_per_segment_nonneg": 0.0, "pass_to_cascade_pct_of_nonneg_pass": 0.0}
+  F06_E4_E4N {"pass_to_cascade_all": 4, "reject_to_cascade_all": 0, "pass_to_cascade_nonneg": 4, "cascade_yen_per_segment_nonneg": 0.00158, "pass_to_cascade_pct_of_nonneg_pass": 0.592}
+
+[Secondary受理] stored_secondary: n=103 ラベル変化 {'F05_E4': 0, 'F06_E4': 0, 'F06_E4N': 0, 'F06_E4_E4N': 0} / 受理(SCG_PASS・orth)変化 {'F05_E4': 0, 'F06_E4': 0, 'F06_E4N': 0, 'F06_E4_E4N': 0}
+
+[Secondary受理] all_primary_as_secondary: n=1203 ラベル変化 {'F05_E4': 4, 'F06_E4': 4, 'F06_E4N': 0, 'F06_E4_E4N': 4} / 受理(SCG_PASS・orth)変化 {'F05_E4': 0, 'F06_E4': 0, 'F06_E4N': 0, 'F06_E4_E4N': 0}
+
+summary: {"real_rows": 1327, "parity_bad": 0, "stored_secondary_rows": 193, "all_rows": 1638, "violations": {"F05_E4": 0, "F06_E4": 0, "F06_E4N": 0, "F06_E4_E4N": 0}, "overall": {"F05_E4": {"不変": 1564, "PASS→Cascade": 74}, "F06_E4": {"不変": 1564, "PASS→Cascade": 74}, "F06_E4N": {"不変": 1564, "同種内変化(CASC)": 30, "拒否→Cascade": 44}, "F06_E4_E4N": {"不変": 1490, "PASS→Cascade": 74, "同種内変化(CASC)": 30, "拒否→Cascade": 44}}, "qcd": {"F05_E4": {"pass_to_cascade_all": 4, "reject_to_cascade_all": 0, "pass_to_cascade_nonneg": 4, "cascade_yen_per_segment_nonneg": 0.00158, "pass_to_cascade_pct_of_nonneg_pass": 0.592}, "F06_E4": {"pass_to_cascade_all": 4, "reject_to_cascade_all": 0, "pass_to_cascade_nonneg": 4, "cascade_yen_per_segment_nonneg": 0.00158, "pass_to_cascade_pct_of_nonneg_pass": 0.592}, "F06_E4N": {"pass_to_cascade_all": 0, "reject_to_cascade_all": 0, "pass_to_cascade_nonneg": 0, "cascade_yen_per_segment_nonneg": 0.0, "pass_to_cascade_pct_of_nonneg_pass": 0.0}, "F06_E4_E4N": {"pass_to_cascade_all": 4, "reject_to_cascade_all": 0, "pass_to_cascade_nonneg": 4, "cascade_yen_per_segment_nonneg": 0.00158, "pass_to_cascade_pct_of_nonneg_pass": 0.592}}, "secondary": {"stored_secondary": {"n": 103, "label_changes": {"F05_E4": 0, "F06_E4": 0, "F06_E4N": 0, "F06_E4_E4N": 0}, "accept_changes": {"F05_E4": 0, "F06_E4": 0, "F06_E4N": 0, "F06_E4_E4N": 0}}, "all_primary_as_secondary": {"n": 1203, "label_changes": {"F05_E4": 4, "F06_E4": 4, "F06_E4N": 0, "F06_E4_E4N": 4}, "accept_changes": {"F05_E4": 0, "F06_E4": 0, "F06_E4N": 0, "F06_E4_E4N": 0}}}, "e4_rows": 242, "ctrl_changed": 0, "e4_n2p": 0}
+out sha256: 7814c7d96c90739b6feb606f0dee7f4100f994d7b3020eade5085550a5987318
