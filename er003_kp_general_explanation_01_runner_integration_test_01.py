@@ -38,8 +38,17 @@ X_ITEMS = [
 PASS = {"selection": {"status": "KEY_WORDS_STRUCTURE_PASS"}, "canonicalization": {"status": "CANONICALIZATION_PASS"}, "m2_fallback_events": []}
 
 
+def ja_text(prompt):
+    """T1(引用英文の日本語訳)のmock応答。Promptの列挙行の数だけ構造検査を通る訳を返す。"""
+    import re
+    sents = re.findall(r"^\d+\. (.*)$", prompt.split("# 英文\n", 1)[1].split("\n# 出力形式", 1)[0], re.M)
+    return json.dumps({"translations": [{"id": i, "ja": f"これは{i}番の英文の日本語訳です。"} for i, _ in enumerate(sents, 1)]}, ensure_ascii=False)
+
+
 def ok_text(prompt):
     import re
+    if prompt.startswith("あなたは英日翻訳者です"):
+        return ja_text(prompt)   # FakeClient(client経路)は解説・訳の両方をこの応答関数で受ける
     phrases = re.findall(r"^\d+\. 英語表現: (.*)$", prompt, re.M)
     return "\n".join(f"### {i}. ({p})\n{p} の一般的な解説です。核となる意味と主要な使い方を**説明**します。*{p}* のように使われます。" for i, p in enumerate(phrases, 1))
 
@@ -127,15 +136,22 @@ class ZPart1Tests(Tmp, unittest.TestCase):
         self.assertTrue(ent["input_sha256"])
         self.assertFalse(os.path.exists(f"{out}/b1b/audit/tts_generation_results.json"))   # TTS未着手
         rows = json.load(open(f"{out}/study_text/part1_vocabulary_expressions.json", encoding="utf-8"))["rows"]
-        self.assertTrue(rows and all(r["source_sentence_ja"] is None and r["translation_status"] == "PENDING_USER_DECISION" for r in rows))
+        self.assertTrue(rows and all(r["source_sentence_ja"] and r["translation_status"] == "PROVIDED" for r in rows))   # T1: 訳は常に生成される
         calls = [json.loads(x) for x in open(f"{out}/mock_api_calls.jsonl", encoding="utf-8")]
         self.assertEqual([c for c in calls if c["kind"] == "kp_part1"].__len__(), 1)
+        self.assertEqual([c for c in calls if c["kind"] == "kp_part1_ja"].__len__(), 1)     # 解説とは独立の別call
+        jd = json.load(open(f"{out}/key_phrases/b1b/kp_source_sentence_ja.json", encoding="utf-8"))
+        self.assertEqual(jd["audit"]["process"], "KEY_PHRASE_SOURCE_SENTENCE_JA")
+        ent_ja = prov["downstream_stages"]["kp_part1_ja_b1b"]
+        self.assertEqual(ent_ja["prompt_sha256"], jd["audit"]["prompt_sha256"])
+        self.assertEqual(ent_ja["model"], "gpt-6-luna")
 
     def test_resume_reuses_without_new_call(self):
         ctx = self._ctx_through_kp()
         n = sum(1 for _ in open(f"{ctx.out_dir}/mock_api_calls.jsonl", encoding="utf-8"))
         res = quiet(zr.run_stages, ctx, ["kp"])
         self.assertEqual(res["kp"]["kp_part1_b1b"], "reused")
+        self.assertEqual(res["kp"]["kp_part1_ja_b1b"], "reused")
         self.assertEqual(n, sum(1 for _ in open(f"{ctx.out_dir}/mock_api_calls.jsonl", encoding="utf-8")))
 
     def test_failure_is_fail_closed_before_tts_with_next_command(self):
@@ -238,11 +254,58 @@ class ZPart1Tests(Tmp, unittest.TestCase):
             zr.stage_pages(ctx)
         self.assertIn("Vocabulary &amp; Expressions", bp.call_args.kwargs["study_html"])
 
-    def test_t1_record_without_translations_stops_pages(self):
-        decision_record(self, "T1")
+    def test_t1_pages_render_five_items_with_translation(self):
+        ctx = self._ctx_through_kp()     # 実record(T1)のまま
+        rest = [s for s in zr.E2E_STAGES if s not in self.PRE and s != "page_verify"]
+        quiet(zr.run_stages, ctx, rest)
+        index = open(f"{ctx.pages_dir}/index.html", encoding="utf-8").read()
+        blk = index.split("<section class='study'>")[1].split("</section>")[0]
+        for lab in ("本文中の意味", "本文の英文", "日本語訳", "解説"):
+            self.assertEqual(blk.count(f"<dt>{lab}</dt>"), 3, lab)
+        self.assertIn("mock日本語訳", blk)
+        self.assertNotIn("class='study'", open(f"{ctx.pages_dir}/standard.html", encoding="utf-8").read())
+
+    def test_translation_missing_or_stale_stops_tts_and_pages_with_next_command(self):
         ctx = self._ctx_through_kp()
-        with self.assertRaisesRegex(zr.FamilyZE2EStop, "TRANSLATION_REQUIRED_BY_T1"):
+        path = f"{ctx.out_dir}/key_phrases/b1b/kp_source_sentence_ja.json"
+        good = open(path, encoding="utf-8").read()
+        os.remove(path)    # T1導入前のrun再開を模擬
+        with self.assertRaisesRegex(zr.FamilyZE2EStop, "KP_PART1_JA_NOT_READY.*MISSING.*--regenerate-stage kp_part1_ja_b1b"):
+            zr.load_level_inputs(ctx, "b1b")
+        with self.assertRaisesRegex(zr.FamilyZE2EStop, "KP_PART1_JA_NOT_READY"):
             zr.stage_pages(ctx)
+        d = json.loads(good)
+        d["translations_signature"] = "0" * 64
+        open(path, "w", encoding="utf-8").write(json.dumps(d))
+        with self.assertRaisesRegex(zr.FamilyZE2EStop, "KP_PART1_TRANSLATIONS_STALE"):
+            zr.load_level_inputs(ctx, "b1b")
+        zr.load_level_inputs(ctx, "a2")   # Standardは対象外
+
+    def test_translation_failure_is_fail_closed_and_does_not_touch_explanation(self):
+        ctx = zr.build_mock_context(self.new_tmp())
+        ctx.hooks["part1_ja_call_fn"] = make_call_fn(lambda prompt: "壊れた出力(JSONではない)")
+        with self.assertRaisesRegex(zr.FamilyZE2EStop, "FAMILY_Z_KP_PART1_JA_NOT_OK.*--regenerate-stage kp_part1_ja_b1b"):
+            quiet(zr.run_stages, ctx, self.PRE)
+        self.assertEqual(len(ctx.hooks["part1_ja_call_fn"].calls), 2)     # 初回+技術retry1回のみ
+        self.assertTrue(os.path.exists(f"{ctx.out_dir}/key_phrases/b1b/kp_general_explanations.json"))   # 解説は無傷で残る
+        self.assertFalse(os.path.exists(f"{ctx.out_dir}/key_phrases/b1b/kp_source_sentence_ja.json"))   # 空欄で続行しない
+        self.assertFalse(os.path.exists(f"{ctx.out_dir}/b1b/audit/tts_generation_results.json"))
+        # 解説は再利用(API 0)、訳だけ明示再生成で回復できる
+        ctx.hooks["part1_ja_call_fn"] = make_call_fn(ja_text)
+        ctx.regenerate_stage = "kp_part1_ja_b1b"
+        res = quiet(zr.run_stages, ctx, ["kp"])
+        self.assertEqual(res["kp"]["kp_part1_b1b"], "reused")
+        self.assertEqual(res["kp"]["kp_part1_ja_b1b"], "generated")
+
+    def test_translation_call_input_is_quotes_only(self):
+        ctx = zr.build_mock_context(self.new_tmp())
+        ctx.hooks["part1_ja_call_fn"] = fn = make_call_fn(ja_text)
+        quiet(zr.run_stages, ctx, self.PRE)
+        kp = json.load(open(f"{ctx.out_dir}/key_phrases/b1b/keywords_canonicalized.json", encoding="utf-8"))
+        prompt = fn.calls[0]
+        for it in kp["items"]:
+            self.assertIn(it["source_sentence"], prompt)
+            self.assertNotIn(it["japanese_gloss"], prompt)
 
 
 # ============================================================
@@ -266,13 +329,14 @@ def _kp_writer(out):
     return fake
 
 
-def _scaffold(src, out, levels, part1_call_fn, kp=None):
+def _scaffold(src, out, levels, part1_call_fn, kp=None, ja_call_fn=None):
     with mock.patch.object(sc, "run_key_phrases", side_effect=_kp_writer(out)) as rk, \
          mock.patch.object(xr.plan, "split_family_x_article_text_v2", return_value={"status": "OK", "paragraph_count": 4}), \
          mock.patch.object(xr, "run_family_x_b1_scaffold", return_value={}), \
          mock.patch.object(xr, "run_family_x_a2_scaffold", return_value={}), \
          contextlib.redirect_stdout(io.StringIO()):
-        res = xr.run_theme_scaffold(None, src, out, list(levels), part1_call_fn=part1_call_fn)
+        res = xr.run_theme_scaffold(None, src, out, list(levels), part1_call_fn=part1_call_fn,
+                                    part1_ja_call_fn=ja_call_fn or make_call_fn(ja_text))
     return res, rk
 
 
@@ -289,8 +353,10 @@ class XPart1ScaffoldTests(Tmp, unittest.TestCase):
         self.assertEqual(doc["phrases"], ["give way", "at a moment's notice", "catch one's breath"])
         self.assertFalse(os.path.exists(f"{out}/a2/key_phrases/kp_general_explanations.json"))
         rows = json.load(open(f"{out}/b1b/study_text/part1_vocabulary_expressions.json", encoding="utf-8"))["rows"]
-        self.assertEqual([r["source_sentence_ja"] for r in rows], [None, None, None])
+        self.assertTrue(all(r["source_sentence_ja"] and r["translation_status"] == "PROVIDED" for r in rows))   # T1
         self.assertEqual(res["b1b"]["study_text"], "saved")
+        self.assertTrue(os.path.exists(f"{out}/b1b/key_phrases/kp_source_sentence_ja.json"))
+        self.assertFalse(os.path.exists(f"{out}/a2/key_phrases/kp_source_sentence_ja.json"))
         self.assertFalse(os.path.exists(f"{out}/b1b/key_phrases/{xr.KP_PART1_FAILED_MARKER}"))
 
     def test_input_never_contains_gloss_quote_or_display_phrase(self):
@@ -386,7 +452,7 @@ class XPart1MainTests(Tmp, unittest.TestCase):
         with mock.patch.object(sc, "run_key_phrases", side_effect=AssertionError("KP再選定してはいけない")):
             rc, tts, asm, log = self._main(work, out, "study_text", client=good)
         self.assertIsNone(rc, log)
-        self.assertEqual(len(good.calls), 1)                                     # Part 1の1 callのみ
+        self.assertEqual(len(good.calls), 2)                                     # Part 1: 解説1 call+訳1 call(独立)
         self.assertEqual(good.calls[0]["model"], "gpt-6-luna")
         self.assertFalse(os.path.exists(f"{out}/b1b/key_phrases/{xr.KP_PART1_FAILED_MARKER}"))
         self.assertTrue(os.path.exists(f"{out}/b1b/study_text/part1_vocabulary_expressions.json"))
@@ -447,7 +513,7 @@ class XPart1MainTests(Tmp, unittest.TestCase):
         c2 = FakeClient()
         rc, *_ = self._main(work, out, "study_text", client=c2)
         self.assertIsNone(rc)
-        self.assertEqual(len(c2.calls), 1)                                       # Xは自動再生成(Zは明示再生成STOP)
+        self.assertEqual(len(c2.calls), 1)                                       # Xは自動再生成(Zは明示再生成STOP)。引用英文は不変なので訳は再利用(API 0)
         doc = json.load(open(f"{out}/b1b/key_phrases/kp_general_explanations.json", encoding="utf-8"))
         self.assertEqual(doc["phrases"][1], "on short notice")
 

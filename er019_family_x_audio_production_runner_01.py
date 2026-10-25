@@ -427,6 +427,62 @@ def _part1_kp_items(out_dir: str) -> list:
     return sorted(items, key=lambda x: x["rank"])
 
 
+def _part1_ja_gen():
+    import er003_kp_source_sentence_ja_01 as ja
+    return ja
+
+
+def _part1_ja_path(out_dir: str, level: str = "b1b") -> str:
+    return f"{out_dir}/{level}/key_phrases/{_part1_ja_gen().TRANSLATIONS_FILENAME}"
+
+
+def generate_part1_ja_for_b1b(client, source_dir: str, out_dir: str, *, call_fn=None, budget_check=None) -> dict:
+    """委任_16 T1: 本文引用英文だけを入力に日本語訳を1 callで生成・保存する(解説とは独立。signature一致ならAPI 0で再利用、
+    不一致なら自動再生成)。失敗(技術retry1回後も構造NG・入力不正・本文に逐語実在しない引用・model不一致)は
+    kp_part1_failed.jsonへ status=KP_PART1_JA_FAILED(...) を書き返す。解説artifactには触れない。"""
+    ja = _part1_ja_gen()
+    kp_dir = f"{out_dir}/b1b/key_phrases"
+    marker = f"{kp_dir}/{KP_PART1_FAILED_MARKER}"
+    path = _part1_ja_path(out_dir)
+    items = _part1_kp_items(out_dir)
+    cached = None
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            cached = json.load(f)
+    if budget_check is not None:
+        budget_check("before kp_part1_ja")
+    _parts = os.path.normpath(source_dir).replace("\\", "/").split("/")
+    try:
+        with cl.logging_context(_parts[-2] if len(_parts) >= 2 else "part1", "kp_part1_ja"):   # 費用ログのstageタグ(訳の原価を単独で集計できる)
+            doc = ja.resolve_translations(items, cached, call_fn=call_fn, client=client,
+                                          article_text=load_text(f"{source_dir}/b1b/article.md"))
+    except (ja.KpSourceSentenceJaError, ja.KpSourceSentenceJaInputError) as exc:
+        os.makedirs(kp_dir, exist_ok=True)
+        status = f"KP_PART1_JA_FAILED({type(exc).__name__})"
+        save_json(marker, {"status": status, "reason": str(exc), "next_command": part1_next_command(source_dir)})
+        return {"status": status, "reason": str(exc)}
+    if not doc.get("reused_from_previous_run"):
+        save_json(path, doc)
+    return {"status": "OK", "reused": bool(doc.get("reused_from_previous_run")),
+            "total_cost_jpy": (doc.get("audit") or {}).get("total_cost_jpy")}
+
+
+def _require_part1_ja_fresh_x(source_dir: str, out_dir: str, where: str) -> dict:
+    """委任_16 T1: 訳の存在と最新性(tts/assemble/player入口)。無い/古いならRuntimeError(STOP、次コマンド付き)。"""
+    ja = _part1_ja_gen()
+    items = _part1_kp_items(out_dir)
+    path = _part1_ja_path(out_dir)
+    doc = None
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            doc = json.load(f)
+    try:
+        ja.require_fresh_translations(items, doc, where=where, next_command=part1_next_command(source_dir))
+    except ja.KpSourceSentenceJaStale as exc:
+        raise RuntimeError(f"[STOP][Part 1] KP_PART1_JA_NOT_READY: {exc}") from exc
+    return doc
+
+
 def generate_part1_for_b1b(client, source_dir: str, out_dir: str, *, call_fn=None, budget_check=None) -> dict:
     """b1bのPart 1解説を生成・保存する(signature一致ならAPI 0で再利用、不一致なら自動再生成=Xの`kp_expl`系と同型)。
     失敗(技術retry1回後も構造NG・入力不正・model不一致)は専用marker kp_part1_failed.jsonを書き status=KP_PART1_FAILED(...)を返す。
@@ -459,13 +515,28 @@ def generate_part1_for_b1b(client, source_dir: str, out_dir: str, *, call_fn=Non
             "total_cost_jpy": (doc.get("audit") or {}).get("total_cost_jpy")}
 
 
+def generate_part1_all_for_b1b(client, source_dir: str, out_dir: str, *, call_fn=None, ja_call_fn=None, budget_check=None) -> dict:
+    """Part 1の生成点(解説1 call + 訳1 call、独立)。解説がOKのときだけ訳へ進む(解説失敗=TTS前STOP)。どちらかの失敗は
+    kp_part1_failed.json+status。戻り値statusはOKまたは失敗status、explanation/translationに各結果。"""
+    r1 = generate_part1_for_b1b(client, source_dir, out_dir, call_fn=call_fn, budget_check=budget_check)
+    if r1["status"] != "OK":
+        return r1
+    r2 = generate_part1_ja_for_b1b(client, source_dir, out_dir, call_fn=ja_call_fn, budget_check=budget_check)
+    if r2["status"] != "OK":
+        return r2
+    costs = [x for x in (r1.get("total_cost_jpy"), r2.get("total_cost_jpy")) if x is not None]
+    return {"status": "OK", "reused": bool(r1.get("reused") and r2.get("reused")), "explanation": r1, "translation": r2,
+            "total_cost_jpy": round(sum(costs), 4) if costs else None}
+
+
 def assemble_part1_for_b1b(source_dir: str, out_dir: str) -> list:
     """Part 1の組立(決定論)+study_text/保存。存在・最新性(Opus M2)・gloss HR/未評価・引用の逐語実在をSTOPで確認する。訳はnull+PENDING_USER_DECISION。"""
     p1 = _part1_gen()
     items = _part1_kp_items(out_dir)
     doc = _require_part1_fresh_x(source_dir, out_dir, "assemble")
+    ja_doc = _require_part1_ja_fresh_x(source_dir, out_dir, "assemble")
     try:
-        rows = p1.assemble_part1(items, doc, None, load_text(f"{source_dir}/b1b/article.md"))
+        rows = p1.assemble_part1(items, doc, _part1_ja_gen().translations_by_rank(ja_doc), load_text(f"{source_dir}/b1b/article.md"))
     except p1.KpGeneralExplanationError as exc:
         raise RuntimeError(f"[STOP][Part 1] 組立NG: {exc}") from exc
     p1.write_study_text(f"{out_dir}/b1b/study_text", rows)
@@ -488,14 +559,14 @@ def _require_part1_fresh_x(source_dir: str, out_dir: str, where: str) -> dict:
     return doc
 
 
-def run_study_text_stage(client, source_dir: str, out_dir: str, *, call_fn=None, budget_check=None) -> dict:
+def run_study_text_stage(client, source_dir: str, out_dir: str, *, call_fn=None, ja_call_fn=None, budget_check=None) -> dict:
     """`--stage study_text`: 既存keywords_canonicalized.jsonからPart 1だけを(再)生成する(KP再選定・support再生成なし)。
     Opus M1の事前確認: KP stage成功済み(kp_stage_failed.jsonなし・KP成果物あり)。成功でkp_part1_failed.jsonを削除、study_text/を保存。"""
     kpf = _kp_stage_failed_markers(out_dir, ["b1b"])
     if kpf:
         raise RuntimeError(f"[STOP][Part 1] KP_STAGE_FAILED markerあり(旧attemptのKPを使わない): {kpf}")
     _part1_kp_items(out_dir)   # KP成果物なし/空はSTOP
-    r = generate_part1_for_b1b(client, source_dir, out_dir, call_fn=call_fn, budget_check=budget_check)
+    r = generate_part1_all_for_b1b(client, source_dir, out_dir, call_fn=call_fn, ja_call_fn=ja_call_fn, budget_check=budget_check)
     if r["status"] != "OK":
         return r
     assemble_part1_for_b1b(source_dir, out_dir)
@@ -514,7 +585,7 @@ def part1_study_html_for_player(source_dir: str, out_dir: str) -> str:
 
 def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
                         scaffold_only: str | None = None, budget_check=None,
-                        kp_backend: str = "fulltext_p2", part1_call_fn=None) -> dict:
+                        kp_backend: str = "fulltext_p2", part1_call_fn=None, part1_ja_call_fn=None) -> dict:
     """既存sc.run_key_phrases()(選定+canonicalization+redundancy QA)を
     Family X本文へそのまま適用する(記事冒頭Key Phrasesは既存Family A
     既定構成をそのまま再利用する、本委任文の前提どおり)。
@@ -607,7 +678,7 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
         _part1_fail = None
         if _fail is None and level == "b1b":
             # 委任_14: 学習テキスト Part 1(Advancedのみ)。KP PASS後・TTS前。失敗はKP失敗と分離した専用marker+part1_stage_status(Opus M1)。
-            _p1r = generate_part1_for_b1b(client, source_dir, out_dir, call_fn=part1_call_fn, budget_check=budget_check)
+            _p1r = generate_part1_all_for_b1b(client, source_dir, out_dir, call_fn=part1_call_fn, ja_call_fn=part1_ja_call_fn, budget_check=budget_check)
             result[level]["part1"] = _p1r
             if _p1r["status"] != "OK":
                 _part1_fail = _p1r["status"]
@@ -2915,6 +2986,7 @@ def main() -> None:
             # (Part 1導入前のrun再開・KP変更後の再生成忘れでPart 1なし/古い解説のまま進めない)。
             try:
                 _require_part1_fresh_x(source_dir, out_dir, f"--stage {args.stage}")
+                _require_part1_ja_fresh_x(source_dir, out_dir, f"--stage {args.stage}")
             except RuntimeError as exc:
                 print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
                 sys.exit(3)

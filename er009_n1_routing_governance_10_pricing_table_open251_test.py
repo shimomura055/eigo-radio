@@ -9,7 +9,7 @@ SNAP = os.path.join(HERE, "er005_output", "cost_baseline_01", "pricing_snapshot.
 # 本表(cost_jpy_for_call)を呼ぶ経路(KP選定/KP説明等)がSUPPORT/WRITER系で使うmodel。
 # gpt-6-astraはW-1 Writer(er053 factlock)専用で別の費用集計経路(pricing_snapshot直接)を使う。
 TABLE_PATH_PROCESSES = ["B1_SUPPORT", "A2_SUPPORT", "B1_WRITER", "A2_WRITER", "SUPPORT_FACT_CHECK",
-                        "WRITER_FACT_CHECK", "KEY_PHRASE_ADVANCED_EXPLANATION", "KEY_PHRASE_GENERAL_EXPLANATION", "EVIDENCE_PACK"]
+                        "WRITER_FACT_CHECK", "KEY_PHRASE_ADVANCED_EXPLANATION", "KEY_PHRASE_GENERAL_EXPLANATION", "KEY_PHRASE_SOURCE_SENTENCE_JA", "EVIDENCE_PACK"]
 
 def _snap(model):
     d = json.load(open(SNAP, encoding="utf-8"))

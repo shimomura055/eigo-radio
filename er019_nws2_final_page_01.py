@@ -58,13 +58,16 @@ def main():
     std = level_block("std", "a2", "Standard", a.tag)
     pa = pp.rj(os.path.join(pp.RUN, "a2", "parts.json")); pb = pp.rj(os.path.join(pp.RUN, "b1b", "parts.json"))
 
-    def sect(sid, lab, full, dur, rows, iol, extra=""):
+    def sect(sid, lab, full, dur, rows, iol, extra="", tail=""):
         return (f"<section id='{sid}' class='lv'><h2>{lab}(通し再生 約{dur / 60:.1f}分 / {dur:.0f}秒)</h2>{extra}"
                 f"<div class='combo'><b>通し再生</b><audio id='main_{sid}' controls preload='none' src='audio/{full}'></audio></div>"
                 f"<div class='note'><b>In One Line</b>: {esc(iol)}</div>"
-                "<details open><summary>パート別再生・全スクリプト・Key Phrase(英語と意味/解説)</summary>" + rows_html(rows) + "</details></section>")
+                "<details open><summary>パート別再生・全スクリプト・Key Phrase(英語と意味/解説)</summary>" + rows_html(rows) + "</details>" + tail + "</section>")
 
     std_extra = ""
+    # 委任_16: 学習テキスト Part 1(Vocabulary & Expressions、Advancedのみ)。共通builder1呼出。判断記録なし→空文字、未生成/古い→STOP(ページを作らない)
+    import er003_kp_general_explanation_01 as p1
+    study_html = p1.study_html_for_audio_dir(pp.RUN)
     pw = []
     for lvl, lab in (("a2", "Standard"), ("b1b", "Advanced")):
         pth = os.path.join(pp.RUN, lvl, "audit", "pass_with_warning_listening_list.json")
@@ -87,7 +90,7 @@ def main():
           f"<b>タイトル</b>: {esc(pb.get('title') or '')}</div>"
           "<div class='tabs'><button id='tab_std' onclick=\"show('std')\">Standard</button><button id='tab_adv' onclick=\"show('adv')\">Advanced</button></div>"
           + sect("std", "Standard", std[0], std[1], std[2], pa["in_one_line"], std_extra)
-          + sect("adv", "Advanced", adv[0], adv[1], adv[2], pb["in_one_line"])
+          + sect("adv", "Advanced", adv[0], adv[1], adv[2], pb["in_one_line"], tail=study_html)
           + "<div class='note2'><b>事後試聴の参考(読み方の揺れが検出された箇所、非ブロッキング)</b>" + "".join(pw) + "</div>" + js + "</body></html>")
     assert "file:///" not in pg and "C:\\" not in pg and "C:/" not in pg
     with open(os.path.join(pp.WEB, "index.html"), "w", encoding="utf-8") as f:
