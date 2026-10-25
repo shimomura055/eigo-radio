@@ -132,3 +132,14 @@ Fable引き上げ(委任文記載)、2026-10-25、理由=ユーザー承認のTr
 | FAMILY-Z-STUDY-TEXT-TRIAL-01 累計 | 34.694 + 0.5526 = **約35.25円**(案件上限50円の70%) |
 | 量産単価(Step A''平均0.332円 + Step B平均0.0789円) | **約0.41円/セット**(0件時は約0.33円) |
 生データ: `usage_07_07_r1_stepB_*.json`、`batch_07b_result.json`。詳細は `EVAL_07B.md`。
+
+## Trial-08(委任_18、2026-10-25)
+| 項目 | 値 |
+|---|---|
+| API call数 | 12(Step A8再抽出11: 賢者3・猿の手2・告げ口心臓2・二十年後2・走れメロス2 + 新選定文の翻訳1[T1 module、5文]。1 launch、失敗0、再起動0) |
+| model_id | gpt-6-luna(全call一致、status=completed。Trial-07と同一) |
+| Trial-08実費 | **3.5803円**(再抽出3.4985円[平均0.318円/call、0.112〜0.481] + 翻訳0.0818円)。本委任上限12円の29.8%。予約方式ガード(Step A8上限11.0円)で上限超過0 |
+| STOP確認 | `tools/stop_scope_check_01.py` 作業開始時・launch前・翻訳前とも rc=0(`stop_check_18a/18b/18c.json`) |
+| FAMILY-Z-STUDY-TEXT-TRIAL-01 累計 | 35.2454 + 3.5803 = **約38.83円**(案件上限50円の77.7%) |
+| 量産単価 | 選定規則はコード(API 0)・Prompt長ほぼ同一のため **約0.41円/セット**(Trial-07と同じ) |
+生データ: `usage_08_*.json`、`batch_08a_result.json`、`translations_08.json`。

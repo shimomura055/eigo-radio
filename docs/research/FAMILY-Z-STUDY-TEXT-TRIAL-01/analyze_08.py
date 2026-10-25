@@ -52,9 +52,8 @@ def analyze():
         allrows = new if new else rows            # 判定用: 再抽出した作品は新抽出、それ以外は既存抽出(順位変更のみの効果)
         r["judged_src"] = "new" if new else "old"
         has_core = bool(a7.CORE[w])
-        c1 = all(not (s["n_t1_eligible"] > 0 and any(x["feature_class"] == "INV" for x in s["selected"])) for s in allrows) and \
-             all(all(x["reg_kind"] != "outside" for x in s["selected"]) for s in allrows if w != "melos")
-        c2 = all(all(x["reg_kind"] != "outside" for x in s["selected"]) for s in allrows)
+        c1 = all(not (s["n_t1_eligible"] > 0 and any(x["feature_class"] == "INV" for x in s["selected"])) for s in allrows)
+        c2 =all(all(x["reg_kind"] != "outside" for x in s["selected"]) for s in allrows)
         r["c1_priority_ok"] = c1
         r["c2_no_forced_selection"] = c2 if w != "melos" else None
         r["c2_melos_inherited_outside"] = [dict(run=s["run"], sel=[(x["para"], x["sentence"][:50]) for x in s["selected"]]) for s in allrows if w == "melos" and s["selected"]]
