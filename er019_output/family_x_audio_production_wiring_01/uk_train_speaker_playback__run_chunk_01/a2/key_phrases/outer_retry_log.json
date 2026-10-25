@@ -1,0 +1,101 @@
+{
+  "scope": "KP外側retry(全文選定backend、X/Z共通)",
+  "max_outer": 3,
+  "generic_note": "",
+  "attempts": [
+    {
+      "outer_attempt": 1,
+      "note_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+      "selection_phrases": [
+        "sound no one asked for",
+        "reach for your wallet",
+        "draw that line"
+      ],
+      "excluded_phrases_in": [],
+      "canonicalization_status": "CANONICALIZATION_PASS",
+      "canonicalization_attempts": [
+        {
+          "attempt": 1,
+          "status": "CANONICALIZATION_PASS",
+          "reasons": [],
+          "item_reasons": [],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "key_phrase": "sound no one asked for",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "自然な名詞句として単独で理解でき、語を削ると「誰も求めていない音」という中心的な意味が損なわれるため、そのまま維持します。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 2,
+                "key_phrase": "reach for one's wallet",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "ここでのyourは特定の人物ではなく読者一般を指すため、辞書的な一般形one'sに置き換えます。reach forとwalletは表現の意味に必要なので維持します。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              },
+              {
+                "rank": 3,
+                "key_phrase": "draw that line",
+                "changed_from_display_phrase": false,
+                "normalization_reason": "none",
+                "reasoning": "「境界・区別を示す」という意味を持つ自然な表現で、thatを除くと文法的に不自然になります。語を加えたり置き換えたりせず、そのまま維持します。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS"
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_0d0eebf4a51ecfc2006adacb7b276087d0b985526c47d4add2"
+        }
+      ],
+      "cmu_post_canon": {
+        "version": "kp_cmu_lexicon_gate_v1",
+        "ok": true,
+        "checked": 3,
+        "bad": []
+      },
+      "redundancy_status": "REDUNDANCY_PASS",
+      "symbol_flagged": false,
+      "artifacts": "er019_output/family_x_audio_production_wiring_01/uk_train_speaker_playback__run_nws_02/a2/key_phrases/outer_retry/attempt_1"
+    }
+  ],
+  "excluded_phrases": []
+}
