@@ -6,6 +6,12 @@
 # 状態: 作業branch feat/auw-unified-asr-01 上の新規moduleのみ。Production配線なし(委任_03/04)。
 #       既存Production関数(er006_*/er007_*/runner群)は一切変更しない(importして使うだけ)。
 #
+# 2026-10-25 JA-ASR-FALSE-NG-ROOT-CAUSE-01 委任_07A(OPEN-517 F1+F2 / OPEN-523 / OPEN-524 のProduction適用。承認済み安全条件[値・単位の最終確認]を機能させる不具合是正。
+#   合格範囲は狭まる方向のみ。DEV正本: docs/research/JA-ASR-FALSE-NG-ROOT-CAUSE-01/OPEN517_DESIGN_02.md・proto_value_gate_fix_04.py):
+#   F2 = `value_guard_kana_unified`(READING_MATCH PASSの最終ゲートにだけ judge が `kana_unify=True` で使う。かな書き数詞の表記統一)。
+#   OPEN-524 = かな数詞が『より大きいかな数詞の一部』(にじゅうよっか内のよっか)のとき atom を『部分一致』印にして値一致扱いしない(KANA_WORD_BOUNDARY_CHECK)。
+#   OPEN-523 = 弱いかな数詞(なのか/ようか/とお)は、脱落atomの値と一致しうる場合だけ数詞の証拠とする(WEAK_KANA_REGION_COMPAT)。
+#   rollback: 上記2定数を False(各1行)。F1(READING_MATCH最終ゲート)は judge の READING_MATCH_FINAL_GATE。
 # 意味論の正本: er058_output/unified_all_roles_production_wiring_01/DESIGN_02_ADDENDUM_01.md §1
 #   NO_VALUES : 両側とも値atomなし
 #   EQUAL     : 全atomが値+単位で一致(表層違い可)、または表層同一
@@ -27,6 +33,7 @@
 # ============================================================
 from __future__ import annotations
 
+import dataclasses
 import difflib
 import re
 import unicodedata
@@ -157,6 +164,14 @@ KANA_NUMERALS = {
     "いつか": (5, "day", True),  # 「いつか(someday)」と衝突 -> 曖昧語atom扱い
 }
 WEAK_KANA_NUMERALS = ("なのか", "ようか", "とお")
+# OPEN-523(2026-10-25): 弱いかな数詞が表せる(値, 助数詞)。脱落atomがこの値でないとき、弱い語は『数詞の証拠』にしない(一般語[何なのか/しようか/通り]と区別できないため、
+# 『脱落atomの値と一致しうる場合だけ』UNKNOWN=委譲、それ以外は従来のDIFF(b)判定へ進む=合格範囲は狭まるのみ)。False=従来挙動(rollback用module定数。env/flagではない)。
+WEAK_KANA_REGION_COMPAT = True
+_WEAK_KANA_VALUES = {"なのか": ((7, "day"), (7, "day_span")), "ようか": ((8, "day"), (8, "day_span")), "とお": ((10, "tsu"),)}
+# OPEN-524(2026-10-25): かな数詞の一致が『同じ助数詞のより大きいかな数詞の一部』(にじゅうよっか内のよっか)のとき、atomに部分一致印(extra)を付け、
+# 他atomと値が一致しても同一視しない(従来はEQUAL=誤PASS)。False=従来挙動(rollback用module定数)。
+KANA_WORD_BOUNDARY_CHECK = True
+_EMBEDDED_TAG = "embedded"
 _KANA_RE = re.compile("|".join(sorted((re.escape(k) for k in KANA_NUMERALS), key=len, reverse=True)))
 
 _KBLOCK = r"(?:[一二三四五六七八九]?千)?(?:[一二三四五六七八九]?百)?(?:[一二三四五六七八九]?十)?[一二三四五六七八九]?"
@@ -292,7 +307,12 @@ def extract_atoms_ja(text: str) -> list:
         if amb:
             atoms.append(Atom(m.group(0), "amb", None, "", s, e, alt=(Fraction(v), unit)))
         else:
-            atoms.append(Atom(m.group(0), "num", Fraction(v), unit, s, e))
+            extra = ()
+            if KANA_WORD_BOUNDARY_CHECK:
+                big = embedded_in_larger_reading(t, s, e, m.group(0), v, unit)
+                if big:
+                    extra = (_EMBEDDED_TAG, big)   # 部分一致印: keyにbig(より大きい読み)を含むため、24日(にじゅうよっか)と34日(さんじゅうよっか)も区別される
+            atoms.append(Atom(m.group(0), "num", Fraction(v), unit, s, e, extra=extra))
         take(s, e)
     # 6) 助数詞なしの算用数字(単位 '')
     for m in _BARE_RE.finditer(t):
@@ -306,9 +326,407 @@ def extract_atoms_ja(text: str) -> list:
     return atoms
 
 
-def _region_has_numeral_ja(text: str) -> bool:
-    return bool(re.search(r"[0-9〇零一二三四五六七八九十百千万億兆]", text)) or any(w in text for w in WEAK_KANA_NUMERALS) \
-        or bool(_KANA_RE.search(text))
+def _weak_kana_compatible(atom, weak: str) -> bool:
+    """弱いかな数詞(weak)が、脱落したatomの値を表しうるか。値を持たない種別(frac/approx/unparsed)は従来どおり『表しうる』扱い(=変更しない)。"""
+    if atom is None or not WEAK_KANA_REGION_COMPAT:
+        return True
+    if atom.kind == "num":
+        return (atom.value, atom.unit) in _WEAK_KANA_VALUES[weak]
+    if atom.kind == "amb" and atom.alt is not None:
+        return tuple(atom.alt) in _WEAK_KANA_VALUES[weak]
+    return True
+
+
+def _region_has_numeral_ja(text: str, atom=None) -> bool:
+    return (bool(re.search(r"[0-9〇零一二三四五六七八九十百千万億兆]", text))
+            or any(w in text and _weak_kana_compatible(atom, w) for w in WEAK_KANA_NUMERALS)
+            or bool(_KANA_RE.search(text)))
+
+
+# ============================================================
+# 期待読み表(OPEN-517 F2 / OPEN-524) — 移設元: er066_ja_asr_orthographic_equivalence_01_trial.py `_cands` と周辺(L114-280)。
+# 「Production→Trial import禁止」(DESIGN_01 §5-4)のため移設。**移設後の表とTrialの`_cands`の差分はparity testで固定**
+# (er078_asr_value_guard_kana_unify_test_01.py: n=1..20000×全unit。意図差分は『弱い読み除外』『同unitで値が一意でない読み除外』のみ=`expected_reads`側で適用)。
+# ============================================================
+_ER_D = {1: "いち", 2: "に", 3: "さん", 4: "よん", 5: "ご", 6: "ろく", 7: "なな", 8: "はち", 9: "きゅう"}
+
+
+def _er_under10000(n: int) -> str:
+    out = ""
+    th, rest = divmod(n, 1000)
+    if th:
+        out += {1: "せん", 3: "さんぜん", 8: "はっせん"}.get(th, _ER_D[th] + "せん")
+    hu, rest = divmod(rest, 100)
+    if hu:
+        out += {1: "ひゃく", 3: "さんびゃく", 6: "ろっぴゃく", 8: "はっぴゃく"}.get(hu, _ER_D[hu] + "ひゃく")
+    te, on = divmod(rest, 10)
+    if te:
+        out += "じゅう" if te == 1 else _ER_D[te] + "じゅう"
+    if on:
+        out += _ER_D[on]
+    return out
+
+
+def _er_kana_int(n: int) -> str:
+    if n == 0:
+        return "ぜろ"
+    out = ""
+    oku, rest = divmod(n, 10 ** 8)
+    man, rest = divmod(rest, 10000)
+    if oku:
+        out += _er_under10000(oku) + "おく"
+    if man:
+        out += ("いち" if man == 1 else _er_under10000(man)) + "まん"
+    if rest:
+        out += _er_under10000(rest)
+    return out
+
+
+def _er_sok(k: str, six: bool = True) -> str:
+    """促音化。six=Falseなら6(ろく)は促音化しない(6歳ろくさい・6週間ろくしゅうかん)。"""
+    for a, b in (("いち", "いっ"), ("ろく", "ろっ"), ("はち", "はっ"), ("じゅう", "じゅっ"), ("ひゃく", "ひゃっ")):
+        if a == "ろく" and not six:
+            continue
+        if k.endswith(a):
+            return k[: -len(a)] + b
+    return k
+
+
+def _er_swap_last(n: int, sub: dict) -> str | None:
+    """末尾桁の慣用読み(4->よ, 7->しち, 9->く)へ差し替えた数詞読み。"""
+    k = _er_kana_int(n)
+    d = n % 10
+    dflt = {4: "よん", 7: "なな", 9: "きゅう"}
+    if d in sub and k.endswith(dflt[d]):
+        return k[: -len(dflt[d])] + sub[d]
+    return None
+
+
+def _er_cls(n: int) -> int:
+    """促音化クラス: 末尾桁。10/100の倍数は0、1000の倍数は-1(促音化なし)。"""
+    if n % 1000 == 0:
+        return -1
+    return n % 10
+
+
+_ER_DAY = {1: ["ついたち", "いちにち"], 2: ["ふつか"], 3: ["みっか"], 4: ["よっか"], 5: ["いつか"], 6: ["むいか"],
+        7: ["なのか"], 8: ["ようか"], 9: ["ここのか"], 10: ["とおか"], 14: ["じゅうよっか"], 20: ["はつか"],
+        24: ["にじゅうよっか"]}
+_ER_TSU = {1: "ひとつ", 2: "ふたつ", 3: "みっつ", 4: "よっつ", 5: "いつつ", 6: "むっつ", 7: "ななつ", 8: "やっつ", 9: "ここのつ", 10: "とお"}
+_ER_MONTH = {1: "いち", 2: "に", 3: "さん", 4: "し", 5: "ご", 6: "ろく", 7: "しち", 8: "はち", 9: "く", 10: "じゅう", 11: "じゅういち", 12: "じゅうに"}
+
+
+def _er_uniq(xs):
+    return list(dict.fromkeys(xs))
+
+
+def _er_cands(n: int, c: str) -> list[str]:
+    k = _er_kana_int(n)
+    d = n % 10
+    if c in ("day", "day_span"):
+        suf = "かん" if c == "day_span" else ""
+        if n in _ER_DAY:
+            return [x + suf for x in (_ER_DAY[n] if c == "day" else _ER_DAY[n][:1] if n != 1 else ["いちにち"])]
+        if d == 4:
+            return [k[:-2] + "よっか" + suf]
+        outs = [k + "にち" + suf]
+        for dd, key in ((7, "しち"), (9, "く")):
+            if d == dd:
+                s = _er_swap_last(n, {dd: key})
+                if s:
+                    outs.append(s + "にち" + suf)
+        return outs
+    if c == "person":
+        if n == 1:
+            return ["ひとり"]
+        if n == 2:
+            return ["ふたり"]
+        if d == 4:
+            return [_er_swap_last(n, {4: "よ"}) + "にん"]
+        outs = [k + "にん"]
+        if d == 7:
+            outs.append(_er_swap_last(n, {7: "しち"}) + "にん")
+        return outs
+    if c in ("hour", "hour_span"):
+        suf = "じ" if c == "hour" else "じかん"
+        if d == 4:
+            return [_er_swap_last(n, {4: "よ"}) + suf]
+        if d == 7:
+            return [k + suf, _er_swap_last(n, {7: "しち"}) + suf]
+        if d == 9:
+            return [_er_swap_last(n, {9: "く"}) + suf]
+        return [k + suf]
+    if c in ("minute", "hon", "haku"):
+        h, p = {"minute": ("ふん", "ぷん"), "hon": ("ほん", "ぽん"), "haku": ("はく", "ぱく")}[c]
+        cl = _er_cls(n)
+        if cl == -1:
+            return [k + {"minute": "ぷん", "hon": "ぼん", "haku": "ぱく"}[c]]
+        if cl in (1, 6, 8, 0):
+            outs = [_er_sok(k) + p]
+            if c == "minute" and cl in (8, 0):
+                outs.append(k + h)
+            return outs
+        if c == "minute" and cl in (3, 4):
+            return [k + p]
+        if c == "hon" and cl == 3:
+            return [k + "ぼん"]
+        if c == "haku" and cl == 3:
+            return [k + p]
+        return [k + h]
+    if c == "second":
+        return [k + "びょう"]
+    if c == "month":
+        return [_ER_MONTH[n] + "がつ"] if n in _ER_MONTH else []
+    if c == "month_span":
+        return [(_er_sok(k) if _er_cls(n) in (1, 6, 8, 0) else k) + "かげつ"]
+    if c in ("year", "year_span"):
+        suf = "ねん" + ("かん" if c == "year_span" else "")
+        if d == 4:
+            return [_er_swap_last(n, {4: "よ"}) + suf]
+        if d == 7:
+            return [k + suf, _er_swap_last(n, {7: "しち"}) + suf]
+        if d == 9:
+            return [k + suf, _er_swap_last(n, {9: "く"}) + suf]
+        return [k + suf]
+    if c in ("age", "kai", "ken", "ko", "week"):
+        base = {"age": "さい", "kai": "かい", "ken": "けん", "ko": "こ", "week": "しゅうかん"}[c]
+        if c == "age" and n == 20:
+            return ["はたち"]
+        # 02: 歳(さい)・週間(しゅうかん)は6でも促音化しない(ろくさい/ろくしゅうかん)。1/8/10/100は促音化。
+        six = c not in ("age", "week")
+        outs = [(_er_sok(k, six) if _er_cls(n) in (1, 6, 8, 0) else k) + base]
+        if c in ("age", "week") and _er_cls(n) == 0:
+            outs.append(k + base)  # さんじゅうさい / さんじゅっさい の両方が標準
+        return outs
+    if c == "tsu":
+        return [_ER_TSU[n]] if n in _ER_TSU else []
+    if c == "yen":
+        if d == 4:
+            return [_er_swap_last(n, {4: "よ"}) + "えん", k + "えん"]
+        return [k + "えん"]
+    if c == "percent":
+        return [k + "ぱーせんと", k + "ぱあせんと"]
+    if c == "floor":
+        if _er_cls(n) == 3:
+            return [k + "がい"]
+        return [(_er_sok(k) if _er_cls(n) in (1, 6, 8, 0) else k) + "かい"]
+    simple = {"gen": "だい", "ban": "ばん", "go": "ごう", "mai": "まい", "dai": "だい", "bai": "ばい", "do": "ど", "km": "きろ"}
+    if c in simple:
+        return [k + simple[c]]
+    return []
+
+
+
+_ER_REV: dict = {}       # unit -> {read: set(values)}  (n=1..ER_REV_MAX、遅延生成・プロセス内キャッシュ)
+ER_REV_MAX = 20000
+_ER_EXT_K = 8            # 前後k文字(<=8)を連結して『より大きいかな数詞の読みか』を調べる範囲(最長一致の等価)
+_WEAK_SET = frozenset(WEAK_KANA_NUMERALS)
+
+
+def _er_rev(unit: str) -> dict:
+    if unit not in _ER_REV:
+        m: dict = {}
+        for n in range(1, ER_REV_MAX + 1):
+            try:
+                for r in _er_cands(n, unit):
+                    if r:
+                        m.setdefault(r, set()).add(n)
+            except Exception:  # noqa: BLE001  表生成の失敗はその値を表に載せないだけ(fail-safe=置換しない)
+                pass
+        _ER_REV[unit] = m
+    return _ER_REV[unit]
+
+
+def expected_reads(value, unit) -> list:
+    """atom(value, unit)の期待読み(かな)。Trial `_cands` との意図差分: (1)弱い読み(なのか/ようか/とお。一般語と衝突しProductionが辞書から外した)を除外
+    (2)同unit内で値が一意でない読みを除外。整数以外・助数詞なし・範囲外は空。"""
+    try:
+        if value is None or Fraction(value).denominator != 1 or unit == "":
+            return []
+        n = int(value)
+        rv = _er_rev(unit) if 1 <= n <= ER_REV_MAX else {}
+        out = []
+        for x in _er_cands(n, unit):
+            if not x or x in _WEAK_SET:
+                continue
+            if rv and rv.get(x, {n}) != {n}:
+                continue
+            out.append(x)
+        return out
+    except Exception:  # noqa: BLE001
+        return []
+
+
+def _part_of_larger_numeral(text: str, i: int, j: int, r: str, value, unit: str) -> bool:
+    """text[i:j]==r(値valueの読み)が、同unitのより大きい(別値の)数詞読みの一部か。F2の置換可否判定(最長一致)。"""
+    if not (1 <= int(value) <= ER_REV_MAX):
+        return False
+    rv = _er_rev(unit)
+    for k in range(1, _ER_EXT_K + 1):
+        if i - k >= 0:
+            sx = text[i - k:i] + r
+            if rv.get(sx) and rv[sx] != {int(value)}:
+                return True
+        if j + k <= len(text):
+            sx = r + text[j:j + k]
+            if rv.get(sx) and rv[sx] != {int(value)}:
+                return True
+    if j < len(text) and text[j] in "ゃゅょ":
+        return True
+    return False
+
+
+def embedded_in_larger_reading(text: str, i: int, j: int, r: str, value, unit: str) -> str:
+    """OPEN-524: かな数詞の一致text[i:j]==r(registered, 値value/助数詞unit)が、より大きいかな数詞の読みの一部なら、その(最長の)読み文字列を返す。無ければ ''。
+    判定: (a)同unitの別値の読みになる (b)unit=dayのとき日数(day_span)の読みになる(みっか+かん=3日間。値が同じでも助数詞が違うので『部分一致』)
+    (c)直後が拗音(ゃゅょ)。表に無い(非標準の)連結は『部分一致』にしない=従来どおり。"""
+    try:
+        if not (1 <= int(value) <= ER_REV_MAX):
+            return ""
+        best = ""
+        tables = [(unit, False)] + ([("day_span", True)] if unit == "day" else [])
+        for u, any_value in tables:
+            rv = _er_rev(u)
+            for k in range(1, _ER_EXT_K + 1):
+                cands = []
+                if i - k >= 0:
+                    cands.append(text[i - k:i] + r)
+                if j + k <= len(text):
+                    cands.append(r + text[j:j + k])
+                for sx in cands:
+                    hit = rv.get(sx)
+                    if hit and (any_value or hit != {int(value)}) and len(sx) > len(best):
+                        best = sx
+        if not best and j < len(text) and text[j] in "ゃゅょ":
+            best = r + text[j]
+        return best
+    except Exception:  # noqa: BLE001  fail-safe: 判定不能は従来どおり(印を付けない)
+        return ""
+
+
+# ============================================================
+# F2: かな書き数詞の表記統一(OPEN-517、DESIGN_02 §F2 / proto_value_gate_fix_04.py v4 の移設)
+# READING_MATCH PASSの最終ゲートでだけ使う(judgeが明示引数 kana_unify=True で呼ぶ)。Primary NG・Secondary・KP等では使わない。
+# 原稿(または転写)の『かな書き数詞』を、相手側が同じ値を数字で書いた表層へ置換してから値ガードを再計算する。
+# 単調性ガード: F2前の非EQUAL pair(置換に対応するものを除く)がF2後も同じ(src,hyp,verdict)で全て残らなければF2前の結果を採用する
+# =F2は『誤NG防止』の側にだけ働き、F1が検出した値違い・否定差を隠さない(合格範囲は広がらない)。
+# ============================================================
+def _replace_kana(text, own_atoms, other_atoms, budget):
+    """NFKC text中の『かな書き数詞』を相手側atom表層へ置換。budget={surface: 許可回数}(F2前に未対応だった相手atomだけ)。戻り: (新text, 置換したatomのlist)"""
+    out = unicodedata.normalize("NFKC", text or "")
+    spans = [(a.start, a.end, a) for a in own_atoms]
+    replaced = []
+    for a in other_atoms:
+        if a.kind != "num" or budget.get(a.surface, 0) <= 0:
+            continue
+        done = False
+        for r in sorted(expected_reads(a.value, a.unit), key=len, reverse=True):
+            i = out.find(r)
+            while i >= 0:
+                j = i + len(r)
+                ok = True
+                for st, en, x in spans:
+                    if not (i < en and j > st):
+                        continue
+                    # 重なる既存atom: 候補(=相手atomの値の完全な期待読み)が既存atomを内包する(完全一致でない)場合のみ吸収を許可
+                    if not ((i <= st and en <= j) and (st, en) != (i, j) and x.kind in ("num", "amb")):
+                        ok = False
+                        break
+                if ok and not _part_of_larger_numeral(out, i, j, r, a.value, a.unit):
+                    out = out[:i] + a.surface + out[j:]
+                    replaced.append(a)
+                    budget[a.surface] -= 1
+                    spans = [(x.start, x.end, x) for x in extract_atoms_ja(out)]
+                    done = True
+                    break
+                i = out.find(r, i + 1)
+            if done:
+                break
+    return out, replaced
+
+
+def _eligible_budget(pairs0, side):
+    """F2前のpair列から『相手atomが未対応(None)または別のかな数詞atomと対応していた』非EQUALを集計。
+    side='hyp': 置換対象=転写側 -> 原稿側atom(src)が対象。side='src': 逆。"""
+    b: dict = {}
+    for p in pairs0:
+        if p.verdict == EQUAL:
+            continue
+        mine, other = (p.src, p.hyp) if side == "hyp" else (p.hyp, p.src)
+        if mine is None:
+            continue
+        if other is None or other in KANA_NUMERALS:
+            b[mine] = b.get(mine, 0) + 1
+    return b
+
+
+@dataclass(frozen=True)
+class KanaUnifyInfo:
+    fired: bool
+    replaced: tuple = ()          # ((side, partner_surface), ...)
+    fallback: str = ""            # '' / 'monotonic_guard' / 'no_replacement'
+    canon2: str = ""
+    text2: str = ""
+
+    def to_dict(self) -> dict:
+        return {"fired": self.fired, "replaced": [list(x) for x in self.replaced], "fallback": self.fallback,
+                "canon2": self.canon2, "text2": self.text2}
+
+
+def _replace_both(canon, text, g0):
+    nc, na = unicodedata.normalize("NFKC", canon or ""), unicodedata.normalize("NFKC", text or "")
+    ac, aa = extract_atoms_ja(nc), extract_atoms_ja(na)
+    bh = _eligible_budget(g0.pairs, "hyp")   # 原稿側atomを相手にして転写をかな->数字へ
+    bs = _eligible_budget(g0.pairs, "src")   # 転写側atomを相手にして原稿をかな->数字へ
+    c2, rc = _replace_kana(nc, ac, aa, bs)
+    a2, ra = _replace_kana(na, aa, ac, bh)
+    return c2, a2, [("src", a) for a in rc], [("hyp", a) for a in ra]
+
+
+def unify_kana_numerals(canon, asr, g0=None):
+    """(canon', asr', 置換atoms)。g0=F2前のvalue_guard結果(省略時は計算)。"""
+    g0 = g0 or _guard_ja(canon, asr)
+    c2, a2, rc, ra = _replace_both(canon, asr, g0)
+    return c2, a2, [a for _, a in rc + ra]
+
+
+def _nonequal(g):
+    return [(p.src, p.hyp, p.verdict) for p in g.pairs if p.verdict != EQUAL]
+
+
+def value_guard_kana_unified_detail(canon: str, text: str, lang: str = "ja"):
+    """value_guardにF2を前置。戻り (ValueGuardResult, KanaUnifyInfo)。lang!='ja'は通常のvalue_guardでF2なし。純関数(API 0・副作用なし)。"""
+    if lang != "ja":
+        return value_guard(canon, text, lang), KanaUnifyInfo(False)
+    g0 = _guard_ja(canon, text)
+    c2, t2, rc, ra = _replace_both(canon, text, g0)
+    reps = rc + ra
+    if not reps:
+        return g0, KanaUnifyInfo(False, fallback="no_replacement")
+    g = _guard_ja(c2, t2)
+    # 単調性ガード: F2前の非EQUAL pairから『置換に対応するpair』を除いたものが、F2後も同じ(src,hyp,verdict)で全て残ること
+    pre = _nonequal(g0)
+    for side, a in reps:
+        for k, (sv, hv, v) in enumerate(pre):
+            if (side == "hyp" and sv == a.surface and (hv is None or hv in KANA_NUMERALS)) or \
+               (side == "src" and hv == a.surface and (sv is None or sv in KANA_NUMERALS)):
+                pre.pop(k)
+                break
+    post = _nonequal(g)
+    rep_t = tuple((sd, a.surface) for sd, a in reps)
+    for t in pre:
+        if t in post:
+            post.remove(t)
+        else:
+            return g0, KanaUnifyInfo(False, rep_t, "monotonic_guard", c2, t2)
+    warns = list(dict.fromkeys(list(g0.warnings) + list(g.warnings)))
+    if any(is_irregular_sig(a.value, a.unit) for _, a in reps) and WARN_IRREGULAR_READING not in warns:
+        warns.append(WARN_IRREGULAR_READING)
+    return dataclasses.replace(g, warnings=tuple(warns)), KanaUnifyInfo(True, rep_t, "", c2, t2)
+
+
+def value_guard_kana_unified(canon: str, text: str, lang: str = "ja") -> ValueGuardResult:
+    return value_guard_kana_unified_detail(canon, text, lang)[0]
 
 
 # ============================================================
@@ -397,6 +815,8 @@ def _compare_pair(a: Atom, b: Atom, lang: str):
         if {a.kind, b.kind} == {"num", "approx"} or {a.kind, b.kind} == {"approx", "frac"}:
             return DIFF, "approx_vs_exact", False
         return UNKNOWN, f"kind_mismatch:{a.kind}/{b.kind}", False
+    if a.kind == "num" and (a.extra[:1] == (_EMBEDDED_TAG,) or b.extra[:1] == (_EMBEDDED_TAG,)) and a.extra != b.extra:
+        return DIFF, "kana_numeral_part_of_larger_reading", False   # OPEN-524: 『にじゅうよっか』のよっか等は4日と同一視しない
     if a.kind == "approx":
         return DIFF, "approx_differs", False
     if a.kind == "frac":
@@ -418,7 +838,7 @@ def _compare_pair(a: Atom, b: Atom, lang: str):
 
 
 def _drop_verdict_ja(atom: Atom, region_text: str, side: str):
-    if _region_has_numeral_ja(region_text):
+    if _region_has_numeral_ja(region_text, atom):
         return UNKNOWN, f"{side}_drop_but_partner_region_has_numeral_like_text"
     if atom.kind == "amb":
         return AMBIGUOUS, f"{side}_ambiguous_surface_without_counterpart"

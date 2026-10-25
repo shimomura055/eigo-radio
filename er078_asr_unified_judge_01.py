@@ -65,12 +65,19 @@ W_PRIMARY_LENGTH_EXCESS = "PRIMARY_LENGTH_EXCESS"  # 委任_13(A3R-07): Primary�
 W_JA_NUMERIC_IRREGULAR_READING = vg.WARN_IRREGULAR_READING
 
 # ---- 最終ANDゲートが再否定しない承認済みequivalence根拠(ctx/primary_resultの`equivalence_basis`で受け取る) ----
+# 2026-10-25 JA-ASR-FALSE-NG-ROOT-CAUSE-01 委任_07A(OPEN-517 F1、承認済み安全条件の不具合是正): `READING_MATCH`(er007 読み一致[JA]。PHONETIC_MATCH/READING_RESOLVED_MATCH由来)を
+#   この集合から**除外**した。旧実装(OF-AUW-01、追補§1-3「読み一致を再否定しない」)は承認済み仕様 CURRENT_SPEC.md:2855・ユーザー原文L97
+#   (『承認済み根拠にも値・否定の最終ANDゲートを適用』)と矛盾し、数値を含む文の読み一致が値ガードを受けず誤PASSしていた(8,900↔89,000・しわ↔すわ等)。
+#   READING_MATCHのPrimary PASSは最終ANDゲートを受ける(値DIFF/否定差=NG_PROTECTED、AMBIGUOUS=P3降格)。正しいかな書き数詞は F2(`kana_unify`)で値同一として維持する。
+#   rollback = 下の `READING_MATCH_FINAL_GATE = False`(1行。READING_MATCHを再び承認基底へ戻し、F2も無効=旧挙動を完全復元)。
 APPROVED_EQUIVALENCE_BASES = frozenset({
     "HOMOPHONE_MATCH_NUMBER_EXCEPTION",   # er006_preprod_hardening_01_validation.py:905/1066
     "TIER1_DIFF_ANCHORED",                # er021 Tier1(strict版、2026-09-28承認)
     "TIER1_NUMERIC_EQUIVALENCE",
-    "READING_MATCH",                      # er007 読み一致(JA)
 })
+READING_MATCH_BASIS = "READING_MATCH"
+# OPEN-517 F1+F2のrollback用module定数(env/flag/起動scriptでは変更不可。承認済み不具合是正のためflag化しない)。True=READING_MATCH PASSにも最終ANDゲート+F2。False=旧挙動。
+READING_MATCH_FINAL_GATE = True
 
 # ---- U1(委任_10、2026-10-16ユーザー指示A-2/A-3「承認済み仕様への実装修正」。解放実装・Regression済み。既定は条件付きSTOP s1により暫定True) ----
 # 既定の経緯: live負例対照でPrimary PASS 3件(Secondary不呼出=U1と無関係)が出たためs1に従いTrueのままcommit。Fableが採否判断し1行でFalse化する。
@@ -352,8 +359,17 @@ def same_surface(a: str, b: str) -> bool:
 # ============================================================
 # 判定本体
 # ============================================================
-def _protected(canonical: str, text: str, lang: str):
-    """(value_guard結果, 否定差bool)。"""
+def _protected(canonical: str, text: str, lang: str, *, kana_unify: bool = False, info_out: dict | None = None):
+    """(value_guard結果, 否定差bool)。
+
+    kana_unify(OPEN-517 F2): 明示引数。Trueのときだけ値ガードの前に『かな書き数詞の表記統一』を行う(呼出回数や副作用では決めない)。
+      Trueにしてよいのは READING_MATCH PASS の Primary 最終ゲートだけ(呼出元で限定)。Primary NG・Secondary・KP等は既定False。
+      否定差は**常に置換前の元テキスト**で判定する(F2の置換後テキストでは判定しない)。info_out(dict)を渡すとF2の発動情報を書き込む。"""
+    if kana_unify and lang == "ja":
+        g, info = vg.value_guard_kana_unified_detail(canonical, text, lang)
+        if info_out is not None:
+            info_out.update(info.to_dict())
+        return g, negation_diff(canonical, text, lang)
     return vg.value_guard(canonical, text, lang), negation_diff(canonical, text, lang)
 
 
@@ -506,8 +522,13 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
 
     # 委任_06c(OF-AUW-C-01): Primary PASSの根拠が別転写(adopted_text)ならその転写で最終ANDゲートを行う。
     gate_text = pr.adopted_text if (pr.passed and pr.adopted_text is not None) else pr.text
-    pvg, pneg = _protected(canon, gate_text, lang)
+    # OPEN-517(F1+F2): READING_MATCHのPrimary PASSは最終ANDゲートを受け、そのゲートの値ガードにだけF2(かな数詞の表記統一)を許す。Primary NG・Secondaryは対象外。
+    kana_unify = bool(READING_MATCH_FINAL_GATE and pr.passed and pr.equivalence_basis == READING_MATCH_BASIS)
+    f2_info: dict = {}
+    pvg, pneg = _protected(canon, gate_text, lang, kana_unify=kana_unify, info_out=f2_info)
     audit["value_guard"] = {"primary": pvg.to_dict()}
+    if kana_unify and f2_info.get("replaced"):
+        audit["value_guard"]["kana_unify"] = f2_info   # 監査(R-3集計用): F2が置換を試みた(発動/単調性ガードで巻戻し)場合のみ
     audit["negation_guard"] = {"primary": pneg}
     if gate_text is not pr.text:
         audit["primary"]["adopted_text"] = gate_text
@@ -523,7 +544,8 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
 
     # ---- Primary PASS -> 最終ANDゲート ----
     if pr.passed:
-        approved = pr.equivalence_basis in APPROVED_EQUIVALENCE_BASES
+        approved = (pr.equivalence_basis in APPROVED_EQUIVALENCE_BASES
+                    or (not READING_MATCH_FINAL_GATE and pr.equivalence_basis == READING_MATCH_BASIS))   # False=旧挙動へのrollback
         if not final_and_gate:
             audit["final_gate"] = {"applied": False, "skipped": "final_and_gate=False"}
         elif approved:

@@ -149,7 +149,9 @@ def test_basis7_monotonic_guard_blocks_hijack_even_if_other_layers_disabled():
         assert G(c, a) == "NG_PROTECTED"
     # v3(凍結)は同じ入力でPASSだった事実の固定(回帰ではなく証跡): v3のhole
     import proto_value_gate_fix_03 as F3
-    assert F3.reading_match_final_gate("とおくの町で7日", "とおくの町で8日、なのか").state == "PASS"
+    import unittest.mock as mock2
+    with mock2.patch.object(vg, "WEAK_KANA_REGION_COMPAT", False):   # 2026-10-25(07A): v3当時のhole(OPEN-523適用前)は定数Falseで再現
+        assert F3.reading_match_final_gate("とおくの町で7日", "とおくの町で8日、なのか").state == "PASS"
 
 
 def test_basis7_f2_off_for_primary_ng_and_secondary_gates():
@@ -176,9 +178,13 @@ def test_basis7_f2_off_for_primary_ng_and_secondary_gates():
 def test_existing_guard_hole_is_not_made_worse_by_f2():
     # 既存のvalue_guard(KANA_NUMERALS正規表現に語境界が無い)が『にじゅうよっか』内の『よっか』を4日atomとして拾う既存の穴(F2とは無関係。別OPEN候補)。
     # F2は発動せず、F2前の結果と同一であること(悪化させない)を固定する。
+    import unittest.mock as mock
     for c, a in [("4日に会う", "にじゅうよっかに会う"), ("4日に会う", "さんじゅうよっかに会う")]:
-        g, info = F.value_guard_fixed_detail(c, a)
-        assert not info.fired and g.kind == PRE(c, a) == "EQUAL", (c, a, info, g.kind)   # 既存の穴(Production現行も同じ)。F2は無関与
+        # 2026-10-25(07A): OPEN-524はProductionへ適用済み(KANA_WORD_BOUNDARY_CHECK)。『適用前の穴』は定数Falseで再現し、適用後はDIFFになることも固定する
+        with mock.patch.object(vg, "KANA_WORD_BOUNDARY_CHECK", False):
+            g, info = F.value_guard_fixed_detail(c, a)
+            assert not info.fired and g.kind == PRE(c, a) == "EQUAL", (c, a, info, g.kind)   # 適用前の穴(F2は無関与)
+        assert PRE(c, a) == "DIFF"                                                            # 適用後(Production)
 
 
 def test_f2_fired_value_identity():

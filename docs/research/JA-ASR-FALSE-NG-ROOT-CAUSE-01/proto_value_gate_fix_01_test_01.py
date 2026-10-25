@@ -38,7 +38,7 @@ def test_apply_in_process_restores():
     b, p = uj.APPROVED_EQUIVALENCE_BASES, uj._protected
     with F.apply_in_process():
         assert "READING_MATCH" not in uj.APPROVED_EQUIVALENCE_BASES
-    assert uj.APPROVED_EQUIVALENCE_BASES is b and uj._protected is p and "READING_MATCH" in b
+    assert uj.APPROVED_EQUIVALENCE_BASES is b and uj._protected is p   # 2026-10-25(07A): READING_MATCHはProduction適用済みで元から集合に無い
 
 def test_idempotent():
     s = "いちばん一番にどと"

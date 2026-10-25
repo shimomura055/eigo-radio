@@ -186,13 +186,16 @@ def test_negation_reversal_is_ng_protected_no_secondary(monkeypatch):
     assert d["verified"] is False and az.calls == 0 and d["asr_judgement"]["state"] == uj.NG_PROTECTED
 
 
-def test_approved_reading_match_is_not_renegated_by_final_gate(monkeypatch):
-    # 否定語を含むが、承認済みの読み一致(PHONETIC_MATCH)でPASSしたPrimaryは最終ANDゲートが再否定しない(EN同様)
+def test_reading_match_is_subject_to_final_gate_and_passes_when_no_diff(monkeypatch):
+    # OPEN-517(2026-10-25、承認済み安全条件の不具合是正): 読み一致(PHONETIC_MATCH)のPrimary PASSにも最終ANDゲートを適用する(旧: 『再否定しない』skip)。
+    # 否定語を含むが原稿と転写で同じ(否定差なし)なので、最終ゲートは適用されたうえでPASS維持(Secondary不呼出)。理由は承認根拠skipではなく primary_pass。
     az = Az()
     d = run("解約できない仕組み", "かいやくできないしくみ", az, monkeypatch)
     assert d["verified"] is True and az.calls == 0
     assert d["asr_judgement"]["primary"]["equivalence_basis"] == "READING_MATCH"
-    assert d["asr_judgement"]["final_gate"]["skipped"].startswith("approved_equivalence")
+    fg = d["asr_judgement"]["final_gate"]
+    assert fg["applied"] is True and "skipped" not in fg and fg["negation_diff"] is False
+    assert d["asr_judgement"]["reason_code"] == "primary_pass"
 
 
 def test_irregular_numeric_reading_is_warning(monkeypatch):

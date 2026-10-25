@@ -62,7 +62,7 @@ Production採用はユーザー承認済み(管理ID全体)。ただしU1/U2は�
 ### 1-3. AMBIGUOUSの処理(DESIGN_01の矛盾の解消)
 - AMBIGUOUSはP1(保護差)ではなくP3(Secondary確認要)として扱う。Primary NG扱いでSecondary 1回を呼ぶ。
 - Secondary転写が原稿と同一表層のときだけPASS_WITH_WARNING(ラベル`NUMERIC_AMBIGUOUS_SURFACE`、人が試聴)。Secondaryも異表層ならNGとして次slotへ。
-- 最終ANDゲート(値ガード)は、承認済みのequivalence(`HOMOPHONE_MATCH_NUMBER_EXCEPTION`、Tier1 diff-anchored、読み一致)で既にPASSと確定した結果を再否定しない。再否定が起きると承認済み救済が値ガードで無効化されるため。
+- 最終ANDゲート(値ガード)は、承認済みのequivalence(`HOMOPHONE_MATCH_NUMBER_EXCEPTION`、Tier1 diff-anchored、読み一致)で既にPASSと確定した結果を再否定しない。再否定が起きると承認済み救済が値ガードで無効化されるため。**(2026-10-25 OPEN-517で上書き・JA-ASR-FALSE-NG-ROOT-CAUSE-01 委任_07A)**: 本項のうち`読み一致`(READING_MATCH)は再否定しない対象から**外す**(OF-AUW-01のこの部分はFable採用でユーザー個別承認が無く、`CURRENT_SPEC.md:2855`・ユーザー原文L97『承認済み根拠にも値・否定の最終確認』と矛盾する不具合=11-8 T1のため撤回)。READING_MATCHのPrimary PASSにも最終ANDゲート(値DIFF/否定差=NG_PROTECTED、AMBIGUOUS=P3降格)を適用する。元の理由『承認済み救済が値ガードで無効化される(誤NG防止)』は、かな書き数詞の表記統一(F2。`kana_unify`、READING_MATCH PASSの最終ゲートのみ)で手当てした。他の承認根拠(`HOMOPHONE_MATCH_NUMBER_EXCEPTION`・Tier1)は本項のまま。詳細=`docs/research/JA-ASR-FALSE-NG-ROOT-CAUSE-01/OPEN517_APPLY_RESULT_01.md`。
 
 ### 1-4. 擬似コード
 ```

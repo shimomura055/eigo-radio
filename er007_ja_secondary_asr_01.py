@@ -404,7 +404,7 @@ def _apply_variant_layer_voicing_upgrade(canonical_text: str, asr_text: Optional
 # (er078_asr_unified_judge_01.unified_judge)へ委譲するadapterに置換された(DESIGN_01 §4-1/§4-3/§4-9、DESIGN_02_ADDENDUM_01 §1/§4/§6)。
 #   [Primary P-chain = 既存] javal.classify_ja_asr_match(+Variant層D-2) -> [本委任の追加層] 数値の値等価(三十人=30人等、値ガードEQUAL
 #       かつ数値表記を値トークンへ置換した残りが一致のときだけ。DESIGN_01 §5-2) -> 統一judge。
-#   Primary PASS -> 最終ANDゲート(値DIFF/否定差。READING_MATCH等の承認済み根拠は再否定しない)。
+#   Primary PASS -> 最終ANDゲート(値DIFF/否定差。HOMOPHONE_MATCH_NUMBER_EXCEPTION・TIER1_*は再否定しない。READING_MATCHは最終ANDゲートを適用(OPEN-517))。
 #   Primary NG   -> P1 保護差(値DIFF・否定差・既存の per-span 否定/数字不一致・fugashi否定マーカー差) -> NG_PROTECTED[Secondary不呼出]
 #                   P2 除外表(length NG / C2同形異音 / 登録読み辞書不一致[A7=登録読み保護] / [U1: U1_KEEP_C1_SIMILARITY_EXCLUSIONS=False(解放実装済み、既定は暫定True)のときA5類似度<0.4・A6 C1固有名詞差は除外しない]) -> NG_EXCLUDED[Secondary不呼出]
 #                   P3 それ以外 -> Azure Secondary 1回(SecondaryCache共有: 同一wav+engine+lang+phrase_hashで重複呼出なし)。
@@ -423,7 +423,7 @@ import er078_asr_unified_judge_01 as unified_judge_mod
 import er078_asr_value_guard_01 as value_guard_mod
 
 NUMERIC_VALUE_EQUIVALENT_MATCH = "NUMERIC_VALUE_EQUIVALENT_MATCH"
-# Primary PASSのうち「読み一致」を根拠にした承認済みequivalence(最終ANDゲートが再否定しない)。
+# Primary PASSのうち「読み一致」を根拠にした equivalence_basis="READING_MATCH"。2026-10-25 OPEN-517: 最終ANDゲートの再否定しない集合(APPROVED_EQUIVALENCE_BASES)から除外し、値DIFF/否定差の最終ゲートを受ける。
 _READING_MATCH_CLASSIFICATIONS = ("PHONETIC_MATCH", "READING_RESOLVED_MATCH")
 _COST_GUARD_MAX_USD_PER_SEGMENT_FALLBACK = 0.05  # er006_secondary_asr_01.COST_GUARD_MAX_USD_PER_SEGMENT と同値(取得できない場合のみ)
 

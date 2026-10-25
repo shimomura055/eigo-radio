@@ -236,7 +236,7 @@ def apply_in_process(f1=True, f2=True, log=None):
                 state["n"] = 0
                 return orig_judge(ctx, primary_result, *a, **k)
 
-            def _prot(c, t, lang):
+            def _prot(c, t, lang, **kw):   # 2026-10-25(07A): Production _protected が kana_unify/info_out を受けるため**kwを許容(protoは明示F2を自前で行う)
                 state["n"] += 1
                 if lang == "ja" and state["read"] and state["n"] == 1:
                     g, info = value_guard_fixed_detail(c, t, lang)
