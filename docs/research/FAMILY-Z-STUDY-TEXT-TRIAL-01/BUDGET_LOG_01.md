@@ -120,3 +120,15 @@ Fable引き上げ(委任文記載)、2026-10-25、理由=ユーザー承認のTr
 | 日次 | 本委任5.98円。2026-10-25の既往Trial実費(約436.7円)に加算して約442.7円、日次1,000円内(他並行agent分は別途) |
 | FAMILY-Z-STUDY-TEXT-TRIAL-01 累計 | 28.71 + 5.984 = **約34.69円**(引き上げ後の案件上限50円の69%) |
 生データ: `usage_07_*.json`(prompt_sha256・response_id・token内訳)、`batch_07a_result.json`。
+
+## Trial-07 Step B(委任_15、2026-10-25)
+| 項目 | 値 |
+|---|---|
+| API call数 | 7(Step Bのみ。各作品r1の選定1件×7作品。二十年後は0件でcall無し。1 launch、失敗0、再起動0) |
+| model_id | gpt-6-luna(全call一致、status=completed。最新世代の推奨系) |
+| 本委任実費 | **0.5526円**(¥160/$)。平均0.0789円/call(0.0483〜0.1292)。本委任上限3円の18.4% |
+| STOP確認 | `tools/stop_scope_check_01.py` 作業開始時・launch前とも rc=0 |
+| Trial-07累計 | 5.984 + 0.5526 = 6.5366円(承認済みTrial-07上限12円内) |
+| FAMILY-Z-STUDY-TEXT-TRIAL-01 累計 | 34.694 + 0.5526 = **約35.25円**(案件上限50円の70%) |
+| 量産単価(Step A''平均0.332円 + Step B平均0.0789円) | **約0.41円/セット**(0件時は約0.33円) |
+生データ: `usage_07_07_r1_stepB_*.json`、`batch_07b_result.json`。詳細は `EVAL_07B.md`。
