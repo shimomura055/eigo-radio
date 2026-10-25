@@ -1,0 +1,120 @@
+{
+  "stage": "yrv_closing_A_gate",
+  "kind": "tension",
+  "status": "PASS",
+  "n_judgements": 2,
+  "history": [
+    {
+      "attempt": 1,
+      "sha256": {
+        "tension": "607e0a3b85f3f9546f3795c5120fb370061977c8ea5e4bbaca131ec807aee0eb"
+      },
+      "check": {
+        "kind": "tension",
+        "model": "gpt-6-luna",
+        "effort": "high",
+        "meta": {
+          "response_id": "resp_0b71f26e0557a187006add92ae5cb487d0bef91a37851689b1",
+          "model": "gpt-6-luna",
+          "usage": {
+            "input_tokens": 940,
+            "output_tokens": 3435
+          }
+        },
+        "prompt_sha256": "7114b0994cd66a1bf41202a74e66e440f0fa9e4698adc2d46d91cf0673ed3e04",
+        "parsed": {
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "FAIL",
+            "leak_binary_camp_split": "PASS",
+            "reasoning": "研究やデータの説明には戻っていませんが、3人がなぜ異なる答えに至るのかではなく、不在票をめぐる一般化された状況と書き手の解釈が中心です。したがって、指定された「3人の違いの掘り下げ」というPASS条件を満たしていません。",
+            "quoted_evidence": "不在という言葉で片づけると、受け取る人が家にいなかったことばかりが目に入る。届く時間が分からなかったことも、営業所に頼んでも遅れたことも、その一言からこぼれる。"
+          }
+        },
+        "flagged_items": [
+          {
+            "section": "tension",
+            "fail_fields": [
+              "leak_tension_reverts_to_research"
+            ],
+            "reasoning": "研究やデータの説明には戻っていませんが、3人がなぜ異なる答えに至るのかではなく、不在票をめぐる一般化された状況と書き手の解釈が中心です。したがって、指定された「3人の違いの掘り下げ」というPASS条件を満たしていません。",
+            "quoted_evidence": "不在という言葉で片づけると、受け取る人が家にいなかったことばかりが目に入る。届く時間が分からなかったことも、営業所に頼んでも遅れたことも、その一言からこぼれる。"
+          }
+        ],
+        "any_flagged": true,
+        "n_fail_fields": 1
+      },
+      "rewrite_calls": [
+        {
+          "try": 1,
+          "meta": {
+            "response_id": "resp_011a6f5d51c28156006add92c9852c87d0b5dff6986109f359",
+            "model": "gpt-6.1-sol",
+            "usage": {
+              "input_tokens": 1729,
+              "output_tokens": 1168
+            }
+          },
+          "details": {
+            "applied": [
+              "tension"
+            ],
+            "errors": []
+          },
+          "raw_rewrites": [
+            {
+              "section": "tension",
+              "text": "不在票を入れる人も、受け取る人も、再配達の手間は減ってほしいんだ。ただ三人は、一回の再配達より前の、違うところから手間を数え始めている。運び続ける手間も、家で待つ時間も、営業所へ行く手間も、料金には同じ形で表れない。再配達だけに値段をつける話は、その前の手間が報われたかを確かめる話にもなっている。あなたが最近受け取った荷物では、届くまでに誰が予定を空け、誰が受け取り方を変えた？"
+            }
+          ]
+        }
+      ],
+      "rewritten": [
+        "tension"
+      ]
+    },
+    {
+      "attempt": 2,
+      "sha256": {
+        "tension": "f48c146707e2afd431e7d953c93106080c7a856dd2851f41830c8429dc496847"
+      },
+      "check": {
+        "kind": "tension",
+        "model": "gpt-6-luna",
+        "effort": "high",
+        "meta": {
+          "response_id": "resp_0d28ed29b584dfe6006add92e1db4087d0a29140d631118ef0",
+          "model": "gpt-6-luna",
+          "usage": {
+            "input_tokens": 942,
+            "output_tokens": 1013
+          }
+        },
+        "prompt_sha256": "8bb8341022ef962603dacc613063d66efb9bb92f0b2df5d9ba8ce31d09c15287",
+        "parsed": {
+          "tension": {
+            "leak_evidence_subject": "PASS",
+            "leak_numbers_foreground": "PASS",
+            "leak_discovery_syntax": "PASS",
+            "leak_evidence_memorable": "PASS",
+            "leak_tension_reverts_to_research": "PASS",
+            "leak_binary_camp_split": "PASS",
+            "reasoning": "具体的な調査結果や数字を根拠として前面に出さず、三人が手間をどこから数えるかという違いと、その背後にある負担に焦点を置いています。三人を二対一の陣営に分けてもいません。",
+            "quoted_evidence": ""
+          }
+        },
+        "flagged_items": [],
+        "any_flagged": false,
+        "n_fail_fields": 0
+      }
+    }
+  ],
+  "first_judgement_flagged": true,
+  "first_judgement_n_fail_fields": 1,
+  "final_sha256": {
+    "tension": "f48c146707e2afd431e7d953c93106080c7a856dd2851f41830c8429dc496847"
+  }
+}
