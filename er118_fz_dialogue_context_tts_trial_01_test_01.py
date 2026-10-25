@@ -514,6 +514,8 @@ class MeasureAndPageTests(unittest.TestCase):
         self.assertAlmostEqual(f["median_hz"], 200, delta=8)
 
     def test_page_has_noindex_and_no_dummy_audio_for_missing_arm(self):
+        saved_out = t.OUT_DIR
+        t.OUT_DIR = "er118_output/_unit_page_phase0_tmp"      # Round 1の実phase0を書換えない(Round 2で existing_audio_record にkeyを追加したため隔離)
         t.build_phase0_artifacts()
         sel = t.load_json(f"{t.OUT_DIR}/phase0/selection.json")
         tmp = "er118_output/_unit_page_tmp"
@@ -524,6 +526,207 @@ class MeasureAndPageTests(unittest.TestCase):
             self.assertIn("noindex", doc)
             self.assertEqual(doc.count("<audio"), 1)
             self.assertEqual(doc.count("未生成"), 31)    # 8*4 - 1
+        finally:
+            shutil.rmtree(os.path.join(t.ROOT, tmp), ignore_errors=True)
+            shutil.rmtree(os.path.join(t.ROOT, t.OUT_DIR), ignore_errors=True)
+            t.OUT_DIR = saved_out
+
+
+class Round2ConfigTests(unittest.TestCase):
+    """委任_04(Round 2): 作品/level/出力dirのパラメータ化。API 0。Round 1(magi)の挙動が不変であることと、新2作品の選定規則・隔離・費用ガードを検証する。"""
+    WORKS2 = ("open_window", "monkeys_paw")
+
+    def tearDown(self):
+        t.configure("magi")
+
+    def test_default_is_round1_magi_and_prompt_sha_unchanged(self):
+        t.configure("magi")
+        self.assertEqual(t.WORK_KEY, "magi")
+        self.assertEqual(t.OUT_DIR, "er118_output/fz_dialogue_context_tts_trial_01")
+        self.assertEqual(t.PHASE1_GO_FILE, "er118_output/fz_dialogue_context_tts_trial_01/PHASE1_GO.json")
+        self.assertEqual(t.COST_LOG, "er118_output/fz_dialogue_context_tts_trial_01/raw_usage_log.jsonl")
+        self.assertEqual(t.sha_text(t.EMOTION_DEVELOPER), "035b54ff44b28d645e831cd0266c47fd2691f0268d606de0a0bea3d6ecd39cab")
+        self.assertEqual(t.emotion_prompt_sha(), "8bc8c816d5187ff060c438bce09b03e21492c7e44806241763631e55db291dce")
+        self.assertEqual(len(t.TARGETS), 8)
+
+    def test_round2_selection_rules(self):
+        for w in self.WORKS2:
+            t.configure(w)
+            plan = t.load_plan()
+            cl = {c["id"]: c for c in plan["clips"]}
+            order = [c["id"] for c in plan["clips"]]
+            ids = t.TARGET_IDS
+            self.assertEqual(len(ids), 8, w)
+            self.assertEqual(len(set(ids)), 8, w)
+            self.assertEqual(ids, sorted(ids, key=order.index), f"{w}: plan順")
+            for cid in ids:
+                self.assertTrue(cl[cid]["voice_role"].startswith("dialogue:"), cid)
+            words = [t.n_words(cl[c]["text"]) for c in ids]
+            self.assertLessEqual(sum(1 for x in words if x <= 2), 1, f"{w}: 2語以下は1件以下")
+            self.assertGreaterEqual(sum(1 for x in words if x >= 4), 6, f"{w}: 4語以上が主体")
+            roles = [x["role"] for x in t.TARGETS]
+            self.assertEqual((roles.count("directional"), roles.count("watch"), roles.count("stability")), (5, 2, 1), w)
+            self.assertEqual(len(t.PRIMARY_METRICS), 5)
+            self.assertEqual(len(t.OVERACT_WATCH), 2)
+            self.assertIn(t.STABILITY_WATCH, ids)
+            self.assertGreaterEqual(words[ids.index(t.STABILITY_WATCH)], 6, "安定監視clipは6語以上(Round 1で2語clipが不成立だった教訓)")
+            for cid, (metric, direction) in t.PRIMARY_METRICS.items():
+                self.assertIn(metric, ("rms_dbfs", "articulation_wpm_300", "f0_median_hz"))
+                self.assertIn(direction, ("up", "down"))
+            self.assertIn(t.EXAMPLE_CLIP_ID, ids)
+
+    def test_round2_existing_audio_reusable_api0(self):
+        for w in self.WORKS2:
+            t.configure(w)
+            for cid in t.TARGET_IDS:
+                r = t.existing_audio_record(cid)
+                self.assertTrue(os.path.isfile(os.path.join(t.ROOT, r["original_wav"])), cid)
+                self.assertTrue(os.path.isfile(os.path.join(t.ROOT, r["final_wav"])), cid)
+                self.assertEqual(r["tts_execution_mode"], "STANDARD")
+                self.assertEqual(r["tts_model_id"], t.TTS_MODEL)
+                self.assertEqual(r["asr_state"], "PASS", cid)
+                self.assertIsNotNone(r["original_attempt_index"], f"{cid}: 採用原音がどのattemptかを特定できる")
+                self.assertEqual(r["style_effective_sha256"], t.EXPECTED_BASE_STYLE_SHA)
+                clip = {c["id"]: c for c in t.load_plan()["clips"]}[cid]
+                self.assertEqual(t.tts_voice(clip), r["voice"], "②のVoice(voice_assignment)は①の実生成Voiceと同一")
+
+    def test_round2_style_and_context_invariants(self):
+        for w in self.WORKS2:
+            t.configure(w)
+            plan = t.load_plan()
+            cl = {c["id"]: c for c in plan["clips"]}
+            plan_text = " ".join(c["text"] for c in plan["clips"])
+            self.assertEqual(t.sha_text(t.base_style()), t.EXPECTED_BASE_STYLE_SHA)
+            for cid in t.TARGET_IDS:
+                clip, ctx = cl[cid], t.extract_context(plan, cid)
+                note = {"state": "quietly worried.", "scene": "At home.", "reaction": ""}
+                b = t.build_prompt(t.tts_text_for(clip), t.style_for_arm("base", ctx, None))
+                c = t.build_prompt(t.tts_text_for(clip), t.style_for_arm("ctx", ctx, note))
+                self.assertEqual(text_section(b), text_section(c), "TEXT TO SPEAK区画は①②で同一")
+                self.assertTrue(style_section(c).startswith(style_section(b).rstrip()))
+                self.assertNotIn(clip["text"], t.build_context_block(ctx, note), cid)
+                self.assertLessEqual(len(ctx["prev_dialogue"]), 2)
+                self.assertLessEqual(len(ctx["next_dialogue"]), 1)
+                for s in ctx["stage_direction_sentences"] + [ctx["narration_before"], ctx["narration_after"]] + [d["text"] for d in ctx["prev_dialogue"] + ctx["next_dialogue"]]:
+                    if s:
+                        self.assertIn(s.strip(), plan_text)
+
+    def test_round2_cap_and_cost_log_shared_across_works(self):
+        t.configure("open_window")
+        go_a, log_a, out_a = t.PHASE1_GO_FILE, t.COST_LOG, t.OUT_DIR
+        t.configure("monkeys_paw")
+        self.assertEqual((t.PHASE1_GO_FILE, t.COST_LOG), (go_a, log_a), "30円Capとcost logは2作品で共有")
+        self.assertNotEqual(t.OUT_DIR, out_a)
+        self.assertTrue(go_a.startswith("er118_output/fz_dialogue_context_tts_trial_02/"))
+        self.assertNotEqual(go_a, "er118_output/fz_dialogue_context_tts_trial_01/PHASE1_GO.json", "Round 1の出力・GOと分離")
+        self.assertEqual(t.TRIAL_CAP_JPY, 30.0)
+
+    def test_round2_go_cap_over_30_rejected_and_tts_arms_blocked_without_go_scope(self):
+        t.configure("open_window")
+        saved = t.PHASE1_GO_FILE
+        t.PHASE1_GO_FILE = "er118_output/_unit_r2_go_tmp/PHASE1_GO.json"
+        try:
+            p = os.path.join(t.ROOT, t.PHASE1_GO_FILE)
+            os.makedirs(os.path.dirname(p), exist_ok=True)
+            with open(p, "w") as f:
+                json.dump({"managed_id": t.MANAGED_ID, "cap_jpy": 31, "arms": ["ctx"]}, f)
+            with self.assertRaises(SystemExit):
+                t._require_go()
+            with open(p, "w") as f:
+                json.dump({"managed_id": t.MANAGED_ID, "cap_jpy": 30, "arms": []}, f)
+            with self.assertRaises(SystemExit):
+                t.generate_arm("ctx", 1)       # armsが許可されていない(Phase 1aのGO=TTS arm無し)ならTTS生成は起動しない
+            with self.assertRaises(SystemExit):
+                t.generate_arm("base", 1)
+        finally:
+            t.PHASE1_GO_FILE = saved
+            shutil.rmtree(os.path.join(t.ROOT, "er118_output/_unit_r2_go_tmp"), ignore_errors=True)
+    def test_round2_cap_lookahead_stops_before_exceeding_without_api(self):
+        """Round 2追加のCap先読み: 実績+次clip見積>Capなら、API呼出前にSTOP(clip未生成)。TTS/LLMは呼ばない。"""
+        import er019_family_x_audio_production_runner_01 as runner
+        t.configure("monkeys_paw")
+        self.assertGreater(t.est_next_clip_jpy("x" * 3000, t.TARGET_IDS[0]), 0.1)
+        saved = (t.PHASE1_GO_FILE, t.COST_LOG, t.OUT_DIR, runner.compute_cost_jpy_so_far)
+        tmp = "er118_output/_unit_r2_cap_tmp"
+        try:
+            t.OUT_DIR, t.PHASE1_GO_FILE, t.COST_LOG = tmp, f"{tmp}/PHASE1_GO.json", f"{tmp}/raw_usage_log.jsonl"
+            os.makedirs(os.path.join(t.ROOT, tmp), exist_ok=True)
+            with open(os.path.join(t.ROOT, t.PHASE1_GO_FILE), "w") as f:
+                json.dump({"managed_id": t.MANAGED_ID, "cap_jpy": 30, "arms": ["base"]}, f)
+            runner.compute_cost_jpy_so_far = lambda _p: (29.9, {})
+            with self.assertRaises(SystemExit) as cm:
+                t.generate_arm("base", 1)
+            self.assertIn("Cap", str(cm.exception))
+            self.assertFalse(os.path.exists(os.path.join(t.ROOT, tmp, "gen")) and any(
+                f.endswith(".wav") for _d, _s, fs in os.walk(os.path.join(t.ROOT, tmp, "gen")) for f in fs), "wav未生成")
+        finally:
+            t.PHASE1_GO_FILE, t.COST_LOG, t.OUT_DIR, runner.compute_cost_jpy_so_far = saved
+            shutil.rmtree(os.path.join(t.ROOT, tmp), ignore_errors=True)
+
+
+    def test_round2_emotion_prompt_only_title_differs(self):
+        t.configure("magi")
+        base = t.EMOTION_DEVELOPER
+        for w in self.WORKS2:
+            t.configure(w)
+            self.assertIn(t.WORK_TITLE, t.EMOTION_DEVELOPER)
+            self.assertNotIn("Gift of the Magi", t.EMOTION_DEVELOPER)
+            self.assertEqual(t.EMOTION_DEVELOPER.replace(t.WORK_TITLE, "The Gift of the Magi"), base, "作品名以外のrule 1〜10は無変更")
+            self.assertEqual(t.EMOTION_SCHEMA["name"], "dialogue_delivery_notes")
+
+    def test_round2_speaker_names_allowed_in_emotion_validation(self):
+        t.configure("open_window")
+        plan = t.load_plan()
+        ctx = t.extract_context(plan, "full_story_part1_c14")
+        raw = [{"clip_id": ctx["clip_id"], "speaker_state": "quietly sad, as Vera tells Framton about the lawn", "scene": "Vera speaks softly to Framton.",
+                "reaction_to_previous": "", "evidence": ["Vera's voice grew quieter."], "has_explicit_cue": True}]
+        v = t.validate_emotion_items(raw, [ctx])[ctx["clip_id"]]
+        self.assertEqual(v["status"], "ACCEPTED", v["discard_reasons"])
+        raw[0]["scene"] = "Vera speaks softly to Gertrude."
+        v2 = t.validate_emotion_items(raw, [ctx])[ctx["clip_id"]]
+        self.assertEqual(v2["status"], "DISCARDED")      # 入力に無い固有名詞は従来どおり破棄
+
+    def test_round2_combined_page(self):
+        tmp = "er118_output/_unit_combined_page_tmp"
+        try:
+            for w in self.WORKS2:
+                t.configure(w)
+                t.build_phase0_artifacts()
+            ap = t.build_combined_page(page_root=tmp)
+            with open(ap, encoding="utf-8") as f:
+                doc = f.read()
+            self.assertIn("noindex", doc)
+            n_audio = 0     # 音声はpage_manifest.jsonに載ったpathだけ(未生成armにダミー音声を置かない)
+            for w in self.WORKS2:
+                t.configure(w)
+                mp = os.path.join(t.ROOT, t.OUT_DIR, "page_manifest.json")
+                if os.path.exists(mp):
+                    man = t.load_json(f"{t.OUT_DIR}/page_manifest.json")
+                    n_audio += sum(len(v) for v in list(man["pages"].values()) + list(man["extra"].values()))
+            self.assertEqual(doc.count("<audio"), n_audio)
+            self.assertEqual(doc.count("class='card'"), 16)
+            self.assertEqual(doc.count("未生成"), 16 * 4 - n_audio)
+            self.assertIn("../fz_dialogue_context_trial_01/index.html", doc)      # 前回『賢者の贈り物』ページへのリンク
+            self.assertIn("Production採用ではありません", doc)
+            self.assertIn("B 改善方式", doc)
+            self.assertIn("A' 現行方式の別take", doc)
+            self.assertIn("音量の大小ではなく", doc)
+            self.assertIn("前後の会話・地の文", doc)
+        finally:
+            shutil.rmtree(os.path.join(t.ROOT, tmp), ignore_errors=True)
+
+    def test_round2_single_page_links_and_title(self):
+        t.configure("monkeys_paw")
+        t.build_phase0_artifacts()
+        sel = t.load_json(f"{t.OUT_DIR}/phase0/selection.json")
+        tmp = "er118_output/_unit_single_page_tmp"
+        try:
+            ap = t.build_page(sel, {"base": {}, "ctx": {}}, out_dir=tmp)
+            with open(ap, encoding="utf-8") as f:
+                doc = f.read()
+            self.assertIn("猿の手", doc)
+            self.assertIn("../fz_dialogue_context_trial_01/index.html", doc)
+            self.assertNotIn("賢者の贈り物』セリフ音声", doc)
         finally:
             shutil.rmtree(os.path.join(t.ROOT, tmp), ignore_errors=True)
 

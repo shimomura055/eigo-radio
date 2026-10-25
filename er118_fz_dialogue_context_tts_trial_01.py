@@ -41,7 +41,17 @@ sys.path.insert(0, ROOT)
 MANAGED_ID = "FZ-DIALOGUE-TTS-CONTEXT-EMOTION-TRIAL-01"
 OUT_DIR = "er118_output/fz_dialogue_context_tts_trial_01"
 PAGE_DIR = "user_test/fz_dialogue_context_trial_01"
-PHASE1_GO_FILE = f"{OUT_DIR}/PHASE1_GO.json"
+GROUP_DIR = OUT_DIR                       # 個別Capとcost logを共有するTrial群のdir(Round 1=OUT_DIR自身。Round 2=2作品の共通親dir)
+PAGE_ROOT = PAGE_DIR                      # 複数作品を束ねる試聴ページの親dir(Round 1=PAGE_DIR自身)
+PHASE1_GO_FILE = f"{GROUP_DIR}/PHASE1_GO.json"
+COST_LOG = f"{GROUP_DIR}/raw_usage_log.jsonl"
+WORK_KEY = "magi"
+WORK_TITLE = "The Gift of the Magi"       # EMOTION_DEVELOPERの作品名(Round 1文言のまま)
+WORK_TITLE_JA = "賢者の贈り物"
+EXAMPLE_CLIP_ID = "full_story_part2_c7"
+PAGE_EXTRA_HTML = ""                      # 単独ページ末尾に足すHTML(Round 2: 親ページ/Round 1ページへのリンク)
+ALLOWED_NAMES = {"della", "jim", "christmas"}   # 感情情報の新規固有名詞検査で許可する語(入力に与えた話者名等)
+CANDIDATES_PATH = "docs/research/FZ-DIALOGUE-TTS-CONTEXT-EMOTION-TRIAL-01/EMOTION_CANDIDATES_01.md"
 SRC_RUN = "er026_output/family_z_production_e2e_01/the_gift_of_the_magi/run_sf_prod_01"
 LEVEL = "b1b"
 PLAN_PATH = f"{SRC_RUN}/segment_plan_{LEVEL}.json"
@@ -281,7 +291,7 @@ def validate_emotion_items(raw_items: list, contexts: list) -> dict:
         it = by_id.get(cid)
         src = allowed_source_text(ctx)
         src_n = norm_for_match(src)
-        src_tokens = set(norm_tokens(src)) | {"della", "jim", "christmas"}
+        src_tokens = set(norm_tokens(src)) | set(ALLOWED_NAMES)
         reasons = []
         if it is None:
             reasons.append("missing_item")
@@ -433,8 +443,15 @@ def existing_audio_record(clip_id: str) -> dict:
     res = load_json(TTS_RESULTS_PATH)["segments"][clip_id]
     orig = f"{NARR_DIR}/{clip_id}_original.wav"
     att = load_json(f"{NARR_DIR}/attempts/{clip_id}_attempt1_englishstyleprefixwidemargin.json")
-    return {"clip_id": clip_id, "original_wav": orig, "original_sha256": sha_file(orig), "attempt_json_sha256_field": att.get("sha256"),
-            "original_matches_attempt_sha": sha_file(orig) == att.get("sha256"),
+    # Round 2追加: Productionが複数attemptを要した場合、採用された原音は最終attemptと一致する。どのattemptと一致するかを併記(既存keyは不変)
+    osha, orig_attempt = sha_file(orig), None
+    for k in range(1, 12):
+        pth = f"{NARR_DIR}/attempts/{clip_id}_attempt{k}_englishstyleprefixwidemargin.json"
+        if os.path.isfile(os.path.join(ROOT, pth)) and load_json(pth).get("sha256") == osha:
+            orig_attempt = k
+            break
+    return {"clip_id": clip_id, "original_wav": orig, "original_sha256": osha, "attempt_json_sha256_field": att.get("sha256"),
+            "original_matches_attempt_sha": sha_file(orig) == att.get("sha256"), "original_attempt_index": orig_attempt,
             "final_wav": res.get("path"), "final_sha256": res.get("sha256"), "voice": res.get("voice"),
             "asr_text": res.get("asr_text"), "audio_classification": (res.get("attempts") or [{}])[-1].get("audio_classification"),
             "asr_state": (res.get("asr_judgement") or {}).get("state"), "asr_primary_label": ((res.get("asr_judgement") or {}).get("primary") or {}).get("label"), "speed_profile": (res.get("speed_profile") or {}).get("profile"),
@@ -593,8 +610,8 @@ def build_phase0_artifacts() -> dict:
         sel.append({**t, "speaker": clip["speaker"], "voice": tts_voice(clip), "text": clip["text"], "context": ctx, "existing_audio": rec, "existing_measure": meas,
                     "production_reuse_key": production_reuse_key_for(clip)})
     save_json(f"{OUT_DIR}/phase0/selection.json", sel)
-    ctx_ex = contexts[3]
-    save_json(f"{OUT_DIR}/phase0/style_example_part2_c7.json", {
+    ctx_ex = next(c for c in contexts if c["clip_id"] == EXAMPLE_CLIP_ID)
+    save_json(f"{OUT_DIR}/phase0/style_example_{EXAMPLE_CLIP_ID.replace('full_story_', '')}.json", {
         "note": "Phase 0 例示。speaker_state/scene/reactionはPhase 1のLLM(gpt-6-luna 1 call)出力が入る欄で、ここでは『<LLM>』のプレースホルダ。",
         "context_block_with_placeholders": build_context_block(ctx_ex, {"state": "<LLM: speaker_state>", "scene": "<LLM: scene>", "reaction": ""}),
         "base_style_sha256": sha_text(base_style())})
@@ -681,8 +698,9 @@ def evidence_sources(ctx: dict, evidence: list) -> list:
     return out
 
 
-def run_emotion_llm(client=None, *, out_dir: str = f"{OUT_DIR}/llm") -> dict:
+def run_emotion_llm(client=None, *, out_dir: str | None = None) -> dict:
     """Phase 1a専用。全対象を1 callで。結果と生応答・検査結果を保存し、Fableレビュー用の枠(emotion_review.json)を作る。GO無しでは起動しない。"""
+    out_dir = out_dir or f"{OUT_DIR}/llm"
     go = _require_go()
     _stop_check()
     plan = load_plan()
@@ -691,7 +709,7 @@ def run_emotion_llm(client=None, *, out_dir: str = f"{OUT_DIR}/llm") -> dict:
         from dotenv import load_dotenv
         load_dotenv()
         import er005_cost_logger as cl
-        cl.install(os.path.join(ROOT, f"{OUT_DIR}/raw_usage_log.jsonl"))
+        cl.install(os.path.join(ROOT, COST_LOG))
         import er003_v1_en_direct_vfl_01_generate as vfl01
         client = vfl01.get_client()
     import er062_family_z_writer_01 as zw
@@ -738,11 +756,13 @@ def load_reviewed_notes(path_notes: str = None, path_review: str = None, require
     return out
 
 
-def render_emotion_candidates(out_path: str = "docs/research/FZ-DIALOGUE-TTS-CONTEXT-EMOTION-TRIAL-01/EMOTION_CANDIDATES_01.md") -> str:
-    """Fableレビュー用(API 0): 感情情報8件を1件ずつ、英文・前後文脈・LLM出力・根拠引用・決定論検査結果・実際に送られるCONTEXTブロックと共に書き出す。"""
+def _candidate_body(h: int = 1, title_override: str | None = None) -> list:
+    """感情情報候補のMarkdown行(現在のconfigの作品)。h=見出し深さ(1: Round 1と同一形式 / 2: 複数作品を束ねる)。"""
     plan = load_plan()
     rec = load_json(f"{OUT_DIR}/llm/emotion_notes.json")
-    L = ["# EMOTION_CANDIDATES_01 — 感情情報8件(Fableレビュー用。TTS前に accept / discard を `llm/emotion_review.json` へ)", "",
+    H1, H2 = "#" * h, "#" * (h + 1)
+    n_items = len(TARGETS)
+    L = [f"{H1} {title_override or 'EMOTION_CANDIDATES_01'} — 感情情報{n_items}件(Fableレビュー用。TTS前に accept / discard を `{OUT_DIR}/llm/emotion_review.json` へ)", "",
          f"- LLM: 要求 `{rec['model_requested']}` / 返却 `{rec['model_returned']}`、1 call、実費 {rec['cost_jpy']} 円(raw_usage_log.jsonl)。EMOTION_DEVELOPER+schema sha256 = `{rec['prompt_sha256']}`。",
          f"- 決定論検査の結果: ACCEPTED {rec['n_accepted']} / NO_EXPLICIT_CUE {rec['n_no_explicit_cue']} / DISCARDED {rec['n_discarded']}。",
          "- NO_EXPLICIT_CUE(LLMが has_explicit_cue=false)の行は、Opus M2により『Speaker's state of mind』行を出さない(sceneとreactionは保持)。DISCARDEDは状態・場面・返答すべて出さない。",
@@ -752,7 +772,7 @@ def render_emotion_candidates(out_path: str = "docs/research/FZ-DIALOGUE-TTS-CON
         ctx = extract_context(plan, cid)
         v = rec["validated"][cid]
         raw = v.get("llm_raw") or {}
-        L += [f"## {i}. `{cid}` — {ctx['speaker_display']}(Voice {ctx['voice']}) / {' / '.join(tg['categories'])}", "",
+        L += [f"{H2} {i}. `{cid}` — {ctx['speaker_display']}(Voice {ctx['voice']}) / {' / '.join(tg['categories'])}", "",
               f"- セリフ(英): {ctx['text']}",
               f"- 場面(日本語・選定時): {tg['scene_ja']}",
               "- 前のセリフ: " + (" / ".join(f"{d['speaker_display']}: {_unq(d['text'])}" for d in ctx["prev_dialogue"]) or "なし"),
@@ -767,8 +787,12 @@ def render_emotion_candidates(out_path: str = "docs/research/FZ-DIALOGUE-TTS-CON
             src = "本人の台詞" if e["in_own_line"] else ("地の文" if e["in_narration"] else ("他者の台詞" if e["in_other_speaker_line"] else "不明"))
             L.append(f"  - 「{e['quote']}」 — {src}")
         L += ["", "実際に送られるCONTEXTブロック(accept時):", "```text", build_context_block(ctx, v), "```", ""]
-    L += ["## レビューの付け方", "", "`er118_output/fz_dialogue_context_tts_trial_01/llm/emotion_review.json` の各 `fable_decision` を `accept` か `discard` にする。discardはLLM由来の項目(状態・場面・返答)を全て外して中立にする。"
-          "`summary_ja` は試聴ページ用の日本語要約(Sonnet下書き入り。accept時のみ表示)。全8件が埋まるまで ctx arm の有料生成は起動しない。"]
+    L += [f"{H2} レビューの付け方", "", f"`{OUT_DIR}/llm/emotion_review.json` の各 `fable_decision` を `accept` か `discard` にする。discardはLLM由来の項目(状態・場面・返答)を全て外して中立にする。"
+          f"`summary_ja` は試聴ページ用の日本語要約(Sonnet下書き入り。accept時のみ表示)。全{n_items}件が埋まるまで ctx arm の有料生成は起動しない。", ""]
+    return L
+
+
+def _write_lines(out_path: str, L: list) -> str:
     ap = os.path.join(ROOT, out_path)
     os.makedirs(os.path.dirname(ap), exist_ok=True)
     with open(ap, "w", encoding="utf-8", newline="\n") as f:
@@ -776,11 +800,29 @@ def render_emotion_candidates(out_path: str = "docs/research/FZ-DIALOGUE-TTS-CON
     return out_path
 
 
+def render_emotion_candidates(out_path: str | None = None) -> str:
+    """Fableレビュー用(API 0): 感情情報を1件ずつ、英文・前後文脈・LLM出力・根拠引用・決定論検査結果・実際に送られるCONTEXTブロックと共に書き出す(現在のconfigの作品)。"""
+    return _write_lines(out_path or CANDIDATES_PATH, _candidate_body(1))
+
+
+def render_emotion_candidates_multi(work_keys: tuple, out_path: str, title: str) -> str:
+    """Round 2: 複数作品の感情候補を1つのMarkdownへ(作品ごとにconfigureして連結)。実行後は元のconfigへ戻す。"""
+    prev = WORK_KEY
+    L = [f"# {title}", ""]
+    try:
+        for k in work_keys:
+            configure(k)
+            L += [f"## 作品: {WORK_TITLE_JA}({WORK_TITLE}) / work key `{k}`", ""] + _candidate_body(2, title_override=WORK_KEY)
+    finally:
+        configure(prev)
+    return _write_lines(out_path, L)
+
+
 def scan_repo_mtime(t_start: float) -> dict:
     """Opus R3: er113のrepo全体mtime走査を流用(除外dirに本Trialの出力先・試聴ページを追加)。"""
     import er113_fx_paragraph_chunk_trial_01 as t113
     old = t113.SCAN_EXCLUDE_DIRS
-    t113.SCAN_EXCLUDE_DIRS = tuple(old) + (OUT_DIR, PAGE_DIR)
+    t113.SCAN_EXCLUDE_DIRS = tuple(old) + (OUT_DIR, PAGE_DIR, GROUP_DIR, PAGE_ROOT)
     try:
         return t113.scan_new_files(t_start - 2)
     finally:
@@ -797,6 +839,12 @@ def comparison_validity(res: dict, sent: list, expected_sha: str) -> dict:
     return {"comparison_valid": bool(valid), "final_instruction_type": it, "last_request_prompt_matches_expected": last_ok,
             "attempts_logged": n_att, "n_tts_calls_captured": len(sent),
             "n_tts_calls_undercount_possible": bool(it == "minimal_fallback" or (n_att and len(sent) < n_att))}
+
+
+def est_next_clip_jpy(prompt: str, clip_id: str) -> float:
+    """次の1 call(retry無し)の費用見積(Round 2追加のCap先読み用)。音声長は①(Production既存原音)から。"""
+    x, sr = read_mono(f"{NARR_DIR}/{clip_id}_original.wav")
+    return est_tts_jpy(len(prompt), len(x) / sr * 1.05)
 
 
 def generate_arm(arm: str, take: int, *, gen_fn=None, only: list | None = None, go: dict | None = None) -> dict:
@@ -831,16 +879,19 @@ def generate_arm(arm: str, take: int, *, gen_fn=None, only: list | None = None, 
             cid = t["id"]
             if only and cid not in only:
                 continue
-            if runner is not None:
-                spent, _ = runner.compute_cost_jpy_so_far(os.path.join(ROOT, f"{OUT_DIR}/raw_usage_log.jsonl"))
-                if spent >= cap:
-                    raise SystemExit(f"[STOP] 個別Cap {cap}円到達(実績{spent:.2f}円)")
             clip = cl_map[cid]
             ctx = extract_context(plan, cid)
             note_for_arm = notes.get(cid) if arm == "ctx" else None
             style = style_for_arm(arm, ctx, note_for_arm)
             text = tts_text_for(clip)
             prompt_expected = build_prompt(text, style)
+            if runner is not None:
+                spent, _ = runner.compute_cost_jpy_so_far(os.path.join(ROOT, COST_LOG))
+                if spent >= cap:
+                    raise SystemExit(f"[STOP] 個別Cap {cap}円到達(実績{spent:.2f}円)")
+                est_next = est_next_clip_jpy(prompt_expected, cid)     # Round 2追加: 次のclip(1 call)の見積を足すとCapを超える場合も開始しない(上限超過の予防)
+                if spent + est_next > cap:
+                    raise SystemExit(f"[STOP] 次clip({cid})の見積{est_next:.2f}円を足すと個別Cap {cap}円を超える(実績{spent:.2f}円)")
             wav = f"{arm_dir}/{cid}/{LEVEL}/narration/{cid}.wav"
             os.makedirs(os.path.dirname(os.path.join(ROOT, wav)), exist_ok=True)
             current["label"] = f"{arm}_t{take}:{cid}"
@@ -878,7 +929,7 @@ def generate_arm(arm: str, take: int, *, gen_fn=None, only: list | None = None, 
             import er113_fx_paragraph_chunk_trial_01 as t113
             from dotenv import load_dotenv
             load_dotenv()
-            cl_mod.install(os.path.join(ROOT, f"{OUT_DIR}/raw_usage_log.jsonl"))
+            cl_mod.install(os.path.join(ROOT, COST_LOG))
             gen_fn = bvoices.generate_voice_body_wide_margin
             before = snapshot_protected()
             stack.enter_context(t113.redirect_production_sinks(f"{OUT_DIR}/sinks"))
@@ -973,14 +1024,15 @@ def make_final_equivalent(wav_rel: str, out_rel: str) -> dict:
     return {k: info[k] for k in ("slowdown_pct_target", "slowdown_pct_actual", "src_duration_seconds", "dst_duration_seconds")}
 
 
-def build_page(sel: list, arms: dict, out_dir: str = PAGE_DIR, extra: dict | None = None, summaries_ja: dict | None = None) -> str:
-    """arms: {"base": {clip_id: mp3}, "ctx": {...}}(A/B=主音声)。extra: {"base2": {...}, "ctx2": {...}}(A'/B'=別take)。未生成は『Phase 1で生成』表示(ダミー音声は置かない)。
-    開発者向け詳細はdev_details.htmlに分離。"""
-    extra = extra or {}
-    summaries_ja = summaries_ja or {}
+def _speaker_label(speaker: str) -> str:
+    """表示用の話者名(Round 1の'della'→'Della'等は従来と同一。'mr_white'→'Mr White')。"""
+    return " ".join(w.capitalize() for w in speaker.split("_"))
 
+
+def _cards_html(sel: list, arms: dict, extra: dict, summaries_ja: dict, prefix: str = "") -> str:
+    """作品1つ分のカードHTML。prefix=音声の相対pathの前置き(複数作品を束ねる親ページ用。単独ページは空)。"""
     def cell(src):
-        return f"<audio controls preload='none' src='{H.escape(src)}'></audio>" if src else "<span class='na'>未生成(Phase 1で生成)</span>"
+        return f"<audio controls preload='none' src='{H.escape(prefix + src)}'></audio>" if src else "<span class='na'>未生成(Phase 1で生成)</span>"
     cards = []
     for i, s in enumerate(sel, 1):
         ctx = s["context"]
@@ -991,7 +1043,7 @@ def build_page(sel: list, arms: dict, out_dir: str = PAGE_DIR, extra: dict | Non
         sj = summaries_ja.get(cid)
         llm = f"<div class='llm'>追加した気持ち・場面（AI作成、確認済み）: {H.escape(sj)}</div>" if sj else ""
         cards.append(
-            f"<div class='card'><h2>{i}. {H.escape(s['speaker'].capitalize())}（{' / '.join(H.escape(c) for c in s['categories'])}）</h2>"
+            f"<div class='card'><h2>{i}. {H.escape(_speaker_label(s['speaker']))}（{' / '.join(H.escape(c) for c in s['categories'])}）</h2>"
             f"<div class='scene'>{H.escape(s['scene_ja'])}</div><div class='en'>{H.escape(s['text'])}</div>{llm}"
             f"<details><summary>前後の会話・地の文（英語）</summary>{narr}<div class='lab'>直前のセリフ</div>{prev or '<div>なし</div>'}"
             f"<div class='lab'>直後のセリフ</div>{nxt or '<div>なし</div>'}</details>"
@@ -1000,15 +1052,26 @@ def build_page(sel: list, arms: dict, out_dir: str = PAGE_DIR, extra: dict | Non
             f"<div class='row'><div class='col'><div class='lab'>{LAB_A2}</div>{cell(extra.get('base2', {}).get(cid))}</div>"
             f"<div class='col'><div class='lab'>{LAB_B2}</div>{cell(extra.get('ctx2', {}).get(cid))}</div></div>"
             "</div>")
+    return ''.join(cards)
+
+
+def build_page(sel: list, arms: dict, out_dir: str | None = None, extra: dict | None = None, summaries_ja: dict | None = None) -> str:
+    """arms: {"base": {clip_id: mp3}, "ctx": {...}}(A/B=主音声)。extra: {"base2": {...}, "ctx2": {...}}(A'/B'=別take)。未生成は『Phase 1で生成』表示(ダミー音声は置かない)。
+    開発者向け詳細はdev_details.htmlに分離。"""
+    out_dir = out_dir or PAGE_DIR
+    extra = extra or {}
+    summaries_ja = summaries_ja or {}
+
+    cards_html = _cards_html(sel, arms, extra, summaries_ja)
     doc = (f"<!DOCTYPE html><html lang='ja'><head><meta charset='utf-8'><meta name='robots' content='noindex,nofollow'>"
            f"<meta name='viewport' content='width=device-width, initial-scale=1'><title>セリフ音声 文脈・感情 比較試聴（Trial）</title><style>{_PAGE_CSS}</style></head><body>"
-           "<h1>『賢者の贈り物』セリフ音声 現行方式 vs 文脈・感情を追加（Trial）</h1>"
+           f"<h1>『{H.escape(WORK_TITLE_JA)}』セリフ音声 現行方式 vs 文脈・感情を追加（Trial）</h1>"
            "<div class='note'><b>状態: Trial（Production採用ではありません）</b>。同じ英文・同じ声・同じAIモデル・同じ生成設定で、A=現行方式、"
            "B=Style（話し方の指示）に「話者の気持ち／場面／前後の会話／地の文の演出」を足した方式を聞き比べます。"
            "生成のたびに声は少し変わるため、同じ方式をもう一度生成した A'・B' も添えています（A と A' の違いが『偶然のゆれ』の目安です）。"
            "<br>聴いていただきたい観点: 感情が伝わるか / 抑揚の自然さ / 会話としての自然さ / 場面に合った演出 / 聞き取りやすさ / 大げさすぎないか。</div>"
            f"<div class='note'>{PAGE_VOLUME_NOTE}（音声は本番と同じ約6%の速度加工と音量調整をした形です。）</div>"
-           f"{''.join(cards)}<p class='lab'>開発者向けの詳細は <a href='dev_details.html'>dev_details.html</a></p></body></html>")
+           f"{cards_html}{PAGE_EXTRA_HTML}<p class='lab'>開発者向けの詳細は <a href='dev_details.html'>dev_details.html</a></p></body></html>")
     ap = os.path.join(ROOT, out_dir, "index.html")
     os.makedirs(os.path.dirname(ap), exist_ok=True)
     with open(ap, "w", encoding="utf-8", newline="\n") as f:
@@ -1016,7 +1079,8 @@ def build_page(sel: list, arms: dict, out_dir: str = PAGE_DIR, extra: dict | Non
     return ap
 
 
-def build_dev_details(analysis: dict | None, out_dir: str = PAGE_DIR) -> str:
+def build_dev_details(analysis: dict | None, out_dir: str | None = None) -> str:
+    out_dir = out_dir or PAGE_DIR
     body = "<p>Phase 1実行後に生成条件・Style全文・ASR・leakage・機械指標を出力します。</p>" if not analysis else \
         "<pre>" + H.escape(json.dumps(analysis, ensure_ascii=False, indent=1)) + "</pre>"
     doc = (f"<!DOCTYPE html><html lang='ja'><head><meta charset='utf-8'><meta name='robots' content='noindex,nofollow'><title>dev details</title>"
@@ -1130,9 +1194,10 @@ def load_summaries_ja() -> dict:
     return {cid: v["summary_ja"] for cid, v in load_json(p)["items"].items() if v.get("summary_ja") and v.get("fable_decision") == "accept"}
 
 
-def analyze_all(*, out_dir: str = OUT_DIR, page_dir: str = PAGE_DIR) -> dict:
+def analyze_all(*, out_dir: str | None = None, page_dir: str | None = None) -> dict:
     """Phase 1b生成後(API 0): 生成済みarm/takeを解析し、最終相当音声(R2)・mp3(target_rms統一)・analysis.json・試聴ページ・dev_details.htmlを書く。
     ページ: A=Production既存の最終音声 / B=ctx_t1の最終相当 / A'=base_t1 / B'=ctx_t2(いずれも最終相当)。機械指標は加工前の原音で計測(速度加工は全armで同一)。"""
+    out_dir, page_dir = out_dir or OUT_DIR, page_dir or PAGE_DIR
     plan = load_plan()
     cl_map = {c["id"]: c for c in plan["clips"]}
     sel = load_json(f"{OUT_DIR}/phase0/selection.json")
@@ -1191,19 +1256,195 @@ def analyze_all(*, out_dir: str = OUT_DIR, page_dir: str = PAGE_DIR) -> dict:
         analysis["clips"][cid] = row
     try:
         import er019_family_x_audio_production_runner_01 as runner
-        cost, _ = runner.compute_cost_jpy_so_far(os.path.join(ROOT, out_dir, "raw_usage_log.jsonl"))
+        cost, _ = runner.compute_cost_jpy_so_far(os.path.join(ROOT, COST_LOG if out_dir == OUT_DIR else os.path.join(out_dir, "raw_usage_log.jsonl")))
     except Exception:   # noqa: BLE001  費用が取れない場合は未確認として評価(g不成立)にする
         cost = None
     analysis["cost_jpy"] = cost
     analysis["evaluation"] = evaluate_trial(analysis["clips"], cost)
     save_json(f"{out_dir}/analysis.json", analysis)
+    save_json(f"{out_dir}/page_manifest.json", {"pages": pages, "extra": extra})     # Round 2: 親ページ(build_combined_page)が各作品の音声pathを読む
     build_page(sel, pages, out_dir=page_dir, extra=extra, summaries_ja=load_summaries_ja())
     build_dev_details(analysis, out_dir=page_dir)
     return analysis
 
 
+
+# ============================================================
+# 作品config(Round 2 追加: 作品/level/出力dirのパラメータ化。生成関数・Style追記方式・CONTEXT書式・leakage/ASR検査・分離条件は無変更)
+# ============================================================
+_EMOTION_DEVELOPER_MAGI = EMOTION_DEVELOPER
+ROUND2_GROUP_DIR = "er118_output/fz_dialogue_context_tts_trial_02"
+ROUND2_PAGE_ROOT = "user_test/fz_dialogue_context_trial_02"
+ROUND1_PAGE_REL = "../fz_dialogue_context_trial_01/index.html"   # Round 2 親ページ(user_test/fz_dialogue_context_trial_02/index.html)から見たRound 1ページ
+_RUN_ROOT = "er026_output/family_z_production_e2e_01"
+
+_OW_TARGETS = [
+    {"id": "full_story_part1_c7", "categories": ["不安・緊張", "静かな告白"], "role": "watch",
+     "scene_ja": "客のFramtonに、Veraが叔母の『悲劇』を切り出す場面。Veraは開け放たれたフランス窓を見やってから話し始める。",
+     "why_ja": "不穏な話の切り出し。感情を示す語は本文に無く、地の文は窓を見る動作だけ(過剰演技の監視)。"},
+    {"id": "full_story_part1_c10", "categories": ["驚き・同情", "ささやき・静かな発言"], "role": "directional",
+     "scene_ja": "窓の外へ出て行方不明になった叔母の家族の話を聞き、Framtonが小声で『なんと恐ろしい』とつぶやく場面(地の文に『murmured』)。",
+     "why_ja": "2語の短いセリフ(本Trialで唯一の2語セリフ)。『つぶやき』の演出が地の文の会話タグにしか無い。"},
+    {"id": "full_story_part1_c12", "categories": ["不気味さ・悲しみ", "静かな語り"], "role": "watch",
+     "scene_ja": "Framtonがつぶやいた後、Veraが『叔母は今もみんなが帰ってくると思っていて、暗くなるまで窓を開けて待っている』と静かに続ける場面(直後の地の文に『Vera's voice grew quieter』)。",
+     "why_ja": "不気味で悲しい語り。直後の地の文に声の静けさがあり、文脈追加で大げさな怖がらせ方にならないかの監視。"},
+    {"id": "full_story_part2_c4", "categories": ["喜び・驚き", "感情が変化する場面"], "role": "directional",
+     "scene_ja": "叔母が急いで部屋に入ってきて、Framtonに話しかけ、開けた窓のこと、もうすぐ帰る夫と弟たちのことをにこやかに話す場面(直前の地の文に『hurried into the room』)。",
+     "why_ja": "地の文に『急いで』の明示がある長めのセリフ。話速が上がるかを見る(33語で費用が最大のセリフ)。"},
+    {"id": "full_story_part2_c6", "categories": ["喜び・驚き"], "role": "directional",
+     "scene_ja": "窓の外を気にしていた叔母の顔がぱっと明るくなり、『やっと帰ってきた』と声を上げる場面(直前の地の文に『her face brightened』)。",
+     "why_ja": "明るい喜びの一言。声が明るくなるか、大げさにならないかを見る。"},
+    {"id": "full_story_part3_c8", "categories": ["戸惑い", "日常の会話(対照)"], "role": "stability",
+     "scene_ja": "逃げるように帰った客のことを、叔母が帰宅した家族に『神経の話をしたかと思ったら急に走って行った』と何気なく話す場面。",
+     "why_ja": "感情・演出の明記が無い日常の会話。文脈追加で『過剰に感情的』にならないかの対照(Round 1のMadameに相当)。"},
+    {"id": "full_story_part3_c9", "categories": ["落ち着いた嘘", "相手の発言を受けた返答"], "role": "directional",
+     "scene_ja": "客が逃げた理由を問われ、Veraが落ち着いて『犬のせい』と答える場面(直後の地の文に『Vera said calmly』)。",
+     "why_ja": "平然とした一言。落ち着きの演出が直後の地の文の会話タグにしか無い。"},
+    {"id": "full_story_part3_c11", "categories": ["落ち着いた嘘", "作り話の語り"], "role": "directional",
+     "scene_ja": "逃げた客について、Veraが落ち着いたまま、インドで犬の群れに追われ墓穴で一晩過ごしたという作り話をすらすらと語る場面(直前の地の文に『Vera said calmly』、直後の地の文でそれが作り話だと明かされる)。",
+     "why_ja": "平然と嘘をつく長めのセリフ。落ち着きの演出が地の文にあり、不自然に芝居がからないかを見る。"},
+]
+_MP_TARGETS = [
+    {"id": "full_story_part1_c4", "categories": ["不吉な警告", "静かな語り"], "role": "watch",
+     "scene_ja": "元軍曹が暖炉のそばで猿の手の由来を語り、『運命に手を出す者には悲しみをもたらす』と続ける場面。",
+     "why_ja": "感情語の明示が無い不吉な説明。地の文は会話タグ(he said)のみ(過剰演技の監視)。"},
+    {"id": "full_story_part1_c13", "categories": ["喜び", "冗談めかした提案"], "role": "directional",
+     "scene_ja": "訪問者が帰ったあと、Herbertが笑いながら、父に『200ポンドを願って家のローンを払おう』と促す場面(直前の地の文に『Herbert laughed』)。",
+     "why_ja": "明るい調子の提案。声が明るくなるか、大げさにならないかを見る。"},
+    {"id": "full_story_part1_c15", "categories": ["期待と半信半疑", "願い事"], "role": "directional",
+     "scene_ja": "Mr. Whiteが微笑みながら猿の手を掲げ、『200ポンドが欲しい』と願う場面(直前の地の文に『with a smile』、直後に手がねじれて叫ぶ)。",
+     "why_ja": "半信半疑の軽い願い。直後の恐怖との対比で、声の明るさが出るかを見る。"},
+    {"id": "full_story_part2_c2", "categories": ["悲しみ", "重い知らせ"], "role": "watch",
+     "scene_ja": "工場から来た見知らぬ男が、Whiteさん夫妻に息子の事故を切り出す場面。",
+     "why_ja": "重い知らせの切り出し。地の文に感情の明示は無い(過剰演技の監視)。"},
+    {"id": "full_story_part2_c6", "categories": ["事務的な発言(対照)"], "role": "stability",
+     "scene_ja": "息子の死を告げたあと、会社は責任を負わないが見舞金として200ポンドを出すと、男が事務的に伝える場面。",
+     "why_ja": "感情の明記が無い事務的な告知。文脈追加で『過剰に感情的』にならないかの対照(Round 1のMadameに相当)。"},
+    {"id": "full_story_part2_c8", "categories": ["悲しみ", "必死の頼み", "感情が変化する場面"], "role": "directional",
+     "scene_ja": "埋葬の1週間後、涙で顔を濡らしたMrs. Whiteが夫を揺り起こし、猿の手に残った願いで息子を生き返らせてと迫る場面(直前の地の文に『Her face was wet with tears』)。",
+     "why_ja": "涙と切迫が混じった頼み。涙の演出が出るかを見る(涙=話速↓の事前登録。切迫との混在に注意)。"},
+    {"id": "full_story_part2_c10", "categories": ["恐れ", "ためらい"], "role": "directional",
+     "scene_ja": "夫が顔をそむけ、『お前は息子の姿を見ていない。何が戻ってくるのか怖い』と答える場面(直前の地の文に『He turned away』)。",
+     "why_ja": "恐れと拒絶。内にこもった静かな発言になるかを見る。"},
+    {"id": "full_story_part3_c1", "categories": ["恐れと決意", "震え声"], "role": "directional",
+     "scene_ja": "階下で猿の手を見つけたMr. Whiteが、震える声で『息子を生き返らせてほしい』と最後に近い願いを口にする場面(直前の地の文に『His voice shook』)。",
+     "why_ja": "声の震えが地の文にしか無い短い願い。話速が落ちるかを見る。"},
+]
+
+
+def _metrics_from_targets(targets: list) -> tuple:
+    pm, over, stab = {}, [], None
+    for t in targets:
+        if t["role"] == "directional":
+            pm[t["id"]] = (t["metric"], t["direction"])
+        elif t["role"] == "watch":
+            over.append(t["id"])
+        elif t["role"] == "stability":
+            stab = t["id"]
+    return pm, tuple(over), stab
+
+
+# 事前登録(PREREGISTERED_CRITERIA_02の対応則を適用。TTS観測前に固定): 手がかり語→主指標
+#   hushed/murmured → 揃える前RMS↓ / 涙・震え声・落ち着いた(calmly)→調音話速↓ / hurried/rushed → 調音話速↑ / laughed・smile・brightened(明るい喜び)→F0中央値↑
+_PRE_OW = {
+    "full_story_part1_c10": ("rms_dbfs", "down"),
+    "full_story_part2_c4": ("articulation_wpm_300", "up"), "full_story_part2_c6": ("f0_median_hz", "up"),
+    "full_story_part3_c9": ("articulation_wpm_300", "down"), "full_story_part3_c11": ("articulation_wpm_300", "down"),
+}
+_PRE_MP = {
+    "full_story_part1_c13": ("f0_median_hz", "up"), "full_story_part1_c15": ("f0_median_hz", "up"),
+    "full_story_part2_c8": ("articulation_wpm_300", "down"), "full_story_part2_c10": ("rms_dbfs", "down"),
+    "full_story_part3_c1": ("articulation_wpm_300", "down"),
+}
+for _tg, _pre in ((_OW_TARGETS, _PRE_OW), (_MP_TARGETS, _PRE_MP)):
+    for _t in _tg:
+        if _t["id"] in _pre:
+            _t["metric"], _t["direction"] = _pre[_t["id"]]
+
+WORKS = {
+    "magi": {"title": "The Gift of the Magi", "title_ja": "賢者の贈り物", "run": f"{_RUN_ROOT}/the_gift_of_the_magi/run_sf_prod_01",
+             "out_dir": OUT_DIR, "group_dir": OUT_DIR, "page_dir": PAGE_DIR, "page_root": PAGE_DIR, "targets": TARGETS, "speaker_display": dict(SPEAKER_DISPLAY),
+             "primary": dict(PRIMARY_METRICS), "overact": tuple(OVERACT_WATCH), "stability": STABILITY_WATCH, "example": "full_story_part2_c7",
+             "allowed_names": {"della", "jim", "christmas"}, "candidates": CANDIDATES_PATH, "extra_html": ""},
+    "open_window": {"title": "The Open Window", "title_ja": "開いた窓", "run": f"{_RUN_ROOT}/the_open_window/run_sf_prod_01",
+                    "out_dir": f"{ROUND2_GROUP_DIR}/open_window", "group_dir": ROUND2_GROUP_DIR, "page_dir": f"{ROUND2_PAGE_ROOT}/open_window", "page_root": ROUND2_PAGE_ROOT,
+                    "targets": _OW_TARGETS, "speaker_display": {"vera": "Vera", "framton": "Framton", "mrs_sappleton": "Vera's aunt", "men": "one of the returning men"},
+                    "example": "full_story_part3_c11", "allowed_names": {"vera", "framton", "bertie", "india"},
+                    "candidates": "docs/research/FZ-DIALOGUE-TTS-CONTEXT-EMOTION-TRIAL-01/EMOTION_CANDIDATES_02.md"},
+    "monkeys_paw": {"title": "The Monkey's Paw", "title_ja": "猿の手", "run": f"{_RUN_ROOT}/the_monkeys_paw/run_sf_prod_01",
+                    "out_dir": f"{ROUND2_GROUP_DIR}/monkeys_paw", "group_dir": ROUND2_GROUP_DIR, "page_dir": f"{ROUND2_PAGE_ROOT}/monkeys_paw", "page_root": ROUND2_PAGE_ROOT,
+                    "targets": _MP_TARGETS, "speaker_display": {"morris": "the retired sergeant-major", "mr_white": "Mr. White", "mrs_white": "Mrs. White", "herbert": "Herbert",
+                                                                 "visitor": "the stranger from the firm"},
+                    "example": "full_story_part2_c8", "allowed_names": {"herbert", "mr", "mrs", "white"},
+                    "candidates": "docs/research/FZ-DIALOGUE-TTS-CONTEXT-EMOTION-TRIAL-01/EMOTION_CANDIDATES_02.md"},
+}
+ROUND2_WORKS = ("open_window", "monkeys_paw")
+
+
+def configure(work: str) -> str:
+    """作品configを有効にする(module globalsを差替え)。既定=magi(Round 1と同一)。Round 2は GROUP_DIR(個別Cap/cost log/PHASE1_GO)を2作品で共有する。"""
+    global WORK_KEY, WORK_TITLE, WORK_TITLE_JA, OUT_DIR, GROUP_DIR, PAGE_DIR, PAGE_ROOT, PHASE1_GO_FILE, COST_LOG, SRC_RUN, PLAN_PATH, TTS_RESULTS_PATH, NARR_DIR
+    global SPEAKER_DISPLAY, TARGETS, TARGET_IDS, PRIMARY_METRICS, OVERACT_WATCH, STABILITY_WATCH, EXAMPLE_CLIP_ID, ALLOWED_NAMES, CANDIDATES_PATH, EMOTION_DEVELOPER, PAGE_EXTRA_HTML
+    c = WORKS[work]
+    WORK_KEY, WORK_TITLE, WORK_TITLE_JA = work, c["title"], c["title_ja"]
+    OUT_DIR, GROUP_DIR, PAGE_DIR, PAGE_ROOT = c["out_dir"], c["group_dir"], c["page_dir"], c["page_root"]
+    PHASE1_GO_FILE, COST_LOG = f"{GROUP_DIR}/PHASE1_GO.json", f"{GROUP_DIR}/raw_usage_log.jsonl"
+    SRC_RUN = c["run"]
+    PLAN_PATH, TTS_RESULTS_PATH, NARR_DIR = f"{SRC_RUN}/segment_plan_{LEVEL}.json", f"{SRC_RUN}/{LEVEL}/audit/tts_generation_results.json", f"{SRC_RUN}/{LEVEL}/narration"
+    SPEAKER_DISPLAY = dict(c["speaker_display"])
+    TARGETS = c["targets"]
+    TARGET_IDS = [t["id"] for t in TARGETS]
+    if "primary" in c:
+        PRIMARY_METRICS, OVERACT_WATCH, STABILITY_WATCH = dict(c["primary"]), tuple(c["overact"]), c["stability"]
+    else:
+        PRIMARY_METRICS, OVERACT_WATCH, STABILITY_WATCH = _metrics_from_targets(TARGETS)
+    EXAMPLE_CLIP_ID, ALLOWED_NAMES, CANDIDATES_PATH = c["example"], set(c["allowed_names"]), c["candidates"]
+    EMOTION_DEVELOPER = _EMOTION_DEVELOPER_MAGI.replace("The Gift of the Magi", WORK_TITLE)
+    PAGE_EXTRA_HTML = c["extra_html"] if "extra_html" in c else (
+        f"<p class='lab'><a href='../index.html'>追加2作品をまとめたページ</a> / <a href='{ROUND1_PAGE_REL}'>前回『賢者の贈り物』の比較ページ</a></p>")
+    return work
+
+
+def build_combined_page(work_keys: tuple = ROUND2_WORKS, page_root: str | None = None) -> str:
+    """Round 2の親ページ: 2作品のA/Bカードを1ページに束ね、前回『賢者の贈り物』ページへのリンクと比較の読み方を添える。
+    音声mp3は各作品のpage_dir/audio(analyze_allが書く page_manifest.json の相対path)。未生成は『未生成』表示でダミー音声を置かない。"""
+    page_root = page_root or ROUND2_PAGE_ROOT
+    prev = WORK_KEY
+    sections = []
+    try:
+        for k in work_keys:
+            configure(k)
+            sel = load_json(f"{OUT_DIR}/phase0/selection.json")
+            mp = f"{OUT_DIR}/page_manifest.json"
+            man = load_json(mp) if os.path.exists(os.path.join(ROOT, mp)) else {"pages": {"base": {}, "ctx": {}}, "extra": {"base2": {}, "ctx2": {}}}
+            sj = load_summaries_ja()
+            sections.append(f"<h1 id='{k}'>『{H.escape(WORK_TITLE_JA)}』（{H.escape(WORK_TITLE)}）</h1>"
+                            + _cards_html(sel, man["pages"], man["extra"], sj, prefix=f"{k}/"))
+    finally:
+        configure(prev)
+    nav = " / ".join(f"<a href='#{k}'>{H.escape(WORKS[k]['title_ja'])}</a>" for k in work_keys)
+    doc = ("<!DOCTYPE html><html lang='ja'><head><meta charset='utf-8'><meta name='robots' content='noindex,nofollow'>"
+           "<meta name='viewport' content='width=device-width, initial-scale=1'><title>セリフ音声 文脈・感情 追加比較試聴（Trial 追加2作品）</title>"
+           f"<style>{_PAGE_CSS}</style></head><body>"
+           "<h1>セリフ音声 現行方式 vs 文脈・感情を追加（Trial・追加2作品）</h1>"
+           "<div class='note'><b>状態: Trial（Production採用ではありません）</b>。前回『賢者の贈り物』の試聴で差が分かりづらかったため、追加の2作品で同じ比較をしています。"
+           "同じ英文・同じ声・同じAIモデル・同じ生成設定で、<b>A=現行方式</b>、<b>B=改善方式（Style［話し方の指示］に「話者の気持ち／場面／前後の会話／地の文の演出」を足した方式）</b>を聞き比べます。"
+           "生成のたびに声は少し変わるため、同じ方式をもう一度生成した A'・B' も添えています（A と A' の違いが『偶然のゆれ』の目安です）。"
+           "<br>聴いていただきたい観点: 感情が伝わるか / 抑揚の自然さ / 会話としての自然さ / 場面に合った演出 / 聞き取りやすさ / 大げさすぎないか。"
+           "<br>機械の指標だけでは最終判断せず、ここでの試聴による比較判断を残します。</div>"
+           f"<div class='note'>{PAGE_VOLUME_NOTE}（音声は本番と同じ約6%の速度加工と音量調整をした形です。）</div>"
+           f"<div class='note'>比較: 前回の <a href='{ROUND1_PAGE_REL}'>『賢者の贈り物』の比較ページ</a>（同じ形式のA/B）と、ここの2作品（{nav}）を続けて聴くと、3作品で効果の有無や傾向を比べられます。</div>"
+           f"{''.join(sections)}</body></html>")
+    ap = os.path.join(ROOT, page_root, "index.html")
+    os.makedirs(os.path.dirname(ap), exist_ok=True)
+    with open(ap, "w", encoding="utf-8", newline="\n") as f:
+        f.write(doc)
+    return ap
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=MANAGED_ID)
+    ap.add_argument("--work", choices=tuple(WORKS), default="magi", help="対象作品config(既定=magi=Round 1。Round 2は open_window / monkeys_paw)")
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("plan", help="Phase 0: 選定・文脈・費用見積(API 0)")
     p_page = sub.add_parser("page", help="試聴ページ骨格(API 0)。生成済みarmがあれば反映")
@@ -1215,7 +1456,17 @@ def main(argv=None) -> int:
     p_gen.add_argument("--arm", choices=("ctx", "base"), required=True)
     p_gen.add_argument("--take", type=int, default=1)
     sub.add_parser("gen-session", help="Phase 1b(有料): ctx_t1 -> base_t1 -> ctx_t2 を同一セッションで連続実行(Opus R1)")
+    sub.add_parser("page-all", help="Round 2: 2作品を束ねた親ページ index.html を生成(API 0)")
+    sub.add_parser("candidates-all", help="Round 2: 2作品の感情候補を EMOTION_CANDIDATES_02.md へ(API 0)")
     a = ap.parse_args(argv)
+    configure(a.work)
+    if a.cmd == "page-all":
+        print(build_combined_page())
+        return 0
+    if a.cmd == "candidates-all":
+        print(render_emotion_candidates_multi(ROUND2_WORKS, "docs/research/FZ-DIALOGUE-TTS-CONTEXT-EMOTION-TRIAL-01/EMOTION_CANDIDATES_02.md",
+                                              "EMOTION_CANDIDATES_02 — 追加2作品の感情情報(Fableレビュー用。TTS前に各作品の emotion_review.json へ accept / discard)"))
+        return 0
     if a.cmd == "plan":
         r = build_phase0_artifacts()
         tot = sum(e["tts_ctx_est_jpy"] for e in r["estimates"])
@@ -1229,6 +1480,7 @@ def main(argv=None) -> int:
             for s in sel:
                 export_mp3(s["existing_audio"]["final_wav"], f"{PAGE_DIR}/audio/A_{s['id']}.mp3", tr)
                 arms["base"][s["id"]] = f"audio/A_{s['id']}.mp3"
+        save_json(f"{OUT_DIR}/page_manifest.json", {"pages": arms, "extra": {"base2": {}, "ctx2": {}}})
         print(build_page(sel, arms))
         print(build_dev_details(None))
         return 0

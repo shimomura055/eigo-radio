@@ -1,0 +1,43 @@
+{
+  "date_jst": "2026-10-26",
+  "log": {
+    "total_jpy": 0.17,
+    "by_provider_jpy": {
+      "openai": 0.0,
+      "gemini_batch": 0.13,
+      "openai_asr": 0.05
+    },
+    "top_run_dirs_jpy": [
+      [
+        "er019_output/family_x_audio_production_wiring_01/part2_hr_evidence_01__run_r2",
+        0.17
+      ],
+      [
+        "er009_output/regression_test_14",
+        0.0
+      ]
+    ],
+    "records": 6,
+    "files_scanned": 1092,
+    "unpriced": {},
+    "excluded_synthetic": {
+      "records": 0,
+      "jpy": 0.0,
+      "note": "usage_source=SYNTHETIC_DRYRUN_STUB/STUB等のdry-run合成行。実費から除外(別枠表示)"
+    }
+  },
+  "ledger": {
+    "total_jpy": 0.0,
+    "rows": 0
+  },
+  "adopted_jpy": 0.17,
+  "adopted_rule": "max(log, ledger)",
+  "uncaptured_kinds": [
+    "run dir外・ログ外課金",
+    "Batch未完了",
+    "単価未登録(unpriced)",
+    "推定値(ledger側)",
+    "Claude Code自体の利用料(別項目)"
+  ],
+  "assumption": "input_tokensはcachedを含めた全入力として標準単価で換算(cached割引は考慮しない=やや過大側)"
+}
