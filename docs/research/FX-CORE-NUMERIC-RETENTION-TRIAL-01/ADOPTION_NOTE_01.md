@@ -70,3 +70,6 @@ Status(Sonnet所見): **VALIDATED(Trial)**。方式=R5 v4(B3の同じ呼出で�
 
 ## 7. 撤退(revert単位)
 追加型・単一flag・既定OFF・OFF時は入力バイト一致(`test_o2prime_off_is_byte_identical_and_writes_nothing`等)。撤退は`git revert`で済み、既存公開記事は不変(再生成しない限り)。月のProduction再実行は採用判断後(未承認)。
+
+
+Status: PRODUCTION_WIRED(Family X Std/Adv、Fable受入 2026-10-25 委任_11。残件=OPEN-514・C-1・月記事試聴)
