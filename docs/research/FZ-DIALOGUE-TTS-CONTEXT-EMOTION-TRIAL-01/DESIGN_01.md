@@ -1,5 +1,7 @@
 # DESIGN_01 — 改善方式(文脈+感情)の設計 / DEV実装(FZ-DIALOGUE-TTS-CONTEXT-EMOTION-TRIAL-01 委任_01、API 0)
 
+> 注(委任_02、2026-10-25): §2のStyle追記ブロック全文例・§3のfallback文・§6のleakage検査は、Opusレビュー反映で**§9の通り改訂済み**。§2/§3/§6の旧記述は履歴として残置(現行仕様は §9 と `er118_...py`、事前登録は `PREREGISTERED_CRITERIA_02.md`)。
+
 実装: `er118_fz_dialogue_context_tts_trial_01.py`(DEV/Trial専用)、test: `er118_fz_dialogue_context_tts_trial_01_test_01.py`(21 test PASS、API 0)。`py`ではなく`.venv/Scripts/python.exe`で実行。
 到達上限: VALIDATED(Production採用・実装は対象外)。Production file / Prompt / flag / 再利用仕様の変更0。
 

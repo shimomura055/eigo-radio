@@ -738,6 +738,44 @@ def load_reviewed_notes(path_notes: str = None, path_review: str = None, require
     return out
 
 
+def render_emotion_candidates(out_path: str = "docs/research/FZ-DIALOGUE-TTS-CONTEXT-EMOTION-TRIAL-01/EMOTION_CANDIDATES_01.md") -> str:
+    """Fableレビュー用(API 0): 感情情報8件を1件ずつ、英文・前後文脈・LLM出力・根拠引用・決定論検査結果・実際に送られるCONTEXTブロックと共に書き出す。"""
+    plan = load_plan()
+    rec = load_json(f"{OUT_DIR}/llm/emotion_notes.json")
+    L = ["# EMOTION_CANDIDATES_01 — 感情情報8件(Fableレビュー用。TTS前に accept / discard を `llm/emotion_review.json` へ)", "",
+         f"- LLM: 要求 `{rec['model_requested']}` / 返却 `{rec['model_returned']}`、1 call、実費 {rec['cost_jpy']} 円(raw_usage_log.jsonl)。EMOTION_DEVELOPER+schema sha256 = `{rec['prompt_sha256']}`。",
+         f"- 決定論検査の結果: ACCEPTED {rec['n_accepted']} / NO_EXPLICIT_CUE {rec['n_no_explicit_cue']} / DISCARDED {rec['n_discarded']}。",
+         "- NO_EXPLICIT_CUE(LLMが has_explicit_cue=false)の行は、Opus M2により『Speaker's state of mind』行を出さない(sceneとreactionは保持)。DISCARDEDは状態・場面・返答すべて出さない。",
+         "- 決定論検査: 根拠引用の逐語一致 / 語数 / 新規固有名詞 / 強度語deny(語幹)。根拠の出どころ(本人の台詞・地の文・他者の台詞)は目視補助。", ""]
+    for i, tg in enumerate(TARGETS, 1):
+        cid = tg["id"]
+        ctx = extract_context(plan, cid)
+        v = rec["validated"][cid]
+        raw = v.get("llm_raw") or {}
+        L += [f"## {i}. `{cid}` — {ctx['speaker_display']}(Voice {ctx['voice']}) / {' / '.join(tg['categories'])}", "",
+              f"- セリフ(英): {ctx['text']}",
+              f"- 場面(日本語・選定時): {tg['scene_ja']}",
+              "- 前のセリフ: " + (" / ".join(f"{d['speaker_display']}: {_unq(d['text'])}" for d in ctx["prev_dialogue"]) or "なし"),
+              "- 後のセリフ: " + (" / ".join(f"{d['speaker_display']}: {_unq(d['text'])}" for d in ctx["next_dialogue"]) or "なし"),
+              f"- 直前の地の文: {ctx['narration_before'] or 'なし'}",
+              f"- 直後の地の文: {ctx['narration_after'] or 'なし'}",
+              f"- 決定論の manner_words: {', '.join(ctx['manner_words']) or 'なし'}",
+              "", f"**LLM出力**(status = `{v['status']}`" + (f"、破棄理由 {v['discard_reasons']}" if v["discard_reasons"] else "") + ")",
+              f"- speaker_state: {raw.get('state')}", f"- scene: {raw.get('scene')}", f"- reaction_to_previous: {raw.get('reaction') or '(空)'}",
+              "- 根拠引用(出どころ):"]
+        for e in v.get("evidence_sources", []):
+            src = "本人の台詞" if e["in_own_line"] else ("地の文" if e["in_narration"] else ("他者の台詞" if e["in_other_speaker_line"] else "不明"))
+            L.append(f"  - 「{e['quote']}」 — {src}")
+        L += ["", "実際に送られるCONTEXTブロック(accept時):", "```text", build_context_block(ctx, v), "```", ""]
+    L += ["## レビューの付け方", "", "`er118_output/fz_dialogue_context_tts_trial_01/llm/emotion_review.json` の各 `fable_decision` を `accept` か `discard` にする。discardはLLM由来の項目(状態・場面・返答)を全て外して中立にする。"
+          "`summary_ja` は試聴ページ用の日本語要約(Sonnet下書き入り。accept時のみ表示)。全8件が埋まるまで ctx arm の有料生成は起動しない。"]
+    ap = os.path.join(ROOT, out_path)
+    os.makedirs(os.path.dirname(ap), exist_ok=True)
+    with open(ap, "w", encoding="utf-8", newline="\n") as f:
+        f.write("\n".join(L) + "\n")
+    return out_path
+
+
 def scan_repo_mtime(t_start: float) -> dict:
     """Opus R3: er113のrepo全体mtime走査を流用(除外dirに本Trialの出力先・試聴ページを追加)。"""
     import er113_fx_paragraph_chunk_trial_01 as t113
@@ -1172,6 +1210,7 @@ def main(argv=None) -> int:
     p_page.add_argument("--no-existing-mp3", action="store_true")
     sub.add_parser("analyze", help="生成済みarmの解析・最終相当音声・mp3・試聴ページ(API 0)")
     sub.add_parser("llm", help="Phase 1a(有料): 感情情報LLM 1 call")
+    sub.add_parser("candidates", help="Fableレビュー用 EMOTION_CANDIDATES_01.md を出力(API 0)")
     p_gen = sub.add_parser("gen", help="Phase 1b(有料): arm単独生成(通常はgen-sessionを使う)")
     p_gen.add_argument("--arm", choices=("ctx", "base"), required=True)
     p_gen.add_argument("--take", type=int, default=1)
@@ -1200,6 +1239,9 @@ def main(argv=None) -> int:
     if a.cmd == "llm":
         r = run_emotion_llm()
         print(json.dumps({k: r[k] for k in ("cost_jpy", "n_accepted", "n_discarded", "n_no_explicit_cue")}, ensure_ascii=False))
+        return 0
+    if a.cmd == "candidates":
+        print(render_emotion_candidates())
         return 0
     if a.cmd == "gen":
         generate_arm(a.arm, a.take)

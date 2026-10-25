@@ -389,26 +389,39 @@ class GuardTests(unittest.TestCase):
             out += [os.path.join(dp, f) for f in fns]
         return sorted(out)
 
+    def setUp(self):
+        # 実GO(PHASE1_GO.json)を触らないよう、GOファイル位置・出力先をtest専用の空dirへ向ける(DefaultOffIsolation: GO無し状態を再現)
+        self._go, self._out = t.PHASE1_GO_FILE, t.OUT_DIR
+        t.OUT_DIR = "er118_output/_unit_guard_tmp"
+        t.PHASE1_GO_FILE = f"{t.OUT_DIR}/PHASE1_GO.json"
+        shutil.rmtree(os.path.join(t.ROOT, t.OUT_DIR), ignore_errors=True)
+        os.makedirs(os.path.join(t.ROOT, t.OUT_DIR), exist_ok=True)
+
+    def tearDown(self):
+        shutil.rmtree(os.path.join(t.ROOT, t.OUT_DIR), ignore_errors=True)
+        t.PHASE1_GO_FILE, t.OUT_DIR = self._go, self._out
+
     def test_no_go_file_blocks_gen_and_llm(self):
         self.assertFalse(os.path.exists(os.path.join(t.ROOT, t.PHASE1_GO_FILE)))
         before = self._listing()
         with self.assertRaises(SystemExit):
             t.generate_arm("ctx", 1)
         with self.assertRaises(SystemExit):
+            t.generate_arm("base", 1)
+        with self.assertRaises(SystemExit):
             t.run_emotion_llm()
+        with self.assertRaises(SystemExit):
+            t.run_session()
         self.assertEqual(before, self._listing())
         self.assertFalse(os.path.exists(os.path.join(t.ROOT, t.OUT_DIR, "raw_usage_log.jsonl")))
 
     def test_cap_over_30_rejected(self):
         p = os.path.join(t.ROOT, t.PHASE1_GO_FILE)
         os.makedirs(os.path.dirname(p), exist_ok=True)
-        try:
-            with open(p, "w") as f:
-                json.dump({"managed_id": t.MANAGED_ID, "cap_jpy": 31, "arms": ["ctx"]}, f)
-            with self.assertRaises(SystemExit):
-                t._require_go()
-        finally:
-            os.remove(p)
+        with open(p, "w") as f:
+            json.dump({"managed_id": t.MANAGED_ID, "cap_jpy": 31, "arms": ["ctx"]}, f)
+        with self.assertRaises(SystemExit):
+            t._require_go()
 
 
 class GenerateArmInjectionTests(unittest.TestCase):
