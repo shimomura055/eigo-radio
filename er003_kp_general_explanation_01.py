@@ -10,8 +10,8 @@
 # 1 call(gpt-6-luna=routing.SUPPORT_MODEL)で全KP(1〜3件)の日本語一般解説を生成する。
 # 失敗=技術retry1回→fail-closed(旧方式なし・空欄続行なし)。fallbackしない。
 #
-# 訳欄(source_sentence_ja)の生成元はユーザー判断待ち(UDR #197, T1/T2)。判断記録が無い間は
-# 生成・保存まで行い、ページへの描画は止める(translation_decision_record()が唯一の入口)。
+# 訳欄(source_sentence_ja)は専用翻訳工程T1(er003_kp_source_sentence_ja_01.py、2026-10-25ユーザー正式承認、UDR #197判断済み)で生成する。
+# 描画の有効化は判断記録docs/pm/decisions/part1_translation_decision.json(translation_decision_record()が唯一の入口)。記録が無い間は描画しない。
 #
 # このmoduleは docs/research のTrial資産をimportしない(Prompt定数は逐語コピー、byte一致をtestで固定)。
 # ============================================================
@@ -474,7 +474,7 @@ STUDY_CSS = ("<style>.study{margin:24px 0;padding:12px 16px;border:1px solid #dd
 
 def render_html_block(rows: list) -> str:
     """ページ用のstudy block(<section class='study'>、<h3>+<div>/<dl>のみ。<table>/<h2>不使用=標準適合checkを壊さない)。
-    判断記録が無い間は空文字(描画しない)。T1は全行に日本語訳が必要(未実装の間はSTOP=fail-closed)。"""
+    判断記録が無い間は空文字(描画しない)。T1は全行に日本語訳が必要(欠落時は描画せずSTOP=fail-closed)。"""
     rec = translation_decision_record()
     if rec is None:
         return ""
