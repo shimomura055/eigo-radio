@@ -1,0 +1,17 @@
+POS          prod=NG  (TRUE_CONTENT_MISMATCH) designA=PASS(pron_equal_after_value_form) | 月のしわ、8,900本超 | 月の死は八千九百本超
+POS          prod=NG  (TRUE_CONTENT_MISMATCH) designA=PASS(pron_equal_after_value_form) | 月のしわ、8,900本超 | 月の詩は8900本超
+POS          prod=NG  (TRUE_CONTENT_MISMATCH) designA=PASS(surface_equal_after_value_form) | 売上は1,200円です | 売上は1200円です
+POS(同音)      prod=NG  (TRUE_CONTENT_MISMATCH) designA=NG  (pron_differs) | 月のしわは多い | 月のしは多い
+NEG(わ脱落)     prod=NG  (TRUE_CONTENT_MISMATCH) designA=NG  (pron_differs) | 月のしわ、8,900本超 | 月の死、8900本超
+NEG(値違い)     prod=NG  (TRUE_CONTENT_MISMATCH) designA=NG  (value_guard=DIFF) | 月のしわ、8,900本超 | 月の詩は8800本超
+NEG(値garble) prod=NG  (TRUE_CONTENT_MISMATCH) designA=NG  (value_guard=DIFF) | 月のしわ、8,900本超 | 月の詩は8000900本超
+NEG(間→目)     prod=PASS(PHONETIC_MATCH) designA=NG  (value_guard=DIFF) | 三日間の猶予 | 三日目の猶予
+NEG(へ→に)     prod=NG  (TRUE_CONTENT_MISMATCH) designA=NG  (pron_differs) | 学校へ行く | 学校に行く
+NEG(否定)      prod=NG  (TRUE_CONTENT_MISMATCH) designA=NG  (negation_diff) | 彼女は来ない | 彼女は来る
+AMBIG        prod=NG  (TRUE_CONTENT_MISMATCH) designA=NG  (value_guard=AMBIGUOUS) | 会議は十分で終わる | 会議は10分で終わる
+NEG(別語)      prod=NG  (TRUE_CONTENT_MISMATCH) designA=NG  (pron_differs) | 犬は走る | 犬は歩く
+NEG(時制)      prod=NG  (TRUE_CONTENT_MISMATCH) designA=NG  (pron_differs) | 私は本を読んだ | 私は本を読む
+NEG          prod=NG  (TRUE_CONTENT_MISMATCH) designA=NG  (pron_differs) | 今日は晴れ | 今日は雨
+POS?(ASR不出)  prod=NG  (TRUE_CONTENT_MISMATCH) designA=PASS(pron_equal_after_value_form) | 私は行く | 私わ行く
+NEG(列挙)      prod=NG  (TRUE_CONTENT_MISMATCH) designA=NG  (value_guard=UNKNOWN) | 1,2,3個 | 123個
+NEG(脱落)      prod=NG  (TRUE_CONTENT_MISMATCH) designA=NG  (pron_differs) | 月のしわ | 月の
