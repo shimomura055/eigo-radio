@@ -360,16 +360,103 @@ def try_rescue_before_resolver(canonical_text: str, asr_text: str,
     # LLM呼び出しは追加しない(候補はpykakasi内蔵辞書に既に登録されている
     # 読みのみを使うため、false acceptを増やすリスクは既存Resolverの
     # single_char_candidates()と同等)。
+    # 【2026-10-25 委任_12】上の検査が見るのは content_diffs(non-cascade)だけ。数値entryでは protected_check_ja が数字の異なる
+    # opcodeに糊付けされた非数値差を content_diffs に入れないため、直下の _candidate_e_number_entry_rejections が数値span除去後の
+    # 全差分を再検査して補う(OPEN-333、承認済み不具合是正。PASS集合は縮むのみ)。
     remaining_diffs = [d for d in protected.content_diffs if not d["cascade_eligible"]]
     if remaining_diffs and all(
         _span_pair_reading_variant_match(d["canonical"], d["asr"]) for d in remaining_diffs
     ):
+        # JA-ASR-FALSE-NG-ROOT-CAUSE-01 委任_12(OPEN-333、承認済み不具合是正): protected_check_ja(er007:258-261)は
+        # 数字が左右で異なるopcodeを number_mismatches に記録して continue するため、そのopcodeに糊付けされた
+        # 非数値差(例:『しわ8,900』→『巣は八千九百』のしわ→巣は)は content_diffs に入らず、上のEは『全差分を
+        # 読みで説明できた』と誤認する(実害: 月のしわ↔すわ=N3-07)。数値entryに限り、数値spanを除いた全文の
+        # 非数値差を再検査し、1件でも説明できなければEを拒否する(拒否時は呼び元の既存TRUE_CONTENT_MISMATCH経路)。
+        # 判定を広げる方向の変更は無い(PASS集合は縮むのみ)。拒否した(c,a)は protected.candidate_e_rejections に記録(判定不変)。
+        _rej = _candidate_e_number_entry_rejections(canonical_text, asr_text, c_norm, a_norm, protected)
+        if _rej:
+            protected.candidate_e_rejections = _rej
+            return None
         return _pass("PHONETIC_MATCH",
                      "(JA ASR Variant Layer/Candidate E)残っていた差分箇所について、漢字候補読み"
                      "(pykakasi内蔵辞書由来)の総当たりで、canonical/ASR双方に共通する読みが"
                      "見つかったため一致と判定(LLM不要、決定的)")
 
     return None
+
+
+# ============================================================
+# JA-ASR-FALSE-NG-ROOT-CAUSE-01 委任_12: Candidate E(数値entry)の全差分再検査(OPEN-333、承認済み不具合是正)
+# ============================================================
+# rollback定数(env/flag/引数で切替不可。変更はこのソース1行のみ。既定ON=是正有効)。
+#   CANDIDATE_E_FULL_DIFF_CHECK=False  -> 数値entryの非数値差の再検査を行わない(HEADと完全に同じ挙動)
+#   CANDIDATE_E_VALUE_GUARD_CHECK=False -> 数値entryで値ガード(最終Gateと同じF2付き)がDIFF/UNKNOWNのEを拒否する多層防御(R-6)を行わない
+CANDIDATE_E_FULL_DIFF_CHECK = True
+CANDIDATE_E_VALUE_GUARD_CHECK = True
+_E_VALUE_PLACEHOLDER = ""
+_E_MASK_KINDS = ("num", "frac", "approx", "unparsed")
+
+
+def _mask_value_spans(norm_text: str) -> str:
+    """値ガード(er078 extract_atoms_ja)が数値と認識したspan(num/frac/approx/unparsed)だけを同一placeholderへ置換する。
+    語中の漢数字(一緒・千葉・九州)など、値と認識されないspanはそのまま残す。"""
+    import er078_asr_value_guard_01 as vg  # 遅延import(vgがこのモジュールをimportするため循環回避)
+    t = unicodedata.normalize("NFKC", norm_text or "")
+    atoms = [a for a in vg.extract_atoms_ja(t) if a.kind in _E_MASK_KINDS]
+    atoms.sort(key=lambda a: a.start)
+    out, pos = [], 0
+    for a in atoms:
+        if a.start < pos:
+            continue
+        out.append(t[pos:a.start])
+        out.append(_E_VALUE_PLACEHOLDER)
+        pos = a.end
+    out.append(t[pos:])
+    return "".join(out)
+
+
+def _candidate_e_number_entry_rejections(canonical_text: str, asr_text: str, c_norm: str, a_norm: str, protected) -> list:
+    """数値entry(protected.number_mismatchesあり)でCandidate Eを拒否すべき理由のlist(空=拒否しない)。
+    各要素は {"canonical","asr","kind"}。helper内の例外は『説明できない=拒否』(fail-closed)。数値entryでなければ常に空。"""
+    if not (CANDIDATE_E_FULL_DIFF_CHECK or CANDIDATE_E_VALUE_GUARD_CHECK):
+        return []
+    if not getattr(protected, "number_mismatches", None):
+        return []
+    import difflib
+    import er007_ja_asr_validator_01 as javal
+    rej: list = []
+    if CANDIDATE_E_FULL_DIFF_CHECK:
+        try:
+            sc, sa = _mask_value_spans(c_norm), _mask_value_spans(a_norm)
+            n = javal._READING_CONTEXT_CHARS
+            sm = difflib.SequenceMatcher(None, sc, sa, autojunk=False)
+            for tag, i1, i2, j1, j2 in sm.get_opcodes():
+                if tag == "equal":
+                    continue
+                cs = sc[i1:i2].replace(_E_VALUE_PLACEHOLDER, "")
+                as_ = sa[j1:j2].replace(_E_VALUE_PLACEHOLDER, "")
+                if not cs and not as_:
+                    continue  # 値spanのみの差(値の一致は値ガードが担当)
+                cp = sc[max(0, i1 - n):i2 + n].replace(_E_VALUE_PLACEHOLDER, "")
+                ap = sa[max(0, j1 - n):j2 + n].replace(_E_VALUE_PLACEHOLDER, "")
+                if cs == as_:
+                    continue
+                if javal._reading_equal(cp, ap):
+                    continue
+                if _span_pair_reading_variant_match(cs, as_):
+                    continue
+                rej.append({"canonical": cs, "asr": as_, "kind": "unexplained_non_numeric_diff"})
+        except Exception as exc:  # noqa: BLE001  fail-closed: 説明できない=拒否
+            rej.append({"canonical": "", "asr": "", "kind": f"helper_error:{type(exc).__name__}"})
+    if CANDIDATE_E_VALUE_GUARD_CHECK:
+        try:
+            import er078_asr_value_guard_01 as vg
+            g = vg.value_guard_kana_unified(canonical_text, asr_text, "ja")
+            if g.kind not in (vg.EQUAL, vg.NO_VALUES, vg.AMBIGUOUS):
+                rej.append({"canonical": "", "asr": "", "kind": f"value_guard:{g.kind}"})
+        except Exception as exc:  # noqa: BLE001  fail-closed
+            rej.append({"canonical": "", "asr": "", "kind": f"value_guard_error:{type(exc).__name__}"})
+    return rej
 
 
 _MAX_KANJI_CANDIDATE_COMBINATIONS = 64  # 組合せ爆発防止(超えたら諦めるだけ、fail-safe)

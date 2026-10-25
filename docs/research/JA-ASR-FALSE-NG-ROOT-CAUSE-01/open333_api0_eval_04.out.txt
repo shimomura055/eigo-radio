@@ -1,0 +1,210 @@
+items: 1327  [parity] 現行HEADの再計算 vs eval_04保存fix_state(07A後proto)の不一致: 1
+
+== 棚卸し: 現行PASSのうちCandidate E経由 23 / 現行PASS全体 710 ==
+ 内訳: {('N1', '数値entry'): 2, ('N1', '非数値entry'): 4, ('P4', '非数値entry'): 10, ('P4', '数値entry'): 1, ('MOON', '数値entry'): 1, ('N3', '数値entry'): 1, ('U:legacy/other', '非数値entry'): 4}
+
+== E3: 変化 5 (PASS->非PASS 2 / 非PASS->PASS 0 / その他 3 / E経由PASS行の外の変化 3) ==
+   MOON  :japanese_title_attempt3_minimalfallback.wav#1 | 月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密 | 月の詩は八千九百本長。その奥に潜む岩の上着の秘密。 | PASS -> NG_EXCLUDED/p2_exclusion:A4_C2_HOMOGRAPH
+   N3    N3-07                                          | 月のしわ、8,900本超 | 月の巣は八千九百本長。 | PASS -> NG_EXCLUDED/p2_exclusion:A4_C2_HOMOGRAPH
+   OTHER N1-er066b-020 ('NG_PROTECTED', 'final_gate_value_diff', 'PHONETIC_MATCH') -> ('NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH')
+   OTHER A2_openai_moon_x3:japanese_title_attempt3_minimalfallback.wav#2 ('NG_PROTECTED', 'final_gate_value_diff', 'PHONETIC_MATCH') -> ('NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH')
+   OTHER N3-02 ('NG_PROTECTED', 'final_gate_value_diff', 'PHONETIC_MATCH') -> ('NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH')
+  {"changed": 5, "pass_to_ng": 2, "ng_to_pass": 0, "other_changed": 3, "changed_outside_E_pass_rows": 3, "non_negative_pass_to_ng": 1, "neg_pass_blocked": 1, "neg_pass_before": 33, "non_negative_pass_before": 677, "regen_increase_pct": 0.148}
+
+== E3V: 変化 5 (PASS->非PASS 2 / 非PASS->PASS 0 / その他 3 / E経由PASS行の外の変化 3) ==
+   MOON  :japanese_title_attempt3_minimalfallback.wav#1 | 月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密 | 月の詩は八千九百本長。その奥に潜む岩の上着の秘密。 | PASS -> NG_EXCLUDED/p2_exclusion:A4_C2_HOMOGRAPH
+   N3    N3-07                                          | 月のしわ、8,900本超 | 月の巣は八千九百本長。 | PASS -> NG_EXCLUDED/p2_exclusion:A4_C2_HOMOGRAPH
+   OTHER N1-er066b-020 ('NG_PROTECTED', 'final_gate_value_diff', 'PHONETIC_MATCH') -> ('NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH')
+   OTHER A2_openai_moon_x3:japanese_title_attempt3_minimalfallback.wav#2 ('NG_PROTECTED', 'final_gate_value_diff', 'PHONETIC_MATCH') -> ('NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH')
+   OTHER N3-02 ('NG_PROTECTED', 'final_gate_value_diff', 'PHONETIC_MATCH') -> ('NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH')
+  {"changed": 5, "pass_to_ng": 2, "ng_to_pass": 0, "other_changed": 3, "changed_outside_E_pass_rows": 3, "non_negative_pass_to_ng": 1, "neg_pass_blocked": 1, "neg_pass_before": 33, "non_negative_pass_before": 677, "regen_increase_pct": 0.148}
+
+== E3V_E4: 変化 9 (PASS->非PASS 6 / 非PASS->PASS 0 / その他 3 / E経由PASS行の外の変化 3) ==
+   P4    mment_3_attempt1_customb8f0ff16.json:comment_3 | ここまでのポイントは、AIの通話に人が加わる場合、そのことを相手 | ここまでのポイントは、AIの通話に人が加わる場合、そのことを相手 | PASS -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable
+   P4    le_attempt1_customb8f0ff16.json:japanese_title | 走れメロス | 走レメラス | PASS -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable
+   P4    mment_2_attempt1_custom06ec49ff.json:comment_2 | ヴェラは、叔母が夫たちの帰りを今も待っていると話しました。叔母が | ベラは、叔母が夫たちの帰りを今も待っていると話しました。叔母が戻 | PASS -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable
+   MOON  :japanese_title_attempt3_minimalfallback.wav#1 | 月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密 | 月の詩は八千九百本長。その奥に潜む岩の上着の秘密。 | PASS -> NG_EXCLUDED/p2_exclusion:A4_C2_HOMOGRAPH
+   N3    N3-07                                          | 月のしわ、8,900本超 | 月の巣は八千九百本長。 | PASS -> NG_EXCLUDED/p2_exclusion:A4_C2_HOMOGRAPH
+   U:legacy/other 33_output/phase2_ja_evidence_01/result.json#s4 | AIからの電話だと思ったら…中に“人”がいた？　MetaのMus | AIからの電話だと思ったら、中に人がいた? メタのミューゼンロを | PASS -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable
+   OTHER N1-er066b-020 ('NG_PROTECTED', 'final_gate_value_diff', 'PHONETIC_MATCH') -> ('NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH')
+   OTHER A2_openai_moon_x3:japanese_title_attempt3_minimalfallback.wav#2 ('NG_PROTECTED', 'final_gate_value_diff', 'PHONETIC_MATCH') -> ('NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH')
+   OTHER N3-02 ('NG_PROTECTED', 'final_gate_value_diff', 'PHONETIC_MATCH') -> ('NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH')
+  {"changed": 9, "pass_to_ng": 6, "ng_to_pass": 0, "other_changed": 3, "changed_outside_E_pass_rows": 3, "non_negative_pass_to_ng": 5, "neg_pass_blocked": 1, "neg_pass_before": 33, "non_negative_pass_before": 677, "regen_increase_pct": 0.739}
+
+== E3V_E4E: 変化 9 (PASS->非PASS 6 / 非PASS->PASS 0 / その他 3 / E経由PASS行の外の変化 3) ==
+   P4    mment_3_attempt1_customb8f0ff16.json:comment_3 | ここまでのポイントは、AIの通話に人が加わる場合、そのことを相手 | ここまでのポイントは、AIの通話に人が加わる場合、そのことを相手 | PASS -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable
+   P4    le_attempt1_customb8f0ff16.json:japanese_title | 走れメロス | 走レメラス | PASS -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable
+   P4    mment_2_attempt1_custom06ec49ff.json:comment_2 | ヴェラは、叔母が夫たちの帰りを今も待っていると話しました。叔母が | ベラは、叔母が夫たちの帰りを今も待っていると話しました。叔母が戻 | PASS -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable
+   MOON  :japanese_title_attempt3_minimalfallback.wav#1 | 月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密 | 月の詩は八千九百本長。その奥に潜む岩の上着の秘密。 | PASS -> NG_EXCLUDED/p2_exclusion:A4_C2_HOMOGRAPH
+   N3    N3-07                                          | 月のしわ、8,900本超 | 月の巣は八千九百本長。 | PASS -> NG_EXCLUDED/p2_exclusion:A4_C2_HOMOGRAPH
+   U:legacy/other 33_output/phase2_ja_evidence_01/result.json#s4 | AIからの電話だと思ったら…中に“人”がいた？　MetaのMus | AIからの電話だと思ったら、中に人がいた? メタのミューゼンロを | PASS -> NG_SECONDARY_UNAVAILABLE/secondary_unavailable
+   OTHER N1-er066b-020 ('NG_PROTECTED', 'final_gate_value_diff', 'PHONETIC_MATCH') -> ('NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH')
+   OTHER A2_openai_moon_x3:japanese_title_attempt3_minimalfallback.wav#2 ('NG_PROTECTED', 'final_gate_value_diff', 'PHONETIC_MATCH') -> ('NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH')
+   OTHER N3-02 ('NG_PROTECTED', 'final_gate_value_diff', 'PHONETIC_MATCH') -> ('NG_PROTECTED', 'p1_value_diff', 'TRUE_CONTENT_MISMATCH')
+  {"changed": 9, "pass_to_ng": 6, "ng_to_pass": 0, "other_changed": 3, "changed_outside_E_pass_rows": 3, "non_negative_pass_to_ng": 5, "neg_pass_blocked": 1, "neg_pass_before": 33, "non_negative_pass_before": 677, "regen_increase_pct": 0.739}
+
+== E3 と E3V の差(行) ==
+ 件数: 0
+
+== M-3 sweep(8クラス + 旧v2 sweep) ==
+ クラス1: 6件 / 現行PASS 3 / E数値entry到達 3 / E3:違反0 E3V:違反0
+ クラス2: 5件 / 現行PASS 2 / E数値entry到達 2 / E3:違反0 E3V:違反0
+ クラス3: 6件 / 現行PASS 0 / E数値entry到達 0 / E3:違反0 E3V:違反0
+ クラス4: 5件 / 現行PASS 1 / E数値entry到達 1 / E3:違反0 E3V:違反0
+ クラス5: 6件 / 現行PASS 3 / E数値entry到達 3 / E3:違反0 E3V:違反0
+ クラス6: 4件 / 現行PASS 1 / E数値entry到達 1 / E3:違反0 E3V:違反0
+ クラス7: 3件 / 現行PASS 2 / E数値entry到達 2 / E3:違反0 E3V:違反0
+ クラス8: 5件 / 現行PASS 3 / E数値entry到達 2 / E3:違反0 E3V:違反0
+  c1 keep  base=PASS(E) E3=PASS E3V=PASS | 売上は8,900本超えです | 売上は八千九百本長えです | 糊付けなしの対照(超↔長のみ)
+  c1 block base=NG      E3=NG   E3V=NG   | 月の8,900本しわ超 | 月の八千九百本すわ長 | 数値の後ろ側にしわ→すわ
+  c1 block base=NG      E3=NG   E3V=NG   | 月の8,900本しわ超 | 月の八千九百本巣は長 | 数値の後ろ側にしわ→巣は
+  c1 block base=PASS(E) E3=NG   E3V=NG   | 月のしわ、8,900本超 | 月の八千九百本長 | しわ脱落(片側削除)
+  c1 block base=PASS(E) E3=NG   E3V=NG   | 月の8,900本超 | 月のしわ八千九百本長 | しわ挿入(片側挿入)
+  c1 block base=NG      E3=NG   E3V=NG   | 月の8,900本超 | 月のしわ、八千九百ぼん長 | 挿入+数値表記崩れ
+  c2 keep  base=PASS(E) E3=PASS E3V=PASS | 売上は8,900円で利益は1,200円超です | 売上は八千九百円で利益は千二百円長です | 複数数値・対照
+  c2 block base=NG      E3=NG   E3V=NG   | 売上しわ8,900円で利益は1,200円超です | 売上すわ八千九百円で利益は千二百円長です | 先頭数値側の糊付け
+  c2 block base=NG      E3=NG   E3V=NG   | 売上は8,900円で利益はしわ1,200円超です | 売上は八千九百円で利益はすわ千二百円長です | 後側数値の糊付け
+  c2 keep  base=PASS(E) E3=PASS E3V=PASS | 支払いは1万2,000円超です | 支払いは一万二千円長です | 1万2,000↔一万二千
+  c2 block base=NG      E3=NG   E3V=NG   | 支払いしわ1万2,000円超です | 支払いすわ一万二千円長です | 1万2,000+糊付け
+  c3 keep  base=NG      E3=NG   E3V=NG   | 気温は3.5℃超です | 気温は三点五度長です | 小数+℃
+  c3 block base=NG      E3=NG   E3V=NG   | 気温はしわ3.5℃超です | 気温はすわ三点五度長です | 小数+糊付け
+  c3 keep  base=NG      E3=NG   E3V=NG   | 割合は12%超です | 割合は十二パーセント長です | %
+  c3 keep  base=NG      E3=NG   E3V=NG   | 距離は10km超です | 距離は十キロメートル長です | km
+  c3 block base=NG      E3=NG   E3V=NG   | 距離はしわ10km超です | 距離はすわ十キロメートル長です | km+糊付け
+  c3 keep  base=NG      E3=NG   E3V=NG   | 全体の3分の1超です | 全体の三分の一長です | 分数
+  c4 keep  base=NG      E3=NG   E3V=NG   | ひとりで8,900本超 | 一人で八千九百本長 | ひとり↔一人
+  c4 keep  base=NG      E3=NG   E3V=NG   | ふつかで8,900本超 | 二日で八千九百本長 | ふつか↔2日
+  c4 keep  base=NG      E3=NG   E3V=NG   | はたちで8,900本超 | 二十歳で八千九百本長 | はたち↔二十歳
+  c4 keep  base=PASS(E) E3=PASS E3V=PASS | ひとつで8,900本超 | 一つで八千九百本長 | ひとつ↔一つ
+  c4 block base=NG      E3=NG   E3V=NG   | ひとりでしわ8,900本超 | 一人ですわ八千九百本長 | かな数詞+糊付け
+  c5 keep  base=PASS(E) E3=PASS E3V=PASS | 一緒に8,900本超 | 一緒に八千九百本長 | 一緒を保持
+  c5 keep  base=PASS(E) E3=PASS E3V=PASS | 千葉で8,900本超 | 千葉で八千九百本長 | 千葉を保持
+  c5 keep  base=PASS(E) E3=PASS E3V=PASS | 九州で8,900本超 | 九州で八千九百本長 | 九州を保持
+  c5 block base=NG      E3=NG   E3V=NG   | 千葉で8,900本超 | 千駄で八千九百本長 | 千葉→千駄(漢数字を含む語が入れ替わり)
+  c5 block base=NG      E3=NG   E3V=NG   | 一緒に8,900本超 | 一昨日に八千九百本長 | 一緒→一昨日
+  c5 block base=NG      E3=NG   E3V=NG   | 九州で8,900本超 | 九本で八千九百本長 | 九州→九本
+  c6 block base=NG      E3=NG   E3V=NG   | はし、8,900本超 | わし八千九百本長 | はし→わし
+  c6 block base=NG      E3=NG   E3V=NG   | はな、8,900本超 | わな八千九百本長 | はな→わな
+  c6 block base=NG      E3=NG   E3V=NG   | へや、8,900本超 | えや八千九百本長 | へや→えや
+  c6 block base=PASS(E) E3=NG   E3V=NG   | 月のしわ、8,900本超 | 月の詩は八千九百本長 | 月題#1型(助詞は→わ。E3では仕様どおりNG。救済はv2/βの担当)
+  c7 block base=PASS(E) E3=NG   E3V=NG   | しわ8,900本超 | 巣は八千九百本長 | 文頭に糊付け差
+  c7 block base=NG      E3=NG   E3V=NG   | 8,900本超しわ | 八千九百本長すわ | 文末に糊付け差
+  c7 keep  base=PASS(E) E3=PASS E3V=PASS | 8,900本超 | 八千九百本長 | 差分が文頭・文末(窓幅切れ)の正常
+  c8 keep  base=PASS(E) E3=PASS E3V=PASS | ８，９００本超 | 八千九百本長 | 全角数字
+  c8 keep  base=PASS    E3=PASS E3V=PASS | ２０２０年超 | 二千二十年長 | 全角+漢数字
+  c8 keep  base=NG  (E) E3=NG   E3V=NG   | ２〇〇本超 | 二百本長 | 〇を含む数
+  c8 block base=NG      E3=NG   E3V=NG   | しわ２〇〇本超 | すわ二百本長 | 〇+糊付け
+  c8 keep  base=PASS    E3=PASS E3V=PASS | 零点五パーセント超 | 〇点五パーセント長 | 零/〇
+ -- 関数レベル(audit_e3単体。現行がEに到達しない行も含む) --
+   クラス1: 6件 keep=1 block=5 audit違反=0
+   クラス2: 5件 keep=2 block=3 audit違反=0
+   クラス3: 6件 keep=4 block=2 audit違反=2
+   クラス4: 5件 keep=4 block=1 audit違反=0
+   クラス5: 6件 keep=3 block=3 audit違反=0
+   クラス6: 4件 keep=0 block=4 audit違反=0
+   クラス7: 3件 keep=1 block=2 audit違反=0
+   クラス8: 5件 keep=4 block=1 audit違反=2
+   audit違反: c3 keep | 気温は3.5℃超です | 気温は三点五度長です | audit_bad=[('', '三点'), ('°c超', '長')] | 小数+℃
+   audit違反: c3 keep | 距離は10km超です | 距離は十キロメートル長です | audit_bad=[('超', 'メートル長')] | km
+   audit違反: c8 keep | ２〇〇本超 | 二百本長 | audit_bad=[('〇超', '長')] | 〇を含む数
+   audit違反: c8 keep | 零点五パーセント超 | 〇点五パーセント長 | audit_bad=[('零', '〇')] | 零/〇
+ sweep 非PASS->PASS: 0
+ 旧v2 sweep 29件 / 現行PASS 19 / E3後PASS 5 / E3V後PASS 5 / 非PASS->PASS 0
+   月のしわ、8,900本超 | 月のし八千九百本長 | base=PASS E3=NG_EXCLUDED E3V=NG_EXCLUDED
+   月のしわ、8,900本超 | 月のし、八千九百本長 | base=PASS E3=NG_EXCLUDED E3V=NG_EXCLUDED
+   月のしわ、8,900本超 | 月のす八千九百本長 | base=PASS E3=NG_EXCLUDED E3V=NG_EXCLUDED
+   月のしわ、8,900本超 | 月のす、八千九百本長 | base=PASS E3=NG_EXCLUDED E3V=NG_EXCLUDED
+   月のしわ、8,900本超 | 月のそ八千九百本長 | base=PASS E3=NG_EXCLUDED E3V=NG_EXCLUDED
+   月のしわ、8,900本超 | 月のそ、八千九百本長 | base=PASS E3=NG_EXCLUDED E3V=NG_EXCLUDED
+   月のしわ、8,900本超 | 月のしわ八千九百本長 | base=PASS E3=PASS E3V=PASS
+   月のしわ、8,900本超 | 月のしわ、八千九百本長 | base=PASS E3=PASS E3V=PASS
+   月のしわ、8,900本超 | 月のしわー八千九百本長 | base=PASS E3=NG_EXCLUDED E3V=NG_EXCLUDED
+   月のしわ、8,900本超 | 月のしわー、八千九百本長 | base=PASS E3=NG_EXCLUDED E3V=NG_EXCLUDED
+   月のしわ、8,900本超 | 月のしば八千九百本長 | base=PASS E3=NG_EXCLUDED E3V=NG_EXCLUDED
+   月のしわ、8,900本超 | 月のしば、八千九百本長 | base=PASS E3=NG_EXCLUDED E3V=NG_EXCLUDED
+   月のしわ、8,900本超 | 月のすば八千九百本長 | base=PASS E3=NG_EXCLUDED E3V=NG_EXCLUDED
+   月のしわ、8,900本超 | 月のすば、八千九百本長 | base=PASS E3=NG_EXCLUDED E3V=NG_EXCLUDED
+   月のしわ、8,900本超 | 月のしわわ八千九百本長 | base=PASS E3=NG_EXCLUDED E3V=NG_EXCLUDED
+   月のしわ、8,900本超 | 月のしわわ、八千九百本長 | base=PASS E3=NG_EXCLUDED E3V=NG_EXCLUDED
+   売上は8,900円です | 売上は八千九百円です | base=PASS E3=PASS E3V=PASS
+   売上は8,900円超です | 売上は八千九百円長です | base=PASS E3=PASS E3V=PASS
+   売上は8,900円超です | 売上は八千九百円腸です | base=PASS E3=PASS E3V=PASS
+
+== E4(便乗PASS): 負例/対照/コスト ==
+ kind=neg: 110件 / 現行PASS 96 (うちE経由 96) / E3後PASS=46 E3V後PASS=46 E3V_E4後PASS=0 E3V_E4E後PASS=0
+ kind=cost: 50件 / 現行PASS 49 (うちE経由 48) / E3後PASS=25 E3V後PASS=25 E3V_E4後PASS=1 E3V_E4E後PASS=1
+ kind=ctrl: 10件 / 現行PASS 10 (うちE経由 8) / E3後PASS=10 E3V後PASS=10 E3V_E4後PASS=10 E3V_E4E後PASS=10
+   entry=txt kind=neg: 55件 / 現行PASS 46 / E3後PASS=46 E3V後PASS=46 E3V_E4後PASS=0 E3V_E4E後PASS=0
+   entry=txt kind=cost: 25件 / 現行PASS 24 / E3後PASS=24 E3V後PASS=24 E3V_E4後PASS=1 E3V_E4E後PASS=1
+   entry=txt kind=ctrl: 5件 / 現行PASS 5 / E3後PASS=5 E3V後PASS=5 E3V_E4後PASS=5 E3V_E4E後PASS=5
+   entry=num kind=neg: 55件 / 現行PASS 50 / E3後PASS=0 E3V後PASS=0 E3V_E4後PASS=0 E3V_E4E後PASS=0
+   entry=num kind=cost: 25件 / 現行PASS 25 / E3後PASS=1 E3V後PASS=1 E3V_E4後PASS=0 E3V_E4E後PASS=0
+   entry=num kind=ctrl: 5件 / 現行PASS 5 / E3後PASS=5 E3V後PASS=5 E3V_E4後PASS=5 E3V_E4E後PASS=5
+ -- neg: ラベル別 現行PASS(便乗)/E3V_E4後PASS/E3V_E4E後PASS --
+   acronym_misread                    n=10 現行PASS=10 E4後PASS= 0 E4E後PASS= 0
+   acronym_vs_other_name              n=10 現行PASS=10 E4後PASS= 0 E4E後PASS= 0
+   kata_consonant(ン→ル)                n=10 現行PASS=10 E4後PASS= 0 E4E後PASS= 0
+   kata_shape(ミューズ→ミーザ)               n=10 現行PASS= 0 E4後PASS= 0 E4E後PASS= 0
+   kata_vowel(ウ→ア)                    n=10 現行PASS=10 E4後PASS= 0 E4E後PASS= 0
+   kata_vowel(ニ→ネ)                    n=10 現行PASS=10 E4後PASS= 0 E4E後PASS= 0
+   kata_vowel(ベ→ボ)                    n=10 現行PASS=10 E4後PASS= 0 E4E後PASS= 0
+   kata_vowel(メ→ム)                    n=10 現行PASS=10 E4後PASS= 0 E4E後PASS= 0
+   kata_vowel(ロ→ラ)                    n=10 現行PASS=10 E4後PASS= 0 E4E後PASS= 0
+   voicing_only_kata(ク→グ)             n=10 現行PASS= 8 E4後PASS= 0 E4E後PASS= 0
+   voicing_only_kata(テ→デ)             n=10 現行PASS= 8 E4後PASS= 0 E4E後PASS= 0
+ -- cost ラベル別 --
+   acronym_reading(IBM→アイビーエム)        n=10 現行PASS=10 E4後PASS= 0 E4E後PASS= 0
+   acronym_reading(NASA→ナサ)           n=10 現行PASS=10 E4後PASS= 1 E4E後PASS= 1
+   latin→kata(muse→ミューズ)              n=10 現行PASS=10 E4後PASS= 0 E4E後PASS= 0
+   ヴァ↔バ(等価表記)                         n=10 現行PASS= 9 E4後PASS= 0 E4E後PASS= 0
+   ヴェ↔ベ(等価表記)                         n=10 現行PASS=10 E4後PASS= 0 E4E後PASS= 0
+ E4行 非PASS->PASS: 0 / ctrl の変化: 0
+
+== 実データ(1,327行): E4がE3V単独に対して動かす行 ==
+ E3V_E4: 4件
+   P4    mpt1_customb8f0ff16.json:comment_3 | ここまでのポイントは、AIの通話に人が加わる場合、そのこ | ここまでのポイントは、AIの通話に人が加わる場合、そのこ | casc=[('muse', 'ミューズ', True)] PASS -> NG_SECONDARY_UNAVAILABLE
+   P4    customb8f0ff16.json:japanese_title | 走れメロス | 走レメラス | casc=[('ロ', 'ラ', True)] PASS -> NG_SECONDARY_UNAVAILABLE
+   P4    mpt1_custom06ec49ff.json:comment_2 | ヴェラは、叔母が夫たちの帰りを今も待っていると話しました | ベラは、叔母が夫たちの帰りを今も待っていると話しました。 | casc=[('ヴェ', 'ベ', True)] PASS -> NG_SECONDARY_UNAVAILABLE
+   U:legacy/other ase2_ja_evidence_01/result.json#s4 | AIからの電話だと思ったら…中に“人”がいた？　Meta | AIからの電話だと思ったら、中に人がいた? メタのミュー | casc=[('meta', 'メタ', True), ('museで起き', 'ミューゼンロを着', True)] PASS -> NG_SECONDARY_UNAVAILABLE
+ E3V_E4E: 4件
+   P4    mpt1_customb8f0ff16.json:comment_3 | ここまでのポイントは、AIの通話に人が加わる場合、そのこ | ここまでのポイントは、AIの通話に人が加わる場合、そのこ | casc=[('muse', 'ミューズ', True)] PASS -> NG_SECONDARY_UNAVAILABLE
+   P4    customb8f0ff16.json:japanese_title | 走れメロス | 走レメラス | casc=[('ロ', 'ラ', True)] PASS -> NG_SECONDARY_UNAVAILABLE
+   P4    mpt1_custom06ec49ff.json:comment_2 | ヴェラは、叔母が夫たちの帰りを今も待っていると話しました | ベラは、叔母が夫たちの帰りを今も待っていると話しました。 | casc=[('ヴェ', 'ベ', True)] PASS -> NG_SECONDARY_UNAVAILABLE
+   U:legacy/other ase2_ja_evidence_01/result.json#s4 | AIからの電話だと思ったら…中に“人”がいた？　Meta | AIからの電話だと思ったら、中に人がいた? メタのミュー | casc=[('meta', 'メタ', True), ('museで起き', 'ミューゼンロを着', True)] PASS -> NG_SECONDARY_UNAVAILABLE
+
+== M-2 Secondary転写 ==
+ stored_secondary: n=103 ラベル変化 {'E3': 1, 'E3V': 1, 'E3V_E4': 1, 'E3V_E4E': 1} / 受理(SCG_PASS・orth)変化 {'E3': 0, 'E3V': 0, 'E3V_E4': 0, 'E3V_E4E': 0}
+    [E3] ラベル変化: ('hist', '男は七晩、老人の目が開くのを待っていましたが、目は閉じたまま', '男は七番。老人の目が開くのを待っていましたが、目は閉じたまま', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3V] ラベル変化: ('hist', '男は七晩、老人の目が開くのを待っていましたが、目は閉じたまま', '男は七番。老人の目が開くのを待っていましたが、目は閉じたまま', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3V_E4] ラベル変化: ('hist', '男は七晩、老人の目が開くのを待っていましたが、目は閉じたまま', '男は七番。老人の目が開くのを待っていましたが、目は閉じたまま', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3V_E4E] ラベル変化: ('hist', '男は七晩、老人の目が開くのを待っていましたが、目は閉じたまま', '男は七番。老人の目が開くのを待っていましたが、目は閉じたまま', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+ all_primary_as_secondary: n=1203 ラベル変化 {'E3': 5, 'E3V': 5, 'E3V_E4': 9, 'E3V_E4E': 9} / 受理(SCG_PASS・orth)変化 {'E3': 0, 'E3V': 0, 'E3V_E4': 0, 'E3V_E4E': 0}
+    [E3] ラベル変化: ('primary_as_secondary', '三日目', '3日間', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3] ラベル変化: ('primary_as_secondary', '月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密', '月の詩は八千九百本長。その奥に潜む岩の上着の秘密。', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3] ラベル変化: ('primary_as_secondary', '月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密', '月のシワ、8000九百本超。その奥に潜む岩の上着の秘密。', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3] ラベル変化: ('primary_as_secondary', '月のしわ、8,900本超', '月野氏は八万九千本町。', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3] ラベル変化: ('primary_as_secondary', '月のしわ、8,900本超', '月の巣は八千九百本長。', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3V] ラベル変化: ('primary_as_secondary', '三日目', '3日間', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3V] ラベル変化: ('primary_as_secondary', '月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密', '月の詩は八千九百本長。その奥に潜む岩の上着の秘密。', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3V] ラベル変化: ('primary_as_secondary', '月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密', '月のシワ、8000九百本超。その奥に潜む岩の上着の秘密。', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3V] ラベル変化: ('primary_as_secondary', '月のしわ、8,900本超', '月野氏は八万九千本町。', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3V] ラベル変化: ('primary_as_secondary', '月のしわ、8,900本超', '月の巣は八千九百本長。', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3V_E4] ラベル変化: ('primary_as_secondary', '三日目', '3日間', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3V_E4] ラベル変化: ('primary_as_secondary', 'ここまでのポイントは、AIの通話に人が加わる場合、そのことを', 'ここまでのポイントは、AIの通話に人が加わる場合、そのことを', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('ASR_VALIDATION_UNCERTAIN', 'ASR_VALIDATION_UNCERTAIN'))
+    [E3V_E4] ラベル変化: ('primary_as_secondary', '走れメロス', '走レメラス', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('ASR_VALIDATION_UNCERTAIN', 'ASR_VALIDATION_UNCERTAIN'))
+    [E3V_E4] ラベル変化: ('primary_as_secondary', 'ヴェラは、叔母が夫たちの帰りを今も待っていると話しました。叔', 'ベラは、叔母が夫たちの帰りを今も待っていると話しました。叔母', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('ASR_VALIDATION_UNCERTAIN', 'ASR_VALIDATION_UNCERTAIN'))
+    [E3V_E4] ラベル変化: ('primary_as_secondary', '月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密', '月の詩は八千九百本長。その奥に潜む岩の上着の秘密。', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3V_E4] ラベル変化: ('primary_as_secondary', '月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密', '月のシワ、8000九百本超。その奥に潜む岩の上着の秘密。', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3V_E4] ラベル変化: ('primary_as_secondary', '月のしわ、8,900本超', '月野氏は八万九千本町。', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3V_E4] ラベル変化: ('primary_as_secondary', '月のしわ、8,900本超', '月の巣は八千九百本長。', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3V_E4E] ラベル変化: ('primary_as_secondary', '三日目', '3日間', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3V_E4E] ラベル変化: ('primary_as_secondary', 'ここまでのポイントは、AIの通話に人が加わる場合、そのことを', 'ここまでのポイントは、AIの通話に人が加わる場合、そのことを', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('ASR_VALIDATION_UNCERTAIN', 'ASR_VALIDATION_UNCERTAIN'))
+    [E3V_E4E] ラベル変化: ('primary_as_secondary', '走れメロス', '走レメラス', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('ASR_VALIDATION_UNCERTAIN', 'ASR_VALIDATION_UNCERTAIN'))
+    [E3V_E4E] ラベル変化: ('primary_as_secondary', 'ヴェラは、叔母が夫たちの帰りを今も待っていると話しました。叔', 'ベラは、叔母が夫たちの帰りを今も待っていると話しました。叔母', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('ASR_VALIDATION_UNCERTAIN', 'ASR_VALIDATION_UNCERTAIN'))
+    [E3V_E4E] ラベル変化: ('primary_as_secondary', '月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密', '月の詩は八千九百本長。その奥に潜む岩の上着の秘密。', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3V_E4E] ラベル変化: ('primary_as_secondary', '月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密', '月のシワ、8000九百本超。その奥に潜む岩の上着の秘密。', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3V_E4E] ラベル変化: ('primary_as_secondary', '月のしわ、8,900本超', '月野氏は八万九千本町。', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+    [E3V_E4E] ラベル変化: ('primary_as_secondary', '月のしわ、8,900本超', '月の巣は八千九百本長。', ('PHONETIC_MATCH', 'PHONETIC_MATCH'), ('TRUE_CONTENT_MISMATCH', 'TRUE_CONTENT_MISMATCH'))
+
+summary: {"items": 1327, "parity_mismatch": 1, "e_pass_rows": 23, "per_mode": {"E3": {"changed": 5, "pass_to_ng": 2, "ng_to_pass": 0, "other_changed": 3, "changed_outside_E_pass_rows": 3, "non_negative_pass_to_ng": 1, "neg_pass_blocked": 1, "neg_pass_before": 33, "non_negative_pass_before": 677, "regen_increase_pct": 0.148}, "E3V": {"changed": 5, "pass_to_ng": 2, "ng_to_pass": 0, "other_changed": 3, "changed_outside_E_pass_rows": 3, "non_negative_pass_to_ng": 1, "neg_pass_blocked": 1, "neg_pass_before": 33, "non_negative_pass_before": 677, "regen_increase_pct": 0.148}, "E3V_E4": {"changed": 9, "pass_to_ng": 6, "ng_to_pass": 0, "other_changed": 3, "changed_outside_E_pass_rows": 3, "non_negative_pass_to_ng": 5, "neg_pass_blocked": 1, "neg_pass_before": 33, "non_negative_pass_before": 677, "regen_increase_pct": 0.739}, "E3V_E4E": {"changed": 9, "pass_to_ng": 6, "ng_to_pass": 0, "other_changed": 3, "changed_outside_E_pass_rows": 3, "non_negative_pass_to_ng": 5, "neg_pass_blocked": 1, "neg_pass_before": 33, "non_negative_pass_before": 677, "regen_increase_pct": 0.739}}, "sweep": 40, "sweep_viol": {"E3": 0, "E3V": 0}, "sweep_audit_viol": 4, "sweep_new_pass": 0, "e4": {"rows": 170, "n2p": 0, "ctrl_changed": 0}, "secondary": {"stored_secondary": {"n": 103, "label_changes": {"E3": 1, "E3V": 1, "E3V_E4": 1, "E3V_E4E": 1}, "accept_changes": {"E3": 0, "E3V": 0, "E3V_E4": 0, "E3V_E4E": 0}}, "all_primary_as_secondary": {"n": 1203, "label_changes": {"E3": 5, "E3V": 5, "E3V_E4": 9, "E3V_E4E": 9}, "accept_changes": {"E3": 0, "E3V": 0, "E3V_E4": 0, "E3V_E4E": 0}}}}
+out sha256: 72f9097d7ac95f2ead94398c8437fd4de1b1133dab7ec23c412c8bb277e6046e

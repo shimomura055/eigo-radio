@@ -320,11 +320,26 @@ def test_adapter_maps_phonetic_and_resolved_labels_to_reading_match_basis():
 def test_candidate_e_phonetic_match_value_diff_blocked_via_adapter(monkeypatch):
     # Candidate E(漢字読み総当たり、er011:347-372)由来のPHONETIC_MATCH + 8,900<->89,000相当: adapter実経路で最終ゲートが効く
     monkeypatch.setattr(javal, "FEATURE_FLAG_A2_READING_RESOLVER_ENABLED", False)
+    # 委任_12(OPEN-333 E3): Eの数値entry再検査が同じpairを先に拒否するようになったため、最終Gate(F1)単体を検査するためE3のrollback定数をFalseにする
+    # (E3有効時はNG_PROTECTED/p1_value_diffで同じくNG。下の test_candidate_e_value_diff_also_blocked_with_e3_on で固定)。
+    import er011_ja_asr_variant_layer_01 as _vl
+    monkeypatch.setattr(_vl, "CANDIDATE_E_FULL_DIFF_CHECK", False)
+    monkeypatch.setattr(_vl, "CANDIDATE_E_VALUE_GUARD_CHECK", False)
     monkeypatch.setattr(ja, "_azure_stt_strict", lambda *a, **k: (None, "api0_stub"))
     d = ja.evaluate_attempt_ja_with_cascade_detail("月のしわ、8,900本超", "月野氏は八万九千本町。", "dummy.wav", cascade_enabled=True, attempt_ctx={"max_len": 400})
     aj = d["asr_judgement"]
     assert aj["primary"]["equivalence_basis"] == "READING_MATCH" and aj["state"] == uj.NG_PROTECTED and aj["reason_code"] == "final_gate_value_diff"
     assert d["verified"] is False
+
+
+def test_candidate_e_value_diff_also_blocked_with_e3_on(monkeypatch):
+    # 委任_12: E3(既定ON)でも同じ8,900<->89,000相当はNG(Eの段で拒否され NG_PROTECTED/p1_value_diff。PASSには決してならない)
+    monkeypatch.setattr(javal, "FEATURE_FLAG_A2_READING_RESOLVER_ENABLED", False)
+    monkeypatch.setattr(ja, "_azure_stt_strict", lambda *a, **k: (None, "api0_stub"))
+    d = ja.evaluate_attempt_ja_with_cascade_detail("月のしわ、8,900本超", "月野氏は八万九千本町。", "dummy.wav", cascade_enabled=True, attempt_ctx={"max_len": 400})
+    aj = d["asr_judgement"]
+    assert aj["state"] == uj.NG_PROTECTED and aj["reason_code"] == "p1_value_diff" and d["verified"] is False
+    assert aj["candidate_e_full_diff"]["rejected"] >= 1
 
 
 def test_force_secondary_path_gets_final_gate_before_secondary():

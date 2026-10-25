@@ -10,6 +10,7 @@ import er007_ja_asr_validator_01 as javal
 import er007_ja_secondary_asr_01 as ja
 import er006_secondary_asr_01 as en_sec
 import er078_asr_unified_judge_01 as uj
+import er011_ja_asr_variant_layer_01 as _vl
 
 
 class Az:
@@ -92,6 +93,10 @@ def test_measurement_does_not_change_judgement(name, canon, primary, azres, tmp_
 
 
 def test_f1_rejection_and_f2_fired_are_recorded(tmp_path, monkeypatch):
+    # 委任_12(OPEN-333 E3): このtestは『Candidate E由来のREADING_MATCH PASSを最終Gate(F1)が拒否する』記録の固定が目的。E3(Eの数値entry再検査)が
+    # 先に同じpairを拒否するようになったため、E3のrollback定数をFalseにして最終Gate単体を検査する(E3有効時の挙動は er011_..._candidate_e_full_diff_test_01 で固定)。
+    monkeypatch.setattr(_vl, "CANDIDATE_E_FULL_DIFF_CHECK", False)
+    monkeypatch.setattr(_vl, "CANDIDATE_E_VALUE_GUARD_CHECK", False)
     a = run(tmp_path, monkeypatch, "月のしわ、8,900本超", "月野氏は八万九千本町。", Az())["asr_judgement"]
     r = a["r5"]
     assert a["reason_code"] == "final_gate_value_diff" and r["measurement_error"] is None
@@ -137,6 +142,8 @@ def test_provenance_incomplete_when_sha_is_placeholder_or_transcript_missing():
 
 
 def test_measurement_exception_is_recorded_and_does_not_affect_judgement(tmp_path, monkeypatch):
+    monkeypatch.setattr(_vl, "CANDIDATE_E_FULL_DIFF_CHECK", False)   # 委任_12: 最終Gate単体の検査(上のtestと同じ理由)
+    monkeypatch.setattr(_vl, "CANDIDATE_E_VALUE_GUARD_CHECK", False)
     d0 = run(tmp_path, monkeypatch, "月のしわ、8,900本超", "月野氏は八万九千本町。", Az())["asr_judgement"]
     en_sec.reset_secondary_cache()
     monkeypatch.setattr(uj, "_R5_WEAK_KANA_MARKS", 5)   # 計測内で TypeError を起こす

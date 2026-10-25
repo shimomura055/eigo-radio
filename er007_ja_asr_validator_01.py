@@ -378,6 +378,16 @@ def classify_ja_asr_match(canonical_text: str, asr_text: str | None,
         # しか変換しない)、誤PASSのリスクを生まない(Trial実測でも負例
         # 0件、詳細はJA-ASR-ORTHOGRAPHIC-VARIANT-GENERALIZATION-TRIAL-01
         # 「修正2回目」節参照)。
+        # 【2026-10-25 JA-ASR-FALSE-NG-ROOT-CAUSE-01 委任_12 注記】上記『誤PASS
+        # のリスクを生まない』は、後から同関数へ追加されたCandidate E(漢字候補
+        # 読み総当たり)には当てはまらなかった: 上の for ループ(数字が異なる
+        # opcodeを number_mismatches に記録して continue)は、そのopcodeに糊付け
+        # された非数値差(例:『しわ8,900』→『巣は八千九百』のしわ→巣は)を
+        # content_diffs へ入れず、Eが未検査のまま『残差分は全て説明できた』と
+        # PASSした(N3-07)。承認時の前提(残りの読みが1つでも違えば通さない)へ
+        # 戻すため、er011 try_rescue_before_resolver のE分岐が数値entryに限り
+        # 数値span除去後の非数値差を全件再検査する(rollback定数
+        # er011.CANDIDATE_E_FULL_DIFF_CHECK / CANDIDATE_E_VALUE_GUARD_CHECK)。
         if protected.number_mismatches and not protected.negation_mismatches:
             import er011_ja_asr_variant_layer_01 as ja_variant_layer
             variant_result = ja_variant_layer.try_rescue_before_resolver(

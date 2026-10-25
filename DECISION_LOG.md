@@ -22459,3 +22459,12 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - **X証拠**: 既存X artifact(run_r1 title=表層一致でREADING_MATCH非該当、run_r2=commit前起動)は不足のため、`er078_output/open517_runtime_evidence_01/x_one_clip_01/`(X正式経路1 clip、22:54:11、HEAD fb768a357、実費0.531円)でREADING_MATCH PASS・final_gate.applied=True・r5.f2.enabled=true/fired=false・DEMOTE/NG化/523/524=0・HR Lockなし。Z=`z_one_clip_02`(委任_09)。証拠=`docs/research/JA-ASR-FALSE-NG-ROOT-CAUSE-01/OPEN517_RUNTIME_EVIDENCE_02.md`。
 - **監視**: F2の実変換事例・DEMOTE事例は正式runtimeで0件のため、以後の正式runごとに`open517_first_run_tally_01.py`で集計。DEMOTE 1runで3件超はFableへ即報告。rollback定数=`er078_asr_unified_judge_01.READING_MATCH_FINAL_GATE`(OPEN-523/524の定数は07A参照)。
 - 詳細=`docs/pm/RESULT_PACKET_JAASR10.md`。
+
+## JA-ASR-FALSE-NG-ROOT-CAUSE-01 委任_12: OPEN-333 しわ↔すわ(N3-07)是正E3をProduction適用(Opus条件Cレビュー反映・P-1はユーザー判断へ・E4は評価済み適用待ち)(2026-10-25、API 0・実費0円)
+
+- **区分**: 承認済み不具合是正(PM_GOVERNANCE 11-8)。Opus条件Cレビュー(`docs/research/JA-ASR-FALSE-NG-ROOT-CAUSE-01/OPUS_REVIEW_01_OPEN333.md`)は区分『実装不具合』に同意。**是正本体=E3(P-1なし)**。Fable採用: Opus R-3(助詞免除P-1は未承認のB-light v2規則を既定ONで入れることになるため不具合是正に含めない)。新しい合格条件ではない(是正後PASS集合⊂是正前PASS集合。実データ1,327行・sweep・E4行で非PASS→PASS 0)。
+- **内容**: er011 Candidate E分岐に、数値entry(`protected.number_mismatches`あり)限定で、値ガード(`extract_atoms_ja`)が数値と認識したspanを同一placeholderへ置換(R-2。語中の漢数字は剥がさない)した全文の非数値差を全件再検査し、説明できない差が1件でもあればEを拒否(既存の`TRUE_CONTENT_MISMATCH`経路へ。helper例外は拒否=fail-closed)。多層防御(R-6)として値ガード(最終Gateと同じF2付き)がDIFF/UNKNOWNでも拒否。rollback定数`er011.CANDIDATE_E_FULL_DIFF_CHECK`/`CANDIDATE_E_VALUE_GUARD_CHECK`(既定True、env/flag不可、OFFでHEAD完全一致)。拒否した(c,a)は`asr_judgement.candidate_e_full_diff`に記録(M-6、判定不変)。R-1確認: Candidate E承認(DECISION_LOG:10208-10300)は数字不一致経路を明記しておらず、Eがこの経路で動くこと自体が承認前提外だった(結論は不変)。
+- **P-1(助詞は→わ免除)**: Production未実装。**判断候補(D真に新しい判断)**: v2/②B-light βの採否と一体でユーザー判断。E3単独では月題#1(正常と推定、再聴なし)がNG化(1/677=0.148%)。承認済み仕様どおりの結果で、『正常な月の記事タイトルの救済』はv2/βの担当。
+- **E4(便乗PASS=cascade_eligible差分の未検査)**: 評価済み・**Production未適用(Fable判断待ち)**。合成負例96/110が現行PASS、数値entryはE3で閉じ、非数値entry46件はE4が必要。実データ4/677行(0.59%)がCascade化(本物の読み違い疑い2、正常等価表記2)。
+- **検証**: E3 API 0評価(`OPEN333_EVAL_02.md`、決定性sha同一)、proto↔Production一致2,716キー差0・OFF=HEAD差0(`open333_prod_parity_01.out.txt`)、新規test 28件PASS、回帰は`OPEN333_APPLY_RESULT_01.md`、runtime発火(API 0、正式adapterへ保存転写注入): E経由PASS 23→21、拒否発火5attempt(8 pair)。
+- **commit**: 本コミット(sha=報告)。詳細=`docs/pm/RESULT_PACKET_JAASR12.md`。

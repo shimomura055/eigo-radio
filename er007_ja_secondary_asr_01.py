@@ -548,6 +548,8 @@ def evaluate_attempt_ja_with_cascade_detail(
     `cost_guard_triggered`を追加)。cascade_enabled=Falseなら従来のclassify_ja_asr_matchの結果をそのまま返す。"""
     cls = javal.classify_ja_asr_match(canonical_text, primary_asr_text, expected_readings=expected_readings)
     cls = _apply_variant_layer_voicing_upgrade(canonical_text, primary_asr_text, cls)
+    # OPEN-333 E3(委任_12 M-6): Candidate Eが数値entryで拒否した(c,a)の読取専用記録(判定には関与しない。拒否が無ければ空=出力不変)。
+    _ce_rej = list(getattr(getattr(cls, "protected", None), "candidate_e_rejections", None) or [])
     steps = [{"step": "primary_1", "provider": "openai_asr", "text": primary_asr_text,
               "classification": cls.classification}]
     result = {
@@ -741,6 +743,9 @@ def evaluate_attempt_ja_with_cascade_detail(
     except Exception as _e:   # noqa: BLE001  計測の失敗は判定へ波及させない
         if isinstance(audit.get("r5"), dict):
             audit["r5"]["measurement_error"] = f"{type(_e).__name__}: {_e}"
+    if _ce_rej:
+        audit["candidate_e_full_diff"] = {"rejected": len(_ce_rej), "pairs": _ce_rej,
+                                          "note": "OPEN-333 E3: 数値entryのCandidate Eを、数値span除去後の非数値差が読みで説明できないため拒否(読取専用記録、判定不変)"}
     audit["adapter"] = {"layers": (["numeric_value_equivalence"] if eq_cls is not None else []),
                         "azure_real_calls": 1 if sec.get("called") else 0, "cost_guard_triggered": state["cost_guard"],
                         "language": "ja-JP", "asr_text_present": primary_asr_text is not None,
