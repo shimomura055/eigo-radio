@@ -119,6 +119,7 @@ STEPA = """あなたは英語読解指導の専門家です。下の英語本文
 }}
 - candidates_consideredは、検討した候補を最大5件(選んだ文を含む)。
 - selectedは0〜2件。0件なら空配列。
+- construct_ja・points_ja・context_jaは、ユーザー向け解説の材料になる。文の内容として書き、難易度・誤解しやすさ・学習価値などの評価語を入れない。
 """
 def stepa_prompt(d):
     return STEPA.format(label=d["label"], n=len(d["body"]), numbered=d["numbered"])
@@ -139,6 +140,8 @@ STEPB = """あなたは英語学習の解説を書く執筆者です。別の工
 - 学習者がそのまま読んで価値を感じられる、読みやすい文章にする。形式的・冗長な説明、同じ内容の繰り返しをしない。
 - ユーザー向けの解説であり、選定理由・難易度の評価・品質の判定・工程への言及(「選ばれた」「学習価値が高い」「Advancedの学習者でも難しい」等)は一切書かない。
 - 本文にない事実・登場人物の言動を作らない。「本文での位置づけ」に書かれた事実の範囲で述べる。
+- 「前の文」「後の文」は、対象の英文を読み解くための本文の前後関係の参考である(解説する対象は各項目の「英文」のみ)。前後の文を引用するときも一字一句そのまま(逐語)引用する。
+- 「参考訳」が渡されている場合は、それと矛盾しない日本語訳にする(同じ英文に食い違う訳を並べない)。
 - 本文の英文を引用するときは、渡された英文から一字一句そのまま(逐語)引用する。
 - 英文そのものの再掲(見出しとしての掲載)は不要(別途表示される)。
 
@@ -159,21 +162,28 @@ def stepb_items(selected):
     out = []
     for i, s in enumerate(selected, 1):
         pts = "\n".join(f"     - {p}" for p in s["points_ja"])
-        out.append(f"[{i}] 英文: {s['sentence']}\n   構文: {s['construct_ja']}\n   押さえる点:\n{pts}\n   本文での位置づけ: {s['context_ja']}")
+        blk = f"[{i}] 英文: {s['sentence']}\n   構文: {s['construct_ja']}\n   押さえる点:\n{pts}\n   本文での位置づけ: {s['context_ja']}"
+        if s.get("prev"): blk += f"\n   前の文(本文): {s['prev']}"
+        if s.get("next"): blk += f"\n   後の文(本文): {s['next']}"
+        if s.get("ref_ja"): blk += f"\n   参考訳(別工程で確定済み): {s['ref_ja']}"
+        out.append(blk)
     return "\n".join(out)
 def stepb_prompt(selected):
     return STEPB.format(items=stepb_items(selected))
 
 # ---------- Prompt: Part 3/4 (Trial-03 03dのPart 3/4ブロックをそのまま。Part 1/2は別工程) ----------
-def p34_prompt(work, part2_note_text):
+def p34_prompt(work, part2_note_text, part1_note_text="<<Part 1の解説>>"):
     full = r3.build(work, "03d")
     a = full.index("## Part 1. Vocabulary"); b = full.index("## Part 3. Nuance")
     p = full[:a] + full[b:]
-    p = r3.sub_once(p, "# 出力する内容(4つのPartをすべて、この順序・この見出しで)", f"# Part 2で扱う文(別工程で確定済み。Part 3はこれらと内容を重複させない)\n{part2_note_text}\n\n# 出力する内容(Part 3とPart 4のみ、この順序・この見出しで。Part 1・Part 2は別工程で作成済み)")
+    p = r3.sub_once(p, "# 出力する内容(4つのPartをすべて、この順序・この見出しで)", f"# Part 1の解説(別工程で確定済み。Part 3はこれらと内容を重複させない)\n{part1_note_text}\n\n# Part 2で扱う文(別工程で確定済み。Part 3はこれらと内容を重複させない)\n{part2_note_text}\n\n# 出力する内容(Part 3とPart 4のみ、この順序・この見出しで。Part 1・Part 2は別工程で作成済み)")
     p = r3.sub_once(p, "出力はMarkdownのみ。上記の見出し(## Part 1〜4)構成を守り", "出力はMarkdownのみ。上記の見出し(## Part 3、## Part 4)構成を守り")
     blk = lambda s: s[s.index("## Part 3. Nuance"):s.index("\n# 制約")]
     assert blk(p) == blk(full)  # Part 3/4ブロックは03dと完全一致
     return p
+
+def part1_note(inp, p1):
+    return "\n".join(f"- {it['kp']}: {p1[i][1]}" for i, it in enumerate(inp, 1))
 
 def part2_note(selected):
     if not selected: return "なし(Part 2は0件)"
@@ -188,12 +198,37 @@ def parse_p1(txt, n=3):
         res[int(parts[i])] = (parts[i + 1].strip(), parts[i + 2].strip())
     assert sorted(res) == list(range(1, n + 1)), list(res)
     return res
-def parse_stepa(txt):
+def _qn(x):  # 長さ保存の正規化(曲がった引用符/アポストロフィ -> 直線)
+    return x.replace("\u2019", "'").replace("\u2018", "'").replace("\u201c", '"').replace("\u201d", '"')
+def resolve_verbatim(d, para, sentence):
+    """M1: 本文の該当段落から文を引き当て、本文側の逐語文字列を返す。見つからなければ例外(自動再試行しない)。構造上の保証であり判定器ではない。"""
+    m = re.fullmatch(r"P(\d+)", str(para).strip())
+    assert m and 1 <= int(m.group(1)) <= len(d["body"]), ("bad para", para)
+    pi = int(m.group(1)) - 1; body = d["body"][pi]
+    toks = _qn(sentence).split(); assert toks, "empty sentence"
+    mm = re.search(r"\s+".join(re.escape(t) for t in toks), _qn(body))
+    assert mm, ("sentence not found in para", para, sentence[:60])
+    return body[mm.start():mm.end()], pi, mm.start(), mm.end()
+_SENT_RE = re.compile(r".+?[.!?\u2026]+[\u201d\"\u2019']?(?=\s|$)|.+?$", re.S)
+def _sents(t): return [x.strip() for x in _SENT_RE.findall(t) if x.strip()]
+def local_context(d, pi, a, b):
+    """R1: 選定文の前後1文を本文から逐語で取る(段落をまたぐ)。"""
+    T = "\n\n".join(d["body"]); off = sum(len(x) + 2 for x in d["body"][:pi])
+    bef = _sents(T[:off + a]); aft = _sents(T[off + b:])
+    return (bef[-1] if bef else ""), (aft[0] if aft else "")
+def parse_stepa(txt, d=None, inp=None):
     m = re.search(r"\{.*\}", txt, re.S)
     j = json.loads(m.group(0))
     assert len(j["selected"]) <= 2
     for s in j["selected"]:
         for k in ("para", "sentence", "construct_ja", "points_ja", "context_ja", "reason_dev"): assert k in s, k
+        if d is not None:
+            verb, pi, a, b = resolve_verbatim(d, s["para"], s["sentence"])
+            s["sentence_llm_raw"] = s["sentence"]; s["sentence_replaced_by_body"] = (verb != s["sentence"]); s["sentence"] = verb
+            s["prev"], s["next"] = local_context(d, pi, a, b)
+            if inp:  # R4: KPの引用英文と一致したら固定訳を参考訳として渡す
+                for it in inp:
+                    if _qn(it["sentence"]) == _qn(verb): s["ref_ja"] = it["sentence_ja"]
     return j
 def parse_stepb(txt, n):
     items = re.split(r"(?m)^=====ITEM (\d+)=====\s*$", txt)
@@ -237,18 +272,22 @@ def run_pipeline(work, runid, llm, arm="alpha"):
         f1 = ex.submit(llm, p1_prompt(kps, arm), f"04{arm[0]}_{runid}_p1_{work}")
         fa = ex.submit(llm, stepa_prompt(d), f"04_{runid}_stepA_{work}")
         r1, ra = f1.result(), fa.result()
-    stepa = parse_stepa(ra[0]); sel = stepa["selected"]
+    stepa = parse_stepa(ra[0], d, inp); sel = stepa["selected"]
+    p1 = parse_p1(r1[0])
     with ThreadPoolExecutor(max_workers=2) as ex:
         fb = ex.submit(llm, stepb_prompt(sel), f"04_{runid}_stepB_{work}") if sel else None
-        f34 = ex.submit(llm, p34_prompt(work, part2_note(sel)), f"04_{runid}_p34_{work}")
+        f34 = ex.submit(llm, p34_prompt(work, part2_note(sel), part1_note(inp, p1)), f"04_{runid}_p34_{work}")
         rb = fb.result() if fb else None; r34 = f34.result()
     stepb = parse_stepb(rb[0], len(sel)) if sel else {}
-    user = assemble_user(inp, parse_p1(r1[0]), stepa, stepb, r34[0])
+    user = assemble_user(inp, p1, stepa, stepb, r34[0])
     usages = [x[1] for x in (r1, ra, rb, r34) if x]
     return user, stepa, usages
 
+import threading
+_SPENT = {"jpy": 0.0}; _LOCK = threading.Lock(); CAP_JPY = 18.0  # 委任_09上限20円に対する安全余裕(新規call拒否)
 def real_llm(prompt, tag):
     assert os.environ.get("TRIAL04_PAID_APPROVED") == "1", "paid call refused (Phase 0 / 委任_09 Fable Go required)"
+    with _LOCK: assert _SPENT["jpy"] < CAP_JPY, ("cost cap reached; new calls refused", _SPENT)
     from dotenv import load_dotenv; load_dotenv(os.path.join(ROOT, ".env"))
     from openai import OpenAI
     c = OpenAI(); t0 = time.time()
@@ -262,7 +301,46 @@ def real_llm(prompt, tag):
          "cost_usd": round(usd, 6), "cost_jpy_at_160": round(usd * 160, 4)}
     json.dump(d, open(os.path.join(BASE, f"usage_{tag}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     open(os.path.join(BASE, f"_raw_{tag}.txt"), "w", encoding="utf-8", newline="\n").write(r.output_text)
+    with _LOCK: _SPENT["jpy"] += d["cost_jpy_at_160"]
     return r.output_text, d
+
+# ---------- R5/β腕: 単独実行 ----------
+def run_p1_only(work, runid, llm, arm):
+    inp = load_inputs()[work]; kps = [(x["kp"], x["gloss_in_text_ja"], x["sentence"]) for x in inp]
+    r = llm(p1_prompt(kps, arm), f"04{arm[0]}_{runid}_p1_{work}"); parse_p1(r[0])
+    open(os.path.join(BASE, f"OUTPUT_04_{work}_{runid}_P1{arm.upper()}.md"), "w", encoding="utf-8", newline="\n").write(r[0])
+    return r[1]
+def run_stepa_only(work, runid, llm):
+    d = work_data(work); inp = load_inputs()[work]
+    r = llm(stepa_prompt(d), f"04_{runid}_stepA_{work}")
+    j = parse_stepa(r[0], d, inp)
+    open(os.path.join(BASE, f"OUTPUT_04_{work}_{runid}_STEPA_DEV.json"), "w", encoding="utf-8", newline="\n").write(json.dumps(j, ensure_ascii=False, indent=1))
+    return r[1]
+def run_full(work, runid, llm):
+    user, stepa, us = run_pipeline(work, runid, llm, arm="alpha")
+    up = os.path.join(BASE, f"OUTPUT_04_{work}_{runid}_USER.md"); dp = os.path.join(BASE, f"OUTPUT_04_{work}_{runid}_DEV.md")
+    open(up, "w", encoding="utf-8", newline="\n").write(user); open(dp, "w", encoding="utf-8", newline="\n").write(assemble_dev(work, runid, stepa, us, up))
+    return us
+def batch(llm):
+    """委任_09の全構成を1 launchで実行(各job失敗は記録のみ。自動再試行しない)。"""
+    from concurrent.futures import ThreadPoolExecutor
+    jobs = []
+    for w in WORKS:
+        for r in ("r1", "r2"): jobs.append((f"full_{w}_{r}", lambda w=w, r=r: run_full(w, r, llm)))
+    for w in WORKS:
+        for r in ("r1", "r2"): jobs.append((f"p1beta_{w}_{r}", lambda w=w, r=r: run_p1_only(w, r, llm, "beta")))
+        for r in ("r3", "r4"): jobs.append((f"stepA_{w}_{r}", lambda w=w, r=r: run_stepa_only(w, r, llm)))
+    errs = {}
+    def go(j):
+        name, fn = j
+        try: fn(); return name, None
+        except BaseException as e: return name, repr(e)
+    with ThreadPoolExecutor(max_workers=9) as ex:
+        for name, e in ex.map(go, jobs):
+            print(name, "OK" if e is None else "ERR " + e, flush=True)
+            if e: errs[name] = e
+    json.dump(dict(errors=errs, spent_jpy=_SPENT["jpy"]), open(os.path.join(BASE, "batch_04_result.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    print("spent_jpy", _SPENT["jpy"], "errors", len(errs))
 
 # ---------- Part 1 混入確認(dry-run用。新設Checkerではなく、Prompt作成時の確認) ----------
 _STOP_CAPS = {"The", "A", "An", "I", "In", "It", "He", "She", "They", "We", "This", "That", "But", "And", "Yet", "Then", "His", "Her", "Not", "Nothing", "At", "One", "Will", "Please", "Look", "Cut", "Twenty", "Still", "Suddenly", "Footsteps", "Inside", "Outside", "Each", "Finally", "Slowly", "For", "By", "Like", "How", "Give", "My", "On", "No", "If", "When", "As", "So", "What", "There", "Here", "Now", "After", "Is", "Do", "Or", "To", "Of", "You", "Yes", "Let"}
@@ -308,12 +386,25 @@ def selftest():
         if "_p1_" in tag: return "### 1. a\nAAA\n### 2. b\nBBB\n### 3. c\nCCC", u
         if "_stepA_" in tag:
             if "zero" in tag: return json.dumps(dict(candidates_considered=[], selected=[], none_reason_dev="none")), u
-            return "```json\n" + json.dumps(dict(candidates_considered=[dict(para="P1", note="x")], selected=[dict(para="P4", sentence="S1.", construct_ja="倒置", points_ja=["p"], context_ja="c", reason_dev="DEVREASON")], none_reason_dev="")) + "\n```", u
+            return "```json\n" + json.dumps(dict(candidates_considered=[dict(para="P1", note="x")], selected=[dict(para="P6", sentence="Outside a hair-goods shop, she paused just long enough to catch her breath.", construct_ja="倒置", points_ja=["p"], context_ja="c", reason_dev="DEVREASON")], none_reason_dev="")) + "\n```", u
         if "_stepB_" in tag: return "=====ITEM 1=====\n【日本語訳】\nT\n【文法・構文の仕組み】\nM\n【意味・ニュアンス・表現効果】\nE", u
         return "## Part 3. Nuance & Deeper Understanding\nx\n\n## Part 4. Think & Express\ny", u
+    # M1/R1/R4 単体確認
+    dg = work_data("gift"); ingift = load_inputs()["gift"]
+    v, pi, a, b = resolve_verbatim(dg, "P4", "One was Jim's gold watch, handed down from his grandfather to his father, and then to him.")
+    assert v == "One was Jim\u2019s gold watch, handed down from his grandfather to his father, and then to him.", v
+    pv, nx = local_context(dg, pi, a, b); assert pv == "They owned two things that made them proud." and nx == "The other was Della\u2019s long brown hair.", (pv, nx)
+    v5, pi5, a5, b5 = resolve_verbatim(dg, "P3", "Then she caught sight of herself in the mirror.")
+    pv5, nx5 = local_context(dg, pi5, a5, b5); assert pv5 == "For a while, she cried on their shabby couch." and nx5.startswith("They owned"), (pv5, nx5)
+    j = parse_stepa(json.dumps(dict(candidates_considered=[], selected=[dict(para="P3", sentence="Then she caught sight of herself in the mirror.", construct_ja="x", points_ja=["p"], context_ja="c", reason_dev="r")], none_reason_dev="")), dg, ingift)
+    assert j["selected"][0].get("ref_ja"), "R4 ref_ja"
+    try:
+        parse_stepa(json.dumps(dict(candidates_considered=[], selected=[dict(para="P4", sentence="One was Jim's silver watch.", construct_ja="x", points_ja=["p"], context_ja="c", reason_dev="r")], none_reason_dev="")), dg, ingift); raise SystemExit("M1 should raise")
+    except AssertionError: pass
+    sb = stepb_prompt(j["selected"]); assert "前の文(本文): For a while" in sb and "後の文(本文): They owned" in sb and "参考訳" in sb
     user, stepa, us = run_pipeline("gift", "mock", mock)
     assert "DEVREASON" not in user and "候補" not in user and "選定理由" not in user
-    assert "**日本語訳**" in user and "> S1." in user and "5. **解説:**" in user and "実用性を重視した解説" not in user
+    assert "**日本語訳**" in user and "> Outside a hair-goods shop" in user and "5. **解説:**" in user and "実用性を重視した解説" not in user
     zu, _, us0 = run_pipeline("gift", "zero", mock)
     assert ZERO_P2 in zu and len(us0) == 3  # 0件: Step B呼出なし(3 call)
     assert len(us) == 4
@@ -326,6 +417,9 @@ if __name__ == "__main__":
         json.dump(extract_ja_from_03d(), open(os.path.join(BASE, "INPUT_04.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     elif m == "dry-run": dry_run()
     elif m == "selftest": selftest()
+    elif m == "batch": batch(real_llm)
+    elif m == "send-p1": run_p1_only(sys.argv[2], sys.argv[3], real_llm, sys.argv[4])
+    elif m == "send-stepa": run_stepa_only(sys.argv[2], sys.argv[3], real_llm)
     elif m == "send":
         work, runid = sys.argv[2], sys.argv[3]
         user, stepa, us = run_pipeline(work, runid, real_llm, arm=(sys.argv[4] if len(sys.argv) > 4 else "alpha"))

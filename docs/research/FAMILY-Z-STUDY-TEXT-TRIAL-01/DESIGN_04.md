@@ -83,3 +83,9 @@ Status: Trial承認済み(ユーザー2026-10-25、原文=`docs/pm/delegation_lo
 
 ## 8. 禁止事項の確認
 Production code/Prompt/flag変更0、KP追加選定なし、音声生成なし、Web検索なし、Part 3/4 Prompt変更なし(ブロック一致をassert)、Checker/Validator新設なし、API呼出0(`real_llm`は`TRIAL04_PAID_APPROVED=1`が無い限り`assert`で拒否)。
+
+## 9. 委任_09 反映(Opus条件A、`OPUS_REVIEW_02.md`)
+- M1: `run_trial_04.resolve_verbatim`/`parse_stepa`(本文側文字列への差替え、見つからなければ例外)。selftestで曲がったアポストロフィ差替え・不一致例外・全文(3作品122文)の引当てを確認。
+- M2: `PREREGISTERED_CRITERIA_04.md`(矛盾=語義不一致のみ/α→β切替は両側条件/`bound to the protein`別集計/Part 2数値固定/本文引っ張り再現時は設計見直し)を**生成前にcommit**。上記§3-2の旧ルール「αで矛盾1件以上ならβ」は、事前登録の1-4両側条件に置換(旧ルールは撤去・本節が上書き)。
+- R1: Step Bへ前後1文の逐語(決定論取得)を追加(`local_context`)。R2: Part 3/4へPart 1解説を入力。R3: Step A Promptに評価語禁止の1行。R4: KP引用英文と一致する選定文に固定訳を参考訳として渡す。R5: 各作品でStep Aのみr3・r4、β P1をr1・r2。
+- 安全線: 実行は`TRIAL04_PAID_APPROVED=1`必須、累計18円で新規call拒否(`CAP_JPY`)、parse/call失敗は記録のみで自動再試行しない。
