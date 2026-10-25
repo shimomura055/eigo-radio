@@ -127,8 +127,19 @@
 - Voice: Aoede / Style: PD06For seven nights, at midnight, I lifted his latch. You should have seen my patience! I eased the door open so slowly he never stirred, then let one thin ray escape my lantern. The eye was always closed. So I could do nothing. You understand: I hated the eye, not the man. Each morning I kindly asked how he had slept. On the eighth night, I nearly laughed at my cleverness. Then my thumb slipped against the lantern's fastening.
 - Voice: Aoede / Style: PD06I stood motionless. For an hour he sat in bed, listening. At last he groaned softly. Not pain—terror. I knew that sound. I uncovered the lantern. Its narrow beam found the eye. Wide open. A low, quick beating reached me, like a watch wrapped in cotton. His heart! Faster it went, and louder. What if a neighbour heard? I rushed forward. He shrieked once. I dragged him down and pulled the heavy bed over him. Finally, the beating stopped. I checked his pulse. Nothing. I hid his body beneath three floorboards and fitted them back exactly. Not a mark! You could have searched all night. At four in the morning, three police officers knocked. A neighbour had heard a shriek.
 
-### Standard: 英文セル10件中 一人称(I/my/me)を含む=0件、聞き手(you)を含む=0件、housemate=0件
+### Standard: 英文セル11件中 一人称(I/my/me)を含む=4件、聞き手(you)を含む=4件、housemate=0件(委任_05で訂正)
 
-聞き手への語りかけ(you):
+**訂正(委任_05確認1)**: 旧記載『10件中 一人称=0件・you=0件』は抽出の不具合による誤り。Standardの本文セルは`<div class='note'>6%減速適用(比…)</div>`(日本語)がVoice行とscriptの間に入るHTML構造のため、日本語文字を含むセルを除外する旧抽出が本文セルを落としていた。公開Stdは`run_sf_prod_02/writer/std.md`と22段落全一致(ACCEPTANCE_CHECK_01.md)。
+
+聞き手への語りかけ(you、文単位):
+- You think I am mad, but I am only nervous.
+- Listen, and judge how calmly I tell you this.
+- You should have seen my patience—he never even moved!
+- You could search all night and find no mark.
+- You see, I sat right above the body without fear.
+- Could you bear that?
 
 一人称の例(先頭3件):
+- You think I am mad, but I am only nervous. Illness made my senses stronger, especially my hearing. I hear everything in heaven and on earth. Listen, and judge how calmly I tell you this. I loved the o
+- At midnight for seven nights, I slowly opened his door. You should have seen my patience—he never even moved! Then I let one thin ray escape from my lantern. But I always found that eye shut. I could 
+- For an hour, he sat listening while I stood completely still. Finally, he groaned softly in fear, not pain. I knew that sound well. I opened the lantern's cover, sending light onto his eye. It was com
