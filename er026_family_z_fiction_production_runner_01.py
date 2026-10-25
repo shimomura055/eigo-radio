@@ -2486,6 +2486,8 @@ def build_parser():
     parser.add_argument("--story", default="melos", choices=list(STORY_REGISTRY.keys()))
     parser.add_argument("--slug", default=None, help="出力ディレクトリ名(既定: --storyと同じ)")
     parser.add_argument("--run", default=E2E_DEFAULT_RUN)
+    parser.add_argument("--pages-dir", default=None,
+                        help="試聴ページ出力先の上書き(既定: STORY_REGISTRYのe2e_pages_dir=従来どおりの公開dir)。複製run(例 run_chunk_01)の候補ページ用")
     parser.add_argument("--stage", default="all", choices=list(E2E_STAGES) + ["all"] + list(LEGACY_STAGES))
     parser.add_argument("--stages", default=None,
                         help="カンマ区切りのstage名(E2E_STAGES内)を1回の起動でE2E順に実行する(例 tts_b1b,tts_a2,gate,assemble)。"
@@ -2574,6 +2576,8 @@ def main(argv=None):
             _launch_guard(ctx.out_dir)
         else:
             ctx = build_real_context(args)
+        if getattr(args, "pages_dir", None):               # FXZC委任_04: 複製run用のpages_dir分離(未指定=従来値)
+            ctx.pages_dir = args.pages_dir
         ctx.only_clips, ctx.regenerate_stage = only, args.regenerate_stage
         # OF-KGCPW-11: gloss再整合の実効flag(ON/OFFと取得元)をrun開始時にstdout+runディレクトリ+summaryへ記録する。
         import er003_key_words_gloss_alignment as _ga_flag
