@@ -101,7 +101,8 @@ class FakeTextCore:
     def __init__(self, api=None):
         self.api, self.calls = api, 0
 
-    def produce_article(self, client, *, slug, theme_package, out_dir, guard=None):
+    def produce_article(self, client, *, slug, theme_package, out_dir, guard=None, reuse=None, theme_package_path=None):
+        self.last_kwargs = {"reuse": reuse, "theme_package_path": theme_package_path}
         self.calls += 1
         if guard:
             guard("text_mock")

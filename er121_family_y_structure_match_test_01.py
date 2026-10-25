@@ -126,7 +126,8 @@ class DevVerbatim(unittest.TestCase):
 
 class RoutingContract(unittest.TestCase):
     KEYS = ("FAMILY_Y_CLOSING_GENERATE", "FAMILY_Y_CLOSING_REWRITE", "FAMILY_Y_LEAK_JUDGE", "FAMILY_Y_VOICE_GENERATE", "FAMILY_Y_VOICE_REWRITE",
-            "FAMILY_Y_LEAD_GENERATE", "FAMILY_Y_PERSONA_INTRO", "FAMILY_Y_TRANSLATE_ADV", "FAMILY_Y_TRANSLATE_STD")
+            "FAMILY_Y_LEAD_GENERATE", "FAMILY_Y_PERSONA_INTRO", "FAMILY_Y_TRANSLATE_ADV", "FAMILY_Y_TRANSLATE_STD",
+            "FAMILY_Y_VOICE_PROVENANCE_MAP", "FAMILY_Y_VOICE_STRUCTURE_TAG")
 
     def test_all_y_keys_registered_with_expected_models(self):
         import er006_model_routing_contract_01 as routing
@@ -135,6 +136,8 @@ class RoutingContract(unittest.TestCase):
         for k in ("FAMILY_Y_CLOSING_GENERATE", "FAMILY_Y_CLOSING_REWRITE", "FAMILY_Y_VOICE_GENERATE", "FAMILY_Y_VOICE_REWRITE",
                   "FAMILY_Y_LEAD_GENERATE", "FAMILY_Y_PERSONA_INTRO"):
             self.assertEqual(routing.PROCESS_MODEL_MAP[k], "gpt-6.1-sol", k)
+        for k in ("FAMILY_Y_VOICE_PROVENANCE_MAP", "FAMILY_Y_VOICE_STRUCTURE_TAG"):                 # 委任_03: 補助判定2key=gpt-6-luna(luna固定)
+            self.assertEqual(routing.PROCESS_MODEL_MAP[k], "gpt-6-luna", k)
         self.assertEqual(routing.PROCESS_MODEL_MAP["FAMILY_Y_LEAK_JUDGE"], "gpt-6-luna")            # 判定系は執筆Solと別系統(luna固定)
         self.assertEqual(routing.PROCESS_MODEL_MAP["FAMILY_Y_TRANSLATE_ADV"], routing.WRITER_MODEL)
         self.assertEqual(routing.PROCESS_MODEL_MAP["FAMILY_Y_TRANSLATE_STD"], routing.WRITER_MODEL)
@@ -149,7 +152,7 @@ class RoutingContract(unittest.TestCase):
     def test_text_core_route_table_matches_contract_no_drift(self):
         import er006_model_routing_contract_01 as routing
         import er121_family_y_text_core_01 as tc
-        for k, v in tc.ROUTE.items():
+        for k, v in list(tc.ROUTE.items()) + list(tc.ROUTE_AUX.items()):       # 委任_03: 補助2key(ROUTE_AUX)もer006登録済みで一致
             self.assertEqual(routing.PROCESS_MODEL_MAP.get(k), v["model"], f"{k}: text coreの期待表とer006がdrift")
 
     def test_existing_keys_unchanged(self):

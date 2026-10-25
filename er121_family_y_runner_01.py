@@ -28,7 +28,7 @@ import er121_family_y_structure_01 as ys
 MANAGEMENT_ID = ys.MANAGEMENT_ID
 RUN_ROOT = "er121_output/family_y_production_01"
 DEFAULT_RUN = "run_01"
-APPROVED_BUDGET_MAX_JPY = 150.0          # 案件個別Cap(BUDGET_PLAN_01: 見積上限113円+約30%)。これを超える承認は受け付けない
+APPROVED_BUDGET_MAX_JPY = 170.0          # 案件個別Cap(Fable判断 委任_02C: 150→170円。BUDGET_PLAN_03 §1)。これを超える承認は受け付けない
 WARN_THRESHOLD_JPY = 100.0
 STAGES = ("seed_check", "text", "translate", "support", "kp", "tts_b1b", "tts_a2", "gate", "assemble", "pages", "page_verify")
 STAGE_EST_JPY = {"text": 45.0, "translate": 12.0, "support": 6.0, "kp": 10.0, "tts_b1b": 30.0, "tts_a2": 30.0}
@@ -156,6 +156,7 @@ class YContext:
     run_root: str = RUN_ROOT
     pages_dir: str = None                       # None -> <out_dir>/pages(公開dirではない。公開は別手順)
     theme_package_path: str = None
+    reuse_manifest_path: str = None          # 再利用manifest(E-1: 既存R0のVoice/Lead/紹介をbyte一致検証して採用)。None=全て新規生成
     budget: object = None
     llm_client: object = None
     hooks: dict = dataclasses.field(default_factory=dict)
@@ -287,7 +288,8 @@ def stage_seed_check(ctx) -> dict:
     res = {"management_id": MANAGEMENT_ID, "family": ys.FAMILY, "entry_status": ys.ENTRY_STATUS}
     res["voice_assignment"] = ys.verify_voice_assignment()
     keys = ("FAMILY_Y_CLOSING_GENERATE", "FAMILY_Y_CLOSING_REWRITE", "FAMILY_Y_LEAK_JUDGE", "FAMILY_Y_VOICE_GENERATE", "FAMILY_Y_VOICE_REWRITE",
-            "FAMILY_Y_LEAD_GENERATE", "FAMILY_Y_PERSONA_INTRO", "FAMILY_Y_TRANSLATE_ADV", "FAMILY_Y_TRANSLATE_STD")
+            "FAMILY_Y_LEAD_GENERATE", "FAMILY_Y_PERSONA_INTRO", "FAMILY_Y_TRANSLATE_ADV", "FAMILY_Y_TRANSLATE_STD",
+            "FAMILY_Y_VOICE_PROVENANCE_MAP", "FAMILY_Y_VOICE_STRUCTURE_TAG")
     res["routing"] = {k: routing.PROCESS_MODEL_MAP.get(k) for k in keys}
     missing = [k for k, v in res["routing"].items() if not v]
     if missing:
@@ -297,7 +299,7 @@ def stage_seed_check(ctx) -> dict:
     tp = ctx.theme_package_path
     res["theme_package"] = {"path": tp, "exists": bool(tp and os.path.exists(tp))}
     tc = ctx.hooks.get("text_core")
-    if tc is None and ctx.mode == "real":
+    if tc is None and ctx.mode in ("real", "dry-run"):          # import自体はI/Oなし(isolation testで固定)。dry-runでも接続状態を正しく表示する
         import er121_family_y_text_core_01 as tc
     res["text_core_connected"] = bool(tc is not None and hasattr(tc, "produce_article"))
     res["study_text_slots"] = STUDY_TEXT_SLOTS
@@ -326,7 +328,8 @@ def stage_text(ctx) -> dict:
                 "Closing lane(produce_closing)だけでは記事全体を作れません。02Aの記事組立I/F確定後に接続(未接続のまま本文を手書き・流用しない)")
         _guard(ctx, "text", STAGE_EST_JPY["text"])
         out = f"{ctx.out_dir}/text"
-        res = fn(ctx.llm_client, slug=ctx.slug, theme_package=tp, out_dir=out, guard=lambda label: _guard(ctx, label, 1.0))
+        res = fn(ctx.llm_client, slug=ctx.slug, theme_package=tp, out_dir=out, guard=lambda label: _guard(ctx, label, 1.0),
+                 theme_package_path=ctx.theme_package_path, reuse=ctx.reuse_manifest_path)
         for k in ("title", "lead", "intros", "voices", "closing", "closing_record"):
             if not res.get(k):
                 raise YE2EStop(f"FAMILY_Y_TEXT_CORE_RESULT_INCOMPLETE: {k}がありません(closing_recordは実model/routing/prompt shaを含むため必須)")
@@ -339,7 +342,7 @@ def stage_text(ctx) -> dict:
         return ja, {"closing_source": res["closing_record"].get("source"), "closing_final_sha256": res["closing_record"].get("final_sha256"),
                     "text_records_sha256": w62.file_sha(f"{out}/text_records.json")}
 
-    r = _ensure(ctx, prov, "text", _sha(f"text|{w62.file_sha(ctx.theme_package_path)}"), _ja_path(ctx), runner)
+    r = _ensure(ctx, prov, "text", _sha(f"text|{w62.file_sha(ctx.theme_package_path)}|reuse={w62.file_sha(ctx.reuse_manifest_path) if ctx.reuse_manifest_path else 'none'}"), _ja_path(ctx), runner)
     return {"status": r["status"], "entry": r["entry"]}
 
 
@@ -847,7 +850,7 @@ def _release_launch_lock() -> None:
 
 
 def build_real_context(args) -> YContext:
-    ctx = YContext(slug=args.slug, run=args.run, mode="real", theme_package_path=args.theme_package)
+    ctx = YContext(slug=args.slug, run=args.run, mode="real", theme_package_path=args.theme_package, reuse_manifest_path=args.reuse_manifest)
     cost_log = f"{ctx.out_dir}/cost_log.jsonl"
     ctx.budget = E2EBudget(args.approved_budget_jpy, args.warn_threshold_jpy, spent_fn=make_real_spent_fn(cost_log), ack_warn=args.ack_warn_threshold)
     st = _m().st
@@ -884,6 +887,7 @@ def build_parser():
     p.add_argument("--slug", default="y_article")
     p.add_argument("--run", default=DEFAULT_RUN)
     p.add_argument("--theme-package", default=None, help="Theme Package(json)。text stageの入力。seed shaとして来歴に記録")
+    p.add_argument("--reuse-manifest", default=None, help="再利用manifest(json)。E-1(宅配案B)でR0のVoice/Lead/紹介を再利用。未指定=全て新規生成")
     p.add_argument("--stage", default="all", choices=list(STAGES) + ["all"])
     p.add_argument("--stages", default=None, help="カンマ区切りのstage名を1回の起動でSTAGES順に実行(例 tts_b1b,tts_a2,gate,assemble,pages,page_verify)。--stageと併用不可")
     p.add_argument("--stop-after", default=None, choices=list(STAGES))
@@ -937,7 +941,7 @@ def main(argv=None):
     ctx = None
     try:
         if args.mode == "dry-run":
-            ctx = YContext(slug=args.slug, run=args.run, mode="dry-run", theme_package_path=args.theme_package)
+            ctx = YContext(slug=args.slug, run=args.run, mode="dry-run", theme_package_path=args.theme_package, reuse_manifest_path=args.reuse_manifest)
             plan = describe_plan(ctx, stages)
             try:
                 plan["preflight"] = stage_seed_check(ctx)
@@ -949,6 +953,7 @@ def main(argv=None):
         st.check_stop_sentinel("startup", startup_dir)
         if args.mode == "mock":
             ctx = build_mock_context(RUN_ROOT, run=f"{args.run}_mock", slug=args.slug, theme_package_path=args.theme_package)
+            ctx.reuse_manifest_path = args.reuse_manifest
             _launch_guard(ctx.out_dir)
         else:
             ctx = build_real_context(args)

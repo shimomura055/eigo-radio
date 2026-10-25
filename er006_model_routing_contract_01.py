@@ -188,6 +188,9 @@ PROCESS_MODEL_MAP = {
     "FAMILY_Y_VOICE_REWRITE": "gpt-6.1-sol",
     "FAMILY_Y_LEAD_GENERATE": "gpt-6.1-sol",
     "FAMILY_Y_PERSONA_INTRO": "gpt-6.1-sol",
+    # 委任_03: Voice出典付番(provenance map)・構造タグの補助判定(gpt-6-luna、effort=medium。text coreのROUTE_AUXから統合)
+    "FAMILY_Y_VOICE_PROVENANCE_MAP": "gpt-6-luna",
+    "FAMILY_Y_VOICE_STRUCTURE_TAG": "gpt-6-luna",
     "FAMILY_Y_TRANSLATE_ADV": WRITER_MODEL,
     "FAMILY_Y_TRANSLATE_STD": WRITER_MODEL,
 }
