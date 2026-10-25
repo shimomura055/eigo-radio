@@ -400,3 +400,8 @@
 ### 2026-10-26 FAMILY-Y-PRODUCTION-LAUNCH-01 委任_09 判断反映(E-1 3 segment試聴承認=判断済み。既存行は書き換えず追記)
 
 - E-1(宅配の再配達は有料にすべきか？)の3音声[a2 preview / b1b y_voice_1 / a2 y_voice_1(6%減速版)]の試聴承認: **判断済み(2026-10-26、ユーザー原文=`docs/pm/delegation_log/2026-10-26_FAMILY-Y-PRODUCTION-LAUNCH-01_USER_E1_APPROVAL.md`)**。『3本とも問題ありません。正式に採用を承認します。』approved_by=user。新規USER_DECISION_REQUIRED=0件。
+
+### 2026-10-26 PM-SSOT-SYNC-2026-10-26-01 追記(FZ OPEN-516 / X OPEN-526。調査中/UDR区分。既存行は書き換えず追記)
+
+- OPEN-516 セリフ文脈Trial 3作品の試聴判断(a/b/c、推奨a): **調査中・ユーザー判断待ち(USER_LISTENING_PENDING)**。機械判定は3作品ともREJECTED相当(正方向完全分離4/15・逆2/15)。試聴で明確な改善がなければREJECTED・現状維持(推奨a)。Production配線なし。試聴ページ=https://shimomura055.github.io/eigo-radio/user_test/fz_dialogue_context_trial_02/index.html。
+- OPEN-526 X AI島記事の切り口選択(1/2/3、推奨2)+KP/文法HR選択: **UDR・ユーザー判断待ち**。(1)現版で進む (2)theme強調+B3/writer再生成約55円 (3)B3選定Prompt変更=ユーザー承認要・非推奨。Fable推奨=(2)。HR待機継続。証跡=docs/research/FAMILY-X-AI-ISLAND-TEMPLE-PRODUCTION-01/EDITORIAL_GATE_01.md。

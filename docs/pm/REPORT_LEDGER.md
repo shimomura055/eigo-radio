@@ -573,3 +573,5 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-26 | FAMILY-Y-PRODUCTION-LAUNCH-01 委任_09 | E-1(宅配 redelivery_fee run_01)のユーザー試聴承認3 segmentを正式経路へ反映→gate PASS・assemble・pages・page_verify ok・限定公開まで完走。Y Part 2実走確認・OPEN-517 Y tally(F1/F2発火0、READING_MATCH適用0=runtime未確認)。API 0円。報告=docs/pm/RESULT_PACKET_YPL9.md
 - 2026-10-26 | FAMILY-Y-PRODUCTION-LAUNCH-01 委任_10 | 委任_09のFable受入判定: Part 2実走=commit(d2bbce56c)後の正式経路(a)と確認、Y列=Part 2/Trial-08 PRODUCTION_WIRED(Y)、KP/文法HR=限定PRODUCTION_WIRED(HRなし経路)、OPEN-517 Y=配線済み・runtime未確認。API 0・費用0円。報告=docs/pm/RESULT_PACKET_YPL10.md
 - 2026-10-26 | FAMILY-X-AI-ISLAND-TEMPLE-PRODUCTION-01 委任_01 | ユーザー選定テーマのX新規記事Std/Advを正式経路でtext+audio scaffoldまで制作、KP HR・文法HR待機(rc=4)で停止。実費51.57円。判断候補=切り口に神殿語なし。報告=docs/pm/RESULT_PACKET_XAIT1.md
+- 2026-10-26 | FZ-DIALOGUE-TTS-CONTEXT-EMOTION-TRIAL-01 委任_05 | 追加2作品(開いた窓・猿の手)比較Trialの結果をユーザー報告済み(2026-10-26)。実費27.99円、機械判定=REJECTED相当・Status=USER_LISTENING_PENDING。報告=docs/pm/RESULT_PACKET_FZDC5.md
+- 2026-10-26 | FAMILY-X-AI-ISLAND-TEMPLE-PRODUCTION-01 委任_02 | Editorial Gateで切り口を確認、方向性は既にtopicで渡済み(分岐B)のため再生成せずSTOP(API 0)。切り口選択(1/2/3)+KP/文法HR選択のユーザー判断待ち(本日報告)。報告=docs/pm/RESULT_PACKET_XAIT2.md

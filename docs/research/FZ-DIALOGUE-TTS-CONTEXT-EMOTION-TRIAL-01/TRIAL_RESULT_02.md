@@ -34,7 +34,7 @@ https://shimomura055.github.io/eigo-radio/user_test/fz_dialogue_context_trial_02
 (1) 開いた窓 part1_c10(つぶやき)・part3_c11(落ち着いた作り話)・猿の手 part1_c15(微笑み)で、Bが場面に合う声か (2) 逆向きの part3_c9(開いた窓 calmly)・猿の手 part2_c10(恐れ)でBが不自然か (3) 猿の手 part2_c2/part3_c1 の B' が遅すぎ・不自然でないか (4) A と A'、B と B' の違い(偶然のゆれ)と A/B の違いの大小 (5) 全体として、文脈・感情を足す価値を感じるか。
 
 ## 7. Fable評価欄
-(空欄 — Fable記入)
+(Fable記入、2026-10-26): 事前登録02を緩めずに適用した機械判定は3作品ともREJECTED相当。3作品15 clipで正方向の完全分離4件(2take安定3件)・逆方向2件。効果は一部clipに限られ、下げ方向(静・穏・悲: murmured/calmly/涙ながらの笑顔)は出やすく、上げ方向(急ぎ・明るさ・笑い)は分離しにくい。短文(4語前後)は指標不安定。条件(e)は感情情報を外した中立clip(猿の手part2_c6)でも不成立で、判定幅が自然なtake揺れより狭い可能性(基準は不変、次回設計の留意点)。安全面(ASR逐語一致・leakage 0・過剰演技なし)は全て成立。Status(Fable)=機械的にはREJECTED相当、ユーザー試聴判断を残す指示によりUSER_LISTENING_PENDING(試聴後にREJECTED/VALIDATED(限定)を確定)。推奨=試聴で明確な改善がなければREJECTED・現状維持。Production配線なし。運用開示: 委任_05で生成起動間隔27秒(150秒未達、再起動なし、実害なし)。
 
 ## 8. SSOT・Git
 SSOT本体は未編集(X委任_01が編集権保有)。追記文案は`docs/pm/RESULT_PACKET_FZDC5.md`。コード/証跡: `er118_fz_dialogue_context_tts_trial_01.py`、`er118_output/fz_dialogue_context_tts_trial_02/`。

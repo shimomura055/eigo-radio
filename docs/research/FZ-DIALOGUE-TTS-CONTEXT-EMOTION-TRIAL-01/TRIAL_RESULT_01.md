@@ -136,7 +136,7 @@ Use this only to choose a natural tone, pace, and energy for this one line, as a
 ```
 
 ## 4. Fable比較評価
-(空欄 — Fable記入)
+(Fable記入、2026-10-26。Round 2評価と同趣旨・PM-SSOT-SYNC-2026-10-26-01で転記): 事前登録02を緩めずに適用した機械判定は3作品ともREJECTED相当。3作品15 clipで正方向の完全分離4件(2take安定3件)・逆方向2件。効果は一部clipに限られ、下げ方向(静・穏・悲: murmured/calmly/涙ながらの笑顔)は出やすく、上げ方向(急ぎ・明るさ・笑い)は分離しにくい。短文(4語前後)は指標不安定。条件(e)は感情情報を外した中立clip(猿の手part2_c6)でも不成立で、判定幅が自然なtake揺れより狭い可能性(基準は不変、次回設計の留意点)。安全面(ASR逐語一致・leakage 0・過剰演技なし)は全て成立。Status(Fable)=機械的にはREJECTED相当、ユーザー試聴判断を残す指示によりUSER_LISTENING_PENDING(試聴後にREJECTED/VALIDATED(限定)を確定)。推奨=試聴で明確な改善がなければREJECTED・現状維持。Production配線なし。運用開示: 委任_05で生成起動間隔27秒(150秒未達、再起動なし、実害なし)。
 
 ## 5. 発話正確性・生成条件・再利用分離の確認(Sonnet機械所見、詳細 `EVAL_01.md`)
 - 発話正確性: ②16/16 ASR本文逐語一致、leakage(全attempt)0件、needs_listen 0件、comparison_valid 16/16(実送信promptのsha一致)。
