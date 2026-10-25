@@ -207,7 +207,13 @@ def identify_ng_span(canonical_text: str, asr_text: str, context_words: int = 3)
     canon_tokens = asr_validation.tokenize(canonical_text)
     asr_tokens = asr_validation.tokenize(asr_text or "")
     sm = difflib.SequenceMatcher(None, canon_tokens, asr_tokens)
-    diff_ops = [op for op in sm.get_opcodes() if op[0] != "equal"]
+    # FAMILY-Y-PRODUCTION-LAUNCH-01 委任_07(既存承認仕様との不整合の是正=不具合、新規許容規則ではない):
+    # 分類器(asr_validation.classify_asr_match)が『表記正規化[ハイフン/複合語分かち書き]後に一致』とみなす差
+    # (redeliveries <-> re-deliveries[=tokenize後 're','deliveries'])はNG spanにしない。判定は分類器が既に個別diff spanへ適用している
+    # asr_validation._is_compound_spacing_only_spanをそのまま再利用する(数値・否定を含むspan、片側が空のspan、単複差などは従来どおり差分として残る)。
+    # 旧実装はこの差をNG spanとして拾い、QA(反復)のみ失敗した文のR0本文をLocal Rewriteで書換えていた(redeliveries->repeat deliveries)。
+    diff_ops = [op for op in sm.get_opcodes() if op[0] != "equal"
+                and not asr_validation._is_compound_spacing_only_span(canon_tokens[op[1]:op[2]], asr_tokens[op[3]:op[4]])]
     if not diff_ops:
         return {"found": False}
     tag, i1, i2, j1, j2 = diff_ops[0]

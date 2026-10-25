@@ -295,5 +295,56 @@ class CallSiteHelperSafetyTest(unittest.TestCase):
         self.assertIsNone(result)
 
 
+class IdentifyNgSpanHyphenNormalizationTest(unittest.TestCase):
+    """FAMILY-Y-PRODUCTION-LAUNCH-01 委任_07(不具合是正、仕様変更ではない): identify_ng_spanは、分類器(asr_validation.classify_asr_match)が
+    既に『表記正規化[ハイフン/複合語分かち書き]後に一致』とみなす差(re-deliveries/redeliveries)をNG spanにしてはならない。
+    ASR比較で既に使っている_is_compound_spacing_only_spanを再利用するだけで、新しい許容規則・辞書・閾値は追加しない。
+    E-1(宅配)でQA(反復)のみ失敗の文のR0本文が redeliveries->repeat deliveries に書換えられた事象の再現と固定。"""
+
+    _CANON_B1B = ("When I leave a notice saying nobody was home and head off, I feel a little down, too. But then I go to the next house. "
+                  "I really would like to see fewer redeliveries, and they are hard on us, too. Even so, I can't just say that customers should pay the cost. "
+                  "I think it makes more sense to cover the cost through the overall fee for carrying packages than to charge each customer who wasn't home "
+                  "for the cost of that redelivery. To do that, I want the company to think about whether free shipping for online orders should stay as it is. "
+                  "If they review shipping fees, I want them to review how the fees are set, too, so that the money really reaches the people who deliver the packages.")
+    _ASR_B1B = ("When I leave a notice saying nobody was home and head off, I feel a little down too. But then I go to the next house. "
+                "I really would like to see fewer re-deliveries, and they are hard on us too. Even so, I can't just say that customers should pay the cost. "
+                "I think it makes more sense to cover the cost through the overall fee for carrying packages than to charge each customer who wasn't home "
+                "for the cost of that re-delivery. To do that, I want the company to think about whether free shipping for online orders should stay as it is. "
+                "If they review shipping fees, I want them to review how the fees are set too, so that the money really reaches the people who deliver the packages.")
+
+    def test_hyphenated_asr_only_difference_is_not_an_ng_span(self):
+        self.assertFalse(m.identify_ng_span(self._CANON_B1B, self._ASR_B1B)["found"])
+
+    def test_short_hyphen_case_and_reverse_direction(self):
+        self.assertFalse(m.identify_ng_span("I want fewer redeliveries today.", "I want fewer re-deliveries today.")["found"])
+        self.assertFalse(m.identify_ng_span("I want fewer re-deliveries today.", "I want fewer redeliveries today.")["found"])
+
+    def test_true_mismatches_are_still_detected(self):
+        sp = m.identify_ng_span("I want fewer deliveries today.", "I want fewer delivery today.")
+        self.assertTrue(sp["found"])
+        self.assertEqual(sp["canonical_changed_words"], ["deliveries"])
+        sp = m.identify_ng_span("They can reach the people.", "They could reach the people.")
+        self.assertTrue(sp["found"])
+
+    def test_hyphen_difference_does_not_hide_a_following_true_mismatch(self):
+        sp = m.identify_ng_span("I want fewer redeliveries. Then the money can really reach people.",
+                                "I want fewer re-deliveries. Then the money could really reach people.")
+        self.assertTrue(sp["found"])
+        self.assertEqual(sp["canonical_changed_words"], ["can"])
+        self.assertEqual(sp["asr_changed_words"], ["could"])
+
+    def test_negation_difference_is_not_exempted(self):
+        self.assertTrue(m.identify_ng_span("They did not pay.", "They did pay.")["found"])
+
+    def test_no_local_rewrite_started_for_hyphen_only_difference(self):
+        """run_local_rewrite_recoveryはNG spanが無ければLuna(client)を一切呼ばず HUMAN_REVIEW_LOCKED_NO_NG_SPAN で戻る(API 0)。"""
+        with tempfile.TemporaryDirectory() as d:
+            client = mock.Mock(side_effect=AssertionError("Luna/clientを呼んではならない"))
+            r = m.run_local_rewrite_recovery(segment_id="y_voice_1", canonical_text=self._CANON_B1B, last_asr_text=self._ASR_B1B,
+                                             retts_fn=lambda t: {"status": "OK"}, out_dir=d, client=client)
+        self.assertEqual(r["status"], "HUMAN_REVIEW_LOCKED_NO_NG_SPAN")
+        self.assertFalse(r["ng_span"]["found"])
+
+
 if __name__ == "__main__":
     unittest.main()
