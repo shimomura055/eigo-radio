@@ -1,0 +1,34 @@
+kind/result counts (v4):
+   ('A', 'DEMOTE_P3') 1
+   ('A', 'PASS') 1340
+   ('A_weak', 'PASS') 3
+   ('B', 'NG_PROTECTED') 5252
+   ('B', 'PASS') 17
+   ('B_rev', 'NG_PROTECTED') 5252
+   ('B_rev', 'PASS') 17
+   ('C', 'DEMOTE_P3') 1
+   ('C', 'PASS') 1340
+   ('C_weak', 'PASS') 3
+   ('D_ng', 'NG_PROTECTED') 1341
+   ('D_ok', 'DEMOTE_P3') 1
+   ('D_ok', 'PASS') 1340
+誤PASS(B/B_rev/D_ng で PASS)件数 v4: 34
+   FALSE_PASS B ('それは8日です', 'それはなのかです', 'PASS')
+   FALSE_PASS B ('それは17日です', 'それはなのかです', 'PASS')
+   FALSE_PASS B ('それは6日です', 'それはなのかです', 'PASS')
+   FALSE_PASS B ('それは14日です', 'それはなのかです', 'PASS')
+   FALSE_PASS B ('それは16日です', 'それはようかです', 'PASS')
+   FALSE_PASS B ('それは9日です', 'それはようかです', 'PASS')
+   FALSE_PASS B_rev ('それはなのかです', 'それは8日です', 'PASS')
+   FALSE_PASS B_rev ('それはなのかです', 'それは17日です', 'PASS')
+   FALSE_PASS B_rev ('それはなのかです', 'それは6日です', 'PASS')
+   FALSE_PASS B_rev ('それはなのかです', 'それは14日です', 'PASS')
+   FALSE_PASS B_rev ('それはようかです', 'それは16日です', 'PASS')
+   FALSE_PASS B_rev ('それはようかです', 'それは9日です', 'PASS')
+誤NG(A/C/D_ok で PASS以外、弱い読みは除く)件数 v4: 3
+   FALSE_NG A DEMOTE_P3 ('それは5日です', 'それはいつかです', 'DEMOTE_P3')
+   FALSE_NG C DEMOTE_P3 ('それはいつかです', 'それは5日です', 'DEMOTE_P3')
+   FALSE_NG D_ok DEMOTE_P3 ('5日と8日です', 'いつかと8日です', 'DEMOTE_P3')
+(参考)A_weak/C_weak(弱い読み=仕様で置換対象外):  {('A_weak', 'PASS'): 3, ('C_weak', 'PASS'): 3}
+== v3との比較 ==
+v3 誤PASS: {'B_false_pass': 17, 'B_rev_false_pass': 17}

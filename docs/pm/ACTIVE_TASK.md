@@ -39,3 +39,7 @@ FAMILY-Z-TELL-TALE-HEART-KP-FIX-01 委任_01: Std KP#2差替え(catch of one's l
 ## JA-ASR-FALSE-NG-ROOT-CAUSE-01 委任_05(2026-10-25、OPEN-517是正設計+DEV実装+API 0検証)
 - 状態: 完了(有料API 0・実費0円・Production変更0)。v2=VALIDATED(限定)をFable転記。OPEN-517是正案(F1+F2 v3)をproto実装し771件API 0再評価=正常NG化0・既知負例9/9是正・非READING_MATCH経路変化0・決定的。次=Opus軽量レビュー→ユーザー報告→Production適用(別委任)。
 - 成果物: docs/research/JA-ASR-FALSE-NG-ROOT-CAUSE-01/{OPEN517_DESIGN_01,OPEN517_PREREGISTERED_01,OPEN517_EVAL_01,OPUS_REVIEW_REQUEST_01_OPEN517}.md、proto_value_gate_fix_03.py、報告=docs/pm/RESULT_PACKET_JAASR5.md。
+
+## JA-ASR-FALSE-NG-ROOT-CAUSE-01 委任_06(2026-10-25、OPEN-517 Opus条件Cレビュー反映: proto v4・未知データAPI 0評価・過去公開物監査・適用計画)
+- 状態: 完了(有料API 0・実費0円・Production変更0)。v4(sha `19aea160…`)基準1〜5・7〜9合格。既存771+未知493で判定変化13件(v3と同一)、正常NG化0、未知データ変化0(ただし検出力の検証にならない)。過去公開物監査=該当0。OF-AUW-01はFable採用(ユーザー個別承認なし)。新規OPEN-522/523/524。Production適用はFable判断+ユーザー報告後(`OPEN517_APPLY_PLAN_01.md`)。
+- 成果物: docs/research/JA-ASR-FALSE-NG-ROOT-CAUSE-01/{OPUS_REVIEW_01_OPEN517,OPEN517_DESIGN_02,OPEN517_PREREGISTERED_02,OPEN517_EVAL_02,OPEN517_PUBLIC_AUDIT_01,OPEN517_APPLY_PLAN_01}.md、proto_value_gate_fix_04.py(+_test_01)、eval_open517_api0_04.py、collect_unknown_pool_02.py、sweep_open517_04.py、open517_public_audit_01.py、報告=docs/pm/RESULT_PACKET_JAASR6.md。
