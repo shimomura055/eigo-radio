@@ -87,6 +87,48 @@ class TestPrompt(unittest.TestCase):
         self.assertTrue(all(len(v) > 150 for v in inp["voices"].values()))
 
 
+class TestPromptRevision02(unittest.TestCase):
+    """委任_30: Opusレビュー反映(M1〜M4, R1〜R5, O1)がPromptに入っていること、旧表現が残っていないこと。"""
+
+    def setUp(self):
+        self.u = g.load_prompt_parts()["user_template"]
+
+    def test_required_present(self):
+        for s in ("人物像の欄は人物を理解するための参考", "「人物1」などの番号や順番で呼ばない", "一人でも当てはまらない面があるなら、全員にまとめない",
+                  "中心にしないとされている話題を、見方の中心にしません", "並べた順番は選び方に関係しません", "多くの人が思いつきそうな見方は選ばない",
+                  "最後の問いは1つにする", "唯一の正しい見方として言い切らない", "哲学的な一般化", "selection_reason には",
+                  "evidence_quotes で裏づけられる範囲", "もとにした観察か、焦点を当てる語りの箇所が違う", "算用数字を使わない"):
+            self.assertIn(s, self.u)
+
+    def test_old_expressions_removed(self):
+        for s in ("最初に思いついた候補を、そのまま選ばないでください", "互いに言い換えにならないように", "漢数字", "いつ、どこで、誰と、何をしたとき"):
+            self.assertNotIn(s, self.u)
+
+    def test_old_prompt_kept_and_differs(self):
+        old = os.path.join(ROOT, "docs/research/FAMILY-Y-VOICES-DESIGN-01/CLOSING_GENERAL_01/prompt_closing_general_00.txt")
+        self.assertTrue(os.path.exists(old))
+        self.assertNotEqual(g.load_prompt_parts(old)["sha256"], g.PROMPT_SHA256)
+
+    def test_explain_problem_japanese(self):
+        for c in ("HAS_DIGIT", "NOT_ENDING_WITH_QUESTION", "LENGTH=300", "SENTENCE_TOO_LONG", "DESU_MASU", "SYMBOL:x", "UNKNOWN_X"):
+            e = g.explain_problem(c)
+            self.assertTrue(any("぀" <= ch <= "ヿ" for ch in e), c)
+        self.assertNotIn("HAS_DIGIT", g.explain_problem("HAS_DIGIT"))
+
+    def test_regen_feedback_uses_japanese(self):
+        users = []
+
+        def fake_chat(client, **kw):
+            users.append(kw["user"])
+            return FakeResp(fake_obj("短すぎる。" if len(users) == 1 else GOOD))
+        with tempfile.TemporaryDirectory() as d:
+            g.generate_one(None, theme="redelivery_fee", gen_idx=1, inp=g.load_input("redelivery_fee"), theme_cap=40.0, out_dir=os.path.join(d, "t", "gen_1"),
+                           chat=fake_chat, spent_fn=lambda _d: 0.0, leak=lambda *a, **k: {"any_flagged": False, "flagged_items": []})
+        self.assertEqual(len(users), 2)
+        self.assertIn("約190〜230字", users[1])
+        self.assertNotIn("LENGTH=", users[1])
+
+
 class TestIsolation(unittest.TestCase):
     def test_no_production_reference(self):
         bad = []

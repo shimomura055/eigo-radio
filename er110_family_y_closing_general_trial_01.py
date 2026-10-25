@@ -34,7 +34,7 @@ THEME_TAG = "FAMILY_Y_CLOSING_GENERAL_01"
 ROOT = "er110_output/family_y_closing_general_01"
 APPROVAL_FILE = f"{ROOT}/BUDGET_APPROVED.json"
 PROMPT_FILE = "docs/research/FAMILY-Y-VOICES-DESIGN-01/CLOSING_GENERAL_01/prompt_closing_general_01.txt"
-PROMPT_SHA256 = "1e74f542d0d615d950340f0a1b8b10cff1075e497deb94058d427b9808f5e35d"
+PROMPT_SHA256 = "fd3dc62e67ce661e675b648d5b9207d41e2f9bb20425bbe4c6cbcd597af479b8"
 SLOTS = ("voice_1", "voice_2", "voice_3")
 THEMES = ("redelivery_fee", "sns_age_limit")
 GEN_EST_JPY = 12.0       # 1生成(sol, high, 構造化出力)の予約見積(委任_28実績 1callあたり4〜5.4円[出力2.2〜3k token]から、分析出力を加えた保守値)
@@ -135,6 +135,42 @@ def build_prompt(inp: dict, parts: dict = None) -> dict:
 # ============================================================
 # 検査(決定論)
 # ============================================================
+_PROBLEM_JA = {
+    "EMPTY": "closing_ja が空でした。最終パートの本文を書いてください。",
+    "MULTI_PARAGRAPH": "改行が入っていました。最終パートは改行なしの1段落にしてください。",
+    "HAS_FIRST_PERSON": "一人称(私・俺・僕・わたし)が入っていました。語り手の声で、一人称を使わずに書いてください。",
+    "LABEL_AT_START": "冒頭にラベルのような言葉が入っていました。ラベルや見出しは書かず、本文から始めてください。",
+    "HAS_INTERVIEWER_EXPRESSION": "取材者がいるような言い方(取材した、話を聞いた等)が入っていました。使わないでください。",
+    "HAS_DIGIT": "算用数字が入っていました。数字は使わず、言葉で書いてください。",
+    "DESU_MASU": "です・ます調が入っていました。話し言葉の常体で書いてください。",
+    "HAS_AI_EDIT_ANNOUNCEMENT": "編集やAIについて断る文言が入っていました。本文だけを書いてください。",
+    "OBVIOUS_CONCLUSION_PHRASE": "「人によって違う」のような当然の結論で終える言い方が入っていました。避けてください。",
+    "NOT_ENDING_WITH_QUESTION": "文末が「？」で終わっていませんでした。最後は聞き手への問い1つで、文末を「？」にしてください。",
+    "SENTENCE_TOO_LONG": "1文が長すぎる箇所がありました。1文は45字以内に区切ってください。",
+}
+
+
+def explain_problem(code: str) -> str:
+    """決定論検査の違反コードを、再生成時に渡す日本語の説明へ変える(コード名のまま渡さない)。"""
+    if code in _PROBLEM_JA:
+        return _PROBLEM_JA[code]
+    if code.startswith("LENGTH="):
+        return f"本文の長さが{code[7:]}字でした。約190〜230字の範囲に収めてください。"
+    if code.startswith("CANDIDATES_COUNT="):
+        return "候補の切り口の数が3〜5個の範囲ではありませんでした。3〜5個にしてください。"
+    if code == "CANDIDATE_ID_DUP":
+        return "候補の id が重複していました。候補ごとに別の id を付けてください。"
+    if code == "SELECTED_ID_NOT_IN_CANDIDATES":
+        return "selected_id が候補の id にありませんでした。候補の id から選んでください。"
+    if code == "NO_OBSERVATIONS":
+        return "観察の欄が空でした。語りの中から見つかった観察を書いてください。"
+    if code.startswith("TAG_LEAK:"):
+        return "本文に内部用のタグのような表記が入っていました。本文だけを書いてください。"
+    if code.startswith("SYMBOL:"):
+        return "使えない記号(括弧・コロン・スラッシュ・三点リーダー・波ダッシュ・絵文字など)が入っていました。使わずに書いてください。"
+    return f"本文に問題がありました({code})。ルールを見直して書き直してください。"
+
+
 def _squash(s: str) -> str:
     return re.sub(r"\s+", "", s or "")
 
@@ -221,7 +257,7 @@ def generate_one(client, *, theme: str, gen_idx: int, inp: dict, theme_cap: floa
         if not probs:
             break
         if k == 1:
-            cur = pr["user"] + "\n\n【前回の出力の問題(今回は避けてください)】\n" + "\n".join(f"- {x}" for x in probs)
+            cur = pr["user"] + "\n\n【前回の出力の問題(今回は避けてください)】\n" + "\n".join(f"- {explain_problem(x)}" for x in probs)
     else:
         w1.wj(os.path.join(out_dir, "gen_meta.json"), {"calls": calls, "problems_per_try": hist, "status": "CONTRACT_STOP"})
         raise y0.YStop("CLOSING_GENERAL_CONTRACT_STOP", f"{theme} gen{gen_idx}: 再生成後も契約違反 {hist[-1]}", hist)
