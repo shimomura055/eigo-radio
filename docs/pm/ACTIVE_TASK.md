@@ -1,5 +1,9 @@
 FAMILY-Z-TELL-TALE-HEART-KP-FIX-01 委任_01: Std KP#2差替え(catch of one's lantern→louder and louder)完了・公開差替え済み・USER_LISTENING_PENDING。報告=docs/pm/RESULT_PACKET_TTHKP1.md
 
+## FAMILY-Y-PRODUCTION-LAUNCH-01 委任_02B(2026-10-25、runner/audio/routing/scope lane)
+- 状態: 実装+mock test完了(API 0・実費0円・Production変更0・有料run 0)。新規test 59件PASS(network/実client遮断)・X/Z回帰の失敗16件は本変更起因でない。Y Production runner=`er121_family_y_runner_01.py`(既定dry-run、real未起動)。text core `produce_article`は未接続(委任_02Cで接続)。
+- 成果物: er121_family_y_{runner,audio,structure,mock}_01.py、test=er121_family_y_runner_01_test_01.py・er121_family_y_structure_match_test_01.py、tools/y_page_notice_check_01.py、docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/OPERATIONS_01.md、報告=docs/pm/RESULT_PACKET_YPL2B.md。
+
 ## FAMILY-Y-PRODUCTION-LAUNCH-01 委任_02A(2026-10-25、Opus条件A反映・テキストcore[Closing/Gate lane]・較正)
 - 状態: Opus M-1〜M-6/R-1〜R-7反映完了。実装=`er121_family_y_text_core_01.py`(+`er121_prompts/closing_general_02.txt`、test 56 PASS、Production未接続・新flagなし)。有料実費14.35円(M-1較正5.97+M-2書換えevidence 8.38)。**STOP報告: 案BがM-1後Tension判定promptで2/7 FAIL(旧0/7)=ユーザー判断候補(D)、案B関連の追加作業は停止**。Lead/紹介補助適用も同根で3/4 FAIL(Fable判断)。R2宅配H2『見えてくる』はM-1後も3/3 FAIL(G-2根拠強化)。次=02B(runner/audio/routing/scope、並行中)→E-3 closing前倒し(`produce_closing`直接呼出可)→E-1(案B判断後)。
 - 成果物: docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/{OPUS_REVIEW_01,DESIGN_02,SPEC_LEDGER_02(+spec_ledger_02.json),BUDGET_PLAN_02,OPEN_TRACKING_02,GATE_CALIBRATION_01,REWRITE_EVIDENCE_01}.md、証跡=er110_output/family_y_production_launch_01/、ユーザー原文逐語=docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER.md、報告=docs/pm/RESULT_PACKET_YPL2A.md。

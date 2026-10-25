@@ -169,6 +169,27 @@ PROCESS_MODEL_MAP = {
     "FAMILY_Z_SEMANTIC_JUDGE": "gpt-6-luna",
     "FAMILY_Z_STORY_SPLIT": "gpt-6-luna",
     "FAMILY_Z_DIALOGUE_ATTRIBUTION": "gpt-6-luna",
+    # FAMILY-Y-PRODUCTION-LAUNCH-01 委任_02B(2026-10-25、ユーザー正式決定[Y Production立上げ・Closing一般化Prompt 02・案B個別採用]+Opus条件Aレビュー):
+    # Family Y Production用routing key(追加のみ、既存keyは不変、リテラル/定数参照固定、環境変数上書きなし)。Family別に分離し費用集計が混ざらない
+    # (stage tagはer121_family_y_runner_01が `FAMILY_Y_PRODUCTION_<slug>` で記録)。DESIGN_02 §routingの表と突合(02A)。
+    #   FAMILY_Y_CLOSING_GENERATE : Closing一般化(Prompt 02、reasoning effort=high。承認原文=gpt-6.1-sol effort high)
+    #   FAMILY_Y_CLOSING_REWRITE  : Closing local rewrite on Leakage Gate FAIL (judgements<=3, effort=medium)
+    #   FAMILY_Y_LEAK_JUDGE       : Leakage Gate判定(Voice 7項目/Tension 6項目。執筆Solと別系統=gpt-6-luna)
+    #   FAMILY_Y_VOICE_GENERATE   : Voice R0生成(実在意見ベース方式)
+    #   FAMILY_Y_VOICE_REWRITE    : Voice局所書換え(Leakage Gate FAIL時、判定<=3)
+    #   FAMILY_Y_LEAD_GENERATE    : リード生成
+    #   FAMILY_Y_PERSONA_INTRO    : 人物紹介ナレーション(3本1 call)
+    #   FAMILY_Y_TRANSLATE_ADV/STD: 英訳(X承認済み関数の既存routing=NATURAL_ENGLISH_ADAPTATION/STANDARD_A2_ADAPTATIONと同値。定数WRITER_MODEL参照)
+    # Comment/Preview/KP等のsupport系は既存のB1_SUPPORT/A2_SUPPORT/KEY_PHRASE_*をそのまま使う(新規model追加なし)。
+    "FAMILY_Y_CLOSING_GENERATE": "gpt-6.1-sol",
+    "FAMILY_Y_CLOSING_REWRITE": "gpt-6.1-sol",
+    "FAMILY_Y_LEAK_JUDGE": "gpt-6-luna",
+    "FAMILY_Y_VOICE_GENERATE": "gpt-6.1-sol",
+    "FAMILY_Y_VOICE_REWRITE": "gpt-6.1-sol",
+    "FAMILY_Y_LEAD_GENERATE": "gpt-6.1-sol",
+    "FAMILY_Y_PERSONA_INTRO": "gpt-6.1-sol",
+    "FAMILY_Y_TRANSLATE_ADV": WRITER_MODEL,
+    "FAMILY_Y_TRANSLATE_STD": WRITER_MODEL,
 }
 PROCESS_PROVIDER_MAP = {
     "EXCEPTION_SEARCH": EXCEPTION_SEARCH_PROVIDER,

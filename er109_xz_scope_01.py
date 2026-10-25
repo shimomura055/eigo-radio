@@ -22,7 +22,8 @@ from contextlib import contextmanager
 from dataclasses import dataclass, field
 from typing import Optional
 
-APPROVED_SCOPES = frozenset({"X", "Z"})
+# FAMILY-Y-PRODUCTION-LAUNCH-01 委任_02B(2026-10-25、Fable指示=PM_GOVERNANCE 28-1運用7): "Y"を追加(仕様はFamily非依存)。X/Zの挙動は不変(test固定)。
+APPROVED_SCOPES = frozenset({"X", "Z", "Y"})
 _RUN_SCOPE: Optional[str] = None
 
 ORTHO_LABEL = "ORTHOGRAPHIC_EQUIVALENT_MATCH"

@@ -84,13 +84,21 @@ class ScopeTests(Base):
         self.assertTrue(hasattr(xz, "_enter_scope"))
 
     def test_unsupported_family_rejected(self):
-        for bad in ("A", "B", "C", "Y", "x", "z", "", None, "XZ"):
+        for bad in ("A", "B", "C", "W", "x", "z", "y", "", None, "XZ"):   # "Y"は02B(2026-10-25)から承認範囲(test_y_scope_accepted)
             with self.subTest(bad=bad):
                 with self.assertRaises(ValueError):
                     with xz.run_scope(bad):
                         pass
                 with self.assertRaises(ValueError):
                     xz.family_scope(bad)
+        self.assertIsNone(xz.current_scope())
+
+    def test_y_scope_accepted(self):
+        """FAMILY-Y-PRODUCTION-LAUNCH-01 02B: scope \"Y\" is approved (Y production audio layer only). X/Z behaviour unchanged."""
+        self.assertEqual(xz.APPROVED_SCOPES, frozenset({"X", "Z", "Y"}))
+        with xz.run_scope("Y"):
+            self.assertEqual(xz.current_scope(), "Y")
+            self.assertTrue(xz.is_active_for_run())
         self.assertIsNone(xz.current_scope())
 
     def test_run_scope_nested_and_restore(self):

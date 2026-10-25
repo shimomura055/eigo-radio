@@ -124,6 +124,10 @@ _FAMILY_Z_STORY_CLIP_PATTERN = re.compile(r"full_story_part[1-3]_c[0-9]+")
 # X `full_story_part{n}_k{j}` / Z `full_story_part{n}_c{k}_k{j}` をFULL_STORYへ解決する(追加のみ。既存ID・fullmatch挙動は不変)。
 # er117_chunk_tts_production_01.X_CHUNK_ID_RE / Z_CHUNK_ID_RE と同形(testで一致を固定)。
 _CHUNK_TTS_SEGMENT_PATTERN = re.compile(r"full_story_part[1-3](?:_c[0-9]+)?_k[1-9][0-9]*")
+# FAMILY-Y-PRODUCTION-LAUNCH-01 委任_02B(2026-10-25、Fable設計 DESIGN_01 4-3/YL-C11): Family Y正式Productionの本文segment ID(追加のみ。既存IDの解決は不変)。
+# DEV Trialのalias(full_story_part3_c2/c3)は意味が衝突する(ZのDialogue clip)ためProductionでは使わない。lead/intro/closing=ナレーター、voice=本人のTTS Voice。
+# いずれもFULL_STORYとして扱う(Connected Speech/Local Rewrite/Repetition QA/disfluency/Std減速の対象)。er121_family_y_structure_01.Y_SEGMENT_IDSとtestで一致を固定する。
+_FAMILY_Y_SEGMENT_PATTERN = re.compile(r"y_(?:lead|closing|intro_[1-3]|voice_[1-3])")
 
 
 def resolve_narrative_role(segment_id: str | None) -> str | None:
@@ -140,6 +144,8 @@ def resolve_narrative_role(segment_id: str | None) -> str | None:
     if _FAMILY_Z_STORY_CLIP_PATTERN.fullmatch(segment_id):
         return "FULL_STORY"
     if _CHUNK_TTS_SEGMENT_PATTERN.fullmatch(segment_id):
+        return "FULL_STORY"
+    if _FAMILY_Y_SEGMENT_PATTERN.fullmatch(segment_id):
         return "FULL_STORY"
     if segment_id in ("comment_1", "comment_2", "comment_3", "comment_4"):
         return "COMMENT"
@@ -161,6 +167,10 @@ for _chunk_seg_id in ("full_story_part1_k1", "full_story_part3_k10", "full_story
     if resolve_narrative_role(_chunk_seg_id) != "FULL_STORY":
         raise RuntimeError(f"chunk TTS segment_id={_chunk_seg_id!r} が resolve_narrative_role() で FULL_STORY に解決されません"
                            "(FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01 C4)")
+for _y_seg_id in ("y_lead", "y_intro_1", "y_intro_3", "y_voice_1", "y_voice_3", "y_closing"):
+    if resolve_narrative_role(_y_seg_id) != "FULL_STORY":
+        raise RuntimeError(f"Family Y segment_id={_y_seg_id!r} が resolve_narrative_role() で FULL_STORY に解決されません"
+                           "(FAMILY-Y-PRODUCTION-LAUNCH-01 委任_02B YL-C11)")
 
 
 NARRATIVE_ENGLISH_ROLE_LABELS = {

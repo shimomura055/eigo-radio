@@ -118,7 +118,9 @@ class PricingCoverageTest(unittest.TestCase):
         #    er006_model_routing_contract_01.py FAMILY_Z_WRITER_ADV_R0/R1/R2・FAMILY_Z_STD_ADJUST(APPROVED_FOR_PRODUCTION+Opus M7)。
         sol_keys = {k for k, v in routing.PROCESS_MODEL_MAP.items() if v == "gpt-6.1-sol"}
         self.assertEqual(sol_keys, {"FAMILY_X_STORYLINE_B3", "FAMILY_X_FACTLOCK_R0", "FAMILY_X_FACTLOCK_REVISE",
-                                    "FAMILY_Z_WRITER_ADV_R0", "FAMILY_Z_WRITER_ADV_R1", "FAMILY_Z_WRITER_ADV_R2", "FAMILY_Z_STD_ADJUST"})
+                                    "FAMILY_Z_WRITER_ADV_R0", "FAMILY_Z_WRITER_ADV_R1", "FAMILY_Z_WRITER_ADV_R2", "FAMILY_Z_STD_ADJUST",
+                                    # FAMILY-Y-PRODUCTION-LAUNCH-01 02B: Y Production本文生成系6キー(承認済み許可集合)
+                                    "FAMILY_Y_CLOSING_GENERATE", "FAMILY_Y_CLOSING_REWRITE", "FAMILY_Y_VOICE_GENERATE", "FAMILY_Y_VOICE_REWRITE", "FAMILY_Y_LEAD_GENERATE", "FAMILY_Y_PERSONA_INTRO"})
         self.assertNotIn("deepseek-v4-pro", set(routing.PROCESS_MODEL_MAP.values()))
 
     def test_deepseek_flash_prices_registered(self):

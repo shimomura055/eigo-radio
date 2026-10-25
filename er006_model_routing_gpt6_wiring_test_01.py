@@ -42,7 +42,14 @@ class RoutingConstantsTest(unittest.TestCase):
                             "FAMILY_Z_WRITER_ADV_R0": "gpt-6.1-sol",
                             "FAMILY_Z_WRITER_ADV_R1": "gpt-6.1-sol",
                             "FAMILY_Z_WRITER_ADV_R2": "gpt-6.1-sol",
-                            "FAMILY_Z_STD_ADJUST": "gpt-6.1-sol"}
+                            "FAMILY_Z_STD_ADJUST": "gpt-6.1-sol",
+                            # FAMILY-Y-PRODUCTION-LAUNCH-01 委任_02B(2026-10-25): Family Y Productionの本文生成系6キー=gpt-6.1-sol(承認原文)。判定系(FAMILY_Y_LEAK_JUDGE)はluna固定で許可不要。
+                            "FAMILY_Y_CLOSING_GENERATE": "gpt-6.1-sol",
+                            "FAMILY_Y_CLOSING_REWRITE": "gpt-6.1-sol",
+                            "FAMILY_Y_VOICE_GENERATE": "gpt-6.1-sol",
+                            "FAMILY_Y_VOICE_REWRITE": "gpt-6.1-sol",
+                            "FAMILY_Y_LEAD_GENERATE": "gpt-6.1-sol",
+                            "FAMILY_Y_PERSONA_INTRO": "gpt-6.1-sol"}
         for k, v in routing.PROCESS_MODEL_MAP.items():
             if k in allowed_non_luna:
                 self.assertEqual(v, allowed_non_luna[k], k)

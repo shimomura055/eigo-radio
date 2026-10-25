@@ -37,9 +37,11 @@ def is_enabled() -> bool:
     return PROPER_NOUN_ALARM_POLICY_ENABLED is True
 
 
-# ---- run scope(承認範囲=Family X/Z。A/B/C・単体呼出は scope 未設定のため完全に従来どおり) ----
+# ---- run scope(承認範囲=Family X/Z/Y。A/B/C・単体呼出は scope 未設定のため完全に従来どおり) ----
 # X runner / Z runner の main 冒頭で enter_scope("X"|"Z") を1回呼ぶ(既存 secondary_run_scope と同型のprocess内状態)。
-APPROVED_SCOPES = frozenset({"X", "Z"})
+# FAMILY-Y-PRODUCTION-LAUNCH-01 委任_02B(2026-10-25、Fable指示=PM_GOVERNANCE 28-1運用7[Yを最初から配線対象]・仕様はFamily非依存): "Y"を追加。
+# Y正式Production runner(er121_family_y_audio_01)のTTS段だけが"Y"で入る。X/Zの挙動は不変(test固定)。
+APPROVED_SCOPES = frozenset({"X", "Z", "Y"})
 _RUN_SCOPE: Optional[str] = None
 
 

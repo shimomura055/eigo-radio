@@ -702,7 +702,10 @@ class AbcGoldenTests(unittest.TestCase):
                                          "er110_family_y_audio_report_01.py", "er110_family_y_audio_trial_01.py",
                                          # 委任_27(2026-10-24): Family Y persona音声Trial(DEV/Trial専用)。y_style_gateがY本文4segment(segs[name])のfallback_usedを読むのみ
                                          # (KP英語Store entryは読まない・書込みなし[書込みはY出力dirのgate結果のみ])。Production到達経路なし
-                                         "er110_family_y_persona_audio_trial_01.py"}, readers)
+                                         "er110_family_y_persona_audio_trial_01.py",
+                                         # FAMILY-Y-PRODUCTION-LAUNCH-01 委任_02B(2026-10-25): Family Y正式Production音声層。y_style_gateがY本文8segment(segs[name])のfallback_usedを読むのみ
+                                         # (KP英語Store entryは読まない・Store/Production出力へ書き戻さない。書込みはY出力dirのaudit/y_style_profile_gate.jsonのみ)
+                                         "er121_family_y_audio_01.py"}, readers)
 
 
 # ============================================================

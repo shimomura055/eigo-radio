@@ -192,7 +192,7 @@ def check_page(html_text: str, base_dir: str | None = None, levels=("Standard", 
         put(f"{lv}:script_rows_in_play_order", len(rows) >= 5 and mono, f"rows={len(rows)} monotonic_start={mono}")
         lab = [r["label"] for r in rows]
         prev_i = next((i for i, l in enumerate(lab) if re.match(r"^Preview(\s*\(.*\))?$", l)), None)
-        fs_i = next((i for i, l in enumerate(lab) if l.lower().startswith("full story part") or l.lower().startswith("full_story")), None)
+        fs_i = next((i for i, l in enumerate(lab) if l.lower().startswith("full story part") or l.lower().startswith("full_story") or l.lower().startswith("full story:")), None)
         prev_ok = prev_i is not None and bool(rows[prev_i]["scripts"]) and any(rows[prev_i]["scripts"])
         fs_ok = fs_i is not None and bool(rows[fs_i]["scripts"]) and any(rows[fs_i]["scripts"])
         put(f"{lv}:preview_and_full_story_scripts", prev_ok and fs_ok and prev_i < fs_i,

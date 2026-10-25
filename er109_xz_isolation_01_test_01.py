@@ -31,6 +31,7 @@ PRODUCTION_SCOPE_IMPORTERS = {
     "er006_secondary_asr_01.py", "er078_asr_unified_judge_01.py", "er104_kp_three_asr_vote_01.py", "er019_family_x_validation_inheritance_01.py",
     "er078_reuse_value_guard_01.py", "er019_family_x_audio_production_runner_01.py", "er063_family_z_audio_01.py", "er019_family_x_clobber_restore_03.py",
     "er109_hr_lock_rejudge_01.py", "er109_wiring_signature_01.py", "er109_runtime_evidence_04_01.py",
+    "er121_family_y_audio_01.py",   # FAMILY-Y-PRODUCTION-LAUNCH-01 02B: Y正式Productionの音声層(scope "Y"の入口を2箇所で呼ぶ。下のEXPECTED_SCOPE_CALLSで固定)
     "er012_b_family_voices_production_01.py",   # OPEN-479(Fable承認2026-10-23): is_active_for_run()の読取のみ(scope入口は呼ばない)。会話clipのsegment_idをX/Z scope内だけに限定するため
 }
 # PM-REGRESSION-ISOLATION-HYGIENE-01 委任_01: DEV/Trial-only, not production-reachable(具体ファイル名のみ。glob・接頭辞での拡張禁止)。
@@ -48,6 +49,7 @@ ABC_FILES = ("er012_b_family_voices_production_01.py", "er012_b_family_voices_a2
 EXPECTED_SCOPE_CALLS = collections.Counter({
     ("er019_family_x_audio_production_runner_01.py", "family_scope", "X"): 2,
     ("er063_family_z_audio_01.py", "family_scope", "Z"): 1,
+    ("er121_family_y_audio_01.py", "family_scope", "Y"): 2,   # FAMILY-Y-PRODUCTION-LAUNCH-01 02B: generate_y_b1/a2_segments
     ("er019_family_x_validation_inheritance_01.py", "family_scope", "X"): 2,
     ("er019_family_x_clobber_restore_03.py", "family_scope", "X"): 1,
     ("er109_hr_lock_rejudge_01.py", "run_scope", "X"): 1,
@@ -175,7 +177,7 @@ class StaticIsolation(unittest.TestCase):
                     lit = arg.value if isinstance(arg, ast.Constant) else None
                     if is_test_file(rel):
                         continue
-                    self.assertIn(lit, ("X", "Z"), f"{rel}: {fname}の引数はリテラル'X'/'Z'のみ")
+                    self.assertIn(lit, ("X", "Z", "Y"), f"{rel}: {fname}の引数はリテラル'X'/'Z'のみ")
                     if dev_script:
                         continue    # DEV/Trial専用script: リテラル検査は行うが、Production固定リスト(EXPECTED_SCOPE_CALLS)には数えない
                     found[(os.path.basename(rel), fname, lit)] += 1
