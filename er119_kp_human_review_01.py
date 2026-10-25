@@ -1128,7 +1128,10 @@ def verify_selection_matches_outputs(kp_dir: str, *, level: str, tts_results_pat
         else:
             kps = _read_json(tts_results_path).get("key_phrases") or {}
             want = [it["used_form"] for it in kp_items]
-            got = [((kps.get(str(it["rank"])) or {}).get("english") or {}).get("text") for it in kp_items]
+            def _en_text(rank):   # Master Store再利用のrecordは`text`を持たず、runnerが記録する`canonical_text`(再利用時にexpected_text一致を検査済み)が同じ内容を指す
+                en = (kps.get(str(rank)) or {}).get("english") or {}
+                return en.get("text") if en.get("text") is not None else en.get("canonical_text")
+            got = [_en_text(it["rank"]) for it in kp_items]
             if len(kps) != len(kp_items):
                 problems.append(f"TTSのKP件数({len(kps)})が確定KP({len(kp_items)})と一致しません")
             if got != want:

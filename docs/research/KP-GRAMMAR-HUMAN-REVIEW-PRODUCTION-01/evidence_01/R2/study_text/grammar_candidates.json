@@ -1,0 +1,251 @@
+{
+  "schema": "grammar_candidates_v1",
+  "level": "Advanced",
+  "label": "The Coffee Price Hike Case: Turn Back the Clock on the Price Tag!",
+  "text_sha256": "02c33a41d4a352e3661dbcedd3cfc179a14b83e68614128f37e603bcc8d76027",
+  "n_paragraphs": 9,
+  "prompt_id": "part2_stepA8",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+  "model": "gpt-6-luna",
+  "extract_signature": "374ab1e5e5cf55b424f6cc39aeeee3b41b26f3ac99ba64aca3a3e27c7633498f",
+  "round": 1,
+  "tier_table": [
+    {
+      "para": "P1",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "名詞を修飾する関係節の動詞と、主節の動詞を区別して読む。",
+      "front_kind": "",
+      "sentence": "The first thing that comes to mind is tariffs.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P4",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "名詞の内容を示すthat節を主語の一部として捉え、主節の動詞を後から特定する。",
+      "front_kind": "",
+      "sentence": "Hopes that the next harvest would recover had also faded.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P5",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "長い名詞句では中心となる名詞を先に捉え、その名詞を主語として後続の動詞につなぐ。",
+      "front_kind": "",
+      "sentence": "Turn the pages of the record, and we find that in February, before summer, the futures price for Arabica coffee in New York reached an all-time high.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P6",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "名詞を修飾する節の動詞と、その節を含む主語に対応する主節の動詞を区別する。",
+      "front_kind": "",
+      "sentence": "Reuters also reported that the tariffs the United States imposed in summer pushed up the price of the beans themselves.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
+  "no_feature_paras": [
+    "P2",
+    "P3",
+    "P7",
+    "P8",
+    "P9"
+  ],
+  "uncovered_paras": [],
+  "audit": {
+    "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+    "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+    "model": "gpt-6-luna",
+    "requested_model": "gpt-6-luna",
+    "prompt_sha256": "acec6d5d77d35b19fcb7fb9982424c0875501cff8116340a4610f8e052179d2d",
+    "response_ids": [
+      "resp_057e5cd3bb023359006addf64bb18887d08a5668c4212090c2",
+      "resp_087b299f9000f728006addf677b95487d0b4f0e26b4753ef7f"
+    ],
+    "calls": [
+      {
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3549,
+          "output_tokens": 6105,
+          "cached_input_tokens": 3546,
+          "reasoning_tokens": 4940
+        },
+        "response_id": "resp_057e5cd3bb023359006addf64bb18887d08a5668c4212090c2",
+        "elapsed_sec": 43.85,
+        "cost_jpy": 0.4941,
+        "structure_error": "Step A''応答が不正: Illegal trailing comma before end of object: line 58 column 62 (char 2143)"
+      },
+      {
+        "attempt": 2,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3549,
+          "output_tokens": 4761,
+          "cached_input_tokens": 3546,
+          "reasoning_tokens": 3597
+        },
+        "response_id": "resp_087b299f9000f728006addf677b95487d0b4f0e26b4753ef7f",
+        "elapsed_sec": 33.65,
+        "cost_jpy": 0.3866
+      }
+    ],
+    "retried_for_parse": true,
+    "total_cost_jpy": 0.8807,
+    "generated_at": "2026-10-25T21:31:21+0900",
+    "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+  },
+  "reselect_count": 0,
+  "reextract_count": 0,
+  "reselect_log": [],
+  "candidates": [
+    {
+      "candidate_id": "g1a36528a08",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P1",
+      "sentence": "The first thing that comes to mind is tariffs.",
+      "front_kind": "",
+      "misread_target": "VERB",
+      "misread_quote": "comes to mind is tariffs",
+      "misread_ja": "関係節内のcomesを主節の動詞と取り、主節の動詞isを見落とすことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "名詞を修飾する関係節の動詞と、主節の動詞を区別して読む。",
+      "construct_ja": "関係節を含む長い主語",
+      "points_ja": [
+        "主語の中心はthingで、that comes to mindはthingを修飾する。",
+        "主節の動詞はis。"
+      ],
+      "context_ja": "話し手が最初に思い浮かべるのは関税だと述べている。",
+      "prev": "“Hey, when did you go upscale?”",
+      "next": "You want to say, “So you’re the culprit!”",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        76,
+        122
+      ]
+    },
+    {
+      "candidate_id": "g241d45439e",
+      "rank": 2,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P4",
+      "sentence": "Hopes that the next harvest would recover had also faded.",
+      "front_kind": "",
+      "misread_target": "VERB",
+      "misread_quote": "would recover had also faded",
+      "misread_ja": "that節のwould recoverを主節の動詞と取り、had also fadedを別の述語のように読むことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "名詞の内容を示すthat節を主語の一部として捉え、主節の動詞を後から特定する。",
+      "construct_ja": "that節を含む長い主語",
+      "points_ja": [
+        "that the next harvest would recoverはhopesの内容を示す。",
+        "主語全体を受ける主節の動詞はhad faded。"
+      ],
+      "context_ja": "次の収穫で状況が回復するという期待も薄れていたと述べている。",
+      "prev": "A drought was happening there.",
+      "next": "“Will there be enough beans?”",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        69,
+        126
+      ]
+    },
+    {
+      "candidate_id": "gf8e6d999a2",
+      "rank": 3,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P5",
+      "sentence": "Turn the pages of the record, and we find that in February, before summer, the futures price for Arabica coffee in New York reached an all-time high.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "the futures price for Arabica coffee in New York",
+      "misread_ja": "長い主語の中心を見失い、Arabica coffeeを主語、またはpriceの目的語のように捉えることがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "長い名詞句では中心となる名詞を先に捉え、その名詞を主語として後続の動詞につなぐ。",
+      "construct_ja": "長い名詞句主語",
+      "points_ja": [
+        "主語の中心はpriceで、for Arabica coffee in New Yorkはその名詞句に含まれる。",
+        "主語に続く主節の動詞はreached。"
+      ],
+      "context_ja": "2月にニューヨークのアラビカコーヒー先物価格が史上最高値に達したと述べている。",
+      "prev": "Before thinking about how to brew them, the question was whether there would be beans to brew at all.",
+      "next": "This was not the price of ground coffee in stores, but the market price for trading coffee beans.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        0,
+        149
+      ]
+    },
+    {
+      "candidate_id": "gec037f4074",
+      "rank": 4,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P6",
+      "sentence": "Reuters also reported that the tariffs the United States imposed in summer pushed up the price of the beans themselves.",
+      "front_kind": "",
+      "misread_target": "VERB",
+      "misread_quote": "imposed in summer pushed",
+      "misread_ja": "imposedを主節の動詞と取り、主語the tariffsに対応するpushedを見落とすことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "名詞を修飾する節の動詞と、その節を含む主語に対応する主節の動詞を区別する。",
+      "construct_ja": "関係節を含むthat節内の長い主語",
+      "points_ja": [
+        "the United States imposed in summerはtariffsを修飾する。",
+        "that節内でtariffsに対応する動詞はpushed up。"
+      ],
+      "context_ja": "ロイターは、アメリカが夏に課した関税が豆自体の価格を押し上げたとも報じた。",
+      "prev": "No, that would be jumping to conclusions too.",
+      "next": "They did play a part.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        78,
+        197
+      ]
+    }
+  ],
+  "top_ids": [
+    "g1a36528a08",
+    "g241d45439e"
+  ],
+  "n_eligible": 4,
+  "ng": [],
+  "filtered_by_ng": [],
+  "rejected_ids": [],
+  "candidates_sha256": "998e27b2ddad805b8bceccfa00457dbdaf736fa09d6a11569e0946bb0f401fb0",
+  "status": "HAS_CANDIDATES",
+  "exhausted": false,
+  "reused_from_previous_run": false
+}

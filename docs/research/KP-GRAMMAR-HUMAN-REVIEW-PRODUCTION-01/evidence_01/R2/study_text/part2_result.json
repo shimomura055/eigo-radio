@@ -1,0 +1,109 @@
+{
+  "schema": "part2_grammar_v1",
+  "level": "Advanced",
+  "status": "SELECTED",
+  "zero_reason": null,
+  "selection": {
+    "source": "auto_top1",
+    "candidate_id": "g1a36528a08",
+    "rank": 1,
+    "tier": "T1",
+    "feature_class": "HEAVY",
+    "para": "P1",
+    "sentence": "The first thing that comes to mind is tariffs.",
+    "construct_ja": "関係節を含む長い主語",
+    "teaching_value_ja": "名詞を修飾する関係節の動詞と、主節の動詞を区別して読む。"
+  },
+  "text_sha256": "02c33a41d4a352e3661dbcedd3cfc179a14b83e68614128f37e603bcc8d76027",
+  "extract_signature": "374ab1e5e5cf55b424f6cc39aeeee3b41b26f3ac99ba64aca3a3e27c7633498f",
+  "candidates_sha256": "998e27b2ddad805b8bceccfa00457dbdaf736fa09d6a11569e0946bb0f401fb0",
+  "round": 1,
+  "translation_ja": "最初に思い浮かぶのは、関税です。",
+  "translation_source": "stepB",
+  "ref_ja": null,
+  "ref_ja_source": null,
+  "explain_signature": "60754278170c4e1ad98b9d04c48698f8d4632fa1b160d320e320fa982fd17419",
+  "explanation_md": "【日本語訳】\n最初に思い浮かぶのは、関税です。\n\n【文法・構文の仕組み】\n主語は **The first thing that comes to mind** 全体です。その中心となる名詞は **thing**（もの・こと）で、**that comes to mind**（思い浮かぶ）が **thing** を後ろから説明しています。ここで **that** は **thing** を指し、関係節の中では **comes** の主語です。\n\n主節の動詞は **is** で、その後ろの **tariffs** が「何が思い浮かぶのか」を示しています。つまり、「最初に思い浮かぶものは何か」という主語に対して、「関税だ」と答える形です。\n\n【意味・ニュアンス・表現効果】\n**The first thing that comes to mind** は「真っ先に思い浮かぶこと」という意味です。話し手が最初に思い浮かべるものを主語として示し、それが **tariffs** だと述べています。前の文を受けた発言として、関税が最初に思い浮かぶと伝える表現です。\n=====",
+  "sections": {
+    "日本語訳": "最初に思い浮かぶのは、関税です。",
+    "文法・構文の仕組み": "主語は **The first thing that comes to mind** 全体です。その中心となる名詞は **thing**（もの・こと）で、**that comes to mind**（思い浮かぶ）が **thing** を後ろから説明しています。ここで **that** は **thing** を指し、関係節の中では **comes** の主語です。\n\n主節の動詞は **is** で、その後ろの **tariffs** が「何が思い浮かぶのか」を示しています。つまり、「最初に思い浮かぶものは何か」という主語に対して、「関税だ」と答える形です。",
+    "意味・ニュアンス・表現効果": "**The first thing that comes to mind** は「真っ先に思い浮かぶこと」という意味です。話し手が最初に思い浮かべるものを主語として示し、それが **tariffs** だと述べています。前の文を受けた発言として、関税が最初に思い浮かぶと伝える表現です。\n====="
+  },
+  "audit": {
+    "extract": {
+      "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+      "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+      "model": "gpt-6-luna",
+      "requested_model": "gpt-6-luna",
+      "prompt_sha256": "acec6d5d77d35b19fcb7fb9982424c0875501cff8116340a4610f8e052179d2d",
+      "response_ids": [
+        "resp_057e5cd3bb023359006addf64bb18887d08a5668c4212090c2",
+        "resp_087b299f9000f728006addf677b95487d0b4f0e26b4753ef7f"
+      ],
+      "calls": [
+        {
+          "attempt": 1,
+          "response_model": "gpt-6-luna",
+          "usage": {
+            "input_tokens": 3549,
+            "output_tokens": 6105,
+            "cached_input_tokens": 3546,
+            "reasoning_tokens": 4940
+          },
+          "response_id": "resp_057e5cd3bb023359006addf64bb18887d08a5668c4212090c2",
+          "elapsed_sec": 43.85,
+          "cost_jpy": 0.4941,
+          "structure_error": "Step A''応答が不正: Illegal trailing comma before end of object: line 58 column 62 (char 2143)"
+        },
+        {
+          "attempt": 2,
+          "response_model": "gpt-6-luna",
+          "usage": {
+            "input_tokens": 3549,
+            "output_tokens": 4761,
+            "cached_input_tokens": 3546,
+            "reasoning_tokens": 3597
+          },
+          "response_id": "resp_087b299f9000f728006addf677b95487d0b4f0e26b4753ef7f",
+          "elapsed_sec": 33.65,
+          "cost_jpy": 0.3866
+        }
+      ],
+      "retried_for_parse": true,
+      "total_cost_jpy": 0.8807,
+      "generated_at": "2026-10-25T21:31:21+0900",
+      "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+    },
+    "explain": {
+      "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+      "process": "STUDY_TEXT_GRAMMAR_EXPLAIN",
+      "model": "gpt-6-luna",
+      "requested_model": "gpt-6-luna",
+      "prompt_sha256": "192b3f24ff7615173b9430f37b6618ea0696a501027b45baa846a3b787c25c69",
+      "response_ids": [
+        "resp_05d166b0da693c7c006addf735cc2887d0b4778028c3dd6ec3"
+      ],
+      "calls": [
+        {
+          "attempt": 1,
+          "response_model": "gpt-6-luna",
+          "usage": {
+            "input_tokens": 932,
+            "output_tokens": 445,
+            "cached_input_tokens": 0,
+            "reasoning_tokens": 157
+          },
+          "response_id": "resp_05d166b0da693c7c006addf735cc2887d0b4778028c3dd6ec3",
+          "elapsed_sec": 4.89,
+          "cost_jpy": 0.0505
+        }
+      ],
+      "retried_for_parse": false,
+      "total_cost_jpy": 0.0505,
+      "generated_at": "2026-10-25T21:34:02+0900",
+      "prompt_template_sha256": "59588b5961e88d1be052e9ae5045ed90ca243546d6996027b60336e3083b591c"
+    }
+  },
+  "generated_at": "2026-10-25T21:34:02+0900",
+  "reused_from_previous_run": false
+}

@@ -1,0 +1,154 @@
+{
+  "schema": "grammar_candidates_v1",
+  "level": "Advanced",
+  "label": "The Coffee Price Hike Case: Turn Back the Clock on the Price Tag!",
+  "text_sha256": "02c33a41d4a352e3661dbcedd3cfc179a14b83e68614128f37e603bcc8d76027",
+  "n_paragraphs": 9,
+  "prompt_id": "part2_stepA8",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+  "model": "gpt-6-luna",
+  "extract_signature": "374ab1e5e5cf55b424f6cc39aeeee3b41b26f3ac99ba64aca3a3e27c7633498f",
+  "round": 1,
+  "tier_table": [
+    {
+      "para": "P4",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "名詞を説明するthat節の後ろに主節の動詞が続くと見抜く。",
+      "front_kind": "",
+      "sentence": "Hopes that the next harvest would recover had also faded.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P9",
+      "cls": "SPEC",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "want＋目的語＋to不定詞では、目的語がto不定詞の意味上の主語にもなると読む。",
+      "front_kind": "",
+      "sentence": "Coffee may be bitter, but we want our detective work to be clear.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
+  "no_feature_paras": [
+    "P1",
+    "P2",
+    "P3",
+    "P5",
+    "P6",
+    "P7",
+    "P8"
+  ],
+  "uncovered_paras": [],
+  "audit": {
+    "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+    "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+    "model": "gpt-6-luna",
+    "requested_model": "gpt-6-luna",
+    "prompt_sha256": "acec6d5d77d35b19fcb7fb9982424c0875501cff8116340a4610f8e052179d2d",
+    "response_ids": [
+      "resp_0bfa160619a7e013006addf09ba19487d090848128ba205be6"
+    ],
+    "calls": [
+      {
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3549,
+          "output_tokens": 4028,
+          "cached_input_tokens": 0,
+          "reasoning_tokens": 3448
+        },
+        "response_id": "resp_0bfa160619a7e013006addf09ba19487d090848128ba205be6",
+        "elapsed_sec": 31.89,
+        "cost_jpy": 0.379
+      }
+    ],
+    "retried_for_parse": false,
+    "total_cost_jpy": 0.379,
+    "generated_at": "2026-10-25T21:06:19+0900",
+    "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+  },
+  "reselect_count": 0,
+  "reextract_count": 0,
+  "reselect_log": [],
+  "candidates": [
+    {
+      "candidate_id": "g241d45439e",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P4",
+      "sentence": "Hopes that the next harvest would recover had also faded.",
+      "front_kind": "",
+      "misread_target": "VERB",
+      "misread_quote": "would recover",
+      "misread_ja": "that節内のwould recoverを主節の動詞と取り、had also fadedを見落とすことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "名詞を説明するthat節の後ろに主節の動詞が続くと見抜く。",
+      "construct_ja": "that節を含む長い主語",
+      "points_ja": [
+        "Hopesが主語の中心で、that節はその内容を示す。",
+        "主節の動詞はthat節の後ろにあるhad also faded。"
+      ],
+      "context_ja": "次の収穫で状況が回復するという希望も薄れていたと述べている。",
+      "prev": "A drought was happening there.",
+      "next": "“Will there be enough beans?”",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        69,
+        126
+      ]
+    },
+    {
+      "candidate_id": "g064ddb76fb",
+      "rank": 2,
+      "tier": "T1",
+      "feature_class": "SPEC",
+      "para": "P9",
+      "sentence": "Coffee may be bitter, but we want our detective work to be clear.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "our detective work to be clear",
+      "misread_ja": "our detective workをto be clearの意味上の主語として捉えず、後続の不定詞との関係を切ってしまうことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "want＋目的語＋to不定詞では、目的語がto不定詞の意味上の主語にもなると読む。",
+      "construct_ja": "want＋目的語＋to不定詞",
+      "points_ja": [
+        "our detective workはwantの目的語。",
+        "to be clearはour detective workの状態を表す。"
+      ],
+      "context_ja": "コーヒーは苦くても、探偵の推理は明快であってほしいと述べている。",
+      "prev": "to “Why is it expensive?”",
+      "next": "Before that first cup, turn back the hands of the clock a little.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        115,
+        180
+      ]
+    }
+  ],
+  "top_ids": [
+    "g241d45439e",
+    "g064ddb76fb"
+  ],
+  "n_eligible": 2,
+  "ng": [],
+  "filtered_by_ng": [],
+  "rejected_ids": [],
+  "candidates_sha256": "fd174998eadcda8c3dece2c6a5262c4cc1cce8eab7ebfdbd246b64edb6a72761",
+  "status": "HAS_CANDIDATES",
+  "exhausted": false,
+  "reused_from_previous_run": false
+}

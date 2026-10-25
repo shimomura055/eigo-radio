@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import test_state_isolation_01  # noqa: F401
 
+import json
 import os
 import unittest
 
@@ -62,6 +63,25 @@ class TestVerifyOutputs(KpTestCase):
         wr(page, "<html>nothing</html>")
         with self.assertRaises(rv.KpReviewInconsistent):
             rv.verify_selection_matches_outputs(self.kp_dir, level="b1b", page_paths=[page])
+
+    def test_master_store_reused_tts_record_uses_canonical_text(self):
+        """実run(KP-GRAMMAR-HR-PRODUCTION-01 R1)で判明: Master Store再利用のKP英語recordは`text`が無く`canonical_text`だけを持つ。"""
+        self._final()
+        tts, st, page, vpage = self._write_outputs()
+        d = json.load(open(tts, encoding="utf-8"))
+        for k, v in d["key_phrases"].items():
+            v["english"] = {"status": "OK", "reused": True, "canonical_text": v["english"]["text"]}
+        jd(tts, d)
+        rep = rv.verify_selection_matches_outputs(self.kp_dir, level="b1b", tts_results_path=tts)
+        self.assertTrue(rep["ok"])
+        d["key_phrases"]["2"]["english"]["canonical_text"] = "different phrase"
+        jd(tts, d)
+        with self.assertRaises(rv.KpReviewInconsistent):
+            rv.verify_selection_matches_outputs(self.kp_dir, level="b1b", tts_results_path=tts)
+        d["key_phrases"]["2"]["english"].pop("canonical_text")   # text/canonical_textとも無い=不一致(fail-closed)
+        jd(tts, d)
+        with self.assertRaises(rv.KpReviewInconsistent):
+            rv.verify_selection_matches_outputs(self.kp_dir, level="b1b", tts_results_path=tts)
 
     def test_legacy_run_is_out_of_scope(self):
         os.makedirs(self.kp_dir)
