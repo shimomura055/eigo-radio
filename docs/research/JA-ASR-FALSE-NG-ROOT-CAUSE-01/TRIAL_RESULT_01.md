@@ -28,3 +28,4 @@ v1は**VALIDATED不可**(事前登録§1: 増分誤PASS 1件→v2再凍結→再
 - 判断候補(分類D 新規): Phase 4=Production適用は事前登録が満たされてから。月題の数詞崩れ解消にはB-light/Azure併用(UDR #136に触れる)=ユーザー判断。
 - 別OPEN: OPEN-517(PHONETIC_MATCHの値ガードskip)に本件N3-02/N3-07を追記。
 詳細: `EVAL_02.md`・`BUDGET_LOG_01.md`・`eval_phase3_02.out.json`。
+**Fable(2026-10-25 委任_05転記)**: v2(`proto_reading_compare_02.py` sha `bcb042c651f05c7801b382e51b802a870e1240892d3ae65efc6cdbbca27c6144`)= **VALIDATED(限定: 安全性[増分誤PASS 0/180・回帰0]は確認。月題救済効果は限定的[12転写中1件]。未知データでの汎化は未確認)**。Task B(ユーザー原文USER_06)の到達上限VALIDATEDに到達。Phase 4(Production適用)はユーザー判断。OPEN-517(READING_MATCHの最終値ゲートskip)は別管理で是正設計+API 0検証まで実施(`OPEN517_DESIGN_01.md`/`OPEN517_EVAL_01.md`)。
