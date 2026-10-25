@@ -552,7 +552,7 @@ def generate_part1_all_for_b1b(client, source_dir: str, out_dir: str, *, call_fn
 
 
 def assemble_part1_for_b1b(source_dir: str, out_dir: str) -> list:
-    """Part 1の組立(決定論)+study_text/保存。存在・最新性(Opus M2)・gloss HR/未評価・引用の逐語実在をSTOPで確認する。訳はnull+PENDING_USER_DECISION。"""
+    """Part 1の組立(決定論)+study_text/保存。存在・最新性(Opus M2)・gloss HR/未評価・引用の逐語実在・訳(T1)の最新性をSTOPで確認する。"""
     p1 = _part1_gen()
     items = _part1_kp_items(out_dir)
     doc = _require_part1_fresh_x(source_dir, out_dir, "assemble")
