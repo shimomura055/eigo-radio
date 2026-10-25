@@ -1,0 +1,152 @@
+{
+ "features": [
+  {
+   "para": "P1",
+   "sentence": "Still the same.",
+   "feature_class": "ELL",
+   "other_desc": "",
+   "misread_target": "OMITTED",
+   "misread_quote": "Still the same",
+   "misread_ja": "省略された主語と動詞を補えず、「the same」を独立した名詞句のように捉えることがある。",
+   "correct_structure_ja": "前文の内容を受けて「それは依然として同じだった」と述べており、主語とbe動詞が省略されている。",
+   "subject_span": "",
+   "main_verb": "",
+   "basic_only": false,
+   "construct_ja": "主語・be動詞の省略",
+   "points_ja": [
+    "前文の内容から省略された主語とbe動詞を補う"
+   ],
+   "context_ja": "デラが硬貨を数え直した後も、金額は変わらなかったと述べている。",
+   "resolve_ok": true,
+   "order": 0,
+   "sentence_llm_raw": "Still the same.",
+   "sentence_replaced_by_body": false,
+   "prev": "Della counted the coins again, pressing each one against the table.",
+   "next": "And tomorrow was Christmas.",
+   "misread_quote_in_sentence": true
+  },
+  {
+   "para": "P4",
+   "sentence": "One was Jim’s gold watch, handed down from his grandfather to his father, and then to him.",
+   "feature_class": "POSTMOD",
+   "other_desc": "",
+   "misread_target": "MODIFIEE",
+   "misread_quote": "handed down from his grandfather to his father",
+   "misread_ja": "過去分詞句を近くにある「his father」などにかかる表現として捉えることがある。",
+   "correct_structure_ja": "過去分詞句「handed down ...」は「Jim’s gold watch」を後ろから修飾している。",
+   "subject_span": "One",
+   "main_verb": "was",
+   "basic_only": false,
+   "construct_ja": "過去分詞句による後置修飾",
+   "points_ja": [
+    "「handed down ...」の修飾先は「Jim’s gold watch」"
+   ],
+   "context_ja": "デラたちが誇りにしている二つの品のうち、ジムの金時計について説明している。",
+   "resolve_ok": true,
+   "order": 1,
+   "sentence_llm_raw": "One was Jim’s gold watch, handed down from his grandfather to his father, and then to him.",
+   "sentence_replaced_by_body": false,
+   "prev": "They owned two things that made them proud.",
+   "next": "The other was Della’s long brown hair.",
+   "ref_ja": "その一つはジムの金時計で、祖父から父へ、そして彼へと受け継がれてきたものでした。",
+   "misread_quote_in_sentence": true
+  }
+ ],
+ "no_feature_paras": [
+  "P2",
+  "P3",
+  "P5",
+  "P6",
+  "P7",
+  "P8",
+  "P9",
+  "P10",
+  "P11",
+  "P12",
+  "P13",
+  "P14",
+  "P15",
+  "P16",
+  "P17",
+  "P18",
+  "P19",
+  "P20",
+  "P21",
+  "P22",
+  "P23",
+  "P24",
+  "P25",
+  "P26",
+  "P27",
+  "P28",
+  "P29",
+  "P30"
+ ],
+ "uncovered_paras": [],
+ "rule_selected": {
+  "selected": [
+   {
+    "para": "P4",
+    "sentence": "One was Jim’s gold watch, handed down from his grandfather to his father, and then to him.",
+    "construct_ja": "過去分詞句による後置修飾",
+    "points_ja": [
+     "「handed down ...」の修飾先は「Jim’s gold watch」"
+    ],
+    "context_ja": "デラたちが誇りにしている二つの品のうち、ジムの金時計について説明している。",
+    "reason_dev": "POSTMOD/MODIFIEE: 過去分詞句を近くにある「his father」などにかかる表現として捉えることがある。",
+    "prev": "They owned two things that made them proud.",
+    "next": "The other was Della’s long brown hair.",
+    "ref_ja": "その一つはジムの金時計で、祖父から父へ、そして彼へと受け継がれてきたものでした。"
+   },
+   {
+    "para": "P1",
+    "sentence": "Still the same.",
+    "construct_ja": "主語・be動詞の省略",
+    "points_ja": [
+     "前文の内容から省略された主語とbe動詞を補う"
+    ],
+    "context_ja": "デラが硬貨を数え直した後も、金額は変わらなかったと述べている。",
+    "reason_dev": "ELL/OMITTED: 省略された主語と動詞を補えず、「the same」を独立した名詞句のように捉えることがある。",
+    "prev": "Della counted the coins again, pressing each one against the table.",
+    "next": "And tomorrow was Christmas."
+   }
+  ],
+  "records": [
+   {
+    "para": "P4",
+    "sentence": "One was Jim’s gold watch, handed down from his grandfather to his father, and then to him.",
+    "feature_class": "POSTMOD",
+    "misread_target": "MODIFIEE",
+    "misread_quote": "handed down from his grandfather to his father",
+    "subject_span": "One",
+    "main_verb": "was"
+   },
+   {
+    "para": "P1",
+    "sentence": "Still the same.",
+    "feature_class": "ELL",
+    "misread_target": "OMITTED",
+    "misread_quote": "Still the same",
+    "subject_span": "",
+    "main_verb": ""
+   }
+  ]
+ },
+ "usage": {
+  "tag": "06_r2_stepA6_gift",
+  "model_requested": "gpt-6-luna",
+  "model_actual": "gpt-6-luna",
+  "response_id": "resp_0cb287380e232b05006add5bb4e6c087d0bf957b60dc8ef57b",
+  "status": "completed",
+  "elapsed_sec": 56.8,
+  "prompt_sha256": "23e628c0572bbefedee4f2197665ad355cea73502cccfeec56dd73c1b6a3c881",
+  "input_tokens": 2749,
+  "cached_input_tokens": 2746,
+  "output_tokens": 5782,
+  "reasoning_tokens": 5109,
+  "max_output_tokens": 13000,
+  "hard_reserved_jpy": 1.1401,
+  "cost_usd": 0.002919,
+  "cost_jpy_at_160": 0.467
+ }
+}

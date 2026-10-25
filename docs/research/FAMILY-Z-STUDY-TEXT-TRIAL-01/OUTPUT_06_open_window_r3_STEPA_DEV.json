@@ -1,0 +1,175 @@
+{
+ "features": [
+  {
+   "para": "P12",
+   "sentence": "Before Framton could reply, her aunt hurried into the room.",
+   "feature_class": "FRONT",
+   "other_desc": "",
+   "misread_target": "SUBJECT",
+   "misread_quote": "Before Framton could reply",
+   "misread_ja": "文頭の従属節にあるFramtonを主節の主語と取り、couldを主節の動詞と読む可能性がある。",
+   "correct_structure_ja": "Before Framton could replyは時を表す従属節で、主節の主語はher aunt、主動詞はhurriedである。",
+   "subject_span": "her aunt",
+   "main_verb": "hurried",
+   "basic_only": false,
+   "construct_ja": "文頭の時を表す副詞節",
+   "points_ja": [
+    "Before Framton could replyは従属節である",
+    "主節はher aunt hurriedから始まる"
+   ],
+   "context_ja": "Framtonが返事をする前に、叔母が部屋へ急いで入ってくる。",
+   "resolve_ok": true,
+   "order": 0,
+   "sentence_llm_raw": "Before Framton could reply, her aunt hurried into the room.",
+   "sentence_replaced_by_body": false,
+   "prev": "“Sometimes, on evenings like this, I almost expect to see them.”",
+   "next": "“I hope Vera has kept you company!",
+   "misread_quote_in_sentence": true
+  },
+  {
+   "para": "P18",
+   "sentence": "Vera stared outside, her eyes wide with horror.",
+   "feature_class": "OTHER",
+   "other_desc": "独立分詞構文（名詞＋形容詞の付帯状況表現）",
+   "misread_target": "SUBJECT",
+   "misread_quote": "her eyes",
+   "misread_ja": "her eyesを主節の主語と取り、Vera stared outsideとの主語・述語関係を見誤る可能性がある。",
+   "correct_structure_ja": "主節の主語はVera、主動詞はstaredであり、her eyes wide with horrorはher eyesを意味上の主語とする付帯状況表現である。",
+   "subject_span": "Vera",
+   "main_verb": "stared",
+   "basic_only": false,
+   "construct_ja": "",
+   "points_ja": [],
+   "context_ja": "Veraが目を大きく見開いて外を見つめる。",
+   "resolve_ok": true,
+   "order": 1,
+   "sentence_llm_raw": "Vera stared outside, her eyes wide with horror.",
+   "sentence_replaced_by_body": false,
+   "prev": "“Here they are at last!”",
+   "next": "Framton turned.",
+   "misread_quote_in_sentence": true
+  },
+  {
+   "para": "P21",
+   "sentence": "Across the quiet garden came a young voice:",
+   "feature_class": "INV",
+   "other_desc": "",
+   "misread_target": "SUBJECT",
+   "misread_quote": "Across the quiet garden",
+   "misread_ja": "文頭の場所を表す句を主語とし、a young voiceを動詞cameの後ろに置かれた要素と読む可能性がある。",
+   "correct_structure_ja": "場所を表す句Across the quiet gardenの後に動詞cameが置かれ、主語は後置されたa young voiceである。",
+   "subject_span": "a young voice",
+   "main_verb": "came",
+   "basic_only": false,
+   "construct_ja": "場所句による倒置",
+   "points_ja": [
+    "文頭の場所句の後に動詞が置かれる",
+    "a young voiceが主語である"
+   ],
+   "context_ja": "静かな庭を横切って若い声が聞こえてくる。",
+   "resolve_ok": true,
+   "order": 2,
+   "sentence_llm_raw": "Across the quiet garden came a young voice:",
+   "sentence_replaced_by_body": false,
+   "prev": "A brown spaniel followed close behind.",
+   "next": "“Bertie, why do you bound?”",
+   "misread_quote_in_sentence": true
+  }
+ ],
+ "no_feature_paras": [
+  "P1",
+  "P2",
+  "P3",
+  "P4",
+  "P5",
+  "P6",
+  "P7",
+  "P8",
+  "P9",
+  "P10",
+  "P11",
+  "P13",
+  "P14",
+  "P15",
+  "P16",
+  "P17",
+  "P19",
+  "P20",
+  "P22",
+  "P23",
+  "P24",
+  "P25",
+  "P26",
+  "P27",
+  "P28",
+  "P29"
+ ],
+ "uncovered_paras": [],
+ "rule_selected": {
+  "selected": [
+   {
+    "para": "P21",
+    "sentence": "Across the quiet garden came a young voice:",
+    "construct_ja": "場所句による倒置",
+    "points_ja": [
+     "文頭の場所句の後に動詞が置かれる",
+     "a young voiceが主語である"
+    ],
+    "context_ja": "静かな庭を横切って若い声が聞こえてくる。",
+    "reason_dev": "INV/SUBJECT: 文頭の場所を表す句を主語とし、a young voiceを動詞cameの後ろに置かれた要素と読む可能性がある。",
+    "prev": "A brown spaniel followed close behind.",
+    "next": "“Bertie, why do you bound?”"
+   },
+   {
+    "para": "P12",
+    "sentence": "Before Framton could reply, her aunt hurried into the room.",
+    "construct_ja": "文頭の時を表す副詞節",
+    "points_ja": [
+     "Before Framton could replyは従属節である",
+     "主節はher aunt hurriedから始まる"
+    ],
+    "context_ja": "Framtonが返事をする前に、叔母が部屋へ急いで入ってくる。",
+    "reason_dev": "FRONT/SUBJECT: 文頭の従属節にあるFramtonを主節の主語と取り、couldを主節の動詞と読む可能性がある。",
+    "prev": "“Sometimes, on evenings like this, I almost expect to see them.”",
+    "next": "“I hope Vera has kept you company!"
+   }
+  ],
+  "records": [
+   {
+    "para": "P21",
+    "sentence": "Across the quiet garden came a young voice:",
+    "feature_class": "INV",
+    "misread_target": "SUBJECT",
+    "misread_quote": "Across the quiet garden",
+    "subject_span": "a young voice",
+    "main_verb": "came"
+   },
+   {
+    "para": "P12",
+    "sentence": "Before Framton could reply, her aunt hurried into the room.",
+    "feature_class": "FRONT",
+    "misread_target": "SUBJECT",
+    "misread_quote": "Before Framton could reply",
+    "subject_span": "her aunt",
+    "main_verb": "hurried"
+   }
+  ]
+ },
+ "usage": {
+  "tag": "06_r3_stepA6_open_window",
+  "model_requested": "gpt-6-luna",
+  "model_actual": "gpt-6-luna",
+  "response_id": "resp_05a6b8fac1ece582006add5b76097087d0815431eb67f4e740",
+  "status": "completed",
+  "elapsed_sec": 28.0,
+  "prompt_sha256": "f7b94ecac59dc9d1082313252381a56df6d91604bbf472f7babab2bb7a7cf6f2",
+  "input_tokens": 2752,
+  "cached_input_tokens": 0,
+  "output_tokens": 3253,
+  "reasoning_tokens": 2339,
+  "max_output_tokens": 13000,
+  "hard_reserved_jpy": 1.1418,
+  "cost_usd": 0.001902,
+  "cost_jpy_at_160": 0.3043
+ }
+}
