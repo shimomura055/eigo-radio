@@ -1,0 +1,86 @@
+== 1. N3-07 本体 ==
+--- N3-07: canon='月のしわ、8,900本超' asr='月の巣は八千九百本長。'
+  opcode replace: canon[2:9]='しわ8,900' -> asr[2:8]='巣は八千九百'
+  opcode replace: canon[10:11]='超' -> asr[9:10]='長'
+  protected_check_ja: passed=False number_mismatches=[('8900', '')] negation_mismatches=[]
+  content_diffs(Candidate Eが見る集合)=[('超', '長')]
+    E候補: '超'=['ちょう'] / '長'=['おさ', 'おさむ', 'ちょう', 'なが'] 共通=['ちょう']
+  D-1正規化: canon='月のしわ8,900本超' asr='月の巣は八千九百本長' 文字列一致=False morph読み一致=False
+  classify_ja_asr_match -> PHONETIC_MATCH / reason=(JA ASR Variant Layer/Candidate E)残っていた差分箇所について、漢字候補読み(pykakasi内蔵辞書由来)の総当たりで、canonical/ASR
+  Production Primary段(unified_judge込み) -> state=PASS reason=primary_pass label=PHONETIC_MATCH warnings=[]
+== 2. 反事実(Candidate Eを通る『偶然の同音差』を外す) ==
+--- CF1: 超長の差なし: canon='月のしわ、8,900本超' asr='月の巣は八千九百本超。'
+  opcode replace: canon[2:9]='しわ8,900' -> asr[2:8]='巣は八千九百'
+  protected_check_ja: passed=False number_mismatches=[('8900', '')] negation_mismatches=[]
+  content_diffs(Candidate Eが見る集合)=[]
+  D-1正規化: canon='月のしわ8,900本超' asr='月の巣は八千九百本超' 文字列一致=False morph読み一致=False
+  classify_ja_asr_match -> TRUE_CONTENT_MISMATCH / reason=数字/否定の不一致を検出: numbers=[('8900', '')] negation=[]
+  Production Primary段(unified_judge込み) -> state=NG_SECONDARY_UNAVAILABLE reason=secondary_unavailable label=TRUE_CONTENT_MISMATCH warnings=[]
+--- CF2: 数値バンドルのみ: canon='月のしわ、8,900本' asr='月の巣は八千九百本'
+  opcode replace: canon[2:9]='しわ8,900' -> asr[2:8]='巣は八千九百'
+  protected_check_ja: passed=False number_mismatches=[('8900', '')] negation_mismatches=[]
+  content_diffs(Candidate Eが見る集合)=[]
+  D-1正規化: canon='月のしわ8,900本' asr='月の巣は八千九百本' 文字列一致=False morph読み一致=False
+  classify_ja_asr_match -> TRUE_CONTENT_MISMATCH / reason=数字/否定の不一致を検出: numbers=[('8900', '')] negation=[]
+  Production Primary段(unified_judge込み) -> state=NG_SECONDARY_UNAVAILABLE reason=secondary_unavailable label=TRUE_CONTENT_MISMATCH warnings=[]
+== 3. 反事実(数値のバンドルを外す) ==
+--- CF3: 数値なし(非数値entry): canon='月のしわ、本超' asr='月の巣は本長。'
+  opcode replace: canon[2:4]='しわ' -> asr[2:4]='巣は'
+  opcode replace: canon[5:6]='超' -> asr[5:6]='長'
+  protected_check_ja: passed=True number_mismatches=[] negation_mismatches=[]
+  content_diffs(Candidate Eが見る集合)=[('しわ', '巣は'), ('超', '長')]
+    E候補: 'しわ'=['しわ'] / '巣は'=['すは', 'そうは'] 共通=[]
+    E候補: '超'=['ちょう'] / '長'=['おさ', 'おさむ', 'ちょう', 'なが'] 共通=['ちょう']
+  D-1正規化: canon='月のしわ本超' asr='月の巣は本長' 文字列一致=False morph読み一致=False
+  classify_ja_asr_match -> TRUE_CONTENT_MISMATCH / reason=固有名詞・略語・濁点ゆれ以外の内容に差がある(内容誤りの可能性): [{'type': 'replace', 'canonical': 'しわ', 'asr': '巣は', 'en
+  Production Primary段(unified_judge込み) -> state=NG_EXCLUDED reason=p2_exclusion:A4_C2_HOMOGRAPH label=TRUE_CONTENT_MISMATCH warnings=[]
+== 4. 同型の類似例(母音違い/濁音/長音が数値と同居) ==
+--- SIM: canon='月のしわ、8,900本超' asr='月のしば八千九百本長'
+  opcode replace: canon[3:9]='わ8,900' -> asr[3:8]='ば八千九百'
+  opcode replace: canon[10:11]='超' -> asr[9:10]='長'
+  protected_check_ja: passed=False number_mismatches=[('8900', '')] negation_mismatches=[]
+  content_diffs(Candidate Eが見る集合)=[('超', '長')]
+    E候補: '超'=['ちょう'] / '長'=['おさ', 'おさむ', 'ちょう', 'なが'] 共通=['ちょう']
+  D-1正規化: canon='月のしわ8,900本超' asr='月のしば八千九百本長' 文字列一致=False morph読み一致=False
+  classify_ja_asr_match -> PHONETIC_MATCH / reason=(JA ASR Variant Layer/Candidate E)残っていた差分箇所について、漢字候補読み(pykakasi内蔵辞書由来)の総当たりで、canonical/ASR
+  Production Primary段(unified_judge込み) -> state=PASS reason=primary_pass label=PHONETIC_MATCH warnings=[]
+--- SIM: canon='月のしわ、8,900本超' asr='月のすわ八千九百本長'
+  opcode replace: canon[2:3]='し' -> asr[2:3]='す'
+  opcode replace: canon[4:9]='8,900' -> asr[4:8]='八千九百'
+  opcode replace: canon[10:11]='超' -> asr[9:10]='長'
+  protected_check_ja: passed=False number_mismatches=[('8900', '')] negation_mismatches=[]
+  content_diffs(Candidate Eが見る集合)=[('し', 'す'), ('超', '長')]
+    E候補: 'し'=['し'] / 'す'=['す'] 共通=[]
+    E候補: '超'=['ちょう'] / '長'=['おさ', 'おさむ', 'ちょう', 'なが'] 共通=['ちょう']
+  D-1正規化: canon='月のしわ8,900本超' asr='月のすわ八千九百本長' 文字列一致=False morph読み一致=False
+  classify_ja_asr_match -> TRUE_CONTENT_MISMATCH / reason=数字/否定の不一致を検出: numbers=[('8900', '')] negation=[]
+  Production Primary段(unified_judge込み) -> state=NG_EXCLUDED reason=p2_exclusion:A4_C2_HOMOGRAPH label=TRUE_CONTENT_MISMATCH warnings=[]
+--- SIM: canon='月のしわ、8,900本超' asr='月のしわ八千九百本長'
+  opcode replace: canon[4:9]='8,900' -> asr[4:8]='八千九百'
+  opcode replace: canon[10:11]='超' -> asr[9:10]='長'
+  protected_check_ja: passed=False number_mismatches=[('8900', '')] negation_mismatches=[]
+  content_diffs(Candidate Eが見る集合)=[('超', '長')]
+    E候補: '超'=['ちょう'] / '長'=['おさ', 'おさむ', 'ちょう', 'なが'] 共通=['ちょう']
+  D-1正規化: canon='月のしわ8,900本超' asr='月のしわ八千九百本長' 文字列一致=False morph読み一致=False
+  classify_ja_asr_match -> PHONETIC_MATCH / reason=(JA ASR Variant Layer/Candidate E)残っていた差分箇所について、漢字候補読み(pykakasi内蔵辞書由来)の総当たりで、canonical/ASR
+  Production Primary段(unified_judge込み) -> state=PASS reason=primary_pass label=PHONETIC_MATCH warnings=[]
+--- SIM: canon='コーヒー、8,900本超' asr='コヒ八千九百本長'
+  opcode delete: canon[1:2]='ー' -> asr[1:1]=''
+  opcode replace: canon[3:9]='ー8,900' -> asr[2:6]='八千九百'
+  opcode replace: canon[10:11]='超' -> asr[7:8]='長'
+  protected_check_ja: passed=False number_mismatches=[('8900', '')] negation_mismatches=[]
+  content_diffs(Candidate Eが見る集合)=[('ー', ''), ('超', '長')]
+    E候補: 'ー'=['ー'] / ''=[] 共通=[]
+    E候補: '超'=['ちょう'] / '長'=['おさ', 'おさむ', 'ちょう', 'なが'] 共通=['ちょう']
+  D-1正規化: canon='コーヒ8,900本超' asr='コヒ八千九百本長' 文字列一致=False morph読み一致=False
+  classify_ja_asr_match -> TRUE_CONTENT_MISMATCH / reason=数字/否定の不一致を検出: numbers=[('8900', '')] negation=[]
+  Production Primary段(unified_judge込み) -> state=NG_EXCLUDED reason=p2_exclusion:A4_C2_HOMOGRAPH label=TRUE_CONTENT_MISMATCH warnings=[]
+--- SIM: canon='月のしわ、8,900本間' asr='月のしわ八千九百本目'
+  opcode replace: canon[4:9]='8,900' -> asr[4:8]='八千九百'
+  opcode replace: canon[10:11]='間' -> asr[9:10]='目'
+  protected_check_ja: passed=False number_mismatches=[('8900', '')] negation_mismatches=[]
+  content_diffs(Candidate Eが見る集合)=[('間', '目')]
+    E候補: '間'=['あい', 'あいだ', 'あわい', 'かん', 'けん', 'はざま', 'ま'] / '目'=['ぼく', 'ま', 'め', 'もく'] 共通=['ま']
+  D-1正規化: canon='月のしわ8,900本間' asr='月のしわ八千九百本目' 文字列一致=False morph読み一致=False
+  classify_ja_asr_match -> PHONETIC_MATCH / reason=(JA ASR Variant Layer/Candidate E)残っていた差分箇所について、漢字候補読み(pykakasi内蔵辞書由来)の総当たりで、canonical/ASR
+  Production Primary段(unified_judge込み) -> state=PASS reason=primary_pass label=PHONETIC_MATCH warnings=[]
