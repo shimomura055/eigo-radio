@@ -22486,3 +22486,9 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - **監視**: `open333_first_run_tally_01.py`を拡張(E4発火件数と最終結果区分)。1run 3件超→報告、E4発火行がHRに到達したら1件でも報告(対処はE4 rollbackではなく表記正規化=ユーザー承認が必要な別件の検討)。
 - **別件観察(実害なし)**: Candidate E本体は同形異音(今日→こんにち等)でもPASSし得る(承認済み挙動)。
 - 詳細=`docs/research/JA-ASR-FALSE-NG-ROOT-CAUSE-01/OPEN333_E4_APPLY_RESULT_01.md`、`docs/pm/RESULT_PACKET_JAASR14.md`。
+
+## FAMILY-Y-PRODUCTION-LAUNCH-01 委任_09: E-1(宅配 redelivery_fee)ユーザー試聴承認の正式反映・組立〜限定公開の完走・Y runtime証拠回収(2026-10-26、API 0・実費0円)
+- **ユーザー承認(2026-10-26、原文逐語=`docs/pm/delegation_log/2026-10-26_FAMILY-Y-PRODUCTION-LAUNCH-01_USER_E1_APPROVAL.md`)**: E-1の3音声[①a2 preview ②b1b y_voice_1 ③a2 y_voice_1(6%減速版)]を試聴し『3本とも問題ありません。正式に採用を承認します』。承認の範囲=この3 segmentのみ。品質基準・Gate・閾値は変更しない。
+- **実施**: `er121_e1_hr_adopt_r0_01.py --apply` 3本(`approved_by="user"`、statement ref=上記ファイル)。③は減速後ASR再検証JSON(`a2/hr_adopt_prep/y_voice_1_slowed_asr_recheck.json`、PASS)とsha256一致(c3f59b00…)で採用。完成段は1起動(`--stages gate,assemble,pages,page_verify`)で gate b1b/a2=PASS・assemble・pages・page_verify ok。限定公開=`user_test/family_y_production_redelivery_fee_01/`(standard/notice check rc=0)。
+- **runtime証拠**: Y Part 2はSELECTED・ページ表示・page_verify OK。KP HR/文法HRは『HRなし』経路のみ実走、HRあり経路は未。OPEN-517 F1+F2: r5計測付き判定あり・発火0・READING_MATCHでfinal_gate適用された行0=X/Z基準未達(Y=runtime未確認)。E3/E4発火0・alertなし。証跡=`docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/EVIDENCE_03.md`、`docs/research/JA-ASR-FALSE-NG-ROOT-CAUSE-01/OPEN517_RUNTIME_EVIDENCE_03_Y.md`。
+- **費用**: 0円(Y累計約167.25/200円)。PRODUCTION_WIRED判定語はFable。報告=`docs/pm/RESULT_PACKET_YPL9.md`。
