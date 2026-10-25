@@ -83,3 +83,19 @@
 1. R2のHR Lock(既存音声品質Gate、disfluency false positive[本文自身の「now. Now,」])。分類: 実害なし(既存Gateが仕様どおり停止。KP/Part 2とは独立)/ただし完走させるなら人間によるapprove_regenerate要。
 2. Z小説でStep A''が0件になりやすい(tell-tale 22段落すべて「特徴なし」、melos R3=1件、R4=0件)。Part 2のZでの有用性に関わる仕様面の観察(分類: ユーザー判断要の可能性[Zへの文法解説の価値/抽出基準]。現時点は仕様どおり固定文面で完走するため実害なし)。
 3. 新規の初回Zでa2のHR(KP)が対象になる経路は本evidenceでは未実走(a2は旧run再利用)。モック統合test固定のみ。分類: 修正へ進む場合は次委任でZ新規run相当(旧KPを削除したcopy)で実走。
+
+## 11. 委任_05(2026-10-25 23:25〜2026-10-26 00:10 JST): R3完成段・R2再生成
+証跡: `evidence_01/R3/d05/`・`evidence_01/R2/d05/`(各起動のlog・stop_check・確定JSON・page_verify_local.json)。
+
+### 11-1 R3(Z・HRあり、melos `run_p2_evidence_r3`) = **完走・検証PASS**
+- `STOP`/`RESTART_STORM_LOCK.json`は`--clear-stop --reason "Fable権限: 委任_04の起動間隔ミスによるRESTART_STORM自行発動の解除(2026-10-25)"`で解除(監査記録あり)。
+- 起動(`Get-Date`記録、各起動前に`stop_scope_check_01`rc=0): L1 23:25:15 `--stage kp --regenerate-stage kp_b1b`(KP再finalize、6秒) → L2 23:28:06(+171秒) `kp_expl_b1b`(10秒) → L3 23:31:12(+186秒) 完成段`tts_b1b,tts_a2,provision_shell,gate,assemble,pages,page_verify`(rc=0、約4.4分、2.16円) → L4 23:36:51(+339秒) `--regenerate-stage part2_cand_b1b`(rc=2、`part2_b1b`がstale→STOP。抽出は走り候補0件=`NO_CANDIDATE_UNREVIEWED`) → L5 23:40:11(+200秒) 再度`part2_cand_b1b`(**候補1件**、rc=4待機) → [CLI `grammar-select --choice top1 --accept-ai`、23:41:00] → L6 23:43:27(+196秒) `--regenerate-stage part2_b1b`(再finalize、rc=0、`part2_result.json` status=SELECTED `selection.source=human_top1`) → L7 23:46:30(+183秒) 完成段再実行(rc=0、約3.2分)。最小間隔171秒、300秒窓内の起動は最大2回(RESTART_STORMなし)。
+- **文法の経緯**: 委任_04時点のR3は`human_rejected_all`(再抽出上限1回を使用済み、`MAX_REEXTRACT`)。そのまま`reextract`は不可のため、`--regenerate-stage part2_cand_b1b`(既存の強制再抽出経路。Step A'' 1 call)を2回使用(L4=0件、L5=1件=同じP11の1文。NG registryはinactive化済みのため復活可)。L4の0件も含め「LLM非決定」の実測(同一本文で0件/1件)。
+- 完走後の検証: `page_verify_local.json` = `kp_selection_verified` a2 legacy/b1b `ok:true`(signature `7d93c69d…`、KP/vocab=pull someone under・earn such trust・execution=Human選定。AI順位1,2,3と異なる[R3 select 2,3,4])、`part2_verified` index_page=OK・blocks_in_index=1・`standard_page_has_part2=false`、`user_page_standard_check` PASS(`page_standard_check_r3_index.json`)、plays_ok=全件(index49/standard52/advanced49)・http_ge400=[]・console_errors=[]。`index.html`のAdvanced節で「Vocabulary & Expressions」(Part 1)の直後(位置9113→10336)に「Sentence Structure」節があり、`Melos struck the man holding it…`の解説(現在分詞句`holding it`の係り先)を掲載、Standard節に0件。
+- 公開: `user_test/family_z_melos_kphr_evidence_r3/`(wav 0件)。
+- 費用: 本委任のR3分 2.78円(2.9034→5.6802)。
+
+### 11-2 R2(X・HRなし)の1回再生成 = **再Lockで途中停止(再承認せず)**
+- `approve_regenerate`をb1b `comment_4`へ1回適用(text sha`f84580f1…`一致[ASCII apostrophe]、`approved_by="Fable(委任_05: Fable権限で1回のみ許可・user承認ではない)"`)。`--stage all`を1起動(23:51〜00:10 JST)。
+- 結果: comment_4が3 attempt(4〜6)ともASR PASS/primary_passだが`disfluency_evidence.flagged`(`now.`→`Now,`、第2語の開始が前語終了の約0.9〜1.1秒後)で`STOPPED`→再び`HUMAN_REVIEW_REQUIRED`。assemble前に停止(rc=0でプロセス終了、`EPISODE_BLOCKED_BY_AUDIO_VALIDATION: comment_4=STOPPED`)。player未生成。**再承認せず**、そのまま記録(委任_05指示)。実費0.50円(18.32→18.82)。
+- 原因の見立て(事実/推測): 事実=comment_4の台本自体が「…what is happening now. Now, let's bring the main idea together.」で`now.`の直後に`Now,`が続く。TTS 6回すべてで同じ位置をdisfluencyと判定。推測=Gateの誤検知というより、台本自体の語反復(support comment生成の文面)が実音声でも反復として聞こえる可能性が高い。分類: **修正へ進む(Gate変更ではなく台本側/comment生成側の問題の可能性。X・HRなし経路の機能確認とは独立で、X wiring受入に実害なし)**。着手は別委任(対象=b1 support comment生成の文末/文頭語の連続回避。Gate・閾値は変えない)。

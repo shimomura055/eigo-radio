@@ -1,0 +1,70 @@
+[GLOSS-ALIGN] 実効flag=ON (source=default, EIGO_KP_GLOSS_ALIGNMENT=None)
+[FAMILY-X-AUDIO-SCAFFOLD] a2: KP review再開(support生成・KP選定はskip。確定のみ実行)
+[FAMILY-X-AUDIO-SCAFFOLD] a2: key phrase status=CANONICALIZATION_PASS
+[FAMILY-X-AUDIO-RUNNER][cost] so far=18.32 JPY by_provider={'openai': 4.45, 'gemini_batch': 6.26, 'openai_asr': 3.4, 'azure': 4.2} (after scaffold a2)
+[FAMILY-X-AUDIO-SCAFFOLD] b1b: KP review再開(support生成・KP選定はskip。確定のみ実行)
+[FAMILY-X-AUDIO-SCAFFOLD] b1b: key phrase status=CANONICALIZATION_PASS
+[FAMILY-X-AUDIO-RUNNER][cost] so far=18.32 JPY by_provider={'openai': 4.45, 'gemini_batch': 6.26, 'openai_asr': 3.4, 'azure': 4.2} (before kp_part1)
+[FAMILY-X-AUDIO-RUNNER][cost] so far=18.32 JPY by_provider={'openai': 4.45, 'gemini_batch': 6.26, 'openai_asr': 3.4, 'azure': 4.2} (before kp_part1_ja)
+[FAMILY-X-AUDIO-RUNNER][cost] so far=18.32 JPY by_provider={'openai': 4.45, 'gemini_batch': 6.26, 'openai_asr': 3.4, 'azure': 4.2} (after scaffold b1b)
+[FAMILY-X-AUDIO-RUNNER][cost] so far=18.32 JPY by_provider={'openai': 4.45, 'gemini_batch': 6.26, 'openai_asr': 3.4, 'azure': 4.2} (after scaffold)
+[FAMILY-X-AUDIO-RUNNER][rf_guard] a2: 三者sha一致(scaffold == source == Queue)。RF再実行なし。
+[FAMILY-X-AUDIO-RUNNER][rf_guard] b1b: 三者sha一致(scaffold == source == Queue)。RF再実行なし。
+
+===== 固有名詞発音アラーム報告 (er019_output/family_x_audio_production_wiring_01/part2_hr_evidence_01__run_r2/a2) =====
+## 固有名詞発音アラーム(運営責任者向け・一般リスナー非表示)
+0件(固有名詞の発音不一致アラームなし)
+
+### 発音供給の適用一覧(TTS入力へ綴り置換した語。ASR比較は置換後の綴りが基準)
+0件(供給対象なし。A階層の自動供給対象/人承認済みB階層が無い、または該当語が本文に無い)
+
+### Human Review残(受理境界の外): ASR不確実のまま残ったsegment 0件 (うち固有名詞のみ不一致だが境界外=脱落/一般語化等 0件)
+
+注: 日本語音声の固有名詞読みはこのアラーム方針の対象外です(従来の検証・Human Reviewのまま)。
+
+### 実体表(固有名詞と認識した根拠。受理判定用。発音の根拠[Ledger/Perplexity調査]とは別)
+- 実体表: 6件(うち証拠として使用可 1件) / NER call=0 / model=gpt-6-luna / table_sha256=7f7c85b97e55
+- 実体表 organization/confirmed: 1件
+- 実体表 other_named/weak: 1件
+- 実体表 place/weak: 4件
+- 証拠にならなかった語(weak/一般語等): United States, Brazil, New York, Arabica coffee, U.S.
+
+[FAMILY-X-AUDIO-RUNNER][cost] so far=18.32 JPY by_provider={'openai': 4.45, 'gemini_batch': 6.26, 'openai_asr': 3.4, 'azure': 4.2} (after tts a2)
+
+===== 固有名詞発音アラーム報告 (er019_output/family_x_audio_production_wiring_01/part2_hr_evidence_01__run_r2/b1b) =====
+## 固有名詞発音アラーム(運営責任者向け・一般リスナー非表示)
+0件(固有名詞の発音不一致アラームなし)
+
+### 発音供給の適用一覧(TTS入力へ綴り置換した語。ASR比較は置換後の綴りが基準)
+0件(供給対象なし。A階層の自動供給対象/人承認済みB階層が無い、または該当語が本文に無い)
+
+### Human Review残(受理境界の外): ASR不確実のまま残ったsegment 0件 (うち固有名詞のみ不一致だが境界外=脱落/一般語化等 0件)
+
+注: 日本語音声の固有名詞読みはこのアラーム方針の対象外です(従来の検証・Human Reviewのまま)。
+
+### 実体表(固有名詞と認識した根拠。受理判定用。発音の根拠[Ledger/Perplexity調査]とは別)
+- 実体表: 6件(うち証拠として使用可 1件) / NER call=0 / model=gpt-6-luna / table_sha256=7f7c85b97e55
+- 実体表 organization/confirmed: 1件
+- 実体表 other_named/weak: 1件
+- 実体表 place/weak: 4件
+- 証拠にならなかった語(weak/一般語等): United States, Brazil, New York, Arabica coffee, U.S.
+
+[FAMILY-X-AUDIO-RUNNER][cost] so far=18.82 JPY by_provider={'openai': 4.45, 'gemini_batch': 6.62, 'openai_asr': 3.54, 'azure': 4.2} (after tts b1b)
+[FAMILY-X-AUDIO-RUNNER][cost] so far=18.82 JPY by_provider={'openai': 4.45, 'gemini_batch': 6.62, 'openai_asr': 3.54, 'azure': 4.2} (after tts)
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 3545, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 3475, in main
+    stage_assemble_family_x_b1(out_dir, args.slug, source_dir=source_dir)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 2402, in stage_assemble_family_x_b1
+    sources = load_family_x_b1_sources(theme_out_dir, source_dir=source_dir)
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 2079, in load_family_x_b1_sources
+    asm.verify_episode_audio_validation_gate(out_dir, "B1", article_text=article_text)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er003_v1_n3_01_assemble.py", line 512, in verify_episode_audio_validation_gate
+    raise RuntimeError(
+    ...<7 lines>...
+        "適用してから再度assemblyを実行してください。")
+RuntimeError: EPISODE_BLOCKED_BY_AUDIO_VALIDATION: B1のepisode assemblyを中止しました。以下のsegmentが今回のrunでVALIDATED/HUMAN_APPROVED状態ではありません、または必須post-processのevidenceがありません: ['comment_4=STOPPED']。未検証・stale・STOPPEDの音声、または6% slowdown等の必須post-processを経ていない音声をそのまま完成扱いにすることは許可されていません(ER-008-AUDIO-VALIDATION-GATE-AND-EVIDENCE-MAJOR-AUDIT-05、ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19)。該当segmentを再生成するか、post-processを適用してから再度assemblyを実行してください。

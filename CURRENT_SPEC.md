@@ -2052,6 +2052,11 @@ WIRING-01`) | 2026-09-29 |
 - **導入前の既存runの解消手順(M2)**: Part 1/訳の導入前に始まったZ/X runはtts/gate/assemble/pages/playerでSTOPする。Z=`--stage kp`(解説約0.10円+訳約0.04円/作品。`kp_part1_b1b`/`kp_part1_ja_b1b`が未生成なら生成、生成済みはreuse API 0)、X=`--slug <slug> --run <run> --level b1b --stage study_text`(解説約0.07円+訳約0.03円/作品、KP再選定なし)。完成段の再実行はZなら`--stages provision_shell,gate,assemble,pages,page_verify`を**1起動**で指定する(複数起動はRESTART_STORMを自行発動する)。**注意**: Zの`--stage pages`はrunner既定の公開pages_dir(`user_test/family_z_*`)へ書き込むため、複製runで検証する場合はpages_dirを分離すること。既公開作品への適用はFable判断事項(今回未実施)。
 - 設計=`docs/research/FAMILY-Z-STUDY-TEXT-TRIAL-01/PART1_WIRING_DESIGN_01.md`(§13〜§17がOpus条件A反映後の正)、Opusレビュー逐語=`PART1_WIRING_OPUS_REVIEW_01.md`、runtime evidence=`PART1_WIRING_EVIDENCE_01.md`(解説)・`PART1_WIRING_EVIDENCE_02.md`(T1・X公開ページ)、T1正確性確認=`PART1_T1_CHECK_01.md`。test=`er003_kp_general_explanation_01_test_01.py`+`..._runner_integration_test_01.py`+`er003_kp_source_sentence_ja_01_test_01.py`。
 
+### KP Human Review・文法Human Review・Part 2「Grammar & Sentence Structure」・Trial-08選定方式 — Family別Status(2026-10-25 Fable受入、OPEN-518/519)
+
+- **Status**: 4機能とも X=`PRODUCTION_WIRED`・Z=`PRODUCTION_WIRED`(正式runner経由のruntime evidence: X=R1[HRあり完走]/R2[HRなし継続]、Z=R3[HRあり完走]/R4[HRなし完走]。証跡=`docs/research/KP-GRAMMAR-HUMAN-REVIEW-PRODUCTION-01/EVIDENCE_01.md`§11)。Y=委任_06でY runnerへ接続済み・文法HRありの実走は未(OPEN-484/520)。
+- 運用(既存記述の要点・重複追記なし): 既定=Human Review待機(rc=4)。HRなしでの継続は明示宣言(`declared_by`+`user_ref`)のみで自動確定し、期限付き不在宣言は不採用。Part 2はAdvancedのみ・Part 1直後。Z=`--regenerate-stage kp_<lv>`は再finalize(再選定なし)、選び直しはCLI `reselect`。
+
 ## Preview
 
 **適用範囲の注意(2026-08-17追記)**: 本節は**A2、および旧P-series B1**の

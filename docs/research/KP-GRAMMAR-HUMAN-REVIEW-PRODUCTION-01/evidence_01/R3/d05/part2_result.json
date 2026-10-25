@@ -1,0 +1,94 @@
+{
+  "schema": "part2_grammar_v1",
+  "level": "Advanced",
+  "status": "SELECTED",
+  "zero_reason": null,
+  "selection": {
+    "source": "human_top1",
+    "candidate_id": "g50e12a388f",
+    "rank": 1,
+    "tier": "T1",
+    "feature_class": "POSTMOD",
+    "para": "P11",
+    "sentence": "Melos struck the man holding it with his walking stick and ran uphill, their shouts following him.",
+    "construct_ja": "後置修飾と前置詞句の係り先",
+    "teaching_value_ja": "後置された前置詞句が名詞と動詞のどちらを修飾するか、文の意味から判断する読み方。"
+  },
+  "text_sha256": "03b3787d1c4eae4f508c2140de3864effae9c46debc2f133a42c4cb1917c0981",
+  "extract_signature": "f1a95ad1387e3d70bf8c01e670afdeeb392ada883a43135267dbf96725dd38e9",
+  "candidates_sha256": "7e53201cc0392e89a6decbc9dcc72a3cda3aeaa20280b143d0a74d5afdee3933",
+  "round": 1,
+  "translation_ja": "メロスは、ナイフを持った男を杖で打ち、彼らの叫び声が後を追うなか、丘を駆け上がった。",
+  "translation_source": "stepB",
+  "ref_ja": null,
+  "ref_ja_source": null,
+  "explain_signature": "01bf70f1ada46070c659e3076e91b096c1e97573d9658deedc26511485e9b702",
+  "explanation_md": "【日本語訳】\nメロスは、ナイフを持った男を杖で打ち、彼らの叫び声が後を追うなか、丘を駆け上がった。\n\n【文法・構文の仕組み】\n`holding it` は現在分詞句で、直前の `the man` を後ろから説明しています。「それを持っている男」という意味です。前の文の `A knife flashed.` を踏まえると、`it` はナイフを指します。\n\n`with his walking stick` は `struck` にかかり、「杖を使って打った」という手段を表します。`the man holding it` の一部ではなく、メロスがどのように打ったのかを説明する語句です。\n\nまた、`their shouts following him` は「彼らの叫び声が彼の後を追って」という状況を付け加えています。`and ran uphill` の主語は前半と同じくメロスです。\n\n【意味・ニュアンス・表現効果】\n`holding it` によって、メロスが打った相手がナイフを持っている男だと分かります。また、`with his walking stick` が打つ手段を示し、続く `ran uphill` がその後の動きを伝えています。最後に叫び声が彼を追う様子を添えることで、打って丘を駆け上がる動きが、周囲の声とともに続いていくように描かれています。\n=====",
+  "sections": {
+    "日本語訳": "メロスは、ナイフを持った男を杖で打ち、彼らの叫び声が後を追うなか、丘を駆け上がった。",
+    "文法・構文の仕組み": "`holding it` は現在分詞句で、直前の `the man` を後ろから説明しています。「それを持っている男」という意味です。前の文の `A knife flashed.` を踏まえると、`it` はナイフを指します。\n\n`with his walking stick` は `struck` にかかり、「杖を使って打った」という手段を表します。`the man holding it` の一部ではなく、メロスがどのように打ったのかを説明する語句です。\n\nまた、`their shouts following him` は「彼らの叫び声が彼の後を追って」という状況を付け加えています。`and ran uphill` の主語は前半と同じくメロスです。",
+    "意味・ニュアンス・表現効果": "`holding it` によって、メロスが打った相手がナイフを持っている男だと分かります。また、`with his walking stick` が打つ手段を示し、続く `ran uphill` がその後の動きを伝えています。最後に叫び声が彼を追う様子を添えることで、打って丘を駆け上がる動きが、周囲の声とともに続いていくように描かれています。\n====="
+  },
+  "audit": {
+    "extract": {
+      "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+      "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+      "model": "gpt-6-luna",
+      "requested_model": "gpt-6-luna",
+      "prompt_sha256": "560073ba36045b75cac711cca2aefe638cd86e74dc37976b469b52c349268134",
+      "response_ids": [
+        "resp_01d9ea541cdb9911006ade14d039f487d0964c220dab66dfac"
+      ],
+      "calls": [
+        {
+          "attempt": 1,
+          "response_model": "gpt-6-luna",
+          "usage": {
+            "input_tokens": 3554,
+            "output_tokens": 3172,
+            "cached_input_tokens": 3551,
+            "reasoning_tokens": 2728
+          },
+          "response_id": "resp_01d9ea541cdb9911006ade14d039f487d0964c220dab66dfac",
+          "elapsed_sec": 33.04,
+          "cost_jpy": 0.2595
+        }
+      ],
+      "retried_for_parse": false,
+      "total_cost_jpy": 0.2595,
+      "generated_at": "2026-10-25T23:40:48+0900",
+      "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+    },
+    "explain": {
+      "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+      "process": "STUDY_TEXT_GRAMMAR_EXPLAIN",
+      "model": "gpt-6-luna",
+      "requested_model": "gpt-6-luna",
+      "prompt_sha256": "8648ef25f66b92f1075fadcd4dd1d921b1edd6ffbf250f6ad903b7a9a1ae5f50",
+      "response_ids": [
+        "resp_01d7bfae38caa62a006ade1594b56c87d0af3838edcc853594"
+      ],
+      "calls": [
+        {
+          "attempt": 1,
+          "response_model": "gpt-6-luna",
+          "usage": {
+            "input_tokens": 934,
+            "output_tokens": 1216,
+            "cached_input_tokens": 0,
+            "reasoning_tokens": 846
+          },
+          "response_id": "resp_01d7bfae38caa62a006ade1594b56c87d0af3838edcc853594",
+          "elapsed_sec": 10.97,
+          "cost_jpy": 0.1122
+        }
+      ],
+      "retried_for_parse": false,
+      "total_cost_jpy": 0.1122,
+      "generated_at": "2026-10-25T23:43:43+0900",
+      "prompt_template_sha256": "59588b5961e88d1be052e9ae5045ed90ca243546d6996027b60336e3083b591c"
+    }
+  },
+  "generated_at": "2026-10-25T23:43:43+0900",
+  "reused_from_previous_run": false
+}

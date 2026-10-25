@@ -1,0 +1,138 @@
+{
+  "schema": "kp_human_review_v1",
+  "kind": "kp",
+  "level": "b1b",
+  "text_sha256": "03b3787d1c4eae4f508c2140de3864effae9c46debc2f133a42c4cb1917c0981",
+  "candidates_sha256": "c5e4d43e600b69455f9210984ec8d8bc3742acbb8fdb5563dc6bee85fb524107",
+  "round": 1,
+  "status": "REVIEWED",
+  "revision": 6,
+  "article_key": {
+    "family": "z",
+    "slug": "melos",
+    "level": "b1b"
+  },
+  "selection": {
+    "kp": [
+      "p_37c58c930b",
+      "p_5fa532a514",
+      "p_1e21474598"
+    ],
+    "vocab": [
+      "p_37c58c930b",
+      "p_5fa532a514",
+      "p_1e21474598"
+    ]
+  },
+  "accepted_qa_fail": [],
+  "accept_ai_default": false,
+  "accept_ai_shown_candidates_sha256": null,
+  "verdicts": {
+    "p_35c51d5f10": null,
+    "p_37c58c930b": "SELECTED_KP",
+    "p_5fa532a514": "SELECTED_KP",
+    "p_1e21474598": "SELECTED_KP"
+  },
+  "ng": [
+    {
+      "candidate_id": "p_35c51d5f10",
+      "phrase_key": "sentenced him to death",
+      "used_form_key": "sentence someone to death",
+      "phrase": "sentenced him to death",
+      "used_form": "sentence someone to death",
+      "reason": "evidence R3: AI top1 NG(共有registry検証)",
+      "by": "Fable-evidence-operator",
+      "at": "2026-10-25T21:17:50.049965+09:00",
+      "active": false,
+      "removed": {
+        "at": "2026-10-25T23:08:35.610672+09:00",
+        "by": "Fable-evidence-operator",
+        "reason": "evidence後始末(2回目): 実記事melosのNG registryへ検証用NGを残さない"
+      }
+    }
+  ],
+  "reselect_count": 0,
+  "last_human_op_at": "2026-10-25T23:08:35.610684+09:00",
+  "mode_used": null,
+  "final_qa": {
+    "status": "REDUNDANCY_PASS",
+    "ng_pairs": [],
+    "results": {
+      "kp": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      }
+    },
+    "key": "628212540fb76b0d7a04e5517835c69617c07b545e193bc9fab4e23af26ff43b"
+  },
+  "published_selection_signature": null,
+  "history": [
+    {
+      "at": "2026-10-25T21:17:31.627454+09:00",
+      "event": "candidates_generated",
+      "by": "runner",
+      "detail": {
+        "round": 1,
+        "candidates_sha256": "c5e4d43e600b69455f9210984ec8d8bc3742acbb8fdb5563dc6bee85fb524107"
+      }
+    },
+    {
+      "at": "2026-10-25T21:17:50.053290+09:00",
+      "event": "select",
+      "by": "Fable-evidence-operator",
+      "detail": {
+        "from": "PENDING_REVIEW",
+        "selection": {
+          "kp": [
+            "p_37c58c930b",
+            "p_5fa532a514",
+            "p_1e21474598"
+          ],
+          "vocab": [
+            "p_37c58c930b",
+            "p_5fa532a514",
+            "p_1e21474598"
+          ]
+        },
+        "ng": [
+          "p_35c51d5f10"
+        ],
+        "accepted_qa_fail": []
+      }
+    },
+    {
+      "at": "2026-10-25T23:07:32.423854+09:00",
+      "event": "unng",
+      "by": "Fable-evidence-operator",
+      "detail": {
+        "removed": [
+          "p_35c51d5f10"
+        ],
+        "reason": "evidence後始末: 実記事melosのNG registryへ検証用NGを残さない(KP-GRAMMAR-HR R3/R4)"
+      }
+    },
+    {
+      "at": "2026-10-25T23:08:03.316258+09:00",
+      "event": "ng",
+      "by": "Fable-evidence-operator",
+      "detail": {
+        "ids": [
+          "p_35c51d5f10"
+        ]
+      }
+    },
+    {
+      "at": "2026-10-25T23:08:35.610690+09:00",
+      "event": "unng",
+      "by": "Fable-evidence-operator",
+      "detail": {
+        "removed": [
+          "p_35c51d5f10"
+        ],
+        "reason": "evidence後始末(2回目): 実記事melosのNG registryへ検証用NGを残さない"
+      }
+    }
+  ],
+  "selection_signature": "7d93c69d9015a01034e13c777db6f25f44f1f24948ff9e6d66c042ef5dad9cbe"
+}
