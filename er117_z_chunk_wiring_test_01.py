@@ -382,8 +382,7 @@ class ZGateAndAssemblyTests(unittest.TestCase):
     def test_assembly_chunk_gain_gap_timeline_and_pages(self):
         plan, kp = self._prepare(lr={"full_story_part2_c1_k2"})
         story_clips = story()
-        tl = z.run_assembly(self.run, "b1b", story_clips, kp, chunk_plans=z.chunk_plans_from_specs(plan), kp_third="explanation") \
-            if False else z.run_assembly(self.run, "b1b", story_clips, kp, chunk_plans=z.chunk_plans_from_specs(plan))
+        tl = z.run_assembly(self.run, "b1b", story_clips, kp, chunk_plans=z.chunk_plans_from_specs(plan))
         names = tl["sequence_order"]
         self.assertIn("full_story_part2_c1", names)
         self.assertFalse(any("_k" in n for n in names))                                      # timelineは親1エントリ
