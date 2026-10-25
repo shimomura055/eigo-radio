@@ -492,3 +492,44 @@ def render_html_block(rows: list) -> str:
         parts.append(f"<div class='study-item'><h4>{html.escape(r['english_expression'], quote=False)}</h4><dl>{''.join(dl)}</dl></div>")
     parts.append("</section>")
     return STUDY_CSS + "".join(parts)
+
+
+# ------------------------------------------------------------
+# Family X 公開ページ(per-article script)用の共通builder(委任_16、API 0)
+# ------------------------------------------------------------
+def study_html_for_audio_dir(audio_dir: str) -> str:
+    """Xの試聴/公開ページ生成script(例 er019_nws2_final_page_01.py)が1行で呼ぶ共通関数。
+    入力=Production runnerのaudio出力dir(`<audio_dir>/b1b/{key_phrases,study_text}`)。保存済みstudy_text(組立時に本文との逐語照合済み)が、
+    現在のKP・解説・訳(いずれもsignature最新)・gloss現在値と一致することを確認してから描画する。
+    判断記録なし→空文字(従来とバイト同一)。Part 1未生成/古い/不一致→KpGeneralExplanationError(ページを作らない)。"""
+    import er003_kp_source_sentence_ja_01 as ja
+    b = f"{audio_dir}/b1b"
+    kp_path = f"{b}/key_phrases/keywords_canonicalized.json"
+    try:
+        with open(kp_path, encoding="utf-8") as f:
+            items = sorted_items(json.load(f).get("items") or [])
+        with open(f"{b}/key_phrases/{EXPLANATIONS_FILENAME}", encoding="utf-8") as f:
+            ex = json.load(f)
+        with open(f"{b}/key_phrases/{ja.TRANSLATIONS_FILENAME}", encoding="utf-8") as f:
+            tr = json.load(f)
+        with open(f"{b}/study_text/{PART1_FILE_STEM}.json", encoding="utf-8") as f:
+            saved = json.load(f)
+    except (OSError, ValueError) as e:
+        raise KpGeneralExplanationError(f"KP_PART1_PAGE_INPUT_MISSING: {e}(次の一手: --stage study_text の後に --stage assemble/player)") from e
+    try:
+        require_fresh_general_explanations(items, ex, next_command="--stage study_text", where="x_page")
+        ja.require_fresh_translations(items, tr, next_command="--stage study_text", where="x_page")
+    except (KpGeneralExplanationStale, ja.KpSourceSentenceJaStale) as e:
+        raise KpGeneralExplanationError(str(e)) from e
+    rows = saved.get("rows") or []
+    if len(rows) != len(items):
+        raise KpGeneralExplanationError("KP_PART1_PAGE_STUDY_TEXT_COUNT_MISMATCH: 保存済みstudy_textとKPの件数が不一致(--stage assembleで再保存)")
+    by_idx = {r["rank_index"]: r for r in ex["items"]}
+    trs = ja.translations_by_rank(tr)
+    for i, (it, r) in enumerate(zip(items, rows), 1):
+        exp = (by_idx.get(i) or {}).get("explanation_ja")
+        want = (strict_phrase(it), (it.get("japanese_gloss") or "").strip(), (it.get("source_sentence") or "").strip(), trs.get(it["rank"]), exp)
+        got = (r.get("english_expression"), r.get("meaning_in_text_ja"), r.get("source_sentence"), r.get("source_sentence_ja"), r.get("explanation_ja"))
+        if want != got:
+            raise KpGeneralExplanationError(f"KP_PART1_PAGE_STUDY_TEXT_STALE: rank={it['rank']} 保存済みstudy_textが現在のKP/解説/訳と不一致(--stage assembleで再保存)")
+    return render_html_block(rows)

@@ -1132,7 +1132,7 @@ E2E_STAGES = ("seed_check", "writer", "std_adjust", "plan", "support", "kp",
 E2E_STAGE_EST_JPY = {"writer": 22.0, "std_adjust": 8.0, "plan": 2.0,
                      "support": 8.0, "kp": 10.0, "tts_b1b": 40.0, "tts_a2": 40.0}
 E2E_TTS_CLIP_EST_JPY = 1.0              # clip単位guard(LRが走ると+約1円。事後は次clipのguardで検知)
-E2E_KP_EXTRA_REGEN_NAMES = ("kp_expl_b1b", "kp_part1_b1b")   # 委任_14(Part 1 Vocabulary & Expressions): kp_part1_b1b追加
+E2E_KP_EXTRA_REGEN_NAMES = ("kp_expl_b1b", "kp_part1_b1b", "kp_part1_ja_b1b")   # 委任_14(Part 1 Vocabulary & Expressions): kp_part1_b1b追加
 LEGACY_STAGES = ("text", "keyphrase")
 
 
@@ -1782,6 +1782,8 @@ def stage_kp(ctx) -> dict:
                       "(KP表現が変わった場合の2段再生成)") from e
     summary["kp_explanations_b1b"] = r["status"]
     summary["kp_part1_b1b"] = _stage_kp_part1(ctx, prov, items)
+    summary["kp_part1_ja_b1b"] = _stage_kp_part1_ja(ctx, prov, items)   # 委任_16 T1: 解説とは独立の別stage・別call(引用英文のみ入力)
+    _assemble_study_rows(ctx, items)   # 組立検証(gloss HR/未評価・引用の逐語実在・訳の最新性)+study_text/保存
     return summary
 
 
@@ -1824,13 +1826,35 @@ def _require_part1_fresh(ctx, items: list, where: str) -> dict:
     return doc
 
 
+def _p1ja():
+    import er003_kp_source_sentence_ja_01 as ja
+    return ja
+
+
+def _part1_ja_path(ctx) -> str:
+    return f"{ctx.out_dir}/key_phrases/b1b/{_p1ja().TRANSLATIONS_FILENAME}"
+
+
+def _require_part1_ja_fresh(ctx, items: list, where: str) -> dict:
+    """委任_16 T1: 訳(引用英文の日本語訳)を使う側の確認(存在+signature一致)。無い/古いならFamilyZE2EStop(次コマンド付き)。"""
+    ja = _p1ja()
+    path = _part1_ja_path(ctx)
+    doc = _m().w62.rj(path) if os.path.exists(path) else None
+    try:
+        ja.require_fresh_translations(items, doc, where=where, next_command=f"{_part1_cli_hint(ctx, 'kp_part1_ja_b1b')}(訳だけ再生成。KP選定・TTS・解説はやり直さない)")
+    except ja.KpSourceSentenceJaStale as e:
+        raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_JA_NOT_READY: {e}") from e
+    return doc
+
+
 def _assemble_study_rows(ctx, items: list) -> list:
     m = _m()
     p1 = _p1()
     doc = _require_part1_fresh(ctx, items, "assemble")
+    ja_doc = _require_part1_ja_fresh(ctx, items, "assemble")
     text = canonical_article_text(m.w62.rd(_level_text_path(ctx, "b1b")))
     try:
-        rows = p1.assemble_part1(items, doc, None, text)
+        rows = p1.assemble_part1(items, doc, _p1ja().translations_by_rank(ja_doc), text)
     except p1.KpGeneralExplanationError as e:
         raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_ASSEMBLE_NOT_OK: {e}") from e
     p1.write_study_text(f"{ctx.out_dir}/study_text", rows)
@@ -1865,7 +1889,39 @@ def _stage_kp_part1(ctx, prov, items: list) -> str:
         r = w62.ensure_stage(prov, "kp_part1_b1b", sig, _part1_path(ctx), runner_p1, regenerate=ctx.regenerate_stage == "kp_part1_b1b")
     except w62.FamilyZProvenanceMismatchStop as e:
         raise type(e)(f"{e} 次の一手: {_part1_cli_hint(ctx, 'kp_part1_b1b')}(KP表現・順序・Prompt・modelが変わった場合は明示再生成。自動再生成しない)") from e
-    _assemble_study_rows(ctx, items)   # 組立検証(gloss HR/未評価・引用の逐語実在)+study_text/保存。訳はnull+PENDING_USER_DECISION
+    return r["status"]
+
+
+def _stage_kp_part1_ja(ctx, prov, items: list) -> str:
+    """委任_16 T1: 引用英文のみを入力に日本語訳を1 callで生成(解説stageとは独立)。signature=引用英文+Prompt sha+model。"""
+    m = _m()
+    st, w62 = m.st, m.w62
+    ja = _p1ja()
+    try:
+        sig = ja.translations_signature(items)
+    except ja.KpSourceSentenceJaInputError as e:
+        raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_JA_INPUT_INVALID: {e}(訳の入力は本文引用英文のみ。TTSへ進まない)") from e
+
+    def runner_ja():
+        _guard(ctx, "kp_part1_ja_b1b", 0.3)
+        hook = ctx.hooks.get("part1_ja_call_fn")
+        if hook is None and ctx.mode != "real":
+            raise FamilyZE2EStop("FAMILY_Z_KP_PART1_JA_NO_HOOK: mock/dry-runではhooks.part1_ja_call_fnが必要(実APIへは出さない)")
+        text = canonical_article_text(w62.rd(_level_text_path(ctx, "b1b")))
+        try:
+            with ctx.stage_context("kp_part1_ja"):   # 費用ログのstageタグ(訳の原価を単独で集計できる)
+                res = ja.generate_for_kp_items(items, call_fn=hook, client=ctx.llm_client, article_text=text)
+        except (ja.KpSourceSentenceJaError, ja.KpSourceSentenceJaInputError) as e:
+            raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_JA_NOT_OK: {e}(旧方式fallbackなし・空欄続行なし。TTSへ渡さずSTOP。"
+                                 f"次の一手: 原因確認後に{_part1_cli_hint(ctx, 'kp_part1_ja_b1b')})") from e
+        a = res["audit"]
+        return st.dumps(res), {"model": a["model"], "prompt_sha256": a["prompt_sha256"], "total_cost_jpy": a["total_cost_jpy"],
+                               "retried_for_parse": a["retried_for_parse"], "response_ids": a["response_ids"]}
+
+    try:
+        r = w62.ensure_stage(prov, "kp_part1_ja_b1b", sig, _part1_ja_path(ctx), runner_ja, regenerate=ctx.regenerate_stage == "kp_part1_ja_b1b")
+    except w62.FamilyZProvenanceMismatchStop as e:
+        raise type(e)(f"{e} 次の一手: {_part1_cli_hint(ctx, 'kp_part1_ja_b1b')}(引用英文・Prompt・modelが変わった場合は明示再生成。自動再生成しない)") from e
     return r["status"]
 
 
@@ -1898,6 +1954,7 @@ def load_level_inputs(ctx, level: str, *, for_tts: bool = False) -> dict:
         # 委任_14(Opus M2): Part 1(Vocabulary & Expressions)の存在と最新性を、TTS/Gate/Assemblyの共有入口でfail-closed確認する
         # (Part 1導入前に始まったrunの再開・--regenerate-stage kp_b1b後の再生成忘れで、Part 1なしの音声/古い解説を作らない)。
         _require_part1_fresh(ctx, items, "load_level_inputs(b1b)")
+        _require_part1_ja_fresh(ctx, items, "load_level_inputs(b1b)")   # 委任_16 T1: 訳も同様にfail-closed確認
     kp_items = [{"rank": it["rank"], "used_form": it["used_form"], "japanese_gloss": it.get("japanese_gloss", ""),
                  "display_phrase": it["display_phrase"]} for it in items]
     expl = None
@@ -2127,7 +2184,7 @@ _STAGE_PLAN_INFO = {
     "std_adjust": ("Std調整 (FAMILY_Z_STD_ADJUST、段落不一致はWARNのみ・再生成/STOPしない)", ["writer/std.md"], "writer/std.md"),
     "plan": ("分割選択+話者判定 (FAMILY_Z_STORY_SPLIT / FAMILY_Z_DIALOGUE_ATTRIBUTION)", ["segment_plan_{b1b,a2}.json", "speaker_table.md"], "segment_plan_a2.json"),
     "support": ("Preview/Comment (gpt-6-luna support)", ["support/{b1b,a2}_support.json"], "support/a2_support.json"),
-    "kp": ("Key Phrase選定+Adv英語解説+Part 1 Vocabulary & Expressions解説 (support model)", ["key_phrases/", "{b1b,a2}/key_phrases/keywords_canonicalized.json", "key_phrases/b1b/kp_general_explanations.json", "study_text/"], "key_phrases/b1b/kp_explanations.json"),
+    "kp": ("Key Phrase選定+Adv英語解説+Part 1 Vocabulary & Expressions解説+引用英文の日本語訳 (support model)", ["key_phrases/", "{b1b,a2}/key_phrases/keywords_canonicalized.json", "key_phrases/b1b/kp_general_explanations.json", "key_phrases/b1b/kp_source_sentence_ja.json", "study_text/"], "key_phrases/b1b/kp_explanations.json"),
     "tts_b1b": ("TTS flash-lite + ASR Primary/Secondary + LR(必要時)", ["b1b/narration/", "b1b/audit/tts_generation_results.json"], "b1b/audit/tts_generation_results.json"),
     "tts_a2": ("TTS flash-lite + ASR Primary/Secondary + LR(必要時)", ["a2/narration/", "a2/audit/tts_generation_results.json"], "a2/audit/tts_generation_results.json"),
     "provision_shell": ("API 0 (既存共有shell資産の読取コピー)", ["{b1b,a2}/narration/*shell"], "-"),
@@ -2254,6 +2311,14 @@ def mock_part1_call_fn(prompt: str):
     return text, p1.MODEL, {"input_tokens": 100, "cached_input_tokens": 0, "output_tokens": 50}, "mock_part1"
 
 
+def mock_part1_ja_call_fn(prompt: str):
+    """Part 1 T1(引用英文の日本語訳)のmock call_fn(委任_16)。Promptの列挙行から英文を取り、構造検査を通る日本語訳を返す。"""
+    import er003_kp_source_sentence_ja_01 as ja
+    sents = ja._variable_part(prompt)
+    text = json.dumps({"translations": [{"id": i, "ja": f"これは{i}番の英文のmock日本語訳です。"} for i, _ in enumerate(sents, 1)]}, ensure_ascii=False)
+    return text, ja.MODEL, {"input_tokens": 50, "cached_input_tokens": 0, "output_tokens": 30}, "mock_part1_ja"
+
+
 def mock_tts_generators() -> dict:
     """発話長を語数から決める偽TTS(tone wav)。速度仕様v2を模す: Std Narrator story clipは6%減速、Adv会話story clipは約6%高速化
     (いずれも_original.wav + slowdown_applied + slowdown_info付き)。Std会話・Adv Narratorは速度処理なし。"""
@@ -2353,6 +2418,7 @@ def build_mock_context(run_root: str, run: str = "run_mock", pages_dir: str | No
                  "en_support_fn": api.wrap("support_en", mock_en_support_fn), "kp_fn": api.wrap("kp", mock_kp_fn),
                  "expl_call_fn": api.wrap("kp_expl", mock_expl_call_fn),
                  "part1_call_fn": api.wrap("kp_part1", mock_part1_call_fn),
+                 "part1_ja_call_fn": api.wrap("kp_part1_ja", mock_part1_ja_call_fn),
                  "tts_generators": {k: api.wrap(f"tts:{k}", f) for k, f in gens.items()}}
     ctx.budget = E2EBudget(E2E_APPROVED_BUDGET_MAX_JPY, E2E_WARN_THRESHOLD_JPY, spent_fn=lambda: 0.0)
     return ctx
