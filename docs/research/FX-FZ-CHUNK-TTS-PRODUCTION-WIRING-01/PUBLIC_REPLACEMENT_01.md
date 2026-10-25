@@ -12,7 +12,7 @@
 | 5 | 0.2秒ポーズ | 成立 | `timeline.json` chunk_tts gap: 188.516〜188.716秒(part2)・249.376〜249.576秒(part3)。公開`audio_advanced/TellTaleHeart_b1b_full.mp3`をデコード(soundfile)し長さ**280.600秒**(timeline 280.6)、gap内max\|x\|=0.0004/0.00001(≤0.001)、前後±0.1秒を含めても≤0.0025。元wav(run_chunk_01/b1b/assembly)も同様(0.0004/0.0) |
 | 6 | script・音声・パート再生一致 | 成立 | `run_chunk_01/page_verify_local.json`(15:06更新): index/standard/advanced の plays_failed=[]・console_errors=[]・http_ge400=[]、plays_ok=34/26/24、`user_page_standard_check` PASS。`seek_ok_all=false`はhttp.serverがRange非対応のための既知偽陰性(`er026_family_z_fiction_production_runner_01.py:2073`)。実Rangeは公開URLで確認(下記8) |
 | 7 | 古い非分割音声が混在しない | 成立 | 差替え前一覧(58)と候補一覧(58)は同一path集合(旧のみ0・新のみ0)。退避dir内の旧58ファイルとsha一致する公開ファイルは**0本**(全58本変化。旧run_sf_prod_02由来なし) |
-| 8 | 公開URLの全音声・Range・page_verify | (push後に下記へ追記) | |
+| 8 | 公開URLの全音声・Range・page_verify | 成立 | push(commit 34c77f5f1)後、Pages反映は6回目の確認(約10分後)で公開advanced.htmlがlocalと一致。index/standard/advanced 全HTTP 200、ページ内mp3 55件(重複除去)全て200かつsha256がlocalと一致。Range `bytes=0-1`: advanced full・standard full とも**206**(Content-Range 0-1/3121152、0-1/3256704、Accept-Ranges: bytes)。公開URL上のPlaywright実再生(`er026_fz_play_verify_17.py`、API 0、出力=scratchpad d5/public_play_verify.json): index 34/34・standard 26/26・advanced 24/24 plays_ok、plays_failed=[]、**seek_ok_all=true(3ページ)**、http_ge400=[]、console_errors=[]、full_durations Adv 280.6秒・Std 291.28秒 |
 
 追加: Part 1(Vocabulary & Expressions)blockは**index.html**に1つ(`<section class='study'>`=1、Advanced文由来の語句)。advanced.html・standard.htmlには0(従来から同blockはindexのみ)。Standardに無い点は成立。旧公開index.htmlには無かった。
 
