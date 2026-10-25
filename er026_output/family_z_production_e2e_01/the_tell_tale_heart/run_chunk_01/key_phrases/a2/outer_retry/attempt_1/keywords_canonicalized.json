@@ -5,8 +5,8 @@
       "source_span": "made my blood turn cold",
       "source_sentence": "That vulture's eye made my blood turn cold",
       "display_phrase": "made my blood turn cold",
-      "key_phrase": "make one's blood turn cold",
-      "used_form": "make one's blood turn cold",
+      "key_phrase": "make someone's blood turn cold",
+      "used_form": "make someone's blood turn cold",
       "japanese_gloss": "人をぞっとさせる",
       "japanese_gloss_tts": "人をぞっとさせる",
       "changed_from_display_phrase": true,
@@ -26,7 +26,7 @@
         "qa_person_reference_generalized": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "経験者自身を指す my を辞書的な one's に置き換え、動詞も見出し語形の make にしました。慣用句の意味を担う語は保持しています。",
+      "reasoning": "記事中の語り手を指すmyを、動作主とは別の人を指すsomeone'sに一般化し、動詞madeは見出し語形のmakeにしました。血が冷たくなるという比喩的な意味を保つ自然な慣用表現です。",
       "kp_extends_beyond_candidate": false,
       "gloss_review_hint": false,
       "fulltext_source_ref": "fulltext_exact_v1",
@@ -40,7 +40,7 @@
       "possessor_roles": [
         {
           "token": "my",
-          "role": "self"
+          "role": "other_person"
         }
       ],
       "person_role_repair": {
@@ -48,15 +48,17 @@
         "roles_ok": true,
         "roles_reason": "",
         "repairs": [],
-        "key_before": "make one's blood turn cold",
-        "role_ok_poss": []
+        "key_before": "make someone's blood turn cold",
+        "role_ok_poss": [
+          1
+        ]
       },
       "gloss_alignment": {
         "version": "ER-003-KP-GLOSS-ALIGN-02",
         "status": "GLOSS_REALIGNED",
         "original_japanese_gloss": null,
         "current_gloss_consistent_verdict": false,
-        "reasoning": "血が冷たくなるという字義ではなく、強い恐怖を感じさせる慣用表現です。人称は不特定のまま「人を」としています。",
+        "reasoning": "血が冷たくなるという比喩は、強い恐怖を感じさせることを表す。不定の someone は「人を」としている。",
         "adopted_attempt": 1,
         "added_word_mappings": [],
         "machine_check_record_only": {
@@ -72,8 +74,8 @@
         "attempts_count": 1,
         "meaning_stage": "applied",
         "meaning_stage_path": "newgen_meaning_v1",
-        "meaning_in_text_en": "To cause a person to feel sudden, intense fear.",
-        "naive_ja": "人の血を冷たくする",
+        "meaning_in_text_en": "It causes someone to feel sudden, intense fear.",
+        "naive_ja": "誰かの血を冷たくさせる",
         "naive_ja_conveys": "no",
         "import_flags": [],
         "gloss_equals_naive_ja": false
@@ -82,15 +84,15 @@
     },
     {
       "rank": 2,
-      "source_span": "the catch of my lantern",
-      "source_sentence": "Then my thumb slipped on the catch of my lantern",
-      "display_phrase": "the catch of my lantern",
-      "key_phrase": "catch of one's lantern",
-      "used_form": "catch of one's lantern",
-      "japanese_gloss": "人のランタンの留め具",
-      "japanese_gloss_tts": "人のランタンの留め具",
-      "changed_from_display_phrase": true,
-      "normalization_reason": "generalize_person_dependent_reference",
+      "source_span": "louder and louder",
+      "source_sentence": "The sound kept growing louder and louder",
+      "display_phrase": "louder and louder",
+      "key_phrase": "louder and louder",
+      "used_form": "louder and louder",
+      "japanese_gloss": "だんだん大きく",
+      "japanese_gloss_tts": "だんだん大きく",
+      "changed_from_display_phrase": false,
+      "normalization_reason": "none",
       "qa": {
         "qa_standalone_natural_unit": "PASS",
         "qa_no_residual_context_word": "PASS",
@@ -106,29 +108,24 @@
         "qa_person_reference_generalized": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "記事固有の所有者を示す my を一般形 one's に置き換え、文脈限定の the を除きました。「ランタンの留め金」という意味を保つため、of one's lantern は残しています。",
+      "reasoning": "程度が次第に増すことを表す自然な反復表現で、単独でも理解でき、文脈限定語も含みません。",
       "kp_extends_beyond_candidate": false,
       "gloss_review_hint": false,
       "fulltext_source_ref": "fulltext_exact_v1",
-      "source_sentence_id": "S17",
+      "source_sentence_id": "S44",
       "occurrence_count": 1,
       "occurrence_sentence_ids": [
-        "S17"
+        "S44"
       ],
       "selection_resolution_method": "fulltext_exact_unique",
       "declared_word_count_mismatch": false,
-      "possessor_roles": [
-        {
-          "token": "my",
-          "role": "self"
-        }
-      ],
+      "possessor_roles": [],
       "person_role_repair": {
-        "status": "NO_CHANGE",
-        "roles_ok": true,
+        "status": "NO_POSSESSIVE",
+        "roles_ok": null,
         "roles_reason": "",
         "repairs": [],
-        "key_before": "catch of one's lantern",
+        "key_before": "louder and louder",
         "role_ok_poss": []
       },
       "gloss_alignment": {
@@ -136,7 +133,7 @@
         "status": "GLOSS_REALIGNED",
         "original_japanese_gloss": null,
         "current_gloss_consistent_verdict": false,
-        "reasoning": "この文のcatchは、ランタンの覆いを留める部分を指します。「人の」で所有者を不特定のまま表しています。",
+        "reasoning": "同じ比較表現を重ねて音量が次第に上がることを表す。ここでは「大きく」が音の大きさを指す。",
         "adopted_attempt": 1,
         "added_word_mappings": [],
         "machine_check_record_only": {
@@ -152,9 +149,9 @@
         "attempts_count": 1,
         "meaning_stage": "applied",
         "meaning_stage_path": "newgen_meaning_v1",
-        "meaning_in_text_en": "The fastening part of a person's lantern.",
-        "naive_ja": "人のランタンの捕獲",
-        "naive_ja_conveys": "no",
+        "meaning_in_text_en": "The sound increases in volume progressively.",
+        "naive_ja": "もっと大きく、もっと大きく",
+        "naive_ja_conveys": "partly",
         "import_flags": [],
         "gloss_equals_naive_ja": false
       },
@@ -186,7 +183,7 @@
         "qa_person_reference_generalized": "PASS"
       },
       "qa_overall_status": "PASS",
-      "reasoning": "過去形 went を見出し語形 go にしました。継続を表す句動詞の go on と talking は、意味・用法を保つためそのまま残しています。",
+      "reasoning": "wentを動詞の基本形goにしました。talkingはgo onの後に続く動名詞形として必要なので、そのまま残しています。",
       "kp_extends_beyond_candidate": false,
       "gloss_review_hint": false,
       "fulltext_source_ref": "fulltext_exact_v1",
@@ -211,7 +208,7 @@
         "status": "GLOSS_REALIGNED",
         "original_japanese_gloss": null,
         "current_gloss_consistent_verdict": false,
-        "reasoning": "go on talkingは、話すことを続けるという意味です。「話し続ける」で句全体を自然に表しています。",
+        "reasoning": "go on talking は「話すことを続ける」という意味。go の継続の意味は「続ける」に表している。",
         "adopted_attempt": 1,
         "added_word_mappings": [
           {
@@ -235,8 +232,8 @@
         "attempts_count": 1,
         "meaning_stage": "applied",
         "meaning_stage_path": "newgen_meaning_v1",
-        "meaning_in_text_en": "To keep speaking without stopping.",
-        "naive_ja": "行って、その上で話す",
+        "meaning_in_text_en": "Speaking continues without stopping.",
+        "naive_ja": "行って、上で話す",
         "naive_ja_conveys": "no",
         "import_flags": [],
         "gloss_equals_naive_ja": false

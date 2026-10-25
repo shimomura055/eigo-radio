@@ -1,0 +1,290 @@
+{
+  "scope": "KP外側retry(X/Z共通実装。Zのdelegate)",
+  "max_outer": 3,
+  "generic_note": "",
+  "attempts": [
+    {
+      "outer_attempt": 1,
+      "note_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+      "selection_phrases": [
+        "made my blood turn cold",
+        "growing louder and louder",
+        "went on talking"
+      ],
+      "excluded_phrases_in": [],
+      "canonicalization_status": "CANONICALIZATION_INVALID",
+      "canonicalization_attempts": [
+        {
+          "attempt": 1,
+          "status": "CANONICALIZATION_INVALID",
+          "reasons": [],
+          "item_reasons": [
+            {
+              "index": 1,
+              "rank": 2,
+              "reasons": [
+                "key_phrase('grow louder and louder')がdisplay_phraseと一致せず、source_span('growing louder and louder')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            }
+          ],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "possessor_roles": [
+                  {
+                    "token": "my",
+                    "role": "self"
+                  }
+                ],
+                "key_phrase": "make one's blood turn cold",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "「my」は血が冷たくなる経験主体自身を指すため、辞書的な一般形「one's」に置換し、動詞も見出し形の「make」にしました。慣用表現の意味の核を保つため、他の語は残しています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_CHANGE",
+                  "roles_ok": true,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "make one's blood turn cold",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 2,
+                "possessor_roles": [],
+                "key_phrase": "grow louder and louder",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "lemma_normalization",
+                "reasoning": "「growing」は「keep」の後で進行中の動作を表す動詞形なので、見出し形の「grow」にしました。「louder and louder」は音が次第に大きくなる意味に必要なため保持しています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "grow louder and louder",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 3,
+                "possessor_roles": [],
+                "key_phrase": "go on talking",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "lemma_normalization",
+                "reasoning": "「went」を動詞の見出し形「go」にしました。「go on talking」は「話し続ける」という意味の自然な単位であり、「talking」も表現に必要なので残しています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "go on talking",
+                  "role_ok_poss": []
+                }
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_0d6c9a73661a3553006addbb8c465487d0af241c03a65f4b7c"
+        },
+        {
+          "attempt": 2,
+          "status": "CANONICALIZATION_INVALID",
+          "reasons": [],
+          "item_reasons": [
+            {
+              "index": 1,
+              "rank": 2,
+              "reasons": [
+                "key_phrase('grow louder and louder')がdisplay_phraseと一致せず、source_span('growing louder and louder')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+              ]
+            }
+          ],
+          "items_requiring_review": [],
+          "parsed": {
+            "items": [
+              {
+                "rank": 1,
+                "possessor_roles": [
+                  {
+                    "token": "my",
+                    "role": "self"
+                  }
+                ],
+                "key_phrase": "make one's blood turn cold",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "generalize_person_dependent_reference",
+                "reasoning": "myは表現中の経験者自身を指すためone'sに一般化し、動詞madeも見出し語形のmakeにしました。血の気が引くという慣用的な意味を保つため、他の語は残しています。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_CHANGE",
+                  "roles_ok": true,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "make one's blood turn cold",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 2,
+                "possessor_roles": [],
+                "key_phrase": "grow louder and louder",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "lemma_normalization",
+                "reasoning": "動詞growingを見出し語形のgrowにしました。「次第にどんどん大きくなる」という意味はこの形で自然に伝わり、追加の語も不要です。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "grow louder and louder",
+                  "role_ok_poss": []
+                }
+              },
+              {
+                "rank": 3,
+                "possessor_roles": [],
+                "key_phrase": "go on talking",
+                "changed_from_display_phrase": true,
+                "normalization_reason": "lemma_normalization",
+                "reasoning": "句動詞の意味を保つためonを残し、wentだけを見出し語形のgoにしました。「話し続ける」を表す自然で再利用可能な単位です。",
+                "qa_standalone_natural_unit": "PASS",
+                "qa_no_residual_context_word": "PASS",
+                "qa_meaning_or_usage_unchanged": "PASS",
+                "qa_reusable_other_context": "PASS",
+                "qa_traceable_contiguous_span": "PASS",
+                "qa_listening_blocker_value_preserved": "PASS",
+                "qa_standalone_comprehensibility": "PASS",
+                "qa_not_over_minimized": "PASS",
+                "qa_context_sufficiency": "PASS",
+                "qa_core_meaning_preserved": "PASS",
+                "qa_no_semantic_role_loss": "PASS",
+                "qa_person_reference_generalized": "PASS",
+                "person_role_repair": {
+                  "status": "NO_POSSESSIVE",
+                  "roles_ok": null,
+                  "roles_reason": "",
+                  "repairs": [],
+                  "key_before": "go on talking",
+                  "role_ok_poss": []
+                }
+              }
+            ]
+          },
+          "model": "gpt-6-luna",
+          "response_id": "resp_09cbd3a4a2d30616006addbb99be6087d0ac2382da02373c31"
+        }
+      ],
+      "artifacts": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_chunk_01/key_phrases/a2/outer_retry/attempt_1",
+      "excluded_phrases_added": [
+        "growing louder and louder"
+      ]
+    },
+    {
+      "outer_attempt": 2,
+      "note_sha256": "02dcaa1837a5b031792b5b71128b4999fde601fab720f486fc601c0040bcc902",
+      "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+      "selection_phrases": [
+        "made my blood turn cold",
+        "growing louder and louder",
+        "went on talking"
+      ],
+      "excluded_phrases_in": [
+        "growing louder and louder"
+      ],
+      "excluded_phrase_reselected": [
+        "growing louder and louder"
+      ],
+      "artifacts": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_chunk_01/key_phrases/a2/outer_retry/attempt_2"
+    },
+    {
+      "outer_attempt": 3,
+      "note_sha256": "02dcaa1837a5b031792b5b71128b4999fde601fab720f486fc601c0040bcc902",
+      "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+      "selection_phrases": [
+        "made my blood turn cold",
+        "growing louder and louder",
+        "went on talking"
+      ],
+      "excluded_phrases_in": [
+        "growing louder and louder"
+      ],
+      "excluded_phrase_reselected": [
+        "growing louder and louder"
+      ],
+      "artifacts": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_chunk_01/key_phrases/a2/outer_retry/attempt_3",
+      "stale_artifact": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_chunk_01/key_phrases/a2/keywords_canonicalized.STALE_attempt3.json"
+    }
+  ],
+  "excluded_phrases": [
+    {
+      "phrase": "growing louder and louder",
+      "reasons": [
+        "key_phrase('grow louder and louder')がdisplay_phraseと一致せず、source_span('growing louder and louder')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+      ],
+      "outer_attempt": 1,
+      "source": "canonicalization_invalid"
+    }
+  ]
+}
