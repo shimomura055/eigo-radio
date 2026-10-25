@@ -1,0 +1,76 @@
+以下は、同じ記事から選ばれた6件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。6件から作れる全てのペア(15組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず15組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+If a child tells you they want to use social media, how much should you allow? Restricting how they use it until a certain age is different from banning them from having an account at all. To begin with, should Japan set an age limit on children's use of social media? Let’s hear from three people with different views and lives.
+
+First to speak is a parent raising a young child. They think about social media as they watch over their child each day. My young child was choosing videos that were too intense and things that could cost money in the app, just because they were interested. When I talk to them, they often say, “Then I won’t do it.” I think they understand when I explain it. But maybe they can’t tell what’s wrong before they choose. I don’t think it’s okay to let them use whatever catches their interest. Seeing that, I feel safer if there are rules for how to use social media based on age. But honestly, when we’re on a long trip and I want them to be quiet, it helps if they watch something, and limits are hard on parents too. Even so, I still can’t say how far I want the rules to go.
+
+Next is a high school student for whom social media is a familiar way to stay in touch with friends. He talks about the issue of children’s use from the user’s side. I don’t want to be blocked from using social media just because of my age. If even high school students couldn’t have accounts, I think it would be hard to keep in touch with friends. I’m against a ban. I want to have a say in what I can use and how I use it. I want to decide for myself, but I can’t handle everything that happens on my own. If people say bad things about me or threaten me, I’d still want to turn to an adult right away. Maybe that’s selfish of me. Rather than putting the same limits on how everyone can use it based on age, I think there are other things we can do, like setting safety filters. I want the approach to change so it takes our use into account, without even stopping us from keeping in touch with friends.
+
+Last is a parent who lives with a middle school child. They speak as someone who has to decide at home how their child uses social media. As a parent raising a middle school child, I want to decide how much to let them use social media based on what they can handle. Rather than drawing the line by age alone, I think it would be better, if possible, for the features they can use to grow step by step as they become able to handle more. I don’t want the choice to be only between letting them use it and banning it. I want to set different stages. If my child started using social media with no preparation the moment they passed the age when it had been banned, that would worry me. I don’t think reaching the age when it’s okay to use it means they’ll suddenly know how to protect themselves. Just as you need to practice swimming before going into the sea, it’s still scary when a child who isn’t ready is suddenly thrown into it.
+
+The high school student said that wanting to rely on adults might be “selfish.” The freedom to decide how to use social media and turning to adults when something goes wrong do not fit neatly together. The parent of a middle school child said that even at an age when children are allowed to use it, they won’t suddenly be able to protect themselves. The question of setting an age when children are allowed to use social media also raises the question of how much they can turn to adults after they start. If you let a child in your life use social media, which parts of how they use it would you leave up to them, and what kinds of trouble would you help them with?
+
+【Key Phrase 6件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "draw the line",
+    "japanese_gloss": "線を引く",
+    "source_sentence": "Rather than drawing the line by age alone, I think it would be better, if possible, for the features they can use to grow step by step as they become able to handle more"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "take someone's use into account",
+    "japanese_gloss": "人の使い方を考えに入れる",
+    "source_sentence": "I want the approach to change so it takes our use into account, without even stopping us from keeping in touch with friends"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "fit neatly together",
+    "japanese_gloss": "うまくかみ合う",
+    "source_sentence": "The freedom to decide how to use social media and turning to adults when something goes wrong do not fit neatly together"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "raise the question of",
+    "japanese_gloss": "〜という疑問を投げかける",
+    "source_sentence": "The question of setting an age when children are allowed to use social media also raises the question of how much they can turn to adults after they start"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "turn to an adult",
+    "japanese_gloss": "大人を頼る",
+    "source_sentence": "If people say bad things about me or threaten me, I'd still want to turn to an adult right away"
+  },
+  {
+    "rank": 6,
+    "key_phrase": "thrown into it",
+    "japanese_gloss": "その状況に放り込まれる",
+    "source_sentence": "Just as you need to practice swimming before going into the sea, it's still scary when a child who isn't ready is suddenly thrown into it"
+  }
+]

@@ -1,0 +1,111 @@
+{
+  "schema": "kp_human_review_v1",
+  "kind": "kp",
+  "level": "b1b",
+  "text_sha256": "5ca8fb080f9d6b2aca022f74bb3c8a4be14da1e30d2dc525b1977dd280a62cff",
+  "candidates_sha256": "208f5fd0764db2d93df8d5a26873aaf48f9beb1766f5820883c761d4bd01b629",
+  "round": 1,
+  "status": "REVIEWED",
+  "revision": 3,
+  "article_key": {
+    "family": "y",
+    "slug": "sns_age_limit",
+    "level": "b1b"
+  },
+  "selection": {
+    "kp": [
+      "p_e5e22acc25",
+      "p_cf7a9581d4",
+      "p_503475b6e3"
+    ],
+    "vocab": [
+      "p_e5e22acc25",
+      "p_cf7a9581d4",
+      "p_503475b6e3",
+      "p_7fb25fc307",
+      "p_713181b03e"
+    ]
+  },
+  "accepted_qa_fail": [],
+  "accept_ai_default": false,
+  "accept_ai_shown_candidates_sha256": null,
+  "verdicts": {
+    "p_e5e22acc25": "SELECTED_KP",
+    "p_7fb25fc307": "SELECTED_VOCAB",
+    "p_cf7a9581d4": "SELECTED_KP",
+    "p_503475b6e3": "SELECTED_KP",
+    "p_713181b03e": "SELECTED_VOCAB",
+    "p_fe6b3ef219": "NG"
+  },
+  "ng": [
+    {
+      "candidate_id": "p_fe6b3ef219",
+      "phrase_key": "thrown into it",
+      "used_form_key": "thrown into it",
+      "phrase": "thrown into it",
+      "used_form": "thrown into it",
+      "reason": "比喩的でQA FAIL旗付き、学習価値が低いため以後も出さない(HRあり経路のevidence操作)",
+      "by": "Fable代行(Sonnet実行/evidence操作)",
+      "at": "2026-10-25T21:12:54.538531+09:00"
+    }
+  ],
+  "reselect_count": 0,
+  "last_human_op_at": "2026-10-25T21:12:54.541502+09:00",
+  "mode_used": null,
+  "final_qa": {
+    "status": "REDUNDANCY_PASS",
+    "ng_pairs": [],
+    "results": {
+      "kp": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      },
+      "vocab": {
+        "status": "REDUNDANCY_PASS",
+        "duplicate_pairs": [],
+        "model_id": "gpt-6-luna"
+      }
+    },
+    "key": "11c8bdeb6b134df6bf6a858cafda6fb371268d998ab30e7e61d960c6faca9e03"
+  },
+  "published_selection_signature": null,
+  "history": [
+    {
+      "at": "2026-10-25T21:09:47.236553+09:00",
+      "event": "candidates_generated",
+      "by": "runner",
+      "detail": {
+        "round": 1,
+        "candidates_sha256": "208f5fd0764db2d93df8d5a26873aaf48f9beb1766f5820883c761d4bd01b629"
+      }
+    },
+    {
+      "at": "2026-10-25T21:12:54.541526+09:00",
+      "event": "select",
+      "by": "Fable代行(Sonnet実行/evidence操作)",
+      "detail": {
+        "from": "PENDING_REVIEW",
+        "selection": {
+          "kp": [
+            "p_e5e22acc25",
+            "p_cf7a9581d4",
+            "p_503475b6e3"
+          ],
+          "vocab": [
+            "p_e5e22acc25",
+            "p_cf7a9581d4",
+            "p_503475b6e3",
+            "p_7fb25fc307",
+            "p_713181b03e"
+          ]
+        },
+        "ng": [
+          "p_fe6b3ef219"
+        ],
+        "accepted_qa_fail": []
+      }
+    }
+  ],
+  "selection_signature": "bb911ba908cc13021eda21d74e156b06ff1e5fcd49719f7d35dcaad3e9c6bdda"
+}

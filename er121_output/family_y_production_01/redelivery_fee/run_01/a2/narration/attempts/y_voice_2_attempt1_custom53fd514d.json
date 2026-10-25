@@ -1,0 +1,125 @@
+{
+  "attempt_number": 1,
+  "route": "custom_53fd514d",
+  "segment_id": "y_voice_2",
+  "theme_id": "run_01",
+  "level": "a2",
+  "source_out_path": "er121_output/family_y_production_01/redelivery_fee/run_01/a2/narration/y_voice_2.wav",
+  "saved_at": "2026-10-25T21:27:54",
+  "sha256": "a00e775b3600569dc53fe066d279619412b094db44586a1aa1e013689bdb567d",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Zephyr",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "calm, steady news narration with natural emphasis at key points and turns; not dramatic.\nSpeak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional.",
+  "asr_text": "Having to pay for redelivery just doesn't feel right to me. My husband and I are both away at work, so when we can choose a delivery time, we choose a day and time when we know we'll be home. But once, I chose a morning time and the package did not come. I went out to do an errand. When I came back, there was a note saying they had tried to deliver it. There are also many packages where we cannot choose a time. We do not know when they will come either. Before they charge us, I want them to fix two things: come at the time we chose and tell us when the package will arrive. Delivery workers must have a hard time because there are not enough of them. I guess it can't be helped, but I can't accept having to pay for that. Am I wrong to feel this way?",
+  "audio_classification": "NORMALIZED_MATCH",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": false,
+    "duration_seconds": 48.67,
+    "method_a_ngram": {
+      "matches": [
+        {
+          "span_text": " Having  to  pay  for",
+          "n_words": 4,
+          "category": "phrase",
+          "first_start_s": 0.0,
+          "first_end_s": 1.46,
+          "second_start_s": 44.74,
+          "second_end_s": 45.82,
+          "gap_seconds": 43.28,
+          "canonical_repeat_count": 2,
+          "intentional": true,
+          "flagged": false
+        }
+      ],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 159,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.9976,
+          "time_a_seconds": 18.33,
+          "time_b_seconds": 29.42,
+          "lag_seconds": 11.09,
+          "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+          "similarity": 0.9964,
+          "time_a_seconds": 4.53,
+          "time_b_seconds": 41.59,
+          "lag_seconds": 37.06,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9964,
+          "time_a_seconds": 4.5,
+          "time_b_seconds": 19.46,
+          "lag_seconds": 14.96,
+          "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+          "similarity": 0.9959,
+          "time_a_seconds": 3.64,
+          "time_b_seconds": 25.29,
+          "lag_seconds": 21.65
+        },
+        {
+          "similarity": 0.9957,
+          "time_a_seconds": 0.07,
+          "time_b_seconds": 29.32,
+          "lag_seconds": 29.25
+        }
+      ],
+      "best_run_length_seconds": 0.02,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": false,
+      "local_asr_confirmation": null,
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.38,
+      "time_a": 8.22,
+      "lag": 1.85,
+      "similarity_at_start": 0.7752,
+      "best_run_length_seconds": 0.38,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  },
+  "scg_info": null,
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": false,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "Having to pay for redelivery just doesn't feel right to me. My husband and I are both away at work, so when we can choose a delivery time, we choose a day and time when we know we'll be home. But once, I chose a morning time and the package did not come. I went out to do an errand. When I came back, there was a note saying they had tried to deliver it. There are also many packages where we cannot choose a time. We do not know when they will come either. Before they charge us, I want them to fix two things: come at the time we chose and tell us when the package will arrive. Delivery workers must have a hard time because there are not enough of them. I guess it can't be helped, but I can't accept having to pay for that. Am I wrong to feel this way?",
+      "classification": "NORMALIZED_MATCH",
+      "entity_like_source": []
+    }
+  ]
+}

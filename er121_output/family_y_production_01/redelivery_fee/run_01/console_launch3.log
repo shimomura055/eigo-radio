@@ -1,0 +1,21 @@
+[Y-E2E] stage=tts_a2 mode=real ...
+
+===== 固有名詞発音アラーム報告 (er121_output/family_y_production_01/redelivery_fee/run_01/a2) =====
+## 固有名詞発音アラーム(運営責任者向け・一般リスナー非表示)
+0件(固有名詞の発音不一致アラームなし)
+
+### 発音供給の適用一覧(TTS入力へ綴り置換した語。ASR比較は置換後の綴りが基準)
+0件(供給対象なし。A階層の自動供給対象/人承認済みB階層が無い、または該当語が本文に無い)
+
+### Human Review残(受理境界の外): ASR不確実のまま残ったsegment 2件 (うち固有名詞のみ不一致だが境界外=脱落/一般語化等 0件)
+
+注: 日本語音声の固有名詞読みはこのアラーム方針の対象外です(従来の検証・Human Reviewのまま)。
+
+### 実体表(固有名詞と認識した根拠。受理判定用。発音の根拠[Ledger/Perplexity調査]とは別)
+- 実体表: 1件(うち証拠として使用可 0件) / NER call=0 / model=gpt-6-luna / table_sha256=f1e934bc0db6
+- 実体表 work_title/weak: 1件
+- 証拠にならなかった語(weak/一般語等): Package Redelivery: Different Voices
+
+[Y-E2E] stage=gate mode=real ...
+[STOP] YE2EStop: FAMILY_Y_GATE_BLOCK: {"a2": {"status": "BLOCK", "y_body_blocked": [{"segment": "y_voice_1", "violations": ["STD_FALLBACK_USED_OR_UNKNOWN"]}, {"segment": "y_voice_1", "violations": ["Y_MISSING_MANDATORY_A2_SLOWDOWN"]}], "x_gate_blocked_after_filter": []}}(Gateを回避しない。該当segmentの再生成/Human確認が必要)
+rc=2

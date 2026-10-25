@@ -1,5 +1,9 @@
 FAMILY-Z-TELL-TALE-HEART-KP-FIX-01 委任_01: Std KP#2差替え(catch of one's lantern→louder and louder)完了・公開差替え済み・USER_LISTENING_PENDING。報告=docs/pm/RESULT_PACKET_TTHKP1.md
 
+## FAMILY-Y-PRODUCTION-LAUNCH-01 委任_03(2026-10-25、runner結線の仕上げ+正式E2E evidence E-3/E-1)
+- 状態: Part A完了(commit 4437e98cf、API 0)。Part B: **E-3(SNS)完走**(実費82.72円・Gate全PASS・限定公開)、**E-1(宅配案B)未完走**(案B 1回判定PASS・HRなし経路確認・a2の`preview`/`y_voice_1`がTTS上限3回でER-011 HR Lock→Gate BLOCK、実費32.07円)。累計129.14円/Cap 170円。PRODUCTION_WIREDではない(判定はFable)。
+- 成果物: docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/{EVIDENCE_01,BUDGET_LOG_01}.md、er121_output/family_y_production_01/{sns_age_limit,redelivery_fee}/run_01/、user_test/family_y_production_sns_age_limit_01/、報告=docs/pm/RESULT_PACKET_YPL3.md。次=E-1のa2 HR Lock解除(ユーザー試聴承認)後の再走/OPEN-517適用。
+
 ## FAMILY-Y-PRODUCTION-LAUNCH-01 委任_02B(2026-10-25、runner/audio/routing/scope lane)
 - 状態: 実装+mock test完了(API 0・実費0円・Production変更0・有料run 0)。新規test 59件PASS(network/実client遮断)・X/Z回帰の失敗16件は本変更起因でない。Y Production runner=`er121_family_y_runner_01.py`(既定dry-run、real未起動)。text core `produce_article`は未接続(委任_02Cで接続)。
 - 成果物: er121_family_y_{runner,audio,structure,mock}_01.py、test=er121_family_y_runner_01_test_01.py・er121_family_y_structure_match_test_01.py、tools/y_page_notice_check_01.py、docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/OPERATIONS_01.md、報告=docs/pm/RESULT_PACKET_YPL2B.md。

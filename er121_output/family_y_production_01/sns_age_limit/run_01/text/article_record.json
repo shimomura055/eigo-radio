@@ -1,0 +1,399 @@
+{
+  "management_id": "FAMILY-Y-PRODUCTION-LAUNCH-01",
+  "status": "FAMILY_Y_PRODUCTION",
+  "slug": "sns_age_limit",
+  "theme_id": "sns_age_limit",
+  "title": "子どものSNS、それぞれの声",
+  "theme_package_sha256": "aa37a1e1c8d2a42f3edc57b8869be0e27b7f094dba711472a7b1b74fe807ccc8",
+  "theme_package_sha_method": "file_bytes",
+  "theme_package_path": "docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/theme_packages/sns_age_limit_package_01.json",
+  "mode": "generated",
+  "routes_preflighted": [
+    {
+      "routing_key": "FAMILY_Y_LEAK_JUDGE",
+      "model": "gpt-6-luna",
+      "effort": "high"
+    },
+    {
+      "routing_key": "FAMILY_Y_VOICE_GENERATE",
+      "model": "gpt-6.1-sol",
+      "effort": "high"
+    },
+    {
+      "routing_key": "FAMILY_Y_VOICE_PROVENANCE_MAP",
+      "model": "gpt-6-luna",
+      "effort": "medium"
+    },
+    {
+      "routing_key": "FAMILY_Y_VOICE_STRUCTURE_TAG",
+      "model": "gpt-6-luna",
+      "effort": "medium"
+    },
+    {
+      "routing_key": "FAMILY_Y_VOICE_REWRITE",
+      "model": "gpt-6.1-sol",
+      "effort": "medium"
+    },
+    {
+      "routing_key": "FAMILY_Y_LEAD_GENERATE",
+      "model": "gpt-6.1-sol",
+      "effort": "high"
+    },
+    {
+      "routing_key": "FAMILY_Y_PERSONA_INTRO",
+      "model": "gpt-6.1-sol",
+      "effort": "high"
+    },
+    {
+      "routing_key": "FAMILY_Y_CLOSING_GENERATE",
+      "model": "gpt-6.1-sol",
+      "effort": "high"
+    },
+    {
+      "routing_key": "FAMILY_Y_CLOSING_REWRITE",
+      "model": "gpt-6.1-sol",
+      "effort": "medium"
+    }
+  ],
+  "stages_done": [
+    "voices",
+    "lead_intro",
+    "closing"
+  ],
+  "voices": {
+    "source": "generated",
+    "routing_key": "FAMILY_Y_VOICE_GENERATE",
+    "expected_model": "gpt-6.1-sol",
+    "effort": "high",
+    "model_ids": [
+      "gpt-6.1-sol"
+    ],
+    "prompt_file": "voice_generate_02.txt",
+    "prompt_sha256": "48645f1de5fcf6efd3a9d758a0120aa97b37f656a074c9ea0c31d95c51ffcd5e",
+    "per_slot": {
+      "voice_1": {
+        "user_prompt_sha256": "2ea97a0eb96e5d0fe317cea2edec9bb6b1f8d596b2bc4e8520e89f7a72292e5c",
+        "n_calls": 1,
+        "problems_per_try": [
+          []
+        ],
+        "monitors": {
+          "note": "記録専用。合否に使わない",
+          "chars": 270,
+          "sentences": 8,
+          "mean_sentence_chars": 33.8,
+          "max_sentence_chars": 50,
+          "numbers": [],
+          "exclamations": 0,
+          "question_marks": 0,
+          "role_words": [],
+          "interview_expr": [],
+          "self_intro_pattern": false,
+          "first_person_count": 2,
+          "ends_with_question": false,
+          "last_sentence": "そんな自分のままで、どこまで決まりを求めるのか、まだ言い切れない。"
+        },
+        "repetition": {
+          "note": "記録専用。合否に使わない。1サンプルで較正した簡易判定(目視確認なしに結論に使わない)",
+          "threshold": 0.3,
+          "n_sentences": 8,
+          "n_repeat_pairs": 0,
+          "repeat_pairs": [],
+          "contrast_turns": 2,
+          "last_vs_first_echo": false
+        }
+      },
+      "voice_2": {
+        "user_prompt_sha256": "d6579c06c2cb5ed740f705dea4036c851f1631c157a6c9c58eadec667510e75e",
+        "n_calls": 1,
+        "problems_per_try": [
+          []
+        ],
+        "monitors": {
+          "note": "記録専用。合否に使わない",
+          "chars": 265,
+          "sentences": 7,
+          "mean_sentence_chars": 37.9,
+          "max_sentence_chars": 83,
+          "numbers": [],
+          "exclamations": 0,
+          "question_marks": 0,
+          "role_words": [],
+          "interview_expr": [],
+          "self_intro_pattern": false,
+          "first_person_count": 3,
+          "ends_with_question": false,
+          "last_sentence": "友達と連絡を取るのまで止めずに、僕らが使うことも考えたやり方に変えてほしい。"
+        },
+        "repetition": {
+          "note": "記録専用。合否に使わない。1サンプルで較正した簡易判定(目視確認なしに結論に使わない)",
+          "threshold": 0.3,
+          "n_sentences": 7,
+          "n_repeat_pairs": 0,
+          "repeat_pairs": [],
+          "contrast_turns": 3,
+          "last_vs_first_echo": false
+        }
+      },
+      "voice_3": {
+        "user_prompt_sha256": "1a186db39334bfbbbdcbcd6b3aef452aabb8f00dc5fcae5a28dd9d08c1f0834d",
+        "n_calls": 1,
+        "problems_per_try": [
+          []
+        ],
+        "monitors": {
+          "note": "記録専用。合否に使わない",
+          "chars": 267,
+          "sentences": 6,
+          "mean_sentence_chars": 44.5,
+          "max_sentence_chars": 53,
+          "numbers": [],
+          "exclamations": 0,
+          "question_marks": 0,
+          "role_words": [],
+          "interview_expr": [],
+          "self_intro_pattern": false,
+          "first_person_count": 1,
+          "ends_with_question": false,
+          "last_sentence": "海に出る前には泳ぐ練習がいるのと同じで、準備のできていない子どもが急に放り出されるのは、やはり怖い。"
+        },
+        "repetition": {
+          "note": "記録専用。合否に使わない。1サンプルで較正した簡易判定(目視確認なしに結論に使わない)",
+          "threshold": 0.3,
+          "n_sentences": 6,
+          "n_repeat_pairs": 0,
+          "repeat_pairs": [],
+          "contrast_turns": 0,
+          "last_vs_first_echo": false
+        }
+      }
+    },
+    "unmapped_regen": {
+      "voice_1": {
+        "before": "うちの小さい子が、刺激の強い動画や、課金につながるものを興味のままに選んでいた。話すと、じゃあやらない、となることも多い。分かればやめるんだと思う。でも、危ないと気づけなかったら、助けてとも言えないかもしれない。私はそこが気になる。SNSには、年齢に応じたはっきりした決まりがほしい。見守りの設定も、もっと簡単なら、子どもがどうしても使いたい時に困らずに済むのにと思う。長い移動で静かにしてほしい時は、動画を見てくれると私も助かるから、制限がかかるとしんどい時もある。守りたい気持ちは変わらないけれど、どこまで制限するかは、まだ割り切れない。",
+        "after": "うちの小さい子が、刺激の強い動画や課金につながるものを、興味のままに選んでいた。話をすると、じゃあやらない、となることも多い。私が話せば、分かってくれるんだと思う。でも、何がよくないのか、選ぶ前には分からないのかもしれない。興味を持ったものを、そのまま使わせていいとは思えないんだ。そういう様子を見ると、SNSは年齢に応じて使い方に決まりがあるほうが、私は安心できると思う。ただ、長い移動で静かにしてほしい時は、子どもが見てくれていると正直助かるし、制限で親もしんどくなる。そんな自分のままで、どこまで決まりを求めるのか、まだ言い切れない。",
+        "n_unmapped_before": 1,
+        "n_unmapped_after": 1,
+        "problems_per_try": [
+          []
+        ]
+      },
+      "voice_2": {
+        "before": "年齢だけでSNSを縛られるのは、正直、嫌だ。高校生の僕は友達との連絡に使っているから、アカウントまで持てなくなるのは、本当に困る。禁止には反対だ。使っていいかまで決められたら、自分で考えるところがなくなる気がする。何を見るか、どう使うかは自分で決めたいんだけど、悪口や脅しに遭った時まで自分で何とかできるとは思えないし、そういう時はすぐ大人に頼りたいとも思っていて、そこはうまく言えない。危ないものを避ける手助けは、ちゃんとあってほしい。使えなくするんじゃなく、安全フィルターをかけて、友達との連絡は続けられるようなやり方に変えてほしい。",
+        "after": "年齢だけでSNSを使えなくされるのは、僕は嫌だ。高校生でもアカウントを持てないとなったら、友達と連絡を取るのにも困ると思う。禁止には反対だ。何を使っていいか、どう使うかは、僕にも考えさせてほしい。自分で決めたいんだけど、何があっても自分でどうにかできるわけじゃないし、悪口や脅しに遭った時は、やっぱりすぐ大人に頼りたいと思うから、そこは自分でも勝手かもしれない。年齢で使い方をまとめて縛るより、安全フィルターをかけるとか、ほかにもできることはあると思う。友達と連絡を取るのまで止めずに、僕らが使うことも考えたやり方に変えてほしい。",
+        "n_unmapped_before": 1,
+        "n_unmapped_after": 0,
+        "problems_per_try": [
+          []
+        ]
+      },
+      "voice_3": {
+        "before": "中学生の子どもに、いつ、どこまでSNSを使わせるかは、親であるわたしが決めることになる。年齢は大凡の目安で、できれば、その子の力に合わせて、使える機能を少しずつ広げたい。使わせないか、何でも使わせるか、そのどちらかに決めるのではなく、間に段階を設けることが必要だと思う。もしうちの子が、禁止される年齢を過ぎた途端、何の準備もなくSNSを使い始めるなら、もう使っていい年齢だからと安心はできない。急に触れさせて、何かあってからでは遅い気がする。海に出る前に泳ぐ練習をするように、少しずつ慣れる時間もないまま、子どもを送り出すのは心配なんだ。",
+        "after": "中学生の子どもを育てる親として、わたしはSNSをどこまで使わせるか、その子の力に合わせて考えたい。年齢だけで区切るより、できれば、できることに合わせて使える機能が少しずつ広がる形がいい。使わせるか、禁止するかだけではなく、そこは段階を分けたいんだ。もし、うちの子が禁止されていた年齢を過ぎた途端に、何の準備もなくSNSを使い始めるなら、それは心配になる。使ってよい年齢になったからといって、急に身を守れるようになるわけではないと思う。海に出る前には泳ぐ練習がいるのと同じで、準備のできていない子どもが急に放り出されるのは、やはり怖い。",
+        "n_unmapped_before": 1,
+        "n_unmapped_after": 2,
+        "problems_per_try": [
+          []
+        ]
+      }
+    },
+    "map_routing_key": "FAMILY_Y_VOICE_PROVENANCE_MAP",
+    "structure_routing_key": "FAMILY_Y_VOICE_STRUCTURE_TAG",
+    "structure": {
+      "tags_before": {
+        "tags": {
+          "voice_1": {
+            "voice": "voice_1",
+            "opening_type": "出来事・場面の描写から",
+            "development_type": "具体例から感情を経て主張へ",
+            "closing_type": "迷いを残して締める",
+            "evidence_ja": "冒頭は「うちの小さい子が…選んでいた」と具体的な出来事から始まり、「そういう様子を見ると…決まりがあるほうが」と意見へ進む。最後は「どこまで決まりを求めるのか、まだ言い切れない」と迷いを残している。"
+          },
+          "voice_2": {
+            "voice": "voice_2",
+            "opening_type": "主張・意見の表明から",
+            "development_type": "主張から具体例へ",
+            "closing_type": "約束・要求で締める",
+            "evidence_ja": "冒頭で「年齢だけでSNSを使えなくされるのは…嫌だ」と意見を示し、友達との連絡や被害時の対応を具体例として述べている。最後は「やり方に変えてほしい」と要求で締めている。"
+          },
+          "voice_3": {
+            "voice": "voice_3",
+            "opening_type": "自分の状況・立場の描写から",
+            "development_type": "主張から具体例へ",
+            "closing_type": "場面・情景で締める",
+            "evidence_ja": "冒頭は「中学生の子どもを育てる親として」と立場を示し、段階的に使わせたいという考えを述べている。禁止年齢を過ぎた後の想定や泳ぐ練習の比喩を重ね、最後は「急に放り出されるのは、やはり怖い」という情景を伴う言葉で締めている。"
+          }
+        },
+        "fire": {
+          "fired": false,
+          "pairs": [],
+          "regenerate_slot": null
+        }
+      },
+      "regen": null,
+      "tags_after": null
+    },
+    "final_map_n_unmapped": {
+      "voice_1": 0,
+      "voice_2": 0,
+      "voice_3": 2
+    },
+    "final_map_r2plus_only_idx": {
+      "voice_1": [
+        6,
+        7
+      ],
+      "voice_2": [],
+      "voice_3": []
+    },
+    "gate": {
+      "status": "PASS",
+      "n_judgements": 1,
+      "rewritten": false,
+      "source": "judged_this_run",
+      "dir": "er121_output/family_y_production_01/sns_age_limit/run_01/text\\voices\\gate_voices",
+      "judge_routing_key": "FAMILY_Y_LEAK_JUDGE",
+      "rewrite_routing_key": "FAMILY_Y_VOICE_REWRITE"
+    },
+    "final_sha256": {
+      "voice_1": "a906e1e4a5338fcd4abd0a1bece8fb010933d87e508e6a525b61e263f2b159fb",
+      "voice_2": "9fe487d6956bcdc6891ac089639805028f2f96392c276b4b9437b6d01a1932b1",
+      "voice_3": "3f49281be8efdea75de327766e3fa822614bd6dc767d8d6686832ed00c9bdc47"
+    },
+    "voices_sha256": "7716bc4e36cf7859b83bf412c01231fcfe1f6f5236e7fe7bb148bfa4a214bbf7"
+  },
+  "lead": {
+    "source": "generated",
+    "routing_key": "FAMILY_Y_LEAD_GENERATE",
+    "expected_model": "gpt-6.1-sol",
+    "effort": "high",
+    "model_ids": [
+      "gpt-6.1-sol"
+    ],
+    "prompt_file": "lead_generate_01.txt",
+    "prompt_sha256": "76282235c4f089c56318a635c4af1e45001795e7c8b956480bcfacb307edef21",
+    "user_prompt_sha256": "49c27971e4534c393e06bd041af3557468912a7a5d29c942b3a9b9a44cdc8e2c",
+    "inputs_source": "derived_from_world_frame",
+    "n_calls": 1,
+    "sha256": "f684aa094875fa21efbb11fee77132b6ad792cd4634387c6c6e1235e055aecb3"
+  },
+  "intros": {
+    "source": "generated",
+    "routing_key": "FAMILY_Y_PERSONA_INTRO",
+    "expected_model": "gpt-6.1-sol",
+    "effort": "high",
+    "model_ids": [
+      "gpt-6.1-sol"
+    ],
+    "prompt_file": "persona_intro_01.txt",
+    "prompt_sha256": "787794d635587053d20a411aa98da70b00dc7a45bc182f1483c1ae6a7267afc4",
+    "user_prompt_sha256": "c14d480cd865e4e1a737d3478db28d54433828da70652d73e04aaf552e82407d",
+    "check_mode": "derived",
+    "n_calls": 2,
+    "sha256": {
+      "voice_1": "dd1f1fded66e649dfc8c5d4fa47404e098c3f8d53c642287a20c59b7754cdf86",
+      "voice_2": "12a4a6d0fe1c9b5e5f64ec3ba4f50131d537fff85becad8e3f6dc2a7aa31b96d",
+      "voice_3": "5bbfd455ee238b8ae866efbee80171cba682483c0e349e84fc21c8394f4dc958"
+    }
+  },
+  "leadintro_gate": {
+    "text_sha256": "5641221e7f66d3f07020912151f268e39fe12c38b3a0e91d83b2307afdbff3e5",
+    "na_fields": [
+      "leak_tension_reverts_to_research",
+      "leak_binary_camp_split",
+      "leak_evidence_memorable"
+    ],
+    "applicable_flagged": [],
+    "not_applicable_flagged": [
+      {
+        "section": "tension",
+        "fail_fields": [
+          "leak_tension_reverts_to_research"
+        ],
+        "reasoning": "調査や研究データには戻っていませんが、三人がなぜ異なる答えに至るのかも掘り下げず、声の紹介にとどまっています。指定基準の中心である三人の答えの違いを説明する内容がありません。",
+        "quoted_evidence": "「ここに、立場も暮らしも違う三人の声を並べてみよう。\n最初に話すのは、小さい子どもを育てている親。子どもを見守る毎日の中で、SNSについて考える。\n次は、友達とのやり取りにSNSが身近な高校生。子どもの利用をめぐる話題を、使う側から語る。\n最後は、中学生の子と暮らす親。子どものSNS利用について、家庭で判断する立場から語る。」"
+      }
+    ],
+    "any_flagged_raw": true,
+    "prompt_sha256": "f99bdc26b47a490b275b789d3a25f8ab34a6817d41cef119d2bbc01da7c051bc",
+    "model": "gpt-6-luna",
+    "meta": {
+      "response_id": "resp_0fd6d22b5a830caa006addef664b7487d082721e079b6e8a5e",
+      "model": "gpt-6-luna",
+      "usage": {
+        "input_tokens": 1103,
+        "output_tokens": 1683
+      }
+    },
+    "status": "PASS"
+  },
+  "closing": {
+    "source": "general_prompt_02",
+    "general_method_used": true,
+    "slug": "sns_age_limit",
+    "routing_key": "FAMILY_Y_CLOSING_GENERATE",
+    "model_id": "gpt-6.1-sol",
+    "expected_model": "gpt-6.1-sol",
+    "effort": "high",
+    "prompt_version": "02",
+    "prompt_sha256": "4713ceff2dd00a2f67eb9313ae9e206a4a3236c5b158e624c10ccf6fc20e5f07",
+    "user_sha256": "22986b45de9852a8d7708acacf05d51c79a98b7ef9f952c1101dcd5ca27f95f5",
+    "selected_id": "C",
+    "gen_calls": 1,
+    "generation_sha256": "33629677da35c851a9d06b2d2969ff4000edda984b58584e5b476fa1ede3224a",
+    "final_sha256": "33629677da35c851a9d06b2d2969ff4000edda984b58584e5b476fa1ede3224a",
+    "rewritten": false,
+    "gate": {
+      "status": "PASS",
+      "n_judgements": 1
+    },
+    "gate_history_dir": "er121_output/family_y_production_01/sns_age_limit/run_01/text\\closing\\gate",
+    "theme_package_sha256": "aa37a1e1c8d2a42f3edc57b8869be0e27b7f094dba711472a7b1b74fe807ccc8",
+    "voice_r0_sha256": "7716bc4e36cf7859b83bf412c01231fcfe1f6f5236e7fe7bb148bfa4a214bbf7",
+    "entry": {
+      "module": "er121_family_y_text_core_01.py",
+      "status": "FAMILY_Y_PRODUCTION",
+      "module_sha256": "e0a6bf10b352c13e37298ccb0d216d739f319b4653653da3402f23e38ffae2aa"
+    }
+  },
+  "verbatim": {
+    "checked": true,
+    "source_dir": "docs/research/FAMILY-Y-VOICES-DESIGN-01/OPINION_BASED_01/sources",
+    "n_source_files": 204,
+    "n_hits": 0,
+    "hits": {}
+  },
+  "part_sha256": {
+    "lead": "f684aa094875fa21efbb11fee77132b6ad792cd4634387c6c6e1235e055aecb3",
+    "closing": "33629677da35c851a9d06b2d2969ff4000edda984b58584e5b476fa1ede3224a",
+    "intro_voice_1": "dd1f1fded66e649dfc8c5d4fa47404e098c3f8d53c642287a20c59b7754cdf86",
+    "intro_voice_2": "12a4a6d0fe1c9b5e5f64ec3ba4f50131d537fff85becad8e3f6dc2a7aa31b96d",
+    "intro_voice_3": "5bbfd455ee238b8ae866efbee80171cba682483c0e349e84fc21c8394f4dc958",
+    "voice_voice_1": "a906e1e4a5338fcd4abd0a1bece8fb010933d87e508e6a525b61e263f2b159fb",
+    "voice_voice_2": "9fe487d6956bcdc6891ac089639805028f2f96392c276b4b9437b6d01a1932b1",
+    "voice_voice_3": "3f49281be8efdea75de327766e3fa822614bd6dc767d8d6686832ed00c9bdc47"
+  },
+  "article_sha256": "931fba5c4dbaa0bcdb2a5471ea05e6af59fbd7c4d0764f539ab8a0e2fb669df2",
+  "prompt_files": {
+    "closing": {
+      "file": "closing_general_02.txt",
+      "sha256": "4713ceff2dd00a2f67eb9313ae9e206a4a3236c5b158e624c10ccf6fc20e5f07"
+    },
+    "voice": {
+      "file": "voice_generate_02.txt",
+      "sha256": "48645f1de5fcf6efd3a9d758a0120aa97b37f656a074c9ea0c31d95c51ffcd5e"
+    },
+    "lead": {
+      "file": "lead_generate_01.txt",
+      "sha256": "76282235c4f089c56318a635c4af1e45001795e7c8b956480bcfacb307edef21"
+    },
+    "intro": {
+      "file": "persona_intro_01.txt",
+      "sha256": "787794d635587053d20a411aa98da70b00dc7a45bc182f1483c1ae6a7267afc4"
+    }
+  },
+  "module": {
+    "file": "er121_family_y_text_core_01.py",
+    "sha256": "e0a6bf10b352c13e37298ccb0d216d739f319b4653653da3402f23e38ffae2aa"
+  }
+}

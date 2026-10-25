@@ -1,0 +1,76 @@
+{
+  "input_key": "ddb30a1989c77e75bcaed182d898e86b69d992bd678363ab50c5f25188edcc0a",
+  "result": {
+    "lead": "子どもにSNSを使いたいと言われたら、どこまで認めたらいいだろう。一定の年齢まで使い方を制限するのと、アカウントを持つこと自体を禁じるのは違う。そもそも、日本で子どものSNS利用に年齢の線を引くべきなのだろうか。ここに、立場も暮らしも違う三人の声を並べてみよう。",
+    "intros": {
+      "voice_1": "最初に話すのは、小さい子どもを育てている親。子どもを見守る毎日の中で、SNSについて考える。",
+      "voice_2": "次は、友達とのやり取りにSNSが身近な高校生。子どもの利用をめぐる話題を、使う側から語る。",
+      "voice_3": "最後は、中学生の子と暮らす親。子どものSNS利用について、家庭で判断する立場から語る。"
+    },
+    "lead_record": {
+      "source": "generated",
+      "routing_key": "FAMILY_Y_LEAD_GENERATE",
+      "expected_model": "gpt-6.1-sol",
+      "effort": "high",
+      "model_ids": [
+        "gpt-6.1-sol"
+      ],
+      "prompt_file": "lead_generate_01.txt",
+      "prompt_sha256": "76282235c4f089c56318a635c4af1e45001795e7c8b956480bcfacb307edef21",
+      "user_prompt_sha256": "49c27971e4534c393e06bd041af3557468912a7a5d29c942b3a9b9a44cdc8e2c",
+      "inputs_source": "derived_from_world_frame",
+      "n_calls": 1,
+      "sha256": "f684aa094875fa21efbb11fee77132b6ad792cd4634387c6c6e1235e055aecb3"
+    },
+    "intro_record": {
+      "source": "generated",
+      "routing_key": "FAMILY_Y_PERSONA_INTRO",
+      "expected_model": "gpt-6.1-sol",
+      "effort": "high",
+      "model_ids": [
+        "gpt-6.1-sol"
+      ],
+      "prompt_file": "persona_intro_01.txt",
+      "prompt_sha256": "787794d635587053d20a411aa98da70b00dc7a45bc182f1483c1ae6a7267afc4",
+      "user_prompt_sha256": "c14d480cd865e4e1a737d3478db28d54433828da70652d73e04aaf552e82407d",
+      "check_mode": "derived",
+      "n_calls": 2,
+      "sha256": {
+        "voice_1": "dd1f1fded66e649dfc8c5d4fa47404e098c3f8d53c642287a20c59b7754cdf86",
+        "voice_2": "12a4a6d0fe1c9b5e5f64ec3ba4f50131d537fff85becad8e3f6dc2a7aa31b96d",
+        "voice_3": "5bbfd455ee238b8ae866efbee80171cba682483c0e349e84fc21c8394f4dc958"
+      }
+    },
+    "gate_record": {
+      "text_sha256": "5641221e7f66d3f07020912151f268e39fe12c38b3a0e91d83b2307afdbff3e5",
+      "na_fields": [
+        "leak_tension_reverts_to_research",
+        "leak_binary_camp_split",
+        "leak_evidence_memorable"
+      ],
+      "applicable_flagged": [],
+      "not_applicable_flagged": [
+        {
+          "section": "tension",
+          "fail_fields": [
+            "leak_tension_reverts_to_research"
+          ],
+          "reasoning": "調査や研究データには戻っていませんが、三人がなぜ異なる答えに至るのかも掘り下げず、声の紹介にとどまっています。指定基準の中心である三人の答えの違いを説明する内容がありません。",
+          "quoted_evidence": "「ここに、立場も暮らしも違う三人の声を並べてみよう。\n最初に話すのは、小さい子どもを育てている親。子どもを見守る毎日の中で、SNSについて考える。\n次は、友達とのやり取りにSNSが身近な高校生。子どもの利用をめぐる話題を、使う側から語る。\n最後は、中学生の子と暮らす親。子どものSNS利用について、家庭で判断する立場から語る。」"
+        }
+      ],
+      "any_flagged_raw": true,
+      "prompt_sha256": "f99bdc26b47a490b275b789d3a25f8ab34a6817d41cef119d2bbc01da7c051bc",
+      "model": "gpt-6-luna",
+      "meta": {
+        "response_id": "resp_0fd6d22b5a830caa006addef664b7487d082721e079b6e8a5e",
+        "model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 1103,
+          "output_tokens": 1683
+        }
+      },
+      "status": "PASS"
+    }
+  }
+}

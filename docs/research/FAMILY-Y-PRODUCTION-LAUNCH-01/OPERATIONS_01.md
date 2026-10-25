@@ -9,7 +9,7 @@
 
 | 項目 | 状態 | 影響 | 次の一手 |
 |---|---|---|---|
-| text core `produce_article`(Voice/Lead/紹介/Closing+Gateの記事組立I/F) | **未接続**(`er121_family_y_text_core_01`にはClosing lane=`produce_closing`のみ。runnerは `produce_article` を呼び、無ければ `FAMILY_Y_TEXT_CORE_NOT_CONNECTED` でSTOP) | real実走の`text` stageは止まる。mockは偽text coreで全経路PASS | 02AのDESIGN_02で記事組立I/Fを確定→adapterを接続(戻り値の期待形はrunner `stage_text` の docstring/検査に記載: title/lead/intros{voice_n}/voices{voice_n}/closing/closing_record) |
+| text core `produce_article`(Voice/Lead/紹介/Closing+Gateの記事組立I/F) | **接続済み(委任_03、4437e98cf。runner `stage_text`が`theme_package_path=`/`reuse=`[`--reuse-manifest`]付きで呼ぶ)。以下の「未接続」記述は02B時点の履歴**(`er121_family_y_text_core_01`にはClosing lane=`produce_closing`のみ。runnerは `produce_article` を呼び、無ければ `FAMILY_Y_TEXT_CORE_NOT_CONNECTED` でSTOP) | real実走の`text` stageは止まる。mockは偽text coreで全経路PASS | 02AのDESIGN_02で記事組立I/Fを確定→adapterを接続(戻り値の期待形はrunner `stage_text` の docstring/検査に記載: title/lead/intros{voice_n}/voices{voice_n}/closing/closing_record) |
 | Part 1(Vocabulary & Expressions)・Part 2(文法) | **未接続スロット**(`study_text_slots.json`に「未接続」と記録。ページには描画しない) | 学習テキストは出ない | 別案件(PART2-GRAMMAR-PRODUCTION-WIRING-01はX/Zのみ) |
 | Std(A2)生成関数のPromptは「In one lineを保つ」文を含む(X承認済み・無変更) | Yの入力はIOLなし。`must_fix`欄で「IOLを足すな」を1文明示し、出力にIOLがあれば契約違反として1回再試行→STOP | E-1 evidenceで実挙動を確認する必要あり(未検証) | E-1の最初のStd出力で確認 |
 | KPのgloss整合Human Review事象 | Yには解消経路が未接続。事象があれば `FAMILY_Y_KP_GLOSS_HR_EVENTS` でSTOP(自動で通さない) | 発生時は止まる | 発生頻度を見て別案件 |
@@ -20,7 +20,7 @@
 1. **STOP確認**: `py tools/stop_scope_check_01.py --managed-id FAMILY-Y-PRODUCTION-LAUNCH-01 --run-dir er121_output/family_y_production_01/<slug>/<run> --out <json>`。rc=3なら新規API呼出をせず停止して報告。
 2. **dry-run**(副作用0・API 0): `py er121_family_y_runner_01.py --slug <slug> --run <run> --theme-package <theme.json>`(既定mode=dry-run)。routing登録・Voice割当・Theme Package・text core接続状態を表示。
 3. **mock**(偽client・偽TTS。実APIへ出ない): `--mode mock`。出力は `<run>_mock/`。KPは`rc=4`で止まる(下記4)。
-4. **real**(承認予算内のみ): `--mode real --approved-budget-jpy <N>`。`N`は案件個別Cap(**150円**、BUDGET_PLAN_01)以下。警告閾値(既定100円)を超える見込みで新規API呼出の前にSTOP。`--ack-warn-threshold`はFable確認後のみ。**日付・stage分割で境界を回避しない**。
+4. **real**(承認予算内のみ): `--mode real --approved-budget-jpy <N>`。`N`は案件個別Cap(**170円**、BUDGET_PLAN_03。委任_03でrunner定数を150→170へ)以下。警告閾値(既定100円)を超える見込みで新規API呼出の前にSTOP。`--ack-warn-threshold`はFable確認後のみ。**日付・stage分割で境界を回避しない**。
    - 例: `py er121_family_y_runner_01.py --mode real --slug <slug> --run run_01 --theme-package <theme.json> --approved-budget-jpy 150 --stages text,translate,support,kp`(KPでrc=4待機→下記4→同じ`--stages`の後半を**1起動**で再開)。
 
 stage順: `seed_check → text → translate → support → kp → tts_b1b → tts_a2 → gate → assemble → pages → page_verify`。`--stages a,b,c`で複数stageを**1起動**に束ねる(STAGES順に正規化)。`--stop-after <stage>`も可。
@@ -66,3 +66,9 @@ stage順: `seed_check → text → translate → support → kp → tts_b1b → 
 
 - `py -m pytest -q er121_family_y_runner_01_test_01.py er121_family_y_structure_match_test_01.py`(35+24件)。
 - X/Z回帰: `er019*/er026*/er062*/er063*/er103*/er109*/er006*/er020*`関連(結果は`RESULT_PACKET_YPL2B.md`)。
+
+## 8. 委任_03で判明した運用上の注意(E-1/E-3 evidenceより、詳細=EVIDENCE_01.md)
+- 宅配(案B)の起動例: `--theme-package docs/research/FAMILY-Y-VOICES-DESIGN-01/OPINION_BASED_02/THEME_DATA_02.json --reuse-manifest docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/theme_packages/redelivery_fee_reuse_01.json`(registryのTheme Package sha `f0d0af36…`はこのfile bytes)。凍結file(Theme Package/R0/Prompt)は`.gitattributes`で`-text`(改行変換なし)。
+- KP不在宣言の例: `py er119_kp_human_review_cli_01.py declare-absent --runs <run_dir> --by "<名前>" --user-ref "<ユーザー発言の参照>" --reason "<理由>"`(AI名義は`--user-ref`必須)。rc=4後に宣言→**同じ制作コマンドを再実行**。
+- TTSが1 segmentで上限3回に達するとER-011のHR Lock(`HUMAN_REVIEW_LOCKED`)になり、再起動(`--regenerate-stage tts_a2`を付けても)では再生成されず、Gateが`FAMILY_Y_GATE_BLOCK`でrc=2。解除は`er011_human_review_lock_01.approve_regenerate()`(ユーザー承認)のみ。回避しない。
+- 共有working treeを他agentが編集中の有料runは、codeが途中で変わりうる(import済みmoduleは影響なし・未import moduleは新codeを読む)。有料run前に`git status`で`er121_*`が未commit変更でないことを確認する。

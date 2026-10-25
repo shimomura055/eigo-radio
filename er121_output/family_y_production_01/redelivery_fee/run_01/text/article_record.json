@@ -1,0 +1,153 @@
+{
+  "management_id": "FAMILY-Y-PRODUCTION-LAUNCH-01",
+  "status": "FAMILY_Y_PRODUCTION",
+  "slug": "redelivery_fee",
+  "theme_id": "redelivery_fee",
+  "title": "宅配の再配達、それぞれの声",
+  "theme_package_sha256": "f0d0af367950735bb0264162d3cb45e3ef330759d8077e9d6f9bb5c3dadf0288",
+  "theme_package_sha_method": "file_bytes",
+  "theme_package_path": "docs/research/FAMILY-Y-VOICES-DESIGN-01/OPINION_BASED_02/THEME_DATA_02.json",
+  "mode": "reused_r0",
+  "routes_preflighted": [
+    {
+      "routing_key": "FAMILY_Y_LEAK_JUDGE",
+      "model": "gpt-6-luna",
+      "effort": "high"
+    }
+  ],
+  "stages_done": [
+    "voices",
+    "lead_intro",
+    "closing"
+  ],
+  "voices": {
+    "source": "reused_r0",
+    "voice_generation_used": false,
+    "routing_key": null,
+    "model_id": null,
+    "prompt_sha256": null,
+    "voice_r0_article": "er110_output/family_y_opinion_based_03/redelivery_fee/run_01/article_ja.md",
+    "voice_r0_sha256": "566ebd97d7ba1c81dcaa64305c8e5f02228a44cf1b5aa64f5f0105b1e5498a89",
+    "gate": {
+      "status": "PASS",
+      "n_judgements": 1,
+      "rewritten": false,
+      "source": "reused_prior_pass_record",
+      "reused_from": "er110_output/family_y_opinion_based_03/redelivery_fee/run_01/gate_voices"
+    },
+    "final_sha256": {
+      "voice_1": "4dad1b8132d8901e93e9c8ff0d18320f0a138dc7e9f61eb62d9211d738d14e50",
+      "voice_2": "7215b68741723e48e01291aa914d9b30a6e3e0d95acc9b61ceb67f9c03f632c3",
+      "voice_3": "430169b043bdc195892f408c1f3faade0c4b61b7ef8ea7244cf9c9b17a0d6187"
+    },
+    "voices_sha256": "2b0f3444ea8d560545cdd5173c7be659bc862b4787332fee9f2a71f1ba1e338d",
+    "note": "既存R0(Trial生成・Gate PASS・byte一致検証済み)を採用。Voice生成のProduction runtime evidenceではない(E-3 voices段で別途取得)"
+  },
+  "lead": {
+    "source": "reused",
+    "file": "er110_output/family_y_redelivery_audio_01/revision_01/lead/lead.txt",
+    "file_sha256": "a0f19c7bda1c953a9c8546ca4f8c563ea3233bf060fc6985a41d10c688666b1d",
+    "sha256": "ccd0042f6f2fb7b9d0d9d1348f272b218c313a36823cd2e8e51731ec5caa0a02"
+  },
+  "intros": {
+    "source": "reused",
+    "file": "er110_output/family_y_redelivery_audio_01/revision_01/intro/intros.json",
+    "file_sha256": "e963be74a15a6993f270cc377e3a66e3db219515d0a28b62ad7ab6569676195d",
+    "check_mode": "explicit",
+    "sha256": {
+      "voice_1": "459944976e01de4d154770bc991a9700e1916f28d329a2b1c3b95d3c896b2b69",
+      "voice_2": "ab4768ad89037baccd7d86ff4fc41be91f6fa4e71cf1bf761b59fec1bc58f63e",
+      "voice_3": "3985db3cc3930272d1b8fdaa12aa567d82a619e355f1b5ca0a92e31b71b388aa"
+    }
+  },
+  "leadintro_gate": {
+    "text_sha256": "a042bdd1820a16b10ce483e3cf6a2709fbd137223839305a5a3caec8f7a08741",
+    "na_fields": [
+      "leak_tension_reverts_to_research",
+      "leak_binary_camp_split",
+      "leak_evidence_memorable"
+    ],
+    "applicable_flagged": [],
+    "not_applicable_flagged": [],
+    "any_flagged_raw": false,
+    "prompt_sha256": "49c955e3dfa2ae31427a0572d0d445d0ba82cab58049363bfc75a8138a9c0420",
+    "model": "gpt-6-luna",
+    "meta": {
+      "response_id": "resp_090caee39174b0d4006added867d1087d0b6e86a1ef1976226",
+      "model": "gpt-6-luna",
+      "usage": {
+        "input_tokens": 1108,
+        "output_tokens": 658
+      }
+    },
+    "status": "PASS"
+  },
+  "closing": {
+    "source": "fixed_user_approved",
+    "general_method_used": false,
+    "slug": "redelivery_fee",
+    "approval_ref": "docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER.md §2-3 (案B「料金は何を動かせるか」を当該記事のみ個別正式採用)",
+    "text_sha256": "26745165e33be3ea5cf4548f365c6d145862d94ad0201cc69695c0a954800e71",
+    "registry_sha256": "1af776887262d9253cc07ca5945176bdb146ba8c8afaa5491fe83c6c04299ceb",
+    "theme_package_sha256": "f0d0af367950735bb0264162d3cb45e3ef330759d8077e9d6f9bb5c3dadf0288",
+    "voice_r0_sha256": "566ebd97d7ba1c81dcaa64305c8e5f02228a44cf1b5aa64f5f0105b1e5498a89",
+    "generation_sha256": "26745165e33be3ea5cf4548f365c6d145862d94ad0201cc69695c0a954800e71",
+    "final_sha256": "26745165e33be3ea5cf4548f365c6d145862d94ad0201cc69695c0a954800e71",
+    "rewritten": false,
+    "gate": {
+      "status": "PASS",
+      "n_judgements": 1,
+      "rewritten": false,
+      "source": "judged_this_run"
+    },
+    "model_id": null,
+    "routing_key": null,
+    "prompt_sha256": null,
+    "note": "案B固定注入。Prompt 02による一般化生成は使っていない(受入条件3は別記事の一般化経路evidenceで担保)",
+    "entry": {
+      "module": "er121_family_y_text_core_01.py",
+      "status": "FAMILY_Y_PRODUCTION",
+      "module_sha256": "e0a6bf10b352c13e37298ccb0d216d739f319b4653653da3402f23e38ffae2aa"
+    }
+  },
+  "verbatim": {
+    "checked": true,
+    "source_dir": "docs/research/FAMILY-Y-VOICES-DESIGN-01/OPINION_BASED_02/sources",
+    "n_source_files": 153,
+    "n_hits": 0,
+    "hits": {}
+  },
+  "part_sha256": {
+    "lead": "ccd0042f6f2fb7b9d0d9d1348f272b218c313a36823cd2e8e51731ec5caa0a02",
+    "closing": "26745165e33be3ea5cf4548f365c6d145862d94ad0201cc69695c0a954800e71",
+    "intro_voice_1": "459944976e01de4d154770bc991a9700e1916f28d329a2b1c3b95d3c896b2b69",
+    "intro_voice_2": "ab4768ad89037baccd7d86ff4fc41be91f6fa4e71cf1bf761b59fec1bc58f63e",
+    "intro_voice_3": "3985db3cc3930272d1b8fdaa12aa567d82a619e355f1b5ca0a92e31b71b388aa",
+    "voice_voice_1": "4dad1b8132d8901e93e9c8ff0d18320f0a138dc7e9f61eb62d9211d738d14e50",
+    "voice_voice_2": "7215b68741723e48e01291aa914d9b30a6e3e0d95acc9b61ceb67f9c03f632c3",
+    "voice_voice_3": "430169b043bdc195892f408c1f3faade0c4b61b7ef8ea7244cf9c9b17a0d6187"
+  },
+  "article_sha256": "c9c4a9d5215328e1f5a056e0763e866af77ebdf977bf9b473c0c68963f3877ba",
+  "prompt_files": {
+    "closing": {
+      "file": "closing_general_02.txt",
+      "sha256": "4713ceff2dd00a2f67eb9313ae9e206a4a3236c5b158e624c10ccf6fc20e5f07"
+    },
+    "voice": {
+      "file": "voice_generate_02.txt",
+      "sha256": "48645f1de5fcf6efd3a9d758a0120aa97b37f656a074c9ea0c31d95c51ffcd5e"
+    },
+    "lead": {
+      "file": "lead_generate_01.txt",
+      "sha256": "76282235c4f089c56318a635c4af1e45001795e7c8b956480bcfacb307edef21"
+    },
+    "intro": {
+      "file": "persona_intro_01.txt",
+      "sha256": "787794d635587053d20a411aa98da70b00dc7a45bc182f1483c1ae6a7267afc4"
+    }
+  },
+  "module": {
+    "file": "er121_family_y_text_core_01.py",
+    "sha256": "e0a6bf10b352c13e37298ccb0d216d739f319b4653653da3402f23e38ffae2aa"
+  }
+}
