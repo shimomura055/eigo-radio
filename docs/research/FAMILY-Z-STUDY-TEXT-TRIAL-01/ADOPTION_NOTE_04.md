@@ -10,6 +10,7 @@
 - **本文をregen/Local Rewriteで作り直した場合は、Part 2〜4(本文依存)を作り直す**。Part 1は本文に依存しない(KPが変われば再生成)。学習テキストは本文・KPの派生物として扱い、作り直しの無効化条件(本文sha・KP一覧の変化)を持たせる必要がある。
 - 呼出構成: P1 ∥ Step A → (Step B ∥ Part 3/4)。Part 3/4にはPart 1解説(R2)とStep A選定文が入る。Step AはM1(`resolve_verbatim`)で本文側の文字列に確定する。
 - 既存のretry/fallback機構との整合は未設計: Trialではparse失敗時に自動再試行しない。Productionでは既存retry方針に合わせた設計が別途必要。
+- **【追記 2026-10-25 委任_14】Part 1(案α)は`PART1_WIRING_*`(設計`PART1_WIRING_DESIGN_01.md`[§13〜§17=Opus条件A反映後]、証跡`PART1_WIRING_EVIDENCE_01.md`)でX/Z共通module`er003_kp_general_explanation_01.py`として配線済み(Z=`WIRED_PENDING_FABLE`・訳欄判断待ちでページ描画停止中/X=`WIRED_EXCEPT_USER_PAGE`、PRODUCTION_WIREDはFable受入後)。上記「Productionに存在しない」は配線前の記録として残す(履歴)。Part 2〜4は引き続き未配線。**
 
 ## 2. 項目4(英文の日本語訳)の生成元(未解決課題)
 - Productionには「KP引用英文の独立した確定日本語訳」の出所がない。Trial-04では03d第1標本の訳を`INPUT_04.json`に固定して流用した(Beforeとの比較条件を揃えるため。評価対象外)。
@@ -24,6 +25,7 @@
 - Part 1(案α): 事前登録基準を満たす(EVAL_04 §1)。採用の技術的な障害は見当たらない。判定保留は`at a moment’s notice`の結びの即応寄り(目視確認要)。
 - Part 2: 事前登録基準が未達(EVAL_04 §2)。設計見直し案(A)(B)(C)の判断・実装が先。見直しは新しい処理構造なのでOpus条件Aレビューが必要。
 - 採用する場合の量産単価: 約0.46円/記事セット(70円の約0.65%)。Part 2見直し案(B)を採ると約+0.3円。
+- **【追記 2026-10-25 委任_14】Part 1はユーザー正式採用(APPROVED_FOR_PRODUCTION、USER_05)を受け配線済み。Production実測=0.088〜0.137円/set(4call平均0.116円、70円比0.12〜0.20%)・+約10〜16秒。上記『at a moment’s notice結びの即応寄り』は分類C(追加Trial不要・ユーザー明示)のまま。Part 1の訳欄(T1/T2)は判断待ちで、判断記録が出るまでページへ描画しない。**
 
 ## 5. Validator/Checker
 新設していない。引用逐語照合(`check_quotes_04.py`)は評価時のみの決定論スクリプトで、Pipelineに組込んでいない。M1の`resolve_verbatim`はStep Aの文を本文側の文字列に確定する構造保証であり、判定器ではない。
