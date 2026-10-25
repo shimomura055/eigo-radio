@@ -19,6 +19,7 @@ from unittest import mock
 
 import er003_v1_n3_01_scaffold_generate as sc
 import er019_family_x_audio_production_runner_01 as runner
+import er119_kp_wiring_01 as _kpw
 
 ARTICLE = "P1.\n\nP2.\n\nP3.\n\nP4.\n"
 PASS = {"selection": {"status": "KEY_WORDS_STRUCTURE_PASS"}, "canonicalization": {"status": "CANONICALIZATION_PASS"},
@@ -42,7 +43,7 @@ def _setup(stale=True):
 
 
 def _scaffold(src, out, kp, scaffold_only="kp"):
-    with mock.patch.object(sc, "run_key_phrases", return_value=kp), \
+    with mock.patch.object(_kpw, "run_kp_with_review", return_value=kp), \
          mock.patch.object(runner.plan, "split_family_x_article_text_v2", return_value={"status": "OK", "paragraph_count": 4}), \
          mock.patch.object(runner, "run_family_x_a2_scaffold", return_value={}), \
          contextlib.redirect_stdout(io.StringIO()):
@@ -87,7 +88,7 @@ class ScaffoldStopTests(unittest.TestCase):
             work, src, out = _setup(stale=False)
             os.makedirs(f"{src}/b1b")
             open(f"{src}/b1b/article.md", "w", encoding="utf-8").write(ARTICLE)
-            with mock.patch.object(sc, "run_key_phrases", return_value=kp) as m,                  mock.patch.object(runner.plan, "split_family_x_article_text_v2", return_value={"status": "OK", "paragraph_count": 4}),                  mock.patch.object(runner, "run_family_x_a2_scaffold", return_value={}),                  contextlib.redirect_stdout(io.StringIO()):
+            with mock.patch.object(_kpw, "run_kp_with_review", return_value=kp) as m,                  mock.patch.object(runner.plan, "split_family_x_article_text_v2", return_value={"status": "OK", "paragraph_count": 4}),                  mock.patch.object(runner, "run_family_x_a2_scaffold", return_value={}),                  contextlib.redirect_stdout(io.StringIO()):
                 res = runner.run_theme_scaffold(None, src, out, ["a2", "b1b"], scaffold_only="kp")
             self.assertEqual(m.call_count, 1)   # b1bのKPは呼ばない
             self.assertNotIn("b1b", res)
@@ -124,7 +125,7 @@ class DownstreamNotRunTests(unittest.TestCase):
                    mock.patch.object(runner, "ensure_rf_record"),
                    mock.patch.object(runner, "assert_budget_ok"),
                    mock.patch.object(runner, "compute_cost_jpy_so_far", return_value=(0.0, {})),
-                   mock.patch.object(sc, "run_key_phrases", return_value=kp or PASS),
+                   mock.patch.object(_kpw, "run_kp_with_review", return_value=kp or PASS),
                    mock.patch.object(runner.plan, "split_family_x_article_text_v2", return_value={"status": "OK", "paragraph_count": 4}),
                    mock.patch.object(runner, "run_family_x_a2_scaffold", return_value={}),
                    mock.patch("er003_v1_en_direct_vfl_01_generate.get_client", return_value=None)]

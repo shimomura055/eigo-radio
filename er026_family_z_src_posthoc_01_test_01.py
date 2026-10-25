@@ -102,6 +102,7 @@ class RunnerWiringTest(unittest.TestCase):
         self.tmp = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, self.tmp, True)
         self.ctx = r.build_mock_context(self.tmp)
+        _declare_ctx(self.ctx)   # KP Human Review: 既存mock testのfixture(Human不在を明示宣言)
         self.calls = []
         orig = r._src_gate
 
@@ -149,10 +150,9 @@ class RunnerWiringTest(unittest.TestCase):
         self.ctx.hooks["kp_fn"] = bad_kp
         with self.assertRaises(r.FamilyZE2EStop) as cm:
             self._run(["kp"])
-        self.assertIn("FAMILY_Z_SRC_UNRESOLVED", str(cm.exception))
+        # KP Human Review(2026-10-25): 出典を解決できない候補は候補単位でSRC D1により除外(stage=src_d1)され、採用可能0件ならSTOP(推測補完しない)
+        self.assertIn("FAMILY_Z_KP_REVIEW_STOP", str(cm.exception))
         self.assertFalse(os.path.exists(f"{self.ctx.out_dir}/b1b/key_phrases/keywords_canonicalized.json"))   # install前に停止
-        a = json.load(open(f"{self.ctx.out_dir}/audit/src_z_posthoc_01.json", encoding="utf-8"))
-        self.assertEqual(a["levels"]["b1b"]["status"], "STOP")
 
     def test_load_level_inputs_rejects_kp_without_contract(self):
         pre = ["seed_check", "writer", "std_adjust", "plan", "support", "kp"]
@@ -194,6 +194,7 @@ class PromptAndCandidateSupplyUnchangedTest(unittest.TestCase):
 
 
 import unittest.mock  # noqa: E402
+from er119_test_support_01 import declare_ctx as _declare_ctx  # noqa: E402
 
 if __name__ == "__main__":
     unittest.main()

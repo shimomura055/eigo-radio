@@ -394,7 +394,11 @@ def _kp_stage_failed_markers(out_dir: str, levels: list[str]) -> list[str]:
 
 
 def _kp_already_generated(kp_dir: str) -> list[str]:
-    """`--scaffold-only kp`のQ5(iv): KP再生成は1レベル1回まで。既にKP成果物がある場合はその一覧を返す。"""
+    """`--scaffold-only kp`のQ5(iv): KP再生成は1レベル1回まで。既にKP成果物がある場合はその一覧を返す。
+    KP Human Review(2026-10-25): review/候補ファイルがある場合は『review再開』経路として許可する(候補の再生成はせず、確定のみ。
+    選び直しは`er119_kp_human_review_cli_01 reselect`だけ)ので、生成済みとは数えない。"""
+    if _khr().has_review(kp_dir):
+        return []
     found = []
     for name in ("keywords_runtime_metadata.json", "keywords_canonicalized.json", "key_phrases_db_hybrid"):
         if os.path.exists(f"{kp_dir}/{name}"):
@@ -438,15 +442,29 @@ def part1_next_command(source_dir: str) -> str:
             "scaffold再実行は費用と別KPを生むため行わない)")
 
 
+def _khr():
+    import er119_kp_human_review_01 as khr
+    return khr
+
+
+def _kpw():
+    import er119_kp_wiring_01 as kpw
+    return kpw
+
+
+def _slug_of(source_dir: str) -> str:
+    parts = os.path.normpath(source_dir).replace("\\", "/").split("/")
+    return parts[-2] if len(parts) >= 2 else "unknown"
+
+
 def _part1_kp_items(out_dir: str) -> list:
-    p = f"{out_dir}/b1b/key_phrases/keywords_canonicalized.json"
-    if not os.path.exists(p):
-        raise RuntimeError(f"[STOP][Part 1] {p}がありません(KP stage未完了)")
-    with open(p, encoding="utf-8") as f:
-        items = (json.load(f).get("items") or [])
-    if not items:
-        raise RuntimeError(f"[STOP][Part 1] {p}のitemsが空です")
-    return sorted(items, key=lambda x: x["rank"])
+    """Part 1(単語解説)の入力の単一アクセサ(KP Human Review M-9)。KP Human Reviewのreviewがあるrunはvocab_confirmed.json
+    (最大5件、KP3件を含む)が必須(fail-closed)、reviewが無い旧runだけ従来のkeywords_canonicalized.json(3件)。
+    未確定/不整合はKpReviewNotConfirmed/KpReviewInconsistent(いずれもRuntimeError)で止める。"""
+    khr = _khr()
+    kp_dir = f"{out_dir}/b1b/key_phrases"
+    khr.require_final_consistent(kp_dir, level="b1b")
+    return khr.part1_items(kp_dir)
 
 
 def _part1_ja_gen():
@@ -641,6 +659,9 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
         record_scaffold_article_sha(out_dir, level, article_path)
 
         kp_dir = f"{level_out_dir}/key_phrases"
+        # KP Human Review M-4: review/候補ファイルが有効(本文shaが一致)なら、rc=4待機後の再開で有料のsupportを再生成しない
+        # (文面が変わり費用がかかるため)。support成果物が無ければSTOP。本文が変わっていれば従来どおりsupportから作り直す。
+        _resume_review = scaffold_only is None and _kpw().review_resume_valid(kp_dir, article_text)
         if scaffold_only == "kp":
             _sp = _support_texts_path(level, level_out_dir)
             if not os.path.exists(_sp):
@@ -653,6 +674,14 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
                     f"[STOP][scaffold-only kp] {level}のKey Phraseは既に生成済みです({_done})。"
                     "KP再生成は1レベル1回までです(NGでも引き直しません)。Fableへ報告してください。")
             support = {}
+        elif _resume_review:
+            _sp = _support_texts_path(level, level_out_dir)
+            if not os.path.exists(_sp):
+                raise RuntimeError(
+                    f"[STOP][KP review再開] {level}: 有効なKP review/候補がありますがsupport成果物({_sp})がありません。"
+                    "supportを再生成すると文面が変わるため、自動では再生成しません(Fableへ報告してください)。")
+            print(f"[FAMILY-X-AUDIO-SCAFFOLD] {level}: KP review再開(support生成・KP選定はskip。確定のみ実行)")
+            support = {}
         elif level == "b1b":
             support = run_family_x_b1_scaffold(client, parts, level_out_dir)
         else:
@@ -661,10 +690,24 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
         # (下は変更なし: kp_dir定義は上へ移動済み)
         article_id = f"FAMILY_X_AUDIO_{os.path.basename(out_dir)}_{level}"
         kp_process = "B1_SUPPORT" if level == "b1b" else "A2_SUPPORT"
-        kp = sc.run_key_phrases(article_text, kp_dir, article_id, level, process=kp_process,
-                                 kp_backend=kp_backend, stop_run_dir=out_dir)
+        if kp_backend == "fulltext_p2":
+            # KP Human Review(2026-10-25、ユーザーAPPROVED_FOR_PRODUCTION): 候補(最大8)生成→Human確認/明示の不在宣言→finalize。
+            # 共有関数sc.run_key_phrasesは通らない(A/B/C・Y Trialは従来の3件経路のまま)。宣言なし=待機(rc=4)。
+            kp = _kpw().run_kp_with_review(text=article_text, kp_dir=kp_dir, run_dir=out_dir, family="x", slug=_slug_of(source_dir),
+                                           level=level, article_id=article_id, stop_run_dir=out_dir, run_hint=out_dir)
+        else:   # 非Production互換(test/Trial)。X Productionは常にfulltext_p2
+            kp = sc.run_key_phrases(article_text, kp_dir, article_id, level, process=kp_process,
+                                     kp_backend=kp_backend, stop_run_dir=out_dir)
         kp_status = (kp["canonicalization"] or {}).get("status") if kp["canonicalization"] else kp["selection"]["status"]
         print(f"[FAMILY-X-AUDIO-SCAFFOLD] {level}: key phrase status={kp_status}")
+        _kr = kp.get("kp_review") or {}
+        if _kr.get("state") == "PENDING":
+            # 失敗ではなく待機。残levelの候補も生成してから、main()がまとめてrc=4で止める(Part 1・TTSなど有料の後続へは進まない)。
+            result[level] = {"parts": parts, "support": {k: v.get("status") for k, v in support.items()},
+                             "key_phrases_status": "KP_REVIEW_PENDING", "kp_backend_used": None, "kp_review_state": "PENDING",
+                             "kp_review_pending": _kr["pending"]}
+            print(f"[FAMILY-X-AUDIO-SCAFFOLD] {level}: {_khr().PENDING_MARKER} Human確認待ち(依頼書: {_kr['pending'].get('request_md')})")
+            continue
         # fail-closed(KPMP-03 委任_03): PASS系以外はstageを止める(Zと対称)。ただしsummary(kp_run_status/gloss HR event等、
         # OF-KGCPW-04/16)は欠落させず全て記録してから、下のloop末尾でmarker+kp_stage_statusを付けて残levelを実行せず終了する。
         # 実際のrc≠0停止はmain()側(result内のkp_stage_statusを検出してFamilyXKPStageFailed)。markerは成功時に削除する。
@@ -680,6 +723,8 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
 
         result[level] = {"parts": parts, "support": {k: v.get("status") for k, v in support.items()},
                           "key_phrases_status": kp_status, "kp_backend_used": kp_backend_used}
+        if _kr:
+            result[level]["kp_review"] = {k: _kr.get(k) for k in ("state", "status", "signature", "round")}
         # KGCPW(OF-KGCPW-04/11/16): gloss再整合は無条件。KP段のtop-level status(kp_run_status)と
         # gloss停止(gloss_alignment_run_status)は別キーで記録する(NG_REVIEW_REQUIREDとHRが重なっても隠れない)。
         _canon = kp.get("canonicalization") or {}
@@ -2809,6 +2854,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
                               "out_dirは課金前にSTOP(従来styleでresumeするなら`--style-profile default`を明示)。"
                               "coffee_p8=Coffee限定P8置換、coffee_n01_r2_p3=N01+R2+P3(Coffee用)。")
     # FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01(Opus Q5): KPだけを再生成する最小CLI。--stage scaffold専用。
+    parser.add_argument("--kp-review", default=None, choices=("wait", "auto"),
+                         help="KP Human Review。既定(指定なし)=待機(Humanの選択か明示の不在宣言が必要。rc=4)。auto=このrunについて不在を明示宣言する"
+                              "(要 --kp-review-by/--kp-review-reason。AIが宣言する場合は --kp-review-user-ref 必須)。")
+    parser.add_argument("--kp-review-by", default=None)
+    parser.add_argument("--kp-review-reason", default=None)
+    parser.add_argument("--kp-review-user-ref", default="")
     parser.add_argument("--scaffold-only", default=None, choices=("kp",),
                          help="kp: scaffold stageでKey Phrase(M2P0)のみ再生成する(Preview/Comment等のsupport文面は"
                               "再生成しない。support成果物がout_dirに無ければSTOP、KP再生成は1レベル1回)。--stage scaffold専用。")
@@ -3049,6 +3100,8 @@ def main() -> None:
 
     if args.scaffold_only is not None and args.stage != "scaffold":
         parser.error("--scaffold-onlyは--stage scaffoldでのみ使えます。")
+    if args.kp_review == "auto" and not (args.kp_review_by and args.kp_review_reason):
+        parser.error("--kp-review auto には --kp-review-by と --kp-review-reason が必要です(自動確定は明示宣言のみ)。")
     source_dir = f"er019_output/{args.slug}/{args.run}"
     out_dir = derive_out_dir(args.slug, args.run, args.out_dir)
     # OPEN-300: style profileは課金・ファイル作成前に決定する。M5(backend)→M2/固定記録の順で、
@@ -3114,6 +3167,12 @@ def main() -> None:
         cl.install(f"{out_dir}/raw_usage_log.jsonl")
         import er003_v1_en_direct_vfl_01_generate as vfl01
         client = vfl01.get_client()
+        if args.kp_review == "auto":   # 明示引数のときだけ宣言を記録する(宣言ファイルが自動確定の唯一の読取元)
+            try:
+                _kpw().declare_from_runner_args(out_dir, by=args.kp_review_by, reason=args.kp_review_reason, user_ref=args.kp_review_user_ref)
+            except _khr().KpReviewError as exc:
+                print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
+                sys.exit(3)
 
         if args.stage in ("scaffold", "all"):
             with cl.logging_context(args.slug, "scaffold"):
@@ -3145,6 +3204,17 @@ def main() -> None:
                 print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {_p1_fail}: 学習テキスト Part 1の生成に失敗(KPは確定済み・TTS前に停止)。"
                       f"次の一手: {part1_next_command(source_dir)}。scaffold stageの再実行はしないでください(support/KPが再生成され費用・別KPになります)。")
                 sys.exit(3)
+            _kp_pending = {lv: (scaffold_result.get(lv) or {}).get("kp_review_pending") for lv in levels
+                           if (scaffold_result.get(lv) or {}).get("kp_review_state") == "PENDING"}
+            if _kp_pending:   # KP Human Review待ち(失敗ではない)。rc=4。KP候補は生成済み。再開は同じコマンドを1つだけ再実行(support/選定は再生成されない)
+                _ep = f"{out_dir}/entry_point.json"
+                if os.path.exists(_ep):
+                    with open(_ep, encoding="utf-8") as f:
+                        _epd = json.load(f)
+                    _epd["kp_review_status"] = {lv: "PENDING_REVIEW" for lv in _kp_pending}
+                    save_json(_ep, _epd)
+                print(_kpw().pending_banner(list(_kp_pending.values()), restart_command="py " + " ".join(sys.argv)))
+                sys.exit(_khr().EXIT_CODE_PENDING)
             # 修正1回目(Opus L2所見B2、2026-09-27): scaffold完了後、
             # entry_point.jsonへlevelごとのkp_backend_usedを追記する
             # (per-article traceability、既存フィールドは保持したまま追加)。
@@ -3157,6 +3227,18 @@ def main() -> None:
                 }
                 save_json(entry_point_path, entry_point)
 
+        if args.stage in ("study_text", "tts", "assemble", "player", "all"):
+            # KP Human Review: 全consumerの入口で確定物の整合を確認する(未確定=待機rc=4 / 不整合・旧KP混入=STOP rc=3)。review無しの旧runは従来どおり。
+            for _lv in levels:
+                try:
+                    _khr().require_final_consistent(f"{out_dir}/{_lv}/key_phrases", level=_lv)
+                except _khr().KpReviewNotConfirmed as exc:
+                    print(_kpw().pending_banner([{"level": _lv, "request_md": _khr().paths(f"{out_dir}/{_lv}/key_phrases")["request"]}],
+                                                restart_command="py " + " ".join(sys.argv)) + f"\n  詳細: {exc}")
+                    sys.exit(_khr().EXIT_CODE_PENDING)
+                except _khr().KpReviewInconsistent as exc:
+                    print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
+                    sys.exit(3)
         if args.stage == "study_text":
             # 委任_14 Opus M1: Part 1だけを(再)生成する単独stage(KP再選定・support再生成なし。API=Part 1の1 call以内)。Advanced(b1b)のみ。
             if "b1b" not in levels:
@@ -3246,6 +3328,20 @@ def main() -> None:
             player_path = (build_player_html(out_dir, args.slug, japanese_title, study_html=_study_html) if _study_html
                            else build_player_html(out_dir, args.slug, japanese_title))
             print(f"[FAMILY-X-AUDIO-RUNNER] player.html: {os.path.abspath(player_path)}")
+            # 検証5(KP Human Review): 選定結果=実際に音声化・公開された内容(確定JSON<->KP artifact<->TTS結果<->study_text<->ページ)。不一致=STOP。
+            for _lv in levels:
+                _asm = f"{out_dir}/{_lv}/run_summary_assemble.json"
+                _asm_ok = os.path.exists(_asm) and load_json(_asm).get("status") == "OK"
+                _tts = f"{out_dir}/{_lv}/audit/tts_generation_results.json"
+                try:
+                    _khr().verify_selection_matches_outputs(
+                        f"{out_dir}/{_lv}/key_phrases", level=_lv, tts_results_path=(_tts if os.path.exists(_tts) else None),
+                        study_text_json=(f"{out_dir}/b1b/study_text/{_part1_gen().PART1_FILE_STEM}.json" if _lv == "b1b" else None),
+                        page_paths=([player_path] if _asm_ok else None),
+                        vocab_page_paths=([player_path] if (_lv == "b1b" and _study_html) else None))
+                except _khr().KpReviewInconsistent as exc:
+                    print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
+                    sys.exit(3)
 
     finally:
         # OF-KGCPW-03: 例外(--stage allのEPISODE_BLOCKED等)で途中終了しても最終stdoutの1行を必ず出す(try/finally)。

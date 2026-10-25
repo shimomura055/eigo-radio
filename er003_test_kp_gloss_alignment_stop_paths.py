@@ -30,6 +30,7 @@ import unittest
 
 import er003_key_words_canonicalization as kc  # noqa: E402
 import er003_key_words_gloss_alignment as ga  # noqa: E402
+from er119_test_support_01 import declare_ctx as _declare_ctx  # noqa: E402
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 RESULTS: list = []
@@ -494,7 +495,8 @@ def pat_scaffold_passthrough(base, x):
     seen = []
     hr_doc = {"items": [dict(ga_item(ORIGINALS[1], "based on interviews"), gloss_alignment_status=ga.STATUS_HR_REQUIRED)]}
 
-    def fake_run(article_text, kp_dir, article_id, level, **kw):
+    def fake_run(*, text=None, kp_dir=None, article_id=None, level=None, **kw):   # KP Human Review: X Productionは確認付きKP経路(run_kp_with_review)を通る
+        article_text = text
         seen.append(dict(kw))
         os.makedirs(kp_dir, exist_ok=True)
         json.dump(hr_doc, open(f"{kp_dir}/keywords_canonicalized.json", "w", encoding="utf-8"), ensure_ascii=False)
@@ -503,7 +505,8 @@ def pat_scaffold_passthrough(base, x):
                                      "gloss_alignment_metrics": {"targets": 1}}, "m2_fallback_events": [],
                 "status": "NG_REVIEW_REQUIRED", "gloss_alignment_run_status": ga.STOPPED_STATUS,
                 "gloss_alignment_human_review_events": [{"article": article_id, "level": level, "ranks": [2]}]}
-    with mock.patch.object(sc, "run_key_phrases", side_effect=fake_run), contextlib.redirect_stdout(io.StringIO()):
+    import er119_kp_wiring_01 as _kpw
+    with mock.patch.object(_kpw, "run_kp_with_review", side_effect=fake_run), contextlib.redirect_stdout(io.StringIO()):
         res = x.run_theme_scaffold(None, src, out, ["a2"], scaffold_only="kp")
     summ = json.load(open(f"{out}/scaffold_run_summary.json", encoding="utf-8"))
     buf = io.StringIO()
@@ -519,9 +522,16 @@ def pat_scaffold_passthrough(base, x):
 
 
 # ---------------------------------------------------------------- Z patterns
-def z_ctx(tmp, kp_calls, fail_levels=("B1",), align_enabled=True):
+def z_ctx(tmp, kp_calls, fail_levels=("B1",), align_enabled=True, declare=True):
     import er026_family_z_fiction_production_runner_01 as r
     ctx = r.build_mock_context(tmp)
+    if declare:
+        _declare_ctx(ctx)   # KP Human Review: 既存mock testのfixture(Human不在を明示宣言)
+    else:
+        import er119_kp_human_review_01 as _rv0
+        _p0 = _rv0.declarations_path(ctx.out_dir)   # 既存mock testがimportでwrapしていても『宣言なし』から始める
+        if os.path.exists(_p0):
+            os.remove(_p0)
 
     def kp_fn(text, kp_dir, article_id, source_level, process=None, **kw):
         kp_calls.append(source_level)
@@ -559,6 +569,10 @@ def api_kinds(ctx):
 
 
 def pat_z(base):
+    """KP Human Review(2026-10-25)導入後のZ。gloss再整合が成立しない候補(HR待ち)は候補段階で旗付け=AUTO対象外・Human選択不可
+    (`resolve-gloss`後に選択可)になり、確定物(assets)には入らない。旧: kp stageがHR itemを含むartifactで停止していた。
+    守るべき不変条件(HR itemが後段に流れない・人間確定glossが使われる・選定を再実行しない・有料呼出なし)は同じ。"""
+    import er119_kp_human_review_01 as rv
     tmp = os.path.join(base, "z"); os.makedirs(tmp)
     kp_calls: list = []
     r, ctx = z_ctx(tmp, kp_calls)
@@ -566,78 +580,70 @@ def pat_z(base):
         r.run_stages(ctx, ["seed_check", "writer", "std_adjust", "plan", "support"])
     kinds0 = api_kinds(ctx)
     stop = None
-    out = io.StringIO()
-    with contextlib.redirect_stdout(out):
+    with contextlib.redirect_stdout(io.StringIO()):
         try:
             r.run_stage(ctx, "kp")
         except r.FamilyZE2EStop as e:
             stop = str(e)
     odir = ctx.out_dir
     kd = f"{odir}/key_phrases/b1b"
-    rep_ok = not ga.validate_hr_report(f"{kd}/{ga.HR_REPORT_JSON}")
-    events = json.load(open(f"{odir}/gloss_alignment_human_review_events.json", encoding="utf-8"))
-    dst_exists = os.path.exists(f"{odir}/b1b/key_phrases/keywords_canonicalized.json")
-    result_exists = os.path.exists(f"{odir}/key_phrases/b1b_result.json")
+    asset = f"{odir}/b1b/key_phrases/keywords_canonicalized.json"
+    cands = rv.load_candidates(kd)
+    hr_c = [c for c in cands["candidates"] if c["flags"]["gloss_hr_pending"]]
+    inst = json.load(open(asset, encoding="utf-8"))
     kinds1 = api_kinds(ctx)
     new_kinds = {k: kinds1.get(k, 0) - kinds0.get(k, 0) for k in kinds1 if kinds1.get(k, 0) != kinds0.get(k, 0)}
-    record("T3(j)", "Z stage_kp: FAILED(HR待ち)で既存FamilyZE2EStop送出、HR報告書(再読検証)+run-level event、HR artifactをassetsへ配備(旧assetを残さない)・stage結果未保存・TTS/解説 0 call",
-           stop and "GLOSS_ALIGNMENT_HUMAN_REVIEW_REQUIRED(b1b)" in stop and rep_ok and events[0]["level"] == "b1b"
-           and dst_exists and not result_exists and new_kinds == {"kp": 1} and kp_calls == ["B1"],
-           {"stop_message": (stop or "")[:200], "api_kinds_during_kp_stage": new_kinds, "assets_installed": dst_exists,
-            "stage_result_saved": result_exists})
-    shutil.copy(f"{kd}/{ga.HR_REPORT_MD}", os.path.join(base, "_evidence_z_report.md"))
-    # (m-Z) 別stage(tts_b1b)単独実行でも保留: HR停止時にassetsを配備済み(OF-KGCPW-09)なので、手動コピー無しでもload_level_inputsが止める
-    tts_stop2 = None
-    with contextlib.redirect_stdout(io.StringIO()):
-        try:
-            r.run_stage(ctx, "tts_b1b")
-        except r.FamilyZE2EStop as e:
-            tts_stop2 = str(e)
+    record("T3(j)", "Z stage_kp: gloss HR(rank=2)の候補は旗付き・AUTO対象外で確定物(assets)に入らず、HR itemが後段へ流れない(stageは通る)。有料呼出は候補生成のみ",
+           stop is None and len(hr_c) == 1 and not hr_c[0]["auto_eligible"] and ga.collect_unresolved(inst) == []
+           and hr_c[0]["candidate_id"] not in [i["candidate_id"] for i in inst["items"]] and new_kinds.get("kp") == 2
+           and kp_calls == ["B1", "A2"],
+           {"stop": stop, "hr_candidates": [c["candidate_id"] for c in hr_c], "api_kinds_during_kp_stage": new_kinds})
+    # (m-Z) 別stage(tts_b1b)の共有入力(load_level_inputs)もHR itemを含まない。TTS API 0 call(入力検査のみ)
     kinds2 = api_kinds(ctx)
-    record("T3(m)", "tts段を別実行しても保留: HR停止時に配備済みのHR artifactをload_level_inputsがFamilyZE2EStopで拒否。TTS API 0 call",
-           tts_stop2 and "HUMAN_REVIEW_REQUIRED" in tts_stop2 and not any(k.startswith("tts") for k in kinds2),
-           {"with_hr_assets": (tts_stop2 or "")[:160], "api_kinds": kinds2})
-    os.remove(f"{odir}/b1b/key_phrases/keywords_canonicalized.json")
-    # (l-Z) resolve_gloss -> 同じstageを再実行 -> 選定を再実行しない(kp_fn呼出数不変) / a2は初回選定 / 解説sigにgloss
-    ga.resolve_gloss(f"{kd}/keywords_canonicalized.json", 2, "人間が確定した意味", "t3_mock", now="2026-10-15T00:00:00+00:00")
     with contextlib.redirect_stdout(io.StringIO()):
-        res_kp = r.run_stage(ctx, "kp")
-    installed = json.load(open(f"{odir}/b1b/key_phrases/keywords_canonicalized.json", encoding="utf-8"))
+        li = r.load_level_inputs(ctx, "b1b")
+    record("T3(m)", "tts段の共有入力load_level_inputs: HR itemは含まれず検査を通る。この検査でTTS API 0 call",
+           li is not None and not any(k.startswith("tts") for k in api_kinds(ctx)) and api_kinds(ctx) == kinds2,
+           {"api_kinds": api_kinds(ctx)})
+    # (l-Z) 宣言なし(=Human確認待ち)で候補生成 -> 候補のgloss HRをresolve-gloss -> Humanが選定 -> 同じstageを再実行:
+    # 選定を再実行しない(kp_fn計1回+a2初回のみ)、人間確定glossがassetsに入り(HUMAN_RESOLVED)、解説sigにglossを含む
+    tmp_l = os.path.join(base, "z_l"); os.makedirs(tmp_l)
+    kp_calls_l: list = []
+    rl, ctxl = z_ctx(tmp_l, kp_calls_l, declare=False)
+    with contextlib.redirect_stdout(io.StringIO()):
+        rl.run_stages(ctxl, ["seed_check", "writer", "std_adjust", "plan", "support"])
+        try:
+            rl.run_stage(ctxl, "kp")
+        except rl.FamilyZKpReviewPending:
+            pass
+    kdl = f"{ctxl.out_dir}/key_phrases/b1b"
+    hr_l = [c for c in rv.load_candidates(kdl)["candidates"] if c["flags"]["gloss_hr_pending"]][0]
+    rv.op_resolve_gloss(kdl, rank=hr_l["ai_rank"], gloss="人間が確定した意味", by="t3_mock")
+    rv.op_select(kdl, kp_ranks=[1, 2, 3], vocab_ranks=[1, 2, 3, 4, 5], by="t3_mock")
+    rv.op_select(f"{ctxl.out_dir}/key_phrases/a2", kp_ranks=[1, 2, 3], by="t3_mock")
+    with contextlib.redirect_stdout(io.StringIO()):
+        res_kp = rl.run_stage(ctxl, "kp")
+    installed = json.load(open(f"{ctxl.out_dir}/b1b/key_phrases/keywords_canonicalized.json", encoding="utf-8"))
     _sorted_items = sorted(installed["items"], key=lambda x: x["rank"])
-    import er019_family_x_kp_explanation_01 as _kexp_t   # 委任_14: fixtureが全文選定item(fulltext_source_ref付き)になったため解説sigは実装どおりexplanation_phrase(=used_form)
+    import er019_family_x_kp_explanation_01 as _kexp_t   # 解説sigは実装どおりexplanation_phrase(=used_form)
     _sig_payload = {"display": [_kexp_t.explanation_phrase(it) for it in _sorted_items],
                     "gloss": [it.get("japanese_gloss", "") for it in _sorted_items]}
     if any(it.get("source_reference_contract") for it in _sorted_items):
-        # 委任_16(SRC D1): 解説sigにsrcが加わる(FZQI委任_06で期待値更新。実装不変)
         _sig_payload["src"] = [[it.get("source_sentence_id", ""), it.get("source_sentence", "")] for it in _sorted_items]
-    sig_expected = r._sha(json.dumps(_sig_payload, ensure_ascii=False))
-    pv = r._m().w62.rj(f"{odir}/writer/provenance.json")
+    sig_expected = rl._sha(json.dumps(_sig_payload, ensure_ascii=False))
+    pv = rl._m().w62.rj(f"{ctxl.out_dir}/writer/provenance.json")
     expl_entry = (pv.get("downstream_stages") or {}).get("kp_expl_b1b") or {}
-    consumed = os.path.exists(f"{kd}/gloss_alignment_pending_result.consumed.json")
-    record("T3(l-Z)", "Z: resolve_gloss後に同stageを再実行 -> b1b選定は再実行されない(kp_fn計1回+a2初回のみ)、人間確定glossでassets配備、解説sigにgloss含む、snapshot消費済み",
-           kp_calls == ["B1", "A2"] and installed["items"][1]["japanese_gloss"] == "人間が確定した意味"
-           and installed["items"][1]["gloss_alignment_status"] == ga.STATUS_HUMAN_RESOLVED
-           and expl_entry.get("input_sha256") == sig_expected and consumed,
-           {"kp_fn_levels_called": kp_calls, "expl_sig_includes_gloss": expl_entry.get("input_sha256") == sig_expected,
-            "snapshot_consumed": consumed, "stage_status": res_kp.get("b1b") if isinstance(res_kp, dict) else None})
-    # (h-Z) 通知失敗 -> stage_kpは成功扱いにならない
-    tmp2 = os.path.join(base, "z_h"); os.makedirs(tmp2)
-    r2, ctx2 = z_ctx(tmp2, [])
-    with contextlib.redirect_stdout(io.StringIO()):
-        r2.run_stages(ctx2, ["seed_check", "writer", "std_adjust", "plan", "support"])
-    err = None
-    with contextlib.redirect_stdout(io.StringIO()), mock.patch.object(ga, "validate_hr_report", return_value=["entry0.attemptsが空"]):
-        try:
-            r2.run_stage(ctx2, "kp")
-        except ga.GlossAlignmentNotificationError as e:
-            err = str(e)
-    record("T3(h-Z)", "Z: HR報告の再読検証失敗 -> GlossAlignmentNotificationErrorでkp stage停止(通知失敗のまま継続しない)、assets未配備",
-           err and not os.path.exists(f"{ctx2.out_dir}/b1b/key_phrases/keywords_canonicalized.json")
-           and not os.path.exists(f"{ctx2.out_dir}/key_phrases/b1b_result.json"), {"error": (err or "")[:140]})
+    hit = [i for i in installed["items"] if i["candidate_id"] == hr_l["candidate_id"]]
+    record("T3(l-Z)", "Z: 候補のresolve-gloss+Human選定後に同stageを再実行 -> 選定は再実行されない(kp_fn計1回+a2初回のみ)、人間確定glossがassetsへ(HUMAN_RESOLVED)、解説sigにgloss含む",
+           kp_calls_l == ["B1", "A2"] and len(hit) == 1 and hit[0]["japanese_gloss"] == "人間が確定した意味"
+           and hit[0]["gloss_alignment_status"] == ga.STATUS_HUMAN_RESOLVED and expl_entry.get("input_sha256") == sig_expected,
+           {"kp_fn_levels_called": kp_calls_l, "expl_sig_includes_gloss": expl_entry.get("input_sha256") == sig_expected,
+            "stage_status": res_kp.get("b1b") if isinstance(res_kp, dict) else None})
     # (k-Z) 既定のZ mock kp stage(gloss再整合の対象0件)は従来どおり通る: 未評価検出は対象0件を通す(OF-KGCPW-08)
     tmp3 = os.path.join(base, "z_default"); os.makedirs(tmp3)
     r3 = __import__("er026_family_z_fiction_production_runner_01")
     ctx3 = r3.build_mock_context(tmp3)
+    _declare_ctx(ctx3)   # KP Human Review: 既存mock testのfixture(Human不在を明示宣言)
     with contextlib.redirect_stdout(io.StringIO()):
         r3.run_stages(ctx3, ["seed_check", "writer", "std_adjust", "plan", "support", "kp"])
     record("T3(k-Z)", "Z 既定mock kp stage(対象0件): 無条件配線後も従来どおり通る(未評価検出は対象0件を通過)",
@@ -646,7 +652,7 @@ def pat_z(base):
 # ---------------------------------------------------------------- subprocess drivers (終了statusの非OK確認)
 def driver_z(work):
     kp_calls = []
-    r, ctx = z_ctx(work, kp_calls)
+    r, ctx = z_ctx(work, kp_calls, declare=False)   # KP Human Review: 宣言なし=確認待ち(FamilyZKpReviewPending=FamilyZE2EStop)で非0終了
     r.run_stages(ctx, ["seed_check", "writer", "std_adjust", "plan", "support", "kp"])   # kpで例外->rc!=0
 
 
@@ -676,7 +682,7 @@ def pat_exit_status(base):
                       "stderr_tail": p.stderr.strip().splitlines()[-1][:200] if p.stderr.strip() else "",
                       "unreachable": "UNREACHABLE" in p.stdout}
     record("T3(exit)", "別プロセス実行: Z=FamilyZE2EStopで非0終了、X=Gate拒否で非0終了。最終stdoutに専用行(「届いた」条件③)",
-           outs["z"]["rc"] != 0 and "GLOSS_ALIGNMENT_HUMAN_REVIEW_REQUIRED" in outs["z"]["stderr_tail"]
+           outs["z"]["rc"] != 0 and "KP_REVIEW_PENDING" in outs["z"]["stderr_tail"]
            and outs["x"]["rc"] != 0 and outs["x"]["stdout_has_line"] and "EPISODE_BLOCKED_BY_AUDIO_VALIDATION" in outs["x"]["stderr_tail"]
            and not outs["x"]["unreachable"], outs)
 
@@ -725,7 +731,7 @@ def run_all_scenarios():
 
 
 EXPECTED_IDS = ["T3(a)", "T3(b)", "T3(c)", "T3(d)", "T3(e)", "T3(f)", "T3(g)", "T3(h)", "T3(i-A2)", "T3(p)", "T3(o)", "T3(q)",
-                "T3(k-X)", "T3(l-X)", "T3(t-X)", "T3(n)", "T3(n2)", "T3(v)", "T3(j)", "T3(m)", "T3(l-Z)", "T3(h-Z)", "T3(k-Z)",
+                "T3(k-X)", "T3(l-X)", "T3(t-X)", "T3(n)", "T3(n2)", "T3(v)", "T3(j)", "T3(m)", "T3(l-Z)", "T3(k-Z)",
                 "T3(exit)", "T3(r)", "T3(api0)"]
 
 

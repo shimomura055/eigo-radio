@@ -22,6 +22,9 @@ from unittest import mock
 import er026_family_z_fiction_production_runner_01 as r
 import er062_family_z_structure_01 as st62
 import er063_family_z_audio_01 as a63
+import er119_test_support_01 as _s119
+
+_s119.declare_in_mock_contexts(r)   # KP Human Review: 既存mock E2Eは『Human不在を明示宣言』したctxで従来どおり進める
 
 MONITORED_FILES = [
     "er006_output/master_audio_store_01/manifest.json",

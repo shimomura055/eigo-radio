@@ -21,6 +21,7 @@ import unittest.mock as mock
 import er003_key_words_gloss_alignment as ga
 import er003_test_kp_gloss_alignment_stop_paths as sp
 import er019_family_x_audio_production_runner_01 as x
+from er119_test_support_01 import declare_ctx as _declare_ctx  # noqa: E402
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 GOLDEN_DIR = os.path.join(REPO, "er071_output", "m2p0_n01_production_wiring_01", "gloss_alignment_production_wiring_01", "golden")
@@ -111,6 +112,7 @@ class ExplanationSignatureZ(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             r = __import__("er026_family_z_fiction_production_runner_01")
             ctx = r.build_mock_context(tmp)
+            _declare_ctx(ctx)   # KP Human Review: 既存mock testのfixture(Human不在を明示宣言)
             with contextlib.redirect_stdout(io.StringIO()):
                 r.run_stages(ctx, ["seed_check", "writer", "std_adjust", "plan", "support", "kp"])
             installed = json.load(open(f"{ctx.out_dir}/b1b/key_phrases/keywords_canonicalized.json", encoding="utf-8"))
@@ -197,7 +199,9 @@ class UnevaluatedDetection(_FlagOn):
                         f"{ctx.out_dir}/b1b/key_phrases/keywords_canonicalized.json")
             with self.assertRaises(r.FamilyZE2EStop) as cm:
                 r.load_level_inputs(ctx, "b1b")
-            self.assertIn("GLOSS_ALIGNMENT_UNEVALUATED", str(cm.exception))
+            # KP Human Review(M-9): 消費側入口は先にreview/確定物の整合検査(KP_VOCAB_CONSUMER_CHECK_FAILED=同じgloss未評価の検出)で止まる。
+            # 止まる理由(gloss未評価itemがある)は従来と同じで、止まる層が前段に1つ増えただけ(従来の検査も後段に残る)。
+            self.assertTrue("GLOSS_ALIGNMENT_UNEVALUATED" in str(cm.exception) or "gloss未評価" in str(cm.exception), str(cm.exception))
 
     def test_z_zero_targets_pass(self):
         with tempfile.TemporaryDirectory() as tmp, sp.forbid_real_apis():
@@ -212,6 +216,10 @@ class ZSnapshotPriorityAndAssetInstall(_FlagOn):
     """OF-KGCPW-09 (M3)。"""
 
     def test_regenerate_hr_resolve_rerun_uses_snapshot_and_old_asset_not_left(self):
+        """KP Human Review(M-3(b)導入後の等価検証)。旧: --regenerate-stage kp_b1bが選定を引き直し、gloss HRで停止して旧assetを置換した。
+        新: --regenerate-stage kp_<lv>は『現在のreviewからの再finalize(再選定なし)』なので引き直しは起きない。選定の引き直しは
+        reselect(新round)だけで、gloss HRの候補はAUTO対象外=確定物へ入らない。いずれの経路でも『旧glossが通る/HR itemが確定に混入する』ことはない。"""
+        import er119_kp_human_review_01 as rv
         with tempfile.TemporaryDirectory() as tmp, sp.forbid_real_apis():
             calls: list = []
             fail_levels = []                                        # 可変: 最初はHRなし(旧=ON化前に相当する健全asset)
@@ -221,33 +229,34 @@ class ZSnapshotPriorityAndAssetInstall(_FlagOn):
             asset = f"{ctx.out_dir}/b1b/key_phrases/keywords_canonicalized.json"
             self.assertEqual(ga.collect_unresolved(json.load(open(asset, encoding="utf-8"))), [])
             self.assertEqual(calls, ["B1", "A2"])
-            # b1bを明示再生成 -> 今度はHRになる
+            # (a) b1bを明示再生成: 再選定しない(kp_fnは呼ばれない)。確定物・assetは健全のまま
             fail_levels.append("B1")
             ctx.regenerate_stage = "kp_b1b"
             with contextlib.redirect_stdout(io.StringIO()):
-                with self.assertRaises(r.FamilyZE2EStop) as cm:
-                    r.run_stage(ctx, "kp")
-            self.assertIn("HUMAN_REVIEW_REQUIRED(b1b)", str(cm.exception))
-            self.assertEqual(calls, ["B1", "A2", "B1"])
-            # (ii) インストール済みの旧assetがHR artifactへ置換され、tts_b1b単独起動で旧glossが通らない
-            self.assertEqual([i["rank"] for i in ga.collect_unresolved(json.load(open(asset, encoding="utf-8")))], [2])
+                r.run_stage(ctx, "kp")
+            self.assertEqual(calls, ["B1", "A2"])
+            self.assertEqual(ga.collect_unresolved(json.load(open(asset, encoding="utf-8"))), [])
+            # (b) 選定の引き直しはreselect(Human操作)。新round(宣言はround 1のみ有効=失効)に対し明示宣言し直すと、新しい候補に
+            # gloss HRの候補(rank 2)が含まれるが、AUTO対象外=確定物に入らず、assetにgloss HR itemは残らない
+            kp_dir = f"{ctx.out_dir}/key_phrases/b1b"
+            rv.op_reselect(kp_dir, ng={}, note="gloss HR経路の確認", by="tester")
+            rv.add_declaration(run_dirs=[ctx.out_dir], by="tester", reason="Human不在(round 2)", rounds=[2])
             with contextlib.redirect_stdout(io.StringIO()):
-                with self.assertRaises(r.FamilyZE2EStop) as cm2:
-                    r.run_stage(ctx, "tts_b1b")
-            self.assertIn("HUMAN_REVIEW_REQUIRED", str(cm2.exception))
-            # (i) resolve後に同じ--regenerate-stage kp_b1bで再実行 -> snapshotから復元(選定を再実行しない)
-            ga.resolve_gloss(f"{ctx.out_dir}/key_phrases/b1b/keywords_canonicalized.json", 2, "人間が確定した意味", "tester")
-            # kp_b1b自体はsnapshot復元で通り、続く解説(kp_expl_b1b)は旧(status無し=display_phraseのみ)署名とglossを含む新署名が
-            # 食い違うためfail-closedで停止する(自動再生成しない。runbook「注意」)。明示--regenerate-stage kp_expl_b1bで解消する。
-            with contextlib.redirect_stdout(io.StringIO()):
-                with self.assertRaises(r._m().st.FamilyZProvenanceMismatchStop) as cm3:
+                try:
                     r.run_stage(ctx, "kp")
-            self.assertIn("kp_expl_b1b", str(cm3.exception))
-            self.assertEqual(calls, ["B1", "A2", "B1"])             # b1bのkp_fnは追加で呼ばれない
+                except r._m().st.FamilyZProvenanceMismatchStop as e:   # 解説(kp_expl_b1b)は新署名で2段再生成が必要(既存仕様)
+                    self.assertIn("kp_expl_b1b", str(e))
+            self.assertEqual(calls, ["B1", "A2", "B1"])             # b1bだけ新roundで候補を引き直した
+            cands = rv.load_candidates(kp_dir)
+            hr = [c for c in cands["candidates"] if c["flags"]["gloss_hr_pending"]]
+            self.assertTrue(hr and all(not c["auto_eligible"] for c in hr))
             inst = json.load(open(asset, encoding="utf-8"))
-            self.assertEqual(inst["items"][1]["japanese_gloss"], "人間が確定した意味")
-            self.assertEqual(inst["items"][1]["gloss_alignment_status"], ga.STATUS_HUMAN_RESOLVED)
-            self.assertTrue(os.path.exists(f"{ctx.out_dir}/key_phrases/b1b/gloss_alignment_pending_result.consumed.json"))
+            self.assertEqual(ga.collect_unresolved(inst), [])
+            self.assertNotIn(hr[0]["candidate_id"], [i["candidate_id"] for i in inst["items"]])
+            # 消費側(TTS/Gate/Assembly共有入力)は、KP表現が変わったので旧Part 1(解説)を通さず止まる(既存の2段再生成の案内。HR itemは無関係)
+            with contextlib.redirect_stdout(io.StringIO()), self.assertRaises(r.FamilyZE2EStop) as cm:
+                r.load_level_inputs(ctx, "b1b")
+            self.assertIn("KP_PART1", str(cm.exception))
 
     def test_stage_kp_runs_preflight_first(self):
         with tempfile.TemporaryDirectory() as tmp, sp.forbid_real_apis():

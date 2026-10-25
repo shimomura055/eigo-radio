@@ -734,7 +734,7 @@ class TestFamilyZWiring(unittest.TestCase):
 
     def test_mock_kp_fn_is_three_items(self):
         import er026_family_z_fiction_production_runner_01 as z
-        self.assertIn("[:3]", inspect.getsource(z.mock_kp_fn))
+        self.assertIn("n_max=3", inspect.getsource(z.mock_kp_fn))   # 既定は3件(Production上限)。KP Human Review: 候補生成mockだけn_max=8
 
     def test_stage_kp_explanation_sig_uses_used_form_for_fulltext(self):
         import er026_family_z_fiction_production_runner_01 as z

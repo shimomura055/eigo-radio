@@ -68,9 +68,10 @@ class TestFamilyXWiring(unittest.TestCase):
         article = "# T\n\n" + "\n\n".join(f"Paragraph {i}. Owners pushed prices up in May. Cafes keep raw beans in stock." for i in range(1, 5)) + "\n"
         captured = {}
 
-        def fake_run_key_phrases(article_text, kp_dir, article_id, level, **kw):
+        def fake_run_key_phrases(**kw):   # KP Human Review: X Productionはsc.run_key_phrasesではなくer119の確認付きKP経路を通る
             captured.update(kw)
-            captured["kp_dir"] = kp_dir
+            kp_dir = kw["kp_dir"]
+            captured["kp_backend"] = "fulltext_p2"
             os.makedirs(kp_dir, exist_ok=True)
             return {"selection": {"status": "KEY_WORDS_STRUCTURE_PASS", "kp_backend_used": "fulltext_p2"},
                     "canonicalization": {"status": "CANONICALIZATION_PASS"}, "status": None}
@@ -79,7 +80,7 @@ class TestFamilyXWiring(unittest.TestCase):
             open(f"{src}/a2/article.md", "w", encoding="utf-8").write(article)
             os.makedirs(f"{out}/a2")
             json.dump({}, open(f"{out}/a2/a2_support_texts.json", "w"))
-            with mock.patch.object(x.sc, "run_key_phrases", fake_run_key_phrases),                     mock.patch.object(x.plan, "split_family_x_article_text_v2", lambda t: {"status": "OK", "part1": "a", "part2": "b", "part3": "c"}):
+            with mock.patch.object(__import__("er119_kp_wiring_01"), "run_kp_with_review", fake_run_key_phrases),                     mock.patch.object(x.plan, "split_family_x_article_text_v2", lambda t: {"status": "OK", "part1": "a", "part2": "b", "part3": "c"}):
                 res = x.run_theme_scaffold(None, src, out, ["a2"], scaffold_only="kp")
         self.assertEqual(captured["kp_backend"], "fulltext_p2")
         self.assertEqual(captured["stop_run_dir"], out)

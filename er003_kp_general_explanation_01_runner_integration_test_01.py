@@ -20,6 +20,8 @@ import er019_family_x_audio_production_runner_01 as xr
 import er026_family_z_fiction_production_runner_01 as zr
 import er062_family_z_structure_01 as st62
 import er063_family_z_audio_01 as a63
+from er119_test_support_01 import declare_ctx as _declare_ctx  # noqa: E402
+import er119_kp_wiring_01 as _kpw  # noqa: E402
 
 QUOTE1 = "They tried to cross a bog, but the ground gave way beneath them."
 QUOTE2 = "Inventing convincing stories at a moment's notice was Vera's speciality."
@@ -118,6 +120,7 @@ class ZPart1Tests(Tmp, unittest.TestCase):
 
     def _ctx_through_kp(self):
         ctx = zr.build_mock_context(self.new_tmp())
+        _declare_ctx(ctx)   # KP Human Review: 既存mock testのfixture(Human不在を明示宣言)
         quiet(zr.run_stages, ctx, self.PRE)
         return ctx
 
@@ -128,7 +131,7 @@ class ZPart1Tests(Tmp, unittest.TestCase):
         doc = json.load(open(f"{out}/key_phrases/b1b/kp_general_explanations.json", encoding="utf-8"))
         self.assertEqual(doc["audit"]["model"], "gpt-6-luna")
         self.assertEqual(doc["audit"]["process"], "KEY_PHRASE_GENERAL_EXPLANATION")
-        self.assertEqual(len(doc["items"]), 3)
+        self.assertEqual(len(doc["items"]), 5)   # KP Human Review: Part 1の単語解説は最大5件(vocab_confirmed.json、KP3件を含む)
         prov = json.load(open(f"{out}/writer/provenance.json", encoding="utf-8"))
         ent = prov["downstream_stages"]["kp_part1_b1b"]
         self.assertEqual(ent["model"], "gpt-6-luna")
@@ -156,6 +159,7 @@ class ZPart1Tests(Tmp, unittest.TestCase):
 
     def test_failure_is_fail_closed_before_tts_with_next_command(self):
         ctx = zr.build_mock_context(self.new_tmp())
+        _declare_ctx(ctx)   # KP Human Review: 既存mock testのfixture(Human不在を明示宣言)
         ctx.hooks["part1_call_fn"] = make_call_fn(lambda prompt: "壊れた出力(見出しなし)")
         with self.assertRaisesRegex(zr.FamilyZE2EStop, "FAMILY_Z_KP_GENERAL_EXPLANATION_NOT_OK.*--regenerate-stage kp_part1_b1b"):
             quiet(zr.run_stages, ctx, self.PRE)
@@ -165,6 +169,7 @@ class ZPart1Tests(Tmp, unittest.TestCase):
 
     def test_mock_without_hook_stops_without_real_api(self):
         ctx = zr.build_mock_context(self.new_tmp())
+        _declare_ctx(ctx)   # KP Human Review: 既存mock testのfixture(Human不在を明示宣言)
         del ctx.hooks["part1_call_fn"]
         with mock.patch("er003_v1_b1_scaffold_01_generate.get_client", side_effect=AssertionError("REAL CLIENT")):
             with self.assertRaisesRegex(zr.FamilyZE2EStop, "FAMILY_Z_KP_PART1_NO_HOOK"):
@@ -261,7 +266,7 @@ class ZPart1Tests(Tmp, unittest.TestCase):
         index = open(f"{ctx.pages_dir}/index.html", encoding="utf-8").read()
         blk = index.split("<section class='study'>")[1].split("</section>")[0]
         for lab in ("本文中の意味", "本文の英文", "日本語訳", "解説"):
-            self.assertEqual(blk.count(f"<dt>{lab}</dt>"), 3, lab)
+            self.assertEqual(blk.count(f"<dt>{lab}</dt>"), 5, lab)   # KP Human Review: 5件
         self.assertIn("mock日本語訳", blk)
         self.assertNotIn("class='study'", open(f"{ctx.pages_dir}/standard.html", encoding="utf-8").read())
 
@@ -283,6 +288,7 @@ class ZPart1Tests(Tmp, unittest.TestCase):
 
     def test_translation_failure_is_fail_closed_and_does_not_touch_explanation(self):
         ctx = zr.build_mock_context(self.new_tmp())
+        _declare_ctx(ctx)   # KP Human Review: 既存mock testのfixture(Human不在を明示宣言)
         ctx.hooks["part1_ja_call_fn"] = make_call_fn(lambda prompt: "壊れた出力(JSONではない)")
         with self.assertRaisesRegex(zr.FamilyZE2EStop, "FAMILY_Z_KP_PART1_JA_NOT_OK.*--regenerate-stage kp_part1_ja_b1b"):
             quiet(zr.run_stages, ctx, self.PRE)
@@ -299,6 +305,7 @@ class ZPart1Tests(Tmp, unittest.TestCase):
 
     def test_translation_call_input_is_quotes_only(self):
         ctx = zr.build_mock_context(self.new_tmp())
+        _declare_ctx(ctx)   # KP Human Review: 既存mock testのfixture(Human不在を明示宣言)
         ctx.hooks["part1_ja_call_fn"] = fn = make_call_fn(ja_text)
         quiet(zr.run_stages, ctx, self.PRE)
         kp = json.load(open(f"{ctx.out_dir}/key_phrases/b1b/keywords_canonicalized.json", encoding="utf-8"))
@@ -321,7 +328,9 @@ def _x_setup(levels=("b1b",)):
 
 
 def _kp_writer(out):
-    def fake(article_text, kp_dir, article_id, level, **kw):
+    def fake(*a, text=None, kp_dir=None, article_id=None, level=None, **kw):   # KP Human Review: X Productionは確認付きKP経路(run_kp_with_review)を通る
+        if a:   # 位置引数呼出(旧sc.run_key_phrases形式)も受ける
+            text, kp_dir, article_id, level = (list(a) + [None] * 4)[:4]
         os.makedirs(kp_dir, exist_ok=True)
         with open(f"{kp_dir}/keywords_canonicalized.json", "w", encoding="utf-8") as f:
             json.dump({"items": X_ITEMS, "overall_status": "PASS"}, f, ensure_ascii=False)
@@ -330,7 +339,7 @@ def _kp_writer(out):
 
 
 def _scaffold(src, out, levels, part1_call_fn, kp=None, ja_call_fn=None):
-    with mock.patch.object(sc, "run_key_phrases", side_effect=_kp_writer(out)) as rk, \
+    with mock.patch.object(_kpw, "run_kp_with_review", side_effect=_kp_writer(out)) as rk, \
          mock.patch.object(xr.plan, "split_family_x_article_text_v2", return_value={"status": "OK", "paragraph_count": 4}), \
          mock.patch.object(xr, "run_family_x_b1_scaffold", return_value={}), \
          mock.patch.object(xr, "run_family_x_a2_scaffold", return_value={}), \
@@ -386,7 +395,7 @@ class XPart1ScaffoldTests(Tmp, unittest.TestCase):
         work, src, out = _x_setup()
         fn = make_call_fn()
         bad = {"selection": {}, "canonicalization": {"status": "CANONICALIZATION_INVALID"}}
-        with mock.patch.object(sc, "run_key_phrases", return_value=bad), \
+        with mock.patch.object(_kpw, "run_kp_with_review", return_value=bad), \
              mock.patch.object(xr.plan, "split_family_x_article_text_v2", return_value={"status": "OK", "paragraph_count": 4}), \
              mock.patch.object(xr, "run_family_x_b1_scaffold", return_value={}), contextlib.redirect_stdout(io.StringIO()):
             res = xr.run_theme_scaffold(None, src, out, ["b1b"], part1_call_fn=fn)
@@ -411,7 +420,7 @@ class XPart1MainTests(Tmp, unittest.TestCase):
                    mock.patch.object(xr, "ensure_rf_record"),
                    mock.patch.object(xr, "assert_budget_ok"),
                    mock.patch.object(xr, "compute_cost_jpy_so_far", return_value=(0.0, {})),
-                   mock.patch.object(sc, "run_key_phrases", side_effect=_kp_writer(out)),
+                   mock.patch.object(_kpw, "run_kp_with_review", side_effect=_kp_writer(out)),
                    mock.patch.object(xr.plan, "split_family_x_article_text_v2", return_value={"status": "OK", "paragraph_count": 4}),
                    mock.patch.object(xr, "run_family_x_b1_scaffold", return_value={}),
                    mock.patch("er003_v1_en_direct_vfl_01_generate.get_client", return_value=client)]
@@ -449,7 +458,7 @@ class XPart1MainTests(Tmp, unittest.TestCase):
         rc, *_ = self._main(work, out, "scaffold", client=FakeClient(lambda prompt: "壊れた出力"))
         self.assertEqual(rc, 3)
         good = FakeClient()
-        with mock.patch.object(sc, "run_key_phrases", side_effect=AssertionError("KP再選定してはいけない")):
+        with mock.patch.object(_kpw, "run_kp_with_review", side_effect=AssertionError("KP再選定してはいけない")):
             rc, tts, asm, log = self._main(work, out, "study_text", client=good)
         self.assertIsNone(rc, log)
         self.assertEqual(len(good.calls), 2)                                     # Part 1: 解説1 call+訳1 call(独立)

@@ -21,6 +21,7 @@ import unittest.mock as mock
 
 import er003_key_words_canonicalization as kc
 import er003_key_words_gloss_alignment as ga
+from er119_test_support_01 import declare_ctx as _declare_ctx  # noqa: E402
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 
@@ -301,6 +302,7 @@ def _base_root():
         r = _runner()
         root = tempfile.mkdtemp(prefix="itm1_base_")
         ctx = r.build_mock_context(root)
+        _declare_ctx(ctx)   # KP Human Review: 既存mock testのfixture(Human不在を明示宣言)
         with contextlib.redirect_stdout(io.StringIO()):
             r.run_stages(ctx, ["seed_check", "writer", "std_adjust", "plan", "support"])
         _BASE["root"] = root
@@ -354,6 +356,7 @@ class ZPersonGate(_FlagOn):
         shutil.rmtree(self.root)
         shutil.copytree(_base_root(), self.root)
         self.ctx = self.r.build_mock_context(self.root)
+        _declare_ctx(self.ctx)   # KP Human Review: 既存mock testのfixture(Human不在を明示宣言)
         self.kp_fn = _make_kp_fn(self.r)
         self.ctx.hooks["kp_fn"] = self.ctx.mock_api.wrap("kp", self.kp_fn)
         self.factory_calls = []
@@ -462,8 +465,10 @@ class ZPersonGate(_FlagOn):
             s = self._stage()
         self.assertEqual(gw.call_count, 2)
         self.assertEqual(s["a2"]["status"], "generated")
-        self.assertEqual(s["a2"]["gloss_person_gate"]["status"], "REPAIRED")
-        self.assertEqual(len(self.factory_calls), 2)
+        # KP Human Review(M-3(b)): --regenerate-stage kp_<lv>は『現在のreviewからの再finalize(再選定なし)』。最初の実行で修復済みの
+        # 確定物は再finalizeで書き直されない(idempotent)ので、gateは通る(2回呼ばれる)が再修復は不要=CLEAN・追加の有料repair 0。
+        self.assertEqual(s["a2"]["gloss_person_gate"]["status"], "CLEAN")
+        self.assertEqual(len(self.factory_calls), 1)
         self._prov_check()
 
     def test_unrepairable_goes_to_existing_hr_stop_then_resume(self):

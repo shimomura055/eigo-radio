@@ -317,7 +317,8 @@ class PostCanonOuterRetry(unittest.TestCase):
 
 
 class Importers(unittest.TestCase):
-    ALLOWED = {"er105_kp_fulltext_selector_01.py", "er003_v1_n3_01_scaffold_generate.py"}
+    ALLOWED = {"er105_kp_fulltext_selector_01.py", "er003_v1_n3_01_scaffold_generate.py",
+               "er119_kp_candidates_01.py"}   # KP Human Review(2026-10-25 APPROVED_FOR_PRODUCTION): X/Z共通の候補生成でCMU gateを適用
 
     def test_cmu_gate_is_imported_only_by_x_z_shared_kp_path(self):
         """A/B/Cの量産経路(er003 v1 main/N3 tts, er013, er006 shared narration等)はCMU gateを使わない。許可=全文選定(M1)と共通外側retry(M2)のみ。"""

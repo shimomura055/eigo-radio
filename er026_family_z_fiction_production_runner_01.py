@@ -1152,6 +1152,15 @@ class FamilyZTtsClipFailedStop(FamilyZE2EStop):
     pass
 
 
+class FamilyZKpReviewPending(FamilyZE2EStop):
+    """KP Human Review待ち(失敗ではなく待機。rc=4)。KP候補は生成済みで、Humanの選択か明示の不在宣言を待っている。
+    有料の後続工程(Adv解説・Part 1・TTS)へは進まない。pending=[{level,kp_dir,request_md}]。"""
+
+    def __init__(self, message, pending=None):
+        super().__init__(message)
+        self.pending = pending or []
+
+
 _MODS = None
 
 
@@ -1484,6 +1493,57 @@ def install_kp_assets(ctx, level: str) -> str:
     return dst
 
 
+def _khr():
+    import er119_kp_human_review_01 as khr
+    return khr
+
+
+def _kp_src_dir(ctx, level: str) -> str:
+    """er062/Z KP stageの出力dir(<run>/key_phrases/<level>)。Human Review(候補/review/確定物)の唯一の置き場。"""
+    return f"{ctx.out_dir}/key_phrases/{level}"
+
+
+def _review_signature(ctx, level: str):
+    """現在のKP Human Review確定署名(review無し=旧run互換でNone)。gloss HR snapshotの失効判定(M-2)とprov input_sha(M-3a)に使う。"""
+    r = _khr().load_review(_kp_src_dir(ctx, level))
+    return None if r is None else r.get("selection_signature")
+
+
+def _assert_kp_review_consistent(ctx, level: str, where: str) -> None:
+    """KP Human Reviewの消費側検査(DESIGN c-2)。review/候補が存在するときだけ確定物の整合を確認し、assets copyが現在の確定集合と
+    一致することを確認する(旧KPが--stage tts_*単独起動等で使われない)。未確定=FamilyZKpReviewPending(待機)、不整合=FamilyZE2EStop。
+    review/候補が無い旧runは何もしない(従来どおり)。"""
+    khr = _khr()
+    src = _kp_src_dir(ctx, level)
+    try:
+        rev = khr.require_final_consistent(src, level=level, require_src_contract=True)
+    except khr.KpReviewNotConfirmed as e:
+        raise FamilyZKpReviewPending(f"{khr.PENDING_MARKER} {where}: {e}",
+                                     [{"level": level, "kp_dir": src, "request_md": khr.paths(src)["request"]}]) from e
+    except khr.KpReviewInconsistent as e:
+        raise FamilyZE2EStop(f"FAMILY_Z_KP_REVIEW_INCONSISTENT({level}) at {where}: {e}") from e
+    if rev is None:
+        return
+    asset = f"{_kp_assets_dir(ctx, level)}/keywords_canonicalized.json"
+    if not os.path.exists(asset):
+        raise FamilyZE2EStop(f"FAMILY_Z_KP_CANONICALIZED_MISSING: {asset}(kp stageを再実行して確定物をinstallする)")
+    got = sorted(it.get("candidate_id") for it in _m().w62.rj(asset).get("items") or [])
+    want = sorted(khr.sel_ids(rev["selection"], "kp"))
+    if got != want:
+        raise FamilyZE2EStop(f"FAMILY_Z_KP_ASSETS_STALE({level}) at {where}: assetsのKP候補{got}が確定集合{want}と一致しません"
+                             f"(旧KPの混入防止。`--stage kp`を再実行して確定物をinstallする)")
+
+
+def _part1_items_b1b(ctx) -> list:
+    """Part 1(単語解説)の入力の単一アクセサ(M-9)。reviewがあればvocab_confirmed.json(最大5件)が必須(fail-closed)、旧runだけKP(3件)。
+    KP側のrankで他ファイルと結合しない(vocab側の連番rankを使う)。"""
+    khr = _khr()
+    try:
+        return khr.part1_items(_kp_src_dir(ctx, "b1b"))
+    except khr.KpReviewError as e:
+        raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_ITEMS_NOT_READY: {e}") from e
+
+
 def _kp_fn_for_ctx(ctx):
     """hook or w62.run_kp_with_outer_retry。canonicalization(canon_fn既定=sc.run_key_phrase_canonicalization)の中で
     gloss再整合が既定ON・無条件で走る(KGCPW)。"""
@@ -1506,6 +1566,11 @@ def _load_gloss_hr_resume(ctx, lv: str, text: str):
     snap = m.w62.rj(snap_path)
     if snap.get("text_sha256") != _sha(text):
         return None
+    # M-2: Human Reviewの確定(選び直し)が変わっていたら、旧選定(NG句を含みうる)を復元しない。署名不一致のsnapshotは退避して破棄する。
+    cur_sig = _review_signature(ctx, lv)
+    if cur_sig is not None and snap.get("selection_signature") != cur_sig:
+        _khr().archive_if_exists(snap_path, "INVALIDATED")
+        return None
     res = snap["res"]
     art_path = f"{ctx.out_dir}/key_phrases/{lv}/keywords_canonicalized.json"
     if (res.get("canonicalization") or {}).get("merged") is not None:
@@ -1517,7 +1582,7 @@ def _load_gloss_hr_resume(ctx, lv: str, text: str):
 def _gloss_unevaluated_stop_message(lv: str, ranks: list) -> str:
     import er003_key_words_gloss_alignment as ga
     return (f"FAMILY_Z_KP_GLOSS_ALIGNMENT_UNEVALUATED({lv}): rank={ranks} {ga.UNEVALUATED_REASON}"
-            f" [--regenerate-stage kp_{lv}]")
+            f" [--regenerate-stage kp_{lv}(確定済みKP Human Reviewからの再finalize。再選定はしない。選び直しはreselect CLIのみ)]")
 
 
 def _gloss_hr_gate(ctx, lv: str, text: str, res: dict, prov=None) -> None:
@@ -1533,7 +1598,8 @@ def _gloss_hr_gate(ctx, lv: str, text: str, res: dict, prov=None) -> None:
     article_id = f"family_z_{ctx.slug}_{m.w62.LEVEL_DIR[lv]}"
     event = ga.emit_human_review_notice(kp_dir, article_id, lv, kpjson)
     with open(f"{kp_dir}/{_GLOSS_HR_SNAPSHOT}", "w", encoding="utf-8") as f:
-        f.write(json.dumps({"text_sha256": _sha(text), "res": json.loads(m.st.dumps(res))}, ensure_ascii=False, indent=2))
+        f.write(json.dumps({"text_sha256": _sha(text), "selection_signature": _review_signature(ctx, lv),
+                            "res": json.loads(m.st.dumps(res))}, ensure_ascii=False, indent=2))
     ev_path = f"{ctx.out_dir}/gloss_alignment_human_review_events.json"
     prev = json.load(open(ev_path, encoding="utf-8")) if os.path.exists(ev_path) else []
     prev = [e for e in prev if e.get("level") != lv] + [event]
@@ -1587,11 +1653,16 @@ def _gloss_fields(item: dict) -> dict:
     return {k: v for k, v in item.items() if k in ("japanese_gloss", "japanese_gloss_tts") or k.startswith("gloss_")}
 
 
+def _item_key(it: dict):
+    """M-3(c): 句とglossの取り違え防止。KP Human Review確定物はcandidate_idで照合し、無い旧runだけrankで照合する。"""
+    return it.get("candidate_id") or ("rank", it["rank"])
+
+
 def _result_gloss_diff(res_merged: dict, art: dict) -> bool:
     """stage結果のcanonicalization.mergedと、artifact(SRC D1等の後処理が入る)とで、gloss関連フィールドだけを比較する。"""
-    by = {it["rank"]: it for it in (res_merged.get("items") or [])}
+    by = {_item_key(it): it for it in (res_merged.get("items") or [])}
     for it in art.get("items") or []:
-        r = by.get(it["rank"])
+        r = by.get(_item_key(it))
         if r is None or _gloss_fields(r) != _gloss_fields(it):
             return True
     return res_merged.get("gloss_alignment_unresolved") != art.get("gloss_alignment_unresolved")
@@ -1611,9 +1682,13 @@ def _sync_kp_result(ctx, lv: str, prov, art: dict, records: list) -> str:
     if cm is None:
         canon["merged"] = art
     else:
-        by = {it["rank"]: it for it in cm.get("items") or []}
+        a_sig, c_sig = art.get("kp_selection_signature"), cm.get("kp_selection_signature")
+        if a_sig and c_sig and a_sig != c_sig:
+            raise FamilyZE2EStop(f"FAMILY_Z_KP_SELECTION_SIGNATURE_MISMATCH({lv}): artifact({a_sig[:12]})とstage結果({c_sig[:12]})の確定署名が不一致"
+                                 f"(別の確定集合のglossを同期しない。`--regenerate-stage kp_{lv}`で現在のreviewから再finalize)")
+        by = {_item_key(it): it for it in cm.get("items") or []}
         for it in art.get("items") or []:
-            tgt = by.get(it["rank"])
+            tgt = by.get(_item_key(it))
             if tgt is None:
                 continue
             for k in list(_gloss_fields(tgt)):
@@ -1690,6 +1765,77 @@ def _gloss_person_gate(ctx, lv: str, text: str, prov) -> dict:
     return rec
 
 
+def _kp_legacy_run(ctx, lv: str, prov) -> bool:
+    """KP Human Review導入前に作られたKP成果物(review/候補ファイルが無く、kp_<lv>_result.jsonと来歴entryがある)か。
+    旧runは再選定せず従来どおり再利用する(公開済みepisodeの再開を壊さない)。`--regenerate-stage kp_<lv>`は新方式(候補生成)で作り直す。"""
+    if _khr().has_review(_kp_src_dir(ctx, lv)) or ctx.regenerate_stage == f"kp_{lv}":
+        return False
+    return os.path.exists(f"{ctx.out_dir}/key_phrases/{lv}_result.json") and prov.stage_entry(f"kp_{lv}") is not None
+
+
+def _kp_hooks_generate(ctx, lv: str, text: str):
+    """test/mock用の候補生成hook。hooks.kp_generate_fn優先、無ければ旧hooks.kp_fn(3件を返すmock)を候補docへ変換するadapter。
+    real以外でhookが無ければ実APIへ出さずSTOP。real時はNone(=実の候補生成)。"""
+    hook = ctx.hooks.get("kp_generate_fn")
+    if hook is not None:
+        return hook
+    legacy = ctx.hooks.get("kp_fn")
+    if legacy is not None:
+        import er119_kp_candidates_01 as kcand
+        src_level, process = ("A2", "A2_SUPPORT") if lv == "a2" else ("B1", "B1_SUPPORT")
+        art_id = f"family_z_{ctx.slug}_{_m().w62.LEVEL_DIR[lv]}"
+
+        def adapter(round_no, ng_entries):
+            work = f"{_kp_src_dir(ctx, lv)}/kp_candidates/round_{round_no}/work"
+            os.makedirs(work, exist_ok=True)
+            res = legacy(text, work, art_id, src_level, process=process)
+            _cs = (res.get("canonicalization") or {}).get("status")
+            if res.get("status") in ("NG_REVIEW_REQUIRED", "OUTER_RETRY_EXHAUSTED") or _cs != "CANONICALIZATION_PASS" or not os.path.exists(f"{work}/keywords_canonicalized.json"):
+                return {"ok": False, "status": res.get("status") or _cs or "OUTER_RETRY_EXHAUSTED"}   # 旧hookの非PASSは候補化せず失敗として返す(自動採用しない)
+            with open(f"{work}/keywords_canonicalized.json", encoding="utf-8") as _f:
+                doc = json.load(_f)
+            _items = doc["items"]
+            _new, _drop = kcand.make_z_src_fn(text, lv)(_items)   # SRC D1は旧stage_kp同様、mock/hook経路にも適用する(曖昧/未解決は候補から除外)
+            _items = [_new.get(x["rank"], x) for x in _items if x["rank"] not in _drop]
+            return {"ok": True, "doc": kcand.candidate_doc_from_items(_items, lv, round_no=round_no)}
+        return adapter
+    if ctx.mode != "real":
+        raise FamilyZE2EStop(f"FAMILY_Z_KP_NO_CANDIDATE_HOOK({lv}): mock/dry-runでは候補生成hook(hooks.kp_generate_fn)が必要(実APIへは出さない)")
+    return None
+
+
+def _kp_review_step(ctx, lv: str, text: str) -> dict:
+    """候補生成(または既存候補の再利用)→Human確認/明示宣言→finalize。stage_kpのensure_stageより前に実行し、確定署名をinput_shaに含める(M-3a)。"""
+    import er003_key_words_gloss_alignment as ga
+    import er119_kp_candidates_01 as kcand
+    import er119_kp_wiring_01 as kw
+    m = _m()
+    kp_dir = _kp_src_dir(ctx, lv)
+    article_id = f"family_z_{ctx.slug}_{m.w62.LEVEL_DIR[lv]}"
+    gen_hook = _kp_hooks_generate(ctx, lv, text)
+    red_hook = ctx.hooks.get("kp_redundancy_fn")
+    if red_hook is None and ctx.mode != "real":   # mock/dry-runは確定集合のRedundancy QAを実APIへ出さない(決定論PASS。実run=real時のみ実QA)
+        def red_hook(items, name):
+            return {"status": "REDUNDANCY_PASS", "duplicate_pairs": [], "model_id": None, "response_id": None, "attempts_detail": [],
+                    "skipped": "mock/dry-run: Redundancy QAは実APIへ出さない"}
+    src_fn = kcand.make_z_src_fn(text, lv) if gen_hook is None else None
+    person_fn = None
+    if gen_hook is None and ga.flag_enabled():
+        def person_fn(merged):
+            return kcand.make_person_repair_fn(text, _person_repair_factory(ctx, lv), f"{kp_dir}/gloss_person_repair_candidates", article_id)(merged)
+    _khr_mod = _khr()
+    try:
+        return kw.run_kp_with_review(
+            text=text, kp_dir=kp_dir, run_dir=ctx.out_dir, family="z", slug=ctx.slug, level=lv, article_id=article_id,
+            stop_run_dir=ctx.out_dir, generate_hook=gen_hook, redundancy_hook=red_hook, src_fn=src_fn, person_repair_fn=person_fn,
+            guard_fn=lambda label: _guard(ctx, label, E2E_STAGE_EST_JPY["kp"] / 2), run_hint=ctx.out_dir,
+            stop_check_fn=lambda where: m.st.check_stop_sentinel(where, ctx.out_dir))
+    except _khr_mod.KpReviewPending:
+        raise
+    except _khr_mod.KpReviewError as e:   # 採用可能な候補0件・予算超過等: 失敗として明示STOP(rc≠0。自動採用しない)
+        raise FamilyZE2EStop(f"FAMILY_Z_KP_REVIEW_STOP({lv}): {e}") from e
+
+
 def stage_kp(ctx) -> dict:
     m = _m()
     st, w62 = m.st, m.w62
@@ -1697,27 +1843,40 @@ def stage_kp(ctx) -> dict:
     ga.preflight()   # OF-229(Zはrun_key_phrasesを通らないため): gloss規則の抽出失敗は最初の対象alignの前(run開始時)に停止する
     prov = _prov(ctx)
     summary = {}
+    pending = []
     for lv in ("b1b", "a2"):
         text = canonical_article_text(w62.rd(_level_text_path(ctx, lv)))
+        # KP Human Review(2026-10-25、ユーザーAPPROVED_FOR_PRODUCTION): 候補(最大8)生成→Human確認/明示の不在宣言→finalize。両レベルの候補を
+        # 先に生成してからまとめて待機する(レベル往復を最小化)。旧run(review無し・KP成果物あり)は従来どおり再利用する。
+        review_res = None
+        input_sha = _sha(text)
+        if not _kp_legacy_run(ctx, lv, prov):
+            review_res = _kp_review_step(ctx, lv, text)
+            kr = review_res.get("kp_review") or {}
+            if kr.get("state") == "PENDING":
+                pending.append(kr["pending"])
+                summary[lv] = {"status": "KP_REVIEW_PENDING", "pending": kr["pending"]}
+                continue
+            if kr.get("state") == "FAILED":
+                raise FamilyZE2EStop(f"FAMILY_Z_KP_NOT_PASSED({lv}): status={review_res.get('status')} canonicalization=False(自動採用しない)")
+            input_sha = _sha(f"{text}|{kr['signature']}")   # M-3(a): Human確定(選択集合)が変わったらstage入力が変わる
 
-        def runner(lv=lv, text=text):
-            _guard(ctx, f"kp_{lv}", E2E_STAGE_EST_JPY["kp"] / 2)
-            # 委任_10: Z限定・暫定の外側retry(OPEN-310回避、共有module無改変、canonicalization INVALID時のみ通算3回)。
-            res = None
-            # OF-KGCPW-09: 未消費のHR snapshotがあれば--regenerate-stage kp_*指定時でも優先復元する
-            # (人間の確定値を捨てて選定をやり直さない)。snapshotはHR停止時にだけ作られ、再開成功後に消費済みへ改名される。
-            res = _load_gloss_hr_resume(ctx, lv, text)   # HR解消後の再開は選定を再実行しない
+        def runner(lv=lv, text=text, review_res=review_res):
+            if review_res is None:
+                raise FamilyZE2EStop(f"FAMILY_Z_KP_LEGACY_RUNNER_UNREACHABLE({lv}): 旧run互換経路では再選定しません")
+            res = _load_gloss_hr_resume(ctx, lv, text)   # HR解消後の再開は再選定しない。確定署名が変わっていたら旧snapshotは使わない(M-2)
             if res is None:
-                res = w62.run_kp_stage(lv, text, ctx.out_dir, ctx.slug, kp_fn=_kp_fn_for_ctx(ctx))
+                res = review_res
             canon_status = (res.get("canonicalization") or {}).get("status")
             if (res.get("status") in ("NG_REVIEW_REQUIRED", "OUTER_RETRY_EXHAUSTED") or not res.get("canonicalization")
-                    or canon_status != "CANONICALIZATION_PASS"):   # KP-CANON-REVIEW-REQUIRED-FIX-01(OPEN-504): 採用はPASSのみ(REVIEW_REQUIREDは外側retryで再選定→上限後ここで停止)
+                    or canon_status != "CANONICALIZATION_PASS"):   # KP-CANON-REVIEW-REQUIRED-FIX-01(OPEN-504): 採用はPASSのみ
                 raise FamilyZE2EStop(f"FAMILY_Z_KP_NOT_PASSED({lv}): status={res.get('status')} "
                                      f"canonicalization={bool(res.get('canonicalization'))}(自動採用しない)")
             _gloss_hr_gate(ctx, lv, text, res, prov=prov)
-            return st.dumps(res), {}
+            return st.dumps(res), {"kp_review_status": (res.get("kp_review") or {}).get("status"),
+                                   "kp_selection_signature": (res.get("kp_review") or {}).get("signature")}
 
-        r = w62.ensure_stage(prov, f"kp_{lv}", _sha(text), f"{ctx.out_dir}/key_phrases/{lv}_result.json", runner,
+        r = w62.ensure_stage(prov, f"kp_{lv}", input_sha, f"{ctx.out_dir}/key_phrases/{lv}_result.json", runner,
                              regenerate=ctx.regenerate_stage == f"kp_{lv}")
         # 再開に使ったHR snapshotは消費済みにする(再利用しない)
         _snap = f"{ctx.out_dir}/key_phrases/{lv}/{_GLOSS_HR_SNAPSHOT}"
@@ -1737,12 +1896,19 @@ def stage_kp(ctx) -> dict:
         summary[lv] = {"status": r["status"], "assets": dst,
                        # OF-KPFT-P-14: 旧5件KP(strategy_l/db_hybrid)を再利用した場合と区別できるよう、使用backendを完成報告に表示する
                        "kp_backend_used": (_res_doc.get("selection") or {}).get("kp_backend_used"),
+                       "kp_review_status": (_res_doc.get("kp_review") or {}).get("status"),
                        "gloss_alignment_status": _canon_doc.get("gloss_alignment_status"),
                        "gloss_alignment_metrics": _canon_doc.get("gloss_alignment_metrics"),
                        "gloss_alignment_flag": ga.flag_effective(),
                        "gloss_person_gate": _person_rep,
                        "src_posthoc": {"label": _src_rep["label"], "status": _src_rep["status"],
                                        "quote_boundary_truncated_count": _src_rep["quote_boundary_truncated_count"]}}
+    if pending:
+        # 有料の後続(Adv解説・Part 1・TTS)へ進まない。候補は両レベルとも生成済み。次の一手は依頼書(kp_human_review_request.md)に1つだけ出す。
+        os.makedirs(ctx.out_dir, exist_ok=True)
+        with open(f"{ctx.out_dir}/kp_review_pending.json", "w", encoding="utf-8") as f:
+            json.dump({"pending": pending, "summary": summary}, f, ensure_ascii=False, indent=2)
+        raise FamilyZKpReviewPending(f"{_khr().PENDING_MARKER} KP Human Review待ち: " + ", ".join(p["level"] for p in pending), pending)
     # 方針6: Adv KP第3segment=英語解説(Coffee最終v3 Adv / X B1と同一構成)。
     kp = w62.rj(f"{_kp_assets_dir(ctx, 'b1b')}/keywords_canonicalized.json")
     items = sorted(kp["items"], key=lambda x: x["rank"])
@@ -1781,9 +1947,10 @@ def stage_kp(ctx) -> dict:
         raise type(e)(f"{e} 次の一手: {_part1_cli_hint(ctx, 'kp_expl_b1b')}を実行し、続けて{_part1_cli_hint(ctx, 'kp_part1_b1b')}を実行する"
                       "(KP表現が変わった場合の2段再生成)") from e
     summary["kp_explanations_b1b"] = r["status"]
-    summary["kp_part1_b1b"] = _stage_kp_part1(ctx, prov, items)
-    summary["kp_part1_ja_b1b"] = _stage_kp_part1_ja(ctx, prov, items)   # 委任_16 T1: 解説とは独立の別stage・別call(引用英文のみ入力)
-    _assemble_study_rows(ctx, items)   # 組立検証(gloss HR/未評価・引用の逐語実在・訳の最新性)+study_text/保存
+    p1_items = _part1_items_b1b(ctx)   # M-9: Part 1の入力=vocab_confirmed.json(最大5件、KP3件を含む)。KP(音声・Adv解説)は3件のまま
+    summary["kp_part1_b1b"] = _stage_kp_part1(ctx, prov, p1_items)
+    summary["kp_part1_ja_b1b"] = _stage_kp_part1_ja(ctx, prov, p1_items)   # 委任_16 T1: 解説とは独立の別stage・別call(引用英文のみ入力)
+    _assemble_study_rows(ctx, p1_items)   # 組立検証(gloss HR/未評価・引用の逐語実在・訳の最新性)+study_text/保存
     return summary
 
 
@@ -1933,6 +2100,7 @@ def load_level_inputs(ctx, level: str, *, for_tts: bool = False) -> dict:
     m = _m()
     w62, a63 = m.w62, m.a63
     out = ctx.out_dir
+    _assert_kp_review_consistent(ctx, level, f"load_level_inputs({level})")   # KP Human Review: 未確定/不整合/旧KP(assets stale)を全consumerの入口で止める
     text = w62.rd(_level_text_path(ctx, level))
     plan = w62.rj(f"{out}/segment_plan_{level}.json")
     support = w62.rj(f"{out}/support/{level}_support.json")
@@ -1953,8 +2121,9 @@ def load_level_inputs(ctx, level: str, *, for_tts: bool = False) -> dict:
     if level == "b1b":
         # 委任_14(Opus M2): Part 1(Vocabulary & Expressions)の存在と最新性を、TTS/Gate/Assemblyの共有入口でfail-closed確認する
         # (Part 1導入前に始まったrunの再開・--regenerate-stage kp_b1b後の再生成忘れで、Part 1なしの音声/古い解説を作らない)。
-        _require_part1_fresh(ctx, items, "load_level_inputs(b1b)")
-        _require_part1_ja_fresh(ctx, items, "load_level_inputs(b1b)")   # 委任_16 T1: 訳も同様にfail-closed確認
+        _p1_items = _part1_items_b1b(ctx)   # M-9: Part 1の入力はvocab(最大5件)。KP側rankで結合しない
+        _require_part1_fresh(ctx, _p1_items, "load_level_inputs(b1b)")
+        _require_part1_ja_fresh(ctx, _p1_items, "load_level_inputs(b1b)")   # 委任_16 T1: 訳も同様にfail-closed確認
     kp_items = [{"rank": it["rank"], "used_form": it["used_form"], "japanese_gloss": it.get("japanese_gloss", ""),
                  "display_phrase": it["display_phrase"]} for it in items]
     expl = None
@@ -2059,7 +2228,9 @@ def stage_pages(ctx) -> dict:
     cfg = STORY_REGISTRY[ctx.story_key]
     # 委任_14: Part 1(Opus M2で存在・最新性をfail-closed確認)。study_text/は毎回再組立して保存(gloss更新・本文更新に追従)。
     # ページへの描画は、訳欄(T1/T2)のユーザー判断記録が存在するときのみ(M3 (ii))。無い間は従来とバイト同一(study_html未指定)。
-    rows = _assemble_study_rows(ctx, _kp_items_b1b(ctx))
+    _assert_kp_review_consistent(ctx, "b1b", "stage_pages")
+    _assert_kp_review_consistent(ctx, "a2", "stage_pages")
+    rows = _assemble_study_rows(ctx, _part1_items_b1b(ctx))
     try:
         study_html = _p1().render_html_block(rows)
     except _p1().KpGeneralExplanationError as e:
@@ -2113,6 +2284,23 @@ def stage_page_verify(ctx) -> dict:
     import er_user_listening_page_common_01 as _uc
     std = _uc.check_file(f"{ctx.pages_dir}/index.html")
     res["user_page_standard_check"] = {"overall": std["overall"], "failed": {k: v for k, v in std["checks"].items() if not v["ok"]}}
+    # 検証5(KP Human Review): 選定結果=実際に音声化・公開された内容(確定JSON<->KP artifact<->TTS結果<->study_text<->ページ)。不一致=STOP。
+    khr = _khr()
+    sel_report = {}
+    for lv, page in (("a2", "standard.html"), ("b1b", "advanced.html")):
+        idx = f"{ctx.pages_dir}/index.html"
+        has_vocab_on_page = False
+        if lv == "b1b" and os.path.exists(idx):
+            with open(idx, encoding="utf-8") as _f:
+                has_vocab_on_page = "Vocabulary &amp; Expressions" in _f.read()
+        try:
+            sel_report[lv] = khr.verify_selection_matches_outputs(
+                _kp_src_dir(ctx, lv), level=lv, tts_results_path=f"{ctx.out_dir}/{lv}/audit/tts_generation_results.json",
+                study_text_json=(f"{ctx.out_dir}/study_text/{_p1().PART1_FILE_STEM}.json" if lv == "b1b" else None),
+                page_paths=[f"{ctx.pages_dir}/{page}"], vocab_page_paths=([idx] if has_vocab_on_page else None), require_src_contract=True)
+        except khr.KpReviewInconsistent as e:
+            raise FamilyZE2EStop(f"FAMILY_Z_KP_SELECTION_OUTPUT_MISMATCH({lv}): {e}") from e
+    res["kp_selection_verified"] = sel_report
     _m().w62.wj(f"{ctx.out_dir}/page_verify_local.json", res)
     problems = evaluate_page_verify(res)
     if std["overall"] != "PASS":
@@ -2280,8 +2468,8 @@ def mock_en_support_fn(client, role, context, model=None):
                                     "and he faces a hard choice."}
 
 
-def mock_kp_fn(text, kp_dir, article_id, source_level, process=None, **kw):
-    spans = [s for s in _MOCK_KP_CANDIDATES if s in text][:3]   # KPFT 委任_02: 最大3件(Production件数)
+def mock_kp_fn(text, kp_dir, article_id, source_level, process=None, n_max=3, **kw):
+    spans = [s for s in _MOCK_KP_CANDIDATES if s in text][:n_max]   # KPFT 委任_02: 最大3件(Production件数)。KP Human Review: 候補生成のmockはn_max=8
     if len(spans) < 3:
         raise AssertionError(f"mock KP: 本文に実在する候補が{len(spans)}件しかない")
     os.makedirs(kp_dir, exist_ok=True)
@@ -2415,7 +2603,8 @@ def build_mock_context(run_root: str, run: str = "run_mock", pages_dir: str | No
     ctx.llm_client = m.w62.MockClient(api.wrap("llm", writer_hook or mock_writer_hook(story_key=story_key)))
     gens = tts_generators or mock_tts_generators()
     ctx.hooks = {"ja_support_fn": api.wrap("support_ja", mock_ja_support_fn),
-                 "en_support_fn": api.wrap("support_en", mock_en_support_fn), "kp_fn": api.wrap("kp", mock_kp_fn),
+                 "en_support_fn": api.wrap("support_en", mock_en_support_fn),
+                 "kp_fn": api.wrap("kp", lambda *a, **k: mock_kp_fn(*a, n_max=8, **k)),   # KP Human Review: mockの候補生成(最大8件。hooks.kp_generate_fn未指定時はadapterが候補docへ変換)
                  "expl_call_fn": api.wrap("kp_expl", mock_expl_call_fn),
                  "part1_call_fn": api.wrap("kp_part1", mock_part1_call_fn),
                  "part1_ja_call_fn": api.wrap("kp_part1_ja", mock_part1_ja_call_fn),
@@ -2489,6 +2678,11 @@ def build_parser():
     parser.add_argument("--pages-dir", default=None,
                         help="試聴ページ出力先の上書き(既定: STORY_REGISTRYのe2e_pages_dir=従来どおりの公開dir)。複製run(例 run_chunk_01)の候補ページ用")
     parser.add_argument("--stage", default="all", choices=list(E2E_STAGES) + ["all"] + list(LEGACY_STAGES))
+    parser.add_argument("--kp-review", default=None, choices=("wait", "auto"),
+                        help="KP Human Review。既定(指定なし)=待機(Humanの選択か明示の不在宣言が必要)。auto=この起動のrunについて不在を明示宣言(要 --kp-review-by/--kp-review-reason。AIが宣言する場合は --kp-review-user-ref 必須)")
+    parser.add_argument("--kp-review-by", default=None)
+    parser.add_argument("--kp-review-reason", default=None)
+    parser.add_argument("--kp-review-user-ref", default="")
     parser.add_argument("--stages", default=None,
                         help="カンマ区切りのstage名(E2E_STAGES内)を1回の起動でE2E順に実行する(例 tts_b1b,tts_a2,gate,assemble)。"
                              "--stageとの併用不可。既存runの後段だけを再実行する用途(5分3起動のRESTART_STORMを避け、起動を1回にする)")
@@ -2586,12 +2780,26 @@ def main(argv=None):
         with open(f"{ctx.out_dir}/gloss_alignment_flag.json", "w", encoding="utf-8") as _ff:
             json.dump(_flag_eff, _ff, ensure_ascii=False, indent=2)
         write_voice_assignment(ctx.out_dir, ctx.story_key)
+        if args.kp_review == "auto":   # 明示引数のときだけ宣言を記録する(宣言ファイルが自動確定の唯一の読取元)
+            import er119_kp_wiring_01 as _kw
+            if not (args.kp_review_by and args.kp_review_reason):
+                print("[STOP] --kp-review auto には --kp-review-by と --kp-review-reason が必要です", file=sys.stderr)
+                return 2
+            try:
+                _kw.declare_from_runner_args(ctx.out_dir, by=args.kp_review_by, reason=args.kp_review_reason, user_ref=args.kp_review_user_ref)
+            except _khr().KpReviewError as e:
+                print(f"[STOP] {e}", file=sys.stderr)
+                return 2
         results = run_stages(ctx, stages)
         summary = {"management_id": ctx.management_id, "mode": ctx.mode, "stages": list(results),
                    "gloss_alignment_flag": _flag_eff,
                    "spent_jpy": round(ctx.budget.spent(), 4) if ctx.budget is not None else None}
         print(json.dumps(summary, ensure_ascii=False))
         return 0
+    except FamilyZKpReviewPending as e:    # KP Human Review待ち(失敗ではない)。rc=4(ZではRUN_LOCKと同じ番号のため、stdoutの[KP_REVIEW_PENDING]で区別する)
+        import er119_kp_wiring_01 as _kw
+        print(_kw.pending_banner(e.pending, restart_command="py " + " ".join(sys.argv)))
+        return _khr().EXIT_CODE_PENDING
     except (_m().st.FamilyZStopSentinel, _m().st.FamilyZStopSentinelAbort) as e:   # STOPセンチネル。監査記録済み。rc=3(自動再開しない)
         print(f"[STOP_SENTINEL] {e}", file=sys.stderr)
         return _m().st.STOP_EXIT_CODE

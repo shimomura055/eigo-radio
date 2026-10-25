@@ -92,6 +92,7 @@ def tearDownModule():
 
 
 import atexit  # noqa: E402
+from er119_test_support_01 import declare_ctx as _declare_ctx  # noqa: E402
 atexit.register(_release_exclusive)
 
 
@@ -105,7 +106,17 @@ def run_dir(run: str, mock: bool = True) -> str:
     return os.path.join(MELOS, run + ("_mock" if mock else ""))
 
 
+def predeclare(run: str) -> None:
+    """KP Human Review(2026-10-25): 既存のmock実走testが『導入前と同じく最後まで進む』ように、subprocess起動の前に当該runで『Human不在』を
+    明示宣言する(通常のadd_declaration=宣言ファイル。runnerのProductionコードに暗黙のauto経路は無い)。"""
+    import er119_kp_human_review_01 as _rv
+    _rv.add_declaration(run_dirs=[run_dir(run)], by="test-fixture", reason="既存mock実走testのfixture(Human不在を明示宣言)")
+
+
 def cli(args, env=None, cwd=REPO, timeout=180):
+    if "--mode" in args and args[args.index("--mode") + 1] == "mock" and "--run" in args and (
+            "--stop-after" in args or ("--stage" in args and args[args.index("--stage") + 1] in ("kp",))):
+        predeclare(args[args.index("--run") + 1])
     e = dict(os.environ)
     e.update(env or {})
     p = subprocess.run([PY, RUNNER] + list(args), cwd=cwd, env=e, capture_output=True, text=True, timeout=timeout,
@@ -223,6 +234,7 @@ class Item1InitialRunStop(Base):
         run = "run_stoptest_01"
         os.makedirs(run_dir(run, mock=False), exist_ok=True)       # <run>/STOP の置き場(mock実体は <run>_mock)
         env = dict(os.environ, FAMILY_Z_MOCK_API_DELAY_SEC="0.1")
+        predeclare(run)
         p = subprocess.Popen([PY, RUNNER, "--mode", "mock", "--stage", "all", "--run", run], cwd=REPO, env=env,
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding="utf-8", errors="replace")
         try:
@@ -303,6 +315,7 @@ class Item2RetryFallbackCooldown(Base):
         """Z側の生成wrapper(build_mock_context)経由: primary NG -> fallback の前でSTOP。"""
         d = self.tmp()
         ctx = r.build_mock_context(d, run="run_t2b")
+        _declare_ctx(ctx)   # KP Human Review: 既存mock testのfixture(Human不在を明示宣言)
         api, out = ctx.mock_api, os.path.join(d, "x.wav")
         calls = []
 
@@ -315,6 +328,7 @@ class Item2RetryFallbackCooldown(Base):
             return {"status": "OK"}
 
         ctx2 = r.build_mock_context(d, run="run_t2b", tts_generators={"narrator": gen})
+        _declare_ctx(ctx2)   # KP Human Review: 既存mock testのfixture(Human不在を明示宣言)
         os.makedirs(ctx2.out_dir, exist_ok=True)
         wrapped = r.wrap_generators_with_budget(ctx2.hooks["tts_generators"], None, sentinel_dir=ctx2.out_dir)
         with self.assertRaises(st.FamilyZStopSentinelAbort):
@@ -567,6 +581,7 @@ class Item4bRunLock(Base):
         # (2) 実プロセス2つ: P1稼働中にP2を同一runで起動 -> P2はrc=4
         run2 = "run_stoptest_4b2"
         env = dict(os.environ, FAMILY_Z_MOCK_API_DELAY_SEC="0.25")
+        predeclare(run2)
         p1 = subprocess.Popen([PY, RUNNER, "--mode", "mock", "--stage", "all", "--stop-after", "tts_a2", "--run", run2], cwd=REPO,
                               env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding="utf-8", errors="replace")
         try:
