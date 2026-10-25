@@ -1,0 +1,119 @@
+あなたは英語読解指導の専門家です。下の英語本文(Advancedレベル)を、日本語話者の学習者(B1〜B2相当)の読解の観点で点検します。この工程の仕事は、本文の全文を見て、構文上の特徴のある文に「分類コード」を付けて漏れなく洗い出すことです。どの文を解説するかの選択は、この工程では行いません(別の工程が決まった規則で、最大1件を選びます。該当がなければ0件です)。解説文も書きません。
+
+# 作品・レベル
+- 作品: The Gift of the Magi(『賢者の贈り物』)
+- レベル: Advanced
+
+# 本文(段落番号[P1]〜[P30]は参照用。引用では番号を書かない)
+[P1] One dollar and eighty-seven cents. Della counted the coins again, pressing each one against the table. Still the same. And tomorrow was Christmas.
+
+[P2] She had saved every penny she could. How could she buy Jim something worthy of him?
+
+[P3] For a while, she cried on their shabby couch. Then she caught sight of herself in the mirror.
+
+[P4] They owned two things that made them proud. One was Jim’s gold watch, handed down from his grandfather to his father, and then to him. The other was Della’s long brown hair.
+
+[P5] Slowly, she loosened her hair. It fell below her knees, shining in the pale light. She ran her fingers through it once. Then, before she could change her mind, she pulled on her coat.
+
+[P6] Outside a hair-goods shop, she paused just long enough to catch her breath.
+
+[P7] “Will you buy my hair?”
+
+[P8] The owner lifted the heavy waves.
+
+[P9] “Twenty dollars.”
+
+[P10] “Cut it quickly, please.”
+
+[P11] At the first touch of the scissors, Della shut her eyes.
+
+[P12] For two hours afterward, she hurried from shop to shop. Finally, she found it: a simple platinum watch chain. Nothing showy, nothing unnecessary. Like Jim, it needed no decoration to prove its worth.
+
+[P13] It cost twenty-one dollars.
+
+[P14] She carried it home with eighty-seven cents left, imagining Jim replacing his worn leather watch strap with her beautiful gift.
+
+[P15] By seven, dinner was nearly ready. Della had curled her short hair, but she kept returning to the mirror.
+
+[P16] “Please let him still think I’m pretty,” she whispered.
+
+[P17] Footsteps sounded. The door opened.
+
+[P18] Jim stopped.
+
+[P19] His eyes stayed on her hair. Della rushed toward him.
+
+[P20] “I sold it, Jim. I couldn’t let Christmas come without giving you something. It’ll grow again!”
+
+[P21] He put his arms around her. Then he gave her a package.
+
+[P22] Inside were the tortoise-shell combs she had so often admired in a shop window.
+
+[P23] She held them against her chest, smiling through tears.
+
+[P24] “My hair grows quickly.”
+
+[P25] Suddenly remembering, she brought out the chain.
+
+[P26] “Look! Isn’t it perfect? Give me your watch.”
+
+[P27] Jim sat down and smiled gently.
+
+[P28] “I sold the watch to buy your combs.”
+
+[P29] Della sat beside him and took his hand. Her hair was gone; the combs could not hold it. His watch was gone; the chain had nothing to carry. Each had sold their greatest treasure to buy the other a gift.
+
+[P30] The magi were wise men who brought gifts on the first Christmas. Yet here, with gifts they could not use, sat two foolish young people whose love made them the wisest of all gift-givers. They were the magi.
+
+# 手順
+1. 本文を最初から最後まで、段落を1つずつ確認し、すべての文について、下の「分類コード」に該当する特徴があるかを確認する。該当する文は、数に上限を設けず、すべてfeaturesに列挙する(1段落に複数あれば文ごとに列挙)。特にINV・CLEFT・CMPの3つは、全段落で見落としがないか最後にもう一度確認する。どの文にも該当しない段落は、段落番号をno_feature_parasに書く(featuresに載せた段落は書かない)。
+2. featuresの各文について、その文だけを見て、分類コードと、構造の取り違えの起点を答える。他の文との比較、どれが重要か、何件挙げるか、といった相対的な判断はしない。
+
+# 分類コード(feature_classに書く)
+- INV: 倒置。場所・方向・否定・時を表す副詞句が文頭に出て、動詞が主語の前に来る(例: Under the bed lay a small box. / Never had she seen such a place.)。伝達部の倒置(said Vera の型)は含まない。
+- CLEFT: 疑似分裂文・分裂文(例: What the committee needed was more time. / It was in March that the plan changed.)。
+- CMP: 比較の基準(何と何を比べているか)が見えにくい比較。倍数比較・as以降の省略・than以降が前置詞句や代名詞だけで何と比べるかを補う必要があるもの(例: The new bridge is twice as long as the old one. / She earns three times what he does. / Cats were calmer after the vet than after the move.)。
+- FRONT: 文頭に置かれた要素のために、主節の主語や動詞を取り違えやすい文。**文頭要素の種類をfront_kindに必ず書く**(下記)。
+- HEAVY: 主語が長い・重い。主語の中心から動詞までが離れている、または主語が節・長い句で、動詞を見つけにくい(例: The decision to postpone the vote until after the holidays surprised everyone.)。
+- POSTMOD: 名詞から離れた、または重なった後置修飾(後置の分詞句・関係節・前置詞句など)で、修飾先を取り違えやすい(例: He found a letter on the table by the window addressed to his brother.)。
+- SPEC: 目的語と補語の境界が見えにくい特殊な文型に限る。形式目的語it(例: She found it impossible to refuse such an offer.)、目的語が長いもの、wish+目的語+形容詞/副詞(例: I wish my brother here.)など。
+- ELL: 前の文や前の部分から、**別の主語の動詞・比較の基準を補わないと構造が取れない**省略(例: Tom likes tea, and Anna coffee.)。補った語句をomitted_wordsに書く。同じ主語が続く並列(He opened the door, then left.)・省略された関係代名詞・会話の断片はELLにしない。
+- APPOS: 同格・挿入・コンマで区切られた要素のため、構造が複数に読める(例: My neighbour's daughter, a doctor in Leeds, called.)。
+- OTHER: 上記以外の構文上の特徴。
+
+# FRONTのfront_kind(FRONTの文だけに書く。それ以外の分類では空文字)
+- CLAUSE_SIMPLE: 文頭が、時・理由・条件などの副詞節(before/after/when/if/because/although/while + 主語 + 動詞)。主節の主語と動詞が普通に読める単純な形。**基礎であり、FRONTにしない**(basic_onlyをtrue)。
+- PHRASE_SHORT: 文頭が、短い副詞・前置詞句・時や場所の語句(Then, / In the morning, / At the gate,)。**基礎であり、FRONTにしない**。
+- PARTICIPLE: 文頭が分詞句(Hidden behind the door, the boy waited. / Having lost the key, she knocked.)で、分詞の意味上の主語や主節の主語が取りにくい。
+- ADJECTIVE: 文頭が形容詞句・名詞句の独立した修飾(Calm and sure of himself, he spoke.)。
+- AS_THOUGH: as/though/although/much asによる倒置的な前置(Hard as it was to admit, she had been wrong.)。
+- NESTED_OR_LONG: 文頭要素が長く(おおむね10語以上)、その中にさらに節や修飾が入って、主節の主語や動詞の位置が見えにくい(例: Regardless of how little each member had been told, the team agreed to go on.)。
+- OBJECT_OR_COMPLEMENT: 目的語や補語が文頭に出ている(例: This I could not forgive.)。
+- 文頭に従属節や前置詞句が「置かれているだけ」という理由でFRONTにしてはならない(単純な文頭配置は基礎)。文頭要素が複雑で、読み方が実際に難しくなっている場合だけ、上のPARTICIPLE〜OBJECT_OR_COMPLEMENTを選ぶ。
+
+# 基礎項目(これだけで説明が済む文は価値なしとして扱い、basic_onlyをtrueにする。作品に関係なく共通)
+命令文(命令文+and/orを含む)/ 基本的な接続(and・but・or・so・because・when・if・while・although・before・after)と、それらが導く文頭・文中の単純な副詞節 / 前置詞句 / 分詞構文・付帯状況のwithの基本形 / 関係詞の基本用法(whose・関係副詞・省略された関係代名詞を含む)/ 基本時制・進行形・完了形・受動態 / 比較級・最上級・as…asの基本形 / 仮定法の基本形 / 動名詞主語の単純形 / the+形容詞 / 伝達部の倒置(said X)/ 伝達部(said X、he explained等)に付く同格・挿入 / 疑問文・感嘆文・there is構文・It is…to…の基本形 / to不定詞・動名詞・分詞の基本用法 / 使役動詞・知覚動詞+目的語+原形/分詞、keep/make/find+目的語+補語の基本形 / 会話の断片・間投詞・一語や短い語句だけの返答。
+- 基礎項目を含む文でも、上の分類コードに該当する特徴が文中にあれば、その特徴について答える(basic_onlyはfalse)。分類コードに該当する特徴がないのに、基礎項目の「特殊な用法」「表現効果」を理由に分類してはならない。
+- 基礎項目だけの文はfeaturesに載せなくてよい(載せる場合は、feature_classをOTHER、basic_onlyをtrueにし、材料欄は空にする)。
+
+# 学習価値の確認(teaching_valueとteaching_value_ja。basic_onlyがfalseの項目に書く)
+- teaching_value: HIGH または LOW。HIGH=基礎項目の説明では足りず、この文の構造を理解する説明に学習者が一般の英文でも再利用できる読み方が含まれる(同じ型が他の英文でも出会う)。かつ、読み違えると文意が大きく変わる、または日本語に引き写しにくい。LOW=上記を満たさない(その文脈だけの用法、すぐ読み取れる短い文、基礎項目の言い換えで済む)。
+- teaching_value_ja: HIGHの場合、この文の解説で学習者が身につけられる読み方を1句で(例: 場所の副詞句が文頭に出ると主語と動詞の順が逆になる)。LOWの場合は空文字でよい。
+
+# featuresの各項目の書き方(各欄は短く)
+- para: 段落番号(例: "P4")。sentence: **その1つの段落の中にある1つの文**を、本文から一字一句そのまま(逐語。文頭・文末の引用符は書かなくてよい)。**段落をまたいで文を連結してはならない**(文がコロンで終わっていて次の段落が引用になっていても、次の段落の引用はsentenceに含めず、コロンまでを書く)。
+- feature_class: 上のコード。front_kind: 上のコード(FRONT以外は空文字)。
+- misread_target: 学習者が構造を取り違える対象。SUBJECT(主語)/ VERB(動詞)/ MODIFIEE(修飾先)/ OMITTED(省略された語句の補い方)のいずれか1つ。取り違えの対象を具体的に挙げられない場合は空文字。
+- misread_quote: 取り違えの起点になる本文中の語句を一字一句そのまま(1〜8語)。挙げられなければ空文字。
+- misread_ja: 学習者がどう取り違えうるかを日本語で1文。構造の取り違え(主語・動詞・修飾先・省略の補い方)に限り、単語の意味が分からないこと(語彙の誤読)は書かない。
+- omitted_words: ELLの場合のみ、補う語句(本文にない語を書いてよい)。それ以外は空文字。
+- basic_only: この文の説明が上の基礎項目だけで済むならtrue、分類コードに該当する特徴があるならfalse。
+- construct_ja / points_ja / context_ja: basic_onlyがfalseでfeature_classがOTHERでない項目だけに書く(それ以外は空文字・空配列)。construct_ja=構文の名前(短く)。points_ja=解説で押さえるべき点(最大2つ、短く)。context_ja=その文の本文中での位置づけを1文で(本文に書かれた事実のみ。解釈や評価は書かない)。これらはユーザー向け解説の材料になるため、難易度・誤解しやすさ・学習価値などの評価語を入れない。
+
+# 出力(JSONオブジェクト1個のみ。前置き・後書き・コードフェンスなし)
+{
+  "features": [
+    {"para": "P4", "sentence": "…", "feature_class": "INV", "front_kind": "", "misread_target": "SUBJECT", "misread_quote": "…", "misread_ja": "…", "omitted_words": "", "basic_only": false, "teaching_value": "HIGH", "teaching_value_ja": "…", "construct_ja": "…", "points_ja": ["…"], "context_ja": "…"}
+  ],
+  "no_feature_paras": ["P1", "P2"]
+}
