@@ -1,0 +1,91 @@
+== A. 月題(12転写: attempt1-3 x {保存転写+OpenAI再転写3}) ==  列: base / F12(=base+F1F2) / F12B / F12B(strict読み) / F12B(veto) / (参考)v2F12 / (参考)v2F12B
+ a1 stored   P=月野詩は8000句800本超え。その奥に   base=0 F12=0 F12B=0 F12B_strict=0 F12B_veto=0 v2F12=0 v2F12B=0 [F12:p1_value_diff -> B:primary_secondary_value_contradiction]
+ a1 redraw0  P=月野詩は8,900本超え。その奥に潜む岩   base=0 F12=0 F12B=0 F12B_strict=0 F12B_veto=0 v2F12=0 v2F12B=0 [F12:secondary_not_accepted -> B:primary_reading]
+ a1 redraw1  P=月野詩は8,900本超え。その奥に潜む岩   base=0 F12=0 F12B=0 F12B_strict=0 F12B_veto=0 v2F12=0 v2F12B=0 [F12:secondary_not_accepted -> B:primary_reading]
+ a1 redraw2  P=好きの詩は8000900本超え。その奥に   base=0 F12=0 F12B=0 F12B_strict=0 F12B_veto=0 v2F12=0 v2F12B=0 [F12:p1_value_diff -> B:primary_reading]
+ a2 stored   P=月の死は八千九百本超。その奥に潜む岩の上   base=0 F12=0 F12B=1 F12B_strict=0 F12B_veto=1 v2F12=1 v2F12B=1 [F12:secondary_not_accepted -> B:composite]
+ a2 redraw0  P=月の島は千九百本超。その奥に潜む岩の上着   base=0 F12=0 F12B=0 F12B_strict=0 F12B_veto=0 v2F12=0 v2F12B=0 [F12:p1_value_diff -> B:primary_secondary_value_contradiction]
+ a2 redraw1  P=月の島は千九百本超。その奥に潜む岩の上着   base=0 F12=0 F12B=0 F12B_strict=0 F12B_veto=0 v2F12=0 v2F12B=0 [F12:p1_value_diff -> B:primary_secondary_value_contradiction]
+ a2 redraw2  P=月の島は千九百本超。その奥に潜む岩の上着   base=0 F12=0 F12B=0 F12B_strict=0 F12B_veto=0 v2F12=0 v2F12B=0 [F12:p1_value_diff -> B:primary_secondary_value_contradiction]
+ a3 stored   P=月の氏は8000900本超。その奥に潜む   base=0 F12=0 F12B=1 F12B_strict=0 F12B_veto=0 v2F12=0 v2F12B=1 [F12:p1_value_diff -> B:composite]
+ a3 redraw0  P=月野氏は八千九百本超、その奥に潜む岩の上   base=0 F12=0 F12B=1 F12B_strict=0 F12B_veto=0 v2F12=1 v2F12B=1 [F12:secondary_not_accepted -> B:composite]
+ a3 redraw1  P=月の詩は八千九百本長。その奥に潜む岩の上   base=1 F12=1 F12B=1 F12B_strict=1 F12B_veto=1 v2F12=1 v2F12B=1 [F12:primary_pass -> B:primary]
+ a3 redraw2  P=月のシワ、8000九百本超。その奥に潜む   base=1 F12=0 F12B=1 F12B_strict=0 F12B_veto=0 v2F12=0 v2F12B=1 [F12:final_gate_value_diff -> B:composite]
+ PASS数: base=2 F12=1 F12B=5 F12B_strict=1 F12B_veto=2 v2F12=3 v2F12B=5 / 12
+  attempt1: F12=0/4 F12B=0/4 strict=0 veto=0 (安定救済=全転写PASS: F12=False F12B=False)
+  attempt2: F12=0/4 F12B=1/4 strict=0 veto=1 (安定救済=全転写PASS: F12=False F12B=False)
+  attempt3: F12=1/4 F12B=4/4 strict=1 veto=1 (安定救済=全転写PASS: F12=False F12B=True)
+ β増分(F12→F12B): [(2, 'stored', ['JA_COMPOSITE_VALUE_FROM_SECONDARY', 'JA_PRON_EQUIVALENT', 'JA_COMPOSITE_LISTEN_REQUIRED'], True), (3, 'stored', ['JA_COMPOSITE_VALUE_FROM_SECONDARY', 'JA_COMPOSITE_PRIMARY_VALUE_GARBLE_EXPLAINED', 'JA_PRON_EQUIVALENT', 'JA_COMPOSITE_SECONDARY_READING_CONFLICT', 'JA_COMPOSITE_LISTEN_REQUIRED'], True), (3, 'redraw0', ['JA_COMPOSITE_VALUE_FROM_SECONDARY', 'JA_PRON_EQUIVALENT', 'JA_COMPOSITE_SECONDARY_READING_CONFLICT', 'JA_COMPOSITE_LISTEN_REQUIRED'], True), (3, 'redraw2', ['JA_COMPOSITE_VALUE_FROM_SECONDARY', 'JA_COMPOSITE_PRIMARY_VALUE_GARBLE_EXPLAINED', 'JA_PRON_EQUIVALENT', 'JA_COMPOSITE_SECONDARY_READING_CONFLICT', 'JA_COMPOSITE_LISTEN_REQUIRED'], True)]
+   うちstrict読みでも通る: [] / vetoでも通る: [(2, 'stored')]
+ v2読み規則を除いた場合(F12B_strict)の増分: 0 / F12に対し v2F12 が追加する(=v2部品の効果): 2
+== B. N-3 30 clip (実TTS→実OpenAI+実Azure。音声は意図的な誤読=正解は全てNG) ==
+ 誤PASS数: base=16 F12=15 F12B=15 F12B_strict=15 F12B_veto=15 v2F12=15 v2F12B=15 / 30
+ 基準1a 増分誤PASS(F12→F12B): [] / strict: [] / veto: []
+ 基準2 回帰(F12→F12B): [] / F12がbaseから新たにNG化(F1の効果): [('N3-02', 'final_gate_value_diff')]
+ 参考 composite が評価対象になった件: [('N3-01', 'secondary_value'), ('N3-02', 'R4_atom_notation'), ('N3-03', 'R4_atom_notation'), ('N3-04', 'not_applicable'), ('N3-05', 'not_applicable'), ('N3-08', 'primary_reading'), ('N3-15', 'primary_reading'), ('N3-17', 'A4a_irregular_reading'), ('N3-19', 'not_applicable'), ('N3-21', 'A4a_irregular_reading'), ('N3-29', 'not_applicable'), ('N3-30', 'R4_atom_notation')]
+ 参考 eligible reason外でcompositeが通りうる件: []
+== C. Melos preview == 結婚式を終えたメロスは、三日目の夜明け前に町へ戻り始めます。 | P: 結婚式を終えたメロスは、3日目の夜明け前に町へ戻り始めます。 | S: 結婚式を終えたメロスは、 3日目の夜明け前に街へ戻り始めます
+ base=False/ng F12=False/ng F12B=False/ng F12B_strict=False/ng F12B_veto=False/ng v2F12=True/primary v2F12B=True/primary
+ 基準4 Melos副作用(F12 と F12B が同一): True
+== D. 実Production履歴のP-S対 (ng_pool_cases_01 Secondary記録あり) ==
+ 対=43 / 評価不能(Secondary記録なし等)=133
+ PASS数: base=18 F12=18 F12B=19 F12B_strict=18 F12B_veto=19 v2F12=19 v2F12B=19
+ 基準1d composite による増分PASS(全件列挙): 1
+    月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密 | 月の死は八千九百本超。その奥に潜む岩の上着の秘密。 | 月の詩は8900本超。その奥に潜む岩の上着の秘密。
+ 基準2 回帰(F12→F12B): [] / F12がbaseから新たにNG化(F1の効果): 0
+ composite が評価対象になった件の内訳: {'not_applicable': 13, 'R4_atom_notation': 3, 'primary_value_missing': 5, 'primary_reading': 1, 'A4a_irregular_reading': 2}
+== E. N-1 確定負例 x 最悪ケース(Secondary=原稿そのもの。比較=F12) ==
+ 対=151 / composite がPASS候補にした(F12で既にPASSの件を含む)=3 / うちF12がNGなのに composite がPASS(=露出)=1 / strict読みでの露出=0
+   露出: N1-new-018 値garble | 月のしわ、8,900本超 | 月の詩は8000900本超 | p1_value_diff ['JA_COMPOSITE_VALUE_FROM_SECONDARY', 'JA_COMPOSITE_PRIMARY_VALUE_GARBLE_EXPLAINED', 'JA_PRON_EQUIVALENT', 'JA_COMPOSITE_LISTEN_REQUIRED']
+ 露出の型内訳: {'値garble': 1}
+== F. 合成負例マトリクス(正解は全てNG)。V1=v1の55件 / M3=複数atom(M-3) / FB=F-B・Secondary表記・R-3・R-4 ==
+ V1: 件数=55 / β(F12B)がPASSにした=0 / 案αがPASS=0 / 増分誤PASS(F12 NG→composite PASS)=0 / F12自体が誤PASS=15
+ M3: 件数=17 / β(F12B)がPASSにした=0 / 案αがPASS=0 / 増分誤PASS(F12 NG→composite PASS)=0 / F12自体が誤PASS=0
+ FB: 件数=19 / β(F12B)がPASSにした=0 / 案αがPASS=0 / 増分誤PASS(F12 NG→composite PASS)=0 / F12自体が誤PASS=0
+   要確認: V1 value_wrong:Secondary_only | composite= False | F12= True | 月のしわ、8,900本超。その奥に潜む岩の上着の秘密。 | 月のしわ、8,800本超。その奥に潜む岩の上着の秘密。
+   要確認: V1 value_wrong:Secondary_only | composite= False | F12= True | 月のしわ、8,900本超。その奥に潜む岩の上着の秘密。 | 月のしわ、89,000本超。その奥に潜む岩の上着の秘密。
+   要確認: V1 value_wrong:Secondary_only | composite= False | F12= True | 月のしわ、8,900本超。その奥に潜む岩の上着の秘密。 | 月のしわ、8,090本超。その奥に潜む岩の上着の秘密。
+   要確認: V1 value_wrong:Secondary_only | composite= False | F12= True | 月のしわ、8,900本超。その奥に潜む岩の上着の秘密。 | 月のしわ、9,900本超。その奥に潜む岩の上着の秘密。
+   要確認: V1 value_wrong:Secondary_only | composite= False | F12= True | 月のしわ、8,900本超。その奥に潜む岩の上着の秘密。 | 月のしわ、千九百本超。その奥に潜む岩の上着の秘密。
+   要確認: V1 value_wrong:Secondary_only | composite= False | F12= True | 月のしわ、8,900本超。その奥に潜む岩の上着の秘密。 | 月のしわ、八万九千本超。その奥に潜む岩の上着の秘密。
+   要確認: V1 value_wrong:Secondary_only | composite= False | F12= True | 月のしわ、8,900本超。その奥に潜む岩の上着の秘密。 | 月のしわ、8000800本超。その奥に潜む岩の上着の秘密。
+   要確認: V1 value_wrong:Secondary_only | composite= False | F12= True | 月のしわ、8,900本超。その奥に潜む岩の上着の秘密。 | 月のしわ、8000句800本超。その奥に潜む岩の上着の秘密。
+   要確認: V1 value_wrong:Secondary_only | composite= False | F12= True | 月のしわ、8,900本超。その奥に潜む岩の上着の秘密。 | 月のしわ、8万9千本超。その奥に潜む岩の上着の秘密。
+   要確認: V1 value_wrong:Secondary_only | composite= False | F12= True | 月のしわ、8,900本超。その奥に潜む岩の上着の秘密。 | 月のしわ、890本超。その奥に潜む岩の上着の秘密。
+   要確認: V1 irregular | composite= False | F12= True | 3日待った。 | 3日待った。
+   要確認: V1 irregular | composite= False | F12= True | 20歳になった | 20歳になった
+   要確認: V1 irregular | composite= False | F12= True | 10月1日に会う | 10月1日に会う
+   要確認: V1 negation | composite= False | F12= True | 3人は行かない | 3人は行く
+   要確認: V1 counter | composite= False | F12= True | 犬が三頭いる | 犬が三匹いる
+ 非通過理由の分布(M3+FB): {'primary_secondary_value_contradiction': 18, 'secondary_value': 10, 'primary_reading': 1, 'primary_value_missing': 2, 'R4_atom_notation': 5}
+== G. 合成の正例(設計対象型の動作確認のみ。実頻度の証拠ではない) ==
+   売上は1,200円です | 売上は1000200円です | 売上は1200円です | composite= True | F12= False | listen= True composite_value_secondary_reading_primary
+   参加者は3,500人です | 参加者は3000五百人です | 参加者は3500人です | composite= True | F12= False | listen= True composite_value_secondary_reading_primary
+   価格は12,000円です | 価格は10000二千円です | 価格は12000円です | composite= True | F12= False | listen= True composite_value_secondary_reading_primary
+   価格は12,000円です | 価格は12,000円です | 価格は12000円です | composite= True | F12= True | listen= False composite_value_secondary_reading_primary
+   売上は1,200円で利益は3,500円です | 売上は1000200円で利益は3,500円です | 売上は1200円で利益は3500円です | composite= True | F12= False | listen= True composite_value_secondary_reading_primary
+   売上は1,200円で利益は3,500円です | 売上は1000200円で利益は3000五百円です | 売上は1200円で利益は3500円です | composite= True | F12= False | listen= True composite_value_secondary_reading_primary
+   1,200円と1,200円を払う | 1000200円と1000200円を払う | 1200円と1200円を払う | composite= True | F12= False | listen= True composite_value_secondary_reading_primary
+   売上は8,900円です | 売上は８０００９００円です | 売上は８９００円です | composite= True | F12= False | listen= True composite_value_secondary_reading_primary
+== H. 追加Azure呼出 / 評価不能 ==
+ composite が新たにAzure呼出を要した対(現行はP1/最終ゲートでAzure不呼出)=2 (見積 0.53円/評価母集団ぶん)
+ 評価不能: P-4 実attempt=562 件(うちSecondary記録あり=0)、未知データ(Primary転写のみ)=493 件、N-1=150 対(音声・Secondary実転写なし=最悪ケース被覆のみ)
+== I. R-5 予備集計 (API 0): 保存転写でのF1+F2(base→F12)の新規NG と 値差NG(β対象になりうるPrimary NG)の件数 ==
+ P-4 attempt_pool_01(562): n=562 / F1+F2が新たにNG化=0 {} / F12のp1_value_diff等NG={'p1_value_diff': 13}
+ 未知データ unknown_pool_02(493): n=493 / F1+F2が新たにNG化=0 {} / F12のp1_value_diff等NG={'p1_value_diff': 36}
+ 実履歴P-S対(43): n=43 / F1+F2が新たにNG化=0 {} / F12のp1_value_diff等NG={'p1_value_diff': 5}
+ 月題(12): n=12 / F1+F2が新たにNG化=1 {'final_gate_value_diff': 1} / F12のp1_value_diff等NG={'p1_value_diff': 6, 'final_gate_value_diff': 1}
+     新規NG: ('月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密', '月のシワ、8000九百本超。その奥に潜む岩の上着の秘密。', 'final_gate_value_diff')
+ N-3(30): n=30 / F1+F2が新たにNG化=1 {'final_gate_value_diff': 1} / F12のp1_value_diff等NG={'p1_value_diff': 3, 'final_gate_value_diff': 1}
+     新規NG: ('月のしわ、8,900本超', '月野氏は八万九千本町。', 'final_gate_value_diff')
+== J. 読み規則別内訳(探索的・事後追加。値atom除去後の残りに対する Production 分類) ==
+   moon a2_stored 月の死は八千九百本超。その奥に潜む岩の上着の秘密。 | masked_class= TRUE_CONTENT_MISMATCH | Production読みクラスで成立= False | strict= False | veto= True
+   moon a3_stored 月の氏は8000900本超。その奥に潜む岩の上着の秘密。 | masked_class= TRUE_CONTENT_MISMATCH | Production読みクラスで成立= False | strict= False | veto= False
+   moon a3_redraw0 月野氏は八千九百本超、その奥に潜む岩の上着の秘密。 | masked_class= TRUE_CONTENT_MISMATCH | Production読みクラスで成立= False | strict= False | veto= False
+   moon a3_redraw2 月のシワ、8000九百本超。その奥に潜む岩の上着の秘密。 | masked_class= PHONETIC_MATCH | Production読みクラスで成立= True | strict= False | veto= False
+   hist aNone_None 月の死は八千九百本超。その奥に潜む岩の上着の秘密。 | masked_class= TRUE_CONTENT_MISMATCH | Production読みクラスで成立= False | strict= False | veto= True
+ 増分5件中: Production既存の読みクラスで成立=1 / v2の助詞発音等価に依存=4
+== 事前登録基準の機械判定 ==
+ 1a N-3増分誤PASS=0: True | 1b N-1露出が値garble型のみ: True (型={'値garble': 1}) | 1c 合成負例(V1+M3+FB) composite PASS=0: True | 1d 履歴対の増分PASS件数(要個別審査)=1
+ 2 回帰0: True | 4 Melos副作用0: True | 3 月題の増分(F12→F12B)=4 (strict読み=0, veto=1)
+ Status候補(機械写像。1dの個別審査結果は別途。最終はFable): VALIDATED(限定)候補[低優先]
