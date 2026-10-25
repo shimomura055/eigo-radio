@@ -42,7 +42,28 @@ def test_isolation_only_family_x_runner_and_writer_reference_er116():
         txt = open(p, encoding="utf-8", errors="replace").read()
         if re.search(r"^[ \t]*(?:import|from)[ \t]+er116_fx_core_numeric_retention", txt, re.M):
             hits.append(base)
-    assert hits == ["er019_family_x_entertainment_production_runner_01.py"], hits
+    assert sorted(hits) == ["er019_family_x_audio_production_runner_01.py", "er019_family_x_entertainment_production_runner_01.py"], hits
+
+
+def test_a2_support_text_j2_normalizes_ranges_only(monkeypatch):
+    """委任_07: A2 support本文(Preview/Comment)生成直後のJ2。範囲値の波ダッシュだけ『から』へ、数字・他の文は不変。"""
+    import er019_family_x_audio_production_runner_01 as ar
+    seen = {}
+
+    def fake(client, role, context, *, model):
+        return {"text": "月の半径は約42〜46メートル小さくなりました。ではそれだけでしょうか。", "x": 1}
+
+    monkeypatch.setattr(ar.a2gen, "run_support_text", fake)
+    r = ar._a2_run_support_text_j2(None, "r", "c", model="m")
+    assert r["text"] == "月の半径は約42から46メートル小さくなりました。ではそれだけでしょうか。"
+    assert r["j2_range_normalized"] is True and len(r["j2_raw_text_sha256"]) == 64 and r["x"] == 1
+
+    monkeypatch.setattr(ar.a2gen, "run_support_text", lambda c, ro, ctx, *, model: {"text": "範囲のない文。8,900本です。"})
+    r2 = ar._a2_run_support_text_j2(None, "r", "c", model="m")
+    assert r2["text"] == "範囲のない文。8,900本です。" and "j2_range_normalized" not in r2
+
+    monkeypatch.setattr(ar.a2gen, "run_support_text", lambda c, ro, ctx, *, model: {"text": None, "status": "FAILED"})
+    assert ar._a2_run_support_text_j2(None, "r", "c", model="m")["text"] is None
 
 
 def test_isolation_y_z_and_trial_do_not_reach_numeric_retention():

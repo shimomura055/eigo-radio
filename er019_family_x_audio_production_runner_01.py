@@ -69,6 +69,7 @@ import er020_tts_retry_local_rewrite_01 as retry_primitive
 import er117_chunk_tts_production_01 as chunk_tts  # FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01(X Adv本文=段落単位chunk+0.2秒、APPROVED_FOR_PRODUCTION 2026-10-25)
 import er053_review_queue_01 as rq
 import er053_risk_flagger_production_01 as rf
+import er116_fx_core_numeric_retention_01 as numret  # FX-CORE-NUMERIC-RETENTION 委任_07: J2(A2 support本文の範囲値正規化)のみ使用
 
 MANAGEMENT_ID = "NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01"
 
@@ -312,31 +313,45 @@ def run_family_x_b1_scaffold(client, parts: dict, out_dir: str) -> dict:
     return results
 
 
+def _a2_run_support_text_j2(client, role, context, *, model):
+    """A2(日本語)support本文(Preview/Comment1-4)生成の直後にJ2(範囲値『数字〜数字』→『数字から数字』、数字・桁は不変)を適用する。
+    FX-CORE-NUMERIC-RETENTION-TRIAL-01 委任_07(ユーザー正式採用J2=USER_05の同一目的の適用点)。Writer段で『から』に統一済みの範囲値を
+    support生成LLMが波ダッシュへ書き戻し、TTS用Normalizerが『なになに』と読んでASR NG→STOPした実測(月run_ms_03 comment_2)の是正。"""
+    r = a2gen.run_support_text(client, role, context, model=model)
+    if isinstance(r, dict) and isinstance(r.get("text"), str):
+        new = numret.normalize_ranges(r["text"])
+        if new != r["text"]:
+            r["j2_raw_text_sha256"] = hashlib.sha256(r["text"].encode("utf-8")).hexdigest()
+            r["j2_range_normalized"] = True
+            r["text"] = new
+    return r
+
+
 def run_family_x_a2_scaffold(client, parts: dict, out_dir: str) -> dict:
     """A2(Japanese)Preview/Comment1-4を生成する(単一Voice、a2genの
     Comment1/2/PreviewをそのままJapanese出力で流用)。"""
     print(f"[FAMILY-X-AUDIO-SCAFFOLD] A2 Comment 1生成開始({out_dir})...")
     c1_context = f"【これから聞く本文(本文1、英語)】\n{parts['part1']}"
-    c1 = a2gen.run_support_text(client, a2gen.COMMENT_1_ROLE, c1_context, model=_a2_support_model())
+    c1 = _a2_run_support_text_j2(client, a2gen.COMMENT_1_ROLE, c1_context, model=_a2_support_model())
 
     print(f"[FAMILY-X-AUDIO-SCAFFOLD] A2 Comment 2生成開始({out_dir})...")
     c2_context = f"【すでに聞いた本文(本文1)】\n{parts['part1']}\n\n【これから聞く本文(本文2)】\n{parts['part2']}"
-    c2 = a2gen.run_support_text(client, a2gen.COMMENT_2_ROLE, c2_context, model=_a2_support_model())
+    c2 = _a2_run_support_text_j2(client, a2gen.COMMENT_2_ROLE, c2_context, model=_a2_support_model())
 
     print(f"[FAMILY-X-AUDIO-SCAFFOLD] A2 Comment 3生成開始({out_dir})...")
     c3_context = f"【本文1】\n{parts['part1']}\n\n【本文2】\n{parts['part2']}"
-    c3 = a2gen.run_support_text(client, plan.FAMILY_X_A2_COMMENT_3_ROLE, c3_context, model=_a2_support_model())
+    c3 = _a2_run_support_text_j2(client, plan.FAMILY_X_A2_COMMENT_3_ROLE, c3_context, model=_a2_support_model())
 
     print(f"[FAMILY-X-AUDIO-SCAFFOLD] A2 Comment 4生成開始({out_dir})...")
     c4_context = f"【本文1】\n{parts['part1']}\n\n【本文2】\n{parts['part2']}\n\n【本文3】\n{parts['part3']}"
-    c4 = a2gen.run_support_text(client, plan.FAMILY_X_A2_COMMENT_4_ROLE, c4_context, model=_a2_support_model())
+    c4 = _a2_run_support_text_j2(client, plan.FAMILY_X_A2_COMMENT_4_ROLE, c4_context, model=_a2_support_model())
 
     print(f"[FAMILY-X-AUDIO-SCAFFOLD] A2 Preview生成開始({out_dir})...")
     preview_prompt_role = a2gen.PREVIEW_ROLE.format(
         comment_1=c1.get("text") or "(生成失敗)", comment_2=c2.get("text") or "(生成失敗)")
     article_text = plan.reconstruct_family_x_article_text_v2(parts)
     preview_context = f"【エピソード全文(参考、新しいFactの追加禁止)】\n{article_text}"
-    preview = a2gen.run_support_text(client, preview_prompt_role, preview_context, model=_a2_support_model())
+    preview = _a2_run_support_text_j2(client, preview_prompt_role, preview_context, model=_a2_support_model())
 
     results = {"preview": preview, "comment_1": c1, "comment_2": c2, "comment_3": c3, "comment_4": c4}
     os.makedirs(f"{out_dir}/audit", exist_ok=True)

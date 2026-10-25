@@ -64,8 +64,8 @@ def run():
            "old": {"TP": 0, "FP": 0, "FN": 0, "TN": 0}, "new": {"TP": 0, "FP": 0, "FN": 0, "TN": 0},
            "partial": [], "diff_old_new": [], "weak_new": 0, "errors": []}
     for r in lab["rows"]:
-        run = runs[r["run_id"]]
-        assert run["run"] == r["run"], (run["run"], r["run"])
+        # 委任_07: 新規の正式runがdiscover()に加わるとindexがずれるため、ラベルのrunパスで引く(Trial標本の識別は不変)
+        run = next(v for v in runs.values() if v["run"] == r["run"])
         text = run["texts"][r["stage"]]
         hint = D.unit_hint_after(run["facts_marked"], r["surface"])
         old = old_present(r["surface"], text)
