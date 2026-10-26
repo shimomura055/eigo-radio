@@ -13,6 +13,7 @@ grammar[]は正式Part 2候補が無い限り空(仮データを入れない)。
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import sys
@@ -25,6 +26,27 @@ def kind_of(c: dict) -> str:
     if k in ("phrase", "word"):
         return k
     return "word" if len((c.get("used_form") or "").split()) == 1 else "phrase"      # 古いdoc(kind欠落)を許容
+
+
+def kind_source_of(c: dict) -> str:
+    """kindの出所(委任_03)。候補docのkindを逐語で使ったか、語数から導出したか。"""
+    return "candidate_doc" if c.get("kind") in ("phrase", "word") else "derived_from_word_count"
+
+
+def doc_sha256(doc: dict) -> str:
+    """候補docの自己sha。er119_kp_human_review_01.candidates_sha256と同一算式(candidates_sha256キーを除いたjsha)。Production moduleに依存しないよう再掲。"""
+    d = {k: v for k, v in doc.items() if k != "candidates_sha256"}
+    return hashlib.sha256(json.dumps(d, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()
+
+
+def sha_info(doc: dict, source_kind: str) -> tuple:
+    """(candidates_sha256, candidates_sha256_source)。docのフィールドが無い場合はnull(算出・捏造しない)。docの値と再算出が不一致なら例外。"""
+    v = doc.get("candidates_sha256")
+    if v:
+        if v != doc_sha256(doc):
+            raise ValueError("candidates_sha256 mismatch: doc field != recomputed")
+        return v, "candidate_doc_field"
+    return None, ("unavailable_replay_doc" if source_kind.startswith("REPLAY") else "unavailable_dev_trial_doc")
 
 
 def flag_notes(c: dict) -> list:
@@ -81,7 +103,7 @@ def entry(c: dict, source_kind: str = "PRODUCTION_FORMAL_PATH") -> dict:
     fl = c.get("flags") or {}
     rj, rsrc = reason_info(c)
     e = {
-        "id": c["candidate_id"], "term": c.get("used_form") or c.get("selection_phrase"),
+        "id": c["candidate_id"], "candidate_id": c["candidate_id"], "kind_source": kind_source_of(c), "term": c.get("used_form") or c.get("selection_phrase"),
         "meaning_ja": c.get("japanese_gloss") or "", "excerpt": c.get("source_sentence") or "",
         "ja_gloss": c.get("japanese_gloss") or "", "ja_gloss_status": gloss_status(c, source_kind),
         "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
@@ -126,12 +148,15 @@ def shortfall_note_ja(doc: dict) -> str:
 
 
 def convert(doc: dict, *, slug: str, level: str, name: str, family: str, run: str, source_kind: str, note_ja: str, text_sha256: str | None = None,
-            grammar: list | None = None) -> dict:
+            grammar: list | None = None, cand_path: str | None = None) -> dict:
     cands = sorted(doc.get("candidates") or [], key=lambda c: c.get("ai_rank") or 99)
     es = [entry(c, source_kind) for c in cands]
     bf = doc.get("backfill") or {}
+    sha, sha_src = sha_info(doc, source_kind)
     out = {
         "schema": "eigo_radio_selection_article_v1", "slug": slug, "level": level, "level_label": LEVEL_LABEL.get(level, level), "name": name, "family": family,
+        "candidates_sha256": sha, "candidates_sha256_source": sha_src,
+        "source_kp_candidates_path": (os.path.relpath(cand_path).replace(os.sep, "/") if cand_path else None),
         "source": {"kind": source_kind, "trial": "KP-GATE-DROP-BACKFILL-PRODUCTION-01", "run": run, "text_sha256": text_sha256 or doc.get("text_sha256"),
                    "model_id": {"kp": doc.get("model_id")}, "prompt_sha256": doc.get("prompt_sha256"), "note_ja": note_ja},
         "phrases": [e for e in es if e["kind"] == "phrase"][:7], "words": [e for e in es if e["kind"] == "word"][:5],
@@ -166,7 +191,7 @@ def main(argv=None) -> int:
     with open(a.cand, encoding="utf-8") as f:
         doc = json.load(f)
     out = convert(doc, slug=a.slug, level=a.level, name=a.name, family=a.family, run=a.run or os.path.dirname(a.cand), source_kind=a.source_kind,
-                  note_ja=a.note_ja, text_sha256=a.text_sha256)
+                  note_ja=a.note_ja, text_sha256=a.text_sha256, cand_path=a.cand)
     with open(a.out, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
     print(json.dumps({"out": a.out, "phrases": len(out["phrases"]), "words": len(out["words"]), "shortfall_note_ja": out["shortfall_note_ja"]}, ensure_ascii=False))

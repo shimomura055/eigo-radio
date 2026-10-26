@@ -128,6 +128,39 @@ class SelectionFormV3Test(unittest.TestCase):
             self.assertEqual(e["ja_gloss"], by_id[e["id"]]["japanese_gloss"])
             self.assertEqual(e["reason_ja"], by_id[e["id"]].get("reason_ja") or "")
 
+    def test_candidate_id_kind_and_sha_match_source_docs_verbatim(self):
+        """委任_03: データJSONのcandidate_id/kind/candidates_sha256が元docと逐語一致。docに自己shaが無い場合はnull(捏造しない)。"""
+        import glob
+        files = [f for f in sorted(glob.glob(os.path.join(FD, "data", "*__*.json"))) if "ui_check" not in f]
+        self.assertEqual(len(files), 7)
+        n_sha = n_null = 0
+        for f in files:
+            d = _j(f)
+            src = _j(os.path.join(ROOT, d["source_kp_candidates_path"]))
+            doc = src.get("doc", src)
+            by_id = {c["candidate_id"]: c for c in doc["candidates"]}
+            items = d["phrases"] + d["words"] + d.get("overflow", [])
+            ids = [e["candidate_id"] for e in items]
+            self.assertEqual(len(set(ids)), len(ids), f)
+            for e in items:
+                c = by_id[e["candidate_id"]]
+                self.assertEqual(e["id"], c["candidate_id"])
+                if c.get("kind") in ("phrase", "word"):
+                    self.assertEqual((e["kind"], e["kind_source"]), (c["kind"], "candidate_doc"), f)
+                else:
+                    self.assertEqual((e["kind"], e["kind_source"]), ("word" if len((c.get("used_form") or "").split()) == 1 else "phrase", "derived_from_word_count"), f)
+            if doc.get("candidates_sha256"):
+                self.assertEqual(d["candidates_sha256"], doc["candidates_sha256"], f)
+                self.assertEqual(d["candidates_sha256_source"], "candidate_doc_field")
+                recomputed = hashlib.sha256(json.dumps({k: v for k, v in doc.items() if k != "candidates_sha256"}, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()
+                self.assertEqual(d["candidates_sha256"], recomputed, f)
+                n_sha += 1
+            else:
+                self.assertIsNone(d["candidates_sha256"], f)
+                self.assertTrue(d["candidates_sha256_source"].startswith("unavailable_"), f)
+                n_null += 1
+        self.assertEqual((n_sha, n_null), (5, 2))
+
     def test_form_has_no_regeneration_or_network_calls_beyond_data_fetch(self):
         s = open(os.path.join(FD, "index.html"), encoding="utf-8").read() + open(os.path.join(FD, "form_logic.js"), encoding="utf-8").read()
         for bad in ("api.openai.com", "generativelanguage", "XMLHttpRequest", "sendBeacon"):

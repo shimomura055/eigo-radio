@@ -10,7 +10,7 @@ d = json.load(open(SRC, encoding="utf-8"))
 phrases, words = [], []
 for c in d["doc"]["candidates"]:
     rj, rsrc = xf.reason_info(c)
-    item = {"id": c["candidate_id"], "term": c["used_form"], "meaning_ja": c["japanese_gloss"], "excerpt": c["source_sentence"],
+    item = {"id": c["candidate_id"], "candidate_id": c["candidate_id"], "kind": xf.kind_of(c), "kind_source": xf.kind_source_of(c), "term": c["used_form"], "meaning_ja": c["japanese_gloss"], "excerpt": c["source_sentence"],
             "ja_gloss": c["japanese_gloss"], "ja_gloss_status": xf.gloss_status(c, "DEV_TRIAL"),
             "ja_gloss_source": "Trial-02 trial_result.json candidates[].japanese_gloss(再利用。AI再生成なし)",
             "reason_ja": rj, "reason_source": rsrc, "origin": c.get("origin")}
@@ -18,9 +18,11 @@ for c in d["doc"]["candidates"]:
         item["flag"] = "rescued"
         item["flag_note_ja"] = "KP救済済み(" + ",".join(c["rescue"].get("codes", [])) + ")"
     (words if c.get("origin") == "call2" else phrases).append(item)
+sha, sha_src = xf.sha_info(d["doc"], "DEV_TRIAL")      # Trial-02 docは自己sha無し→null(捏造しない)
 data = {
     "schema": "eigo_radio_selection_article_v1", "slug": "monkeys_paw", "level": "b1b", "level_label": "Advanced",
     "name": "猿の手", "family": "Z",
+    "candidates_sha256": sha, "candidates_sha256_source": sha_src, "source_kp_candidates_path": os.path.relpath(SRC, ROOT).replace(os.sep, "/"),
     "source": {"kind": "DEV_TRIAL", "trial": "KP-CANDIDATE-PHRASE7-WORD5-TRIAL-02", "run": "monkeys_paw__b1b__p7w5__r1",
                "text_sha256": d["text_sha256"], "model_id": d["doc"]["model_id"],
                "note_ja": "この候補はDEV Trial-02由来(Production候補生成Promptは現行のまま。7+5 Promptは未採用)。"},
@@ -30,4 +32,4 @@ data = {
 }
 os.makedirs(OUT, exist_ok=True)
 json.dump(data, open(os.path.join(OUT, "monkeys_paw__b1b.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
-print(len(phrases), len(words), [p["term"] for p in phrases], [w["term"] for w in words])
+print([(i["term"], i["kind"], i["kind_source"]) for i in phrases + words]); print(len(phrases), len(words), [p["term"] for p in phrases], [w["term"] for w in words])

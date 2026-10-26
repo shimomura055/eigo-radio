@@ -102,7 +102,8 @@ t('structured output has required keys and is JSON round-trippable', () => {
   const st = FL.newState(); const tl = FL.terms(mp); FL.setChoice(st, tl, 'burial', 1, true); st.comment = 'c';
   const o = FL.buildStructured(mp, st, '2026-10-26T00:00:00Z'); const r = JSON.parse(JSON.stringify(o));
   assert.strictEqual(r.schema, 'eigo_radio_selection_result_v2'); assert.strictEqual(r.schema_version, 2);   // 委任_02でv2へ(日本語訳・区分・文法解説全文を追加)
-  assert.deepStrictEqual(r.article, { slug: 'monkeys_paw', level: 'b1b', level_label: 'Advanced', name: '猿の手', text_sha256: mp.source.text_sha256 });
+  assert.deepStrictEqual(r.article, { slug: 'monkeys_paw', level: 'b1b', level_label: 'Advanced', name: '猿の手', text_sha256: mp.source.text_sha256,
+    candidates_sha256: null, candidates_sha256_source: 'unavailable_dev_trial_doc', source_kp_candidates_path: mp.source_kp_candidates_path });   // 委任_03で追加(additive)
   assert.deepStrictEqual(r.selection.key_phrase.map(x => x.term), ['burial']); assert.strictEqual(r.counts.key_phrase, 1); assert.strictEqual(r.comment, 'c');
   assert.strictEqual(r.generated_at, '2026-10-26T00:00:00Z'); assert.strictEqual(r.production_connected, false);
   assert.deepStrictEqual(r.limits, { key_phrase: 3, key_phrase_plus_extra: 5, total_highlight: 12, grammar: 2 });
@@ -110,7 +111,7 @@ t('structured output has required keys and is JSON round-trippable', () => {
 t('chatgpt url: contains selection, <=6000, falls back when too long', () => {
   const st = FL.newState(); const tl = FL.terms(mp); FL.setChoice(st, tl, 'burial', 1, true);
   const r = FL.buildChatGptUrl(mp, st, 'T'); assert.ok(r.url && r.url.length <= 6000 && r.url.startsWith('https://chatgpt.com/?q='));
-  const msg = decodeURIComponent(r.url.slice('https://chatgpt.com/?q='.length)); assert.ok(msg.includes('① Key Phrase (1/3): burial')); assert.ok(r.with_json && msg.includes('"selection"'));
+  const msg = decodeURIComponent(r.url.slice('https://chatgpt.com/?q='.length)); assert.ok(msg.includes('① Key Phrase (1/3): burial')); assert.ok(r.with_json ? msg.includes('"selection"') : msg.includes('candidate_id: '));   // 委任_03: candidate_id追加でJSON同梱がURL上限を超える場合はテキストのみ(テキストにcandidate_id/kind/sha行あり)
   st.comment = 'あ'.repeat(3000); const r2 = FL.buildChatGptUrl(mp, st, 'T'); assert.strictEqual(r2.url, null);   // 長文はコピー誘導
   st.comment = 'あ'.repeat(330); const r3 = FL.buildChatGptUrl(mp, st, 'T'); if (r3.url) assert.ok(r3.url.length <= 6000);
 });
@@ -197,7 +198,7 @@ t('send text: official gloss and reason; provisional/missing marked; reasons onl
   const txt = FL.buildText(d, st); const iAi = txt.indexOf('【AI選定理由'); const conf = txt.slice(0, iAi), ai = txt.slice(iAi);
   assert.ok(conf.includes('日本語訳: ' + call1.ja_gloss + '【正式訳】') && conf.includes('日本語訳: ' + call2.ja_gloss + '【正式訳】'));
   assert.ok(!conf.includes(call2.reason_ja), 'reason must not be in the confirmed section');
-  assert.ok(ai.includes(call2.term + ': ' + call2.reason_ja)); assert.ok(ai.includes(call1.term + ': (AI理由なし'));
+  assert.ok(ai.includes(call2.term + '(' + call2.candidate_id + '): ' + call2.reason_ja)); assert.ok(ai.includes(call1.term + '(' + call1.candidate_id + '): (AI理由なし'));   // 委任_03: 行末にcandidate_id
   const mp1 = rd('data/monkeys_paw__b1b.json'); const st2 = FL.newState(); pick(mp1, st2, [['burial', 1]]);
   const t2 = FL.buildText(mp1, st2); assert.ok(t2.includes('【仮訳・未確定】') && t2.includes('黙って確定・変更しないこと'));
   const miss = { slug: 'x', level: 'a2', name: 'X', phrases: [{ id: 'a', term: 'foo bar' }], words: [], grammar: [] }; const st3 = FL.newState(); pick(miss, st3, [['foo bar', 1]]);
@@ -229,7 +230,7 @@ t('no omission for every article x full selection (3/2/7 + 2 grammar + comment):
     const items = d.phrases.concat(d.words);
     tl.forEach((x, i) => {
       const it = items[i], g = FL.glossOf(it), ro = FL.reasonOf(it);
-      if (st.choices[x]) { assert.ok(txt.includes('｜' + x + '｜日本語訳: ' + (g.text || '(未生成)') + '【' + g.label + '】'), f + x); if (ro.has) assert.ok(txt.includes(x + ': ' + ro.text), f + 'reason ' + x); }
+      if (st.choices[x]) { assert.ok(txt.includes('｜' + x + '｜日本語訳: ' + (g.text || '(未生成)') + '【' + g.label + '】'), f + x); if (ro.has) assert.ok(txt.includes(x + '(' + it.candidate_id + '): ' + ro.text), f + 'reason ' + x); }
     });
     d.grammar.slice(0, 2).forEach(g => assert.ok(txt.includes(g.body) && txt.includes(g.title)));
     assert.ok(txt.includes('自由コメント: 全項目コメント'));
@@ -250,5 +251,56 @@ t('copy text includes JSON with all candidates and is parseable', () => {
   const d = mpp; const st = FL.newState(); pick(d, st, [[d.phrases[0].term, 1]]);
   const c = FL.buildCopyText(d, st, 'T'); const j = JSON.parse(c.slice(c.indexOf('```json\n') + 8, c.lastIndexOf('\n```')));
   assert.strictEqual(j.candidates_all.length, 7); assert.strictEqual(j.selection.key_phrase[0].ja_gloss, d.phrases[0].ja_gloss);
+});
+
+// ---- 委任_03: candidate_id / kind / candidates_sha256 (payload v2 minor 1) ----
+const dataFiles03 = idx.articles.filter(a => a.data && !a.data.includes('ui_check')).map(a => a.data);
+t('v2.1: candidate_id unique + present in every real data file; kind valid; id==candidate_id', () => {
+  assert.strictEqual(dataFiles03.length, 7);
+  dataFiles03.forEach(f => {
+    const d = rd(f), all = d.phrases.concat(d.words), ids = all.map(x => x.candidate_id);
+    assert.ok(ids.length > 0 && ids.every(x => typeof x === 'string' && x), f);
+    assert.strictEqual(new Set(ids).size, ids.length, f);
+    all.forEach(x => { assert.ok(x.kind === 'phrase' || x.kind === 'word', f); assert.strictEqual(x.id, x.candidate_id); });
+  });
+});
+t('v2.1: structured payload carries candidate_id/kind on selected items, ai_reference, candidates_all; article has sha fields; text has candidate_id lines', () => {
+  dataFiles03.forEach(f => {
+    const d = rd(f), all = d.phrases.concat(d.words), tl = FL.terms(d), st = FL.newState();
+    all.slice(0, 3).forEach(x => FL.setChoice(st, tl, x.term, 1, true)); FL.setChoice(st, tl, all[3].term, 2, true); FL.setChoice(st, tl, all[4] ? all[4].term : all[5].term, 3, true);
+    const j = FL.buildStructured(d, st, 'T', { all_candidates: true });
+    assert.strictEqual(j.schema_version, 2); assert.strictEqual(j.schema_minor, 1);
+    let ns = 0;
+    ['key_phrase', 'extra_explanation', 'meaning_display'].forEach(k => j.selection[k].forEach(it => {
+      ns++; const o = all.filter(x => x.term === it.term)[0]; assert.strictEqual(it.candidate_id, o.candidate_id); assert.strictEqual(it.kind, o.kind); }));
+    assert.strictEqual(ns, 5);
+    assert.strictEqual(j.ai_reference.items.length, 5); j.ai_reference.items.forEach(it => assert.ok(it.candidate_id));
+    j.candidates_all.forEach((it, i) => { assert.strictEqual(it.candidate_id, all[i].candidate_id); assert.strictEqual(it.kind, all[i].kind); });
+    assert.ok('candidates_sha256' in j.article && j.article.candidates_sha256_source && 'source_kp_candidates_path' in j.article);
+    assert.strictEqual(j.article.candidates_sha256, d.candidates_sha256);
+    const txt = FL.buildText(d, st);
+    assert.ok(txt.includes('候補集合sha256: ' + (d.candidates_sha256 || 'なし(取得不可: ')));
+    ['key_phrase', 'extra_explanation', 'meaning_display'].forEach(k => j.selection[k].forEach(it => assert.ok(txt.includes('candidate_id: ' + it.candidate_id + '｜種類: ' + it.kind))));
+  });
+});
+t('v2.1: null sha stays null (replay / DEV Trial) and is stated, not fabricated', () => {
+  ['data/monkeys_paw__b1b.json', 'data/monkeys_paw__b1b__prod.json'].forEach(f => {
+    const d = rd(f), st = FL.newState(); assert.strictEqual(d.candidates_sha256, null); assert.ok(/^unavailable_/.test(d.candidates_sha256_source));
+    assert.strictEqual(FL.buildStructured(d, st, 'T').article.candidates_sha256, null);
+    assert.ok(FL.buildText(d, st).includes('候補集合sha256: なし(取得不可: unavailable_'));
+  });
+});
+t('v2.1: duplicate candidate_id rejected by validateArticle; legacy data (no candidate_id) uses id or null', () => {
+  const d = JSON.parse(JSON.stringify(rd('data/melos__a2__prod.json'))); d.phrases[1].candidate_id = d.phrases[0].candidate_id;
+  assert.ok(FL.validateArticle(d).some(e => e.startsWith('dup_candidate_id')));
+  assert.strictEqual(FL.candIdOf({ term: 'x' }), null); assert.strictEqual(FL.candIdOf({ term: 'x', id: 'i1' }), 'i1');
+  assert.strictEqual(FL.itemRecord({ term: 'x' }, 1).kind, null);
+});
+t('v2.1: URL length with 3 selected (informational) never exceeds 6000 or is null (copy guidance)', () => {
+  dataFiles03.forEach(f => {
+    const d = rd(f), tl = FL.terms(d), st = FL.newState(); tl.slice(0, 3).forEach(x => FL.setChoice(st, tl, x, 1, true));
+    const r = FL.buildChatGptUrl(d, st, 'T'); assert.ok(r.url === null || r.url.length <= 6000);
+    console.log('  url len', f, r.url ? r.url.length : 'null(copy)', 'with_json', r.with_json);
+  });
 });
 console.log('ALL PASS', n);

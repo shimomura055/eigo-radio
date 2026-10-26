@@ -67,8 +67,15 @@
   }
   function allItems(d) { return (d.phrases || []).concat(d.words || []); }
   function findItem(d, term) { return allItems(d).filter(function (x) { return x.term === term; })[0] || { term: term }; }
+  // 候補の識別(委任_03): candidate_id=候補docの逐語(termは同一表示が複数候補にあり得るため対応付けの正にしない)。旧データはidを流用、無ければnull(捏造しない)
+  function candIdOf(it) { return it.candidate_id || it.id || null; }
+  function kindOf(it) { return it.kind === 'phrase' || it.kind === 'word' ? it.kind : null; }
+  function shaInfo(d) {
+    var sha = d.candidates_sha256 || null;
+    return { sha: sha, src: d.candidates_sha256_source || (sha ? 'candidate_doc_field' : 'unavailable'), path: d.source_kp_candidates_path || null };
+  }
   function itemRecord(it, cat) {
-    var g = glossOf(it), o = { term: it.term, category: cat, category_label: CAT_LABEL[cat], ja_gloss: g.text, ja_gloss_status: g.status };
+    var g = glossOf(it), o = { term: it.term, category: cat, category_label: CAT_LABEL[cat], ja_gloss: g.text, ja_gloss_status: g.status, candidate_id: candIdOf(it), kind: kindOf(it) };
     if (it.selection_phrase && it.selection_phrase !== it.term) o.selection_phrase = it.selection_phrase;
     return o;
   }
@@ -87,12 +94,15 @@
       '③ 本文意味表示 (累計=' + tot + '/12): ' + (s.groups[2].join(' / ') || 'なし') + '\n' +
       '文法 (' + s.grammar.length + '/2): ' + (s.grammar.map(function (g) { return g.title; }).join(' / ') || 'なし') + '\n' +
       '自由コメント: ' + (st.comment || 'なし');
-    var lines = ['', '【ユーザー確定内容の詳細(英語表現・日本語訳・区分。後続工程で変更しない)】'];
+    var si = shaInfo(d);
+    var lines = ['', '【ユーザー確定内容の詳細(英語表現・日本語訳・区分。後続工程で変更しない)】',
+      '候補集合sha256: ' + (si.sha || 'なし(取得不可: ' + si.src + ')')];
     var anyItem = false, unconfirmed = false;
     s.groups.forEach(function (grp, i) {
       grp.forEach(function (term) {
         var r = itemRecord(findItem(d, term), i + 1); anyItem = true; if (r.ja_gloss_status !== 'official') unconfirmed = true;
-        lines.push(r.category_label + '｜' + r.term + '｜日本語訳: ' + (r.ja_gloss || '(未生成)') + '【' + GLOSS_LABEL[r.ja_gloss_status] + '】');
+        lines.push(r.category_label + '｜' + r.term + '｜日本語訳: ' + (r.ja_gloss || '(未生成)') + '【' + GLOSS_LABEL[r.ja_gloss_status] + '】' +
+          '｜candidate_id: ' + (r.candidate_id || 'なし') + '｜種類: ' + (r.kind || 'なし'));
       });
     });
     if (!anyItem) lines.push('(選択なし)');
@@ -106,7 +116,7 @@
     lines.push('', '【AI選定理由(確認用情報。ユーザーが確定した英語・日本語訳・解説本文とは別。確定内容ではありません)】');
     var nr = 0;
     s.groups.forEach(function (grp) { grp.forEach(function (term) {
-      var ro = reasonOf(findItem(d, term)); nr++; lines.push('・' + term + ': ' + (ro.has ? ro.text : '(' + ro.note + ')'));
+      var ro = reasonOf(findItem(d, term)); nr++; var it0 = findItem(d, term); lines.push('・' + term + '(' + (candIdOf(it0) || 'candidate_idなし') + '): ' + (ro.has ? ro.text : '(' + ro.note + ')'));
     }); });
     if (!nr) lines.push('(選択なし)');
     t += lines.join('\n');
@@ -118,10 +128,11 @@
   function buildStructured(d, st, now, opts) {
     var s = summary(d, st);
     var sel = [1, 2, 3].map(function (cat) { return s.groups[cat - 1].map(function (t) { return itemRecord(findItem(d, t), cat); }); });
-    var refs = []; s.groups.forEach(function (grp) { grp.forEach(function (t) { var ro = reasonOf(findItem(d, t)); refs.push({ term: t, reason_ja: ro.text, reason_source: ro.source }); }); });
+    var refs = []; s.groups.forEach(function (grp) { grp.forEach(function (t) { var ro = reasonOf(findItem(d, t)); refs.push({ candidate_id: candIdOf(findItem(d, t)), term: t, reason_ja: ro.text, reason_source: ro.source }); }); });
     var o = {
-      schema: SCHEMA, schema_version: 2, generated_at: now || new Date().toISOString(),
-      article: { slug: d.slug, level: d.level, level_label: d.level_label || '', name: d.name, text_sha256: (d.source || {}).text_sha256 || null },
+      schema: SCHEMA, schema_version: 2, schema_minor: 1, generated_at: now || new Date().toISOString(),
+      article: { slug: d.slug, level: d.level, level_label: d.level_label || '', name: d.name, text_sha256: (d.source || {}).text_sha256 || null,
+        candidates_sha256: shaInfo(d).sha, candidates_sha256_source: shaInfo(d).src, source_kp_candidates_path: shaInfo(d).path },
       candidate_source: (d.source || {}).kind || null,
       limits: { key_phrase: LIMITS[0], key_phrase_plus_extra: LIMITS[1], total_highlight: LIMITS[2], grammar: GRAMMAR_MAX },
       user_confirmed_note_ja: 'selection・comment はユーザーが確定した内容(英語表現・日本語訳・区分・文法解説全文)。後続工程で変更しない。ja_gloss_status が official 以外の日本語訳は未確定で、変更が必要なら修正案を提示して再確認を求めること。',
@@ -135,7 +146,7 @@
     if (opts && opts.all_candidates) {
       o.candidates_all = allItems(d).map(function (it) {
         var g = glossOf(it), ro = reasonOf(it), cat = (st.choices || {})[it.term] || 0;
-        return { term: it.term, category: cat, ja_gloss: g.text, ja_gloss_status: g.status, reason_ja: ro.text, reason_source: ro.source, reason_for_reference_only: true };
+        return { candidate_id: candIdOf(it), kind: kindOf(it), term: it.term, category: cat, ja_gloss: g.text, ja_gloss_status: g.status, reason_ja: ro.text, reason_source: ro.source, reason_for_reference_only: true };
       });
     }
     return o;
@@ -168,6 +179,8 @@
       if (!Array.isArray(d.grammar)) e.push('grammar');
       var seen = {};
       terms(d).forEach(function (t) { if (!t) e.push('empty term'); if (seen[t]) e.push('dup:' + t); seen[t] = 1; });
+      var seenId = {};
+      allItems(d).forEach(function (x) { var id = candIdOf(x); if (id) { if (seenId[id]) e.push('dup_candidate_id:' + id); seenId[id] = 1; } });
       (d.grammar || []).forEach(function (g) { ['id', 'title', 'body'].forEach(function (k) { if (!g[k]) e.push('grammar.' + k); }); });
     }
     return e;
@@ -183,6 +196,6 @@
   }
   return { LIMITS: LIMITS, GRAMMAR_MAX: GRAMMAR_MAX, SCHEMA: SCHEMA, terms: terms, counts: counts, allowed: allowed, grammarChosen: grammarChosen,
     grammarCanToggle: grammarCanToggle, setChoice: setChoice, setGrammar: setGrammar, newState: newState, stateKey: stateKey, summary: summary,
-    buildText: buildText, buildStructured: buildStructured, buildChatGptUrl: buildChatGptUrl, buildCopyText: buildCopyText, glossOf: glossOf, reasonOf: reasonOf, itemRecord: itemRecord, grammarRecord: grammarRecord, GLOSS_LABEL: GLOSS_LABEL,
+    buildText: buildText, buildStructured: buildStructured, buildChatGptUrl: buildChatGptUrl, buildCopyText: buildCopyText, glossOf: glossOf, reasonOf: reasonOf, itemRecord: itemRecord, candIdOf: candIdOf, kindOf: kindOf, shaInfo: shaInfo, grammarRecord: grammarRecord, GLOSS_LABEL: GLOSS_LABEL,
     validateArticle: validateArticle, validateIndex: validateIndex };
 });

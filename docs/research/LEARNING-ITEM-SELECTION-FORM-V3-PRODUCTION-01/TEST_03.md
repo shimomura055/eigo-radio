@@ -1,0 +1,5 @@
+# TEST_03 委任_03のtest結果(2026-10-27、API 0)
+- node `selection_form_logic_test_01.js`: ALL PASS 41(既存36 + 新規5: candidate_id一意・全実データ7件に存在/kind値/id==candidate_id、payload項目有無(selection/ai_reference/candidates_all/article sha・schema_minor 1/テキスト行)、sha null時の明示(Trial-02・replay)、重複candidate_id拒否と旧データ(id流用/null)、URL長上限)。
+  - 既存testの更新(additive変更に伴う期待値の追従。不整合出力のassertではない): `article`のdeepStrictEqualにsha3項目、AI理由行`term(candidate_id): 理由`、1項目選択のURLでJSON同梱が上限超となりtext-only降格(テキストにcandidate_idあり)を許容。
+- Python `.venv\Scripts\python.exe run_project_regression.py --pattern "form1_selection_form_v3_test_01.py"`: collected=12 passed=12 failed=0(既存11 + 新規1: データJSON7件の`candidate_id`/`kind`/`kind_source`/`candidates_sha256`が元doc(`kp_candidates.json`/replay doc/Trial-02 trial_result)と逐語一致、sha再算出一致、sha無しdocはnull+`unavailable_*`、5件sha有・2件null)。
+- headless実DOM(Chrome): `browser_check_03.mjs` 9/9 PASS(`browser_check_03_local_output.txt`)、既存`browser_check_02.mjs` 19/19 PASS(`browser_check_02_local_rerun_03.txt`、UI不変の回帰)。
