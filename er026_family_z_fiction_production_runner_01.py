@@ -2705,10 +2705,15 @@ def mock_tts_generators() -> dict:
             is_std_story = spec.level == "a2" and spec.kind == "narrator" and is_story
             is_adv_fast = spec.level == "b1b" and spec.kind == "dialogue" and is_story
             write_tone(out_path, d * (1.06 if is_std_story else (1 / a63.Z_ADV_DIALOGUE_SPEEDUP_TEMPO if is_adv_fast else 1.0)))
+            # FAMILY-Z-STYLE-ACTUAL-GATE-01: 実leafと同様、そのroleの承認Styleをそのまま送った記録を返す(旧'ab'*32は実測照合Gateで不一致になる不整合mock)。
+            # Dialogue(style_prefix_override=None)はleafが送信prefixを返さないため記録なし。
+            import hashlib as _hl
+            _st = a63.style_text_for(spec)
+            _att = {"attempt": 1, "instruction_type": "english_style_prefix_wide_margin", "tts_model_id": "mock-tts", "voice": spec.voice}
+            if _st is not None:
+                _att["style_prefix"] = {"sha256": _hl.sha256(_st.encode("utf-8")).hexdigest(), "len": len(_st), "head200": _st[:200]}
             r = {"status": "OK", "asr_text": spec.text, "disfluency_checked": True, "text": spec.text,
-                 "standard_attempts_log": [{"attempt": 1, "instruction_type": "english_style_prefix_wide_margin",
-                                            "style_prefix": {"sha256": "ab" * 32, "head200": "mock"},
-                                            "tts_model_id": "mock-tts", "voice": spec.voice}]}
+                 "standard_attempts_log": [_att]}
             if spec.kind == "kp_en":
                 # KPDUAL-PROD-D2(UDR #139): 実strictはKP英語phraseで両Provider PASSの監査record(asr_judgement.dual)を返す。mock時も同形で返し、
                 # 前回results再利用(generate_or_reuse_z。両Provider PASS証跡を要する=fail-closed)がmockでも実と同じ経路を通るようにする。

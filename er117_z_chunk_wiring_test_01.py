@@ -75,10 +75,15 @@ class Gens:
                 return {"status": "STOPPED", "reason": "x"}
             adv_fast = spec.level == "b1b" and spec.kind == "dialogue"
             _tone(out_path, (1.0 / z.Z_ADV_DIALOGUE_SPEEDUP_TEMPO) if adv_fast else 1.0 + 0.1 * (hash(spec.clip_id) % 5), freq=200 + hash(spec.clip_id) % 50)
+            # FAMILY-Z-STYLE-ACTUAL-GATE-01: 実leaf同様、そのroleの承認Styleをそのまま送った記録を返す(旧'ab'*32は実測照合Gateで不一致になる不整合fixture)。Dialogueはleafが送信prefixを返さない。
+            import hashlib as _hl
+            _st = z.style_text_for(spec)
+            _att = {"attempt": 1, "instruction_type": "english_style_prefix_wide_margin",
+                    "tts_model_id": "gemini-3.8-flash-lite-tts", "voice": spec.voice}
+            if _st is not None:
+                _att["style_prefix"] = {"sha256": _hl.sha256(_st.encode("utf-8")).hexdigest(), "len": len(_st), "head200": _st[:200]}
             r = {"status": "OK", "asr_text": spec.text, "disfluency_checked": True, "text": spec.text,
-                 "standard_attempts_log": [{"attempt": 1, "instruction_type": "english_style_prefix_wide_margin",
-                                            "style_prefix": {"sha256": "ab" * 32, "head200": "x"},
-                                            "tts_model_id": "gemini-3.8-flash-lite-tts", "voice": spec.voice}]}
+                 "standard_attempts_log": [_att]}
             if spec.clip_id in self.lr:
                 r["canonical_text_before_local_rewrite"] = spec.text
                 r["local_rewrite_recovery"] = {"selection": {"selected": {"rewritten_segment": spec.text + " indeed"}}}

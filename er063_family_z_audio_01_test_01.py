@@ -54,10 +54,15 @@ def fake_generators(slow_std: bool = True, lr_clips=(), fail_clips=()):
                 return {"status": "STOPPED", "reason": "x"}
             _adv_fast = spec.level == "b1b" and spec.kind == "dialogue" and z._CLIP_ID_RE.fullmatch(spec.clip_id) and slow_std
             _write_tone(out_path, (1.0 / z.Z_ADV_DIALOGUE_SPEEDUP_TEMPO) if _adv_fast else 1.06)
+            # FAMILY-Z-STYLE-ACTUAL-GATE-01: 実leaf同様、そのroleの承認Styleをそのまま送った記録を返す(旧fakeは'ab'*32の無関係shaで、実測照合Gateでは不一致になる不整合fixtureだった)。
+            # Dialogue(style_prefix_override=None)はleafが送信prefixを返さないため記録なし。
+            _st = z.style_text_for(spec)
+            _att = {"attempt": 1, "instruction_type": "english_style_prefix_wide_margin",
+                    "tts_model_id": "gemini-3.8-flash-lite-tts", "voice": spec.voice}
+            if _st is not None:
+                _att["style_prefix"] = {"sha256": hashlib.sha256(_st.encode("utf-8")).hexdigest(), "len": len(_st), "head200": _st[:200]}
             r = {"status": "OK", "asr_text": spec.text, "disfluency_checked": True, "text": spec.text,
-                 "standard_attempts_log": [{"attempt": 1, "instruction_type": "english_style_prefix_wide_margin",
-                                            "style_prefix": {"sha256": "ab" * 32, "head200": "x"},
-                                            "tts_model_id": "gemini-3.8-flash-lite-tts", "voice": spec.voice}]}
+                 "standard_attempts_log": [_att]}
             if spec.clip_id in lr_clips:
                 r["canonical_text_before_local_rewrite"] = spec.text
                 r["local_rewrite_recovery"] = {"selection": {"selected": {"rewritten_segment": spec.text + " indeed"}}}

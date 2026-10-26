@@ -123,6 +123,11 @@ class FamilyZRunStyleMismatchStop(FamilyZAudioStop):
 FamilyZNarratorStyleMismatchStop = FamilyZRunStyleMismatchStop   # 互換alias(旧名)
 
 
+class FamilyZStyleActualGateStop(FamilyZAudioStop):
+    """FAMILY-Z-STYLE-ACTUAL-GATE-01(OPEN-551): 実送信Style prefixが承認値と不一致/未記録/未実測、role未カバー、Style落ちfallback採用(人間承認なし)。
+    audit/style_actual_vs_approved.json に1行ずつの照合表を残してから送出する。人間承認(human_approved_segments.json、canonical text sha一致)で個別clipは解除できる。"""
+
+
 class FamilyZVoiceMappingStop(FamilyZAudioStop):
     """Dialogue speakerに対応するVoiceが無い。"""
 
@@ -1268,6 +1273,9 @@ def build_entry(spec: ClipSpec, out_path: str, result: dict, *, human_approved: 
         # chunk以外のentry・Adv entryには付けない(従来とバイト同一)。
         _sd = result["slowdown_info"]
         entry["slowdown_info"] = {k: _sd.get(k) for k in ("slowdown_pct_target", "slowdown_pct_actual", "src_duration_seconds", "dst_duration_seconds")}
+    # FAMILY-Z-STYLE-ACTUAL-GATE-01(OPEN-551、additive): leafが実際に送ったStyle prefixの実測記録(採用attempt優先、無ければtop-level style_prefix)。
+    # run_audio_gate の z_style_actual_gate がこれを承認値と照合する。意図値(style.style_prefix_sha256)とは別物。
+    entry["style_actual"] = build_style_actual_record(spec, result)
     if result.get("kp_dual_check") is not None:   # KP3V(additive): KP英語phraseのみ。両Provider PASSの証跡
         entry["kp_dual_check"] = result["kp_dual_check"]
     if isinstance(result.get("dialogue_tts"), dict):   # FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01(additive): dialogue文脈・感情付きTTSのpolicy・試行・最終方式の証跡
@@ -1551,6 +1559,7 @@ def _run_tts_stage_impl(run_dir: str, level: str, plan: list, *, generators: dic
     gens = generators or real_generators()
     os.makedirs(narr, exist_ok=True)
     os.makedirs(f"{level_dir}/audit", exist_ok=True)
+    write_style_actual_marker_if_fresh(level_dir, level)   # FAMILY-Z-STYLE-ACTUAL-GATE-01: 新規levelの開始だけでstrict(本Gate導入後のrun)を記録
     assert_run_style_record(level_dir, level, write=True)
     segments, key_phrases, evidence = {}, {}, []
     deferred_stop = None
@@ -1922,17 +1931,282 @@ def run_audio_gate(run_dir: str, level: str, plan: list, shell_names: list, *, a
     problems = check_clip_audio_quality(f"{level_dir}/narration", {k: v for k, v in entries.items() if v and v.get("clip_kind")})
     if problems:
         raise FamilyZAudioStop(f"clip品質確認でNG: {problems}")
+    style_actual = z_style_actual_gate(run_dir, level, plan, entries)   # FAMILY-Z-STYLE-ACTUAL-GATE-01: 実送信Style prefix==承認値(fail-closed。BLOCKは照合表を保存してからSTOP)
     deviations = {k: v["audio_text_deviation"] for k, v in entries.items() if v and v.get("audio_text_deviation")}
     result = {"m2_complete": True, "m1_slowdown": slow, "z_speed_profile": {"version": Z_SPEED_PROFILE_VERSION, "clips": speed}, "audio_text_deviation_clips": sorted(deviations),
               "kp_vote_audit": kp_vote.assembly_audit(data, level),   # KP3V: 非blocking監査(KP英語phraseのvote証跡欠落を警告+記録)
               "audio_text_deviations": m2["audio_text_deviations"],
-              "article_text_source": "canonical(原稿のまま)", "shared_gate": "skipped" if skip_shared_gate else "PASS"}
+              "article_text_source": "canonical(原稿のまま)", "shared_gate": "skipped" if skip_shared_gate else "PASS",
+              "style_actual_gate": {k: style_actual[k] for k in ("status", "mode", "checked_count", "legacy_unrecorded_count", "human_approved_count", "path")}}
     if not skip_shared_gate:
         import er003_v1_n3_01_assemble as asm
         asm.verify_episode_audio_validation_gate(level_dir, GATE_LEVEL_STRING[level], article_text=article_text)
     os.makedirs(f"{level_dir}/audit", exist_ok=True)
     _write_json(f"{level_dir}/audit/gate_result_{SUB_TASK_ID}.json", result)
     return result
+
+
+
+# ============================================================
+# 8-S. Style実測照合Gate(OPEN-551、FAMILY-Z-STYLE-ACTUAL-GATE-01 委任_01)
+#      再発防止方針(FAMILY-Y-STYLE-PROFILE-FIX-01 PREVENTION_01 (a)): 全Familyの正式経路で「承認Styleと実測(実送信)prefixの照合」を必須化。
+#      Y方式(er121 y_style_gate)と同じ構造: 期待集合Z_ROLE_COVERAGEと検査集合の完全一致・fail-closed・audit/style_actual_vs_approved.json。
+#      X(er019)・Y(er121)・leaf(er003_v1_*)は一切変更しない。実測はleafの戻り値(採用attemptのstyle_prefix / top-level style_prefix)をZ側(build_entry)で記録する。
+#      過去run(本Gate導入前に開始したrun)は遡及BLOCKせず「未記録」警告(マーカー audit/style_actual_gate.json の有無で判定)。
+#      設計=docs/research/FAMILY-Z-STYLE-ACTUAL-GATE-01/DESIGN_01.md。
+# ============================================================
+STYLE_ACTUAL_SCHEMA = "family_z_style_actual_v1"
+STYLE_ACTUAL_GATE_ID = "FAMILY-Z-STYLE-ACTUAL-GATE-01"
+STYLE_ACTUAL_MARKER_RELPATH = "audit/style_actual_gate.json"
+STYLE_ACTUAL_OUT_RELPATH = "audit/style_actual_vs_approved.json"
+
+# level -> role -> 必須か(True=planに1clip以上必須[0件=Z_STYLE_COVERAGE_EMPTY]、False=planにあれば検査・無くても可[Dialogue: 地の文のみの作品がある])。
+# SHELLはTTSなし(既存Master資産)のため対象外。FAMILY_Z_ROLE_STYLE/CROSS_FAMILY_COMMON_STYLE_MAPとの完全一致をdriftとして検査する。
+Z_ROLE_COVERAGE = {
+    "a2": {"NARRATOR_FULL_STORY_STD": True, "DIALOGUE_STD": False, "TOPIC_INTRO_EN": True, "JAPANESE_TITLE": True,
+           "STD_JA_PREVIEW": True, "STD_JA_COMMENT": True, "KP_EN": True, "KP_JA": False, "KP_EXPL_EN": False},
+    "b1b": {"NARRATOR_FULL_STORY_ADV": True, "DIALOGUE_ADV": False, "TOPIC_INTRO_EN": True, "ADV_EN_PREVIEW": True,
+            "ADV_EN_COMMENT": True, "KP_EN": True, "KP_JA": False, "KP_EXPL_EN": False},
+}
+# 第3KP(Std=日本語意味/Adv=英語解説)はplan builder(kp_explanationsの有無)の責務でlevelごとの固定はしない: どちらか1種以上のroleがplanに存在し、全clipが検査されることを要求する。
+Z_ROLE_ANY_OF = {"KP_THIRD": ("KP_JA", "KP_EXPL_EN")}
+Z_DIALOGUE_ROLES = ("DIALOGUE_ADV", "DIALOGUE_STD")      # 例外role(CROSS_FAMILY_COMMON_STYLE_MAP "EXCEPTION:Dialogue…")。Style overrideを持たず既定Dialogue Styleを期待
+_Z_KP_APPROVAL_SUB = {"kp_en": "english", "kp_ja": "japanese_meaning", "kp_expl_en": "explanation"}
+
+
+def _style_obs_from(sp):
+    """style_prefix値(str=全文 / dict=sha256+len+head200 record / None)を観測dictへ。'<default:…>'ラベル等の実体のない値は未実測(None)。"""
+    if isinstance(sp, str):
+        if sp.startswith("<default"):
+            return None
+        return {"sha256": _sha256_text(sp), "len": len(sp), "head200": sp[:200], "form": "full_text"}
+    if isinstance(sp, dict) and sp.get("sha256"):
+        return {"sha256": sp.get("sha256"), "len": sp.get("len"), "head200": sp.get("head200"), "form": "record"}
+    return None
+
+
+def z_expected_style(role_key: str):
+    """role -> 承認(意図)Style {text, sha256, label}。Dialogue(text=None)・SHELLはNone(別規則)。"""
+    spec = FAMILY_Z_ROLE_STYLE[role_key]
+    if spec["text"] is None:
+        return None
+    return {"text": spec["text"], "sha256": _STYLE_SHA256[spec["style_label"]], "label": spec["style_label"]}
+
+
+def build_style_actual_record(spec: ClipSpec, result: dict) -> dict:
+    """leaf戻り値から『実際に送ったStyle prefix』の実測記録を作る(API 0・新規計算のみ)。
+    優先: (1)採用attempt(fallback段→標準段の順で最後にstyle記録を持つattempt) (2)top-level style_prefix。(1)がある場合top-levelは副次記録に留める
+    (統一flowで採用attemptが後段fallbackでもtop-levelが旧段のままの場合に、fallbackのStyle落ちを見逃さないため)。
+    どちらも実体(sha)が取れなければ kind='unmeasured'(意図値の自己記録で『一致』とは扱わない=Opus M-4)。"""
+    result = result if isinstance(result, dict) else {}
+    std_key = "standard_attempts_log" if result.get("standard_attempts_log") else "attempts_log"
+    att_obs, att_meta = None, {}
+    for phase, key in (("fallback", "fallback_attempts_log"), ("standard", std_key)):
+        logs = result.get(key)
+        if not isinstance(logs, list):
+            continue
+        for a in reversed(logs):
+            obs = _style_obs_from(a.get("style_prefix")) if isinstance(a, dict) else None
+            if obs:
+                att_obs, att_meta = obs, {"phase": phase, "attempt": a.get("attempt"), "instruction_type": a.get("instruction_type")}
+                break
+        if att_obs:
+            break
+    top_obs = _style_obs_from(result.get("style_prefix"))
+    primary, source = (att_obs, "adopted_attempt.style_prefix") if att_obs else ((top_obs, "result.style_prefix") if top_obs else (None, None))
+    exp = z_expected_style(spec.role_key)
+    rec = {"schema": STYLE_ACTUAL_SCHEMA, "role_key": spec.role_key,
+           "kind": "measured" if primary else "unmeasured", "source": source,
+           "sha256": (primary or {}).get("sha256"), "len": (primary or {}).get("len"), "head200": (primary or {}).get("head200"),
+           "form": (primary or {}).get("form"),
+           "hint_applied": bool((result.get("en_pronunciation_resolver_info") or {}).get("hints_applied")),
+           "adopted_phase": att_meta.get("phase"), "adopted_instruction_type": att_meta.get("instruction_type") or result.get("instruction_type"),
+           "result_fallback_used": bool(result.get("fallback_used")),
+           "expected_sha256": (exp or {}).get("sha256")}
+    if exp is not None and source == "result.style_prefix" and isinstance(result.get("style_prefix"), str):
+        # 全文が見えるときだけ、承認原文で始まるか(hint追記の判定)を全長で記録する。recordのみの場合は記録しない(gateはhead200で判定)。
+        rec["startswith_expected"] = result["style_prefix"].startswith(exp["text"])
+    if att_obs and top_obs and att_obs["sha256"] != top_obs["sha256"]:
+        rec["secondary_top_level"] = {"sha256": top_obs["sha256"], "len": top_obs.get("len")}
+    return rec
+
+
+def _z_prefix_match_with_hint(exp: dict, rec: dict) -> bool:
+    et = exp["text"]
+    if not (rec.get("hint_applied") and rec.get("head200") and rec.get("len") is not None):
+        return False
+    if rec.get("startswith_expected") is False:
+        return False
+    return rec["len"] >= len(et) and str(rec["head200"]).startswith(et[:200])
+
+
+def write_style_actual_marker_if_fresh(level_dir: str, level: str) -> bool:
+    """本Gate導入後に開始した新規levelのrunだけにマーカーを書く(結果/checkpointが既にあるrun=導入前に開始した過去・進行中runには書かない=遡及しない)。"""
+    marker = f"{level_dir}/{STYLE_ACTUAL_MARKER_RELPATH}"
+    if os.path.exists(marker):
+        return False
+    if os.path.exists(f"{level_dir}/audit/tts_generation_results.json") or os.path.exists(_checkpoint_path(level_dir)):
+        return False
+    import time as _t
+    os.makedirs(f"{level_dir}/audit", exist_ok=True)
+    _write_json(marker, {"schema": STYLE_ACTUAL_SCHEMA, "gate_id": STYLE_ACTUAL_GATE_ID, "level": level,
+                         "created_at": _t.strftime("%Y-%m-%dT%H:%M:%S"),
+                         "note": "このlevelはStyle実測照合Gate導入後に開始(strict: 未記録/不一致/未実測はBLOCK)。無い場合は過去run扱い(未記録は警告のみ)"})
+    return True
+
+
+def _z_role_table_drift() -> list:
+    covered = {r for lv in Z_ROLE_COVERAGE.values() for r in lv}
+    exp_roles = set(FAMILY_Z_ROLE_STYLE) - {"SHELL"}
+    bad = []
+    if covered != exp_roles:
+        bad.append({"reason": "Z_STYLE_ROLE_TABLE_DRIFT", "detail": f"covered-only={sorted(covered - exp_roles)} table-only={sorted(exp_roles - covered)}"})
+    if set(CROSS_FAMILY_COMMON_STYLE_MAP) != set(FAMILY_Z_ROLE_STYLE):
+        bad.append({"reason": "Z_STYLE_ROLE_TABLE_DRIFT", "detail": "CROSS_FAMILY_COMMON_STYLE_MAP != FAMILY_Z_ROLE_STYLE"})
+    return bad
+
+
+def _z_approval_names(spec: ClipSpec) -> list:
+    names = [spec.clip_id]
+    if spec.kind in _Z_KP_APPROVAL_SUB:
+        names.append(f"kp{spec.rank}_{_Z_KP_APPROVAL_SUB[spec.kind]}")
+    return names
+
+
+def _z_row_for_clip(spec: ClipSpec, entry: dict | None, strict_run: bool, approvals: dict, default_dialogue_sha: str) -> dict:
+    role = spec.role_key
+    exp = z_expected_style(role)
+    row = {"level": spec.level, "role": role, "segment": spec.clip_id, "kind": spec.kind,
+           "approved_sha256": (exp or {}).get("sha256"), "approved_label": FAMILY_Z_ROLE_STYLE[role]["style_label"],
+           "role_origin": "exception" if str(CROSS_FAMILY_COMMON_STYLE_MAP[role]["Z"]).startswith("EXCEPTION") else "common",
+           "measured_kind": None, "measured_sha256": None, "measured_len": None, "source": None, "match": None, "check": None,
+           "violations": [], "human_approved": False, "z_adoption": (entry or {}).get("z_adoption"), "voice": (entry or {}).get("voice"),
+           "fallback_used": ((entry or {}).get("style") or {}).get("fallback_used")}
+    if entry is None:
+        row["violations"].append("Z_STYLE_ENTRY_MISSING")
+        row["check"] = "entry_missing"
+        return row
+    rec = entry.get("style_actual")
+    if not isinstance(rec, dict):
+        # 記録なし: 過去run=警告のみ(attemptsから導出できる範囲を参考情報として添える・BLOCKしない) / 導入後run=BLOCK
+        att = None
+        for a in reversed(entry.get("attempts") or []):
+            if a.get("style_prefix_sha256"):
+                att = a
+                break
+        row["legacy_derived_from_attempts"] = ({"sha256": att["style_prefix_sha256"], "phase": att.get("phase"), "instruction_type": att.get("instruction_type")}
+                                              if att else None)
+        if exp is not None and att:
+            row["legacy_derived_matches_approved"] = att["style_prefix_sha256"] == exp["sha256"]
+        row["check"] = "unrecorded" if strict_run else "legacy_unrecorded"
+        if strict_run:
+            row["violations"].append("Z_STYLE_ACTUAL_UNRECORDED")
+    else:
+        row.update({"measured_kind": rec.get("kind"), "measured_sha256": rec.get("sha256"), "measured_len": rec.get("len"), "source": rec.get("source"),
+                    "hint_applied": rec.get("hint_applied"), "adopted_phase": rec.get("adopted_phase"),
+                    "adopted_instruction_type": rec.get("adopted_instruction_type")})
+        fb_phase = (rec.get("adopted_phase") == "fallback" or "minimal" in str(rec.get("adopted_instruction_type") or "")
+                    or rec.get("result_fallback_used") is True)
+        if role in Z_DIALOGUE_ROLES:
+            # 例外role(Dialogue): Style overrideを渡さず既定Dialogue Style(p9a.ENGLISH_STYLE_PREFIX)。leaf(er012)は送信prefixを返さないため実測は原則取れない。
+            # 取れた場合は既定sha(またはctx採用時のctx style sha)との一致を要求。取れない場合は『意図sha(実測なし)』ラベルで、一致扱いにはしない(match=None)が、
+            # 意図shaが既定Dialogue Style(またはctx style)と食い違えばBLOCK。従来方式(3回目)への切替はDialogueの承認済み構成でありStyle落ちではない。
+            dt = entry.get("dialogue_tts") or {}
+            eff = (entry.get("style") or {}).get("effective_style_prefix_sha256")
+            ctx_sha = dt.get("ctx_style_sha256") if dt.get("final_mode") == "ctx" else None
+            allowed = {default_dialogue_sha} | ({ctx_sha} if ctx_sha else set())
+            if rec.get("kind") == "measured":
+                ok = rec.get("sha256") in allowed
+                row.update({"match": ok, "check": "dialogue_measured"})
+                if not ok:
+                    row["violations"].append("Z_DIALOGUE_STYLE_ACTUAL_MISMATCH")
+            else:
+                ok = eff in allowed
+                row.update({"match": None, "check": "dialogue_intended_only", "measured_kind": "意図sha(実測なし・leaf非公開)",
+                            "measured_sha256": eff, "measurement_gap": True})
+                if not ok:
+                    row["violations"].append("Z_DIALOGUE_STYLE_INTENDED_MISMATCH")
+        else:
+            if rec.get("kind") != "measured" or not rec.get("sha256"):
+                row.update({"match": False, "check": "unmeasured", "measured_kind": "意図sha(実測なし)", "measured_sha256": None})
+                row["violations"].append("Z_STYLE_ACTUAL_UNMEASURED")
+            else:
+                exact = rec["sha256"] == exp["sha256"]
+                hint_ok = (not exact) and _z_prefix_match_with_hint(exp, rec)
+                row.update({"match": bool(exact or hint_ok), "check": "exact" if exact else ("prefix_with_hint" if hint_ok else "mismatch")})
+                if not (exact or hint_ok):
+                    row["violations"].append("Z_STYLE_ACTUAL_MISMATCH")
+            if fb_phase and row["violations"]:
+                row["violations"].append("Z_STYLE_FALLBACK_ADOPTED")      # Style落ちfallback採用: 人間承認必須(承認Styleのまま送られたfallbackは違反にしない)
+    if row["violations"]:
+        for nm in _z_approval_names(spec):
+            if _xs._approved(approvals, nm, entry):
+                row["human_approved"] = True
+                break
+    return row
+
+
+def z_style_actual_gate(run_dir: str, level: str, plan: list, entries: dict) -> dict:
+    """実送信Style prefixと承認値の照合(fail-closed)。期待集合(planのTTS clip: role×clip)と検査集合の完全一致、必須roleのカバー、
+    checked空、未記録、未実測、不一致、Style落ちfallback採用(人間承認なし)をBLOCK。audit/style_actual_vs_approved.json に照合表を残し、BLOCKならFamilyZStyleActualGateStop。
+    過去run(マーカー無し)の未記録clipは警告のみ(遡及しない)。記録のあるclipはrun種別によらず厳格に検査。"""
+    level_dir = f"{run_dir}/{level}"
+    os.makedirs(f"{level_dir}/audit", exist_ok=True)
+    strict_run = os.path.exists(f"{level_dir}/{STYLE_ACTUAL_MARKER_RELPATH}")
+    approvals_p = f"{level_dir}/audit/human_approved_segments.json"
+    approvals = _read_json(approvals_p) if os.path.exists(approvals_p) else {}
+    import er003_b1_p9a_audio as _p9a
+    default_dialogue_sha = style_prefix_sha256(_p9a.ENGLISH_STYLE_PREFIX)
+    cov = Z_ROLE_COVERAGE.get(level) or {}
+    rows, blocked, warnings = [], [], []
+    for b in _z_role_table_drift():
+        blocked.append({"segment": "(table)", "violations": [b["reason"]], "detail": b["detail"]})
+    any_recorded = any(isinstance((entries.get(s.clip_id) or {}).get("style_actual"), dict) for s in plan)
+    coverage_enforced = strict_run or any_recorded
+    plan_roles = {}
+    for spec in plan:
+        plan_roles.setdefault(spec.role_key, []).append(spec.clip_id)
+        if spec.role_key not in cov:
+            blocked.append({"segment": f"{spec.role_key}:{spec.clip_id}", "violations": ["Z_STYLE_COVERAGE_UNEXPECTED"]})
+            continue
+        row = _z_row_for_clip(spec, entries.get(spec.clip_id), strict_run, approvals, default_dialogue_sha)
+        rows.append(row)
+        if row["violations"] and not row["human_approved"]:
+            blocked.append({"segment": spec.clip_id, "role": spec.role_key, "violations": row["violations"]})
+        elif row["check"] == "legacy_unrecorded":
+            warnings.append({"segment": spec.clip_id, "role": spec.role_key, "warning": "Z_STYLE_ACTUAL_UNRECORDED_LEGACY_RUN"})
+            if row.get("legacy_derived_matches_approved") is False:    # 過去runでもattempts_logから不一致が読めるclipは警告で可視化(BLOCKはしない)
+                warnings.append({"segment": spec.clip_id, "role": spec.role_key, "warning": "Z_STYLE_LEGACY_DERIVED_MISMATCH",
+                                 "derived": row.get("legacy_derived_from_attempts")})
+    missing_roles = sorted(r for r, req in cov.items() if req and not plan_roles.get(r))
+    missing_roles += sorted(g for g, members in Z_ROLE_ANY_OF.items() if not any(plan_roles.get(m) for m in members))
+    checked = [r for r in rows if r["check"] not in ("legacy_unrecorded", "unrecorded", "entry_missing")]
+    coverage = {"expected_roles": {r: bool(req) for r, req in cov.items()}, "plan_roles": {r: len(v) for r, v in sorted(plan_roles.items())},
+                "missing_required_roles": missing_roles, "expected_clip_count": len(plan), "row_count": len(rows),
+                "checked_count": len(checked), "enforced": coverage_enforced}
+    if coverage_enforced:
+        for r in missing_roles:
+            blocked.append({"segment": f"{r}:*", "violations": ["Z_STYLE_COVERAGE_EMPTY"]})
+        if len(rows) != len(plan):
+            blocked.append({"segment": "(coverage)", "violations": ["Z_STYLE_COVERAGE_MISMATCH"], "detail": f"plan={len(plan)} rows={len(rows)}"})
+        if not checked:
+            blocked.append({"segment": "(all)", "violations": ["Z_STYLE_CHECKED_EMPTY"]})
+    elif missing_roles:
+        warnings.append({"warning": "Z_STYLE_COVERAGE_EMPTY_LEGACY_RUN", "roles": missing_roles})
+    legacy_n = sum(1 for r in rows if r["check"] == "legacy_unrecorded")
+    human_n = sum(1 for r in rows if r["human_approved"])
+    res = {"schema": STYLE_ACTUAL_SCHEMA, "gate_id": STYLE_ACTUAL_GATE_ID, "level": level, "status": "BLOCK" if blocked else "PASS",
+           "mode": "strict" if strict_run else ("legacy_run_recorded_clips_strict" if any_recorded else "legacy_run_warning_only"),
+           "marker_present": strict_run, "coverage": coverage, "blocked": blocked, "warnings": warnings,
+           "checked_count": len(checked), "legacy_unrecorded_count": legacy_n, "human_approved_count": human_n,
+           "all_match": bool(checked) and all(r["match"] is True for r in checked if r["check"] != "dialogue_intended_only"),
+           "rows_count": len(rows), "rows": rows, "path": f"{level_dir}/{STYLE_ACTUAL_OUT_RELPATH}"}
+    _write_json(res["path"], res)
+    if blocked:
+        raise FamilyZStyleActualGateStop(f"Style実測照合Gate BLOCK({level}): " + "; ".join(
+            f"{b.get('segment')}={','.join(b['violations'])}" for b in blocked[:12]) + (" …" if len(blocked) > 12 else "")
+            + f" (照合表={res['path']}。Style落ちfallback等は人間承認[human_approved_segments.json]が必要)")
+    return res
 
 
 # ============================================================
