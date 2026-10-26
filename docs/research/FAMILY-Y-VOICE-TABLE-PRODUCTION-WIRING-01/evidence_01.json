@@ -1,0 +1,102 @@
+{
+ "management_id": "FAMILY-Y-VOICE-TABLE-PRODUCTION-WIRING-01",
+ "status": "PARTIAL: Std(a2) evidence collected; Adv(b1b)/restart/gate/assemble NOT run (RESTART_STORM self-induced STOP 17:25:10)",
+ "pool": {
+  "male": [
+   "Puck",
+   "Schedar",
+   "Fenrir",
+   "Orus",
+   "Iapetus"
+  ],
+  "female": [
+   "Zephyr",
+   "Kore",
+   "Leda",
+   "Sulafat",
+   "Erinome"
+  ]
+ },
+ "fixed_slots": {
+  "voice_1": "Puck",
+  "voice_2": "Zephyr",
+  "voice_3": "Schedar"
+ },
+ "run_dir": "er121_output/family_y_production_01/redelivery_fee/run_voice_puck_ev_01",
+ "std_a2_segments": {
+  "y_voice_1": {
+   "status": "OK",
+   "voice": "Puck",
+   "y_tts_voice_requested": "Puck",
+   "model": "gemini-3.8-flash-lite-tts",
+   "tts_backend": "speech_metadata_flash_lite",
+   "call_count": 1,
+   "retry_count": 0,
+   "tts_generations_used": 1,
+   "fallback_used": false,
+   "slowdown_applied": true,
+   "duration_seconds": 41.698,
+   "sha256": "8432ffbc0a85511b654be3b3e52e43bde56f6fd13f4fd4a40dda62f74eb47c88",
+   "path": "er121_output/family_y_production_01/redelivery_fee/run_voice_puck_ev_01/a2/narration/y_voice_1.wav",
+   "audio_classification": "NORMALIZED_MATCH"
+  },
+  "y_voice_2": {
+   "status": "OK",
+   "voice": "Zephyr",
+   "y_tts_voice_requested": "Zephyr",
+   "model": "gemini-3.8-flash-lite-tts",
+   "tts_backend": "speech_metadata_flash_lite",
+   "call_count": 1,
+   "retry_count": 0,
+   "tts_generations_used": 1,
+   "fallback_used": false,
+   "slowdown_applied": true,
+   "duration_seconds": 51.58,
+   "sha256": "89b23bea4c6b8c175718b1058ff4a1ed1db6fb2d244a973f1eac83be65679552",
+   "path": "er121_output/family_y_production_01/redelivery_fee/run_voice_puck_ev_01/a2/narration/y_voice_2.wav",
+   "audio_classification": "NORMALIZED_MATCH"
+  },
+  "y_voice_3": {
+   "status": "OK",
+   "voice": "Schedar",
+   "y_tts_voice_requested": "Schedar",
+   "model": "gemini-3.8-flash-lite-tts",
+   "tts_backend": "speech_metadata_flash_lite",
+   "call_count": 1,
+   "retry_count": 0,
+   "tts_generations_used": 1,
+   "fallback_used": false,
+   "slowdown_applied": true,
+   "duration_seconds": 52.408,
+   "sha256": "6ea1b7dd108c678afc14059399e82f2448ed3fa9e1213954dfbac4597c15325d",
+   "path": "er121_output/family_y_production_01/redelivery_fee/run_voice_puck_ev_01/a2/narration/y_voice_3.wav",
+   "audio_classification": "NORMALIZED_MATCH"
+  }
+ },
+ "api_calls_std": [
+  {
+   "api": "models.generate_content(TTS)",
+   "model_id": "gemini-3.8-flash-lite-tts",
+   "attempt": 1,
+   "segment": "y_voice_1"
+  },
+  {
+   "api": "audio.transcriptions.create",
+   "model_id": "gpt-4o-mini-transcribe",
+   "attempt": 1,
+   "segment": "y_voice_1"
+  },
+  {
+   "api": "audio.transcriptions.create",
+   "model_id": "gpt-4o-mini-transcribe",
+   "attempt": 2,
+   "segment": "y_voice_1"
+  }
+ ],
+ "std_spent_jpy": 1.3459,
+ "launches": [
+  "17:20:24 rc=2 (seed mismatch, no API)",
+  "17:22:34 rc=0 Std y_voice_1",
+  "17:25:10 rc=3 RESTART_STORM"
+ ]
+}

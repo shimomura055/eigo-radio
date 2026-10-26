@@ -10,7 +10,7 @@
 #   X/Zに新しい共通呼出しが増えるとYのtest(構造一致test: er121_family_y_structure_match_test_01)が落ちる。意図的差分は許可リスト(台帳ID付き)。
 # Y固有の要点:
 #   - segment ID: y_lead / y_intro_1..3 / y_voice_1..3 / y_closing(er020.resolve_narrative_role がFULL_STORYへ解決)。
-#   - Voice: voice_n=固定割当(Algieba/Zephyr/Schedar)。ナレーター=Xの既存Full Story設定 `er003_b1_p9a_audio.VOICE_NAME` を実行時に読む(コードに固定しない)。
+#   - Voice: voice_n=固定割当(Puck/Zephyr/Schedar。2026-10-26 Voice1=Algieba→Puck)。ナレーター=Xの既存Full Story設定 `er003_b1_p9a_audio.VOICE_NAME` を実行時に読む(コードに固定しない)。
 #   - 固有名詞アラーム(PNAP)/Run Entity Table/er109 scope は "Y" で入る(Family非依存の仕組み。er103/er109 の APPROVED_SCOPES に "Y" 追加済み)。
 #   - Chunk TTS: Y=適用(X方式=段落単位chunk+0.2秒ポーズ。ユーザー正式決定2026-10-25 USER_02 ①、YL-B08)。分割・親wav連結・親集約entry・整合検査・
 #     chunk別gain+0.2秒組立は共通module er117(chunk_tts)を直接importして呼ぶ(Yは segment ID規則と segment単位の呼出し配線のみ)。

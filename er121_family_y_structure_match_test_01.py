@@ -234,9 +234,9 @@ class SegmentIds(unittest.TestCase):
         self.assertNotIn("master_audio_store", src)
         self.assertNotIn("er006_master_audio_store", src)
 
-    def test_voice_assignment_matches_z_formal_table(self):
+    def test_voice_assignment_matches_y_voice_table(self):
         rec = ys.verify_voice_assignment()
-        self.assertEqual(rec["y_fixed_slots"], {"voice_1": "Algieba", "voice_2": "Zephyr", "voice_3": "Schedar"})
+        self.assertEqual(rec["y_fixed_slots"], {"voice_1": "Puck", "voice_2": "Zephyr", "voice_3": "Schedar"})
 
 
 class NoticeDisplay(unittest.TestCase):

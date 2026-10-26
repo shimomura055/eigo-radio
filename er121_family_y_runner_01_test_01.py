@@ -228,7 +228,7 @@ class FullMockRun(unittest.TestCase):
     def test_tts_results_cover_segment_ids_with_voices(self):
         import er121_family_y_audio_01 as ya
         vm = ya.segment_voice_map()
-        self.assertEqual(vm["y_voice_1"], "Algieba")
+        self.assertEqual(vm["y_voice_1"], "Puck")
         self.assertEqual(vm["y_voice_2"], "Zephyr")
         self.assertEqual(vm["y_voice_3"], "Schedar")
         narrator = ya.narrator_voice()
@@ -531,7 +531,7 @@ class StageFramework(unittest.TestCase):
                 r.stage_seed_check(ctx)
         finally:
             routing.PROCESS_MODEL_MAP["FAMILY_Y_LEAD_GENERATE"] = saved
-        self.assertEqual(r.stage_seed_check(ctx)["voice_assignment"]["y_fixed_slots"]["voice_1"], "Algieba")
+        self.assertEqual(r.stage_seed_check(ctx)["voice_assignment"]["y_fixed_slots"]["voice_1"], "Puck")
 
     def test_clear_stop_requires_reason(self):
         with mock.patch.object(r, "RUN_ROOT", self.root):

@@ -8,7 +8,7 @@
 #   - Y segment ID(YL-C11): y_lead / y_intro_1..3 / y_voice_1..3 / y_closing。DEV Trialのalias(full_story_part3_c2/c3)は使わない。
 #     er020_tts_retry_local_rewrite_01.resolve_narrative_role がこれらをFULL_STORYへ解決する(test固定)。
 #   - 5パート記事契約(YL-C01): 段落1=リード / 段落2〜4=[人物紹介行(ナレーター)\nVoice本文(本人)] / 段落5=Tension+Closing。In One Lineなし(YL-C08)。
-#   - Voice固定割当(YL-C10): Algieba/Zephyr/Schedar(Z正式表 assign_dialogue_voices の結果と一致をtestで固定)。ナレーターのVoiceは
+#   - Voice固定割当(YL-C10): Puck/Zephyr/Schedar(2026-10-26 Voice1=Algieba→Puck。Y候補表Y_DIALOGUE_VOICE_POOLにassign_dialogue_voicesを適用した結果と一致をtestで固定)。ナレーターのVoiceは
 #     コードに固定せず、Xの既存Full Story設定(er003_b1_p9a_audio.VOICE_NAME)を実行時に読む(audio module)。
 #   - 公開ページ注意書き(YL-C07): PAGE_NOTICE_JA(本文外・音声にアナウンスなし)。
 #   - Comment 2/3のY版role文(YL-C09): DEV Trial(er110_family_y_text_trial_01.Y_COMMENT_2/3_ROLE)と逐語一致(testで固定。Productionはer110をimportしない)。
@@ -48,9 +48,16 @@ PAGE_LABEL = {
 }
 
 # ------------------------------------------------------------
-# Voice固定割当(YL-C10、ユーザー決定): Z正式表 assign_dialogue_voices の結果と一致(男女独立・登場順)
+# Voice固定割当(YL-C10、ユーザー決定+2026-10-26 Voice表改訂): Y候補表にassign_dialogue_voicesを適用した結果と一致(男女独立・登場順)
 # ------------------------------------------------------------
-FIXED_VOICE_SLOTS = {"voice_1": "Algieba", "voice_2": "Zephyr", "voice_3": "Schedar"}
+# FAMILY-Y-VOICE-TABLE-PRODUCTION-WIRING-01(ユーザー正式採用 APPROVED_FOR_PRODUCTION 2026-10-26): Y Voice候補表(男性5/女性5)。
+#   Algieba除外・男性1=Puck・Iapetus追加。Family Z表(er062 FAMILY_Z_DIALOGUE_VOICE_POOL: 男性1=Algieba/男性5=Puck)とは意図的に異なる
+#   (ユーザーがY/Z候補差分を明示許容した承認済みFamily固有仕様。共通仕様統一を理由にZ側をPuckへ変えない/Y側をAlgiebaへ戻さない)。
+Y_DIALOGUE_VOICE_POOL = {
+    "male": ("Puck", "Schedar", "Fenrir", "Orus", "Iapetus"),
+    "female": ("Zephyr", "Kore", "Leda", "Sulafat", "Erinome"),
+}
+FIXED_VOICE_SLOTS = {"voice_1": "Puck", "voice_2": "Zephyr", "voice_3": "Schedar"}
 ROSTER = (
     {"speaker": "voice_1", "gender": "male", "order": 1, "first_appearance": "Voice 1"},
     {"speaker": "voice_2", "gender": "female", "order": 2, "first_appearance": "Voice 2"},
@@ -67,11 +74,12 @@ class FamilyYStructureError(FamilyYStop):
 
 
 def verify_voice_assignment() -> dict:
-    """Z正式表(er062 assign_dialogue_voices)の結果が固定割当と一致することを確認する(API 0)。不一致は方式を変えずSTOP。"""
+    """Y候補表(Y_DIALOGUE_VOICE_POOL)に既存の決定的割当関数(er062 assign_dialogue_voices、pool引数)を適用した結果が固定割当と一致することを確認する(API 0)。
+    不一致は方式を変えずSTOP。Z表ではなくY表を使う(Y/Z候補差分は承認済み)。記録キー名z_rule_assignmentは互換のため維持(割当関数がZ由来のため)。"""
     import er062_family_z_structure_01 as z
-    got = z.assign_dialogue_voices(ROSTER)
+    got = z.assign_dialogue_voices(ROSTER, pool=Y_DIALOGUE_VOICE_POOL)
     if got != FIXED_VOICE_SLOTS:
-        raise FamilyYStop(f"FAMILY_Y_VOICE_ASSIGNMENT_MISMATCH: Z正式表の割当 {got} が固定割当 {FIXED_VOICE_SLOTS} と一致しません")
+        raise FamilyYStop(f"FAMILY_Y_VOICE_ASSIGNMENT_MISMATCH: Y候補表の割当 {got} が固定割当 {FIXED_VOICE_SLOTS} と一致しません")
     return {"z_rule_assignment": got, "y_fixed_slots": dict(FIXED_VOICE_SLOTS), "match": True}
 
 
