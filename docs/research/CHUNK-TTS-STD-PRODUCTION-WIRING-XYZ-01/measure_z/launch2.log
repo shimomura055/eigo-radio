@@ -1,0 +1,30 @@
+[GLOSS-ALIGN] 実効flag=ON (source=default, EIGO_KP_GLOSS_ALIGNMENT=None)
+[E2E] stage=tts_a2 mode=real ...
+
+===== 固有名詞発音アラーム報告 (er026_output/family_z_production_e2e_01/melos/run_stdchunk_ev_01/a2) =====
+## 固有名詞発音アラーム(運営責任者向け・一般リスナー非表示)
+1箇所。最終状態=**アラーム付き完成**。制作は停止せずHuman Reviewにも回していません。確認・承認操作は完成の条件ではありません。
+- **melos** × 1箇所
+  - [Z/a2/full_story_part1_c5] er026_output/family_z_production_e2e_01/melos/run_fzcw_e1_01/a2/narration/full_story_part1_c5.wav / 文脈 `...[[melos]] said....` / 目安0.0秒
+    - 検出した不一致: 原稿 `melos` -> Primary `nello` / Secondary `nello`
+    - 発音の根拠(Ledger/Perplexity調査): 階層=UNVERIFIED_AI_OUTPUT / 確信度=low / hint=MEE-lahs
+    - TTS発音改善: 供給なし(EVIDENCE_NOT_VERIFIED_ESTIMATED)
+    - 最終状態: アラーム付き完成 / 使用モデル: ASR=gpt-4o-mini-transcribe, Secondary=azure-speech-stt, TTS=None
+
+### 発音供給の適用一覧(TTS入力へ綴り置換した語。ASR比較は置換後の綴りが基準)
+0件(供給対象なし。A階層の自動供給対象/人承認済みB階層が無い、または該当語が本文に無い)
+
+### Human Review残(受理境界の外): ASR不確実のまま残ったsegment 0件 (うち固有名詞のみ不一致だが境界外=脱落/一般語化等 0件)
+
+注: 日本語音声の固有名詞読みはこのアラーム方針の対象外です(従来の検証・Human Reviewのまま)。
+
+### 実体表(固有名詞と認識した根拠。受理判定用。発音の根拠[Ledger/Perplexity調査]とは別)
+- 実体表: 2件(うち証拠として使用可 1件) / NER call=0 / model=gpt-6-luna / table_sha256=424558431053
+- 実体表 person/confirmed: 1件
+- 実体表 work_title/weak: 1件
+- 証拠にならなかった語(weak/一般語等): The Three-Day Promise
+
+[E2E] stage=provision_shell mode=real ...
+[E2E] stage=gate mode=real ...
+[E2E] stage=assemble mode=real ...
+{"management_id": "FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01", "mode": "real", "stages": ["tts_a2", "provision_shell", "gate", "assemble"], "gloss_alignment_flag": {"enabled": true, "raw": null, "source": "default"}, "spent_jpy": 1.6653}
