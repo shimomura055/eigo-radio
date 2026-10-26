@@ -149,7 +149,9 @@ def test_force_secondary_true_call_sites_are_exactly_one_production_site():
         for n in ast.walk(tree):
             if isinstance(n, ast.keyword) and n.arg == "force_secondary" and isinstance(n.value, ast.Constant) and n.value.value is True:
                 sites.append((name, n.value.lineno))
-    assert [s[0] for s in sites] == ["er003_v1_crosslevel_audio_02_common.py"], sites
+    # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02(2026-10-26): ③=Fallback音声のSecondary必須確認の固定呼出点は2箇所
+    # (Std英語の `_run_a2_minimal_fallback_attempt` と X/Y/Z scope内のKP英語解説③ `_kp_explanation_unified`)。他leafの③は条件付きunpack(`**({...} if _third else {})`)でリテラルTrueを置かない。
+    assert [s[0] for s in sites] == ["er003_v1_crosslevel_audio_02_common.py", "er019_family_x_audio_production_runner_01.py"], sites
     root = os.path.dirname(os.path.abspath(__file__))
     src = open(os.path.join(root, "er003_v1_crosslevel_audio_02_common.py"), encoding="utf-8").read()
     fn = [n for n in ast.walk(ast.parse(src)) if isinstance(n, ast.FunctionDef) and n.name == "_run_a2_minimal_fallback_attempt"]

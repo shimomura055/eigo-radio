@@ -6,6 +6,7 @@
 fake LLMで駆動する。Std/Adv、初回・retry・fallback・resume・中断再開・HR Lock・明示再生成・X/Y/narrator不変を検証。
 """
 import ast
+import re
 import json
 import os
 import subprocess
@@ -245,7 +246,7 @@ def test_w3c_std_ng_ng_cooldown_then_legacy_style_adopted_e2e(env):
     assert seg["full_story_part1_c2"]["dialogue_tts"]["final_mode"] == "ctx"
     e3 = seg["full_story_part1_c3"]
     assert e3["dialogue_tts"]["final_mode"] == "legacy_fallback" and e3["status"] == "OK"
-    assert abs(sum(env.clk.sleeps) - 600.0) < 1e-6 and e3["dialogue_tts"]["cooldown"]["total_elapsed_since_ref_seconds"] >= 600
+    assert abs(sum(env.clk.sleeps) - 180.0) < 1e-6 and e3["dialogue_tts"]["cooldown"]["total_elapsed_since_ref_seconds"] >= 180
     legacy = legacy_prompt_for(story_plan("a2")[2])
     assert w.prompts[3] == legacy and w.prompts[1].count("CONTEXT FOR THIS ONE LINE") == 1 and w.prompts[2].count("CONTEXT FOR THIS ONE LINE") == 1
     assert e3["style"]["effective_style_prefix_sha256"] == z.style_prefix_sha256(__import__("er003_b1_p9a_audio").ENGLISH_STYLE_PREFIX)
@@ -393,8 +394,8 @@ def test_w5_adv_n1_ng_n2_asr_ok_post_ng_then_n3_cooldown_legacy(env, adv_post):
     e2 = results(env, "b1b")["full_story_part1_c2"]
     assert e2["status"] == "OK" and e2["dialogue_tts"]["final_mode"] == "legacy_fallback" and e2["dialogue_tts"]["n_started"] == 3
     assert "CONTEXT" not in w.prompts[2] and w.prompts[0].count("CONTEXT FOR THIS ONE LINE") == 1
-    assert abs(sum(env.clk.sleeps) - 600.0) < 1e-6          # 2回目NG(減速後NG確定)の後に600秒
-    assert e2["dialogue_tts"]["cooldown"]["total_elapsed_since_ref_seconds"] >= 600
+    assert abs(sum(env.clk.sleeps) - 180.0) < 1e-6          # 2回目NG(減速後NG確定)の後に180秒
+    assert e2["dialogue_tts"]["cooldown"]["total_elapsed_since_ref_seconds"] >= 180
     legacy = legacy_prompt_for(story_plan("b1b")[1])
     assert w.prompts[2] == legacy
 
@@ -491,6 +492,14 @@ def test_w11b_non_dialogue_generators_source_unchanged_vs_baseline_commit():
     assert set(b) == set(c)
     for name in b:
         if name == "dialogue":
+            continue
+        if name == "_kp_en_two_stage":
+            # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02: KP英語の二段にだけ統一ブロック(er127)の差込みを許可。差込み部分を除くと基準commitと一字一句同一であること。
+            cc = c[name]
+            cc = re.sub(r"    @er127\.with_block\([^\n]*\n", "", cc)
+            cc = cc.replace("def _kp_en_two_stage(text, out_path, spec, *, _blk=None):", "def _kp_en_two_stage(text, out_path, spec):")
+            cc = re.sub(r",  (# KP3V[^\n]*)\n\s+\*\*er127\.stage_kwargs\([^\n]*?\)\)[^\n]*\n(?:        if _blk is not None[^\n]*\n[^\n]*\n)?", r")  \1\n", cc)
+            assert cc == b[name], "kp_en: er127差込み以外の差分があります"
             continue
         assert b[name] == c[name], name
     # dialogue のlegacy分岐(Adv外側ループ・Std単一呼出)は現行コードが一字も変わらず残っている

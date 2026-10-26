@@ -61,7 +61,7 @@ def fake_generators(slow_std: bool = True, lr_clips=(), fail_clips=()):
             if spec.clip_id in lr_clips:
                 r["canonical_text_before_local_rewrite"] = spec.text
                 r["local_rewrite_recovery"] = {"selection": {"selected": {"rewritten_segment": spec.text + " indeed"}}}
-                r["cooldown_events"] = [{"cooldown_actual_seconds": 600.0}]
+                r["cooldown_events"] = [{"cooldown_actual_seconds": 180.0}]
             if spec.kind == "kp_en":
                 # KPDUAL-PROD-D2(UDR #139): KP英語phraseは実strictが両Provider PASSの監査record(asr_judgement.dual)を返す。
                 # 前回results再利用(generate_or_reuse_z)はこの証跡を要する(fail-closed)ため、fakeも同形のrecordを返す。

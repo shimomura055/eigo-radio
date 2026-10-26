@@ -66,6 +66,7 @@ import er081_family_x_in_one_line_01 as fx_iol  # FXPW 委任_04: In One Line sc
 import er019_family_x_style_profile_01 as style_profile_mod
 import er019_family_x_validation_inheritance_01 as validation_inheritance
 import er020_tts_retry_local_rewrite_01 as retry_primitive
+import er127_tts_block_policy_01 as er127  # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02: X/Y/Z scope内の統一3回構成ブロック
 import er117_chunk_tts_production_01 as chunk_tts  # FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01(X Adv本文=段落単位chunk+0.2秒、APPROVED_FOR_PRODUCTION 2026-10-25)
 import er053_review_queue_01 as rq
 import er053_risk_flagger_production_01 as rf
@@ -1199,23 +1200,58 @@ def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: s
 # er003_v1_n3_01_tts_generate.pyは無変更のまま維持する、
 # er019_family_x_pointless_01_test_01.FamilyAUnchangedTestが同ファイルの
 # working tree diff=0を機械的に強制しているため)。
-KP_EXPLANATION_MAX_ATTEMPTS = 3   # AUW 委任_05(OF-AUW-12): 旧2 -> 3。PRODUCTION_MAX_TTS_ATTEMPTS(=3)と同値
+KP_EXPLANATION_MAX_ATTEMPTS = 3   # 1ブロックの試行数。AUW 委任_05(OF-AUW-12): 旧2 -> 3。X/Y/Z scope内は ①②=解説Style → 180秒 → ③=Fallback(minimal・Secondary必須)、LRなし(TTS統一委任_02、_kp_explanation_unified)。scope外(A/B/C)は従来の同一Style3回
 
 
 def generate_key_phrase_explanation_en_verified(explanation_text: str, out_path: str,
                                                  style_prefix_override: str,
                                                  tts_backend: str = "structured_separation") -> dict:
+    # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02(2026-10-26): X/Y/Z scope内(単一flag読取関数 er127.unified_flow_active)のみ
+    # 統一3回構成(①②=解説Style → 180秒 → ③=Fallback Style[minimal・Secondary必須]、LRなし)。scope外(A/B/C)は従来コードのまま。
+    if er127.unified_flow_active():
+        return _kp_explanation_unified(explanation_text, out_path, style_prefix_override, tts_backend)
     import er003_v1_repro01_main_generate as repro01
     text = n3_tts.tts_safe_en(explanation_text)
     return repro01.generate_narration_snippet_verified_strict(
         text, "en", out_path, text,
-        # AUW 委任_05(OF-AUW-12、DESIGN_02_ADDENDUM_01 §9): 統一フロー「TTS①②③、3回NGでLR/HR」に揃える
+        # AUW 委任_05(OF-AUW-12、DESIGN_02_ADDENDUM_01 §9): scope外の同一Style3回構成(X/Y/Z scope内は上の_kp_explanation_unifiedで ①②→180秒→③Fallback)
         # (旧Trial値max_attempts=2の継承を3回へ。KP解説の回数変更はこの1点のみ。Prompt/閾値/他回数は不変)。
         max_extra_chars=max(20, len(text) // 2), max_attempts=KP_EXPLANATION_MAX_ATTEMPTS,
         safety_margin_seconds=repro01.KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS,
         style_prefix_override=style_prefix_override, disfluency_qa=True,
         asr_prompt=repro01.KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT,
         enable_non_latin_cascade=True, tts_backend=tts_backend)
+
+
+@review_lock.guarded_generate("en")      # 2段呼出を外側guard1つで包む(L6と同方式: 内側guardがreentrancyでcheck/recordしない)
+@er127.with_block("L5", fingerprint_params=("style_prefix_override", "tts_backend"))
+def _kp_explanation_unified(explanation_text: str, out_path: str, style_prefix_override: str,
+                            tts_backend: str = "structured_separation", *, _blk=None) -> dict:
+    import er003_v1_repro01_main_generate as repro01
+    text = n3_tts.tts_safe_en(explanation_text)
+    common_kw = dict(
+        max_extra_chars=max(20, len(text) // 2), safety_margin_seconds=repro01.KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS,
+        disfluency_qa=True, asr_prompt=repro01.KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT, enable_non_latin_cascade=True,
+        tts_backend=tts_backend, total_slots=KP_EXPLANATION_MAX_ATTEMPTS)
+    primary = repro01.generate_narration_snippet_verified_strict(
+        text, "en", out_path, text, max_attempts=KP_EXPLANATION_MAX_ATTEMPTS - 1, style_prefix_override=style_prefix_override,
+        slot_offset=0, **common_kw, **er127.stage_kwargs(_blk, 0))
+    if primary.get("status") == "OK":
+        primary["fallback_used"] = False
+        return primary
+    if er127._is_tech_stop(er127.last_attempt_of(primary)):
+        primary["fallback_used"] = False
+        return primary                      # 技術STOP(Secondary不可等)は③・HRに進めない(従来どおり)
+    fb = repro01.generate_narration_snippet_verified_strict(
+        text, "en", out_path, text, max_attempts=1, style_prefix_override=repro01.MINIMAL_INSTRUCTION_PREFIX,
+        slot_offset=KP_EXPLANATION_MAX_ATTEMPTS - 1, force_secondary=True, **common_kw,
+        **er127.stage_kwargs(_blk, KP_EXPLANATION_MAX_ATTEMPTS - 1))      # ③の直前に180秒(blk.step(3))
+    fb["fallback_used"] = True
+    fb["fallback_attempts_log"] = primary.get("attempts_log")           # record_outcomeの実TTS計上(=3): L6と同じ会計
+    fb["minimal_attempts_log"] = fb.get("attempts_log")
+    if fb.get("status") != "OK" and not er127._is_tech_stop(er127.last_attempt_of(fb)):
+        er127.register_terminal_hr(out_path=out_path, canonical_text=text, attempt=er127.last_attempt_of(fb), lock_text=text)
+    return fb
 
 
 # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(修正3回目、

@@ -29,6 +29,7 @@ import shutil
 from dataclasses import dataclass, field
 import er078_secondary_run_scope_01 as secondary_run_scope  # AUW 委任_05
 import er104_kp_vote_reuse_01 as kp_vote  # KP3V(2026-10-22、ユーザー承認APPROVED_FOR_PRODUCTION): KP英語phrase 3-ASR多数決(OpenAI・Azure・Whisper)
+import er127_tts_block_policy_01 as er127   # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02: 統一3回構成ブロック
 import er109_xz_scope_01 as er109_scope  # ASR-HOMOPHONE 委任_04: er109(表記違い同音)のrun scope(Z)。TTS段の入口decoratorだけで使う(リテラル"Z"のみ)
 # 2026-10-17 委任_15: Xの承認済みStyle定数を**定数として**参照する(コピーしない)。DEFAULT_NEW_RUN_PROFILE・profile解決関数は
 # 参照しない(X既定の変更がZへ無言で波及しない。Opus R-C1)。er019のimportは標準ライブラリ+er002_commonのみで循環しない。
@@ -882,7 +883,7 @@ def generate_or_reuse_z(cached_entry: dict | None, spec: ClipSpec, wav_path: str
 
 # ============================================================
 # 4-D. Z dialogue 文脈・感情付きTTS(FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01、OPEN-528、APPROVED_FOR_PRODUCTION 2026-10-26)
-#      ユーザー仕様: 1回目=文脈・感情付き、NG->即時2回目=文脈・感情付き、NG->600秒->3回目=従来方式(文脈・感情情報を完全除外)、総試行3回。
+#      ユーザー仕様: 1回目=文脈・感情付き、NG->即時2回目=文脈・感情付き、NG->180秒->3回目=従来方式(文脈・感情情報を完全除外)、総試行3回(待機は2026-10-26に旧600秒から180秒へ変更、er127.cooldown_core)。
 #      設計=docs/research/FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01/DESIGN_02.md。X/Y/B/C/narrator/KPは一切変更しない(Zのdialogueだけ)。
 # ============================================================
 def prepare_dialogue_ctx(run_dir: str, level: str, plan: list, *, story_key: str = DEFAULT_SLUG, only_clips: set | None = None) -> dict:
@@ -1020,7 +1021,7 @@ def real_generators() -> dict:
         text = _norm_for_tts(spec)
         _dctx = (spec.extra or {}).get("dialogue_ctx")
         if _dctx and _dctx.get("policy") == "fz_ctx_v1":
-            # FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01(APPROVED_FOR_PRODUCTION 2026-10-26): 新規runのdialogueは文脈・感情付きTTSが標準(ctx->ctx->600秒->従来方式、総3回)
+            # FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01(APPROVED_FOR_PRODUCTION 2026-10-26): 新規runのdialogueは文脈・感情付きTTSが標準(ctx->ctx->180秒->従来方式、総3回。旧600秒は2026-10-26に180秒へ変更)
             return generate_dialogue_ctx(spec, out_path, text, _dctx)
         if spec.level == "b1b":
             # FAMILY-Z-DIALOGUE-SPEED-PRODUCTION-WIRING-01(速度仕様v2): Adv会話は生成後に約6%高速化(atempo=1.06、ピッチ保持。Trial Bと同一関数・係数)。
@@ -1066,14 +1067,16 @@ def real_generators() -> dict:
         return _kp_en_two_stage(_norm_for_tts(spec), out_path, spec)
 
     @review_lock.guarded_generate("en")
-    def _kp_en_two_stage(text, out_path, spec):
+    @er127.with_block("L6", fingerprint_params=())      # 委任_02(X/Y/Z scope内のみ有効。scope外=_blk None=従来どおり)
+    def _kp_en_two_stage(text, out_path, spec, *, _blk=None):
         primary = repro01.generate_narration_snippet_verified_strict(
             text, "en", out_path, text, max_extra_chars=10, max_attempts=repro01.KEY_PHRASE_MINIMAL_MAX_ATTEMPTS,
             safety_margin_seconds=repro01.KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS, disfluency_qa=True,
             style_prefix_override=style_text_for(spec), asr_prompt=repro01.KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT,
             enable_non_latin_cascade=True, tts_backend=TTS_BACKEND,
             slot_offset=0, total_slots=repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS,  # AUW 委任_05: 4回構成の前半(HR queue対象外)
-            vote_pass_required=kp_vote.vote_enabled())  # KP3V: KP英語phrase=Primary・Secondary両方PASS必須
+            vote_pass_required=kp_vote.vote_enabled(),  # KP3V: KP英語phrase=Primary・Secondary両方PASS必須
+            **er127.stage_kwargs(_blk, 0))
         if primary.get("status") == "OK":
             primary["fallback_used"] = False
             return kp_vote.attach_kp_vote_check(primary, out_path, text)
@@ -1090,7 +1093,10 @@ def real_generators() -> dict:
             tts_backend=TTS_BACKEND,
             slot_offset=repro01.KEY_PHRASE_MINIMAL_MAX_ATTEMPTS,
             total_slots=repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS,  # AUW 委任_05: 4回構成の後半(最終slot)
-            vote_pass_required=kp_vote.vote_enabled())  # KP3V
+            vote_pass_required=kp_vote.vote_enabled(),  # KP3V
+            **er127.stage_kwargs(_blk, repro01.KEY_PHRASE_MINIMAL_MAX_ATTEMPTS))     # ③(ENGLISH_LOCK段の最初)直前に180秒
+        if _blk is not None and _blk.depth == 0 and fb.get("status") != "OK":
+            er127.register_terminal_hr(out_path=out_path, canonical_text=text, attempt=er127.last_attempt_of(fb), lock_text=text)   # Opus M-4
         kp_vote.attach_kp_vote_check(fb, out_path, text)
         fb["fallback_used"] = True
         # legacy `generate_key_phrase_component_verified`と同じ会計: record_outcomeの実TTS試行数(=4)のため、1段目の
@@ -1548,6 +1554,7 @@ def _run_tts_stage_impl(run_dir: str, level: str, plan: list, *, generators: dic
     assert_run_style_record(level_dir, level, write=True)
     segments, key_phrases, evidence = {}, {}, []
     deferred_stop = None
+    er127.register_stop_check(lambda where: _check_stop_sentinel(run_dir, where))      # 委任_02: 統一3回構成の180秒待機中もZのSTOP sentinelを確認
     import er005_cost_logger as cl
     for spec in plan:
         out_path = f"{narr}/{spec.wav_name()}"

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02(R-2): scope外(Family A/B/C・単体呼出)のgolden。
 
-**変更前コード(委任_02着手時のHEAD相当)で生成**した `er127_golden_01.json` と、現在のコードの出力をbyte同一で比較する。
+**変更前コード(委任_02着手時のHEAD相当)で生成**した `er127_test_golden_01.json` と、現在のコードの出力をbyte同一で比較する。
 対象: 変更した全leaf(voice01 / news_tail_fix / crosslevel / n3_tts L4・JA / repro01 strict・KP / er012_b hook=None)を、
 scope外・新kwargなしで呼んだときの 結果dict・sleep列・TTS prompt列・judge呼出kw・HRQ行。
 `FamilyAUnchangedTest`(working tree diff=0)はcommit後は常にPASSで保護にならない(Opus R-2)ため、本goldenを証拠とする。
@@ -12,9 +12,9 @@ import json
 import os
 import re
 
-import er127_fakes_01 as F
+import er127_test_fakes_01 as F
 
-GOLDEN_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "er127_golden_01.json")
+GOLDEN_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "er127_test_golden_01.json")
 TTS_ALL = [True] * 12
 SCENARIOS = {
     "pass1": dict(judge=[F.PASS]),

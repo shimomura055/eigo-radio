@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-"""FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01 委任_02: dialogue TTS attempt policy(ctx -> ctx -> 600秒cooldown -> 従来方式、総3回)のoffline test(API 0)。
+"""FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01 委任_02: dialogue TTS attempt policy(ctx -> ctx -> 180秒cooldown -> 従来方式、総3回(2026-10-26: 旧600秒から180秒へ変更))のoffline test(API 0)。
 
 共有ループ `er012_b.generate_voice_body_wide_margin` を、scriptされたfake backend(er122_fz_ctx_fakes_01)で駆動し、policy hook(案A)の
-状態機械・永続state・resume・cooldown・上限3・最終slot・二重計上防止を検証する。時間は注入(実600秒は待たない)。ユーザー原文§6受入表の必須6ケース
+状態機械・永続state・resume・cooldown・上限3・最終slot・二重計上防止を検証する。時間は注入(実180秒は待たない)。ユーザー原文§6受入表の必須6ケース
 (1回目PASS/1回目NG→2回目PASS/1・2回目NG→3回目PASS/3回ともNG/retry途中で中断・再開/X・Y不変)に対応。
 """
 import ast
@@ -114,21 +114,22 @@ def test_case2_first_ng_then_ctx_immediately_no_wait(env):
     assert p.evidence()["final_mode"] == "ctx" and p.evidence()["cooldown"] is None
 
 
-def test_case3_two_ng_then_cooldown_600_then_legacy_style_adopted(env):
+def test_case3_two_ng_then_cooldown_180_then_legacy_style_adopted(env):
     w = make_world([True, True, True], [NG, NG, OK], env.tmp)
     r, p = run_std(env, w)
     assert r["status"] == "OK" and w.tts_i == 3
     assert has_ctx(w.prompts[0]) and has_ctx(w.prompts[1]) and not has_ctx(w.prompts[2])
-    assert abs(sum(env.clk.sleeps) - 600.0) < 1e-6 and max(env.clk.sleeps) <= pol.SLICE_SECONDS      # 実時間600秒を5秒刻みで
-    assert sum(1 for s in env.stops if s.startswith("tts_cooldown")) >= 119
-    assert p.evidence()["final_mode"] == "legacy_fallback" and p.evidence()["cooldown"]["total_elapsed_since_ref_seconds"] >= 600
+    assert abs(sum(env.clk.sleeps) - 180.0) < 1e-6 and max(env.clk.sleeps) <= pol.SLICE_SECONDS      # 実時間180秒を5秒刻みで
+    assert sum(1 for s in env.stops if s.startswith("tts_cooldown")) >= 35
+    assert p.evidence()["final_mode"] == "legacy_fallback" and p.evidence()["cooldown"]["total_elapsed_since_ref_seconds"] >= 180
     # 待機は2回目NGの後・3回目の前の1回だけ(1〜2回目の間は0)
-    assert p.st["attempts"][2]["started_epoch"] - p.st["attempts"][1]["finished_epoch"] >= 600
+    assert p.st["attempts"][2]["started_epoch"] - p.st["attempts"][1]["finished_epoch"] >= 180
 
 
-def test_case3b_cooldown_constant_is_the_existing_600_not_shortened():
+def test_case3b_cooldown_constant_is_the_single_180_definition():
     import er020_tts_retry_local_rewrite_01 as er020
-    assert pol.cooldown_seconds() == er020.COOLDOWN_SECONDS == 600.0
+    import er127_tts_block_policy_01 as er127
+    assert pol.cooldown_seconds() == er127.COOLDOWN_SECONDS == 180.0 and er020.LEGACY_COOLDOWN_SECONDS == 600.0      # 唯一の定義=er127(180)。旧600はscope外(A/B/C)専用
     src = open(os.path.join(ROOT, "er122_fz_ctx_policy_01.py"), encoding="utf-8").read()
     assert "os.environ" not in src and "getenv" not in src      # env/flagで短縮・ON/OFFできない
 
@@ -196,8 +197,8 @@ def test_case5b_interrupt_during_cooldown_resumes_waiting_only_remaining_then_n3
         run_std(env, w)
     waited1 = sum(env.clk.sleeps)
     assert 90 <= waited1 <= 110 and w.tts_i == 2
-    # 落ちている間に実時間が200秒進み、再開
-    env.clk.t += 200.0
+    # 落ちている間に実時間が60秒進み、再開
+    env.clk.t += 60.0
     env.crash_at = None
     env.clk.sleeps.clear()
     w2 = make_world([True], [OK], env.tmp)
@@ -205,9 +206,9 @@ def test_case5b_interrupt_during_cooldown_resumes_waiting_only_remaining_then_n3
     r, p = run_std(env, w2)
     assert r["status"] == "OK" and w2.tts_i == 1 and not has_ctx(w2.prompts[0])     # 1〜2回目を再実行せずn=3の従来方式のみ
     waited2 = sum(env.clk.sleeps)
-    assert abs((waited1 + 200.0 + waited2) - 600.0) < 1e-6 or (waited1 + 200.0 + waited2) >= 600.0
-    assert waited2 < 600.0 - 100 and p.evidence()["cooldown"]["resumed"] is True
-    assert p.evidence()["cooldown"]["total_elapsed_since_ref_seconds"] >= 600.0       # 再開でも前回NGから600秒以上
+    assert abs((waited1 + 60.0 + waited2) - 180.0) < 1e-6 or (waited1 + 60.0 + waited2) >= 180.0
+    assert waited2 < 180.0 - 100 + 60 and p.evidence()["cooldown"]["resumed"] is True
+    assert p.evidence()["cooldown"]["total_elapsed_since_ref_seconds"] >= 180.0       # 再開でも前回NGから180秒以上
     assert p.evidence()["final_mode"] == "legacy_fallback"
 
 

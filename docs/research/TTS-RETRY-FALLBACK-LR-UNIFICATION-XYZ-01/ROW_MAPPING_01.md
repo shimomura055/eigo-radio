@@ -60,7 +60,7 @@ LRあり行 = EN_LR_STD(10)+EN_LR_ADV(14)=24行(現行22行+Z topic_intro_en Std
 | Y-S-03 | Y | japanese_title(日本語タイトル) | 総3/LR×/A | JA_STD(3回・待機1) | 待機新設(180) | D1,D2,D7,D12,D14 |  |
 | Y-S-04 | Y | 日本語支援文 preview/comment_1/comment_2/comment_3(Stdはcomment_2を維持) | 総3/LR×/A | JA_STD(3回・待機1) | 待機新設(180) | D1,D2,D7,D12,D14 |  |
 | Y-S-05 | Y | ナレーター本文5(y_lead/y_intro_1〜3/y_closing・6%減速) | 総4/LR○/A | EN_LR_STD(6回・待機2) | 待機(旧600→180)、LR後構成(旧1回→3構成)、LR再入禁止(OPEN-376)、Style保持(OPEN-312)、減速後最終NGもLRへ(旧U-09) | D1,D2,D4,D5,D6,D12,D14 | Y Gate: ③/LR採用は現行どおりGate承認要(D13=変更なし) |
-| Y-S-06 | Y | Voice本文3(y_voice_1 Algieba/y_voice_2 Zephyr/y_voice_3 Schedar・6%減速) | 総4/LR○/A | EN_LR_STD(6回・待機2) | 待機(旧600→180)、LR後構成(旧1回→3構成)、LR再入禁止(OPEN-376)、Style保持(OPEN-312)、減速後最終NGもLRへ(旧U-09) | D1,D2,D4,D5,D6,D12,D14 | Voice既定Style不変。Y Gate同上 |
+| Y-S-06 | Y | Voice本文3(y_voice_1 Puck/y_voice_2 Zephyr/y_voice_3 Schedar・6%減速) | 総4/LR○/A | EN_LR_STD(6回・待機2) | 待機(旧600→180)、LR後構成(旧1回→3構成)、LR再入禁止(OPEN-376)、Style保持(OPEN-312)、減速後最終NGもLRへ(旧U-09) | D1,D2,D4,D5,D6,D12,D14 | Voice既定Style不変。Y Gate同上 |
 | Y-S-07 | Y | 本文chunk y_<segment>_k<j>(段落2つ以上のときのみ。現行Y契約は各Voice1段落) | 総4/LR○/A | EN_LR_STD(6回・待機2) | 待機(旧600→180)、LR後構成(旧1回→3構成)、LR再入禁止(OPEN-376)、Style保持(OPEN-312)、減速後最終NGもLRへ(旧U-09) | D1,D2,D4,D5,D6,D12,D14 | chunk単位 |
 | Y-S-08 | Y | Key Phrase英語 kp{rank}_en(3件) | 総4/LR×/A | KP_EN(4回・待機1) | 待機新設(180・ENGLISH_LOCK段直前) | D1,D2,D8,D12,D14 | 前段=MINIMAL(U-15=OPEN-537は別途。本件で変更しない) |
 | Y-S-09 | Y | Key Phrase日本語意味 meaning_{i}(3件) | 総3/LR×/A | JA_STD(3回・待機1) | 待機新設(180) | D1,D2,D7,D12,D14 |  |

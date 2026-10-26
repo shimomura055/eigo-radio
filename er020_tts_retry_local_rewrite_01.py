@@ -168,8 +168,8 @@ def resolve_narrative_role(segment_id: str | None) -> str | None:
     # 扱う(LR+待機+CS Equivalenceが初めて有効)。**X/Y/Z run scope内だけ**に限定する: Family C(Legacy凍結)も同名IDを使うため、
     # 無条件の追加はA/B/C出力を変えてしまう(委任_02で発見)。scope外は従来どおり None。
     if segment_id == "topic_intro_en":
-        import er109_xz_scope_01 as _xz_scope
-        if _xz_scope.current_scope() in ("X", "Y", "Z"):
+        import er127_tts_block_policy_01 as _er127      # 単一読取関数経由(er109を直接importしない=Productionのscope importer固定リストを増やさない)
+        if _er127.unified_flow_active():
             return "TOPIC_INTRO"
         return None
     if segment_id == "in_one_line":

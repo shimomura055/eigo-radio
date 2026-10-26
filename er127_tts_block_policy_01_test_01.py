@@ -15,8 +15,8 @@ import tempfile
 import unittest
 from unittest import mock
 
-import er127_fakes_01 as F
-import er127_golden_01 as G
+import er127_test_fakes_01 as F
+import er127_test_golden_01 as G
 import er127_tts_block_policy_01 as blk
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -662,6 +662,66 @@ class LeafMatrixTests(Base):
                 self.assertIn(s.status, ("OK", "STOPPED"))
                 self.assertLessEqual(s.lr, 1)
                 self.assertLessEqual(s.tts, 6)
+
+
+# =====================================================================================================
+# Phase 2: L5(KP英語解説、X runner)。①②=解説Style → 180秒 → ③=minimal(Secondary必須)、LRなし、終端HR1行
+# =====================================================================================================
+class KpExplanationL5Tests(Base):
+    def _run(self, judge, scope="X"):
+        import er019_family_x_audio_production_runner_01 as x
+        w = F.World(seg="kp1_explanation_en", level="b1b", tts=[True] * 8, judge=judge, asr_text=F.TEXT)
+        self._sums = getattr(self, "_sums", [])
+        try:
+            with w.patched(scope=scope):
+                try:
+                    r, err = x.generate_key_phrase_explanation_en_verified(F.TEXT, w.out_path, style_prefix_override=STYLE), None
+                except BaseException as exc:      # noqa: BLE001
+                    r, err = None, exc
+            s = Summary(w, r, err)
+        except BaseException:
+            w.cleanup()
+            raise
+        self._sums.append(s)
+        if err is not None:
+            raise err
+        return s
+
+    def test_first_pass_and_second_pass_no_wait(self):
+        s = self._run([F.PASS])
+        self.assertEqual((s.status, s.tts, s.sleep_total), ("OK", 1, 0))
+        self.assertIs(s.r["fallback_used"], False)
+        s = self._run([F.NG, F.PASS])
+        self.assertEqual((s.status, s.tts, s.sleep_total), ("OK", 2, 0))
+
+    def test_third_after_180_with_fallback_style_and_forced_secondary(self):
+        s = self._run([F.NG, F.NG, F.PASS])
+        self.assertEqual((s.status, s.tts, s.waits(), s.lr, len(s.hr)), ("OK", 3, 1, 0, 0))
+        self.assertAlmostEqual(s.sleep_total, 180.0, places=2)
+        self.assertIn(STYLE, s.prompts[0])
+        self.assertIn(STYLE, s.prompts[1])
+        self.assertNotIn(STYLE, s.prompts[2])
+        self.assertEqual([j["force_secondary"] for j in s.judges], [False, False, True])
+        self.assertIs(s.r["fallback_used"], True)
+
+    def test_all_ng_three_tts_no_lr_one_hrq_row(self):
+        s = self._run([F.NG] * 6)
+        self.assertEqual((s.status, s.tts, s.waits(), s.lr, len(s.hr)), ("STOPPED", 3, 1, 0, 1))
+        self.assertEqual([j["ctx"].get("slot") for j in s.judges], [1, 2, 3])
+        self.assertEqual([j["ctx"].get("is_last_slot") for j in s.judges], [False, False, True])
+
+    def test_scope_out_uses_legacy_single_strict_call(self):
+        import er019_family_x_audio_production_runner_01 as x
+        w = F.World(seg="kp1_explanation_en", level="b1b", tts=[True] * 8, judge=[F.NG] * 6, asr_text=F.TEXT)
+        self.addCleanup(w.cleanup)
+        with w.patched(scope=None):
+            with mock.patch.object(x, "_kp_explanation_unified", side_effect=AssertionError("unified used outside scope")):
+                try:
+                    x.generate_key_phrase_explanation_en_verified(F.TEXT, w.out_path, style_prefix_override=STYLE)
+                except AssertionError:
+                    raise
+                except BaseException:
+                    pass
 
 
 # =====================================================================================================

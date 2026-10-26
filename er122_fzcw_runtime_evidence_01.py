@@ -2,7 +2,7 @@
 """FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01 Phase 2 runtime evidence driver(委任_02で実装。**本委任では実行しない**=mock testのみ。実行は別委任・費用承認後)。
 
 目的: 正式Production runner(`er026_family_z_fiction_production_runner_01.main`)を**同一プロセス内**で起動し(STOP確認・SDK入口STOP guard・cost loggerなど
-runner起動時のguardを全部通す)、Gateの出力を **NG方向にだけ** 上書きして、文脈・感情付きTTS -> 600秒cooldown -> 従来方式 の遷移を実TTS/実ASRで検証する。
+runner起動時のguardを全部通す)、Gateの出力を **NG方向にだけ** 上書きして、文脈・感情付きTTS -> 180秒cooldown(旧600秒。2026-10-26変更) -> 従来方式 の遷移を実TTS/実ASRで検証する。
 
 Gate迂回ではない理由(DESIGN_02 §H):
   - 注入口はProduction codeに無い(env/flag/設定dictなし)。本driverはProductionから参照されない独立scriptで、同一プロセス内のmodule属性を包むだけ。
@@ -40,7 +40,7 @@ CTX_MARK = "CONTEXT FOR THIS ONE LINE"
 #   rep: {clip_id: {ordinal,...}}  post: {clip_id: {ordinal,...}}(Adv: 減速後の統一judge再検証の呼出ordinal)
 CASE_DEFAULT_PLANS = {
     "E-1": {"path": "normal", "rep": {}, "post": {}},
-    "E-2": {"path": "forced_ng_fallback", "rep": {"*": [1, 2]}, "post": {}},          # attempt 1・2を強制NG -> 600秒 -> attempt 3(本物の判定)
+    "E-2": {"path": "forced_ng_fallback", "rep": {"*": [1, 2]}, "post": {}},          # attempt 1・2を強制NG -> 180秒 -> attempt 3(本物の判定)
     "E-3": {"path": "forced_ng_resume", "rep": {"*": [1, 2]}, "post": {}},           # E-2と同形 + cooldown中に自起動PIDをterminate -> 同一argsで再起動
     "E-4": {"path": "forced_ng_exhaust", "rep": {"*": [1, 2, 3]}, "post": {}},       # 3回すべて強制NG -> STOPPED -> HR Lock
     "E-5": {"path": "forced_ng_first_only", "rep": {"*": [1]}, "post": {}},          # 1回目だけ強制NG -> 2回目(ctx)で即時PASS(待機0) + n=1 NG後kill -> 再開

@@ -1131,7 +1131,7 @@ E2E_STAGES = ("seed_check", "writer", "std_adjust", "plan", "support", "kp",
               "tts_b1b", "tts_a2", "provision_shell", "gate", "assemble", "pages", "page_verify")
 E2E_STAGE_EST_JPY = {"writer": 22.0, "std_adjust": 8.0, "plan": 2.0,
                      "support": 8.0, "kp": 10.0, "tts_b1b": 40.0, "tts_a2": 40.0}
-E2E_TTS_CLIP_EST_JPY = 1.0              # clip単位guard(LRが走ると+約1円。事後は次clipのguardで検知)
+E2E_TTS_CLIP_EST_JPY = 2.0              # clip単位guard見積り。TTS統一委任_02(Opus R-6): 最悪clip=6TTS+ASR+LR LLM≒2円へ更新(旧1.0=最大4TTS想定)。事後は次clipのguardで検知
 E2E_KP_EXTRA_REGEN_NAMES = ("kp_expl_b1b", "kp_part1_b1b", "kp_part1_ja_b1b")   # 委任_14(Part 1 Vocabulary & Expressions): kp_part1_b1b追加
 LEGACY_STAGES = ("text", "keyphrase")
 

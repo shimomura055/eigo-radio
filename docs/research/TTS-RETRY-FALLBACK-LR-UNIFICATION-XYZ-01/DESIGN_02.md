@@ -38,7 +38,7 @@
 | ID | 採否 | 理由/実施 |
 |---|---|---|
 | R-1 | 採用 | legacy方式(`attempt_hook=None`)のZ Adv外側ループ: `generate_voice_body_wide_margin`のscope内分岐は`step(通算ordinal)`で判定(局所attempt番号ではなく`max_attempts`=残予算でも③前に180秒) |
-| R-2 | 採用 | `FamilyAUnchangedTest`はcommit後は常にPASSで保護にならないため、golden(`er127_golden_01.json`、変更前コードで生成)を証拠とする。変更した全leafのscope外呼出(新kwarg無し)+A runner `generate_a2_segments`の1経路を含める |
+| R-2 | 採用 | `FamilyAUnchangedTest`はcommit後は常にPASSで保護にならないため、golden(`er127_test_golden_01.json`、変更前コードで生成)を証拠とする。変更した全leafのscope外呼出(新kwarg無し)+A runner `generate_a2_segments`の1経路を含める |
 | R-3 | 採用 | 最終報告の星取表に「表外・現行維持(SHELL_EN 3行)」を明示 |
 | R-4 | 採用 | `IMPLEMENTATION_01.md`にTrial/tool(er113/er114/er118/er019_clobber_restore/validation_inheritance/er121_e1)がscope内で新flowになることを記録。scopeを使う既存testがleafを実sleepで通らないよう確認(`er127.RUNTIME`のclock/sleepをtestで置換できる。Productionにenv迂回口なし) |
 | R-5 | 委任_03で任意 | kill→resume実走(LR block内)は費用約数円。委任_03の判断 |

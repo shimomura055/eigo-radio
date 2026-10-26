@@ -14,7 +14,7 @@
 #   - 固有名詞アラーム(PNAP)/Run Entity Table/er109 scope は "Y" で入る(Family非依存の仕組み。er103/er109 の APPROVED_SCOPES に "Y" 追加済み)。
 #   - Chunk TTS: Y=適用(X方式=段落単位chunk+0.2秒ポーズ。ユーザー正式決定2026-10-25 USER_02 ①、YL-B08)。分割・親wav連結・親集約entry・整合検査・
 #     chunk別gain+0.2秒組立は共通module er117(chunk_tts)を直接importして呼ぶ(Yは segment ID規則と segment単位の呼出し配線のみ)。
-#     Adv(b1b)本文のみ(X同様、Std本文はchunk化しない)。分割はsegment内の段落単位。segment境界(話者切替)は結合しない。ZのB_r1方式は不採用。
+#     Adv(b1b)本文に加えStd(a2)本文もchunk対象(2026-10-26ユーザー正式承認。旧記述「Std本文はchunk化しない」は是正済み、U-11)。分割はsegment内の段落単位。segment境界(話者切替)は結合しない。ZのB_r1方式は不採用。
 #   - 中核数値v4/J2: 呼ばない(YL-B05)。In One Line/Comment 4/RF(Risk Flagger): 呼ばない(YL-C08/YL-C09/YL-B02)。
 #   - Std(a2)本文は X準拠で全segmentに6%減速(YL-A02)。共有 A2_SLOWDOWN_TARGET_SEGMENTS はYのIDを持たないため、Y独自の必須確認(check_std_slowdown)を行う。
 # ============================================================
@@ -47,6 +47,7 @@ import er103_pnap_runner_hooks_01 as pnap_hooks
 import er103_pronunciation_tts_supply_01 as pnap_supply   # noqa: F401  (PNAP供給はxr._pnap_supply経由で呼ぶ。共通moduleの存在・scope連動をtestで確認)
 import er109_xz_scope_01 as er109_scope
 import er121_family_y_structure_01 as ys
+import er127_tts_block_policy_01 as er127   # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02: 統一3回構成ブロック(180秒待機中のSTOP確認を登録)
 
 TTS_BACKEND = xr.FAMILY_X_APPROVED_PRODUCTION_TTS_BACKEND
 load_json, save_json, load_text, save_text = xr.load_json, xr.save_json, xr.load_text, xr.save_text
@@ -540,6 +541,12 @@ def _generate_y_body_segment_chunked_a2(plan: dict, cached, narration_dir: str, 
 
 @secondary_run_scope.with_secondary_run   # AUW 委任_05: run単位SecondaryCache+circuit breaker(Xと同じ共通hook)
 @y_family_scope("b1b")   # PNAP run scope(Y)+完成報告hook+Run Entity Table(YProvider)
+def _register_y_stop_check(theme_out_dir: str) -> None:
+    """統一3回構成ブロックの180秒待機・attempt境界でYのSTOP sentinel(<run>/STOP等)を確認する(TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02)。"""
+    import er062_family_z_structure_01 as _st
+    er127.register_stop_check(lambda where: _st.check_stop_sentinel(where, theme_out_dir))
+
+
 @er109_scope.family_scope("Y")   # er109 run scope(Y)。例外・STOP時もfinallyで復元
 def generate_y_b1_segments(theme_out_dir: str, *, tts_backend: str = TTS_BACKEND, style_profile: str, guard=None) -> dict:   # style_profile必須(既定値なし。OPEN-537: 供給漏れで黙ってdefaultになる経路を作らない)
     style_profile_mod.assert_profile_backend(style_profile, tts_backend)
@@ -547,6 +554,7 @@ def generate_y_b1_segments(theme_out_dir: str, *, tts_backend: str = TTS_BACKEND
     out_dir = f"{theme_out_dir}/b1b"
     narration_dir = f"{out_dir}/narration"
     os.makedirs(narration_dir, exist_ok=True)
+    _register_y_stop_check(theme_out_dir)
     reconcile_hr_approvals_for_request(out_dir, "b1b", style_profile, tts_backend)   # 課金前: Voice/Style不一致の旧HR承認をquarantine(OPEN-535)
     chunk_plans = _record_chunk_decision(out_dir, "b1b")      # 課金前: 適用表・plan・role解決・保存済みplanとの一致を確認(違反はSTOP)
     parts = load_json(f"{out_dir}/parts.json")
@@ -656,6 +664,7 @@ def generate_y_a2_segments(theme_out_dir: str, japanese_title: str, *, tts_backe
     out_dir = f"{theme_out_dir}/a2"
     narration_dir = f"{out_dir}/narration"
     os.makedirs(narration_dir, exist_ok=True)
+    _register_y_stop_check(theme_out_dir)
     reconcile_hr_approvals_for_request(out_dir, "a2", style_profile, tts_backend)   # 課金前: Voice/Style不一致の旧HR承認をquarantine(OPEN-535)
     chunk_plans = _record_chunk_decision(out_dir, "a2")       # 課金前: 適用表・plan・role解決・保存済みplanとの一致を確認(違反はSTOP)。Stdもchunk対象(2026-10-26ユーザー正式承認)
     parts = load_json(f"{out_dir}/parts.json")

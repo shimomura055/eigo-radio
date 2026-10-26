@@ -204,13 +204,13 @@ def _run_with_driver(env, tts, evals, case, **kw):
 
 def test_e2_forced_ng_1_2_then_cooldown_then_real_legacy_attempt(env):
     w, rec = _run_with_driver(env, [True, True, True, True], [OK, OK, OK, OK], "E-2")
-    # clip2: n=1,n=2を強制NG -> 600秒 -> n=3(従来方式・本物の判定=OK)。clip3: ordinal対象外ではない('*')ので同様
+    # clip2: n=1,n=2を強制NG -> 180秒 -> n=3(従来方式・本物の判定=OK)。clip3: ordinal対象外ではない('*')ので同様
     e2 = results(env, "a2")["full_story_part1_c2"]
     assert e2["status"] == "OK" and e2["dialogue_tts"]["final_mode"] == "legacy_fallback" and e2["dialogue_tts"]["n_started"] == 3
     prompts = [r for r in rec.requests if r["clip"] == "full_story_part1_c2"]
     assert [r["has_context"] for r in prompts] == [True, True, False]
     assert prompts[2]["prompt_sha256"] == drv.hashlib.sha256(legacy_prompt_for(story_plan("a2")[1]).encode("utf-8")).hexdigest()
-    assert abs(sum(env.clk.sleeps) - 1200.0) < 1e-6          # 2 clip x 600秒
+    assert abs(sum(env.clk.sleeps) - 360.0) < 1e-6          # 2 clip x 180秒
     assert len([o for o in rec.overrides if o["clip"] == "full_story_part1_c2"]) == 2
 
 

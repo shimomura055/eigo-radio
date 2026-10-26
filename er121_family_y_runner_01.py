@@ -33,7 +33,7 @@ APPROVED_BUDGET_MAX_JPY = 170.0          # 案件個別Cap(Fable判断 委任_02
 WARN_THRESHOLD_JPY = 100.0
 STAGES = ("seed_check", "text", "translate", "support", "kp", "tts_b1b", "tts_a2", "gate", "assemble", "pages", "page_verify")
 STAGE_EST_JPY = {"text": 45.0, "translate": 12.0, "support": 6.0, "kp": 10.0, "tts_b1b": 30.0, "tts_a2": 30.0}
-TTS_CLIP_EST_JPY = 1.0
+TTS_CLIP_EST_JPY = 2.0     # clip単位guard見積り。TTS統一委任_02(Opus R-6): 最悪clip=6TTS+ASR+LR LLM≒2円へ更新(旧1.0)
 # OPEN-537是正(FAMILY-Y-STYLE-PROFILE-FIX-01 委任_02): 旧 `STYLE_PROFILE = "default"` を撤去。Yのprofileは承認profile(_ya().Y_APPROVED_STYLE_PROFILE=fx_20261017)を
 # resolve_style_profile()で課金前に解決・固定記録(audit/style_profile.json)し、ctx.style_profileとして生成/Gate/組立へ透過する。
 LEVELS = ("b1b", "a2")

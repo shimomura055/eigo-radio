@@ -32,6 +32,7 @@ PRODUCTION_SCOPE_IMPORTERS = {
     "er078_reuse_value_guard_01.py", "er019_family_x_audio_production_runner_01.py", "er063_family_z_audio_01.py", "er019_family_x_clobber_restore_03.py",
     "er109_hr_lock_rejudge_01.py", "er109_wiring_signature_01.py", "er109_runtime_evidence_04_01.py",
     "er121_family_y_audio_01.py",   # FAMILY-Y-PRODUCTION-LAUNCH-01 02B: Y正式Productionの音声層(scope "Y"の入口を2箇所で呼ぶ。下のEXPECTED_SCOPE_CALLSで固定)
+    "er127_tts_block_policy_01.py",   # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02: unified_flow_active()=current_scope()の読取のみ(scope入口は呼ばない。単一読取関数)
     "er012_b_family_voices_production_01.py",   # OPEN-479(Fable承認2026-10-23): is_active_for_run()の読取のみ(scope入口は呼ばない)。会話clipのsegment_idをX/Z scope内だけに限定するため
 }
 # PM-REGRESSION-ISOLATION-HYGIENE-01 委任_01: DEV/Trial-only, not production-reachable(具体ファイル名のみ。glob・接頭辞での拡張禁止)。
