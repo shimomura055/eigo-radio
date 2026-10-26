@@ -126,6 +126,11 @@ class FamilyZVoiceMappingStop(FamilyZAudioStop):
     """Dialogue speakerに対応するVoiceが無い。"""
 
 
+class FamilyZDialogueCtxStop(FamilyZAudioStop):
+    """Z dialogue 文脈・感情付きTTS(OPEN-528、APPROVED_FOR_PRODUCTION 2026-10-26)の技術STOP(感情notes生成のLLM失敗[1回再試行後]・attempt state破損・
+    従来Dialogue Styleのsha不一致・STOP sentinel中のcooldown中断など)。承認不要・再開可(消費済み試行は永続stateに残り、再開で再実行されない)。"""
+
+
 def _read_text(path: str) -> str:
     with open(path, encoding="utf-8") as f:
         return f.read()
@@ -807,6 +812,11 @@ def build_reuse_key(spec: ClipSpec) -> dict:
         # 速度仕様v2(会話のみ速度処理が変わった)。旧仕様(Std=6%減速済み/Adv=未処理)の保存音声はこのkeyを持たず、不一致=新仕様として再利用されない。
         # 会話以外(Narrator・Preview・KP等)は速度処理が不変のため、keyを変えず既存の再利用を維持する。
         key["speed_profile"] = f"{Z_SPEED_PROFILE_VERSION}:{speed_profile_name(spec.level, spec.kind)}"
+        _dc = (spec.extra or {}).get("dialogue_ctx")
+        if _dc and _dc.get("policy") == "fz_ctx_v1":
+            # FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01(Opus M-5): 文脈・感情付きpolicyのrunでだけ方式識別を載せる(policy=legacy/未解決のdialogueはkeyバイト不変)。
+            # 文脈入力(前後セリフ・地の文の決定論抽出)のshaを含めるため、前後の台本が変われば当該clipだけ再生成される。LLM出力(notes)はrun内不変なのでkeyに入れない。
+            key["dialogue_tts"] = {"policy": _dc["policy"], "context_input_sha256": _dc["context_input_sha"]}
     ch = (spec.extra or {}).get("chunk")
     if ch:
         # chunk specにのみ追加(planner版・親・index・chunk数・ポーズ)。非chunk specのkeyはバイト不変=従来の再利用を壊さない。
@@ -866,6 +876,93 @@ def generate_or_reuse_z(cached_entry: dict | None, spec: ClipSpec, wav_path: str
 
 
 # ============================================================
+# 4-D. Z dialogue 文脈・感情付きTTS(FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01、OPEN-528、APPROVED_FOR_PRODUCTION 2026-10-26)
+#      ユーザー仕様: 1回目=文脈・感情付き、NG->即時2回目=文脈・感情付き、NG->600秒->3回目=従来方式(文脈・感情情報を完全除外)、総試行3回。
+#      設計=docs/research/FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01/DESIGN_02.md。X/Y/B/C/narrator/KPは一切変更しない(Zのdialogueだけ)。
+# ============================================================
+def prepare_dialogue_ctx(run_dir: str, level: str, plan: list, *, story_key: str = DEFAULT_SLUG, only_clips: set | None = None) -> dict:
+    """LLMを呼ばない前処理(Opus M-5)。(1)run単位のdialogue TTS policyを解決・保存 (2)policy=fz_ctx_v1のrunでdialogue specへ extra["dialogue_ctx"]
+    (policy・文脈入力sha・明示再生成信号)を付ける。感情notes(LLM)は最初のdialogue生成時にlevel単位で1回だけ作る(保存済みなら0)。
+    policy=legacy(既存run・ロールバック)ではspecに何も付けず現行と同一動作。"""
+    import er122_fz_ctx_policy_01 as pol
+    import er122_fz_ctx_notes_01 as notes
+    rec = pol.resolve_run_policy(run_dir, write=True)
+    dlg = [s for s in plan if s.kind == "dialogue"]
+    if rec["policy"] != pol.POLICY_CTX or not dlg:
+        return rec
+    level_dir = f"{run_dir}/{level}"
+    clips = notes.story_clips_from_plan(plan)
+    provider = notes.get_provider(level_dir, notes.resolve_story_key(story_key), clips)
+    for s in dlg:
+        s.extra["dialogue_ctx"] = {"policy": pol.POLICY_CTX, "context_input_sha": provider.context_input_sha(s.clip_id),
+                                   "explicit_regenerate": bool(only_clips and s.clip_id in only_clips), "level_dir": level_dir,
+                                   "run_dir": run_dir, "story_key": story_key}
+    return rec
+
+
+def generate_dialogue_ctx(spec: ClipSpec, out_path: str, text: str, dctx: dict) -> dict:
+    """dialogue 1 clipの文脈・感情付きTTS。共有ループ(er012_b.generate_voice_body_wide_margin)は単一コピーのまま、attempt_hook(policy)で
+    『attempt番号->Style』と『試行前後の記録』だけを差し込む。Std=単一呼出、Adv=外側ループ(減速後ASR再検証つき、通算TTS3回を共有)。"""
+    import er003_v1_n3_01_tts_generate as n3_tts
+    import er011_human_review_lock_01 as review_lock
+    import er012_b_family_voices_production_01 as bvoices
+    import er122_fz_ctx_notes_01 as notes
+    import er122_fz_ctx_policy_01 as pol
+
+    run_dir, level_dir = dctx["run_dir"], dctx["level_dir"]
+    adv = spec.level == "b1b"
+    chk = review_lock.check_before_generation(out_path, text, "en")
+    if not chk.get("proceed"):
+        # Human Review Lock済み(0 API): 既存のblock結果をそのまま返す。notes(LLM)もstateも触らない
+        return bvoices.generate_voice_body_wide_margin(text, out_path, spec.voice)
+    provider = notes.provider_for_level(level_dir)
+    sty = provider.style_for(spec.clip_id)       # level単位1 call(保存済みなら0)。失敗=技術STOP(全clip中立では続行しない)。TTS前
+    policy = pol.DialogueAttemptPolicy(
+        level_dir, spec.clip_id, text, sty["style"], sty["style_sha256"], out_path=out_path,
+        stop_check=lambda where: _check_stop_sentinel(run_dir, where),
+        explicit_regenerate=bool(dctx.get("explicit_regenerate")), consuming_regenerate_approval=bool(chk.get("consuming_regenerate_approval")))
+    saved = policy.saved_result()
+    if saved is not None:       # 確定直後〜checkpoint前に落ちた合格済みclip: 保存結果を採用(API 0。作り直さない)
+        return saved
+    budget_left = min(policy.remaining(), pol.MAX_TOTAL_ATTEMPTS - policy.prior_generations())
+    if not adv:
+        r = bvoices.generate_voice_body_wide_margin(text, out_path, spec.voice, max_attempts=policy.remaining(), attempt_hook=policy)
+        policy.mark_counted()
+    elif budget_left <= 0:
+        # 3回消費済み(または行会計で予算なし): 4回目を回さず、STOPPED+Review Lock(HR)で終える(0 API)
+        r = bvoices.generate_voice_body_wide_margin(text, out_path, spec.voice, max_attempts=0, attempt_hook=policy)
+        policy.mark_counted()
+    else:
+        passes = {"n": 0}
+
+        def gen(max_attempts):
+            if passes["n"] > 0:
+                policy.note_final_ng()      # 直前passが減速後検証でNG確定した時刻(cooldownの起点)
+            passes["n"] += 1
+            # Opus M-2: ループ内の番号と通算nの最終slotを一致させる(外側の行会計の残りと、policyの通算残りの小さい方)
+            ma = min(max_attempts, policy.remaining())
+            r_ = bvoices.generate_voice_body_wide_margin(text, out_path, spec.voice, max_attempts=ma, attempt_hook=policy)
+            policy.mark_counted()
+            return r_
+        r = n3_tts.generate_with_a2_slowdown_outer_loop(spec.clip_id, text, out_path, gen, slowdown_pct=Z_ADV_DIALOGUE_SLOWDOWN_PCT,
+                                                        prior_generations=policy.prior_generations())
+    if not isinstance(r, dict):
+        return r
+    extra = {"ctx_style_sha256": sty["style_sha256"], "context_input_sha256": sty["context_input_sha256"], "note_status": sty["note_status"],
+             "speaker_display_source": sty["speaker_display_source"], "emotion_prompt_sha256": sty["emotion_prompt_sha256"],
+             # Opus M-3(ii): 行会計で外側予算が先に尽きた/早期終了で従来方式(3回目)に到達せず終わった場合の記録(安全側=STOPPED->HR Lock)
+             "terminal_before_fallback": bool(r.get("status") != "OK" and policy.n_started < pol.MAX_TOTAL_ATTEMPTS)}
+    try:    # leakage検査は観測のみ(NG理由にしない。ASRの表記違いだけで再生成しない)
+        texts = [a.get("asr_text") for a in (r.get("attempts_log") or []) if isinstance(a, dict) and a.get("tts_mode") == "ctx"]
+        if policy.st["attempts"] and policy.st["attempts"][-1].get("mode") == "ctx":
+            extra["leakage"] = notes.leakage_all_attempts(texts, r.get("asr_text"), sty["ctx"], sty["note"])
+    except Exception as e:      # 観測の失敗で生成結果を失わない
+        extra["leakage"] = {"observation_only": True, "error": str(e)}
+    r["dialogue_tts"] = policy.evidence(extra)
+    return policy.finish(r)
+
+
+# ============================================================
 # 5. 実TTS generator(遅延import、testではgeneratorsを差し替える)
 # ============================================================
 def _pnap_supply(original: str, shaped: str) -> str:
@@ -916,6 +1013,10 @@ def real_generators() -> dict:
 
     def dialogue(spec, out_path):
         text = _norm_for_tts(spec)
+        _dctx = (spec.extra or {}).get("dialogue_ctx")
+        if _dctx and _dctx.get("policy") == "fz_ctx_v1":
+            # FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01(APPROVED_FOR_PRODUCTION 2026-10-26): 新規runのdialogueは文脈・感情付きTTSが標準(ctx->ctx->600秒->従来方式、総3回)
+            return generate_dialogue_ctx(spec, out_path, text, _dctx)
         if spec.level == "b1b":
             # FAMILY-Z-DIALOGUE-SPEED-PRODUCTION-WIRING-01(速度仕様v2): Adv会話は生成後に約6%高速化(atempo=1.06、ピッチ保持。Trial Bと同一関数・係数)。
             # 高速化後の音声を統一judgeで再検証し、NGなら通算TTS3回の残予算で取り直す(旧Std減速と同じ外側ループ=既存のretry上限・ASR検査を維持)。
@@ -1046,7 +1147,7 @@ def extract_attempt_evidence(result: dict) -> list:
                 continue
             sp = a.get("style_prefix")
             meta = _read_attempt_meta(a.get("attempt_audio_path"))
-            out.append({
+            row = {
                 "phase": phase, "attempt": a.get("attempt"),
                 "instruction_type": a.get("instruction_type"),
                 "instruction_label": a.get("instruction_label") or a.get("instruction_type"),
@@ -1055,7 +1156,10 @@ def extract_attempt_evidence(result: dict) -> list:
                 "tts_model_id": a.get("tts_model_id") or meta.get("model"), "voice": a.get("voice") or meta.get("voice"),
                 "audio_classification": a.get("audio_classification"), "verified": a.get("verified"),
                 "asr_text": a.get("asr_text"),
-            })
+            }
+            if a.get("tts_mode"):    # additive(dialogue文脈・感情付きTTSのrowだけ。旧rowの形は不変)
+                row.update({k: a.get(k) for k in ("tts_mode", "overall_attempt_n", "tts_mode_effective") if a.get(k) is not None})
+            out.append(row)
     return out
 
 
@@ -1135,7 +1239,7 @@ def build_entry(spec: ClipSpec, out_path: str, result: dict, *, human_approved: 
         "role_style_key": spec.role_key, "model_ids_measured": model_ids,
         "style": {"instruction_label": FAMILY_Z_ROLE_STYLE[spec.role_key]["style_label"] if spec.kind != "dialogue"
                   else FAMILY_Z_ROLE_STYLE[spec.role_key]["style_label"],
-                  "style_prefix_sha256": style_sha, "effective_style_prefix_sha256": _effective_style_sha(spec, style_sha),
+                  "style_prefix_sha256": style_sha, "effective_style_prefix_sha256": _effective_style_sha_for_result(spec, style_sha, result),
                   "fallback_used": bool(result.get("fallback_used") or fallback_attempts),
                   "fallback_attempts": [{"instruction_label": a["instruction_label"],
                                          "style_prefix_sha256": a["style_prefix_sha256"],
@@ -1150,6 +1254,8 @@ def build_entry(spec: ClipSpec, out_path: str, result: dict, *, human_approved: 
     }
     if result.get("kp_dual_check") is not None:   # KP3V(additive): KP英語phraseのみ。両Provider PASSの証跡
         entry["kp_dual_check"] = result["kp_dual_check"]
+    if isinstance(result.get("dialogue_tts"), dict):   # FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01(additive): dialogue文脈・感情付きTTSのpolicy・試行・最終方式の証跡
+        entry["dialogue_tts"] = result["dialogue_tts"]
     if os.path.exists(out_path):
         try:
             entry["duration_seconds"] = round(_wav_duration(out_path), 3)
@@ -1167,6 +1273,14 @@ def _effective_style_sha(spec: ClipSpec, style_sha):
         return style_prefix_sha256(p9a.ENGLISH_STYLE_PREFIX)
     except Exception:
         return None
+
+
+def _effective_style_sha_for_result(spec: ClipSpec, style_sha, result: dict):
+    """採用された試行の実効Style sha(Opus M-8)。文脈・感情付きで採用したclipは ctx style のsha、従来方式fallback/minimal fallbackは既定Dialogue Styleのsha。"""
+    dt = result.get("dialogue_tts") if isinstance(result, dict) else None
+    if isinstance(dt, dict) and dt.get("final_mode") == "ctx" and dt.get("ctx_style_sha256"):
+        return dt["ctx_style_sha256"]
+    return _effective_style_sha(spec, style_sha)
 
 
 def _diff_summary(before: str, after: str) -> str:
@@ -1406,6 +1520,8 @@ def _run_tts_stage_impl(run_dir: str, level: str, plan: list, *, generators: dic
     if _chunk_plans:
         # 再計画禁止(resume): 同一本文・同一版で保存済みplanと分割が食い違えば課金前にSTOP(planは原稿の純関数)
         chunk_tts.reconcile_saved_plan(f"{level_dir}/audit/chunk_plan_{level}.json", _chunk_plans)
+    # FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01(Opus M-5): LLMを呼ばないrun単位policy解決と文脈入力の付与を、cached読込・reuse_key評価(prune/migrate/再利用)より前に行う。
+    prepare_dialogue_ctx(run_dir, level, plan, story_key=story_key, only_clips=only_clips)
     cached = load_results(level_dir)
     cached = _merge_checkpoint(cached, load_checkpoint(level_dir))   # 委任_10: process中断時もOK clipを再利用(再課金しない)
     cached, _speed_migration = migrate_legacy_dialogue_speed(cached, plan, run_dir, level)   # 速度仕様v2: 旧会話entryをTTS再生成なしで移行(ASRはAdvのみ)
@@ -1513,6 +1629,7 @@ def _evidence_row(spec: ClipSpec, out_path: str, entry: dict) -> dict:
         "speed_profile": entry.get("speed_profile"),
         "reused": bool(entry.get("reused_from_previous_run")), "duration_seconds": entry.get("duration_seconds"),
         "cost_jpy": entry.get("cost_jpy"),
+        **({"dialogue_tts": entry["dialogue_tts"]} if isinstance(entry.get("dialogue_tts"), dict) else {}),
     }
 
 

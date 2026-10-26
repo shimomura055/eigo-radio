@@ -432,7 +432,11 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
     return result
 
 def generate_with_a2_slowdown_outer_loop(name: str, tts_input: str, out_path: str, gen_fn,
-                                         max_slowdown_attempts: int = 3, slowdown_pct: float | None = None) -> dict:
+                                         max_slowdown_attempts: int = 3, slowdown_pct: float | None = None,
+                                         # FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01(Opus M-1): 前プロセスで既にrecord_outcome済み(計上済み)の生成行数。
+                                         # 中断再開時に外側ループの通算TTS予算(3回)を実消費に合わせる(前例: generate_a2_segment_with_slowdown内のprior_generations)。
+                                         # 既定0で既存の全呼出は不変。
+                                         *, prior_generations: int = 0) -> dict:
     """AUW 委任_06c(OF-AUW-C-08、ユーザー原文L204「最大3回のTTS生成フロー」): 外側ループを持たなかった
     Dialogue(Std)[`er063.dialogue` a2]/Voices A2[`er012_b_family_voices_a2_production_01`の`*_with_a2_slowdown`]向けの、
     `generate_a2_segment_with_slowdown`と同じ構造の外側ループ。`gen_fn(max_attempts)->result dict`(減速前の通常ペース生成。
@@ -441,7 +445,7 @@ def generate_with_a2_slowdown_outer_loop(name: str, tts_input: str, out_path: st
     (話者帰属は呼出側)・閾値は不変。KP英語phraseの4回構成(2026-09-01ユーザー決定)は本関数の対象外(既存例外として維持)。"""
     narration_dir = out_path.rsplit("/", 1)[0]
     total_budget = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS
-    generations_used = 0
+    generations_used = prior_generations
     slowdown_attempts_log = []
     result = None
     final_post_slowdown_ng = False

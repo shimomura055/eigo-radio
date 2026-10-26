@@ -1,0 +1,368 @@
+E......EEE......................E..E..EE....E.E...E.EEEE...................[run_project_regression] repo root: C:\Users\tensh\eigo-radio
+[run_project_regression] discovery pattern: er118*_test_*.py
+[run_project_regression] discovered 2 test file(s):
+  - er118_fz_dialogue_context_tts_trial_01_test_01.py
+  - er118_fz_full_episode_trial_01_test_01.py
+[run_project_regression] collected 89 test(s)
+.E...E.......usage: run_project_regression.py [-h]
+                                 {inventory,budget,llm,candidates,preflight,gen,assemble,analyze,dryrun-sinks,noise-band,page-all,analyze-all} ...
+run_project_regression.py: error: unrecognized arguments: --record-m5-stop
+.
+======================================================================
+ERROR: test_capture_records_prompt_and_restores_env_and_factory (er118_fz_dialogue_context_tts_trial_01_test_01.CaptureTests.test_capture_records_prompt_and_restores_env_and_factory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01_test_01.py", line 362, in test_capture_records_prompt_and_restores_env_and_factory
+    import er006_batch_tts_wiring_01 as bw
+  File "C:\Users\tensh\eigo-radio\er006_batch_tts_wiring_01.py", line 46, in <module>
+    from google.genai import types
+ModuleNotFoundError: No module named 'google.genai'
+
+======================================================================
+ERROR: test_analyze_all_end_to_end_with_fake_generation (er118_fz_dialogue_context_tts_trial_01_test_01.GenerateArmInjectionTests.test_analyze_all_end_to_end_with_fake_generation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01_test_01.py", line 489, in test_analyze_all_end_to_end_with_fake_generation
+    t.build_phase0_artifacts()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 605, in build_phase0_artifacts
+    base_prompt = build_prompt(tts_text_for(clip), style_for_arm("base", ctx, None))
+                               ~~~~~~~~~~~~^^^^^^
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 419, in tts_text_for
+    return z._norm_for_tts(spec)
+           ~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\tensh\eigo-radio\er063_family_z_audio_01.py", line 880, in _norm_for_tts
+    import er003_v1_n3_01_tts_generate as n3_tts
+  File "C:\Users\tensh\eigo-radio\er003_v1_n3_01_tts_generate.py", line 33, in <module>
+    import er003_v1_crosslevel_audio_02_common as c
+  File "C:\Users\tensh\eigo-radio\er003_v1_crosslevel_audio_02_common.py", line 32, in <module>
+    import er003_b1_p9a_audio as p9a
+  File "C:\Users\tensh\eigo-radio\er003_b1_p9a_audio.py", line 52, in <module>
+    import er002_gemini_client as gclient
+  File "C:\Users\tensh\eigo-radio\er002_gemini_client.py", line 20, in <module>
+    from google import genai
+ImportError: cannot import name 'genai' from 'google' (unknown location)
+
+======================================================================
+ERROR: test_arms_pass_expected_style_override (er118_fz_dialogue_context_tts_trial_01_test_01.GenerateArmInjectionTests.test_arms_pass_expected_style_override)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01_test_01.py", line 452, in test_arms_pass_expected_style_override
+    t.generate_arm("base", 1, gen_fn=self._fake(calls), only=["full_story_part2_c7"])
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 939, in generate_arm
+    _run()
+    ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 885, in _run
+    style = style_for_arm(arm, ctx, note_for_arm)
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 401, in style_for_arm
+    b = base_style()
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 354, in base_style
+    import er003_b1_p9a_audio as p9a
+  File "C:\Users\tensh\eigo-radio\er003_b1_p9a_audio.py", line 52, in <module>
+    import er002_gemini_client as gclient
+  File "C:\Users\tensh\eigo-radio\er002_gemini_client.py", line 20, in <module>
+    from google import genai
+ImportError: cannot import name 'genai' from 'google' (unknown location)
+
+======================================================================
+ERROR: test_m5_ng_clip_does_not_abort_remaining_clips (er118_fz_dialogue_context_tts_trial_01_test_01.GenerateArmInjectionTests.test_m5_ng_clip_does_not_abort_remaining_clips)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01_test_01.py", line 480, in test_m5_ng_clip_does_not_abort_remaining_clips
+    r = t.generate_arm("base", 1, gen_fn=gen)
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 939, in generate_arm
+    _run()
+    ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 885, in _run
+    style = style_for_arm(arm, ctx, note_for_arm)
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 401, in style_for_arm
+    b = base_style()
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 354, in base_style
+    import er003_b1_p9a_audio as p9a
+  File "C:\Users\tensh\eigo-radio\er003_b1_p9a_audio.py", line 52, in <module>
+    import er002_gemini_client as gclient
+  File "C:\Users\tensh\eigo-radio\er002_gemini_client.py", line 20, in <module>
+    from google import genai
+ImportError: cannot import name 'genai' from 'google' (unknown location)
+
+======================================================================
+ERROR: test_page_has_noindex_and_no_dummy_audio_for_missing_arm (er118_fz_dialogue_context_tts_trial_01_test_01.MeasureAndPageTests.test_page_has_noindex_and_no_dummy_audio_for_missing_arm)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01_test_01.py", line 519, in test_page_has_noindex_and_no_dummy_audio_for_missing_arm
+    t.build_phase0_artifacts()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 605, in build_phase0_artifacts
+    base_prompt = build_prompt(tts_text_for(clip), style_for_arm("base", ctx, None))
+                               ~~~~~~~~~~~~^^^^^^
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 419, in tts_text_for
+    return z._norm_for_tts(spec)
+           ~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\tensh\eigo-radio\er063_family_z_audio_01.py", line 880, in _norm_for_tts
+    import er003_v1_n3_01_tts_generate as n3_tts
+  File "C:\Users\tensh\eigo-radio\er003_v1_n3_01_tts_generate.py", line 33, in <module>
+    import er003_v1_crosslevel_audio_02_common as c
+  File "C:\Users\tensh\eigo-radio\er003_v1_crosslevel_audio_02_common.py", line 32, in <module>
+    import er003_b1_p9a_audio as p9a
+  File "C:\Users\tensh\eigo-radio\er003_b1_p9a_audio.py", line 52, in <module>
+    import er002_gemini_client as gclient
+  File "C:\Users\tensh\eigo-radio\er002_gemini_client.py", line 20, in <module>
+    from google import genai
+ImportError: cannot import name 'genai' from 'google' (unknown location)
+
+======================================================================
+ERROR: test_production_reuse_key_cannot_distinguish_styles_but_trial_key_can (er118_fz_dialogue_context_tts_trial_01_test_01.ReuseSeparationTests.test_production_reuse_key_cannot_distinguish_styles_but_trial_key_can)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01_test_01.py", line 111, in test_production_reuse_key_cannot_distinguish_styles_but_trial_key_can
+    sb, sc = t.style_for_arm("base", ctx, None), t.style_for_arm("ctx", ctx, {"state": "x", "scene": "", "reaction": ""})
+             ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 401, in style_for_arm
+    b = base_style()
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 354, in base_style
+    import er003_b1_p9a_audio as p9a
+  File "C:\Users\tensh\eigo-radio\er003_b1_p9a_audio.py", line 52, in <module>
+    import er002_gemini_client as gclient
+  File "C:\Users\tensh\eigo-radio\er002_gemini_client.py", line 20, in <module>
+    from google import genai
+ImportError: cannot import name 'genai' from 'google' (unknown location)
+
+======================================================================
+ERROR: test_round2_cap_lookahead_stops_before_exceeding_without_api (er118_fz_dialogue_context_tts_trial_01_test_01.Round2ConfigTests.test_round2_cap_lookahead_stops_before_exceeding_without_api)
+Round 2追加のCap先読み: 実績+次clip見積>Capなら、API呼出前にSTOP(clip未生成)。TTS/LLMは呼ばない。
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01_test_01.py", line 646, in test_round2_cap_lookahead_stops_before_exceeding_without_api
+    import er019_family_x_audio_production_runner_01 as runner
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 45, in <module>
+    import er003_v1_crosslevel_audio_02_common as crosslevel_common
+  File "C:\Users\tensh\eigo-radio\er003_v1_crosslevel_audio_02_common.py", line 32, in <module>
+    import er003_b1_p9a_audio as p9a
+  File "C:\Users\tensh\eigo-radio\er003_b1_p9a_audio.py", line 52, in <module>
+    import er002_gemini_client as gclient
+  File "C:\Users\tensh\eigo-radio\er002_gemini_client.py", line 20, in <module>
+    from google import genai
+ImportError: cannot import name 'genai' from 'google' (unknown location)
+
+======================================================================
+ERROR: test_round2_combined_page (er118_fz_dialogue_context_tts_trial_01_test_01.Round2ConfigTests.test_round2_combined_page)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01_test_01.py", line 694, in test_round2_combined_page
+    t.build_phase0_artifacts()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 605, in build_phase0_artifacts
+    base_prompt = build_prompt(tts_text_for(clip), style_for_arm("base", ctx, None))
+                               ~~~~~~~~~~~~^^^^^^
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 419, in tts_text_for
+    return z._norm_for_tts(spec)
+           ~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\tensh\eigo-radio\er063_family_z_audio_01.py", line 880, in _norm_for_tts
+    import er003_v1_n3_01_tts_generate as n3_tts
+  File "C:\Users\tensh\eigo-radio\er003_v1_n3_01_tts_generate.py", line 33, in <module>
+    import er003_v1_crosslevel_audio_02_common as c
+  File "C:\Users\tensh\eigo-radio\er003_v1_crosslevel_audio_02_common.py", line 32, in <module>
+    import er003_b1_p9a_audio as p9a
+  File "C:\Users\tensh\eigo-radio\er003_b1_p9a_audio.py", line 52, in <module>
+    import er002_gemini_client as gclient
+  File "C:\Users\tensh\eigo-radio\er002_gemini_client.py", line 20, in <module>
+    from google import genai
+ImportError: cannot import name 'genai' from 'google' (unknown location)
+
+======================================================================
+ERROR: test_round2_single_page_links_and_title (er118_fz_dialogue_context_tts_trial_01_test_01.Round2ConfigTests.test_round2_single_page_links_and_title)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01_test_01.py", line 720, in test_round2_single_page_links_and_title
+    t.build_phase0_artifacts()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 605, in build_phase0_artifacts
+    base_prompt = build_prompt(tts_text_for(clip), style_for_arm("base", ctx, None))
+                               ~~~~~~~~~~~~^^^^^^
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 419, in tts_text_for
+    return z._norm_for_tts(spec)
+           ~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\tensh\eigo-radio\er063_family_z_audio_01.py", line 880, in _norm_for_tts
+    import er003_v1_n3_01_tts_generate as n3_tts
+  File "C:\Users\tensh\eigo-radio\er003_v1_n3_01_tts_generate.py", line 33, in <module>
+    import er003_v1_crosslevel_audio_02_common as c
+  File "C:\Users\tensh\eigo-radio\er003_v1_crosslevel_audio_02_common.py", line 32, in <module>
+    import er003_b1_p9a_audio as p9a
+  File "C:\Users\tensh\eigo-radio\er003_b1_p9a_audio.py", line 52, in <module>
+    import er002_gemini_client as gclient
+  File "C:\Users\tensh\eigo-radio\er002_gemini_client.py", line 20, in <module>
+    from google import genai
+ImportError: cannot import name 'genai' from 'google' (unknown location)
+
+======================================================================
+ERROR: test_round2_style_and_context_invariants (er118_fz_dialogue_context_tts_trial_01_test_01.Round2ConfigTests.test_round2_style_and_context_invariants)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01_test_01.py", line 599, in test_round2_style_and_context_invariants
+    self.assertEqual(t.sha_text(t.base_style()), t.EXPECTED_BASE_STYLE_SHA)
+                                ~~~~~~~~~~~~^^
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 354, in base_style
+    import er003_b1_p9a_audio as p9a
+  File "C:\Users\tensh\eigo-radio\er003_b1_p9a_audio.py", line 52, in <module>
+    import er002_gemini_client as gclient
+  File "C:\Users\tensh\eigo-radio\er002_gemini_client.py", line 20, in <module>
+    from google import genai
+ImportError: cannot import name 'genai' from 'google' (unknown location)
+
+======================================================================
+ERROR: test_base_style_is_production_default_and_prompt_matches_recorded_sha (er118_fz_dialogue_context_tts_trial_01_test_01.StyleTests.test_base_style_is_production_default_and_prompt_matches_recorded_sha)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01_test_01.py", line 52, in test_base_style_is_production_default_and_prompt_matches_recorded_sha
+    self.assertEqual(t.sha_text(t.base_style()), t.EXPECTED_BASE_STYLE_SHA)
+                                ~~~~~~~~~~~~^^
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 354, in base_style
+    import er003_b1_p9a_audio as p9a
+  File "C:\Users\tensh\eigo-radio\er003_b1_p9a_audio.py", line 52, in <module>
+    import er002_gemini_client as gclient
+  File "C:\Users\tensh\eigo-radio\er002_gemini_client.py", line 20, in <module>
+    from google import genai
+ImportError: cannot import name 'genai' from 'google' (unknown location)
+
+======================================================================
+ERROR: test_ctx_differs_from_base_only_by_context_block (er118_fz_dialogue_context_tts_trial_01_test_01.StyleTests.test_ctx_differs_from_base_only_by_context_block)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01_test_01.py", line 62, in test_ctx_differs_from_base_only_by_context_block
+    b = t.build_prompt(t.tts_text_for(clip), t.style_for_arm("base", ctx, None))
+                       ~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 419, in tts_text_for
+    return z._norm_for_tts(spec)
+           ~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\tensh\eigo-radio\er063_family_z_audio_01.py", line 880, in _norm_for_tts
+    import er003_v1_n3_01_tts_generate as n3_tts
+  File "C:\Users\tensh\eigo-radio\er003_v1_n3_01_tts_generate.py", line 33, in <module>
+    import er003_v1_crosslevel_audio_02_common as c
+  File "C:\Users\tensh\eigo-radio\er003_v1_crosslevel_audio_02_common.py", line 32, in <module>
+    import er003_b1_p9a_audio as p9a
+  File "C:\Users\tensh\eigo-radio\er003_b1_p9a_audio.py", line 52, in <module>
+    import er002_gemini_client as gclient
+  File "C:\Users\tensh\eigo-radio\er002_gemini_client.py", line 20, in <module>
+    from google import genai
+ImportError: cannot import name 'genai' from 'google' (unknown location)
+
+======================================================================
+ERROR: test_target_text_not_in_context_block_and_text_section_only_target (er118_fz_dialogue_context_tts_trial_01_test_01.StyleTests.test_target_text_not_in_context_block_and_text_section_only_target)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01_test_01.py", line 77, in test_target_text_not_in_context_block_and_text_section_only_target
+    c = t.build_prompt(t.tts_text_for(clip), t.style_for_arm("ctx", ctx, None))
+                       ~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 419, in tts_text_for
+    return z._norm_for_tts(spec)
+           ~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\tensh\eigo-radio\er063_family_z_audio_01.py", line 880, in _norm_for_tts
+    import er003_v1_n3_01_tts_generate as n3_tts
+  File "C:\Users\tensh\eigo-radio\er003_v1_n3_01_tts_generate.py", line 33, in <module>
+    import er003_v1_crosslevel_audio_02_common as c
+  File "C:\Users\tensh\eigo-radio\er003_v1_crosslevel_audio_02_common.py", line 32, in <module>
+    import er003_b1_p9a_audio as p9a
+  File "C:\Users\tensh\eigo-radio\er003_b1_p9a_audio.py", line 52, in <module>
+    import er002_gemini_client as gclient
+  File "C:\Users\tensh\eigo-radio\er002_gemini_client.py", line 20, in <module>
+    from google import genai
+ImportError: cannot import name 'genai' from 'google' (unknown location)
+
+======================================================================
+ERROR: test_budget_within_autonomous_window (er118_fz_full_episode_trial_01_test_01.BudgetTests.test_budget_within_autonomous_window)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_full_episode_trial_01_test_01.py", line 168, in test_budget_within_autonomous_window
+    b = [m.budget_case(w, lv) for w, lv in m.CASES]
+         ~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er118_fz_full_episode_trial_01.py", line 109, in w
+    return fn(work, level, *a, **kw)
+  File "C:\Users\tensh\eigo-radio\er118_fz_full_episode_trial_01.py", line 274, in budget_case
+    txt = t.tts_text_for(x)
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 419, in tts_text_for
+    return z._norm_for_tts(spec)
+           ~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\tensh\eigo-radio\er063_family_z_audio_01.py", line 880, in _norm_for_tts
+    import er003_v1_n3_01_tts_generate as n3_tts
+  File "C:\Users\tensh\eigo-radio\er003_v1_n3_01_tts_generate.py", line 33, in <module>
+    import er003_v1_crosslevel_audio_02_common as c
+  File "C:\Users\tensh\eigo-radio\er003_v1_crosslevel_audio_02_common.py", line 32, in <module>
+    import er003_b1_p9a_audio as p9a
+  File "C:\Users\tensh\eigo-radio\er003_b1_p9a_audio.py", line 52, in <module>
+    import er002_gemini_client as gclient
+  File "C:\Users\tensh\eigo-radio\er002_gemini_client.py", line 20, in <module>
+    from google import genai
+ImportError: cannot import name 'genai' from 'google' (unknown location)
+
+======================================================================
+ERROR: test_context_extraction_runs_for_every_dialogue_clip (er118_fz_full_episode_trial_01_test_01.ConfigureTests.test_context_extraction_runs_for_every_dialogue_clip)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_full_episode_trial_01_test_01.py", line 74, in test_context_extraction_runs_for_every_dialogue_clip
+    prompt = t.build_prompt(t.tts_text_for(x), t.style_for_arm("ctx", ctx, None))
+                            ~~~~~~~~~~~~~~^^^
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 419, in tts_text_for
+    return z._norm_for_tts(spec)
+           ~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\tensh\eigo-radio\er063_family_z_audio_01.py", line 880, in _norm_for_tts
+    import er003_v1_n3_01_tts_generate as n3_tts
+  File "C:\Users\tensh\eigo-radio\er003_v1_n3_01_tts_generate.py", line 33, in <module>
+    import er003_v1_crosslevel_audio_02_common as c
+  File "C:\Users\tensh\eigo-radio\er003_v1_crosslevel_audio_02_common.py", line 32, in <module>
+    import er003_b1_p9a_audio as p9a
+  File "C:\Users\tensh\eigo-radio\er003_b1_p9a_audio.py", line 52, in <module>
+    import er002_gemini_client as gclient
+  File "C:\Users\tensh\eigo-radio\er002_gemini_client.py", line 20, in <module>
+    from google import genai
+ImportError: cannot import name 'genai' from 'google' (unknown location)
+
+======================================================================
+ERROR: test_gen_case_injected_isolated_and_no_forbidden_round2_calls (er118_fz_full_episode_trial_01_test_01.Phase1bGuardTests.test_gen_case_injected_isolated_and_no_forbidden_round2_calls)
+M-6: Round 1/2 moduleのglobal依存関数を例外化しても gen が通る(本module側再実装)。書込みは(差替えた)OUT_ROOT配下のみ、clip別dirに result.json。
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_full_episode_trial_01_test_01.py", line 432, in test_gen_case_injected_isolated_and_no_forbidden_round2_calls
+    r = m.gen_case("melos", "a2", gen_fn_factory=factory, only=None)
+  File "C:\Users\tensh\eigo-radio\er118_fz_full_episode_trial_01.py", line 1081, in gen_case
+    sec_scope.with_secondary_run(scope.family_scope("Z")(_run))(gen_dir(work, level, "_"))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er078_secondary_run_scope_01.py", line 68, in wrapper
+    return fn(*args, **kwargs)
+  File "C:\Users\tensh\eigo-radio\er109_xz_scope_01.py", line 73, in wrapper
+    return fn(*args, **kwargs)
+  File "C:\Users\tensh\eigo-radio\er118_fz_full_episode_trial_01.py", line 1016, in _run
+    style = t.style_for_arm("ctx", ctx, note)
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 401, in style_for_arm
+    b = base_style()
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 354, in base_style
+    import er003_b1_p9a_audio as p9a
+  File "C:\Users\tensh\eigo-radio\er003_b1_p9a_audio.py", line 52, in <module>
+    import er002_gemini_client as gclient
+  File "C:\Users\tensh\eigo-radio\er002_gemini_client.py", line 20, in <module>
+    from google import genai
+ImportError: cannot import name 'genai' from 'google' (unknown location)
+
+======================================================================
+ERROR: test_prod_inputs_a2_matches_runner_load_level_inputs (er118_fz_full_episode_trial_01_test_01.Phase1bGuardTests.test_prod_inputs_a2_matches_runner_load_level_inputs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_full_episode_trial_01_test_01.py", line 272, in test_prod_inputs_a2_matches_runner_load_level_inputs
+    ref, mine = r.load_level_inputs(ctx, lv), m.prod_inputs(w, lv)
+                ~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er026_family_z_fiction_production_runner_01.py", line 2286, in load_level_inputs
+    import er026_family_z_src_posthoc_01 as _srcz
+  File "C:\Users\tensh\eigo-radio\er026_family_z_src_posthoc_01.py", line 25, in <module>
+    import er030_key_phrase_db_hybrid_core_01 as core
+  File "C:\Users\tensh\eigo-radio\er030_key_phrase_db_hybrid_core_01.py", line 50, in <module>
+    import wordfreq
+ModuleNotFoundError: No module named 'wordfreq'
+
+----------------------------------------------------------------------
+Ran 89 tests in 5.383s
+
+FAILED (errors=17)
+{}
+{}
+[run_project_regression] collected=89 passed=72 failed=0 errors=17 skipped=0
+[run_project_regression] summary written: docs/research/FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01/baseline_regression/base_er118.json

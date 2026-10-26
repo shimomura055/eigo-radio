@@ -1,0 +1,86 @@
+E.....................................{
+ "stop": false,
+ "applicable": [],
+ "notices": [
+  {
+   "path": "C:/Users/tensh/eigo-radio/docs/pm/delegation_log/2026-10-12_FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01_STOP_NOTICE.md",
+   "applies": false,
+   "rule": "a_status_inactive"
+  }
+ ]
+}
+E....................................[run_project_regression] repo root: C:\Users\tensh\eigo-radio
+[run_project_regression] discovery pattern: er118*_test_*.py
+[run_project_regression] discovered 2 test file(s):
+  - er118_fz_dialogue_context_tts_trial_01_test_01.py
+  - er118_fz_full_episode_trial_01_test_01.py
+[run_project_regression] collected 89 test(s)
+.[GEN] melos/a2 full_story_part1_c2 status=OK calls=0 gens=1 adopt=False cost=0.0 t=0.01s
+[GEN] melos/a2 full_story_part1_c4 status=OK calls=0 gens=1 adopt=False cost=0.0 t=0.01s
+[GEN] melos/a2 full_story_part1_c6 status=OK calls=0 gens=1 adopt=False cost=0.0 t=0.01s
+[GEN] melos/a2 full_story_part1_c8 status=OK calls=0 gens=1 adopt=False cost=0.0 t=0.01s
+[GEN] melos/a2 full_story_part1_c10 status=OK calls=0 gens=1 adopt=False cost=0.0 t=0.01s
+[GEN] melos/a2 full_story_part3_c2 status=OK calls=0 gens=1 adopt=False cost=0.0 t=0.01s
+[GEN] melos/a2 full_story_part3_c4 status=OK calls=0 gens=1 adopt=False cost=0.0 t=0.01s
+[GEN] melos/a2 full_story_part3_c6 status=OK calls=0 gens=1 adopt=False cost=0.0 t=0.01s
+[GEN] melos/a2 full_story_part3_c8 status=OK calls=0 gens=1 adopt=False cost=0.0 t=0.01s
+[GEN] melos/a2 full_story_part3_c10 status=OK calls=0 gens=1 adopt=False cost=0.0 t=0.01s
+....E.......usage: run_project_regression.py [-h]
+                                 {inventory,budget,llm,candidates,preflight,gen,assemble,analyze,dryrun-sinks,noise-band,page-all,analyze-all} ...
+run_project_regression.py: error: unrecognized arguments: --record-m5-stop
+.
+======================================================================
+ERROR: test_capture_records_prompt_and_restores_env_and_factory (er118_fz_dialogue_context_tts_trial_01_test_01.CaptureTests.test_capture_records_prompt_and_restores_env_and_factory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01_test_01.py", line 371, in test_capture_records_prompt_and_restores_env_and_factory
+    fn = bw.make_batch_tts_call_fn(t.TTS_MODEL, "Zephyr")
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 634, in factory
+    sc = gclient.build_speech_config(voice_name)
+  File "C:\Users\tensh\eigo-radio\er002_gemini_client.py", line 34, in build_speech_config
+    return types.SpeechConfig(
+           ^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'types' has no attribute 'SpeechConfig'
+
+======================================================================
+ERROR: test_round2_cap_lookahead_stops_before_exceeding_without_api (er118_fz_dialogue_context_tts_trial_01_test_01.Round2ConfigTests.test_round2_cap_lookahead_stops_before_exceeding_without_api)
+Round 2追加のCap先読み: 実績+次clip見積>Capなら、API呼出前にSTOP(clip未生成)。TTS/LLMは呼ばない。
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01_test_01.py", line 658, in test_round2_cap_lookahead_stops_before_exceeding_without_api
+    t.generate_arm("base", 1)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er118_fz_dialogue_context_tts_trial_01.py", line 932, in generate_arm
+    cl_mod.install(os.path.join(ROOT, COST_LOG))
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er005_cost_logger.py", line 342, in install
+    _patch_gemini()
+    ~~~~~~~~~~~~~^^
+  File "C:\Users\tensh\eigo-radio\er005_cost_logger.py", line 165, in _patch_gemini
+    original_generate_content = genai_models.Models.generate_content
+                                ^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'models' has no attribute 'Models'
+
+======================================================================
+ERROR: test_prod_inputs_a2_matches_runner_load_level_inputs (er118_fz_full_episode_trial_01_test_01.Phase1bGuardTests.test_prod_inputs_a2_matches_runner_load_level_inputs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er118_fz_full_episode_trial_01_test_01.py", line 272, in test_prod_inputs_a2_matches_runner_load_level_inputs
+    ref, mine = r.load_level_inputs(ctx, lv), m.prod_inputs(w, lv)
+                ~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er026_family_z_fiction_production_runner_01.py", line 2286, in load_level_inputs
+    import er026_family_z_src_posthoc_01 as _srcz
+  File "C:\Users\tensh\eigo-radio\er026_family_z_src_posthoc_01.py", line 25, in <module>
+    import er030_key_phrase_db_hybrid_core_01 as core
+  File "C:\Users\tensh\eigo-radio\er030_key_phrase_db_hybrid_core_01.py", line 50, in <module>
+    import wordfreq
+ModuleNotFoundError: No module named 'wordfreq'
+
+----------------------------------------------------------------------
+Ran 89 tests in 9.942s
+
+FAILED (errors=3)
+{}
+{}
+[run_project_regression] collected=89 passed=86 failed=0 errors=3 skipped=0
+[run_project_regression] summary written: docs/research/FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01/baseline_regression/base2_er118.json

@@ -505,7 +505,12 @@ def generate_voice_body_wide_margin(text: str, out_path: str, voice_name: str,
                                      # apply_a2_slowdown_postprocess[Production、無変更]を
                                      # 別途適用する設計、標準A2のgenerate_a2_segment_with_
                                      # slowdown()と同じ役割分担)。
-                                     style_prefix_override: str = None) -> dict:
+                                     style_prefix_override: str = None,
+                                     # FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01(Family Z dialogue 文脈・感情付きTTS、APPROVED_FOR_PRODUCTION
+                                     # 2026-10-26): attempt番号->Styleと試行前後の記録だけを差し込む任意hook(duck typing、既定None)。
+                                     # None(Family B/C/X/Y・Z narrator等の既存全呼出)は現行とバイト同一(golden fixtureで固定)。
+                                     # hookは er122_fz_ctx_policy_01.DialogueAttemptPolicy 相当(本moduleは新しいimportを持たない)。
+                                     *, attempt_hook=None) -> dict:
     """Voice A/B本文専用の正式Production TTS関数。既存
     news_tail_fix.generate_news_narration_wide_margin()と同一のASR検証・
     Cascade・disfluency gate・repetition QA・connected speech equivalence
@@ -515,9 +520,18 @@ def generate_voice_body_wide_margin(text: str, out_path: str, voice_name: str,
     max_len = len(text) + max_extra_chars
     attempts_log = []
     classification_history = []
+    if attempt_hook is not None:
+        attempts_log.extend(attempt_hook.carried_log())   # 前プロセスで完了済み・未計上の試行行(二重計上しない)
     for attempt in range(1, max_attempts + 1):
+        _style_override = style_prefix_override
+        if attempt_hook is not None:
+            _hook_dec = attempt_hook.before_attempt(attempt, max_attempts, out_path)    # 通算n・STOP確認・cooldown・stateへ消費済み記録(TTS呼出より前)
+            if _hook_dec.get("stop"):
+                break
+            _style_override = _hook_dec.get("style_prefix_override")
+        _rows0 = len(attempts_log)
         call_fn = batch_wiring.make_batch_tts_call_fn(p9a.ENGLISH_MODEL_NAME, voice_name, output_path=out_path)
-        prompt = p4c.build_tts_prompt(text, style_prefix_override or p9a.ENGLISH_STYLE_PREFIX)
+        prompt = p4c.build_tts_prompt(text, _style_override or p9a.ENGLISH_STYLE_PREFIX)
         pcm, retries, ok, err = common._call_tts_with_retry(
             call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
         instruction_type = "english_style_prefix_wide_margin"
@@ -543,6 +557,8 @@ def generate_voice_body_wide_margin(text: str, out_path: str, voice_name: str,
             if r.get("status") != "OK":
                 attempts_log.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason"),
                                       "instruction_type": instruction_type})
+                if attempt_hook is not None:
+                    attempt_hook.after_attempt(attempt, attempts_log[_rows0:], False, instruction_type, technical_failure=True)
                 continue
         else:
             common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
@@ -590,8 +606,11 @@ def generate_voice_body_wide_margin(text: str, out_path: str, voice_name: str,
             "disfluency_evidence": gate.get("disfluency_evidence"),
             "repetition_qa_checked": rep_gate["repetition_qa_checked"],
             "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence"),
+            **(attempt_hook.attempt_metadata() if attempt_hook is not None else {}),
         })
         attempts_log[-1]["attempt_audio_path"] = _attempt_audio_path
+        if attempt_hook is not None:
+            attempt_hook.after_attempt(attempt, attempts_log[_rows0:], verified, instruction_type)
         if verified:
             metrics = common.measure_metrics(common.read_wav_float(out_path)[0], common.SAMPLE_RATE)
             return {"status": "OK", "text": text, "path": out_path, "voice": voice_name, "asr_verified": True, "asr_judgement": _aj.get("asr_judgement"),
@@ -611,7 +630,8 @@ def generate_voice_body_wide_margin(text: str, out_path: str, voice_name: str,
                     "clipping_detected": metrics["clipping_detected"],
                     "reason": f"同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り"
                               f"(最終classification={cls.classification})"}
-    return {"status": "STOPPED", "reason": f"{max_attempts}回試行してもASR検証に合格しませんでした",
+    return {"status": "STOPPED", "reason": (attempt_hook.final_reason(max_attempts) if attempt_hook is not None
+                                            else f"{max_attempts}回試行してもASR検証に合格しませんでした"),
             "attempts_log": attempts_log, "voice": voice_name}
 
 
