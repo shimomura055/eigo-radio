@@ -352,7 +352,11 @@ def std_chunk_slowdown_violations(plan: dict, segments: dict) -> list:
             else:
                 info = e.get("slowdown_info") or {}
                 src, dst = info.get("src_duration_seconds"), info.get("dst_duration_seconds")
-                if src and dst and not (STD_SLOWDOWN_RATIO_MIN <= dst / src <= STD_SLOWDOWN_RATIO_MAX):
+                if not (src and dst):
+                    # Opus R2(2026-10-26): 減速前後長の記録が欠けているchunkは比率を検証できない=素通しにしない(新規chunkは必ず両方を記録する
+                    # = er003_v1_n3_01_tts_generate.py の slowdown_info。よって正規のchunkを誤ってブロックしない)。
+                    v.append("STD_CHUNK_SLOWDOWN_DURATION_RECORD_MISSING")
+                elif not (STD_SLOWDOWN_RATIO_MIN <= dst / src <= STD_SLOWDOWN_RATIO_MAX):
                     v.append(f"STD_CHUNK_SLOWDOWN_RATIO_OUT_OF_RANGE({dst / src:.4f})")
         if v:
             out.append({"segment": cid, "violations": v})
@@ -561,6 +565,45 @@ def is_legacy_unchunked(plan: dict, segments: dict) -> bool:
         return False
     prefix = f"{pid}_k"
     return not any(k.startswith(prefix) and parse_chunk_id(k) for k in (segments or {}))
+
+
+def unknown_chunk_ids_in_selection(plans: dict, only_segments, is_chunk_id=None) -> list:
+    """Opus R3(c)(2026-10-26): `--only-segments`に、planに存在しないchunk id(例 full_story_part1_k9)があれば返す(課金前に拒否するため。
+    何も起きずに素通りして『指定したつもりのchunkが生成されない』のを防ぐ)。is_chunk_id: key→bool(既定=X/Z形式parse_chunk_id)。"""
+    if not only_segments:
+        return []
+    is_chunk_id = is_chunk_id or (lambda k: parse_chunk_id(k) is not None)
+    known = set()
+    for plan in (plans or {}).values():
+        if plan.get("chunked"):
+            known.update(chunk_ids(plan))
+    return sorted(k for k in only_segments if is_chunk_id(k) and k not in known)
+
+
+def legacy_partial_retry_parents(plans: dict, cached: dict | None, only_segments) -> set:
+    """Opus M1(2026-10-26): `--only-segments`が『親もそのchunk idも含まない』指定のとき、前回cacheが旧方式(is_legacy_unchunked=親entryのみ・
+    chunk entryなし)の親は、chunk化して再生成しない(本文chunkは前回cacheに無く、SKIPPED→親が CHUNKS_NOT_ALL_VALIDATED で上書きされ
+    検証済み本文が失われるため)。戻り値=従来経路(親名で_generate_or_reuse=検証済みentryの引継ぎ)に残す親idの集合。
+    親/chunk idを指定した場合(本文を含む通常のresume)は含めない=従来どおりchunk化して再生成する。"""
+    if only_segments is None or not cached:
+        return set()
+    segs = cached.get("segments") or {}
+    out = set()
+    for pid, plan in (plans or {}).items():
+        if not plan.get("chunked") or pid in only_segments or any(c in only_segments for c in chunk_ids(plan)):
+            continue
+        if is_legacy_unchunked(plan, segs):
+            out.add(pid)
+    return out
+
+
+def apply_legacy_partial_retry(plans: dict, cached: dict | None, only_segments) -> dict:
+    """legacy_partial_retry_parentsの親だけ effective_plan(従来経路)へ差し替えたplan辞書を返す(他は不変)。"""
+    keep = legacy_partial_retry_parents(plans, cached, only_segments)
+    if not keep:
+        return plans
+    segs = (cached or {}).get("segments") or {}
+    return {pid: (effective_plan(p, segs) if pid in keep else p) for pid, p in plans.items()}
 
 
 def effective_plan(plan: dict, segments: dict) -> dict:

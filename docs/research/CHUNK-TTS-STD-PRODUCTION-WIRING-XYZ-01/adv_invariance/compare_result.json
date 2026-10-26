@@ -1,0 +1,68 @@
+{
+ "old": "docs/research/CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01/adv_invariance/old_bb578265c.json",
+ "new": "docs/research/CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01/adv_invariance/new_tree.json",
+ "checks": {
+  "x_adv": {
+   "results_json_normalized_sha256": "IDENTICAL",
+   "narration_wav_sha256": "IDENTICAL",
+   "chunk_plan_sha256": "IDENTICAL",
+   "chunk_tts_evidence_normalized_sha256": "IDENTICAL",
+   "gain_report_sha256": "IDENTICAL",
+   "assembled_sha256": "IDENTICAL",
+   "timeline_sha256": "IDENTICAL",
+   "assembled_shape": "IDENTICAL"
+  },
+  "y_adv_single_paragraph": {
+   "results_json_normalized_sha256": "IDENTICAL",
+   "narration_wav_sha256": "IDENTICAL",
+   "chunk_plan_sha256": "IDENTICAL",
+   "gain_report_sha256": "IDENTICAL",
+   "assembled_wav_sha256": "IDENTICAL",
+   "timeline_sha256": "IDENTICAL",
+   "assemble_status": "IDENTICAL",
+   "chunk_tts_decision_diff": [
+    {
+     "path": "/approval_ref",
+     "kind": "CHANGED",
+     "old": "docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER_02.md §1-① (Family X方式のY正式採用、APPROVED_FOR_PRODUCTION)",
+     "new": "docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER_02.md §1-① (Family X方式のY正式採用、APPROVED_FOR_PRODUCTION) / docs/pm/delegation_log/2026-10-26_CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01_USER.md §2 (Std/Adv共通採用、APPROVED_FOR_PRODUCTION)"
+    },
+    {
+     "path": "/note",
+     "kind": "CHANGED",
+     "old": "Family Y: Chunk TTSはX方式(段落単位chunk+0.2秒ポーズ)を正式採用(USER_02 ①)。分割は各Y segment(lead/intro/voice/closing)の段落単位に限り、segment境界(話者切替=intro→voice、voice→次のintro)は結合しない。段落が1つのsegmentは分割しない(X規則どおり=従来の1 call)。",
+     "new": "Family Y: Chunk TTSはX方式(段落単位chunk+0.2秒ポーズ)をStd/Adv共通で正式採用(USER_02 ① + 2026-10-26)。分割は各Y segment(lead/intro/voice/closing)の段落単位に限り、segment境界(話者切替=intro→voice、voice→次のintro)は結合しない。段落が1つのsegmentは分割しない(X規則どおり=従来の1 call。現行のY本文契約は各Voice 1段落のため実記事では不発火=正常)。Stdは各chunkに既存の6%減速を適用してから0.2秒を挿入する(ポーズは減速されない)。"
+    }
+   ],
+   "chunk_tts_decision_diff_keys_are_note_text_only": true
+  },
+  "y_adv_multi_paragraph": {
+   "results_json_normalized_sha256": "IDENTICAL",
+   "narration_wav_sha256": "IDENTICAL",
+   "chunk_plan_sha256": "IDENTICAL",
+   "gain_report_sha256": "IDENTICAL",
+   "assembled_wav_sha256": "IDENTICAL",
+   "timeline_sha256": "IDENTICAL",
+   "assemble_status": "IDENTICAL",
+   "chunk_tts_decision_diff": [
+    {
+     "path": "/approval_ref",
+     "kind": "CHANGED",
+     "old": "docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER_02.md §1-① (Family X方式のY正式採用、APPROVED_FOR_PRODUCTION)",
+     "new": "docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER_02.md §1-① (Family X方式のY正式採用、APPROVED_FOR_PRODUCTION) / docs/pm/delegation_log/2026-10-26_CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01_USER.md §2 (Std/Adv共通採用、APPROVED_FOR_PRODUCTION)"
+    },
+    {
+     "path": "/note",
+     "kind": "CHANGED",
+     "old": "Family Y: Chunk TTSはX方式(段落単位chunk+0.2秒ポーズ)を正式採用(USER_02 ①)。分割は各Y segment(lead/intro/voice/closing)の段落単位に限り、segment境界(話者切替=intro→voice、voice→次のintro)は結合しない。段落が1つのsegmentは分割しない(X規則どおり=従来の1 call)。",
+     "new": "Family Y: Chunk TTSはX方式(段落単位chunk+0.2秒ポーズ)をStd/Adv共通で正式採用(USER_02 ① + 2026-10-26)。分割は各Y segment(lead/intro/voice/closing)の段落単位に限り、segment境界(話者切替=intro→voice、voice→次のintro)は結合しない。段落が1つのsegmentは分割しない(X規則どおり=従来の1 call。現行のY本文契約は各Voice 1段落のため実記事では不発火=正常)。Stdは各chunkに既存の6%減速を適用してから0.2秒を挿入する(ポーズは減速されない)。"
+    }
+   ],
+   "chunk_tts_decision_diff_keys_are_note_text_only": true
+  }
+ },
+ "x_adv_results_json_diff": [],
+ "y_adv_single_paragraph_results_json_diff": [],
+ "y_adv_multi_paragraph_results_json_diff": [],
+ "audio_and_results_byte_identical_all": true
+}

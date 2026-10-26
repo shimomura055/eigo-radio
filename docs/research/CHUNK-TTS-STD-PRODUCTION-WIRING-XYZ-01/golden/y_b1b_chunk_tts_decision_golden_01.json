@@ -1,0 +1,141 @@
+{
+ "_comment": "R4(c) golden: Y b1b audit/chunk_tts_decision.json(単一段落mock run)。旧(bb578265c)との差分は approval_ref/note の注記文言のみ(compare_result.json)。音声・results無関係。",
+ "new_decision": {
+  "approval": "APPROVED_FOR_PRODUCTION",
+  "approval_ref": "docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER_02.md §1-① (Family X方式のY正式採用、APPROVED_FOR_PRODUCTION) / docs/pm/delegation_log/2026-10-26_CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01_USER.md §2 (Std/Adv共通採用、APPROVED_FOR_PRODUCTION)",
+  "chunk_tts_applicable": true,
+  "chunk_tts_applied_at_this_level": true,
+  "decision": "applied_X_method",
+  "extra_pause_seconds": 0.2,
+  "family": "Y",
+  "ledger_ids": [
+   "YL-B08"
+  ],
+  "level": "b1b",
+  "method": "X_paragraph_0.2s",
+  "note": "Family Y: Chunk TTSはX方式(段落単位chunk+0.2秒ポーズ)をStd/Adv共通で正式採用(USER_02 ① + 2026-10-26)。分割は各Y segment(lead/intro/voice/closing)の段落単位に限り、segment境界(話者切替=intro→voice、voice→次のintro)は結合しない。段落が1つのsegmentは分割しない(X規則どおり=従来の1 call。現行のY本文契約は各Voice 1段落のため実記事では不発火=正常)。Stdは各chunkに既存の6%減速を適用してから0.2秒を挿入する(ポーズは減速されない)。",
+  "planner_version": "chunk_tts_v1_x_paragraph_z_r1_20261025",
+  "segments": {
+   "y_closing": {
+    "chunk_ids": [],
+    "chunked": false,
+    "paragraphs": 1,
+    "reason": "paragraphs=1<2"
+   },
+   "y_intro_1": {
+    "chunk_ids": [],
+    "chunked": false,
+    "paragraphs": 1,
+    "reason": "paragraphs=1<2"
+   },
+   "y_intro_2": {
+    "chunk_ids": [],
+    "chunked": false,
+    "paragraphs": 1,
+    "reason": "paragraphs=1<2"
+   },
+   "y_intro_3": {
+    "chunk_ids": [],
+    "chunked": false,
+    "paragraphs": 1,
+    "reason": "paragraphs=1<2"
+   },
+   "y_lead": {
+    "chunk_ids": [],
+    "chunked": false,
+    "paragraphs": 1,
+    "reason": "paragraphs=1<2"
+   },
+   "y_voice_1": {
+    "chunk_ids": [],
+    "chunked": false,
+    "paragraphs": 1,
+    "reason": "paragraphs=1<2"
+   },
+   "y_voice_2": {
+    "chunk_ids": [],
+    "chunked": false,
+    "paragraphs": 1,
+    "reason": "paragraphs=1<2"
+   },
+   "y_voice_3": {
+    "chunk_ids": [],
+    "chunked": false,
+    "paragraphs": 1,
+    "reason": "paragraphs=1<2"
+   }
+  },
+  "z_b_r1_adopted": false
+ },
+ "old_decision_bb578265c": {
+  "approval": "APPROVED_FOR_PRODUCTION",
+  "approval_ref": "docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER_02.md §1-① (Family X方式のY正式採用、APPROVED_FOR_PRODUCTION)",
+  "chunk_tts_applicable": true,
+  "chunk_tts_applied_at_this_level": true,
+  "decision": "applied_X_method",
+  "extra_pause_seconds": 0.2,
+  "family": "Y",
+  "ledger_ids": [
+   "YL-B08"
+  ],
+  "level": "b1b",
+  "method": "X_paragraph_0.2s",
+  "note": "Family Y: Chunk TTSはX方式(段落単位chunk+0.2秒ポーズ)を正式採用(USER_02 ①)。分割は各Y segment(lead/intro/voice/closing)の段落単位に限り、segment境界(話者切替=intro→voice、voice→次のintro)は結合しない。段落が1つのsegmentは分割しない(X規則どおり=従来の1 call)。",
+  "planner_version": "chunk_tts_v1_x_paragraph_z_r1_20261025",
+  "segments": {
+   "y_closing": {
+    "chunk_ids": [],
+    "chunked": false,
+    "paragraphs": 1,
+    "reason": "paragraphs=1<2"
+   },
+   "y_intro_1": {
+    "chunk_ids": [],
+    "chunked": false,
+    "paragraphs": 1,
+    "reason": "paragraphs=1<2"
+   },
+   "y_intro_2": {
+    "chunk_ids": [],
+    "chunked": false,
+    "paragraphs": 1,
+    "reason": "paragraphs=1<2"
+   },
+   "y_intro_3": {
+    "chunk_ids": [],
+    "chunked": false,
+    "paragraphs": 1,
+    "reason": "paragraphs=1<2"
+   },
+   "y_lead": {
+    "chunk_ids": [],
+    "chunked": false,
+    "paragraphs": 1,
+    "reason": "paragraphs=1<2"
+   },
+   "y_voice_1": {
+    "chunk_ids": [],
+    "chunked": false,
+    "paragraphs": 1,
+    "reason": "paragraphs=1<2"
+   },
+   "y_voice_2": {
+    "chunk_ids": [],
+    "chunked": false,
+    "paragraphs": 1,
+    "reason": "paragraphs=1<2"
+   },
+   "y_voice_3": {
+    "chunk_ids": [],
+    "chunked": false,
+    "paragraphs": 1,
+    "reason": "paragraphs=1<2"
+   }
+  },
+  "z_b_r1_adopted": false
+ },
+ "allowed_text_only_diff_keys": [
+  "approval_ref",
+  "note"
+ ]
+}

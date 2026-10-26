@@ -1,0 +1,969 @@
+{
+ "base": "bb578265c",
+ "files": {
+  "er117_chunk_tts_production_01.py": {
+   "functions": [
+    {
+     "func": "apply_legacy_partial_retry",
+     "change": "ADDED",
+     "class": "NEW_HELPER",
+     "referenced_by_pre_existing_functions": []
+    },
+    {
+     "func": "attach_chunk_meta",
+     "change": "MODIFIED",
+     "class": "DEFAULT_ADV_HELPER",
+     "why": "追加/既存引数の既定値がAdv相当(level=None)。呼出側Advは引数を渡さない(下記callersで確認)",
+     "old_params": [
+      "entry",
+      "parent_id",
+      "chunk",
+      "n_chunks"
+     ],
+     "new_params": [
+      "entry",
+      "parent_id",
+      "chunk",
+      "n_chunks",
+      "level"
+     ],
+     "unguarded_changed_lines": [],
+     "callers_in_file": []
+    },
+    {
+     "func": "drop_cached_std_chunks_without_slowdown",
+     "change": "ADDED",
+     "class": "A2_ONLY",
+     "referenced_by_pre_existing_functions": []
+    },
+    {
+     "func": "evidence_record",
+     "change": "MODIFIED",
+     "class": "STD_GUARDED",
+     "why": "変更行は全て Std専用ガード(if ... a2/STD_LEVEL/slowdown_applied ...)・コメント/docstring・署名の内側のみ",
+     "old_params": [
+      "plan",
+      "segments",
+      "compose_report"
+     ],
+     "new_params": [
+      "plan",
+      "segments",
+      "compose_report"
+     ],
+     "unguarded_changed_lines": [],
+     "callers_in_file": []
+    },
+    {
+     "func": "legacy_partial_retry_parents",
+     "change": "ADDED",
+     "class": "NEW_HELPER",
+     "referenced_by_pre_existing_functions": []
+    },
+    {
+     "func": "std_chunk_slowdown_violations",
+     "change": "ADDED",
+     "class": "A2_ONLY",
+     "referenced_by_pre_existing_functions": []
+    },
+    {
+     "func": "std_parent_slowdown_fields",
+     "change": "ADDED",
+     "class": "A2_ONLY",
+     "referenced_by_pre_existing_functions": []
+    },
+    {
+     "func": "unknown_chunk_ids_in_selection",
+     "change": "ADDED",
+     "class": "NEW_HELPER",
+     "referenced_by_pre_existing_functions": []
+    }
+   ],
+   "constants": [
+    {
+     "const": "STD_LEVEL",
+     "change": "ADDED",
+     "class": "MODULE_LEVEL"
+    },
+    {
+     "const": "STD_SLOWDOWN_COMPOSITION",
+     "change": "ADDED",
+     "class": "MODULE_LEVEL"
+    },
+    {
+     "const": "STD_SLOWDOWN_RATIO_MAX",
+     "change": "ADDED",
+     "class": "MODULE_LEVEL"
+    },
+    {
+     "const": "STD_SLOWDOWN_RATIO_MIN",
+     "change": "ADDED",
+     "class": "MODULE_LEVEL"
+    }
+   ]
+  },
+  "er019_family_x_audio_production_runner_01.py": {
+   "functions": [
+    {
+     "func": "_chunk_parent_refresh_x",
+     "change": "MODIFIED",
+     "class": "DEFAULT_ADV_HELPER",
+     "why": "追加/既存引数の既定値がAdv相当(level='b1b')。呼出側Advは引数を渡さない(下記callersで確認)",
+     "old_params": [
+      "out_dir"
+     ],
+     "new_params": [
+      "out_dir",
+      "level"
+     ],
+     "unguarded_changed_lines": [
+      [
+       2419,
+       "_refresh_x_chunk_parents(out_dir, parts, data.setdefault(\"segments\", {}), plans, level)"
+      ]
+     ],
+     "callers_in_file": [
+      "stage_assemble_family_x_b1",
+      "stage_assemble_family_x_a2"
+     ]
+    },
+    {
+     "func": "_generate_x_body_part_chunked_a2",
+     "change": "ADDED",
+     "class": "A2_ONLY",
+     "referenced_by_pre_existing_functions": []
+    },
+    {
+     "func": "_refresh_x_chunk_parents",
+     "change": "MODIFIED",
+     "class": "DEFAULT_ADV_HELPER",
+     "why": "追加/既存引数の既定値がAdv相当(level='b1b')。呼出側Advは引数を渡さない(下記callersで確認)",
+     "old_params": [
+      "out_dir",
+      "parts",
+      "segments",
+      "plans"
+     ],
+     "new_params": [
+      "out_dir",
+      "parts",
+      "segments",
+      "plans",
+      "level"
+     ],
+     "unguarded_changed_lines": [
+      [
+       1339,
+       "display = _x_chunk_parent_display(plan, segments)"
+      ],
+      [
+       1344,
+       "parent_text=parts[\"part\" + pid[-1]], display=display)"
+      ]
+     ],
+     "callers_in_file": [
+      "generate_family_x_b1_segments",
+      "generate_family_x_a2_segments",
+      "_chunk_parent_refresh_x"
+     ]
+    },
+    {
+     "func": "_x_std_chunk_slowdown_blocked",
+     "change": "ADDED",
+     "class": "A2_ONLY",
+     "referenced_by_pre_existing_functions": []
+    },
+    {
+     "func": "apply_family_x_a2_gain",
+     "change": "MODIFIED",
+     "class": "A2_ONLY",
+     "why": "関数名がa2/Std専用",
+     "old_params": [
+      "sources"
+     ],
+     "new_params": [
+      "sources"
+     ],
+     "unguarded_changed_lines": [
+      [
+       2627,
+       "body_chunks = sources.get(\"body_chunks\") or {}"
+      ],
+      [
+       2629,
+       "if name in body_chunks:"
+      ],
+      [
+       2631,
+       "composed, rep_ = chunk_tts.compose_gained_parent("
+      ],
+      [
+       2632,
+       "body_chunks[name], target_rms, gain_fn=p9a.compute_gain_for_target_rms, rms_fn=p9a.rms, peak_fn=p9a.peak)"
+      ],
+      [
+       2633,
+       "gain_report[f\"a2_{name}\"] = {\"chunked\": True, \"note\": \"親全体のgainは掛けていない。chunk別gain・RMS・peakは chunk_tts を参照\"}"
+      ],
+      [
+       2634,
+       "gain_report.setdefault(\"chunk_tts\", {})[name] = rep_"
+      ],
+      [
+       2635,
+       "a2_stereo[name] = p9a.mono_24k_to_stereo_target(composed)"
+      ],
+      [
+       2636,
+       "continue"
+      ]
+     ],
+     "callers_in_file": [
+      "stage_assemble_family_x_a2"
+     ]
+    },
+    {
+     "func": "generate_family_x_a2_segments",
+     "change": "MODIFIED",
+     "class": "A2_ONLY",
+     "why": "関数名がa2/Std専用",
+     "old_params": [
+      "theme_out_dir",
+      "japanese_title",
+      "tts_backend",
+      "style_profile"
+     ],
+     "new_params": [
+      "theme_out_dir",
+      "japanese_title",
+      "tts_backend",
+      "style_profile"
+     ],
+     "unguarded_changed_lines": [
+      [
+       1917,
+       "_chunk_plans = _x_chunk_plans(parts)"
+      ],
+      [
+       1918,
+       "chunk_tts.reconcile_saved_plan(f\"{out_dir}/audit/chunk_plan_a2.json\", _chunk_plans)"
+      ],
+      [
+       1919,
+       "_unk = chunk_tts.unknown_chunk_ids_in_selection(_chunk_plans, _ONLY_SEGMENTS)   # Opus R3(c): planに無いchunk id指定は課金前に拒否"
+      ],
+      [
+       1920,
+       "if _unk:"
+      ],
+      [
+       1921,
+       "raise chunk_tts.ChunkIntegrityError(f\"--only-segmentsにplanへ存在しないchunk idがあります(課金前に拒否): {_unk}\")"
+      ],
+      [
+       1922,
+       "_cached = chunk_tts.drop_cached_std_chunks_without_slowdown("
+      ],
+      [
+       1923,
+       "_x_drop_chunked_parent_cache(chunk_tts.drop_stale_chunk_entries(_load_cached_tts_results(out_dir)), _chunk_plans))"
+      ],
+      [
+       1925,
+       "_chunk_plans = chunk_tts.apply_legacy_partial_retry(_chunk_plans, _cached, _ONLY_SEGMENTS)"
+      ],
+      [
+       1982,
+       "if name in _BODY_SEGMENT_NAMES and _chunk_plans[name][\"chunked\"]:"
+      ],
+      [
+       1984,
+       "_generate_x_body_part_chunked_a2(_chunk_plans[name], _cached, narration_dir, results, _role_style_slower, style_profile, tts_backend)"
+      ],
+      [
+       1985,
+       "continue"
+      ],
+      [
+       2006,
+       "_refresh_x_chunk_parents(out_dir, parts, results, _chunk_plans, level=\"a2\")"
+      ],
+      [
+       2016,
+       "if any(pl.get(\"chunked\") for pl in _chunk_plans.values()):   # C7: Std chunk TTSのruntime evidence(分割位置・種別・chunk別減速・attempts/fallback/LR/ASR判定)"
+      ],
+      [
+       2017,
+       "save_json(f\"{out_dir}/audit/chunk_tts_evidence_a2.json\","
+      ],
+      [
+       2018,
+       "{\"planner_version\": chunk_tts.CHUNK_PLANNER_VERSION, \"level\": \"a2\", \"composition\": chunk_tts.STD_SLOWDOWN_COMPOSITION,"
+      ],
+      [
+       2019,
+       "\"style_profile\": style_profile, \"tts_backend\": tts_backend,"
+      ],
+      [
+       2020,
+       "\"parents\": {pid: chunk_tts.evidence_record(pl, results) for pid, pl in _chunk_plans.items() if pl.get(\"chunked\")}})"
+      ]
+     ],
+     "callers_in_file": [
+      "main"
+     ]
+    },
+    {
+     "func": "generate_family_x_b1_segments",
+     "change": "MODIFIED",
+     "class": "MANUAL_REVIEWED",
+     "why": "Opus R3(c)(planに無いchunk idの--only-segments指定を課金前拒否)とOpus M1(旧方式[親entryのみ]cacheへ本文以外の部分retryでも検証済み本文を失わない従来経路維持)。どちらも正常入力(planに存在するid・通常のresume)ではno-op。Advにも同じ潜在不具合があったためOpus M1がAdvへの是正を明示。",
+     "old_params": [
+      "theme_out_dir",
+      "tts_backend",
+      "style_profile"
+     ],
+     "new_params": [
+      "theme_out_dir",
+      "tts_backend",
+      "style_profile"
+     ],
+     "unguarded_changed_lines": [
+      [
+       1493,
+       "_unk = chunk_tts.unknown_chunk_ids_in_selection(_chunk_plans, _ONLY_SEGMENTS)   # Opus R3(c): planに無いchunk id指定は課金前に拒否"
+      ],
+      [
+       1494,
+       "if _unk:"
+      ],
+      [
+       1495,
+       "raise chunk_tts.ChunkIntegrityError(f\"--only-segmentsにplanへ存在しないchunk idがあります(課金前に拒否): {_unk}\")"
+      ],
+      [
+       1500,
+       "_chunk_plans = chunk_tts.apply_legacy_partial_retry(_chunk_plans, _cached, _ONLY_SEGMENTS)"
+      ]
+     ],
+     "callers_in_file": [
+      "generate_family_x_a2_segments",
+      "main"
+     ]
+    },
+    {
+     "func": "load_family_x_a2_sources",
+     "change": "MODIFIED",
+     "class": "A2_ONLY",
+     "why": "関数名がa2/Std専用",
+     "old_params": [
+      "theme_out_dir",
+      "source_dir"
+     ],
+     "new_params": [
+      "theme_out_dir",
+      "source_dir"
+     ],
+     "unguarded_changed_lines": [
+      [
+       2547,
+       "parts_json = load_json(f\"{out_dir}/parts.json\")"
+      ],
+      [
+       2548,
+       "chunk_plans = _x_effective_chunk_plans(out_dir, parts_json)"
+      ],
+      [
+       2549,
+       "_res_path = f\"{out_dir}/audit/tts_generation_results.json\""
+      ],
+      [
+       2550,
+       "_segs = (load_json(_res_path).get(\"segments\") or {}) if os.path.exists(_res_path) else {}"
+      ],
+      [
+       2551,
+       "body_chunks, chunk_plan_used = {}, {}"
+      ],
+      [
+       2552,
+       "for pid, plan in chunk_plans.items():"
+      ],
+      [
+       2553,
+       "if not plan.get(\"chunked\"):"
+      ],
+      [
+       2554,
+       "continue"
+      ],
+      [
+       2555,
+       "ids = chunk_tts.chunk_ids(plan)"
+      ],
+      [
+       2556,
+       "chunk_tts.verify_parent_integrity(plan, parts_json[\"part\" + pid[-1]], {i: _segs[i] for i in ids if i in _segs}, _segs.get(pid))"
+      ],
+      [
+       2559,
+       "_bad = chunk_tts.std_chunk_slowdown_violations(plan, _segs)"
+      ],
+      [
+       2560,
+       "if _bad:"
+      ],
+      [
+       2561,
+       "raise chunk_tts.ChunkIntegrityError(f\"BLOCKED_STD_CHUNK_SLOWDOWN_GATE({pid}): {_bad}\")"
+      ],
+      [
+       2562,
+       "paths = [f\"{narration_dir}/{i}.wav\" for i in ids]"
+      ],
+      [
+       2563,
+       "chunk_tts.verify_raw_parent(f\"{narration_dir}/{pid}.wav\", paths)"
+      ],
+      [
+       2564,
+       "monos = []"
+      ],
+      [
+       2565,
+       "for pth in paths:"
+      ],
+      [
+       2566,
+       "m_, sr_, _, _ = common.read_wav_float(pth)"
+      ],
+      [
+       2567,
+       "assert sr_ == common.SAMPLE_RATE"
+      ],
+      [
+       2568,
+       "monos.append(m_)"
+      ],
+      [
+       2569,
+       "body_chunks[pid] = monos"
+      ],
+      [
+       2570,
+       "chunk_plan_used[pid] = plan"
+      ],
+      [
+       2582,
+       "\"key_phrase_components\": key_phrase_components, \"a2_segments\": a2_segments, \"kp_items\": kp_items,"
+      ],
+      [
+       2583,
+       "\"body_chunks\": body_chunks, \"chunk_plans\": chunk_plan_used}"
+      ]
+     ],
+     "callers_in_file": [
+      "stage_assemble_family_x_a2"
+     ]
+    },
+    {
+     "func": "stage_assemble_family_x_a2",
+     "change": "MODIFIED",
+     "class": "A2_ONLY",
+     "why": "関数名がa2/Std専用",
+     "old_params": [
+      "theme_out_dir",
+      "theme_id",
+      "source_dir"
+     ],
+     "new_params": [
+      "theme_out_dir",
+      "theme_id",
+      "source_dir"
+     ],
+     "unguarded_changed_lines": [
+      [
+       2722,
+       "_chunk_parent_refresh_x(out_dir, \"a2\")"
+      ],
+      [
+       2723,
+       "std_chunk_blocked = _x_std_chunk_slowdown_blocked(out_dir)"
+      ],
+      [
+       2724,
+       "if std_chunk_blocked is not None:"
+      ],
+      [
+       2725,
+       "save_json(f\"{out_dir}/run_summary_assemble.json\", std_chunk_blocked)"
+      ],
+      [
+       2726,
+       "return std_chunk_blocked"
+      ],
+      [
+       2750,
+       "if sources.get(\"body_chunks\"):"
+      ],
+      [
+       2751,
+       "summary[\"chunk_tts\"] = _chunk_assembly_summary_x(sources[\"chunk_plans\"], parts[\"gain_report\"].get(\"chunk_tts\") or {}, result[\"timeline\"])"
+      ],
+      [
+       2752,
+       "summary[\"chunk_tts\"][\"level\"] = \"a2\""
+      ],
+      [
+       2753,
+       "summary[\"chunk_tts\"][\"composition\"] = chunk_tts.STD_SLOWDOWN_COMPOSITION"
+      ],
+      [
+       2754,
+       "save_json(f\"{out_dir}/audit/chunk_tts_assembly_a2.json\", summary[\"chunk_tts\"])"
+      ]
+     ],
+     "callers_in_file": [
+      "main"
+     ]
+    },
+    {
+     "func": "validate_only_segments_args",
+     "change": "MODIFIED",
+     "class": "STD_GUARDED",
+     "why": "変更行は全て Std専用ガード(if ... a2/STD_LEVEL/slowdown_applied ...)・コメント/docstring・署名の内側のみ",
+     "old_params": [
+      "stage",
+      "dry_run",
+      "level",
+      "raw"
+     ],
+     "new_params": [
+      "stage",
+      "dry_run",
+      "level",
+      "raw"
+     ],
+     "unguarded_changed_lines": [],
+     "callers_in_file": [
+      "main"
+     ]
+    }
+   ],
+   "constants": []
+  },
+  "er121_family_y_audio_01.py": {
+   "functions": [
+    {
+     "func": "_generate_y_body_segment_chunked_a2",
+     "change": "ADDED",
+     "class": "A2_ONLY",
+     "referenced_by_pre_existing_functions": []
+    },
+    {
+     "func": "_load_y_body_chunks",
+     "change": "MODIFIED",
+     "class": "DEFAULT_ADV_HELPER",
+     "why": "追加/既存引数の既定値がAdv相当(level='b1b')。呼出側Advは引数を渡さない(下記callersで確認)",
+     "old_params": [
+      "out_dir"
+     ],
+     "new_params": [
+      "out_dir",
+      "level"
+     ],
+     "unguarded_changed_lines": [],
+     "callers_in_file": [
+      "load_y_sources"
+     ]
+    },
+    {
+     "func": "_record_chunk_decision",
+     "change": "MODIFIED",
+     "class": "MANUAL_REVIEWED",
+     "why": "Opus R3(c)の課金前拒否(planに無いchunk id)と、CHUNK_TTS_Y_LEVELSに含まれないlevel専用の else 分岐の文言変更(b1b/a2とも対象のため到達しない)。",
+     "old_params": [
+      "out_dir",
+      "level"
+     ],
+     "new_params": [
+      "out_dir",
+      "level"
+     ],
+     "unguarded_changed_lines": [
+      [
+       304,
+       "_unk = chunk_tts.unknown_chunk_ids_in_selection(plans, xr._ONLY_SEGMENTS, lambda k: ys.parse_y_chunk_id(k) is not None)"
+      ],
+      [
+       305,
+       "if _unk:      # Opus R3(c)(2026-10-26): planに無いchunk id指定は課金前に拒否(素通りさせない)"
+      ],
+      [
+       306,
+       "raise YAudioStop(f\"FAMILY_Y_CHUNK_ID_NOT_IN_PLAN: --only-segmentsにplanへ存在しないchunk idがあります: {_unk}。課金前にSTOP\")"
+      ],
+      [
+       312,
+       "rec[\"not_applied_reason\"] = f\"levelがchunk対象外({level}は{ys.CHUNK_TTS_Y_LEVELS}に含まれない)\""
+      ]
+     ],
+     "callers_in_file": [
+      "generate_y_b1_segments",
+      "generate_y_a2_segments"
+     ]
+    },
+    {
+     "func": "_refresh_y_chunk_parents_on_disk",
+     "change": "MODIFIED",
+     "class": "DEFAULT_ADV_HELPER",
+     "why": "追加/既存引数の既定値がAdv相当(level='b1b')。呼出側Advは引数を渡さない(下記callersで確認)",
+     "old_params": [
+      "out_dir"
+     ],
+     "new_params": [
+      "out_dir",
+      "level"
+     ],
+     "unguarded_changed_lines": [
+      [
+       897,
+       "refresh_y_chunk_parents(out_dir, parts, data.setdefault(\"segments\", {}), plans, level)"
+      ]
+     ],
+     "callers_in_file": [
+      "assemble_level"
+     ]
+    },
+    {
+     "func": "_tts_unit_badge",
+     "change": "MODIFIED",
+     "class": "MANUAL_REVIEWED",
+     "why": "試聴ページの表示文言のみ(音声・Gate・採否に無関係)。Adv(b1b)は従来と同一の判定記録参照(chunked→'TTS n分割'/それ以外→'TTS 1回')。旧Std記録は'旧記録'と明示(Opus論点7で妥当と判定)。",
+     "old_params": [
+      "level",
+      "decision",
+      "sid"
+     ],
+     "new_params": [
+      "level",
+      "decision",
+      "sid"
+     ],
+     "unguarded_changed_lines": [
+      [
+       1086,
+       "seg = ((decision or {}).get(\"segments\") or {}).get(sid) or {}"
+      ]
+     ],
+     "callers_in_file": [
+      "build_page_rows"
+     ]
+    },
+    {
+     "func": "_y_chunk_parent_display",
+     "change": "MODIFIED",
+     "class": "DEFAULT_ADV_HELPER",
+     "why": "追加/既存引数の既定値がAdv相当(level='b1b')。呼出側Advは引数を渡さない(下記callersで確認)",
+     "old_params": [
+      "plan",
+      "segments",
+      "voice"
+     ],
+     "new_params": [
+      "plan",
+      "segments",
+      "voice",
+      "level"
+     ],
+     "unguarded_changed_lines": [],
+     "callers_in_file": [
+      "refresh_y_chunk_parents"
+     ]
+    },
+    {
+     "func": "assemble_level",
+     "change": "MODIFIED",
+     "class": "MANUAL_REVIEWED",
+     "why": "levelをrefresh/出力ファイル名へ渡すだけ。Adv(level='b1b')は従来値と同一(chunk_tts_assembly_b1b.json、refresh既定level=b1b)。Std時のみsummaryにlevel/composition追加。",
+     "old_params": [
+      "theme_out_dir",
+      "level"
+     ],
+     "new_params": [
+      "theme_out_dir",
+      "level"
+     ],
+     "unguarded_changed_lines": [
+      [
+       916,
+       "_refresh_y_chunk_parents_on_disk(out_dir, level)"
+      ],
+      [
+       942,
+       "save_json(f\"{out_dir}/audit/chunk_tts_assembly_{level}.json\", summary[\"chunk_tts\"])"
+      ]
+     ],
+     "callers_in_file": []
+    },
+    {
+     "func": "check_std_slowdown",
+     "change": "MODIFIED",
+     "class": "A2_ONLY",
+     "why": "関数名がa2/Std専用",
+     "old_params": [
+      "results"
+     ],
+     "new_params": [
+      "results",
+      "plans"
+     ],
+     "unguarded_changed_lines": [
+      [
+       658,
+       "pl = (plans or {}).get(sid)"
+      ],
+      [
+       659,
+       "if pl and pl.get(\"chunked\"):"
+      ],
+      [
+       660,
+       "bad += chunk_tts.std_chunk_slowdown_violations(pl, segs)"
+      ],
+      [
+       661,
+       "continue"
+      ]
+     ],
+     "callers_in_file": [
+      "y_style_gate"
+     ]
+    },
+    {
+     "func": "generate_y_a2_segments",
+     "change": "MODIFIED",
+     "class": "A2_ONLY",
+     "why": "関数名がa2/Std専用",
+     "old_params": [
+      "theme_out_dir",
+      "japanese_title"
+     ],
+     "new_params": [
+      "theme_out_dir",
+      "japanese_title"
+     ],
+     "unguarded_changed_lines": [
+      [
+       543,
+       "chunk_plans = _record_chunk_decision(out_dir, \"a2\")       # 課金前: 適用表・plan・role解決・保存済みplanとの一致を確認(違反はSTOP)。Stdもchunk対象(2026-10-26ユーザー正式承認)"
+      ],
+      [
+       550,
+       "cached = chunk_tts.drop_cached_std_chunks_without_slowdown("
+      ],
+      [
+       551,
+       "_drop_stale_chunk_cache(voice_guard_cached(xr._load_cached_tts_results(out_dir)), chunk_plans), is_chunk_id=lambda k: ys.parse_y_chunk_id(k) is not None)"
+      ],
+      [
+       589,
+       "if chunk_plans[name][\"chunked\"]:       # 段落が2つ以上のsegment: 段落単位chunk+chunkごとの6%減速(親集約entryはループ後に常に書く)。1段落=下の従来経路(1 call)"
+      ],
+      [
+       590,
+       "with _only_includes_chunks(chunk_plans):"
+      ],
+      [
+       591,
+       "_generate_y_body_segment_chunked_a2(chunk_plans[name], cached, narration_dir, results, voice, _role_style_slower, style_profile, tts_backend, guard)"
+      ],
+      [
+       592,
+       "continue"
+      ],
+      [
+       611,
+       "refresh_y_chunk_parents(out_dir, parts, results, chunk_plans, \"a2\")     # chunk親集約entry(失敗・未生成でも常に書く)+親wav(減速後chunkの生連結+0.2秒)+減速集約"
+      ],
+      [
+       612,
+       "if any(pl.get(\"chunked\") for pl in chunk_plans.values()):              # Std chunk TTSのruntime evidence"
+      ],
+      [
+       613,
+       "save_json(f\"{out_dir}/audit/chunk_tts_evidence_a2.json\","
+      ],
+      [
+       614,
+       "{\"planner_version\": chunk_tts.CHUNK_PLANNER_VERSION, \"family\": ys.FAMILY, \"level\": \"a2\", \"composition\": chunk_tts.STD_SLOWDOWN_COMPOSITION,"
+      ],
+      [
+       615,
+       "\"style_profile\": style_profile, \"tts_backend\": tts_backend,"
+      ],
+      [
+       616,
+       "\"parents\": {sid: chunk_tts.evidence_record(pl, results) for sid, pl in chunk_plans.items() if pl.get(\"chunked\")}})"
+      ]
+     ],
+     "callers_in_file": []
+    },
+    {
+     "func": "load_y_sources",
+     "change": "MODIFIED",
+     "class": "MANUAL_REVIEWED",
+     "why": "変更行はa2分岐のみ(b1b分岐は'return'で先に抜ける=Advの経路は変更行に到達しない)。",
+     "old_params": [
+      "theme_out_dir",
+      "level",
+      "article_text"
+     ],
+     "new_params": [
+      "theme_out_dir",
+      "level",
+      "article_text"
+     ],
+     "unguarded_changed_lines": [
+      [
+       795,
+       "body_chunks, chunk_plan_used = _load_y_body_chunks(out_dir, \"a2\")    # Std chunk(2026-10-26ユーザー正式承認): Advと同じ整合検査+親wav生連結検証"
+      ],
+      [
+       796,
+       "return {**common_in, \"preview_mono\": preview_mono, \"narration\": narration, \"key_phrase_components\": comp, \"a2_segments\": segs,"
+      ],
+      [
+       797,
+       "\"body_chunks\": body_chunks, \"chunk_plans\": chunk_plan_used}"
+      ]
+     ],
+     "callers_in_file": [
+      "assemble_level"
+     ]
+    },
+    {
+     "func": "page_legend_html",
+     "change": "MODIFIED",
+     "class": "MANUAL_REVIEWED",
+     "why": "試聴ページ凡例の表示文言のみ(StdもAdvと同じ分割対象である旨・R5の条件付き文)。音声・Gate・採否に無関係。",
+     "old_params": [
+      "decisions"
+     ],
+     "new_params": [
+      "decisions"
+     ],
+     "unguarded_changed_lines": [
+      [
+       1104,
+       "f\"TTSの実分割: <b>{split_txt}</b> / 追加0.2秒ポーズ: <b>{zero}</b>(StandardもAdvancedと同じ段落境界分割の対象。段落が1つのsegmentは分割しません)。\""
+      ]
+     ],
+     "callers_in_file": [
+      "render_y_page"
+     ]
+    },
+    {
+     "func": "refresh_y_chunk_parents",
+     "change": "MODIFIED",
+     "class": "DEFAULT_ADV_HELPER",
+     "why": "追加/既存引数の既定値がAdv相当(level='b1b')。呼出側Advは引数を渡さない(下記callersで確認)",
+     "old_params": [
+      "out_dir",
+      "parts",
+      "segments",
+      "plans"
+     ],
+     "new_params": [
+      "out_dir",
+      "parts",
+      "segments",
+      "plans",
+      "level"
+     ],
+     "unguarded_changed_lines": [
+      [
+       369,
+       "parent_text=parts[\"segments\"][sid], display=_y_chunk_parent_display(plan, segments, vmap[sid], level))"
+      ]
+     ],
+     "callers_in_file": [
+      "generate_y_b1_segments",
+      "generate_y_a2_segments",
+      "_refresh_y_chunk_parents_on_disk"
+     ]
+    },
+    {
+     "func": "validate_only_segments",
+     "change": "MODIFIED",
+     "class": "MANUAL_REVIEWED",
+     "why": "_k指定の受理可否をCHUNK_TTS_Y_LEVELS(b1b,a2)基準にしただけ。b1bで_k受理・both/未知levelで拒否は従来どおり(拒否文言のみ変更)。",
+     "old_params": [
+      "raw",
+      "level"
+     ],
+     "new_params": [
+      "raw",
+      "level"
+     ],
+     "unguarded_changed_lines": [
+      [
+       112,
+       "if k_sel and level not in ys.CHUNK_TTS_Y_LEVELS:   # Std/Adv両方がchunk対象(2026-10-26ユーザー正式承認)。対象外levelへの_k指定のみ拒否"
+      ],
+      [
+       113,
+       "return None, f\"--only-segmentsの_k指定(chunk)はchunk対象level({'/'.join(ys.CHUNK_TTS_Y_LEVELS)})のみです: level={level} {k_sel}\""
+      ]
+     ],
+     "callers_in_file": []
+    },
+    {
+     "func": "y_style_gate",
+     "change": "MODIFIED",
+     "class": "STD_GUARDED",
+     "why": "変更行は全て Std専用ガード(if ... a2/STD_LEVEL/slowdown_applied ...)・コメント/docstring・署名の内側のみ",
+     "old_params": [
+      "theme_out_dir",
+      "level",
+      "style_profile"
+     ],
+     "new_params": [
+      "theme_out_dir",
+      "level",
+      "style_profile"
+     ],
+     "unguarded_changed_lines": [],
+     "callers_in_file": [
+      "assemble_level"
+     ]
+    }
+   ],
+   "constants": []
+  },
+  "er121_family_y_structure_01.py": {
+   "functions": [],
+   "constants": [
+    {
+     "const": "CHUNK_TTS_Y_APPROVAL_REF",
+     "change": "VALUE_CHANGED",
+     "class": "MANUAL_REVIEWED",
+     "why": "監査記録の注記文言のみ(chunk_tts_decision.jsonのapproval_ref。音声無関係。compareで『注記文言のみの差』を確認)。"
+    },
+    {
+     "const": "CHUNK_TTS_Y_LEVELS",
+     "change": "VALUE_CHANGED",
+     "class": "MANUAL_REVIEWED",
+     "why": "('b1b',)→('b1b','a2'): Advは引き続き含む(承認済み仕様=Std/Adv双方。ユーザー原文§2)。Adv動作は不変(動的バイト一致)。"
+    },
+    {
+     "const": "CHUNK_TTS_Y_NOTE",
+     "change": "VALUE_CHANGED",
+     "class": "MANUAL_REVIEWED",
+     "why": "監査記録の注記文言のみ(chunk_tts_decision.jsonのnote。音声無関係)。"
+    }
+   ]
+  }
+ },
+ "unclassified": []
+}

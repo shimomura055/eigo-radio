@@ -301,6 +301,9 @@ def _record_chunk_decision(out_dir: str, level: str) -> dict:
             chunk_tts.reconcile_saved_plan(f"{out_dir}/audit/chunk_plan_{level}.json", plans)
         except chunk_tts.ChunkIntegrityError as exc:
             raise YAudioStop(f"FAMILY_Y_CHUNK_PLAN_RECONCILE: {exc}") from exc
+        _unk = chunk_tts.unknown_chunk_ids_in_selection(plans, xr._ONLY_SEGMENTS, lambda k: ys.parse_y_chunk_id(k) is not None)
+        if _unk:      # Opus R3(c)(2026-10-26): planに無いchunk id指定は課金前に拒否(素通りさせない)
+            raise YAudioStop(f"FAMILY_Y_CHUNK_ID_NOT_IN_PLAN: --only-segmentsにplanへ存在しないchunk idがあります: {_unk}。課金前にSTOP")
         rec["segments"] = {sid: {"chunked": pl["chunked"], "paragraphs": len(chunk_tts.split_x_paragraphs(parts["segments"][sid])),
                                  "reason": pl.get("reason"), "chunk_ids": chunk_tts.chunk_ids(pl)} for sid, pl in plans.items()}
         rec["planner_version"] = chunk_tts.CHUNK_PLANNER_VERSION
@@ -725,7 +728,7 @@ def _read(narration_dir, name):
     return mono
 
 
-def _load_y_body_chunks(out_dir: str) -> tuple:
+def _load_y_body_chunks(out_dir: str, level: str = "b1b") -> tuple:
     """chunk化したsegmentについて、音声を読む前に整合検査(chunk集合・順序・語数・版・本文)と『親wav==ディスク上のchunk wavの生連結』
     (整数サンプル完全一致)を確認し、chunk別monoを返す(共通er117の関数。X組立と同じ手順)。戻り値=(body_chunks, plans_used)。"""
     nd = f"{out_dir}/narration"
@@ -741,6 +744,11 @@ def _load_y_body_chunks(out_dir: str) -> tuple:
             chunk_tts.verify_parent_integrity(plan, text, {i: segs[i] for i in ids if i in segs}, segs.get(sid))
             if not plan.get("chunked"):
                 continue
+            if level == chunk_tts.STD_LEVEL:
+                # Opus R1(2026-10-26): Std(a2)はchunk単位の6%減速証跡検査をload関数の中にも置く(人間承認では迂回しない。R2で記録欠落も違反)。
+                _bad = chunk_tts.std_chunk_slowdown_violations(plan, segs)
+                if _bad:
+                    raise YAudioStop(f"FAMILY_Y_STD_CHUNK_SLOWDOWN_GATE({sid}): {_bad}")
             paths = [f"{nd}/{i}.wav" for i in ids]
             chunk_tts.verify_raw_parent(f"{nd}/{sid}.wav", paths)
         except chunk_tts.ChunkIntegrityError as exc:
@@ -784,7 +792,7 @@ def load_y_sources(theme_out_dir: str, level: str, article_text: str | None = No
         narration[f"meaning_{i}"] = _read(nd, f"meaning_{i}")
     segs = {n: _read(nd, n) for n in (*ys.Y_SEGMENT_IDS, *ys.body_comment_names("a2"))}
     segs["full_story_part1"] = segs[ys.Y_LEAD]
-    body_chunks, chunk_plan_used = _load_y_body_chunks(out_dir)    # Std chunk(2026-10-26ユーザー正式承認): Advと同じ整合検査+親wav生連結検証
+    body_chunks, chunk_plan_used = _load_y_body_chunks(out_dir, "a2")    # Std chunk(2026-10-26ユーザー正式承認): Advと同じ整合検査+親wav生連結検証
     return {**common_in, "preview_mono": preview_mono, "narration": narration, "key_phrase_components": comp, "a2_segments": segs,
             "body_chunks": body_chunks, "chunk_plans": chunk_plan_used}
 
@@ -1097,7 +1105,7 @@ def page_legend_html(decisions: dict) -> str:
             "台本の見た目の段落とTTSの実分割は別のものです。<br>"
             f"<span style=\"{_PZ_STYLE}\">&#9208;1.25s@0:13.7</span> = 完成音声を実測した{PAUSE_MARK_MIN_MS}ms以上の停止(長さ@その行の音声内の時刻)。"
             "台本上の位置は語への割当てで<b>推定(前後2〜3語の誤差)</b>です。聴いて不自然に感じた時刻と見比べてください。"
-            "&#9660;(TTS実分割位置)の表示は、分割があるsegmentでのみ出ます(今回はありません)。</div>")
+            f"&#9660;(TTS実分割位置)の表示は、分割があるsegmentでのみ出ます({'今回はありません' if n_chunked == 0 else '今回は分割があるsegmentにのみ出ます'})。</div>")
 
 
 def voice1_candidates_aux_html(theme_out_dir: str, audio_dir: str, audio_rel: str) -> str:

@@ -1,0 +1,81 @@
+[REFUSED] 減速後ASR再検証の実測結果がありません: C:/Users/tensh/AppData/Local/Temp/tmpctwte4z1/run/a2/hr_adopt_prep/y_voice_1_slowed_asr_recheck.json(er121_e1_slowed_asr_recheck_01.pyで実測してから採用する)
+.[REFUSED] 減速後ASR再検証がPASSでないため採用できません: status=STOPPED label=MISMATCH
+..[REFUSED] 採用時に生成される減速後wavが、再検証したwavとsha256不一致(検証した音と違う音は採用しない)
+[REFUSED] 減速後ASR再検証の対象wavが採用候補attemptと不一致
+..[REFUSED] --apply には --user-statement-ref(ユーザー承認発言の逐語ファイル)が必須です
+[REFUSED] --user-statement-ref が存在しません: C:\Users\tensh\AppData\Local\Temp\tmpvsqrcf6o/missing.md(ユーザー本人の承認発言の逐語保存が必要)
+.[REFUSED] 採用候補wavのsha256が試聴時の記録と不一致(試聴したものと違う音は採用しない)
+...[REFUSED] ユーザー承認発言ファイルに対象(b1b/y_voice_1)の記載がありません: C:\Users\tensh\AppData\Local\Temp\tmpgcvzsnqg/stmt.md
+.....s...........................................................................................................................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 298 tests in 127.167s
+
+OK (skipped=1)
+[run_project_regression] repo root: C:\Users\tensh\eigo-radio
+[run_project_regression] discovery pattern: er121*_test_*.py
+[run_project_regression] discovered 11 test file(s):
+  - er121_e1_hr_adopt_r0_01_test_01.py
+  - er121_family_y_audio_chunk_test_01.py
+  - er121_family_y_comment2_removal_test_01.py
+  - er121_family_y_page_pause_test_01.py
+  - er121_family_y_runner_01_test_01.py
+  - er121_family_y_runner_text_wiring_test_01.py
+  - er121_family_y_std_chunk_opus_test_01.py
+  - er121_family_y_std_chunk_test_01.py
+  - er121_family_y_structure_match_test_01.py
+  - er121_family_y_text_core_01_test_01.py
+  - er121_family_y_text_core_article_test_01.py
+[run_project_regression] collected 298 test(s)
+{
+ "level": "a2",
+ "segment": "y_voice_1",
+ "approved_by": "user",
+ "approved_at": "2026-10-26T16:05:33",
+ "user_statement_source": "C:\\Users\\tensh\\AppData\\Local\\Temp\\tmpql0krokm/stmt.md",
+ "adopted_attempt": 5,
+ "adopted_attempt_wav": "C:/Users/tensh/AppData/Local/Temp/tmpql0krokm/run/a2/narration/attempts/y_voice_1_attempt5_custom53fd514d.wav",
+ "adopted_audio_sha256": "5e68e2abf78c1f4923c07d4da510a05f76fcec164eea4ee9995872b6beae724e",
+ "replaced_audio": "C:/Users/tensh/AppData/Local/Temp/tmpql0krokm/run/a2/narration/y_voice_1.pre_ypl7_adopt.wav",
+ "canonical_text_sha256": "3907f873ae3ad1cc56fe6fb21854742697b7e373158570885bfb22004f116130",
+ "slowdown_info": {
+  "slowdown_pct_target": 6.0,
+  "slowdown_pct_actual": 5.906,
+  "src_duration_seconds": 2.0,
+  "dst_duration_seconds": 2.118,
+  "src_path": "C:/Users/tensh/AppData/Local/Temp/tmpql0krokm/run/a2/narration/y_voice_1_original.wav",
+  "dst_path": "C:/Users/tensh/AppData/Local/Temp/tmpql0krokm/run/a2/narration/y_voice_1.wav"
+ },
+ "scope": "this single segment / this attempt only; NOT a general ASR/QA exemption; no TTS/ASR API call"
+}
+{
+ "level": "b1b",
+ "segment": "y_voice_1",
+ "approved_by": "user",
+ "approved_at": "2026-10-26T16:05:34",
+ "user_statement_source": "C:\\Users\\tensh\\AppData\\Local\\Temp\\tmpa1hanb5n/stmt.md",
+ "adopted_attempt": 6,
+ "adopted_attempt_wav": "C:/Users/tensh/AppData/Local/Temp/tmpa1hanb5n/run/b1b/narration/attempts/y_voice_1_attempt6_englishstyleprefixwidemargin.wav",
+ "adopted_audio_sha256": "22ae4c0cd8a8bc41778a05092128c6e025c38756dc483e1538afcec951b30c8d",
+ "replaced_audio": "C:/Users/tensh/AppData/Local/Temp/tmpa1hanb5n/run/b1b/narration/y_voice_1.pre_ypl7_adopt.wav",
+ "canonical_text_sha256": "3907f873ae3ad1cc56fe6fb21854742697b7e373158570885bfb22004f116130",
+ "slowdown_info": null,
+ "scope": "this single segment / this attempt only; NOT a general ASR/QA exemption; no TTS/ASR API call"
+}
+{
+ "dry_run": true,
+ "plan": {
+  "run": "C:/Users/tensh/AppData/Local/Temp/tmp_5id5ydi/run",
+  "level": "b1b",
+  "segment": "y_voice_1",
+  "attempt": 6,
+  "attempt_wav": "C:/Users/tensh/AppData/Local/Temp/tmp_5id5ydi/run/b1b/narration/attempts/y_voice_1_attempt6_englishstyleprefixwidemargin.wav",
+  "attempt_json": "C:/Users/tensh/AppData/Local/Temp/tmp_5id5ydi/run/b1b/narration/attempts/y_voice_1_attempt6_englishstyleprefixwidemargin.json",
+  "dst": "C:/Users/tensh/AppData/Local/Temp/tmp_5id5ydi/run/b1b/narration/y_voice_1.wav",
+  "canonical_text_sha256": "3907f873ae3ad1cc56fe6fb21854742697b7e373158570885bfb22004f116130",
+  "attempt_wav_sha256": "22ae4c0cd8a8bc41778a05092128c6e025c38756dc483e1538afcec951b30c8d",
+  "recorded_attempt_sha256": "22ae4c0cd8a8bc41778a05092128c6e025c38756dc483e1538afcec951b30c8d",
+  "needs_a2_slowdown": false,
+  "current_dst_sha256": "dc7cda4f55984ce91302d135d4a18df927cb6c8ae1c443c7c5dbed210a3e908b"
+ }
+}
+[run_project_regression] collected=298 passed=297 failed=0 errors=0 skipped=1

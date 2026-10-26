@@ -1490,8 +1490,14 @@ def generate_family_x_b1_segments(
     _chunk_plans = _x_chunk_plans(parts)
     # 再計画禁止(resume): 同一本文・同一版で保存済みplanと分割が食い違えば課金前にSTOP。planは本文の純関数。
     chunk_tts.reconcile_saved_plan(f"{out_dir}/audit/chunk_plan_b1b.json", _chunk_plans)
+    _unk = chunk_tts.unknown_chunk_ids_in_selection(_chunk_plans, _ONLY_SEGMENTS)   # Opus R3(c): planに無いchunk id指定は課金前に拒否
+    if _unk:
+        raise chunk_tts.ChunkIntegrityError(f"--only-segmentsにplanへ存在しないchunk idがあります(課金前に拒否): {_unk}")
     # I1: planner_versionが現行と異なる前回chunk entryは再利用しない(版を上げた後に旧chunkが再利用されて整合検査STOPになるのを防ぐ)
     _cached = _x_drop_chunked_parent_cache(chunk_tts.drop_stale_chunk_entries(_load_cached_tts_results(out_dir)), _chunk_plans)
+    # Opus M1(2026-10-26): 親もそのchunk idも--only-segmentsに含まれず前回cacheが旧方式(親entryのみ)の本文は、従来経路(親名で検証済みentryを引継ぎ)に残す。
+    # chunk化すると本文chunkが前回cacheに無くSKIPPEDになり、親が CHUNKS_NOT_ALL_VALIDATED で上書きされ検証済み本文が失われるため。本文を含む通常のresumeは従来どおりchunk化。
+    _chunk_plans = chunk_tts.apply_legacy_partial_retry(_chunk_plans, _cached, _ONLY_SEGMENTS)
 
     results = {}
     topic_intro_text = f"Today's topic is {parts['title']}."
@@ -1910,8 +1916,13 @@ def generate_family_x_a2_segments(
     # chunkごとに既存の6%減速処理を適用→0.2秒無音を挿入して連結する。再計画禁止(resume)・stale版/減速証跡なしcacheの再利用拒否もAdvと同じ。
     _chunk_plans = _x_chunk_plans(parts)
     chunk_tts.reconcile_saved_plan(f"{out_dir}/audit/chunk_plan_a2.json", _chunk_plans)
+    _unk = chunk_tts.unknown_chunk_ids_in_selection(_chunk_plans, _ONLY_SEGMENTS)   # Opus R3(c): planに無いchunk id指定は課金前に拒否
+    if _unk:
+        raise chunk_tts.ChunkIntegrityError(f"--only-segmentsにplanへ存在しないchunk idがあります(課金前に拒否): {_unk}")
     _cached = chunk_tts.drop_cached_std_chunks_without_slowdown(
         _x_drop_chunked_parent_cache(chunk_tts.drop_stale_chunk_entries(_load_cached_tts_results(out_dir)), _chunk_plans))
+    # Opus M1(2026-10-26): b1b(Adv)側と同じ。旧方式Std結果への『本文以外』の部分指定retryで検証済み本文を失わない(従来経路で引継ぎ)。
+    _chunk_plans = chunk_tts.apply_legacy_partial_retry(_chunk_plans, _cached, _ONLY_SEGMENTS)
 
     results = {}
     topic_intro_tts_title = parts.get("title_tts", parts["title"])
@@ -2543,6 +2554,11 @@ def load_family_x_a2_sources(theme_out_dir: str, source_dir: str | None = None) 
             continue
         ids = chunk_tts.chunk_ids(plan)
         chunk_tts.verify_parent_integrity(plan, parts_json["part" + pid[-1]], {i: _segs[i] for i in ids if i in _segs}, _segs.get(pid))
+        # Opus R1(2026-10-26): chunk単位の6%減速証跡検査を、共有Gateと同じくload関数の中にも置く(stage関数外の直接呼出でも検査を通す。
+        # 人間承認では迂回しない)。R2により減速前後長の記録欠落も違反。
+        _bad = chunk_tts.std_chunk_slowdown_violations(plan, _segs)
+        if _bad:
+            raise chunk_tts.ChunkIntegrityError(f"BLOCKED_STD_CHUNK_SLOWDOWN_GATE({pid}): {_bad}")
         paths = [f"{narration_dir}/{i}.wav" for i in ids]
         chunk_tts.verify_raw_parent(f"{narration_dir}/{pid}.wav", paths)
         monos = []

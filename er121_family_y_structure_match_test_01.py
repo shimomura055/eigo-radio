@@ -53,6 +53,8 @@ ALLOWED_X_ONLY = {
     "_chunk_plans.items": "Y-DIFF-CHUNK-ID", "_chunk_plans.values": "Y-DIFF-CHUNK-ID", "_generate_x_body_part_chunked": "Y-DIFF-CHUNK-ID",
     "_generate_x_body_part_chunked_a2": "Y-DIFF-CHUNK-ID(2026-10-26 Std対象化: YはStd chunkを_generate_y_body_segment_chunked_a2で再配線。減速はX同様 n3_tts.generate_a2_segment_with_slowdown)",
     "_refresh_x_chunk_parents": "Y-DIFF-CHUNK-ID", "_x_chunk_plans": "Y-DIFF-CHUNK-ID", "_x_drop_chunked_parent_cache": "Y-DIFF-CHUNK-ID",
+    "chunk_tts.apply_legacy_partial_retry": "Y-NO-LEGACY(Opus M1[2026-10-26]はX限定の指摘: 旧方式[複数段落を1 callで生成]のStd/Adv結果が存在するのはX既存runのみ。Yの正式run[実記事は全て各Voice 1段落]にchunk化対象の旧方式結果は無く、Yのgate/assembleは旧方式用effective_planを持たない)",
+    "chunk_tts.ChunkIntegrityError": "Y-DIFF-STOP-TYPE(課金前拒否・減速証跡違反はYAudioStopで同等に停止する。Opus R1/R3(c))",
     "chunk_tts.drop_stale_chunk_entries": "Y-DIFF-CHUNK-ID(Y chunk idはer117.parse_chunk_idが解釈しないため_drop_stale_chunk_cacheで同等処理)",
     "fx_iol.family_x_in_one_line_scope": "Y-DIFF-IOL(YL-C08)",
     "pnap_hooks.family_scope": "Y-DIFF-RET-PROVIDER(Yはrun_with_alarm_hookを直接呼ぶ)",
