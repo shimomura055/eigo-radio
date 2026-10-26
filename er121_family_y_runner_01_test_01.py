@@ -26,6 +26,7 @@ sys.path.insert(0, ROOT)
 
 import er121_family_y_runner_01 as r  # noqa: E402
 import er121_family_y_structure_01 as ys  # noqa: E402
+import er121_family_y_audio_01 as ya  # noqa: E402
 
 BLOCK = {"net": 0, "client": 0}
 _PATCHERS = []
@@ -216,7 +217,7 @@ class FullMockRun(unittest.TestCase):
             json.dump(res, open(resp, "w", encoding="utf-8"))
             before = [e["part"] for e in json.load(open(f"{self.out}/b1b/audit/timeline.json", encoding="utf-8"))]
             with _quiet():
-                s = ya.assemble_level(dst, "b1b", style_profile=r.STYLE_PROFILE, slug="mock_slug",
+                s = ya.assemble_level(dst, "b1b", style_profile=ya.Y_APPROVED_STYLE_PROFILE, slug="mock_slug",
                                       article_text=ys.canonical_body(r._rd(r._level_text_path(self.ctx, "b1b"))))
             self.assertEqual(s["status"], "OK", s)
             after = [e["part"] for e in json.load(open(f"{adv}/audit/timeline.json", encoding="utf-8"))]

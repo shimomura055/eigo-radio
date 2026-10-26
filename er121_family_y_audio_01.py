@@ -541,7 +541,7 @@ def _generate_y_body_segment_chunked_a2(plan: dict, cached, narration_dir: str, 
 @secondary_run_scope.with_secondary_run   # AUW 委任_05: run単位SecondaryCache+circuit breaker(Xと同じ共通hook)
 @y_family_scope("b1b")   # PNAP run scope(Y)+完成報告hook+Run Entity Table(YProvider)
 @er109_scope.family_scope("Y")   # er109 run scope(Y)。例外・STOP時もfinallyで復元
-def generate_y_b1_segments(theme_out_dir: str, *, tts_backend: str = TTS_BACKEND, style_profile: str = "default", guard=None) -> dict:
+def generate_y_b1_segments(theme_out_dir: str, *, tts_backend: str = TTS_BACKEND, style_profile: str, guard=None) -> dict:   # style_profile必須(既定値なし。OPEN-537: 供給漏れで黙ってdefaultになる経路を作らない)
     style_profile_mod.assert_profile_backend(style_profile, tts_backend)
     _role_style, _base, _fl = _style_resolvers("b1b", tts_backend, style_profile)
     out_dir = f"{theme_out_dir}/b1b"
@@ -629,7 +629,7 @@ def generate_y_b1_segments(theme_out_dir: str, *, tts_backend: str = TTS_BACKEND
 @secondary_run_scope.with_secondary_run
 @y_family_scope("a2")
 @er109_scope.family_scope("Y")
-def generate_y_a2_segments(theme_out_dir: str, japanese_title: str, *, tts_backend: str = TTS_BACKEND, style_profile: str = "default", guard=None) -> dict:
+def generate_y_a2_segments(theme_out_dir: str, japanese_title: str, *, tts_backend: str = TTS_BACKEND, style_profile: str, guard=None) -> dict:   # style_profile必須(既定値なし。OPEN-537)
     style_profile_mod.assert_profile_backend(style_profile, tts_backend)
     _role_style, _base, fl_styles = _style_resolvers("a2", tts_backend, style_profile)
 
@@ -786,54 +786,200 @@ def name_not_approved(approvals, name, entry) -> bool:
     return not (entry is not None and style_profile_mod._approved(approvals, name, entry))
 
 
+# ------------------------------------------------------------
+# 承認Style profile(OPEN-537是正、FAMILY-Y-STYLE-PROFILE-FIX-01 委任_02)
+# Y本文/日本語補助/Preview/KP音声のStyleは、Family Xの承認済みprofile(fx_20261017)を継承する(根拠=DESIGN_01[LAUNCH-01]:84・A19・28-1運用7)。
+# 以前は runner が "default" を渡してYだけ承認Styleが一切適用されなかった。profile名はここに1か所だけ置く(runnerは_ya().Y_APPROVED_STYLE_PROFILEを参照)。
+# Xの既定(DEFAULT_NEW_RUN_PROFILE)へは自動追従しない(drift testで一致を固定=Xの既定が変わればYが落ちて承認判断を強制する)。
+# ------------------------------------------------------------
+Y_APPROVED_STYLE_PROFILE = "fx_20261017"
+_Y_KP_RANKS = ("1", "2", "3")
+
+
+def _y_kp_names(role: str) -> tuple:
+    return tuple(f"kp{rank}_{style_profile_mod.ROLE_KP_RESULT_KEY[role]}" for rank in _Y_KP_RANKS)
+
+
+# role -> level -> 検査対象のgate上の名前(FULL_STORYはY本文8segment[親ID。chunk化したsegmentは全chunkが検査された場合のみ『検査済み』])。
+# Gateは『この表の期待集合 == 実際に検査した集合』を要求する(Opus M-1: Xのchecked>=1件では、Y本文が0件でもXの名前で空振りして通る)。
+Y_ROLE_COVERAGE = {
+    "FULL_STORY": {"a2": tuple(ys.Y_SEGMENT_IDS), "b1b": tuple(ys.Y_SEGMENT_IDS)},
+    style_profile_mod.ROLE_SUPPORT_JA: {"a2": tuple(ys.support_names("a2"))},   # Std: preview+comment_1..3(Advは対象外。Comment 2はAdvのみ削除)
+    style_profile_mod.ROLE_PREVIEW: {"b1b": ("preview",)},
+    style_profile_mod.ROLE_KP_EN: {"a2": _y_kp_names(style_profile_mod.ROLE_KP_EN), "b1b": _y_kp_names(style_profile_mod.ROLE_KP_EN)},
+    style_profile_mod.ROLE_KP_JA_MEANING: {"a2": _y_kp_names(style_profile_mod.ROLE_KP_JA_MEANING)},
+    style_profile_mod.ROLE_KP_EXPLANATION_EN: {"b1b": _y_kp_names(style_profile_mod.ROLE_KP_EXPLANATION_EN)},
+}
+_Y_JA_ROLES = (style_profile_mod.ROLE_SUPPORT_JA, style_profile_mod.ROLE_KP_JA_MEANING)
+
+
+def y_expected_coverage(level: str) -> set:
+    return {(role, name) for role, lv in Y_ROLE_COVERAGE.items() for name in lv.get(level, ())}
+
+
+def _y_profile_assert(theme_out_dir: str, style_profile: str) -> list:
+    """固定記録(audit/style_profile.json)を正として、承認profile以外/記録欠落/不一致をfail-closedで検出する(引数と記録が食い違えばSTOP=Opus見落とし3)。"""
+    sp = style_profile_mod
+    bad = []
+    try:
+        rec = sp.read_record(theme_out_dir)
+    except sp.StyleProfileStop as e:
+        return [{"reason": "Y_STYLE_PROFILE_RECORD_UNREADABLE", "detail": str(e)[:200]}]
+    if rec is None:
+        return [{"reason": "Y_STYLE_PROFILE_RECORD_MISSING", "detail": sp.record_path(theme_out_dir)}]
+    try:
+        rid = sp.verify_record(rec)
+    except sp.StyleProfileStop as e:
+        return [{"reason": "Y_STYLE_PROFILE_RECORD_MISMATCH", "detail": str(e)[:300]}]
+    if rid != Y_APPROVED_STYLE_PROFILE:
+        bad.append({"reason": "Y_STYLE_PROFILE_NOT_APPROVED", "detail": f"record={rid!r} approved={Y_APPROVED_STYLE_PROFILE!r}"})
+    if style_profile != rid:
+        bad.append({"reason": "Y_STYLE_PROFILE_ARG_DISAGREES_WITH_RECORD", "detail": f"arg={style_profile!r} record={rid!r}"})
+    if style_profile != Y_APPROVED_STYLE_PROFILE:
+        bad.append({"reason": "Y_STYLE_PROFILE_NOT_APPROVED", "detail": f"arg={style_profile!r} approved={Y_APPROVED_STYLE_PROFILE!r}"})
+    if not bad and sorted(sp.overridden_roles(Y_APPROVED_STYLE_PROFILE)) != sorted(Y_ROLE_COVERAGE):
+        bad.append({"reason": "Y_STYLE_ROLE_TABLE_DRIFT", "detail": f"profile_roles={sorted(sp.overridden_roles(Y_APPROVED_STYLE_PROFILE))} Y_ROLE_COVERAGE={sorted(Y_ROLE_COVERAGE)}"})
+    return bad
+
+
+def _y_row(level, role, name, entry, o, ev, measured, measured_sha, match, extra=None):
+    row = {"level": level, "role": role, "segment": name, "approved_sha256": o["sha256"], "approved_length": len(o["text"]),
+           "measured_kind": measured, "measured_sha256": measured_sha, "match": match,
+           "voice": entry.get("voice"), "model": entry.get("model"), "tts_backend": entry.get("tts_backend"),
+           "reused": bool(entry.get("reused") or entry.get("reused_from_previous_run")),
+           "instruction_type": entry.get("instruction_type"), "fallback_used": entry.get("fallback_used"),
+           "slowdown_applied": entry.get("slowdown_applied"), "local_rewrite_recovery": bool(entry.get("local_rewrite_recovery")),
+           "hint_applied": (ev or {}).get("hint_applied")}
+    row.update(extra or {})
+    return row
+
+
+def _kp_entry(results: dict, gate_name: str):
+    """KP系gate名(kp1_english等)からresultsのkey_phrases entryを返す(承認照合用)。"""
+    m = re.fullmatch(r"kp([0-9]+)_(english|japanese_meaning|explanation)", gate_name or "")
+    if not m:
+        return None
+    return ((results.get("key_phrases") or {}).get(m.group(1)) or {}).get(m.group(2))
+
+
 def y_style_gate(theme_out_dir: str, level: str, style_profile: str) -> dict:
     """XのM3 Assembly前Gate(style_profile_mod.m3_assembly_gate)を呼び、X専用segment(full_story_part*/comment_4/in_one_line)の『記録なし』だけを除外して、
-    Y本文8segmentにも同じ判定(Style/fallback/Local Rewrite)を掛ける。それ以外は一切緩和しない。"""
+    Y本文8segmentにも同じ判定(Style/fallback/Local Rewrite)を掛ける。それ以外は一切緩和しない。
+    fail-closed(OPEN-537): 固定記録欠落/不一致/承認profile以外=BLOCK(legacy waiverなし)、期待集合Y_ROLE_COVERAGEと検査集合の完全一致を要求(Opus M-1)、
+    audit/style_actual_vs_approved.json に実測値と承認値の1行ずつ照合表を残す(日本語roleは送信instruction[style_prefix]の実測。取れなければ『意図sha(実測なし)』で一致扱いにしない=Opus M-4)。"""
     sp = style_profile_mod
     out_dir = f"{theme_out_dir}/{level}"
+    os.makedirs(f"{out_dir}/audit", exist_ok=True)
+    pbad = _y_profile_assert(theme_out_dir, style_profile)
+    if pbad:      # 承認profileで検査できない=評価に進まず必ずBLOCK
+        res = {"status": "BLOCK", "level": level, "y_profile_blocked": pbad, "x_gate_blocked_after_filter": [], "y_body_checks": [], "y_body_blocked": [],
+               "x_gate": {"status": None, "checked": [], "human_approved": [], "warnings": []}, "coverage": None}
+        save_json(f"{out_dir}/audit/y_style_profile_gate.json", res)
+        return res
     reconcile_hr_approvals_for_request(out_dir, level, style_profile)   # OPEN-535: 現Voice/Styleと不一致の旧HR承認はGateに効かせない
     results = load_json(f"{out_dir}/audit/tts_generation_results.json")
     approvals_path = asm.human_approval_path(out_dir)
     approvals = load_json(approvals_path) if os.path.exists(approvals_path) else {}
     gate = sp.m3_assembly_gate(style_profile, level, results, approvals)
     blocked = [b for b in gate["blocked"] if not (b["segment"] in _X_ONLY_SEGMENTS and b["violations"] == ["NO_SEGMENT_RECORD"])]
-    extra = []
+    extra, rows = [], []
     segs = results.get("segments") or {}
-    prof = sp.get_profile(style_profile)["overrides"].get("FULL_STORY")
+    overrides = sp.get_profile(style_profile)["overrides"]
+    prof = overrides.get("FULL_STORY")
     exp_text = prof["text"] if prof else None
     plans = plan_y_chunks(load_json(f"{out_dir}/parts.json")) if level in ys.CHUNK_TTS_Y_LEVELS and os.path.exists(f"{out_dir}/parts.json") else {}
-    targets = []
-    for sid in ys.Y_SEGMENT_IDS:     # chunk化したsegmentは『親ではなく全chunk』を検査する(親にはstyle記録が無く、chunk1の値を親へ写すとchunk2以降の違反が通るため)
+    evaluated = set()      # 実際に evaluate_segment_evidence を実行した (role, name)
+    for sid in ys.Y_SEGMENT_IDS:
         pl = plans.get(sid)
-        targets += chunk_tts.chunk_ids(pl) if pl and pl.get("chunked") else [sid]
-    for name in targets:
-        entry = segs.get(name)
-        viol = []
-        if entry is None:
-            viol.append("NO_SEGMENT_RECORD")
-        else:
-            if prof is not None:
+        # chunk化したsegmentは『親ではなく全chunk』を検査する(親にはstyle記録が無く、chunk1の値を親へ写すとchunk2以降の違反が通るため)
+        names = chunk_tts.chunk_ids(pl) if pl and pl.get("chunked") else [sid]
+        all_evaluated = True
+        for name in names:
+            entry = segs.get(name)
+            viol = []
+            if entry is None:
+                viol.append("NO_SEGMENT_RECORD")
+                all_evaluated = False
+            elif prof is None:
+                viol.append("Y_STYLE_PROFILE_FULL_STORY_NOT_OVERRIDDEN")
+                all_evaluated = False
+            else:
                 ev = sp.evaluate_segment_evidence(entry, level, style_profile, "FULL_STORY")
                 viol.extend(ev["reasons"])
+                prefix_ok = None
                 if level == "b1b":
                     spx = entry.get("style_prefix")
-                    if not (isinstance(spx, str) and spx.startswith(exp_text)):
+                    prefix_ok = isinstance(spx, str) and spx.startswith(exp_text)
+                    if not prefix_ok:
                         viol.append("ADV_STYLE_PREFIX_NOT_PROFILE_PREFIXED")
                     if entry.get("instruction_type") == "minimal_fallback":
                         viol.append("ADV_MINIMAL_FALLBACK")
-            if level == "a2" and entry.get("fallback_used") is not False:
-                viol.append("STD_FALLBACK_USED_OR_UNKNOWN")
-            if entry.get("local_rewrite_recovery"):
-                viol.append("LOCAL_REWRITE_RECOVERY")
-        extra.append({"segment": name, "violations": viol})
-    extra_blocked = [e for e in extra if e["violations"] and name_not_approved(approvals, e["segment"], segs.get(e["segment"]))]
+                if level == "a2" and entry.get("fallback_used") is not False:
+                    viol.append("STD_FALLBACK_USED_OR_UNKNOWN")
+                if entry.get("local_rewrite_recovery"):
+                    viol.append("LOCAL_REWRITE_RECOVERY")
+                fin = ev.get("final_style_record") or {}
+                rows.append(_y_row(level, "FULL_STORY", name, entry, prof, ev, "final_style_record(送信style実測)", fin.get("sha256"),
+                                   ev["pass"] and prefix_ok is not False, {"parent_segment": sid, "adv_prefix_startswith_approved": prefix_ok,
+                                                                          "style_prefix_len": fin.get("len")}))
+            extra.append({"segment": name, "violations": viol})
+        if all_evaluated:
+            evaluated.add(("FULL_STORY", sid))
+    # FULL_STORY以外のrole(日本語補助/Preview/KP): 判定自体はX共通のm3_assembly_gateが実施済み。ここでは『検査が実際に行われた集合』の算出と、
+    # 日本語roleの実測照合、照合表の作成を行う。
+    for name, role, entry in sp._gate_targets(style_profile, level, results):
+        if role == "FULL_STORY" or name in _X_ONLY_SEGMENTS or entry is None:
+            continue
+        o = overrides[role]
+        evaluated.add((role, name))
+        viol, ev = [], None
+        if role in _Y_JA_ROLES:
+            # 日本語roleは発音hint追記が無く、top-level style_prefixが送信したinstruction(再利用entryも生成時の値を保持し、再利用でも上書きされない)。
+            spx = entry.get("style_prefix")
+            if isinstance(spx, str):
+                ms = sp.sha256_text(spx)
+                ok = ms == o["sha256"]
+                if not ok:
+                    viol.append("JA_STYLE_ACTUAL_MISMATCH")
+                rows.append(_y_row(level, role, name, entry, o, None, "style_prefix(送信instruction実測)", ms, ok))
+            else:
+                viol.append("JA_STYLE_ACTUAL_UNMEASURED")
+                rows.append(_y_row(level, role, name, entry, o, None, "意図sha(実測なし)", None, False,
+                                   {"intended_sha256": (entry.get("style_profile") or {}).get("style_base_sha256")}))
+        else:
+            ev = sp.evaluate_segment_evidence(entry, level, style_profile, role)
+            fin = ev.get("final_style_record") or {}
+            if role == sp.ROLE_KP_EN and ev.get("final_style_checked") is False:
+                kc = sp.kp_en_store_key_check(entry, style_profile)
+                rows.append(_y_row(level, role, name, entry, o, ev, "master_store_key(再利用/fallback・生成時style実測なし)", None,
+                                   ev["base_sha_ok"] and not kc["violations"], {"store_key_violations": kc["violations"]}))
+            else:
+                spx = entry.get("style_prefix")
+                pref_ok = (isinstance(spx, str) and spx.startswith(o["text"])) if role == sp.ROLE_PREVIEW else None
+                rows.append(_y_row(level, role, name, entry, o, ev, "final_style_record(送信style実測)", fin.get("sha256"),
+                                   ev["pass"] and pref_ok is not False, {"style_prefix_len": fin.get("len")}))
+        if viol:
+            extra.append({"segment": name, "violations": viol})
+    expected = y_expected_coverage(level)
+    missing = sorted(expected - evaluated)
+    unexpected = sorted(evaluated - expected)
+    coverage = {"expected_count": len(expected), "evaluated_count": len(evaluated & expected), "missing": [list(x) for x in missing],
+                "unexpected": [list(x) for x in unexpected]}
+    cov_blocked = ([{"segment": f"{r}:{n}", "violations": ["Y_STYLE_COVERAGE_EMPTY"]} for r, n in missing]
+                   + [{"segment": f"{r}:{n}", "violations": ["Y_STYLE_COVERAGE_UNEXPECTED"]} for r, n in unexpected])
+    extra_blocked = [e for e in extra if e["violations"] and name_not_approved(approvals, e["segment"], segs.get(e["segment"]) or _kp_entry(results, e["segment"]))]
     if level == "a2":
         extra_blocked += check_std_slowdown(results, plans)
-    res = {"status": "BLOCK" if (blocked or extra_blocked) else "PASS", "x_gate_blocked_after_filter": blocked,
-           "y_body_checks": extra, "y_body_blocked": extra_blocked,
+    extra_blocked += cov_blocked
+    res = {"status": "BLOCK" if (blocked or extra_blocked) else "PASS", "level": level, "profile_id": style_profile,
+           "x_gate_blocked_after_filter": blocked, "y_profile_blocked": [],
+           "y_body_checks": extra, "y_body_blocked": extra_blocked, "coverage": coverage,
            "x_gate": {k: gate.get(k) for k in ("status", "checked", "human_approved", "warnings")}}
-    os.makedirs(f"{out_dir}/audit", exist_ok=True)
     save_json(f"{out_dir}/audit/y_style_profile_gate.json", res)
+    rec = sp.read_record(theme_out_dir)
+    save_json(f"{out_dir}/audit/style_actual_vs_approved.json",
+              {"profile_id": style_profile, "record_created_at": (rec or {}).get("created_at"), "level": level, "coverage": coverage,
+               "rows_count": len(rows), "all_match": bool(rows) and all(r["match"] is True for r in rows), "rows": rows})
     return res
 
 

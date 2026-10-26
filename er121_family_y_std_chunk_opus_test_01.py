@@ -48,7 +48,7 @@ class TestOpusR1R2R3R5(base.BaseStd):
         with self.assertRaises(ya.YAudioStop) as e:
             ya._load_y_body_chunks(self.a2, "a2")
         self.assertIn("DURATION_RECORD_MISSING", str(e.exception))
-        g = ya.y_style_gate(self.out, "a2", r.STYLE_PROFILE)
+        g = ya.y_style_gate(self.out, "a2", ya.Y_APPROVED_STYLE_PROFILE)
         self.assertEqual(g["status"], "BLOCK")
 
     def test_r3c_unknown_chunk_id_in_only_segments_is_rejected_before_billing(self):

@@ -95,7 +95,7 @@ class TestAllSegmentsMultiParagraphStd(BaseStd):
             nd = f"{self.a2}/narration"
             k1, k2 = (chunk_tts.read_pcm16(f"{nd}/{sid}_k{i}.wav") for i in (1, 2))
             self.assertEqual(len(chunk_tts.read_pcm16(f"{nd}/{sid}.wav")), len(k1) + len(k2) + 4800)   # 24kHz*0.2s
-        gate = ya.y_style_gate(self.out, "a2", r.STYLE_PROFILE)
+        gate = ya.y_style_gate(self.out, "a2", ya.Y_APPROVED_STYLE_PROFILE)
         self.assertEqual(gate["status"], "PASS", gate)
         self.assertEqual(len([x for x in gate["y_body_checks"] if ys.parse_y_chunk_id(x["segment"])]), 16)
         s = self.assemble()

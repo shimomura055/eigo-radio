@@ -116,7 +116,7 @@ class Base(unittest.TestCase):
         if patch_role:
             stack.enter_context(_patch_resolve())
         with stack, _quiet():
-            return ya.generate_y_b1_segments(self.out, style_profile=r.STYLE_PROFILE), api
+            return ya.generate_y_b1_segments(self.out, style_profile=ya.Y_APPROVED_STYLE_PROFILE), api
 
     def results(self):
         return self.rj(f"{self.b1}/audit/tts_generation_results.json")
@@ -130,7 +130,7 @@ class Base(unittest.TestCase):
 
     def assemble(self):
         with mk.fake_tts(self.api()), _quiet():
-            return ya.assemble_level(self.out, "b1b", style_profile=r.STYLE_PROFILE, slug="mock_slug", article_text=self.article_text())
+            return ya.assemble_level(self.out, "b1b", style_profile=ya.Y_APPROVED_STYLE_PROFILE, slug="mock_slug", article_text=self.article_text())
 
 
 class TestPlan(Base):
@@ -198,7 +198,7 @@ class TestGenerateAndAssemble(Base):
         api = self.api()
         with mk.fake_tts(api), _quiet():
             with self.assertRaises(ya.YAudioStop) as e:
-                ya.generate_y_b1_segments(self.out, style_profile=r.STYLE_PROFILE)
+                ya.generate_y_b1_segments(self.out, style_profile=ya.Y_APPROVED_STYLE_PROFILE)
         self.assertIn("FAMILY_Y_CHUNK_ID_ROLE_UNRESOLVED", str(e.exception))
         self.assertEqual(api.n, 0)                                                  # 共有narration含め1回も生成していない
 
@@ -238,7 +238,7 @@ class TestGenerateAndAssemble(Base):
     def test_gate_and_assemble_with_0_2s_pause_and_unmerged_speaker_switches(self):
         self.multi_para_parts()
         self.generate()
-        gate = ya.y_style_gate(self.out, "b1b", r.STYLE_PROFILE)
+        gate = ya.y_style_gate(self.out, "b1b", ya.Y_APPROVED_STYLE_PROFILE)
         self.assertEqual(gate["status"], "PASS", gate)
         names = [x["segment"] for x in gate["y_body_checks"]]
         self.assertIn("y_voice_2_k1", names)
@@ -295,7 +295,7 @@ class TestGenerateAndAssemble(Base):
         res = self.results()
         res["segments"]["y_voice_2_k2"]["local_rewrite_recovery"] = {"mock": True}      # chunk2だけがLocal Rewrite recoveryで生成された
         self.save_results(res)
-        g = ya.y_style_gate(self.out, "b1b", "default")
+        g = ya.y_style_gate(self.out, "b1b", ya.Y_APPROVED_STYLE_PROFILE)
         self.assertEqual(g["status"], "BLOCK")
         blocked = {x["segment"] for x in g["y_body_blocked"]}
         self.assertEqual(blocked, {"y_voice_2_k2"})                                  # chunk1ではなくchunk2が止まる(親へchunk1の値を写して素通りさせない)
@@ -305,7 +305,7 @@ class TestGenerateAndAssemble(Base):
         res = self.results()
         del res["segments"]["y_voice_2_k2"]
         self.save_results(res)
-        g = ya.y_style_gate(self.out, "b1b", "default")
+        g = ya.y_style_gate(self.out, "b1b", ya.Y_APPROVED_STYLE_PROFILE)
         self.assertEqual(g["status"], "BLOCK")
         self.assertIn("y_voice_2_k2", {x["segment"] for x in g["y_body_blocked"]})
 

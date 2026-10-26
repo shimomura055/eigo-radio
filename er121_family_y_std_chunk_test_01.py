@@ -93,7 +93,7 @@ class BaseStd(unittest.TestCase):
         if slow_fn is not None:
             stack.enter_context(mock.patch.object(ya.n3_tts, "generate_a2_segment_with_slowdown", side_effect=slow_fn))
         with stack, _quiet():
-            return ya.generate_y_a2_segments(self.out, "日本語タイトル", style_profile=r.STYLE_PROFILE), api
+            return ya.generate_y_a2_segments(self.out, "日本語タイトル", style_profile=ya.Y_APPROVED_STYLE_PROFILE), api
 
     def results(self):
         return self.rj(f"{self.a2}/audit/tts_generation_results.json")
@@ -107,7 +107,7 @@ class BaseStd(unittest.TestCase):
 
     def assemble(self):
         with mk.fake_tts(self.api()), _quiet():
-            return ya.assemble_level(self.out, "a2", style_profile=r.STYLE_PROFILE, slug="mock_slug", article_text=self.article_text())
+            return ya.assemble_level(self.out, "a2", style_profile=ya.Y_APPROVED_STYLE_PROFILE, slug="mock_slug", article_text=self.article_text())
 
     def api_lines(self):
         with open(f"{self.out}/mock_api_calls.jsonl", encoding="utf-8") as f:
@@ -190,7 +190,7 @@ class TestStdChunkGeneration(BaseStd):
     def test_gate_checks_every_chunk_and_assembly_has_exact_0_2s_gaps(self):
         self.multi_para_parts()
         self.generate()
-        gate = ya.y_style_gate(self.out, "a2", r.STYLE_PROFILE)
+        gate = ya.y_style_gate(self.out, "a2", ya.Y_APPROVED_STYLE_PROFILE)
         self.assertEqual(gate["status"], "PASS", gate)
         names = [x["segment"] for x in gate["y_body_checks"]]
         self.assertIn("y_voice_2_k2", names)
@@ -213,11 +213,11 @@ class TestStdChunkGeneration(BaseStd):
         res = self.results()
         del res["segments"]["y_closing_k2"]["slowdown_applied"]                          # chunk2だけ減速証跡なし
         self.save_results(res)
-        g = ya.y_style_gate(self.out, "a2", r.STYLE_PROFILE)
+        g = ya.y_style_gate(self.out, "a2", ya.Y_APPROVED_STYLE_PROFILE)
         self.assertEqual(g["status"], "BLOCK")
         self.assertIn(("y_closing_k2", "STD_CHUNK_MISSING_MANDATORY_A2_SLOWDOWN"),
                       [(x["segment"], v) for x in g["y_body_blocked"] for v in x["violations"]])
-        s = ya.assemble_level(self.out, "a2", style_profile=r.STYLE_PROFILE, slug="mock_slug", article_text=self.article_text())
+        s = ya.assemble_level(self.out, "a2", style_profile=ya.Y_APPROVED_STYLE_PROFILE, slug="mock_slug", article_text=self.article_text())
         self.assertEqual(s["status"], "BLOCKED_STYLE_PROFILE_GATE")                       # 組み立てない(回避しない)
         res = self.results()                                                              # assembleの入口で親が再構築され、減速集約はFalse
         self.assertIs(res["segments"]["y_closing"]["slowdown_applied"], False)

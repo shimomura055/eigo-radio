@@ -159,11 +159,12 @@ def _dur(text, ja=False):
     return 0.6 + (len(text) / 7.0 if ja else len(text.split()) / 2.8)
 
 
-def _entry(text, path, *, ja=False, slow=False, voice=None):
+def _entry(text, path, *, ja=False, slow=False, voice=None, style=None):
+    """偽TTSのentry。style=本物の下位関数が受け取る style_prefix_override(承認Styleの実送信値)。mockも『送ったStyleを記録する』ことで、Gateの実測照合を空振りさせない。"""
     d = _dur(text, ja)
     _write_tone(path, d * (1.06 if slow else 1.0))
     e = {"status": "OK", "path": path, "text": text, "asr_text": text, "disfluency_checked": True, "fallback_used": False,
-         "instruction_type": "english_style_prefix_wide_margin", "style_prefix": "mock style",
+         "instruction_type": "english_style_prefix_wide_margin", "style_prefix": style if isinstance(style, str) and style else "mock style",
          "attempts_log": [{"attempt": 1, "tts_model_id": "mock-tts", "voice": voice or "mock"}]}
     if slow:
         _write_tone(path.replace(".wav", "_original.wav"), d)
@@ -189,23 +190,39 @@ def fake_tts(api: MockApi):
 
     def eng(text, out_path, *a, **k):
         api.call("tts", os.path.basename(out_path))
-        return _entry(text, out_path, voice=cur_voice())
+        return _entry(text, out_path, voice=cur_voice(), style=k.get("style_prefix_override"))
 
     def news(text, out_path, *a, **k):
         api.call("tts", os.path.basename(out_path))
-        return _entry(text, out_path, voice=cur_voice())
+        return _entry(text, out_path, voice=cur_voice(), style=k.get("style_prefix_override"))
 
     def a2_slow(text, out_path, sub, *a, **k):
         api.call("tts", os.path.basename(out_path))
-        return _entry(text, out_path, slow=True, voice=cur_voice())
+        return _entry(text, out_path, slow=True, voice=cur_voice(), style=k.get("style_prefix_override"))
 
     def a2_ja(text, out_path, sub, *a, **k):
         api.call("tts", os.path.basename(out_path))
-        return _entry(text, out_path, ja=True)
+        return _entry(text, out_path, ja=True, style=k.get("style_prefix_override"))
 
     def eng_fb(text, out_path, sub, *a, **k):
         api.call("tts", os.path.basename(out_path))
-        return _entry(text, out_path)
+        return _entry(text, out_path, style=k.get("style_prefix_override"))
+
+    import er019_family_x_style_profile_01 as sp
+
+    def _kp_style(style_profile, role, level):
+        return sp.resolve_role_style(style_profile, role, level, lambda _r: None)
+
+    def _kp_stamp(e, style_profile, role, level):
+        """本物のKP生成関数と同じく、承認profile対象roleはStyleを送信値として記録し、profile記録(base sha)を付ける(KP_ENはK2 Store key付き)。"""
+        text = _kp_style(style_profile, role, level)
+        if text is not None:
+            e["style_prefix"] = text
+            sp.attach_segment_profile_record(e, style_profile, role, text)
+            if role == sp.ROLE_KP_EN:
+                e["master_audio_key"] = {"style_instruction_id": sp.KP_EN_STORE_STYLE_ID, "instruction_path": sp.KP_EN_STORE_PATH_PRIMARY,
+                                         "style_instruction_version": f"mock+k2.{sp.get_profile(style_profile)['overrides'][role]['sha256'][:12]}"}
+        return e
 
     def shared_b1(narration_dir, tts_backend=None, **k):
         out = {}
@@ -225,24 +242,24 @@ def fake_tts(api: MockApi):
             out[name] = {**_entry(t, f"{narration_dir}/{name}.wav", ja=True), "reused": False, "master_audio_id": f"mock_{name}"}
         return out
 
-    def kp_b1(kp, narration_dir, cached=None, tts_backend=None, style_profile="default"):
+    def kp_b1(kp, narration_dir, cached=None, tts_backend=None, *, style_profile):
         res = {}
         for it in sorted(kp["items"], key=lambda x: x["rank"]):
             r = it["rank"]
             api.call("tts_kp", f"kp{r}")
-            res[r] = {"english": _entry(it["used_form"], f"{narration_dir}/kp{r}_en.wav"),
-                      "explanation": {**_entry("a plain way to say this in everyday life", f"{narration_dir}/kp{r}_explanation_en.wav"),
-                                      "explanation_text": "a plain way to say this in everyday life"}}
+            res[r] = {"english": _kp_stamp(_entry(it["used_form"], f"{narration_dir}/kp{r}_en.wav"), style_profile, sp.ROLE_KP_EN, "b1b"),
+                      "explanation": _kp_stamp({**_entry("a plain way to say this in everyday life", f"{narration_dir}/kp{r}_explanation_en.wav"),
+                                                "explanation_text": "a plain way to say this in everyday life"}, style_profile, sp.ROLE_KP_EXPLANATION_EN, "b1b")}
         return res, {"items": {str(it["rank"]): {"status": "OK", "english_explanation": "a plain way to say this in everyday life"} for it in kp["items"]}}
 
-    def kp_a2(kp, narration_dir, cached=None, tts_backend=None, style_profile="default"):
+    def kp_a2(kp, narration_dir, cached=None, tts_backend=None, *, style_profile):
         res = {}
         for i, it in enumerate(sorted(kp["items"], key=lambda x: x["rank"]), start=1):
             r = it["rank"]
             api.call("tts_kp", f"kp{r}")
-            res[r] = {"english": _entry(it["used_form"], f"{narration_dir}/kp{r}_en.wav"),
-                      "japanese_meaning": {**_entry(it.get("japanese_gloss", "意味"), f"{narration_dir}/meaning_{i}.wav", ja=True),
-                                           "canonical_text": it.get("japanese_gloss", "意味")}}
+            res[r] = {"english": _kp_stamp(_entry(it["used_form"], f"{narration_dir}/kp{r}_en.wav"), style_profile, sp.ROLE_KP_EN, "a2"),
+                      "japanese_meaning": _kp_stamp({**_entry(it.get("japanese_gloss", "意味"), f"{narration_dir}/meaning_{i}.wav", ja=True),
+                                                     "canonical_text": it.get("japanese_gloss", "意味")}, style_profile, sp.ROLE_KP_JA_MEANING, "a2")}
         return res
 
     patches = [(voice01, "generate_charon_english", eng), (news_tail_fix, "generate_news_narration_wide_margin", news),

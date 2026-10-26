@@ -65,7 +65,7 @@ class Base(_ChunkBase):
         return [x["label"] for x in rows if x["kind"] == "tts"]
 
     def reconcile(self, **kw):
-        return ya.reconcile_hr_approvals_for_request(self.b1, "b1b", r.STYLE_PROFILE, **kw)
+        return ya.reconcile_hr_approvals_for_request(self.b1, "b1b", ya.Y_APPROVED_STYLE_PROFILE, **kw)
 
 
 class TestVoiceBinding(Base):
@@ -123,7 +123,7 @@ class TestVoiceBinding(Base):
     def test_new_format_y_binding_voice_and_style(self):
         res = self.seed(voice="Puck", approve=())
         text = res["segments"]["y_voice_1"]["canonical_text"]
-        cur = ya.current_style_record("b1b", r.STYLE_PROFILE)
+        cur = ya.current_style_record("b1b", ya.Y_APPROVED_STYLE_PROFILE)
         ya.record_y_human_approval(self.b1, "y_voice_1", text, tts_voice="Puck", style_profile=cur, tts_model="m")
         self.assertEqual(self.reconcile()["quarantined"], [])                      # Voice・Style一致→適用
         self.assertEqual(self.approvals()["y_voice_1"]["y_binding"]["tts_voice"], "Puck")
@@ -157,7 +157,7 @@ class TestVoiceBinding(Base):
         self.save_results(res)
         entry = self.results()["segments"]["y_voice_1"]
         self.assertEqual(asm._segment_gate_status(entry, "y_voice_1", self.approvals()), "HUMAN_APPROVED")   # 修正前の挙動
-        ya.y_style_gate(self.out, "b1b", r.STYLE_PROFILE)
+        ya.y_style_gate(self.out, "b1b", ya.Y_APPROVED_STYLE_PROFILE)
         self.assertNotIn("y_voice_1", self.approvals())
         self.assertEqual(asm._segment_gate_status(entry, "y_voice_1", self.approvals()), "STOPPED")
 

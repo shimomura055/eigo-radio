@@ -34,7 +34,8 @@ WARN_THRESHOLD_JPY = 100.0
 STAGES = ("seed_check", "text", "translate", "support", "kp", "tts_b1b", "tts_a2", "gate", "assemble", "pages", "page_verify")
 STAGE_EST_JPY = {"text": 45.0, "translate": 12.0, "support": 6.0, "kp": 10.0, "tts_b1b": 30.0, "tts_a2": 30.0}
 TTS_CLIP_EST_JPY = 1.0
-STYLE_PROFILE = "default"
+# OPEN-537是正(FAMILY-Y-STYLE-PROFILE-FIX-01 委任_02): 旧 `STYLE_PROFILE = "default"` を撤去。Yのprofileは承認profile(_ya().Y_APPROVED_STYLE_PROFILE=fx_20261017)を
+# resolve_style_profile()で課金前に解決・固定記録(audit/style_profile.json)し、ctx.style_profileとして生成/Gate/組立へ透過する。
 LEVELS = ("b1b", "a2")
 
 # 来歴(provenance)の単位。CLIのstageより細かい。--regenerate-stage の許可値でもある。
@@ -166,6 +167,8 @@ class YContext:
     only_segments: object = None
     regenerate_stage: object = None
     mock_api: object = None
+    style_profile: str = None                   # resolve_style_profile()が設定(課金前)。None=未解決=stageはSTOP(fail-closed)
+    style_profile_source: str = None
 
     def __post_init__(self):
         if self.pages_dir is None:
@@ -957,13 +960,48 @@ def _mock_isolation(ctx):
         yield
 
 
+def resolve_style_profile(ctx, *, write: bool = True) -> str:
+    """承認Style profileを課金前に解決する(X方式 resolve_run_profile+固定記録+M2/M5。DESIGN_02)。新規run dirは承認profileを固定記録、
+    既存run state(TTS結果/Review Lock/人間承認)があり記録の無いdirは Style混在を避けるため課金前にSTOP(M2。legacy waiver/`default`指定の経路は作らない)。
+    migrate_record(同一dirでのprofile移行)はYでは使用しない(日本語roleの照合が自己一致になるため。Opus見落とし1)。"""
+    ya = _ya()
+    sp = ya.style_profile_mod
+    approved = ya.Y_APPROVED_STYLE_PROFILE
+    try:
+        sp.assert_profile_backend(approved, ya.TTS_BACKEND)
+        pid, source = sp.resolve_run_profile(ctx.out_dir, approved, write=False, tts_backend=ya.TTS_BACKEND)
+        if write:
+            pid, source = sp.resolve_run_profile(ctx.out_dir, approved, write=True, tts_backend=ya.TTS_BACKEND)
+    except sp.StyleProfileStop as e:
+        raise YE2EStop(f"FAMILY_Y_STYLE_PROFILE_STOP: {e}") from e
+    if pid != approved:
+        raise YE2EStop(f"FAMILY_Y_STYLE_PROFILE_NOT_APPROVED: resolved={pid!r} approved={approved!r}")
+    ctx.style_profile, ctx.style_profile_source = pid, source
+    return pid
+
+
+def _style_profile(ctx) -> str:
+    """stageが使うprofile。未解決/承認profile以外/固定記録の欠落・不一致はSTOP(resume時に別profileが紛れない)。"""
+    ya = _ya()
+    sp = ya.style_profile_mod
+    if ctx.style_profile != ya.Y_APPROVED_STYLE_PROFILE:
+        raise YE2EStop(f"FAMILY_Y_STYLE_PROFILE_NOT_RESOLVED: ctx.style_profile={ctx.style_profile!r}(resolve_style_profile未実行または承認profile以外。Y新規runは承認profile必須)")
+    try:
+        rec = sp.read_record(ctx.out_dir)
+        if rec is None or sp.verify_record(rec) != ctx.style_profile:
+            raise YE2EStop(f"FAMILY_Y_STYLE_PROFILE_RECORD_MISSING_OR_MISMATCH: {sp.record_path(ctx.out_dir)}")
+    except sp.StyleProfileStop as e:
+        raise YE2EStop(f"FAMILY_Y_STYLE_PROFILE_RECORD_INVALID: {e}") from e
+    return ctx.style_profile
+
+
 def _tts_input_sha(ctx, lv) -> str:
     ya = _ya()
     kp = f"{_kp_assets_dir(ctx, lv)}/keywords_canonicalized.json"
     ex = f"{ctx.out_dir}/key_phrases/b1b/kp_explanations.json"
     parts = [_sha(_rd(_level_text_path(ctx, lv))), _sha(_rd(f"{ctx.out_dir}/support/{lv}_support.json")), _m().w62.file_sha(kp),
              _m().w62.file_sha(ex) if lv == "b1b" else "", json.dumps(ya.segment_voice_map(), sort_keys=True), _sha(_rd(_ja_path(ctx))) if lv == "a2" else "",
-             ya.TTS_BACKEND, STYLE_PROFILE]
+             ya.TTS_BACKEND, _style_profile(ctx)]
     return _sha("|".join(parts))
 
 
@@ -985,9 +1023,9 @@ def stage_tts(ctx, lv: str) -> dict:
         guard = lambda label: _guard(ctx, f"tts_{lv}_{label}", TTS_CLIP_EST_JPY)     # noqa: E731  各clipの新規API呼出の前
         with _mock_isolation(ctx), ya.only_segments_scope(ctx.only_segments):
             if lv == "b1b":
-                s = ya.generate_y_b1_segments(ctx.out_dir, style_profile=STYLE_PROFILE, guard=guard)
+                s = ya.generate_y_b1_segments(ctx.out_dir, style_profile=_style_profile(ctx), guard=guard)
             else:
-                s = ya.generate_y_a2_segments(ctx.out_dir, ja_title, style_profile=STYLE_PROFILE, guard=guard)
+                s = ya.generate_y_a2_segments(ctx.out_dir, ja_title, style_profile=_style_profile(ctx), guard=guard)
         res_path = f"{ctx.out_dir}/{lv}/audit/tts_generation_results.json"
         return json.dumps({"summary": s, "results_sha256": w62.file_sha(res_path)}, ensure_ascii=False, indent=2), \
             {"tts_backend": ya.TTS_BACKEND, "narrator_voice": ya.narrator_voice(), "voices": ya.segment_voice_map(), "chunk_tts": CHUNK_TTS_MANIFEST}
@@ -1004,6 +1042,18 @@ def _require_fresh(prov, name):
         raise YE2EStop(f"FAMILY_Y_STAGE_NOT_FRESH: {name}(未実行またはstale。明示 --regenerate-stage {name} または該当stageの実行が必要)")
 
 
+def _write_style_actual_vs_approved(ctx) -> None:
+    """level別の照合表(a2/b1b/audit/style_actual_vs_approved.json)を theme直下 audit/style_actual_vs_approved.json に統合する(受入の実測照合表。Gate 7(3))。"""
+    levels = {}
+    for lv in LEVELS:
+        p = f"{ctx.out_dir}/{lv}/audit/style_actual_vs_approved.json"
+        if os.path.exists(p):
+            levels[lv] = _rj(p)
+    _wj(f"{ctx.out_dir}/audit/style_actual_vs_approved.json",
+        {"profile_id": ctx.style_profile, "approved_profile": _ya().Y_APPROVED_STYLE_PROFILE, "levels": levels,
+         "all_match": bool(levels) and all(v.get("all_match") for v in levels.values())})
+
+
 def stage_gate(ctx) -> dict:
     ya = _ya()
     prov = _prov(ctx)
@@ -1013,9 +1063,11 @@ def stage_gate(ctx) -> dict:
     out = {}
     for lv in LEVELS:
         _require_fresh(prov, f"tts_{lv}")
-        g = ya.y_style_gate(ctx.out_dir, lv, STYLE_PROFILE)
-        out[lv] = {"status": g["status"], "y_body_blocked": g["y_body_blocked"], "x_gate_blocked_after_filter": g["x_gate_blocked_after_filter"]}
+        g = ya.y_style_gate(ctx.out_dir, lv, _style_profile(ctx))
+        out[lv] = {"status": g["status"], "y_body_blocked": g["y_body_blocked"], "x_gate_blocked_after_filter": g["x_gate_blocked_after_filter"],
+                   "y_profile_blocked": g.get("y_profile_blocked", []), "coverage": g.get("coverage")}
     _wj(f"{ctx.out_dir}/gate_summary.json", out)
+    _write_style_actual_vs_approved(ctx)
     bad = {lv: v for lv, v in out.items() if v["status"] != "PASS"}
     if bad:
         raise YE2EStop(f"FAMILY_Y_GATE_BLOCK: {json.dumps(bad, ensure_ascii=False)[:600]}(Gateを回避しない。該当segmentの再生成/Human確認が必要)")
@@ -1031,7 +1083,7 @@ def stage_assemble(ctx) -> dict:
     out = {}
     for lv in LEVELS:
         _require_fresh(prov, f"tts_{lv}")
-        s = ya.assemble_level(ctx.out_dir, lv, style_profile=STYLE_PROFILE, slug=ctx.slug, article_text=ys.canonical_body(_rd(_level_text_path(ctx, lv))))
+        s = ya.assemble_level(ctx.out_dir, lv, style_profile=_style_profile(ctx), slug=ctx.slug, article_text=ys.canonical_body(_rd(_level_text_path(ctx, lv))))
         out[lv] = {k: s.get(k) for k in ("status", "out_path", "duration_seconds", "clipping_detected")}
         if s.get("status") != "OK":
             _wj(f"{ctx.out_dir}/assemble_summary.json", out)
@@ -1284,6 +1336,7 @@ def build_real_context(args) -> YContext:
     st = _m().st
     st.check_stop_sentinel("client:build_real_context", ctx.out_dir)       # client生成前のSTOP確認
     _launch_guard(ctx.out_dir)                                             # client生成前に RESTART_STORM / RUN_LOCK
+    resolve_style_profile(ctx)                                             # 課金前: 承認Style profileの解決・固定記録(M2違反/不一致は課金前STOP)
     from dotenv import load_dotenv
     load_dotenv()
     if args.tts_execution_mode:
@@ -1307,6 +1360,7 @@ def build_mock_context(run_root: str, run: str = "run_mock", slug: str = "y_arti
     ctx.hooks = mk.default_hooks(api)
     ctx.hooks.update(hooks or {})
     ctx.budget = E2EBudget(APPROVED_BUDGET_MAX_JPY, WARN_THRESHOLD_JPY, spent_fn=lambda: 0.0)
+    resolve_style_profile(ctx)
     return ctx
 
 
@@ -1371,6 +1425,10 @@ def main(argv=None):
         if args.mode == "dry-run":
             ctx = YContext(slug=args.slug, run=args.run, mode="dry-run", theme_package_path=args.theme_package, reuse_manifest_path=args.reuse_manifest)
             plan = describe_plan(ctx, stages)
+            try:
+                plan["style_profile"] = {"approved": _ya().Y_APPROVED_STYLE_PROFILE, "resolved": resolve_style_profile(ctx, write=False), "source": ctx.style_profile_source}
+            except Exception as e:  # noqa: BLE001
+                plan["style_profile"] = {"approved": _ya().Y_APPROVED_STYLE_PROFILE, "error": f"{e.__class__.__name__}: {e}"}
             try:
                 plan["preflight"] = stage_seed_check(ctx)
             except Exception as e:  # noqa: BLE001
