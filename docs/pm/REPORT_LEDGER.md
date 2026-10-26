@@ -579,3 +579,6 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-26 | FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01 委任_03 | 『宅配』E-1へComment 2削除を反映(API 0、gate PASS、page_verify ok、Std不変)+Voice 1候補Std/Adv各3生成・停止計測(17.52円、未採用)+試聴ページに分割/0.2秒なし明示と停止位置重畳。分割方式・Voice 1対策のユーザー判断待ち(未報告、Fable経由で報告)。報告=docs/pm/RESULT_PACKET_YFB3.md
 - 2026-10-26 | FZ-DIALOGUE-CONTEXT-FULL-EPISODE-TRIAL-01 委任_04 | 全編通しTrial(猿の手・メロスStd/Adv、セリフ53 clip)完了。猿Std/猿Adv/メロAdv=USER_LISTENING_PENDING、メロスStd=REJECTED候補(比較条件不成立)。実費26.59円(Phase 0+1b)。ユーザー通し試聴待ち(OPEN-528)。報告=docs/pm/RESULT_PACKET_FZFE4.md
 - 2026-10-26 | FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01 委任_03(Fable受入) | Comment 2削除=PRODUCTION_WIRED(限定)、Voice 1候補6 take未採用、UDR-YFB-1/2ユーザー判断待ち。報告済み(2026-10-26)。報告=docs/pm/RESULT_PACKET_YFB3.md
+- 2026-10-26 | KP-GATE-EXCLUSION-RESCUE-DESIGN-01 委任_02 | KP Gate除外救済方式の設計(OPEN-529)をUSER_DECISION_REQUIREDとしてユーザー報告済み(2026-10-26)。段階1採否等はユーザー判断待ち。報告台帳のみ追記(PM-SSOT-SYNC-2026-10-26-03)。
+- 2026-10-26 | CHUNK-TTS-PRODUCTION-AUDIT-XYZ-01 委任_01 | Chunk監査(X/Z Adv一致、Std 3Family・Y Adv=UDR)をユーザー報告済み(2026-10-26)。Std拡張(案A/B/C)・Y分割方式のユーザー判断待ち。報告=docs/pm/RESULT_PACKET_CHK1.md
+- 2026-10-26 | FAMILY-Y-VOICE1-PAUSE-CAUSE-TRIAL-01 委任_01 | 『宅配』Voice1ポーズ原因切り分けTrial(VALIDATED限定、実費91.12円)。報告予定(本転記後にFableが報告、未報告)。報告=docs/pm/RESULT_PACKET_YVP1.md
