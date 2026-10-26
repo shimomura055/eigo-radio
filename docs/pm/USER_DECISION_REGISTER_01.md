@@ -484,3 +484,9 @@
 - **新規UDR(分類D=真に新しい判断) OPEN-526 HR候補選択+候補数案A/B/C(Fable推奨A)**: (a)Std KP(5件)・Adv KP(7件)・Adv Part 2文法のHR候補をユーザーが選択・確定する(実作業。AI推奨先頭3=Std: carry over / worth paying attention to / a useful card to play、Adv: carry over / call on / look at separately。AI/Fableは代行しない)。(b)候補数『TOP 8まで』=上限・補充機構なしと確認済み(判定(3)記録漏れ、委任_04 commit 4c50015c9)。案A=仕様記録のみ(費用0、Fable推奨、採らなければAI側で実施)/案B=補充call新仕様(+0.3〜0.8円/level、数合わせ禁止と緊張)/案C=Prompt 2-V上限5→7(sha変更・要承認)。根拠=`docs/research/FAMILY-X-AI-ISLAND-TEMPLE-PRODUCTION-01/KP_CANDIDATE_COUNT_CHECK_01.md`、`docs/pm/RESULT_PACKET_XAIT4.md`。A既判断=なし(補充は未規定、27-3)。
 - 現在UDR-blocking: OPEN-526(HR選択+案A/B/C)・OPEN-534(KP候補生成方式の採否)。OPEN-539/537は`_03`完成後に提示。
 - UDR #172: 不要化(OPEN-463委任_13記録、USER_05)。旧UDR 64件の棚卸しは別委任(REPORT_01残作業)。
+
+### 2026-10-26 PM-SSOT-SYNC-16 追記(選定フォームv3・`_03`。既存行は書き換えず追記。OPEN-526/534は据置)
+- **UDR-FORM-1 文法選定の型(フォーム、OPEN-545、分類D)**: 決めること=フォーム「文法名+解説全文・最大2」と現行Part 2「英文1つ選択→解説後生成・最大1」のどちらに揃えるか。Fable推奨=(a)Part 2候補の英文ごとに短い解説を事前生成して全文表示(費用数円/level増)。代替=(b)フォーム側変更(承認済みUI変更)。
+- **UDR-YRF-2 Std preview承認(`_03`、OPEN-537/539、分類D)**: 表記ゆれのみで残るStd preview 1件のHR承認(ユーザー)。
+- **UDR-YRF-3 S9(`_03`完成後、OPEN-537、分類D)**: Voice 1〜3のPD06可否(A19条件付き承認・未評価)。`_03`完成後に提示。
+

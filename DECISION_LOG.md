@@ -22606,3 +22606,12 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 2026-10-26 OPEN-527 Closeout(Fable判定、ユーザー指示§3)。Y Chunk=WIRED_NOT_FIRING継続、本文契約不変、管理先OPEN-532。Comment 2削除=PRODUCTION_WIRED(限定、初回生成stage確認は次のY新規記事)、Voice 1=OPEN-531で解決済み。証跡=`docs/research/FAMILY-Y-CHUNK-OPEN527-CLOSEOUT-01/`、commit 47db4accf。
 - OPEN-540=DESIGN_READY(commit 6669925cf、Opus条件Aレビュー進行中)。本採用記述は実装後。
 - OPEN-537=ユーザー緊急指示により最優先是正へ(適用時期判断の分類撤回)。OPEN-539=公開版`_02`承認は旧版扱い、新版`_03`は再試聴待ち。
+
+## 選定フォームv3・Gate除外補完・Y Style是正進捗・OPEN-540実装の記録(2026-10-26追記(PM-SSOT-SYNC-16))
+
+- OPEN-545: 学習項目選定フォームv3はユーザー正式採用(`APPROVED_FOR_PRODUCTION`)の実装済み(IMPLEMENTED・公開、ユーザー実操作確認待ち)。PRODUCTION_WIRED未判定。文法選定の型・候補ソースは判断候補(区分D)。
+- OPEN-546: Gate除外候補の補完はユーザー正式採用(原文§3)の実装済み(IMPLEMENTED+evidence条件付き)。承認範囲と区別した挙動変更=補完ON時の外側retry(全件再生成)撤去(原文§3-1「初回合格候補を保持し入れ替えない」に従う。OFFで完全復帰)。ユーザーへ報告済み(2026-10-26)。
+- OPEN-537/539/535: Y Style是正実装・再生成完了(3af84a499/d2d68194d)、`_03`先行公開。旧`_02`承認は旧版扱い。PRODUCTION_WIRED判定はFableが別途。
+- OPEN-540: IMPLEMENTED(18d997941/e8773980a/65e5b036e)。evidence進行中。
+- 新規OPEN: 545〜552(11-8分類は各行に記載)。
+
