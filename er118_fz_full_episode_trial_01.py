@@ -4,8 +4,8 @@
 ユーザー指示(2026-10-26、原文=docs/pm/delegation_log/2026-10-26_FZ-DIALOGUE-CONTEXT-FULL-EPISODE-TRIAL-01_USER.md):
 『猿の手』『走れメロス』の Standard/Advanced で、セリフ音声を全件、文脈・感情付き方式で新規生成し、地の文等の既存音声と組み合わせた通し版を作る。
 
-委任_01(Phase 0)の範囲: inventory / budget / llm(Phase 1a、PHASE1_GO.json必須) / candidates のみ。
-gen / assemble / page は未実装(Opus条件Aレビュー後の委任_02で実装)。呼ぶと拒否する。
+委任_01(Phase 0): inventory / budget / llm(Phase 1a、scope=Phase 1a・cap<=5円) / candidates。
+委任_02(Phase 1b、Opus条件A M-1〜M-8反映済): preflight / dryrun-sinks / gen / assemble / analyze / page-all(scope=Phase 1b・cap<=100円、PHASE1_GO.json必須)。
 
 方式は Round 1/2 (er118_fz_dialogue_context_tts_trial_01.py) を import 再利用のみ。
 CONTEXT区画書式・EMOTION_DEVELOPER rule 1〜10・leakage検査・ASR検査・決定論抽出は無変更(本ファイルは module globals を作品×レベルへ切り替えるだけ)。
@@ -13,12 +13,18 @@ Production file / Master Store / manifest / reuse telemetry へは一切書か�
 """
 import argparse
 import contextlib
+import copy
 import datetime
 import functools
+import hashlib
 import json
+import math
 import os
+import re
+import shutil
 import subprocess
 import sys
+import time
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 if ROOT not in sys.path:
@@ -34,6 +40,8 @@ COST_LOG = f"{OUT_ROOT}/raw_usage_log.jsonl"
 GO_FILE = f"{OUT_ROOT}/PHASE1_GO.json"
 PHASE1A_CAP_JPY = 5.0          # 委任_01の個別Guardrail(感情情報LLMのみ)
 SCOPE_PHASE1A = "Phase 1a"
+SCOPE_PHASE1B = "Phase 1b"
+PHASE1B_CAP_JPY = 100.0        # R-9: 委任_02(Phase 1b)の個別Guardrail(見積 期待25/保守31/天井75円)
 _RUN_ROOT = "er026_output/family_z_production_e2e_01"
 
 # 作品×レベル。run = 公開済み完成版の正本run。pages = 公開済みProduction試聴ページ(参照のみ・上書き禁止)。
@@ -73,15 +81,23 @@ def case_dir(work: str, level: str) -> str:
 _T_GLOBALS = ("LEVEL", "SRC_RUN", "PLAN_PATH", "TTS_RESULTS_PATH", "NARR_DIR", "SPEAKER_DISPLAY", "ALLOWED_NAMES", "WORK_TITLE", "WORK_TITLE_JA", "EMOTION_DEVELOPER", "voice_map")
 
 
+_USE_CASE_ACTIVE = {"v": None}
+
+
 @contextlib.contextmanager
 def use_case(work: str, level: str):
-    """Round 1/2 module の globals を作品×レベルへ一時的に切り替え、終了時に必ず元へ戻す(Round 1/2の既定=賢者の贈り物を壊さない。Opus論点⑤)。"""
+    """Round 1/2 module の globals を作品×レベルへ一時的に切り替え、終了時に必ず元へ戻す(Round 1/2の既定=賢者の贈り物を壊さない。Opus論点⑤)。
+    R-8(a): 単一thread・単一case前提。実行中の再入(並列/入れ子)はassertで拒否する(例外時もfinallyで復元・解除)。"""
+    if _USE_CASE_ACTIVE["v"] is not None:
+        raise RuntimeError(f"use_case は再入禁止(実行中={_USE_CASE_ACTIVE['v']}、要求={(work, level)})。並列実行は禁止(Opus R-8a)")
+    _USE_CASE_ACTIVE["v"] = (work, level)
     saved = {k: getattr(t, k) for k in _T_GLOBALS}
     try:
         yield configure_case(work, level)
     finally:
         for k, v in saved.items():
             setattr(t, k, v)
+        _USE_CASE_ACTIVE["v"] = None
 
 
 def with_case(fn):
@@ -297,19 +313,20 @@ def cmd_budget() -> dict:
 # ============================================================
 # 3. Phase 1a: 感情情報LLM(有料、cap<=5円。GO必須)
 # ============================================================
-def _require_go() -> dict:
+def _require_go(scope: str = SCOPE_PHASE1A, max_cap: float = PHASE1A_CAP_JPY) -> dict:
+    """R-9: scopeごとに上限を分離(Phase 1a=5円 / Phase 1b=100円)。scope不一致のGOでは起動しない。"""
     ap = os.path.join(ROOT, GO_FILE)
     if not os.path.exists(ap):
         raise SystemExit(f"[STOP] {GO_FILE} が無い。有料runは PHASE1_GO.json 無しで起動しない。")
     go = t.load_json(GO_FILE)
-    if go.get("managed_id") != MANAGED_ID or go.get("scope") != SCOPE_PHASE1A or not go.get("cap_jpy") or float(go["cap_jpy"]) > PHASE1A_CAP_JPY:
-        raise SystemExit(f"[STOP] PHASE1_GO.json の managed_id / scope({SCOPE_PHASE1A}) / cap_jpy(<= {PHASE1A_CAP_JPY}) 不正")
+    if go.get("managed_id") != MANAGED_ID or go.get("scope") != scope or not go.get("cap_jpy") or float(go["cap_jpy"]) > max_cap:
+        raise SystemExit(f"[STOP] PHASE1_GO.json の managed_id / scope({scope}) / cap_jpy(<= {max_cap}) 不正")
     return go
 
 
-def _stop_check() -> None:
+def _stop_check(out_name: str = "stop_check_llm.json") -> None:
     r = subprocess.run([sys.executable, "tools/stop_scope_check_01.py", "--managed-id", MANAGED_ID, "--run-dir", OUT_ROOT,
-                        "--out", f"{OUT_ROOT}/stop_check_llm.json"], cwd=ROOT)
+                        "--out", f"{OUT_ROOT}/{out_name}"], cwd=ROOT)
     if r.returncode == 3:
         raise SystemExit("[STOP] stop_scope_check rc=3")
     if r.returncode != 0:
@@ -401,8 +418,825 @@ def render_candidates() -> str:
     return f"{DOC_DIR}/EMOTION_CANDIDATES_01.md"
 
 
-def refuse(cmd: str):
-    raise SystemExit(f"[STOP] `{cmd}` は委任_01では未実装(Opus条件Aレビュー反映後の委任_02で実装)。TTS生成・組立・公開ページは本委任で禁止。")
+# ============================================================
+# 4. Phase 1b(委任_02、Opus条件A M-1〜M-8 / R-1〜R-9 反映)
+#    生成(セリフ53 clip・ctx方式) -> DEV隔離組立 -> 解析 -> 試聴ページ。Production経路ではない(書込みは OUT_ROOT / PAGE_ROOT のみ)。
+#    M-6: Round 1/2 module(t)は『純関数の許可list』だけを使う。generate_arm / load_reviewed_notes既定path / snapshot_protected /
+#         est_next_clip_jpy / trial_reuse_key / _require_go / _stop_check は呼ばず、本module側に再実装している。
+# ============================================================
+NG_MAX_RECORDED = 2                 # M-8(PREREGISTERED_CRITERIA_02): NG(上限到達で不採用)<=2 clip なら C1 は記録付き成立
+MIN_UNIT_INTERVAL_S = 150           # 起動間隔(委任文: 150秒以上)
+Z_PAGES_PREFIXES = tuple(c["pages"] for c in WORK_CFG.values())
+
+
+# ---------- 4-1 書込ガード(M-4) ----------
+def _abs(p: str) -> str:
+    return p if os.path.isabs(p) else os.path.join(ROOT, p)
+
+
+def _real(p: str) -> str:
+    return os.path.normcase(os.path.realpath(_abs(p)))
+
+
+def under(path: str, root: str) -> bool:
+    """M-4(a): 文字列prefixではなく realpath の commonpath で判定。"""
+    a, r = _real(path), _real(root)
+    try:
+        return os.path.commonpath([a, r]) == r
+    except ValueError:
+        return False
+
+
+def assert_writable(path: str) -> None:
+    if not (under(path, OUT_ROOT) or under(path, PAGE_ROOT)):
+        raise SystemExit(f"[STOP] 書込先が OUT_ROOT/PAGE_ROOT 配下でない(realpath判定): {path}")
+
+
+def assert_out_root(path: str) -> None:
+    if not under(path, OUT_ROOT):
+        raise SystemExit(f"[STOP] run_dir/out_path が OUT_ROOT 配下でない(realpath判定): {path}")
+
+
+def file_sha(path: str):
+    ap = _abs(path)
+    if not os.path.isfile(ap):
+        return None
+    h = hashlib.sha256()
+    with open(ap, "rb") as f:
+        for b in iter(lambda: f.read(1 << 20), b""):
+            h.update(b)
+    return h.hexdigest()
+
+
+def safe_write_json(path: str, obj) -> str:
+    assert_writable(path)
+    os.makedirs(os.path.dirname(_abs(path)), exist_ok=True)
+    with open(_abs(path), "w", encoding="utf-8", newline="\n") as f:
+        json.dump(obj, f, ensure_ascii=False, indent=2, default=str)
+    return path
+
+
+def safe_write_text(path: str, text: str) -> str:
+    assert_writable(path)
+    os.makedirs(os.path.dirname(_abs(path)), exist_ok=True)
+    with open(_abs(path), "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+    return path
+
+
+def safe_copy(src: str, dst: str) -> str:
+    """M-4(b): shutil.copyfile のみ(hardlink/symlink/junction禁止)。既存dstがhardlink(nlink>1)なら書かずにSTOP(Production破壊防止)。"""
+    assert_writable(dst)
+    os.makedirs(os.path.dirname(_abs(dst)), exist_ok=True)
+    if os.path.lexists(_abs(dst)):
+        if os.path.islink(_abs(dst)) or os.stat(_abs(dst)).st_nlink > 1:
+            raise SystemExit(f"[STOP] 既存dstがsymlink/hardlink: {dst}")
+    shutil.copyfile(_abs(src), _abs(dst))
+    if os.path.samefile(_abs(src), _abs(dst)):
+        raise SystemExit(f"[STOP] copy後にsrc==dst(同一ファイル): {src} -> {dst}")
+    return dst
+
+
+def jload(path: str):
+    with open(_abs(path), encoding="utf-8") as f:
+        return json.load(f)
+
+
+# ---------- 4-2 Production snapshot(R-1 tree-hash)・汚染判定・mtime走査(M-4d) ----------
+def tree_hashes(rel_dir: str) -> dict:
+    base = _abs(rel_dir)
+    out = {}
+    for dp, _dn, fns in os.walk(base):
+        for fn in sorted(fns):
+            ap = os.path.join(dp, fn)
+            out[os.path.relpath(ap, base).replace("\\", "/")] = file_sha(ap)
+    return out
+
+
+def prod_snapshot() -> dict:
+    """R-1: 2作品のProduction run dir全体・公開ページdir全体を全ファイルsha、共有store(PROTECTED_STORES+PROTECTED_TREES)をer113のsnapshotで取る。"""
+    import er113_fx_paragraph_chunk_trial_01 as t113
+    return {"runs": {w: tree_hashes(c["run"]) for w, c in WORK_CFG.items()},
+            "pages": {w: tree_hashes(c["pages"]) for w, c in WORK_CFG.items()},
+            "stores": t113.snapshot_protected()}
+
+
+def snapshot_diff(before: dict, after: dict) -> dict:
+    d = {"runs": [], "pages": [], "stores": []}
+    for g in ("runs", "pages"):
+        for w in before[g]:
+            b, a = before[g][w], after[g][w]
+            d[g] += [f"{w}/{k}" for k in sorted(set(b) | set(a)) if b.get(k) != a.get(k)]
+    d["stores"] = [k for k in before["stores"] if before["stores"][k] != after["stores"].get(k)]
+    return d
+
+
+def store_contamination(changed_keys: list, t_start: float) -> dict:
+    """共有store差分の帰属判定: 本Trialの出力先path(OUT_ROOT)が差分ファイルの内容に含まれれば『本Trial由来(汚染)』、含まれなければ『他agent由来(外部変更)』。"""
+    contaminated, external = [], []
+    for k in changed_keys:
+        files = []
+        if k.startswith("tree:"):
+            base = _abs(k[5:])
+            for dp, _dn, fns in os.walk(base):
+                for fn in fns:
+                    ap = os.path.join(dp, fn)
+                    try:
+                        if os.path.getmtime(ap) >= t_start - 2:
+                            files.append(ap)
+                    except OSError:
+                        pass
+        else:
+            files = [_abs(k)]
+        hit = False
+        for ap in files:
+            try:
+                if os.path.getsize(ap) > 80_000_000:
+                    continue
+                with open(ap, "rb") as f:
+                    if OUT_ROOT.encode() in f.read():
+                        hit = True
+            except OSError:
+                pass
+        (contaminated if hit else external).append(k)
+    return {"contaminated": contaminated, "external_changes_not_from_this_trial": external}
+
+
+def scan_repo_mtime(t_start: float) -> dict:
+    """M-4(d): Round 1のdirではなく本Trialの OUT_ROOT / PAGE_ROOT を除外に入れた版。Z Production run dir / Z公開ページ配下のヒットだけを厳格(STOP)対象とする。"""
+    import er113_fx_paragraph_chunk_trial_01 as t113
+    old = t113.SCAN_EXCLUDE_DIRS
+    t113.SCAN_EXCLUDE_DIRS = tuple(old) + (OUT_ROOT, PAGE_ROOT)
+    try:
+        r = t113.scan_new_files(t_start - 2)
+    finally:
+        t113.SCAN_EXCLUDE_DIRS = old
+    strict = tuple(c["run"] for c in WORK_CFG.values()) + Z_PAGES_PREFIXES
+    allhits = list(r.get("suspicious", [])) + list(r.get("benign_other_agent_or_docs", []))
+    r["z_production_hits"] = [h for h in allhits if h.startswith(strict)]
+    r["n_other_hits_not_z"] = len([h for h in allhits if not h.startswith(strict)])
+    return r
+
+
+# ---------- 4-3 Production入力の読取専用再構成(Part1/Part2 freshness検査は除く。自己検証で再構成の正しさを実測する) ----------
+_INP_CACHE: dict = {}
+
+
+def prod_inputs(work: str, level: str) -> dict:
+    """er026 load_level_inputs と同じ決定論手順(読取のみ)。b1bはProduction run が Part1/Part2導入前のため load_level_inputs の鮮度検査で止まる
+    (FAMILY_Z_KP_PART1_NOT_READY)ので、story_clips/kp_items/chunk_plans/plan の再構成部だけを複製する。誤りは selfcheck の厳密一致で検出する(OK-3)。"""
+    key = (work, level)
+    if key in _INP_CACHE:
+        return _INP_CACHE[key]
+    import er026_family_z_fiction_production_runner_01 as r
+    m = r._m()
+    a63, w62, st = m.a63, m.w62, m.st
+    c = WORK_CFG[work]
+    run = c["run"]
+    ctx = r.E2EContext(story_key=c["story_key"], slug=c["story_key"], run=os.path.basename(run))
+    if ctx.out_dir != run:
+        raise SystemExit(f"[STOP] E2EContext.out_dir({ctx.out_dir}) != WORK_CFG run({run})")
+    text = w62.rd(r._level_text_path(ctx, level))
+    plan_j = w62.rj(f"{run}/segment_plan_{level}.json")
+    support = w62.rj(f"{run}/support/{level}_support.json")
+    kp = w62.rj(f"{r._kp_assets_dir(ctx, level)}/keywords_canonicalized.json")
+    items = sorted(kp["items"], key=lambda x: x["rank"])
+    kp_items = [{"rank": it["rank"], "used_form": it["used_form"], "japanese_gloss": it.get("japanese_gloss", ""), "display_phrase": it["display_phrase"]} for it in items]
+    expl = None
+    if level == "b1b":
+        ex = w62.rj(f"{run}/key_phrases/b1b/kp_explanations.json")
+        expl = {int(k): v["english_explanation"] for k, v in ex["items"].items()}
+    cfg = r.STORY_REGISTRY[ctx.story_key]
+    comments = {int(n): tx for n, tx in support["comments"].items()}
+    story_clips = plan_j["clips"]
+    _t, _body = st.split_title_body(text)
+    chunk_plans = a63.chunk_tts.plan_z_level(story_clips, st.clean_body_paragraphs(_body), level)
+    segs = ((a63.load_results(f"{run}/{level}") or {}).get("segments")) or {}
+    chunk_plans = {cid: a63.chunk_tts.effective_plan(pl, segs) for cid, pl in chunk_plans.items()}
+    spec_plan = a63.build_level_plan(level, story_clips, support["preview"], comments, kp_items, cfg["topic_title"],
+                                     cfg.get("japanese_title_tts") if level == "a2" else None, kp_explanations=expl,
+                                     story_key=ctx.story_key, chunk_plans=chunk_plans)
+    out = {"plan": spec_plan, "story_clips": story_clips, "kp_items": kp_items, "chunk_plans": a63.chunk_plans_from_specs(spec_plan),
+           "article_text": r.canonical_article_text(text), "story_key": c["story_key"],
+           "shell_names": list(a63.SHELL_ASSET_SOURCES) + [f"kp{it['rank']}_number" for it in kp_items]}
+    _INP_CACHE[key] = out
+    return out
+
+
+def dialogue_specs(work: str, level: str) -> dict:
+    return {s.clip_id: s for s in prod_inputs(work, level)["plan"] if s.kind == "dialogue"}
+
+
+# ---------- 4-4 trial_run_dir の構築(M-1/M-2/M-3/M-4) ----------
+_NARR_WAV_RE = re.compile(r"[\\/]narration[\\/]([^\\/]+\.wav)$")
+
+
+def _narr(run_dir: str, level: str) -> str:
+    return f"{run_dir}/{level}/narration"
+
+
+def _rewrite_paths(obj, dst_narr: str) -> None:
+    """M-3(2): path / narration_path / original_path の narration/<file>.wav を trial_run_dir へ書き換える(再帰)。"""
+    if isinstance(obj, dict):
+        for k, v in list(obj.items()):
+            if k in ("path", "narration_path", "original_path") and isinstance(v, str) and _NARR_WAV_RE.search(v):
+                obj[k] = f"{dst_narr}/{_NARR_WAV_RE.search(v).group(1)}"
+            else:
+                _rewrite_paths(v, dst_narr)
+    elif isinstance(obj, list):
+        for v in obj:
+            _rewrite_paths(v, dst_narr)
+
+
+def build_run_dir(work: str, level: str, run_name: str, adopted: dict | None) -> dict:
+    """Production run の <lv>/narration/*.wav を copy(shutil.copyfileのみ)し、adopted(cid -> {gen_wav, gen_original, entry})のdialogueだけTrial音声で置換する。
+    adopted=None は selfcheck(Production dialogueのまま。_original も保持)。M-2: adoptedのdialogueは Production の _original.wav を削除してから
+    (Advは)生成で新しく作られた _original のみ置く。"""
+    c = WORK_CFG[work]
+    prod_run = c["run"]
+    run_dir = f"{case_dir(work, level)}/{run_name}"
+    assert_out_root(run_dir)
+    if os.path.isdir(_abs(run_dir)):
+        shutil.rmtree(_abs(run_dir))
+    prod_narr, dst_narr = _narr(prod_run, level), _narr(run_dir, level)
+    n_copied = 0
+    for fn in sorted(os.listdir(_abs(prod_narr))):
+        if os.path.isfile(_abs(f"{prod_narr}/{fn}")) and fn.endswith(".wav"):
+            safe_copy(f"{prod_narr}/{fn}", f"{dst_narr}/{fn}")
+            n_copied += 1
+    res = copy.deepcopy(jload(f"{prod_run}/{level}/audit/tts_generation_results.json"))
+    _rewrite_paths(res, dst_narr)
+    installed = []
+    for cid, ad in (adopted or {}).items():
+        for fn in (f"{cid}.wav", f"{cid}_original.wav"):          # M-2: Production原音の dialogue wav / _original を除去
+            ap = _abs(f"{dst_narr}/{fn}")
+            if os.path.exists(ap):
+                os.remove(ap)
+        safe_copy(ad["gen_wav"], f"{dst_narr}/{cid}.wav")
+        if ad.get("gen_original"):
+            safe_copy(ad["gen_original"], f"{dst_narr}/{cid}_original.wav")
+        e = copy.deepcopy(ad["entry"])
+        e["path"] = e["narration_path"] = f"{dst_narr}/{cid}.wav"
+        if isinstance(e.get("speed_profile"), dict) and e["speed_profile"].get("applied") and ad.get("gen_original"):
+            e["original_path"] = f"{dst_narr}/{cid}_original.wav"
+        res["segments"][cid] = e
+        installed.append(cid)
+    safe_write_json(f"{run_dir}/{level}/audit/tts_generation_results.json", res)
+    ha = f"{prod_run}/{level}/audit/human_approved_segments.json"        # M-3(3)
+    if os.path.exists(_abs(ha)):
+        safe_copy(ha, f"{run_dir}/{level}/audit/human_approved_segments.json")
+    kp_src = f"{prod_run}/{level}/key_phrases"                               # key phrase source gate の入力
+    if os.path.isdir(_abs(kp_src)):
+        for fn in sorted(os.listdir(_abs(kp_src))):
+            if os.path.isfile(_abs(f"{kp_src}/{fn}")):
+                safe_copy(f"{kp_src}/{fn}", f"{run_dir}/{level}/key_phrases/{fn}")
+    os.makedirs(_abs(f"{run_dir}/{level}/assembly"), exist_ok=True)
+    return {"run_dir": run_dir, "n_wav_copied": n_copied, "installed_trial": installed}
+
+
+def verify_isolation(work: str, level: str, run_dir: str) -> dict:
+    """M-4(b)/M-3 test: (1) trial narration の全ファイルが Production と別ファイル(inode/ nlink==1) (2) results の path 系keyが全て OUT_ROOT 配下。"""
+    prod_narr, dst_narr = _narr(WORK_CFG[work]["run"], level), _narr(run_dir, level)
+    bad_link, n = [], 0
+    for fn in sorted(os.listdir(_abs(dst_narr))):
+        d, p = _abs(f"{dst_narr}/{fn}"), _abs(f"{prod_narr}/{fn}")
+        n += 1
+        if os.stat(d).st_nlink > 1 or os.path.islink(d) or (os.path.exists(p) and os.path.samefile(d, p)):
+            bad_link.append(fn)
+    res = jload(f"{run_dir}/{level}/audit/tts_generation_results.json")
+    outside = []
+
+    def walk(o, trail=""):
+        if isinstance(o, dict):
+            for k, v in o.items():
+                if k in ("path", "narration_path", "original_path") and isinstance(v, str) and _NARR_WAV_RE.search(v) and not under(v, OUT_ROOT):
+                    outside.append(f"{trail}/{k}={v}")
+                else:
+                    walk(v, f"{trail}/{k}")
+        elif isinstance(o, list):
+            for i, v in enumerate(o):
+                walk(v, f"{trail}[{i}]")
+    walk(res)
+    return {"n_files": n, "hardlink_or_same_file": bad_link, "result_paths_outside_out_root": outside, "ok": not bad_link and not outside}
+
+
+# ---------- 4-5 組立(M-4a/M-5)・比較・Gate(C6) ----------
+def assemble_run(work: str, level: str, run_dir: str) -> dict:
+    assert_out_root(run_dir)
+    import er063_family_z_audio_01 as a63
+    inp = prod_inputs(work, level)
+    return a63.run_assembly(run_dir, level, inp["story_clips"], inp["kp_items"], story_key=inp["story_key"],
+                            kp_third="explanation" if level == "b1b" else "japanese", chunk_plans=inp["chunk_plans"])
+
+
+def _read_wav(path: str):
+    import soundfile as sf
+    x, sr = sf.read(_abs(path), dtype="float64", always_2d=True)
+    return x, sr
+
+
+def compare_to_production(work: str, level: str, tl: dict, *, identical: bool) -> dict:
+    """identical=True(selfcheck): wav/timeline/gain/headroom 全て一致。identical=False(Trial): M-5の3点(target_rms / dialogue以外のgain / headroom.scalar)。"""
+    import numpy as np
+    ptl = jload(f"{WORK_CFG[work]['run']}/{level}/assembly/timeline.json")
+    dlg = set(dialogue_specs(work, level))
+    g_t, g_p = tl["gain_report"], ptl["gain_report"]
+    nd = [k for k in g_p if k != "target_rms" and k not in dlg]
+    rep = {"target_rms_trial": g_t.get("target_rms"), "target_rms_prod": g_p.get("target_rms"), "target_rms_equal": g_t.get("target_rms") == g_p.get("target_rms"),
+           "n_nondialogue_gain_labels": len(nd), "nondialogue_gain_mismatch": [k for k in nd if g_t.get(k) != g_p.get(k)],
+           "nondialogue_gain_missing_in_trial": [k for k in nd if k not in g_t],
+           "headroom_trial": tl["headroom"], "headroom_prod": ptl["headroom"],
+           "headroom_scalar_equal": tl["headroom"].get("scalar") == ptl["headroom"].get("scalar"),
+           "story_clips_0_is_non_dialogue": prod_inputs(work, level)["story_clips"][0]["id"] not in dlg}
+    rep["m5_ok"] = bool(rep["target_rms_equal"] and not rep["nondialogue_gain_mismatch"] and not rep["nondialogue_gain_missing_in_trial"] and rep["headroom_scalar_equal"]
+                        and rep["story_clips_0_is_non_dialogue"])
+    if identical:
+        parts_t, parts_p = [(e["part"], round(e["duration_seconds"], 4)) for e in tl["timeline"]], [(e["part"], round(e["duration_seconds"], 4)) for e in ptl["timeline"]]
+        rep["timeline_parts_equal"] = parts_t == parts_p
+        rep["gain_report_equal"] = g_t == g_p
+        rep["headroom_equal"] = tl["headroom"] == ptl["headroom"]
+        xt, sr_t = _read_wav(tl["wav"])
+        xp, sr_p = _read_wav(ptl["wav"])
+        rep["sr_equal"] = sr_t == sr_p
+        rep["shape_equal"] = xt.shape == xp.shape
+        if xt.shape == xp.shape:
+            d = np.abs(xt - xp)
+            rep["wav_max_abs_diff"] = float(d.max())
+            rep["wav_n_diff_samples"] = int((d > 0).sum())
+        else:
+            rep["wav_max_abs_diff"], rep["wav_n_diff_samples"] = None, None
+        rep["identical_ok"] = bool(rep["timeline_parts_equal"] and rep["gain_report_equal"] and rep["headroom_equal"] and rep["sr_equal"] and rep["shape_equal"]
+                                   and rep["wav_max_abs_diff"] is not None and rep["wav_max_abs_diff"] <= 3.1e-5)
+    return rep
+
+
+def run_gate(work: str, level: str, run_dir: str) -> dict:
+    """C6: a63.run_audio_gate を trial_run_dir に適用(書込みは trial_run_dir/<lv>/audit/ のみ)。例外は握りつぶさず結果に記録する(PASS扱いにしない)。"""
+    assert_out_root(run_dir)
+    import er063_family_z_audio_01 as a63
+    inp = prod_inputs(work, level)
+    try:
+        r = a63.run_audio_gate(run_dir, level, inp["plan"], inp["shell_names"], article_text=inp["article_text"])
+        return {"ok": r.get("shared_gate") == "PASS", "shared_gate": r.get("shared_gate"), "audio_text_deviation_clips": r.get("audio_text_deviation_clips"),
+                "n_speed_profile_clips": len((r.get("z_speed_profile") or {}).get("clips") or {})}
+    except BaseException as e:      # noqa: BLE001  (STOP系の例外もGate不成立として記録)
+        return {"ok": False, "error": f"{type(e).__name__}: {str(e)[:600]}"}
+
+
+def mp3_from_wav(wav: str, mp3: str) -> dict:
+    """R-4/M-4(c): build_pagesは呼ばず、er063 build_page_rows と同一の sf.write(..., format='MP3') を PAGE_ROOT 配下へ直接書く。"""
+    import soundfile as sf
+    assert_writable(mp3)
+    os.makedirs(os.path.dirname(_abs(mp3)), exist_ok=True)
+    x, sr = sf.read(_abs(wav), dtype="float32")
+    sf.write(_abs(mp3), x, sr, format="MP3")
+    return {"mp3": mp3, "wav_duration_s": round(len(x) / sr, 3), "mp3_duration_s": round(float(sf.info(_abs(mp3)).duration), 3), "bytes": os.path.getsize(_abs(mp3))}
+
+
+def selfcheck_case(work: str, level: str) -> dict:
+    """生成前の自己検証(API 0): Production原clipをそのまま入れて同じ run_assembly を実行し、Production組立wavと厳密一致することを確認。
+    あわせて C6 Gate(Production音声で)・公開mp3長の一致(R-4)・Production版試聴用mp3(同一sf.write経路)を作る。"""
+    with use_case(work, level):
+        t0 = time.time()
+        b = build_run_dir(work, level, "run_selfcheck", None)
+        iso = verify_isolation(work, level, b["run_dir"])
+        tl = assemble_run(work, level, b["run_dir"])
+        cmp_ = compare_to_production(work, level, tl, identical=True)
+        gate = run_gate(work, level, b["run_dir"])
+        pub = f"{WORK_CFG[work]['pages']}/{LEVELS[level]['page']}/{WORK_CFG[work]['audio_prefix']}_{level}_full.mp3"
+        import soundfile as sf
+        pub_dur = float(sf.info(_abs(pub)).duration) if os.path.exists(_abs(pub)) else None
+        ptl = jload(f"{WORK_CFG[work]['run']}/{level}/assembly/timeline.json")
+        mp3 = mp3_from_wav(tl["wav"], f"{PAGE_ROOT}/{work}/{level}/production_full.mp3")
+        rep = {"work": work, "level": level, "isolation": iso, "compare": cmp_, "gate": gate, "production_mp3_public": pub, "production_mp3_public_duration_s": pub_dur,
+               "production_wav_duration_s": ptl["duration_seconds"],
+               "public_mp3_vs_wav_diff_s": (round(abs(pub_dur - ptl["duration_seconds"]), 3) if pub_dur is not None else None),
+               "production_listening_mp3": mp3, "elapsed_s": round(time.time() - t0, 1), "saved_at": t.now_jst()}
+        rep["pass"] = bool(iso["ok"] and cmp_["identical_ok"] and gate["ok"] and rep["public_mp3_vs_wav_diff_s"] is not None and rep["public_mp3_vs_wav_diff_s"] < 0.3)
+        safe_write_json(f"{case_dir(work, level)}/selfcheck.json", rep)
+        return rep
+
+
+# ---------- 4-6 TEXT同一性(R-3) ----------
+def text_identity_case(work: str, level: str) -> dict:
+    """Z scope内で53 clipのTTS入力を計算し、(a)Productionと同一関数 a63._norm_for_tts の結果と t.tts_text_for が一致すること (b)発音供給(PNAP)の効果=
+    scope内と scope外の差 を全clipで記録する。Productionの実送信入力は保存されていないため『現行ledger copyでの再現』を比較対象とする(R-3)。"""
+    import er063_family_z_audio_01 as a63
+    import er003_v1_n3_01_tts_generate as n3
+    import er078_secondary_run_scope_01 as sec_scope
+    import er109_xz_scope_01 as scope
+    with use_case(work, level):
+        plan = t.load_plan()
+        specs = dialogue_specs(work, level)
+        res = t.load_json(t.TTS_RESULTS_PATH)["segments"]
+        rows = []
+
+        def _in_scope(_d=None):
+            for x in dialogue_clips(plan):
+                sp = specs[x["id"]]
+                rows.append({"clip_id": x["id"], "canonical": x["text"], "tts_in_scope": a63._norm_for_tts(sp), "tts_text_for": t.tts_text_for(x),
+                             "tts_safe_only": n3.tts_safe_news_en(x["text"])})
+        sec_scope.with_secondary_run(scope.family_scope("Z")(_in_scope))(None)
+        out = []
+        for r_ in rows:
+            e = res.get(r_["clip_id"]) or {}
+            out.append({**r_, "same_function_equal": r_["tts_in_scope"] == r_["tts_text_for"], "pnap_effect": r_["tts_in_scope"] != r_["tts_safe_only"],
+                        "reused_from_previous_run": e.get("reused_from_previous_run"), "production_status": e.get("status")})
+        rep = {"work": work, "level": level, "n": len(out), "all_same_function_equal": all(o["same_function_equal"] for o in out),
+               "n_pnap_effect": sum(1 for o in out if o["pnap_effect"]), "rows": out,
+               "note": "Productionの実送信TTS入力は未保存のため、現行ledger copy(Z scope内)での再現値。pnap_effect=発音供給(綴り置換)が掛かるclip"}
+        safe_write_json(f"{case_dir(work, level)}/text_identity.json", rep)
+        return rep
+
+
+# ---------- 4-7 費用(R-6) ----------
+def spent_now() -> tuple:
+    import er019_family_x_audio_production_runner_01 as runner
+    return runner.compute_cost_jpy_so_far(_abs(COST_LOG))
+
+
+def est_next_clip_jpy(prompt: str, audio_s: float) -> float:
+    return t.est_tts_jpy(len(prompt), audio_s * 1.05)
+
+
+def _ref_audio_s(work: str, level: str, cid: str) -> float:
+    narr = t.NARR_DIR
+    orig = f"{narr}/{cid}_original.wav"
+    x, sr = t.read_mono(orig if os.path.isfile(_abs(orig)) else f"{narr}/{cid}.wav")
+    return len(x) / sr
+
+
+# ---------- 4-8 生成 ----------
+def gen_dir(work: str, level: str, cid: str) -> str:
+    return f"{case_dir(work, level)}/gen/{cid}"
+
+
+def gen_wav_path(work: str, level: str, cid: str) -> str:
+    """M-1: clipごとの別ディレクトリ(Round 2と同形。review lock用の <run>/<lv>/narration/<id>.wav 配置)。"""
+    return f"{gen_dir(work, level, cid)}/{level}/narration/{cid}.wav"
+
+
+def trial_reuse_key(clip: dict, style: str, voice: str) -> dict:
+    """M-6: 本module版(Round 1のMANAGED_IDが入る t.trial_reuse_key は使わない)。"""
+    return {"managed_id": MANAGED_ID, "arm": "ctx", "take": 1, "canonical_text_sha256": t.sha_text(clip["text"]), "voice": voice, "model": t.TTS_MODEL,
+            "style_sha256": t.sha_text(style), "tts_backend_note": "gemini_standard_sync(Production Z実行と同じSTANDARD)"}
+
+
+def adopt_decision(rec: dict) -> dict:
+    """M-1/M-7/M-8: 組立入力に採用してよいか。C1(status OK)・C2(Production ASRカスケードの最終判定PASS系[=status OK] かつ repetition QA済み)・
+    C3(leakage_final.flagged無し。flaggedは『保留=Fable聴取確認待ち』で採用しない)・C4(comparison_valid)。token_equal/similarityは観測値でblockingに使わない。"""
+    reasons = []
+    if rec.get("status") != "OK":
+        reasons.append("C1:status!=OK")
+    if not rec.get("repetition_qa_checked"):
+        reasons.append("C2:repetition_qa未実施")
+    if not rec.get("comparison_valid"):
+        reasons.append("C4:comparison_valid=false")
+    hold = bool((rec.get("leakage") or {}).get("leakage_final"))
+    if hold:
+        reasons.append("C3:leakage_final.flagged(保留・Fable聴取確認待ち)")
+    return {"adopted": not reasons, "hold_pending_fable_listen": hold, "reasons": reasons}
+
+
+def _load_notes(work: str, level: str) -> dict:
+    """M-6: t.load_reviewed_notes を path 明示で呼ぶ(既定pathはRound 1)。Fable全件accept/discard記入済みを要求(require_review=True)。"""
+    d = f"{case_dir(work, level)}/llm"
+    return t.load_reviewed_notes(f"{d}/emotion_notes.json", f"{d}/emotion_review.json", require_review=True)
+
+
+def _make_live_gen_fn(level: str, cid: str):
+    import er003_v1_n3_01_tts_generate as n3_tts
+    import er012_b_family_voices_production_01 as bvoices
+    import er063_family_z_audio_01 as a63
+
+    def fn(text: str, wav_rel: str, voice: str, style: str) -> dict:
+        if level == "b1b":
+            # Production dialogue() と同形(er063:917-928): 速度後ASR再検証つき外側ループ・通算TTS3回・atempo=1.06。style_prefix_overrideのみ差(ctx方式)。
+            return n3_tts.generate_with_a2_slowdown_outer_loop(
+                cid, text, wav_rel,
+                lambda max_attempts: bvoices.generate_voice_body_wide_margin(text, wav_rel, voice, max_attempts=max_attempts, style_prefix_override=style),
+                slowdown_pct=a63.Z_ADV_DIALOGUE_SLOWDOWN_PCT)
+        return bvoices.generate_voice_body_wide_margin(text, wav_rel, voice, style_prefix_override=style)   # Std: 速度後処理なし(Productionと同形)
+    return fn
+
+
+def _ensure_selfcheck_and_dryrun(work: str, level: str) -> None:
+    sc = f"{case_dir(work, level)}/selfcheck.json"
+    if not os.path.exists(_abs(sc)) or not jload(sc).get("pass"):
+        raise SystemExit(f"[STOP] {sc} が無い/不成立。生成前の自己検証(preflight)に合格するまで有料生成は起動しない")
+    dr = f"{OUT_ROOT}/dryrun_sinks.json"
+    if not os.path.exists(_abs(dr)) or not jload(dr).get("pass"):
+        raise SystemExit(f"[STOP] {dr} が無い/不成立。R-2のdry-run(書込先3経路の実測)に合格するまで有料生成は起動しない")
+    ti = f"{case_dir(work, level)}/text_identity.json"
+    if not os.path.exists(_abs(ti)):
+        raise SystemExit(f"[STOP] {ti} が無い(R-3)")
+
+
+def _wait_interval() -> float:
+    """起動間隔(150秒以上): 他unitのgen_summaryの最新finished_epochから経過が足りなければ待つ。"""
+    last = 0.0
+    for w, lv in CASES:
+        p = f"{case_dir(w, lv)}/gen_summary.json"
+        if os.path.exists(_abs(p)):
+            last = max(last, float(jload(p).get("finished_epoch") or 0))
+    wait = max(0.0, last + MIN_UNIT_INTERVAL_S - time.time())
+    if wait > 0:
+        print(f"[WAIT] 前unit終了から{MIN_UNIT_INTERVAL_S}秒未満。{wait:.0f}秒待機", flush=True)
+        time.sleep(wait)
+    return wait
+
+
+def gen_case(work: str, level: str, *, gen_fn_factory=None, only: list | None = None, go: dict | None = None) -> dict:
+    """1作品×レベルのセリフ全件を ctx方式で新規生成(1 take)。gen_fn_factory(level, cid)->fn(text, wav_rel, voice, style)->result: testのinjection用
+    (本番はNone=Production関数。このときだけ GO・STOP確認・自己検証確認・sink隔離・Zscope・実費Guardrailを適用)。1 clipのNGでは中断しない。"""
+    live = gen_fn_factory is None
+    import er078_secondary_run_scope_01 as sec_scope
+    import er109_xz_scope_01 as scope
+    if live:
+        go = _require_go(SCOPE_PHASE1B, PHASE1B_CAP_JPY)
+        _ensure_selfcheck_and_dryrun(work, level)
+        _stop_check(f"stop_check_gen_{work}_{level}.json")
+        waited = _wait_interval()
+    else:
+        waited = 0.0
+    cap = float(go["cap_jpy"]) if go else 1e9
+    started_epoch = time.time()
+    specs_all = dialogue_specs(work, level)
+    results: dict = {}
+    reqs: list = []
+    cur = {"label": None}
+    before = after = None
+    spent0 = spent_now()[0] if live else 0.0
+    baseline_path = f"{OUT_ROOT}/phase1b_baseline.json"
+    if live:
+        if not os.path.exists(_abs(baseline_path)):
+            safe_write_json(baseline_path, {"spent_before_phase1b_jpy": spent0, "saved_at": t.now_jst(), "scope": SCOPE_PHASE1B})
+        base_total = jload(baseline_path)["spent_before_phase1b_jpy"]
+    else:
+        base_total = 0.0
+
+    with use_case(work, level):
+        plan = t.load_plan()
+        notes = _load_notes(work, level) if live else (gen_fn_factory.notes if hasattr(gen_fn_factory, "notes") else {})
+        clip_by_id = {c_["id"]: c_ for c_ in plan["clips"]}
+        tts_voice = {cid: t.tts_voice(clip_by_id[cid]) for cid in specs_all}
+        for cid, sp in specs_all.items():
+            if sp.voice != tts_voice[cid]:
+                raise SystemExit(f"[STOP] Voice不一致 {cid}: spec={sp.voice} / Production結果={tts_voice[cid]}")
+
+        def _run(_d=None):
+            runner_cl = None
+            if live:
+                import er005_cost_logger as cl_mod
+                runner_cl = cl_mod
+            for x in dialogue_clips(plan):
+                cid = x["id"]
+                if only and cid not in only:
+                    continue
+                sp = specs_all[cid]
+                ctx = t.extract_context(plan, cid)
+                note = notes.get(cid)
+                style = t.style_for_arm("ctx", ctx, note)
+                text = a63_norm(sp)
+                prompt_expected = t.build_prompt(text, style)
+                spent_clip0 = spent_now()[0] if live else 0.0
+                if live:
+                    if spent_clip0 - base_total >= cap:
+                        raise SystemExit(f"[STOP] Phase 1b Guardrail {cap}円到達(実績{spent_clip0 - base_total:.2f}円)。暴走疑いの有無を確認して報告")
+                    est = est_next_clip_jpy(prompt_expected, _ref_audio_s(work, level, cid))
+                    if spent_clip0 - base_total + est > cap:
+                        raise SystemExit(f"[STOP] 次clip({cid})見積{est:.2f}円を足すと Guardrail {cap}円を超える(実績{spent_clip0 - base_total:.2f}円)")
+                wav = gen_wav_path(work, level, cid)
+                assert_out_root(wav)
+                os.makedirs(os.path.dirname(_abs(wav)), exist_ok=True)
+                cur["label"] = f"{work}/{level}:{cid}"
+                n_before = len(reqs)
+                t0 = time.time()
+                fn = gen_fn_factory(level, cid) if not live else _make_live_gen_fn(level, cid)
+                if live:
+                    with runner_cl.segment_context(cid):
+                        res = fn(text, wav, tts_voice[cid], style) or {}
+                else:
+                    res = fn(text, wav, tts_voice[cid], style) or {}
+                sent = reqs[n_before:]
+                attempts_asr = [a.get("asr_text") for a in (res.get("attempts_log") or []) if isinstance(a, dict)]
+                leak = t.leakage_all_attempts(attempts_asr, res.get("asr_text"), ctx, note) if (res.get("asr_text") is not None or attempts_asr) else None
+                import er063_family_z_audio_01 as a63
+                entry = a63.build_entry(sp, wav, res) if res.get("status") is not None else None
+                if entry is not None:
+                    entry["trial_style_sha256"] = t.sha_text(style)
+                    entry["trial_reuse_key"] = trial_reuse_key(clip_by_id[cid], style, tts_voice[cid])
+                orig = f"{os.path.dirname(wav)}/{cid}_original.wav"
+                rec = {"managed_id": MANAGED_ID, "work": work, "level": level, "clip_id": cid, "speaker": x["speaker"], "voice": tts_voice[cid],
+                       "status": res.get("status"), "wav": wav, "wav_sha256": file_sha(wav),
+                       "original_wav": orig if os.path.exists(_abs(orig)) else None, "original_sha256": file_sha(orig),
+                       "tts_text": text, "style_sha256": t.sha_text(style), "prompt_expected_sha256": t.sha_text(prompt_expected),
+                       "requests_sent": [{k: v for k, v in q.items() if k != "prompt"} for q in sent],
+                       "request_prompt_matches_expected": [q["prompt_sha256"] == t.sha_text(prompt_expected) for q in sent],
+                       "n_tts_calls_captured": len(sent), "tts_generations_used": res.get("tts_generations_used"),
+                       "attempts_log_n": len(res.get("attempts_log") or []), "slowdown_attempts_n": len(res.get("slowdown_attempts_log") or []),
+                       "asr_text": res.get("asr_text"), "attempts_asr_texts": attempts_asr, "audio_classification": res.get("audio_classification"),
+                       "asr_judgement": res.get("asr_judgement"), "instruction_type": res.get("instruction_type"),
+                       "repetition_qa_checked": res.get("repetition_qa_checked"), "trim_info": res.get("trim_info"),
+                       "leakage": leak, **t.comparison_validity(res, sent, t.sha_text(prompt_expected)),
+                       "verbatim_observation": t.verbatim_check(res.get("asr_text") or "", x["text"]) if res.get("asr_text") is not None else None,
+                       "reason": res.get("reason"), "tts_cap_reached": res.get("tts_generation_cap_reached"),
+                       "cost_jpy_clip": round((spent_now()[0] - spent_clip0) if live else 0.0, 4),
+                       "elapsed_s": round(time.time() - t0, 2), "saved_at": t.now_jst(), "entry": entry,
+                       "trial_reuse_key": trial_reuse_key(clip_by_id[cid], style, tts_voice[cid])}
+                rec["adopt"] = adopt_decision(rec)
+                safe_write_json(f"{gen_dir(work, level, cid)}/request_full.json", {"clip_id": cid, "requests": sent})
+                safe_write_json(f"{gen_dir(work, level, cid)}/result.json", rec)
+                results[cid] = rec
+                print(f"[GEN] {work}/{level} {cid} status={rec['status']} calls={rec['n_tts_calls_captured']} gens={rec['tts_generations_used']} "
+                      f"adopt={rec['adopt']['adopted']} cost={rec['cost_jpy_clip']} t={rec['elapsed_s']}s", flush=True)
+
+        with contextlib.ExitStack() as stack:
+            if live:
+                import er005_cost_logger as cl_mod
+                import er113_fx_paragraph_chunk_trial_01 as t113
+                from dotenv import load_dotenv
+                load_dotenv()
+                cl_mod.install(_abs(COST_LOG))
+                before = prod_snapshot()
+                stack.enter_context(t113.redirect_production_sinks(f"{case_dir(work, level)}/sinks"))
+                stack.enter_context(t.capture_tts_requests(reqs, lambda: cur["label"]))
+            sec_scope.with_secondary_run(scope.family_scope("Z")(_run))(gen_dir(work, level, "_"))
+
+    finished = time.time()
+    by_prov_after = spent_now()[1] if live else {}
+    summary = {"managed_id": MANAGED_ID, "work": work, "level": level, "started_epoch": started_epoch, "finished_epoch": finished,
+               "started_at_jst": datetime.datetime.fromtimestamp(started_epoch, datetime.timezone(datetime.timedelta(hours=9))).isoformat(timespec="seconds"),
+               "wall_s": round(finished - started_epoch, 1), "waited_for_interval_s": round(waited, 1), "live": live,
+               "n_clips": len(results), "n_ok": sum(1 for r_ in results.values() if r_["status"] == "OK"), "n_adopted": sum(1 for r_ in results.values() if r_["adopt"]["adopted"]),
+               "n_hold": sum(1 for r_ in results.values() if r_["adopt"]["hold_pending_fable_listen"]),
+               "spent_unit_jpy": round(spent_now()[0] - spent0, 4) if live else 0.0, "spent_phase1b_total_jpy": round(spent_now()[0] - base_total, 4) if live else 0.0,
+               "spent_by_provider_cumulative": by_prov_after, "tts_model_requested": t.TTS_MODEL}
+    if live:
+        after = prod_snapshot()
+        diff = snapshot_diff(before, after)
+        contam = store_contamination(diff["stores"], started_epoch)
+        scan = scan_repo_mtime(started_epoch)
+        summary.update({"snapshot_diff": diff, "store_attribution": contam, "mtime_z_production_hits": scan["z_production_hits"],
+                        "mtime_n_other_hits": scan["n_other_hits_not_z"], "mtime_total": scan["n_total"]})
+        bad = diff["runs"] + diff["pages"] + contam["contaminated"] + scan["z_production_hits"]
+        if bad:
+            summary["STOP"] = f"Production保護対象が変化/汚染: {bad[:10]}"
+    safe_write_json(f"{case_dir(work, level)}/gen_summary.json", summary)
+    if summary.get("STOP"):
+        raise SystemExit(f"[STOP] {summary['STOP']}")
+    return {"summary": summary, "results": results}
+
+
+def a63_norm(spec) -> str:
+    """Productionと同一の TTS 入力整形(er063 _norm_for_tts。Z scope内で発音供給が有効)。"""
+    import er063_family_z_audio_01 as a63
+    return a63._norm_for_tts(spec)
+
+
+
+# ---------- 4-9 R-2: 外側ループの書込先 dry-run(API 0。PYTHONPATH=netblock_harness_01 NETBLOCK_LOG=... 下でのみ実行) ----------
+def dryrun_sinks(work: str = "monkeys_paw", level: str = "b1b") -> dict:
+    """gen_fn と ASR を差し替え、Adv外側ループ(sink差替え + Z scope + secondary run scope の内側)を3回NGで走らせ、
+    append_attempt_history_event / _log_human_review / finalize→record_outcome(review lock state) の書込先を実測する。
+    Productionの保護store・run dir・公開pageが不変であること、本Trial由来の書込みが全てOUT_ROOT配下であることを確認する。"""
+    if not os.environ.get("NETBLOCK_LOG"):
+        raise SystemExit("[STOP] dryrun-sinks は PYTHONPATH=netblock_harness_01 NETBLOCK_LOG=<log> 下で実行する(接続試行0の保証)")
+    import numpy as np
+    import soundfile as sf
+    import er003_v1_n3_01_tts_generate as n3
+    import er006_secondary_asr_01 as secondary_asr
+    import er063_family_z_audio_01 as a63
+    import er078_secondary_run_scope_01 as sec_scope
+    import er109_xz_scope_01 as scope
+    import er113_fx_paragraph_chunk_trial_01 as t113
+    t_start = time.time()
+    before = prod_snapshot()
+    out_files_before = set(_list_files(OUT_ROOT))
+    info: dict = {}
+    with use_case(work, level):
+        plan = t.load_plan()
+        cid = dialogue_clips(plan)[0]["id"]
+        sp = dialogue_specs(work, level)[cid]
+        dry_dir = f"{case_dir(work, level)}/dryrun/{cid}"
+        wav = f"{dry_dir}/{level}/narration/{cid}.wav"
+        assert_out_root(wav)
+        os.makedirs(os.path.dirname(_abs(wav)), exist_ok=True)
+        text = sp.text
+        calls = {"gen": 0, "asr": 0}
+
+        def stub_gen(max_attempts):
+            calls["gen"] += 1
+            sr = 24000
+            tt = np.arange(int(sr * 1.2)) / sr
+            sf.write(_abs(wav), (0.2 * np.sin(2 * np.pi * 220 * tt)).astype("float32"), sr)
+            return {"status": "OK", "text": text, "path": wav, "voice": sp.voice, "asr_verified": True, "asr_text": text,
+                    "attempts_log": [{"attempt": 1, "status": "OK", "verified": True}], "instruction_type": "english_style_prefix_wide_margin",
+                    "trim_info": None, "duration_seconds": 1.2, "repetition_qa_checked": True}
+
+        def stub_transcribe(path, language="en-US"):
+            calls["asr"] += 1
+            return "zzz qqq completely different words", None
+
+        old_tr, old_flag = n3.routing.transcribe, secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED
+        n3.routing.transcribe = stub_transcribe
+        secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED = False      # Secondary(Azure)を呼ばない = API 0
+        sinks_dir = f"{case_dir(work, level)}/sinks_dryrun"
+        err = None
+        try:
+            with t113.redirect_production_sinks(sinks_dir):
+                def _run(_d=None):
+                    return n3.generate_with_a2_slowdown_outer_loop(cid, text, wav, stub_gen, slowdown_pct=a63.Z_ADV_DIALOGUE_SLOWDOWN_PCT)
+                res = sec_scope.with_secondary_run(scope.family_scope("Z")(_run))(None)
+                # HR queue経路が外側ループ内で実行されなかった場合に備え、同じ関数を同じredirect下で直接1回プローブ(書込先の実測)
+                hr_probe = None
+                if not (os.path.exists(_abs(f"{sinks_dir}/sink_er006_secondary_asr_01_HUMAN_REVIEW_LOG_PATH.jsonl"))):
+                    try:
+                        secondary_asr._log_human_review({"canonical_text": text, "wav_path": wav, "steps": [], "cost_guard_triggered": False, "final_status": "DRYRUN_PROBE",
+                                                         "classification": None})
+                        hr_probe = "probe_executed"
+                    except BaseException as e:      # noqa: BLE001
+                        hr_probe = f"probe_error:{type(e).__name__}:{str(e)[:200]}"
+                    info["hr_probe"] = hr_probe
+        except BaseException as e:      # noqa: BLE001
+            err = f"{type(e).__name__}: {str(e)[:500]}"
+            res = {}
+        finally:
+            n3.routing.transcribe = old_tr
+            secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED = old_flag
+        info.update({"clip_id": cid, "stub_gen_calls": calls["gen"], "stub_asr_calls": calls["asr"], "error": err,
+                     "final_status": res.get("status"), "tts_generations_used": res.get("tts_generations_used"),
+                     "review_lock_state_final": res.get("review_lock_state_final"), "human_review_required": res.get("human_review_required"),
+                     "slowdown_attempts": len(res.get("slowdown_attempts_log") or [])})
+    after = prod_snapshot()
+    diff = snapshot_diff(before, after)
+    contam = store_contamination(diff["stores"], t_start)
+    scan = scan_repo_mtime(t_start)
+    new_files = sorted(set(_list_files(OUT_ROOT)) - out_files_before)
+    sink_files = {f: os.path.getsize(_abs(f)) for f in new_files if "/sinks_dryrun/" in f}
+    lock_files = [f for f in new_files if f.endswith("review_lock_state.json")]
+    outside_new = [f for f in new_files if not under(f, OUT_ROOT)]
+    ah = [f for f in sink_files if f.endswith("ATTEMPT_HISTORY_PATH.jsonl")]
+    hr = [f for f in sink_files if f.endswith("HUMAN_REVIEW_LOG_PATH.jsonl")]
+    nb_log = os.environ["NETBLOCK_LOG"]
+    nb_lines = open(nb_log, encoding="utf-8").read().splitlines() if os.path.exists(nb_log) else []
+    rep = {"work": work, "level": level, **info, "snapshot_diff": diff, "store_attribution": contam,
+           "z_production_mtime_hits": scan["z_production_hits"], "mtime_n_other_hits": scan["n_other_hits_not_z"],
+           "new_files_under_out_root": len(new_files), "sink_files": sink_files, "review_lock_state_files": lock_files,
+           "attempt_history_sink_landed": bool(ah), "human_review_sink_landed": bool(hr), "lock_state_landed": bool(lock_files),
+           "netblock_log": nb_log, "netblock_blocked_lines": nb_lines, "saved_at": t.now_jst()}
+    rep["pass"] = bool(not info.get("error") and info.get("stub_gen_calls", 0) >= 1 and rep["attempt_history_sink_landed"] and rep["lock_state_landed"]
+                       and not diff["runs"] and not diff["pages"] and not contam["contaminated"] and not scan["z_production_hits"] and not outside_new
+                       and not nb_lines)
+    safe_write_json(f"{OUT_ROOT}/dryrun_sinks.json", rep)
+    return rep
+
+
+def _list_files(rel_dir: str) -> list:
+    out = []
+    for dp, _dn, fns in os.walk(_abs(rel_dir)):
+        for fn in fns:
+            out.append(os.path.relpath(os.path.join(dp, fn), ROOT).replace("\\", "/"))
+    return out
+
+
+# ---------- 4-10 R-7(a): Round 1/2 の自然ゆれ固定値(生成前に作成・以後更新しない) ----------
+NOISE_SOURCES = ("er118_output/fz_dialogue_context_tts_trial_01/analysis.json", "er118_output/fz_dialogue_context_tts_trial_02/monkeys_paw/analysis.json",
+                 "er118_output/fz_dialogue_context_tts_trial_02/open_window/analysis.json")
+NOISE_METRICS = {"articulation_wpm_300": lambda a: a.get("articulation_wpm_300"), "f0_median_hz": lambda a: (a.get("f0") or {}).get("median_hz"),
+                 "f0_range_semitones": lambda a: (a.get("f0") or {}).get("range_semitones_p10_p90"), "rms_lin": lambda a: a.get("rms_lin"),
+                 "duration_s": lambda a: a.get("duration_s"), "max_mid_pause_s": lambda a: a.get("max_mid_pause_s")}
+
+
+def noise_band_r2() -> dict:
+    """Production原音(existing_A)と同styleの別take(base_t1)の |ln比| を Round 1/2 の全clipで集計(中央値・90%点)。ctx効果の判断前の『自然ゆれの目安』。"""
+    import numpy as np
+    vals = {k: [] for k in NOISE_METRICS}
+    n_pairs = 0
+    for src in NOISE_SOURCES:
+        d = jload(src)
+        for cid, c in d["clips"].items():
+            a, b = c.get("existing_A"), c.get("base_t1")
+            if not a or not b:
+                continue
+            n_pairs += 1
+            for k, f in NOISE_METRICS.items():
+                x, y = f(a), f(b)
+                if x and y and x > 0 and y > 0:
+                    vals[k].append(abs(math.log(y / x)))
+    out = {"managed_id": MANAGED_ID, "definition": "|ln(base_t1 / existing_A)|(同style別take対Production原音)。Round 1(8 clip)+Round 2(猿の手8+open_window)", "sources": list(NOISE_SOURCES),
+           "source_sha256": {s: file_sha(s) for s in NOISE_SOURCES}, "n_pairs": n_pairs, "metrics": {}}
+    for k, v in vals.items():
+        out["metrics"][k] = {"n": len(v), "median": round(float(np.median(v)), 4) if v else None, "p90": round(float(np.percentile(v, 90)), 4) if v else None}
+    out["fixed_at"] = t.now_jst()
+    safe_write_json(f"{OUT_ROOT}/noise_band_r2.json", out)
+    return out
+
+
+def cmd_preflight(work: str, level: str) -> dict:
+    sc = selfcheck_case(work, level)
+    ti = text_identity_case(work, level)
+    return {"selfcheck_pass": sc["pass"], "text_identity_all_same_function": ti["all_same_function_equal"], "n_pnap_effect": ti["n_pnap_effect"]}
 
 
 def main(argv=None) -> int:
@@ -410,15 +1244,22 @@ def main(argv=None) -> int:
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("inventory", help="棚卸(API 0)")
     sub.add_parser("budget", help="費用見積(API 0)")
-    p = sub.add_parser("llm", help="Phase 1a(有料・cap<=5円・PHASE1_GO.json必須): 感情情報LLM 1 call")
+    p = sub.add_parser("llm", help="Phase 1a(有料・cap<=5円・scope=Phase 1a): 感情情報LLM 1 call")
     p.add_argument("--work", choices=tuple(WORK_CFG), required=True)
     p.add_argument("--level", choices=tuple(LEVELS), required=True)
     sub.add_parser("candidates", help="EMOTION_CANDIDATES_01.md(API 0)")
-    for c in ("gen", "assemble", "page"):
-        sub.add_parser(c, help="未実装(委任_02)")
+    for c in ("preflight", "gen", "assemble", "analyze"):
+        p = sub.add_parser(c, help={"preflight": "生成前の自己検証+TEXT同一性(API 0)", "gen": "セリフ新規生成(有料・scope=Phase 1b・cap<=100円)",
+                                    "assemble": "DEV隔離の通し組立+M-5 assert+C6 Gate+mp3(API 0)", "analyze": "解析(API 0)"}[c])
+        p.add_argument("--work", choices=tuple(WORK_CFG), required=True)
+        p.add_argument("--level", choices=tuple(LEVELS), required=True)
+    p = sub.add_parser("dryrun-sinks", help="R-2 書込先dry-run(API 0、netblock harness必須)")
+    p.add_argument("--work", choices=tuple(WORK_CFG), default="monkeys_paw")
+    p.add_argument("--level", choices=tuple(LEVELS), default="b1b")
+    sub.add_parser("noise-band", help="R-7(a) noise_band_r2.json(API 0)")
+    sub.add_parser("page-all", help="試聴ページ(API 0)")
+    sub.add_parser("analyze-all", help="全unit解析+集計(API 0)")
     a = ap.parse_args(argv)
-    if a.cmd in ("gen", "assemble", "page"):
-        refuse(a.cmd)
     if a.cmd == "inventory":
         inv = cmd_inventory()
         print(json.dumps({k: v["n_dialogue"] for k, v in inv["cases"].items()}, ensure_ascii=False))
@@ -429,8 +1270,28 @@ def main(argv=None) -> int:
         print(json.dumps({k: r[k] for k in ("cost_jpy", "n_clips", "n_accepted", "n_discarded", "n_no_explicit_cue")}, ensure_ascii=False))
     elif a.cmd == "candidates":
         print(render_candidates())
+    elif a.cmd == "preflight":
+        print(json.dumps(cmd_preflight(a.work, a.level), ensure_ascii=False))
+    elif a.cmd == "dryrun-sinks":
+        r = dryrun_sinks(a.work, a.level)
+        print(json.dumps({k: r.get(k) for k in ("pass", "error", "stub_gen_calls", "attempt_history_sink_landed", "human_review_sink_landed", "lock_state_landed", "netblock_blocked_lines")}, ensure_ascii=False))
+    elif a.cmd == "noise-band":
+        print(json.dumps(noise_band_r2()["metrics"], ensure_ascii=False))
+    elif a.cmd == "gen":
+        r = gen_case(a.work, a.level)
+        s = r["summary"]
+        print(json.dumps({k: s.get(k) for k in ("n_clips", "n_ok", "n_adopted", "n_hold", "spent_unit_jpy", "spent_phase1b_total_jpy", "wall_s")}, ensure_ascii=False))
+    elif a.cmd == "assemble":
+        print(json.dumps(assemble_case(a.work, a.level)["summary"], ensure_ascii=False))
+    elif a.cmd == "analyze":
+        print(json.dumps(analyze_case(a.work, a.level)["summary"], ensure_ascii=False))
+    elif a.cmd == "analyze-all":
+        print(json.dumps(analyze_all()["summary"], ensure_ascii=False))
+    elif a.cmd == "page-all":
+        print(json.dumps(build_pages_all(), ensure_ascii=False))
     return 0
 
 
 if __name__ == "__main__":
     sys.exit(main())
+
