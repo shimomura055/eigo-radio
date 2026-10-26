@@ -213,6 +213,121 @@ def voice_guard_cached(cached: dict | None) -> dict | None:
     return out
 
 
+# ============================================================
+# 旧Human Review承認のVoice/Style不一致流用の防止(FAMILY-Y-HR-APPROVAL-VOICE-GUARD-01、OPEN-535)
+# 承認記録(human_approved_segments.json)のscopeは『this single segment / this attempt only』だが、共有の照合
+# (er011 _human_approved / asm._segment_gate_status / style _approved)はsegment ID+canonical text sha256しか見ない。
+# そのためVoice(またはStyle)を変えた後も旧attemptの承認が残ると、(1)承認スキップで再生成が0 callで阻止され旧声wavが残る
+# (2)stampが新Voiceを無条件に刻印して旧声wavが新Voiceのラベルで組立へ通る、恐れがあった。
+# 対策(Y経路のみ・共有module/X/Z無変更): Y本文segment(chunk含む)の承認は『承認時のVoice(+Style)が現要求と一致する』場合だけ残し、
+#   不一致・判定不能(記録欠落)の承認は quarantine file へ退避(削除しない=監査用に保全)して通常生成/Gateへ進める(fail-closed)。
+#   Voice/Style一致の承認(正常な再利用・resume)は一切触らない。承認時のVoiceは(1)新形式: 承認recordの`y_binding`
+#   (2)旧形式: 同runのresults entryの実TTS Voice(`voice`)/要求Voice(`y_tts_voice_requested`)から導く(両方あり不一致は判定不能)。
+# ============================================================
+HR_APPROVAL_QUARANTINE_FILE = "human_approved_segments.voice_guard_quarantine.json"
+
+
+def _y_approval_scope_key(key: str) -> str | None:
+    """承認keyがY本文segment(y_* またはそのchunk id)なら親segment IDを返す。preview/comment/KP等(Voice固定でY Voice変更の影響を受けない)はNone。"""
+    if key in ys.Y_SEGMENT_IDS:
+        return key
+    pc = ys.parse_y_chunk_id(key)
+    return pc[0] if pc is not None and pc[0] in ys.Y_SEGMENT_IDS else None
+
+
+def current_style_record(level: str, style_profile: str, tts_backend: str = TTS_BACKEND):
+    """Y本文segment(role=FULL_STORY)に現在要求されるStyle記録(profile_id/expected_base_sha256/style_base_sha256。default profileはNone)。"""
+    _role_style, _b, _f = _style_resolvers(level, tts_backend, style_profile)
+    return style_profile_mod.segment_profile_record(style_profile, "FULL_STORY", _role_style("FULL_STORY"))
+
+
+def approval_binding_from_evidence(approval: dict, entry: dict | None) -> dict:
+    """承認時のVoice/Styleを導く。戻り値 {"voice": str|None, "style": dict|None, "style_known": bool, "source": str}。voice=Noneは判定不能。"""
+    b = approval.get("y_binding")
+    if isinstance(b, dict) and b.get("tts_voice"):
+        return {"voice": b["tts_voice"], "style": b.get("style_profile"), "style_known": True, "source": "approval_record.y_binding"}
+    e = entry or {}
+    actual, stamp = e.get("voice"), e.get("y_tts_voice_requested")
+    if isinstance(actual, str) and isinstance(stamp, str) and actual != stamp:
+        return {"voice": None, "style": None, "style_known": False, "source": "results_entry(voice!=y_tts_voice_requested)"}
+    v = actual if isinstance(actual, str) else (stamp if isinstance(stamp, str) else None)
+    return {"voice": v, "style": e.get("style_profile"), "style_known": entry is not None, "source": "results_entry" if v else "none"}
+
+
+def reconcile_hr_approvals_for_request(out_dir: str, level: str, style_profile: str, tts_backend: str = TTS_BACKEND) -> dict:
+    """Y本文segmentの人間承認のうち、現要求のVoice(+Style)と一致しない/判定不能なものを quarantine fileへ退避する(冪等・TTS/API 0)。
+    承認file・resultsが無ければ何もしない。戻り値は退避したkeyと理由(監査用)。"""
+    ap = asm.human_approval_path(out_dir)
+    if not os.path.exists(ap):
+        return {"checked": 0, "quarantined": []}
+    approvals = load_json(ap)
+    rp = f"{out_dir}/audit/tts_generation_results.json"
+    segs = (load_json(rp).get("segments") or {}) if os.path.exists(rp) else {}
+    vmap = segment_voice_map()
+    cur_style = current_style_record(level, style_profile, tts_backend)
+    moved, checked = [], 0
+    for key in list(approvals):
+        parent = _y_approval_scope_key(key)
+        if parent is None:
+            continue
+        checked += 1
+        approval = approvals[key] or {}
+        want_v = vmap[parent]
+        b = approval_binding_from_evidence(approval, segs.get(key))
+        reason = None
+        if b["voice"] is None:
+            reason = "Y_HR_APPROVAL_VOICE_UNDETERMINABLE"
+        elif b["voice"] != want_v:
+            reason = "Y_HR_APPROVAL_VOICE_MISMATCH"
+        elif b["style_known"] and b["style"] != cur_style:
+            reason = "Y_HR_APPROVAL_STYLE_MISMATCH"
+        if reason:
+            moved.append({"segment": key, "reason": reason, "approval_voice": b["voice"], "requested_voice": want_v,
+                          "approval_style": b["style"], "requested_style": cur_style, "binding_source": b["source"], "approval_record": approval})
+    if moved:
+        qp = f"{out_dir}/audit/{HR_APPROVAL_QUARANTINE_FILE}"
+        q = load_json(qp) if os.path.exists(qp) else {"scope": "旧HR承認のVoice/Style不一致流用防止(OPEN-535)。承認は削除せず保全。再承認は新attemptに対して行う", "events": []}
+        q["events"].append({"at": __import__("time").strftime("%Y-%m-%dT%H:%M:%S"), "level": level, "quarantined": moved})
+        save_json(qp, q)
+        for m in moved:
+            approvals.pop(m["segment"], None)
+        save_json(ap, approvals)
+    return {"checked": checked, "quarantined": moved}
+
+
+def approval_voice_ok(out_dir: str, key: str, voice: str) -> bool:
+    """承認が(reconcile後も)残っているkeyについて、承認時Voiceが`voice`と一致することの再確認(stamp直前の最終防御)。承認が無ければTrue(承認依存でない)。"""
+    ap = asm.human_approval_path(out_dir)
+    approvals = load_json(ap) if os.path.exists(ap) else {}
+    if key not in approvals:
+        return True
+    rp = f"{out_dir}/audit/tts_generation_results.json"
+    segs = (load_json(rp).get("segments") or {}) if os.path.exists(rp) else {}
+    return approval_binding_from_evidence(approvals[key] or {}, segs.get(key))["voice"] == voice
+
+
+def record_y_human_approval(out_dir: str, segment_key: str, canonical_text: str, *, tts_voice: str, style_profile: dict | None,
+                            tts_model: str | None, approved_by: str = "user") -> None:
+    """Y本文segmentの人間承認を記録する(既存asm.record_human_approvalをそのまま呼び、承認時のVoice/Style/modelを`y_binding`として追記)。"""
+    asm.record_human_approval(out_dir, segment_key, canonical_text, approved_by=approved_by)
+    ap = asm.human_approval_path(out_dir)
+    approvals = load_json(ap)
+    approvals[segment_key]["y_binding"] = {"tts_voice": tts_voice, "style_profile": style_profile, "tts_model": tts_model}
+    save_json(ap, approvals)
+
+
+def stamp_requested_voice(entry: dict, voice: str, out_dir: str | None = None, key: str | None = None) -> dict:
+    """entryへ`y_tts_voice_requested`を刻印する。実TTSが記録したVoice(entry['voice'])が要求Voiceと異なる場合、または
+    承認スキップ(HUMAN_APPROVED)結果で承認時Voiceが要求Voiceと一致しない場合は刻印せずSTOP(旧声wavを新Voiceのラベルで通さない)。"""
+    actual = entry.get("voice")
+    if isinstance(actual, str) and actual != voice:
+        raise YAudioStop(f"Y_VOICE_STAMP_MISMATCH({key}): 実TTS Voice={actual!r} != 要求Voice={voice!r}。旧Voiceのaudioを新Voiceのラベルで通しません")
+    if entry.get("human_review_lock_status") == "HUMAN_APPROVED" and out_dir and key and not approval_voice_ok(out_dir, key, voice):
+        raise YAudioStop(f"Y_HR_APPROVAL_VOICE_MISMATCH({key}): 承認時Voiceが要求Voice={voice!r}と一致しません。旧承認を適用しません")
+    entry["y_tts_voice_requested"] = voice
+    return entry
+
+
 def seed_kp_explanations_cache(cached: dict | None, kp: dict, expl_doc: dict) -> dict:
     """kp stageで生成・来歴管理済みのAdv英語解説(kp_explanations.json)を、X共通関数 `_resolve_kp_explanations_text` が再利用できる形で
     cacheへ注入する(TTS段で解説LLMを呼び直さない=隠れたAPI呼出を作らない)。署名はX関数と同じ式。署名不一致ならX関数が再生成するためここで厳密に検査してSTOP。"""
@@ -388,7 +503,7 @@ def _generate_y_body_segment_chunked(plan: dict, cached, narration_dir: str, res
                         style_prefix_override=role_style("FULL_STORY"), tts_backend=tts_backend)
             results[cid] = xr._generate_or_reuse(cached, cid, f"{narration_dir}/{cid}.wav", _guarded(guard, cid, _gen), expected_text=ctext)
         results[cid]["canonical_text"] = ctext
-        results[cid]["y_tts_voice_requested"] = voice
+        stamp_requested_voice(results[cid], voice, os.path.dirname(narration_dir), cid)
         results[cid]["y_role"] = "voice" if plan["parent_id"] in ys.Y_VOICE_IDS else "narrator"
         chunk_tts.attach_chunk_meta(results[cid], plan["parent_id"], c, n)
         if not validation_inheritance.is_untouched_entry(results[cid]):     # Style profile記録は『chunkごと』(親へコピーしない)
@@ -416,7 +531,7 @@ def _generate_y_body_segment_chunked_a2(plan: dict, cached, narration_dir: str, 
                         enable_repetition_qa=True, tts_backend=tts_backend)
             results[cid] = xr._generate_or_reuse(cached, cid, f"{narration_dir}/{cid}.wav", _guarded(guard, cid, _gen), expected_text=ctext)
         results[cid]["canonical_text"] = ctext
-        results[cid]["y_tts_voice_requested"] = voice
+        stamp_requested_voice(results[cid], voice, os.path.dirname(narration_dir), cid)
         results[cid]["y_role"] = "voice" if plan["parent_id"] in ys.Y_VOICE_IDS else "narrator"
         chunk_tts.attach_chunk_meta(results[cid], plan["parent_id"], c, n, level=chunk_tts.STD_LEVEL)
         if not validation_inheritance.is_untouched_entry(results[cid]):
@@ -432,6 +547,7 @@ def generate_y_b1_segments(theme_out_dir: str, *, tts_backend: str = TTS_BACKEND
     out_dir = f"{theme_out_dir}/b1b"
     narration_dir = f"{out_dir}/narration"
     os.makedirs(narration_dir, exist_ok=True)
+    reconcile_hr_approvals_for_request(out_dir, "b1b", style_profile, tts_backend)   # 課金前: Voice/Style不一致の旧HR承認をquarantine(OPEN-535)
     chunk_plans = _record_chunk_decision(out_dir, "b1b")      # 課金前: 適用表・plan・role解決・保存済みplanとの一致を確認(違反はSTOP)
     parts = load_json(f"{out_dir}/parts.json")
     support = load_json(f"{out_dir}/support_texts.json")
@@ -489,7 +605,7 @@ def generate_y_b1_segments(theme_out_dir: str, *, tts_backend: str = TTS_BACKEND
                         style_prefix_override=_role_style("FULL_STORY"), tts_backend=tts_backend)
             results[name] = xr._generate_or_reuse(cached, name, f"{narration_dir}/{name}.wav", _guarded(guard, name, _gen), expected_text=text)
         results[name]["canonical_text"] = text
-        results[name]["y_tts_voice_requested"] = voice
+        stamp_requested_voice(results[name], voice, out_dir, name)
         results[name]["y_role"] = "voice" if name in ys.Y_VOICE_IDS else "narrator"
         if not validation_inheritance.is_untouched_entry(results[name]):
             style_profile_mod.attach_segment_profile_record(results[name], style_profile, "FULL_STORY", _role_style("FULL_STORY"))
@@ -540,6 +656,7 @@ def generate_y_a2_segments(theme_out_dir: str, japanese_title: str, *, tts_backe
     out_dir = f"{theme_out_dir}/a2"
     narration_dir = f"{out_dir}/narration"
     os.makedirs(narration_dir, exist_ok=True)
+    reconcile_hr_approvals_for_request(out_dir, "a2", style_profile, tts_backend)   # 課金前: Voice/Style不一致の旧HR承認をquarantine(OPEN-535)
     chunk_plans = _record_chunk_decision(out_dir, "a2")       # 課金前: 適用表・plan・role解決・保存済みplanとの一致を確認(違反はSTOP)。Stdもchunk対象(2026-10-26ユーザー正式承認)
     parts = load_json(f"{out_dir}/parts.json")
     support = load_json(f"{out_dir}/support_texts.json")
@@ -603,7 +720,7 @@ def generate_y_a2_segments(theme_out_dir: str, japanese_title: str, *, tts_backe
                         enable_repetition_qa=True, tts_backend=tts_backend)
             results[name] = xr._generate_or_reuse(cached, name, f"{narration_dir}/{name}.wav", _guarded(guard, name, _gen), expected_text=text)
         results[name]["canonical_text"] = text
-        results[name]["y_tts_voice_requested"] = voice
+        stamp_requested_voice(results[name], voice, out_dir, name)
         results[name]["y_role"] = "voice" if name in ys.Y_VOICE_IDS else "narrator"
         if not validation_inheritance.is_untouched_entry(results[name]):
             style_profile_mod.attach_segment_profile_record(results[name], style_profile, "FULL_STORY", _role_style_slower("FULL_STORY"))
@@ -674,6 +791,7 @@ def y_style_gate(theme_out_dir: str, level: str, style_profile: str) -> dict:
     Y本文8segmentにも同じ判定(Style/fallback/Local Rewrite)を掛ける。それ以外は一切緩和しない。"""
     sp = style_profile_mod
     out_dir = f"{theme_out_dir}/{level}"
+    reconcile_hr_approvals_for_request(out_dir, level, style_profile)   # OPEN-535: 現Voice/Styleと不一致の旧HR承認はGateに効かせない
     results = load_json(f"{out_dir}/audit/tts_generation_results.json")
     approvals_path = asm.human_approval_path(out_dir)
     approvals = load_json(approvals_path) if os.path.exists(approvals_path) else {}
@@ -912,6 +1030,7 @@ def assemble_level(theme_out_dir: str, level: str, *, style_profile: str, slug: 
     if shared_blocked is not None:
         save_json(f"{out_dir}/run_summary_assemble.json", shared_blocked)
         return shared_blocked
+    reconcile_hr_approvals_for_request(out_dir, level, style_profile)   # OPEN-535: chunk親の再構築・共有Gateより前に不一致の旧HR承認を退避
     if level in ys.CHUNK_TTS_Y_LEVELS:      # Style Gate・共有Gateより前に、chunk親集約entry(status・親wav・human_approved_chunks)を再構築する(人間承認後の再assembleで親も通る)
         _refresh_y_chunk_parents_on_disk(out_dir, level)
     gate = y_style_gate(theme_out_dir, level, style_profile)

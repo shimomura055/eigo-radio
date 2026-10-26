@@ -1,0 +1,21 @@
+{
+  "managed_id": "FAMILY-Y-HR-APPROVAL-VOICE-GUARD-01",
+  "status": "FIXED+EVIDENCE_COLLECTED",
+  "tests": {
+    "new_guard_test": "16/16 PASS",
+    "er121*": "330 collected, 328 pass, 1 skip, 1 fail (er121_family_y_multiparagraph_regression_test_01 CRLF planner: untracked test of concurrent agent FAMILY-Y-CHUNK-OPEN527, unrelated)",
+    "er011*": "292/292 PASS",
+    "er019*": "595 collected, 594 pass, 1 fail (er019_x_std_chunk_opus_test_01 R4HunkClassifier: already red before this change due to er121_family_y_structure_01 voice-table hunks)",
+    "er063*": "130/130 PASS",
+    "network_attempts": 0,
+    "client_creations": 0
+  },
+  "formal_path": {
+    "cmd": ".venv\\Scripts\\python.exe er121_family_y_runner_01.py --slug redelivery_fee --run run_hrguard_ev_02 --mode mock --stage tts_a2 --only-segments y_voice_1 --regenerate-stage tts_a2 --tts-execution-mode STANDARD",
+    "run_dir": "er121_output/family_y_production_01/redelivery_fee/run_hrguard_ev_02_mock (copy of run_voice_puck_ev_01 with y_voice_1 entry set to Algieba and old Algieba approval left; provenance seed sha set to no_theme_package for mock)",
+    "before": "check_before_generation -> proceed=False HUMAN_APPROVED (old Algieba approval, 0 call skip)",
+    "after": "see evidence_cli_after.json: approval quarantined (Y_HR_APPROVAL_VOICE_MISMATCH Algieba->Puck), preview approval kept, 1 mock TTS call for y_voice_1 only, entry voice stamped Puck",
+    "api_cost_jpy": 0
+  },
+  "incident": "run_hrguard_ev_01_mock: 3 launches within 300s (2 early failures: py w/o google.genai, theme-package provenance) tripped FAMILY_Z_RESTART_STORM STOP sentinel in the scratch dir only; API 0; sentinel not removed; dir abandoned and run_hrguard_ev_02_mock used with spacing >=150s."
+}
