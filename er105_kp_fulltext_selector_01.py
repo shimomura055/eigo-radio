@@ -686,6 +686,8 @@ def _token_pair_ok(kt: str, dt: str, idx: int, key_tokens: list) -> bool:
         if (dl not in _IRREGULAR_PLURAL and dl not in _PARTICIPIAL_ADJ_EXCLUDE and dl not in _PLURAL_EXCLUDE
                 and kl in _verb_base_candidates(dl) and len(key_tokens) >= 2 and _guard_ok(key_tokens, idx)):
             return True
+        if _quant_follow_ok(kl, dl, idx, key_tokens):     # 量化詞限定詞guard是正(KPRW1 委任_01。既存条件で不受理のときだけ追加判定=単調)
+            return True
         if _adverb_follow_ok(kl, dl, idx, key_tokens):    # 委任_03 区分1(1): 副詞前の原形化(既存条件で不受理のときだけ追加判定=単調)
             return True
     if idx == len(key_tokens) - 1 and dl not in _PLURAL_EXCLUDE and kl in _plural_base_candidates(dl):
@@ -1011,6 +1013,23 @@ def _adverb_follow_ok(kl: str, dl: str, idx: int, key_tokens: list) -> bool:
         return False
     nxt = key_tokens[idx + 1].lower()
     return is_manner_adverb(nxt) and _adverb_tail_ok(key_tokens, idx + 1)
+
+
+# KP-GATE-EXCLUSION-RESCUE-PRODUCTION-WIRING-01 委任_01(2026-10-26、区分1=承認済み規則への準拠修正。fulltext経路限定):
+# 量化詞限定詞guard。承認文『先頭またはto直後の動詞を、直後が限定詞の場合に原形化』の限定詞に、名詞を導く量化詞(no/each/every等)が
+# 含まれない乖離(`accepts no responsibility`->`accept no responsibility`が除外される)を是正する。DEV `RulePatch(quant=True)`と同一判定
+# (表層が動詞活用形でないとき=_PARTICIPIAL_ADJ_EXCLUDE等は除外、前方活用一致必須)。A/B/Cは_token_pair_ok経由(allow=True)でしか参照しない。
+_QUANT_DET = frozenset({"no", "each", "every", "all", "both", "another", "either", "neither", "several", "few", "many", "much", "enough"})
+
+
+def _quant_follow_ok(kl: str, dl: str, idx: int, key_tokens: list) -> bool:
+    if not (len(key_tokens) >= 2 and idx + 1 < len(key_tokens)):
+        return False
+    if dl in _IRREGULAR_PLURAL or dl in _PARTICIPIAL_ADJ_EXCLUDE or dl in _PLURAL_EXCLUDE:
+        return False
+    lemma_ok = ((dl in _AMBIGUOUS_IRREGULAR and kl == _AMBIGUOUS_IRREGULAR[dl])
+                or (kl in _verb_base_candidates(dl) and inflects_to(kl, dl)))
+    return lemma_ok and key_tokens[idx + 1].lower() in _QUANT_DET
 
 
 def _complete_past_tables() -> None:

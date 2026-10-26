@@ -114,11 +114,30 @@ class TestRuleStatements(unittest.TestCase):
         for w, lemma in {"gave": "give", "took": "take", "led": "lead", "given": "give", "saw": "see"}.items():     # 既存のエントリは不変
             self.assertEqual((ft._PAST_ONLY_IRREGULAR.get(w) or ft._AMBIGUOUS_IRREGULAR.get(w)), lemma)
 
-    def test_quant_determiner_guard_not_applied(self):
-        """区分2相当(量化詞限定詞guard: kept no secrets->keep no secrets)は本委任の範囲外=未適用(受理面を広げない)。"""
+    def test_quant_determiner_guard_applied_positive_and_negative(self):
+        """KPRW1 委任_01 区分1: 量化詞限定詞guard是正(承認文『直後が限定詞なら原形化』の限定詞に量化詞を含める)。fulltext経路限定。
+        量化詞はguard用の閉表`_QUANT_DET`にのみ追加し、既存`_GUARD_DET`(他用途)は不変。"""
         for det in ("no", "each", "every", "all", "both", "another", "either", "neither", "several", "few", "many", "much", "enough"):
+            self.assertIn(det, ft._QUANT_DET)
             self.assertNotIn(det, ft._GUARD_DET)
-        self.assertIsNone(ft.find_inflection_window("raise every hand", "raised every hand"))
+        # 正例: 動詞活用形+量化詞(+名詞) -> 原形
+        for key, disp in (("accept no responsibility", "accepts no responsibility"), ("keep no secrets", "kept no secrets"),
+                          ("raise every hand", "raised every hand"), ("take many questions", "took many questions"),
+                          ("make enough noise", "made enough noise"), ("give each student", "gave each student")):
+            self.assertIsNotNone(ft.find_inflection_window(key, disp), (key, disp))
+        # 負例: 形容詞化分詞・名詞・前方活用不一致・非動詞位置・誤原形は不受理のまま
+        for key, disp in (("heat many", "heated many"), ("limit no gain", "limited no gain"), ("hop no fence", "hoped no fence"),
+                          ("the accept no", "the accepts no"), ("rise each", "rice each"), ("new every day", "news every day"), ("mean each case", "means each case")):
+            self.assertIsNone(ft.find_inflection_window(key, disp), (key, disp))
+        # A/B/C(allow_inflection_normalization=False)は無影響
+        r = kc.validate_canonicalization_item("accept no responsibility", "accepts no responsibility", "accepts no responsibility",
+                                              normalization_reason="lemma_normalization", original_span="accepts no responsibility",
+                                              allow_inflection_normalization=False)
+        self.assertFalse(r["ok"])
+        r2 = kc.validate_canonicalization_item("accept no responsibility", "accepts no responsibility", "accepts no responsibility",
+                                               normalization_reason="lemma_normalization", original_span="accepts no responsibility",
+                                               allow_inflection_normalization=True)
+        self.assertTrue(r2["ok"], r2)
 
     def test_rescue_flow_not_wired_in_er105(self):
         src = open(os.path.join(ROOT, "er105_kp_fulltext_selector_01.py"), encoding="utf-8").read()
