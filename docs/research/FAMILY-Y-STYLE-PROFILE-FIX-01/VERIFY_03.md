@@ -10,4 +10,4 @@
 | 標準ページ検査`cp.check_page` | FAIL(想定内) | 通し再生/再生順script/Preview-Full story/KP表/内部情報検査は通し版を前提とする。先行公開(組立前)ページのため未達。委任_04で通し版追加後に再検査する(未達を隠さず記載) |
 | run dir無変更 | PASS | 最終build後 `find run_style_fix_01 -newermt` 0件(初回試走でGate副産物`key_phrase_source_gate.json`が書かれ削除済み。BUILD_03.md) |
 | 旧`_01`/`_02`無変更 | PASS | `git status`にdiffなし |
-| HTTP 200(push後) | 下記追記 | |
+| HTTP 200(push後) | PASS | index.html および audio/adv_00,adv_12・compare_old/adv_voice1・std_hr/std_y_voice_1_take3・std_ok/y_voice_2 のmp3が200(Pages反映はpush後約6分) |
