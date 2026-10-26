@@ -22590,3 +22590,11 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 解決したユーザー判断事項: UDR-TRA-1(OPEN-528 Deferred(1) Zセリフ LR新設要否)=今回LRは追加しない(現状維持)→CLOSED(決定)。UDR-TRA-2(OPEN-536 非ASR起因NG)=品質NGの再試行フロー・180秒待機は省略せず、LR適用不可なら無益な後続処理を避ける(③NG後にLR適用可否を判定し不可なら即HR)→修正へ進む(OPEN-540で実装)。UDR-TRA-3(OPEN-537 Y Style profile適用時期)=変更なし・ユーザー判断待ち継続(OPEN-540のScope外)。OPEN-376/312/538/274はOPEN-540(統一案件)で解消予定。新規UDRなし(再承認を求めない)。
 - Fable工程計画: 設計(委任_01・read-only・JPY0)→Opus独立レビュー条件A→実装→Family別runtime evidence(見積後に承認区分判定、300円超は事前費用承認)→Fable受入→SSOT。PRODUCTION_WIRED判定は配線・runtime evidence後にFable。CURRENT_SPECへの統一仕様反映は配線後。
 - 本記録は転記であり、PRODUCTION_WIREDではない(配線前)。Production/コード変更なし。費用: API 0・JPY0。
+
+## KP Gate除外救済方式 PRODUCTION_WIRED判定(2026-10-26、KP-GATE-EXCLUSION-RESCUE-PRODUCTION-WIRING-01、OPEN-529/530/541〜544、PM-SSOT-SYNC-12、API 0・転記)
+
+- ユーザー採用(2026-10-26、APPROVED_FOR_PRODUCTION。原文=`docs/pm/delegation_log/2026-10-26_KP-GATE-EXCLUSION-RESCUE-PRODUCTION-WIRING-01_USER.md` §2採用表・§3)。慣用句は閉表27件から辞書+構造条件(一般機構)へ変更(ユーザー要件『一般的な仕組み』)、HRなし既定は救済候補をQA再判定PASS時のみauto、外側retryは救済済みauto不可を数えるがF1累積除外へ入れない(M3)。
+- Fable判定: **PRODUCTION_WIRED**(Family X/Y/Z Std/Adv共通KP経路、既定ON・kill switch `EIGO_KP_RESCUE=0`、`generate_candidates`中のみ発火=contextvar[Opus M2]。A/B/C不変、golden 1002件BYTE_IDENTICAL)。Y=自然発火2件(慣用句の核・revert)、X/Z=経路到達+replay(自然発火はOPEN-544)。短縮救済・本文外語追加・CMU分解救済は不採用。Opus OPUS_REVIEW_03 M1〜M4/R1〜R7全件採用。
+- 費用: 実費約11.2円。単価影響=救済発火時のみ+約0.2〜0.8円/記事セット。運用逸脱(記録): Z初回起動がY初回起動の101秒後(別run dir・別Family、STOPなし)。
+- 新規OPEN: 541(縮約形の非対称、修正へ進む)、542(`a can of beans`型、修正へ進む・低)、543(HEAD既存test失敗4件、実害なし)、544(X/Z自然発火の初回記録、追跡)。OPEN-529/530=CLOSED。
+- commit: 6133aa6d6、1701dfc4d、2910e859b、d2269a26b。証拠=`docs/research/KP-GATE-EXCLUSION-RESCUE-PRODUCTION-WIRING-01/`。本記録は転記(Production/コード変更なし、API 0・JPY0)。

@@ -470,3 +470,8 @@
 ### 2026-10-26 PM-SSOT-SYNC-10 追記(redelivery_fee 完成版の試聴承認。既存行は書き換えず追記)
 
 - **UDR-YRF-1 redelivery_fee 完成版の試聴承認(OPEN-539、分類D=ユーザーの耳による最終判断)**: 決めること=『宅配の再配達は有料にすべきか？』完成版(Voice 1=Puck・Advanced Comment 2なし)を試聴し、①完成確定とするか②差し戻すか(差し戻す場合は問題箇所を指示)。参照URL=https://shimomura055.github.io/eigo-radio/user_test/family_y_production_redelivery_fee_02/index.html(旧`_01`Algieba版は保持)。注記(HR実態): KP/Vocab/文法Part 2は人間確定ではなく`UNREVIEWED_AUTO_ADOPTED`(前回公開版と同一内容の再利用)、人間確定の再利用はa2 preview承認のみ。Style=`default`のまま(OPEN-537/UDR-TRA-3は別判断)。追加費用0円(累計約54.65円)。Fable所見=全Gate PASS、Voice 1の長停止0・Repetition旗なし、聴感は未確認のため試聴判断が必要。
+
+### 2026-10-26 PM-SSOT-SYNC-12 追記(KP Gate除外救済方式 OPEN-529 解決。既存行は書き換えず追記)
+
+- OPEN-529: 区分2(救済フロー・慣用句・活用形・再アンカー等)はユーザー採用(2026-10-26、APPROVED_FOR_PRODUCTION。原文=docs/pm/delegation_log/2026-10-26_KP-GATE-EXCLUSION-RESCUE-PRODUCTION-WIRING-01_USER.md §2)->PRODUCTION_WIRED反映済み(Fable判定2026-10-26)。UDR-blocking解除。新規UDRなし。
+- OPEN-530は文書是正済み(CLOSED)。OPEN-541〜544は修正へ進む/実害なし/追跡でありユーザー判断対象外。
