@@ -5,6 +5,7 @@ LLM呼出・ファイル書込を持たない(例外: call1メタデータの読
 - 単一flag読取関数 backfill_enabled()(環境変数 EIGO_KP_BACKFILL、既定ON=承認済み仕様。"0"のときだけ補完無効かつ外側retry条件も現行へ完全復帰)。
 - 除外件数Eの計数(R-1 種類別 / R-4 phrase_key重複除去 / M-1 call1最終attemptの除外)。
 - 補完候補の採用規則(種類別の先頭N件、R-2/R-3)。
+- KP-PHRASE7-WORD5-PRODUCTION-01(2026-10-27): 候補上限は種類別(フレーズ7・単語5・合計12)。補完quotaは種類別の空きとE_kindの小さい方(Opus M-1)。
 A/B/C(strategy_l経路)はこのmoduleをimportしない(er119_isolation_test_01と同じ方針)。
 """
 from __future__ import annotations
@@ -16,8 +17,13 @@ from typing import Optional
 import er119_kp_human_review_01 as rv   # er105を直接importしない(er105の隔離test: Productionからの参照はer119_kp_candidates系のみ)
 
 KILL_SWITCH_ENV = "EIGO_KP_BACKFILL"
-BACKFILL_MAX_CALL_ITEMS = 5          # Prompt 2-Vの最大件数(SELECTOR_2V_MAX_ITEMS)。N>5は5で打ち切る(capped)
-NOT_COUNTED_STAGES = ("overflow",)   # Prompt上限超過の切捨て=Gate除外ではない(現行も外側retry判定から除外、DESIGN_01 §2)
+PHRASE_CAP = 7                       # 種類別上限(P7の最大件数)。er119_kp_p7w5_prompts_01.KP_PHRASE_MAXと一致(testで固定。本moduleはer105系をimportしない)
+WORD_CAP = 5                         # 種類別上限(W5'の最大件数)。er119_kp_p7w5_prompts_01.KP_WORD_MAXと一致
+# Prompt上限・種類別上限の切捨て=Gate除外ではない(現行も外側retry判定から除外、DESIGN_01 §2)。overflow_kindはM-2: 候補組立後の種類別cap強制
+NOT_COUNTED_STAGES = ("overflow", "overflow_kind")
+# 外側retry条件のgate_dropped(M-2: NOT_COUNTED_STAGESを参照する単一の定義に統一。candidatesはこれを使う)
+GATE_DROP_EXEMPT_STAGES = NOT_COUNTED_STAGES + ("human_ng", "duplicate_of_top3", "excluded")
+STAGE_NOT_SINGLE_WORD = "not_single_word"     # W5'(call2)が返した複数語。Eには単語(kind=word)として数える
 ST_NOT_TRIGGERED, ST_OK, ST_FAILED, ST_DISABLED = "NOT_TRIGGERED", "OK", "FAILED", "DISABLED"
 KIND_PHRASE, KIND_WORD = "phrase", "word"
 
@@ -114,29 +120,35 @@ def count_exclusions(dropped: list, cands: list) -> dict:
         if st != "duplicate_of_top3" and k in live_keys:
             continue
         seen.add(k)
-        items.append({"phrase": d.get("phrase"), "kind": kind_of_phrase(d.get("phrase")), "stage": st, "origin": d.get("origin")})
+        kind = KIND_WORD if st == STAGE_NOT_SINGLE_WORD else kind_of_phrase(d.get("phrase"))     # D3: not_single_wordは元phraseが複数語でもKW枠のE
+        items.append({"phrase": d.get("phrase"), "kind": kind, "stage": st, "origin": d.get("origin")})
         by_stage[st] = by_stage.get(st, 0) + 1
     n_word = sum(1 for i in items if i["kind"] == KIND_WORD)
     return {"total": len(items), "phrase": len(items) - n_word, "word": n_word, "by_stage": by_stage,
             "human_ng": by_stage.get("human_ng", 0), "excluded": by_stage.get("excluded", 0), "items": items}
 
 
-def plan_quota(counts: dict, n_cands: int, cap: int) -> dict:
-    """補完件数Nの上限。N = min(E, cap-現存, 2-Vの最大5)。単語のE_wordは単語、フレーズのE_phraseはフレーズで補う(R-1)。現存候補が上限以上(room<=0)なら0。"""
-    room = max(0, cap - n_cands)
+def plan_quota(counts: dict, n_phrase: int, n_word: int) -> dict:
+    """補完件数の上限(種類別)。quota_phrase=min(E_phrase, 7-現存フレーズ), quota_word=min(E_word, 5-現存単語)、total=両者の和。
+    種類をまたいだ数合わせはしない。現存が種類別上限以上ならその種類は0。『初回が上限未満』自体は発動条件にしない(E>=1が条件)。"""
+    room_phrase = max(0, PHRASE_CAP - n_phrase)
+    room_word = max(0, WORD_CAP - n_word)
+    q_phrase = min(counts["phrase"], room_phrase)
+    q_word = min(counts["word"], room_word)
+    total = q_phrase + q_word
     want = counts["phrase"] + counts["word"]
-    total = min(want, room, BACKFILL_MAX_CALL_ITEMS)
-    return {"room": room, "total": total, "phrase_wanted": counts["phrase"], "word_wanted": counts["word"], "capped": want > total}
+    return {"room": room_phrase + room_word, "room_phrase": room_phrase, "room_word": room_word, "quota_phrase": q_phrase,
+            "quota_word": q_word, "total": total, "phrase_wanted": counts["phrase"], "word_wanted": counts["word"], "capped": want > total}
 
 
 def pick_backfill(cands_new: list, counts: dict, plan: dict) -> tuple:
-    """補完候補(Gate全段通過・LLM応答順)から、種類別の先頭E_phrase件・E_word件を採り、合計はplan.total以内。返り値=(採用, 余り)。
-    不足は不足のまま(種類をまたいだ数合わせはしない。§3-1「適切な候補が不足する場合は上限未達を許容」)。余りは候補にしない(surplus)。"""
-    quota = {KIND_PHRASE: counts["phrase"], KIND_WORD: counts["word"]}
+    """補完候補(Gate全段通過・LLM応答順)から、**種類別quota(plan.quota_phrase/quota_word)**の先頭N件を採る(Opus M-1: Eではなくquota)。
+    返り値=(採用, 余り)。不足は不足のまま(種類をまたいだ数合わせはしない)。余りは候補にしない(surplus)。"""
+    quota = {KIND_PHRASE: plan["quota_phrase"], KIND_WORD: plan["quota_word"]}
     taken, surplus = [], []
     for c in cands_new:
         k = c.get("kind") or kind_of_phrase(c.get("used_form"))
-        if quota.get(k, 0) > 0 and len(taken) < plan["total"]:
+        if quota.get(k, 0) > 0:
             quota[k] -= 1
             taken.append(c)
         else:
@@ -156,8 +168,9 @@ def shown_phrases(cands: list) -> list:
     return out
 
 
-def rejected_entries(excluded: list, dropped: list) -> list:
-    """note(理由付き『選ばない』)と機械除外に使う不適合確定句。Human NG・累積除外(excluded)+この周のdropped(overflowは不適合でないので除く)。phrase_key重複なし。"""
+def rejected_entries(excluded: list, dropped: list, *, for_kind: Optional[str] = None) -> list:
+    """note(理由付き『選ばない』)と機械除外に使う不適合確定句。Human NG・累積除外(excluded)+この周のdropped(overflow系は不適合でないので除く)。phrase_key重複なし。
+    for_kind=KIND_PHRASE(P7補完)のときは、W5'が返した複数語(not_single_word)を除く(フレーズとしては不適合でない)。"""
     out, seen = [], set()
     for e in excluded or []:
         k = rv.phrase_key(e["phrase"])
@@ -166,6 +179,8 @@ def rejected_entries(excluded: list, dropped: list) -> list:
             out.append({"phrase": e["phrase"], "reasons": list(e.get("reasons") or ["不適合"]), "source": e.get("source") or "excluded"})
     for d in dropped:
         if d.get("stage") in NOT_COUNTED_STAGES:
+            continue
+        if for_kind == KIND_PHRASE and d.get("stage") == STAGE_NOT_SINGLE_WORD:
             continue
         k = rv.phrase_key(d.get("phrase") or "")
         if k and k not in seen:

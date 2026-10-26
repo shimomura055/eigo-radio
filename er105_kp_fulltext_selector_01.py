@@ -106,17 +106,18 @@ class ModelMismatchError(FulltextSelectionError):
 # ============================================================
 # Prompt組立
 # ============================================================
-def build_user_message(article_text: str, diagnostic_note: Optional[str] = None) -> str:
-    """Prompt 2(固定)+区切り+記事全文。diagnostic_noteは再選定時のみ、本文の後ろに後置する(Prompt本文は不変)。"""
-    msg = PROMPT_2_TEXT + BODY_DELIMITER + article_text
+def build_user_message(article_text: str, diagnostic_note: Optional[str] = None, *, prompt_text: Optional[str] = None) -> str:
+    """Prompt 2(固定)+区切り+記事全文。diagnostic_noteは再選定時のみ、本文の後ろに後置する(Prompt本文は不変)。
+    prompt_text(keyword-only、既定=Prompt 2): KP-PHRASE7-WORD5-PRODUCTION-01でP7を渡す。既定値の挙動は従来とバイト同一。"""
+    msg = (PROMPT_2_TEXT if prompt_text is None else prompt_text) + BODY_DELIMITER + article_text
     if diagnostic_note:
         msg += NOTE_DELIMITER + diagnostic_note
     return msg
 
 
-def prompt_prefix_intact(user_message: str) -> bool:
-    """送信messageの先頭がPrompt 2と完全一致し、直後が区切りであること(Prompt改変の機械的検出)。"""
-    return user_message.startswith(PROMPT_2_TEXT + BODY_DELIMITER)
+def prompt_prefix_intact(user_message: str, *, prompt_text: Optional[str] = None) -> bool:
+    """送信messageの先頭がPrompt 2(prompt_text指定時はそれ)と完全一致し、直後が区切りであること(Prompt改変の機械的検出)。"""
+    return user_message.startswith((PROMPT_2_TEXT if prompt_text is None else prompt_text) + BODY_DELIMITER)
 
 
 # ============================================================
@@ -222,13 +223,13 @@ def _legacy_form_reasons(phrase: str) -> list:
     return reasons
 
 
-def validate_and_resolve(selected: list, units: list) -> dict:
+def validate_and_resolve(selected: list, units: list, *, max_items: int = KP_COUNT_MAX) -> dict:
     """機械検証+原文span/文ID確定。returns {"ok": bool, "reasons": [...], "item_reasons": [...], "resolved": [...]}。
     blocking: 本文連続一致 / 実語数1〜5 / 件数1〜3 / 重複なし / 旧形式precheck。
     non-blocking記録: LLM申告語数と実語数の不一致、複数文に出現(first_of_N)。"""
     reasons, item_reasons, resolved = [], [], []
-    if not (KP_COUNT_MIN <= len(selected) <= KP_COUNT_MAX):
-        reasons.append(f"件数が{KP_COUNT_MIN}〜{KP_COUNT_MAX}の範囲外(実際: {len(selected)})")
+    if not (KP_COUNT_MIN <= len(selected) <= max_items):
+        reasons.append(f"件数が{KP_COUNT_MIN}〜{max_items}の範囲外(実際: {len(selected)})")
     seen = set()
     for idx, s in enumerate(selected):
         phrase = s["phrase"]
@@ -265,6 +266,8 @@ def validate_and_resolve(selected: list, units: list) -> dict:
                "reasons": r}
         if sel_rescue is not None:
             rec["selection_rescue"] = sel_rescue
+        if "reason_ja" in s:      # KP-PHRASE7-WORD5-PRODUCTION-01: P7の選定理由。キーが存在する時だけ付ける(Prompt 2経路はバイト同一)
+            rec["reason_ja"] = s["reason_ja"]
         if hits:
             first = hits[0]
             rec.update(source_span=first["span"], source_sentence=first["sentence"], source_sentence_id=first["sentence_id"],
@@ -300,6 +303,7 @@ def build_original_items(resolved: list) -> list:
             "occurrence_sentence_ids": r["occurrence_sentence_ids"],
             "declared_word_count_mismatch": r["declared_word_count_mismatch"],
             **({"selection_rescue": r["selection_rescue"]} if r.get("selection_rescue") else {}),   # H2: 永続化メタ(救済なしの項目はキー自体を付けない=従来とバイト同一)
+            **({"reason_ja": r["reason_ja"]} if "reason_ja" in r else {}),   # P7の選定理由(キーが存在する時だけ。Prompt 2経路は付かない)
         })
     return items
 
@@ -361,7 +365,7 @@ def phrase_key(phrase: str) -> str:
     return _normalize_phrase(phrase or "").lower()
 
 
-def build_machine_note(attempt_record: dict, history: Optional[list] = None) -> str:
+def build_machine_note(attempt_record: dict, history: Optional[list] = None, *, limit: int = 3) -> str:
     """P-07: 直前attemptの機械診断(不適合だった語句と理由)を2回目の選定noteにする。Prompt 2本文は変更せず、本文の後ろに置く。
     history(KP-OUTER-RETRY-SAME-PHRASE-FIX): それ以前のattemptで不適合だった語句[{"phrase","reasons"}]を累積して併記する(同一句の再選択を防ぐ)。"""
     lines = []
@@ -381,20 +385,21 @@ def build_machine_note(attempt_record: dict, history: Optional[list] = None) -> 
         out = ("前回の選定結果のうち、次の点が機械検証で不適合でした。該当する語句を、条件を満たす別の語句に置き換えて選び直してください"
                "(不適合でなかった語句は、そのまま使ってかまいません)。\n" + "\n".join(lines))
     if prior:
-        out += ("\n\n" if out else "") + build_exclusion_note(prior)
+        out += ("\n\n" if out else "") + build_exclusion_note(prior, limit=limit)
     return out
 
 
-def build_exclusion_note(excluded: list) -> str:
+def build_exclusion_note(excluded: list, *, limit: int = 3) -> str:
     """KP-OUTER-RETRY-SAME-PHRASE-FIX: 『次の語句は選ばない(理由付き)』のnote(本文後置・Prompt 2本文は不変)。excluded=[{"phrase","reasons":[...]}]。"""
     if not excluded:
         return ""
     lines = [f"- 「{e['phrase']}」: " + " / ".join(e.get("reasons") or ["不適合"]) for e in excluded]
     return ("次の語句は、これまでの検証で不適合と確定しています。同じ語句、または同じ理由で不適合になる語句は選ばないでください"
-            "(条件を満たす別の語句がなければ、無理に3件に揃えず、適切な語句だけを選んでください)。\n" + "\n".join(lines))
+            f"(条件を満たす別の語句がなければ、無理に{limit}件に揃えず、適切な語句だけを選んでください)。\n" + "\n".join(lines))
 
 
-def apply_exclusions(v: dict, excluded: Optional[list], *, final_attempt: bool, min_keep: int = KP_COUNT_MIN) -> dict:
+def apply_exclusions(v: dict, excluded: Optional[list], *, final_attempt: bool, min_keep: int = KP_COUNT_MIN,
+                     max_items: int = KP_COUNT_MAX) -> dict:
     """KP-OUTER-RETRY-SAME-PHRASE-FIX: 外側retryで不適合確定済みの語句(excluded、正規化後一致)が選定に再び含まれたら、
     Luna(canonicalization)呼出前に機械検証で不適合とする。通常attemptはitem_reasonsへ理由追加(=再選定へ)。最終attemptは、残るitemが
     min_keep件以上なら除外句だけを落としてshortfall確定(数合わせ/条件緩和なし)、残らなければ不適合のまま。入力dictは変更しない。
@@ -420,8 +425,8 @@ def apply_exclusions(v: dict, excluded: Optional[list], *, final_attempt: bool, 
     if final_attempt and len(keep) >= min_keep:
         item_reasons = [ir for ir in item_reasons if ir["index"] not in hit_idx]
         reasons = [x for x in out.get("reasons", []) if not x.startswith("件数が")]
-        if not (KP_COUNT_MIN <= len(keep) <= KP_COUNT_MAX):
-            reasons.append(f"件数が{KP_COUNT_MIN}〜{KP_COUNT_MAX}の範囲外(実際: {len(keep)})")
+        if not (KP_COUNT_MIN <= len(keep) <= max_items):
+            reasons.append(f"件数が{KP_COUNT_MIN}〜{max_items}の範囲外(実際: {len(keep)})")
         out.update(resolved=keep, item_reasons=item_reasons, reasons=reasons, exclusion_dropped=hits,
                    ok=(not reasons and not item_reasons))
         return out
@@ -455,11 +460,16 @@ def _cmu_gate_meta(cmu, lexicon: dict, attempts: list) -> dict:
 
 def run_selection_gate(article_text: str, make_call_fn: Callable[[str], Callable], *, diagnostic_note: Optional[str] = None,
                        max_attempts: int = MAX_ATTEMPTS, units: Optional[list] = None,
-                       sleep_fn: Optional[Callable[[float], None]] = None, excluded_phrases: Optional[list] = None) -> dict:
+                       sleep_fn: Optional[Callable[[float], None]] = None, excluded_phrases: Optional[list] = None,
+                       prompt_text: Optional[str] = None, max_items: Optional[int] = None, parse_fn: Optional[Callable] = None) -> dict:
     """returns {"status", "items"(original_items形式), "attempts_detail", "model_id", "response_id", "shortfall",
     "user_message_sha256", "messages"}。attempt失敗(技術/parse/検証)は最大max_attempts回。
     OF-KPFT-P-07: 2回目以降は直前の機械診断noteを本文の後ろに後置して再選定する(Prompt 2本文は不変)。技術失敗の再試行前は待機する
-    (canonicalizationのsleep_fn(2)と同じ思想)。内容品質を理由とした再選定はしない(hard requirementのみ)。"""
+    (canonicalizationのsleep_fn(2)と同じ思想)。内容品質を理由とした再選定はしない(hard requirementのみ)。
+    KP-PHRASE7-WORD5-PRODUCTION-01: prompt_text / max_items / parse_fn(keyword-only)。既定(None)=Prompt 2 / 3件 / parse_selectionで従来と同一。
+    P7では prompt_text=P7・max_items=7・parse_fn=2-V形式parse(reason_jaつき)を渡す。再選定ループ(MAX_ATTEMPTS)・Gate・CMU・除外句は共通のまま。"""
+    eff_max = KP_COUNT_MAX if max_items is None else max_items
+    parse = parse_fn if parse_fn is not None else parse_selection
     if units is None:
         import er030_key_phrase_db_hybrid_core_01 as core   # 遅延import
         units = core.build_sentence_units(article_text)
@@ -480,8 +490,8 @@ def run_selection_gate(article_text: str, make_call_fn: Callable[[str], Callable
                 history.append({"phrase": ir["phrase"], "reasons": list(ir["reasons"])})
                 seen.add(phrase_key(ir["phrase"]))
     for attempt in range(1, max_attempts + 1):
-        user_message = build_user_message(article_text, merge_notes(diagnostic_note, machine_note))
-        assert prompt_prefix_intact(user_message), "Prompt 2が改変されている"
+        user_message = build_user_message(article_text, merge_notes(diagnostic_note, machine_note), prompt_text=prompt_text)
+        assert prompt_prefix_intact(user_message, prompt_text=prompt_text), "Prompt 2(またはP7)が改変されている"
         messages.append(user_message)
         msg_sha = hashlib.sha256(user_message.encode("utf-8")).hexdigest()
         fn = make_call_fn(user_message)
@@ -505,17 +515,17 @@ def run_selection_gate(article_text: str, make_call_fn: Callable[[str], Callable
             continue
         last_model, last_resp = model_id, response_id
         try:
-            selected = parse_selection(raw)
+            selected = parse(raw)
         except ParseError as e:
             rec = {"attempt": attempt, "status": STATUS_PARSE_FAILED, "error": str(e), "raw_text": raw,
                    "model": model_id, "response_id": response_id, "user_message_sha256": msg_sha}
             attempts.append(rec)
-            machine_note = build_machine_note(rec, history)
+            machine_note = build_machine_note(rec, history, limit=eff_max)
             last_status = STATUS_PARSE_FAILED
             continue
-        v = validate_and_resolve(selected, units)
+        v = validate_and_resolve(selected, units, max_items=eff_max)
         # KP-QUALITY-2ITEMS M1: 構成する全英単語のCMU登録確認(語単位)。未登録語itemは機械診断noteで再選定、最終attemptはCMU未登録のみが原因なら除外してshortfall確定。
-        v = apply_exclusions(v, excluded_phrases, final_attempt=(attempt == max_attempts))
+        v = apply_exclusions(v, excluded_phrases, final_attempt=(attempt == max_attempts), max_items=eff_max)
         v = cmu.apply_cmu_to_validation(v, final_attempt=(attempt == max_attempts))
         rec = {"attempt": attempt, "status": STATUS_PASS if v["ok"] else STATUS_INVALID, "validation_reasons": v["reasons"],
                "item_reasons": v["item_reasons"], "resolved": v["resolved"], "cmu_excluded": v.get("cmu_excluded") or [],
@@ -525,9 +535,9 @@ def run_selection_gate(article_text: str, make_call_fn: Callable[[str], Callable
         if v["ok"]:
             items = build_original_items(v["resolved"])
             return {"status": STATUS_PASS, "items": items, "attempts_detail": attempts, "model_id": model_id,
-                    "response_id": response_id, "shortfall": len(items) < KP_COUNT_MAX, "user_message_sha256": msg_sha,
+                    "response_id": response_id, "shortfall": len(items) < eff_max, "user_message_sha256": msg_sha,
                     "messages": messages, "cmu_gate": _cmu_gate_meta(cmu, cmu_lexicon, attempts)}
-        machine_note = build_machine_note(rec, history)
+        machine_note = build_machine_note(rec, history, limit=eff_max)
         _acc(rec)
         last_status = STATUS_INVALID
     return {"status": last_status, "items": None, "attempts_detail": attempts, "model_id": last_model, "response_id": last_resp,
@@ -537,8 +547,12 @@ def run_selection_gate(article_text: str, make_call_fn: Callable[[str], Callable
 
 def run_fulltext_selection(article_text: str, out_dir: str, article_id: str, source_level: str, process: Optional[str] = None,
                            diagnostic_note: Optional[str] = None, *, make_call_fn: Optional[Callable[[str], Callable]] = None,
-                           sleep_fn: Optional[Callable[[float], None]] = None, excluded_phrases: Optional[list] = None) -> dict:
+                           sleep_fn: Optional[Callable[[float], None]] = None, excluded_phrases: Optional[list] = None,
+                           prompt_text: Optional[str] = None, max_items: Optional[int] = None, parse_fn: Optional[Callable] = None,
+                           prompt_id: str = "kp_prompt_2", prompt_sha256: str = PROMPT_2_SHA256) -> dict:
     """`sc.run_key_phrase_selection(..., kp_backend="fulltext_p2")`が委譲する入口(配線は次委任)。
+    KP-PHRASE7-WORD5-PRODUCTION-01: prompt_text/max_items/parse_fn/prompt_id/prompt_sha256(keyword-only・既定=Prompt 2/3件で従来と同一)。
+    P7は`er119_kp_candidates_01.select_p7`がこれらを渡して呼ぶ(metadataのprompt_id/sha/kp_count_maxにP7を記録する)。
     戻り値は旧`_run_key_phrase_selection_strategy_l`と同じキー構成(status/parsed/model_id/original_items/kp_backend_used)に
     加え、Zの外側retryが参照する`parsed={"items": [...]}`を持つ。成果物: keywords_selector_prompt.txt / keywords_runtime_metadata.json。
     make_call_fn省略時のみ実API(Luna)を使う(test/mockは注入)。"""
@@ -550,7 +564,7 @@ def run_fulltext_selection(article_text: str, out_dir: str, article_id: str, sou
         if process is not None and process not in ALLOWED_PROCESSES:
             raise FulltextSelectionError(f"processはB1_SUPPORT/A2_SUPPORTのみ(実際: {process!r})")
     gate = run_selection_gate(article_text, make_call_fn, diagnostic_note=diagnostic_note, sleep_fn=sleep_fn,
-                              excluded_phrases=excluded_phrases)
+                              excluded_phrases=excluded_phrases, prompt_text=prompt_text, max_items=max_items, parse_fn=parse_fn)
     for n, msg in enumerate(gate["messages"], start=1):
         with open(f"{out_dir}/keywords_selector_prompt.txt" if n == 1 else f"{out_dir}/keywords_selector_prompt_attempt{n}.txt",
                   "w", encoding="utf-8") as f:
@@ -560,10 +574,10 @@ def run_fulltext_selection(article_text: str, out_dir: str, article_id: str, sou
         json.dump([{"attempt": a["attempt"], "status": a["status"], "raw_text": a.get("raw_text"), "error": a.get("error")}
                    for a in gate["attempts_detail"]], f, ensure_ascii=False, indent=2)
     meta = {
-        "article_id": article_id, "source_level": source_level, "kp_backend": BACKEND_ID, "prompt_id": "kp_prompt_2",
-        "prompt_sha256": PROMPT_2_SHA256, "user_message_sha256": gate["user_message_sha256"], "record_status": "PRODUCTION",
+        "article_id": article_id, "source_level": source_level, "kp_backend": BACKEND_ID, "prompt_id": prompt_id,
+        "prompt_sha256": prompt_sha256, "user_message_sha256": gate["user_message_sha256"], "record_status": "PRODUCTION",
         "model_requested": SELECTION_MODEL_ID, "model_id": gate["model_id"], "response_id": gate["response_id"],
-        "final_status": gate["status"], "shortfall": gate["shortfall"], "kp_count_max": KP_COUNT_MAX,
+        "final_status": gate["status"], "shortfall": gate["shortfall"], "kp_count_max": (KP_COUNT_MAX if max_items is None else max_items),
         "kp_backend_used": BACKEND_ID,
         "attempts": len(gate["attempts_detail"]), "has_diagnostic_note": bool(diagnostic_note),
         "attempts_detail": [{k: v for k, v in a.items() if k != "raw_text"} for a in gate["attempts_detail"]],

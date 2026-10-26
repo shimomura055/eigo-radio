@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
-"""KP-GRAMMAR-HUMAN-REVIEW-PRODUCTION-01 委任_02: KP候補(TOP 8)の生成(Opus M-1/M-7/R-1/R-2)。
+"""KP-GRAMMAR-HUMAN-REVIEW-PRODUCTION-01 委任_02: KP候補の生成(Opus M-1/M-7/R-1/R-2)。
+KP-PHRASE7-WORD5-PRODUCTION-01 委任_02(2026-10-27 APPROVED_FOR_PRODUCTION): 候補は**フレーズ最大7(P7)+単語最大5(W5')=最大12件**。
+call1=P7、call2=W5'(KP含有語は除外・1語のみ=not_single_word Gate)。補完は種類別(フレーズ=P7・単語=W5'、直列、各1回)。旧Prompt 2/2-Vは残置(新経路では使わない)。
 
 - 候補生成は <kp_dir>/kp_candidates/round_<n>/work/ で行う(M-1)。既存関数(canonicalization等)が書く keywords_canonicalized.json は
   この作業dirのものであり、後段が読む <kp_dir>/keywords_canonicalized.json は finalize(er119_kp_human_review_01)だけが書く。
-- 1 call目=Prompt 2(承認済み・無変更)で上位3件、2 call目=Prompt 2-V(er119_kp_prompt_2v_01)で追加最大5件(R-1)。
+- 1 call目=P7(最大7件・順位付け・理由つき)、2 call目=W5'(単語最大5件・理由つき)。(旧: Prompt 2で3件+Prompt 2-Vで最大5件。本文は残置)
 - Gate基準は既存のまま(validate / CMU / canonicalization / gloss再整合 / CMU post-canon / 記号 / 人称整合[Z] / SRC D1[Z] / Redundancy QA)。
   扱いだけを「attempt全体INVALID」から「そのitemだけ除外」へ(M-7: INVALIDはitem_reasonsのitemを除いた残りで再実行し全体PASSのみ受理)。
-- Gate除外候補の補完(KP-GATE-DROP-BACKFILL-PRODUCTION-01、ユーザー正式採用): AIが選んだitemのうち最終的にGate除外された件数Eが1以上のとき、1回だけ最大E件を
-  Prompt 2-V(再利用・本文無変更)で追加探索し、同一Gateを通して末尾へ追加する。初回に合格した候補は保持(入れ替えない)。flag EIGO_KP_BACKFILL(既定ON、er119_kp_backfill_01)。
+- Gate除外候補の補完(KP-GATE-DROP-BACKFILL-PRODUCTION-01、ユーザー正式採用): AIが選んだitemのうち最終的にGate除外された件数Eが1以上のとき、1回だけ種類別の空きとE_kindの小さい方まで
+  P7(フレーズ)/W5'(単語)で追加探索し、同一Gateを通して末尾へ追加する。初回に合格した候補は保持(入れ替えない)。flag EIGO_KP_BACKFILL(既定ON、er119_kp_backfill_01)。
 - 外側retry(M-7c): 補完ON(既定)では候補0件と技術失敗のretryだけ。補完OFF(EIGO_KP_BACKFILL=0)では従来どおり『AUTO採用できる有効件数が3未満かつGate除外または救済済みauto不可が発生』
   の場合も候補list全体を置き換える(roundに内mergeしない)。
 - 共有関数 sc.run_key_phrases は呼ばない。sc.run_key_phrase_selection / canonicalization / redundancy_qa は既存のまま再利用する。
@@ -30,6 +32,7 @@ import er125_kp_rescue_production_01 as er125
 import er119_kp_backfill_01 as bf
 import er119_kp_human_review_01 as rv
 import er119_kp_prompt_2v_01 as p2v
+import er119_kp_p7w5_prompts_01 as p7w5
 
 # R-5: 補完の人称整合(Z)の出力先を初回と分ける。person_repair_fnを返す側(er026のrunner等)は触らず、make_person_repair_fnが実行時にこの値を読む
 # (補完のGate連鎖の実行中だけ_run_backfillがセットし、終了時に必ず戻す)。既定None=従来のdir。
@@ -45,12 +48,14 @@ def _containment(a_key: str, b_key: str) -> bool:
 
 def run_vocab_selection(text: str, units: list, already_items: list, excluded: list, *, process: Optional[str] = None,
                         make_call_fn: Optional[Callable] = None, sleep_fn: Optional[Callable] = None,
-                        max_attempts: int = ft.MAX_ATTEMPTS, shown_phrases: Optional[list] = None, note: Optional[str] = None) -> dict:
-    """2 call目(Prompt 2-V)。item単位でvalidate / 重複(前記3件との同一・包含)/ 明示除外 / CMU を適用し、通ったものだけ返す。
+                        max_attempts: int = ft.MAX_ATTEMPTS, shown_phrases: Optional[list] = None, note: Optional[str] = None,
+                        spec: Optional["p7w5.PromptSpec"] = None) -> dict:
+    """2 call目(既定=Prompt 2-V。spec指定時はW5'(単語)/P7(フレーズ補完)=1回call・item単位除外。KP-PHRASE7-WORD5-PRODUCTION-01 Opus M-3)。item単位でvalidate / 重複(前記3件との同一・包含)/ 明示除外 / CMU を適用し、通ったものだけ返す。
     技術/parse失敗は最大max_attempts回。全て失敗ならstatus=FAILED(呼出側が外側retryへ)。0件はOK(適切な候補が不足=shortfall)。
     M-5/M-7(補完): shown_phrases=LLMに見せる『すでに選ばれた表現』(未指定=already_itemsのdisplay_phrase=従来どおり)。包含比較先(duplicate_of_top3)は
     常にalready_items(=call1の選定結果)のまま=Gateの意味を変えない。note=本文後置の既存exclusion note(2-V本文のshaは不変)。"""
     sleep_fn = sleep_fn if sleep_fn is not None else time.sleep
+    max_items = p2v.SELECTOR_2V_MAX_ITEMS if spec is None else spec.max_items
     already = [it["display_phrase"] for it in already_items]
     already_keys = [ft.phrase_key(p) for p in already]            # 包含比較先(duplicate_of_top3)。表示用とは分離(M-5)
     shown = list(shown_phrases) if shown_phrases is not None else already
@@ -58,10 +63,17 @@ def run_vocab_selection(text: str, units: list, already_items: list, excluded: l
     model = None if make_call_fn is not None else ft.resolve_model(process)
     attempts, messages = [], []
     for attempt in range(1, max_attempts + 1):
-        msg = p2v.build_user_message(text, shown, diagnostic_note=note)
-        assert p2v.prompt_prefix_intact(msg), "Prompt 2-Vが改変されている"
+        if spec is None:
+            msg = p2v.build_user_message(text, shown, diagnostic_note=note)
+            assert p2v.prompt_prefix_intact(msg), "Prompt 2-Vが改変されている"
+        else:
+            msg = spec.build_message(text, shown, note)
+            assert spec.prefix_intact(msg), f"{spec.prompt_id}が改変されている"
         messages.append(msg)
-        fn = make_call_fn(msg) if make_call_fn is not None else p2v.make_vocab_selector_fn(msg, model=model)
+        if make_call_fn is not None:
+            fn = make_call_fn(msg)
+        else:
+            fn = p2v.make_vocab_selector_fn(msg, model=model) if spec is None else spec.make_call(msg, model)
         try:
             raw, model_id, response_id = fn()
         except ft.FulltextSelectionError as e:
@@ -92,6 +104,9 @@ def run_vocab_selection(text: str, units: list, already_items: list, excluded: l
             pk = ft.phrase_key(phrase)
             reasons = list(item_reasons.get(idx) or [])
             stage = "validate" if reasons else None
+            if not reasons and spec is not None and spec.single_word_only and ft.count_words(phrase) != 1:
+                # D3(Fable確定): Key Word絶対条件2『1語』のGate化。validate(救済後の句)→not_single_word→duplicate_of_top3の順。Eには単語(kind=word)として数える
+                reasons, stage = [f"Key Wordは1語のみ(実際: {ft.count_words(phrase)}語)"], bf.STAGE_NOT_SINGLE_WORD
             if not reasons and any(pk == k or _containment(pk, k) for k in already_keys):
                 reasons, stage = ["前記の選定済み表現と同一または包含関係(重複)"], "duplicate_of_top3"
             opk = ft.phrase_key((rec.get("selection_rescue") or {}).get("original_phrase") or "") if rec.get("selection_rescue") else None
@@ -108,11 +123,11 @@ def run_vocab_selection(text: str, units: list, already_items: list, excluded: l
                 dropped.append({"raw_rank": idx + 1, "phrase": phrase, "stage": stage, "reasons": reasons, "origin": "call2"})
             else:
                 kept.append({"resolved": rec, "reason_ja": selected[idx]["reason_ja"], "raw_rank": idx + 1})
-        if len(kept) > p2v.SELECTOR_2V_MAX_ITEMS:
-            for k in kept[p2v.SELECTOR_2V_MAX_ITEMS:]:
+        if len(kept) > max_items:
+            for k in kept[max_items:]:
                 dropped.append({"raw_rank": k["raw_rank"], "phrase": k["resolved"]["phrase"], "stage": "overflow",
-                                "reasons": [f"最大{p2v.SELECTOR_2V_MAX_ITEMS}件を超過(下位のため除外)"], "origin": "call2"})
-            kept = kept[:p2v.SELECTOR_2V_MAX_ITEMS]
+                                "reasons": [f"最大{max_items}件を超過(下位のため除外)"], "origin": "call2"})
+            kept = kept[:max_items]
         attempts.append({"attempt": attempt, "status": "OK", "model": model_id, "response_id": response_id,
                          "n_selected": len(selected), "n_kept": len(kept), "n_dropped": len(dropped)})
         return {"status": "OK", "kept": kept, "dropped": dropped, "model_id": model_id, "response_id": response_id,
@@ -273,6 +288,48 @@ def _gate_chain(text: str, work: str, article_id: str, process: Optional[str], o
     return {"status": "OK", "cands": cands}
 
 
+def select_p7(text: str, work: str, article_id: str, source_level: str, process: Optional[str] = None, diagnostic_note: Optional[str] = None,
+              kp_backend: Optional[str] = None, *, excluded_phrases: Optional[list] = None, make_call_fn: Optional[Callable] = None,
+              sleep_fn: Optional[Callable] = None, synthetic: bool = False) -> dict:
+    """call1(P7・フレーズ最大7件)の既定select_fn(KP-PHRASE7-WORD5-PRODUCTION-01)。`er105.run_fulltext_selection`をP7パラメータで呼ぶ
+    (再選定ループMAX_ATTEMPTS=2・本文一致/1〜5語/CMU/除外句/救済の各Gateは従来のcall1と共通=承認済み仕様の維持。Trial-02のP7[ループなし]とは別方式)。
+    戻り値は`sc.run_key_phrase_selection`と同形。sc経由にしない(scは`prompt_sha256=PROMPT_2_SHA256`を固定記録するため)。代わりにP7のshaつきのtelemetryを
+    ここで1行記録する(Opus M-9)。kp_backend名は`fulltext_p2`(全文選定backendの識別。R-2)のまま、Promptの識別はprompt_id/shaで行う。"""
+    if kp_backend is not None and kp_backend != sc.FULLTEXT_BACKEND_ID:
+        raise ValueError(f"select_p7は全文選定backend({sc.FULLTEXT_BACKEND_ID})専用(実際: {kp_backend!r})")
+    if make_call_fn is None:
+        model = ft.resolve_model(process)
+        make_call_fn = lambda msg: p7w5.make_p7_selector_fn(msg, model=model)   # noqa: E731
+    result = ft.run_fulltext_selection(text, work, article_id, source_level, process=process, diagnostic_note=diagnostic_note,
+                                       make_call_fn=make_call_fn, sleep_fn=sleep_fn, excluded_phrases=excluded_phrases,
+                                       prompt_text=p7w5.P7_TEXT, max_items=p7w5.KP_PHRASE_MAX, parse_fn=p2v.parse_selection,
+                                       prompt_id=p7w5.P7_ID, prompt_sha256=p7w5.P7_SHA256)
+    sc._log_kp_backend_telemetry(
+        article_id, source_level, requested_backend=sc.FULLTEXT_BACKEND_ID, backend_used=sc.FULLTEXT_BACKEND_ID,
+        final_status=result.get("status"), fallback_triggered=False, model_id=result.get("model_id"),
+        cost_jpy=None, synthetic=synthetic, source_reference_contract=ft.FULLTEXT_SOURCE_REF_ID,
+        kp_attempts=result.get("kp_attempts"), shortfall=result.get("shortfall"),
+        prompt_id=p7w5.P7_ID, prompt_sha256=p7w5.P7_SHA256)
+    return result
+
+
+def _enforce_kind_caps(cands: list, dropped: list) -> list:
+    """種類別上限(フレーズ7・単語5)の強制(承認済み上限の維持。新規抽出規則ではない)。used_formのkindで数え、超過分は下位(通し順の後ろ)から
+    dropped(stage=overflow_kind)へ。overflow同様Eに数えない(bf.NOT_COUNTED_STAGES)。順序は維持。"""
+    cap = {bf.KIND_PHRASE: bf.PHRASE_CAP, bf.KIND_WORD: bf.WORD_CAP}
+    n = {bf.KIND_PHRASE: 0, bf.KIND_WORD: 0}
+    keep = []
+    for c in cands:
+        k = c.get("kind") or bf.kind_of_phrase(c.get("used_form") or "")
+        if n[k] >= cap[k]:
+            dropped.append({"raw_rank": c["raw_rank"], "phrase": c["selection_phrase"], "stage": "overflow_kind",
+                            "reasons": [f"{'Key Phrase' if k == bf.KIND_PHRASE else 'Key Word'}の種類別上限{cap[k]}件を超過(下位のため除外)"], "origin": c["origin"]})
+            continue
+        n[k] += 1
+        keep.append(c)
+    return keep
+
+
 def generate_candidates(*args, **kwargs) -> dict:
     """KP候補生成の入口(X/Y/Z共通)。KP-GATE-EXCLUSION-RESCUE-PRODUCTION-WIRING-01 委任_02(Opus M2): 救済フロー(H1/H2)は本関数の実行中
     (er125.rescue_context)だけ有効。終了時(例外含む)に必ず無効へ戻す。引数・戻り値は_generate_candidates_impl(従来の本体)と同一。"""
@@ -285,11 +342,12 @@ def _generate_candidates_impl(text: str, kp_dir: str, article_id: str, source_le
                         max_outer: int = sc.KP_OUTER_RETRY_MAX, src_fn: Optional[Callable] = None,
                         person_repair_fn: Optional[Callable] = None, select_fn: Optional[Callable] = None,
                         canon_fn: Optional[Callable] = None, redundancy_fn: Optional[Callable] = None,
-                        vocab_call_fn: Optional[Callable] = None, sleep_fn: Optional[Callable] = None) -> dict:
+                        vocab_call_fn: Optional[Callable] = None, sleep_fn: Optional[Callable] = None,
+                        phrase_call_fn: Optional[Callable] = None) -> dict:
     """returns {"ok": True, "doc": 候補doc(candidates_sha256未付与)} | {"ok": False, "status": "OUTER_RETRY_EXHAUSTED", "outer_retry_log": [...]}。
     作業はすべて <kp_dir>/kp_candidates/round_<n>/work/ 配下。<kp_dir>/keywords_canonicalized.json には触れない(M-1)。"""
     import er030_key_phrase_db_hybrid_core_01 as core
-    select_fn = select_fn or sc.run_key_phrase_selection
+    select_fn = select_fn or select_p7
     if canon_fn is None:
         # [H3'] 救済有効(文脈内かつkill switch未OFF)のときだけ rescue=True を明示。無効ならこれまでと同一の関数をそのまま使う。test注入のcanon_fnは影響を受けない
         canon_fn = functools.partial(sc.run_key_phrase_canonicalization, rescue=True) if er125.rescue_active() else sc.run_key_phrase_canonicalization
@@ -309,9 +367,9 @@ def _generate_candidates_impl(text: str, kp_dir: str, article_id: str, source_le
             stop_check_fn(f"kp_candidates:{article_id}:round{round_no}:attempt{outer}")
         entry = {"outer_attempt": outer, "excluded_in": [e["phrase"] for e in excluded], "stages": {}}
         last = outer >= max_outer
-        note = ft.build_exclusion_note(excluded) if excluded else None
+        note = ft.build_exclusion_note(excluded, limit=p7w5.KP_PHRASE_MAX) if excluded else None
         sel_kwargs = {"excluded_phrases": [dict(e) for e in excluded]} if excluded else {}
-        # ---- call 1: Prompt 2(承認済み・無変更)で上位3件
+        # ---- call 1: P7(フレーズ最大7件・順位付け・理由つき)
         if backfill_on:
             bf.clear_call1_metadata(work)    # M-1: 前周のmetadataを読み違えない
         sel = select_fn(text, work, article_id, source_level, process=process, diagnostic_note=(note or None),
@@ -324,10 +382,11 @@ def _generate_candidates_impl(text: str, kp_dir: str, article_id: str, source_le
                 return {"ok": False, "status": "OUTER_RETRY_EXHAUSTED", "outer_retry_log": log}
             continue
         call1 = list(sel["original_items"])
-        # M-1: call1(Prompt 2)の最終attemptでitem単位に除外された句(CMU未登録・除外指定の再選択)もEに数える。er105は無変更でmetadataから読む
+        # M-1: call1(P7)の最終attemptでitem単位に除外された句(CMU未登録・除外指定の再選択)もEに数える。er105は無変更でmetadataから読む
         call1_dropped = bf.read_call1_dropped(work, excluded) if backfill_on else []
-        # ---- call 2: Prompt 2-V(追加最大5件+理由)
-        v2 = run_vocab_selection(text, units, call1, excluded, process=process, make_call_fn=vocab_call_fn, sleep_fn=sleep_fn)
+        # ---- call 2: W5'(Key Word最大5件+理由。KP含有語は除外・1語のみ=not_single_word Gate)
+        v2 = run_vocab_selection(text, units, call1, excluded, process=process, make_call_fn=vocab_call_fn, sleep_fn=sleep_fn,
+                                 spec=p7w5.SPEC_W5P)
         entry["call2_status"] = v2["status"]
         if v2["status"] != "OK":
             entry["failure"] = "call2_selection_failed"
@@ -339,7 +398,7 @@ def _generate_candidates_impl(text: str, kp_dir: str, article_id: str, source_le
         for n, it in enumerate(call1, start=1):
             o = dict(it)
             originals.append(o)
-            meta.append({"origin": "call1", "raw_rank": n, "reason_ja": "", "selection_phrase": it["display_phrase"]})
+            meta.append({"origin": "call1", "raw_rank": n, "reason_ja": it.get("reason_ja", ""), "selection_phrase": it["display_phrase"]})
         extra = ft.build_original_items([k["resolved"] for k in v2["kept"]])
         for k, it in zip(v2["kept"], extra):
             originals.append(dict(it))
@@ -363,17 +422,18 @@ def _generate_candidates_impl(text: str, kp_dir: str, article_id: str, source_le
                 return {"ok": False, "status": "OUTER_RETRY_EXHAUSTED", "outer_retry_log": log}
             continue
         cands = chain["cands"]
-        # ai_rank(Gate通過後の連番。call1の順→call2の順)
+        # 種類別cap(フレーズ7・単語5)の強制 → ai_rank(Gate通過後の連番。call1[P7]の順→call2[W5']の順)
+        cands = _enforce_kind_caps(cands, dropped)
         for n, c in enumerate(cands, start=1):
             c["ai_rank"] = n
-        gate_dropped = [d for d in dropped if d["stage"] not in ("human_ng", "overflow", "duplicate_of_top3", "excluded")]
+        gate_dropped = [d for d in dropped if d["stage"] not in bf.GATE_DROP_EXEMPT_STAGES]      # M-2: NOT_COUNTED_STAGES参照に統一(overflow_kindを含む)
         # ---- Gate除外候補の補完(承認済み仕様。配線位置=ai_rank付番後・Redundancy QAの前 [R-10])。初回の候補は不変・補完分は末尾へ追加・1周1回だけ
         if backfill_on:
             backfill_rec, new_cands, bdropped = _run_backfill(
                 text=text, units=units, work=work, article_id=article_id, process=process, round_no=round_no, outer=outer, cands=cands,
                 dropped=dropped, call1=call1, excluded=excluded, ng_entries=ng_entries, canon_fn=canon_fn, src_fn=src_fn,
-                person_repair_fn=person_repair_fn, stop_check_fn=stop_check_fn, vocab_call_fn=vocab_call_fn, sleep_fn=sleep_fn,
-                stages=entry["stages"])
+                person_repair_fn=person_repair_fn, stop_check_fn=stop_check_fn, vocab_call_fn=vocab_call_fn, phrase_call_fn=phrase_call_fn,
+                sleep_fn=sleep_fn, stages=entry["stages"])
             cands = cands + new_cands
             dropped = dropped + bdropped
         else:
@@ -422,8 +482,8 @@ def _generate_candidates_impl(text: str, kp_dir: str, article_id: str, source_le
         cands_final = (cands, red, dropped, v2, sel, backfill_rec)
         break
     cands, red, dropped, v2, sel, backfill_rec = cands_final
-    doc = {"level": level, "prompt_ids": {"call1": "kp_prompt_2", "call2": p2v.PROMPT_2V_ID},
-           "prompt_sha256": {"call1": ft.PROMPT_2_SHA256, "call2": p2v.PROMPT_2V_SHA256},
+    doc = {"level": level, "prompt_ids": {"call1": p7w5.P7_ID, "call2": p7w5.W5P_ID},
+           "prompt_sha256": {"call1": p7w5.P7_SHA256, "call2": p7w5.W5P_SHA256},
            "model_requested": ft.SELECTION_MODEL_ID, "model_id": {"call1": sel.get("model_id"), "call2": v2.get("model_id")},
            "generated_at": rv._now(), "round": round_no, "candidates": cands, "dropped": dropped, "redundancy_qa": red,
            "shortfall": len(cands) < rv.KP_CANDIDATE_MAX, "outer_attempts": outer, "outer_retry_log": log,
@@ -440,7 +500,10 @@ def _shortfall_detail(cands: list, rec: dict) -> dict:
     e = rec.get("E") or {}
     added = rec.get("added") or []
     n_add = {bf.KIND_PHRASE: sum(1 for a in added if a.get("kind") == bf.KIND_PHRASE), bf.KIND_WORD: sum(1 for a in added if a.get("kind") == bf.KIND_WORD)}
+    n_by = {k: sum(1 for c in cands if c.get("kind") == k) for k in (bf.KIND_PHRASE, bf.KIND_WORD)}
+    cap_by = {bf.KIND_PHRASE: bf.PHRASE_CAP, bf.KIND_WORD: bf.WORD_CAP}
     return {"n_candidates": len(cands), "cap": rv.KP_CANDIDATE_MAX, "missing": max(0, rv.KP_CANDIDATE_MAX - len(cands)),
+            "cap_by_kind": cap_by, "missing_by_kind": {k: max(0, cap_by[k] - n_by[k]) for k in cap_by},
             "E_total": e.get("total"), "backfilled": len(added),
             "unfilled_by_kind": ({bf.KIND_PHRASE: max(0, (e.get("phrase") or 0) - n_add[bf.KIND_PHRASE]),
                                   bf.KIND_WORD: max(0, (e.get("word") or 0) - n_add[bf.KIND_WORD])} if rec.get("triggered") else None)}
@@ -453,41 +516,80 @@ def _by_stage(dropped: list) -> dict:
     return out
 
 
+def _keys_of(c: dict) -> list:
+    """候補の比較用キー(基本形化後のused_formと選定表層形)。"""
+    return [k for k in (ft.phrase_key(c.get("used_form") or ""), ft.phrase_key(c.get("selection_phrase") or "")) if k]
+
+
+def _contains_any(a: dict, b: dict) -> bool:
+    """候補a・bの語がトークン部分列として一方が他方に含まれるか(used_form/選定表層形のどの組合せでも)。Key Phrase含有語の除外判定(受入条件3)に使う。"""
+    return any(_containment(x, y) for x in _keys_of(a) for y in _keys_of(b))
+
+
 def _run_backfill(*, text: str, units: list, work: str, article_id: str, process: Optional[str], round_no: int, outer: int, cands: list,
                   dropped: list, call1: list, excluded: list, ng_entries: list, canon_fn: Callable, src_fn: Optional[Callable],
                   person_repair_fn: Optional[Callable], stop_check_fn: Optional[Callable], vocab_call_fn: Optional[Callable],
-                  sleep_fn: Optional[Callable], stages: dict) -> tuple:
-    """Gate除外候補の補完(ユーザー正式採用 §3-1〜3-3、DESIGN_02)。returns (backfill記録, 追加候補[ai_rank付き], 補完側のdropped)。
-    初回の cands / dropped は変更しない(初回合格候補の保持)。補完は1回だけ(内容起因の再callなし。技術/parse失敗の再試行は2-Vの既存2回まで)。
-    補完側の失敗(call失敗・live 0・canonicalization全体失敗・技術例外)は status=FAILED として初回候補で続行する(M-6)。
-    FulltextSelectionError(routing違反等)とSTOP(M-4)は握らず伝播させる(R-8)。"""
+                  sleep_fn: Optional[Callable], stages: dict, phrase_call_fn: Optional[Callable] = None) -> tuple:
+    """Gate除外候補の補完(ユーザー正式採用 §3-1〜3-3、DESIGN_02 + KP-PHRASE7-WORD5-PRODUCTION-01 DESIGN_02)。
+    returns (backfill記録, 追加候補[ai_rank付き], 補完側のdropped)。初回の cands / dropped は変更しない(初回合格候補の保持)。
+    補完は**種類別・直列・各1回**: フレーズ=P7(quota_phrase>0のとき)→単語=W5'(quota_word>0のとき)。各callは`run_vocab_selection`の一般化経路で
+    item単位に除外し、内容不適合で再callしない(技術/parse失敗の再試行のみ既存2回まで)。er105のattempt loopもmetadata書込みも使わない(Opus M-3)。
+    直列の理由: 共有state(contextvars=救済文脈、er005 cost loggerのglobal _CONTEXT)の引継ぎを避ける・発火が低頻度(Opus M-7)。
+    片方の種類だけ失敗しても成功した種類は採用し、prompts[kind].statusに失敗を記録する。両方失敗/live 0/canonicalization全体失敗は status=FAILED で
+    初回候補で続行する(M-6)。FulltextSelectionError(routing違反等)とSTOP(M-4)は握らず伝播させる(R-8)。"""
     counts = bf.count_exclusions(dropped, cands)
     if counts["total"] == 0:
         return bf.not_triggered_record(counts, "E=0"), [], []                 # LLM 0
-    plan = bf.plan_quota(counts, len(cands), rv.KP_CANDIDATE_MAX)
+    n_phrase = sum(1 for c in cands if c.get("kind") == bf.KIND_PHRASE)
+    n_word = sum(1 for c in cands if c.get("kind") == bf.KIND_WORD)
+    plan = bf.plan_quota(counts, n_phrase, n_word)
     if not cands or plan["total"] <= 0:
         return bf.not_triggered_record(counts, "no_candidate" if not cands else "no_room"), [], []
     if stop_check_fn is not None:                                              # M-4: 新しい課金点でもSTOP通知を迂回しない(try外=伝播)
         stop_check_fn(f"kp_backfill:{article_id}:round{round_no}:attempt{outer}")
+    kinds = ((bf.KIND_PHRASE, p7w5.SPEC_P7, phrase_call_fn), (bf.KIND_WORD, p7w5.SPEC_W5P, vocab_call_fn))
     rec = {"enabled": True, "triggered": True, "status": bf.ST_FAILED, "failure": None, "E": bf.e_public(counts),
-           "N": {k: plan[k] for k in ("room", "total", "phrase_wanted", "word_wanted", "capped")},
-           "prompt_id": p2v.PROMPT_2V_ID, "prompt_sha256": p2v.PROMPT_2V_SHA256, "model_id": None, "response_id": None,
-           "attempts": [], "added": [], "surplus": [], "dropped_by_stage": {}}
+           "N": {k: plan[k] for k in ("room", "total", "phrase_wanted", "word_wanted", "capped", "quota_phrase", "quota_word")},
+           "prompt_id": "per_kind", "prompt_sha256": "per_kind",              # 旧スカラー読取の互換(値は種類別。実体はprompts)
+           "prompts": {kd: {"id": sp.prompt_id, "sha256": sp.sha256, "quota": plan[f"quota_{kd}"], "status": "SKIPPED", "failure": None,
+                            "model_id": None, "response_id": None} for kd, sp, _ in kinds},
+           "model_id": None, "response_id": None, "attempts": [], "added": [], "surplus": [], "dropped_by_stage": {}}
     bdropped: list = []
     try:
-        rejected = bf.rejected_entries(excluded, dropped)
-        v2b = run_vocab_selection(text, units, call1, rejected + bf.existing_entries(cands), process=process, make_call_fn=vocab_call_fn,
-                                  sleep_fn=sleep_fn, shown_phrases=bf.shown_phrases(cands), note=(ft.build_exclusion_note(rejected) or None))
-        rec["attempts"], rec["model_id"], rec["response_id"] = v2b["attempts"], v2b["model_id"], v2b["response_id"]
-        if v2b["status"] != "OK":
-            rec["failure"] = "call2_selection_failed"
-            return rec, [], []
-        bdropped = [dict(d, origin="backfill") for d in v2b["dropped"]]
+        shown = bf.shown_phrases(cands)
         originals, meta = [], []
-        extra = ft.build_original_items([k["resolved"] for k in v2b["kept"]])
-        for k, it in zip(v2b["kept"], extra):
-            originals.append(dict(it))
-            meta.append({"origin": "backfill", "raw_rank": k["raw_rank"], "reason_ja": k["reason_ja"], "selection_phrase": it["display_phrase"]})
+        n_ok = 0
+        for kd, sp, call_fn in kinds:
+            if plan[f"quota_{kd}"] <= 0:
+                continue                                                       # その種類は空きなし/E=0 → call 0
+            pr = rec["prompts"][kd]
+            try:
+                rejected = bf.rejected_entries(excluded, dropped, for_kind=kd)
+                vb = run_vocab_selection(text, units, call1, rejected + bf.existing_entries(cands), process=process, make_call_fn=call_fn,
+                                         sleep_fn=sleep_fn, shown_phrases=shown, spec=sp,
+                                         note=(ft.build_exclusion_note(rejected, limit=sp.max_items) or None))
+            except Exception as e:   # noqa: BLE001  R-8: 技術失敗だけ握る(種類単位)。routing違反(FulltextSelectionError)・STOPは伝播
+                if bf.is_propagating_exception(e):
+                    raise
+                pr.update(status=bf.ST_FAILED, failure=f"technical:{type(e).__name__}: {e}")
+                continue
+            rec["attempts"] += [dict(a, kind=kd) for a in vb["attempts"]]
+            pr.update(model_id=vb["model_id"], response_id=vb["response_id"])
+            if vb["model_id"]:
+                rec["model_id"], rec["response_id"] = vb["model_id"], vb["response_id"]
+            if vb["status"] != "OK":
+                pr.update(status=bf.ST_FAILED, failure="selection_failed")
+                continue
+            pr.update(status=bf.ST_OK, n_kept=len(vb["kept"]), n_dropped=len(vb["dropped"]))
+            n_ok += 1
+            bdropped += [dict(d, origin="backfill") for d in vb["dropped"]]
+            extra = ft.build_original_items([k["resolved"] for k in vb["kept"]])
+            for k, it in zip(vb["kept"], extra):
+                originals.append(dict(it))
+                meta.append({"origin": "backfill", "raw_rank": k["raw_rank"], "reason_ja": k["reason_ja"], "selection_phrase": it["display_phrase"]})
+        if n_ok == 0:                           # 呼んだ種類が全て失敗
+            rec["failure"] = "call_selection_failed"
+            return rec, [], []
         if not originals:                       # 適切な候補が無い(LLMが0件/全てGate不合格)=上限未達を許容(§3-2)
             rec.update(status=bf.ST_OK, dropped_by_stage=_by_stage(bdropped))
             return rec, [], bdropped
@@ -507,19 +609,31 @@ def _run_backfill(*, text: str, units: list, work: str, article_id: str, process
             rec.update(failure=f"canonicalization_{chain['canon_fail']}", dropped_by_stage=_by_stage(bdropped))
             return rec, [], bdropped
         # R-3: 基本形化後のused_formが既存候補(または先に採った補完候補)と完全一致=重複として捨てる(Nに数えない・再callしない)。candidate_id衝突も同様
+        # M-4(Opus): Key Phraseに含まれるKey Wordは候補にしない(受入条件3)。既存候補は保持し、**新規の補完候補の方を落とす**:
+        #   補完フレーズが既存/先着のKey Wordを含む → 補完フレーズを落とす / 補完単語が既存・先着のKey Phraseに含まれる → 補完単語を落とす。いずれもNに数えない
         have_ids = {c["candidate_id"] for c in cands}
         have_forms = {ft.phrase_key(c.get("used_form") or "") for c in cands}
+        acc_phrases = [c for c in cands if c.get("kind") == bf.KIND_PHRASE]
+        acc_words = [c for c in cands if c.get("kind") == bf.KIND_WORD]
         uniq = []
         for c in chain["cands"]:
             uk = ft.phrase_key(c.get("used_form") or "")
+            why = None
             if c["candidate_id"] in have_ids or uk in have_forms:
+                why = "基本形化後の表現が既存候補と同一"
+            elif c.get("kind") == bf.KIND_PHRASE and any(_contains_any(w, c) for w in acc_words):
+                why = "既存のKey Wordを含む補完フレーズ(Key Phraseに含まれる単語はKey Word候補から除外する仕様のため、補完フレーズを除外)"
+            elif c.get("kind") == bf.KIND_WORD and any(_contains_any(c, p) for p in acc_phrases):
+                why = "Key Phraseに含まれる単語(Key Word候補から除外)"
+            if why:
                 bdropped.append({"raw_rank": c["raw_rank"], "phrase": c["selection_phrase"], "stage": "backfill_duplicate",
-                                 "reasons": ["基本形化後の表現が既存候補と同一"], "origin": "backfill"})
+                                 "reasons": [why], "origin": "backfill"})
                 continue
             have_ids.add(c["candidate_id"])
             have_forms.add(uk)
+            (acc_phrases if c.get("kind") == bf.KIND_PHRASE else acc_words).append(c)
             uniq.append(c)
-        taken, surplus = bf.pick_backfill(uniq, counts, plan)                  # 種類別の先頭E_phrase/E_word件(R-1)。余りは候補にしない
+        taken, surplus = bf.pick_backfill(uniq, counts, plan)                  # 種類別quota(plan.quota_phrase/quota_word)の先頭N件(M-1)。余りは候補にしない
         for n, c in enumerate(taken, start=len(cands) + 1):
             c["ai_rank"] = n
         rec.update(status=bf.ST_OK, dropped_by_stage=_by_stage(bdropped),

@@ -57,10 +57,10 @@ class TestCli(KpTestCase):
         self.assertEqual(rc, 0, err)
         r = rv.load_review(self.kp_dir)
         self.assertEqual(r["status"], rv.ST_REVIEWED)
-        self.assertEqual(r["verdicts"][rv.candidate_id_for("built in")], "NG")
-        self.assertEqual(r["verdicts"][rv.candidate_id_for("raw beans")], "NOT_SELECTED")   # 見たが選ばなかった=NGではない
+        self.assertEqual(r["verdicts"][rv.candidate_id_for("insiders")], "NG")
+        self.assertEqual(r["verdicts"][rv.candidate_id_for("blends")], "NOT_SELECTED")   # 見たが選ばなかった=NGではない
         self.assertEqual(r["verdicts"][rv.candidate_id_for("pushed prices up")], "SELECTED_KP")
-        self.assertEqual(r["verdicts"][rv.candidate_id_for("feel a spike")], "SELECTED_VOCAB")
+        self.assertEqual(r["verdicts"][rv.candidate_id_for("spike")], "SELECTED_VOCAB")
         # --from-json
         jd(os.path.join(self.tmp, "sel.json"), {"kp": [1, 2, 3], "vocab": [1, 2, 3, 4], "by": "tester2"})
         rc, out, err = run_cli(["select", "--run", self.run_dir, "--level", "b1b", "--from-json", os.path.join(self.tmp, "sel.json")])

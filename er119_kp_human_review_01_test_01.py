@@ -16,6 +16,7 @@ import er105_kp_fulltext_selector_01 as ft
 import er119_kp_candidates_01 as kcand
 import er119_kp_human_review_01 as rv
 import er119_kp_prompt_2v_01 as p2v
+import er119_kp_p7w5_prompts_01 as p7w5
 from er119_test_support_01 import ARTICLE, ARTICLE2, CALL1, CALL2, Env, KpTestCase, jd, jl, rd, wr
 
 P2_SHA = "a12896f485604f32efd52cb159d2615733c0eca262725af78db0b4f1c9a3dc9a"
@@ -79,24 +80,29 @@ class TestCandidateGeneration(KpTestCase):
         self.assertLessEqual(len(c["candidates"]), rv.KP_CANDIDATE_MAX)
         self.assertEqual(len(c["candidates"]), 8)   # call1の3件+call2の5件
         self.assertEqual([x["origin"] for x in c["candidates"]], ["call1"] * 3 + ["call2"] * 5)
-        self.assertEqual(c["prompt_sha256"]["call1"], P2_SHA)
-        self.assertEqual(c["prompt_sha256"]["call2"], p2v.PROMPT_2V_SHA256)
+        self.assertEqual(c["prompt_sha256"]["call1"], p7w5.P7_SHA256)     # KP-PHRASE7-WORD5-PRODUCTION-01: call1=P7 / call2=W5'
+        self.assertEqual(c["prompt_sha256"]["call2"], p7w5.W5P_SHA256)
+        self.assertEqual(c["prompt_ids"], {"call1": p7w5.P7_ID, "call2": p7w5.W5P_ID})
         for x in c["candidates"]:
             self.assertIn("reason_ja", x)
             self.assertTrue(x["auto_eligible"])
             self.assertEqual(x["candidate_id"], cid(x["selection_phrase"]))
 
-    def test_prompt2_message_unchanged_in_call1(self):
+    def test_p7_w5_messages_in_call1_call2(self):
         with Env(self.tmp) as env:
             self.ensure(env)
+        self.assertEqual(len(env.messages1), 1)
         for m in env.messages1:
-            self.assertTrue(m.startswith(ft.PROMPT_2_TEXT + ft.BODY_DELIMITER))
+            self.assertTrue(m.startswith(p7w5.P7_TEXT + ft.BODY_DELIMITER))
+            self.assertFalse(m.startswith(ft.PROMPT_2_TEXT))      # 旧Prompt 2は新経路で使わない(本文は残置)
+        self.assertEqual(len(env.messages2), 1)
         for m in env.messages2:
-            self.assertTrue(p2v.prompt_prefix_intact(m))
-            self.assertIn("pushed prices up", m)   # 既選定3件が除外対象として渡る
+            self.assertTrue(p7w5.w5_prefix_intact(m))
+            self.assertFalse(p2v.prompt_prefix_intact(m))          # 旧2-Vは使わない
+            self.assertIn("pushed prices up", m)   # 既選定(P7の選定)が除外対象として渡る
 
     def test_call2_dedup_vs_top3_is_dropped(self):
-        call2 = [{"phrase": "time lag", "reason_ja": "dup", "word_count": 2}] + CALL2[:2]
+        call2 = [{"phrase": "lag", "reason_ja": "dup", "word_count": 1}] + CALL2[:2]      # "lag"はKey Phrase"time lag"に含まれる単語=W5'本文とGateの二重で除外
         with Env(self.tmp, call2=call2) as env:
             self.ensure(env)
         c = rv.load_candidates(self.kp_dir)
@@ -104,15 +110,15 @@ class TestCandidateGeneration(KpTestCase):
         self.assertEqual(len(c["candidates"]), 5)
 
     def test_canonicalization_invalid_item_excluded_and_rerun_M7a(self):
-        with Env(self.tmp, bad_phrases=["feel a spike"], rescue_env="0") as env:   # 救済前の挙動(M-7a)を検証するためkill switch OFFに固定
+        with Env(self.tmp, bad_phrases=["spike"], rescue_env="0") as env:   # 救済前の挙動(M-7a)を検証するためkill switch OFFに固定
             self.ensure(env)
         c = rv.load_candidates(self.kp_dir)
-        self.assertIn("feel a spike", [d["phrase"] for d in c["dropped"] if d["stage"] == "canonicalization"])
-        self.assertNotIn("feel a spike", [x["selection_phrase"] for x in c["candidates"]])
-        # 全体PASSの応答だけ受理: 2周目は"feel a spike"を除いた7件でcanonicalization
+        self.assertIn("spike", [d["phrase"] for d in c["dropped"] if d["stage"] == "canonicalization"])
+        self.assertNotIn("spike", [x["selection_phrase"] for x in c["candidates"]])
+        # 全体PASSの応答だけ受理: 2周目は"spike"を除いた7件でcanonicalization
         self.assertEqual(len(env.canon_inputs[0]), 8)
         self.assertEqual(len(env.canon_inputs[-1]), 7)
-        self.assertNotIn("feel a spike", env.canon_inputs[-1])
+        self.assertNotIn("spike", env.canon_inputs[-1])
         # n_auto=7>=3: 外側retryなし(select1回)
         self.assertEqual(env.n["call1"], 1)
 
@@ -123,16 +129,17 @@ class TestCandidateGeneration(KpTestCase):
             with self.subTest(EIGO_KP_BACKFILL=mode):
                 with Env(self.tmp, bad_phrases=[p["phrase"] for p in CALL1], rescue_env="0") as env,                         mock.patch.dict(os.environ, {"EIGO_KP_BACKFILL": mode}):   # 救済前の挙動(M-7c)を検証
                     self.ensure(env, kp_dir=f"{self.kp_dir}_{mode}")
-                self.assertEqual(env.n["call1"], 1)
+                # 補完ON: E_phrase=3 → P7でフレーズ補完を1回(=call1系の2回目。返答は既出/除外句のみで追加0)。OFF: 補完なし
+                self.assertEqual(env.n["call1"], 1 if mode == "0" else 2)
                 c = rv.load_candidates(f"{self.kp_dir}_{mode}")
                 self.assertEqual(len(c["candidates"]), 5)
 
     def test_outer_retry_replaces_list_when_auto_lt3(self):
         call1b = [{"phrase": "Before you know it", "word_count": 4}, {"phrase": "stay high", "word_count": 2}]
-        call2_only_bad = [{"phrase": "in stock", "reason_ja": "x", "word_count": 2}]
+        call2_only_bad = [{"phrase": "stock", "reason_ja": "x", "word_count": 1}]
         # 1周目: call1 3件のうち2件がINVALID、call2 1件 -> 有効2件(<3)かつGate除外あり -> 外側retry(2周目はcall1b+call2)
         # 外側retryの『gate_dropped脚』は補完OFF(EIGO_KP_BACKFILL=0)の現行条件。補完ON(既定)では撤去され、補完へ置換(er119_kp_backfill_test_01 TBF18)
-        with Env(self.tmp, call1_seq=[CALL1, call1b], call2_seq=[call2_only_bad, CALL2[3:5]],
+        with Env(self.tmp, call1_seq=[CALL1, call1b], call2_seq=[call2_only_bad, CALL2[3:5]],      # 2周目のW5': blends / increases
                  bad_phrases=["pushed prices up", "took a sharp turn"]) as env, mock.patch.dict(os.environ, {"EIGO_KP_BACKFILL": "0"}):
             self.ensure(env)
         self.assertEqual(env.n["call1"], 2)
@@ -140,12 +147,12 @@ class TestCandidateGeneration(KpTestCase):
         phrases = [x["selection_phrase"] for x in c["candidates"]]
         # 候補listは2周目のものに置換(merge禁止): 1周目の"time lag"/"in stock"は残らない
         self.assertNotIn("time lag", phrases)
-        self.assertEqual(phrases, ["Before you know it", "stay high", "raw beans"])
+        self.assertEqual(phrases, ["Before you know it", "stay high", "blends", "increases"])
         # 1周目で除外された句は2周目の選定noteで除外指定される
         self.assertIn("pushed prices up", env.messages1[1])
 
     def test_shortfall_without_gate_drop_does_not_retry(self):
-        with Env(self.tmp, call2=[{"phrase": "in stock", "reason_ja": "x", "word_count": 2}]) as env:
+        with Env(self.tmp, call2=[{"phrase": "stock", "reason_ja": "x", "word_count": 1}]) as env:
             self.ensure(env)
         self.assertEqual(env.n["call1"], 1)   # LLMが少なく返しただけ=shortfall受容(数合わせretryなし)
         self.assertEqual(len(rv.load_candidates(self.kp_dir)["candidates"]), 4)

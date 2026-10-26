@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-"""er119 KP Human Review testの共通fixture(API 0)。LLM由来の関数(選定1/選定2-V/canonicalization/gloss再整合/Redundancy QA)を
-すべてmockし、呼出回数をcounterで数える(実API呼出が0であることの証明に使う)。"""
+"""er119 KP Human Review testの共通fixture(API 0)。LLM由来の関数(選定1[P7]/選定2[W5']/canonicalization/gloss再整合/Redundancy QA)を
+すべてmockし、呼出回数をcounterで数える(実API呼出が0であることの証明に使う)。
+KP-PHRASE7-WORD5-PRODUCTION-01(Opus M-5): call1=P7(フレーズ。フレーズ補完もこちら)・call2=W5'(単語。単語補完もこちら)。想定外のPrompt先頭を受けたら
+AssertionError(fail-closed)。旧Prompt 2(`ft.make_selector_fn`)・旧2-V(`p2v.make_vocab_selector_fn`)はProduction経路から呼ばれてはならないので、呼ばれたら失敗させる。"""
 from __future__ import annotations
 
 import test_state_isolation_01  # noqa: F401
@@ -19,6 +21,7 @@ import er011_key_phrase_set_redundancy_qa_01 as rq
 import er105_kp_fulltext_selector_01 as ft
 import er119_kp_human_review_01 as rv
 import er119_kp_prompt_2v_01 as p2v
+import er119_kp_p7w5_prompts_01 as p7w5
 
 ARTICLE = (
     "# Coffee prices\n\n"
@@ -31,9 +34,10 @@ ARTICLE2 = ARTICLE + "Many shops raised the stakes by cutting hours.\n"   # 本�
 
 CALL1 = [{"phrase": "pushed prices up", "word_count": 3}, {"phrase": "took a sharp turn", "word_count": 4},
          {"phrase": "time lag", "word_count": 2}]
-CALL2 = [{"phrase": "feel a spike", "reason_ja": "理由A", "word_count": 3}, {"phrase": "in stock", "reason_ja": "理由B", "word_count": 2},
-         {"phrase": "built in", "reason_ja": "理由C", "word_count": 2}, {"phrase": "raw beans", "reason_ja": "理由D", "word_count": 2},
-         {"phrase": "Before you know it", "reason_ja": "理由E", "word_count": 4}]
+# W5'(Key Word)の既定返答=本文に実在する単語5件(1語のみ。KP含有語[CALL1のフレーズに含まれる語]を含まない)
+CALL2 = [{"phrase": "spike", "reason_ja": "理由A", "word_count": 1}, {"phrase": "stock", "reason_ja": "理由B", "word_count": 1},
+         {"phrase": "insiders", "reason_ja": "理由C", "word_count": 1}, {"phrase": "blends", "reason_ja": "理由D", "word_count": 1},
+         {"phrase": "increases", "reason_ja": "理由E", "word_count": 1}]
 KANJI = "一二三四五六七八九"
 
 
@@ -94,6 +98,7 @@ class Env:
 
     # ---- fakes
     def _make1(self, msg, **kw):
+        assert p7w5.p7_prefix_intact(msg), f"call1(P7)のmockに想定外のPromptが渡された(fail-closed): {msg[:80]!r}"
         self.messages1.append(msg)
         i = self.n["call1_factory"]
         self.n["call1_factory"] += 1
@@ -101,11 +106,14 @@ class Env:
 
         def fn():
             self.n["call1"] += 1
+            if isinstance(r, Exception):
+                raise r
             raw = r if isinstance(r, str) else json.dumps({"items": r}, ensure_ascii=False)
             return raw, "gpt-6-luna", f"resp1_{self.n['call1']}"
         return fn
 
     def _make2(self, msg, **kw):
+        assert p7w5.w5_prefix_intact(msg), f"call2(W5')のmockに想定外のPromptが渡された(fail-closed): {msg[:80]!r}"
         self.messages2.append(msg)
         i = self.n["call2_factory"]
         self.n["call2_factory"] += 1
@@ -118,6 +126,10 @@ class Env:
             raw = r if isinstance(r, str) else json.dumps({"items": r}, ensure_ascii=False)
             return raw, "gpt-6-luna", f"resp2_{self.n['call2']}"
         return fn
+
+    @staticmethod
+    def _forbidden_legacy(*a, **kw):
+        raise AssertionError("旧Prompt 2/2-VのselectorがProduction候補生成経路から呼ばれた(新経路はP7/W5'のみ)")
 
     def _canon(self, user_message, **kw):
         items = _parse_items_json(user_message, "【Key Phrase候補(JSON)】\n")
@@ -195,8 +207,10 @@ class Env:
         self._patches = [
             mock.patch.object(sc, "KP_BACKEND_TELEMETRY_PATH", os.path.join(self.tmp, "telemetry.jsonl")),
             mock.patch.object(rv, "STORE_ROOT", os.path.join(self.tmp, "store")),
-            mock.patch.object(ft, "make_selector_fn", self._make1),
-            mock.patch.object(p2v, "make_vocab_selector_fn", self._make2),
+            mock.patch.object(p7w5, "make_p7_selector_fn", self._make1),
+            mock.patch.object(p7w5, "make_w5_selector_fn", self._make2),
+            mock.patch.object(ft, "make_selector_fn", self._forbidden_legacy),
+            mock.patch.object(p2v, "make_vocab_selector_fn", self._forbidden_legacy),
             mock.patch.object(kc, "make_canonicalization_fn", self._canon),
             mock.patch.object(ga, "make_alignment_fn", self._gloss),
             mock.patch.object(rq, "make_redundancy_qa_fn", self._red),

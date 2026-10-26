@@ -34,9 +34,11 @@ import er125_kp_rescue_production_01 as r
 ART = ("# Wiring test\n\nThe owner pushed prices up in May. They let people try whatever catches their interest. "
        "The cafe keeps raw beans in stock. Her laughter rose above the other voices. Nobody knew the plan, and I guess it can’t be helped. "
        "In the end, the band took a sharp turn.\n")
-CALL1 = [{"phrase": "catch their interest", "word_count": 3}, {"phrase": "pushed prices up", "word_count": 3}, {"phrase": "in stock", "word_count": 2}]
-CALL2 = [{"phrase": "rose above", "reason_ja": "M1", "word_count": 2}, {"phrase": "it can’t be helped", "reason_ja": "idiom", "word_count": 4},
+# KP-PHRASE7-WORD5-PRODUCTION-01: フレーズは全てcall1(P7・最大7)。call2(W5')は単語のみなので空(適切な単語が無い=件数不足を許容)
+CALL1 = [{"phrase": "catch their interest", "word_count": 3}, {"phrase": "pushed prices up", "word_count": 3}, {"phrase": "in stock", "word_count": 2},
+         {"phrase": "rose above", "reason_ja": "M1", "word_count": 2}, {"phrase": "it can’t be helped", "reason_ja": "idiom", "word_count": 4},
          {"phrase": "took a sharp turn", "reason_ja": "plain", "word_count": 4}]
+CALL2 = []
 CANON_KEYS = {"rose above": "rise above the other voices"}      # LLMが長い原形key(窓外tailつき)を返す -> M1で'rise above'
 
 
@@ -134,8 +136,9 @@ class TestWiredFlow(KpTestCase):
         self.assertEqual(env.n["gloss"], 0)
 
     def test_w3b_kill_switch_off_candidates_unrescued_when_phrases_valid(self):
-        call1 = [{"phrase": "pushed prices up", "word_count": 3}, {"phrase": "in stock", "word_count": 2}, {"phrase": "took a sharp turn", "word_count": 4}]
-        with self._gen(rescue_env="0", call1=call1, call2=[{"phrase": "rose above", "reason_ja": "x", "word_count": 2}]) as env:
+        call1 = [{"phrase": "pushed prices up", "word_count": 3}, {"phrase": "in stock", "word_count": 2}, {"phrase": "took a sharp turn", "word_count": 4},
+                 {"phrase": "rose above", "reason_ja": "x", "word_count": 2}]
+        with self._gen(rescue_env="0", call1=call1, call2=[]) as env:
             self.ensure(env, text=ART)
         doc = rv.load_candidates(self.kp_dir)
         self.assertTrue(all("rescue" not in c for c in doc["candidates"]))

@@ -57,18 +57,18 @@ def vote_check(state="PASS_VOTE_2OF3", p=False, s=True, w_called=True, w_pass=Tr
 def kp_items(n, backend_phrases=("time lag", "price tag", "hold on")):
     items = []
     for i in range(1, n + 1):
-        ph = backend_phrases[(i - 1) % len(backend_phrases)] if n <= 3 else ["lag", "price tag", "hold on", "journey", "shelf"][i - 1]
+        ph = backend_phrases[(i - 1) % len(backend_phrases)] if n <= 3 else (["lag", "price tag", "hold on", "journey", "shelf"][i - 1] if i <= 5 else f"phrase{i}")
         items.append({"rank": i, "source_span": ph, "display_phrase": ph, "key_phrase": ph, "used_form": ph, "japanese_gloss": "gloss",
                       "source_sentence": "s", "normalization_reason": "none", "changed_from_display_phrase": False})
     return items
 
 
 def make_level(root, family, level, n_kp, *, backend="fulltext_p2", votes=None, sha=e106.KPFT_PROMPT_2_SHA256, model="gpt-6-luna",
-               with_timeline=True, kp_state="OK"):
+               with_timeline=True, kp_state="OK", prompt_id="kp_prompt_2"):
     paths = e106.level_paths(family, root, level)
     kd = paths["kp_dir"]
     wj(f"{kd}/keywords_canonicalized.json", {"items": kp_items(n_kp), "overall_status": "PASS", "source_reference_contract": "x"})
-    meta = {"kp_backend": backend, "kp_backend_used": backend, "prompt_id": "kp_prompt_2", "prompt_sha256": sha, "user_message_sha256": "u",
+    meta = {"kp_backend": backend, "kp_backend_used": backend, "prompt_id": prompt_id, "prompt_sha256": sha, "user_message_sha256": "u",
             "record_status": "PRODUCTION", "model_requested": "gpt-6-luna", "model_id": model, "response_id": "r", "final_status": "KEY_WORDS_STRUCTURE_PASS",
             "shortfall": n_kp < 3, "kp_count_max": 3, "attempts": 1, "attempts_detail": []}
     wj(f"{kd}/keywords_runtime_metadata.json", meta)
@@ -309,6 +309,17 @@ class KpftChecksTest(unittest.TestCase):
 
     def test_wrong_prompt_sha_is_ng(self):
         self.assertEqual(status(self._rep(sha="0" * 64), "KPFT", "X", "KPFT-3"), "NG")
+
+    def test_p7_doc_expects_p7_sha_and_up_to_7_items_M6(self):
+        """KP-PHRASE7-WORD5-PRODUCTION-01: prompt_id=kp_prompt_p7のdocはP7 sha・7件上限で判定する(Prompt 2のshaでもNG)。"""
+        p7 = dict(prompt_id="kp_prompt_p7", sha=e106.KPFT_P7_SHA256)
+        self.assertEqual(status(self._rep(n=5, **p7), "KPFT", "X", "KPFT-3"), "OK")
+        self.assertEqual(status(self._rep(n=5, **p7), "KPFT", "X", "KPFT-4"), "OK")                  # 3件超でもP7なら可
+        self.assertEqual(status(self._rep(n=8, **p7), "KPFT", "X", "KPFT-4"), "NG")                  # 8件はP7上限7超
+        self.assertEqual(status(self._rep(n=5, prompt_id="kp_prompt_p7", sha=e106.KPFT_PROMPT_2_SHA256), "KPFT", "X", "KPFT-3"), "NG")   # P7のdocにPrompt 2のshaは不可
+        self.assertEqual(status(self._rep(n=5, prompt_id="kp_prompt_2"), "KPFT", "X", "KPFT-4"), "NG")                                  # Prompt 2のdocは3件上限のまま
+        self.assertEqual(status(self._rep(n=3, prompt_id="unknown_prompt", sha=e106.KPFT_P7_SHA256), "KPFT", "X", "KPFT-3"), "NG")
+        self.assertEqual(status(self._rep(n=5, **p7), "KPFT", "X", "KPFT-1"), "OK")                  # kp_backendは全文選定backend名(fulltext_p2)のまま(R-2)
 
     def test_four_items_ng_two_items_ok_with_shortfall(self):
         self.assertEqual(status(self._rep(n=4), "KPFT", "X", "KPFT-4"), "NG")

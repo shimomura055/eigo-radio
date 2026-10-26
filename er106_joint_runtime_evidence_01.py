@@ -44,6 +44,16 @@ KPFT_BACKEND_ID = "fulltext_p2"                      # 設計§2 BACKEND_ID
 KPFT_MODEL_ID = "gpt-6-luna"                         # 設計§2 SELECTION_MODEL_ID
 KPFT_PROMPT_2_SHA256 = "a12896f485604f32efd52cb159d2615733c0eca262725af78db0b4f1c9a3dc9a"   # 設計§2(testで固定されたsha)
 KPFT_KP_COUNT_MAX = 3                                # 設計§2 KP_COUNT_MAX
+# KP-PHRASE7-WORD5-PRODUCTION-01(2026-10-27): 候補生成のcall1がP7(最大7件)へ替わった。docの`prompt_id`ごとに期待値(sha・件数上限)を切り替える
+# (無条件に両shaを許容しない。Opus M-6)。上の旧定数(Prompt 2・3件)は旧run(prompt_id=kp_prompt_2)の判定専用として残す。
+KPFT_P7_SHA256 = "2e93019300f960e5ff3070dd83b12a81566b8ceb87b44b335d554a7a711eb291"
+KPFT_P7_KP_COUNT_MAX = 7
+KPFT_EXPECT_BY_PROMPT_ID = {"kp_prompt_2": (KPFT_PROMPT_2_SHA256, KPFT_KP_COUNT_MAX), "kp_prompt_p7": (KPFT_P7_SHA256, KPFT_P7_KP_COUNT_MAX)}
+
+
+def kpft_expected(prompt_id):
+    """prompt_idに対応する(期待sha, 件数上限)。prompt_id無し(旧metadata)はPrompt 2。未知のprompt_idはNone(=NG)。"""
+    return KPFT_EXPECT_BY_PROMPT_ID.get(prompt_id or "kp_prompt_2")
 KPFT_WORDS_MAX = 5                                   # 設計§2 KP_WORDS_MAX
 KPFT_SELECTION_MAX_ATTEMPTS = 2                      # 設計§5-1
 KPFT_CANON_MAX_ATTEMPTS = 2                          # 設計§5-1(既存MAX_CANONICALIZATION_RETRY_ATTEMPTS)
@@ -259,7 +269,7 @@ def collect_kp_selection(family, level, paths, text):
         "metadata_missing_keys": missing_keys(meta, EXPECTED_KPFT_METADATA_KEYS) if meta is not None else list(EXPECTED_KPFT_METADATA_KEYS),
         "kp_backend": (meta or {}).get("kp_backend"), "kp_backend_used": (meta or {}).get("kp_backend_used"),
         "model_id": (meta or {}).get("model_id"), "model_requested": (meta or {}).get("model_requested"),
-        "prompt_sha256": (meta or {}).get("prompt_sha256"), "selection_attempts": (meta or {}).get("attempts"),
+        "prompt_id": (meta or {}).get("prompt_id"), "prompt_sha256": (meta or {}).get("prompt_sha256"), "selection_attempts": (meta or {}).get("attempts"),
         "shortfall": (meta or {}).get("shortfall"), "final_status": (meta or {}).get("final_status"),
         "canonicalization_present": canon is not None, "canonicalization_overall": (canon or {}).get("overall_status") if isinstance(canon, dict) else None,
         "n_items": len(items), "items": rows,
@@ -809,12 +819,14 @@ def evaluate_kpft(fam):
     per_level("KPFT-2 actual model ID=gpt-6-luna", lambda lv, d: (
         ("OK" if d["selection"]["model_id"] == KPFT_MODEL_ID else ("MISSING" if d["selection"]["model_id"] is None else "NG")),
         f"model_id={d['selection']['model_id']} requested={d['selection']['model_requested']}"))
-    per_level("KPFT-3 正式Prompt 2のsha", lambda lv, d: (
-        ("OK" if d["selection"]["prompt_sha256"] == KPFT_PROMPT_2_SHA256 else ("MISSING" if d["selection"]["prompt_sha256"] is None else "NG")),
-        f"prompt_sha256={str(d['selection']['prompt_sha256'])[:16]}"))
-    per_level("KPFT-4 KP最大3件", lambda lv, d: (
-        ("OK" if 1 <= d["selection"]["n_items"] <= KPFT_KP_COUNT_MAX else ("MISSING" if not d["selection"]["canonicalization_present"] else "NG")),
-        f"n_items={d['selection']['n_items']} shortfall={d['selection']['shortfall']} (期待3, 1-2はshortfall記録つきで許容)"))
+    def _exp(d):
+        return kpft_expected(d["selection"].get("prompt_id"))
+    per_level("KPFT-3 正式Prompt(prompt_id別: Prompt 2 / P7)のsha", lambda lv, d: (
+        ("MISSING" if d["selection"]["prompt_sha256"] is None else ("OK" if (_exp(d) and d["selection"]["prompt_sha256"] == _exp(d)[0]) else "NG")),
+        f"prompt_id={d['selection'].get('prompt_id')} prompt_sha256={str(d['selection']['prompt_sha256'])[:16]}"))
+    per_level("KPFT-4 KP件数上限(prompt_id別: Prompt 2=3件 / P7=7件)", lambda lv, d: (
+        ("OK" if (_exp(d) and 1 <= d["selection"]["n_items"] <= _exp(d)[1]) else ("MISSING" if not d["selection"]["canonicalization_present"] else "NG")),
+        f"n_items={d['selection']['n_items']} max={(_exp(d) or (None, None))[1]} shortfall={d['selection']['shortfall']} (1件以上上限以下。件数不足はshortfall記録つきで許容)"))
 
     def _tx(lv, d):
         rows = d["selection"]["items"]
