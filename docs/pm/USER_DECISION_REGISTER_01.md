@@ -442,3 +442,7 @@
 ### 2026-10-26 FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01 委任_04 追記(OPEN-528 配線完了。既存行は書き換えず追記のみ)
 - OPEN-528(Z dialogue 文脈・感情付きTTS+Fallback)=**判断済み→配線完了**(ユーザー正式採用APPROVED_FOR_PRODUCTION 2026-10-26[原文=docs/pm/delegation_log/2026-10-26_FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01_USER.md]→Fable判定PRODUCTION_WIRED 2026-10-26)。再質問しない。blockingなし。
 - Deferred(非blocking・分類D=真に新しい判断): (1)Z dialogue Local Rewrite新設(新仕様、現行は3回NG→HR Lock/STOP) (2)M-3(i)=外側ループ会計のpolicy準拠化(既存A2予算規則変更、併発シナリオ未観測) (3)実音声の聴取評価(任意)。いずれも現状の安全側動作で運用でき、ユーザー判断までは現行を維持。
+
+### 2026-10-26 PM-SSOT-SYNC-04 追記(OPEN-531男性7Voice Trial・OPEN-532 Chunk中間。既存行は書き換えず追記)
+- OPEN-531 Y Voice 1の変更採用(分類D=真に新しい判断、UDR-YFB-2の後続): 決めること=Voice 1(現行Algieba)を男性7Voice比較Trial結果に基づき変更するか。選択肢=Puck採用/Orus採用/Algieba維持。Fable推奨=**Puck**(主要指標『文境界に対応しない≥1.0秒の停止』0.00回/sample [Algieba 0.36]・悪いtake率0%[Algieba 31%]・fresh take OK率24/24)。Status=VALIDATED(限定)_USER_DECISION_REQUIRED、声質・V2/V3との聞き分けは未評価=ユーザー試聴で確認。試聴=https://shimomura055.github.io/eigo-radio/user_test/family_y_voice1_male7_trial_01/index.html 。採用提案時はOpus条件C判定を別途実施。
+- OPEN-532 Chunk Std拡張: ユーザー承認済み。現状維持(Z完了後にFableが判定報告)。判断事項の追加なし。
