@@ -115,7 +115,7 @@ def build(dest: str, check_only: bool = False, pages: str | None = None) -> dict
 #   Advanced = 承認済みgain(apply_y_gain, 組立なし)を掛けたsegment個別再生、Standard = 素のsegment wavの個別再生+HR試聴節。
 #   run dirは読み取りのみ(Gate検査が副産物を書くためrun全体をscratchへ複製して実行する)。API 0。
 # ============================================================
-HR_SEGS = (("y_voice_1", "en", "Voice 1(人物本文)"), ("preview", "ja", "Preview(日本語要約)"))
+HR_SEGS = (("preview", "ja", "Preview(日本語要約)"),)  # 委任_04: y_voice_1は再生成で自動検査PASS(HR不要)になり専用節へ移動
 
 
 def _mp3(arr, sr, out, br="96k"):
@@ -143,6 +143,60 @@ def _diff_pairs(ref: str, hyp: str, ja: bool) -> list:
         sep = "" if ja else " "
         out.append((sep.join(a[i1:i2]) or "(なし)", sep.join(b[j1:j2]) or "(なし)"))
     return out
+
+
+def _wasis(t: str) -> str:
+    """『who was/is not home』の was/is を強調(表示専用)。"""
+    m = re.search(r"who (was|is) not home", t or "")
+    if not m:
+        return "<span class='sec'>(該当箇所なし)</span>"
+    ok = m.group(1) == "was"
+    return f"『who <b style='color:{'#0a7a0a' if ok else '#c00'}'>{m.group(1)}</b> not home』" + ("(台本どおり)" if ok else "(台本は was)")
+
+
+def _y1_section(a2: str, scratch: str, dest: str, script: str, ares: dict, sf) -> tuple:
+    """委任_04: y_voice_1の全take(旧1〜3=読み違い疑い・非推奨 / 新=take4+最終[6%減速後])を並べる。"""
+    import glob
+    rows, data = [], []
+    files = sorted(glob.glob(f"{a2}/narration/attempts/y_voice_1_attempt*.json"), key=lambda f: json.load(open(f, encoding="utf-8"))["attempt_number"])
+    final_wav = f"{a2}/narration/y_voice_1.wav"
+    items = []
+    for f in files:
+        j = json.load(open(f, encoding="utf-8"))
+        n, route = j["attempt_number"], j["route"]
+        wav = f[:-5] + ".wav"
+        sec = next((st for st in (j.get("cascade_steps") or []) if st.get("provider") == "azure"), None)
+        az = (sec or {}).get("text") or ""
+        if "postslowdown" in f or route.startswith("postslowdown"):
+            continue
+        if n <= 3:
+            kind = "旧take(読み違い疑い・非推奨)" if n < 3 else "旧take(fallback短文Style・承認Styleと異なる・非推奨/参考)"
+        else:
+            kind = "新take(承認Style PD06・自動検査PASS。減速前の素の音声)"
+        items.append(dict(n=str(n), kind=kind, wav=wav, primary=j.get("asr_text") or "", azure=az, state=j.get("audio_classification"), rec=(n >= 4)))
+    e = ares["segments"]["y_voice_1"]
+    items.append(dict(n="final", kind="最終(新takeにStd規則の6%減速を適用済み。組立に使われる音声)", wav=final_wav, primary=e.get("post_slowdown_asr_text") or "", azure="",
+                      state=f"{e.get('status')} / 減速後ASR {e.get('post_slowdown_final_classification')}", rec=True))
+    for t in items:
+        arr, s0 = sf.read(t["wav"], dtype="float32")
+        fn = f"std_hr/std_y_voice_1_take{t['n']}.mp3"
+        _mp3(arr, s0, f"{dest}/{fn}")
+        d = round(arr.shape[0] / s0, 2)
+        pairs = _diff_pairs(script, t["primary"], False)
+        pairs_az = _diff_pairs(script, t["azure"], False) if t["azure"] else []
+        cell = lambda ps: "<br>".join(f"台本「{html.escape(x)}」 ⇔ ASR「{html.escape(y)}」" for x, y in ps) or "(語句差なし)"
+        az = (f"<div class='sec' style='margin-top:4px'>Azure転写(第2ASR)</div><div class='script'>{html.escape(t['azure'])}</div>{cell(pairs_az)}<div>Azure: {_wasis(t['azure'])}</div>") if t["azure"] else ""
+        label = f"take {t['n']}" if t["n"] != "final" else "最終版"
+        rows.append(f"<tr{' style=\"background:#eef9ee\"' if t['rec'] else ''}><td><b>{label}</b><br><span class='sec'>{html.escape(t['kind'])}<br>{d}秒</span></td>"
+                    f"<td class='play'><audio controls preload='none' src='{fn}'></audio></td>"
+                    f"<td><div>OpenAI: {_wasis(t['primary'])}</div><div class='sec'>OpenAI ASR転写</div><div class='script'>{html.escape(t['primary'])}</div>"
+                    f"<div class='sec'>台本との語句差(句読点・空白は除く):</div>{cell(pairs)}{az}<div class='sec'>判定: {html.escape(str(t['state']))}</div></td></tr>")
+        data.append({"take": t["n"], "kind": t["kind"], "dur": d, "mp3": fn, "state": t["state"], "openai_was_is": (re.search(r"who (was|is) not home", t["primary"]) or [None, None])[1],
+                     "azure_was_is": (re.search(r"who (was|is) not home", t["azure"]) or [None, None])[1], "diff_openai": pairs, "diff_azure": pairs_az,
+                     "openai_asr": t["primary"], "azure_asr": t["azure"]})
+    html_ = (f"<h3>Voice 1(人物本文 y_voice_1)</h3><div class='script'><b>台本</b>: {html.escape(script)}</div>"
+             f"<table><thead><tr><th>候補</th><th>音声</th><th>ASR転写・台本との差</th></tr></thead><tbody>{''.join(rows)}</tbody></table>")
+    return html_, data
 
 
 def _std_script(sid: str, parts: dict, support: dict, res: dict) -> str:
@@ -252,9 +306,17 @@ def build_segments_page(dest: str) -> dict:
         hr_html, hr_data = [], {}
         for sid, lang, lab in HR_SEGS:
             e = ares["segments"][sid]
-            script = e["canonical_text"] if lang == "ja" else apar["segments"][sid]
+            script = e.get("canonical_text") or asup.get(sid) if lang == "ja" else apar["segments"][sid]
             takes = []
-            for a in e["attempts_log"]:
+            # 委任_04: --only-segments実行でpreviewのresults entryがSKIPPED_NOT_SELECTEDになったため、attempts/*.json(実体)から候補を再構成する
+            alog = e.get("attempts_log") or []
+            if not alog:
+                import glob
+                for f in sorted(glob.glob(f"{a2}/narration/attempts/{sid}_attempt[12]_*.json")):
+                    jj = json.load(open(f, encoding="utf-8"))
+                    takes.append(dict(n=jj["attempt_number"], kind="承認Style(標準経路)", wav=f[:-5] + ".wav", primary=jj.get("asr_text") or "", azure="",
+                                      state="NG_BOTH(secondary_not_accepted)", reason=jj.get("audio_classification")))
+            for a in alog:
                 j = a.get("asr_judgement") or {}
                 w = a["attempt_audio_path"].replace("\\", "/")
                 takes.append(dict(n=a["attempt"], kind="承認Style(標準経路)", wav=os.path.join(scratch, w.split("run_style_fix_01/", 1)[1]),
@@ -284,12 +346,14 @@ def build_segments_page(dest: str) -> dict:
                                                     "diff_openai": pairs, "diff_azure": pairs_az, "openai_asr": t["primary"], "azure_asr": t["azure"]})
             hr_html.append(f"<h3>{html.escape(lab)}({sid})</h3><div class='script'><b>台本</b>: {html.escape(script)}</div>"
                            f"<table><thead><tr><th>候補</th><th>音声</th><th>ASR転写・台本との差</th></tr></thead><tbody>{''.join(rows)}</tbody></table>")
+        y1_html, y1_data = _y1_section(a2, scratch, dest, apar["segments"]["y_voice_1"], ares, sf)
+        hr_data["y_voice_1"] = y1_data
         # ---- Standard: 通過segment(素のwav・音量調整前) ----
         sva = json.load(open(f"{scratch}/audit/style_actual_vs_approved.json", encoding="utf-8"))["levels"]["a2"]["rows"]
         ok_rows = []
         for r in sva:
             sid = r["segment"]
-            if sid in ("y_voice_1", "preview") or not r.get("match"):
+            if sid in ("y_voice_1", "preview") or not r.get("match"):  # y_voice_1は専用節で表示
                 continue
             km = re.fullmatch(r"kp(\d)_(english|japanese_meaning)", sid)
             wp = f"{a2}/narration/{(f'kp{km.group(1)}_en' if km.group(2) == 'english' else f'meaning_{km.group(1)}') if km else sid}.wav"
@@ -309,12 +373,12 @@ def build_segments_page(dest: str) -> dict:
     page = (
         f"<!DOCTYPE html><html lang='ja'><head><meta charset='utf-8'><meta name=\"robots\" content=\"noindex,nofollow\"><title>{title}</title>"
         f"<meta name='viewport' content='width=device-width, initial-scale=1'><style>{css}</style></head><body><h1>{title}</h1>"
-        "<nav><a href='#status'>状況</a><a href='#compare'>Voice 1〜3 旧新比較</a><a href='#advanced'>Advanced修正版</a><a href='#std_hr'>Standard 承認待ち2件</a><a href='#std_ok'>Standard 通過分</a></nav>"
+        "<nav><a href='#status'>状況</a><a href='#compare'>Voice 1〜3 旧新比較</a><a href='#advanced'>Advanced修正版</a><a href='#std_y1'>Standard Voice 1(再生成)</a><a href='#std_hr'>Standard Preview 承認待ち</a><a href='#std_ok'>Standard 通過分</a></nav>"
         + ys.notice_html() +
-        "<h2 id='status'>この `_03` ページの状況(先行公開)</h2><div class='note'><b>Advanced修正版は公開、Standardは承認待ち2 segmentがあるため通し版は未作成です。</b><br>"
-        "・Advanced: 承認済みStyleで再生成した全segment(Gate 15/15 PASS)を個別再生できます。<b>通し音声(全編)は未組立</b>です(組立は全レベルのGate通過が条件で、Standardの承認待ち2件が残るため。承認後に追加します)。"
+        "<h2 id='status'>この `_03` ページの状況(先行公開)</h2><div class='note'><b>Advanced修正版は公開、StandardはPreview 1件があなたの承認待ちのため通し版は未作成です(委任_04更新)。</b><br>"
+        "・Advanced: 承認済みStyleで再生成した全segment(Gate 15/15 PASS)を個別再生できます。<b>通し音声(全編)は未組立</b>です(組立は全レベルのGate通過が条件で、StandardのPreview承認待ちが残るため。承認後に追加します)。"
         "音量は通し版と同じ調整(gain)を掛けていますが、segment間の無音(pause)は含みません。Intro/Notification/Outro/番号は定型音声のため省略しています。<br>"
-        "・Standard: <b>Voice 1(y_voice_1)とPreview(preview)の2件は自動検査(ASR)が通らず、あなたの試聴・承認待ち</b>です(原因は下記)。通過した16 segment は個別再生のみ(音量調整前の素の音声)。<br>"
+        "・Standard: <b>Voice 1(y_voice_1)は、旧takeで台本「who was not home」が両ASRで「is」と聞こえる読み違いの疑いがあったため、承認に回さず再生成し(委任_04・Fable許可)、新takeは自動検査に通りました(あなたの承認は不要。聴いて確認することは可能)。Preview(preview)の1件のみ、表記ゆれ(「思い通り」/「思いどおり」)でASRが通らず、あなたの試聴・承認待ち</b>です。通過した16 segmentは個別再生のみ(音量調整前の素の音声)。<br>"
         "・Advanced Comment 2は仕様どおり存在しません。</div>"
         "<h2 id='compare'>旧版(`_02`)との比較: Advanced Voice 1〜3の聞こえ方(ユーザー判断項目)</h2>"
         "<div class='note'><b>S9未評価・ユーザー判断項目</b><br>承認済みの本文Style(PD06: 「smile in your voice」「reassuring」「like a favorite morning radio host」)を、"
@@ -325,9 +389,10 @@ def build_segments_page(dest: str) -> dict:
         "<details class='aux'><summary>話速(WPM)前後表(全segment)</summary><table><thead><tr><th>level</th><th>segment</th><th>語数</th><th>旧 秒</th><th>新 秒</th><th>旧 WPM</th><th>新 WPM</th></tr></thead><tbody>" + wpm_rows + "</tbody></table></details>"
         "<details class='aux'><summary>部位別Style 前後表(全segment)</summary><table><thead><tr><th>level</th><th>segment</th><th>旧</th><th>新</th><th>区分</th><th>Voice</th></tr></thead><tbody>" + "".join(style_rows) + "</tbody></table></details>"
         f"<h2 id='advanced'>Advanced 修正版(segment個別再生・計 約{adv_total}秒)</h2><table><thead><tr><th>パート</th><th>音声</th><th>Script / Key Phrase</th></tr></thead><tbody>{adv_html}</tbody></table>"
-        "<h2 id='std_hr'>Standard: あなたの試聴・承認待ちの2 segment</h2><div class='note'>どちらも自動検査(ASR)が台本と一致せずNGになったものです。Previewは「思い通り」と「思いどおり」(読みは同じ)の表記ゆれのみです。"
-        "Voice 1はtake 1/2で「re-deliveries」のハイフン表記に加え、<b>台本「who was not home」が両ASRで「who is not home」と聞こえている</b>(1語の言い違いの可能性。take 3は語句差なし)ため、ここは耳で確認してください。Styleの不具合ではありません。各候補を聴き、<b>どのtakeを採用するか</b>をご指定ください(操作方法は `HR_REQUEST_STD_01.md`)。"
-        "take 1/2は承認Style、take 3はfallback(短文Style)で承認Styleと異なるため、特段の理由がなければtake 1または2を推奨します。</div>"
+        "<h2 id='std_y1'>Standard: Voice 1(y_voice_1)再生成結果(委任_04)</h2><div class='note'>旧take 1〜3は <b>読み違いの疑い・非推奨</b> として残してあります(take 1/2は台本「who was not home」が両ASR[OpenAI・Azure]で「is」、take 3は「was」だが承認Styleと異なるfallback短文Style)。"
+        "Fable許可で再生成した<b>新take 4(承認Style PD06)は初回で自動検査に通り</b>(OpenAIで「who was not home」)、6%減速後の再検証も通過、Std規則の自動処理が完了しています(あなたの承認は不要)。緑の行が新しい音声です。任意で聴いて確認できます。</div>"
+        + y1_html +
+        "<h2 id='std_hr'>Standard: あなたの試聴・承認待ちの1 segment(Preview)</h2><div class='note'>自動検査(ASR)が台本と一致せずNGになったものです。「思い通り」と「思いどおり」(読みは同じ)の表記ゆれのみで、Styleの不具合ではありません。take 1/2は承認Style、take 3はfallback(短文Style)で承認Styleと異なるため、特段の理由がなければtake 1または2を推奨します。採用するtakeをご指定ください(操作方法は `HR_REQUEST_STD_02.md`)。</div>"
         + "".join(hr_html) +
         f"<h2 id='std_ok'>Standard: 検査を通過した {len(ok_rows)} segment(個別再生・音量調整前)</h2><table><thead><tr><th>パート</th><th>音声</th><th>Script</th></tr></thead><tbody>{''.join(ok_rows)}</tbody></table>"
         "</body></html>")
@@ -344,6 +409,15 @@ if __name__ == "__main__":
     ap.add_argument("--dest", default=DEST)
     ap.add_argument("--check-only", action="store_true")
     ap.add_argument("--pages", default=None, help="入力pages dir(既定=run_style_fix_01/pages。テスト用)")
+    ap.add_argument("--overwrite", action="store_true", help="委任_04: 既存destを新規build成功後に置換(--segments-only用)")
     ap.add_argument("--segments-only", action="store_true", help="委任_03: 組立前の先行公開ページ(Adv segment個別再生+Std HR試聴節)")
     a = ap.parse_args()
-    print(json.dumps(build_segments_page(a.dest) if a.segments_only else build(a.dest, a.check_only, a.pages), ensure_ascii=False))
+    if a.segments_only and a.overwrite and os.path.exists(os.path.join(ROOT, a.dest)):
+        new = a.dest + ".new"
+        shutil.rmtree(os.path.join(ROOT, new), ignore_errors=True)
+        r = build_segments_page(new)
+        shutil.rmtree(os.path.join(ROOT, a.dest))
+        os.rename(os.path.join(ROOT, new), os.path.join(ROOT, a.dest))
+        print(json.dumps(r, ensure_ascii=False))
+    else:
+        print(json.dumps(build_segments_page(a.dest) if a.segments_only else build(a.dest, a.check_only, a.pages), ensure_ascii=False))

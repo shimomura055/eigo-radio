@@ -1,18 +1,72 @@
 {
- "dest": "user_test/family_y_production_redelivery_fee_03",
+ "dest": "user_test/family_y_production_redelivery_fee_03.new",
  "adv_rows": 19,
  "adv_total_sec": 279.1,
  "cmp_rows": 3,
  "std_ok_rows": 16,
  "hr": {
-  "y_voice_1": [
+  "preview": [
    {
     "take": 1,
     "kind": "承認Style(標準経路)",
+    "dur": 15.72,
+    "mp3": "std_hr/std_preview_take1.mp3",
+    "state": "NG_BOTH(secondary_not_accepted)",
+    "reason": "ASR_VALIDATION_UNCERTAIN",
+    "diff_openai": [
+     [
+      "どお",
+      "通"
+     ]
+    ],
+    "diff_azure": [],
+    "openai_asr": "荷物の再配達では、受け取る側が時間を指定しても、思い通りに届かないことがあります。配達する人と受け取る人の経験を通して、再配達の問題を身近な場面から考えます。",
+    "azure_asr": ""
+   },
+   {
+    "take": 2,
+    "kind": "承認Style(標準経路)",
+    "dur": 15.75,
+    "mp3": "std_hr/std_preview_take2.mp3",
+    "state": "NG_BOTH(secondary_not_accepted)",
+    "reason": "ASR_VALIDATION_UNCERTAIN",
+    "diff_openai": [
+     [
+      "どお",
+      "通"
+     ]
+    ],
+    "diff_azure": [],
+    "openai_asr": "荷物の再配達では、受け取る側が時間を指定しても、思い通りに届かないことがあります。配達する人と受け取る人の経験を通して、再配達の問題を身近な場面から考えます。",
+    "azure_asr": ""
+   },
+   {
+    "take": 3,
+    "kind": "fallback短文Style(minimal_fallback。承認Styleと異なる)",
+    "dur": 14.69,
+    "mp3": "std_hr/std_preview_take3.mp3",
+    "state": "3回ともNG_BOTH(locked_entry最終判定)。fallbackはStd規則でHR承認必須",
+    "reason": "ASR_VALIDATION_UNCERTAIN",
+    "diff_openai": [
+     [
+      "どお",
+      "通"
+     ]
+    ],
+    "diff_azure": [],
+    "openai_asr": "荷物の再配達では、受け取る側が時間を指定しても思い通りに届かないことがあります。 配達する人と受け取る人の経験を通して、再配達の問題を身近な場面から考えます。",
+    "azure_asr": ""
+   }
+  ],
+  "y_voice_1": [
+   {
+    "take": "1",
+    "kind": "旧take(読み違い疑い・非推奨)",
     "dur": 39.2,
     "mp3": "std_hr/std_y_voice_1_take1.mp3",
-    "state": "NG_BOTH",
-    "reason": "secondary_not_accepted",
+    "state": "ASR_VALIDATION_UNCERTAIN",
+    "openai_was_is": "is",
+    "azure_was_is": "is",
     "diff_openai": [
      [
       "redeliveries",
@@ -41,12 +95,13 @@
     "azure_asr": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house.I really want fewer redeliveries. They are hard on us, too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who is not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is.If it changes delivery fees, I wanted to look at how it sets them too. Then the money can really reach the people who deliver packages."
    },
    {
-    "take": 2,
-    "kind": "承認Style(標準経路)",
+    "take": "2",
+    "kind": "旧take(読み違い疑い・非推奨)",
     "dur": 35.87,
     "mp3": "std_hr/std_y_voice_1_take2.mp3",
-    "state": "NG_BOTH",
-    "reason": "secondary_not_accepted",
+    "state": "ASR_VALIDATION_UNCERTAIN",
+    "openai_was_is": "is",
+    "azure_was_is": "is",
     "diff_openai": [
      [
       "redeliveries",
@@ -75,78 +130,51 @@
     "azure_asr": "When I leave a note saying no one was home, I feel a little sad too. But then I go to the next house. I really want fewer redeliveries. They are hard on us too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who is not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is if it changes delivery fees.I wanted to look at how it sets them too. Then the money can really reach the people who deliver packages."
    },
    {
-    "take": 3,
-    "kind": "fallback短文Style(minimal_fallback。承認Styleと異なる)",
+    "take": "3",
+    "kind": "旧take(fallback短文Style・承認Styleと異なる・非推奨/参考)",
     "dur": 34.88,
     "mp3": "std_hr/std_y_voice_1_take3.mp3",
-    "state": "3回ともNG_BOTH(locked_entry最終判定)。fallbackはStd規則でHR承認必須",
-    "reason": "NORMALIZED_MATCH",
+    "state": "NORMALIZED_MATCH",
+    "openai_was_is": "was",
+    "azure_was_is": null,
     "diff_openai": [],
     "diff_azure": [],
     "openai_asr": "When I leave a note saying no one was home, I feel a little sad too. But then I go to the next house. I really want fewer redeliveries—they are hard on us too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
     "azure_asr": ""
-   }
-  ],
-  "preview": [
-   {
-    "take": 1,
-    "kind": "承認Style(標準経路)",
-    "dur": 15.72,
-    "mp3": "std_hr/std_preview_take1.mp3",
-    "state": "NG_BOTH",
-    "reason": "secondary_not_accepted",
-    "diff_openai": [
-     [
-      "どお",
-      "通"
-     ]
-    ],
-    "diff_azure": [
-     [
-      "どお",
-      "通"
-     ]
-    ],
-    "openai_asr": "荷物の再配達では、受け取る側が時間を指定しても、思い通りに届かないことがあります。配達する人と受け取る人の経験を通して、再配達の問題を身近な場面から考えます。",
-    "azure_asr": "荷物の再配達では、受け取る側が時間を指定しても思い通りに届かないことがあります。配達する人と受け取る人の経験を通して、再配達の問題を身近な場面から考えます。"
    },
    {
-    "take": 2,
-    "kind": "承認Style(標準経路)",
-    "dur": 15.75,
-    "mp3": "std_hr/std_preview_take2.mp3",
-    "state": "NG_BOTH",
-    "reason": "secondary_not_accepted",
-    "diff_openai": [
-     [
-      "どお",
-      "通"
-     ]
-    ],
-    "diff_azure": [
-     [
-      "どお",
-      "通"
-     ]
-    ],
-    "openai_asr": "荷物の再配達では、受け取る側が時間を指定しても、思い通りに届かないことがあります。配達する人と受け取る人の経験を通して、再配達の問題を身近な場面から考えます。",
-    "azure_asr": "荷物の再配達では、受け取る側が時間を指定しても思い通りに届かないことがあります。配達する人と受け取る人の経験を通して、再配達の問題を身近な場面から考えます。"
+    "take": "4",
+    "kind": "新take(承認Style PD06・自動検査PASS。減速前の素の音声)",
+    "dur": 37.92,
+    "mp3": "std_hr/std_y_voice_1_take4.mp3",
+    "state": "NUMERIC_EQUIVALENCE_MATCH",
+    "openai_was_is": "was",
+    "azure_was_is": null,
+    "diff_openai": [],
+    "diff_azure": [],
+    "openai_asr": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+    "azure_asr": ""
    },
    {
-    "take": 3,
-    "kind": "fallback短文Style(minimal_fallback。承認Styleと異なる)",
-    "dur": 14.69,
-    "mp3": "std_hr/std_preview_take3.mp3",
-    "state": "3回ともNG_BOTH(locked_entry最終判定)。fallbackはStd規則でHR承認必須",
-    "reason": "ASR_VALIDATION_UNCERTAIN",
+    "take": "final",
+    "kind": "最終(新takeにStd規則の6%減速を適用済み。組立に使われる音声)",
+    "dur": 40.18,
+    "mp3": "std_hr/std_y_voice_1_takefinal.mp3",
+    "state": "OK / 減速後ASR NORMALIZED_MATCH",
+    "openai_was_is": "was",
+    "azure_was_is": null,
     "diff_openai": [
      [
-      "どお",
-      "通"
+      "redeliveries",
+      "re-deliveries"
+     ],
+     [
+      "redelivery",
+      "re-delivery"
      ]
     ],
     "diff_azure": [],
-    "openai_asr": "荷物の再配達では、受け取る側が時間を指定しても思い通りに届かないことがあります。 配達する人と受け取る人の経験を通して、再配達の問題を身近な場面から考えます。",
+    "openai_asr": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewer re-deliveries. They are hard on us too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their re-delivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
     "azure_asr": ""
    }
   ]
