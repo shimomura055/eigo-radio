@@ -3102,3 +3102,5 @@ ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01完了報告(Gemini TTS Batch API実配線
 - **Trial問題の記録(OPEN-533追記)**: Algieba=Repetition旗率72%・take最終OK率38%(平均2.31 attempt/take)に対し、Puck=Trial fresh 24/24・平均1.21 attempt/take、本番runtime Std/Advとも1 attempt(n=2、継続観察)。
 - **PRODUCTION_WIRED判定条件(ユーザー§6 9項目)**: 1承認仕様一致○/2正式初回経路実装○/3 retry・fallback・regeneration・resume整合○(再起動API 0+voice_guard_cached)/4正式runtime発火証拠○(Std/Adv)/5 Regression・Validator test PASS○/6 actual model_id・routing○/7 SSOT更新=PM-SSOT-SYNC-08で完了/8 Git○(31c41ea76、50e6e7673)/9未承認仕様・Dangling Referenceなし○。
 - **既知の残課題**: OPEN-535(Voice変更時の旧人間承認記録の扱い、別委任でY側guard)。
+
+- **Family Y 公開記事一覧追記(2026-10-26、PM-SSOT-SYNC-10、OPEN-539)**: `user_test/family_y_production_redelivery_fee_02`(『宅配の再配達は有料にすべきか？』、Voice 1=Puck・Advanced Comment 2なし、公開2026-10-26、**ユーザー最終試聴待ち**、URL https://shimomura055.github.io/eigo-radio/user_test/family_y_production_redelivery_fee_02/index.html)。`_01`はAlgieba版として保持(無断差し替えなし)。Style=`default`(OPEN-537は別途判断)、追加費用0円。HR実態=KP/Vocab/文法Part 2は`UNREVIEWED_AUTO_ADOPTED`、人間確定の再利用はa2 preview承認のみ。完成確定・Closeoutではない。

@@ -22575,3 +22575,9 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 用語統一: F-Tech(技術救済)、F-Style(Std/日本語3回目)、F-Prompt(Z dialogue ctx→legacy)。
 - UDR追記: UDR-TRA-1/2/3(`docs/pm/USER_DECISION_REGISTER_01.md`)。CURRENT_SPECは本件では編集しない(ユーザー判断後に反映)。
 - 費用: API 0・JPY0。
+
+
+## FAMILY-Y-REDELIVERY-FEE-FINAL-PUCK-01 委任_02 完成版・ユーザー最終試聴待ち(2026-10-26、PM-SSOT-SYNC-10、OPEN-539)
+
+- FAMILY-Y-REDELIVERY-FEE-FINAL-PUCK-01 = 完成版・ユーザー最終試聴待ち(2026-10-26、Fable受入済み)。公開URL https://shimomura055.github.io/eigo-radio/user_test/family_y_production_redelivery_fee_02/index.html(HTTP 200)。旧`_01`(Algieba版)は保持。run=`er121_output/family_y_production_01/redelivery_fee/run_voice_puck_ev_01`(選択肢A: Voice表evidence runをそのまま完成版runに採用。入力はrun_01とsha一致、差分は`voice_assignment.json`のvoice_1のみ)。反映仕様: Voice 1=Puck(Std/Adv、actual voice=Puck、model gemini-3.8-flash-lite-tts、各1 attempt、ASR PASS、Repetition旗なし、文中>=1.0秒の長停止0回)、Advanced Comment 2なし(timeline 43要素・ページAdv節・mp3・support_textsで0件、`removed_by_spec`記録のみ残置。Std側Comment 2は維持=timeline 47要素)。Chunk不発火(現行1段落構成維持)。Style=`default`(現行公開版と同一、OPEN-537=U-15は別途ユーザー判断)。再利用: 他narration 67本はrun_01とsha一致。再生成はVoice 1関連3本のみ。同引数再起動でAPI 0、旧Algieba cacheは`voice_guard_cached`で非使用。Gate: y_style_gate/Audio Validation Gate PASS、page_verify ok。組立 Std 342.261秒/Adv 315.85秒、clippingなし。HR実態(正確な記載): KP/Vocab/文法Part 2は人間確定ではなく`UNREVIEWED_AUTO_ADOPTED`(前回公開版と同一内容を再利用)。人間確定の再利用はa2 preview承認のみ。費用: 本委任の追加費用0円(Voice 1生成はVoice表evidenceで2.511円計上済み)。本記事累計約54.65円。commit 38da6e414(公開物+証跡)・4a91c894f(VERIFY_01、origin/main反映済み)。最終Statusは「完成版・ユーザー最終試聴待ち」。ユーザーの試聴承認を先取りして完成確定・Closeoutしない。
+- 本記録は転記であり新規仕様決定ではない。Production/コード変更なし。費用: API 0・JPY0(本SSOT同期)。
