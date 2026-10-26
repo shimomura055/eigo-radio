@@ -1,0 +1,390 @@
+{
+ "managed_id": "FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01",
+ "source": "docs/pm/delegation_log/2026-10-26_FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01_USER.md",
+ "items": [
+  {
+   "id": "R1-1",
+   "section": "§1",
+   "verbatim": "Family Zの「文脈・感情付きTTS」を正式採用する。",
+   "impl_target": "新規Production module(DESIGN_01 §A)+er063 dialogue()配線",
+   "verification": "TEST-01〜06+Phase2 E-1",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R1-2",
+   "section": "§1",
+   "verbatim": "**Status：APPROVED_FOR_PRODUCTION**\n**目標：PRODUCTION_WIRED**",
+   "impl_target": "SSOT(OPEN-528追記)。PRODUCTION_WIRED判定はPhase2完了+Fable独立照合後",
+   "verification": "OPEN_TRACKING_01 §ゲート",
+   "status": "APPROVED_FOR_PRODUCTION(PRODUCTION_WIRED未達)"
+  },
+  {
+   "id": "R1-3",
+   "section": "§1",
+   "verbatim": "対象はFamily Zのセリフ音声、Standard／Advanced両方。",
+   "impl_target": "er063.real_generators().dialogue の a2(Std)/b1b(Adv)両分岐",
+   "verification": "TEST-01/02(Std・Adv各)+E-1(Std・Adv各)",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R1-4",
+   "section": "§1",
+   "verbatim": "Family X/Yには適用しない。既存のナレーション、Key Phrase、その他のTTS仕様も変更しない。",
+   "impl_target": "入口=Z dialogue()closureのみ。共有generate関数は既定None不変",
+   "verification": "TEST-12(X/Y/B/C/narrator/KPバイト同一)",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R2-1",
+   "section": "§2",
+   "verbatim": "**1回目：文脈・感情付きTTS**\n- PASS → 採用\n- NG → 即時Retry",
+   "impl_target": "attempt policy n=1: ctx style、待機なし",
+   "verification": "TEST-01,TEST-02",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R2-2",
+   "section": "§2",
+   "verbatim": "**2回目：文脈・感情付きTTS**\n- PASS → 採用\n- NG → 10分クールダウン",
+   "impl_target": "attempt policy n=2: ctx style。NG時 cooldown 600秒(er020.COOLDOWN_SECONDS再利用)",
+   "verification": "TEST-02,TEST-03,TEST-08",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R2-3",
+   "section": "§2",
+   "verbatim": "**3回目：従来方式TTSへFallback**\n- 文脈・感情情報を付加しない、従来の承認済みTTS指示・Styleを使用\n- PASS → 採用\n- NG → 既存のLocal Rewrite処理へ",
+   "impl_target": "attempt policy n=3: style_prefix_override=None(=p9a.ENGLISH_STYLE_PREFIX、現行Z dialogueとバイト同一)。NG後=判断候補J-1(Z dialogueにLR未配線)",
+   "verification": "TEST-03,TEST-04,TEST-05",
+   "status": "DESIGN_READY_FOR_OPUS(NG後の扱いはJ-1)"
+  },
+  {
+   "id": "R2-4",
+   "section": "§2",
+   "verbatim": "Local Rewriteで解決できなければ、既存のHuman Review／STOP規則に従う。",
+   "impl_target": "既存finalize/record_outcome→HR Lock→Gate BLOCK(無変更)",
+   "verification": "TEST-04",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R2-5",
+   "section": "§2",
+   "verbatim": "**TTS総試行回数は初回を含め最大3回。** Fallbackを追加の4回目として扱わない。",
+   "impl_target": "state machineの反復上限=3(永続化、resume・外側ループ・LRをまたぐ)",
+   "verification": "TEST-09,TEST-04",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R2-6",
+   "section": "§2",
+   "verbatim": "Local Rewriteも既存の回数上限・安全条件を維持し、無制限な再生成を発生させない。",
+   "impl_target": "Z dialogueのLR経路は新設しない(J-1の既定)。将来LRが配線される場合も既存`lr_used==0`・累積15回guardを維持",
+   "verification": "TEST-10",
+   "status": "DESIGN_READY_FOR_OPUS(J-1)"
+  },
+  {
+   "id": "R3-1",
+   "section": "§3①",
+   "verbatim": "今回の『猿の手』『走れメロス』全編Trialで使用した文脈・感情情報生成方式とTTS指示を、承認済み仕様として正式Productionへ移植する。",
+   "impl_target": "er118_fz_dialogue_context_tts_trial_01.py の extract_context/EMOTION_DEVELOPER/EMOTION_SCHEMA/validate_emotion_items/CONTEXT_HEAD・TAIL/build_context_block/style_for_arm を新Production moduleへ逐語移植",
+   "verification": "TEST-01(Trial 53 clipのstyle_sha256 golden一致)",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R3-2",
+   "section": "§3①",
+   "verbatim": "未承認のPrompt改変、感情分類方式の変更、品質基準の追加・緩和は行わない。",
+   "impl_target": "Prompt/rule 1-10/検査規則は逐語・sha固定。leakageはblockingにしない(観測のみ)",
+   "verification": "TEST-01(prompt sha固定)、DESIGN_01 §F",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R3-3",
+   "section": "§3①",
+   "verbatim": "Trialの一時コードを単に呼び出すのではなく、正式初回Production経路として機能させる。",
+   "impl_target": "Production moduleはer118を一切importしない。run_tts_stage前段に配線",
+   "verification": "TEST-11(import禁止)、E-1",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R3-4",
+   "section": "§3②",
+   "verbatim": "以下の経路すべてで同一仕様を保証する。\n\n- 初回Production生成\n- retry\n- fallback\n- regeneration\n- resume\n- 中断後の再開\n- Local Rewrite\n- Human Review Lock",
+   "impl_target": "単一のattempt policy object(clip単位・永続state)が全経路の唯一の決定者。経路別の経路表=DESIGN_01 §C-8",
+   "verification": "TEST-01〜10、E-1〜E-4",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R3-5",
+   "section": "§3②",
+   "verbatim": "失敗が発生した場合も、残りの試行回数・状態・生成方式を正しく引き継ぐこと。",
+   "impl_target": "state file(<level>/audit/dialogue_ctx_attempt_state.json)をattempt開始前/後に原子的に書く",
+   "verification": "TEST-07,TEST-09",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R3-6",
+   "section": "§3②",
+   "verbatim": "特に、再開によって1〜2回目の文脈・感情付きTTSを不必要に再実行したり、3回の上限を超えたりしないこと。",
+   "impl_target": "resumeはstateのn_startedから続行。started-but-unfinishedは消費済み扱い(安全側)",
+   "verification": "TEST-07,TEST-09,E-3",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R3-7",
+   "section": "§3③",
+   "verbatim": "3回目のFallbackでは、今回の文脈・感情情報をTTS指示から完全に除外する。",
+   "impl_target": "attempt3のstyle引数=None。CONTEXT関連のどの文字列も合成関数に渡さない",
+   "verification": "TEST-05(Style完全除外・バイト一致)",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R3-8",
+   "section": "§3③",
+   "verbatim": "従来方式のVoice、Style、速度、発音制御、品質検査を維持する。",
+   "impl_target": "Voice=spec.voice、速度=Adv atempo 1.06外側ループ、発音=_norm_for_tts/PNAP、品質検査=既存unified judge+repetition QA(全て無変更)",
+   "verification": "TEST-05,TEST-12",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R3-9",
+   "section": "§3③",
+   "verbatim": "文脈・感情付き方式の一部設定が残り、従来方式と異なる音声になることを防ぐ。",
+   "impl_target": "attempt3のprompt全体(STYLE+TEXT)がlegacy Zのprompt(HEAD時点)とsha一致をtestで固定",
+   "verification": "TEST-05",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R3-10",
+   "section": "§3④",
+   "verbatim": "ASR Primary／Secondaryの承認済み判定規則\n- 発音・内容一致検査\n- ASR表記揺れへの救済\n- Local Rewrite／Natural English QA\n- Human Review Lock\n- STOP条件\n- 音声の組立・音量・速度に関する承認済み仕様",
+   "impl_target": "全て無変更(generic loop内のASR/QA呼出は触らない)。hookはstyle選択と記録のみ",
+   "verification": "TEST-12、static diff確認",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R3-11",
+   "section": "§3④",
+   "verbatim": "特に、ASRの表記違いだけを理由に不要なTTS再生成を行わないこと。",
+   "impl_target": "leakageを再生成理由にしない(観測のみ)。ctx固有の追加NG条件を作らない",
+   "verification": "TEST-13(表記揺れ入力で再生成0)",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R4-1",
+   "section": "§4",
+   "verbatim": "これらを隠さず、Production品質への影響を確認する。",
+   "impl_target": "DESIGN_01 §E(6項目×既存Validator照合)、EXISTING_SPEC_CHECK §5",
+   "verification": "文書+Phase2観測",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R4-2",
+   "section": "§4",
+   "verbatim": "既存の承認済みValidator・組立・品質条件に反する問題は、承認範囲内で是正する。",
+   "impl_target": "現時点で『既存条件に反する』と確認できた問題=0件(DESIGN_01 §E)。新規発見時は同一委任内で是正",
+   "verification": "Phase2観測",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R4-3",
+   "section": "§4",
+   "verbatim": "ただし、Trial結果を理由に独自の新しい品質基準を設けたり、承認した文脈・感情方式を変更したりしない。",
+   "impl_target": "話速/ポーズ/音量差/F0の新gateは作らない(判断候補J-4として分離)",
+   "verification": "DESIGN_01 §E",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R4-4",
+   "section": "§4",
+   "verbatim": "実質的な仕様変更が必要なら、理由とQCD影響を示してUSER_DECISION_REQUIREDで報告する。",
+   "impl_target": "OPEN_TRACKING_01 判断候補J-1〜J-4",
+   "verification": "Fable報告",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R5-1",
+   "section": "§5",
+   "verbatim": "**Family Z専用のコスト増として管理する。Family X/Yは変更しない。**",
+   "impl_target": "BUDGET_PLAN_01(Z専用)",
+   "verification": "BUDGET_PLAN_01",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R5-2",
+   "section": "§5",
+   "verbatim": "1. 文脈・感情情報生成の追加費用\n2. 文脈・感情付きTTSの費用差\n3. Retry／Fallbackの発生率と期待費用\n4. Local Rewrite・ASR追加費用\n5. Family Zの記事セットあたり総量産単価\n6. 制作時間への影響",
+   "impl_target": "BUDGET_PLAN_01 §1の6区分表(出典付き。未確認は『未確認』)",
+   "verification": "BUDGET_PLAN_01、Phase2で実測置換",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R5-3",
+   "section": "§5",
+   "verbatim": "70円／記事セットの目標を継続する。品質を維持できる範囲で、情報生成の再利用・キャッシュ・不要な再生成防止によって原価を最適化する。",
+   "impl_target": "感情情報のrun内immutable cache(resumeでLLM再call 0)、state永続でresume時の再生成防止、fallback deferral案(BUDGET_PLAN §4)",
+   "verification": "TEST-14(LLM再call 0)",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R5-4",
+   "section": "§5",
+   "verbatim": "**品質 ＞ Delivery ＞ 量産単価。**\n\n費用削減のために承認済み品質を下げないこと。",
+   "impl_target": "費用最適化は上記cache/再生成防止のみ。品質基準は触らない",
+   "verification": "DESIGN_01 §F",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R6-1",
+   "section": "§6",
+   "verbatim": "| 1回目PASS | 文脈・感情付き音声を採用 |",
+   "impl_target": "TEST-01、E-1",
+   "verification": "unit+runtime",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R6-2",
+   "section": "§6",
+   "verbatim": "| 1回目NG、2回目PASS | 即時Retry後に採用 |",
+   "impl_target": "TEST-02",
+   "verification": "unit(+runtime自然発生時)",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R6-3",
+   "section": "§6",
+   "verbatim": "| 1・2回目NG、3回目PASS | 10分クールダウン後、従来方式で採用 |",
+   "impl_target": "TEST-03、E-2(強制NG注入、Std/Adv)",
+   "verification": "unit+runtime",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R6-4",
+   "section": "§6",
+   "verbatim": "| 3回ともNG | Local Rewrite／Human Review／STOPへ正しく移行 |",
+   "impl_target": "TEST-04、E-4(Std/Adv)",
+   "verification": "unit+runtime(強制NG)。LR部分=J-1",
+   "status": "DESIGN_READY_FOR_OPUS(J-1)"
+  },
+  {
+   "id": "R6-5",
+   "section": "§6",
+   "verbatim": "| retry途中で中断・再開 | 回数・方式を維持 |",
+   "impl_target": "TEST-07、E-3(Std/Adv)",
+   "verification": "unit+runtime(kill→resume)",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R6-6",
+   "section": "§6",
+   "verbatim": "| X/Yの通常TTS | 一切変更なし |",
+   "impl_target": "TEST-12",
+   "verification": "unit(バイト同一)",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R6-7",
+   "section": "§6",
+   "verbatim": "Mockテストに加え、正式Production runtimeで文脈・感情付き方式が実際に発火した証拠を取得すること。",
+   "impl_target": "Phase 2 E-1(正式runner経由、実TTS request promptにCONTEXT有をsha/文字列で記録)",
+   "verification": "Phase 2",
+   "status": "Phase 2待ち"
+  },
+  {
+   "id": "R6-8",
+   "section": "§6",
+   "verbatim": "Fallbackは3回目まで偶発的に失敗するのを待たず、強制NGによるテストで遷移を検証してよい。ただし、Mockだけで通常経路全体をPRODUCTION_WIREDと判定しないこと。",
+   "impl_target": "E-2はGate出力をNG方向にのみ上書きするdriver注入(Production code内に注入口を作らない)。E-1(正常経路)は注入なし",
+   "verification": "DESIGN_01 §H、TEST_PLAN §3",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R6-9",
+   "section": "§6",
+   "verbatim": "実際の正常経路・Fallback経路を区別して証拠を記録する。",
+   "impl_target": "証拠JSONに path=normal|forced_ng_fallback|forced_ng_resume|forced_ng_exhaust を必須記録",
+   "verification": "Phase 2",
+   "status": "Phase 2待ち"
+  },
+  {
+   "id": "R6-10",
+   "section": "§6",
+   "verbatim": "Fableは独立して設計、コード、正式実行経路、回帰テスト、runtime evidenceを照合する。",
+   "impl_target": "Fable照合チェックリスト=OPEN_TRACKING_01 §ゲート",
+   "verification": "Fable",
+   "status": "Fable待ち"
+  },
+  {
+   "id": "R7-1",
+   "section": "§7",
+   "verbatim": "CURRENT_SPEC\n- DECISION_LOG\n- OPEN_ITEMS\n- 必要な設計・runtime evidence\n- Git commit／push",
+   "impl_target": "本委任: DECISION_LOG/OPEN_ITEMS/UDR+設計文書。CURRENT_SPECはPhase1/2完了時(文案=DESIGN_01末尾)",
+   "verification": "git log",
+   "status": "本委任分DONE/CURRENT_SPECは後続"
+  },
+  {
+   "id": "R7-2",
+   "section": "§7",
+   "verbatim": "今回の正式採用をFamily Z専用仕様として記録する。",
+   "impl_target": "DECISION_LOGエントリ+OPEN-528追記",
+   "verification": "SSOT diff",
+   "status": "DONE(本委任)"
+  },
+  {
+   "id": "R7-3",
+   "section": "§7",
+   "verbatim": "旧方式は3回目のFallbackとして利用できるよう維持し、新方式が後続経路で参照されない等のDangling Referenceを防ぐ。",
+   "impl_target": "legacy style(p9a.ENGLISH_STYLE_PREFIX)・build_reuse_key・style_text_for・_effective_style_sha・extract_attempt_evidence・verify_z_speed_profile を維持。新方式の参照点(reuse_key/entry/evidence/page/gate)を表で全列挙(DESIGN_01 §G)",
+   "verification": "TEST-15(Grep+参照表)",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R7-4",
+   "section": "§7",
+   "verbatim": "完了報告では、Family Z Standard／Advancedそれぞれについて、正式初回生成・retry・fallback・resume・QA・実音声・コストを明示すること。",
+   "impl_target": "Phase 2完了報告の必須表(Std/Adv×7項目)=OPEN_TRACKING_01 §完了報告雛形",
+   "verification": "Phase 2",
+   "status": "Phase 2待ち"
+  },
+  {
+   "id": "R7-5",
+   "section": "§7",
+   "verbatim": "**すべてのGate条件を満たして初めてPRODUCTION_WIREDと判定する。**\n\n未確認事項がある場合は、完了とせず残るOpen Itemと解消条件を報告すること。",
+   "impl_target": "OPEN_TRACKING_01 §PRODUCTION_WIRED判定ゲート",
+   "verification": "Fable",
+   "status": "Fable待ち"
+  },
+  {
+   "id": "R8-1",
+   "section": "§8",
+   "verbatim": "既存の承認済み作業・日次予算内で、独立作業を並列化して速やかに進める。",
+   "impl_target": "Phase 2 E-1〜E-4を並列(別run dir・別process)、Phase1は実装/テスト/証拠driverを並列",
+   "verification": "BUDGET_PLAN §3",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R8-2",
+   "section": "§8",
+   "verbatim": "不要な追加Trialや磨き込みは行わない。",
+   "impl_target": "追加Trialなし。Phase 2は受入条件の最小証拠のみ",
+   "verification": "BUDGET_PLAN",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R8-3",
+   "section": "§8",
+   "verbatim": "重大な品質・安全問題、予算超過見込み、承認範囲外の仕様変更が必要な場合はSTOPし、判断事項を整理する。",
+   "impl_target": "判断候補J-1〜J-4(OPEN_TRACKING_01)",
+   "verification": "Fable",
+   "status": "DESIGN_READY_FOR_OPUS"
+  },
+  {
+   "id": "R8-4",
+   "section": "§8",
+   "verbatim": "**今回の最重要目的は、Family Zで文脈・感情付きTTSを標準方式とし、2回失敗した場合だけ、10分クールダウン後の3回目に従来方式へ戻すこと。そして、その動作を正式Productionの全経路で保証することです。**",
+   "impl_target": "本設計全体(単一attempt policy+永続state+hook)",
+   "verification": "全TEST+全E",
+   "status": "DESIGN_READY_FOR_OPUS"
+  }
+ ]
+}

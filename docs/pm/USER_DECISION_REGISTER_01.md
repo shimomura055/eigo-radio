@@ -427,3 +427,8 @@
 
 - OPEN-529 KP Gate除外救済方式の判断(2026-10-26報告予定): ①段階1[revert+M1制限付き再導出、HR旗『修正済み』『QA未再判定』、AUTO不可、gloss再整合約0.5円/件]の採否と採用時のProduction配線承認 ②段階2の項目別採否[2a guard限定詞補完・2a'過去形表補完・2b 副詞前の原形化・2e lexical have・2c AI短縮(保留推奨)・2d スロット一般化(非推奨)] ③AI島a2 HRへ`studied separately`(表層形)を救済追加するか[再発行手順の新設+約0.5〜0.6円]: **調査中・ユーザー判断待ち(DESIGN_DONE_USER_DECISION_PENDING)**。Opus条件Aレビュー(M1〜M6・R1〜R4)はDESIGN_02へ全件反映済み。実装0・API 0・Production変更0。AI島run_ai_01のHR候補は未確定のまま保全。成果物=docs/research/KP-GATE-EXCLUSION-RESCUE-DESIGN-01/DESIGN_02.md。報告=docs/pm/RESULT_PACKET_KPRS2.md。
 - OPEN-530(guard次トークン条件のCURRENT_SPEC追記)は範囲内の文書是正のためUDR対象外(Fable判断で実施予定)。
+
+### 2026-10-26 FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01 委任_01 追記(OPEN-528 判断済み化。既存行は書換えず追記のみ)
+
+- **OPEN-528(Z dialogue文脈・感情付きTTS)=ユーザー判断済み(`APPROVED_FOR_PRODUCTION`、2026-10-26)**。上の『2026-10-26 PM-SSOT-SYNC-2026-10-26-02 追記』の『試聴・ユーザー判断待ち(USER_LISTENING_PENDING)』は、ユーザーの通し試聴後の正式決定で解消した(区分: UDR → **判断済み**。再質問しない)。原文=`docs/pm/delegation_log/2026-10-26_FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01_USER.md`。決定内容=Family Z限定・Std/Adv・1回目ctx→2回目ctx(即時)→10分クールダウン→3回目従来方式fallback・総3回・以後Local Rewrite→HR/STOP・X/Y不変。目標=PRODUCTION_WIRED(**未達**。Phase 0=設計完了・Opus条件Aレビュー待ち)。
+- 本案件に伴う非ブロッキングの判断候補(登録は区分4=Deferred/Non-blocking。Fableが報告時に要否判断): J-1=Z dialogueへのLocal Rewrite新規配線(現行はLR未配線のため『3回NG→STOPPED→HR Lock』を既定、LR新設はD=新仕様)/J-4=Trial観測の話速・長ポーズ・音量差・F0への新品質基準(既存の承認済み条件に反しないため開示のみ)。詳細=`docs/research/FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01/OPEN_TRACKING_01.md`。
