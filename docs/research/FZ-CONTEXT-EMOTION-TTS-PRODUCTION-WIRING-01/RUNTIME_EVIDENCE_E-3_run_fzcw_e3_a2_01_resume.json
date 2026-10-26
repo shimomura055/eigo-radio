@@ -1,0 +1,112 @@
+{
+ "management_id": "FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01",
+ "case": "E-3",
+ "path": "forced_ng_resume",
+ "forced_ng_injection": false,
+ "injection_plan": {
+  "rep": {
+   "*": [
+    1,
+    2
+   ]
+  },
+  "post": {}
+ },
+ "injected_overrides": [],
+ "injected_override_count": 0,
+ "ordinal_offset": 2,
+ "rep_gate_calls": {
+  "full_story_part1_c2": 3
+ },
+ "post_slowdown_calls": {},
+ "runner_rc": 0,
+ "run_dir": "er026_output/family_z_production_e2e_01/melos/run_fzcw_e3_a2_01",
+ "argv": [
+  "--mode",
+  "real",
+  "--story",
+  "melos",
+  "--slug",
+  "melos",
+  "--run",
+  "run_fzcw_e3_a2_01",
+  "--stages",
+  "tts_a2",
+  "--approved-budget-jpy",
+  "15.0",
+  "--tts-execution-mode",
+  "STANDARD",
+  "--pages-dir",
+  "er026_output/family_z_production_e2e_01/melos/run_fzcw_e3_a2_01/pages_evidence_unpublished",
+  "--only-clips",
+  "full_story_part1_c2"
+ ],
+ "pid": 45652,
+ "tts_requests": [
+  {
+   "clip": "full_story_part1_c2",
+   "prompt_sha256": "76d4c50474ffe72318d1c804f09eec2612fc5a5a29348e25ad245edde7fa72fc",
+   "prompt_chars": 2318,
+   "prompt_type": "str",
+   "has_context": false,
+   "t": 1792998337.8790953
+  }
+ ],
+ "tts_requests_with_context": 0,
+ "tts_requests_total": 1,
+ "policy_events": [],
+ "shared_ledgers": {
+  "er011_output/attempt_history.jsonl": {
+   "lines_before": 19038,
+   "lines_after": 19065,
+   "added_lines": 27,
+   "changed": true
+  },
+  "er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl": {
+   "lines_before": 136,
+   "lines_after": 137,
+   "added_lines": 1,
+   "changed": true
+  },
+  "er007_output/ja_asr_cascade_01/human_review_queue.jsonl": {
+   "lines_before": 15,
+   "lines_after": 15,
+   "added_lines": 0,
+   "changed": false
+  },
+  "er006_output/master_audio_store_01/manifest.json": {
+   "lines_before": 30162,
+   "lines_after": 30162,
+   "added_lines": 0,
+   "changed": false
+  },
+  "er006_output/master_audio_store_01/reuse_telemetry.jsonl": {
+   "lines_before": 2526,
+   "lines_after": 2526,
+   "added_lines": 0,
+   "changed": false
+  }
+ },
+ "evidence_only_rows": [
+  {
+   "ledger": "er011_output/attempt_history.jsonl",
+   "line_index": 19061,
+   "sha256": "d99443dbb7af8d495f3e44858535789d2f3c4c93f842fe4fbd0067a9a0051800",
+   "head": "{\"run_id\": \"25609369-57b3-4fa3-b29e-3f30299eb3b2\", \"timestamp\": \"2026-10-26T16:05:37\", \"theme_id\": \"run_fzcw_e3_a2_01\", \"level\": \"a2\", \"segment_id\": \"full_story_part1_c2\", \"wav_path\": \"er026_output/family_z_production_e2e_01/melos/run_fzcw_e3_a2_01/a2/narration/full_story_part1_c2.wav\", \"action\": \"C",
+   "classification": "evidence_only_no_action_required"
+  },
+  {
+   "ledger": "er011_output/attempt_history.jsonl",
+   "line_index": 19064,
+   "sha256": "52ccee587e7bd920c4648020264b8b1e9d51f6f673c9addc95c7d16aa7faf152",
+   "head": "{\"run_id\": \"08186c91-ca01-4388-a079-071e72b2e1ed\", \"timestamp\": \"2026-10-26T16:05:50\", \"theme_id\": \"run_fzcw_e3_a2_01\", \"level\": \"a2\", \"segment_id\": \"full_story_part1_c2\", \"language\": \"en\", \"canonical_text_sha256\": \"c14e0042a1f2e8c213bd8d5b61f9ba7bc3632049f79ae3b7a9d0e73630fc903a\", \"action\": \"PROCEE",
+   "classification": "evidence_only_no_action_required"
+  }
+ ],
+ "assembly_observations": null,
+ "ledger_invalidation": "forced run由来のHR queue行・attempt_history行は『evidence専用・対応不要』(台帳で無効化)。費用は開発費に計上",
+ "peak_distribution_observation": {
+  "full_story_part1_c2": 0.69992
+ },
+ "finished_at": "2026-10-26T16:05:51"
+}

@@ -83,6 +83,7 @@ class Recorder:
         self.requests: list = []
         self.policy_events: list = []
         self.cooldown_slept = 0.0
+        self.ordinal_offset = 0     # 再開起動で、前processで消費済みのattempt数(強制NGの呼出ordinalが再開後に1へ戻って再注入されるのを防ぐ。委任_03で追加)
         self.before_exit = None     # 自起動PID終了の直前に呼ぶ(部分evidenceの書出し)
 
 
@@ -97,7 +98,7 @@ def make_rep_gate_wrapper(orig, plan: InjectionPlan, rec: Recorder):
     def wrapper(verified, out_path, text, *a, **k):
         res = orig(verified, out_path, text, *a, **k)
         clip = clip_of(out_path)
-        rec.rep_calls[clip] = rec.rep_calls.get(clip, 0) + 1
+        rec.rep_calls[clip] = rec.rep_calls.get(clip, rec.ordinal_offset) + 1
         n = rec.rep_calls[clip]
         if plan.wanted("rep", clip, n) and res.get("verified"):      # NG方向のみ(元がNGなら何もしない)
             res = dict(res)
@@ -114,7 +115,7 @@ def make_post_slowdown_wrapper(orig, plan: InjectionPlan, rec: Recorder):
     def wrapper(name, narration_dir, tts_input, result, *a, **k):
         res = orig(name, narration_dir, tts_input, result, *a, **k)
         clip = str(name)
-        rec.post_calls[clip] = rec.post_calls.get(clip, 0) + 1
+        rec.post_calls[clip] = rec.post_calls.get(clip, rec.ordinal_offset) + 1
         n = rec.post_calls[clip]
         if plan.wanted("post", clip, n) and isinstance(res, dict) and res.get("status") == "OK":     # NG方向のみ
             res = dict(res)
@@ -134,8 +135,10 @@ def make_tts_capture_wrapper(orig, rec: Recorder):
             seg = cl._CONTEXT.get("segment")
         except Exception:
             pass
-        rec.requests.append({"clip": seg, "prompt_sha256": hashlib.sha256(prompt.encode("utf-8")).hexdigest(), "prompt_chars": len(prompt),
-                             "has_context": CTX_MARK in prompt, "t": time.time()})
+        # 駆動中に発見したバグ修正(2026-10-26 委任_03): promptがstr以外(tuple等)で来る経路があり.encodeで落ちた。記録用にstr化する(送信promptは変更しない)。
+        ptxt = prompt if isinstance(prompt, str) else repr(prompt)
+        rec.requests.append({"clip": seg, "prompt_sha256": hashlib.sha256(ptxt.encode("utf-8")).hexdigest(), "prompt_chars": len(ptxt),
+                             "prompt_type": type(prompt).__name__, "has_context": CTX_MARK in ptxt, "t": time.time()})
         return orig(call_fn, prompt, *a, **k)
     return wrapper
 
@@ -322,6 +325,7 @@ def run_case(args, *, runner_main=None, exit_fn=os._exit, stop_check=stop_scope_
         f.write(json.dumps({"pid": os.getpid(), "case": args.case, "argv": argv, "started_at": time.strftime("%Y-%m-%dT%H:%M:%S")}) + "\n")
     before = ledger_snapshot()
     rec = Recorder()
+    rec.ordinal_offset = int(getattr(args, "ordinal_offset", 0) or 0)
     out = args.evidence_out or f"{EVIDENCE_DIR}/RUNTIME_EVIDENCE_{args.case}_{args.run}.json"
 
     def write_partial():
@@ -342,7 +346,7 @@ def run_case(args, *, runner_main=None, exit_fn=os._exit, stop_check=stop_scope_
     after = ledger_snapshot()
     ev = {"management_id": MANAGEMENT_ID, "case": args.case, "path": plan.path, "forced_ng_injection": bool(rec.overrides),
           "injection_plan": {"rep": {k: sorted(v) for k, v in plan.rep.items()}, "post": {k: sorted(v) for k, v in plan.post.items()}},
-          "injected_overrides": rec.overrides, "injected_override_count": len(rec.overrides),
+          "injected_overrides": rec.overrides, "injected_override_count": len(rec.overrides), "ordinal_offset": rec.ordinal_offset,
           "rep_gate_calls": rec.rep_calls, "post_slowdown_calls": rec.post_calls,
           "runner_rc": rc, "run_dir": run_dir, "argv": argv, "pid": os.getpid(), "tts_requests": rec.requests,
           "tts_requests_with_context": sum(1 for r in rec.requests if r["has_context"]), "tts_requests_total": len(rec.requests),
@@ -372,6 +376,7 @@ def build_parser():
     ap.add_argument("--path", default=None, help="evidence JSONのpath記録値の上書き(既定=caseの既定値)")
     ap.add_argument("--kill-after-attempt", type=int, default=None, help="attempt Nのstate永続化直後に自起動PIDをos._exit(137)で終了(E-5)")
     ap.add_argument("--kill-in-cooldown", type=float, default=None, help="cooldownの累積待機がS秒に達したら自起動PIDを終了(E-3)")
+    ap.add_argument("--ordinal-offset", type=int, default=0, help="再開起動用: 前processで消費済みのattempt数。強制NGの呼出ordinalをこの値から数える(再開後に再注入しない)")
     ap.add_argument("--evidence-out", default=None)
     return ap
 

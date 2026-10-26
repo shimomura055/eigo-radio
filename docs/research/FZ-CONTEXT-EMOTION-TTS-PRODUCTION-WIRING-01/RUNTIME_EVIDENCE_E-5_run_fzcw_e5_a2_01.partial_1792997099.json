@@ -1,0 +1,73 @@
+{
+ "management_id": "FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01",
+ "case": "E-5",
+ "partial_before_self_terminate": true,
+ "pid": 50932,
+ "injected_overrides": [
+  {
+   "kind": "rep",
+   "clip": "full_story_part1_c2",
+   "ordinal": 1
+  }
+ ],
+ "rep_gate_calls": {
+  "full_story_part1_c2": 1
+ },
+ "post_slowdown_calls": {},
+ "tts_requests": [
+  {
+   "clip": "full_story_part1_c2",
+   "prompt_sha256": "a481d962366efad8b21ab85c7b095748c7ecbd51b042d64f2a0a4208769b7589",
+   "prompt_chars": 3707,
+   "prompt_type": "str",
+   "has_context": true,
+   "t": 1792997088.7166858
+  }
+ ],
+ "policy_events": [
+  {
+   "event": "after_attempt",
+   "clip": "full_story_part1_c2",
+   "n": 1,
+   "verified": false
+  },
+  {
+   "event": "SELF_TERMINATE_AFTER_ATTEMPT",
+   "pid": 50932,
+   "n": 1
+  }
+ ],
+ "shared_ledgers": {
+  "er011_output/attempt_history.jsonl": {
+   "lines_before": 19015,
+   "lines_after": 19016,
+   "added_lines": 1,
+   "changed": true
+  },
+  "er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl": {
+   "lines_before": 136,
+   "lines_after": 136,
+   "added_lines": 0,
+   "changed": false
+  },
+  "er007_output/ja_asr_cascade_01/human_review_queue.jsonl": {
+   "lines_before": 15,
+   "lines_after": 15,
+   "added_lines": 0,
+   "changed": false
+  },
+  "er006_output/master_audio_store_01/manifest.json": {
+   "lines_before": 30162,
+   "lines_after": 30162,
+   "added_lines": 0,
+   "changed": false
+  },
+  "er006_output/master_audio_store_01/reuse_telemetry.jsonl": {
+   "lines_before": 2526,
+   "lines_after": 2526,
+   "added_lines": 0,
+   "changed": false
+  }
+ },
+ "at": "2026-10-26T15:44:59"
+}

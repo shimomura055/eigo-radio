@@ -13,3 +13,12 @@ driver: `er122_fzcw_runtime_evidence_01.py`(正式runner main()を同一process�
 | E-5 | Std | `--kill-after-attempt 1` | attempt1のみNG(強制)->kill後再開でn=2はctx即時PASS、TTS総回数=2、再開で1回目重複なし |
 | E-6 | Adv | post-slowdown側でattempt1をNG | 外側ループが継続し通算n=2もctx、`prior_generations`で二重計上なし、総3回上限 |
 合否: 上記期待を満たし、新規費用が見積内、ASR表記違いのみ理由の再生成0。不合格はFableへ原因・証拠付き報告。
+
+## 実行後の逸脱履歴(委任_03、2026-10-26追記。計画本文は改訂せず履歴として残す)
+
+実行結果=EVIDENCE_01.md。計画からの逸脱は以下(詳細・理由・影響はEVIDENCE_01.md §5):
+- D-1 作品を猿の手→melos(猿の手seed更新によるprovenance不一致STOP[API 0]。melosは`run_p2_evidence_r3`のtext資産copy、dialogue TTSは全新規生成)。
+- D-2 driver修正2点(prompt非str記録、再開用`--ordinal-offset`)。再開起動は「同一args」ではなくkillフラグ除去+offset付き。
+- D-3 準備段階の起動重ねで猿の手`run_fzcw_e1_01`にRESTART_STORM(STOP+LOCK)。解除せず、melos別run dirで継続。
+- D-4/D-5 budget値・追加text資産copy(study_text、keywords_canonicalized)。
+- 計画表のE-1は「両level 1run」で実施(`--level`なし、default stagesの1起動)。E-2〜E-6の対象clipは`full_story_part1_c2`(Std/Adv共通のdialogue clip)。

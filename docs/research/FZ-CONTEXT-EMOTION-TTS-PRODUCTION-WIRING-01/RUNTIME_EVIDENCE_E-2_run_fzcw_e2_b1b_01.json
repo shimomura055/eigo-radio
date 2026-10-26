@@ -1,0 +1,145 @@
+{
+ "management_id": "FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01",
+ "case": "E-2",
+ "path": "forced_ng_fallback",
+ "forced_ng_injection": true,
+ "injection_plan": {
+  "rep": {
+   "*": [
+    1,
+    2
+   ]
+  },
+  "post": {}
+ },
+ "injected_overrides": [
+  {
+   "kind": "rep",
+   "clip": "full_story_part1_c2",
+   "ordinal": 1
+  },
+  {
+   "kind": "rep",
+   "clip": "full_story_part1_c2",
+   "ordinal": 2
+  }
+ ],
+ "injected_override_count": 2,
+ "rep_gate_calls": {
+  "full_story_part1_c2": 3
+ },
+ "post_slowdown_calls": {},
+ "runner_rc": 0,
+ "run_dir": "er026_output/family_z_production_e2e_01/melos/run_fzcw_e2_b1b_01",
+ "argv": [
+  "--mode",
+  "real",
+  "--story",
+  "melos",
+  "--slug",
+  "melos",
+  "--run",
+  "run_fzcw_e2_b1b_01",
+  "--stages",
+  "tts_b1b",
+  "--approved-budget-jpy",
+  "15.0",
+  "--tts-execution-mode",
+  "STANDARD",
+  "--pages-dir",
+  "er026_output/family_z_production_e2e_01/melos/run_fzcw_e2_b1b_01/pages_evidence_unpublished",
+  "--only-clips",
+  "full_story_part1_c2"
+ ],
+ "pid": 36400,
+ "tts_requests": [
+  {
+   "clip": "full_story_part1_c2",
+   "prompt_sha256": "64d3477546f0cd4e85a710e5f025a0096a9ea0fbffce30d93e53e947d22bd470",
+   "prompt_chars": 3719,
+   "prompt_type": "str",
+   "has_context": true,
+   "t": 1792996772.799423
+  },
+  {
+   "clip": "full_story_part1_c2",
+   "prompt_sha256": "64d3477546f0cd4e85a710e5f025a0096a9ea0fbffce30d93e53e947d22bd470",
+   "prompt_chars": 3719,
+   "prompt_type": "str",
+   "has_context": true,
+   "t": 1792996785.1895256
+  },
+  {
+   "clip": "full_story_part1_c2",
+   "prompt_sha256": "110956e8c13b85a3061b2204f4a84ca6c55d634b2d8bdb80eb6bd12839a98eb5",
+   "prompt_chars": 2322,
+   "prompt_type": "str",
+   "has_context": false,
+   "t": 1792997395.3439279
+  }
+ ],
+ "tts_requests_with_context": 2,
+ "tts_requests_total": 3,
+ "policy_events": [],
+ "shared_ledgers": {
+  "er011_output/attempt_history.jsonl": {
+   "lines_before": 18976,
+   "lines_after": 19031,
+   "added_lines": 55,
+   "changed": true
+  },
+  "er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl": {
+   "lines_before": 134,
+   "lines_after": 136,
+   "added_lines": 2,
+   "changed": true
+  },
+  "er007_output/ja_asr_cascade_01/human_review_queue.jsonl": {
+   "lines_before": 15,
+   "lines_after": 15,
+   "added_lines": 0,
+   "changed": false
+  },
+  "er006_output/master_audio_store_01/manifest.json": {
+   "lines_before": 30162,
+   "lines_after": 30162,
+   "added_lines": 0,
+   "changed": false
+  },
+  "er006_output/master_audio_store_01/reuse_telemetry.jsonl": {
+   "lines_before": 2526,
+   "lines_after": 2526,
+   "added_lines": 0,
+   "changed": false
+  }
+ },
+ "evidence_only_rows": [
+  {
+   "ledger": "er011_output/attempt_history.jsonl",
+   "line_index": 19024,
+   "sha256": "e7e177100a09abc62d8acc4283a7514e3ba8f2a38992ef01689e71ffdef3a639",
+   "head": "{\"run_id\": \"5d4e07bb-d1a6-4a96-9c66-6c6f4a93935d\", \"timestamp\": \"2026-10-26T15:49:55\", \"theme_id\": \"run_fzcw_e2_b1b_01\", \"level\": \"b1b\", \"segment_id\": \"full_story_part1_c2\", \"wav_path\": \"er026_output/family_z_production_e2e_01/melos/run_fzcw_e2_b1b_01/b1b/narration/full_story_part1_c2.wav\", \"action\"",
+   "classification": "evidence_only_no_action_required"
+  },
+  {
+   "ledger": "er011_output/attempt_history.jsonl",
+   "line_index": 19029,
+   "sha256": "1d2bd1eca65ad067cd561bd04e8575419cc389af76754de98d7f4672f963fb24",
+   "head": "{\"run_id\": \"29274ae3-c056-4ad1-9311-b0c5e3d5f90e\", \"timestamp\": \"2026-10-26T15:50:05\", \"theme_id\": \"run_fzcw_e2_b1b_01\", \"level\": \"b1b\", \"segment_id\": \"full_story_part1_c2\", \"language\": \"en\", \"canonical_text_sha256\": \"50716093a4e3cddc047beb98df7be1477e354d3c7e390f3165d9a9743bfc907e\", \"action\": \"PROC",
+   "classification": "evidence_only_no_action_required"
+  },
+  {
+   "ledger": "er011_output/attempt_history.jsonl",
+   "line_index": 19030,
+   "sha256": "f0d115aa42051f65964d1336a390712f910282421b68ce687a9f8f21cb4ea45e",
+   "head": "{\"run_id\": \"280abd95-01b4-4ff3-b8dd-bd5ddf19d9fc\", \"timestamp\": \"2026-10-26T15:50:06\", \"theme_id\": \"run_fzcw_e2_b1b_01\", \"level\": \"b1b\", \"segment_id\": \"full_story_part1_c2\", \"wav_path\": \"er026_output/family_z_production_e2e_01/melos/run_fzcw_e2_b1b_01/b1b/narration/full_story_part1_c2.wav\", \"action\"",
+   "classification": "evidence_only_no_action_required"
+  }
+ ],
+ "assembly_observations": null,
+ "ledger_invalidation": "forced run由来のHR queue行・attempt_history行は『evidence専用・対応不要』(台帳で無効化)。費用は開発費に計上",
+ "peak_distribution_observation": {
+  "full_story_part1_c2": 0.69882
+ },
+ "finished_at": "2026-10-26T15:50:06"
+}

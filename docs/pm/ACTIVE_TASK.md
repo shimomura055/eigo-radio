@@ -1,49 +1,8 @@
-FAMILY-Z-TELL-TALE-HEART-KP-FIX-01 委任_01: Std KP#2差替え(catch of one's lantern→louder and louder)完了・公開差替え済み・USER_LISTENING_PENDING。報告=docs/pm/RESULT_PACKET_TTHKP1.md
-
-## FAMILY-Y-PRODUCTION-LAUNCH-01 委任_03(2026-10-25、runner結線の仕上げ+正式E2E evidence E-3/E-1)
-- 状態: Part A完了(commit 4437e98cf、API 0)。Part B: **E-3(SNS)完走**(実費82.72円・Gate全PASS・限定公開)、**E-1(宅配案B)未完走**(案B 1回判定PASS・HRなし経路確認・a2の`preview`/`y_voice_1`がTTS上限3回でER-011 HR Lock→Gate BLOCK、実費32.07円)。累計129.14円/Cap 170円。PRODUCTION_WIREDではない(判定はFable)。
-- 成果物: docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/{EVIDENCE_01,BUDGET_LOG_01}.md、er121_output/family_y_production_01/{sns_age_limit,redelivery_fee}/run_01/、user_test/family_y_production_sns_age_limit_01/、報告=docs/pm/RESULT_PACKET_YPL3.md。次=E-1のa2 HR Lock解除(ユーザー試聴承認)後の再走/OPEN-517適用。
-
-## FAMILY-Y-PRODUCTION-LAUNCH-01 委任_02B(2026-10-25、runner/audio/routing/scope lane)
-- 状態: 実装+mock test完了(API 0・実費0円・Production変更0・有料run 0)。新規test 59件PASS(network/実client遮断)・X/Z回帰の失敗16件は本変更起因でない。Y Production runner=`er121_family_y_runner_01.py`(既定dry-run、real未起動)。text core `produce_article`は未接続(委任_02Cで接続)。
-- 成果物: er121_family_y_{runner,audio,structure,mock}_01.py、test=er121_family_y_runner_01_test_01.py・er121_family_y_structure_match_test_01.py、tools/y_page_notice_check_01.py、docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/OPERATIONS_01.md、報告=docs/pm/RESULT_PACKET_YPL2B.md。
-
-## FAMILY-Y-PRODUCTION-LAUNCH-01 委任_02C(2026-10-25、text core残り=`produce_article`: Voice生成+Voice Gate+Lead+人物紹介+組立)
-- 状態: 実装・offline test完了(新規72+既存56=128 PASS、接続試行0)。API 0・実費0円・有料run 0・Production run 0。Fable判断(OT-27=案I/OT-28=補助適用から`leak_evidence_memorable`除外/Cap 170円/E-3 voices実生成)を反映。**PRODUCTION_WIREDではない**。未実施=routing key 2本のer006登録(02B)・runner受け渡し(02B)・E-1/E-3 runtime evidence。
-- 成果物: er121_family_y_text_core_01.py(+`er121_family_y_text_core_article_test_01.py`)、er121_prompts/{voice_generate_02,lead_generate_01,persona_intro_01}.txt、docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/{DESIGN_02 §11-12,BUDGET_PLAN_03,OPEN_TRACKING_02 §4,theme_packages/}、報告=docs/pm/RESULT_PACKET_YPL2C.md。
-
-## FAMILY-Y-PRODUCTION-LAUNCH-01 委任_02A(2026-10-25、Opus条件A反映・テキストcore[Closing/Gate lane]・較正)
-- 状態: Opus M-1〜M-6/R-1〜R-7反映完了。実装=`er121_family_y_text_core_01.py`(+`er121_prompts/closing_general_02.txt`、test 56 PASS、Production未接続・新flagなし)。有料実費14.35円(M-1較正5.97+M-2書換えevidence 8.38)。**STOP報告: 案BがM-1後Tension判定promptで2/7 FAIL(旧0/7)=ユーザー判断候補(D)、案B関連の追加作業は停止**。Lead/紹介補助適用も同根で3/4 FAIL(Fable判断)。R2宅配H2『見えてくる』はM-1後も3/3 FAIL(G-2根拠強化)。次=02B(runner/audio/routing/scope、並行中)→E-3 closing前倒し(`produce_closing`直接呼出可)→E-1(案B判断後)。
-- 成果物: docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/{OPUS_REVIEW_01,DESIGN_02,SPEC_LEDGER_02(+spec_ledger_02.json),BUDGET_PLAN_02,OPEN_TRACKING_02,GATE_CALIBRATION_01,REWRITE_EVIDENCE_01}.md、証跡=er110_output/family_y_production_launch_01/、ユーザー原文逐語=docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER.md、報告=docs/pm/RESULT_PACKET_YPL2A.md。
-
-## FAMILY-Y-PRODUCTION-LAUNCH-01 委任_01(2026-10-25、Phase 0)
-- 状態: Phase 0完了(API 0・実費0円・Production変更0・有料run 0)。ユーザー正式決定(Y Production立上げ・Closing一般化Prompt 02・案B個別採用)を原文保存(文字化けのまま無改変)。差分台帳55行・Prompt/Gate整合・設計・費用概算・Opus条件A依頼文・OPEN追跡を作成。OPEN-520新規、OPEN-463/484統合。次=Opus条件Aレビュー→委任_02(共有file最小編集+er121_*実装)。
-- 成果物: docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/{SPEC_LEDGER_01(+spec_ledger_01.json),EXISTING_SPEC_CHECK_01,PROMPT_GATE_ALIGNMENT_01,DESIGN_01,OPUS_REVIEW_REQUEST_01,BUDGET_PLAN_01,OPEN_TRACKING_01}.md、報告=docs/pm/RESULT_PACKET_YPL1.md。ユーザー判断候補=Gate文言(D)のみ、立上げは止めない。
-
-## KP-GRAMMAR-HUMAN-REVIEW-PRODUCTION-01 委任_02(2026-10-25)
-- 状態: Opus条件Aレビュー反映→DESIGN_02→KP側(X/Z共通核)実装・新規test 104件PASS・既存回帰PASS(既存失敗はHEADでも同じ5件のみ)。Status=IMPLEMENTED_PENDING_EVIDENCE(PRODUCTION_WIREDではない)。既定=宣言なし→待機(rc=4)。実API evidence R1〜R4は翌日JST 10/26以降の別委任。**既存X testのmock漏れで実LLMに到達・推定6〜15円(是正済み、RESULT_PACKET_KPHR2.md参照)**。
-- 成果物: docs/research/KP-GRAMMAR-HUMAN-REVIEW-PRODUCTION-01/{OPUS_REVIEW_01,DESIGN_02,TEST_PLAN_02,BUDGET_PLAN_02,OPERATIONS_01}.md、報告=docs/pm/RESULT_PACKET_KPHR2.md。次=R1〜R4委任(Cap150円)。
-
-## PART2-GRAMMAR-PRODUCTION-WIRING-01 委任_02(2026-10-25)
-- 状態: Opus条件Aレビュー(M-1〜M-7・R採用分)をmodule内で反映済み。test 99 PASS・API 0・実費0円。M-1=訳の出所をTrial-07同一に戻した(T1 call廃止)。runner/er119/er006/ページは未変更(委任_03で接続)。OPEN-519/484更新済み。
-- 成果物: docs/research/PART2-GRAMMAR-PRODUCTION-WIRING-01/{OPUS_REVIEW_01,DESIGN_02,TEST_PLAN_02,BUDGET_PLAN_02}.md、報告=docs/pm/RESULT_PACKET_P2W2.md。次=委任_03(KP HR実装完了後: er006登録→Z/X hook+文法HR→evidence→SSOT)。
-
-## FAMILY-Y-VOICES-DESIGN-01 委任_33(2026-10-25、Closing一般化Trial Round 2)
-- 状態: Round 2有料実行+評価完了(6本・実費94.28円・案件累計161.32/200円)。委任_34でFable評価転記済み、Status確定=VALIDATED(限定)据置(次の手=案4)。Production配線なし。OPEN-463追記済み。
-- 成果物: docs/research/FAMILY-Y-VOICES-DESIGN-01/CLOSING_GENERAL_01/{TRIAL_RESULT_02,EVAL_02,BUDGET_LOG_02}.md、報告=docs/pm/RESULT_PACKET_Y33.md。
-
-## JA-ASR-FALSE-NG-ROOT-CAUSE-01 委任_03(2026-10-25、Phase 3有料検証)
-- 状態: Phase 3有料6 stage完了(実費約5.6円/保守側29.65円、Cap60円内)・評価完了。Status候補=v1 VALIDATED不可(A4(a)側で増分誤PASS 1/30=N3-21)→v2(A4(a)不規則読み除外)API 0再評価が次。Production変更0。
-- 成果物: docs/research/JA-ASR-FALSE-NG-ROOT-CAUSE-01/{EVAL_02,TRIAL_RESULT_01,BUDGET_LOG_01}.md、報告=docs/pm/RESULT_PACKET_JAASR3.md。
-
-## JA-ASR-FALSE-NG-ROOT-CAUSE-01 委任_04(2026-10-25、Fable評価転記+v2再凍結+API 0再評価)
-- 状態: 完了(有料API 0・実費0円・Production変更0)。v1=REJECTED。v2(`proto_reading_compare_02.py` sha `bcb042c651f05c7801b382e51b802a870e1240892d3ae65efc6cdbbca27c6144`)をAPI 0再評価: 増分誤PASS 0(N-3 A4(a)込み含む)・回帰0・失う救済0・Melos副作用なし → Status候補=VALIDATED(限定)(最終はFable)。OPEN-517是正案整理済み(実装なし)。
-- 成果物: docs/research/JA-ASR-FALSE-NG-ROOT-CAUSE-01/{DESIGN_02,PREREGISTERED_CRITERIA_03,EVAL_03}.md、proto_reading_compare_02.py(+_test_01)、eval_api0_v2_01.py、open517_value_gate_probe_01.py、報告=docs/pm/RESULT_PACKET_JAASR4.md。
-
-## JA-ASR-FALSE-NG-ROOT-CAUSE-01 委任_05(2026-10-25、OPEN-517是正設計+DEV実装+API 0検証)
-- 状態: 完了(有料API 0・実費0円・Production変更0)。v2=VALIDATED(限定)をFable転記。OPEN-517是正案(F1+F2 v3)をproto実装し771件API 0再評価=正常NG化0・既知負例9/9是正・非READING_MATCH経路変化0・決定的。次=Opus軽量レビュー→ユーザー報告→Production適用(別委任)。
-- 成果物: docs/research/JA-ASR-FALSE-NG-ROOT-CAUSE-01/{OPEN517_DESIGN_01,OPEN517_PREREGISTERED_01,OPEN517_EVAL_01,OPUS_REVIEW_REQUEST_01_OPEN517}.md、proto_value_gate_fix_03.py、報告=docs/pm/RESULT_PACKET_JAASR5.md。
-
-## JA-ASR-FALSE-NG-ROOT-CAUSE-01 委任_06(2026-10-25、OPEN-517 Opus条件Cレビュー反映: proto v4・未知データAPI 0評価・過去公開物監査・適用計画)
-- 状態: 完了(有料API 0・実費0円・Production変更0)。v4(sha `19aea160…`)基準1〜5・7〜9合格。既存771+未知493で判定変化13件(v3と同一)、正常NG化0、未知データ変化0(ただし検出力の検証にならない)。過去公開物監査=該当0。OF-AUW-01はFable採用(ユーザー個別承認なし)。新規OPEN-522/523/524。Production適用はFable判断+ユーザー報告後(`OPEN517_APPLY_PLAN_01.md`)。
-- 成果物: docs/research/JA-ASR-FALSE-NG-ROOT-CAUSE-01/{OPUS_REVIEW_01_OPEN517,OPEN517_DESIGN_02,OPEN517_PREREGISTERED_02,OPEN517_EVAL_02,OPEN517_PUBLIC_AUDIT_01,OPEN517_APPLY_PLAN_01}.md、proto_value_gate_fix_04.py(+_test_01)、eval_open517_api0_04.py、collect_unknown_pool_02.py、sweep_open517_04.py、open517_public_audit_01.py、報告=docs/pm/RESULT_PACKET_JAASR6.md。
+管理ID: FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01 委任_03(Phase 2: 正式runtime evidence E-1〜E-6。実費約¥40.3)
+Status: 完了報告前(到達上限=EVIDENCE_COLLECTED。PRODUCTION_WIREDではない。判定はFable)
+進行中: OPEN-528=APPROVED_FOR_PRODUCTION・Phase 2 evidence取得済み(melos、逸脱4件)
+並行3件: FAMILY-Y-VOICE1-MALE7-TRIAL-01/CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01/KP-GATE-EXCLUSION-RESCUE-DESIGN-02
+STOP条件: 猿の手 run_fzcw_e1_01 にRESTART_STORM STOP(自発、run dir限定、未解除)。他は stop_scope_check rc=0
+次アクション: Fableが逸脱D-1〜D-5を照合→PRODUCTION_WIRED判定/OPEN-528更新の別委任
+QDC: 当日費用=2026-10-26 約214+本委任約40.3+Y Trial実費/1,000
+報告単位Status: Phase 2完了報告待ち

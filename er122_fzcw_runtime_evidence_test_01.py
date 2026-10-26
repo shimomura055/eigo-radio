@@ -269,3 +269,18 @@ def test_assembly_observations_reads_headroom_and_gain_reports_only(tmp_path):
     (d / "gain_report.json").write_text(json.dumps({"target_rms": 0.1}))
     obs = drv.assembly_observations(str(tmp_path), levels=("a2", "b1b"))
     assert obs == {"a2": {"headroom_report": {"scalar": 0.97}, "gain_report": {"target_rms": 0.1}}}
+
+
+def test_ordinal_offset_prevents_reinjection_after_resume():
+    """委任_03追加: 再開起動(新process)でも強制NGのordinalが1に戻らず、消費済みattempt数から数える。"""
+    import er122_fzcw_runtime_evidence_01 as d
+    plan = d.InjectionPlan("E-5")                       # rep {"*":[1]}
+    orig = lambda verified, out_path, text, *a, **k: {"verified": True}
+    fresh = d.Recorder()
+    w = d.make_rep_gate_wrapper(orig, plan, fresh)
+    assert w(True, "x/clip1.wav", "t")["verified"] is False         # 新規起動: 1回目は強制NG
+    resumed = d.Recorder()
+    resumed.ordinal_offset = 1                           # 再開: n=1は消費済み
+    w2 = d.make_rep_gate_wrapper(orig, plan, resumed)
+    assert w2(True, "x/clip1.wav", "t")["verified"] is True         # 再開後の最初の判定はordinal 2 -> 本物の判定のまま
+    assert resumed.overrides == []
