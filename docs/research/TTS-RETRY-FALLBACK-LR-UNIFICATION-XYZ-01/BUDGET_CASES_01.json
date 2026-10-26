@@ -1,0 +1,777 @@
+{
+ "unit_costs": {
+  "short": [
+   0.7,
+   1.0,
+   1.5
+  ],
+  "body_s": [
+   1.0,
+   1.6,
+   2.2
+  ],
+  "body_l": [
+   2.0,
+   2.34,
+   3.0
+  ],
+  "ja": [
+   0.5,
+   0.8,
+   1.2
+  ],
+  "kp": [
+   0.6,
+   1.0,
+   1.5
+  ],
+  "kpx": [
+   0.8,
+   1.2,
+   1.8
+  ],
+  "zdlg": [
+   0.65,
+   1.0,
+   1.5
+  ],
+  "lr": [
+   0.6,
+   1.0,
+   2.0
+  ]
+ },
+ "cases": [
+  {
+   "id": "X-Std-1",
+   "family": "X",
+   "level": "Std",
+   "leaf": "L3 topic_intro",
+   "scenario": "E-S1 ①②NG→180→③PASS",
+   "counts": {
+    "short": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Std-2",
+   "family": "X",
+   "level": "Std",
+   "leaf": "L3 topic_intro",
+   "scenario": "E-S2a ①②③NG→LR→①'PASS",
+   "counts": {
+    "short": 4,
+    "lr": 1
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Std-3",
+   "family": "X",
+   "level": "Std",
+   "leaf": "L3 topic_intro",
+   "scenario": "E-S2b 全6NG→HR(+再入なし)",
+   "counts": {
+    "short": 6,
+    "lr": 1
+   },
+   "waits": 2,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Std-4",
+   "family": "X",
+   "level": "Std",
+   "leaf": "L4 in_one_line(減速)",
+   "scenario": "E-S1",
+   "counts": {
+    "body_s": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Std-5",
+   "family": "X",
+   "level": "Std",
+   "leaf": "L4 in_one_line(減速)",
+   "scenario": "E-S2b(案A: 減速後再検証NG含む)",
+   "counts": {
+    "body_s": 6,
+    "lr": 1
+   },
+   "waits": 2,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Std-6",
+   "family": "X",
+   "level": "Std",
+   "leaf": "L7 japanese_title",
+   "scenario": "E-S1",
+   "counts": {
+    "ja": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Std-7",
+   "family": "X",
+   "level": "Std",
+   "leaf": "L7 japanese_title",
+   "scenario": "E-S3 LRなし③NG→HR",
+   "counts": {
+    "ja": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Std-8",
+   "family": "X",
+   "level": "Std",
+   "leaf": "L6 kp1_en",
+   "scenario": "E-S4 前段2NG→180→ENGLISH_LOCK③PASS",
+   "counts": {
+    "kp": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Std-9",
+   "family": "X",
+   "level": "Std",
+   "leaf": "L6 kp1_en",
+   "scenario": "E-S4 4回NG→HR",
+   "counts": {
+    "kp": 4
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Std-10",
+   "family": "X",
+   "level": "Std",
+   "leaf": "L3 topic_intro",
+   "scenario": "E-S6 待機中kill→resume(①②再生成0・残り待機のみ)",
+   "counts": {
+    "short": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Std-11",
+   "family": "X",
+   "level": "Std",
+   "leaf": "正常系(N-lite 2 clip)",
+   "scenario": "E-N ①PASS無待機",
+   "counts": {
+    "short": 2
+   },
+   "waits": 0,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Adv-1",
+   "family": "X",
+   "level": "Adv",
+   "leaf": "L1 comment_1",
+   "scenario": "E-S1 ①②NG→180→短文③PASS(Adv新規)",
+   "counts": {
+    "short": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Adv-2",
+   "family": "X",
+   "level": "Adv",
+   "leaf": "L1 comment_1",
+   "scenario": "E-S2a",
+   "counts": {
+    "short": 4,
+    "lr": 1
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Adv-3",
+   "family": "X",
+   "level": "Adv",
+   "leaf": "L1 comment_1",
+   "scenario": "E-S2b 全6NG→HR",
+   "counts": {
+    "short": 6,
+    "lr": 1
+   },
+   "waits": 2,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Adv-4",
+   "family": "X",
+   "level": "Adv",
+   "leaf": "L1 comment_1",
+   "scenario": "E-S7 U-03: ASR一致+disfluency単独NG→LR不可→即HR",
+   "counts": {
+    "short": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Adv-5",
+   "family": "X",
+   "level": "Adv",
+   "leaf": "L2 in_one_line",
+   "scenario": "E-S1",
+   "counts": {
+    "body_s": 3
+   },
+   "waits": 1,
+   "lean": false,
+   "note": ""
+  },
+  {
+   "id": "X-Adv-6",
+   "family": "X",
+   "level": "Adv",
+   "leaf": "L2 in_one_line",
+   "scenario": "E-S2b(LR再TTSのStyle保持を確認)",
+   "counts": {
+    "body_s": 6,
+    "lr": 1
+   },
+   "waits": 2,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Adv-7",
+   "family": "X",
+   "level": "Adv",
+   "leaf": "L5 kp1_explanation_en",
+   "scenario": "E-S1",
+   "counts": {
+    "kpx": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Adv-8",
+   "family": "X",
+   "level": "Adv",
+   "leaf": "L5 kp1_explanation_en",
+   "scenario": "E-S3 LRなし③NG→HR",
+   "counts": {
+    "kpx": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Adv-9",
+   "family": "X",
+   "level": "Adv",
+   "leaf": "L5 kp解説 適合性",
+   "scenario": "E-X5 既存3 text×minimal 1take(ASR PASS・disfluency NGなし)",
+   "counts": {
+    "kpx": 3
+   },
+   "waits": 0,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Adv-10",
+   "family": "X",
+   "level": "Adv",
+   "leaf": "L6 kp1_en",
+   "scenario": "E-S4 PASS",
+   "counts": {
+    "kp": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Adv-11",
+   "family": "X",
+   "level": "Adv",
+   "leaf": "L6 kp1_en",
+   "scenario": "E-S4 4回NG→HR",
+   "counts": {
+    "kp": 4
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Adv-12",
+   "family": "X",
+   "level": "Adv",
+   "leaf": "L1 comment_1",
+   "scenario": "E-S6 resume",
+   "counts": {
+    "short": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "X-Adv-13",
+   "family": "X",
+   "level": "Adv",
+   "leaf": "正常系(N-lite 2 clip)",
+   "scenario": "E-N",
+   "counts": {
+    "short": 2
+   },
+   "waits": 0,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Y-Std-1",
+   "family": "Y",
+   "level": "Std",
+   "leaf": "L3 topic_intro",
+   "scenario": "E-S2b 全6NG→HR(Y側の終端確認)",
+   "counts": {
+    "short": 6,
+    "lr": 1
+   },
+   "waits": 2,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Y-Std-2",
+   "family": "Y",
+   "level": "Std",
+   "leaf": "L7 japanese_title",
+   "scenario": "E-S1",
+   "counts": {
+    "ja": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Y-Std-3",
+   "family": "Y",
+   "level": "Std",
+   "leaf": "L6 kp1_en",
+   "scenario": "E-S4 PASS",
+   "counts": {
+    "kp": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Y-Std-4",
+   "family": "Y",
+   "level": "Std",
+   "leaf": "L4 y_voice_1(本文Voice)",
+   "scenario": "E-S1 ①②NG→180→③PASS → Y Gate(STD_FALLBACK)BLOCK確認",
+   "counts": {
+    "body_l": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Y-Std-5",
+   "family": "Y",
+   "level": "Std",
+   "leaf": "正常系(N-lite 2 clip)",
+   "scenario": "E-N",
+   "counts": {
+    "short": 2
+   },
+   "waits": 0,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Y-Adv-1",
+   "family": "Y",
+   "level": "Adv",
+   "leaf": "L1 comment",
+   "scenario": "E-S2a",
+   "counts": {
+    "short": 4,
+    "lr": 1
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Y-Adv-2",
+   "family": "Y",
+   "level": "Adv",
+   "leaf": "L5 kp1_explanation_en",
+   "scenario": "E-S1",
+   "counts": {
+    "kpx": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Y-Adv-3",
+   "family": "Y",
+   "level": "Adv",
+   "leaf": "L6 kp1_en",
+   "scenario": "E-S4 PASS",
+   "counts": {
+    "kp": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Y-Adv-4",
+   "family": "Y",
+   "level": "Adv",
+   "leaf": "L2 y_voice_1(本文Voice)",
+   "scenario": "E-S2a ①②③NG→LR→①'PASS → Y Gate(LOCAL_REWRITE_RECOVERY)BLOCK確認・Voice/Style保持",
+   "counts": {
+    "body_l": 4,
+    "lr": 1
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Y-Adv-5",
+   "family": "Y",
+   "level": "Adv",
+   "leaf": "正常系(N-lite 2 clip)",
+   "scenario": "E-N",
+   "counts": {
+    "short": 2
+   },
+   "waits": 0,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Z-Std-1",
+   "family": "Z",
+   "level": "Std",
+   "leaf": "L4 narrator chunk",
+   "scenario": "E-S2b",
+   "counts": {
+    "body_s": 6,
+    "lr": 1
+   },
+   "waits": 2,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Z-Std-2",
+   "family": "Z",
+   "level": "Std",
+   "leaf": "L8 dialogue ctx",
+   "scenario": "E-S1 ctx①②NG→180→従来③PASS",
+   "counts": {
+    "zdlg": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Z-Std-3",
+   "family": "Z",
+   "level": "Std",
+   "leaf": "L8 dialogue ctx",
+   "scenario": "E-S3 3NG→TERMINAL_NG→rc=2",
+   "counts": {
+    "zdlg": 3
+   },
+   "waits": 1,
+   "lean": false,
+   "note": ""
+  },
+  {
+   "id": "Z-Std-4",
+   "family": "Z",
+   "level": "Std",
+   "leaf": "L7 japanese_title",
+   "scenario": "E-S1",
+   "counts": {
+    "ja": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Z-Std-5",
+   "family": "Z",
+   "level": "Std",
+   "leaf": "L6 kp1_en",
+   "scenario": "E-S4 PASS",
+   "counts": {
+    "kp": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Z-Std-6",
+   "family": "Z",
+   "level": "Std",
+   "leaf": "L3 topic_intro_en(U-06)",
+   "scenario": "E-S2a(新規にLR・待機が有効になることの実証)",
+   "counts": {
+    "short": 4,
+    "lr": 1
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Z-Std-7",
+   "family": "Z",
+   "level": "Std",
+   "leaf": "正常系(N-lite 2 clip)",
+   "scenario": "E-N",
+   "counts": {
+    "short": 2
+   },
+   "waits": 0,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Z-Adv-1",
+   "family": "Z",
+   "level": "Adv",
+   "leaf": "L2 narrator chunk",
+   "scenario": "E-S2b",
+   "counts": {
+    "body_s": 6,
+    "lr": 1
+   },
+   "waits": 2,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Z-Adv-2",
+   "family": "Z",
+   "level": "Adv",
+   "leaf": "L8 dialogue ctx",
+   "scenario": "E-S1(減速後NG含む通算)",
+   "counts": {
+    "zdlg": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Z-Adv-3",
+   "family": "Z",
+   "level": "Adv",
+   "leaf": "L8 dialogue ctx",
+   "scenario": "E-S3 3NG→HR",
+   "counts": {
+    "zdlg": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Z-Adv-4",
+   "family": "Z",
+   "level": "Adv",
+   "leaf": "L1 topic_intro_en(U-06)",
+   "scenario": "E-S2a",
+   "counts": {
+    "short": 4,
+    "lr": 1
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Z-Adv-5",
+   "family": "Z",
+   "level": "Adv",
+   "leaf": "L5 kp1_explanation_en",
+   "scenario": "E-S1",
+   "counts": {
+    "kpx": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Z-Adv-6",
+   "family": "Z",
+   "level": "Adv",
+   "leaf": "L6 kp1_en",
+   "scenario": "E-S4 PASS",
+   "counts": {
+    "kp": 3
+   },
+   "waits": 1,
+   "lean": true,
+   "note": ""
+  },
+  {
+   "id": "Z-Adv-7",
+   "family": "Z",
+   "level": "Adv",
+   "leaf": "L1 preview/comment",
+   "scenario": "E-S1",
+   "counts": {
+    "short": 3
+   },
+   "waits": 1,
+   "lean": false,
+   "note": ""
+  },
+  {
+   "id": "Z-Adv-8",
+   "family": "Z",
+   "level": "Adv",
+   "leaf": "正常系(N-lite 2 clip)",
+   "scenario": "E-N",
+   "counts": {
+    "short": 2
+   },
+   "waits": 0,
+   "lean": true,
+   "note": ""
+  }
+ ],
+ "totals": {
+  "full": {
+   "cases": 49,
+   "expected": 140.8,
+   "conservative": 211.0,
+   "ceiling": 313.4,
+   "tts_attempts": 170,
+   "lr_calls": 13,
+   "waits": 49
+  },
+  "lean": {
+   "cases": 46,
+   "expected": 133.8,
+   "conservative": 200.2,
+   "ceiling": 297.8,
+   "tts_attempts": 161,
+   "lr_calls": 13,
+   "waits": 46
+  }
+ },
+ "lean_by_family": {
+  "X": {
+   "cases": 23,
+   "expected": 64.5,
+   "conservative": 98.6,
+   "ceiling": 147.9,
+   "tts": 83
+  },
+  "Y": {
+   "cases": 10,
+   "expected": 33.1,
+   "conservative": 45.4,
+   "ceiling": 66.0,
+   "tts": 33
+  },
+  "Z": {
+   "cases": 13,
+   "expected": 36.1,
+   "conservative": 56.2,
+   "ceiling": 83.9,
+   "tts": 45
+  }
+ },
+ "lean_by_level": {
+  "X-Std": {
+   "cases": 11,
+   "expected": 30.6,
+   "conservative": 47.2,
+   "ceiling": 70.5
+  },
+  "X-Adv": {
+   "cases": 12,
+   "expected": 33.9,
+   "conservative": 51.4,
+   "ceiling": 77.4
+  },
+  "Y-Std": {
+   "cases": 5,
+   "expected": 15.5,
+   "conservative": 21.4,
+   "ceiling": 31.1
+  },
+  "Y-Adv": {
+   "cases": 5,
+   "expected": 17.6,
+   "conservative": 24.0,
+   "ceiling": 34.9
+  },
+  "Z-Std": {
+   "cases": 6,
+   "expected": 16.6,
+   "conservative": 26.0,
+   "ceiling": 38.8
+  },
+  "Z-Adv": {
+   "cases": 7,
+   "expected": 19.5,
+   "conservative": 30.2,
+   "ceiling": 45.1
+  }
+ }
+}
