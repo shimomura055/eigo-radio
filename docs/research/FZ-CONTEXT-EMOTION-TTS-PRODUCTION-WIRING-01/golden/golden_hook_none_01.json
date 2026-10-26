@@ -1,0 +1,1188 @@
+{
+ "outer": {
+  "O1_first_pass_ok": {
+   "calls": {
+    "gen": [
+     3
+    ],
+    "post": [
+     {
+      "is_last_slot": false
+     }
+    ]
+   },
+   "result": {
+    "attempts_log": [
+     {
+      "attempt": 1
+     }
+    ],
+    "reason": "fake",
+    "slowdown_attempts_log": [
+     {
+      "attempt": 1,
+      "post_slowdown_asr_text": null,
+      "post_slowdown_cascade": null,
+      "post_slowdown_classification": null,
+      "status": "OK",
+      "tts_generations_used_cumulative": 1
+     }
+    ],
+    "status": "OK",
+    "tts_generations_used": 1
+   },
+   "scenario": "O1_first_pass_ok"
+  },
+  "O2_post_ng_then_ok": {
+   "calls": {
+    "gen": [
+     3,
+     2
+    ],
+    "post": [
+     {
+      "is_last_slot": false
+     },
+     {
+      "is_last_slot": false
+     }
+    ]
+   },
+   "result": {
+    "attempts_log": [
+     {
+      "attempt": 1
+     }
+    ],
+    "reason": "fake",
+    "slowdown_attempts_log": [
+     {
+      "attempt": 1,
+      "post_slowdown_asr_text": null,
+      "post_slowdown_cascade": null,
+      "post_slowdown_classification": null,
+      "status": "STOPPED",
+      "tts_generations_used_cumulative": 1
+     },
+     {
+      "attempt": 2,
+      "post_slowdown_asr_text": null,
+      "post_slowdown_cascade": null,
+      "post_slowdown_classification": null,
+      "status": "OK",
+      "tts_generations_used_cumulative": 2
+     }
+    ],
+    "status": "OK",
+    "tts_generations_used": 2
+   },
+   "scenario": "O2_post_ng_then_ok"
+  },
+  "O3_post_ng_thrice": {
+   "calls": {
+    "gen": [
+     3,
+     2,
+     1
+    ],
+    "post": [
+     {
+      "is_last_slot": false
+     },
+     {
+      "is_last_slot": false
+     },
+     {
+      "is_last_slot": true
+     }
+    ]
+   },
+   "result": {
+    "asr_judgement": null,
+    "attempts_log": [
+     {
+      "attempt": 1
+     }
+    ],
+    "human_review_required": true,
+    "reason": "fake post-slowdown NG",
+    "review_lock_state_final": "HUMAN_REVIEW_REQUIRED",
+    "slowdown_attempts_log": [
+     {
+      "attempt": 1,
+      "post_slowdown_asr_text": null,
+      "post_slowdown_cascade": null,
+      "post_slowdown_classification": null,
+      "status": "STOPPED",
+      "tts_generations_used_cumulative": 1
+     },
+     {
+      "attempt": 2,
+      "post_slowdown_asr_text": null,
+      "post_slowdown_cascade": null,
+      "post_slowdown_classification": null,
+      "status": "STOPPED",
+      "tts_generations_used_cumulative": 2
+     },
+     {
+      "attempt": 3,
+      "post_slowdown_asr_text": null,
+      "post_slowdown_cascade": null,
+      "post_slowdown_classification": null,
+      "status": "STOPPED",
+      "tts_generations_used_cumulative": 3
+     }
+    ],
+    "status": "STOPPED",
+    "tts_generation_cap_reached": true,
+    "tts_generations_used": 3
+   },
+   "scenario": "O3_post_ng_thrice"
+  },
+  "O4_inner_exhausted": {
+   "calls": {
+    "gen": [
+     3
+    ],
+    "post": []
+   },
+   "result": {
+    "attempts_log": [
+     {
+      "attempt": 1
+     },
+     {
+      "attempt": 2
+     },
+     {
+      "attempt": 3
+     }
+    ],
+    "reason": "fake",
+    "slowdown_attempts_log": [],
+    "status": "STOPPED",
+    "tts_generation_cap_reached": true,
+    "tts_generations_used": 3
+   },
+   "scenario": "O4_inner_exhausted"
+  },
+  "O5_two_rows_one_iteration": {
+   "calls": {
+    "gen": [
+     3,
+     1
+    ],
+    "post": [
+     {
+      "is_last_slot": false
+     },
+     {
+      "is_last_slot": true
+     }
+    ]
+   },
+   "result": {
+    "asr_judgement": null,
+    "attempts_log": [
+     {
+      "attempt": 1
+     }
+    ],
+    "human_review_required": true,
+    "reason": "fake post-slowdown NG",
+    "review_lock_state_final": "HUMAN_REVIEW_REQUIRED",
+    "slowdown_attempts_log": [
+     {
+      "attempt": 1,
+      "post_slowdown_asr_text": null,
+      "post_slowdown_cascade": null,
+      "post_slowdown_classification": null,
+      "status": "STOPPED",
+      "tts_generations_used_cumulative": 2
+     },
+     {
+      "attempt": 2,
+      "post_slowdown_asr_text": null,
+      "post_slowdown_cascade": null,
+      "post_slowdown_classification": null,
+      "status": "STOPPED",
+      "tts_generations_used_cumulative": 3
+     }
+    ],
+    "status": "STOPPED",
+    "tts_generation_cap_reached": true,
+    "tts_generations_used": 3
+   },
+   "scenario": "O5_two_rows_one_iteration"
+  },
+  "O6_post_ng_ok_ng": {
+   "calls": {
+    "gen": [
+     3,
+     2
+    ],
+    "post": [
+     {
+      "is_last_slot": false
+     },
+     {
+      "is_last_slot": false
+     }
+    ]
+   },
+   "result": {
+    "attempts_log": [
+     {
+      "attempt": 1
+     }
+    ],
+    "reason": "fake",
+    "slowdown_attempts_log": [
+     {
+      "attempt": 1,
+      "post_slowdown_asr_text": null,
+      "post_slowdown_cascade": null,
+      "post_slowdown_classification": null,
+      "status": "STOPPED",
+      "tts_generations_used_cumulative": 1
+     },
+     {
+      "attempt": 2,
+      "post_slowdown_asr_text": null,
+      "post_slowdown_cascade": null,
+      "post_slowdown_classification": null,
+      "status": "OK",
+      "tts_generations_used_cumulative": 2
+     }
+    ],
+    "status": "OK",
+    "tts_generations_used": 2
+   },
+   "scenario": "O6_post_ng_ok_ng"
+  }
+ },
+ "single": {
+  "S1_success": {
+   "attempt_ctxs": [
+    {
+     "is_last_slot": false,
+     "max_len": 59,
+     "script_version": "v0",
+     "slot": 1
+    }
+   ],
+   "eval_calls": 1,
+   "events": [
+    [
+     "tts",
+     true
+    ],
+    [
+     "eval",
+     1,
+     false
+    ]
+   ],
+   "prompts": [
+    "The message below has two clearly separated sections.\n\n=== STYLE INSTRUCTIONS (meta-guidance only — do not speak this section aloud, it only describes how to perform the reading in the next section) ===\nTTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nGive the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n=== END STYLE INSTRUCTIONS ===\n\n=== TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else — do not speak anything from the STYLE INSTRUCTIONS section above) ===\nThe quick brown fox jumps over the lazy dog.\n=== END TEXT TO SPEAK ==="
+   ],
+   "result": {
+    "asr_judgement": {
+     "fake": true,
+     "state": "PASS"
+    },
+    "asr_text": "The quick brown fox jumps over the lazy dog.",
+    "asr_verified": true,
+    "attempts_log": [
+     {
+      "asr_judgement": {
+       "fake": true,
+       "state": "PASS"
+      },
+      "asr_text": "The quick brown fox jumps over the lazy dog.",
+      "attempt": 1,
+      "attempt_audio_path": "<TMP>/theme/b1b/narration/attempts/full_story_part1_c3_attempt1_englishstyleprefixwidemargin.wav",
+      "audio_classification": "EXACT_MATCH",
+      "connected_speech_info": null,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "final_length_ok": true,
+      "instruction_type": "english_style_prefix_wide_margin",
+      "length_ok": true,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+       "fake": true
+      },
+      "status": "OK",
+      "trim_info": {
+       "raw_duration_seconds": 1.0,
+       "trimmed_duration_seconds": 1.0
+      },
+      "verified": true
+     }
+    ],
+    "audio_classification": "EXACT_MATCH",
+    "clipping_detected": false,
+    "connected_speech_info": null,
+    "disfluency_checked": false,
+    "disfluency_evidence": null,
+    "instruction_type": "english_style_prefix_wide_margin",
+    "path": "<TMP>/theme/b1b/narration/full_story_part1_c3.wav",
+    "repetition_qa_checked": true,
+    "repetition_qa_evidence": {
+     "fake": true
+    },
+    "safety_margin_seconds": 0.35,
+    "status": "OK",
+    "text": "The quick brown fox jumps over the lazy dog.",
+    "trim_info": {
+     "raw_duration_seconds": 1.0,
+     "trimmed_duration_seconds": 1.0
+    },
+    "voice": "Puck"
+   },
+   "scenario": "S1_success",
+   "tts_calls": 1
+  },
+  "S2_ng_then_ok": {
+   "attempt_ctxs": [
+    {
+     "is_last_slot": false,
+     "max_len": 59,
+     "script_version": "v0",
+     "slot": 1
+    },
+    {
+     "is_last_slot": false,
+     "max_len": 59,
+     "script_version": "v0",
+     "slot": 2
+    }
+   ],
+   "eval_calls": 2,
+   "events": [
+    [
+     "tts",
+     true
+    ],
+    [
+     "eval",
+     1,
+     false
+    ],
+    [
+     "tts",
+     true
+    ],
+    [
+     "eval",
+     2,
+     false
+    ]
+   ],
+   "prompts": [
+    "The message below has two clearly separated sections.\n\n=== STYLE INSTRUCTIONS (meta-guidance only — do not speak this section aloud, it only describes how to perform the reading in the next section) ===\nTTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nGive the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n=== END STYLE INSTRUCTIONS ===\n\n=== TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else — do not speak anything from the STYLE INSTRUCTIONS section above) ===\nThe quick brown fox jumps over the lazy dog.\n=== END TEXT TO SPEAK ===",
+    "The message below has two clearly separated sections.\n\n=== STYLE INSTRUCTIONS (meta-guidance only — do not speak this section aloud, it only describes how to perform the reading in the next section) ===\nTTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nGive the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n=== END STYLE INSTRUCTIONS ===\n\n=== TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else — do not speak anything from the STYLE INSTRUCTIONS section above) ===\nThe quick brown fox jumps over the lazy dog.\n=== END TEXT TO SPEAK ==="
+   ],
+   "result": {
+    "asr_judgement": {
+     "fake": true,
+     "state": "PASS"
+    },
+    "asr_text": "The quick brown fox jumps over the lazy dog.",
+    "asr_verified": true,
+    "attempts_log": [
+     {
+      "asr_judgement": {
+       "fake": true,
+       "state": "NG"
+      },
+      "asr_text": "The quick brown fox jumps over the lazy dog.",
+      "attempt": 1,
+      "attempt_audio_path": "<TMP>/theme/b1b/narration/attempts/full_story_part1_c3_attempt1_englishstyleprefixwidemargin.wav",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "connected_speech_info": null,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "final_length_ok": true,
+      "instruction_type": "english_style_prefix_wide_margin",
+      "length_ok": true,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+       "fake": true
+      },
+      "status": "OK",
+      "trim_info": {
+       "raw_duration_seconds": 1.0,
+       "trimmed_duration_seconds": 1.0
+      },
+      "verified": false
+     },
+     {
+      "asr_judgement": {
+       "fake": true,
+       "state": "PASS"
+      },
+      "asr_text": "The quick brown fox jumps over the lazy dog.",
+      "attempt": 2,
+      "attempt_audio_path": "<TMP>/theme/b1b/narration/attempts/full_story_part1_c3_attempt2_englishstyleprefixwidemargin.wav",
+      "audio_classification": "EXACT_MATCH",
+      "connected_speech_info": null,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "final_length_ok": true,
+      "instruction_type": "english_style_prefix_wide_margin",
+      "length_ok": true,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+       "fake": true
+      },
+      "status": "OK",
+      "trim_info": {
+       "raw_duration_seconds": 1.0,
+       "trimmed_duration_seconds": 1.0
+      },
+      "verified": true
+     }
+    ],
+    "audio_classification": "EXACT_MATCH",
+    "clipping_detected": false,
+    "connected_speech_info": null,
+    "disfluency_checked": false,
+    "disfluency_evidence": null,
+    "instruction_type": "english_style_prefix_wide_margin",
+    "path": "<TMP>/theme/b1b/narration/full_story_part1_c3.wav",
+    "repetition_qa_checked": true,
+    "repetition_qa_evidence": {
+     "fake": true
+    },
+    "safety_margin_seconds": 0.35,
+    "status": "OK",
+    "text": "The quick brown fox jumps over the lazy dog.",
+    "trim_info": {
+     "raw_duration_seconds": 1.0,
+     "trimmed_duration_seconds": 1.0
+    },
+    "voice": "Puck"
+   },
+   "scenario": "S2_ng_then_ok",
+   "tts_calls": 2
+  },
+  "S3_ng_ng_ok": {
+   "attempt_ctxs": [
+    {
+     "is_last_slot": false,
+     "max_len": 59,
+     "script_version": "v0",
+     "slot": 1
+    },
+    {
+     "is_last_slot": false,
+     "max_len": 59,
+     "script_version": "v0",
+     "slot": 2
+    },
+    {
+     "is_last_slot": true,
+     "max_len": 59,
+     "script_version": "v0",
+     "slot": 3
+    }
+   ],
+   "eval_calls": 3,
+   "events": [
+    [
+     "tts",
+     true
+    ],
+    [
+     "eval",
+     1,
+     false
+    ],
+    [
+     "tts",
+     true
+    ],
+    [
+     "eval",
+     2,
+     false
+    ],
+    [
+     "tts",
+     true
+    ],
+    [
+     "eval",
+     3,
+     true
+    ]
+   ],
+   "prompts": [
+    "The message below has two clearly separated sections.\n\n=== STYLE INSTRUCTIONS (meta-guidance only — do not speak this section aloud, it only describes how to perform the reading in the next section) ===\nTTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nGive the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n=== END STYLE INSTRUCTIONS ===\n\n=== TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else — do not speak anything from the STYLE INSTRUCTIONS section above) ===\nThe quick brown fox jumps over the lazy dog.\n=== END TEXT TO SPEAK ===",
+    "The message below has two clearly separated sections.\n\n=== STYLE INSTRUCTIONS (meta-guidance only — do not speak this section aloud, it only describes how to perform the reading in the next section) ===\nTTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nGive the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n=== END STYLE INSTRUCTIONS ===\n\n=== TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else — do not speak anything from the STYLE INSTRUCTIONS section above) ===\nThe quick brown fox jumps over the lazy dog.\n=== END TEXT TO SPEAK ===",
+    "The message below has two clearly separated sections.\n\n=== STYLE INSTRUCTIONS (meta-guidance only — do not speak this section aloud, it only describes how to perform the reading in the next section) ===\nTTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nGive the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n=== END STYLE INSTRUCTIONS ===\n\n=== TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else — do not speak anything from the STYLE INSTRUCTIONS section above) ===\nThe quick brown fox jumps over the lazy dog.\n=== END TEXT TO SPEAK ==="
+   ],
+   "result": {
+    "asr_judgement": {
+     "fake": true,
+     "state": "PASS"
+    },
+    "asr_text": "The quick brown fox jumps over the lazy dog.",
+    "asr_verified": true,
+    "attempts_log": [
+     {
+      "asr_judgement": {
+       "fake": true,
+       "state": "NG"
+      },
+      "asr_text": "The quick brown fox jumps over the lazy dog.",
+      "attempt": 1,
+      "attempt_audio_path": "<TMP>/theme/b1b/narration/attempts/full_story_part1_c3_attempt1_englishstyleprefixwidemargin.wav",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "connected_speech_info": null,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "final_length_ok": true,
+      "instruction_type": "english_style_prefix_wide_margin",
+      "length_ok": true,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+       "fake": true
+      },
+      "status": "OK",
+      "trim_info": {
+       "raw_duration_seconds": 1.0,
+       "trimmed_duration_seconds": 1.0
+      },
+      "verified": false
+     },
+     {
+      "asr_judgement": {
+       "fake": true,
+       "state": "NG"
+      },
+      "asr_text": "The quick brown fox jumps over the lazy dog.",
+      "attempt": 2,
+      "attempt_audio_path": "<TMP>/theme/b1b/narration/attempts/full_story_part1_c3_attempt2_englishstyleprefixwidemargin.wav",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "connected_speech_info": null,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "final_length_ok": true,
+      "instruction_type": "english_style_prefix_wide_margin",
+      "length_ok": true,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+       "fake": true
+      },
+      "status": "OK",
+      "trim_info": {
+       "raw_duration_seconds": 1.0,
+       "trimmed_duration_seconds": 1.0
+      },
+      "verified": false
+     },
+     {
+      "asr_judgement": {
+       "fake": true,
+       "state": "PASS"
+      },
+      "asr_text": "The quick brown fox jumps over the lazy dog.",
+      "attempt": 3,
+      "attempt_audio_path": "<TMP>/theme/b1b/narration/attempts/full_story_part1_c3_attempt3_englishstyleprefixwidemargin.wav",
+      "audio_classification": "EXACT_MATCH",
+      "connected_speech_info": null,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "final_length_ok": true,
+      "instruction_type": "english_style_prefix_wide_margin",
+      "length_ok": true,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+       "fake": true
+      },
+      "status": "OK",
+      "trim_info": {
+       "raw_duration_seconds": 1.0,
+       "trimmed_duration_seconds": 1.0
+      },
+      "verified": true
+     }
+    ],
+    "audio_classification": "EXACT_MATCH",
+    "clipping_detected": false,
+    "connected_speech_info": null,
+    "disfluency_checked": false,
+    "disfluency_evidence": null,
+    "instruction_type": "english_style_prefix_wide_margin",
+    "path": "<TMP>/theme/b1b/narration/full_story_part1_c3.wav",
+    "repetition_qa_checked": true,
+    "repetition_qa_evidence": {
+     "fake": true
+    },
+    "safety_margin_seconds": 0.35,
+    "status": "OK",
+    "text": "The quick brown fox jumps over the lazy dog.",
+    "trim_info": {
+     "raw_duration_seconds": 1.0,
+     "trimmed_duration_seconds": 1.0
+    },
+    "voice": "Puck"
+   },
+   "scenario": "S3_ng_ng_ok",
+   "tts_calls": 3
+  },
+  "S4_all_ng": {
+   "attempt_ctxs": [
+    {
+     "is_last_slot": false,
+     "max_len": 59,
+     "script_version": "v0",
+     "slot": 1
+    },
+    {
+     "is_last_slot": false,
+     "max_len": 59,
+     "script_version": "v0",
+     "slot": 2
+    },
+    {
+     "is_last_slot": true,
+     "max_len": 59,
+     "script_version": "v0",
+     "slot": 3
+    }
+   ],
+   "eval_calls": 3,
+   "events": [
+    [
+     "tts",
+     true
+    ],
+    [
+     "eval",
+     1,
+     false
+    ],
+    [
+     "tts",
+     true
+    ],
+    [
+     "eval",
+     2,
+     false
+    ],
+    [
+     "tts",
+     true
+    ],
+    [
+     "eval",
+     3,
+     true
+    ]
+   ],
+   "prompts": [
+    "The message below has two clearly separated sections.\n\n=== STYLE INSTRUCTIONS (meta-guidance only — do not speak this section aloud, it only describes how to perform the reading in the next section) ===\nTTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nGive the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n=== END STYLE INSTRUCTIONS ===\n\n=== TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else — do not speak anything from the STYLE INSTRUCTIONS section above) ===\nThe quick brown fox jumps over the lazy dog.\n=== END TEXT TO SPEAK ===",
+    "The message below has two clearly separated sections.\n\n=== STYLE INSTRUCTIONS (meta-guidance only — do not speak this section aloud, it only describes how to perform the reading in the next section) ===\nTTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nGive the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n=== END STYLE INSTRUCTIONS ===\n\n=== TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else — do not speak anything from the STYLE INSTRUCTIONS section above) ===\nThe quick brown fox jumps over the lazy dog.\n=== END TEXT TO SPEAK ===",
+    "The message below has two clearly separated sections.\n\n=== STYLE INSTRUCTIONS (meta-guidance only — do not speak this section aloud, it only describes how to perform the reading in the next section) ===\nTTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nGive the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n=== END STYLE INSTRUCTIONS ===\n\n=== TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else — do not speak anything from the STYLE INSTRUCTIONS section above) ===\nThe quick brown fox jumps over the lazy dog.\n=== END TEXT TO SPEAK ==="
+   ],
+   "result": {
+    "attempts_log": [
+     {
+      "asr_judgement": {
+       "fake": true,
+       "state": "NG"
+      },
+      "asr_text": "The quick brown fox jumps over the lazy dog.",
+      "attempt": 1,
+      "attempt_audio_path": "<TMP>/theme/b1b/narration/attempts/full_story_part1_c3_attempt1_englishstyleprefixwidemargin.wav",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "connected_speech_info": null,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "final_length_ok": true,
+      "instruction_type": "english_style_prefix_wide_margin",
+      "length_ok": true,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+       "fake": true
+      },
+      "status": "OK",
+      "trim_info": {
+       "raw_duration_seconds": 1.0,
+       "trimmed_duration_seconds": 1.0
+      },
+      "verified": false
+     },
+     {
+      "asr_judgement": {
+       "fake": true,
+       "state": "NG"
+      },
+      "asr_text": "The quick brown fox jumps over the lazy dog.",
+      "attempt": 2,
+      "attempt_audio_path": "<TMP>/theme/b1b/narration/attempts/full_story_part1_c3_attempt2_englishstyleprefixwidemargin.wav",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "connected_speech_info": null,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "final_length_ok": true,
+      "instruction_type": "english_style_prefix_wide_margin",
+      "length_ok": true,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+       "fake": true
+      },
+      "status": "OK",
+      "trim_info": {
+       "raw_duration_seconds": 1.0,
+       "trimmed_duration_seconds": 1.0
+      },
+      "verified": false
+     },
+     {
+      "asr_judgement": {
+       "fake": true,
+       "state": "NG"
+      },
+      "asr_text": "The quick brown fox jumps over the lazy dog.",
+      "attempt": 3,
+      "attempt_audio_path": "<TMP>/theme/b1b/narration/attempts/full_story_part1_c3_attempt3_englishstyleprefixwidemargin.wav",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "connected_speech_info": null,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "final_length_ok": true,
+      "instruction_type": "english_style_prefix_wide_margin",
+      "length_ok": true,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+       "fake": true
+      },
+      "status": "OK",
+      "trim_info": {
+       "raw_duration_seconds": 1.0,
+       "trimmed_duration_seconds": 1.0
+      },
+      "verified": false
+     }
+    ],
+    "reason": "3回試行してもASR検証に合格しませんでした",
+    "status": "STOPPED",
+    "voice": "Puck"
+   },
+   "scenario": "S4_all_ng",
+   "tts_calls": 3
+  },
+  "S5_technical_failure_minimal_ok": {
+   "attempt_ctxs": [
+    {
+     "is_last_slot": false,
+     "max_len": 59,
+     "script_version": "v0",
+     "slot": 1
+    }
+   ],
+   "eval_calls": 1,
+   "events": [
+    [
+     "tts",
+     false
+    ],
+    [
+     "tts",
+     true
+    ],
+    [
+     "eval",
+     1,
+     false
+    ]
+   ],
+   "prompts": [
+    "The message below has two clearly separated sections.\n\n=== STYLE INSTRUCTIONS (meta-guidance only — do not speak this section aloud, it only describes how to perform the reading in the next section) ===\nTTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nGive the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n=== END STYLE INSTRUCTIONS ===\n\n=== TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else — do not speak anything from the STYLE INSTRUCTIONS section above) ===\nThe quick brown fox jumps over the lazy dog.\n=== END TEXT TO SPEAK ===",
+    "The message below has two clearly separated sections.\n\n=== STYLE INSTRUCTIONS (meta-guidance only — do not speak this section aloud, it only describes how to perform the reading in the next section) ===\nSpeak the following text aloud naturally and clearly, in a warm podcast announcer voice. Do not add, omit, or change any words.\n=== END STYLE INSTRUCTIONS ===\n\n=== TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else — do not speak anything from the STYLE INSTRUCTIONS section above) ===\nThe quick brown fox jumps over the lazy dog.\n=== END TEXT TO SPEAK ==="
+   ],
+   "result": {
+    "asr_judgement": {
+     "fake": true,
+     "state": "PASS"
+    },
+    "asr_text": "The quick brown fox jumps over the lazy dog.",
+    "asr_verified": true,
+    "attempts_log": [
+     {
+      "attempt": 1,
+      "instruction_type": "english_style_prefix_wide_margin",
+      "reason": "tts down",
+      "status": "STOPPED"
+     },
+     {
+      "asr_judgement": {
+       "fake": true,
+       "state": "PASS"
+      },
+      "asr_text": "The quick brown fox jumps over the lazy dog.",
+      "attempt": 1,
+      "attempt_audio_path": "<TMP>/theme/b1b/narration/attempts/full_story_part1_c3_attempt1_minimalfallback.wav",
+      "audio_classification": "EXACT_MATCH",
+      "connected_speech_info": null,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "final_length_ok": true,
+      "instruction_type": "minimal_fallback",
+      "length_ok": true,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+       "fake": true
+      },
+      "status": "OK",
+      "trim_info": null,
+      "verified": true
+     }
+    ],
+    "audio_classification": "EXACT_MATCH",
+    "clipping_detected": false,
+    "connected_speech_info": null,
+    "disfluency_checked": false,
+    "disfluency_evidence": null,
+    "instruction_type": "minimal_fallback",
+    "path": "<TMP>/theme/b1b/narration/full_story_part1_c3.wav",
+    "repetition_qa_checked": true,
+    "repetition_qa_evidence": {
+     "fake": true
+    },
+    "safety_margin_seconds": 0.35,
+    "status": "OK",
+    "text": "The quick brown fox jumps over the lazy dog.",
+    "trim_info": null,
+    "voice": "Puck"
+   },
+   "scenario": "S5_technical_failure_minimal_ok",
+   "tts_calls": 2
+  },
+  "S6_technical_failure_minimal_fail": {
+   "attempt_ctxs": [
+    {
+     "is_last_slot": false,
+     "max_len": 59,
+     "script_version": "v0",
+     "slot": 2
+    }
+   ],
+   "eval_calls": 1,
+   "events": [
+    [
+     "tts",
+     false
+    ],
+    [
+     "tts",
+     false
+    ],
+    [
+     "tts",
+     true
+    ],
+    [
+     "eval",
+     2,
+     false
+    ]
+   ],
+   "prompts": [
+    "The message below has two clearly separated sections.\n\n=== STYLE INSTRUCTIONS (meta-guidance only — do not speak this section aloud, it only describes how to perform the reading in the next section) ===\nTTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nGive the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n=== END STYLE INSTRUCTIONS ===\n\n=== TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else — do not speak anything from the STYLE INSTRUCTIONS section above) ===\nThe quick brown fox jumps over the lazy dog.\n=== END TEXT TO SPEAK ===",
+    "The message below has two clearly separated sections.\n\n=== STYLE INSTRUCTIONS (meta-guidance only — do not speak this section aloud, it only describes how to perform the reading in the next section) ===\nSpeak the following text aloud naturally and clearly, in a warm podcast announcer voice. Do not add, omit, or change any words.\n=== END STYLE INSTRUCTIONS ===\n\n=== TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else — do not speak anything from the STYLE INSTRUCTIONS section above) ===\nThe quick brown fox jumps over the lazy dog.\n=== END TEXT TO SPEAK ===",
+    "The message below has two clearly separated sections.\n\n=== STYLE INSTRUCTIONS (meta-guidance only — do not speak this section aloud, it only describes how to perform the reading in the next section) ===\nTTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nGive the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n=== END STYLE INSTRUCTIONS ===\n\n=== TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else — do not speak anything from the STYLE INSTRUCTIONS section above) ===\nThe quick brown fox jumps over the lazy dog.\n=== END TEXT TO SPEAK ==="
+   ],
+   "result": {
+    "asr_judgement": {
+     "fake": true,
+     "state": "PASS"
+    },
+    "asr_text": "The quick brown fox jumps over the lazy dog.",
+    "asr_verified": true,
+    "attempts_log": [
+     {
+      "attempt": 1,
+      "instruction_type": "english_style_prefix_wide_margin",
+      "reason": "tts down",
+      "status": "STOPPED"
+     },
+     {
+      "attempt": 1,
+      "instruction_type": "minimal_fallback",
+      "reason": "minimal instructionでもTTS失敗: tts down",
+      "status": "STOPPED"
+     },
+     {
+      "asr_judgement": {
+       "fake": true,
+       "state": "PASS"
+      },
+      "asr_text": "The quick brown fox jumps over the lazy dog.",
+      "attempt": 2,
+      "attempt_audio_path": "<TMP>/theme/b1b/narration/attempts/full_story_part1_c3_attempt1_englishstyleprefixwidemargin.wav",
+      "audio_classification": "EXACT_MATCH",
+      "connected_speech_info": null,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "final_length_ok": true,
+      "instruction_type": "english_style_prefix_wide_margin",
+      "length_ok": true,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+       "fake": true
+      },
+      "status": "OK",
+      "trim_info": {
+       "raw_duration_seconds": 1.0,
+       "trimmed_duration_seconds": 1.0
+      },
+      "verified": true
+     }
+    ],
+    "audio_classification": "EXACT_MATCH",
+    "clipping_detected": false,
+    "connected_speech_info": null,
+    "disfluency_checked": false,
+    "disfluency_evidence": null,
+    "instruction_type": "english_style_prefix_wide_margin",
+    "path": "<TMP>/theme/b1b/narration/full_story_part1_c3.wav",
+    "repetition_qa_checked": true,
+    "repetition_qa_evidence": {
+     "fake": true
+    },
+    "safety_margin_seconds": 0.35,
+    "status": "OK",
+    "text": "The quick brown fox jumps over the lazy dog.",
+    "trim_info": {
+     "raw_duration_seconds": 1.0,
+     "trimmed_duration_seconds": 1.0
+    },
+    "voice": "Puck"
+   },
+   "scenario": "S6_technical_failure_minimal_fail",
+   "tts_calls": 3
+  },
+  "S7_stop_retrying": {
+   "attempt_ctxs": [
+    {
+     "is_last_slot": false,
+     "max_len": 59,
+     "script_version": "v0",
+     "slot": 1
+    },
+    {
+     "is_last_slot": false,
+     "max_len": 59,
+     "script_version": "v0",
+     "slot": 2
+    }
+   ],
+   "eval_calls": 2,
+   "events": [
+    [
+     "tts",
+     true
+    ],
+    [
+     "eval",
+     1,
+     false
+    ],
+    [
+     "tts",
+     true
+    ],
+    [
+     "eval",
+     2,
+     false
+    ]
+   ],
+   "prompts": [
+    "The message below has two clearly separated sections.\n\n=== STYLE INSTRUCTIONS (meta-guidance only — do not speak this section aloud, it only describes how to perform the reading in the next section) ===\nTTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nGive the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n=== END STYLE INSTRUCTIONS ===\n\n=== TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else — do not speak anything from the STYLE INSTRUCTIONS section above) ===\nThe quick brown fox jumps over the lazy dog.\n=== END TEXT TO SPEAK ===",
+    "The message below has two clearly separated sections.\n\n=== STYLE INSTRUCTIONS (meta-guidance only — do not speak this section aloud, it only describes how to perform the reading in the next section) ===\nTTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nGive the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n=== END STYLE INSTRUCTIONS ===\n\n=== TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else — do not speak anything from the STYLE INSTRUCTIONS section above) ===\nThe quick brown fox jumps over the lazy dog.\n=== END TEXT TO SPEAK ==="
+   ],
+   "result": {
+    "asr_text": "The quick brown fox jumps over the lazy dog.",
+    "asr_verified": false,
+    "attempts_log": [
+     {
+      "asr_judgement": {
+       "fake": true,
+       "state": "NG"
+      },
+      "asr_text": "The quick brown fox jumps over the lazy dog.",
+      "attempt": 1,
+      "attempt_audio_path": "<TMP>/theme/b1b/narration/attempts/full_story_part1_c3_attempt1_englishstyleprefixwidemargin.wav",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "connected_speech_info": null,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "final_length_ok": true,
+      "instruction_type": "english_style_prefix_wide_margin",
+      "length_ok": true,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+       "fake": true
+      },
+      "status": "OK",
+      "trim_info": {
+       "raw_duration_seconds": 1.0,
+       "trimmed_duration_seconds": 1.0
+      },
+      "verified": false
+     },
+     {
+      "asr_judgement": {
+       "fake": true,
+       "state": "NG"
+      },
+      "asr_text": "The quick brown fox jumps over the lazy dog.",
+      "attempt": 2,
+      "attempt_audio_path": "<TMP>/theme/b1b/narration/attempts/full_story_part1_c3_attempt2_englishstyleprefixwidemargin.wav",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "connected_speech_info": null,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "final_length_ok": true,
+      "instruction_type": "english_style_prefix_wide_margin",
+      "length_ok": true,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+       "fake": true
+      },
+      "status": "OK",
+      "trim_info": {
+       "raw_duration_seconds": 1.0,
+       "trimmed_duration_seconds": 1.0
+      },
+      "verified": false
+     }
+    ],
+    "clipping_detected": false,
+    "instruction_type": "english_style_prefix_wide_margin",
+    "path": "<TMP>/theme/b1b/narration/full_story_part1_c3.wav",
+    "reason": "同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り(最終classification=TRUE_CONTENT_MISMATCH)",
+    "safety_margin_seconds": 0.35,
+    "status": "ASR_VALIDATION_UNCERTAIN",
+    "text": "The quick brown fox jumps over the lazy dog.",
+    "trim_info": {
+     "raw_duration_seconds": 1.0,
+     "trimmed_duration_seconds": 1.0
+    },
+    "voice": "Puck"
+   },
+   "scenario": "S7_stop_retrying",
+   "tts_calls": 2
+  },
+  "S8_max_attempts_2_all_ng": {
+   "attempt_ctxs": [
+    {
+     "is_last_slot": false,
+     "max_len": 59,
+     "script_version": "v0",
+     "slot": 1
+    },
+    {
+     "is_last_slot": true,
+     "max_len": 59,
+     "script_version": "v0",
+     "slot": 2
+    }
+   ],
+   "eval_calls": 2,
+   "events": [
+    [
+     "tts",
+     true
+    ],
+    [
+     "eval",
+     1,
+     false
+    ],
+    [
+     "tts",
+     true
+    ],
+    [
+     "eval",
+     2,
+     true
+    ]
+   ],
+   "prompts": [
+    "The message below has two clearly separated sections.\n\n=== STYLE INSTRUCTIONS (meta-guidance only — do not speak this section aloud, it only describes how to perform the reading in the next section) ===\nTTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nGive the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n=== END STYLE INSTRUCTIONS ===\n\n=== TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else — do not speak anything from the STYLE INSTRUCTIONS section above) ===\nThe quick brown fox jumps over the lazy dog.\n=== END TEXT TO SPEAK ===",
+    "The message below has two clearly separated sections.\n\n=== STYLE INSTRUCTIONS (meta-guidance only — do not speak this section aloud, it only describes how to perform the reading in the next section) ===\nTTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.\n\nCarry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.\n\nTreat the narration as one continuous program, even when it is generated in separate sections.\n\nRead every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.\n\nDo not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.\n\nGive the narration a noticeably animated, emotionally present, and expressive delivery.\n\nUse a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.\n\nMake the listener feel that the story matters and that you genuinely want them to keep listening.\n\nKeep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.\n\nAllow the most important moments, contrasts, and conclusions to land with clear emotional impact.\n\nUse stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.\n\nDo not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.\n=== END STYLE INSTRUCTIONS ===\n\n=== TEXT TO SPEAK (speak this section aloud exactly as written, and nothing else — do not speak anything from the STYLE INSTRUCTIONS section above) ===\nThe quick brown fox jumps over the lazy dog.\n=== END TEXT TO SPEAK ==="
+   ],
+   "result": {
+    "attempts_log": [
+     {
+      "asr_judgement": {
+       "fake": true,
+       "state": "NG"
+      },
+      "asr_text": "The quick brown fox jumps over the lazy dog.",
+      "attempt": 1,
+      "attempt_audio_path": "<TMP>/theme/b1b/narration/attempts/full_story_part1_c3_attempt1_englishstyleprefixwidemargin.wav",
+      "audio_classification": "X",
+      "connected_speech_info": null,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "final_length_ok": true,
+      "instruction_type": "english_style_prefix_wide_margin",
+      "length_ok": true,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+       "fake": true
+      },
+      "status": "OK",
+      "trim_info": {
+       "raw_duration_seconds": 1.0,
+       "trimmed_duration_seconds": 1.0
+      },
+      "verified": false
+     },
+     {
+      "asr_judgement": {
+       "fake": true,
+       "state": "NG"
+      },
+      "asr_text": "The quick brown fox jumps over the lazy dog.",
+      "attempt": 2,
+      "attempt_audio_path": "<TMP>/theme/b1b/narration/attempts/full_story_part1_c3_attempt2_englishstyleprefixwidemargin.wav",
+      "audio_classification": "X",
+      "connected_speech_info": null,
+      "disfluency_checked": false,
+      "disfluency_evidence": null,
+      "final_length_ok": true,
+      "instruction_type": "english_style_prefix_wide_margin",
+      "length_ok": true,
+      "repetition_qa_checked": true,
+      "repetition_qa_evidence": {
+       "fake": true
+      },
+      "status": "OK",
+      "trim_info": {
+       "raw_duration_seconds": 1.0,
+       "trimmed_duration_seconds": 1.0
+      },
+      "verified": false
+     }
+    ],
+    "reason": "2回試行してもASR検証に合格しませんでした",
+    "status": "STOPPED",
+    "voice": "Puck"
+   },
+   "scenario": "S8_max_attempts_2_all_ng",
+   "tts_calls": 2
+  }
+ }
+}
