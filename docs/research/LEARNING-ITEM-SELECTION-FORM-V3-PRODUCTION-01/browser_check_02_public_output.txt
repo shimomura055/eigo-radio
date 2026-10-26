@@ -1,0 +1,20 @@
+PASS default article loads with 11 candidate rows
+PASS every row shows a Japanese gloss line with a status label
+PASS Trial-02 glosses are labelled 仮訳・未確定 (not 正式訳)
+PASS every row has AI reason details (確認用) collapsed
+PASS hint explains 日本語訳/確認用/仮訳
+PASS call2 row shows AI reason when opened (compensation)
+PASS call1 row says AI reason not available (explicit)
+PASS open state survives re-render (checked a box)
+PASS melos prod: 7 rows all 正式訳
+PASS melos prod: backfill row shows AI reason text
+PASS send: URL built (<=6000) :: 4230
+PASS send message has EN + JA gloss + 正式訳 + category for each selected
+PASS send message has comment and AI reason section (確認用, separate, after confirmed section)
+PASS send message has grammar section (none selected => 選択なし)
+PASS copy JSON v2: schema/selection/ai_reference/candidates_all
+PASS copy JSON: AI reason not inside confirmed items
+PASS dummy: selected grammar full body in send message
+PASS too long: no truncated URL; copy guidance with full text (all selected JA glosses) :: 送信文が長くURLに載せられないため、自動コピーできませんでした。下の枠のテキストを手動でコピーしてください。
+PASS no console errors/exceptions
+SUMMARY pass=19 fail=0
