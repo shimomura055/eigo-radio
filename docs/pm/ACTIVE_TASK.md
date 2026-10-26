@@ -1,9 +1,9 @@
-管理ID: PM-SSOT-SYNC-18(git整合確認[stash事故]+SSOT同期、API 0)
-Status: OPEN-540 PRODUCTION_WIRED(限定解除、2026-10-27) / OPEN-551 IMPLEMENTED(52c07550d、実run evidence要=OPEN-554) / OPEN-553〜555起票 / git整合=喪失なし
-進行中: なし(SSOT18同期完了)
-次: UDR-MONKEY-1(猿の手c10差替え、推奨B)提示 / OPEN-553 Dialogue実測化 / OPEN-543(test失敗統合) / `_03` preview承認待ち
+管理ID: PM-SSOT-SYNC-19(KP75受入・FORM委任_02/03・KCP起票・Y HR新形式・HR提出形式のSSOT同期、API 0)
+Status: OPEN-534 PRODUCTION_WIRED(P7/W5' X/Y/Z×Std/Adv、Fable受入2026-10-27) / OPEN-545 IMPLEMENTED(実操作確認待ち) / OPEN-556 KCP IMPLEMENTED第1段 / OPEN-557 HR提出形式共通化 / OPEN-558 軽微観測
+進行中: KP-CONFIRMED-CONTENT-PROTECTION-01 委任_02B、LEARNING-ITEM-SELECTION-FORM-V3 委任_04(cap 8→12)
+次: KCP2B受入→SYNC-20(確定内容保護の正式節) / PRODUCTION-HR-PACKET-FORMAT-01委任 / UDR-MONKEY-1 / OPEN-553 / OPEN-543
 STOP条件: 猿の手 run_fzcw_e1_01 のSTOP/RESTART_STORM_LOCK残置(当該run不使用)。他なし
-並行: KPT2=UDR(OPEN-534へ統合)
-UDR-blocking: OPEN-526・534・Std preview承認(`_03`)・文法の型(フォーム、UDR-FORM-1)・UDR-YRF-2/3(据置)
-QDC: 2026-10-27 当日約¥1.15(TRU 0.56+0.585)
-報告単位Status: SSOT18同期完了、UDR-MONKEY-1(猿の手c10)ユーザー判断待ち
+並行: なし(KPT2はOPEN-534で解消)
+UDR-blocking: Y preview HR承認(hr_preview_01)・UDR-FORM-1・OPEN-526(HR候補選択)・UDR-MONKEY-1(UDR-YRF-2/3は撤回)
+QDC: 2026-10-27 当日約¥17(TRU 1.15+KP75 15.84)
+報告単位Status: SSOT19同期完了、KCP 02B・FORM 04進行中

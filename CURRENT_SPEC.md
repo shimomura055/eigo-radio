@@ -2024,12 +2024,22 @@ champion_trial_results.json`を参照。 |
   - **Family別判定**: Y=PRODUCTION_WIRED(自然発火の実走あり)、X=PRODUCTION_WIRED、Z=PRODUCTION_WIRED(X/Zはfresh runで救済対象候補が出現せず自然発火0=経路到達と正式関数経由replay[実LLM gloss/QA]で確認。次の自然発火をOPEN-544で追跡=非blocking)。**費用**: 実費約11.2円(fresh X 3.26/Y 3.25/Z 2.95、replay 1.71)。単価影響=救済発火時のみ+約0.2〜0.8円/記事セット、非発火時0。
   - **既知の限界(OPEN)**: OPEN-541(縮約形の非対称: ASCII `can't`主語付き受理/curly `can’t`のみ核へ救済)、OPEN-542(`a can of beans`型の名詞canが`aux_start`で通る既存guard)、OPEN-543(HEAD既存test失敗4件)、OPEN-544(X/Z自然発火の初回記録)。Fable判断(B・承認範囲内・未実施): revertではQA再判定callを省く案(節約約0.16円/件)は次回KP関連変更時に判断。
 
-**【2026-10-26追記(PM-SSOT-SYNC-16)、OPEN-546】Gate除外候補の補完(KP-GATE-DROP-BACKFILL-PRODUCTION-01)— Status: IMPLEMENTED・evidence取得(条件付き)。PRODUCTION_WIREDとは判定していない(Fable判定待ち)。** ユーザー正式採用(`APPROVED_FOR_PRODUCTION`、原文`docs/pm/delegation_log/2026-10-26_KP-GATE-DROP-BACKFILL-PRODUCTION-01_USER.md`参照)。
+**【履歴(2026-10-27改訂、直下の「KP候補生成 P7/W5'」節へ置換): 以下は2026-10-26時点の記述】** **【2026-10-26追記(PM-SSOT-SYNC-16)、OPEN-546】Gate除外候補の補完(KP-GATE-DROP-BACKFILL-PRODUCTION-01)— Status: IMPLEMENTED・evidence取得(条件付き)。PRODUCTION_WIREDとは判定していない(Fable判定待ち)。** ユーザー正式採用(`APPROVED_FOR_PRODUCTION`、原文`docs/pm/delegation_log/2026-10-26_KP-GATE-DROP-BACKFILL-PRODUCTION-01_USER.md`参照)。
 - 発動条件・件数: 初回のGate合格候補が上限未満でGate除外(E)が生じたときのみ、除外分(E件)を補完する(E=0は不発動)。件数・順序・種類別(単語枠は種類別計数のローカル規則)の詳細は`er119_kp_backfill_01.py`と`docs/research/KP-GATE-DROP-BACKFILL-PRODUCTION-01/`の設計書を正とする。
 - 救済(RESCUED)済み候補は補完の計数に含めない(非計上)。初回合格候補は保持し入れ替えない。補完は1回限り。2-Vへ除外noteを後置する(新Promptではない。Prompt 2-V本文sha不変)。
 - kill switch: 環境変数`EIGO_KP_BACKFILL`(既定ON、OFFで旧挙動に完全復帰)。実装=`_generate_candidates_impl`配線1箇所(A/B/C・runner差分0)。HR依頼書に補完表示。resume時の再課金0。
 - 外側retry: 補完ON時は撤去(上記2021付近参照)。call1のattempt内再選定は現行維持(K0。item単位化=OPEN-547)。
 - runtime evidence: commit 2b3fcefe1/109fc9016(fresh 10 level-run、実費¥26.25)。未観測=Y Adv/Z Advの自然発動(OPEN-549)、call1最終attempt除外計数、AUTO n_auto<3挙動(mockのみ)。猿の手の新規KP生成はseed provenance不一致で不可(OPEN-548)。
+
+**【2026-10-27追記(PM-SSOT-SYNC-19、OPEN-534、KP-PHRASE7-WORD5-PRODUCTION-01)】KP候補生成=P7(フレーズ最大7)+W5'(単語最大5)・候補上限12・種類別補完・`not_single_word` Gate — Status: `PRODUCTION_WIRED`(Family X/Y/Z × Standard/Advanced、Fable受入2026-10-27)。** ユーザー正式採用(`APPROVED_FOR_PRODUCTION` 2026-10-27、原文`docs/pm/delegation_log/2026-10-27_KP-PHRASE7-WORD5-PRODUCTION-01_USER.md`)。実装commit 967109760、evidence 082d5ec6c、設計`docs/research/KP-PHRASE7-WORD5-PRODUCTION-01/DESIGN_02.md`(Opus条件A M-1〜M-9採用)。本節が旧記述(Prompt 2=最大3件、Prompt 2-V=最大5件、`KP_CANDIDATE_MAX=8`、Gate除外の単一cap補完)を置換する。
+- 候補生成: 2 call直列(M-7)。P7=フレーズ最大7件(prompt sha 2e930193…)、W5'=単語最大5件(5条件・補足・出力規則をユーザー原文逐語、sha 12d33708…)。含有語の扱い=KP含有語はPrompt+Gateで二重除外。生成モデル=gpt-6-luna(routing契約)。候補上限=12(フレーズ7+単語5)。
+- Gate: 既存Gate(CMU辞書登録語・慣用句救済er125等)に加え、`not_single_word` Gate(単語候補は本文一致かつ1語、フレーズ枠に1語を入れない)。実測で単語⊂フレーズ0件。
+- 補完(Gate除外時のみ): 種類別quota(フレーズ枠/単語枠ごと)。上限未満docでE=0なら不発動。補完は1回限り、初回合格候補は保持し入れ替えない、救済済みは非計上。補完用Promptは種類別。resumeはAPI 0・sha不変。旧3+5のHR待ちdocは作り直さない(D6)。
+- 設計判断D1〜D6: R0 flagなし/Adv AUTO vocab5は現行維持/not_single_word Gate/W5'補足=原文逐語/補完Prompt種類別/旧HR待ち候補作り直さない。Prompt 2/2-V本文は残置(pin test、復帰はgit revert)。AUTO選定での単語組入れは新仕様のため導入しない。
+- 撤去: `BACKFILL_MAX_CALL_ITEMS`、単一cap room計算、外側retry独立tuple、`KP_CANDIDATE_MAX=8`。HR依頼書・フォームexportは`[:7]/[:5]`(12件)対応。フォーム`cap`表示既定8→12はOPEN-545 委任_04で是正中。
+- 未観測: フレーズ補完のreal発火(OPEN-549で追跡)。evidence=`docs/research/KP-PHRASE7-WORD5-PRODUCTION-01/{EVIDENCE_01,COST_01,IMPLEMENTATION_01,REMOVAL_RESULT_01,DESIGN_02,OPUS_REVIEW_01}.md`、実費¥15.84、量産単価+約¥0.5/記事セット。
+
+**【2026-10-27準備中(PM-SSOT-SYNC-19、OPEN-556)】KP確定内容保護(KP-CONFIRMED-CONTENT-PROTECTION-01)** — 第1段IMPLEMENTED(委任_02A、246093175: `er128_kp_confirmed_content_01.py`、確定レコード`confirmed_selection.json`正本、G0/G1、AI操作ガード、flag `EIGO_KP_CONFIRMED_PROTECTION`既定ON)。第2段+Family別evidence(委任_02B)進行中。正式な仕様節は02B完了後のSSOT同期(SYNC-20)で新設する。
 
 ### Key Phrase 音声構造(Standard/Advanced 共通骨格)— Status: `PRODUCTION_WIRED`(2026-09-29、Fable Gate 3=Meta run_03。`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§E2E Meta run_03、runtime evidence: Advanced KP全5rankで`explanation.voice="Aoede"`・Variant B文言・`phrase_repeat`が`english`と同一sha256、Standard全5rankで`japanese_meaning.style_prefix`=J3文言。W4/W5で配線済み)
 
