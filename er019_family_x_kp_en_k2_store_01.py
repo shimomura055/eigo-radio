@@ -24,6 +24,7 @@ import hashlib
 import er003_v1_repro01_main_generate as repro01
 import er006_audio_cost_pilot_02_shared_narration as shared
 import er006_master_audio_store_01 as store
+import er127_tts_block_policy_01 as er127  # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02: X/Y/Z scope内の統一3回構成ブロック
 import er104_kp_vote_reuse_01 as kp_vote  # KP3V(2026-10-22、ユーザー承認APPROVED_FOR_PRODUCTION): KP英語phrase 3-ASR多数決(OpenAI・Azure・Whisper)
 
 KEY_PHRASE_STYLED_PATH_PRIMARY = "primary"
@@ -52,14 +53,16 @@ def key_phrase_styled_keys(used_form_tts_safe: str, style_text: str, style_id: s
 
 
 @repro01.review_lock.guarded_generate("en")
-def _styled_two_stage(text: str, out_path: str, *, style_text: str, key_b, tts_backend: str) -> dict:
+@er127.with_block("L6", fingerprint_params=())
+def _styled_two_stage(text: str, out_path: str, *, style_text: str, key_b, tts_backend: str, _blk=None) -> dict:
     primary = repro01.generate_narration_snippet_verified_strict(
         text, "en", out_path, text, max_extra_chars=10, max_attempts=repro01.KEY_PHRASE_MINIMAL_MAX_ATTEMPTS,
         safety_margin_seconds=repro01.KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS, disfluency_qa=True,
         style_prefix_override=style_text, asr_prompt=repro01.KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT,
         enable_non_latin_cascade=True, tts_backend=tts_backend,
         slot_offset=0, total_slots=repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS,  # 4回構成の前半(HR queue対象外)
-        vote_pass_required=kp_vote.vote_enabled())  # KP3V: KP英語phrase=Primary・Secondary両方PASS必須
+        vote_pass_required=kp_vote.vote_enabled(),  # KP3V: KP英語phrase=Primary・Secondary両方PASS必須
+        **er127.stage_kwargs(_blk, 0))              # 委任_02: scope内は①②のSTOP確認/n_started永続化/resumeを統一ブロックで
     if primary.get("status") == "OK":
         primary["fallback_used"] = False
         primary["primary_instruction_type"] = "STYLED"
@@ -80,12 +83,16 @@ def _styled_two_stage(text: str, out_path: str, *, style_text: str, key_b, tts_b
             tts_backend=tts_backend,
             slot_offset=repro01.KEY_PHRASE_MINIMAL_MAX_ATTEMPTS,
             total_slots=repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS,  # 4回構成の後半(最終slot)
-            vote_pass_required=kp_vote.vote_enabled())  # KP3V
+            vote_pass_required=kp_vote.vote_enabled(),  # KP3V
+            # 委任_02: ③(=ENGLISH_LOCK段の最初)直前に180秒。Store key B hit時は_gen_lock自体が呼ばれない=待機しない(無益な待機を作らない、I-4)
+            **er127.stage_kwargs(_blk, repro01.KEY_PHRASE_MINIMAL_MAX_ATTEMPTS))
 
     fb = store.get_or_generate(key_b, out_path, _gen_lock,
                                reuse_gate=(kp_vote.KpVoteReuseGate() if kp_vote.vote_enabled() else None))
     fb["fallback_used"] = True
     fb["primary_instruction_type"] = "ENGLISH_LOCK" if fb.get("status") == "OK" else "STYLED_AND_ENGLISH_LOCK_BOTH_FAILED"
+    if _blk is not None and _blk.depth == 0 and fb.get("status") != "OK":
+        er127.register_terminal_hr(out_path=out_path, canonical_text=text, attempt=er127.last_attempt_of(fb), lock_text=text)   # Opus M-4
     # legacy `generate_key_phrase_component_verified`と同じ会計(record_outcomeの実TTS試行数=4)。
     fb["fallback_attempts_log"] = primary.get("attempts_log")
     fb["minimal_attempts_log"] = primary.get("attempts_log")

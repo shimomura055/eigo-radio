@@ -52,9 +52,14 @@ import er081_family_x_in_one_line_01 as fx_iol  # FXPW 委任_02B: 中立module(
 MANAGEMENT_ID = "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01"
 
 # ============================================================
-# Part A: cool-down(ユーザー正式決定、固定10分・短縮禁止)
+# Part A: cool-down
 # ============================================================
-COOLDOWN_SECONDS = 600.0
+# TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02(2026-10-26ユーザー正式決定): X/Y/Z run scope内の正式経路の待機は **180秒**
+# (唯一の定義 er127_tts_block_policy_01.COOLDOWN_SECONDS)。本moduleの600秒は Family A/B/C(Legacy凍結、PM_GOVERNANCE 27-3/27-7)専用に
+# `LEGACY_COOLDOWN_SECONDS` として残す(旧2026-09-26決定「固定10分」。A/B/C出力のbyte同一を保つため)。
+# `COOLDOWN_SECONDS` は旧名の別名(A/B/C・旧testの互換のみ。X/Y/Z専用moduleからの参照は禁止=静的testで固定)。
+LEGACY_COOLDOWN_SECONDS = 600.0
+COOLDOWN_SECONDS = LEGACY_COOLDOWN_SECONDS
 
 
 def _now_iso() -> str:
@@ -74,6 +79,10 @@ def maybe_cooldown_before_attempt(attempt: int, max_attempts: int, cooldown_gate
         return None
     if not (max_attempts >= 3 and attempt == max_attempts):
         return None
+    # 安全網(委任_02): X/Y/Z scope内でこの旧関数に到達した場合(blockを経由しない経路)でも旧600秒は払わず、正式な180秒+STOP確認付きで待つ。
+    import er127_tts_block_policy_01 as _blk
+    if _blk.unified_flow_active() and cooldown_seconds == LEGACY_COOLDOWN_SECONDS:
+        return _blk.cooldown_core(label="legacy_entry", attempt_before=attempt - 1, attempt_after=attempt)
     cooldown_started_at = time.time()
     started_iso = _now_iso()
     sleep_fn(cooldown_seconds)
@@ -155,6 +164,14 @@ def resolve_narrative_role(segment_id: str | None) -> str | None:
         return "PREVIEW"
     if segment_id == "topic_intro":
         return "TOPIC_INTRO"
+    # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02(D11/U-06/OPEN-538、2026-10-26): Family Zの冒頭英語clip `topic_intro_en`(Std/Adv)をTOPIC_INTROとして
+    # 扱う(LR+待機+CS Equivalenceが初めて有効)。**X/Y/Z run scope内だけ**に限定する: Family C(Legacy凍結)も同名IDを使うため、
+    # 無条件の追加はA/B/C出力を変えてしまう(委任_02で発見)。scope外は従来どおり None。
+    if segment_id == "topic_intro_en":
+        import er109_xz_scope_01 as _xz_scope
+        if _xz_scope.current_scope() in ("X", "Y", "Z"):
+            return "TOPIC_INTRO"
+        return None
     if segment_id == "in_one_line":
         return "IN_ONE_LINE"
     if segment_id in NON_APPLICABLE_SEGMENT_IDS:
@@ -741,7 +758,7 @@ def run_local_rewrite_recovery(*, segment_id: str, canonical_text: str, last_asr
                                 context_before_text: str | None = None,
                                 context_after_text: str | None = None,
                                 n_new_candidates: int = N_NEW_CANDIDATES_DEFAULT,
-                                client=None) -> dict:
+                                client=None, depth: int = 0) -> dict:
     """Human Review Lockへ到達する直前に、Production呼び出し元(generate_
     charon_english/generate_news_narration_wide_margin)から呼ぶ唯一の
     回復経路。retts_fn(rewritten_text:str)->dict は、呼び出し元が既に
@@ -761,6 +778,9 @@ def run_local_rewrite_recovery(*, segment_id: str, canonical_text: str, last_asr
       HUMAN_REVIEW_LOCKED_NO_NG_SPAN -> canonical/ASR間に差分が見つからない
         (Local Rewriteの対象spanを機械的に特定できない)
     """
+    if depth >= 1:
+        # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02(OPEN-376、二重防御): LR block内(depth>=1)からのLR再実行は構造的に禁止。
+        raise RuntimeError("run_local_rewrite_recovery: depth>=1(LR block内)からは呼べません(LR再入禁止)")
     role_label = role_label_for(segment_id)
     result: dict = {
         "management_id": MANAGEMENT_ID, "segment_id": segment_id, "segment_role_label": role_label,

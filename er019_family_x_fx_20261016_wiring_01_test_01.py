@@ -647,7 +647,7 @@ class AbcGoldenTests(unittest.TestCase):
         self.assertEqual((c["max_attempts"], c["slot_offset"], c["total_slots"]), (2, 0, 4))
         self.assertEqual(inspect.signature(repro01.generate_key_phrase_component_verified).parameters.keys(),
                          {"text": 0, "out_path": 0, "disfluency_qa": 0, "tts_backend": 0,
-                          "vote_pass_required": 0}.keys())            # KPDUAL-PROD-D2: 既定False(A/B/Cは引数なし=従来動作)の1引数のみ追加
+                          "vote_pass_required": 0, "_blk": 0}.keys())            # KPDUAL-PROD-D2: 既定False(A/B/Cは引数なし=従来動作)の1引数のみ追加。TTS統一委任_02: `_blk`(er127.with_blockが渡す統一ブロック。scope外=None=従来コード)を追加
         self.assertIs(inspect.signature(repro01.generate_key_phrase_component_verified).parameters["vote_pass_required"].default, False)
 
     def test_k2_store_module_is_family_x_only(self):
@@ -660,7 +660,8 @@ class AbcGoldenTests(unittest.TestCase):
         self.assertEqual(users, ["er019_family_x_audio_production_runner_01.py",
                                  "er019_family_x_fx_20261016_wiring_01_test_01.py",
                                  "er096_kp_dual_runtime_evidence_01.py",       # 履歴script(旧KPDUAL evidence driver。Productionではない)
-                                 "er104_kp_vote_wiring_test_01.py"])           # KP3V: 本件のtest(K2 siteのvote flag転送確認)
+                                 "er104_kp_vote_wiring_test_01.py",
+                                 "er127_tts_block_policy_01_test_01.py"])    # TTS統一委任_02: K2 storeのL6 leaf test           # KP3V: 本件のtest(K2 siteのvote flag転送確認)
 
     def test_master_audio_store_module_unchanged_contract(self):
         self.assertEqual(store.EQUALITY_FIELDS, (
@@ -705,7 +706,12 @@ class AbcGoldenTests(unittest.TestCase):
                                          "er110_family_y_persona_audio_trial_01.py",
                                          # FAMILY-Y-PRODUCTION-LAUNCH-01 委任_02B(2026-10-25): Family Y正式Production音声層。y_style_gateがY本文8segment(segs[name])のfallback_usedを読むのみ
                                          # (KP英語Store entryは読まない・Store/Production出力へ書き戻さない。書込みはY出力dirのaudit/y_style_profile_gate.jsonのみ)
-                                         "er121_family_y_audio_01.py"}, readers)
+                                         "er121_family_y_audio_01.py",
+                                         # TTS統一委任_02(2026-10-26): L3の統一ブロックが自分の戻り値(標準段res)のfallback_usedを読んでLR blockの実TTS行を
+                                         # attempts_logへ戻す(KP英語Store entryは読まない・書込みは自分のresult dictのみ)。
+                                         "er003_v1_crosslevel_audio_02_common.py",
+                                         # 同: er127.lr_unresolved_rowsがLR blockの戻り値(標準leafのresult)のfallback_usedを読んで実TTS行を振り分ける(KP英語Store entryは読まない)。
+                                         "er127_tts_block_policy_01.py"}, readers)
 
 
 # ============================================================

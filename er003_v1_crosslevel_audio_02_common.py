@@ -43,6 +43,7 @@ import er011_open121_repetition_qa_production_01 as repetition_qa
 import er020_tts_retry_local_rewrite_01 as retry_primitive
 import er078_asr_unified_attempt_ctx_01 as attempt_ctx_mod  # AUW 委任_05
 import er078_asr_unified_judge_01 as unified_judge_mod  # AUW 委任_13: final_length_ok(A3是正)
+import er127_tts_block_policy_01 as er127  # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02: X/Y/Z scope内の統一3回構成ブロック
 
 generate_narration_snippet_verified_strict = repro01.generate_narration_snippet_verified_strict
 generate_key_phrase_component_verified = repro01.generate_key_phrase_component_verified
@@ -92,6 +93,7 @@ def _fallback_sidecar_model_fields(tts_backend: str) -> dict:
 # check_before_generation/record_outcome双方でbypassされ無変更のまま。
 # 状態ファイル(review_lock_state.json)自体はこの修正では書き換えない。
 @review_lock.guarded_generate("en")
+@er127.with_block("L3", fingerprint_params=("style_prefix_override", "tts_backend"))
 def generate_english_segment_with_fallback(text: str, out_path: str, expected_substring: str,
                                             max_extra_chars: int = 60,
                                             max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
@@ -122,7 +124,10 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
                                             # OPEN-270 M3(委任_05A): 外側ループ2周目以降で通算試行番号を
                                             # cool-down判定へ渡す(既定0/None=従来動作)。
                                             prior_generations: int = 0,
-                                            cooldown_total_budget: int = None) -> dict:
+                                            cooldown_total_budget: int = None,
+                                            # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02(既定None=従来どおり): Std本文の減速+減速後再検証を
+                                            # 各attemptの検証の一部にするhook(X/Y/Z scope内のL4だけが渡す。D6案A)。_blk=er127.with_blockが渡す統一ブロック。
+                                            post_hook=None, _blk=None) -> dict:
     """style_prefix_override(既定None、ER-008-EVIDENCE-COMPRESSION-PROD-
     AND-N7-AUDIO-06 Part Gで追加): standard経路にのみ適用する(A2の
     「わずかに遅く」指示のため)。fallback(minimal instruction)経路には
@@ -147,6 +152,12 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
     によらず、対象Production経路は例外なくTOTAL3回上限に統一する
     (詳細はvoice01.generate_charon_japaneseの同種修正コメント参照)。"""
     max_attempts = min(max_attempts, review_lock.PRODUCTION_MAX_TTS_ATTEMPTS)
+    if _blk is not None:
+        # X/Y/Z scope内(統一3回構成ブロック)。scope外は以下の旧コードを一切変更しない(golden固定)。
+        return _generate_english_segment_unified(
+            _blk, text, out_path, expected_substring, max_extra_chars=max_extra_chars, style_prefix_override=style_prefix_override,
+            disfluency_qa=disfluency_qa, enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+            enable_repetition_qa=enable_repetition_qa, tts_backend=tts_backend, post_hook=post_hook)
     # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(修正1回目、既知Gap
     # 解消): 標準経路(このgenerate_narration_snippet_verified_strict呼び
     # 出し)にもsegment_idを渡す。_run_a2_minimal_fallback_attempt()と同じ
@@ -321,6 +332,167 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
             cooldown_events, tts_backend=tts_backend)
         if recovered is not None:
             return recovered
+    return stopped_result
+
+
+def _generate_english_segment_unified(blk, text: str, out_path: str, expected_substring: str, *, max_extra_chars: int,
+                                      style_prefix_override, disfluency_qa: bool, enable_connected_speech_equivalence_layer: bool,
+                                      enable_repetition_qa: bool, tts_backend: str, post_hook) -> dict:
+    """TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02: Std英語(L3)の統一3回構成ブロック(X/Y/Z scope内専用)。
+    ①②=呼出元のStyle(strict 2回) → ②NG後180秒(blk.step(3)が実行) → ③=minimal Fallback Style(force_secondary) → NGならLR
+    (er127.lr_recover: LR block=同じ3回構成を書換え後原稿で1回だけ)。減速+減速後再検証はpost_hookとして各attemptの検証の一部(D6案A)。
+    旧10分待機・LR後1回(max_attempts=1)・外側ループ(prior_generations/cooldown_total_budget)は使わない。"""
+    ctx = blk.ctx
+    max_attempts = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS
+    segment_id = er127.segment_id_from_out_path(out_path)
+    std_n = review_lock.PRODUCTION_STANDARD_TTS_ATTEMPTS
+    standard = generate_narration_snippet_verified_strict(
+        text, "en", out_path, expected_substring, max_attempts=std_n, max_extra_chars=max_extra_chars,
+        style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa,
+        enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+        enable_repetition_qa=enable_repetition_qa, segment_id=segment_id, tts_backend=tts_backend,
+        post_hook=post_hook, script_version=ctx.script_version, m1_anchor_text=ctx.m1_anchor_text,
+        **blk.ctx_kwargs(), **er127.stage_kwargs(blk, 0))
+    if standard.get("status") == "OK":
+        standard["fallback_used"] = False
+        return standard
+    if standard.get("status") == "HUMAN_REVIEW_LOCKED":
+        standard["fallback_used"] = False
+        return standard
+
+    max_len = len(text) + max_extra_chars
+    fallback_attempts = []
+    fallback_classification_history = []
+    cooldown_events = []
+    std_log = standard.get("attempts_log") or []
+    fallback_budget = max(0, max_attempts - len(std_log))
+    last_ng = None            # (asr_text, ng_source)
+    last_outcome_r = None
+    for attempt in range(1, fallback_budget + 1):
+        ordinal = len(std_log) + attempt
+        _bs = blk.step(ordinal)               # STOP確認 + ③直前の180秒(②NG後) + n_started永続化
+        if _bs.skip:
+            fallback_attempts.append(blk.stub_row(ordinal))
+            continue
+        if _bs.cooldown:
+            cooldown_events.append(_bs.cooldown)
+        outcome = _run_a2_minimal_fallback_attempt(
+            text, out_path, max_len, fallback_classification_history,
+            enable_connected_speech_equivalence_layer, disfluency_qa, enable_repetition_qa,
+            tts_backend=tts_backend,
+            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(ordinal, max_attempts, slot_offset=ctx.slot_offset, total_slots=blk.total_slots,
+                                                          script_version=ctx.script_version, m1_anchor_text=ctx.m1_anchor_text))
+        r = outcome["result"]
+        if not outcome["ok"]:
+            fallback_attempts.append({"attempt": ordinal, "status": r.get("status"), "reason": r.get("reason"),
+                                       "en_pronunciation_resolver_info": r.get("en_pronunciation_resolver_info")})
+            last_outcome_r = r
+            continue
+        asr_text = outcome["asr_text"]
+        cls = outcome["classification"]
+        verified = outcome["verified"]
+        gate = outcome["disfluency_gate"]
+        rep_gate = outcome["repetition_gate"]
+        fallback_attempts.append({"attempt": ordinal, "status": "OK", "asr_text": asr_text,
+                                   "audio_classification": cls.classification, "verified": verified,
+                                   "disfluency_checked": gate["disfluency_checked"],
+                                   "disfluency_evidence": gate.get("disfluency_evidence"),
+                                   "repetition_qa_checked": rep_gate["repetition_qa_checked"],
+                                   "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence"),
+                                   "en_pronunciation_resolver_info": r.get("en_pronunciation_resolver_info"),
+                                   "cascade_steps": outcome.get("cascade_steps"),
+                                   "asr_judgement": outcome.get("asr_judgement"),
+                                   "style_prefix": r.get("style_prefix"),
+                                   "instruction_label": r.get("instruction_label")})
+        _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, "minimal_fallback", {
+            "loop_attempt_index": ordinal, "max_attempts": max_attempts, "language": "en",
+            **_fallback_sidecar_model_fields(tts_backend), "voice": p9a.VOICE_NAME,
+            "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(),
+            "asr_text": asr_text, "audio_classification": cls.classification,
+            "length_ok": outcome["length_ok"], "final_length_ok": outcome.get("final_length_ok"), "verified": verified,
+            "disfluency_checked": gate["disfluency_checked"], "disfluency_evidence": gate.get("disfluency_evidence"),
+            "repetition_qa_checked": rep_gate["repetition_qa_checked"], "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence"),
+        })
+        fallback_attempts[-1]["attempt_audio_path"] = _attempt_audio_path
+        if verified:
+            r["asr_verified"] = True
+            r["asr_text"] = asr_text
+            r["asr_judgement"] = outcome.get("asr_judgement")
+            r["fallback_used"] = True
+            r["standard_attempts_log"] = std_log
+            r["fallback_attempts_log"] = fallback_attempts
+            r["disfluency_checked"] = gate["disfluency_checked"]
+            r["disfluency_evidence"] = gate.get("disfluency_evidence")
+            r["repetition_qa_checked"] = rep_gate["repetition_qa_checked"]
+            r["repetition_qa_evidence"] = rep_gate.get("repetition_qa_evidence")
+            r["cooldown_events"] = cooldown_events
+            if post_hook is not None:
+                r = post_hook(r, blk.slot(ordinal), blk.is_last_slot(ordinal))
+                if r.get("status") != "OK":
+                    fallback_attempts[-1]["verified"] = False
+                    fallback_attempts[-1]["post_slowdown_ng"] = True
+                    fallback_attempts[-1]["post_slowdown_reason"] = r.get("reason")
+                    # M-6(e): LRへはNGの原因になった転写(減速後NGなら減速後の転写)を渡す
+                    last_ng, last_outcome_r = ((r.get("post_slowdown_asr_text") or asr_text), "post_slowdown"), r
+                    continue
+            return r
+        last_ng, last_outcome_r = (asr_text, "pre_slowdown"), r
+        if outcome["stop_retrying"]:
+            r["status"] = "ASR_VALIDATION_UNCERTAIN"
+            r["asr_verified"] = False
+            r["asr_text"] = asr_text
+            r["reason"] = (f"同一ASR mismatch signatureが連続し、retryでの改善が見込めないため打ち切り"
+                            f"(最終classification={cls.classification})")
+            break
+
+    # ③まで不合格(③の技術失敗・stop_retryingを含む)
+    last_asr_text = (last_ng[0] if last_ng else None)
+    if last_asr_text is None:
+        last_asr_text = next((a.get("asr_text") for a in reversed(fallback_attempts + list(std_log))
+                              if isinstance(a, dict) and a.get("asr_text")), None)
+    stopped_result = dict(last_outcome_r) if isinstance(last_outcome_r, dict) else {}
+    if stopped_result.get("status") in (None, "OK"):
+        stopped_result["status"] = "STOPPED"
+    stopped_result.setdefault("reason", f"ブロック(標準経路{len(std_log)}回+fallback経路{len(fallback_attempts)}回、合計上限{max_attempts}回)とも不合格")
+    stopped_result.update({
+        "standard_attempts_log": std_log, "attempts_log": std_log, "fallback_attempts_log": fallback_attempts,
+        "cooldown_events": cooldown_events, "fallback_used": True,
+        "fallback_en_pronunciation_resolver_info": (fallback_attempts[-1].get("en_pronunciation_resolver_info") if fallback_attempts else None),
+    })
+    term_attempt = er127.last_attempt_of(stopped_result)
+    if er127._is_tech_stop(term_attempt):
+        return stopped_result              # 技術STOP(Secondary/Whisper不能)は品質NGではない: LR・HRに入れない(再実行で再開、Opus M-4)
+    if blk.lr_allowed:
+        def _block_call(rewritten_text: str, lr_ctx):
+            return generate_english_segment_with_fallback.__wrapped__(
+                rewritten_text, out_path, expected_substring, max_extra_chars=max_extra_chars,
+                max_attempts=max_attempts, style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa,
+                enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+                enable_repetition_qa=enable_repetition_qa, tts_backend=tts_backend, post_hook=post_hook, tts_block=lr_ctx)
+
+        def _merge(res: dict, recovery: dict) -> dict:
+            blk_std = res.get("standard_attempts_log") if res.get("fallback_used") else res.get("attempts_log")
+            blk_fb = res.get("fallback_attempts_log") if res.get("fallback_used") else []
+            res["local_rewrite_recovery"] = recovery
+            res["fallback_used"] = True
+            res["standard_attempts_log"] = er127.merge_logs(std_log, blk_std)
+            res["attempts_log"] = res["standard_attempts_log"]
+            res["fallback_attempts_log"] = er127.merge_logs(fallback_attempts, blk_fb)
+            res["cooldown_events"] = er127.merge_logs(cooldown_events, res.get("cooldown_events"))
+            return res
+
+        recovered = er127.lr_recover(blk, text=text, out_path=out_path, last_asr_text=last_asr_text, block_call=_block_call,
+                                     merge=_merge, last_attempt=term_attempt)
+        if recovered is not None:
+            return recovered
+        _std_rows, _fb_rows = er127.lr_unresolved_rows(blk)       # LR block(不合格)で消費したTTS行も実TTS計上へ(M-3b)
+        std_log.extend(_std_rows)
+        fallback_attempts.extend(_fb_rows)
+        _lr_sum = er127.lr_attempt_summary(blk)
+        if _lr_sum is not None:
+            stopped_result["local_rewrite_attempted"] = _lr_sum
+    elif blk.depth == 0:
+        er127.register_terminal_hr(out_path=out_path, canonical_text=text, attempt=term_attempt, lock_text=text)
     return stopped_result
 
 

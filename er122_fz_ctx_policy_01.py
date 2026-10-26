@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-"""FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01 委任_02: Family Z dialogue の TTS attempt policy(ctx -> ctx -> 600秒cooldown -> 従来方式、総3回)。
+"""FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01 委任_02: Family Z dialogue の TTS attempt policy(ctx -> ctx -> 180秒cooldown -> 従来方式、総3回)。
 
 ユーザー正式決定(APPROVED_FOR_PRODUCTION 2026-10-26)の中核。clip単位の単一policy objectと永続stateを、初回・retry・fallback・regeneration・resume・
 中断後の再開・Human Review Lock の全経路が通る。決定者が1つなので経路間で方式がずれない。
 
 - 総TTS試行(ループ反復)は初回を含め最大3回。3回目が従来方式Fallbackそのもので、4回目は存在しない。
-- 1〜2回目=文脈・感情付きStyle(`style_prefix_override`=ctx style)。2回目NG後に600秒(er020.COOLDOWN_SECONDS、短縮不可、実時間で数える)。
+- 1〜2回目=文脈・感情付きStyle(`style_prefix_override`=ctx style)。2回目NG後に180秒(er127.COOLDOWN_SECONDS、唯一の定義[TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02、
+  2026-10-26ユーザー正式決定。旧600秒は2026-10-26に180秒へ変更]。実時間で数える。待機本体は er127.cooldown_core に委譲)。
   3回目=Style引数None(=現行の承認済み従来Dialogue Style。文脈・感情情報を一切渡さない)。
 - 永続state(`<level_dir>/audit/dialogue_ctx_attempt_state.json`、tmp+os.replaceで原子書込)。**TTS呼出より前に** `n_started` を書く=TTS中に落ちても消費済み
   (3回超過は構造的に起きない)。再開は消費済みの試行を再実行せず、`n_started+1`から続ける。cooldownは前回の完了時刻からの実経過時間で数える。
@@ -39,9 +40,9 @@ RUN_STATE_FILENAMES = ("tts_generation_results.json", "tts_checkpoint.json", "re
 
 
 def cooldown_seconds() -> float:
-    """固定10分(ユーザー正式決定・短縮禁止)。既存定数 er020.COOLDOWN_SECONDS を参照する(複製しない)。"""
-    import er020_tts_retry_local_rewrite_01 as er020
-    return float(er020.COOLDOWN_SECONDS)
+    """固定180秒(ユーザー正式決定2026-10-26。旧600秒)。唯一の定義 er127_tts_block_policy_01.COOLDOWN_SECONDS を参照する(複製しない)。"""
+    import er127_tts_block_policy_01 as er127
+    return float(er127.COOLDOWN_SECONDS)
 
 
 class _Runtime:
@@ -296,7 +297,7 @@ class DialogueAttemptPolicy:
         return {"stop": False, "style_prefix_override": (self.ctx_style if mode == "ctx" else None), "n": n, "mode": mode}
 
     def _cooldown_before_fallback(self, n: int) -> None:
-        """2回目NG後の固定600秒。起点=直前試行の最終NG確定時刻(無ければ完了時刻、完了前に落ちていれば開始時刻)。実時間で数える(再開しても10分未満にならない)。"""
+        """2回目NG後の固定180秒(旧600秒)。起点=直前試行の最終NG確定時刻(無ければ完了時刻、完了前に落ちていれば開始時刻)。実時間で数える(再開しても180秒未満にならない)。"""
         st = self.st
         prev = st["attempts"][-1] if st["attempts"] else None
         ref = None
@@ -315,12 +316,11 @@ class DialogueAttemptPolicy:
         st["cooldown"] = cd
         self.store.put(self.clip_id, st)
         t0 = RUNTIME.clock()
-        while True:
-            remaining = ref + total - RUNTIME.clock()
-            if remaining <= 0:
-                break
-            self.stop_check(f"tts_cooldown:{self.clip_id}")     # 5秒刻みでSTOP確認(STOP時は例外で即中断。stateは起点を保持=後でresume可)
-            RUNTIME.sleep(min(SLICE_SECONDS, remaining))
+        # 待機本体は er127.cooldown_core(唯一の実装。5秒刻みでSTOP確認、STOP時は例外で即中断。stateは起点を保持=後でresume可)。
+        # clock/sleepは本moduleのRUNTIME(test/driver注入点)を明示的に渡す。
+        import er127_tts_block_policy_01 as er127
+        er127.cooldown_core(ref_epoch=ref, seconds=total, stop_check=self.stop_check, label=self.clip_id, clock=RUNTIME.clock,
+                            sleep=RUNTIME.sleep, slice_seconds=SLICE_SECONDS, resumed=bool(cd.get("resumed")))
         end = RUNTIME.clock()
         cd["ended_epoch"] = end
         cd["ended_at"] = now_iso(end)

@@ -84,8 +84,11 @@ def _load_manifest() -> dict:
 
 def _save_manifest(manifest: dict) -> None:
     os.makedirs(STORE_DIR, exist_ok=True)
-    with open(MANIFEST_PATH, "w", encoding="utf-8") as f:
+    # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02(Opus M-7): tmp+os.replaceの原子的書込(読込側が書込途中のJSONを見ない)。内容は従来と同一。
+    tmp = f"{MANIFEST_PATH}.tmp{os.getpid()}"
+    with open(tmp, "w", encoding="utf-8") as f:
         json.dump(manifest, f, ensure_ascii=False, indent=2)
+    os.replace(tmp, MANIFEST_PATH)
 
 
 def _log_telemetry(record: dict) -> None:
@@ -208,6 +211,10 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
         os.makedirs(AUDIO_DIR, exist_ok=True)
         stored_path = f"{AUDIO_DIR}/{master_id}.wav"
         shutil.copyfile(out_path, stored_path)
+        # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02(Opus M-7): generate_fn内は180秒待機+複数TTSで長い。冒頭で読んだmanifestは古く、
+        # 並列process(evidenceは6並列)が待機中に登録した他entryや`reuse_blocked`印を上書き・消去し得る(ブロック済み音声の再利用=品質リスク)。
+        # 保存直前に再読込してmergeする(自分のentryだけを追加。従来の単独process結果は不変)。
+        manifest = _load_manifest()
         manifest[master_id] = {
             "audio_path": stored_path, "key": key.as_dict(),
             "created_at": time.strftime("%Y-%m-%dT%H:%M:%S"),

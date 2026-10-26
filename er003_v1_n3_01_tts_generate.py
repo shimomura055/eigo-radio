@@ -53,6 +53,7 @@ import er006_preprod_hardening_01_validation as en_validator
 import er006_secondary_asr_01 as secondary_asr
 import er008_a2_postprocess_slowdown_01 as a2_slowdown
 import er020_tts_retry_local_rewrite_01 as retry_primitive
+import er127_tts_block_policy_01 as er127  # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02: X/Y/Z scope内の統一3回構成ブロック
 import er033_tts_flash_lite_backend_wiring_01 as flw
 
 # ============================================================
@@ -121,7 +122,7 @@ A2_SLOWDOWN_TARGET_SEGMENTS = (
 def _post_slowdown_unified_judge(result: dict, tts_input_text: str, asr_text: str, out_path: str,
                                  segment_id: str, is_last_slot: bool, log_human_review: bool = False,
                                  lock_canonical_text: str | None = None, expected_text_source: str | None = None,
-                                 m1_anchor_text: str | None = None) -> dict:
+                                 m1_anchor_text: str | None = None, slot: int | None = None) -> dict:
     """AUW 委任_05(J7): 6%減速後のwavを**統一judge(EN adapter)**で判定する。旧実装は直接
     `en_validator.classify_asr_match`+homophone+UNCERTAIN限定の共有Cascadeだった。
 
@@ -144,10 +145,10 @@ def _post_slowdown_unified_judge(result: dict, tts_input_text: str, asr_text: st
         detail = secondary_asr.evaluate_attempt_with_cascade_detail(
             tts_input_text, asr_text, [], out_path, language="en-US", ledger_phrases=ledger_phrases,
             cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED, segment_id=segment_id,
-            attempt_ctx=({"slot": 1, "script_version": "v0", "is_last_slot": bool(is_last_slot),
+            attempt_ctx=({"slot": (slot if slot is not None else 1), "script_version": "v0", "is_last_slot": bool(is_last_slot),
                           # 委任_03(Opus_H条件1、OF-179): LR採用時のみ元原稿をM1 anchorに(元segment開始時刻で凍結)。LRなしは従来どおり。
                           "m1_anchor_text": m1_anchor_text} if m1_anchor_text
-                         else {"slot": 1, "script_version": "v0", "is_last_slot": bool(is_last_slot)}))
+                         else {"slot": (slot if slot is not None else 1), "script_version": "v0", "is_last_slot": bool(is_last_slot)}))
     except RuntimeError as exc:
         if "init_logger" in str(exc) or "[STOP]" in str(exc):
             raise  # 設定不備(cost logger未初期化/単価未登録)は握りつぶさない
@@ -193,7 +194,8 @@ def _post_slowdown_unified_judge(result: dict, tts_input_text: str, asr_text: st
 
 def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text: str, result: dict,
                                   is_last_slot: bool = True, log_human_review: bool = False,
-                                  slowdown_pct: float | None = None) -> dict:
+                                  slowdown_pct: float | None = None, slot: int | None = None,
+                                  lock_text: str | None = None) -> dict:
     """generate_english_segment_with_fallback()が返した通常ペースの
     結果(status=="OK")に対し、6% time-stretchを適用し、post-process後の
     音声を実際にASRで再検証した上でresultを更新する。post-process後の
@@ -217,7 +219,13 @@ def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text:
     # 再TTSに実際に送った文にする(単一参照点=retry_primitive.resolve_expected_text_after_local_rewrite)。LRなし/未採用は従来どおり。
     # Lock key(finalize_a2_slowdown_final_ng/record_outcome)は元の原稿のまま(下記)。
     _lock_text = tts_input_text  # Lock key/HR承認key=元の原稿(下記で再代入する前に保持)
-    tts_input_text, _expected_source = retry_primitive.resolve_expected_text_after_local_rewrite(result, tts_input_text)
+    if lock_text is not None and lock_text != tts_input_text:
+        # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02(M-6(c)): LR block内のattemptはattempt dictに`local_rewrite_recovery`がまだ無い。
+        # 期待text=そのattemptの送信文(書換え後)、Lock key/HRQ lock_canonical_text/M1 anchor=元原稿を呼出元(BlockCtx)から明示的に受け取る。
+        _lock_text = lock_text
+        _expected_source = "local_rewrite_text"
+    else:
+        tts_input_text, _expected_source = retry_primitive.resolve_expected_text_after_local_rewrite(result, tts_input_text)
     result["post_slowdown_expected_text_source"] = _expected_source
 
     # FAMILY-Z-DIALOGUE-SPEED-PRODUCTION-WIRING-01: slowdown_pct=None(既定)は従来の6%減速そのまま(X/A/B/Cは引数を渡さない=出力不変)。
@@ -240,7 +248,8 @@ def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text:
     detail = _post_slowdown_unified_judge(result, tts_input_text, asr_text, out_path, name, is_last_slot,
                                           log_human_review=log_human_review, lock_canonical_text=_lock_text,
                                           expected_text_source=_expected_source,
-                                          m1_anchor_text=(_lock_text if _expected_source == "local_rewrite_text" else None))
+                                          m1_anchor_text=(_lock_text if _expected_source == "local_rewrite_text" else None),
+                                          slot=slot)
     _steps = detail.get("steps") or []
     _primary_label = (_steps[0].get("classification") if _steps else None) or "ASR_VALIDATION_UNCERTAIN"
     _cls = detail.get("classification")
@@ -328,6 +337,54 @@ def finalize_a2_slowdown_final_ng(out_path: str, tts_input: str, result: dict, l
     return result
 
 
+def make_slowdown_post_hook(name: str, narration_dir: str, lock_text: str, slowdown_pct: float | None = None):
+    """TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02(D6案A、Opus M-6): Std本文の6%減速+減速後ASR再検証を**各attemptの検証の一部**にするhook。
+    er003_v1_repro01.generate_narration_snippet_verified_strict(post_hook=)/crosslevel _generate_english_segment_unified(③)が、検証PASS後に
+    (result, slot, is_last_slot)で呼ぶ。順序: out_pathを`*_original.wav`へ退避→減速→減速後ASR(統一judge)。減速前の音声は呼出元が保存済み、減速後は route=post_slowdown で
+    attempt保存する(b)。期待textはそのattemptの送信文(result["text"]、LR block内は書換え後)、Lock key/HRQ lock_canonical_text/M1 anchorは元原稿lock_text(c)。
+    slotはブロック通算slot(d)。最終slot(is_last_slot)の減速後NGだけHRQへ1行(log_human_review)。戻り値のstatus!=OKならそのattemptは不合格。
+    採用結果のtop-levelへ slowdown_applied/original_path/slowdown_info/post_slowdown_*/再計算sha256/比例補正trim_info を残す(f=apply_a2_slowdown_postprocess)。"""
+    def _hook(result: dict, slot: int, is_last_slot: bool) -> dict:
+        sent_text = result.get("text") or lock_text
+        pre_path = f"{narration_dir}/{name}.wav"      # 減速前の音声は呼出元(strict/③)が既にattempt保存済み(route=standard/minimal_fallback)
+        out = apply_a2_slowdown_postprocess(
+            name, narration_dir, sent_text, result, is_last_slot=is_last_slot, log_human_review=True,
+            lock_text=lock_text, slot=slot, **({} if slowdown_pct is None else {"slowdown_pct": slowdown_pct}))
+        try:
+            review_lock.save_tts_attempt_audio(pre_path, "post_slowdown", {
+                "slot": slot, "verified": out.get("status") == "OK", "post_slowdown_asr_text": out.get("post_slowdown_asr_text"),
+                "post_slowdown_classification": out.get("post_slowdown_classification")})
+        except Exception:
+            pass
+        return out
+    return _hook
+
+
+def _generate_a2_segment_with_slowdown_unified(tts_input: str, out_path: str, expected_substring: str, *, max_extra_chars: int,
+                                               style_prefix_override, disfluency_qa: bool, enable_connected_speech_equivalence_layer: bool,
+                                               enable_repetition_qa: bool, tts_backend: str) -> dict:
+    """X/Y/Z scope内のStd本文(L4)。外側ループ(取り直し)・prior_generations・cooldown_total_budget・finalize_a2_slowdown_final_ngを使わず、
+    L3の統一3回構成ブロックの各attempt内で減速+減速後再検証を行う(D6案A)。LRはブロック最終NG(減速前NG/減速後NG)から入る(原文§2「Std英語本文=LRあり部位」)。
+    chunk(X `_k{j}`/Z `_c{k}_k{j}`/Y `y_*_k{j}`)はchunkごとに独立した1ブロック。"""
+    narration_dir = out_path.rsplit("/", 1)[0]
+    name = out_path.rsplit("/", 1)[1].removesuffix(".wav")
+    hook = make_slowdown_post_hook(name, narration_dir, tts_input)
+    result = c.generate_english_segment_with_fallback(
+        tts_input, out_path, expected_substring, max_extra_chars=max_extra_chars,
+        max_attempts=review_lock.PRODUCTION_MAX_TTS_ATTEMPTS, standard_attempts=review_lock.PRODUCTION_STANDARD_TTS_ATTEMPTS,
+        style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa,
+        enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+        enable_repetition_qa=enable_repetition_qa, tts_backend=tts_backend, post_hook=hook)
+    if isinstance(result, dict) and "tts_generations_used" not in result:
+        # 互換(runner/evidence集計が読む): 外側ループは無いが、このブロック(+LR block)で消費したTTS生成数を通算で記録する
+        result["tts_generations_used"] = len(result.get("standard_attempts_log") or result.get("attempts_log") or []) + len(result.get("fallback_attempts_log") or [])
+        result["slowdown_attempts_log"] = [
+            {"attempt": a.get("attempt"), "post_slowdown_ng": a.get("post_slowdown_ng"), "post_slowdown_reason": a.get("post_slowdown_reason")}
+            for a in (list(result.get("standard_attempts_log") or result.get("attempts_log") or []) + list(result.get("fallback_attempts_log") or []))
+            if isinstance(a, dict) and a.get("post_slowdown_ng")]
+    return result
+
+
 def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_substring: str,
                                         max_extra_chars: int = 60, max_slowdown_attempts: int = 3,
                                         style_prefix_override: str = None,
@@ -375,6 +432,12 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
     自体の単独効果がsame-text比較[ABC-09]で不安定だったことは、
     instructionを外してよい理由にはならない、ユーザーが実際に聴いて
     承認したのはinstructionを含む音声である)。"""
+    if er127.unified_flow_active():
+        # X/Y/Z scope内(統一3回構成ブロック): 減速+再検証をattempt内へ(D6案A)。scope外(A/B/C)は以下の旧コードを一切変更しない(golden固定)。
+        return _generate_a2_segment_with_slowdown_unified(
+            tts_input, out_path, expected_substring, max_extra_chars=max_extra_chars, style_prefix_override=style_prefix_override,
+            disfluency_qa=disfluency_qa, enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+            enable_repetition_qa=enable_repetition_qa, tts_backend=tts_backend)
     narration_dir = out_path.rsplit("/", 1)[0]
     name = out_path.rsplit("/", 1)[1].removesuffix(".wav")
     slowdown_attempts_log = []
@@ -690,6 +753,7 @@ def _generate_a2_japanese_minimal_instruction(
 # 影響はない。状態ファイル(review_lock_state.json)自体はこの修正では
 # 書き換えない(次回実行時から正しく記録されるようになるだけ)。
 @review_lock.guarded_generate("ja")
+@er127.with_block("L7", fingerprint_params=("style_prefix_override", "tts_backend"))
 def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substring: str,
                                         max_extra_chars: int = 40,
                                         max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
@@ -708,7 +772,9 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
                                         # (c.generate_narration_snippet_verified_strict)にのみ転送する。
                                         # fallback経路(_generate_a2_japanese_minimal_instruction)は
                                         # FAMILY-X-02 D-1の方針どおり既存テキスト流用のまま変更しない。
-                                        style_prefix_override: str | None = None) -> dict:
+                                        style_prefix_override: str | None = None,
+                                        # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02: er127.with_blockが渡す統一ブロック(X/Y/Z scope内のみ。None=従来コード)。
+                                        _blk=None) -> dict:
     """標準経路(JAPANESE_STYLE_PREFIX)が合格しない場合、minimal
     instructionへフォールバックする(声・モデルは変えない)。
     ER-003-N3-ROOT-FIX-01: 短いA2日本語フレーズのinstruction
@@ -734,7 +800,8 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
         text, "ja", out_path, expected_substring, max_attempts=standard_attempts, max_extra_chars=max_extra_chars,
         expected_readings=expected_readings, tts_backend=tts_backend,
         style_prefix_override=style_prefix_override,
-        slot_offset=0, total_slots=max_attempts)  # AUW 委任_05: 標準経路は後段fallbackが残る間HR queue対象外
+        slot_offset=0, total_slots=max_attempts,   # AUW 委任_05: 標準経路は後段fallbackが残る間HR queue対象外
+        **er127.stage_kwargs(_blk, 0))             # 委任_02: scope内は①②のSTOP確認/n_started永続化/resumeを統一ブロックで
     if standard.get("status") == "OK":
         standard["fallback_used"] = False
         return standard
@@ -750,6 +817,13 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
     fallback_attempts = []
     fallback_budget = max(0, max_attempts - len(standard.get("attempts_log") or []))
     for attempt in range(1, fallback_budget + 1):
+        if _blk is not None:
+            # 委任_02: ②NG後・③(JA minimal)直前に180秒(新設、JA_STD)。STOP確認・n_started永続化・resume skip。
+            _ord = len(standard.get("attempts_log") or []) + attempt
+            _bs = _blk.step(_ord)
+            if _bs.skip:
+                fallback_attempts.append(_blk.stub_row(_ord))
+                continue
         r = _generate_a2_japanese_minimal_instruction(text, out_path, tts_backend=tts_backend)
         if r.get("status") != "OK":
             fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})

@@ -38,6 +38,7 @@ import er078_asr_unified_attempt_ctx_01 as attempt_ctx_mod  # AUW 委任_05
 import er078_asr_unified_judge_01 as unified_judge_mod  # AUW 委任_13: final_length_ok(A3是正)
 import er020_tts_retry_local_rewrite_01 as retry_primitive
 import er025_entity_pronunciation_resolver_core_01 as pron_resolver_core
+import er127_tts_block_policy_01 as er127  # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02: X/Y/Z scope内の統一3回構成ブロック
 
 OUT_DIR = "er003_output/novel_audio_01/SING01"
 NARRATION_DIR = f"{OUT_DIR}/narration"
@@ -46,6 +47,7 @@ SAFETY_MARGIN = 0.35  # AUDIO-03/NOVEL-AUDIO-01のtail切れ修正と同じ値�
 
 
 @review_lock.guarded_generate("en")
+@er127.with_block("L1", fingerprint_params=("style_prefix_override", "tts_backend", "enable_pronunciation_resolver"))
 def generate_charon_english(text: str, out_path: str,
                              max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
                              style_prefix_override: str = None,
@@ -82,10 +84,21 @@ def generate_charon_english(text: str, out_path: str,
                              # (統一judgeがLR_REWRITTENをPASS_WITH_WARNINGとして付与)。
                              script_version: str = "v0",
                              # 委任_03(Opus_H条件1、OF-179): LR後の再TTS(_retts_fn)のみ元原稿を渡す(M1候補の時刻境界を元segment開始に固定)。
-                             m1_anchor_text: str | None = None) -> dict:
+                             m1_anchor_text: str | None = None,
+                             # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02: er127.with_blockが渡す統一ブロック(X/Y/Z scope内のみ。None=従来コード)。
+                             _blk=None) -> dict:
     """ENGLISH_STYLE_PREFIX主経路(voice=Charon)+MINIMAL_INSTRUCTION
     fallback。trim安全マージンはNOVEL-AUDIO-01のtail切れ修正と同じ
-    0.35秒を使う。"""
+    0.35秒を使う。
+
+    TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02(2026-10-26、X/Y/Z scope内のみ=_blk指定時): 3回構成ブロック。①②=呼出元のStyle、
+    ②NG後180秒、③=Fallback Style(Charon・minimal・発音hint付き、judgeはforce_secondary=True)。③NG後はLR(er127.lr_recover。LR block=
+    同じ3回構成を書換え後原稿で1回)。scope外(_blk=None)は従来コードのまま。"""
+    _orig_style_prefix_override = style_prefix_override   # LR blockへは呼出元の元Style(発音hint付与前)+元resolver flagを渡す(Opus M-3c)
+    if _blk is not None:
+        max_attempts = min(max_attempts, review_lock.PRODUCTION_MAX_TTS_ATTEMPTS)
+        script_version = _blk.ctx.script_version
+        m1_anchor_text = _blk.ctx.m1_anchor_text
     # ER-008-N8-QA-CONTENT-SPEED-HARDENING-18: No.8のB1 Comment 2で
     # "In Part 2, ..."という制作内部ラベルが英語canonical textへ残って
     # いた事故を受け、TTS呼び出し前に検出する(発生源[Comment生成prompt
@@ -148,20 +161,75 @@ def generate_charon_english(text: str, out_path: str,
     attempts_log = []
     classification_history = []
     cooldown_events = []
+
+    def _fallback_style_prefix() -> str:
+        """③のFallback Style(既存のF-Tech分岐と同じ定数。新Style・新Promptなし)+発音hint。Voiceは変えない(Charon、M-10)。"""
+        if tts_backend == "speech_metadata_flash_lite":
+            import er033_tts_flash_lite_family_x_styles_01 as fl_styles
+            _p = fl_styles.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]
+        else:
+            _p = repro01.MINIMAL_INSTRUCTION_PREFIX
+        if enable_pronunciation_resolver and en_pronunciation_resolver_info and en_pronunciation_resolver_info.get("cache_hits"):
+            _p = pron_resolver_core.augment_style_prefix_with_cached_hits(_p, en_pronunciation_resolver_info["cache_hits"])
+        return _p
+
+    def _unified_ng_exit(last_asr_text):
+        """③まで不合格(またはstop_retrying)。技術STOPはLR/HRに入れない。LR可ならlr_recover(非RESOLVEDは終端HRQ1行)、不可なら終端HRQ1行。"""
+        term = attempts_log[-1] if attempts_log else None
+        if er127._is_tech_stop(term):
+            return None
+        if _blk.lr_allowed:
+            def _block_call(rewritten_text, lr_ctx):
+                return generate_charon_english.__wrapped__(
+                    rewritten_text, out_path, max_attempts=review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
+                    style_prefix_override=_orig_style_prefix_override, disfluency_qa=disfluency_qa,
+                    enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+                    enable_pronunciation_resolver=enable_pronunciation_resolver, tts_backend=tts_backend, tts_block=lr_ctx)
+
+            def _merge(res, recovery):
+                res["local_rewrite_recovery"] = recovery
+                res["attempts_log"] = er127.merge_logs(attempts_log, res.get("attempts_log"))
+                if res.get("en_pronunciation_resolver_info") is None:
+                    res["en_pronunciation_resolver_info"] = en_pronunciation_resolver_info
+                res["cooldown_events"] = er127.merge_logs(cooldown_events, res.get("cooldown_events"))
+                return res
+
+            _rec = er127.lr_recover(_blk, text=text, out_path=out_path, last_asr_text=last_asr_text, block_call=_block_call,
+                                    merge=_merge, last_attempt=term)
+            if _rec is None:
+                _std_rows, _fb_rows = er127.lr_unresolved_rows(_blk)      # LR block(不合格)で消費したTTS行も実TTS計上へ(M-3b)
+                attempts_log.extend(_std_rows + _fb_rows)
+            return _rec
+        if _blk.depth == 0:
+            er127.register_terminal_hr(out_path=out_path, canonical_text=text, attempt=term, lock_text=text)
+        return None
+
     for attempt in range(1, max_attempts + 1):
-        # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01: ユーザー
-        # 承認済みcool-down(attempt1->即時attempt2->NG->10分固定cool-down->
-        # attempt3)。enable_connected_speech_equivalence_layer=Falseの
-        # 既存呼び出し元には一切影響しない(即座にNoneを返すだけ)。
-        cooldown_record = retry_primitive.maybe_cooldown_before_attempt(
-            attempt, max_attempts, enable_connected_speech_equivalence_layer)
-        if cooldown_record:
-            cooldown_events.append(cooldown_record)
+        _third = False
+        if _blk is not None:
+            _step = _blk.step(attempt)        # STOP確認 + ③直前の180秒(②NG後) + n_started永続化(統一ブロック)
+            if _step.skip:
+                attempts_log.append(_blk.stub_row(attempt))
+                continue
+            if _step.cooldown:
+                cooldown_events.append(_step.cooldown)
+            _third = _step.style_mode == "FALLBACK"
+        else:
+            # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01: ユーザー
+            # 承認済みcool-down(attempt1->即時attempt2->NG->10分固定cool-down->
+            # attempt3)。enable_connected_speech_equivalence_layer=Falseの
+            # 既存呼び出し元には一切影響しない(即座にNoneを返すだけ)。
+            cooldown_record = retry_primitive.maybe_cooldown_before_attempt(
+                attempt, max_attempts, enable_connected_speech_equivalence_layer)
+            if cooldown_record:
+                cooldown_events.append(cooldown_record)
         # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線
         # (声・モデルはgclient.make_tts_call_fn(CHARON)と同一)。
         # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01: 既定
         # backendでは上記2行とbyte-identical。
         standard_style_prefix = style_prefix_override or p9a.ENGLISH_STYLE_PREFIX
+        if _third:
+            standard_style_prefix = _fallback_style_prefix()      # ③=Fallback Style(Voice=Charon不変、M-10)
         # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、MAJOR-2是正):
         # 実際にTTSへ渡した最終文字列をruntime evidence用に保持する。
         _active_style_prefix = standard_style_prefix
@@ -170,7 +238,7 @@ def generate_charon_english(text: str, out_path: str,
             build_tts_prompt=p4c.build_tts_prompt, make_batch_tts_call_fn=batch_wiring.make_batch_tts_call_fn)
         pcm, retries, ok, err = common._call_tts_with_retry(
             call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
-        instruction_type = "english_style_prefix"
+        instruction_type = "minimal_fallback" if _third else "english_style_prefix"
         trimmed = None
         if ok:
             samples_raw = common.pcm_bytes_to_float_mono(pcm)
@@ -254,8 +322,10 @@ def generate_charon_english(text: str, out_path: str,
             # 判定した値をそのまま転送する。
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
             segment_id=segment_id, detail_out=_aj,
+            **({"force_secondary": True} if _third else {}),      # ③(Fallback音声)はPrimary PASSでもSecondary確認必須(既存のFallback規則)
             attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts, script_version=script_version, max_len=max_len,
-                                                           m1_anchor_text=m1_anchor_text))  # AUW 委任_05/13
+                                                           m1_anchor_text=m1_anchor_text,
+                                                           **(_blk.ctx_kwargs() if _blk is not None else {})))  # AUW 委任_05/13
         final_len_ok = unified_judge_mod.final_length_ok(length_ok, _aj)  # AUW 委任_13(A3是正)
         verified = verified_content and final_len_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
@@ -296,12 +366,17 @@ def generate_charon_english(text: str, out_path: str,
                     # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、Opus L2
                     # 所見MAJOR-2/MINOR-A是正): 実際に渡した最終style文字列
                     # (override指定時のみ)・model_idのruntime evidence。
-                    "style_prefix": (_active_style_prefix if _caller_provided_style_override
+                    "style_prefix": (_active_style_prefix if (_caller_provided_style_override or _third)
                                       else "<default:ENGLISH_STYLE_PREFIX>"),
-                    "tts_model_id": flw.resolve_actual_model_name(common.MODEL_NAME, tts_backend)}
+                    "tts_model_id": flw.resolve_actual_model_name(common.MODEL_NAME, tts_backend),
+                    **({"fallback_used": _third} if _blk is not None else {})}      # Opus M-5: Gateが読む採用attemptの正規化(additive)
         if stop_retrying:
             metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
-            if enable_connected_speech_equivalence_layer:
+            if _blk is not None:
+                recovered = _unified_ng_exit(asr_text)
+                if recovered is not None:
+                    return recovered
+            elif enable_connected_speech_equivalence_layer:
                 recovered = _local_rewrite_recovery_for_charon_english(
                     text, out_path, asr_text, style_prefix_override, disfluency_qa,
                     enable_connected_speech_equivalence_layer, attempts_log,
@@ -317,10 +392,15 @@ def generate_charon_english(text: str, out_path: str,
                               f"(最終classification={cls.classification})",
                     "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
                     "cooldown_events": cooldown_events,
-                    "style_prefix": (_active_style_prefix if _caller_provided_style_override
+                    "style_prefix": (_active_style_prefix if (_caller_provided_style_override or _third)
                                       else "<default:ENGLISH_STYLE_PREFIX>"),
                     "tts_model_id": flw.resolve_actual_model_name(common.MODEL_NAME, tts_backend)}
-    if enable_connected_speech_equivalence_layer:
+    if _blk is not None:
+        last_asr_text = next((a.get("asr_text") for a in reversed(attempts_log) if isinstance(a, dict) and a.get("asr_text")), None)
+        recovered = _unified_ng_exit(last_asr_text)
+        if recovered is not None:
+            return recovered
+    elif enable_connected_speech_equivalence_layer:
         last_asr_text = attempts_log[-1].get("asr_text") if attempts_log else None
         recovered = _local_rewrite_recovery_for_charon_english(
             text, out_path, last_asr_text, style_prefix_override, disfluency_qa,
@@ -443,6 +523,7 @@ def generate_charon_japanese_minimal_instruction(
 
 
 @review_lock.guarded_generate("ja")
+@er127.with_block("L7", fingerprint_params=("tts_backend",))
 def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
                               max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
                               standard_attempts: int = review_lock.PRODUCTION_STANDARD_TTS_ATTEMPTS,
@@ -451,7 +532,9 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
                               # (2026-09-27、既定"structured_separation"で既存挙動と
                               # byte-identical): Family X runnerのみが明示的に
                               # "speech_metadata_flash_lite"を渡す。
-                              tts_backend: str = "structured_separation") -> dict:
+                              tts_backend: str = "structured_separation",
+                              # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02: er127.with_blockが渡す統一ブロック(X/Y/Z scope内のみ。None=従来コード)。
+                              _blk=None) -> dict:
     """JAPANESE_STYLE_PREFIX経路、voice=Charon。既存generate_narration_
     snippet_verified_strictと同じ判定方式(部分一致+長さ)を使うが、
     voiceだけCharonへ差し替える(p9a.generate_narration_snippetは
@@ -488,6 +571,11 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
     max_len = len(text) + 15
     attempts_log = []
     for attempt in range(1, standard_attempts + 1):
+        if _blk is not None:
+            _bs = _blk.step(attempt)          # 委任_02: scope内はSTOP確認/n_started永続化/resume skipを統一ブロックで
+            if _bs.skip:
+                attempts_log.append(_blk.stub_row(attempt))
+                continue
         # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線
         # (声・モデルはp7a.make_tts_call_fn_for_modelと同一)。
         # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: build_tts_prompt()経由
@@ -571,6 +659,13 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
     fallback_attempts = []
     fallback_budget = max(0, max_attempts - len(attempts_log))
     for attempt in range(1, fallback_budget + 1):
+        if _blk is not None:
+            # 委任_02: ②NG後・③(JA minimal)直前に180秒(新設、JA_STD)
+            _ord = len(attempts_log) + attempt
+            _bs = _blk.step(_ord)
+            if _bs.skip:
+                fallback_attempts.append(_blk.stub_row(_ord))
+                continue
         r = generate_charon_japanese_minimal_instruction(text, out_path, tts_backend=tts_backend)
         if r.get("status") != "OK":
             fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})

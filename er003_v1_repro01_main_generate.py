@@ -40,6 +40,7 @@ import er078_asr_unified_attempt_ctx_01 as attempt_ctx_mod  # AUW 委任_05
 import er078_asr_unified_judge_01 as unified_judge_mod  # AUW 委任_13: final_length_ok(A3是正)
 # PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2)
 import er025_entity_pronunciation_resolver_core_01 as pron_resolver_core
+import er127_tts_block_policy_01 as er127  # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02: X/Y/Z scope内の統一3回構成ブロック
 
 ARTICLE_ID = "A02"
 OUT_DIR = f"er003_output/b1_p9a/{ARTICLE_ID}"
@@ -269,6 +270,13 @@ def generate_narration_snippet_verified_strict(
     # generate_key_phrase_component_verified 内2・K2 store 2・Family Z 2)のみ(静的test er104_kp_vote_wiring_test_01で固定)。
     # KP英語解説・phrase_repeat・KP日本語・その他全音声は渡さない。
     vote_pass_required: bool = False,
+    # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02(2026-10-26、既定=全て無指定でscope外・既存の全呼出元は従来どおり=byte同一):
+    #   block_run: er127.BlockRun(X/Y/Z scope内の統一3回構成ブロック。呼出元leafが渡す)。指定時は旧cooldown_total_budget方式ではなく
+    #     block_run.step(block_ordinal_offset+attempt)が STOP確認・③前180秒・n_started永続化・resume(消費済みattemptのskip)を担う。
+    #   post_hook: 検証PASS後の後処理(Std本文の6%減速+減速後ASR再検証)。(result_ok, slot, is_last_slot)->result(slot=segment通算slot)。status!=OKならこのattemptは不合格(次attemptへ)。
+    #   script_version/m1_anchor_text: LR block内(書換え後原稿)のattemptが統一judgeへ渡すctx(v1+元原稿anchor)。force_secondary: ③(Fallback音声)のSecondary必須確認。
+    block_run=None, block_ordinal_offset: int = 0, post_hook=None,
+    script_version: str = "v0", m1_anchor_text: str | None = None, force_secondary: bool = False,
 ) -> dict:
     # ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: 英語(language=="en")は、
     # 単純substring一致に代えて正規化+6分類のvalidatorを使う(数字・否定・
@@ -334,7 +342,12 @@ def generate_narration_snippet_verified_strict(
     import er033_tts_flash_lite_backend_wiring_01 as flw
     actual_model_name = flw.resolve_actual_model_name(batch_model_name, tts_backend)
     for attempt in range(1, max_attempts + 1):
-        if cooldown_total_budget:  # 通算3回目直前のみ固定cool-down(CURRENT_SPEC、同一module関数)
+        if block_run is not None:
+            _bstep = block_run.step(block_ordinal_offset + attempt)
+            if _bstep.skip:
+                attempts_log.append(block_run.stub_row(block_ordinal_offset + attempt))
+                continue
+        elif cooldown_total_budget:  # 通算3回目直前のみ固定cool-down(CURRENT_SPEC、同一module関数)
             import er020_tts_retry_local_rewrite_01 as _retry_primitive
             _cd = _retry_primitive.maybe_cooldown_before_attempt(
                 prior_generations + attempt, cooldown_total_budget, enable_connected_speech_equivalence_layer)
@@ -369,9 +382,10 @@ def generate_narration_snippet_verified_strict(
                 # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(修正1回目):
                 # segment_id=None(既定)の既存呼び出し元は無変更のまま。
                 segment_id=segment_id,
+                force_secondary=force_secondary,
                 attempt_ctx=attempt_ctx_mod.build_attempt_ctx(
                     attempt, max_attempts, slot_offset=slot_offset, total_slots=total_slots, max_len=max_len,
-                    vote_required=vote_pass_required))  # AUW 委任_05/13、KP3V
+                    vote_required=vote_pass_required, script_version=script_version, m1_anchor_text=m1_anchor_text))  # AUW 委任_05/13、KP3V
             final_len_ok = unified_judge_mod.final_length_ok(length_ok, cascade_detail)  # AUW 委任_13(A3是正)
             verified = verified_content and final_len_ok
             gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
@@ -467,7 +481,7 @@ def generate_narration_snippet_verified_strict(
             # 一切参照していなかったことがNo.8のkp2("uneven choice")取りこぼし
             # の一因だった。asr_verified等と同じtop-levelへ昇格し、Gate側
             # (_segment_missing_mandatory_disfluency_qa)が読めるようにする。
-            return {**r, "asr_verified": True, "asr_text": asr_text, "attempts_log": attempts_log,
+            _ok_result = {**r, "asr_verified": True, "asr_text": asr_text, "attempts_log": attempts_log,
                     "audio_classification": audio_classification,
                     "connected_speech_info": getattr(cls, "connected_speech_info", None) if language == "en" else None,
                     "reading_resolver_info": getattr(cls, "reading_resolver_info", None) if language == "ja" else None,
@@ -479,6 +493,19 @@ def generate_narration_snippet_verified_strict(
                     "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence") if language == "en" else None,
                     # AUW 委任_03/04(additive、EN/JA共通)
                     "asr_judgement": cascade_detail.get("asr_judgement")}
+            if post_hook is not None:
+                # 委任_02 D6案A: 検証PASS後の後処理(6%減速+減速後再検証)もこのattemptの検証の一部。NGならこのattemptは不合格として次attemptへ。
+                _ord = block_ordinal_offset + attempt
+                _last = block_run.is_last_slot(_ord) if block_run is not None else ((slot_offset + attempt) >= (total_slots or (slot_offset + max_attempts)))
+                _slot = block_run.slot(_ord) if block_run is not None else (slot_offset + attempt)
+                _ok_result = post_hook(_ok_result, _slot, _last)
+                if _ok_result.get("status") != "OK":
+                    attempts_log[-1]["verified"] = False
+                    attempts_log[-1]["post_slowdown_ng"] = True
+                    attempts_log[-1]["post_slowdown_reason"] = _ok_result.get("reason")
+                    attempts_log[-1]["post_slowdown_asr_text"] = _ok_result.get("post_slowdown_asr_text")
+                    continue
+            return _ok_result
         if stop_retrying:
             return {**r, "status": "ASR_VALIDATION_UNCERTAIN", "asr_verified": False, "asr_text": asr_text,
                     "attempts_log": attempts_log,
@@ -794,6 +821,7 @@ def _vote_circuit_open() -> bool:
 
 
 @review_lock.guarded_generate("en")
+@er127.with_block("L6", fingerprint_params=("tts_backend", "vote_pass_required"))
 def generate_key_phrase_component_verified(text: str, out_path: str,
         # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: Key PhraseはPRODUCTION
         # 承認済みのdisfluency QA対象segmentのため既定True(A2/B1共通)。
@@ -808,7 +836,9 @@ def generate_key_phrase_component_verified(text: str, out_path: str,
         tts_backend: str = "structured_separation",
         # KP3V(2026-10-22、既定False=Family A/B/Cを含む他の全呼出元は無変更): Family X(default profile)のみ
         # er104_kp_vote_reuse_01.ensure_key_phrase_english_component_x_vote経由でTrueを渡す。
-        vote_pass_required: bool = False) -> dict:
+        vote_pass_required: bool = False,
+        # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02: er127.with_blockが渡す統一ブロック(X/Y/Z scope内のみ。None=従来コード)。
+        _blk=None) -> dict:
     """Primary: Minimal instruction(KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX)
     で最大KEY_PHRASE_MINIMAL_MAX_ATTEMPTS(2)回まで試行する。2回とも
     不合格の場合のみ、Fallback: Minimal instruction+English language lock
@@ -836,7 +866,8 @@ def generate_key_phrase_component_verified(text: str, out_path: str,
         # 英語Key Phrase Component経路のみ、この関数だけが明示的に渡す)。
         asr_prompt=KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT, enable_non_latin_cascade=True, tts_backend=tts_backend,
         # AUW 委任_05: KP 4回構成の前半。後段(English Lock 2回)が残るため、ここのNGはHR queueへ投入しない。
-        slot_offset=0, total_slots=KEY_PHRASE_TOTAL_MAX_ATTEMPTS, vote_pass_required=vote_pass_required)
+        slot_offset=0, total_slots=KEY_PHRASE_TOTAL_MAX_ATTEMPTS, vote_pass_required=vote_pass_required,
+        **er127.stage_kwargs(_blk, 0))        # 委任_02: scope内は①②のSTOP確認/n_started永続化/resume skipを統一ブロックで
     if primary.get("status") == "OK":
         primary["fallback_used"] = False
         primary["primary_instruction_type"] = "MINIMAL"
@@ -859,7 +890,8 @@ def generate_key_phrase_component_verified(text: str, out_path: str,
         asr_prompt=KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT, enable_non_latin_cascade=True, tts_backend=tts_backend,
         # AUW 委任_05: KP 4回構成の後半(最終slot=通算4)。ここのNGのみHR queue対象。
         slot_offset=KEY_PHRASE_MINIMAL_MAX_ATTEMPTS, total_slots=KEY_PHRASE_TOTAL_MAX_ATTEMPTS,
-        vote_pass_required=vote_pass_required)
+        vote_pass_required=vote_pass_required,
+        **er127.stage_kwargs(_blk, KEY_PHRASE_MINIMAL_MAX_ATTEMPTS))   # 委任_02: ③(=ENGLISH_LOCK段の最初)直前に180秒(blk.step(3)。circuit-open判定後・実TTS直前のみ)
     fallback["fallback_used"] = True
     fallback["primary_instruction_type"] = "ENGLISH_LOCK" if fallback.get("status") == "OK" else "MINIMAL_AND_ENGLISH_LOCK_BOTH_FAILED"
     # record_outcome()のcumulative_tts_attempts集計は
@@ -873,6 +905,9 @@ def generate_key_phrase_component_verified(text: str, out_path: str,
     fallback["english_lock_attempts_log"] = fallback.get("attempts_log")
     if fallback.get("status") == "OK":
         return fallback
+    if _blk is not None and _blk.depth == 0:
+        # 委任_02(Opus M-4): 終端NG1件=HRQ1行(disfluency単独NG等でjudge由来の行が出ない場合も欠落させない。重複は既存の重複抑止)
+        er127.register_terminal_hr(out_path=out_path, canonical_text=text, attempt=er127.last_attempt_of(fallback), lock_text=text)
     fallback["reason"] = (f"Minimal instruction{KEY_PHRASE_MINIMAL_MAX_ATTEMPTS}回+"
                           f"English language lock{KEY_PHRASE_ENGLISH_LOCK_MAX_ATTEMPTS}回"
                           f"(合計上限{KEY_PHRASE_TOTAL_MAX_ATTEMPTS}回)とも不合格。"

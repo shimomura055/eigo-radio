@@ -41,6 +41,7 @@ import er078_asr_unified_judge_01 as unified_judge_mod  # AUW 委任_13: final_l
 import er011_open121_repetition_qa_production_01 as repetition_qa
 import er020_tts_retry_local_rewrite_01 as retry_primitive
 import er025_entity_pronunciation_resolver_core_01 as pron_resolver_core
+import er127_tts_block_policy_01 as er127  # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02: X/Y/Z scope内の統一3回構成ブロック
 
 OUT_DIR = "er003_output/novel_audio_01/SING01"
 NARRATION_DIR = f"{OUT_DIR}/narration"
@@ -60,6 +61,7 @@ LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS = 0.35
 
 
 @review_lock.guarded_generate("en")
+@er127.with_block("L2", fingerprint_params=("style_prefix_override", "tts_backend", "enable_pronunciation_resolver"))
 def generate_news_narration_wide_margin(text: str, out_path: str,
                                          max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
                                          max_extra_chars: int = 15,
@@ -106,10 +108,21 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                                          # AUW 委任_05(既定"v0"): Local Rewrite後のv1再TTSのみ"v1"。
                                          script_version: str = "v0",
                                          # 委任_03(Opus_H条件1、OF-179): LR後の再TTSのみ元原稿を渡す(M1候補の時刻境界を元segment開始に固定)。
-                                         m1_anchor_text: str | None = None) -> dict:
+                                         m1_anchor_text: str | None = None,
+                                         # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02: er127.with_blockが渡す統一ブロック(X/Y/Z scope内のみ。None=従来コード)。
+                                         _blk=None) -> dict:
     """p9a.generate_narration_snippet(ENGLISH_STYLE_PREFIX経路)と同じ
     prompt/model/voiceを使うが、末尾trim安全マージンのみ0.35秒に広げる。
-    失敗時はMINIMAL_INSTRUCTION経路(同じく広いマージン)へfallbackする。"""
+    失敗時はMINIMAL_INSTRUCTION経路(同じく広いマージン)へfallbackする。
+
+    TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02(2026-10-26、X/Y/Z scope内のみ=_blk指定時): 3回構成ブロック。①②=呼出元のStyle、
+    ②NG後180秒、③=Fallback Style(minimal。Voiceは標準と同じp9a.VOICE_NAME、judgeはforce_secondary=True)。③NG後はLR(er127.lr_recover。
+    LR block=同じ3回構成・元と同じStyle引数を書換え後原稿で1回)。scope外(_blk=None)は従来コードのまま。"""
+    _orig_style_prefix_override = style_prefix_override   # LR blockへは呼出元の元Style(発音hint付与前)+元resolver flagを渡す(Opus M-3c)
+    if _blk is not None:
+        max_attempts = min(max_attempts, review_lock.PRODUCTION_MAX_TTS_ATTEMPTS)
+        script_version = _blk.ctx.script_version
+        m1_anchor_text = _blk.ctx.m1_anchor_text
     # TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(Layer 4
     # Gate、2026-09-27): full_story/point/in_one_line等、本関数を経由する
     # 全segmentへ適用する。呼び出し側がtts_safe_news_enでNormalizerを
@@ -141,53 +154,109 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
     attempts_log = []
     classification_history = []
     cooldown_events = []
+
+    def _unified_ng_exit(last_asr_text):
+        """③まで不合格(またはstop_retrying)。技術STOPはLR/HRに入れない。LR可ならlr_recover(非RESOLVEDは終端HRQ1行)、不可なら終端HRQ1行。"""
+        term = attempts_log[-1] if attempts_log else None
+        if er127._is_tech_stop(term):
+            return None
+        if _blk.lr_allowed:
+            def _block_call(rewritten_text, lr_ctx):
+                return generate_news_narration_wide_margin.__wrapped__(
+                    rewritten_text, out_path, max_attempts=review_lock.PRODUCTION_MAX_TTS_ATTEMPTS, max_extra_chars=max_extra_chars,
+                    disfluency_qa=disfluency_qa, enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+                    enable_repetition_qa=enable_repetition_qa, enable_pronunciation_resolver=enable_pronunciation_resolver,
+                    style_prefix_override=_orig_style_prefix_override,      # OPEN-312是正: 旧LR再TTSが脱落させていたStyleを元のまま転送
+                    tts_backend=tts_backend, tts_block=lr_ctx)
+
+            def _merge(res, recovery):
+                res["local_rewrite_recovery"] = recovery
+                res["attempts_log"] = er127.merge_logs(attempts_log, res.get("attempts_log"))
+                res.setdefault("en_pronunciation_resolver_info", en_pronunciation_resolver_info)
+                res["cooldown_events"] = er127.merge_logs(cooldown_events, res.get("cooldown_events"))
+                return res
+
+            _rec = er127.lr_recover(_blk, text=text, out_path=out_path, last_asr_text=last_asr_text, block_call=_block_call,
+                                    merge=_merge, last_attempt=term)
+            if _rec is None:
+                _std_rows, _fb_rows = er127.lr_unresolved_rows(_blk)      # LR block(不合格)で消費したTTS行も実TTS計上へ(M-3b)
+                attempts_log.extend(_std_rows + _fb_rows)
+            return _rec
+        if _blk.depth == 0:
+            er127.register_terminal_hr(out_path=out_path, canonical_text=text, attempt=term, lock_text=text)
+        return None
+
     for attempt in range(1, max_attempts + 1):
-        # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01: ユーザー
-        # 承認済みcool-down(attempt1->即時attempt2->NG->10分固定cool-down->
-        # attempt3)。enable_connected_speech_equivalence_layer=Falseの
-        # 既存呼び出し元には一切影響しない(即座にNoneを返すだけ)。
-        cooldown_record = retry_primitive.maybe_cooldown_before_attempt(
-            attempt, max_attempts, enable_connected_speech_equivalence_layer)
-        if cooldown_record:
-            cooldown_events.append(cooldown_record)
+        _third = False
+        _sp_top = None
+        if _blk is not None:
+            _step = _blk.step(attempt)        # STOP確認 + ③直前の180秒(②NG後) + n_started永続化(統一ブロック)
+            if _step.skip:
+                attempts_log.append(_blk.stub_row(attempt))
+                continue
+            if _step.cooldown:
+                cooldown_events.append(_step.cooldown)
+            _third = _step.style_mode == "FALLBACK"
+        else:
+            # TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01: ユーザー
+            # 承認済みcool-down(attempt1->即時attempt2->NG->10分固定cool-down->
+            # attempt3)。enable_connected_speech_equivalence_layer=Falseの
+            # 既存呼び出し元には一切影響しない(即座にNoneを返すだけ)。
+            cooldown_record = retry_primitive.maybe_cooldown_before_attempt(
+                attempt, max_attempts, enable_connected_speech_equivalence_layer)
+            if cooldown_record:
+                cooldown_events.append(cooldown_record)
         # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線(声・モデルは
         # p9a._make_english_call_fn()と同一)。
         # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01: 既定
         # backendでは上記2行とbyte-identical。
         import er033_tts_flash_lite_backend_wiring_01 as flw
-        call_fn, prompt = flw.resolve_tts_call_and_prompt(
-            text, standard_style_prefix, p9a.ENGLISH_MODEL_NAME, p9a.VOICE_NAME, out_path, tts_backend=tts_backend,
-            build_tts_prompt=p4c.build_tts_prompt, make_batch_tts_call_fn=batch_wiring.make_batch_tts_call_fn)
-        pcm, retries, ok, err = common._call_tts_with_retry(
-            call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
-        instruction_type = "english_style_prefix_wide_margin"
-        if ok:
-            samples_raw = common.pcm_bytes_to_float_mono(pcm)
-            trimmed, trim_info = p3u.trim_english_keyword_silence(
-                samples_raw, common.SAMPLE_RATE, safety_margin_seconds=LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS)
-            # ER-005-AUDIO-WASTE-REDUCTION-01: hallucinationを疑わせる
-            # 異常長音声を、ASR実行前に検知して破棄する。
-            if trimmed is not None:
-                anomaly = safety.detect_duration_anomaly(trim_info["raw_duration_seconds"], text, "en")
-                if anomaly["is_anomaly"]:
-                    trimmed = None
-                    err = anomaly["reason"]
-        else:
-            trimmed, trim_info = None, None
-
-        if trimmed is None:
-            attempts_log.append({"attempt": attempt, "status": "STOPPED", "reason": str(err) if not ok else "発話区間検出失敗",
-                                  "instruction_type": instruction_type})
+        if _third:
+            # ③=Fallback Style(既存のF-Tech分岐と同じminimal定数。新Style・新Promptなし)。Voiceは標準と同じp9a.VOICE_NAME(Opus M-10)。
             r = repro01.generate_english_component_minimal_instruction(
                 text, out_path, enable_pronunciation_resolver=enable_pronunciation_resolver,
                 tts_backend=tts_backend)
             instruction_type = "minimal_fallback"
+            trim_info = r.get("trim_info")
+            _sp_top = r.get("style_prefix")          # 実送信Styleの記録(Opus M-5: Gateが読む採用attemptのstyle_prefix)
             if r.get("status") != "OK":
                 attempts_log.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason"),
                                       "instruction_type": instruction_type})
                 continue
         else:
-            common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
+            call_fn, prompt = flw.resolve_tts_call_and_prompt(
+                text, standard_style_prefix, p9a.ENGLISH_MODEL_NAME, p9a.VOICE_NAME, out_path, tts_backend=tts_backend,
+                build_tts_prompt=p4c.build_tts_prompt, make_batch_tts_call_fn=batch_wiring.make_batch_tts_call_fn)
+            pcm, retries, ok, err = common._call_tts_with_retry(
+                call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
+            instruction_type = "english_style_prefix_wide_margin"
+            if ok:
+                samples_raw = common.pcm_bytes_to_float_mono(pcm)
+                trimmed, trim_info = p3u.trim_english_keyword_silence(
+                    samples_raw, common.SAMPLE_RATE, safety_margin_seconds=LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS)
+                # ER-005-AUDIO-WASTE-REDUCTION-01: hallucinationを疑わせる
+                # 異常長音声を、ASR実行前に検知して破棄する。
+                if trimmed is not None:
+                    anomaly = safety.detect_duration_anomaly(trim_info["raw_duration_seconds"], text, "en")
+                    if anomaly["is_anomaly"]:
+                        trimmed = None
+                        err = anomaly["reason"]
+            else:
+                trimmed, trim_info = None, None
+
+            if trimmed is None:
+                attempts_log.append({"attempt": attempt, "status": "STOPPED", "reason": str(err) if not ok else "発話区間検出失敗",
+                                      "instruction_type": instruction_type})
+                r = repro01.generate_english_component_minimal_instruction(
+                    text, out_path, enable_pronunciation_resolver=enable_pronunciation_resolver,
+                    tts_backend=tts_backend)
+                instruction_type = "minimal_fallback"
+                if r.get("status") != "OK":
+                    attempts_log.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason"),
+                                          "instruction_type": instruction_type})
+                    continue
+            else:
+                common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
 
         asr_text, asr_err = routing.transcribe(out_path, language="en-US")
         # ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: safety.validate_asr_match
@@ -211,8 +280,10 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
             segment_id=segment_id, detail_out=_aj,
+            **({"force_secondary": True} if _third else {}),      # ③(Fallback音声)はPrimary PASSでもSecondary確認必須(既存のFallback規則)
             attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts, script_version=script_version, max_len=max_len,
-                                                           m1_anchor_text=m1_anchor_text))  # AUW 委任_05/13
+                                                           m1_anchor_text=m1_anchor_text,
+                                                           **(_blk.ctx_kwargs() if _blk is not None else {})))  # AUW 委任_05/13
         final_len_ok = unified_judge_mod.final_length_ok(length_ok, _aj)  # AUW 委任_13(A3是正)
         verified = verified_content and final_len_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
@@ -275,6 +346,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                     "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence"),
                     "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
                     "cooldown_events": cooldown_events, "tts_backend": tts_backend,
+                    **({"fallback_used": _third} if _blk is not None else {}),      # Opus M-5(additive)
                     # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(D-4):
                     # attempts_logと同じ理由でtop-levelにも昇格する。
                     "semantic_equivalence_info": getattr(cls, "semantic_equivalence_info", None),
@@ -289,15 +361,19 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                     # instruction_typeフィールドで判別可能)。
                     "voice": p9a.VOICE_NAME,
                     "tts_model_id": flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend),
-                    "style_prefix": (standard_style_prefix if style_prefix_override
-                                      else "<default:ENGLISH_STYLE_PREFIX>")}
+                    "style_prefix": (_sp_top if _sp_top is not None else
+                                     (standard_style_prefix if style_prefix_override else "<default:ENGLISH_STYLE_PREFIX>"))}
         if stop_retrying:
             # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15: 固有名詞的な
             # 差分の自動PASSは共有Cascade側のD-2'(Pronunciation Ledgerに
             # 基づく期待発音との比較)に一本化したため、ここでの追加retry・
             # 追加corroborationは行わない(他7関数と同じ、即座に停止)。
             metrics = common.measure_metrics(common.read_wav_float(out_path)[0], common.SAMPLE_RATE)
-            if enable_connected_speech_equivalence_layer:
+            if _blk is not None:
+                recovered = _unified_ng_exit(asr_text)
+                if recovered is not None:
+                    return recovered
+            elif enable_connected_speech_equivalence_layer:
                 recovered = _local_rewrite_recovery_for_news_narration(
                     text, out_path, asr_text, max_extra_chars, disfluency_qa,
                     enable_connected_speech_equivalence_layer, enable_repetition_qa, attempts_log,
@@ -320,9 +396,14 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                     "semantic_equivalence_info": getattr(cls, "semantic_equivalence_info", None),
                     "voice": p9a.VOICE_NAME,
                     "tts_model_id": flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend),
-                    "style_prefix": (standard_style_prefix if style_prefix_override
-                                      else "<default:ENGLISH_STYLE_PREFIX>")}
-    if enable_connected_speech_equivalence_layer:
+                    "style_prefix": (_sp_top if _sp_top is not None else
+                                     (standard_style_prefix if style_prefix_override else "<default:ENGLISH_STYLE_PREFIX>"))}
+    if _blk is not None:
+        last_asr_text = next((a.get("asr_text") for a in reversed(attempts_log) if isinstance(a, dict) and a.get("asr_text")), None)
+        recovered = _unified_ng_exit(last_asr_text)
+        if recovered is not None:
+            return recovered
+    elif enable_connected_speech_equivalence_layer:
         last_asr_text = attempts_log[-1].get("asr_text") if attempts_log else None
         recovered = _local_rewrite_recovery_for_news_narration(
             text, out_path, last_asr_text, max_extra_chars, disfluency_qa,

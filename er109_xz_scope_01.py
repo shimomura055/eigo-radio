@@ -83,7 +83,9 @@ def layer_version() -> str:
 
 
 def current_scope() -> Optional[str]:
-    """診断・test用(判定には使わない)。"""
+    """現在のrun scope("X"/"Y"/"Z"/None)を返す。TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02(Opus M-1)以降は、
+    **統一TTSブロックflow(3回構成・180秒・LR block)をX/Y/Z scope内でだけ有効にする判定の唯一の読取関数**
+    (er127_tts_block_policy_01.unified_flow_active())の根拠。scope外(None=A/B/C・単体呼出)は従来コードパス。env/引数/設定dictでは変わらない。"""
     return _RUN_SCOPE
 
 

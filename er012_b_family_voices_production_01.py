@@ -100,6 +100,7 @@ EXTRA_SEGMENT_NAME = registry.EXTRA_SEGMENT_NAME  # "tension_reflection"
 # ============================================================
 import er002_ja_web_research_r3 as r3  # noqa: E402
 import er006_model_routing_contract_01 as routing  # noqa: E402
+import er127_tts_block_policy_01 as er127  # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02: X/Y/Z scope内の統一3回構成ブロック
 
 
 def run_fact_checker(topic: str, article_text: str, voice_attribution_block: str = "") -> dict:
@@ -480,6 +481,8 @@ def generate_voice_body_minimal_fallback(
 
 
 @review_lock.guarded_generate("en")
+@er127.with_block("L8", fingerprint_params=("voice_name", "style_prefix_override"), z_policy=lambda a: "legacy",
+                  skip_when=lambda a: a.get("attempt_hook") is not None)
 def generate_voice_body_wide_margin(text: str, out_path: str, voice_name: str,
                                      max_attempts: int = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS,
                                      max_extra_chars: int = 15,
@@ -510,7 +513,10 @@ def generate_voice_body_wide_margin(text: str, out_path: str, voice_name: str,
                                      # 2026-10-26): attempt番号->Styleと試行前後の記録だけを差し込む任意hook(duck typing、既定None)。
                                      # None(Family B/C/X/Y・Z narrator等の既存全呼出)は現行とバイト同一(golden fixtureで固定)。
                                      # hookは er122_fz_ctx_policy_01.DialogueAttemptPolicy 相当(本moduleは新しいimportを持たない)。
-                                     *, attempt_hook=None) -> dict:
+                                     *, attempt_hook=None,
+                                     # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02: er127.with_blockが渡す統一ブロック(X/Y/Z scope内のhook=None[legacy方式]のみ。
+                                     # hook有[ctx方式]はer122のDialogueAttemptPolicyが同じcooldown_coreを使う)。None=従来コード。
+                                     _blk=None) -> dict:
     """Voice A/B本文専用の正式Production TTS関数。既存
     news_tail_fix.generate_news_narration_wide_margin()と同一のASR検証・
     Cascade・disfluency gate・repetition QA・connected speech equivalence
@@ -529,6 +535,14 @@ def generate_voice_body_wide_margin(text: str, out_path: str, voice_name: str,
             if _hook_dec.get("stop"):
                 break
             _style_override = _hook_dec.get("style_prefix_override")
+        elif _blk is not None:
+            # 委任_02(Opus R-1): legacy方式のZ Adv外側ループは局所attempt番号ではなく**通算ordinal**で③前の180秒を判定する
+            # (外側ループはmax_attempts=残予算を渡す: 通算ordinal = 総予算3 - 残予算 + 局所attempt)。Style変更なし(legacyは同一Dialogue Style)。
+            _ord = max(0, review_lock.PRODUCTION_MAX_TTS_ATTEMPTS - max_attempts) + attempt
+            _bs = _blk.step(_ord)
+            if _bs.skip:
+                attempts_log.append(_blk.stub_row(_ord))
+                continue
         _rows0 = len(attempts_log)
         call_fn = batch_wiring.make_batch_tts_call_fn(p9a.ENGLISH_MODEL_NAME, voice_name, output_path=out_path)
         prompt = p4c.build_tts_prompt(text, _style_override or p9a.ENGLISH_STYLE_PREFIX)
