@@ -1,0 +1,376 @@
+{
+  "results": [
+    {
+      "id": "AI1-a",
+      "note": "5語に縮約(先頭 too を落とす)。本文連続・原形は無変更。",
+      "method": "mechanical-enumeration+HR選択",
+      "scope": "X a2 (AI島)",
+      "display_phrase": "too soon to wave a flag",
+      "proposed_key": "soon to wave a flag",
+      "words": 5,
+      "canonicalization_validator": {
+        "ok": true,
+        "reasons": []
+      },
+      "cmu_reasons": [],
+      "finite_aux_token": false,
+      "selection_gate": {
+        "ok": true,
+        "item_reasons": [],
+        "span": "soon to wave a flag",
+        "sentence_id": "S35"
+      },
+      "overall_pass": true
+    },
+    {
+      "id": "AI1-b",
+      "note": "4語(末尾 a flag を落とす)。目的語が無く意味が未完。",
+      "method": "mechanical-enumeration+HR選択",
+      "scope": "X a2 (AI島)",
+      "display_phrase": "too soon to wave a flag",
+      "proposed_key": "too soon to wave",
+      "words": 4,
+      "canonicalization_validator": {
+        "ok": true,
+        "reasons": []
+      },
+      "cmu_reasons": [],
+      "finite_aux_token": false,
+      "selection_gate": {
+        "ok": true,
+        "item_reasons": [],
+        "span": "too soon to wave",
+        "sentence_id": "S35"
+      },
+      "overall_pass": true
+    },
+    {
+      "id": "AI1-c",
+      "note": "3語(動詞句核のみ)。'too soon to' の否定的評価(時期尚早)を失う。",
+      "method": "mechanical-enumeration+HR選択",
+      "scope": "X a2 (AI島)",
+      "display_phrase": "too soon to wave a flag",
+      "proposed_key": "wave a flag",
+      "words": 3,
+      "canonicalization_validator": {
+        "ok": true,
+        "reasons": []
+      },
+      "cmu_reasons": [],
+      "finite_aux_token": false,
+      "selection_gate": {
+        "ok": true,
+        "item_reasons": [],
+        "span": "wave a flag",
+        "sentence_id": "S35"
+      },
+      "overall_pass": true
+    },
+    {
+      "id": "AI1-d",
+      "note": "4語(to不定詞句)。",
+      "method": "mechanical-enumeration+HR選択",
+      "scope": "X a2 (AI島)",
+      "display_phrase": "too soon to wave a flag",
+      "proposed_key": "to wave a flag",
+      "words": 4,
+      "canonicalization_validator": {
+        "ok": true,
+        "reasons": []
+      },
+      "cmu_reasons": [],
+      "finite_aux_token": false,
+      "selection_gate": {
+        "ok": true,
+        "item_reasons": [],
+        "span": "to wave a flag",
+        "sentence_id": "S35"
+      },
+      "overall_pass": true
+    },
+    {
+      "id": "AI1-e",
+      "note": "3語(frame部分のみ)。内容語が無い。",
+      "method": "mechanical-enumeration",
+      "scope": "X a2 (AI島)",
+      "display_phrase": "too soon to wave a flag",
+      "proposed_key": "too soon to",
+      "words": 3,
+      "canonicalization_validator": {
+        "ok": true,
+        "reasons": []
+      },
+      "cmu_reasons": [],
+      "finite_aux_token": false,
+      "selection_gate": {
+        "ok": true,
+        "item_reasons": [],
+        "span": "too soon to",
+        "sentence_id": "S35"
+      },
+      "overall_pass": true
+    },
+    {
+      "id": "AI1-f",
+      "note": "5語。末尾が冠詞で不完全句(構造的に不適)。",
+      "method": "mechanical-enumeration",
+      "scope": "X a2 (AI島)",
+      "display_phrase": "too soon to wave a flag",
+      "proposed_key": "too soon to wave a",
+      "words": 5,
+      "canonicalization_validator": {
+        "ok": true,
+        "reasons": []
+      },
+      "cmu_reasons": [],
+      "finite_aux_token": false,
+      "selection_gate": {
+        "ok": true,
+        "item_reasons": [],
+        "span": "too soon to wave a",
+        "sentence_id": "S35"
+      },
+      "overall_pass": true
+    },
+    {
+      "id": "AI1-u",
+      "note": "ユーザー例。wave a flag→do(本文に無い語doを生成し語を削除)。1対1置換ではない。",
+      "method": "llm-or-rule-NEW",
+      "scope": "X a2 (AI島)",
+      "display_phrase": "too soon to wave a flag",
+      "proposed_key": "too soon to do",
+      "words": 4,
+      "canonicalization_validator": {
+        "ok": false,
+        "reasons": [
+          "key_phrase('too soon to do')がdisplay_phraseと一致せず、source_span('too soon to wave a flag')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+        ]
+      },
+      "cmu_reasons": [],
+      "finite_aux_token": false,
+      "selection_gate": {
+        "ok": false,
+        "item_reasons": [
+          {
+            "index": 0,
+            "phrase": "too soon to do",
+            "reasons": [
+              "本文に連続一致しない(変更・言い換え・創作)"
+            ]
+          }
+        ],
+        "span": null,
+        "sentence_id": null
+      },
+      "overall_pass": false
+    },
+    {
+      "id": "AI2-a",
+      "note": "LLM(canonicalization)が出した原形案そのもの(2語)。現行Gateの再現。",
+      "method": "llm(original)",
+      "scope": "X a2 (AI島)",
+      "display_phrase": "studied separately",
+      "proposed_key": "study separately",
+      "words": 2,
+      "canonicalization_validator": {
+        "ok": false,
+        "reasons": [
+          "key_phrase('study separately')がdisplay_phraseと一致せず、source_span('studied separately')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+        ]
+      },
+      "cmu_reasons": [],
+      "finite_aux_token": false,
+      "overall_pass": false
+    },
+    {
+      "id": "AI2-b",
+      "note": "表層形のまま(revert)。Rule7無変更。",
+      "method": "mechanical-revert",
+      "scope": "X a2 (AI島)",
+      "display_phrase": "studied separately",
+      "proposed_key": "studied separately",
+      "words": 2,
+      "canonicalization_validator": {
+        "ok": true,
+        "reasons": []
+      },
+      "cmu_reasons": [],
+      "finite_aux_token": false,
+      "overall_pass": true
+    },
+    {
+      "id": "AI2-c",
+      "note": "本文連続の3語(受動の見出し形。旧template『be+過去分詞』見出し形と整合)。",
+      "method": "mechanical-enumeration+HR選択",
+      "scope": "X a2 (AI島)",
+      "display_phrase": "studied separately",
+      "proposed_key": "be studied separately",
+      "words": 3,
+      "canonicalization_validator": {
+        "ok": true,
+        "reasons": []
+      },
+      "cmu_reasons": [],
+      "finite_aux_token": false,
+      "selection_gate": {
+        "ok": true,
+        "item_reasons": [],
+        "span": "be studied separately",
+        "sentence_id": "S37"
+      },
+      "overall_pass": true
+    },
+    {
+      "id": "AI2-d",
+      "note": "1語(副詞のみ)。学習単位として最小。",
+      "method": "mechanical-enumeration",
+      "scope": "X a2 (AI島)",
+      "display_phrase": "studied separately",
+      "proposed_key": "separately",
+      "words": 1,
+      "canonicalization_validator": {
+        "ok": true,
+        "reasons": []
+      },
+      "cmu_reasons": [],
+      "finite_aux_token": false,
+      "selection_gate": {
+        "ok": true,
+        "item_reasons": [],
+        "span": "separately",
+        "sentence_id": "S37"
+      },
+      "overall_pass": true
+    },
+    {
+      "id": "AI2-e",
+      "note": "b1b側の表現。a2本文にはなく本文連続しない。",
+      "method": "n/a(別レベル本文)",
+      "scope": "X a2 (AI島)",
+      "display_phrase": "studied separately",
+      "proposed_key": "look at separately",
+      "words": 3,
+      "canonicalization_validator": {
+        "ok": true,
+        "reasons": []
+      },
+      "cmu_reasons": [],
+      "finite_aux_token": false,
+      "selection_gate": {
+        "ok": false,
+        "item_reasons": [
+          {
+            "index": 0,
+            "phrase": "look at separately",
+            "reasons": [
+              "本文に連続一致しない(変更・言い換え・創作)"
+            ]
+          }
+        ],
+        "span": null,
+        "sentence_id": null
+      },
+      "overall_pass": false
+    },
+    {
+      "id": "AI2-f",
+      "note": "b1b側の実際のGate通過例(比較用)。",
+      "method": "reference(b1b PASS)",
+      "scope": "X b1b (AI島)",
+      "display_phrase": "looked at separately",
+      "proposed_key": "look at separately",
+      "words": 3,
+      "canonicalization_validator": {
+        "ok": true,
+        "reasons": []
+      },
+      "cmu_reasons": [],
+      "finite_aux_token": false,
+      "overall_pass": true
+    },
+    {
+      "id": "Z-rose",
+      "note": "LLMは 'rise above the other voices' と拡張→INVALID。決定論の再導出なら通る。",
+      "method": "mechanical-rederive",
+      "scope": "Z melos b1b",
+      "display_phrase": "rose above",
+      "proposed_key": "rise above",
+      "words": 2,
+      "canonicalization_validator": {
+        "ok": true,
+        "reasons": []
+      },
+      "cmu_reasons": [],
+      "finite_aux_token": false,
+      "overall_pass": true
+    },
+    {
+      "id": "Z-held",
+      "note": "LLMは \"hold out one's hands\" と拡張→INVALID。決定論の再導出なら通る。",
+      "method": "mechanical-rederive",
+      "scope": "Z melos b1b",
+      "display_phrase": "held out",
+      "proposed_key": "hold out",
+      "words": 2,
+      "canonicalization_validator": {
+        "ok": true,
+        "reasons": []
+      },
+      "cmu_reasons": [],
+      "finite_aux_token": false,
+      "overall_pass": true
+    },
+    {
+      "id": "Z-rang",
+      "note": "'rang' が過去形専用不規則表に無い。",
+      "method": "table-extension-NEW",
+      "scope": "Z melos b1b",
+      "display_phrase": "rang through",
+      "proposed_key": "ring through",
+      "words": 2,
+      "canonicalization_validator": {
+        "ok": false,
+        "reasons": [
+          "key_phrase('ring through')がdisplay_phraseと一致せず、source_span('rang through')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+        ]
+      },
+      "cmu_reasons": [],
+      "finite_aux_token": false,
+      "overall_pass": false
+    },
+    {
+      "id": "Y-be-helped",
+      "note": "有限助動詞can除去の縮約。イディオムの意味(仕方がない)を失う。",
+      "method": "mechanical-enumeration",
+      "scope": "Y redelivery",
+      "display_phrase": "can’t be helped",
+      "proposed_key": "be helped",
+      "words": 2,
+      "canonicalization_validator": {
+        "ok": true,
+        "reasons": []
+      },
+      "cmu_reasons": [],
+      "finite_aux_token": false,
+      "overall_pass": true
+    },
+    {
+      "id": "Y-have-a-say",
+      "note": "lexical 'have' が語形リスト(has/have/had)に該当。",
+      "method": "gate-refine-NEW",
+      "scope": "Y sns b1b",
+      "display_phrase": "have a say",
+      "proposed_key": "have a say",
+      "words": 3,
+      "canonicalization_validator": {
+        "ok": false,
+        "reasons": [
+          "有限助動詞が含まれている"
+        ]
+      },
+      "cmu_reasons": [],
+      "finite_aux_token": true,
+      "overall_pass": false
+    }
+  ]
+}

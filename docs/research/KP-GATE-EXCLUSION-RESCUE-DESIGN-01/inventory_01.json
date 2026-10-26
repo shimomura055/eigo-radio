@@ -1,0 +1,2240 @@
+{
+  "summary": {
+    "HR(kp_candidates.json dropped)": {
+      "total": 14,
+      "buckets": {
+        "NOT_GATE": {
+          "events": 3,
+          "unique_family_phrase": 3
+        },
+        "S1_IN_SCOPE_MECHANICAL": {
+          "events": 4,
+          "unique_family_phrase": 4
+        },
+        "S2_NEEDS_NEW_RULE": {
+          "events": 3,
+          "unique_family_phrase": 3
+        },
+        "HARD": {
+          "events": 4,
+          "unique_family_phrase": 4
+        }
+      },
+      "buckets_by_family": {
+        "X|NOT_GATE": 2,
+        "X|S1_IN_SCOPE_MECHANICAL": 1,
+        "X|S2_NEEDS_NEW_RULE": 2,
+        "Y|HARD": 4,
+        "Y|S2_NEEDS_NEW_RULE": 1,
+        "Z|NOT_GATE": 1,
+        "Z|S1_IN_SCOPE_MECHANICAL": 3
+      },
+      "by_class": {
+        "CMU_UNREGISTERED": {
+          "events": 1,
+          "unique_family_phrase": 1
+        },
+        "FINITE_AUX_TOKEN": {
+          "events": 4,
+          "unique_family_phrase": 4
+        },
+        "HUMAN_NG_EXCLUDED": {
+          "events": 3,
+          "unique_family_phrase": 3
+        },
+        "NOT_CONTIGUOUS_IN_TEXT": {
+          "events": 1,
+          "unique_family_phrase": 1
+        },
+        "RULE7_NORMALIZATION/LEMMA_1TO1_REJECTED": {
+          "events": 2,
+          "unique_family_phrase": 2
+        },
+        "RULE7_NORMALIZATION/LLM_EXPANDED_BEYOND_SPAN": {
+          "events": 2,
+          "unique_family_phrase": 2
+        },
+        "WORDCOUNT_OVER5": {
+          "events": 1,
+          "unique_family_phrase": 1
+        }
+      },
+      "by_family_class": {
+        "X|FINITE_AUX_TOKEN": 1,
+        "X|HUMAN_NG_EXCLUDED": 2,
+        "X|RULE7_NORMALIZATION": 1,
+        "X|WORDCOUNT_OVER5": 1,
+        "Y|CMU_UNREGISTERED": 1,
+        "Y|FINITE_AUX_TOKEN": 3,
+        "Y|NOT_CONTIGUOUS_IN_TEXT": 1,
+        "Z|HUMAN_NG_EXCLUDED": 1,
+        "Z|RULE7_NORMALIZATION": 3
+      }
+    },
+    "preHR(outer-retry全置換)": {
+      "total": 81,
+      "buckets": {
+        "NOT_GATE": {
+          "events": 10,
+          "unique_family_phrase": 3
+        },
+        "NOW_PASS": {
+          "events": 4,
+          "unique_family_phrase": 4
+        },
+        "S1_IN_SCOPE_MECHANICAL": {
+          "events": 23,
+          "unique_family_phrase": 12
+        },
+        "S2_NEEDS_NEW_RULE": {
+          "events": 5,
+          "unique_family_phrase": 2
+        },
+        "HARD": {
+          "events": 39,
+          "unique_family_phrase": 11
+        }
+      },
+      "buckets_by_family": {
+        "X|HARD": 5,
+        "X|S2_NEEDS_NEW_RULE": 4,
+        "Z|HARD": 34,
+        "Z|NOT_GATE": 10,
+        "Z|NOW_PASS": 4,
+        "Z|S1_IN_SCOPE_MECHANICAL": 23,
+        "Z|S2_NEEDS_NEW_RULE": 1
+      },
+      "by_class": {
+        "CMU_UNREGISTERED": {
+          "events": 5,
+          "unique_family_phrase": 3
+        },
+        "FINITE_AUX_TOKEN": {
+          "events": 36,
+          "unique_family_phrase": 7
+        },
+        "NOT_CONTIGUOUS_IN_TEXT": {
+          "events": 2,
+          "unique_family_phrase": 2
+        },
+        "QA_REVIEW_REQUIRED(非除外・旗)": {
+          "events": 10,
+          "unique_family_phrase": 3
+        },
+        "RULE7_NORMALIZATION/LEMMA_1TO1_REJECTED": {
+          "events": 9,
+          "unique_family_phrase": 7
+        },
+        "RULE7_NORMALIZATION/PERSON_GENERALIZATION_REJECTED": {
+          "events": 18,
+          "unique_family_phrase": 9
+        },
+        "WORDCOUNT_OVER5": {
+          "events": 1,
+          "unique_family_phrase": 1
+        }
+      },
+      "by_family_class": {
+        "X|CMU_UNREGISTERED": 5,
+        "X|FINITE_AUX_TOKEN": 4,
+        "Z|FINITE_AUX_TOKEN": 32,
+        "Z|NOT_CONTIGUOUS_IN_TEXT": 2,
+        "Z|QA_REVIEW_REQUIRED(非除外・旗)": 10,
+        "Z|RULE7_NORMALIZATION": 27,
+        "Z|WORDCOUNT_OVER5": 1
+      }
+    }
+  },
+  "events": [
+    {
+      "era": "HR(kp_candidates.json dropped)",
+      "family": "X",
+      "run": "family_x_audio_production_wiring_01/ai_island_temple__run_ai_01/a2",
+      "level": "a2",
+      "origin": "call2",
+      "stage": "validate",
+      "phrase": "too soon to wave a flag",
+      "reason": "語数が1〜5語でない(実際: 6語)",
+      "class": "WORDCOUNT_OVER5",
+      "sub": "",
+      "source": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_ai_01/a2/key_phrases/kp_candidates.json",
+      "context": "Even so, it is too soon to wave a flag and say, \"Play and get smarter—proof complete!\" The experienced group did better, and removing one memory lowered its score.",
+      "bucket": "S2_NEEDS_NEW_RULE",
+      "bucket_note": "部分列短縮(選定段。意味反転リスクあり=AI/HR判断)"
+    },
+    {
+      "era": "HR(kp_candidates.json dropped)",
+      "family": "X",
+      "run": "family_x_audio_production_wiring_01/ai_island_temple__run_ai_01/a2",
+      "level": "a2",
+      "origin": "call2",
+      "stage": "canonicalization",
+      "phrase": "studied separately",
+      "reason": "key_phrase('study separately')がdisplay_phraseと一致せず、source_span('studied separately')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "LEMMA_1TO1_REJECTED",
+      "source": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_ai_01/a2/key_phrases/kp_candidates.json",
+      "llm_key_phrase": "study separately",
+      "source_span": "studied separately",
+      "probe": {
+        "span": "studied separately",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 2
+        },
+        "rederive_current_tables": [],
+        "whatif_W1_quantifier_determiners": [],
+        "whatif_W2_plus_ly_adverb": [
+          "study separately"
+        ],
+        "whatif_W3_past_only_table_completed": []
+      },
+      "still_rejected_now": true,
+      "context": "These two results need to be studied separately.",
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "表層形revert(基本形化は閉表/guard拡張[新規則]で可: study separately)"
+    },
+    {
+      "era": "HR(kp_candidates.json dropped)",
+      "family": "X",
+      "run": "family_x_audio_production_wiring_01/part2_hr_evidence_01__run_r2/a2",
+      "level": "a2",
+      "origin": "call2",
+      "stage": "human_ng",
+      "phrase": "put in place",
+      "reason": "除外指定の語句(Humanが不適切(NG)と指定: evidence R1: AI top1 NG登録(共有registry検証用))",
+      "class": "HUMAN_NG_EXCLUDED",
+      "sub": "",
+      "source": "er019_output/family_x_audio_production_wiring_01/part2_hr_evidence_01__run_r2/a2/key_phrases/kp_candidates.json",
+      "context": "tariffs put in place during summer raised the price of the beans themselves.",
+      "bucket": "NOT_GATE",
+      "bucket_note": ""
+    },
+    {
+      "era": "HR(kp_candidates.json dropped)",
+      "family": "X",
+      "run": "family_x_audio_production_wiring_01/part2_hr_evidence_01__run_r2/b1b",
+      "level": "b1b",
+      "origin": "call2",
+      "stage": "human_ng",
+      "phrase": "off the hook",
+      "reason": "除外指定の語句(Humanが不適切(NG)と指定: evidence R1: off the hook NG(共有registry検証))",
+      "class": "HUMAN_NG_EXCLUDED",
+      "sub": "",
+      "source": "er019_output/family_x_audio_production_wiring_01/part2_hr_evidence_01__run_r2/b1b/key_phrases/kp_candidates.json",
+      "context": "\"So, are tariffs off the hook?\" No, that would be jumping to conclusions too.",
+      "bucket": "NOT_GATE",
+      "bucket_note": ""
+    },
+    {
+      "era": "HR(kp_candidates.json dropped)",
+      "family": "X",
+      "run": "family_x_audio_production_wiring_01/part2_hr_evidence_01__run_r2/b1b",
+      "level": "b1b",
+      "origin": "call2",
+      "stage": "validate",
+      "phrase": "had our eye on",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "source": "er019_output/family_x_audio_production_wiring_01/part2_hr_evidence_01__run_r2/b1b/key_phrases/kp_candidates.json",
+      "context": "The case had started before the suspect we had our eye on even appeared.",
+      "bucket": "S2_NEEDS_NEW_RULE",
+      "bucket_note": "lexical have(語形リストが助動詞と区別しない)=Gate精緻化"
+    },
+    {
+      "era": "HR(kp_candidates.json dropped)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/melos/run_p2_evidence_r3",
+      "level": "b1b",
+      "origin": "call1",
+      "stage": "canonicalization",
+      "phrase": "rose above",
+      "reason": "key_phrase('rise above the other voices')がdisplay_phraseと一致せず、source_span('rose above')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "LLM_EXPANDED_BEYOND_SPAN",
+      "source": "er026_output/family_z_production_e2e_01/melos/run_p2_evidence_r3/key_phrases/b1b/kp_candidates.json",
+      "llm_key_phrase": "rise above the other voices",
+      "source_span": "rose above",
+      "probe": {
+        "span": "rose above",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 2
+        },
+        "rederive_current_tables": [
+          "rise above"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "rise above"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "rise above"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "rise above"
+        ]
+      },
+      "still_rejected_now": true,
+      "context": "I know you'll come back.\" At the wedding, his sister's laughter rose above the other voices.",
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "再導出:rise above"
+    },
+    {
+      "era": "HR(kp_candidates.json dropped)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/melos/run_p2_evidence_r3",
+      "level": "b1b",
+      "origin": "call2",
+      "stage": "canonicalization",
+      "phrase": "held out",
+      "reason": "key_phrase(\"hold out one's hands\")がdisplay_phraseと一致せず、source_span('held out')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "LLM_EXPANDED_BEYOND_SPAN",
+      "source": "er026_output/family_z_production_e2e_01/melos/run_p2_evidence_r3/key_phrases/b1b/kp_candidates.json",
+      "llm_key_phrase": "hold out one's hands",
+      "source_span": "held out",
+      "probe": {
+        "span": "held out",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 2
+        },
+        "rederive_current_tables": [
+          "hold out"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "hold out"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "hold out"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "hold out"
+        ]
+      },
+      "still_rejected_now": true,
+      "context": "If you are late, he dies instead.\" Melos turned to his friend, but before he could speak, his friend held out his hands for the chains.",
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "再導出:hold out"
+    },
+    {
+      "era": "HR(kp_candidates.json dropped)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/melos/run_p2_evidence_r4",
+      "level": "b1b",
+      "origin": "call2",
+      "stage": "human_ng",
+      "phrase": "sentenced him to death",
+      "reason": "除外指定の語句(Humanが不適切(NG)と指定: evidence R3: AI top1 NG(共有registry検証))",
+      "class": "HUMAN_NG_EXCLUDED",
+      "sub": "",
+      "source": "er026_output/family_z_production_e2e_01/melos/run_p2_evidence_r4/key_phrases/b1b/kp_candidates.json",
+      "context": "Then the guards seized the young shepherd, and the ruler sentenced him to death.",
+      "bucket": "NOT_GATE",
+      "bucket_note": ""
+    },
+    {
+      "era": "HR(kp_candidates.json dropped)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/melos/run_p2_evidence_r4",
+      "level": "b1b",
+      "origin": "call1",
+      "stage": "canonicalization",
+      "phrase": "rang through",
+      "reason": "key_phrase('ring through')がdisplay_phraseと一致せず、source_span('rang through')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "LEMMA_1TO1_REJECTED",
+      "source": "er026_output/family_z_production_e2e_01/melos/run_p2_evidence_r4/key_phrases/b1b/kp_candidates.json",
+      "llm_key_phrase": "ring through",
+      "source_span": "rang through",
+      "probe": {
+        "span": "rang through",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 2
+        },
+        "rederive_current_tables": [],
+        "whatif_W1_quantifier_determiners": [],
+        "whatif_W2_plus_ly_adverb": [],
+        "whatif_W3_past_only_table_completed": [
+          "ring through"
+        ]
+      },
+      "still_rejected_now": true,
+      "context": "【記事本文】 Melos's voice rang through the hall.",
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "表層形revert(基本形化は閉表/guard拡張[新規則]で可: ring through)"
+    },
+    {
+      "era": "HR(kp_candidates.json dropped)",
+      "family": "Y",
+      "run": "family_y_production_01/redelivery_fee/run_01",
+      "level": "a2",
+      "origin": "call2",
+      "stage": "validate",
+      "phrase": "it can’t be helped",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "source": "er121_output/family_y_production_01/redelivery_fee/run_01/key_phrases/a2/kp_candidates.json",
+      "context": null,
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "HR(kp_candidates.json dropped)",
+      "family": "Y",
+      "run": "family_y_production_01/redelivery_fee/run_01",
+      "level": "a2",
+      "origin": "call2",
+      "stage": "cmu",
+      "phrase": "redelivery fee",
+      "reason": "CMU発音辞書に登録されていない語を含む(未登録語: redelivery。構成する全ての語がCMU辞書に登録された語句だけを選ぶ)",
+      "class": "CMU_UNREGISTERED",
+      "sub": "",
+      "source": "er121_output/family_y_production_01/redelivery_fee/run_01/key_phrases/a2/kp_candidates.json",
+      "context": "A redelivery fee is extra money paid by the person getting the package.",
+      "bucket": "HARD",
+      "bucket_note": "CMU必須Gate(代替合格禁止)"
+    },
+    {
+      "era": "HR(kp_candidates.json dropped)",
+      "family": "Y",
+      "run": "family_y_production_01/redelivery_fee/run_01",
+      "level": "b1b",
+      "origin": "call2",
+      "stage": "validate",
+      "phrase": "can’t be helped",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "source": "er121_output/family_y_production_01/redelivery_fee/run_01/key_phrases/b1b/kp_candidates.json",
+      "context": null,
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "HR(kp_candidates.json dropped)",
+      "family": "Y",
+      "run": "family_y_production_01/sns_age_limit/run_01",
+      "level": "b1b",
+      "origin": "call2",
+      "stage": "validate",
+      "phrase": "have a say",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "source": "er121_output/family_y_production_01/sns_age_limit/run_01/key_phrases/b1b/kp_candidates.json",
+      "context": "I want to have a say in what I can use and how I use it.",
+      "bucket": "S2_NEEDS_NEW_RULE",
+      "bucket_note": "lexical have(語形リストが助動詞と区別しない)=Gate精緻化"
+    },
+    {
+      "era": "HR(kp_candidates.json dropped)",
+      "family": "Y",
+      "run": "family_y_production_01/sns_age_limit/run_01",
+      "level": "b1b",
+      "origin": "call2",
+      "stage": "validate",
+      "phrase": "catch their interest",
+      "reason": "本文に連続一致しない(変更・言い換え・創作)",
+      "class": "NOT_CONTIGUOUS_IN_TEXT",
+      "sub": "",
+      "source": "er121_output/family_y_production_01/sns_age_limit/run_01/key_phrases/b1b/kp_candidates.json",
+      "context": null,
+      "bucket": "HARD",
+      "bucket_note": "本文に無い(本文対応喪失)"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "X",
+      "run": "family_x_audio_production_wiring_01/small_bag__run_f1fix_01/a2",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "minaudières",
+      "reason": "CMU発音辞書に登録されていない語を含む(未登録語: minaudières。構成する全ての語がCMU辞書に登録された語句だけを選ぶ)",
+      "class": "CMU_UNREGISTERED",
+      "sub": "",
+      "context": "Palm-sized clutches, small pouches, and eye-catching minaudières fill runways and fashion reports.",
+      "source": "er019_output/family_x_audio_production_wiring_01/small_bag__run_f1fix_01/a2/key_phrases/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "CMU必須Gate(代替合格禁止)"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "X",
+      "run": "family_x_audio_production_wiring_01/small_bag__run_kpq_01/a2",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "minaudières",
+      "reason": "CMU発音辞書に登録されていない語を含む(未登録語: minaudières。構成する全ての語がCMU辞書に登録された語句だけを選ぶ)",
+      "class": "CMU_UNREGISTERED",
+      "sub": "",
+      "context": "Palm-sized clutches, small pouches, and eye-catching minaudières fill runways and fashion reports.",
+      "source": "er019_output/family_x_audio_production_wiring_01/small_bag__run_kpq_01/a2/key_phrases/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "CMU必須Gate(代替合格禁止)"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "X",
+      "run": "family_x_audio_production_wiring_01/small_bag__run_kpq_01/a2",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "novelty minaudière",
+      "reason": "CMU発音辞書に登録されていない語を含む(未登録語: minaudière。構成する全ての語がCMU辞書に登録された語句だけを選ぶ)",
+      "class": "CMU_UNREGISTERED",
+      "sub": "",
+      "context": "Its examples included Khaite's palm-sized evening clutch and Chanel's novelty minaudière.",
+      "source": "er019_output/family_x_audio_production_wiring_01/small_bag__run_kpq_01/a2/key_phrases/outer_retry/attempt_1/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "CMU必須Gate(代替合格禁止)"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "X",
+      "run": "family_x_audio_production_wiring_01/small_bag__run_kpq_02/a2",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "minaudière",
+      "reason": "CMU発音辞書に登録されていない語を含む(未登録語: minaudière。構成する全ての語がCMU辞書に登録された語句だけを選ぶ)",
+      "class": "CMU_UNREGISTERED",
+      "sub": "",
+      "context": "Palm-sized clutches, small pouches, and eye-catching minaudières fill runways and fashion reports.",
+      "source": "er019_output/family_x_audio_production_wiring_01/small_bag__run_kpq_02/a2/key_phrases/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "CMU必須Gate(代替合格禁止)"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "X",
+      "run": "family_x_audio_production_wiring_01/small_bag__run_kpq_02/a2",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "minaudières",
+      "reason": "CMU発音辞書に登録されていない語を含む(未登録語: minaudières。構成する全ての語がCMU辞書に登録された語句だけを選ぶ)",
+      "class": "CMU_UNREGISTERED",
+      "sub": "",
+      "context": "Palm-sized clutches, small pouches, and eye-catching minaudières fill runways and fashion reports.",
+      "source": "er019_output/family_x_audio_production_wiring_01/small_bag__run_kpq_02/a2/key_phrases/outer_retry/attempt_1/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "CMU必須Gate(代替合格禁止)"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "X",
+      "run": "family_x_audio_production_wiring_01/small_bag__run_f1fix_01/a2",
+      "level": "a2",
+      "stage": "canonicalization",
+      "phrase": "have a big moment",
+      "reason": "有限助動詞が含まれている",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": null,
+      "source": "er019_output/family_x_audio_production_wiring_01/small_bag__run_f1fix_01/a2/key_phrases/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "bucket": "S2_NEEDS_NEW_RULE",
+      "bucket_note": "lexical have(語形リストが助動詞と区別しない)=Gate精緻化"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "X",
+      "run": "family_x_audio_production_wiring_01/small_bag__run_jre_01/a2",
+      "level": "a2",
+      "stage": "canonicalization",
+      "phrase": "have a big moment",
+      "reason": "有限助動詞が含まれている",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": null,
+      "source": "er019_output/family_x_audio_production_wiring_01/small_bag__run_jre_01/a2/key_phrases/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "bucket": "S2_NEEDS_NEW_RULE",
+      "bucket_note": "lexical have(語形リストが助動詞と区別しない)=Gate精緻化"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "X",
+      "run": "family_x_audio_production_wiring_01/small_bag__run_kpq_01/a2",
+      "level": "a2",
+      "stage": "canonicalization",
+      "phrase": "have a big moment",
+      "reason": "有限助動詞が含まれている",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": null,
+      "source": "er019_output/family_x_audio_production_wiring_01/small_bag__run_kpq_01/a2/key_phrases/canonicalization_runtime_metadata.json",
+      "bucket": "S2_NEEDS_NEW_RULE",
+      "bucket_note": "lexical have(語形リストが助動詞と区別しない)=Gate精緻化"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "X",
+      "run": "family_x_audio_production_wiring_01/small_bag__run_kpq_02/a2",
+      "level": "a2",
+      "stage": "canonicalization",
+      "phrase": "have a big moment",
+      "reason": "有限助動詞が含まれている",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": null,
+      "source": "er019_output/family_x_audio_production_wiring_01/small_bag__run_kpq_02/a2/key_phrases/canonicalization_runtime_metadata.json",
+      "bucket": "S2_NEEDS_NEW_RULE",
+      "bucket_note": "lexical have(語形リストが助動詞と区別しない)=Gate精緻化"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "fz_essence_01/the_tell_tale_heart/1b_s1",
+      "level": "b1b",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "were mocking me",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "Their easy smiles were mocking me.",
+      "source": "er026_output/family_z_dev_trials/fz_essence_01/the_tell_tale_heart/1b_s1/key_phrases/b1b/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/melos/run_aho4_z_h3",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "offered his hands for the chains",
+      "reason": "語数が1〜5語でない(実際: 6語)",
+      "class": "WORDCOUNT_OVER5",
+      "sub": "",
+      "context": "Return late, and he will die in your place.\" Melos turned to his friend, who offered his hands for the chains.",
+      "source": "er026_output/family_z_production_e2e_01/melos/run_aho4_z_h3/key_phrases/a2/keywords_runtime_metadata.json",
+      "bucket": "S2_NEEDS_NEW_RULE",
+      "bucket_note": "部分列短縮(選定段。意味反転リスクあり=AI/HR判断)"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/melos/run_kpgm20_01",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "lose my trust in you",
+      "reason": "本文に連続一致しない(変更・言い換え・創作)",
+      "class": "NOT_CONTIGUOUS_IN_TEXT",
+      "sub": "",
+      "context": null,
+      "source": "er026_output/family_z_production_e2e_01/melos/run_kpgm20_01/key_phrases/a2/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "本文に無い(本文対応喪失)"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/melos/run_kpgm20_02",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "in his place",
+      "reason": "本文に連続一致しない(変更・言い換え・創作)",
+      "class": "NOT_CONTIGUOUS_IN_TEXT",
+      "sub": "",
+      "context": null,
+      "source": "er026_output/family_z_production_e2e_01/melos/run_kpgm20_02/key_phrases/a2/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "本文に無い(本文対応喪失)"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_chunk_01",
+      "level": "b1b",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "Could you have borne it",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "Could you have borne it?",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_chunk_01/key_phrases/b1b/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_chunk_01",
+      "level": "b1b",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "could have borne it",
+      "reason": "本文に連続一致しない(変更・言い換え・創作) / 有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": null,
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_chunk_01/key_phrases/b1b/outer_retry/attempt_1/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_01",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "Could you bear that?",
+      "reason": "本文に連続一致しない(変更・言い換え・創作) / 有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "Could you bear that?",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_01/key_phrases/a2/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_01",
+      "level": "b1b",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "Could you have borne it",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "Could you have borne it?",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_01/key_phrases/b1b/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_01",
+      "level": "b1b",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "could have borne it",
+      "reason": "本文に連続一致しない(変更・言い換え・創作) / 有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": null,
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_01/key_phrases/b1b/outer_retry/attempt_1/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_02",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "Could you bear that?",
+      "reason": "本文に連続一致しない(変更・言い換え・創作) / 有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "Could you bear that?",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_02/key_phrases/a2/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_02",
+      "level": "b1b",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "Could you have borne it",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "Could you have borne it?",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_02/key_phrases/b1b/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_02",
+      "level": "b1b",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "could have borne it",
+      "reason": "本文に連続一致しない(変更・言い換え・創作) / 有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": null,
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_02/key_phrases/b1b/outer_retry/attempt_1/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_03",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "Could you bear that?",
+      "reason": "本文に連続一致しない(変更・言い換え・創作) / 有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "Could you bear that?",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_03/key_phrases/a2/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_03",
+      "level": "b1b",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "Could you have borne it",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "Could you have borne it?",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_03/key_phrases/b1b/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_03",
+      "level": "b1b",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "could have borne it",
+      "reason": "本文に連続一致しない(変更・言い換え・創作) / 有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": null,
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_03/key_phrases/b1b/outer_retry/attempt_1/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p2_evidence_r3",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "Could you bear that?",
+      "reason": "本文に連続一致しない(変更・言い換え・創作) / 有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "Could you bear that?",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p2_evidence_r3/key_phrases/a2/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p2_evidence_r3",
+      "level": "b1b",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "Could you have borne it",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "Could you have borne it?",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p2_evidence_r3/key_phrases/b1b/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p2_evidence_r3",
+      "level": "b1b",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "could have borne it",
+      "reason": "本文に連続一致しない(変更・言い換え・創作) / 有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": null,
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p2_evidence_r3/key_phrases/b1b/outer_retry/attempt_1/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p2_evidence_r4",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "Could you bear that?",
+      "reason": "本文に連続一致しない(変更・言い換え・創作) / 有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "Could you bear that?",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p2_evidence_r4/key_phrases/a2/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p2_evidence_r4",
+      "level": "b1b",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "Could you have borne it",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "Could you have borne it?",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p2_evidence_r4/key_phrases/b1b/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p2_evidence_r4",
+      "level": "b1b",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "could have borne it",
+      "reason": "本文に連続一致しない(変更・言い換え・創作) / 有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": null,
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p2_evidence_r4/key_phrases/b1b/outer_retry/attempt_1/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_01",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "could not bear",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "I could not bear another second.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_01/key_phrases/a2/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_01",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "could not bear another second",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "I could not bear another second.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_01/key_phrases/a2/outer_retry/attempt_3/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_02",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "Could you bear that?",
+      "reason": "本文に連続一致しない(変更・言い換え・創作) / 有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "Could you bear that?",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_02/key_phrases/a2/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_02",
+      "level": "b1b",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "Could you have borne it",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "Could you have borne it?",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_02/key_phrases/b1b/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_02",
+      "level": "b1b",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "could have borne it",
+      "reason": "本文に連続一致しない(変更・言い換え・創作) / 有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": null,
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_02/key_phrases/b1b/outer_retry/attempt_1/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "_bak_pre04/a2/keywords_runtime_metadata.json",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "could not bear another second",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "I could not bear another second.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_bak_pre04/a2/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "outer_retry/attempt_1/keywords_runtime_metadata.json",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "could not bear another second",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "I could not bear another second.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_bak_pre04/a2/outer_retry/attempt_1/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "outer_retry/attempt_2/keywords_runtime_metadata.json",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "could not bear another second",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "I could not bear another second.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_bak_pre04/a2/outer_retry/attempt_2/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "outer_retry/attempt_3/keywords_runtime_metadata.json",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "could not bear another second",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "I could not bear another second.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_bak_pre04/a2/outer_retry/attempt_3/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "kp_try1/a2/keywords_runtime_metadata.json",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "could not bear",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "I could not bear another second.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_bak_pre04/kp_try1/a2/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "outer_retry/attempt_2/keywords_runtime_metadata.json",
+      "level": "a2",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "could not bear",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "I could not bear another second.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_bak_pre04/kp_try1/a2/outer_retry/attempt_2/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "mode_A/kp/keywords_runtime_metadata.json",
+      "level": "?",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "could not bear",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "I could not bear another second.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_evidence_kcrr1/mode_A/kp/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "outer_retry/attempt_2/keywords_runtime_metadata.json",
+      "level": "?",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "could not bear",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "I could not bear another second.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_evidence_kcrr1/mode_A/kp/outer_retry/attempt_2/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "outer_retry/attempt_3/keywords_runtime_metadata.json",
+      "level": "?",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "could not bear",
+      "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+      "class": "FINITE_AUX_TOKEN",
+      "sub": "",
+      "context": "I could not bear another second.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_evidence_kcrr1/mode_A/kp/outer_retry/attempt_3/keywords_runtime_metadata.json",
+      "bucket": "HARD",
+      "bucket_note": "法助動詞/進行形aux等。句の核であり縮約すると意味喪失"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "mode_B/kp/keywords_runtime_metadata.json",
+      "level": "?",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "vulture's",
+      "reason": "外側retryで不適合と確定済みの語句の再選択(前回の理由: canonicalization QAでFAIL(学習単位として不適切の疑い): qa_standalone_natural_unit, qa_no_residual_context_word, qa_reusable_other_context, qa_standalone_comprehensibility)",
+      "class": "QA_REVIEW_REQUIRED(非除外・旗)",
+      "sub": "",
+      "context": "But his pale blue eye had a thin covering, like a vulture's.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_evidence_kcrr1/mode_B/kp/keywords_runtime_metadata.json",
+      "bucket": "NOT_GATE",
+      "bucket_note": ""
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "outer_retry/attempt_2/keywords_runtime_metadata.json",
+      "level": "?",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "vulture's",
+      "reason": "外側retryで不適合と確定済みの語句の再選択(前回の理由: canonicalization QAでFAIL(学習単位として不適切の疑い): qa_standalone_natural_unit, qa_no_residual_context_word, qa_reusable_other_context, qa_standalone_comprehensibility)",
+      "class": "QA_REVIEW_REQUIRED(非除外・旗)",
+      "sub": "",
+      "context": "But his pale blue eye had a thin covering, like a vulture's.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_evidence_kcrr1/mode_B/kp/outer_retry/attempt_2/keywords_runtime_metadata.json",
+      "bucket": "NOT_GATE",
+      "bucket_note": ""
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "mode_C/kp/keywords_runtime_metadata.json",
+      "level": "?",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "in heaven and on earth",
+      "reason": "外側retryで不適合と確定済みの語句の再選択(前回の理由: canonicalization QAでFAIL(学習単位として不適切の疑い): qa_standalone_natural_unit, qa_no_residual_context_word, qa_reusable_other_context, qa_standalone_comprehensibility)",
+      "class": "QA_REVIEW_REQUIRED(非除外・旗)",
+      "sub": "",
+      "context": "I could hear everything in heaven and on earth.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_evidence_kcrr1/mode_C/kp/keywords_runtime_metadata.json",
+      "bucket": "NOT_GATE",
+      "bucket_note": ""
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "mode_C/kp/keywords_runtime_metadata.json",
+      "level": "?",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "vulture's",
+      "reason": "外側retryで不適合と確定済みの語句の再選択(前回の理由: canonicalization QAでFAIL(学習単位として不適切の疑い): qa_standalone_natural_unit, qa_no_residual_context_word, qa_reusable_other_context, qa_standalone_comprehensibility)",
+      "class": "QA_REVIEW_REQUIRED(非除外・旗)",
+      "sub": "",
+      "context": "But his pale blue eye had a thin covering, like a vulture's.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_evidence_kcrr1/mode_C/kp/keywords_runtime_metadata.json",
+      "bucket": "NOT_GATE",
+      "bucket_note": ""
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "mode_C/kp/keywords_runtime_metadata.json",
+      "level": "?",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "metal catch",
+      "reason": "外側retryで不適合と確定済みの語句の再選択(前回の理由: canonicalization QAでFAIL(学習単位として不適切の疑い): qa_standalone_natural_unit, qa_no_residual_context_word, qa_reusable_other_context, qa_standalone_comprehensibility)",
+      "class": "QA_REVIEW_REQUIRED(非除外・旗)",
+      "sub": "",
+      "context": "On night eight, my thumb slipped on the lantern's metal catch.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_evidence_kcrr1/mode_C/kp/keywords_runtime_metadata.json",
+      "bucket": "NOT_GATE",
+      "bucket_note": ""
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "outer_retry/attempt_2/keywords_runtime_metadata.json",
+      "level": "?",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "in heaven and on earth",
+      "reason": "外側retryで不適合と確定済みの語句の再選択(前回の理由: canonicalization QAでFAIL(学習単位として不適切の疑い): qa_standalone_natural_unit, qa_no_residual_context_word, qa_reusable_other_context, qa_standalone_comprehensibility)",
+      "class": "QA_REVIEW_REQUIRED(非除外・旗)",
+      "sub": "",
+      "context": "I could hear everything in heaven and on earth.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_evidence_kcrr1/mode_C/kp/outer_retry/attempt_2/keywords_runtime_metadata.json",
+      "bucket": "NOT_GATE",
+      "bucket_note": ""
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "outer_retry/attempt_2/keywords_runtime_metadata.json",
+      "level": "?",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "metal catch",
+      "reason": "外側retryで不適合と確定済みの語句の再選択(前回の理由: canonicalization QAでFAIL(学習単位として不適切の疑い): qa_standalone_natural_unit, qa_no_residual_context_word, qa_reusable_other_context, qa_standalone_comprehensibility)",
+      "class": "QA_REVIEW_REQUIRED(非除外・旗)",
+      "sub": "",
+      "context": "On night eight, my thumb slipped on the lantern's metal catch.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_evidence_kcrr1/mode_C/kp/outer_retry/attempt_2/keywords_runtime_metadata.json",
+      "bucket": "NOT_GATE",
+      "bucket_note": ""
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "outer_retry/attempt_3/keywords_runtime_metadata.json",
+      "level": "?",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "in heaven and on earth",
+      "reason": "外側retryで不適合と確定済みの語句の再選択(前回の理由: canonicalization QAでFAIL(学習単位として不適切の疑い): qa_standalone_natural_unit, qa_no_residual_context_word, qa_reusable_other_context, qa_standalone_comprehensibility)",
+      "class": "QA_REVIEW_REQUIRED(非除外・旗)",
+      "sub": "",
+      "context": "I could hear everything in heaven and on earth.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_evidence_kcrr1/mode_C/kp/outer_retry/attempt_3/keywords_runtime_metadata.json",
+      "bucket": "NOT_GATE",
+      "bucket_note": ""
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "outer_retry/attempt_3/keywords_runtime_metadata.json",
+      "level": "?",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "vulture's",
+      "reason": "外側retryで不適合と確定済みの語句の再選択(前回の理由: canonicalization QAでFAIL(学習単位として不適切の疑い): qa_standalone_natural_unit, qa_no_residual_context_word, qa_reusable_other_context, qa_standalone_comprehensibility)",
+      "class": "QA_REVIEW_REQUIRED(非除外・旗)",
+      "sub": "",
+      "context": "But his pale blue eye had a thin covering, like a vulture's.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_evidence_kcrr1/mode_C/kp/outer_retry/attempt_3/keywords_runtime_metadata.json",
+      "bucket": "NOT_GATE",
+      "bucket_note": ""
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "outer_retry/attempt_3/keywords_runtime_metadata.json",
+      "level": "?",
+      "stage": "selector_gate(validate/CMU)",
+      "phrase": "metal catch",
+      "reason": "外側retryで不適合と確定済みの語句の再選択(前回の理由: canonicalization QAでFAIL(学習単位として不適切の疑い): qa_standalone_natural_unit, qa_no_residual_context_word, qa_reusable_other_context, qa_standalone_comprehensibility)",
+      "class": "QA_REVIEW_REQUIRED(非除外・旗)",
+      "sub": "",
+      "context": "On night eight, my thumb slipped on the lantern's metal catch.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_evidence_kcrr1/mode_C/kp/outer_retry/attempt_3/keywords_runtime_metadata.json",
+      "bucket": "NOT_GATE",
+      "bucket_note": ""
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "fz_essence_01/the_tell_tale_heart/1b_s1",
+      "level": "b1b",
+      "stage": "canonicalization",
+      "phrase": "my ears began to ring",
+      "reason": "key_phrase(\"one's ears begin to ring\")がdisplay_phraseと一致せず、source_span('my ears began to ring')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "PERSON_GENERALIZATION_REJECTED",
+      "context": "Soon my ears began to ring.",
+      "source": "er026_output/family_z_dev_trials/fz_essence_01/the_tell_tale_heart/1b_s1/key_phrases/b1b/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "one's ears begin to ring",
+      "source_span": "my ears began to ring",
+      "probe": {
+        "span": "my ears began to ring",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 5
+        },
+        "rederive_current_tables": [
+          "one's ears began to ring"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "one's ears began to ring"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "one's ears began to ring"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "one's ears began to ring"
+        ]
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "再導出:one's ears began to ring"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/after_twenty_years/run_sf_prod_01",
+      "level": "a2",
+      "stage": "canonicalization",
+      "phrase": "lost touch",
+      "reason": "key_phrase('lose touch')がdisplay_phraseと一致せず、source_span('lost touch')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "LEMMA_1TO1_REJECTED",
+      "context": "We promised to meet here tonight at ten, whatever happened.\" \"Do you hear from him these days?\" \"We lost touch years ago,\" Bob said with a smile.",
+      "source": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/key_phrases/a2/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "lose touch",
+      "source_span": "lost touch",
+      "probe": {
+        "span": "lost touch",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 2
+        },
+        "rederive_current_tables": [],
+        "whatif_W1_quantifier_determiners": [],
+        "whatif_W2_plus_ly_adverb": [],
+        "whatif_W3_past_only_table_completed": []
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "表層形revert"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/after_twenty_years/run_sf_prod_01",
+      "level": "b1b",
+      "stage": "canonicalization",
+      "phrase": "couldn't bring myself to arrest",
+      "reason": "key_phrase(\"couldn't bring oneself to arrest\")がdisplay_phraseと一致せず、source_span(\"couldn't bring myself to arrest\")内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "PERSON_GENERALIZATION_REJECTED",
+      "context": "But I couldn't bring myself to arrest my old friend, so I found a plain-clothes officer to do it for me.\"",
+      "source": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/key_phrases/b1b/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "couldn't bring oneself to arrest",
+      "source_span": "couldn't bring myself to arrest",
+      "probe": {
+        "span": "couldn't bring myself to arrest",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 5
+        },
+        "rederive_current_tables": [
+          "couldn't bring oneself to arrest"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "couldn't bring oneself to arrest"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "couldn't bring oneself to arrest"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "couldn't bring oneself to arrest"
+        ]
+      },
+      "still_rejected_now": false,
+      "bucket": "NOW_PASS",
+      "bucket_note": ""
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/after_twenty_years/run_sf_prod_01",
+      "level": "b1b",
+      "stage": "canonicalization",
+      "phrase": "lost touch",
+      "reason": "key_phrase('lose touch')がdisplay_phraseと一致せず、source_span('lost touch')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "LEMMA_1TO1_REJECTED",
+      "context": "We lost touch.\" Bob smiled.",
+      "source": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/key_phrases/b1b/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "lose touch",
+      "source_span": "lost touch",
+      "probe": {
+        "span": "lost touch",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 2
+        },
+        "rederive_current_tables": [],
+        "whatif_W1_quantifier_determiners": [],
+        "whatif_W2_plus_ly_adverb": [],
+        "whatif_W3_past_only_table_completed": []
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "表層形revert"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/after_twenty_years/run_sf_prod_01",
+      "level": "b1b",
+      "stage": "canonicalization",
+      "phrase": "couldn't bring myself to",
+      "reason": "key_phrase(\"couldn't bring oneself to\")がdisplay_phraseと一致せず、source_span(\"couldn't bring myself to\")内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "PERSON_GENERALIZATION_REJECTED",
+      "context": "But I couldn't bring myself to arrest my old friend, so I found a plain-clothes officer to do it for me.\" --- 【前回の選定結果に関する指摘(機械診断)】 次の語句は、これまでの検証で不適合と確定しています。同じ語句、または同じ理由で不適合になる語句は選ばないでください(条件を満たす別の語句がなければ、無理に3件に揃えず、適切な語句だけを選んでください)。 - 「couldn't bring myself to arrest」: key_phrase(\"couldn't bring oneself to arrest\")がdisplay_phraseと一致せず、source_span(\"couldn't bring myself to arrest\")内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない) - 「lost touch」: key_phrase('lose touch')がdisplay_phraseと一致せず、source_span('lost touch')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "source": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/key_phrases/b1b/outer_retry/attempt_2/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "couldn't bring oneself to",
+      "source_span": "couldn't bring myself to",
+      "probe": {
+        "span": "couldn't bring myself to",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 4
+        },
+        "rederive_current_tables": [
+          "couldn't bring oneself to"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "couldn't bring oneself to"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "couldn't bring oneself to"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "couldn't bring oneself to"
+        ]
+      },
+      "still_rejected_now": false,
+      "bucket": "NOW_PASS",
+      "bucket_note": ""
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/after_twenty_years/run_sf_prod_01",
+      "level": "b1b",
+      "stage": "canonicalization",
+      "phrase": "struck a match",
+      "reason": "key_phrase('strike a match')がdisplay_phraseと一致せず、source_span('struck a match')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "LEMMA_1TO1_REJECTED",
+      "context": "\"There used to be a restaurant here.\" \"They pulled it down five years ago.\" Bob struck a match.",
+      "source": "er026_output/family_z_production_e2e_01/after_twenty_years/run_sf_prod_01/key_phrases/b1b/outer_retry/attempt_2/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "strike a match",
+      "source_span": "struck a match",
+      "probe": {
+        "span": "struck a match",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 3
+        },
+        "rederive_current_tables": [],
+        "whatif_W1_quantifier_determiners": [],
+        "whatif_W2_plus_ly_adverb": [],
+        "whatif_W3_past_only_table_completed": []
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "表層形revert"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/melos/run_jre_01",
+      "level": "b1b",
+      "stage": "canonicalization",
+      "phrase": "sentenced him to death",
+      "reason": "key_phrase('sentence someone to death')がdisplay_phraseと一致せず、source_span('sentenced him to death')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "PERSON_GENERALIZATION_REJECTED",
+      "context": "Then the guards seized the young shepherd, and the ruler sentenced him to death.",
+      "source": "er026_output/family_z_production_e2e_01/melos/run_jre_01/key_phrases/b1b/outer_retry/attempt_2/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "sentence someone to death",
+      "source_span": "sentenced him to death",
+      "probe": {
+        "span": "sentenced him to death",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 4
+        },
+        "rederive_current_tables": [
+          "sentence him to death"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "sentence him to death"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "sentence him to death"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "sentence him to death"
+        ]
+      },
+      "still_rejected_now": false,
+      "bucket": "NOW_PASS",
+      "bucket_note": ""
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/melos/run_jre_01",
+      "level": "b1b",
+      "stage": "canonicalization",
+      "phrase": "nearly abandoned you",
+      "reason": "key_phrase('nearly abandon someone')がdisplay_phraseと一致せず、source_span('nearly abandoned you')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "PERSON_GENERALIZATION_REJECTED",
+      "context": "\"I nearly abandoned you,\" he whispered.",
+      "source": "er026_output/family_z_production_e2e_01/melos/run_jre_01/key_phrases/b1b/outer_retry/attempt_3/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "nearly abandon someone",
+      "source_span": "nearly abandoned you",
+      "probe": {
+        "span": "nearly abandoned you",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 3
+        },
+        "rederive_current_tables": [
+          "nearly abandoned someone",
+          "nearly abandoned somebody",
+          "nearly abandoned one"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "nearly abandoned someone",
+          "nearly abandoned somebody",
+          "nearly abandoned one"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "nearly abandoned someone",
+          "nearly abandoned somebody",
+          "nearly abandoned one"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "nearly abandoned someone",
+          "nearly abandoned somebody",
+          "nearly abandoned one"
+        ]
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "再導出:nearly abandoned someone"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_monkeys_paw/run_kpgm35_01",
+      "level": "a2",
+      "stage": "canonicalization",
+      "phrase": "pulling free",
+      "reason": "key_phrase('pull free')がdisplay_phraseと一致せず、source_span('pulling free')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "LEMMA_1TO1_REJECTED",
+      "context": "\"It's Herbert!\" She ran towards the door, pulling free when Mr.",
+      "source": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_kpgm35_01/key_phrases/a2/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "pull free",
+      "source_span": "pulling free",
+      "probe": {
+        "span": "pulling free",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 2
+        },
+        "rederive_current_tables": [],
+        "whatif_W1_quantifier_determiners": [],
+        "whatif_W2_plus_ly_adverb": [],
+        "whatif_W3_past_only_table_completed": []
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "表層形revert"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_monkeys_paw/run_kpgm35_01",
+      "level": "b1b",
+      "stage": "canonicalization",
+      "phrase": "accepts no responsibility",
+      "reason": "key_phrase('accept no responsibility')がdisplay_phraseと一致せず、source_span('accepts no responsibility')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "LEMMA_1TO1_REJECTED",
+      "context": "\"The firm accepts no responsibility, but offers you two hundred pounds in compensation.\" Mr.",
+      "source": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_kpgm35_01/key_phrases/b1b/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "accept no responsibility",
+      "source_span": "accepts no responsibility",
+      "probe": {
+        "span": "accepts no responsibility",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 3
+        },
+        "rederive_current_tables": [],
+        "whatif_W1_quantifier_determiners": [
+          "accept no responsibility"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "accept no responsibility"
+        ],
+        "whatif_W3_past_only_table_completed": []
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "表層形revert(基本形化は閉表/guard拡張[新規則]で可: accept no responsibility)"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_monkeys_paw/run_sf_prod_01",
+      "level": "a2",
+      "stage": "canonicalization",
+      "phrase": "pulling free",
+      "reason": "key_phrase('pull free')がdisplay_phraseと一致せず、source_span('pulling free')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "LEMMA_1TO1_REJECTED",
+      "context": "\"It's Herbert!\" She ran towards the door, pulling free when Mr.",
+      "source": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_sf_prod_01/key_phrases/a2/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "pull free",
+      "source_span": "pulling free",
+      "probe": {
+        "span": "pulling free",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 2
+        },
+        "rederive_current_tables": [],
+        "whatif_W1_quantifier_determiners": [],
+        "whatif_W2_plus_ly_adverb": [],
+        "whatif_W3_past_only_table_completed": []
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "表層形revert"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_chunk_01",
+      "level": "a2",
+      "stage": "canonicalization",
+      "phrase": "growing louder and louder",
+      "reason": "key_phrase('grow louder and louder')がdisplay_phraseと一致せず、source_span('growing louder and louder')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "LEMMA_1TO1_REJECTED",
+      "context": "The sound kept growing louder and louder!",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_chunk_01/key_phrases/a2/outer_retry/attempt_2/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "grow louder and louder",
+      "source_span": "growing louder and louder",
+      "probe": {
+        "span": "growing louder and louder",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 4
+        },
+        "rederive_current_tables": [],
+        "whatif_W1_quantifier_determiners": [],
+        "whatif_W2_plus_ly_adverb": [],
+        "whatif_W3_past_only_table_completed": []
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "表層形revert"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_chunk_01",
+      "level": "b1b",
+      "stage": "canonicalization",
+      "phrase": "my blood went cold",
+      "reason": "key_phrase(\"one's blood go cold\")がdisplay_phraseと一致せず、source_span('my blood went cold')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "PERSON_GENERALIZATION_REJECTED",
+      "context": "Whenever it turned towards me, my blood went cold.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_chunk_01/key_phrases/b1b/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "one's blood go cold",
+      "source_span": "my blood went cold",
+      "probe": {
+        "span": "my blood went cold",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 4
+        },
+        "rederive_current_tables": [
+          "one's blood went cold"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "one's blood went cold"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "one's blood went cold"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "one's blood went cold"
+        ]
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "再導出:one's blood went cold"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_01",
+      "level": "b1b",
+      "stage": "canonicalization",
+      "phrase": "my blood went cold",
+      "reason": "key_phrase(\"one's blood go cold\")がdisplay_phraseと一致せず、source_span('my blood went cold')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "PERSON_GENERALIZATION_REJECTED",
+      "context": "Whenever it turned towards me, my blood went cold.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_01/key_phrases/b1b/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "one's blood go cold",
+      "source_span": "my blood went cold",
+      "probe": {
+        "span": "my blood went cold",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 4
+        },
+        "rederive_current_tables": [
+          "one's blood went cold"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "one's blood went cold"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "one's blood went cold"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "one's blood went cold"
+        ]
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "再導出:one's blood went cold"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_02",
+      "level": "b1b",
+      "stage": "canonicalization",
+      "phrase": "my blood went cold",
+      "reason": "key_phrase(\"one's blood go cold\")がdisplay_phraseと一致せず、source_span('my blood went cold')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "PERSON_GENERALIZATION_REJECTED",
+      "context": "Whenever it turned towards me, my blood went cold.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_02/key_phrases/b1b/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "one's blood go cold",
+      "source_span": "my blood went cold",
+      "probe": {
+        "span": "my blood went cold",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 4
+        },
+        "rederive_current_tables": [
+          "one's blood went cold"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "one's blood went cold"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "one's blood went cold"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "one's blood went cold"
+        ]
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "再導出:one's blood went cold"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_03",
+      "level": "b1b",
+      "stage": "canonicalization",
+      "phrase": "my blood went cold",
+      "reason": "key_phrase(\"one's blood go cold\")がdisplay_phraseと一致せず、source_span('my blood went cold')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "PERSON_GENERALIZATION_REJECTED",
+      "context": "Whenever it turned towards me, my blood went cold.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p1_evidence_03/key_phrases/b1b/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "one's blood go cold",
+      "source_span": "my blood went cold",
+      "probe": {
+        "span": "my blood went cold",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 4
+        },
+        "rederive_current_tables": [
+          "one's blood went cold"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "one's blood went cold"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "one's blood went cold"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "one's blood went cold"
+        ]
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "再導出:one's blood went cold"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p2_evidence_r3",
+      "level": "b1b",
+      "stage": "canonicalization",
+      "phrase": "my blood went cold",
+      "reason": "key_phrase(\"one's blood go cold\")がdisplay_phraseと一致せず、source_span('my blood went cold')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "PERSON_GENERALIZATION_REJECTED",
+      "context": "Whenever it turned towards me, my blood went cold.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p2_evidence_r3/key_phrases/b1b/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "one's blood go cold",
+      "source_span": "my blood went cold",
+      "probe": {
+        "span": "my blood went cold",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 4
+        },
+        "rederive_current_tables": [
+          "one's blood went cold"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "one's blood went cold"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "one's blood went cold"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "one's blood went cold"
+        ]
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "再導出:one's blood went cold"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_p2_evidence_r4",
+      "level": "b1b",
+      "stage": "canonicalization",
+      "phrase": "my blood went cold",
+      "reason": "key_phrase(\"one's blood go cold\")がdisplay_phraseと一致せず、source_span('my blood went cold')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "PERSON_GENERALIZATION_REJECTED",
+      "context": "Whenever it turned towards me, my blood went cold.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_p2_evidence_r4/key_phrases/b1b/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "one's blood go cold",
+      "source_span": "my blood went cold",
+      "probe": {
+        "span": "my blood went cold",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 4
+        },
+        "rederive_current_tables": [
+          "one's blood went cold"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "one's blood went cold"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "one's blood went cold"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "one's blood went cold"
+        ]
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "再導出:one's blood went cold"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_01",
+      "level": "a2",
+      "stage": "canonicalization",
+      "phrase": "froze my blood",
+      "reason": "key_phrase(\"freeze someone's blood\")がdisplay_phraseと一致せず、source_span('froze my blood')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "PERSON_GENERALIZATION_REJECTED",
+      "context": "It froze my blood.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_01/key_phrases/a2/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "freeze someone's blood",
+      "source_span": "froze my blood",
+      "probe": {
+        "span": "froze my blood",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 3
+        },
+        "rederive_current_tables": [
+          "froze one's blood"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "froze one's blood"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "froze one's blood"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "freeze one's blood",
+          "froze one's blood",
+          "freeze my blood"
+        ]
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "再導出:froze one's blood"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_01",
+      "level": "b1b",
+      "stage": "canonicalization",
+      "phrase": "eased open",
+      "reason": "key_phrase('ease open')がdisplay_phraseと一致せず、source_span('eased open')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "LEMMA_1TO1_REJECTED",
+      "context": "For seven nights, at midnight, he eased open the bedroom door.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_01/key_phrases/b1b/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "ease open",
+      "source_span": "eased open",
+      "probe": {
+        "span": "eased open",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 2
+        },
+        "rederive_current_tables": [],
+        "whatif_W1_quantifier_determiners": [],
+        "whatif_W2_plus_ly_adverb": [],
+        "whatif_W3_past_only_table_completed": []
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "表層形revert"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_02",
+      "level": "b1b",
+      "stage": "canonicalization",
+      "phrase": "my blood went cold",
+      "reason": "key_phrase(\"one's blood go cold\")がdisplay_phraseと一致せず、source_span('my blood went cold')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "PERSON_GENERALIZATION_REJECTED",
+      "context": "Whenever it turned towards me, my blood went cold.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_sf_prod_02/key_phrases/b1b/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "one's blood go cold",
+      "source_span": "my blood went cold",
+      "probe": {
+        "span": "my blood went cold",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 4
+        },
+        "rederive_current_tables": [
+          "one's blood went cold"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "one's blood went cold"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "one's blood went cold"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "one's blood went cold"
+        ]
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "再導出:one's blood went cold"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "level": "a2",
+      "stage": "canonicalization",
+      "phrase": "froze my blood",
+      "reason": "key_phrase(\"freeze someone's blood\")がdisplay_phraseと一致せず、source_span('froze my blood')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "PERSON_GENERALIZATION_REJECTED",
+      "context": "It froze my blood.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_bak_pre04/a2/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "freeze someone's blood",
+      "source_span": "froze my blood",
+      "probe": {
+        "span": "froze my blood",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 3
+        },
+        "rederive_current_tables": [
+          "froze one's blood"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "froze one's blood"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "froze one's blood"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "freeze one's blood",
+          "froze one's blood",
+          "freeze my blood"
+        ]
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "再導出:froze one's blood"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "level": "a2",
+      "stage": "canonicalization",
+      "phrase": "sure of myself",
+      "reason": "key_phrase('sure of oneself')がdisplay_phraseと一致せず、source_span('sure of myself')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "PERSON_GENERALIZATION_REJECTED",
+      "context": "I sat right above the body, calm and sure of myself.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_bak_pre04/a2/outer_retry/attempt_1/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "sure of oneself",
+      "source_span": "sure of myself",
+      "probe": {
+        "span": "sure of myself",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 3
+        },
+        "rederive_current_tables": [
+          "sure of oneself"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "sure of oneself"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "sure of oneself"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "sure of oneself"
+        ]
+      },
+      "still_rejected_now": false,
+      "bucket": "NOW_PASS",
+      "bucket_note": ""
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "outer_retry/attempt_2/canonicalization_runtime_metadata.json",
+      "level": "a2",
+      "stage": "canonicalization",
+      "phrase": "My ears began ringing",
+      "reason": "key_phrase(\"one's ears begin ringing\")がdisplay_phraseと一致せず、source_span('My ears began ringing')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "PERSON_GENERALIZATION_REJECTED",
+      "context": "My ears began ringing, so I spoke more loudly.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_bak_pre04/a2/outer_retry/attempt_2/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "one's ears begin ringing",
+      "source_span": "My ears began ringing",
+      "probe": {
+        "span": "My ears began ringing",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 4
+        },
+        "rederive_current_tables": [
+          "one's ears began ringing"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "one's ears began ringing"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "one's ears began ringing"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "one's ears began ringing"
+        ]
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "再導出:one's ears began ringing"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "outer_retry/attempt_2/canonicalization_runtime_metadata.json",
+      "level": "?",
+      "stage": "canonicalization",
+      "phrase": "froze my blood",
+      "reason": "key_phrase(\"freeze someone's blood\")がdisplay_phraseと一致せず、source_span('froze my blood')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "PERSON_GENERALIZATION_REJECTED",
+      "context": "It froze my blood.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_evidence_kcrr1/mode_A/kp/outer_retry/attempt_2/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "freeze someone's blood",
+      "source_span": "froze my blood",
+      "probe": {
+        "span": "froze my blood",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 3
+        },
+        "rederive_current_tables": [
+          "froze one's blood"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "froze one's blood"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "froze one's blood"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "freeze one's blood",
+          "froze one's blood",
+          "freeze my blood"
+        ]
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "再導出:froze one's blood"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "outer_retry/attempt_2/canonicalization_runtime_metadata.json",
+      "level": "?",
+      "stage": "canonicalization",
+      "phrase": "leaving no mark",
+      "reason": "key_phrase('leave no mark')がdisplay_phraseと一致せず、source_span('leaving no mark')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "LEMMA_1TO1_REJECTED",
+      "context": "I put them back carefully, leaving no mark.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_evidence_kcrr1/mode_A/kp/outer_retry/attempt_2/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "leave no mark",
+      "source_span": "leaving no mark",
+      "probe": {
+        "span": "leaving no mark",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 3
+        },
+        "rederive_current_tables": [],
+        "whatif_W1_quantifier_determiners": [
+          "leave no mark"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "leave no mark"
+        ],
+        "whatif_W3_past_only_table_completed": []
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "表層形revert(基本形化は閉表/guard拡張[新規則]で可: leave no mark)"
+    },
+    {
+      "era": "preHR(outer-retry全置換)",
+      "family": "Z",
+      "run": "outer_retry/attempt_2/canonicalization_runtime_metadata.json",
+      "level": "?",
+      "stage": "canonicalization",
+      "phrase": "My ears began ringing",
+      "reason": "key_phrase(\"one's ears begin ringing\")がdisplay_phraseと一致せず、source_span('My ears began ringing')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)",
+      "class": "RULE7_NORMALIZATION",
+      "sub": "PERSON_GENERALIZATION_REJECTED",
+      "context": "My ears began ringing, so I spoke more loudly.",
+      "source": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/_evidence_kcrr1/mode_A/kp/outer_retry/attempt_2/canonicalization_runtime_metadata.json",
+      "llm_key_phrase": "one's ears begin ringing",
+      "source_span": "My ears began ringing",
+      "probe": {
+        "span": "My ears began ringing",
+        "surface_pass": {
+          "validator": true,
+          "cmu": true,
+          "words": 4
+        },
+        "rederive_current_tables": [
+          "one's ears began ringing"
+        ],
+        "whatif_W1_quantifier_determiners": [
+          "one's ears began ringing"
+        ],
+        "whatif_W2_plus_ly_adverb": [
+          "one's ears began ringing"
+        ],
+        "whatif_W3_past_only_table_completed": [
+          "one's ears began ringing"
+        ]
+      },
+      "still_rejected_now": true,
+      "bucket": "S1_IN_SCOPE_MECHANICAL",
+      "bucket_note": "再導出:one's ears began ringing"
+    }
+  ]
+}
