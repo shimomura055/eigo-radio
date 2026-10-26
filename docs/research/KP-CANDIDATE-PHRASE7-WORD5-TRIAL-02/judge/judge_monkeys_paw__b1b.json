@@ -1,0 +1,80 @@
+{
+ "key": "monkeys_paw:b1b",
+ "model_requested": "gpt-6.1-sol",
+ "model_id": "gpt-6.1-sol",
+ "response_id": "resp_02e0d55b1d0cd042006adf3dd7fb2087d0b76373fd2439ff22",
+ "n_candidates": 4,
+ "message_sha256": "72fd073c9fe0c844003ffff7402e70ab9b7bec32a96a10ac46411040c499db20",
+ "message": "あなたは英語学習コンテンツの編集者です。下の記事(英語)から選ばれた『Key Phrase候補』を、同一ルーブリックで独立に評価してください。\n対象の学習者: Advanced(B1〜B2相当の英語学習者向け)。\n\n各候補について次を判定します。\n- natural: 単独で自然に成立する語句で、切り出しが不自然・文脈依存でない\n- general: 他の文脈でも再利用でき、記事固有の固有名詞・数値・物名でない\n- level_fit: 学ぶ価値がある(少し上の語彙)なら good、易しすぎる基本語なら too_easy、極端に難しい/特殊なら too_hard\n- value: 学習価値 1(低)〜5(高)\n- overlap_with: 学習ポイントが実質同じ(語幹・包含・同概念)の別候補のid(なければ空配列)\n- verdict: natural・general・level_fitが全て満たされるなら Y、1項目だけ境界なら B、明確に不満足なら N\n候補の出所や順序は無関係です。数合わせのために入れられた候補(易しすぎる語・不自然な語・重複)は N にしてください。note_jaは日本語で30字以内。\n\n【記事本文】\nWind rattled the windows, but the fire burned brightly. Herbert grinned over the chessboard while Mr. White leaned back, defeated. Beside them, Mrs. White smiled over her knitting.\n\nA knock announced an old friend, a retired sergeant-major home from India. By the fire, he showed them a small, dried monkey’s paw.\n\n“It grants three wishes,” he said, “but brings sorrow to anyone who interferes with fate.”\n\n“Have you used it?” asked Mr. White.\n\n“All three.”\n\nSuddenly, the soldier threw it into the flames. Mr. White snatched it out.\n\n“Burn it,” his friend warned. “And don’t blame me if you keep it.”\n\nAfter their visitor left, Herbert laughed. “Ask for two hundred pounds, Father. Enough to pay off the house!”\n\nMr. White raised the paw with a smile. “I wish for two hundred pounds.”\n\nIt twisted in his hand. He cried out and dropped it. They stared at the floor, but nothing else happened.\n\nBy breakfast, they were joking again. Herbert left for work, and Mrs. White cleared the table.\n\nLater, a stranger from the firm arrived.\n\n“Your son was caught in the machinery,” he said. “He is dead.”\n\nMr. White reached for his wife’s hand.\n\n“The firm accepts no responsibility, but offers you two hundred pounds in compensation.”\n\nMr. White fell from his chair.\n\nA week after the burial, Mrs. White shook her husband awake. Her face was wet with tears.\n\n“The paw! We have two wishes left. Wish him alive again!”\n\nHe turned away. “You didn’t see him. I’m afraid of what might come back.”\n\n“He’s our son!”\n\nAt last, Mr. White went downstairs and found the paw. His wife followed. His voice shook.\n\n“I wish Herbert alive again.”\n\nIt fell from his hand. They waited in the dark, listening to the clock.\n\nThen came a soft knock.\n\n“Herbert!” Mrs. White rushed towards the door. Her husband caught her arm, but she pulled free.\n\nThe knocking grew louder. She dragged a chair to the front door and climbed onto it to reach the high bolt.\n\nMr. White dropped to his knees. Where was the paw? His fingers swept across the boards as the knocking shook the door.\n\n“Wait!”\n\nThe chair scraped. The last bolt began to slide. His fingers closed around the paw. Just as his wife was about to open the door, he made his third and last wish.\n\nThe terrible knocking stopped.\n\nShe pulled the door open. There was nobody there. Cold wind swept into the house, and her long wail of loss rose into the night.\n\nThe street lamp opposite shone on a quiet, deserted road.\n\n【候補一覧(4件。単語のみ)】\n- W01: compensation / 意味: 補償金 / 出典文: The firm accepts no responsibility, but offers you two hundred pounds in compensation\n- W02: burial / 意味: 墓に納めること / 出典文: A week after the burial, Mrs\n- W03: deserted / 意味: 人けのない / 出典文: The street lamp opposite shone on a quiet, deserted road\n- W04: snatch / 意味: さっとつかみ取る / 出典文: White snatched it out\n\n【参考: 同時に選ばれたフレーズ(評価対象外。overlap_withの判断にのみ使う)】\n- accept no responsibility\n- pay off the house\n- interfere with fate\n- pulled free\n- caught in the machinery\n- wail of loss\n- shake one's husband awake",
+ "candidates": {
+  "W01": {
+   "used_form": "compensation",
+   "sources": [
+    "p7w3_r1",
+    "p7w5_r1"
+   ]
+  },
+  "W02": {
+   "used_form": "burial",
+   "sources": [
+    "p7w3_r1",
+    "p7w5_r1"
+   ]
+  },
+  "W03": {
+   "used_form": "deserted",
+   "sources": [
+    "p7w3_r1",
+    "p7w5_r1"
+   ]
+  },
+  "W04": {
+   "used_form": "snatch",
+   "sources": [
+    "p7w5_r1"
+   ]
+  }
+ },
+ "judged": [
+  {
+   "id": "W01",
+   "natural": true,
+   "general": true,
+   "level_fit": "good",
+   "value": 5,
+   "verdict": "Y",
+   "overlap_with": [],
+   "note_ja": "補償や賠償の文脈で広く使える重要語"
+  },
+  {
+   "id": "W02",
+   "natural": true,
+   "general": true,
+   "level_fit": "good",
+   "value": 4,
+   "verdict": "Y",
+   "overlap_with": [],
+   "note_ja": "埋葬を表す一般語で学習価値がある"
+  },
+  {
+   "id": "W03",
+   "natural": true,
+   "general": true,
+   "level_fit": "good",
+   "value": 5,
+   "verdict": "Y",
+   "overlap_with": [],
+   "note_ja": "場所の閑散とした様子を表す有用語"
+  },
+  {
+   "id": "W04",
+   "natural": true,
+   "general": true,
+   "level_fit": "good",
+   "value": 5,
+   "verdict": "Y",
+   "overlap_with": [],
+   "note_ja": "素早くつかむ動作を具体的に表せる"
+  }
+ ]
+}

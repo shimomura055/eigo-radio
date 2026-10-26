@@ -29,6 +29,14 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, ROOT)
 OUT = os.path.join(ROOT, "docs", "research", "KP-CANDIDATE-PHRASE7-WORD3-TRIAL-01")
 MGMT_ID = "KP-CANDIDATE-PHRASE7-WORD3-TRIAL-01"
+# Trial-02(KP-CANDIDATE-PHRASE7-WORD5-TRIAL-02): method=p7w5(P7結果再利用+W5 Prompt)。成果物は別dirへ(前回dirは読み取りのみ)。
+OUT2 = os.path.join(ROOT, "docs", "research", "KP-CANDIDATE-PHRASE7-WORD5-TRIAL-02")
+MGMT_ID2 = "KP-CANDIDATE-PHRASE7-WORD5-TRIAL-02"
+
+
+def run_root(method: str) -> str:
+    """method別のrun出力root。p7w5=Trial-02 dir、それ以外(current/p7w3)=Trial-01 dir(従来どおり)。"""
+    return os.path.join(OUT2 if method == "p7w5" else OUT, "runs")
 
 LEVELS = {"a2": "Standard", "b1b": "Advanced"}
 FORMAL_X = "er019_output/family_x_audio_production_wiring_01"
@@ -45,6 +53,7 @@ Z_LEVEL_FILE = {"a2": "std.md", "b1b": "r2.md"}   # er062_family_z_writer_01.lev
 JUDGE_MODEL = "gpt-6.1-sol"
 P7_MAX = 7
 W3_MAX = 3
+W5_MAX = 5
 
 
 # ============================================================
@@ -84,9 +93,40 @@ def _build_prompts():
     return p7, w3
 
 
+# ============================================================
+# W5 Prompt(Trial-02。ユーザー指示§3の5条件を記載順どおり。①②のみ絶対条件、③④は優先、⑤は考慮(必須にしない))。
+# 件数・順位付け・数合わせ禁止・出力確認は『条件』ではなく出力規則として別ブロックに置く(条件を追加しない)。
+# ============================================================
+W5_TEXT = (
+    "以下の記事から、英語上級者が学ぶ価値のある**単語単体(1語)**を、学習価値の高い順に**最大5つ**選んでください"
+    "(すでに選ばれたフレーズ・表現は、記事本文の後ろに示します)。\n"
+    "\n"
+    "以下の5条件を、記載順に適用してください。順番を入れ替えたり、条件を追加したりしないでください。\n"
+    "\n"
+    "1. **本文一致（絶対条件）**：本文中に実在する単語だけを、本文に現れる形のまま抜き出す。変更・言い換え・追加・創作は禁止。\n"
+    "2. **1語（絶対条件）**：スペースを含まない1語だけを出力する。2語以上は出力禁止。\n"
+    "3. **上級者向けの学習価値**：上級者でも学ぶ価値のある単語を優先する。\n"
+    "4. **易しい語の除外**：基本語や、上級者なら知っている易しい単語は除外する。\n"
+    "5. **単語単体の学習価値**：意味の明確さ・他の文脈での汎用性・難易度を考慮する。固有名詞・数字・この記事だけでしか使えない語は、考慮の際に避ける。"
+    "ただし必須条件にはしない。\n"
+    "\n"
+    "補足:\n"
+    "- 条件3・4を、条件5より必ず優先する。条件5を理由に、条件3・4に適合する単語を不当に除外しない。\n"
+    "- すでに選ばれたフレーズ・表現に含まれる単語であっても、それだけを理由に一律除外しない。"
+    "学習価値の重複は評価してよいが、新たな絶対条件にはしない。\n"
+    "- 条件1・2(本文一致と1語)は必須。\n"
+    "\n"
+    "出力: 条件を満たす単語から、学習価値の高い順に最大5件を選び、1位から順に並べる。"
+    "適切な候補が不足する場合のみ5件未満とし、数合わせはしない(簡単すぎる語や不自然な語で5件に揃えない)。"
+    "各候補に、選んだ理由を日本語で1文(40字以内)添える。\n"
+    "\n"
+    "**出力直前に各候補を本文と照合し、改変がないこと、1語であることを再確認してください。語数も併記してください。**")
+
+
 P7_TEXT, W3_TEXT = _build_prompts()
 P7_SHA = hashlib.sha256(P7_TEXT.encode("utf-8")).hexdigest()
 W3_SHA = hashlib.sha256(W3_TEXT.encode("utf-8")).hexdigest()
+W5_SHA = hashlib.sha256(W5_TEXT.encode("utf-8")).hexdigest()
 
 
 def build_p7_message(text: str) -> str:
@@ -94,10 +134,10 @@ def build_p7_message(text: str) -> str:
     return P7_TEXT + ft.BODY_DELIMITER + text
 
 
-def build_w3_message(text: str, already: list) -> str:
+def build_w3_message(text: str, already: list, prompt_text: Optional[str] = None) -> str:
     import er105_kp_fulltext_selector_01 as ft
     import er119_kp_prompt_2v_01 as p2v
-    return W3_TEXT + ft.BODY_DELIMITER + text + p2v.ALREADY_DELIMITER + "\n".join(f"- {p}" for p in already)
+    return (prompt_text or W3_TEXT) + ft.BODY_DELIMITER + text + p2v.ALREADY_DELIMITER + "\n".join(f"- {p}" for p in already)
 
 
 def parse_already(msg: str) -> list:
@@ -228,7 +268,28 @@ def make_p7_select_fn(text: str, state: TrialState, units: list, call_factory=No
     return select_fn
 
 
-def make_w3_call_fn(text: str, state: TrialState, process: str, call_factory=None):
+def make_p7_replay_factory(prev_trial_result_path: str, state: TrialState):
+    """P7結果の再利用(Trial-02)。前回Trial-01の同一level r1のP7 raw返答をそのまま返す call_factory(API 0・費用0)。
+    再利用の前提=入力message(P7 Prompt+本文)のsha256が前回と同一であること(不一致なら例外=再利用しない)。"""
+    prev = json.load(open(prev_trial_result_path, encoding="utf-8"))
+    st = prev["state"]
+    raw, model_id = st["p7_raw"], st["p7_model"]
+    prev_msg_sha = st["messages"]["p7"]["sha256"]
+
+    def factory(msg: str, model: str):
+        sha = hashlib.sha256(msg.encode("utf-8")).hexdigest()
+        if sha != prev_msg_sha or st["messages"]["p7"]["prompt_sha256"] != P7_SHA:
+            raise RuntimeError(f"P7再利用不可: message sha256不一致 now={sha} prev={prev_msg_sha}")
+        state.p7_reused_from = prev_trial_result_path
+
+        def fn():
+            return raw, model_id, "reused:" + os.path.basename(os.path.dirname(prev_trial_result_path))
+        return fn
+    return factory
+
+
+def make_w3_call_fn(text: str, state: TrialState, process: str, call_factory=None,
+                    prompt_text: Optional[str] = None, prompt_sha: Optional[str] = None, wmax: int = W3_MAX):
     """generate_candidatesのvocab_call_fn(make_call_fn)。run_vocab_selection(Production)が組んだ2-V messageから『すでに選ばれた表現』を取り、
     W3 messageで単語単体を最大3件要求する。以降のitem単位gate(validate/重複包含/Human NG/CMU)はrun_vocab_selection(Production)がそのまま適用。"""
     import er105_kp_fulltext_selector_01 as ft
@@ -236,8 +297,8 @@ def make_w3_call_fn(text: str, state: TrialState, process: str, call_factory=Non
 
     def make_call_fn(prod_msg: str):
         already = parse_already(prod_msg)
-        msg = build_w3_message(text, already)
-        state.messages["w3"] = {"sha256": hashlib.sha256(msg.encode("utf-8")).hexdigest(), "prompt_sha256": W3_SHA, "already": already}
+        msg = build_w3_message(text, already, prompt_text)
+        state.messages["w3"] = {"sha256": hashlib.sha256(msg.encode("utf-8")).hexdigest(), "prompt_sha256": prompt_sha or W3_SHA, "already": already}
         model = ft.resolve_model(process)
         inner = call_factory(msg, model) if call_factory else p2v.make_vocab_selector_fn(msg, model=model)
 
@@ -248,9 +309,9 @@ def make_w3_call_fn(text: str, state: TrialState, process: str, call_factory=Non
             n = len(doc.get("items") or [])
             state.w3_returned = n
             state.w3_model = model_id
-            if n > W3_MAX:   # 要求は最大3件。超過分は下位から切って記録(Production gateの上限5を3へ揃える)
-                state.w3_over_request = n - W3_MAX
-                doc["items"] = doc["items"][:W3_MAX]
+            if n > wmax:   # 要求は最大wmax件。超過分は下位から切って記録(Production gateの上限5をwmaxへ揃える)
+                state.w3_over_request = n - wmax
+                doc["items"] = doc["items"][:wmax]
                 raw = json.dumps(doc, ensure_ascii=False)
             state.w3_raw = raw
             return raw, model_id, response_id
@@ -270,7 +331,7 @@ def run_one(args) -> int:
 
     article, lv, method, rep = args.article, args.level, args.method, args.rep
     tag = f"{article}__{lv}__{method}__r{rep}"
-    run_dir = os.path.join(OUT, "runs", tag)
+    run_dir = os.path.join(run_root(method), tag)
     os.makedirs(run_dir, exist_ok=True)
     usage_path = os.path.join(run_dir, "usage_log.jsonl")
     cl.install(usage_path)
@@ -294,20 +355,27 @@ def run_one(args) -> int:
     t0 = time.time()
     if method == "p7w3":
         kw.update(max_outer=1, select_fn=make_p7_select_fn(text, state, units), vocab_call_fn=make_w3_call_fn(text, state, process))
+    elif method == "p7w5":
+        if not getattr(args, "reuse_p7", None):
+            raise SystemExit("p7w5 requires --reuse-p7 <Trial-01 runs dir> (P7結果は再利用のみ。P7の新規API呼出はしない)")
+        prev_path = os.path.join(args.reuse_p7, f"{article}__{lv}__p7w3__r1", "trial_result.json")
+        kw.update(max_outer=1, select_fn=make_p7_select_fn(text, state, units, call_factory=make_p7_replay_factory(prev_path, state)),
+                  vocab_call_fn=make_w3_call_fn(text, state, process, prompt_text=W5_TEXT, prompt_sha=W5_SHA, wmax=W5_MAX))
     elif method != "current":
-        raise SystemExit("method must be current|p7w3")
+        raise SystemExit("method must be current|p7w3|p7w5")
     article_id = f"kptrial_{tag}"
     with cl.logging_context(article_id, f"kp_trial_{method}"):
         res = kcand.generate_candidates(text, run_dir, article_id, source_level, lv, 1, [], **kw)
     elapsed = round(time.time() - t0, 1)
     out = {"tag": tag, "article": article, "level": lv, "method": method, "rep": rep, "text_sha256": text_sha(text), "elapsed_sec": elapsed,
            "ok": res.get("ok"), "status": res.get("status"),
-           "p7_prompt_sha256": P7_SHA, "w3_prompt_sha256": W3_SHA, "ft_prompt2_sha256": ft.PROMPT_2_SHA256}
-    if method == "p7w3":
+           "p7_prompt_sha256": P7_SHA, "w3_prompt_sha256": W3_SHA, "w5_prompt_sha256": W5_SHA, "ft_prompt2_sha256": ft.PROMPT_2_SHA256}
+    if method in ("p7w3", "p7w5"):
         out["state"] = {"p7_calls": state.p7_calls, "p7_returned": state.p7_returned, "p7_model": state.p7_model,
                         "p7_dropped": state.p7_dropped, "p7_reason": state.p7_reason, "p7_raw": state.p7_raw,
                         "w3_calls": state.w3_calls, "w3_returned": state.w3_returned, "w3_model": state.w3_model,
-                        "w3_over_request": state.w3_over_request, "w3_raw": state.w3_raw, "messages": state.messages}
+                        "w3_over_request": state.w3_over_request, "w3_raw": state.w3_raw, "messages": state.messages,
+                        "p7_reused_from": getattr(state, "p7_reused_from", None)}
     if res.get("ok"):
         out["doc"] = res["doc"]
     else:
@@ -419,10 +487,10 @@ def cmd_run(args) -> int:
     for spec in args.levels.split(","):
         article, lv = spec.split(":")
         for method in args.methods.split(","):
-            reps = args.repeats if method == "p7w3" else args.current_repeats
+            reps = args.repeats if method in ("p7w3", "p7w5") else args.current_repeats
             for rep in range(1, reps + 1):
                 tag = f"{article}__{lv}__{method}__r{rep}"
-                if os.path.exists(os.path.join(OUT, "runs", tag, "trial_result.json")):
+                if os.path.exists(os.path.join(run_root(method), tag, "trial_result.json")):
                     print("skip(既に結果あり。再実行しない):", tag)
                     continue
                 jobs.append((article, lv, method, rep, tag))
@@ -433,11 +501,11 @@ def cmd_run(args) -> int:
     while pending or running:
         while pending and len(running) < args.parallel:
             article, lv, method, rep, tag = pending.pop(0)
-            logp = os.path.join(OUT, "runs", f"{tag}.console.txt")
+            logp = os.path.join(run_root(method), f"{tag}.console.txt")
             os.makedirs(os.path.dirname(logp), exist_ok=True)
             fh = open(logp, "w", encoding="utf-8")
             p = subprocess.Popen([sys.executable, os.path.abspath(__file__), "run-one", "--article", article, "--level", lv, "--method", method,
-                                  "--rep", str(rep)], cwd=ROOT, stdout=fh, stderr=subprocess.STDOUT, env=dict(os.environ, PYTHONUTF8="1"))
+                                  "--rep", str(rep)] + (["--reuse-p7", args.reuse_p7] if getattr(args, "reuse_p7", None) else []), cwd=ROOT, stdout=fh, stderr=subprocess.STDOUT, env=dict(os.environ, PYTHONUTF8="1"))
             running.append((p, tag, fh))
         time.sleep(2)
         for item in list(running):
@@ -762,6 +830,61 @@ def cmd_report(args) -> int:
     return 0
 
 
+def cmd_judge2(args) -> int:
+    """Trial-02のjudge(単語のみ新規。フレーズは前回judgeを再利用)。level単位で前回W3 r1の単語 + 今回W5の単語を匿名化・シャッフルして1 call。
+    同時に選ばれたフレーズは『参考(評価対象外・overlap判断用)』として本文の後ろに示す。"""
+    import er005_cost_logger as cl
+    prev = json.load(open(os.path.join(OUT, "trial_runs_01.json"), encoding="utf-8"))["runs"]
+    usage_path = os.path.join(OUT2, "judge", "usage_log.jsonl")
+    os.makedirs(os.path.dirname(usage_path), exist_ok=True)
+    cl.install(usage_path)
+    from dotenv import load_dotenv
+    load_dotenv()
+    from openai import OpenAI
+    client = OpenAI()
+    for article in ARTICLES:
+        for lv in LEVELS:
+            key = f"{article}:{lv}"
+            outp = os.path.join(OUT2, "judge", f"judge_{article}__{lv}.json")
+            if os.path.exists(outp):
+                print("skip(既存)", key)
+                continue
+            r2 = json.load(open(os.path.join(OUT2, "runs", f"{article}__{lv}__p7w5__r1", "trial_result.json"), encoding="utf-8"))
+            w5 = cand_rows(r2["doc"])
+            w3 = prev[f"{article}__{lv}__p7w3__r1"]["candidates"]
+            pool: dict = {}
+            for src, rows in (("p7w3_r1", w3), ("p7w5_r1", w5)):
+                for r in rows:
+                    if r["kind"] != "word":
+                        continue
+                    e = pool.setdefault(r["used_form"].lower(), {"used_form": r["used_form"], "gloss": r.get("japanese_gloss"),
+                                                                 "sentence": r.get("source_sentence"), "sources": set()})
+                    e["sources"].add(src)
+            phrases = [r["used_form"] for r in w5 if r["kind"] == "phrase"]
+            items = list(pool.values())
+            rnd = random.Random(f"{MGMT_ID2}:{key}")
+            rnd.shuffle(items)
+            ids, lines = {}, []
+            for n, it in enumerate(items, start=1):
+                cid = f"W{n:02d}"
+                ids[cid] = it
+                lines.append(f"- {cid}: {it['used_form']} / 意味: {it['gloss']} / 出典文: {it['sentence']}")
+            text = load_text(article, lv)
+            msg = (JUDGE_INSTRUCTION.format(level_desc=_level_desc(lv)) + "\n【記事本文】\n" + text + "\n\n【候補一覧(" + str(len(items)) + "件。単語のみ)】\n"
+                   + "\n".join(lines) + "\n\n【参考: 同時に選ばれたフレーズ(評価対象外。overlap_withの判断にのみ使う)】\n" + "\n".join(f"- {p}" for p in phrases))
+            with cl.logging_context(f"kpjudge02_{article}_{lv}", "kp_judge"):
+                resp = client.responses.create(model=JUDGE_MODEL, reasoning={"effort": "low"},
+                                               text={"format": {"type": "json_schema", **JUDGE_SCHEMA}}, input=[{"role": "user", "content": msg}])
+            judged = json.loads(resp.output_text)["items"]
+            rec = {"key": key, "model_requested": JUDGE_MODEL, "model_id": resp.model, "response_id": resp.id, "n_candidates": len(items),
+                   "message_sha256": hashlib.sha256(msg.encode("utf-8")).hexdigest(), "message": msg,
+                   "candidates": {cid: {"used_form": it["used_form"], "sources": sorted(it["sources"])} for cid, it in ids.items()}, "judged": judged}
+            with open(outp, "w", encoding="utf-8") as f:
+                json.dump(rec, f, ensure_ascii=False, indent=1)
+            print("judged", key, len(items), len(judged), flush=True)
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -772,17 +895,20 @@ def main(argv=None) -> int:
     r1.add_argument("--level", required=True)
     r1.add_argument("--method", required=True)
     r1.add_argument("--rep", type=int, default=1)
+    r1.add_argument("--reuse-p7", default=None, help="p7w5用: Trial-01のrunsディレクトリ(各levelのp7w3 r1のP7返答を再利用)")
     r = sub.add_parser("run")
     r.add_argument("--levels", required=True)
     r.add_argument("--methods", default="p7w3")
     r.add_argument("--repeats", type=int, default=2)
     r.add_argument("--current-repeats", type=int, default=1)
     r.add_argument("--parallel", type=int, default=4)
+    r.add_argument("--reuse-p7", default=None, help="p7w5用: Trial-01のrunsディレクトリ")
     r.add_argument("--out", required=True)
     c = sub.add_parser("collect")
     c.add_argument("--out", required=True)
     c.add_argument("--gate-out", required=True)
     sub.add_parser("judge")
+    sub.add_parser("judge2")
     sub.add_parser("report")
     a = ap.parse_args(argv)
     if a.cmd == "report":
@@ -791,6 +917,8 @@ def main(argv=None) -> int:
         return cmd_collect(a)
     if a.cmd == "judge":
         return cmd_judge(a)
+    if a.cmd == "judge2":
+        return cmd_judge2(a)
     if a.cmd == "baseline":
         return cmd_baseline(a)
     if a.cmd == "run-one":
