@@ -446,3 +446,6 @@
 ### 2026-10-26 PM-SSOT-SYNC-04 追記(OPEN-531男性7Voice Trial・OPEN-532 Chunk中間。既存行は書き換えず追記)
 - OPEN-531 Y Voice 1の変更採用(分類D=真に新しい判断、UDR-YFB-2の後続): 決めること=Voice 1(現行Algieba)を男性7Voice比較Trial結果に基づき変更するか。選択肢=Puck採用/Orus採用/Algieba維持。Fable推奨=**Puck**(主要指標『文境界に対応しない≥1.0秒の停止』0.00回/sample [Algieba 0.36]・悪いtake率0%[Algieba 31%]・fresh take OK率24/24)。Status=VALIDATED(限定)_USER_DECISION_REQUIRED、声質・V2/V3との聞き分けは未評価=ユーザー試聴で確認。試聴=https://shimomura055.github.io/eigo-radio/user_test/family_y_voice1_male7_trial_01/index.html 。採用提案時はOpus条件C判定を別途実施。
 - OPEN-532 Chunk Std拡張: ユーザー承認済み。現状維持(Z完了後にFableが判定報告)。判断事項の追加なし。
+
+### 2026-10-26 PM-SSOT-SYNC-05 追記(OPEN-532 Chunk Std拡張 PRODUCTION_WIRED。既存行は書き換えず追記)
+- OPEN-532 Chunk Std拡張: PRODUCTION_WIRED報告済み(Fable判定2026-10-26、X/Y/Z Std/Adv 6行)。ユーザー判断不要(承認済み範囲=承認原文`docs/pm/delegation_log/2026-10-26_CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01_USER.md`)。Y構造的不発火(現行本文契約)の分割方式変更はOPEN-527(UDR-YFB-1)でユーザー判断待ちのまま。残件(Z Std 2作品目実run等)は任意・非blocking。

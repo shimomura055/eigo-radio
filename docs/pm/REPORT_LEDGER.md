@@ -586,3 +586,6 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-26 | FAMILY-Y-VOICE1-MALE7-TRIAL-01 委任_01 | Y Voice 1男性7Voice比較Trial(VALIDATED限定_UDR、Fable推奨Puck、実費276.13円)。報告予定(本転記後にFableが報告、未報告)。報告=docs/pm/RESULT_PACKET_YM7.md
 - 2026-10-26 | CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01 委任_02 | Chunk Std配線の中間(X Std/Y EVIDENCE_COLLECTED、Y構造的不発火、Z未)。中間・報告予定(Z完了後にFableが判定報告、未報告)。報告=docs/pm/RESULT_PACKET_CHKW2.md
 - 2026-10-26 | KP-CANDIDATE-PHRASE7-WORD3-TRIAL-01 委任_01 | KP候補要求(フレーズ7/単語3)Trial。受領・委任_01開始(進行中、結果未)。
+- 2026-10-26 | CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01 委任_03 / Closeout | Chunk分割 X/Y/Z Std/Adv=PRODUCTION_WIRED(Fable判定6行表、Y現行契約で構造的不発火=OPEN-527、実費合計11.15円)。Fable報告済み(2026-10-26)。SSOT反映=PM-SSOT-SYNC-05。
+- 2026-10-26 | TTS-RETRY-FALLBACK-REWRITE-AUDIT-XYZ-01 | TTS retry/fallback/Local Rewrite監査。受領・委任_01X/01Y/01Z開始(JPY0、進行中、結果未)。
+- 2026-10-26 | PM-SSOT-SYNC-05 | 本件(CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01 Closeout転記、CURRENT_SPEC Chunk節是正含む、API 0・JPY0)。
