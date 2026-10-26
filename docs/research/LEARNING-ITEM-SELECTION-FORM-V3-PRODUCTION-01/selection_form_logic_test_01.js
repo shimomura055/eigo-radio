@@ -163,8 +163,8 @@ t('v2 data: DEV Trial / replay glosses are provisional (not formal)', () => {
   ['data/monkeys_paw__b1b.json', 'data/monkeys_paw__b1b__prod.json'].forEach(f => rd(f).phrases.concat(rd(f).words).forEach(it => assert.strictEqual(it.ja_gloss_status, 'provisional', f + it.term)));
   assert.ok(rd('data/melos__a2__prod.json').phrases.every(it => it.ja_gloss_status === 'official'));
 });
-t('v2 data: call1 has no AI reason (explicit), replay placeholder suppressed, call2 reasons present', () => {
-  const m = rd('data/ai_island_temple__a2__prod.json');
+t('v2 data (legacy 3+5 doc): call1 has no AI reason (explicit), replay placeholder suppressed, call2 reasons present', () => {
+  const m = rd('data/legacy/ai_island_temple__a2__prod.json');
   m.phrases.filter(x => x.origin === 'call1').forEach(x => { assert.strictEqual(x.reason_ja, ''); assert.strictEqual(x.reason_source, 'none_call1_has_no_reason'); });
   m.phrases.filter(x => x.origin === 'call2').forEach(x => { assert.ok(x.reason_ja.length > 0); assert.strictEqual(x.reason_source, 'ai_call2'); });
   const r = rd('data/monkeys_paw__b1b__prod.json'); const rr = r.phrases.concat(r.words);
@@ -193,12 +193,14 @@ t('send text: contains EN, JA gloss+status, category, grammar full body, comment
 });
 t('send text: official gloss and reason; provisional/missing marked; reasons only in AI section', () => {
   const d = mpp; const st = FL.newState();
-  const call2 = d.phrases.find(x => x.origin === 'call2'), call1 = d.phrases.find(x => x.origin === 'call1');
+  const all = d.phrases.concat(d.words), call2 = all.find(x => x.origin === 'call2'), call1 = all.find(x => x.origin === 'call1');
   pick(d, st, [[call1.term, 1], [call2.term, 2]]);
   const txt = FL.buildText(d, st); const iAi = txt.indexOf('【AI選定理由'); const conf = txt.slice(0, iAi), ai = txt.slice(iAi);
   assert.ok(conf.includes('日本語訳: ' + call1.ja_gloss + '【正式訳】') && conf.includes('日本語訳: ' + call2.ja_gloss + '【正式訳】'));
   assert.ok(!conf.includes(call2.reason_ja), 'reason must not be in the confirmed section');
-  assert.ok(ai.includes(call2.term + '(' + call2.candidate_id + '): ' + call2.reason_ja)); assert.ok(ai.includes(call1.term + '(' + call1.candidate_id + '): (AI理由なし'));   // 委任_03: 行末にcandidate_id
+  assert.ok(ai.includes(call2.term + '(' + call2.candidate_id + '): ' + call2.reason_ja)); assert.ok(ai.includes(call1.term + '(' + call1.candidate_id + '): ' + call1.reason_ja));   // 委任_03: 行末にcandidate_id。委任_04: 7+5ではcall1にも理由がある
+  const lg = rd('data/legacy/melos__a2__prod.json'), lc1 = lg.phrases.find(x => x.origin === 'call1'), st4 = FL.newState(); pick(lg, st4, [[lc1.term, 1]]);
+  assert.ok(FL.buildText(lg, st4).includes(lc1.term + '(' + lc1.candidate_id + '): (AI理由なし'));   // 旧3+5 docのcall1は理由なし
   const mp1 = rd('data/monkeys_paw__b1b.json'); const st2 = FL.newState(); pick(mp1, st2, [['burial', 1]]);
   const t2 = FL.buildText(mp1, st2); assert.ok(t2.includes('【仮訳・未確定】') && t2.includes('黙って確定・変更しないこと'));
   const miss = { slug: 'x', level: 'a2', name: 'X', phrases: [{ id: 'a', term: 'foo bar' }], words: [], grammar: [] }; const st3 = FL.newState(); pick(miss, st3, [['foo bar', 1]]);
@@ -250,13 +252,13 @@ t('url: when too long never silently truncates (url null => copy guidance); text
 t('copy text includes JSON with all candidates and is parseable', () => {
   const d = mpp; const st = FL.newState(); pick(d, st, [[d.phrases[0].term, 1]]);
   const c = FL.buildCopyText(d, st, 'T'); const j = JSON.parse(c.slice(c.indexOf('```json\n') + 8, c.lastIndexOf('\n```')));
-  assert.strictEqual(j.candidates_all.length, 7); assert.strictEqual(j.selection.key_phrase[0].ja_gloss, d.phrases[0].ja_gloss);
+  assert.strictEqual(j.candidates_all.length, d.phrases.length + d.words.length); assert.strictEqual(j.selection.key_phrase[0].ja_gloss, d.phrases[0].ja_gloss);
 });
 
 // ---- 委任_03: candidate_id / kind / candidates_sha256 (payload v2 minor 1) ----
 const dataFiles03 = idx.articles.filter(a => a.data && !a.data.includes('ui_check')).map(a => a.data);
 t('v2.1: candidate_id unique + present in every real data file; kind valid; id==candidate_id', () => {
-  assert.strictEqual(dataFiles03.length, 7);
+  assert.strictEqual(dataFiles03.length, 10);
   dataFiles03.forEach(f => {
     const d = rd(f), all = d.phrases.concat(d.words), ids = all.map(x => x.candidate_id);
     assert.ok(ids.length > 0 && ids.every(x => typeof x === 'string' && x), f);
@@ -304,3 +306,44 @@ t('v2.1: URL length with 3 selected (informational) never exceeds 6000 or is nul
   });
 });
 console.log('ALL PASS', n);
+
+// ---- 委任_04: P7/W5' 7+5 配線追従(cap 12・kind別cap 7/5・reason_ja逐語) ----
+const KP75_FILES = { 'ai_island_temple__a2__prod': 'er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_kp75_ev_01/a2', 'ai_island_temple__b1b__prod': 'er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_kp75_ev_01/b1b', 'uk_train_speaker_playback__a2__prod': 'er019_output/family_x_audio_production_wiring_01/uk_train_speaker_playback__run_kp75_ev_01/a2', 'uk_train_speaker_playback__b1b__prod': 'er019_output/family_x_audio_production_wiring_01/uk_train_speaker_playback__run_kp75_ev_01/b1b', 'redelivery_fee__a2__prod': 'er121_output/family_y_production_01/redelivery_fee/run_kp75_ev_01/key_phrases/a2', 'redelivery_fee__b1b__prod': 'er121_output/family_y_production_01/redelivery_fee/run_kp75_ev_01/key_phrases/b1b', 'melos__a2__prod': 'er026_output/family_z_production_e2e_01/melos/run_kp75_ev_01/key_phrases/a2', 'melos__b1b__prod': 'er026_output/family_z_production_e2e_01/melos/run_kp75_ev_01/key_phrases/b1b' };
+const kp75Root = require('path').resolve(__dirname, '..', '..', '..');
+const srcDoc = (rel) => { const f = require('path').join(kp75Root, rel, (rel.includes('/key_phrases/') ? '' : 'key_phrases/') + 'kp_candidates.json'); return JSON.parse(require('fs').readFileSync(f, 'utf8')); };
+t('7+5: 8 evidence data files exist, cap 12 and cap_by_kind {phrase:7, word:5}, shortfall_detail.cap is 12 (doc value)', () => {
+  Object.keys(KP75_FILES).forEach(k => {
+    const d = rd('data/' + k + '.json'); const src = srcDoc(KP75_FILES[k]);
+    assert.strictEqual(d.cap, 12, k); assert.deepStrictEqual(d.cap_by_kind, { phrase: 7, word: 5 }, k);
+    if (d.shortfall_detail) { assert.strictEqual(d.shortfall_detail.cap, 12, k); assert.deepStrictEqual(d.shortfall_detail.cap_by_kind, { phrase: 7, word: 5 }, k); assert.strictEqual(d.shortfall_detail.cap, src.shortfall_detail.cap); }
+    assert.ok(d.phrases.length <= 7 && d.words.length <= 5, k); assert.ok(d.phrases.length + d.words.length <= 12, k);
+    assert.strictEqual((d.overflow || []).length, 0, k);
+    assert.ok(/source_kp_candidates_path/.test(JSON.stringify(Object.keys(d))) && d.source_kp_candidates_path.includes('run_kp75_ev_01'), k);
+    if (d.shortfall) assert.ok(d.shortfall_note_ja.includes('上限12件') && d.shortfall_note_ja.includes('フレーズ最大7') && d.shortfall_note_ja.includes('単語最大5'), d.shortfall_note_ja);
+  });
+});
+t('7+5: kind taken verbatim from candidate doc (candidate_doc), gloss official, reason_ja verbatim for every candidate (call1 included)', () => {
+  let n = 0;
+  Object.keys(KP75_FILES).forEach(k => {
+    const d = rd('data/' + k + '.json'); const src = srcDoc(KP75_FILES[k]); const by = {}; src.candidates.forEach(c => { by[c.candidate_id] = c; });
+    d.phrases.concat(d.words).forEach(e => { const c = by[e.candidate_id]; assert.ok(c, e.term);
+      assert.strictEqual(e.kind, c.kind); assert.strictEqual(e.kind_source, 'candidate_doc'); assert.strictEqual(e.ja_gloss, c.japanese_gloss); assert.strictEqual(e.ja_gloss_status, 'official');
+      assert.ok(c.reason_ja && c.reason_ja.length > 0); assert.strictEqual(e.reason_ja, c.reason_ja); assert.ok(e.reason_source.startsWith('ai_'), e.reason_source); n++; });
+    assert.strictEqual(d.phrases.length + d.words.length, src.candidates.length, k);
+    assert.strictEqual(d.candidates_sha256, src.candidates_sha256);
+  });
+  assert.ok(n >= 70, String(n));
+});
+t('7+5: legacy 3+5 versions are kept under data/legacy and are not in the index; index has the 8 evidence slots', () => {
+  const fs2 = require('fs'), pa = require('path'); const base = pa.join(kp75Root, 'user_test', 'selection_form_v3', 'data');
+  ['ai_island_temple__a2__prod', 'ai_island_temple__b1b__prod', 'redelivery_fee__a2__prod', 'redelivery_fee__b1b__prod', 'melos__a2__prod'].forEach(k => { assert.ok(fs2.existsSync(pa.join(base, 'legacy', k + '.json')), k); assert.strictEqual(rd('data/legacy/' + k + '.json').shortfall_detail.cap, 8, k); });
+  const datas = idx.articles.map(a => a.data); Object.keys(KP75_FILES).forEach(k => assert.ok(datas.includes('data/' + k + '.json'), k)); assert.ok(!datas.some(x => x && x.includes('legacy')));
+  assert.strictEqual(idx.articles.filter(a => !a.slug.startsWith('ui_check') && !a.slug.endsWith('_prod')).length, 9);
+});
+t('7+5: a full 12-candidate article (7 phrases + 5 words) validates and selection limits (3/5/12) are unchanged', () => {
+  const d = rd('data/uk_train_speaker_playback__b1b__prod.json'); assert.strictEqual(d.phrases.length + d.words.length, 12); assert.deepStrictEqual(FL.validateArticle(d), []);
+  const st = FL.newState(), tl = FL.terms(d); assert.strictEqual(tl.length, 12);
+  for (let i = 0; i < 3; i++) assert.ok(FL.setChoice(st, tl, tl[i], 1, true)); assert.ok(!FL.setChoice(st, tl, tl[3], 1, true));
+  for (let i = 3; i < 5; i++) assert.ok(FL.setChoice(st, tl, tl[i], 2, true)); assert.ok(!FL.setChoice(st, tl, tl[5], 2, true));
+  for (let i = 5; i < 12; i++) assert.ok(FL.setChoice(st, tl, tl[i], 3, true));
+});

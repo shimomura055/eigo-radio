@@ -69,7 +69,7 @@ try {
   const cp = await ev(`document.querySelector('#fallback').value`);
   const j = JSON.parse(cp.slice(cp.indexOf('```json\n') + 8, cp.lastIndexOf('\n```')));
   rec('copy JSON: schema_version 2 / minor 1, article sha fields', j.schema_version === 2 && j.schema_minor === 1 && j.article.candidates_sha256 === dat.candidates_sha256 && j.article.candidates_sha256_source === 'candidate_doc_field' && j.article.source_kp_candidates_path === dat.source_kp_candidates_path);
-  rec('copy JSON: selected items have candidate_id/kind equal to data; candidates_all has all 7 ids', sel.every(([t, c]) => { const it = j.selection[['key_phrase', 'extra_explanation', 'meaning_display'][c - 1]].find(x => x.term === t); return it && it.candidate_id === byTerm[t].candidate_id && it.kind === byTerm[t].kind; }) && j.candidates_all.length === 7 && j.candidates_all.every((x, i) => x.candidate_id === dat.phrases.concat(dat.words)[i].candidate_id) && j.ai_reference.items.every(x => x.candidate_id));
+  rec('copy JSON: selected items have candidate_id/kind equal to data; candidates_all has all 8 ids', sel.every(([t, c]) => { const it = j.selection[['key_phrase', 'extra_explanation', 'meaning_display'][c - 1]].find(x => x.term === t); return it && it.candidate_id === byTerm[t].candidate_id && it.kind === byTerm[t].kind; }) && j.candidates_all.length === 8 && j.candidates_all.every((x, i) => x.candidate_id === dat.phrases.concat(dat.words)[i].candidate_id) && j.ai_reference.items.every(x => x.candidate_id));
   // 猿の手 replay由来: sha null を明示
   await switchTo('猿の手｜Advanced');
   await ev(`document.querySelector('#copy').click()`); await sleep(600);

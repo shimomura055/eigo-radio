@@ -3,15 +3,15 @@
  "slug": "redelivery_fee_prod",
  "level": "a2",
  "level_label": "Standard",
- "name": "再配達手数料｜Production候補・補完evidence",
+ "name": "再配達手数料｜Production候補・7+5 evidence",
  "family": "Y",
- "candidates_sha256": "cd8c2c18b6ab8b9c9082c7e4535147778e4bf9b59d14191b3d1a4d86db7f3f69",
+ "candidates_sha256": "d8bac743b7920c1fdfe14652133eb2fa2991408a8a0650b9a53afd78350c0e4f",
  "candidates_sha256_source": "candidate_doc_field",
- "source_kp_candidates_path": "er121_output/family_y_production_01/redelivery_fee/run_kpbf_ev_01/key_phrases/a2/kp_candidates.json",
+ "source_kp_candidates_path": "er121_output/family_y_production_01/redelivery_fee/run_kp75_ev_01/key_phrases/a2/kp_candidates.json",
  "source": {
   "kind": "PRODUCTION_FORMAL_PATH",
   "trial": "KP-GATE-DROP-BACKFILL-PRODUCTION-01",
-  "run": "redelivery_fee/run_kpbf_ev_01",
+  "run": "redelivery_fee/run_kp75_ev_01",
   "text_sha256": "c415df6b554bcaa07cc058b30312e6cff62f9845563dc0aba861b99771aef007",
   "model_id": {
    "kp": {
@@ -20,36 +20,18 @@
    }
   },
   "prompt_sha256": {
-   "call1": "a12896f485604f32efd52cb159d2615733c0eca262725af78db0b4f1c9a3dc9a",
-   "call2": "e1d5349ce2fda897b74f0350817ced0d7385842c170d066721eb3917f012f5ec"
+   "call1": "2e93019300f960e5ff3070dd83b12a81566b8ceb87b44b335d554a7a711eb291",
+   "call2": "12d3370876d189f016cc49e26b2abcbe2618f028b380fe7fcff479554fa693b8"
   },
-  "note_ja": "Production正式経路(KP stage・補完機能ON)で生成した候補です。選定フォームのテスト表示で、Production未連携。"
+  "note_ja": "Production正式経路(P7/W5'・候補上限12=フレーズ最大7+単語最大5・補完機能ON)で生成した候補です。選定フォームのテスト表示で、Production未連携。"
  },
+ "cap": 12,
+ "cap_by_kind": {
+  "phrase": 7,
+  "word": 5
+ },
+ "cap_source": "candidate_doc",
  "phrases": [
-  {
-   "id": "p_fab64079d6",
-   "candidate_id": "p_fab64079d6",
-   "kind_source": "candidate_doc",
-   "term": "can't be helped",
-   "meaning_ja": "仕方がない",
-   "excerpt": "I guess it can't be helped",
-   "ja_gloss": "仕方がない",
-   "ja_gloss_status": "official",
-   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "none_call1_has_no_reason",
-   "kind": "phrase",
-   "origin": "call1",
-   "ai_rank": 1,
-   "auto_eligible": true,
-   "human_selectable": true,
-   "reason_ja": "",
-   "flags": {
-    "qa_fail": false,
-    "gloss_hr_pending": false,
-    "similar_to_ng": false,
-    "redundant_with": []
-   }
-  },
   {
    "id": "p_dc30d5f93e",
    "candidate_id": "p_dc30d5f93e",
@@ -60,13 +42,87 @@
    "ja_gloss": "結局受け取ることになる",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "none_call1_has_no_reason",
+   "reason_source": "ai_call1",
+   "kind": "phrase",
+   "origin": "call1",
+   "ai_rank": 1,
+   "auto_eligible": true,
+   "human_selectable": true,
+   "reason_ja": "「結局～することになる」を表す句動詞の用法を学べる。",
+   "flags": {
+    "qa_fail": false,
+    "gloss_hr_pending": false,
+    "similar_to_ng": false,
+    "redundant_with": []
+   }
+  },
+  {
+   "id": "p_3305371a5c",
+   "candidate_id": "p_3305371a5c",
+   "kind_source": "candidate_doc",
+   "term": "hard on someone",
+   "meaning_ja": "人にとって負担になる",
+   "excerpt": "They are hard on us, too",
+   "ja_gloss": "人にとって負担になる",
+   "ja_gloss_status": "official",
+   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
+   "reason_source": "ai_call1",
    "kind": "phrase",
    "origin": "call1",
    "ai_rank": 2,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "",
+   "reason_ja": "人にとって負担が大きいことを表す自然な言い回し。",
+   "flags": {
+    "qa_fail": false,
+    "gloss_hr_pending": false,
+    "similar_to_ng": false,
+    "redundant_with": []
+   },
+   "selection_phrase": "hard on us"
+  },
+  {
+   "id": "p_36eda7a782",
+   "candidate_id": "p_36eda7a782",
+   "kind_source": "candidate_doc",
+   "term": "when it suits someone",
+   "meaning_ja": "人の都合がいいときに",
+   "excerpt": "It is handy to pick them up when it suits me",
+   "ja_gloss": "人の都合がいいときに",
+   "ja_gloss_status": "official",
+   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
+   "reason_source": "ai_call1",
+   "kind": "phrase",
+   "origin": "call1",
+   "ai_rank": 3,
+   "auto_eligible": true,
+   "human_selectable": true,
+   "reason_ja": "「自分の都合に合うときに」という実用的な表現。",
+   "flags": {
+    "qa_fail": false,
+    "gloss_hr_pending": false,
+    "similar_to_ng": false,
+    "redundant_with": []
+   },
+   "selection_phrase": "when it suits me"
+  },
+  {
+   "id": "p_9f42c71603",
+   "candidate_id": "p_9f42c71603",
+   "kind_source": "candidate_doc",
+   "term": "make an effort",
+   "meaning_ja": "努力する",
+   "excerpt": "For people who can choose how to get packages, a redelivery fee can be a sign that encourages them to make an effort",
+   "ja_gloss": "努力する",
+   "ja_gloss_status": "official",
+   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
+   "reason_source": "ai_call1",
+   "kind": "phrase",
+   "origin": "call1",
+   "ai_rank": 4,
+   "auto_eligible": true,
+   "human_selectable": true,
+   "reason_ja": "努力することを表す頻出コロケーション。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
@@ -84,13 +140,13 @@
    "ja_gloss": "時間を取る",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "none_call1_has_no_reason",
+   "reason_source": "ai_call1",
    "kind": "phrase",
    "origin": "call1",
-   "ai_rank": 3,
+   "ai_rank": 5,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "",
+   "reason_ja": "時間や場所を「取る・占める」という句動詞。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
@@ -98,97 +154,75 @@
     "redundant_with": []
    },
    "selection_phrase": "takes up"
-  },
+  }
+ ],
+ "words": [
   {
-   "id": "p_36eda7a782",
-   "candidate_id": "p_36eda7a782",
+   "id": "p_00cceb7181",
+   "candidate_id": "p_00cceb7181",
    "kind_source": "candidate_doc",
-   "term": "when it suits someone",
-   "meaning_ja": "誰かの都合がいいときに",
-   "excerpt": "It is handy to pick them up when it suits me",
-   "ja_gloss": "誰かの都合がいいときに",
+   "term": "errand",
+   "meaning_ja": "用事を済ませる外出",
+   "excerpt": "I went out to do an errand",
+   "ja_gloss": "用事を済ませる外出",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
    "reason_source": "ai_call2",
-   "kind": "phrase",
+   "kind": "word",
    "origin": "call2",
-   "ai_rank": 4,
+   "ai_rank": 6,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "「自分の都合に合うとき」を表す自然な定型表現。",
+   "reason_ja": "用事・使い走りを表し、日常の幅広い文脈で使える。",
+   "flags": {
+    "qa_fail": false,
+    "gloss_hr_pending": false,
+    "similar_to_ng": false,
+    "redundant_with": []
+   }
+  },
+  {
+   "id": "p_fe25452dd8",
+   "candidate_id": "p_fe25452dd8",
+   "kind_source": "candidate_doc",
+   "term": "encourage",
+   "meaning_ja": "促す",
+   "excerpt": "For people who can choose how to get packages, a redelivery fee can be a sign that encourages them to make an effort",
+   "ja_gloss": "促す",
+   "ja_gloss_status": "official",
+   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
+   "reason_source": "ai_call2",
+   "kind": "word",
+   "origin": "call2",
+   "ai_rank": 7,
+   "auto_eligible": true,
+   "human_selectable": true,
+   "reason_ja": "人や行動を促す意味の動詞で、汎用性が高い。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
     "similar_to_ng": false,
     "redundant_with": []
    },
-   "selection_phrase": "when it suits me"
+   "selection_phrase": "encourages"
   },
   {
-   "id": "p_60dc040483",
-   "candidate_id": "p_60dc040483",
+   "id": "p_5ea9c348e5",
+   "candidate_id": "p_5ea9c348e5",
    "kind_source": "candidate_doc",
-   "term": "take the time",
-   "meaning_ja": "時間をかける",
-   "excerpt": "Still, I take the time to think about how to get my packages",
-   "ja_gloss": "時間をかける",
-   "ja_gloss_status": "official",
-   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "ai_call2",
-   "kind": "phrase",
-   "origin": "call2",
-   "ai_rank": 5,
-   "auto_eligible": true,
-   "human_selectable": true,
-   "reason_ja": "時間をかけて何かをする際に使える自然な連語。",
-   "flags": {
-    "qa_fail": false,
-    "gloss_hr_pending": false,
-    "similar_to_ng": false,
-    "redundant_with": []
-   }
-  },
-  {
-   "id": "p_9f42c71603",
-   "candidate_id": "p_9f42c71603",
-   "kind_source": "candidate_doc",
-   "term": "make an effort",
-   "meaning_ja": "努力する",
-   "excerpt": "For people who can choose how to get packages, a redelivery fee can be a sign that encourages them to make an effort",
-   "ja_gloss": "努力する",
-   "ja_gloss_status": "official",
-   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "ai_call2",
-   "kind": "phrase",
-   "origin": "call2",
-   "ai_rank": 6,
-   "auto_eligible": true,
-   "human_selectable": true,
-   "reason_ja": "努力することを表す、幅広く使える熟語。",
-   "flags": {
-    "qa_fail": false,
-    "gloss_hr_pending": false,
-    "similar_to_ng": false,
-    "redundant_with": []
-   }
-  },
-  {
-   "id": "p_2befc7ff20",
-   "candidate_id": "p_2befc7ff20",
-   "kind_source": "candidate_doc",
-   "term": "have a hard time",
-   "meaning_ja": "苦労する",
-   "excerpt": "Delivery workers must have a hard time because there are not enough of them",
-   "ja_gloss": "苦労する",
+   "term": "charge",
+   "meaning_ja": "料金を取る",
+   "excerpt": "How should we decide whether to charge this fee or cut repeat deliveries another way",
+   "ja_gloss": "料金を取る",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
    "reason_source": "ai_backfill",
-   "kind": "phrase",
+   "kind": "word",
    "origin": "backfill",
-   "ai_rank": 7,
+   "ai_rank": 8,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "「苦労する」を表す、会話でもよく使われる定型表現です。",
+   "reason_ja": "料金を請求する意味のほか、多義的で汎用性が高い語です。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
@@ -199,7 +233,6 @@
    "flag_note_ja": "補完候補(Gate除外の代替)"
   }
  ],
- "words": [],
  "backfill": {
   "enabled": true,
   "triggered": true,
@@ -209,22 +242,27 @@
   "N_total": 1,
   "added": [
    {
-    "candidate_id": "p_2befc7ff20",
-    "kind": "phrase",
-    "used_form": "have a hard time",
-    "ai_rank": 7
+    "candidate_id": "p_5ea9c348e5",
+    "kind": "word",
+    "used_form": "charge",
+    "ai_rank": 8
    }
   ],
-  "dropped_by_stage": {
-   "cmu": 1,
-   "validate": 1
-  }
+  "dropped_by_stage": {}
  },
  "shortfall": true,
  "shortfall_detail": {
-  "n_candidates": 7,
-  "cap": 8,
-  "missing": 1,
+  "n_candidates": 8,
+  "cap": 12,
+  "missing": 4,
+  "cap_by_kind": {
+   "phrase": 7,
+   "word": 5
+  },
+  "missing_by_kind": {
+   "phrase": 2,
+   "word": 2
+  },
   "E_total": 1,
   "backfilled": 1,
   "unfilled_by_kind": {
@@ -232,7 +270,7 @@
    "word": 0
   }
  },
- "shortfall_note_ja": "候補7件/上限8件、Gate除外1件、補完1件を追加",
+ "shortfall_note_ja": "候補8件/上限12件(フレーズ最大7・単語最大5)、Gate除外1件、補完1件を追加",
  "grammar": [],
  "grammar_note_ja": "候補なし・要生成(この記事のPart 2文法解説候補は未生成です。仮データは入れていません)"
 }

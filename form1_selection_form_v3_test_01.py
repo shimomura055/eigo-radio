@@ -46,7 +46,7 @@ class SelectionFormV3Test(unittest.TestCase):
 
     def test_no_placeholder_grammar_in_formal_data(self):
         for fn in os.listdir(os.path.join(FD, "data")):
-            if fn.startswith("ui_check_dummy") or fn == "articles.json":
+            if fn.startswith("ui_check_dummy") or fn == "articles.json" or fn == "legacy":
                 continue
             s = open(os.path.join(FD, "data", fn), encoding="utf-8").read()
             self.assertNotIn("過去完了形", s)
@@ -97,12 +97,21 @@ class SelectionFormV3Test(unittest.TestCase):
 
     def test_form_data_reuses_existing_gloss_and_reason_verbatim(self):
         """各データの日本語訳・AI理由が、元のkp_candidates.json(またはTrial-02 trial_result.json)の値と逐語一致(再生成なし)。"""
-        srcs = {
-            "ai_island_temple__a2__prod.json": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_kpbf_ev_01/a2/key_phrases/kp_candidates.json",
-            "ai_island_temple__b1b__prod.json": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_kpbf_ev_01/b1b/key_phrases/kp_candidates.json",
-            "redelivery_fee__a2__prod.json": "er121_output/family_y_production_01/redelivery_fee/run_kpbf_ev_01/key_phrases/a2/kp_candidates.json",
-            "redelivery_fee__b1b__prod.json": "er121_output/family_y_production_01/redelivery_fee/run_kpbf_ev_01/key_phrases/b1b/kp_candidates.json",
-            "melos__a2__prod.json": "er026_output/family_z_production_e2e_01/melos/run_kpbf_ev_01/key_phrases/a2/kp_candidates.json",
+        K = "er019_output/family_x_audio_production_wiring_01/"
+        srcs = {          # 委任_04: 7+5 (run_kp75_ev_01)。旧3+5版(run_kpbf_ev_01)はdata/legacy/
+            "ai_island_temple__a2__prod.json": K + "ai_island_temple__run_kp75_ev_01/a2/key_phrases/kp_candidates.json",
+            "ai_island_temple__b1b__prod.json": K + "ai_island_temple__run_kp75_ev_01/b1b/key_phrases/kp_candidates.json",
+            "uk_train_speaker_playback__a2__prod.json": K + "uk_train_speaker_playback__run_kp75_ev_01/a2/key_phrases/kp_candidates.json",
+            "uk_train_speaker_playback__b1b__prod.json": K + "uk_train_speaker_playback__run_kp75_ev_01/b1b/key_phrases/kp_candidates.json",
+            "redelivery_fee__a2__prod.json": "er121_output/family_y_production_01/redelivery_fee/run_kp75_ev_01/key_phrases/a2/kp_candidates.json",
+            "redelivery_fee__b1b__prod.json": "er121_output/family_y_production_01/redelivery_fee/run_kp75_ev_01/key_phrases/b1b/kp_candidates.json",
+            "melos__a2__prod.json": "er026_output/family_z_production_e2e_01/melos/run_kp75_ev_01/key_phrases/a2/kp_candidates.json",
+            "melos__b1b__prod.json": "er026_output/family_z_production_e2e_01/melos/run_kp75_ev_01/key_phrases/b1b/kp_candidates.json",
+            "legacy/ai_island_temple__a2__prod.json": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_kpbf_ev_01/a2/key_phrases/kp_candidates.json",
+            "legacy/ai_island_temple__b1b__prod.json": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_kpbf_ev_01/b1b/key_phrases/kp_candidates.json",
+            "legacy/redelivery_fee__a2__prod.json": "er121_output/family_y_production_01/redelivery_fee/run_kpbf_ev_01/key_phrases/a2/kp_candidates.json",
+            "legacy/redelivery_fee__b1b__prod.json": "er121_output/family_y_production_01/redelivery_fee/run_kpbf_ev_01/key_phrases/b1b/kp_candidates.json",
+            "legacy/melos__a2__prod.json": "er026_output/family_z_production_e2e_01/melos/run_kpbf_ev_01/key_phrases/a2/kp_candidates.json",
             "monkeys_paw__b1b__prod.json": "docs/research/KP-GATE-DROP-BACKFILL-PRODUCTION-01/replay_results/R5a_Z_monkeys_paw_b1b_frozen_only/kp_candidates_doc.json",
         }
         checked = 0
@@ -111,7 +120,7 @@ class SelectionFormV3Test(unittest.TestCase):
             if not os.path.exists(path):
                 continue
             src = _j(path)
-            d = _j(os.path.join(FD, "data", fn))
+            d = _j(os.path.join(FD, "data", *fn.split("/")))
             by_id = {c["candidate_id"]: c for c in src["candidates"]}
             for e in d["phrases"] + d["words"]:
                 c = by_id[e["id"]]
@@ -132,7 +141,7 @@ class SelectionFormV3Test(unittest.TestCase):
         """委任_03: データJSONのcandidate_id/kind/candidates_sha256が元docと逐語一致。docに自己shaが無い場合はnull(捏造しない)。"""
         import glob
         files = [f for f in sorted(glob.glob(os.path.join(FD, "data", "*__*.json"))) if "ui_check" not in f]
-        self.assertEqual(len(files), 7)
+        self.assertEqual(len(files), 10)
         n_sha = n_null = 0
         for f in files:
             d = _j(f)
@@ -159,7 +168,54 @@ class SelectionFormV3Test(unittest.TestCase):
                 self.assertIsNone(d["candidates_sha256"], f)
                 self.assertTrue(d["candidates_sha256_source"].startswith("unavailable_"), f)
                 n_null += 1
-        self.assertEqual((n_sha, n_null), (5, 2))
+        self.assertEqual((n_sha, n_null), (8, 2))
+
+    # ---- 委任_04: P7/W5'(上限12・kind別cap 7/5)追従 ----
+    def test_export_cap_default_12_and_cap_by_kind(self):
+        xf = self._xf()
+        base = dict(candidates=[], backfill={}, shortfall=True)
+        cap, cbk, src = xf.cap_info(base)                                   # 記録が無いdocは既定12 / 7+5
+        self.assertEqual((cap, cbk, src), (12, {"phrase": 7, "word": 5}, "default_12_7_5"))
+        self.assertEqual(xf.cap_info(dict(base, shortfall_detail={"cap": 8}))[0], 8)   # 旧8 docは記録値を正とする
+        c, b, s2 = xf.cap_info(dict(base, shortfall_detail={"cap": 12, "cap_by_kind": {"phrase": 7, "word": 5}}))
+        self.assertEqual((c, b, s2), (12, {"phrase": 7, "word": 5}, "candidate_doc"))
+        out = xf.convert(dict(base, shortfall_detail=None), slug="s", level="a2", name="n", family="X", run="r", source_kind="PRODUCTION_FORMAL_PATH", note_ja="")
+        self.assertEqual((out["cap"], out["cap_by_kind"]), (12, {"phrase": 7, "word": 5}))
+        self.assertIn("上限12件", out["shortfall_note_ja"])
+        self.assertNotIn("上限8件", out["shortfall_note_ja"])
+        self.assertEqual(xf.reason_info({"reason_ja": "理由", "origin": "call1"}), ("理由", "ai_call1"))       # P7ではcall1にも理由
+
+    def test_kp75_form_data_cap12_kind_cap_and_reason_verbatim(self):
+        import glob
+        n = 0
+        for f in sorted(glob.glob(os.path.join(FD, "data", "*__prod.json"))):
+            if "monkeys" in f:
+                continue
+            d = _j(f)
+            src = _j(os.path.join(ROOT, d["source_kp_candidates_path"]))
+            self.assertIn("run_kp75_ev_01", d["source_kp_candidates_path"])
+            self.assertEqual((d["cap"], d["cap_by_kind"]), (12, {"phrase": 7, "word": 5}), f)
+            self.assertEqual(d["shortfall_detail"]["cap"], src["shortfall_detail"]["cap"] if src.get("shortfall_detail") else 12)
+            self.assertLessEqual(len(d["phrases"]), 7)
+            self.assertLessEqual(len(d["words"]), 5)
+            by_id = {c["candidate_id"]: c for c in src["candidates"]}
+            for e in d["phrases"] + d["words"]:
+                c = by_id[e["candidate_id"]]
+                self.assertEqual((e["kind"], e["kind_source"]), (c["kind"], "candidate_doc"))
+                self.assertEqual(e["reason_ja"], c["reason_ja"])
+                self.assertTrue(e["reason_ja"])
+                self.assertEqual(e["ja_gloss_status"], "official")
+                n += 1
+        self.assertGreaterEqual(n, 70)
+
+    def test_legacy_3plus5_data_retained_and_not_indexed(self):
+        idx = _j(os.path.join(FD, "data", "articles.json"))
+        for a in idx["articles"]:
+            self.assertFalse((a.get("data") or "").startswith("data/legacy"), a)
+        for fn in ("ai_island_temple__a2__prod", "ai_island_temple__b1b__prod", "redelivery_fee__a2__prod", "redelivery_fee__b1b__prod", "melos__a2__prod"):
+            d = _j(os.path.join(FD, "data", "legacy", fn + ".json"))
+            self.assertEqual(d["shortfall_detail"]["cap"], 8)
+            self.assertIn("run_kpbf_ev_01", d["source_kp_candidates_path"])
 
     def test_form_has_no_regeneration_or_network_calls_beyond_data_fetch(self):
         s = open(os.path.join(FD, "index.html"), encoding="utf-8").read() + open(os.path.join(FD, "form_logic.js"), encoding="utf-8").read()

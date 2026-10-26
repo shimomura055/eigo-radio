@@ -61,8 +61,8 @@ try {
 
   // 2) メロスa2(Production正式経路): 正式訳ラベル
   await switchTo('走れメロス');
-  rec('melos prod: 7 rows all 正式訳', (await ev(`document.querySelectorAll('.item').length`)) === 7 && (await ev(`[...document.querySelectorAll('.item .gl')].every(e=>e.textContent==='正式訳')`)));
-  rec('melos prod: backfill row shows AI reason text', await ev(`(()=>{const d=[...document.querySelectorAll('details.why')].find(e=>e.dataset.why==='a knife flashed');return !!d && !d.textContent.includes('AI理由なし')})()`));
+  rec('melos prod: 8 rows all 正式訳 (委任_04: 7+5 doc)', (await ev(`document.querySelectorAll('.item').length`)) === 8 && (await ev(`[...document.querySelectorAll('.item .gl')].every(e=>e.textContent==='正式訳')`)));
+  rec('melos prod: every row (call1 included) shows AI reason text (委任_04: 7+5 doc)', await ev(`(()=>{const ds=[...document.querySelectorAll('details.why')];return ds.length===8 && ds.every(d=>!d.textContent.includes('AI理由なし'))})()`));
 
   // 3) 選定→送信文の内容
   const terms = await ev(`[...document.querySelectorAll('input[data-term][data-cat="1"]')].map(e=>e.dataset.term)`);
@@ -86,7 +86,7 @@ try {
   await ev(`document.querySelector('#copy').click()`); await sleep(600);
   const cp = await ev(`document.querySelector('#fallback').value`);
   const j = JSON.parse(cp.slice(cp.indexOf('```json\n') + 8, cp.lastIndexOf('\n```')));
-  rec('copy JSON v2: schema/selection/ai_reference/candidates_all', j.schema_version === 2 && j.selection.key_phrase.length === 2 && j.selection.key_phrase.every(x => x.ja_gloss && x.ja_gloss_status === 'official') && j.ai_reference.for_reference_only === true && j.candidates_all.length === 7 && j.comment.includes('日本語訳テスト'));
+  rec('copy JSON v2: schema/selection/ai_reference/candidates_all', j.schema_version === 2 && j.selection.key_phrase.length === 2 && j.selection.key_phrase.every(x => x.ja_gloss && x.ja_gloss_status === 'official') && j.ai_reference.for_reference_only === true && j.candidates_all.length === 8 && j.comment.includes('日本語訳テスト'));
   rec('copy JSON: AI reason not inside confirmed items', j.selection.key_phrase.concat(j.selection.extra_explanation, j.selection.meaning_display).every(x => !('reason_ja' in x)));
 
   // 5) 文法(ダミー)でも全文が送信文へ

@@ -25,7 +25,7 @@ function status(m){$('status').textContent=m}
 function render(){
   var d=D, st=get();
   var src=$('srcnote');
-  if(d&&d.source&&d.source.note_ja){src.hidden=false;src.textContent=d.source.note_ja}else{src.hidden=true}
+  if(d&&d.source&&d.source.note_ja){src.hidden=false;src.textContent=d.source.note_ja+(d.shortfall_note_ja?'　［候補数: '+d.shortfall_note_ja+'］':'')}else{src.hidden=true}
   if(!d){
     $('stats').innerHTML='';$('candidates').innerHTML='<p class="muted">この記事枠の候補は未登録です。</p>';
     $('grammarCount').textContent='';$('grammars').innerHTML='';$('grammarNotice').hidden=true;$('comment').value=st.comment||'';return;
@@ -35,8 +35,9 @@ function render(){
   var gch=FL.grammarChosen(st.grammar,gids).length;
   $('stats').innerHTML=[['① Key Phrase',c[0],3,c[0]===3],['①＋②',c[0]+c[1],5,c[0]+c[1]===5],['①＋②＋③',tot,12,tot===12],['文法',gch,2,gch===2]].map(function(x){return '<div class="stat '+(x[3]?'full':'')+'">'+x[0]+'<strong>'+x[1]+' / '+x[2]+'</strong>'+(x[3]?'上限到達':'選択可能')+'</div>'}).join('');
   var html='<div class="head"><span style="text-align:left">候補</span><span>①</span><span>②</span><span>③</span></div>';
-  [{title:'フレーズ',items:d.phrases||[]},{title:'単語',items:d.words||[]}].forEach(function(group){
-    html+='<div class="group">'+group.title+'（'+group.items.length+'件）</div>';
+  var cbk=d.cap_by_kind||null;
+  [{title:'フレーズ',items:d.phrases||[],cap:cbk&&cbk.phrase},{title:'単語',items:d.words||[],cap:cbk&&cbk.word}].forEach(function(group){
+    html+='<div class="group">'+group.title+'（'+group.items.length+'件'+(group.cap?'／上限'+group.cap+'件':'')+'）</div>';
     group.items.forEach(function(it){
       var term=it.term,now=(st.choices||{})[term]||0,g=FL.glossOf(it),ro=FL.reasonOf(it);
       var tip=[g.text,it.excerpt].filter(Boolean).join('｜');

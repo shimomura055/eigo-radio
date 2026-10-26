@@ -63,3 +63,30 @@
 - 照合キー=`candidate_id`(+`candidates_sha256`で候補集合の同一性)。`candidates_sha256==null`(replay/Trial-02由来)の記事は、保護Gateで「候補集合照合不可」として扱うこと(通過扱いにしない)。
 - `ja_gloss_status`の意味は変更なし。`official`以外の訳をユーザーが確定した場合、受け側(er128)はISSUE(要確認)として扱う。
 - 本追補で確定内容の最小単位は `{candidate_id, kind, term, category, ja_gloss}` と grammar `{id, title, explanation_full}`、`comment`。
+
+---
+# 追補 委任_04(2026-10-27): P7/W5'(KP_CANDIDATE_MAX 12・kind別cap 7/5)配線への追従(additive、UI不変、API 0)
+## A''. 候補データ最上位への追加
+- `cap`: 候補上限(整数)。候補docの`shortfall_detail.cap`を正とし、記録が無いdocのみ既定12(`export_form_data_01.cap_info`)。旧8 doc(`data/legacy/`)は`shortfall_detail.cap=8`のまま。
+- `cap_by_kind`: `{phrase:7, word:5}`。候補docの`shortfall_detail.cap_by_kind`を正、無ければ既定。`phrases[]`/`words[]`の上限スライスと`overflow[]`の境界もこの値を使う。
+- `cap_source`: `candidate_doc`|`candidate_doc_cap_only`|`default_12_7_5`。
+- `shortfall_detail`(docがあれば): `cap`/`cap_by_kind`が欠落している場合のみ補完(docの値は書き換えない)。`shortfall_note_ja`は`候補N件/上限12件(フレーズ最大7・単語最大5)…`。
+- `reason_ja`: P7/W5'では全候補(call1含む)に`reason_ja`があり逐語。旧Prompt 2 doc(legacy)のcall1は空(`none_call1_has_no_reason`)。`kind`はP7/W5' docでは必須で、`kind_source=candidate_doc`。
+## B''. フォーム表示(UI仕様は不変。表示のみ追加)
+- 候補グループ見出し: `フレーズ（N件／上限7件）`/`単語（N件／上限5件）`(`cap_by_kind`がある場合のみ。無い旧データは従来表示)。
+- 出所注記(`#srcnote`)に`［候補数: <shortfall_note_ja>］`を追記(shortfall時のみ)。
+- 選択上限(①<=3/①+②<=5/①+②+③<=12)・文法独立2・コメントは不変。
+## C''. データ差し替え一覧(`data/` ← 候補doc)
+| データ | 候補doc(run_kp75_ev_01) | 候補数(phrase+word) | 旧3+5版 |
+|---|---|---|---|
+| ai_island_temple__a2__prod | er019.../ai_island_temple__run_kp75_ev_01/a2 | 5+5 | legacy/へ退避 |
+| ai_island_temple__b1b__prod | 同 b1b | 5+5 | legacy/へ退避 |
+| uk_train_speaker_playback__a2__prod(新規) | er019.../uk_train_speaker_playback__run_kp75_ev_01/a2 | 3+5 | なし(新規枠) |
+| uk_train_speaker_playback__b1b__prod(新規) | 同 b1b | 7+5(12件満載) | なし(新規枠) |
+| redelivery_fee__a2__prod | er121.../redelivery_fee/run_kp75_ev_01/key_phrases/a2 | 5+3(補完1) | legacy/へ退避 |
+| redelivery_fee__b1b__prod | 同 b1b | 6+4(補完1) | legacy/へ退避 |
+| melos__a2__prod | er026.../melos/run_kp75_ev_01/key_phrases/a2 | 4+4 | legacy/へ退避 |
+| melos__b1b__prod(新規) | 同 b1b | 4+5 | なし(新規枠) |
+- 記事枠: 9記事枠(参照HTML順)は不変。7+5 evidenceは`_prod`スラッグ枠(9枠に数えない)に置く。`articles.json`は`melos_prod`にb1b、`uk_train_speaker_playback_prod`にa2/b1bを追加(計+3枠)。9枠を超えて退避した7+5版は無い。
+- 旧3+5版5件は`data/legacy/`へ移動(articles.jsonから参照しない。testで保持を確認)。猿の手(`monkeys_paw__b1b`/`__prod`)は7+5 evidence docが無いため不変(前者DEV Trial-02、後者replay=いずれも`provisional`)。
+- 日本語訳(`ja_gloss`)・AI理由(`reason_ja`)は候補docの値を逐語(AI再生成なし)。8件とも`ja_gloss_status=official`、全候補に`reason_ja`あり。

@@ -33,3 +33,43 @@ data = {
 os.makedirs(OUT, exist_ok=True)
 json.dump(data, open(os.path.join(OUT, "monkeys_paw__b1b.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 print([(i["term"], i["kind"], i["kind_source"]) for i in phrases + words]); print(len(phrases), len(words), [p["term"] for p in phrases], [w["term"] for w in words])
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# 委任_04(2026-10-27): P7/W5'(KP_CANDIDATE_MAX 12・kind別cap 7/5)配線後の6経路evidence doc(run_kp75_ev_01)をフォームデータへ。API 0。
+# 実行: py docs\research\LEARNING-ITEM-SELECTION-FORM-V3-PRODUCTION-01\build_data_01.py --kp75
+# 旧3+5 doc(run_kpbf_ev_01)由来の同名__prod.jsonはdata/legacy/へ退避(上書き前)。AI理由・日本語訳は候補docの値を逐語(再生成なし)。
+# ---------------------------------------------------------------------------------------------------------------------
+KP75_NOTE = "Production正式経路(P7/W5'・候補上限12=フレーズ最大7+単語最大5・補完機能ON)で生成した候補です。選定フォームのテスト表示で、Production未連携。"
+KP75 = [  # (出力ファイル, slug, level, 表示名, family, run, 候補docの相対path)
+    ("ai_island_temple__a2__prod.json", "ai_island_temple_prod", "a2", "AIの仮想の島｜Production候補・7+5 evidence", "X", "ai_island_temple__run_kp75_ev_01", "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_kp75_ev_01/a2/key_phrases/kp_candidates.json"),
+    ("ai_island_temple__b1b__prod.json", "ai_island_temple_prod", "b1b", "AIの仮想の島｜Production候補・7+5 evidence", "X", "ai_island_temple__run_kp75_ev_01", "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_kp75_ev_01/b1b/key_phrases/kp_candidates.json"),
+    ("uk_train_speaker_playback__a2__prod.json", "uk_train_speaker_playback_prod", "a2", "英国の電車マナー｜Production候補・7+5 evidence", "X", "uk_train_speaker_playback__run_kp75_ev_01", "er019_output/family_x_audio_production_wiring_01/uk_train_speaker_playback__run_kp75_ev_01/a2/key_phrases/kp_candidates.json"),
+    ("uk_train_speaker_playback__b1b__prod.json", "uk_train_speaker_playback_prod", "b1b", "英国の電車マナー｜Production候補・7+5 evidence", "X", "uk_train_speaker_playback__run_kp75_ev_01", "er019_output/family_x_audio_production_wiring_01/uk_train_speaker_playback__run_kp75_ev_01/b1b/key_phrases/kp_candidates.json"),
+    ("redelivery_fee__a2__prod.json", "redelivery_fee_prod", "a2", "再配達手数料｜Production候補・7+5 evidence", "Y", "redelivery_fee/run_kp75_ev_01", "er121_output/family_y_production_01/redelivery_fee/run_kp75_ev_01/key_phrases/a2/kp_candidates.json"),
+    ("redelivery_fee__b1b__prod.json", "redelivery_fee_prod", "b1b", "再配達手数料｜Production候補・7+5 evidence", "Y", "redelivery_fee/run_kp75_ev_01", "er121_output/family_y_production_01/redelivery_fee/run_kp75_ev_01/key_phrases/b1b/kp_candidates.json"),
+    ("melos__a2__prod.json", "melos_prod", "a2", "走れメロス｜Production候補・7+5 evidence", "Z", "melos/run_kp75_ev_01", "er026_output/family_z_production_e2e_01/melos/run_kp75_ev_01/key_phrases/a2/kp_candidates.json"),
+    ("melos__b1b__prod.json", "melos_prod", "b1b", "走れメロス｜Production候補・7+5 evidence", "Z", "melos/run_kp75_ev_01", "er026_output/family_z_production_e2e_01/melos/run_kp75_ev_01/key_phrases/b1b/kp_candidates.json"),
+]
+
+
+def build_kp75():
+    import shutil
+    legacy = os.path.join(OUT, "legacy")
+    os.makedirs(legacy, exist_ok=True)
+    moved = []
+    for fn, slug, level, name, fam, run, rel in KP75:
+        dst = os.path.join(OUT, fn)
+        if os.path.exists(dst):                       # 旧3+5版(run_kpbf_ev_01)なら退避。既に7+5版(再実行)なら退避しない
+            old = json.load(open(dst, encoding="utf-8"))
+            if "run_kpbf_ev_01" in (old.get("source") or {}).get("run", "") and not os.path.exists(os.path.join(legacy, fn)):
+                shutil.move(dst, os.path.join(legacy, fn)); moved.append(fn)
+        doc = json.load(open(os.path.join(ROOT, rel), encoding="utf-8"))
+        out = xf.convert(doc, slug=slug, level=level, name=name, family=fam, run=run, source_kind="PRODUCTION_FORMAL_PATH", note_ja=KP75_NOTE, cand_path=os.path.join(ROOT, rel))
+        json.dump(out, open(dst, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        print(fn, len(out["phrases"]), len(out["words"]), out["cap"], out["cap_by_kind"], out["shortfall_note_ja"])
+    print("moved_to_legacy:", moved)
+
+
+if __name__ == "__main__" and "--kp75" in sys.argv:
+    build_kp75()

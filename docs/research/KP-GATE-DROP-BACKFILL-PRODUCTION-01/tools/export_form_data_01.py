@@ -19,6 +19,17 @@ import os
 import sys
 
 LEVEL_LABEL = {"a2": "Standard", "b1b": "Advanced"}
+DEFAULT_CAP = 12                                   # 2026-10-27 P7/W5'配線(KP_CANDIDATE_MAX 8->12)。docに記録が無い場合の既定
+DEFAULT_CAP_BY_KIND = {"phrase": 7, "word": 5}
+
+
+def cap_info(doc: dict) -> tuple:
+    """(cap, cap_by_kind, source)。docのshortfall_detailに記録があればそれを正とする(旧8 docは8のまま)。無ければ既定12 / 7+5。"""
+    sd = doc.get("shortfall_detail") or {}
+    cap = sd.get("cap")
+    cbk = sd.get("cap_by_kind")
+    src = "candidate_doc" if (cap and cbk) else ("candidate_doc_cap_only" if cap else "default_12_7_5")
+    return (cap or DEFAULT_CAP), (dict(cbk) if cbk else dict(DEFAULT_CAP_BY_KIND)), src
 
 
 def kind_of(c: dict) -> str:
@@ -87,7 +98,8 @@ def gloss_status(c: dict, source_kind: str) -> str:
 
 
 def reason_info(c: dict) -> tuple:
-    """(reason_ja, reason_source)。AIが実際に出した理由だけを返す。call1 Prompt 2は理由を出さない(空)/fixture placeholderは理由として扱わない。"""
+    """(reason_ja, reason_source)。AIが実際に出した理由だけを返す。P7/W5'(2026-10-27配線、KP-PHRASE7-WORD5-PRODUCTION-01)では全候補(call1含む)に`reason_ja`があり逐語で返す。
+    旧Prompt 2 doc(3+5以前)のcall1候補は理由が空で、その場合のみ`none_call1_has_no_reason`。fixture placeholderは理由として扱わない。"""
     r = (c.get("reason_ja") or "").strip()
     origin = c.get("origin")
     if r and r.lower() not in REASON_PLACEHOLDERS:
@@ -130,7 +142,8 @@ def shortfall_note_ja(doc: dict) -> str:
     n = len(doc.get("candidates") or [])
     if not doc.get("shortfall"):
         return ""
-    parts = [f"候補{n}件/上限{sd.get('cap', 8)}件"]
+    cap, cbk, _ = cap_info(doc)
+    parts = [f"候補{n}件/上限{cap}件(フレーズ最大{cbk.get('phrase')}・単語最大{cbk.get('word')})"]
     E = (bf.get("E") or {}).get("total")
     if E:
         parts.append(f"Gate除外{E}件")
@@ -153,20 +166,26 @@ def convert(doc: dict, *, slug: str, level: str, name: str, family: str, run: st
     es = [entry(c, source_kind) for c in cands]
     bf = doc.get("backfill") or {}
     sha, sha_src = sha_info(doc, source_kind)
+    cap, cbk, cap_src = cap_info(doc)
+    sd_out = dict(doc.get("shortfall_detail") or {}) if doc.get("shortfall_detail") is not None else None
+    if sd_out is not None:
+        sd_out.setdefault("cap", cap)
+        sd_out.setdefault("cap_by_kind", cbk)
     out = {
         "schema": "eigo_radio_selection_article_v1", "slug": slug, "level": level, "level_label": LEVEL_LABEL.get(level, level), "name": name, "family": family,
         "candidates_sha256": sha, "candidates_sha256_source": sha_src,
         "source_kp_candidates_path": (os.path.relpath(cand_path).replace(os.sep, "/") if cand_path else None),
         "source": {"kind": source_kind, "trial": "KP-GATE-DROP-BACKFILL-PRODUCTION-01", "run": run, "text_sha256": text_sha256 or doc.get("text_sha256"),
                    "model_id": {"kp": doc.get("model_id")}, "prompt_sha256": doc.get("prompt_sha256"), "note_ja": note_ja},
-        "phrases": [e for e in es if e["kind"] == "phrase"][:7], "words": [e for e in es if e["kind"] == "word"][:5],
+        "cap": cap, "cap_by_kind": cbk, "cap_source": cap_src,
+        "phrases": [e for e in es if e["kind"] == "phrase"][:cbk.get("phrase", 7)], "words": [e for e in es if e["kind"] == "word"][:cbk.get("word", 5)],
         "backfill": {"enabled": bf.get("enabled"), "triggered": bf.get("triggered"), "status": bf.get("status"), "reason": bf.get("reason"),
                      "E_total": (bf.get("E") or {}).get("total"), "N_total": (bf.get("N") or {}).get("total"), "added": bf.get("added") or [],
                      "dropped_by_stage": bf.get("dropped_by_stage") or {}},
-        "shortfall": bool(doc.get("shortfall")), "shortfall_detail": doc.get("shortfall_detail"), "shortfall_note_ja": shortfall_note_ja(doc),
+        "shortfall": bool(doc.get("shortfall")), "shortfall_detail": sd_out, "shortfall_note_ja": shortfall_note_ja(doc),
         "grammar": grammar or [],
     }
-    over = [e for e in es if e["kind"] == "phrase"][7:] + [e for e in es if e["kind"] == "word"][5:]
+    over = [e for e in es if e["kind"] == "phrase"][cbk.get("phrase", 7):] + [e for e in es if e["kind"] == "word"][cbk.get("word", 5):]
     if over:                                   # フォームの枠(フレーズ7/単語5)を超える候補は表示せず別枠に保持(情報は失わない)
         out["overflow"] = over
         out["shortfall_note_ja"] = (out["shortfall_note_ja"] + "、" if out["shortfall_note_ja"] else "") + "枠超過で未表示の候補" + str(len(over)) + "件(overflow)"

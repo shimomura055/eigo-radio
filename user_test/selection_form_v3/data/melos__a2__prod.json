@@ -3,15 +3,15 @@
  "slug": "melos_prod",
  "level": "a2",
  "level_label": "Standard",
- "name": "走れメロス｜Production候補・補完evidence",
+ "name": "走れメロス｜Production候補・7+5 evidence",
  "family": "Z",
- "candidates_sha256": "7718064b1272e528cc77a86f622df9c56dd66cb80198f1c3db7958ce8b67eac7",
+ "candidates_sha256": "e7791e333a7d8c64a0b71ce6a0440d2c53ed4cce36c255661f94ffe1e72e5b18",
  "candidates_sha256_source": "candidate_doc_field",
- "source_kp_candidates_path": "er026_output/family_z_production_e2e_01/melos/run_kpbf_ev_01/key_phrases/a2/kp_candidates.json",
+ "source_kp_candidates_path": "er026_output/family_z_production_e2e_01/melos/run_kp75_ev_01/key_phrases/a2/kp_candidates.json",
  "source": {
   "kind": "PRODUCTION_FORMAL_PATH",
   "trial": "KP-GATE-DROP-BACKFILL-PRODUCTION-01",
-  "run": "melos/run_kpbf_ev_01",
+  "run": "melos/run_kp75_ev_01",
   "text_sha256": "efba2a233a8a8100b10d615ca56da69d350681a9dfc3dff7a2f352649ffb091c",
   "model_id": {
    "kp": {
@@ -20,29 +20,35 @@
    }
   },
   "prompt_sha256": {
-   "call1": "a12896f485604f32efd52cb159d2615733c0eca262725af78db0b4f1c9a3dc9a",
-   "call2": "e1d5349ce2fda897b74f0350817ced0d7385842c170d066721eb3917f012f5ec"
+   "call1": "2e93019300f960e5ff3070dd83b12a81566b8ceb87b44b335d554a7a711eb291",
+   "call2": "12d3370876d189f016cc49e26b2abcbe2618f028b380fe7fcff479554fa693b8"
   },
-  "note_ja": "Production正式経路(KP stage・補完機能ON)で生成した候補です。選定フォームのテスト表示で、Production未連携。"
+  "note_ja": "Production正式経路(P7/W5'・候補上限12=フレーズ最大7+単語最大5・補完機能ON)で生成した候補です。選定フォームのテスト表示で、Production未連携。"
  },
+ "cap": 12,
+ "cap_by_kind": {
+  "phrase": 7,
+  "word": 5
+ },
+ "cap_source": "candidate_doc",
  "phrases": [
   {
    "id": "p_37c58c930b",
    "candidate_id": "p_37c58c930b",
    "kind_source": "candidate_doc",
    "term": "pull someone under",
-   "meaning_ja": "誰かを水中に引きずり込む",
+   "meaning_ja": "人を水中に引き込む",
    "excerpt": "The water pulled him under, but he fought toward the light",
-   "ja_gloss": "誰かを水中に引きずり込む",
+   "ja_gloss": "人を水中に引き込む",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "none_call1_has_no_reason",
+   "reason_source": "ai_call1",
    "kind": "phrase",
    "origin": "call1",
    "ai_rank": 1,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "",
+   "reason_ja": "「水中に引きずり込む」を表す句動詞です。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
@@ -52,47 +58,46 @@
    "selection_phrase": "pulled him under"
   },
   {
-   "id": "p_f8e0ef8480",
-   "candidate_id": "p_f8e0ef8480",
+   "id": "p_6bd48ea268",
+   "candidate_id": "p_6bd48ea268",
    "kind_source": "candidate_doc",
-   "term": "block someone's way",
-   "meaning_ja": "誰かの行く手をさえぎる",
-   "excerpt": "Later, three men blocked his way, and a knife flashed",
-   "ja_gloss": "誰かの行く手をさえぎる",
+   "term": "without asking for another promise",
+   "meaning_ja": "さらに約束を求めずに",
+   "excerpt": "His friend trusted him without asking for another promise",
+   "ja_gloss": "さらに約束を求めずに",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "none_call1_has_no_reason",
+   "reason_source": "ai_call1",
    "kind": "phrase",
    "origin": "call1",
    "ai_rank": 2,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "",
+   "reason_ja": "without asking for の自然な用法と含意を学べます。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
     "similar_to_ng": false,
     "redundant_with": []
-   },
-   "selection_phrase": "blocked his way"
+   }
   },
   {
    "id": "p_a31a016ed7",
    "candidate_id": "p_a31a016ed7",
    "kind_source": "candidate_doc",
    "term": "lose one's trust in someone",
-   "meaning_ja": "人が誰かへの信頼を失う",
+   "meaning_ja": "自分が誰かを信じる気持ちを失う",
    "excerpt": "I almost lost my trust in you,\" his friend replied",
-   "ja_gloss": "人が誰かへの信頼を失う",
+   "ja_gloss": "自分が誰かを信じる気持ちを失う",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "none_call1_has_no_reason",
+   "reason_source": "ai_call1",
    "kind": "phrase",
    "origin": "call1",
    "ai_rank": 3,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "",
+   "reason_ja": "lose trust in の語法と信頼を失う表現が学べます。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
@@ -102,71 +107,85 @@
    "selection_phrase": "lost my trust in you"
   },
   {
-   "id": "p_3a75374afb",
-   "candidate_id": "p_3a75374afb",
-   "kind_source": "candidate_doc",
-   "term": "hold out",
-   "meaning_ja": "差し出す",
-   "excerpt": "He remembered the hands held out for the chains",
-   "ja_gloss": "差し出す",
-   "ja_gloss_status": "official",
-   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "ai_call2",
-   "kind": "phrase",
-   "origin": "call2",
-   "ai_rank": 4,
-   "auto_eligible": true,
-   "human_selectable": true,
-   "reason_ja": "手などを差し出す意味の句動詞です。",
-   "flags": {
-    "qa_fail": false,
-    "gloss_hr_pending": false,
-    "similar_to_ng": false,
-    "redundant_with": []
-   },
-   "selection_phrase": "held out"
-  },
-  {
-   "id": "p_53007f613e",
-   "candidate_id": "p_53007f613e",
-   "kind_source": "candidate_doc",
-   "term": "For once",
-   "meaning_ja": "今回に限って",
-   "excerpt": "For once, he waited for a reply instead of demanding one",
-   "ja_gloss": "今回に限って",
-   "ja_gloss_status": "official",
-   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "ai_call2",
-   "kind": "phrase",
-   "origin": "call2",
-   "ai_rank": 5,
-   "auto_eligible": true,
-   "human_selectable": true,
-   "reason_ja": "「今回ばかりは」を表す自然な慣用表現です。",
-   "flags": {
-    "qa_fail": false,
-    "gloss_hr_pending": false,
-    "similar_to_ng": false,
-    "redundant_with": []
-   }
-  },
-  {
    "id": "p_a75cb9faa3",
    "candidate_id": "p_a75cb9faa3",
    "kind_source": "candidate_doc",
    "term": "win such trust",
-   "meaning_ja": "そのような信頼を勝ち取る",
+   "meaning_ja": "そのような信頼を得る",
    "excerpt": "More softly, he then asked, \"How can a man win such trust",
-   "ja_gloss": "そのような信頼を勝ち取る",
+   "ja_gloss": "そのような信頼を得る",
+   "ja_gloss_status": "official",
+   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
+   "reason_source": "ai_call1",
+   "kind": "phrase",
+   "origin": "call1",
+   "ai_rank": 4,
+   "auto_eligible": true,
+   "human_selectable": true,
+   "reason_ja": "win trust の自然なコロケーションが学べます。",
+   "flags": {
+    "qa_fail": false,
+    "gloss_hr_pending": false,
+    "similar_to_ng": false,
+    "redundant_with": [],
+    "rescued": true,
+    "rescue_codes": [
+     "REVERT_SURFACE"
+    ]
+   },
+   "rescue": {
+    "codes": [
+     "REVERT_SURFACE"
+    ],
+    "note": "修正済み(元: win such trust / REVERT_SURFACE)・QA再判定済み"
+   },
+   "flag": "候補の注記",
+   "flag_note_ja": "KP救済済み(REVERT_SURFACE)"
+  }
+ ],
+ "words": [
+  {
+   "id": "p_30fd0a4577",
+   "candidate_id": "p_30fd0a4577",
+   "kind_source": "candidate_doc",
+   "term": "demand",
+   "meaning_ja": "強く求める",
+   "excerpt": "For once, he waited for a reply instead of demanding one",
+   "ja_gloss": "強く求める",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
    "reason_source": "ai_call2",
-   "kind": "phrase",
+   "kind": "word",
+   "origin": "call2",
+   "ai_rank": 5,
+   "auto_eligible": true,
+   "human_selectable": true,
+   "reason_ja": "要求するという意味で、議論や交渉など幅広い文脈で使えます。",
+   "flags": {
+    "qa_fail": false,
+    "gloss_hr_pending": false,
+    "similar_to_ng": false,
+    "redundant_with": []
+   },
+   "selection_phrase": "demanding"
+  },
+  {
+   "id": "p_5200f4dad2",
+   "candidate_id": "p_5200f4dad2",
+   "kind_source": "candidate_doc",
+   "term": "shepherd",
+   "meaning_ja": "羊の世話をする人",
+   "excerpt": "Silence came, and guards grabbed the young shepherd",
+   "ja_gloss": "羊の世話をする人",
+   "ja_gloss_status": "official",
+   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
+   "reason_source": "ai_call2",
+   "kind": "word",
    "origin": "call2",
    "ai_rank": 6,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "信頼を得ることを表す win の用法が学べます。",
+   "reason_ja": "牧羊をする人を指す語で、物語や歴史の文脈で役立ちます。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
@@ -175,63 +194,82 @@
    }
   },
   {
-   "id": "p_48aa45c36d",
-   "candidate_id": "p_48aa45c36d",
+   "id": "p_ca456ebf8e",
+   "candidate_id": "p_ca456ebf8e",
    "kind_source": "candidate_doc",
-   "term": "a knife flashed",
-   "meaning_ja": "ナイフが一瞬きらりと光った",
-   "excerpt": "Later, three men blocked his way, and a knife flashed",
-   "ja_gloss": "ナイフが一瞬きらりと光った",
+   "term": "Silence",
+   "meaning_ja": "沈黙",
+   "excerpt": "Silence came, and guards grabbed the young shepherd",
+   "ja_gloss": "沈黙",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "ai_backfill",
-   "kind": "phrase",
-   "origin": "backfill",
+   "reason_source": "ai_call2",
+   "kind": "word",
+   "origin": "call2",
    "ai_rank": 7,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "flashが「一瞬きらめく・現れる」を表す文学的用法。",
+   "reason_ja": "単なる無音だけでなく、発言のない状態も表せます。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
     "similar_to_ng": false,
     "redundant_with": []
-   },
-   "flag": "候補の注記",
-   "flag_note_ja": "補完候補(Gate除外の代替)"
+   }
+  },
+  {
+   "id": "p_b55e22fe78",
+   "candidate_id": "p_b55e22fe78",
+   "kind_source": "candidate_doc",
+   "term": "exact",
+   "meaning_ja": "正確な",
+   "excerpt": "Melos listened closely to remember its exact sound",
+   "ja_gloss": "正確な",
+   "ja_gloss_status": "official",
+   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
+   "reason_source": "ai_call2",
+   "kind": "word",
+   "origin": "call2",
+   "ai_rank": 8,
+   "auto_eligible": true,
+   "human_selectable": true,
+   "reason_ja": "細部まで正確であることを表し、幅広い名詞と組み合わせます。",
+   "flags": {
+    "qa_fail": false,
+    "gloss_hr_pending": false,
+    "similar_to_ng": false,
+    "redundant_with": []
+   }
   }
  ],
- "words": [],
  "backfill": {
   "enabled": true,
-  "triggered": true,
-  "status": "OK",
-  "reason": null,
-  "E_total": 1,
-  "N_total": 1,
-  "added": [
-   {
-    "candidate_id": "p_48aa45c36d",
-    "kind": "phrase",
-    "used_form": "a knife flashed",
-    "ai_rank": 7
-   }
-  ],
+  "triggered": false,
+  "status": "NOT_TRIGGERED",
+  "reason": "E=0",
+  "E_total": 0,
+  "N_total": null,
+  "added": [],
   "dropped_by_stage": {}
  },
  "shortfall": true,
  "shortfall_detail": {
-  "n_candidates": 7,
-  "cap": 8,
-  "missing": 1,
-  "E_total": 1,
-  "backfilled": 1,
-  "unfilled_by_kind": {
-   "phrase": 0,
-   "word": 0
-  }
+  "n_candidates": 8,
+  "cap": 12,
+  "missing": 4,
+  "cap_by_kind": {
+   "phrase": 7,
+   "word": 5
+  },
+  "missing_by_kind": {
+   "phrase": 3,
+   "word": 1
+  },
+  "E_total": 0,
+  "backfilled": 0,
+  "unfilled_by_kind": null
  },
- "shortfall_note_ja": "候補7件/上限8件、Gate除外1件、補完1件を追加",
+ "shortfall_note_ja": "候補8件/上限12件(フレーズ最大7・単語最大5)、Gate除外が無いため補完なし(AIの返答が上限未満。数合わせはしません)",
  "grammar": [],
  "grammar_note_ja": "候補なし・要生成(この記事のPart 2文法解説候補は未生成です。仮データは入れていません)"
 }

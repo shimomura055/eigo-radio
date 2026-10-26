@@ -3,15 +3,15 @@
  "slug": "redelivery_fee_prod",
  "level": "b1b",
  "level_label": "Advanced",
- "name": "再配達手数料｜Production候補・補完evidence",
+ "name": "再配達手数料｜Production候補・7+5 evidence",
  "family": "Y",
- "candidates_sha256": "884db644d8d98c164e4bf77be89d4a51a62e68a496f04e5b0cfdf5dc8e6eea3e",
+ "candidates_sha256": "ac43bbe1b923a43ef462aad3795bae983e07d84beea8ffaf262df25c609de179",
  "candidates_sha256_source": "candidate_doc_field",
- "source_kp_candidates_path": "er121_output/family_y_production_01/redelivery_fee/run_kpbf_ev_01/key_phrases/b1b/kp_candidates.json",
+ "source_kp_candidates_path": "er121_output/family_y_production_01/redelivery_fee/run_kp75_ev_01/key_phrases/b1b/kp_candidates.json",
  "source": {
   "kind": "PRODUCTION_FORMAL_PATH",
   "trial": "KP-GATE-DROP-BACKFILL-PRODUCTION-01",
-  "run": "redelivery_fee/run_kpbf_ev_01",
+  "run": "redelivery_fee/run_kp75_ev_01",
   "text_sha256": "f4f19da3217ae2ebdc415c237036b909d68dd080ba3851dd6c01917080fd89a5",
   "model_id": {
    "kp": {
@@ -20,72 +20,42 @@
    }
   },
   "prompt_sha256": {
-   "call1": "a12896f485604f32efd52cb159d2615733c0eca262725af78db0b4f1c9a3dc9a",
-   "call2": "e1d5349ce2fda897b74f0350817ced0d7385842c170d066721eb3917f012f5ec"
+   "call1": "2e93019300f960e5ff3070dd83b12a81566b8ceb87b44b335d554a7a711eb291",
+   "call2": "12d3370876d189f016cc49e26b2abcbe2618f028b380fe7fcff479554fa693b8"
   },
-  "note_ja": "Production正式経路(KP stage・補完機能ON)で生成した候補です。選定フォームのテスト表示で、Production未連携。"
+  "note_ja": "Production正式経路(P7/W5'・候補上限12=フレーズ最大7+単語最大5・補完機能ON)で生成した候補です。選定フォームのテスト表示で、Production未連携。"
  },
+ "cap": 12,
+ "cap_by_kind": {
+  "phrase": 7,
+  "word": 5
+ },
+ "cap_source": "candidate_doc",
  "phrases": [
   {
-   "id": "p_dc8bb697ba",
-   "candidate_id": "p_dc8bb697ba",
+   "id": "p_4e11d37d8a",
+   "candidate_id": "p_4e11d37d8a",
    "kind_source": "candidate_doc",
-   "term": "doesn't sit right with someone",
-   "meaning_ja": "人には納得がいかない",
+   "term": "sit right with someone",
+   "meaning_ja": "人にとって納得できる",
    "excerpt": "Having to pay for redelivery just doesn't sit right with me",
-   "ja_gloss": "人には納得がいかない",
+   "ja_gloss": "人にとって納得できる",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "none_call1_has_no_reason",
+   "reason_source": "ai_call1",
    "kind": "phrase",
    "origin": "call1",
    "ai_rank": 1,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "",
-   "flags": {
-    "qa_fail": false,
-    "gloss_hr_pending": false,
-    "similar_to_ng": false,
-    "redundant_with": [],
-    "rescued": true,
-    "rescue_codes": [
-     "REDERIVE_M1_WINDOW"
-    ]
-   },
-   "selection_phrase": "doesn't sit right with me",
-   "rescue": {
-    "codes": [
-     "REDERIVE_M1_WINDOW"
-    ],
-    "note": "修正済み(元: doesn't sit right with me / REDERIVE_M1_WINDOW)・QA再判定済み"
-   },
-   "flag": "候補の注記",
-   "flag_note_ja": "KP救済済み(REDERIVE_M1_WINDOW)"
-  },
-  {
-   "id": "p_58e94a0d31",
-   "candidate_id": "p_58e94a0d31",
-   "kind_source": "candidate_doc",
-   "term": "take the trouble",
-   "meaning_ja": "わざわざ手間をかける",
-   "excerpt": "Still, I take the trouble to think about how to receive my packages, so honestly, I think it's wrong that I pay the same fee as people who are always away and ask for redelivery",
-   "ja_gloss": "わざわざ手間をかける",
-   "ja_gloss_status": "official",
-   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "none_call1_has_no_reason",
-   "kind": "phrase",
-   "origin": "call1",
-   "ai_rank": 2,
-   "auto_eligible": true,
-   "human_selectable": true,
-   "reason_ja": "",
+   "reason_ja": "しっくりこない、納得できないという口語表現。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
     "similar_to_ng": false,
     "redundant_with": []
-   }
+   },
+   "selection_phrase": "sit right with me"
   },
   {
    "id": "p_fab64079d6",
@@ -97,13 +67,61 @@
    "ja_gloss": "仕方がない",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "none_call1_has_no_reason",
+   "reason_source": "ai_call1",
+   "kind": "phrase",
+   "origin": "call1",
+   "ai_rank": 2,
+   "auto_eligible": true,
+   "human_selectable": true,
+   "reason_ja": "避けられない状況を受け入れる定型表現。",
+   "flags": {
+    "qa_fail": false,
+    "gloss_hr_pending": false,
+    "similar_to_ng": false,
+    "redundant_with": []
+   }
+  },
+  {
+   "id": "p_58e94a0d31",
+   "candidate_id": "p_58e94a0d31",
+   "kind_source": "candidate_doc",
+   "term": "take the trouble",
+   "meaning_ja": "わざわざ手間をかける",
+   "excerpt": "Still, I take the trouble to think about how to receive my packages, so honestly, I think it's wrong that I pay the same fee as people who are always away and ask for redelivery",
+   "ja_gloss": "わざわざ手間をかける",
+   "ja_gloss_status": "official",
+   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
+   "reason_source": "ai_call1",
    "kind": "phrase",
    "origin": "call1",
    "ai_rank": 3,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "",
+   "reason_ja": "手間をかけて何かをするという表現。",
+   "flags": {
+    "qa_fail": false,
+    "gloss_hr_pending": false,
+    "similar_to_ng": false,
+    "redundant_with": []
+   }
+  },
+  {
+   "id": "p_27797b97e2",
+   "candidate_id": "p_27797b97e2",
+   "kind_source": "candidate_doc",
+   "term": "end up receiving",
+   "meaning_ja": "結局受け取ることになる",
+   "excerpt": "And even when I ask for a package to be sent to a delivery office, it may arrive late, so I sometimes end up receiving it in person after all",
+   "ja_gloss": "結局受け取ることになる",
+   "ja_gloss_status": "official",
+   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
+   "reason_source": "ai_call1",
+   "kind": "phrase",
+   "origin": "call1",
+   "ai_rank": 4,
+   "auto_eligible": true,
+   "human_selectable": true,
+   "reason_ja": "最終的にそうなることを表す構文。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
@@ -121,13 +139,13 @@
    "ja_gloss": "〜に加えて",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "ai_call2",
+   "reason_source": "ai_call1",
    "kind": "phrase",
-   "origin": "call2",
-   "ai_rank": 4,
+   "origin": "call1",
+   "ai_rank": 5,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "「〜に加えて」を表す慣用的な前置詞表現です。",
+   "reason_ja": "費用などに加えて、という意味の表現。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
@@ -136,47 +154,22 @@
    }
   },
   {
-   "id": "p_49a03b6ebd",
-   "candidate_id": "p_49a03b6ebd",
+   "id": "p_9ff01df831",
+   "candidate_id": "p_9ff01df831",
    "kind_source": "candidate_doc",
-   "term": "take up",
-   "meaning_ja": "占める",
-   "excerpt": "Redelivery takes up the delivery worker's time, so it's fine to charge for it",
-   "ja_gloss": "占める",
+   "term": "head off",
+   "meaning_ja": "立ち去る",
+   "excerpt": "When I leave a notice saying nobody was home and head off, I feel a little down, too",
+   "ja_gloss": "立ち去る",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "ai_call2",
+   "reason_source": "ai_call1",
    "kind": "phrase",
-   "origin": "call2",
-   "ai_rank": 5,
-   "auto_eligible": true,
-   "human_selectable": true,
-   "reason_ja": "時間や場所を「費やす・占める」を表す句動詞です。",
-   "flags": {
-    "qa_fail": false,
-    "gloss_hr_pending": false,
-    "similar_to_ng": false,
-    "redundant_with": []
-   },
-   "selection_phrase": "takes up"
-  },
-  {
-   "id": "p_27797b97e2",
-   "candidate_id": "p_27797b97e2",
-   "kind_source": "candidate_doc",
-   "term": "end up receiving",
-   "meaning_ja": "結局受け取ることになる",
-   "excerpt": "And even when I ask for a package to be sent to a delivery office, it may arrive late, so I sometimes end up receiving it in person after all",
-   "ja_gloss": "結局受け取ることになる",
-   "ja_gloss_status": "official",
-   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
-   "reason_source": "ai_call2",
-   "kind": "phrase",
-   "origin": "call2",
+   "origin": "call1",
    "ai_rank": 6,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "「結局〜を受け取ることになる」という結果を表します。",
+   "reason_ja": "その場を離れることを表す句動詞。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
@@ -191,9 +184,9 @@
    "candidate_id": "p_076fb18840",
    "kind_source": "candidate_doc",
    "term": "beforehand",
-   "meaning_ja": "あらかじめ",
+   "meaning_ja": "事前に",
    "excerpt": "There are also many packages where you can't choose a time, and you don't know beforehand when they'll arrive",
-   "ja_gloss": "あらかじめ",
+   "ja_gloss": "事前に",
    "ja_gloss_status": "official",
    "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
    "reason_source": "ai_call2",
@@ -202,35 +195,128 @@
    "ai_rank": 7,
    "auto_eligible": true,
    "human_selectable": true,
-   "reason_ja": "「事前に」を表す、簡潔で使い勝手のよい副詞です。",
+   "reason_ja": "「事前に」を表し、幅広い場面で使えます。",
    "flags": {
     "qa_fail": false,
     "gloss_hr_pending": false,
     "similar_to_ng": false,
     "redundant_with": []
    }
+  },
+  {
+   "id": "p_0f51a8c574",
+   "candidate_id": "p_0f51a8c574",
+   "kind_source": "candidate_doc",
+   "term": "repeatedly",
+   "meaning_ja": "何度も",
+   "excerpt": "I'd be happy if the first redelivery were free, and people who are repeatedly away had to pay",
+   "ja_gloss": "何度も",
+   "ja_gloss_status": "official",
+   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
+   "reason_source": "ai_call2",
+   "kind": "word",
+   "origin": "call2",
+   "ai_rank": 8,
+   "auto_eligible": true,
+   "human_selectable": true,
+   "reason_ja": "「繰り返し」を表す副詞で、汎用性があります。",
+   "flags": {
+    "qa_fail": false,
+    "gloss_hr_pending": false,
+    "similar_to_ng": false,
+    "redundant_with": []
+   }
+  },
+  {
+   "id": "p_00cceb7181",
+   "candidate_id": "p_00cceb7181",
+   "kind_source": "candidate_doc",
+   "term": "errand",
+   "meaning_ja": "ちょっとした用事",
+   "excerpt": "I went out to take care of an errand, and when I got back, there was a missed-delivery notice",
+   "ja_gloss": "ちょっとした用事",
+   "ja_gloss_status": "official",
+   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
+   "reason_source": "ai_call2",
+   "kind": "word",
+   "origin": "call2",
+   "ai_rank": 9,
+   "auto_eligible": true,
+   "human_selectable": true,
+   "reason_ja": "用事を指す語で、日常会話でも使われます。",
+   "flags": {
+    "qa_fail": false,
+    "gloss_hr_pending": false,
+    "similar_to_ng": false,
+    "redundant_with": []
+   }
+  },
+  {
+   "id": "p_fe25452dd8",
+   "candidate_id": "p_fe25452dd8",
+   "kind_source": "candidate_doc",
+   "term": "encourage",
+   "meaning_ja": "促す",
+   "excerpt": "For people who can choose how to receive packages, a redelivery fee can be a signal that encourages them to make an effort",
+   "ja_gloss": "促す",
+   "ja_gloss_status": "official",
+   "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
+   "reason_source": "ai_backfill",
+   "kind": "word",
+   "origin": "backfill",
+   "ai_rank": 10,
+   "auto_eligible": true,
+   "human_selectable": true,
+   "reason_ja": "「促す」を表す動詞で、議論や説明でも幅広く使えます。",
+   "flags": {
+    "qa_fail": false,
+    "gloss_hr_pending": false,
+    "similar_to_ng": false,
+    "redundant_with": []
+   },
+   "selection_phrase": "encourages",
+   "flag": "候補の注記",
+   "flag_note_ja": "補完候補(Gate除外の代替)"
   }
  ],
  "backfill": {
   "enabled": true,
-  "triggered": false,
-  "status": "NOT_TRIGGERED",
-  "reason": "E=0",
-  "E_total": 0,
-  "N_total": null,
-  "added": [],
+  "triggered": true,
+  "status": "OK",
+  "reason": null,
+  "E_total": 1,
+  "N_total": 1,
+  "added": [
+   {
+    "candidate_id": "p_fe25452dd8",
+    "kind": "word",
+    "used_form": "encourage",
+    "ai_rank": 10
+   }
+  ],
   "dropped_by_stage": {}
  },
  "shortfall": true,
  "shortfall_detail": {
-  "n_candidates": 7,
-  "cap": 8,
-  "missing": 1,
-  "E_total": 0,
-  "backfilled": 0,
-  "unfilled_by_kind": null
+  "n_candidates": 10,
+  "cap": 12,
+  "missing": 2,
+  "cap_by_kind": {
+   "phrase": 7,
+   "word": 5
+  },
+  "missing_by_kind": {
+   "phrase": 1,
+   "word": 1
+  },
+  "E_total": 1,
+  "backfilled": 1,
+  "unfilled_by_kind": {
+   "phrase": 0,
+   "word": 0
+  }
  },
- "shortfall_note_ja": "候補7件/上限8件、Gate除外が無いため補完なし(AIの返答が上限未満。数合わせはしません)",
+ "shortfall_note_ja": "候補10件/上限12件(フレーズ最大7・単語最大5)、Gate除外1件、補完1件を追加",
  "grammar": [],
  "grammar_note_ja": "候補なし・要生成(この記事のPart 2文法解説候補は未生成です。仮データは入れていません)"
 }
