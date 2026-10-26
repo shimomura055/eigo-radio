@@ -72,6 +72,7 @@ class World:
         os.makedirs(os.path.dirname(self.out_path), exist_ok=True)
         self.history_path = os.path.join(self.tmp_root, "attempt_history.jsonl")
         self.hr_path = os.path.join(self.tmp_root, "hr_queue.jsonl")
+        self.hr_path_ja = os.path.join(self.tmp_root, "hr_queue_ja.jsonl")     # TRU-06: JA queue (er007 HUMAN_REVIEW_LOG_PATH_JA) is a separate file from EN
         self.events = []
         self.prompts = []
         self.judge_calls = []
@@ -136,7 +137,7 @@ class World:
         if isinstance(d, dict):
             d["asr_judgement"] = {"state": spec["state"], "fake": True}
         if ctx.get("is_last_slot") and not spec["ok"] and not self.suppress_ja_hr and spec["state"] not in ("NG_SECONDARY_UNAVAILABLE", "NG_WHISPER_UNAVAILABLE"):
-            self._write_hr(out_path, text, spec)
+            self._write_hr(out_path, text, spec, path=self.hr_path_ja)
         return spec["ok"], spec["stop"], _Cls(spec["cls"])
 
     def evaluate_detail(self, text, asr_text, prior, wav, **kw):
@@ -152,14 +153,19 @@ class World:
                 "asr_judgement": {"state": spec["state"], "fake": True, "adapter": {"layers": []}},
                 "canonical_text": text, "wav_path": wav, "cost_guard_triggered": False}
 
-    def _write_hr(self, out_path, text, spec):
-        with open(self.hr_path, "a", encoding="utf-8") as f:
+    def _write_hr(self, out_path, text, spec, path=None):
+        with open(path or self.hr_path, "a", encoding="utf-8") as f:
             f.write(json.dumps({"canonical_text": text, "wav_path": out_path, "final_status": spec["cls"]}, ensure_ascii=False) + "\n")
 
     def hr_rows(self):
         if not os.path.exists(self.hr_path):
             return []
         return [json.loads(x) for x in open(self.hr_path, encoding="utf-8") if x.strip()]
+
+    def hr_rows_ja(self):
+        if not os.path.exists(self.hr_path_ja):
+            return []
+        return [json.loads(x) for x in open(self.hr_path_ja, encoding="utf-8") if x.strip()]
 
     # ---- LR fakes
     def lr_run(self, **kw):
@@ -228,6 +234,7 @@ class World:
             st.enter_context(mock.patch.object(secondary_asr, "evaluate_attempt_with_cascade_detail", self.evaluate_detail))
             st.enter_context(mock.patch.object(ja_secondary, "evaluate_attempt_ja_with_cascade", self.evaluate_ja))
             st.enter_context(mock.patch.object(secondary_asr, "HUMAN_REVIEW_LOG_PATH", self.hr_path))
+            st.enter_context(mock.patch.object(ja_secondary, "HUMAN_REVIEW_LOG_PATH_JA", self.hr_path_ja))
             st.enter_context(mock.patch.object(dq18, "apply_disfluency_gate",
                                                lambda v, p, language="en", enabled=False: {"verified": bool(v) and not self.dq_ng, "disfluency_checked": bool(enabled), "disfluency_evidence": None}))
             import er033_tts_flash_lite_backend_wiring_01 as flw

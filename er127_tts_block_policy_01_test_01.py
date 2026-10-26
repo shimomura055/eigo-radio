@@ -99,6 +99,7 @@ class Summary:
         self.sleep_total = sum(w.clock.sleeps)
         self.sleeps = w.clock.sleeps
         self.hr = w.hr_rows()
+        self.hr_ja = w.hr_rows_ja()
         self.lr = len(w.lr_calls)
         self.lr_llm = sum(1 for e in w.events if e[0] == "lr_llm")
         self.prompts = w.prompts
@@ -648,7 +649,8 @@ class LeafMatrixTests(Base):
                 s = self.go(leaf, [F.NG] * 12)
                 self.assertEqual(s.lr, 0)
                 self.assertEqual(s.status, "STOPPED")
-                self.assertEqual(len(s.hr), 1)
+                self.assertEqual(len(s.hr_ja) if leaf in ("L7a", "L7b") else len(s.hr), 1)
+                self.assertEqual(len(s.hr) if leaf in ("L7a", "L7b") else len(s.hr_ja), 0)    # JA->JA queueのみ、EN->EN queueのみ
 
     def test_ja_terminal_ng_without_judge_row_still_one_hrq_row_lock_and_stopped(self):
         """委任_04: JA(L7a=a2 fallback / L7b=charon)の終端NGで、judgeがHRQ行を書かない形(disfluency単独NG・driver判定注入の再現)でも
@@ -658,8 +660,9 @@ class LeafMatrixTests(Base):
             with self.subTest(leaf=leaf):
                 s = self.go(leaf, [F.NG] * 6, world_kw={"suppress_ja_hr": True})
                 self.assertEqual((s.status, s.tts, s.waits()), ("STOPPED", 3, 1))
-                self.assertEqual(len(s.hr), 1)
-                self.assertEqual(s.hr[0]["canonical_text"], F.JA_TEXT)
+                self.assertEqual(len(s.hr_ja), 1)                  # judgeが書かない終端 -> register_ja_terminal_hr がJA queueへ1行
+                self.assertEqual(s.hr, [])                         # 委任_06: EN queueへJA行を書かない
+                self.assertEqual(s.hr_ja[0]["canonical_text"], F.JA_TEXT)
                 entry = rl._load_store(rl._level_out_dir_from_out_path(s.w.out_path)).get("japanese_title")
                 self.assertIsNotNone(entry)
                 self.assertEqual(entry.get("state"), "HUMAN_REVIEW_REQUIRED")
@@ -669,15 +672,17 @@ class LeafMatrixTests(Base):
         for leaf in ("L7a", "L7b"):
             with self.subTest(leaf=leaf):
                 s = self.go(leaf, [F.NG] * 6)
-                self.assertEqual((s.status, len(s.hr)), ("STOPPED", 1))
+                self.assertEqual((s.status, len(s.hr_ja), len(s.hr)), ("STOPPED", 1, 0))   # judgeがJA queueへ1行 -> 終端登録は2行目を作らない
 
     def test_ja_terminal_registration_excludes_tech_failures(self):
         """TTS技術失敗(ASR未実施)・技術STOP(Secondary不能)は品質NGではない=HRQ 0行。"""
         tech = F.judge(False, state="NG_SECONDARY_UNAVAILABLE", cls="UNCERTAIN")
         for leaf in ("L7a", "L7b"):
             with self.subTest(leaf=leaf):
-                self.assertEqual(self.go(leaf, [F.NG] * 6, tts=[False] * 12).hr, [])
-                self.assertEqual(self.go(leaf, [tech] * 6, world_kw={"suppress_ja_hr": True}).hr, [])
+                _s = self.go(leaf, [F.NG] * 6, tts=[False] * 12)
+                self.assertEqual((_s.hr, _s.hr_ja), ([], []))
+                _s = self.go(leaf, [tech] * 6, world_kw={"suppress_ja_hr": True})
+                self.assertEqual((_s.hr, _s.hr_ja), ([], []))
 
     def test_ja_third_after_180s(self):
         for leaf in ("L7a", "L7b"):
@@ -690,7 +695,7 @@ class LeafMatrixTests(Base):
                 s3 = self.go(leaf, [F.NG, F.PASS])
                 self.assertEqual((s3.tts, s3.sleep_total), (2, 0))
                 s4 = self.go(leaf, [F.NG] * 5)
-                self.assertEqual((s4.tts, s4.waits(), len(s4.hr)), (3, 1, 1))
+                self.assertEqual((s4.tts, s4.waits(), len(s4.hr_ja), len(s4.hr)), (3, 1, 1, 0))
 
     def test_kp_four_with_single_wait_before_english_lock(self):
         s = self.go("L6", [F.NG, F.NG, F.PASS])

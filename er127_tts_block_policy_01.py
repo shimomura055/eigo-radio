@@ -558,14 +558,18 @@ def _is_tech_stop(attempt: dict | None) -> bool:
 
 
 def register_terminal_hr(*, out_path: str, canonical_text: str, attempt: dict | None, lock_text: str | None = None,
-                         expected_source: str | None = None, final_status: str = "TERMINAL_NG") -> bool:
+                         expected_source: str | None = None, final_status: str = "TERMINAL_NG", log_fn=None) -> bool:
     """終端NG(最後のblockの最後のattemptが不合格)で、HRQ(human_review_queue.jsonl)へ1行を保証する(Opus M-4)。
     judgeが最終slotで既に書いていれば、既存の重複抑止(同一wav_path+canonical_text)で2行目は作られない。
     disfluency/repetition単独NG・NO_NG_SPAN・LR例外等、judge由来の行が出ない終端でも欠落しない(U-03/U-04b)。
-    技術STOP(Secondary/Whisper不能)は品質NGではない=登録しない(承認不要・再実行で再開)。戻り値=登録を試みたか。"""
+    技術STOP(Secondary/Whisper不能)は品質NGではない=登録しない(承認不要・再実行で再開)。戻り値=登録を試みたか。
+    log_fn(委任_06): queue書込関数(detail->None)。None=EN queue(er006 _log_human_review)。重複抑止(is_duplicate_queue_entry)は
+    log_fn内の『書込先queueファイル単位』なので、judgeが書くqueueと同じqueueのlog_fnを渡さない限り二重登録を防げない(JAはer007のJA queue)。"""
     if not _layout_ok(out_path) or _is_tech_stop(attempt):
         return False
-    import er006_secondary_asr_01 as secondary_asr
+    if log_fn is None:
+        import er006_secondary_asr_01 as secondary_asr
+        log_fn = secondary_asr._log_human_review
     a = attempt or {}
     steps = a.get("cascade_steps") or ([{"classification": a.get("audio_classification"), "asr_text": a.get("asr_text")}] if a else [])
     detail = {"canonical_text": canonical_text, "wav_path": out_path, "steps": steps, "cost_guard_triggered": False,
@@ -574,7 +578,7 @@ def register_terminal_hr(*, out_path: str, canonical_text: str, attempt: dict | 
         detail["lock_canonical_text"] = lock_text
     if expected_source is not None:
         detail["expected_text_source"] = expected_source
-    secondary_asr._log_human_review(detail)
+    log_fn(detail)
     return True
 
 
@@ -587,7 +591,11 @@ def register_ja_terminal_hr(blk: Optional["BlockRun"], text: str, out_path: str,
         return False
     if not last_attempt or last_attempt.get("status") != "OK" or last_attempt.get("verified"):
         return False
-    return register_terminal_hr(out_path=out_path, canonical_text=text, attempt=last_attempt, lock_text=text)
+    # 委任_06: JA判定器(er007 evaluate_attempt_ja_with_cascade)が最終slotで書くのはJA queue(HUMAN_REVIEW_LOG_PATH_JA)。同じqueue・同じ
+    # 重複抑止キー(wav_path+canonical_text)へ書く(EN queueへ書くと『判定器のJA行+終端のEN行』で2行になる。委任_05 JA_01実測)。
+    import er007_ja_secondary_asr_01 as ja_secondary
+    return register_terminal_hr(out_path=out_path, canonical_text=text, attempt=last_attempt, lock_text=text,
+                                log_fn=ja_secondary._log_human_review)
 
 
 def last_attempt_of(result: dict | None) -> dict | None:

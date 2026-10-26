@@ -92,7 +92,7 @@ def run_case(leaf, scenario, cs, *, scope=None, seg=None, level=None):
                 r, err = None, f"{type(exc).__name__}: {exc}"
         rec = {"leaf": leaf, "scenario": scenario, "cs": cs, "result": r, "error": err, "events": w.events,
                "prompts": [p for p in w.prompts], "judge_calls": [{k: v for k, v in j.items() if k != "path"} for j in w.judge_calls],
-               "hr_rows": w.hr_rows(), "lr_calls": w.lr_calls, "sleeps": w.clock.sleeps}
+               "hr_rows": w.hr_rows() + w.hr_rows_ja(), "lr_calls": w.lr_calls, "sleeps": w.clock.sleeps}
         return _norm(rec, w.tmp_root)
     finally:
         w.cleanup()
