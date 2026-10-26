@@ -438,3 +438,7 @@
 - UDR-YFB-2前提修正(FAMILY-Y-VOICE1-PAUSE-CAUSE-TRIAL-01結果): 上記『Voice 1(Algieba)のTTS出力の長停止傾向が主因』→『take間ばらつきが最大要因(cell内分散 Std 84%/Adv 65%)。Voice差(Algieba/Schedar>Zephyr)は1秒以上の長停止回数に限り事後・探索観測(小標本)。6%減速は非原因』。判断はOPEN-531へ。
 - OPEN-531 Y Voice1ポーズ対策の判断(分類D=真に新しい判断): P-A V1枠のVoice変更(Zephyr系、費用0、声質・キャラ適合は試聴判断)/P-B 選別方式(k=3 take生成+停止計測で採用、V1のみ約+9円/記事セット、新Gate=新仕様)/P-C Style A/B追加Trial(Fable権限内、ユーザーがStyle経路を選ぶ場合のみ)/P-D 現状維持。試聴=https://shimomura055.github.io/eigo-radio/user_test/family_y_voice_pause_trial_01/index.html 。Status=報告予定(本転記後にFable)。
 - OPEN-532 Chunk Std拡張の判断(分類D、2026-10-26報告済み): 判断1 Std拡張=案A拡張しない/案B段階拡張(1作品試聴、推奨)/案C 3Family一括。判断2 Y分割方式=UDR-YFB-1(案1 文境界/案2 本文契約変更/案3 現状維持)。
+
+### 2026-10-26 FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01 委任_04 追記(OPEN-528 配線完了。既存行は書き換えず追記のみ)
+- OPEN-528(Z dialogue 文脈・感情付きTTS+Fallback)=**判断済み→配線完了**(ユーザー正式採用APPROVED_FOR_PRODUCTION 2026-10-26[原文=docs/pm/delegation_log/2026-10-26_FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01_USER.md]→Fable判定PRODUCTION_WIRED 2026-10-26)。再質問しない。blockingなし。
+- Deferred(非blocking・分類D=真に新しい判断): (1)Z dialogue Local Rewrite新設(新仕様、現行は3回NG→HR Lock/STOP) (2)M-3(i)=外側ループ会計のpolicy準拠化(既存A2予算規則変更、併発シナリオ未観測) (3)実音声の聴取評価(任意)。いずれも現状の安全側動作で運用でき、ユーザー判断までは現行を維持。

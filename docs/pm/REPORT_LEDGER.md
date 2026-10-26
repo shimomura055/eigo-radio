@@ -582,3 +582,4 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-26 | KP-GATE-EXCLUSION-RESCUE-DESIGN-01 委任_02 | KP Gate除外救済方式の設計(OPEN-529)をUSER_DECISION_REQUIREDとしてユーザー報告済み(2026-10-26)。段階1採否等はユーザー判断待ち。報告台帳のみ追記(PM-SSOT-SYNC-2026-10-26-03)。
 - 2026-10-26 | CHUNK-TTS-PRODUCTION-AUDIT-XYZ-01 委任_01 | Chunk監査(X/Z Adv一致、Std 3Family・Y Adv=UDR)をユーザー報告済み(2026-10-26)。Std拡張(案A/B/C)・Y分割方式のユーザー判断待ち。報告=docs/pm/RESULT_PACKET_CHK1.md
 - 2026-10-26 | FAMILY-Y-VOICE1-PAUSE-CAUSE-TRIAL-01 委任_01 | 『宅配』Voice1ポーズ原因切り分けTrial(VALIDATED限定、実費91.12円)。報告予定(本転記後にFableが報告、未報告)。報告=docs/pm/RESULT_PACKET_YVP1.md
+- 2026-10-26 | FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01 委任_04 | Z文脈・感情付きTTS+Fallback=PRODUCTION_WIRED(Z限定・Std/Adv)をSSOT反映(CURRENT_SPEC新節・DECISION_LOG・OPEN-528・Opus台帳CLOSEOUT・UDR)。API 0。報告予定(本転記後にFableが報告、未報告)。報告=docs/pm/RESULT_PACKET_FZCW4.md

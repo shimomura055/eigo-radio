@@ -1470,6 +1470,8 @@ PROGRESS(2026-09-27着手)、音声工程は読み解決Phase 2後。
 TTS記号正規化(`PRODUCTION_WIRED`)と読み解決resolver
 (`APPROVED_FOR_PRODUCTION`、Phase 2実装中)を必須適用する。**
 
+**Status追記(2026-10-26)**: セリフTTS=文脈・感情付き方式+Fallback は **`PRODUCTION_WIRED`(Family Z限定・Std/Adv、2026-10-26 Fable判定)**。詳細は本ファイル「Family Z セリフTTS 文脈・感情付き方式+Fallback」節。
+
 1. **Family定義**: Fiction系を既存Future Family(Family C=Future Story)
    から独立させ、**Family Z = Fiction**(Literature/Public Domain文学・
    Real Story・Historical True Crime)とする。基本方式は外部Seed方式で
@@ -1638,6 +1640,18 @@ Story"専用設計であり、In One Line相当のsegmentがFamily Cに存在し
   - **実測(2026-10-17 委任_17、run_e2e_03)**: 別枠JPY100に対し実測JPY36.3845(`run_e2e_03/cost_log.jsonl`、stage別=kp 0.0326/tts_b1b 13.8973/tts_a2 22.4546)。¥300枠累計(run_e2e_01 108.11+run_e2e_02 62.83=171.0)とは分離。残り別枠JPY63.62。evidence=`audit/cost_by_stage_17.json`。
   - **運用安全(事故再発防止、`docs/pm/PM_GOVERNANCE.md`26節)**: Z runner(er026/er062/er063)は各API呼出の前・各clipの前に STOPセンチネル(`<run>/STOP` または `er026_output/family_z_production_e2e_01/STOP_ALL`)を確認し、存在すれば新規API呼出をせず監査記録を書いてrc=3で終了する。
   - **Z E2E状態(2026-10-12 委任_11時点)**: **仕様修正反映済み・再生成待ち(予算判断)**。run_e2e_01(旧仕様、累計JPY108.1)は全額無効(再利用しない)。再生成は新規run(run_e2e_02想定)で、ユーザーの予算判断後に委任_12で実施。`PRODUCTION_WIRED`ではない(runtime evidence未取得)。Melos Voice=Algieba暫定(未承認、OPEN-306)。費用台帳・再生成見積: `er026_output/family_z_production_e2e_01/melos/COST_LEDGER_MELOS_01.md`。
+
+## Family Z セリフTTS 文脈・感情付き方式+Fallback(2026-10-26ユーザー正式採用`APPROVED_FOR_PRODUCTION`、`FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01`、OPEN-528、Status=`PRODUCTION_WIRED`[Family Z限定・Std/Adv、2026-10-26 Fable判定])
+
+- **対象**: Family Z dialogue clip(Std=a2・Adv=b1b)のみ。X/Y/B/C・narrator・KPは不変(`attempt_hook=None`/`prior_generations`既定0のgolden fixtureで一致確認)。ユーザー原文=`docs/pm/delegation_log/2026-10-26_FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01_USER.md`。
+- **試行列(総3回)**: 1回目=文脈・感情付き(ctx)→NGなら2回目=ctx(待機0)→NGなら固定600秒cooldown(`er020.COOLDOWN_SECONDS`、実時間)→3回目=従来方式(`style_prefix_override=None`、CONTEXT/話者/前後セリフ/mannerを完全除外。prompt sha256は従来`build_tts_prompt(text, ENGLISH_STYLE_PREFIX)`出力とバイト一致)。3回NGは STOPPED→Review Lock(HUMAN_REVIEW_REQUIRED)→STOP(stage例外`FamilyZTtsClipFailedStop` rc=2。runner既存仕様でsentinelファイルは作らない)。4回目なし。**Z dialogueにLocal Rewriteは未配線**(3回NG→HR Lock/STOP直行。LR新設は新仕様=別承認事項)。「NG」は既存のASR/disfluency/repetition QA(Advは減速後再検証を含む)の採否そのもの。ASR表記違いのみを理由とする再生成は行わない(既存方針)。
+- **感情・文脈notes(正式経路)**: Trialと同一Prompt(rule 1-10)・モデル(`gpt-6-luna`、reasoning low)・CONTEXT書式、level単位で1 call(+失敗時1回再試行、再失敗は技術STOP[再開可])。保存=`<level>/audit/dialogue_ctx_notes.json`(run内不変)。**Trialでの目視レビューは撤去し、決定論検査(逐語引用一致・語数・新規固有名詞・強度語)の3値[ACCEPTED/NO_EXPLICIT_CUE/DISCARDED]を自動受理する工程置換**(Trial決定済み77件で判定一致100%・覆し0。品質基準の緩和ではない)。leakageは観測のみ。module=`er122_fz_ctx_notes_01.py`/`er122_fz_ctx_policy_01.py`(Trial module `er118_*`をimportしない)。
+- **状態の永続化・再開**: attempt状態=`<level>/audit/dialogue_ctx_attempt_state.json`(TTS呼出前に`n_started`を書く=TTS中に落ちても消費済み)。再開は消費済み試行を再実行せず、cooldown起点(前回NG確定時刻)から残りだけ実時間で待機(10分未満にならない)。明示再生成信号(`--only-clips`対象・`consuming_regenerate_approval`・本文/policy/ctx style不一致)のときだけ新規サイクル。run単位policy=`<run>/audit/dialogue_tts_policy.json`(既存run state有=legacy、新規=`fz_ctx_v1`、ロールバック=`Z_DIALOGUE_CTX_POLICY_DEFAULT`)。ctx試行内の技術失敗minimal fallbackは既存安全装置として許容し`minimal_fallback_in_ctx_attempt`と記録。
+- **M-3=(ii)採用**: 実TTSは3回を超えない。Advで行会計により従来方式へ到達せず終わる稀ケース(M-3(i)併発シナリオ)は安全側でSTOPPED→HR Lock(`terminal_before_fallback`)。(i)(外側ループ会計のpolicy準拠化)は既存A2予算規則変更のため未実施=ユーザー判断事項(非blocking)。
+- **Dangling Reference防止**: 旧方式(従来style・`style_prefix_override=None`)は3回目Fallbackとして残置し、policy=legacyの既存run・fallback・`--only-clips`再生成から参照され続ける(旧方式をdeadにしない)。新方式(ctx)も後続経路(fallback・resume・cooldown・Adv外側ループ)から参照される(下記evidenceで実発火確認)。
+- **runtime evidence(2026-10-26、作品=『走れメロス』Std/Adv、実TTS・実ASR・実Gate、実費合計40.31円)**: 全6ケースPASS。E-1 正常経路(注入0)=dialogue 21 clip全てmode=ctx(Std 10・Adv 11)、notes保存、policy=fz_ctx_v1、attempt1 PASS 20/21(Std `part3_c10`は自然発生repetition QAで2回目ctxにPASS)。E-2 強制NG fallback=n1,n2 ctx→cooldown実測600.001秒→n3従来方式PASS(Std/Adv)。E-3 cooldown中kill→再開=重複TTS 0・通算600.0秒・n3のみ実行。E-4 3回NG exhaust=TTS総3回・4回目なし・TERMINAL_NG・HR Lock・rc=2(Std/Adv)。E-5 1回目NG→kill→再開で2回目ctx即時PASS・n1重複なし。E-6 Adv減速後NG→外側ループ継続・通算2回目ctx PASS・二重計上なし。証跡=`docs/research/FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01/EVIDENCE_01.md`・`RUNTIME_EVIDENCE_E-*.json`・`COST_01.md`。test=新規4ファイル93 PASS・既存失敗集合不変・X/Y/B/C golden一致。
+- **量産単価影響(推定・1作品1回)**: TTS区分+0.59円(+2.1%、うちnotes LLM 0.27円)≒+0.9円/セット(猿の手Z総原価46.82円→約47.7円、目標70円に対し余裕あり)。
+- **既知事項(非blocking)**: (a)逸脱D-1=作品を猿の手→melos(猿の手seed provenance不一致でrunnerが課金前停止、証拠価値は作品非依存・Fable許容) (b)M-3(i)併発シナリオは未観測 (c)実音声の聴取評価は未実施(自動QAのみ) (d)Z dialogue LR未配線 (e)D-3: 猿の手`run_fzcw_e1_01`にSTOP/RESTART_STORM_LOCKが残置(当該run dir限定・未解除・使用しない、Fable判断で解除不要)。(b)(c)(d)のユーザー判断候補は`OPEN_ITEMS.md` OPEN-528参照。
 
 ## Family体系(2026-09-27ユーザー決定、`PM-FAMILY-SYSTEM-MIGRATION-ABC-TO-XYZ-2026-09-27`)
 
