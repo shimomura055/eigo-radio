@@ -1,0 +1,171 @@
+{
+ "cases": [
+  {
+   "no": 1,
+   "family": "X",
+   "level": "a2",
+   "display": "too soon to wave a flag",
+   "selection_reasons_now": [
+    "語数が1〜5語でない(実際: 6語)"
+   ],
+   "result": "NOT_RESCUED(短縮不採用)",
+   "route": "-",
+   "code": null,
+   "final": null
+  },
+  {
+   "no": 2,
+   "family": "X",
+   "level": "a2",
+   "display": "studied separately",
+   "selection_reasons_now": [],
+   "result": "PASS(通常フロー・区分1是正)",
+   "route": "通常",
+   "code": null,
+   "final": "study separately",
+   "validator_ok": true
+  },
+  {
+   "no": 3,
+   "family": "X",
+   "level": "b1b",
+   "display": "had our eye on",
+   "selection_reasons_now": [],
+   "result": "PASS(通常フロー・区分1是正)",
+   "route": "通常",
+   "code": null,
+   "final": "have our eye on",
+   "validator_ok": true
+  },
+  {
+   "no": 4,
+   "family": "Z",
+   "level": "b1b",
+   "display": "rose above",
+   "selection_reasons_now": [],
+   "result": "RESCUED",
+   "route": "canonicalization段(救済フロー)",
+   "code": "REDERIVE_M1_WINDOW",
+   "final": "rise above",
+   "dropped_tail": [
+    "the",
+    "other",
+    "voices"
+   ]
+  },
+  {
+   "no": 5,
+   "family": "Z",
+   "level": "b1b",
+   "display": "held out",
+   "selection_reasons_now": [],
+   "result": "RESCUED",
+   "route": "canonicalization段(救済フロー)",
+   "code": "REDERIVE_M1_WINDOW",
+   "final": "hold out",
+   "dropped_tail": [
+    "one's",
+    "hands"
+   ]
+  },
+  {
+   "no": 6,
+   "family": "Z",
+   "level": "b1b",
+   "display": "rang through",
+   "selection_reasons_now": [],
+   "result": "PASS(通常フロー・区分1是正)",
+   "route": "通常",
+   "code": null,
+   "final": "ring through",
+   "validator_ok": true
+  },
+  {
+   "no": 7,
+   "family": "Y",
+   "level": "a2",
+   "display": "it can’t be helped",
+   "selection_reasons_now": [
+    "有限助動詞を含む(既存canonicalization Validatorが拒否する形)"
+   ],
+   "result": "RESCUED",
+   "route": "選定段(救済フロー)",
+   "code": "IDIOM_CORE_WITHOUT_IT",
+   "final": "can’t be helped"
+  },
+  {
+   "no": 8,
+   "family": "Y",
+   "level": "a2",
+   "display": "redelivery fee",
+   "selection_reasons_now": [],
+   "result": "NOT_RESCUED(CMU分解不採用)",
+   "route": "-",
+   "code": null,
+   "final": null,
+   "cmu": [
+    "CMU発音辞書に登録されていない語を含む(未登録語: redelivery。構成する全ての語がCMU辞書に登録された語句だけを選ぶ)"
+   ],
+   "rescue_meta": null
+  },
+  {
+   "no": 9,
+   "family": "Y",
+   "level": "b1b",
+   "display": "can’t be helped",
+   "selection_reasons_now": [
+    "有限助動詞を含む(既存canonicalization Validatorが拒否する形)"
+   ],
+   "result": "PASS(通常フロー・慣用句例外)",
+   "route": "通常(H1: 有限助動詞guard例外)",
+   "code": "IDIOM_AUX_EXCEPTION",
+   "final": "can’t be helped",
+   "idiom": {
+    "form": "in_place",
+    "core": "can't be helped",
+    "headword": "it can't be helped",
+    "pattern": "aux_start"
+   }
+  },
+  {
+   "no": 10,
+   "family": "Y",
+   "level": "b1b",
+   "display": "have a say",
+   "selection_reasons_now": [],
+   "result": "PASS(通常フロー・区分1是正)",
+   "route": "通常",
+   "code": null,
+   "final": "have a say",
+   "validator_ok": true
+  },
+  {
+   "no": 11,
+   "family": "Y",
+   "level": "b1b",
+   "display": "catch their interest",
+   "selection_reasons_now": [
+    "本文に連続一致しない(変更・言い換え・創作)"
+   ],
+   "result": "RESCUED",
+   "route": "選定段(救済フロー)",
+   "code": "REANCHOR_D1",
+   "final": "catches their interest"
+  }
+ ],
+ "real_data": {
+  "n_pairs": 351,
+  "gate_passing": 348,
+  "gate_failing": 3,
+  "passing_but_changed_by_rescue": 0,
+  "failing_and_rescued": []
+ },
+ "lexicon": {
+  "loaded": true,
+  "n": 10657,
+  "reason": "ok",
+  "sha": "5ec8f3aee57745064cbf53d6ab23fa20979a743e1dcb1f1300845bc1439327c1",
+  "fetched_at_utc": "2026-10-26T09:01:12+00:00"
+ },
+ "provenance": "synthetic/frozen fixtures(case_fixtures_01.json)+過去成果物(keywords_canonicalized.json)。API 0。fresh runtime evidenceは委任_02"
+}

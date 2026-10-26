@@ -1,0 +1,545 @@
+{
+  "level": "b1b",
+  "prompt_ids": {
+    "call1": "kp_prompt_2",
+    "call2": "kp_prompt_2v"
+  },
+  "prompt_sha256": {
+    "call1": "a12896f485604f32efd52cb159d2615733c0eca262725af78db0b4f1c9a3dc9a",
+    "call2": "e1d5349ce2fda897b74f0350817ced0d7385842c170d066721eb3917f012f5ec"
+  },
+  "model_requested": "gpt-6-luna",
+  "model_id": {
+    "call1": "REPLAY_FIXTURE",
+    "call2": "REPLAY_FIXTURE"
+  },
+  "generated_at": "2026-10-26T19:11:57.628854+09:00",
+  "round": 1,
+  "candidates": [
+    {
+      "candidate_id": "p_1c1b5d1efa",
+      "selection_phrase": "rose above",
+      "used_form": "rise above",
+      "japanese_gloss": "～より大きく聞こえる",
+      "source_sentence": "At the wedding, his sister's laughter rose above the other voices",
+      "source_sentence_id": "S16",
+      "word_count": 2,
+      "reason_ja": "",
+      "origin": "call1",
+      "raw_rank": 1,
+      "item": {
+        "rank": 1,
+        "source_span": "rose above",
+        "source_sentence": "At the wedding, his sister's laughter rose above the other voices",
+        "display_phrase": "rose above",
+        "key_phrase": "rise above",
+        "used_form": "rise above",
+        "japanese_gloss": "～より大きく聞こえる",
+        "japanese_gloss_tts": "なになにより大きく聞こえる",
+        "changed_from_display_phrase": true,
+        "normalization_reason": "lemma_normalization",
+        "qa": {
+          "qa_standalone_natural_unit": "PASS",
+          "qa_no_residual_context_word": "PASS",
+          "qa_meaning_or_usage_unchanged": "PASS",
+          "qa_reusable_other_context": "PASS",
+          "qa_traceable_contiguous_span": "PASS",
+          "qa_listening_blocker_value_preserved": "PASS",
+          "qa_standalone_comprehensibility": "PASS",
+          "qa_not_over_minimized": "PASS",
+          "qa_context_sufficiency": "PASS",
+          "qa_core_meaning_preserved": "PASS",
+          "qa_no_semantic_role_loss": "PASS",
+          "qa_person_reference_generalized": "PASS"
+        },
+        "qa_overall_status": "PASS",
+        "reasoning": "replay fixture",
+        "kp_extends_beyond_candidate": false,
+        "gloss_review_hint": false,
+        "fulltext_source_ref": "fulltext_exact_v1",
+        "source_sentence_id": "S16",
+        "occurrence_count": 1,
+        "occurrence_sentence_ids": [
+          "S16"
+        ],
+        "selection_resolution_method": "fulltext_exact_unique",
+        "declared_word_count_mismatch": false,
+        "possessor_roles": [],
+        "person_role_repair": {
+          "status": "NO_POSSESSIVE",
+          "roles_ok": null,
+          "roles_reason": "",
+          "repairs": [],
+          "key_before": "rise above the other voices",
+          "role_ok_poss": []
+        },
+        "gloss_alignment": {
+          "version": "ER-003-KP-GLOSS-ALIGN-02",
+          "status": "GLOSS_REALIGNED",
+          "original_japanese_gloss": "ほかの声より大きく聞こえる",
+          "current_gloss_consistent_verdict": false,
+          "reasoning": "「ほかの声」はkey_phraseに含まれない文脈情報なので外し、声や音が何かより大きく聞こえるというrise aboveの意味を表しました。",
+          "adopted_attempt": 1,
+          "added_word_mappings": [],
+          "machine_check_record_only": {
+            "required_words": [],
+            "covered": {},
+            "uncovered": [],
+            "span_not_in_gloss": [],
+            "symbol_only_spans": [],
+            "malformed_mappings": 0,
+            "pass": true,
+            "note": "必須内容語なし(機械検査対象外)"
+          },
+          "attempts_count": 1
+        },
+        "gloss_alignment_status": "ALIGNED",
+        "rescue": {
+          "schema": "kp_rescue_v1",
+          "codes": [
+            "REDERIVE_M1_WINDOW"
+          ],
+          "selection": null,
+          "canonicalization": {
+            "schema": "kp_rescue_v1",
+            "stage": "canonicalization",
+            "code": "REDERIVE_M1_WINDOW",
+            "display_phrase": "rose above",
+            "llm_key_phrase": "rise above the other voices",
+            "rescued_key": "rise above",
+            "llm_tokens_used": 2,
+            "dropped_tail": [
+              "the",
+              "other",
+              "voices"
+            ],
+            "reasons_before": [
+              "key_phrase('rise above the other voices')がdisplay_phraseと一致せず、source_span('rose above')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+            ],
+            "validator_args": {
+              "key": "rise above",
+              "display": "rose above",
+              "source_span": "rose above",
+              "original_span": "rose above",
+              "allow_inflection_normalization": true,
+              "role_ok_poss": [],
+              "normalization_reason": "lemma_normalization"
+            },
+            "validator_args_sha256": "42998b91d0b9d101ffd26d3ca25c4fcde5d46f61ec5e8cdc6a369f59cc8c7871"
+          },
+          "gloss": {
+            "status": "REALIGNED"
+          },
+          "qa": {
+            "status": "PASS",
+            "model_id": "gpt-6-luna"
+          }
+        },
+        "source_sentence_llm": "At the wedding, his sister's laughter rose above the other voices",
+        "resolution_method": "exact",
+        "quote_boundary_truncated": false,
+        "source_reference_contract": "z_sentence_id_posthoc_v1"
+      },
+      "flags": {
+        "qa_fail": false,
+        "gloss_hr_pending": false,
+        "similar_to_ng": false,
+        "redundant_with": [],
+        "rescued": true,
+        "rescue_codes": [
+          "REDERIVE_M1_WINDOW"
+        ]
+      },
+      "gates": {
+        "validate": "PASS",
+        "cmu": "PASS",
+        "canonicalization": "RESCUED_QA_REJUDGED_PASS",
+        "gloss": "ALIGNED",
+        "symbol": "PASS",
+        "src_d1": "PASS"
+      },
+      "auto_eligible": true,
+      "human_selectable": true,
+      "rescue": {
+        "schema": "kp_rescue_v1",
+        "codes": [
+          "REDERIVE_M1_WINDOW"
+        ],
+        "selection": null,
+        "canonicalization": {
+          "schema": "kp_rescue_v1",
+          "stage": "canonicalization",
+          "code": "REDERIVE_M1_WINDOW",
+          "display_phrase": "rose above",
+          "llm_key_phrase": "rise above the other voices",
+          "rescued_key": "rise above",
+          "llm_tokens_used": 2,
+          "dropped_tail": [
+            "the",
+            "other",
+            "voices"
+          ],
+          "reasons_before": [
+            "key_phrase('rise above the other voices')がdisplay_phraseと一致せず、source_span('rose above')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+          ],
+          "validator_args": {
+            "key": "rise above",
+            "display": "rose above",
+            "source_span": "rose above",
+            "original_span": "rose above",
+            "allow_inflection_normalization": true,
+            "role_ok_poss": [],
+            "normalization_reason": "lemma_normalization"
+          },
+          "validator_args_sha256": "42998b91d0b9d101ffd26d3ca25c4fcde5d46f61ec5e8cdc6a369f59cc8c7871"
+        },
+        "gloss": {
+          "status": "REALIGNED"
+        },
+        "qa": {
+          "status": "PASS",
+          "model_id": "gpt-6-luna"
+        }
+      },
+      "rescue_note": "修正済み(元: rose above / REDERIVE_M1_WINDOW)・QA再判定済み",
+      "ai_rank": 1
+    },
+    {
+      "candidate_id": "p_3a75374afb",
+      "selection_phrase": "held out",
+      "used_form": "hold out",
+      "japanese_gloss": "差し出す",
+      "source_sentence": "Melos turned to his friend, but before he could speak, his friend held out his hands for the chains",
+      "source_sentence_id": "S13",
+      "word_count": 2,
+      "reason_ja": "",
+      "origin": "call1",
+      "raw_rank": 2,
+      "item": {
+        "rank": 2,
+        "source_span": "held out",
+        "source_sentence": "Melos turned to his friend, but before he could speak, his friend held out his hands for the chains",
+        "display_phrase": "held out",
+        "key_phrase": "hold out",
+        "used_form": "hold out",
+        "japanese_gloss": "差し出す",
+        "japanese_gloss_tts": "差し出す",
+        "changed_from_display_phrase": true,
+        "normalization_reason": "lemma_normalization",
+        "qa": {
+          "qa_standalone_natural_unit": "PASS",
+          "qa_no_residual_context_word": "PASS",
+          "qa_meaning_or_usage_unchanged": "PASS",
+          "qa_reusable_other_context": "PASS",
+          "qa_traceable_contiguous_span": "PASS",
+          "qa_listening_blocker_value_preserved": "PASS",
+          "qa_standalone_comprehensibility": "PASS",
+          "qa_not_over_minimized": "PASS",
+          "qa_context_sufficiency": "PASS",
+          "qa_core_meaning_preserved": "PASS",
+          "qa_no_semantic_role_loss": "PASS",
+          "qa_person_reference_generalized": "PASS"
+        },
+        "qa_overall_status": "PASS",
+        "reasoning": "replay fixture",
+        "kp_extends_beyond_candidate": false,
+        "gloss_review_hint": false,
+        "fulltext_source_ref": "fulltext_exact_v1",
+        "source_sentence_id": "S13",
+        "occurrence_count": 2,
+        "occurrence_sentence_ids": [
+          "S13",
+          "S37"
+        ],
+        "selection_resolution_method": "fulltext_exact_first_of_N",
+        "declared_word_count_mismatch": false,
+        "possessor_roles": [],
+        "person_role_repair": {
+          "status": "NO_POSSESSIVE",
+          "roles_ok": null,
+          "roles_reason": "",
+          "repairs": [],
+          "key_before": "hold out one's hands",
+          "role_ok_poss": []
+        },
+        "gloss_alignment": {
+          "version": "ER-003-KP-GLOSS-ALIGN-02",
+          "status": "GLOSS_ALREADY_CONSISTENT",
+          "original_japanese_gloss": "差し出す",
+          "current_gloss_consistent_verdict": true,
+          "reasoning": "hold outはこの文脈で「差し出す」という意味で、現在のグロスが句全体の意味を表しています。",
+          "adopted_attempt": 1,
+          "added_word_mappings": [
+            {
+              "english_word": "hold",
+              "japanese_span": "差し出す"
+            }
+          ],
+          "machine_check_record_only": {
+            "required_words": [
+              "hold"
+            ],
+            "covered": {
+              "hold": "差し出す"
+            },
+            "uncovered": [],
+            "span_not_in_gloss": [],
+            "symbol_only_spans": [],
+            "malformed_mappings": 0,
+            "pass": true
+          },
+          "attempts_count": 1
+        },
+        "gloss_alignment_status": "ALIGNED",
+        "rescue": {
+          "schema": "kp_rescue_v1",
+          "codes": [
+            "REDERIVE_M1_WINDOW"
+          ],
+          "selection": null,
+          "canonicalization": {
+            "schema": "kp_rescue_v1",
+            "stage": "canonicalization",
+            "code": "REDERIVE_M1_WINDOW",
+            "display_phrase": "held out",
+            "llm_key_phrase": "hold out one's hands",
+            "rescued_key": "hold out",
+            "llm_tokens_used": 2,
+            "dropped_tail": [
+              "one's",
+              "hands"
+            ],
+            "reasons_before": [
+              "key_phrase(\"hold out one's hands\")がdisplay_phraseと一致せず、source_span('held out')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+            ],
+            "validator_args": {
+              "key": "hold out",
+              "display": "held out",
+              "source_span": "held out",
+              "original_span": "held out",
+              "allow_inflection_normalization": true,
+              "role_ok_poss": [],
+              "normalization_reason": "lemma_normalization"
+            },
+            "validator_args_sha256": "9ec8e4b96511e002e2181667bfc8b50912d54c3fbb4d1c6048267955c06a6777"
+          },
+          "gloss": {
+            "status": "REALIGNED"
+          },
+          "qa": {
+            "status": "PASS",
+            "model_id": "gpt-6-luna"
+          }
+        },
+        "source_sentence_llm": "Melos turned to his friend, but before he could speak, his friend held out his hands for the chains",
+        "resolution_method": "exact",
+        "quote_boundary_truncated": false,
+        "source_reference_contract": "z_sentence_id_posthoc_v1"
+      },
+      "flags": {
+        "qa_fail": false,
+        "gloss_hr_pending": false,
+        "similar_to_ng": false,
+        "redundant_with": [],
+        "rescued": true,
+        "rescue_codes": [
+          "REDERIVE_M1_WINDOW"
+        ]
+      },
+      "gates": {
+        "validate": "PASS",
+        "cmu": "PASS",
+        "canonicalization": "RESCUED_QA_REJUDGED_PASS",
+        "gloss": "ALIGNED",
+        "symbol": "PASS",
+        "src_d1": "PASS"
+      },
+      "auto_eligible": true,
+      "human_selectable": true,
+      "rescue": {
+        "schema": "kp_rescue_v1",
+        "codes": [
+          "REDERIVE_M1_WINDOW"
+        ],
+        "selection": null,
+        "canonicalization": {
+          "schema": "kp_rescue_v1",
+          "stage": "canonicalization",
+          "code": "REDERIVE_M1_WINDOW",
+          "display_phrase": "held out",
+          "llm_key_phrase": "hold out one's hands",
+          "rescued_key": "hold out",
+          "llm_tokens_used": 2,
+          "dropped_tail": [
+            "one's",
+            "hands"
+          ],
+          "reasons_before": [
+            "key_phrase(\"hold out one's hands\")がdisplay_phraseと一致せず、source_span('held out')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+          ],
+          "validator_args": {
+            "key": "hold out",
+            "display": "held out",
+            "source_span": "held out",
+            "original_span": "held out",
+            "allow_inflection_normalization": true,
+            "role_ok_poss": [],
+            "normalization_reason": "lemma_normalization"
+          },
+          "validator_args_sha256": "9ec8e4b96511e002e2181667bfc8b50912d54c3fbb4d1c6048267955c06a6777"
+        },
+        "gloss": {
+          "status": "REALIGNED"
+        },
+        "qa": {
+          "status": "PASS",
+          "model_id": "gpt-6-luna"
+        }
+      },
+      "rescue_note": "修正済み(元: held out / REDERIVE_M1_WINDOW)・QA再判定済み",
+      "ai_rank": 2
+    },
+    {
+      "candidate_id": "p_a82d6af521",
+      "selection_phrase": "threw himself into the flood",
+      "used_form": "threw himself into the flood",
+      "japanese_gloss": "洪水に飛び込む",
+      "source_sentence": "He stepped back, ran, and threw himself into the flood",
+      "source_sentence_id": "S23",
+      "word_count": 5,
+      "reason_ja": "",
+      "origin": "call1",
+      "raw_rank": 3,
+      "item": {
+        "rank": 3,
+        "source_span": "threw himself into the flood",
+        "source_sentence": "He stepped back, ran, and threw himself into the flood",
+        "display_phrase": "threw himself into the flood",
+        "key_phrase": "threw himself into the flood",
+        "used_form": "threw himself into the flood",
+        "japanese_gloss": "洪水に飛び込む",
+        "japanese_gloss_tts": "洪水に飛び込む",
+        "changed_from_display_phrase": false,
+        "normalization_reason": "none",
+        "qa": {
+          "qa_standalone_natural_unit": "PASS",
+          "qa_no_residual_context_word": "PASS",
+          "qa_meaning_or_usage_unchanged": "PASS",
+          "qa_reusable_other_context": "PASS",
+          "qa_traceable_contiguous_span": "PASS",
+          "qa_listening_blocker_value_preserved": "PASS",
+          "qa_standalone_comprehensibility": "PASS",
+          "qa_not_over_minimized": "PASS",
+          "qa_context_sufficiency": "PASS",
+          "qa_core_meaning_preserved": "PASS",
+          "qa_no_semantic_role_loss": "PASS",
+          "qa_person_reference_generalized": "PASS"
+        },
+        "qa_overall_status": "PASS",
+        "reasoning": "replay fixture",
+        "kp_extends_beyond_candidate": false,
+        "gloss_review_hint": false,
+        "fulltext_source_ref": "fulltext_exact_v1",
+        "source_sentence_id": "S23",
+        "occurrence_count": 1,
+        "occurrence_sentence_ids": [
+          "S23"
+        ],
+        "selection_resolution_method": "fulltext_exact_unique",
+        "declared_word_count_mismatch": false,
+        "possessor_roles": [],
+        "person_role_repair": {
+          "status": "NO_POSSESSIVE",
+          "roles_ok": null,
+          "roles_reason": "",
+          "repairs": [],
+          "key_before": "threw himself into the flood",
+          "role_ok_poss": []
+        },
+        "gloss_alignment": {
+          "version": "ER-003-KP-GLOSS-ALIGN-02",
+          "status": "GLOSS_REALIGNED",
+          "original_japanese_gloss": null,
+          "current_gloss_consistent_verdict": false,
+          "reasoning": "洪水の水の中へ自分の体ごと入る、文字どおりの動作です。「洪水に飛び込む」は、その動作を自然な日本語で表しています。",
+          "adopted_attempt": 1,
+          "added_word_mappings": [],
+          "machine_check_record_only": {
+            "required_words": [],
+            "covered": {},
+            "uncovered": [],
+            "span_not_in_gloss": [],
+            "symbol_only_spans": [],
+            "malformed_mappings": 0,
+            "pass": true,
+            "note": "必須内容語なし(機械検査対象外)"
+          },
+          "attempts_count": 1,
+          "meaning_stage": "applied",
+          "meaning_stage_path": "newgen_meaning_v1",
+          "meaning_in_text_en": "To propel one's own body into overflowing water.",
+          "naive_ja": "自分自身を洪水の中へ投げる",
+          "naive_ja_conveys": "yes",
+          "import_flags": [],
+          "gloss_equals_naive_ja": false
+        },
+        "gloss_alignment_status": "ALIGNED",
+        "source_sentence_llm": "He stepped back, ran, and threw himself into the flood",
+        "resolution_method": "exact",
+        "quote_boundary_truncated": false,
+        "source_reference_contract": "z_sentence_id_posthoc_v1"
+      },
+      "flags": {
+        "qa_fail": false,
+        "gloss_hr_pending": false,
+        "similar_to_ng": false,
+        "redundant_with": []
+      },
+      "gates": {
+        "validate": "PASS",
+        "cmu": "PASS",
+        "canonicalization": "PASS",
+        "gloss": "ALIGNED",
+        "symbol": "PASS",
+        "src_d1": "PASS"
+      },
+      "auto_eligible": true,
+      "human_selectable": true,
+      "ai_rank": 3
+    }
+  ],
+  "dropped": [],
+  "redundancy_qa": {
+    "status": "REDUNDANCY_PASS",
+    "duplicate_pairs": [],
+    "model_id": null
+  },
+  "shortfall": true,
+  "outer_attempts": 1,
+  "outer_retry_log": [
+    {
+      "outer_attempt": 1,
+      "excluded_in": [],
+      "stages": {
+        "canonicalization_0": "CANONICALIZATION_PASS",
+        "redundancy_qa": "REDUNDANCY_PASS"
+      },
+      "call1_status": "KEY_WORDS_STRUCTURE_PASS",
+      "call2_status": "OK",
+      "n_candidates": 3,
+      "n_auto_eligible": 3,
+      "n_gate_dropped": 0,
+      "n_rescued": 2,
+      "rescued_not_auto": []
+    }
+  ],
+  "rescue_provenance": {
+    "schema": "kp_rescue_v1",
+    "rescue_enabled": true,
+    "lexicon_sha256": "5ec8f3aee57745064cbf53d6ab23fa20979a743e1dcb1f1300845bc1439327c1",
+    "lexicon_status": "ok",
+    "lexicon_n": 10657,
+    "lexicon_pin": "5ec8f3aee57745064cbf53d6ab23fa20979a743e1dcb1f1300845bc1439327c1",
+    "denylist_pin": "5582e366d784a7d31383c68c4c12def6d9adc814c4fd9a0f2b48e5dbfd028fbd"
+  }
+}
