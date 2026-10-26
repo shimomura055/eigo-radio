@@ -1,0 +1,277 @@
+{
+  "case": "R3_Y_redelivery_a2",
+  "family": "Y",
+  "level": "a2",
+  "ok": true,
+  "elapsed_s": 83.9,
+  "frozen": {
+    "call1": [
+      "make an effort",
+      "end up getting it",
+      "takes up"
+    ],
+    "call2": [
+      "it can’t be helped",
+      "when it suits me",
+      "redelivery fee"
+    ],
+    "canon_keys_n": 4,
+    "source_doc": "er121_output/family_y_production_01/redelivery_fee/run_01/key_phrases/a2/kp_candidates.json",
+    "note": null
+  },
+  "vocab_calls": 2,
+  "canon_calls": 2,
+  "canon_real_sets": [
+    [
+      "goes to delivery workers",
+      "have a hard time",
+      "in person"
+    ]
+  ],
+  "backfill_raw": "{\"items\":[{\"phrase\":\"goes to delivery workers\",\"reason_ja\":\"費用などが特定の受け手に回ることを表す。\",\"word_count\":4},{\"phrase\":\"as it is\",\"reason_ja\":\"「現状のままで」という意味を表す慣用表現。\",\"word_count\":3},{\"phrase\":\"have a hard time\",\"reason_ja\":\"何かをするのに苦労することを表す。\",\"word_count\":4},{\"phrase\":\"in person\",\"reason_ja\":\"代理や配送ではなく、本人が直接行うことを表す。\",\"word_count\":2}]}",
+  "backfill_model": "gpt-6-luna",
+  "backfill": {
+    "enabled": true,
+    "triggered": true,
+    "status": "OK",
+    "failure": null,
+    "E": {
+      "total": 1,
+      "phrase": 1,
+      "word": 0,
+      "human_ng": 0,
+      "excluded": 0,
+      "by_stage": {
+        "cmu": 1
+      },
+      "items": [
+        {
+          "phrase": "redelivery fee",
+          "kind": "phrase",
+          "stage": "cmu",
+          "origin": "call2"
+        }
+      ]
+    },
+    "N": {
+      "room": 3,
+      "total": 1,
+      "phrase_wanted": 1,
+      "word_wanted": 0,
+      "capped": false
+    },
+    "prompt_id": "kp_prompt_2v",
+    "prompt_sha256": "e1d5349ce2fda897b74f0350817ced0d7385842c170d066721eb3917f012f5ec",
+    "model_id": "gpt-6-luna",
+    "response_id": "resp_000fa26e170be90a006adf5efa880c87d0b6b2f9cc91487808",
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "model": "gpt-6-luna",
+        "response_id": "resp_000fa26e170be90a006adf5efa880c87d0b6b2f9cc91487808",
+        "n_selected": 4,
+        "n_kept": 3,
+        "n_dropped": 1
+      }
+    ],
+    "added": [
+      {
+        "candidate_id": "p_ab74745534",
+        "kind": "phrase",
+        "used_form": "go to delivery workers",
+        "ai_rank": 6
+      }
+    ],
+    "surplus": [
+      {
+        "candidate_id": "p_2befc7ff20",
+        "kind": "phrase",
+        "used_form": "have a hard time"
+      },
+      {
+        "candidate_id": "p_7aafe489f5",
+        "kind": "phrase",
+        "used_form": "in person"
+      }
+    ],
+    "dropped_by_stage": {
+      "validate": 1
+    }
+  },
+  "shortfall_detail": {
+    "n_candidates": 6,
+    "cap": 8,
+    "missing": 2,
+    "E_total": 1,
+    "backfilled": 1,
+    "unfilled_by_kind": {
+      "phrase": 0,
+      "word": 0
+    }
+  },
+  "candidates": [
+    {
+      "ai_rank": 1,
+      "origin": "call1",
+      "kind": "phrase",
+      "selection_phrase": "make an effort",
+      "used_form": "make an effort",
+      "auto_eligible": true,
+      "rescued": false,
+      "rescue_codes": null,
+      "gates": {
+        "validate": "PASS",
+        "cmu": "PASS",
+        "canonicalization": "PASS",
+        "gloss": "ALIGNED",
+        "symbol": "PASS",
+        "src_d1": "NA"
+      }
+    },
+    {
+      "ai_rank": 2,
+      "origin": "call1",
+      "kind": "phrase",
+      "selection_phrase": "end up getting it",
+      "used_form": "end up getting it",
+      "auto_eligible": true,
+      "rescued": false,
+      "rescue_codes": null,
+      "gates": {
+        "validate": "PASS",
+        "cmu": "PASS",
+        "canonicalization": "PASS",
+        "gloss": "ALIGNED",
+        "symbol": "PASS",
+        "src_d1": "NA"
+      }
+    },
+    {
+      "ai_rank": 3,
+      "origin": "call1",
+      "kind": "phrase",
+      "selection_phrase": "takes up",
+      "used_form": "take up",
+      "auto_eligible": true,
+      "rescued": false,
+      "rescue_codes": null,
+      "gates": {
+        "validate": "PASS",
+        "cmu": "PASS",
+        "canonicalization": "PASS",
+        "gloss": "ALIGNED",
+        "symbol": "PASS",
+        "src_d1": "NA"
+      }
+    },
+    {
+      "ai_rank": 4,
+      "origin": "call2",
+      "kind": "phrase",
+      "selection_phrase": "can't be helped",
+      "used_form": "can't be helped",
+      "auto_eligible": true,
+      "rescued": true,
+      "rescue_codes": [
+        "IDIOM_CORE_WITHOUT_IT"
+      ],
+      "gates": {
+        "validate": "PASS",
+        "cmu": "PASS",
+        "canonicalization": "PASS",
+        "gloss": "ALIGNED",
+        "symbol": "PASS",
+        "src_d1": "NA"
+      }
+    },
+    {
+      "ai_rank": 5,
+      "origin": "call2",
+      "kind": "phrase",
+      "selection_phrase": "when it suits me",
+      "used_form": "when it suits someone",
+      "auto_eligible": true,
+      "rescued": false,
+      "rescue_codes": null,
+      "gates": {
+        "validate": "PASS",
+        "cmu": "PASS",
+        "canonicalization": "PASS",
+        "gloss": "ALIGNED",
+        "symbol": "PASS",
+        "src_d1": "NA"
+      }
+    },
+    {
+      "ai_rank": 6,
+      "origin": "backfill",
+      "kind": "phrase",
+      "selection_phrase": "goes to delivery workers",
+      "used_form": "go to delivery workers",
+      "auto_eligible": true,
+      "rescued": false,
+      "rescue_codes": null,
+      "gates": {
+        "validate": "PASS",
+        "cmu": "PASS",
+        "canonicalization": "PASS",
+        "gloss": "ALIGNED",
+        "symbol": "PASS",
+        "src_d1": "NA"
+      }
+    }
+  ],
+  "dropped": [
+    {
+      "phrase": "redelivery fee",
+      "stage": "cmu",
+      "origin": "call2",
+      "reasons": [
+        "CMU発音辞書に登録されていない語を含む(未登録語: redelivery。構成する全ての語がCMU辞書に登録された語句だけを選ぶ)"
+      ]
+    },
+    {
+      "phrase": "as it is",
+      "stage": "validate",
+      "origin": "backfill",
+      "reasons": [
+        "有限助動詞を含む(既存canonicalization Validatorが拒否する形)"
+      ]
+    }
+  ],
+  "outer_retry_log": [
+    {
+      "outer_attempt": 1,
+      "excluded_in": [],
+      "stages": {
+        "canonicalization_0": "CANONICALIZATION_PASS",
+        "backfill_canonicalization_0": "CANONICALIZATION_PASS",
+        "redundancy_qa": "REDUNDANCY_PASS"
+      },
+      "call1_status": "KEY_WORDS_STRUCTURE_PASS",
+      "call2_status": "OK",
+      "backfill": {
+        "triggered": true,
+        "status": "OK",
+        "E": 1,
+        "added": 1
+      },
+      "n_candidates": 6,
+      "n_auto_eligible": 6,
+      "n_gate_dropped": 1,
+      "n_rescued": 1,
+      "rescued_not_auto": []
+    }
+  ],
+  "candidates_sha256": "502e0ecaf8f085c7e2c2768cb25f44f662cdd9bb5b2ae19821e461021830a698",
+  "api_calls_logged": 5,
+  "api_calls_by_stage": {
+    "kp_gloss_alignment": 2,
+    "null": 3
+  },
+  "models": {
+    "gpt-6-luna": 5
+  },
+  "cost_jpy_logged": 0.0
+}

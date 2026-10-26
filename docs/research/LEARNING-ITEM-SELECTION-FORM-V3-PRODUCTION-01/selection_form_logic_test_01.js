@@ -18,7 +18,7 @@ t('data schema: monkeys_paw b1b', () => { assert.deepStrictEqual(FL.validateArti
 t('data: rescued flag shown for pulled free', () => { const f = mp.phrases.filter(p => p.flag === 'rescued').map(p => p.term); assert.ok(f.includes('pulled free')); });
 t('data: gate-dropped interferes not present', () => { assert.ok(!FL.terms(mp).some(x => x === 'interferes')); });
 t('data schema: dummy', () => { assert.deepStrictEqual(FL.validateArticle(dummy), []); assert.strictEqual(dummy.grammar.length, 3); });
-t('index schema + 9 slots + default exists', () => { assert.deepStrictEqual(FL.validateIndex(idx), []); assert.strictEqual(idx.articles.filter(a => !a.slug.startsWith('ui_check')).length, 9); assert.ok(idx.articles.some(a => FL.stateKey(a) === idx.default)); });
+t('index schema + 9 slots + default exists', () => { assert.deepStrictEqual(FL.validateIndex(idx), []); assert.strictEqual(idx.articles.filter(a => !a.slug.startsWith('ui_check') && !a.slug.endsWith('_prod')).length, 9); assert.ok(idx.articles.some(a => FL.stateKey(a) === idx.default)); });
 t('index data files exist and valid', () => { idx.articles.filter(a => a.data).forEach(a => assert.deepStrictEqual(FL.validateArticle(rd(a.data)), [])); });
 
 t('cumulative: (1) max 3', () => {

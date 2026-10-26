@@ -1,0 +1,185 @@
+{
+  "case": "R6_Z_melos_b1b",
+  "family": "Z",
+  "level": "b1b",
+  "ok": true,
+  "elapsed_s": 76.8,
+  "frozen": {
+    "call1": [
+      "sentenced him to death",
+      "pulled him under"
+    ],
+    "call2": [
+      "earn such trust",
+      "execution",
+      "held out"
+    ],
+    "canon_keys_n": 6,
+    "source_doc": "er026_output/family_z_production_e2e_01/melos/run_p2_evidence_r3/key_phrases/b1b/kp_candidates.json",
+    "note": null
+  },
+  "vocab_calls": 1,
+  "canon_calls": 2,
+  "canon_real_sets": [
+    [
+      "hold out"
+    ]
+  ],
+  "backfill_raw": null,
+  "backfill_model": null,
+  "backfill": {
+    "enabled": true,
+    "triggered": false,
+    "status": "NOT_TRIGGERED",
+    "reason": "E=0",
+    "E": {
+      "total": 0,
+      "phrase": 0,
+      "word": 0,
+      "human_ng": 0,
+      "excluded": 0,
+      "by_stage": {},
+      "items": []
+    }
+  },
+  "shortfall_detail": {
+    "n_candidates": 5,
+    "cap": 8,
+    "missing": 3,
+    "E_total": 0,
+    "backfilled": 0,
+    "unfilled_by_kind": null
+  },
+  "candidates": [
+    {
+      "ai_rank": 1,
+      "origin": "call1",
+      "kind": "phrase",
+      "selection_phrase": "sentenced him to death",
+      "used_form": "sentence someone to death",
+      "auto_eligible": true,
+      "rescued": false,
+      "rescue_codes": null,
+      "gates": {
+        "validate": "PASS",
+        "cmu": "PASS",
+        "canonicalization": "PASS",
+        "gloss": "ALIGNED",
+        "symbol": "PASS",
+        "src_d1": "PASS"
+      }
+    },
+    {
+      "ai_rank": 2,
+      "origin": "call1",
+      "kind": "phrase",
+      "selection_phrase": "pulled him under",
+      "used_form": "pull someone under",
+      "auto_eligible": true,
+      "rescued": false,
+      "rescue_codes": null,
+      "gates": {
+        "validate": "PASS",
+        "cmu": "PASS",
+        "canonicalization": "PASS",
+        "gloss": "ALIGNED",
+        "symbol": "PASS",
+        "src_d1": "PASS"
+      }
+    },
+    {
+      "ai_rank": 3,
+      "origin": "call2",
+      "kind": "phrase",
+      "selection_phrase": "earn such trust",
+      "used_form": "earn such trust",
+      "auto_eligible": true,
+      "rescued": false,
+      "rescue_codes": null,
+      "gates": {
+        "validate": "PASS",
+        "cmu": "PASS",
+        "canonicalization": "PASS",
+        "gloss": "ALIGNED",
+        "symbol": "PASS",
+        "src_d1": "PASS"
+      }
+    },
+    {
+      "ai_rank": 4,
+      "origin": "call2",
+      "kind": "word",
+      "selection_phrase": "execution",
+      "used_form": "execution",
+      "auto_eligible": true,
+      "rescued": false,
+      "rescue_codes": null,
+      "gates": {
+        "validate": "PASS",
+        "cmu": "PASS",
+        "canonicalization": "PASS",
+        "gloss": "ALIGNED",
+        "symbol": "PASS",
+        "src_d1": "PASS"
+      }
+    },
+    {
+      "ai_rank": 5,
+      "origin": "call2",
+      "kind": "phrase",
+      "selection_phrase": "held out",
+      "used_form": "hold out",
+      "auto_eligible": false,
+      "rescued": true,
+      "rescue_codes": [
+        "REDERIVE_M1_WINDOW"
+      ],
+      "gates": {
+        "validate": "PASS",
+        "cmu": "PASS",
+        "canonicalization": "RESCUED_QA_NOT_REJUDGED",
+        "gloss": "ALIGNED",
+        "symbol": "PASS",
+        "src_d1": "PASS"
+      }
+    }
+  ],
+  "dropped": [],
+  "outer_retry_log": [
+    {
+      "outer_attempt": 1,
+      "excluded_in": [],
+      "stages": {
+        "canonicalization_0": "CANONICALIZATION_PASS",
+        "redundancy_qa": "REDUNDANCY_PASS"
+      },
+      "call1_status": "KEY_WORDS_STRUCTURE_PASS",
+      "call2_status": "OK",
+      "backfill": {
+        "triggered": false,
+        "status": "NOT_TRIGGERED",
+        "E": 0,
+        "added": 0
+      },
+      "n_candidates": 5,
+      "n_auto_eligible": 4,
+      "n_gate_dropped": 0,
+      "n_rescued": 1,
+      "rescued_not_auto": [
+        "p_3a75374afb"
+      ]
+    }
+  ],
+  "candidates_sha256": "faa8b0c8091982021828ba0da3c34d133c4cd1d1b4509cc41210455135907f8d",
+  "api_calls_logged": 4,
+  "api_calls_by_stage": {
+    "kp_gloss_alignment": 1,
+    "kp_rescue_gloss_realign": 1,
+    "kp_rescue_qa_rejudge": 1,
+    "null": 1
+  },
+  "models": {
+    "gpt-6-luna": 4
+  },
+  "cost_jpy_logged": 0.0
+}
