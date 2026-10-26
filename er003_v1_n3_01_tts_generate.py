@@ -883,7 +883,9 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
             r["fallback_attempts_log"] = fallback_attempts
             r["reason"] = (f"ASR Cascadeを尽くしても解決せず、retryでの改善が見込めないため打ち切り"
                            f"(最終classification={cls.classification})")
+            er127.register_ja_terminal_hr(_blk, text, out_path, fallback_attempts[-1] if fallback_attempts else None)   # 委任_04: 終端NG=HRQ1行
             return r
+    er127.register_ja_terminal_hr(_blk, text, out_path, fallback_attempts[-1] if fallback_attempts else None)           # 委任_04: 終端NG=HRQ1行
     return {"status": "STOPPED",
             "reason": f"標準経路{len(standard.get('attempts_log') or [])}回+fallback経路{len(fallback_attempts)}回"
                       f"(合計上限{max_attempts}回)とも不合格",

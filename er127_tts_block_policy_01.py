@@ -355,6 +355,21 @@ class BlockProgress:
         self._write()
 
     def mark_done(self, final_status: str | None = None) -> None:
+        # 委任_04: 書込直前にfileを再読込しblocksをmerge(depth0のfinishがdepth1=LR blockの記録を上書きで消さない)
+        disk = self._read()
+        if disk and disk.get("key") == self.key:
+            for d, b in (disk.get("blocks") or {}).items():
+                mine = self.state["blocks"].get(d)
+                if mine is None:
+                    self.state["blocks"][d] = b
+                else:
+                    mine["n_started"] = max(int(mine.get("n_started") or 0), int(b.get("n_started") or 0))
+                    for o, a in (b.get("attempts") or {}).items():
+                        mine["attempts"].setdefault(o, a)
+                    if mine.get("cooldown") is None and b.get("cooldown") is not None:
+                        mine["cooldown"] = b["cooldown"]
+            if (disk.get("lr") or {}).get("used") and not self.state["lr"].get("used"):
+                self.state["lr"] = disk["lr"]
         self.state["status"] = "DONE"
         self.state["final_status"] = final_status
         self.state["updated_epoch"] = RUNTIME.clock()
@@ -561,6 +576,18 @@ def register_terminal_hr(*, out_path: str, canonical_text: str, attempt: dict | 
         detail["expected_text_source"] = expected_source
     secondary_asr._log_human_review(detail)
     return True
+
+
+def register_ja_terminal_hr(blk: Optional["BlockRun"], text: str, out_path: str, last_attempt: dict | None) -> bool:
+    """委任_04: JA leaf(L7: generate_a2_japanese_with_fallback / generate_charon_japanese)の終端NG(最後のattemptがASR判定済みで不合格)は、
+    judgeがHRQ行を書かない形(disfluency/repetition単独NG等)でも『終端NG1件=HRQ1行』(U-04)を保証する。judge由来の行がある場合は
+    既存の重複抑止(同一wav_path+canonical_text)で2行目は作られない。統一ブロック外(blk None)・LR block内(depth>=1。JAはLR対象外)・
+    TTS技術失敗(最後のattemptがASR未実施=status!=OK)・合格attempt・技術STOP(Secondary不能。register_terminal_hr内)は登録しない。"""
+    if blk is None or getattr(blk, "depth", 0) != 0:
+        return False
+    if not last_attempt or last_attempt.get("status") != "OK" or last_attempt.get("verified"):
+        return False
+    return register_terminal_hr(out_path=out_path, canonical_text=text, attempt=last_attempt, lock_text=text)
 
 
 def last_attempt_of(result: dict | None) -> dict | None:

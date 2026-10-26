@@ -77,6 +77,7 @@ MAX_CUMULATIVE_ASR_CALLS = 60
 # 6回生成しても同じ結果を繰り返すだけで無駄という監査結果を受けた変更。
 # 全Production generate関数(er003_v1_repro01_main_generate.py等)の
 # max_attempts既定値はこの定数を参照する(SSOT、CURRENT_SPEC.md参照)。
+# 【現行(2026-10-26 TTS統一、正本=er127_tts_block_policy_01.py)】1ブロック=3回+間に180秒。LRありのsegmentは元ブロック3+LRブロック3の最大6、KP英語は4。以下の「総3回」記述は1ブロックの上限。
 PRODUCTION_MAX_TTS_ATTEMPTS = 3
 
 # ============================================================

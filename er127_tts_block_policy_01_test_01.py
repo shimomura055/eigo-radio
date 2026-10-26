@@ -74,8 +74,10 @@ def run(leaf, judge, *, scope="__default__", post_judge=(), tts=None, cs=True, s
     """leafを1回実行して要約を返す(例外は捕捉して返す)。"""
     wkw = dict(world_kw or {})
     dq_ng = wkw.pop("dq_ng", False)
+    suppress_ja_hr = wkw.pop("suppress_ja_hr", False)
     w = make_world(leaf, judge=judge, post_judge=post_judge, tts=tts, **wkw)
     w.dq_ng = dq_ng
+    w.suppress_ja_hr = suppress_ja_hr
     sc = LEAF_CFG[leaf][2] if scope == "__default__" else scope
     try:
         with w.patched(scope=sc):
@@ -399,6 +401,41 @@ class BlockRunTests(unittest.TestCase):
     def open(self, leaf="L1", text="hello", **kw):
         return blk.open_block(leaf, self.out, text, fingerprint={"style": "s"}, **kw)
 
+    def test_mark_done_keeps_depth1_lr_block_record(self):
+        """委任_04: depth0のmark_done(finish)が、別BlockProgress(depth1=LR block)がfileへ書いた記録を上書きで消さない。resume判定は不変。"""
+        b0 = self.open()
+        b0.step(1); b0.done(1, False)
+        b0.step(2); b0.done(2, False)
+        b0.step(3); b0.done(3, False)
+        b1 = self.open(text="hello rewritten", ctx=blk.BlockCtx(depth=1, slot_offset=3, total_slots=6, script_version="v1",
+                                                                m1_anchor_text="hello", lock_text="hello"))
+        b1.step(1); b1.done(1, False)
+        b1.step(2); b1.done(2, True)
+        path = b0.progress.path
+        before = json.load(open(path, encoding="utf-8"))
+        self.assertIn("1", before["blocks"])                    # depth1が書いた(depth0のin-memoryには無い)
+        b0.finish({"status": "OK"})                             # depth0のmark_done
+        after = json.load(open(path, encoding="utf-8"))
+        self.assertEqual(after["status"], "DONE")
+        self.assertEqual(after["final_status"], "OK")
+        self.assertEqual(sorted(after["blocks"]), ["0", "1"])   # 両方残る
+        self.assertEqual(after["blocks"]["0"]["n_started"], 3)
+        self.assertEqual(after["blocks"]["1"]["n_started"], 2)
+        self.assertEqual(sorted(after["blocks"]["1"]["attempts"]), ["1", "2"])
+        self.assertTrue(after["blocks"]["1"]["attempts"]["2"]["verified"])
+        self.assertEqual(sorted(after["blocks"]["0"]["attempts"]), ["1", "2", "3"])
+        # DONEは次run=新規サイクル(resume判定不変)
+        b_next = self.open()
+        self.assertFalse(b_next.progress.resumed)
+
+    def test_mark_done_resume_judgement_unchanged_when_in_progress_not_marked(self):
+        """mark_doneしなければ(STOP等の例外終了)IN_PROGRESSのまま=resume可(従来どおり)。"""
+        b0 = self.open()
+        b0.step(1); b0.done(1, False)
+        b0r = self.open()
+        self.assertTrue(b0r.progress.resumed)
+        self.assertTrue(b0r.progress.consumed(0, 1))
+
     def test_wait_only_before_third_and_only_after_ng(self):
         b = self.open()
         s1 = b.step(1)
@@ -612,6 +649,35 @@ class LeafMatrixTests(Base):
                 self.assertEqual(s.lr, 0)
                 self.assertEqual(s.status, "STOPPED")
                 self.assertEqual(len(s.hr), 1)
+
+    def test_ja_terminal_ng_without_judge_row_still_one_hrq_row_lock_and_stopped(self):
+        """委任_04: JA(L7a=a2 fallback / L7b=charon)の終端NGで、judgeがHRQ行を書かない形(disfluency単独NG・driver判定注入の再現)でも
+        終端NG1件=HRQ1行+STOPPED+Lock。"""
+        import er011_human_review_lock_01 as rl
+        for leaf in ("L7a", "L7b"):
+            with self.subTest(leaf=leaf):
+                s = self.go(leaf, [F.NG] * 6, world_kw={"suppress_ja_hr": True})
+                self.assertEqual((s.status, s.tts, s.waits()), ("STOPPED", 3, 1))
+                self.assertEqual(len(s.hr), 1)
+                self.assertEqual(s.hr[0]["canonical_text"], F.JA_TEXT)
+                entry = rl._load_store(rl._level_out_dir_from_out_path(s.w.out_path)).get("japanese_title")
+                self.assertIsNotNone(entry)
+                self.assertEqual(entry.get("state"), "HUMAN_REVIEW_REQUIRED")
+
+    def test_ja_terminal_ng_with_judge_row_is_not_duplicated(self):
+        """判定器経由で既に1行ある終端は、終端登録を足しても2行目を作らない(重複登録防止)。"""
+        for leaf in ("L7a", "L7b"):
+            with self.subTest(leaf=leaf):
+                s = self.go(leaf, [F.NG] * 6)
+                self.assertEqual((s.status, len(s.hr)), ("STOPPED", 1))
+
+    def test_ja_terminal_registration_excludes_tech_failures(self):
+        """TTS技術失敗(ASR未実施)・技術STOP(Secondary不能)は品質NGではない=HRQ 0行。"""
+        tech = F.judge(False, state="NG_SECONDARY_UNAVAILABLE", cls="UNCERTAIN")
+        for leaf in ("L7a", "L7b"):
+            with self.subTest(leaf=leaf):
+                self.assertEqual(self.go(leaf, [F.NG] * 6, tts=[False] * 12).hr, [])
+                self.assertEqual(self.go(leaf, [tech] * 6, world_kw={"suppress_ja_hr": True}).hr, [])
 
     def test_ja_third_after_180s(self):
         for leaf in ("L7a", "L7b"):

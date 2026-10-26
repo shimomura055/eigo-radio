@@ -84,6 +84,7 @@ class World:
         self.stop_after_sleeps = None   # N回sleepしたらSTOP例外(待機中STOP)
         self.slowdown_calls = []
         self.voices = []                # TTS呼出ごとの(voice名, model名)  ※resolve_tts_call_and_promptの引数を記録
+        self.suppress_ja_hr = False     # True: JA judgeが最終slotでもHRQ行を書かない(disfluency単独NG・driver判定注入の再現。委任_04)
         self.dq_ng = False              # Trueならdisfluency/repetition gateが常にNG化(ASR一致でも不合格=U-03の再現)
 
     def path_for(self, seg):
@@ -134,7 +135,7 @@ class World:
         d = kw.get("detail_out")
         if isinstance(d, dict):
             d["asr_judgement"] = {"state": spec["state"], "fake": True}
-        if ctx.get("is_last_slot") and not spec["ok"]:
+        if ctx.get("is_last_slot") and not spec["ok"] and not self.suppress_ja_hr and spec["state"] not in ("NG_SECONDARY_UNAVAILABLE", "NG_WHISPER_UNAVAILABLE"):
             self._write_hr(out_path, text, spec)
         return spec["ok"], spec["stop"], _Cls(spec["cls"])
 
