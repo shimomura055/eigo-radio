@@ -1,0 +1,689 @@
+{
+ "model": "gpt-6-luna",
+ "response_id": "resp_0b79b3dd68a4dda1006adeeef56d1487d089856a401e5933cc",
+ "n_items": 42,
+ "usage": {
+  "input": 3828,
+  "cached": 3825,
+  "output": 3568
+ },
+ "cost_jpy": 0.2916,
+ "budget_jpy": 30.0,
+ "items_in": [
+  {
+   "id": "0:too soon",
+   "source_sentence": "Even so, it is too soon to wave a flag and say, \"Play and get smarter—proof complete!\" The experienced group did better, and removing one memory lowered its score.",
+   "original_selected_phrase": "too soon to wave a flag",
+   "repaired_unit": "too soon",
+   "how_repaired": "A1_subspan"
+  },
+  {
+   "id": "0:too soon to do",
+   "source_sentence": "Even so, it is too soon to wave a flag and say, \"Play and get smarter—proof complete!\" The experienced group did better, and removing one memory lowered its score.",
+   "original_selected_phrase": "too soon to wave a flag",
+   "repaired_unit": "too soon to do",
+   "how_repaired": "A2 slot generalization (replaces the tail with a generic verb 'do'; the word 'do' is not in the source)"
+  },
+  {
+   "id": "0:wave a flag",
+   "source_sentence": "Even so, it is too soon to wave a flag and say, \"Play and get smarter—proof complete!\" The experienced group did better, and removing one memory lowered its score.",
+   "original_selected_phrase": "too soon to wave a flag",
+   "repaired_unit": "wave a flag",
+   "how_repaired": "A1 contiguous sub-span of the original phrase (alternative)"
+  },
+  {
+   "id": "0:flag",
+   "source_sentence": "Even so, it is too soon to wave a flag and say, \"Play and get smarter—proof complete!\" The experienced group did better, and removing one memory lowered its score.",
+   "original_selected_phrase": "too soon to wave a flag",
+   "repaired_unit": "flag",
+   "how_repaired": "A1 contiguous sub-span of the original phrase (alternative)"
+  },
+  {
+   "id": "1:study separately",
+   "source_sentence": "These two results need to be studied separately.",
+   "original_selected_phrase": "studied separately",
+   "repaired_unit": "study separately",
+   "how_repaired": "LLMのkeyが区分1規則是正だけで通常フローを通る"
+  },
+  {
+   "id": "4:have our eye on",
+   "source_sentence": "The case had started before the suspect we had our eye on even appeared.",
+   "original_selected_phrase": "had our eye on",
+   "repaired_unit": "have our eye on",
+   "how_repaired": "役割判定(lexical have)で通常フローを通る"
+  },
+  {
+   "id": "5:rise above",
+   "source_sentence": "I know you'll come back.\" At the wedding, his sister's laughter rose above the other voices.",
+   "original_selected_phrase": "rose above",
+   "repaired_unit": "rise above",
+   "how_repaired": "M1再導出(救済フロー)"
+  },
+  {
+   "id": "6:hold out",
+   "source_sentence": "If you are late, he dies instead.\" Melos turned to his friend, but before he could speak, his friend held out his hands for the chains.",
+   "original_selected_phrase": "held out",
+   "repaired_unit": "hold out",
+   "how_repaired": "M1再導出(救済フロー)"
+  },
+  {
+   "id": "8:ring through",
+   "source_sentence": "【記事本文】 Melos's voice rang through the hall.",
+   "original_selected_phrase": "rang through",
+   "repaired_unit": "ring through",
+   "how_repaired": "LLMのkeyが区分1規則是正だけで通常フローを通る"
+  },
+  {
+   "id": "9:can’t be helped",
+   "source_sentence": "I guess it can't be helped.",
+   "original_selected_phrase": "it can’t be helped",
+   "repaired_unit": "can’t be helped",
+   "how_repaired": "主語(it)除去の連続部分列+慣用句の法助動詞例外"
+  },
+  {
+   "id": "11:can’t be helped",
+   "source_sentence": "The delivery workers must have a hard time because there aren't enough of them, and I guess it can't be helped.",
+   "original_selected_phrase": "can’t be helped",
+   "repaired_unit": "can’t be helped",
+   "how_repaired": "慣用句の法助動詞例外(辞書見出しの核と一致)"
+  },
+  {
+   "id": "12:have a say",
+   "source_sentence": "I want to have a say in what I can use and how I use it.",
+   "original_selected_phrase": "have a say",
+   "repaired_unit": "have a say",
+   "how_repaired": "役割判定(lexical have)で通常フローを通る"
+  },
+  {
+   "id": "13:catch their interest",
+   "source_sentence": "I don't think it's okay to let them use whatever catches their interest",
+   "original_selected_phrase": "catch their interest",
+   "repaired_unit": "catch their interest",
+   "how_repaired": "D1 本文近傍への再アンカー(既存原形化validatorの逆引き)"
+  },
+  {
+   "id": "19:have a big moment",
+   "source_sentence": null,
+   "original_selected_phrase": "have a big moment",
+   "repaired_unit": "have a big moment",
+   "how_repaired": "役割判定(lexical have)で通常フローを通る"
+  },
+  {
+   "id": "23:mocking me",
+   "source_sentence": "Their easy smiles were mocking me.",
+   "original_selected_phrase": "were mocking me",
+   "repaired_unit": "mocking me",
+   "how_repaired": "contiguous sub-span that drops the auxiliary (deterministic scope check passed)"
+  },
+  {
+   "id": "23:mocking",
+   "source_sentence": "Their easy smiles were mocking me.",
+   "original_selected_phrase": "were mocking me",
+   "repaired_unit": "mocking",
+   "how_repaired": "contiguous sub-span that drops the auxiliary (deterministic scope check passed)"
+  },
+  {
+   "id": "24:offered his hands",
+   "source_sentence": "Return late, and he will die in your place.\" Melos turned to his friend, who offered his hands for the chains.",
+   "original_selected_phrase": "offered his hands for the chains",
+   "repaired_unit": "offered his hands",
+   "how_repaired": "A1_subspan"
+  },
+  {
+   "id": "24:his hands for the chains",
+   "source_sentence": "Return late, and he will die in your place.\" Melos turned to his friend, who offered his hands for the chains.",
+   "original_selected_phrase": "offered his hands for the chains",
+   "repaired_unit": "his hands for the chains",
+   "how_repaired": "A1 contiguous sub-span of the original phrase (alternative)"
+  },
+  {
+   "id": "24:hands for the chains",
+   "source_sentence": "Return late, and he will die in your place.\" Melos turned to his friend, who offered his hands for the chains.",
+   "original_selected_phrase": "offered his hands for the chains",
+   "repaired_unit": "hands for the chains",
+   "how_repaired": "A1 contiguous sub-span of the original phrase (alternative)"
+  },
+  {
+   "id": "24:his hands",
+   "source_sentence": "Return late, and he will die in your place.\" Melos turned to his friend, who offered his hands for the chains.",
+   "original_selected_phrase": "offered his hands for the chains",
+   "repaired_unit": "his hands",
+   "how_repaired": "A1 contiguous sub-span of the original phrase (alternative)"
+  },
+  {
+   "id": "25:lose my trust in you",
+   "source_sentence": "I almost lost my trust in you,\" his friend replied",
+   "original_selected_phrase": "lose my trust in you",
+   "repaired_unit": "lose my trust in you",
+   "how_repaired": "D1 本文近傍への再アンカー(既存原形化validatorの逆引き)"
+  },
+  {
+   "id": "27:borne it",
+   "source_sentence": "Could you have borne it?",
+   "original_selected_phrase": "Could you have borne it",
+   "repaired_unit": "borne it",
+   "how_repaired": "contiguous sub-span that drops the auxiliary (deterministic scope check passed)"
+  },
+  {
+   "id": "27:borne",
+   "source_sentence": "Could you have borne it?",
+   "original_selected_phrase": "Could you have borne it",
+   "repaired_unit": "borne",
+   "how_repaired": "contiguous sub-span that drops the auxiliary (deterministic scope check passed)"
+  },
+  {
+   "id": "28:borne it",
+   "source_sentence": null,
+   "original_selected_phrase": "could have borne it",
+   "repaired_unit": "borne it",
+   "how_repaired": "contiguous sub-span that drops the auxiliary (deterministic scope check passed)"
+  },
+  {
+   "id": "28:borne",
+   "source_sentence": null,
+   "original_selected_phrase": "could have borne it",
+   "repaired_unit": "borne",
+   "how_repaired": "contiguous sub-span that drops the auxiliary (deterministic scope check passed)"
+  },
+  {
+   "id": "29:you bear",
+   "source_sentence": "Could you bear that?",
+   "original_selected_phrase": "Could you bear that?",
+   "repaired_unit": "you bear",
+   "how_repaired": "contiguous sub-span that drops the auxiliary (deterministic scope check passed)"
+  },
+  {
+   "id": "29:bear",
+   "source_sentence": "Could you bear that?",
+   "original_selected_phrase": "Could you bear that?",
+   "repaired_unit": "bear",
+   "how_repaired": "contiguous sub-span that drops the auxiliary (deterministic scope check passed)"
+  },
+  {
+   "id": "44:not bear",
+   "source_sentence": "I could not bear another second.",
+   "original_selected_phrase": "could not bear",
+   "repaired_unit": "not bear",
+   "how_repaired": "contiguous sub-span that drops the auxiliary (deterministic scope check passed)"
+  },
+  {
+   "id": "45:not bear another second",
+   "source_sentence": "I could not bear another second.",
+   "original_selected_phrase": "could not bear another second",
+   "repaired_unit": "not bear another second",
+   "how_repaired": "contiguous sub-span that drops the auxiliary (deterministic scope check passed)"
+  },
+  {
+   "id": "45:not bear another",
+   "source_sentence": "I could not bear another second.",
+   "original_selected_phrase": "could not bear another second",
+   "repaired_unit": "not bear another",
+   "how_repaired": "contiguous sub-span that drops the auxiliary (deterministic scope check passed)"
+  },
+  {
+   "id": "58:one's ears began to ring",
+   "source_sentence": "Soon my ears began to ring.",
+   "original_selected_phrase": "my ears began to ring",
+   "repaired_unit": "one's ears began to ring",
+   "how_repaired": "M1再導出(救済フロー)"
+  },
+  {
+   "id": "59:lose touch",
+   "source_sentence": "We promised to meet here tonight at ten, whatever happened.\" \"Do you hear from him these days?\" \"We lost touch years ago,\" Bob said with a smile.",
+   "original_selected_phrase": "lost touch",
+   "repaired_unit": "lose touch",
+   "how_repaired": "M1再導出(救済フロー)"
+  },
+  {
+   "id": "63:strike a match",
+   "source_sentence": "\"There used to be a restaurant here.\" \"They pulled it down five years ago.\" Bob struck a match.",
+   "original_selected_phrase": "struck a match",
+   "repaired_unit": "strike a match",
+   "how_repaired": "LLMのkeyが区分1規則是正だけで通常フローを通る"
+  },
+  {
+   "id": "65:nearly abandoned someone",
+   "source_sentence": "\"I nearly abandoned you,\" he whispered.",
+   "original_selected_phrase": "nearly abandoned you",
+   "repaired_unit": "nearly abandoned someone",
+   "how_repaired": "M1再導出(救済フロー)"
+  },
+  {
+   "id": "66:pulling free",
+   "source_sentence": "\"It's Herbert!\" She ran towards the door, pulling free when Mr.",
+   "original_selected_phrase": "pulling free",
+   "repaired_unit": "pulling free",
+   "how_repaired": "表層形へ戻す(revert。原形はguard/表の範囲外のため)"
+  },
+  {
+   "id": "67:accept no responsibility",
+   "source_sentence": "\"The firm accepts no responsibility, but offers you two hundred pounds in compensation.\" Mr.",
+   "original_selected_phrase": "accepts no responsibility",
+   "repaired_unit": "accept no responsibility",
+   "how_repaired": "LLMのkeyが区分1規則是正だけで通常フローを通る"
+  },
+  {
+   "id": "69:growing louder and louder",
+   "source_sentence": "The sound kept growing louder and louder!",
+   "original_selected_phrase": "growing louder and louder",
+   "repaired_unit": "growing louder and louder",
+   "how_repaired": "表層形へ戻す(revert。原形はguard/表の範囲外のため)"
+  },
+  {
+   "id": "70:one's blood went cold",
+   "source_sentence": "Whenever it turned towards me, my blood went cold.",
+   "original_selected_phrase": "my blood went cold",
+   "repaired_unit": "one's blood went cold",
+   "how_repaired": "M1再導出(救済フロー)"
+  },
+  {
+   "id": "76:freeze my blood",
+   "source_sentence": "It froze my blood.",
+   "original_selected_phrase": "froze my blood",
+   "repaired_unit": "freeze my blood",
+   "how_repaired": "M1再導出(救済フロー)"
+  },
+  {
+   "id": "77:eased open",
+   "source_sentence": "For seven nights, at midnight, he eased open the bedroom door.",
+   "original_selected_phrase": "eased open",
+   "repaired_unit": "eased open",
+   "how_repaired": "表層形へ戻す(revert。原形はguard/表の範囲外のため)"
+  },
+  {
+   "id": "81:one's ears began ringing",
+   "source_sentence": "My ears began ringing, so I spoke more loudly.",
+   "original_selected_phrase": "My ears began ringing",
+   "repaired_unit": "one's ears began ringing",
+   "how_repaired": "M1再導出(救済フロー)"
+  },
+  {
+   "id": "83:leave no mark",
+   "source_sentence": "I put them back carefully, leaving no mark.",
+   "original_selected_phrase": "leaving no mark",
+   "repaired_unit": "leave no mark",
+   "how_repaired": "LLMのkeyが区分1規則是正だけで通常フローを通る"
+  }
+ ],
+ "judgements": [
+  {
+   "id": "0:too soon",
+   "meaning_vs_source": "narrowed",
+   "natural_english": true,
+   "standalone_learning_unit": "weak",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt_with_hr_flag",
+   "note_ja": "元の「旗を振るほどではない」という含みは薄れます。"
+  },
+  {
+   "id": "0:too soon to do",
+   "meaning_vs_source": "changed",
+   "natural_english": false,
+   "standalone_learning_unit": "bad",
+   "corresponds_to_source_text": false,
+   "verdict": "reject",
+   "note_ja": "出典にない do が加わり、表現としても不自然です。"
+  },
+  {
+   "id": "0:wave a flag",
+   "meaning_vs_source": "changed",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt_with_hr_flag",
+   "note_ja": "単独では文字どおりの「旗を振る」と読め、元の比喩的な意味が伝わりません。"
+  },
+  {
+   "id": "0:flag",
+   "meaning_vs_source": "changed",
+   "natural_english": true,
+   "standalone_learning_unit": "weak",
+   "corresponds_to_source_text": true,
+   "verdict": "reject",
+   "note_ja": "元の「早計だ」という意味を表す学習単位ではありません。"
+  },
+  {
+   "id": "1:study separately",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "原形化されており、自然な学習単位です。"
+  },
+  {
+   "id": "4:have our eye on",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "「注目している」という自然な慣用表現です。"
+  },
+  {
+   "id": "5:rise above",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "ここでは声の上に響くという意味で自然です。"
+  },
+  {
+   "id": "6:hold out",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "weak",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt_with_hr_flag",
+   "note_ja": "「差し出す」の意味ですが、目的語がなく用法が複数あります。"
+  },
+  {
+   "id": "8:ring through",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "音が場所全体に響き渡る意味の自然な表現です。"
+  },
+  {
+   "id": "9:can’t be helped",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "「仕方がない」を表す定型表現です。"
+  },
+  {
+   "id": "11:can’t be helped",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "「仕方がない」を表す定型表現です。"
+  },
+  {
+   "id": "12:have a say",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "「発言権がある」という自然な慣用表現です。"
+  },
+  {
+   "id": "13:catch their interest",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "「興味を引く」という自然な表現です。"
+  },
+  {
+   "id": "19:have a big moment",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "weak",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt_with_hr_flag",
+   "note_ja": "自然な表現ですが、文脈なしでは意味がやや曖昧です。"
+  },
+  {
+   "id": "23:mocking me",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "「私をあざ笑う」という意味が保たれています。"
+  },
+  {
+   "id": "23:mocking",
+   "meaning_vs_source": "narrowed",
+   "natural_english": true,
+   "standalone_learning_unit": "weak",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt_with_hr_flag",
+   "note_ja": "相手をあざ笑う意味は単独では特定できません。"
+  },
+  {
+   "id": "24:offered his hands",
+   "meaning_vs_source": "narrowed",
+   "natural_english": true,
+   "standalone_learning_unit": "weak",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt_with_hr_flag",
+   "note_ja": "手を差し出す意味は保たれますが、鎖にかける目的が抜けています。"
+  },
+  {
+   "id": "24:his hands for the chains",
+   "meaning_vs_source": "changed",
+   "natural_english": false,
+   "standalone_learning_unit": "bad",
+   "corresponds_to_source_text": true,
+   "verdict": "reject",
+   "note_ja": "動詞がなく、独立した学習単位として不自然です。"
+  },
+  {
+   "id": "24:hands for the chains",
+   "meaning_vs_source": "changed",
+   "natural_english": false,
+   "standalone_learning_unit": "bad",
+   "corresponds_to_source_text": true,
+   "verdict": "reject",
+   "note_ja": "動詞がなく、独立した表現として成り立ちません。"
+  },
+  {
+   "id": "24:his hands",
+   "meaning_vs_source": "narrowed",
+   "natural_english": true,
+   "standalone_learning_unit": "weak",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt_with_hr_flag",
+   "note_ja": "手を指すだけで、鎖に差し出す意味は伝わりません。"
+  },
+  {
+   "id": "25:lose my trust in you",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "「あなたへの信頼を失う」という自然な表現です。"
+  },
+  {
+   "id": "27:borne it",
+   "meaning_vs_source": "narrowed",
+   "natural_english": false,
+   "standalone_learning_unit": "bad",
+   "corresponds_to_source_text": true,
+   "verdict": "reject",
+   "note_ja": "助動詞なしの過去分詞句では、独立した学習単位として不自然です。"
+  },
+  {
+   "id": "27:borne",
+   "meaning_vs_source": "narrowed",
+   "natural_english": true,
+   "standalone_learning_unit": "weak",
+   "corresponds_to_source_text": true,
+   "verdict": "reject",
+   "note_ja": "過去分詞だけでは意味や用法が特定しにくいです。"
+  },
+  {
+   "id": "28:borne it",
+   "meaning_vs_source": "narrowed",
+   "natural_english": false,
+   "standalone_learning_unit": "bad",
+   "corresponds_to_source_text": true,
+   "verdict": "reject",
+   "note_ja": "助動詞なしの過去分詞句では、独立した学習単位として不自然です。"
+  },
+  {
+   "id": "28:borne",
+   "meaning_vs_source": "narrowed",
+   "natural_english": true,
+   "standalone_learning_unit": "weak",
+   "corresponds_to_source_text": true,
+   "verdict": "reject",
+   "note_ja": "過去分詞だけでは意味や用法が特定しにくいです。"
+  },
+  {
+   "id": "29:you bear",
+   "meaning_vs_source": "narrowed",
+   "natural_english": true,
+   "standalone_learning_unit": "weak",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt_with_hr_flag",
+   "note_ja": "「耐える」という意味ですが、目的語と疑問の形が抜けています。"
+  },
+  {
+   "id": "29:bear",
+   "meaning_vs_source": "narrowed",
+   "natural_english": true,
+   "standalone_learning_unit": "weak",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt_with_hr_flag",
+   "note_ja": "動詞単体では多義的で、元の「耐える」の意味が明確ではありません。"
+  },
+  {
+   "id": "44:not bear",
+   "meaning_vs_source": "narrowed",
+   "natural_english": false,
+   "standalone_learning_unit": "bad",
+   "corresponds_to_source_text": true,
+   "verdict": "reject",
+   "note_ja": "助動詞なしの not bear は独立表現として不自然です。"
+  },
+  {
+   "id": "45:not bear another second",
+   "meaning_vs_source": "narrowed",
+   "natural_english": false,
+   "standalone_learning_unit": "bad",
+   "corresponds_to_source_text": true,
+   "verdict": "reject",
+   "note_ja": "助動詞を欠き、独立した文句として不自然です。"
+  },
+  {
+   "id": "45:not bear another",
+   "meaning_vs_source": "changed",
+   "natural_english": false,
+   "standalone_learning_unit": "bad",
+   "corresponds_to_source_text": true,
+   "verdict": "reject",
+   "note_ja": "助動詞と目的語を欠き、不自然で意味も曖昧です。"
+  },
+  {
+   "id": "58:one's ears began to ring",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "耳鳴りが始まることを表す自然な表現です。"
+  },
+  {
+   "id": "59:lose touch",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "「連絡が途絶える」という自然な慣用表現です。"
+  },
+  {
+   "id": "63:strike a match",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "「マッチをする」という自然な表現です。"
+  },
+  {
+   "id": "65:nearly abandoned someone",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "「誰かをもう少しで見捨てる」という意味が保たれています。"
+  },
+  {
+   "id": "66:pulling free",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "「自由になろうともがく」という自然な表現です。"
+  },
+  {
+   "id": "67:accept no responsibility",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "「責任を一切負わない」という自然な表現です。"
+  },
+  {
+   "id": "69:growing louder and louder",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "音がだんだん大きくなることを表す自然な句です。"
+  },
+  {
+   "id": "70:one's blood went cold",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "恐怖で血の気が引くことを表す慣用表現です。"
+  },
+  {
+   "id": "76:freeze my blood",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "「ぞっとさせる」という意味の自然な表現です。"
+  },
+  {
+   "id": "77:eased open",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "weak",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt_with_hr_flag",
+   "note_ja": "自然ですが、目的語がないと用法が少し分かりにくいです。"
+  },
+  {
+   "id": "81:one's ears began ringing",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "耳鳴りが始まることを表す自然な表現です。"
+  },
+  {
+   "id": "83:leave no mark",
+   "meaning_vs_source": "same",
+   "natural_english": true,
+   "standalone_learning_unit": "good",
+   "corresponds_to_source_text": true,
+   "verdict": "adopt",
+   "note_ja": "「跡を残さない」という自然な表現です。"
+  }
+ ],
+ "provenance": "fresh(LLM評価のみ。救済候補の生成は決定論)"
+}
