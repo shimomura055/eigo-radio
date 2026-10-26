@@ -416,3 +416,9 @@
 
 - Y分割方式(UDR-YFB-1): **ユーザー判断待ち**。事実=Y本文は各Voice 1段落のためX規則(段落2未満は分割しない)で分割は不発火、ポーズの原因ではない。案1 Y専用文境界分割(効果は比較Trial未確認、費用約数円〜十数円)/案3 現状維持(費用0・仕様どおり)/案4 Std拡張(Std本文も対象にする=新仕様)。委任_02の推奨=効果がTrial未確認のためまず比較Trial。証跡=docs/research/FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01/INVESTIGATION_01.md。
 - Voice 1対策(UDR-YFB-2): **ユーザー判断待ち**。事実=Voice 1(Algieba)のTTS出力の長停止傾向が主因。候補Std/Adv各3 take(未採用)を試聴ページに掲載済み(停止占有率はStd 15.9〜21.1% vs 現行25.6%、Adv 17.5〜17.9% vs 現行19.9%)。P1 Voice差替(新仕様・QDC影響大)/P2 候補から試聴選択(推奨、追加費用0・採用は`approved_by=user`)/P5 現状維持。証跡=docs/research/FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01/VOICE1_CANDIDATES_01.md。
+
+### 2026-10-26 PM-SSOT-SYNC-2026-10-26-02 追記(FZ全編通しTrial OPEN-528 / Y Fable受入。調査中/UDR区分。既存行は書き換えず追記)
+
+- OPEN-528 FZ全編通しTrial 2作品(猿の手・走れメロス、Std/Adv計4単位)の通し試聴判断(効果十分→Production採用検討/不安定→現行維持/別方式、ユーザー試聴後): **調査中・ユーザー判断待ち(USER_LISTENING_PENDING)**。Status(Fable)=猿Std/猿Adv/メロAdv=USER_LISTENING_PENDING、メロStd=REJECTED候補(比較条件不成立、方式欠陥ではない)。試聴の注目点=同一人物の演技の一貫性・地の文→セリフの切替・不自然な速度変化/長ポーズ・境界RMS段差。量産想定Δ/set +1.80〜+3.26円(70円比2.6〜4.7%)。Production未承認。公開=https://shimomura055.github.io/eigo-radio/user_test/fz_full_episode_trial_01/index.html 。報告=docs/pm/RESULT_PACKET_FZFE4.md。
+- OPEN-526 X AI島記事(候補数案A/B/C+HR選択)は2026-10-26 PM-SSOT-SYNC-2026-10-26-01で登録済み(重複追加せず)。
+- OPEN-527 Y: Comment 2削除はFable受入=PRODUCTION_WIRED(限定)。UDR-YFB-1(分割方式)・UDR-YFB-2(Voice 1)は上記委任_03追記のとおりユーザー判断待ち(変更なし)。
