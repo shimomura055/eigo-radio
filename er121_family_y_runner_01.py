@@ -424,7 +424,7 @@ def stage_translate(ctx) -> dict:
 
 
 # ------------------------------------------------------------
-# stage: support(Preview / Comment 1〜3。Comment 4・In One Lineは無い)
+# stage: support(Preview / Comment 1〜3。Comment 4・In One Lineは無い。Advanced(b1b)はComment 2なし=Preview/Comment 1/Comment 3のみ)
 # ------------------------------------------------------------
 def _support_modules(lv):
     if lv == "b1b":
@@ -457,17 +457,25 @@ def stage_support(ctx) -> dict:
                     raise YE2EStop(f"FAMILY_Y_SUPPORT_FAILED({lv},{label}): status={r.get('status')}")
                 return r
             c1 = call(gen.COMMENT_1_ROLE, ctxs["comment_1"], "comment_1")
-            c2 = call(ys.Y_COMMENT_2_ROLE[lv], ctxs["comment_2"], "comment_2")
+            if "comment_2" in ys.support_names(lv):        # Standardのみ(日本語側は現状維持)。AdvancedはComment 2を生成しない(2026-10-26ユーザー承認)
+                c2 = call(ys.Y_COMMENT_2_ROLE[lv], ctxs["comment_2"], "comment_2")
+            else:
+                c2 = None
             c3 = call(ys.Y_COMMENT_3_ROLE[lv], ctxs["comment_3"], "comment_3")
-            prev_role = gen.PREVIEW_ROLE.format(comment_1=c1["text"], comment_2=c2["text"])
+            if c2 is not None:
+                prev_role = gen.PREVIEW_ROLE.format(comment_1=c1["text"], comment_2=c2["text"])
+            else:
+                prev_role = ys.advanced_preview_role(gen.PREVIEW_ROLE).format(comment_1=c1["text"])
             prev = call(prev_role, ctxs["preview"], "preview")
-            res = {"preview": prev, "comment_1": c1, "comment_2": c2, "comment_3": c3}
+            res = {"preview": prev, "comment_1": c1, **({"comment_2": c2} if c2 is not None else {}), "comment_3": c3}
             pat = ys.AI_ANNOUNCE_RE if lv == "a2" else ys.AI_ANNOUNCE_EN_RE
             hit = [k for k, v in res.items() if pat.search(v["text"])]
             if hit:
                 raise YE2EStop(f"FAMILY_Y_AI_ANNOUNCE_IN_SUPPORT({lv}): {hit}(音声へAIアナウンスを入れない。再生成が必要)")
             doc = {k: v["text"] for k, v in res.items()}
-            doc["_meta"] = {"model_requested": model, "comment_4_generated": False, "attempts": {k: v.get("attempts") for k, v in res.items()}}
+            doc["_meta"] = {"model_requested": model, "comment_4_generated": False,
+                            **({"removed_by_spec": {n: ys.COMMENT2_REMOVED_SPEC for n in ys.Y_REMOVED_SUPPORT_NAMES[lv]}} if ys.Y_REMOVED_SUPPORT_NAMES[lv] else {}),
+                            "attempts": {k: v.get("attempts") for k, v in res.items()}}
             return json.dumps(doc, ensure_ascii=False, indent=2), {"routing_key": "B1_SUPPORT" if lv == "b1b" else "A2_SUPPORT", "requested_model": model}
 
         r = _ensure(ctx, prov, unit, _sha(f"{unit}|{_sha(text)}"), out_path, runner)
@@ -1181,6 +1189,8 @@ def write_final_manifest(ctx) -> str:
            "ja_article": _ja_path(ctx), "closing_record": tr.get("closing_record"),
            "stage_entries": entries,
            "study_text_slots": STUDY_TEXT_SLOTS, "chunk_tts": CHUNK_TTS_MANIFEST, "core_numeric_v4_j2": "not_applicable_Y",
+           "support_segments": {lv: list(ys.support_names(lv)) for lv in LEVELS},
+           "removed_by_spec": {lv: {n: ys.COMMENT2_REMOVED_SPEC for n in ys.Y_REMOVED_SUPPORT_NAMES[lv]} for lv in LEVELS if ys.Y_REMOVED_SUPPORT_NAMES[lv]},
            "spent_jpy": round(ctx.budget.spent(), 4) if ctx.budget is not None else None}
     path = f"{ctx.out_dir}/final_manifest.json"
     _wj(path, man)
@@ -1231,7 +1241,7 @@ STAGE_PLAN_INFO = {
     "seed_check": "読み取りのみ(routing登録・Voice割当・Theme Package・text core接続)",
     "text": "text core(Voice/Lead/紹介/Closing+Leakage Gate。routing FAMILY_Y_*)→ text/article_ja.md, text/text_records.json(closing_record)",
     "translate": "Advanced忠実英訳 → Standard(X承認済み関数。FAMILY_Y_TRANSLATE_ADV/STD)→ translate/{b1b,a2}.md",
-    "support": "Preview/Comment 1〜3(Comment 4・In One Lineなし)→ support/{b1b,a2}_support.json",
+    "support": "Preview/Comment 1〜3(Comment 4・In One Lineなし。AdvancedはComment 2なし)→ support/{b1b,a2}_support.json",
     "kp": "KP Human Review(rc=4待機)→ KP確定 → Adv英語解説 → key_phrases/",
     "tts_b1b": "Y body 8seg + shared narration + KP(TTS flash-lite+ASR。Chunk/中核数値はY非適用)",
     "tts_a2": "同(Standard。6%減速)",

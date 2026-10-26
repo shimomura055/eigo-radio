@@ -127,7 +127,9 @@ class DevVerbatim(unittest.TestCase):
         body = [n for n in tree.body if isinstance(n, ast.Assign) and any(isinstance(t, ast.Name) and t.id in keep for t in n.targets)]
         ns = {}
         exec(compile(ast.Module(body=body, type_ignores=[]), "dev_roles", "exec"), ns)       # 代入文だけを評価(importしない・副作用なし)
-        self.assertEqual(ys.Y_COMMENT_2_ROLE, ns["Y_COMMENT_2_ROLE"])
+        # Advanced(b1b)のComment 2は2026-10-26ユーザー承認で削除。Production側はStandard(a2)のrole文だけを持ち、DEV Trialのa2文と逐語一致を維持する(日本語側は現状維持)。
+        self.assertEqual(set(ys.Y_COMMENT_2_ROLE), {"a2"})
+        self.assertEqual(ys.Y_COMMENT_2_ROLE["a2"], ns["Y_COMMENT_2_ROLE"]["a2"])
         self.assertEqual(ys.Y_COMMENT_3_ROLE, ns["Y_COMMENT_3_ROLE"])
 
 

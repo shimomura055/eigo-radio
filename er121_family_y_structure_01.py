@@ -218,10 +218,9 @@ _C2_COMMON = ("役割: 導入で聞いた問いの核心を1点だけ短く回�
               "3人の立場や結論を先に言ってはいけません。新しいFactを追加しないでください。")
 _C3_COMMON = ("役割: 3人の語りを聞いたうえで、「なぜ同じ問題が、それぞれにこんなに違って見えるのか」へ聞き手の視点を移します。"
               "誰が正しいかを言わず、結論を先に言ってはいけません。3人の発言を再要約しないでください。新しいFactを追加しないでください。")
+# Comment 2: ユーザー正式承認(2026-10-26、USER.md §1-③)によりAdvanced(b1b)は削除。Standard(a2、日本語側)は現状維持。
+# 旧b1b用role文は撤去(DEV Trial er110のY_COMMENT_2_ROLE['b1b']は旧run解析用に残るが、Productionは参照しない)。
 Y_COMMENT_2_ROLE = {
-    "b1b": ("あなたはPodcastのナビゲーターです。リスナーは導入部分(リード)をすでに聞き終わり、これから3人の人物が順番に自分の言葉で語るのを聞きます。"
-            "その間に流す、Comment 2(役割: Lead Recovery + Bridge to the Three Voices)を書いてください。\n\n"
-            + _C2_COMMON + "1〜2文にしてください。\n\n" + _LABEL_BAN),
     "a2": ("あなたはPodcastのナビゲーターです。リスナーは導入部分(リード)をすでに聞き終わり、これから3人の人物が順番に自分の言葉で語るのを聞きます。"
            "その間に流す、Comment 2(役割: Lead Recovery + Bridge to the Three Voices)を日本語で書いてください。\n\n"
            + _C2_COMMON + "易しい日本語で1〜2文にしてください。\n\n" + _LABEL_BAN),
@@ -236,8 +235,47 @@ Y_COMMENT_3_ROLE = {
 }
 
 
+# ------------------------------------------------------------
+# support segment構成(level別)。Advanced(b1b)はComment 2なし(2026-10-26ユーザー承認)。Standard(a2)は現状維持。
+# 生成・検査・TTS・組立・ページはこの1か所の定義から導出する(各所でlevel別のcomment名を直書きしない)。
+# ------------------------------------------------------------
+COMMENT2_REMOVED_SPEC = "2026-10-26 FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01(ユーザー正式承認: Family Y Advanced Comment 2削除)"
+Y_SUPPORT_NAMES = {
+    "b1b": ("preview", "comment_1", "comment_3"),
+    "a2": ("preview", "comment_1", "comment_2", "comment_3"),
+}
+Y_REMOVED_SUPPORT_NAMES = {"b1b": ("comment_2",), "a2": ()}
+
+
+def support_names(level: str) -> tuple:
+    if level not in Y_SUPPORT_NAMES:
+        raise KeyError(f"unknown Family Y level: {level}")
+    return Y_SUPPORT_NAMES[level]
+
+
+def body_comment_names(level: str) -> tuple:
+    """再生順に並ぶ本文中のComment(Preview除く)。"""
+    return tuple(n for n in support_names(level) if n.startswith("comment_"))
+
+
+def advanced_preview_role(base_role: str) -> str:
+    """Advanced(b1b)用Preview role。共有のX用PREVIEW_ROLEから、Comment 2への言及(重複回避の参照)だけを機械的に除く。
+    ほかの文は1文字も変えない。置換対象が共有側から消えた/変わった場合はValueErrorで止める(黙って旧文のまま出さない)。"""
+    reps = (("- 後で流れるComment 1・Comment 2と内容が重複する", "- 後で流れるComment 1と内容が重複する"),
+            ("Comment 1・Comment 2は以下の通りです。これらと重複する内容にしないでください。", "Comment 1は以下の通りです。これと重複する内容にしないでください。"),
+            ("\n\n【Comment 2】\n{comment_2}", ""))
+    out = base_role
+    for a, b in reps:
+        if out.count(a) != 1:
+            raise ValueError(f"ADVANCED_PREVIEW_ROLE_BASE_CHANGED: 置換対象が1か所ではありません: {a[:30]}")
+        out = out.replace(a, b)
+    if "Comment 2" in out or "comment_2" in out:
+        raise ValueError("ADVANCED_PREVIEW_ROLE_COMMENT2_LEFT")
+    return out
+
+
 def comment_contexts(parsed_en: dict) -> dict:
-    """support生成の入力文脈(LLM 0)。Comment 1=導入、Comment 2=導入+3人の冒頭1文、Comment 3=導入+3人の語り。Previewは全文。"""
+    """support生成の入力文脈(LLM 0)。Comment 1=導入、Comment 2(Standardのみ。Advancedは削除済みで未使用)=導入+3人の冒頭1文、Comment 3=導入+3人の語り。Previewは全文。"""
     paras = parsed_en["paragraphs"]
     first_sentences = "\n".join("- " + re.split(r"(?<=[.!?])\s", vo["body"])[0] for vo in parsed_en["voices"])
     return {

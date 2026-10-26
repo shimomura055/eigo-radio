@@ -143,7 +143,7 @@ class YProvider:
             sp = f"{self.run_dir}/{lvl}/support_texts.json"
             if lvl == "b1b" and os.path.exists(sp):
                 support = load_json(sp)
-                for name in ("preview", "comment_1", "comment_2", "comment_3"):
+                for name in ys.support_names("b1b"):          # Advancedはcomment_2なし(2026-10-26ユーザー承認)。Stdのpreview/commentは日本語のため対象外
                     txt = support.get(name)
                     if txt:
                         segs.append(_ret_seg(txt, "PREVIEW" if name == "preview" else "COMMENT", f"{lvl}:{name}",
@@ -173,15 +173,18 @@ def y_family_scope(subdir: str):
 # ============================================================
 def write_level_inputs(theme_out_dir: str, level: str, parsed_en: dict, support: dict) -> dict:
     """<theme>/<level>/parts.json(title+Y segment text map)と support_texts.json(preview/comment_1..3。Comment 4は無い)を書く。"""
-    for k in ("preview", "comment_1", "comment_2", "comment_3"):
+    names = ys.support_names(level)             # Advancedはcomment_2なし。support dictに旧comment_2が残っていても書き出さない/検査しない
+    for k in names:
         if not (support.get(k) or "").strip():
             raise YAudioStop(f"FAMILY_Y_SUPPORT_TEXT_MISSING({level}): {k}")
     d = f"{theme_out_dir}/{level}"
     os.makedirs(f"{d}/audit", exist_ok=True)
     parts = {"family": ys.FAMILY, "level": level, "title": parsed_en["title"], "segments": dict(parsed_en["segments"]),
              "y_segment_order": list(ys.Y_SEGMENT_IDS), "status": "OK"}
+    if ys.Y_REMOVED_SUPPORT_NAMES[level]:
+        parts["removed_by_spec"] = {n: ys.COMMENT2_REMOVED_SPEC for n in ys.Y_REMOVED_SUPPORT_NAMES[level]}
     save_json(f"{d}/parts.json", parts)
-    save_json(f"{d}/support_texts.json", {k: support[k] for k in ("preview", "comment_1", "comment_2", "comment_3")})
+    save_json(f"{d}/support_texts.json", {k: support[k] for k in names})
     return parts
 
 
@@ -418,7 +421,7 @@ def generate_y_b1_segments(theme_out_dir: str, *, tts_backend: str = TTS_BACKEND
                 tts_backend=tts_backend)), expected_text=topic_text)
     results["topic_intro"]["canonical_text"] = topic_text
 
-    for name in ("preview", "comment_1", "comment_2", "comment_3"):      # Comment 4は無い(YL-C09)
+    for name in ys.support_names("b1b"):      # Comment 4は無い(YL-C09)。Comment 2はAdvancedでは削除(2026-10-26ユーザー承認)
         text = support[name]
         with cl.segment_context(name):
             results[name] = xr._generate_or_reuse(
@@ -532,7 +535,7 @@ def generate_y_a2_segments(theme_out_dir: str, japanese_title: str, *, tts_backe
                 max_extra_chars=30, style_prefix_override=_role_style_ja(), tts_backend=tts_backend)),
             expected_text=japanese_title)
 
-    for name in ("preview", "comment_1", "comment_2", "comment_3"):      # Comment 4は無い(YL-C09)。J2(範囲値正規化)=中核数値v4はY対象外(YL-B05)
+    for name in ys.support_names("a2"):      # Comment 4は無い(YL-C09)。Standardはcomment_2を維持(日本語側は現状維持)。J2(範囲値正規化)=中核数値v4はY対象外(YL-B05)
         text = support[name]
         with cl.segment_context(name):
             results[name] = xr._generate_or_reuse(
@@ -716,7 +719,7 @@ def load_y_sources(theme_out_dir: str, level: str, article_text: str | None = No
     if level == "b1b":
         narration = {n: _read(nd, f"{n}_charon") for n in ("welcome", "preview_intro", "key_phrases_intro", "full_story_intro", *nums)}
         narration["topic_intro"] = _read(nd, "topic_intro")
-        segs = {n: _read(nd, n) for n in (*ys.Y_SEGMENT_IDS, "comment_1", "comment_2", "comment_3", "preview")}
+        segs = {n: _read(nd, n) for n in (*ys.Y_SEGMENT_IDS, *ys.body_comment_names("b1b"), "preview")}
         segs["full_story_part1"] = segs[ys.Y_LEAD]       # 共通gain関数のRMSアンカー用alias(gain後に除去する。出力には残さない)
         comp = {it["rank"]: _read(nd, f"kp{it['rank']}_en") for it in items}
         mean = {it["rank"]: _read(nd, f"kp{it['rank']}_explanation_en") for it in items}
@@ -729,7 +732,7 @@ def load_y_sources(theme_out_dir: str, level: str, article_text: str | None = No
     for i, it in enumerate(items, start=1):
         comp[it["rank"]] = _read(nd, f"kp{it['rank']}_en")
         narration[f"meaning_{i}"] = _read(nd, f"meaning_{i}")
-    segs = {n: _read(nd, n) for n in (*ys.Y_SEGMENT_IDS, "comment_1", "comment_2", "comment_3")}
+    segs = {n: _read(nd, n) for n in (*ys.Y_SEGMENT_IDS, *ys.body_comment_names("a2"))}
     segs["full_story_part1"] = segs[ys.Y_LEAD]
     return {**common_in, "preview_mono": preview_mono, "narration": narration, "key_phrase_components": comp, "a2_segments": segs}
 
@@ -747,14 +750,17 @@ def apply_y_gain(sources: dict, level: str) -> dict:
     return parts
 
 
-def _body_seq(seg: dict, comment_to_story_gap: float, story_to_comment_gap: float) -> list:
-    """Y本文の再生順(Intro→…→Full story intro の後): Comment1→Lead→Comment2→[紹介1→Voice1]→[紹介2→Voice2]→[紹介3→Voice3]→Comment3→Closing。
+def _body_seq(seg: dict, comment_to_story_gap: float, story_to_comment_gap: float, level: str) -> list:
+    """Y本文の再生順(Intro→…→Full story intro の後):
+    Advanced(b1b)=Comment1→Lead→[紹介1→Voice1]→[紹介2→Voice2]→[紹介3→Voice3]→Comment3→Closing(Comment 2は削除。2026-10-26ユーザー承認)。
+    Standard(a2)=Comment1→Lead→Comment2→[紹介1→Voice1]→…→Comment3→Closing(現状維持)。
     ナレーター↔Voice切替のpauseはXの語り手切替値(CHARON_TO_AOEDE_PAUSE_SECONDS)を再利用(Y固有の新値なし)。"""
     S = xr.p9a.silence_stereo
     gap = asm.CHARON_TO_AOEDE_PAUSE_SECONDS
     seq = [("Comment 1", seg["comment_1"]), ("pause_comment_to_story", S(comment_to_story_gap)),
-           (ys.PAGE_LABEL[ys.Y_LEAD], seg[ys.Y_LEAD]), ("pause_story_to_comment", S(story_to_comment_gap)),
-           ("Comment 2", seg["comment_2"]), ("pause_comment_to_story", S(comment_to_story_gap))]
+           (ys.PAGE_LABEL[ys.Y_LEAD], seg[ys.Y_LEAD]), ("pause_story_to_comment", S(story_to_comment_gap))]
+    if "comment_2" in ys.body_comment_names(level):
+        seq += [("Comment 2", seg["comment_2"]), ("pause_comment_to_story", S(comment_to_story_gap))]
     for i in (1, 2, 3):
         seq += [(ys.PAGE_LABEL[f"y_intro_{i}"], seg[f"y_intro_{i}"]), ("pause_intro_to_voice", S(gap)),
                 (ys.PAGE_LABEL[f"y_voice_{i}"], seg[f"y_voice_{i}"])]
@@ -777,7 +783,7 @@ def build_y_timeline(level: str, parts: dict) -> list:
             seq.append((f"Key Phrase {i}", block))
         seq += [("Notification 3", parts["notification"]), ("pause_0.4", S(0.4)), ("Full story intro", parts["full_story_intro"]),
                 ("pause_1.0", S(asm.AOEDE_TO_CHARON_PAUSE_SECONDS))]
-        seq += _body_seq(b1, asm.CHARON_TO_AOEDE_PAUSE_SECONDS, asm.AOEDE_TO_CHARON_PAUSE_SECONDS)
+        seq += _body_seq(b1, asm.CHARON_TO_AOEDE_PAUSE_SECONDS, asm.AOEDE_TO_CHARON_PAUSE_SECONDS, "b1b")
         seq += [("pause_closing_to_outro", S(asm.IN_ONE_LINE_TO_OUTRO_PAUSE_SECONDS)), ("Outro", parts["outro"])]
         return seq
     blocks = asm.build_a2_key_phrase_blocks(parts)
@@ -791,7 +797,7 @@ def build_y_timeline(level: str, parts: dict) -> list:
         seq.append((f"Key Phrase {i}", block))
     seq += [("Notification 3", parts["notification"]), ("pause_0.4", S(0.4)), ("Full story intro", parts["full_story_intro"]),
             ("pause_1.0_en_to_ja", S(1.0))]
-    seq += _body_seq(a2, 0.8, 1.0)
+    seq += _body_seq(a2, 0.8, 1.0, "a2")
     seq += [("pause_closing_to_outro", S(0.5)), ("Outro", parts["outro"])]
     return seq
 

@@ -156,11 +156,74 @@ class FullMockRun(unittest.TestCase):
             self.assertEqual(got, want, lv)
             i = parts.index
             self.assertEqual(parts[i("Full story intro"):i("Full story intro") + 3], ["Full story intro", "Comment 1", want[0]])
-            self.assertLess(i("Comment 2"), i(want[1]))
+            if lv == "b1b":      # 2026-10-26ユーザー承認: Advanced Comment 2削除(導入→Voice1紹介→Voice1→…)。Standardは現状維持
+                self.assertNotIn("Comment 2", parts)
+                self.assertEqual(parts[i(want[0]) + 1], want[1])
+            else:
+                self.assertLess(i("Comment 2"), i(want[1]))
+                self.assertLess(i(want[0]), i("Comment 2"))
             self.assertEqual(parts[i(want[6]) + 1:i(want[6]) + 3], ["Comment 3", want[7]])      # Voice3 → Comment 3 → Closing
             self.assertEqual(parts[-1], "Outro")
             self.assertNotIn("Comment 4", parts)
             self.assertFalse([p for p in parts if "one line" in p.lower()])
+
+    def test_advanced_has_no_comment2_anywhere_but_standard_keeps_it(self):
+        """Advanced(b1b)のComment 2は初回生成・TTS結果・音声ファイル・support_texts・ページから消え、Standard(a2)は現状維持。"""
+        adv, std = f"{self.out}/b1b", f"{self.out}/a2"
+        sup_adv = json.load(open(f"{self.out}/support/b1b_support.json", encoding="utf-8"))
+        sup_std = json.load(open(f"{self.out}/support/a2_support.json", encoding="utf-8"))
+        self.assertNotIn("comment_2", sup_adv)
+        self.assertIn("comment_2", sup_std)
+        self.assertEqual(sup_adv["_meta"]["removed_by_spec"], {"comment_2": ys.COMMENT2_REMOVED_SPEC})
+        self.assertNotIn("removed_by_spec", sup_std["_meta"])
+        self.assertEqual(sorted(k for k in json.load(open(f"{adv}/support_texts.json", encoding="utf-8"))), ["comment_1", "comment_3", "preview"])
+        self.assertEqual(sorted(k for k in json.load(open(f"{std}/support_texts.json", encoding="utf-8"))), ["comment_1", "comment_2", "comment_3", "preview"])
+        self.assertEqual(json.load(open(f"{adv}/parts.json", encoding="utf-8"))["removed_by_spec"], {"comment_2": ys.COMMENT2_REMOVED_SPEC})
+        self.assertNotIn("removed_by_spec", json.load(open(f"{std}/parts.json", encoding="utf-8")))
+        res_adv = json.load(open(f"{adv}/audit/tts_generation_results.json", encoding="utf-8"))["segments"]
+        res_std = json.load(open(f"{std}/audit/tts_generation_results.json", encoding="utf-8"))["segments"]
+        self.assertNotIn("comment_2", res_adv)
+        man = json.load(open(f"{self.out}/final_manifest.json", encoding="utf-8"))
+        self.assertEqual(man["support_segments"], {"b1b": ["preview", "comment_1", "comment_3"], "a2": ["preview", "comment_1", "comment_2", "comment_3"]})
+        self.assertEqual(man["removed_by_spec"], {"b1b": {"comment_2": ys.COMMENT2_REMOVED_SPEC}})
+        self.assertIn("comment_2", res_std)
+        self.assertFalse(os.path.exists(f"{adv}/narration/comment_2.wav"))
+        self.assertTrue(os.path.exists(f"{std}/narration/comment_2.wav"))
+        for k in ("comment_1", "comment_3", "preview"):
+            self.assertIn(k, res_adv)
+        tl = json.load(open(f"{adv}/audit/timeline.json", encoding="utf-8"))
+        self.assertFalse([e for e in tl if "comment 2" in e["part"].lower()])
+        gr = json.load(open(f"{adv}/audit/gain_report.json", encoding="utf-8")) if os.path.exists(f"{adv}/audit/gain_report.json") else {}
+        self.assertNotIn("comment_2", json.dumps(gr))
+        html = open(f"{self.out}/pages/index.html", encoding="utf-8").read()
+        self.assertEqual(html.count(">Comment 2<"), 1, "Comment 2の行はStandardの1行だけ(Advancedには無い)")
+
+    def test_legacy_comment2_artifacts_are_ignored_on_reassemble(self):
+        """旧run(comment_2のsupport/TTS結果/wavが残るAdvanced)を再組立しても、Comment 2は組立・timelineに入らない(旧成果物は無視。削除はしない)。"""
+        import er121_family_y_audio_01 as ya
+        tmp = tempfile.mkdtemp(prefix="y_legacy_c2_")
+        try:
+            dst = os.path.join(tmp, "run")
+            shutil.copytree(self.out, dst)
+            adv = f"{dst}/b1b"
+            sup = json.load(open(f"{adv}/support_texts.json", encoding="utf-8"))
+            sup["comment_2"] = "legacy comment two text."
+            json.dump(sup, open(f"{adv}/support_texts.json", "w", encoding="utf-8"))
+            shutil.copy(f"{adv}/narration/comment_1.wav", f"{adv}/narration/comment_2.wav")
+            resp = f"{adv}/audit/tts_generation_results.json"
+            res = json.load(open(resp, encoding="utf-8"))
+            res["segments"]["comment_2"] = dict(res["segments"]["comment_1"])
+            json.dump(res, open(resp, "w", encoding="utf-8"))
+            before = [e["part"] for e in json.load(open(f"{self.out}/b1b/audit/timeline.json", encoding="utf-8"))]
+            with _quiet():
+                s = ya.assemble_level(dst, "b1b", style_profile=r.STYLE_PROFILE, slug="mock_slug",
+                                      article_text=ys.canonical_body(r._rd(r._level_text_path(self.ctx, "b1b"))))
+            self.assertEqual(s["status"], "OK", s)
+            after = [e["part"] for e in json.load(open(f"{adv}/audit/timeline.json", encoding="utf-8"))]
+            self.assertEqual(after, before)
+            self.assertNotIn("Comment 2", after)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
 
     def test_tts_results_cover_segment_ids_with_voices(self):
         import er121_family_y_audio_01 as ya
