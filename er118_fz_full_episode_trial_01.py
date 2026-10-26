@@ -749,7 +749,23 @@ def compare_to_production(work: str, level: str, tl: dict, *, identical: bool) -
            "headroom_trial": tl["headroom"], "headroom_prod": ptl["headroom"],
            "headroom_scalar_equal": tl["headroom"].get("scalar") == ptl["headroom"].get("scalar"),
            "story_clips_0_is_non_dialogue": prod_inputs(work, level)["story_clips"][0]["id"] not in dlg}
-    rep["m5_ok"] = bool(rep["target_rms_equal"] and not rep["nondialogue_gain_mismatch"] and not rep["nondialogue_gain_missing_in_trial"] and rep["headroom_scalar_equal"]
+    # M-5(3) 観測後改訂(委任_03、Fable案A、PREREGISTERED_CRITERIA_02 §6): scalar不一致でも、(i)原因がTrial dialogue clipのみ(非dialogue gain不変・Production側は安全弁非作動)
+    # (ii)Production安全弁(閾値同一)の設計どおりの作動 (iii)差が0.1 dB以内、の3点を満たす場合のみ『記録付き成立』。M-5(1)(2)は不変。
+    ht, hp = tl["headroom"], ptl["headroom"]
+    st, sp = ht.get("scalar"), hp.get("scalar")
+    rep["headroom_scalar_diff_db"] = (round(20.0 * float(np.log10(st / sp)), 5) if (st and sp) else None)
+    if rep["headroom_scalar_equal"]:
+        rep["m5_3_recorded_exception"] = False
+        m53 = True
+    else:
+        c_i = bool(ht.get("cause_piece") in dlg and not rep["nondialogue_gain_mismatch"] and not rep["nondialogue_gain_missing_in_trial"] and hp.get("applied") is False and sp == 1.0)
+        c_ii = bool(ht.get("threshold") == hp.get("threshold") and ht.get("applied") is True and (ht.get("peak_before") or 0) > ht.get("threshold", 0)
+                    and abs((ht.get("peak_after") or 0) - ht.get("threshold", 0)) < 1e-6)
+        c_iii = bool(rep["headroom_scalar_diff_db"] is not None and abs(rep["headroom_scalar_diff_db"]) <= 0.1)
+        rep["m5_3_conditions"] = {"i_cause_trial_dialogue_only": c_i, "ii_safety_valve_by_design": c_ii, "iii_within_0.1dB": c_iii}
+        m53 = bool(c_i and c_ii and c_iii)
+        rep["m5_3_recorded_exception"] = m53
+    rep["m5_ok"] = bool(rep["target_rms_equal"] and not rep["nondialogue_gain_mismatch"] and not rep["nondialogue_gain_missing_in_trial"] and m53
                         and rep["story_clips_0_is_non_dialogue"])
     if identical:
         parts_t, parts_p = [(e["part"], round(e["duration_seconds"], 4)) for e in tl["timeline"]], [(e["part"], round(e["duration_seconds"], 4)) for e in ptl["timeline"]]

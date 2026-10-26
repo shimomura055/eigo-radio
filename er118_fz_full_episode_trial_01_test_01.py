@@ -355,6 +355,55 @@ class Phase1bGuardTests(unittest.TestCase):
         x["gain_report"][dl]["gain"] += 0.05
         self.assertTrue(m.compare_to_production(w, lv, x, identical=False)["m5_ok"])
 
+    def _hr(self, **kw):
+        h = {"threshold": 0.98, "peak_before": 0.9833809, "cause_piece": None, "cause_piece_peak": 0.9833809, "applied": True, "scalar": 0.99656194, "peak_after": 0.98}
+        h.update(kw)
+        return h
+
+    def test_m5_3_revision_recorded_exception_only_when_three_conditions(self):
+        """委任_03 M-5(3)改訂: (i)原因=Trial dialogue clipのみ (ii)安全弁の設計どおり (iii)0.1dB以内、の全成立時のみ『記録付き成立』。"""
+        w, lv = "monkeys_paw", "b1b"
+        ptl = t.load_json(f"{m.WORK_CFG[w]['run']}/{lv}/assembly/timeline.json")
+        dl = next(iter(m.dialogue_specs(w, lv)))
+        nd = next(k for k in ptl["gain_report"] if k != "target_rms" and k not in m.dialogue_specs(w, lv))
+
+        def mk(hr, base=None):
+            x = copy_json(base or ptl)
+            x["headroom"] = hr
+            return x
+        ptl_no = copy_json(ptl)
+        ptl_no["headroom"] = {"threshold": 0.98, "peak_before": 0.95, "cause_piece": "full_story_part2_c3", "cause_piece_peak": 0.95, "applied": False, "scalar": 1.0, "peak_after": 0.95}
+        orig = m.jload
+        try:
+            def fake(path, *a, **k):
+                if path.endswith(f"{lv}/assembly/timeline.json") and m.WORK_CFG[w]["run"] in path:
+                    return ptl_no
+                return orig(path, *a, **k)
+            m.jload = fake
+            r = m.compare_to_production(w, lv, mk(self._hr(cause_piece=dl), ptl_no), identical=False)
+            self.assertTrue(r["m5_ok"], r)
+            self.assertTrue(r["m5_3_recorded_exception"])
+            self.assertLessEqual(abs(r["headroom_scalar_diff_db"]), 0.1)
+            # (i)不成立: 原因が非dialogue clip
+            self.assertFalse(m.compare_to_production(w, lv, mk(self._hr(cause_piece=nd), ptl_no), identical=False)["m5_ok"])
+            # (i)不成立: 非dialogue gainが変化
+            x = mk(self._hr(cause_piece=dl), ptl_no)
+            x["gain_report"][nd]["gain"] = x["gain_report"][nd].get("gain", 1.0) + 0.01
+            self.assertFalse(m.compare_to_production(w, lv, x, identical=False)["m5_ok"])
+            # (iii)不成立: 0.1dB超(scalar 0.98 -> 約-0.175dB)
+            self.assertFalse(m.compare_to_production(w, lv, mk(self._hr(cause_piece=dl, scalar=0.98, peak_before=1.0), ptl_no), identical=False)["m5_ok"])
+            # (ii)不成立: 安全弁の設計と不整合(peak_afterが閾値でない)
+            self.assertFalse(m.compare_to_production(w, lv, mk(self._hr(cause_piece=dl, peak_after=0.9), ptl_no), identical=False)["m5_ok"])
+            # 閾値が異なる
+            self.assertFalse(m.compare_to_production(w, lv, mk(self._hr(cause_piece=dl, threshold=0.97), ptl_no), identical=False)["m5_ok"])
+            # Production側が作動している場合は(i)不成立
+            ptl_ap = copy_json(ptl_no)
+            ptl_ap["headroom"]["applied"], ptl_ap["headroom"]["scalar"] = True, 0.999
+            m.jload = lambda path, *a, **k: ptl_ap if (path.endswith(f"{lv}/assembly/timeline.json") and m.WORK_CFG[w]["run"] in path) else orig(path, *a, **k)
+            self.assertFalse(m.compare_to_production(w, lv, mk(self._hr(cause_piece=dl), ptl_ap), identical=False)["m5_ok"])
+        finally:
+            m.jload = orig
+
     def test_gen_case_injected_isolated_and_no_forbidden_round2_calls(self):
         """M-6: Round 1/2 moduleのglobal依存関数を例外化しても gen が通る(本module側再実装)。書込みは(差替えた)OUT_ROOT配下のみ、clip別dirに result.json。"""
         tmp, rel = self._tmp_out_root()

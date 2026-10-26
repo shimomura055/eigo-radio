@@ -52,3 +52,11 @@
 - **起動条件**: 生成中は他のProduction runを起動しない。並行するY委任_03の書込みによる共有storeの差分は C7(b)の帰属判定で『他agent由来』と区別する。Z Production dir/公開pageに差分が出れば即STOP。
 - **Guardrail**: scope=Phase 1b・100円(PHASE1_GO.json、`scope="Phase 1b"`、`cap_jpy=100`)。到達時は暴走疑いの有無を確認し報告(T-3)。
 - 外部停止・原因不明のrc≠0が2回続いたら再起動せずSTOP。起動間隔≥150秒、各unit 1起動、同一コマンドの5分3回禁止。
+
+## 6. 改訂履歴(観測後改訂1件: M-5(3)。委任_03、Fable案A採用)
+
+- **改訂時刻**: 2026-10-26 09:54:05 JST(commit時刻は `git log` を正とする。メロス生成前に固定)。
+- **改訂内容(M-5(3))**: 「`headroom.scalar`がProductionと一致」を次に置換する。「`headroom.scalar`の差が生じても、(i)原因がTrial dialogue clipのサンプル間ピークのみ(非dialogue clipのgain/peakは不変、Production側は安全弁非作動)、(ii)Production安全弁(閾値0.98・全編一律scalar)の設計どおりの作動、(iii)差が0.1 dB以内、の3点を満たす場合は『記録付き成立』とし、実測scalar・dB差・原因clipを交絡として全報告に明記する」。M-5(1)(target_rms一致)・(2)(非dialogue gain一致)・story_clips[0]非dialogue は不変。
+- **理由**: M-5はProduction規則・品質基準ではなくTrialの比較条件ガード(Fable設定)。安全弁は全編一律scalarで相対音量を変えない。Opus前提「会話peak≦0.95<0.98」が猿の手Advで崩れた(Trial clip part2_c10の24k→48k変換後サンプル間ピーク0.9834>0.98)。take入替(結果を見て試行を選ぶ)は不可、評価不能扱いは過剰。
+- **観測済み範囲(改訂時点)**: 猿の手Std/Adv セリフ32 clipの生成と生成時採用判定(32/32初回OK)、猿の手Stdの組立と機械指標`analysis.json`(STOP直後に自動生成済み。M-5(3)改訂は音量scalarのみに依存し、指標値に依存しない)、猿の手Advの組立でM-5(3)不一致を観測(Trial scalar 0.99656 / Prod 1.0 = -0.030 dB)。**未観測**: メロス生成・メロス組立・猿の手Advの機械指標・ユーザー試聴。
+- **開示義務**: EVAL/TRIAL_RESULT/ユーザー報告で『観測後改訂1件(M-5(3))』として必ず開示する。
