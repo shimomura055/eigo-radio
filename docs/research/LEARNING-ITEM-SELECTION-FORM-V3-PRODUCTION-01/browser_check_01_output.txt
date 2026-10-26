@@ -1,0 +1,33 @@
+PASS page loads, default article = 猿の手 Advanced :: 6. 猿の手｜Advanced
+PASS 10 options in selector (9 slots + UI check dummy)
+PASS candidates: 7 phrases + 4 words rendered
+PASS source note (DEV Trial-02) shown
+PASS rescued flag displayed
+PASS grammar notice: 候補なし・要生成, no grammar items
+PASS (1) 3 chosen -> stat full :: 3 / 3|stat full ; 3 / 5|stat  ; 3 / 12|stat  ; 0 / 2|stat 
+PASS (1) 4th disabled
+PASS (1) locked styling present
+PASS (1)+(2)=5 -> stat full, 6th (2) disabled :: 3 / 3|stat full ; 5 / 5|stat full ; 5 / 12|stat  ; 0 / 2|stat 
+PASS total 11 (not yet full) :: 3 / 3|stat full ; 5 / 5|stat full ; 11 / 12|stat  ; 0 / 2|stat 
+PASS same item switch (1)->(2) allowed at (1)+(2)=5? (expected: allowed, (1) 3->2,(2) 2->3 => (1)+(2) stays 5)
+PASS after switch, item has exactly one checked cat
+PASS deselect at limit works :: 11->10
+PASS checked count before reload recorded :: 11
+PASS state persists after reload
+PASS comment persists after reload
+PASS dummy article: 3 grammar items shown
+PASS dummy: selection empty (no cross-article mixing)
+PASS dummy: comment empty
+PASS grammar 2 chosen -> 3rd disabled
+PASS grammar stat full :: 0 / 3|stat  ; 0 / 5|stat  ; 0 / 12|stat  ; 2 / 2|stat full
+PASS grammar deselect re-enables 3rd
+PASS switch back: 猿の手 selection retained
+PASS switch back: comment retained
+PASS unregistered slot shows 未登録 message
+PASS send builds chatgpt URL :: https://chatgpt.com/?q=%E4%BB%A5%E4%B8%8B%E3%81%AE%E9%81%B8%
+PASS send message contains selection + comment + JSON
+PASS send URL length <= 6000 :: 2985
+PASS copy: status message shown (clipboard API or fallback) :: 自動コピーできませんでした。下の枠のテキストを手動でコピーしてください。
+PASS copy fallback path: textarea filled :: 自動コピーできませんでした。下の枠のテキストを手動でコピーしてください。 len=1304
+PASS no console errors/exceptions
+SUMMARY pass=32 fail=0
