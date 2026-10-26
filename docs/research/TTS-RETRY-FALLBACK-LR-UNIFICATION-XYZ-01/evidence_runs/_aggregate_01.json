@@ -1,0 +1,3400 @@
+{
+ "cases": {
+  "X-Adv-1": {
+   "id": "X-Adv-1",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "①②同Style/③別Style",
+     "ok": true,
+     "detail": [
+      "57c3fd",
+      "57c3fd",
+      "dba23e"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Charon'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.759,
+   "final_status": "OK",
+   "wall_seconds": 203.3
+  },
+  "X-Adv-10": {
+   "id": "X-Adv-10",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.997]"
+    },
+    {
+     "check": "③=ENGLISH_LOCK",
+     "ok": true,
+     "detail": [
+      "",
+      "",
+      "ENGLISH_LOCK"
+     ]
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": 0
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "待機位置=ENGLISH_LOCK段直前(attempt 2→3)",
+     "ok": true,
+     "detail": [
+      [
+       2,
+       3
+      ]
+     ]
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.324,
+   "final_status": "OK",
+   "wall_seconds": 197.5
+  },
+  "X-Adv-11": {
+   "id": "X-Adv-11",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=4",
+     "ok": true,
+     "detail": 4
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.998]"
+    },
+    {
+     "check": "③④=ENGLISH_LOCK",
+     "ok": true,
+     "detail": [
+      "",
+      "",
+      "ENGLISH_LOCK",
+      "ENGLISH_LOCK"
+     ]
+    },
+    {
+     "check": "HRQ=1行",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "最終NG",
+     "ok": true,
+     "detail": "STOPPED"
+    },
+    {
+     "check": "待機位置=ENGLISH_LOCK段直前(attempt 2→3)",
+     "ok": true,
+     "detail": [
+      [
+       2,
+       3
+      ]
+     ]
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 4
+    }
+   ],
+   "tts": 4,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 1,
+   "cost_jpy": 0.414,
+   "final_status": "STOPPED",
+   "wall_seconds": 218.2
+  },
+  "X-Adv-12": {
+   "id": "X-Adv-12 (resume)",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "kill前: 再開前のTTS=2",
+     "ok": true,
+     "detail": 2
+    },
+    {
+     "check": "再開後: 既完了attemptの再生成0・残り1回のみ",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "TTS総数=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "再開後LR再呼出0(R-5のみ)",
+     "ok": true,
+     "detail": 0
+    },
+    {
+     "check": "待機: 残りのみ(resumed=True・実測<180、または壁時計で既に180秒経過済み=残り0)",
+     "ok": true,
+     "detail": {
+      "label": "comment_1",
+      "requested_seconds": 180.0,
+      "actual_seconds": 0.0,
+      "started_at": "2026-10-27T00:02:52",
+      "ended_at": "2026-10-27T00:02:52",
+      "resumed": false,
+      "attempt_before": 2,
+      "attempt_after": 3,
+      "total_elapsed_since_ref_seconds": 196.049,
+      "wall_start_epoch": 1793026972.7721488
+     }
+    },
+    {
+     "check": "総経過(起点から)≥180秒",
+     "ok": true,
+     "detail": 196.049
+    },
+    {
+     "check": "最終attemptが③/⑥=Fallback Style",
+     "ok": true,
+     "detail": [
+      "57c3fd",
+      "57c3fd",
+      "dba23e"
+     ]
+    },
+    {
+     "check": "attempt sidecar: 3本(二重なし)",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "再開後の上書き(①②再注入)0",
+     "ok": true,
+     "detail": []
+    },
+    {
+     "check": "最終OK",
+     "ok": true,
+     "detail": "OK"
+    }
+   ],
+   "tts": 3,
+   "cost_jpy": 0.746,
+   "final_status": "OK"
+  },
+  "X-Adv-13": {
+   "id": "X-Adv-13",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "上書き0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "TTS=2(1/clip)",
+     "ok": true,
+     "detail": 2
+    },
+    {
+     "check": "待機0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "全clip OK",
+     "ok": true,
+     "detail": {
+      "topic_intro": "OK",
+      "comment_1": "OK"
+     }
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 0
+    }
+   ],
+   "tts": 1,
+   "cooldowns": 0,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.36,
+   "final_status": "OK",
+   "wall_seconds": 15.4
+  },
+  "X-Adv-14": {
+   "id": "X-Adv-14",
+   "verdict": "DEVIATION_NATURAL",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "①②同Style/③別Style",
+     "ok": true,
+     "detail": [
+      "886231",
+      "886231",
+      "dba23e"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Charon'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "LR=0",
+     "ok": false,
+     "detail": ""
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": false,
+     "detail": "STOPPED"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 1,
+   "hrq": 1,
+   "cost_jpy": 1.607,
+   "final_status": "STOPPED",
+   "wall_seconds": 201.4
+  },
+  "X-Adv-14b": {
+   "id": "X-Adv-14b",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "①②同Style/③別Style",
+     "ok": true,
+     "detail": [
+      "886231",
+      "886231",
+      "dba23e"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Charon'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 1.672,
+   "final_status": "OK",
+   "wall_seconds": 213.9
+  },
+  "X-Adv-15": {
+   "id": "X-Adv-15",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=2(①NG→②PASS)",
+     "ok": true,
+     "detail": 2
+    },
+    {
+     "check": "待機0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "①②同Style",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "最終OK(②実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 1
+    }
+   ],
+   "tts": 2,
+   "cooldowns": 0,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.343,
+   "final_status": "OK",
+   "wall_seconds": 21.2
+  },
+  "X-Adv-16": {
+   "id": "X-Adv-16 (resume)",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "kill前: 再開前のTTS=5",
+     "ok": true,
+     "detail": 5
+    },
+    {
+     "check": "再開後: 既完了attemptの再生成0・残り1回のみ",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "TTS総数=6",
+     "ok": true,
+     "detail": 6
+    },
+    {
+     "check": "再開後LR再呼出0(R-5のみ)",
+     "ok": true,
+     "detail": 0
+    },
+    {
+     "check": "待機: 残りのみ(resumed=True・実測<180、または壁時計で既に180秒経過済み=残り0)",
+     "ok": true,
+     "detail": {
+      "label": "in_one_line",
+      "requested_seconds": 180.0,
+      "actual_seconds": 12.414,
+      "started_at": "2026-10-27T00:21:42",
+      "ended_at": "2026-10-27T00:21:54",
+      "resumed": false,
+      "attempt_before": 5,
+      "attempt_after": 6,
+      "total_elapsed_since_ref_seconds": 180.001,
+      "wall_start_epoch": 1793028102.350122
+     }
+    },
+    {
+     "check": "総経過(起点から)≥180秒",
+     "ok": true,
+     "detail": 180.001
+    },
+    {
+     "check": "最終attemptが③/⑥=Fallback Style",
+     "ok": true,
+     "detail": [
+      "634955",
+      "634955",
+      "dba23e",
+      "634955",
+      "634955",
+      "dba23e"
+     ]
+    },
+    {
+     "check": "attempt sidecar: 6本(二重なし)",
+     "ok": true,
+     "detail": 6
+    },
+    {
+     "check": "再開後の上書き(①②再注入)0",
+     "ok": true,
+     "detail": []
+    },
+    {
+     "check": "最終OK",
+     "ok": true,
+     "detail": "OK"
+    }
+   ],
+   "tts": 6,
+   "cost_jpy": 1.851,
+   "final_status": "OK"
+  },
+  "X-Adv-2": {
+   "id": "X-Adv-2",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=4",
+     "ok": true,
+     "detail": 4
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "LR=1",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "LR RESOLVED",
+     "ok": true,
+     "detail": [
+      "RESOLVED_BY_LOCAL_REWRITE"
+     ]
+    },
+    {
+     "check": "④=元role Style(①と同じ)",
+     "ok": true,
+     "detail": [
+      "57c3fd",
+      "57c3fd",
+      "dba23e",
+      "57c3fd"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Charon'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "④のjudgeがscript_version=v1",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": 0
+    },
+    {
+     "check": "最終OK(LR採用)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 4
+    }
+   ],
+   "tts": 4,
+   "cooldowns": 1,
+   "lr": 1,
+   "hrq": 0,
+   "cost_jpy": 1.304,
+   "final_status": "OK",
+   "wall_seconds": 247.4
+  },
+  "X-Adv-3c": {
+   "id": "X-Adv-3c",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=6",
+     "ok": true,
+     "detail": 6
+    },
+    {
+     "check": "待機2回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=2 実測秒=[179.999, 179.999]"
+    },
+    {
+     "check": "LR=1(再入0)",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "①②④⑤=role Style / ③⑥=Fallback",
+     "ok": true,
+     "detail": [
+      "57c3fd",
+      "57c3fd",
+      "dba23e",
+      "57c3fd",
+      "57c3fd",
+      "dba23e"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Charon'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "HRQ=1行",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "最終NG(STOPPED)",
+     "ok": true,
+     "detail": "STOPPED"
+    },
+    {
+     "check": "Lock=HUMAN_REVIEW",
+     "ok": true,
+     "detail": "HUMAN_REVIEW_REQUIRED"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 7
+    }
+   ],
+   "tts": 6,
+   "cooldowns": 2,
+   "lr": 1,
+   "hrq": 1,
+   "cost_jpy": 2.021,
+   "final_status": "STOPPED",
+   "wall_seconds": 466.5
+  },
+  "X-Adv-4": {
+   "id": "X-Adv-4",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "LR LLM=0",
+     "ok": true,
+     "detail": [
+      "HUMAN_REVIEW_LOCKED_NO_NG_SPAN"
+     ]
+    },
+    {
+     "check": "ASR一致(判定は本物PASS)",
+     "ok": true,
+     "detail": [
+      true,
+      true,
+      true
+     ]
+    },
+    {
+     "check": "HRQ=1行",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "最終NG",
+     "ok": true,
+     "detail": "STOPPED"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 3
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 1,
+   "hrq": 1,
+   "cost_jpy": 0.973,
+   "final_status": "STOPPED",
+   "wall_seconds": 211.6
+  },
+  "X-Adv-6": {
+   "id": "X-Adv-6",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=6",
+     "ok": true,
+     "detail": 6
+    },
+    {
+     "check": "待機2回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=2 実測秒=[179.999, 179.999]"
+    },
+    {
+     "check": "LR=1(再入0)",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "①②④⑤=role Style / ③⑥=Fallback",
+     "ok": true,
+     "detail": [
+      "634955",
+      "634955",
+      "dba23e",
+      "634955",
+      "634955",
+      "dba23e"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Aoede'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "HRQ=1行",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "最終NG(STOPPED)",
+     "ok": true,
+     "detail": "STOPPED"
+    },
+    {
+     "check": "Lock=HUMAN_REVIEW",
+     "ok": true,
+     "detail": "HUMAN_REVIEW_REQUIRED"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 7
+    }
+   ],
+   "tts": 6,
+   "cooldowns": 2,
+   "lr": 1,
+   "hrq": 1,
+   "cost_jpy": 1.789,
+   "final_status": "STOPPED",
+   "wall_seconds": 441.1
+  },
+  "X-Adv-7": {
+   "id": "X-Adv-7",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "①②同Style/③別Style",
+     "ok": true,
+     "detail": [
+      "051800",
+      "051800",
+      "b66d3a"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Aoede'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.684,
+   "final_status": "OK",
+   "wall_seconds": 199.0
+  },
+  "X-Adv-8": {
+   "id": "X-Adv-8",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.998]"
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "HRQ=1行",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "最終NG",
+     "ok": true,
+     "detail": "STOPPED"
+    },
+    {
+     "check": "Lock=HUMAN_REVIEW",
+     "ok": true,
+     "detail": "HUMAN_REVIEW_REQUIRED"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 3
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 1,
+   "cost_jpy": 0.695,
+   "final_status": "STOPPED",
+   "wall_seconds": 194.4
+  },
+  "X-Adv-9": {
+   "id": "X-Adv-9",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "kp1_explanation_en: 短文(minimal) Styleで1 take・ASR PASS(OK)・追加TTSなし",
+     "ok": true,
+     "detail": [
+      1,
+      "OK"
+     ]
+    },
+    {
+     "check": "kp1_explanation_en: Styleが短文minimal",
+     "ok": true,
+     "detail": "MINIMAL_INSTRUCTION_PREFIX"
+    },
+    {
+     "check": "kp2_explanation_en: 短文(minimal) Styleで1 take・ASR PASS(OK)・追加TTSなし",
+     "ok": true,
+     "detail": [
+      1,
+      "OK"
+     ]
+    },
+    {
+     "check": "kp2_explanation_en: Styleが短文minimal",
+     "ok": true,
+     "detail": "MINIMAL_INSTRUCTION_PREFIX"
+    },
+    {
+     "check": "kp3_explanation_en: 短文(minimal) Styleで1 take・ASR PASS(OK)・追加TTSなし",
+     "ok": true,
+     "detail": [
+      1,
+      "OK"
+     ]
+    },
+    {
+     "check": "kp3_explanation_en: Styleが短文minimal",
+     "ok": true,
+     "detail": "MINIMAL_INSTRUCTION_PREFIX"
+    },
+    {
+     "check": "待機0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "LR=0・HRQ=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "上書き0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 0
+    }
+   ],
+   "tts": 1,
+   "cooldowns": 0,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.413,
+   "final_status": "OK",
+   "wall_seconds": 19.2
+  },
+  "X-Std-1": {
+   "id": "X-Std-1",
+   "verdict": "DEVIATION_NATURAL",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "①②同Style/③別Style",
+     "ok": true,
+     "detail": [
+      "d16e09",
+      "d16e09",
+      "dba23e"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Aoede'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "LR=0",
+     "ok": false,
+     "detail": ""
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": false,
+     "detail": "STOPPED"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 1,
+   "hrq": 1,
+   "cost_jpy": 0.767,
+   "final_status": "STOPPED",
+   "wall_seconds": 213.0
+  },
+  "X-Std-10": {
+   "id": "X-Std-10 (resume)",
+   "verdict": "DEVIATION_NATURAL",
+   "checks": [
+    {
+     "check": "kill前: 再開前のTTS=2",
+     "ok": true,
+     "detail": 2
+    },
+    {
+     "check": "再開後: 既完了attemptの再生成0・残り1回のみ",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "TTS総数=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "再開後LR再呼出0(R-5のみ)",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "待機: 残りのみ(resumed=True・実測<180、または壁時計で既に180秒経過済み=残り0)",
+     "ok": true,
+     "detail": {
+      "label": "topic_intro",
+      "requested_seconds": 180.0,
+      "actual_seconds": 29.523,
+      "started_at": "2026-10-27T00:17:22",
+      "ended_at": "2026-10-27T00:17:52",
+      "resumed": false,
+      "attempt_before": 2,
+      "attempt_after": 3,
+      "total_elapsed_since_ref_seconds": 180.001,
+      "wall_start_epoch": 1793027842.7464192
+     }
+    },
+    {
+     "check": "総経過(起点から)≥180秒",
+     "ok": true,
+     "detail": 180.001
+    },
+    {
+     "check": "最終attemptが③/⑥=Fallback Style",
+     "ok": true,
+     "detail": [
+      "d16e09",
+      "d16e09",
+      "dba23e"
+     ]
+    },
+    {
+     "check": "attempt sidecar: 3本(二重なし)",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "再開後の上書き(①②再注入)0",
+     "ok": true,
+     "detail": []
+    },
+    {
+     "check": "最終OK",
+     "ok": false,
+     "detail": "STOPPED"
+    }
+   ],
+   "tts": 3,
+   "cost_jpy": 0.744,
+   "final_status": "STOPPED"
+  },
+  "X-Std-11": {
+   "id": "X-Std-11",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "上書き0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "TTS=2(1/clip)",
+     "ok": true,
+     "detail": 2
+    },
+    {
+     "check": "待機0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "全clip OK",
+     "ok": true,
+     "detail": {
+      "topic_intro": "OK",
+      "japanese_title": "OK"
+     }
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 0
+    }
+   ],
+   "tts": 1,
+   "cooldowns": 0,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.265,
+   "final_status": "OK",
+   "wall_seconds": 10.9
+  },
+  "X-Std-12": {
+   "id": "X-Std-12",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=2(①減速後NG→②)",
+     "ok": true,
+     "detail": 2
+    },
+    {
+     "check": "待機0(③に入らない)",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "上書き=減速後NG 1回",
+     "ok": true,
+     "detail": [
+      {
+       "kind": "post_slowdown_ng",
+       "clip": "full_story_part1_k1",
+       "slot": 1
+      }
+     ]
+    },
+    {
+     "check": "①②同Style",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "最終OK",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "Std chunk減速Gate: 当該chunkはviolationなし(他chunk=未生成はMISSING_MANDATORY扱いで対象外)",
+     "ok": true,
+     "detail": []
+    },
+    {
+     "check": "M3 profile Gate: 当該chunk blockedなし(誤BLOCKなし)",
+     "ok": true,
+     "detail": []
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 1
+    }
+   ],
+   "tts": 2,
+   "cooldowns": 0,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 1.175,
+   "final_status": "OK",
+   "wall_seconds": 38.6
+  },
+  "X-Std-1b": {
+   "id": "X-Std-1b",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "①②同Style/③別Style",
+     "ok": true,
+     "detail": [
+      "d16e09",
+      "d16e09",
+      "dba23e"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Aoede'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.471,
+   "final_status": "OK",
+   "wall_seconds": 195.4
+  },
+  "X-Std-2": {
+   "id": "X-Std-2",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=4",
+     "ok": true,
+     "detail": 4
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "LR=1",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "LR RESOLVED",
+     "ok": true,
+     "detail": [
+      "RESOLVED_BY_LOCAL_REWRITE"
+     ]
+    },
+    {
+     "check": "④=元role Style(①と同じ)",
+     "ok": true,
+     "detail": [
+      "d16e09",
+      "d16e09",
+      "dba23e",
+      "d16e09"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Aoede'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "④のjudgeがscript_version=v1",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": 0
+    },
+    {
+     "check": "最終OK(LR採用)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 3
+    }
+   ],
+   "tts": 4,
+   "cooldowns": 1,
+   "lr": 1,
+   "hrq": 0,
+   "cost_jpy": 1.142,
+   "final_status": "OK",
+   "wall_seconds": 237.3
+  },
+  "X-Std-3": {
+   "id": "X-Std-3",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=6",
+     "ok": true,
+     "detail": 6
+    },
+    {
+     "check": "待機2回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=2 実測秒=[179.999, 179.999]"
+    },
+    {
+     "check": "LR=1(再入0)",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "①②④⑤=role Style / ③⑥=Fallback",
+     "ok": true,
+     "detail": [
+      "d16e09",
+      "d16e09",
+      "dba23e",
+      "d16e09",
+      "d16e09",
+      "dba23e"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Aoede'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "HRQ=1行",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "最終NG(STOPPED)",
+     "ok": true,
+     "detail": "STOPPED"
+    },
+    {
+     "check": "Lock=HUMAN_REVIEW",
+     "ok": true,
+     "detail": "HUMAN_REVIEW_REQUIRED"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 5
+    }
+   ],
+   "tts": 6,
+   "cooldowns": 2,
+   "lr": 1,
+   "hrq": 1,
+   "cost_jpy": 2.203,
+   "final_status": "STOPPED",
+   "wall_seconds": 481.4
+  },
+  "X-Std-4": {
+   "id": "X-Std-4",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "①②同Style/③別Style",
+     "ok": true,
+     "detail": [
+      "10e211",
+      "10e211",
+      "dba23e"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Aoede'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.804,
+   "final_status": "OK",
+   "wall_seconds": 209.6
+  },
+  "X-Std-5": {
+   "id": "X-Std-5",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=6",
+     "ok": true,
+     "detail": 6
+    },
+    {
+     "check": "待機2回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=2 実測秒=[179.999, 179.999]"
+    },
+    {
+     "check": "LR=1(再入0)",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "①②④⑤=role Style / ③⑥=Fallback",
+     "ok": true,
+     "detail": [
+      "10e211",
+      "10e211",
+      "dba23e",
+      "10e211",
+      "10e211",
+      "dba23e"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Aoede'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "HRQ=1行",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "最終NG(STOPPED)",
+     "ok": true,
+     "detail": "STOPPED"
+    },
+    {
+     "check": "Lock=HUMAN_REVIEW",
+     "ok": true,
+     "detail": "HUMAN_REVIEW_REQUIRED"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 7
+    }
+   ],
+   "tts": 6,
+   "cooldowns": 2,
+   "lr": 1,
+   "hrq": 1,
+   "cost_jpy": 1.868,
+   "final_status": "STOPPED",
+   "wall_seconds": 442.0
+  },
+  "X-Std-6": {
+   "id": "X-Std-6",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "①②同Style/③別Style",
+     "ok": true,
+     "detail": [
+      "ae68e3",
+      "ae68e3",
+      "57d8e2"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Aoede'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.238,
+   "final_status": "OK",
+   "wall_seconds": 196.9
+  },
+  "X-Std-7": {
+   "id": "X-Std-7",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "HRQ行: L7(JA)/L8はjudge自身が最終slotの本物のNGで書く経路。judge戻り値の注入では行が出ない(driver側の限界・対象外)",
+     "ok": true,
+     "detail": 0
+    },
+    {
+     "check": "最終NG",
+     "ok": true,
+     "detail": "STOPPED"
+    },
+    {
+     "check": "Lock=HUMAN_REVIEW",
+     "ok": true,
+     "detail": "HUMAN_REVIEW_REQUIRED"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 3
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.237,
+   "final_status": "STOPPED",
+   "wall_seconds": 198.0
+  },
+  "X-Std-8": {
+   "id": "X-Std-8",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "③=ENGLISH_LOCK",
+     "ok": true,
+     "detail": [
+      "",
+      "",
+      "ENGLISH_LOCK"
+     ]
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": 0
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "待機位置=ENGLISH_LOCK段直前(attempt 2→3)",
+     "ok": true,
+     "detail": [
+      [
+       2,
+       3
+      ]
+     ]
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.393,
+   "final_status": "OK",
+   "wall_seconds": 203.1
+  },
+  "X-Std-9": {
+   "id": "X-Std-9",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=4",
+     "ok": true,
+     "detail": 4
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "③④=ENGLISH_LOCK",
+     "ok": true,
+     "detail": [
+      "",
+      "",
+      "ENGLISH_LOCK",
+      "ENGLISH_LOCK"
+     ]
+    },
+    {
+     "check": "HRQ=1行",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "最終NG",
+     "ok": true,
+     "detail": "STOPPED"
+    },
+    {
+     "check": "待機位置=ENGLISH_LOCK段直前(attempt 2→3)",
+     "ok": true,
+     "detail": [
+      [
+       2,
+       3
+      ]
+     ]
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 3
+    }
+   ],
+   "tts": 4,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 1,
+   "cost_jpy": 0.523,
+   "final_status": "STOPPED",
+   "wall_seconds": 206.0
+  },
+  "Y-Adv-1": {
+   "id": "Y-Adv-1",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=4",
+     "ok": true,
+     "detail": 4
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "LR=1",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "LR RESOLVED",
+     "ok": true,
+     "detail": [
+      "RESOLVED_BY_LOCAL_REWRITE"
+     ]
+    },
+    {
+     "check": "④=元role Style(①と同じ)",
+     "ok": true,
+     "detail": [
+      "57c3fd",
+      "57c3fd",
+      "dba23e",
+      "57c3fd"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Charon'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "④のjudgeがscript_version=v1",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": 0
+    },
+    {
+     "check": "最終OK(LR採用)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 4
+    }
+   ],
+   "tts": 4,
+   "cooldowns": 1,
+   "lr": 1,
+   "hrq": 0,
+   "cost_jpy": 1.152,
+   "final_status": "OK",
+   "wall_seconds": 248.1
+  },
+  "Y-Adv-2": {
+   "id": "Y-Adv-2",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[180.0]"
+    },
+    {
+     "check": "①②同Style/③別Style",
+     "ok": true,
+     "detail": [
+      "051800",
+      "051800",
+      "b66d3a"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Aoede'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.409,
+   "final_status": "OK",
+   "wall_seconds": 192.5
+  },
+  "Y-Adv-3": {
+   "id": "Y-Adv-3",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "③=ENGLISH_LOCK",
+     "ok": true,
+     "detail": [
+      "",
+      "",
+      "ENGLISH_LOCK"
+     ]
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": 0
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "待機位置=ENGLISH_LOCK段直前(attempt 2→3)",
+     "ok": true,
+     "detail": [
+      [
+       2,
+       3
+      ]
+     ]
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.411,
+   "final_status": "OK",
+   "wall_seconds": 196.4
+  },
+  "Y-Adv-4": {
+   "id": "Y-Adv-4",
+   "verdict": "DEVIATION_NATURAL",
+   "checks": [
+    {
+     "check": "TTS=4",
+     "ok": false,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "LR=1",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "LR RESOLVED",
+     "ok": false,
+     "detail": [
+      "HUMAN_REVIEW_LOCKED_NO_CANDIDATE_PASSED_QA"
+     ]
+    },
+    {
+     "check": "④=元role Style(①と同じ)",
+     "ok": false,
+     "detail": [
+      "3a6808",
+      "3a6808",
+      "dba23e"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Puck'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "④のjudgeがscript_version=v1",
+     "ok": false,
+     "detail": ""
+    },
+    {
+     "check": "HRQ=0",
+     "ok": false,
+     "detail": 1
+    },
+    {
+     "check": "最終OK(LR採用)",
+     "ok": false,
+     "detail": "STOPPED"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 4
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 1,
+   "hrq": 1,
+   "cost_jpy": 7.058,
+   "final_status": "STOPPED",
+   "wall_seconds": 341.3
+  },
+  "Y-Adv-4b": {
+   "id": "Y-Adv-4b",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=4",
+     "ok": true,
+     "detail": 4
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "LR=1",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "LR RESOLVED",
+     "ok": true,
+     "detail": [
+      "RESOLVED_BY_LOCAL_REWRITE"
+     ]
+    },
+    {
+     "check": "④=元role Style(①と同じ)",
+     "ok": true,
+     "detail": [
+      "3a6808",
+      "3a6808",
+      "dba23e",
+      "3a6808"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Puck'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "④のjudgeがscript_version=v1",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": 0
+    },
+    {
+     "check": "最終OK(LR採用)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 3
+    }
+   ],
+   "tts": 4,
+   "cooldowns": 1,
+   "lr": 1,
+   "hrq": 0,
+   "cost_jpy": 8.558,
+   "final_status": "OK",
+   "wall_seconds": 368.6
+  },
+  "Y-Adv-5": {
+   "id": "Y-Adv-5",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "上書き0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "TTS=2(1/clip)",
+     "ok": true,
+     "detail": 2
+    },
+    {
+     "check": "待機0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "全clip OK",
+     "ok": true,
+     "detail": {
+      "topic_intro": "OK",
+      "comment_1": "OK"
+     }
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 0
+    }
+   ],
+   "tts": 1,
+   "cooldowns": 0,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.282,
+   "final_status": "OK",
+   "wall_seconds": 24.8
+  },
+  "Y-Std-1": {
+   "id": "Y-Std-1",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=6",
+     "ok": true,
+     "detail": 6
+    },
+    {
+     "check": "待機2回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=2 実測秒=[179.999, 179.998]"
+    },
+    {
+     "check": "LR=1(再入0)",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "①②④⑤=role Style / ③⑥=Fallback",
+     "ok": true,
+     "detail": [
+      "d16e09",
+      "d16e09",
+      "dba23e",
+      "d16e09",
+      "d16e09",
+      "dba23e"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Aoede'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "HRQ=1行",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "最終NG(STOPPED)",
+     "ok": true,
+     "detail": "STOPPED"
+    },
+    {
+     "check": "Lock=HUMAN_REVIEW",
+     "ok": true,
+     "detail": "HUMAN_REVIEW_REQUIRED"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 7
+    }
+   ],
+   "tts": 6,
+   "cooldowns": 2,
+   "lr": 1,
+   "hrq": 1,
+   "cost_jpy": 1.323,
+   "final_status": "STOPPED",
+   "wall_seconds": 420.6
+  },
+  "Y-Std-2": {
+   "id": "Y-Std-2",
+   "verdict": "DEVIATION_NATURAL",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "①②同Style/③別Style",
+     "ok": true,
+     "detail": [
+      "ae68e3",
+      "ae68e3",
+      "57d8e2"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Aoede'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": false,
+     "detail": "STOPPED"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 1,
+   "cost_jpy": 0.325,
+   "final_status": "STOPPED",
+   "wall_seconds": 197.6
+  },
+  "Y-Std-2b": {
+   "id": "Y-Std-2b",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[180.0]"
+    },
+    {
+     "check": "①②同Style/③別Style",
+     "ok": true,
+     "detail": [
+      "ae68e3",
+      "ae68e3",
+      "57d8e2"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Aoede'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 0
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.494,
+   "final_status": "OK",
+   "wall_seconds": 208.3
+  },
+  "Y-Std-3": {
+   "id": "Y-Std-3",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "③=ENGLISH_LOCK",
+     "ok": true,
+     "detail": [
+      "",
+      "",
+      "ENGLISH_LOCK"
+     ]
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": 0
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "待機位置=ENGLISH_LOCK段直前(attempt 2→3)",
+     "ok": true,
+     "detail": [
+      [
+       2,
+       3
+      ]
+     ]
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.318,
+   "final_status": "OK",
+   "wall_seconds": 194.2
+  },
+  "Y-Std-4": {
+   "id": "Y-Std-4",
+   "verdict": "DEVIATION_NATURAL",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[180.0]"
+    },
+    {
+     "check": "①②同Style/③別Style",
+     "ok": true,
+     "detail": [
+      "3a6808",
+      "3a6808",
+      "dba23e"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Puck'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "LR=0",
+     "ok": false,
+     "detail": ""
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": false,
+     "detail": "STOPPED"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 1,
+   "hrq": 1,
+   "cost_jpy": 4.827,
+   "final_status": "STOPPED",
+   "wall_seconds": 226.9
+  },
+  "Y-Std-4b": {
+   "id": "Y-Std-4b",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "①②同Style/③別Style",
+     "ok": true,
+     "detail": [
+      "3a6808",
+      "3a6808",
+      "dba23e"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Puck'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 6.539,
+   "final_status": "OK",
+   "wall_seconds": 317.5
+  },
+  "Y-Std-5": {
+   "id": "Y-Std-5",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "上書き0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "TTS=2(1/clip)",
+     "ok": true,
+     "detail": 2
+    },
+    {
+     "check": "待機0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "全clip OK",
+     "ok": true,
+     "detail": {
+      "topic_intro": "OK",
+      "japanese_title": "OK"
+     }
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 0
+    }
+   ],
+   "tts": 1,
+   "cooldowns": 0,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.218,
+   "final_status": "OK",
+   "wall_seconds": 9.5
+  },
+  "Y-Std-6": {
+   "id": "Y-Std-6",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=2(③を実行していない)",
+     "ok": true,
+     "detail": 2
+    },
+    {
+     "check": "例外=TtsBlockStopError(BaseException)でrunner最上位まで伝播",
+     "ok": true,
+     "detail": {
+      "type": "FamilyZStopSentinel",
+      "message": "FAMILY_Z_STOP_SENTINEL: er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_6/STOP が存在するため tts_cooldown:topic_intro の前で停止(新規API呼出なし)。自動再開/再試行はしない。Fable/ユーザーの指示を待つこと。",
+      "trace_tail": "al - 1, attempt_after=self.ctx.slot_offset + ordinal)\n  File \"C:\\Users\\tensh\\eigo-radio\\docs\\research\\TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01\\tools\\tru_ev_core_01.py\", line 191, in cooldown_core\n    r = _orig_cd(**kw)\n  File \"C:\\Users\\tensh\\eigo-radio\\er127_tts_block_policy_01.py\", line 200, in cooldown_core\n    (stop_check or run_stop_check)(f\"tts_cooldown:{label}\")\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\tensh\\eigo-radio\\docs\\research\\TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01\\tools\\tru_ev_core_01.py\", line 205, in run_stop_check\n    return _orig_rsc(where)\n  File \"C:\\Users\\tensh\\eigo-radio\\er127_tts_block_policy_01.py\", line 89, in run_stop_check\n    _STOP_CHECK(where)\n    ~~~~~~~~~~~^^^^^^^\n  File \"C:\\Users\\tensh\\eigo-radio\\er121_family_y_audio_01.py\", line 545, in <lambda>\n    er127.register_stop_check(lambda where: _st.check_stop_sentinel(where, theme_out_dir))\n                                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\tensh\\eigo-radio\\er062_family_z_structure_01.py\", line 452, in check_stop_sentinel\n    raise FamilyZStopSentinel(f\"FAMILY_Z_STOP_SENTINEL: {hit} が存在するため {where} の前で停止(新規API呼出なし)。\"\n                              \"自動再開/再試行はしない。Fable/ユーザーの指示を待つこと。\")\ner062_family_z_structure_01.FamilyZStopSentinel: FAMILY_Z_STOP_SENTINEL: er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_6/STOP が存在するため tts_cooldown:topic_intro の前で停止(新規API呼出なし)。自動再開/再試行はしない。Fable/ユーザーの指示を待つこと。\n"
+     }
+    },
+    {
+     "check": "待機は完了せず中断(sleep合計<180)",
+     "ok": true,
+     "detail": 40.0
+    },
+    {
+     "check": "STOPPED結果を保存していない(Lockが無いか未HR)",
+     "ok": true,
+     "detail": null
+    },
+    {
+     "check": "BlockProgress=IN_PROGRESS(resume可)",
+     "ok": true,
+     "detail": [
+      "IN_PROGRESS"
+     ]
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": 0
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 2,
+   "cooldowns": 0,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.255,
+   "final_status": null,
+   "wall_seconds": 56.4
+  },
+  "Z-Adv-1": {
+   "id": "Z-Adv-1",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=6",
+     "ok": true,
+     "detail": 6
+    },
+    {
+     "check": "待機2回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=2 実測秒=[179.999, 179.999]"
+    },
+    {
+     "check": "LR=1(再入0)",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "①②④⑤=role Style / ③⑥=Fallback",
+     "ok": true,
+     "detail": [
+      "3a6808",
+      "3a6808",
+      "dba23e",
+      "3a6808",
+      "3a6808",
+      "dba23e"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Aoede'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "HRQ=1行",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "最終NG(STOPPED)",
+     "ok": true,
+     "detail": "STOPPED"
+    },
+    {
+     "check": "Lock=HUMAN_REVIEW",
+     "ok": true,
+     "detail": "HUMAN_REVIEW_REQUIRED"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 7
+    }
+   ],
+   "tts": 6,
+   "cooldowns": 2,
+   "lr": 1,
+   "hrq": 1,
+   "cost_jpy": 1.065,
+   "final_status": "STOPPED",
+   "wall_seconds": 422.3
+  },
+  "Z-Adv-2": {
+   "id": "Z-Adv-2",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.983]"
+    },
+    {
+     "check": "①②=ctx方式 / ③=従来Dialogue Style(legacy_fallback)",
+     "ok": true,
+     "detail": [
+      "ctx",
+      "ctx",
+      "legacy_fallback"
+     ]
+    },
+    {
+     "check": "Voice/model全attempt同一",
+     "ok": true,
+     "detail": [
+      [
+       "Schedar",
+       "gemini-2.5-pro-preview-tts"
+      ]
+     ]
+    },
+    {
+     "check": "待機はn=3直前(required_before_n=3)",
+     "ok": true,
+     "detail": {
+      "required_before_n": 3,
+      "ref_epoch": 1793026787.20081,
+      "ref_at": "2026-10-26T23:59:47",
+      "requested_seconds": 180.0,
+      "started_epoch": 1793026787.209265,
+      "started_at": "2026-10-26T23:59:47",
+      "ended_epoch": 1793026967.201382,
+      "waited_seconds_this_process": 179.983,
+      "resumed": false,
+      "process_starts": 1,
+      "ended_at": "2026-10-27T00:02:47",
+      "total_elapsed_since_ref_seconds": 180.001
+     }
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 1.22,
+   "final_status": "OK",
+   "wall_seconds": 209.4
+  },
+  "Z-Adv-3": {
+   "id": "Z-Adv-3",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.972]"
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "HRQ行: L7(JA)/L8はjudge自身が最終slotの本物のNGで書く経路。judge戻り値の注入では行が出ない(driver側の限界・対象外)",
+     "ok": true,
+     "detail": 0
+    },
+    {
+     "check": "最終NG",
+     "ok": true,
+     "detail": "STOPPED"
+    },
+    {
+     "check": "Lock=HUMAN_REVIEW",
+     "ok": true,
+     "detail": "HUMAN_REVIEW_REQUIRED"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 3
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 1.282,
+   "final_status": "STOPPED",
+   "wall_seconds": 201.9
+  },
+  "Z-Adv-3b": {
+   "id": "Z-Adv-3b",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.978]"
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "HRQ=1行",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "最終NG",
+     "ok": true,
+     "detail": "STOPPED"
+    },
+    {
+     "check": "Lock=HUMAN_REVIEW",
+     "ok": true,
+     "detail": "HUMAN_REVIEW_REQUIRED"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 3
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 1,
+   "cost_jpy": 1.512,
+   "final_status": "STOPPED",
+   "wall_seconds": 222.8
+  },
+  "Z-Adv-4": {
+   "id": "Z-Adv-4",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=4",
+     "ok": true,
+     "detail": 4
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "LR=1",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "LR RESOLVED",
+     "ok": true,
+     "detail": [
+      "RESOLVED_BY_LOCAL_REWRITE"
+     ]
+    },
+    {
+     "check": "④=元role Style(①と同じ)",
+     "ok": true,
+     "detail": [
+      "d16e09",
+      "d16e09",
+      "dba23e",
+      "d16e09"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Charon'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "④のjudgeがscript_version=v1",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": 0
+    },
+    {
+     "check": "最終OK(LR採用)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 4
+    }
+   ],
+   "tts": 4,
+   "cooldowns": 1,
+   "lr": 1,
+   "hrq": 0,
+   "cost_jpy": 0.633,
+   "final_status": "OK",
+   "wall_seconds": 217.6
+  },
+  "Z-Adv-5": {
+   "id": "Z-Adv-5",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "①②同Style/③別Style",
+     "ok": true,
+     "detail": [
+      "051800",
+      "051800",
+      "b66d3a"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Aoede'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.464,
+   "final_status": "OK",
+   "wall_seconds": 194.9
+  },
+  "Z-Adv-6": {
+   "id": "Z-Adv-6",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "③=ENGLISH_LOCK",
+     "ok": true,
+     "detail": [
+      "",
+      "",
+      "ENGLISH_LOCK"
+     ]
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": 0
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "待機位置=ENGLISH_LOCK段直前(attempt 2→3)",
+     "ok": true,
+     "detail": [
+      [
+       2,
+       3
+      ]
+     ]
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.452,
+   "final_status": "OK",
+   "wall_seconds": 191.8
+  },
+  "Z-Adv-8": {
+   "id": "Z-Adv-8",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "上書き0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "TTS=2(1/clip)",
+     "ok": true,
+     "detail": 2
+    },
+    {
+     "check": "待機0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "全clip OK",
+     "ok": true,
+     "detail": {
+      "topic_intro_en": "OK",
+      "comment_1": "OK"
+     }
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 0
+    }
+   ],
+   "tts": 1,
+   "cooldowns": 0,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.218,
+   "final_status": "OK",
+   "wall_seconds": 11.8
+  },
+  "Z-Std-1": {
+   "id": "Z-Std-1",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=6",
+     "ok": true,
+     "detail": 6
+    },
+    {
+     "check": "待機2回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=2 実測秒=[179.999, 179.999]"
+    },
+    {
+     "check": "LR=1(再入0)",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "①②④⑤=role Style / ③⑥=Fallback",
+     "ok": true,
+     "detail": [
+      "3a6808",
+      "3a6808",
+      "dba23e",
+      "3a6808",
+      "3a6808",
+      "dba23e"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Aoede'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "HRQ=1行",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "最終NG(STOPPED)",
+     "ok": true,
+     "detail": "STOPPED"
+    },
+    {
+     "check": "Lock=HUMAN_REVIEW",
+     "ok": true,
+     "detail": "HUMAN_REVIEW_REQUIRED"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 7
+    }
+   ],
+   "tts": 6,
+   "cooldowns": 2,
+   "lr": 1,
+   "hrq": 1,
+   "cost_jpy": 2.499,
+   "final_status": "STOPPED",
+   "wall_seconds": 458.2
+  },
+  "Z-Std-2": {
+   "id": "Z-Std-2",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.981]"
+    },
+    {
+     "check": "①②=ctx方式 / ③=従来Dialogue Style(legacy_fallback)",
+     "ok": true,
+     "detail": [
+      "ctx",
+      "ctx",
+      "legacy_fallback"
+     ]
+    },
+    {
+     "check": "Voice/model全attempt同一",
+     "ok": true,
+     "detail": [
+      [
+       "Schedar",
+       "gemini-2.5-pro-preview-tts"
+      ]
+     ]
+    },
+    {
+     "check": "待機はn=3直前(required_before_n=3)",
+     "ok": true,
+     "detail": {
+      "required_before_n": 3,
+      "ref_epoch": 1793025692.6983616,
+      "ref_at": "2026-10-26T23:41:32",
+      "requested_seconds": 180.0,
+      "started_epoch": 1793025692.7090755,
+      "started_at": "2026-10-26T23:41:32",
+      "ended_epoch": 1793025872.6992779,
+      "waited_seconds_this_process": 179.981,
+      "resumed": false,
+      "process_starts": 1,
+      "ended_at": "2026-10-26T23:44:32",
+      "total_elapsed_since_ref_seconds": 180.001
+     }
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 1.513,
+   "final_status": "OK",
+   "wall_seconds": 241.7
+  },
+  "Z-Std-4": {
+   "id": "Z-Std-4",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "①②同Style/③別Style",
+     "ok": true,
+     "detail": [
+      "ae68e3",
+      "ae68e3",
+      "57d8e2"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Aoede'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 1
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.199,
+   "final_status": "OK",
+   "wall_seconds": 190.4
+  },
+  "Z-Std-5": {
+   "id": "Z-Std-5",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=3",
+     "ok": true,
+     "detail": 3
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[180.0]"
+    },
+    {
+     "check": "③=ENGLISH_LOCK",
+     "ok": true,
+     "detail": [
+      "",
+      "",
+      "ENGLISH_LOCK"
+     ]
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": 0
+    },
+    {
+     "check": "最終OK(③実PASS)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "待機位置=ENGLISH_LOCK段直前(attempt 2→3)",
+     "ok": true,
+     "detail": [
+      [
+       2,
+       3
+      ]
+     ]
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 3,
+   "cooldowns": 1,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.377,
+   "final_status": "OK",
+   "wall_seconds": 192.5
+  },
+  "Z-Std-6": {
+   "id": "Z-Std-6",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=4",
+     "ok": true,
+     "detail": 4
+    },
+    {
+     "check": "待機1回(各≥178秒)",
+     "ok": true,
+     "detail": "回数=1 実測秒=[179.999]"
+    },
+    {
+     "check": "LR=1",
+     "ok": true,
+     "detail": 1
+    },
+    {
+     "check": "LR RESOLVED",
+     "ok": true,
+     "detail": [
+      "RESOLVED_BY_LOCAL_REWRITE"
+     ]
+    },
+    {
+     "check": "④=元role Style(①と同じ)",
+     "ok": true,
+     "detail": [
+      "d16e09",
+      "d16e09",
+      "dba23e",
+      "d16e09"
+     ]
+    },
+    {
+     "check": "Voice/modelが全attempt同一",
+     "ok": true,
+     "detail": "voice=['Aoede'] model=['gemini-3.8-flash-lite-tts']"
+    },
+    {
+     "check": "④のjudgeがscript_version=v1",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": 0
+    },
+    {
+     "check": "最終OK(LR採用)",
+     "ok": true,
+     "detail": "OK"
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 4
+    }
+   ],
+   "tts": 4,
+   "cooldowns": 1,
+   "lr": 1,
+   "hrq": 0,
+   "cost_jpy": 0.702,
+   "final_status": "OK",
+   "wall_seconds": 224.8
+  },
+  "Z-Std-7": {
+   "id": "Z-Std-7",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "上書き0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "TTS=2(1/clip)",
+     "ok": true,
+     "detail": 2
+    },
+    {
+     "check": "待機0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "LR=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": ""
+    },
+    {
+     "check": "全clip OK",
+     "ok": true,
+     "detail": {
+      "topic_intro_en": "OK",
+      "japanese_title": "OK"
+     }
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 0
+    }
+   ],
+   "tts": 1,
+   "cooldowns": 0,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.133,
+   "final_status": "OK",
+   "wall_seconds": 8.5
+  },
+  "Z-Std-8": {
+   "id": "Z-Std-8",
+   "verdict": "PASS",
+   "checks": [
+    {
+     "check": "TTS=2(③を実行していない)",
+     "ok": true,
+     "detail": 2
+    },
+    {
+     "check": "例外=TtsBlockStopError(BaseException)でrunner最上位まで伝播",
+     "ok": true,
+     "detail": {
+      "type": "FamilyZStopSentinel",
+      "message": "FAMILY_Z_STOP_SENTINEL: er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_std_8/STOP が存在するため tts_cooldown:topic_intro_en の前で停止(新規API呼出なし)。自動再開/再試行はしない。Fable/ユーザーの指示を待つこと。",
+      "trace_tail": "C:\\Users\\tensh\\eigo-radio\\er127_tts_block_policy_01.py\", line 200, in cooldown_core\n    (stop_check or run_stop_check)(f\"tts_cooldown:{label}\")\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\tensh\\eigo-radio\\docs\\research\\TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01\\tools\\tru_ev_core_01.py\", line 205, in run_stop_check\n    return _orig_rsc(where)\n  File \"C:\\Users\\tensh\\eigo-radio\\er127_tts_block_policy_01.py\", line 89, in run_stop_check\n    _STOP_CHECK(where)\n    ~~~~~~~~~~~^^^^^^^\n  File \"C:\\Users\\tensh\\eigo-radio\\er063_family_z_audio_01.py\", line 1557, in <lambda>\n    er127.register_stop_check(lambda where: _check_stop_sentinel(run_dir, where))      # 委任_02: 統一3回構成の180秒待機中もZのSTOP sentinelを確認\n                                            ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\tensh\\eigo-radio\\er063_family_z_audio_01.py\", line 1328, in _check_stop_sentinel\n    _zst.check_stop_sentinel(where, run_dir)\n    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\tensh\\eigo-radio\\er062_family_z_structure_01.py\", line 452, in check_stop_sentinel\n    raise FamilyZStopSentinel(f\"FAMILY_Z_STOP_SENTINEL: {hit} が存在するため {where} の前で停止(新規API呼出なし)。\"\n                              \"自動再開/再試行はしない。Fable/ユーザーの指示を待つこと。\")\ner062_family_z_structure_01.FamilyZStopSentinel: FAMILY_Z_STOP_SENTINEL: er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_std_8/STOP が存在するため tts_cooldown:topic_intro_en の前で停止(新規API呼出なし)。自動再開/再試行はしない。Fable/ユーザーの指示を待つこと。\n"
+     }
+    },
+    {
+     "check": "待機は完了せず中断(sleep合計<180)",
+     "ok": true,
+     "detail": 40.0
+    },
+    {
+     "check": "STOPPED結果を保存していない(Lockが無いか未HR)",
+     "ok": true,
+     "detail": null
+    },
+    {
+     "check": "BlockProgress=IN_PROGRESS(resume可)",
+     "ok": true,
+     "detail": [
+      "IN_PROGRESS"
+     ]
+    },
+    {
+     "check": "HRQ=0",
+     "ok": true,
+     "detail": 0
+    },
+    {
+     "check": "injected_override_count記録",
+     "ok": true,
+     "detail": 2
+    }
+   ],
+   "tts": 2,
+   "cooldowns": 0,
+   "lr": 0,
+   "hrq": 0,
+   "cost_jpy": 0.169,
+   "final_status": null,
+   "wall_seconds": 51.3
+  }
+ }
+}

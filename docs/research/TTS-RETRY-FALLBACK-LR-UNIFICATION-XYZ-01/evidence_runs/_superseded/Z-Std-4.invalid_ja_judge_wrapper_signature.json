@@ -1,0 +1,135 @@
+{
+ "management_id": "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01",
+ "case": "Z-Std-4",
+ "family": "Z",
+ "level": "a2",
+ "scenario": "E-S1",
+ "leaf": "L7",
+ "policy": "JA_STD",
+ "segments": [
+  "japanese_title"
+ ],
+ "run_dir": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_std_4",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {},
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {
+   "*": [
+    1,
+    2
+   ]
+  }
+ },
+ "injected_overrides": [],
+ "injected_override_count": 0,
+ "started_at": "2026-10-26T23:37:19",
+ "ended_at": "2026-10-26T23:37:22",
+ "wall_seconds": 3.4,
+ "pid": 20104,
+ "exception": {
+  "type": "TypeError",
+  "message": "installed.<locals>.wrap_judge.<locals>.w() missing 1 required positional argument: 'wav_path'",
+  "trace_tail": "tion_snippet_verified_strict(\n        text, \"ja\", out_path, expected_substring, max_attempts=standard_attempts, max_extra_chars=max_extra_chars,\n    ...<2 lines>...\n        slot_offset=0, total_slots=max_attempts,   # AUW 委任_05: 標準経路は後段fallbackが残る間HR queue対象外\n        **er127.stage_kwargs(_blk, 0))             # 委任_02: scope内は①②のSTOP確認/n_started永続化/resumeを統一ブロックで\n  File \"C:\\Users\\tensh\\eigo-radio\\er011_human_review_lock_01.py\", line 714, in wrapper\n    return fn(text, language, out_path, *args, **kwargs)\n  File \"C:\\Users\\tensh\\eigo-radio\\er003_v1_repro01_main_generate.py\", line 406, in generate_narration_snippet_verified_strict\n    verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(\n                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\n        text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<2 lines>...\n            attempt, max_attempts, slot_offset=slot_offset, total_slots=total_slots, max_len=max_len),  # AUW 委任_05/13\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        detail_out=cascade_detail)  # AUW 委任_04: 統一judgeの監査record(asr_judgement)をadditiveに受け取る\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: installed.<locals>.wrap_judge.<locals>.w() missing 1 required positional argument: 'wav_path'\n"
+ },
+ "tts_attempts": [
+  {
+   "clip": "japanese_title",
+   "t": 0.02,
+   "voice": "Aoede",
+   "model_requested": "gemini-3.1-flash-tts-preview",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "ae68e3e6ac8e",
+   "style_head": "落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。",
+   "style_chars": 65,
+   "text_head": "猿の手",
+   "text_sha": "b43563c72975",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 1,
+ "tts_api_calls": 1,
+ "judges": [],
+ "post_slowdown_judges": [],
+ "cooldown_events": [],
+ "cooldown_count": 0,
+ "sleep_total_seconds": 0.0,
+ "stop_checks": {
+  "cooldown": 0,
+  "attempt": 1,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [],
+ "lock_state": null,
+ "block_progress": {
+  "japanese_title.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "a6296746db29e62ce61183d9",
+   "segment_id": "japanese_title",
+   "fingerprint": {
+    "leaf": "L7",
+    "style_prefix_override": "ae68e3e6ac8e8dc2",
+    "tts_backend": "7b7d9d14787b08f6",
+    "policy": "JA_STD"
+   },
+   "status": "IN_PROGRESS",
+   "created_epoch": 1793025439.1476667,
+   "updated_epoch": 1793025439.1487906,
+   "blocks": {
+    "0": {
+     "n_started": 1,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793025439.1487901
+      }
+     },
+     "cooldown": null
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   }
+  }
+ },
+ "results_segments": {},
+ "results_key_phrases": {},
+ "attempt_sidecars": [],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 0.039,
+  "by_provider": {
+   "gemini": 0.03,
+   "openai_asr": 0.01
+  }
+ },
+ "gate_observation": {
+  "m2_complete": {
+   "BLOCK": "FamilyZTtsResultsIncompleteStop: tts_generation_results.json が存在しません: er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_std_4/a2/audit/tts_generation_results.json"
+  },
+  "audio_gate": {
+   "BLOCK": "FamilyZTtsResultsIncompleteStop: tts_generation_results.json が存在しません: er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_std_4/a2/audit/tts_generation_results.json"
+  }
+ },
+ "resumed_run": false
+}

@@ -1,0 +1,253 @@
+{
+ "management_id": "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01",
+ "case": "Z-Std-8",
+ "family": "Z",
+ "level": "a2",
+ "scenario": "E-STOP",
+ "leaf": "L3",
+ "policy": "EN_LR_STD",
+ "segments": [
+  "topic_intro_en"
+ ],
+ "run_dir": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_std_8",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {
+   "*": [
+    1,
+    2
+   ]
+  },
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [
+  {
+   "kind": "judge_ng",
+   "clip": "topic_intro_en",
+   "slot": 1,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "topic_intro_en",
+   "slot": 2,
+   "judge_kind": "en"
+  }
+ ],
+ "injected_override_count": 2,
+ "started_at": "2026-10-26T23:58:17",
+ "ended_at": "2026-10-26T23:59:08",
+ "wall_seconds": 51.3,
+ "pid": 54672,
+ "exception": {
+  "type": "FamilyZStopSentinel",
+  "message": "FAMILY_Z_STOP_SENTINEL: er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_std_8/STOP が存在するため tts_cooldown:topic_intro_en の前で停止(新規API呼出なし)。自動再開/再試行はしない。Fable/ユーザーの指示を待つこと。",
+  "trace_tail": "C:\\Users\\tensh\\eigo-radio\\er127_tts_block_policy_01.py\", line 200, in cooldown_core\n    (stop_check or run_stop_check)(f\"tts_cooldown:{label}\")\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\tensh\\eigo-radio\\docs\\research\\TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01\\tools\\tru_ev_core_01.py\", line 205, in run_stop_check\n    return _orig_rsc(where)\n  File \"C:\\Users\\tensh\\eigo-radio\\er127_tts_block_policy_01.py\", line 89, in run_stop_check\n    _STOP_CHECK(where)\n    ~~~~~~~~~~~^^^^^^^\n  File \"C:\\Users\\tensh\\eigo-radio\\er063_family_z_audio_01.py\", line 1557, in <lambda>\n    er127.register_stop_check(lambda where: _check_stop_sentinel(run_dir, where))      # 委任_02: 統一3回構成の180秒待機中もZのSTOP sentinelを確認\n                                            ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\tensh\\eigo-radio\\er063_family_z_audio_01.py\", line 1328, in _check_stop_sentinel\n    _zst.check_stop_sentinel(where, run_dir)\n    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\tensh\\eigo-radio\\er062_family_z_structure_01.py\", line 452, in check_stop_sentinel\n    raise FamilyZStopSentinel(f\"FAMILY_Z_STOP_SENTINEL: {hit} が存在するため {where} の前で停止(新規API呼出なし)。\"\n                              \"自動再開/再試行はしない。Fable/ユーザーの指示を待つこと。\")\ner062_family_z_structure_01.FamilyZStopSentinel: FAMILY_Z_STOP_SENTINEL: er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_std_8/STOP が存在するため tts_cooldown:topic_intro_en の前で停止(新規API呼出なし)。自動再開/再試行はしない。Fable/ユーザーの指示を待つこと。\n"
+ },
+ "tts_attempts": [
+  {
+   "clip": "topic_intro_en",
+   "t": 4.06,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "d16e099cb4f6",
+   "style_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "style_chars": 96,
+   "text_head": "Today's topic is The Monkey's Paw.",
+   "text_sha": "33f159fa7e5b",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "topic_intro_en",
+   "t": 8.61,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "d16e099cb4f6",
+   "style_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "style_chars": 96,
+   "text_head": "Today's topic is The Monkey's Paw.",
+   "text_sha": "33f159fa7e5b",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 2,
+ "tts_api_calls": 2,
+ "judges": [
+  {
+   "clip": "topic_intro_en",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "EXACT_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Today's topic is The Monkey's Paw."
+  },
+  {
+   "clip": "topic_intro_en",
+   "kind": "en",
+   "slot": 2,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "EXACT_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Today's topic is The Monkey's Paw."
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [],
+ "cooldown_count": 0,
+ "sleep_total_seconds": 40.0,
+ "stop_checks": {
+  "cooldown": 9,
+  "attempt": 3,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [],
+ "lock_state": null,
+ "block_progress": {
+  "topic_intro_en.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "a6093b976c3b29bf0f044eec",
+   "segment_id": "topic_intro_en",
+   "fingerprint": {
+    "leaf": "L3",
+    "style_prefix_override": "d16e099cb4f6fd7f",
+    "tts_backend": "7b7d9d14787b08f6",
+    "policy": "EN_LR_STD"
+   },
+   "status": "IN_PROGRESS",
+   "created_epoch": 1793026701.095009,
+   "updated_epoch": 1793026708.3120008,
+   "blocks": {
+    "0": {
+     "n_started": 2,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793026701.0993505,
+       "finished_epoch": 1793026705.6440494,
+       "verified": false
+      },
+      "2": {
+       "started_epoch": 1793026705.6456084,
+       "finished_epoch": 1793026708.3119998,
+       "verified": false
+      }
+     },
+     "cooldown": null
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   }
+  }
+ },
+ "results_segments": {},
+ "results_key_phrases": {},
+ "attempt_sidecars": [
+  {
+   "file": "topic_intro_en_attempt1_custom60a24f1e.json",
+   "segment_id": "topic_intro_en",
+   "attempt_number": 1,
+   "route": "custom_60a24f1e",
+   "saved_at": "2026-10-26T23:58:25",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "instruction_sha": "d16e099cb4f6",
+   "instruction_chars": 96,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Today's topic is The Monkey's Paw.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "EXACT_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "topic_intro_en_attempt2_custom60a24f1e.json",
+   "segment_id": "topic_intro_en",
+   "attempt_number": 2,
+   "route": "custom_60a24f1e",
+   "saved_at": "2026-10-26T23:58:28",
+   "loop_attempt_index": 2,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "instruction_sha": "d16e099cb4f6",
+   "instruction_chars": 96,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Today's topic is The Monkey's Paw.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "EXACT_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 0.169,
+  "by_provider": {
+   "openai": 0.01,
+   "gemini": 0.14,
+   "openai_asr": 0.03
+  }
+ },
+ "gate_observation": {
+  "m2_complete": {
+   "BLOCK": "FamilyZTtsResultsIncompleteStop: tts_generation_results.json が存在しません: er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_std_8/a2/audit/tts_generation_results.json"
+  },
+  "audio_gate": {
+   "BLOCK": "FamilyZTtsResultsIncompleteStop: tts_generation_results.json が存在しません: er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_std_8/a2/audit/tts_generation_results.json"
+  }
+ },
+ "resumed_run": false
+}

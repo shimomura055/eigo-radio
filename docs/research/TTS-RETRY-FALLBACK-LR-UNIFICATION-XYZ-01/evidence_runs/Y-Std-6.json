@@ -1,0 +1,248 @@
+{
+ "management_id": "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01",
+ "case": "Y-Std-6",
+ "family": "Y",
+ "level": "a2",
+ "scenario": "E-STOP",
+ "leaf": "L3",
+ "policy": "EN_LR_STD",
+ "segments": [
+  "topic_intro"
+ ],
+ "run_dir": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_6",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {
+   "*": [
+    1,
+    2
+   ]
+  },
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [
+  {
+   "kind": "judge_ng",
+   "clip": "topic_intro",
+   "slot": 1,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "topic_intro",
+   "slot": 2,
+   "judge_kind": "en"
+  }
+ ],
+ "injected_override_count": 2,
+ "started_at": "2026-10-26T23:53:09",
+ "ended_at": "2026-10-26T23:54:05",
+ "wall_seconds": 56.4,
+ "pid": 49692,
+ "exception": {
+  "type": "FamilyZStopSentinel",
+  "message": "FAMILY_Z_STOP_SENTINEL: er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_6/STOP が存在するため tts_cooldown:topic_intro の前で停止(新規API呼出なし)。自動再開/再試行はしない。Fable/ユーザーの指示を待つこと。",
+  "trace_tail": "al - 1, attempt_after=self.ctx.slot_offset + ordinal)\n  File \"C:\\Users\\tensh\\eigo-radio\\docs\\research\\TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01\\tools\\tru_ev_core_01.py\", line 191, in cooldown_core\n    r = _orig_cd(**kw)\n  File \"C:\\Users\\tensh\\eigo-radio\\er127_tts_block_policy_01.py\", line 200, in cooldown_core\n    (stop_check or run_stop_check)(f\"tts_cooldown:{label}\")\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\tensh\\eigo-radio\\docs\\research\\TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01\\tools\\tru_ev_core_01.py\", line 205, in run_stop_check\n    return _orig_rsc(where)\n  File \"C:\\Users\\tensh\\eigo-radio\\er127_tts_block_policy_01.py\", line 89, in run_stop_check\n    _STOP_CHECK(where)\n    ~~~~~~~~~~~^^^^^^^\n  File \"C:\\Users\\tensh\\eigo-radio\\er121_family_y_audio_01.py\", line 545, in <lambda>\n    er127.register_stop_check(lambda where: _st.check_stop_sentinel(where, theme_out_dir))\n                                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\tensh\\eigo-radio\\er062_family_z_structure_01.py\", line 452, in check_stop_sentinel\n    raise FamilyZStopSentinel(f\"FAMILY_Z_STOP_SENTINEL: {hit} が存在するため {where} の前で停止(新規API呼出なし)。\"\n                              \"自動再開/再試行はしない。Fable/ユーザーの指示を待つこと。\")\ner062_family_z_structure_01.FamilyZStopSentinel: FAMILY_Z_STOP_SENTINEL: er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_6/STOP が存在するため tts_cooldown:topic_intro の前で停止(新規API呼出なし)。自動再開/再試行はしない。Fable/ユーザーの指示を待つこと。\n"
+ },
+ "tts_attempts": [
+  {
+   "clip": "topic_intro",
+   "t": 3.61,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "d16e099cb4f6",
+   "style_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "style_chars": 96,
+   "text_head": "Today's topic is Package Redelivery. Different Voices.",
+   "text_sha": "75548276de66",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "topic_intro",
+   "t": 13.5,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "d16e099cb4f6",
+   "style_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "style_chars": 96,
+   "text_head": "Today's topic is Package Redelivery. Different Voices.",
+   "text_sha": "75548276de66",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 2,
+ "tts_api_calls": 2,
+ "judges": [
+  {
+   "clip": "topic_intro",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Today's topic is package redelivery. Different voices."
+  },
+  {
+   "clip": "topic_intro",
+   "kind": "en",
+   "slot": 2,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Today's topic is package redelivery. Different voices."
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [],
+ "cooldown_count": 0,
+ "sleep_total_seconds": 40.0,
+ "stop_checks": {
+  "cooldown": 9,
+  "attempt": 3,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [],
+ "lock_state": null,
+ "block_progress": {
+  "topic_intro.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "e9e9a1cd18aff47293a4e488",
+   "segment_id": "topic_intro",
+   "fingerprint": {
+    "leaf": "L3",
+    "style_prefix_override": "d16e099cb4f6fd7f",
+    "tts_backend": "7b7d9d14787b08f6",
+    "policy": "EN_LR_STD"
+   },
+   "status": "IN_PROGRESS",
+   "created_epoch": 1793026393.240777,
+   "updated_epoch": 1793026405.965121,
+   "blocks": {
+    "0": {
+     "n_started": 2,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793026393.2459009,
+       "finished_epoch": 1793026403.1335075,
+       "verified": false
+      },
+      "2": {
+       "started_epoch": 1793026403.1349976,
+       "finished_epoch": 1793026405.9651203,
+       "verified": false
+      }
+     },
+     "cooldown": null
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   }
+  }
+ },
+ "results_segments": {},
+ "results_key_phrases": {},
+ "attempt_sidecars": [
+  {
+   "file": "topic_intro_attempt1_custom60a24f1e.json",
+   "segment_id": "topic_intro",
+   "attempt_number": 1,
+   "route": "custom_60a24f1e",
+   "saved_at": "2026-10-26T23:53:23",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "instruction_sha": "d16e099cb4f6",
+   "instruction_chars": 96,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Today's topic is package redelivery. Different voices.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "topic_intro_attempt2_custom60a24f1e.json",
+   "segment_id": "topic_intro",
+   "attempt_number": 2,
+   "route": "custom_60a24f1e",
+   "saved_at": "2026-10-26T23:53:25",
+   "loop_attempt_index": 2,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "instruction_sha": "d16e099cb4f6",
+   "instruction_chars": 96,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Today's topic is package redelivery. Different voices.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 0.255,
+  "by_provider": {
+   "openai": 0.03,
+   "gemini": 0.2,
+   "openai_asr": 0.04
+  }
+ },
+ "gate_observation": {
+  "error": "FileNotFoundError: [Errno 2] No such file or directory: 'er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_6/a2/audit/tts_generation_results.json'"
+ },
+ "resumed_run": false
+}

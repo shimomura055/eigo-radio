@@ -1,0 +1,591 @@
+{
+ "management_id": "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01",
+ "case": "Y-Std-5",
+ "family": "Y",
+ "level": "a2",
+ "scenario": "E-N",
+ "leaf": "L3+L7",
+ "policy": "EN_LR_STD+JA_STD",
+ "segments": [
+  "topic_intro",
+  "japanese_title"
+ ],
+ "run_dir": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_5",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {},
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [],
+ "injected_override_count": 0,
+ "started_at": "2026-10-26T23:58:12",
+ "ended_at": "2026-10-26T23:58:21",
+ "wall_seconds": 9.5,
+ "pid": 50340,
+ "exception": null,
+ "tts_attempts": [
+  {
+   "clip": "topic_intro",
+   "t": 2.79,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "d16e099cb4f6",
+   "style_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "style_chars": 96,
+   "text_head": "Today's topic is Package Redelivery. Different Voices.",
+   "text_sha": "75548276de66",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "japanese_title",
+   "t": 5.97,
+   "voice": "Aoede",
+   "model_requested": "gemini-3.1-flash-tts-preview",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "ae68e3e6ac8e",
+   "style_head": "落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。",
+   "style_chars": 65,
+   "text_head": "再配達の有料化",
+   "text_sha": "47ef38837622",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 2,
+ "tts_api_calls": 2,
+ "judges": [
+  {
+   "clip": "topic_intro",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "Today's topic is package redelivery. Different voices."
+  },
+  {
+   "clip": "japanese_title",
+   "kind": "ja",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "再配達の有料化。"
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [],
+ "cooldown_count": 0,
+ "sleep_total_seconds": 0.0,
+ "stop_checks": {
+  "cooldown": 0,
+  "attempt": 2,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [
+  "PROCEED",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "topic_intro": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "75548276de66fc9f6aec921bd5a08133f4ed1a8c84a1650aabeebc827d1f6a5c",
+   "language": "en",
+   "theme_id": "run_tru_ev_y_std_5",
+   "level": "a2",
+   "segment_id": "topic_intro",
+   "updated_at": "2026-10-26T23:58:18",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_5/a2/narration/topic_intro.wav",
+   "cumulative_tts_attempts": 1,
+   "cumulative_asr_calls": 1,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 4.04,
+     "asr_text": "Today's topic is package redelivery. Different voices.",
+     "asr_text_length": 54,
+     "max_len": 84,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "NORMALIZED_MATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": true,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": false,
+     "non_latin_cascade_enabled": false,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 96,
+      "sha256": "d16e099cb4f6fd7f87826e48f636c143c31f3c7ad4aaeea13dd3c9ae4a3f724b",
+      "head200": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic."
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "Today's topic is package redelivery. Different voices.",
+       "classification": "NORMALIZED_MATCH",
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "TOPIC_INTRO",
+      "lang": "en",
+      "segment_key": "topic_intro",
+      "audio_sha256": "0e36cc21e508ed6770c33f0ae4f7b4e9a3ac21f4b646d3fc9a966193f854b880",
+      "primary": {
+       "text": "Today's topic is package redelivery. Different voices.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 54,
+       "secondary_len": null,
+       "max_len": 84,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "topic_intro",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      }
+     },
+     "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_5/a2/narration/attempts/topic_intro_attempt1_custom60a24f1e.wav"
+    }
+   ]
+  },
+  "japanese_title": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "47ef38837622652ebc2760cd2393a0367d504ce04b1d3b23b1ad7b0a2775f9fb",
+   "language": "ja",
+   "theme_id": "run_tru_ev_y_std_5",
+   "level": "a2",
+   "segment_id": "japanese_title",
+   "updated_at": "2026-10-26T23:58:21",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_5/a2/narration/japanese_title.wav",
+   "cumulative_tts_attempts": 1,
+   "cumulative_asr_calls": 1,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 2.6,
+     "asr_text": "再配達の有料化。",
+     "asr_text_length": 8,
+     "max_len": 37,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "NORMALIZED_MATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": true,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": false,
+     "non_latin_cascade_enabled": false,
+     "non_latin_cascade_invoked": null,
+     "style_prefix": null,
+     "cascade_steps": null,
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": null,
+      "lang": "ja",
+      "segment_key": "",
+      "audio_sha256": "5ea266d78c4f6c1b065b50e78746c76fc64daefdacd5c3e47117896c5ac16a32",
+      "primary": {
+       "text": "再配達の有料化。",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 8,
+       "secondary_len": null,
+       "max_len": 37,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "r5": {
+       "version": "r5_v1",
+       "measurement_error": null,
+       "f1": {
+        "rollback_const_READING_MATCH_FINAL_GATE": true,
+        "reading_match_primary_pass": false,
+        "final_gate_rejected": false,
+        "demoted_p3": false,
+        "would_have_passed_before_f1": false,
+        "reason_code": null,
+        "pair_reasons": []
+       },
+       "f2": {
+        "enabled": false,
+        "fired": false,
+        "fallback": null,
+        "replaced": null,
+        "canon_before": null,
+        "canon_after": null,
+        "text_before": null,
+        "text_after": null,
+        "state_after": null
+       },
+       "o524_part_of_larger_pairs": 0,
+       "o523_weak_kana_diff_pairs": 0,
+       "models": {
+        "primary": {
+         "provider": "openai_asr",
+         "model": "gpt-4o-mini-transcribe"
+        },
+        "secondary": null
+       }
+      },
+      "canonical_text": "再配達の有料化",
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "ja-JP",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      }
+     },
+     "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_5/a2/narration/attempts/japanese_title_attempt1_customb8f0ff16.wav"
+    }
+   ]
+  }
+ },
+ "block_progress": {
+  "japanese_title.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "f8ab47676df5a87825128f4a",
+   "segment_id": "japanese_title",
+   "fingerprint": {
+    "leaf": "L7",
+    "style_prefix_override": "ae68e3e6ac8e8dc2",
+    "tts_backend": "7b7d9d14787b08f6",
+    "policy": "JA_STD"
+   },
+   "status": "DONE",
+   "created_epoch": 1793026698.3437483,
+   "updated_epoch": 1793026701.792235,
+   "blocks": {
+    "0": {
+     "n_started": 1,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793026698.3449612,
+       "finished_epoch": 1793026701.791116,
+       "verified": true
+      }
+     },
+     "cooldown": null
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_status": "OK"
+  },
+  "topic_intro.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "e9e9a1cd18aff47293a4e488",
+   "segment_id": "topic_intro",
+   "fingerprint": {
+    "leaf": "L3",
+    "style_prefix_override": "d16e099cb4f6fd7f",
+    "tts_backend": "7b7d9d14787b08f6",
+    "policy": "EN_LR_STD"
+   },
+   "status": "DONE",
+   "created_epoch": 1793026695.1641543,
+   "updated_epoch": 1793026698.334282,
+   "blocks": {
+    "0": {
+     "n_started": 1,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793026695.1666126,
+       "finished_epoch": 1793026698.3332336,
+       "verified": true
+      }
+     },
+     "cooldown": null
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_status": "OK"
+  }
+ },
+ "results_segments": {
+  "topic_intro": {
+   "status": "OK",
+   "fallback_used": false,
+   "voice": "Aoede",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_prefix": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "asr_verified": true,
+   "asr_text": "Today's topic is package redelivery. Different voices.",
+   "canonical_text": "Today's topic is Package Redelivery: Different Voices.",
+   "path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_5/a2/narration/topic_intro.wav",
+   "style_prefix_sha": "d16e099cb4f6",
+   "attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": true,
+     "asr_text": "Today's topic is package redelivery. Different voices.",
+     "audio_classification": "NORMALIZED_MATCH",
+     "disfluency_checked": false
+    }
+   ]
+  },
+  "japanese_title": {
+   "status": "OK",
+   "fallback_used": false,
+   "voice": "Aoede",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_prefix": "落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。",
+   "asr_verified": true,
+   "asr_text": "再配達の有料化。",
+   "canonical_text": "再配達の有料化",
+   "path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_5/a2/narration/japanese_title.wav",
+   "style_prefix_sha": "ae68e3e6ac8e",
+   "attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": true,
+     "asr_text": "再配達の有料化。",
+     "audio_classification": "NORMALIZED_MATCH",
+     "disfluency_checked": false
+    }
+   ]
+  }
+ },
+ "results_key_phrases": {},
+ "attempt_sidecars": [
+  {
+   "file": "japanese_title_attempt1_customb8f0ff16.json",
+   "segment_id": "japanese_title",
+   "attempt_number": 1,
+   "route": "custom_b8f0ff16",
+   "saved_at": "2026-10-26T23:58:21",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。",
+   "instruction_sha": "ae68e3e6ac8e",
+   "instruction_chars": 65,
+   "verified": true,
+   "audio_classification": "NORMALIZED_MATCH",
+   "asr_text": "再配達の有料化。",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "topic_intro_attempt1_custom60a24f1e.json",
+   "segment_id": "topic_intro",
+   "attempt_number": 1,
+   "route": "custom_60a24f1e",
+   "saved_at": "2026-10-26T23:58:18",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "instruction_sha": "d16e099cb4f6",
+   "instruction_chars": 96,
+   "verified": true,
+   "audio_classification": "NORMALIZED_MATCH",
+   "asr_text": "Today's topic is package redelivery. Different voices.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 0.218,
+  "by_provider": {
+   "openai": 0.03,
+   "gemini": 0.16,
+   "openai_asr": 0.03
+  }
+ },
+ "gate_observation": {
+  "status": "BLOCK",
+  "y_profile_blocked": [],
+  "my_segment_checks": [],
+  "my_segment_blocked": [],
+  "x_gate_blocked_mine": [],
+  "note": "Gateは全Y本文segmentを対象にするため、未生成segmentのNO_SEGMENT_RECORDは本evidenceの対象外(my_*のみ参照)"
+ },
+ "resumed_run": false
+}

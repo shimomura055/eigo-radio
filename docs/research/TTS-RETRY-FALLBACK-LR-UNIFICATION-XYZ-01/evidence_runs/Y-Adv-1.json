@@ -1,0 +1,1511 @@
+{
+ "management_id": "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01",
+ "case": "Y-Adv-1",
+ "family": "Y",
+ "level": "b1b",
+ "scenario": "E-S2a",
+ "leaf": "L1",
+ "policy": "EN_LR_ADV",
+ "segments": [
+  "comment_1"
+ ],
+ "run_dir": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_adv_1",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {
+   "*": [
+    1,
+    2,
+    3
+   ]
+  },
+  "sub": {
+   "*": [
+    3
+   ]
+  },
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [
+  {
+   "kind": "judge_ng",
+   "clip": "comment_1",
+   "slot": 1,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "comment_1",
+   "slot": 2,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "transcript_substitution",
+   "clip": "comment_1",
+   "slot": 3,
+   "before": "Listen for what the three people think about charging for another delivery.",
+   "after": "Listen for what the three people think market charging for another delivery."
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "comment_1",
+   "slot": 3,
+   "judge_kind": "en"
+  }
+ ],
+ "injected_override_count": 4,
+ "started_at": "2026-10-26T23:32:15",
+ "ended_at": "2026-10-26T23:36:24",
+ "wall_seconds": 248.1,
+ "pid": 51064,
+ "exception": null,
+ "tts_attempts": [
+  {
+   "clip": "comment_1",
+   "t": 3.69,
+   "voice": "Charon",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "57c3fda67c1d",
+   "style_head": "calm, conversational",
+   "style_chars": 20,
+   "text_head": "Listen for what the 3 people think about charging for another delivery.",
+   "text_sha": "48bd8f8dc30a",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "comment_1",
+   "t": 7.31,
+   "voice": "Charon",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "57c3fda67c1d",
+   "style_head": "calm, conversational",
+   "style_chars": 20,
+   "text_head": "Listen for what the 3 people think about charging for another delivery.",
+   "text_sha": "48bd8f8dc30a",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "comment_1",
+   "t": 191.18,
+   "voice": "Charon",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "dba23e664f38",
+   "style_head": "natural, clear, conversational",
+   "style_chars": 30,
+   "text_head": "Listen for what the 3 people think about charging for another delivery.",
+   "text_sha": "48bd8f8dc30a",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "comment_1",
+   "t": 235.32,
+   "voice": "Charon",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "57c3fda67c1d",
+   "style_head": "calm, conversational",
+   "style_chars": 20,
+   "text_head": "Listen for what the 3 people think of charging for another delivery.",
+   "text_sha": "4a6c7ff6288f",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 4,
+ "tts_api_calls": 4,
+ "judges": [
+  {
+   "clip": "comment_1",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NUMERIC_EQUIVALENCE_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Listen for what the three people think about charging for another delivery."
+  },
+  {
+   "clip": "comment_1",
+   "kind": "en",
+   "slot": 2,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NUMERIC_EQUIVALENCE_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Listen for what the three people think about charging for another delivery."
+  },
+  {
+   "clip": "comment_1",
+   "kind": "en",
+   "slot": 3,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NUMERIC_EQUIVALENCE_MATCH",
+   "force_secondary": true,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Listen for what the three people think market charging for another delivery."
+  },
+  {
+   "clip": "comment_1",
+   "kind": "en",
+   "slot": 4,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NUMERIC_EQUIVALENCE_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v1",
+   "forced_ng": false,
+   "asr_text_head": "Listen for what the three people think of charging for another delivery."
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [
+  {
+   "label": "comment_1",
+   "requested_seconds": 180.0,
+   "actual_seconds": 179.999,
+   "started_at": "2026-10-26T23:32:27",
+   "ended_at": "2026-10-26T23:35:27",
+   "resumed": false,
+   "attempt_before": 2,
+   "attempt_after": 3,
+   "total_elapsed_since_ref_seconds": 180.001,
+   "wall_start_epoch": 1793025147.1454778
+  }
+ ],
+ "cooldown_count": 1,
+ "sleep_total_seconds": 180.0,
+ "stop_checks": {
+  "cooldown": 36,
+  "attempt": 4,
+  "other": 0
+ },
+ "lr_calls": [
+  {
+   "segment_id": "comment_1",
+   "depth": 0,
+   "status": "RESOLVED_BY_LOCAL_REWRITE",
+   "ng_span_found": true,
+   "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "3 people think about charging for another",
+    "asr_span_with_context": "3 people think market charging for another",
+    "canonical_changed_words": [
+     "about"
+    ],
+    "asr_changed_words": [
+     "market"
+    ],
+    "context_window_word_indices": [
+     4,
+     11
+    ]
+   },
+   "model": null,
+   "rewritten_text": "Listen for what the 3 people think of charging for another delivery.",
+   "elapsed_s": 51.52,
+   "last_asr_text": "Listen for what the three people think market charging for another delivery."
+  }
+ ],
+ "lr_count": 1,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [
+  "COOLDOWN_BEFORE_BLOCK_ATTEMPT",
+  "LOCAL_REWRITE_RECOVERY",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "comment_1": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "48bd8f8dc30a70c4c72a5909848006c76840b0defbdbe17b543cae5a2ce3d99f",
+   "language": "en",
+   "theme_id": "run_tru_ev_y_adv_1",
+   "level": "b1b",
+   "segment_id": "comment_1",
+   "updated_at": "2026-10-26T23:36:24",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_adv_1/b1b/narration/comment_1.wav",
+   "cumulative_tts_attempts": 4,
+   "cumulative_asr_calls": 4,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "asr_text": "Listen for what the three people think about charging for another delivery.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "COMMENT",
+      "lang": "en",
+      "segment_key": "comment_1",
+      "audio_sha256": "32160be8a62393c0a64e852a8a5a034511458e0945aab48b9d0f9dc42ab219c0",
+      "primary": {
+       "text": "Listen for what the three people think about charging for another delivery.",
+       "passed": true,
+       "label": "NUMERIC_EQUIVALENCE_MATCH",
+       "equivalence_basis": "TIER1_NUMERIC_EQUIVALENCE",
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+         {
+          "src": "3",
+          "hyp": "3",
+          "verdict": "EQUAL",
+          "reason": "same_surface"
+         }
+        ],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": false,
+       "skipped": "approved_equivalence:TIER1_NUMERIC_EQUIVALENCE"
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 75,
+       "secondary_len": null,
+       "max_len": 86,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "comment_1",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "instruction_type": "english_style_prefix",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "semantic_equivalence": {
+      "tier_applied": "tier1_numeric",
+      "sub_reason": "numeric_only",
+      "corroborated_by": [],
+      "warning": false,
+      "role": "COMMENT",
+      "diff_spans": {
+       "canonical_atoms": [
+        {
+         "kind": "literal",
+         "word": "listen"
+        },
+        {
+         "kind": "literal",
+         "word": "for"
+        },
+        {
+         "kind": "literal",
+         "word": "what"
+        },
+        {
+         "kind": "literal",
+         "word": "the"
+        },
+        {
+         "kind": "number",
+         "value": "3",
+         "currency": null,
+         "percent": false,
+         "ordinal": false,
+         "value_float": 3.0
+        },
+        {
+         "kind": "literal",
+         "word": "people"
+        },
+        {
+         "kind": "literal",
+         "word": "think"
+        },
+        {
+         "kind": "literal",
+         "word": "about"
+        },
+        {
+         "kind": "literal",
+         "word": "charging"
+        },
+        {
+         "kind": "literal",
+         "word": "for"
+        },
+        {
+         "kind": "literal",
+         "word": "another"
+        },
+        {
+         "kind": "literal",
+         "word": "delivery"
+        },
+        {
+         "kind": "literal",
+         "word": "."
+        }
+       ],
+       "asr_atoms": [
+        {
+         "kind": "literal",
+         "word": "listen"
+        },
+        {
+         "kind": "literal",
+         "word": "for"
+        },
+        {
+         "kind": "literal",
+         "word": "what"
+        },
+        {
+         "kind": "literal",
+         "word": "the"
+        },
+        {
+         "kind": "number",
+         "value": "3",
+         "currency": null,
+         "percent": false,
+         "ordinal": false,
+         "value_float": 3.0
+        },
+        {
+         "kind": "literal",
+         "word": "people"
+        },
+        {
+         "kind": "literal",
+         "word": "think"
+        },
+        {
+         "kind": "literal",
+         "word": "about"
+        },
+        {
+         "kind": "literal",
+         "word": "charging"
+        },
+        {
+         "kind": "literal",
+         "word": "for"
+        },
+        {
+         "kind": "literal",
+         "word": "another"
+        },
+        {
+         "kind": "literal",
+         "word": "delivery"
+        },
+        {
+         "kind": "literal",
+         "word": "."
+        }
+       ],
+       "diff_anchored": false,
+       "absorbed_ops": 0
+      }
+     },
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": false,
+     "trim_info": {
+      "raw_duration_seconds": 4.04,
+      "raw_leading_silence_seconds": 0.12,
+      "raw_trailing_silence_seconds": 0.44,
+      "trimmed_duration_seconds": 3.95,
+      "leading_margin_retained_seconds": 0.12,
+      "trailing_margin_retained_seconds": 0.35
+     },
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_adv_1/b1b/narration/attempts/comment_1_attempt1_englishstyleprefix.wav"
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "asr_text": "Listen for what the three people think about charging for another delivery.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE",
+      "slot": 2,
+      "script_version": "v0",
+      "role": "COMMENT",
+      "lang": "en",
+      "segment_key": "comment_1",
+      "audio_sha256": "a12b1b8c848ae3340e8875ceecc3b5bbe46411d50031c4816410f9ed5f2d95fa",
+      "primary": {
+       "text": "Listen for what the three people think about charging for another delivery.",
+       "passed": true,
+       "label": "NUMERIC_EQUIVALENCE_MATCH",
+       "equivalence_basis": "TIER1_NUMERIC_EQUIVALENCE",
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+         {
+          "src": "3",
+          "hyp": "3",
+          "verdict": "EQUAL",
+          "reason": "same_surface"
+         }
+        ],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": false,
+       "skipped": "approved_equivalence:TIER1_NUMERIC_EQUIVALENCE"
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 75,
+       "secondary_len": null,
+       "max_len": 86,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "comment_1",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "instruction_type": "english_style_prefix",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "semantic_equivalence": {
+      "tier_applied": "tier1_numeric",
+      "sub_reason": "numeric_only",
+      "corroborated_by": [],
+      "warning": false,
+      "role": "COMMENT",
+      "diff_spans": {
+       "canonical_atoms": [
+        {
+         "kind": "literal",
+         "word": "listen"
+        },
+        {
+         "kind": "literal",
+         "word": "for"
+        },
+        {
+         "kind": "literal",
+         "word": "what"
+        },
+        {
+         "kind": "literal",
+         "word": "the"
+        },
+        {
+         "kind": "number",
+         "value": "3",
+         "currency": null,
+         "percent": false,
+         "ordinal": false,
+         "value_float": 3.0
+        },
+        {
+         "kind": "literal",
+         "word": "people"
+        },
+        {
+         "kind": "literal",
+         "word": "think"
+        },
+        {
+         "kind": "literal",
+         "word": "about"
+        },
+        {
+         "kind": "literal",
+         "word": "charging"
+        },
+        {
+         "kind": "literal",
+         "word": "for"
+        },
+        {
+         "kind": "literal",
+         "word": "another"
+        },
+        {
+         "kind": "literal",
+         "word": "delivery"
+        },
+        {
+         "kind": "literal",
+         "word": "."
+        }
+       ],
+       "asr_atoms": [
+        {
+         "kind": "literal",
+         "word": "listen"
+        },
+        {
+         "kind": "literal",
+         "word": "for"
+        },
+        {
+         "kind": "literal",
+         "word": "what"
+        },
+        {
+         "kind": "literal",
+         "word": "the"
+        },
+        {
+         "kind": "number",
+         "value": "3",
+         "currency": null,
+         "percent": false,
+         "ordinal": false,
+         "value_float": 3.0
+        },
+        {
+         "kind": "literal",
+         "word": "people"
+        },
+        {
+         "kind": "literal",
+         "word": "think"
+        },
+        {
+         "kind": "literal",
+         "word": "about"
+        },
+        {
+         "kind": "literal",
+         "word": "charging"
+        },
+        {
+         "kind": "literal",
+         "word": "for"
+        },
+        {
+         "kind": "literal",
+         "word": "another"
+        },
+        {
+         "kind": "literal",
+         "word": "delivery"
+        },
+        {
+         "kind": "literal",
+         "word": "."
+        }
+       ],
+       "diff_anchored": false,
+       "absorbed_ops": 0
+      }
+     },
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": false,
+     "trim_info": {
+      "raw_duration_seconds": 4.08,
+      "raw_leading_silence_seconds": 0.28,
+      "raw_trailing_silence_seconds": 0.44,
+      "trimmed_duration_seconds": 3.99,
+      "leading_margin_retained_seconds": 0.28,
+      "trailing_margin_retained_seconds": 0.35
+     },
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_adv_1/b1b/narration/attempts/comment_1_attempt2_englishstyleprefix.wav"
+    },
+    {
+     "attempt": 3,
+     "status": "OK",
+     "asr_text": "Listen for what the three people think market charging for another delivery.",
+     "asr_judgement": {
+      "state": "PASS_WITH_WARNING",
+      "reason_code": "secondary_confirmed",
+      "slot": 3,
+      "script_version": "v0",
+      "role": "COMMENT",
+      "lang": "en",
+      "segment_key": "comment_1",
+      "audio_sha256": "5232582fa0973b2b35f15938a96e668ad254ff7b290ace52f62b06fc17f6dae0",
+      "primary": {
+       "text": "Listen for what the three people think market charging for another delivery.",
+       "passed": false,
+       "label": "TRUE_CONTENT_MISMATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": true,
+       "cached": false,
+       "engine": "azure",
+       "text": "Listen for what the three people think about charging for another delivery.",
+       "label": "NUMERIC_EQUIVALENCE_MATCH",
+       "accepted": true,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+         {
+          "src": "3",
+          "hyp": "3",
+          "verdict": "EQUAL",
+          "reason": "same_surface"
+         }
+        ],
+        "reasons": [],
+        "warnings": []
+       },
+       "secondary": {
+        "kind": "EQUAL",
+        "pairs": [
+         {
+          "src": "3",
+          "hyp": "3",
+          "verdict": "EQUAL",
+          "reason": "same_surface"
+         }
+        ],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false,
+       "secondary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "target": "secondary",
+       "value_guard": "EQUAL",
+       "negation_diff": false
+      },
+      "warnings": [
+       "SECONDARY_CONFIRMED"
+      ],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 1,
+       "azure_seconds": 4.25,
+       "est_jpy": 0.2222,
+       "est_jpy_known": true
+      },
+      "timing": {
+       "total_ms": 1207,
+       "secondary_ms": 1206
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 76,
+       "secondary_len": 75,
+       "max_len": 86,
+       "adopted_from": "secondary",
+       "adopted_ok": true,
+       "surface_len": 63,
+       "primary_ok": true
+      },
+      "p3_entry": "p3_primary_ng",
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 1,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "comment_1",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 2,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "instruction_type": "minimal_fallback",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "semantic_equivalence": {
+      "tier_applied": "tier1_numeric",
+      "sub_reason": "numeric_only",
+      "corroborated_by": [],
+      "warning": false,
+      "role": "COMMENT",
+      "diff_spans": {
+       "canonical_atoms": [
+        {
+         "kind": "literal",
+         "word": "listen"
+        },
+        {
+         "kind": "literal",
+         "word": "for"
+        },
+        {
+         "kind": "literal",
+         "word": "what"
+        },
+        {
+         "kind": "literal",
+         "word": "the"
+        },
+        {
+         "kind": "number",
+         "value": "3",
+         "currency": null,
+         "percent": false,
+         "ordinal": false,
+         "value_float": 3.0
+        },
+        {
+         "kind": "literal",
+         "word": "people"
+        },
+        {
+         "kind": "literal",
+         "word": "think"
+        },
+        {
+         "kind": "literal",
+         "word": "about"
+        },
+        {
+         "kind": "literal",
+         "word": "charging"
+        },
+        {
+         "kind": "literal",
+         "word": "for"
+        },
+        {
+         "kind": "literal",
+         "word": "another"
+        },
+        {
+         "kind": "literal",
+         "word": "delivery"
+        },
+        {
+         "kind": "literal",
+         "word": "."
+        }
+       ],
+       "asr_atoms": [
+        {
+         "kind": "literal",
+         "word": "listen"
+        },
+        {
+         "kind": "literal",
+         "word": "for"
+        },
+        {
+         "kind": "literal",
+         "word": "what"
+        },
+        {
+         "kind": "literal",
+         "word": "the"
+        },
+        {
+         "kind": "number",
+         "value": "3",
+         "currency": null,
+         "percent": false,
+         "ordinal": false,
+         "value_float": 3.0
+        },
+        {
+         "kind": "literal",
+         "word": "people"
+        },
+        {
+         "kind": "literal",
+         "word": "think"
+        },
+        {
+         "kind": "literal",
+         "word": "about"
+        },
+        {
+         "kind": "literal",
+         "word": "charging"
+        },
+        {
+         "kind": "literal",
+         "word": "for"
+        },
+        {
+         "kind": "literal",
+         "word": "another"
+        },
+        {
+         "kind": "literal",
+         "word": "delivery"
+        },
+        {
+         "kind": "literal",
+         "word": "."
+        }
+       ],
+       "diff_anchored": false,
+       "absorbed_ops": 0
+      }
+     },
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": false,
+     "trim_info": {
+      "raw_duration_seconds": 4.32,
+      "raw_leading_silence_seconds": 0.24,
+      "raw_trailing_silence_seconds": 0.42,
+      "trimmed_duration_seconds": 4.25,
+      "leading_margin_retained_seconds": 0.24,
+      "trailing_margin_retained_seconds": 0.35
+     },
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_adv_1/b1b/narration/attempts/comment_1_attempt3_minimalfallback.wav"
+    },
+    {
+     "attempt": 1,
+     "status": "OK",
+     "asr_text": "Listen for what the three people think of charging for another delivery.",
+     "asr_judgement": {
+      "state": "PASS_WITH_WARNING",
+      "reason_code": "primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE",
+      "slot": 4,
+      "script_version": "v1",
+      "role": "COMMENT",
+      "lang": "en",
+      "segment_key": "comment_1",
+      "audio_sha256": "c4b64b81c4eaf4e1564578ad14d5e4080e77a207926fd59bf5e0ef720390e8d9",
+      "primary": {
+       "text": "Listen for what the three people think of charging for another delivery.",
+       "passed": true,
+       "label": "NUMERIC_EQUIVALENCE_MATCH",
+       "equivalence_basis": "TIER1_NUMERIC_EQUIVALENCE",
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+         {
+          "src": "3",
+          "hyp": "3",
+          "verdict": "EQUAL",
+          "reason": "same_surface"
+         }
+        ],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": false,
+       "skipped": "approved_equivalence:TIER1_NUMERIC_EQUIVALENCE"
+      },
+      "warnings": [
+       "LR_REWRITTEN"
+      ],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 72,
+       "secondary_len": null,
+       "max_len": 83,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "comment_1",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 2,
+        "hits": 0
+       }
+      }
+     },
+     "instruction_type": "english_style_prefix",
+     "audio_classification": "NUMERIC_EQUIVALENCE_MATCH",
+     "connected_speech_info": null,
+     "semantic_equivalence": {
+      "tier_applied": "tier1_numeric",
+      "sub_reason": "numeric_only",
+      "corroborated_by": [],
+      "warning": false,
+      "role": "COMMENT",
+      "diff_spans": {
+       "canonical_atoms": [
+        {
+         "kind": "literal",
+         "word": "listen"
+        },
+        {
+         "kind": "literal",
+         "word": "for"
+        },
+        {
+         "kind": "literal",
+         "word": "what"
+        },
+        {
+         "kind": "literal",
+         "word": "the"
+        },
+        {
+         "kind": "number",
+         "value": "3",
+         "currency": null,
+         "percent": false,
+         "ordinal": false,
+         "value_float": 3.0
+        },
+        {
+         "kind": "literal",
+         "word": "people"
+        },
+        {
+         "kind": "literal",
+         "word": "think"
+        },
+        {
+         "kind": "literal",
+         "word": "of"
+        },
+        {
+         "kind": "literal",
+         "word": "charging"
+        },
+        {
+         "kind": "literal",
+         "word": "for"
+        },
+        {
+         "kind": "literal",
+         "word": "another"
+        },
+        {
+         "kind": "literal",
+         "word": "delivery"
+        },
+        {
+         "kind": "literal",
+         "word": "."
+        }
+       ],
+       "asr_atoms": [
+        {
+         "kind": "literal",
+         "word": "listen"
+        },
+        {
+         "kind": "literal",
+         "word": "for"
+        },
+        {
+         "kind": "literal",
+         "word": "what"
+        },
+        {
+         "kind": "literal",
+         "word": "the"
+        },
+        {
+         "kind": "number",
+         "value": "3",
+         "currency": null,
+         "percent": false,
+         "ordinal": false,
+         "value_float": 3.0
+        },
+        {
+         "kind": "literal",
+         "word": "people"
+        },
+        {
+         "kind": "literal",
+         "word": "think"
+        },
+        {
+         "kind": "literal",
+         "word": "of"
+        },
+        {
+         "kind": "literal",
+         "word": "charging"
+        },
+        {
+         "kind": "literal",
+         "word": "for"
+        },
+        {
+         "kind": "literal",
+         "word": "another"
+        },
+        {
+         "kind": "literal",
+         "word": "delivery"
+        },
+        {
+         "kind": "literal",
+         "word": "."
+        }
+       ],
+       "diff_anchored": false,
+       "absorbed_ops": 0
+      }
+     },
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": true,
+     "trim_info": {
+      "raw_duration_seconds": 4.32,
+      "raw_leading_silence_seconds": 0.2,
+      "raw_trailing_silence_seconds": 0.36,
+      "trimmed_duration_seconds": 4.31,
+      "leading_margin_retained_seconds": 0.2,
+      "trailing_margin_retained_seconds": 0.35
+     },
+     "disfluency_checked": true,
+     "disfluency_evidence": {
+      "flagged": false,
+      "repeats": [],
+      "word_count": 12,
+      "transcript": "Listen  for  what  the  three  people  think  of  charging  for  another  delivery.",
+      "method": "faster_whisper_small_local_verbatim"
+     },
+     "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_adv_1/b1b/narration/attempts/comment_1_attempt4_englishstyleprefix.wav"
+    }
+   ]
+  }
+ },
+ "block_progress": {
+  "comment_1.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "22b61f2def33c0f6c35d011f",
+   "segment_id": "comment_1",
+   "fingerprint": {
+    "leaf": "L1",
+    "style_prefix_override": "57c3fda67c1d3976",
+    "tts_backend": "7b7d9d14787b08f6",
+    "enable_pronunciation_resolver": true,
+    "policy": "EN_LR_ADV"
+   },
+   "status": "DONE",
+   "created_epoch": 1793025139.6575155,
+   "updated_epoch": 1793025384.062217,
+   "blocks": {
+    "0": {
+     "n_started": 3,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793025139.6617315,
+       "finished_epoch": 1793025143.2734475,
+       "verified": false
+      },
+      "2": {
+       "started_epoch": 1793025143.274652,
+       "finished_epoch": 1793025147.1441467,
+       "verified": false
+      },
+      "3": {
+       "started_epoch": 1793025327.1484077,
+       "finished_epoch": 1793025384.0608103,
+       "verified": true
+      }
+     },
+     "cooldown": {
+      "before_ordinal": 3,
+      "cooldown_started_at": "2026-10-26T23:32:27",
+      "cooldown_ended_at": "2026-10-26T23:35:27",
+      "cooldown_actual_seconds": 179.999,
+      "total_elapsed_since_ref_seconds": 180.001,
+      "resumed": false
+     }
+    }
+   },
+   "lr": {
+    "used": true,
+    "text": "Listen for what the 3 people think of charging for another delivery.",
+    "text_sha": "4a6c7ff6288fef84cf955a8f565405731f0b3643d8964fd5c470012814ab4308"
+   },
+   "final_status": "OK"
+  }
+ },
+ "results_segments": {
+  "topic_intro": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "Today's topic is Package Redelivery: Different Voices."
+  },
+  "preview": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "A missed package can affect more than the person waiting for it. In this episode, we look at the delivery process and what needs to be considered when trying to reduce missed deliveries."
+  },
+  "comment_1": {
+   "status": "OK",
+   "fallback_used": false,
+   "instruction_type": "english_style_prefix",
+   "voice": "Charon",
+   "model": "gemini-3.8-flash-lite-tts",
+   "tts_model_id": "gemini-3.8-flash-lite-tts",
+   "style_prefix": "calm, conversational",
+   "asr_verified": true,
+   "asr_text": "Listen for what the three people think of charging for another delivery.",
+   "canonical_text": "Listen for what the three people think about charging for another delivery.",
+   "local_rewrite_recovery": {
+    "status": "RESOLVED_BY_LOCAL_REWRITE",
+    "segment_id": "comment_1"
+   },
+   "cooldown_events": [
+    {
+     "cooldown_requested_seconds": 180.0,
+     "cooldown_actual_seconds": 179.999,
+     "cooldown_started_at": "2026-10-26T23:32:27",
+     "cooldown_ended_at": "2026-10-26T23:35:27",
+     "attempt_before_cooldown": 2,
+     "attempt_after_cooldown": 3,
+     "total_elapsed_since_ref_seconds": 180.001,
+     "resumed": false
+    }
+   ],
+   "path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_adv_1/b1b/narration/comment_1.wav",
+   "style_prefix_sha": "57c3fda67c1d",
+   "attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": false,
+     "instruction_type": "english_style_prefix",
+     "asr_text": "Listen for what the three people think about charging for another delivery.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "verified": false,
+     "instruction_type": "english_style_prefix",
+     "asr_text": "Listen for what the three people think about charging for another delivery.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 3,
+     "status": "OK",
+     "verified": false,
+     "instruction_type": "minimal_fallback",
+     "asr_text": "Listen for what the three people think market charging for another delivery.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": true,
+     "instruction_type": "english_style_prefix",
+     "asr_text": "Listen for what the three people think of charging for another delivery.",
+     "audio_classification": "NUMERIC_EQUIVALENCE_MATCH",
+     "disfluency_checked": true
+    }
+   ]
+  },
+  "comment_3": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "Why does the same issue look so different to each person? As you listen to the final thoughts, think about what each person can choose and what feels fair to them."
+  },
+  "y_lead": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "What if it cost money to have a package delivered again when you were not home at the time it arrived? Charging for redelivery means the person receiving the package pays a fee on top of the usual shipping cost. How should we decide whether to charge a fee or reduce redeliveries in another way? Let’s hear from three people with different lives and points of view."
+  },
+  "y_intro_1": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "First to speak is a delivery driver who visits homes every day and delivers packages."
+  },
+  "y_voice_1": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "When I leave a notice saying nobody was home and head off, I feel a little down, too. But then I go to the next house. I really would like to see fewer redeliveries, and they are hard on us, too. Even so, I can’t just say that customers should pay the cost. I think it makes more sense to cover the cost through the overall fee for carrying packages than to charge each customer who wasn’t home for the cost of that redelivery. To do that, I want the company to think about whether free shipping for online orders should stay as it is. If they review shipping fees, I want them to review how the fees are set, too, so that the money really reaches the people who deliver the packages."
+  },
+  "y_intro_2": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "Next is someone who receives packages and is often away from home because both she and her husband work."
+  },
+  "y_voice_2": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "Having to pay for redelivery just doesn’t sit right with me. My husband and I are both away at work, so for packages where we can choose a delivery time, we choose a day and time when we know we’ll be home. But once, I chose a morning time slot and the package didn’t come. I went out to take care of an errand, and when I got back, there was a missed-delivery notice. There are also many packages where you can’t choose a time, and you don’t know beforehand when they’ll arrive. Before charging us, I want them to first do something about arriving at the time we chose and telling us when the package will arrive. The delivery workers must have a hard time because there aren’t enough of them, and I guess it can’t be helped. But I can’t accept having to pay for that. Am I wrong to feel this way?"
+  },
+  "y_intro_3": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "Lastly, a person who chooses to pick up packages at a locker or another place and takes steps to avoid redelivery."
+  },
+  "y_voice_3": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "I try to pick up packages at a delivery office or locker so I don’t cause trouble with redelivery. It’s convenient to pick them up when it suits me, but for some items, I can’t choose a locker. And even when I ask for a package to be sent to a delivery office, it may arrive late, so I sometimes end up receiving it in person after all. Still, I take the trouble to think about how to receive my packages, so honestly, I think it’s wrong that I pay the same fee as people who are always away and ask for redelivery. Redelivery takes up the delivery worker’s time, so it’s fine to charge for it. I’d be happy if the first redelivery were free, and people who are repeatedly away had to pay. But maybe that’s just my point of view, since the delivery office is nearby and I can choose how to receive my packages."
+  },
+  "y_closing": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "A missed-delivery notice was left at the home of someone who had chosen a morning time slot, too. For people who can choose how to receive packages, a redelivery fee can be a signal that encourages them to make an effort. But having the person receiving the package pay won’t change late deliveries or how arrival times are shared. The person receiving the package can’t change how much shipping costs or how much of it goes to the people who deliver the packages, either. When you couldn’t be home and had a problem, could you choose how to receive your package? Did you know when it would arrive? Is that a problem that can be changed by charging the person receiving the package?"
+  }
+ },
+ "results_key_phrases": {},
+ "attempt_sidecars": [
+  {
+   "file": "comment_1_attempt1_englishstyleprefix.json",
+   "segment_id": "comment_1",
+   "attempt_number": 1,
+   "route": "english_style_prefix",
+   "saved_at": "2026-10-26T23:32:23",
+   "loop_attempt_index": 1,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Charon",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Listen for what the three people think about charging for another delivery.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "comment_1_attempt2_englishstyleprefix.json",
+   "segment_id": "comment_1",
+   "attempt_number": 2,
+   "route": "english_style_prefix",
+   "saved_at": "2026-10-26T23:32:27",
+   "loop_attempt_index": 2,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Charon",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Listen for what the three people think about charging for another delivery.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "comment_1_attempt3_minimalfallback.json",
+   "segment_id": "comment_1",
+   "attempt_number": 3,
+   "route": "minimal_fallback",
+   "saved_at": "2026-10-26T23:35:32",
+   "loop_attempt_index": 3,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Charon",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Listen for what the three people think market charging for another delivery.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "comment_1_attempt4_englishstyleprefix.json",
+   "segment_id": "comment_1",
+   "attempt_number": 4,
+   "route": "english_style_prefix",
+   "saved_at": "2026-10-26T23:36:24",
+   "loop_attempt_index": 1,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Charon",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": true,
+   "audio_classification": "NUMERIC_EQUIVALENCE_MATCH",
+   "asr_text": "Listen for what the three people think of charging for another delivery.",
+   "disfluency_checked": true,
+   "cascade_providers": [],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 1.152,
+  "by_provider": {
+   "openai": 0.48,
+   "gemini": 0.41,
+   "openai_asr": 0.08,
+   "azure": 0.19
+  }
+ },
+ "gate_observation": {
+  "status": "BLOCK",
+  "y_profile_blocked": [],
+  "my_segment_checks": [],
+  "my_segment_blocked": [],
+  "x_gate_blocked_mine": [],
+  "note": "Gateは全Y本文segmentを対象にするため、未生成segmentのNO_SEGMENT_RECORDは本evidenceの対象外(my_*のみ参照)"
+ },
+ "resumed_run": false
+}

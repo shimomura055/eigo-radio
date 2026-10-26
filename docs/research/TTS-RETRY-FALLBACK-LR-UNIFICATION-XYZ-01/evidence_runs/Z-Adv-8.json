@@ -1,0 +1,520 @@
+{
+ "management_id": "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01",
+ "case": "Z-Adv-8",
+ "family": "Z",
+ "level": "b1b",
+ "scenario": "E-N",
+ "leaf": "L1",
+ "policy": "EN_LR_ADV",
+ "segments": [
+  "topic_intro_en",
+  "comment_1"
+ ],
+ "run_dir": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_adv_8",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {},
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [],
+ "injected_override_count": 0,
+ "started_at": "2026-10-26T23:58:14",
+ "ended_at": "2026-10-26T23:58:25",
+ "wall_seconds": 11.8,
+ "pid": 49160,
+ "exception": null,
+ "tts_attempts": [
+  {
+   "clip": "topic_intro_en",
+   "t": 2.35,
+   "voice": "Charon",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "d16e099cb4f6",
+   "style_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "style_chars": 96,
+   "text_head": "Today's topic is The Monkey's Paw.",
+   "text_sha": "33f159fa7e5b",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "comment_1",
+   "t": 5.84,
+   "voice": "Charon",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "37c52d6ec237",
+   "style_head": "warm, upbeat and engaging; friendly conversational delivery with lively but natural intonation.",
+   "style_chars": 95,
+   "text_head": "Listen for what the old soldier says the monkey's paw can do.",
+   "text_sha": "6c4f2218cd1d",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 2,
+ "tts_api_calls": 2,
+ "judges": [
+  {
+   "clip": "topic_intro_en",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "EXACT_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "Today's topic is The Monkey's Paw."
+  },
+  {
+   "clip": "comment_1",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "EXACT_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "Listen for what the old soldier says the monkey's paw can do."
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [],
+ "cooldown_count": 0,
+ "sleep_total_seconds": 0.0,
+ "stop_checks": {
+  "cooldown": 0,
+  "attempt": 2,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [
+  "PROCEED",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "topic_intro_en": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "33f159fa7e5bc366739c5888e50ea008be333ea2b3f3a6e832ffa2ac7f0ea996",
+   "language": "en",
+   "theme_id": "run_tru_ev_z_adv_8",
+   "level": "b1b",
+   "segment_id": "topic_intro_en",
+   "updated_at": "2026-10-26T23:58:19",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_adv_8/b1b/narration/topic_intro_en.wav",
+   "cumulative_tts_attempts": 1,
+   "cumulative_asr_calls": 1,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "asr_text": "Today's topic is The Monkey's Paw.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "TOPIC_INTRO",
+      "lang": "en",
+      "segment_key": "topic_intro_en",
+      "audio_sha256": "bee1285a4de63ec6a800ba892a9dafdf36471cc22f0432aea0a04ce2b71f6f8f",
+      "primary": {
+       "text": "Today's topic is The Monkey's Paw.",
+       "passed": true,
+       "label": "EXACT_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 34,
+       "secondary_len": null,
+       "max_len": 49,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "topic_intro_en",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      }
+     },
+     "instruction_type": "english_style_prefix",
+     "audio_classification": "EXACT_MATCH",
+     "connected_speech_info": null,
+     "semantic_equivalence": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": true,
+     "trim_info": {
+      "raw_duration_seconds": 3.0,
+      "raw_leading_silence_seconds": 0.26,
+      "raw_trailing_silence_seconds": 0.52,
+      "trimmed_duration_seconds": 2.83,
+      "leading_margin_retained_seconds": 0.26,
+      "trailing_margin_retained_seconds": 0.35
+     },
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_adv_8/b1b/narration/attempts/topic_intro_en_attempt1_englishstyleprefix.wav"
+    }
+   ]
+  },
+  "comment_1": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "6c4f2218cd1d4ce272ac9b44c98cbef38a3ef999f9522a74ebb2f4ea3be11d5f",
+   "language": "en",
+   "theme_id": "run_tru_ev_z_adv_8",
+   "level": "b1b",
+   "segment_id": "comment_1",
+   "updated_at": "2026-10-26T23:58:25",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_adv_8/b1b/narration/comment_1.wav",
+   "cumulative_tts_attempts": 1,
+   "cumulative_asr_calls": 1,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "asr_text": "Listen for what the old soldier says the monkey's paw can do.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "COMMENT",
+      "lang": "en",
+      "segment_key": "comment_1",
+      "audio_sha256": "88aaa93c1897924366dcc02e76a0a7ad09f0b2e4a38af22d11576411712df75a",
+      "primary": {
+       "text": "Listen for what the old soldier says the monkey's paw can do.",
+       "passed": true,
+       "label": "EXACT_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 61,
+       "secondary_len": null,
+       "max_len": 76,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "comment_1",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      }
+     },
+     "instruction_type": "english_style_prefix",
+     "audio_classification": "EXACT_MATCH",
+     "connected_speech_info": null,
+     "semantic_equivalence": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": true,
+     "trim_info": {
+      "raw_duration_seconds": 4.16,
+      "raw_leading_silence_seconds": 0.3,
+      "raw_trailing_silence_seconds": 0.36,
+      "trimmed_duration_seconds": 4.15,
+      "leading_margin_retained_seconds": 0.3,
+      "trailing_margin_retained_seconds": 0.35
+     },
+     "disfluency_checked": true,
+     "disfluency_evidence": {
+      "flagged": false,
+      "repeats": [],
+      "word_count": 12,
+      "transcript": "Listen  for  what  the  old  soldier  says  the  monkey's  paw  can  do.",
+      "method": "faster_whisper_small_local_verbatim"
+     },
+     "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_adv_8/b1b/narration/attempts/comment_1_attempt1_englishstyleprefix.wav"
+    }
+   ]
+  }
+ },
+ "block_progress": {
+  "comment_1.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "1786b954628087665474a658",
+   "segment_id": "comment_1",
+   "fingerprint": {
+    "leaf": "L1",
+    "style_prefix_override": "37c52d6ec2377109",
+    "tts_backend": "7b7d9d14787b08f6",
+    "enable_pronunciation_resolver": true,
+    "policy": "EN_LR_ADV"
+   },
+   "status": "DONE",
+   "created_epoch": 1793026699.9417884,
+   "updated_epoch": 1793026705.8667219,
+   "blocks": {
+    "0": {
+     "n_started": 1,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793026699.9444735,
+       "finished_epoch": 1793026705.8654954,
+       "verified": true
+      }
+     },
+     "cooldown": null
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_status": "OK"
+  },
+  "topic_intro_en.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "1f7f8c45c7e91bcd3ef95069",
+   "segment_id": "topic_intro_en",
+   "fingerprint": {
+    "leaf": "L1",
+    "style_prefix_override": "d16e099cb4f6fd7f",
+    "tts_backend": "7b7d9d14787b08f6",
+    "enable_pronunciation_resolver": true,
+    "policy": "EN_LR_ADV"
+   },
+   "status": "DONE",
+   "created_epoch": 1793026696.4511871,
+   "updated_epoch": 1793026699.922529,
+   "blocks": {
+    "0": {
+     "n_started": 1,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793026696.4535236,
+       "finished_epoch": 1793026699.9212227,
+       "verified": true
+      }
+     },
+     "cooldown": null
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_status": "OK"
+  }
+ },
+ "results_segments": {
+  "topic_intro_en": {
+   "status": "OK",
+   "voice": "Charon",
+   "asr_text": "Today's topic is The Monkey's Paw.",
+   "canonical_text": "Today's topic is The Monkey's Paw.",
+   "slowdown_applied": null,
+   "cooldown_events": [],
+   "path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_adv_8/b1b/narration/topic_intro_en.wav",
+   "audio_text_deviation": null
+  },
+  "comment_1": {
+   "status": "OK",
+   "voice": "Charon",
+   "asr_text": "Listen for what the old soldier says the monkey's paw can do.",
+   "canonical_text": "Listen for what the old soldier says the monkey’s paw can do.",
+   "slowdown_applied": null,
+   "cooldown_events": [],
+   "path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_adv_8/b1b/narration/comment_1.wav",
+   "audio_text_deviation": null
+  }
+ },
+ "results_key_phrases": {},
+ "attempt_sidecars": [
+  {
+   "file": "comment_1_attempt1_englishstyleprefix.json",
+   "segment_id": "comment_1",
+   "attempt_number": 1,
+   "route": "english_style_prefix",
+   "saved_at": "2026-10-26T23:58:25",
+   "loop_attempt_index": 1,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Charon",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": true,
+   "audio_classification": "EXACT_MATCH",
+   "asr_text": "Listen for what the old soldier says the monkey's paw can do.",
+   "disfluency_checked": true,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "topic_intro_en_attempt1_englishstyleprefix.json",
+   "segment_id": "topic_intro_en",
+   "attempt_number": 1,
+   "route": "english_style_prefix",
+   "saved_at": "2026-10-26T23:58:19",
+   "loop_attempt_index": 1,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Charon",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": true,
+   "audio_classification": "EXACT_MATCH",
+   "asr_text": "Today's topic is The Monkey's Paw.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 0.218,
+  "by_provider": {
+   "openai": 0.01,
+   "gemini": 0.17,
+   "openai_asr": 0.03
+  }
+ },
+ "gate_observation": {
+  "m2_complete": {
+   "checked": 2,
+   "path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_adv_8/b1b/audit/tts_generation_results.json",
+   "audio_text_deviations": []
+  },
+  "audio_gate": {
+   "m2_complete": true,
+   "shared_gate": "skipped",
+   "audio_text_deviation_clips": []
+  }
+ },
+ "resumed_run": false
+}

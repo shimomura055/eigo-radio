@@ -1,0 +1,680 @@
+{
+ "management_id": "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01",
+ "case": "X-Std-4",
+ "family": "X",
+ "level": "a2",
+ "scenario": "E-S1",
+ "leaf": "L4",
+ "policy": "EN_LR_STD",
+ "segments": [
+  "in_one_line"
+ ],
+ "run_dir": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_std_4",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {
+   "*": [
+    1,
+    2
+   ]
+  },
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [
+  {
+   "kind": "judge_ng",
+   "clip": "in_one_line",
+   "slot": 1,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "in_one_line",
+   "slot": 2,
+   "judge_kind": "en"
+  }
+ ],
+ "injected_override_count": 2,
+ "started_at": "2026-10-26T23:56:22",
+ "ended_at": "2026-10-26T23:59:52",
+ "wall_seconds": 209.6,
+ "pid": 52864,
+ "exception": null,
+ "tts_attempts": [
+  {
+   "clip": "in_one_line",
+   "t": 5.23,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "10e21170b1b1",
+   "style_head": "concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.\nSpeak at a slightly slower, relaxed pace than natural adu",
+   "style_chars": 266,
+   "text_head": "Falling coffee bean prices may take at least 9 months to affect US shop prices.",
+   "text_sha": "5a3885cbbca4",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "in_one_line",
+   "t": 9.75,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "10e21170b1b1",
+   "style_head": "concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.\nSpeak at a slightly slower, relaxed pace than natural adu",
+   "style_chars": 266,
+   "text_head": "Falling coffee bean prices may take at least 9 months to affect US shop prices.",
+   "text_sha": "5a3885cbbca4",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "in_one_line",
+   "t": 198.45,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "dba23e664f38",
+   "style_head": "natural, clear, conversational",
+   "style_chars": 30,
+   "text_head": "Falling coffee bean prices may take at least 9 months to affect US shop prices.",
+   "text_sha": "5a3885cbbca4",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 3,
+ "tts_api_calls": 3,
+ "judges": [
+  {
+   "clip": "in_one_line",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Falling coffee bean prices may take at least nine months to affect U.S. shop prices."
+  },
+  {
+   "clip": "in_one_line",
+   "kind": "en",
+   "slot": 2,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Falling coffee bean prices may take at least nine months to affect U.S. shop prices."
+  },
+  {
+   "clip": "in_one_line",
+   "kind": "en",
+   "slot": 3,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": true,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "Falling coffee bean prices may take at least nine months to affect U.S. shop prices."
+  }
+ ],
+ "post_slowdown_judges": [
+  {
+   "clip": "in_one_line",
+   "slot": 3,
+   "verified_real": true,
+   "forced_ng": false
+  }
+ ],
+ "cooldown_events": [
+  {
+   "label": "in_one_line",
+   "requested_seconds": 180.0,
+   "actual_seconds": 179.999,
+   "started_at": "2026-10-26T23:56:41",
+   "ended_at": "2026-10-26T23:59:41",
+   "resumed": false,
+   "attempt_before": 2,
+   "attempt_after": 3,
+   "total_elapsed_since_ref_seconds": 180.0,
+   "wall_start_epoch": 1793026601.2562687
+  }
+ ],
+ "cooldown_count": 1,
+ "sleep_total_seconds": 180.0,
+ "stop_checks": {
+  "cooldown": 36,
+  "attempt": 3,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [
+  "COOLDOWN_BEFORE_BLOCK_ATTEMPT",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "in_one_line": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "5a3885cbbca46a59983eb26f6e3e2d586714c06688e6a6f8fa0a01c7360d22c2",
+   "language": "en",
+   "theme_id": "coffee_prices__run_tru_ev_x_std_4",
+   "level": "a2",
+   "segment_id": "in_one_line",
+   "updated_at": "2026-10-26T23:59:52",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_std_4/a2/narration/in_one_line.wav",
+   "cumulative_tts_attempts": 3,
+   "cumulative_asr_calls": 3,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 5.97,
+     "asr_text": "Falling coffee bean prices may take at least nine months to affect U.S. shop prices.",
+     "asr_text_length": 84,
+     "max_len": 139,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": false,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": false,
+     "non_latin_cascade_enabled": false,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 266,
+      "sha256": "10e21170b1b13b9f577f1642a987511eaa68eed7334aeb6807ecc2fb4f01b860",
+      "head200": "concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.\nSpeak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversatio"
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "Falling coffee bean prices may take at least nine months to affect U.S. shop prices.",
+       "classification": "NORMALIZED_MATCH",
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "IN_ONE_LINE",
+      "lang": "en",
+      "segment_key": "in_one_line",
+      "audio_sha256": "7466bdc5774c2f99c0f54519a8b5ee06418614efe788d0b07e12bd25f65f5ba7",
+      "primary": {
+       "text": "Falling coffee bean prices may take at least nine months to affect U.S. shop prices.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+         {
+          "src": "9",
+          "hyp": "9",
+          "verdict": "EQUAL",
+          "reason": "same_surface"
+         }
+        ],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "EQUAL",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 84,
+       "secondary_len": null,
+       "max_len": 139,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "in_one_line",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_std_4/a2/narration/attempts/in_one_line_attempt1_custom78daa961.wav"
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "duration_seconds": 6.04,
+     "asr_text": "Falling coffee bean prices may take at least nine months to affect U.S. shop prices.",
+     "asr_text_length": 84,
+     "max_len": 139,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": false,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": false,
+     "non_latin_cascade_enabled": false,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 266,
+      "sha256": "10e21170b1b13b9f577f1642a987511eaa68eed7334aeb6807ecc2fb4f01b860",
+      "head200": "concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.\nSpeak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversatio"
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "Falling coffee bean prices may take at least nine months to affect U.S. shop prices.",
+       "classification": "NORMALIZED_MATCH",
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 2,
+      "script_version": "v0",
+      "role": "IN_ONE_LINE",
+      "lang": "en",
+      "segment_key": "in_one_line",
+      "audio_sha256": "8b24189000157648bb94adbc2006549b7a3eaf57ee395efa4a520c63e26a095e",
+      "primary": {
+       "text": "Falling coffee bean prices may take at least nine months to affect U.S. shop prices.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+         {
+          "src": "9",
+          "hyp": "9",
+          "verdict": "EQUAL",
+          "reason": "same_surface"
+         }
+        ],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "EQUAL",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 84,
+       "secondary_len": null,
+       "max_len": 139,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "in_one_line",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_std_4/a2/narration/attempts/in_one_line_attempt2_custom78daa961.wav"
+    }
+   ]
+  }
+ },
+ "block_progress": {
+  "in_one_line.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "6eec0976e3f92c167c8e2e5d",
+   "segment_id": "in_one_line",
+   "fingerprint": {
+    "leaf": "L3",
+    "style_prefix_override": "10e21170b1b13b9f",
+    "tts_backend": "7b7d9d14787b08f6",
+    "policy": "EN_LR_STD"
+   },
+   "status": "DONE",
+   "created_epoch": 1793026588.0360513,
+   "updated_epoch": 1793026792.415518,
+   "blocks": {
+    "0": {
+     "n_started": 3,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793026588.0420892,
+       "finished_epoch": 1793026592.5644314,
+       "verified": false
+      },
+      "2": {
+       "started_epoch": 1793026592.5657387,
+       "finished_epoch": 1793026601.2550328,
+       "verified": false
+      },
+      "3": {
+       "started_epoch": 1793026781.2591777,
+       "finished_epoch": 1793026792.4141018,
+       "verified": true
+      }
+     },
+     "cooldown": {
+      "before_ordinal": 3,
+      "cooldown_started_at": "2026-10-26T23:56:41",
+      "cooldown_ended_at": "2026-10-26T23:59:41",
+      "cooldown_actual_seconds": 179.999,
+      "total_elapsed_since_ref_seconds": 180.0,
+      "resumed": false
+     }
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_status": "OK"
+  }
+ },
+ "results_segments": {
+  "in_one_line": {
+   "status": "OK",
+   "fallback_used": true,
+   "voice": "Aoede",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_prefix": {
+    "len": 30,
+    "sha256": "dba23e664f387c6641f9dd003cf4571f78af87613c68536ddbb5f1e52cad964b",
+    "head200": "natural, clear, conversational"
+   },
+   "asr_verified": true,
+   "asr_text": "Falling coffee bean prices may take at least nine months to affect U.S. shop prices.",
+   "canonical_text": "Falling coffee bean prices may take at least nine months to affect US shop prices.",
+   "slowdown_applied": true,
+   "cooldown_events": [
+    {
+     "cooldown_requested_seconds": 180.0,
+     "cooldown_actual_seconds": 179.999,
+     "cooldown_started_at": "2026-10-26T23:56:41",
+     "cooldown_ended_at": "2026-10-26T23:59:41",
+     "attempt_before_cooldown": 2,
+     "attempt_after_cooldown": 3,
+     "total_elapsed_since_ref_seconds": 180.0,
+     "resumed": false
+    }
+   ],
+   "path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_std_4/a2/narration/in_one_line.wav",
+   "standard_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "Falling coffee bean prices may take at least nine months to affect U.S. shop prices.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "Falling coffee bean prices may take at least nine months to affect U.S. shop prices.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    }
+   ],
+   "fallback_attempts_log": [
+    {
+     "attempt": 3,
+     "status": "OK",
+     "verified": true,
+     "asr_text": "Falling coffee bean prices may take at least nine months to affect U.S. shop prices.",
+     "audio_classification": "NORMALIZED_MATCH",
+     "disfluency_checked": true
+    }
+   ]
+  }
+ },
+ "results_key_phrases": {},
+ "attempt_sidecars": [
+  {
+   "file": "in_one_line_attempt1_custom78daa961.json",
+   "segment_id": "in_one_line",
+   "attempt_number": 1,
+   "route": "custom_78daa961",
+   "saved_at": "2026-10-26T23:56:32",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.\nSpeak at a slightly slower, relaxed pace than natural adu",
+   "instruction_sha": "10e21170b1b1",
+   "instruction_chars": 266,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Falling coffee bean prices may take at least nine months to affect U.S. shop prices.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "in_one_line_attempt2_custom78daa961.json",
+   "segment_id": "in_one_line",
+   "attempt_number": 2,
+   "route": "custom_78daa961",
+   "saved_at": "2026-10-26T23:56:41",
+   "loop_attempt_index": 2,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.\nSpeak at a slightly slower, relaxed pace than natural adu",
+   "instruction_sha": "10e21170b1b1",
+   "instruction_chars": 266,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Falling coffee bean prices may take at least nine months to affect U.S. shop prices.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "in_one_line_attempt3_minimalfallback.json",
+   "segment_id": "in_one_line",
+   "attempt_number": 3,
+   "route": "minimal_fallback",
+   "saved_at": "2026-10-26T23:59:51",
+   "loop_attempt_index": 3,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": true,
+   "audio_classification": "NORMALIZED_MATCH",
+   "asr_text": "Falling coffee bean prices may take at least nine months to affect U.S. shop prices.",
+   "disfluency_checked": true,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "in_one_line_attempt4_postslowdown.json",
+   "segment_id": "in_one_line",
+   "attempt_number": 4,
+   "route": "post_slowdown",
+   "saved_at": "2026-10-26T23:59:52",
+   "loop_attempt_index": null,
+   "max_attempts": null,
+   "model": null,
+   "voice": null,
+   "tts_backend": null,
+   "tts_execution_mode": null,
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": true,
+   "audio_classification": null,
+   "asr_text": null,
+   "disfluency_checked": null,
+   "cascade_providers": [],
+   "slowdown": {
+    "post_slowdown_asr_text": "Falling coffee bean prices may take at least nine months to affect U.S. shop prices.",
+    "post_slowdown_classification": "NORMALIZED_MATCH"
+   }
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 0.804,
+  "by_provider": {
+   "openai": 0.04,
+   "gemini": 0.42,
+   "openai_asr": 0.11,
+   "azure": 0.23
+  }
+ },
+ "gate_observation": {
+  "status_all": "BLOCK",
+  "my_segment_blocked": [],
+  "my_segment_warnings": [],
+  "note": "m3_assembly_gate(承認済みprofile)を実resultsへ適用。全体statusは未生成segmentのNO_SEGMENT_RECORDを含むため my_* のみ参照"
+ },
+ "resumed_run": false
+}

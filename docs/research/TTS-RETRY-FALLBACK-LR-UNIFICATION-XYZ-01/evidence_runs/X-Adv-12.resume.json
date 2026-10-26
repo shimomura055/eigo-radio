@@ -1,0 +1,449 @@
+{
+ "management_id": "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01",
+ "case": "X-Adv-12",
+ "family": "X",
+ "level": "b1b",
+ "scenario": "E-S6",
+ "leaf": "L1",
+ "policy": "EN_LR_ADV",
+ "segments": [
+  "comment_1"
+ ],
+ "run_dir": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_12",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {
+   "*": [
+    1,
+    2
+   ]
+  },
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [],
+ "injected_override_count": 0,
+ "started_at": "2026-10-27T00:02:50",
+ "ended_at": "2026-10-27T00:03:01",
+ "wall_seconds": 10.9,
+ "pid": 48184,
+ "exception": null,
+ "tts_attempts": [
+  {
+   "clip": "comment_1",
+   "t": 1.83,
+   "voice": "Charon",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "dba23e664f38",
+   "style_head": "natural, clear, conversational",
+   "style_chars": 30,
+   "text_head": "Listen for how the news about bean prices compares with the prices people see in",
+   "text_sha": "9f77c7f5b23b",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 1,
+ "tts_api_calls": 1,
+ "judges": [
+  {
+   "clip": "comment_1",
+   "kind": "en",
+   "slot": 3,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "EXACT_MATCH",
+   "force_secondary": true,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "Listen for how the news about bean prices compares with the prices people see in shops."
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [
+  {
+   "label": "comment_1",
+   "requested_seconds": 180.0,
+   "actual_seconds": 0.0,
+   "started_at": "2026-10-27T00:02:52",
+   "ended_at": "2026-10-27T00:02:52",
+   "resumed": false,
+   "attempt_before": 2,
+   "attempt_after": 3,
+   "total_elapsed_since_ref_seconds": 196.049,
+   "wall_start_epoch": 1793026972.7721488
+  }
+ ],
+ "cooldown_count": 1,
+ "sleep_total_seconds": 0.0,
+ "stop_checks": {
+  "cooldown": 0,
+  "attempt": 1,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [
+  "COOLDOWN_BEFORE_BLOCK_ATTEMPT",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "comment_1": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "9f77c7f5b23ba0c3c614c28b7dfa8bd836fa6a7cefb646c17dc48596b6d87aa1",
+   "language": "en",
+   "theme_id": "coffee_prices__run_tru_ev_x_adv_12",
+   "level": "b1b",
+   "segment_id": "comment_1",
+   "updated_at": "2026-10-27T00:03:01",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_12/b1b/narration/comment_1.wav",
+   "cumulative_tts_attempts": 3,
+   "cumulative_asr_calls": 1,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "RESUMED_CONSUMED_BY_PRIOR_PROCESS",
+     "verified": false,
+     "carried_from_prior_process": true,
+     "instruction_type": null
+    },
+    {
+     "attempt": 2,
+     "status": "RESUMED_CONSUMED_BY_PRIOR_PROCESS",
+     "verified": false,
+     "carried_from_prior_process": true,
+     "instruction_type": null
+    },
+    {
+     "attempt": 3,
+     "status": "OK",
+     "asr_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "force_secondary_agreed",
+      "slot": 3,
+      "script_version": "v0",
+      "role": "COMMENT",
+      "lang": "en",
+      "segment_key": "comment_1",
+      "audio_sha256": "80a8f8103f28a2e8aa688ecc510bc232e0eca1087a1fd3c5590a15bb70adbc49",
+      "primary": {
+       "text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+       "passed": true,
+       "label": "EXACT_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": true,
+       "cached": false,
+       "engine": "azure",
+       "text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+       "label": "EXACT_MATCH",
+       "accepted": true,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       },
+       "secondary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false,
+       "secondary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "target": "secondary",
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 1,
+       "azure_seconds": 5.56,
+       "est_jpy": 0.2667,
+       "est_jpy_known": true
+      },
+      "timing": {
+       "total_ms": 1646,
+       "secondary_ms": 1644
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 87,
+       "secondary_len": 87,
+       "max_len": 102,
+       "adopted_from": "secondary",
+       "adopted_ok": true,
+       "surface_len": 71,
+       "primary_ok": true
+      },
+      "p3_entry": "force_secondary",
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 1,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "comment_1",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 2,
+        "hits": 0
+       }
+      }
+     },
+     "instruction_type": "minimal_fallback",
+     "audio_classification": "EXACT_MATCH",
+     "connected_speech_info": null,
+     "semantic_equivalence": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": true,
+     "trim_info": {
+      "raw_duration_seconds": 5.56,
+      "raw_leading_silence_seconds": 0.3,
+      "raw_trailing_silence_seconds": 0.34,
+      "trimmed_duration_seconds": 5.56,
+      "leading_margin_retained_seconds": 0.3,
+      "trailing_margin_retained_seconds": 0.34
+     },
+     "disfluency_checked": true,
+     "disfluency_evidence": {
+      "flagged": false,
+      "repeats": [],
+      "word_count": 16,
+      "transcript": "Listen  for  how  the  news  about  bean  prices  compares  with  the  prices  people  see  in  shops.",
+      "method": "faster_whisper_small_local_verbatim"
+     },
+     "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_12/b1b/narration/attempts/comment_1_attempt3_minimalfallback.wav"
+    }
+   ]
+  }
+ },
+ "block_progress": {
+  "comment_1.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "ce5329f1dc0dbe65a5e28278",
+   "segment_id": "comment_1",
+   "fingerprint": {
+    "leaf": "L1",
+    "style_prefix_override": "57c3fda67c1d3976",
+    "tts_backend": "7b7d9d14787b08f6",
+    "enable_pronunciation_resolver": true,
+    "policy": "EN_LR_ADV"
+   },
+   "status": "DONE",
+   "created_epoch": 1793026764.7538452,
+   "updated_epoch": 1793026981.8678453,
+   "blocks": {
+    "0": {
+     "n_started": 3,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793026764.7561796,
+       "finished_epoch": 1793026772.9620736,
+       "verified": false
+      },
+      "2": {
+       "started_epoch": 1793026772.9632764,
+       "finished_epoch": 1793026776.7231183,
+       "verified": false
+      },
+      "3": {
+       "started_epoch": 1793026972.7746613,
+       "finished_epoch": 1793026981.8662615,
+       "verified": true
+      }
+     },
+     "cooldown": {
+      "before_ordinal": 3,
+      "cooldown_started_at": "2026-10-27T00:02:52",
+      "cooldown_ended_at": "2026-10-27T00:02:52",
+      "cooldown_actual_seconds": 0.0,
+      "total_elapsed_since_ref_seconds": 196.049,
+      "resumed": false
+     }
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_status": "OK"
+  }
+ },
+ "results_segments": {
+  "comment_1": {
+   "status": "OK",
+   "fallback_used": true,
+   "instruction_type": "minimal_fallback",
+   "voice": "Charon",
+   "model": "gemini-3.8-flash-lite-tts",
+   "tts_model_id": "gemini-3.8-flash-lite-tts",
+   "style_prefix": "natural, clear, conversational",
+   "asr_verified": true,
+   "asr_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+   "canonical_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+   "cooldown_events": [
+    {
+     "cooldown_requested_seconds": 180.0,
+     "cooldown_actual_seconds": 0.0,
+     "cooldown_started_at": "2026-10-27T00:02:52",
+     "cooldown_ended_at": "2026-10-27T00:02:52",
+     "attempt_before_cooldown": 2,
+     "attempt_after_cooldown": 3,
+     "total_elapsed_since_ref_seconds": 196.049,
+     "resumed": false
+    }
+   ],
+   "path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_12/b1b/narration/comment_1.wav",
+   "style_prefix_sha": "dba23e664f38",
+   "attempts_log": [
+    {
+     "attempt": 1,
+     "status": "RESUMED_CONSUMED_BY_PRIOR_PROCESS",
+     "verified": false,
+     "instruction_type": null,
+     "carried_from_prior_process": true
+    },
+    {
+     "attempt": 2,
+     "status": "RESUMED_CONSUMED_BY_PRIOR_PROCESS",
+     "verified": false,
+     "instruction_type": null,
+     "carried_from_prior_process": true
+    },
+    {
+     "attempt": 3,
+     "status": "OK",
+     "verified": true,
+     "instruction_type": "minimal_fallback",
+     "asr_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+     "audio_classification": "EXACT_MATCH",
+     "disfluency_checked": true
+    }
+   ]
+  }
+ },
+ "results_key_phrases": {},
+ "attempt_sidecars": [
+  {
+   "file": "comment_1_attempt1_englishstyleprefix.json",
+   "segment_id": "comment_1",
+   "attempt_number": 1,
+   "route": "english_style_prefix",
+   "saved_at": "2026-10-26T23:59:32",
+   "loop_attempt_index": 1,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Charon",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "comment_1_attempt2_englishstyleprefix.json",
+   "segment_id": "comment_1",
+   "attempt_number": 2,
+   "route": "english_style_prefix",
+   "saved_at": "2026-10-26T23:59:36",
+   "loop_attempt_index": 2,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Charon",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "comment_1_attempt3_minimalfallback.json",
+   "segment_id": "comment_1",
+   "attempt_number": 3,
+   "route": "minimal_fallback",
+   "saved_at": "2026-10-27T00:03:01",
+   "loop_attempt_index": 3,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Charon",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": true,
+   "audio_classification": "EXACT_MATCH",
+   "asr_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+   "disfluency_checked": true,
+   "cascade_providers": [],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 0.746,
+  "by_provider": {
+   "openai": 0.04,
+   "gemini": 0.38,
+   "openai_asr": 0.08,
+   "azure": 0.25
+  }
+ },
+ "gate_observation": {
+  "status_all": "BLOCK",
+  "my_segment_blocked": [],
+  "my_segment_warnings": [],
+  "note": "m3_assembly_gate(承認済みprofile)を実resultsへ適用。全体statusは未生成segmentのNO_SEGMENT_RECORDを含むため my_* のみ参照"
+ },
+ "resumed_run": true
+}

@@ -1,0 +1,106 @@
+{
+ "management_id": "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01",
+ "case": "X-Adv-11",
+ "family": "X",
+ "level": "b1b",
+ "scenario": "E-S4",
+ "leaf": "L6",
+ "policy": "KP_EN",
+ "segments": [
+  "kp1_en"
+ ],
+ "run_dir": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_11",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {
+   "*": [
+    1,
+    2,
+    3,
+    4
+   ]
+  },
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [],
+ "injected_override_count": 0,
+ "started_at": "2026-10-26T23:55:43",
+ "ended_at": "2026-10-26T23:55:43",
+ "wall_seconds": 0.0,
+ "pid": 55924,
+ "exception": null,
+ "tts_attempts": [],
+ "tts_attempts_count": 0,
+ "tts_api_calls": 0,
+ "judges": [],
+ "post_slowdown_judges": [],
+ "cooldown_events": [],
+ "cooldown_count": 0,
+ "sleep_total_seconds": 0.0,
+ "stop_checks": {
+  "cooldown": 0,
+  "attempt": 0,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [],
+ "lock_state": null,
+ "block_progress": {},
+ "results_segments": {},
+ "results_key_phrases": {
+  "1": {
+   "english": {
+    "status": "SKIPPED_NOT_SELECTED",
+    "reason": "--only-segmentsに含まれないため生成しません"
+   }
+  }
+ },
+ "attempt_sidecars": [],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 0.0,
+  "by_provider": {}
+ },
+ "gate_observation": {
+  "status_all": "BLOCK",
+  "my_segment_blocked": [
+   {
+    "segment": "kp1_english",
+    "violations": [
+     "STYLE_BASE_SHA_MISMATCH_OR_MISSING",
+     "FINAL_STYLE_RECORD_MISSING",
+     "KP_EN_STATUS_NOT_OK",
+     "KP_EN_STORE_KEY_MISSING"
+    ]
+   },
+   {
+    "segment": "kp1_explanation",
+    "violations": [
+     "NO_SEGMENT_RECORD"
+    ]
+   }
+  ],
+  "my_segment_warnings": [],
+  "note": "m3_assembly_gate(承認済みprofile)を実resultsへ適用。全体statusは未生成segmentのNO_SEGMENT_RECORDを含むため my_* のみ参照"
+ },
+ "resumed_run": false
+}

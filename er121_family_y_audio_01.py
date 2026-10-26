@@ -539,14 +539,14 @@ def _generate_y_body_segment_chunked_a2(plan: dict, cached, narration_dir: str, 
             style_profile_mod.attach_segment_profile_record(results[cid], style_profile, "FULL_STORY", role_style_slower("FULL_STORY"))
 
 
-@secondary_run_scope.with_secondary_run   # AUW 委任_05: run単位SecondaryCache+circuit breaker(Xと同じ共通hook)
-@y_family_scope("b1b")   # PNAP run scope(Y)+完成報告hook+Run Entity Table(YProvider)
 def _register_y_stop_check(theme_out_dir: str) -> None:
     """統一3回構成ブロックの180秒待機・attempt境界でYのSTOP sentinel(<run>/STOP等)を確認する(TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02)。"""
     import er062_family_z_structure_01 as _st
     er127.register_stop_check(lambda where: _st.check_stop_sentinel(where, theme_out_dir))
 
 
+@secondary_run_scope.with_secondary_run   # AUW 委任_05: run単位SecondaryCache+circuit breaker(Xと同じ共通hook)
+@y_family_scope("b1b")   # PNAP run scope(Y)+完成報告hook+Run Entity Table(YProvider)
 @er109_scope.family_scope("Y")   # er109 run scope(Y)。例外・STOP時もfinallyで復元
 def generate_y_b1_segments(theme_out_dir: str, *, tts_backend: str = TTS_BACKEND, style_profile: str, guard=None) -> dict:   # style_profile必須(既定値なし。OPEN-537: 供給漏れで黙ってdefaultになる経路を作らない)
     style_profile_mod.assert_profile_backend(style_profile, tts_backend)

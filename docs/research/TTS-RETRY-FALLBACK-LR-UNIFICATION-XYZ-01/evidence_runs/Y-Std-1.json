@@ -1,0 +1,1173 @@
+{
+ "management_id": "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01",
+ "case": "Y-Std-1",
+ "family": "Y",
+ "level": "a2",
+ "scenario": "E-S2b",
+ "leaf": "L3",
+ "policy": "EN_LR_STD",
+ "segments": [
+  "topic_intro"
+ ],
+ "run_dir": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_1",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {
+   "*": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  },
+  "sub": {
+   "*": [
+    3
+   ]
+  },
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [
+  {
+   "kind": "judge_ng",
+   "clip": "topic_intro",
+   "slot": 1,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "topic_intro",
+   "slot": 2,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "transcript_substitution",
+   "clip": "topic_intro",
+   "slot": 3,
+   "before": "Today's topic is package redelivery. Different voices.",
+   "after": "Today's market is package redelivery. Different voices."
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "topic_intro",
+   "slot": 3,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "topic_intro",
+   "slot": 4,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "topic_intro",
+   "slot": 5,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "topic_intro",
+   "slot": 6,
+   "judge_kind": "en"
+  }
+ ],
+ "injected_override_count": 7,
+ "started_at": "2026-10-26T23:40:52",
+ "ended_at": "2026-10-26T23:47:52",
+ "wall_seconds": 420.6,
+ "pid": 50340,
+ "exception": null,
+ "tts_attempts": [
+  {
+   "clip": "topic_intro",
+   "t": 6.02,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "d16e099cb4f6",
+   "style_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "style_chars": 96,
+   "text_head": "Today's topic is Package Redelivery. Different Voices.",
+   "text_sha": "75548276de66",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "topic_intro",
+   "t": 10.33,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "d16e099cb4f6",
+   "style_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "style_chars": 96,
+   "text_head": "Today's topic is Package Redelivery. Different Voices.",
+   "text_sha": "75548276de66",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "topic_intro",
+   "t": 193.32,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "dba23e664f38",
+   "style_head": "natural, clear, conversational",
+   "style_chars": 30,
+   "text_head": "Today's topic is Package Redelivery. Different Voices.",
+   "text_sha": "75548276de66",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "topic_intro",
+   "t": 228.82,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "d16e099cb4f6",
+   "style_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "style_chars": 96,
+   "text_head": "Today's subject is Package Redelivery. Different Voices.",
+   "text_sha": "91740cea6955",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "topic_intro",
+   "t": 232.39,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "d16e099cb4f6",
+   "style_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "style_chars": 96,
+   "text_head": "Today's subject is Package Redelivery. Different Voices.",
+   "text_sha": "91740cea6955",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "topic_intro",
+   "t": 415.94,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "dba23e664f38",
+   "style_head": "natural, clear, conversational",
+   "style_chars": 30,
+   "text_head": "Today's subject is Package Redelivery. Different Voices.",
+   "text_sha": "91740cea6955",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 6,
+ "tts_api_calls": 6,
+ "judges": [
+  {
+   "clip": "topic_intro",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Today's topic is package redelivery. Different voices."
+  },
+  {
+   "clip": "topic_intro",
+   "kind": "en",
+   "slot": 2,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Today's topic is Package Redelivery. Different voices."
+  },
+  {
+   "clip": "topic_intro",
+   "kind": "en",
+   "slot": 3,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": true,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Today's market is package redelivery. Different voices."
+  },
+  {
+   "clip": "topic_intro",
+   "kind": "en",
+   "slot": 4,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v1",
+   "forced_ng": true,
+   "asr_text_head": "Today's subject is package redelivery. Different voices."
+  },
+  {
+   "clip": "topic_intro",
+   "kind": "en",
+   "slot": 5,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v1",
+   "forced_ng": true,
+   "asr_text_head": "Today's subject is package redelivery. Different voices."
+  },
+  {
+   "clip": "topic_intro",
+   "kind": "en",
+   "slot": 6,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": true,
+   "is_last_slot": true,
+   "script_version": "v1",
+   "forced_ng": true,
+   "asr_text_head": "Today's subject is package redelivery. Different voices."
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [
+  {
+   "label": "topic_intro",
+   "requested_seconds": 180.0,
+   "actual_seconds": 179.999,
+   "started_at": "2026-10-26T23:41:05",
+   "ended_at": "2026-10-26T23:44:05",
+   "resumed": false,
+   "attempt_before": 2,
+   "attempt_after": 3,
+   "total_elapsed_since_ref_seconds": 180.001,
+   "wall_start_epoch": 1793025665.5443773
+  },
+  {
+   "label": "topic_intro",
+   "requested_seconds": 180.0,
+   "actual_seconds": 179.998,
+   "started_at": "2026-10-26T23:44:48",
+   "ended_at": "2026-10-26T23:47:48",
+   "resumed": false,
+   "attempt_before": 5,
+   "attempt_after": 6,
+   "total_elapsed_since_ref_seconds": 180.0,
+   "wall_start_epoch": 1793025888.1655738
+  }
+ ],
+ "cooldown_count": 2,
+ "sleep_total_seconds": 360.0,
+ "stop_checks": {
+  "cooldown": 72,
+  "attempt": 6,
+  "other": 0
+ },
+ "lr_calls": [
+  {
+   "segment_id": "topic_intro",
+   "depth": 0,
+   "status": "HUMAN_REVIEW_LOCKED_RETTS_FAILED",
+   "ng_span_found": true,
+   "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "today s topic is package redelivery",
+    "asr_span_with_context": "today s market is package redelivery",
+    "canonical_changed_words": [
+     "topic"
+    ],
+    "asr_changed_words": [
+     "market"
+    ],
+    "context_window_word_indices": [
+     0,
+     6
+    ]
+   },
+   "model": null,
+   "rewritten_text": "Today's subject is Package Redelivery. Different Voices.",
+   "elapsed_s": 220.86,
+   "last_asr_text": "Today's market is package redelivery. Different voices."
+  }
+ ],
+ "lr_count": 1,
+ "hrq_rows": 1,
+ "hrq_detail": [
+  {
+   "canonical_text": "Today's subject is Package Redelivery. Different Voices.",
+   "wav_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_1/a2/narration/topic_intro.wav",
+   "final_status": "HUMAN_REVIEW_LOCKED_RETTS_FAILED",
+   "lock_canonical_text": "Today's topic is Package Redelivery. Different Voices."
+  }
+ ],
+ "attempt_history_actions": [
+  "COOLDOWN_BEFORE_BLOCK_ATTEMPT",
+  "COOLDOWN_BEFORE_BLOCK_ATTEMPT",
+  "LOCAL_REWRITE_RECOVERY",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "topic_intro": {
+   "state": "HUMAN_REVIEW_REQUIRED",
+   "canonical_text_sha256": "75548276de66fc9f6aec921bd5a08133f4ed1a8c84a1650aabeebc827d1f6a5c",
+   "language": "en",
+   "theme_id": "run_tru_ev_y_std_1",
+   "level": "a2",
+   "segment_id": "topic_intro",
+   "updated_at": "2026-10-26T23:47:52",
+   "reason": "最終status=STOPPED。ブロック(標準経路2回+fallback経路1回、合計上限3回)とも不合格",
+   "final_status": "STOPPED",
+   "wav_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_1/a2/narration/topic_intro.wav",
+   "cumulative_tts_attempts": 6,
+   "cumulative_asr_calls": 6,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 4.32,
+     "asr_text": "Today's topic is package redelivery. Different voices.",
+     "asr_text_length": 54,
+     "max_len": 84,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": false,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": false,
+     "non_latin_cascade_enabled": false,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 96,
+      "sha256": "d16e099cb4f6fd7f87826e48f636c143c31f3c7ad4aaeea13dd3c9ae4a3f724b",
+      "head200": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic."
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "Today's topic is package redelivery. Different voices.",
+       "classification": "NORMALIZED_MATCH",
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "TOPIC_INTRO",
+      "lang": "en",
+      "segment_key": "topic_intro",
+      "audio_sha256": "5fd3a368dd95c0612a4eed1511d97fef1e0a29e56c1d0b45b32a17eae0103672",
+      "primary": {
+       "text": "Today's topic is package redelivery. Different voices.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 54,
+       "secondary_len": null,
+       "max_len": 84,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "topic_intro",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_1/a2/narration/attempts/topic_intro_attempt1_custom60a24f1e.wav"
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "duration_seconds": 4.0,
+     "asr_text": "Today's topic is Package Redelivery. Different voices.",
+     "asr_text_length": 54,
+     "max_len": 84,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": false,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": false,
+     "non_latin_cascade_enabled": false,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 96,
+      "sha256": "d16e099cb4f6fd7f87826e48f636c143c31f3c7ad4aaeea13dd3c9ae4a3f724b",
+      "head200": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic."
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "Today's topic is Package Redelivery. Different voices.",
+       "classification": "NORMALIZED_MATCH",
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 2,
+      "script_version": "v0",
+      "role": "TOPIC_INTRO",
+      "lang": "en",
+      "segment_key": "topic_intro",
+      "audio_sha256": "17412d02e62c91d39b5f0426b4fc24ff8e4b78c90763d22e7ea1cd54fe2f4bc6",
+      "primary": {
+       "text": "Today's topic is Package Redelivery. Different voices.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 54,
+       "secondary_len": null,
+       "max_len": 84,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "topic_intro",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_1/a2/narration/attempts/topic_intro_attempt2_custom60a24f1e.wav"
+    },
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 4.4,
+     "asr_text": "Today's subject is package redelivery. Different voices.",
+     "asr_text_length": 56,
+     "max_len": 86,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": false,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": false,
+     "non_latin_cascade_enabled": false,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 96,
+      "sha256": "d16e099cb4f6fd7f87826e48f636c143c31f3c7ad4aaeea13dd3c9ae4a3f724b",
+      "head200": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic."
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "Today's subject is package redelivery. Different voices.",
+       "classification": "NORMALIZED_MATCH",
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS_WITH_WARNING",
+      "reason_code": "primary_pass",
+      "slot": 4,
+      "script_version": "v1",
+      "role": "TOPIC_INTRO",
+      "lang": "en",
+      "segment_key": "topic_intro",
+      "audio_sha256": "986d7b763457ba5cae94eca636be3120d1f41bc068a5f22d2865c6b09f56c685",
+      "primary": {
+       "text": "Today's subject is package redelivery. Different voices.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [
+       "LR_REWRITTEN"
+      ],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 56,
+       "secondary_len": null,
+       "max_len": 86,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "topic_intro",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 2,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_1/a2/narration/attempts/topic_intro_attempt4_custom60a24f1e.wav"
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "duration_seconds": 4.48,
+     "asr_text": "Today's subject is package redelivery. Different voices.",
+     "asr_text_length": 56,
+     "max_len": 86,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": false,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": false,
+     "non_latin_cascade_enabled": false,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 96,
+      "sha256": "d16e099cb4f6fd7f87826e48f636c143c31f3c7ad4aaeea13dd3c9ae4a3f724b",
+      "head200": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic."
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "Today's subject is package redelivery. Different voices.",
+       "classification": "NORMALIZED_MATCH",
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS_WITH_WARNING",
+      "reason_code": "primary_pass",
+      "slot": 5,
+      "script_version": "v1",
+      "role": "TOPIC_INTRO",
+      "lang": "en",
+      "segment_key": "topic_intro",
+      "audio_sha256": "c1b90208b3ba6aae9b523144c25a4be358d48b7574547834a34278bf0f6fdc32",
+      "primary": {
+       "text": "Today's subject is package redelivery. Different voices.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [
+       "LR_REWRITTEN"
+      ],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 56,
+       "secondary_len": null,
+       "max_len": 86,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "topic_intro",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 2,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_1/a2/narration/attempts/topic_intro_attempt5_custom60a24f1e.wav"
+    }
+   ]
+  }
+ },
+ "block_progress": {
+  "topic_intro.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "e9e9a1cd18aff47293a4e488",
+   "segment_id": "topic_intro",
+   "fingerprint": {
+    "leaf": "L3",
+    "style_prefix_override": "d16e099cb4f6fd7f",
+    "tts_backend": "7b7d9d14787b08f6",
+    "policy": "EN_LR_STD"
+   },
+   "status": "DONE",
+   "created_epoch": 1793025658.2477674,
+   "updated_epoch": 1793026072.8038092,
+   "blocks": {
+    "0": {
+     "n_started": 3,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793025658.2517104,
+       "finished_epoch": 1793025662.5539067,
+       "verified": false
+      },
+      "2": {
+       "started_epoch": 1793025662.5555522,
+       "finished_epoch": 1793025665.5429425,
+       "verified": false
+      },
+      "3": {
+       "started_epoch": 1793025845.5465186,
+       "finished_epoch": 1793026072.8024037,
+       "verified": false
+      }
+     },
+     "cooldown": {
+      "before_ordinal": 3,
+      "cooldown_started_at": "2026-10-26T23:41:05",
+      "cooldown_ended_at": "2026-10-26T23:44:05",
+      "cooldown_actual_seconds": 179.999,
+      "total_elapsed_since_ref_seconds": 180.001,
+      "resumed": false
+     }
+    }
+   },
+   "lr": {
+    "used": true,
+    "text": "Today's subject is Package Redelivery. Different Voices.",
+    "text_sha": "91740cea6955fa179f14c04dea0968db4d08ce8a274627719eab1dd5417e4cf5"
+   },
+   "final_status": "STOPPED"
+  }
+ },
+ "results_segments": {
+  "topic_intro": {
+   "status": "STOPPED",
+   "reason": "ブロック(標準経路2回+fallback経路1回、合計上限3回)とも不合格",
+   "fallback_used": true,
+   "voice": "Aoede",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_prefix": {
+    "len": 30,
+    "sha256": "dba23e664f387c6641f9dd003cf4571f78af87613c68536ddbb5f1e52cad964b",
+    "head200": "natural, clear, conversational"
+   },
+   "canonical_text": "Today's topic is Package Redelivery: Different Voices.",
+   "cooldown_events": [
+    {
+     "cooldown_requested_seconds": 180.0,
+     "cooldown_actual_seconds": 179.999,
+     "cooldown_started_at": "2026-10-26T23:41:05",
+     "cooldown_ended_at": "2026-10-26T23:44:05",
+     "attempt_before_cooldown": 2,
+     "attempt_after_cooldown": 3,
+     "total_elapsed_since_ref_seconds": 180.001,
+     "resumed": false
+    }
+   ],
+   "path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_1/a2/narration/topic_intro.wav",
+   "attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "Today's topic is package redelivery. Different voices.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "Today's topic is Package Redelivery. Different voices.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "Today's subject is package redelivery. Different voices.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "Today's subject is package redelivery. Different voices.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    }
+   ],
+   "standard_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "Today's topic is package redelivery. Different voices.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "Today's topic is Package Redelivery. Different voices.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "Today's subject is package redelivery. Different voices.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "Today's subject is package redelivery. Different voices.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    }
+   ],
+   "fallback_attempts_log": [
+    {
+     "attempt": 3,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "Today's market is package redelivery. Different voices.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 3,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "Today's subject is package redelivery. Different voices.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    }
+   ]
+  }
+ },
+ "results_key_phrases": {},
+ "attempt_sidecars": [
+  {
+   "file": "topic_intro_attempt1_custom60a24f1e.json",
+   "segment_id": "topic_intro",
+   "attempt_number": 1,
+   "route": "custom_60a24f1e",
+   "saved_at": "2026-10-26T23:41:02",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "instruction_sha": "d16e099cb4f6",
+   "instruction_chars": 96,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Today's topic is package redelivery. Different voices.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "topic_intro_attempt2_custom60a24f1e.json",
+   "segment_id": "topic_intro",
+   "attempt_number": 2,
+   "route": "custom_60a24f1e",
+   "saved_at": "2026-10-26T23:41:05",
+   "loop_attempt_index": 2,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "instruction_sha": "d16e099cb4f6",
+   "instruction_chars": 96,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Today's topic is Package Redelivery. Different voices.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "topic_intro_attempt3_minimalfallback.json",
+   "segment_id": "topic_intro",
+   "attempt_number": 3,
+   "route": "minimal_fallback",
+   "saved_at": "2026-10-26T23:44:11",
+   "loop_attempt_index": 3,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Today's market is package redelivery. Different voices.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "topic_intro_attempt4_custom60a24f1e.json",
+   "segment_id": "topic_intro",
+   "attempt_number": 4,
+   "route": "custom_60a24f1e",
+   "saved_at": "2026-10-26T23:44:44",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "instruction_sha": "d16e099cb4f6",
+   "instruction_chars": 96,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Today's subject is package redelivery. Different voices.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "topic_intro_attempt5_custom60a24f1e.json",
+   "segment_id": "topic_intro",
+   "attempt_number": 5,
+   "route": "custom_60a24f1e",
+   "saved_at": "2026-10-26T23:44:48",
+   "loop_attempt_index": 2,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "instruction_sha": "d16e099cb4f6",
+   "instruction_chars": 96,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Today's subject is package redelivery. Different voices.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "topic_intro_attempt6_minimalfallback.json",
+   "segment_id": "topic_intro",
+   "attempt_number": 6,
+   "route": "minimal_fallback",
+   "saved_at": "2026-10-26T23:47:52",
+   "loop_attempt_index": 3,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Today's subject is package redelivery. Different voices.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 1.323,
+  "by_provider": {
+   "openai": 0.22,
+   "gemini": 0.62,
+   "openai_asr": 0.11,
+   "azure": 0.37
+  }
+ },
+ "gate_observation": {
+  "status": "BLOCK",
+  "y_profile_blocked": [],
+  "my_segment_checks": [],
+  "my_segment_blocked": [],
+  "x_gate_blocked_mine": [],
+  "note": "Gateは全Y本文segmentを対象にするため、未生成segmentのNO_SEGMENT_RECORDは本evidenceの対象外(my_*のみ参照)"
+ },
+ "resumed_run": false
+}

@@ -1,0 +1,126 @@
+{
+ "case": "X-Adv-12",
+ "partial_before_self_terminate": true,
+ "pid": 55924,
+ "sleep_total_seconds": 60.0,
+ "tts_attempts": [
+  {
+   "clip": "comment_1",
+   "t": 4.39,
+   "voice": "Charon",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "57c3fda67c1d",
+   "style_head": "calm, conversational",
+   "style_chars": 20,
+   "text_head": "Listen for how the news about bean prices compares with the prices people see in",
+   "text_sha": "9f77c7f5b23b",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "comment_1",
+   "t": 12.6,
+   "voice": "Charon",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "57c3fda67c1d",
+   "style_head": "calm, conversational",
+   "style_chars": 20,
+   "text_head": "Listen for how the news about bean prices compares with the prices people see in",
+   "text_sha": "9f77c7f5b23b",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "cooldowns_so_far": [],
+ "overrides": [
+  {
+   "kind": "judge_ng",
+   "clip": "comment_1",
+   "slot": 1,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "comment_1",
+   "slot": 2,
+   "judge_kind": "en"
+  }
+ ],
+ "judges": [
+  {
+   "clip": "comment_1",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "EXACT_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Listen for how the news about bean prices compares with the prices people see in shops."
+  },
+  {
+   "clip": "comment_1",
+   "kind": "en",
+   "slot": 2,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "EXACT_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Listen for how the news about bean prices compares with the prices people see in shops."
+  }
+ ],
+ "terminated_at": "2026-10-27T00:00:36",
+ "cost": {
+  "jpy": 0.338,
+  "by_provider": {
+   "openai": 0.04,
+   "gemini": 0.25,
+   "openai_asr": 0.05
+  }
+ },
+ "block_progress_at_kill": {
+  "comment_1.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "ce5329f1dc0dbe65a5e28278",
+   "segment_id": "comment_1",
+   "fingerprint": {
+    "leaf": "L1",
+    "style_prefix_override": "57c3fda67c1d3976",
+    "tts_backend": "7b7d9d14787b08f6",
+    "enable_pronunciation_resolver": true,
+    "policy": "EN_LR_ADV"
+   },
+   "status": "IN_PROGRESS",
+   "created_epoch": 1793026764.7538452,
+   "updated_epoch": 1793026776.723119,
+   "blocks": {
+    "0": {
+     "n_started": 2,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793026764.7561796,
+       "finished_epoch": 1793026772.9620736,
+       "verified": false
+      },
+      "2": {
+       "started_epoch": 1793026772.9632764,
+       "finished_epoch": 1793026776.7231183,
+       "verified": false
+      }
+     },
+     "cooldown": null
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   }
+  }
+ }
+}

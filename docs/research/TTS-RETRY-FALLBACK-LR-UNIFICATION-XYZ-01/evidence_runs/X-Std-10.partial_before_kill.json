@@ -1,0 +1,125 @@
+{
+ "case": "X-Std-10",
+ "partial_before_self_terminate": true,
+ "pid": 52864,
+ "sleep_total_seconds": 60.0,
+ "tts_attempts": [
+  {
+   "clip": "topic_intro",
+   "t": 3.05,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "d16e099cb4f6",
+   "style_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "style_chars": 96,
+   "text_head": "Today's topic is Coffee Bean Prices Fall. Are Price Tags Still on a Journey?.",
+   "text_sha": "c0f0f5d64d80",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "topic_intro",
+   "t": 7.65,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "d16e099cb4f6",
+   "style_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "style_chars": 96,
+   "text_head": "Today's topic is Coffee Bean Prices Fall. Are Price Tags Still on a Journey?.",
+   "text_sha": "c0f0f5d64d80",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "cooldowns_so_far": [],
+ "overrides": [
+  {
+   "kind": "judge_ng",
+   "clip": "topic_intro",
+   "slot": 1,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "topic_intro",
+   "slot": 2,
+   "judge_kind": "en"
+  }
+ ],
+ "judges": [
+  {
+   "clip": "topic_intro",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Today's topic is coffee bean prices fall. Are price tags still on a journey?"
+  },
+  {
+   "clip": "topic_intro",
+   "kind": "en",
+   "slot": 2,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Today's topic is coffee bean prices fall. Are price tags still on a journey?"
+  }
+ ],
+ "terminated_at": "2026-10-27T00:15:52",
+ "cost": {
+  "jpy": 0.339,
+  "by_provider": {
+   "openai": 0.03,
+   "gemini": 0.26,
+   "openai_asr": 0.05
+  }
+ },
+ "block_progress_at_kill": {
+  "topic_intro.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "e8791b527d7318ee73bd1d74",
+   "segment_id": "topic_intro",
+   "fingerprint": {
+    "leaf": "L3",
+    "style_prefix_override": "d16e099cb4f6fd7f",
+    "tts_backend": "7b7d9d14787b08f6",
+    "policy": "EN_LR_STD"
+   },
+   "status": "IN_PROGRESS",
+   "created_epoch": 1793027683.7604663,
+   "updated_epoch": 1793027692.2685132,
+   "blocks": {
+    "0": {
+     "n_started": 2,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793027683.762802,
+       "finished_epoch": 1793027688.357955,
+       "verified": false
+      },
+      "2": {
+       "started_epoch": 1793027688.358997,
+       "finished_epoch": 1793027692.268513,
+       "verified": false
+      }
+     },
+     "cooldown": null
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   }
+  }
+ }
+}

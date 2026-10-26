@@ -1,0 +1,644 @@
+{
+ "management_id": "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01",
+ "case": "X-Adv-10",
+ "family": "X",
+ "level": "b1b",
+ "scenario": "E-S4",
+ "leaf": "L6",
+ "policy": "KP_EN",
+ "segments": [
+  "kp1_en"
+ ],
+ "run_dir": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_10",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {
+   "*": [
+    1,
+    2
+   ]
+  },
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [
+  {
+   "kind": "judge_ng",
+   "clip": "kp1_en",
+   "slot": 1,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "kp1_en",
+   "slot": 2,
+   "judge_kind": "en"
+  }
+ ],
+ "injected_override_count": 2,
+ "started_at": "2026-10-27T00:04:48",
+ "ended_at": "2026-10-27T00:08:00",
+ "wall_seconds": 192.0,
+ "pid": 34564,
+ "exception": null,
+ "tts_attempts": [
+  {
+   "clip": "kp1_en",
+   "t": 0.01,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "9d905cfe6c04",
+   "style_head": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pit",
+   "style_chars": 332,
+   "text_head": "time lag",
+   "text_sha": "a6ff0589259b",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "kp1_en",
+   "t": 3.13,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "9d905cfe6c04",
+   "style_head": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pit",
+   "style_chars": 332,
+   "text_head": "time lag",
+   "text_sha": "a6ff0589259b",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "kp1_en",
+   "t": 186.12,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "dcd08dcae5b0",
+   "style_head": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not",
+   "style_chars": 1246,
+   "text_head": "time lag",
+   "text_sha": "a6ff0589259b",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 3,
+ "tts_api_calls": 3,
+ "judges": [
+  {
+   "clip": "kp1_en",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Time lag."
+  },
+  {
+   "clip": "kp1_en",
+   "kind": "en",
+   "slot": 2,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Time lag."
+  },
+  {
+   "clip": "kp1_en",
+   "kind": "en",
+   "slot": 3,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "Time lag."
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [
+  {
+   "label": "kp1_en",
+   "requested_seconds": 180.0,
+   "actual_seconds": 180.0,
+   "started_at": "2026-10-27T00:04:54",
+   "ended_at": "2026-10-27T00:07:54",
+   "resumed": false,
+   "attempt_before": 2,
+   "attempt_after": 3,
+   "total_elapsed_since_ref_seconds": 180.001,
+   "wall_start_epoch": 1793027094.540559
+  }
+ ],
+ "cooldown_count": 1,
+ "sleep_total_seconds": 180.0,
+ "stop_checks": {
+  "cooldown": 36,
+  "attempt": 3,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [
+  "COOLDOWN_BEFORE_BLOCK_ATTEMPT",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "kp1_en": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "a6ff0589259b634c0ffdadd21b17f7ac7ebc98ecdb0243a9077d34be331037e1",
+   "language": "en",
+   "theme_id": "coffee_prices__run_tru_ev_x_adv_10",
+   "level": "b1b",
+   "segment_id": "kp1_en",
+   "updated_at": "2026-10-27T00:08:00",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_10/b1b/narration/kp1_en.wav",
+   "cumulative_tts_attempts": 3,
+   "cumulative_asr_calls": 3,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 1.18,
+     "asr_text": "Time lag.",
+     "asr_text_length": 9,
+     "max_len": 18,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "NORMALIZED_MATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": true,
+     "disfluency_checked": true,
+     "disfluency_evidence": {
+      "flagged": false,
+      "repeats": [],
+      "word_count": 1,
+      "transcript": "Timelag",
+      "method": "faster_whisper_small_local_verbatim"
+     },
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": true,
+     "non_latin_cascade_enabled": true,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 1246,
+      "sha256": "dcd08dcae5b0ce13fd35da0980d4cf021e0b2c0a33db0cec6c8377444b3bbf30",
+      "head200": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not add explanations, examples, introductions, or any other com"
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "Time lag.",
+       "classification": "NORMALIZED_MATCH",
+       "entity_like_source": []
+      },
+      {
+       "step": "secondary_vote",
+       "provider": "azure",
+       "text": "Time lag.",
+       "classification": "NORMALIZED_MATCH",
+       "phrase_list_used": false,
+       "azure_phrase_list_weight": null,
+       "azure_phrase_list": [],
+       "cached": false,
+       "unified_judge_state": "PASS",
+       "vote_required": true,
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "dual_agreed",
+      "slot": 3,
+      "script_version": "v0",
+      "role": null,
+      "lang": "en",
+      "segment_key": "",
+      "audio_sha256": "d7eece8654c6fe57835f41273465abca0e6c848651a42d5d20cde91f8c89e46e",
+      "primary": {
+       "text": "Time lag.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": true,
+       "cached": false,
+       "engine": "azure",
+       "text": "Time lag.",
+       "label": "NORMALIZED_MATCH",
+       "accepted": true,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       },
+       "secondary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false,
+       "secondary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "target": "secondary",
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 1,
+       "azure_seconds": 1.18,
+       "est_jpy": 0.0889,
+       "est_jpy_known": true
+      },
+      "timing": {
+       "total_ms": 1577,
+       "secondary_ms": 1577
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 9,
+       "secondary_len": 9,
+       "max_len": 18,
+       "adopted_from": "secondary",
+       "adopted_ok": true,
+       "surface_len": 7,
+       "primary_ok": true
+      },
+      "vote": {
+       "version": "kp_vote_check_v1",
+       "guard_lifted": true,
+       "guard_lifted_version": "kp_vote_guard_lifted_v1",
+       "observed_protected_diff": {
+        "primary": false,
+        "secondary": false,
+        "whisper": false
+       },
+       "required": true,
+       "state": "PASS_DUAL",
+       "reason": "dual_agreed",
+       "row": "P+S",
+       "pass_count": 2,
+       "tiebreak_enabled": true,
+       "primary": {
+        "provider": "openai",
+        "text": "Time lag.",
+        "pass": true,
+        "available": true,
+        "label": "NORMALIZED_MATCH",
+        "observed_protected_diff": false,
+        "rescued": false,
+        "error": null,
+        "technical_failure": false,
+        "note": null,
+        "rescue_layers": []
+       },
+       "secondary": {
+        "provider": "azure",
+        "text": "Time lag.",
+        "pass": true,
+        "available": true,
+        "label": "NORMALIZED_MATCH",
+        "observed_protected_diff": false,
+        "rescued": false,
+        "error": null,
+        "technical_failure": false,
+        "note": "secondary_accepted",
+        "rescue_layers": []
+       },
+       "secondary_called": true,
+       "whisper": null,
+       "whisper_called": false,
+       "whisper_model": null,
+       "ortho_layer_version": "er109_orthographic_equivalence_v2_ukus01",
+       "ortho_scope": "X",
+       "primary_not_pass_reason": null,
+       "primary_rescued_by_secondary": false
+      },
+      "p3_entry": "vote_required",
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 1,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": null,
+       "asr_text_present": true,
+       "cache": {
+        "calls": 6,
+        "hits": 0
+       }
+      }
+     },
+     "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_10/b1b/narration/attempts/kp1_en_attempt3_custom31eb2f72.wav"
+    }
+   ]
+  }
+ },
+ "block_progress": {
+  "kp1_en.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "697a0bdd03dfcbf2c58d37af",
+   "segment_id": "kp1_en",
+   "fingerprint": {
+    "leaf": "L6",
+    "policy": "KP_EN"
+   },
+   "status": "DONE",
+   "created_epoch": 1793027088.4319878,
+   "updated_epoch": 1793027280.4301229,
+   "blocks": {
+    "0": {
+     "n_started": 3,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793027088.4345262,
+       "finished_epoch": 1793027091.5571487,
+       "verified": false
+      },
+      "2": {
+       "started_epoch": 1793027091.5583134,
+       "finished_epoch": 1793027094.539434,
+       "verified": false
+      },
+      "3": {
+       "started_epoch": 1793027274.5434875,
+       "finished_epoch": 1793027280.4288106,
+       "verified": true
+      }
+     },
+     "cooldown": {
+      "before_ordinal": 3,
+      "cooldown_started_at": "2026-10-27T00:04:54",
+      "cooldown_ended_at": "2026-10-27T00:07:54",
+      "cooldown_actual_seconds": 180.0,
+      "total_elapsed_since_ref_seconds": 180.001,
+      "resumed": false
+     }
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_status": "OK"
+  }
+ },
+ "results_segments": {},
+ "results_key_phrases": {
+  "1": {
+   "english": {
+    "status": "OK",
+    "fallback_used": true,
+    "voice": "Aoede",
+    "model": "gemini-3.8-flash-lite-tts",
+    "style_prefix": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not add explanations, e",
+    "asr_verified": true,
+    "asr_text": "Time lag.",
+    "path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_10/b1b/narration/kp1_en.wav",
+    "style_prefix_sha": "dcd08dcae5b0",
+    "attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "verified": true,
+      "asr_text": "Time lag.",
+      "audio_classification": "NORMALIZED_MATCH",
+      "disfluency_checked": true
+     }
+    ],
+    "fallback_attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "verified": false,
+      "asr_text": "Time lag.",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "disfluency_checked": false
+     },
+     {
+      "attempt": 2,
+      "status": "OK",
+      "verified": false,
+      "asr_text": "Time lag.",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "disfluency_checked": false
+     }
+    ],
+    "minimal_attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "verified": false,
+      "asr_text": "Time lag.",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "disfluency_checked": false
+     },
+     {
+      "attempt": 2,
+      "status": "OK",
+      "verified": false,
+      "asr_text": "Time lag.",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "disfluency_checked": false
+     }
+    ],
+    "english_lock_attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "verified": true,
+      "asr_text": "Time lag.",
+      "audio_classification": "NORMALIZED_MATCH",
+      "disfluency_checked": true
+     }
+    ]
+   }
+  }
+ },
+ "attempt_sidecars": [
+  {
+   "file": "kp1_en_attempt1_custom60ebc452.json",
+   "segment_id": "kp1_en",
+   "attempt_number": 1,
+   "route": "custom_60ebc452",
+   "saved_at": "2026-10-27T00:04:51",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pit",
+   "instruction_sha": "9d905cfe6c04",
+   "instruction_chars": 332,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Time lag.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ],
+    [
+     "secondary_vote",
+     "azure",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "kp1_en_attempt2_custom60ebc452.json",
+   "segment_id": "kp1_en",
+   "attempt_number": 2,
+   "route": "custom_60ebc452",
+   "saved_at": "2026-10-27T00:04:54",
+   "loop_attempt_index": 2,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pit",
+   "instruction_sha": "9d905cfe6c04",
+   "instruction_chars": 332,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Time lag.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ],
+    [
+     "secondary_vote",
+     "azure",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "kp1_en_attempt3_custom31eb2f72.json",
+   "segment_id": "kp1_en",
+   "attempt_number": 3,
+   "route": "custom_31eb2f72",
+   "saved_at": "2026-10-27T00:08:00",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not",
+   "instruction_sha": "dcd08dcae5b0",
+   "instruction_chars": 1246,
+   "verified": true,
+   "audio_classification": "NORMALIZED_MATCH",
+   "asr_text": "Time lag.",
+   "disfluency_checked": true,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ],
+    [
+     "secondary_vote",
+     "azure",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 0.292,
+  "by_provider": {
+   "gemini": 0.09,
+   "openai_asr": 0.05,
+   "azure": 0.16
+  }
+ },
+ "gate_observation": {
+  "status_all": "BLOCK",
+  "my_segment_blocked": [
+   {
+    "segment": "kp1_english",
+    "violations": [
+     "STYLE_BASE_SHA_MISMATCH_OR_MISSING"
+    ]
+   },
+   {
+    "segment": "kp1_explanation",
+    "violations": [
+     "NO_SEGMENT_RECORD"
+    ]
+   }
+  ],
+  "my_segment_warnings": [
+   {
+    "segment": "kp1_english",
+    "warning": "KP_EN_ENGLISH_LOCK_FALLBACK_AUDIO_NOT_K2"
+   }
+  ],
+  "note": "m3_assembly_gate(承認済みprofile)を実resultsへ適用。全体statusは未生成segmentのNO_SEGMENT_RECORDを含むため my_* のみ参照"
+ },
+ "resumed_run": false
+}

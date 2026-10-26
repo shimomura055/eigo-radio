@@ -1,0 +1,649 @@
+{
+ "management_id": "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01",
+ "case": "Y-Std-2",
+ "family": "Y",
+ "level": "a2",
+ "scenario": "E-S1",
+ "leaf": "L7",
+ "policy": "JA_STD",
+ "segments": [
+  "japanese_title"
+ ],
+ "run_dir": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_2",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {},
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {
+   "*": [
+    1,
+    2
+   ]
+  }
+ },
+ "injected_overrides": [
+  {
+   "kind": "judge_ng",
+   "clip": "japanese_title",
+   "slot": 1,
+   "judge_kind": "ja"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "japanese_title",
+   "slot": 2,
+   "judge_kind": "ja"
+  }
+ ],
+ "injected_override_count": 2,
+ "started_at": "2026-10-26T23:47:53",
+ "ended_at": "2026-10-26T23:51:10",
+ "wall_seconds": 197.6,
+ "pid": 50340,
+ "exception": null,
+ "tts_attempts": [
+  {
+   "clip": "japanese_title",
+   "t": 3.27,
+   "voice": "Aoede",
+   "model_requested": "gemini-3.1-flash-tts-preview",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "ae68e3e6ac8e",
+   "style_head": "落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。",
+   "style_chars": 65,
+   "text_head": "再配達の有料化",
+   "text_sha": "47ef38837622",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "japanese_title",
+   "t": 6.68,
+   "voice": "Aoede",
+   "model_requested": "gemini-3.1-flash-tts-preview",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "ae68e3e6ac8e",
+   "style_head": "落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。",
+   "style_chars": 65,
+   "text_head": "再配達の有料化",
+   "text_sha": "47ef38837622",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "japanese_title",
+   "t": 190.26,
+   "voice": "Aoede",
+   "model_requested": "gemini-3.1-flash-tts-preview",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "57d8e231a988",
+   "style_head": "次の文章だけを、翻訳・言い換え・追加をせず、自然で温かいpodcastのナレーターの声でそのまま読み上げてください。\n\n",
+   "style_chars": 60,
+   "text_head": "再配達の有料化",
+   "text_sha": "47ef38837622",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 3,
+ "tts_api_calls": 3,
+ "judges": [
+  {
+   "clip": "japanese_title",
+   "kind": "ja",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "再配達の有料化。"
+  },
+  {
+   "clip": "japanese_title",
+   "kind": "ja",
+   "slot": 2,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "再配達の有料化。"
+  },
+  {
+   "clip": "japanese_title",
+   "kind": "ja",
+   "slot": 3,
+   "ok_real": false,
+   "stop_real": false,
+   "cls_real": "TRUE_CONTENT_MISMATCH",
+   "force_secondary": false,
+   "is_last_slot": true,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "再配帯の有料化。"
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [
+  {
+   "label": "japanese_title",
+   "requested_seconds": 180.0,
+   "actual_seconds": 179.999,
+   "started_at": "2026-10-26T23:48:03",
+   "ended_at": "2026-10-26T23:51:03",
+   "resumed": false,
+   "attempt_before": 2,
+   "attempt_after": 3,
+   "total_elapsed_since_ref_seconds": 180.001,
+   "wall_start_epoch": 1793026083.3151364
+  }
+ ],
+ "cooldown_count": 1,
+ "sleep_total_seconds": 180.0,
+ "stop_checks": {
+  "cooldown": 36,
+  "attempt": 3,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 1,
+ "hrq_detail": [
+  {
+   "canonical_text": "再配達の有料化",
+   "wav_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_2/a2/narration/japanese_title.wav",
+   "final_status": "TRUE_CONTENT_MISMATCH",
+   "lock_canonical_text": null
+  }
+ ],
+ "attempt_history_actions": [
+  "COOLDOWN_BEFORE_BLOCK_ATTEMPT",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "japanese_title": {
+   "state": "HUMAN_REVIEW_REQUIRED",
+   "canonical_text_sha256": "47ef38837622652ebc2760cd2393a0367d504ce04b1d3b23b1ad7b0a2775f9fb",
+   "language": "ja",
+   "theme_id": "run_tru_ev_y_std_2",
+   "level": "a2",
+   "segment_id": "japanese_title",
+   "updated_at": "2026-10-26T23:51:10",
+   "reason": "最終status=STOPPED。標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+   "final_status": "STOPPED",
+   "wav_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_2/a2/narration/japanese_title.wav",
+   "cumulative_tts_attempts": 3,
+   "cumulative_asr_calls": 3,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 2.37,
+     "asr_text": "再配達の有料化。",
+     "asr_text_length": 8,
+     "max_len": 37,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": false,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": false,
+     "non_latin_cascade_enabled": false,
+     "non_latin_cascade_invoked": null,
+     "style_prefix": null,
+     "cascade_steps": null,
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": null,
+      "lang": "ja",
+      "segment_key": "",
+      "audio_sha256": "945c1b22d032ed1730ec078f11d575a1c2c66b341aa73c2b18d27e19f20a0ef3",
+      "primary": {
+       "text": "再配達の有料化。",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 8,
+       "secondary_len": null,
+       "max_len": 37,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "r5": {
+       "version": "r5_v1",
+       "measurement_error": null,
+       "f1": {
+        "rollback_const_READING_MATCH_FINAL_GATE": true,
+        "reading_match_primary_pass": false,
+        "final_gate_rejected": false,
+        "demoted_p3": false,
+        "would_have_passed_before_f1": false,
+        "reason_code": null,
+        "pair_reasons": []
+       },
+       "f2": {
+        "enabled": false,
+        "fired": false,
+        "fallback": null,
+        "replaced": null,
+        "canon_before": null,
+        "canon_after": null,
+        "text_before": null,
+        "text_after": null,
+        "state_after": null
+       },
+       "o524_part_of_larger_pairs": 0,
+       "o523_weak_kana_diff_pairs": 0,
+       "models": {
+        "primary": {
+         "provider": "openai_asr",
+         "model": "gpt-4o-mini-transcribe"
+        },
+        "secondary": null
+       }
+      },
+      "canonical_text": "再配達の有料化",
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "ja-JP",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_2/a2/narration/attempts/japanese_title_attempt1_customb8f0ff16.wav"
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "duration_seconds": 2.17,
+     "asr_text": "再配達の有料化。",
+     "asr_text_length": 8,
+     "max_len": 37,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": false,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": false,
+     "non_latin_cascade_enabled": false,
+     "non_latin_cascade_invoked": null,
+     "style_prefix": null,
+     "cascade_steps": null,
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 2,
+      "script_version": "v0",
+      "role": null,
+      "lang": "ja",
+      "segment_key": "",
+      "audio_sha256": "43f8dd22546d33d0901e398e634312316c307d40719babf9ce081519f2f1f329",
+      "primary": {
+       "text": "再配達の有料化。",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 8,
+       "secondary_len": null,
+       "max_len": 37,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "r5": {
+       "version": "r5_v1",
+       "measurement_error": null,
+       "f1": {
+        "rollback_const_READING_MATCH_FINAL_GATE": true,
+        "reading_match_primary_pass": false,
+        "final_gate_rejected": false,
+        "demoted_p3": false,
+        "would_have_passed_before_f1": false,
+        "reason_code": null,
+        "pair_reasons": []
+       },
+       "f2": {
+        "enabled": false,
+        "fired": false,
+        "fallback": null,
+        "replaced": null,
+        "canon_before": null,
+        "canon_after": null,
+        "text_before": null,
+        "text_after": null,
+        "state_after": null
+       },
+       "o524_part_of_larger_pairs": 0,
+       "o523_weak_kana_diff_pairs": 0,
+       "models": {
+        "primary": {
+         "provider": "openai_asr",
+         "model": "gpt-4o-mini-transcribe"
+        },
+        "secondary": null
+       }
+      },
+      "canonical_text": "再配達の有料化",
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "ja-JP",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_2/a2/narration/attempts/japanese_title_attempt2_customb8f0ff16.wav"
+    }
+   ]
+  }
+ },
+ "block_progress": {
+  "japanese_title.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "f8ab47676df5a87825128f4a",
+   "segment_id": "japanese_title",
+   "fingerprint": {
+    "leaf": "L7",
+    "style_prefix_override": "ae68e3e6ac8e8dc2",
+    "tts_backend": "7b7d9d14787b08f6",
+    "policy": "JA_STD"
+   },
+   "status": "DONE",
+   "created_epoch": 1793026076.326686,
+   "updated_epoch": 1793026270.6311145,
+   "blocks": {
+    "0": {
+     "n_started": 3,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793026076.3281446,
+       "finished_epoch": 1793026079.7317336,
+       "verified": false
+      },
+      "2": {
+       "started_epoch": 1793026079.7383802,
+       "finished_epoch": 1793026083.3139732,
+       "verified": false
+      },
+      "3": {
+       "started_epoch": 1793026263.3174627,
+       "finished_epoch": 1793026270.629798,
+       "verified": false
+      }
+     },
+     "cooldown": {
+      "before_ordinal": 3,
+      "cooldown_started_at": "2026-10-26T23:48:03",
+      "cooldown_ended_at": "2026-10-26T23:51:03",
+      "cooldown_actual_seconds": 179.999,
+      "total_elapsed_since_ref_seconds": 180.001,
+      "resumed": false
+     }
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_status": "STOPPED"
+  }
+ },
+ "results_segments": {
+  "japanese_title": {
+   "status": "STOPPED",
+   "reason": "標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+   "canonical_text": "再配達の有料化",
+   "standard_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "再配達の有料化。",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "再配達の有料化。",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    }
+   ],
+   "fallback_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "再配帯の有料化。",
+     "audio_classification": "TRUE_CONTENT_MISMATCH"
+    }
+   ]
+  }
+ },
+ "results_key_phrases": {},
+ "attempt_sidecars": [
+  {
+   "file": "japanese_title_attempt1_customb8f0ff16.json",
+   "segment_id": "japanese_title",
+   "attempt_number": 1,
+   "route": "custom_b8f0ff16",
+   "saved_at": "2026-10-26T23:47:59",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。",
+   "instruction_sha": "ae68e3e6ac8e",
+   "instruction_chars": 65,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "再配達の有料化。",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "japanese_title_attempt2_customb8f0ff16.json",
+   "segment_id": "japanese_title",
+   "attempt_number": 2,
+   "route": "custom_b8f0ff16",
+   "saved_at": "2026-10-26T23:48:03",
+   "loop_attempt_index": 2,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。",
+   "instruction_sha": "ae68e3e6ac8e",
+   "instruction_chars": 65,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "再配達の有料化。",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "japanese_title_attempt3_minimalfallback.json",
+   "segment_id": "japanese_title",
+   "attempt_number": 3,
+   "route": "minimal_fallback",
+   "saved_at": "2026-10-26T23:51:10",
+   "loop_attempt_index": 1,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "再配帯の有料化。",
+   "disfluency_checked": null,
+   "cascade_providers": [],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 0.325,
+  "by_provider": {
+   "openai": 0.04,
+   "gemini": 0.16,
+   "openai_asr": 0.04,
+   "azure": 0.09
+  }
+ },
+ "gate_observation": {
+  "status": "BLOCK",
+  "y_profile_blocked": [],
+  "my_segment_checks": [],
+  "my_segment_blocked": [],
+  "x_gate_blocked_mine": [],
+  "note": "Gateは全Y本文segmentを対象にするため、未生成segmentのNO_SEGMENT_RECORDは本evidenceの対象外(my_*のみ参照)"
+ },
+ "resumed_run": false
+}

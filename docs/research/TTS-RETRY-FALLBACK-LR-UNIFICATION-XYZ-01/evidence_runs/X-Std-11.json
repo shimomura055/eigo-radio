@@ -1,0 +1,589 @@
+{
+ "management_id": "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01",
+ "case": "X-Std-11",
+ "family": "X",
+ "level": "a2",
+ "scenario": "E-N",
+ "leaf": "L3+L7",
+ "policy": "EN_LR_STD+JA_STD",
+ "segments": [
+  "topic_intro",
+  "japanese_title"
+ ],
+ "run_dir": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_std_11",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {},
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [],
+ "injected_override_count": 0,
+ "started_at": "2026-10-27T00:13:50",
+ "ended_at": "2026-10-27T00:14:01",
+ "wall_seconds": 10.9,
+ "pid": 52864,
+ "exception": null,
+ "tts_attempts": [
+  {
+   "clip": "topic_intro",
+   "t": 3.87,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "d16e099cb4f6",
+   "style_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "style_chars": 96,
+   "text_head": "Today's topic is Coffee Bean Prices Fall. Are Price Tags Still on a Journey?.",
+   "text_sha": "c0f0f5d64d80",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "japanese_title",
+   "t": 7.64,
+   "voice": "Aoede",
+   "model_requested": "gemini-3.1-flash-tts-preview",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "ae68e3e6ac8e",
+   "style_head": "落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。",
+   "style_chars": 65,
+   "text_head": "コーヒー豆の値下がり",
+   "text_sha": "74878f69ac2b",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 2,
+ "tts_api_calls": 2,
+ "judges": [
+  {
+   "clip": "topic_intro",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "Today's topic is, Coffee bean prices fall. Are price tags still on a journey?"
+  },
+  {
+   "clip": "japanese_title",
+   "kind": "ja",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "EXACT_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "コーヒー豆の値下がり"
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [],
+ "cooldown_count": 0,
+ "sleep_total_seconds": 0.0,
+ "stop_checks": {
+  "cooldown": 0,
+  "attempt": 2,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [
+  "PROCEED",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "topic_intro": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "c0f0f5d64d80f0904c6e6b05b7c045455d366982d6e588a1a7d24108719451de",
+   "language": "en",
+   "theme_id": "coffee_prices__run_tru_ev_x_std_11",
+   "level": "a2",
+   "segment_id": "topic_intro",
+   "updated_at": "2026-10-27T00:13:58",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_std_11/a2/narration/topic_intro.wav",
+   "cumulative_tts_attempts": 1,
+   "cumulative_asr_calls": 1,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 5.64,
+     "asr_text": "Today's topic is, Coffee bean prices fall. Are price tags still on a journey?",
+     "asr_text_length": 77,
+     "max_len": 107,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "NORMALIZED_MATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": true,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": false,
+     "non_latin_cascade_enabled": false,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 96,
+      "sha256": "d16e099cb4f6fd7f87826e48f636c143c31f3c7ad4aaeea13dd3c9ae4a3f724b",
+      "head200": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic."
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "Today's topic is, Coffee bean prices fall. Are price tags still on a journey?",
+       "classification": "NORMALIZED_MATCH",
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "TOPIC_INTRO",
+      "lang": "en",
+      "segment_key": "topic_intro",
+      "audio_sha256": "878be3ee8d46d5a6d05e3de7ba290774422cd56f1fed7b4c7ed1668d7b9a1762",
+      "primary": {
+       "text": "Today's topic is, Coffee bean prices fall. Are price tags still on a journey?",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 77,
+       "secondary_len": null,
+       "max_len": 107,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "topic_intro",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      }
+     },
+     "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_std_11/a2/narration/attempts/topic_intro_attempt1_custom60a24f1e.wav"
+    }
+   ]
+  },
+  "japanese_title": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "74878f69ac2bf292d84e025b608738779c52ac66af60aef1e95e9843227370f0",
+   "language": "ja",
+   "theme_id": "coffee_prices__run_tru_ev_x_std_11",
+   "level": "a2",
+   "segment_id": "japanese_title",
+   "updated_at": "2026-10-27T00:14:01",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_std_11/a2/narration/japanese_title.wav",
+   "cumulative_tts_attempts": 1,
+   "cumulative_asr_calls": 1,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 2.32,
+     "asr_text": "コーヒー豆の値下がり",
+     "asr_text_length": 10,
+     "max_len": 40,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "EXACT_MATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": true,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": false,
+     "non_latin_cascade_enabled": false,
+     "non_latin_cascade_invoked": null,
+     "style_prefix": null,
+     "cascade_steps": null,
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": null,
+      "lang": "ja",
+      "segment_key": "",
+      "audio_sha256": "3516fbb383631c672a8fbb4678b137e9f18a1b17a18555fc0101a883b1f1e43c",
+      "primary": {
+       "text": "コーヒー豆の値下がり",
+       "passed": true,
+       "label": "EXACT_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 10,
+       "secondary_len": null,
+       "max_len": 40,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "r5": {
+       "version": "r5_v1",
+       "measurement_error": null,
+       "f1": {
+        "rollback_const_READING_MATCH_FINAL_GATE": true,
+        "reading_match_primary_pass": false,
+        "final_gate_rejected": false,
+        "demoted_p3": false,
+        "would_have_passed_before_f1": false,
+        "reason_code": null,
+        "pair_reasons": []
+       },
+       "f2": {
+        "enabled": false,
+        "fired": false,
+        "fallback": null,
+        "replaced": null,
+        "canon_before": null,
+        "canon_after": null,
+        "text_before": null,
+        "text_after": null,
+        "state_after": null
+       },
+       "o524_part_of_larger_pairs": 0,
+       "o523_weak_kana_diff_pairs": 0,
+       "models": {
+        "primary": {
+         "provider": "openai_asr",
+         "model": "gpt-4o-mini-transcribe"
+        },
+        "secondary": null
+       }
+      },
+      "canonical_text": "コーヒー豆の値下がり",
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "ja-JP",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      }
+     },
+     "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_std_11/a2/narration/attempts/japanese_title_attempt1_customb8f0ff16.wav"
+    }
+   ]
+  }
+ },
+ "block_progress": {
+  "japanese_title.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "6ccc954e950c1d38463b9add",
+   "segment_id": "japanese_title",
+   "fingerprint": {
+    "leaf": "L7",
+    "style_prefix_override": "ae68e3e6ac8e8dc2",
+    "tts_backend": "7b7d9d14787b08f6",
+    "policy": "JA_STD"
+   },
+   "status": "DONE",
+   "created_epoch": 1793027638.4891324,
+   "updated_epoch": 1793027641.7540758,
+   "blocks": {
+    "0": {
+     "n_started": 1,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793027638.4902415,
+       "finished_epoch": 1793027641.7529407,
+       "verified": true
+      }
+     },
+     "cooldown": null
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_status": "OK"
+  },
+  "topic_intro.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "e8791b527d7318ee73bd1d74",
+   "segment_id": "topic_intro",
+   "fingerprint": {
+    "leaf": "L3",
+    "style_prefix_override": "d16e099cb4f6fd7f",
+    "tts_backend": "7b7d9d14787b08f6",
+    "policy": "EN_LR_STD"
+   },
+   "status": "DONE",
+   "created_epoch": 1793027634.7267063,
+   "updated_epoch": 1793027638.4793048,
+   "blocks": {
+    "0": {
+     "n_started": 1,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793027634.729159,
+       "finished_epoch": 1793027638.4781277,
+       "verified": true
+      }
+     },
+     "cooldown": null
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_status": "OK"
+  }
+ },
+ "results_segments": {
+  "topic_intro": {
+   "status": "OK",
+   "fallback_used": false,
+   "voice": "Aoede",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_prefix": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "asr_verified": true,
+   "asr_text": "Today's topic is, Coffee bean prices fall. Are price tags still on a journey?",
+   "canonical_text": "Today's topic is Coffee Bean Prices Fall. Are Price Tags Still on a Journey?.",
+   "path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_std_11/a2/narration/topic_intro.wav",
+   "style_prefix_sha": "d16e099cb4f6",
+   "attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": true,
+     "asr_text": "Today's topic is, Coffee bean prices fall. Are price tags still on a journey?",
+     "audio_classification": "NORMALIZED_MATCH",
+     "disfluency_checked": false
+    }
+   ]
+  },
+  "japanese_title": {
+   "status": "OK",
+   "fallback_used": false,
+   "voice": "Aoede",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_prefix": "落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。",
+   "asr_verified": true,
+   "asr_text": "コーヒー豆の値下がり",
+   "canonical_text": "コーヒー豆の値下がり",
+   "path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_std_11/a2/narration/japanese_title.wav",
+   "style_prefix_sha": "ae68e3e6ac8e",
+   "attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": true,
+     "asr_text": "コーヒー豆の値下がり",
+     "audio_classification": "EXACT_MATCH",
+     "disfluency_checked": false
+    }
+   ]
+  }
+ },
+ "results_key_phrases": {},
+ "attempt_sidecars": [
+  {
+   "file": "japanese_title_attempt1_customb8f0ff16.json",
+   "segment_id": "japanese_title",
+   "attempt_number": 1,
+   "route": "custom_b8f0ff16",
+   "saved_at": "2026-10-27T00:14:01",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。",
+   "instruction_sha": "ae68e3e6ac8e",
+   "instruction_chars": 65,
+   "verified": true,
+   "audio_classification": "EXACT_MATCH",
+   "asr_text": "コーヒー豆の値下がり",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "topic_intro_attempt1_custom60a24f1e.json",
+   "segment_id": "topic_intro",
+   "attempt_number": 1,
+   "route": "custom_60a24f1e",
+   "saved_at": "2026-10-27T00:13:58",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "instruction_sha": "d16e099cb4f6",
+   "instruction_chars": 96,
+   "verified": true,
+   "audio_classification": "NORMALIZED_MATCH",
+   "asr_text": "Today's topic is, Coffee bean prices fall. Are price tags still on a journey?",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 0.265,
+  "by_provider": {
+   "openai": 0.03,
+   "gemini": 0.19,
+   "openai_asr": 0.04
+  }
+ },
+ "gate_observation": {
+  "status_all": "BLOCK",
+  "my_segment_blocked": [],
+  "my_segment_warnings": [],
+  "note": "m3_assembly_gate(承認済みprofile)を実resultsへ適用。全体statusは未生成segmentのNO_SEGMENT_RECORDを含むため my_* のみ参照"
+ },
+ "resumed_run": false
+}

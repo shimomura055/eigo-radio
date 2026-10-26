@@ -1,0 +1,804 @@
+{
+ "management_id": "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01",
+ "case": "X-Adv-1",
+ "family": "X",
+ "level": "b1b",
+ "scenario": "E-S1",
+ "leaf": "L1",
+ "policy": "EN_LR_ADV",
+ "segments": [
+  "comment_1"
+ ],
+ "run_dir": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_1",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {
+   "*": [
+    1,
+    2
+   ]
+  },
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [
+  {
+   "kind": "judge_ng",
+   "clip": "comment_1",
+   "slot": 1,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "comment_1",
+   "slot": 2,
+   "judge_kind": "en"
+  }
+ ],
+ "injected_override_count": 2,
+ "started_at": "2026-10-26T23:29:32",
+ "ended_at": "2026-10-26T23:32:56",
+ "wall_seconds": 203.3,
+ "pid": 48408,
+ "exception": null,
+ "tts_attempts": [
+  {
+   "clip": "comment_1",
+   "t": 5.68,
+   "voice": "Charon",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "57c3fda67c1d",
+   "style_head": "calm, conversational",
+   "style_chars": 20,
+   "text_head": "Listen for how the news about bean prices compares with the prices people see in",
+   "text_sha": "9f77c7f5b23b",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "comment_1",
+   "t": 9.45,
+   "voice": "Charon",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "57c3fda67c1d",
+   "style_head": "calm, conversational",
+   "style_chars": 20,
+   "text_head": "Listen for how the news about bean prices compares with the prices people see in",
+   "text_sha": "9f77c7f5b23b",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "comment_1",
+   "t": 193.29,
+   "voice": "Charon",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "dba23e664f38",
+   "style_head": "natural, clear, conversational",
+   "style_chars": 30,
+   "text_head": "Listen for how the news about bean prices compares with the prices people see in",
+   "text_sha": "9f77c7f5b23b",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 3,
+ "tts_api_calls": 3,
+ "judges": [
+  {
+   "clip": "comment_1",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "EXACT_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Listen for how the news about bean prices compares with the prices people see in shops."
+  },
+  {
+   "clip": "comment_1",
+   "kind": "en",
+   "slot": 2,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "EXACT_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Listen for how the news about bean prices compares with the prices people see in shops."
+  },
+  {
+   "clip": "comment_1",
+   "kind": "en",
+   "slot": 3,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "EXACT_MATCH",
+   "force_secondary": true,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "Listen for how the news about bean prices compares with the prices people see in shops."
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [
+  {
+   "label": "comment_1",
+   "requested_seconds": 180.0,
+   "actual_seconds": 179.999,
+   "started_at": "2026-10-26T23:29:46",
+   "ended_at": "2026-10-26T23:32:46",
+   "resumed": false,
+   "attempt_before": 2,
+   "attempt_after": 3,
+   "total_elapsed_since_ref_seconds": 180.0,
+   "wall_start_epoch": 1793024986.2541516
+  }
+ ],
+ "cooldown_count": 1,
+ "sleep_total_seconds": 180.0,
+ "stop_checks": {
+  "cooldown": 36,
+  "attempt": 3,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [
+  "COOLDOWN_BEFORE_BLOCK_ATTEMPT",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "comment_1": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "9f77c7f5b23ba0c3c614c28b7dfa8bd836fa6a7cefb646c17dc48596b6d87aa1",
+   "language": "en",
+   "theme_id": "coffee_prices__run_tru_ev_x_adv_1",
+   "level": "b1b",
+   "segment_id": "comment_1",
+   "updated_at": "2026-10-26T23:32:56",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_1/b1b/narration/comment_1.wav",
+   "cumulative_tts_attempts": 3,
+   "cumulative_asr_calls": 3,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "asr_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "COMMENT",
+      "lang": "en",
+      "segment_key": "comment_1",
+      "audio_sha256": "6bfcaef5b718b2da1fc8495b635d55df8865f7bf507770dcf8346085495141ff",
+      "primary": {
+       "text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+       "passed": true,
+       "label": "EXACT_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 87,
+       "secondary_len": null,
+       "max_len": 102,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "comment_1",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "instruction_type": "english_style_prefix",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "semantic_equivalence": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": false,
+     "trim_info": {
+      "raw_duration_seconds": 5.4,
+      "raw_leading_silence_seconds": 0.26,
+      "raw_trailing_silence_seconds": 0.5,
+      "trimmed_duration_seconds": 5.25,
+      "leading_margin_retained_seconds": 0.26,
+      "trailing_margin_retained_seconds": 0.35
+     },
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_1/b1b/narration/attempts/comment_1_attempt1_englishstyleprefix.wav"
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "asr_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 2,
+      "script_version": "v0",
+      "role": "COMMENT",
+      "lang": "en",
+      "segment_key": "comment_1",
+      "audio_sha256": "fea20e5aa35cfa9c48e52893e238f72c5b414b2f29a224cc49a642410690227e",
+      "primary": {
+       "text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+       "passed": true,
+       "label": "EXACT_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 87,
+       "secondary_len": null,
+       "max_len": 102,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "comment_1",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "instruction_type": "english_style_prefix",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "semantic_equivalence": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": false,
+     "trim_info": {
+      "raw_duration_seconds": 5.68,
+      "raw_leading_silence_seconds": 0.34,
+      "raw_trailing_silence_seconds": 0.56,
+      "trimmed_duration_seconds": 5.47,
+      "leading_margin_retained_seconds": 0.34,
+      "trailing_margin_retained_seconds": 0.35
+     },
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_1/b1b/narration/attempts/comment_1_attempt2_englishstyleprefix.wav"
+    },
+    {
+     "attempt": 3,
+     "status": "OK",
+     "asr_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "force_secondary_agreed",
+      "slot": 3,
+      "script_version": "v0",
+      "role": "COMMENT",
+      "lang": "en",
+      "segment_key": "comment_1",
+      "audio_sha256": "efdc2c8c913bbe5278f1413b1e098b73599629e1ae7ae50f7d5697c92de8c681",
+      "primary": {
+       "text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+       "passed": true,
+       "label": "EXACT_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": true,
+       "cached": false,
+       "engine": "azure",
+       "text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+       "label": "EXACT_MATCH",
+       "accepted": true,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       },
+       "secondary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false,
+       "secondary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "target": "secondary",
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 1,
+       "azure_seconds": 5.45,
+       "est_jpy": 0.2667,
+       "est_jpy_known": true
+      },
+      "timing": {
+       "total_ms": 1217,
+       "secondary_ms": 1216
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 87,
+       "secondary_len": 87,
+       "max_len": 102,
+       "adopted_from": "secondary",
+       "adopted_ok": true,
+       "surface_len": 71,
+       "primary_ok": true
+      },
+      "p3_entry": "force_secondary",
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 1,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "comment_1",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 2,
+        "hits": 0
+       }
+      }
+     },
+     "instruction_type": "minimal_fallback",
+     "audio_classification": "EXACT_MATCH",
+     "connected_speech_info": null,
+     "semantic_equivalence": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": true,
+     "trim_info": {
+      "raw_duration_seconds": 5.48,
+      "raw_leading_silence_seconds": 0.34,
+      "raw_trailing_silence_seconds": 0.38,
+      "trimmed_duration_seconds": 5.45,
+      "leading_margin_retained_seconds": 0.34,
+      "trailing_margin_retained_seconds": 0.35
+     },
+     "disfluency_checked": true,
+     "disfluency_evidence": {
+      "flagged": false,
+      "repeats": [],
+      "word_count": 16,
+      "transcript": "Listen  for  how  the  news  about  bean  prices  compares  with  the  prices  people  see  in  shops.",
+      "method": "faster_whisper_small_local_verbatim"
+     },
+     "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_1/b1b/narration/attempts/comment_1_attempt3_minimalfallback.wav"
+    }
+   ]
+  }
+ },
+ "block_progress": {
+  "comment_1.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "ce5329f1dc0dbe65a5e28278",
+   "segment_id": "comment_1",
+   "fingerprint": {
+    "leaf": "L1",
+    "style_prefix_override": "57c3fda67c1d3976",
+    "tts_backend": "7b7d9d14787b08f6",
+    "enable_pronunciation_resolver": true,
+    "policy": "EN_LR_ADV"
+   },
+   "status": "DONE",
+   "created_epoch": 1793024978.6385248,
+   "updated_epoch": 1793025176.1905324,
+   "blocks": {
+    "0": {
+     "n_started": 3,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793024978.64284,
+       "finished_epoch": 1793024982.417596,
+       "verified": false
+      },
+      "2": {
+       "started_epoch": 1793024982.419115,
+       "finished_epoch": 1793024986.2530997,
+       "verified": false
+      },
+      "3": {
+       "started_epoch": 1793025166.2570827,
+       "finished_epoch": 1793025176.1888704,
+       "verified": true
+      }
+     },
+     "cooldown": {
+      "before_ordinal": 3,
+      "cooldown_started_at": "2026-10-26T23:29:46",
+      "cooldown_ended_at": "2026-10-26T23:32:46",
+      "cooldown_actual_seconds": 179.999,
+      "total_elapsed_since_ref_seconds": 180.0,
+      "resumed": false
+     }
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_status": "OK"
+  }
+ },
+ "results_segments": {
+  "topic_intro": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "Today's topic is Coffee Bean Prices Fall. Are Price Tags Still on a Journey?."
+  },
+  "preview": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "Coffee prices can change for several reasons, and the news can be hard to make sense of. In this episode, we’ll look at what is behind the latest coffee price story and what the news can tell us."
+  },
+  "comment_1": {
+   "status": "OK",
+   "fallback_used": true,
+   "instruction_type": "minimal_fallback",
+   "voice": "Charon",
+   "model": "gemini-3.8-flash-lite-tts",
+   "tts_model_id": "gemini-3.8-flash-lite-tts",
+   "style_prefix": "natural, clear, conversational",
+   "asr_verified": true,
+   "asr_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+   "canonical_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+   "cooldown_events": [
+    {
+     "cooldown_requested_seconds": 180.0,
+     "cooldown_actual_seconds": 179.999,
+     "cooldown_started_at": "2026-10-26T23:29:46",
+     "cooldown_ended_at": "2026-10-26T23:32:46",
+     "attempt_before_cooldown": 2,
+     "attempt_after_cooldown": 3,
+     "total_elapsed_since_ref_seconds": 180.0,
+     "resumed": false
+    }
+   ],
+   "path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_1/b1b/narration/comment_1.wav",
+   "style_prefix_sha": "dba23e664f38",
+   "attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": false,
+     "instruction_type": "english_style_prefix",
+     "asr_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "verified": false,
+     "instruction_type": "english_style_prefix",
+     "asr_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 3,
+     "status": "OK",
+     "verified": true,
+     "instruction_type": "minimal_fallback",
+     "asr_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+     "audio_classification": "EXACT_MATCH",
+     "disfluency_checked": true
+    }
+   ]
+  },
+  "comment_2": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "The reported price of coffee beans has fallen as more beans from Brazil entered the market. But when might that change show up on a price tag?"
+  },
+  "comment_3": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "So far, bean prices have fallen, but the coffee price data has not shown the same change. The two figures cover different things, and changes in bean prices can take time to reach shop prices. As you listen next, notice what happens between the raw beans and the price customers pay."
+  },
+  "comment_4": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "The story shows why news about bean prices may not match the price you see for coffee right away. There can be a delay, and other costs matter too. Now, let’s bring the main idea together."
+  },
+  "full_story_part1_k1": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "“Beans have gotten cheaper!” At that news, your wallet pumps its fist. In your mind, the price of your usual cup has already come down, too. But the price tag in a shop may not change right away. When you see a price tag that makes you want to say, “Haven’t you heard the news?”, it seems there is a time lag."
+  },
+  "full_story_part1_k2": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "The price measure reported by the International Coffee Organization fell 8.7% from the previous month. The reason, it said, was that more beans harvested in Brazil had entered the market, and a good supply was expected to continue."
+  },
+  "full_story_part1_k3": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "The US Department of Agriculture said that earlier high prices came from several factors happening at once: bad weather in Brazil and Vietnam, fewer beans available for sale, and strong demand."
+  },
+  "full_story_part2_k1": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "Meanwhile, US consumer price data showed that the price of coffee was 6.1% higher than in the same month a year earlier. It may leave you wondering, “Did prices go down or up?” But the data covers a different month from the bean price measure. And it does not show the price of a cup at a cafe. Hold on before putting the two figures in the ring."
+  },
+  "full_story_part2_k2": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "So, how long does it take for the price of beans to reach a price tag?"
+  },
+  "full_story_part2_k3": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "According to estimates from market insiders and experts interviewed by Reuters, it takes at least about nine months for the price of raw beans to show up in US retail prices. The road to a price tag is quite a long journey."
+  },
+  "full_story_part2_k4": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "The article says that companies in the US that roast coffee keep raw beans in stock. Roasting and packing the beans also take time. They also often negotiate prices with retailers on a regular basis. The price tag in a shop does not flash to a new price the moment the market moves."
+  },
+  "full_story_part3_k1": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "However, the “about nine months” figure is an estimate based on interviews. It is not a rule that applies to every company, and it is not a promise that “prices will fall in nine months.” It is too soon to mark the date on your calendar."
+  },
+  "full_story_part3_k2": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "And a cup at a cafe comes with costs besides the beans. One cafe operator in Chicago said that the cost of cups and labor, as well as the cost of buying beans, had been behind price increases. Even if bean prices fall, other costs do not always fall along with them."
+  },
+  "full_story_part3_k3": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "If you are waiting for the price of your usual cup to come down, think not only, “How much do beans cost now?” but also, “When does the price of the beans reach here?” A coffee price tag may have an unseen clock of its own, separate from the latest news about the market."
+  },
+  "in_one_line": {
+   "status": "SKIPPED_NOT_SELECTED",
+   "reason": "--only-segmentsに含まれないため生成しません",
+   "canonical_text": "Falling coffee bean prices may take at least nine months to affect US retail prices."
+  },
+  "full_story_part1": {
+   "status": "CHUNKS_NOT_ALL_VALIDATED",
+   "asr_verified": false,
+   "canonical_text": "“Beans have gotten cheaper!” At that news, your wallet pumps its fist. In your mind, the price of your usual cup has already come down, too. But the price tag in a shop may not change right away. When you see a price tag that makes you want to say, “Haven’t you heard the news?”, it seems there is a time lag.\n\nThe price measure reported by the International Coffee Organization fell 8.7% from the previous month. The reason, it said, was that more beans harvested in Brazil had entered the market, and a good supply was expected to continue.\n\nThe US Department of Agriculture said that earlier high prices came from several factors happening at once: bad weather in Brazil and Vietnam, fewer beans available for sale, and strong demand.",
+   "path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_1/b1b/narration/full_story_part1.wav"
+  },
+  "full_story_part2": {
+   "status": "CHUNKS_NOT_ALL_VALIDATED",
+   "asr_verified": false,
+   "canonical_text": "Meanwhile, US consumer price data showed that the price of coffee was 6.1% higher than in the same month a year earlier. It may leave you wondering, “Did prices go down or up?” But the data covers a different month from the bean price measure. And it does not show the price of a cup at a cafe. Hold on before putting the two figures in the ring.\n\nSo, how long does it take for the price of beans to reach a price tag?\n\nAccording to estimates from market insiders and experts interviewed by Reuters, it takes at least about nine months for the price of raw beans to show up in US retail prices. The road to a price tag is quite a long journey.\n\nThe article says that companies in the US that roast coffee keep raw beans in stock. Roasting and packing the beans also take time. They also often negotiate prices with retailers on a regular basis. The price tag in a shop does not flash to a new price the moment the market moves.",
+   "path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_1/b1b/narration/full_story_part2.wav"
+  },
+  "full_story_part3": {
+   "status": "CHUNKS_NOT_ALL_VALIDATED",
+   "asr_verified": false,
+   "canonical_text": "However, the “about nine months” figure is an estimate based on interviews. It is not a rule that applies to every company, and it is not a promise that “prices will fall in nine months.” It is too soon to mark the date on your calendar.\n\nAnd a cup at a cafe comes with costs besides the beans. One cafe operator in Chicago said that the cost of cups and labor, as well as the cost of buying beans, had been behind price increases. Even if bean prices fall, other costs do not always fall along with them.\n\nIf you are waiting for the price of your usual cup to come down, think not only, “How much do beans cost now?” but also, “When does the price of the beans reach here?” A coffee price tag may have an unseen clock of its own, separate from the latest news about the market.",
+   "path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_1/b1b/narration/full_story_part3.wav"
+  }
+ },
+ "results_key_phrases": {},
+ "attempt_sidecars": [
+  {
+   "file": "comment_1_attempt1_englishstyleprefix.json",
+   "segment_id": "comment_1",
+   "attempt_number": 1,
+   "route": "english_style_prefix",
+   "saved_at": "2026-10-26T23:29:42",
+   "loop_attempt_index": 1,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Charon",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "comment_1_attempt2_englishstyleprefix.json",
+   "segment_id": "comment_1",
+   "attempt_number": 2,
+   "route": "english_style_prefix",
+   "saved_at": "2026-10-26T23:29:46",
+   "loop_attempt_index": 2,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Charon",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "comment_1_attempt3_minimalfallback.json",
+   "segment_id": "comment_1",
+   "attempt_number": 3,
+   "route": "minimal_fallback",
+   "saved_at": "2026-10-26T23:32:56",
+   "loop_attempt_index": 3,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Charon",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": true,
+   "audio_classification": "EXACT_MATCH",
+   "asr_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+   "disfluency_checked": true,
+   "cascade_providers": [],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 0.759,
+  "by_provider": {
+   "openai": 0.04,
+   "gemini": 0.4,
+   "openai_asr": 0.08,
+   "azure": 0.24
+  }
+ },
+ "gate_observation": {
+  "status_all": "BLOCK",
+  "my_segment_blocked": [],
+  "my_segment_warnings": [],
+  "note": "m3_assembly_gate(承認済みprofile)を実resultsへ適用。全体statusは未生成segmentのNO_SEGMENT_RECORDを含むため my_* のみ参照"
+ },
+ "resumed_run": false
+}

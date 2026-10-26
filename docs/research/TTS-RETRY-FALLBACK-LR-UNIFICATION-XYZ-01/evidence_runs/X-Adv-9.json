@@ -1,0 +1,855 @@
+{
+ "management_id": "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01",
+ "case": "X-Adv-9",
+ "family": "X",
+ "level": "b1b",
+ "scenario": "E-X5",
+ "leaf": "L5",
+ "policy": "KP_EXPL",
+ "segments": [
+  "kp1_explanation_en",
+  "kp2_explanation_en",
+  "kp3_explanation_en"
+ ],
+ "run_dir": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_9",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {},
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [],
+ "injected_override_count": 0,
+ "started_at": "2026-10-27T00:38:44",
+ "ended_at": "2026-10-27T00:39:04",
+ "wall_seconds": 19.2,
+ "pid": 47908,
+ "exception": null,
+ "tts_attempts": [
+  {
+   "clip": "kp1_explanation_en",
+   "t": 0.45,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "b66d3a74eec7",
+   "style_head": "Speak the following text aloud naturally and clearly, in a warm podcast announcer voice. Do not add, omit, or change any words.\n\n",
+   "style_chars": 129,
+   "text_head": "a delay between a change happening and its effect being seen or felt",
+   "text_sha": "eeba07537a53",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "kp2_explanation_en",
+   "t": 8.9,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "b66d3a74eec7",
+   "style_head": "Speak the following text aloud naturally and clearly, in a warm podcast announcer voice. Do not add, omit, or change any words.\n\n",
+   "style_chars": 129,
+   "text_head": "to become visible or noticeable in a place or situation",
+   "text_sha": "f7776c990e08",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "kp3_explanation_en",
+   "t": 14.3,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "b66d3a74eec7",
+   "style_head": "Speak the following text aloud naturally and clearly, in a warm podcast announcer voice. Do not add, omit, or change any words.\n\n",
+   "style_chars": 129,
+   "text_head": "to become lower, especially in price or amount",
+   "text_sha": "e008e05bdb31",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 3,
+ "tts_api_calls": 3,
+ "judges": [
+  {
+   "clip": "kp1_explanation_en",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "A delay between a change happening and its effect being seen or felt."
+  },
+  {
+   "clip": "kp2_explanation_en",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "To become visible or noticeable in a place or situation."
+  },
+  {
+   "clip": "kp3_explanation_en",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "To become lower, especially in price or amount."
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [],
+ "cooldown_count": 0,
+ "sleep_total_seconds": 0.0,
+ "stop_checks": {
+  "cooldown": 0,
+  "attempt": 3,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [
+  "PROCEED",
+  "PROCEED",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "kp1_explanation_en": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "eeba07537a53ae476a66f48a560f6f816a2d5a76403e68e9af16be252e833995",
+   "language": "en",
+   "theme_id": "coffee_prices__run_tru_ev_x_adv_9",
+   "level": "b1b",
+   "segment_id": "kp1_explanation_en",
+   "updated_at": "2026-10-27T00:38:53",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_9/b1b/narration/kp1_explanation_en.wav",
+   "cumulative_tts_attempts": 1,
+   "cumulative_asr_calls": 1,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 5.36,
+     "asr_text": "A delay between a change happening and its effect being seen or felt.",
+     "asr_text_length": 69,
+     "max_len": 102,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "NORMALIZED_MATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": true,
+     "disfluency_checked": true,
+     "disfluency_evidence": {
+      "flagged": false,
+      "repeats": [],
+      "word_count": 13,
+      "transcript": "A  delay  between  a  change  happening  and  its  effect  being  seen  or  felt.",
+      "method": "faster_whisper_small_local_verbatim"
+     },
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": true,
+     "non_latin_cascade_enabled": true,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 129,
+      "sha256": "b66d3a74eec779695828414b2326aa3979a23f95cffe2e3b34aaf5816c074385",
+      "head200": "Speak the following text aloud naturally and clearly, in a warm podcast announcer voice. Do not add, omit, or change any words.\n\n"
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "A delay between a change happening and its effect being seen or felt.",
+       "classification": "NORMALIZED_MATCH",
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": null,
+      "lang": "en",
+      "segment_key": "",
+      "audio_sha256": "0b9dafb3642bc39329baf67b8a7c71fcd9c9e339250a07119c9af5232ff5eba9",
+      "primary": {
+       "text": "A delay between a change happening and its effect being seen or felt.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 69,
+       "secondary_len": null,
+       "max_len": 102,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": null,
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      }
+     },
+     "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_9/b1b/narration/attempts/kp1_explanation_en_attempt1_custom77eabcf8.wav"
+    }
+   ]
+  },
+  "kp2_explanation_en": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "f7776c990e08652eb74145f67c7aca67e25c4118132d47312c6c4c0bf48ecda0",
+   "language": "en",
+   "theme_id": "coffee_prices__run_tru_ev_x_adv_9",
+   "level": "b1b",
+   "segment_id": "kp2_explanation_en",
+   "updated_at": "2026-10-27T00:38:59",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_9/b1b/narration/kp2_explanation_en.wav",
+   "cumulative_tts_attempts": 1,
+   "cumulative_asr_calls": 1,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 4.4,
+     "asr_text": "To become visible or noticeable in a place or situation.",
+     "asr_text_length": 56,
+     "max_len": 82,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "NORMALIZED_MATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": true,
+     "disfluency_checked": true,
+     "disfluency_evidence": {
+      "flagged": false,
+      "repeats": [],
+      "word_count": 10,
+      "transcript": "to  become  visible  or  noticeable  in  a  place  or  situation.",
+      "method": "faster_whisper_small_local_verbatim"
+     },
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": true,
+     "non_latin_cascade_enabled": true,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 129,
+      "sha256": "b66d3a74eec779695828414b2326aa3979a23f95cffe2e3b34aaf5816c074385",
+      "head200": "Speak the following text aloud naturally and clearly, in a warm podcast announcer voice. Do not add, omit, or change any words.\n\n"
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "To become visible or noticeable in a place or situation.",
+       "classification": "NORMALIZED_MATCH",
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": null,
+      "lang": "en",
+      "segment_key": "",
+      "audio_sha256": "c855256bef88f447847d92047392f7054d0810675629c5d68ae4eb52efa7b734",
+      "primary": {
+       "text": "To become visible or noticeable in a place or situation.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 56,
+       "secondary_len": null,
+       "max_len": 82,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": null,
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      }
+     },
+     "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_9/b1b/narration/attempts/kp2_explanation_en_attempt1_custom77eabcf8.wav"
+    }
+   ]
+  },
+  "kp3_explanation_en": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "e008e05bdb3111c13333639ff8698fe93289853d3dab0706ce1a14d36a59de36",
+   "language": "en",
+   "theme_id": "coffee_prices__run_tru_ev_x_adv_9",
+   "level": "b1b",
+   "segment_id": "kp3_explanation_en",
+   "updated_at": "2026-10-27T00:39:04",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_9/b1b/narration/kp3_explanation_en.wav",
+   "cumulative_tts_attempts": 1,
+   "cumulative_asr_calls": 1,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 3.66,
+     "asr_text": "To become lower, especially in price or amount.",
+     "asr_text_length": 47,
+     "max_len": 69,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "NORMALIZED_MATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": true,
+     "disfluency_checked": true,
+     "disfluency_evidence": {
+      "flagged": false,
+      "repeats": [],
+      "word_count": 8,
+      "transcript": "to  become  lower,  especially  in  price  or  amount.",
+      "method": "faster_whisper_small_local_verbatim"
+     },
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": true,
+     "non_latin_cascade_enabled": true,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 129,
+      "sha256": "b66d3a74eec779695828414b2326aa3979a23f95cffe2e3b34aaf5816c074385",
+      "head200": "Speak the following text aloud naturally and clearly, in a warm podcast announcer voice. Do not add, omit, or change any words.\n\n"
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "To become lower, especially in price or amount.",
+       "classification": "NORMALIZED_MATCH",
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": null,
+      "lang": "en",
+      "segment_key": "",
+      "audio_sha256": "35f0eabacc4b0779b848aad019750378a6cb96b5cc0068f96eb83afab81f57f0",
+      "primary": {
+       "text": "To become lower, especially in price or amount.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 47,
+       "secondary_len": null,
+       "max_len": 69,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": null,
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      }
+     },
+     "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_9/b1b/narration/attempts/kp3_explanation_en_attempt1_custom77eabcf8.wav"
+    }
+   ]
+  }
+ },
+ "block_progress": {
+  "kp1_explanation_en.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "231bf9a180a6daed3da90f26",
+   "segment_id": "kp1_explanation_en",
+   "fingerprint": {
+    "leaf": "L5",
+    "style_prefix_override": "b66d3a74eec77969",
+    "tts_backend": "7b7d9d14787b08f6",
+    "policy": "KP_EXPL"
+   },
+   "status": "DONE",
+   "created_epoch": 1793029125.334886,
+   "updated_epoch": 1793029133.7713127,
+   "blocks": {
+    "0": {
+     "n_started": 1,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793029125.3388288,
+       "finished_epoch": 1793029133.770205,
+       "verified": true
+      }
+     },
+     "cooldown": null
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_status": "OK"
+  },
+  "kp2_explanation_en.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "225808fe70b0edd7c4199203",
+   "segment_id": "kp2_explanation_en",
+   "fingerprint": {
+    "leaf": "L5",
+    "style_prefix_override": "b66d3a74eec77969",
+    "tts_backend": "7b7d9d14787b08f6",
+    "policy": "KP_EXPL"
+   },
+   "status": "DONE",
+   "created_epoch": 1793029133.7820137,
+   "updated_epoch": 1793029139.1780365,
+   "blocks": {
+    "0": {
+     "n_started": 1,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793029133.784485,
+       "finished_epoch": 1793029139.176937,
+       "verified": true
+      }
+     },
+     "cooldown": null
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_status": "OK"
+  },
+  "kp3_explanation_en.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "4014c04ac58662d71c0d7e5a",
+   "segment_id": "kp3_explanation_en",
+   "fingerprint": {
+    "leaf": "L5",
+    "style_prefix_override": "b66d3a74eec77969",
+    "tts_backend": "7b7d9d14787b08f6",
+    "policy": "KP_EXPL"
+   },
+   "status": "DONE",
+   "created_epoch": 1793029139.1874752,
+   "updated_epoch": 1793029144.0548494,
+   "blocks": {
+    "0": {
+     "n_started": 1,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793029139.1899219,
+       "finished_epoch": 1793029144.0536919,
+       "verified": true
+      }
+     },
+     "cooldown": null
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_status": "OK"
+  }
+ },
+ "results_segments": {},
+ "results_key_phrases": {
+  "1": {
+   "explanation": {
+    "status": "OK",
+    "fallback_used": false,
+    "voice": "Aoede",
+    "model": "gemini-3.8-flash-lite-tts",
+    "style_prefix": "Speak the following text aloud naturally and clearly, in a warm podcast announcer voice. Do not add, omit, or change any words.\n\n",
+    "asr_verified": true,
+    "asr_text": "A delay between a change happening and its effect being seen or felt.",
+    "canonical_text": "a delay between a change happening and its effect being seen or felt",
+    "path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_9/b1b/narration/kp1_explanation_en.wav",
+    "style_prefix_sha": "b66d3a74eec7",
+    "attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "verified": true,
+      "asr_text": "A delay between a change happening and its effect being seen or felt.",
+      "audio_classification": "NORMALIZED_MATCH",
+      "disfluency_checked": true
+     }
+    ]
+   }
+  },
+  "2": {
+   "explanation": {
+    "status": "OK",
+    "fallback_used": false,
+    "voice": "Aoede",
+    "model": "gemini-3.8-flash-lite-tts",
+    "style_prefix": "Speak the following text aloud naturally and clearly, in a warm podcast announcer voice. Do not add, omit, or change any words.\n\n",
+    "asr_verified": true,
+    "asr_text": "To become visible or noticeable in a place or situation.",
+    "canonical_text": "to become visible or noticeable in a place or situation",
+    "path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_9/b1b/narration/kp2_explanation_en.wav",
+    "style_prefix_sha": "b66d3a74eec7",
+    "attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "verified": true,
+      "asr_text": "To become visible or noticeable in a place or situation.",
+      "audio_classification": "NORMALIZED_MATCH",
+      "disfluency_checked": true
+     }
+    ]
+   }
+  },
+  "3": {
+   "explanation": {
+    "status": "OK",
+    "fallback_used": false,
+    "voice": "Aoede",
+    "model": "gemini-3.8-flash-lite-tts",
+    "style_prefix": "Speak the following text aloud naturally and clearly, in a warm podcast announcer voice. Do not add, omit, or change any words.\n\n",
+    "asr_verified": true,
+    "asr_text": "To become lower, especially in price or amount.",
+    "canonical_text": "to become lower, especially in price or amount",
+    "path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_adv_9/b1b/narration/kp3_explanation_en.wav",
+    "style_prefix_sha": "b66d3a74eec7",
+    "attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "verified": true,
+      "asr_text": "To become lower, especially in price or amount.",
+      "audio_classification": "NORMALIZED_MATCH",
+      "disfluency_checked": true
+     }
+    ]
+   }
+  }
+ },
+ "attempt_sidecars": [
+  {
+   "file": "kp1_explanation_en_attempt1_custom77eabcf8.json",
+   "segment_id": "kp1_explanation_en",
+   "attempt_number": 1,
+   "route": "custom_77eabcf8",
+   "saved_at": "2026-10-27T00:38:53",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Speak the following text aloud naturally and clearly, in a warm podcast announcer voice. Do not add, omit, or change any words.\n\n",
+   "instruction_sha": "b66d3a74eec7",
+   "instruction_chars": 129,
+   "verified": true,
+   "audio_classification": "NORMALIZED_MATCH",
+   "asr_text": "A delay between a change happening and its effect being seen or felt.",
+   "disfluency_checked": true,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "kp2_explanation_en_attempt1_custom77eabcf8.json",
+   "segment_id": "kp2_explanation_en",
+   "attempt_number": 1,
+   "route": "custom_77eabcf8",
+   "saved_at": "2026-10-27T00:38:59",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Speak the following text aloud naturally and clearly, in a warm podcast announcer voice. Do not add, omit, or change any words.\n\n",
+   "instruction_sha": "b66d3a74eec7",
+   "instruction_chars": 129,
+   "verified": true,
+   "audio_classification": "NORMALIZED_MATCH",
+   "asr_text": "To become visible or noticeable in a place or situation.",
+   "disfluency_checked": true,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "kp3_explanation_en_attempt1_custom77eabcf8.json",
+   "segment_id": "kp3_explanation_en",
+   "attempt_number": 1,
+   "route": "custom_77eabcf8",
+   "saved_at": "2026-10-27T00:39:04",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Speak the following text aloud naturally and clearly, in a warm podcast announcer voice. Do not add, omit, or change any words.\n\n",
+   "instruction_sha": "b66d3a74eec7",
+   "instruction_chars": 129,
+   "verified": true,
+   "audio_classification": "NORMALIZED_MATCH",
+   "asr_text": "To become lower, especially in price or amount.",
+   "disfluency_checked": true,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 0.413,
+  "by_provider": {
+   "gemini": 0.33,
+   "openai_asr": 0.09
+  }
+ },
+ "gate_observation": {
+  "status_all": "BLOCK",
+  "my_segment_blocked": [
+   {
+    "segment": "kp1_english",
+    "violations": [
+     "NO_SEGMENT_RECORD"
+    ]
+   },
+   {
+    "segment": "kp1_explanation",
+    "violations": [
+     "STYLE_BASE_SHA_MISMATCH_OR_MISSING",
+     "FINAL_STYLE_SHA_MISMATCH_NO_HINT"
+    ]
+   }
+  ],
+  "my_segment_warnings": [],
+  "note": "m3_assembly_gate(承認済みprofile)を実resultsへ適用。全体statusは未生成segmentのNO_SEGMENT_RECORDを含むため my_* のみ参照"
+ },
+ "resumed_run": false
+}

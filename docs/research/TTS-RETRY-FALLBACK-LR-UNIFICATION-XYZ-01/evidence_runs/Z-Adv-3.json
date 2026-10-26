@@ -1,0 +1,605 @@
+{
+ "management_id": "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01",
+ "case": "Z-Adv-3",
+ "family": "Z",
+ "level": "b1b",
+ "scenario": "E-S3(L8 ctx)",
+ "leaf": "L8",
+ "policy": "Z_DLG_CTX",
+ "segments": [
+  "full_story_part1_c15"
+ ],
+ "run_dir": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_adv_3",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {
+   "*": [
+    1,
+    2,
+    3
+   ]
+  },
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [
+  {
+   "kind": "judge_ng",
+   "clip": "full_story_part1_c15",
+   "slot": 1,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "full_story_part1_c15",
+   "slot": 2,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "full_story_part1_c15",
+   "slot": 3,
+   "judge_kind": "en"
+  }
+ ],
+ "injected_override_count": 3,
+ "started_at": "2026-10-26T23:44:47",
+ "ended_at": "2026-10-26T23:48:09",
+ "wall_seconds": 201.9,
+ "pid": 49160,
+ "exception": null,
+ "tts_attempts": [],
+ "tts_attempts_count": 0,
+ "tts_api_calls": 3,
+ "judges": [
+  {
+   "clip": "full_story_part1_c15",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "I wish for two hundred pounds."
+  },
+  {
+   "clip": "full_story_part1_c15",
+   "kind": "en",
+   "slot": 2,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "I wish for two hundred pounds."
+  },
+  {
+   "clip": "full_story_part1_c15",
+   "kind": "en",
+   "slot": 3,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": true,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "I wish for two hundred pounds."
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [
+  {
+   "label": "full_story_part1_c15",
+   "requested_seconds": 180.0,
+   "actual_seconds": 179.972,
+   "started_at": "2026-10-26T23:45:03",
+   "ended_at": "2026-10-26T23:48:03",
+   "resumed": false,
+   "attempt_before": null,
+   "attempt_after": null,
+   "total_elapsed_since_ref_seconds": 180.001,
+   "wall_start_epoch": 1793025903.3758914
+  }
+ ],
+ "cooldown_count": 1,
+ "sleep_total_seconds": 0.0,
+ "stop_checks": {
+  "cooldown": 0,
+  "attempt": 0,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [
+  "CTX_COOLDOWN_BEFORE_FALLBACK",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "full_story_part1_c15": {
+   "state": "HUMAN_REVIEW_REQUIRED",
+   "canonical_text_sha256": "c125e7fd9636a69e2384e35fda16b57b60bb5d914d0e08c1414c901c16895c41",
+   "language": "en",
+   "theme_id": "run_tru_ev_z_adv_3",
+   "level": "b1b",
+   "segment_id": "full_story_part1_c15",
+   "updated_at": "2026-10-26T23:48:09",
+   "reason": "最終status=STOPPED。文脈・感情付きTTS方式の通算3回の試行(上限3回、1〜2回目=文脈・感情付き、3回目=従来方式)でもASR検証に合格しませんでした(この呼出のmax_attempts=3)",
+   "final_status": "STOPPED",
+   "wav_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_adv_3/b1b/narration/full_story_part1_c15.wav",
+   "cumulative_tts_attempts": 3,
+   "cumulative_asr_calls": 3,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "asr_text": "I wish for two hundred pounds.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "FULL_STORY",
+      "lang": "en",
+      "segment_key": "full_story_part1_c15",
+      "audio_sha256": "6ab4363a1203fff15aca83f18c47782e4e76f75b6d9b49a53635ccfdc1abe194",
+      "primary": {
+       "text": "I wish for two hundred pounds.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+         {
+          "src": "200",
+          "hyp": "200",
+          "verdict": "EQUAL",
+          "reason": "same_surface"
+         }
+        ],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "EQUAL",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 30,
+       "secondary_len": null,
+       "max_len": 45,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "full_story_part1_c15",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "instruction_type": "english_style_prefix_wide_margin",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": false,
+     "trim_info": {
+      "raw_duration_seconds": 4.331,
+      "raw_leading_silence_seconds": 0.24,
+      "raw_trailing_silence_seconds": 0.34,
+      "trimmed_duration_seconds": 4.331,
+      "leading_margin_retained_seconds": 0.24,
+      "trailing_margin_retained_seconds": 0.34
+     },
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_adv_3/b1b/narration/attempts/full_story_part1_c15_attempt1_englishstyleprefixwidemargin.wav",
+     "tts_mode": "ctx",
+     "overall_attempt_n": 1,
+     "dialogue_tts_policy": "fz_ctx_v1",
+     "style_prefix": {
+      "len": 3617,
+      "sha256": "6fb6ace4ef486de91bef3f61b5dd32e3d27a979922809bb935804c9c686b3f39",
+      "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
+     }
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "asr_text": "I wish for two hundred pounds.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 2,
+      "script_version": "v0",
+      "role": "FULL_STORY",
+      "lang": "en",
+      "segment_key": "full_story_part1_c15",
+      "audio_sha256": "ef6620dcc104c247bc2db039c7fb6e39445e2162f47281e40e18b62f2985c888",
+      "primary": {
+       "text": "I wish for two hundred pounds.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+         {
+          "src": "200",
+          "hyp": "200",
+          "verdict": "EQUAL",
+          "reason": "same_surface"
+         }
+        ],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "EQUAL",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 30,
+       "secondary_len": null,
+       "max_len": 45,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "full_story_part1_c15",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "instruction_type": "english_style_prefix_wide_margin",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": false,
+     "trim_info": {
+      "raw_duration_seconds": 3.411,
+      "raw_leading_silence_seconds": 0.28,
+      "raw_trailing_silence_seconds": 0.06,
+      "trimmed_duration_seconds": 3.411,
+      "leading_margin_retained_seconds": 0.28,
+      "trailing_margin_retained_seconds": 0.06
+     },
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_adv_3/b1b/narration/attempts/full_story_part1_c15_attempt2_englishstyleprefixwidemargin.wav",
+     "tts_mode": "ctx",
+     "overall_attempt_n": 2,
+     "dialogue_tts_policy": "fz_ctx_v1",
+     "style_prefix": {
+      "len": 3617,
+      "sha256": "6fb6ace4ef486de91bef3f61b5dd32e3d27a979922809bb935804c9c686b3f39",
+      "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
+     }
+    },
+    {
+     "attempt": 3,
+     "status": "OK",
+     "asr_text": "I wish for two hundred pounds.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 3,
+      "script_version": "v0",
+      "role": "FULL_STORY",
+      "lang": "en",
+      "segment_key": "full_story_part1_c15",
+      "audio_sha256": "7f0586465c768960a6fe782ed08567a53ce2e82e9fe6479a0c0a46b998c8352b",
+      "primary": {
+       "text": "I wish for two hundred pounds.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+         {
+          "src": "200",
+          "hyp": "200",
+          "verdict": "EQUAL",
+          "reason": "same_surface"
+         }
+        ],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "EQUAL",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 30,
+       "secondary_len": null,
+       "max_len": 45,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "full_story_part1_c15",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "instruction_type": "english_style_prefix_wide_margin",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": false,
+     "trim_info": {
+      "raw_duration_seconds": 3.091,
+      "raw_leading_silence_seconds": 0.28,
+      "raw_trailing_silence_seconds": 0.12,
+      "trimmed_duration_seconds": 3.091,
+      "leading_margin_retained_seconds": 0.28,
+      "trailing_margin_retained_seconds": 0.12
+     },
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_adv_3/b1b/narration/attempts/full_story_part1_c15_attempt3_englishstyleprefixwidemargin.wav",
+     "tts_mode": "legacy_fallback",
+     "overall_attempt_n": 3,
+     "dialogue_tts_policy": "fz_ctx_v1"
+    }
+   ]
+  }
+ },
+ "block_progress": {},
+ "results_segments": {
+  "full_story_part1_c15": {
+   "status": "STOPPED",
+   "voice": "Schedar",
+   "asr_text": null,
+   "canonical_text": "\"I wish for two hundred pounds.\"",
+   "slowdown_applied": null,
+   "cooldown_events": [],
+   "path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_adv_3/b1b/narration/full_story_part1_c15.wav",
+   "audio_text_deviation": null
+  }
+ },
+ "results_key_phrases": {},
+ "attempt_sidecars": [
+  {
+   "file": "full_story_part1_c15_attempt1_englishstyleprefixwidemargin.json",
+   "segment_id": "full_story_part1_c15",
+   "attempt_number": 1,
+   "route": "english_style_prefix_wide_margin",
+   "saved_at": "2026-10-26T23:44:56",
+   "loop_attempt_index": 1,
+   "max_attempts": 3,
+   "model": "gemini-2.5-pro-preview-tts",
+   "voice": "Schedar",
+   "tts_backend": null,
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "I wish for two hundred pounds.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "full_story_part1_c15_attempt2_englishstyleprefixwidemargin.json",
+   "segment_id": "full_story_part1_c15",
+   "attempt_number": 2,
+   "route": "english_style_prefix_wide_margin",
+   "saved_at": "2026-10-26T23:45:03",
+   "loop_attempt_index": 2,
+   "max_attempts": 3,
+   "model": "gemini-2.5-pro-preview-tts",
+   "voice": "Schedar",
+   "tts_backend": null,
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "I wish for two hundred pounds.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "full_story_part1_c15_attempt3_englishstyleprefixwidemargin.json",
+   "segment_id": "full_story_part1_c15",
+   "attempt_number": 3,
+   "route": "english_style_prefix_wide_margin",
+   "saved_at": "2026-10-26T23:48:08",
+   "loop_attempt_index": 3,
+   "max_attempts": 3,
+   "model": "gemini-2.5-pro-preview-tts",
+   "voice": "Schedar",
+   "tts_backend": null,
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "I wish for two hundred pounds.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 1.282,
+  "by_provider": {
+   "openai": 0.03,
+   "gemini": 1.21,
+   "openai_asr": 0.04
+  }
+ },
+ "gate_observation": {
+  "m2_complete": {
+   "BLOCK": "FamilyZTtsResultsIncompleteStop: required clip entry 欠落=[] 未採択=['full_story_part1_c15=STOPPED']"
+  },
+  "audio_gate": {
+   "BLOCK": "FamilyZTtsResultsIncompleteStop: required clip entry 欠落=[] 未採択=['full_story_part1_c15=STOPPED']"
+  }
+ },
+ "resumed_run": false
+}

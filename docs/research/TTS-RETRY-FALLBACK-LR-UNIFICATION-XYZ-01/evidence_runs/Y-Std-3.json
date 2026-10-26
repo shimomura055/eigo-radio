@@ -1,0 +1,628 @@
+{
+ "management_id": "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01",
+ "case": "Y-Std-3",
+ "family": "Y",
+ "level": "a2",
+ "scenario": "E-S4",
+ "leaf": "L6",
+ "policy": "KP_EN",
+ "segments": [
+  "kp1_en"
+ ],
+ "run_dir": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_3",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {
+   "*": [
+    1,
+    2
+   ]
+  },
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [
+  {
+   "kind": "judge_ng",
+   "clip": "kp1_en",
+   "slot": 1,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "kp1_en",
+   "slot": 2,
+   "judge_kind": "en"
+  }
+ ],
+ "injected_override_count": 2,
+ "started_at": "2026-10-26T23:51:10",
+ "ended_at": "2026-10-26T23:54:25",
+ "wall_seconds": 194.2,
+ "pid": 50340,
+ "exception": null,
+ "tts_attempts": [
+  {
+   "clip": "kp1_en",
+   "t": 1.8,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "9d905cfe6c04",
+   "style_head": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pit",
+   "style_chars": 332,
+   "text_head": "make an effort",
+   "text_sha": "216ca5a2d6df",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "kp1_en",
+   "t": 5.09,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "9d905cfe6c04",
+   "style_head": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pit",
+   "style_chars": 332,
+   "text_head": "make an effort",
+   "text_sha": "216ca5a2d6df",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "kp1_en",
+   "t": 188.62,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "dcd08dcae5b0",
+   "style_head": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not",
+   "style_chars": 1246,
+   "text_head": "make an effort",
+   "text_sha": "216ca5a2d6df",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 3,
+ "tts_api_calls": 3,
+ "judges": [
+  {
+   "clip": "kp1_en",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Make an effort."
+  },
+  {
+   "clip": "kp1_en",
+   "kind": "en",
+   "slot": 2,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Make an effort."
+  },
+  {
+   "clip": "kp1_en",
+   "kind": "en",
+   "slot": 3,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "Make an effort."
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [
+  {
+   "label": "kp1_en",
+   "requested_seconds": 180.0,
+   "actual_seconds": 179.999,
+   "started_at": "2026-10-26T23:51:19",
+   "ended_at": "2026-10-26T23:54:19",
+   "resumed": false,
+   "attempt_before": 2,
+   "attempt_after": 3,
+   "total_elapsed_since_ref_seconds": 180.001,
+   "wall_start_epoch": 1793026279.47429
+  }
+ ],
+ "cooldown_count": 1,
+ "sleep_total_seconds": 180.0,
+ "stop_checks": {
+  "cooldown": 36,
+  "attempt": 3,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [
+  "COOLDOWN_BEFORE_BLOCK_ATTEMPT",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "kp1_en": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "216ca5a2d6df6014e01cbc56c9e89b1f9ac62f5014e982e32a82f731a8e9b222",
+   "language": "en",
+   "theme_id": "run_tru_ev_y_std_3",
+   "level": "a2",
+   "segment_id": "kp1_en",
+   "updated_at": "2026-10-26T23:54:24",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_3/a2/narration/kp1_en.wav",
+   "cumulative_tts_attempts": 3,
+   "cumulative_asr_calls": 3,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 1.38,
+     "asr_text": "Make an effort.",
+     "asr_text_length": 15,
+     "max_len": 24,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "NORMALIZED_MATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": true,
+     "disfluency_checked": true,
+     "disfluency_evidence": {
+      "flagged": false,
+      "repeats": [],
+      "word_count": 3,
+      "transcript": "Make  an  effort.",
+      "method": "faster_whisper_small_local_verbatim"
+     },
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": true,
+     "non_latin_cascade_enabled": true,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 1246,
+      "sha256": "dcd08dcae5b0ce13fd35da0980d4cf021e0b2c0a33db0cec6c8377444b3bbf30",
+      "head200": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not add explanations, examples, introductions, or any other com"
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "Make an effort.",
+       "classification": "NORMALIZED_MATCH",
+       "entity_like_source": []
+      },
+      {
+       "step": "secondary_vote",
+       "provider": "azure",
+       "text": "Make an effort.",
+       "classification": "NORMALIZED_MATCH",
+       "phrase_list_used": false,
+       "azure_phrase_list_weight": null,
+       "azure_phrase_list": [],
+       "cached": false,
+       "unified_judge_state": "PASS",
+       "vote_required": true,
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "dual_agreed",
+      "slot": 3,
+      "script_version": "v0",
+      "role": null,
+      "lang": "en",
+      "segment_key": "",
+      "audio_sha256": "0114c6ceb2633ea812a49bcbaf616b3eb79a5e957f46461e9239ae770b6285d8",
+      "primary": {
+       "text": "Make an effort.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": true,
+       "cached": false,
+       "engine": "azure",
+       "text": "Make an effort.",
+       "label": "NORMALIZED_MATCH",
+       "accepted": true,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       },
+       "secondary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false,
+       "secondary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "target": "secondary",
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 1,
+       "azure_seconds": 1.38,
+       "est_jpy": 0.0889,
+       "est_jpy_known": true
+      },
+      "timing": {
+       "total_ms": 604,
+       "secondary_ms": 604
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 15,
+       "secondary_len": 15,
+       "max_len": 24,
+       "adopted_from": "secondary",
+       "adopted_ok": true,
+       "surface_len": 12,
+       "primary_ok": true
+      },
+      "vote": {
+       "version": "kp_vote_check_v1",
+       "guard_lifted": true,
+       "guard_lifted_version": "kp_vote_guard_lifted_v1",
+       "observed_protected_diff": {
+        "primary": false,
+        "secondary": false,
+        "whisper": false
+       },
+       "required": true,
+       "state": "PASS_DUAL",
+       "reason": "dual_agreed",
+       "row": "P+S",
+       "pass_count": 2,
+       "tiebreak_enabled": true,
+       "primary": {
+        "provider": "openai",
+        "text": "Make an effort.",
+        "pass": true,
+        "available": true,
+        "label": "NORMALIZED_MATCH",
+        "observed_protected_diff": false,
+        "rescued": false,
+        "error": null,
+        "technical_failure": false,
+        "note": null,
+        "rescue_layers": []
+       },
+       "secondary": {
+        "provider": "azure",
+        "text": "Make an effort.",
+        "pass": true,
+        "available": true,
+        "label": "NORMALIZED_MATCH",
+        "observed_protected_diff": false,
+        "rescued": false,
+        "error": null,
+        "technical_failure": false,
+        "note": "secondary_accepted",
+        "rescue_layers": []
+       },
+       "secondary_called": true,
+       "whisper": null,
+       "whisper_called": false,
+       "whisper_model": null,
+       "ortho_layer_version": "er109_orthographic_equivalence_v2_ukus01",
+       "ortho_scope": "Y",
+       "primary_not_pass_reason": null,
+       "primary_rescued_by_secondary": false
+      },
+      "p3_entry": "vote_required",
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 1,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": null,
+       "asr_text_present": true,
+       "cache": {
+        "calls": 6,
+        "hits": 0
+       }
+      }
+     },
+     "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_3/a2/narration/attempts/kp1_en_attempt3_custom31eb2f72.wav"
+    }
+   ]
+  }
+ },
+ "block_progress": {
+  "kp1_en.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "66181ec3625a94778155fb5b",
+   "segment_id": "kp1_en",
+   "fingerprint": {
+    "leaf": "L6",
+    "policy": "KP_EN"
+   },
+   "status": "DONE",
+   "created_epoch": 1793026272.6482577,
+   "updated_epoch": 1793026464.9940608,
+   "blocks": {
+    "0": {
+     "n_started": 3,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793026272.6513073,
+       "finished_epoch": 1793026275.9467824,
+       "verified": false
+      },
+      "2": {
+       "started_epoch": 1793026275.948457,
+       "finished_epoch": 1793026279.4727855,
+       "verified": false
+      },
+      "3": {
+       "started_epoch": 1793026459.4765034,
+       "finished_epoch": 1793026464.9923954,
+       "verified": true
+      }
+     },
+     "cooldown": {
+      "before_ordinal": 3,
+      "cooldown_started_at": "2026-10-26T23:51:19",
+      "cooldown_ended_at": "2026-10-26T23:54:19",
+      "cooldown_actual_seconds": 179.999,
+      "total_elapsed_since_ref_seconds": 180.001,
+      "resumed": false
+     }
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_status": "OK"
+  }
+ },
+ "results_segments": {},
+ "results_key_phrases": {
+  "1": {
+   "english": {
+    "status": "OK",
+    "fallback_used": true,
+    "voice": "Aoede",
+    "model": "gemini-3.8-flash-lite-tts",
+    "style_prefix": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not add explanations, e",
+    "asr_verified": true,
+    "asr_text": "Make an effort.",
+    "path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_y_std_3/a2/narration/kp1_en.wav",
+    "style_prefix_sha": "dcd08dcae5b0",
+    "attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "verified": true,
+      "asr_text": "Make an effort.",
+      "audio_classification": "NORMALIZED_MATCH",
+      "disfluency_checked": true
+     }
+    ],
+    "fallback_attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "verified": false,
+      "asr_text": "Make an effort.",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "disfluency_checked": false
+     },
+     {
+      "attempt": 2,
+      "status": "OK",
+      "verified": false,
+      "asr_text": "Make an effort.",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "disfluency_checked": false
+     }
+    ],
+    "minimal_attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "verified": false,
+      "asr_text": "Make an effort.",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "disfluency_checked": false
+     },
+     {
+      "attempt": 2,
+      "status": "OK",
+      "verified": false,
+      "asr_text": "Make an effort.",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "disfluency_checked": false
+     }
+    ],
+    "english_lock_attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "verified": true,
+      "asr_text": "Make an effort.",
+      "audio_classification": "NORMALIZED_MATCH",
+      "disfluency_checked": true
+     }
+    ]
+   }
+  }
+ },
+ "attempt_sidecars": [
+  {
+   "file": "kp1_en_attempt1_custom60ebc452.json",
+   "segment_id": "kp1_en",
+   "attempt_number": 1,
+   "route": "custom_60ebc452",
+   "saved_at": "2026-10-26T23:51:15",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pit",
+   "instruction_sha": "9d905cfe6c04",
+   "instruction_chars": 332,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Make an effort.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ],
+    [
+     "secondary_vote",
+     "azure",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "kp1_en_attempt2_custom60ebc452.json",
+   "segment_id": "kp1_en",
+   "attempt_number": 2,
+   "route": "custom_60ebc452",
+   "saved_at": "2026-10-26T23:51:19",
+   "loop_attempt_index": 2,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pit",
+   "instruction_sha": "9d905cfe6c04",
+   "instruction_chars": 332,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Make an effort.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ],
+    [
+     "secondary_vote",
+     "azure",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "kp1_en_attempt3_custom31eb2f72.json",
+   "segment_id": "kp1_en",
+   "attempt_number": 3,
+   "route": "custom_31eb2f72",
+   "saved_at": "2026-10-26T23:54:24",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not",
+   "instruction_sha": "dcd08dcae5b0",
+   "instruction_chars": 1246,
+   "verified": true,
+   "audio_classification": "NORMALIZED_MATCH",
+   "asr_text": "Make an effort.",
+   "disfluency_checked": true,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ],
+    [
+     "secondary_vote",
+     "azure",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 0.318,
+  "by_provider": {
+   "gemini": 0.1,
+   "openai_asr": 0.05,
+   "azure": 0.17
+  }
+ },
+ "gate_observation": {
+  "status": "BLOCK",
+  "y_profile_blocked": [],
+  "my_segment_checks": [],
+  "my_segment_blocked": [],
+  "x_gate_blocked_mine": [],
+  "note": "Gateは全Y本文segmentを対象にするため、未生成segmentのNO_SEGMENT_RECORDは本evidenceの対象外(my_*のみ参照)"
+ },
+ "resumed_run": false
+}

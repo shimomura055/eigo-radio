@@ -1,0 +1,571 @@
+{
+ "management_id": "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01",
+ "case": "Z-Std-7",
+ "family": "Z",
+ "level": "a2",
+ "scenario": "E-N",
+ "leaf": "L3+L7",
+ "policy": "EN_LR_STD+JA_STD",
+ "segments": [
+  "topic_intro_en",
+  "japanese_title"
+ ],
+ "run_dir": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_std_7",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {},
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [],
+ "injected_override_count": 0,
+ "started_at": "2026-10-26T23:55:04",
+ "ended_at": "2026-10-26T23:55:13",
+ "wall_seconds": 8.5,
+ "pid": 35788,
+ "exception": null,
+ "tts_attempts": [
+  {
+   "clip": "topic_intro_en",
+   "t": 1.74,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "d16e099cb4f6",
+   "style_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "style_chars": 96,
+   "text_head": "Today's topic is The Monkey's Paw.",
+   "text_sha": "33f159fa7e5b",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "japanese_title",
+   "t": 6.5,
+   "voice": "Aoede",
+   "model_requested": "gemini-3.1-flash-tts-preview",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "ae68e3e6ac8e",
+   "style_head": "落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。",
+   "style_chars": 65,
+   "text_head": "猿の手",
+   "text_sha": "b43563c72975",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 2,
+ "tts_api_calls": 2,
+ "judges": [
+  {
+   "clip": "topic_intro_en",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "EXACT_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "Today's topic is The Monkey's Paw."
+  },
+  {
+   "clip": "japanese_title",
+   "kind": "ja",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "EXACT_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "猿の手"
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [],
+ "cooldown_count": 0,
+ "sleep_total_seconds": 0.0,
+ "stop_checks": {
+  "cooldown": 0,
+  "attempt": 2,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [
+  "PROCEED",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "topic_intro_en": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "33f159fa7e5bc366739c5888e50ea008be333ea2b3f3a6e832ffa2ac7f0ea996",
+   "language": "en",
+   "theme_id": "run_tru_ev_z_std_7",
+   "level": "a2",
+   "segment_id": "topic_intro_en",
+   "updated_at": "2026-10-26T23:55:10",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_std_7/a2/narration/topic_intro_en.wav",
+   "cumulative_tts_attempts": 1,
+   "cumulative_asr_calls": 1,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 2.83,
+     "asr_text": "Today's topic is The Monkey's Paw.",
+     "asr_text_length": 34,
+     "max_len": 64,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "EXACT_MATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": true,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": false,
+     "non_latin_cascade_enabled": false,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 96,
+      "sha256": "d16e099cb4f6fd7f87826e48f636c143c31f3c7ad4aaeea13dd3c9ae4a3f724b",
+      "head200": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic."
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "Today's topic is The Monkey's Paw.",
+       "classification": "EXACT_MATCH",
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "TOPIC_INTRO",
+      "lang": "en",
+      "segment_key": "topic_intro_en",
+      "audio_sha256": "374efb2aa4eb76d47b7a9219bdc079189b431f04d11fed766eb990946bf9309e",
+      "primary": {
+       "text": "Today's topic is The Monkey's Paw.",
+       "passed": true,
+       "label": "EXACT_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 34,
+       "secondary_len": null,
+       "max_len": 64,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "topic_intro_en",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      }
+     },
+     "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_std_7/a2/narration/attempts/topic_intro_en_attempt1_custom60a24f1e.wav"
+    }
+   ]
+  },
+  "japanese_title": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "b43563c72975ed90cf113a75ad44e142a40cae086c2f4b2ace6a5c3391939a9d",
+   "language": "ja",
+   "theme_id": "run_tru_ev_z_std_7",
+   "level": "a2",
+   "segment_id": "japanese_title",
+   "updated_at": "2026-10-26T23:55:12",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_std_7/a2/narration/japanese_title.wav",
+   "cumulative_tts_attempts": 1,
+   "cumulative_asr_calls": 1,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 1.47,
+     "asr_text": "猿の手",
+     "asr_text_length": 3,
+     "max_len": 43,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "EXACT_MATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": true,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": false,
+     "non_latin_cascade_enabled": false,
+     "non_latin_cascade_invoked": null,
+     "style_prefix": null,
+     "cascade_steps": null,
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": null,
+      "lang": "ja",
+      "segment_key": "",
+      "audio_sha256": "3af5b235c691734436be749f09dca6b3ce9a3b70891bf8324c66ff0befe7766e",
+      "primary": {
+       "text": "猿の手",
+       "passed": true,
+       "label": "EXACT_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 3,
+       "secondary_len": null,
+       "max_len": 43,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "r5": {
+       "version": "r5_v1",
+       "measurement_error": null,
+       "f1": {
+        "rollback_const_READING_MATCH_FINAL_GATE": true,
+        "reading_match_primary_pass": false,
+        "final_gate_rejected": false,
+        "demoted_p3": false,
+        "would_have_passed_before_f1": false,
+        "reason_code": null,
+        "pair_reasons": []
+       },
+       "f2": {
+        "enabled": false,
+        "fired": false,
+        "fallback": null,
+        "replaced": null,
+        "canon_before": null,
+        "canon_after": null,
+        "text_before": null,
+        "text_after": null,
+        "state_after": null
+       },
+       "o524_part_of_larger_pairs": 0,
+       "o523_weak_kana_diff_pairs": 0,
+       "models": {
+        "primary": {
+         "provider": "openai_asr",
+         "model": "gpt-4o-mini-transcribe"
+        },
+        "secondary": null
+       }
+      },
+      "canonical_text": "猿の手",
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "ja-JP",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      }
+     },
+     "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_std_7/a2/narration/attempts/japanese_title_attempt1_customb8f0ff16.wav"
+    }
+   ]
+  }
+ },
+ "block_progress": {
+  "japanese_title.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "a6296746db29e62ce61183d9",
+   "segment_id": "japanese_title",
+   "fingerprint": {
+    "leaf": "L7",
+    "style_prefix_override": "ae68e3e6ac8e8dc2",
+    "tts_backend": "7b7d9d14787b08f6",
+    "policy": "JA_STD"
+   },
+   "status": "DONE",
+   "created_epoch": 1793026510.9744744,
+   "updated_epoch": 1793026512.992117,
+   "blocks": {
+    "0": {
+     "n_started": 1,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793026510.9759862,
+       "finished_epoch": 1793026512.990539,
+       "verified": true
+      }
+     },
+     "cooldown": null
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_status": "OK"
+  },
+  "topic_intro_en.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "a6093b976c3b29bf0f044eec",
+   "segment_id": "topic_intro_en",
+   "fingerprint": {
+    "leaf": "L3",
+    "style_prefix_override": "d16e099cb4f6fd7f",
+    "tts_backend": "7b7d9d14787b08f6",
+    "policy": "EN_LR_STD"
+   },
+   "status": "DONE",
+   "created_epoch": 1793026506.2122548,
+   "updated_epoch": 1793026510.955271,
+   "blocks": {
+    "0": {
+     "n_started": 1,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793026506.2152104,
+       "finished_epoch": 1793026510.9536614,
+       "verified": true
+      }
+     },
+     "cooldown": null
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_status": "OK"
+  }
+ },
+ "results_segments": {
+  "topic_intro_en": {
+   "status": "OK",
+   "voice": "Aoede",
+   "asr_text": "Today's topic is The Monkey's Paw.",
+   "canonical_text": "Today's topic is The Monkey's Paw.",
+   "slowdown_applied": null,
+   "cooldown_events": [],
+   "path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_std_7/a2/narration/topic_intro_en.wav",
+   "audio_text_deviation": null
+  },
+  "japanese_title": {
+   "status": "OK",
+   "voice": "Aoede",
+   "asr_text": "猿の手",
+   "canonical_text": "猿の手",
+   "slowdown_applied": null,
+   "cooldown_events": [],
+   "path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_std_7/a2/narration/japanese_title.wav",
+   "audio_text_deviation": null
+  }
+ },
+ "results_key_phrases": {},
+ "attempt_sidecars": [
+  {
+   "file": "japanese_title_attempt1_customb8f0ff16.json",
+   "segment_id": "japanese_title",
+   "attempt_number": 1,
+   "route": "custom_b8f0ff16",
+   "saved_at": "2026-10-26T23:55:12",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。",
+   "instruction_sha": "ae68e3e6ac8e",
+   "instruction_chars": 65,
+   "verified": true,
+   "audio_classification": "EXACT_MATCH",
+   "asr_text": "猿の手",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "topic_intro_en_attempt1_custom60a24f1e.json",
+   "segment_id": "topic_intro_en",
+   "attempt_number": 1,
+   "route": "custom_60a24f1e",
+   "saved_at": "2026-10-26T23:55:10",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "instruction_sha": "d16e099cb4f6",
+   "instruction_chars": 96,
+   "verified": true,
+   "audio_classification": "EXACT_MATCH",
+   "asr_text": "Today's topic is The Monkey's Paw.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "EXACT_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 0.133,
+  "by_provider": {
+   "openai": 0.01,
+   "gemini": 0.11,
+   "openai_asr": 0.02
+  }
+ },
+ "gate_observation": {
+  "m2_complete": {
+   "checked": 2,
+   "path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_std_7/a2/audit/tts_generation_results.json",
+   "audio_text_deviations": []
+  },
+  "audio_gate": {
+   "m2_complete": true,
+   "shared_gate": "skipped",
+   "audio_text_deviation_clips": []
+  }
+ },
+ "resumed_run": false
+}

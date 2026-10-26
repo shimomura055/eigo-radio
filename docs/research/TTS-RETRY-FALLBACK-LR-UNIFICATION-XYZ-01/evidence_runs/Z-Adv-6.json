@@ -1,0 +1,562 @@
+{
+ "management_id": "TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01",
+ "case": "Z-Adv-6",
+ "family": "Z",
+ "level": "b1b",
+ "scenario": "E-S4",
+ "leaf": "L6",
+ "policy": "KP_EN",
+ "segments": [
+  "kp1_en"
+ ],
+ "run_dir": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_adv_6",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {
+   "*": [
+    1,
+    2
+   ]
+  },
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [
+  {
+   "kind": "judge_ng",
+   "clip": "kp1_en",
+   "slot": 1,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "kp1_en",
+   "slot": 2,
+   "judge_kind": "en"
+  }
+ ],
+ "injected_override_count": 2,
+ "started_at": "2026-10-26T23:55:02",
+ "ended_at": "2026-10-26T23:58:13",
+ "wall_seconds": 191.8,
+ "pid": 49160,
+ "exception": null,
+ "tts_attempts": [
+  {
+   "clip": "kp1_en",
+   "t": 0.03,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "9d905cfe6c04",
+   "style_head": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pit",
+   "style_chars": 332,
+   "text_head": "interfere with fate",
+   "text_sha": "1e35f671ad04",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "kp1_en",
+   "t": 3.29,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "9d905cfe6c04",
+   "style_head": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pit",
+   "style_chars": 332,
+   "text_head": "interfere with fate",
+   "text_sha": "1e35f671ad04",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "kp1_en",
+   "t": 186.06,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "dcd08dcae5b0",
+   "style_head": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not",
+   "style_chars": 1246,
+   "text_head": "interfere with fate",
+   "text_sha": "1e35f671ad04",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 3,
+ "tts_api_calls": 3,
+ "judges": [
+  {
+   "clip": "kp1_en",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Interfere with fate."
+  },
+  {
+   "clip": "kp1_en",
+   "kind": "en",
+   "slot": 2,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Interfere with fate."
+  },
+  {
+   "clip": "kp1_en",
+   "kind": "en",
+   "slot": 3,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "interfere with fate."
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [
+  {
+   "label": "kp1_en",
+   "requested_seconds": 180.0,
+   "actual_seconds": 179.999,
+   "started_at": "2026-10-26T23:55:08",
+   "ended_at": "2026-10-26T23:58:08",
+   "resumed": false,
+   "attempt_before": 2,
+   "attempt_after": 3,
+   "total_elapsed_since_ref_seconds": 180.001,
+   "wall_start_epoch": 1793026508.124543
+  }
+ ],
+ "cooldown_count": 1,
+ "sleep_total_seconds": 180.0,
+ "stop_checks": {
+  "cooldown": 36,
+  "attempt": 3,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [
+  "COOLDOWN_BEFORE_BLOCK_ATTEMPT",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "kp1_en": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "1e35f671ad043f6aa447c2a64647694e9cb6d673beab4510fa5357fc9f83b195",
+   "language": "en",
+   "theme_id": "run_tru_ev_z_adv_6",
+   "level": "b1b",
+   "segment_id": "kp1_en",
+   "updated_at": "2026-10-26T23:58:13",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_adv_6/b1b/narration/kp1_en.wav",
+   "cumulative_tts_attempts": 3,
+   "cumulative_asr_calls": 3,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 1.92,
+     "asr_text": "interfere with fate.",
+     "asr_text_length": 20,
+     "max_len": 29,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "NORMALIZED_MATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": true,
+     "disfluency_checked": true,
+     "disfluency_evidence": {
+      "flagged": false,
+      "repeats": [],
+      "word_count": 3,
+      "transcript": "Interfere  with  fate.",
+      "method": "faster_whisper_small_local_verbatim"
+     },
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": true,
+     "non_latin_cascade_enabled": true,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 1246,
+      "sha256": "dcd08dcae5b0ce13fd35da0980d4cf021e0b2c0a33db0cec6c8377444b3bbf30",
+      "head200": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not add explanations, examples, introductions, or any other com"
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "interfere with fate.",
+       "classification": "NORMALIZED_MATCH",
+       "entity_like_source": []
+      },
+      {
+       "step": "secondary_vote",
+       "provider": "azure",
+       "text": "Interfere with fate.",
+       "classification": "NORMALIZED_MATCH",
+       "phrase_list_used": false,
+       "azure_phrase_list_weight": null,
+       "azure_phrase_list": [],
+       "cached": false,
+       "unified_judge_state": "PASS",
+       "vote_required": true,
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "dual_agreed",
+      "slot": 3,
+      "script_version": "v0",
+      "role": null,
+      "lang": "en",
+      "segment_key": "",
+      "audio_sha256": "468f2f8d58659640efa44ca01aea7dd1a431cbff9dfb04f96163eba3a5f5313e",
+      "primary": {
+       "text": "interfere with fate.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": true,
+       "cached": false,
+       "engine": "azure",
+       "text": "Interfere with fate.",
+       "label": "NORMALIZED_MATCH",
+       "accepted": true,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       },
+       "secondary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false,
+       "secondary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "target": "secondary",
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 1,
+       "azure_seconds": 1.92,
+       "est_jpy": 0.0889,
+       "est_jpy_known": true
+      },
+      "timing": {
+       "total_ms": 557,
+       "secondary_ms": 556
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 20,
+       "secondary_len": 20,
+       "max_len": 29,
+       "adopted_from": "secondary",
+       "adopted_ok": true,
+       "surface_len": 17,
+       "primary_ok": true
+      },
+      "vote": {
+       "version": "kp_vote_check_v1",
+       "guard_lifted": true,
+       "guard_lifted_version": "kp_vote_guard_lifted_v1",
+       "observed_protected_diff": {
+        "primary": false,
+        "secondary": false,
+        "whisper": false
+       },
+       "required": true,
+       "state": "PASS_DUAL",
+       "reason": "dual_agreed",
+       "row": "P+S",
+       "pass_count": 2,
+       "tiebreak_enabled": true,
+       "primary": {
+        "provider": "openai",
+        "text": "interfere with fate.",
+        "pass": true,
+        "available": true,
+        "label": "NORMALIZED_MATCH",
+        "observed_protected_diff": false,
+        "rescued": false,
+        "error": null,
+        "technical_failure": false,
+        "note": null,
+        "rescue_layers": []
+       },
+       "secondary": {
+        "provider": "azure",
+        "text": "Interfere with fate.",
+        "pass": true,
+        "available": true,
+        "label": "NORMALIZED_MATCH",
+        "observed_protected_diff": false,
+        "rescued": false,
+        "error": null,
+        "technical_failure": false,
+        "note": "secondary_accepted",
+        "rescue_layers": []
+       },
+       "secondary_called": true,
+       "whisper": null,
+       "whisper_called": false,
+       "whisper_model": null,
+       "ortho_layer_version": "er109_orthographic_equivalence_v2_ukus01",
+       "ortho_scope": "Z",
+       "primary_not_pass_reason": null,
+       "primary_rescued_by_secondary": false
+      },
+      "p3_entry": "vote_required",
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 1,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": null,
+       "asr_text_present": true,
+       "cache": {
+        "calls": 6,
+        "hits": 0
+       }
+      }
+     },
+     "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_adv_6/b1b/narration/attempts/kp1_en_attempt3_custom31eb2f72.wav"
+    }
+   ]
+  }
+ },
+ "block_progress": {
+  "kp1_en.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "bb933d8b4cd35a992246cb3e",
+   "segment_id": "kp1_en",
+   "fingerprint": {
+    "leaf": "L6",
+    "policy": "KP_EN"
+   },
+   "status": "DONE",
+   "created_epoch": 1793026502.0935774,
+   "updated_epoch": 1793026693.860334,
+   "blocks": {
+    "0": {
+     "n_started": 3,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793026502.0960813,
+       "finished_epoch": 1793026505.359397,
+       "verified": false
+      },
+      "2": {
+       "started_epoch": 1793026505.3611693,
+       "finished_epoch": 1793026508.1227777,
+       "verified": false
+      },
+      "3": {
+       "started_epoch": 1793026688.1266625,
+       "finished_epoch": 1793026693.8585792,
+       "verified": true
+      }
+     },
+     "cooldown": {
+      "before_ordinal": 3,
+      "cooldown_started_at": "2026-10-26T23:55:08",
+      "cooldown_ended_at": "2026-10-26T23:58:08",
+      "cooldown_actual_seconds": 179.999,
+      "total_elapsed_since_ref_seconds": 180.001,
+      "resumed": false
+     }
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_status": "OK"
+  }
+ },
+ "results_segments": {},
+ "results_key_phrases": {},
+ "attempt_sidecars": [
+  {
+   "file": "kp1_en_attempt1_custom60ebc452.json",
+   "segment_id": "kp1_en",
+   "attempt_number": 1,
+   "route": "custom_60ebc452",
+   "saved_at": "2026-10-26T23:55:05",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pit",
+   "instruction_sha": "9d905cfe6c04",
+   "instruction_chars": 332,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Interfere with fate.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ],
+    [
+     "secondary_vote",
+     "azure",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "kp1_en_attempt2_custom60ebc452.json",
+   "segment_id": "kp1_en",
+   "attempt_number": 2,
+   "route": "custom_60ebc452",
+   "saved_at": "2026-10-26T23:55:08",
+   "loop_attempt_index": 2,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pit",
+   "instruction_sha": "9d905cfe6c04",
+   "instruction_chars": 332,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Interfere with fate.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ],
+    [
+     "secondary_vote",
+     "azure",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "kp1_en_attempt3_custom31eb2f72.json",
+   "segment_id": "kp1_en",
+   "attempt_number": 3,
+   "route": "custom_31eb2f72",
+   "saved_at": "2026-10-26T23:58:13",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not",
+   "instruction_sha": "dcd08dcae5b0",
+   "instruction_chars": 1246,
+   "verified": true,
+   "audio_classification": "NORMALIZED_MATCH",
+   "asr_text": "interfere with fate.",
+   "disfluency_checked": true,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ],
+    [
+     "secondary_vote",
+     "azure",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 0.452,
+  "by_provider": {
+   "gemini": 0.14,
+   "openai_asr": 0.06,
+   "azure": 0.25
+  }
+ },
+ "gate_observation": {
+  "m2_complete": {
+   "checked": 1,
+   "path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_z_adv_6/b1b/audit/tts_generation_results.json",
+   "audio_text_deviations": []
+  },
+  "audio_gate": {
+   "m2_complete": true,
+   "shared_gate": "skipped",
+   "audio_text_deviation_clips": []
+  }
+ },
+ "resumed_run": false
+}
