@@ -1,0 +1,218 @@
+{
+ "model": "gpt-6-luna",
+ "model_is_latest_recommended": "repoの承認済み推奨系(SUPPORT_MODEL)。PM_GOVERNANCE 25節: 最新世代の推奨系。旧/下位モデルではない(生成側と同系統=R6の限界を併記)",
+ "n_runs": 3,
+ "cost_jpy_total": 0.224,
+ "budget_jpy": 15.0,
+ "cases": [
+  {
+   "id": "A2_too_soon_to_do",
+   "unit": "too soon to do",
+   "source_phrase_in_article": "too soon to wave a flag",
+   "article_sentence": "Even so, it is too soon to wave a flag and say, \"Play and get smarter—proof complete!\" The experienced group did better, and removing one memory lowered its score.",
+   "note": "generic verb slot 'do' replaces 'wave a flag'"
+  },
+  {
+   "id": "A1_too_soon",
+   "unit": "too soon",
+   "source_phrase_in_article": "too soon to wave a flag",
+   "article_sentence": "Even so, it is too soon to wave a flag and say, \"Play and get smarter—proof complete!\" The experienced group did better, and removing one memory lowered its score.",
+   "note": "contiguous sub-span of the source phrase"
+  },
+  {
+   "id": "CTL_too_soon_to_say",
+   "unit": "too soon to say",
+   "source_phrase_in_article": null,
+   "article_sentence": null,
+   "note": "control: common fixed expression"
+  },
+  {
+   "id": "CTL_too_late_to_do",
+   "unit": "too late to do",
+   "source_phrase_in_article": null,
+   "article_sentence": null,
+   "note": "control: same pattern with a different adjective"
+  },
+  {
+   "id": "CTL_soon_to_do",
+   "unit": "soon to do",
+   "source_phrase_in_article": null,
+   "article_sentence": null,
+   "note": "control: truncated pattern (operator dropped)"
+  }
+ ],
+ "runs": [
+  {
+   "run": 1,
+   "response_id": "resp_0a747774d55b0d98006adef7fb535087d0a884ba10096c6d36",
+   "usage": {
+    "input": 785,
+    "cached": 0,
+    "output": 742
+   },
+   "cost_jpy": 0.0719,
+   "judgements": [
+    {
+     "id": "A2_too_soon_to_do",
+     "acceptable_as_headword": true,
+     "entry_type": "grammar_pattern_with_slot",
+     "learning_value": "good",
+     "meaning_vs_source": "generalized",
+     "verdict": "adopt",
+     "note_ja": "「too soon to do」は動詞を入れ替えられる学習価値の高いパターンです。"
+    },
+    {
+     "id": "A1_too_soon",
+     "acceptable_as_headword": true,
+     "entry_type": "ordinary_phrase",
+     "learning_value": "good",
+     "meaning_vs_source": "narrowed",
+     "verdict": "adopt",
+     "note_ja": "「too soon」は独立した副詞句として辞書に載り、単独でも学ぶ価値があります。"
+    },
+    {
+     "id": "CTL_too_soon_to_say",
+     "acceptable_as_headword": true,
+     "entry_type": "fixed_expression",
+     "learning_value": "good",
+     "meaning_vs_source": "no_source",
+     "verdict": "adopt",
+     "note_ja": "「too soon to say」は「まだ判断するには早い」という定着した表現です。"
+    },
+    {
+     "id": "CTL_too_late_to_do",
+     "acceptable_as_headword": true,
+     "entry_type": "grammar_pattern_with_slot",
+     "learning_value": "good",
+     "meaning_vs_source": "no_source",
+     "verdict": "adopt",
+     "note_ja": "「too late to do」は動詞を入れ替えられる明確な文法パターンです。"
+    },
+    {
+     "id": "CTL_soon_to_do",
+     "acceptable_as_headword": false,
+     "entry_type": "not_a_learning_unit",
+     "learning_value": "bad",
+     "meaning_vs_source": "no_source",
+     "verdict": "reject",
+     "note_ja": "「soon to do」だけでは標準的な見出しパターンとして不自然です。"
+    }
+   ]
+  },
+  {
+   "run": 2,
+   "response_id": "resp_02e0834b85dffc9c006adef803b07487d0ba7f4fdd904c3435",
+   "usage": {
+    "input": 785,
+    "cached": 0,
+    "output": 816
+   },
+   "cost_jpy": 0.0778,
+   "judgements": [
+    {
+     "id": "A2_too_soon_to_do",
+     "acceptable_as_headword": true,
+     "entry_type": "grammar_pattern_with_slot",
+     "learning_value": "good",
+     "meaning_vs_source": "generalized",
+     "verdict": "adopt",
+     "note_ja": "「too ... to do」という汎用パターンとして学習価値があります。"
+    },
+    {
+     "id": "A1_too_soon",
+     "acceptable_as_headword": true,
+     "entry_type": "ordinary_phrase",
+     "learning_value": "good",
+     "meaning_vs_source": "generalized",
+     "verdict": "adopt",
+     "note_ja": "「too soon」は独立して使える自然な表現で、元の動作を特定しない形です。"
+    },
+    {
+     "id": "CTL_too_soon_to_say",
+     "acceptable_as_headword": true,
+     "entry_type": "fixed_expression",
+     "learning_value": "good",
+     "meaning_vs_source": "no_source",
+     "verdict": "adopt",
+     "note_ja": "「まだ判断するには早すぎる」という意味で定着した表現です。"
+    },
+    {
+     "id": "CTL_too_late_to_do",
+     "acceptable_as_headword": true,
+     "entry_type": "grammar_pattern_with_slot",
+     "learning_value": "good",
+     "meaning_vs_source": "no_source",
+     "verdict": "adopt",
+     "note_ja": "「too ... to do」の形を示す自然なパターン見出しです。"
+    },
+    {
+     "id": "CTL_soon_to_do",
+     "acceptable_as_headword": false,
+     "entry_type": "not_a_learning_unit",
+     "learning_value": "bad",
+     "meaning_vs_source": "no_source",
+     "verdict": "reject",
+     "note_ja": "「too」がないこの形は一般的な見出しパターンとして不完全です。"
+    }
+   ]
+  },
+  {
+   "run": 3,
+   "response_id": "resp_092de9093682dcb0006adef80cbc1c87d0b52ab4ed99a9b9be",
+   "usage": {
+    "input": 785,
+    "cached": 0,
+    "output": 771
+   },
+   "cost_jpy": 0.0742,
+   "judgements": [
+    {
+     "id": "A2_too_soon_to_do",
+     "acceptable_as_headword": true,
+     "entry_type": "grammar_pattern_with_slot",
+     "learning_value": "good",
+     "meaning_vs_source": "generalized",
+     "verdict": "adopt",
+     "note_ja": "「too ... to do」の型として、元の具体例を含む有用な学習項目です。"
+    },
+    {
+     "id": "A1_too_soon",
+     "acceptable_as_headword": true,
+     "entry_type": "ordinary_phrase",
+     "learning_value": "good",
+     "meaning_vs_source": "generalized",
+     "verdict": "adopt",
+     "note_ja": "「早すぎる」を表す独立した句として辞書見出しになり得ます。"
+    },
+    {
+     "id": "CTL_too_soon_to_say",
+     "acceptable_as_headword": true,
+     "entry_type": "fixed_expression",
+     "learning_value": "good",
+     "meaning_vs_source": "no_source",
+     "verdict": "adopt",
+     "note_ja": "「まだ判断するには早い」という意味でよく使われる表現です。"
+    },
+    {
+     "id": "CTL_too_late_to_do",
+     "acceptable_as_headword": true,
+     "entry_type": "grammar_pattern_with_slot",
+     "learning_value": "good",
+     "meaning_vs_source": "no_source",
+     "verdict": "adopt",
+     "note_ja": "「too ... to do」の型に形容詞を入れ替えた有用なパターンです。"
+    },
+    {
+     "id": "CTL_soon_to_do",
+     "acceptable_as_headword": false,
+     "entry_type": "ordinary_phrase",
+     "learning_value": "bad",
+     "meaning_vs_source": "no_source",
+     "verdict": "reject",
+     "note_ja": "「too」がない形は安定した学習パターン見出しとは言いにくいです。"
+    }
+   ]
+  }
+ ],
+ "framing": "学習者向け辞書の見出し形/パターン見出しとして適切か(前回judge_06-08=自然な英文としての評価)"
+}

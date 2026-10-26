@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import er123_kp_rescue_dev_01 as m   # noqa: E402
 
 kc, ft, cmu = m.kc, m.ft, m.cmu
-EVAL = os.path.join(os.path.dirname(os.path.abspath(__file__)), "docs", "research", "KP-GATE-EXCLUSION-RESCUE-DESIGN-02", "rescue_eval_07.json")
+EVAL = os.path.join(os.path.dirname(os.path.abspath(__file__)), "docs", "research", "KP-GATE-EXCLUSION-RESCUE-DESIGN-02", "rescue_eval_08.json")
 
 
 # ---------------------------------------------------------------- Production不変 / 既定OFF
@@ -191,7 +191,7 @@ def test_structural_revert_for_cmu_post_canon_style_violation():
 
 
 # ---------------------------------------------------------------- inventory結果の不変条件(X/Y/Z・NG・CMU)
-@pytest.mark.skipif(not os.path.exists(EVAL), reason="rescue_eval_07.json未生成")
+@pytest.mark.skipif(not os.path.exists(EVAL), reason="rescue_eval_08.json未生成")
 def test_inventory_invariants():
     rows = json.load(open(EVAL, encoding="utf-8"))
     assert {r["family"] for r in rows} <= {"X", "Y", "Z"}                     # A/B/C(LEGACY)は対象外
@@ -210,3 +210,171 @@ def test_inventory_invariants():
             if rr["flags"]["rescued"]:
                 assert rr["auto_eligible"] is False                            # 救済フロー由来はAUTO不可
                 assert rr["gates"]["canonicalization"] == "RESCUED_QA_NOT_REJUDGED"
+
+
+# =====================================================================================================
+# 委任_02: Opus M1〜M4 / R3〜R5 の固定(敵対的test)。adversarial_01.json と同じ事例を直接assertする
+# =====================================================================================================
+ADV = os.path.join(os.path.dirname(os.path.abspath(__file__)), "docs", "research", "KP-GATE-EXCLUSION-RESCUE-DESIGN-02", "adversarial_01.json")
+
+
+def _adv():
+    return json.load(open(ADV, encoding="utf-8"))
+
+
+# ---------------------------------------------------------------- M1: -ly名詞/形容詞を副詞扱いしない
+@pytest.mark.parametrize("noun", ["supply", "reply", "rally", "assembly", "jelly", "belly", "bully", "folly", "monopoly", "anomaly", "tally",
+                                  "timely", "scholarly", "cowardly", "leisurely", "manly", "hourly", "nightly", "sickly", "burly", "unruly", "well", "still"])
+def test_m1_is_manner_adverb_rejects_ly_nouns_adjectives_and_noun_homographs(noun):
+    assert m.is_manner_adverb(noun) is False
+
+
+@pytest.mark.parametrize("adv", ["separately", "quietly", "happily", "basically", "probably", "simply", "truly", "fully", "gently", "effectively"])
+def test_m1_is_manner_adverb_accepts_real_ly_adverbs_via_stem_check(adv):
+    assert m.is_manner_adverb(adv) is True
+
+
+def test_m1_adversarial_conversions_from_json():
+    bad = []
+    for c in _adv()["conversions"]:
+        with m.RulePatch(**m.TIER1_PATCH):
+            t1 = ft.find_inflection_window(c["key"], c["display"]) is not None
+        base = ft.find_inflection_window(c["key"], c["display"]) is not None
+        if c["expect"] == "accept":
+            ok = t1 is True
+        elif c["expect"] == "reject":
+            ok = t1 is False
+        else:       # preexisting_accept: Production既存の挙動。パッチで変化しない
+            ok = (t1 == base)
+        if not ok:
+            bad.append((c["display"], c["key"], c["expect"], t1))
+    assert not bad, bad
+
+
+def test_m1_increased_supply_is_not_lemmatized_under_tier1():
+    with m.RulePatch(**m.TIER1_PATCH):
+        for key, disp in [("increase supply", "increased supply"), ("fail rally", "failed rally"), ("cancel reply", "cancelled reply")]:
+            assert ft.find_inflection_window(key, disp) is None, (key, disp)
+        assert ft.find_inflection_window("study separately", "studied separately") is not None
+
+
+# ---------------------------------------------------------------- M2: have_roleの3類型(迷えばaux)
+@pytest.mark.parametrize("phrase", ["has spread", "have quit", "has cast", "has cost", "have burst", "has shed", "has split", "have upset", "have bet",
+                                    "has forecast", "has broadcast", "have bid", "have fit", "have rid", "had wed", "had dwelt", "had leapt",
+                                    "has wrung", "had strode", "has stunk"])
+def test_m2_invariant_participles_are_aux(phrase):
+    assert [r for _, r in m.finite_aux_roles(phrase)] == ["aux"]
+
+
+@pytest.mark.parametrize("phrase", ["have all gone", "have both agreed", "has more than doubled", "have each tried", "have just been", "had already left",
+                                    "have never seen"])
+def test_m2_quantifier_or_adverb_between_aux_and_participle_is_aux(phrase):
+    assert [r for _, r in m.finite_aux_roles(phrase)] == ["aux"]
+
+
+@pytest.mark.parametrize("phrase", ["had the board known", "had the house painted", "had the big board known"])
+def test_m2_det_noun_participle_is_aux_when_indistinguishable(phrase):
+    assert [r for _, r in m.finite_aux_roles(phrase)] == ["aux"]
+
+
+@pytest.mark.parametrize("phrase", ["have all the answers", "have many questions", "have more than five users", "have a say in", "have a limited budget",
+                                    "have two hundred pounds"])
+def test_m2_lexical_have_still_lexical(phrase):
+    assert [r for _, r in m.finite_aux_roles(phrase)] == ["lexical"]
+
+
+def test_m2_have_roles_from_json():
+    bad = []
+    for c in _adv()["have_roles"]:
+        got = [r for t, r in m.finite_aux_roles(c["phrase"]) if t in ("has", "have", "had")]
+        if got != c["expect"]:
+            bad.append((c["phrase"], got, c["expect"]))
+    assert not bad, bad
+
+
+# ---------------------------------------------------------------- M3: 慣用句例外は先頭が助動詞のレビュー済み閉表だけ
+@pytest.mark.parametrize("phrase", ["beggars can’t be choosers", "boys will be boys", "time is money", "the die is cast", "a leopard can’t change its spots",
+                                    "it can’t be helped", "will be missed", "could not bear", "you can’t be serious"])
+def test_m3_noun_subject_proverbs_and_full_clauses_stay_blocked(phrase):
+    with m.RulePatch(aux=True, idiom=True):
+        assert kc._contains_finite_auxiliary(phrase) is True
+
+
+@pytest.mark.parametrize("phrase", ["can’t be helped", "can of worms", "might as well", "had better", "had our hands tied", "can’t wait"])
+def test_m3_closed_table_phrases_are_allowed(phrase):
+    with m.RulePatch(aux=True, idiom=True):
+        assert kc._contains_finite_auxiliary(phrase) is False
+
+
+def test_m3_closed_table_is_small_reviewed_and_integrity_checked():
+    t = m.idiom_closed_table()
+    assert 20 <= len(t) <= 40 and m._entries_sha(t) == m.IDIOM_TABLE_SHA256
+    assert all(m._first_aux_word(e.split()) for e in t)            # 全件が先頭語=(法助動詞/助動詞)
+    assert not any(e.split()[0] in ("it", "that", "there", "i", "you", "he", "she", "we", "they") for e in t)
+    assert len(m.build_idiom_candidates()) >= len(t)
+
+
+def test_m3_tampered_table_fails_closed(monkeypatch):
+    monkeypatch.setattr(m, "IDIOM_TABLE_SHA256", "0" * 64)
+    monkeypatch.setattr(m, "_IDIOM_TABLE", None)
+    assert m.idiom_closed_table() == frozenset()
+    with m.RulePatch(aux=True, idiom=True):
+        assert kc._contains_finite_auxiliary("can’t be helped") is True       # 閉表が空なら例外なし(fail-closed)
+    monkeypatch.setattr(m, "_IDIOM_TABLE", None)
+
+
+def test_m3_idiom_is_not_used_without_flag():
+    assert kc._contains_finite_auxiliary("can of worms") is True            # 既定OFF: Production現行どおり拒否
+
+
+# ---------------------------------------------------------------- R3: 他動詞の原形/名詞と同形になる語を補完しない
+def test_r3_past_table_completion_excludes_homographs():
+    with m.RulePatch(past=True):
+        for w in ("lay", "wound", "ground", "bore", "bound"):
+            assert w not in ft._PAST_ONLY_IRREGULAR and w not in ft._AMBIGUOUS_IRREGULAR, w
+        for w in ("rang", "sang", "swam"):
+            assert w in ft._PAST_ONLY_IRREGULAR or w in ft._AMBIGUOUS_IRREGULAR, w
+    assert "rang" not in ft._PAST_ONLY_IRREGULAR       # 復元済み
+
+
+# ---------------------------------------------------------------- R4: A1の演算子表拡張とHR旗
+@pytest.mark.parametrize("dropped", ["little", "few", "unless", "rather", "instead", "fail", "except"])
+def test_r4_new_operator_words_are_in_scope_table(dropped):
+    assert dropped in m.SCOPE_WORDS
+
+
+def test_r4_a1_candidates_carry_hr_flags_and_never_drop_operator():
+    allr, ok = m.subspan_candidates("too soon to wave a flag", [], [])
+    r = next(x for x in allr if x["phrase"] == "too soon")
+    flags = m.a1_hr_flags(ft._norm_tokens("too soon to wave a flag"), r)
+    assert any("意味縮小" in f for f in flags) and any("低価値" in f for f in flags)
+    rej = {x["phrase"]: x.get("rejected") for x in allr}
+    assert rej["soon to wave a flag"] and "演算子" in rej["soon to wave a flag"]
+
+
+# ---------------------------------------------------------------- M4: A2は区分3で閉じず、区分2(非推奨・意見付き)
+@pytest.mark.skipif(not os.path.exists(EVAL), reason="rescue_eval_08.json未生成")
+def test_m4_a2_is_tier2_not_recommended_not_tier3():
+    rows = json.load(open(EVAL, encoding="utf-8"))
+    a2 = [r["decision"]["option_slot_generalization"] for r in rows if r["decision"].get("option_slot_generalization")]
+    assert a2 and all(o["category"].startswith("区分2") and "非推奨" in o["category"] for o in a2)
+    assert any(o["candidate"] == "too soon to do" for o in a2)
+
+
+# ---------------------------------------------------------------- R5: 縮約形(測定。Gateは変えない)
+def test_r5_current_gate_asymmetry_between_ascii_and_curly_contractions_is_recorded():
+    assert kc._contains_finite_auxiliary("can't wait") is False          # ASCII: 1トークン(can't)でありすり抜け
+    assert kc._contains_finite_auxiliary("can’t wait") is True           # 曲線: can|t に割れてcanで拒否
+    assert kc._contains_finite_auxiliary("they’re ready") is False       # 're は are と認識されない
+    assert kc._contains_finite_auxiliary("I’ll go") is False
+
+
+# ---------------------------------------------------------------- 回帰: 結果の不変条件(委任_02)
+@pytest.mark.skipif(not os.path.exists(EVAL), reason="rescue_eval_08.json未生成")
+def test_inventory_hr_final_categories_unchanged_or_documented():
+    rows = json.load(open(EVAL, encoding="utf-8"))
+    hr = {(r["display"].lower()): str(r["decision"]["category"]).split("(")[0] for r in rows if str(r.get("era", "")).startswith("HR")}
+    assert hr["studied separately"] == "区分1" and hr["had our eye on"] == "区分1" and hr["rang through"] == "区分1" and hr["have a say"] == "区分1"
+    assert hr["too soon to wave a flag"] == "区分2" and hr["rose above"] == "区分2" and hr["held out"] == "区分2"
+    assert hr["catch their interest"] == "区分2" and hr["it can’t be helped"] == "区分2" and hr["can’t be helped"] == "区分2"
+    assert hr["redelivery fee"] == "区分2"

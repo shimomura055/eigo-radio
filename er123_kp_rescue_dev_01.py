@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""KP-GATE-EXCLUSION-RESCUE-DESIGN-02 委任_01: Key Phrase候補Gate除外の「救済」方式 DEV実証モジュール。
+"""KP-GATE-EXCLUSION-RESCUE-DESIGN-02 委任_01/委任_02: Key Phrase候補Gate除外の「救済」方式 DEV実証モジュール。
+委任_02(2026-10-26): Opus独立レビュー(OPUS_REVIEW_02.md)のM1(-ly名詞の誤受理)/M2(have_roleの3類型)/M3(慣用句例外の閉表化)/M4(A2を区分2・非推奨へ)/
+  R3(過去形補完から同形異義語を除外)/R4(A1演算子表拡張+HR旗)/R5(縮約形の測定)を反映。
 
 性質: DEV(Production非配線)。Production code(er105/er003_key_words_canonicalization/er003_key_words_min_unit/er119_*/scaffold)は
   一切編集しない。import・読取・in-memory一時差替え(RulePatch、with文で必ず復元)だけを行う。
@@ -44,7 +46,7 @@ def _blocked(*a, **k):
     raise RuntimeError("network blocked: KP-GATE-EXCLUSION-RESCUE-DESIGN-02 DEV module is API-0 (except --judge)")
 
 
-if "--judge" not in sys.argv:
+if "--judge" not in sys.argv and "--judge-headword" not in sys.argv:
     socket.socket.connect = _blocked          # type: ignore[assignment]
     socket.create_connection = _blocked       # type: ignore[assignment]
 
@@ -91,12 +93,22 @@ IRR = {
 }
 # 過去形が名詞・形容詞・別語としても通用する語(過去形専用表には入れず、直後条件つきのAMBIGUOUS表へ)
 # OPEN-476=DEFERRED(er105 is_valid_inflection_normalization docstring: bound to->bind to は拒否のまま)。補完の対象から除外する。
-COMPLETION_EXCLUDE = frozenset({"bound"})
+# R3(Opus): 他の動詞の原形/名詞と同形になる新規追加語は補完しない(bound/lay/wound/ground/bore。`bound`を外したのと同じ理由)。
+COMPLETION_EXCLUDE = frozenset({"bound", "lay", "wound", "ground", "bore"})
 PAST_ALSO_OTHER_WORD = frozenset({
     "saw", "left", "found", "bound", "wound", "lay", "bore", "rose", "felt", "spoke", "stole", "bit", "shot", "won",
     "stuck", "struck", "hung", "bent", "spent", "ground", "lit", "fell", "led", "sat", "bled", "fed", "laid", "dug", "lent",
 })
-IRR_PARTICIPLES = frozenset(p for _, p in IRR.values()) | frozenset({
+# M2(Opus): 形が変わらない/不規則な過去分詞で表に無かった語(has spread/quit/cast/cost/burst/shed/split/upset/bet/forecast/broadcast/bid/fit/rid/wed、
+#   dwelt/leapt/wrung/strode/stunk ほか)。2語の句は nxt2=None になり倒置ルールにも掛からないため、nxt自身を分詞として認識する。迷えばaux側。
+IRR_PARTICIPLES_EXTRA = frozenset({
+    "spread", "quit", "cast", "cost", "burst", "shed", "split", "upset", "bet", "forecast", "broadcast", "bid", "fit", "rid", "wed",
+    "dwelt", "leapt", "wrung", "strode", "stunk", "bust", "slit", "thrust", "sublet", "typeset", "offset", "reset", "outbid", "overcast",
+    "recast", "underbid", "unwound", "spat", "slung", "slunk", "snuck", "strung", "leant", "dived", "dove", "spoilt", "wound", "ground",
+    "bore", "laid", "lain", "bled", "fled", "sped", "stove", "clad", "shod", "woven", "hewn", "mown", "rent", "bereft", "dealt", "meant",
+    "overrun", "outrun", "overthrown", "withstood", "forborne", "foregone", "foresaw", "foreseen", "overseen", "outdone", "overtaken",
+    "retaken", "remade", "regrown", "reborn", "reheard", "rebound", "unbound", "unbent", "underlain", "underwritten", "unfrozen"})
+IRR_PARTICIPLES = frozenset(p for _, p in IRR.values()) | IRR_PARTICIPLES_EXTRA | frozenset({
     "got", "been", "done", "had", "put", "cut", "set", "let", "hit", "hurt", "read", "shut",
     # IRRマスタ外の過去分詞(完了形のauxを語彙haveと誤認しないための追加。迷えばaux側=現行どおり拒否)
     "proven", "learnt", "burnt", "dreamt", "spelt", "spilt", "smelt", "sped", "knit", "forsaken", "mistaken", "overtaken", "undergone",
@@ -195,7 +207,7 @@ def irregular_gap_report() -> dict:
     have = set(ft._PAST_ONLY_IRREGULAR) | set(ft._AMBIGUOUS_IRREGULAR)
     gaps_past_only, gaps_ambiguous, gaps_pp = [], [], []
     for lemma, (past, pp) in sorted(IRR.items()):
-        if past in COMPLETION_EXCLUDE:
+        if past in COMPLETION_EXCLUDE or pp in COMPLETION_EXCLUDE or (past in IRR and past != lemma) or (pp in IRR and pp != lemma):
             continue
         if past != lemma and past != lemma + "ed" and past not in have and past not in ft._FUNCTION_VERB_FORMS:
             (gaps_ambiguous if past in PAST_ALSO_OTHER_WORD else gaps_past_only).append((past, lemma))
@@ -261,8 +273,11 @@ _NOM_PRONOUN = frozenset({"i", "you", "he", "she", "it", "we", "they", "there", 
 _AUX_FOLLOW = frozenset({"been", "being", "to", "not", "t", "n't", "never", "already", "just", "ever", "better", "rather", "best", "got"})
 
 
+_NOT_PARTICIPLE_ED = frozenset({"hundred", "kindred", "sacred", "naked", "wicked", "rugged", "crooked", "beloved", "wretched", "hatred", "infrared"})   # -edで終わるが分詞でない語
+
+
 def _is_participle(w: str) -> bool:
-    return w in IRR_PARTICIPLES or (w.endswith("ed") and len(w) > 3 and w not in ft._PARTICIPIAL_ADJ_EXCLUDE)
+    return w in IRR_PARTICIPLES or (w.endswith("ed") and len(w) > 3 and w not in ft._PARTICIPIAL_ADJ_EXCLUDE and w not in _NOT_PARTICIPLE_ED)
 
 
 _HAVE_ADV = frozenset({"also", "often", "only", "finally", "just", "already", "ever", "never", "always", "still", "quite", "really", "soon",
@@ -271,10 +286,19 @@ _LEXICAL_START = frozenset(set(ft._GUARD_DET) | {"no", "each", "every", "all", "
                                                  "much", "more", "less", "enough", "what", "something", "nothing", "anything", "everything"})
 
 
+# M2(Opus): 助動詞と分詞の間に入りうる量化詞・副詞(have all gone / have both agreed / has more than doubled / have just been)。
+_HAVE_SKIP = frozenset({"all", "both", "each", "either", "neither", "more", "less", "than", "much", "many", "few", "several", "most", "half",
+                        "just", "already", "also", "never", "ever", "only", "still", "always", "often", "finally", "recently", "previously",
+                        "yet", "really", "quite", "so", "long", "now", "then", "once", "twice", "nearly", "almost", "barely", "hardly", "all"})
+_HAVE_DET_SET = frozenset(ft._GUARD_DET) | {"the", "a", "an"}
+
+
 def have_role(toks: list, i: int, capitalized_first: bool = False) -> str:
     """have/has/had(toks[i])が『aux』(完了・倒置・慣用の助動詞用法)か『lexical』(所有・経験・実行の語彙動詞)か。
     保守的: 判定に迷えばaux(=現行どおり拒否)。lexicalと判定するのは、直後が限定詞/所有格/数量詞/名詞句の始まりで、かつ
-    (1)文頭の大文字Have/Has/Had(倒置・疑問)でない (2)直後に副詞+過去分詞が続かない (3)『have+主語+been/過去分詞』の倒置でない場合のみ。"""
+    (1)文頭の大文字Have/Has/Had(倒置・疑問)でない (2)直後に副詞+過去分詞が続かない (3)『have+主語+been/過去分詞』の倒置でない
+    (4)[M2] 量化詞/副詞を挟んだ『have all gone』『has more than doubled』でない (5)[M2] 形が変わらない過去分詞(has spread/quit/cast/cost…)でない
+    (6)[M2] 限定詞(+形容詞)+名詞+過去分詞(had the board known / had the house painted は形が同じで区別不能→aux)でない 場合のみ。"""
     nxt = toks[i + 1] if i + 1 < len(toks) else None
     nxt2 = toks[i + 2] if i + 2 < len(toks) else None
     if capitalized_first and i == 0 and nxt is not None:
@@ -290,6 +314,24 @@ def have_role(toks: list, i: int, capitalized_first: bool = False) -> str:
         if nxt2 is None or nxt2 in ft._GUARD_DET or nxt2 in ft._GUARD_PARTICLE:
             return "aux"
         return "lexical"
+    # (4) 量化詞/副詞を読み飛ばして、その先が分詞/been/beingならaux(have all gone / has more than doubled)
+    j = i + 1
+    skipped = False
+    while j < len(toks) and toks[j] in _HAVE_SKIP:
+        j += 1
+        skipped = True
+    if skipped and j < len(toks):
+        w = toks[j]
+        if w in ("been", "being") or _is_participle(w) or w in ft._PARTICIPIAL_ADJ_EXCLUDE or (w.endswith("ed") and len(w) > 3):
+            return "aux"
+    if skipped and j >= len(toks) and toks[-1] in _HAVE_SKIP and toks[-1] not in ("all", "both", "each", "either", "neither", "most", "half",
+                                                                                     "many", "few", "several", "much", "more", "less", "than"):
+        return "aux"      # have just / have already 等の副詞止まり(分詞が切れている)
+    # (6) 限定詞(+形容詞)+名詞+過去分詞: had the board known / had the house painted → aux(倒置/使役の区別不能)
+    if nxt in _HAVE_DET_SET:
+        for k in (i + 3, i + 4):
+            if k < len(toks) and (toks[k] in ("been", "being") or _is_participle(toks[k])):
+                return "aux"
     if nxt not in _LEXICAL_START and nxt2 is not None and (nxt2 in ("been", "being") or _is_participle(nxt2)):
         return "aux"       # have + 主語(名詞) + been/過去分詞 = 倒置の助動詞(Had users been / Has Vera been)
     return "lexical"
@@ -311,12 +353,111 @@ def contains_finite_aux_role_based(text: str) -> bool:
 
 _SUBJ_START = frozenset({"it", "that", "this", "there", "i", "you", "he", "she", "we", "they"})
 
+# ---- M3(Opus): 慣用句の法助動詞/助動詞例外は『レビュー済みの小さな閉表』に限る。
+#  対象= idioms由来(proverbs/phrasal verbs除外)かつ『先頭語が法助動詞/助動詞(主語の無い述部)』の句(+『it/that+核』見出しの主語を除いた核)。
+#  名詞主語のことわざ・完全文(beggars can't be choosers / boys will be boys / time is money / the die is cast / a leopard can't change its spots)は
+#  先頭が助動詞でないため例外にならない。閉表は実行時に外部データ(Wiktionary 17,389見出し)を照会せず、下記JSON(sha256固定)だけを使う。
+IDIOM_TABLE_PATH = os.path.join(ROOT, "docs", "research", "KP-GATE-EXCLUSION-RESCUE-DESIGN-02", "idiom_closed_table_01.json")
+IDIOM_TABLE_SHA256 = "0fb89833d0e0548102b758bad1af15a6fc3fffe866cdd27c86dec4c21cefa3aa"      # entriesをsortedし改行連結したsha256。不一致なら閉表は空(例外なし=fail-closed)
+_AUX_FIRST = {"is": "is", "are": "are", "was": "was", "were": "were", "has": "has", "have": "have", "had": "had", "will": "will", "would": "would",
+              "can": "can", "could": "could", "should": "should", "may": "may", "might": "might", "must": "must",
+              "can't": "can", "cannot": "can", "couldn't": "could", "won't": "will", "wouldn't": "would", "shouldn't": "should", "mustn't": "must",
+              "isn't": "is", "aren't": "are", "wasn't": "was", "weren't": "were", "hasn't": "has", "haven't": "have", "hadn't": "had", "mightn't": "might"}
+_POSS_TO_ONES = {"my": "one's", "your": "one's", "his": "one's", "her": "one's", "our": "one's", "their": "one's", "its": "one's"}
+_HAVE_TO_BASE = {"has": "have", "had": "have", "having": "have"}
+
+# 機械抽出した候補のうち採用(include)する見出し(レビュー結果)。理由はIDIOM_REVIEW_EXCLUDE_REASONに残す。
+IDIOM_REVIEW_INCLUDE = frozenset({
+    "can of corn", "can of worms", "could not get elected dogcatcher", "had better", "have been around", "have done with", "have had it",
+    "have it all", "have it both ways", "have it coming", "have it made", "have it your way", "have one's hands tied", "have one's head read",
+    "have one's ears pinned back", "have seen one's day", "may as well", "might as well",
+    "can't get enough", "can't help", "can't stand", "can't stand the sight of", "can't wait", "couldn't be more different",
+    "couldn't care less", "wouldn't be seen dead", "can't be helped"})      # 最後は『it can't be helped』の主語を除いた核
+IDIOM_REVIEW_EXCLUDE_REASON = {
+    "完全文/疑問文(主語を持つ節)": ["are bears catholic", "are you deaf", "are your ears burning", "is a bear catholic", "is what it is", "is a new sheriff in town",
+                              "wouldn't you know", "wouldn't you say", "will the real someone please stand up", "were you born in a tent"],
+    "語彙動詞can等の曖昧/断片(単独では学習単位でない)": ["can it", "have", "would", "have got", "will do", "have it in one"],
+    "スラング/方言/侮蔑的/古風で学習価値が低い(レビューで除外)": ["have it large", "have it going on", "have one's ears lowered", "have one's wig snatched", "have had one's chips",
+                                          "have fingers made of lime-twigs", "would give a jew's eye", "has left the building", "have seen this movie",
+                                          "have one's name taken"],
+    "主語(there等)を要する構文の核/語数・未完": ["is no telling", "is no there there", "must be something in the water", "couldn't happen to a nicer"]}
+
+
+def _first_aux_word(toks: list) -> str | None:
+    return _AUX_FIRST.get(toks[0]) if toks else None
+
+
+def build_idiom_candidates() -> list:
+    """機械抽出(DEV専用。実行時には使わない): Wiktionary `English idioms`の見出し(proverbs/phrasal verbsは除く)のうち
+    (1)5語以内 (2)先頭語が法助動詞/助動詞(縮約形含む) (3)役割判定(区分1の是正)後も有限助動詞として拒否される(縮約形・名詞can・節頭の例外候補)
+    +『it/that/there + 核』見出しで核の先頭が助動詞のもの(核を候補にする)。"""
+    base = os.path.join(ROOT, "er023_output", "key_phrase_db_trial_01", "db", "wiktionary", "idioms.json")
+    titles = [_lex_norm(t) for t in json.load(open(base, encoding="utf-8")).get("titles", [])]
+    out = {}
+    for t in titles:
+        w = t.split()
+        if 0 < len(w) <= 5 and _first_aux_word(w) and (w[0] in _AUX_FIRST and ("'" in w[0] or contains_finite_aux_role_based(t))):
+            out[t] = "title"
+        if len(w) >= 3 and w[0] in ("it", "that", "there"):
+            core = " ".join(w[1:])
+            cw = core.split()
+            if len(cw) <= 5 and _first_aux_word(cw):
+                out.setdefault(core, f"core_of:{t}")
+    return sorted(out.items())
+
+
+def _entries_sha(entries) -> str:
+    import hashlib
+    return hashlib.sha256(chr(10).join(sorted(entries)).encode("utf-8")).hexdigest()
+
+
+_IDIOM_TABLE = None
+
+
+def idiom_closed_table() -> frozenset:
+    """レビュー済み閉表(JSON)を読む。sha256が定数と一致しなければ空(例外なし)。外部辞書への依存なし。"""
+    global _IDIOM_TABLE
+    if _IDIOM_TABLE is None:
+        ents = frozenset()
+        if os.path.exists(IDIOM_TABLE_PATH):
+            try:
+                d = json.load(open(IDIOM_TABLE_PATH, encoding="utf-8"))
+                cand = d.get("entries", [])
+                if _entries_sha(cand) == IDIOM_TABLE_SHA256:
+                    ents = frozenset(cand)
+            except Exception:   # noqa: BLE001
+                ents = frozenset()
+        _IDIOM_TABLE = ents
+    return _IDIOM_TABLE
+
+
+def idiom_variants(phrase: str) -> set:
+    """閉表照合用の正規化: 曲線引用符→ASCII・小文字・所有格(my/our/his…)→one's・has/had/having→have(先頭のみ)。"""
+    p = _lex_norm(phrase)
+    toks = p.split()
+    if not toks:
+        return set()
+    v = {p}
+    t2 = [_POSS_TO_ONES.get(t, t) for t in toks]
+    v.add(" ".join(t2))
+    if t2[0] in _HAVE_TO_BASE:
+        v.add(" ".join([_HAVE_TO_BASE[t2[0]]] + t2[1:]))
+    v |= {x.replace("one's", "someone's") for x in list(v)}
+    return v
+
+
+def idiom_closed_table_hit(phrase: str) -> bool:
+    toks = _lex_norm(phrase).split()
+    if not toks or not _first_aux_word(toks):
+        return False          # 先頭が(法)助動詞でない句(名詞主語のことわざ/完全文)は例外にしない
+    tbl = idiom_closed_table()
+    return any(x in tbl for x in idiom_variants(phrase))
+
 
 def contains_finite_aux_role_based_idiom(text: str) -> bool:
-    """区分2: role判定に加え、Wiktionary慣用句見出し(または『it/that+核』見出しの核)と一致する句は法助動詞を含んでも例外(固定表現として自立)。
-    ただし主語で始まる句(完全文)は例外にしない=原承認趣旨(ER-003-P2G: 完全文・節・時制付き動詞句の排除)を維持し、主語を除いた核だけを通す。"""
-    toks = [t.lower() for t in kc._WORD_TOKEN_RE.findall(text or "")]
-    if toks and toks[0] not in _SUBJ_START and lex_hit(text)["hit"]:
+    """区分2(M3後): role判定に加え、『先頭が(法助動詞/助動詞)でidioms由来のレビュー済み閉表(約27件)』に一致する句だけ例外。
+    名詞主語のことわざ・完全文・閉表外は不変(拒否)。主語で始まる句(it can't be helped)は例外にせず、主語を除いた核だけを通す。"""
+    if idiom_closed_table_hit(text):
         return False
     return contains_finite_aux_role_based(text)
 
@@ -326,14 +467,53 @@ def contains_finite_aux_role_based_idiom(text: str) -> bool:
 # =====================================================================================================
 QUANT_DET = frozenset({"no", "each", "every", "all", "both", "another", "either", "neither", "several", "few", "many", "much", "enough"})
 LY_ADJ = frozenset({"friendly", "lovely", "lonely", "elderly", "costly", "likely", "unlikely", "silly", "early", "daily", "weekly", "monthly",
-                    "yearly", "only", "family", "holy", "ugly", "lively", "deadly", "orderly", "lowly", "bubbly", "chilly", "curly"})
-_MANNER_ADV_EXTRA = frozenset({"again", "alone", "hard", "well", "fast", "often", "always", "never", "still"})
+                    "yearly", "only", "family", "holy", "ugly", "lively", "deadly", "orderly", "lowly", "bubbly", "chilly", "curly",
+                    # M1(c): -ly形容詞の追加(Opus指摘: timely/scholarly/cowardly/leisurely/manly/hourly/nightly/sickly/burly/unruly 他)
+                    "timely", "scholarly", "cowardly", "leisurely", "manly", "womanly", "hourly", "nightly", "sickly", "burly", "unruly", "motherly",
+                    "fatherly", "brotherly", "sisterly", "heavenly", "earthly", "ghostly", "kingly", "queenly", "masterly", "saintly", "worldly",
+                    "homely", "kindly", "lordly", "neighborly", "neighbourly", "princely", "slovenly", "surly", "wily", "stately", "sprightly",
+                    "gentlemanly", "ladylike", "cleanly", "comely", "courtly", "fortnightly", "quarterly", "northerly", "southerly", "easterly",
+                    "westerly", "wobbly", "gnarly", "scraggly", "squiggly", "wriggly", "crumbly", "prickly", "bristly", "knobbly", "lumpy"})
+# M1(a): -ly で終わる名詞/動詞(副詞ではない)の除外表。語幹検査をすり抜ける語(supply→supple, reply→rep)も明示的に除く。
+LY_NOUN_VERB = frozenset({"supply", "reply", "rally", "assembly", "jelly", "belly", "bully", "folly", "monopoly", "anomaly", "tally", "ally",
+                          "apply", "comply", "imply", "multiply", "rely", "fly", "ply", "july", "italy", "lily", "dolly", "holly", "molly", "polly",
+                          "sally", "wally", "dally", "bully", "melancholy", "homily", "casualty", "butterfly", "firefly", "dragonfly", "gadfly",
+                          "underlay", "overlay", "doily", "dilly", "filly", "hillbilly", "billy", "willy", "silly", "chilly", "cobbly", "gully", "bally",
+                          "ghastly", "grisly", "grizzly", "bubbly", "dumbly", "unfriendly", "overly", "reapply", "resupply", "outfly", "nelly", "sully"})
+_MANNER_ADV_EXTRA = frozenset({"again", "alone", "hard", "fast", "often", "always", "never"})    # well/stillは名詞用法(a well/a still)があるため除外(M1)
 _TAIL_OK_FOLLOW = None   # 実行時にft._GUARD_PARTICLE|ft._GUARD_DETから決める
 
 
+def _ly_stems(w: str) -> set:
+    """-ly副詞の語幹候補(綴り規則: -ily→-y happily→happy / -ally→-ic basically→basic / -bly,-ply,-tly等→-ble,-ple,-tle simply→simple /
+    -ully,-lly→-l fully→full / -uly→-ue truly→true / それ以外は-ly除去 quietly→quiet)。"""
+    st = set()
+    base = w[:-2]
+    st.add(base)
+    if w.endswith("ily"):
+        st.add(w[:-3] + "y")
+    if w.endswith("ally"):
+        st.add(w[:-4])      # basically -> basic
+    if re.search(r"[bpdgktz]ly$", w):
+        st.add(w[:-1] + "e")
+    if w.endswith("lly"):
+        st.add(w[:-1])
+    if w.endswith("uly"):
+        st.add(w[:-2] + "e")
+    if w.endswith("ably") or w.endswith("ibly"):
+        st.add(w[:-1] + "e")
+    return {x for x in st if len(x) >= 3}
+
+
 def is_manner_adverb(w: str) -> bool:
+    """[M1] -ly副詞か。-ly名詞/動詞/形容詞の除外表に無く、かつ語幹(綴り規則で復元)がCMU実在の語であること。
+    (CMU実在だけでは rep(reply)/supple(supply)のように語幹検査をすり抜けるため、除外表と併用する。)"""
     w = w.lower()
-    return (w.endswith("ly") and len(w) > 4 and w not in LY_ADJ) or w in _MANNER_ADV_EXTRA
+    if w in _MANNER_ADV_EXTRA:
+        return True
+    if not (w.endswith("ly") and len(w) > 4) or w in LY_ADJ or w in LY_NOUN_VERB:
+        return False
+    return any(not cmu.reasons_for_phrase(x) for x in _ly_stems(w))
 
 
 def _adverb_tail_ok(key_tokens: list, adv_idx: int) -> bool:
@@ -362,6 +542,8 @@ class RulePatch:
             for lemma, (past, pp) in IRR.items():
                 if past in COMPLETION_EXCLUDE or pp in COMPLETION_EXCLUDE:
                     continue
+                if (past in IRR and past != lemma) or (pp in IRR and pp != lemma):
+                    continue      # R3: 他の動詞の原形と同形(lay→lie等)
                 if past != lemma and past not in ft._PAST_ONLY_IRREGULAR and past not in ft._AMBIGUOUS_IRREGULAR \
                         and past not in ft._FUNCTION_VERB_FORMS:
                     (ft._AMBIGUOUS_IRREGULAR if past in PAST_ALSO_OTHER_WORD else ft._PAST_ONLY_IRREGULAR)[past] = lemma
@@ -445,7 +627,9 @@ def containment(a: str, b: str) -> bool:
 # 5. 救済method
 # =====================================================================================================
 SCOPE_WORDS = frozenset({"too", "not", "never", "no", "only", "hardly", "barely", "scarcely", "rarely", "seldom", "nor", "neither",
-                         "less", "least", "nothing", "none", "nobody", "without", "cannot", "nowhere", "almost", "nearly"})
+                         "less", "least", "nothing", "none", "nobody", "without", "cannot", "nowhere", "almost", "nearly",
+                         # R4(Opus): little/few(a little/littleで意味が反転)・unless/except/rather/instead/fail(否定・対比の演算子)
+                         "little", "few", "unless", "except", "rather", "instead", "fail", "fails", "failed", "failing"})
 EDGE_BAN_START = frozenset({"a", "an", "the", "and", "or", "but", "of", "to", "in", "on", "at", "for", "with", "by", "from", "as", "that",
                             "this", "these", "those", "is", "are", "was", "were", "be", "been", "it", "its"})
 EDGE_BAN_END = frozenset({"a", "an", "the", "and", "or", "but", "that", "this", "these", "those", "my", "your", "his", "her", "its", "our",
@@ -487,6 +671,20 @@ def _scope_violation(toks: list, i: int, j: int) -> str | None:
     return None
 
 
+_LOW_VALUE_HEADS = frozenset(SCOPE_WORDS | {"soon", "late", "much", "many", "more", "most", "very", "so", "such", "quite", "just", "even"})
+
+
+def a1_hr_flags(toks: list, rec: dict) -> list:
+    """R4(Opus): A1短縮のHR旗。決定論Gateは『機能語だけ』を禁じても質は担保しない→低価値かどうかの最終判断はHR(元句と本文の文を併記)。"""
+    flags = ["意味縮小の可能性(元句の一部のみ。元句と本文の文を併記して確認)"]
+    low = [t.lower() for t in rec["phrase"].split()]
+    if len(low) <= 2 or all(t in _LOW_VALUE_HEADS or t in _FUNCTION_ONLY for t in low):
+        flags.append("低価値の可能性(2語以下/程度・否定の語が中心)")
+    if rec["suffix"] is False and rec["prefix"] is False:
+        flags.append("元句の中間部分(両端を落とした)")
+    return flags
+
+
 def subspan_candidates(phrase: str, units: list, existing: list) -> list:
     """A1: 6語以上の選定句の真部分連続列(1〜5語)。本文対応は元句の部分列なので保持。決定論禁止表(演算子作用域・端の機能語)で歯止め。"""
     toks = ft._norm_tokens(phrase)
@@ -520,6 +718,8 @@ def subspan_candidates(phrase: str, units: list, existing: list) -> list:
                 "; ".join(sg["reasons"]) or "既存候補と重複/包含: " + ", ".join(rec["duplicate_with_existing"]))
             out.append(rec)
     ok = [r for r in out if not r.get("rejected")]
+    for r in ok:
+        r["hr_flags"] = a1_hr_flags(toks, r)
     anchor = _anchor_index(toks)
     scope_idx = [k for k, t in enumerate(toks) if t.lower() in SCOPE_WORDS]
     for r in ok:
@@ -725,7 +925,8 @@ def ladder(case: dict) -> dict:
         allr, ok = subspan_candidates(d, c["units"], c["existing"])
         out["subspans_all"] = allr
         for r in ok[:1]:
-            add("T0", "A1_subspan", final=r["phrase"], pass_=True, note="連続部分列(現行規則内・受理面不変)。右端保持の最長", selection_gate=r["selection_gate"])
+            add("T0", "A1_subspan", final=r["phrase"], pass_=True, note="連続部分列(現行規則内・受理面不変)。右端保持の最長", selection_gate=r["selection_gate"],
+                hr_flags=r.get("hr_flags"))
         alts = [r["phrase"] for r in ok[1:4]]
         out["subspan_alternatives"] = alts
         slots = slot_generalization_candidates(d, c["units"], c["existing"])
@@ -865,9 +1066,11 @@ def decide(lad: dict, case: dict) -> dict:
         if a1:
             dec.update(final_display=a1["final"], final_key=a1["final"], method="A1_subspan", rescuable=True, flow_needed=True,
                        category="区分2(救済フロー本体の採否[後処理工程の新設]。受理面は不変)", rule_changes=["選定段の短縮救済フロー(新規)"],
-                       why="元句の連続部分列で本文対応を保持。演算子(too/not/no等)の作用域を壊す部分列は決定論で禁止(意味反転なし)。HRに元句と本文の文を併記")
+                       why="元句の連続部分列で本文対応を保持。演算子(too/not/no/little/few/unless/except/rather/instead/fail等)の作用域を壊す部分列は決定論で禁止(意味反転なし)。HRに元句と本文の文を併記",
+                       hr_flags=a1.get("hr_flags"))
         if a2:
-            dec["option_slot_generalization"] = {"candidate": a2["final"], "category": "区分3推奨(意味変化/不自然/出典対応喪失。ユーザー例のため区分2の判断材料も併記)",
+            dec["option_slot_generalization"] = {"candidate": a2["final"],
+                                                  "category": "区分2(非推奨・AI意見付き。M4: ユーザー自身の例のためAIが区分3で閉じず、判断材料を併記してユーザー判断へ)",
                                                   "dropped_tail_is_lexicon_idiom": a2.get("dropped_tail_is_lexicon_idiom"), "checks": a2.get("checks")}
         if not a1 and not a2:
             dec.update(category="区分3", why="検査を通る部分列/一般化が無い")
@@ -902,6 +1105,7 @@ def decide(lad: dict, case: dict) -> dict:
                 dec["category"] = "区分2(救済フロー本体の採否。受理面は不変=LLM提案語∩display窓)"
                 dec["rule_changes"] = ["救済フロー(後処理工程の新設)"]
                 if any(x.get("truncated_tail") for x in rows):
+                    dec["hr_flags"] = ["LLMが補った語(窓外のtail)を破棄(目的語の意味が失われる/多義の可能性。gloss再整合は本文での意味で行う)"]
                     dec["why"] = "LLMが範囲拡張(display窓外の語を付加)。窓内の語だけ採用(先頭len(display)語。新語形は作らない)。窓外tailは捨てる(gloss再整合必須)"
                 else:
                     dec["why"] = "LLM提案語/display語の組合せから最大限LLM提案を採用した形"
@@ -934,15 +1138,15 @@ def decide(lad: dict, case: dict) -> dict:
                            "承認済みP-04(3)のhas/had->haveも語形リストと自己矛盾して常に不通過(dead path)")
             return dec
         if t2_d:
-            dec.update(rescuable=True, final_display=d, final_key=d, method="慣用句の法助動詞例外(辞書見出しの核と一致)", category="区分2",
-                       rule_changes=["慣用句(Wiktionary見出しの核)に限る法助動詞例外"], flow_needed=False,
-                       why="Wiktionary慣用句見出し『it can't be helped』の核(主語を除く)。固定表現として自立=節の断片ではない。例外は辞書見出しの核に限定")
+            dec.update(rescuable=True, final_display=d, final_key=d, method="慣用句の法助動詞例外(レビュー済み閉表と一致)", category="区分2",
+                       rule_changes=["慣用句の法助動詞例外(先頭が助動詞・idioms由来のレビュー済み閉表)"], flow_needed=False,
+                       why="Wiktionary慣用句見出し『it can't be helped』の核(主語を除く)をレビュー済み閉表に収載。固定表現として自立=節の断片ではない。例外は閉表の句に限定(名詞主語のことわざ・完全文は対象外)")
             return dec
         t2_var = [r for r in rows if r["tier"] == "T2" and r.get("pass_") and r.get("display") and r["display"].lower() != d.lower()]
         if t2_var:
             v = t2_var[0]
             dec.update(rescuable=True, final_display=v["display"], final_key=v["final"], method="主語(it)除去の連続部分列+慣用句の法助動詞例外", category="区分2",
-                       rule_changes=["選定段の主語除去(連続部分列)", "慣用句(Wiktionary見出しの核)に限る法助動詞例外"], flow_needed=True,
+                       rule_changes=["選定段の主語除去(連続部分列)", "慣用句の法助動詞例外(レビュー済み閉表)"], flow_needed=True,
                        why="『it can't be helped』は主語を持つ完全文=原承認趣旨(完全文排除)に反するため、主語を除いた核『can't be helped』(本文の連続部分列・"
                            "Wiktionary見出しの核)だけを通す。それでも例外が無ければ不通過")
             return dec
@@ -978,7 +1182,9 @@ def final_check(dec: dict, case: dict) -> dict | None:
     flags = NO_PATCH
     if cat.startswith("区分1"):
         flags = TIER1_PATCH
-    if "辞書" in cat or "慣用句" in " ".join(dec.get("rule_changes", [])):
+    if "慣用句" in " ".join(dec.get("rule_changes", [])) or "慣用句" in str(dec.get("method", "")):
+        flags = dict(TIER1_PATCH, idiom=True)        # M3: 慣用句例外(レビュー済み閉表)のみ。辞書guard(lexguard)は含めない
+    if "辞書" in cat:
         flags = TIER2_PATCH
     disp, key = dec["final_display"], dec["final_key"]
     with RulePatch(**flags):
@@ -1034,9 +1240,10 @@ def run_inventory(inv_path: str):
     return out
 
 
-def have_probe(path_out: str) -> dict:
+def have_probe(path_out: str, prev_path: str | None = None) -> dict:
     """全本文(X/Y/Z selector prompt)の『have/has/had始まりの2〜4語窓』のうち、現行の語形リストでは拒否され、役割判定で新たに通る窓を列挙(人手レビュー用)。
-    reviewは『語彙動詞haveとして自然な学習単位か』『完了形/助動詞用法が混入していないか』。先頭3語でdedupe。"""
+    [委任_02/M2] 窓単体の判定に加え、文全体を文脈にした判定(ext_role)も出し、窓が助動詞構文の断片(have all|gone 等)のものを fragment_of_aux として別掲する。
+    prev_path(委任_01の結果)があれば、M2で再び拒否側(aux)に戻った窓を reblocked_by_m2 として出す。"""
     seen_texts = {}
     for pat in ("er019_output", "er026_output", "er121_output"):
         for f in glob.glob(f"{pat}/**/keywords_selector_prompt.txt", recursive=True):
@@ -1044,14 +1251,16 @@ def have_probe(path_out: str) -> dict:
             i = t.find(chr(10) + "---" + chr(10))
             art = t[i + 5:] if i >= 0 else t
             seen_texts[hash(art)] = art
-    newly, blocked_still = {}, {}
+    newly, blocked_still, frag = {}, {}, {}
     for art in seen_texts.values():
         flat = unicodedata.normalize("NFKC", art).replace("’", "'")
         for sent in re.split(r"(?<=[.!?])\s+|" + chr(10) + "+", flat):
             toks = ft._norm_tokens(sent)
+            low = [x.lower() for x in toks]
             for st in range(len(toks)):
-                if toks[st].lower() not in _HAVE:
+                if low[st] not in _HAVE:
                     continue
+                ext = have_role(low, st, capitalized_first=toks[st][:1].isupper())
                 for n in (2, 3, 4):
                     w = toks[st:st + n]
                     if len(w) < n:
@@ -1060,8 +1269,165 @@ def have_probe(path_out: str) -> dict:
                     if not kc._contains_finite_auxiliary(ph):
                         continue
                     key = " ".join(w[:3]).lower()
-                    (newly if not contains_finite_aux_role_based(ph) else blocked_still).setdefault(key, ph)
-    res = {"newly_unblocked_windows": sorted(newly.values()), "still_blocked_windows": sorted(blocked_still.values())}
+                    if contains_finite_aux_role_based(ph):
+                        blocked_still.setdefault(key, ph)
+                    else:
+                        newly.setdefault(key, ph)
+                        if ext == "aux":
+                            frag.setdefault(key, {"window": ph, "sentence": sent.strip()[:200]})
+    res = {"newly_unblocked_windows": sorted(newly.values()), "still_blocked_windows": sorted(blocked_still.values()),
+           "fragment_of_aux_in_sentence": sorted(frag.values(), key=lambda x: x["window"])}
+    if prev_path and os.path.exists(prev_path):
+        prev = json.load(open(prev_path, encoding="utf-8")).get("newly_unblocked_windows", [])
+        res["reblocked_by_m2"] = sorted(set(prev) - set(res["newly_unblocked_windows"]))
+        res["prev_n"] = len(prev)
+    json.dump(res, open(path_out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    return res
+
+
+def build_idiom_table(out_json: str) -> dict:
+    """M3: 機械抽出した候補(build_idiom_candidates)にレビュー結果(IDIOM_REVIEW_INCLUDE/EXCLUDE)を適用して閉表JSONを書く。"""
+    import hashlib
+    base = os.path.join(ROOT, "er023_output", "key_phrase_db_trial_01", "db", "wiktionary")
+    src = {}
+    for fn in ("idioms", "phrasal_verbs", "proverbs"):
+        p = os.path.join(base, fn + ".json")
+        d = json.load(open(p, encoding="utf-8"))
+        src[fn + ".json"] = {"sha256": hashlib.sha256(open(p, "rb").read()).hexdigest(), "category": d.get("category"), "n_titles": len(d.get("titles", [])),
+                             "used_for_table": fn == "idioms"}
+    cands = dict(build_idiom_candidates())
+    excl = {t: why for why, ts in IDIOM_REVIEW_EXCLUDE_REASON.items() for t in ts}
+    missing = sorted(IDIOM_REVIEW_INCLUDE - set(cands))
+    uncovered = sorted(t for t in cands if t not in IDIOM_REVIEW_INCLUDE and t not in excl)
+    entries = sorted(IDIOM_REVIEW_INCLUDE & set(cands))
+    out = {"purpose": "KP-GATE-EXCLUSION-RESCUE-DESIGN-02 M3: 慣用句の法助動詞/助動詞例外のレビュー済み閉表(DEV。Production非配線)",
+           "extraction_rule": "Wiktionary Category:English idioms の見出し(proverbs/phrasal verbsは使わない)のうち、5語以内・先頭語が法助動詞/助動詞(縮約形can't等を含む)・"
+                              "役割判定後も有限助動詞として拒否されるもの、+『it/that/there+核』見出しの核(核の先頭が助動詞、5語以内)。実行時に外部辞書は照会しない",
+           "source_snapshot": src, "n_candidates": len(cands), "n_entries": len(entries), "entries": entries,
+           "entries_sha256": _entries_sha(entries),
+           "excluded": [{"title": t, "origin": cands[t], "reason": excl.get(t, "(未分類)")} for t in sorted(cands) if t not in entries],
+           "include_not_in_candidates": missing, "uncovered_candidates": uncovered,
+           "license_note": "Wiktionary本文はCC BY-SA 4.0(+GFDL)。本表は見出し(語句の列挙)のみを利用し本文・定義・例文は取り込まない。見出しの列挙が著作物として"
+                           "継承条件(ShareAlike)の対象かは法的判断が必要(ユーザー判断材料)。出典表示ファイルをrepoに置く案を併記(DESIGN_02参照)"}
+    json.dump(out, open(out_json, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    return out
+
+
+def monotonicity_run(adv_path: str, out_path: str) -> dict:
+    """委任_02: (1)実データ(既存の選定句/used_formペア)に対する単調性(既に受理されていた変換がパッチ後も受理される)+新規受理変換の列挙(selection_probe)
+    (2)敵対的test集(adversarial_01.json): 誤受理してはいけない変換/受理すべき変換/役割判定/過去形表/慣用句例外 を機械判定。"""
+    tmp = out_path + ".real.tmp"
+    real = selection_probe(tmp)
+    os.remove(tmp)
+    adv = json.load(open(adv_path, encoding="utf-8"))
+    res = {"real_data": {k: real[k] for k in ("n_displays", "n_pairs", "n_changed_pairs", "monotonicity_violations")},
+           "real_data_newly_accepted": real["newly_accepted_conversions"], "adversarial": {}}
+    fails = []
+
+    conv = []
+    for c in adv.get("conversions", []):
+        with RulePatch(**TIER1_PATCH):
+            t1 = ft.find_inflection_window(c["key"], c["display"]) is not None
+        base = ft.find_inflection_window(c["key"], c["display"]) is not None
+        if c["expect"] == "preexisting_accept":      # パッチ前から受理される既存挙動: パッチで増減しないことだけを固定
+            row = dict(c, tier1_accepts=t1, production_accepts=base, ok=(t1 == base and base))
+            row["preexisting_in_production"] = True
+        else:
+            want = c["expect"] == "accept"
+            row = dict(c, tier1_accepts=t1, production_accepts=base, ok=(t1 == want))
+            row["preexisting_in_production"] = bool(base and not want)
+        conv.append(row)
+        if not row["ok"]:
+            fails.append(("conversion", c["display"], c["key"]))
+    res["adversarial"]["conversions"] = conv
+
+    roles = []
+    for c in adv.get("have_roles", []):
+        got = [role for tok, role in finite_aux_roles(c["phrase"]) if tok in _HAVE]
+        ok = got == c["expect"]
+        roles.append(dict(c, got=got, ok=ok))
+        if not ok:
+            fails.append(("have_role", c["phrase"], got))
+    res["adversarial"]["have_roles"] = roles
+
+    past = []
+    with RulePatch(past=True):
+        for w in adv.get("past_forms_must_not_be_added", []):
+            added = w in ft._PAST_ONLY_IRREGULAR or w in ft._AMBIGUOUS_IRREGULAR
+            past.append({"form": w, "added": added, "ok": not added})
+            if added:
+                fails.append(("past_form", w, "added"))
+        for w in adv.get("past_forms_must_be_added", []):
+            added = w in ft._PAST_ONLY_IRREGULAR or w in ft._AMBIGUOUS_IRREGULAR
+            past.append({"form": w, "added": added, "ok": added})
+            if not added:
+                fails.append(("past_form_missing", w, "not added"))
+    res["adversarial"]["past_forms"] = past
+
+    idi = []
+    with RulePatch(aux=True, idiom=True):
+        for c in adv.get("idiom", []):
+            blocked = kc._contains_finite_auxiliary(c["phrase"])
+            ok = blocked == (c["expect"] == "blocked")
+            idi.append(dict(c, blocked=blocked, ok=ok))
+            if not ok:
+                fails.append(("idiom", c["phrase"], blocked))
+    res["adversarial"]["idiom"] = idi
+    res["adversarial_summary"] = {"n": len(conv) + len(roles) + len(past) + len(idi), "fails": fails}
+    json.dump(res, open(out_path, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    return res
+
+
+_CLITIC_RE = re.compile(r"(?<![A-Za-z])([A-Za-z]+)(n['’]t|['’](?:re|ll|d|ve|m|s))(?![A-Za-z])", re.IGNORECASE)
+
+
+def contraction_probe(path_out: str) -> dict:
+    """R5(Opus): 縮約形('re/'ll/'d/'ve/'m/'s、n't)が有限助動詞検査をすり抜ける範囲の測定(API 0、既存の出力ログのみ)。
+    現行の検査(kc._contains_finite_auxiliary)はトークン化 [A-Za-z][A-Za-z'-]* で、ASCII `'`は1語(can't)・曲線`’`は2語(can,t)になる。
+    対象= X/Y/Z出力の選定句(selection_phrase/used_form/display_phrase/key_phrase/dropped)。"""
+    phrases = {}
+    for pat in ("er019_output", "er026_output", "er121_output"):
+        for f in glob.glob(f"{pat}/**/kp_candidates.json", recursive=True):
+            try:
+                d = json.load(open(f, encoding="utf-8"))
+            except Exception:   # noqa: BLE001
+                continue
+            for c in d.get("candidates", []):
+                for k in ("selection_phrase", "used_form"):
+                    if c.get(k):
+                        phrases.setdefault(c[k], set()).add("accepted_candidate")
+            for c in d.get("dropped", []):
+                if c.get("phrase"):
+                    phrases.setdefault(c["phrase"], set()).add("dropped")
+        for f in glob.glob(f"{pat}/**/keywords_canonicalized.json", recursive=True):
+            try:
+                d = json.load(open(f, encoding="utf-8"))
+            except Exception:   # noqa: BLE001
+                continue
+            for it in d.get("items", []):
+                for k in ("display_phrase", "key_phrase", "used_form"):
+                    if it.get(k):
+                        phrases.setdefault(it[k], set()).add("canonicalized_item")
+    rows = []
+    for ph, where in sorted(phrases.items()):
+        ms = _CLITIC_RE.findall(ph)
+        if not ms:
+            continue
+        curly = "’" in ph
+        rows.append({"phrase": ph, "where": sorted(where), "quote": "curly" if curly else "ascii",
+                     "clitics": [a + b for a, b in ms], "orig_blocked": kc._contains_finite_auxiliary(ph),
+                     "has_aux_clitic": any(re.fullmatch(r"n['’]t|['’](re|ll|d|ve|m)", b, re.IGNORECASE) for _, b in ms),
+                     "has_s_clitic": any(re.fullmatch(r"['’]s", b, re.IGNORECASE) for _, b in ms)})
+    by = {}
+    for r in rows:
+        k = (r["quote"], "aux_clitic" if r["has_aux_clitic"] else ("'s(所有格/is/has)" if r["has_s_clitic"] else "other"))
+        by.setdefault(f"{k[0]}/{k[1]}", {"n": 0, "currently_blocked": 0, "currently_passes": 0})
+        by[f"{k[0]}/{k[1]}"]["n"] += 1
+        by[f"{k[0]}/{k[1]}"]["currently_blocked" if r["orig_blocked"] else "currently_passes"] += 1
+    res = {"n_phrases_scanned": len(phrases), "n_with_clitic": len(rows), "by_class": by, "rows": rows,
+           "tokenization_note": {"can't": kc._WORD_TOKEN_RE.findall("can't"), "can’t": kc._WORD_TOKEN_RE.findall("can’t"),
+                                 "they’re": kc._WORD_TOKEN_RE.findall("they’re"), "I’ll": kc._WORD_TOKEN_RE.findall("I’ll"),
+                                 "it's": kc._WORD_TOKEN_RE.findall("it's"), "won’t": kc._WORD_TOKEN_RE.findall("won’t")}}
     json.dump(res, open(path_out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     return res
 
@@ -1225,6 +1591,65 @@ def run_judge(eval_path: str, budget_jpy: float, out_path: str):
            "provenance": "fresh(LLM評価のみ。救済候補の生成は決定論)"}
     json.dump(out, open(out_path, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print("judge items:", len(items), "cost_jpy:", round(jpy, 4))
+
+
+HEADWORD_SCHEMA = {"name": "kp_headword_judge", "strict": True, "schema": {
+    "type": "object", "additionalProperties": False, "required": ["items"],
+    "properties": {"items": {"type": "array", "items": {
+        "type": "object", "additionalProperties": False,
+        "required": ["id", "acceptable_as_headword", "entry_type", "learning_value", "meaning_vs_source", "verdict", "note_ja"],
+        "properties": {
+            "id": {"type": "string"},
+            "acceptable_as_headword": {"type": "boolean"},
+            "entry_type": {"type": "string", "enum": ["fixed_expression", "grammar_pattern_with_slot", "ordinary_phrase", "not_a_learning_unit"]},
+            "learning_value": {"type": "string", "enum": ["good", "weak", "bad"]},
+            "meaning_vs_source": {"type": "string", "enum": ["same", "narrowed", "generalized", "changed", "inverted", "no_source"]},
+            "verdict": {"type": "string", "enum": ["adopt", "adopt_with_hr_flag", "reject"]},
+            "note_ja": {"type": "string"}}}}}}}
+
+HEADWORD_PROMPT = """You are an independent reviewer for an English-learning radio app. Each item is a candidate "key phrase" learning unit. In this evaluation you must judge each unit AS A HEADWORD / PATTERN ENTRY OF A LEARNER'S DICTIONARY (like the pattern headings in Oxford Advanced Learner's, Cambridge or Longman, e.g. "too ... to do", "be about to do", "have a say"), NOT as a natural English sentence fragment. In such headings the word "do" (or "something"/"someone") is a conventional placeholder for a generic verb/object slot.
+For each item output:
+- acceptable_as_headword: would a learner's dictionary plausibly list this exact form as an entry or pattern heading?
+- entry_type: fixed_expression / grammar_pattern_with_slot / ordinary_phrase / not_a_learning_unit.
+- learning_value: good / weak / bad as a unit to teach on its own.
+- meaning_vs_source: compared with the source phrase's meaning in its sentence (source_phrase_in_article; "no_source" if none): same / narrowed / generalized (a pattern covering the source) / changed / inverted.
+- verdict: adopt / adopt_with_hr_flag (a human should also see the original) / reject.
+- note_ja: one short Japanese sentence.
+Be strict and independent. Items:
+"""
+
+
+def run_judge_headword(cases_path: str, budget_jpy: float, out_path: str, n_runs: int = 3):
+    """M4(Opus): A2 `too soon to do` を『学習者向け辞書の見出し形として適切か』の枠組みで再評価(前回=『自然な英文として適切か』の枠組みでreject 7/8)。
+    評価は決定論Gateが通したものの却下専用の参考情報であり、QAではない。n_runs回の独立call(各回同一プロンプト)で揺れを見る。"""
+    cases = json.load(open(cases_path, encoding="utf-8"))
+    from dotenv import load_dotenv
+    load_dotenv()
+    from openai import OpenAI
+    client = OpenAI()
+    msg = HEADWORD_PROMPT + json.dumps(cases, ensure_ascii=False, indent=1)
+    runs, total = [], 0.0
+    for k in range(n_runs):
+        resp = client.responses.create(model=JUDGE_MODEL, reasoning={"effort": "low"},
+                                       text={"format": {"type": "json_schema", **HEADWORD_SCHEMA}}, input=[{"role": "user", "content": msg}])
+        if resp.model != JUDGE_MODEL:
+            raise RuntimeError(f"model mismatch: {resp.model}")
+        u = resp.usage
+        inp = getattr(u, "input_tokens", 0) or 0
+        cached = getattr(getattr(u, "input_tokens_details", None), "cached_tokens", 0) or 0
+        outp = getattr(u, "output_tokens", 0) or 0
+        usd = ((inp - cached) * _PRICE_USD_PER_M["input"] + cached * _PRICE_USD_PER_M["cached"] + outp * _PRICE_USD_PER_M["output"]) / 1e6
+        jpy = usd * _USD_JPY
+        total += jpy
+        runs.append({"run": k + 1, "response_id": resp.id, "usage": {"input": inp, "cached": cached, "output": outp}, "cost_jpy": round(jpy, 4),
+                     "judgements": json.loads(resp.output_text)["items"]})
+        if total > budget_jpy:
+            raise RuntimeError(f"budget exceeded: {total:.3f} > {budget_jpy}")
+    out = {"model": JUDGE_MODEL, "model_is_latest_recommended": "repoの承認済み推奨系(SUPPORT_MODEL)。PM_GOVERNANCE 25節: 最新世代の推奨系。旧/下位モデルではない(生成側と同系統=R6の限界を併記)",
+           "n_runs": n_runs, "cost_jpy_total": round(total, 4), "budget_jpy": budget_jpy, "cases": cases, "runs": runs,
+           "framing": "学習者向け辞書の見出し形/パターン見出しとして適切か(前回judge_06-08=自然な英文としての評価)"}
+    json.dump(out, open(out_path, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    print("headword judge: cases", len(cases), "runs", n_runs, "cost_jpy_total:", round(total, 4))
 
 
 def rescue_structural_revert(llm_key: str, display: str, span: str, original_span: str | None = None, role_ok_poss=frozenset()) -> dict:
@@ -1399,6 +1824,12 @@ def main():
     ap.add_argument("--final-md")
     ap.add_argument("--gap-report")
     ap.add_argument("--judge")
+    ap.add_argument("--judge-headword")
+    ap.add_argument("--build-idiom-table")
+    ap.add_argument("--monotonicity", action="store_true")
+    ap.add_argument("--adversarial")
+    ap.add_argument("--contraction-probe")
+    ap.add_argument("--prev-have")
     ap.add_argument("--budget-jpy", type=float, default=30.0)
     a = ap.parse_args()
     sys.stdout.reconfigure(encoding="utf-8")
@@ -1406,7 +1837,7 @@ def main():
         json.dump(irregular_gap_report(), open(a.gap_report, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
         print("gap report ->", a.gap_report)
     if a.have_probe:
-        r = have_probe(a.have_probe)
+        r = have_probe(a.have_probe, a.prev_have)
         print("newly_unblocked:", len(r["newly_unblocked_windows"]), "still_blocked:", len(r["still_blocked_windows"]))
     if a.finalize:
         print(json.dumps(finalize(a.finalize, a.judge_json, a.out, a.final_md), ensure_ascii=False))
@@ -1424,6 +1855,19 @@ def main():
         print("events:", len(rows), "->", a.out)
     if a.judge:
         run_judge(a.judge, a.budget_jpy, a.out)
+    if a.judge_headword:
+        run_judge_headword(a.judge_headword, a.budget_jpy, a.out)
+    if a.build_idiom_table:
+        r = build_idiom_table(a.build_idiom_table)
+        print("idiom table: candidates", r["n_candidates"], "entries", r["n_entries"], "sha256", r["entries_sha256"], "include_not_in_candidates", r["include_not_in_candidates"],
+              "uncovered", r["uncovered_candidates"])
+    if a.contraction_probe:
+        r = contraction_probe(a.contraction_probe)
+        print("contraction: scanned", r["n_phrases_scanned"], "with clitic", r["n_with_clitic"], json.dumps(r["by_class"], ensure_ascii=False))
+    if a.monotonicity:
+        r = monotonicity_run(a.adversarial, a.out)
+        print("real:", json.dumps(r["real_data"]["monotonicity_violations"]), "newly_accepted:", len(r["real_data_newly_accepted"]),
+              "adversarial n/fails:", r["adversarial_summary"]["n"], r["adversarial_summary"]["fails"])
 
 
 if __name__ == "__main__":

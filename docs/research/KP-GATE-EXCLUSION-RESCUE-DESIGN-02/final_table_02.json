@@ -1,0 +1,2822 @@
+[
+ {
+  "id": 0,
+  "era": "HR(kp_candidates.json dropped)",
+  "family": "X",
+  "level": "a2",
+  "display": "too soon to wave a flag",
+  "class": "WORDCOUNT_OVER5",
+  "sub": "",
+  "reason": "語数が1〜5語でない(実際: 6語)",
+  "decision": {
+   "id": 0,
+   "family": "X",
+   "level": "a2",
+   "display": "too soon to wave a flag",
+   "class": "WORDCOUNT_OVER5",
+   "era": "HR(kp_candidates.json dropped)",
+   "final_display": "too soon",
+   "final_key": "too soon",
+   "method": "A1_subspan",
+   "category": "区分2(救済フロー本体の採否[後処理工程の新設]。受理面は不変)",
+   "rescuable": true,
+   "rule_changes": [
+    "選定段の短縮救済フロー(新規)"
+   ],
+   "fallback_surface": null,
+   "why": "元句の連続部分列で本文対応を保持。演算子(too/not/no/little/few/unless/except/rather/instead/fail等)の作用域を壊す部分列は決定論で禁止(意味反転なし)。HRに元句と本文の文を併記",
+   "flow_needed": true,
+   "hr_flags": [
+    "意味縮小の可能性(元句の一部のみ。元句と本文の文を併記して確認)",
+    "低価値の可能性(2語以下/程度・否定の語が中心)"
+   ],
+   "option_slot_generalization": {
+    "candidate": "too soon to do",
+    "category": "区分2(非推奨・AI意見付き。M4: ユーザー自身の例のためAIが区分3で閉じず、判断材料を併記してユーザー判断へ)",
+    "dropped_tail_is_lexicon_idiom": false,
+    "checks": {
+     "scope_words_kept_before_slot": true,
+     "words_le_5": true,
+     "tail_ge_2_tokens": true,
+     "prefix_is_leading_contiguous": true,
+     "cmu": true,
+     "no_finite_aux": true,
+     "prefix_selection_gate": true
+    }
+   }
+  },
+  "final_check": {
+   "patch_flags": {},
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 2,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 2,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "narrowed",
+     "good"
+    ],
+    [
+     "adopt",
+     "narrowed",
+     "good"
+    ],
+    [
+     "adopt_with_hr_flag",
+     "narrowed",
+     "weak"
+    ]
+   ],
+   "notes_ja": [
+    "元の「早まって判断する」という意味のうち、早すぎることだけを表します。",
+    "元の「早まって成功を宣言する」という意味より広い表現ですが、自然な学習単位です。",
+    "元の「旗を振るほどではない」という含みは薄れます。"
+   ]
+  },
+  "final_label": "区分2(救済フロー本体の採否[後処理工程の新設]。受理面は不変)",
+  "final_note": ""
+ },
+ {
+  "id": 1,
+  "era": "HR(kp_candidates.json dropped)",
+  "family": "X",
+  "level": "a2",
+  "display": "studied separately",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "LEMMA_1TO1_REJECTED",
+  "reason": "key_phrase('study separately')がdisplay_phraseと一致せず、source_span('studied separately')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しな",
+  "decision": {
+   "id": 1,
+   "family": "X",
+   "level": "a2",
+   "display": "studied separately",
+   "class": "RULE7_NORMALIZATION",
+   "era": "HR(kp_candidates.json dropped)",
+   "final_display": "studied separately",
+   "final_key": "study separately",
+   "method": "LLMのkeyが区分1規則是正だけで通常フローを通る",
+   "category": "区分1",
+   "rescuable": true,
+   "rule_changes": [
+    "guardに副詞後続(三重検査付き)を追加"
+   ],
+   "fallback_surface": "studied separately",
+   "why": "承認済みP-04の文言(『先頭またはto直後の動詞』)に無い内部条件/閉表の網羅漏れ。LLMの提案keyはそのまま通る=救済フロー不要",
+   "flow_needed": false
+  },
+  "final_check": {
+   "patch_flags": {
+    "aux": true,
+    "quant": true,
+    "adverb": true,
+    "past": true
+   },
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 2,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 3,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "「別々に研究する」という意味を自然に保っています。",
+    "「別々に調べる」という原文の意味を保った自然な単位です。",
+    "原形化されており、自然な学習単位です。"
+   ]
+  },
+  "final_label": "区分1",
+  "final_note": ""
+ },
+ {
+  "id": 2,
+  "era": "HR(kp_candidates.json dropped)",
+  "family": "X",
+  "level": "a2",
+  "display": "put in place",
+  "class": "HUMAN_NG_EXCLUDED",
+  "sub": null,
+  "reason": "除外指定の語句(Humanが不適切(NG)と指定: evidence R1: AI top1 NG登録(共有registry検証用))",
+  "decision": {
+   "id": 2,
+   "family": "X",
+   "level": "a2",
+   "display": "put in place",
+   "class": "HUMAN_NG_EXCLUDED",
+   "era": "HR(kp_candidates.json dropped)",
+   "final_display": null,
+   "final_key": null,
+   "method": null,
+   "category": "区分3",
+   "rescuable": false,
+   "rule_changes": [],
+   "fallback_surface": null,
+   "why": "Human NG(ユーザーの明示判断)は復活しない(USER.md:97)。救済経路でもmatch_ngがselection_phrase/used_formの両方を照合し迂回不可",
+   "flow_needed": false
+  },
+  "final_check": null,
+  "judge": null,
+  "final_label": "区分3",
+  "final_note": ""
+ },
+ {
+  "id": 3,
+  "era": "HR(kp_candidates.json dropped)",
+  "family": "X",
+  "level": "b1b",
+  "display": "off the hook",
+  "class": "HUMAN_NG_EXCLUDED",
+  "sub": null,
+  "reason": "除外指定の語句(Humanが不適切(NG)と指定: evidence R1: off the hook NG(共有registry検証))",
+  "decision": {
+   "id": 3,
+   "family": "X",
+   "level": "b1b",
+   "display": "off the hook",
+   "class": "HUMAN_NG_EXCLUDED",
+   "era": "HR(kp_candidates.json dropped)",
+   "final_display": null,
+   "final_key": null,
+   "method": null,
+   "category": "区分3",
+   "rescuable": false,
+   "rule_changes": [],
+   "fallback_surface": null,
+   "why": "Human NG(ユーザーの明示判断)は復活しない(USER.md:97)。救済経路でもmatch_ngがselection_phrase/used_formの両方を照合し迂回不可",
+   "flow_needed": false
+  },
+  "final_check": null,
+  "judge": null,
+  "final_label": "区分3",
+  "final_note": ""
+ },
+ {
+  "id": 4,
+  "era": "HR(kp_candidates.json dropped)",
+  "family": "X",
+  "level": "b1b",
+  "display": "had our eye on",
+  "class": "FINITE_AUX_TOKEN",
+  "sub": "",
+  "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+  "decision": {
+   "id": 4,
+   "family": "X",
+   "level": "b1b",
+   "display": "had our eye on",
+   "class": "FINITE_AUX_TOKEN",
+   "era": "HR(kp_candidates.json dropped)",
+   "final_display": "had our eye on",
+   "final_key": "have our eye on",
+   "method": "役割判定(lexical have)で通常フローを通る",
+   "category": "区分1",
+   "rescuable": true,
+   "rule_changes": [
+    "有限助動詞の役割判定(語彙動詞have/has/hadは助動詞でない)"
+   ],
+   "fallback_surface": null,
+   "why": "承認済み規則は『有限助動詞』の排除(DECISION_LOG:7408)。語彙動詞haveは助動詞でなく、OPEN-152で誤判定として既出。承認済みP-04(3)のhas/had->haveも語形リストと自己矛盾して常に不通過(dead path)",
+   "flow_needed": false
+  },
+  "final_check": {
+   "patch_flags": {
+    "aux": true,
+    "quant": true,
+    "adverb": true,
+    "past": true
+   },
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 4,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 3,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "「注目している」という慣用表現として自然です。",
+    "「注目している」という意味の自然な慣用表現です。",
+    "「注目している」という自然な慣用表現です。"
+   ]
+  },
+  "final_label": "区分1",
+  "final_note": ""
+ },
+ {
+  "id": 5,
+  "era": "HR(kp_candidates.json dropped)",
+  "family": "Z",
+  "level": "b1b",
+  "display": "rose above",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "LLM_EXPANDED_BEYOND_SPAN",
+  "reason": "key_phrase('rise above the other voices')がdisplay_phraseと一致せず、source_span('rose above')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存",
+  "decision": {
+   "id": 5,
+   "family": "Z",
+   "level": "b1b",
+   "display": "rose above",
+   "class": "RULE7_NORMALIZATION",
+   "era": "HR(kp_candidates.json dropped)",
+   "final_display": "rose above",
+   "final_key": "rise above",
+   "method": "M1再導出(救済フロー)",
+   "category": "区分2(救済フロー本体の採否。受理面は不変=LLM提案語∩display窓)",
+   "rescuable": true,
+   "rule_changes": [
+    "救済フロー(後処理工程の新設)"
+   ],
+   "fallback_surface": "rose above",
+   "why": "LLMが範囲拡張(display窓外の語を付加)。窓内の語だけ採用(先頭len(display)語。新語形は作らない)。窓外tailは捨てる(gloss再整合必須)",
+   "flow_needed": true,
+   "hr_flags": [
+    "LLMが補った語(窓外のtail)を破棄(目的語の意味が失われる/多義の可能性。gloss再整合は本文での意味で行う)"
+   ]
+  },
+  "final_check": {
+   "patch_flags": {},
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 2,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 2,
+   "adopt_ok_loose": 2,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt_with_hr_flag",
+     "changed",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "声がほかの声を上回るという用法を表す自然な句です。",
+    "自然な句動詞ですが、原文の「声の中でひときわ響く」とは意味がずれる可能性があります。",
+    "ここでは声の上に響くという意味で自然です。"
+   ]
+  },
+  "final_label": "区分2(救済フロー本体の採否。受理面は不変=LLM提案語∩display窓)",
+  "final_note": ""
+ },
+ {
+  "id": 6,
+  "era": "HR(kp_candidates.json dropped)",
+  "family": "Z",
+  "level": "b1b",
+  "display": "held out",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "LLM_EXPANDED_BEYOND_SPAN",
+  "reason": "key_phrase(\"hold out one's hands\")がdisplay_phraseと一致せず、source_span('held out')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形",
+  "decision": {
+   "id": 6,
+   "family": "Z",
+   "level": "b1b",
+   "display": "held out",
+   "class": "RULE7_NORMALIZATION",
+   "era": "HR(kp_candidates.json dropped)",
+   "final_display": "held out",
+   "final_key": "hold out",
+   "method": "M1再導出(救済フロー)",
+   "category": "区分2(救済フロー本体の採否。受理面は不変=LLM提案語∩display窓)",
+   "rescuable": true,
+   "rule_changes": [
+    "救済フロー(後処理工程の新設)"
+   ],
+   "fallback_surface": "held out",
+   "why": "LLMが範囲拡張(display窓外の語を付加)。窓内の語だけ採用(先頭len(display)語。新語形は作らない)。窓外tailは捨てる(gloss再整合必須)",
+   "flow_needed": true,
+   "hr_flags": [
+    "LLMが補った語(窓外のtail)を破棄(目的語の意味が失われる/多義の可能性。gloss再整合は本文での意味で行う)"
+   ]
+  },
+  "final_check": {
+   "patch_flags": {},
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 2,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 2,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt_with_hr_flag",
+     "same",
+     "weak"
+    ]
+   ],
+   "notes_ja": [
+    "手を差し出す意味の句動詞として自然です。",
+    "手を差し出すという原文の意味に合う自然な句動詞です。",
+    "「差し出す」の意味ですが、目的語がなく用法が複数あります。"
+   ]
+  },
+  "final_label": "区分2(救済フロー本体の採否。受理面は不変=LLM提案語∩display窓)",
+  "final_note": ""
+ },
+ {
+  "id": 7,
+  "era": "HR(kp_candidates.json dropped)",
+  "family": "Z",
+  "level": "b1b",
+  "display": "sentenced him to death",
+  "class": "HUMAN_NG_EXCLUDED",
+  "sub": null,
+  "reason": "除外指定の語句(Humanが不適切(NG)と指定: evidence R3: AI top1 NG(共有registry検証))",
+  "decision": {
+   "id": 7,
+   "family": "Z",
+   "level": "b1b",
+   "display": "sentenced him to death",
+   "class": "HUMAN_NG_EXCLUDED",
+   "era": "HR(kp_candidates.json dropped)",
+   "final_display": null,
+   "final_key": null,
+   "method": null,
+   "category": "区分3",
+   "rescuable": false,
+   "rule_changes": [],
+   "fallback_surface": null,
+   "why": "Human NG(ユーザーの明示判断)は復活しない(USER.md:97)。救済経路でもmatch_ngがselection_phrase/used_formの両方を照合し迂回不可",
+   "flow_needed": false
+  },
+  "final_check": null,
+  "judge": null,
+  "final_label": "区分3",
+  "final_note": ""
+ },
+ {
+  "id": 8,
+  "era": "HR(kp_candidates.json dropped)",
+  "family": "Z",
+  "level": "b1b",
+  "display": "rang through",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "LEMMA_1TO1_REJECTED",
+  "reason": "key_phrase('ring through')がdisplay_phraseと一致せず、source_span('rang through')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に",
+  "decision": {
+   "id": 8,
+   "family": "Z",
+   "level": "b1b",
+   "display": "rang through",
+   "class": "RULE7_NORMALIZATION",
+   "era": "HR(kp_candidates.json dropped)",
+   "final_display": "rang through",
+   "final_key": "ring through",
+   "method": "LLMのkeyが区分1規則是正だけで通常フローを通る",
+   "category": "区分1",
+   "rescuable": true,
+   "rule_changes": [
+    "過去形/分詞の閉表を補完"
+   ],
+   "fallback_surface": "rang through",
+   "why": "承認済みP-04の文言(『先頭またはto直後の動詞』)に無い内部条件/閉表の網羅漏れ。LLMの提案keyはそのまま通る=救済フロー不要",
+   "flow_needed": false
+  },
+  "final_check": {
+   "patch_flags": {
+    "aux": true,
+    "quant": true,
+    "adverb": true,
+    "past": true
+   },
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 2,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 3,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "音や声が場所に響き渡る意味を自然に表します。",
+    "「鳴り響く」という原文の意味を保つ自然な表現です。",
+    "音が場所全体に響き渡る意味の自然な表現です。"
+   ]
+  },
+  "final_label": "区分1",
+  "final_note": ""
+ },
+ {
+  "id": 9,
+  "era": "HR(kp_candidates.json dropped)",
+  "family": "Y",
+  "level": "a2",
+  "display": "it can’t be helped",
+  "class": "FINITE_AUX_TOKEN",
+  "sub": "",
+  "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+  "decision": {
+   "id": 9,
+   "family": "Y",
+   "level": "a2",
+   "display": "it can’t be helped",
+   "class": "FINITE_AUX_TOKEN",
+   "era": "HR(kp_candidates.json dropped)",
+   "final_display": "can’t be helped",
+   "final_key": "can’t be helped",
+   "method": "主語(it)除去の連続部分列+慣用句の法助動詞例外",
+   "category": "区分2",
+   "rescuable": true,
+   "rule_changes": [
+    "選定段の主語除去(連続部分列)",
+    "慣用句の法助動詞例外(レビュー済み閉表)"
+   ],
+   "fallback_surface": null,
+   "why": "『it can't be helped』は主語を持つ完全文=原承認趣旨(完全文排除)に反するため、主語を除いた核『can't be helped』(本文の連続部分列・Wiktionary見出しの核)だけを通す。それでも例外が無ければ不通過",
+   "flow_needed": true
+  },
+  "final_check": {
+   "patch_flags": {
+    "aux": true,
+    "quant": true,
+    "adverb": true,
+    "past": true,
+    "idiom": true
+   },
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 3,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 3,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "「仕方がない」という慣用表現として適切です。",
+    "「仕方がない」という意味の自然な慣用表現です。",
+    "「仕方がない」を表す定型表現です。"
+   ]
+  },
+  "final_label": "区分2",
+  "final_note": ""
+ },
+ {
+  "id": 10,
+  "era": "HR(kp_candidates.json dropped)",
+  "family": "Y",
+  "level": "a2",
+  "display": "redelivery fee",
+  "class": "CMU_UNREGISTERED",
+  "sub": "",
+  "reason": "CMU発音辞書に登録されていない語を含む(未登録語: redelivery。構成する全ての語がCMU辞書に登録された語句だけを選ぶ)",
+  "decision": {
+   "id": 10,
+   "family": "Y",
+   "level": "a2",
+   "display": "redelivery fee",
+   "class": "CMU_UNREGISTERED",
+   "era": "HR(kp_candidates.json dropped)",
+   "final_display": null,
+   "final_key": null,
+   "method": null,
+   "category": "区分2(CMU規則の受理面拡大: 非推奨)",
+   "rescuable": false,
+   "rule_changes": [
+    "CMU未登録語の接頭辞+登録基底語分解(代替合格の一種)"
+   ],
+   "fallback_surface": null,
+   "why": "分解は可能(re+delivery)だが、2026-10-22承認のCMU必須条件は未登録語の推測/代替合格を禁止。TTS発音安全のため非採用を推奨(音声ASR検証付きでの限定採用は選択肢)",
+   "flow_needed": false
+  },
+  "final_check": null,
+  "judge": null,
+  "final_label": "区分2(CMU規則の受理面拡大: 非推奨)",
+  "final_note": ""
+ },
+ {
+  "id": 11,
+  "era": "HR(kp_candidates.json dropped)",
+  "family": "Y",
+  "level": "b1b",
+  "display": "can’t be helped",
+  "class": "FINITE_AUX_TOKEN",
+  "sub": "",
+  "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+  "decision": {
+   "id": 11,
+   "family": "Y",
+   "level": "b1b",
+   "display": "can’t be helped",
+   "class": "FINITE_AUX_TOKEN",
+   "era": "HR(kp_candidates.json dropped)",
+   "final_display": "can’t be helped",
+   "final_key": "can’t be helped",
+   "method": "慣用句の法助動詞例外(レビュー済み閉表と一致)",
+   "category": "区分2",
+   "rescuable": true,
+   "rule_changes": [
+    "慣用句の法助動詞例外(先頭が助動詞・idioms由来のレビュー済み閉表)"
+   ],
+   "fallback_surface": null,
+   "why": "Wiktionary慣用句見出し『it can't be helped』の核(主語を除く)をレビュー済み閉表に収載。固定表現として自立=節の断片ではない。例外は閉表の句に限定(名詞主語のことわざ・完全文は対象外)",
+   "flow_needed": false
+  },
+  "final_check": {
+   "patch_flags": {
+    "aux": true,
+    "quant": true,
+    "adverb": true,
+    "past": true,
+    "idiom": true
+   },
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 3,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 3,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "「仕方がない」という慣用表現として適切です。",
+    "「仕方がない」という意味の自然な慣用表現です。",
+    "「仕方がない」を表す定型表現です。"
+   ]
+  },
+  "final_label": "区分2",
+  "final_note": ""
+ },
+ {
+  "id": 12,
+  "era": "HR(kp_candidates.json dropped)",
+  "family": "Y",
+  "level": "b1b",
+  "display": "have a say",
+  "class": "FINITE_AUX_TOKEN",
+  "sub": "",
+  "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+  "decision": {
+   "id": 12,
+   "family": "Y",
+   "level": "b1b",
+   "display": "have a say",
+   "class": "FINITE_AUX_TOKEN",
+   "era": "HR(kp_candidates.json dropped)",
+   "final_display": "have a say",
+   "final_key": "have a say",
+   "method": "役割判定(lexical have)で通常フローを通る",
+   "category": "区分1",
+   "rescuable": true,
+   "rule_changes": [
+    "有限助動詞の役割判定(語彙動詞have/has/hadは助動詞でない)"
+   ],
+   "fallback_surface": null,
+   "why": "承認済み規則は『有限助動詞』の排除(DECISION_LOG:7408)。語彙動詞haveは助動詞でなく、OPEN-152で誤判定として既出。承認済みP-04(3)のhas/had->haveも語形リストと自己矛盾して常に不通過(dead path)",
+   "flow_needed": false
+  },
+  "final_check": {
+   "patch_flags": {
+    "aux": true,
+    "quant": true,
+    "adverb": true,
+    "past": true
+   },
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 3,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 3,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "「発言権がある」という自然な慣用表現です。",
+    "「発言権がある」という原文の意味に合う表現です。",
+    "「発言権がある」という自然な慣用表現です。"
+   ]
+  },
+  "final_label": "区分1",
+  "final_note": ""
+ },
+ {
+  "id": 13,
+  "era": "HR(kp_candidates.json dropped)",
+  "family": "Y",
+  "level": "b1b",
+  "display": "catch their interest",
+  "class": "NOT_CONTIGUOUS_IN_TEXT",
+  "sub": "",
+  "reason": "本文に連続一致しない(変更・言い換え・創作)",
+  "decision": {
+   "id": 13,
+   "family": "Y",
+   "level": "b1b",
+   "display": "catch their interest",
+   "class": "NOT_CONTIGUOUS_IN_TEXT",
+   "era": "HR(kp_candidates.json dropped)",
+   "final_display": "catches their interest",
+   "final_key": "catch their interest",
+   "method": "D1 本文近傍への再アンカー(既存原形化validatorの逆引き)",
+   "category": "区分2(救済フロー本体の採否。受理面は不変=本文逐語のspanに戻す)",
+   "rescuable": true,
+   "rule_changes": [
+    "選定段の再アンカー救済(新規)"
+   ],
+   "fallback_surface": null,
+   "why": "LLMが原形で返した句を、既存validatorが『その本文窓の合法な正規化形』と判定する窓へ戻す。窓が一意のときのみ。以降は通常のcanonicalizationへ",
+   "flow_needed": true
+  },
+  "final_check": {
+   "patch_flags": {},
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 3,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 3,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "「興味を引く」という意味を自然に表しています。",
+    "「興味を引く」という意味で自然に使える表現です。",
+    "「興味を引く」という自然な表現です。"
+   ]
+  },
+  "final_label": "区分2(救済フロー本体の採否。受理面は不変=本文逐語のspanに戻す)",
+  "final_note": ""
+ },
+ {
+  "id": 14,
+  "era": "preHR(outer-retry全置換)",
+  "family": "X",
+  "level": "a2",
+  "display": "minaudières",
+  "class": "CMU_UNREGISTERED",
+  "sub": "",
+  "reason": "CMU発音辞書に登録されていない語を含む(未登録語: minaudières。構成する全ての語がCMU辞書に登録された語句だけを選ぶ)",
+  "decision": {
+   "id": 14,
+   "family": "X",
+   "level": "a2",
+   "display": "minaudières",
+   "class": "CMU_UNREGISTERED",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": null,
+   "final_key": null,
+   "method": null,
+   "category": "区分3",
+   "rescuable": false,
+   "rule_changes": [],
+   "fallback_surface": null,
+   "why": "CMU未登録でかつ構成語に分解できない(外来語/アクセント付き)。発音を推測で補えない=TTS発音安全",
+   "flow_needed": false
+  },
+  "final_check": null,
+  "judge": null,
+  "final_label": "区分3",
+  "final_note": ""
+ },
+ {
+  "id": 16,
+  "era": "preHR(outer-retry全置換)",
+  "family": "X",
+  "level": "a2",
+  "display": "novelty minaudière",
+  "class": "CMU_UNREGISTERED",
+  "sub": "",
+  "reason": "CMU発音辞書に登録されていない語を含む(未登録語: minaudière。構成する全ての語がCMU辞書に登録された語句だけを選ぶ)",
+  "decision": {
+   "id": 16,
+   "family": "X",
+   "level": "a2",
+   "display": "novelty minaudière",
+   "class": "CMU_UNREGISTERED",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": null,
+   "final_key": null,
+   "method": null,
+   "category": "区分3",
+   "rescuable": false,
+   "rule_changes": [],
+   "fallback_surface": null,
+   "why": "CMU未登録でかつ構成語に分解できない(外来語/アクセント付き)。発音を推測で補えない=TTS発音安全",
+   "flow_needed": false
+  },
+  "final_check": null,
+  "judge": null,
+  "final_label": "区分3",
+  "final_note": ""
+ },
+ {
+  "id": 17,
+  "era": "preHR(outer-retry全置換)",
+  "family": "X",
+  "level": "a2",
+  "display": "minaudière",
+  "class": "CMU_UNREGISTERED",
+  "sub": "",
+  "reason": "CMU発音辞書に登録されていない語を含む(未登録語: minaudière。構成する全ての語がCMU辞書に登録された語句だけを選ぶ)",
+  "decision": {
+   "id": 17,
+   "family": "X",
+   "level": "a2",
+   "display": "minaudière",
+   "class": "CMU_UNREGISTERED",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": null,
+   "final_key": null,
+   "method": null,
+   "category": "区分3",
+   "rescuable": false,
+   "rule_changes": [],
+   "fallback_surface": null,
+   "why": "CMU未登録でかつ構成語に分解できない(外来語/アクセント付き)。発音を推測で補えない=TTS発音安全",
+   "flow_needed": false
+  },
+  "final_check": null,
+  "judge": null,
+  "final_label": "区分3",
+  "final_note": ""
+ },
+ {
+  "id": 19,
+  "era": "preHR(outer-retry全置換)",
+  "family": "X",
+  "level": "a2",
+  "display": "have a big moment",
+  "class": "FINITE_AUX_TOKEN",
+  "sub": "",
+  "reason": "有限助動詞が含まれている",
+  "decision": {
+   "id": 19,
+   "family": "X",
+   "level": "a2",
+   "display": "have a big moment",
+   "class": "FINITE_AUX_TOKEN",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "having a big moment",
+   "final_key": "have a big moment",
+   "method": "役割判定(lexical have)で通常フローを通る",
+   "category": "区分1",
+   "rescuable": true,
+   "rule_changes": [
+    "有限助動詞の役割判定(語彙動詞have/has/hadは助動詞でない)"
+   ],
+   "fallback_surface": null,
+   "why": "承認済み規則は『有限助動詞』の排除(DECISION_LOG:7408)。語彙動詞haveは助動詞でなく、OPEN-152で誤判定として既出。承認済みP-04(3)のhas/had->haveも語形リストと自己矛盾して常に不通過(dead path)",
+   "flow_needed": false
+  },
+  "final_check": {
+   "patch_flags": {
+    "aux": true,
+    "quant": true,
+    "adverb": true,
+    "past": true
+   },
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 4,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 2,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt_with_hr_flag",
+     "same",
+     "weak"
+    ]
+   ],
+   "notes_ja": [
+    "自然な表現ですが、文脈がないため意味の判断には限界があります。",
+    "自然な表現で、単独でも学習単位として使えます。",
+    "自然な表現ですが、文脈なしでは意味がやや曖昧です。"
+   ]
+  },
+  "final_label": "区分1",
+  "final_note": ""
+ },
+ {
+  "id": 23,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "b1b",
+  "display": "were mocking me",
+  "class": "FINITE_AUX_TOKEN",
+  "sub": "",
+  "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+  "decision": {
+   "id": 23,
+   "family": "Z",
+   "level": "b1b",
+   "display": "were mocking me",
+   "class": "FINITE_AUX_TOKEN",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "mocking me",
+   "final_key": "mocking me",
+   "method": "助動詞を外した連続部分列",
+   "category": "区分2(救済フロー: 助動詞を外した連続部分列)",
+   "rescuable": true,
+   "rule_changes": [
+    "選定段の短縮救済フロー(新規)"
+   ],
+   "fallback_surface": null,
+   "why": "法助動詞/進行形auxを核とする節の断片(完全文/節排除の意図どおり)。助動詞を外すと意味が変わる。辞書見出しにも無い",
+   "flow_needed": true
+  },
+  "final_check": {
+   "patch_flags": {},
+   "validator_ok": true,
+   "cmu_ok": true,
+   "words": 2,
+   "selection_gate": true,
+   "duplicate_with_existing": []
+  },
+  "judge": null,
+  "final_label": "区分2(救済フロー: 助動詞を外した連続部分列)",
+  "final_note": "助動詞を外した部分列『mocking me』が決定論gate+LLM評価(多数決)を通過(HRに元句を併記)",
+  "aux_free_subspan_judgements": [
+   {
+    "candidate": "mocking me",
+    "judge": {
+     "n_runs": 3,
+     "adopt_ok_strict": 2,
+     "adopt_ok_loose": 3,
+     "reject": 0,
+     "majority_need": 2,
+     "verdicts": [
+      [
+       "adopt",
+       "same",
+       "weak"
+      ],
+      [
+       "adopt",
+       "same",
+       "good"
+      ],
+      [
+       "adopt",
+       "same",
+       "good"
+      ]
+     ],
+     "notes_ja": [
+      "意味は保たれていますが、進行形の一部として覚えるには文脈が要ります。",
+      "「私をあざ笑う」という原文の意味を保っています。",
+      "「私をあざ笑う」という意味が保たれています。"
+     ]
+    }
+   },
+   {
+    "candidate": "mocking",
+    "judge": {
+     "n_runs": 3,
+     "adopt_ok_strict": 0,
+     "adopt_ok_loose": 3,
+     "reject": 0,
+     "majority_need": 2,
+     "verdicts": [
+      [
+       "adopt_with_hr_flag",
+       "narrowed",
+       "weak"
+      ],
+      [
+       "adopt_with_hr_flag",
+       "narrowed",
+       "weak"
+      ],
+      [
+       "adopt_with_hr_flag",
+       "narrowed",
+       "weak"
+      ]
+     ],
+     "notes_ja": [
+      "「あざける」という意味は残りますが、誰をあざけるかが失われています。",
+      "自然な語形ですが、目的語がなく原文の意味を十分に示しません。",
+      "相手をあざ笑う意味は単独では特定できません。"
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": 24,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "a2",
+  "display": "offered his hands for the chains",
+  "class": "WORDCOUNT_OVER5",
+  "sub": "",
+  "reason": "語数が1〜5語でない(実際: 6語)",
+  "decision": {
+   "id": 24,
+   "family": "Z",
+   "level": "a2",
+   "display": "offered his hands for the chains",
+   "class": "WORDCOUNT_OVER5",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "offered his hands",
+   "final_key": "offered his hands",
+   "method": "A1_subspan",
+   "category": "区分2(救済フロー本体の採否[後処理工程の新設]。受理面は不変)",
+   "rescuable": true,
+   "rule_changes": [
+    "選定段の短縮救済フロー(新規)"
+   ],
+   "fallback_surface": null,
+   "why": "元句の連続部分列で本文対応を保持。演算子(too/not/no/little/few/unless/except/rather/instead/fail等)の作用域を壊す部分列は決定論で禁止(意味反転なし)。HRに元句と本文の文を併記",
+   "flow_needed": true,
+   "hr_flags": [
+    "意味縮小の可能性(元句の一部のみ。元句と本文の文を併記して確認)"
+   ]
+  },
+  "final_check": {
+   "patch_flags": {},
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 3,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 1,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt_with_hr_flag",
+     "narrowed",
+     "weak"
+    ],
+    [
+     "adopt",
+     "narrowed",
+     "good"
+    ],
+    [
+     "adopt_with_hr_flag",
+     "narrowed",
+     "weak"
+    ]
+   ],
+   "notes_ja": [
+    "手を差し出したことは分かりますが、鎖のためという目的が抜けています。",
+    "手を差し出す意味は残りますが、鎖に差し出した目的は省かれています。",
+    "手を差し出す意味は保たれますが、鎖にかける目的が抜けています。"
+   ]
+  },
+  "final_label": "区分2(救済フロー本体の採否[後処理工程の新設]。受理面は不変)",
+  "final_note": ""
+ },
+ {
+  "id": 25,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "a2",
+  "display": "lose my trust in you",
+  "class": "NOT_CONTIGUOUS_IN_TEXT",
+  "sub": "",
+  "reason": "本文に連続一致しない(変更・言い換え・創作)",
+  "decision": {
+   "id": 25,
+   "family": "Z",
+   "level": "a2",
+   "display": "lose my trust in you",
+   "class": "NOT_CONTIGUOUS_IN_TEXT",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "lost my trust in you",
+   "final_key": "lose my trust in you",
+   "method": "D1 本文近傍への再アンカー(既存原形化validatorの逆引き)",
+   "category": "区分2(救済フロー本体の採否。受理面は不変=本文逐語のspanに戻す)",
+   "rescuable": true,
+   "rule_changes": [
+    "選定段の再アンカー救済(新規)"
+   ],
+   "fallback_surface": null,
+   "why": "LLMが原形で返した句を、既存validatorが『その本文窓の合法な正規化形』と判定する窓へ戻す。窓が一意のときのみ。以降は通常のcanonicalizationへ",
+   "flow_needed": true
+  },
+  "final_check": {
+   "patch_flags": {},
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 5,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 3,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "「あなたへの信頼を失う」という意味を自然に保っています。",
+    "「あなたへの信頼を失う」という意味を保つ自然な表現です。",
+    "「あなたへの信頼を失う」という自然な表現です。"
+   ]
+  },
+  "final_label": "区分2(救済フロー本体の採否。受理面は不変=本文逐語のspanに戻す)",
+  "final_note": ""
+ },
+ {
+  "id": 26,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "a2",
+  "display": "in his place",
+  "class": "NOT_CONTIGUOUS_IN_TEXT",
+  "sub": "",
+  "reason": "本文に連続一致しない(変更・言い換え・創作)",
+  "decision": {
+   "id": 26,
+   "family": "Z",
+   "level": "a2",
+   "display": "in his place",
+   "class": "NOT_CONTIGUOUS_IN_TEXT",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": null,
+   "final_key": null,
+   "method": null,
+   "category": "区分3",
+   "rescuable": false,
+   "rule_changes": [],
+   "fallback_surface": null,
+   "why": "本文に対応する窓が無い(言い換え・創作)=出典との対応が失われる",
+   "flow_needed": false
+  },
+  "final_check": null,
+  "judge": null,
+  "final_label": "区分3",
+  "final_note": ""
+ },
+ {
+  "id": 27,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "b1b",
+  "display": "Could you have borne it",
+  "class": "FINITE_AUX_TOKEN",
+  "sub": "",
+  "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+  "decision": {
+   "id": 27,
+   "family": "Z",
+   "level": "b1b",
+   "display": "Could you have borne it",
+   "class": "FINITE_AUX_TOKEN",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": null,
+   "final_key": null,
+   "method": null,
+   "category": "区分3",
+   "rescuable": false,
+   "rule_changes": [],
+   "fallback_surface": null,
+   "why": "法助動詞/進行形auxを核とする節の断片(完全文/節排除の意図どおり)。助動詞を外すと意味が変わる。辞書見出しにも無い",
+   "flow_needed": false
+  },
+  "final_check": null,
+  "judge": null,
+  "final_label": "区分3",
+  "final_note": "助動詞を外した部分列は多数決で基準(意味same/narrowed・自然・学習単位good)を満たさない。助動詞が意味の核のため区分3",
+  "aux_free_subspan_judgements": [
+   {
+    "candidate": "borne it",
+    "judge": {
+     "n_runs": 3,
+     "adopt_ok_strict": 0,
+     "adopt_ok_loose": 1,
+     "reject": 2,
+     "majority_need": 2,
+     "verdicts": [
+      [
+       "adopt_with_hr_flag",
+       "narrowed",
+       "weak"
+      ],
+      [
+       "reject",
+       "narrowed",
+       "bad"
+      ],
+      [
+       "reject",
+       "narrowed",
+       "bad"
+      ]
+     ],
+     "notes_ja": [
+      "「それに耐える」は伝わりますが、仮定的な問いの意味は失われます。",
+      "過去分詞だけの断片で、単独では自然な学習単位になりません。",
+      "助動詞なしの過去分詞句では、独立した学習単位として不自然です。"
+     ]
+    }
+   },
+   {
+    "candidate": "borne",
+    "judge": {
+     "n_runs": 3,
+     "adopt_ok_strict": 0,
+     "adopt_ok_loose": 1,
+     "reject": 2,
+     "majority_need": 2,
+     "verdicts": [
+      [
+       "adopt_with_hr_flag",
+       "narrowed",
+       "weak"
+      ],
+      [
+       "reject",
+       "narrowed",
+       "bad"
+      ],
+      [
+       "reject",
+       "narrowed",
+       "weak"
+      ]
+     ],
+     "notes_ja": [
+      "耐える意味の過去分詞ですが、助動詞なしでは学習単位として不完全です。",
+      "過去分詞だけでは不自然で、原文の「耐える」という意味も明確になりません。",
+      "過去分詞だけでは意味や用法が特定しにくいです。"
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": 28,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "b1b",
+  "display": "could have borne it",
+  "class": "FINITE_AUX_TOKEN",
+  "sub": "",
+  "reason": "本文に連続一致しない(変更・言い換え・創作) / 有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+  "decision": {
+   "id": 28,
+   "family": "Z",
+   "level": "b1b",
+   "display": "could have borne it",
+   "class": "FINITE_AUX_TOKEN",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": null,
+   "final_key": null,
+   "method": null,
+   "category": "区分3",
+   "rescuable": false,
+   "rule_changes": [],
+   "fallback_surface": null,
+   "why": "法助動詞/進行形auxを核とする節の断片(完全文/節排除の意図どおり)。助動詞を外すと意味が変わる。辞書見出しにも無い",
+   "flow_needed": false
+  },
+  "final_check": null,
+  "judge": null,
+  "final_label": "区分3",
+  "final_note": "助動詞を外した部分列は多数決で基準(意味same/narrowed・自然・学習単位good)を満たさない。助動詞が意味の核のため区分3",
+  "aux_free_subspan_judgements": [
+   {
+    "candidate": "borne it",
+    "judge": {
+     "n_runs": 3,
+     "adopt_ok_strict": 0,
+     "adopt_ok_loose": 1,
+     "reject": 2,
+     "majority_need": 2,
+     "verdicts": [
+      [
+       "adopt_with_hr_flag",
+       "narrowed",
+       "weak"
+      ],
+      [
+       "reject",
+       "narrowed",
+       "bad"
+      ],
+      [
+       "reject",
+       "narrowed",
+       "bad"
+      ]
+     ],
+     "notes_ja": [
+      "「それに耐える」は伝わりますが、元の仮定的な問いは表しません。",
+      "過去分詞の断片で、単独の学習単位として不自然です。",
+      "助動詞なしの過去分詞句では、独立した学習単位として不自然です。"
+     ]
+    }
+   },
+   {
+    "candidate": "borne",
+    "judge": {
+     "n_runs": 3,
+     "adopt_ok_strict": 0,
+     "adopt_ok_loose": 1,
+     "reject": 2,
+     "majority_need": 2,
+     "verdicts": [
+      [
+       "adopt_with_hr_flag",
+       "narrowed",
+       "weak"
+      ],
+      [
+       "reject",
+       "narrowed",
+       "bad"
+      ],
+      [
+       "reject",
+       "narrowed",
+       "weak"
+      ]
+     ],
+     "notes_ja": [
+      "耐える意味の過去分詞ですが、単独では形が不完全です。",
+      "過去分詞だけでは不自然で、意味も単独では把握しにくいです。",
+      "過去分詞だけでは意味や用法が特定しにくいです。"
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": 29,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "a2",
+  "display": "Could you bear that?",
+  "class": "FINITE_AUX_TOKEN",
+  "sub": "",
+  "reason": "本文に連続一致しない(変更・言い換え・創作) / 有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+  "decision": {
+   "id": 29,
+   "family": "Z",
+   "level": "a2",
+   "display": "Could you bear that?",
+   "class": "FINITE_AUX_TOKEN",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "bear",
+   "final_key": "bear",
+   "method": "助動詞を外した連続部分列",
+   "category": "区分2(救済フロー: 助動詞を外した連続部分列)",
+   "rescuable": true,
+   "rule_changes": [
+    "選定段の短縮救済フロー(新規)"
+   ],
+   "fallback_surface": null,
+   "why": "法助動詞/進行形auxを核とする節の断片(完全文/節排除の意図どおり)。助動詞を外すと意味が変わる。辞書見出しにも無い",
+   "flow_needed": true
+  },
+  "final_check": {
+   "patch_flags": {},
+   "validator_ok": true,
+   "cmu_ok": true,
+   "words": 1,
+   "selection_gate": true,
+   "duplicate_with_existing": []
+  },
+  "judge": null,
+  "final_label": "区分2(救済フロー: 助動詞を外した連続部分列)",
+  "final_note": "助動詞を外した部分列『bear』が決定論gate+LLM評価(多数決)を通過(HRに元句を併記)",
+  "aux_free_subspan_judgements": [
+   {
+    "candidate": "you bear",
+    "judge": {
+     "n_runs": 3,
+     "adopt_ok_strict": 0,
+     "adopt_ok_loose": 2,
+     "reject": 1,
+     "majority_need": 2,
+     "verdicts": [
+      [
+       "adopt_with_hr_flag",
+       "narrowed",
+       "weak"
+      ],
+      [
+       "reject",
+       "changed",
+       "weak"
+      ],
+      [
+       "adopt_with_hr_flag",
+       "narrowed",
+       "weak"
+      ]
+     ],
+     "notes_ja": [
+      "「あなたが耐える」は表しますが、助動詞と目的語を欠いています。",
+      "文としては自然ですが、原文の可能性を尋ねる意味が失われています。",
+      "「耐える」という意味ですが、目的語と疑問の形が抜けています。"
+     ]
+    }
+   },
+   {
+    "candidate": "bear",
+    "judge": {
+     "n_runs": 3,
+     "adopt_ok_strict": 2,
+     "adopt_ok_loose": 3,
+     "reject": 0,
+     "majority_need": 2,
+     "verdicts": [
+      [
+       "adopt",
+       "narrowed",
+       "good"
+      ],
+      [
+       "adopt",
+       "narrowed",
+       "good"
+      ],
+      [
+       "adopt_with_hr_flag",
+       "narrowed",
+       "weak"
+      ]
+     ],
+     "notes_ja": [
+      "動詞 bear の「耐える」という意味を学ぶ単位として使えます。",
+      "「耐える」という意味を学べる自然な基本形です。",
+      "動詞単体では多義的で、元の「耐える」の意味が明確ではありません。"
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": 44,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "a2",
+  "display": "could not bear",
+  "class": "FINITE_AUX_TOKEN",
+  "sub": "",
+  "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+  "decision": {
+   "id": 44,
+   "family": "Z",
+   "level": "a2",
+   "display": "could not bear",
+   "class": "FINITE_AUX_TOKEN",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": null,
+   "final_key": null,
+   "method": null,
+   "category": "区分3",
+   "rescuable": false,
+   "rule_changes": [],
+   "fallback_surface": null,
+   "why": "法助動詞/進行形auxを核とする節の断片(完全文/節排除の意図どおり)。助動詞を外すと意味が変わる。辞書見出しにも無い",
+   "flow_needed": false
+  },
+  "final_check": null,
+  "judge": null,
+  "final_label": "区分3",
+  "final_note": "助動詞を外した部分列は多数決で基準(意味same/narrowed・自然・学習単位good)を満たさない。助動詞が意味の核のため区分3",
+  "aux_free_subspan_judgements": [
+   {
+    "candidate": "not bear",
+    "judge": {
+     "n_runs": 3,
+     "adopt_ok_strict": 0,
+     "adopt_ok_loose": 1,
+     "reject": 2,
+     "majority_need": 2,
+     "verdicts": [
+      [
+       "adopt_with_hr_flag",
+       "same",
+       "weak"
+      ],
+      [
+       "reject",
+       "changed",
+       "bad"
+      ],
+      [
+       "reject",
+       "narrowed",
+       "bad"
+      ]
+     ],
+     "notes_ja": [
+      "「耐えられない」という否定は伝わりますが、助動詞を含む元の形とは異なります。",
+      "助動詞を欠いた断片で、単独では不自然です。",
+      "助動詞なしの not bear は独立表現として不自然です。"
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": 45,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "a2",
+  "display": "could not bear another second",
+  "class": "FINITE_AUX_TOKEN",
+  "sub": "",
+  "reason": "有限助動詞を含む(既存canonicalization Validatorが拒否する形)",
+  "decision": {
+   "id": 45,
+   "family": "Z",
+   "level": "a2",
+   "display": "could not bear another second",
+   "class": "FINITE_AUX_TOKEN",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": null,
+   "final_key": null,
+   "method": null,
+   "category": "区分3",
+   "rescuable": false,
+   "rule_changes": [],
+   "fallback_surface": null,
+   "why": "法助動詞/進行形auxを核とする節の断片(完全文/節排除の意図どおり)。助動詞を外すと意味が変わる。辞書見出しにも無い",
+   "flow_needed": false
+  },
+  "final_check": null,
+  "judge": null,
+  "final_label": "区分3",
+  "final_note": "助動詞を外した部分列は多数決で基準(意味same/narrowed・自然・学習単位good)を満たさない。助動詞が意味の核のため区分3",
+  "aux_free_subspan_judgements": [
+   {
+    "candidate": "not bear another second",
+    "judge": {
+     "n_runs": 3,
+     "adopt_ok_strict": 0,
+     "adopt_ok_loose": 1,
+     "reject": 2,
+     "majority_need": 2,
+     "verdicts": [
+      [
+       "adopt_with_hr_flag",
+       "same",
+       "weak"
+      ],
+      [
+       "reject",
+       "changed",
+       "bad"
+      ],
+      [
+       "reject",
+       "narrowed",
+       "bad"
+      ]
+     ],
+     "notes_ja": [
+      "「もう一秒も耐えられない」という意味ですが、単独では文の一部です。",
+      "助動詞を欠き、独立した表現として不自然です。",
+      "助動詞を欠き、独立した文句として不自然です。"
+     ]
+    }
+   },
+   {
+    "candidate": "not bear another",
+    "judge": {
+     "n_runs": 3,
+     "adopt_ok_strict": 0,
+     "adopt_ok_loose": 0,
+     "reject": 3,
+     "majority_need": 2,
+     "verdicts": [
+      [
+       "reject",
+       "narrowed",
+       "bad"
+      ],
+      [
+       "reject",
+       "changed",
+       "bad"
+      ],
+      [
+       "reject",
+       "changed",
+       "bad"
+      ]
+     ],
+     "notes_ja": [
+      "another の後に名詞が必要で、この形では不自然に途切れています。",
+      "助動詞も目的語の核も欠けた不自然な断片です。",
+      "助動詞と目的語を欠き、不自然で意味も曖昧です。"
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "id": 58,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "b1b",
+  "display": "my ears began to ring",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "PERSON_GENERALIZATION_REJECTED",
+  "reason": "key_phrase(\"one's ears begin to ring\")がdisplay_phraseと一致せず、source_span('my ears began to ring')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: sourc",
+  "decision": {
+   "id": 58,
+   "family": "Z",
+   "level": "b1b",
+   "display": "my ears began to ring",
+   "class": "RULE7_NORMALIZATION",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "my ears began to ring",
+   "final_key": "one's ears began to ring",
+   "method": "M1再導出(救済フロー)",
+   "category": "区分2(救済フロー本体の採否。受理面は不変=LLM提案語∩display窓)",
+   "rescuable": true,
+   "rule_changes": [
+    "救済フロー(後処理工程の新設)"
+   ],
+   "fallback_surface": "my ears began to ring",
+   "why": "LLM提案語/display語の組合せから最大限LLM提案を採用した形",
+   "flow_needed": true
+  },
+  "final_check": {
+   "patch_flags": {},
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 5,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 3,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "耳鳴りが始まるという意味を自然に保っています。",
+    "耳鳴りが始まるという原文の意味を保っています。",
+    "耳鳴りが始まることを表す自然な表現です。"
+   ]
+  },
+  "final_label": "区分2(救済フロー本体の採否。受理面は不変=LLM提案語∩display窓)",
+  "final_note": ""
+ },
+ {
+  "id": 59,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "a2",
+  "display": "lost touch",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "LEMMA_1TO1_REJECTED",
+  "reason": "key_phrase('lose touch')がdisplay_phraseと一致せず、source_span('lost touch')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しな",
+  "decision": {
+   "id": 59,
+   "family": "Z",
+   "level": "a2",
+   "display": "lost touch",
+   "class": "RULE7_NORMALIZATION",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "lost touch",
+   "final_key": "lose touch",
+   "method": "M1再導出(救済フロー)",
+   "category": "区分2(辞書裏付けguard等の受理面拡大)",
+   "rescuable": true,
+   "rule_changes": [
+    "辞書裏付けguard"
+   ],
+   "fallback_surface": "lost touch",
+   "why": "規則文のguardでは不通過。辞書(Wiktionary見出し)に原形句が存在=動詞用法の裏付けで受理",
+   "flow_needed": true
+  },
+  "final_check": {
+   "patch_flags": {
+    "aux": true,
+    "quant": true,
+    "adverb": true,
+    "past": true,
+    "idiom": true,
+    "lexguard": true
+   },
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 2,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 3,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "「連絡が途絶える」という慣用表現として適切です。",
+    "「連絡が途絶える」という意味の自然な慣用表現です。",
+    "「連絡が途絶える」という自然な慣用表現です。"
+   ]
+  },
+  "final_label": "区分2(辞書裏付けguard等の受理面拡大)",
+  "final_note": ""
+ },
+ {
+  "id": 60,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "b1b",
+  "display": "couldn't bring myself to arrest",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "PERSON_GENERALIZATION_REJECTED",
+  "reason": "key_phrase(\"couldn't bring oneself to arrest\")がdisplay_phraseと一致せず、source_span(\"couldn't bring myself to arrest\")内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該",
+  "decision": {
+   "id": 60,
+   "family": "Z",
+   "level": "b1b",
+   "display": "couldn't bring myself to arrest",
+   "class": "RULE7_NORMALIZATION",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "couldn't bring myself to arrest",
+   "final_key": "couldn't bring oneself to arrest",
+   "method": "現行Gateで既に通る",
+   "category": "(除外ではなくなった)",
+   "rescuable": true,
+   "rule_changes": [],
+   "fallback_surface": null,
+   "why": "現行validatorで通過(過去世代の除外)",
+   "flow_needed": false
+  },
+  "final_check": {
+   "patch_flags": {},
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 5,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": null,
+  "final_label": "(除外ではなくなった)",
+  "final_note": ""
+ },
+ {
+  "id": 62,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "b1b",
+  "display": "couldn't bring myself to",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "PERSON_GENERALIZATION_REJECTED",
+  "reason": "key_phrase(\"couldn't bring oneself to\")がdisplay_phraseと一致せず、source_span(\"couldn't bring myself to\")内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: s",
+  "decision": {
+   "id": 62,
+   "family": "Z",
+   "level": "b1b",
+   "display": "couldn't bring myself to",
+   "class": "RULE7_NORMALIZATION",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "couldn't bring myself to",
+   "final_key": "couldn't bring oneself to",
+   "method": "現行Gateで既に通る",
+   "category": "(除外ではなくなった)",
+   "rescuable": true,
+   "rule_changes": [],
+   "fallback_surface": null,
+   "why": "現行validatorで通過(過去世代の除外)",
+   "flow_needed": false
+  },
+  "final_check": {
+   "patch_flags": {},
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 4,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": null,
+  "final_label": "(除外ではなくなった)",
+  "final_note": ""
+ },
+ {
+  "id": 63,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "b1b",
+  "display": "struck a match",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "LEMMA_1TO1_REJECTED",
+  "reason": "key_phrase('strike a match')がdisplay_phraseと一致せず、source_span('struck a match')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形",
+  "decision": {
+   "id": 63,
+   "family": "Z",
+   "level": "b1b",
+   "display": "struck a match",
+   "class": "RULE7_NORMALIZATION",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "struck a match",
+   "final_key": "strike a match",
+   "method": "LLMのkeyが区分1規則是正だけで通常フローを通る",
+   "category": "区分1",
+   "rescuable": true,
+   "rule_changes": [
+    "過去形/分詞の閉表を補完"
+   ],
+   "fallback_surface": "struck a match",
+   "why": "承認済みP-04の文言(『先頭またはto直後の動詞』)に無い内部条件/閉表の網羅漏れ。LLMの提案keyはそのまま通る=救済フロー不要",
+   "flow_needed": false
+  },
+  "final_check": {
+   "patch_flags": {
+    "aux": true,
+    "quant": true,
+    "adverb": true,
+    "past": true
+   },
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 3,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 3,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "「マッチをする」という自然な動詞句です。",
+    "「マッチをする」という原文の意味に合う自然な表現です。",
+    "「マッチをする」という自然な表現です。"
+   ]
+  },
+  "final_label": "区分1",
+  "final_note": ""
+ },
+ {
+  "id": 64,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "b1b",
+  "display": "sentenced him to death",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "PERSON_GENERALIZATION_REJECTED",
+  "reason": "key_phrase('sentence someone to death')がdisplay_phraseと一致せず、source_span('sentenced him to death')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: sou",
+  "decision": {
+   "id": 64,
+   "family": "Z",
+   "level": "b1b",
+   "display": "sentenced him to death",
+   "class": "RULE7_NORMALIZATION",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "sentenced him to death",
+   "final_key": "sentence someone to death",
+   "method": "現行Gateで既に通る",
+   "category": "(除外ではなくなった)",
+   "rescuable": true,
+   "rule_changes": [],
+   "fallback_surface": null,
+   "why": "現行validatorで通過(過去世代の除外)",
+   "flow_needed": false
+  },
+  "final_check": {
+   "patch_flags": {},
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 4,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": null,
+  "final_label": "(除外ではなくなった)",
+  "final_note": ""
+ },
+ {
+  "id": 65,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "b1b",
+  "display": "nearly abandoned you",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "PERSON_GENERALIZATION_REJECTED",
+  "reason": "key_phrase('nearly abandon someone')がdisplay_phraseと一致せず、source_span('nearly abandoned you')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_s",
+  "decision": {
+   "id": 65,
+   "family": "Z",
+   "level": "b1b",
+   "display": "nearly abandoned you",
+   "class": "RULE7_NORMALIZATION",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "nearly abandoned you",
+   "final_key": "nearly abandoned someone",
+   "method": "M1再導出(救済フロー)",
+   "category": "区分2(救済フロー本体の採否。受理面は不変=LLM提案語∩display窓)",
+   "rescuable": true,
+   "rule_changes": [
+    "救済フロー(後処理工程の新設)"
+   ],
+   "fallback_surface": "nearly abandoned you",
+   "why": "LLM提案語/display語の組合せから最大限LLM提案を採用した形",
+   "flow_needed": true
+  },
+  "final_check": {
+   "patch_flags": {},
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 3,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 3,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "「誰かを見捨てかけた」という意味を自然に保っています。",
+    "「誰かを見捨てかけた」という意味を保つ自然な表現です。",
+    "「誰かをもう少しで見捨てる」という意味が保たれています。"
+   ]
+  },
+  "final_label": "区分2(救済フロー本体の採否。受理面は不変=LLM提案語∩display窓)",
+  "final_note": ""
+ },
+ {
+  "id": 66,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "a2",
+  "display": "pulling free",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "LEMMA_1TO1_REJECTED",
+  "reason": "key_phrase('pull free')がdisplay_phraseと一致せず、source_span('pulling free')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成し",
+  "decision": {
+   "id": 66,
+   "family": "Z",
+   "level": "a2",
+   "display": "pulling free",
+   "class": "RULE7_NORMALIZATION",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "pulling free",
+   "final_key": "pulling free",
+   "method": "表層形へ戻す(revert。原形はguard/表の範囲外のため)",
+   "category": "区分2(救済フロー本体の採否。受理面は不変=LLM提案語∩display窓)",
+   "rescuable": true,
+   "rule_changes": [
+    "救済フロー(後処理工程の新設)"
+   ],
+   "fallback_surface": "pulling free",
+   "why": "LLM提案語/display語の組合せから最大限LLM提案を採用した形",
+   "flow_needed": true
+  },
+  "final_check": {
+   "patch_flags": {},
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 2,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 3,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "「振りほどいて自由になる」という自然な表現です。",
+    "「振りほどいて自由になる」という意味の自然な表現です。",
+    "「自由になろうともがく」という自然な表現です。"
+   ]
+  },
+  "final_label": "区分2(救済フロー本体の採否。受理面は不変=LLM提案語∩display窓)",
+  "final_note": ""
+ },
+ {
+  "id": 67,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "b1b",
+  "display": "accepts no responsibility",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "LEMMA_1TO1_REJECTED",
+  "reason": "key_phrase('accept no responsibility')がdisplay_phraseと一致せず、source_span('accepts no responsibility')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: s",
+  "decision": {
+   "id": 67,
+   "family": "Z",
+   "level": "b1b",
+   "display": "accepts no responsibility",
+   "class": "RULE7_NORMALIZATION",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "accepts no responsibility",
+   "final_key": "accept no responsibility",
+   "method": "LLMのkeyが区分1規則是正だけで通常フローを通る",
+   "category": "区分1",
+   "rescuable": true,
+   "rule_changes": [
+    "guard限定詞に量化詞を追加"
+   ],
+   "fallback_surface": "accepts no responsibility",
+   "why": "承認済みP-04の文言(『先頭またはto直後の動詞』)に無い内部条件/閉表の網羅漏れ。LLMの提案keyはそのまま通る=救済フロー不要",
+   "flow_needed": false
+  },
+  "final_check": {
+   "patch_flags": {
+    "aux": true,
+    "quant": true,
+    "adverb": true,
+    "past": true
+   },
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 3,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 3,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "責任を負わないという意味を自然に表しています。",
+    "「一切責任を負わない」という意味を保っています。",
+    "「責任を一切負わない」という自然な表現です。"
+   ]
+  },
+  "final_label": "区分1",
+  "final_note": ""
+ },
+ {
+  "id": 69,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "a2",
+  "display": "growing louder and louder",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "LEMMA_1TO1_REJECTED",
+  "reason": "key_phrase('grow louder and louder')がdisplay_phraseと一致せず、source_span('growing louder and louder')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: sou",
+  "decision": {
+   "id": 69,
+   "family": "Z",
+   "level": "a2",
+   "display": "growing louder and louder",
+   "class": "RULE7_NORMALIZATION",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "growing louder and louder",
+   "final_key": "growing louder and louder",
+   "method": "表層形へ戻す(revert。原形はguard/表の範囲外のため)",
+   "category": "区分2(救済フロー本体の採否。受理面は不変=LLM提案語∩display窓)",
+   "rescuable": true,
+   "rule_changes": [
+    "救済フロー(後処理工程の新設)"
+   ],
+   "fallback_surface": "growing louder and louder",
+   "why": "LLM提案語/display語の組合せから最大限LLM提案を採用した形",
+   "flow_needed": true
+  },
+  "final_check": {
+   "patch_flags": {},
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 4,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 3,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "「ますます大きくなる」という自然な表現です。",
+    "「ますます大きくなる」という意味の自然な表現です。",
+    "音がだんだん大きくなることを表す自然な句です。"
+   ]
+  },
+  "final_label": "区分2(救済フロー本体の採否。受理面は不変=LLM提案語∩display窓)",
+  "final_note": ""
+ },
+ {
+  "id": 70,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "b1b",
+  "display": "my blood went cold",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "PERSON_GENERALIZATION_REJECTED",
+  "reason": "key_phrase(\"one's blood go cold\")がdisplay_phraseと一致せず、source_span('my blood went cold')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存",
+  "decision": {
+   "id": 70,
+   "family": "Z",
+   "level": "b1b",
+   "display": "my blood went cold",
+   "class": "RULE7_NORMALIZATION",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "my blood went cold",
+   "final_key": "one's blood went cold",
+   "method": "M1再導出(救済フロー)",
+   "category": "区分2(救済フロー本体の採否。受理面は不変=LLM提案語∩display窓)",
+   "rescuable": true,
+   "rule_changes": [
+    "救済フロー(後処理工程の新設)"
+   ],
+   "fallback_surface": "my blood went cold",
+   "why": "LLM提案語/display語の組合せから最大限LLM提案を採用した形",
+   "flow_needed": true
+  },
+  "final_check": {
+   "patch_flags": {},
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 4,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 3,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "恐怖で血の気が引くという慣用表現を保っています。",
+    "恐怖でぞっとするという原文の意味に合う表現です。",
+    "恐怖で血の気が引くことを表す慣用表現です。"
+   ]
+  },
+  "final_label": "区分2(救済フロー本体の採否。受理面は不変=LLM提案語∩display窓)",
+  "final_note": ""
+ },
+ {
+  "id": 76,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "a2",
+  "display": "froze my blood",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "PERSON_GENERALIZATION_REJECTED",
+  "reason": "key_phrase(\"freeze someone's blood\")がdisplay_phraseと一致せず、source_span('froze my blood')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在",
+  "decision": {
+   "id": 76,
+   "family": "Z",
+   "level": "a2",
+   "display": "froze my blood",
+   "class": "RULE7_NORMALIZATION",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "froze my blood",
+   "final_key": "freeze my blood",
+   "method": "M1再導出(救済フロー)",
+   "category": "区分1(+救済フロー)",
+   "rescuable": true,
+   "rule_changes": [
+    "区分1規則是正"
+   ],
+   "fallback_surface": "froze my blood",
+   "why": "区分1規則是正後に原形が通る",
+   "flow_needed": true
+  },
+  "final_check": {
+   "patch_flags": {
+    "aux": true,
+    "quant": true,
+    "adverb": true,
+    "past": true
+   },
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 3,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 3,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "恐怖を与える意味の「血を凍らせる」という表現です。",
+    "「血を凍らせるほどぞっとさせる」という意味の自然な表現です。",
+    "「ぞっとさせる」という意味の自然な表現です。"
+   ]
+  },
+  "final_label": "区分1(+救済フロー)",
+  "final_note": ""
+ },
+ {
+  "id": 77,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "b1b",
+  "display": "eased open",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "LEMMA_1TO1_REJECTED",
+  "reason": "key_phrase('ease open')がdisplay_phraseと一致せず、source_span('eased open')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない",
+  "decision": {
+   "id": 77,
+   "family": "Z",
+   "level": "b1b",
+   "display": "eased open",
+   "class": "RULE7_NORMALIZATION",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "eased open",
+   "final_key": "eased open",
+   "method": "表層形へ戻す(revert。原形はguard/表の範囲外のため)",
+   "category": "区分2(救済フロー本体の採否。受理面は不変=LLM提案語∩display窓)",
+   "rescuable": true,
+   "rule_changes": [
+    "救済フロー(後処理工程の新設)"
+   ],
+   "fallback_surface": "eased open",
+   "why": "LLM提案語/display語の組合せから最大限LLM提案を採用した形",
+   "flow_needed": true
+  },
+  "final_check": {
+   "patch_flags": {},
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 2,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 0,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt_with_hr_flag",
+     "same",
+     "weak"
+    ],
+    [
+     "adopt_with_hr_flag",
+     "same",
+     "weak"
+    ],
+    [
+     "adopt_with_hr_flag",
+     "same",
+     "weak"
+    ]
+   ],
+   "notes_ja": [
+    "文脈では「そっと開けた」ですが、過去形のままでは見出し語として扱いにくいです。",
+    "原文の動作は表しますが、過去形の断片で学習単位としてはやや弱いです。",
+    "自然ですが、目的語がないと用法が少し分かりにくいです。"
+   ]
+  },
+  "final_label": "区分2(救済フロー本体の採否。受理面は不変=LLM提案語∩display窓)",
+  "final_note": ""
+ },
+ {
+  "id": 80,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "a2",
+  "display": "sure of myself",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "PERSON_GENERALIZATION_REJECTED",
+  "reason": "key_phrase('sure of oneself')がdisplay_phraseと一致せず、source_span('sure of myself')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書",
+  "decision": {
+   "id": 80,
+   "family": "Z",
+   "level": "a2",
+   "display": "sure of myself",
+   "class": "RULE7_NORMALIZATION",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "sure of myself",
+   "final_key": "sure of oneself",
+   "method": "現行Gateで既に通る",
+   "category": "(除外ではなくなった)",
+   "rescuable": true,
+   "rule_changes": [],
+   "fallback_surface": null,
+   "why": "現行validatorで通過(過去世代の除外)",
+   "flow_needed": false
+  },
+  "final_check": {
+   "patch_flags": {},
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 3,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": null,
+  "final_label": "(除外ではなくなった)",
+  "final_note": ""
+ },
+ {
+  "id": 81,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "a2",
+  "display": "My ears began ringing",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "PERSON_GENERALIZATION_REJECTED",
+  "reason": "key_phrase(\"one's ears begin ringing\")がdisplay_phraseと一致せず、source_span('My ears began ringing')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: sourc",
+  "decision": {
+   "id": 81,
+   "family": "Z",
+   "level": "a2",
+   "display": "My ears began ringing",
+   "class": "RULE7_NORMALIZATION",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "My ears began ringing",
+   "final_key": "one's ears began ringing",
+   "method": "M1再導出(救済フロー)",
+   "category": "区分2(救済フロー本体の採否。受理面は不変=LLM提案語∩display窓)",
+   "rescuable": true,
+   "rule_changes": [
+    "救済フロー(後処理工程の新設)"
+   ],
+   "fallback_surface": "My ears began ringing",
+   "why": "LLM提案語/display語の組合せから最大限LLM提案を採用した形",
+   "flow_needed": true
+  },
+  "final_check": {
+   "patch_flags": {},
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 4,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 3,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "耳鳴りが始まるという意味を自然に保っています。",
+    "耳鳴りが始まるという原文の意味を保つ自然な表現です。",
+    "耳鳴りが始まることを表す自然な表現です。"
+   ]
+  },
+  "final_label": "区分2(救済フロー本体の採否。受理面は不変=LLM提案語∩display窓)",
+  "final_note": ""
+ },
+ {
+  "id": 83,
+  "era": "preHR(outer-retry全置換)",
+  "family": "Z",
+  "level": "?",
+  "display": "leaving no mark",
+  "class": "RULE7_NORMALIZATION",
+  "sub": "LEMMA_1TO1_REJECTED",
+  "reason": "key_phrase('leave no mark')がdisplay_phraseと一致せず、source_span('leaving no mark')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形",
+  "decision": {
+   "id": 83,
+   "family": "Z",
+   "level": "?",
+   "display": "leaving no mark",
+   "class": "RULE7_NORMALIZATION",
+   "era": "preHR(outer-retry全置換)",
+   "final_display": "leaving no mark",
+   "final_key": "leave no mark",
+   "method": "LLMのkeyが区分1規則是正だけで通常フローを通る",
+   "category": "区分1",
+   "rescuable": true,
+   "rule_changes": [
+    "guard限定詞に量化詞を追加"
+   ],
+   "fallback_surface": "leaving no mark",
+   "why": "承認済みP-04の文言(『先頭またはto直後の動詞』)に無い内部条件/閉表の網羅漏れ。LLMの提案keyはそのまま通る=救済フロー不要",
+   "flow_needed": false
+  },
+  "final_check": {
+   "patch_flags": {
+    "aux": true,
+    "quant": true,
+    "adverb": true,
+    "past": true
+   },
+   "validator_ok": true,
+   "validator_reasons": [],
+   "cmu_ok": true,
+   "words": 3,
+   "selection_gate": true,
+   "legacy_form_reasons": [],
+   "duplicate_with_existing": []
+  },
+  "judge": {
+   "n_runs": 3,
+   "adopt_ok_strict": 3,
+   "adopt_ok_loose": 3,
+   "reject": 0,
+   "majority_need": 2,
+   "verdicts": [
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ],
+    [
+     "adopt",
+     "same",
+     "good"
+    ]
+   ],
+   "notes_ja": [
+    "「跡を残さない」という意味を自然に表しています。",
+    "「跡を残さない」という意味を保つ自然な表現です。",
+    "「跡を残さない」という自然な表現です。"
+   ]
+  },
+  "final_label": "区分1",
+  "final_note": ""
+ }
+]

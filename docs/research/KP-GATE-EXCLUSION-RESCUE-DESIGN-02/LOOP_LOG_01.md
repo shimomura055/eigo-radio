@@ -20,3 +20,23 @@ LLM評価: 8回、gpt-6-luna(最新世代の推奨系=repo承認済みSUPPORT_MO
 - 区分2(7件): 6件は救済形が既存Gate(同一引数)を通過し、LLM評価の多数決でadopt。1件(`redelivery fee`)は救済形が存在するが承認済みCMU規則の趣旨に反するため**非推奨**。
 - 区分3(Human NG 3件+A2 `too soon to do`推奨)。11件内の救済不能は0。
 - 残る不確実性(改善見込み低と判断して打ち切り): `too soon`(2語)の学習価値、`pulling free`/`eased open`の原形(POS情報が要る=不採用)、救済フロー全体のProduction上の挙動(実run未観測=DEV実証止まり)。
+
+---
+
+# 委任_02 追記(2026-10-26、Opus条件A M1〜M4/R1〜R6の反映)
+
+終了条件=「Opus指摘の誤受理が敵対的testで再現→是正後0件、実データ315種の単調性違反0、11件の区分が説明可能」。LLM: 1回(M4の見出し形再評価、3呼出、gpt-6-luna、0.224円、呼出前に`tools/stop_scope_check_01.py` rc=0=`stop_check_judge_headword.json`)。
+
+| ループ | 入力→結果 | 不合格の原因(観測) | 設計/実装の変更 |
+|---|---|---|---|
+| **5** Opus指摘の再現(`old_vs_new_02.json`) | 旧実装(委任_01のHEAD)に敵対的セットを当てる: -ly名詞9件(increased supply/failed rally/organized rally/revised assembly/filled belly/ended folly/joined assembly/ruled monopoly/dug well)を誤受理、語彙have誤判定26件(has spread等の不変化分詞19・量化詞介在4・限定詞+名詞+分詞3)、名詞主語のことわざ5/5を慣用句例外が通す | M1: `is_manner_adverb`が語幹も品詞も見ず「-lyで終わる5文字超」だけ。M2: `IRR_PARTICIPLES`が表依存で、nxt2を見る倒置ルールは2語句と量化詞介在に効かない。M3: `lex_hit`が17,389見出しを全照会し、主語判定が代名詞のみ | M1: 語幹復元(CMU実在)+-ly名詞/動詞除外表+-ly形容詞表拡張+well/still除外。M2: 不変化分詞表補完・量化詞/副詞のskip・限定詞+名詞+分詞をaux。M3: レビュー済み閉表27件+sha256固定+fail-closed |
+| **6** 再実証 | 敵対的85ケース=不一致0。実データ315種(312ペア)の単調性違反0、新規受理3変換(旧と同一)。have窓72件(旧71件+`have two hundred`)は全件レビューで語彙have。rescue_eval_08の11件decisionは07と同一。test 154 PASS | 途中で発見: (a)`reduced supply of→reduce supply of`はProduction現行で既に受理(「句末が不変化詞」の承認文言。パッチ由来ではない)→preexisting枠で固定 (b)ASCII`beggars can't be choosers`は現行Gateが通す(縮約形のすり抜け=R5。パッチ由来ではない)→preexisting枠 (c)`hundred`が`-ed`で分詞扱い(保守側の誤aux)→`_NOT_PARTICIPLE_ED` (d)敵対的セット側の誤り(`lit`は曖昧不規則として正当)→期待値を修正 | R3(同形異義語の除外)・R4(演算子表+HR旗)・R5(縮約形測定)を実装 |
+| **7** M4 見出し形再評価 | A2 `too soon to do`: 前回枠組みreject 3/3 → 見出し形枠組みadopt 3/3。陰性対照`soon to do`はreject 3/3 | 前回のreject根拠(LLM評価)は枠組みに依存する | A2を区分3推奨→区分2(非推奨・AI意見付き)へ。評価の限界(生成側と同系統・ばらつきのみ測定)を開示。非推奨の根拠を評価から承認済み規則との関係へ置き換え |
+
+## 手法転換(委任_02)
+- 委任_01は「実データ315種で誤受理0」を安全の根拠にしていたが、実データに無い形(-ly名詞・不変化分詞)は検証されていなかった。**実データ+敵対的セット**(承認済み不変条件を破る形を設計側から生成する)へ検証方式を転換し、旧実装を同じ敵対セットに当てて「指摘が再現すること」「是正で消えること」の両方を機械で固定した。
+- 「LLM評価でreject」を区分判断の根拠にする方式をやめ、評価の枠組み依存を開示した上で、根拠を承認済み規則との関係に置き換えた。
+
+## 終了判定
+- M1〜M4/R1〜R6は全件実装・敵対的test固定。Production非配線。
+- 残る不確実性(改善見込み低と判断して打ち切り): 除外表が閉表である限界(品詞タガーなしでは未収載の-ly名詞を理論上防げない)、`has`+表外の不規則分詞、A2を採るかの品質判断(ユーザー)、Wiktionary見出し27件のライセンス(ユーザー/法務判断)。
