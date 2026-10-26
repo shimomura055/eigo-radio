@@ -22551,3 +22551,10 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - **Chunk Y判定の是正(§2逐語)**: 「Family Y：正式承認・配線済みだが、現行本文が1段落固定のため実記事ではChunkが発火しない。したがって、Family YはPRODUCTION_WIREDと判定しない。現状をOPEN-527等に正確に記録する。本文の段落構成や分割方式は未承認のまま変更しない。」→ PM-SSOT-SYNC-05(764901e3a)で記録したY Std/Adv=PRODUCTION_WIREDを、APPROVED_FOR_PRODUCTION・配線済み(WIRED_NOT_FIRING)・PRODUCTION_WIRED未判定へ是正(旧記載は履歴保持)。X/Z Std/Adv 4行はPRODUCTION_WIRED不変。SYNC-05の記録は誤判定ではなく、発火証拠のない配線はPRODUCTION_WIREDとしないというユーザー基準が後から明示されたことによる是正。OPEN-527/532更新。
 - **FZ ctx Local Rewrite(§3)**: 「文脈・感情付きTTS本体および3回目Fallbackまでは正式runtime検証済み。ただし、Local Rewriteは未配線であり、現行ではHuman Review／STOPに進む。…Local Rewriteの新仕様を独断で追加しない。」→ OPEN-528へ記録(TTS-RETRY-FALLBACK-REWRITE-AUDIT-XYZ-01の調査結果と照合後にユーザー判断。既存Deferred項目と統合)。
 - 費用: API 0・JPY0。
+
+## KP候補要求のフレーズ7+単語3分離Trial結果(2026-10-26、KP-CANDIDATE-PHRASE7-WORD3-TRIAL-01、OPEN-534、PM-SSOT-SYNC-07、API 0・転記)
+
+- **Trial完了**: 方式=P7→W3の2 call直列、3記事×2レベル×2回=12 run(+現行fresh4+judge6 call)、モデル=gpt-6-luna(生成)/gpt-6.1-sol(judge)、Gate=Production関数import同一引数。結果=有用候補は厳格Y median5.5(現行4)・Y+B median7.5・単語の純増・フレーズ品質同等(フレーズY率61%→62%、数合わせ型21%→4%)。
+- **Fable判定**: **VALIDATED(限定)_USER_DECISION_REQUIRED**(Production採用判断はユーザー)。Production不変。限定事項=P7は平均5.4件しか返さない/文学作品Adv(猿の手)でフレーズ枠が記事固有句に偏る/現行側は各level1回のみ/「有用」の閾値次第で6〜7件確保の評価が変わる。
+- **Fable推奨**: 採用(条件付き)=P7→W3をProduction候補生成へ採用、HRで「フレーズ枠/単語枠」を分けて提示、候補上限10。P7要求数5への縮小・単語枠不足許容の明示は採用後の初回運用で観測してから判断(追加Trial不要)。採用時のユーザー承認事項=(a)Prompt 2/2-V→P7/W3置換、(b)`KP_CANDIDATE_MAX=8`→10、(c)HR単語枠の見せ方。
+- 費用: Trial実費38.64円(Guardrail80内)。本SSOT反映はAPI 0・JPY0。

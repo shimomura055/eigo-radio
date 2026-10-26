@@ -455,3 +455,6 @@
 - OPEN-532 Chunk Std拡張: Y=PRODUCTION_WIRED未判定(ユーザー決定2026-10-26、WIRED_NOT_FIRING)。X/Z=PRODUCTION_WIRED不変。SYNC-05の「Y PRODUCTION_WIRED」記載は是正済み。
 - OPEN-527 Y分割方式(UDR-YFB-1): 継続(ユーザー判断待ち)。Chunk Yは実記事不発火、本文の段落構成・分割方式は未承認のまま変更しない。
 - OPEN-528 FZ ctx: Local Rewrite未配線・現行HR/STOP。LR新仕様は独断追加しない(TTS-RETRY-FALLBACK-REWRITE-AUDIT-XYZ-01調査結果と照合後にユーザー判断。Deferredのまま)。
+
+### 2026-10-26 PM-SSOT-SYNC-07 追記(OPEN-534 KP候補フレーズ7+単語3 Trial。既存行は書き換えず追記)
+- OPEN-534 KP候補生成方式P7→W3の採否(分類D=真に新しい判断): 決めること=(1)P7→W3方式をProduction候補生成へ採用するか、(2)「有用6〜7件」の閾値(厳格Y/境界込みY+B/judge基準のどれを必要十分とするか)、(3)単語枠のHR扱い(フレーズ枠/単語枠を分けて提示するか、現行の自動推奨のままか)、(4)文学作品Advでフレーズ枠が記事固有句に偏る点の扱い。選択肢と影響=採用(Prompt 2/2-V置換・KP_CANDIDATE_MAX 8→10・HR表示変更を伴う、+0.4円/記事セット)/不採用(現行維持、単語候補はほぼ0のまま)/P7要求数5縮小等の調整後採用。Fable推奨=**採用(条件付き)**(P7→W3+HR枠分け+候補上限10、追加Trial不要)。根拠=単語候補が12/12 runで純増しフレーズ品質は同等(Y率61→62%、N率21→4%)、境界込みで12/12 runが6件以上、費用+0.19円/level。Status=VALIDATED(限定)_USER_DECISION_REQUIRED、Production不変。参照=https://raw.githubusercontent.com/shimomura055/eigo-radio/main/docs/research/KP-CANDIDATE-PHRASE7-WORD3-TRIAL-01/STATUS_01.md 、関連OPEN-526(候補数案A/B/C)。

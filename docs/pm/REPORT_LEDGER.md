@@ -592,3 +592,5 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-26 | ユーザー決定受領(Voice表/Chunk Y判定/FZ LR) | Y Voice候補表APPROVED_FOR_PRODUCTION(Puck、男5女5、Z不変、Y/Z差分は承認済み)・Chunk Y=PRODUCTION_WIRED未判定(WIRED_NOT_FIRING)・FZ LR未配線(新仕様は独断追加しない)。原文=`docs/pm/delegation_log/2026-10-26_FAMILY-Y-VOICE-TABLE-PRODUCTION-WIRING-01_USER.md`。
 - 2026-10-26 | FAMILY-Y-VOICE-TABLE-PRODUCTION-WIRING-01 委任_01 | Y Voice候補表Production配線。委任_01開始(Cap60、進行中、結果未)。
 - 2026-10-26 | PM-SSOT-SYNC-06 | 本件(ユーザー決定転記、Chunk Y判定是正、OPEN-527/528/531/532、API 0・JPY0)。
+- 2026-10-26 | KP-CANDIDATE-PHRASE7-WORD3-TRIAL-01 | KP候補フレーズ7+単語3分離Trial。Fable報告予定(2026-10-26)、判定=VALIDATED(限定)_USER_DECISION_REQUIRED、実費38.64円、OPEN-534。
+- 2026-10-26 | PM-SSOT-SYNC-07 | 本件(KP Trial結果とFable評価の転記、OPEN-534起票、OPEN-526/484追記、UDR、API 0・JPY0)。
