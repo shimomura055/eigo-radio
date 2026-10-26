@@ -22566,3 +22566,12 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - **運用逸脱**: 委任_01の起動手順ミスによる自己発動RESTART_STORMをFable許可で`--clear-stop`(記録済み)。
 - **新規OPEN-535**(旧人間承認記録の扱い、修正へ進む・非blocking)、OPEN-533にPuck実績追記、OPEN-531=CLOSED。
 - 費用: API 0・JPY0。
+
+## TTS Retry/Fallback/Local Rewrite棚卸し(X/Y/Z)AUDITED・Fable 11-8判定(2026-10-26、TTS-RETRY-FALLBACK-REWRITE-AUDIT-XYZ-01、OPEN-376/528/536/537/538他、PM-SSOT-SYNC-09、API 0・転記のみ)
+
+- **判定**: TTS-RETRY-FALLBACK-REWRITE-AUDIT-XYZ-01 = **AUDITED**(調査完了、Production変更なし)。結論=「大部分は整合、完全ではない」。星取表①49行(LR○22/×26/TTSなし1、総4=28/総3=20、A36/B2/C10)、②22行(A12/B1/C7/TTSなし2)、findings 23件(U-01〜U-23)。成果物=`docs/research/TTS-RETRY-FALLBACK-REWRITE-AUDIT-XYZ-01/{REPORT_01,Y_F01_STYLE_PROFILE_CHECK_01,FAMILY_X_01,FAMILY_Y_01,FAMILY_Z_01,COMMON_CORE_01}.md`・`consolidated_01.json`(commit 7e2351b8c/60e48c2ce/b1ef7ee2f/3ce145a6a)。
+- **Fable 11-8判定**: U-05 Zセリフ LRなし=OPEN-528 Deferred(1)をUSER_DECISION_REQUIREDへ(推奨B現状維持)/U-03 非ASR起因NGでcooldown後LR不発→HR=新規OPEN-536 USER_DECISION_REQUIRED(推奨b'順序是正、2026-09-26「固定10分」決定との整合はユーザー判断)/U-15 Y Style profile default固定=新規OPEN-537(**B・修正へ進む候補・重要度高**、適用時期はユーザー判断、推奨①次記事から)/U-01 LR再入(OPEN-376 D-B4、仕様「2回目LRなし」ITEMS23_REWRITE_CONDITION_AND_SCRIPT_REF_01.md:28と不一致)=**B・修正へ進む**(ラベルを「仕様判断要」から変更)/U-06 Z topic_intro_en未分類=新規OPEN-538(修正へ進む・低)/U-02=OPEN-274・312へ追記(Deferred継続)/U-04・U-12=OPEN-376へ追記(U-12は確認項目、SDK入口guard確認後に起票要否)/U-16=OPEN-312へ追記/U-08=OPEN-528へ1行追記/U-10・U-11=OPEN-532へ追記(文書同期は次回CURRENT_SPEC編集時)。
+- **A(承認済み合理的差異)確定**: 日本語LRなし(2026-10-15:148,160)、KP phrase LRなし(2026-09-26・2026-10-15:161)、Std「標準2+minimal1」vs Adv「同一Style3回」(2026-10-21決定)、X runnerにRUN_LOCK/RESTART_STORMなし(PM_GOVERNANCE 26-4)。2026-10-19決定(「両ASR合意」削除・初回→最大2回再生成→なおNGならRewrite)はX/Y/Z英語ナレーション全部位で実装一致、実行コード残存0件。
+- 用語統一: F-Tech(技術救済)、F-Style(Std/日本語3回目)、F-Prompt(Z dialogue ctx→legacy)。
+- UDR追記: UDR-TRA-1/2/3(`docs/pm/USER_DECISION_REGISTER_01.md`)。CURRENT_SPECは本件では編集しない(ユーザー判断後に反映)。
+- 費用: API 0・JPY0。
