@@ -22598,3 +22598,9 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 費用: 実費約11.2円。単価影響=救済発火時のみ+約0.2〜0.8円/記事セット。運用逸脱(記録): Z初回起動がY初回起動の101秒後(別run dir・別Family、STOPなし)。
 - 新規OPEN: 541(縮約形の非対称、修正へ進む)、542(`a can of beans`型、修正へ進む・低)、543(HEAD既存test失敗4件、実害なし)、544(X/Z自然発火の初回記録、追跡)。OPEN-529/530=CLOSED。
 - commit: 6133aa6d6、1701dfc4d、2910e859b、d2269a26b。証拠=`docs/research/KP-GATE-EXCLUSION-RESCUE-PRODUCTION-WIRING-01/`。本記録は転記(Production/コード変更なし、API 0・JPY0)。
+
+## OPEN-527 Closeout・OPEN-540 DESIGN_READY・OPEN-537/539ユーザー緊急指示反映(2026-10-26、PM-SSOT-SYNC-13)
+
+- 2026-10-26 OPEN-527 Closeout(Fable判定、ユーザー指示§3)。Y Chunk=WIRED_NOT_FIRING継続、本文契約不変、管理先OPEN-532。Comment 2削除=PRODUCTION_WIRED(限定、初回生成stage確認は次のY新規記事)、Voice 1=OPEN-531で解決済み。証跡=`docs/research/FAMILY-Y-CHUNK-OPEN527-CLOSEOUT-01/`、commit 47db4accf。
+- OPEN-540=DESIGN_READY(commit 6669925cf、Opus条件Aレビュー進行中)。本採用記述は実装後。
+- OPEN-537=ユーザー緊急指示により最優先是正へ(適用時期判断の分類撤回)。OPEN-539=公開版`_02`承認は旧版扱い、新版`_03`は再試聴待ち。

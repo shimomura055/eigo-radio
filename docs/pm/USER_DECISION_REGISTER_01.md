@@ -414,14 +414,14 @@
 
 ### 2026-10-26 FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01 委任_03 追記(新規UDR。分類D=真に新しい判断。既存行は書き換えず追記)
 
-- Y分割方式(UDR-YFB-1): **ユーザー判断待ち**。事実=Y本文は各Voice 1段落のためX規則(段落2未満は分割しない)で分割は不発火、ポーズの原因ではない。案1 Y専用文境界分割(効果は比較Trial未確認、費用約数円〜十数円)/案3 現状維持(費用0・仕様どおり)/案4 Std拡張(Std本文も対象にする=新仕様)。委任_02の推奨=効果がTrial未確認のためまず比較Trial。証跡=docs/research/FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01/INVESTIGATION_01.md。
+- Y分割方式(UDR-YFB-1): **据置(新規判断を立てない。ユーザー指示2026-10-26§3、OPEN-527 CLOSED・管理先OPEN-532)**[旧: ユーザー判断待ち]。事実=Y本文は各Voice 1段落のためX規則(段落2未満は分割しない)で分割は不発火、ポーズの原因ではない。案1 Y専用文境界分割(効果は比較Trial未確認、費用約数円〜十数円)/案3 現状維持(費用0・仕様どおり)/案4 Std拡張(Std本文も対象にする=新仕様)。委任_02の推奨=効果がTrial未確認のためまず比較Trial。証跡=docs/research/FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01/INVESTIGATION_01.md。
 - Voice 1対策(UDR-YFB-2): **ユーザー判断待ち**。事実=Voice 1(Algieba)のTTS出力の長停止傾向が主因。候補Std/Adv各3 take(未採用)を試聴ページに掲載済み(停止占有率はStd 15.9〜21.1% vs 現行25.6%、Adv 17.5〜17.9% vs 現行19.9%)。P1 Voice差替(新仕様・QDC影響大)/P2 候補から試聴選択(推奨、追加費用0・採用は`approved_by=user`)/P5 現状維持。証跡=docs/research/FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01/VOICE1_CANDIDATES_01.md。
 
 ### 2026-10-26 PM-SSOT-SYNC-2026-10-26-02 追記(FZ全編通しTrial OPEN-528 / Y Fable受入。調査中/UDR区分。既存行は書き換えず追記)
 
 - OPEN-528 FZ全編通しTrial 2作品(猿の手・走れメロス、Std/Adv計4単位)の通し試聴判断(効果十分→Production採用検討/不安定→現行維持/別方式、ユーザー試聴後): **調査中・ユーザー判断待ち(USER_LISTENING_PENDING)**。Status(Fable)=猿Std/猿Adv/メロAdv=USER_LISTENING_PENDING、メロStd=REJECTED候補(比較条件不成立、方式欠陥ではない)。試聴の注目点=同一人物の演技の一貫性・地の文→セリフの切替・不自然な速度変化/長ポーズ・境界RMS段差。量産想定Δ/set +1.80〜+3.26円(70円比2.6〜4.7%)。Production未承認。公開=https://shimomura055.github.io/eigo-radio/user_test/fz_full_episode_trial_01/index.html 。報告=docs/pm/RESULT_PACKET_FZFE4.md。
 - OPEN-526 X AI島記事(候補数案A/B/C+HR選択)は2026-10-26 PM-SSOT-SYNC-2026-10-26-01で登録済み(重複追加せず)。
-- OPEN-527 Y: Comment 2削除はFable受入=PRODUCTION_WIRED(限定)。UDR-YFB-1(分割方式)・UDR-YFB-2(Voice 1)は上記委任_03追記のとおりユーザー判断待ち(変更なし)。
+- OPEN-527 Y: Comment 2削除はFable受入=PRODUCTION_WIRED(限定)。UDR-YFB-1(分割方式)は据置(OPEN-527 CLOSED[SYNC-13]・管理先OPEN-532)、UDR-YFB-2(Voice 1)はOPEN-531で解決済み。
 
 ### 2026-10-26 KP-GATE-EXCLUSION-RESCUE-DESIGN-01 委任_02 追記(KP Gate除外救済方式 OPEN-529。調査中/UDR区分。既存行は書き換えず追記)
 
@@ -448,12 +448,12 @@
 - OPEN-532 Chunk Std拡張: ユーザー承認済み。現状維持(Z完了後にFableが判定報告)。判断事項の追加なし。
 
 ### 2026-10-26 PM-SSOT-SYNC-05 追記(OPEN-532 Chunk Std拡張 PRODUCTION_WIRED。既存行は書き換えず追記)
-- OPEN-532 Chunk Std拡張: PRODUCTION_WIRED報告済み(Fable判定2026-10-26、X/Y/Z Std/Adv 6行)。ユーザー判断不要(承認済み範囲=承認原文`docs/pm/delegation_log/2026-10-26_CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01_USER.md`)。Y構造的不発火(現行本文契約)の分割方式変更はOPEN-527(UDR-YFB-1)でユーザー判断待ちのまま。残件(Z Std 2作品目実run等)は任意・非blocking。
+- OPEN-532 Chunk Std拡張: PRODUCTION_WIRED報告済み(Fable判定2026-10-26、X/Y/Z Std/Adv 6行)。ユーザー判断不要(承認済み範囲=承認原文`docs/pm/delegation_log/2026-10-26_CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01_USER.md`)。Y構造的不発火(現行本文契約)の分割方式変更はOPEN-527(UDR-YFB-1)でユーザー判断待ちのまま。残件(Z Std 2作品目実run等)は任意・非blocking。 [SYNC-13: Y分割はOPEN-527 CLOSEDによりOPEN-532へ一本化]
 
 ### 2026-10-26 PM-SSOT-SYNC-06 追記(ユーザー決定反映。既存行は書き換えず追記)
 - OPEN-531 Y Voice 1変更・Y候補表: **決定済み**(2026-10-26 APPROVED_FOR_PRODUCTION。Voice 1=Puck、Y男性5/女性5、Algieba除外、Z不変、Y/Z候補差分は承認済みFamily固有仕様=未承認の仕様不一致として扱わない)。原文=`docs/pm/delegation_log/2026-10-26_FAMILY-Y-VOICE-TABLE-PRODUCTION-WIRING-01_USER.md` §1/§6。PRODUCTION_WIRED反映済み(2026-10-26、FAMILY-Y-VOICE-TABLE-PRODUCTION-WIRING-01、Fable判定、PM-SSOT-SYNC-08)。UDR-YFB-2のVoice 1選択(Puck/Orus/Algieba維持)は決定済みで判断待ち解除。
 - OPEN-532 Chunk Std拡張: Y=PRODUCTION_WIRED未判定(ユーザー決定2026-10-26、WIRED_NOT_FIRING)。X/Z=PRODUCTION_WIRED不変。SYNC-05の「Y PRODUCTION_WIRED」記載は是正済み。
-- OPEN-527 Y分割方式(UDR-YFB-1): 継続(ユーザー判断待ち)。Chunk Yは実記事不発火、本文の段落構成・分割方式は未承認のまま変更しない。
+- OPEN-527 Y分割方式(UDR-YFB-1): 据置(新規判断を立てない、ユーザー指示2026-10-26§3)・OPEN-527 CLOSED(SYNC-13)・管理先OPEN-532。Chunk Yは実記事不発火、本文の段落構成・分割方式は未承認のまま変更しない。
 - OPEN-528 FZ ctx: Local Rewrite未配線・現行HR/STOP。LR新仕様は独断追加しない(TTS-RETRY-FALLBACK-REWRITE-AUDIT-XYZ-01調査結果と照合後にユーザー判断。Deferredのまま)。
 
 ### 2026-10-26 PM-SSOT-SYNC-07 追記(OPEN-534 KP候補フレーズ7+単語3 Trial。既存行は書き換えず追記)
@@ -463,13 +463,13 @@
 
 - **UDR-TRA-1 Zセリフ(dialogue)用Local Rewrite新設要否(OPEN-528 Deferred(1)をUSER_DECISION_REQUIREDへ変更)**: 決めること=Z dialogueにLR(3回NG後に書換え→再TTS1回)を新設するか。背景=LR無しはユーザー承認による除外ではなく、既存LRが無い状態でFable判断J-1がHR/STOP直行を選択(DESIGN_02.md:6,61、Opus同調OPUS_REVIEW_01.md:63-70)。ユーザー原文(FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01_USER.md:30,32,36,136)は「NG→既存のLocal Rewrite処理へ」。ユーザーは後続指示で状態を認識し採否を保留。ctx導入後3回NG実績0、legacy時代3回STOPPED 6件、LRで救えたかは未検証。選択肢=A LR新設(新仕様、Opus条件A、設計案DESIGN_01.md:122、セリフ書換えは台詞自体を変える品質リスク)/B 現状維持(3回NG→HR/STOP)。Fable推奨=**B 現状維持(当面)**(ctx方式導入後に3回NG実績0で便益未確認、セリフ書換えはnarratorより品質リスク大。実績が出た時点で再検討)。急がない。参照=docs/research/TTS-RETRY-FALLBACK-REWRITE-AUDIT-XYZ-01/REPORT_01.md §8-1、OPEN-528。 →**決定済み(2026-10-26ユーザー決定、PM-SSOT-SYNC-11、OPEN-540)**: 今回LRは追加しない(現状維持)。UDR解除。
 - **UDR-TRA-2 非ASR起因NGの扱い(新規OPEN-536)**: 決めること=ASR PASSだがdisfluency/Repetition QA単独NGの音声で、LRが`NO_NG_SPAN`で不発と確定していてもcooldown(固定600秒)後にHRへ落ちる現行を変えるか。選択肢=a 現状維持/b 非ASR起因NGはcooldown省略(2026-09-26「固定10分・短縮禁止」決定と衝突)/c LRを非ASR起因NGへ拡張(新仕様・未検証)。Fable推奨=**b'(LRの発動可否を判定してからcooldownに入る順序是正)**: 「最終attempt前cooldown」の趣旨(API負荷緩和・再生成品質)を変えず待ち時間(1件10分)だけ省く、品質影響なし。ユーザーに確認したい点=2026-09-26決定の文言「固定10分」との整合。実走=X Adv comment_4 2026-10-26、Y Voice 1 Algieba旗率72%。参照=docs/research/TTS-RETRY-FALLBACK-REWRITE-AUDIT-XYZ-01/REPORT_01.md、OPEN-536/525/533。 →**決定済み(2026-10-26ユーザー決定)**: 品質NGの再試行フロー・180秒待機は省略せず、LR適用不可なら無益な後続処理を避ける(③NG後にLR適用可否判定→不可なら即HR)。実装はOPEN-540。UDR解除。
-- **UDR-TRA-3 Y Style profile是正の適用時期(新規OPEN-537、B=仕様と実装の乖離)**: 決めること=Y runnerの`STYLE_PROFILE="default"`固定(設計・台帳・DEV Trialは`fx_20261017`継承、承認/除外記録0件)をいつ是正するか(是正自体はFableが11-8=Bとして判定済み)。選択肢=①次のY新規記事から是正(redelivery_fee完成版はdefaultのまま)/②redelivery_fee完成版も是正して再生成(全Y音声再生成、Voice 2/3再利用不成立、run_01 tts実績約28円+再試行)。Fable推奨=**①**(ユーザーが試聴済みの現行版と同条件を保ちVoice 1変更の効果を単独評価できる、費用最小)。参照=docs/research/TTS-RETRY-FALLBACK-REWRITE-AUDIT-XYZ-01/Y_F01_STYLE_PROFILE_CHECK_01.md、OPEN-537。 →**継続(変更なし)**: OPEN-537はOPEN-540のScope外(Voice/Styleの無断変更なし)。ユーザー判断待ち。
+- **UDR-TRA-3 Y Style profile是正の適用時期(新規OPEN-537、B=仕様と実装の乖離)[2026-10-26 SYNC-13: ユーザー判断待ち→ユーザー緊急指示により是正実施中(FAMILY-Y-STYLE-PROFILE-FIX-01、原文`docs/pm/delegation_log/2026-10-26_FAMILY-Y-STYLE-PROFILE-FIX-01_USER.md`§1)。以下の選択肢は履歴]**: 決めること=Y runnerの`STYLE_PROFILE="default"`固定(設計・台帳・DEV Trialは`fx_20261017`継承、承認/除外記録0件)をいつ是正するか(是正自体はFableが11-8=Bとして判定済み)。選択肢=①次のY新規記事から是正(redelivery_fee完成版はdefaultのまま)/②redelivery_fee完成版も是正して再生成(全Y音声再生成、Voice 2/3再利用不成立、run_01 tts実績約28円+再試行)。Fable推奨=**①**(ユーザーが試聴済みの現行版と同条件を保ちVoice 1変更の効果を単独評価できる、費用最小)。参照=docs/research/TTS-RETRY-FALLBACK-REWRITE-AUDIT-XYZ-01/Y_F01_STYLE_PROFILE_CHECK_01.md、OPEN-537。 →**継続(変更なし)**: OPEN-537はOPEN-540のScope外(Voice/Styleの無断変更なし)。ユーザー判断待ち。
 - 判断不要で自律処理に回したもの(再質問しない): U-01(OPEN-376再入ガード=Fable 11-8 B・修正へ進む)、U-06(OPEN-538)、U-02/U-16/U-04/U-12/U-08/U-10/U-11(既存OPENへ追記)。Aとして確定した承認済み差異=日本語LRなし、KP phrase LRなし、Std「標準2+minimal1」vs Adv「同一Style3回」、X runnerにRUN_LOCK/RESTART_STORMなし。
 
 
 ### 2026-10-26 PM-SSOT-SYNC-10 追記(redelivery_fee 完成版の試聴承認。既存行は書き換えず追記)
 
-- **UDR-YRF-1 redelivery_fee 完成版の試聴承認(OPEN-539、分類D=ユーザーの耳による最終判断)**: 決めること=『宅配の再配達は有料にすべきか？』完成版(Voice 1=Puck・Advanced Comment 2なし)を試聴し、①完成確定とするか②差し戻すか(差し戻す場合は問題箇所を指示)。参照URL=https://shimomura055.github.io/eigo-radio/user_test/family_y_production_redelivery_fee_02/index.html(旧`_01`Algieba版は保持)。注記(HR実態): KP/Vocab/文法Part 2は人間確定ではなく`UNREVIEWED_AUTO_ADOPTED`(前回公開版と同一内容の再利用)、人間確定の再利用はa2 preview承認のみ。Style=`default`のまま(OPEN-537/UDR-TRA-3は別判断)。追加費用0円(累計約54.65円)。Fable所見=全Gate PASS、Voice 1の長停止0・Repetition旗なし、聴感は未確認のため試聴判断が必要。
+- **UDR-YRF-1 redelivery_fee 完成版の試聴承認(OPEN-539、分類D=ユーザーの耳による最終判断)[2026-10-26 SYNC-13: 公開版`_02`(default Style)への試聴承認は旧版承認として記録。新Style反映版`_03`予定はユーザー再試聴・再承認待ち、承認を先取りしない(緊急指示§1-C)]**: 決めること=『宅配の再配達は有料にすべきか？』完成版(Voice 1=Puck・Advanced Comment 2なし)を試聴し、①完成確定とするか②差し戻すか(差し戻す場合は問題箇所を指示)。参照URL=https://shimomura055.github.io/eigo-radio/user_test/family_y_production_redelivery_fee_02/index.html(旧`_01`Algieba版は保持)。注記(HR実態): KP/Vocab/文法Part 2は人間確定ではなく`UNREVIEWED_AUTO_ADOPTED`(前回公開版と同一内容の再利用)、人間確定の再利用はa2 preview承認のみ。Style=`default`のまま(OPEN-537/UDR-TRA-3は別判断)。追加費用0円(累計約54.65円)。Fable所見=全Gate PASS、Voice 1の長停止0・Repetition旗なし、聴感は未確認のため試聴判断が必要。
 
 ### 2026-10-26 PM-SSOT-SYNC-12 追記(KP Gate除外救済方式 OPEN-529 解決。既存行は書き換えず追記)
 
