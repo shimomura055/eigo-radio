@@ -126,10 +126,18 @@ class ZPlanTests(unittest.TestCase):
         self.assertEqual(k.extra["chunk"]["count"], 2)
         self.assertEqual(" ".join(s.text for s in plan if s.clip_id.startswith("full_story_part2_c1_k")), core.normalize_for_tts(" ".join(PARAS[1:4])))
 
-    def test_std_and_unchunked_plan_identical_to_legacy(self):
+    def test_std_narrator_over_100_words_expands_dialogue_and_others_identical_to_legacy(self):
+        # CHUNK-TTS-STD 委任_03(旧『Stdはchunk化しない』固定を書換え): Stdもnarrator>100語はchunk化。dialogue・短narrator・Std他clipは非chunk planとClipSpecが一致
         a, _ = make_plan("a2", chunked=True)
         b, _ = make_plan("a2", chunked=False)
-        self.assertEqual(a, b)                                                           # Std: chunk化しない(ClipSpec列が完全一致)
+        ids_a = [s.clip_id for s in a if s.kind in ("narrator", "dialogue")]
+        self.assertEqual(ids_a, ["full_story_part1_c1", "full_story_part1_c2", "full_story_part2_c1_k1", "full_story_part2_c1_k2", "full_story_part3_c1"])
+        self.assertEqual([s for s in a if (s.extra or {}).get("chunk") is None], [s for s in b if s.clip_id != "full_story_part2_c1"])
+        for s in a:
+            if (s.extra or {}).get("chunk"):
+                self.assertEqual((s.level, s.kind, s.role_key), ("a2", "narrator", b[[x.clip_id for x in b].index("full_story_part2_c1")].role_key))
+        self.assertEqual(" ".join(s.text for s in a if s.clip_id.startswith("full_story_part2_c1_k")),
+                         [x for x in b if x.clip_id == "full_story_part2_c1"][0].text)
         c, _ = make_plan("b1b", chunked=False)
         d = z.build_level_plan("b1b", story(), "preview text", {1: "c1 text", 2: "c2 text", 3: "c3 text"},
                                [{"rank": 1, "used_form": "run through", "japanese_gloss": "x", "japanese_gloss_tts": "x"}], "The Three-Day Promise")
@@ -199,7 +207,8 @@ class ZPlanTests(unittest.TestCase):
         self.assertEqual(sorted(got), ["full_story_part2_c1"])
         self.assertEqual([(c["chunk_id"], c["text"], c["words"], c["boundary_kind"]) for c in got["full_story_part2_c1"]["chunks"]],
                          [(c["chunk_id"], c["text"], c["words"], c["boundary_kind"]) for c in want["chunks"]])
-        self.assertEqual(z.chunk_plans_from_specs(make_plan("a2")[0]), {})
+        self.assertEqual(sorted(z.chunk_plans_from_specs(make_plan("a2")[0])), ["full_story_part2_c1"])   # Std(a2)もchunk化(委任_03)
+        self.assertEqual(z.chunk_plans_from_specs(make_plan("a2", chunked=False)[0]), {})
 
 
 class ZStageTests(unittest.TestCase):

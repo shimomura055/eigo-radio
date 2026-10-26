@@ -15,7 +15,8 @@ CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01 委任_01(ユーザー正式承認2026-10
     → 減速後のchunk wavを0.2秒の無音(減速対象外)で連結』。ポーズは減速の影響を受けず0.2秒のまま。連結後に減速はかけない。
     本moduleは減速自体を実装しない(既存関数を呼出側が適用)。ここでは(a)Std chunk entryの減速証跡を要求する検査 (b)親集約entryの減速集約
     (c)減速証跡の無い旧cacheの再利用拒否 だけを共通化する(X/Yが共用、Zは次委任)。
-  * Z向けのレベル条件(plan_z_clip の level != "b1b")は本委任では撤去しない(Z側の減速合成配線=er063は次委任。未配線のまま発火させない)。
+  * 委任_03(2026-10-26): Z向けのレベル条件(plan_z_clip の level != "b1b")を撤去。er063の Z Std配線(chunk別6%減速→0.2秒→連結、
+    速度Gateの厳格化)と同一commitで実施(Opus M3)。planner規則・版は不変(Advのplan出力はバイト同一)。
 """
 from __future__ import annotations
 
@@ -147,14 +148,13 @@ def _candidates(paragraph_texts: list) -> list:
 
 
 def plan_z_clip(clip: dict, paragraph_texts: list, level: str = "b1b") -> dict:
-    """clip: {id, voice, word_count, text}。Adv(b1b)のnarratorで語数>100のみ分割。それ以外は不変(chunked=False)。
+    """clip: {id, voice, word_count, text}。narrator(Adv b1b / Std a2 とも同一規則)で語数>100のみ分割。それ以外は不変(chunked=False)。
+    levelは互換のため残す(委任_03: Std除外のレベル条件を撤去。規則・出力はlevelに依存しない)。
     k=ceil(語数/100)、段落境界>文境界、最小25語、引用途中禁止、cut目標は残語数の等分。"""
     cid = clip["id"]
     n = clip.get("word_count") or wc(clip["text"])
     base = {"parent_id": cid, "family": "Z", "planner_version": CHUNK_PLANNER_VERSION, "chunks": [], "chunked": False,
             "parent_text_sha256": sha256_text(clip["text"])}
-    if level != "b1b":
-        return {**base, "reason": "level!=b1b(Std対象外: 6%減速との相互作用が未検証)"}
     if clip.get("voice") != "narrator":
         return {**base, "reason": "not_narrator(Dialogue/話者切替clipは不変)"}
     if n <= Z_SPLIT_THRESHOLD_WORDS:

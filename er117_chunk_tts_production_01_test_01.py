@@ -95,7 +95,10 @@ class TPlannerZ(unittest.TestCase):
         self.assertTrue(r["full_story_part1_c1"]["chunked"])
         self.assertFalse(r["full_story_part1_c2"]["chunked"])
         self.assertTrue(r["full_story_part1_c2"]["paragraph_info_lost"])
-        self.assertEqual(core.plan_z_level(clips, paras, level="a2")["full_story_part1_c1"]["chunked"], False)
+        # CHUNK-TTS-STD 委任_03: Std(a2)のレベル条件は撤去(Std/Adv同一規則)。Advと同じ分割になる
+        std = core.plan_z_level(clips, paras, level="a2")
+        self.assertEqual(std["full_story_part1_c1"]["chunked"], True)
+        self.assertEqual([c["chunk_id"] for c in std["full_story_part1_c1"]["chunks"]], [c["chunk_id"] for c in r["full_story_part1_c1"]["chunks"]])
 
 
 class TPlannerX(unittest.TestCase):

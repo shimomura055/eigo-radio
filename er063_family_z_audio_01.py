@@ -595,7 +595,7 @@ def build_level_plan(level: str, story_clips: list, preview_text: str, comments:
         kind = "narrator" if speaker == "narrator" else "dialogue"
         voice = resolve_dialogue_voice(speaker, story_key)
         cp = (chunk_plans or {}).get(c["id"])
-        if cp and cp.get("chunked") and kind == "narrator" and level == "b1b":
+        if cp and cp.get("chunked") and kind == "narrator" and level in ("b1b", "a2"):   # CHUNK-TTS-STD 委任_03(M3): Stdも展開(dialogueは対象外のまま)
             n = len(cp["chunks"])
             for ch in cp["chunks"]:
                 plan.append(ClipSpec(ch["chunk_id"], level, kind, ch["text"], voice=voice, speaker=speaker,
@@ -632,11 +632,16 @@ def _z_chunk_parent_display(plan: dict, segments: dict) -> dict:
     rk = plan["role_key"]
     first = segments.get(plan["chunks"][0]["chunk_id"]) or {}
     sha = ((first.get("style") or {}).get("style_prefix_sha256"))
-    return {"voice": plan["voice"], "speaker": plan["speaker"], "clip_kind": "narrator", "role_style_key": rk,
+    disp = {"voice": plan["voice"], "speaker": plan["speaker"], "clip_kind": "narrator", "role_style_key": rk,
             "role": "FULL_STORY", "tts_backend": TTS_BACKEND, "slowdown_applied": None,
             "style": {"instruction_label": FAMILY_Z_ROLE_STYLE[rk]["style_label"] + "(chunked, see chunk_tts)", "style_prefix_sha256": sha},
             "z_adoption": "adopted" if all((segments.get(c["chunk_id"]) or {}).get("z_adoption") in ("adopted", "human_review_adopted")
                                            for c in plan["chunks"]) else "failed"}
+    if plan.get("level") == chunk_tts.STD_LEVEL:
+        # CHUNK-TTS-STD 委任_03(Opus M3): Stdの親は『全chunkがchunk単位で6%減速済み』のときだけ slowdown_applied=True(明示True/False。
+        # 古い親_original.wavの弱い証拠へ落ちない)。Adv(b1b)は従来どおりNone=バイト不変(速度Gateの『Adv Narratorに速度後処理なし』検査を維持)。
+        disp.update(chunk_tts.std_parent_slowdown_fields(plan, segments))
+    return disp
 
 
 def refresh_chunk_parents(level_dir: str, plan: list, segments: dict) -> dict:
@@ -1252,6 +1257,11 @@ def build_entry(spec: ClipSpec, out_path: str, result: dict, *, human_approved: 
         # AUW 委任_03(additive): 統一ASR判定の監査record(PASS_WITH_WARNING等)。事後試聴リストの入力。
         "asr_judgement": result.get("asr_judgement"),
     }
+    if (spec.extra or {}).get("chunk") and spec.level == chunk_tts.STD_LEVEL and isinstance(result.get("slowdown_info"), dict):
+        # CHUNK-TTS-STD 委任_03(Opus M2/R2): Std chunk entryには減速前後長を記録する(速度Gateがchunk単位の比率を厳格検査する根拠)。
+        # chunk以外のentry・Adv entryには付けない(従来とバイト同一)。
+        _sd = result["slowdown_info"]
+        entry["slowdown_info"] = {k: _sd.get(k) for k in ("slowdown_pct_target", "slowdown_pct_actual", "src_duration_seconds", "dst_duration_seconds")}
     if result.get("kp_dual_check") is not None:   # KP3V(additive): KP英語phraseのみ。両Provider PASSの証跡
         entry["kp_dual_check"] = result["kp_dual_check"]
     if isinstance(result.get("dialogue_tts"), dict):   # FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01(additive): dialogue文脈・感情付きTTSのpolicy・試行・最終方式の証跡
@@ -1523,7 +1533,13 @@ def _run_tts_stage_impl(run_dir: str, level: str, plan: list, *, generators: dic
     # FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01(Opus M-5): LLMを呼ばないrun単位policy解決と文脈入力の付与を、cached読込・reuse_key評価(prune/migrate/再利用)より前に行う。
     prepare_dialogue_ctx(run_dir, level, plan, story_key=story_key, only_clips=only_clips)
     cached = load_results(level_dir)
+    if level == chunk_tts.STD_LEVEL:
+        # CHUNK-TTS-STD 委任_03(Opus M3): 減速証跡のないStd chunk entryは再利用しない。--only-clipsで選ばれなかったclipの再利用(下の
+        # _cached_entry→_store)は generate_or_reuse_z を通らないため、load_results直後に落とす(checkpoint統合後にも再適用)。
+        cached = chunk_tts.drop_cached_std_chunks_without_slowdown(cached)
     cached = _merge_checkpoint(cached, load_checkpoint(level_dir))   # 委任_10: process中断時もOK clipを再利用(再課金しない)
+    if level == chunk_tts.STD_LEVEL:
+        cached = chunk_tts.drop_cached_std_chunks_without_slowdown(cached)
     cached, _speed_migration = migrate_legacy_dialogue_speed(cached, plan, run_dir, level)   # 速度仕様v2: 旧会話entryをTTS再生成なしで移行(ASRはAdvのみ)
     cached = prune_cached_to_plan(cached, plan)   # KPFT 委任_02(OF-KPFT-P-09): 旧rank/旧語句(reuse_key不一致。reuse_keyを持たないentryは判定不能のため従来どおり保持)を再利用経路へ入れない
     gens = generators or real_generators()
@@ -1558,7 +1574,8 @@ def _run_tts_stage_impl(run_dir: str, level: str, plan: list, *, generators: dic
         entry = normalize_technical_stop_entry(spec, out_path, entry)
         _ch = (spec.extra or {}).get("chunk")
         if _ch:
-            chunk_tts.attach_chunk_meta(entry, _ch["parent_id"], {"index": _ch["index"], "words": _ch["words"], "boundary_kind": _ch["boundary_kind"]}, _ch["count"])
+            chunk_tts.attach_chunk_meta(entry, _ch["parent_id"], {"index": _ch["index"], "words": _ch["words"], "boundary_kind": _ch["boundary_kind"]}, _ch["count"],
+                                    level=spec.level)   # Std(a2)のときだけ減速合成方式をchunk_ttsへ記録。Adv(b1b)はバイト不変
         _store(segments, key_phrases, spec, entry)
         evidence.append(_evidence_row(spec, out_path, entry))
         save_checkpoint(level_dir, segments, key_phrases)
@@ -1719,7 +1736,35 @@ def assert_tts_results_complete(level_dir: str, required_clip_ids_: list) -> dic
     return {"checked": len(required_clip_ids_), "path": p, "audio_text_deviations": deviations}
 
 
-def verify_std_english_slowdown(level_dir: str, required_clip_entries: dict, narration_dir: str | None = None) -> dict:
+def _std_chunk_slowdown_check(required_clip_entries: dict, chunk_plans: dict | None) -> dict:
+    """CHUNK-TTS-STD 委任_03(Opus M2): Std chunk idの速度Gate(厳格)。chunk entryに slowdown_applied is True と、記録された減速前後長の比
+    ∈[1.03,1.09](両長さの記録欠落もNG)を要求する。`_original.wav`の再生時間比による弱い証拠の救済は使わない(chunkは生成時の記録だけが証拠)。
+    chunk_plansが渡されればplanの全chunk id(entry欠落=NG)、無ければrequired_clip_entriesに現れたchunk idを検査する。戻り値={chunk_id: detail}、
+    違反は {chunk_id: [違反ID…]} を failures として返す。"""
+    plans = {}
+    for pid, pl in (chunk_plans or {}).items():
+        if pl.get("chunked"):
+            plans[pid] = pl
+    seen = {pl_c["chunk_id"] for pl in plans.values() for pl_c in pl["chunks"]}
+    for cid in required_clip_entries:
+        m = _CLIP_OR_CHUNK_ID_RE.fullmatch(cid)
+        if m and m.group(3) and cid not in seen:
+            # planが渡されない/planに無いchunk idも検査対象(抜け道を作らない)。1 chunkだけの擬似planで同じ検査関数を使う。
+            plans[f"{cid}__solo"] = {"chunked": True, "parent_id": cid, "chunks": [{"chunk_id": cid, "index": 1}]}
+    detail, failures = {}, []
+    for pid, pl in plans.items():
+        segs = {c["chunk_id"]: required_clip_entries.get(c["chunk_id"]) for c in pl["chunks"]}
+        viol = {v["segment"]: v["violations"] for v in chunk_tts.std_chunk_slowdown_violations(pl, segs)}
+        for c in pl["chunks"]:
+            cid = c["chunk_id"]
+            detail[cid] = {"ok": cid not in viol, "why": ";".join(viol.get(cid, [])) or "chunk slowdown_applied=True & ratio ok", "strict": "chunk"}
+            if cid in viol:
+                failures.append(f"{cid}({detail[cid]['why']})")
+    return {"detail": detail, "failures": failures}
+
+
+def verify_std_english_slowdown(level_dir: str, required_clip_entries: dict, narration_dir: str | None = None,
+                                chunk_plans: dict | None = None) -> dict:
     """M1: 全Std英語Story clip(narrator・dialogue、_cN含む、Human Review採択も対象)で
     slowdown_applied is True、または _original.wav と現行wavの再生時間比∈[1.03,1.09]を要求する。
     (比 = 現行/original。減速後の方が長い。設計書は逆向きの記載だが、既存Gate
@@ -1729,7 +1774,7 @@ def verify_std_english_slowdown(level_dir: str, required_clip_entries: dict, nar
     failures, detail = [], {}
     for cid, entry in required_clip_entries.items():
         if not _CLIP_ID_RE.fullmatch(cid):
-            continue
+            continue   # chunk id(…_c{k}_k{j})は下の厳格検査(_std_chunk_slowdown_check)で扱う
         if (entry or {}).get("clip_kind") == "dialogue":
             continue   # 速度仕様v2: Std会話は減速禁止(verify_z_speed_profileが検査)。本関数は6%減速必須のStd narrator story clipのみ
         ok, why = False, ""
@@ -1749,6 +1794,9 @@ def verify_std_english_slowdown(level_dir: str, required_clip_entries: dict, nar
         detail[cid] = {"ok": ok, "why": why}
         if not ok:
             failures.append(f"{cid}({why})")
+    _ck = _std_chunk_slowdown_check(required_clip_entries, chunk_plans)   # M2: chunk idは厳格(_original.wav弱証拠なし)
+    detail.update(_ck["detail"])
+    failures.extend(_ck["failures"])
     if failures:
         raise FamilyZSlowdownGateStop(f"Std英語Story clipに6%減速の証跡がありません: {failures}")
     return detail
@@ -1862,7 +1910,8 @@ def run_audio_gate(run_dir: str, level: str, plan: list, shell_names: list, *, a
     slow = None
     speed = verify_z_speed_profile(level, {k: v for k, v in entries.items() if _CLIP_OR_CHUNK_ID_RE.fullmatch(k)}, f"{level_dir}/narration")
     if level == "a2":
-        slow = verify_std_english_slowdown(level_dir, {k: v for k, v in entries.items() if _CLIP_ID_RE.fullmatch(k)})
+        slow = verify_std_english_slowdown(level_dir, {k: v for k, v in entries.items() if _CLIP_OR_CHUNK_ID_RE.fullmatch(k)},
+                                           chunk_plans=chunk_plans_from_specs(plan))   # M2: chunk idも対象(厳格検査)
     problems = check_clip_audio_quality(f"{level_dir}/narration", {k: v for k, v in entries.items() if v and v.get("clip_kind")})
     if problems:
         raise FamilyZAudioStop(f"clip品質確認でNG: {problems}")

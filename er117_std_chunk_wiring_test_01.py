@@ -82,12 +82,13 @@ class AdvUnchangedGolden(unittest.TestCase):
         self.assertEqual(len(c), 1000 + 4800 + 700)
         self.assertTrue((c[1000:5800] == 0).all())
 
-    def test_z_planner_level_condition_is_still_in_place_until_next_delegation(self):
-        # Z側のStd配線(er063の減速合成)は次委任。それまでZ Stdを発火させない(未配線のまま発火させない)。
-        clip = {"id": "full_story_part1_c1", "voice": "narrator", "word_count": 130, "text": "word " * 130}
-        p = core.plan_z_clip(clip, [clip["text"]], "a2")
-        self.assertFalse(p["chunked"])
-        self.assertIn("level!=b1b", p["reason"])
+    def test_z_planner_level_condition_removed_std_and_adv_plans_identical(self):
+        # CHUNK-TTS-STD 委任_03: Z側のStd配線(er063の減速合成・速度Gate厳格化)と同時に plan_z_clip のレベル条件を撤去済み。規則はStd/Adv同一。
+        clip = {"id": "full_story_part1_c1", "voice": "narrator", "word_count": 130, "text": ("word " * 130).strip()}
+        p_std = core.plan_z_clip(clip, [clip["text"]], "a2")
+        p_adv = core.plan_z_clip(clip, [clip["text"]], "b1b")
+        self.assertEqual(p_std, p_adv)                                                       # Advのplan出力は不変、StdもAdvと同一規則
+        self.assertNotIn("level!=b1b", json.dumps(p_std, ensure_ascii=False))
 
 
 class StdSlowdownCompositionPhysics(unittest.TestCase):
