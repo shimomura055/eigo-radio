@@ -302,6 +302,8 @@ class TestIsolation(unittest.TestCase):
                 continue
             if b.startswith("er123_"):
                 continue   # DEV専用module(KP-GATE-EXCLUSION-RESCUE-DESIGN-02。Production到達経路なし。委任_03で既存の失敗を是正: 委任_01から未登録だった)
+            if b.startswith("er124_"):
+                continue   # DEV/Trial専用module(KP-CANDIDATE-PHRASE7-WORD3-TRIAL-01。Production到達経路なし。逆方向のimport禁止は er124_kp_phrase_word_trial_test_01.IsolationTests が担保)
             if b.startswith("er112_"):
                 continue   # DEV/Trial専用module(Production到達経路なし。逆方向のimport禁止は er112_kp_gm_trial_01_test_01.test_no_production_module_imports_er112 が担保)
             with open(p, encoding="utf-8", errors="ignore") as f:

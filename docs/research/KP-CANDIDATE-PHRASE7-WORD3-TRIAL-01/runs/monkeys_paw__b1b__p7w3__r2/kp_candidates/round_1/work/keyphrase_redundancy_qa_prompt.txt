@@ -1,0 +1,136 @@
+以下は、同じ記事から選ばれた7件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。7件から作れる全てのペア(21組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず21組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+Wind rattled the windows, but the fire burned brightly. Herbert grinned over the chessboard while Mr. White leaned back, defeated. Beside them, Mrs. White smiled over her knitting.
+
+A knock announced an old friend, a retired sergeant-major home from India. By the fire, he showed them a small, dried monkey’s paw.
+
+“It grants three wishes,” he said, “but brings sorrow to anyone who interferes with fate.”
+
+“Have you used it?” asked Mr. White.
+
+“All three.”
+
+Suddenly, the soldier threw it into the flames. Mr. White snatched it out.
+
+“Burn it,” his friend warned. “And don’t blame me if you keep it.”
+
+After their visitor left, Herbert laughed. “Ask for two hundred pounds, Father. Enough to pay off the house!”
+
+Mr. White raised the paw with a smile. “I wish for two hundred pounds.”
+
+It twisted in his hand. He cried out and dropped it. They stared at the floor, but nothing else happened.
+
+By breakfast, they were joking again. Herbert left for work, and Mrs. White cleared the table.
+
+Later, a stranger from the firm arrived.
+
+“Your son was caught in the machinery,” he said. “He is dead.”
+
+Mr. White reached for his wife’s hand.
+
+“The firm accepts no responsibility, but offers you two hundred pounds in compensation.”
+
+Mr. White fell from his chair.
+
+A week after the burial, Mrs. White shook her husband awake. Her face was wet with tears.
+
+“The paw! We have two wishes left. Wish him alive again!”
+
+He turned away. “You didn’t see him. I’m afraid of what might come back.”
+
+“He’s our son!”
+
+At last, Mr. White went downstairs and found the paw. His wife followed. His voice shook.
+
+“I wish Herbert alive again.”
+
+It fell from his hand. They waited in the dark, listening to the clock.
+
+Then came a soft knock.
+
+“Herbert!” Mrs. White rushed towards the door. Her husband caught her arm, but she pulled free.
+
+The knocking grew louder. She dragged a chair to the front door and climbed onto it to reach the high bolt.
+
+Mr. White dropped to his knees. Where was the paw? His fingers swept across the boards as the knocking shook the door.
+
+“Wait!”
+
+The chair scraped. The last bolt began to slide. His fingers closed around the paw. Just as his wife was about to open the door, he made his third and last wish.
+
+The terrible knocking stopped.
+
+She pulled the door open. There was nobody there. Cold wind swept into the house, and her long wail of loss rose into the night.
+
+The street lamp opposite shone on a quiet, deserted road.
+
+【Key Phrase 7件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "interfere with fate",
+    "japanese_gloss": "運命に逆らう",
+    "source_sentence": "It grants three wishes,\" he said, \"but brings sorrow to anyone who interferes with fate"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "pay off",
+    "japanese_gloss": "完済する",
+    "source_sentence": "Enough to pay off the house"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "in compensation",
+    "japanese_gloss": "補償として",
+    "source_sentence": "The firm accepts no responsibility, but offers you two hundred pounds in compensation"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "wail of loss",
+    "japanese_gloss": "失ったものを嘆く叫び",
+    "source_sentence": "Cold wind swept into the house, and her long wail of loss rose into the night"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "responsibility",
+    "japanese_gloss": "責任",
+    "source_sentence": "The firm accepts no responsibility, but offers you two hundred pounds in compensation"
+  },
+  {
+    "rank": 6,
+    "key_phrase": "snatch",
+    "japanese_gloss": "さっとつかみ取る",
+    "source_sentence": "White snatched it out"
+  },
+  {
+    "rank": 7,
+    "key_phrase": "deserted",
+    "japanese_gloss": "人けのない",
+    "source_sentence": "The street lamp opposite shone on a quiet, deserted road"
+  }
+]
