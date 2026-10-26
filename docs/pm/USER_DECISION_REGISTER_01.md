@@ -490,3 +490,6 @@
 - **UDR-YRF-2 Std preview承認(`_03`、OPEN-537/539、分類D)**: 表記ゆれのみで残るStd preview 1件のHR承認(ユーザー)。
 - **UDR-YRF-3 S9(`_03`完成後、OPEN-537、分類D)**: Voice 1〜3のPD06可否(A19条件付き承認・未評価)。`_03`完成後に提示。
 
+
+### 2026-10-27 PM-SSOT-SYNC-18 追記(既存行は書き換えず追記)
+- **UDR-MONKEY-1 猿の手Std公開版c10差替え(OPEN-551、分類D=真に新しい判断)**: 決めること=公開mp3(301.8秒)の128.6〜133.4秒(4.7秒)にStyle落ち(PD06落ち)fallback clip `full_story_part1_c10`が含まれる件の扱い。案A=現状維持/案B=当該clipのみ再生成(約¥1〜2)→再組立→公開更新(**Fable推奨B**)/案C=ユーザーが聴取して人間承認。根拠=`docs/research/PM-OPEN-548-551-INVESTIGATION-01/OPEN551_Z_STYLE_CHECK_01.md`・OPEN_ITEMS OPEN-551追記。

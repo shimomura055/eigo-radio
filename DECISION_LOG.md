@@ -22616,3 +22616,8 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - OPEN-540: IMPLEMENTED(18d997941/e8773980a/65e5b036e)。evidence進行中。
 - 新規OPEN: 545〜552(11-8分類は各行に記載)。
 
+
+### 2026-10-27 PM-SSOT-SYNC-18
+- OPEN-540: 限定解除=PRODUCTION_WIRED(Fable受入。委任_04〜06、6e7fa7cf5/5db9e40bc/88b1a5173、実経路hrq_rows==1)。CURRENT_SPEC統一仕様節の限定事項は解消へ更新。
+- OPEN-551: IMPLEMENTED(52c07550d)。猿の手Std c10のfallback clip公開版混入→UDR-MONKEY-1(分類D)を起票。
+- Git運用違反(並行Agentのstash/pop)を検証: 喪失なし(OPEN-555、GIT_INTEGRITY_01.md)。新規OPEN 553〜555。

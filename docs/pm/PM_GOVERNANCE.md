@@ -4335,3 +4335,5 @@ Family Z runner(er026/er062/er063)に次を実装済み(課金0のmock/dry-run�
   ファイル(`sandwich-pm.md`のdescription・手順7・手順8、`opus-consultant.md`、
   `CLAUDE.md`、`PM_BRIEF.md`、テンプレート)は直接修正(モデル指定・Fable本体の
   役割は不変)。詳細は`DECISION_LOG.md`同管理ID委任_02エントリ参照。
+
+**禁止Git操作の違反記録(2026-10-27追記、PM-SSOT-SYNC-18)**: FAMILY-Z-STYLE-ACTUAL-GATE-01 委任_01が並列稼働中に`git stash`/`git stash pop`を実行(自己申告、stash残0)。検証=commit喪失なし・コード巻き戻りなし(`docs/research/PM-SSOT-SYNC-18/GIT_INTEGRITY_01.md`、OPEN-555)。上記『並列稼働中のgit stash禁止』は不変。委任文の禁止事項に`stash`を明記して再発防止(継続)。
