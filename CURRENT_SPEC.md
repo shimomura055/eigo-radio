@@ -2945,6 +2945,7 @@ OPEN-178/179・既存Topic Discovery Trial結果を上書きしない。
 - **量産単価**: 追加LLM call 0。chunk数分のTTS call増(X 10 call、Z 4 call/作品)。実測=X『英国の電車マナー』Adv TTS 2.51円、Z『告げ口心臓』Std+Adv全TTS+KP 16.67円(参考: run_sf_prod_02 34.64円は別構成)。
 - **runtime evidence**: `docs/research/FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01/RUNTIME_EVIDENCE_01.md`(X/Zとも全chunk OK・LR/HR/fallback 0・共有Gate PASS・0.2秒gap実測・親wav整数sample一致)。
 - **test**: `er117_chunk_tts_production_01_test_01.py`(43)・`er117_x_chunk_wiring_test_01.py`(25)・`er117_z_chunk_wiring_test_01.py`(21)。planner凍結fixture(`planner_fixture_01.json`)は承認Trial planner出力(Z 16 run/385 clip/15分割clip、X parts.json 421)と本文sha・語数・boundary_kind・境界段落まで一致を検査。
+- **Y適用の実測(2026-10-26、`FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01` 委任_02/03、OPEN-527)**: Y本文は各Voice 1段落(`MULTI_PARAGRAPH`契約)のため、現行規則(段落2未満は分割しない)ではYのAdvanced本文の分割は発火しない(『宅配』E-1全segmentで分割0・追加0.2秒0、`chunk_tts_decision.json`)。Standard本文は仕様上対象外。分割の実効化(Y専用文境界分割等)は新仕様=ユーザー判断待ち。試聴ページは『TTS分割なし/追加0.2秒なし』を明示し、実測した停止位置を台本に重畳する。
 
 ## 参照元
 
@@ -3045,10 +3046,10 @@ ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01完了報告(Gemini TTS Batch API実配線
 - **実装時の開示**: 委任文にあった補足の後半(「ただし、根拠がない解釈、不要な一般化、研究・調査の説明への逆戻りは引き続きFAIL」)は、較正で案Bが`leak_discovery_syntax`で3/3 FAILし①の救済条件と衝突したため実装していない(ユーザー承認原文の一文のみ)。詳細=`docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/{HUMAN_APPROVAL_CASE_B_01,GATE_CALIBRATION_02,SPEC_LEDGER_04}.md`、設計=`DESIGN_02.md` 14節、追跡=`OPEN_TRACKING_04.md`。
 - **【2026-10-25追記 FAMILY-Y-PRODUCTION-LAUNCH-01 委任_06/07: Yの接続状況(仕様本文は変更しない)】** Part 1(Vocabulary & Expressions)・Part 2(文法解説)・文法HR(kind="grammar")はY runner(`er121_family_y_runner_01.py`)へコード接続済み(委任_06)。実API確認は文法HRなしのみで、**文法HRありの実走は未**。E-1(宅配)は完走せずHuman Review待ち(公開物なし、`docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/E1_HUMAN_REVIEW_01.md`)。ER-020 `identify_ng_span`はハイフン/複合語分かち書き差のみをNG spanにしない(承認済み表記正規化との不整合の不具合是正、委任_07。仕様・閾値・Local Rewrite発火条件は不変)。PRODUCTION_WIREDではない(判定はFable)。
 
-## Family Y Advanced Comment 2削除(2026-10-26ユーザー正式決定、`FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01` 委任_01、原文=`docs/pm/delegation_log/2026-10-26_FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01_USER.md` §1-③。Status=`IMPLEMENTED_PENDING_EVIDENCE`)
+## Family Y Advanced Comment 2削除(2026-10-26ユーザー正式決定、`FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01` 委任_01、原文=`docs/pm/delegation_log/2026-10-26_FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01_USER.md` §1-③。Status=runtime evidence取得済み・Fable受入待ち、委任_03)
 
 - **決定**: Family Y Advanced(b1b)のComment 2を削除(正式仕様変更)。理由=導入・Comment 2・各Voiceリード文の内容重複。
 - **新しい基本構成(Advanced)**: 導入(Comment 1+Lead)→Voice 1リード文→Voice 1→Voice 2リード文→Voice 2→Voice 3リード文→Voice 3→Comment 3→Tension+Closing(段落5)。日本語側(Standard=a2)は現状維持=Comment 1→Lead→Comment 2→…→Comment 3→Closingのまま。
 - **実装(2026-10-26、test済み・runtime evidence未)**: `er121_family_y_structure_01.py` `Y_SUPPORT_NAMES`(b1b=preview/comment_1/comment_3、a2=4種)から初回生成・TTS・組立・ページ・manifestを導出。b1bのComment 2 role文は撤去。Advanced Previewは共有X `PREVIEW_ROLE`からComment 2への言及(重複回避参照)のみ機械的に除去(`advanced_preview_role`、共有module無編集)。旧runのcomment_2成果物は無視(削除しない)。Lead直後のpauseは既存`pause_story_to_comment`を1つ残し新値なし。詳細=`docs/research/FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01/DESIGN_01.md`。
-- **Family別Status(Y)**: Advanced Comment 2削除=`IMPLEMENTED_PENDING_EVIDENCE`(runtime evidenceは委任_03のE-1再組立。PRODUCTION_WIRED判定はFable)。
+- **Family別Status(Y)**: Advanced Comment 2削除=runtime evidence取得済み・Fable受入待ち(2026-10-26 委任_03: 『宅配』E-1 run_01を正式経路[gate/assemble/pages/page_verify]で再組立、API 0。Advanced timeline 45→43要素[Comment 2 8.61秒+直後pause 0.8秒のみ削除]、gate PASS、page_verify ok、Standardはtimeline・wavともバイト同一。証跡=`docs/research/FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01/EVIDENCE_01.md`)。PRODUCTION_WIRED判定はFable。
 - **記事の扱い(同原文§1-①②)**: E-3『SNSの年齢制限・利用禁止』=Trialサンプルとして保管(最終試聴判断なし・正式完成記事の承認済み扱いにしない・比較検証用に再利用可能な状態を維持)。E-1『宅配の再配達は有料にすべきか？』=ユーザー評価良好(『Family Yを入れる価値を示している』)、最終承認・完成判定は構成変更+音声品質調査後。

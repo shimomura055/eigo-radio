@@ -22508,3 +22508,7 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 ## FAMILY-X-AI-ISLAND-TEMPLE-PRODUCTION-01 委任_02: Editorial Gate(切り口)確認、分岐BでSTOP(2026-10-26、API 0・費用0円)
 - 2026-10-26 FAMILY-X-AI-ISLAND-TEMPLE-PRODUCTION-01 委任_02: Fable Editorial Gateで委任_01版の切り口(攻略メモ主軸)をユーザー原文§3と部分不一致と判定。確認の結果、方向性はtheme.txt(sha 22736ccd…)でB3へ渡済み(分岐B)、正式経路の切り口入力は`--theme`のみ、主因=Writer/R2段の主軸再構成+B3のF06/F08不採用。再生成せずSTOP(API 0)。選択肢(1)現版で進む(2)theme強調+B3/writer再生成約55円(3)Prompt変更=ユーザー承認要、をユーザー判断へ(Fable推奨=(2))。HR待機継続。Cap 150→200円(Fable 7-7)。
 - 証跡=docs/research/FAMILY-X-AI-ISLAND-TEMPLE-PRODUCTION-01/EDITORIAL_GATE_01.md、報告=docs/pm/RESULT_PACKET_XAIT2.md。
+
+## FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01 委任_03: 『宅配』E-1へComment 2削除を反映・Voice 1候補生成・試聴ページ改修(2026-10-26、実費17.52円)
+- 2026-10-26 FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01 委任_03: 『宅配』E-1 run_01へAdvanced Comment 2削除を正式経路(gate/assemble/pages/page_verify)で反映(API 0、gate PASS、page_verify ok、Advanced timeline 45→43要素[Comment 2 8.61秒+直後pause 0.8秒のみ削除]、Standardはtimeline・wavともバイト同一)。Voice 1代替候補Std/Adv各3 takeを正式生成経路で生成・停止量計測(実費17.52円、採用なし=ユーザー試聴選択待ち。6 takeとも現行採用より停止占有率・最長停止が小さいが、うち3 takeは正式経路でSTOPPED[HR扱い])。試聴ページに『TTS分割なし/追加0.2秒なし』の明示と実測停止位置の重畳、Voice 1の個別再生・停止統計を追加。分割不発火(X規則『段落2未満は分割しない』+Y 1段落契約)・Voice 1対策はユーザー判断へ(案1 Y専用文境界分割/案3 現状維持/案4 Std拡張、P1差替/P2候補から試聴選択/P5現状維持)。
+- 証跡=docs/research/FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01/{EVIDENCE_01,BUDGET_LOG_01,VOICE1_CANDIDATES_01}.md、報告=docs/pm/RESULT_PACKET_YFB3.md。PRODUCTION_WIRED判定はFable。

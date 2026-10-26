@@ -889,6 +889,216 @@ def assemble_level(theme_out_dir: str, level: str, *, style_profile: str, slug: 
 NOINDEX_META = "<meta name=\"robots\" content=\"noindex,nofollow\">"
 
 
+# ============================================================
+# 試聴ページ用: TTS分割/追加0.2秒の明示・実測停止の重畳・Voice 1候補表(表示専用。音声・Gate・採否に使わない。API 0)
+# 2026-10-26 FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01 委任_03(ユーザー原文§4)。位置は台本語への推定(ASRに語時刻が無いため±2〜3語)。
+# ============================================================
+PAUSE_MARK_MIN_MS = 700                 # 台本上に⏸を出す下限(表示専用)
+PAUSE_SCAN_DBFS, PAUSE_SCAN_MIN_MS, PAUSE_BLIP_MS = -40.0, 150, 120
+PAUSE_MID_CLAUSE_MIN_MS = 500           # Voice 1候補表の『文中停止数』= 句読点外の統合後停止のうち500ms以上
+_PZ_STYLE = "background:#ffe0b2;color:#a30;font-weight:bold;padding:0 3px;border-radius:3px;font-size:.9em"
+_BADGE_STYLE = "display:inline-block;background:#e8f0fe;border:1px solid #9ab;border-radius:3px;padding:1px 6px;font-size:.8em;margin:2px 0"
+
+
+def pause_scan(arr, sr, thr_db: float = PAUSE_SCAN_DBFS, min_ms: int = PAUSE_SCAN_MIN_MS, blip_ms: int = PAUSE_BLIP_MS) -> dict:
+    """10msフレームRMS<thr_dbが min_ms 以上続く区間を列挙し、無音間の有音が blip_ms 未満なら統合した『内部停止』を返す(numpyのみ)。
+    docs/research/FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01/tools/yfb_silence_scan_01.py+yfb_pause_stats_01.py と同じ手順(測定値の同一性はtestで固定)。"""
+    import numpy as np
+    x = np.asarray(arr, dtype="float64")
+    if x.ndim > 1:
+        x = x.mean(axis=1)
+    f = int(sr * 10 / 1000)
+    nf = len(x) // f
+    if nf == 0:
+        return {"duration_s": 0.0, "lead_ms": 0, "trail_ms": 0, "pauses": []}
+    fr = x[: nf * f].reshape(nf, f)
+    db = 20 * np.log10(np.sqrt((fr ** 2).mean(axis=1) + 1e-20) + 1e-12)
+    sil = db < thr_db
+    runs, i = [], 0
+    while i < nf:
+        if sil[i]:
+            j = i
+            while j < nf and sil[j]:
+                j += 1
+            if (j - i) * 10 >= min_ms:
+                runs.append({"start_s": round(i * 10 / 1000, 3), "end_s": round(j * 10 / 1000, 3), "dur_ms": (j - i) * 10})
+            i = j
+        else:
+            i += 1
+    tot = nf * 10 / 1000
+    lead = runs[0]["dur_ms"] if runs and runs[0]["start_s"] < 0.05 else 0
+    trail = runs[-1]["dur_ms"] if runs and runs[-1]["end_s"] >= tot - 0.05 else 0
+    inner = [r for r in runs if r["start_s"] >= 0.05 and r["end_s"] < tot - 0.05]
+    merged = []
+    for p_ in inner:
+        if merged and (p_["start_s"] - merged[-1]["end_s"]) * 1000 < blip_ms:
+            merged[-1]["end_s"] = p_["end_s"]
+            merged[-1]["dur_ms"] = round((merged[-1]["end_s"] - merged[-1]["start_s"]) * 1000)
+        else:
+            merged.append(dict(p_))
+    return {"duration_s": tot, "lead_ms": lead, "trail_ms": trail, "pauses": merged}
+
+
+def pause_align(scan: dict, text: str) -> list:
+    """統合後の停止を台本の語境界へ単調DPで概算対応付け(句読点直後を優先)。精度は±2〜3語。各要素に word_index/after_word/before_word/at_punctuation を足して返す。"""
+    m = scan["pauses"]
+    words = (text or "").split()
+    if not m or len(words) < 2:
+        return [dict(p_, word_index=None, after_word="", before_word="", at_punctuation=False) for p_ in m]
+    wt = [len(re.sub(r"\W", "", w)) + 2 for w in words]
+    W = sum(wt)
+    act = scan["duration_s"] - scan["lead_ms"] / 1000 - scan["trail_ms"] / 1000 - sum(p_["dur_ms"] for p_ in m) / 1000
+    cum = [sum(wt[: i + 1]) for i in range(len(words))]
+    cand = list(range(1, len(words)))
+    punct = {k for k in cand if re.search(r"[.?!,;:]$", words[k - 1])}
+    est, acc = [], 0.0
+    for p_ in m:
+        sp = p_["start_s"] - scan["lead_ms"] / 1000 - acc
+        acc += p_["dur_ms"] / 1000
+        est.append(W * sp / act if act > 0 else 0)
+
+    def cost(i, k):
+        return abs(cum[k - 1] - est[i]) / 3.0 * 0.5 + (0 if k in punct else 3)
+    n, INF = len(m), 1e18
+    dp = [[INF] * (len(cand) + 1) for _ in range(n + 1)]
+    bp = [[0] * (len(cand) + 1) for _ in range(n + 1)]
+    dp[0] = [0.0] * (len(cand) + 1)
+    for i in range(1, n + 1):
+        best, bj = INF, 0
+        for j in range(1, len(cand) + 1):
+            if dp[i - 1][j - 1] < best:
+                best, bj = dp[i - 1][j - 1], j - 1
+            dp[i][j] = best + cost(i - 1, cand[j - 1])
+            bp[i][j] = bj
+    j = min(range(1, len(cand) + 1), key=lambda t: dp[n][t])
+    out = []
+    for i in range(n, 0, -1):
+        k = cand[j - 1]
+        out.append(dict(m[i - 1], word_index=k, after_word=words[k - 1], before_word=words[k], at_punctuation=(k in punct)))
+        j = bp[i][j]
+    out.reverse()
+    return out
+
+
+def pause_stats(arr, sr, text: str) -> dict:
+    """Voice 1候補表の停止統計(1秒以上停止数・停止占有率・文中停止数・最長停止)。"""
+    sc = pause_scan(arr, sr)
+    al = pause_align(sc, text)
+    tot = sc["duration_s"]
+    return {"duration_s": round(tot, 2), "pauses_total": len(al), "ge1000": sum(1 for p_ in al if p_["dur_ms"] >= 1000),
+            "ge700": sum(1 for p_ in al if p_["dur_ms"] >= 700),
+            "mid_clause_ge500": sum(1 for p_ in al if not p_["at_punctuation"] and p_["dur_ms"] >= PAUSE_MID_CLAUSE_MIN_MS),
+            "max_ms": max([p_["dur_ms"] for p_ in al], default=0),
+            "pause_ratio_pct": round(100 * sum(p_["dur_ms"] for p_ in al) / 1000 / tot, 1) if tot else 0.0}
+
+
+def _mmss(sec: float) -> str:
+    return f"{int(sec // 60)}:{sec % 60:04.1f}"
+
+
+def _script_with_pauses(text: str, marks: list) -> str:
+    """台本1ブロック。実測した長い停止(>=PAUSE_MARK_MIN_MS)を該当語の直後に ⏸(長さ@行内の秒)で重ねる。marksは pause_align の結果。"""
+    import html
+    toks = re.split(r"(\s+)", text or "")
+    wpos = {}
+    for i, t in enumerate(toks):
+        if t and not t.isspace():
+            wpos[i] = len(wpos)
+    after = {}
+    for p_ in marks:
+        k = p_.get("word_index")
+        if k is not None and p_["dur_ms"] >= PAUSE_MARK_MIN_MS:
+            after.setdefault(k - 1, []).append(p_)
+    out = []
+    for i, t in enumerate(toks):
+        out.append(html.escape(t))
+        for p_ in after.get(wpos.get(i), []):
+            out.append(f" <span style=\"{_PZ_STYLE}\" title=\"実測の停止(位置は推定)\">&#9208;{p_['dur_ms'] / 1000:.2f}s@{_mmss(p_['start_s'])}</span>")
+    return "<div class='script'>" + "".join(out) + "</div>"
+
+
+def _tts_unit_badge(level: str, decision: dict, sid: str) -> str:
+    """R1: segmentごとのTTS生成単位バッジ。分割の有無は chunk_tts_decision.json(実際の判定)から読む。"""
+    import html
+    if level != "b1b":
+        txt = "TTS 1回 / 分割なし(Standardの本文は分割対象外) / 追加0.2秒ポーズ: なし"
+    else:
+        seg = ((decision or {}).get("segments") or {}).get(sid) or {}
+        if seg.get("chunked"):
+            n = len(seg.get("chunk_ids") or [])
+            txt = f"TTS {n}分割(段落境界) / 追加0.2秒ポーズ: あり(境界ごと)"
+        else:
+            txt = f"TTS 1回 / 分割なし(段落={seg.get('paragraphs', '?')}) / 追加0.2秒ポーズ: なし"
+    return f"<div><span style=\"{_BADGE_STYLE}\">{html.escape(txt)}</span></div>"
+
+
+def page_legend_html(decisions: dict) -> str:
+    """ページ冒頭の凡例1ブロック(本文外)。実分割の有無はchunk_tts_decision.json(level別)から集計して明示する。"""
+    n_chunked = sum(1 for d in decisions.values() for sg in ((d or {}).get("segments") or {}).values() if sg.get("chunked"))
+    split_txt = "なし(全segmentが1段落のため、各segmentを1回のTTSで生成)" if n_chunked == 0 else f"{n_chunked} segmentで分割"
+    zero = "なし" if n_chunked == 0 else "分割境界のみあり"
+    return ("<div class='note'><b>この試聴ページの見方</b><br>"
+            f"TTSの実分割: <b>{split_txt}</b> / 追加0.2秒ポーズ: <b>{zero}</b>(Standardの本文は仕様上、分割しません)。"
+            "台本の見た目の段落とTTSの実分割は別のものです。<br>"
+            f"<span style=\"{_PZ_STYLE}\">&#9208;1.25s@0:13.7</span> = 完成音声を実測した{PAUSE_MARK_MIN_MS}ms以上の停止(長さ@その行の音声内の時刻)。"
+            "台本上の位置は語への割当てで<b>推定(前後2〜3語の誤差)</b>です。聴いて不自然に感じた時刻と見比べてください。"
+            "&#9660;(TTS実分割位置)の表示は、分割があるsegmentでのみ出ます(今回はありません)。</div>")
+
+
+def voice1_candidates_aux_html(theme_out_dir: str, audio_dir: str, audio_rel: str) -> str:
+    """Voice 1の個別再生: 現行採用+候補(hr_adopt_prep/voice1_candidates/take*/、未採用)を並べ、停止統計を併記する。候補が無ければ空文字。
+    候補はユーザーの試聴選択前=『候補・未採用』。採用は別手続き(approved_by="user"はユーザーのみ)。Std候補で減速未適用のもの(STOPPED=人間確認待ちのraw attempt)は、採用時と同じ6%減速(API 0)を適用した音で提示・計測する。"""
+    import html
+    import tempfile
+    import imageio_ffmpeg
+    import soundfile as sf
+    import subprocess
+    ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
+    blocks = []
+    for level, label in (("a2", "Standard"), ("b1b", "Advanced")):
+        base = f"{theme_out_dir}/{level}"
+        takes = sorted(glob.glob(f"{base}/hr_adopt_prep/voice1_candidates/take*/result.json"))
+        if not takes:
+            continue
+        text = load_json(f"{base}/parts.json")["segments"]["y_voice_1"]
+        cur_wav = f"{base}/narration/y_voice_1.wav"
+        items = [("現行(採用済み)", cur_wav, "採用済み", None)]
+        for tp in takes:
+            r = load_json(tp)
+            wav = r.get("wav")
+            if not wav or not os.path.exists(wav):
+                continue
+            note = {"OK": "ASR判定PASS(正式経路で完走)", "STOPPED": "ASR判定NG→人間確認待ち扱い(正式経路の停止状態。聴いて選ぶ候補)"}.get(r.get("status"), str(r.get("status")))
+            items.append((f"候補{r['take']}(未採用)", wav, note, r))
+        rows = []
+        for idx, (name, wav, note, r) in enumerate(items):
+            src = wav
+            tmp_dir = None
+            if level == "a2" and r is not None and r.get("status") != "OK":
+                import er008_a2_postprocess_slowdown_01 as slow
+                tmp_dir = tempfile.mkdtemp()
+                src = os.path.join(tmp_dir, "slowed.wav")
+                slow.apply_a2_slowdown(wav, src)
+                note += " / 6%減速適用後の音を提示"
+            x, sr = sf.read(src, dtype="float32")
+            fn = f"v1cand_{level}_{idx}.mp3"
+            tmp = os.path.join(audio_dir, fn + ".tmp.wav")
+            sf.write(tmp, x, sr)
+            subprocess.run([ffmpeg, "-y", "-loglevel", "error", "-i", tmp, "-codec:a", "libmp3lame", "-b:a", "96k", os.path.join(audio_dir, fn)], check=True)
+            os.remove(tmp)
+            st_ = pause_stats(x, sr, text)
+            rows.append(f"<div style='border:1px solid #ccc;padding:6px;margin:4px 0'><b>{html.escape(name)}</b> <span class='sec'>{html.escape(note)}</span><br>"
+                        f"<audio controls preload='none' src='{html.escape(audio_rel)}/{fn}'></audio><br>"
+                        f"<span class='sec'>実測の停止(参考): {st_['duration_s']:.1f}秒 / 1秒以上の停止 <b>{st_['ge1000']}</b> / 停止占有率 <b>{st_['pause_ratio_pct']}%</b> / "
+                        f"文中停止(500ms以上) <b>{st_['mid_clause_ge500']}</b> / 最長 <b>{st_['max_ms'] / 1000:.2f}秒</b></span></div>")
+        blocks.append(f"<h4>{label} Voice 1</h4>" + "".join(rows))      # table/h2を使わない(標準適合checkのレベル節の行判定に触れない)
+    if not blocks:
+        return ""
+    return ("<details class='aux' open><summary><b>Voice 1の聴き比べ(候補・未採用)</b></summary>"
+            "<p class='sec'>現行の採用音声と、同じ設定(同じVoice・同じ本文)で取り直した候補です。<b>候補はすべて未採用</b>で、聴いて選ぶまで本編は変わりません。"
+            "停止の数値は完成音声の実測(参考。品質の合否判定には使いません)。</p>" + "".join(blocks) + "</details>")
+
+
 def _script(text):
     import er_user_listening_page_common_01 as cp
     return cp.script_block(text or "")
@@ -923,6 +1133,8 @@ def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: s
     kp_items = sorted(load_json(f"{base}/key_phrases/keywords_canonicalized.json")["items"], key=lambda it: it["rank"])
     expl = res.get("key_phrase_explanations_text") or {}
     label_to_sid = {v: k for k, v in ys.PAGE_LABEL.items()}
+    dec_path = f"{base}/audit/chunk_tts_decision.json"
+    decision = load_json(dec_path) if os.path.exists(dec_path) else {}
     rows = []
     for e in tl:
         part = e["part"]
@@ -934,7 +1146,9 @@ def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: s
         blocks, pl = [], part.lower()
         if part in label_to_sid:
             sid = label_to_sid[part]
-            blocks.append(_script(parts["segments"][sid]))
+            blocks.append(_tts_unit_badge(level, decision, sid))                  # R1: TTS生成単位(分割の有無・追加0.2秒の有無)
+            row_arr = x[int(round(s0 * sr)): int(round((s0 + dur) * sr))]
+            blocks.append(_script_with_pauses(parts["segments"][sid], pause_align(pause_scan(row_arr, sr), parts["segments"][sid])))   # R4: 実測停止を台本へ重畳(推定位置)
             if ja_paragraphs is not None:
                 blocks.append("<details><summary>日本語の元原稿</summary><div class='ja'>" + cp.esc(ja_paragraphs.get(sid, "")) + "</div></details>")
         elif pl.startswith("topic intro"):
@@ -959,12 +1173,13 @@ def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: s
         else:
             blocks.append("<span class='sec'>(定型音声)</span>")
         rows.append({"part": part, "start": s0, "dur": dur, "src": f"{audio_rel}/{fn}", "blocks": blocks})
-    return {"id": "advanced" if level == "b1b" else "standard", "label": "Advanced" if level == "b1b" else "Standard",
+    return {"id": "advanced" if level == "b1b" else "standard", "label": "Advanced" if level == "b1b" else "Standard", "chunk_decision": decision,
             "full_src": f"{audio_rel}/{full}", "duration": x.shape[0] / sr, "rows": rows}
 
 
 def render_y_page(title: str, levels: list, aux_html: str = "") -> str:
     """限定共有ページ(noindex)。注意書きは本文外(冒頭のintro_html)。X/Zページには出さない(共通builderの既定は不変)。"""
     import er_user_listening_page_common_01 as cp
-    html_text = cp.render_standard_page(title, levels, intro_html=ys.notice_html(), aux_html=aux_html)
+    legend = page_legend_html({lv["id"]: lv.get("chunk_decision") for lv in levels})
+    html_text = cp.render_standard_page(title, levels, intro_html=ys.notice_html() + legend, aux_html=aux_html)
     return html_text.replace("<meta charset='utf-8'>", "<meta charset='utf-8'>" + NOINDEX_META, 1)

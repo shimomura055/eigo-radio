@@ -1058,7 +1058,7 @@ def stage_pages(ctx) -> dict:
     for lvd in levels:
         if lvd["id"] == "advanced" and study_html:
             lvd["study_html"] = study_html
-    html_text = ya.render_y_page(title, levels)
+    html_text = ya.render_y_page(title, levels, aux_html=ya.voice1_candidates_aux_html(ctx.out_dir, audio_dir, "audio"))     # 候補が無ければ空(従来と同一)
     page = f"{ctx.pages_dir}/index.html"
     with open(page, "w", encoding="utf-8") as f:
         f.write(html_text)

@@ -576,3 +576,4 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-26 | FZ-DIALOGUE-TTS-CONTEXT-EMOTION-TRIAL-01 委任_05 | 追加2作品(開いた窓・猿の手)比較Trialの結果をユーザー報告済み(2026-10-26)。実費27.99円、機械判定=REJECTED相当・Status=USER_LISTENING_PENDING。報告=docs/pm/RESULT_PACKET_FZDC5.md
 - 2026-10-26 | FAMILY-X-AI-ISLAND-TEMPLE-PRODUCTION-01 委任_02 | Editorial Gateで切り口を確認、方向性は既にtopicで渡済み(分岐B)のため再生成せずSTOP(API 0)。切り口選択(1/2/3)+KP/文法HR選択のユーザー判断待ち(本日報告)。報告=docs/pm/RESULT_PACKET_XAIT2.md
 - 2026-10-26 | FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01 委任_01(Lane A) | Family Y Advanced Comment 2削除のProduction配線(コード・test完了、API 0・JPY0、IMPLEMENTED_PENDING_EVIDENCE)+E-3 Trialサンプル保管・E-1評価良好の記録。ユーザーへは委任_03完了時にLane B結果と合わせて初回報告予定(未報告)。報告=docs/pm/RESULT_PACKET_YFB1.md
+- 2026-10-26 | FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01 委任_03 | 『宅配』E-1へComment 2削除を反映(API 0、gate PASS、page_verify ok、Std不変)+Voice 1候補Std/Adv各3生成・停止計測(17.52円、未採用)+試聴ページに分割/0.2秒なし明示と停止位置重畳。分割方式・Voice 1対策のユーザー判断待ち(未報告、Fable経由で報告)。報告=docs/pm/RESULT_PACKET_YFB3.md

@@ -1,0 +1,98 @@
+# -*- coding: utf-8 -*-
+"""FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01 委任_03: 試聴ページ(TTS分割/追加0.2秒の明示・実測停止の重畳・Voice 1候補表)の表示helperのtest。API 0・表示専用。"""
+import os
+import unittest
+
+import numpy as np
+
+import er121_family_y_audio_01 as ya
+
+SR = 24000
+
+
+def _sig(spec):
+    """spec=[(秒, 有音?)] -> float32 mono。有音=0.3の正弦、無音=0。"""
+    out = []
+    for sec, tone in spec:
+        n = int(SR * sec)
+        out.append((0.3 * np.sin(2 * np.pi * 220 * np.arange(n) / SR)) if tone else np.zeros(n))
+    return np.concatenate(out).astype("float32")
+
+
+class PauseScanTest(unittest.TestCase):
+    def test_inner_pause_measured_lead_trail_excluded(self):
+        sc = ya.pause_scan(_sig([(0.3, 0), (1.0, 1), (1.2, 0), (1.0, 1), (0.4, 0)]), SR)
+        self.assertEqual(len(sc["pauses"]), 1)
+        self.assertAlmostEqual(sc["pauses"][0]["dur_ms"], 1200, delta=30)
+        self.assertAlmostEqual(sc["pauses"][0]["start_s"], 1.3, delta=0.05)
+        self.assertEqual((sc["lead_ms"], sc["trail_ms"] > 0), (300, True))
+
+    def test_blip_merge(self):
+        sc = ya.pause_scan(_sig([(0.5, 1), (0.4, 0), (0.05, 1), (0.4, 0), (0.5, 1)]), SR)
+        self.assertEqual(len(sc["pauses"]), 1)
+
+    def test_stats_keys_and_align_marks_long_pause_after_word(self):
+        text = "one two three, four five six seven eight nine ten"
+        x = _sig([(1.0, 1), (1.5, 0), (3.0, 1)])
+        st = ya.pause_stats(x, SR, text)
+        self.assertEqual(st["ge1000"], 1)
+        self.assertEqual(st["ge700"], 1)
+        self.assertAlmostEqual(st["max_ms"], 1500, delta=30)
+        al = ya.pause_align(ya.pause_scan(x, SR), text)
+        self.assertEqual(len(al), 1)
+        self.assertTrue(al[0]["at_punctuation"])          # 句読点直後を優先して割当
+        html = ya._script_with_pauses(text, al)
+        self.assertIn("&#9208;1.50s@", html)
+        self.assertIn("three,", html)
+
+    def test_below_mark_threshold_not_shown(self):
+        text = "a b c d e f g h"
+        al = ya.pause_align(ya.pause_scan(_sig([(1.0, 1), (0.5, 0), (1.0, 1)]), SR), text)
+        self.assertEqual(len(al), 1)
+        self.assertNotIn("&#9208;", ya._script_with_pauses(text, al))      # 500ms < 700ms
+
+
+class BadgeTest(unittest.TestCase):
+    def test_std_is_out_of_scope_and_adv_unchunked(self):
+        dec = {"segments": {"y_voice_1": {"chunked": False, "paragraphs": 1, "chunk_ids": []}}}
+        self.assertIn("Standardの本文は分割対象外", ya._tts_unit_badge("a2", dec, "y_voice_1"))
+        b = ya._tts_unit_badge("b1b", dec, "y_voice_1")
+        self.assertIn("分割なし", b)
+        self.assertIn("追加0.2秒ポーズ: なし", b)
+
+    def test_chunked_shows_split(self):
+        dec = {"segments": {"y_voice_1": {"chunked": True, "paragraphs": 2, "chunk_ids": ["y_voice_1_k1", "y_voice_1_k2"]}}}
+        b = ya._tts_unit_badge("b1b", dec, "y_voice_1")
+        self.assertIn("TTS 2分割", b)
+        self.assertIn("あり", b)
+
+    def test_legend_states_no_split_when_none(self):
+        dec = {"advanced": {"segments": {"y_voice_1": {"chunked": False}}}, "standard": {"segments": {}}}
+        lg = ya.page_legend_html(dec)
+        self.assertIn("TTSの実分割: <b>なし", lg)
+        self.assertIn("追加0.2秒ポーズ: <b>なし", lg)
+
+    def test_candidates_aux_empty_without_candidates(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            self.assertEqual(ya.voice1_candidates_aux_html(td, td, "audio"), "")
+
+
+class AdoptedWavMatchesResearchToolTest(unittest.TestCase):
+    RUN = "er121_output/family_y_production_01/redelivery_fee/run_01"
+
+    def test_same_numbers_as_research_tool(self):
+        wav = f"{self.RUN}/b1b/narration/y_voice_1.wav"
+        if not os.path.exists(wav):
+            self.skipTest("run_01 wav 無し")
+        import json
+        import soundfile as sf
+        x, sr = sf.read(wav, dtype="float32")
+        t = json.load(open(f"{self.RUN}/b1b/parts.json", encoding="utf-8"))["segments"]["y_voice_1"]
+        st = ya.pause_stats(x, sr, t)
+        # docs/research/.../PAUSE_MEASUREMENT_01.md の表(Adv V1採用 attempt6): 停止14・>=700ms 7・>=1000ms 3・最大1250ms・占有率19.9%
+        self.assertEqual((st["pauses_total"], st["ge700"], st["ge1000"], st["max_ms"], st["pause_ratio_pct"]), (14, 7, 3, 1250, 19.9))
+
+
+if __name__ == "__main__":
+    unittest.main()

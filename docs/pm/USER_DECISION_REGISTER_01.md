@@ -411,3 +411,8 @@
 - Family Y Advanced Comment 2削除: **判断済み(承認)**。原文=`docs/pm/delegation_log/2026-10-26_FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01_USER.md` §1-③。実装=OPEN-527(IMPLEMENTED_PENDING_EVIDENCE)。
 - E-3『SNSの年齢制限・利用禁止』: **判断済み**=Trialサンプルとして保管(最終試聴判断なし、正式完成記事の承認済み扱いにしない、比較検証用に再利用可能な状態を維持)。同§1-①。
 - E-1『宅配の再配達は有料にすべきか？』: ユーザー評価良好。最終承認・完成判定は**未**(Comment 2削除反映+音声品質調査後)。同§1-②。
+
+### 2026-10-26 FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01 委任_03 追記(新規UDR。分類D=真に新しい判断。既存行は書き換えず追記)
+
+- Y分割方式(UDR-YFB-1): **ユーザー判断待ち**。事実=Y本文は各Voice 1段落のためX規則(段落2未満は分割しない)で分割は不発火、ポーズの原因ではない。案1 Y専用文境界分割(効果は比較Trial未確認、費用約数円〜十数円)/案3 現状維持(費用0・仕様どおり)/案4 Std拡張(Std本文も対象にする=新仕様)。委任_02の推奨=効果がTrial未確認のためまず比較Trial。証跡=docs/research/FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01/INVESTIGATION_01.md。
+- Voice 1対策(UDR-YFB-2): **ユーザー判断待ち**。事実=Voice 1(Algieba)のTTS出力の長停止傾向が主因。候補Std/Adv各3 take(未採用)を試聴ページに掲載済み(停止占有率はStd 15.9〜21.1% vs 現行25.6%、Adv 17.5〜17.9% vs 現行19.9%)。P1 Voice差替(新仕様・QDC影響大)/P2 候補から試聴選択(推奨、追加費用0・採用は`approved_by=user`)/P5 現状維持。証跡=docs/research/FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01/VOICE1_CANDIDATES_01.md。
