@@ -1,5 +1,7 @@
 # RESULT_02 (KP-CANDIDATE-PHRASE7-WORD5-TRIAL-02 委任_01、2026-10-26)
 
+> **訂正注記(2026-10-26 Fable確認、PM-SSOT-SYNC-14)**: 下記本文の『フレーズ側の差=LLM再実行の揺れ』および『er125不在のためスキップ』は誤り。実際は本日PRODUCTION_WIRED(既定ON)のKP救済機構(`er125_kp_rescue_production_01.py`)が発火した結果(`trial_result.json` `rescued: true`)。詳細・分離数値=`COMPARISON_02.md` §9。本文は改変しない。
+
 自動生成(`make_report_02.py`)。Trial=P7(前回r1の返答を再利用・API 0)→W5(単語最大5)。Gate=Production関数同一適用。順位=最終候補の`ai_rank`(フレーズ→単語の順)。自=自ルーブリックY/B/N(`own_rubric_02.json`、judge前に確定)、judge=gpt-6.1-sol(フレーズは前回judge再利用、単語は今回新規)。③④適合=単語のみ(適合/境界[基本寄り]/不適合[易しい語])。
 
 ## ai_island_temple:a2（AIの仮想の島 / Standard）

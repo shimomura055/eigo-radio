@@ -475,3 +475,6 @@
 
 - OPEN-529: 区分2(救済フロー・慣用句・活用形・再アンカー等)はユーザー採用(2026-10-26、APPROVED_FOR_PRODUCTION。原文=docs/pm/delegation_log/2026-10-26_KP-GATE-EXCLUSION-RESCUE-PRODUCTION-WIRING-01_USER.md §2)->PRODUCTION_WIRED反映済み(Fable判定2026-10-26)。UDR-blocking解除。新規UDRなし。
 - OPEN-530は文書是正済み(CLOSED)。OPEN-541〜544は修正へ進む/実害なし/追跡でありユーザー判断対象外。
+
+### 2026-10-26 PM-SSOT-SYNC-14 追記(OPEN-534 KP候補生成方式 Trial-02[7+5]結果。既存行は書き換えず追記)
+- OPEN-534 判断項目を更新(分類D): 『7+3方式の採否』→『**候補生成方式[現行/7+3/7+5/7+3順序是正]の採否**』。Trial-02(7+5)Status=USER_DECISION_REQUIRED。Fable推奨=(a)7+5は採用しない、(b)単語枠を残すなら『是正後Prompt順×最大3件』の分離確認1回(約¥10・6レベル)で順序是正の単独効果を測ってから判断、(c)Gate duplicate_of_top3(含有語の機械除外)とユーザー補足『含有語を一律除外しない』の食い違いはProduction Gate変更=ユーザー判断(現状Gate維持)、(d)KP_CANDIDATE_MAX=8・HR UIとの関係は採用判断後。根拠=W5は6/6で上限5件・基本寄り+易語22%→41%・追加11語のうちY3語のみ・Strategy/technique生返答1位。注=フレーズ側比較は救済機構(er125)の交絡あり(救済除外でr1と同一)。影響=Production不変、実費¥16.3。参照=docs/research/KP-CANDIDATE-PHRASE7-WORD5-TRIAL-02/COMPARISON_02.md §9、OPEN_ITEMS.md OPEN-534。

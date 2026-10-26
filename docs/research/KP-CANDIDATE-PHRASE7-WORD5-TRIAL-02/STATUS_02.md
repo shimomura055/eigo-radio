@@ -1,5 +1,7 @@
 # STATUS_02 (KP-CANDIDATE-PHRASE7-WORD5-TRIAL-02 委任_01、2026-10-26)
 
+> **訂正注記(2026-10-26 Fable確認、PM-SSOT-SYNC-14)**: 下記本文の『フレーズ側の差=LLM再実行の揺れ』および『er125不在のためスキップ』は誤り。実際は本日PRODUCTION_WIRED(既定ON)のKP救済機構(`er125_kp_rescue_production_01.py`)が発火した結果(`trial_result.json` `rescued: true`)。詳細・分離数値=`COMPARISON_02.md` §9。本文は改変しない。
+
 ## 1. Status案(DEV実行層の提案。最終判定=Fable/ユーザー)
 **判断候補(Trialとして VALIDATED でも REJECTED でもない中間。ユーザー判断が必要な採否)**
 

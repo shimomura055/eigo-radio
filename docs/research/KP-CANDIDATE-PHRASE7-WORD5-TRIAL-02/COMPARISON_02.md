@@ -128,3 +128,35 @@ RQA: {'ai_island_temple:a2': 'REDUNDANCY_PASS', 'ai_island_temple:b1b': 'REDUNDA
 - 今回の6 runは、P7のAPI 0・W5 1 call + canonicalization/gloss/RQAで、**1 levelあたり平均¥1.76(5.0 call)**。前回r1(P7+W3)は平均¥1.83(6.0 call、P7 1 callを含む)。P7 1 callは約¥0.12(前回usage log: 1,200 in/1,267 out、gpt-6-luna)なので、P7込みに換算すると今回約¥1.88/level vs 前回¥1.83/level = **約+¥0.05/level(+3%)**。W5 call自体はW3と同程度(AI Std: W3 ¥0.067 → W5 ¥0.073)で、増分は候補増に伴うcanonicalization・gloss再整合の出力増(AI Std gloss出力 5,471→6,139 tokens)。出典: `runs/*/usage_log.jsonl`(`trial_runs_02.json`の`cost`、前回`w3_r1_cost`)。
 - 所要(1 levelのelapsed): 今回平均178秒、前回r1平均178秒(同等。6 level並列起動のため参考値)。
 - 本Trial実費: run ¥10.58(30 call)+ judge ¥5.73(6 call)= **¥16.3**(Guardrail ¥40内)。
+
+## 9. 訂正(2026-10-26 Fable確認): 救済機構による交絡
+**訂正対象**: §0-5および§E冒頭の『前回r1で除外されていた句が今回のLLM再実行で通過(LLMの揺れ)』、および委任_01報告の『`er125`は不在のためスキップ』。**いずれも誤り**。`er125_kp_rescue_production_01.py`はHEADに存在し、本日(commit 2910e859b、19:28)PRODUCTION_WIRED(既定ON)となった。前回r1(17:05生成)は配線前、今回(20:45生成)は配線後で、全6 runの`trial_result.json` `doc.rescue_provenance.rescue_enabled=true`。
+
+### 9-1 `rescued: true`候補の全件(6 run全走査、`doc.candidates[].flags.rescued`)
+| 句 | run | rescue_codes | auto可否(`rescued_not_auto`) | 前回r1に出ていたか |
+|---|---|---|---|---|
+| given written permission | uk_train_speaker_playback:a2 | REVERT_SURFACE(llm_key=`give written permission`) | **不可**(`p_aabe5020d3`) | 無(今回追加) |
+| pulling free | monkeys_paw:a2 | REVERT_SURFACE(llm_key=`pull free`) | **不可**(`p_fd00a23331`) | 無(今回追加) |
+| pulled free | monkeys_paw:b1b | REVERT_SURFACE(llm_key=`pull free`) | **不可**(`p_82e055c35c`) | 無(今回追加) |
+| caught in the machinery | monkeys_paw:b1b | REVERT_SURFACE(llm_key=`caught in machinery`) | 可(auto対象のまま) | 有(r1にも出現=件数差に寄与せず) |
+他の2 run(ai_island_temple a2/b1b)・uk b1bは`rescued: true`なし(`rescued_not_auto`=[])。
+
+**救済フラグが付かなかった1件**: `accept no responsibility`(monkeys_paw:b1b、表示形`accepts no responsibility`)は`rescued`なし。`canonicalization_runtime_metadata.json`は attempt1 で`CANONICALIZATION_PASS`(reasons空)。r1では同じkey文字列がRule7(連続部分文字列でない辞書形)で除外されていた(WORD3 r1 `trial_result.json:976-979`)。r1→今回で通過した原因は**未確定**(救済ではない。LLM揺れの可能性は残るが、断定しない。Production差分0のため§9-4と矛盾しない)。
+
+### 9-2 結論(a)
+フレーズ側の件数差(前回r1 30 → 今回34)のうち**3句は救済機構の有無**による(P7入力は同一=前回r1の返答再利用)。残る1句(`accept no responsibility`)は救済外で原因未確定。`pulling free`/`pulled free`/`given written permission`は**ProductionではHR表示のみ(auto不可)**。
+
+### 9-3 結論(b) 救済分離後のフレーズ側(6 level合計、自ルーブリック`own_rubric_02.json`)
+| 集合 | 件数 | 自Y | 自B | 自N |
+|---|---|---|---|---|
+| 前回P7+W3 r1(救済機構なし) | 30 | 19 | 10 | 1 |
+| 今回W5(救済込み・as-is) | 34 | 20 | 13 | 1 |
+| 今回W5から`rescued: true`全4件を除外 | 30 | 20 | 9 | 1 |
+| 今回W5から救済3件+救済外の`accept no responsibility`を除外(=r1と同一集合) | 30 | 19 | 10 | 1 |
+除外した句の自評価: given written permission=B / pulling free=B / pulled free=B / caught in the machinery=B / accept no responsibility=Y。level別: UK a2 4→3、猿の手Std 6→5、猿の手Adv 7→5(r1と同数)で他3 levelは無変化。**救済を除くとフレーズ側はr1と同一(件数30、Y/B/N 19/10/1)**。したがって『フレーズ側でW5が優れる/劣る』は本Trialから言えない(交絡)。
+
+### 9-4 結論(c) 単語側(W5)への救済の影響
+単語候補(`origin: call2`)で`rescued: true`は**0件**。単語側の比較(§C・§D・§A単語列)は救済の影響を受けない(救済はcanonicalization段のフレーズ候補のみに作用)。
+
+### 9-5 結論(d) Production差分0の再確認(er125含む)
+`git diff --stat b15266613~1 b15266613 -- er125_kp_rescue_production_01.py er119_kp_candidates_01.py er105_kp_fulltext_selector_01.py er003_key_words_canonicalization.py` = **空(差分なし)**。委任_01 commit(b15266613)は上記4ファイルを変更していない。
