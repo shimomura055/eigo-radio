@@ -43,6 +43,17 @@
 
 HR導入後のGate除外11件(Human NG 3件を除く)のうち、S1=4(36%)、S2=3(27%)、困難=4(36%)。HR導入前は同一記事の再実行(tell-tale heart等)でイベントが重複するため、割合には「一意(Family,句)」を使う: Gate除外の一意句29のうちS1=12(41%)/S2=2(7%)/困難=11(38%)/現行validatorで既に通る=4(14%)。
 
+## 4. 棚卸し対象外だった除外経路(Opus条件Aレビュー(C)、委任_02で追記。件数は分かる範囲、不明は「未集計」)
+
+出典=`OPUS_REVIEW_01.md`(C)1〜4。上記§1〜§3の棚卸し(`kp_candidates.json`の`dropped[]`とpreHRのcanonicalization INVALID)に載らない/載りにくい経路。委任_02では観測のみで、救済はDESIGN_02のR1(トリガー拡張、手段はrevertのみ)とR3(観測のみ)の範囲に限る。
+
+| # | 経路 | 位置 | 件数(分かる範囲) | 救済可否の所見 |
+|---|---|---|---|---|
+| 1 | `cmu_post_canon`による除外(canonicalization後のCMU再検査で落ちる句) | `er119_kp_candidates_01.py:264-266` | HR導入後のCMU_UNREGISTERED=1(Y `redelivery fee`、選定段か本段かは未区別)/preHR=3句(X)。**本段(post_canon)に限った件数は未集計** | 救済の位置がvalidateの前なので、ここで落ちる句は現設計では救済されない。displayへrevertすればCMUを通る場合に限り救える可能性(revert後のCMU再検査は必須)。`redelivery fee`型(display自体がCMU未登録)は救えない |
+| 2 | 外側retry発動時の候補一覧ごとの置換(`dropped_all=[]`、Gate通過済みの良い候補も捨てる) | `er119_kp_candidates_01.py:334-341` | preHR `fulltext_p2` outer_retry_log 78件中25件で発動(32%、再実行を含み過大評価)/HR導入後13 level-runで0。**置換で捨てられたGate通過済み候補の件数は未集計** | 最大の破棄経路。救済では扱わず、R3(観測のみ)で`dropped`/inventoryへ記録する |
+| 3 | canonicalization段の非Rule7構造違反(OF-X1=左端条件違反[`er003_key_words_canonicalization.py:600-605`]、canon段の語数>5、LLMが有限助動詞を混入) | 同`:599-620` | HR導入後: FINITE_AUX_TOKEN=4(X `had our eye on`、Y `have a say`・`can't be helped`×2。選定段起因かcanon混入かは未区別)。OF-X1違反/canon段語数>5の件数は未集計 | revertで救える可能性があるのにトリガーが「Rule7(基本形化)」に限定されている。DESIGN_02ではR1によりトリガーを「LLM keyが原因の構造違反全般」へ拡張(手段はrevertのみ=受理面不変)。ただし有限助動詞が本文(display)側にもある場合(`can't be helped`)はrevertでも救えない |
+| 4 | call1(選定段)のgate失敗(`sc.run_key_phrase_selection`内のretry)で句が記録されずに消える | `er003_v1_n3_01_scaffold_generate.py`内 | **未集計**(dropped/inventoryに載らないため既存ログから数えられない) | 記録がなく件数不明。R3で観測のみ(記録)を追加する案。救済はしない |
+
 ---
 
 # 第2部: script出力(全イベント)

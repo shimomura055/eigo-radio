@@ -422,3 +422,8 @@
 - OPEN-528 FZ全編通しTrial 2作品(猿の手・走れメロス、Std/Adv計4単位)の通し試聴判断(効果十分→Production採用検討/不安定→現行維持/別方式、ユーザー試聴後): **調査中・ユーザー判断待ち(USER_LISTENING_PENDING)**。Status(Fable)=猿Std/猿Adv/メロAdv=USER_LISTENING_PENDING、メロStd=REJECTED候補(比較条件不成立、方式欠陥ではない)。試聴の注目点=同一人物の演技の一貫性・地の文→セリフの切替・不自然な速度変化/長ポーズ・境界RMS段差。量産想定Δ/set +1.80〜+3.26円(70円比2.6〜4.7%)。Production未承認。公開=https://shimomura055.github.io/eigo-radio/user_test/fz_full_episode_trial_01/index.html 。報告=docs/pm/RESULT_PACKET_FZFE4.md。
 - OPEN-526 X AI島記事(候補数案A/B/C+HR選択)は2026-10-26 PM-SSOT-SYNC-2026-10-26-01で登録済み(重複追加せず)。
 - OPEN-527 Y: Comment 2削除はFable受入=PRODUCTION_WIRED(限定)。UDR-YFB-1(分割方式)・UDR-YFB-2(Voice 1)は上記委任_03追記のとおりユーザー判断待ち(変更なし)。
+
+### 2026-10-26 KP-GATE-EXCLUSION-RESCUE-DESIGN-01 委任_02 追記(KP Gate除外救済方式 OPEN-529。調査中/UDR区分。既存行は書き換えず追記)
+
+- OPEN-529 KP Gate除外救済方式の判断(2026-10-26報告予定): ①段階1[revert+M1制限付き再導出、HR旗『修正済み』『QA未再判定』、AUTO不可、gloss再整合約0.5円/件]の採否と採用時のProduction配線承認 ②段階2の項目別採否[2a guard限定詞補完・2a'過去形表補完・2b 副詞前の原形化・2e lexical have・2c AI短縮(保留推奨)・2d スロット一般化(非推奨)] ③AI島a2 HRへ`studied separately`(表層形)を救済追加するか[再発行手順の新設+約0.5〜0.6円]: **調査中・ユーザー判断待ち(DESIGN_DONE_USER_DECISION_PENDING)**。Opus条件Aレビュー(M1〜M6・R1〜R4)はDESIGN_02へ全件反映済み。実装0・API 0・Production変更0。AI島run_ai_01のHR候補は未確定のまま保全。成果物=docs/research/KP-GATE-EXCLUSION-RESCUE-DESIGN-01/DESIGN_02.md。報告=docs/pm/RESULT_PACKET_KPRS2.md。
+- OPEN-530(guard次トークン条件のCURRENT_SPEC追記)は範囲内の文書是正のためUDR対象外(Fable判断で実施予定)。
