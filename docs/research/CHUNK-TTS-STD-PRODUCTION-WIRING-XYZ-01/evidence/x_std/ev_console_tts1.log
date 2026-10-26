@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 3669, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 3352, in main
+    _profile_id, _profile_source = style_profile_mod.resolve_run_profile(
+                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        out_dir, args.style_profile, write=False, tts_backend=args.tts_backend)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_style_profile_01.py", line 488, in resolve_run_profile
+    raise StyleProfileStop(
+    ...<4 lines>...
+        f"style_profile.jsonは作成していません。")
+er019_family_x_style_profile_01.StyleProfileStop: [STOP][M2][USER_DECISION_REQUIRED] 既存のrun記録があるout_dirで、style profileの固定記録がありません(既定profile='fx_20261017'は新規out_dirにのみ適用されます。Review Lock/人間承認はtext shaのみで照合されStyleを区別しないため、既存runへの途中適用はStyle混在を招きます)。既存の記録: ['er019_output/family_x_audio_production_wiring_01/uk_train_speaker_playback__run_stdchunk_ev_01/a2/audit/tts_generation_results.json', 'er019_output/family_x_audio_production_wiring_01/uk_train_speaker_playback__run_stdchunk_ev_01/a2/audit/review_lock_state.json']。従来のstyleでresumeする場合は`--style-profile default`を明示してください。style_profile.jsonは作成していません。

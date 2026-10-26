@@ -1,0 +1,150 @@
+{
+ "note": "実Y記事(run_01)の本文を現行コード(Std/Adv両対象)のplannerへ読み取りだけで通した結果(API 0・run_01は無変更)。既存の決定記録も併記。",
+ "real_run": "er121_output/family_y_production_01/redelivery_fee/run_01",
+ "levels": {
+  "a2": {
+   "planner_version": "chunk_tts_v1_x_paragraph_z_r1_20261025",
+   "chunk_applies_to_level_now": true,
+   "segments": {
+    "y_lead": {
+     "chunked": false,
+     "paragraphs": 1,
+     "reason": "paragraphs=1<2"
+    },
+    "y_intro_1": {
+     "chunked": false,
+     "paragraphs": 1,
+     "reason": "paragraphs=1<2"
+    },
+    "y_voice_1": {
+     "chunked": false,
+     "paragraphs": 1,
+     "reason": "paragraphs=1<2"
+    },
+    "y_intro_2": {
+     "chunked": false,
+     "paragraphs": 1,
+     "reason": "paragraphs=1<2"
+    },
+    "y_voice_2": {
+     "chunked": false,
+     "paragraphs": 1,
+     "reason": "paragraphs=1<2"
+    },
+    "y_intro_3": {
+     "chunked": false,
+     "paragraphs": 1,
+     "reason": "paragraphs=1<2"
+    },
+    "y_voice_3": {
+     "chunked": false,
+     "paragraphs": 1,
+     "reason": "paragraphs=1<2"
+    },
+    "y_closing": {
+     "chunked": false,
+     "paragraphs": 1,
+     "reason": "paragraphs=1<2"
+    }
+   },
+   "existing_decision_file": {
+    "path": "er121_output/family_y_production_01/redelivery_fee/run_01/a2/audit/chunk_tts_decision.json",
+    "chunk_tts_applied_at_this_level": false,
+    "not_applied_reason": "Std(a2)本文はX同様chunk化しない",
+    "segments": {},
+    "note": "a2は2026-10-26以前の旧記録(当時Standardは分割対象外)。現行コードでは上のsegmentsが判定結果"
+   }
+  },
+  "b1b": {
+   "planner_version": "chunk_tts_v1_x_paragraph_z_r1_20261025",
+   "chunk_applies_to_level_now": true,
+   "segments": {
+    "y_lead": {
+     "chunked": false,
+     "paragraphs": 1,
+     "reason": "paragraphs=1<2"
+    },
+    "y_intro_1": {
+     "chunked": false,
+     "paragraphs": 1,
+     "reason": "paragraphs=1<2"
+    },
+    "y_voice_1": {
+     "chunked": false,
+     "paragraphs": 1,
+     "reason": "paragraphs=1<2"
+    },
+    "y_intro_2": {
+     "chunked": false,
+     "paragraphs": 1,
+     "reason": "paragraphs=1<2"
+    },
+    "y_voice_2": {
+     "chunked": false,
+     "paragraphs": 1,
+     "reason": "paragraphs=1<2"
+    },
+    "y_intro_3": {
+     "chunked": false,
+     "paragraphs": 1,
+     "reason": "paragraphs=1<2"
+    },
+    "y_voice_3": {
+     "chunked": false,
+     "paragraphs": 1,
+     "reason": "paragraphs=1<2"
+    },
+    "y_closing": {
+     "chunked": false,
+     "paragraphs": 1,
+     "reason": "paragraphs=1<2"
+    }
+   },
+   "existing_decision_file": {
+    "path": "er121_output/family_y_production_01/redelivery_fee/run_01/b1b/audit/chunk_tts_decision.json",
+    "chunk_tts_applied_at_this_level": true,
+    "not_applied_reason": null,
+    "segments": {
+     "y_lead": {
+      "chunked": false,
+      "paragraphs": 1
+     },
+     "y_intro_1": {
+      "chunked": false,
+      "paragraphs": 1
+     },
+     "y_voice_1": {
+      "chunked": false,
+      "paragraphs": 1
+     },
+     "y_intro_2": {
+      "chunked": false,
+      "paragraphs": 1
+     },
+     "y_voice_2": {
+      "chunked": false,
+      "paragraphs": 1
+     },
+     "y_intro_3": {
+      "chunked": false,
+      "paragraphs": 1
+     },
+     "y_voice_3": {
+      "chunked": false,
+      "paragraphs": 1
+     },
+     "y_closing": {
+      "chunked": false,
+      "paragraphs": 1
+     }
+    },
+    "note": "a2は2026-10-26以前の旧記録(当時Standardは分割対象外)。現行コードでは上のsegmentsが判定結果"
+   }
+  }
+ },
+ "structural_reason": {
+  "parser": "er121_family_y_structure_01.py split_y_article (段落数=5固定、Voice段落=紹介行+本文1行)",
+  "consequence": "記事本文の段落契約がVoice本文を1行に固定し、正式runnerのstage_ttsはwrite_level_inputsでparts.jsonを記事から再生成するため、正式経路ではchunk化条件(同一segment内2段落以上)を満たせない",
+  "blank_line_inside_voice_body_demo": "FamilyYStructureError: Y_ARTICLE_PARAGRAPH_COUNT: 段落が5でありません(=6)"
+ }
+}
