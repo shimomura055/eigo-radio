@@ -292,7 +292,8 @@ class TestRunEntry(unittest.TestCase):
 class TestIsolation(unittest.TestCase):
     """配線後の機械的証拠: er105を参照するProductionファイルは委任_02で配線した最小集合だけ(予期せぬ参照元が無い)。API 0。"""
     ALLOWED = {"er003_key_words_canonicalization.py", "er003_v1_n3_01_scaffold_generate.py",
-               "er119_kp_candidates_01.py", "er119_kp_prompt_2v_01.py"}   # KP Human Review(2026-10-25 APPROVED_FOR_PRODUCTION): 候補生成がer105の選定関数を再利用する
+               "er119_kp_candidates_01.py", "er119_kp_prompt_2v_01.py",
+               "er125_kp_rescue_production_01.py"}   # KPRW1 委任_01(2026-10-26 APPROVED_FOR_PRODUCTION): 救済module(委任_02でProduction配線。er105のvalidatorを再利用)。KP Human Review(2026-10-25 APPROVED_FOR_PRODUCTION): 候補生成がer105の選定関数を再利用する
 
     def test_no_production_file_references_er105(self):
         offenders = []
