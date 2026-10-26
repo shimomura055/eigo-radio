@@ -38,17 +38,19 @@ def test_rule_patch_restores_production_state():
 
 
 def test_default_off_current_production_behaviour_unchanged():
-    # パッチ外(=Production現行)では従来どおり除外される(DefaultOffIsolation)
+    # 委任_03(2026-10-26): 区分1(副詞前原形化・過去形表補完・have役割判定)はProductionへ適用済み(er105_kp_rule_compliance_test_01.pyが固定)。
+    # パッチ外でも区分1の変換は通る。共有のA/B/C用kc._contains_finite_auxiliary(語形リスト判定)は不変で、区分2(慣用句の閉表等)はパッチ外では効かない。
     assert kc._contains_finite_auxiliary("have a say") is True
-    assert m.gate_check("study separately", "studied separately", "studied separately")["ok"] is False
-    assert m.gate_check("ring through", "rang through", "rang through")["ok"] is False
-    assert "rang" not in ft._PAST_ONLY_IRREGULAR and "rang" not in ft._AMBIGUOUS_IRREGULAR
+    assert m.gate_check("study separately", "studied separately", "studied separately")["ok"] is True
+    assert m.gate_check("ring through", "rang through", "rang through")["ok"] is True
+    assert "rang" in ft._PAST_ONLY_IRREGULAR
+    assert kc._contains_finite_auxiliary("can of worms") is True          # 区分2(慣用句例外)は未配線
 
 
 def test_patch_flags_are_independent_and_minimal():
     with m.RulePatch(adverb=True):
         assert m.gate_check("study separately", "studied separately", "studied separately")["ok"] is True
-        assert m.gate_check("ring through", "rang through", "rang through")["ok"] is False      # past未指定なら通らない
+        assert m.gate_check("ring through", "rang through", "rang through")["ok"] is True       # 委任_03: past表補完はProduction適用済み
         assert kc._contains_finite_auxiliary("have a say") is True                              # aux未指定なら変わらない
     with m.RulePatch(past=True):
         assert m.gate_check("ring through", "rang through", "rang through")["ok"] is True
@@ -329,12 +331,13 @@ def test_m3_idiom_is_not_used_without_flag():
 
 # ---------------------------------------------------------------- R3: 他動詞の原形/名詞と同形になる語を補完しない
 def test_r3_past_table_completion_excludes_homographs():
+    snap = (dict(ft._PAST_ONLY_IRREGULAR), dict(ft._AMBIGUOUS_IRREGULAR))
     with m.RulePatch(past=True):
         for w in ("lay", "wound", "ground", "bore", "bound"):
             assert w not in ft._PAST_ONLY_IRREGULAR and w not in ft._AMBIGUOUS_IRREGULAR, w
         for w in ("rang", "sang", "swam"):
             assert w in ft._PAST_ONLY_IRREGULAR or w in ft._AMBIGUOUS_IRREGULAR, w
-    assert "rang" not in ft._PAST_ONLY_IRREGULAR       # 復元済み
+    assert (dict(ft._PAST_ONLY_IRREGULAR), dict(ft._AMBIGUOUS_IRREGULAR)) == snap     # 復元済み(委任_03: Productionは補完済みの状態へ戻る)
 
 
 # ---------------------------------------------------------------- R4: A1の演算子表拡張とHR旗

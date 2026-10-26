@@ -624,7 +624,14 @@ def validate_canonicalization_item(key_phrase: str, display_phrase: str, source_
         reasons.append(f"key_phraseが{KEY_PHRASE_MIN_WORDS}〜{KEY_PHRASE_MAX_WORDS}語でない"
                        f"(実際: {word_count}語)")
 
-    if _contains_finite_auxiliary(key_phrase):
+    # KP-GATE-EXCLUSION-RESCUE-DESIGN-02 委任_03(区分1=承認済み規則への準拠修正): 全文選定itemのみ(allow_inflection_normalization=True)、have/has/hadは役割判定
+    # (語彙動詞haveを有限助動詞と誤判定しない)。法助動詞・be系は従来どおり。A/B/C経路(False)は従来の語形リスト判定のまま不変。
+    if allow_inflection_normalization:
+        import er105_kp_fulltext_selector_01 as _ft   # 遅延import(循環回避)
+        _aux = _ft.contains_finite_aux_role_based(key_phrase)
+    else:
+        _aux = _contains_finite_auxiliary(key_phrase)
+    if _aux:
         reasons.append("有限助動詞が含まれている")
 
     return {"ok": len(reasons) == 0, "reasons": reasons}

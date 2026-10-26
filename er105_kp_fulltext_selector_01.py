@@ -216,7 +216,7 @@ def _legacy_form_reasons(phrase: str) -> list:
     その後段(canonicalization)は必ずINVALIDになるため、選定段でretryに回す(設計書§3-4)。"""
     import er003_key_words_canonicalization as kc   # 遅延import(test時に重いmodule群を不要に読まない)
     reasons = []
-    if kc._contains_finite_auxiliary(phrase):
+    if contains_finite_aux_role_based(phrase):   # 委任_03 区分1(2): have/has/hadは役割判定(fulltext経路。法助動詞・be系は従来どおり拒否)
         reasons.append("有限助動詞を含む(既存canonicalization Validatorが拒否する形)")
     reasons.extend(numeric_placeholder_reasons(phrase))   # P-13: 数値placeholder型の回避(CURRENT_SPEC:470-472)
     return reasons
@@ -686,9 +686,348 @@ def _token_pair_ok(kt: str, dt: str, idx: int, key_tokens: list) -> bool:
         if (dl not in _IRREGULAR_PLURAL and dl not in _PARTICIPIAL_ADJ_EXCLUDE and dl not in _PLURAL_EXCLUDE
                 and kl in _verb_base_candidates(dl) and len(key_tokens) >= 2 and _guard_ok(key_tokens, idx)):
             return True
+        if _adverb_follow_ok(kl, dl, idx, key_tokens):    # 委任_03 区分1(1): 副詞前の原形化(既存条件で不受理のときだけ追加判定=単調)
+            return True
     if idx == len(key_tokens) - 1 and dl not in _PLURAL_EXCLUDE and kl in _plural_base_candidates(dl):
         return True
     return False
+
+
+# ============================================================
+# KP-GATE-EXCLUSION-RESCUE-DESIGN-02 委任_03(2026-10-26、区分1=承認済み規則への準拠修正のProduction適用。fulltext経路限定)
+# 正本: docs/research/KP-GATE-EXCLUSION-RESCUE-DESIGN-02/DESIGN_02.md §3-1、OPUS_REVIEW_02.md Q1(b)/Q2(b)/M1/M2/R3、PROD_APPLY_01.md。
+# 移植元: er123_kp_rescue_dev_01.py(DEV。判定をDEV/Prodで完全一致させるためデータ表・関数本体を逐語移植。parity=parity_01.json)。
+# 適用範囲(3点のみ): (1)副詞前の原形化(承認文「先頭またはto直後の動詞」へ戻すguard是正。-ly名詞/動詞除外表+語幹CMU実在+前方活用一致+句末/前置詞等の前)
+#   (2)有限助動詞have/has/hadの役割判定(`contains_finite_aux_role_based`。fulltext経路の_legacy_form_reasons・canonicalizationのallow_inflection_normalization=True時のみ)
+#   (3)過去形表の補完(他動詞原形と同形のbound/lay/wound/ground/boreは追加しない)。
+# 非適用(区分2): 量化詞限定詞guard・慣用句の閉表・辞書裏付けguard・救済フロー・A1短縮・再アンカー・A2・縮約形是正。A/B/C経路(allow_inflection_normalization=False)は不変。
+# ============================================================
+# lemma: (過去形, 過去分詞)。標準的な不規則動詞(be/have/doは_FUNCTION_VERB_FORMSで別管理)。
+IRR = {
+    "arise": ("arose", "arisen"), "awake": ("awoke", "awoken"), "bear": ("bore", "borne"), "beat": ("beat", "beaten"),
+    "become": ("became", "become"), "begin": ("began", "begun"), "bend": ("bent", "bent"), "bind": ("bound", "bound"),
+    "bite": ("bit", "bitten"), "bleed": ("bled", "bled"), "blow": ("blew", "blown"), "break": ("broke", "broken"),
+    "breed": ("bred", "bred"), "bring": ("brought", "brought"), "build": ("built", "built"), "buy": ("bought", "bought"),
+    "catch": ("caught", "caught"), "choose": ("chose", "chosen"), "cling": ("clung", "clung"), "come": ("came", "come"),
+    "creep": ("crept", "crept"), "deal": ("dealt", "dealt"), "dig": ("dug", "dug"), "draw": ("drew", "drawn"),
+    "drink": ("drank", "drunk"), "drive": ("drove", "driven"), "eat": ("ate", "eaten"), "fall": ("fell", "fallen"),
+    "feed": ("fed", "fed"), "feel": ("felt", "felt"), "fight": ("fought", "fought"), "find": ("found", "found"),
+    "flee": ("fled", "fled"), "fling": ("flung", "flung"), "fly": ("flew", "flown"), "forbid": ("forbade", "forbidden"),
+    "forget": ("forgot", "forgotten"), "forgive": ("forgave", "forgiven"), "freeze": ("froze", "frozen"),
+    "get": ("got", "gotten"), "give": ("gave", "given"), "go": ("went", "gone"), "grind": ("ground", "ground"),
+    "grow": ("grew", "grown"), "hang": ("hung", "hung"), "hear": ("heard", "heard"), "hide": ("hid", "hidden"),
+    "hold": ("held", "held"), "keep": ("kept", "kept"), "kneel": ("knelt", "knelt"), "know": ("knew", "known"),
+    "lay": ("laid", "laid"), "lead": ("led", "led"), "leave": ("left", "left"), "lend": ("lent", "lent"),
+    "lie": ("lay", "lain"), "light": ("lit", "lit"), "lose": ("lost", "lost"), "make": ("made", "made"),
+    "mean": ("meant", "meant"), "meet": ("met", "met"), "overcome": ("overcame", "overcome"), "pay": ("paid", "paid"),
+    "ride": ("rode", "ridden"), "ring": ("rang", "rung"), "rise": ("rose", "risen"), "run": ("ran", "run"),
+    "say": ("said", "said"), "see": ("saw", "seen"), "seek": ("sought", "sought"), "sell": ("sold", "sold"),
+    "send": ("sent", "sent"), "shake": ("shook", "shaken"), "shine": ("shone", "shone"), "shoot": ("shot", "shot"),
+    "show": ("showed", "shown"), "shrink": ("shrank", "shrunk"), "sing": ("sang", "sung"), "sink": ("sank", "sunk"),
+    "sit": ("sat", "sat"), "sleep": ("slept", "slept"), "slide": ("slid", "slid"), "speak": ("spoke", "spoken"),
+    "spend": ("spent", "spent"), "spin": ("spun", "spun"), "spring": ("sprang", "sprung"), "stand": ("stood", "stood"),
+    "steal": ("stole", "stolen"), "stick": ("stuck", "stuck"), "sting": ("stung", "stung"), "strike": ("struck", "struck"),
+    "swear": ("swore", "sworn"), "sweep": ("swept", "swept"), "swim": ("swam", "swum"), "swing": ("swung", "swung"),
+    "take": ("took", "taken"), "teach": ("taught", "taught"), "tear": ("tore", "torn"), "tell": ("told", "told"),
+    "think": ("thought", "thought"), "throw": ("threw", "thrown"), "understand": ("understood", "understood"),
+    "undertake": ("undertook", "undertaken"), "wake": ("woke", "woken"), "wear": ("wore", "worn"), "weave": ("wove", "woven"),
+    "weep": ("wept", "wept"), "win": ("won", "won"), "wind": ("wound", "wound"), "withdraw": ("withdrew", "withdrawn"),
+    "write": ("wrote", "written"),
+}
+# 過去形が名詞・形容詞・別語としても通用する語(過去形専用表には入れず、直後条件つきのAMBIGUOUS表へ)
+# OPEN-476=DEFERRED(er105 is_valid_inflection_normalization docstring: bound to->bind to は拒否のまま)。補完の対象から除外する。
+# R3(Opus): 他の動詞の原形/名詞と同形になる新規追加語は補完しない(bound/lay/wound/ground/bore。`bound`を外したのと同じ理由)。
+COMPLETION_EXCLUDE = frozenset({"bound", "lay", "wound", "ground", "bore"})
+PAST_ALSO_OTHER_WORD = frozenset({
+    "saw", "left", "found", "bound", "wound", "lay", "bore", "rose", "felt", "spoke", "stole", "bit", "shot", "won",
+    "stuck", "struck", "hung", "bent", "spent", "ground", "lit", "fell", "led", "sat", "bled", "fed", "laid", "dug", "lent",
+})
+# M2(Opus): 形が変わらない/不規則な過去分詞で表に無かった語(has spread/quit/cast/cost/burst/shed/split/upset/bet/forecast/broadcast/bid/fit/rid/wed、
+#   dwelt/leapt/wrung/strode/stunk ほか)。2語の句は nxt2=None になり倒置ルールにも掛からないため、nxt自身を分詞として認識する。迷えばaux側。
+IRR_PARTICIPLES_EXTRA = frozenset({
+    "spread", "quit", "cast", "cost", "burst", "shed", "split", "upset", "bet", "forecast", "broadcast", "bid", "fit", "rid", "wed",
+    "dwelt", "leapt", "wrung", "strode", "stunk", "bust", "slit", "thrust", "sublet", "typeset", "offset", "reset", "outbid", "overcast",
+    "recast", "underbid", "unwound", "spat", "slung", "slunk", "snuck", "strung", "leant", "dived", "dove", "spoilt", "wound", "ground",
+    "bore", "laid", "lain", "bled", "fled", "sped", "stove", "clad", "shod", "woven", "hewn", "mown", "rent", "bereft", "dealt", "meant",
+    "overrun", "outrun", "overthrown", "withstood", "forborne", "foregone", "foresaw", "foreseen", "overseen", "outdone", "overtaken",
+    "retaken", "remade", "regrown", "reborn", "reheard", "rebound", "unbound", "unbent", "underlain", "underwritten", "unfrozen"})
+IRR_PARTICIPLES = frozenset(p for _, p in IRR.values()) | IRR_PARTICIPLES_EXTRA | frozenset({
+    "got", "been", "done", "had", "put", "cut", "set", "let", "hit", "hurt", "read", "shut",
+    # IRRマスタ外の過去分詞(完了形のauxを語彙haveと誤認しないための追加。迷えばaux側=現行どおり拒否)
+    "proven", "learnt", "burnt", "dreamt", "spelt", "spilt", "smelt", "sped", "knit", "forsaken", "mistaken", "overtaken", "undergone",
+    "outgrown", "slain", "striven", "trodden", "sewn", "sown", "shorn", "swollen", "stricken", "begotten", "beheld", "upheld", "withheld",
+    "misled", "overdone", "undone", "redone", "rebuilt", "retold", "rewritten", "bidden", "wrought", "come", "become", "run", "gone"})
+
+_VOWELS = "aeiou"
+
+
+def _cvc(w: str) -> bool:
+    return len(w) >= 3 and w[-1] not in _VOWELS + "wxy" and w[-2] in _VOWELS and w[-3] not in _VOWELS
+
+
+def _doubling_options(l: str) -> tuple:
+    """CVC語の重子音化: (重子音形を許す?, 非重子音形を許す?)。単音節/語末強勢→重子音(hop->hopped, plan->planned, prefer->preferred)、
+    語末が無強勢→非重子音(visit->visited, open->opened)。CMUに無ければ両方許す。hoped->hop のような誤受理を前方生成一致で拒否するための判定。"""
+    try:
+        import pronouncing
+        prons = pronouncing.phones_for_word(l)
+    except Exception:   # noqa: BLE001
+        prons = []
+    if not prons:
+        return True, True
+    dbl = plain = False
+    for pr in prons:
+        vs = [x for x in pr.split() if x[-1].isdigit()]
+        if not vs:
+            continue
+        if len(vs) == 1 or vs[-1].endswith("1"):
+            dbl = True
+        else:
+            plain = True
+    return (dbl or not plain), (plain or not dbl)
+
+
+def regular_forms(lemma: str) -> set:
+    """規則活用の前方生成(-s/-es/-ies, -ed/-d/-ied, -ing)。CVC語は重子音あり/なし両方(強勢未判定のため緩め=受理側の誤り防止ではなく『一致確認』用)。"""
+    l = lemma.lower()
+    out = set()
+    # 3sg
+    if re.search(r"(s|x|z|ch|sh|o)$", l):
+        out.add(l + "es")
+    elif re.search(r"[^aeiou]y$", l):
+        out.add(l[:-1] + "ies")
+    else:
+        out.add(l + "s")
+    # past / participle
+    if l.endswith("e"):
+        out.add(l + "d")
+    elif re.search(r"[^aeiou]y$", l):
+        out.add(l[:-1] + "ied")
+    elif _cvc(l):
+        dbl, plain = _doubling_options(l)
+        if dbl:
+            out.add(l + l[-1] + "ed")
+        if plain:
+            out.add(l + "ed")
+    else:
+        out.add(l + "ed")
+    # gerund
+    if l.endswith("ie"):
+        out.add(l[:-2] + "ying")
+    elif l.endswith("e") and not l.endswith(("ee", "ye", "oe")):
+        out.add(l[:-1] + "ing")
+    elif _cvc(l):
+        dbl, plain = _doubling_options(l)
+        if dbl:
+            out.add(l + l[-1] + "ing")
+        if plain:
+            out.add(l + "ing")
+    else:
+        out.add(l + "ing")
+    return out
+
+
+def forms(lemma: str) -> set:
+    """lemmaの活用形全体(前方生成)。不規則動詞は過去形・過去分詞をIRRから、3sg/gerundは規則形。"""
+    l = lemma.lower()
+    rf = regular_forms(l)
+    if l in IRR:
+        past, pp = IRR[l]
+        rf = {f for f in rf if not f.endswith(("ed", "ied"))} | {past, pp}
+    if l in ("be", "have", "do"):
+        rf |= {"be": {"is", "are", "was", "were", "been", "being", "am"}, "have": {"has", "had", "having"},
+               "do": {"does", "did", "done", "doing"}}[l]
+    return rf
+
+
+def inflects_to(lemma: str, surface: str) -> bool:
+    """前方生成一致: surfaceがlemmaの活用形か(`hoped`->`hop`は偽、`hoped`->`hope`は真)。"""
+    return surface.lower() in forms(lemma)
+
+
+
+
+def _kc():
+    import er003_key_words_canonicalization as kc   # 遅延import(循環回避)
+    return kc
+
+
+def _cmu_reasons(word: str) -> list:
+    import er108_kp_cmu_lexicon_gate_01 as cmu   # 遅延import(Production既存の同一CMU辞書)
+    return cmu.reasons_for_phrase(word)
+
+
+_HAVE = frozenset({"has", "have", "had"})
+_NOM_PRONOUN = frozenset({"i", "you", "he", "she", "it", "we", "they", "there", "who"})   # have + 主格代名詞=倒置の助動詞(You/Itは保守的にaux側)
+_AUX_FOLLOW = frozenset({"been", "being", "to", "not", "t", "n't", "never", "already", "just", "ever", "better", "rather", "best", "got"})
+
+
+_NOT_PARTICIPLE_ED = frozenset({"hundred", "kindred", "sacred", "naked", "wicked", "rugged", "crooked", "beloved", "wretched", "hatred", "infrared"})   # -edで終わるが分詞でない語
+
+
+def _is_participle(w: str) -> bool:
+    return w in IRR_PARTICIPLES or (w.endswith("ed") and len(w) > 3 and w not in _PARTICIPIAL_ADJ_EXCLUDE and w not in _NOT_PARTICIPLE_ED)
+
+
+_HAVE_ADV = frozenset({"also", "often", "only", "finally", "just", "already", "ever", "never", "always", "still", "quite", "really", "soon",
+                       "recently", "previously", "yet", "long", "so"})
+_LEXICAL_START = frozenset(set(_GUARD_DET) | {"no", "each", "every", "all", "both", "another", "either", "neither", "several", "few", "many",
+                                                 "much", "more", "less", "enough", "what", "something", "nothing", "anything", "everything"})
+
+
+# M2(Opus): 助動詞と分詞の間に入りうる量化詞・副詞(have all gone / have both agreed / has more than doubled / have just been)。
+_HAVE_SKIP = frozenset({"all", "both", "each", "either", "neither", "more", "less", "than", "much", "many", "few", "several", "most", "half",
+                        "just", "already", "also", "never", "ever", "only", "still", "always", "often", "finally", "recently", "previously",
+                        "yet", "really", "quite", "so", "long", "now", "then", "once", "twice", "nearly", "almost", "barely", "hardly", "all"})
+_HAVE_DET_SET = frozenset(_GUARD_DET) | {"the", "a", "an"}
+
+
+def have_role(toks: list, i: int, capitalized_first: bool = False) -> str:
+    """have/has/had(toks[i])が『aux』(完了・倒置・慣用の助動詞用法)か『lexical』(所有・経験・実行の語彙動詞)か。
+    保守的: 判定に迷えばaux(=現行どおり拒否)。lexicalと判定するのは、直後が限定詞/所有格/数量詞/名詞句の始まりで、かつ
+    (1)文頭の大文字Have/Has/Had(倒置・疑問)でない (2)直後に副詞+過去分詞が続かない (3)『have+主語+been/過去分詞』の倒置でない
+    (4)[M2] 量化詞/副詞を挟んだ『have all gone』『has more than doubled』でない (5)[M2] 形が変わらない過去分詞(has spread/quit/cast/cost…)でない
+    (6)[M2] 限定詞(+形容詞)+名詞+過去分詞(had the board known / had the house painted は形が同じで区別不能→aux)でない 場合のみ。"""
+    nxt = toks[i + 1] if i + 1 < len(toks) else None
+    nxt2 = toks[i + 2] if i + 2 < len(toks) else None
+    if capitalized_first and i == 0 and nxt is not None:
+        return "aux"
+    if nxt is None:
+        return "aux"
+    if nxt in _AUX_FOLLOW or nxt in _NOM_PRONOUN or nxt in _HAVE_ADV:
+        return "aux"
+    if _is_participle(nxt):
+        return "aux"
+    if nxt in _PARTICIPIAL_ADJ_EXCLUDE:
+        # 形容詞化もしうる分詞(limited/interested/expected等): 直後が限定詞/前置詞(=目的語を取る完了形)・句末ならaux、名詞が続くときだけ形容詞=語彙have
+        if nxt2 is None or nxt2 in _GUARD_DET or nxt2 in _GUARD_PARTICLE:
+            return "aux"
+        return "lexical"
+    # (4) 量化詞/副詞を読み飛ばして、その先が分詞/been/beingならaux(have all gone / has more than doubled)
+    j = i + 1
+    skipped = False
+    while j < len(toks) and toks[j] in _HAVE_SKIP:
+        j += 1
+        skipped = True
+    if skipped and j < len(toks):
+        w = toks[j]
+        if w in ("been", "being") or _is_participle(w) or w in _PARTICIPIAL_ADJ_EXCLUDE or (w.endswith("ed") and len(w) > 3):
+            return "aux"
+    if skipped and j >= len(toks) and toks[-1] in _HAVE_SKIP and toks[-1] not in ("all", "both", "each", "either", "neither", "most", "half",
+                                                                                     "many", "few", "several", "much", "more", "less", "than"):
+        return "aux"      # have just / have already 等の副詞止まり(分詞が切れている)
+    # (6) 限定詞(+形容詞)+名詞+過去分詞: had the board known / had the house painted → aux(倒置/使役の区別不能)
+    if nxt in _HAVE_DET_SET:
+        for k in (i + 3, i + 4):
+            if k < len(toks) and (toks[k] in ("been", "being") or _is_participle(toks[k])):
+                return "aux"
+    if nxt not in _LEXICAL_START and nxt2 is not None and (nxt2 in ("been", "being") or _is_participle(nxt2)):
+        return "aux"       # have + 主語(名詞) + been/過去分詞 = 倒置の助動詞(Had users been / Has Vera been)
+    return "lexical"
+
+
+def finite_aux_roles(text: str) -> list:
+    orig = _kc()._WORD_TOKEN_RE.findall(text or "")
+    toks = [t.lower() for t in orig]
+    out = []
+    for i, t in enumerate(toks):
+        if t in _kc()._FINITE_AUX_WORDS:
+            out.append((t, have_role(toks, i, capitalized_first=orig[i][:1].isupper()) if t in _HAVE else "aux"))
+    return out
+
+
+def contains_finite_aux_role_based(text: str) -> bool:
+    return any(role == "aux" for _, role in finite_aux_roles(text))
+
+
+LY_ADJ = frozenset({"friendly", "lovely", "lonely", "elderly", "costly", "likely", "unlikely", "silly", "early", "daily", "weekly", "monthly",
+                    "yearly", "only", "family", "holy", "ugly", "lively", "deadly", "orderly", "lowly", "bubbly", "chilly", "curly",
+                    # M1(c): -ly形容詞の追加(Opus指摘: timely/scholarly/cowardly/leisurely/manly/hourly/nightly/sickly/burly/unruly 他)
+                    "timely", "scholarly", "cowardly", "leisurely", "manly", "womanly", "hourly", "nightly", "sickly", "burly", "unruly", "motherly",
+                    "fatherly", "brotherly", "sisterly", "heavenly", "earthly", "ghostly", "kingly", "queenly", "masterly", "saintly", "worldly",
+                    "homely", "kindly", "lordly", "neighborly", "neighbourly", "princely", "slovenly", "surly", "wily", "stately", "sprightly",
+                    "gentlemanly", "ladylike", "cleanly", "comely", "courtly", "fortnightly", "quarterly", "northerly", "southerly", "easterly",
+                    "westerly", "wobbly", "gnarly", "scraggly", "squiggly", "wriggly", "crumbly", "prickly", "bristly", "knobbly", "lumpy"})
+# M1(a): -ly で終わる名詞/動詞(副詞ではない)の除外表。語幹検査をすり抜ける語(supply→supple, reply→rep)も明示的に除く。
+LY_NOUN_VERB = frozenset({"supply", "reply", "rally", "assembly", "jelly", "belly", "bully", "folly", "monopoly", "anomaly", "tally", "ally",
+                          "apply", "comply", "imply", "multiply", "rely", "fly", "ply", "july", "italy", "lily", "dolly", "holly", "molly", "polly",
+                          "sally", "wally", "dally", "bully", "melancholy", "homily", "casualty", "butterfly", "firefly", "dragonfly", "gadfly",
+                          "underlay", "overlay", "doily", "dilly", "filly", "hillbilly", "billy", "willy", "silly", "chilly", "cobbly", "gully", "bally",
+                          "ghastly", "grisly", "grizzly", "bubbly", "dumbly", "unfriendly", "overly", "reapply", "resupply", "outfly", "nelly", "sully"})
+_MANNER_ADV_EXTRA = frozenset({"again", "alone", "hard", "fast", "often", "always", "never"})    # well/stillは名詞用法(a well/a still)があるため除外(M1)
+
+
+def _ly_stems(w: str) -> set:
+    """-ly副詞の語幹候補(綴り規則: -ily→-y happily→happy / -ally→-ic basically→basic / -bly,-ply,-tly等→-ble,-ple,-tle simply→simple /
+    -ully,-lly→-l fully→full / -uly→-ue truly→true / それ以外は-ly除去 quietly→quiet)。"""
+    st = set()
+    base = w[:-2]
+    st.add(base)
+    if w.endswith("ily"):
+        st.add(w[:-3] + "y")
+    if w.endswith("ally"):
+        st.add(w[:-4])      # basically -> basic
+    if re.search(r"[bpdgktz]ly$", w):
+        st.add(w[:-1] + "e")
+    if w.endswith("lly"):
+        st.add(w[:-1])
+    if w.endswith("uly"):
+        st.add(w[:-2] + "e")
+    if w.endswith("ably") or w.endswith("ibly"):
+        st.add(w[:-1] + "e")
+    return {x for x in st if len(x) >= 3}
+
+
+def is_manner_adverb(w: str) -> bool:
+    """[M1] -ly副詞か。-ly名詞/動詞/形容詞の除外表に無く、かつ語幹(綴り規則で復元)がCMU実在の語であること。
+    (CMU実在だけでは rep(reply)/supple(supply)のように語幹検査をすり抜けるため、除外表と併用する。)"""
+    w = w.lower()
+    if w in _MANNER_ADV_EXTRA:
+        return True
+    if not (w.endswith("ly") and len(w) > 4) or w in LY_ADJ or w in LY_NOUN_VERB:
+        return False
+    return any(not _cmu_reasons(x) for x in _ly_stems(w))
+
+
+def _adverb_tail_ok(key_tokens: list, adv_idx: int) -> bool:
+    """副詞が句末、または直後が前置詞/不変化詞/限定詞/等位接続詞(= 副詞が動詞を修飾していて、後続名詞を修飾する形容詞化分詞ではない)。"""
+    if adv_idx >= len(key_tokens) - 1:
+        return True
+    f = key_tokens[adv_idx + 1].lower()
+    return f in _GUARD_PARTICLE or f in _GUARD_DET or f in ("and", "or", "but")
+
+
+
+def _adverb_follow_ok(kl: str, dl: str, idx: int, key_tokens: list) -> bool:
+    """[区分1(1)] 副詞前の原形化(承認文『先頭またはto直後の動詞』の目的に沿う是正)。DEV `RulePatch(adverb=True)`のpair_okと同一判定。
+    P-04の目的(heated debate型=V+名詞を原形化しない)は、(a)形容詞化分詞表 (b)-ly名詞/動詞/形容詞の除外表+語幹CMU実在 (c)副詞が句末/前置詞等の直前 (d)前方活用一致 で維持する。"""
+    if not (len(key_tokens) >= 2 and idx + 1 < len(key_tokens)):
+        return False
+    if dl in _IRREGULAR_PLURAL or dl in _PARTICIPIAL_ADJ_EXCLUDE or dl in _PLURAL_EXCLUDE:
+        return False
+    lemma_ok = ((dl in _AMBIGUOUS_IRREGULAR and kl == _AMBIGUOUS_IRREGULAR[dl])
+                or (kl in _verb_base_candidates(dl) and inflects_to(kl, dl)))
+    if not lemma_ok:
+        return False
+    nxt = key_tokens[idx + 1].lower()
+    return is_manner_adverb(nxt) and _adverb_tail_ok(key_tokens, idx + 1)
+
+
+def _complete_past_tables() -> None:
+    """[区分1(3)] 過去形専用表/曖昧表の補完(import時に1回、冪等)。他動詞原形と同形の語(R3: bound/lay/wound/ground/bore等)は追加しない。"""
+    for lemma, (past, pp) in IRR.items():
+        if past in COMPLETION_EXCLUDE or pp in COMPLETION_EXCLUDE:
+            continue
+        if (past in IRR and past != lemma) or (pp in IRR and pp != lemma):
+            continue
+        if past != lemma and past not in _PAST_ONLY_IRREGULAR and past not in _AMBIGUOUS_IRREGULAR                 and past not in _FUNCTION_VERB_FORMS:
+            (_AMBIGUOUS_IRREGULAR if past in PAST_ALSO_OTHER_WORD else _PAST_ONLY_IRREGULAR)[past] = lemma
+        if pp not in (past, lemma) and pp not in _AMBIGUOUS_IRREGULAR and pp not in _PAST_ONLY_IRREGULAR:
+            _AMBIGUOUS_IRREGULAR[pp] = lemma
+
+
+_complete_past_tables()
+
 
 
 # ============================================================

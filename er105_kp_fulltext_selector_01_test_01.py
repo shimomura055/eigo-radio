@@ -300,6 +300,8 @@ class TestIsolation(unittest.TestCase):
             b = os.path.basename(p)
             if b.startswith("er105_"):
                 continue
+            if b.startswith("er123_"):
+                continue   # DEV専用module(KP-GATE-EXCLUSION-RESCUE-DESIGN-02。Production到達経路なし。委任_03で既存の失敗を是正: 委任_01から未登録だった)
             if b.startswith("er112_"):
                 continue   # DEV/Trial専用module(Production到達経路なし。逆方向のimport禁止は er112_kp_gm_trial_01_test_01.test_no_production_module_imports_er112 が担保)
             with open(p, encoding="utf-8", errors="ignore") as f:
@@ -348,9 +350,12 @@ class TestInflectionNormalizationPrototype(unittest.TestCase):
             self.assertTrue(m.is_valid_inflection_normalization(k, d), (k, d))
 
     def test_v_plus_adverb_or_noun_phrases_are_not_normalized(self):
-        # 範囲縮小(開示): V+副詞/名詞は形容詞化分詞・名詞修飾と区別できないため基本形化しない(表層形のまま=Rule7無変更で扱う)
-        for k, d in [("try hard", "tried hard"), ("stop short", "stopped short"), ("raise concern", "raised concerns")]:
+        # 範囲縮小(開示): V+名詞・-ly以外の副詞は形容詞化分詞・名詞修飾と区別できないため基本形化しない(表層形のまま=Rule7無変更で扱う)
+        # 委任_03(2026-10-26、区分1): 閉表の副詞(hard/fast/alone/again/often/always/never)と語幹CMU実在の-ly副詞が句末/前置詞等の前にある形は、
+        # 承認文「先頭またはto直後の動詞」の目的に沿って原形化を許す(tried hard->try hard)。V+名詞(raised concerns)・表外の副詞(stopped short)は従来どおり拒否。
+        for k, d in [("stop short", "stopped short"), ("raise concern", "raised concerns")]:
             self.assertFalse(m.is_valid_inflection_normalization(k, d), (k, d))
+        self.assertTrue(m.is_valid_inflection_normalization("try hard", "tried hard"))
 
     def test_rejects_content_change_or_length_change(self):
         for k, d in [("keep raw materials in stock", "keep raw beans in stock"), ("human concierge service", "human concierge feature"),
