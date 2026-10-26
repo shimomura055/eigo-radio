@@ -23,3 +23,4 @@
 - `run_project_regression.py --pattern "form1_selection_form_v3_test_01.py"` → collected=6 passed=6 failed=0。(JS単体test`selection_form_logic_test_01.js`を含む。articles.jsonの『9記事枠』判定は`_prod`slugを数えないよう1行だけ修正[新6枠を追加しても正式9枠の数え方を維持するため]。)
 - 各データは`FL.validateArticle`相当(schema・slug/level/name・フレーズ≤7/単語≤5・term重複なし)を上記JS testの`index data files exist and valid`で検証済み。
 - `er119_kp_backfill_test_01.py` collected=55 passed=55。
+- 公開URL(push後、2026-10-26): `https://shimomura055.github.io/eigo-radio/user_test/selection_form_v3/` と `data/articles.json`・新6データ・既存`monkeys_paw__b1b.json`がHTTP 200(`articles.json`に`_prod`7箇所=6entry+note)。commit `2b3fcefe1`。
