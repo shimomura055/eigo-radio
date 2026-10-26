@@ -15,3 +15,18 @@
 - 使用モデル(開発・評価用途の最新モデル原則、PM_GOVERNANCE 25節): Round 1/2と同一の `gpt-6-luna`(返却モデル名も `gpt-6-luna`)。比較条件を揃えるための据置(Round 2と方式同一)。
 - 本委任のunit test(67件=Round 1/2 54件+新規13件)は遮断harness下で実行、外部接続の試行0(cost logの行数6のまま)。
 - 委任_02の見積(再掲、BUDGET_PLAN_01): 期待25円 / 保守31円 / 天井75円。全て300円以下=Fable自律枠。
+
+## 委任_02 Phase 1b(scope=Phase 1b、Guardrail 100円。出典: 同 raw_usage_log.jsonl、unitごとの `gen_summary.json`)
+
+| unit(起動 JST) | 結果 | 実費(円) | wall | provider内訳(累計cost log) |
+|---|---|---|---|---|
+| 猿の手 Standard(09:38:40) | 15/15 OK・初回1 call・全採用 | 7.007 | 138.7秒 | gemini TTS 6.76 / openai_asr 0.25(累計に感情LLM 1.01を含む) |
+| 猿の手 Advanced(09:43:29、起動間隔≥150秒) | 17/17 OK・各clip 1生成(外側ループ1周)・全採用 | 7.389 | 149.6秒 | gemini累計 13.53 / openai_asr 0.73 / azure 0.14 |
+| メロス Standard | **未生成**(起動待機中に停止。API 0) | 0 | - | - |
+| メロス Advanced | **未生成** | 0 | - | - |
+| **Phase 1b累計** | 32 clip、再生成0 | **14.396 / 100** | - | 期待25円(53 clip)に対し32 clip時点で約57%(clip比 60%) |
+
+- 停止理由: 猿の手 Advanced の組立で **M-5(3)`headroom.scalar` 不一致**(Trial 0.99656194 / Production 1.0)。Fable決定どおり STOP し報告(メロス Standard の生成プロセスは待機中=有料call 0の段階で自プロセスのPIDのみ終了)。詳細は RESULT_PACKET_FZFE2。
+- 日次(JST、`daily_dev_cost_01.py`): 委任開始前 約92.74円 → 停止時 112.13円(本委任14.4円+並行agent分)。1,000円/日以内。
+- Guardrail 100円に対する超過なし。暴走疑いなし(再生成0、無意味なretry 0)。
+- 使用モデル: TTS `gemini-2.5-pro-preview-tts`(Production Zと同一=比較条件)、ASR Production cascade(gpt-4o-mini-transcribe + Azure Secondary)。評価・Trial用途だが、比較条件を現行Production・Round 1/2と揃えるため据置(PM_GOVERNANCE 25節の明示例外理由)。

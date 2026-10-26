@@ -1,0 +1,475 @@
+{
+  "managed_id": "FZ-DIALOGUE-CONTEXT-FULL-EPISODE-TRIAL-01",
+  "work": "monkeys_paw",
+  "level": "b1b",
+  "clip_id": "full_story_part2_c6",
+  "speaker": "visitor",
+  "voice": "Orus",
+  "status": "OK",
+  "wav": "er118_output/fz_full_episode_trial_01/monkeys_paw/b1b/gen/full_story_part2_c6/b1b/narration/full_story_part2_c6.wav",
+  "wav_sha256": "cd484c1c03e236793e4ef57757b7d1a00aabe0f55bda53fe263c087c2901b334",
+  "original_wav": "er118_output/fz_full_episode_trial_01/monkeys_paw/b1b/gen/full_story_part2_c6/b1b/narration/full_story_part2_c6_original.wav",
+  "original_sha256": "4f930467716db9f9d1ede7f2c0698223e36f3185c21c6425696c19de981e3747",
+  "tts_text": "\"The firm accepts no responsibility, but offers you 2 hundred pounds in compensation.\"",
+  "style_sha256": "c652c5e0f1b8b1b4764b2e74c1b80b270ee07f87aa3c6c966ca581fc1332df6e",
+  "prompt_expected_sha256": "8473222abfb155d60f8852db12ea606662decc4a96cbd2bc99e52e81896f64ae",
+  "requests_sent": [
+    {
+      "label": "monkeys_paw/b1b:full_story_part2_c6",
+      "ts": "2026-10-26T09:44:55+09:00",
+      "model": "gemini-2.5-pro-preview-tts",
+      "voice": "Orus",
+      "tts_execution_mode": "STANDARD",
+      "speech_config": {
+        "voice_config": {
+          "replicated_voice_config": null,
+          "prebuilt_voice_config": {
+            "voice_name": "Orus"
+          },
+          "voice": null
+        },
+        "language_code": "en-us",
+        "multi_speaker_voice_config": null
+      },
+      "response_modalities": [
+        "AUDIO"
+      ],
+      "temperature": null,
+      "temperature_note": "未指定(SDK/モデル既定)。Production Z実行と同一コード経路 er003_b1_p7a_audio.make_tts_call_fn_for_model",
+      "http_timeout_ms": 150000,
+      "prompt_sha256": "8473222abfb155d60f8852db12ea606662decc4a96cbd2bc99e52e81896f64ae",
+      "prompt_chars": 4101
+    }
+  ],
+  "request_prompt_matches_expected": [
+    true
+  ],
+  "n_tts_calls_captured": 1,
+  "tts_generations_used": 1,
+  "attempts_log_n": 1,
+  "slowdown_attempts_n": 1,
+  "asr_text": "The firm accepts no responsibility but offers you £200 in compensation.",
+  "attempts_asr_texts": [
+    "The firm accepts no responsibility but offers you £200 in compensation."
+  ],
+  "audio_classification": "TRUE_CONTENT_MISMATCH",
+  "asr_judgement": {
+    "state": "PASS",
+    "reason_code": "primary_pass",
+    "slot": 1,
+    "script_version": "v0",
+    "role": "FULL_STORY",
+    "lang": "en",
+    "segment_key": "full_story_part2_c6",
+    "audio_sha256": "cd484c1c03e236793e4ef57757b7d1a00aabe0f55bda53fe263c087c2901b334",
+    "primary": {
+      "text": "The firm accepts no responsibility but offers you £200 in compensation.",
+      "passed": true,
+      "label": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+      "equivalence_basis": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+      "warning_labels": []
+    },
+    "secondary": {
+      "called": false,
+      "cached": false,
+      "engine": "azure",
+      "text": null,
+      "label": "",
+      "accepted": null,
+      "error": null,
+      "unavailable": false
+    },
+    "value_guard": {
+      "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+          {
+            "src": "200",
+            "hyp": "200",
+            "verdict": "EQUAL",
+            "reason": "same_surface"
+          }
+        ],
+        "reasons": [],
+        "warnings": []
+      }
+    },
+    "negation_guard": {
+      "primary": false
+    },
+    "final_gate": {
+      "applied": true,
+      "value_guard": "EQUAL",
+      "negation_diff": false
+    },
+    "warnings": [],
+    "exclusion_rule": null,
+    "cost": {
+      "azure_calls": 0,
+      "azure_seconds": null,
+      "est_jpy": 0.0
+    },
+    "timing": {
+      "total_ms": 0,
+      "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "length": {
+      "applied": false,
+      "primary_len": null,
+      "secondary_len": null,
+      "max_len": null,
+      "adopted_from": "primary",
+      "adopted_ok": null,
+      "surface_len": null,
+      "primary_ok": null
+    },
+    "orthographic_equivalence": {
+      "applied": true,
+      "version": "er109_orthographic_equivalence_v2_ukus01",
+      "scope": "Z",
+      "label": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+      "sites": [
+        {
+          "site": "primary",
+          "text": "The firm accepts no responsibility but offers you £200 in compensation.",
+          "verdict": "PASS",
+          "warnings": [],
+          "er109": {
+            "version": "er109_orthographic_equivalence_v2_ukus01",
+            "flag_enabled": true,
+            "stress_mode": "binary_stressed_vs_unstressed",
+            "equivalent": true,
+            "verdict": "PASS",
+            "reason": "all_diff_spans_phoneme_equal",
+            "rules": [
+              "number_spoken_form"
+            ],
+            "warnings": [],
+            "contraction_expanded": false,
+            "spans": [
+              {
+                "canon": [
+                  "2",
+                  "hundred",
+                  "pounds"
+                ],
+                "asr": [
+                  "£200"
+                ],
+                "equivalent": true,
+                "rule": "number_spoken_form",
+                "why": "phoneme_equal",
+                "matched_variants": [
+                  "T UW1 HH AH1 N D ER0 D P AW1 N D Z",
+                  "T UW1 HH AH1 N D ER0 D P AW1 N Z",
+                  "T UW1 HH AH1 N D R AH0 D P AW1 N D Z"
+                ],
+                "representative_match": true,
+                "heteronym_guard": true,
+                "warnings": []
+              }
+            ]
+          }
+        }
+      ],
+      "warnings": []
+    },
+    "adapter": {
+      "layers": [
+        "orthographic_er109"
+      ],
+      "azure_real_calls": 0,
+      "cost_guard_triggered": false,
+      "language": "en-US",
+      "segment_id": "full_story_part2_c6",
+      "asr_text_present": true,
+      "cache": {
+        "calls": 0,
+        "hits": 0
+      }
+    }
+  },
+  "instruction_type": "english_style_prefix_wide_margin",
+  "repetition_qa_checked": true,
+  "trim_info": {
+    "raw_duration_seconds": 7.876,
+    "raw_leading_silence_seconds": 0.265,
+    "raw_trailing_silence_seconds": 0.265,
+    "trimmed_duration_seconds": 7.876,
+    "leading_margin_retained_seconds": 0.265,
+    "trailing_margin_retained_seconds": 0.265
+  },
+  "leakage": {
+    "leakage_any_attempt": false,
+    "leakage_final": false,
+    "needs_listen_any_attempt": false,
+    "per_attempt": [
+      {
+        "flagged": false,
+        "needs_listen": false,
+        "extra_tokens": [],
+        "extra_runs": [],
+        "max_extra_run": 0,
+        "context_only_hits": [],
+        "asr_words": 11,
+        "target_words": 13
+      }
+    ],
+    "final": {
+      "flagged": false,
+      "needs_listen": false,
+      "extra_tokens": [],
+      "extra_runs": [],
+      "max_extra_run": 0,
+      "context_only_hits": [],
+      "asr_words": 11,
+      "target_words": 13
+    }
+  },
+  "comparison_valid": true,
+  "final_instruction_type": "english_style_prefix_wide_margin",
+  "last_request_prompt_matches_expected": true,
+  "attempts_logged": 1,
+  "n_tts_calls_undercount_possible": false,
+  "verbatim_observation": {
+    "token_equal": false,
+    "token_similarity": 0.8333
+  },
+  "reason": null,
+  "tts_cap_reached": null,
+  "cost_jpy_clip": 0.8594,
+  "elapsed_s": 13.01,
+  "saved_at": "2026-10-26T09:45:08+09:00",
+  "entry": {
+    "status": "OK",
+    "path": "er118_output/fz_full_episode_trial_01/monkeys_paw/b1b/gen/full_story_part2_c6/b1b/narration/full_story_part2_c6.wav",
+    "sha256": "cd484c1c03e236793e4ef57757b7d1a00aabe0f55bda53fe263c087c2901b334",
+    "canonical_text": "\"The firm accepts no responsibility, but offers you two hundred pounds in compensation.\"",
+    "text": "\"The firm accepts no responsibility, but offers you two hundred pounds in compensation.\"",
+    "disfluency_checked": false,
+    "asr_text": "The firm accepts no responsibility but offers you £200 in compensation.",
+    "slowdown_applied": true,
+    "z_adoption": "adopted",
+    "segment_id": "full_story_part2_c6",
+    "narration_path": "er118_output/fz_full_episode_trial_01/monkeys_paw/b1b/gen/full_story_part2_c6/b1b/narration/full_story_part2_c6.wav",
+    "role": "FULL_STORY",
+    "connected_speech_enabled": true,
+    "tts_backend": "speech_metadata_flash_lite",
+    "voice": "Orus",
+    "speaker": "visitor",
+    "clip_kind": "dialogue",
+    "role_style_key": "DIALOGUE_ADV",
+    "model_ids_measured": [
+      "gemini-2.5-pro-preview-tts"
+    ],
+    "style": {
+      "instruction_label": "existing_dialogue_style(ENGLISH_STYLE_PREFIX)",
+      "style_prefix_sha256": null,
+      "effective_style_prefix_sha256": "add26d27a79c2cbee982eb5ddc32616b8294494a316b973215c94cccc76ede26",
+      "fallback_used": false,
+      "fallback_attempts": []
+    },
+    "reuse_key": {
+      "canonical_text_sha256": "4072340dc122dc0cb0ab3ca3916f8fa52cf04288dab9ccca08f74993ab677048",
+      "role_style_version": "z_v2_pd8_r2_e1_e2up_k2_m2_kpx_20261012",
+      "voice": "Orus",
+      "style_prefix_sha256": null,
+      "tts_backend": "speech_metadata_flash_lite",
+      "speed_profile": "z_speed_v2:adv_dialogue_fast6"
+    },
+    "slowdown_ratio": 0.9454,
+    "speed_profile": {
+      "version": "z_speed_v2",
+      "profile": "adv_dialogue_fast6",
+      "applied": true,
+      "tempo": 1.06,
+      "slowdown_pct_target": -5.660377358490576,
+      "original_sha256": "4f930467716db9f9d1ede7f2c0698223e36f3185c21c6425696c19de981e3747",
+      "source": "generated"
+    },
+    "attempts": [
+      {
+        "phase": "standard",
+        "attempt": 1,
+        "instruction_type": "english_style_prefix_wide_margin",
+        "instruction_label": "english_style_prefix_wide_margin",
+        "style_prefix_sha256": null,
+        "style_prefix_head": null,
+        "tts_model_id": "gemini-2.5-pro-preview-tts",
+        "voice": "Orus",
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "verified": true,
+        "asr_text": "The firm accepts no responsibility but offers you £200 in compensation."
+      }
+    ],
+    "cooldown_occurred": false,
+    "cooldown_events": [],
+    "audio_text_deviation": null,
+    "tts_generations_used": 1,
+    "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "FULL_STORY",
+      "lang": "en",
+      "segment_key": "full_story_part2_c6",
+      "audio_sha256": "cd484c1c03e236793e4ef57757b7d1a00aabe0f55bda53fe263c087c2901b334",
+      "primary": {
+        "text": "The firm accepts no responsibility but offers you £200 in compensation.",
+        "passed": true,
+        "label": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+        "equivalence_basis": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+        "warning_labels": []
+      },
+      "secondary": {
+        "called": false,
+        "cached": false,
+        "engine": "azure",
+        "text": null,
+        "label": "",
+        "accepted": null,
+        "error": null,
+        "unavailable": false
+      },
+      "value_guard": {
+        "primary": {
+          "kind": "EQUAL",
+          "pairs": [
+            {
+              "src": "200",
+              "hyp": "200",
+              "verdict": "EQUAL",
+              "reason": "same_surface"
+            }
+          ],
+          "reasons": [],
+          "warnings": []
+        }
+      },
+      "negation_guard": {
+        "primary": false
+      },
+      "final_gate": {
+        "applied": true,
+        "value_guard": "EQUAL",
+        "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+        "azure_calls": 0,
+        "azure_seconds": null,
+        "est_jpy": 0.0
+      },
+      "timing": {
+        "total_ms": 0,
+        "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+        "applied": false,
+        "primary_len": null,
+        "secondary_len": null,
+        "max_len": null,
+        "adopted_from": "primary",
+        "adopted_ok": null,
+        "surface_len": null,
+        "primary_ok": null
+      },
+      "orthographic_equivalence": {
+        "applied": true,
+        "version": "er109_orthographic_equivalence_v2_ukus01",
+        "scope": "Z",
+        "label": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+        "sites": [
+          {
+            "site": "primary",
+            "text": "The firm accepts no responsibility but offers you £200 in compensation.",
+            "verdict": "PASS",
+            "warnings": [],
+            "er109": {
+              "version": "er109_orthographic_equivalence_v2_ukus01",
+              "flag_enabled": true,
+              "stress_mode": "binary_stressed_vs_unstressed",
+              "equivalent": true,
+              "verdict": "PASS",
+              "reason": "all_diff_spans_phoneme_equal",
+              "rules": [
+                "number_spoken_form"
+              ],
+              "warnings": [],
+              "contraction_expanded": false,
+              "spans": [
+                {
+                  "canon": [
+                    "2",
+                    "hundred",
+                    "pounds"
+                  ],
+                  "asr": [
+                    "£200"
+                  ],
+                  "equivalent": true,
+                  "rule": "number_spoken_form",
+                  "why": "phoneme_equal",
+                  "matched_variants": [
+                    "T UW1 HH AH1 N D ER0 D P AW1 N D Z",
+                    "T UW1 HH AH1 N D ER0 D P AW1 N Z",
+                    "T UW1 HH AH1 N D R AH0 D P AW1 N D Z"
+                  ],
+                  "representative_match": true,
+                  "heteronym_guard": true,
+                  "warnings": []
+                }
+              ]
+            }
+          }
+        ],
+        "warnings": []
+      },
+      "adapter": {
+        "layers": [
+          "orthographic_er109"
+        ],
+        "azure_real_calls": 0,
+        "cost_guard_triggered": false,
+        "language": "en-US",
+        "segment_id": "full_story_part2_c6",
+        "asr_text_present": true,
+        "cache": {
+          "calls": 0,
+          "hits": 0
+        }
+      }
+    },
+    "duration_seconds": 7.876,
+    "trial_style_sha256": "c652c5e0f1b8b1b4764b2e74c1b80b270ee07f87aa3c6c966ca581fc1332df6e",
+    "trial_reuse_key": {
+      "managed_id": "FZ-DIALOGUE-CONTEXT-FULL-EPISODE-TRIAL-01",
+      "arm": "ctx",
+      "take": 1,
+      "canonical_text_sha256": "4072340dc122dc0cb0ab3ca3916f8fa52cf04288dab9ccca08f74993ab677048",
+      "voice": "Orus",
+      "model": "gemini-2.5-pro-preview-tts",
+      "style_sha256": "c652c5e0f1b8b1b4764b2e74c1b80b270ee07f87aa3c6c966ca581fc1332df6e",
+      "tts_backend_note": "gemini_standard_sync(Production Z実行と同じSTANDARD)"
+    }
+  },
+  "trial_reuse_key": {
+    "managed_id": "FZ-DIALOGUE-CONTEXT-FULL-EPISODE-TRIAL-01",
+    "arm": "ctx",
+    "take": 1,
+    "canonical_text_sha256": "4072340dc122dc0cb0ab3ca3916f8fa52cf04288dab9ccca08f74993ab677048",
+    "voice": "Orus",
+    "model": "gemini-2.5-pro-preview-tts",
+    "style_sha256": "c652c5e0f1b8b1b4764b2e74c1b80b270ee07f87aa3c6c966ca581fc1332df6e",
+    "tts_backend_note": "gemini_standard_sync(Production Z実行と同じSTANDARD)"
+  },
+  "adopt": {
+    "adopted": true,
+    "hold_pending_fable_listen": false,
+    "reasons": []
+  }
+}

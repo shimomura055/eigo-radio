@@ -1,0 +1,385 @@
+{
+  "managed_id": "FZ-DIALOGUE-CONTEXT-FULL-EPISODE-TRIAL-01",
+  "work": "monkeys_paw",
+  "level": "b1b",
+  "clip_id": "full_story_part3_c3",
+  "speaker": "mrs_white",
+  "voice": "Zephyr",
+  "status": "OK",
+  "wav": "er118_output/fz_full_episode_trial_01/monkeys_paw/b1b/gen/full_story_part3_c3/b1b/narration/full_story_part3_c3.wav",
+  "wav_sha256": "bee4f223fce99a8cb1a443ff11255c7537a33671786a817f051bbb250f73a4a5",
+  "original_wav": "er118_output/fz_full_episode_trial_01/monkeys_paw/b1b/gen/full_story_part3_c3/b1b/narration/full_story_part3_c3_original.wav",
+  "original_sha256": "bebfa1d640207b05da8198e81215d349f6e710474be2430b9277298db571fcdd",
+  "tts_text": "\"Herbert!\"",
+  "style_sha256": "92cb3c4220705ae957f3f6e2b5c42e33db5f9de6a85b0596cab7511591e99128",
+  "prompt_expected_sha256": "52074d11e81f3f163854b68d9f3cf9d991bc3fb3364b207039968f94ad835624",
+  "requests_sent": [
+    {
+      "label": "monkeys_paw/b1b:full_story_part3_c3",
+      "ts": "2026-10-26T09:45:45+09:00",
+      "model": "gemini-2.5-pro-preview-tts",
+      "voice": "Zephyr",
+      "tts_execution_mode": "STANDARD",
+      "speech_config": {
+        "voice_config": {
+          "replicated_voice_config": null,
+          "prebuilt_voice_config": {
+            "voice_name": "Zephyr"
+          },
+          "voice": null
+        },
+        "language_code": "en-us",
+        "multi_speaker_voice_config": null
+      },
+      "response_modalities": [
+        "AUDIO"
+      ],
+      "temperature": null,
+      "temperature_note": "未指定(SDK/モデル既定)。Production Z実行と同一コード経路 er003_b1_p7a_audio.make_tts_call_fn_for_model",
+      "http_timeout_ms": 150000,
+      "prompt_sha256": "52074d11e81f3f163854b68d9f3cf9d991bc3fb3364b207039968f94ad835624",
+      "prompt_chars": 4015
+    }
+  ],
+  "request_prompt_matches_expected": [
+    true
+  ],
+  "n_tts_calls_captured": 1,
+  "tts_generations_used": 1,
+  "attempts_log_n": 1,
+  "slowdown_attempts_n": 1,
+  "asr_text": "Haverts!",
+  "attempts_asr_texts": [
+    "Hábert!"
+  ],
+  "audio_classification": "NORMALIZED_MATCH",
+  "asr_judgement": {
+    "state": "PASS_WITH_WARNING",
+    "reason_code": "secondary_confirmed",
+    "slot": 1,
+    "script_version": "v0",
+    "role": "FULL_STORY",
+    "lang": "en",
+    "segment_key": "full_story_part3_c3",
+    "audio_sha256": "bee4f223fce99a8cb1a443ff11255c7537a33671786a817f051bbb250f73a4a5",
+    "primary": {
+      "text": "Haverts!",
+      "passed": false,
+      "label": "TTS_FAILURE",
+      "equivalence_basis": null,
+      "warning_labels": []
+    },
+    "secondary": {
+      "called": true,
+      "cached": false,
+      "engine": "azure",
+      "text": "Herbert.",
+      "label": "NORMALIZED_MATCH",
+      "accepted": true,
+      "error": null,
+      "unavailable": false
+    },
+    "value_guard": {
+      "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+      },
+      "secondary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+      }
+    },
+    "negation_guard": {
+      "primary": false,
+      "secondary": false
+    },
+    "final_gate": {
+      "applied": true,
+      "target": "secondary",
+      "value_guard": "NO_VALUES",
+      "negation_diff": false
+    },
+    "warnings": [
+      "SECONDARY_CONFIRMED"
+    ],
+    "exclusion_rule": null,
+    "cost": {
+      "azure_calls": 1,
+      "azure_seconds": 1.536,
+      "est_jpy": 0.0889,
+      "est_jpy_known": true
+    },
+    "timing": {
+      "total_ms": 534,
+      "secondary_ms": 533
+    },
+    "technical_stop": null,
+    "length": {
+      "applied": false,
+      "primary_len": null,
+      "secondary_len": null,
+      "max_len": null,
+      "adopted_from": "primary",
+      "adopted_ok": null,
+      "surface_len": null,
+      "primary_ok": null
+    },
+    "p3_entry": "p3_primary_ng",
+    "adapter": {
+      "layers": [],
+      "azure_real_calls": 1,
+      "cost_guard_triggered": false,
+      "language": "en-US",
+      "segment_id": "full_story_part3_c3",
+      "asr_text_present": true,
+      "cache": {
+        "calls": 4,
+        "hits": 0
+      }
+    }
+  },
+  "instruction_type": "english_style_prefix_wide_margin",
+  "repetition_qa_checked": true,
+  "trim_info": {
+    "raw_duration_seconds": 1.536,
+    "raw_leading_silence_seconds": 0.267,
+    "raw_trailing_silence_seconds": 0.324,
+    "trimmed_duration_seconds": 1.536,
+    "leading_margin_retained_seconds": 0.267,
+    "trailing_margin_retained_seconds": 0.324
+  },
+  "leakage": {
+    "leakage_any_attempt": false,
+    "leakage_final": false,
+    "needs_listen_any_attempt": true,
+    "per_attempt": [
+      {
+        "flagged": false,
+        "needs_listen": true,
+        "extra_tokens": [
+          "bert"
+        ],
+        "extra_runs": [
+          [
+            "bert"
+          ]
+        ],
+        "max_extra_run": 1,
+        "context_only_hits": [],
+        "asr_words": 2,
+        "target_words": 1
+      }
+    ],
+    "final": {
+      "flagged": false,
+      "needs_listen": false,
+      "extra_tokens": [],
+      "extra_runs": [],
+      "max_extra_run": 0,
+      "context_only_hits": [],
+      "asr_words": 1,
+      "target_words": 1
+    }
+  },
+  "comparison_valid": true,
+  "final_instruction_type": "english_style_prefix_wide_margin",
+  "last_request_prompt_matches_expected": true,
+  "attempts_logged": 1,
+  "n_tts_calls_undercount_possible": false,
+  "verbatim_observation": {
+    "token_equal": false,
+    "token_similarity": 0.0
+  },
+  "reason": null,
+  "tts_cap_reached": null,
+  "cost_jpy_clip": 0.4189,
+  "elapsed_s": 7.89,
+  "saved_at": "2026-10-26T09:45:53+09:00",
+  "entry": {
+    "status": "OK",
+    "path": "er118_output/fz_full_episode_trial_01/monkeys_paw/b1b/gen/full_story_part3_c3/b1b/narration/full_story_part3_c3.wav",
+    "sha256": "bee4f223fce99a8cb1a443ff11255c7537a33671786a817f051bbb250f73a4a5",
+    "canonical_text": "\"Herbert!\"",
+    "text": "\"Herbert!\"",
+    "disfluency_checked": false,
+    "asr_text": "Haverts!",
+    "slowdown_applied": true,
+    "z_adoption": "adopted",
+    "segment_id": "full_story_part3_c3",
+    "narration_path": "er118_output/fz_full_episode_trial_01/monkeys_paw/b1b/gen/full_story_part3_c3/b1b/narration/full_story_part3_c3.wav",
+    "role": "FULL_STORY",
+    "connected_speech_enabled": true,
+    "tts_backend": "speech_metadata_flash_lite",
+    "voice": "Zephyr",
+    "speaker": "mrs_white",
+    "clip_kind": "dialogue",
+    "role_style_key": "DIALOGUE_ADV",
+    "model_ids_measured": [
+      "gemini-2.5-pro-preview-tts"
+    ],
+    "style": {
+      "instruction_label": "existing_dialogue_style(ENGLISH_STYLE_PREFIX)",
+      "style_prefix_sha256": null,
+      "effective_style_prefix_sha256": "add26d27a79c2cbee982eb5ddc32616b8294494a316b973215c94cccc76ede26",
+      "fallback_used": false,
+      "fallback_attempts": []
+    },
+    "reuse_key": {
+      "canonical_text_sha256": "fa3641bf2c5b709dbaa96a718e396714829b6eb4ffc40aa3a33a9f1961804a1d",
+      "role_style_version": "z_v2_pd8_r2_e1_e2up_k2_m2_kpx_20261012",
+      "voice": "Zephyr",
+      "style_prefix_sha256": null,
+      "tts_backend": "speech_metadata_flash_lite",
+      "speed_profile": "z_speed_v2:adv_dialogue_fast6"
+    },
+    "slowdown_ratio": 0.9534,
+    "speed_profile": {
+      "version": "z_speed_v2",
+      "profile": "adv_dialogue_fast6",
+      "applied": true,
+      "tempo": 1.06,
+      "slowdown_pct_target": -5.660377358490576,
+      "original_sha256": "bebfa1d640207b05da8198e81215d349f6e710474be2430b9277298db571fcdd",
+      "source": "generated"
+    },
+    "attempts": [
+      {
+        "phase": "standard",
+        "attempt": 1,
+        "instruction_type": "english_style_prefix_wide_margin",
+        "instruction_label": "english_style_prefix_wide_margin",
+        "style_prefix_sha256": null,
+        "style_prefix_head": null,
+        "tts_model_id": "gemini-2.5-pro-preview-tts",
+        "voice": "Zephyr",
+        "audio_classification": "NORMALIZED_MATCH",
+        "verified": true,
+        "asr_text": "Hábert!"
+      }
+    ],
+    "cooldown_occurred": false,
+    "cooldown_events": [],
+    "audio_text_deviation": null,
+    "tts_generations_used": 1,
+    "asr_judgement": {
+      "state": "PASS_WITH_WARNING",
+      "reason_code": "secondary_confirmed",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "FULL_STORY",
+      "lang": "en",
+      "segment_key": "full_story_part3_c3",
+      "audio_sha256": "bee4f223fce99a8cb1a443ff11255c7537a33671786a817f051bbb250f73a4a5",
+      "primary": {
+        "text": "Haverts!",
+        "passed": false,
+        "label": "TTS_FAILURE",
+        "equivalence_basis": null,
+        "warning_labels": []
+      },
+      "secondary": {
+        "called": true,
+        "cached": false,
+        "engine": "azure",
+        "text": "Herbert.",
+        "label": "NORMALIZED_MATCH",
+        "accepted": true,
+        "error": null,
+        "unavailable": false
+      },
+      "value_guard": {
+        "primary": {
+          "kind": "NO_VALUES",
+          "pairs": [],
+          "reasons": [],
+          "warnings": []
+        },
+        "secondary": {
+          "kind": "NO_VALUES",
+          "pairs": [],
+          "reasons": [],
+          "warnings": []
+        }
+      },
+      "negation_guard": {
+        "primary": false,
+        "secondary": false
+      },
+      "final_gate": {
+        "applied": true,
+        "target": "secondary",
+        "value_guard": "NO_VALUES",
+        "negation_diff": false
+      },
+      "warnings": [
+        "SECONDARY_CONFIRMED"
+      ],
+      "exclusion_rule": null,
+      "cost": {
+        "azure_calls": 1,
+        "azure_seconds": 1.536,
+        "est_jpy": 0.0889,
+        "est_jpy_known": true
+      },
+      "timing": {
+        "total_ms": 534,
+        "secondary_ms": 533
+      },
+      "technical_stop": null,
+      "length": {
+        "applied": false,
+        "primary_len": null,
+        "secondary_len": null,
+        "max_len": null,
+        "adopted_from": "primary",
+        "adopted_ok": null,
+        "surface_len": null,
+        "primary_ok": null
+      },
+      "p3_entry": "p3_primary_ng",
+      "adapter": {
+        "layers": [],
+        "azure_real_calls": 1,
+        "cost_guard_triggered": false,
+        "language": "en-US",
+        "segment_id": "full_story_part3_c3",
+        "asr_text_present": true,
+        "cache": {
+          "calls": 4,
+          "hits": 0
+        }
+      }
+    },
+    "duration_seconds": 1.536,
+    "trial_style_sha256": "92cb3c4220705ae957f3f6e2b5c42e33db5f9de6a85b0596cab7511591e99128",
+    "trial_reuse_key": {
+      "managed_id": "FZ-DIALOGUE-CONTEXT-FULL-EPISODE-TRIAL-01",
+      "arm": "ctx",
+      "take": 1,
+      "canonical_text_sha256": "fa3641bf2c5b709dbaa96a718e396714829b6eb4ffc40aa3a33a9f1961804a1d",
+      "voice": "Zephyr",
+      "model": "gemini-2.5-pro-preview-tts",
+      "style_sha256": "92cb3c4220705ae957f3f6e2b5c42e33db5f9de6a85b0596cab7511591e99128",
+      "tts_backend_note": "gemini_standard_sync(Production Z実行と同じSTANDARD)"
+    }
+  },
+  "trial_reuse_key": {
+    "managed_id": "FZ-DIALOGUE-CONTEXT-FULL-EPISODE-TRIAL-01",
+    "arm": "ctx",
+    "take": 1,
+    "canonical_text_sha256": "fa3641bf2c5b709dbaa96a718e396714829b6eb4ffc40aa3a33a9f1961804a1d",
+    "voice": "Zephyr",
+    "model": "gemini-2.5-pro-preview-tts",
+    "style_sha256": "92cb3c4220705ae957f3f6e2b5c42e33db5f9de6a85b0596cab7511591e99128",
+    "tts_backend_note": "gemini_standard_sync(Production Z実行と同じSTANDARD)"
+  },
+  "adopt": {
+    "adopted": true,
+    "hold_pending_fable_listen": false,
+    "reasons": []
+  }
+}

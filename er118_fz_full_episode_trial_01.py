@@ -17,6 +17,7 @@ import copy
 import datetime
 import functools
 import hashlib
+import html as H
 import json
 import math
 import os
@@ -1092,6 +1093,507 @@ def a63_norm(spec) -> str:
     """Productionと同一の TTS 入力整形(er063 _norm_for_tts。Z scope内で発音供給が有効)。"""
     import er063_family_z_audio_01 as a63
     return a63._norm_for_tts(spec)
+
+
+
+# ---------- 4-11 生成結果の読込・採用判定・DEV隔離組立(M-1〜M-5)・C6・mp3 ----------
+def load_gen_results(work: str, level: str) -> dict:
+    out = {}
+    for cid in dialogue_specs(work, level):
+        rp = f"{gen_dir(work, level, cid)}/result.json"
+        if not os.path.exists(_abs(rp)):
+            raise SystemExit(f"[STOP] {rp} が無い(gen未完了のunitは組立しない)")
+        out[cid] = jload(rp)
+    return out
+
+
+def final_adoption(rec: dict, clearance: dict) -> dict:
+    """生成時の adopt 判定に Fable の聴取確認(fable_clearance.json)を反映した最終判定。cleared は C3保留のみが理由の場合に採用、confirmed_leak はNG。"""
+    ad = rec["adopt"]
+    cl = clearance.get(rec["clip_id"])
+    other = [r_ for r_ in ad["reasons"] if not r_.startswith("C3:")]
+    if ad["adopted"]:
+        return {"adopted": True, "kind": "adopted", "reasons": []}
+    if ad["hold_pending_fable_listen"] and not other:
+        if cl == "cleared":
+            return {"adopted": True, "kind": "adopted_after_fable_clearance", "reasons": []}
+        if cl == "confirmed_leak":
+            return {"adopted": False, "kind": "ng_confirmed_leak", "reasons": ["C3:Fable聴取でconfirmed_leak"]}
+        return {"adopted": False, "kind": "hold_pending_fable_listen", "reasons": ad["reasons"]}
+    return {"adopted": False, "kind": "ng", "reasons": ad["reasons"]}
+
+
+def _slice_mp3(x, sr, start_s: float, dur_s: float, mp3: str) -> None:
+    import soundfile as sf
+    assert_writable(mp3)
+    os.makedirs(os.path.dirname(_abs(mp3)), exist_ok=True)
+    sf.write(_abs(mp3), x[int(round(start_s * sr)): int(round((start_s + dur_s) * sr))], sr, format="MP3")
+
+
+def assemble_case(work: str, level: str) -> dict:
+    """採用clipだけをTrial音声に置換した trial_run_dir を作り、Productionと同一の run_assembly で通し組立(API 0)。M-1 sha assert → M-4 隔離検査 →
+    M-5 3点assert(不一致はSTOP) → C6 Gate → mp3(Trial版・個別A/B)。"""
+    import numpy as np
+    import soundfile as sf
+    sc = f"{case_dir(work, level)}/selfcheck.json"
+    if not os.path.exists(_abs(sc)) or not jload(sc).get("pass"):
+        raise SystemExit(f"[STOP] {sc} 不成立。組立しない")
+    with use_case(work, level):
+        recs = load_gen_results(work, level)
+        cpath = f"{case_dir(work, level)}/fable_clearance.json"
+        clearance = jload(cpath) if os.path.exists(_abs(cpath)) else {}
+        decisions = {cid: final_adoption(rec, clearance) for cid, rec in recs.items()}
+        adopted = {cid: {"gen_wav": recs[cid]["wav"], "gen_original": recs[cid].get("original_wav"), "entry": recs[cid]["entry"]} for cid, d in decisions.items() if d["adopted"]}
+        b = build_run_dir(work, level, "run", adopted)
+        run_dir = b["run_dir"]
+        narr = _narr(run_dir, level)
+        sha_assert = {}
+        for cid in adopted:                           # M-1: dialogue wavのsha == 採用済みTrial結果のsha
+            got, want, ent = file_sha(f"{narr}/{cid}.wav"), recs[cid]["wav_sha256"], recs[cid]["entry"].get("sha256")
+            sha_assert[cid] = bool(got == want == ent)
+            if not sha_assert[cid]:
+                raise SystemExit(f"[STOP] M-1 sha不一致 {cid}: trial_dir={got} result={want} entry={ent}")
+        iso = verify_isolation(work, level, run_dir)
+        if not iso["ok"]:
+            raise SystemExit(f"[STOP] M-4 隔離検査NG: {iso}")
+        prod_sha_by_name = {fn: file_sha(f"{_narr(WORK_CFG[work]['run'], level)}/{fn}") for fn in os.listdir(_abs(_narr(WORK_CFG[work]['run'], level)))}
+        orig_clash = [cid for cid in adopted if os.path.exists(_abs(f"{narr}/{cid}_original.wav")) and file_sha(f"{narr}/{cid}_original.wav") in set(prod_sha_by_name.values())]
+        tl = assemble_run(work, level, run_dir)
+        cmp_ = compare_to_production(work, level, tl, identical=False)
+        res = {"managed_id": MANAGED_ID, "work": work, "level": level, "run_dir": run_dir, "decisions": decisions, "n_adopted": len(adopted),
+               "n_ng": sum(1 for d in decisions.values() if d["kind"] in ("ng", "ng_confirmed_leak")),
+               "n_hold": sum(1 for d in decisions.values() if d["kind"] == "hold_pending_fable_listen"),
+               "sha_assert_m1": sha_assert, "original_clash_with_production": orig_clash, "isolation": iso, "compare_m5": cmp_, "saved_at": t.now_jst()}
+        if not cmp_["m5_ok"]:
+            res["STOP"] = "M-5: 『差はセリフclipのみ』が組立で崩れた(target_rms/非dialogue gain/headroom.scalar のいずれか不一致)"
+            safe_write_json(f"{case_dir(work, level)}/assemble_result.json", res)
+            raise SystemExit(f"[STOP] {res['STOP']}: {json.dumps(cmp_, ensure_ascii=False)[:800]}")
+        gate = run_gate(work, level, run_dir)
+        x_t, sr = sf.read(_abs(tl["wav"]), dtype="float32")
+        peak = float(np.max(np.abs(x_t)))
+        prod_tl = jload(f"{case_dir(work, level)}/run_selfcheck/{level}/assembly/timeline.json")
+        x_p, sr_p = sf.read(_abs(prod_tl["wav"]), dtype="float32")
+        pg = f"{PAGE_ROOT}/{work}/{level}"
+        trial_mp3 = mp3_from_wav(tl["wav"], f"{pg}/trial_full.mp3")
+        if not os.path.exists(_abs(f"{pg}/production_full.mp3")):
+            raise SystemExit("[STOP] production_full.mp3 が無い(selfcheck未実施)")
+        te = {e["part"]: e for e in tl["timeline"]}
+        pe = {e["part"]: e for e in prod_tl["timeline"]}
+        chapters = []
+        for i, cid in enumerate(recs, 1):
+            d = decisions[cid]
+            row = {"n": i, "clip_id": cid, "kind": d["kind"], "trial_start": round(te[cid]["start_seconds"], 3), "trial_dur": round(te[cid]["duration_seconds"], 3),
+                   "prod_start": round(pe[cid]["start_seconds"], 3), "prod_dur": round(pe[cid]["duration_seconds"], 3)}
+            _slice_mp3(x_p, sr_p, pe[cid]["start_seconds"], pe[cid]["duration_seconds"], f"{pg}/clips/{cid}_prod.mp3")
+            if d["adopted"]:
+                _slice_mp3(x_t, sr, te[cid]["start_seconds"], te[cid]["duration_seconds"], f"{pg}/clips/{cid}_trial.mp3")
+            elif d["kind"] == "hold_pending_fable_listen" and recs[cid].get("wav") and os.path.exists(_abs(recs[cid]["wav"])):
+                xw, srw = sf.read(_abs(recs[cid]["wav"]), dtype="float32")
+                os.makedirs(os.path.dirname(_abs(f"{pg}/held/x")), exist_ok=True)
+                sf.write(_abs(f"{pg}/held/{cid}_generated_unverified.mp3"), xw, srw, format="MP3")
+            chapters.append(row)
+        res.update({"gate_c6": gate, "peak_trial_wav": round(peak, 4), "c5_peak_ok": bool(peak <= 0.99), "trial_wav": tl["wav"], "trial_duration_s": tl["duration_seconds"],
+                    "prod_reassembled_wav": prod_tl["wav"], "prod_duration_s": prod_tl["duration_seconds"], "trial_mp3": trial_mp3, "chapters": chapters})
+        safe_write_json(f"{case_dir(work, level)}/assemble_result.json", res)
+        summary = {"n_adopted": res["n_adopted"], "n_ng": res["n_ng"], "n_hold": res["n_hold"], "m5_ok": cmp_["m5_ok"], "gate_ok": gate["ok"], "peak": res["peak_trial_wav"],
+                   "trial_s": tl["duration_seconds"], "prod_s": prod_tl["duration_seconds"]}
+        return {"summary": summary, "result": res}
+
+
+# ---------- 4-12 解析(API 0): 指標・N1〜N6・費用(R-6) ----------
+def _mono(x):
+    return x.mean(axis=1) if getattr(x, "ndim", 1) > 1 else x
+
+
+def _rms_db(x) -> float:
+    import numpy as np
+    return 20 * math.log10(max(float(np.sqrt(np.mean(np.square(x)))) if len(x) else 0.0, 1e-9))
+
+
+def _edge_window(seg, sr: int, which: str, dur: float = 0.3, thr_db: float = -40.0):
+    import numpy as np
+    f = int(sr * 0.02)
+    n = len(seg) // f
+    if n == 0:
+        return seg
+    fr = seg[:n * f].reshape(n, f)
+    db = 20 * np.log10(np.sqrt((fr ** 2).mean(axis=1)) + 1e-9)
+    idx = np.where(db > thr_db)[0]
+    if len(idx) == 0:
+        return seg
+    a, b = int(idx[0] * f), int((idx[-1] + 1) * f)
+    w = int(sr * dur)
+    return seg[a:a + w] if which == "head" else seg[max(a, b - w):b]
+
+
+def boundary_steps(wav: str, timeline: list, dlg_ids: set) -> dict:
+    """N3: セリフclipと直前/直後の地の文clipの境界RMS段差(dB、clip内の無音を除いた先頭/末尾300ms窓)。"""
+    x, sr = _read_wav(wav)
+    xm = _mono(x)
+    parts = [e for e in timeline if not e["part"].startswith("_silence_")]
+
+    def seg(e):
+        return xm[int(round(e["start_seconds"] * sr)): int(round((e["start_seconds"] + e["duration_seconds"]) * sr))]
+    out = {}
+    for i, e in enumerate(parts):
+        if e["part"] not in dlg_ids:
+            continue
+        d, rec = seg(e), {}
+        if i > 0 and parts[i - 1]["part"] not in dlg_ids:
+            rec["prev_part"] = parts[i - 1]["part"]
+            rec["step_in_db"] = round(abs(_rms_db(_edge_window(d, sr, "head")) - _rms_db(_edge_window(seg(parts[i - 1]), sr, "tail"))), 2)
+        if i + 1 < len(parts) and parts[i + 1]["part"] not in dlg_ids:
+            rec["next_part"] = parts[i + 1]["part"]
+            rec["step_out_db"] = round(abs(_rms_db(_edge_window(seg(parts[i + 1]), sr, "head")) - _rms_db(_edge_window(d, sr, "tail"))), 2)
+        out[e["part"]] = rec
+    return out
+
+
+def cost_breakdown(work: str, level: str) -> dict:
+    """R-6(a)(b): raw_usage_log.jsonl のprovider別実績(unitの時間窓内)。clip別(segment)のTTS call数・ASR call数・円。"""
+    import er019_family_x_audio_production_runner_01 as runner
+    import er005_cost_logger as cl
+    gs = jload(f"{case_dir(work, level)}/gen_summary.json")
+    lo, hi = gs["started_epoch"] - 1, gs["finished_epoch"] + 1
+    price = runner._load_pricing()
+    seg = {}
+    tot = {}
+    with open(_abs(COST_LOG), encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            rec = json.loads(line)
+            ts = datetime.datetime.fromisoformat(rec["timestamp"]).timestamp()
+            if not (lo <= ts <= hi):
+                continue
+            provider = rec.get("provider")
+            model = rec.get("model_id") or rec.get("model")
+            usd = rec["cost_usd"] if rec.get("cost_usd") is not None else 0.0
+            if rec.get("cost_usd") is None:
+                if provider == "azure":
+                    usd = cl.azure_stt_cost_usd(rec, price)
+                elif provider in ("gemini", "openai", "openai_asr") and model:
+                    usd = (rec.get("input_tokens") or 0) * price(provider, model, "input_tokens") / 1e6 + (rec.get("output_tokens") or 0) * price(provider, model, "output_tokens") / 1e6
+            jpy = usd * runner.USD_JPY
+            s = seg.setdefault(rec.get("segment"), {})
+            kind = "tts" if provider == "gemini" else ("asr_openai" if provider == "openai_asr" else ("asr_azure" if provider == "azure" else provider))
+            e = s.setdefault(kind, {"calls": 0, "jpy": 0.0})
+            e["calls"] += 1
+            e["jpy"] += jpy
+            e2 = tot.setdefault(kind, {"calls": 0, "jpy": 0.0})
+            e2["calls"] += 1
+            e2["jpy"] += jpy
+    for d in (seg, ):
+        for s in d.values():
+            for e in s.values():
+                e["jpy"] = round(e["jpy"], 4)
+    return {"by_segment": seg, "by_kind": {k: {"calls": v["calls"], "jpy": round(v["jpy"], 4)} for k, v in tot.items()}, "window_epoch": [lo, hi]}
+
+
+def _cv(vals: list):
+    import numpy as np
+    return round(float(np.std(vals) / np.mean(vals)), 4) if len(vals) >= 2 and np.mean(vals) else None
+
+
+def _sd_semitones(f0s: list):
+    import numpy as np
+    s = [12 * math.log2(v) for v in f0s if v]
+    return round(float(np.std(s)), 3) if len(s) >= 2 else None
+
+
+def analyze_case(work: str, level: str) -> dict:
+    import numpy as np
+    with use_case(work, level):
+        plan = t.load_plan()
+        specs = dialogue_specs(work, level)
+        recs = load_gen_results(work, level)
+        ar = jload(f"{case_dir(work, level)}/assemble_result.json")
+        notes = jload(f"{case_dir(work, level)}/llm/emotion_notes.json")["validated"]
+        prod_narr = _narr(WORK_CFG[work]["run"], level)
+        band = jload(f"{OUT_ROOT}/noise_band_r2.json")
+        band_sha = file_sha(f"{OUT_ROOT}/noise_band_r2.json")
+        costs = cost_breakdown(work, level)
+        clips = {}
+        for x in dialogue_clips(plan):
+            cid = x["id"]
+            rec = recs[cid]
+            nw = t.n_words(x["text"])
+            p_ref = f"{prod_narr}/{cid}_original.wav"
+            p_ref = p_ref if os.path.exists(_abs(p_ref)) else f"{prod_narr}/{cid}.wav"
+            t_ref = rec.get("original_wav") or rec.get("wav")
+            m_p = t.analyze_wav(p_ref, nw)
+            m_t = t.analyze_wav(t_ref, nw) if t_ref and os.path.exists(_abs(t_ref)) else None
+            for _m in (m_p, m_t):
+                if _m:
+                    _m['rms_lin'] = round(10 ** (_m['rms_dbfs'] / 20), 6)
+            ratios, flags = {}, {}
+            if m_t:
+                for k, f in NOISE_METRICS.items():
+                    a, b = f(m_p), f(m_t)
+                    ratios[k] = round(math.log(b / a), 4) if a and b and a > 0 and b > 0 else None
+                wr = (m_t["articulation_wpm_300"] / m_p["articulation_wpm_300"]) if m_p["articulation_wpm_300"] else None
+                flags = {"N2a_new_long_pause": bool(m_t["max_mid_pause_s"] > 0.7 and not m_p["max_mid_pause_s"] > 0.7),
+                         "N2b_wpm_outside_0.6_1.6": bool(wr is not None and not (0.6 <= wr <= 1.6)),
+                         "N2c_length_listen": bool(t.length_listen_flag(m_t["duration_s"], [m_p["duration_s"]]))}
+            clips[cid] = {"speaker": x["speaker"], "voice": rec["voice"], "text": x["text"], "words": nw, "emotion_status": notes[cid]["status"],
+                          "prod": m_p, "trial": m_t, "log_ratio": ratios, "flags": flags, "adopt": ar["decisions"][cid],
+                          "n_tts_calls_log": (costs["by_segment"].get(cid) or {}).get("tts", {}).get("calls"),
+                          "cost_jpy": round(sum(v["jpy"] for v in (costs["by_segment"].get(cid) or {}).values()), 4),
+                          "verbatim_observation": rec.get("verbatim_observation"), "asr_judgement_state": (rec.get("asr_judgement") or {}).get("state"),
+                          "leakage_final": (rec.get("leakage") or {}).get("leakage_final"), "leakage_any_attempt": (rec.get("leakage") or {}).get("leakage_any_attempt"),
+                          "instruction_type": rec.get("instruction_type"), "elapsed_s": rec.get("elapsed_s")}
+        # N1 話者内ばらつき(両側全件併記。判定列は補助)
+        n1 = {}
+        for spk in sorted({c["speaker"] for c in clips.values()}):
+            cs = [c for c in clips.values() if c["speaker"] == spk and c["trial"]]
+            if len(cs) < 3:
+                continue
+            tw, pw = [c["trial"]["articulation_wpm_300"] for c in cs], [c["prod"]["articulation_wpm_300"] for c in cs]
+            tf, pf = [c["trial"]["f0"]["median_hz"] for c in cs], [c["prod"]["f0"]["median_hz"] for c in cs]
+            row = {"n_clips": len(cs), "trial_wpm_cv": _cv(tw), "prod_wpm_cv": _cv(pw), "trial_f0_sd_semitones": _sd_semitones(tf), "prod_f0_sd_semitones": _sd_semitones(pf),
+                   "trial_wpm_values": tw, "prod_wpm_values": pw, "trial_f0_values": tf, "prod_f0_values": pf}
+            a, b, c_, d_ = row["trial_wpm_cv"], row["prod_wpm_cv"], row["trial_f0_sd_semitones"], row["prod_f0_sd_semitones"]
+            row["unstable_speaker_flag"] = bool((a is not None and b is not None and a > 2 * b and a - b > 0.05) or (c_ is not None and d_ is not None and c_ > 2 * d_ and c_ - d_ > 1.0))
+            n1[spk] = row
+        # N3 境界RMS段差(組立後wav同士。Trial版 vs 再組立Production版)
+        dlg = set(specs)
+        prod_tl = jload(f"{case_dir(work, level)}/run_selfcheck/{level}/assembly/timeline.json")
+        tr_tl = jload(f"{ar['run_dir']}/{level}/assembly/timeline.json")
+        bs_t, bs_p = boundary_steps(tr_tl["wav"], tr_tl["timeline"], dlg), boundary_steps(prod_tl["wav"], prod_tl["timeline"], dlg)
+        n3_rows, n_over, n_total = {}, 0, 0
+        for cid in dlg:
+            r_ = {}
+            for k in ("step_in_db", "step_out_db"):
+                if k in bs_t.get(cid, {}) and k in bs_p.get(cid, {}):
+                    d = round(bs_t[cid][k] - bs_p[cid][k], 2)
+                    r_[k] = {"trial": bs_t[cid][k], "prod": bs_p[cid][k], "delta": d, "over_3db": bool(d > 3.0 and ar["decisions"][cid]["adopted"])}
+                    n_total += 1
+                    n_over += int(r_[k]["over_3db"])
+            n3_rows[cid] = r_
+        # N4 感情あり/なし別の |log比| 中央値
+        def med_abs(group):
+            vals = {k: [abs(c["log_ratio"][k]) for c in group if c["log_ratio"].get(k) is not None] for k in NOISE_METRICS}
+            return {k: (round(float(np.median(v)), 4) if v else None) for k, v in vals.items()} | {"n": len(group)}
+        measured = [c for c in clips.values() if c["trial"]]
+        n4 = {"emotion_accepted": med_abs([c for c in measured if c["emotion_status"] == "ACCEPTED"]), "no_explicit_cue": med_abs([c for c in measured if c["emotion_status"] != "ACCEPTED"]),
+              "noise_band_median": {k: band["metrics"][k]["median"] for k in NOISE_METRICS}, "noise_band_p90": {k: band["metrics"][k]["p90"] for k in NOISE_METRICS},
+              "prediction": "感情ありのほうが|log比|が大きい(外れても結果として報告)"}
+        # N5/N6
+        calls = [c["n_tts_calls_log"] for c in clips.values() if c["n_tts_calls_log"]]
+        n5 = {"n_clips": len(clips), "tts_calls_total_raw_log": sum(calls), "k_ctx": round(sum(calls) / len(clips), 4) if clips else None,
+              "first_try_ok": sum(1 for v in calls if v == 1), "first_try_rate": round(sum(1 for v in calls if v == 1) / len(clips), 4),
+              "regen_clips": {cid: c["n_tts_calls_log"] for cid, c in clips.items() if (c["n_tts_calls_log"] or 0) > 1},
+              "ng_clips": [cid for cid, c in clips.items() if c["adopt"]["kind"] in ("ng", "ng_confirmed_leak")],
+              "hold_clips": [cid for cid, c in clips.items() if c["adopt"]["kind"] == "hold_pending_fable_listen"],
+              "production_calls_per_clip": jload("er118_output/fz_full_episode_trial_01/inventory.json")["cases"][case_key(work, level)]["production_calls_total"] / len(clips),
+              "costs_by_kind": costs["by_kind"]}
+        gs = jload(f"{case_dir(work, level)}/gen_summary.json")
+        n6 = {"gen_wall_s": gs["wall_s"], "per_clip_mean_s": round(gs["wall_s"] / len(clips), 2), "per_clip_s": {cid: c["elapsed_s"] for cid, c in clips.items()},
+              "started_at_jst": gs["started_at_jst"]}
+        n2 = {"N2a_new_long_pause": [cid for cid, c in clips.items() if c["flags"].get("N2a_new_long_pause")],
+              "N2b_wpm_outside": [cid for cid, c in clips.items() if c["flags"].get("N2b_wpm_outside_0.6_1.6")],
+              "N2c_length_listen": [cid for cid, c in clips.items() if c["flags"].get("N2c_length_listen")]}
+        cond = {"C1_ng_count": n5["ng_clips"], "C1_ok_all_adopted_or_recorded": len(n5["ng_clips"]) <= NG_MAX_RECORDED,
+                "C2_all_production_pass_and_repetition_qa": all(c["adopt"]["kind"] != "ng" for c in clips.values()),
+                "C3_hold_clips": n5["hold_clips"], "C4_all_comparison_valid": all(recs[cid].get("comparison_valid") for cid in clips),
+                "C5_i_selfcheck": jload(f"{case_dir(work, level)}/selfcheck.json")["pass"], "C5_ii_m5": ar["compare_m5"]["m5_ok"], "C5_iii_peak_ok": ar["c5_peak_ok"],
+                "C6_gate": ar["gate_c6"]["ok"], "C7_gen_snapshot_diff_empty": not (gs.get("snapshot_diff", {}).get("runs") or gs.get("snapshot_diff", {}).get("pages")),
+                "C7_no_store_contamination": not (gs.get("store_attribution", {}).get("contaminated")), "C7_mtime_z_hits_empty": not gs.get("mtime_z_production_hits"),
+                "C7_isolation_ok": ar["isolation"]["ok"] and not ar["original_clash_with_production"]}
+        out = {"managed_id": MANAGED_ID, "work": work, "level": level, "noise_band_sha256": band_sha, "clips": clips, "N1": n1, "N2": n2,
+               "N3": {"rows": n3_rows, "n_boundaries": n_total, "n_over_3db": n_over}, "N4": n4, "N5": n5, "N6": n6, "conditions": cond, "saved_at": t.now_jst()}
+        safe_write_json(f"{case_dir(work, level)}/analysis.json", out)
+        return {"summary": {"n": len(clips), "ng": len(n5["ng_clips"]), "hold": len(n5["hold_clips"]), "k_ctx": n5["k_ctx"], "first_try_rate": n5["first_try_rate"],
+                            "N3_over_3db": f"{n_over}/{n_total}"}, "analysis": out}
+
+
+def r2_base_k() -> dict:
+    """R-6(c): Round 1/2 の base arm(同一session・同一コード系)の実測 TTS call/clip。"""
+    import glob
+    n_calls = n_clips = 0
+    for p in glob.glob(os.path.join(ROOT, "er118_output", "fz_dialogue_context_tts_trial_0*", "**", "base_t1", "*", "result.json"), recursive=True):
+        r_ = json.load(open(p, encoding="utf-8"))
+        if r_.get("n_tts_calls") is not None:
+            n_calls += r_["n_tts_calls"]
+            n_clips += 1
+    return {"base_t1_clips": n_clips, "base_t1_tts_calls": n_calls, "k_r2_base": round(n_calls / n_clips, 4) if n_clips else None}
+
+
+def analyze_all() -> dict:
+    """4単位の集計: C1〜C8・Status候補(事前登録02写像)・費用/時間・Δ/set(幅)・70円/setに対する評価。"""
+    A = {f"{w}/{lv}": jload(f"{case_dir(w, lv)}/analysis.json") for w, lv in CASES}
+    inv = jload(f"{OUT_ROOT}/inventory.json")
+    bp = jload(f"{OUT_ROOT}/budget_plan.json")
+    r2 = r2_base_k()
+    n_ng = sum(len(a["N5"]["ng_clips"]) for a in A.values())
+    n_hold = sum(len(a["N5"]["hold_clips"]) for a in A.values())
+    n_clips = sum(a["N5"]["n_clips"] for a in A.values())
+    cond_all = {k: all(a["conditions"][k] for a in A.values()) for k in ("C4_all_comparison_valid", "C5_i_selfcheck", "C5_ii_m5", "C5_iii_peak_ok", "C6_gate", "C7_gen_snapshot_diff_empty",
+                                                                        "C7_no_store_contamination", "C7_mtime_z_hits_empty", "C7_isolation_ok")}
+    if not all(cond_all.values()) or n_ng >= NG_MAX_RECORDED + 1:
+        status = "REJECTED候補(TRIAL_FAILED_QUALITY/方式不安定)"
+    elif n_hold:
+        status = "PHASE1B_DONE_HOLD_PENDING_FABLE_LISTEN"
+    else:
+        status = "PHASE1B_DONE_USER_LISTENING_PENDING" + ("(NG記録付き)" if n_ng else "")
+    # 費用(R-6): 実Trial支出(raw log) と 量産想定増分Δ/set(幅)
+    llm_per_call = round(sum(jload(f"{case_dir(w, lv)}/llm/emotion_notes.json")["cost_jpy"] for w, lv in CASES) / 4, 4)
+    spent = {k: round(sum(a["N5"]["costs_by_kind"].get(k, {}).get("jpy", 0.0) for a in A.values()), 4) for k in ("tts", "asr_openai", "asr_azure")}
+    delta = {}
+    for w in WORK_CFG:
+        tot = {"k_prod_1.019": 0.0, "k_r2_base": 0.0}
+        rows = {}
+        for lv in LEVELS:
+            a = A[f"{w}/{lv}"]
+            n5 = a["N5"]
+            n = n5["n_clips"]
+            ck = n5["costs_by_kind"]
+            c_ctx = ck.get("tts", {}).get("jpy", 0.0) / max(ck.get("tts", {}).get("calls", 1), 1)                          # 実測 TTS円/call (ctx style)
+            est_ctx = bp["cases"][case_key(w, lv)]["tts_ctx_est_jpy_1call_per_clip"]
+            est_base = bp["cases"][case_key(w, lv)]["tts_base_est_jpy_1call_per_clip"]
+            c_base = c_ctx * (est_base / est_ctx) if est_ctx else 0.0                                                      # base call単価 = 実測ctx単価 × 見積比
+            c_asr = (ck.get("asr_openai", {}).get("jpy", 0.0) + ck.get("asr_azure", {}).get("jpy", 0.0)) / max(ck.get("tts", {}).get("calls", 1), 1)   # TTS call当たりASR実費
+            k_ctx = n5["k_ctx"]
+            for kname, k_prod in (("k_prod_1.019", 1.019), ("k_r2_base", r2["k_r2_base"] or 1.0)):
+                d = n * (k_ctx * c_ctx - k_prod * c_base + (k_ctx - k_prod) * c_asr)
+                tot[kname] += d
+            rows[lv] = {"n": n, "k_ctx": k_ctx, "c_ctx_per_call": round(c_ctx, 4), "c_base_per_call_est": round(c_base, 4), "c_asr_per_call": round(c_asr, 4)}
+        delta[w] = {"levels": rows, **{k: round(v + 2 * llm_per_call, 3) for k, v in tot.items()}, "llm_2calls_jpy": round(2 * llm_per_call, 4),
+                    "share_of_70yen": {k: round((v + 2 * llm_per_call) / 70.0, 4) for k, v in tot.items()}}
+    spent_total = round(sum(spent.values()), 3)
+    wall = sum(a["N6"]["gen_wall_s"] for a in A.values())
+    out = {"managed_id": MANAGED_ID, "status_candidate": status, "n_clips": n_clips, "n_ng": n_ng, "n_hold": n_hold, "conditions_all_units": cond_all,
+           "c1_recorded": bool(n_ng <= NG_MAX_RECORDED), "spent_phase1b_jpy_by_kind": spent, "spent_phase1b_total_jpy": spent_total,
+           "llm_cost_per_call_jpy_phase1a": llm_per_call, "r2_base_k": r2, "k_ctx_by_unit": {k: a["N5"]["k_ctx"] for k, a in A.items()},
+           "k_ctx_overall": round(sum(a["N5"]["tts_calls_total_raw_log"] for a in A.values()) / n_clips, 4),
+           "first_try_rate_overall": round(sum(a["N5"]["first_try_ok"] for a in A.values()) / n_clips, 4),
+           "production_k": 1.019, "delta_per_set": delta, "gen_wall_s_total": round(wall, 1),
+           "n3_over_3db_total": {k: f"{a['N3']['n_over_3db']}/{a['N3']['n_boundaries']}" for k, a in A.items()},
+           "n2_flags": {k: a["N2"] for k, a in A.items()}, "n1_unstable_speakers": {k: [s for s, r_ in a["N1"].items() if r_["unstable_speaker_flag"]] for k, a in A.items()},
+           "saved_at": t.now_jst()}
+    safe_write_json(f"{OUT_ROOT}/analysis_all.json", out)
+    return {"summary": {"status": status, "n_ng": n_ng, "n_hold": n_hold, "spent_total": spent_total, "k_ctx": out["k_ctx_overall"],
+                        "delta_per_set": {w: delta[w]["k_prod_1.019"] for w in delta}}, "all": out}
+
+
+
+# ---------- 4-13 試聴ページ(PAGE_ROOT配下のみ。noindex。Production公開物は一切変更しない) ----------
+PAGE_BASE_URL = "https://shimomura055.github.io/eigo-radio/user_test/fz_full_episode_trial_01"
+_KIND_LABEL = {"adopted": "", "adopted_after_fable_clearance": "(Fable聴取確認済み)",
+               "ng": "この箇所は現行音声（Trial生成NG）", "ng_confirmed_leak": "この箇所は現行音声（Trial生成NG: 文脈語の混入を確認）",
+               "hold_pending_fable_listen": "この箇所は現行音声（Trial生成は保留中: 文脈語の混入疑いをFableが確認待ち）"}
+_PAGE_JS = ("<script>function seek(id,s){var a=document.getElementById(id);if(!a)return;a.currentTime=s;a.play();}</script>")
+_PAGE_CSS2 = (t._PAGE_CSS + ".nowprod{background:#fff0f0;border:1px solid #d99;border-radius:6px;padding:6px 10px;font-size:.9rem}"
+              ".ctxbox{background:#f7f7f7;border-radius:6px;padding:4px 8px;font-size:.85rem;margin:4px 0}.btn{font-size:.8rem;margin:2px 4px 2px 0;padding:2px 8px}"
+              "table.s{border-collapse:collapse;font-size:.88rem}table.s td,table.s th{border:1px solid #bbb;padding:3px 8px}")
+
+
+def _fmt_t(s: float) -> str:
+    return f"{int(s // 60)}:{int(s % 60):02d}"
+
+
+def _metrics_line(c: dict) -> str:
+    p, tr = c["prod"], c["trial"]
+    if not tr:
+        return "<div class='lab'>機械指標: Trial音声なし</div>"
+    return (f"<div class='lab'>機械指標(参考・開発側): 長さ 現行{p['duration_s']:.2f}s → Trial{tr['duration_s']:.2f}s / 調音話速 {p['articulation_wpm_300']:.0f} → {tr['articulation_wpm_300']:.0f} wpm / "
+            f"F0中央値 {p['f0']['median_hz']:.0f} → {tr['f0']['median_hz']:.0f} Hz / F0幅 {p['f0']['range_semitones_p10_p90']:.1f} → {tr['f0']['range_semitones_p10_p90']:.1f} 半音</div>")
+
+
+def _context_html(ctx: dict) -> str:
+    prev = " / ".join(f"{d['speaker_display']}: {t._unq(d['text'])}" for d in ctx["prev_dialogue"]) or "なし"
+    nxt = " / ".join(f"{d['speaker_display']}: {t._unq(d['text'])}" for d in ctx["next_dialogue"]) or "なし"
+    return (f"<details><summary>前後の文脈（Trial生成時にStyleへ渡した決定論の抜き出し）</summary><div class='ctxbox'>前のセリフ: {H.escape(prev)}<br>後のセリフ: {H.escape(nxt)}<br>"
+            f"直前の地の文: {H.escape(ctx['narration_before'] or 'なし')}<br>直後の地の文: {H.escape(ctx['narration_after'] or 'なし')}</div></details>")
+
+
+def _level_section(work: str, level: str, A: dict, AR: dict, review: dict, plan: dict, ctxs: dict) -> str:
+    lab = LEVELS[level]["label"]
+    n_ng = AR["n_ng"] + AR["n_hold"]
+    sec = [f"<section id='{level}'><h2>{lab}</h2>",
+           f"<div class='note'>採用したTrialセリフ {AR['n_adopted']}/{len(AR['decisions'])} 件" + (f"、現行音声のまま {n_ng} 件（下の各カードに明記）" if n_ng else "（全件Trial音声）") +
+           f"。通しの長さ: Trial {_fmt_t(AR['trial_duration_s'])}（{AR['trial_duration_s']:.1f}秒）/ 現行 {_fmt_t(AR['prod_duration_s'])}（{AR['prod_duration_s']:.1f}秒）。"
+           "地の文・導入・Key Phrase・まとめ・無音・音量規則は現行と同じで、<b>差はセリフの音声だけ</b>です（Trial版はセリフの長さが変わるため、通し全体の秒数と各セリフの開始時刻が少しずれます）。</div>",
+           "<div class='row'>"
+           f"<div class='col'><div class='lab'>Trial版 通し（セリフ=文脈・感情付きで新規生成）</div><audio id='tf_{level}' controls preload='none' src='{level}/trial_full.mp3'></audio></div>"
+           f"<div class='col'><div class='lab'>現行版 通し（同じ経路でmp3化した再組立。本番公開物ではなくコピー）</div><audio id='pf_{level}' controls preload='none' src='{level}/production_full.mp3'></audio></div></div>"]
+    for ch in AR["chapters"]:
+        cid = ch["clip_id"]
+        c = A["clips"][cid]
+        d = AR["decisions"][cid]
+        rv = review[cid]
+        ctx = ctxs[cid]
+        spk = ctx["speaker_display"]
+        trial_part = (f"<audio controls preload='none' src='{level}/clips/{cid}_trial.mp3'></audio>" if d["adopted"]
+                      else f"<div class='nowprod'><b>{H.escape(_KIND_LABEL.get(d['kind'], ''))}</b>。通し版のこの箇所には現行音声を置いています。</div>")
+        held = ""
+        if d["kind"] == "hold_pending_fable_listen":
+            held = (f"<details><summary>保留中のTrial生成音声（未確認・参考。採用していません）</summary><audio controls preload='none' src='{level}/held/{cid}_generated_unverified.mp3'></audio></details>")
+        sec.append(
+            f"<div class='card'><h2>#{ch['n']} {H.escape(spk)}（{H.escape(c['voice'])}） {('<span class=na>' + H.escape(_KIND_LABEL[d['kind']]) + '</span>') if d['kind'] != 'adopted' else ''}</h2>"
+            f"<div class='en'>{H.escape(c['text'])}</div>"
+            f"<div class='scene'>場面・演出（日本語要約）: {H.escape(rv['summary_ja'])}</div>{_context_html(ctx)}"
+            "<div class='row'>"
+            f"<div class='col'><div class='lab'>現行（Production）</div><audio controls preload='none' src='{level}/clips/{cid}_prod.mp3'></audio></div>"
+            f"<div class='col'><div class='lab'>Trial（文脈・感情付き）</div>{trial_part}{held}</div></div>"
+            f"<div>通しの該当箇所へ: <button class='btn' onclick=\"seek('pf_{level}',{ch['prod_start']})\">現行 {_fmt_t(ch['prod_start'])}</button>"
+            f"<button class='btn' onclick=\"seek('tf_{level}',{ch['trial_start']})\">Trial {_fmt_t(ch['trial_start'])}</button></div>"
+            f"{_metrics_line(c)}</div>")
+    sec.append("</section>")
+    return "\n".join(sec)
+
+
+def _doc(title: str, body: str) -> str:
+    return (f"<!DOCTYPE html><html lang='ja'><head><meta charset='utf-8'><meta name='robots' content='noindex,nofollow'>"
+            f"<meta name='viewport' content='width=device-width, initial-scale=1'><title>{H.escape(title)}</title><style>{_PAGE_CSS2}</style></head><body>{body}{_PAGE_JS}</body></html>")
+
+
+def build_pages_all() -> dict:
+    """試聴ページ: index.html + 作品別(monkeys_paw.html / melos.html) + dev_details.html。PAGE_ROOT配下のみ書く(safe_write_text)。"""
+    AR = {f"{w}/{lv}": jload(f"{case_dir(w, lv)}/assemble_result.json") for w, lv in CASES}
+    AN = {f"{w}/{lv}": jload(f"{case_dir(w, lv)}/analysis.json") for w, lv in CASES}
+    ALL = jload(f"{OUT_ROOT}/analysis_all.json")
+    written = []
+    for w in WORK_CFG:
+        secs = []
+        for lv in LEVELS:
+            key = f"{w}/{lv}"
+            with use_case(w, lv):
+                plan = t.load_plan()
+                ctxs = {x["id"]: t.extract_context(plan, x["id"]) for x in dialogue_clips(plan)}
+            review = jload(f"{case_dir(w, lv)}/llm/emotion_review.json")["items"]
+            secs.append(_level_section(w, lv, AN[key], AR[key], review, plan, ctxs))
+        body = (f"<h1>『{H.escape(WORK_CFG[w]['title_ja'])}』全編通し（Trial）</h1><p><a href='index.html'>← 一覧へ</a> / <a href='#a2'>Standard</a> / <a href='#b1b'>Advanced</a></p>"
+                "<div class='note'><b>状態: Trial（Production採用ではありません・既存の公開音声は差し替えていません）</b>。セリフ音声を、前後の会話・地の文の演出・話者の気持ちをStyle（話し方の指示）に添えた方式で"
+                "<b>全件新規に生成</b>し、地の文などの既存音声と同じ手順で通しに組み立てました。「現行版」は比較用のコピーです。音量はすべて本番と同じ規則で揃えています。</div>"
+                + "\n".join(secs))
+        written.append(safe_write_text(f"{PAGE_ROOT}/{w}.html", _doc(f"{WORK_CFG[w]['title_ja']} 全編通しTrial", body)))
+    rows = []
+    for w in WORK_CFG:
+        for lv in LEVELS:
+            key = f"{w}/{lv}"
+            ar, an = AR[key], AN[key]
+            rows.append(f"<tr><td>{H.escape(WORK_CFG[w]['title_ja'])}</td><td>{LEVELS[lv]['label']}</td><td>{ar['n_adopted']}/{len(ar['decisions'])}</td><td>{ar['n_ng'] + ar['n_hold']}</td>"
+                        f"<td>{_fmt_t(ar['trial_duration_s'])} / {_fmt_t(ar['prod_duration_s'])}</td><td><a href='{w}.html#{lv}'>聴く</a></td></tr>")
+    body = ("<h1>セリフ音声 全編通しTrial（文脈・感情付き）</h1>"
+            "<div class='note'><b>状態: Trial（Production採用ではありません）</b>。『猿の手』『走れメロス』の Standard / Advanced で、セリフ音声を<b>全件</b>「前後の会話・地の文の演出・話者の気持ち」を足した方式で新規生成し、"
+            "既存の地の文などと組み合わせて<b>最初から最後まで通して聴ける</b>ようにしました。既存の公開音声は一切差し替えていません。機械指標は開発側の参考で、最終判断はあなたの試聴です。</div>"
+            f"<div class='note'>{t.PAGE_VOLUME_NOTE}</div>"
+            "<table class='s'><tr><th>作品</th><th>レベル</th><th>Trial採用セリフ</th><th>現行音声のままの箇所</th><th>通しの長さ（Trial / 現行）</th><th></th></tr>" + "".join(rows) + "</table>"
+            "<h2>聴いていただきたい観点</h2><ol>"
+            "<li><b>表現</b>: ①セリフの感情が場面に合っているか ②感情表現が過剰でないか ③前後のセリフと演技がつながっているか ④地の文からセリフへの切り替わりが自然か ⑤通しで聴いたとき現行版より没入感が増すか</li>"
+            "<li><b>安定性</b>: ⑥同じ人物の演技に大きなばらつきがないか ⑦感情の強いセリフと弱いセリフで効果がどう違うか ⑧不自然な速度変化・長すぎる間がないか</li></ol>"
+            "<p class='lab'>前回のTrial（比較用）: "
+            "<a href='../fz_dialogue_context_trial_01/index.html'>1回目（賢者の贈り物・8セリフ）</a> / <a href='../fz_dialogue_context_trial_02/index.html'>2回目（猿の手・開けた窓）</a></p>"
+            "<p class='lab'>開発者向けの詳細: <a href='dev_details.html'>dev_details.html</a></p>")
+    written.append(safe_write_text(f"{PAGE_ROOT}/index.html", _doc("セリフ音声 全編通しTrial", body)))
+    dev = ("<h1>開発者向け詳細（Trial）</h1><p>状態候補: " + H.escape(ALL["status_candidate"]) + "</p><pre style='white-space:pre-wrap;font-size:.78rem'>" +
+           H.escape(json.dumps({"analysis_all": ALL, "units": {k: {"conditions": v["conditions"], "N2": v["N2"], "N3": {"n_boundaries": v["N3"]["n_boundaries"], "n_over_3db": v["N3"]["n_over_3db"]},
+                                                                      "N5": {kk: v["N5"][kk] for kk in ("k_ctx", "first_try_rate", "regen_clips", "ng_clips", "hold_clips")}} for k, v in AN.items()}},
+                                ensure_ascii=False, indent=1)) + "</pre>")
+    written.append(safe_write_text(f"{PAGE_ROOT}/dev_details.html", _doc("dev details", dev)))
+    return {"pages": written, "index_url": f"{PAGE_BASE_URL}/index.html"}
 
 
 

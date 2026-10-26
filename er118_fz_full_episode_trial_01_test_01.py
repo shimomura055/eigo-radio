@@ -427,6 +427,40 @@ class Phase1bGuardTests(unittest.TestCase):
         self.assertEqual(d["stores"], ["s"])
 
 
+class Phase1bAnalysisTests(unittest.TestCase):
+    def test_final_adoption_with_fable_clearance(self):
+        base = {"clip_id": "c", "adopt": {"adopted": False, "hold_pending_fable_listen": True, "reasons": ["C3:leakage_final.flagged(保留・Fable聴取確認待ち)"]}}
+        self.assertEqual(m.final_adoption(base, {})["kind"], "hold_pending_fable_listen")
+        self.assertTrue(m.final_adoption(base, {"c": "cleared"})["adopted"])
+        self.assertEqual(m.final_adoption(base, {"c": "confirmed_leak"})["kind"], "ng_confirmed_leak")
+        ng = {"clip_id": "c", "adopt": {"adopted": False, "hold_pending_fable_listen": True, "reasons": ["C1:status!=OK", "C3:x"]}}
+        self.assertFalse(m.final_adoption(ng, {"c": "cleared"})["adopted"])          # C3以外の理由があれば聴取確認でも採用しない
+        self.assertTrue(m.final_adoption({"clip_id": "c", "adopt": {"adopted": True, "hold_pending_fable_listen": False, "reasons": []}}, {})["adopted"])
+
+    def test_boundary_steps_and_edge_window(self):
+        import numpy as np
+        sr = 24000
+        loud, quiet = 0.3 * np.sin(np.arange(sr) / 7.0), 0.03 * np.sin(np.arange(sr) / 7.0)
+        w = np.concatenate([loud, quiet, loud]).astype("float32")
+        tmp = tempfile.mkdtemp(dir=os.path.join(m.ROOT, "er118_output"))
+        try:
+            import soundfile as sf
+            rel = os.path.relpath(os.path.join(tmp, "x.wav"), m.ROOT).replace("\\", "/")
+            sf.write(os.path.join(m.ROOT, rel), w, sr)
+            tl = [{"part": "narr1", "start_seconds": 0.0, "duration_seconds": 1.0}, {"part": "dlg", "start_seconds": 1.0, "duration_seconds": 1.0},
+                  {"part": "_silence_0.5", "start_seconds": 2.0, "duration_seconds": 0.0}, {"part": "narr2", "start_seconds": 2.0, "duration_seconds": 1.0}]
+            r = m.boundary_steps(rel, tl, {"dlg"})
+            self.assertAlmostEqual(r["dlg"]["step_in_db"], 20.0, delta=0.5)
+            self.assertAlmostEqual(r["dlg"]["step_out_db"], 20.0, delta=0.5)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_page_labels_for_ng_and_hold_present(self):
+        self.assertIn("現行音声", m._KIND_LABEL["ng"])
+        self.assertIn("現行音声", m._KIND_LABEL["hold_pending_fable_listen"])
+        self.assertNotIn("(A2)", m._PAGE_CSS2)
+
+
 class Phase1bArtifactTests(unittest.TestCase):
     """生成前に取得した実測の成果物(API 0で再現可能)が成立していること。"""
 

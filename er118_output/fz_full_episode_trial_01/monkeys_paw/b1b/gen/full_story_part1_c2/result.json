@@ -1,0 +1,369 @@
+{
+  "managed_id": "FZ-DIALOGUE-CONTEXT-FULL-EPISODE-TRIAL-01",
+  "work": "monkeys_paw",
+  "level": "b1b",
+  "clip_id": "full_story_part1_c2",
+  "speaker": "morris",
+  "voice": "Algieba",
+  "status": "OK",
+  "wav": "er118_output/fz_full_episode_trial_01/monkeys_paw/b1b/gen/full_story_part1_c2/b1b/narration/full_story_part1_c2.wav",
+  "wav_sha256": "bb4b3939ae3223a8a82c86cba7a77a91bdace625298f7be93de827f6004872ae",
+  "original_wav": "er118_output/fz_full_episode_trial_01/monkeys_paw/b1b/gen/full_story_part1_c2/b1b/narration/full_story_part1_c2_original.wav",
+  "original_sha256": "c953b07c52b99d419a395f8a6373b32c53ceceef24bff06ef3779a541b4a2456",
+  "tts_text": "\"It grants 3 wishes,\"",
+  "style_sha256": "cd141a93d6437bec0b0c163b1fc80d140395e4d62d3d5fcecff9d8c53d1b2d4e",
+  "prompt_expected_sha256": "88efb8d948ea946138ff89f89c552944487700996b658b97e410ac83f6174677",
+  "requests_sent": [
+    {
+      "label": "monkeys_paw/b1b:full_story_part1_c2",
+      "ts": "2026-10-26T09:43:35+09:00",
+      "model": "gemini-2.5-pro-preview-tts",
+      "voice": "Algieba",
+      "tts_execution_mode": "STANDARD",
+      "speech_config": {
+        "voice_config": {
+          "replicated_voice_config": null,
+          "prebuilt_voice_config": {
+            "voice_name": "Algieba"
+          },
+          "voice": null
+        },
+        "language_code": "en-us",
+        "multi_speaker_voice_config": null
+      },
+      "response_modalities": [
+        "AUDIO"
+      ],
+      "temperature": null,
+      "temperature_note": "未指定(SDK/モデル既定)。Production Z実行と同一コード経路 er003_b1_p7a_audio.make_tts_call_fn_for_model",
+      "http_timeout_ms": 150000,
+      "prompt_sha256": "88efb8d948ea946138ff89f89c552944487700996b658b97e410ac83f6174677",
+      "prompt_chars": 3738
+    }
+  ],
+  "request_prompt_matches_expected": [
+    true
+  ],
+  "n_tts_calls_captured": 1,
+  "tts_generations_used": 1,
+  "attempts_log_n": 1,
+  "slowdown_attempts_n": 1,
+  "asr_text": "It grants three wishes.",
+  "attempts_asr_texts": [
+    "It grants three wishes."
+  ],
+  "audio_classification": "NORMALIZED_MATCH",
+  "asr_judgement": {
+    "state": "PASS",
+    "reason_code": "primary_pass",
+    "slot": 1,
+    "script_version": "v0",
+    "role": "FULL_STORY",
+    "lang": "en",
+    "segment_key": "full_story_part1_c2",
+    "audio_sha256": "bb4b3939ae3223a8a82c86cba7a77a91bdace625298f7be93de827f6004872ae",
+    "primary": {
+      "text": "It grants three wishes.",
+      "passed": true,
+      "label": "NORMALIZED_MATCH",
+      "equivalence_basis": null,
+      "warning_labels": []
+    },
+    "secondary": {
+      "called": false,
+      "cached": false,
+      "engine": "azure",
+      "text": null,
+      "label": "",
+      "accepted": null,
+      "error": null,
+      "unavailable": false
+    },
+    "value_guard": {
+      "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+          {
+            "src": "3",
+            "hyp": "3",
+            "verdict": "EQUAL",
+            "reason": "same_surface"
+          }
+        ],
+        "reasons": [],
+        "warnings": []
+      }
+    },
+    "negation_guard": {
+      "primary": false
+    },
+    "final_gate": {
+      "applied": true,
+      "value_guard": "EQUAL",
+      "negation_diff": false
+    },
+    "warnings": [],
+    "exclusion_rule": null,
+    "cost": {
+      "azure_calls": 0,
+      "azure_seconds": null,
+      "est_jpy": 0.0
+    },
+    "timing": {
+      "total_ms": 0,
+      "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "length": {
+      "applied": false,
+      "primary_len": null,
+      "secondary_len": null,
+      "max_len": null,
+      "adopted_from": "primary",
+      "adopted_ok": null,
+      "surface_len": null,
+      "primary_ok": null
+    },
+    "adapter": {
+      "layers": [],
+      "azure_real_calls": 0,
+      "cost_guard_triggered": false,
+      "language": "en-US",
+      "segment_id": "full_story_part1_c2",
+      "asr_text_present": true,
+      "cache": {
+        "calls": 0,
+        "hits": 0
+      }
+    }
+  },
+  "instruction_type": "english_style_prefix_wide_margin",
+  "repetition_qa_checked": true,
+  "trim_info": {
+    "raw_duration_seconds": 2.658,
+    "raw_leading_silence_seconds": 0.246,
+    "raw_trailing_silence_seconds": 0.321,
+    "trimmed_duration_seconds": 2.658,
+    "leading_margin_retained_seconds": 0.246,
+    "trailing_margin_retained_seconds": 0.321
+  },
+  "leakage": {
+    "leakage_any_attempt": false,
+    "leakage_final": false,
+    "needs_listen_any_attempt": false,
+    "per_attempt": [
+      {
+        "flagged": false,
+        "needs_listen": false,
+        "extra_tokens": [],
+        "extra_runs": [],
+        "max_extra_run": 0,
+        "context_only_hits": [],
+        "asr_words": 4,
+        "target_words": 4
+      }
+    ],
+    "final": {
+      "flagged": false,
+      "needs_listen": false,
+      "extra_tokens": [],
+      "extra_runs": [],
+      "max_extra_run": 0,
+      "context_only_hits": [],
+      "asr_words": 4,
+      "target_words": 4
+    }
+  },
+  "comparison_valid": true,
+  "final_instruction_type": "english_style_prefix_wide_margin",
+  "last_request_prompt_matches_expected": true,
+  "attempts_logged": 1,
+  "n_tts_calls_undercount_possible": false,
+  "verbatim_observation": {
+    "token_equal": true,
+    "token_similarity": 1.0
+  },
+  "reason": null,
+  "tts_cap_reached": null,
+  "cost_jpy_clip": 0.3694,
+  "elapsed_s": 10.3,
+  "saved_at": "2026-10-26T09:43:45+09:00",
+  "entry": {
+    "status": "OK",
+    "path": "er118_output/fz_full_episode_trial_01/monkeys_paw/b1b/gen/full_story_part1_c2/b1b/narration/full_story_part1_c2.wav",
+    "sha256": "bb4b3939ae3223a8a82c86cba7a77a91bdace625298f7be93de827f6004872ae",
+    "canonical_text": "\"It grants three wishes,\"",
+    "text": "\"It grants three wishes,\"",
+    "disfluency_checked": false,
+    "asr_text": "It grants three wishes.",
+    "slowdown_applied": true,
+    "z_adoption": "adopted",
+    "segment_id": "full_story_part1_c2",
+    "narration_path": "er118_output/fz_full_episode_trial_01/monkeys_paw/b1b/gen/full_story_part1_c2/b1b/narration/full_story_part1_c2.wav",
+    "role": "FULL_STORY",
+    "connected_speech_enabled": true,
+    "tts_backend": "speech_metadata_flash_lite",
+    "voice": "Algieba",
+    "speaker": "morris",
+    "clip_kind": "dialogue",
+    "role_style_key": "DIALOGUE_ADV",
+    "model_ids_measured": [
+      "gemini-2.5-pro-preview-tts"
+    ],
+    "style": {
+      "instruction_label": "existing_dialogue_style(ENGLISH_STYLE_PREFIX)",
+      "style_prefix_sha256": null,
+      "effective_style_prefix_sha256": "add26d27a79c2cbee982eb5ddc32616b8294494a316b973215c94cccc76ede26",
+      "fallback_used": false,
+      "fallback_attempts": []
+    },
+    "reuse_key": {
+      "canonical_text_sha256": "411da7ed4e72510c5f1a25507306492cd27a764e7b59e9465aadb1b19954fd48",
+      "role_style_version": "z_v2_pd8_r2_e1_e2up_k2_m2_kpx_20261012",
+      "voice": "Algieba",
+      "style_prefix_sha256": null,
+      "tts_backend": "speech_metadata_flash_lite",
+      "speed_profile": "z_speed_v2:adv_dialogue_fast6"
+    },
+    "slowdown_ratio": 0.9456,
+    "speed_profile": {
+      "version": "z_speed_v2",
+      "profile": "adv_dialogue_fast6",
+      "applied": true,
+      "tempo": 1.06,
+      "slowdown_pct_target": -5.660377358490576,
+      "original_sha256": "c953b07c52b99d419a395f8a6373b32c53ceceef24bff06ef3779a541b4a2456",
+      "source": "generated"
+    },
+    "attempts": [
+      {
+        "phase": "standard",
+        "attempt": 1,
+        "instruction_type": "english_style_prefix_wide_margin",
+        "instruction_label": "english_style_prefix_wide_margin",
+        "style_prefix_sha256": null,
+        "style_prefix_head": null,
+        "tts_model_id": "gemini-2.5-pro-preview-tts",
+        "voice": "Algieba",
+        "audio_classification": "NORMALIZED_MATCH",
+        "verified": true,
+        "asr_text": "It grants three wishes."
+      }
+    ],
+    "cooldown_occurred": false,
+    "cooldown_events": [],
+    "audio_text_deviation": null,
+    "tts_generations_used": 1,
+    "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "FULL_STORY",
+      "lang": "en",
+      "segment_key": "full_story_part1_c2",
+      "audio_sha256": "bb4b3939ae3223a8a82c86cba7a77a91bdace625298f7be93de827f6004872ae",
+      "primary": {
+        "text": "It grants three wishes.",
+        "passed": true,
+        "label": "NORMALIZED_MATCH",
+        "equivalence_basis": null,
+        "warning_labels": []
+      },
+      "secondary": {
+        "called": false,
+        "cached": false,
+        "engine": "azure",
+        "text": null,
+        "label": "",
+        "accepted": null,
+        "error": null,
+        "unavailable": false
+      },
+      "value_guard": {
+        "primary": {
+          "kind": "EQUAL",
+          "pairs": [
+            {
+              "src": "3",
+              "hyp": "3",
+              "verdict": "EQUAL",
+              "reason": "same_surface"
+            }
+          ],
+          "reasons": [],
+          "warnings": []
+        }
+      },
+      "negation_guard": {
+        "primary": false
+      },
+      "final_gate": {
+        "applied": true,
+        "value_guard": "EQUAL",
+        "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+        "azure_calls": 0,
+        "azure_seconds": null,
+        "est_jpy": 0.0
+      },
+      "timing": {
+        "total_ms": 0,
+        "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+        "applied": false,
+        "primary_len": null,
+        "secondary_len": null,
+        "max_len": null,
+        "adopted_from": "primary",
+        "adopted_ok": null,
+        "surface_len": null,
+        "primary_ok": null
+      },
+      "adapter": {
+        "layers": [],
+        "azure_real_calls": 0,
+        "cost_guard_triggered": false,
+        "language": "en-US",
+        "segment_id": "full_story_part1_c2",
+        "asr_text_present": true,
+        "cache": {
+          "calls": 0,
+          "hits": 0
+        }
+      }
+    },
+    "duration_seconds": 2.658,
+    "trial_style_sha256": "cd141a93d6437bec0b0c163b1fc80d140395e4d62d3d5fcecff9d8c53d1b2d4e",
+    "trial_reuse_key": {
+      "managed_id": "FZ-DIALOGUE-CONTEXT-FULL-EPISODE-TRIAL-01",
+      "arm": "ctx",
+      "take": 1,
+      "canonical_text_sha256": "411da7ed4e72510c5f1a25507306492cd27a764e7b59e9465aadb1b19954fd48",
+      "voice": "Algieba",
+      "model": "gemini-2.5-pro-preview-tts",
+      "style_sha256": "cd141a93d6437bec0b0c163b1fc80d140395e4d62d3d5fcecff9d8c53d1b2d4e",
+      "tts_backend_note": "gemini_standard_sync(Production Z実行と同じSTANDARD)"
+    }
+  },
+  "trial_reuse_key": {
+    "managed_id": "FZ-DIALOGUE-CONTEXT-FULL-EPISODE-TRIAL-01",
+    "arm": "ctx",
+    "take": 1,
+    "canonical_text_sha256": "411da7ed4e72510c5f1a25507306492cd27a764e7b59e9465aadb1b19954fd48",
+    "voice": "Algieba",
+    "model": "gemini-2.5-pro-preview-tts",
+    "style_sha256": "cd141a93d6437bec0b0c163b1fc80d140395e4d62d3d5fcecff9d8c53d1b2d4e",
+    "tts_backend_note": "gemini_standard_sync(Production Z実行と同じSTANDARD)"
+  },
+  "adopt": {
+    "adopted": true,
+    "hold_pending_fable_listen": false,
+    "reasons": []
+  }
+}

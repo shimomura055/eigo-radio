@@ -1,0 +1,369 @@
+{
+  "managed_id": "FZ-DIALOGUE-CONTEXT-FULL-EPISODE-TRIAL-01",
+  "work": "monkeys_paw",
+  "level": "b1b",
+  "clip_id": "full_story_part2_c8",
+  "speaker": "mrs_white",
+  "voice": "Zephyr",
+  "status": "OK",
+  "wav": "er118_output/fz_full_episode_trial_01/monkeys_paw/b1b/gen/full_story_part2_c8/b1b/narration/full_story_part2_c8.wav",
+  "wav_sha256": "cab165c2719691c905503eb1a58fd2aa74b1625279990e7a0d6bcd0b594fef57",
+  "original_wav": "er118_output/fz_full_episode_trial_01/monkeys_paw/b1b/gen/full_story_part2_c8/b1b/narration/full_story_part2_c8_original.wav",
+  "original_sha256": "50ac478ba89f2cf104b22897b2235b3c16babf001ce24214edb78ab418914ffd",
+  "tts_text": "\"The paw! We have 2 wishes left. Wish him alive again!\"",
+  "style_sha256": "f3250b016760007b6d9416407db452919df2299150972a166437b94b96e82cca",
+  "prompt_expected_sha256": "9e46259a14a4a23ac046f28d0b56a4b8b094bb93ad8bce1f4c832195b3dd8502",
+  "requests_sent": [
+    {
+      "label": "monkeys_paw/b1b:full_story_part2_c8",
+      "ts": "2026-10-26T09:45:08+09:00",
+      "model": "gemini-2.5-pro-preview-tts",
+      "voice": "Zephyr",
+      "tts_execution_mode": "STANDARD",
+      "speech_config": {
+        "voice_config": {
+          "replicated_voice_config": null,
+          "prebuilt_voice_config": {
+            "voice_name": "Zephyr"
+          },
+          "voice": null
+        },
+        "language_code": "en-us",
+        "multi_speaker_voice_config": null
+      },
+      "response_modalities": [
+        "AUDIO"
+      ],
+      "temperature": null,
+      "temperature_note": "未指定(SDK/モデル既定)。Production Z実行と同一コード経路 er003_b1_p7a_audio.make_tts_call_fn_for_model",
+      "http_timeout_ms": 150000,
+      "prompt_sha256": "9e46259a14a4a23ac046f28d0b56a4b8b094bb93ad8bce1f4c832195b3dd8502",
+      "prompt_chars": 4257
+    }
+  ],
+  "request_prompt_matches_expected": [
+    true
+  ],
+  "n_tts_calls_captured": 1,
+  "tts_generations_used": 1,
+  "attempts_log_n": 1,
+  "slowdown_attempts_n": 1,
+  "asr_text": "The paw, we have two wishes left. Wish him alive again.",
+  "attempts_asr_texts": [
+    "The paw, we have two wishes left. Wish him alive again."
+  ],
+  "audio_classification": "NORMALIZED_MATCH",
+  "asr_judgement": {
+    "state": "PASS",
+    "reason_code": "primary_pass",
+    "slot": 1,
+    "script_version": "v0",
+    "role": "FULL_STORY",
+    "lang": "en",
+    "segment_key": "full_story_part2_c8",
+    "audio_sha256": "cab165c2719691c905503eb1a58fd2aa74b1625279990e7a0d6bcd0b594fef57",
+    "primary": {
+      "text": "The paw, we have two wishes left. Wish him alive again.",
+      "passed": true,
+      "label": "NORMALIZED_MATCH",
+      "equivalence_basis": null,
+      "warning_labels": []
+    },
+    "secondary": {
+      "called": false,
+      "cached": false,
+      "engine": "azure",
+      "text": null,
+      "label": "",
+      "accepted": null,
+      "error": null,
+      "unavailable": false
+    },
+    "value_guard": {
+      "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+          {
+            "src": "2",
+            "hyp": "2",
+            "verdict": "EQUAL",
+            "reason": "same_surface"
+          }
+        ],
+        "reasons": [],
+        "warnings": []
+      }
+    },
+    "negation_guard": {
+      "primary": false
+    },
+    "final_gate": {
+      "applied": true,
+      "value_guard": "EQUAL",
+      "negation_diff": false
+    },
+    "warnings": [],
+    "exclusion_rule": null,
+    "cost": {
+      "azure_calls": 0,
+      "azure_seconds": null,
+      "est_jpy": 0.0
+    },
+    "timing": {
+      "total_ms": 0,
+      "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "length": {
+      "applied": false,
+      "primary_len": null,
+      "secondary_len": null,
+      "max_len": null,
+      "adopted_from": "primary",
+      "adopted_ok": null,
+      "surface_len": null,
+      "primary_ok": null
+    },
+    "adapter": {
+      "layers": [],
+      "azure_real_calls": 0,
+      "cost_guard_triggered": false,
+      "language": "en-US",
+      "segment_id": "full_story_part2_c8",
+      "asr_text_present": true,
+      "cache": {
+        "calls": 0,
+        "hits": 0
+      }
+    }
+  },
+  "instruction_type": "english_style_prefix_wide_margin",
+  "repetition_qa_checked": true,
+  "trim_info": {
+    "raw_duration_seconds": 5.266,
+    "raw_leading_silence_seconds": 0.284,
+    "raw_trailing_silence_seconds": 0.359,
+    "trimmed_duration_seconds": 5.238,
+    "leading_margin_retained_seconds": 0.284,
+    "trailing_margin_retained_seconds": 0.331
+  },
+  "leakage": {
+    "leakage_any_attempt": false,
+    "leakage_final": false,
+    "needs_listen_any_attempt": false,
+    "per_attempt": [
+      {
+        "flagged": false,
+        "needs_listen": false,
+        "extra_tokens": [],
+        "extra_runs": [],
+        "max_extra_run": 0,
+        "context_only_hits": [],
+        "asr_words": 11,
+        "target_words": 11
+      }
+    ],
+    "final": {
+      "flagged": false,
+      "needs_listen": false,
+      "extra_tokens": [],
+      "extra_runs": [],
+      "max_extra_run": 0,
+      "context_only_hits": [],
+      "asr_words": 11,
+      "target_words": 11
+    }
+  },
+  "comparison_valid": true,
+  "final_instruction_type": "english_style_prefix_wide_margin",
+  "last_request_prompt_matches_expected": true,
+  "attempts_logged": 1,
+  "n_tts_calls_undercount_possible": false,
+  "verbatim_observation": {
+    "token_equal": true,
+    "token_similarity": 1.0
+  },
+  "reason": null,
+  "tts_cap_reached": null,
+  "cost_jpy_clip": 0.6356,
+  "elapsed_s": 10.83,
+  "saved_at": "2026-10-26T09:45:19+09:00",
+  "entry": {
+    "status": "OK",
+    "path": "er118_output/fz_full_episode_trial_01/monkeys_paw/b1b/gen/full_story_part2_c8/b1b/narration/full_story_part2_c8.wav",
+    "sha256": "cab165c2719691c905503eb1a58fd2aa74b1625279990e7a0d6bcd0b594fef57",
+    "canonical_text": "\"The paw! We have two wishes left. Wish him alive again!\"",
+    "text": "\"The paw! We have two wishes left. Wish him alive again!\"",
+    "disfluency_checked": false,
+    "asr_text": "The paw, we have two wishes left. Wish him alive again.",
+    "slowdown_applied": true,
+    "z_adoption": "adopted",
+    "segment_id": "full_story_part2_c8",
+    "narration_path": "er118_output/fz_full_episode_trial_01/monkeys_paw/b1b/gen/full_story_part2_c8/b1b/narration/full_story_part2_c8.wav",
+    "role": "FULL_STORY",
+    "connected_speech_enabled": true,
+    "tts_backend": "speech_metadata_flash_lite",
+    "voice": "Zephyr",
+    "speaker": "mrs_white",
+    "clip_kind": "dialogue",
+    "role_style_key": "DIALOGUE_ADV",
+    "model_ids_measured": [
+      "gemini-2.5-pro-preview-tts"
+    ],
+    "style": {
+      "instruction_label": "existing_dialogue_style(ENGLISH_STYLE_PREFIX)",
+      "style_prefix_sha256": null,
+      "effective_style_prefix_sha256": "add26d27a79c2cbee982eb5ddc32616b8294494a316b973215c94cccc76ede26",
+      "fallback_used": false,
+      "fallback_attempts": []
+    },
+    "reuse_key": {
+      "canonical_text_sha256": "c1e8c0b1ed1047c0b612023037b46ef4a996a6c171e13d97dfb5a86e0940e220",
+      "role_style_version": "z_v2_pd8_r2_e1_e2up_k2_m2_kpx_20261012",
+      "voice": "Zephyr",
+      "style_prefix_sha256": null,
+      "tts_backend": "speech_metadata_flash_lite",
+      "speed_profile": "z_speed_v2:adv_dialogue_fast6"
+    },
+    "slowdown_ratio": 0.9453,
+    "speed_profile": {
+      "version": "z_speed_v2",
+      "profile": "adv_dialogue_fast6",
+      "applied": true,
+      "tempo": 1.06,
+      "slowdown_pct_target": -5.660377358490576,
+      "original_sha256": "50ac478ba89f2cf104b22897b2235b3c16babf001ce24214edb78ab418914ffd",
+      "source": "generated"
+    },
+    "attempts": [
+      {
+        "phase": "standard",
+        "attempt": 1,
+        "instruction_type": "english_style_prefix_wide_margin",
+        "instruction_label": "english_style_prefix_wide_margin",
+        "style_prefix_sha256": null,
+        "style_prefix_head": null,
+        "tts_model_id": "gemini-2.5-pro-preview-tts",
+        "voice": "Zephyr",
+        "audio_classification": "NORMALIZED_MATCH",
+        "verified": true,
+        "asr_text": "The paw, we have two wishes left. Wish him alive again."
+      }
+    ],
+    "cooldown_occurred": false,
+    "cooldown_events": [],
+    "audio_text_deviation": null,
+    "tts_generations_used": 1,
+    "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "FULL_STORY",
+      "lang": "en",
+      "segment_key": "full_story_part2_c8",
+      "audio_sha256": "cab165c2719691c905503eb1a58fd2aa74b1625279990e7a0d6bcd0b594fef57",
+      "primary": {
+        "text": "The paw, we have two wishes left. Wish him alive again.",
+        "passed": true,
+        "label": "NORMALIZED_MATCH",
+        "equivalence_basis": null,
+        "warning_labels": []
+      },
+      "secondary": {
+        "called": false,
+        "cached": false,
+        "engine": "azure",
+        "text": null,
+        "label": "",
+        "accepted": null,
+        "error": null,
+        "unavailable": false
+      },
+      "value_guard": {
+        "primary": {
+          "kind": "EQUAL",
+          "pairs": [
+            {
+              "src": "2",
+              "hyp": "2",
+              "verdict": "EQUAL",
+              "reason": "same_surface"
+            }
+          ],
+          "reasons": [],
+          "warnings": []
+        }
+      },
+      "negation_guard": {
+        "primary": false
+      },
+      "final_gate": {
+        "applied": true,
+        "value_guard": "EQUAL",
+        "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+        "azure_calls": 0,
+        "azure_seconds": null,
+        "est_jpy": 0.0
+      },
+      "timing": {
+        "total_ms": 0,
+        "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+        "applied": false,
+        "primary_len": null,
+        "secondary_len": null,
+        "max_len": null,
+        "adopted_from": "primary",
+        "adopted_ok": null,
+        "surface_len": null,
+        "primary_ok": null
+      },
+      "adapter": {
+        "layers": [],
+        "azure_real_calls": 0,
+        "cost_guard_triggered": false,
+        "language": "en-US",
+        "segment_id": "full_story_part2_c8",
+        "asr_text_present": true,
+        "cache": {
+          "calls": 0,
+          "hits": 0
+        }
+      }
+    },
+    "duration_seconds": 5.238,
+    "trial_style_sha256": "f3250b016760007b6d9416407db452919df2299150972a166437b94b96e82cca",
+    "trial_reuse_key": {
+      "managed_id": "FZ-DIALOGUE-CONTEXT-FULL-EPISODE-TRIAL-01",
+      "arm": "ctx",
+      "take": 1,
+      "canonical_text_sha256": "c1e8c0b1ed1047c0b612023037b46ef4a996a6c171e13d97dfb5a86e0940e220",
+      "voice": "Zephyr",
+      "model": "gemini-2.5-pro-preview-tts",
+      "style_sha256": "f3250b016760007b6d9416407db452919df2299150972a166437b94b96e82cca",
+      "tts_backend_note": "gemini_standard_sync(Production Z実行と同じSTANDARD)"
+    }
+  },
+  "trial_reuse_key": {
+    "managed_id": "FZ-DIALOGUE-CONTEXT-FULL-EPISODE-TRIAL-01",
+    "arm": "ctx",
+    "take": 1,
+    "canonical_text_sha256": "c1e8c0b1ed1047c0b612023037b46ef4a996a6c171e13d97dfb5a86e0940e220",
+    "voice": "Zephyr",
+    "model": "gemini-2.5-pro-preview-tts",
+    "style_sha256": "f3250b016760007b6d9416407db452919df2299150972a166437b94b96e82cca",
+    "tts_backend_note": "gemini_standard_sync(Production Z実行と同じSTANDARD)"
+  },
+  "adopt": {
+    "adopted": true,
+    "hold_pending_fable_listen": false,
+    "reasons": []
+  }
+}
