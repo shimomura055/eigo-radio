@@ -1,0 +1,305 @@
+{
+ "management_id": "FAMILY-Y-STYLE-PROFILE-FIX-01",
+ "delegation": "01",
+ "approved_profile": "fx_20261017",
+ "roles": {
+  "FULL_STORY": {
+   "sha256_prefix": "3a680861",
+   "len": 177,
+   "levels": [
+    "a2",
+    "b1b"
+   ]
+  },
+  "SUPPORT_JA": {
+   "sha256_prefix": "060c08fd",
+   "len": 199,
+   "levels": [
+    "a2"
+   ]
+  },
+  "PREVIEW": {
+   "sha256_prefix": "8862317f",
+   "len": 68,
+   "levels": [
+    "b1b"
+   ]
+  },
+  "KP_EN": {
+   "sha256_prefix": "9d905cfe",
+   "len": 332,
+   "levels": [
+    "a2",
+    "b1b"
+   ]
+  },
+  "KP_JA_MEANING": {
+   "sha256_prefix": "b12c8721",
+   "len": 93,
+   "levels": [
+    "a2"
+   ]
+  },
+  "KP_EXPLANATION_EN": {
+   "sha256_prefix": "05180006",
+   "len": 136,
+   "levels": [
+    "b1b"
+   ]
+  }
+ },
+ "y_specific_style_approvals": 0,
+ "decision_candidate_V": "Voice 1-3 body PD06 application (S9 listening result not recorded); recommended V1 = apply approved default, A/B listening vs _02",
+ "rows": [
+  {
+   "level": "b1b",
+   "segment": "shell固定(welcome/num_*/kp intro/full_story_intro/outro)",
+   "voice": "Charon",
+   "apply": "なし",
+   "not_apply": "全て",
+   "basis": "INVENTORY_X_Z_SPEC_01.md shell固定英語",
+   "judgement": "承認済み共通(非対象)",
+   "style_changes_vs_default": false
+  },
+  {
+   "level": "b1b",
+   "segment": "topic_intro",
+   "voice": "Charon",
+   "apply": "なし(基底)",
+   "not_apply": "PD06等",
+   "basis": "fx_20261017にTOPIC_INTRO overrideなし",
+   "judgement": "承認済み共通(非対象)",
+   "style_changes_vs_default": false
+  },
+  {
+   "level": "b1b",
+   "segment": "preview",
+   "voice": "Charon",
+   "apply": "E1",
+   "not_apply": "基底 calm, conversational",
+   "basis": "ROLE_LEVELS[PREVIEW]=(b1b),DESIGN_01.md:84,YL-A01",
+   "judgement": "承認済み共通",
+   "style_changes_vs_default": true
+  },
+  {
+   "level": "b1b",
+   "segment": "kp1..3_english",
+   "voice": "Aoede",
+   "apply": "K2",
+   "not_apply": "MINIMAL",
+   "basis": "ROLE_LEVELS[KP_EN]=(a2,b1b)",
+   "judgement": "承認済み共通",
+   "style_changes_vs_default": true
+  },
+  {
+   "level": "b1b",
+   "segment": "kp1..3_explanation",
+   "voice": "Aoede",
+   "apply": "P7",
+   "not_apply": "基底",
+   "basis": "ROLE_LEVELS[KP_EXPLANATION_EN]=(b1b)",
+   "judgement": "承認済み共通",
+   "style_changes_vs_default": true
+  },
+  {
+   "level": "b1b",
+   "segment": "comment_1,comment_3",
+   "voice": "Charon",
+   "apply": "なし(基底)",
+   "not_apply": "E1(Previewのみ対象)",
+   "basis": "ROLE_SEGMENTS[PREVIEW]=(preview,)",
+   "judgement": "承認済み共通(非対象)",
+   "style_changes_vs_default": false
+  },
+  {
+   "level": "b1b",
+   "segment": "comment_2",
+   "voice": "-",
+   "apply": "削除",
+   "not_apply": "-",
+   "basis": "CURRENT_SPEC.md:3089-3091(2026-10-26)",
+   "judgement": "Y固有承認(構成)",
+   "style_changes_vs_default": null
+  },
+  {
+   "level": "b1b",
+   "segment": "y_lead",
+   "voice": "Aoede",
+   "apply": "PD06",
+   "not_apply": "基底",
+   "basis": "DESIGN_PROPOSAL_02.md:109,242; YL-A01",
+   "judgement": "承認済み共通",
+   "style_changes_vs_default": true
+  },
+  {
+   "level": "b1b",
+   "segment": "y_intro_1..3",
+   "voice": "Aoede",
+   "apply": "PD06",
+   "not_apply": "基底",
+   "basis": "同上",
+   "judgement": "承認済み共通",
+   "style_changes_vs_default": true
+  },
+  {
+   "level": "b1b",
+   "segment": "y_voice_1",
+   "voice": "Puck",
+   "apply": "PD06(判断候補V)",
+   "not_apply": "-",
+   "basis": "A19 Voice別Styleは設けない",
+   "judgement": "承認済み共通(S9未確認)",
+   "style_changes_vs_default": true
+  },
+  {
+   "level": "b1b",
+   "segment": "y_voice_2",
+   "voice": "Zephyr",
+   "apply": "PD06(判断候補V)",
+   "not_apply": "-",
+   "basis": "同上",
+   "judgement": "承認済み共通(S9未確認)",
+   "style_changes_vs_default": true
+  },
+  {
+   "level": "b1b",
+   "segment": "y_voice_3",
+   "voice": "Schedar",
+   "apply": "PD06(判断候補V)",
+   "not_apply": "-",
+   "basis": "同上",
+   "judgement": "承認済み共通(S9未確認)",
+   "style_changes_vs_default": true
+  },
+  {
+   "level": "b1b",
+   "segment": "y_closing",
+   "voice": "Aoede",
+   "apply": "PD06",
+   "not_apply": "基底",
+   "basis": "同上",
+   "judgement": "承認済み共通",
+   "style_changes_vs_default": true
+  },
+  {
+   "level": "a2",
+   "segment": "shell固定",
+   "voice": "Charon/Aoede",
+   "apply": "なし",
+   "not_apply": "全て",
+   "basis": "同上",
+   "judgement": "承認済み共通(非対象)",
+   "style_changes_vs_default": false
+  },
+  {
+   "level": "a2",
+   "segment": "topic_intro",
+   "voice": "Aoede",
+   "apply": "なし(基底)",
+   "not_apply": "PD06等",
+   "basis": "fx_20261017にoverrideなし",
+   "judgement": "承認済み共通(非対象)",
+   "style_changes_vs_default": false
+  },
+  {
+   "level": "a2",
+   "segment": "japanese_title",
+   "voice": "Aoede",
+   "apply": "なし(J3基底)",
+   "not_apply": "S3(対象外)",
+   "basis": "er019_family_x_style_profile_01.py:203",
+   "judgement": "承認済み共通(非対象)",
+   "style_changes_vs_default": false
+  },
+  {
+   "level": "a2",
+   "segment": "preview(日本語)",
+   "voice": "Aoede",
+   "apply": "S3",
+   "not_apply": "基底",
+   "basis": "ROLE_SEGMENTS[SUPPORT_JA]",
+   "judgement": "承認済み共通",
+   "style_changes_vs_default": true
+  },
+  {
+   "level": "a2",
+   "segment": "comment_1,2,3(日本語)",
+   "voice": "Aoede",
+   "apply": "S3",
+   "not_apply": "基底",
+   "basis": "同上",
+   "judgement": "承認済み共通",
+   "style_changes_vs_default": true
+  },
+  {
+   "level": "a2",
+   "segment": "y_lead,y_intro_1..3,y_closing",
+   "voice": "Aoede",
+   "apply": "PD06逐語+生成後6%減速",
+   "not_apply": "基底+slower連結",
+   "basis": "std_append_slower_instruction=False",
+   "judgement": "承認済み共通",
+   "style_changes_vs_default": true
+  },
+  {
+   "level": "a2",
+   "segment": "y_voice_1",
+   "voice": "Puck",
+   "apply": "PD06+6%減速(判断候補V)",
+   "not_apply": "-",
+   "basis": "A19",
+   "judgement": "承認済み共通(S9未確認)",
+   "style_changes_vs_default": true
+  },
+  {
+   "level": "a2",
+   "segment": "y_voice_2",
+   "voice": "Zephyr",
+   "apply": "PD06+6%減速(判断候補V)",
+   "not_apply": "-",
+   "basis": "A19",
+   "judgement": "承認済み共通(S9未確認)",
+   "style_changes_vs_default": true
+  },
+  {
+   "level": "a2",
+   "segment": "y_voice_3",
+   "voice": "Schedar",
+   "apply": "PD06+6%減速(判断候補V)",
+   "not_apply": "-",
+   "basis": "A19",
+   "judgement": "承認済み共通(S9未確認)",
+   "style_changes_vs_default": true
+  },
+  {
+   "level": "a2",
+   "segment": "kp1..3_english",
+   "voice": "Aoede",
+   "apply": "K2",
+   "not_apply": "MINIMAL",
+   "basis": "ROLE_LEVELS[KP_EN]",
+   "judgement": "承認済み共通",
+   "style_changes_vs_default": true
+  },
+  {
+   "level": "a2",
+   "segment": "kp1..3_japanese_meaning",
+   "voice": "Aoede",
+   "apply": "P8-KP",
+   "not_apply": "基底J3",
+   "basis": "ROLE_LEVELS[KP_JA_MEANING]=(a2)",
+   "judgement": "承認済み共通",
+   "style_changes_vs_default": true
+  },
+  {
+   "level": "a2",
+   "segment": "in_one_line",
+   "voice": "-",
+   "apply": "生成しない",
+   "not_apply": "-",
+   "basis": "DESIGN_01.md 4-5",
+   "judgement": "Y固有(構成)",
+   "style_changes_vs_default": null
+  }
+ ]
+}
