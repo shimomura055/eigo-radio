@@ -65,6 +65,81 @@ class SelectionFormV3Test(unittest.TestCase):
             self.assertIn(ref, s)
             self.assertTrue(os.path.exists(os.path.join(FD, ref)))
 
+    # ---- 委任_02: 日本語訳・AI選定理由(既存値の再利用。AI再生成なし) ----
+    @staticmethod
+    def _xf():
+        import importlib.util
+        p = os.path.join(ROOT, "docs", "research", "KP-GATE-DROP-BACKFILL-PRODUCTION-01", "tools", "export_form_data_01.py")
+        spec = importlib.util.spec_from_file_location("export_form_data_01", p)
+        m = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(m)
+        return m
+
+    def test_gloss_status_rules(self):
+        xf = self._xf()
+        base = {"japanese_gloss": "訳", "flags": {"gloss_hr_pending": False}, "gates": {"gloss": "ALIGNED"}}
+        self.assertEqual(xf.gloss_status(base, "PRODUCTION_FORMAL_PATH"), "official")
+        self.assertEqual(xf.gloss_status(base, "REPLAY_FROZEN_INITIAL_REAL_BACKFILL"), "provisional")    # replayは正式扱いしない
+        self.assertEqual(xf.gloss_status(base, "DEV_TRIAL"), "provisional")
+        hr = dict(base, flags={"gloss_hr_pending": True}, gates={"gloss": "HR_PENDING"})
+        self.assertEqual(xf.gloss_status(hr, "PRODUCTION_FORMAL_PATH"), "provisional")                  # 意味確認待ちは仮訳
+        self.assertEqual(xf.gloss_status(dict(base, japanese_gloss=""), "PRODUCTION_FORMAL_PATH"), "missing")
+        self.assertEqual(xf.gloss_status(dict(base, japanese_gloss=None), "PRODUCTION_FORMAL_PATH"), "missing")
+        self.assertEqual(xf.gloss_status(dict(base, gates={"gloss": "HUMAN_RESOLVED"}), "PRODUCTION_FORMAL_PATH"), "official")
+
+    def test_reason_info_rules(self):
+        xf = self._xf()
+        self.assertEqual(xf.reason_info({"reason_ja": "理由", "origin": "call2"}), ("理由", "ai_call2"))
+        self.assertEqual(xf.reason_info({"reason_ja": "理由", "origin": "backfill"}), ("理由", "ai_backfill"))
+        self.assertEqual(xf.reason_info({"reason_ja": "", "origin": "call1"}), ("", "none_call1_has_no_reason"))
+        self.assertEqual(xf.reason_info({"reason_ja": "replay", "origin": "call2"}), ("", "none_placeholder_not_real"))
+        self.assertEqual(xf.reason_info({"reason_ja": "", "origin": "call2"}), ("", "none_not_generated"))
+
+    def test_form_data_reuses_existing_gloss_and_reason_verbatim(self):
+        """各データの日本語訳・AI理由が、元のkp_candidates.json(またはTrial-02 trial_result.json)の値と逐語一致(再生成なし)。"""
+        srcs = {
+            "ai_island_temple__a2__prod.json": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_kpbf_ev_01/a2/key_phrases/kp_candidates.json",
+            "ai_island_temple__b1b__prod.json": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_kpbf_ev_01/b1b/key_phrases/kp_candidates.json",
+            "redelivery_fee__a2__prod.json": "er121_output/family_y_production_01/redelivery_fee/run_kpbf_ev_01/key_phrases/a2/kp_candidates.json",
+            "redelivery_fee__b1b__prod.json": "er121_output/family_y_production_01/redelivery_fee/run_kpbf_ev_01/key_phrases/b1b/kp_candidates.json",
+            "melos__a2__prod.json": "er026_output/family_z_production_e2e_01/melos/run_kpbf_ev_01/key_phrases/a2/kp_candidates.json",
+            "monkeys_paw__b1b__prod.json": "docs/research/KP-GATE-DROP-BACKFILL-PRODUCTION-01/replay_results/R5a_Z_monkeys_paw_b1b_frozen_only/kp_candidates_doc.json",
+        }
+        checked = 0
+        for fn, rel in srcs.items():
+            path = os.path.join(ROOT, rel)
+            if not os.path.exists(path):
+                continue
+            src = _j(path)
+            d = _j(os.path.join(FD, "data", fn))
+            by_id = {c["candidate_id"]: c for c in src["candidates"]}
+            for e in d["phrases"] + d["words"]:
+                c = by_id[e["id"]]
+                self.assertEqual(e["ja_gloss"], c["japanese_gloss"], fn + e["term"])
+                self.assertEqual(e["meaning_ja"], c["japanese_gloss"])
+                if e["reason_ja"]:
+                    self.assertEqual(e["reason_ja"], c["reason_ja"])
+                checked += 1
+        self.assertGreater(checked, 30)
+        trial = _j(os.path.join(ROOT, "docs/research/KP-CANDIDATE-PHRASE7-WORD5-TRIAL-02/runs/monkeys_paw__b1b__p7w5__r1/trial_result.json"))
+        by_id = {c["candidate_id"]: c for c in trial["doc"]["candidates"]}
+        d = _j(os.path.join(FD, "data", "monkeys_paw__b1b.json"))
+        for e in d["phrases"] + d["words"]:
+            self.assertEqual(e["ja_gloss"], by_id[e["id"]]["japanese_gloss"])
+            self.assertEqual(e["reason_ja"], by_id[e["id"]].get("reason_ja") or "")
+
+    def test_form_has_no_regeneration_or_network_calls_beyond_data_fetch(self):
+        s = open(os.path.join(FD, "index.html"), encoding="utf-8").read() + open(os.path.join(FD, "form_logic.js"), encoding="utf-8").read()
+        for bad in ("api.openai.com", "generativelanguage", "XMLHttpRequest", "sendBeacon"):
+            self.assertNotIn(bad, s)
+        self.assertEqual(s.count("fetch("), 2)         # data/articles.json と data/<article>.json のみ
+
+    def test_page_display_source_is_japanese_gloss(self):
+        """公開ページ/音声のKP日本語意味の元=japanese_gloss(フォームの日本語訳と同一項目)であることの静的照合。"""
+        s = open(os.path.join(ROOT, "er019_family_x_audio_production_runner_01.py"), encoding="utf-8").read()
+        self.assertIn('JA: {kp[\'japanese_gloss\']}', s)
+        self.assertIn('ja_r["display_gloss"] = item["japanese_gloss"]', s)
+
 
 if __name__ == "__main__":
     unittest.main()

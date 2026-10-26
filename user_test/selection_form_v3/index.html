@@ -2,9 +2,10 @@
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>eigo-radio｜学習項目選定</title><link rel="icon" href="data:,">
 <style>
 :root{font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;color:#222;background:#f7f8fa}*{box-sizing:border-box}body{margin:0;padding:20px}.panel{background:white;border:1px solid #dfe3e8;border-radius:16px;max-width:820px;margin:auto;padding:20px}h1{font-size:19px;margin:0 0 4px}.muted,.hint{color:#68717b;font-size:12px}.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0}.stat{border:1px solid #edf0f3;background:#f3f5f7;border-radius:10px;padding:10px;text-align:center;font-size:12px}.stat strong{font-size:18px;display:block;margin:4px}.stat.full{background:#dff3e9;border-color:#249361}.group{background:#f0f2f5;padding:7px 9px;font-size:12px;font-weight:700;border-radius:6px;margin:12px 0 5px}.head,.item{display:grid;grid-template-columns:minmax(0,1fr) repeat(3,52px);align-items:center;gap:4px;padding:9px 4px;border-bottom:1px solid #eee}.head{text-align:center;font-size:13px;font-weight:700}.item label{overflow-wrap:anywhere;font-size:14px}.pick{text-align:center;border-radius:5px;padding:5px}.pick.chosen{background:#e0f2e9}.pick.locked{background:#f0f0f0}.pick input{width:17px;height:17px;accent-color:#217b52;cursor:pointer}.pick input:disabled{cursor:not-allowed}h2{font-size:16px;margin:24px 0 8px}.grammar{border:1px solid #dfe3e8;border-radius:10px;padding:12px;margin:9px 0}.grammar.selected{background:#f3faf6}.grammar p{font-size:14px;line-height:1.7}.grammar .sample{background:#f1f3f5;padding:9px;border-radius:6px;font-style:italic}textarea,select{font:inherit;width:100%;padding:9px;border:1px solid #cdd2d8;border-radius:8px}textarea{min-height:95px;resize:vertical}.actions{display:flex;gap:8px;margin-top:12px}button{border:1px solid #ccc;border-radius:8px;padding:12px 15px;font-weight:600;cursor:pointer;background:#fff}button.primary{background:#20272f;border-color:#20272f;color:#fff;flex:1}.warning{color:#ad4938;font-size:12px;margin-top:8px}.notice{font-size:12px;background:#fff7e3;padding:8px;border-radius:6px;margin:12px 0}@media(max-width:520px){body{padding:8px}.panel{padding:12px}.stats{grid-template-columns:repeat(2,1fr)}.head,.item{grid-template-columns:minmax(0,1fr) repeat(3,42px)}.pick{padding:4px}}
+.lab{min-width:0}.ja{font-size:13px;margin-top:3px;line-height:1.5}.gl{display:inline-block;font-size:11px;font-weight:700;border-radius:4px;padding:1px 6px;margin-right:4px;white-space:nowrap}.gl-official{background:#dff3e9;color:#17623f}.gl-provisional{background:#fff3d6;color:#8a5a00}.gl-missing{background:#fde4e0;color:#ad4938}.why{font-size:12px;margin-top:3px;color:#555}.why summary{cursor:pointer;color:#68717b}.whybody{background:#f6f7f9;border-radius:6px;padding:6px 8px;margin-top:3px;overflow-wrap:anywhere}
 .flag{font-size:11px;color:#8a5a00;background:#fff3d6;border-radius:4px;padding:1px 5px;margin-left:4px;white-space:nowrap}#fallback{margin-top:10px;min-height:120px}[hidden]{display:none!important}
 </style></head><body><main class="panel"><h1>eigo-radio｜学習項目選定</h1><div class="muted">承認フォームv3｜9記事枠｜選定テスト用（Production未連携）</div>
-<p><select id="article" aria-label="記事・レベルを選択"></select></p><div id="srcnote" class="notice" hidden></div><div class="stats" id="stats"></div><div class="hint">各候補は①②③のいずれか1つだけ。①単独で3件、①＋②で5件、①＋②＋③で12件まで。</div><div id="candidates"></div>
+<p><select id="article" aria-label="記事・レベルを選択"></select></p><div id="srcnote" class="notice" hidden></div><div class="stats" id="stats"></div><div class="hint">各候補の日本語訳は、エンドユーザーへ提供予定の日本語意味（既存の生成結果を再利用。AI再生成なし）です。「正式訳」以外は仮訳・未生成で、確定内容として扱われません。「AI理由・確認用」はAIの選定理由で、確認用の参考情報です。<br>各候補は①②③のいずれか1つだけ。①単独で3件、①＋②で5件、①＋②＋③で12件まで。</div><div id="candidates"></div>
 <h2>文法解説 <span class="muted" id="grammarCount"></span></h2><div class="notice" id="grammarNotice" hidden></div><div id="grammars"></div>
 <h2>自由コメント・追加指示</h2><textarea id="comment" placeholder="例：snatch の説明を修正。別の上級単語を2件追加探索してください。"></textarea><div class="actions"><button class="primary" id="send">ChatGPTへ送信</button><button id="copy">選定結果をコピー</button></div><div class="hint">送信はChatGPTへのテキスト受渡しを試みます。サイトのブラウザや環境によって直接送信できない場合はコピーを使用。Claude・Productionへの自動反映はありません。</div><div id="status" class="warning" role="status"></div><textarea id="fallback" readonly hidden aria-label="コピー用テキスト（手動コピー）"></textarea></main>
 <script src="form_logic.js"></script>
@@ -15,7 +16,7 @@ var FL=window.FormLogic;
 var STORE_KEY='eigo-kp-form-v3';
 var esc=function(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
 var $=function(id){return document.getElementById(id)};
-var IDX=null, entry=null, D=null, cache={}, state={};
+var openWhy={}, IDX=null, entry=null, D=null, cache={}, state={};
 try{state=JSON.parse(localStorage.getItem(STORE_KEY)||'{}')}catch(e){state={}}
 function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(state))}catch(e){}}
 function skey(){return FL.stateKey(entry)}
@@ -37,9 +38,11 @@ function render(){
   [{title:'フレーズ',items:d.phrases||[]},{title:'単語',items:d.words||[]}].forEach(function(group){
     html+='<div class="group">'+group.title+'（'+group.items.length+'件）</div>';
     group.items.forEach(function(it){
-      var term=it.term,now=(st.choices||{})[term]||0;
-      var tip=[it.meaning_ja,it.excerpt].filter(Boolean).join('｜');
-      html+='<div class="item"><label'+(tip?' title="'+esc(tip)+'"':'')+'>'+esc(term)+(it.flag?' <span class="flag" title="'+esc(it.flag_note_ja||it.flag)+'">'+esc(it.flag_note_ja||it.flag)+'</span>':'')+'</label>';
+      var term=it.term,now=(st.choices||{})[term]||0,g=FL.glossOf(it),ro=FL.reasonOf(it);
+      var tip=[g.text,it.excerpt].filter(Boolean).join('｜');
+      html+='<div class="item"><div class="lab"><label'+(tip?' title="'+esc(tip)+'"':'')+'>'+esc(term)+'</label>'+(it.flag?' <span class="flag" title="'+esc(it.flag_note_ja||it.flag)+'">'+esc(it.flag_note_ja||it.flag)+'</span>':'')+
+        '<div class="ja"><span class="gl gl-'+g.status+'">'+esc(g.label)+'</span> '+(g.text?'<span class="jatext">'+esc(g.text)+'</span>':'<span class="muted">（日本語訳は未生成です。仮訳は表示しません）</span>')+'</div>'+
+        '<details class="why" data-why="'+esc(term)+'"'+(openWhy[skey()+'|'+term]?' open':'')+'><summary>AI理由・確認用'+(ro.has?'':'（なし）')+'</summary><div class="whybody">'+(ro.has?esc(ro.text):esc(ro.note))+'<br><span class="muted">※確認用情報です。確定内容（英語・日本語訳・解説）ではありません。</span></div></details></div>';
       for(var cat=1;cat<=3;cat++){var ok=FL.allowed(st.choices,tl,term,cat);
         html+='<div class="pick '+(now===cat?'chosen':!ok?'locked':'')+'"><input aria-label="'+esc(term)+' 区分'+cat+'" type="checkbox" data-term="'+esc(term)+'" data-cat="'+cat+'" '+(now===cat?'checked':'')+' '+(!ok?'disabled':'')+'></div>'}
       html+='</div>'});
@@ -48,6 +51,7 @@ function render(){
   document.querySelectorAll('input[data-term]').forEach(function(el){el.addEventListener('change',function(e){
     var t=e.target.dataset.term,k=Number(e.target.dataset.cat);
     if(FL.setChoice(st,tl,t,k,e.target.checked)||!e.target.checked){save();render()}else{render()}})});
+  document.querySelectorAll('details[data-why]').forEach(function(el){el.addEventListener('toggle',function(){openWhy[skey()+'|'+el.dataset.why]=el.open})});
   $('grammarCount').textContent=gch+'/2';
   var gn=$('grammarNotice');
   if(!(d.grammar||[]).length){gn.hidden=false;gn.textContent=d.grammar_note_ja||'文法候補なし'}
@@ -75,16 +79,19 @@ function copyFallback(text){
   var ok=false;try{ok=document.execCommand('copy')}catch(e){}
   return ok;
 }
-$('copy').addEventListener('click',async function(){
-  if(!D){status('この記事枠には選定結果がありません。');return}
+async function doCopy(prefix){
   var text=FL.buildCopyText(D,get());
-  try{await navigator.clipboard.writeText(text);$('fallback').hidden=true;status('選定結果をコピーしました。')}
-  catch(e){status(copyFallback(text)?'選定結果をコピーしました（代替方式）。':'自動コピーできませんでした。下の枠のテキストを手動でコピーしてください。')}
+  try{await navigator.clipboard.writeText(text);$('fallback').hidden=true;status(prefix+'選定結果をコピーしました。')}
+  catch(e){status(prefix+(copyFallback(text)?'選定結果をコピーしました（代替方式）。':'自動コピーできませんでした。下の枠のテキストを手動でコピーしてください。'))}
+}
+$('copy').addEventListener('click',function(){
+  if(!D){status('この記事枠には選定結果がありません。');return}
+  doCopy('');
 });
 $('send').addEventListener('click',function(){
   if(!D){status('この記事枠には選定結果がありません。');return}
   var r=FL.buildChatGptUrl(D,get());
-  if(!r.url){status('送信文が長いため、コピー機能をご利用ください。');return}
+  if(!r.url){doCopy('送信文が長くURLに載せられないため、');return}      // 黙って切り詰めず、全項目入りの選定結果をコピーして誘導する(日本語訳・区分・文法解説全文・コメントを欠落させない)
   window.open(r.url,'_blank','noopener,noreferrer');
   status('ChatGPTの新しい画面を開きました。入力内容が反映されたか確認してください。未送信の場合はコピーをご利用ください。');
 });

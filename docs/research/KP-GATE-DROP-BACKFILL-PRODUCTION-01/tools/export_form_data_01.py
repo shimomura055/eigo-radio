@@ -47,14 +47,48 @@ def flag_notes(c: dict) -> list:
     return notes
 
 
-def entry(c: dict) -> dict:
+REASON_PLACEHOLDERS = ("replay", "mock", "fixture")      # replay/mock fixtureが埋めた非実在の理由(AI理由として表示しない)
+
+
+def gloss_status(c: dict, source_kind: str) -> str:
+    """日本語訳の正式性(委任_02 ①)。official=Production正式経路で生成されgloss整合Gate通過済み(ページ表示・P8-KP音声と同じ`japanese_gloss`)/
+    provisional=意味確認待ち・試作(DEV Trial)・replay由来で正式扱いしない/missing=未生成。仮訳を正式訳として扱わない。"""
+    if not (c.get("japanese_gloss") or "").strip():
+        return "missing"
     fl = c.get("flags") or {}
+    g = (c.get("gates") or {}).get("gloss")
+    if fl.get("gloss_hr_pending") or g == "HR_PENDING":
+        return "provisional"
+    if source_kind == "PRODUCTION_FORMAL_PATH" and g in ("ALIGNED", "HUMAN_RESOLVED"):
+        return "official"
+    return "provisional"
+
+
+def reason_info(c: dict) -> tuple:
+    """(reason_ja, reason_source)。AIが実際に出した理由だけを返す。call1 Prompt 2は理由を出さない(空)/fixture placeholderは理由として扱わない。"""
+    r = (c.get("reason_ja") or "").strip()
+    origin = c.get("origin")
+    if r and r.lower() not in REASON_PLACEHOLDERS:
+        return r, "ai_" + (origin or "unknown")
+    if r:
+        return "", "none_placeholder_not_real"
+    if origin == "call1" or origin is None:
+        return "", "none_call1_has_no_reason"
+    return "", "none_not_generated"
+
+
+def entry(c: dict, source_kind: str = "PRODUCTION_FORMAL_PATH") -> dict:
+    fl = c.get("flags") or {}
+    rj, rsrc = reason_info(c)
     e = {
         "id": c["candidate_id"], "term": c.get("used_form") or c.get("selection_phrase"),
         "meaning_ja": c.get("japanese_gloss") or "", "excerpt": c.get("source_sentence") or "",
+        "ja_gloss": c.get("japanese_gloss") or "", "ja_gloss_status": gloss_status(c, source_kind),
+        "ja_gloss_source": "kp_candidates.japanese_gloss(ページ表示・P8-KP音声の元と同一項目。AI再生成なし)",
+        "reason_source": rsrc,
         "kind": kind_of(c), "origin": c.get("origin"), "ai_rank": c.get("ai_rank"),
         "auto_eligible": bool(c.get("auto_eligible")), "human_selectable": bool(c.get("human_selectable", True)),
-        "reason_ja": c.get("reason_ja") or "",
+        "reason_ja": rj,
         "flags": {k: fl[k] for k in ("qa_fail", "gloss_hr_pending", "similar_to_ng", "redundant_with", "rescued", "rescue_codes") if k in fl},
     }
     if c.get("selection_phrase") and c.get("selection_phrase") != e["term"]:
@@ -94,7 +128,7 @@ def shortfall_note_ja(doc: dict) -> str:
 def convert(doc: dict, *, slug: str, level: str, name: str, family: str, run: str, source_kind: str, note_ja: str, text_sha256: str | None = None,
             grammar: list | None = None) -> dict:
     cands = sorted(doc.get("candidates") or [], key=lambda c: c.get("ai_rank") or 99)
-    es = [entry(c) for c in cands]
+    es = [entry(c, source_kind) for c in cands]
     bf = doc.get("backfill") or {}
     out = {
         "schema": "eigo_radio_selection_article_v1", "slug": slug, "level": level, "level_label": LEVEL_LABEL.get(level, level), "name": name, "family": family,

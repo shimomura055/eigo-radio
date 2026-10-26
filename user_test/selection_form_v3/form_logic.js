@@ -5,7 +5,7 @@
 })(typeof self !== 'undefined' ? self : this, function () {
   var LIMITS = [3, 5, 12];          // 累積上限: ①<=3, ①+②<=5, ①+②+③<=12
   var GRAMMAR_MAX = 2;
-  var SCHEMA = 'eigo_radio_selection_result_v1';
+  var SCHEMA = 'eigo_radio_selection_result_v2';
 
   function terms(d) { return (d.phrases || []).concat(d.words || []).map(function (x) { return x.term; }); }
   // 現在の候補に存在する語の選択だけを数える(候補データ更新後の古い選択でカウントが狂わないようにするため)
@@ -44,7 +44,40 @@
     var gsel = (d.grammar || []).filter(function (g) { return (st.grammar || {})[g.id]; });
     return { counts: c, groups: groups, grammar: gsel, gids: gids };
   }
-  // 参照HTMLのpayload()と同じ書式(人間可読テキスト)
+  // ---- 日本語訳・AI選定理由(委任_02 ①③) ----
+  // 日本語訳=候補doc既存の japanese_gloss(ページ表示・P8-KP音声の元と同一項目)。AI再生成はしない。status: official|provisional|missing
+  var GLOSS_LABEL = { official: '正式訳', provisional: '仮訳・未確定', missing: '日本語訳未生成' };
+  var CAT_LABEL = { 1: '①Key Phrase', 2: '②追加解説', 3: '③本文意味表示' };
+  var REASON_NONE = {
+    none_call1_has_no_reason: 'AI理由なし(最初の候補生成は選定理由を出さない仕様)',
+    none_placeholder_not_real: 'AI理由なし(試験用の仮文言のため非表示)',
+    none_not_generated: 'AI理由は未生成'
+  };
+  function glossOf(it) {
+    var text = (it.ja_gloss !== undefined ? it.ja_gloss : it.meaning_ja) || '';
+    var st = it.ja_gloss_status || (text ? 'provisional' : 'missing');   // status無しの旧データは正式扱いしない
+    if (!text) st = 'missing';
+    return { text: text, status: st, label: GLOSS_LABEL[st] || st };
+  }
+  function reasonOf(it) {
+    var r = (it.reason_ja || '').trim();
+    var src = it.reason_source || (r ? 'ai_unknown' : 'none_not_generated');
+    if (r) return { text: r, source: src, has: true, note: '' };
+    return { text: '', source: src, has: false, note: REASON_NONE[src] || 'AI理由は未生成' };
+  }
+  function allItems(d) { return (d.phrases || []).concat(d.words || []); }
+  function findItem(d, term) { return allItems(d).filter(function (x) { return x.term === term; })[0] || { term: term }; }
+  function itemRecord(it, cat) {
+    var g = glossOf(it), o = { term: it.term, category: cat, category_label: CAT_LABEL[cat], ja_gloss: g.text, ja_gloss_status: g.status };
+    if (it.selection_phrase && it.selection_phrase !== it.term) o.selection_phrase = it.selection_phrase;
+    return o;
+  }
+  function grammarRecord(g) {
+    var full = g.body || '';
+    return { id: g.id, title: g.title, explanation_full: full, explanation_status: full ? 'provided' : 'missing', example: g.example || '' };
+  }
+
+  // 参照HTMLのpayload()と同じ書式(人間可読テキスト)の先頭5ブロック+委任_02の確定内容詳細・AI理由(確認用)
   function buildText(d, st) {
     var s = summary(d, st), c = s.counts, tot = c[0] + c[1] + c[2];
     var lvl = d.level_label || d.level || '';
@@ -54,25 +87,58 @@
       '③ 本文意味表示 (累計=' + tot + '/12): ' + (s.groups[2].join(' / ') || 'なし') + '\n' +
       '文法 (' + s.grammar.length + '/2): ' + (s.grammar.map(function (g) { return g.title; }).join(' / ') || 'なし') + '\n' +
       '自由コメント: ' + (st.comment || 'なし');
+    var lines = ['', '【ユーザー確定内容の詳細(英語表現・日本語訳・区分。後続工程で変更しない)】'];
+    var anyItem = false, unconfirmed = false;
+    s.groups.forEach(function (grp, i) {
+      grp.forEach(function (term) {
+        var r = itemRecord(findItem(d, term), i + 1); anyItem = true; if (r.ja_gloss_status !== 'official') unconfirmed = true;
+        lines.push(r.category_label + '｜' + r.term + '｜日本語訳: ' + (r.ja_gloss || '(未生成)') + '【' + GLOSS_LABEL[r.ja_gloss_status] + '】');
+      });
+    });
+    if (!anyItem) lines.push('(選択なし)');
+    lines.push('【文法解説(選択分の解説全文)】');
+    if (!s.grammar.length) lines.push('(選択なし)');
+    s.grammar.forEach(function (g) {
+      var r = grammarRecord(g);
+      lines.push('・' + r.title + (r.explanation_status === 'provided' ? '\n' + r.explanation_full + (r.example ? '\n例: ' + r.example : '') : '\n【解説本文: 未生成】'));
+    });
+    if (unconfirmed) lines.push('※【仮訳・未確定】【日本語訳未生成】は正式な日本語訳ではありません。確認と修正案の提示を求めます(黙って確定・変更しないこと)。');
+    lines.push('', '【AI選定理由(確認用情報。ユーザーが確定した英語・日本語訳・解説本文とは別。確定内容ではありません)】');
+    var nr = 0;
+    s.groups.forEach(function (grp) { grp.forEach(function (term) {
+      var ro = reasonOf(findItem(d, term)); nr++; lines.push('・' + term + ': ' + (ro.has ? ro.text : '(' + ro.note + ')'));
+    }); });
+    if (!nr) lines.push('(選択なし)');
+    t += lines.join('\n');
     if (d.is_ui_check_dummy) t += '\n※これはUI確認用ダミー記事の操作結果です。正式記事ではない。';
     else t += '\n※未選択候補は不採用。';
     return t;
   }
-  function buildStructured(d, st, now) {
+  // opts.all_candidates=true のとき、未選択を含む全候補(英語・日本語訳・状態・AI理由)も出力(コピー用。URL送信では長さ上限のため省略)
+  function buildStructured(d, st, now, opts) {
     var s = summary(d, st);
-    return {
-      schema: SCHEMA, schema_version: 1, generated_at: now || new Date().toISOString(),
+    var sel = [1, 2, 3].map(function (cat) { return s.groups[cat - 1].map(function (t) { return itemRecord(findItem(d, t), cat); }); });
+    var refs = []; s.groups.forEach(function (grp) { grp.forEach(function (t) { var ro = reasonOf(findItem(d, t)); refs.push({ term: t, reason_ja: ro.text, reason_source: ro.source }); }); });
+    var o = {
+      schema: SCHEMA, schema_version: 2, generated_at: now || new Date().toISOString(),
       article: { slug: d.slug, level: d.level, level_label: d.level_label || '', name: d.name, text_sha256: (d.source || {}).text_sha256 || null },
       candidate_source: (d.source || {}).kind || null,
       limits: { key_phrase: LIMITS[0], key_phrase_plus_extra: LIMITS[1], total_highlight: LIMITS[2], grammar: GRAMMAR_MAX },
-      selection: {
-        key_phrase: s.groups[0], extra_explanation: s.groups[1], meaning_display: s.groups[2],
-        grammar: s.grammar.map(function (g) { return { id: g.id, title: g.title }; })
-      },
-      counts: { key_phrase: s.counts[0], key_phrase_plus_extra: s.counts[0] + s.counts[1], total_highlight: s.counts[0] + s.counts[1] + s.counts[2], grammar: s.grammar.length },
+      user_confirmed_note_ja: 'selection・comment はユーザーが確定した内容(英語表現・日本語訳・区分・文法解説全文)。後続工程で変更しない。ja_gloss_status が official 以外の日本語訳は未確定で、変更が必要なら修正案を提示して再確認を求めること。',
+      selection: { key_phrase: sel[0], extra_explanation: sel[1], meaning_display: sel[2], grammar: s.grammar.map(grammarRecord) },
+      grammar_status: (d.grammar || []).length ? 'candidates_available' : 'no_candidates_ungenerated',
       comment: st.comment || '',
+      ai_reference: { for_reference_only: true, note_ja: 'AIの選定理由は確認用情報です。ユーザーが確定した英語・日本語訳・解説本文ではありません。', items: refs },
+      counts: { key_phrase: s.counts[0], key_phrase_plus_extra: s.counts[0] + s.counts[1], total_highlight: s.counts[0] + s.counts[1] + s.counts[2], grammar: s.grammar.length },
       production_connected: false
     };
+    if (opts && opts.all_candidates) {
+      o.candidates_all = allItems(d).map(function (it) {
+        var g = glossOf(it), ro = reasonOf(it), cat = (st.choices || {})[it.term] || 0;
+        return { term: it.term, category: cat, ja_gloss: g.text, ja_gloss_status: g.status, reason_ja: ro.text, reason_source: ro.source, reason_for_reference_only: true };
+      });
+    }
+    return o;
   }
   var PREFACE = '以下の選定内容を整理し、必要な修正指示と実装範囲を確認してください。Claude Code向け指示案を作成してください。正式Productionへの未承認変更は禁止します。\n\n';
   var URL_MAX = 6000;
@@ -88,7 +154,7 @@
     return { url: null, with_json: false };
   }
   function buildCopyText(d, st, now) {
-    return buildText(d, st) + '\n\n```json\n' + JSON.stringify(buildStructured(d, st, now), null, 1) + '\n```';
+    return buildText(d, st) + '\n\n```json\n' + JSON.stringify(buildStructured(d, st, now, { all_candidates: true }), null, 1) + '\n```';
   }
 
   // ---- データ検証(testとブラウザの双方で使う) ----
@@ -117,6 +183,6 @@
   }
   return { LIMITS: LIMITS, GRAMMAR_MAX: GRAMMAR_MAX, SCHEMA: SCHEMA, terms: terms, counts: counts, allowed: allowed, grammarChosen: grammarChosen,
     grammarCanToggle: grammarCanToggle, setChoice: setChoice, setGrammar: setGrammar, newState: newState, stateKey: stateKey, summary: summary,
-    buildText: buildText, buildStructured: buildStructured, buildChatGptUrl: buildChatGptUrl, buildCopyText: buildCopyText,
+    buildText: buildText, buildStructured: buildStructured, buildChatGptUrl: buildChatGptUrl, buildCopyText: buildCopyText, glossOf: glossOf, reasonOf: reasonOf, itemRecord: itemRecord, grammarRecord: grammarRecord, GLOSS_LABEL: GLOSS_LABEL,
     validateArticle: validateArticle, validateIndex: validateIndex };
 });
