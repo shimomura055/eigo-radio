@@ -543,6 +543,23 @@ class Phase1bArtifactTests(unittest.TestCase):
         self.assertEqual(n, 53)
 
 
+class RecordM5StopCliTests(unittest.TestCase):
+    """委任_04(Fable案B): --record-m5-stop は assemble のみが持ち、既定はFalse(STOPで止まる)。"""
+
+    def test_flag_plumbed_to_assemble_only(self):
+        calls = []
+        orig = m.assemble_case
+        m.assemble_case = lambda w, lv, record_m5_stop=False: (calls.append((w, lv, record_m5_stop)) or {"summary": {}})
+        try:
+            m.main(["assemble", "--work", "melos", "--level", "a2"])
+            m.main(["assemble", "--work", "melos", "--level", "a2", "--record-m5-stop"])
+        finally:
+            m.assemble_case = orig
+        self.assertEqual(calls, [("melos", "a2", False), ("melos", "a2", True)])
+        with self.assertRaises(SystemExit):
+            m.main(["analyze", "--work", "melos", "--level", "a2", "--record-m5-stop"])
+
+
 def hashlib_sha(path):
     import hashlib
     h = hashlib.sha256()

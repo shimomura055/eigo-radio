@@ -41,3 +41,19 @@
 
 - 日次(JST、`daily_dev_cost_01.py`): 委任_03開始前 112.13円 → 組立後 123.31円。1,000円/日以内。暴走疑いなし(再生成0)。
 - 使用モデル・据置理由は委任_02と同一(TTS gemini-2.5-pro-preview-tts / ASR Production cascade、比較条件のため)。
+
+## 委任_04 最終化(API 0・TTS 0。出典: `raw_usage_log.jsonl` provider別、各unit `analysis.json` N5/N6)
+
+| provider | call | 実費(円) |
+|---|---|---|
+| gemini-2.5-pro-preview-tts | 56(53 clip) | 24.1584(0.431円/call、0.456円/clip) |
+| openai ASR(gpt-4o-mini-transcribe) | 猿の手Std15+Adv34+メロスStd13+Adv22=84 | 1.2826 |
+| Azure ASR(Secondary) | 2 | 0.1399 |
+| **Phase 1b合計** | | **25.581 / 100**(clipあたり0.483円) |
+| 委任_04 | 0 | 0 |
+
+- 単位別: 猿の手Std 7.007(15 clip、138.7s) / Adv 7.389(17、149.6s) / メロスStd 6.413(10、122.8s、うちNG clipの3試行分を含む) / Adv 4.772(11、104.8s)。clipあたり生成時間 平均9.7秒(9.25/8.80/12.28/9.53)。
+- k_ctx=56/53=1.057(猿の手・メロスAdv=1.0、メロスStd=1.3)。Production k=1.019、Round 2 base k=1.083。
+- 感情情報LLM(Phase 0)1.011円は別枠(Phase 1a)。感情情報レビューの自動化費用は未計上(要設計)。
+- 日次(JST): 委任_04開始時 約123円(委任_03終了時)。本委任は API 0 のため追加なし。
+- 量産想定Δ/set: +1.80〜+3.26円(`EVAL_01.md` §4)。

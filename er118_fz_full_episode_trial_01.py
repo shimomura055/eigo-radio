@@ -1146,7 +1146,9 @@ def _slice_mp3(x, sr, start_s: float, dur_s: float, mp3: str) -> None:
     sf.write(_abs(mp3), x[int(round(start_s * sr)): int(round((start_s + dur_s) * sr))], sr, format="MP3")
 
 
-def assemble_case(work: str, level: str) -> dict:
+def assemble_case(work: str, level: str, record_m5_stop: bool = False) -> dict:
+    # record_m5_stop=True(委任_04 Fable案B): M-5(3)改訂条件のみ不成立(target_rms一致・非dialogue gain一致)の場合に限り、STOPで止めず判定を変えないまま
+    # 組立・Gate・mp3を完了する(m5_ok=false・C5(ii)不成立は assemble_result に残す。事前登録は再改訂しない)。
     """採用clipだけをTrial音声に置換した trial_run_dir を作り、Productionと同一の run_assembly で通し組立(API 0)。M-1 sha assert → M-4 隔離検査 →
     M-5 3点assert(不一致はSTOP) → C6 Gate → mp3(Trial版・個別A/B)。"""
     import numpy as np
@@ -1180,7 +1182,12 @@ def assemble_case(work: str, level: str) -> dict:
                "n_ng": sum(1 for d in decisions.values() if d["kind"] in ("ng", "ng_confirmed_leak")),
                "n_hold": sum(1 for d in decisions.values() if d["kind"] == "hold_pending_fable_listen"),
                "sha_assert_m1": sha_assert, "original_clash_with_production": orig_clash, "isolation": iso, "compare_m5": cmp_, "saved_at": t.now_jst()}
-        if not cmp_["m5_ok"]:
+        only_m53_fail = bool(cmp_["target_rms_equal"] and not cmp_["nondialogue_gain_mismatch"] and not cmp_["nondialogue_gain_missing_in_trial"]
+                             and cmp_["story_clips_0_is_non_dialogue"] and not cmp_["m5_ok"])
+        if not cmp_["m5_ok"] and record_m5_stop and only_m53_fail:
+            res["STOP_RECORDED_NOT_HALTED"] = ("M-5(3)改訂条件不成立(事前登録どおり C5(ii)不成立 → 候補Status=REJECTED(比較条件不成立))。Fable案B: 判定は変えず組立のみ完了。"
+                                               f"scalar差={cmp_.get('headroom_scalar_diff_db')} dB、条件={cmp_.get('m5_3_conditions')}")
+        elif not cmp_["m5_ok"]:
             res["STOP"] = "M-5: 『差はセリフclipのみ』が組立で崩れた(target_rms/非dialogue gain/headroom.scalar のいずれか不一致)"
             safe_write_json(f"{case_dir(work, level)}/assemble_result.json", res)
             raise SystemExit(f"[STOP] {res['STOP']}: {json.dumps(cmp_, ensure_ascii=False)[:800]}")
@@ -1412,7 +1419,7 @@ def analyze_case(work: str, level: str) -> dict:
               "N2c_length_listen": [cid for cid, c in clips.items() if c["flags"].get("N2c_length_listen")]}
         cond = {"C1_ng_count": n5["ng_clips"], "C1_ok_all_adopted_or_recorded": len(n5["ng_clips"]) <= NG_MAX_RECORDED,
                 "C2_all_production_pass_and_repetition_qa": all(c["adopt"]["kind"] != "ng" for c in clips.values()),
-                "C3_hold_clips": n5["hold_clips"], "C4_all_comparison_valid": all(recs[cid].get("comparison_valid") for cid in clips),
+                "C3_hold_clips": n5["hold_clips"], "C4_all_comparison_valid": all(recs[cid].get("comparison_valid") for cid in clips), "C4_adopted_comparison_valid": all(recs[cid].get("comparison_valid") for cid in clips if ar["decisions"][cid]["adopted"]),
                 "C5_i_selfcheck": jload(f"{case_dir(work, level)}/selfcheck.json")["pass"], "C5_ii_m5": ar["compare_m5"]["m5_ok"], "C5_iii_peak_ok": ar["c5_peak_ok"],
                 "C6_gate": ar["gate_c6"]["ok"], "C7_gen_snapshot_diff_empty": not (gs.get("snapshot_diff", {}).get("runs") or gs.get("snapshot_diff", {}).get("pages")),
                 "C7_no_store_contamination": not (gs.get("store_attribution", {}).get("contaminated")), "C7_mtime_z_hits_empty": not gs.get("mtime_z_production_hits"),
@@ -1445,10 +1452,23 @@ def analyze_all() -> dict:
     n_ng = sum(len(a["N5"]["ng_clips"]) for a in A.values())
     n_hold = sum(len(a["N5"]["hold_clips"]) for a in A.values())
     n_clips = sum(a["N5"]["n_clips"] for a in A.values())
-    cond_all = {k: all(a["conditions"][k] for a in A.values()) for k in ("C4_all_comparison_valid", "C5_i_selfcheck", "C5_ii_m5", "C5_iii_peak_ok", "C6_gate", "C7_gen_snapshot_diff_empty",
+    cond_all = {k: all(a["conditions"][k] for a in A.values()) for k in ("C4_adopted_comparison_valid", "C5_i_selfcheck", "C5_ii_m5", "C5_iii_peak_ok", "C6_gate", "C7_gen_snapshot_diff_empty",
                                                                         "C7_no_store_contamination", "C7_mtime_z_hits_empty", "C7_isolation_ok")}
+    _ck = ("C4_adopted_comparison_valid", "C5_i_selfcheck", "C5_ii_m5", "C5_iii_peak_ok", "C6_gate", "C7_gen_snapshot_diff_empty", "C7_no_store_contamination", "C7_mtime_z_hits_empty", "C7_isolation_ok")
+
+    def _unit_status(a: dict) -> dict:     # 事前登録02 §3 写像を単位別に適用(委任_04: メロスStdのC5(ii)不成立を単位別に表す)
+        failed = [k for k in _ck if not a["conditions"][k]]
+        u_ng, u_hold = len(a["N5"]["ng_clips"]), len(a["N5"]["hold_clips"])
+        if failed or u_ng >= NG_MAX_RECORDED + 1:
+            st = "REJECTED候補(比較条件不成立: " + ",".join(failed) + ")" if failed and u_ng <= NG_MAX_RECORDED else "REJECTED候補(TRIAL_FAILED_QUALITY/方式不安定)"
+        elif u_hold:
+            st = "PHASE1B_DONE_HOLD_PENDING_FABLE_LISTEN"
+        else:
+            st = "PHASE1B_DONE_USER_LISTENING_PENDING" + ("(NG記録付き成立)" if u_ng else "")
+        return {"status": st, "failed_conditions": failed, "n_ng": u_ng, "n_hold": u_hold}
+    status_by_unit = {k: _unit_status(a) for k, a in A.items()}
     if not all(cond_all.values()) or n_ng >= NG_MAX_RECORDED + 1:
-        status = "REJECTED候補(TRIAL_FAILED_QUALITY/方式不安定)"
+        status = "REJECTED候補(単位別に分かれる: status_by_unit参照)" if any(u["status"].startswith("PHASE1B") for u in status_by_unit.values()) else "REJECTED候補(TRIAL_FAILED_QUALITY/方式不安定)"
     elif n_hold:
         status = "PHASE1B_DONE_HOLD_PENDING_FABLE_LISTEN"
     else:
@@ -1479,7 +1499,7 @@ def analyze_all() -> dict:
                     "share_of_70yen": {k: round((v + 2 * llm_per_call) / 70.0, 4) for k, v in tot.items()}}
     spent_total = round(sum(spent.values()), 3)
     wall = sum(a["N6"]["gen_wall_s"] for a in A.values())
-    out = {"managed_id": MANAGED_ID, "status_candidate": status, "n_clips": n_clips, "n_ng": n_ng, "n_hold": n_hold, "conditions_all_units": cond_all,
+    out = {"managed_id": MANAGED_ID, "status_candidate": status, "status_by_unit": status_by_unit, "n_clips": n_clips, "n_ng": n_ng, "n_hold": n_hold, "conditions_all_units": cond_all,
            "c1_recorded": bool(n_ng <= NG_MAX_RECORDED), "spent_phase1b_jpy_by_kind": spent, "spent_phase1b_total_jpy": spent_total,
            "llm_cost_per_call_jpy_phase1a": llm_per_call, "r2_base_k": r2, "k_ctx_by_unit": {k: a["N5"]["k_ctx"] for k, a in A.items()},
            "k_ctx_overall": round(sum(a["N5"]["tts_calls_total_raw_log"] for a in A.values()) / n_clips, 4),
@@ -1531,9 +1551,13 @@ def _level_section(work: str, level: str, A: dict, AR: dict, review: dict, plan:
            f"<div class='note'>採用したTrialセリフ {AR['n_adopted']}/{len(AR['decisions'])} 件" + (f"、現行音声のまま {n_ng} 件（下の各カードに明記）" if n_ng else "（全件Trial音声）") +
            f"。通しの長さ: Trial {_fmt_t(AR['trial_duration_s'])}（{AR['trial_duration_s']:.1f}秒）/ 現行 {_fmt_t(AR['prod_duration_s'])}（{AR['prod_duration_s']:.1f}秒）。"
            "地の文・導入・Key Phrase・まとめ・無音・音量規則は現行と同じで、<b>差はセリフの音声だけ</b>です（Trial版はセリフの長さが変わるため、通し全体の秒数と各セリフの開始時刻が少しずれます）。</div>",
+           ((f"<div class='nowprod'><b>比較条件(音量係数)不成立: Trial版は全体で{AR['compare_m5']['headroom_scalar_diff_db']:+.2f} dB</b>。"
+             "セリフの1箇所（ピークが現行より高く出たセリフ）に対し、本番と同じ音割れ防止の安全弁が全編一律に働き、Trial版全体の音量がわずかに下がっています（相対的な音量バランスは不変）。"
+             "事前に決めた比較条件（差0.1 dB以内）を超えたため、機械判定上は『比較条件不成立』です。方式の品質欠陥ではありませんが、現行版と聴き比べる際は全体が少し小さく聞こえる点にご注意ください。</div>")
+            if AR.get("STOP_RECORDED_NOT_HALTED") else "") +
            "<div class='row'>"
-           f"<div class='col'><div class='lab'>Trial版 通し（セリフ=文脈・感情付きで新規生成）</div><audio id='tf_{level}' controls preload='none' src='{level}/trial_full.mp3'></audio></div>"
-           f"<div class='col'><div class='lab'>現行版 通し（同じ経路でmp3化した再組立。本番公開物ではなくコピー）</div><audio id='pf_{level}' controls preload='none' src='{level}/production_full.mp3'></audio></div></div>"]
+           f"<div class='col'><div class='lab'>Trial版 通し（セリフ=文脈・感情付きで新規生成）</div><audio id='tf_{level}' controls preload='none' src='{work}/{level}/trial_full.mp3'></audio></div>"
+           f"<div class='col'><div class='lab'>現行版 通し（同じ経路でmp3化した再組立。本番公開物ではなくコピー）</div><audio id='pf_{level}' controls preload='none' src='{work}/{level}/production_full.mp3'></audio></div></div>"]
     for ch in AR["chapters"]:
         cid = ch["clip_id"]
         c = A["clips"][cid]
@@ -1541,17 +1565,17 @@ def _level_section(work: str, level: str, A: dict, AR: dict, review: dict, plan:
         rv = review[cid]
         ctx = ctxs[cid]
         spk = ctx["speaker_display"]
-        trial_part = (f"<audio controls preload='none' src='{level}/clips/{cid}_trial.mp3'></audio>" if d["adopted"]
+        trial_part = (f"<audio controls preload='none' src='{work}/{level}/clips/{cid}_trial.mp3'></audio>" if d["adopted"]
                       else f"<div class='nowprod'><b>{H.escape(_KIND_LABEL.get(d['kind'], ''))}</b>。通し版のこの箇所には現行音声を置いています。</div>")
         held = ""
         if d["kind"] == "hold_pending_fable_listen":
-            held = (f"<details><summary>保留中のTrial生成音声（未確認・参考。採用していません）</summary><audio controls preload='none' src='{level}/held/{cid}_generated_unverified.mp3'></audio></details>")
+            held = (f"<details><summary>保留中のTrial生成音声（未確認・参考。採用していません）</summary><audio controls preload='none' src='{work}/{level}/held/{cid}_generated_unverified.mp3'></audio></details>")
         sec.append(
             f"<div class='card'><h2>#{ch['n']} {H.escape(spk)}（{H.escape(c['voice'])}） {('<span class=na>' + H.escape(_KIND_LABEL[d['kind']]) + '</span>') if d['kind'] != 'adopted' else ''}</h2>"
             f"<div class='en'>{H.escape(c['text'])}</div>"
             f"<div class='scene'>場面・演出（日本語要約）: {H.escape(rv['summary_ja'])}</div>{_context_html(ctx)}"
             "<div class='row'>"
-            f"<div class='col'><div class='lab'>現行（Production）</div><audio controls preload='none' src='{level}/clips/{cid}_prod.mp3'></audio></div>"
+            f"<div class='col'><div class='lab'>現行（Production）</div><audio controls preload='none' src='{work}/{level}/clips/{cid}_prod.mp3'></audio></div>"
             f"<div class='col'><div class='lab'>Trial（文脈・感情付き）</div>{trial_part}{held}</div></div>"
             f"<div>通しの該当箇所へ: <button class='btn' onclick=\"seek('pf_{level}',{ch['prod_start']})\">現行 {_fmt_t(ch['prod_start'])}</button>"
             f"<button class='btn' onclick=\"seek('tf_{level}',{ch['trial_start']})\">Trial {_fmt_t(ch['trial_start'])}</button></div>"
@@ -1591,12 +1615,13 @@ def build_pages_all() -> dict:
             key = f"{w}/{lv}"
             ar, an = AR[key], AN[key]
             rows.append(f"<tr><td>{H.escape(WORK_CFG[w]['title_ja'])}</td><td>{LEVELS[lv]['label']}</td><td>{ar['n_adopted']}/{len(ar['decisions'])}</td><td>{ar['n_ng'] + ar['n_hold']}</td>"
-                        f"<td>{_fmt_t(ar['trial_duration_s'])} / {_fmt_t(ar['prod_duration_s'])}</td><td><a href='{w}.html#{lv}'>聴く</a></td></tr>")
+                        f"<td>{_fmt_t(ar['trial_duration_s'])} / {_fmt_t(ar['prod_duration_s'])}</td>"
+                        f"<td>{'比較条件(音量係数)不成立 ' + format(ar['compare_m5']['headroom_scalar_diff_db'], '+.2f') + ' dB' if ar.get('STOP_RECORDED_NOT_HALTED') else '成立'}</td><td><a href='{w}.html#{lv}'>聴く</a></td></tr>")
     body = ("<h1>セリフ音声 全編通しTrial（文脈・感情付き）</h1>"
             "<div class='note'><b>状態: Trial（Production採用ではありません）</b>。『猿の手』『走れメロス』の Standard / Advanced で、セリフ音声を<b>全件</b>「前後の会話・地の文の演出・話者の気持ち」を足した方式で新規生成し、"
             "既存の地の文などと組み合わせて<b>最初から最後まで通して聴ける</b>ようにしました。既存の公開音声は一切差し替えていません。機械指標は開発側の参考で、最終判断はあなたの試聴です。</div>"
             f"<div class='note'>{t.PAGE_VOLUME_NOTE}</div>"
-            "<table class='s'><tr><th>作品</th><th>レベル</th><th>Trial採用セリフ</th><th>現行音声のままの箇所</th><th>通しの長さ（Trial / 現行）</th><th></th></tr>" + "".join(rows) + "</table>"
+            "<table class='s'><tr><th>作品</th><th>レベル</th><th>Trial採用セリフ</th><th>現行音声のままの箇所</th><th>通しの長さ（Trial / 現行）</th><th>比較条件（音量係数）</th><th></th></tr>" + "".join(rows) + "</table>"
             "<h2>聴いていただきたい観点</h2><ol>"
             "<li><b>表現</b>: ①セリフの感情が場面に合っているか ②感情表現が過剰でないか ③前後のセリフと演技がつながっているか ④地の文からセリフへの切り替わりが自然か ⑤通しで聴いたとき現行版より没入感が増すか</li>"
             "<li><b>安定性</b>: ⑥同じ人物の演技に大きなばらつきがないか ⑦感情の強いセリフと弱いセリフで効果がどう違うか ⑧不自然な速度変化・長すぎる間がないか</li></ol>"
@@ -1771,6 +1796,8 @@ def main(argv=None) -> int:
                                     "assemble": "DEV隔離の通し組立+M-5 assert+C6 Gate+mp3(API 0)", "analyze": "解析(API 0)"}[c])
         p.add_argument("--work", choices=tuple(WORK_CFG), required=True)
         p.add_argument("--level", choices=tuple(LEVELS), required=True)
+        if c == "assemble":
+            p.add_argument("--record-m5-stop", action="store_true", help="M-5(3)のみ不成立のunitを、判定を変えずSTOP記録付きで組立完了(委任_04 案B)")
     p = sub.add_parser("dryrun-sinks", help="R-2 書込先dry-run(API 0、netblock harness必須)")
     p.add_argument("--work", choices=tuple(WORK_CFG), default="monkeys_paw")
     p.add_argument("--level", choices=tuple(LEVELS), default="b1b")
@@ -1800,7 +1827,7 @@ def main(argv=None) -> int:
         s = r["summary"]
         print(json.dumps({k: s.get(k) for k in ("n_clips", "n_ok", "n_adopted", "n_hold", "spent_unit_jpy", "spent_phase1b_total_jpy", "wall_s")}, ensure_ascii=False))
     elif a.cmd == "assemble":
-        print(json.dumps(assemble_case(a.work, a.level)["summary"], ensure_ascii=False))
+        print(json.dumps(assemble_case(a.work, a.level, record_m5_stop=a.record_m5_stop)["summary"], ensure_ascii=False))
     elif a.cmd == "analyze":
         print(json.dumps(analyze_case(a.work, a.level)["summary"], ensure_ascii=False))
     elif a.cmd == "analyze-all":
