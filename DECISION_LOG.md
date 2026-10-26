@@ -22558,3 +22558,11 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - **Fable判定**: **VALIDATED(限定)_USER_DECISION_REQUIRED**(Production採用判断はユーザー)。Production不変。限定事項=P7は平均5.4件しか返さない/文学作品Adv(猿の手)でフレーズ枠が記事固有句に偏る/現行側は各level1回のみ/「有用」の閾値次第で6〜7件確保の評価が変わる。
 - **Fable推奨**: 採用(条件付き)=P7→W3をProduction候補生成へ採用、HRで「フレーズ枠/単語枠」を分けて提示、候補上限10。P7要求数5への縮小・単語枠不足許容の明示は採用後の初回運用で観測してから判断(追加Trial不要)。採用時のユーザー承認事項=(a)Prompt 2/2-V→P7/W3置換、(b)`KP_CANDIDATE_MAX=8`→10、(c)HR単語枠の見せ方。
 - 費用: Trial実費38.64円(Guardrail80内)。本SSOT反映はAPI 0・JPY0。
+
+## Family Y Voice候補表 PRODUCTION_WIRED判定(2026-10-26、FAMILY-Y-VOICE-TABLE-PRODUCTION-WIRING-01、OPEN-531/533/535、PM-SSOT-SYNC-08、API 0・転記)
+
+- **Fable判定**: FAMILY-Y-VOICE-TABLE-PRODUCTION-WIRING-01 = **PRODUCTION_WIRED**(2026-10-26、ユーザー承認=APPROVED_FOR_PRODUCTION 2026-10-26)。承認仕様=Y Voice候補表(男Puck/Schedar/Fenrir/Orus/Iapetus、女Zephyr/Kore/Leda/Sulafat/Erinome、Algieba除外)、固定割当Voice 1=Puck・2=Zephyr・3=Schedar(不変)、Z Voice表不変、Y/Z差分は承認済みFamily固有仕様、既存完成音声は差し替えず今後の制作に適用。
+- **根拠**: 実装=`Y_DIALOGUE_VOICE_POOL`(読み取り専用データ)・`FIXED_VOICE_SLOTS`・`verify_voice_assignment`(commit 31c41ea76)、新規test 9件+er121回帰306 PASS、正式CLI runtime evidence Std/Adv Voice 1=Puck 1 attempt(同引数再起動2回でAPI 0)、旧Algieba cache非復活(`voice_guard_cached`)。実費2.511円。PRODUCTION_WIRED判定条件9項目○(7=本sync)。
+- **運用逸脱**: 委任_01の起動手順ミスによる自己発動RESTART_STORMをFable許可で`--clear-stop`(記録済み)。
+- **新規OPEN-535**(旧人間承認記録の扱い、修正へ進む・非blocking)、OPEN-533にPuck実績追記、OPEN-531=CLOSED。
+- 費用: API 0・JPY0。
