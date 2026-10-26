@@ -369,6 +369,8 @@ class TestGateFailClosed(Base):
         self.assertIn("ADV_MINIMAL_FALLBACK", self.reasons(self.gate("b1b")))
         self.mutate("a2", lambda d: d["segments"]["y_lead"].update({"fallback_used": True}))
         self.assertIn("STD_FALLBACK_USED_OR_UNKNOWN", self.reasons(self.gate("a2")))
+        row = next(x for x in self.rj(f"{self.out}/a2/audit/style_actual_vs_approved.json")["rows"] if x["segment"] == "y_lead")
+        self.assertFalse(row["match"])            # 照合表のmatchは『Style一致かつGate違反なし』(fallbackで生成された音声を一致扱いにしない)
 
     def test_japanese_role_measured_from_sent_instruction_not_from_intended_sha(self):
         """Opus M-4/見落とし1: 再利用entryはstyle_profile記録(意図sha)が現行profileで上書きされ自己一致する。送信instruction(style_prefix)が旧Styleなら必ずBLOCK。"""

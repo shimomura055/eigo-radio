@@ -1,0 +1,137 @@
+{
+  "attempt_number": 2,
+  "route": "custom_a3c4625e",
+  "segment_id": "y_voice_2",
+  "theme_id": "run_style_fix_01",
+  "level": "a2",
+  "source_out_path": "er121_output/family_y_production_01/redelivery_fee/run_style_fix_01/a2/narration/y_voice_2.wav",
+  "saved_at": "2026-10-26T21:02:19",
+  "sha256": "88a3685cecfec05a217b8657aec0b4f72dc1ab184e23fa2f5023d93f4d8b6f25",
+  "loop_attempt_index": 2,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Zephyr",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible.",
+  "asr_text": "Having to pay for a redelivery fee doesn't feel right to me. My husband and I are both away at work, so when we can choose a delivery time, we choose a day and time when we know we'll be home. But once, I chose a morning time and the package did not come. I went out to do an errand. When I came back, there was a note saying they had tried to deliver it. There are also many packages where we cannot choose a time. We do not know when they will come either. Before they charge us, I want them to fix two things: come at the time we chose and tell us when the package will arrive. Delivery workers must have a hard time because there are not enough of them. I guess it can't be helped, but I can't accept having to pay for that. Am I wrong to feel this way?",
+  "audio_classification": "NORMALIZED_MATCH",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": false,
+    "duration_seconds": 47.08,
+    "method_a_ngram": {
+      "matches": [
+        {
+          "span_text": " Having  to  pay  for",
+          "n_words": 4,
+          "category": "phrase",
+          "first_start_s": 0.0,
+          "first_end_s": 1.12,
+          "second_start_s": 43.98,
+          "second_end_s": 44.8,
+          "gap_seconds": 42.86,
+          "canonical_repeat_count": 2,
+          "intentional": true,
+          "flagged": false
+        }
+      ],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 159,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.9972,
+          "time_a_seconds": 0.07,
+          "time_b_seconds": 12.97,
+          "lag_seconds": 12.9,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9965,
+          "time_a_seconds": 2.32,
+          "time_b_seconds": 3.59,
+          "lag_seconds": 1.27,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9965,
+          "time_a_seconds": 0.07,
+          "time_b_seconds": 2.31,
+          "lag_seconds": 2.24,
+          "run_length_seconds_at_thresh_0.85": 0.03
+        },
+        {
+          "similarity": 0.9963,
+          "time_a_seconds": 0.11,
+          "time_b_seconds": 18.74,
+          "lag_seconds": 18.63
+        },
+        {
+          "similarity": 0.9962,
+          "time_a_seconds": 12.97,
+          "time_b_seconds": 18.72,
+          "lag_seconds": 5.75
+        }
+      ],
+      "best_run_length_seconds": 0.03,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": false,
+      "local_asr_confirmation": null,
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.44,
+      "time_a": 6.57,
+      "lag": 1.55,
+      "similarity_at_start": 0.7846,
+      "best_run_length_seconds": 0.44,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  },
+  "scg_info": null,
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": true,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "Having to pay for a redelivery fee doesn't feel right to me. My husband and I are both away at work, so when we can choose a delivery time, we choose a day and time when we know we'll be home. But once, I chose a morning time and the package did not come. I went out to do an errand. When I came back, there was a note saying they had tried to deliver it. There are also many packages where we cannot choose a time. We do not know when they will come either. Before they charge us, I want them to fix two things: come at the time we chose and tell us when the package will arrive. Delivery workers must have a hard time because there are not enough of them. I guess it can't be helped, but I can't accept having to pay for that. Am I wrong to feel this way?",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "entity_like_source": []
+    },
+    {
+      "step": "secondary_1",
+      "provider": "azure",
+      "text": "Having to pay for redelivery just doesn't feel right to me. My husband and I are both away at work, so when we can choose a delivery time, we choose a day and time when we know we'll be home. But once I chose a morning time and the package did not come, I went out to do an errand. When I came back, there was a note saying they had tried to deliver it. There are also many packages where we cannot choose a time. We do not know when they will come either.Before they charge us.I want them to fix two things. Come at the time we chose and tell us when the package will arrive.Delivery workers must have a hard time because there are not enough of them. I guess it can't be helped, but I can't accept having to pay for that. Am I wrong to feel this way?",
+      "classification": "NORMALIZED_MATCH",
+      "phrase_list_used": false,
+      "azure_phrase_list_weight": null,
+      "azure_phrase_list": [],
+      "cached": false,
+      "unified_judge_state": "PASS_WITH_WARNING",
+      "entity_like_source": []
+    }
+  ]
+}

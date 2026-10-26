@@ -1,0 +1,135 @@
+{
+  "attempt_number": 1,
+  "route": "custom_a3c4625e",
+  "segment_id": "y_voice_2",
+  "theme_id": "run_style_fix_01",
+  "level": "a2",
+  "source_out_path": "er121_output/family_y_production_01/redelivery_fee/run_style_fix_01/a2/narration/y_voice_2.wav",
+  "saved_at": "2026-10-26T21:01:25",
+  "sha256": "f62f7c4857469d8ad582e7a6e4ea1ad6f83707b7560187c20a55583169687fcf",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Zephyr",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible.",
+  "asr_text": "Having to pay for redelivery just doesn't feel right to me. My husband and I are both away at work, so when we can choose a delivery time, we choose a day and time when we know we'll be home. But once I chose a morning time and the package did not come. I went out to do an errand. When I came back, there was a note saying they had tried to deliver it. There are also many packages where we cannot choose a time. We do not know when they will come either. Before they charge us, I want them to fix two things: come at the time we chose and tell us when the package will arrive. Delivery workers must have a hard time because there are not enough of them. I guess it can't be helped, but I can't accept having to pay for that. Am I wrong to feel this way?",
+  "audio_classification": "NORMALIZED_MATCH",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": false,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": true,
+    "duration_seconds": 46.21,
+    "method_a_ngram": {
+      "matches": [
+        {
+          "span_text": " Having  to  pay  for",
+          "n_words": 4,
+          "category": "phrase",
+          "first_start_s": 0.0,
+          "first_end_s": 1.26,
+          "second_start_s": 42.74,
+          "second_end_s": 43.66,
+          "gap_seconds": 41.48,
+          "canonical_repeat_count": 2,
+          "intentional": true,
+          "flagged": false
+        }
+      ],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 157,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.9957,
+          "time_a_seconds": 17.54,
+          "time_b_seconds": 18.63,
+          "lag_seconds": 1.09,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9942,
+          "time_a_seconds": 19.19,
+          "time_b_seconds": 24.17,
+          "lag_seconds": 4.98,
+          "run_length_seconds_at_thresh_0.85": 0.12
+        },
+        {
+          "similarity": 0.994,
+          "time_a_seconds": 0.1,
+          "time_b_seconds": 6.5,
+          "lag_seconds": 6.4,
+          "run_length_seconds_at_thresh_0.85": 0.03
+        },
+        {
+          "similarity": 0.9937,
+          "time_a_seconds": 9.22,
+          "time_b_seconds": 25.76,
+          "lag_seconds": 16.54
+        },
+        {
+          "similarity": 0.9935,
+          "time_a_seconds": 19.21,
+          "time_b_seconds": 26.21,
+          "lag_seconds": 7.0
+        }
+      ],
+      "best_run_length_seconds": 0.12,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": true,
+      "local_asr_confirmation": {
+        "confirmed": true,
+        "overlap_ratio": 0.5,
+        "lcs_words": 6,
+        "window_half_seconds_a": 1.5,
+        "window_half_seconds_b": 1.5,
+        "fragment_a": "I went out to do an errand. When I came back, there was",
+        "fragment_b": "When I came back, there was a note saying they had",
+        "overlap_ratio_threshold": 0.5,
+        "lcs_words_threshold": 3
+      },
+      "flagged": true
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.42,
+      "time_a": 1.13,
+      "lag": 1.92,
+      "similarity_at_start": 0.887,
+      "best_run_length_seconds": 0.42,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  },
+  "scg_info": null,
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": false,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "Having to pay for redelivery just doesn't feel right to me. My husband and I are both away at work, so when we can choose a delivery time, we choose a day and time when we know we'll be home. But once I chose a morning time and the package did not come. I went out to do an errand. When I came back, there was a note saying they had tried to deliver it. There are also many packages where we cannot choose a time. We do not know when they will come either. Before they charge us, I want them to fix two things: come at the time we chose and tell us when the package will arrive. Delivery workers must have a hard time because there are not enough of them. I guess it can't be helped, but I can't accept having to pay for that. Am I wrong to feel this way?",
+      "classification": "NORMALIZED_MATCH",
+      "entity_like_source": []
+    }
+  ]
+}

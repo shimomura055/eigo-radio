@@ -920,7 +920,7 @@ def y_style_gate(theme_out_dir: str, level: str, style_profile: str) -> dict:
                     viol.append("LOCAL_REWRITE_RECOVERY")
                 fin = ev.get("final_style_record") or {}
                 rows.append(_y_row(level, "FULL_STORY", name, entry, prof, ev, "final_style_record(送信style実測)", fin.get("sha256"),
-                                   ev["pass"] and prefix_ok is not False, {"parent_segment": sid, "adv_prefix_startswith_approved": prefix_ok,
+                                   not viol, {"parent_segment": sid, "adv_prefix_startswith_approved": prefix_ok,
                                                                           "style_prefix_len": fin.get("len")}))
             extra.append({"segment": name, "violations": viol})
         if all_evaluated:
