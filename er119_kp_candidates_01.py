@@ -154,6 +154,111 @@ def _hr_pending(item: dict) -> bool:
     return item.get("gloss_alignment_status") in (ga.STATUS_HR_REQUIRED, ga.STATUS_OLD_FAILED)
 
 
+def _screen_human_ng(originals: list, meta: list, ng_entries: list, dropped: list) -> list:
+    """選定表層形でHuman NGを再照合し、通った項目のindex listを返す(NG一致はdroppedへstage=human_ng)。"""
+    live = []
+    for i, (o, m) in enumerate(zip(originals, meta)):
+        if rv.match_ng({"candidate_id": rv.candidate_id_for(m["selection_phrase"]), "selection_phrase": m["selection_phrase"], "used_form": ""},
+                       ng_entries) == "exact":
+            dropped.append({"raw_rank": m["raw_rank"], "phrase": m["selection_phrase"], "stage": "human_ng",
+                            "reasons": ["Humanが不適切(NG)と指定済み"], "origin": m["origin"]})
+        else:
+            live.append(i)
+    return live
+
+
+def _gate_chain(text: str, work: str, article_id: str, process: Optional[str], originals: list, meta: list, live: list, dropped: list, *,
+                ng_entries: list, canon_fn: Callable, src_fn: Optional[Callable], person_repair_fn: Optional[Callable],
+                stages: dict, stage_prefix: str = "") -> dict:
+    """canonicalization(+gloss再整合)以降のGate連鎖(初回・補完で共通。R-6の純抽出)。外側ループの制御(continue/return)は持たず、statusを返す(M-6)。
+    droppedは呼出側のlistへ破壊的に追記する(順序・内容は抽出前と同一)。
+    returns {"status": "OK", "cands": [ai_rank未付与の候補]} | {"status": "CANON_FAILED", "canon_fail": canonicalization status}。"""
+    # ---- canonicalization(+gloss再整合)。INVALIDはitem_reasonsのitemを除外し、残りで再実行。全体PASS/REVIEW_REQUIREDのみ受理(M-7a)
+    canon, merged, canon_fail = None, None, None
+    for rerun in range(MAX_CANON_RERUN + 1):
+        items_for_canon = [dict(originals[i], rank=n) for n, i in enumerate(live, start=1)]
+        canon = canon_fn(text, items_for_canon, work, article_id, process=process)
+        st = canon.get("status")
+        stages[f"{stage_prefix}canonicalization_{rerun}"] = st
+        if st in ("CANONICALIZATION_PASS", "CANONICALIZATION_REVIEW_REQUIRED"):
+            merged = canon["merged"]
+            break
+        bad = _canon_item_failures(work) if st == "CANONICALIZATION_INVALID" else {}
+        if bad and rerun < MAX_CANON_RERUN and len(bad) < len(live):
+            new_live = []
+            for n, i in enumerate(live, start=1):
+                if n in bad:
+                    dropped.append({"raw_rank": meta[i]["raw_rank"], "phrase": meta[i]["selection_phrase"],
+                                    "stage": "canonicalization", "reasons": bad[n], "origin": meta[i]["origin"]})
+                else:
+                    new_live.append(i)
+            live = new_live
+            continue
+        canon_fail = st
+        break
+    if merged is None:
+        return {"status": "CANON_FAILED", "canon_fail": canon_fail}
+    items = [json.loads(json.dumps(x)) for x in merged["items"]]   # rank 1..len(live)
+    idx_of = {it["rank"]: live[it["rank"] - 1] for it in items}      # rank -> originals index
+
+    def drop_rank(rank, stage, reasons):
+        nonlocal items
+        i = idx_of[rank]
+        dropped.append({"raw_rank": meta[i]["raw_rank"], "phrase": meta[i]["selection_phrase"], "stage": stage,
+                        "reasons": list(reasons), "origin": meta[i]["origin"]})
+        items = [x for x in items if x["rank"] != rank]
+    # CMU post-canon
+    chk = cmu.canonicalized_check(items)
+    for b in chk["bad"]:
+        drop_rank(b["rank"], "cmu_post_canon", ["基本形化・一般化後「%s」にCMU未登録語 %s" % (b["used_form"], ", ".join(b["unregistered"] or []))])
+    # 記号
+    findings = sc.detect_key_phrase_symbol_findings(items)
+    for rank in sorted({f["rank"] for f in findings if sc.safety.symbol_gate_requires_stop([f])}):
+        drop_rank(rank, "symbol", [f"音声化禁止記号: {f.get('token')}" for f in findings if f["rank"] == rank])
+    # 人称整合(Z)
+    if person_repair_fn is not None and items:
+        mdoc = person_repair_fn({"items": items})
+        by = {x["rank"]: x for x in mdoc["items"]}
+        items = [by.get(x["rank"], x) for x in items]
+    # SRC D1(Z)
+    if src_fn is not None and items:
+        new_by, drop_by = src_fn(items)
+        for rank, reasons in drop_by.items():
+            if any(x["rank"] == rank for x in items):
+                drop_rank(rank, "src_d1", reasons)
+        items = [new_by.get(x["rank"], x) for x in items]
+    # 候補ID・NG(基本形化後のused_form照合)
+    cands = []
+    for it in items:
+        i = idx_of[it["rank"]]
+        m = meta[i]
+        cand = {"candidate_id": rv.candidate_id_for(m["selection_phrase"]), "selection_phrase": m["selection_phrase"],
+                "used_form": it.get("used_form") or it.get("key_phrase"), "japanese_gloss": it.get("japanese_gloss"),
+                "source_sentence": it.get("source_sentence"), "source_sentence_id": it.get("source_sentence_id"),
+                "word_count": ft.count_words(it.get("used_form") or ""), "reason_ja": m["reason_ja"], "origin": m["origin"],
+                "raw_rank": m["raw_rank"], "item": it}
+        mt = rv.match_ng(cand, ng_entries)
+        mo = er125.ng_match_originals(cand, ng_entries, rv.match_ng, rv.candidate_id_for) if it.get("rescue") else None    # 救済前の元句もHuman NG照合
+        if mt == "exact" or mo == "exact":
+            dropped.append({"raw_rank": m["raw_rank"], "phrase": m["selection_phrase"], "stage": "human_ng",
+                            "reasons": ["基本形化後の表現がNG指定と一致" if mt == "exact" else "救済前の元の表現がNG指定と一致"], "origin": m["origin"]})
+            continue
+        if mt is None and mo == "similar":
+            mt = "similar"
+        qa_fail = it.get("qa_overall_status") == "REVIEW_REQUIRED"
+        hr = _hr_pending(it)
+        sim = mt == "similar"
+        cand["flags"] = {"qa_fail": qa_fail, "gloss_hr_pending": hr, "similar_to_ng": sim, "redundant_with": []}
+        cand["gates"] = {"validate": "PASS", "cmu": "PASS", "canonicalization": "REVIEW_REQUIRED" if qa_fail else "PASS",
+                         "gloss": "HR_PENDING" if hr else "ALIGNED", "symbol": "PASS",
+                         "src_d1": "PASS" if src_fn is not None else "NA"}
+        cand["auto_eligible"] = not (qa_fail or hr or sim)
+        cand["human_selectable"] = True
+        er125.annotate_candidate(cand)     # [H4] 救済の旗・gates・rescueメタ。auto_eligibleは緩めない(AND のみ)
+        cands.append(cand)
+    return {"status": "OK", "cands": cands}
+
+
 def generate_candidates(*args, **kwargs) -> dict:
     """KP候補生成の入口(X/Y/Z共通)。KP-GATE-EXCLUSION-RESCUE-PRODUCTION-WIRING-01 委任_02(Opus M2): 救済フロー(H1/H2)は本関数の実行中
     (er125.rescue_context)だけ有効。終了時(例外含む)に必ず無効へ戻す。引数・戻り値は_generate_candidates_impl(従来の本体)と同一。"""
@@ -221,108 +326,24 @@ def _generate_candidates_impl(text: str, kp_dir: str, article_id: str, source_le
             originals.append(dict(it))
             meta.append({"origin": "call2", "raw_rank": k["raw_rank"], "reason_ja": k["reason_ja"], "selection_phrase": it["display_phrase"]})
         # call 1の件は選定後にHuman NGで落ちることはない(excluded_phrasesで除外済み)。念のため選定表層形でNG再照合
-        live = []
-        for i, (o, m) in enumerate(zip(originals, meta)):
-            if rv.match_ng({"candidate_id": rv.candidate_id_for(m["selection_phrase"]), "selection_phrase": m["selection_phrase"], "used_form": ""},
-                           ng_entries) == "exact":
-                dropped.append({"raw_rank": m["raw_rank"], "phrase": m["selection_phrase"], "stage": "human_ng",
-                                "reasons": ["Humanが不適切(NG)と指定済み"], "origin": m["origin"]})
-            else:
-                live.append(i)
+        live = _screen_human_ng(originals, meta, ng_entries, dropped)
         if not live:
             entry["failure"] = "no_live_items"
             log.append(entry)
             if last:
                 return {"ok": False, "status": "OUTER_RETRY_EXHAUSTED", "outer_retry_log": log}
             continue
-        # ---- canonicalization(+gloss再整合)。INVALIDはitem_reasonsのitemを除外し、残りで再実行。全体PASS/REVIEW_REQUIREDのみ受理(M-7a)
-        canon, merged, canon_fail = None, None, None
-        for rerun in range(MAX_CANON_RERUN + 1):
-            items_for_canon = [dict(originals[i], rank=n) for n, i in enumerate(live, start=1)]
-            canon = canon_fn(text, items_for_canon, work, article_id, process=process)
-            st = canon.get("status")
-            entry["stages"][f"canonicalization_{rerun}"] = st
-            if st in ("CANONICALIZATION_PASS", "CANONICALIZATION_REVIEW_REQUIRED"):
-                merged = canon["merged"]
-                break
-            bad = _canon_item_failures(work) if st == "CANONICALIZATION_INVALID" else {}
-            if bad and rerun < MAX_CANON_RERUN and len(bad) < len(live):
-                new_live = []
-                for n, i in enumerate(live, start=1):
-                    if n in bad:
-                        dropped.append({"raw_rank": meta[i]["raw_rank"], "phrase": meta[i]["selection_phrase"],
-                                        "stage": "canonicalization", "reasons": bad[n], "origin": meta[i]["origin"]})
-                    else:
-                        new_live.append(i)
-                live = new_live
-                continue
-            canon_fail = st
-            break
-        if merged is None:
-            entry["failure"] = f"canonicalization_{canon_fail}"
+        # ---- canonicalization(+gloss再整合)以降のGate連鎖(初回・補完で共通の_gate_chain)
+        chain = _gate_chain(text, work, article_id, process, originals, meta, live, dropped, ng_entries=ng_entries, canon_fn=canon_fn,
+                            src_fn=src_fn, person_repair_fn=person_repair_fn, stages=entry["stages"])
+        if chain["status"] != "OK":
+            entry["failure"] = f"canonicalization_{chain['canon_fail']}"
             log.append(entry)
             dropped_all += dropped
             if last:
                 return {"ok": False, "status": "OUTER_RETRY_EXHAUSTED", "outer_retry_log": log}
             continue
-        items = [json.loads(json.dumps(x)) for x in merged["items"]]   # rank 1..len(live)
-        idx_of = {it["rank"]: live[it["rank"] - 1] for it in items}      # rank -> originals index
-
-        def drop_rank(rank, stage, reasons):
-            nonlocal items
-            i = idx_of[rank]
-            dropped.append({"raw_rank": meta[i]["raw_rank"], "phrase": meta[i]["selection_phrase"], "stage": stage,
-                            "reasons": list(reasons), "origin": meta[i]["origin"]})
-            items = [x for x in items if x["rank"] != rank]
-        # CMU post-canon
-        chk = cmu.canonicalized_check(items)
-        for b in chk["bad"]:
-            drop_rank(b["rank"], "cmu_post_canon", ["基本形化・一般化後「%s」にCMU未登録語 %s" % (b["used_form"], ", ".join(b["unregistered"] or []))])
-        # 記号
-        findings = sc.detect_key_phrase_symbol_findings(items)
-        for rank in sorted({f["rank"] for f in findings if sc.safety.symbol_gate_requires_stop([f])}):
-            drop_rank(rank, "symbol", [f"音声化禁止記号: {f.get('token')}" for f in findings if f["rank"] == rank])
-        # 人称整合(Z)
-        if person_repair_fn is not None and items:
-            mdoc = person_repair_fn({"items": items})
-            by = {x["rank"]: x for x in mdoc["items"]}
-            items = [by.get(x["rank"], x) for x in items]
-        # SRC D1(Z)
-        if src_fn is not None and items:
-            new_by, drop_by = src_fn(items)
-            for rank, reasons in drop_by.items():
-                if any(x["rank"] == rank for x in items):
-                    drop_rank(rank, "src_d1", reasons)
-            items = [new_by.get(x["rank"], x) for x in items]
-        # 候補ID・NG(基本形化後のused_form照合)
-        cands = []
-        for it in items:
-            i = idx_of[it["rank"]]
-            m = meta[i]
-            cand = {"candidate_id": rv.candidate_id_for(m["selection_phrase"]), "selection_phrase": m["selection_phrase"],
-                    "used_form": it.get("used_form") or it.get("key_phrase"), "japanese_gloss": it.get("japanese_gloss"),
-                    "source_sentence": it.get("source_sentence"), "source_sentence_id": it.get("source_sentence_id"),
-                    "word_count": ft.count_words(it.get("used_form") or ""), "reason_ja": m["reason_ja"], "origin": m["origin"],
-                    "raw_rank": m["raw_rank"], "item": it}
-            mt = rv.match_ng(cand, ng_entries)
-            mo = er125.ng_match_originals(cand, ng_entries, rv.match_ng, rv.candidate_id_for) if it.get("rescue") else None    # 救済前の元句もHuman NG照合
-            if mt == "exact" or mo == "exact":
-                dropped.append({"raw_rank": m["raw_rank"], "phrase": m["selection_phrase"], "stage": "human_ng",
-                                "reasons": ["基本形化後の表現がNG指定と一致" if mt == "exact" else "救済前の元の表現がNG指定と一致"], "origin": m["origin"]})
-                continue
-            if mt is None and mo == "similar":
-                mt = "similar"
-            qa_fail = it.get("qa_overall_status") == "REVIEW_REQUIRED"
-            hr = _hr_pending(it)
-            sim = mt == "similar"
-            cand["flags"] = {"qa_fail": qa_fail, "gloss_hr_pending": hr, "similar_to_ng": sim, "redundant_with": []}
-            cand["gates"] = {"validate": "PASS", "cmu": "PASS", "canonicalization": "REVIEW_REQUIRED" if qa_fail else "PASS",
-                             "gloss": "HR_PENDING" if hr else "ALIGNED", "symbol": "PASS",
-                             "src_d1": "PASS" if src_fn is not None else "NA"}
-            cand["auto_eligible"] = not (qa_fail or hr or sim)
-            cand["human_selectable"] = True
-            er125.annotate_candidate(cand)     # [H4] 救済の旗・gates・rescueメタ。auto_eligibleは緩めない(AND のみ)
-            cands.append(cand)
+        cands = chain["cands"]
         # ai_rank(Gate通過後の連番。call1の順→call2の順)
         for n, c in enumerate(cands, start=1):
             c["ai_rank"] = n
