@@ -517,7 +517,7 @@ def _assert_kp_review_consistent(ctx, lv, where) -> None:
     khr = _khr()
     src = _kp_src_dir(ctx, lv)
     try:
-        rev = khr.require_final_consistent(src, level=lv, require_src_contract=False)
+        rev = khr.require_final_consistent(src, level=lv, require_src_contract=False, assets_json=f"{_kp_assets_dir(ctx, lv)}/keywords_canonicalized.json")
     except khr.KpReviewNotConfirmed as e:
         raise YKpReviewPending(f"{khr.PENDING_MARKER} {where}: {e}", [{"level": lv, "kp_dir": src, "request_md": khr.paths(src)["request"]}]) from e
     except khr.KpReviewInconsistent as e:
@@ -612,6 +612,7 @@ def stage_kp(ctx) -> dict:
 
         r = _ensure(ctx, prov, f"kp_{lv}", input_sha, f"{ctx.out_dir}/key_phrases/{lv}_result.json", runner)
         install_kp_assets(ctx, lv)
+        _assert_kp_review_consistent(ctx, lv, "stage_kp_post_install")   # 確定内容保護 G1(M-1): 解説LLM/Part 1/Part 2の有料生成の前に確定レコードと照合
         summary[lv] = {"status": r["status"]}
     if pending:
         os.makedirs(ctx.out_dir, exist_ok=True)

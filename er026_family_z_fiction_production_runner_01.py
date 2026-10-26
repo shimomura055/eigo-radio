@@ -1516,7 +1516,7 @@ def _assert_kp_review_consistent(ctx, level: str, where: str) -> None:
     khr = _khr()
     src = _kp_src_dir(ctx, level)
     try:
-        rev = khr.require_final_consistent(src, level=level, require_src_contract=True)
+        rev = khr.require_final_consistent(src, level=level, require_src_contract=True, assets_json=f"{_kp_assets_dir(ctx, level)}/keywords_canonicalized.json")
     except khr.KpReviewNotConfirmed as e:
         raise FamilyZKpReviewPending(f"{khr.PENDING_MARKER} {where}: {e}",
                                      [{"level": level, "kp_dir": src, "request_md": khr.paths(src)["request"]}]) from e
@@ -2059,6 +2059,7 @@ def stage_kp(ctx) -> dict:
             raise FamilyZE2EStop(_gloss_unevaluated_stop_message(lv, [x.get("rank") for x in _uneval]))
         _src_rep = _src_gate(ctx, lv, text)   # SRC D1(z_sentence_id_posthoc_v1): 全経路共通・install_kp_assets前
         dst = install_kp_assets(ctx, lv)
+        _assert_kp_review_consistent(ctx, lv, "stage_kp_post_install")   # 確定内容保護 G1(M-1): _gloss_person_gate/_src_gate/install の後・Adv解説LLM/Part 1/Part 2の有料生成の前
         # OF-KGCPW-16: 監視指標(記録のみ)。再利用でも保存済みresultから読む。
         _res_doc = w62.rj(f"{ctx.out_dir}/key_phrases/{lv}_result.json")
         _canon_doc = _res_doc.get("canonicalization") or {}

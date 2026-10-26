@@ -98,6 +98,30 @@ class KpReviewNotConfirmed(KpReviewInconsistent):
     """Human確認待ち/再選定待ち等で、まだ後段へ進めない状態(失敗ではなく待機。rc=4)。"""
 
 
+class ConfirmedContentIssue(KpReviewNotConfirmed):
+    """CONFIRMED_CONTENT_ISSUE(KP-CONFIRMED-CONTENT-PROTECTION-01 M-3): 確定内容そのものに問題/再確認が必要。AIは黙って変更せずユーザー再確認を待つ(rc=4)。
+    依頼書(request_md)の先頭に『確定内容の確認依頼』節を置く。"""
+
+    def __init__(self, message: str, kp_dir: str = "", issue_path: str = ""):
+        super().__init__(message)
+        self.kp_dir = kp_dir
+        self.issue_path = issue_path
+
+
+class ConfirmedContentIntegrityViolation(KpReviewInconsistent):
+    """INTEGRITY_VIOLATION(M-3): 確定レコードと成果物/候補doc/review がずれた(パイプライン不具合・手編集)。STOP(rc=3相当)。復元は明示コマンドのみ。"""
+
+
+class ConfirmedContentLocked(KpReviewError):
+    """ユーザー確定済みの選定を書き換え得る操作(select/reselect/ng/unng/resolve-gloss/declare-absent)の拒否(M-4)。"""
+
+
+def _cc():
+    """確定内容保護の共通核(er128)。循環importを避けて遅延import。flagの読取点はer128.protection_enabled()のみ(本ファイルは環境変数を読まない)。"""
+    import er128_kp_confirmed_content_01 as cc
+    return cc
+
+
 # ============================================================
 # 基本helper
 # ============================================================
@@ -399,6 +423,7 @@ def add_declaration(*, run_dirs: list, by: str, reason: str, user_ref: str = "",
         raise KpReviewError(f"宣言のsourceが不正です: {source!r}(許可={DECLARATION_SOURCES})")
     if not run_dirs:
         raise KpReviewError("不在宣言には対象のrun dir(--runs)が必須です(範囲・期限付きの宣言は受け付けません)")
+    _cc().guard_declaration(run_dirs)   # M-4: ユーザー確定済みのrunには不在宣言(AUTO)で選定を書き換えない
     rec = {"mode": "auto", "declared_by": by, "declared_at": _now(), "source": source, "reason": reason,
            "user_ref": user_ref or "", "rounds": list(rounds) if rounds else [1],
            "candidates_sha256": candidates_sha256}
@@ -609,6 +634,8 @@ def op_select(kp_dir: str, *, kp_ranks: list, vocab_ranks: Optional[list] = None
         cands = load_candidates(kp_dir, kind)
         if review is None or cands is None:
             raise KpReviewError("候補/reviewがありません(まず制作を実行して候補を生成してください)")
+        if kind == KIND_KP:
+            _cc().guard(kp_dir, "select/--accept-ai")   # M-4: ユーザー確定済みなら拒否(confirm-revise/revokeを案内)
         if review["status"] in (ST_RESELECT, ST_STALE):
             raise KpReviewError(f"status={review['status']}のためselectできません(候補の再生成後に選択してください)")
         if review["candidates_sha256"] != cands["candidates_sha256"]:
@@ -683,6 +710,8 @@ def op_reselect(kp_dir: str, *, ng: Optional[dict] = None, note: str = "", by: s
         cands = load_candidates(kp_dir, kind)
         if review is None or cands is None:
             raise KpReviewError("候補/reviewがありません")
+        if kind == KIND_KP:
+            _cc().guard(kp_dir, "reselect")   # M-4
         if review["status"] in (ST_RESELECT, ST_STALE):
             raise KpReviewError(f"status={review['status']}です(既に再選定要求済み/無効)")
         if review.get("reselect_count", 0) >= RESELECT_MAX:
@@ -714,6 +743,8 @@ def op_ng(kp_dir: str, *, ng: dict, by: str, kind: str = KIND_KP) -> dict:
         review, cands = load_review(kp_dir, kind), load_candidates(kp_dir, kind)
         if review is None or cands is None:
             raise KpReviewError("候補/reviewがありません")
+        if kind == KIND_KP:
+            _cc().guard(kp_dir, "ng")   # M-4
         cm = _cand_map(cands)
         ak = review.get("article_key") or {}
         for rk, reason in ng.items():
@@ -743,6 +774,8 @@ def op_unng(kp_dir: str, *, rank: Optional[int] = None, phrase: Optional[str] = 
         review, cands = load_review(kp_dir, kind), load_candidates(kp_dir, kind)
         if review is None:
             raise KpReviewError("reviewがありません")
+        if kind == KIND_KP:
+            _cc().guard(kp_dir, "unng")   # M-4
         cid = _rank_to_cid(cands, [rank])[0] if rank is not None else None
         ak = review.get("article_key") or {}
         removed = []
@@ -808,6 +841,7 @@ def op_resolve_gloss(kp_dir: str, *, rank: int, gloss: str, by: str, kind: str =
         review, cands = load_review(kp_dir, kind), load_candidates(kp_dir, kind)
         if review is None or cands is None:
             raise KpReviewError("候補/reviewがありません")
+        _cc().guard(kp_dir, "resolve-gloss")   # M-4
         if review["status"] != ST_PENDING:
             raise KpReviewError(f"resolve-glossはPENDING_REVIEWの間だけ使えます(現在{review['status']})")
         c = next((x for x in cands["candidates"] if x["ai_rank"] == rank), None)
@@ -978,6 +1012,7 @@ def finalize_kp(kp_dir: str, *, level: str, redundancy_fn: Optional[Callable] = 
                     review.update(status=ST_PENDING, selection={}, final_qa=None, mode_used=None)
                     _event(review, "final_redundancy_ng", "runner", {"pairs": [list(p) for p in fq["ng_pairs"]]})
                     save_review(kp_dir, review, expected_revision=review["revision"])
+                    _cc().on_final_redundancy_ng(kp_dir, fq["ng_pairs"])   # ユーザー確定レコードは reconfirm_required へ(黙って差し替えない)
                     raise KpReviewPending("確定集合のRedundancy QAがNGでした。選び直してください", [
                         {"level": level, "kp_dir": kp_dir, "reason": "final_redundancy_ng", "request_md": pth["request"]}])
                 review["final_qa"] = fq
@@ -990,6 +1025,15 @@ def finalize_kp(kp_dir: str, *, level: str, redundancy_fn: Optional[Callable] = 
         for it in items + vocab_items:
             if it["candidate_id"] in set(review.get("accepted_qa_fail") or []):
                 it["human_accepted_qa_fail"] = True
+        # G0(確定内容保護): 成果物を(再)書込みする場合だけ、書く前に確定レコードを作成/照合する。既にfinalize済みのidempotent再実行でレコードが無ければ
+        # 旧run扱い(遅延生成しない。M-7)。
+        _need = False
+        for _p, _k, _adv_only in ((pth["kp"], "kp_selection_signature", False), (pth["vocab"], "kp_selection_signature", True), (pth["final"], "selection_signature", False)):
+            if _adv_only and level != "b1b":
+                continue
+            _d = _read_json(_p) if os.path.exists(_p) else None
+            _need = _need or _d is None or _d.get(_k) != sig
+        _cc().on_finalize_pre_write(kp_dir, review, cands, level, fresh=_need)
         wrote = []
         cur = _read_json(pth["kp"]) if os.path.exists(pth["kp"]) else None
         if cur is None or cur.get("kp_selection_signature") != sig:
@@ -1013,6 +1057,7 @@ def finalize_kp(kp_dir: str, *, level: str, redundancy_fn: Optional[Callable] = 
         if curf is None or curf.get("selection_signature") != sig:
             _write_json_atomic(pth["final"], final)
             wrote.append("kp_selection_final.json")
+        _cc().on_finalize_post_write(kp_dir, level)   # G0: 書いた成果物が確定レコードと一致すること
         return {"review": review, "items": items, "vocab_items": vocab_items, "signature": sig, "wrote": wrote}
 
 
@@ -1041,10 +1086,12 @@ def _consumer_checks(items: list, *, require_src_contract: bool) -> list:
     return problems
 
 
-def require_final_consistent(kp_dir: str, *, level: Optional[str] = None, require_src_contract: bool = False) -> Optional[dict]:
+def require_final_consistent(kp_dir: str, *, level: Optional[str] = None, require_src_contract: bool = False,
+                             assets_json: Optional[str] = None) -> Optional[dict]:
     """全消費者の入口で呼ぶ(DESIGN c-2)。review/候補が無い旧run=None(旧run互換)。reviewがあるのに不整合ならKpReviewInconsistent(次コマンド付き)。
     (i)statusが前進可 (ii)selection_signature再計算が一致 (iii)keywords_canonicalized.jsonのcandidate_id集合=selection.kp (iv)vocab_confirmed.json=selection.vocab(Adv)
-    (v)NG交差0 (vi)vocab itemにも消費側検査(M-9)。"""
+    (v)NG交差0 (vi)vocab itemにも消費側検査(M-9)。
+    (vii)G1(確定内容保護): 確定レコードと(候補doc・review・成果物・assets copy[assets_json=Y/Z])の保護フィールド一致(er128.verify_g1)。"""
     pth = paths(kp_dir)
     if not has_review(kp_dir):
         return None
@@ -1081,6 +1128,7 @@ def require_final_consistent(kp_dir: str, *, level: Optional[str] = None, requir
     used = set(sel_ids(sel, "kp")) | set(sel_ids(sel, "vocab"))
     if used & ng_ids:
         raise KpReviewInconsistent(f"KP_NG_INTERSECTION: NG候補が確定集合に含まれています({sorted(used & ng_ids)})")
+    _cc().verify_g1(kp_dir, lv, review, cands, assets_json=assets_json)
     return review
 
 
@@ -1312,6 +1360,14 @@ def ensure_kp_review(kp_dir: str, *, run_dir: str, family: str, slug: str, level
     # 候補/reviewの整合(片方だけ・本文変更)
     if cands is not None and review is None:
         raise KpReviewInconsistent("候補ファイルだけがあり、reviewがありません(手動削除の疑い)。fail-closed。状況をFableへ報告してください")
+    if cands is not None and cands.get("text_sha256") != text_sha and review is not None:
+        # 確定内容保護(M-4/M-8): ユーザー確定済みの選定がある状態で本文が変わった場合は、有料の候補再生成・確定物の退避の前にISSUEで止める(再バインドは委任_02B)
+        if _cc().stale_issue(kp_dir, text_sha):
+            ng_ent0 = ng_entries_of(review, family, slug, level)
+            _write_text_atomic(pth["request"], _cc().request_notice(kp_dir) + render_request_md(cands, review, run_hint=run_hint, ng_entries=ng_ent0))
+            pend = pending_summary(kp_dir, level)
+            pend["reason"] = "confirmed_content_issue"
+            return {"state": "PENDING", "pending": pend, "generated": False}
     if cands is not None and cands.get("text_sha256") != text_sha:
         # 本文が変わった(Writer再生成): 旧候補/review/確定物をSUPERSEDEDへ退避しNGは保持して候補を再生成(STALE)
         tag = "SUPERSEDED"
@@ -1368,7 +1424,7 @@ def ensure_kp_review(kp_dir: str, *, run_dir: str, family: str, slug: str, level
                 review = save_review(kp_dir, review, expected_revision=review["revision"])
         else:
             ng_ent = ng_entries_of(review, family, slug, level)
-            _write_text_atomic(pth["request"], render_request_md(cands, review, run_hint=run_hint, ng_entries=ng_ent))
+            _write_text_atomic(pth["request"], _cc().request_notice(kp_dir) + render_request_md(cands, review, run_hint=run_hint, ng_entries=ng_ent))
             return {"state": "PENDING", "pending": pending_summary(kp_dir, level), "generated": generated}
     if review["status"] in FORWARD_STATUSES:
         try:
@@ -1376,7 +1432,7 @@ def ensure_kp_review(kp_dir: str, *, run_dir: str, family: str, slug: str, level
         except KpReviewPending:
             rv2 = load_review(kp_dir)
             ng_ent = ng_entries_of(rv2, family, slug, level)
-            _write_text_atomic(pth["request"], render_request_md(cands, rv2, run_hint=run_hint, ng_entries=ng_ent))
+            _write_text_atomic(pth["request"], _cc().request_notice(kp_dir) + render_request_md(cands, rv2, run_hint=run_hint, ng_entries=ng_ent))
             return {"state": "PENDING", "pending": pending_summary(kp_dir, level), "generated": generated}
         return {"state": "FINALIZED", "final": fin, "generated": generated}
     raise KpReviewError(f"想定外のstatus={review['status']}")
