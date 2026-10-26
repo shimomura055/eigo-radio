@@ -1,0 +1,532 @@
+{
+  "full_story_part3_c10": {
+    "state": "HUMAN_REVIEW_REQUIRED",
+    "canonical_text_sha256": "36e6c2d26092deb3840a262f858e1946b4608672819bfb8152c7f6ee3bbc3287",
+    "language": "en",
+    "theme_id": "full_story_part3_c10",
+    "level": "a2",
+    "segment_id": "full_story_part3_c10",
+    "updated_at": "2026-10-26T09:56:29",
+    "reason": "最終status=STOPPED。3回試行してもASR検証に合格しませんでした",
+    "final_status": "STOPPED",
+    "wav_path": "er118_output/fz_full_episode_trial_01/melos/a2/gen/full_story_part3_c10/a2/narration/full_story_part3_c10.wav",
+    "cumulative_tts_attempts": 3,
+    "cumulative_asr_calls": 3,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "How can a man win such trust?",
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 1,
+          "script_version": "v0",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "full_story_part3_c10",
+          "audio_sha256": "ec58f77cb3d524589e78d1583be6bfbb5ec492dc874dd5fce217bddfa8f9e825",
+          "primary": {
+            "text": "How can a man win such trust?",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 29,
+            "secondary_len": null,
+            "max_len": 46,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "full_story_part3_c10",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 0,
+              "hits": 0
+            }
+          }
+        },
+        "instruction_type": "english_style_prefix_wide_margin",
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "verified": false,
+        "trim_info": {
+          "raw_duration_seconds": 3.651,
+          "raw_leading_silence_seconds": 0.4,
+          "raw_trailing_silence_seconds": 0.24,
+          "trimmed_duration_seconds": 3.601,
+          "leading_margin_retained_seconds": 0.35,
+          "trailing_margin_retained_seconds": 0.24
+        },
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": true,
+          "duration_seconds": 3.601,
+          "method_a_ngram": {
+            "matches": [],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 7,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.9888,
+                "time_a_seconds": 1.16,
+                "time_b_seconds": 2.22,
+                "lag_seconds": 1.06,
+                "run_length_seconds_at_thresh_0.85": 0.04
+              },
+              {
+                "similarity": 0.9875,
+                "time_a_seconds": 1.21,
+                "time_b_seconds": 2.21,
+                "lag_seconds": 1.0,
+                "run_length_seconds_at_thresh_0.85": 0.05
+              },
+              {
+                "similarity": 0.9824,
+                "time_a_seconds": 1.19,
+                "time_b_seconds": 2.19,
+                "lag_seconds": 1.0,
+                "run_length_seconds_at_thresh_0.85": 0.07
+              },
+              {
+                "similarity": 0.9807,
+                "time_a_seconds": 1.25,
+                "time_b_seconds": 2.44,
+                "lag_seconds": 1.19
+              },
+              {
+                "similarity": 0.978,
+                "time_a_seconds": 0.8,
+                "time_b_seconds": 2.55,
+                "lag_seconds": 1.75
+              }
+            ],
+            "best_run_length_seconds": 0.07,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.82,
+            "time_a": 0.92,
+            "lag": 0.53,
+            "similarity_at_start": 0.7202,
+            "best_run_length_seconds": 0.82,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": true
+          },
+          "method_c_v2_window_check": null
+        },
+        "attempt_audio_path": "er118_output/fz_full_episode_trial_01/melos/a2/gen/full_story_part3_c10/a2/narration/attempts/full_story_part3_c10_attempt1_englishstyleprefixwidemargin.wav"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "asr_text": "How can a man win such trust?",
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 2,
+          "script_version": "v0",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "full_story_part3_c10",
+          "audio_sha256": "6fa88d95ac7612b4f2f68eaa38f5c274b8c28c3c8e9e432ae4f3b0451753ff68",
+          "primary": {
+            "text": "How can a man win such trust?",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 29,
+            "secondary_len": null,
+            "max_len": 46,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "full_story_part3_c10",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 0,
+              "hits": 0
+            }
+          }
+        },
+        "instruction_type": "english_style_prefix_wide_margin",
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "verified": false,
+        "trim_info": {
+          "raw_duration_seconds": 3.571,
+          "raw_leading_silence_seconds": 0.52,
+          "raw_trailing_silence_seconds": 0.42,
+          "trimmed_duration_seconds": 3.331,
+          "leading_margin_retained_seconds": 0.35,
+          "trailing_margin_retained_seconds": 0.35
+        },
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": true,
+          "duration_seconds": 3.331,
+          "method_a_ngram": {
+            "matches": [],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 7,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.9923,
+                "time_a_seconds": 0.16,
+                "time_b_seconds": 3.19,
+                "lag_seconds": 3.03,
+                "run_length_seconds_at_thresh_0.85": 0.03
+              },
+              {
+                "similarity": 0.9891,
+                "time_a_seconds": 0.02,
+                "time_b_seconds": 3.23,
+                "lag_seconds": 3.21,
+                "run_length_seconds_at_thresh_0.85": 0.01
+              },
+              {
+                "similarity": 0.9813,
+                "time_a_seconds": 0.2,
+                "time_b_seconds": 3.19,
+                "lag_seconds": 2.99,
+                "run_length_seconds_at_thresh_0.85": 0.01
+              },
+              {
+                "similarity": 0.9711,
+                "time_a_seconds": 0.2,
+                "time_b_seconds": 3.25,
+                "lag_seconds": 3.05
+              },
+              {
+                "similarity": 0.9678,
+                "time_a_seconds": 0.61,
+                "time_b_seconds": 2.3,
+                "lag_seconds": 1.69
+              }
+            ],
+            "best_run_length_seconds": 0.03,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.68,
+            "time_a": 0.74,
+            "lag": 0.63,
+            "similarity_at_start": 0.8794,
+            "best_run_length_seconds": 0.68,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": true
+          },
+          "method_c_v2_window_check": null
+        },
+        "attempt_audio_path": "er118_output/fz_full_episode_trial_01/melos/a2/gen/full_story_part3_c10/a2/narration/attempts/full_story_part3_c10_attempt2_englishstyleprefixwidemargin.wav"
+      },
+      {
+        "attempt": 3,
+        "status": "OK",
+        "asr_text": "How can a man win such trust?",
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 3,
+          "script_version": "v0",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "full_story_part3_c10",
+          "audio_sha256": "665b541edf7ed039ac2783107fc0ca58cfee84fa6fb98384d1bee7ec6d09141e",
+          "primary": {
+            "text": "How can a man win such trust?",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 29,
+            "secondary_len": null,
+            "max_len": 46,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "full_story_part3_c10",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 0,
+              "hits": 0
+            }
+          }
+        },
+        "instruction_type": "english_style_prefix_wide_margin",
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "verified": false,
+        "trim_info": {
+          "raw_duration_seconds": 3.651,
+          "raw_leading_silence_seconds": 0.32,
+          "raw_trailing_silence_seconds": 0.3,
+          "trimmed_duration_seconds": 3.651,
+          "leading_margin_retained_seconds": 0.32,
+          "trailing_margin_retained_seconds": 0.3
+        },
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": true,
+          "duration_seconds": 3.651,
+          "method_a_ngram": {
+            "matches": [],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 7,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.9874,
+                "time_a_seconds": 1.02,
+                "time_b_seconds": 2.06,
+                "lag_seconds": 1.04,
+                "run_length_seconds_at_thresh_0.85": 0.04
+              },
+              {
+                "similarity": 0.9872,
+                "time_a_seconds": 0.69,
+                "time_b_seconds": 3.28,
+                "lag_seconds": 2.59,
+                "run_length_seconds_at_thresh_0.85": 0.02
+              },
+              {
+                "similarity": 0.9863,
+                "time_a_seconds": 0.89,
+                "time_b_seconds": 1.97,
+                "lag_seconds": 1.08,
+                "run_length_seconds_at_thresh_0.85": 0.05
+              },
+              {
+                "similarity": 0.9853,
+                "time_a_seconds": 0.89,
+                "time_b_seconds": 2.01,
+                "lag_seconds": 1.12
+              },
+              {
+                "similarity": 0.984,
+                "time_a_seconds": 0.69,
+                "time_b_seconds": 2.63,
+                "lag_seconds": 1.94
+              }
+            ],
+            "best_run_length_seconds": 0.05,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.67,
+            "time_a": 0.77,
+            "lag": 0.54,
+            "similarity_at_start": 0.765,
+            "best_run_length_seconds": 0.67,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": true
+          },
+          "method_c_v2_window_check": null
+        },
+        "attempt_audio_path": "er118_output/fz_full_episode_trial_01/melos/a2/gen/full_story_part3_c10/a2/narration/attempts/full_story_part3_c10_attempt3_englishstyleprefixwidemargin.wav"
+      }
+    ]
+  }
+}

@@ -30,3 +30,14 @@
 - 日次(JST、`daily_dev_cost_01.py`): 委任開始前 約92.74円 → 停止時 112.13円(本委任14.4円+並行agent分)。1,000円/日以内。
 - Guardrail 100円に対する超過なし。暴走疑いなし(再生成0、無意味なretry 0)。
 - 使用モデル: TTS `gemini-2.5-pro-preview-tts`(Production Zと同一=比較条件)、ASR Production cascade(gpt-4o-mini-transcribe + Azure Secondary)。評価・Trial用途だが、比較条件を現行Production・Round 1/2と揃えるため据置(PM_GOVERNANCE 25節の明示例外理由)。
+
+## 委任_03 Phase 1b 続き(scope=Phase 1b、Guardrail 100円。出典: 同 raw_usage_log.jsonl、unitごとの `gen_summary.json`)
+
+| unit(起動 JST) | 結果 | 実費(円) | wall |
+|---|---|---|---|
+| メロス Standard(09:54:25) | 10 clip中 9 OK・全採用、**part3_c10 は3試行ともASR検証不合格(STOPPED、NG 1)**。再生成せず(M-8) | 6.413 | 122.8秒 |
+| メロス Advanced(09:57:20、間隔≥150秒) | 11/11 OK・各1 call・全採用 | 4.772 | 104.8秒 |
+| **Phase 1b累計** | 53 clip(猿の手32+メロス21)、NG 1 | **25.581 / 100** | - |
+
+- 日次(JST、`daily_dev_cost_01.py`): 委任_03開始前 112.13円 → 組立後 123.31円。1,000円/日以内。暴走疑いなし(再生成0)。
+- 使用モデル・据置理由は委任_02と同一(TTS gemini-2.5-pro-preview-tts / ASR Production cascade、比較条件のため)。

@@ -1,0 +1,121 @@
+{
+  "managed_id": "FZ-DIALOGUE-CONTEXT-FULL-EPISODE-TRIAL-01",
+  "work": "melos",
+  "level": "a2",
+  "run_dir": "er118_output/fz_full_episode_trial_01/melos/a2/run",
+  "decisions": {
+    "full_story_part1_c2": {
+      "adopted": true,
+      "kind": "adopted",
+      "reasons": []
+    },
+    "full_story_part1_c4": {
+      "adopted": true,
+      "kind": "adopted",
+      "reasons": []
+    },
+    "full_story_part1_c6": {
+      "adopted": true,
+      "kind": "adopted",
+      "reasons": []
+    },
+    "full_story_part1_c8": {
+      "adopted": true,
+      "kind": "adopted",
+      "reasons": []
+    },
+    "full_story_part1_c10": {
+      "adopted": true,
+      "kind": "adopted",
+      "reasons": []
+    },
+    "full_story_part3_c2": {
+      "adopted": true,
+      "kind": "adopted",
+      "reasons": []
+    },
+    "full_story_part3_c4": {
+      "adopted": true,
+      "kind": "adopted",
+      "reasons": []
+    },
+    "full_story_part3_c6": {
+      "adopted": true,
+      "kind": "adopted",
+      "reasons": []
+    },
+    "full_story_part3_c8": {
+      "adopted": true,
+      "kind": "adopted",
+      "reasons": []
+    },
+    "full_story_part3_c10": {
+      "adopted": false,
+      "kind": "ng",
+      "reasons": [
+        "C1:status!=OK",
+        "C2:repetition_qa未実施",
+        "C4:comparison_valid=false"
+      ]
+    }
+  },
+  "n_adopted": 9,
+  "n_ng": 1,
+  "n_hold": 0,
+  "sha_assert_m1": {
+    "full_story_part1_c2": true,
+    "full_story_part1_c4": true,
+    "full_story_part1_c6": true,
+    "full_story_part1_c8": true,
+    "full_story_part1_c10": true,
+    "full_story_part3_c2": true,
+    "full_story_part3_c4": true,
+    "full_story_part3_c6": true,
+    "full_story_part3_c8": true
+  },
+  "original_clash_with_production": [],
+  "isolation": {
+    "n_files": 62,
+    "hardlink_or_same_file": [],
+    "result_paths_outside_out_root": [],
+    "ok": true
+  },
+  "compare_m5": {
+    "target_rms_trial": 0.10575,
+    "target_rms_prod": 0.10575,
+    "target_rms_equal": true,
+    "n_nondialogue_gain_labels": 40,
+    "nondialogue_gain_mismatch": [],
+    "nondialogue_gain_missing_in_trial": [],
+    "headroom_trial": {
+      "threshold": 0.98,
+      "peak_before": 0.998039,
+      "cause_piece": "full_story_part3_c4",
+      "cause_piece_peak": 0.998039,
+      "applied": true,
+      "scalar": 0.9819256,
+      "peak_after": 0.98
+    },
+    "headroom_prod": {
+      "threshold": 0.98,
+      "peak_before": 0.9580289,
+      "cause_piece": "full_story_part3_c4",
+      "cause_piece_peak": 0.9580289,
+      "applied": false,
+      "scalar": 1.0,
+      "peak_after": 0.9580289
+    },
+    "headroom_scalar_equal": false,
+    "story_clips_0_is_non_dialogue": true,
+    "headroom_scalar_diff_db": -0.15843,
+    "m5_3_conditions": {
+      "i_cause_trial_dialogue_only": true,
+      "ii_safety_valve_by_design": true,
+      "iii_within_0.1dB": false
+    },
+    "m5_3_recorded_exception": false,
+    "m5_ok": false
+  },
+  "saved_at": "2026-10-26T10:01:24+09:00",
+  "STOP": "M-5: 『差はセリフclipのみ』が組立で崩れた(target_rms/非dialogue gain/headroom.scalar のいずれか不一致)"
+}
