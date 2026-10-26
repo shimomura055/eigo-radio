@@ -602,3 +602,6 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 
 - 2026-10-26 | FAMILY-Y-REDELIVERY-FEE-FINAL-PUCK-01 委任_02 | 『宅配の再配達は有料にすべきか？』完成版(Voice 1=Puck・Adv Comment 2なし)=完成版・ユーザー最終試聴待ち(Fable受入済み)。Fable報告済み(2026-10-26)。URL https://shimomura055.github.io/eigo-radio/user_test/family_y_production_redelivery_fee_02/index.html。新規OPEN-539(UDR-YRF-1)。報告=docs/pm/RESULT_PACKET_YRF2.md
 - 2026-10-26 | PM-SSOT-SYNC-10 | 本件(上記転記、OPEN-539起票・OPEN-535追記・CURRENT_SPEC公開一覧_02・UDR-YRF-1、API 0・JPY0)。
+- 2026-10-26 | TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 | ユーザー決定受領(Family XYZ TTS Retry・Fallback・LR統一=APPROVED_FOR_PRODUCTION、到達目標=全部位PRODUCTION_WIRED)。OPEN-540起票。UDR-TRA-1/2は決定済み。原文=docs/pm/delegation_log/2026-10-26_TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01_USER.md。
+- 2026-10-26 | TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_01 | 設計(read-only・JPY0)開始。完了後Opus条件A→実装。
+- 2026-10-26 | PM-SSOT-SYNC-11 | 本件(上記ユーザー決定転記、OPEN-540起票・OPEN-528(1)/536解決・OPEN-376/312/538/274追記、UDR更新、API 0・JPY0)。
