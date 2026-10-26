@@ -11,6 +11,7 @@
 """
 from __future__ import annotations
 
+import functools
 import json
 import os
 import shutil
@@ -21,6 +22,7 @@ import er003_key_words_gloss_alignment as ga
 import er003_v1_n3_01_scaffold_generate as sc
 import er105_kp_fulltext_selector_01 as ft
 import er108_kp_cmu_lexicon_gate_01 as cmu
+import er125_kp_rescue_production_01 as er125
 import er119_kp_human_review_01 as rv
 import er119_kp_prompt_2v_01 as p2v
 
@@ -80,6 +82,9 @@ def run_vocab_selection(text: str, units: list, already_items: list, excluded: l
             stage = "validate" if reasons else None
             if not reasons and any(pk == k or _containment(pk, k) for k in already_keys):
                 reasons, stage = ["前記の選定済み表現と同一または包含関係(重複)"], "duplicate_of_top3"
+            opk = ft.phrase_key((rec.get("selection_rescue") or {}).get("original_phrase") or "") if rec.get("selection_rescue") else None
+            if not reasons and opk and opk in ex_keys and pk not in ex_keys:       # R6: 救済前の元句が除外指定(Human NG/外側retry)なら救済形も除外
+                pk = opk
             if not reasons and pk in ex_keys:
                 e = ex_keys[pk]
                 reasons, stage = ["除外指定の語句(" + (" / ".join(e.get("reasons") or ["不適合"])) + ")"], e.get("source") or "excluded"
@@ -149,7 +154,14 @@ def _hr_pending(item: dict) -> bool:
     return item.get("gloss_alignment_status") in (ga.STATUS_HR_REQUIRED, ga.STATUS_OLD_FAILED)
 
 
-def generate_candidates(text: str, kp_dir: str, article_id: str, source_level: str, level: str, round_no: int, ng_entries: list, *,
+def generate_candidates(*args, **kwargs) -> dict:
+    """KP候補生成の入口(X/Y/Z共通)。KP-GATE-EXCLUSION-RESCUE-PRODUCTION-WIRING-01 委任_02(Opus M2): 救済フロー(H1/H2)は本関数の実行中
+    (er125.rescue_context)だけ有効。終了時(例外含む)に必ず無効へ戻す。引数・戻り値は_generate_candidates_impl(従来の本体)と同一。"""
+    with er125.rescue_context():
+        return _generate_candidates_impl(*args, **kwargs)
+
+
+def _generate_candidates_impl(text: str, kp_dir: str, article_id: str, source_level: str, level: str, round_no: int, ng_entries: list, *,
                         process: Optional[str] = None, stop_check_fn: Optional[Callable] = None,
                         max_outer: int = sc.KP_OUTER_RETRY_MAX, src_fn: Optional[Callable] = None,
                         person_repair_fn: Optional[Callable] = None, select_fn: Optional[Callable] = None,
@@ -159,7 +171,9 @@ def generate_candidates(text: str, kp_dir: str, article_id: str, source_level: s
     作業はすべて <kp_dir>/kp_candidates/round_<n>/work/ 配下。<kp_dir>/keywords_canonicalized.json には触れない(M-1)。"""
     import er030_key_phrase_db_hybrid_core_01 as core
     select_fn = select_fn or sc.run_key_phrase_selection
-    canon_fn = canon_fn or sc.run_key_phrase_canonicalization
+    if canon_fn is None:
+        # [H3'] 救済有効(文脈内かつkill switch未OFF)のときだけ rescue=True を明示。無効ならこれまでと同一の関数をそのまま使う。test注入のcanon_fnは影響を受けない
+        canon_fn = functools.partial(sc.run_key_phrase_canonicalization, rescue=True) if er125.rescue_active() else sc.run_key_phrase_canonicalization
     redundancy_fn = redundancy_fn or sc.run_key_phrase_redundancy_qa
     work = f"{kp_dir}/kp_candidates/round_{round_no}/work"
     os.makedirs(work, exist_ok=True)
@@ -291,10 +305,13 @@ def generate_candidates(text: str, kp_dir: str, article_id: str, source_level: s
                     "word_count": ft.count_words(it.get("used_form") or ""), "reason_ja": m["reason_ja"], "origin": m["origin"],
                     "raw_rank": m["raw_rank"], "item": it}
             mt = rv.match_ng(cand, ng_entries)
-            if mt == "exact":
+            mo = er125.ng_match_originals(cand, ng_entries, rv.match_ng, rv.candidate_id_for) if it.get("rescue") else None    # 救済前の元句もHuman NG照合
+            if mt == "exact" or mo == "exact":
                 dropped.append({"raw_rank": m["raw_rank"], "phrase": m["selection_phrase"], "stage": "human_ng",
-                                "reasons": ["基本形化後の表現がNG指定と一致"], "origin": m["origin"]})
+                                "reasons": ["基本形化後の表現がNG指定と一致" if mt == "exact" else "救済前の元の表現がNG指定と一致"], "origin": m["origin"]})
                 continue
+            if mt is None and mo == "similar":
+                mt = "similar"
             qa_fail = it.get("qa_overall_status") == "REVIEW_REQUIRED"
             hr = _hr_pending(it)
             sim = mt == "similar"
@@ -304,6 +321,7 @@ def generate_candidates(text: str, kp_dir: str, article_id: str, source_level: s
                              "src_d1": "PASS" if src_fn is not None else "NA"}
             cand["auto_eligible"] = not (qa_fail or hr or sim)
             cand["human_selectable"] = True
+            er125.annotate_candidate(cand)     # [H4] 救済の旗・gates・rescueメタ。auto_eligibleは緩めない(AND のみ)
             cands.append(cand)
         # ai_rank(Gate通過後の連番。call1の順→call2の順)
         for n, c in enumerate(cands, start=1):
@@ -327,11 +345,14 @@ def generate_candidates(text: str, kp_dir: str, article_id: str, source_level: s
         entry["stages"]["redundancy_qa"] = red["status"]
         n_auto = sum(1 for c in cands if c["auto_eligible"])
         gate_dropped = [d for d in dropped if d["stage"] not in ("human_ng", "overflow", "duplicate_of_top3", "excluded")]
-        entry.update({"n_candidates": len(cands), "n_auto_eligible": n_auto, "n_gate_dropped": len(gate_dropped)})
+        # M3: 救済済みだがauto不可(gloss再整合/QA再判定が未達)の候補はdroppedに入らないため、別途retry条件に数える。F1累積除外には入れない(再選定されてもHR候補として残る)
+        rescued_not_auto = [c["candidate_id"] for c in cands if er125.rescue_blocks_auto(c)]
+        entry.update({"n_candidates": len(cands), "n_auto_eligible": n_auto, "n_gate_dropped": len(gate_dropped),
+                      "n_rescued": sum(1 for c in cands if c.get("rescue")), "rescued_not_auto": rescued_not_auto})
         log.append(entry)
         dropped_all += dropped
         # 外側retry条件(M-7c): AUTO採用可能件数<3 かつ Gate除外が発生 かつ 回数が残っている場合のみ。候補list全体を置き換える。
-        if n_auto < rv.KP_FINAL_MAX and gate_dropped and not last:
+        if n_auto < rv.KP_FINAL_MAX and (gate_dropped or rescued_not_auto) and not last:
             seen = {ft.phrase_key(e["phrase"]) for e in excluded}
             for d in gate_dropped:
                 if ft.phrase_key(d["phrase"]) not in seen:
@@ -350,7 +371,8 @@ def generate_candidates(text: str, kp_dir: str, article_id: str, source_level: s
            "prompt_sha256": {"call1": ft.PROMPT_2_SHA256, "call2": p2v.PROMPT_2V_SHA256},
            "model_requested": ft.SELECTION_MODEL_ID, "model_id": {"call1": sel.get("model_id"), "call2": v2.get("model_id")},
            "generated_at": rv._now(), "round": round_no, "candidates": cands, "dropped": dropped, "redundancy_qa": red,
-           "shortfall": len(cands) < rv.KP_CANDIDATE_MAX, "outer_attempts": outer, "outer_retry_log": log}
+           "shortfall": len(cands) < rv.KP_CANDIDATE_MAX, "outer_attempts": outer, "outer_retry_log": log,
+           "rescue_provenance": er125.provenance()}      # R2: 辞書sha・lexicon_status・rescue_enabled・schema(resume時にドリフトをlogのみ)
     with open(f"{work}/outer_retry_log.json", "w", encoding="utf-8") as f:
         json.dump({"attempts": log, "excluded_phrases": excluded}, f, ensure_ascii=False, indent=2)
     return {"ok": True, "doc": doc}

@@ -16,6 +16,8 @@ API: 本module自体は0(QA再判定・gloss再整合はcallable注入。実call
 """
 from __future__ import annotations
 
+import contextlib
+import contextvars
 import copy
 import hashlib
 import itertools
@@ -51,6 +53,26 @@ def rescue_enabled() -> bool:
     return os.environ.get(KILL_SWITCH_ENV, "1").strip() != "0"
 
 
+# ---- 文脈限定(Opus M2): H1(有限助動詞guardの例外)とH2(選定段の救済)は、KP候補生成(er119.generate_candidates)の実行中だけ有効。
+# 旧経路(er062 run_kp_with_outer_retry_fulltext / er121の旧kp_fnアダプタ / run_selection_gateの他呼出元)では環境変数が既定ONでも発火しない(挙動不変)。
+# contextvarは generate_candidates が開始時にセットし終了時(例外含む)に必ず戻す。thread/asyncioへは自動継承しない(KP経路は同一threadで逐次実行)。
+_rescue_ctx: contextvars.ContextVar = contextvars.ContextVar("kp_rescue_ctx", default=False)
+
+
+@contextlib.contextmanager
+def rescue_context():
+    token = _rescue_ctx.set(True)
+    try:
+        yield
+    finally:
+        _rescue_ctx.reset(token)
+
+
+def rescue_active() -> bool:
+    """H1/H2の発火条件 = kill switch未OFF かつ generate_candidates文脈内。"""
+    return rescue_enabled() and _rescue_ctx.get()
+
+
 # =====================================================================================================
 # 1. 慣用句辞書(Wiktionary Category:English idioms の見出しのみ。data/kp_idiom_lexicon_01/)
 # =====================================================================================================
@@ -58,7 +80,7 @@ LEXICON_DIR = os.path.join(ROOT, "data", "kp_idiom_lexicon_01")
 LEXICON_FILE = "idioms.txt"
 LEXICON_META_FILE = "meta.json"
 DENYLIST_FILE = "denylist.txt"
-DENYLIST_SHA256 = "a8bb01599d69228fe22f5fdebf3a119c3b8cfdf20dfc881085853fa37dc7ca69"      # 除外表(スラング/侮蔑/方言/出来事特定の決まり文句。レビュー済み)のコード側固定sha(コメント行を除いた正規化済み行をLF連結)
+DENYLIST_SHA256 = "5582e366d784a7d31383c68c4c12def6d9adc814c4fd9a0f2b48e5dbfd028fbd"      # 除外表(スラング/侮蔑/方言/出来事特定の決まり文句。レビュー済み)のコード側固定sha(コメント行を除いた正規化済み行をLF連結)
 LEXICON_SHA256 = "5ec8f3aee57745064cbf53d6ab23fa20979a743e1dcb1f1300845bc1439327c1"   # コード側の固定値(メタ側と二重ピン。更新は再レビュー必須)
 LEXICON_MIN_ENTRIES = 5000          # 極端な欠落(部分書込・切れ)を疑う下限。下回れば空表
 
@@ -214,8 +236,8 @@ def idiom_exception(phrase: str, lex: Optional[frozenset] = None) -> Optional[di
 
 def idiom_aux_exception_applies(text: str) -> bool:
     """[H1] 有限助動詞guard(contains_finite_aux_role_based)の例外。句をそのまま(先頭にitを含まない)通してよい場合だけTrue。
-    it付きの完全文は例外にしない(核だけを選定段のrescue_selection_itemで救う)。rescueがkill switchでOFFならFalse。"""
-    if not rescue_enabled():
+    it付きの完全文は例外にしない(核だけを選定段のrescue_selection_itemで救う)。kill switchがOFF、またはgenerate_candidates文脈外(旧経路)ならFalse(M2)。"""
+    if not rescue_active():
         return False
     r = idiom_exception(text)
     return bool(r and r["form"] == "in_place")
@@ -272,7 +294,7 @@ def rescue_selection_item(phrase: str, reasons: list, units: list, *, check_fn: 
       - 理由が『有限助動詞』のみ かつ 先頭がit -> 慣用句の主語除去(核が辞書見出し+構造条件に一致)
     check_fn(phrase)->reasons(空=合格)で救済後の句を再検査する(既定=選定段の通常検査)。再帰呼出しは遮断。
     returns {"phrase", "selection_rescue": {...永続化メタ}} | None。"""
-    if not rescue_enabled() or getattr(_tls, "active", False) or not reasons:
+    if not rescue_active() or getattr(_tls, "active", False) or not reasons:
         return None
     check = check_fn or (lambda p: _default_selection_check(p, units))
     kinds = set()
@@ -546,7 +568,7 @@ def finalize_rescued_items(merged: dict, parsed: dict, original_items: list, tex
             g_ok = gloss_res["status"] == GLOSS_REALIGNED and rank not in gloss_res["unresolved"]
             rec["gloss"] = {"status": GLOSS_REALIGNED if g_ok else (GLOSS_NOT_RUN if gloss_res["status"] == GLOSS_NOT_RUN else GLOSS_FAILED)}
             q = qa_res["by_rank"].get(rank) or {"status": QA_NOT_REJUDGED, "qa": {}}
-            rec["qa"] = {"status": q["status"], "model_id": qa_res.get("model_id")}
+            rec["qa"] = {"status": q["status"], "model_id": qa_res.get("model_id"), **({"error": q["error"]} if q.get("error") else {})}
             if q["status"] in (QA_REJUDGED_PASS, QA_REJUDGED_FAIL):
                 it["qa"] = dict(q["qa"])
                 it["qa_overall_status"] = "REVIEW_REQUIRED" if q["status"] == QA_REJUDGED_FAIL else "PASS"
@@ -577,7 +599,8 @@ def annotate_candidate(cand: dict) -> dict:
     flags, gates = cand.setdefault("flags", {}), cand.setdefault("gates", {})
     if not rs:
         ex = idiom_exception(cand.get("selection_phrase") or "") if rescue_enabled() else None
-        if ex and ex["form"] == "in_place":
+        # R1: 旗は『既存の有限助動詞guardが例外なしなら実際に拒否する句』だけに付ける(have a say等の通常通過句には付けない=HRの誤解防止)
+        if ex and ex["form"] == "in_place" and ft.contains_finite_aux_role_based_raw(cand.get("selection_phrase") or ""):
             flags["idiom_exception"] = ex["headword"]
         return cand
     cand["rescue"] = copy.deepcopy(rs)
@@ -613,11 +636,73 @@ def ng_blocked(cand_or_phrases: Any, ng_entries: list, match_ng_fn: Callable, ca
     return False
 
 
+def rescue_blocks_auto(cand: dict) -> bool:
+    """救済済みでauto不可(gloss再整合/QA再判定が未達)の候補か。外側retry判定(M3)用。rescueなし=False。"""
+    rs = cand.get("rescue")
+    return bool(rs) and not rescue_auto_ok(rs)
+
+
+def ng_match_originals(cand: dict, ng_entries: list, match_ng_fn: Callable, candidate_id_fn: Callable) -> Optional[str]:
+    """R6/Human NG: 救済前の元句(selection.original_phrase / canonicalization.display_phrase)をmatch_ngで照合し、'exact'>'similar'>None を返す
+    (候補自身のselection_phrase/used_formは呼出側が通常どおり照合済み。元句のsimilarもauto不可にするため)。"""
+    rs = cand.get("rescue") or (cand.get("item") or {}).get("rescue") or {}
+    best = None
+    for p in ((rs.get("selection") or {}).get("original_phrase"), (rs.get("canonicalization") or {}).get("display_phrase")):
+        if not p:
+            continue
+        m = match_ng_fn({"candidate_id": candidate_id_fn(p), "selection_phrase": p, "used_form": ""}, ng_entries)
+        if m == "exact":
+            return "exact"
+        if m == "similar":
+            best = "similar"
+    return best
+
+
 def verify_persisted_rescue(cand: dict) -> bool:
-    """resume時の整合確認(再計算ではなく読み戻した内容の自己整合): canonicalization段のvalidator_args_sha256が引数dictと一致するか。
+    """resume時の整合確認(再計算ではなく読み戻した内容の自己整合)。R4で強化:
+    (1) canonicalization段: validator_args_sha256が引数dictと一致 かつ rescued_key == validator_args.key == item.key_phrase(shaは誰でも再計算できるため、
+        3者の値一致で手編集の検出力を補う)。 (2) selection段: rescued_phrase == 候補のselection_phrase(正規化比較)。
     不一致=手編集/破損 -> False(呼出側はfail-closedで候補を信用しない)。"""
     rs = cand.get("rescue") or {}
-    cm = rs.get("canonicalization")
+    cm, sm = rs.get("canonicalization"), rs.get("selection")
+    if cm:
+        va = cm.get("validator_args") or {}
+        if args_sha256(va) != cm.get("validator_args_sha256"):
+            return False
+        item_key = (cand.get("item") or {}).get("key_phrase")
+        if not (cm.get("rescued_key") == va.get("key") and (item_key is None or item_key == va.get("key"))):
+            return False
+    if sm and cand.get("selection_phrase") is not None:
+        if _hw_norm(sm.get("rescued_phrase") or "") != _hw_norm(cand.get("selection_phrase") or ""):
+            return False
+    return True
+
+
+def reverify_persisted_rescue(cand: dict) -> dict:
+    """R4: 保存済みの引数で最終Gate相当のvalidator+CMUを再実行する(決定論・API 0・報告のみ。候補は変更しない)。
+    returns {"checked": bool, "ok": bool|None, "reasons": [...]}。canonicalization段の救済がない候補は checked=False。"""
+    cm = (cand.get("rescue") or {}).get("canonicalization")
     if not cm:
-        return True
-    return args_sha256(cm.get("validator_args") or {}) == cm.get("validator_args_sha256")
+        return {"checked": False, "ok": None, "reasons": []}
+    va = cm.get("validator_args") or {}
+    try:
+        g = _gate(va["key"], va["display"], va["source_span"], va.get("original_span"), frozenset(va.get("role_ok_poss") or ()),
+                  va.get("normalization_reason"))
+    except Exception as e:   # noqa: BLE001  報告のみ
+        return {"checked": True, "ok": False, "reasons": [f"{type(e).__name__}: {e}"]}
+    return {"checked": True, "ok": bool(g["ok"]), "reasons": list(g["reasons"])}
+
+
+def provenance() -> dict:
+    """R2: kp_candidates.jsonのdoc単位に記録する救済の出所(辞書sha・読込状態・有効/無効・schema)。resume時に現在値と比べてドリフトをlogに残す(停止しない)。"""
+    st = lexicon_status()
+    return {"schema": SCHEMA, "rescue_enabled": rescue_enabled(), "lexicon_sha256": st.get("sha"), "lexicon_status": st.get("reason"),
+            "lexicon_n": st.get("n"), "lexicon_pin": LEXICON_SHA256, "denylist_pin": DENYLIST_SHA256}
+
+
+def provenance_drift(saved: Optional[dict]) -> list:
+    """保存済みprovenanceと現在値の差(読み戻し優先のためlogのみ)。救済導入前のdoc(saved=None)は空list。"""
+    if not saved:
+        return []
+    cur = provenance()
+    return [f"{k}: saved={saved.get(k)!r} current={cur.get(k)!r}" for k in cur if saved.get(k) != cur.get(k)]

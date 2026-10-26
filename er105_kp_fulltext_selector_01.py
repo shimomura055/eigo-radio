@@ -247,9 +247,24 @@ def validate_and_resolve(selected: list, units: list) -> dict:
             else:
                 r.append("本文に連続一致しない(変更・言い換え・創作)")
         r.extend(_legacy_form_reasons(phrase))
+        sel_rescue = None
+        if r:
+            # [H2] 選定段の救済(D1再アンカー/慣用句の主語除去)。generate_candidates文脈内のみ発火(Opus M2)。
+            # M1: 救済後の句は『重複』(承認済みblocking条件)を再照合する。重複なら救済せず元のreasonを維持。wc/hits/recは救済後の句で再計算する。
+            res = _rescue().rescue_selection_item(phrase, r, units)
+            if res is not None:
+                new_phrase = res["phrase"]
+                new_key = _normalize_phrase(new_phrase).lower()
+                new_hits = locate_phrase(units, new_phrase)
+                if new_key not in seen and new_hits:
+                    seen.add(new_key)
+                    sel_rescue = res["selection_rescue"]
+                    phrase, key, hits, wc, r = new_phrase, new_key, new_hits, count_words(new_phrase), []
         rec = {"index": idx, "phrase": phrase, "word_count": wc, "declared_word_count": s.get("declared_word_count"),
                "declared_word_count_mismatch": (s.get("declared_word_count") is not None and s.get("declared_word_count") != wc),
                "reasons": r}
+        if sel_rescue is not None:
+            rec["selection_rescue"] = sel_rescue
         if hits:
             first = hits[0]
             rec.update(source_span=first["span"], source_sentence=first["sentence"], source_sentence_id=first["sentence_id"],
@@ -284,6 +299,7 @@ def build_original_items(resolved: list) -> list:
             "occurrence_count": r["occurrence_count"],
             "occurrence_sentence_ids": r["occurrence_sentence_ids"],
             "declared_word_count_mismatch": r["declared_word_count_mismatch"],
+            **({"selection_rescue": r["selection_rescue"]} if r.get("selection_rescue") else {}),   # H2: 永続化メタ(救済なしの項目はキー自体を付けない=従来とバイト同一)
         })
     return items
 
@@ -391,10 +407,14 @@ def apply_exclusions(v: dict, excluded: Optional[list], *, final_attempt: bool, 
     ex = {phrase_key(e["phrase"]): e for e in excluded}
     resolved = [dict(r) for r in v.get("resolved", [])]
     item_reasons = [dict(ir, reasons=list(ir["reasons"])) for ir in v.get("item_reasons", [])]
-    hit_idx = {r["index"] for r in resolved if phrase_key(r["phrase"]) in ex}
+    # R6: 選定段で救済された句は、救済前の元の句もHuman NG/外側retry除外と照合する(canonicalization費用の節約。最終的にはH4のng_blockedでも捕捉)
+    def _orig_key(r):
+        return phrase_key((r.get("selection_rescue") or {}).get("original_phrase") or "") if r.get("selection_rescue") else None
+    hit_idx = {r["index"] for r in resolved if phrase_key(r["phrase"]) in ex or (_orig_key(r) and _orig_key(r) in ex)}
     if not hit_idx:
         return out
-    hits = [{"index": r["index"], "phrase": r["phrase"], "prior_reasons": list(ex[phrase_key(r["phrase"])].get("reasons") or [])}
+    hits = [{"index": r["index"], "phrase": r["phrase"],
+             "prior_reasons": list((ex.get(phrase_key(r["phrase"])) or ex.get(_orig_key(r)) or {}).get("reasons") or [])}
             for r in resolved if r["index"] in hit_idx]
     keep = [r for r in resolved if r["index"] not in hit_idx]
     if final_attempt and len(keep) >= min_keep:
@@ -938,8 +958,25 @@ def finite_aux_roles(text: str) -> list:
     return out
 
 
-def contains_finite_aux_role_based(text: str) -> bool:
+def contains_finite_aux_role_based_raw(text: str) -> bool:
+    """例外なしの有限助動詞guard(従来の判定そのもの)。"""
     return any(role == "aux" for _, role in finite_aux_roles(text))
+
+
+def _rescue():
+    """KP-GATE-EXCLUSION-RESCUE-PRODUCTION-WIRING-01: 救済module(er125)の遅延import(er125はer105をtop-levelでimportするため循環回避)。"""
+    import er125_kp_rescue_production_01 as _r
+    return _r
+
+
+def contains_finite_aux_role_based(text: str) -> bool:
+    """[H1] 従来のguard + 『辞書見出しに一致する助動詞始まりの慣用句』の例外(承認済み: ユーザー採用 2026-10-26)。
+    例外はer125.rescue_active()=KP候補生成(er119.generate_candidates)の文脈内かつkill switch未OFFのときだけ有効(Opus M2)。
+    文脈外(旧経路・test・A/B/C)は従来と完全に同一の戻り値。"""
+    raw = contains_finite_aux_role_based_raw(text)
+    if not raw:
+        return False
+    return not _rescue().idiom_aux_exception_applies(text)
 
 
 LY_ADJ = frozenset({"friendly", "lovely", "lonely", "elderly", "costly", "likely", "unlikely", "silly", "early", "daily", "weekly", "monthly",

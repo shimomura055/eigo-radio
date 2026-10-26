@@ -3,7 +3,8 @@
 
 実行: .venv\\Scripts\\python.exe run_project_regression.py --pattern "er125*_test_*.py"  (または py -m unittest er125_kp_rescue_production_test_01)
 fixture: docs/research/KP-GATE-EXCLUSION-RESCUE-PRODUCTION-WIRING-01/case_fixtures_01.json(除外11件+Human NG 3件の本文・文。frozen)。
-本委任は未配線のため、H1(er105.contains_finite_aux_role_based)の配線後の挙動は `_wired_h1()` でin-memory再現して検証する(委任_02で本物の配線へ置換)。
+委任_02で本物の配線(H1/H2/H3/H4)に置換済み。H1/H2はer125.rescue_context()(=er119.generate_candidatesの実行中)だけ有効(Opus M2)なので、
+本moduleは setUpModule で context ON + EIGO_KP_RESCUE=1 に固定する(シェルのEIGO_KP_RESCUE=0に結果が依存しない)。文脈外(旧経路)は `_outside_ctx()` で検証する。
 """
 from __future__ import annotations
 
@@ -57,23 +58,61 @@ def units_of(case):
     return _UNITS[t]
 
 
-@contextlib.contextmanager
-def _wired_h1():
-    """委任_02のH1配線(er105.contains_finite_aux_role_based の末尾でidiom_aux_exception_appliesを見る)をin-memoryで再現する。"""
-    orig = ft.contains_finite_aux_role_based
+_MOD = {}
 
-    def patched(text):
-        return orig(text) and not r.idiom_aux_exception_applies(text)
-    ft.contains_finite_aux_role_based = patched
+
+def setUpModule():
+    _MOD["env"] = os.environ.get(r.KILL_SWITCH_ENV)
+    os.environ[r.KILL_SWITCH_ENV] = "1"                      # 環境変数を明示固定(OPUS M2: シェルに残ったEIGO_KP_RESCUE=0で結果が変わらない)
+    _MOD["token"] = r._rescue_ctx.set(True)
+
+
+def tearDownModule():
+    r._rescue_ctx.reset(_MOD["token"])
+    if _MOD["env"] is None:
+        os.environ.pop(r.KILL_SWITCH_ENV, None)
+    else:
+        os.environ[r.KILL_SWITCH_ENV] = _MOD["env"]
+
+
+@contextlib.contextmanager
+def _outside_ctx():
+    """generate_candidates文脈の外(旧経路・A/B/C・他呼出元)を再現する。"""
+    tok = r._rescue_ctx.set(False)
     try:
         yield
     finally:
-        ft.contains_finite_aux_role_based = orig
+        r._rescue_ctx.reset(tok)
 
 
-def sel_reasons(phrase, units):
-    v = ft.validate_and_resolve([{"phrase": phrase, "declared_word_count": None}], units)
-    return [x for ir in v["item_reasons"] for x in ir["reasons"] if not x.startswith("件数が")]
+@contextlib.contextmanager
+def _env(val):
+    prev = os.environ.get(r.KILL_SWITCH_ENV)
+    os.environ[r.KILL_SWITCH_ENV] = val
+    try:
+        yield
+    finally:
+        if prev is None:
+            os.environ.pop(r.KILL_SWITCH_ENV, None)
+        else:
+            os.environ[r.KILL_SWITCH_ENV] = prev
+
+
+@contextlib.contextmanager
+def _wired_h1():
+    """(互換名)H1は本物の配線済み。文脈ON(setUpModule)の下でそのまま実行する。"""
+    yield
+
+
+def sel_reasons(phrase, units, ctx=False):
+    """既定(ctx=False)は文脈外=救済前の素の除外理由(rescue_selection_itemへ渡す入力)。ctx=Trueは配線後(H1/H2有効)の結果。"""
+    def run():
+        v = ft.validate_and_resolve([{"phrase": phrase, "declared_word_count": None}], units)
+        return [x for ir in v["item_reasons"] for x in ir["reasons"] if not x.startswith("件数が")]
+    if ctx:
+        return run()
+    with _outside_ctx():
+        return run()
 
 
 def llm_item(rank, key, reason="lemma_normalization", changed=True, qa_fail=()):
@@ -158,17 +197,21 @@ class TestEleven(unittest.TestCase):
             self.assertIsNotNone(res)
             self.assertEqual(res["selection_rescue"]["code"], r.R_IDIOM_CORE)
             self.assertEqual(res["phrase"], "can’t be helped")
-            self.assertEqual(sel_reasons(res["phrase"], u), [])
+            self.assertEqual(sel_reasons(res["phrase"], u, ctx=True), [])
             o = original_item(c, display=res["phrase"])
             self.assertTrue(kc.validate_canonicalization_item(res["phrase"], res["phrase"], view_span(o), normalization_reason="none",
                                                               original_span=o["source_span"], allow_inflection_normalization=True)["ok"])
             self.assertEqual(cmu.reasons_for_phrase(res["phrase"]), [])
 
-    def test_7b_without_h1_wiring_core_is_not_accepted(self):
+    def test_7b_outside_generate_candidates_context_not_rescued_M2(self):
         c = CASE[7]
         u = units_of(c)
         rs = sel_reasons(c["display"], u)
-        self.assertIsNone(r.rescue_selection_item(c["display"], rs, u))                 # 未配線(現Production)では従来どおり除外
+        with _outside_ctx():                                                              # 旧経路(文脈外)は環境変数が既定ONでも従来どおり除外
+            self.assertTrue(r.rescue_enabled())
+            self.assertIsNone(r.rescue_selection_item(c["display"], rs, u))
+            self.assertFalse(r.idiom_aux_exception_applies("might as well"))
+            self.assertTrue(ft.contains_finite_aux_role_based("might as well"))
 
     def test_8_redelivery_fee_cmu_not_rescued(self):
         c = CASE[8]
@@ -183,7 +226,7 @@ class TestEleven(unittest.TestCase):
         c = CASE[9]
         u = units_of(c)
         with _wired_h1():
-            self.assertEqual(sel_reasons(c["display"], u), [])
+            self.assertEqual(sel_reasons(c["display"], u, ctx=True), [])
             self.assertTrue(r.idiom_aux_exception_applies(c["display"]))
         self.assertTrue(any("有限助動詞" in x for x in sel_reasons(c["display"], u)))   # 未配線なら従来どおり除外
 
@@ -287,6 +330,8 @@ class TestIdiomMechanism(unittest.TestCase):
     def test_aux_exception_only_in_place_and_kill_switch(self):
         self.assertTrue(r.idiom_aux_exception_applies("might as well"))
         self.assertFalse(r.idiom_aux_exception_applies("it can’t be helped"))
+        with _outside_ctx():
+            self.assertFalse(r.idiom_aux_exception_applies("might as well"))     # M2: 文脈外はkill switchに関係なく不発
         os.environ[r.KILL_SWITCH_ENV] = "0"
         try:
             self.assertFalse(r.idiom_aux_exception_applies("might as well"))
@@ -294,8 +339,9 @@ class TestIdiomMechanism(unittest.TestCase):
             self.assertEqual(r.postprocess_rescue({"items": [llm_item(1, "rise above the other voices")]}, [original_item(CASE[4])])["items"][0]["key_phrase"],
                              "rise above the other voices")
         finally:
-            del os.environ[r.KILL_SWITCH_ENV]
+            os.environ[r.KILL_SWITCH_ENV] = "1"
         self.assertTrue(r.rescue_enabled())
+        self.assertTrue(r.rescue_active())
 
 
 class TestLexiconFailClosed(unittest.TestCase):
@@ -593,16 +639,33 @@ class TestSelectionGuards(unittest.TestCase):
         self.assertIsNone(r.rescue_selection_item("heat debate", ["本文に連続一致しない(変更・言い換え・創作)"], u))
 
 
-class TestUnwiredInProduction(unittest.TestCase):
-    """本委任ではProductionファイルからimportしない(未配線)。配線は委任_02。"""
+class TestWiringSites(unittest.TestCase):
+    """委任_02: 配線箇所は設計どおり(H1/H2=er105、H3=scaffold、H4=er119)。Family別runner(er019/er121/er026/er062/er063)はer125を直接参照しない。
+    旧『未配線』testの改訂: er125を参照してよい=承認済み救済方式の配線先(WIRING_01.md)に限定し、それ以外のProductionファイルが増えていないことを固定する。"""
+    WIRED = ("er105_kp_fulltext_selector_01.py", "er119_kp_candidates_01.py", "er119_kp_human_review_01.py", "er003_v1_n3_01_scaffold_generate.py")
+    NOT_WIRED = ("er119_kp_wiring_01.py", "er003_key_words_canonicalization.py", "er003_key_words_min_unit.py", "er119_kp_prompt_2v_01.py",
+                 "er062_family_z_writer_01.py", "er121_family_y_runner_01.py", "er019_family_x_audio_production_runner_01.py",
+                 "er026_family_z_fiction_production_runner_01.py", "er063_family_z_runner_01.py", "er119_kp_human_review_cli_01.py")
 
-    def test_no_production_file_imports_er125(self):
-        for fn in ("er105_kp_fulltext_selector_01.py", "er119_kp_candidates_01.py", "er119_kp_human_review_01.py", "er119_kp_wiring_01.py",
-                   "er003_key_words_canonicalization.py", "er003_v1_n3_01_scaffold_generate.py", "er003_key_words_min_unit.py",
-                   "er119_kp_prompt_2v_01.py", "er062_family_z_writer_01.py", "er121_family_y_runner_01.py"):
+    def test_wired_files_reference_er125(self):
+        for fn in self.WIRED:
+            self.assertIn("er125", open(os.path.join(ROOT, fn), encoding="utf-8").read(), fn)
+
+    def test_other_production_files_do_not_reference_er125(self):
+        for fn in self.NOT_WIRED:
             p = os.path.join(ROOT, fn)
             if os.path.exists(p):
                 self.assertNotIn("er125", open(p, encoding="utf-8").read(), fn)
+
+    def test_kill_switch_read_by_single_function(self):
+        import re as _re
+        hits = []
+        for fn in sorted(os.listdir(ROOT)):
+            if fn.endswith(".py") and not fn.endswith("_test_01.py") and "_test_" not in fn and "EIGO_KP_RESCUE" in open(os.path.join(ROOT, fn), encoding="utf-8", errors="ignore").read():
+                hits.append(fn)
+        self.assertEqual(hits, ["er125_kp_rescue_production_01.py"])
+        src = open(os.path.join(ROOT, "er125_kp_rescue_production_01.py"), encoding="utf-8").read()
+        self.assertEqual(len(_re.findall(r"os\.environ\.get\(KILL_SWITCH_ENV", src)), 1)
 
     def test_er125_imports_only_approved_modules(self):
         src = open(os.path.join(ROOT, "er125_kp_rescue_production_01.py"), encoding="utf-8").read()
@@ -613,31 +676,68 @@ class TestUnwiredInProduction(unittest.TestCase):
         self.assertIsNone(_re.search(r"^\s*(import|from)\s+er119_", src, _re.M))     # er119_isolation_test維持: er119はimportしない
 
 
+FIXDIR = os.path.join(WD, "fixtures")
+
+
 class TestAiIslandHrCandidatesUntouched(unittest.TestCase):
-    """AI島 run_ai_01 の既存HR候補ファイルは不変: resumeは保存済み候補を読むだけで救済を再計算しない。本moduleは候補ファイルを書かない(read-only)。
-    読み戻した既存候補にannotate_candidateを当てても変化しない(rescueなし・慣用句旗の該当なし)ことを確認する。ファイルが無い環境ではskip。"""
+    """AI島 run_ai_01 の既存HR候補は不変(R5)。固定fixture(run_ai_01のkp_candidates.json/kp_human_review.jsonの複製。skipしない)に対し、
+    (1)annotate_candidate/verify_persisted_rescueが無変化 (2)ensure_kp_reviewに『呼ばれたら例外を出すgenerate_fn』を渡したresume統合で候補ファイルが
+    バイト不変・再生成0・candidates_sha256不変 (3)実runのファイルが存在する場合は複製とcandidates_shaが一致、を確認する。"""
+
+    LEVELS = ("a2", "b1b")
+
+    def _doc(self, lv):
+        with open(os.path.join(FIXDIR, f"ai_island_{lv}_kp_candidates.json"), encoding="utf-8") as f:
+            return json.load(f)
+
+    def test_fixtures_exist_and_sha_self_consistent(self):
+        for lv in self.LEVELS:
+            doc = self._doc(lv)
+            self.assertEqual(rv.candidates_sha256(doc), doc["candidates_sha256"])
+            self.assertGreaterEqual(len(doc["candidates"]), 5)
 
     def test_existing_candidates_unchanged_by_annotate(self):
-        import hashlib
-        base = os.path.join(ROOT, "er019_output", "family_x_audio_production_wiring_01", "ai_island_temple__run_ai_01")
-        found = 0
-        for lv in ("a2", "b1b"):
-            p = os.path.join(base, lv, "key_phrases", "kp_candidates.json")
-            if not os.path.exists(p):
-                continue
-            found += 1
-            raw = open(p, "rb").read()
-            sha_before = hashlib.sha256(raw).hexdigest()
-            doc = json.loads(raw.decode("utf-8"))
-            self.assertEqual(rv.candidates_sha256(doc), doc["candidates_sha256"])
+        for lv in self.LEVELS:
+            doc = self._doc(lv)
             for c in doc["candidates"]:
                 snap = json.dumps(c, sort_keys=True, ensure_ascii=False)
                 r.annotate_candidate(c)
                 self.assertEqual(json.dumps(c, sort_keys=True, ensure_ascii=False), snap, c["candidate_id"])
                 self.assertTrue(r.verify_persisted_rescue(c))
-            self.assertEqual(hashlib.sha256(open(p, "rb").read()).hexdigest(), sha_before)      # ファイルは書かれていない
-        if not found:
-            self.skipTest("AI島候補ファイルなし")
+                self.assertFalse(r.rescue_blocks_auto(c))
+            self.assertEqual(rv.candidates_sha256(doc), doc["candidates_sha256"])
+
+    def test_resume_never_calls_generate_and_keeps_bytes(self):
+        import hashlib
+        import shutil
+        from unittest import mock
+        for lv in self.LEVELS:
+            with tempfile.TemporaryDirectory() as tmp:
+                kp_dir = os.path.join(tmp, "run", lv, "key_phrases")
+                os.makedirs(kp_dir)
+                for src, dst in ((f"ai_island_{lv}_kp_candidates.json", "kp_candidates.json"), (f"ai_island_{lv}_kp_human_review.json", "kp_human_review.json")):
+                    shutil.copyfile(os.path.join(FIXDIR, src), os.path.join(kp_dir, dst))
+                before = hashlib.sha256(open(os.path.join(kp_dir, "kp_candidates.json"), "rb").read()).hexdigest()
+                doc = self._doc(lv)
+
+                def must_not_generate(*a, **k):
+                    raise AssertionError("generate_fn was called on resume (re-generation / re-rescue must not happen)")
+                with mock.patch.object(rv, "sha256_text", lambda s: doc["text_sha256"]), mock.patch.object(rv, "STORE_ROOT", os.path.join(tmp, "store")):
+                    out = rv.ensure_kp_review(kp_dir, run_dir=os.path.join(tmp, "run"), family="x", slug="ai_island_temple", level=lv, text="fixed-text",
+                                              generate_fn=must_not_generate, redundancy_fn=None, run_hint=os.path.join(tmp, "run"))
+                self.assertEqual(out["state"], "PENDING", out)
+                self.assertFalse(out.get("generated"))
+                self.assertEqual(hashlib.sha256(open(os.path.join(kp_dir, "kp_candidates.json"), "rb").read()).hexdigest(), before)
+                self.assertEqual(rv.load_candidates(kp_dir)["candidates_sha256"], doc["candidates_sha256"])
+
+    def test_live_run_files_match_fixture_when_present(self):
+        base = os.path.join(ROOT, "er019_output", "family_x_audio_production_wiring_01", "ai_island_temple__run_ai_01")
+        for lv in self.LEVELS:
+            p = os.path.join(base, lv, "key_phrases", "kp_candidates.json")
+            if os.path.exists(p):
+                with open(p, encoding="utf-8") as f:
+                    live = json.load(f)
+                self.assertEqual(live["candidates_sha256"], self._doc(lv)["candidates_sha256"], lv)
 
 
 class TestQuantifierGuardRegression(unittest.TestCase):

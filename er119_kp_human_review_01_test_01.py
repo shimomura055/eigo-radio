@@ -103,7 +103,7 @@ class TestCandidateGeneration(KpTestCase):
         self.assertEqual(len(c["candidates"]), 5)
 
     def test_canonicalization_invalid_item_excluded_and_rerun_M7a(self):
-        with Env(self.tmp, bad_phrases=["feel a spike"]) as env:
+        with Env(self.tmp, bad_phrases=["feel a spike"], rescue_env="0") as env:   # 救済前の挙動(M-7a)を検証するためkill switch OFFに固定
             self.ensure(env)
         c = rv.load_candidates(self.kp_dir)
         self.assertIn("feel a spike", [d["phrase"] for d in c["dropped"] if d["stage"] == "canonicalization"])
@@ -117,7 +117,7 @@ class TestCandidateGeneration(KpTestCase):
 
     def test_outer_retry_only_when_auto_lt3_and_gate_drop_M7c(self):
         # call1の3件が全てcanonicalization INVALID -> auto_eligibleはcall2の5件(>=3)なのでretryしない
-        with Env(self.tmp, bad_phrases=[p["phrase"] for p in CALL1]) as env:
+        with Env(self.tmp, bad_phrases=[p["phrase"] for p in CALL1], rescue_env="0") as env:   # 救済前の挙動(M-7c)を検証
             self.ensure(env)
         self.assertEqual(env.n["call1"], 1)
         c = rv.load_candidates(self.kp_dir)

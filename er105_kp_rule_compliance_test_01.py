@@ -7,7 +7,10 @@
   (3) AI島a2の`studied separately`->`study separately`が全文選定のvalidatorでPASS(保存済み応答の机上確認。HR候補は再生成しない)
   (4) `heated debate`型(V+名詞=形容詞化分詞)・`increased supply`(-ly名詞)は原形化しない / `has spread`等はaux / rang through->ring through /
       lay・wound・ground・bore・boundは補完しない
-  (5) 区分2(慣用句の閉表・量化詞限定詞guard・辞書裏付けguard・救済フロー)はProductionに未配線(受理面が増えていない)
+  (5) 【委任_02で改訂=旧規則の撤去】旧(5)『区分2[慣用句の閉表・救済フロー]はProductionに未配線(受理面が増えていない)』は、ユーザーの正式採用(2026-10-26)による
+      救済方式の配線で撤去。代わりに、(a)文脈外[旧経路・A/B/C・他呼出元]では従来と完全に同一、(b)er125.rescue_context[=generate_candidates実行中]内でのみ
+      辞書見出し一致の助動詞始まり慣用句が受理され、(c)`will be missed`/`could not bear`/`time is money`/`is money`/名詞主語のことわざ/完全文は文脈内でも引き続き拒否される、を固定する。
+      これは受理基準の緩和test化ではなく、承認済み方式の配線に伴う期待値の更新(改訂理由=FIX_01.md M4)。
 実行: $env:PYTHONPATH="netblock_harness_01"; py -m pytest er105_kp_rule_compliance_test_01.py -q   (または run_project_regression --pattern "er105*_test_*.py")
 """
 import json
@@ -19,8 +22,28 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, ROOT)
 import er003_key_words_canonicalization as kc   # noqa: E402
 import er105_kp_fulltext_selector_01 as ft      # noqa: E402
+import er125_kp_rescue_production_01 as er125   # noqa: E402
 
 RD = os.path.join(ROOT, "docs", "research", "KP-GATE-EXCLUSION-RESCUE-DESIGN-02")
+
+
+import contextlib   # noqa: E402
+
+
+@contextlib.contextmanager
+def _ctx_on(env="1"):
+    """generate_candidates文脈をON(+EIGO_KP_RESCUEを明示固定。シェルの値に依存しない)にして実行する。"""
+    prev = os.environ.get(er125.KILL_SWITCH_ENV)
+    os.environ[er125.KILL_SWITCH_ENV] = env
+    tok = er125._rescue_ctx.set(True)
+    try:
+        yield
+    finally:
+        er125._rescue_ctx.reset(tok)
+        if prev is None:
+            os.environ.pop(er125.KILL_SWITCH_ENV, None)
+        else:
+            os.environ[er125.KILL_SWITCH_ENV] = prev
 
 
 def _load(name):
@@ -58,13 +81,17 @@ class TestAdversarial85(unittest.TestCase):
         for w in ADV["past_forms_must_be_added"]:
             self.assertTrue(w in ft._PAST_ONLY_IRREGULAR or w in ft._AMBIGUOUS_IRREGULAR, w)
 
-    def test_idiom_exceptions_are_not_wired(self):
-        """区分2(慣用句の閉表)は未配線: 閉表で例外になる句も含め、法助動詞/be系を含む句はProductionでは従来どおり拒否。
-        例外は元からProductionで通る形(ASCII縮約`can't`が1トークンで語形リストをすり抜ける beggars can't be choosers)のみ。"""
+    def test_idiom_exceptions_only_inside_candidate_generation_context(self):
+        """旧test_idiom_exceptions_are_not_wired の改訂(M4・旧規則の撤去)。
+        (a)文脈外(旧経路): 法助動詞/be系を含む句は従来どおり拒否(例外は元からProductionで通る形=ASCII縮約`can't`の beggars can't be choosers のみ)。
+        (b)文脈内(generate_candidates実行中): 敵対的15件がadversarial_01.jsonの期待どおり(allowed=辞書見出し一致の助動詞始まり慣用句のみ。blocked=名詞主語のことわざ・完全文・疑問文・倒置・be系)。"""
         for c in ADV["idiom"]:
             blocked = ft.contains_finite_aux_role_based(c["phrase"])
             already_allowed_in_head = c["phrase"] == "beggars can't be choosers"
             self.assertEqual(blocked, not already_allowed_in_head, c)
+        with _ctx_on():
+            for c in ADV["idiom"]:
+                self.assertEqual(ft.contains_finite_aux_role_based(c["phrase"]), c["expect"] == "blocked", c)
 
 
 class TestRuleStatements(unittest.TestCase):
@@ -95,10 +122,18 @@ class TestRuleStatements(unittest.TestCase):
             self.assertTrue(ft.contains_finite_aux_role_based(ph), ph)
 
     def test_lexical_have_not_blocked_but_modals_and_be_remain_blocked(self):
+        """M4(旧規則の撤去): 旧assert『can of worms がblocked』は、文脈外(旧経路)では引き続き成立、er125.rescue_context内では辞書見出し一致のため通る(配線による期待値の更新)。
+        `will be missed`/`could not bear`/`time is money`/`is money` は文脈の内外を問わず拒否のまま(緩和なし)。"""
         self.assertFalse(ft.contains_finite_aux_role_based("have a say"))
         self.assertFalse(ft.contains_finite_aux_role_based("had a problem"))
         for ph in ["will be missed", "could not bear", "time is money", "can of worms", "is money"]:
-            self.assertTrue(ft.contains_finite_aux_role_based(ph), ph)
+            self.assertTrue(ft.contains_finite_aux_role_based(ph), ph)               # 文脈外=旧経路は従来どおり
+        with _ctx_on():
+            self.assertFalse(ft.contains_finite_aux_role_based("can of worms"))      # 辞書見出し+構造条件に一致(旧規則の撤去)
+            for ph in ["will be missed", "could not bear", "time is money", "is money"]:
+                self.assertTrue(ft.contains_finite_aux_role_based(ph), ph)           # 引き続き拒否
+        with _ctx_on("0"):
+            self.assertTrue(ft.contains_finite_aux_role_based("can of worms"))      # kill switch OFF=従来動作
 
     def test_rang_through_and_completed_past_table(self):
         self.assertIsNotNone(ft.find_inflection_window("ring through", "rang through"))
@@ -139,10 +174,16 @@ class TestRuleStatements(unittest.TestCase):
                                                allow_inflection_normalization=True)
         self.assertTrue(r2["ok"], r2)
 
-    def test_rescue_flow_not_wired_in_er105(self):
-        src = open(os.path.join(ROOT, "er105_kp_fulltext_selector_01.py"), encoding="utf-8").read()
-        for token in ("idiom_closed_table", "import er123", "reanchor", "slot_generalization", "subspan_candidates", "KP_RESCUE"):
+    def test_rescue_wiring_in_er105_is_limited_to_approved_hooks(self):
+        """旧test_rescue_flow_not_wired_in_er105 の改訂(旧規則の撤去): 旧設計の閉表/DEV module/スロット一般化/部分句候補はer105に入っていない。
+        er125への参照は遅延import関数`_rescue()`経由の3か所(H1 contains_finite_aux_role_based / H2 validate_and_resolve)のみ。"""
+        with open(os.path.join(ROOT, "er105_kp_fulltext_selector_01.py"), encoding="utf-8") as f:
+            src = f.read()
+        for token in ("idiom_closed_table", "import er123", "slot_generalization", "subspan_candidates", "KP_RESCUE"):
             self.assertNotIn(token, src, token)
+        self.assertNotIn("\nimport er125", src)                # top-level importなし(循環回避)。遅延importのみ
+        self.assertEqual(src.count("_rescue()."), 2)             # H1 idiom_aux_exception_applies / H2 rescue_selection_item
+        self.assertEqual(src.count("import er125_kp_rescue_production_01"), 1)
 
 
 class TestAbcByteIdentical(unittest.TestCase):

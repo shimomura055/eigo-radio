@@ -14,6 +14,10 @@ import er108_kp_cmu_lexicon_gate_01 as cmu
 import er125_kp_rescue_production_01 as r
 import er125_kp_rescue_production_test_01 as T
 
+# 委任_02: H1/H2はgenerate_candidates文脈内でのみ有効(Opus M2)。この評価は文脈ON+EIGO_KP_RESCUE=1で実行する(旧『in-memory配線』は本物の配線へ置換済み)。
+os.environ["EIGO_KP_RESCUE"] = "1"
+r._rescue_ctx.set(True)
+
 fx = json.load(open(os.path.join(WD, "case_fixtures_01.json"), encoding="utf-8"))
 CASE = {c["table_no"]: c for c in fx if c["table_no"]}
 LLM_KEY = {2: "study separately", 3: "have our eye on", 4: "rise above the other voices", 5: "hold out one's hands", 6: "ring through",

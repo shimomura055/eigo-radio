@@ -74,8 +74,11 @@ class Env:
     """with Env(tmp, ...) as env: ... 。env.n[...]で各LLM由来関数の呼出回数。"""
 
     def __init__(self, tmp, *, call1=None, call2=None, bad_phrases=(), qa_fail_phrases=(), red_ng_pairs=None, final_red_seq=None,
-                 gloss_fail_phrases=(), call1_seq=None, call2_seq=None):
+                 gloss_fail_phrases=(), call1_seq=None, call2_seq=None, rescue_env="1", canon_keys=None, qa_mismatch=()):
         self.tmp = tmp
+        self.rescue_env = rescue_env              # EIGO_KP_RESCUE を明示固定(委任_02 Opus M2: シェルの値に結果が依存しない)。"0"=救済kill switch OFF(救済前の挙動を検証するtest用)
+        self.qa_mismatch = set(qa_mismatch)      # QA再判定call(display_phraseに救済後keyが渡される)で、これらの句には別のkeyを返す(=NOT_REJUDGEDを再現)
+        self.canon_keys = dict(canon_keys or {})  # display_phrase -> LLMが返すkey_phrase(救済の発火テスト用。normalization_reasonはlemma_normalization)
         self.call1_seq = call1_seq if call1_seq is not None else [call1 if call1 is not None else CALL1]
         self.call2_seq = call2_seq if call2_seq is not None else [call2 if call2 is not None else CALL2]
         self.bad_phrases = set(bad_phrases)
@@ -120,10 +123,15 @@ class Env:
         items = _parse_items_json(user_message, "【Key Phrase候補(JSON)】\n")
         self.canon_inputs.append([it["display_phrase"] for it in items])
         out = []
+        # 救済後のQA再判定call = 全itemが canon_keys の対象句だけ(救済したitemのバッチ)。canonicalization call(全候補)とは件数・構成で区別する
+        is_qa_call = bool(self.canon_keys) and all(it["display_phrase"] in self.canon_keys for it in items)
         for it in items:
-            kp = "totally different" if it["display_phrase"] in self.bad_phrases else it["display_phrase"]
+            dp = it["display_phrase"]
+            kp = "totally different" if dp in self.bad_phrases else (dp if is_qa_call else self.canon_keys.get(dp, dp))
+            if is_qa_call and dp in self.qa_mismatch:
+                kp = dp + " mismatch"
             row = {"rank": it["rank"], "key_phrase": kp, "changed_from_display_phrase": kp != it["display_phrase"],
-                   "normalization_reason": "none", "reasoning": "r"}
+                   "normalization_reason": ("lemma_normalization" if (kp != it["display_phrase"] and it["display_phrase"] in self.canon_keys) else "none"), "reasoning": "r"}
             for f in kc.QA_FIELDS:
                 row[f] = "PASS"
             if it["display_phrase"] in self.qa_fail_phrases:
@@ -140,8 +148,10 @@ class Env:
         out = []
         for t in targets:
             ok = t.get("display_phrase_before_canonicalization") not in self.gloss_fail_phrases and t.get("key_phrase") not in self.gloss_fail_phrases
-            out.append({"rank": t["rank"], "current_gloss_consistent": False,
-                        "japanese_gloss": (f"意味{KANJI[(t['rank'] - 1) % 9]}" if ok else "アルファ(bad)"),
+            cur = t.get("current_japanese_gloss")   # 既存glossのある対象(旧経路の整合判定/救済後の強制再整合)は『一致している』と答えて現glossを返す
+            keep = ok and cur is not None
+            out.append({"rank": t["rank"], "current_gloss_consistent": bool(keep),
+                        "japanese_gloss": (cur if keep else (f"意味{KANJI[(t['rank'] - 1) % 9]}" if ok else "アルファ(bad)")),
                         "qa_reflects_all_key_phrase_words": "PASS", "reasoning": "r", "added_word_mappings": []})
         if isinstance(msg, ga.NewGenMessage):
             for o in out:
@@ -191,6 +201,7 @@ class Env:
             mock.patch.object(ga, "make_alignment_fn", self._gloss),
             mock.patch.object(rq, "make_redundancy_qa_fn", self._red),
             mock.patch("time.sleep", lambda s: None),
+            mock.patch.dict(os.environ, {"EIGO_KP_RESCUE": self.rescue_env}),
         ]
         for p in self._patches:
             p.start()

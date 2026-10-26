@@ -473,12 +473,16 @@ def _log_kp_backend_telemetry(article_id: str, source_level: str, requested_back
 
 
 def run_key_phrase_canonicalization(article_text: str, original_items: list, out_dir: str, article_id: str,
-                                     process: str = None) -> dict:
+                                     process: str = None, rescue: bool = False) -> dict:
     """processの意味はrun_key_phrase_selection()と同じ(ER-006-MODEL-ROUTING-
     CONTRACT-01追補)。
 
     gloss再整合(KP-GLOSS-ALIGNMENT-CORRECTED-PRODUCTION-WIRING-01、2026-10-15): 修正版が唯一の方式で既定ON。
-    kill switchはプロセス環境変数EIGO_KP_GLOSS_ALIGNMENT=0のみ(gloss_align.flag_enabled())。"""
+    kill switchはプロセス環境変数EIGO_KP_GLOSS_ALIGNMENT=0のみ(gloss_align.flag_enabled())。
+
+    rescue(KP-GATE-EXCLUSION-RESCUE-PRODUCTION-WIRING-01 委任_02、H3): 既定False=従来と完全に同一(A/B/C・旧候補なし経路・test注入は影響を受けない)。
+    Trueかつ全文選定item(is_fulltext)のときだけ、(1)所有格role後処理の後ろに救済(revert/M1窓内再導出)を連結し、(2)merge+既存gloss整合の後に
+    救済rankのgloss強制再整合とQA再判定(1 call)を行う。呼ぶのはer119.generate_candidatesのみ(er125.rescue_active()の文脈内)。"""
     # KPFT 委任_02: 全文選定itemがあるときだけ、fulltext版template(Listening Blocker/5件記述を除去、基本形化規則を追加)と
     # fulltext専用schema(lemma_normalization enum)を使う。A/B/C(fulltext_source_refなし)は従来のtemplate/schemaのまま(バイト同一)。
     is_fulltext = any(kc.is_fulltext_item(it) for it in original_items)
@@ -503,6 +507,12 @@ def run_key_phrase_canonicalization(article_text: str, original_items: list, out
     if is_fulltext:
         import er105_kp_fulltext_selector_01 as _ft_pp
         _postprocess = _ft_pp.postprocess_possessor_roles
+        if rescue:
+            import er125_kp_rescue_production_01 as _er125
+            if _er125.rescue_enabled():
+                _postprocess = _er125.chain_postprocess(_ft_pp.postprocess_possessor_roles)   # 順序固定: roles -> rescue(Opus-02 論点5(i))
+            else:
+                rescue = False
     parsed, status, attempts, model_id, response_id = kc.run_canonicalization_gate(
         make_factory, original_items, sleep_fn=(time.sleep if is_fulltext else None), postprocess=_postprocess)
     _canon_meta = {
@@ -540,6 +550,21 @@ def run_key_phrase_canonicalization(article_text: str, original_items: list, out
                                             article_id=article_id, enabled=gloss_align.flag_enabled())   # flagが唯一のkill switch
     _t_align = round(_time.monotonic() - _t_align0, 3)
     merged = aligned["merged"]
+    if is_fulltext and rescue:
+        # [H3] 救済があったrankだけ: gloss強制再整合(承認済みgloss規則・Gate)+QA 12項目再判定(承認済みfulltext prompt/schema無変更、1 call)。救済なしなら何もしない(API 0・merged無変更)。
+        import er125_kp_rescue_production_01 as _er125
+        _qa_model = routing.require_model(process, routing.SUPPORT_MODEL) if process is not None else routing.SUPPORT_MODEL
+
+        def _qa_call(msg: str):
+            with _cl.logging_context(article_id or "unknown_article", "kp_rescue_qa_rejudge"):
+                return kc.make_canonicalization_fn(msg, model=_qa_model, schema=kc.CANONICALIZATION_JSON_SCHEMA_FULLTEXT)()
+
+        def _gloss_realign(m, ranks):
+            with _cl.logging_context(article_id or "unknown_article", "kp_rescue_gloss_realign"):
+                return _er125.force_gloss_realign(m, ranks, article_text, _align_factory, out_dir=out_dir, article_id=article_id)
+        merged = _er125.finalize_rescued_items(merged, parsed, original_items, article_text, gloss_realign_fn=_gloss_realign, qa_call_fn=_qa_call)
+        if any(it.get("rescue") for it in merged.get("items") or []):
+            result["rescue_applied_ranks"] = [it["rank"] for it in merged["items"] if it.get("rescue")]
     result["gloss_alignment_status"] = aligned["status"]
     result["gloss_alignment_cost_jpy"] = aligned.get("cost_jpy")
     result["gloss_alignment_unresolved_ranks"] = aligned.get("unresolved_ranks") or []

@@ -18,11 +18,14 @@ from __future__ import annotations
 import datetime
 import hashlib
 import json
+import logging
 import os
 import re
 import time
 import unicodedata
 from typing import Any, Callable, Optional
+
+_log = logging.getLogger("kp_review")
 
 SCHEMA_CANDIDATES = "kp_candidates_v1"
 SCHEMA_REVIEW = "kp_human_review_v1"
@@ -827,6 +830,9 @@ def op_resolve_gloss(kp_dir: str, *, rank: int, gloss: str, by: str, kind: str =
         c["flags"]["gloss_hr_pending"] = False
         c["gates"]["gloss"] = "HUMAN_RESOLVED"
         c["auto_eligible"] = bool(not c["flags"].get("qa_fail") and not c["flags"].get("similar_to_ng"))
+        if c.get("rescue"):      # 救済候補(canonicalization段)はgloss再整合/QA再判定が未達ならgloss解決後もauto不可のまま(戻さない)
+            import er125_kp_rescue_production_01 as _er125
+            c["auto_eligible"] = bool(c["auto_eligible"] and _er125.rescue_auto_ok(c["rescue"]))
         cands = save_candidates(kp_dir, cands, kind)
         review["candidates_sha256"] = cands["candidates_sha256"]
         review["last_human_op_at"] = _now()
@@ -1207,6 +1213,10 @@ def render_request_md(cands: dict, review: dict, *, run_hint: str, ng_entries: O
             flags.append("NG済み")
         elif m == "similar":
             flags.append("NG句に類似(AUTO対象外)")
+        if c.get("rescue_note"):
+            flags.append(c["rescue_note"])       # 救済(RESCUED)候補: 元の句・救済コード・QA再判定状態
+        if (c.get("flags") or {}).get("idiom_exception"):
+            flags.append("慣用句例外(" + str(c["flags"]["idiom_exception"]) + ")")
         if not c.get("auto_eligible"):
             flags.append("AUTO対象外")
         cell = lambda s: (s or "").replace("|", "/").replace("\n", " ")   # noqa: E731
@@ -1270,6 +1280,14 @@ def ensure_kp_review(kp_dir: str, *, run_dir: str, family: str, slug: str, level
     article_key = {"family": family, "slug": slug, "level": level}
     run_hint = run_hint or run_dir
     cands, review = load_candidates(kp_dir), load_review(kp_dir)
+    if cands is not None:
+        # R2: 保存済み候補は読み戻し優先(再計算しない)。救済の出所(辞書sha等)が現在値とずれていたらlogだけ残す(停止しない)
+        try:
+            import er125_kp_rescue_production_01 as _er125
+            for d in _er125.provenance_drift(cands.get("rescue_provenance")):
+                _log.warning("kp_rescue provenance drift (resume keeps saved candidates): %s", d)
+        except Exception as e:   # noqa: BLE001  log専用
+            _log.warning("kp_rescue provenance check skipped: %s", type(e).__name__)
     # 候補/reviewの整合(片方だけ・本文変更)
     if cands is not None and review is None:
         raise KpReviewInconsistent("候補ファイルだけがあり、reviewがありません(手動削除の疑い)。fail-closed。状況をFableへ報告してください")
