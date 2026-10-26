@@ -1186,6 +1186,22 @@ def cli_prefix() -> str:
     return "py er119_kp_human_review_cli_01.py"
 
 
+def _backfill_summary_line(cands: dict) -> str:
+    """KP-GATE-DROP-BACKFILL: 補完の発動結果をHR依頼書へ1行で示す(未発動/無効=空文字=従来の依頼書と同一)。"""
+    b = cands.get("backfill") or {}
+    if not b.get("triggered"):
+        return ""
+    e = b.get("E") or {}
+    added = len(b.get("added") or [])
+    st = b.get("status")
+    msg = f"- Gate除外 {e.get('total')}件(フレーズ{e.get('phrase')}・単語{e.get('word')})に対し、補完候補 {added}件を末尾に追加しました(補完status: {st})"
+    if st != "OK":
+        msg += f"。補完は失敗しました({b.get('failure')})。初回候補のみで続行しています"
+    elif added < (e.get("total") or 0):
+        msg += "。適切な補完候補が不足したため上限未達です(数合わせはしません)"
+    return msg
+
+
 def render_request_md(cands: dict, review: dict, *, run_hint: str, ng_entries: Optional[list] = None) -> str:
     level = cands["level"]
     ng_entries = ng_entries or []
@@ -1197,6 +1213,9 @@ def render_request_md(cands: dict, review: dict, *, run_hint: str, ng_entries: O
              "- あなたの作業: KPに使う最大3件" + ("と、単語解説に使う最大5件(KP3件を含む)" if level == "b1b" else "") + "を選びます。",
              "- 選ばない候補は『NG』にもできます(NGは以後の再生成でも復活しません)。何もしなければ制作は止まったままです(自動確定は明示の不在宣言があるときだけ)。", "",
              "| 番号 | AI推奨 | 英語表現(used_form) | 本文中の意味 | 出典文 | AI理由 | 旗 |", "|---|---|---|---|---|---|---|"]
+    bfl = _backfill_summary_line(cands)
+    if bfl:
+        lines[5:5] = [bfl]      # 見出し直後(箇条書きの末尾)に補完の要約を1行(補完が発動した/失敗したときだけ。未発動は従来のまま)
     for c in sorted(cands.get("candidates") or [], key=lambda x: x["ai_rank"]):
         cid = c["candidate_id"]
         mark = "KP" if cid in top_kp else ("単語" if cid in top_vocab else "")
@@ -1213,6 +1232,8 @@ def render_request_md(cands: dict, review: dict, *, run_hint: str, ng_entries: O
             flags.append("NG済み")
         elif m == "similar":
             flags.append("NG句に類似(AUTO対象外)")
+        if c.get("origin") == "backfill":
+            flags.append("補完候補(Gate除外の代替)")   # KP-GATE-DROP-BACKFILL: 初回候補の末尾に追加された補完分
         if c.get("rescue_note"):
             flags.append(c["rescue_note"])       # 救済(RESCUED)候補: 元の句・救済コード・QA再判定状態
         if (c.get("flags") or {}).get("idiom_exception"):

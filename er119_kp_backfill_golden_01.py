@@ -119,11 +119,17 @@ def strip_additive(doc: dict) -> dict:
     for c in d.get("candidates", []):
         for k in ADDITIVE_CAND_KEYS:
             c.pop(k, None)
+    for e in d.get("outer_retry_log", []):
+        for k in ADDITIVE_LOG_KEYS:
+            e.pop(k, None)
     return d
 
 
 ADDITIVE_DOC_KEYS = ("backfill", "shortfall_detail")
 ADDITIVE_CAND_KEYS = ("kind",)
+ADDITIVE_LOG_KEYS = ("backfill",)
+# 補完ON(既定)でも抽出前goldenと完全一致するscenario(E=0かつ外側retry脚の撤去に影響されないもの)
+ON_EQUAL_SCENARIOS = ("s01_default_8", "s05_shortfall_no_drop", "s06_qa_fail", "s07_gloss_hr", "s08_redundancy_pair", "s11_rescue_selection_stage")
 
 
 def golden_path(name: str) -> str:

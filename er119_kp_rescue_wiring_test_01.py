@@ -211,7 +211,8 @@ class TestWiredFlow(KpTestCase):
     def test_w6_m3_rescued_but_not_auto_triggers_outer_retry_without_f1_exclusion(self):
         call1 = [{"phrase": "pushed prices up", "word_count": 3}, {"phrase": "in stock", "word_count": 2}, {"phrase": "took a sharp turn", "word_count": 4}]
         # 'pushed prices up'のLLM keyが不適切 -> revertで救済、QA再判定のkeyが不一致(NOT_REJUDGED)=auto不可。n_auto=2<3かつGate除外0件
-        with Env(self.tmp, call1=call1, call2=[], canon_keys={"pushed prices up": "totally different"}, qa_mismatch={"pushed prices up"}) as env:
+        # 『rescued_not_auto脚』は補完OFF(EIGO_KP_BACKFILL=0)の現行条件。補完ON(既定)では撤去(Opus M-3、初回合格候補を入れ替えない。er119_kp_backfill_test_01 TBF18)
+        with Env(self.tmp, call1=call1, call2=[], canon_keys={"pushed prices up": "totally different"}, qa_mismatch={"pushed prices up"}) as env,                 mock.patch.dict(os.environ, {"EIGO_KP_BACKFILL": "0"}):
             self.ensure(env, text=ART)
         doc = rv.load_candidates(self.kp_dir)
         c = _cand(doc, "pushed prices up")

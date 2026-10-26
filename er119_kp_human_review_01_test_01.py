@@ -10,6 +10,7 @@ import json
 import os
 import threading
 import unittest
+from unittest import mock
 
 import er105_kp_fulltext_selector_01 as ft
 import er119_kp_candidates_01 as kcand
@@ -116,19 +117,23 @@ class TestCandidateGeneration(KpTestCase):
         self.assertEqual(env.n["call1"], 1)
 
     def test_outer_retry_only_when_auto_lt3_and_gate_drop_M7c(self):
-        # call1の3件が全てcanonicalization INVALID -> auto_eligibleはcall2の5件(>=3)なのでretryしない
-        with Env(self.tmp, bad_phrases=[p["phrase"] for p in CALL1], rescue_env="0") as env:   # 救済前の挙動(M-7c)を検証
-            self.ensure(env)
-        self.assertEqual(env.n["call1"], 1)
-        c = rv.load_candidates(self.kp_dir)
-        self.assertEqual(len(c["candidates"]), 5)
+        # call1の3件が全てcanonicalization INVALID -> auto_eligibleはcall2の5件(>=3)なのでretryしない(補完ON/OFFとも)
+        # KP-GATE-DROP-BACKFILL-PRODUCTION-01 委任_02: 補完ON(既定)ではE=3だが2-Vの返答が全て既出/除外句で候補追加0(外側retryも起こらない)。OFF=現行条件
+        for mode in ("0", "1"):
+            with self.subTest(EIGO_KP_BACKFILL=mode):
+                with Env(self.tmp, bad_phrases=[p["phrase"] for p in CALL1], rescue_env="0") as env,                         mock.patch.dict(os.environ, {"EIGO_KP_BACKFILL": mode}):   # 救済前の挙動(M-7c)を検証
+                    self.ensure(env, kp_dir=f"{self.kp_dir}_{mode}")
+                self.assertEqual(env.n["call1"], 1)
+                c = rv.load_candidates(f"{self.kp_dir}_{mode}")
+                self.assertEqual(len(c["candidates"]), 5)
 
     def test_outer_retry_replaces_list_when_auto_lt3(self):
         call1b = [{"phrase": "Before you know it", "word_count": 4}, {"phrase": "stay high", "word_count": 2}]
         call2_only_bad = [{"phrase": "in stock", "reason_ja": "x", "word_count": 2}]
         # 1周目: call1 3件のうち2件がINVALID、call2 1件 -> 有効2件(<3)かつGate除外あり -> 外側retry(2周目はcall1b+call2)
+        # 外側retryの『gate_dropped脚』は補完OFF(EIGO_KP_BACKFILL=0)の現行条件。補完ON(既定)では撤去され、補完へ置換(er119_kp_backfill_test_01 TBF18)
         with Env(self.tmp, call1_seq=[CALL1, call1b], call2_seq=[call2_only_bad, CALL2[3:5]],
-                 bad_phrases=["pushed prices up", "took a sharp turn"]) as env:
+                 bad_phrases=["pushed prices up", "took a sharp turn"]) as env, mock.patch.dict(os.environ, {"EIGO_KP_BACKFILL": "0"}):
             self.ensure(env)
         self.assertEqual(env.n["call1"], 2)
         c = rv.load_candidates(self.kp_dir)
