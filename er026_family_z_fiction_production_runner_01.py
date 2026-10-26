@@ -1602,7 +1602,8 @@ def _part2_cand_step(ctx, prov) -> dict:
     paragraphs, label = _part2_inputs(ctx)
     sd = _part2_dir(ctx)
     force = ctx.regenerate_stage == PART2_CAND_STAGE
-    _stage_precheck(prov, PART2_CAND_STAGE, g.cand_stage_input_sha(paragraphs, label), force)
+    cand_sha = p2w.cand_input_sha(sd, paragraphs, label, prov.stage_entry(PART2_CAND_STAGE))   # 確定済みの文法はmodel/Prompt変更で再抽出しない(来歴の入力shaを据え置く)
+    _stage_precheck(prov, PART2_CAND_STAGE, cand_sha, force)
     hook = _part2_hook(ctx, "part2_extract_call_fn")
     try:
         with ctx.stage_context("part2_cand"):
@@ -1613,7 +1614,7 @@ def _part2_cand_step(ctx, prov) -> dict:
         g.write_failed_record(sd, e, next_command=_part2_next(ctx, PART2_CAND_STAGE), stage=PART2_CAND_STAGE)
         raise FamilyZE2EStop(f"FAMILY_Z_PART2_NOT_OK({PART2_CAND_STAGE}): {e}(候補抽出に失敗。TTSへ渡さずSTOP。記録={sd}/{g.FAILED_FILENAME}。"
                              f"次の一手: {_part2_next(ctx, PART2_CAND_STAGE)})") from e
-    w62.ensure_stage(prov, PART2_CAND_STAGE, g.cand_stage_input_sha(paragraphs, label), f"{sd}/part2_cand_stage.json",
+    w62.ensure_stage(prov, PART2_CAND_STAGE, cand_sha, f"{sd}/part2_cand_stage.json",
                      lambda: (p2w.cand_marker(sd, paragraphs, label), {"label": label}), regenerate=force)
     return res
 
@@ -1903,6 +1904,14 @@ def _gloss_person_gate(ctx, lv: str, text: str, prov) -> dict:
         rec["synced_from_artifact"] = True
     mism = ga.select_person_mismatches(items)
     if mism:
+        # 確定内容保護(KP-CONFIRMED-CONTENT-PROTECTION-01 02B): ユーザー確定済みのitemが対象なら、修復LLM(約0.06円/call)を呼ばず確定値を変えずにISSUE
+        # (修正案提示+ユーザー再確認待ち=FamilyZKpReviewPending, rc=4)。レコード無し/AUTO/確定外itemは従来どおり自動修復。
+        try:
+            _khr()._cc().person_gate_issue(_kp_src_dir(ctx, lv), lv, mism)   # er119共通核の遅延import口経由(隔離規約)
+        except _khr().ConfirmedContentIssue as e:
+            raise FamilyZKpReviewPending(f"{_khr().PENDING_MARKER} 確定内容の確認依頼({lv}, _gloss_person_gate): {e}",
+                                         [{"level": lv, "kp_dir": _kp_src_dir(ctx, lv), "request_md": _khr().paths(_kp_src_dir(ctx, lv))["request"],
+                                           "reason": "confirmed_content_issue", "issue_json": e.issue_path}]) from e
         ranks = [it["rank"] for it in mism]
         _guard(ctx, f"kp_{lv}_person_repair", E2E_PERSON_REPAIR_EST_JPY)
         factory = _person_repair_factory(ctx, lv)

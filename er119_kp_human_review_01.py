@@ -1160,12 +1160,14 @@ def part1_items(kp_dir: str) -> list:
         it["rank"] = n   # vocab側の連番(KP側rankは使わない)
         it["candidate_id"] = v.get("candidate_id")
         out.append(it)
+    _cc().verify_items_against_record(kp_dir, out, which="part1")   # 確定内容保護(02B 単一アクセサ): ユーザー確定レコードの英語/日本語訳と一致する項目だけ返す
     return out
 
 
 def verify_selection_matches_outputs(kp_dir: str, *, level: str, tts_results_path: Optional[str] = None,
                                      study_text_json: Optional[str] = None, page_paths: Optional[list] = None,
-                                     vocab_page_paths: Optional[list] = None, require_src_contract: bool = False) -> dict:
+                                     vocab_page_paths: Optional[list] = None, require_src_contract: bool = False,
+                                     gloss_page_paths: Optional[list] = None) -> dict:
     """検証5(DESIGN d): 選定結果=実際に音声化・公開された内容。決定論・API 0。不一致=KpReviewInconsistent。
     確定JSON(review/kp_selection_final) <-> keywords_canonicalized.json <-> TTS結果のkp英語text <-> study_text(Part 1の行) <-> 公開ページHTML。
     reviewが無い旧runは対象外(report={"legacy": True})。"""
@@ -1223,6 +1225,9 @@ def verify_selection_matches_outputs(kp_dir: str, *, level: str, tts_results_pat
                 problems.append(f"{os.path.basename(pg)}にPart 1の表現「{it['used_form']}」がありません")
     if problems:
         raise KpReviewInconsistent("KP_SELECTION_OUTPUT_MISMATCH: " + " / ".join(problems))
+    # 確定内容保護 G2(TTS record)・G3(ページHTML/Part 1行)。AND追加・fail-closed(違反=INTEGRITY)。gloss_page_paths=Std日本語訳の表示ページ(省略時はpage_paths)
+    _cc().verify_outputs(kp_dir, level, tts_results_path=tts_results_path, study_text_json=study_text_json, page_paths=page_paths,
+                         vocab_page_paths=vocab_page_paths, gloss_page_paths=gloss_page_paths)
     return {"legacy": False, "ok": True, "signature": review["selection_signature"], "kp": [it["used_form"] for it in kp_items],
             "vocab": [it["used_form"] for it in vocab_items]}
 
@@ -1361,8 +1366,12 @@ def ensure_kp_review(kp_dir: str, *, run_dir: str, family: str, slug: str, level
     if cands is not None and review is None:
         raise KpReviewInconsistent("候補ファイルだけがあり、reviewがありません(手動削除の疑い)。fail-closed。状況をFableへ報告してください")
     if cands is not None and cands.get("text_sha256") != text_sha and review is not None:
-        # 確定内容保護(M-4/M-8): ユーザー確定済みの選定がある状態で本文が変わった場合は、有料の候補再生成・確定物の退避の前にISSUEで止める(再バインドは委任_02B)
-        if _cc().stale_issue(kp_dir, text_sha):
+        # 確定内容保護(M-4/M-8): ユーザー確定済みの選定がある状態で本文が変わった場合は、有料の候補再生成・確定物の退避の前に分岐する。
+        # 各確定itemの出典文が新本文に逐語で残る=API 0で候補doc/review署名/レコードを再バインド("REBOUND")、残らない=ISSUEで止める(退避・再生成しない)。
+        _rb = _cc().stale_or_rebind(kp_dir, text, text_sha)
+        if _rb == "REBOUND":
+            cands, review = load_candidates(kp_dir), load_review(kp_dir)
+        elif _rb:
             ng_ent0 = ng_entries_of(review, family, slug, level)
             _write_text_atomic(pth["request"], _cc().request_notice(kp_dir) + render_request_md(cands, review, run_hint=run_hint, ng_entries=ng_ent0))
             pend = pending_summary(kp_dir, level)

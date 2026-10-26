@@ -27,12 +27,17 @@ runnerは load/verify だけを呼ぶ(レコードの書込みは CLI と finali
 from __future__ import annotations
 
 import argparse
+import copy
+import difflib
+import unicodedata
 import functools
 import hashlib
+import html as _htmlmod
 import inspect
 import json
 import logging
 import os
+import re
 import sys
 from typing import Any, Optional
 
@@ -55,6 +60,8 @@ STATE_LIVE = "live"
 STATE_RECONFIRM = "reconfirm_required"   # 確定集合のRedundancy QAがNG→reviewがPENDINGへ戻った(ユーザーの選び直し待ち。黙って別候補へ差し替えない)
 STATE_REVOKED = "revoked"
 ACTOR_USER = "user"
+ACTOR_EVIDENCE = "evidence"               # 02B: runtime evidence用(ユーザー確定ではない)。保護の強度はuserと同じ(英語・訳・区分・文法を守る)が、記録上は明示的に区別する
+ENFORCING_ACTORS = (ACTOR_USER, ACTOR_EVIDENCE)
 ACTOR_AUTO = "auto"                       # 明示の不在宣言によるAUTO。ユーザー確定ではない(再確認要求の対象外。英語/区分は不変検査)
 
 PROTECTED_ITEM_FIELDS = ("candidate_id", "kind", "category", "slot", "used_form", "display_phrase", "key_phrase", "japanese_gloss")
@@ -204,7 +211,7 @@ def live_user_record(kp_dir: str) -> Optional[dict]:
         rec = _read(p)
     except (OSError, ValueError):
         return None
-    if rec.get("state") == STATE_LIVE and (rec.get("confirmed_by") or {}).get("actor") == ACTOR_USER:
+    if rec.get("state") == STATE_LIVE and (rec.get("confirmed_by") or {}).get("actor") in ENFORCING_ACTORS:
         return rec
     return None
 
@@ -358,7 +365,7 @@ def _doc_items_by_id(path: str) -> Optional[dict]:
 def _artifact_diffs(kp_dir: str, level: str, rec: dict, *, assets_json: Optional[str] = None) -> tuple:
     """レコードと実artifact(kp/vocab/assets copy)の保護フィールド突合。"""
     actor = (rec.get("confirmed_by") or {}).get("actor")
-    enforce_gloss = actor == ACTOR_USER
+    enforce_gloss = actor in ENFORCING_ACTORS
     pth = rv.paths(kp_dir)
     block, warn = [], []
     kp_by = _doc_items_by_id(pth["kp"]) or {}
@@ -433,6 +440,7 @@ def verify_g1(kp_dir: str, level: str, review: dict, cands: dict, *, assets_json
         _note_disabled(kp_dir)
         return
     p = paths_of(kp_dir)
+    register_active_kp_dir(kp_dir)
     if not os.path.exists(p["record"]):
         _legacy_drift(kp_dir, level, review, cands, assets_json)
         return
@@ -535,7 +543,7 @@ def on_finalize_pre_write(kp_dir: str, review: dict, cands: dict, level: str, *,
     if rec is not None and rec.get("state") == STATE_LIVE:
         a_prev = (rec.get("confirmed_by") or {}).get("actor")
         same = content_sha256(build) == rec.get("content_sha256") and (rec.get("origin") or {}).get("review_selection_signature") == sig
-        if a_prev == ACTOR_USER:
+        if a_prev in ENFORCING_ACTORS:
             if not same:
                 raise_integrity(kp_dir, level, [{"candidate_id": None, "field": "review_selection_signature", "confirmed": (rec.get("origin") or {}).get("review_selection_signature"),
                                                  "observed": sig, "where": "finalize(reviewがユーザー確定レコードと異なる確定集合になっている)"}],
@@ -609,6 +617,485 @@ def stale_issue(kp_dir: str, new_text_sha: str) -> Optional[str]:
 
 
 # ============================================================
+# 02B-1: 稼働中の確定レコード登録(LR重なり警告用。プロセス内のみ・読取専用。挙動は変えない)
+# ============================================================
+_ACTIVE_KP_DIRS: dict = {}
+
+
+def register_active_kp_dir(kp_dir: str) -> None:
+    try:
+        _ACTIVE_KP_DIRS[os.path.abspath(kp_dir)] = True
+    except Exception:   # noqa: BLE001  登録失敗で本処理を止めない
+        pass
+
+
+# ============================================================
+# 02B-2: M8 STALE再バインド(本文が変わったがユーザー確定itemの出典文が新本文に逐語で残る場合、API 0で連鎖更新)
+# ============================================================
+_QUOTE_MAP = str.maketrans({"‘": "'", "’": "'", "“": '"', "”": '"'})
+
+
+def _norm_ws(s: Optional[str]) -> str:
+    """出典文の逐語照合用の正規化: NFKC・引用符(曲線→直線。候補docのsource_sentenceは直線引用符に正規化されている)・空白。大文字小文字は保持(逐語)。"""
+    return " ".join(unicodedata.normalize("NFKC", s or "").translate(_QUOTE_MAP).split())
+
+
+def _source_sentence_of(c: Optional[dict]) -> Optional[str]:
+    it = (c or {}).get("item") or {}
+    return it.get("source_sentence") or (c or {}).get("source_sentence")
+
+
+def _grammar_sentences(kp_dir: str, rec: dict) -> list:
+    """確定レコードに文法(sidecar)があれば [(grammar candidate_id, 選定文)]。候補docが読めなければ []。"""
+    g = rec.get("grammar")
+    if not g:
+        return []
+    try:
+        import er119_grammar_review_01 as gr
+        run = _run_dir_of(kp_dir)
+        side = _read(os.path.join(run, g["path_rel"]))
+        sd = os.path.dirname(os.path.join(run, g["path_rel"]))
+        doc = gr.load_candidates(sd) or {}
+    except (OSError, ValueError, KeyError):
+        return []
+    by_id = {c.get("candidate_id"): c for c in doc.get("candidates") or []}
+    out = []
+    for it in side.get("items") or []:
+        c = by_id.get(it.get("id"))
+        if c and c.get("sentence"):
+            out.append((it.get("id"), c["sentence"]))
+    return out
+
+
+def stale_or_rebind(kp_dir: str, text: str, new_text_sha: str) -> Optional[str]:
+    """本文が変わった(text_sha256不一致)場面の入口。ユーザー確定レコードが無ければ None(従来のSTALE再生成)。
+    各確定itemの出典文(と文法の選定文)が新本文に逐語で存在 → 候補doc.text_sha256→candidates_sha256→review署名→レコードを API 0 で連鎖更新して "REBOUND"。
+    1つでも存在しない → ISSUE(確定内容は何も変更しない)の要約文を返す。"""
+    rec = live_user_record(kp_dir)
+    if rec is None or (rec.get("article") or {}).get("text_sha256") == new_text_sha:
+        return None
+    level = rec["article"].get("level")
+    cands = rv.load_candidates(kp_dir)
+    ntext = _norm_ws(text)
+    missing = []
+    if cands is None or cands.get("text_sha256") != (rec.get("article") or {}).get("text_sha256"):
+        missing.append({"candidate_id": None, "field": "candidates.text_sha256", "confirmed": (rec.get("article") or {}).get("text_sha256"),
+                        "observed": (cands or {}).get("text_sha256"), "where": "kp_candidates.json(確定時の本文と候補docが一致しない=再バインド不可)"})
+    else:
+        cm = _cand_map(cands)
+        for it in rec.get("items") or []:
+            sent = _source_sentence_of(cm.get(it["candidate_id"]))
+            if not sent or _norm_ws(sent) not in ntext:
+                missing.append({"candidate_id": it["candidate_id"], "field": "source_sentence", "confirmed": sent, "observed": "(新本文に逐語で存在しない)",
+                                "where": "text_sha256変更"})
+        for gid, sent in _grammar_sentences(kp_dir, rec):
+            if _norm_ws(sent) not in ntext:
+                missing.append({"candidate_id": gid, "field": "grammar.sentence", "confirmed": sent, "observed": "(新本文に逐語で存在しない)", "where": "text_sha256変更"})
+    if missing:
+        msg = (f"本文(text_sha256)が変わり({str((rec['article'] or {}).get('text_sha256'))[:12]}→{new_text_sha[:12]})、ユーザー確定済みの出典文が新本文に逐語で残っていない項目があります。"
+               "確定内容を黙って破棄/再選定しません。")
+        _write_issue(kp_dir, kind="CONFIRMED_CONTENT_ISSUE", summary=msg, diffs=missing,
+                     next_steps=[f"{_cli(kp_dir, 'revoke')} --level {level} --by <名> --user-ref <ユーザー発言> --reason '本文変更に伴う選び直し' (その後に制作を再実行→候補再生成)"],
+                     proposal=["出典文を変更した項目は、新しい出典文で選び直す(revoke→再選択)か、本文の当該文を元に戻してください"])
+        return msg
+    with rv.review_lock(kp_dir, rv.KIND_KP, "er128"):
+        review, cands = rv.load_review(kp_dir), rv.load_candidates(kp_dir)
+        old_c, old_t, old_sig = cands["candidates_sha256"], cands["text_sha256"], review.get("selection_signature")
+        pth = rv.paths(kp_dir)
+        rv.archive_if_exists(pth["candidates"], "REBOUND_SUPERSEDED")
+        doc = dict(cands)
+        doc["text_sha256"] = new_text_sha
+        doc = rv.save_candidates(kp_dir, doc)
+        review["text_sha256"], review["candidates_sha256"] = new_text_sha, doc["candidates_sha256"]
+        rv._event(review, "rebind_text", "er128", {"old_text_sha256": old_t, "new_text_sha256": new_text_sha, "old_candidates_sha256": old_c,
+                                                    "new_candidates_sha256": doc["candidates_sha256"], "note": "確定itemの出典文が新本文に逐語で存在(API 0)"})
+        review = rv.save_review(kp_dir, review, expected_revision=review["revision"])
+        rv.retire_final_outputs(kp_dir, "REBOUND_SUPERSEDED")
+        rec2 = copy.deepcopy(rec)
+        rec2["article"]["text_sha256"] = new_text_sha
+        rec2["origin"]["candidates_sha256"] = doc["candidates_sha256"]
+        rec2["origin"]["review_selection_signature"] = review["selection_signature"]
+        rec2["revision"] += 1
+        _append_history(rec2, event="rebound_text", by="er128", reason="本文変更(確定itemの出典文は新本文に逐語で存在)",
+                        extra={"old_text_sha256": old_t, "new_text_sha256": new_text_sha, "old_candidates_sha256": old_c,
+                               "new_candidates_sha256": doc["candidates_sha256"], "old_review_selection_signature": old_sig,
+                               "new_review_selection_signature": review["selection_signature"]})
+        save_record(kp_dir, rec2)
+    return "REBOUND"
+
+
+# ============================================================
+# 02B-3: G2(TTS record)・G3(ページHTML/Part 1行)。verify_selection_matches_outputs の末尾から呼ぶ(読取専用・API 0)
+# ============================================================
+def _tts_text(ent: Optional[dict]) -> Optional[str]:
+    """TTS recordの読み上げ元text。Master Store再利用recordは`text`を持たないことがあるので`canonical_text`で比較する(誤BLOCK回避)。両方無ければNone。"""
+    if not isinstance(ent, dict):
+        return None
+    return ent.get("text") if ent.get("text") is not None else ent.get("canonical_text")
+
+
+def _page_text(path: str) -> str:
+    with open(path, encoding="utf-8") as f:
+        return _htmlmod.unescape(f.read())
+
+
+def verify_outputs(kp_dir: str, level: str, *, tts_results_path: Optional[str] = None, study_text_json: Optional[str] = None,
+                   page_paths: Optional[list] = None, vocab_page_paths: Optional[list] = None, gloss_page_paths: Optional[list] = None) -> None:
+    """G2/G3(AND追加・fail-closed)。レコードが無い/保護OFF/取消済み=何もしない。違反はINTEGRITY(rc=3)。actor=autoのgloss差はWARNのみ(英語は常にBLOCK)。
+    G2: TTS record。英語=used_form、Std日本語=派生物契約(japanese_gloss_tts または convert(japanese_gloss))。
+    G3: ページHTML。Std=表示用japanese_glossがページに出ること、Adv=Part 1が描画されているときPart 1の行(meaning_in_text_ja)と描画。"""
+    if not protection_enabled():
+        return
+    rec = load_record(kp_dir)
+    if rec is None or rec.get("state") != STATE_LIVE:
+        return
+    enforce = (rec.get("confirmed_by") or {}).get("actor") in ENFORCING_ACTORS
+    pth = rv.paths(kp_dir)
+    kp_art = {it.get("candidate_id"): it for it in (_read(pth["kp"]).get("items") or [])} if os.path.exists(pth["kp"]) else {}
+    block, warn = [], []
+
+    def _put(d, is_gloss=True):
+        (block if (enforce or not is_gloss) else warn).append(d)
+
+    if tts_results_path and os.path.exists(tts_results_path):
+        kps = _read(tts_results_path).get("key_phrases") or {}
+        for ri in rec.get("items") or []:
+            if ri["slot"] != "kp":
+                continue
+            art = kp_art.get(ri["candidate_id"])
+            if art is None:
+                continue   # artifact欠落はG1の担当
+            ent = kps.get(str(art.get("rank"))) or {}
+            en = _tts_text(ent.get("english"))
+            if en is not None and en != ri["used_form"]:
+                block.append({"candidate_id": ri["candidate_id"], "field": "used_form(TTS英語)", "confirmed": ri["used_form"], "observed": en, "where": "tts_generation_results.json"})
+            jm = _tts_text(ent.get("japanese_meaning")) if level == "a2" else None
+            if jm is not None:
+                ok = {(ri.get("derived") or {}).get("japanese_gloss_tts"), convert_gloss_tts(ri.get("japanese_gloss"))}
+                if jm not in ok:
+                    _put({"candidate_id": ri["candidate_id"], "field": "japanese_meaning(TTS日本語。派生物契約: 確定訳の決定論変換でなければならない)",
+                          "confirmed": convert_gloss_tts(ri.get("japanese_gloss")), "observed": jm, "where": "tts_generation_results.json"})
+    if level == "a2":
+        # Std日本語訳の表示ページ。gloss_page_pathsが無ければ page_paths とその同じdirの index.html(Zの詳細確認ページは読み上げ用scriptを載せるため、利用者向けの表示は index.html)のどれかに出ていればよい
+        pages = list(gloss_page_paths or [])
+        if not pages:
+            for pg in page_paths or []:
+                pages.append(pg)
+                idx = os.path.join(os.path.dirname(pg), "index.html")
+                if idx not in pages and os.path.exists(idx):
+                    pages.append(idx)
+        texts = [_page_text(pg) for pg in pages if os.path.exists(pg)]   # ページの存在自体はverify_selection_matches_outputs本体の検査
+        if texts:
+            for ri in rec.get("items") or []:
+                if ri["slot"] == "kp" and ri.get("japanese_gloss") and not any(ri["japanese_gloss"] in t for t in texts):
+                    _put({"candidate_id": ri["candidate_id"], "field": "japanese_gloss(ページ表示)", "confirmed": ri["japanese_gloss"], "observed": "(ページに表示されていない)",
+                          "where": ",".join(os.path.basename(pg) for pg in pages)})
+    elif level == "b1b" and vocab_page_paths:   # Part 1が描画されているページに限る(描画されていなければ検査しない)
+        texts = [_page_text(pg) for pg in vocab_page_paths if os.path.exists(pg)]
+        if texts:
+            for ri in rec.get("items") or []:
+                if ri.get("japanese_gloss") and not any(ri["japanese_gloss"] in t for t in texts):
+                    _put({"candidate_id": ri["candidate_id"], "field": "japanese_gloss(Part 1表示)", "confirmed": ri["japanese_gloss"], "observed": "(Part 1に表示されていない)",
+                          "where": ",".join(os.path.basename(pg) for pg in vocab_page_paths)})
+        if study_text_json and os.path.exists(study_text_json):
+            rows = {r.get("english_expression"): r for r in (_read(study_text_json).get("rows") or [])}
+            for ri in rec.get("items") or []:
+                row = rows.get(ri["used_form"])
+                if row is not None and row.get("meaning_in_text_ja") != ri.get("japanese_gloss"):
+                    _put({"candidate_id": ri["candidate_id"], "field": "japanese_gloss(Part 1行 meaning_in_text_ja)", "confirmed": ri.get("japanese_gloss"),
+                          "observed": row.get("meaning_in_text_ja"), "where": os.path.basename(study_text_json)})
+    if warn:
+        _log.warning("confirmed content (actor=auto) output drift warn: %s", warn)
+    if block:
+        raise_integrity(kp_dir, level, block, "確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。")
+
+
+# ============================================================
+# 02B-4: M6/G4 Part 2(文法)の凍結。確定レコード(confirmed_grammar.json)がある文法は、再抽出・再解説せず凍結した解説全文を使う
+# ============================================================
+FILE_GRAMMAR_FROZEN = "confirmed_grammar_frozen.json"
+SCHEMA_GRAMMAR_FROZEN = "eigo_radio_confirmed_grammar_frozen_v1"
+_TRANSLATION_RE = re.compile(r"【日本語訳】\s*(.*?)(?=\n\s*【|\Z)", re.S)
+
+
+def translation_from_explanation_full(text: Optional[str]) -> Optional[str]:
+    """`explanation_full`の【日本語訳】節を決定論で取り出す(無ければNone)。"""
+    m = _TRANSLATION_RE.search(text or "")
+    return m.group(1).strip() if m and m.group(1).strip() else None
+
+
+def frozen_sha(candidate_id: str, sentence: str, explanation_md: str, translation_ja: Optional[str]) -> str:
+    return hashlib.sha256(json.dumps([candidate_id, sentence, explanation_md, translation_ja], ensure_ascii=False).encode("utf-8")).hexdigest()
+
+
+def frozen_token(fz: dict) -> str:
+    return "frozen:" + fz["frozen_sha256"][:16]
+
+
+def grammar_state(study_dir: str) -> Optional[dict]:
+    """sidecar(confirmed_grammar.json)+ユーザー確定レコード(live)。無い/保護OFF/取消済み=None。sidecar自己整合違反=INTEGRITY。"""
+    if not protection_enabled():
+        return None
+    sp = os.path.join(study_dir, FILE_GRAMMAR)
+    if not os.path.exists(sp):
+        return None
+    side = _read(sp)
+    rel = side.get("kp_dir_rel")
+    if not rel:
+        return None
+    kp_dir = os.path.normpath(os.path.join(study_dir, rel))
+    rec = load_record(kp_dir)
+    if rec is None or rec.get("state") != STATE_LIVE or not rec.get("grammar"):
+        return None
+    level = (rec.get("article") or {}).get("level") or "b1b"
+    bad = []
+    if _jsha({k: v for k, v in side.items() if k != "sidecar_sha256"}) != side.get("sidecar_sha256") or side.get("sidecar_sha256") != rec["grammar"].get("sidecar_sha256"):
+        bad.append("confirmed_grammar.json のshaが不一致(文法の確定内容が書換えられた疑い)")
+    if side.get("confirmation_id") != rec.get("confirmation_id"):
+        bad.append("confirmed_grammar.json の confirmation_id が確定レコードと一致しません")
+    if bad:
+        raise_integrity(kp_dir, level, [{"candidate_id": None, "field": "grammar", "confirmed": "(自己整合)", "observed": x, "where": FILE_GRAMMAR} for x in bad],
+                        "文法の確定内容(sidecar)の整合が崩れています。")
+    return {"sidecar": side, "rec": rec, "kp_dir": kp_dir, "level": level}
+
+
+def load_frozen_grammar(study_dir: str) -> Optional[dict]:
+    """凍結済みの解説(confirmed_grammar_frozen.json)。確定レコードが無い/凍結がまだ無い=None。凍結ファイルの自己sha不一致=INTEGRITY。"""
+    st = grammar_state(study_dir)
+    if st is None:
+        return None
+    p = os.path.join(study_dir, FILE_GRAMMAR_FROZEN)
+    if not os.path.exists(p):
+        return None
+    fz = _read(p)
+    ids = {it.get("id") for it in st["sidecar"].get("items") or []}
+    bad = []
+    if _jsha({k: v for k, v in fz.items() if k != "file_sha256"}) != fz.get("file_sha256"):
+        bad.append("凍結した解説(confirmed_grammar_frozen.json)のshaが不一致(書換えられた疑い)")
+    if fz.get("confirmation_id") != st["rec"].get("confirmation_id") or fz.get("candidate_id") not in ids:
+        bad.append("凍結した解説が確定レコード/確定文法と対応していません")
+    if frozen_sha(fz.get("candidate_id"), fz.get("sentence"), fz.get("explanation_md"), fz.get("translation_ja")) != fz.get("frozen_sha256"):
+        bad.append("凍結した解説の内容shaが不一致")
+    if bad:
+        raise_integrity(st["kp_dir"], st["level"], [{"candidate_id": fz.get("candidate_id"), "field": "grammar_explanation", "confirmed": "(凍結値)", "observed": x,
+                                                      "where": FILE_GRAMMAR_FROZEN} for x in bad], "文法解説の凍結値の整合が崩れています(G4)。")
+    return fz
+
+
+def _write_frozen(study_dir: str, st: dict, *, candidate_id: str, sentence: str, construct_ja: Optional[str], explanation_md: str, sections: dict,
+                  translation_ja: Optional[str], ref_ja: Optional[str], source: str) -> dict:
+    fz = {"schema": SCHEMA_GRAMMAR_FROZEN, "confirmation_id": st["rec"]["confirmation_id"], "candidate_id": candidate_id, "sentence": sentence,
+          "construct_ja": construct_ja, "explanation_md": explanation_md, "sections": sections, "translation_ja": translation_ja, "ref_ja_at_freeze": ref_ja,
+          "source": source, "frozen_at": rv._now(), "frozen_sha256": frozen_sha(candidate_id, sentence, explanation_md, translation_ja)}
+    fz["file_sha256"] = _jsha({k: v for k, v in fz.items() if k != "file_sha256"})
+    _write(os.path.join(study_dir, FILE_GRAMMAR_FROZEN), fz)
+    return fz
+
+
+def freeze_part2_result(study_dir: str, result: dict) -> Optional[dict]:
+    """確定レコードのある文法で、まだ凍結が無ければ現在の(通常の検査を通った)Step B結果を凍結する(出所=stepB_generated_frozen)。
+    凍結済み=既存を返す(上書きしない)。ZERO/確定レコード無し=None。"""
+    st = grammar_state(study_dir)
+    if st is None or (result or {}).get("status") != "SELECTED":
+        return None
+    cur = load_frozen_grammar(study_dir)
+    if cur is not None:
+        return cur
+    sel = result["selection"]
+    ids = {it.get("id") for it in st["sidecar"].get("items") or []}
+    if sel.get("candidate_id") not in ids:
+        raise_integrity(st["kp_dir"], st["level"], [{"candidate_id": sel.get("candidate_id"), "field": "grammar_id", "confirmed": sorted(ids), "observed": sel.get("candidate_id"),
+                                                      "where": "part2_result.json"}], "Part 2の選定が確定した文法と異なります(G4)。")
+    return _write_frozen(study_dir, st, candidate_id=sel["candidate_id"], sentence=sel["sentence"], construct_ja=sel.get("construct_ja"),
+                         explanation_md=result["explanation_md"], sections=result.get("sections") or {}, translation_ja=result.get("translation_ja"),
+                         ref_ja=result.get("ref_ja"), source="stepB_generated_frozen")
+
+
+def freeze_from_sidecar(study_dir: str, candidate: dict) -> Optional[dict]:
+    """sidecarに`explanation_status=provided`(フォームで見せた解説全文)があれば、Step Bを呼ばずそれを凍結値にする(出所=form_displayed)。
+    構造が不正なら ISSUE(再確認)。provided無し=None、凍結済み=既存。"""
+    st = grammar_state(study_dir)
+    if st is None:
+        return None
+    cur = load_frozen_grammar(study_dir)
+    if cur is not None:
+        return cur
+    side_it = next((it for it in st["sidecar"].get("items") or [] if it.get("id") == candidate["candidate_id"]), None)
+    if side_it is None or side_it.get("explanation_status") != "provided" or not (side_it.get("explanation_full") or "").strip():
+        return None
+    import er120_part2_grammar_production_01 as g
+    try:
+        secs = g.split_sections(side_it["explanation_full"].strip())
+    except (g.Part2Error, g.Part2StructureError) as e:
+        raise_issue(st["kp_dir"], st["level"], "フォームで確認した文法解説全文がPart 2の構造(【日本語訳】【仕組み】【意味】)に合わず、そのまま採用できません。", [
+            {"candidate_id": candidate["candidate_id"], "field": "explanation_full", "confirmed": (side_it["explanation_full"] or "")[:60], "observed": str(e)[:120], "where": FILE_GRAMMAR}],
+            proposal=["解説全文の構造を修正した上で再確認してください(AIは解説を作り直して差し替えません)"])
+    return _write_frozen(study_dir, st, candidate_id=candidate["candidate_id"], sentence=candidate["sentence"], construct_ja=candidate.get("construct_ja"),
+                         explanation_md=side_it["explanation_full"].strip(), sections=secs, translation_ja=secs.get("日本語訳"), ref_ja=None, source="form_displayed")
+
+
+def verify_part2(study_dir: str, result: Optional[dict]) -> None:
+    """G4: Part 2結果(part2_result.json)が確定した文法・凍結した解説全文と一致すること(AND追加・fail-closed)。確定レコード無し=何もしない。
+    凍結がまだ無い(確定直後)場合は文法idだけ照合する(freeze_part2_resultが次の通過点で凍結する)。ZERO(省略/適格なし)は確定した文法と矛盾するのでBLOCK。"""
+    st = grammar_state(study_dir)
+    if st is None:
+        return
+    fz = load_frozen_grammar(study_dir)
+    ids = {it.get("id") for it in st["sidecar"].get("items") or []}
+    diffs = []
+    if not result or result.get("status") != "SELECTED":
+        diffs.append({"candidate_id": None, "field": "grammar", "confirmed": sorted(ids), "observed": (result or {}).get("status") or "(Part 2結果なし)", "where": "part2_result.json"})
+    else:
+        sel = result.get("selection") or {}
+        if sel.get("candidate_id") not in ids:
+            diffs.append({"candidate_id": sel.get("candidate_id"), "field": "grammar_id", "confirmed": sorted(ids), "observed": sel.get("candidate_id"), "where": "part2_result.json"})
+        if fz is not None:
+            if sel.get("candidate_id") != fz["candidate_id"] or sel.get("sentence") != fz["sentence"]:
+                diffs.append({"candidate_id": sel.get("candidate_id"), "field": "grammar_sentence", "confirmed": fz["sentence"], "observed": sel.get("sentence"), "where": "part2_result.json"})
+            if result.get("explanation_md") != fz["explanation_md"]:
+                diffs.append({"candidate_id": fz["candidate_id"], "field": "explanation_md(解説全文)", "confirmed": fz["explanation_md"][:80], "observed": str(result.get("explanation_md"))[:80],
+                              "where": "part2_result.json"})
+            if fz.get("translation_ja") is not None and result.get("translation_ja") != fz["translation_ja"]:
+                diffs.append({"candidate_id": fz["candidate_id"], "field": "translation_ja(日本語訳)", "confirmed": fz["translation_ja"], "observed": result.get("translation_ja"), "where": "part2_result.json"})
+    if diffs:
+        raise_integrity(st["kp_dir"], st["level"], diffs, "Part 2が確定した文法・解説全文と一致しません(G4: 確定後に書換えられた、または別の解説が生成された)。")
+
+
+def guard_grammar(study_dir: str, op: str, *, candidate_id: Optional[str] = None) -> None:
+    """確定した文法(sidecar)がある間は、選定を書き換え得る操作(reselect/omit/reextract/ng/unng/--regenerate-stage part2_cand_b1b)を拒否する(revoke必須)。
+    確定した文法と同じ候補を選ぶ top1/top2(candidate_idを渡す)は許可する(確定を実際のreviewへ反映する操作で、書換えではない)。"""
+    st = grammar_state(study_dir)
+    if st is None:
+        return
+    ids = {it.get("id") for it in st["sidecar"].get("items") or []}
+    if candidate_id is not None and candidate_id in ids:
+        return
+    lv = st["level"]
+    raise rv.ConfirmedContentLocked(
+        f"CONFIRMED_CONTENT_LOCKED: 文法(Part 2)の {op} は拒否されました。ユーザー確定済みの文法があります(candidate_id={sorted(ids)})。"
+        f"変更は `{_cli(st['kp_dir'], 'revoke')} --level {lv} --by <名> --user-ref <ユーザー発言> --reason ...`(確定の取消→選び直し)のみ(ユーザー確認済みの操作)。")
+
+
+def pool_ref_ja_issue(study_dir: str, fz: dict, pool_value: Optional[str]) -> Optional[str]:
+    """M6: 新しいPart 1訳poolの値が、確定(凍結)時点の訳(translation_ja / 凍結時のref_ja)と異なる場合のみISSUEを記録して要約を返す(一致・poolに無い=None)。
+    確定した解説を黙って作り直さない(再生成しない)。"""
+    if not pool_value or pool_value in {fz.get("translation_ja"), fz.get("ref_ja_at_freeze")}:
+        return None
+    st = grammar_state(study_dir)
+    msg = (f"Part 1の日本語訳(参考訳pool)が、確定した文法解説の日本語訳({str(fz.get('translation_ja'))[:30]}…)と異なります。"
+           "確定した解説を黙って作り直さず、ユーザーの再確認を待ちます。")
+    if st is not None:
+        _write_issue(st["kp_dir"], kind="CONFIRMED_CONTENT_ISSUE", summary=msg,
+                     diffs=[{"candidate_id": fz.get("candidate_id"), "field": "ref_ja(Part 1訳pool)", "confirmed": fz.get("translation_ja"), "observed": pool_value, "where": "Part 1訳pool"}],
+                     next_steps=[f"{_cli(st['kp_dir'], 'revoke')} --level {st['level']} --by <名> --user-ref <ユーザー発言> --reason ... (文法の確定を取り消して選び直す)"],
+                     proposal=["Part 1の訳を変更したのなら、文法解説の【日本語訳】を新しい訳に合わせるかどうかをユーザーが確認してください"])
+    return msg
+
+
+# ============================================================
+# 02B-5: Z `_gloss_person_gate`(人称整合の自動修復)がユーザー確定itemに触れる場合は、修復LLMを呼ばずISSUE
+# ============================================================
+def person_gate_issue(kp_dir: str, level: str, mismatches: list) -> None:
+    """ユーザー確定レコード(live, actor=user)のitemが人称不整合として検出された場合、gloss再整合(有料LLM)をせずISSUE(rc=4相当)。
+    該当なし(レコード無し/AUTO/他item)=何もしない(従来の自動修復へ)。mismatches=ga.select_person_mismatches(items)の戻り(candidate_id付き)。"""
+    rec = live_user_record(kp_dir)
+    if rec is None:
+        return
+    import er003_key_words_gloss_alignment as ga
+    by_id = {i["candidate_id"]: i for i in rec.get("items") or []}
+    hit = [m for m in mismatches if m.get("candidate_id") in by_id]
+    if not hit:
+        return
+    diffs, props = [], []
+    for m in hit:
+        ri = by_id[m["candidate_id"]]
+        reason = ga.person_reference_mismatch(m.get("key_phrase"), m.get("japanese_gloss"))
+        diffs.append({"candidate_id": ri["candidate_id"], "field": "japanese_gloss(人称整合)", "confirmed": ri["japanese_gloss"], "observed": f"人称不整合の疑い: {reason}",
+                      "where": "stage_kp(_gloss_person_gate)"})
+        props.append(f"{ri['used_form']}: 確定訳「{ri['japanese_gloss']}」を、指示対象が不定の人称なら人称語を含まない訳へ直す案(例: confirm-revise --gloss {ri['candidate_id']}=<人称語を除いた訳>)。"
+                     "現状のまま使う場合は、その旨をユーザーが確認してください(AIは確定した訳を自動で書き換えません)")
+    raise_issue(kp_dir, level, "ユーザー確定済みの日本語訳に人称・指示対象の不整合の疑いがあります。確定した訳を自動修復(LLM再生成)せず、ユーザーの再確認を待ちます。", diffs, proposal=props)
+
+
+# ============================================================
+# 02B-6: LR(Local Rewrite)重なり警告(記録のみ。LRの挙動・候補選定は不変)
+# ============================================================
+def _toks(s: str) -> list:
+    return re.findall(r"[A-Za-z0-9']+", s or "")
+
+
+def lr_overlap(rec_items: list, before: str, after: str) -> list:
+    """LRで書き換わった語範囲と、確定KPの本文出現位置(display_phrase/used_form/key_phrase)の重なりを返す(純関数)。"""
+    tb, ta = _toks(before), _toks(after)
+    lb, la = [t.lower() for t in tb], [t.lower() for t in ta]
+    changed = set()
+    for tag, i1, i2, _j1, _j2 in difflib.SequenceMatcher(None, lb, la, autojunk=False).get_opcodes():
+        if tag != "equal":
+            changed.update(range(i1, max(i2, i1 + 1)))   # 挿入(i1==i2)は直前語を含む位置として扱う
+    out = []
+    for it in rec_items:
+        found = False
+        for form in dict.fromkeys(x for x in (it.get("display_phrase"), it.get("used_form"), it.get("key_phrase")) if x):
+            ft = [t.lower() for t in _toks(form)]
+            if not ft or found:
+                continue
+            for i in range(0, len(lb) - len(ft) + 1):
+                if lb[i:i + len(ft)] == ft:
+                    hit = sorted(set(range(i, i + len(ft))) & changed)
+                    if hit:
+                        out.append({"candidate_id": it["candidate_id"], "form": form, "before_span": " ".join(tb[i:i + len(ft)]),
+                                    "changed_token_positions": hit, "before_snippet": " ".join(tb[max(0, i - 4):i + len(ft) + 4])})
+                        found = True
+                        break
+    return out
+
+
+def note_lr_fired(segment_id: str, before: str, after: str) -> None:
+    """LR発火時にer020から呼ばれる(記録のみ・例外は握る)。稼働中(このプロセスでG1を通った)確定レコードのKPと本文の重なりを
+    `<run>/<lv>/audit/confirmed_kp_lr_overlap.json` に追記する。LRの挙動・採用/不採用には一切影響しない。"""
+    if not protection_enabled():
+        return
+    for kp_dir in list(_ACTIVE_KP_DIRS):
+        try:
+            rec = load_record(kp_dir)
+            if rec is None or rec.get("state") != STATE_LIVE:
+                continue
+            hits = lr_overlap(rec.get("items") or [], before, after)
+            if not hits:
+                continue
+            outp = os.path.join(os.path.dirname(paths_of(kp_dir)["mirror"]), "confirmed_kp_lr_overlap.json")
+            doc = _read(outp) if os.path.exists(outp) else {"kind": "confirmed_kp_lr_overlap", "note": "記録のみ(LR挙動は不変)。確定KPの出現位置とLRの書換え範囲が重なった",
+                                                              "events": []}
+            doc["events"].append({"at": rv._now(), "segment_id": segment_id, "confirmation_id": rec.get("confirmation_id"), "overlaps": hits})
+            _write(outp, doc)
+        except Exception as e:   # noqa: BLE001  記録失敗でLRを止めない
+            _log.warning("lr overlap note failed: %s", type(e).__name__)
+
+
+# ============================================================
+# 02B-7: 単一アクセサ(part1/public_study_html 経由)
+# ============================================================
+def verify_items_against_record(kp_dir: str, items: list, *, which: str = "part1") -> None:
+    """Part 1等の消費者が受け取る item 列が、ユーザー確定レコードの保護値と一致すること(英語は常に、glossはactor=user)。レコード無し=何もしない。"""
+    if not protection_enabled():
+        return
+    rec = load_record(kp_dir)
+    if rec is None or rec.get("state") != STATE_LIVE:
+        return
+    enforce = (rec.get("confirmed_by") or {}).get("actor") in ENFORCING_ACTORS
+    by_id = {it.get("candidate_id"): it for it in items}
+    block = []
+    for ri in rec.get("items") or []:
+        if which == "part1" and ri["slot"] not in ("kp", "vocab"):
+            continue
+        b, w = _item_diffs(ri, by_id.get(ri["candidate_id"]), f"accessor:{which}", enforce_gloss=enforce)
+        block += b
+    if block:
+        level = (rec.get("article") or {}).get("level") or "b1b"
+        raise_integrity(kp_dir, level, block, f"消費者({which})が受け取る項目が確定レコードと一致しません。")
+
+
+# ============================================================
 # 操作ガード(M4)
 # ============================================================
 def guard(kp_dir: str, op: str) -> None:
@@ -633,8 +1120,11 @@ def guard_declaration(run_dirs: list) -> None:
 # 単一アクセサ契約(今後の消費者は検証してから返すこのアクセサだけを使う)
 # ============================================================
 def load_verified_items(kp_dir: str, *, level: str, which: str = "kp", require_src_contract: bool = False) -> list:
-    """G1を通してから確定itemを返す単一アクセサ。which="kp"|"vocab"。reviewの無い旧runは従来のartifactを返す(検証なし)。"""
+    """G1を通してから確定itemを返す単一アクセサ。which="kp"|"vocab"|"part1"。reviewの無い旧runは従来のartifactを返す(検証なし)。
+    契約(02B): 今後の消費者(Part 1・公開ページ builder・ハイライト等)はこのアクセサ経由で確定itemを受け取る。part1=Part 1入力(vocab最大5件、rankはvocab側連番)。"""
     rv.require_final_consistent(kp_dir, level=level, require_src_contract=require_src_contract)
+    if which == "part1":
+        return rv.part1_items(kp_dir)   # part1_items自身が確定レコードとの照合(verify_items_against_record)を行う
     pth = rv.paths(kp_dir)
     p = pth["vocab"] if which == "vocab" else pth["kp"]
     return sorted(_read(p).get("items") or [], key=lambda x: x["rank"])
@@ -675,7 +1165,9 @@ def _flat_selection_ids(groups: dict) -> dict:
             "cat3": [i.get("candidate_id") for i in groups.get("meaning_display") or []]}
 
 
-def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: str) -> dict:
+def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: str, *, actor: str = ACTOR_USER) -> dict:
+    if actor not in ENFORCING_ACTORS:
+        raise CliError(f"--actor は user|evidence のみ(指定: {actor!r})")
     by, user_ref = _need_by(by), _need_user_ref(user_ref)
     kp_dir = _kp_dir_for(run, level)
     with open(payload_path, "rb") as f:
@@ -744,20 +1236,21 @@ def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: st
             f.write(raw)
         origin = {"kind": "form_submission", "form_schema": payload.get("schema"), "form_schema_version": 2, "form_payload_sha256": hashlib.sha256(raw).hexdigest(),
                   "source_revision": rev_no, "user_ref": user_ref}
-        rec = _new_record(kp_dir=kp_dir, review=review, cands=cands, items=items, actor=ACTOR_USER, origin=origin, by=by, attestation="form_submit", user_ref=user_ref,
+        rec = _new_record(kp_dir=kp_dir, review=review, cands=cands, items=items, actor=actor, origin=origin, by=by,
+                          attestation=("form_submit" if actor == ACTOR_USER else "EVIDENCE_RUN(ユーザー確定ではない。runtime evidence用にフォーム送信を再現した記録。user_refは委任文)"), user_ref=user_ref,
                           comment=payload.get("comment") or "", unconsumed=unconsumed, prev=prev, event="confirmed",
                           confirmation_id="cf_" + hashlib.sha256(raw).hexdigest()[:16])
         rec.pop("grammar", None)
         grammar = (groups.get("grammar") or [])
         if grammar:
-            rec["grammar"] = _write_grammar_sidecar(run, rec, grammar)
+            rec["grammar"] = _write_grammar_sidecar(run, rec, grammar, kp_dir)
         save_record(kp_dir, rec)
     return {"record": paths_of(kp_dir)["record"], "revision": rec["revision"], "items": [(i["candidate_id"], i["category"], i["used_form"]) for i in items],
             "unconsumed": [(u["candidate_id"], u["reason"]) for u in unconsumed], "grammar": len(grammar),
             "next": "制作コマンドを同じまま再実行してください(finalize→後続が進みます)"}
 
 
-def _write_grammar_sidecar(run: str, rec: dict, grammar: list) -> dict:
+def _write_grammar_sidecar(run: str, rec: dict, grammar: list, kp_dir: Optional[str] = None) -> dict:
     import er119_grammar_review_01 as gr
     dirs = gr.discover_dirs(run)
     if not dirs:
@@ -765,6 +1258,8 @@ def _write_grammar_sidecar(run: str, rec: dict, grammar: list) -> dict:
     sd = dirs[0]
     doc = {"schema": SCHEMA_GRAMMAR, "confirmation_id": rec["confirmation_id"],
            "items": [{k: g.get(k) for k in ("id", "title", "explanation_full", "explanation_status", "example")} for g in grammar]}
+    if kp_dir:   # 02B(M6): 文法側(study_dir)から確定レコードを辿る相対path(runごとコピーしても有効)
+        doc["kp_dir_rel"] = os.path.relpath(os.path.abspath(kp_dir), os.path.abspath(sd)).replace(os.sep, "/")
     doc["content_sha256"] = _jsha(doc["items"])
     doc["sidecar_sha256"] = _jsha({k: v for k, v in doc.items() if k != "sidecar_sha256"})
     p = os.path.join(sd, FILE_GRAMMAR)
@@ -858,7 +1353,7 @@ def cmd_revise(run: str, level: str, by: str, user_ref: str, reason: str, gloss:
         review = rv.save_review(kp_dir, review, expected_revision=review["revision"])
         sel = review["selection"]
         items = build_items(cands, rv.sel_ids(sel, "kp"), rv.sel_ids(sel, "vocab") if level == "b1b" else [])
-        new_rec = _new_record(kp_dir=kp_dir, review=review, cands=cands, items=items, actor=ACTOR_USER, origin=dict(rec["origin"]), by=by, attestation=f"cli --by {by}",
+        new_rec = _new_record(kp_dir=kp_dir, review=review, cands=cands, items=items, actor=(rec.get("confirmed_by") or {}).get("actor") or ACTOR_USER, origin=dict(rec["origin"]), by=by, attestation=f"cli --by {by}",
                               user_ref=user_ref, comment=rec.get("comment") or "", unconsumed=rec.get("unconsumed"), prev=rec, event="revised", reason=reason,
                               confirmation_id=rec["confirmation_id"])
         new_rec["history"][-1]["extra"] = {"gloss_before": before, "gloss_after": changes}
@@ -956,6 +1451,8 @@ def build_parser() -> argparse.ArgumentParser:
     g.add_argument("--from-review", action="store_true")
     g.add_argument("--adopt-existing", action="store_true")
     p.add_argument("--apply", action="store_true", help="--adopt-existing: 差分提示のみ(既定)ではなく適用する")
+    p.add_argument("--actor", default="user", choices=("user", "evidence"),
+                   help="--from-form のみ。evidence=runtime evidence用(ユーザー確定ではないと記録に明記。保護の強度はuserと同じ)")
     p.add_argument("--by", default=None)
     p.add_argument("--user-ref", default="")
     p = sub.add_parser("confirm-revise")
@@ -983,7 +1480,7 @@ def run(argv=None) -> int:
             out = cmd_status(a.run)
         elif a.cmd == "confirm":
             if a.from_form:
-                out = cmd_from_form(a.run, a.level, a.from_form, a.by, a.user_ref)
+                out = cmd_from_form(a.run, a.level, a.from_form, a.by, a.user_ref, actor=a.actor)
             elif a.from_review:
                 out = cmd_from_review(a.run, a.level, a.by, a.user_ref)
             else:

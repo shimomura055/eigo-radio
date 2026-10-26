@@ -112,6 +112,36 @@ def pending_summary(study_dir: str, review: dict) -> dict:
             "status": review["status"], "candidates_sha256": review["candidates_sha256"]}
 
 
+def _rebind_grammar_text(study_dir: str, state: dict, doc: dict, review: dict, paragraphs: list, label: str) -> None:
+    """M8(文法): 本文が変わったが、ユーザー確定済みの文法の選定文が新本文の同じ段落に逐語で存在し candidate_id も一致する場合、候補doc.text_sha256・
+    extract_signature とreview.text_sha256(署名)をAPI 0で更新する。存在しなければISSUE(Part2Stale。確定内容は変更しない)。"""
+    ids = {it.get("id") for it in state["sidecar"].get("items") or []}
+    conf = [c for c in doc.get("candidates") or [] if c.get("candidate_id") in ids]
+    ok = bool(conf) and all(g.verify_single_span({"body": paragraphs}, c["para"], c["sentence"]) and g.candidate_id(c["para"], c["sentence"]) == c["candidate_id"] for c in conf)
+    if not ok or review is None:
+        cc = rv._cc()
+        cc._write_issue(state["kp_dir"], kind="CONFIRMED_CONTENT_ISSUE",
+                        summary="本文が変わり、ユーザー確定済みの文法(Part 2)の選定文が新本文に逐語で残っていません。確定内容を黙って破棄/再抽出しません。",
+                        diffs=[{"candidate_id": c.get("candidate_id"), "field": "grammar.sentence", "confirmed": c.get("sentence"), "observed": "(新本文に逐語で存在しない)",
+                                "where": "text_sha256変更"} for c in conf] or [{"candidate_id": None, "field": "grammar", "confirmed": sorted(ids), "observed": "(確定した文法が候補docに無い)", "where": "text_sha256変更"}],
+                        next_steps=[f"{cc._cli(state['kp_dir'], 'revoke')} --level {state['level']} --by <名> --user-ref <ユーザー発言> --reason '本文変更に伴う選び直し'"],
+                        proposal=["選定文を変更した場合は新しい文で文法を選び直す(revoke→再選択)か、本文の当該文を元に戻してください"])
+        raise g.Part2Stale("本文が変わり、ユーザー確定済みの文法の選定文が新本文に逐語で残っていません(CONFIRMED_CONTENT_ISSUE。再確認が必要)")
+    pth = paths(study_dir)
+    with rv.review_lock(study_dir, KIND, "er128"):
+        old_t, old_sig = doc.get("text_sha256"), review.get("selection_signature")
+        rv.archive_if_exists(pth["candidates"], "REBOUND_SUPERSEDED")
+        doc2 = dict(doc)
+        doc2["text_sha256"] = g.text_sha256(paragraphs)
+        doc2["extract_signature"] = g.extract_signature(paragraphs, label)
+        _atomic_json(pth["candidates"], doc2)
+        review = load_review(study_dir)
+        review["text_sha256"] = doc2["text_sha256"]
+        _event(review, "rebind_text", "er128", {"old_text_sha256": old_t, "new_text_sha256": doc2["text_sha256"], "old_selection_signature": old_sig,
+                                                 "note": "確定した選定文が新本文に逐語で存在(API 0)"})
+        rv.save_review(study_dir, review, expected_revision=review["revision"], kind=KIND)
+
+
 # ============================================================
 # runner側: 候補抽出(Step A'')と待機/自動確定の評価(再実行しても冪等・resumeはAPI 0)
 # ============================================================
@@ -133,7 +163,22 @@ def ensure_grammar_review(study_dir: str, *, run_dir: str, family: str, slug: st
         raise rv.KpReviewInconsistent("文法の候補ファイルとreviewの片方だけがあります(手動削除の疑い)。fail-closed。状況をFableへ報告してください")
     generated = False
     carry = review
-    sig_ok = cached is not None and cached.get("extract_signature") == g.extract_signature(paragraphs, label)
+    # 確定内容保護(M6/M8): ユーザー確定済みの文法がある場合は再抽出しない。--regenerate-stage part2_cand_b1b はrevoke必須。
+    # Prompt/model/routingの変更(extract_signatureの変化)では失効させない。本文が変わった場合は、確定した選定文が新本文に逐語で残るなら候補doc/review を
+    # API 0 で再バインドし、残らなければISSUE(Part2Stale)。
+    cc = rv._cc()
+    frozen_state = cc.grammar_state(study_dir)
+    if frozen_state is not None:
+        if force_extract:
+            try:
+                cc.guard_grammar(study_dir, "--regenerate-stage part2_cand_b1b(再抽出)")
+            except rv.ConfirmedContentLocked as e:
+                raise g.Part2Stale(str(e)) from e
+        if cached is not None and cached.get("text_sha256") != g.text_sha256(paragraphs):
+            _rebind_grammar_text(study_dir, frozen_state, cached, review, paragraphs, label)
+            cached, review = load_candidates(study_dir), load_review(study_dir)
+    sig_ok = cached is not None and (cached.get("extract_signature") == g.extract_signature(paragraphs, label)
+                                     or (frozen_state is not None and cached.get("text_sha256") == g.text_sha256(paragraphs)))
     if force_extract or (cached is not None and not sig_ok):
         why = "regenerate_stage" if force_extract else "text_or_prompt_changed"
         rv.archive_if_exists(pth["candidates"], "SUPERSEDED")
@@ -158,7 +203,7 @@ def ensure_grammar_review(study_dir: str, *, run_dir: str, family: str, slug: st
             review = _replace_review(study_dir, new_pending_review(doc, article_key=article_key, prev=carry), None)
         cached, generated = doc, True
     else:
-        doc = g.resolve_candidates(paragraphs, label, cached, ng=ng, allow_extract=False)   # API 0。共有registryのNGを再適用
+        doc = g.resolve_candidates(paragraphs, label, cached, ng=ng, allow_extract=False, frozen=frozen_state is not None)   # API 0。共有registryのNGを再適用
         if doc["candidates_sha256"] != cached["candidates_sha256"]:   # 新しいNGで候補が変わった: 古いreviewは対象外(STALE扱いで新review)
             save_candidates_doc(study_dir, doc)
             with rv.review_lock(study_dir, KIND, "runner"):
@@ -229,6 +274,10 @@ def op_decide(study_dir: str, *, choice: str, candidates_sha256: str, reason: st
     with rv.review_lock(study_dir, KIND, by):
         review, doc = _load_pair(study_dir)
         ak = review.get("article_key") or {}
+        # 確定内容保護(M6): ユーザー確定済みの文法があれば、確定した文法と同じ候補を選ぶ top1/top2 以外(省略・再選定・再抽出・別候補)は拒否(revoke必須)
+        _cands = doc.get("candidates") or []
+        _chosen = _cands[0]["candidate_id"] if choice == "top1" and _cands else (_cands[1]["candidate_id"] if choice == "top2" and len(_cands) > 1 else None)
+        rv._cc().guard_grammar(study_dir, f"decide({choice})", candidate_id=_chosen)
         if choice == "reselect":
             if candidates_sha256 != doc["candidates_sha256"]:
                 raise g.Part2ReviewError("reviewが古い候補listに対するものです(candidates_sha256不一致)。再レビューが必要です")
@@ -271,6 +320,7 @@ def op_ng(study_dir: str, *, rank: int, reason: str, by: str) -> dict:
         raise rv.KpReviewError("NG指定には理由が必要です")
     with rv.review_lock(study_dir, KIND, by):
         review, doc = _load_pair(study_dir)
+        rv._cc().guard_grammar(study_dir, "ng")   # 確定内容保護(M6)
         c = next((x for x in doc["candidates"] if x["rank"] == rank), None)
         if c is None:
             raise rv.KpReviewError(f"番号{rank}の候補がありません")
@@ -299,6 +349,7 @@ def op_unng(study_dir: str, *, sentence: Optional[str] = None, candidate_id: Opt
         review = load_review(study_dir)
         if review is None:
             raise rv.KpReviewError("reviewがありません")
+        rv._cc().guard_grammar(study_dir, "unng")   # 確定内容保護(M6)
         ak = review.get("article_key") or {}
         removed = rv.store_remove_ng(ak["family"], ak["slug"], LEVEL_KEY, candidate_id=candidate_id, reason=reason, by=by, kind=KIND, sentence_key=skey)
         review["last_human_op_at"] = rv._now()

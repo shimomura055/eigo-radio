@@ -1501,7 +1501,8 @@ def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: s
             it = kp_items[r - 1]
             k = res["key_phrases"][str(it["rank"])]
             if level == "a2":
-                ja = k["japanese_meaning"].get("canonical_text") or it.get("japanese_gloss") or ""
+                # KP-CONFIRMED-CONTENT-PROTECTION-01 02B M2-b: 表示は確定した表示用japanese_gloss(TTS用canonical_textは表示しない。TTS入力は不変)
+                ja = it.get("japanese_gloss") or k["japanese_meaning"].get("canonical_text") or ""
                 blocks.append(cp.kp_block(["英語", "日本語の意味"], [it["used_form"], ja]))
             else:
                 ex = (expl.get("items") or {})

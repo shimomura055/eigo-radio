@@ -789,10 +789,17 @@ def extract_candidates(paragraphs: list, label: str, *, call_fn=None, client=Non
 
 
 def resolve_candidates(paragraphs: list, label: str, cached: dict | None, *, call_fn=None, client=None, budget_guard=None, ng=(),
-                       allow_extract: bool = True) -> dict:
+                       allow_extract: bool = True, frozen: bool = False) -> dict:
     """resume: 本文sha・Prompt・modelが同じ保存済み候補はAPI 0で再利用(共有registryのNGは再適用)。違えば再抽出。
-    allow_extract=False(再finalize用、M-4)では再抽出せず、無い/古いなら Part2Stale。"""
+    allow_extract=False(再finalize用、M-4)では再抽出せず、無い/古いなら Part2Stale。
+    frozen=True(KP-CONFIRMED-CONTENT-PROTECTION-01 M6): ユーザー確定済みの文法がある場合。Prompt・model・routingの変更でextract_signatureが変わっても
+    再抽出しない(本文shaが同じ・候補doc自己整合なら保存済み候補をそのまま使う)。本文が変わった場合の再バインドはer119_grammar_review側(API 0)。"""
     sig = extract_signature(paragraphs, label)
+    if frozen and cached and cached.get("schema") == SCHEMA_CANDIDATES and cached.get("text_sha256") == text_sha256(paragraphs) \
+            and cached.get("candidates_sha256") == candidates_sha256(cached.get("candidates", [])):
+        out = apply_ng(json.loads(json.dumps(cached)), ng)
+        out["reused_from_previous_run"] = True
+        return out
     if cached and cached.get("schema") == SCHEMA_CANDIDATES and cached.get("extract_signature") == sig \
             and cached.get("candidates_sha256") == candidates_sha256(cached.get("candidates", [])):
         out = apply_ng(json.loads(json.dumps(cached)), ng)
@@ -1102,6 +1109,11 @@ def explain_signature(cand: dict, ref_ja: str | None) -> str:
                                      ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()
 
 
+def frozen_sha_of(candidate_id: str, sentence: str, explanation_md: str, translation_ja: str | None) -> str:
+    """凍結した解説の内容sha(er128.frozen_shaと同一規則。突合test: 両者の出力が一致)。"""
+    return hashlib.sha256(json.dumps([candidate_id, sentence, explanation_md, translation_ja], ensure_ascii=False).encode("utf-8")).hexdigest()
+
+
 def generate_explanation(cand: dict, ref_ja: str | None, *, call_fn=None, client=None, budget_guard=None) -> dict:
     prompt = stepb_prompt([stepb_item(cand, ref_ja)])
     parsed, audit = _run_llm(PROCESS_EXPLAIN, prompt, _parse_stepb_checked, call_fn=call_fn, client=client, max_out=MAXOUT_EXPLAIN,
@@ -1132,15 +1144,32 @@ def build_result(doc: dict, sel: dict, ref_ja: str | None, expl: dict) -> dict:
             "audit": {"extract": doc.get("audit"), "explain": expl["audit"]}, "generated_at": _now()}
 
 
+def result_from_frozen(doc: dict, sel: dict, fz: dict) -> dict:
+    """凍結した解説(KP-CONFIRMED-CONTENT-PROTECTION-01 M6)から結果を決定論で組み立てる(LLM呼出0)。signatureの代わりに `frozen:<sha>` を持つ。"""
+    c = sel["candidate"]
+    token = "frozen:" + fz["frozen_sha256"][:16]
+    return {"schema": SCHEMA_RESULT, "level": LEVEL, "status": "SELECTED", "zero_reason": None,
+            "selection": {"source": sel["source"], "candidate_id": c["candidate_id"], "rank": c["rank"], "tier": c["tier"],
+                          "feature_class": c["feature_class"], "para": c["para"], "sentence": c["sentence"],
+                          "construct_ja": c["construct_ja"], "teaching_value_ja": c["teaching_value_ja"]},
+            "text_sha256": doc["text_sha256"], "extract_signature": doc["extract_signature"], "candidates_sha256": doc["candidates_sha256"],
+            "round": doc.get("round", 1), "translation_ja": fz.get("translation_ja"), "translation_source": "frozen",
+            "ref_ja": fz.get("ref_ja_at_freeze"), "ref_ja_source": "frozen" if fz.get("ref_ja_at_freeze") else None,
+            "explain_signature": token, "explanation_md": fz["explanation_md"], "sections": fz.get("sections") or {},
+            "frozen": token, "frozen_source": fz.get("source"),
+            "audit": {"extract": doc.get("audit"), "explain": {"frozen": True, "source": fz.get("source")}}, "generated_at": _now()}
+
+
 def run_part2(paragraphs: list, label: str, *, review: dict | None = None, mode="wait", cached_candidates: dict | None = None,
               cached_result: dict | None = None, ref_ja_pool: dict | None = None, extract_call_fn=None, explain_call_fn=None,
-              client=None, budget_guard=None, ng=(), allow_extract: bool = True, prior_history: list | None = None) -> dict:
+              client=None, budget_guard=None, ng=(), allow_extract: bool = True, prior_history: list | None = None,
+              frozen: dict | None = None) -> dict:
     """orchestrator(ファイルI/Oは呼出側。write_artifacts/load_artifactsを使う)。LLM callは最大2(Step A''・Step B)。T1訳callはない(M-1)。
     戻り値: {"status": SELECTED|ZERO|WAIT_STATUSES…, "candidates": doc, "result": dict|None, "review_request": dict|None, "selection": sel, "review_record": dict|None}
     待機系ではresultはNone(下流はfail-closed)。PENDING_REVIEWでは有料のStep Bを呼ばない。"""
     paragraphs = _check_paragraphs(paragraphs)
     doc = resolve_candidates(paragraphs, label, cached_candidates, call_fn=extract_call_fn, client=client, budget_guard=budget_guard, ng=ng,
-                             allow_extract=allow_extract)
+                             allow_extract=allow_extract, frozen=frozen is not None)
     sel = select_from_candidates(doc, review, mode)
     if sel["status"] in WAIT_STATUSES:
         return {"status": sel["status"], "candidates": doc, "result": None, "review_request": review_request(doc), "selection": sel, "review_record": None}
@@ -1148,6 +1177,19 @@ def run_part2(paragraphs: list, label: str, *, review: dict | None = None, mode=
     if sel["status"] == "ZERO":
         return {"status": "ZERO", "candidates": doc, "result": zero_result(doc, sel["source"]), "review_request": None, "selection": sel, "review_record": rec}
     c = sel["candidate"]
+    if frozen is not None:   # M6: 凍結した解説を使う(再解説しない・LLM 0 call)。選定が凍結した文法と違えばfail-closed
+        if c["candidate_id"] != frozen["candidate_id"] or c["sentence"] != frozen["sentence"]:
+            raise Part2Stale("Part 2の確定(選定)が、凍結した確定文法と一致しません(確定後に選定が変わった疑い)")
+        cr = cached_result
+        if cr and cr.get("schema") == SCHEMA_RESULT and cr.get("status") == "SELECTED" and cr.get("selection", {}).get("candidate_id") == c["candidate_id"] \
+                and cr.get("candidates_sha256") == doc["candidates_sha256"] and cr.get("explanation_md") == frozen["explanation_md"] \
+                and cr.get("text_sha256") == doc["text_sha256"]:
+            res = json.loads(json.dumps(cr))
+            res["selection"]["source"] = sel["source"]
+        else:
+            res = result_from_frozen(doc, sel, frozen)
+        res["reused_from_previous_run"] = True
+        return {"status": "SELECTED", "candidates": doc, "result": res, "review_request": None, "selection": sel, "review_record": rec}
     ref_ja = lookup_ref_ja(c["sentence"], ref_ja_pool)
     if cached_result and cached_result.get("schema") == SCHEMA_RESULT and cached_result.get("status") == "SELECTED" \
             and cached_result.get("selection", {}).get("candidate_id") == c["candidate_id"] \
@@ -1168,11 +1210,13 @@ def _no_extract(prompt):
 
 
 def finalize_part2(paragraphs: list, label: str, *, candidates_doc: dict, review: dict | None = None, mode="wait", cached_result: dict | None = None,
-                   ref_ja_pool: dict | None = None, explain_call_fn=None, client=None, budget_guard=None, ng=(), prior_history: list | None = None) -> dict:
-    """M-4: 保存済み候補と現在の確定からの再finalize(再抽出なし。Step A''は絶対に呼ばない)。待機系ならPart2PendingReviewで抜ける(出力ファイルを作らない)。"""
+                   ref_ja_pool: dict | None = None, explain_call_fn=None, client=None, budget_guard=None, ng=(), prior_history: list | None = None,
+                   frozen: dict | None = None) -> dict:
+    """M-4: 保存済み候補と現在の確定からの再finalize(再抽出なし。Step A''は絶対に呼ばない)。待機系ならPart2PendingReviewで抜ける(出力ファイルを作らない)。
+    frozen: ユーザー確定済みの文法の凍結解説(M6)。あれば解説も再生成しない。"""
     r = run_part2(paragraphs, label, review=review, mode=mode, cached_candidates=candidates_doc, cached_result=cached_result, ref_ja_pool=ref_ja_pool,
                   extract_call_fn=_no_extract, explain_call_fn=explain_call_fn, client=client, budget_guard=budget_guard, ng=ng,
-                  allow_extract=False, prior_history=prior_history)
+                  allow_extract=False, prior_history=prior_history, frozen=frozen)
     if r["status"] in WAIT_STATUSES:
         raise Part2PendingReview(r["status"], r["review_request"], r["candidates"])
     return r
@@ -1226,7 +1270,8 @@ def _expected_outcome(doc: dict, review: dict, where: str, nxt: str):
 
 
 def require_fresh_part2(result: dict | None, paragraphs: list, label: str, *, next_command: str, where: str = "",
-                        candidates_doc: dict | None, grammar_review: dict | None, ref_ja_pool: dict | None = None) -> None:
+                        candidates_doc: dict | None, grammar_review: dict | None, ref_ja_pool: dict | None = None,
+                        frozen: dict | None = None) -> None:
     """使う側(TTS/assembly/pages/player/公開ページbuilder)のfail-closed確認。無い/古い/不整合ならPart2Stale(次コマンド付き)。
     M-2: 本文sha・抽出signatureに加え、(i)確定statusが前進可 (ii)result.candidates_sha256==現在の候補doc (iii)result.selection==確定のchoiceに対応する候補
     (iv)候補docの材料欄でexplain_signatureを再計算して一致 (v)確定のselection_signatureを再計算して一致。ZEROも確定と候補docに結びつく。
@@ -1236,11 +1281,12 @@ def require_fresh_part2(result: dict | None, paragraphs: list, label: str, *, ne
     if not result or result.get("schema") != SCHEMA_RESULT:
         raise Part2Stale(f"{w}Part 2 artifactがありません。次の一手: {nxt}")
     paragraphs = _check_paragraphs(paragraphs)
-    if result.get("text_sha256") != text_sha256(paragraphs) or result.get("extract_signature") != extract_signature(paragraphs, label):
+    # M6(frozen): ユーザー確定済みの文法は extract/explain signature の代わりに `frozen:<sha>`+選定文の逐語span+candidate_id一致で判定する(Prompt/model/routing変更で失効しない)
+    if result.get("text_sha256") != text_sha256(paragraphs) or (frozen is None and result.get("extract_signature") != extract_signature(paragraphs, label)):
         raise Part2Stale(f"{w}Part 2が現在の本文・Prompt・modelと一致しません(古い)。次の一手: {nxt}")
     if not candidates_doc or candidates_doc.get("schema") != SCHEMA_CANDIDATES:
         raise Part2Stale(f"{w}Part 2の候補docがありません。次の一手: {nxt}")
-    if candidates_doc.get("text_sha256") != text_sha256(paragraphs) or candidates_doc.get("extract_signature") != extract_signature(paragraphs, label) \
+    if candidates_doc.get("text_sha256") != text_sha256(paragraphs) or (frozen is None and candidates_doc.get("extract_signature") != extract_signature(paragraphs, label)) \
             or candidates_doc.get("candidates_sha256") != candidates_sha256(candidates_doc.get("candidates", [])):
         raise Part2Stale(f"{w}Part 2の候補docが現在の本文と一致、または自己整合していません。次の一手: {nxt}")
     if not grammar_review or grammar_review.get("schema") != SCHEMA_REVIEW or grammar_review.get("kind") != "grammar":
@@ -1271,10 +1317,14 @@ def require_fresh_part2(result: dict | None, paragraphs: list, label: str, *, ne
     secs = result.get("sections") or {}
     if not result.get("explanation_md") or not secs or not secs.get("日本語訳") or result.get("translation_ja") != secs.get("日本語訳"):
         raise Part2Stale(f"{w}Part 2の解説または訳(Step Bの【日本語訳】)が欠落・不整合です。次の一手: {nxt}")
-    if result.get("explain_signature") != explain_signature(cand, result.get("ref_ja")):
-        raise Part2Stale(f"{w}Part 2の解説signatureが候補docの材料欄から再計算した値と一致しません。次の一手: {nxt}")
-    if ref_ja_pool is not None and result.get("ref_ja") != lookup_ref_ja(sel["sentence"], ref_ja_pool):
-        raise Part2Stale(f"{w}Part 2の参考訳が現在のPart 1訳poolと一致しません(再生成が必要)。次の一手: {nxt}")
+    if frozen is not None:   # signature(Prompt/model依存)の代わりに、凍結した解説全文・訳との一致(frozen:<sha>)で判定。参考訳poolの変化は呼出側(wiring)がISSUEで扱う
+        if frozen_sha_of(sel["candidate_id"], sel["sentence"], result["explanation_md"], result.get("translation_ja")) != frozen.get("frozen_sha256"):
+            raise Part2Stale(f"{w}Part 2の解説が凍結した確定解説(frozen:{str(frozen.get('frozen_sha256'))[:16]})と一致しません。次の一手: {nxt}")
+    else:
+        if result.get("explain_signature") != explain_signature(cand, result.get("ref_ja")):
+            raise Part2Stale(f"{w}Part 2の解説signatureが候補docの材料欄から再計算した値と一致しません。次の一手: {nxt}")
+        if ref_ja_pool is not None and result.get("ref_ja") != lookup_ref_ja(sel["sentence"], ref_ja_pool):
+            raise Part2Stale(f"{w}Part 2の参考訳が現在のPart 1訳poolと一致しません(再生成が必要)。次の一手: {nxt}")
     if PAGE_FORBIDDEN_RE.search(result["explanation_md"]):
         raise Part2Stale(f"{w}Part 2の解説にページ非表示語が含まれます。次の一手: {nxt}")
 
@@ -1282,13 +1332,13 @@ def require_fresh_part2(result: dict | None, paragraphs: list, label: str, *, ne
 # ---- R-3: 確定 <-> part2_result.json <-> study_text/*.md <-> 公開HTML の一致検証(module側) ------------------
 def verify_selection_matches_outputs(*, kind: str = "grammar", paragraphs: list, label: str, candidates_doc: dict, grammar_review: dict,
                                      result: dict, md_text: str | None = None, html_text: str | None = None, next_command: str,
-                                     where: str = "", ref_ja_pool: dict | None = None) -> None:
+                                     where: str = "", ref_ja_pool: dict | None = None, frozen: dict | None = None) -> None:
     """kind='grammar'のみ。不一致はPart2Stale。md_text/html_textを渡した場合は決定論の描画(render_markdown / render_html_block)と照合する。
     html_textは『render_html_block(include_css=False)の出力を部分文字列として含む』ことを確認(ページbuilderが包む前提。包み方は呼出側)。"""
     if kind != "grammar":
         raise ValueError(f"このmoduleが検証できるのは kind='grammar' のみ: {kind!r}")
     require_fresh_part2(result, paragraphs, label, next_command=next_command, where=where, candidates_doc=candidates_doc,
-                        grammar_review=grammar_review, ref_ja_pool=ref_ja_pool)
+                        grammar_review=grammar_review, ref_ja_pool=ref_ja_pool, frozen=frozen)
     w = f"[{where}] " if where else ""
     if md_text is not None and md_text != render_markdown(result):
         raise Part2Stale(f"{w}study_text/のPart 2 markdownが確定結果(part2_result.json)と一致しません。次の一手: {next_command}")

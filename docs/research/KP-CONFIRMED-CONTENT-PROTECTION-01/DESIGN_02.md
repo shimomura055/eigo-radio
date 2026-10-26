@@ -94,3 +94,14 @@ DESIGN_01(commit 17385f5f9)にOpus条件Aレビュー(`OPUS_REVIEW_01.md`、M1�
 1. (a)文法解説の「ユーザー確定」: 現行フォームでは文法解説が全記事「未生成」でStep Bは確定後生成→`explanation_source=stepB_generated_frozen`(ユーザー未閲覧)。見せてから確定させるには提示前にStep B生成(約¥0.3×候補数、工程順変更=新仕様)。**既出UDR-FORM-1と同一**のため新規提示しない。
 2. (b)Y/Z Std「日本語の意味」欄の表示(M2-b): CURRENT_SPEC:458-469で「表示用`japanese_gloss`/TTS用`japanese_gloss_tts`、表示用フィールドはTTSへ渡らない」が承認済み→現状は承認済み仕様との不一致=バグ是正(Fable判断、委任_02B)。
 3. ③・Stdの②・文法2件目の消費者は無い(`unconsumed`で保存・明示)。消費側新設は新仕様=ユーザー判断(フォーム側委任の判断候補と同根)。
+
+---
+## 付録(委任_02B 実装後の確定事項。2026-10-27)
+
+1. **単一アクセサの契約**: KP/vocab/Part 1行を後工程へ渡す入口は `er128.load_verified_items(kp_dir, level=, which="kp"|"part1")` と `verify_items_against_record` のみ。`part1_items`・`public_study_html` はこれを通す(G1通過+Part 1入力と確定レコードの英語/訳の一致を確認してから返す)。レコード無し/保護OFF/取消済み=従来動作。
+2. **actor=evidence**: runtime evidence専用。`confirm --from-form --actor evidence` で作り、記録に「EVIDENCE_RUN(ユーザー確定ではない…)」を明記。`ENFORCING_ACTORS=(user, evidence)` により保護の強度はuserと同じ(gloss差もBLOCK。autoのみWARN)。本番のユーザー確定とは区別される。
+3. **M6 Part 2凍結の設計**: sidecar `confirmed_grammar.json`(`kp_dir_rel`でKPの確定レコードに結合、sha自己整合)+ `confirmed_grammar_frozen.json`(`frozen:<sha16>`。出所=`stepB_generated_frozen` または `form_displayed`)。凍結がある間、extract/explain/ref_ja signature は判定に使わず frozen sha+逐語span+candidate_id で判定。`--regenerate-stage part2_cand_b1b`・再抽出・別候補選定・NG/UNNGは `guard_grammar` で拒否(revoke必須)。本文変更は選定文が逐語で残れば `_rebind_grammar_text` でAPI 0再バインド、残らなければISSUE(`Part2Stale`)。
+4. **M8照合の正規化**: 出典文の逐語照合は NFKC・曲線引用符→直線・空白正規化(大文字小文字は保持)。候補docの`source_sentence`が直線引用符に正規化されるため。
+5. **来歴の据え置き(Z/Y)**: `part2_cand_b1b` の input_sha に抽出signature(model)が入るため、確定済み文法でmodelだけ変えると親sha不一致STOP(かつ`--regenerate-stage`はrevoke必須で拒否=解消不能)になる。確定済み文法かつ候補docの本文sha一致の場合に限り記録済みinput_shaを据え置く(`er120_part2_wiring_01.cand_input_sha`)。
+6. **ISSUEの扱い(Z `_gloss_person_gate`)**: 確定項目のmismatchは修復LLMを呼ばず `FamilyZKpReviewPending`(reason=`confirmed_content_issue`)。
+7. **LR**: 保護spanは追加しない(OPEN-540統一仕様の変更になるため)。重なりは `audit/confirmed_kp_lr_overlap.json` に記録のみ。

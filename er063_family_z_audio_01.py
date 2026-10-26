@@ -2535,7 +2535,9 @@ def _user_page_rows(run_dir: str, level: str, rows: list, kp_rows: list, audio_r
                 gloss = (kw.get(n) or {}).get("japanese_gloss") or ""
                 heads, cells = (["英語", "日本語の意味", "英語での説明"], [en, gloss, expl]) if gloss else (["英語", "英語での説明"], [en, expl])
             else:
-                ja = (kp.get("japanese_meaning") or {}).get("canonical_text", "未取得")
+                # KP-CONFIRMED-CONTENT-PROTECTION-01 02B M2-b: Stdページの「日本語の意味」はユーザーが確定した表示用japanese_gloss
+                # (CURRENT_SPEC:458-469 表示用/TTS用分離)。TTS用canonical_text(「～」→「なになに」等)は表示しない。TTS入力は不変。
+                ja = (kw.get(n) or {}).get("japanese_gloss") or (kp.get("japanese_meaning") or {}).get("canonical_text", "未取得")
                 heads, cells = ["英語", "日本語の意味"], [en, ja]
             out.append({"part": f"Key Phrase {n}", "start": r["start"], "dur": r["dur"], "src": r["file"],
                         "blocks": [uc.kp_block(heads, cells)]})

@@ -41,6 +41,7 @@ from __future__ import annotations
 import difflib
 import json
 import re
+import sys
 import time
 from datetime import datetime, timezone
 
@@ -825,11 +826,25 @@ def run_local_rewrite_recovery(*, segment_id: str, canonical_text: str, last_asr
     result["retts_result"] = retts_result
     if retts_result.get("status") == "OK":
         result["status"] = "RESOLVED_BY_LOCAL_REWRITE"
+        _note_confirmed_kp_overlap(segment_id, canonical_text, selection["selected"]["rewritten_segment"])
     else:
         result["status"] = "HUMAN_REVIEW_LOCKED_RETTS_FAILED"
     _write_recovery_artifacts(result, out_dir)
     _append_recovery_history(result, out_dir)
     return result
+
+
+def _note_confirmed_kp_overlap(segment_id: str, before: str, after: str) -> None:
+    """KP-CONFIRMED-CONTENT-PROTECTION-01 委任_02B(OPUS O-6): LR発火時、ユーザー確定済みKPの本文出現位置とLRの書換え範囲が重なったら
+    `<run>/<lv>/audit/confirmed_kp_lr_overlap.json` に**記録するだけ**(警告)。LRの挙動・候補選定・採用/不採用は一切変えない(OPEN-540統一仕様は不変)。
+    確定内容保護の共通核(er128)がこのプロセスで既に読み込まれている場合(X/Y/ZでKP確定のG1を通った後)だけ働き、A/B/C等では何もしない(importもしない)。"""
+    cc = sys.modules.get("er128_kp_confirmed_content_01")
+    if cc is None:
+        return
+    try:
+        cc.note_lr_fired(segment_id, before, after)
+    except Exception:   # noqa: BLE001  記録の失敗でLRを止めない
+        pass
 
 
 def resolve_expected_text_after_local_rewrite(result: dict | None, canonical_text: str) -> tuple[str, str]:

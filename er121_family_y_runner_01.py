@@ -828,7 +828,8 @@ def _part2_cand_step(ctx, prov) -> dict:
     paragraphs, label = _part2_inputs(ctx)
     sd = _part2_dir(ctx)
     force = ctx.regenerate_stage == PART2_CAND_STAGE
-    _stage_precheck(prov, PART2_CAND_STAGE, g.cand_stage_input_sha(paragraphs, label), force)
+    cand_sha = p2w.cand_input_sha(sd, paragraphs, label, prov.stage_entry(PART2_CAND_STAGE))   # 確定済みの文法はmodel/Prompt変更で再抽出しない(来歴の入力shaを据え置く)
+    _stage_precheck(prov, PART2_CAND_STAGE, cand_sha, force)
     hook = _part2_hook(ctx, "part2_extract_call_fn")
     try:
         with ctx.stage_context("part2_cand"):
@@ -839,7 +840,7 @@ def _part2_cand_step(ctx, prov) -> dict:
         g.write_failed_record(sd, e, next_command=_part2_next(ctx, PART2_CAND_STAGE), stage=PART2_CAND_STAGE)
         raise YE2EStop(f"FAMILY_Y_PART2_NOT_OK({PART2_CAND_STAGE}): {e}(候補抽出に失敗。TTSへ渡さずSTOP。記録={sd}/{g.FAILED_FILENAME}。"
                        f"次の一手: {_part2_next(ctx, PART2_CAND_STAGE)})") from e
-    _m().w62.ensure_stage(prov, PART2_CAND_STAGE, g.cand_stage_input_sha(paragraphs, label), f"{sd}/part2_cand_stage.json",
+    _m().w62.ensure_stage(prov, PART2_CAND_STAGE, cand_sha, f"{sd}/part2_cand_stage.json",
                           lambda: (p2w.cand_marker(sd, paragraphs, label), {"label": label}), regenerate=force)
     return res
 

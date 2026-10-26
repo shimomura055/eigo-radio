@@ -588,7 +588,12 @@ class TestStaleLegacyFlag(CCBase):
             self.confirm_user(env)
             calls = dict(env.n)
             before = {f: rd(f"{self.kp_dir}/{f}") for f in ("kp_candidates.json", "kp_human_review.json", "keywords_canonicalized.json")}
-            r = self.ensure(env, text=ARTICLE2)
+            # 委任_02B(M8): 出典文が新本文に逐語で残る本文変更は自動再バインド(別test)。ここは『確定itemの出典文そのものが変わった』本文=ISSUEで止まる
+            cm = {c["candidate_id"]: c for c in rv.load_candidates(self.kp_dir)["candidates"]}
+            sent = cm[self.rec()["items"][0]["candidate_id"]]["item"]["source_sentence"]
+            ARTICLE_SRC_CHANGED = ARTICLE.replace(sent, sent[: sent.rindex(sent.split()[-1])] + "changed")
+            self.assertNotEqual(ARTICLE_SRC_CHANGED, ARTICLE)
+            r = self.ensure(env, text=ARTICLE_SRC_CHANGED)
             self.assertEqual(r["state"], "PENDING")
             self.assertEqual(r["pending"]["reason"], "confirmed_content_issue")
             self.assertEqual(dict(env.n), calls, "有料の候補再生成は走らない")
@@ -598,7 +603,7 @@ class TestStaleLegacyFlag(CCBase):
             self.assertEqual(self.rec()["revision"], 1)
             cc.cmd_revoke(self.run_dir, "b1b", "human", self.uref, "本文変更に伴う選び直し")
             self.assertFalse(os.path.exists(cc.paths_of(self.kp_dir)["issue_md"]))   # 解消済みISSUEは依頼書に残らない
-            r2 = self.ensure(env, text=ARTICLE2)   # 取消後は従来どおり(STALE→再生成)
+            r2 = self.ensure(env, text=ARTICLE_SRC_CHANGED)   # 取消後は従来どおり(STALE→再生成)
             self.assertEqual(r2["state"], "PENDING")
             self.assertGreater(env.n["call1"], calls["call1"])
 
