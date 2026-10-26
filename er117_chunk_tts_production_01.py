@@ -8,6 +8,14 @@ B_r1+0.2秒) の「chunk分割TTS」共通module(APPROVED_FOR_PRODUCTION、ユ�
   * 本moduleはnumpy+標準libのみ(p9a等の重いmoduleはimportしない)。rms/peak/gain/status判定は呼出側が関数を渡す(式の再実装をしない=I2)。
   * 規則(閾値・最小語数・優先順・分割数式)を変えたら CHUNK_PLANNER_VERSION を必ず更新する(reuse/resume/整合検査が版で旧chunkを拒否する)。
 Trialとの対応: X=er113 build_chunk_plan(段落単位) / Z=er114 plan_clip_chunks(B_r1)。planner出力一致はtest fixtureで凍結。
+
+CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01 委任_01(ユーザー正式承認2026-10-26 APPROVED_FOR_PRODUCTION: Std/Adv双方。Standard除外は認めない):
+  * X/Yの分割規則(plan_x_part/plan_x_parts)はレベル非依存(元からレベル条件を持たない)。planner規則・版・Advの出力は不変(golden一致test)。
+  * Standardの6%減速との合成方式 = 『chunkごとに既存の減速処理(n3_tts.generate_a2_segment_with_slowdown=TTS→atempo→減速後ASR再検証)をそのまま適用
+    → 減速後のchunk wavを0.2秒の無音(減速対象外)で連結』。ポーズは減速の影響を受けず0.2秒のまま。連結後に減速はかけない。
+    本moduleは減速自体を実装しない(既存関数を呼出側が適用)。ここでは(a)Std chunk entryの減速証跡を要求する検査 (b)親集約entryの減速集約
+    (c)減速証跡の無い旧cacheの再利用拒否 だけを共通化する(X/Yが共用、Zは次委任)。
+  * Z向けのレベル条件(plan_z_clip の level != "b1b")は本委任では撤去しない(Z側の減速合成配線=er063は次委任。未配線のまま発火させない)。
 """
 from __future__ import annotations
 
@@ -27,6 +35,11 @@ Z_SPLIT_THRESHOLD_WORDS = 100        # Z: narrator clipがこれを超えたら�
 Z_TARGET_WORDS = 100                 # k = ceil(語数 / 100)
 Z_MIN_CHUNK_WORDS = 25
 X_MIN_PARAGRAPHS_FOR_CHUNKING = 2    # 段落が1つしか無いpartは分割しない(従来と同じ1 call)
+STD_LEVEL = "a2"                     # Standard。chunk entryに減速証跡(slowdown_applied)を要求する
+STD_SLOWDOWN_COMPOSITION = "per_chunk_slowdown_then_pad_0.2s"   # 合成方式の記録名(chunk別減速→0.2秒無音挿入→連結。連結後減速は採らない)
+# 既存Gate(er003_v1_n3_01_assemble._A2_SLOWDOWN_ORIGINAL_RATIO_MIN/MAX)と同一レンジ。値は複製であり変更しない(testで一致を固定)。
+STD_SLOWDOWN_RATIO_MIN = 1.03
+STD_SLOWDOWN_RATIO_MAX = 1.09
 
 # chunk ID形(er020.resolve_narrative_role の追加正規表現と同形。test_idsで一致を固定)
 X_CHUNK_ID_RE = re.compile(r"(full_story_part([1-3]))_k([1-9][0-9]*)")
@@ -307,11 +320,67 @@ def compose_gained_parent(chunks_mono: list, target_rms: float, *, gain_fn, rms_
 
 
 # ------------------------------------------------------------------ (d) chunk entry meta / 親集約entry
-def attach_chunk_meta(entry: dict, parent_id: str, chunk: dict, n_chunks: int) -> dict:
-    """chunk entryに『どのplanのchunkか』を記録する(整合検査・evidence・resume用)。"""
+def attach_chunk_meta(entry: dict, parent_id: str, chunk: dict, n_chunks: int, level: str | None = None) -> dict:
+    """chunk entryに『どのplanのchunkか』を記録する(整合検査・evidence・resume用)。
+    level="a2"(Standard)のときだけ、減速合成方式の記録(level/std_slowdown_composition)を追加する。levelを渡さない(Adv)場合は従来とバイト同一。"""
     entry["chunk_tts"] = {"planner_version": CHUNK_PLANNER_VERSION, "parent_id": parent_id, "index": chunk["index"], "count": n_chunks,
                           "words": chunk["words"], "boundary_kind": chunk["boundary_kind"], "extra_pause_s": EXTRA_PAUSE_SECONDS}
+    if level == STD_LEVEL:
+        entry["chunk_tts"]["level"] = STD_LEVEL
+        entry["chunk_tts"]["std_slowdown_composition"] = STD_SLOWDOWN_COMPOSITION
     return entry
+
+
+# ------------------------------------------------------------------ (d2) Standard: chunk別6%減速の証跡検査(X/Y共用。Zは次委任)
+def std_chunk_slowdown_violations(plan: dict, segments: dict) -> list:
+    """Std(a2)でchunk化された親について、planの全chunk entryが『chunk単位で』6%減速済みであることを要求する(共有Gateは
+    A2_SLOWDOWN_TARGET_SEGMENTSにchunk idを持たないため、chunk entryの減速欠落を検知できない=ここで補う)。
+    違反: entry欠落 / slowdown_applied is not True / 記録された減速前後長の比が[STD_SLOWDOWN_RATIO_MIN, MAX]外。
+    減速後ASR再検証の合否は共有Gate(VALIDATED/HUMAN_APPROVED)の責務でありここでは見ない(人間承認済みchunkを減速証跡の有無だけで判定するため)。
+    戻り値=[{"segment": chunk_id, "violations": [...]}]。chunk化されていないplanは[]。"""
+    out = []
+    if not plan.get("chunked"):
+        return out
+    for cid in chunk_ids(plan):
+        e = (segments or {}).get(cid)
+        v = []
+        if e is None:
+            v.append("NO_SEGMENT_RECORD")
+        else:
+            if e.get("slowdown_applied") is not True:
+                v.append("STD_CHUNK_MISSING_MANDATORY_A2_SLOWDOWN")
+            else:
+                info = e.get("slowdown_info") or {}
+                src, dst = info.get("src_duration_seconds"), info.get("dst_duration_seconds")
+                if src and dst and not (STD_SLOWDOWN_RATIO_MIN <= dst / src <= STD_SLOWDOWN_RATIO_MAX):
+                    v.append(f"STD_CHUNK_SLOWDOWN_RATIO_OUT_OF_RANGE({dst / src:.4f})")
+        if v:
+            out.append({"segment": cid, "violations": v})
+    return out
+
+
+def std_parent_slowdown_fields(plan: dict, segments: dict) -> dict:
+    """Std親集約entryの減速集約(表示/Gate用)。親wav=減速後chunk wavの生連結なので、全chunkが減速済みの場合に限り slowdown_applied=True。
+    1つでも欠ければ False(親は共有Gateの _segment_missing_mandatory_a2_slowdown で止まる)。根拠は slowdown_basis に残す。"""
+    bad = std_chunk_slowdown_violations(plan, segments)
+    return {"slowdown_applied": not bad, "slowdown_basis": "all_chunks_slowdown_applied(parent wav = post-slowdown chunk wavs + 0.2s silence)",
+            "std_slowdown_composition": STD_SLOWDOWN_COMPOSITION, "std_chunk_slowdown_violations": [b["segment"] for b in bad]}
+
+
+def drop_cached_std_chunks_without_slowdown(cached: dict | None, is_chunk_id=None) -> dict | None:
+    """Std(a2)の前回resultsのうち、chunk idのentryで slowdown_applied is True でないものは再利用しない(減速証跡のないchunk wavを
+    Stdへ流用しない=fail-closed)。chunkでないentryは不変。is_chunk_id: key→bool。既定はX/Z形式(parse_chunk_id)。
+    Yはchunk id形式が異なる(y_voice_2_k1等)ため、呼出側(er121)が自分の判定関数を渡す。"""
+    if not cached:
+        return cached
+    is_chunk_id = is_chunk_id or (lambda k: parse_chunk_id(k) is not None)
+    segs = cached.get("segments") or {}
+    kept = {k: v for k, v in segs.items() if not is_chunk_id(k) or (v or {}).get("slowdown_applied") is True}
+    if len(kept) == len(segs):
+        return cached
+    out = dict(cached)
+    out["segments"] = kept
+    return out
 
 
 def chunk_reuse_key_fields(parent_id: str, chunk: dict, n_chunks: int) -> dict:
@@ -471,6 +540,12 @@ def evidence_record(plan: dict, segments: dict, compose_report: dict | None = No
             "audio_text_deviation": bool(e.get("audio_text_deviation")), "asr_judgement": e.get("asr_judgement"),
             "reused": bool(e.get("reused_from_previous_run")), "cost_jpy": e.get("cost_jpy"),
         })
+        if "slowdown_applied" in e:      # Std(a2)のchunkのみ(Advのchunkには無いkey=Advのevidence形式は不変)
+            si = e.get("slowdown_info") or {}
+            rows[-1].update({"slowdown_applied": e.get("slowdown_applied"), "slowdown_pct_actual": si.get("slowdown_pct_actual"),
+                             "slowdown_src_duration_s": si.get("src_duration_seconds"), "slowdown_dst_duration_s": si.get("dst_duration_seconds"),
+                             "post_slowdown_classification": e.get("post_slowdown_final_classification") or e.get("post_slowdown_classification"),
+                             "tts_generations_used": e.get("tts_generations_used")})
     return {"parent_id": plan.get("parent_id"), "family": plan.get("family"), "planner_version": CHUNK_PLANNER_VERSION,
             "chunk_count": len(rows), "extra_pause_seconds": EXTRA_PAUSE_SECONDS, "chunks": rows, "assembly": compose_report}
 

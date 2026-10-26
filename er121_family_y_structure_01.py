@@ -108,10 +108,14 @@ def notice_html() -> str:
 # ------------------------------------------------------------
 CHUNK_TTS_SCOPE = {"X": True, "Z": True, "Y": True}
 CHUNK_TTS_Y_METHOD = "X_paragraph_0.2s"          # ZのB_r1(narrator>100語分割)は採用しない(USER_02 ①)
-CHUNK_TTS_Y_LEVELS = ("b1b",)                    # X同様Advanced(b1b)本文のみ。Std(a2)本文はchunk化しない
-CHUNK_TTS_Y_APPROVAL_REF = "docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER_02.md §1-① (Family X方式のY正式採用、APPROVED_FOR_PRODUCTION)"
-CHUNK_TTS_Y_NOTE = ("Family Y: Chunk TTSはX方式(段落単位chunk+0.2秒ポーズ)を正式採用(USER_02 ①)。分割は各Y segment(lead/intro/voice/closing)の"
-                    "段落単位に限り、segment境界(話者切替=intro→voice、voice→次のintro)は結合しない。段落が1つのsegmentは分割しない(X規則どおり=従来の1 call)。")
+# CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01(ユーザー正式承認2026-10-26 APPROVED_FOR_PRODUCTION: Std/Adv双方。「Standardを除外することは認めない」)。
+# 旧("b1b",)限定はXのTrial対象(Advanced)を承認なく継承した設計判断であり、ユーザー承認はなかった(撤去)。Stdは各chunkに既存の6%減速を適用→0.2秒挿入。
+CHUNK_TTS_Y_LEVELS = ("b1b", "a2")               # Advanced・Standard両方(Std対象外は認められない)。Std chunkは chunk別6%減速→0.2秒無音→連結
+CHUNK_TTS_Y_APPROVAL_REF = ("docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER_02.md §1-① (Family X方式のY正式採用、APPROVED_FOR_PRODUCTION) / "
+                            "docs/pm/delegation_log/2026-10-26_CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01_USER.md §2 (Std/Adv共通採用、APPROVED_FOR_PRODUCTION)")
+CHUNK_TTS_Y_NOTE = ("Family Y: Chunk TTSはX方式(段落単位chunk+0.2秒ポーズ)をStd/Adv共通で正式採用(USER_02 ① + 2026-10-26)。分割は各Y segment(lead/intro/voice/closing)の"
+                    "段落単位に限り、segment境界(話者切替=intro→voice、voice→次のintro)は結合しない。段落が1つのsegmentは分割しない(X規則どおり=従来の1 call。"
+                    "現行のY本文契約は各Voice 1段落のため実記事では不発火=正常)。Stdは各chunkに既存の6%減速を適用してから0.2秒を挿入する(ポーズは減速されない)。")
 Y_CHUNK_ID_RE = re.compile(r"(y_(?:lead|closing|intro_[1-3]|voice_[1-3]))_k([1-9][0-9]*)")
 
 

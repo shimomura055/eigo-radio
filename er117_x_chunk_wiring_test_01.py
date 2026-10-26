@@ -191,15 +191,16 @@ class XGenerateTests(unittest.TestCase):
             r.run(self.tmp)
         self.assertEqual(r.calls, [])                                                                  # 課金前にSTOP
 
-    def test_std_a2_path_untouched_no_chunk_ids(self):
-        # a2(Std)本文はchunk化しない: a2関数のソースにchunk経路が入っていない
+    def test_std_a2_path_has_chunk_route_after_2026_10_26_approval(self):
+        # 旧test(Std除外を期待値として固定)は撤去。CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01(ユーザー正式承認2026-10-26: Standardを除外することは認めない)。
+        # a2の生成・gain・読込・組立にchunk経路が入っていること(配線漏れ検知)。Adv(b1b)は不変(別test群)。
         import inspect
         src = inspect.getsource(runner.generate_family_x_a2_segments)
-        self.assertNotIn("chunk_tts", src)
-        self.assertNotIn("_generate_x_body_part_chunked", src)
-        self.assertNotIn("chunk_tts", inspect.getsource(runner.apply_family_x_a2_gain))
-        self.assertNotIn("chunk_tts", inspect.getsource(runner.load_family_x_a2_sources))
-        self.assertNotIn("chunk_tts", inspect.getsource(runner.stage_assemble_family_x_a2))
+        self.assertIn("_generate_x_body_part_chunked_a2", src)
+        self.assertIn("chunk_plan_a2.json", src)
+        self.assertIn("chunk_tts", inspect.getsource(runner.apply_family_x_a2_gain))
+        self.assertIn("chunk_tts", inspect.getsource(runner.load_family_x_a2_sources))
+        self.assertIn("_x_std_chunk_slowdown_blocked", inspect.getsource(runner.stage_assemble_family_x_a2))
 
 
 class XOnlySegmentsTests(unittest.TestCase):
@@ -208,8 +209,9 @@ class XOnlySegmentsTests(unittest.TestCase):
         sel, err = v("tts", False, "b1b", "full_story_part2,full_story_part1_k2")
         self.assertIsNone(err)
         self.assertEqual(sel, {"full_story_part2", "full_story_part1_k2"})
-        _, err = v("tts", False, "a2", "full_story_part1_k1")                                          # I5: Stdは_k指定を拒否
-        self.assertIn("_k", err)
+        sel_a2, err = v("tts", False, "a2", "full_story_part1_k1")                                     # 2026-10-26: Stdもchunk対象=_k指定可(旧I5の拒否は撤去)
+        self.assertIsNone(err)
+        self.assertEqual(sel_a2, {"full_story_part1_k1"})
         _, err = v("tts", False, "a2", "full_story_part1")                                             # 親名はa2でも従来どおり可
         self.assertIsNone(err)
         for bad in ("full_story_part1_k", "full_story_part1_k0", "full_story_part1_c1_k1", "comment_1_k1", "in_one_line_k1"):

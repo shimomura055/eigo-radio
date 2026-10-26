@@ -3,7 +3,7 @@
 
 API 0・実client生成block・network遮断(runner testと同じharness)。偽TTSは er121_family_y_mock_01.fake_tts。
 検査: 段落分割がsegment境界(話者切替)をまたがない / 0.2秒ポーズ / chunkごとのVoice / Chunk Gate(親集約 CHUNKS_NOT_ALL_VALIDATED・chunk単位Style検査) /
-      整合検査(欠落・改ざん) / resume再利用 / Std非chunk / role未解決はSTOP(課金前) / X方式の共通module(er117)を再実装していないこと。
+      整合検査(欠落・改ざん) / resume再利用 / (Std対象は2026-10-26に追加=er121_family_y_std_chunk_test_01.py) / role未解決はSTOP(課金前) / X方式の共通module(er117)を再実装していないこと。
 注: Yのchunk idをFULL_STORYへ解決するのは共通er020(委任_04の要求事項=未反映)。test内では resolve_narrative_role に同等の解決を足したpatchを当てて
     『要求どおりer020が更新された後の挙動』を検証し、未更新のままだと課金前にSTOPすること(fail-closed)も別testで固定する。
 """
@@ -165,15 +165,15 @@ class TestPlan(Base):
         self.assertEqual(chunk_tts.EXTRA_PAUSE_SECONDS, 0.2)
         self.assertTrue(all(c["boundary_kind"] == "paragraph" for c in got["chunks"]))        # Zのsentence境界(B_r1)ではない
 
-    def test_a2_is_not_chunked_and_chunk_only_segments_rejected(self):
-        os.makedirs(f"{self.out}/a2/audit", exist_ok=True)
-        plans = ya._record_chunk_decision(f"{self.out}/a2", "a2")
-        self.assertEqual(plans, {})
-        dec = self.rj(f"{self.out}/a2/audit/chunk_tts_decision.json")
-        self.assertTrue(dec["chunk_tts_applicable"] and dec["chunk_tts_applied_at_this_level"] is False)
+    def test_a2_is_chunk_scope_since_2026_10_26_and_real_single_paragraph_article_is_not_chunked(self):
+        # 旧test(a2は非chunk・_k拒否を期待値として固定)は撤去。CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01(ユーザー正式承認2026-10-26: Standardを除外することは認めない)。
+        # Std詳細は er121_family_y_std_chunk_test_01.py。ここではlevel範囲と実記事(1段落)の不発火だけを固定する。
+        self.assertEqual(ys.CHUNK_TTS_Y_LEVELS, ("b1b", "a2"))
+        self.assertTrue(ys.chunk_decision_record("a2")["chunk_tts_applied_at_this_level"])
+        self.assertTrue(ys.chunk_decision_record("b1b")["chunk_tts_applied_at_this_level"])
         sel, err = ya.validate_only_segments("y_voice_2_k1", "a2")
-        self.assertIsNone(sel)
-        self.assertIn("b1b", err)
+        self.assertIsNone(err)
+        self.assertEqual(sel, {"y_voice_2_k1"})
         sel, err = ya.validate_only_segments("y_voice_2,y_voice_2_k1", "b1b")
         self.assertIsNone(err)
         self.assertEqual(sel, {"y_voice_2", "y_voice_2_k1"})

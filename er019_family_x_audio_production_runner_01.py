@@ -955,10 +955,8 @@ def validate_only_segments_args(stage: str, dry_run: bool, level: str, raw: str)
     unknown = sorted(x for x in sel if not _VALID_ONLY_SEGMENT_RE.match(x))
     if unknown:
         return None, f"--only-segmentsに未知のsegment名があります: {unknown}"
-    if level == "a2":
-        k_sel = sorted(x for x in sel if chunk_tts.parse_chunk_id(x))
-        if k_sel:   # I5: chunk TTSはAdvanced(b1b)本文のみ。Std(a2)に_k指定は無い
-            return None, f"--only-segmentsの_k指定(chunk)は--level b1bのみです(Std本文はchunk化しません): {k_sel}"
+    # CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01(ユーザー正式承認2026-10-26): Standardもchunk化するため、Std(a2)の_k指定拒否(旧I5)を撤去した。
+    # _kは本文part(full_story_part{n})にのみ付く(_VALID_ONLY_SEGMENT_REが保証)。in_one_line/comment等への_kは未知segment名として拒否される。
     return sel, None
 
 
@@ -1296,7 +1294,7 @@ def _pnap_supply(original: str, shaped: str) -> str:
 
 # ============================================================
 # FX-FZ-CHUNK-TTS-PRODUCTION-WIRING-01(X Advanced本文=段落単位chunk TTS+0.2秒、APPROVED_FOR_PRODUCTION 2026-10-25、ユーザー正式決定B0.2)
-# chunkは通常のsegment entry(segment_id=full_story_part{n}_k{j})。Std(a2)本文・in_one_line・他segmentは従来どおり(分岐前に抜ける)。
+# chunkは通常のsegment entry(segment_id=full_story_part{n}_k{j})。in_one_line・他segmentは従来どおり(分岐前に抜ける)。Standard(a2)本文もchunk化する(2026-10-26ユーザー正式承認): chunkごとに既存の6%減速を適用→0.2秒無音挿入(_generate_x_body_part_chunked_a2)。
 # 親(full_story_part{n})は『生chunkを0.2秒無音で連結したwav』+親集約entry(statusはplanのchunk id一覧から導出、失敗時も常に書く)。
 # ============================================================
 def _x_chunk_plans(parts: dict) -> dict:
@@ -1329,17 +1327,21 @@ def _x_chunk_parent_display(plan: dict, segments: dict) -> dict:
     return d
 
 
-def _refresh_x_chunk_parents(out_dir: str, parts: dict, segments: dict, plans: dict) -> dict:
-    """M2(a)(b)(d): chunk化したpartの親集約entryを(再)構築して segments に書く(冪等)。generate末尾と、assembleの入口(style gateより前)で呼ぶ。"""
+def _refresh_x_chunk_parents(out_dir: str, parts: dict, segments: dict, plans: dict, level: str = "b1b") -> dict:
+    """M2(a)(b)(d): chunk化したpartの親集約entryを(再)構築して segments に書く(冪等)。generate末尾と、assembleの入口(style gateより前)で呼ぶ。
+    level="a2"(Standard): 親wav=減速後chunk wavの生連結なので、全chunk減速済みのときだけ親にslowdown_applied=Trueを集約する(er117.std_parent_slowdown_fields)。"""
     ap = asm.human_approval_path(out_dir)
     approvals = load_json(ap) if os.path.exists(ap) else {}
     out = {}
     for pid, plan in plans.items():
         if not plan.get("chunked"):
             continue
+        display = _x_chunk_parent_display(plan, segments)
+        if level == chunk_tts.STD_LEVEL:
+            display.update(chunk_tts.std_parent_slowdown_fields(plan, segments))
         out[pid] = chunk_tts.refresh_parent_status(
             plan, segments, approvals, asm._segment_gate_status, narration_dir=f"{out_dir}/narration",
-            parent_text=parts["part" + pid[-1]], display=_x_chunk_parent_display(plan, segments))
+            parent_text=parts["part" + pid[-1]], display=display)
     return out
 
 
@@ -1365,6 +1367,51 @@ def _generate_x_body_part_chunked(plan: dict, cached: dict | None, narration_dir
         # M1: Style profileの記録は『chunkごと』(親は対象外。親へchunk1の値をコピーしない)
         if not validation_inheritance.is_untouched_entry(results[cid]):
             style_profile_mod.attach_segment_profile_record(results[cid], style_profile, "FULL_STORY", role_style("FULL_STORY"))
+
+
+def _generate_x_body_part_chunked_a2(plan: dict, cached: dict | None, narration_dir: str, results: dict, role_style_slower, style_profile: str,
+                                     tts_backend: str) -> None:
+    """Standard(a2)本文part用(CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01、ユーザー正式承認2026-10-26)。chunkごとに、非chunkのStd本文partと『同じ呼出』
+    (n3_tts.generate_a2_segment_with_slowdown = TTS→6%減速(atempo)→減速後ASR再検証、同一Voice/Style[減速instruction込み]/model/Gate/retry/fallback、
+    通算TTS3回の予算もchunk単位)を適用する。減速はchunk wavに対してだけ掛かり、0.2秒の無音は連結時(減速後)に挿入する=ポーズは減速されない。
+    chunk失敗(status!=OK)後も後続chunkの生成を続ける(R1)。直列(chunk順)。"""
+    n = len(plan["chunks"])
+    for c in plan["chunks"]:
+        cid, ctext = c["chunk_id"], c["text"]
+        tts_input = _pnap_supply(ctext, n3_tts.tts_safe_news_en(ctext))
+        sub = n3_tts.first_words(ctext)
+        with cl.segment_context(cid):
+            results[cid] = _generate_or_reuse(
+                cached, cid, f"{narration_dir}/{cid}.wav",
+                lambda tts_input=tts_input, sub=sub, cid=cid: n3_tts.generate_a2_segment_with_slowdown(
+                    tts_input, f"{narration_dir}/{cid}.wav", sub,
+                    style_prefix_override=(role_style_slower("FULL_STORY") or n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER),
+                    disfluency_qa=False,
+                    enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(cid),
+                    enable_repetition_qa=True, tts_backend=tts_backend),
+                expected_text=ctext)
+        results[cid]["canonical_text"] = ctext
+        chunk_tts.attach_chunk_meta(results[cid], plan["parent_id"], c, n, level=chunk_tts.STD_LEVEL)
+        if not validation_inheritance.is_untouched_entry(results[cid]):
+            style_profile_mod.attach_segment_profile_record(results[cid], style_profile, "FULL_STORY", role_style_slower("FULL_STORY"))
+
+
+def _x_std_chunk_slowdown_blocked(out_dir: str) -> dict | None:
+    """Std(a2)組立前Gate: chunk化したpartの全chunkが『chunk単位で』6%減速済み(slowdown_applied)であること。
+    共有Gate(asm.verify_episode_audio_validation_gate)はchunk idをA2_SLOWDOWN_TARGET_SEGMENTSに持たないため、ここで補う(回避ではなく追加)。
+    人間承認(record_human_approval)でも減速欠落は迂回できない(承認は共有Gateのstatusにしか効かない)。"""
+    rp, pp = f"{out_dir}/audit/tts_generation_results.json", f"{out_dir}/parts.json"
+    if not (os.path.exists(rp) and os.path.exists(pp)):
+        return None
+    segs = load_json(rp).get("segments") or {}
+    plans = _x_effective_chunk_plans(out_dir, load_json(pp))
+    bad = []
+    for pid, plan in plans.items():
+        bad += chunk_tts.std_chunk_slowdown_violations(plan, segs)
+    if not bad:
+        return None
+    return {"status": "BLOCKED_STD_CHUNK_SLOWDOWN_GATE", "blocked": bad,
+            "reason": "Std本文chunkに6%減速(chunk単位)の証跡がありません。本runnerはこのGateを回避しません。"}
 
 
 def _x_effective_chunk_plans(out_dir: str, parts: dict) -> dict:
@@ -1859,7 +1906,12 @@ def generate_family_x_a2_segments(
     shared_narration_raw_a2 = ({} if _ONLY_SEGMENTS is not None else
                                shared_narration.ensure_all_shared_narration_a2(narration_dir, tts_backend=tts_backend))
     shared_narration_status = _summarize_shared_narration(shared_narration_raw_a2)
-    _cached = _load_cached_tts_results(out_dir)
+    # CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01(ユーザー正式承認2026-10-26): Std本文partもX Advと同じ段落境界planで分割し(段落2未満は従来の1 call)、
+    # chunkごとに既存の6%減速処理を適用→0.2秒無音を挿入して連結する。再計画禁止(resume)・stale版/減速証跡なしcacheの再利用拒否もAdvと同じ。
+    _chunk_plans = _x_chunk_plans(parts)
+    chunk_tts.reconcile_saved_plan(f"{out_dir}/audit/chunk_plan_a2.json", _chunk_plans)
+    _cached = chunk_tts.drop_cached_std_chunks_without_slowdown(
+        _x_drop_chunked_parent_cache(chunk_tts.drop_stale_chunk_entries(_load_cached_tts_results(out_dir)), _chunk_plans))
 
     results = {}
     topic_intro_tts_title = parts.get("title_tts", parts["title"])
@@ -1916,6 +1968,10 @@ def generate_family_x_a2_segments(
         ("full_story_part1", parts["part1"]), ("full_story_part2", parts["part2"]),
         ("full_story_part3", parts["part3"]), ("in_one_line", parts["in_one_line"]),
     ):
+        if name in _BODY_SEGMENT_NAMES and _chunk_plans[name]["chunked"]:
+            # 本文partが2段落以上: 段落単位chunk+chunkごとの6%減速(親集約entryはループ後に常に書く)。1段落のpartは下の従来経路(1 call)。
+            _generate_x_body_part_chunked_a2(_chunk_plans[name], _cached, narration_dir, results, _role_style_slower, style_profile, tts_backend)
+            continue
         tts_input = _pnap_supply(text, n3_tts.tts_safe_news_en(text))
         sub = n3_tts.first_words(text)
         with cl.segment_context(name):
@@ -1935,6 +1991,9 @@ def generate_family_x_a2_segments(
             style_profile_mod.attach_segment_profile_record(results[name], style_profile, _seg_role,
                                                              _role_style_slower(_seg_role))
 
+    # M2(a)(b)(d): chunk化したpartの親集約entry(失敗・未生成でも常に書く)+親wav(減速後chunkの生連結+0.2秒)+減速集約
+    _refresh_x_chunk_parents(out_dir, parts, results, _chunk_plans, level="a2")
+
     kp_results = _generate_key_phrase_segments_a2(kp, narration_dir, _cached,
                                                    tts_backend=tts_backend,
                                                    style_profile=style_profile) if kp is not None else {}
@@ -1943,6 +2002,11 @@ def generate_family_x_a2_segments(
     all_status = {k: v.get("status") for k, v in results.items()}
     kp_status = {r: {"en": v["english"].get("status"), "ja": v["japanese_meaning"].get("status")}
                  for r, v in kp_results.items()}
+    if any(pl.get("chunked") for pl in _chunk_plans.values()):   # C7: Std chunk TTSのruntime evidence(分割位置・種別・chunk別減速・attempts/fallback/LR/ASR判定)
+        save_json(f"{out_dir}/audit/chunk_tts_evidence_a2.json",
+                  {"planner_version": chunk_tts.CHUNK_PLANNER_VERSION, "level": "a2", "composition": chunk_tts.STD_SLOWDOWN_COMPOSITION,
+                   "style_profile": style_profile, "tts_backend": tts_backend,
+                   "parents": {pid: chunk_tts.evidence_record(pl, results) for pid, pl in _chunk_plans.items() if pl.get("chunked")}})
     review_lock.archive_prior_tts_results(f"{out_dir}/audit/tts_generation_results.json")
     save_json(f"{out_dir}/audit/tts_generation_results.json",
               {"segments": results, "key_phrases": kp_results, "shared_narration": shared_narration_status,
@@ -2330,7 +2394,7 @@ def _attach_kp_vote_audit(summary: dict, out_dir: str, level: str) -> None:
         summary["kp_vote_audit"] = {"enabled": True, "error": f"{type(exc).__name__}: {exc}", "blocking": False}
 
 
-def _chunk_parent_refresh_x(out_dir: str) -> None:
+def _chunk_parent_refresh_x(out_dir: str, level: str = "b1b") -> None:
     """tts_generation_results.json上のchunk親集約entryを(再)構築して保存する(chunk化したpartが無い/legacy結果ならファイルに触れない)。"""
     rp = f"{out_dir}/audit/tts_generation_results.json"
     pp = f"{out_dir}/parts.json"
@@ -2341,7 +2405,7 @@ def _chunk_parent_refresh_x(out_dir: str) -> None:
     plans = _x_effective_chunk_plans(out_dir, parts)
     if not any(pl.get("chunked") for pl in plans.values()):
         return
-    _refresh_x_chunk_parents(out_dir, parts, data.setdefault("segments", {}), plans)
+    _refresh_x_chunk_parents(out_dir, parts, data.setdefault("segments", {}), plans, level)
     save_json(rp, data)
 
 
@@ -2467,6 +2531,28 @@ def load_family_x_a2_sources(theme_out_dir: str, source_dir: str | None = None) 
         mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/meaning_{i}.wav")
         narration[f"meaning_{i}"] = mono
 
+    # CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01: chunk化したStd本文partは、音声を読む前に整合検査(chunk集合・順序・語数・版・本文)と
+    # 『親wav==ディスク上の(減速後)chunk wavの生連結』(整数サンプル完全一致)を確認する(Advと同じ手順・同じ関数)。
+    parts_json = load_json(f"{out_dir}/parts.json")
+    chunk_plans = _x_effective_chunk_plans(out_dir, parts_json)
+    _res_path = f"{out_dir}/audit/tts_generation_results.json"
+    _segs = (load_json(_res_path).get("segments") or {}) if os.path.exists(_res_path) else {}
+    body_chunks, chunk_plan_used = {}, {}
+    for pid, plan in chunk_plans.items():
+        if not plan.get("chunked"):
+            continue
+        ids = chunk_tts.chunk_ids(plan)
+        chunk_tts.verify_parent_integrity(plan, parts_json["part" + pid[-1]], {i: _segs[i] for i in ids if i in _segs}, _segs.get(pid))
+        paths = [f"{narration_dir}/{i}.wav" for i in ids]
+        chunk_tts.verify_raw_parent(f"{narration_dir}/{pid}.wav", paths)
+        monos = []
+        for pth in paths:
+            m_, sr_, _, _ = common.read_wav_float(pth)
+            assert sr_ == common.SAMPLE_RATE
+            monos.append(m_)
+        body_chunks[pid] = monos
+        chunk_plan_used[pid] = plan
+
     a2_segments = {}
     for name in ("comment_1", "comment_2", "comment_3", "comment_4",
                   "full_story_part1", "full_story_part2",
@@ -2477,7 +2563,8 @@ def load_family_x_a2_sources(theme_out_dir: str, source_dir: str | None = None) 
 
     return {"intro": intro, "notification": notification, "outro": outro,
             "preview_mono": preview_mono, "narration": narration,
-            "key_phrase_components": key_phrase_components, "a2_segments": a2_segments, "kp_items": kp_items}
+            "key_phrase_components": key_phrase_components, "a2_segments": a2_segments, "kp_items": kp_items,
+            "body_chunks": body_chunks, "chunk_plans": chunk_plan_used}
 
 
 def apply_family_x_a2_gain(sources: dict) -> dict:
@@ -2521,7 +2608,16 @@ def apply_family_x_a2_gain(sources: dict) -> dict:
     result["key_phrase_components"] = key_phrase_stereo
 
     a2_stereo = {}
+    body_chunks = sources.get("body_chunks") or {}
     for name, mono in sources["a2_segments"].items():
+        if name in body_chunks:
+            # Std chunk: chunk別gain(同一target_rms、peak<=0.95、各chunkは減速後wav)→chunk間に固定無音0.2秒(減速対象外)→連結→48kHz stereo化(Advと同一関数)。
+            composed, rep_ = chunk_tts.compose_gained_parent(
+                body_chunks[name], target_rms, gain_fn=p9a.compute_gain_for_target_rms, rms_fn=p9a.rms, peak_fn=p9a.peak)
+            gain_report[f"a2_{name}"] = {"chunked": True, "note": "親全体のgainは掛けていない。chunk別gain・RMS・peakは chunk_tts を参照"}
+            gain_report.setdefault("chunk_tts", {})[name] = rep_
+            a2_stereo[name] = p9a.mono_24k_to_stereo_target(composed)
+            continue
         gained = gain_to_rms(mono, target_rms, f"a2_{name}")
         a2_stereo[name] = p9a.mono_24k_to_stereo_target(gained)
     result["a2_segments"] = a2_stereo
@@ -2605,6 +2701,13 @@ def stage_assemble_family_x_a2(theme_out_dir: str, theme_id: str, source_dir: st
     if shared_blocked is not None:
         save_json(f"{out_dir}/run_summary_assemble.json", shared_blocked)
         return shared_blocked
+    # CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01: Style profile Gate・共有Gateより前に、chunk親集約entry(status・親wav・human_approved_chunks・減速集約)を
+    # 再構築し(M2(c)、Advと同じ)、全chunkのchunk単位6%減速を確認する(共有Gateはchunk idの減速を見ないため追加。回避しない)。
+    _chunk_parent_refresh_x(out_dir, "a2")
+    std_chunk_blocked = _x_std_chunk_slowdown_blocked(out_dir)
+    if std_chunk_blocked is not None:
+        save_json(f"{out_dir}/run_summary_assemble.json", std_chunk_blocked)
+        return std_chunk_blocked
     style_blocked = _style_profile_gate_blocked_summary(theme_out_dir, out_dir, "a2")
     if style_blocked is not None:
         save_json(f"{out_dir}/run_summary_assemble.json", style_blocked)
@@ -2628,6 +2731,11 @@ def stage_assemble_family_x_a2(theme_out_dir: str, theme_id: str, source_dir: st
         "clipping_detected": metrics["clipping_detected"], "peak": round(p9a.peak(assembled), 5),
         "sample_rate": SR, "channels": 2, "headroom_safety_valve": headroom["report"],
     }
+    if sources.get("body_chunks"):
+        summary["chunk_tts"] = _chunk_assembly_summary_x(sources["chunk_plans"], parts["gain_report"].get("chunk_tts") or {}, result["timeline"])
+        summary["chunk_tts"]["level"] = "a2"
+        summary["chunk_tts"]["composition"] = chunk_tts.STD_SLOWDOWN_COMPOSITION
+        save_json(f"{out_dir}/audit/chunk_tts_assembly_a2.json", summary["chunk_tts"])
     _attach_kp_vote_audit(summary, out_dir, "a2")   # KP3V: 非blocking監査(KP英語phraseのvote証跡欠落を警告+summary記録)
     pnap_hooks.attach_alarm_audit(summary, out_dir, "a2")   # PNAP 委任_02: 固有名詞アラーム要約を組立summaryへ埋め込み(非blocking・flag OFFは何も付けない)
     save_json(f"{out_dir}/run_summary_assemble.json", summary)

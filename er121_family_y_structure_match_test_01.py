@@ -51,6 +51,7 @@ ALLOWED_X_ONLY = {
     # 委任_04(USER_02 ①): YはX方式Chunkを採用。X固有のID(full_story_part{n})を前提にした下記はY IDで再配線(plan_y_chunks/_generate_y_body_segment_chunked/
     # refresh_y_chunk_parents/_drop_stale_chunk_cache)。共通er117の evidence_record/reconcile_saved_plan/plan_x_part 等はYも直接呼ぶ。
     "_chunk_plans.items": "Y-DIFF-CHUNK-ID", "_chunk_plans.values": "Y-DIFF-CHUNK-ID", "_generate_x_body_part_chunked": "Y-DIFF-CHUNK-ID",
+    "_generate_x_body_part_chunked_a2": "Y-DIFF-CHUNK-ID(2026-10-26 Std対象化: YはStd chunkを_generate_y_body_segment_chunked_a2で再配線。減速はX同様 n3_tts.generate_a2_segment_with_slowdown)",
     "_refresh_x_chunk_parents": "Y-DIFF-CHUNK-ID", "_x_chunk_plans": "Y-DIFF-CHUNK-ID", "_x_drop_chunked_parent_cache": "Y-DIFF-CHUNK-ID",
     "chunk_tts.drop_stale_chunk_entries": "Y-DIFF-CHUNK-ID(Y chunk idはer117.parse_chunk_idが解釈しないため_drop_stale_chunk_cacheで同等処理)",
     "fx_iol.family_x_in_one_line_scope": "Y-DIFF-IOL(YL-C08)",

@@ -53,9 +53,16 @@ class PauseScanTest(unittest.TestCase):
 
 
 class BadgeTest(unittest.TestCase):
-    def test_std_is_out_of_scope_and_adv_unchunked(self):
-        dec = {"segments": {"y_voice_1": {"chunked": False, "paragraphs": 1, "chunk_ids": []}}}
-        self.assertIn("Standardの本文は分割対象外", ya._tts_unit_badge("a2", dec, "y_voice_1"))
+    def test_std_and_adv_both_follow_the_decision_record(self):
+        # 2026-10-26: Standardも分割対象(旧『Standardの本文は分割対象外』表示は撤去)。表示は判定記録(chunk_tts_decision.json)に従う。
+        dec = {"segments": {"y_voice_1": {"chunked": False, "paragraphs": 1, "chunk_ids": []}}, "chunk_tts_applied_at_this_level": True}
+        std = ya._tts_unit_badge("a2", dec, "y_voice_1")
+        self.assertNotIn("分割対象外", std)
+        self.assertIn("分割なし(段落=1)", std)
+        decc = {"segments": {"y_voice_1": {"chunked": True, "paragraphs": 2, "chunk_ids": ["y_voice_1_k1", "y_voice_1_k2"]}}}
+        self.assertIn("TTS 2分割", ya._tts_unit_badge("a2", decc, "y_voice_1"))
+        old = {"chunk_tts_applicable": True, "chunk_tts_applied_at_this_level": False, "not_applied_reason": "Std(a2)本文はX同様chunk化しない"}
+        self.assertIn("旧記録", ya._tts_unit_badge("a2", old, "y_voice_1"))                        # 2026-10-26以前のStd記録は旧記録と明示
         b = ya._tts_unit_badge("b1b", dec, "y_voice_1")
         self.assertIn("分割なし", b)
         self.assertIn("追加0.2秒ポーズ: なし", b)
