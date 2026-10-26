@@ -1,0 +1,757 @@
+[
+  {
+    "family": "X",
+    "level": "Adv",
+    "tts_limit": "品質NG 3回(同一Style・同一Prompt) + 技術別枠(attempt毎 max_retry=1)。標準2+fallback1の分割は無い(CURRENT_SPEC.md:1857は3関数のみ名指し)",
+    "cooldown": "cs=True: 通算3回目直前に固定600秒(er020:57/64)",
+    "hr_lock": "STOPPED→record_outcome(er011:357)=HUMAN_REVIEW_REQUIRED(Lock: <level>/audit/review_lock_state.json)+英語HR queue(er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl。slot3 NG時にLR前に書込 er006:1294)",
+    "stop": "runner停止なし(exit3は上流失敗時のみ)。Assemble前Gate(asm.verify_episode_audio_validation_gate)がBLOCK。解除=asm.record_human_approval(canonical sha一致)またはreview_lock.approve_regenerate(次の1回)",
+    "part": "topic_intro(Charon英語)",
+    "generator_fn": "voice01.generate_charon_english [er019:1506→er003_v1_sing01_voice01_generate.py:49]",
+    "retry_conditions": "統一judge NG全種(NG_BOTH/NG_PROTECTED/NG_EXCLUDED/NG_SECONDARY_UNAVAILABLE: Primary NG→Secondary 1回, er006_secondary_asr_01.py:874)+length NG・TTS非OK/発話区間検出失敗/異常長(異常長は次attemptへ voice01:232)。disfluency/repetition QAなし。技術別枠: attempt内 _call_tts_with_retry(max_retry=1,待機なし,er002_common.py:703)",
+    "fallback": [
+      {
+        "type": "F-Tech",
+        "trigger": "TTS例外(技術retry1回後)または発話区間検出失敗(voice01:179)。ASR NGでは発動しない",
+        "from": "role Style(FAMILY_X_ROLE_STYLE_EN['TOPIC_INTRO'])",
+        "to": "FAMILY_X_ROLE_STYLE_EN_FALLBACK[0] minimal短文Style(voice01:194,flash-lite時)。同一attempt内で即再TTS"
+      }
+    ],
+    "lr": {
+      "enabled": true,
+      "trigger": "通算3回使い切りなお不合格 かつ cs=True(5 role) かつ 最終attemptのPrimary転写とcanonicalに語差分あり(identify_ng_span er020:206)。差分なし=NO_NG_SPAN→LR不発→HR。ユーザー決定2026-10-19(基本フロー:初回→最大2回再生成→なおNGならRewrite)",
+      "max_rewrites": "コード上は非有界(再入, CC-F1/X-F1)。1回の呼出で書換えるのは最小変更1本",
+      "retts": "1回(max_attempts=1, role Style維持 voice01:363-369)+再入時さらに",
+      "checks": "Luna候補5件→7 Gate QA+全文性+局所性(+In One Lineは文数不変[X scope])→全PASSのうちunchanged_ratio最大1本を採用(er020:739-)。再TTS後は統一judge(正解=書換え後文, script v1, LR_REWRITTEN警告)+元呼出と同じdisfluency/repetition QA"
+    },
+    "final_ng": "LR不発/LR再TTS NG→STOPPED→Lock+HR queue(英語)→Assemble Gate BLOCK",
+    "spec_refs": [
+      "DECISION_LOG.md:9711-9728(2026-09-26 ユーザー(A)-(D))/CURRENT_SPEC.md:2176",
+      "docs/pm/delegation_log/2026-10-19_FAMILY-Z-AUDIO-QA-DEFECT-RESOLUTION-01_USER.md §3",
+      "CURRENT_SPEC.md:1857(総3回・Std2+minimal1,2026-09-04ユーザー正式決定)"
+    ],
+    "runtime_evidence": [
+      "retry/fallback/LR/HR いずれも実走記録なし(Xの記録済みrun全件でtopic_introは1attempt OKのみ。未検証)"
+    ],
+    "match": "一致(静的: 3回→LR。10-19決定どおり)/runtime証拠なし(未検証)",
+    "cls": "A",
+    "notes_fact": "cs=connected_speech_enabled_for('topic_intro')=True(er020:188)。LR関数はvoice01側(再TTSはStyle維持)。",
+    "notes_opinion": ""
+  },
+  {
+    "family": "X",
+    "level": "Adv",
+    "tts_limit": "品質NG 3回(同一Style・同一Prompt) + 技術別枠(attempt毎 max_retry=1)。標準2+fallback1の分割は無い(CURRENT_SPEC.md:1857は3関数のみ名指し)",
+    "cooldown": "cs=True: 通算3回目直前に固定600秒(er020:57/64)",
+    "hr_lock": "STOPPED→record_outcome(er011:357)=HUMAN_REVIEW_REQUIRED(Lock: <level>/audit/review_lock_state.json)+英語HR queue(er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl。slot3 NG時にLR前に書込 er006:1294)",
+    "stop": "runner停止なし(exit3は上流失敗時のみ)。Assemble前Gate(asm.verify_episode_audio_validation_gate)がBLOCK。解除=asm.record_human_approval(canonical sha一致)またはreview_lock.approve_regenerate(次の1回)",
+    "part": "preview(Charon英語)",
+    "generator_fn": "voice01.generate_charon_english [er019:1523]",
+    "retry_conditions": "統一judge NG全種(NG_BOTH/NG_PROTECTED/NG_EXCLUDED/NG_SECONDARY_UNAVAILABLE: Primary NG→Secondary 1回, er006_secondary_asr_01.py:874)+length NG・disfluency QA(disfluency_qa=True er019:1531)・TTS非OK/発話区間検出失敗/異常長。repetition QAなし。技術別枠: attempt内 _call_tts_with_retry(max_retry=1,待機なし,er002_common.py:703)",
+    "fallback": [
+      {
+        "type": "F-Tech",
+        "trigger": "TTS例外/発話区間検出失敗のみ",
+        "from": "role Style(PREVIEW)",
+        "to": "FAMILY_X_ROLE_STYLE_EN_FALLBACK[0](voice01:194)"
+      }
+    ],
+    "lr": {
+      "enabled": true,
+      "trigger": "通算3回使い切りなお不合格 かつ cs=True(5 role) かつ 最終attemptのPrimary転写とcanonicalに語差分あり(identify_ng_span er020:206)。差分なし=NO_NG_SPAN→LR不発→HR。ユーザー決定2026-10-19(基本フロー:初回→最大2回再生成→なおNGならRewrite)",
+      "max_rewrites": "非有界(再入)",
+      "retts": "1回(Style維持)",
+      "checks": "Luna候補5件→7 Gate QA+全文性+局所性(+In One Lineは文数不変[X scope])→全PASSのうちunchanged_ratio最大1本を採用(er020:739-)。再TTS後は統一judge(正解=書換え後文, script v1, LR_REWRITTEN警告)+元呼出と同じdisfluency/repetition QA"
+    },
+    "final_ng": "LR不発/NG→STOPPED→Lock+HR queue→Gate BLOCK",
+    "spec_refs": [
+      "DECISION_LOG.md:9711-9728(2026-09-26 ユーザー(A)-(D))/CURRENT_SPEC.md:2176",
+      "docs/pm/delegation_log/2026-10-19_FAMILY-Z-AUDIO-QA-DEFECT-RESOLUTION-01_USER.md §3",
+      "CURRENT_SPEC.md:1857(総3回・Std2+minimal1,2026-09-04ユーザー正式決定)"
+    ],
+    "runtime_evidence": [
+      "er011_output/local_rewrite_recovery/small_bag__run_02/b1b/local_rewrite_recovery_preview.json status=RESOLVED_BY_LOCAL_REWRITE(span mini→many, 2026-09-27, 10-19決定より前)",
+      "er019_output/family_x_audio_production_wiring_01/meta__run_03/b1b/audit/tts_generation_results.json [preview] attempts=2 OK(2026-09-29,再生成1回)"
+    ],
+    "match": "一致(静的)/LR実走あり(2026-09-27・決定前)、決定後のpreview LR実走なし(未検証)",
+    "cls": "A",
+    "notes_fact": "preview LR成功例は10-19以前。",
+    "notes_opinion": ""
+  },
+  {
+    "family": "X",
+    "level": "Adv",
+    "tts_limit": "品質NG 3回(同一Style・同一Prompt) + 技術別枠(attempt毎 max_retry=1)。標準2+fallback1の分割は無い(CURRENT_SPEC.md:1857は3関数のみ名指し)",
+    "cooldown": "cs=True: 通算3回目直前に固定600秒(er020:57/64)",
+    "hr_lock": "STOPPED→record_outcome(er011:357)=HUMAN_REVIEW_REQUIRED(Lock: <level>/audit/review_lock_state.json)+英語HR queue(er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl。slot3 NG時にLR前に書込 er006:1294)",
+    "stop": "runner停止なし(exit3は上流失敗時のみ)。Assemble前Gate(asm.verify_episode_audio_validation_gate)がBLOCK。解除=asm.record_human_approval(canonical sha一致)またはreview_lock.approve_regenerate(次の1回)",
+    "part": "comment_1〜4(Charon英語)",
+    "generator_fn": "voice01.generate_charon_english [er019:1523]",
+    "retry_conditions": "統一judge NG全種(NG_BOTH/NG_PROTECTED/NG_EXCLUDED/NG_SECONDARY_UNAVAILABLE: Primary NG→Secondary 1回, er006_secondary_asr_01.py:874)+length NG・disfluency QA(True)・TTS非OK/発話区間検出失敗/異常長。技術別枠: attempt内 _call_tts_with_retry(max_retry=1,待機なし,er002_common.py:703)",
+    "fallback": [
+      {
+        "type": "F-Tech",
+        "trigger": "TTS例外/発話区間検出失敗のみ",
+        "from": "role Style(COMMENT)",
+        "to": "FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]"
+      }
+    ],
+    "lr": {
+      "enabled": true,
+      "trigger": "通算3回使い切りなお不合格 かつ cs=True(5 role) かつ 最終attemptのPrimary転写とcanonicalに語差分あり(identify_ng_span er020:206)。差分なし=NO_NG_SPAN→LR不発→HR。ユーザー決定2026-10-19(基本フロー:初回→最大2回再生成→なおNGならRewrite)",
+      "max_rewrites": "非有界(再入)",
+      "retts": "1回(Style維持)",
+      "checks": "Luna候補5件→7 Gate QA+全文性+局所性(+In One Lineは文数不変[X scope])→全PASSのうちunchanged_ratio最大1本を採用(er020:739-)。再TTS後は統一judge(正解=書換え後文, script v1, LR_REWRITTEN警告)+元呼出と同じdisfluency/repetition QA"
+    },
+    "final_ng": "LR不発/NG→STOPPED→Lock+HR queue→Gate BLOCK",
+    "spec_refs": [
+      "DECISION_LOG.md:9711-9728(2026-09-26 ユーザー(A)-(D))/CURRENT_SPEC.md:2176",
+      "docs/pm/delegation_log/2026-10-19_FAMILY-Z-AUDIO-QA-DEFECT-RESOLUTION-01_USER.md §3",
+      "CURRENT_SPEC.md:1857(総3回・Std2+minimal1,2026-09-04ユーザー正式決定)"
+    ],
+    "runtime_evidence": [
+      "er011_output/local_rewrite_recovery/hormuz__run_02/b1b/local_rewrite_recovery_comment_4.json RESOLVED(then→but, 2026-09-28前後)",
+      "er011_output/local_rewrite_recovery/hormuz__run_03_baseline/b1b/local_rewrite_recovery_comment_4.json RESOLVED・LR再入深さ2(2026-09-28)",
+      "er019_output/family_x_audio_production_wiring_01/part2_hr_evidence_01__run_r2/b1b/audit/tts_generation_results.json [comment_4] 2026-10-26: 3attempt全て ASR EXACT_MATCH だが disfluency flagged→cooldown 600.004秒→LR NO_NG_SPAN→STOPPED",
+      "er011_output/local_rewrite_recovery/meta__run_regen_01/b1b/local_rewrite_recovery_comment_2.json NO_CANDIDATE_PASSED_QA(2026-10-11)",
+      "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/b1b/audit/tts_generation_results.json [comment_4] attempts=2 OK(2026-10-17,boredom_aggression)"
+    ],
+    "match": "一致(静的)/決定後の実走=2026-10-26 comment_4でcooldown→LR不発→STOPPED(X-F3)を観測。LR成功の決定後実走はなし(未検証)",
+    "cls": "A(+C: X-F3)",
+    "notes_fact": "comment_4の失敗原因はASRではなくdisfluency QAで、LRはNG span無しで不発(CC-F3)。",
+    "notes_opinion": "LR設計は『ASR差分で特定できるNG』前提。"
+  },
+  {
+    "family": "X",
+    "level": "Adv",
+    "tts_limit": "品質NG 3回(同一Style・同一Prompt) + 技術別枠(attempt毎 max_retry=1)。標準2+fallback1の分割は無い(CURRENT_SPEC.md:1857は3関数のみ名指し)",
+    "cooldown": "cs=True: 通算3回目直前に固定600秒(er020:57/64)",
+    "hr_lock": "STOPPED→record_outcome(er011:357)=HUMAN_REVIEW_REQUIRED(Lock: <level>/audit/review_lock_state.json)+英語HR queue(er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl。slot3 NG時にLR前に書込 er006:1294)",
+    "stop": "runner停止なし(exit3は上流失敗時のみ)。Assemble前Gate(asm.verify_episode_audio_validation_gate)がBLOCK。解除=asm.record_human_approval(canonical sha一致)またはreview_lock.approve_regenerate(次の1回)",
+    "part": "full_story_part1〜3(Aoede英語, 単一段落part)",
+    "generator_fn": "news_tail_fix.generate_news_narration_wide_margin [er019:1562→er003_v1_sing01_news_tail_fix.py:63]",
+    "retry_conditions": "統一judge NG全種(NG_BOTH/NG_PROTECTED/NG_EXCLUDED/NG_SECONDARY_UNAVAILABLE: Primary NG→Secondary 1回, er006_secondary_asr_01.py:874)+length NG・repetition QA(enable_repetition_qa=True)・TTS非OK/発話区間検出失敗/異常長(異常長もF-Tech news_tail:171)。技術別枠: attempt内 _call_tts_with_retry(max_retry=1,待機なし,er002_common.py:703)",
+    "fallback": [
+      {
+        "type": "F-Tech",
+        "trigger": "TTS例外/発話区間検出失敗/異常長(news_tail_fix:171-178)。ASR NGでは発動しない",
+        "from": "role Style(FULL_STORY=PD06)",
+        "to": "repro01.generate_english_component_minimal_instruction(FAMILY_X_ROLE_STYLE_EN_FALLBACK[0], repro01:586)"
+      }
+    ],
+    "lr": {
+      "enabled": true,
+      "trigger": "通算3回使い切りなお不合格 かつ cs=True(5 role) かつ 最終attemptのPrimary転写とcanonicalに語差分あり(identify_ng_span er020:206)。差分なし=NO_NG_SPAN→LR不発→HR。ユーザー決定2026-10-19(基本フロー:初回→最大2回再生成→なおNGならRewrite)",
+      "max_rewrites": "非有界(再入)",
+      "retts": "1回、role Styleが落ちる(news_tail:370-377, X-F2/OPEN-312)",
+      "checks": "Luna候補5件→7 Gate QA+全文性+局所性(+In One Lineは文数不変[X scope])→全PASSのうちunchanged_ratio最大1本を採用(er020:739-)。再TTS後は統一judge(正解=書換え後文, script v1, LR_REWRITTEN警告)+元呼出と同じdisfluency/repetition QA"
+    },
+    "final_ng": "LR不発/NG→STOPPED→Lock+HR queue→Gate BLOCK(M3 Style Gate含む)",
+    "spec_refs": [
+      "DECISION_LOG.md:9711-9728(2026-09-26 ユーザー(A)-(D))/CURRENT_SPEC.md:2176",
+      "docs/pm/delegation_log/2026-10-19_FAMILY-Z-AUDIO-QA-DEFECT-RESOLUTION-01_USER.md §3",
+      "CURRENT_SPEC.md:1857(総3回・Std2+minimal1,2026-09-04ユーザー正式決定)",
+      "OPEN_ITEMS.md:815 OPEN-312"
+    ],
+    "runtime_evidence": [
+      "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/b1b/audit/tts_generation_results.json [full_story_part3] 2026-10-24: ①②③ NG_BOTH(TRUE_CONTENT_MISMATCH)→cooldown 600.003秒(③直前)→LR RESOLVED_BY_LOCAL_REWRITE→LR再TTS PASS_WITH_WARNING。HR queueに行2件(CC-F4)",
+      "er019_output/family_x_audio_production_wiring_01/manga_ai_chat_byus__run_byus_01/b1b/audit/tts_generation_results.json [full_story_part1/part3] 2026-10-21: 3attempt+cooldown1回、3回目でOK",
+      "er011_output/local_rewrite_recovery/hormuz__run_02/b1b/local_rewrite_recovery_full_story_part2.json RETTS_FAILED(us→u s, 決定前)"
+    ],
+    "match": "一致(10-19決定どおりの順序を2026-10-24実走で確認)。ただしLR再TTSのStyle脱落(B)とLR再入(B)あり",
+    "cls": "A(+B: X-F1,X-F2)",
+    "notes_fact": "word_gacha part3: attempts_logは4件(3+LR再TTS1)。LR後はPASS_WITH_WARNING(試聴リスト対象)。",
+    "notes_opinion": ""
+  },
+  {
+    "family": "X",
+    "level": "Adv",
+    "tts_limit": "品質NG 3回(同一Style・同一Prompt) + 技術別枠(attempt毎 max_retry=1)。標準2+fallback1の分割は無い(CURRENT_SPEC.md:1857は3関数のみ名指し)",
+    "cooldown": "cs=True: 通算3回目直前に固定600秒(er020:57/64)",
+    "hr_lock": "STOPPED→record_outcome(er011:357)=HUMAN_REVIEW_REQUIRED(Lock: <level>/audit/review_lock_state.json)+英語HR queue(er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl。slot3 NG時にLR前に書込 er006:1294)",
+    "stop": "runner停止なし(exit3は上流失敗時のみ)。Assemble前Gate(asm.verify_episode_audio_validation_gate)がBLOCK。解除=asm.record_human_approval(canonical sha一致)またはreview_lock.approve_regenerate(次の1回)",
+    "part": "full_story_part{n}_k{j}(chunk, 2段落以上のpart)",
+    "generator_fn": "news_tail_fix.generate_news_narration_wide_margin(chunkごとに同一呼出) [er019:_generate_x_body_part_chunked 1348→1358]",
+    "retry_conditions": "chunk単位で単一段落partと同一(CURRENT_SPEC.md:2957「retry/fallback/Local Rewrite上限は不変(chunkごとに3 attempt)」)。chunk失敗後も後続chunkは生成継続(R1)",
+    "fallback": [
+      {
+        "type": "F-Tech",
+        "trigger": "同上(chunk単位)",
+        "from": "role Style",
+        "to": "minimal短文Style"
+      }
+    ],
+    "lr": {
+      "enabled": true,
+      "trigger": "通算3回使い切りなお不合格 かつ cs=True(5 role) かつ 最終attemptのPrimary転写とcanonicalに語差分あり(identify_ng_span er020:206)。差分なし=NO_NG_SPAN→LR不発→HR。ユーザー決定2026-10-19(基本フロー:初回→最大2回再生成→なおNGならRewrite)(chunk単位, cs=connected_speech_enabled_for(cid)=True: er020:126)",
+      "max_rewrites": "非有界(再入)・chunk毎",
+      "retts": "1回/chunk(Style脱落)",
+      "checks": "Luna候補5件→7 Gate QA+全文性+局所性(+In One Lineは文数不変[X scope])→全PASSのうちunchanged_ratio最大1本を採用(er020:739-)。再TTS後は統一judge(正解=書換え後文, script v1, LR_REWRITTEN警告)+元呼出と同じdisfluency/repetition QA"
+    },
+    "final_ng": "chunk entry STOPPED→Lock(chunk id key)+HR queue→親entry=CHUNKS_NOT_ALL_VALIDATED(人間承認で迂回不可, er117:53)→Gate BLOCK",
+    "spec_refs": [
+      "CURRENT_SPEC.md:2957",
+      "docs/research/CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01/",
+      "er117_chunk_tts_production_01.py:412-427"
+    ],
+    "runtime_evidence": [
+      "er019_output/family_x_audio_production_wiring_01/part2_hr_evidence_01__run_r2/b1b/audit/tts_generation_results.json [full_story_part1_k3] 2026-10-26: attempts=2 OK(再生成1回)",
+      "chunkでのcooldown/LR/HR: 実走記録なし(未検証)"
+    ],
+    "match": "一致(静的)/chunk LR・HRはruntime証拠なし(未検証)",
+    "cls": "A",
+    "notes_fact": "chunk idはresolve_narrative_roleでFULL_STORYへ解決(正規表現 er020:126・import時自己検査 er020:167付近)。",
+    "notes_opinion": ""
+  },
+  {
+    "family": "X",
+    "level": "Adv",
+    "tts_limit": "品質NG 3回(同一Style・同一Prompt) + 技術別枠(attempt毎 max_retry=1)。標準2+fallback1の分割は無い(CURRENT_SPEC.md:1857は3関数のみ名指し)",
+    "cooldown": "cs=True: 通算3回目直前に固定600秒(er020:57/64)",
+    "hr_lock": "STOPPED→record_outcome(er011:357)=HUMAN_REVIEW_REQUIRED(Lock: <level>/audit/review_lock_state.json)+英語HR queue(er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl。slot3 NG時にLR前に書込 er006:1294)",
+    "stop": "runner停止なし(exit3は上流失敗時のみ)。Assemble前Gate(asm.verify_episode_audio_validation_gate)がBLOCK。解除=asm.record_human_approval(canonical sha一致)またはreview_lock.approve_regenerate(次の1回)",
+    "part": "in_one_line(Aoede英語)",
+    "generator_fn": "news_tail_fix.generate_news_narration_wide_margin [er019:1562]",
+    "retry_conditions": "統一judge NG全種(NG_BOTH/NG_PROTECTED/NG_EXCLUDED/NG_SECONDARY_UNAVAILABLE: Primary NG→Secondary 1回, er006_secondary_asr_01.py:874)+length NG・disfluency QA(disfluency_qa=True)・TTS非OK/発話区間検出失敗/異常長。repetition QAなし(name in _BODY_SEGMENT_NAMES のみ)。技術別枠: attempt内 _call_tts_with_retry(max_retry=1,待機なし,er002_common.py:703)",
+    "fallback": [
+      {
+        "type": "F-Tech",
+        "trigger": "TTS例外/発話区間検出失敗/異常長",
+        "from": "role Style(IN_ONE_LINE)",
+        "to": "minimal短文Style"
+      }
+    ],
+    "lr": {
+      "enabled": true,
+      "trigger": "通算3回使い切りなお不合格 かつ cs=True(5 role) かつ 最終attemptのPrimary転写とcanonicalに語差分あり(identify_ng_span er020:206)。差分なし=NO_NG_SPAN→LR不発→HR。ユーザー決定2026-10-19(基本フロー:初回→最大2回再生成→なおNGならRewrite)。追加Gate 8_sentence_count_unchanged(Family Xスコープのみ, er020:661)",
+      "max_rewrites": "非有界(再入)",
+      "retts": "1回(Style脱落)",
+      "checks": "Luna候補5件→7 Gate QA+全文性+局所性(+In One Lineは文数不変[X scope])→全PASSのうちunchanged_ratio最大1本を採用(er020:739-)。再TTS後は統一judge(正解=書換え後文, script v1, LR_REWRITTEN警告)+元呼出と同じdisfluency/repetition QA"
+    },
+    "final_ng": "LR不発/NG→STOPPED→Lock+HR queue→Gate BLOCK",
+    "spec_refs": [
+      "DECISION_LOG.md:9711-9728(2026-09-26 ユーザー(A)-(D))/CURRENT_SPEC.md:2176",
+      "docs/pm/delegation_log/2026-10-19_FAMILY-Z-AUDIO-QA-DEFECT-RESOLUTION-01_USER.md §3",
+      "DECISION_LOG.md:9711(In One Line=5 role適用)"
+    ],
+    "runtime_evidence": [
+      "er011_output/local_rewrite_recovery/meta__run_regen_01/b1b/local_rewrite_recovery_in_one_line.json RESOLVED・LR再入深さ2(2026-10-11)",
+      "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/b1b/audit/tts_generation_results.json [in_one_line] 2026-10-24 attempts=2 OK"
+    ],
+    "match": "一致(静的)/決定後のin_one_line LR実走なし(未検証)",
+    "cls": "A(+B: X-F1,X-F2)",
+    "notes_fact": "",
+    "notes_opinion": ""
+  },
+  {
+    "family": "X",
+    "level": "Adv",
+    "part": "Key Phrase英語phrase kpN_en(+phrase_repeatは複製=TTS 0)",
+    "generator_fn": "er019._kp_english_generate_fn [er019:1661]→kp_en_k2_store.ensure_key_phrase_english_component_styled(既定profile fx_20261016/17=K2) / K2無しの場合 kp_vote.ensure_key_phrase_english_component_x_vote→repro01.generate_key_phrase_component_verified[:797]",
+    "runtime_evidence": [
+      "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_jre_01/b1b/audit/tts_generation_results.json [kp1_english] 2026-10-22: STOPPED, fallback_used=True(styled+ENGLISH_LOCK両方NG)",
+      "er019_output/family_x_audio_production_wiring_01/moon_shrinking__run_ms_03/a2/audit/tts_generation_results.json [kp3_english] 2026-10-25 attempts=2 OK(再生成1回)"
+    ],
+    "notes_fact": "KP英語はLR対象外。理由の根拠: (a)2026-09-26ユーザー決定(C)で『適用しない=Key Phrase』と明示(理由の逐語記録なし)、(b)2026-10-15ユーザー§6『Key Phrase:学習対象の表現を別表現に置き換えない』。",
+    "notes_opinion": "",
+    "tts_limit": "4回=STYLED(K2)2 + ENGLISH_LOCK 2(KEY_PHRASE_MINIMAL_MAX_ATTEMPTS+KEY_PHRASE_ENGLISH_LOCK_MAX_ATTEMPTS, repro01:685-687)。『全体3回』の唯一の例外(CURRENT_SPEC.md:2885(1))。各試行は3-ASR多数決(OpenAI・Azure・Whisper, 2/3 PASS, KP3V)",
+    "retry_conditions": "3-ASR多数決NG(NG_BOTH/NG_PROTECTED_DISSENT等)・length NG・disfluency QA(True)・非ラテン救済判定(enable_non_latin_cascade)。Whisper/Azure障害=技術STOP(再生成・HRなし)",
+    "fallback": [
+      {
+        "type": "F-Style",
+        "trigger": "前半2回(K2 styled / または default MINIMAL)が両方NG",
+        "from": "K2(styled) / MINIMAL instruction",
+        "to": "ENGLISH_LOCK instruction(repro01:858,k2_store:76)。Azure/Whisper circuit open時は後半をスキップ(repro01:845, 技術STOP)"
+      }
+    ],
+    "lr": {
+      "enabled": false,
+      "trigger": "関数にLR呼出なし(generate_key_phrase_component_verified/_styled_two_stage とも)・cs引数を持たない",
+      "max_rewrites": 0,
+      "retts": 0,
+      "checks": null
+    },
+    "cooldown": "なし(cooldown_total_budget未指定)",
+    "final_ng": "slot4(最終)NG→STOPPED→Lock+HR queue(英語)→Gate BLOCK。技術STOPはHR Lockを経ない場合あり(CURRENT_SPEC.md:2885(1)KP3V追記)",
+    "hr_lock": "STOPPED→record_outcome(er011:357)=HUMAN_REVIEW_REQUIRED(Lock: <level>/audit/review_lock_state.json)+英語HR queue(er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl。KP phrase=slot4(通算最終)NG時のみ書込 er006:1294)",
+    "stop": "runner停止なし(exit3は上流失敗時のみ)。Assemble前Gate(asm.verify_episode_audio_validation_gate)がBLOCK。解除=asm.record_human_approval(canonical sha一致)またはreview_lock.approve_regenerate(次の1回)",
+    "spec_refs": [
+      "CURRENT_SPEC.md:2885(1)",
+      "docs/pm/delegation_log/2026-10-15_ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01_01.md:49,147-148,155-165(L147『KP:学習対象の英語表現は変更しない』/L161『Key Phrase:学習対象の表現を別表現に置き換えない』)",
+      "DECISION_LOG.md:9711(2026-09-26(C)『適用しない=Heading readout, Key Phrase』)",
+      "OPEN_ITEMS.md KP3V/OPEN-440"
+    ],
+    "match": "一致",
+    "cls": "A"
+  },
+  {
+    "family": "X",
+    "level": "Adv",
+    "part": "Key Phrase英語解説 kpN_explanation_en(LLM生成英文)",
+    "generator_fn": "generate_key_phrase_explanation_en_verified [er019:1205]→repro01.generate_narration_snippet_verified_strict(max_attempts=KP_EXPLANATION_MAX_ATTEMPTS=3, er019:1202)",
+    "tts_limit": "品質NG 3回(同一Style・KEY_PHRASE_EXPLANATION_EN)。OF-AUW-12で旧2→3(CURRENT_SPEC.md:2885(2):ユーザー決定の逐語は無く3回へ揃えた)",
+    "retry_conditions": "統一judge NG全種(NG_BOTH/NG_PROTECTED/NG_EXCLUDED/NG_SECONDARY_UNAVAILABLE: Primary NG→Secondary 1回, er006_secondary_asr_01.py:874)+length NG・disfluency QA(True)・非ラテン救済(enable_non_latin_cascade=True)・asr_prompt。技術別枠: attempt内 _call_tts_with_retry(max_retry=1,待機なし,er002_common.py:703)",
+    "fallback": [],
+    "lr": {
+      "enabled": false,
+      "trigger": "strict関数にLR呼出なし。cs未指定(既定False)。role判定: resolve_narrative_role('kp1_explanation_en')=None(未分類。『kp\\d+_(en|ja)』にも5 roleにも一致しない)",
+      "max_rewrites": 0,
+      "retts": 0,
+      "checks": null
+    },
+    "cooldown": "なし(cooldown_total_budget未指定)",
+    "final_ng": "STOPPED→Lock+HR queue(英語, slot3)→Gate BLOCK",
+    "hr_lock": "STOPPED→record_outcome(er011:357)=HUMAN_REVIEW_REQUIRED(Lock: <level>/audit/review_lock_state.json)+英語HR queue(er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl。slot3 NG時にLR前に書込 er006:1294)",
+    "stop": "runner停止なし(exit3は上流失敗時のみ)。Assemble前Gate(asm.verify_episode_audio_validation_gate)がBLOCK。解除=asm.record_human_approval(canonical sha一致)またはreview_lock.approve_regenerate(次の1回)",
+    "spec_refs": [
+      "CURRENT_SPEC.md:2885(2)",
+      "er019:1208-1212コメント『統一フロー「TTS①②③、3回NGでLR/HR」に揃える』",
+      "DECISION_LOG.md:9711-9728(2026-09-26 ユーザー(A)-(D))/CURRENT_SPEC.md:2176"
+    ],
+    "runtime_evidence": [
+      "記録済みX run(b1b)でkp解説の再試行/失敗は0件(attempts>1のentryなし)。retry/HR/LR全て未検証"
+    ],
+    "match": "仕様記録なし(C): 3回化はOF-AUW-12で記録されたがLR有無の承認/不採用記録が無い",
+    "cls": "C",
+    "notes_fact": "コメントは『3回NGでLR/HR』に揃えるとあるが、実装はLR無し・cooldown無し。5 role名指し(2026-09-26)にも除外2 role名指し(Heading,KP)にも含まれない。",
+    "notes_opinion": "KP解説は『学習対象の表現』ではなくLLM生成の解説文なので、2026-10-15 §6の『KP表現不変更』が直接及ぶかは断定できない(X-F5)。"
+  },
+  {
+    "family": "X",
+    "level": "Adv",
+    "part": "shell固定英語(welcome/preview_intro/key_phrases_intro/full_story_intro/num_one〜num_five)",
+    "generator_fn": "shared_narration.ensure_all_shared_narration_b1→ensure_fixed_english_segment [er006_audio_cost_pilot_02_shared_narration.py:220]→voice01.generate_charon_english(cs未指定)。Master Audio Store get_or_generate(同一key再利用)",
+    "tts_limit": "品質NG 3回(同一Style=flash-lite時 FAMILY_X_ROLE_STYLE_EN_FALLBACK[0] を標準Styleとして使用 shared_narration:161)",
+    "retry_conditions": "統一judge NG全種(NG_BOTH/NG_PROTECTED/NG_EXCLUDED/NG_SECONDARY_UNAVAILABLE: Primary NG→Secondary 1回, er006_secondary_asr_01.py:874)+length NG・TTS非OK/発話区間検出失敗/異常長。disfluency/repetition QAなし。技術別枠: attempt内 _call_tts_with_retry(max_retry=1,待機なし,er002_common.py:703)",
+    "fallback": [
+      {
+        "type": "F-Tech",
+        "trigger": "TTS例外/発話区間検出失敗",
+        "from": "shell Style",
+        "to": "FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]"
+      }
+    ],
+    "lr": {
+      "enabled": false,
+      "trigger": "cs未指定(既定False)。role判定: welcome等=None(未分類)",
+      "max_rewrites": 0,
+      "retts": 0,
+      "checks": null
+    },
+    "cooldown": "なし(cs=False)",
+    "final_ng": "STOPPED→Lock+HR queue→shared_narration非OK→SharedNarrationBlockedError(er019:1232/1255)をaudit保存後に送出+Assemble前Gate BLOCKED_SHARED_NARRATION_NOT_OK",
+    "hr_lock": "STOPPED→record_outcome(er011:357)=HUMAN_REVIEW_REQUIRED(Lock: <level>/audit/review_lock_state.json)+英語HR queue(er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl。slot3 NG時にLR前に書込 er006:1294)",
+    "stop": "SharedNarrationBlockedError(runtime例外。run内の後続処理を止める)。Assemble前Gate BLOCK",
+    "spec_refs": [
+      "er006_audio_cost_pilot_02_shared_narration.py:63-90(固定文)",
+      "DECISION_LOG.md:9711-9728(2026-09-26 ユーザー(A)-(D))/CURRENT_SPEC.md:2176(5 roleにshellは名指しなし)",
+      "DECISION_LOG.md 2026-09-28 BL-2(Opus L2)"
+    ],
+    "runtime_evidence": [
+      "記録済みX run 全399 shared_narration entry: 全てstatus=OK・attempts=1(失敗/再試行0件)。retry/HR/LR未検証"
+    ],
+    "match": "仕様記録なし(C)",
+    "cls": "C",
+    "notes_fact": "固定短文でMaster Store再利用のため実害は未観測。",
+    "notes_opinion": "LRが不要な部位と読めるが、承認記録は見つからない(X-F6)。"
+  },
+  {
+    "family": "X",
+    "level": "Std",
+    "tts_limit": "標準2回(同一Style) + minimal fallback 1回 = 総3(PRODUCTION_STANDARD_TTS_ATTEMPTS=2/MINIMAL_FALLBACK=1, er011:102-103, CURRENT_SPEC.md:1857)。技術別枠は標準側のattempt内のみ(strictはF-Techなし)",
+    "cooldown": "cs=True: 通算3回目直前に固定600秒(crosslevel:200/strict:337)",
+    "hr_lock": "STOPPED→record_outcome(er011:357)=HUMAN_REVIEW_REQUIRED(Lock: <level>/audit/review_lock_state.json)+英語HR queue(er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl。slot3 NG時にLR前に書込 er006:1294)",
+    "stop": "runner停止なし(exit3は上流失敗時のみ)。Assemble前Gate(asm.verify_episode_audio_validation_gate)がBLOCK。解除=asm.record_human_approval(canonical sha一致)またはreview_lock.approve_regenerate(次の1回)",
+    "part": "topic_intro(英語)",
+    "generator_fn": "crosslevel.generate_english_segment_with_fallback [er019:1934→er003_v1_crosslevel_audio_02_common.py:95]",
+    "retry_conditions": "統一judge NG全種(NG_BOTH/NG_PROTECTED/NG_EXCLUDED/NG_SECONDARY_UNAVAILABLE: Primary NG→Secondary 1回, er006_secondary_asr_01.py:874)+length NG・TTS非OK(strictはattemptを消費)・disfluency/repetition QAなし。Retry=標準②は同一Style",
+    "fallback": [
+      {
+        "type": "F-Style",
+        "trigger": "標準2回が両方NG",
+        "from": "role Style(TOPIC_INTRO)",
+        "to": "minimal短文Style(_run_a2_minimal_fallback_attempt crosslevel:327), Primary PASSでもSecondary必須(force_secondary=True :381)"
+      }
+    ],
+    "lr": {
+      "enabled": true,
+      "trigger": "通算3回使い切りなお不合格 かつ cs=True(5 role) かつ 最終attemptのPrimary転写とcanonicalに語差分あり(identify_ng_span er020:206)。差分なし=NO_NG_SPAN→LR不発→HR。ユーザー決定2026-10-19(基本フロー:初回→最大2回再生成→なおNGならRewrite)(標準2+fallback1の全滅後 crosslevel:288/:318)",
+      "max_rewrites": "1回(再TTSは_run_a2_minimal_fallback_attempt直呼びで再入なし crosslevel:425-427)",
+      "retts": "1回, minimal Style(role Style脱落, OPEN-274/312)",
+      "checks": "Luna候補5件→7 Gate QA+全文性+局所性(+In One Lineは文数不変[X scope])→全PASSのうちunchanged_ratio最大1本を採用(er020:739-)。再TTS後は統一judge(正解=書換え後文, script v1, LR_REWRITTEN警告)+元呼出と同じdisfluency/repetition QA(force_secondary=True)"
+    },
+    "final_ng": "LR不発/NG→STOPPED→Lock+HR queue→Gate BLOCK",
+    "spec_refs": [
+      "CURRENT_SPEC.md:1857(総3回・Std2+minimal1,2026-09-04ユーザー正式決定)",
+      "DECISION_LOG.md:9711-9728(2026-09-26 ユーザー(A)-(D))/CURRENT_SPEC.md:2176(修正1回目でA2経路配線)",
+      "docs/pm/delegation_log/2026-10-19_FAMILY-Z-AUDIO-QA-DEFECT-RESOLUTION-01_USER.md §3",
+      "docs/pm/delegation_log/2026-10-21_FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01_FALLBACK-APPROVAL-FINAL-ASSEMBLY_USER.md:9-15",
+      "OPEN_ITEMS.md:777 OPEN-274"
+    ],
+    "runtime_evidence": [
+      "topic_intro Stdのretry/fallback/LR実走記録なし(未検証)"
+    ],
+    "match": "一致(静的)/runtime証拠なし(未検証)",
+    "cls": "A(+B: X-F2)",
+    "notes_fact": "Std topic_introは英語。日本語の3 Std partとは別関数。",
+    "notes_opinion": ""
+  },
+  {
+    "family": "X",
+    "level": "Std",
+    "tts_limit": "標準2回(JAPANESE_STYLE_PREFIXまたはJ3 role Style) + JA minimal fallback 1回 = 総3(n3:732/er011:102-103)。technical失敗はattemptを消費",
+    "retry_conditions": "JA統一judge(Primary OpenAI→NGならSecondary Azure 1回, SCG等, er007_ja_secondary_asr_01.py)NG・length NG・読み解決(reading_resolver)NG。Retry=標準②は同一Style",
+    "fallback": [
+      {
+        "type": "F-Style",
+        "trigger": "標準2回が両方NG",
+        "from": "JAPANESE_STYLE_PREFIX(またはJ3 role Style)",
+        "to": "JA minimal instruction(_generate_a2_japanese_minimal_instruction n3:621)"
+      }
+    ],
+    "lr": {
+      "enabled": false,
+      "trigger": "L7関数にLR呼出なし・cs引数を持たない(関数そのものが別系統)",
+      "max_rewrites": 0,
+      "retts": 0,
+      "checks": null
+    },
+    "cooldown": "なし",
+    "final_ng": "STOPPED→Lock+日本語HR queue(slot3)→Gate BLOCK",
+    "hr_lock": "STOPPED→record_outcome=HUMAN_REVIEW_REQUIRED(Lock)+日本語HR queue(er007_output/ja_asr_cascade_01/human_review_queue.jsonl, er007_ja_secondary_asr_01.py:39/:733/:778)",
+    "stop": "runner停止なし(exit3は上流失敗時のみ)。Assemble前Gate(asm.verify_episode_audio_validation_gate)がBLOCK。解除=asm.record_human_approval(canonical sha一致)またはreview_lock.approve_regenerate(次の1回)",
+    "spec_refs": [
+      "CURRENT_SPEC.md:2885(3)『JA KP・JA全般=Local Rewriteなし、3NG→STOPPED→HR Lock』",
+      "docs/pm/delegation_log/2026-10-15_ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01_01.md:49,147-148,155-165(L148『日本語Local Rewrite:現行の英語用機構を機械的に流用しない。安全な実装が成立していない場合はHuman Reviewへ進める』/L160『日本語:現時点では原則Human Review』)",
+      "OPEN_ITEMS.md:793 OPEN-290(E)『identify_ng_spanが純日本語でfound=False…当面なし』"
+    ],
+    "match": "一致",
+    "cls": "A",
+    "part": "japanese_title(日本語)",
+    "generator_fn": "n3_tts.generate_a2_japanese_with_reading_safety [er019:1945]→generate_a2_japanese_with_fallback [n3:819→693]",
+    "runtime_evidence": [
+      "er019_output/family_x_audio_production_wiring_01/moon_shrinking__run_ms_03/a2/audit/tts_generation_results.json [japanese_title] 2026-10-25 HUMAN_REVIEW_LOCKED(標準2回NG_PROTECTED/NG_BOTH後, JA LRなしでHR)",
+      "er019_output/family_x_audio_production_wiring_01/meta__run_regen_01/a2/audit/tts_generation_results.json [japanese_title] 2026-10-11 STOPPED attempts=3",
+      "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_l3_01/a2/audit/tts_generation_results.json [japanese_title] attempts=2 OK(2026-10-10)"
+    ],
+    "notes_fact": "LR不採用の根拠はユーザー2026-10-15指示(『現時点では原則HR』)。時限表現あり。",
+    "notes_opinion": ""
+  },
+  {
+    "family": "X",
+    "level": "Std",
+    "tts_limit": "標準2回(JAPANESE_STYLE_PREFIXまたはJ3 role Style) + JA minimal fallback 1回 = 総3(n3:732/er011:102-103)。technical失敗はattemptを消費",
+    "retry_conditions": "JA統一judge(Primary OpenAI→NGならSecondary Azure 1回, SCG等, er007_ja_secondary_asr_01.py)NG・length NG・読み解決(reading_resolver)NG。Retry=標準②は同一Style",
+    "fallback": [
+      {
+        "type": "F-Style",
+        "trigger": "標準2回が両方NG",
+        "from": "JAPANESE_STYLE_PREFIX(またはJ3 role Style)",
+        "to": "JA minimal instruction(_generate_a2_japanese_minimal_instruction n3:621)"
+      }
+    ],
+    "lr": {
+      "enabled": false,
+      "trigger": "L7関数にLR呼出なし・cs引数を持たない(関数そのものが別系統)",
+      "max_rewrites": 0,
+      "retts": 0,
+      "checks": null
+    },
+    "cooldown": "なし",
+    "final_ng": "STOPPED→Lock+日本語HR queue(slot3)→Gate BLOCK",
+    "hr_lock": "STOPPED→record_outcome=HUMAN_REVIEW_REQUIRED(Lock)+日本語HR queue(er007_output/ja_asr_cascade_01/human_review_queue.jsonl, er007_ja_secondary_asr_01.py:39/:733/:778)",
+    "stop": "runner停止なし(exit3は上流失敗時のみ)。Assemble前Gate(asm.verify_episode_audio_validation_gate)がBLOCK。解除=asm.record_human_approval(canonical sha一致)またはreview_lock.approve_regenerate(次の1回)",
+    "spec_refs": [
+      "CURRENT_SPEC.md:2885(3)『JA KP・JA全般=Local Rewriteなし、3NG→STOPPED→HR Lock』",
+      "docs/pm/delegation_log/2026-10-15_ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01_01.md:49,147-148,155-165(L148『日本語Local Rewrite:現行の英語用機構を機械的に流用しない。安全な実装が成立していない場合はHuman Reviewへ進める』/L160『日本語:現時点では原則Human Review』)",
+      "OPEN_ITEMS.md:793 OPEN-290(E)『identify_ng_spanが純日本語でfound=False…当面なし』"
+    ],
+    "match": "一致",
+    "cls": "A",
+    "part": "preview・comment_1〜4(日本語)",
+    "generator_fn": "n3_tts.generate_a2_japanese_with_reading_safety [er019:1963]",
+    "runtime_evidence": [
+      "er019_output/family_x_audio_production_wiring_01/middle_east_yemen_saudi__run_mey_02/a2/audit/tts_generation_results.json [comment_2] 2026-10-21 HUMAN_REVIEW_LOCKED(標準・fallback不合格→ユーザー試聴承認で解決, REGISTER #128/DECISION_LOG.md:21863)",
+      "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_m2p0_n01_01/a2/audit/tts_generation_results.json [comment_1] attempts=2 OK(2026-10-14)"
+    ],
+    "notes_fact": "2026-10-17にSupport JAはS3(fx_20261017)。LR不採用理由は同上。",
+    "notes_opinion": ""
+  },
+  {
+    "family": "X",
+    "level": "Std",
+    "tts_limit": "標準2回(JAPANESE_STYLE_PREFIXまたはJ3 role Style) + JA minimal fallback 1回 = 総3(n3:732/er011:102-103)。technical失敗はattemptを消費",
+    "retry_conditions": "JA統一judge(Primary OpenAI→NGならSecondary Azure 1回, SCG等, er007_ja_secondary_asr_01.py)NG・length NG・読み解決(reading_resolver)NG。Retry=標準②は同一Style",
+    "fallback": [
+      {
+        "type": "F-Style",
+        "trigger": "標準2回が両方NG",
+        "from": "JAPANESE_STYLE_PREFIX(またはJ3 role Style)",
+        "to": "JA minimal instruction(_generate_a2_japanese_minimal_instruction n3:621)"
+      }
+    ],
+    "lr": {
+      "enabled": false,
+      "trigger": "L7関数にLR呼出なし・cs引数を持たない(関数そのものが別系統)",
+      "max_rewrites": 0,
+      "retts": 0,
+      "checks": null
+    },
+    "cooldown": "なし",
+    "final_ng": "STOPPED→Lock+日本語HR queue(slot3)→Gate BLOCK",
+    "hr_lock": "STOPPED→record_outcome=HUMAN_REVIEW_REQUIRED(Lock)+日本語HR queue(er007_output/ja_asr_cascade_01/human_review_queue.jsonl, er007_ja_secondary_asr_01.py:39/:733/:778)",
+    "stop": "runner停止なし(exit3は上流失敗時のみ)。Assemble前Gate(asm.verify_episode_audio_validation_gate)がBLOCK。解除=asm.record_human_approval(canonical sha一致)またはreview_lock.approve_regenerate(次の1回)",
+    "spec_refs": [
+      "CURRENT_SPEC.md:2885(3)『JA KP・JA全般=Local Rewriteなし、3NG→STOPPED→HR Lock』",
+      "docs/pm/delegation_log/2026-10-15_ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01_01.md:49,147-148,155-165(L148『日本語Local Rewrite:現行の英語用機構を機械的に流用しない。安全な実装が成立していない場合はHuman Reviewへ進める』/L160『日本語:現時点では原則Human Review』)",
+      "OPEN_ITEMS.md:793 OPEN-290(E)『identify_ng_spanが純日本語でfound=False…当面なし』"
+    ],
+    "match": "一致",
+    "cls": "A",
+    "part": "Key Phrase日本語意味 kpN_japanese_meaning(meaning_{i}.wav)",
+    "generator_fn": "n3_tts.generate_a2_japanese_with_reading_safety [er019:2093]",
+    "runtime_evidence": [
+      "er019_output/family_x_audio_production_wiring_01/part2_hr_evidence_01__run_r1/a2/audit/tts_generation_results.json [kp3_japanese_meaning] 2026-10-25 attempts=2 OK",
+      "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_l3_01/a2/audit/tts_generation_results.json [kp2_japanese_meaning] attempts=2 OK"
+    ],
+    "notes_fact": "",
+    "notes_opinion": ""
+  },
+  {
+    "family": "X",
+    "level": "Std",
+    "tts_limit": "通算3回(標準2+minimal1)を6%減速の外側ループ(max_slowdown_attempts=3)と共有: 内側生成回数の累計が3に達したら取り直さない(n3:387-399)",
+    "cooldown": "cs=True: 通算3回目直前600秒(prior_generations+cooldown_total_budget=3 で外側ループ越しに通算化 n3:404)",
+    "hr_lock": "STOPPED→record_outcome(er011:357)=HUMAN_REVIEW_REQUIRED(Lock: <level>/audit/review_lock_state.json)+英語HR queue(er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl。slot3 NG時にLR前に書込 er006:1294)。減速後再検証の最終NGは finalize_a2_slowdown_final_ng(n3:309)がrecord_outcome(STOPPED)+HR queue 1行(_post_slowdown_unified_judge log_human_review=True)",
+    "stop": "runner停止なし(exit3は上流失敗時のみ)。Assemble前Gate(asm.verify_episode_audio_validation_gate)がBLOCK。解除=asm.record_human_approval(canonical sha一致)またはreview_lock.approve_regenerate(次の1回)",
+    "part": "full_story_part1〜3(英語, 6%減速, 単一段落part)",
+    "generator_fn": "n3_tts.generate_a2_segment_with_slowdown [er019:1991→n3:331]→L3(crosslevel.generate_english_segment_with_fallback)→apply_a2_slowdown_postprocess[n3:194]",
+    "retry_conditions": "内側=L3(JUDGE+repetition QA[enable_repetition_qa=True])。外側=6%減速後の音声を統一judgeで再検証(正解=LR採用時は書換え後文 n3:217-220)しNGなら残予算で通常ペースから取り直す(同一Style)",
+    "fallback": [
+      {
+        "type": "F-Style",
+        "trigger": "標準2回が両方NG(取り直しで残予算が少ない場合は発動位置が前後)",
+        "from": "A2_SLOWER Style(role Style+減速instruction)",
+        "to": "minimal短文Style, force_secondary=True"
+      }
+    ],
+    "lr": {
+      "enabled": true,
+      "trigger": "通算3回使い切りなお不合格 かつ cs=True(5 role) かつ 最終attemptのPrimary転写とcanonicalに語差分あり(identify_ng_span er020:206)。差分なし=NO_NG_SPAN→LR不発→HR。ユーザー決定2026-10-19(基本フロー:初回→最大2回再生成→なおNGならRewrite)。ただし発火は内側L3が標準+fallbackを使い切った場合のみ。『減速後再検証の最終NG』ではLRしない(finalize docstring(iii) n3:317-319)",
+      "max_rewrites": "1回(再入なし)",
+      "retts": "1回, minimal Style(Style脱落)。その後6%減速→減速後再検証(正解=書換え後文)",
+      "checks": "Luna候補5件→7 Gate QA+全文性+局所性(+In One Lineは文数不変[X scope])→全PASSのうちunchanged_ratio最大1本を採用(er020:739-)。再TTS後は統一judge(正解=書換え後文, script v1, LR_REWRITTEN警告)+元呼出と同じdisfluency/repetition QA+減速後再検証"
+    },
+    "final_ng": "(a)内側全滅かつLR不発/NG→STOPPED→Lock+HR queue (b)減速後再検証が通算3回目でNG→LRなしでfinalize→Lock+HR queue。→Gate BLOCK",
+    "spec_refs": [
+      "CURRENT_SPEC.md:1857(総3回・Std2+minimal1,2026-09-04ユーザー正式決定)",
+      "CURRENT_SPEC.md:2885(5)『A2 6%減速=通算TTS3回共有の外側ループ』",
+      "docs/pm/delegation_log/2026-10-19_FAMILY-Z-AUDIO-QA-DEFECT-RESOLUTION-01_USER.md §3§4(Rewrite後は書換え後原稿を正解)",
+      "docs/pm/delegation_log/2026-10-21_FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01_FALLBACK-APPROVAL-FINAL-ASSEMBLY_USER.md:9-15"
+    ],
+    "runtime_evidence": [
+      "er019_output/family_x_audio_production_wiring_01/paycheck_personality__run_pp_01/a2/audit/tts_generation_results.json [full_story_part2] 2026-10-21: 標準2回NG→cooldown→minimal fallback成功(fallback_used=True, tts_generations_used=3)。OPEN-432",
+      "er019_output/family_x_audio_production_wiring_01/tesla_spacex_merger_talks__run_nws_01/a2/audit/tts_generation_results.json [full_story_part1/part3] 2026-10-23 tts_generations_used=2(減速後再検証NG→取り直し)",
+      "er011_output/local_rewrite_recovery/hormuz__run_02/a2/local_rewrite_recovery_full_story_part2.json RETTS_FAILED(決定前)",
+      "決定後のStd本文LR成功/失敗の実走: なし(未検証)"
+    ],
+    "match": "一致(静的)/LR決定後の実走なし(未検証)。減速後最終NGでLRしない点は仕様記録が委任_06eのdocstringのみ(X-F7)",
+    "cls": "A(+B: X-F2 / +C: X-F7)",
+    "notes_fact": "Std chunk化後も同じ関数をchunk単位で呼ぶ。",
+    "notes_opinion": ""
+  },
+  {
+    "family": "X",
+    "level": "Std",
+    "tts_limit": "通算3回(標準2+minimal1)を6%減速の外側ループ(max_slowdown_attempts=3)と共有: 内側生成回数の累計が3に達したら取り直さない(n3:387-399)",
+    "cooldown": "cs=True: 通算3回目直前600秒(prior_generations+cooldown_total_budget=3 で外側ループ越しに通算化 n3:404)",
+    "hr_lock": "STOPPED→record_outcome(er011:357)=HUMAN_REVIEW_REQUIRED(Lock: <level>/audit/review_lock_state.json)+英語HR queue(er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl。slot3 NG時にLR前に書込 er006:1294)。減速後再検証の最終NGは finalize_a2_slowdown_final_ng(n3:309)がrecord_outcome(STOPPED)+HR queue 1行(_post_slowdown_unified_judge log_human_review=True)",
+    "stop": "runner停止なし(exit3は上流失敗時のみ)。Assemble前Gate(asm.verify_episode_audio_validation_gate)がBLOCK。解除=asm.record_human_approval(canonical sha一致)またはreview_lock.approve_regenerate(次の1回)",
+    "part": "full_story_part{n}_k{j}(chunk, Std)",
+    "generator_fn": "n3_tts.generate_a2_segment_with_slowdown(chunkごと) [er019:_generate_x_body_part_chunked_a2 1372→1386]",
+    "retry_conditions": "chunk単位で単一段落partと同一。減速はchunk wavに掛け、0.2秒無音は連結時(減速後)に挿入(er019:1375)",
+    "fallback": [
+      {
+        "type": "F-Style",
+        "trigger": "同上(chunk単位)",
+        "from": "A2_SLOWER Style",
+        "to": "minimal"
+      }
+    ],
+    "lr": {
+      "enabled": true,
+      "trigger": "通算3回使い切りなお不合格 かつ cs=True(5 role) かつ 最終attemptのPrimary転写とcanonicalに語差分あり(identify_ng_span er020:206)。差分なし=NO_NG_SPAN→LR不発→HR。ユーザー決定2026-10-19(基本フロー:初回→最大2回再生成→なおNGならRewrite)(chunk単位)",
+      "max_rewrites": "1回/chunk",
+      "retts": "1回(minimal Style)",
+      "checks": "Luna候補5件→7 Gate QA+全文性+局所性(+In One Lineは文数不変[X scope])→全PASSのうちunchanged_ratio最大1本を採用(er020:739-)。再TTS後は統一judge(正解=書換え後文, script v1, LR_REWRITTEN警告)+元呼出と同じdisfluency/repetition QA"
+    },
+    "final_ng": "chunk entry STOPPED→Lock+HR queue。親=CHUNKS_NOT_ALL_VALIDATED→Gate BLOCK。組立前に追加Gate BLOCKED_STD_CHUNK_SLOWDOWN_GATE(er019:1399)",
+    "spec_refs": [
+      "CURRENT_SPEC.md:2957",
+      "docs/research/CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01/",
+      "commit 7ca0df0ad/d00f41c8b"
+    ],
+    "runtime_evidence": [
+      "er019_output/family_x_audio_production_wiring_01/uk_train_speaker_playback__run_stdchunk_ev_01/a2/audit/tts_generation_results.json [full_story_part2_k2] 2026-10-26 attempts=1, tts_generations_used=2(減速後再検証NG→取り直し)",
+      "chunkのcooldown/LR/HR: 実走記録なし(未検証)"
+    ],
+    "match": "一致(静的)/chunk LR・HR runtime証拠なし(未検証)",
+    "cls": "A(+B: X-F2)",
+    "notes_fact": "",
+    "notes_opinion": ""
+  },
+  {
+    "family": "X",
+    "level": "Std",
+    "tts_limit": "通算3回(標準2+minimal1)を6%減速の外側ループ(max_slowdown_attempts=3)と共有: 内側生成回数の累計が3に達したら取り直さない(n3:387-399)",
+    "cooldown": "cs=True: 通算3回目直前600秒(prior_generations+cooldown_total_budget=3 で外側ループ越しに通算化 n3:404)",
+    "hr_lock": "STOPPED→record_outcome(er011:357)=HUMAN_REVIEW_REQUIRED(Lock: <level>/audit/review_lock_state.json)+英語HR queue(er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl。slot3 NG時にLR前に書込 er006:1294)。減速後再検証の最終NGは finalize_a2_slowdown_final_ng(n3:309)がrecord_outcome(STOPPED)+HR queue 1行(_post_slowdown_unified_judge log_human_review=True)",
+    "stop": "runner停止なし(exit3は上流失敗時のみ)。Assemble前Gate(asm.verify_episode_audio_validation_gate)がBLOCK。解除=asm.record_human_approval(canonical sha一致)またはreview_lock.approve_regenerate(次の1回)",
+    "part": "in_one_line(英語, 6%減速)",
+    "generator_fn": "n3_tts.generate_a2_segment_with_slowdown [er019:1991] disfluency_qa=True",
+    "retry_conditions": "本文と同じ+disfluency QA。repetition QAなし",
+    "fallback": [
+      {
+        "type": "F-Style",
+        "trigger": "標準2回NG",
+        "from": "A2_SLOWER Style(IN_ONE_LINE)",
+        "to": "minimal"
+      }
+    ],
+    "lr": {
+      "enabled": true,
+      "trigger": "通算3回使い切りなお不合格 かつ cs=True(5 role) かつ 最終attemptのPrimary転写とcanonicalに語差分あり(identify_ng_span er020:206)。差分なし=NO_NG_SPAN→LR不発→HR。ユーザー決定2026-10-19(基本フロー:初回→最大2回再生成→なおNGならRewrite)+Gate 8_sentence_count_unchanged(X scope)",
+      "max_rewrites": "1回",
+      "retts": "1回(minimal Style)",
+      "checks": "Luna候補5件→7 Gate QA+全文性+局所性(+In One Lineは文数不変[X scope])→全PASSのうちunchanged_ratio最大1本を採用(er020:739-)。再TTS後は統一judge(正解=書換え後文, script v1, LR_REWRITTEN警告)+元呼出と同じdisfluency/repetition QA"
+    },
+    "final_ng": "本文と同じ",
+    "spec_refs": [
+      "CURRENT_SPEC.md:1857(総3回・Std2+minimal1,2026-09-04ユーザー正式決定)",
+      "DECISION_LOG.md:9711"
+    ],
+    "runtime_evidence": [
+      "er019_output/family_x_audio_production_wiring_01/meta__run_regen_01/a2/audit/tts_generation_results.json [in_one_line] 2026-10-11 fallback_used=True attempts=2 OK"
+    ],
+    "match": "一致(静的)/決定後のStd in_one_line fallback/LR実走なし(未検証)",
+    "cls": "A(+B: X-F2)",
+    "notes_fact": "",
+    "notes_opinion": ""
+  },
+  {
+    "tts_limit": "4回=STYLED(K2)2 + ENGLISH_LOCK 2(KEY_PHRASE_MINIMAL_MAX_ATTEMPTS+KEY_PHRASE_ENGLISH_LOCK_MAX_ATTEMPTS, repro01:685-687)。『全体3回』の唯一の例外(CURRENT_SPEC.md:2885(1))。各試行は3-ASR多数決(OpenAI・Azure・Whisper, 2/3 PASS, KP3V)",
+    "retry_conditions": "3-ASR多数決NG(NG_BOTH/NG_PROTECTED_DISSENT等)・length NG・disfluency QA(True)・非ラテン救済判定(enable_non_latin_cascade)。Whisper/Azure障害=技術STOP(再生成・HRなし)",
+    "fallback": [
+      {
+        "type": "F-Style",
+        "trigger": "前半2回(K2 styled / または default MINIMAL)が両方NG",
+        "from": "K2(styled) / MINIMAL instruction",
+        "to": "ENGLISH_LOCK instruction(repro01:858,k2_store:76)。Azure/Whisper circuit open時は後半をスキップ(repro01:845, 技術STOP)"
+      }
+    ],
+    "lr": {
+      "enabled": false,
+      "trigger": "関数にLR呼出なし(generate_key_phrase_component_verified/_styled_two_stage とも)・cs引数を持たない",
+      "max_rewrites": 0,
+      "retts": 0,
+      "checks": null
+    },
+    "cooldown": "なし(cooldown_total_budget未指定)",
+    "final_ng": "slot4(最終)NG→STOPPED→Lock+HR queue(英語)→Gate BLOCK。技術STOPはHR Lockを経ない場合あり(CURRENT_SPEC.md:2885(1)KP3V追記)",
+    "hr_lock": "STOPPED→record_outcome(er011:357)=HUMAN_REVIEW_REQUIRED(Lock: <level>/audit/review_lock_state.json)+英語HR queue(er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl。KP phrase=slot4(通算最終)NG時のみ書込 er006:1294)",
+    "stop": "runner停止なし(exit3は上流失敗時のみ)。Assemble前Gate(asm.verify_episode_audio_validation_gate)がBLOCK。解除=asm.record_human_approval(canonical sha一致)またはreview_lock.approve_regenerate(次の1回)",
+    "spec_refs": [
+      "CURRENT_SPEC.md:2885(1)",
+      "docs/pm/delegation_log/2026-10-15_ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01_01.md:49,147-148,155-165(L147『KP:学習対象の英語表現は変更しない』/L161『Key Phrase:学習対象の表現を別表現に置き換えない』)",
+      "DECISION_LOG.md:9711(2026-09-26(C)『適用しない=Heading readout, Key Phrase』)",
+      "OPEN_ITEMS.md KP3V/OPEN-440"
+    ],
+    "match": "一致",
+    "cls": "A",
+    "level": "Std",
+    "family": "X",
+    "part": "Key Phrase英語phrase kpN_en",
+    "generator_fn": "Advと同一(level=a2でStoreキーは共通=level=None) [er019:2043-]",
+    "runtime_evidence": [
+      "er019_output/family_x_audio_production_wiring_01/small_bag__run_jre_01/a2/audit/tts_generation_results.json [kp1_english] 2026-10-22 STOPPED fallback_used=True(STYLED+ENGLISH_LOCK両方NG)",
+      "er019_output/family_x_audio_production_wiring_01/word_gacha__run_wg_01/a2/audit/tts_generation_results.json [kp1_english] attempts=2 OK(2026-10-24)"
+    ],
+    "notes_fact": "Master Audio Storeはlevel=Noneで共有(B1/A2で再利用)。",
+    "notes_opinion": ""
+  },
+  {
+    "family": "X",
+    "level": "Std",
+    "part": "shell固定英語(welcome/preview_intro/key_phrases_intro/full_story_intro/num_one〜five)",
+    "generator_fn": "shared_narration.ensure_all_shared_narration_a2→ensure_fixed_english_segment(Advと同一key=Store再利用) [er019:1913]",
+    "tts_limit": "品質NG 3回(同一Style)",
+    "retry_conditions": "統一judge NG全種(NG_BOTH/NG_PROTECTED/NG_EXCLUDED/NG_SECONDARY_UNAVAILABLE: Primary NG→Secondary 1回, er006_secondary_asr_01.py:874)+length NG・TTS非OK/異常長。技術別枠: attempt内 _call_tts_with_retry(max_retry=1,待機なし,er002_common.py:703)",
+    "fallback": [
+      {
+        "type": "F-Tech",
+        "trigger": "TTS例外/発話区間検出失敗",
+        "from": "shell Style",
+        "to": "FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]"
+      }
+    ],
+    "lr": {
+      "enabled": false,
+      "trigger": "cs未指定。role=None",
+      "max_rewrites": 0,
+      "retts": 0,
+      "checks": null
+    },
+    "cooldown": "なし",
+    "final_ng": "Advと同じ(SharedNarrationBlockedError+Gate BLOCK)",
+    "hr_lock": "STOPPED→record_outcome(er011:357)=HUMAN_REVIEW_REQUIRED(Lock: <level>/audit/review_lock_state.json)+英語HR queue(er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl。slot3 NG時にLR前に書込 er006:1294)",
+    "stop": "SharedNarrationBlockedError",
+    "spec_refs": [
+      "Advのshellと同じ"
+    ],
+    "runtime_evidence": [
+      "Advのshellと同じ(全399 entry OK・attempts=1)"
+    ],
+    "match": "仕様記録なし(C)",
+    "cls": "C",
+    "notes_fact": "B1で既にMaster Storeにあれば新規TTS 0(er006_audio_cost_pilot_02_shared_narration.py:286)。",
+    "notes_opinion": ""
+  },
+  {
+    "family": "X",
+    "level": "Std",
+    "part": "shell固定日本語『ポイント解説』(point_explanation, A2のみ生成)",
+    "generator_fn": "shared_narration.ensure_fixed_japanese_segment [er006_audio_cost_pilot_02_shared_narration.py:236]→voice01.generate_charon_japanese(max_attempts=6→min(…,3) voice01:487)",
+    "tts_limit": "標準2+JA minimal 1=総3",
+    "retry_conditions": "JA統一judge NG",
+    "fallback": [
+      {
+        "type": "F-Style",
+        "trigger": "標準2回NG",
+        "from": "JAPANESE_STYLE_PREFIX",
+        "to": "JA minimal instruction(voice01:413)"
+      }
+    ],
+    "lr": {
+      "enabled": false,
+      "trigger": "L7関数にLR呼出なし",
+      "max_rewrites": 0,
+      "retts": 0,
+      "checks": null
+    },
+    "cooldown": "なし",
+    "final_ng": "STOPPED→Lock+日本語HR queue→SharedNarrationBlockedError",
+    "hr_lock": "STOPPED→record_outcome=HUMAN_REVIEW_REQUIRED(Lock)+日本語HR queue(er007_output/ja_asr_cascade_01/human_review_queue.jsonl, er007_ja_secondary_asr_01.py:39/:733/:778)",
+    "stop": "SharedNarrationBlockedError",
+    "spec_refs": [
+      "CURRENT_SPEC.md:2885(3)『JA KP・JA全般=Local Rewriteなし、3NG→STOPPED→HR Lock』",
+      "docs/pm/delegation_log/2026-10-15_ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01_01.md:49,147-148,155-165"
+    ],
+    "runtime_evidence": [
+      "全399 shared_narration entry OK(失敗0)"
+    ],
+    "match": "一致(JA LRなし=A)。ただし X Std の組立で point_explanation を使うかは未確認(Std順序 FAMILY_X_A2_SEGMENT_ORDER_V2 に『ポイント解説』なし, er019_family_x_audio_plan_01.py:333-355)",
+    "cls": "A",
+    "notes_fact": "ensure_all_shared_narration_a2 は FIXED_JAPANESE_TEXTS_A2_ONLY を無条件に生成(shared_narration:286-294)。",
+    "notes_opinion": "未使用なら不要生成の可能性(単価要確認・本調査対象外)。"
+  }
+]

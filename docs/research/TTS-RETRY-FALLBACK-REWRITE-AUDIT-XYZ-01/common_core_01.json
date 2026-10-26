@@ -1,0 +1,293 @@
+{
+  "management_id": "TTS-RETRY-FALLBACK-REWRITE-AUDIT-XYZ-01",
+  "delegation": "01X",
+  "date": "2026-10-26",
+  "head": "764901e3a",
+  "api_cost_jpy": 0,
+  "constants": {
+    "PRODUCTION_MAX_TTS_ATTEMPTS": {
+      "value": 3,
+      "at": "er011_human_review_lock_01.py:80"
+    },
+    "PRODUCTION_STANDARD_TTS_ATTEMPTS": {
+      "value": 2,
+      "at": "er011_human_review_lock_01.py:102"
+    },
+    "PRODUCTION_MINIMAL_FALLBACK_TTS_ATTEMPTS": {
+      "value": 1,
+      "at": "er011_human_review_lock_01.py:103"
+    },
+    "MAX_CUMULATIVE_TTS_ATTEMPTS": {
+      "value": 15,
+      "at": "er011_human_review_lock_01.py:68"
+    },
+    "MAX_CUMULATIVE_ASR_CALLS": {
+      "value": 60,
+      "at": "er011_human_review_lock_01.py:69"
+    },
+    "COOLDOWN_SECONDS": {
+      "value": 600.0,
+      "at": "er020_tts_retry_local_rewrite_01.py:57"
+    },
+    "N_NEW_CANDIDATES_DEFAULT": {
+      "value": 5,
+      "at": "er020_tts_retry_local_rewrite_01.py:397"
+    },
+    "KEY_PHRASE_TOTAL_MAX_ATTEMPTS": {
+      "value": 4,
+      "at": "er003_v1_repro01_main_generate.py:685-687"
+    },
+    "KP_EXPLANATION_MAX_ATTEMPTS": {
+      "value": 3,
+      "at": "er019_family_x_audio_production_runner_01.py:1202"
+    },
+    "MAX_TTS_TECHNICAL_RETRY": {
+      "value": 1,
+      "at": "er003_b1_p4_audio.py:61 (via p4c/p9a)",
+      "semantics": "attempt内 _call_tts_with_retry(er002_common.py:703), sleep_fn=None"
+    },
+    "CASCADE_CONFIG": {
+      "value": {
+        "max_primary_attempts": 2,
+        "max_secondary_attempts": 2
+      },
+      "at": "er006_secondary_asr_01.py:303",
+      "note": "統一judge下ではPrimary#2/Secondary#2は廃止(CURRENT_SPEC.md:2882)。定数は残置"
+    },
+    "FEATURE_FLAG_SECONDARY_ASR_ENABLED": {
+      "value": true,
+      "at": "er006_secondary_asr_01.py:297"
+    }
+  },
+  "leaf_functions": [
+    {
+      "id": "L1",
+      "fn": "voice01.generate_charon_english",
+      "at": "er003_v1_sing01_voice01_generate.py:49",
+      "tts_limit": "3 same-style (+technical side-slot)",
+      "cooldown": "cs=True before attempt 3",
+      "fallback": {
+        "type": "F-Tech",
+        "trigger": "TTS exception after 1 technical retry or trim fail (anomaly -> next attempt, no fallback)",
+        "from": "role style",
+        "to": "FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]"
+      },
+      "lr": "cs=True only (:304/:323); re-TTS keeps style_prefix_override (:363-369); re-entrant (CC-F1)",
+      "hr": "guarded_generate en -> record_outcome; HR queue at slot3 NG"
+    },
+    {
+      "id": "L2",
+      "fn": "news_tail_fix.generate_news_narration_wide_margin",
+      "at": "er003_v1_sing01_news_tail_fix.py:63",
+      "tts_limit": "3 same-style (+technical)",
+      "cooldown": "cs=True before attempt 3 (:149)",
+      "fallback": {
+        "type": "F-Tech",
+        "trigger": "TTS exception/trim fail/duration anomaly",
+        "from": "role style",
+        "to": "repro01.generate_english_component_minimal_instruction"
+      },
+      "lr": "cs=True only (:300/:325); re-TTS DROPS style_prefix_override (:370-377); re-entrant (CC-F1)",
+      "hr": "same as L1"
+    },
+    {
+      "id": "L3",
+      "fn": "crosslevel.generate_english_segment_with_fallback",
+      "at": "er003_v1_crosslevel_audio_02_common.py:95",
+      "tts_limit": "standard 2 + minimal fallback 1 = 3",
+      "cooldown": "overall attempt 3 (:200)",
+      "fallback": {
+        "type": "F-Style",
+        "trigger": "standard 2 NG",
+        "from": "role style",
+        "to": "minimal short style, force_secondary=True (:327,:381)"
+      },
+      "lr": "cs=True only (:288/:318); re-TTS = _run_a2_minimal_fallback_attempt direct (:425-427), not re-entrant",
+      "hr": "same"
+    },
+    {
+      "id": "L4",
+      "fn": "n3_tts.generate_a2_segment_with_slowdown",
+      "at": "er003_v1_n3_01_tts_generate.py:331",
+      "tts_limit": "overall 3 shared with outer slowdown loop (max_slowdown_attempts=3)",
+      "cooldown": "overall attempt 3 via prior_generations/cooldown_total_budget",
+      "fallback": "inner L3 F-Style; outer loop retakes only on post-6%-slowdown re-verify NG",
+      "lr": "inner L3 only; post-slowdown final NG -> NO LR -> finalize_a2_slowdown_final_ng (:309) -> HR",
+      "hr": "finalize -> record_outcome STOPPED + HR queue row"
+    },
+    {
+      "id": "L5",
+      "fn": "repro01.generate_narration_snippet_verified_strict",
+      "at": "er003_v1_repro01_main_generate.py:198",
+      "tts_limit": "max_attempts arg (default 3)",
+      "cooldown": "only if cooldown_total_budget passed (:336-343)",
+      "fallback": "none",
+      "lr": "none in function",
+      "hr": "guarded_generate_with_language_arg"
+    },
+    {
+      "id": "L6",
+      "fn": "repro01.generate_key_phrase_component_verified",
+      "at": "er003_v1_repro01_main_generate.py:797",
+      "tts_limit": "4 = styled/minimal 2 + ENGLISH_LOCK 2",
+      "cooldown": "none",
+      "fallback": {
+        "type": "F-Style",
+        "trigger": "first 2 NG",
+        "from": "K2/MINIMAL",
+        "to": "ENGLISH_LOCK"
+      },
+      "lr": "none (no cs arg)",
+      "hr": "slot4 only"
+    },
+    {
+      "id": "L7",
+      "fn": "voice01.generate_charon_japanese / n3_tts.generate_a2_japanese_with_fallback",
+      "at": "voice01.py:446 / n3_tts.py:693",
+      "tts_limit": "standard 2 + JA minimal 1 = 3 (min(max_attempts,3))",
+      "cooldown": "none",
+      "fallback": {
+        "type": "F-Style",
+        "trigger": "standard 2 NG",
+        "from": "JAPANESE_STYLE_PREFIX/J3",
+        "to": "JA minimal instruction"
+      },
+      "lr": "none (no cs arg)",
+      "hr": "JA HR queue er007_output/ja_asr_cascade_01/human_review_queue.jsonl"
+    },
+    {
+      "id": "L8",
+      "fn": "er012_b.generate_voice_body_wide_margin",
+      "at": "er012_b_family_voices_production_01.py:483",
+      "tts_limit": "max_attempts arg",
+      "cooldown": "only via attempt_hook (Z dialogue ctx)",
+      "fallback": "F-Tech (generate_voice_body_minimal_fallback :451)",
+      "lr": "none in function (cs default True used only for ASR judge)",
+      "hr": "guarded_generate en",
+      "used_by_x": false
+    }
+  ],
+  "role_resolution": {
+    "fn": "er020_tts_retry_local_rewrite_01.resolve_narrative_role",
+    "at": "er020:135",
+    "cs_true_roles": [
+      "FULL_STORY",
+      "COMMENT",
+      "PREVIEW",
+      "TOPIC_INTRO",
+      "IN_ONE_LINE"
+    ],
+    "none_examples": [
+      "welcome",
+      "num_two",
+      "kp1_explanation_en"
+    ],
+    "key_phrase_pattern": "^kp\\d+_(en|ja) (er020:121)",
+    "family_z_clip": "full_story_part[1-3]_c[0-9]+ (er020:122)",
+    "chunk": "full_story_part[1-3](_c[0-9]+)?_k[1-9][0-9]* (er020:126)",
+    "family_y": "y_(lead|closing|intro_[1-3]|voice_[1-3])(_k..)? (er020:132)"
+  },
+  "lr_flow": {
+    "entry": "er020.run_local_rewrite_recovery :739",
+    "steps": [
+      "identify_ng_span (:206) vs last attempt Primary transcript",
+      "Luna candidates x5",
+      "7 gates + full-segment + locality (+IOL sentence count, X scope)",
+      "select max unchanged_ratio",
+      "retts_fn x1 (script v1)"
+    ],
+    "statuses": [
+      "RESOLVED_BY_LOCAL_REWRITE",
+      "HUMAN_REVIEW_LOCKED_NO_NG_SPAN",
+      "HUMAN_REVIEW_LOCKED_NO_CANDIDATE_PASSED_QA",
+      "HUMAN_REVIEW_LOCKED_RETTS_FAILED"
+    ],
+    "expected_text_after_lr": "resolve_expected_text_after_local_rewrite :815",
+    "user_decision_2026-10-19": "TTS初回→Primary/Secondary検証→NGなら最大2回TTS再生成→なおNGならRewrite(両ASR合意条件は削除)"
+  },
+  "hr_stop": {
+    "lock_store": "<level_out_dir>/audit/review_lock_state.json (er011:155)",
+    "queue_en": "er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl (er006:481)",
+    "queue_ja": "er007_output/ja_asr_cascade_01/human_review_queue.jsonl (er007_ja_secondary_asr_01.py:39)",
+    "approve": [
+      "asm.record_human_approval (assemble.py:96)",
+      "review_lock.approve_regenerate (er011:474)"
+    ],
+    "stop_scope": "tools/stop_scope_check_01.py (STOP_ALL/STOP/NOTICE/RESTART_STORM_LOCK/RUN_LOCK); X runner has no RUN_LOCK/RESTART_STORM (PM_GOVERNANCE.md 26-4)"
+  },
+  "findings": [
+    {
+      "id": "CC-F1",
+      "class": "B",
+      "title": "LR re-entrancy in voice01/news_tail_fix LR re-TTS",
+      "evidence": [
+        "voice01.py:363-369,:323",
+        "news_tail_fix.py:370-377,:325",
+        "er011_output/local_rewrite_recovery/hormuz__run_03_baseline/b1b/local_rewrite_recovery_comment_4.json",
+        "er011_output/local_rewrite_recovery/meta__run_regen_01/b1b/local_rewrite_recovery_in_one_line.json",
+        "er011_output/local_rewrite_recovery/run_e2e_01/b1b/local_rewrite_recovery_full_story_part1_c18.json"
+      ],
+      "spec_conflict": [
+        "ITEMS23_REWRITE_CONDITION_AND_SCRIPT_REF_01.md:28",
+        "CURRENT_SPEC.md:2886"
+      ],
+      "existing_open": "OPEN-376 (D-B4)"
+    },
+    {
+      "id": "CC-F2",
+      "class": "B",
+      "title": "LR re-TTS style differs per leaf (known OPEN-312/274)",
+      "evidence": [
+        "news_tail_fix.py:370-377",
+        "crosslevel:425-427",
+        "voice01.py:363-369"
+      ],
+      "existing_open": "OPEN-312 / OPEN-274"
+    },
+    {
+      "id": "CC-F3",
+      "class": "C",
+      "title": "NO_NG_SPAN for non-ASR NG -> cooldown paid then LR cannot fire",
+      "evidence": [
+        "er020:206",
+        "part2_hr_evidence_01__run_r2/b1b comment_4 (2026-10-26)"
+      ]
+    },
+    {
+      "id": "CC-F4",
+      "class": "C",
+      "title": "HR queue row written before LR at last slot",
+      "evidence": [
+        "er006_secondary_asr_01.py:1294-1296",
+        "human_review_queue.jsonl word_gacha part3 x2"
+      ],
+      "existing_open": "OPEN-376 (D-B5)"
+    },
+    {
+      "id": "CC-F5",
+      "class": "residual",
+      "title": "stop_retrying branches unreachable when cascade ON",
+      "evidence": [
+        "er006_secondary_asr_01.py:961,:1238"
+      ]
+    },
+    {
+      "id": "CC-F6",
+      "class": "C",
+      "title": "duration anomaly handled differently in L1 vs L2",
+      "evidence": [
+        "voice01.py:232",
+        "news_tail_fix.py:171-178"
+      ]
+    },
+    {
+      "id": "CC-F7",
+      "class": "A",
+      "title": "Std 2+1 vs Adv same-style 3; Fallback kept by user 2026-10-21",
+      "evidence": [
+        "CURRENT_SPEC.md:1857",
+        "2026-10-21_FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01_FALLBACK-APPROVAL-FINAL-ASSEMBLY_USER.md:9-15"
+      ]
+    }
+  ]
+}
