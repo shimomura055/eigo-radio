@@ -589,3 +589,6 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-26 | CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01 委任_03 / Closeout | Chunk分割 X/Y/Z Std/Adv=PRODUCTION_WIRED(Fable判定6行表、Y現行契約で構造的不発火=OPEN-527、実費合計11.15円)。Fable報告済み(2026-10-26)。SSOT反映=PM-SSOT-SYNC-05。
 - 2026-10-26 | TTS-RETRY-FALLBACK-REWRITE-AUDIT-XYZ-01 | TTS retry/fallback/Local Rewrite監査。受領・委任_01X/01Y/01Z開始(JPY0、進行中、結果未)。
 - 2026-10-26 | PM-SSOT-SYNC-05 | 本件(CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01 Closeout転記、CURRENT_SPEC Chunk節是正含む、API 0・JPY0)。
+- 2026-10-26 | ユーザー決定受領(Voice表/Chunk Y判定/FZ LR) | Y Voice候補表APPROVED_FOR_PRODUCTION(Puck、男5女5、Z不変、Y/Z差分は承認済み)・Chunk Y=PRODUCTION_WIRED未判定(WIRED_NOT_FIRING)・FZ LR未配線(新仕様は独断追加しない)。原文=`docs/pm/delegation_log/2026-10-26_FAMILY-Y-VOICE-TABLE-PRODUCTION-WIRING-01_USER.md`。
+- 2026-10-26 | FAMILY-Y-VOICE-TABLE-PRODUCTION-WIRING-01 委任_01 | Y Voice候補表Production配線。委任_01開始(Cap60、進行中、結果未)。
+- 2026-10-26 | PM-SSOT-SYNC-06 | 本件(ユーザー決定転記、Chunk Y判定是正、OPEN-527/528/531/532、API 0・JPY0)。

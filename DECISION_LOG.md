@@ -22544,3 +22544,10 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - CURRENT_SPEC是正: Chunk節の『対象外: Standard(a2)・Family Y』『Standard本文は仕様上対象外』を『(旧: Advanced限定)』履歴付きで是正し、『Std拡張』小節を追加。
 - 運用逸脱(記録): (1)R4 driver初版で遮断前に実LLM呼出し1回0.0084円、(2)X Std 1回目課金前STOP後26秒で再起動(150秒規律違反、課金0)。
 - 残件(任意・非blocking、Fable判断=必須ではない): Z Stdの2作品目実run、強制NG/Local Rewrite/exhaust経路のZ Std実run。既存非冪等test `er063_family_z_audio_01_test_01.py::WiringTest::test_preview_comment_kp_styles`(repo root `x/`にReview Lock残置、HEAD既存、実害なし)。OPEN-527(Y分割方式)は『Chunk配線済みだが現行契約で休眠』のままユーザー判断待ち。
+
+## ユーザー決定反映: Y Voice候補表採用・Z不変・Y/Z差分許容、Chunk Y判定是正、FZ LR未配線の扱い(2026-10-26、OPEN-527/528/531/532、PM-SSOT-SYNC-06、API 0・転記のみ)
+- **決定(原文=`docs/pm/delegation_log/2026-10-26_FAMILY-Y-VOICE-TABLE-PRODUCTION-WIRING-01_USER.md` §1/§2/§3/§6)**: (1)「Family YのVoice候補変更を正式採用（APPROVED_FOR_PRODUCTION）。」Voice 1=Puck、Algieba除外、男性5(Puck/Schedar/Fenrir/Orus/Iapetus)・女性5(Zephyr/Kore/Leda/Sulafat/Erinome)。既存完成音声は無断で差し替えず今後の制作に適用。Trialで判明したポーズ・再生成率の問題も記録。(2)「Family Zは変更しない。」(Z男性1=Algieba、男性5=Puck)。(3)「Family YとFamily ZのVoice候補差分を明示的に許容した。」「承認済みFamily固有仕様としてCURRENT_SPEC／DECISION_LOG等に記録」「共通仕様の統一を理由に、Family ZのAlgiebaを削除したりPuckへ変更したりしない」。§6「今後これを未承認の仕様不一致として扱わないこと」。
+- **記録**: CURRENT_SPEC末尾「Family Y Voice候補表」節(Status=APPROVED・配線中、Production未反映)。OPEN-531=APPROVED_FOR_PRODUCTION_WIRING_IN_PROGRESS(PRODUCTION_WIREDは配線・evidence後にFable判定)。配線=`FAMILY-Y-VOICE-TABLE-PRODUCTION-WIRING-01`委任_01(並行)。Z Voice表は表本体を変更せず再確認1行のみ追記。
+- **Chunk Y判定の是正(§2逐語)**: 「Family Y：正式承認・配線済みだが、現行本文が1段落固定のため実記事ではChunkが発火しない。したがって、Family YはPRODUCTION_WIREDと判定しない。現状をOPEN-527等に正確に記録する。本文の段落構成や分割方式は未承認のまま変更しない。」→ PM-SSOT-SYNC-05(764901e3a)で記録したY Std/Adv=PRODUCTION_WIREDを、APPROVED_FOR_PRODUCTION・配線済み(WIRED_NOT_FIRING)・PRODUCTION_WIRED未判定へ是正(旧記載は履歴保持)。X/Z Std/Adv 4行はPRODUCTION_WIRED不変。SYNC-05の記録は誤判定ではなく、発火証拠のない配線はPRODUCTION_WIREDとしないというユーザー基準が後から明示されたことによる是正。OPEN-527/532更新。
+- **FZ ctx Local Rewrite(§3)**: 「文脈・感情付きTTS本体および3回目Fallbackまでは正式runtime検証済み。ただし、Local Rewriteは未配線であり、現行ではHuman Review／STOPに進む。…Local Rewriteの新仕様を独断で追加しない。」→ OPEN-528へ記録(TTS-RETRY-FALLBACK-REWRITE-AUDIT-XYZ-01の調査結果と照合後にユーザー判断。既存Deferred項目と統合)。
+- 費用: API 0・JPY0。

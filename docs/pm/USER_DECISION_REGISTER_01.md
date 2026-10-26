@@ -449,3 +449,9 @@
 
 ### 2026-10-26 PM-SSOT-SYNC-05 追記(OPEN-532 Chunk Std拡張 PRODUCTION_WIRED。既存行は書き換えず追記)
 - OPEN-532 Chunk Std拡張: PRODUCTION_WIRED報告済み(Fable判定2026-10-26、X/Y/Z Std/Adv 6行)。ユーザー判断不要(承認済み範囲=承認原文`docs/pm/delegation_log/2026-10-26_CHUNK-TTS-STD-PRODUCTION-WIRING-XYZ-01_USER.md`)。Y構造的不発火(現行本文契約)の分割方式変更はOPEN-527(UDR-YFB-1)でユーザー判断待ちのまま。残件(Z Std 2作品目実run等)は任意・非blocking。
+
+### 2026-10-26 PM-SSOT-SYNC-06 追記(ユーザー決定反映。既存行は書き換えず追記)
+- OPEN-531 Y Voice 1変更・Y候補表: **決定済み**(2026-10-26 APPROVED_FOR_PRODUCTION。Voice 1=Puck、Y男性5/女性5、Algieba除外、Z不変、Y/Z候補差分は承認済みFamily固有仕様=未承認の仕様不一致として扱わない)。原文=`docs/pm/delegation_log/2026-10-26_FAMILY-Y-VOICE-TABLE-PRODUCTION-WIRING-01_USER.md` §1/§6。配線中(FAMILY-Y-VOICE-TABLE-PRODUCTION-WIRING-01 委任_01)。UDR-YFB-2のVoice 1選択(Puck/Orus/Algieba維持)は決定済みで判断待ち解除。
+- OPEN-532 Chunk Std拡張: Y=PRODUCTION_WIRED未判定(ユーザー決定2026-10-26、WIRED_NOT_FIRING)。X/Z=PRODUCTION_WIRED不変。SYNC-05の「Y PRODUCTION_WIRED」記載は是正済み。
+- OPEN-527 Y分割方式(UDR-YFB-1): 継続(ユーザー判断待ち)。Chunk Yは実記事不発火、本文の段落構成・分割方式は未承認のまま変更しない。
+- OPEN-528 FZ ctx: Local Rewrite未配線・現行HR/STOP。LR新仕様は独断追加しない(TTS-RETRY-FALLBACK-REWRITE-AUDIT-XYZ-01調査結果と照合後にユーザー判断。Deferredのまま)。
