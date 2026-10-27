@@ -1,0 +1,111 @@
+{
+ "schema": "grammar_candidates_v1",
+ "level": "Advanced",
+ "label": "Coffee Prices Fall, but Store Prices Stay: Coffee’s “Jet Lag”",
+ "text_sha256": "1b80df605dd373bff0c3e3fe7a766ace95922f15f784f964204f099daf0f2195",
+ "n_paragraphs": 9,
+ "prompt_id": "part2_stepA8",
+ "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+ "model": "gpt-6-luna",
+ "extract_signature": "0ec4c1681530d897db3995d2b1bdf966e93d283c8dfa22061ecfa4d7a75d62be",
+ "round": 1,
+ "tier_table": [
+  {
+   "para": "P4",
+   "cls": "CMP",
+   "tier": "T1",
+   "eligible": true,
+   "why_not": [],
+   "tv": "HIGH",
+   "tv_ja": "thanの後が時を表す句だけの場合、省略された比較対象を前後の文脈から補う。",
+   "front_kind": "",
+   "sentence": "It was higher than in the same month a year earlier.",
+   "single_span_ok": true,
+   "cross_para_flag": null
+  }
+ ],
+ "no_feature_paras": [
+  "P1",
+  "P2",
+  "P3",
+  "P5",
+  "P6",
+  "P7",
+  "P8",
+  "P9"
+ ],
+ "uncovered_paras": [],
+ "audit": {
+  "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+  "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+  "model": "gpt-6-luna",
+  "requested_model": "gpt-6-luna",
+  "prompt_sha256": "436594e5ae86cc94b811bc3e5cc91b036cbffefab63c644d9624bd848a9cfc46",
+  "response_ids": [
+   "resp_01643e15b6ea2d16006adff10f089c87d081063132b1107fe3"
+  ],
+  "calls": [
+   {
+    "attempt": 1,
+    "response_model": "gpt-6-luna",
+    "usage": {
+     "input_tokens": 3550,
+     "output_tokens": 3963,
+     "cached_input_tokens": 0,
+     "reasoning_tokens": 3613
+    },
+    "response_id": "resp_01643e15b6ea2d16006adff10f089c87d081063132b1107fe3",
+    "elapsed_sec": 56.31,
+    "cost_jpy": 0.3738
+   }
+  ],
+  "retried_for_parse": false,
+  "total_cost_jpy": 0.3738,
+  "generated_at": "2026-10-27T09:33:10+0900",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+ },
+ "reselect_count": 0,
+ "reextract_count": 0,
+ "reselect_log": [],
+ "candidates": [
+  {
+   "candidate_id": "gd3a20631d7",
+   "rank": 1,
+   "tier": "T1",
+   "feature_class": "CMP",
+   "para": "P4",
+   "sentence": "It was higher than in the same month a year earlier.",
+   "front_kind": "",
+   "misread_target": "OMITTED",
+   "misread_quote": "than in the same month a year earlier",
+   "misread_ja": "than以下をその月そのものとの比較と取り違え、前年同月のコーヒー価格との比較だと捉え損ねることがある。",
+   "omitted_words": "",
+   "teaching_value": "HIGH",
+   "teaching_value_ja": "thanの後が時を表す句だけの場合、省略された比較対象を前後の文脈から補う。",
+   "construct_ja": "比較基準の省略",
+   "points_ja": [
+    "than in the same month以下は「前年同月における価格より」を表す。",
+    "比較されているのは、現在のコーヒー価格と前年同月のコーヒー価格。"
+   ],
+   "context_ja": "米国のコーヒーの消費者物価指数が、前年同月より高かったと述べている。",
+   "prev": "But in the US, the coffee part of the Consumer Price Index was still higher.",
+   "next": "“Wait a minute, that doesn’t add up!”",
+   "cross_para_flag": null,
+   "single_span_ok": true,
+   "span": [
+    227,
+    279
+   ]
+  }
+ ],
+ "top_ids": [
+  "gd3a20631d7"
+ ],
+ "n_eligible": 1,
+ "ng": [],
+ "filtered_by_ng": [],
+ "rejected_ids": [],
+ "candidates_sha256": "216474a5fbc9224bba3c4ef6304c0fcda03005fb11e727cbf7288ae502dd27ee",
+ "status": "HAS_CANDIDATES",
+ "exhausted": false
+}

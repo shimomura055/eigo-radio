@@ -1,0 +1,19 @@
+{
+  "kind": "INTEGRITY_VIOLATION",
+  "at": "2026-10-27T09:23:32.087908+09:00",
+  "summary": "finalizeが書いた成果物が確定レコードと一致しません(G0)。",
+  "diffs": [
+    {
+      "candidate_id": "p_4e11d37d8a",
+      "field": "japanese_gloss",
+      "confirmed": "人にとって納得がいく",
+      "observed": "人にとって納得がいく改変",
+      "where": "keywords_canonicalized.json"
+    }
+  ],
+  "next": [
+    "原因がパイプライン側の変更なら: py er128_kp_confirmed_content_01.py restore --run C:\\Users\\tensh\\eigo-radio\\er121_output\\family_y_production_01\\redelivery_fee\\run_kcp3_ev_y_02 --level b1b --by <名> --reason <理由> (確定値で再finalize。API 0)",
+    "確定内容そのものを変えたい場合: py er128_kp_confirmed_content_01.py confirm-revise --run C:\\Users\\tensh\\eigo-radio\\er121_output\\family_y_production_01\\redelivery_fee\\run_kcp3_ev_y_02 --level b1b --by <名> --user-ref <ユーザー発言> --reason ... (ユーザー確認済みの変更のみ)"
+  ],
+  "proposal": []
+}

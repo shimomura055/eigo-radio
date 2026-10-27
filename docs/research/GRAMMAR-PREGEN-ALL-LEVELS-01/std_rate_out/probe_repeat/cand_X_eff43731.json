@@ -1,0 +1,193 @@
+{
+ "schema": "grammar_candidates_v1",
+ "level": "Advanced",
+ "label": "The Island Resets! But AI Has “Strategy Notes”",
+ "text_sha256": "6723f1e6aa97236f38215687c17c0c29470785acfacbaf0155f25c3ef45e36f4",
+ "n_paragraphs": 8,
+ "prompt_id": "part2_stepA8",
+ "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+ "model": "gpt-6-luna",
+ "extract_signature": "88e63627338528dbcd2a41affe0da93b4ef009e907c927294e47d1d19bba9a2c",
+ "round": 1,
+ "tier_table": [
+  {
+   "para": "P1",
+   "cls": "HEAVY",
+   "tier": "T1",
+   "eligible": true,
+   "why_not": [],
+   "tv": "HIGH",
+   "tv_ja": "主語に前置詞句が重なる場合、主語のまとまりを保って主節の動詞を探す。",
+   "front_kind": "",
+   "sentence": "An AI test on an island inside a computer showed how much these “strategy notes” can matter.",
+   "single_span_ok": true,
+   "cross_para_flag": null
+  },
+  {
+   "para": "P4",
+   "cls": "HEAVY",
+   "tier": "T1",
+   "eligible": true,
+   "why_not": [],
+   "tv": "HIGH",
+   "tv_ja": "主語の中心語の後に修飾句が続くとき、修飾句の終わりから主節の動詞を探す。",
+   "front_kind": "",
+   "sentence": "But the work area with the AI’s notes and programs carried over to the next hour.",
+   "single_span_ok": true,
+   "cross_para_flag": null
+  },
+  {
+   "para": "P6",
+   "cls": "HEAVY",
+   "tier": "T1",
+   "eligible": true,
+   "why_not": [],
+   "tv": "HIGH",
+   "tv_ja": "主語の中に関係節がある場合、関係節の動詞と主節の動詞を分けて読む。",
+   "front_kind": "",
+   "sentence": "After that, the average number of towers it could build went down.",
+   "single_span_ok": true,
+   "cross_para_flag": null
+  }
+ ],
+ "no_feature_paras": [
+  "P2",
+  "P3",
+  "P5",
+  "P7",
+  "P8"
+ ],
+ "uncovered_paras": [],
+ "audit": {
+  "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+  "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+  "model": "gpt-6-luna",
+  "requested_model": "gpt-6-luna",
+  "prompt_sha256": "ece20fc640becea903ff328b0ffe107f87391cbdd8565bc7461bb99fb0b4d904",
+  "response_ids": [
+   "resp_0d1675887177f866006adff37d903487d08f4ca9ad95dfe6ef"
+  ],
+  "calls": [
+   {
+    "attempt": 1,
+    "response_model": "gpt-6-luna",
+    "usage": {
+     "input_tokens": 3531,
+     "output_tokens": 4982,
+     "cached_input_tokens": 3528,
+     "reasoning_tokens": 4031
+    },
+    "response_id": "resp_0d1675887177f866006adff37d903487d08f4ca9ad95dfe6ef",
+    "elapsed_sec": 42.71,
+    "cost_jpy": 0.4043
+   }
+  ],
+  "retried_for_parse": false,
+  "total_cost_jpy": 0.4043,
+  "generated_at": "2026-10-27T09:43:20+0900",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+ },
+ "reselect_count": 0,
+ "reextract_count": 0,
+ "reselect_log": [],
+ "candidates": [
+  {
+   "candidate_id": "g947f997ccd",
+   "rank": 1,
+   "tier": "T1",
+   "feature_class": "HEAVY",
+   "para": "P1",
+   "sentence": "An AI test on an island inside a computer showed how much these “strategy notes” can matter.",
+   "front_kind": "",
+   "misread_target": "VERB",
+   "misread_quote": "on an island inside a computer",
+   "misread_ja": "主語の後に前置詞句が続くため主節の動詞を見失い、後続のhow much節を主節として読んでしまうことがある。",
+   "omitted_words": "",
+   "teaching_value": "HIGH",
+   "teaching_value_ja": "主語に前置詞句が重なる場合、主語のまとまりを保って主節の動詞を探す。",
+   "construct_ja": "長い主語",
+   "points_ja": [
+    "主語の中心はtestで、後続の前置詞句はtestを修飾する。",
+    "主節の動詞はshowedで、how much以下はその目的語となる節。"
+   ],
+   "context_ja": "コンピューター内の島で行ったAIテストが、strategy notesの重要性を示した。",
+   "prev": "Notes written down can go into the next hour.",
+   "next": "The AIs sent to the island had no set tasks or rewards.",
+   "cross_para_flag": null,
+   "single_span_ok": true,
+   "span": [
+    214,
+    306
+   ]
+  },
+  {
+   "candidate_id": "gbbcb90f0ea",
+   "rank": 2,
+   "tier": "T1",
+   "feature_class": "HEAVY",
+   "para": "P4",
+   "sentence": "But the work area with the AI’s notes and programs carried over to the next hour.",
+   "front_kind": "",
+   "misread_target": "SUBJECT",
+   "misread_quote": "the AI’s notes and programs",
+   "misread_ja": "主語の中心であるwork areaから動詞までに修飾句が入るため、近くにあるnotes and programsを主語と取り違えることがある。",
+   "omitted_words": "",
+   "teaching_value": "HIGH",
+   "teaching_value_ja": "主語の中心語の後に修飾句が続くとき、修飾句の終わりから主節の動詞を探す。",
+   "construct_ja": "前置詞句を伴う長い主語",
+   "points_ja": [
+    "with the AI’s notes and programsはwork areaを修飾する。",
+    "主節の主語はwork areaで、動詞はcarried over。"
+   ],
+   "context_ja": "島と会話は毎時リセットされたが、AIのノートやプログラムがある作業領域は次の時間に引き継がれた。",
+   "prev": "In the test, the island and conversation reset every hour.",
+   "next": "The island went back to how it was before, but the AI’s discoveries stayed.",
+   "cross_para_flag": null,
+   "single_span_ok": true,
+   "span": [
+    107,
+    188
+   ]
+  },
+  {
+   "candidate_id": "gea4eb51247",
+   "rank": 3,
+   "tier": "T1",
+   "feature_class": "HEAVY",
+   "para": "P6",
+   "sentence": "After that, the average number of towers it could build went down.",
+   "front_kind": "",
+   "misread_target": "VERB",
+   "misread_quote": "the average number of towers it could build",
+   "misread_ja": "主語が関係節を含んで長くなっているため、関係節内のcould buildを主節の動詞と取り違え、主節のwent downを見落とすことがある。",
+   "omitted_words": "",
+   "teaching_value": "HIGH",
+   "teaching_value_ja": "主語の中に関係節がある場合、関係節の動詞と主節の動詞を分けて読む。",
+   "construct_ja": "関係節を含む長い主語",
+   "points_ja": [
+    "it could buildはtowersを修飾する関係節。",
+    "主節の主語はthe average number of towers it could buildで、動詞はwent down。"
+   ],
+   "context_ja": "AIの記憶から「岩を投げてブロックを増やす」方法を消した後、建てられる塔の平均数が減った。",
+   "prev": "The researchers also erased a way to “throw rocks to get more blocks” from one AI’s memory.",
+   "next": "Its scores on other tasks stayed the same.",
+   "cross_para_flag": null,
+   "single_span_ok": true,
+   "span": [
+    92,
+    158
+   ]
+  }
+ ],
+ "top_ids": [
+  "g947f997ccd",
+  "gbbcb90f0ea"
+ ],
+ "n_eligible": 3,
+ "ng": [],
+ "filtered_by_ng": [],
+ "rejected_ids": [],
+ "candidates_sha256": "dc94018d715669382278f27a94ac4894997cb5fa0c5c8b2c97211057fa731960",
+ "status": "HAS_CANDIDATES",
+ "exhausted": false
+}

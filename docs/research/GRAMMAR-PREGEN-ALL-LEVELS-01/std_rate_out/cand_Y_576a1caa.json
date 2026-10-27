@@ -1,0 +1,149 @@
+{
+ "schema": "grammar_candidates_v1",
+ "level": "Advanced",
+ "label": "Package Redelivery: Different Voices",
+ "text_sha256": "c415df6b554bcaa07cc058b30312e6cff62f9845563dc0aba861b99771aef007",
+ "n_paragraphs": 5,
+ "prompt_id": "part2_stepA8",
+ "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+ "model": "gpt-6-luna",
+ "extract_signature": "110f4dd0db521e48dc2ec000c1028fcea153e9fa23753afde5849f05d5de6d63",
+ "round": 1,
+ "tier_table": [
+  {
+   "para": "P4",
+   "cls": "CMP",
+   "tier": "T1",
+   "eligible": true,
+   "why_not": [],
+   "tv": "HIGH",
+   "tv_ja": "as以下で省略された動詞を補い、何と何を比べているかを見つける。",
+   "front_kind": "",
+   "sentence": "Honestly, I think it’s wrong that I pay the same fee as people who are always away and ask for redelivery.",
+   "single_span_ok": true,
+   "cross_para_flag": null
+  },
+  {
+   "para": "P5",
+   "cls": "HEAVY",
+   "tier": "T1",
+   "eligible": true,
+   "why_not": [],
+   "tv": "HIGH",
+   "tv_ja": "長い動名詞句を主語としてひとまとまりに捉え、主節の動詞を見つける。",
+   "front_kind": "",
+   "sentence": "But making the person who gets the package pay will not fix late deliveries or the way people are told when packages will arrive.",
+   "single_span_ok": true,
+   "cross_para_flag": null
+  }
+ ],
+ "no_feature_paras": [
+  "P1",
+  "P2",
+  "P3"
+ ],
+ "uncovered_paras": [],
+ "audit": {
+  "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+  "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+  "model": "gpt-6-luna",
+  "requested_model": "gpt-6-luna",
+  "prompt_sha256": "bd808126136b20d9749d566bf7505abb58b9a206549b34410ac09f8091f613cf",
+  "response_ids": [
+   "resp_03c13ea2148e8eba006adff16451e087d08c1d45eb19e02533"
+  ],
+  "calls": [
+   {
+    "attempt": 1,
+    "response_model": "gpt-6-luna",
+    "usage": {
+     "input_tokens": 3754,
+     "output_tokens": 3730,
+     "cached_input_tokens": 0,
+     "reasoning_tokens": 3106
+    },
+    "response_id": "resp_03c13ea2148e8eba006adff16451e087d08c1d45eb19e02533",
+    "elapsed_sec": 40.28,
+    "cost_jpy": 0.3585
+   }
+  ],
+  "retried_for_parse": false,
+  "total_cost_jpy": 0.3585,
+  "generated_at": "2026-10-27T09:34:20+0900",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+ },
+ "reselect_count": 0,
+ "reextract_count": 0,
+ "reselect_log": [],
+ "candidates": [
+  {
+   "candidate_id": "g31f4b39e68",
+   "rank": 1,
+   "tier": "T1",
+   "feature_class": "CMP",
+   "para": "P4",
+   "sentence": "Honestly, I think it’s wrong that I pay the same fee as people who are always away and ask for redelivery.",
+   "front_kind": "",
+   "misread_target": "OMITTED",
+   "misread_quote": "as people who are always away",
+   "misread_ja": "as以下を人と料金そのものの比較と捉え、相手も同じ料金を払うという比較だと読み取れないことがある。",
+   "omitted_words": "",
+   "teaching_value": "HIGH",
+   "teaching_value_ja": "as以下で省略された動詞を補い、何と何を比べているかを見つける。",
+   "construct_ja": "as以下で比較対象が省略された比較",
+   "points_ja": [
+    "as以下では people が pay the same fee の主語に当たる。",
+    "話者が払う料金と、相手が払う料金を比べている。"
+   ],
+   "context_ja": "話者は、いつも不在で再配達を頼む人たちと同じ料金を払うのは不公平だと述べている。",
+   "prev": "Still, I take the time to think about how to get my packages.",
+   "next": "Redelivery takes up the delivery worker’s time, so charging for it is fine.",
+   "cross_para_flag": null,
+   "single_span_ok": true,
+   "span": [
+    493,
+    599
+   ]
+  },
+  {
+   "candidate_id": "g5b0e3d12cb",
+   "rank": 2,
+   "tier": "T1",
+   "feature_class": "HEAVY",
+   "para": "P5",
+   "sentence": "But making the person who gets the package pay will not fix late deliveries or the way people are told when packages will arrive.",
+   "front_kind": "",
+   "misread_target": "SUBJECT",
+   "misread_quote": "making the person who gets the package pay",
+   "misread_ja": "the person を主語と捉え、主語が「受取人に支払わせること」全体であると見落とすことがある。",
+   "omitted_words": "",
+   "teaching_value": "HIGH",
+   "teaching_value_ja": "長い動名詞句を主語としてひとまとまりに捉え、主節の動詞を見つける。",
+   "construct_ja": "長い動名詞句主語",
+   "points_ja": [
+    "making から pay までが主語に当たる。",
+    "主節の動詞は will not fix。"
+   ],
+   "context_ja": "この文は、受取人に料金を払わせても、遅配や到着予定の通知方法は改善しないと述べている。",
+   "prev": "For people who can choose how to get packages, a redelivery fee can be a sign that encourages them to make an effort.",
+   "next": "People who get packages cannot change the delivery cost.",
+   "cross_para_flag": null,
+   "single_span_ok": true,
+   "span": [
+    220,
+    349
+   ]
+  }
+ ],
+ "top_ids": [
+  "g31f4b39e68",
+  "g5b0e3d12cb"
+ ],
+ "n_eligible": 2,
+ "ng": [],
+ "filtered_by_ng": [],
+ "rejected_ids": [],
+ "candidates_sha256": "f7994e4260abdacbe57b37074246333112f5e3fb369adf662f2e68e15eb363d5",
+ "status": "HAS_CANDIDATES",
+ "exhausted": false
+}

@@ -1,0 +1,376 @@
+{
+  "story_key": "redelivery_fee",
+  "seed_sha256": "f0d0af367950735bb0264162d3cb45e3ef330759d8077e9d6f9bb5c3dadf0288",
+  "chain": [],
+  "downstream_stale": [],
+  "downstream_stages": {
+    "text": {
+      "stage": "text",
+      "input_sha256": "2f1185e17edf5b63b974a6461c0cc3d99d268c1c6a12b9dd0f9597c396ec983f",
+      "output_sha256": "c9c4a9d5215328e1f5a056e0763e866af77ebdf977bf9b473c0c68963f3877ba",
+      "generated_at": "2026-10-25T11:52:53+00:00",
+      "closing_source": "fixed_user_approved",
+      "closing_final_sha256": "26745165e33be3ea5cf4548f365c6d145862d94ad0201cc69695c0a954800e71",
+      "text_records_sha256": "029bba10942aa481481bd4977cbacf695390241189298297a508cc3ab748dbd1"
+    },
+    "translate_b1b": {
+      "stage": "translate_b1b",
+      "input_sha256": "383ffcc6e06d443aead75c70c84fbd01a5269b9d167bd04b34f70e5974e10b5b",
+      "output_sha256": "df8655a7ca8ec493d40acd7781ee56126b5b087cc39d857e3aed59f7430c2a2b",
+      "generated_at": "2026-10-25T11:53:16+00:00",
+      "routing_key": "FAMILY_Y_TRANSLATE_ADV",
+      "requested_model": "gpt-6-luna",
+      "actual_model_id": "gpt-6-luna",
+      "response_id": "resp_0eebc271a9c9f691006added96269487d0977ed3827ec64d1c",
+      "attempts": 1,
+      "retried": false,
+      "cost_jpy": 0.243,
+      "fallback_detected": false,
+      "contract_retried": false
+    },
+    "translate_a2": {
+      "stage": "translate_a2",
+      "input_sha256": "d64332911fe2f948082f75ba0f83afa45153fc490391b360cc71297516c98cee",
+      "output_sha256": "6feea3e9f5c4619079887e6a610861c3fb273c71873f0064874fbac3f0df9e89",
+      "generated_at": "2026-10-25T11:53:36+00:00",
+      "routing_key": "FAMILY_Y_TRANSLATE_STD",
+      "requested_model": "gpt-6-luna",
+      "actual_model_id": "gpt-6-luna",
+      "response_id": "resp_07bcecfc75cc9639006addedac5d3887d0b46e3b341964b626",
+      "attempts": 1,
+      "retried": false,
+      "cost_jpy": 0.2231,
+      "fallback_detected": false,
+      "contract_retried": false
+    },
+    "support_b1b": {
+      "stage": "support_b1b",
+      "input_sha256": "5091767a73ccfad005a2ddf549ca91e48002353e2b42400715c67501f5182df3",
+      "output_sha256": "d4adcf71b2220e9b0abd1d99fe5f014a900116b18a3946c3f6126d7ae6daa012",
+      "generated_at": "2026-10-25T11:53:55+00:00",
+      "routing_key": "B1_SUPPORT",
+      "requested_model": "gpt-6-luna"
+    },
+    "support_a2": {
+      "stage": "support_a2",
+      "input_sha256": "ec8fa4ee84aac07c132965afaf42384deb9050859c883aa06fa2a30782b8e7d9",
+      "output_sha256": "dd8a9fa78481fd0ea69946ff53029fafab7ecbc8b75313d195df172a781d5034",
+      "generated_at": "2026-10-25T11:54:16+00:00",
+      "routing_key": "A2_SUPPORT",
+      "requested_model": "gpt-6-luna"
+    },
+    "kp_b1b": {
+      "stage": "kp_b1b",
+      "input_sha256": "8c7fa777636a3d8b134b1dcaaeb2b7830524da995029fad3e0a6fe798c52e240",
+      "output_sha256": "8a5674a2331adb30eacc2394782b55d0c2e97e8f1032dbe10c8d75d17415b3b3",
+      "generated_at": "2026-10-25T11:58:46+00:00",
+      "kp_review_status": "UNREVIEWED_AUTO_ADOPTED",
+      "kp_selection_signature": "23afe0b90584fe4f76f6c0a670c61cfa62330432f9a93b277e297b917e945d35"
+    },
+    "kp_a2": {
+      "stage": "kp_a2",
+      "input_sha256": "ded4f9575fa0101426a5fc809f0e3eb79fe321acb1983d01e129c4f7959d0311",
+      "output_sha256": "2ce9cc7785b226fbd43abb10f4251b6b59b0db78e6bf93cfdd94c0595caac0a3",
+      "generated_at": "2026-10-25T11:58:51+00:00",
+      "kp_review_status": "UNREVIEWED_AUTO_ADOPTED",
+      "kp_selection_signature": "f49b5568c52958cb97268bd5f7dc5b3dea86ddeecfd9d81777e776f59614f498"
+    },
+    "kp_expl_b1b": {
+      "stage": "kp_expl_b1b",
+      "input_sha256": "62b5040b34d7d1002363751c1826122893e4571c0820c3e649438d5a3e770b44",
+      "output_sha256": "417b061459f51328143b766ba3a2afc5b64c3e28797828eff558ab0821fdcba6",
+      "generated_at": "2026-10-25T11:58:53+00:00"
+    },
+    "tts_b1b": {
+      "stage": "tts_b1b",
+      "input_sha256": "3c7e1280a2b0c9d33197a6e632b4346d29ec6b6eb7cf8f17025c552ab7118df3",
+      "output_sha256": "6acf9a96c4cd0b11ab1aeab02c7121510b7db0604f304ebca10bc6af0392a1ec",
+      "generated_at": "2026-10-26T11:51:56+00:00",
+      "tts_backend": "speech_metadata_flash_lite",
+      "narrator_voice": "Aoede",
+      "voices": {
+        "y_lead": "Aoede",
+        "y_intro_1": "Aoede",
+        "y_voice_1": "Puck",
+        "y_intro_2": "Aoede",
+        "y_voice_2": "Zephyr",
+        "y_intro_3": "Aoede",
+        "y_voice_3": "Schedar",
+        "y_closing": "Aoede"
+      },
+      "chunk_tts": "applied_X_method"
+    },
+    "tts_a2": {
+      "stage": "tts_a2",
+      "input_sha256": "f2fbee547581c6d894c845286f9b190a9c25d51d1b40ee8c3360d16cee853f96",
+      "output_sha256": "9926dd5593cd2cd93de68b718ef5586067064695c756526412db4387aad289f0",
+      "generated_at": "2026-10-26T12:38:57+00:00",
+      "tts_backend": "speech_metadata_flash_lite",
+      "narrator_voice": "Aoede",
+      "voices": {
+        "y_lead": "Aoede",
+        "y_intro_1": "Aoede",
+        "y_voice_1": "Puck",
+        "y_intro_2": "Aoede",
+        "y_voice_2": "Zephyr",
+        "y_intro_3": "Aoede",
+        "y_voice_3": "Schedar",
+        "y_closing": "Aoede"
+      },
+      "chunk_tts": "applied_X_method"
+    },
+    "part2_cand_b1b": {
+      "stage": "part2_cand_b1b",
+      "input_sha256": "331dfc76bc2d3884fee273796ec9dee7eab4956fa52be896097478bc4d27cc3d",
+      "output_sha256": "be8d7bc3c9396edbd844938a3468caf6460bce96302ee40b65aaf9cc04468152",
+      "generated_at": "2026-10-25T12:59:41+00:00",
+      "label": "Package Redelivery: Different Voices"
+    },
+    "kp_part1_b1b": {
+      "stage": "kp_part1_b1b",
+      "input_sha256": "05b70f49471432bf2d4697411fb4548167e9a499f72728291f3f06e50506eb32",
+      "output_sha256": "14341c44107217c2ac240c88c898763aac34137d112e4c6589940c14faf9c105",
+      "generated_at": "2026-10-25T13:04:20+00:00",
+      "model": "gpt-6-luna",
+      "prompt_sha256": "086bb354a49078aa7ca2060ed2b9587871403e7ab1936be4dac7aff8cb8edaa0",
+      "total_cost_jpy": 0.1071,
+      "retried_for_parse": false,
+      "response_ids": [
+        "resp_0c5c846b132aa11e006addfe47bc4087d0ab79eea08d997b35"
+      ]
+    },
+    "kp_part1_ja_b1b": {
+      "stage": "kp_part1_ja_b1b",
+      "input_sha256": "1fa0414cb2fb5c900e7d3f92ee6ae0b8de473041bc89f7f2d9f2649fee86f271",
+      "output_sha256": "39be5409d8118c51d991ab0fcd76520babc303e4afc37fbc4ef2914a733b71f8",
+      "generated_at": "2026-10-25T13:04:25+00:00",
+      "model": "gpt-6-luna",
+      "prompt_sha256": "c11b9dc73f75d9c483f7c63a0a19e57de532dcea3eadfcbafc7378404a2bd974",
+      "total_cost_jpy": 0.059,
+      "retried_for_parse": false,
+      "response_ids": [
+        "resp_0cc1836e3a4ed7b8006addfe54caf087d095aa837d01026cb5"
+      ]
+    },
+    "part2_b1b": {
+      "stage": "part2_b1b",
+      "input_sha256": "ea182a8b5c8366351229f911757ed406f455505d61b623e2f48c60e73bea2ccd",
+      "output_sha256": "e47c1332ee385ae7eb2a87107304cee94df47e484744aea07729965e1a4cdfe0",
+      "generated_at": "2026-10-25T13:04:35+00:00",
+      "part2_status": "SELECTED",
+      "review_status": "UNREVIEWED_AUTO_ADOPTED",
+      "grammar_selection_signature": "834bbfb230e13679451f54c48a1bc07ee16aa9418223784774181592679961d2"
+    }
+  },
+  "regenerations": [
+    {
+      "stage": "tts_a2",
+      "replaced_at": "2026-10-25T12:30:56+00:00",
+      "old": {
+        "stage": "tts_a2",
+        "input_sha256": "3651700a5338ec7d4d83cd3e6f991cf774c6c1ed7097fa8eea8def580a287cec",
+        "output_sha256": "552b4b9f2c25bd673ff41710d72498c62f90135dc4a99fdafcce33f6e2ddb423",
+        "generated_at": "2026-10-25T12:29:58+00:00",
+        "tts_backend": "speech_metadata_flash_lite",
+        "narrator_voice": "Aoede",
+        "voices": {
+          "y_lead": "Aoede",
+          "y_intro_1": "Aoede",
+          "y_voice_1": "Algieba",
+          "y_intro_2": "Aoede",
+          "y_voice_2": "Zephyr",
+          "y_intro_3": "Aoede",
+          "y_voice_3": "Schedar",
+          "y_closing": "Aoede"
+        },
+        "chunk_tts": "not_applicable_Y"
+      }
+    },
+    {
+      "stage": "tts_b1b",
+      "replaced_at": "2026-10-25T13:18:31+00:00",
+      "old": {
+        "stage": "tts_b1b",
+        "input_sha256": "52fba64807ea093ef59731d6ae9899961d3274b37b2e2b0b1175ccf6446d9241",
+        "output_sha256": "5da9c7e875edef074d0d65a4c928dd21da9c3391f32f3806265e8319602ccadf",
+        "generated_at": "2026-10-25T12:14:18+00:00",
+        "tts_backend": "speech_metadata_flash_lite",
+        "narrator_voice": "Aoede",
+        "voices": {
+          "y_lead": "Aoede",
+          "y_intro_1": "Aoede",
+          "y_voice_1": "Algieba",
+          "y_intro_2": "Aoede",
+          "y_voice_2": "Zephyr",
+          "y_intro_3": "Aoede",
+          "y_voice_3": "Schedar",
+          "y_closing": "Aoede"
+        },
+        "chunk_tts": "not_applicable_Y"
+      }
+    },
+    {
+      "stage": "tts_a2",
+      "replaced_at": "2026-10-25T13:33:48+00:00",
+      "old": {
+        "stage": "tts_a2",
+        "input_sha256": "3651700a5338ec7d4d83cd3e6f991cf774c6c1ed7097fa8eea8def580a287cec",
+        "output_sha256": "31cf2aa325e75424f15b4ef0fc5fd477e088ce8778d7ab0c85dda8045c7412fe",
+        "generated_at": "2026-10-25T12:30:56+00:00",
+        "tts_backend": "speech_metadata_flash_lite",
+        "narrator_voice": "Aoede",
+        "voices": {
+          "y_lead": "Aoede",
+          "y_intro_1": "Aoede",
+          "y_voice_1": "Algieba",
+          "y_intro_2": "Aoede",
+          "y_voice_2": "Zephyr",
+          "y_intro_3": "Aoede",
+          "y_voice_3": "Schedar",
+          "y_closing": "Aoede"
+        },
+        "chunk_tts": "not_applicable_Y"
+      }
+    },
+    {
+      "stage": "tts_a2",
+      "replaced_at": "2026-10-26T08:23:17+00:00",
+      "old": {
+        "stage": "tts_a2",
+        "input_sha256": "3651700a5338ec7d4d83cd3e6f991cf774c6c1ed7097fa8eea8def580a287cec",
+        "output_sha256": "49f92523eb9a5ebd633d2498e311733e4bbee59aba303c83148012190acd8b7c",
+        "generated_at": "2026-10-25T13:33:48+00:00",
+        "tts_backend": "speech_metadata_flash_lite",
+        "narrator_voice": "Aoede",
+        "voices": {
+          "y_lead": "Aoede",
+          "y_intro_1": "Aoede",
+          "y_voice_1": "Algieba",
+          "y_intro_2": "Aoede",
+          "y_voice_2": "Zephyr",
+          "y_intro_3": "Aoede",
+          "y_voice_3": "Schedar",
+          "y_closing": "Aoede"
+        },
+        "chunk_tts": "not_applicable_Y"
+      }
+    },
+    {
+      "stage": "tts_b1b",
+      "replaced_at": "2026-10-26T08:31:13+00:00",
+      "old": {
+        "stage": "tts_b1b",
+        "input_sha256": "52fba64807ea093ef59731d6ae9899961d3274b37b2e2b0b1175ccf6446d9241",
+        "output_sha256": "167fb0af1ebbfb441f31e90a30d1036d38f5ab78e08ba4f14c27b033b172ed3b",
+        "generated_at": "2026-10-25T13:18:31+00:00",
+        "tts_backend": "speech_metadata_flash_lite",
+        "narrator_voice": "Aoede",
+        "voices": {
+          "y_lead": "Aoede",
+          "y_intro_1": "Aoede",
+          "y_voice_1": "Algieba",
+          "y_intro_2": "Aoede",
+          "y_voice_2": "Zephyr",
+          "y_intro_3": "Aoede",
+          "y_voice_3": "Schedar",
+          "y_closing": "Aoede"
+        },
+        "chunk_tts": "not_applicable_Y"
+      }
+    },
+    {
+      "stage": "tts_b1b",
+      "replaced_at": "2026-10-26T11:51:56+00:00",
+      "old": {
+        "stage": "tts_b1b",
+        "input_sha256": "bf70409be7e5e216bb300fea7207d97a49f14b0065236fe0b7a55c64165773f0",
+        "output_sha256": "f437bfd6eac1d318baddeecb94bbf8854c94b2585d990f062917e613a63fa163",
+        "generated_at": "2026-10-26T08:31:13+00:00",
+        "tts_backend": "speech_metadata_flash_lite",
+        "narrator_voice": "Aoede",
+        "voices": {
+          "y_lead": "Aoede",
+          "y_intro_1": "Aoede",
+          "y_voice_1": "Puck",
+          "y_intro_2": "Aoede",
+          "y_voice_2": "Zephyr",
+          "y_intro_3": "Aoede",
+          "y_voice_3": "Schedar",
+          "y_closing": "Aoede"
+        },
+        "chunk_tts": "applied_X_method"
+      }
+    },
+    {
+      "stage": "tts_a2",
+      "replaced_at": "2026-10-26T12:03:59+00:00",
+      "old": {
+        "stage": "tts_a2",
+        "input_sha256": "bfbe3f42f93301815c28a4f4827b78bc587a4d7ef2cfc833e9009905264b3ebb",
+        "output_sha256": "3140d04034549876c60de3a398980f17c009aeebd9cc363fa4d45dcabeef2936",
+        "generated_at": "2026-10-26T08:23:17+00:00",
+        "tts_backend": "speech_metadata_flash_lite",
+        "narrator_voice": "Aoede",
+        "voices": {
+          "y_lead": "Aoede",
+          "y_intro_1": "Aoede",
+          "y_voice_1": "Puck",
+          "y_intro_2": "Aoede",
+          "y_voice_2": "Zephyr",
+          "y_intro_3": "Aoede",
+          "y_voice_3": "Schedar",
+          "y_closing": "Aoede"
+        },
+        "chunk_tts": "applied_X_method"
+      }
+    },
+    {
+      "stage": "tts_a2",
+      "replaced_at": "2026-10-26T12:05:50+00:00",
+      "old": {
+        "stage": "tts_a2",
+        "input_sha256": "f2fbee547581c6d894c845286f9b190a9c25d51d1b40ee8c3360d16cee853f96",
+        "output_sha256": "71d2e3345109b6c2fa6ac738d29dd0544baf629702b0f0bea00374cbd5b80c2a",
+        "generated_at": "2026-10-26T12:03:59+00:00",
+        "tts_backend": "speech_metadata_flash_lite",
+        "narrator_voice": "Aoede",
+        "voices": {
+          "y_lead": "Aoede",
+          "y_intro_1": "Aoede",
+          "y_voice_1": "Puck",
+          "y_intro_2": "Aoede",
+          "y_voice_2": "Zephyr",
+          "y_intro_3": "Aoede",
+          "y_voice_3": "Schedar",
+          "y_closing": "Aoede"
+        },
+        "chunk_tts": "applied_X_method"
+      }
+    },
+    {
+      "stage": "tts_a2",
+      "replaced_at": "2026-10-26T12:38:57+00:00",
+      "old": {
+        "stage": "tts_a2",
+        "input_sha256": "f2fbee547581c6d894c845286f9b190a9c25d51d1b40ee8c3360d16cee853f96",
+        "output_sha256": "a2814303a69651f3e2eac66599052d694a0deb4ed3d1d54143f538867ebba8c1",
+        "generated_at": "2026-10-26T12:05:50+00:00",
+        "tts_backend": "speech_metadata_flash_lite",
+        "narrator_voice": "Aoede",
+        "voices": {
+          "y_lead": "Aoede",
+          "y_intro_1": "Aoede",
+          "y_voice_1": "Puck",
+          "y_intro_2": "Aoede",
+          "y_voice_2": "Zephyr",
+          "y_intro_3": "Aoede",
+          "y_voice_3": "Schedar",
+          "y_closing": "Aoede"
+        },
+        "chunk_tts": "applied_X_method"
+      }
+    }
+  ],
+  "audio_text_deviations": [],
+  "reference_only": {}
+}

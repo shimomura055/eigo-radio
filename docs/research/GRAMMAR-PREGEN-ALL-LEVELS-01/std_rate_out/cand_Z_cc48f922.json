@@ -1,0 +1,130 @@
+{
+ "schema": "grammar_candidates_v1",
+ "level": "Advanced",
+ "label": "The Promise",
+ "text_sha256": "b65c10d5d2c3fd92f0017da95ba56de43437d8a484be3cb488966762ecf1939f",
+ "n_paragraphs": 28,
+ "prompt_id": "part2_stepA8",
+ "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+ "model": "gpt-6-luna",
+ "extract_signature": "d33a6952a3ca68a0d4269abf93dc8acd101efa8db20d2992d8d5aa5952700415",
+ "round": 1,
+ "tier_table": [
+  {
+   "para": "P23",
+   "cls": "CMP",
+   "tier": "T1",
+   "eligible": true,
+   "why_not": [],
+   "tv": "HIGH",
+   "tv_ja": "differentの比較対象を文脈から補って読む。",
+   "front_kind": "",
+   "sentence": "A man may look different after twenty years, but his nose won’t change.",
+   "single_span_ok": true,
+   "cross_para_flag": null
+  }
+ ],
+ "no_feature_paras": [
+  "P1",
+  "P2",
+  "P3",
+  "P4",
+  "P5",
+  "P6",
+  "P7",
+  "P8",
+  "P9",
+  "P10",
+  "P11",
+  "P12",
+  "P13",
+  "P14",
+  "P15",
+  "P16",
+  "P17",
+  "P18",
+  "P19",
+  "P20",
+  "P21",
+  "P22",
+  "P24",
+  "P25",
+  "P26",
+  "P27",
+  "P28"
+ ],
+ "uncovered_paras": [],
+ "audit": {
+  "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+  "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+  "model": "gpt-6-luna",
+  "requested_model": "gpt-6-luna",
+  "prompt_sha256": "8cd57094671eedb3cd37aeac41a17f546d297d6c4092d5dff93ad76b7a8a2305",
+  "response_ids": [
+   "resp_025868301494b582006adff19f049887d0a532a1d165935314"
+  ],
+  "calls": [
+   {
+    "attempt": 1,
+    "response_model": "gpt-6-luna",
+    "usage": {
+     "input_tokens": 3606,
+     "output_tokens": 2365,
+     "cached_input_tokens": 0,
+     "reasoning_tokens": 1948
+    },
+    "response_id": "resp_025868301494b582006adff19f049887d0a532a1d165935314",
+    "elapsed_sec": 36.65,
+    "cost_jpy": 0.2469
+   }
+  ],
+  "retried_for_parse": false,
+  "total_cost_jpy": 0.2469,
+  "generated_at": "2026-10-27T09:35:15+0900",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+ },
+ "reselect_count": 0,
+ "reextract_count": 0,
+ "reselect_log": [],
+ "candidates": [
+  {
+   "candidate_id": "g4305cd3552",
+   "rank": 1,
+   "tier": "T1",
+   "feature_class": "CMP",
+   "para": "P23",
+   "sentence": "A man may look different after twenty years, but his nose won’t change.",
+   "front_kind": "",
+   "misread_target": "OMITTED",
+   "misread_quote": "look different after twenty years",
+   "misread_ja": "「different」の比較対象を補わず、「20年後に見た目が違っている」という時間の情報だけとして読むことがある。",
+   "omitted_words": "",
+   "teaching_value": "HIGH",
+   "teaching_value_ja": "differentの比較対象を文脈から補って読む。",
+   "construct_ja": "比較基準が明示されないdifferent",
+   "points_ja": [
+    "after twenty yearsは時間を表し、比較対象そのものではない。",
+    "見た目の現在の状態と20年前の状態を比べている。"
+   ],
+   "context_ja": "ボブは、20年たてば人の見た目は変わっても鼻は変わらないと言う。",
+   "prev": "“You can’t be Jimmy!",
+   "next": "”\n\n“Twenty years can turn a good man bad,” the tall man replied.",
+   "cross_para_flag": null,
+   "single_span_ok": true,
+   "span": [
+    21,
+    92
+   ]
+  }
+ ],
+ "top_ids": [
+  "g4305cd3552"
+ ],
+ "n_eligible": 1,
+ "ng": [],
+ "filtered_by_ng": [],
+ "rejected_ids": [],
+ "candidates_sha256": "8413e39885215aec103be4ba0095d92db93d9a6434a28a483f351efefeba57ed",
+ "status": "HAS_CANDIDATES",
+ "exhausted": false
+}

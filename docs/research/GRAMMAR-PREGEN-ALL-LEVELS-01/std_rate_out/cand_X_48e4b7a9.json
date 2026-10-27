@@ -1,0 +1,153 @@
+{
+ "schema": "grammar_candidates_v1",
+ "level": "Advanced",
+ "label": "Is Your Video Putting on an Unwanted Show on the Train?",
+ "text_sha256": "4b175b6ae3d2508d123ee0c11f6369ce5712b778d021784b5e2095db64de30fe",
+ "n_paragraphs": 10,
+ "prompt_id": "part2_stepA8",
+ "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+ "model": "gpt-6-luna",
+ "extract_signature": "e1b8778adcc5788ce9d82e971a8b997b7a8ea319584f88fb3a881768bcc6b954",
+ "round": 1,
+ "tier_table": [
+  {
+   "para": "P3",
+   "cls": "INV",
+   "tier": "T2",
+   "eligible": true,
+   "why_not": [],
+   "tv": "HIGH",
+   "tv_ja": "Hereで始まる文では、be動詞の後ろに主語が置かれることがある。",
+   "front_kind": "",
+   "sentence": "Here’s news about this kind of “sound no one asked for.”",
+   "single_span_ok": true,
+   "cross_para_flag": null
+  },
+  {
+   "para": "P7",
+   "cls": "CLEFT",
+   "tier": "T1",
+   "eligible": true,
+   "why_not": [],
+   "tv": "HIGH",
+   "tv_ja": "名詞句が主語でwhat節がbe動詞の補語になる分裂文では、what節を主語と決めつけず、be動詞との関係を確認する。",
+   "front_kind": "",
+   "sentence": "The fine may be what people hear most, but let’s hear the campaign’s message, too.",
+   "single_span_ok": true,
+   "cross_para_flag": null
+  }
+ ],
+ "no_feature_paras": [
+  "P1",
+  "P2",
+  "P4",
+  "P5",
+  "P6",
+  "P8",
+  "P9",
+  "P10"
+ ],
+ "uncovered_paras": [],
+ "audit": {
+  "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+  "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+  "model": "gpt-6-luna",
+  "requested_model": "gpt-6-luna",
+  "prompt_sha256": "a7e62488a60abdf8cb24b4e60297451669ba5e9560a9d9aa29e3f8bb8821201e",
+  "response_ids": [
+   "resp_0aadc4219b52b740006adff0eaa7a087d095ae389b5beee958"
+  ],
+  "calls": [
+   {
+    "attempt": 1,
+    "response_model": "gpt-6-luna",
+    "usage": {
+     "input_tokens": 3525,
+     "output_tokens": 3337,
+     "cached_input_tokens": 0,
+     "reasoning_tokens": 2731
+    },
+    "response_id": "resp_0aadc4219b52b740006adff0eaa7a087d095ae389b5beee958",
+    "elapsed_sec": 36.26,
+    "cost_jpy": 0.3234
+   }
+  ],
+  "retried_for_parse": false,
+  "total_cost_jpy": 0.3234,
+  "generated_at": "2026-10-27T09:32:14+0900",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+ },
+ "reselect_count": 0,
+ "reextract_count": 0,
+ "reselect_log": [],
+ "candidates": [
+  {
+   "candidate_id": "gd0f1f5251f",
+   "rank": 1,
+   "tier": "T1",
+   "feature_class": "CLEFT",
+   "para": "P7",
+   "sentence": "The fine may be what people hear most, but let’s hear the campaign’s message, too.",
+   "front_kind": "",
+   "misread_target": "VERB",
+   "misread_quote": "people hear most",
+   "misread_ja": "hearを主節の動詞と捉え、what people hear most全体がbe動詞の補語であることを見落とす可能性がある。",
+   "omitted_words": "",
+   "teaching_value": "HIGH",
+   "teaching_value_ja": "名詞句が主語でwhat節がbe動詞の補語になる分裂文では、what節を主語と決めつけず、be動詞との関係を確認する。",
+   "construct_ja": "逆行型の疑似分裂文",
+   "points_ja": [
+    "The fineが主語で、may beが述語。",
+    "what people hear mostがbe動詞の補語になっている。"
+   ],
+   "context_ja": "罰金が人々の耳に最も残るかもしれないと述べ、キャンペーンのメッセージにも注意を向けるよう促している。",
+   "prev": "People will see the message on posters and hear it in announcements at stations and on trains.",
+   "next": "Its name means something like, “Share the journey, not the noise.”",
+   "cross_para_flag": null,
+   "single_span_ok": true,
+   "span": [
+    142,
+    224
+   ]
+  },
+  {
+   "candidate_id": "g65ef9868e7",
+   "rank": 2,
+   "tier": "T2",
+   "feature_class": "INV",
+   "para": "P3",
+   "sentence": "Here’s news about this kind of “sound no one asked for.”",
+   "front_kind": "",
+   "misread_target": "SUBJECT",
+   "misread_quote": "Here’s news",
+   "misread_ja": "Hereを主語と捉え、newsがbe動詞の後ろに置かれた主語だと見落とす可能性がある。",
+   "omitted_words": "",
+   "teaching_value": "HIGH",
+   "teaching_value_ja": "Hereで始まる文では、be動詞の後ろに主語が置かれることがある。",
+   "construct_ja": "hereによる倒置",
+   "points_ja": [
+    "Hereが文頭にあり、be動詞isの後ろに主語newsが置かれている。"
+   ],
+   "context_ja": "「sound no one asked for」に関する情報を紹介している。",
+   "prev": "That’s a pretty bold show.",
+   "next": "On October 19, 2026, the UK announced the start of a national campaign.",
+   "cross_para_flag": null,
+   "single_span_ok": true,
+   "span": [
+    0,
+    56
+   ]
+  }
+ ],
+ "top_ids": [
+  "gd0f1f5251f",
+  "g65ef9868e7"
+ ],
+ "n_eligible": 2,
+ "ng": [],
+ "filtered_by_ng": [],
+ "rejected_ids": [],
+ "candidates_sha256": "bfd495e15c4793dcc420154812e86061bafdfeb137df307d3d895844ad8b9bff",
+ "status": "HAS_CANDIDATES",
+ "exhausted": false
+}

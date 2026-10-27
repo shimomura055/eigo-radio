@@ -1,0 +1,146 @@
+{
+ "schema": "grammar_candidates_v1",
+ "level": "Advanced",
+ "label": "The Gift of the Magi",
+ "text_sha256": "baab1a63449fc956100cc82d6ba246bb403bce3dd8581978e64049963c8174f7",
+ "n_paragraphs": 30,
+ "prompt_id": "part2_stepA8",
+ "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+ "model": "gpt-6-luna",
+ "extract_signature": "6516fea5f28e93c8ae1c51be4071514e17321227e13da6b50bd68c7f4cb7304e",
+ "round": 1,
+ "tier_table": [
+  {
+   "para": "P4",
+   "cls": "APPOS",
+   "tier": null,
+   "eligible": false,
+   "why_not": [
+    "TV=LOW"
+   ],
+   "tv": "LOW",
+   "tv_ja": "",
+   "front_kind": "",
+   "sentence": "His grandfather, then his father, had owned the watch before him.",
+   "single_span_ok": true,
+   "cross_para_flag": null
+  },
+  {
+   "para": "P30",
+   "cls": "POSTMOD",
+   "tier": "T1",
+   "eligible": true,
+   "why_not": [],
+   "tv": "HIGH",
+   "tv_ja": "名詞の直後にある過去分詞句は名詞を後置修飾し、その後の動詞が主節の述語になりうる。",
+   "front_kind": "",
+   "sentence": "Wise men called the magi brought gifts on the first Christmas.",
+   "single_span_ok": true,
+   "cross_para_flag": null
+  }
+ ],
+ "no_feature_paras": [
+  "P1",
+  "P2",
+  "P3",
+  "P5",
+  "P6",
+  "P7",
+  "P8",
+  "P9",
+  "P10",
+  "P11",
+  "P12",
+  "P13",
+  "P14",
+  "P15",
+  "P16",
+  "P17",
+  "P18",
+  "P19",
+  "P20",
+  "P21",
+  "P22",
+  "P23",
+  "P24",
+  "P25",
+  "P26",
+  "P27",
+  "P28",
+  "P29"
+ ],
+ "uncovered_paras": [],
+ "audit": {
+  "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+  "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+  "model": "gpt-6-luna",
+  "requested_model": "gpt-6-luna",
+  "prompt_sha256": "f4052531587e0fa8642a4bf17900754928369d4fb5aa2c91474fa59f98df6ef1",
+  "response_ids": [
+   "resp_027458da6bb5d662006adff2ca9fd487d0b86be714be72bf72"
+  ],
+  "calls": [
+   {
+    "attempt": 1,
+    "response_model": "gpt-6-luna",
+    "usage": {
+     "input_tokens": 3610,
+     "output_tokens": 3535,
+     "cached_input_tokens": 0,
+     "reasoning_tokens": 2877
+    },
+    "response_id": "resp_027458da6bb5d662006adff2ca9fd487d0b86be714be72bf72",
+    "elapsed_sec": 32.59,
+    "cost_jpy": 0.3406
+   }
+  ],
+  "retried_for_parse": false,
+  "total_cost_jpy": 0.3406,
+  "generated_at": "2026-10-27T09:40:11+0900",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+ },
+ "reselect_count": 0,
+ "reextract_count": 0,
+ "reselect_log": [],
+ "candidates": [
+  {
+   "candidate_id": "g5fed76bdc7",
+   "rank": 1,
+   "tier": "T1",
+   "feature_class": "POSTMOD",
+   "para": "P30",
+   "sentence": "Wise men called the magi brought gifts on the first Christmas.",
+   "front_kind": "",
+   "misread_target": "VERB",
+   "misread_quote": "called the magi",
+   "misread_ja": "calledを主節の動詞、the magiをその目的語と取り、主節の動詞broughtとの関係を取り違えることがある。",
+   "omitted_words": "",
+   "teaching_value": "HIGH",
+   "teaching_value_ja": "名詞の直後にある過去分詞句は名詞を後置修飾し、その後の動詞が主節の述語になりうる。",
+   "construct_ja": "過去分詞句による後置修飾",
+   "points_ja": [
+    "called the magiはWise menを修飾する",
+    "主節の動詞はbrought"
+   ],
+   "context_ja": "賢者と呼ばれる人々は、最初のクリスマスに贈り物を持ってきた。",
+   "prev": "Both had sold their greatest treasure for the other’s gift.",
+   "next": "The two young people seemed foolish with their useless gifts.",
+   "cross_para_flag": null,
+   "single_span_ok": true,
+   "span": [
+    0,
+    62
+   ]
+  }
+ ],
+ "top_ids": [
+  "g5fed76bdc7"
+ ],
+ "n_eligible": 1,
+ "ng": [],
+ "filtered_by_ng": [],
+ "rejected_ids": [],
+ "candidates_sha256": "3d6787889848ece8016bb29e066a42ff99ecd17ae0382c3c014c20a01803674f",
+ "status": "HAS_CANDIDATES",
+ "exhausted": false
+}

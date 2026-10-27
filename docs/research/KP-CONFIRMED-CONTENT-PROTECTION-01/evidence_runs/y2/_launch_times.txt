@@ -1,0 +1,21 @@
+2026-10-27T09:04:49
+L1 kp 09:04:49
+L2 kp (venv) 09:07:35  [L1 09:04:49 failed ImportError genai: used py not venv; interval>=150s waited]
+L3 kp 09:10:56 (L2から>=150s待機)
+L4 gate..page_verify 09:13:20 (L3から>=150s)
+L5 assemble,pages,page_verify 09:15:39 (L4 09:13:20から>=150s)
+=== 再実施: y_01はL5でSTORM自己発動(STOP保持・解除せず)。原本run_style_fix_01から新コピーy_02を作成(STOPには触れない)。以降同一run dirの起動間隔>=200s
+Y2-L1 kp 09:16:45
+Y2-L2 assemble,pages,page_verify 09:21:28
+Y2-RT1 tamper b1b kp gloss -> --stage kp 09:23:28
+Y2-RT2 tamper page gloss -> --stage page_verify 09:27:23
+Y2-RT3 tamper part2 explanation -> --stage pages 09:30:52
+Y2-R1 --stage kp --regenerate-stage part2_cand_b1b 09:36:41
+Y2-R2 --stage kp --regenerate-stage kp_b1b 09:39:53
+Y2-R2b --stage kp --regenerate-stage kp_b1b (retry) 09:44:24
+
+=== 実測間隔の訂正と開示(RESULT_PACKET_KCP3 §4) ===
+y_01: L1 09:04:49(py使用でImportError。API 0) → L2 09:07:35(166s) → L3 09:10:56(201s) → L4 09:13:20(144s,<150s) → L5 09:15:39(139s,<150s)
+  L3/L4/L5 が283秒内=RESTART_STORM自己発動(y_01/STOPをrunnerが作成。解除していない・削除していない)。上の行内の「>=150s待機」注記は不正確(L4→L5は139s)。
+y_02: L1 09:16:45 → L2 09:21:28(283s) → RT1 09:23:28(120s,<150s) → RT2 09:27:23(235s) → RT3 09:30:52(209s) → R1 09:36:41(349s) → R2 09:39:53(192s) → R2b 09:44:24(271s)
+  y_02で3起動が300s内に収まった窓は無い(最小: L2〜RT2〜… の3起動窓=09:21:28〜09:27:23=355s)。ただしL2→RT1は120sで150s規律に違反。

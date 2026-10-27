@@ -1,0 +1,124 @@
+{
+ "schema": "grammar_candidates_v1",
+ "level": "Advanced",
+ "label": "The Island Resets! But AI Has “Strategy Notes”",
+ "text_sha256": "6723f1e6aa97236f38215687c17c0c29470785acfacbaf0155f25c3ef45e36f4",
+ "n_paragraphs": 8,
+ "prompt_id": "part2_stepA8",
+ "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+ "model": "gpt-6-luna",
+ "extract_signature": "88e63627338528dbcd2a41affe0da93b4ef009e907c927294e47d1d19bba9a2c",
+ "round": 1,
+ "tier_table": [
+  {
+   "para": "P5",
+   "cls": "CMP",
+   "tier": null,
+   "eligible": false,
+   "why_not": [
+    "TV=LOW"
+   ],
+   "tv": "LOW",
+   "tv_ja": "",
+   "front_kind": "",
+   "sentence": "Those that had taken a detour were now one step ahead.",
+   "single_span_ok": true,
+   "cross_para_flag": null
+  },
+  {
+   "para": "P6",
+   "cls": "HEAVY",
+   "tier": "T1",
+   "eligible": true,
+   "why_not": [],
+   "tv": "HIGH",
+   "tv_ja": "長い主語の中の関係節と主節の動詞を区別する。",
+   "front_kind": "",
+   "sentence": "After that, the average number of towers it could build went down.",
+   "single_span_ok": true,
+   "cross_para_flag": null
+  }
+ ],
+ "no_feature_paras": [
+  "P1",
+  "P2",
+  "P3",
+  "P4",
+  "P7",
+  "P8"
+ ],
+ "uncovered_paras": [],
+ "audit": {
+  "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+  "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+  "model": "gpt-6-luna",
+  "requested_model": "gpt-6-luna",
+  "prompt_sha256": "ece20fc640becea903ff328b0ffe107f87391cbdd8565bc7461bb99fb0b4d904",
+  "response_ids": [
+   "resp_09e03ba0ba1e50a1006adff0c32a0087d09c8c9be94b45512a"
+  ],
+  "calls": [
+   {
+    "attempt": 1,
+    "response_model": "gpt-6-luna",
+    "usage": {
+     "input_tokens": 3531,
+     "output_tokens": 3990,
+     "cached_input_tokens": 0,
+     "reasoning_tokens": 3457
+    },
+    "response_id": "resp_09e03ba0ba1e50a1006adff0c32a0087d09c8c9be94b45512a",
+    "elapsed_sec": 40.72,
+    "cost_jpy": 0.3757
+   }
+  ],
+  "retried_for_parse": false,
+  "total_cost_jpy": 0.3757,
+  "generated_at": "2026-10-27T09:31:38+0900",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+ },
+ "reselect_count": 0,
+ "reextract_count": 0,
+ "reselect_log": [],
+ "candidates": [
+  {
+   "candidate_id": "gea4eb51247",
+   "rank": 1,
+   "tier": "T1",
+   "feature_class": "HEAVY",
+   "para": "P6",
+   "sentence": "After that, the average number of towers it could build went down.",
+   "front_kind": "",
+   "misread_target": "VERB",
+   "misread_quote": "it could build",
+   "misread_ja": "主語に含まれる関係節の動詞it could buildを主節の動詞と取り違え、went downを見落とすことがある。",
+   "omitted_words": "",
+   "teaching_value": "HIGH",
+   "teaching_value_ja": "長い主語の中の関係節と主節の動詞を区別する。",
+   "construct_ja": "関係節を含む長い主語",
+   "points_ja": [
+    "主語の中心はthe average number",
+    "it could buildはtowersを修飾し、主節の動詞はwent down"
+   ],
+   "context_ja": "記憶の一部を消した後、そのAIが建てられる塔の平均数が減ったと述べている。",
+   "prev": "The researchers also erased a way to “throw rocks to get more blocks” from one AI’s memory.",
+   "next": "Its scores on other tasks stayed the same.",
+   "cross_para_flag": null,
+   "single_span_ok": true,
+   "span": [
+    92,
+    158
+   ]
+  }
+ ],
+ "top_ids": [
+  "gea4eb51247"
+ ],
+ "n_eligible": 1,
+ "ng": [],
+ "filtered_by_ng": [],
+ "rejected_ids": [],
+ "candidates_sha256": "5b2884ec67fbafdb249bf3e1ca6ad64c6f5020957d0324baf5d9beddf7fe5631",
+ "status": "HAS_CANDIDATES",
+ "exhausted": false
+}

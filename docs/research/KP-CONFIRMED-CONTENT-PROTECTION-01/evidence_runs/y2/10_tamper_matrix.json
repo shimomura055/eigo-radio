@@ -1,0 +1,206 @@
+[
+  {
+    "level": "a2",
+    "gate": "G1",
+    "case": "baseline(改変なし)",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "a2",
+    "gate": "G1",
+    "case": "kp英語(used_form)を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_9f42c71603.used_form 確定=`make an effort` 観測=`make an effort XX`。詳細=er121_output/family_y_production_01/redelivery_fe",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_9f42c71603.used_form 確定=`make an effort` 観測=`make an effort XX`。詳細=er121_output/family_y_production_01/redelivery_fee/run_kcp3_ev_y_02/key_phrases/a2\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_kp_co"
+  },
+  {
+    "level": "a2",
+    "gate": "G1",
+    "case": "kp日本語訳(japanese_gloss)を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_9f42c71603.japanese_gloss 確定=`努力する` 観測=`努力する改変`。詳細=er121_output/family_y_production_01/redelivery_fee/run_kcp3_ev_y_",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_9f42c71603.japanese_gloss 確定=`努力する` 観測=`努力する改変`。詳細=er121_output/family_y_production_01/redelivery_fee/run_kcp3_ev_y_02/key_phrases/a2\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_kp_confirmed_content_"
+  },
+  {
+    "level": "a2",
+    "gate": "G1",
+    "case": "category(KP→対象外/説明語)変更(review選定を書換え+署名再計算)",
+    "result": "BLOCK(KpReviewInconsistent)",
+    "message": "KP_FINAL_SIGNATURE_MISMATCH: kp_selection_final.jsonがreviewと不一致(次の一手: 制作コマンドを再実行して確定させる/ er119_kp_human_review_cli_01.py status --run <run>)"
+  },
+  {
+    "level": "a2",
+    "gate": "G1",
+    "case": "assets copy(Y/Z)の日本語訳を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_9f42c71603.japanese_gloss 確定=`努力する` 観測=`努力する改変`。詳細=er121_output/family_y_production_01/redelivery_fee/run_kcp3_ev_y_",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_9f42c71603.japanese_gloss 確定=`努力する` 観測=`努力する改変`。詳細=er121_output/family_y_production_01/redelivery_fee/run_kcp3_ev_y_02/key_phrases/a2\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_kp_confirmed_content_"
+  },
+  {
+    "level": "a2",
+    "gate": "G2",
+    "case": "baseline",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "a2",
+    "gate": "G2",
+    "case": "TTS recordの英語を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_9f42c71603.used_form(TTS英語) 確定=`make an effort` 観測=`make an effort XX`。詳細=er121_output/fa",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_9f42c71603.used_form(TTS英語) 確定=`make an effort` 観測=`make an effort XX`。詳細=er121_output/family_y_production_01/redelivery_fee/run_kcp3_ev_y_02/key_phrases/a2\\confirmed_content_issue.json。次の一"
+  },
+  {
+    "level": "a2",
+    "gate": "G2",
+    "case": "TTS recordの日本語(japanese_meaning)を別訳へ",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_9f42c71603.japanese_meaning(TTS日本語。派生物契約: 確定訳の決定論変換でなければならない) 確定=`努力する` 観測=`別の訳`。詳細=er121",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_9f42c71603.japanese_meaning(TTS日本語。派生物契約: 確定訳の決定論変換でなければならない) 確定=`努力する` 観測=`別の訳`。詳細=er121_output/family_y_production_01/redelivery_fee/run_kcp3_ev_y_02/key_phrases/a2\\confirmed_content_issu"
+  },
+  {
+    "level": "a2",
+    "gate": "G3",
+    "case": "baseline(ページに確定訳が出ている)",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "a2",
+    "gate": "G3",
+    "case": "ページの日本語訳を別訳へ",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_9f42c71603.japanese_gloss(ページ表示) 確定=`努力する` 観測=`(ページに表示されていない)`。詳細=er121_output/family_y_p",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_9f42c71603.japanese_gloss(ページ表示) 確定=`努力する` 観測=`(ページに表示されていない)`。詳細=er121_output/family_y_production_01/redelivery_fee/run_kcp3_ev_y_02/key_phrases/a2\\confirmed_content_issue.json。次の一手: 原因がパイ",
+    "replaced_occurrences": 1
+  },
+  {
+    "level": "a2",
+    "gate": "G1",
+    "case": "全復元後のbaseline(改変の復元確認)",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "baseline(改変なし)",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "kp英語(used_form)を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_4e11d37d8a.used_form 確定=`sit right with someone` 観測=`sit right with someone XX`。詳細=er121_output/family_y_production",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_4e11d37d8a.used_form 確定=`sit right with someone` 観測=`sit right with someone XX`。詳細=er121_output/family_y_production_01/redelivery_fee/run_kcp3_ev_y_02/key_phrases/b1b\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更"
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "kp日本語訳(japanese_gloss)を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_4e11d37d8a.japanese_gloss 確定=`人にとって納得がいく` 観測=`人にとって納得がいく改変`。詳細=er121_output/family_y_production_01/redelivery_fee/r",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_4e11d37d8a.japanese_gloss 確定=`人にとって納得がいく` 観測=`人にとって納得がいく改変`。詳細=er121_output/family_y_production_01/redelivery_fee/run_kcp3_ev_y_02/key_phrases/b1b\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_kp_conf"
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "vocab日本語訳(Part 1入力)を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_4e11d37d8a.japanese_gloss 確定=`人にとって納得がいく` 観測=`人にとって納得がいく改変`。詳細=er121_output/family_y_production_01/redelivery_fee/r",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_4e11d37d8a.japanese_gloss 確定=`人にとって納得がいく` 観測=`人にとって納得がいく改変`。詳細=er121_output/family_y_production_01/redelivery_fee/run_kcp3_ev_y_02/key_phrases/b1b\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_kp_conf"
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "category(KP→対象外/説明語)変更(review選定を書換え+署名再計算)",
+    "result": "BLOCK(KpReviewInconsistent)",
+    "message": "KP_FINAL_SIGNATURE_MISMATCH: kp_selection_final.jsonがreviewと不一致(次の一手: 制作コマンドを再実行して確定させる/ er119_kp_human_review_cli_01.py status --run <run>)"
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "assets copy(Y/Z)の日本語訳を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_4e11d37d8a.japanese_gloss 確定=`人にとって納得がいく` 観測=`人にとって納得がいく改変`。詳細=er121_output/family_y_production_01/redelivery_fee/r",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_4e11d37d8a.japanese_gloss 確定=`人にとって納得がいく` 観測=`人にとって納得がいく改変`。詳細=er121_output/family_y_production_01/redelivery_fee/run_kcp3_ev_y_02/key_phrases/b1b\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_kp_conf"
+  },
+  {
+    "level": "b1b",
+    "gate": "G2",
+    "case": "baseline",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "b1b",
+    "gate": "G2",
+    "case": "TTS recordの英語を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_4e11d37d8a.used_form(TTS英語) 確定=`sit right with someone` 観測=`sit right with someone XX`。詳",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_4e11d37d8a.used_form(TTS英語) 確定=`sit right with someone` 観測=`sit right with someone XX`。詳細=er121_output/family_y_production_01/redelivery_fee/run_kcp3_ev_y_02/key_phrases/b1b\\confirmed_cont"
+  },
+  {
+    "level": "b1b",
+    "gate": "G3",
+    "case": "baseline(Part 1が描画)",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "b1b",
+    "gate": "G3",
+    "case": "Part 1行(meaning_in_text_ja)を別訳へ",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_4e11d37d8a.japanese_gloss(Part 1行 meaning_in_text_ja) 確定=`人にとって納得がいく` 観測=`別の訳`。詳細=er121_",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_4e11d37d8a.japanese_gloss(Part 1行 meaning_in_text_ja) 確定=`人にとって納得がいく` 観測=`別の訳`。詳細=er121_output/family_y_production_01/redelivery_fee/run_kcp3_ev_y_02/key_phrases/b1b\\confirmed_content_issu"
+  },
+  {
+    "level": "b1b",
+    "gate": "G4",
+    "case": "baseline",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "b1b",
+    "gate": "G4",
+    "case": "文法の解説全文(explanation_md)を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): Part 2が確定した文法・解説全文と一致しません(G4: 確定後に書換えられた、または別の解説が生成された)。 g1de62b0de2.explanation_md(解説全文) 確定=`【日本語訳】\nそれでも私は、荷物をどう受け取るかを考える手間をかけています。だから正直、いつも不在で再配達を頼む人たちと同じ",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): Part 2が確定した文法・解説全文と一致しません(G4: 確定後に書換えられた、または別の解説が生成された)。 g1de62b0de2.explanation_md(解説全文) 確定=`【日本語訳】\nそれでも私は、荷物をどう受け取るかを考える手間をかけています。だから正直、いつも不在で再配達を頼む人たちと同じ料金を払うのはおかしいと思います。\n` 観測=`【日本語訳】\nそれでも私は、荷物をどう受け取るかを考える手間をかけています。だから正直、いつも不在で再配達を頼む人たちと同じ料金を払うのはおかしいと思い"
+  },
+  {
+    "level": "b1b",
+    "gate": "G4",
+    "case": "文法の日本語訳(translation_ja)を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): Part 2が確定した文法・解説全文と一致しません(G4: 確定後に書換えられた、または別の解説が生成された)。 g1de62b0de2.translation_ja(日本語訳) 確定=`それでも私は、荷物をどう受け取るかを考える手間をかけています。だから正直、いつも不在で再配達を頼む人たちと同じ料金を払うのは",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): Part 2が確定した文法・解説全文と一致しません(G4: 確定後に書換えられた、または別の解説が生成された)。 g1de62b0de2.translation_ja(日本語訳) 確定=`それでも私は、荷物をどう受け取るかを考える手間をかけています。だから正直、いつも不在で再配達を頼む人たちと同じ料金を払うのはおかしいと思います。` 観測=`別の訳`。詳細=er121_output\\family_y_production_01\\redelivery_fee\\run_kcp3_ev_y_02\\key_phra"
+  },
+  {
+    "level": "b1b",
+    "gate": "G4",
+    "case": "文法の選定文を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): Part 2が確定した文法・解説全文と一致しません(G4: 確定後に書換えられた、または別の解説が生成された)。 g1de62b0de2.grammar_sentence 確定=`Still, I take the trouble to think about how to receive my package",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): Part 2が確定した文法・解説全文と一致しません(G4: 確定後に書換えられた、または別の解説が生成された)。 g1de62b0de2.grammar_sentence 確定=`Still, I take the trouble to think about how to receive my packages, so honestly, I think it’s wrong that I pay the same fee as people who are always away and ask for"
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "全復元後のbaseline(改変の復元確認)",
+    "result": "PASS(止まらない)"
+  }
+]

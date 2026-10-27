@@ -1,0 +1,192 @@
+[
+  {
+    "family": "y",
+    "level": "a2",
+    "case": "resume(同一本文・API 0)",
+    "ok": true,
+    "value": {
+      "state": "FINALIZED",
+      "record_sha_unchanged": true,
+      "revision": 1,
+      "generate_fn_calls": 0,
+      "redundancy_qa_stub_calls": 0
+    }
+  },
+  {
+    "family": "y",
+    "level": "a2",
+    "case": "STALE再バインド(出典文以外の本文変更・API 0)",
+    "ok": true,
+    "value": {
+      "state": "FINALIZED",
+      "revision_before": 1,
+      "revision_after": 2,
+      "content_sha256_unchanged": true,
+      "last_event": "rebound_text",
+      "g1_after": "PASS",
+      "generate_fn_calls": 0,
+      "redundancy_qa_stub_calls": 0
+    }
+  },
+  {
+    "family": "y",
+    "level": "a2",
+    "case": "STALE ISSUE(確定項目の出典文を変更・黙って破棄しない)",
+    "ok": true,
+    "value": {
+      "state": "PENDING",
+      "reason": "confirmed_content_issue",
+      "record_unchanged": true,
+      "issue_kind": "CONFIRMED_CONTENT_ISSUE",
+      "issue_fields": [
+        "source_sentence"
+      ],
+      "generate_fn_calls": 0,
+      "redundancy_qa_stub_calls": 0
+    }
+  },
+  {
+    "family": "y",
+    "level": "a2",
+    "case": "操作ガード select",
+    "ok": false,
+    "error_class": "ConfirmedContentLocked",
+    "error": "CONFIRMED_CONTENT_LOCKED: select は拒否されました。ユーザー確定済みの選定があります(revision=1, 確定者=KCP3 evidence)。変更は `py er128_kp_confirmed_content_01.py confirm-revise --run C:\\Users\\tensh\\eigo-radio\\er121_output\\family_y_production_01\\redelivery_fee\\run_kcp3_ev_y_02 --level a2 --by <名> --user-ref <ユーザー発言> --reason ...`(訳の修正)または`py er128_kp_confirmed_content_01.py revoke --run C:\\Users\\tensh\\eigo-radio\\er121_output\\fam"
+  },
+  {
+    "family": "y",
+    "level": "a2",
+    "case": "操作ガード reselect",
+    "ok": false,
+    "error_class": "ConfirmedContentLocked",
+    "error": "CONFIRMED_CONTENT_LOCKED: reselect は拒否されました。ユーザー確定済みの選定があります(revision=1, 確定者=KCP3 evidence)。変更は `py er128_kp_confirmed_content_01.py confirm-revise --run C:\\Users\\tensh\\eigo-radio\\er121_output\\family_y_production_01\\redelivery_fee\\run_kcp3_ev_y_02 --level a2 --by <名> --user-ref <ユーザー発言> --reason ...`(訳の修正)または`py er128_kp_confirmed_content_01.py revoke --run C:\\Users\\tensh\\eigo-radio\\er121_output\\f"
+  },
+  {
+    "family": "y",
+    "level": "a2",
+    "case": "操作ガード ng",
+    "ok": false,
+    "error_class": "ConfirmedContentLocked",
+    "error": "CONFIRMED_CONTENT_LOCKED: ng は拒否されました。ユーザー確定済みの選定があります(revision=1, 確定者=KCP3 evidence)。変更は `py er128_kp_confirmed_content_01.py confirm-revise --run C:\\Users\\tensh\\eigo-radio\\er121_output\\family_y_production_01\\redelivery_fee\\run_kcp3_ev_y_02 --level a2 --by <名> --user-ref <ユーザー発言> --reason ...`(訳の修正)または`py er128_kp_confirmed_content_01.py revoke --run C:\\Users\\tensh\\eigo-radio\\er121_output\\family_"
+  },
+  {
+    "family": "y",
+    "level": "a2",
+    "case": "操作ガード resolve-gloss",
+    "ok": false,
+    "error_class": "ConfirmedContentLocked",
+    "error": "CONFIRMED_CONTENT_LOCKED: resolve-gloss は拒否されました。ユーザー確定済みの選定があります(revision=1, 確定者=KCP3 evidence)。変更は `py er128_kp_confirmed_content_01.py confirm-revise --run C:\\Users\\tensh\\eigo-radio\\er121_output\\family_y_production_01\\redelivery_fee\\run_kcp3_ev_y_02 --level a2 --by <名> --user-ref <ユーザー発言> --reason ...`(訳の修正)または`py er128_kp_confirmed_content_01.py revoke --run C:\\Users\\tensh\\eigo-radio\\er121_out"
+  },
+  {
+    "family": "y",
+    "level": "a2",
+    "case": "操作ガード declare-absent",
+    "ok": false,
+    "error_class": "ConfirmedContentLocked",
+    "error": "CONFIRMED_CONTENT_LOCKED: declare-absent は拒否されました。ユーザー確定済みの選定があります(revision=1, 確定者=KCP3 evidence)。変更は `py er128_kp_confirmed_content_01.py confirm-revise --run C:\\Users\\tensh\\eigo-radio\\er121_output\\family_y_production_01\\redelivery_fee\\run_kcp3_ev_y_02 --level a2 --by <名> --user-ref <ユーザー発言> --reason ...`(訳の修正)または`py er128_kp_confirmed_content_01.py revoke --run C:\\Users\\tensh\\eigo-radio\\er121_ou"
+  },
+  {
+    "family": "y",
+    "level": "a2",
+    "case": "再confirm(確定済みへの上書き)拒否",
+    "ok": false,
+    "error_class": "ConfirmedContentLocked",
+    "error": "CONFIRMED_CONTENT_LOCKED: confirm --from-form(既にユーザー確定済み) は拒否されました。ユーザー確定済みの選定があります(revision=1, 確定者=KCP3 evidence)。変更は `py er128_kp_confirmed_content_01.py confirm-revise --run C:\\Users\\tensh\\eigo-radio\\er121_output\\family_y_production_01\\redelivery_fee\\run_kcp3_ev_y_02 --level a2 --by <名> --user-ref <ユーザー発言> --reason ...`(訳の修正)または`py er128_kp_confirmed_content_01.py revoke --run C:\\Users\\tensh\\ei"
+  },
+  {
+    "family": "y",
+    "level": "b1b",
+    "case": "resume(同一本文・API 0)",
+    "ok": true,
+    "value": {
+      "state": "FINALIZED",
+      "record_sha_unchanged": true,
+      "revision": 1,
+      "generate_fn_calls": 0,
+      "redundancy_qa_stub_calls": 0
+    }
+  },
+  {
+    "family": "y",
+    "level": "b1b",
+    "case": "STALE再バインド(出典文以外の本文変更・API 0)",
+    "ok": true,
+    "value": {
+      "state": "FINALIZED",
+      "revision_before": 1,
+      "revision_after": 2,
+      "content_sha256_unchanged": true,
+      "last_event": "rebound_text",
+      "g1_after": "PASS",
+      "generate_fn_calls": 0,
+      "redundancy_qa_stub_calls": 0
+    }
+  },
+  {
+    "family": "y",
+    "level": "b1b",
+    "case": "STALE ISSUE(確定項目の出典文を変更・黙って破棄しない)",
+    "ok": true,
+    "value": {
+      "state": "PENDING",
+      "reason": "confirmed_content_issue",
+      "record_unchanged": true,
+      "issue_kind": "CONFIRMED_CONTENT_ISSUE",
+      "issue_fields": [
+        "source_sentence",
+        "source_sentence",
+        "grammar.sentence"
+      ],
+      "generate_fn_calls": 0,
+      "redundancy_qa_stub_calls": 0
+    }
+  },
+  {
+    "family": "y",
+    "level": "b1b",
+    "case": "操作ガード select",
+    "ok": false,
+    "error_class": "ConfirmedContentLocked",
+    "error": "CONFIRMED_CONTENT_LOCKED: select は拒否されました。ユーザー確定済みの選定があります(revision=1, 確定者=KCP3 evidence)。変更は `py er128_kp_confirmed_content_01.py confirm-revise --run C:\\Users\\tensh\\eigo-radio\\er121_output\\family_y_production_01\\redelivery_fee\\run_kcp3_ev_y_02 --level b1b --by <名> --user-ref <ユーザー発言> --reason ...`(訳の修正)または`py er128_kp_confirmed_content_01.py revoke --run C:\\Users\\tensh\\eigo-radio\\er121_output\\fa"
+  },
+  {
+    "family": "y",
+    "level": "b1b",
+    "case": "操作ガード reselect",
+    "ok": false,
+    "error_class": "ConfirmedContentLocked",
+    "error": "CONFIRMED_CONTENT_LOCKED: reselect は拒否されました。ユーザー確定済みの選定があります(revision=1, 確定者=KCP3 evidence)。変更は `py er128_kp_confirmed_content_01.py confirm-revise --run C:\\Users\\tensh\\eigo-radio\\er121_output\\family_y_production_01\\redelivery_fee\\run_kcp3_ev_y_02 --level b1b --by <名> --user-ref <ユーザー発言> --reason ...`(訳の修正)または`py er128_kp_confirmed_content_01.py revoke --run C:\\Users\\tensh\\eigo-radio\\er121_output\\"
+  },
+  {
+    "family": "y",
+    "level": "b1b",
+    "case": "操作ガード ng",
+    "ok": false,
+    "error_class": "ConfirmedContentLocked",
+    "error": "CONFIRMED_CONTENT_LOCKED: ng は拒否されました。ユーザー確定済みの選定があります(revision=1, 確定者=KCP3 evidence)。変更は `py er128_kp_confirmed_content_01.py confirm-revise --run C:\\Users\\tensh\\eigo-radio\\er121_output\\family_y_production_01\\redelivery_fee\\run_kcp3_ev_y_02 --level b1b --by <名> --user-ref <ユーザー発言> --reason ...`(訳の修正)または`py er128_kp_confirmed_content_01.py revoke --run C:\\Users\\tensh\\eigo-radio\\er121_output\\family"
+  },
+  {
+    "family": "y",
+    "level": "b1b",
+    "case": "操作ガード resolve-gloss",
+    "ok": false,
+    "error_class": "ConfirmedContentLocked",
+    "error": "CONFIRMED_CONTENT_LOCKED: resolve-gloss は拒否されました。ユーザー確定済みの選定があります(revision=1, 確定者=KCP3 evidence)。変更は `py er128_kp_confirmed_content_01.py confirm-revise --run C:\\Users\\tensh\\eigo-radio\\er121_output\\family_y_production_01\\redelivery_fee\\run_kcp3_ev_y_02 --level b1b --by <名> --user-ref <ユーザー発言> --reason ...`(訳の修正)または`py er128_kp_confirmed_content_01.py revoke --run C:\\Users\\tensh\\eigo-radio\\er121_ou"
+  },
+  {
+    "family": "y",
+    "level": "b1b",
+    "case": "操作ガード declare-absent",
+    "ok": false,
+    "error_class": "ConfirmedContentLocked",
+    "error": "CONFIRMED_CONTENT_LOCKED: declare-absent は拒否されました。ユーザー確定済みの選定があります(revision=1, 確定者=KCP3 evidence)。変更は `py er128_kp_confirmed_content_01.py confirm-revise --run C:\\Users\\tensh\\eigo-radio\\er121_output\\family_y_production_01\\redelivery_fee\\run_kcp3_ev_y_02 --level b1b --by <名> --user-ref <ユーザー発言> --reason ...`(訳の修正)または`py er128_kp_confirmed_content_01.py revoke --run C:\\Users\\tensh\\eigo-radio\\er121_o"
+  },
+  {
+    "family": "y",
+    "level": "b1b",
+    "case": "再confirm(確定済みへの上書き)拒否",
+    "ok": false,
+    "error_class": "ConfirmedContentLocked",
+    "error": "CONFIRMED_CONTENT_LOCKED: confirm --from-form(既にユーザー確定済み) は拒否されました。ユーザー確定済みの選定があります(revision=1, 確定者=KCP3 evidence)。変更は `py er128_kp_confirmed_content_01.py confirm-revise --run C:\\Users\\tensh\\eigo-radio\\er121_output\\family_y_production_01\\redelivery_fee\\run_kcp3_ev_y_02 --level b1b --by <名> --user-ref <ユーザー発言> --reason ...`(訳の修正)または`py er128_kp_confirmed_content_01.py revoke --run C:\\Users\\tensh\\e"
+  }
+]

@@ -1,0 +1,111 @@
+{
+ "schema": "grammar_candidates_v1",
+ "level": "Advanced",
+ "label": "The Coffee Price Rise Case: Turn Back the Clock on the Price Tag!",
+ "text_sha256": "d9904b3554d5ee5e26ccea526e26088d986c51f4759d6e373bce410e58130ef2",
+ "n_paragraphs": 9,
+ "prompt_id": "part2_stepA8",
+ "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+ "model": "gpt-6-luna",
+ "extract_signature": "6ca26bfd16ddd0c14e07fa33000610e1f89f69757cb1d1bbde9b3dae63eaf460",
+ "round": 1,
+ "tier_table": [
+  {
+   "para": "P7",
+   "cls": "INV",
+   "tier": "T2",
+   "eligible": true,
+   "why_not": [],
+   "tv": "HIGH",
+   "tv_ja": "場所を示すHereが文頭に出ると、動詞の後ろに主語が置かれることがある。",
+   "front_kind": "",
+   "sentence": "Here is the key point.",
+   "single_span_ok": true,
+   "cross_para_flag": null
+  }
+ ],
+ "no_feature_paras": [
+  "P1",
+  "P2",
+  "P3",
+  "P4",
+  "P5",
+  "P6",
+  "P8",
+  "P9"
+ ],
+ "uncovered_paras": [],
+ "audit": {
+  "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+  "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+  "model": "gpt-6-luna",
+  "requested_model": "gpt-6-luna",
+  "prompt_sha256": "3267f4b90d97cc4a9c0898580fa56bfbb7cb17a4c6d15d3cf1c5e53a0ffeec02",
+  "response_ids": [
+   "resp_0a0fa39ec9f24229006adff2a17a4487d086f35acab02b77f7"
+  ],
+  "calls": [
+   {
+    "attempt": 1,
+    "response_model": "gpt-6-luna",
+    "usage": {
+     "input_tokens": 3540,
+     "output_tokens": 1851,
+     "cached_input_tokens": 0,
+     "reasoning_tokens": 1552
+    },
+    "response_id": "resp_0a0fa39ec9f24229006adff2a17a4487d086f35acab02b77f7",
+    "elapsed_sec": 16.1,
+    "cost_jpy": 0.2047
+   }
+  ],
+  "retried_for_parse": false,
+  "total_cost_jpy": 0.2047,
+  "generated_at": "2026-10-27T09:39:12+0900",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+ },
+ "reselect_count": 0,
+ "reextract_count": 0,
+ "reselect_log": [],
+ "candidates": [
+  {
+   "candidate_id": "gc5d63cb9fd",
+   "rank": 1,
+   "tier": "T2",
+   "feature_class": "INV",
+   "para": "P7",
+   "sentence": "Here is the key point.",
+   "front_kind": "",
+   "misread_target": "SUBJECT",
+   "misread_quote": "Here is the key point",
+   "misread_ja": "文頭のHereを主語と取り、the key pointを補語と誤って捉えることがある。",
+   "omitted_words": "",
+   "teaching_value": "HIGH",
+   "teaching_value_ja": "場所を示すHereが文頭に出ると、動詞の後ろに主語が置かれることがある。",
+   "construct_ja": "場所副詞による倒置",
+   "points_ja": [
+    "Hereは場所を示す副詞で、主語ではない",
+    "isの後ろのthe key pointが主語"
+   ],
+   "context_ja": "この文は、ここから説明する要点を示している。",
+   "prev": "But we must put events in the right order.",
+   "next": "At the time of that report, the tariff-caused rise had not yet passed through the whole supply chain.",
+   "cross_para_flag": null,
+   "single_span_ok": true,
+   "span": [
+    0,
+    22
+   ]
+  }
+ ],
+ "top_ids": [
+  "gc5d63cb9fd"
+ ],
+ "n_eligible": 1,
+ "ng": [],
+ "filtered_by_ng": [],
+ "rejected_ids": [],
+ "candidates_sha256": "9a7d7a1da3c1deb4521a6cd2e207759b9abcbf8993fbdfd02f95ba4a5c1d4808",
+ "status": "HAS_CANDIDATES",
+ "exhausted": false
+}

@@ -1,0 +1,149 @@
+{
+ "schema": "grammar_candidates_v1",
+ "level": "Advanced",
+ "label": "Children and Social Media: Different Voices",
+ "text_sha256": "d22a671a92d5dfdf287ab779dae86530e51e2fe5acbc02767b8ec6d41eb8f6c7",
+ "n_paragraphs": 5,
+ "prompt_id": "part2_stepA8",
+ "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+ "model": "gpt-6-luna",
+ "extract_signature": "759602d1bc4e3c14a2fdf8c45e78c4a10b2783d589bf97ede0a1105650db3524",
+ "round": 1,
+ "tier_table": [
+  {
+   "para": "P4",
+   "cls": "HEAVY",
+   "tier": "T1",
+   "eligible": true,
+   "why_not": [],
+   "tv": "HIGH",
+   "tv_ja": "長い動名詞句が主語のときは、その句の終わりまでを主語として捉えてから動詞を探す。",
+   "front_kind": "",
+   "sentence": "I don’t think reaching the age when it’s okay to use it means they’ll suddenly know how to keep themselves safe.",
+   "single_span_ok": true,
+   "cross_para_flag": null
+  },
+  {
+   "para": "P5",
+   "cls": "HEAVY",
+   "tier": "T1",
+   "eligible": true,
+   "why_not": [],
+   "tv": "HIGH",
+   "tv_ja": "節を含む長い動名詞句もひとまとまりの主語として捉え、その後に主節の動詞を探す。",
+   "front_kind": "",
+   "sentence": "Setting an age when children can use social media also brings up another question: how much can they turn to adults after they start?",
+   "single_span_ok": true,
+   "cross_para_flag": null
+  }
+ ],
+ "no_feature_paras": [
+  "P1",
+  "P2",
+  "P3"
+ ],
+ "uncovered_paras": [],
+ "audit": {
+  "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+  "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+  "model": "gpt-6-luna",
+  "requested_model": "gpt-6-luna",
+  "prompt_sha256": "c63e8042be9614bb54226ff9497a2bc9940cee976686c0bfca6f5f11ad2bae84",
+  "response_ids": [
+   "resp_0c2a1d475db1f04d006adff1472ab887d098409570b90c5c6e"
+  ],
+  "calls": [
+   {
+    "attempt": 1,
+    "response_model": "gpt-6-luna",
+    "usage": {
+     "input_tokens": 3739,
+     "output_tokens": 3193,
+     "cached_input_tokens": 0,
+     "reasoning_tokens": 2546
+    },
+    "response_id": "resp_0c2a1d475db1f04d006adff1472ab887d098409570b90c5c6e",
+    "elapsed_sec": 28.94,
+    "cost_jpy": 0.3153
+   }
+  ],
+  "retried_for_parse": false,
+  "total_cost_jpy": 0.3153,
+  "generated_at": "2026-10-27T09:33:39+0900",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+ },
+ "reselect_count": 0,
+ "reextract_count": 0,
+ "reselect_log": [],
+ "candidates": [
+  {
+   "candidate_id": "g373c8a9790",
+   "rank": 1,
+   "tier": "T1",
+   "feature_class": "HEAVY",
+   "para": "P4",
+   "sentence": "I don’t think reaching the age when it’s okay to use it means they’ll suddenly know how to keep themselves safe.",
+   "front_kind": "",
+   "misread_target": "SUBJECT",
+   "misread_quote": "reaching the age when it’s okay",
+   "misread_ja": "長い動名詞句を主語と捉えず、when節内のitを主節の主語のように読んでmeansとの対応を取り違えることがある。",
+   "omitted_words": "",
+   "teaching_value": "HIGH",
+   "teaching_value_ja": "長い動名詞句が主語のときは、その句の終わりまでを主語として捉えてから動詞を探す。",
+   "construct_ja": "長い動名詞句の主語",
+   "points_ja": [
+    "reachingからitまでが動名詞句の主語",
+    "その主語に対応する動詞はmeans"
+   ],
+   "context_ja": "中学生の親は、使ってよい年齢に達しても、子どもが急に安全な使い方を身につけるわけではないと述べている。",
+   "prev": "If my child started using social media with no preparation as soon as they reached the age when it had been banned, I would worry.",
+   "next": "Just as you need to practice swimming before going into the sea, it’s still scary when a child who isn’t ready is suddenly thrown into it.",
+   "cross_para_flag": null,
+   "single_span_ok": true,
+   "span": [
+    621,
+    733
+   ]
+  },
+  {
+   "candidate_id": "g20160265ad",
+   "rank": 2,
+   "tier": "T1",
+   "feature_class": "HEAVY",
+   "para": "P5",
+   "sentence": "Setting an age when children can use social media also brings up another question: how much can they turn to adults after they start?",
+   "front_kind": "",
+   "misread_target": "SUBJECT",
+   "misread_quote": "Setting an age when children can use",
+   "misread_ja": "when節を含む長い動名詞句が主語であることを見落とし、childrenを主節の主語のように読んでしまうことがある。",
+   "omitted_words": "",
+   "teaching_value": "HIGH",
+   "teaching_value_ja": "節を含む長い動名詞句もひとまとまりの主語として捉え、その後に主節の動詞を探す。",
+   "construct_ja": "節を含む長い動名詞句の主語",
+   "points_ja": [
+    "Settingからmediaまでが主語",
+    "主語に対応する動詞はbrings up"
+   ],
+   "context_ja": "本文は、子どもがソーシャルメディアを使い始めた後、どの程度大人を頼れるかという問いを提示している。",
+   "prev": "The parent of a middle school child said children won’t suddenly know how to keep themselves safe, even when they are old enough to use it.",
+   "next": "If you let a child in your life use social media, which parts of their use would you let them decide?",
+   "cross_para_flag": null,
+   "single_span_ok": true,
+   "span": [
+    337,
+    470
+   ]
+  }
+ ],
+ "top_ids": [
+  "g373c8a9790",
+  "g20160265ad"
+ ],
+ "n_eligible": 2,
+ "ng": [],
+ "filtered_by_ng": [],
+ "rejected_ids": [],
+ "candidates_sha256": "fe5ceca21a2e8aee185b35061174535b467ae5ee3570550f4dec95545e4f03d1",
+ "status": "HAS_CANDIDATES",
+ "exhausted": false
+}
