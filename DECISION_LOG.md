@@ -22665,3 +22665,9 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 決定(§7): TTS試行回数・待機・Fallback Style・LR範囲・ASR基準・Voice/速度・確定内容保護は不変。49経路対応表と実配線を照合しDangling Referenceを残さない。
 - 決定(§8): 既公開4件(X英単語ガチャAdv/Zメロス Adv/Z猿の手Std/X AI島Std・Adv)はLR関連不一致のみ必要十分に修正、一律作り直し禁止、記事単位承認。§9: 告げ口心臓は独立進行。
 - 進行予定: Phase A設計 → Opus独立レビュー(条件A) → Phase B実装 → 受入12条件(原文§10)・Fable独立受入。Status=APPROVED_FOR_PRODUCTION・未配線(PRODUCTION_WIREDと呼ばない)。実装・検証の結果は別途追記。
+
+### 2026-10-28 PM-SSOT-SYNC-30: 告げ口心臓Narrator Schedar・報告資料=試聴フォーム定義+⏸/赤/青表示仕様(ユーザー正式決定_02、Status=APPROVED_FOR_PRODUCTION・配線中・PRODUCTION_WIRED未達)
+- 原文=`docs/pm/delegation_log/2026-10-28_LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01_USER_02.md`。
+- 決定(§2): Family Z「告げ口心臓」のみNarrator Aoede→Schedar(Std/Adv)。Z共通ルール化しない、英文不変、既存完成版再利用(管理ID=FZ-TELL-TALE-HEART-NARRATOR-VOICE-01)。
+- 決定(§3・§4): 「報告資料」=現在の試聴・確認フォーム(全Family・全レベル共通、アプリ表示は未決定)。表示=Chunk境界`⏸`(実分割記録、既存分割仕様不変)/LR赤(前後英文・範囲)/Fallback濃青(Style名・範囲)、全Role(英日)、重複識別、制作本文・TTS入力へ混入しない。受入7条件=原文§7。
+- Phase B進捗: 委任_06(d3775dae7)/07(e56c9a04f)/08(de9d53085)/09(ef20eb878)完了、Opus条件A完了(OPUS_REVIEW_01)、統合配線commit前。

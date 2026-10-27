@@ -521,3 +521,9 @@
 - **既公開4件の是正方針(判断済み、原文§8)**: 対象=X英単語ガチャAdv/Zメロス Adv/Z猿の手Std/X AI島Std・Adv。LRに関係する不一致箇所のみ必要十分に修正、不要な再生成・既公開記事の一律作り直し禁止、確定内容・ユーザー承認と衝突する場合は影響を示しSTOP、公開差替えは記事単位承認・既存運用遵守、無関係な過去記事へ無断遡及しない。
 - **告げ口心臓との整合(原文§9)**: 別途承認済み案件として独立に進行(①②③・照合コード維持、文法0件、既存スクリプト不変)。新仕様は正式配線された経路でのみ使用。LRで本文変更が必要になれば共通仕様との整合を確認。独立作業のためLR横断作業で停止させない。
 - **次工程をブロックするUDR(更新)**: UD-1/UD-2/UD-3は解決済みのためブロックから外す(AI島のOPEN-561はUD-2決定済み→本案件で処理)。UDR-MONKEY-1は据置、告げ口心臓の最終試聴待ちは従来どおり。
+
+### 2026-10-28 PM-SSOT-SYNC-30 追記(ユーザー正式決定_02。既存行は書き換えず追記。ユーザー原文=`docs/pm/delegation_log/2026-10-28_LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01_USER_02.md`)
+- **判断済み(a) 告げ口心臓Narrator Voice変更(原文§2、管理ID=FZ-TELL-TALE-HEART-NARRATOR-VOICE-01)**: Narrator Aoede→Schedar(男性Voice第2候補)、Standard/Advanced両方、本作品限定、Family Z共通Voiceルール化しない。英文は書き換えない(Voice変更のみ)。既存完成版を利用し必要なNarrator音声の差替えと品質検証を実施。Status=APPROVED_FOR_PRODUCTION(配線中、PRODUCTION_WIRED未達)。
+- **判断済み(b) 「報告資料」の定義と表示仕様(原文§3・§4、管理ID=LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01改定)**: 「報告資料」=現在の試聴・確認フォーム(全Family・全レベル共通)。エンドユーザー向けアプリの表示仕様は今回未決定。表示仕様=①Chunk境界に`⏸`(実際の分割記録に基づく。境界以外に表示しない。Chunk分割方法・語数・追加ポーズ等の既存仕様は不変) ②LR変更箇所を赤、変更前後の英文と適用範囲 ③Fallback適用テキスト全体を濃い青、適用Style名注記と適用範囲。英語・日本語とも全Role対象。LRとFallbackが同一区間の場合は双方の内容・範囲を識別可能に表示。表示に必要なのは「何が発動したか/何が変わったか/どこに適用されたか」の3点。制作本文・TTS入力に装飾・注記を加えない。
+- **受入条件(原文§7、逐語)**: 1.「告げ口心臓」Standard/AdvancedのNarratorがSchedarになっている。2.必須音声品質検査をPASSしている。3.全Family・全レベルの報告資料で、実際のChunk境界に`⏸`が表示される。4.LR変更箇所・変更前後の英文が赤色で確認できる。5.Fallback適用範囲全体とStyle名が濃い青色で確認できる。6.正式Production経路、再生成・再開経路で表示仕様が維持される。7.必須Regression・実runtime evidence・CURRENT_SPEC/DECISION_LOG/OPEN_ITEMS/Git反映が完了している。未確認のFamily・Levelが残る場合は内容を明示し、確認できないものをPRODUCTION_WIREDとしない。
+- **次工程をブロックするUDR**: 本決定による新規ブロックなし(告げ口心臓の公開差替えはユーザー試聴後)。
