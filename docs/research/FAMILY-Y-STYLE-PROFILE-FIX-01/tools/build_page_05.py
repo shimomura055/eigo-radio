@@ -5,7 +5,7 @@
  (B) Voice説明文を承認文言へ差替え(index.html の y-ai-notice と制作情報節、preview_segments_01.html の同notice)。
  (C) 実測ポーズ表示(`&#9208;0.70s@0:39.0` 等のASR由来span)を全撤去。実TTS Chunk分割境界は本記事では0件
      (chunk_tts_decision.json: a2/b1b とも全segment chunked=False)なので、`⏸` マーカーは置かない。
-     凡例noteの『実測停止』説明と『▼表示』説明は、承認仕様(実Chunk境界のみ⏸・説明不要)に合わせて1行へ置換。
+     凡例noteの『実測停止』説明と『▼表示』説明は撤去(委任_09: ⏸凡例行も公開ページに残さない)。
 使い方: py docs/research/FAMILY-Y-STYLE-PROFILE-FIX-01/tools/build_page_05.py   (冪等: 2回目は変更0)
 """
 from __future__ import annotations
@@ -18,7 +18,7 @@ OLD_NOTICE = "本コンテンツのVoiceは、実在する人々の意見を参�
 OLD_PROD = "Voice 1〜3は実在人物の発言ではなく、AIが編集した意見です。"
 PAUSE_SPAN = re.compile(r"\s?<span style=\"[^\"]*\"(?: title=\"[^\"]*\")?>&#9208;\d+\.\d+s@\d+:\d+\.\d</span>")
 LEGEND = re.compile(r"<br><span style=\"[^\"]*\">&#9208;1\.25s@0:13\.7</span>.*?(?:今回はありません)\)。</div>", re.S)
-NEW_LEGEND = "<br>⏸=実際のTTS Chunk分割境界(開発確認用表示)。今回の記事にChunk分割境界はなく、表示はありません。</div>"
+NEW_LEGEND = "</div>"  # 委任_09: 凡例行(⏸記号)は公開ページに出さない(USER_04 §1-C。開発用マーカーは公開ページ非表示)
 
 
 def fix(path: str) -> dict:
