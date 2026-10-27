@@ -16,6 +16,7 @@ from unittest import mock
 import er119_kp_human_review_01 as rv
 import er128_kp_confirmed_content_01 as cc
 import er128_kp_confirmed_content_test_01 as base
+from er128_kp_confirmed_content_test_01 import legacy_unmarked_flow
 from er119_test_support_01 import Env, jd, jl, rd, wr
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -46,15 +47,34 @@ class Slot23Base(base.FormHelpers):
 # A. マーク発行は未接続(M14)・発行関数・署名・vocab_enabled
 # ============================================================
 class TestMarkAndVocabEnabled(Slot23Base):
-    def test_M14_new_review_does_not_issue_mark_yet(self):
-        # M14(最後の1commit)で `issue_std_part1_mark` をnew_reviewへ接続したら、このtestは『接続後』の期待値(下のtest_connected_*)へ置換する
+    def test_M14_new_review_issues_mark_now_connected(self):
+        # M14接続済み(委任_05M): 素のnew_review(patch無し)が新規KP reviewにstd_part1を付ける。呼出点はnew_review内の1箇所だけ
         with Env(self.tmp) as env:
             self._gen(env, level="a2")
-        self.assertNotIn("std_part1", rv.load_review(self.kp_dir_a2))
-        src = inspect.getsource(rv.new_review)
+            self._gen(env, level="b1b")
+        self.assertTrue(rv.load_review(self.kp_dir_a2).get("std_part1"))
+        self.assertTrue(rv.load_review(self.kp_dir).get("std_part1"))
         code_lines = [ln for ln in inspect.getsource(rv).splitlines() if "issue_std_part1_mark(" in ln and not ln.lstrip().startswith(("#", "def ", '"""', "**"))]
-        self.assertEqual(code_lines, [], "未接続のはず(呼出点0)")
-        self.assertNotIn("issue_std_part1_mark", "\n".join(ln for ln in src.splitlines() if not ln.lstrip().startswith("#")))
+        self.assertEqual(len(code_lines), 1, code_lines)
+        self.assertIn("issue_std_part1_mark", inspect.getsource(rv.new_review))
+
+    def test_M14_display_spec_derived_for_both_a2_and_b1b(self):
+        # B班判断(a): 素のnew_review→from_formで、a2/b1bとも確定レコードにdisplay_specが導出される(マーク無しならキー無し)
+        with Env(self.tmp) as env:
+            self.form(env, "a2", cat1=[1, 2, 3], cat2=[4], cat3=[5])
+            self.form(env, "b1b", cat1=[1, 2, 3], cat2=[], cat3=[4])
+        self.assertEqual(cc.display_spec_of(self.run_dir, "a2"), cc.DISPLAY_SPEC_V1)
+        self.assertEqual(cc.display_spec_of(self.run_dir, "b1b"), cc.DISPLAY_SPEC_V1)
+
+    def test_M14_prev_without_mark_is_not_retroactively_marked_by_cc(self):
+        # 既に確定済みの旧(マーク無し)記事のrecord/reviewは、接続だけでは変わらない(遡及なし。移行はreconsume明示実行のみ)
+        with mock.patch.object(rv, "issue_std_part1_mark", lambda r: r), Env(self.tmp) as env:
+            self.form(env, "a2", cat1=[1, 2], cat2=[3], cat3=[4])
+        before = (cc.load_record(self.kp_dir_a2), rv.load_review(self.kp_dir_a2))
+        self.assertNotIn("display_spec", before[0])
+        self.assertNotIn("std_part1", before[1])
+        self.assertIsNone(cc.display_spec_of(self.run_dir, "a2"))
+        self.assertEqual(cc.load_record(self.kp_dir_a2), before[0])   # 読むだけでは変わらない
 
     def test_connected_new_review_marks_kp_reviews_only(self):
         with marks_connected(), Env(self.tmp) as env:
@@ -93,11 +113,59 @@ class TestMarkAndVocabEnabled(Slot23Base):
         self.assertEqual(rv.auto_select(c, level="a2")["vocab"], [])
         self.assertEqual(len(rv.auto_select(c, level="a2", std_part1=True)["vocab"]), 5)
 
+    @legacy_unmarked_flow
     def test_legacy_a2_flow_is_unchanged_and_no_removed_rename_remains(self):
         with Env(self.tmp) as env:
             self.confirm_user(env, level="a2")
         self.assertFalse(os.path.exists(rv.paths(self.kp_dir_a2)["vocab"]))   # マーク無しa2はvocab_confirmed.jsonを書かない(従来と同じ)
         self.assertNotIn(".removed", inspect.getsource(rv.finalize_kp))
+
+
+# ============================================================
+# G3 Std Part 1照合のlevel化(委任_05M)
+# ============================================================
+class TestG3StdPart1Level(Slot23Base):
+    def _pages(self, rec, *, drop_gloss=False):
+        d = self.tmp
+        body = "".join(f"<li>{it['used_form']} {'' if drop_gloss and it is rec['items'][0] else it['japanese_gloss']}</li>" for it in rec["items"])
+        pg = os.path.join(d, "std_part1.html")
+        wr(pg, "<html>" + body + "</html>")
+        return pg
+
+    def test_display_spec_a2_checks_part1_rows_and_page(self):
+        with Env(self.tmp) as env:
+            self.form(env, "a2", cat1=[1, 2, 3], cat2=[4, 5], cat3=[6])
+            self.ensure(env, level="a2")
+        rec = cc.load_record(self.kp_dir_a2)
+        self.assertEqual(rec["display_spec"], cc.DISPLAY_SPEC_V1)
+        rows = [{"english_expression": it["used_form"], "meaning_in_text_ja": it["japanese_gloss"]} for it in rec["items"]]
+        st = os.path.join(self.tmp, "p1.json")
+        jd(st, {"rows": rows})
+        good = self._pages(rec)
+        cc.verify_outputs(self.kp_dir_a2, "a2", study_text_json=st, vocab_page_paths=[good], page_paths=[good])   # PASS
+        bad_rows = [dict(r) for r in rows]
+        bad_rows[0]["meaning_in_text_ja"] = "改変された訳"
+        jd(st, {"rows": bad_rows})
+        with self.assertRaises(Exception):
+            cc.verify_outputs(self.kp_dir_a2, "a2", study_text_json=st, vocab_page_paths=[good], page_paths=[good])
+        jd(st, {"rows": rows})
+        bad_page = self._pages(rec, drop_gloss=True)
+        with self.assertRaises(Exception):
+            cc.verify_outputs(self.kp_dir_a2, "a2", study_text_json=st, vocab_page_paths=[bad_page], page_paths=[good])
+
+    @legacy_unmarked_flow
+    def test_a2_without_display_spec_is_unchanged(self):
+        with Env(self.tmp) as env:
+            self.confirm_user(env, level="a2")
+        rec = cc.load_record(self.kp_dir_a2)
+        self.assertNotIn("display_spec", rec)
+        empty = os.path.join(self.tmp, "x.html")
+        wr(empty, "<html>none of the glosses</html>")
+        st = os.path.join(self.tmp, "p1.json")
+        jd(st, {"rows": [{"english_expression": rec["items"][0]["used_form"], "meaning_in_text_ja": "違う"}]})
+        good = os.path.join(self.tmp, "g.html")
+        wr(good, "<html>" + "".join(it["used_form"] + it["japanese_gloss"] for it in rec["items"]) + "</html>")
+        cc.verify_outputs(self.kp_dir_a2, "a2", study_text_json=st, vocab_page_paths=[empty], page_paths=[good])   # Part 1検査は走らない(従来どおり)
 
 
 # ============================================================
@@ -120,6 +188,7 @@ class TestMarkedStd(Slot23Base):
             self.consume("a2")   # G1 PASS
             self.assertEqual(cc.display_spec_of(self.run_dir, "a2"), cc.DISPLAY_SPEC_V1)
 
+    @legacy_unmarked_flow
     def test_unmarked_a2_form_keeps_legacy_behavior(self):
         with Env(self.tmp) as env:
             out = self.form(env, "a2", cat1=[1, 2], cat2=[3], cat3=[4])
@@ -178,6 +247,7 @@ class TestReconsume(Slot23Base):
         self.ensure(env, level="a2")
         return cc.load_record(self.kp_dir_a2), rv.load_review(self.kp_dir_a2)
 
+    @legacy_unmarked_flow
     def test_reconsume_a2_moves_category2_to_items_keeps_user_selection(self):
         with Env(self.tmp) as env:
             rec0, rv0 = self._legacy_a2(env)
@@ -252,6 +322,7 @@ class TestReconsume(Slot23Base):
             with self.assertRaises(cc.CliError):
                 cc.cmd_reconsume(self.run_dir, "a2", "human", self.uref)
 
+    @legacy_unmarked_flow
     def test_reconsume_validation_failure_is_issue_and_changes_nothing(self):
         with Env(self.tmp) as env:
             rec0, rv0 = self._legacy_a2(env)
@@ -262,6 +333,7 @@ class TestReconsume(Slot23Base):
             self.assertEqual(rv.load_review(self.kp_dir_a2)["selection_signature"], rv0["selection_signature"])
             self.assertNotIn("std_part1", rv.load_review(self.kp_dir_a2))
 
+    @legacy_unmarked_flow
     def test_reconsume_b1b_is_record_only(self):
         with Env(self.tmp) as env:
             self.form(env, "b1b", cat1=[1, 2, 3], cat2=[4, 5], cat3=[6, 7])

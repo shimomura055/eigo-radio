@@ -18,6 +18,7 @@ import er119_kp_human_review_01 as rv
 import er119_kp_prompt_2v_01 as p2v
 import er119_kp_p7w5_prompts_01 as p7w5
 from er119_test_support_01 import ARTICLE, ARTICLE2, CALL1, CALL2, Env, KpTestCase, jd, jl, rd, wr
+from er119_test_support_01 import legacy_unmarked_flow  # noqa: E402  (旧マーク無し記事の再現。SLOT-23 委任_05M)
 
 P2_SHA = "a12896f485604f32efd52cb159d2615733c0eca262725af78db0b4f1c9a3dc9a"
 
@@ -247,6 +248,7 @@ class TestReviewFlowAndFinalize(KpTestCase):
             rv.op_select(self.kp_dir, kp_ranks=[1, 3, 4], vocab_ranks=[1, 3, 4], ng={3: "bad"}, by="h")  # 選択とNGの矛盾
         self.assertEqual(rv.load_review(self.kp_dir)["status"], rv.ST_PENDING)
 
+    @legacy_unmarked_flow
     def test_standard_level_rejects_vocab(self):
         env = Env(self.tmp)
         env.__enter__()

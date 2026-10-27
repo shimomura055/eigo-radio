@@ -888,7 +888,7 @@ def verify_outputs(kp_dir: str, level: str, *, tts_results_path: Optional[str] =
                 if ri["slot"] == "kp" and ri.get("japanese_gloss") and not any(ri["japanese_gloss"] in t for t in texts):
                     _put({"candidate_id": ri["candidate_id"], "field": "japanese_gloss(ページ表示)", "confirmed": ri["japanese_gloss"], "observed": "(ページに表示されていない)",
                           "where": ",".join(os.path.basename(pg) for pg in pages)})
-    elif level == "b1b" and vocab_page_paths:   # Part 1が描画されているページに限る(描画されていなければ検査しない)
+    if (level == "b1b" or rec.get("display_spec")) and vocab_page_paths:   # (elifではない: display_spec付きa2はStd訳検査に加えPart 1も検査する)。Part 1が描画されているページに限る(描画されていなければ検査しない)。Std Part 1(display_spec付きa2)もlevel化(委任_05M)
         texts = [_page_text(pg) for pg in vocab_page_paths if os.path.exists(pg)]
         if texts:
             for ri in rec.get("items") or []:

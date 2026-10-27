@@ -27,6 +27,7 @@ import er120_part2_wiring_01 as p2w
 import er119_z_wiring_test_01 as zw
 import er003_kp_general_explanation_01_runner_integration_test_01 as ri
 from er119_test_support_01 import jl, rd
+from er119_test_support_01 import legacy_unmarked_class  # noqa: E402  (旧マーク無し記事の再現。SLOT-23 委任_05M)
 
 BAD_EXPLAIN = lambda prompt: ("壊れた出力(ITEM区切りなし)", pm.MODEL, {"input_tokens": 1, "output_tokens": 1, "cached_input_tokens": 0}, "bad")  # noqa: E731
 
@@ -51,6 +52,7 @@ def _decide_pick(study_dir, ids_idx, by="human"):
 # ============================================================
 # Z
 # ============================================================
+@legacy_unmarked_class
 class ZPart2Integration(zw.ZBase):
     def _select_kp(self):
         for lv in ("b1b", "a2"):

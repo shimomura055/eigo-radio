@@ -21,6 +21,7 @@ import er026_family_z_fiction_production_runner_01 as r
 import er063_family_z_audio_01 as a63
 import er_learning_highlight_01 as hl
 import er_user_listening_page_common_01 as cp
+from er119_test_support_01 import _legacy_patch  # noqa: E402  (旧マーク無し記事の再現。SLOT-23 委任_05M)
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 RUN_KCP4 = os.path.join(ROOT, "er026_output/family_z_production_e2e_01/melos/run_kcp4_ev_z_01")           # 確定レコードあり(display_specなし)の実Z run(a2/b1b)
@@ -559,9 +560,10 @@ class MockKpStageStdPart1Test(unittest.TestCase):
         cls.tmp_plain = tempfile.mkdtemp()
         cls.tmp_marked = tempfile.mkdtemp()
         cls.plain = r.build_mock_context(cls.tmp_plain)
-        e2e.run_stages_quiet(cls.plain, e2e.PRE_STAGES)
+        with _legacy_patch():   # 旧(マーク無し)記事の再現(M14接続後はnew_reviewがマークを付けるので、plainだけマーク発行を無効化する)
+            e2e.run_stages_quiet(cls.plain, e2e.PRE_STAGES)
         cls.marked = r.build_mock_context(cls.tmp_marked)
-        with s23.marks_connected():   # M14(new_reviewへのマーク発行)接続後を模擬。実コードのマーク発行はまだ未接続
+        with s23.marks_connected():   # マーク発行あり(M14接続済み。実コードのnew_reviewと同じ結果)
             cls.marked_res = e2e.run_stages_quiet(cls.marked, e2e.PRE_STAGES)
 
     @classmethod

@@ -1501,6 +1501,12 @@ def _khr():
     return khr
 
 
+def _g3():
+    """本文ハイライトのG3検査module(er128_kp_highlight_01)の遅延accessor(Xの`_g3()`と同方式。文頭/関数内の`import er128_*`を避ける。挙動不変)。"""
+    import importlib
+    return importlib.import_module("er128_kp_highlight_01")
+
+
 def _kp_src_dir(ctx, level: str) -> str:
     """er062/Z KP stageの出力dir(<run>/key_phrases/<level>)。Human Review(候補/review/確定物)の唯一の置き場。"""
     return f"{ctx.out_dir}/key_phrases/{level}"
@@ -2615,7 +2621,7 @@ def _verify_learning_items(ctx) -> dict:
     それ以外は0個) (2) display_spec付きlevelはG3ハイライト検査(er128_kp_highlight_01.verify_highlights: 網羅・区分・本文不変・③訳・public混入)。違反=FamilyZE2EStop。
     確定内容保護のkill switch(既定ON、er128の単一読取関数)がOFFのときはG3だけスキップしてdisabled markerを残す(M10)。"""
     import er_user_listening_page_common_01 as cp
-    import er128_kp_highlight_01 as g3
+    g3 = _g3()
     with open(f"{ctx.pages_dir}/index.html", encoding="utf-8") as f:
         idx_html = f.read()
     out = {}

@@ -23,6 +23,7 @@ import er026_family_z_fiction_production_runner_01 as r
 import er062_family_z_structure_01 as st62
 import er119_kp_human_review_01 as rv
 from er119_test_support_01 import jd, jl, rd, wr
+from er119_test_support_01 import legacy_unmarked_class  # noqa: E402  (旧マーク無し記事の再現。SLOT-23 委任_05M)
 
 PRE = ["seed_check", "writer", "std_adjust", "plan", "support"]
 
@@ -76,6 +77,7 @@ class ZBase(unittest.TestCase):
         return rv.add_declaration(run_dirs=[self.ctx.out_dir], by="test-fixture", reason="Human不在(明示宣言)")
 
 
+@legacy_unmarked_class
 class TestZWait(ZBase):
     def test_no_declaration_generates_both_levels_then_raises_pending_once(self):
         n_before = len(rd(self.ctx.mock_api.path).splitlines())

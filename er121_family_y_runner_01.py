@@ -107,6 +107,12 @@ def _khr():
     return khr
 
 
+def _g3():
+    """本文ハイライトのG3検査module(er128_kp_highlight_01)の遅延accessor(Xの`_g3()`と同方式。文頭/関数内の`import er128_*`を避ける。挙動不変)。"""
+    import importlib
+    return importlib.import_module("er128_kp_highlight_01")
+
+
 def _sha(s) -> str:
     return _m().st.sha(s)
 
@@ -1320,7 +1326,7 @@ def _verify_highlights_on_page(ctx, html_text: str) -> dict:
     """SLOT-23 G3(委任_04D): level節ごとに er128_kp_highlight_01.verify_highlights を実行(網羅=data-hl単位ちょうど1出現/本文不変/③訳一致/public混入0)。
     FAIL=STOP。確定内容保護のkill switch無効時はSKIPPED_DISABLED(disabled markerを記録)。マーク無しlevelの節に data-hl/lk-meaning があればSTOP。"""
     import er_user_listening_page_common_01 as cp
-    import er128_kp_highlight_01 as g3
+    g3 = _g3()
     ya = _ya()
     out = {}
     for lv in LEVELS:

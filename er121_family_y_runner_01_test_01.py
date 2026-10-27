@@ -27,6 +27,7 @@ sys.path.insert(0, ROOT)
 import er121_family_y_runner_01 as r  # noqa: E402
 import er121_family_y_structure_01 as ys  # noqa: E402
 import er121_family_y_audio_01 as ya  # noqa: E402
+from er119_test_support_01 import legacy_unmarked_class  # noqa: E402  (旧マーク無し記事の再現。SLOT-23 委任_05M)
 
 BLOCK = {"net": 0, "client": 0}
 _PATCHERS = []
@@ -626,6 +627,7 @@ def _html(ctx):
     return open(f"{ctx.out_dir}/pages/index.html", encoding="utf-8").read()
 
 
+@legacy_unmarked_class
 class StudyTextWiring(unittest.TestCase):
     """委任_06: Part 1(Vocabulary & Expressions)/Part 2(文法)/文法HRのY runner接続(X/Zと同形。API 0・遮断harness)。"""
 

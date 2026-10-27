@@ -21,6 +21,7 @@ import er119_kp_wiring_01 as kw
 import er119_x_wiring_test_01 as xw
 import er119_z_wiring_test_01 as zw
 from er119_test_support_01 import ARTICLE, Env, KpTestCase
+from er119_test_support_01 import legacy_unmarked_class  # noqa: E402  (旧マーク無し記事の再現。SLOT-23 委任_05M)
 
 PHRASES7 = ["time lag", "pushed prices up", "took a sharp turn", "Before you know it", "stay high", "Retail prices", "raw beans"]
 WORDS5 = ["spike", "stock", "insiders", "blends", "increases"]
@@ -40,6 +41,7 @@ def _invariants(tc, doc):
             tc.assertFalse(kcand._contains_any(w, p), (w["used_form"], p["used_form"]))
 
 
+@legacy_unmarked_class
 class TestSharedWiringAllFamiliesAndLevels(KpTestCase):
     def _run(self, family, level):
         text = ARTICLE
@@ -90,6 +92,7 @@ class TestSharedWiringAllFamiliesAndLevels(KpTestCase):
         self._run("z", "b1b")
 
 
+@legacy_unmarked_class
 class TestXRunnerMain75(xw.XMainBase):
     """Family Xのrunner本体を実際に通す: 7+5(P7/W5')で12候補→宣言なしrc4待機→Human選択→再実行で先へ。"""
 

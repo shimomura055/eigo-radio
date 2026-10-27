@@ -507,7 +507,7 @@ def vocab_enabled(level: str, review: Optional[dict] = None) -> bool:
 def issue_std_part1_mark(review: dict) -> dict:
     """新規KP reviewへ新表示仕様マーク(std_part1)を付与する唯一の関数(KP reviewのみ。grammarは不変)。a2ではvocab(Std Part 1)を有効にし、
     b1bではvocabは元々常に有効なので『新表示仕様の記事』という印としてだけ働く(確定レコードのdisplay_specの導出元)。
-    **new_reviewからはまだ呼ばない**(M14: 全6経路のF直前の最後の1commitで接続する。未接続の間は新規reviewにマークは付かず、従来どおり)。"""
+    new_reviewから呼ぶ(M14接続済み・委任_05M。新規reviewのみ。既存の確定済み記事は reconsume 明示実行まで不変=遡及なし)。"""
     if review.get("kind", KIND_KP) == KIND_KP:
         review["std_part1"] = True
     return review
@@ -625,7 +625,7 @@ def new_review(cands: dict, *, kind: str = KIND_KP, article_key: Optional[dict] 
          "history": list((prev or {}).get("history") or []), "selection_signature": None}
     if (prev or {}).get("std_part1") and kind == KIND_KP:   # 既にマーク付きの選び直しround/再生成は継続(新規付与ではない)
         r["std_part1"] = True
-    # NOTE(M14): ここで issue_std_part1_mark(r) を呼ぶ接続は、全6経路の準備後・F直前の最後の1commitで行う(未接続の間は新規a2 reviewにマークは付かない)。
+    issue_std_part1_mark(r)   # M14接続(SLOT-23 委任_05M): 新規reviewのみ(KPのみ・prevのマーク継承は上で済)。既存記事は reconsume 明示実行まで不変=遡及なし
     r["history"].append({"at": _now(), "event": "candidates_generated", "by": "runner",
                          "detail": {"round": r["round"], "candidates_sha256": r["candidates_sha256"]}})
     return r

@@ -25,6 +25,7 @@ import er119_kp_wiring_01 as _kpw  # noqa: E402
 import er119_kp_human_review_01 as _rv  # noqa: E402
 import er120_part2_grammar_production_01 as _g2  # noqa: E402
 import er120_part2_mock_01 as _pm  # noqa: E402
+from er119_test_support_01 import legacy_unmarked_class  # noqa: E402  (旧マーク無し記事の再現。SLOT-23 委任_05M)
 
 
 def isolate_part2(test, *, check_translation=False):
@@ -133,6 +134,7 @@ def quiet(fn, *a, **k):
 # ============================================================
 # Z
 # ============================================================
+@legacy_unmarked_class
 class ZPart1Tests(Tmp, unittest.TestCase):
     def setUp(self):
         isolate_part2(self)

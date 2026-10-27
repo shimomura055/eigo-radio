@@ -18,6 +18,7 @@ import er002_common as common
 import er062_family_z_structure_01 as zst
 import er063_family_z_audio_01 as z
 import er117_chunk_tts_production_01 as core
+from er119_test_support_01 import legacy_unmarked_class  # noqa: E402  (旧マーク無し記事の再現。SLOT-23 委任_05M)
 
 SR = common.SAMPLE_RATE
 
@@ -328,6 +329,7 @@ class ZStageTests(unittest.TestCase):
         self.assertIn("full_story_part2_c1_k1", [p["clip_id"] for p in out["planned"]])
 
 
+@legacy_unmarked_class
 class ZGateAndAssemblyTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.mkdtemp()

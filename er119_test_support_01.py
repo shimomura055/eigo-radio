@@ -285,3 +285,44 @@ def declare_ctx(ctx):
     """test専用: mock ctxのrunについて『Human不在』を明示宣言する(add_declarationを呼ぶだけ。ctxを返す)。"""
     rv.add_declaration(run_dirs=[ctx.out_dir], by="test-fixture", reason="既存mock E2E testのfixture(Human不在を明示宣言)")
     return ctx
+
+
+# ============================================================
+# 旧(マーク無し)記事の再現(SLOT-23 委任_05M: new_reviewがstd_part1を付与するようになった後も『既存のマーク無し記事は従来どおり』を検証するtest用)
+# ============================================================
+def _legacy_patch():
+    return mock.patch.object(rv, "issue_std_part1_mark", lambda r: r)
+
+
+def legacy_unmarked_flow(fn):
+    """testメソッド用: そのtestの間だけマーク発行を無効化して旧(マーク無し)reviewを模擬する(production挙動は変えない)。"""
+    import functools
+
+    @functools.wraps(fn)
+    def w(self, *a, **k):
+        with _legacy_patch():
+            return fn(self, *a, **k)
+    return w
+
+
+def legacy_unmarked_class(cls):
+    """TestCase class用: setUp/setUpClass(fixtureでreviewを作る場合を含む)とtest本体の間、マーク発行を無効化する。"""
+    orig_setup = cls.setUp
+    orig_setup_class = cls.__dict__.get("setUpClass")
+
+    def setUp(self):
+        p = _legacy_patch()
+        p.start()
+        self.addCleanup(p.stop)
+        orig_setup(self)
+    cls.setUp = setUp
+    if orig_setup_class is not None:
+        fn = orig_setup_class.__func__
+
+        def setUpClass(klass):
+            p = _legacy_patch()
+            p.start()
+            klass.addClassCleanup(p.stop)
+            fn(klass)
+        cls.setUpClass = classmethod(setUpClass)
+    return cls

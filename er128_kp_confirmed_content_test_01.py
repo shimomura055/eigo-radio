@@ -31,6 +31,19 @@ def _quiet(fn, *a, **k):
         return fn(*a, **k)
 
 
+
+def legacy_unmarked_flow(fn):
+    """旧(マーク無し)記事の経路を再現するtest用decorator。M14接続後(委任_05M)は新規reviewにstd_part1が付くため、
+    『既存のマーク無し記事は従来どおり』を検証するtestはマーク発行だけを無効化して旧reviewを模擬する(production挙動は変えない)。"""
+    import functools
+
+    @functools.wraps(fn)
+    def w(self, *a, **k):
+        with mock.patch.object(rv, "issue_std_part1_mark", lambda r: r):
+            return fn(self, *a, **k)
+    return w
+
+
 class CCBase(KpTestCase):
     """b1b(Adv: KP3+単語2)を user select で確定するfixture。"""
 
@@ -108,6 +121,7 @@ class TestRecordCreation(CCBase):
         self.assertEqual(rec["origin"]["kind"], "auto_declared")
         self.consume()
 
+    @legacy_unmarked_flow
     def test_std_level_record_has_kp_only(self):
         with Env(self.tmp) as env:
             self.confirm_user(env, level="a2")
@@ -381,6 +395,7 @@ class FormHelpers(CCBase):
 
 
 class TestFromForm(FormHelpers):
+    @legacy_unmarked_flow
     def test_form_confirm_adv_with_unconsumed_and_payload_source(self):
         with Env(self.tmp) as env:
             cands = self._gen(env)
@@ -404,6 +419,7 @@ class TestFromForm(FormHelpers):
             with self.assertRaises(rv.ConfirmedContentIntegrityViolation):
                 self.consume()
 
+    @legacy_unmarked_flow
     def test_form_std_category2_is_unconsumed(self):
         with Env(self.tmp) as env:
             cands = self._gen(env, level="a2")
@@ -764,6 +780,7 @@ class TestZStageKpG1(unittest.TestCase):
         p = self.ctx.mock_api.path
         return len(rd(p).splitlines()) if os.path.exists(p) else 0
 
+    @legacy_unmarked_flow
     def test_tamper_after_confirm_stops_at_stage_kp_before_paid_generation(self):
         import er119_grammar_review_01 as gr
         with self.assertRaises(self.z.FamilyZKpReviewPending):

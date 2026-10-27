@@ -25,6 +25,7 @@ import er121_family_y_audio_01 as ya  # noqa: E402
 import er119_kp_human_review_01 as rv  # noqa: E402
 import er_learning_highlight_01 as hl  # noqa: E402
 import er_user_listening_page_common_01 as cp  # noqa: E402
+from er119_test_support_01 import legacy_unmarked_class  # noqa: E402  (旧マーク無し記事の再現。SLOT-23 委任_05M)
 
 _quiet, _ctx, _declare = base._quiet, base._ctx, base._declare
 ALL_STAGES = ["kp", "tts_b1b", "tts_a2", "gate", "assemble", "pages", "page_verify"]
@@ -341,6 +342,7 @@ class MarkedPipeline(unittest.TestCase):
         self.assertEqual(cp.count_chunk_markers(_page(self.ctx)), 0)
 
 
+@legacy_unmarked_class
 class UnmarkedPipeline(unittest.TestCase):
     """マーク無し(display_spec無し)=従来とバイト同一の挙動: ハイライト・凡例・CSS・訳リスト・Std Part 1が一切出ない(遡及なし)。"""
 

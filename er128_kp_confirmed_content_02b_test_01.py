@@ -25,6 +25,7 @@ import er120_part2_grammar_production_01 as g2
 import er120_part2_wiring_01 as p2w
 import er128_kp_confirmed_content_01 as cc
 from er119_test_support_01 import ARTICLE, ARTICLE2, Env, KpTestCase, jd, jl, rd, wr
+from er119_test_support_01 import legacy_unmarked_class  # noqa: E402  (旧マーク無し記事の再現。SLOT-23 委任_05M)
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -148,6 +149,7 @@ class TestM8Rebind(CCBase):
 # ============================================================
 # T18 G2/G3: TTS record・ページHTML・Part 1行
 # ============================================================
+@legacy_unmarked_class
 class TestG2G3(CCBase):
     GLOSS_TILDE = "～を延期する"
 
@@ -538,6 +540,7 @@ class TestM6Part2Frozen(zw.ZBase):
 # ============================================================
 # T21 Z _gloss_person_gate: ユーザー確定済みitemは修復LLMを呼ばずISSUE
 # ============================================================
+@legacy_unmarked_class
 class TestZPersonGate(zw.ZBase):
     def _confirm(self):
         import er119_grammar_review_01 as _gr
@@ -775,6 +778,7 @@ class TestSingleAccessor(CCBase):
 # ============================================================
 # Y 実行時: stage_kpのG1が実行時に発火(mock context)
 # ============================================================
+@legacy_unmarked_class
 class TestYStageKpG1Runtime(unittest.TestCase):
     """Y stage_kpのG1が実行時に発火する(mock context。TEST_PLAN_02 T9のY実行時分)。"""
 

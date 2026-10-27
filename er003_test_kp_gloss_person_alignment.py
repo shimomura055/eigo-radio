@@ -21,7 +21,7 @@ import unittest.mock as mock
 
 import er003_key_words_canonicalization as kc
 import er003_key_words_gloss_alignment as ga
-from er119_test_support_01 import declare_ctx as _declare_ctx  # noqa: E402
+from er119_test_support_01 import declare_ctx as _declare_ctx, legacy_unmarked_class  # noqa: E402
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 
@@ -347,6 +347,7 @@ def _make_kp_fn(r, bad_level="a2", bad_rank=2, gloss="あなたの代わりに")
     return kp_fn
 
 
+@legacy_unmarked_class
 class ZPersonGate(_FlagOn):
     def setUp(self):
         super().setUp()

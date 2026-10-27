@@ -19,6 +19,7 @@ import er003_key_words_gloss_alignment as ga
 import er019_family_x_audio_production_runner_01 as runner
 import er119_kp_human_review_01 as rv
 from er119_test_support_01 import ARTICLE, Env, KpTestCase, jd, jl, wr
+from er119_test_support_01 import legacy_unmarked_class  # noqa: E402  (旧マーク無し記事の再現。SLOT-23 委任_05M)
 
 
 def _setup():
@@ -91,6 +92,7 @@ class XMainBase(unittest.TestCase):
         return rc, buf.getvalue()
 
 
+@legacy_unmarked_class
 class TestXWaitAndResume(XMainBase):
     def test_no_declaration_waits_rc4_and_downstream_not_run(self):
         rc, out = self.main("scaffold")
@@ -157,6 +159,7 @@ class TestXWaitAndResume(XMainBase):
         self.assertFalse(os.path.exists(os.path.join(self.out, "kp_review_mode.json")))
 
 
+@legacy_unmarked_class
 class TestXConsumerEntryGate(XMainBase):
     def test_tts_stage_while_pending_refuses_with_rc4_and_no_tts(self):
         self.main("scaffold")
