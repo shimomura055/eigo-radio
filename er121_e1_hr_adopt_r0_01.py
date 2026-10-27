@@ -18,6 +18,7 @@ import sys
 import time
 
 import er121_e1_hr_listening_page_01 as lp
+import er020_tts_retry_local_rewrite_01 as _lr_primitive
 
 DEFAULT_RUN = lp.RUN
 APPROVED_BY = "user"
@@ -143,7 +144,7 @@ def apply(run: str, level: str, segment: str, statement_ref: str) -> dict:
     ent["text"] = ent["canonical_text"]
     ent["asr_text"] = att.get("asr_text")
     if ent.get("local_rewrite_recovery"):
-        ent["local_rewrite_audio_superseded_by_human_approval"] = True
+        ent[_lr_primitive.HUMAN_APPROVAL_SUPERSEDES_LR_AUDIO_FLAG] = True
     if slow_info:
         ent["slowdown_applied"], ent["slowdown_info"], ent["original_path"] = True, slow_info, dst.replace(".wav", "_original.wav")
         ent["post_slowdown_asr_recheck"] = recheck_ref      # 実測結果への参照(path+判定)

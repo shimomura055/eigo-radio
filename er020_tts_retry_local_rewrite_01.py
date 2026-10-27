@@ -847,6 +847,11 @@ def _note_confirmed_kp_overlap(segment_id: str, before: str, after: str) -> None
         pass
 
 
+# LR-FALLBACK-M3-CROSS-FAMILY-AUDIT-01 委任_06(W4 P1): 人間承認で音声を原文版へ戻したentryに立てるフラグ名の単一ソース
+# (書込側=er121_e1_hr_adopt_r0_01、読取側=resolve_expected_text_after_local_rewrite)。
+HUMAN_APPROVAL_SUPERSEDES_LR_AUDIO_FLAG = "local_rewrite_audio_superseded_by_human_approval"
+
+
 def resolve_expected_text_after_local_rewrite(result: dict | None, canonical_text: str) -> tuple[str, str]:
     """FAMILY-Z-AUDIO-QA-DEFECT-RESOLUTION-01 委任_02(不具合③、OPEN-283修正、2026-10-19)。
     **Local Rewrite(LR)後の音声検査が照合すべき『正解原稿』を決める唯一の参照点。**
@@ -859,6 +864,9 @@ def resolve_expected_text_after_local_rewrite(result: dict | None, canonical_tex
     注意: Human Review Lockのkey(`record_outcome`のtext sha)とHR承認記録の同一性は**元の原稿のまま**維持する(本関数の対象外)。
     副作用なし・API 0(純関数)。LR記録の形は`run_local_rewrite_recovery`の戻り値(voice01/news_tail_fix/crosslevelが
     `resolved["local_rewrite_recovery"]`へそのまま保持する)に従う。"""
+    # 委任_06: 人間承認でLR前の原文音声へ戻したentry(フラグ真)は音声が原文なので、LR記録(1次/Z形2次)が残っていても原文が正解。
+    if isinstance(result, dict) and result.get(HUMAN_APPROVAL_SUPERSEDES_LR_AUDIO_FLAG):
+        return canonical_text, "canonical_text"
     rec = (result or {}).get("local_rewrite_recovery") if isinstance(result, dict) else None
     if not isinstance(rec, dict):
         # 委任_03(Opus_H条件2、論点1-a): Family Zのentry(er063.build_entry)は`local_rewrite_recovery`キーを持たず、LRの事実を

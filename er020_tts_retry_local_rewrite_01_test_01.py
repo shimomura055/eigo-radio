@@ -346,5 +346,45 @@ class IdentifyNgSpanHyphenNormalizationTest(unittest.TestCase):
         self.assertFalse(r["ng_span"]["found"])
 
 
+class HumanApprovalSupersedesLrExpectedTextTest(unittest.TestCase):
+    """LR-FALLBACK-M3-CROSS-FAMILY-AUDIT-01 委任_06(W4 P1): 人間承認で原文音声へ戻したentryの正解原稿は原文(API 0・純関数)。"""
+    CANON = "They could reach the people."
+    LR = "They can reach the people."
+
+    def _lr_entry(self):
+        return {"text": self.LR, "local_rewrite_recovery": {
+            "status": "RESOLVED_BY_LOCAL_REWRITE", "selection": {"selected": {"rewritten_segment": self.LR}}}}
+
+    def test_a_lr_without_flag_returns_lr_text(self):
+        self.assertEqual(m.resolve_expected_text_after_local_rewrite(self._lr_entry(), self.CANON), (self.LR, "local_rewrite_text"))
+
+    def test_b_lr_with_flag_returns_original(self):
+        e = self._lr_entry()
+        e[m.HUMAN_APPROVAL_SUPERSEDES_LR_AUDIO_FLAG] = True
+        self.assertEqual(m.resolve_expected_text_after_local_rewrite(e, self.CANON), (self.CANON, "canonical_text"))
+
+    def test_c_z_form_secondary_source_with_flag_returns_original(self):
+        z = {"audio_text_deviation": {"audio_text_after": self.LR}}
+        self.assertEqual(m.resolve_expected_text_after_local_rewrite(z, self.CANON), (self.LR, "local_rewrite_text"))
+        z[m.HUMAN_APPROVAL_SUPERSEDES_LR_AUDIO_FLAG] = True
+        self.assertEqual(m.resolve_expected_text_after_local_rewrite(z, self.CANON), (self.CANON, "canonical_text"))
+
+    def test_flag_name_single_source_shared_with_writer(self):
+        import er121_e1_hr_adopt_r0_01 as hr
+        self.assertIs(hr._lr_primitive, m)
+
+    def test_saved_y_e1_entries_read_only_fixture(self):
+        import json
+        base = "er121_output/family_y_production_01/redelivery_fee/run_01"
+        for lv in ("a2", "b1b"):
+            p = f"{base}/{lv}/audit/tts_generation_results.json"
+            if not os.path.exists(p):
+                self.skipTest("saved Y E-1 fixture absent")
+            ent = json.load(open(p, encoding="utf-8"))["segments"]["y_voice_1"]
+            self.assertTrue(ent.get(m.HUMAN_APPROVAL_SUPERSEDES_LR_AUDIO_FLAG))
+            txt, src = m.resolve_expected_text_after_local_rewrite(ent, ent["canonical_text"])
+            self.assertEqual((txt, src), (ent["canonical_text"], "canonical_text"))
+
+
 if __name__ == "__main__":
     unittest.main()
