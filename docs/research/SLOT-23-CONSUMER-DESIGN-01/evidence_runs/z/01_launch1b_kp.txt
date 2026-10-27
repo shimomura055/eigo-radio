@@ -1,0 +1,9 @@
+[GLOSS-ALIGN] 実効flag=ON (source=default, EIGO_KP_GLOSS_ALIGNMENT=None)
+[E2E] stage=kp mode=real ...
+[KP_REVIEW_PENDING] Human Review待ちです: KP(失敗ではありません。有料の後続工程には進みません)。
+  - level=b1b: 依頼書 er026_output/family_z_production_e2e_01/melos/run_kcp4_ev_z_01_s23f/key_phrases/b1b/kp_human_review_request.md
+  - level=a2: 依頼書 er026_output/family_z_production_e2e_01/melos/run_kcp4_ev_z_01_s23f/key_phrases/a2/kp_human_review_request.md
+  まとめ(統合依頼書): er026_output/family_z_production_e2e_01/melos/run_kcp4_ev_z_01_s23f/review_request.md
+  次の一手: 依頼書の表を見て `py er119_kp_human_review_cli_01.py select ...`(KP)/`grammar-select ...`(文法)で決める(または明示の `declare-absent`)。
+  再開コマンド(同じコマンドを1つだけ再実行): py er026_family_z_fiction_production_runner_01.py --story melos --run run_kcp4_ev_z_01_s23f --mode real --stages kp --approved-budget-jpy 30 --tts-execution-mode STANDARD
+  注意: 直近5分以内に同じrunを3回起動するとRESTART_STORM保護で自動停止します(select/reselect後は数分あけて再開)。
