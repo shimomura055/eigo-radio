@@ -142,6 +142,16 @@ def build_parser() -> argparse.ArgumentParser:
     gcommon(p)
     p.add_argument("--ids", default=None, help="対象の候補id(カンマ区切り)。核(pregen_stage)がids指定に未対応の版では拒否する(黙って全件生成しない)")
     p.add_argument("--managed-id", default="GRAMMAR-PREGEN-ALL-LEVELS-01", help="STOP適用範囲チェックの管理ID(有料操作の前に必ず確認する)")
+    p = sub.add_parser("confirm", help="人間可読の選定結果(+照合コード)から復元して確定内容保護へ渡す(委任_07R。実体はer128_form_readable_restore_01)")
+    p.add_argument("--from-readable", required=True, help="貼付テキストのfile。--dry-runで復元payloadと照合結果のみ出力")
+    p.add_argument("--run", required=True)
+    p.add_argument("--level", required=True, choices=("a2", "b1b"))
+    p.add_argument("--by", default=None)
+    p.add_argument("--user-ref", default="")
+    p.add_argument("--grammar-pending", action="store_true")
+    p.add_argument("--actor", default="user", choices=("user", "evidence"))
+    p.add_argument("--dry-run", action="store_true")
+    p.add_argument("--data-dir", default=None)
     p = sub.add_parser("declare-absent")
     p.add_argument("--runs", required=True, help="カンマ区切りのrun dir(個別run宣言。範囲・期限付きの宣言は受け付けない)")
     p.add_argument("--rounds", default="1", help="宣言が効く候補round(既定=1。再選定後のroundは別途明示宣言)")
@@ -194,6 +204,11 @@ def run(argv=None) -> int:
                     "pending": [r["level"] for r in rows if r.get("status") == rv.ST_PENDING],
                     "grammar_pending": [r["study_dir"] for r in grows if r.get("status") in rv.GRAMMAR_WAIT_STATUSES]})
             return 0
+        if a.cmd == "confirm":   # 薄い委譲(復元・照合・確定はer128_form_readable_restore_01 -> er128 cmd_from_form。ここでは検証しない)
+            import er128_form_readable_restore_01 as fr
+            if a.data_dir is None:
+                a.data_dir = fr.DEFAULT_DATA_DIR
+            return fr.run_confirm(a)
         if a.cmd.startswith("grammar-"):
             gd = _grammar_dir(a.run, a.level)
             if a.cmd == "grammar-show":

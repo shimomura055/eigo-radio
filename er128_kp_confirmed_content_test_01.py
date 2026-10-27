@@ -722,7 +722,7 @@ class TestIsolation(unittest.TestCase):
         offenders = []
         for p in glob.glob(os.path.join(ROOT, "*.py")):
             b = os.path.basename(p)
-            if "test" in b or b in ("er128_kp_confirmed_content_01.py", "er119_kp_human_review_01.py"):
+            if "test" in b or b in ("er128_kp_confirmed_content_01.py", "er119_kp_human_review_01.py", "er128_form_readable_restore_01.py", "er119_kp_human_review_cli_01.py"):   # 委任_07R: 人間可読復元tool(X/Z確定内容保護の入口。cmd_from_formへ委譲)とそのCLI入口はA/B/C共有関数ではない
                 continue
             if re.search(r"^\s*(import|from)\s+er128_", open(p, encoding="utf-8", errors="ignore").read(), re.M):
                 offenders.append(b)
