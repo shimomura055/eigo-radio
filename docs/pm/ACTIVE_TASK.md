@@ -1,8 +1,16 @@
-管理ID: PM-SSOT-SYNC-27(SSOT同期: SLOT-23 ①②③表示仕様6経路のFable受入判定・フォーム送信/コピー改善のFable受入[ユーザー実機確認済み]・SLOT-23委任_06F/07G・AIF委任_06反映、API 0)
-Status: OPEN-562 SLOT-23=PRODUCTION_WIRED(X/Y/Z×Std/Adv、Fable受入2026-10-27、限界=DEV複製run・実記事初回発火はAI島)/ OPEN-545 送信・コピー改善=PRODUCTION_WIRED(ユーザー実機確認) / OPEN-561 AI島=新表示仕様の適用準備完了・HR(hr_02 Q1)承認待ち / D-F1=是正済み(c43917f00)
-進行中: なし
-次: AI島HR承認後の完成(PREP_06.md: record_human_approval→assemble→player→標準builder→公開→page_verify)・最終報告
-STOP条件: 猿の手 run_fzcw_e1_01 のSTOP/RESTART_STORM_LOCK残置
-UDR-blocking: AI島HR Q1(AIs音声言い換え承認)・UDR-MONKEY-1
-QDC: 2026-10-27当日 約¥111(KP75 15.84+KCP 11.2+GPG 7.5+AIF 37.4+S23F 24.2+TRU 1.15+他)。SYNC-27はAPI 0
-報告単位Status: SSOT27同期完了
+管理ID: LR-FALLBACK-M3-CROSS-FAMILY-AUDIT-01(Local Rewrite・Fallback・M3 Gateの全Family横断調査と是正。原文=docs/pm/delegation_log/2026-10-27_LR-FALLBACK-M3-CROSS-FAMILY-AUDIT-01_USER.md)
+Status: **2026-10-27 PM-SSOT-SYNC-28でSSOT同期完了(OPEN-565〜567、分類A 4件是正済み[7dab92aba/8fbfae04c]、UD-1〜3ユーザー判断待ち、API 0)**。(旧) Phase 1(読取専用調査・API 0)を4並列委任(W1 LRデータフロー/W2 6経路/W3 M3×LR×HR/W4 全Role横断)。Phase 2=分類A/B/C→Aは是正、B/CはUSER_DECISION_REQUIRED整理
+進行中: 委任_01〜_04(sonnet-worker 4並列、docs/research/LR-FALLBACK-M3-CROSS-FAMILY-AUDIT-01/)
+次: Fable統合→分類A是正(委任_05〜)→検証→Opus条件A/C判定→SSOT/Git→報告(重要度順10項目)
+STOP条件: 未承認仕様のProduction実装禁止(LR後本文自動更新・M3緩和・自動採用条件変更は全て未承認)/AI島原稿・確定内容の変更禁止/有料run禁止(Phase 1)
+UDR-blocking: AI島HR Q1(hr_02)は本案件の結論待ちで据置(ユーザーが本件を上位案件と位置付け)・UDR-MONKEY-1据置
+QDC: 2026-10-27当日 約¥111消費済み。本案件Phase 1=API 0
+前案件: PM-SSOT-SYNC-27(同期完了、SLOT-23/OPEN-545 PRODUCTION_WIRED、OPEN-561 AI島HR待ち)
+
+===== 並行案件 =====
+管理ID: FZ-TELL-TALE-HEART-RESELECT-REMAKE-01(『告げ口心臓』学習項目V3再選定・本文音声再制作・完成版公開。原文=docs/pm/delegation_log/2026-10-27_FZ-TELL-TALE-HEART-RESELECT-REMAKE-01_USER.md)
+Status: **第1報済み・ユーザー選定待ち(SYNC-28反映済み: 文法0件=正常動作、D-1/D-2判断候補、OPEN-503/568、累計4.87円)**。(旧) 委任_01完了(第1報): 本文固定(run_sf_prod_02)・新run run_reselect_01でV3候補生成(Std9/Adv9、文法0件)・フォーム公開、実費4.08円。ユーザー選定待ち(rc=4)。本文音声はKP確定後(runner入口制約)。報告=docs/pm/RESULT_PACKET_FZTTR1.md
+進行中: 委任_01(sonnet-worker)
+次: 第1報(フォームURL提示)→ユーザー選定確定→Phase 2(確定保護検証・解説・KP音声・組立・公開)→最終報告
+STOP条件: 学習項目のAI独断確定禁止/本文変更禁止/LR採用segmentは完成版へ進めず報告/Cap ¥150
+QDC: Cap ¥150(Phase 1見積は委任_01 BUDGET_PLAN_01)

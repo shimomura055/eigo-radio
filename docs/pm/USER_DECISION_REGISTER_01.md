@@ -497,3 +497,12 @@
 ### 2026-10-27 PM-SSOT-SYNC-21 追記(既存行は書き換えず追記)
 - **UDR-AIIS-GRAM-1 AI島文法Top1/Top2選定(Std/Adv、OPEN-561/559、USER_DECISION_REQUIRED=ユーザーが選ぶ実作業)**: 決めること=AI島Std/Advそれぞれで、AI評価Top1/Top2(文法名+解説全文)から原則1件を選ぶ(0件可・2件同時選択不可)。提示=AI-ISLAND委任_02(フォーム新仕様化)後。KP/KW各10件は既にUSER_CONFIRMED(USER_02)。
 - **OPEN-526のUDR(HR候補選択+案A/B/C)=解消**: ユーザーのV3フォーム選定(USER_02)で置換、OPEN-526 CLOSED。上の『現在UDR-blocking: OPEN-526』は本追記で解消済み。UDR-MONKEY-1(OPEN-551)は据置。UDR-YRF-1(OPEN-539)はUSER_04でユーザー最終試聴PASS・承認=解消。
+
+### 2026-10-27 PM-SSOT-SYNC-28 追記(LR-FALLBACK-M3-CROSS-FAMILY-AUDIT-01・FZ-TELL-TALE-HEART-RESELECT-REMAKE-01。既存行は書き換えず追記)
+根拠(共通): `docs/research/LR-FALLBACK-M3-CROSS-FAMILY-AUDIT-01/{W1_LR_DATAFLOW_01,W2_SIX_ROUTES_01,W3_M3_LR_HR_01,W4_ROLE_COVERAGE_01,FIX_A_01,FIX_A_02}.md`、親=OPEN-565。いずれも区分D(真に新しい判断)、USER_DECISION_REQUIRED。
+- **UD-1 本文と音声の一致方式(OPEN-565/566、分類D)**: 決めること=LRで音声だけ語が変わった場合に、本文と音声をどう一致させるか。(a)X/Yへページ注記を付ける(Zと同様) (b)LR変更箇所の本文局所パッチをHR選択肢に加える(自動書換えなし、sha再バインド・照合コード・ページ再生成を実装、Opus条件A要) (c)LR不採用で原稿側を人が修正し再TTS。Fable推奨=(b)、確定KP/KW/文法に触れる場合は(c)。併せて既存公開3件(Word Gacha Adv `you've`→`you have`[OPEN-499、注記なし]/メロス Adv `Melos`→`He`/猿の手 Std `guest`→`visitor`)への遡及要否も判断。
+- **UD-2 AI島最終処理(OPEN-561/563、分類D、旧hr_02 Q1を置換)**: 決めること=(i)本文1語を音声に合わせ更新(AI agents/AI systems、再バインド可、再TTS不要) (ii)音声承認で本文`AIs`維持+注記。Fable推奨=(i)。
+- **UD-3 M3 LR項とGate範囲(OPEN-312/566、分類D)**: 決めること=(A)現状維持 (B)全LR role+Zへ検知拡張 (C)警告化(=緩和)。Fable推奨=(B)、緩和(C)は不採用。M3 `LOCAL_REWRITE_RECOVERY`はユーザー明示承認原文なし・導入根拠は統一仕様で消滅。**UDR #6(Deferred)はUD-3へ統合。**
+- **告げ口心臓 D-1 文法0件の確定(OPEN-503、分類D)**: 決めること=文法候補0件(正常動作、Trial-08方式どおり、不具合なし)のまま進めるか。Fable推奨=0件確定。根拠=`docs/research/FZ-TELL-TALE-HEART-RESELECT-REMAKE-01/GRAMMAR_ZERO_INVESTIGATION_01.md`。
+- **告げ口心臓 D-2 Z/物語文向け文法抽出Prompt対象定義の新設(OPEN-503、分類D、新仕様)**: Trial+Opus条件A要。Fable推奨=見送り。
+- **次工程をブロックするUDR(追記)**: UD-2(AI島完成=OPEN-561のHR承認待ち)、D-1(告げ口心臓の文法確定→本文音声制作)。UDR-MONKEY-1は据置。UD-1/UD-3は仕様判断(AI島以外の新規実装をブロック、既存公開は現状維持)。

@@ -22639,3 +22639,11 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - OPEN-540: 限定解除=PRODUCTION_WIRED(Fable受入。委任_04〜06、6e7fa7cf5/5db9e40bc/88b1a5173、実経路hrq_rows==1)。CURRENT_SPEC統一仕様節の限定事項は解消へ更新。
 - OPEN-551: IMPLEMENTED(52c07550d)。猿の手Std c10のfallback clip公開版混入→UDR-MONKEY-1(分類D)を起票。
 - Git運用違反(並行Agentのstash/pop)を検証: 喪失なし(OPEN-555、GIT_INTEGRITY_01.md)。新規OPEN 553〜555。
+
+### 2026-10-27 PM-SSOT-SYNC-28 LR-FALLBACK-M3-CROSS-FAMILY-AUDIT-01 監査結果とFable 11-8判定
+- 判定: 真因=LRはTTS入力のみ書換える設計(本文書込み経路なし、X/Y/Z共通、バグではない)。分類A 4件を是正(API 0、Gate/音声/Prompt/閾値不変): F1 er127 LR block記録保全・F2 Std L4 `LR_REWRITTEN`警告・OPEN-564 `_merge` fallback_used実採用attempt準拠(7dab92aba)、人間承認原文採用音声のLR正解原稿解決(`HUMAN_APPROVAL_SUPERSEDES_LR_AUDIO_FLAG`、8fbfae04c)。B/C項目はUSER_DECISION_REQUIRED(UD-1本文と音声の一致方式[推奨(b)]/UD-2 AI島最終処理[推奨(i)、hr_02 Q1を置換]/UD-3 M3 LR項とGate範囲[推奨(B)、緩和不採用])。M3 `LOCAL_REWRITE_RECOVERY`はユーザー明示承認原文なし、導入根拠は統一仕様で消滅。公開済み不一致3件(Word Gacha Adv/メロス Adv/猿の手 Std)。
+- 成果物: docs/research/LR-FALLBACK-M3-CROSS-FAMILY-AUDIT-01/{W1_LR_DATAFLOW_01,W2_SIX_ROUTES_01,W3_M3_LR_HR_01,W4_ROLE_COVERAGE_01,FIX_A_01,FIX_A_02}.md。原文=docs/pm/delegation_log/2026-10-27_LR-FALLBACK-M3-CROSS-FAMILY-AUDIT-01_USER.md。新規OPEN 565〜567。Production/Prompt/test/保存データは本SYNCで無変更。API 0。
+
+### 2026-10-27 PM-SSOT-SYNC-28 FZ-TELL-TALE-HEART-RESELECT-REMAKE-01 第1報
+- 固定正本=run_sf_prod_02(Adv e11b84dd…/Std b94c7305…)、新run `run_reselect_01`でV3学習項目候補生成(KP/KW Std9/Adv9、文法0件)・V3フォーム公開。本文TTSは選定後(runner入口がKP確定前提)。実費累計約4.87円/Cap150円(委任_01=4.08円、委任_02の生応答probe=0.79円)。
+- 文法0件=正常動作(Trial-08方式どおり、LLMが`features:[]`を返した、parser/Validator/上限/NG/事前生成/フォームは正常、不具合なし、修正・再送不要)。判断候補D-1(0件確定、Fable推奨)・D-2(Z/物語文向け抽出Prompt対象定義新設=新仕様、推奨見送り)。軽微=OPEN-568。ユーザー選定待ち。根拠=docs/research/FZ-TELL-TALE-HEART-RESELECT-REMAKE-01/{FIXATION_01,BUDGET_PLAN_01,BUDGET_LOG_01,AUDIO_PHASE1_01,GRAMMAR_ZERO_INVESTIGATION_01}.md。
