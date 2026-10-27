@@ -9,6 +9,8 @@ grammar[]は正式Part 2候補が無い限り空(仮データを入れない)。
 実行: .venv\\Scripts\\python.exe docs\\research\\KP-GATE-DROP-BACKFILL-PRODUCTION-01\\tools\\export_form_data_01.py
         --cand <kp_candidates.json> --slug <slug> --level <a2|b1b> --name <表示名> --family <X|Y|Z> --out <out.json>
         [--grammar <grammar_candidates.json>] [--source-kind PRODUCTION_FORMAL_PATH|REPLAY_FROZEN_INITIAL_REAL_BACKFILL] [--run <run名>] [--note-ja <注記>]
+        [--grammar-study-dir <study_dir>]   (Production: 文法のstudy dirから form_grammar_bundle(level) を直接読む。事前生成が不完全/失敗/sha不整合ならデータを出さずエラー[rc=4]。
+                                             --grammar-bundle[保存済みbundle json]とは同時に指定できない)
 """
 from __future__ import annotations
 
@@ -18,6 +20,7 @@ import json
 import os
 import sys
 
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 LEVEL_LABEL = {"a2": "Standard", "b1b": "Advanced"}
 DEFAULT_CAP = 12                                   # 2026-10-27 P7/W5'配線(KP_CANDIDATE_MAX 8->12)。docに記録が無い場合の既定
 DEFAULT_CAP_BY_KIND = {"phrase": 7, "word": 5}
@@ -199,6 +202,16 @@ def grammar_from_bundle(bundle: dict | None) -> tuple:
     return out, bundle.get("grammar_status")
 
 
+def grammar_bundle_from_study_dir(study_dir: str, level: str) -> dict:
+    """Production経路: 文法study dirから `er120_part2_wiring_01.form_grammar_bundle(study_dir, level=)`(SCHEMA_CONTRACT_01 §5)を直接読む。
+    事前生成が不完全・part2_failed.jsonあり・explanations/sha不整合・level不一致は、データを出さずに例外(Part2Error)。呼出側は出力ファイルを作らずエラー終了する
+    (grammar_status=candidates_availableにもno_candidates_foundにもしない=『要生成』と区別できない仮データを作らない)。"""
+    if ROOT not in sys.path:
+        sys.path.insert(0, ROOT)
+    import er120_part2_wiring_01 as p2w
+    return p2w.form_grammar_bundle(study_dir, level=level)
+
+
 def convert(doc: dict, *, slug: str, level: str, name: str, family: str, run: str, source_kind: str, note_ja: str, text_sha256: str | None = None,
             grammar: list | None = None, cand_path: str | None = None, grammar_status: str | None = None, grammar_source: dict | None = None) -> dict:
     cands = sorted(doc.get("candidates") or [], key=lambda c: c.get("ai_rank") or 99)
@@ -255,12 +268,27 @@ def main(argv=None) -> int:
     ap.add_argument("--note-ja", default="")
     ap.add_argument("--text-sha256", default=None)
     ap.add_argument("--grammar-bundle", default=None, help="form_grammar_bundle.json(SCHEMA_CONTRACT_01 §5)。文法候補+解説全文をフォームデータへ取り込む")
+    ap.add_argument("--grammar-study-dir", default=None, help="文法のstudy dir(Production経路)。form_grammar_bundleを直接読む。不完全/失敗/不整合はデータを出さずrc=4で終了")
     ap.add_argument("--grammar-source-json", default=None, help="文法の出所(summary_<level>.json等)から grammar_source に入れるJSON")
     a = ap.parse_args(argv)
     with open(a.cand, encoding="utf-8") as f:
         doc = json.load(f)
     gram, gstatus, gsrc = [], None, None
-    if a.grammar_bundle:
+    if a.grammar_study_dir and a.grammar_bundle:
+        raise SystemExit("--grammar-study-dir と --grammar-bundle は同時に指定できません(出所を1つにしてください)")
+    if a.grammar_study_dir:
+        try:
+            bundle = grammar_bundle_from_study_dir(a.grammar_study_dir, a.level)
+        except (RuntimeError, ValueError, OSError) as e:   # Part2Error(Part2Stale等)/KpReviewError系。出力ファイルは作らない
+            print(json.dumps({"status": "GRAMMAR_NOT_READY", "out": None, "data_warnings": [{"kind": "grammar_pregen_incomplete_or_inconsistent", "error": f"{type(e).__name__}: {e}"}],
+                              "next": f"py er119_kp_human_review_cli_01.py grammar-pregen --run <run_dir> --level {a.level} (未生成分だけ事前生成。制作コマンドを同じまま再実行でも可)"},
+                             ensure_ascii=False), file=sys.stderr)
+            return 4
+        gram, gstatus = grammar_from_bundle(bundle)
+        if a.grammar_source_json:
+            with open(a.grammar_source_json, encoding="utf-8") as f:
+                gsrc = json.load(f)
+    elif a.grammar_bundle:
         with open(a.grammar_bundle, encoding="utf-8") as f:
             bundle = json.load(f)
         if bundle.get("level") != a.level:

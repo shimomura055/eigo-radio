@@ -10,12 +10,17 @@
   py er119_kp_human_review_cli_01.py ng|unng|resolve-gloss|mark-published ...
   py er119_kp_human_review_cli_01.py declare-absent --runs <dir>[,<dir>] --reason ... --by ... [--user-ref ...]
 
-Part 2(文法)の操作(kind="grammar"。API 0。再抽出は次回起動でStep A'' 1 call):
-  py er119_kp_human_review_cli_01.py grammar-show --run <run_dir>
-  py er119_kp_human_review_cli_01.py grammar-select --run <run_dir> --choice top1 --accept-ai --candidates-sha <表示sha> --by <名前>
-  py er119_kp_human_review_cli_01.py grammar-select --run <run_dir> --choice top2|reselect|omit|reextract --reason <理由> --candidates-sha <表示sha> --by <名前>
-  py er119_kp_human_review_cli_01.py grammar-ng --run <run_dir> --rank N --reason ... --by ...
-  py er119_kp_human_review_cli_01.py grammar-unng --run <run_dir> --sentence "<英文>"|--candidate-id <id> --reason ... --by ...
+Part 2(文法)の操作(kind="grammar"。**--level必須**[b1b=Advanced / a2=Standard。pathや先頭dirから推定しない]。API 0。再抽出は次回起動でStep A'' 1 call):
+  py er119_kp_human_review_cli_01.py grammar-show --run <run_dir> --level b1b
+  py er119_kp_human_review_cli_01.py grammar-select --run <run_dir> --level b1b --choice pick --ids <id>[,<id>] [--accept-ai(AI推奨1件のみの了承)] [--reason <理由>] --candidates-sha <表示sha> --by <名前>
+  py er119_kp_human_review_cli_01.py grammar-select --run <run_dir> --level b1b --choice top1 --accept-ai --candidates-sha <表示sha> --by <名前>
+  py er119_kp_human_review_cli_01.py grammar-select --run <run_dir> --level b1b --choice top2|reselect|omit|reextract --reason <理由> --candidates-sha <表示sha> --by <名前>
+  py er119_kp_human_review_cli_01.py grammar-ng --run <run_dir> --level b1b --rank N --reason ... --by ...
+  py er119_kp_human_review_cli_01.py grammar-unng --run <run_dir> --level b1b --sentence "<英文>"|--candidate-id <id> --reason ... --by ...
+  py er119_kp_human_review_cli_01.py grammar-accept-translation --run <run_dir> --level b1b --candidate-id <id>[,<id>] --user-ref <ユーザー発言のdelegation_logパス> --by <名前> [--reason ...]
+      (Part 1の訳とStep Bの【日本語訳】の食い違いISSUEを、ユーザー了承として記録して解消する。--user-ref必須・記録が残る・再送は冪等)
+  py er119_kp_human_review_cli_01.py grammar-pregen --run <run_dir> --level b1b [--ids <id>[,<id>]] [--all-candidates] [--managed-id <ID>]
+      (解説の事前生成。**有料**[Step B 約0.3円/件、先頭8件まで]。未生成分だけ作り、signature一致は再利用[API 0]。--all-candidatesはauto採用/確定済みrunで全候補を見て選び直すための明示opt-in)
   (status は KP と文法の両方を表示。不在宣言 declare-absent はKPと文法の両方に効く[このrun・この候補round限り])
 
 番号=kp_human_review_request.mdの表の「番号」(ai_rank)。直接 kp_human_review.json を手編集すると署名不一致で全消費者がSTOPする。
@@ -23,12 +28,16 @@ Part 2(文法)の操作(kind="grammar"。API 0。再抽出は次回起動でStep
 from __future__ import annotations
 
 import argparse
+import importlib.util
+import inspect
 import json
+import os
 import sys
 
 import er119_grammar_review_01 as gr
 import er119_kp_human_review_01 as rv
 import er120_part2_grammar_production_01 as g
+import er120_part2_wiring_01 as p2w
 
 
 def _parse_ng(items: list) -> dict:
@@ -98,26 +107,42 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--rank", type=int, required=True)
     p.add_argument("--gloss", required=True)
     p.add_argument("--by", required=True)
+    def gcommon(p):
+        p.add_argument("--run", required=True, help="run dir")
+        p.add_argument("--level", required=True, choices=("a2", "b1b"), help="b1b=Advanced / a2=Standard(必須。先頭dirやpathから推定しない)")
     p = sub.add_parser("grammar-show")
-    common(p, level=False)
+    gcommon(p)
     p = sub.add_parser("grammar-select")
-    common(p, level=False)
-    p.add_argument("--choice", required=True, choices=("top1", "top2", "omit", "reselect", "reextract"))
+    gcommon(p)
+    p.add_argument("--choice", required=True, choices=("pick", "top1", "top2", "omit", "reselect", "reextract"),
+                   help="pick=--idsで1〜2件を選ぶ(0件はomit)。top1/top2=pickの単件ショートカット")
+    p.add_argument("--ids", default=None, help="--choice pick のとき: 候補id(カンマ区切り、最大2件。クリック順に依存せず本文出現順に正規化される)")
     p.add_argument("--candidates-sha", required=True, help="表示した候補のcandidates_sha256(古い候補への操作を拒否する)")
-    p.add_argument("--reason", default="", help="top2/reselect/omit/reextractは必須")
-    p.add_argument("--accept-ai", action="store_true", help="AI推奨(TOP1)の了承。--choice top1 のときだけ")
+    p.add_argument("--reason", default="", help="AI推奨(1件のみ)以外のpick・top2/reselect/omit/reextractは必須")
+    p.add_argument("--accept-ai", action="store_true", help="AI推奨(候補1)1件だけの了承。--choice top1 または pick(--idsがAI推奨1件)のときだけ")
     p.add_argument("--by", required=True)
     p = sub.add_parser("grammar-ng")
-    common(p, level=False)
+    gcommon(p)
     p.add_argument("--rank", type=int, required=True)
     p.add_argument("--reason", required=True)
     p.add_argument("--by", required=True)
     p = sub.add_parser("grammar-unng")
-    common(p, level=False)
+    gcommon(p)
     p.add_argument("--sentence", default=None)
     p.add_argument("--candidate-id", default=None)
     p.add_argument("--reason", required=True)
     p.add_argument("--by", required=True)
+    p = sub.add_parser("grammar-accept-translation", help="Part 1訳とStep B訳の食い違いISSUEをユーザー了承として記録する")
+    gcommon(p)
+    p.add_argument("--candidate-id", required=True, help="ISSUEに記録された候補id(カンマ区切りで複数可)")
+    p.add_argument("--user-ref", required=True, help="ユーザー了承の発言原文を保存したファイル(delegation_logのpath)。存在しないpathは拒否")
+    p.add_argument("--by", required=True)
+    p.add_argument("--reason", default="", help="省略時は『ユーザーが食い違いを了承(--user-refの発言)』を記録")
+    p = sub.add_parser("grammar-pregen", help="文法解説の事前生成(有料: Step B約0.3円/件)。未生成分だけ作る")
+    gcommon(p)
+    p.add_argument("--ids", default=None, help="対象の候補id(カンマ区切り)。核(pregen_stage)がids指定に未対応の版では拒否する(黙って全件生成しない)")
+    p.add_argument("--all-candidates", action="store_true", help="auto採用/確定済みrunでも全候補(<=8)の解説を生成する(事後Reviewで選び直すための明示opt-in・有料)")
+    p.add_argument("--managed-id", default="GRAMMAR-PREGEN-ALL-LEVELS-01", help="STOP適用範囲チェックの管理ID(有料操作の前に必ず確認する)")
     p = sub.add_parser("declare-absent")
     p.add_argument("--runs", required=True, help="カンマ区切りのrun dir(個別run宣言。範囲・期限付きの宣言は受け付けない)")
     p.add_argument("--rounds", default="1", help="宣言が効く候補round(既定=1。再選定後のroundは別途明示宣言)")
@@ -126,6 +151,32 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--by", required=True)
     p.add_argument("--user-ref", default="", help="ユーザー発言の参照。by がAI(Fable/Claude等)の場合は必須")
     return ap
+
+
+def _split(v) -> list:
+    return [x.strip() for x in (v or "").split(",") if x.strip()]
+
+
+def _grammar_dir(run: str, level: str) -> str:
+    """そのlevelの文法study dir。levelは必須(先頭dir/pathからの推定はしない)。無い/曖昧/level不一致はエラー(次の一手つき)。"""
+    dirs = gr.discover_dirs(run, level)
+    if not dirs:
+        raise rv.KpReviewError(f"{run}に level={level} の文法(Part 2)のreview/候補が見つかりません。次の一手: 制作コマンドを実行して候補を生成してください"
+                               f"(状況確認: py er119_kp_human_review_cli_01.py status --run {run})")
+    if len(dirs) > 1:
+        raise rv.KpReviewError(f"level={level} の文法study dirが複数あります({dirs})。どれか1つにしてください(先頭を黙って選びません)")
+    return dirs[0]
+
+
+def _stop_guard(run: str, managed_id: str) -> None:
+    """有料操作の前のSTOP適用範囲チェック(tools/stop_scope_check_01.py の check)。適用があれば有料呼出をせず拒否する(rc=2。解除はFable/ユーザーのみ)。"""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tools", "stop_scope_check_01.py")
+    spec = importlib.util.spec_from_file_location("stop_scope_check_01", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    res = mod.check([managed_id], run)
+    if res["stop"]:
+        raise rv.KpReviewError(f"STOP適用中のため有料のgrammar-pregenを実行しません: {res['applicable']}。STOPの解除はFable/ユーザーのみです")
 
 
 def _print(obj) -> None:
@@ -145,27 +196,51 @@ def run(argv=None) -> int:
                     "grammar_pending": [r["study_dir"] for r in grows if r.get("status") in rv.GRAMMAR_WAIT_STATUSES]})
             return 0
         if a.cmd.startswith("grammar-"):
-            gdirs = gr.discover_dirs(a.run)
-            if not gdirs:
-                raise rv.KpReviewError(f"{a.run}に文法(Part 2)のreview/候補が見つかりません(制作を実行して候補を生成してください)")
-            gd = gdirs[0]
+            gd = _grammar_dir(a.run, a.level)
             if a.cmd == "grammar-show":
                 doc, review = gr.load_candidates(gd), gr.load_review(gd)
-                print(gr.render_request_md(doc, review, run_hint=a.run))
+                print(gr.render_request_md(doc, review, run_hint=a.run, study_dir=gd))
                 return 0
             if a.cmd == "grammar-select":
-                review = gr.op_decide(gd, choice=a.choice, candidates_sha256=a.candidates_sha, reason=a.reason, by=a.by, accept_ai=a.accept_ai)
+                ids = _split(a.ids)
+                if a.choice == "pick" and not ids:
+                    raise rv.KpReviewError("--choice pick には --ids <id>[,<id>] が必要です(0件にするなら --choice omit --reason ...)")
+                if a.choice != "pick" and ids:
+                    raise rv.KpReviewError("--ids は --choice pick のときだけ指定できます(top1/top2は単件ショートカット)")
+                review = gr.op_decide(gd, choice=a.choice, candidates_sha256=a.candidates_sha, reason=a.reason, by=a.by, accept_ai=a.accept_ai, ids=(ids or None))
                 _print({"status": review["status"], "selection": review.get("selection"), "revision": review["revision"],
                         "next": ("再抽出が要求されました。制作コマンドを同じまま再実行すると候補を再抽出します(Step A'' 1 call)" if review["status"] == rv.ST_REEXTRACT_REQUESTED
                                  else "制作コマンドを同じまま再実行してください(finalize→後続が進みます)")})
                 return 0
             if a.cmd == "grammar-ng":
                 review = gr.op_ng(gd, rank=a.rank, reason=a.reason, by=a.by)
-                _print({"status": review["status"], "next": "候補listが更新されました。依頼書(grammar-show)を再確認してください"})
+                _print({"status": review["status"], "next": f"候補listが更新されました。制作コマンドを再実行して解説を事前生成してから、grammar-show --run {a.run} --level {a.level} で再確認してください"})
                 return 0
             if a.cmd == "grammar-unng":
                 _print({"removed": gr.op_unng(gd, sentence=a.sentence, candidate_id=a.candidate_id, reason=a.reason, by=a.by),
                         "note": "現在の候補listには戻りません(次の新規抽出/reextractから効きます)"})
+                return 0
+            if a.cmd == "grammar-accept-translation":
+                if not os.path.exists(a.user_ref):
+                    raise rv.KpReviewError(f"--user-ref のファイルが存在しません: {a.user_ref}(ユーザー了承の発言原文を保存したdelegation_logのpathを指定してください)")
+                ids = _split(a.candidate_id)
+                added = gr.op_accept_translation_diff(gd, ids=ids, by=a.by, user_ref=a.user_ref,
+                                                      reason=(a.reason or "ユーザーがPart 1訳とStep B訳の食い違いを了承(--user-refの発言)"))
+                _print({"accepted_now": added, "already_recorded": [i for i in ids if i not in added],
+                        "next": "制作コマンドを同じまま再実行してください(finalize→後続が進みます)。別の文法を選ぶ/省略する場合は grammar-select"})
+                return 0
+            if a.cmd == "grammar-pregen":
+                ids = _split(a.ids)
+                if ids and "ids" not in inspect.signature(p2w.pregen_stage).parameters:
+                    raise rv.KpReviewError("この版の核(er120_part2_wiring_01.pregen_stage)は --ids に未対応です。--ids を外して実行してください"
+                                           "(未生成分だけ作られ、signature一致の解説は再利用[API 0]されます)")
+                _stop_guard(a.run, a.managed_id)
+                kw = {"ids": ids} if ids else {}
+                nxt = f"py er119_kp_human_review_cli_01.py grammar-pregen --run {a.run} --level {a.level}" + (" --all-candidates" if a.all_candidates else "")
+                res = p2w.pregen_stage(gd, level=a.level, next_command=nxt, run_hint=a.run, all_candidates=a.all_candidates, **kw)
+                _print({"generated": res["generated"], "reused": res["reused"], "skipped_over_cap": res["skipped_over_cap"], "confirmed": res["confirmed"],
+                        "next": (f"py er119_kp_human_review_cli_01.py grammar-show --run {a.run} --level {a.level} で全候補の解説を確認し、grammar-select で選んでください"
+                                 if not res["confirmed"] or a.all_candidates else "制作コマンドを同じまま再実行してください")})
                 return 0
         if a.cmd == "declare-absent":
             runs = [x.strip() for x in (a.runs or "").split(",") if x.strip()]

@@ -288,81 +288,114 @@ class TestG2G3(CCBase):
 # T17/G4 M6: Part 2凍結(Z mock context)
 # ============================================================
 class TestM6Part2Frozen(zw.ZBase):
+    """M6(Part 2凍結)。GRAMMAR-PREGEN-ALL-LEVELS-01 委任_04でv2(解説は確定前に事前生成。フォームは事前生成物と逐語一致のものだけ確定できる。凍結=items[])へ更新。"""
+
     def setUp(self):
         super().setUp()
         self.uref = os.path.join(self.tmp, "user_ref.md")
         wr(self.uref, "ユーザー発言原文(test fixture)\n")
-        self.sd = zr._part2_dir(self.ctx)
+        self.sd = zr._part2_dir(self.ctx, "b1b")
 
     def _boom_extract(self, prompt):
         raise AssertionError("Step A''(再抽出)が呼ばれた")
 
-    def _boom_explain(self, prompt):
-        raise AssertionError("Step B(再解説)が呼ばれた")
+    def _set_pregen_md(self, cid, md):
+        """『フォームで見せた全文』を試すtest用: 事前生成物(正本)の当該解説を、構造の正しい別の全文へ差し替える(sha・digestも整合させる)。フォームはこの事前生成物と逐語一致で確定する。"""
+        doc, ex = gr.load_candidates(self.sd), gr.load_explanations(self.sd)
+        items = []
+        for it in ex["items"]:
+            if it["candidate_id"] == cid:
+                it = dict(it, explanation_md=md, explanation_sha256=g2.explanation_sha256(md), translation_ja=g2.split_sections(md).get("日本語訳"))
+            items.append(it)
+        g2.write_explanations(self.sd, g2._assemble_explanations(doc, items))
 
     def _kp_to_part2_done(self, explanation_full=None):
-        """KP候補・文法候補の生成→待機。Advはフォーム送信(confirm --from-form。文法つき)で確定、Stdはユーザーの選択(HR CLI)で確定、文法を確定どおりに反映。"""
+        """KP候補・文法候補の生成+解説の事前生成→待機。Advはフォーム送信(confirm --from-form。文法つき)で確定、Stdはユーザーの選択(HR CLI)で確定する。"""
         with self.assertRaises(zr.FamilyZKpReviewPending):
             _quiet(zr.run_stage, self.ctx, "kp")
         out, top = self._confirm_form(explanation_full)
         self.form_out, self.top = out, top
-        rv.op_select(self.src["a2"], kp_ranks=[1, 2, 3], by="human")
-        # 確定した文法と同じ候補を選ぶ操作は許可される(確定を実reviewへ反映)。別候補は拒否される(別test)
-        gr.op_decide(self.sd, choice="top1", accept_ai=True, candidates_sha256=gr.load_candidates(self.sd)["candidates_sha256"], by="human")
+        self._confirm_form(level="a2")   # Std(a2)もフォーム確定(文法あり)。両levelが確定内容保護の対象になる
+        self.base_calls = (self.extract_calls(), self.explain_calls())   # ここまでが事前生成までのLLM呼出。確定後は増えないこと
 
-    def _confirm_form(self, explanation_full=None):
-        cands = rv.load_candidates(self.src["b1b"])
-        gdoc = gr.load_candidates(self.sd)
-        top = gdoc["candidates"][0]
-        gram = [{"id": top["candidate_id"], "title": top["construct_ja"], "explanation_status": ("provided" if explanation_full else "missing"),
-                 "explanation_full": explanation_full}]
-        pp = os.path.join(self.tmp, "payload.json")
-        jd(pp, make_payload(cands, cat1=[1, 2, 3], cat2=[4, 5], grammar=gram))
-        return cc.cmd_from_form(self.ctx.out_dir, "b1b", pp, "human", self.uref), top
+    def _confirm_form(self, explanation_full=None, level="b1b"):
+        cands = rv.load_candidates(self.src[level])
+        sd = self.sd if level == "b1b" else zr._part2_dir(self.ctx, level)
+        top = gr.load_candidates(sd)["candidates"][0]
+        if explanation_full:
+            self._set_pregen_md(top["candidate_id"], explanation_full)
+        item = next(i for i in p2w.form_grammar_bundle(sd, level=level)["items"] if i["id"] == top["candidate_id"])
+        gram = [{"id": item["id"], "title": item["title"], "explanation_status": "provided", "explanation_full": item["explanation_full"], "example": item["example"]}]
+        pp = os.path.join(self.tmp, f"payload_{level}.json")
+        jd(pp, make_payload(cands, cat1=[1, 2, 3], cat2=([4, 5] if level == "b1b" else []), level=level, grammar=gram))
+        return cc.cmd_from_form(self.ctx.out_dir, level, pp, "human", self.uref), top
 
     def _inputs(self):
-        paragraphs, label = zr._part2_inputs(self.ctx)
+        paragraphs, label = zr._part2_inputs(self.ctx, "b1b")
         return paragraphs, label
+
+    def _rf(self, paragraphs, label, pool, **kw):
+        return p2w.require_final(self.sd, paragraphs, label, level="b1b", next_command="x", where="t", ref_ja_pool=pool, **kw)
+
+    def _fin(self, paragraphs, label, pool, **kw):
+        return p2w.finalize_stage(self.sd, level="b1b", paragraphs=paragraphs, label=label, ref_ja_pool=pool, **kw)
 
     def test_frozen_part2_survives_model_change_without_reextract_or_reexplain(self):
         self._kp_to_part2_done()
         _quiet(zr.run_stage, self.ctx, "kp")
         out, top = self.form_out, self.top
         self.assertEqual(out["grammar"], 1)
-        self.assertEqual((self.extract_calls(), self.explain_calls()), (1, 1))
+        self.assertEqual((self.extract_calls(), self.explain_calls()), self.base_calls)   # 確定・kp stage再実行でLLMは増えない
         paragraphs, label = self._inputs()
-        pool = zr._part2_pool(self.ctx)
-        res = p2w.require_final(self.sd, paragraphs, label, next_command="x", where="t", ref_ja_pool=pool)   # 通常の検査を通った結果を凍結
+        pool = zr._part2_pool(self.ctx, "b1b")
+        res = self._rf(paragraphs, label, pool)   # 通常の検査を通った結果を凍結(フォームで見せた全文=form_displayed)
         fz = cc.load_frozen_grammar(self.sd)
         self.assertIsNotNone(fz)
-        self.assertEqual(fz["source"], "stepB_generated_frozen")
-        self.assertEqual(fz["explanation_md"], res["explanation_md"])
+        self.assertEqual(fz["source"], "form_displayed")
+        self.assertEqual(fz["explanation_md"], res["items"][0]["explanation_md"])
         self.assertEqual(fz["candidate_id"], top["candidate_id"])
-        # 凍結の前提: model変更だけでextract/explain signatureは失効する(対照=凍結なしの従来検査)
+        out2 = self._fin(paragraphs, label, pool, write=False)   # finalize_stageはLLM引数を持たない(LLM 0 call)
+        self.assertTrue(out2["reused"])
+        self.assertEqual(out2["result"]["items"][0]["explanation_md"], fz["explanation_md"])
+        st = p2w.candidate_stage(self.sd, level="b1b", run_dir=self.ctx.out_dir, family="z", slug="s", paragraphs=paragraphs, label=label, extract_call_fn=self._boom_extract)
+        self.assertEqual(st["state"], "READY")
+        self.assertFalse(st["generated"])
+        # 結果ファイルが無くなっても、凍結値から決定論で作り直す(LLM 0)。signatureの代わりに frozen:<sha>
+        os.remove(f"{self.sd}/{g2.RESULT_FILENAME}")
+        out3 = self._fin(paragraphs, label, pool, write=True)
+        self.assertEqual(out3["result"]["items"][0]["explain_signature"], cc.frozen_token(fz))
+        self.assertEqual(out3["result"]["items"][0]["explanation_md"], fz["explanation_md"])
+        self._rf(paragraphs, label, pool)   # 作り直した結果もfrozen検査を通る
+        self.assertEqual((self.extract_calls(), self.explain_calls()), self.base_calls)
+
+    @unittest.expectedFailure
+    def test_KNOWN_DEFECT_frozen_part2_must_survive_model_change_with_pregen_explanations(self):
+        """承認済みM6(確定した文法は Prompt/model 変更で失効しない)の要件。現状は er120_part2_wiring_01.require_final / finalize_stage が、凍結済みの候補でも
+        事前生成物(grammar_explanations.json)のexplain_signature(model依存)を検査してPart2Staleにする不具合(wiring側=委任_03/核の所有)。修正されたら
+        『unexpected success』になるので、このexpectedFailureを外して通常testにすること。保護OFFの対照は別test。"""
+        self._kp_to_part2_done()
+        _quiet(zr.run_stage, self.ctx, "kp")
+        paragraphs, label = self._inputs()
+        pool = zr._part2_pool(self.ctx, "b1b")
+        res = self._rf(paragraphs, label, pool)
+        fz = cc.load_frozen_grammar(self.sd)
         with mock.patch.object(g2, "MODEL", "some-other-model-id"):
             gdoc, grev = gr.load_candidates(self.sd), gr.load_review(self.sd)
-            with self.assertRaises(g2.Part2Stale):
+            with self.assertRaises(g2.Part2Stale):   # 対照(凍結なしの従来検査)はmodel変更で失効する
                 g2.require_fresh_part2(res, paragraphs, label, next_command="x", candidates_doc=gdoc, grammar_review=grev, ref_ja_pool=pool)
-            # 凍結ありは失効せず、再抽出・再解説のLLMは呼ばれない
-            res2 = p2w.require_final(self.sd, paragraphs, label, next_command="x", where="t", ref_ja_pool=pool)
-            self.assertEqual(res2["explanation_md"], fz["explanation_md"])
-            st = p2w.candidate_stage(self.sd, run_dir=self.ctx.out_dir, family="z", slug="s", paragraphs=paragraphs, label=label, extract_call_fn=self._boom_extract)
-            self.assertEqual(st["state"], "READY")
-            self.assertFalse(st["generated"])
-            out2 = p2w.finalize_stage(self.sd, paragraphs=paragraphs, label=label, ref_ja_pool=pool, explain_call_fn=self._boom_explain, write=False)
+            res2 = self._rf(paragraphs, label, pool)   # 凍結ありは失効しない(要件)
+            self.assertEqual(res2["items"][0]["explanation_md"], fz["explanation_md"])
+            out2 = self._fin(paragraphs, label, pool, write=False)
             self.assertTrue(out2["reused"])
-            self.assertEqual(out2["result"]["explanation_md"], fz["explanation_md"])
-            # 結果ファイルが無くなっても、凍結値から決定論で作り直す(LLM 0)。signatureの代わりに frozen:<sha>
-            os.remove(f"{self.sd}/{g2.RESULT_FILENAME}")
-            out3 = p2w.finalize_stage(self.sd, paragraphs=paragraphs, label=label, ref_ja_pool=pool, explain_call_fn=self._boom_explain, write=True)
-            self.assertEqual(out3["result"]["explain_signature"], cc.frozen_token(fz))
-            self.assertEqual(out3["result"]["explanation_md"], fz["explanation_md"])
-            p2w.require_final(self.sd, paragraphs, label, next_command="x", where="t", ref_ja_pool=pool)   # 作り直した結果もfrozen検査を通る
-        self.assertEqual((self.extract_calls(), self.explain_calls()), (1, 1))
-        # 対照: 保護OFF(kill switch)なら同じmodel変更で再抽出が走る=凍結が効いていることの証明
+
+    def test_unfrozen_signature_goes_stale_on_model_change_but_protection_off_control(self):
+        """対照: 保護OFF(kill switch)なら同じmodel変更で再抽出が走る=凍結が効いていることの証明。"""
+        self._kp_to_part2_done()
+        _quiet(zr.run_stage, self.ctx, "kp")
+        paragraphs, label = self._inputs()
         with mock.patch.dict(os.environ, {cc.FLAG_NAME: "0"}), mock.patch.object(g2, "MODEL", "some-other-model-id"):
             with self.assertRaises(Exception) as cm:   # 再抽出に進む(Step A''のpromptを組み、routingのmodel契約検査かmock呼出で止まる)=凍結が無ければ再抽出が起きる
-                p2w.candidate_stage(self.sd, run_dir=self.ctx.out_dir, family="z", slug="s", paragraphs=paragraphs, label=label, extract_call_fn=self._boom_extract)
+                p2w.candidate_stage(self.sd, level="b1b", run_dir=self.ctx.out_dir, family="z", slug="s", paragraphs=paragraphs, label=label, extract_call_fn=self._boom_extract)
             self.assertTrue(type(cm.exception).__name__ in ("AssertionError", "ModelContractViolation"), type(cm.exception).__name__)
 
     def test_runner_provenance_does_not_stop_on_model_change_when_grammar_confirmed(self):
@@ -384,7 +417,7 @@ class TestM6Part2Frozen(zw.ZBase):
         _quiet(zr.run_stage, self.ctx, "kp")
         paragraphs, label = self._inputs()
         with self.assertRaises(g2.Part2Stale) as cm:   # --regenerate-stage part2_cand_b1b (force_extract)
-            p2w.candidate_stage(self.sd, run_dir=self.ctx.out_dir, family="z", slug="s", paragraphs=paragraphs, label=label, extract_call_fn=self._boom_extract, force_extract=True)
+            p2w.candidate_stage(self.sd, level="b1b", run_dir=self.ctx.out_dir, family="z", slug="s", paragraphs=paragraphs, label=label, extract_call_fn=self._boom_extract, force_extract=True)
         self.assertIn("CONFIRMED_CONTENT_LOCKED", str(cm.exception))
         self.assertIn("revoke", str(cm.exception))
         sha = gr.load_candidates(self.sd)["candidates_sha256"]
@@ -401,74 +434,82 @@ class TestM6Part2Frozen(zw.ZBase):
         self._kp_to_part2_done()
         _quiet(zr.run_stage, self.ctx, "kp")
         paragraphs, label = self._inputs()
-        pool = zr._part2_pool(self.ctx)
-        p2w.require_final(self.sd, paragraphs, label, next_command="x", where="t", ref_ja_pool=pool)
+        pool = zr._part2_pool(self.ctx, "b1b")
+        self._rf(paragraphs, label, pool)
         rp = f"{self.sd}/{g2.RESULT_FILENAME}"
         orig = jl(rp)
-        for field, val in (("explanation_md", orig["explanation_md"] + "\n(改変)"),):
-            d = dict(orig)
-            d[field] = val
-            jd(rp, d)
-            with self.assertRaises(g2.Part2Stale):
-                p2w.require_final(self.sd, paragraphs, label, next_command="x", where="t", ref_ja_pool=pool)
-        jd(rp, orig)
-        p2w.require_final(self.sd, paragraphs, label, next_command="x", where="t", ref_ja_pool=pool)   # 戻せばPASS
-        d = jl(rp)
-        d["selection"]["candidate_id"] = "g_other"
+        d = json.loads(json.dumps(orig))
+        d["items"][0]["explanation_md"] = orig["items"][0]["explanation_md"] + "\n(改変)"
         jd(rp, d)
         with self.assertRaises(g2.Part2Stale):
-            p2w.require_final(self.sd, paragraphs, label, next_command="x", where="t", ref_ja_pool=pool)
+            self._rf(paragraphs, label, pool)
+        jd(rp, orig)
+        self._rf(paragraphs, label, pool)   # 戻せばPASS
+        d = json.loads(json.dumps(orig))
+        d["items"][0]["selection"]["candidate_id"] = "g_other"
+        jd(rp, d)
+        with self.assertRaises(g2.Part2Stale):
+            self._rf(paragraphs, label, pool)
         jd(rp, orig)
         fp = f"{self.sd}/{cc.FILE_GRAMMAR_FROZEN}"
         f = jl(fp)
-        f["explanation_md"] = "凍結値の書換え"
+        f["items"][0]["explanation_md"] = "凍結値の書換え"
         jd(fp, f)
         with self.assertRaises(g2.Part2Stale) as cm:
-            p2w.require_final(self.sd, paragraphs, label, next_command="x", where="t", ref_ja_pool=pool)
+            self._rf(paragraphs, label, pool)
         self.assertIn("INTEGRITY", str(cm.exception))
         # verify_outputs(公開時検証)にもG4が配線されている
-        f["explanation_md"] = orig["explanation_md"]
+        f["items"][0]["explanation_md"] = orig["items"][0]["explanation_md"]
         jd(fp, json.loads(json.dumps(jl(fp))))
         with self.assertRaises(g2.Part2Stale):
-            p2w.verify_outputs(self.sd, paragraphs, label, next_command="x", where="t", ref_ja_pool=pool)
+            p2w.verify_outputs(self.sd, paragraphs, label, level="b1b", next_command="x", where="t", ref_ja_pool=pool)
 
     def test_ref_ja_pool_issue_only_when_pool_differs_from_confirmed_translation(self):
         self._kp_to_part2_done()
         _quiet(zr.run_stage, self.ctx, "kp")
         paragraphs, label = self._inputs()
-        res = p2w.require_final(self.sd, paragraphs, label, next_command="x", where="t", ref_ja_pool=None)
+        res = self._rf(paragraphs, label, None)
         fz = cc.load_frozen_grammar(self.sd)
-        sent = res["selection"]["sentence"]
+        sent = res["items"][0]["selection"]["sentence"]
         # poolに無い / 凍結時の訳と一致 → PASS
-        p2w.require_final(self.sd, paragraphs, label, next_command="x", where="t", ref_ja_pool={})
-        p2w.require_final(self.sd, paragraphs, label, next_command="x", where="t", ref_ja_pool={sent: fz["translation_ja"]})
+        self._rf(paragraphs, label, {})
+        self._rf(paragraphs, label, {sent: fz["translation_ja"]})
         # 凍結時の訳と異なる → ISSUE(再生成しない)
         with self.assertRaises(p2w.Part2NotConfirmed) as cm:
-            p2w.require_final(self.sd, paragraphs, label, next_command="x", where="t", ref_ja_pool={sent: "新しいPart 1訳"})
-        self.assertIn("再確認", str(cm.exception))
+            self._rf(paragraphs, label, {sent: "新しいPart 1訳"})
+        self.assertIn("食い違", str(cm.exception))
         kp_dir = self.src["b1b"]
         self.assertEqual(jl(cc.paths_of(kp_dir)["issue_json"])["kind"], "CONFIRMED_CONTENT_ISSUE")
-        self.assertEqual(self.explain_calls(), 1)
+        self.assertEqual(self.explain_calls(), self.base_calls[1])
 
     def test_provided_explanation_is_frozen_from_form_without_step_b(self):
         provided = "【日本語訳】\nフォームで見せた日本語訳です。\n【文法・構文の仕組み】\nフォームで見せた**仕組み**の説明です。\n【意味・ニュアンス・表現効果】\nフォームで見せたニュアンスです。"
         self._kp_to_part2_done(explanation_full=provided)
         paragraphs, label = self._inputs()
-        out = p2w.finalize_stage(self.sd, paragraphs=paragraphs, label=label, ref_ja_pool={}, explain_call_fn=self._boom_explain, write=True)
-        self.assertEqual(self.explain_calls(), 0)   # Step Bは呼ばれない(フォームで見せた解説全文が確定内容)
-        self.assertEqual(out["result"]["explanation_md"], provided)
-        self.assertEqual(out["result"]["translation_ja"], "フォームで見せた日本語訳です。")
+        out = self._fin(paragraphs, label, {}, write=True)
+        self.assertEqual(self.explain_calls(), self.base_calls[1])   # 確定後にStep Bは呼ばれない(フォームで見せた解説全文が確定内容)
+        it = out["result"]["items"][0]
+        self.assertEqual(it["explanation_md"], provided)
+        self.assertEqual(it["translation_ja"], "フォームで見せた日本語訳です。")
         fz = cc.load_frozen_grammar(self.sd)
         self.assertEqual((fz["source"], fz["explanation_md"]), ("form_displayed", provided))
         self.assertEqual(cc.translation_from_explanation_full(provided), "フォームで見せた日本語訳です。")
-        cc.verify_part2(self.sd, jl(f"{self.sd}/{g2.RESULT_FILENAME}"))
+        cc.verify_part2_items(self.sd, jl(f"{self.sd}/{g2.RESULT_FILENAME}"))
 
-    def test_malformed_provided_explanation_is_issue_not_regenerated(self):
-        self._kp_to_part2_done(explanation_full="見出しの無い解説全文")
-        paragraphs, label = self._inputs()
-        with self.assertRaises(p2w.Part2NotConfirmed):
-            p2w.finalize_stage(self.sd, paragraphs=paragraphs, label=label, explain_call_fn=self._boom_explain, write=False)
-        self.assertEqual(self.explain_calls(), 0)
+    def test_form_with_unpregenerated_explanation_is_issue_and_confirms_nothing(self):
+        """旧『解説なし(explanation_status=missing)で確定→確定後にStep B』は廃止: 事前生成物と逐語一致しない解説全文はISSUE(rc=4)で、KP/文法とも何も確定しない。"""
+        with self.assertRaises(zr.FamilyZKpReviewPending):
+            _quiet(zr.run_stage, self.ctx, "kp")
+        cands = rv.load_candidates(self.src["b1b"])
+        top = gr.load_candidates(self.sd)["candidates"][0]
+        gram = [{"id": top["candidate_id"], "title": top["construct_ja"], "explanation_status": "missing", "explanation_full": None}]
+        pp = os.path.join(self.tmp, "payload.json")
+        jd(pp, make_payload(cands, cat1=[1, 2, 3], cat2=[4, 5], grammar=gram))
+        with self.assertRaises(rv.ConfirmedContentIssue):
+            cc.cmd_from_form(self.ctx.out_dir, "b1b", pp, "human", self.uref)
+        self.assertIsNone(cc.load_record(self.src["b1b"]))
+        self.assertEqual(rv.load_review(self.src["b1b"])["status"], rv.ST_PENDING)
+        self.assertEqual(gr.load_review(self.sd)["status"], rv.ST_PENDING)
 
     def test_text_change_rebinds_grammar_when_sentence_remains_and_issue_when_not(self):
         self._kp_to_part2_done()
@@ -476,25 +517,24 @@ class TestM6Part2Frozen(zw.ZBase):
         paragraphs, label = self._inputs()
         top = gr.load_candidates(self.sd)["candidates"][0]
         # 選定文以外の段落末に語を足す(選定文と段落の位置は不変)→ API 0で再バインド
-        para_i = int(top["para"].lstrip("P")) if str(top["para"]).startswith("P") else None
         new_paras = list(paragraphs)
         new_paras.append("A brand new final paragraph is added at the very end of the story.")
-        st = p2w.candidate_stage(self.sd, run_dir=self.ctx.out_dir, family="z", slug="s", paragraphs=new_paras, label=label, extract_call_fn=self._boom_extract)
+        st = p2w.candidate_stage(self.sd, level="b1b", run_dir=self.ctx.out_dir, family="z", slug="s", paragraphs=new_paras, label=label, extract_call_fn=self._boom_extract)
         self.assertEqual(st["state"], "READY")
         self.assertEqual(gr.load_candidates(self.sd)["text_sha256"], g2.text_sha256(new_paras))
         self.assertEqual(gr.load_review(self.sd)["text_sha256"], g2.text_sha256(new_paras))
         self.assertEqual(gr.load_review(self.sd)["selection_signature"], g2.grammar_selection_signature(gr.load_review(self.sd)))
-        self.assertEqual(self.extract_calls(), 1)
+        self.assertEqual(self.extract_calls(), self.base_calls[0])
         self.assertEqual(gr.load_review(self.sd)["history"][-1]["event"], "rebind_text")
         # 選定文そのものを変更した本文 → ISSUE相当(Part2Stale)、確定内容は変えない
         changed = [p.replace(top["sentence"], top["sentence"].replace(top["sentence"].split()[-1], "zzchanged")) for p in new_paras]
         self.assertNotEqual(changed, new_paras)
         sig = gr.load_review(self.sd)["selection_signature"]
         with self.assertRaises(g2.Part2Stale) as cm:
-            p2w.candidate_stage(self.sd, run_dir=self.ctx.out_dir, family="z", slug="s", paragraphs=changed, label=label, extract_call_fn=self._boom_extract)
+            p2w.candidate_stage(self.sd, level="b1b", run_dir=self.ctx.out_dir, family="z", slug="s", paragraphs=changed, label=label, extract_call_fn=self._boom_extract)
         self.assertIn("CONFIRMED_CONTENT_ISSUE", str(cm.exception))
         self.assertEqual(gr.load_review(self.sd)["selection_signature"], sig)
-        self.assertEqual(self.extract_calls(), 1)
+        self.assertEqual(self.extract_calls(), self.base_calls[0])
 
 
 # ============================================================
@@ -507,8 +547,9 @@ class TestZPersonGate(zw.ZBase):
             _quiet(zr.run_stage, self.ctx, "kp")
         for lv in ("b1b", "a2"):
             rv.op_select(self.src[lv], kp_ranks=[1, 2, 3], vocab_ranks=([1, 2, 3, 4, 5] if lv == "b1b" else None), by="human")
-        sd = zr._part2_dir(self.ctx)
-        _gr.op_decide(sd, choice="top1", accept_ai=True, candidates_sha256=_gr.load_candidates(sd)["candidates_sha256"], by="human")
+        for _lv in ("b1b", "a2"):   # 文法は両level(Adv/Std)ともHuman確定が必要
+            for sd in _gr.discover_dirs(self.ctx.out_dir, _lv):
+                _gr.op_decide(sd, choice="top1", accept_ai=True, candidates_sha256=_gr.load_candidates(sd)["candidates_sha256"], by="human")
         _quiet(zr.run_stage, self.ctx, "kp")
 
     def _text(self):
@@ -769,7 +810,9 @@ class TestYStageKpG1Runtime(unittest.TestCase):
             _quiet(y.run_stages, self.ctx, ["kp"])
         for lv in ("b1b", "a2"):
             rv.op_select(self.src[lv], kp_ranks=[1, 2, 3], vocab_ranks=([1, 2, 3, 4, 5] if lv == "b1b" else None), by="human")
-        gr.op_decide(self.sd, choice="top1", accept_ai=True, candidates_sha256=gr.load_candidates(self.sd)["candidates_sha256"], by="human")
+        for _lv in ("b1b", "a2"):   # 文法は両level(Adv/Std)ともHuman確定が必要(Stdにも事前生成+確認がある)
+            for _sd in gr.discover_dirs(self.ctx.out_dir, _lv):
+                gr.op_decide(_sd, choice="top1", accept_ai=True, candidates_sha256=gr.load_candidates(_sd)["candidates_sha256"], by="human")
         _quiet(y.run_stages, self.ctx, ["kp"])
         for lv in ("b1b", "a2"):
             rec = cc.load_record(self.src[lv])

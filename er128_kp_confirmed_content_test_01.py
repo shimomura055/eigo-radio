@@ -474,12 +474,17 @@ class TestFromForm(FormHelpers):
         self.assertEqual(rv.load_review(self.kp_dir)["status"], rv.ST_PENDING)
 
     def test_grammar_sidecar_written_and_tamper_detected(self):
+        import er119_grammar_review_01 as gr
+        import er120_part2_mock_01 as mk
+        import er120_part2_wiring_01 as p2w
         with Env(self.tmp) as env:
             cands = self._gen(env)
             sd = os.path.join(self.run_dir, "b1b", "study_text")
-            os.makedirs(sd)
-            wr(os.path.join(sd, "grammar_candidates.json"), "{}")   # discover_dirsが見つける最小fixture(文法候補の中身はG4=委任_02Bの対象)
-            gram = [{"id": "g1", "title": "現在完了", "explanation_full": "解説全文【日本語訳】…", "explanation_status": "provided"}]
+            paras = ["The old man walked slowly down the road. He was tired.", "It was a cold morning that day. Nobody spoke.", "Never had she seen such a thing before. Really."]
+            gr.ensure_grammar_review(sd, level="b1b", run_dir=self.run_dir, family="x", slug="coffee", paragraphs=paras, label="T", extract_call_fn=mk.mock_extract_call_fn)
+            p2w.pregen_stage(sd, level="b1b", next_command="rerun", explain_call_fn=mk.mock_explain_call_fn)
+            b = p2w.form_grammar_bundle(sd, level="b1b")["items"][0]
+            gram = [{k: b[k] for k in ("id", "title", "explanation_full", "explanation_status", "example")}]
             pl = self._payload(cands, cat1=[1, 2, 3], cat2=[4, 5], grammar=gram)
             cc.cmd_from_form(self.run_dir, "b1b", self._write(pl), "human", self.uref)
             rec = self.rec()
@@ -765,8 +770,9 @@ class TestZStageKpG1(unittest.TestCase):
             _quiet(self.z.run_stage, self.ctx, "kp")
         for lv in ("b1b", "a2"):
             rv.op_select(self.src[lv], kp_ranks=[1, 2, 3], vocab_ranks=([1, 2, 3, 4, 5] if lv == "b1b" else None), by="human")
-        sd = self.z._part2_dir(self.ctx)
-        gr.op_decide(sd, choice="top1", accept_ai=True, candidates_sha256=gr.load_candidates(sd)["candidates_sha256"], by="human")
+        for _lv in ("b1b", "a2"):   # 文法は両level(Adv/Std)ともHuman確定が必要
+            for sd in gr.discover_dirs(self.ctx.out_dir, _lv):
+                gr.op_decide(sd, choice="top1", accept_ai=True, candidates_sha256=gr.load_candidates(sd)["candidates_sha256"], by="human")
         _quiet(self.z.run_stage, self.ctx, "kp")
         for lv in ("b1b", "a2"):
             self.assertEqual(cc.load_record(self.src[lv])["confirmed_by"]["actor"], cc.ACTOR_USER)

@@ -18,6 +18,10 @@ runnerは load/verify だけを呼ぶ(レコードの書込みは CLI と finali
 使い方:
   py er128_kp_confirmed_content_01.py status --run <run>
   py er128_kp_confirmed_content_01.py confirm --from-form <payload.json> --run <run> --level b1b --by <名> --user-ref <delegation_log path>
+      (文法: payload の selection.grammar[] [最大2件・0件可]を、そのlevelの事前生成物[grammar_candidates.json / grammar_explanations.json]と逐語照合する。
+       不一致=ISSUE[rc=4・修正案つき・何も書かない]。事前生成が未完了なら grammar-pregen を案内して拒否。0件は文法reviewをomitで確定[文法なしの確定も記録]。
+       呼出順: 全検証 -> KPロック -> 文法ロック[gr.apply_form_selection] -> level別sidecar -> KPレコード保存[確定点]。同じ入力の再送は冪等。
+       設計: docs/research/GRAMMAR-PREGEN-ALL-LEVELS-01/SCHEMA_CONTRACT_01.md §4/§5、IMPLEMENTATION_04.md)
   py er128_kp_confirmed_content_01.py confirm --from-review --run <run> --level a2 --by <名> --user-ref <path>
   py er128_kp_confirmed_content_01.py confirm --adopt-existing --run <run> --level a2 --by <名> --user-ref <path> [--apply]
   py er128_kp_confirmed_content_01.py confirm-revise --run <run> --level b1b --by <名> --user-ref <path> --reason ... --gloss <candidate_id>=<新訳>
@@ -47,6 +51,9 @@ _log = logging.getLogger("er128_kp_confirmed_content")
 
 SCHEMA = "eigo_radio_confirmed_selection_v1"
 SCHEMA_GRAMMAR = "eigo_radio_confirmed_grammar_v1"
+SCHEMA_GRAMMAR_V2 = "eigo_radio_confirmed_grammar_v2"   # level別sidecar(level・explanation_sha_by_id付き。新規書込みはv2、v1は読取互換)
+GRAMMAR_MAX = 2                                         # 文法の確定上限(er120.GRAMMAR_MAXと同値。突合test)
+VALID_LEVELS = ("a2", "b1b")
 FLAG_NAME = "EIGO_KP_CONFIRMED_PROTECTION"
 FILE_RECORD = "confirmed_selection.json"
 FILE_GRAMMAR = "confirmed_grammar.json"
@@ -263,6 +270,14 @@ def _new_record(*, kp_dir: str, review: dict, cands: dict, items: list, actor: s
         rec["grammar"] = prev["grammar"]
     _append_history(rec, event=event, by=by, reason=reason, user_ref=user_ref)
     return rec
+
+
+def _rec_level(rec: dict) -> str:
+    """確定レコードのlevel(a2|b1b)。無い/不正は暗黙のb1bにせずINTEGRITY(levelは必須。pathや既定値から推定しない)。"""
+    lv = ((rec or {}).get("article") or {}).get("level")
+    if lv not in VALID_LEVELS:
+        raise rv.ConfirmedContentIntegrityViolation(f"CONFIRMED_CONTENT_INTEGRITY_VIOLATION: 確定レコードのlevelが不正です({lv!r})。a2|b1b のみ。levelから推定しません")
+    return lv
 
 
 def _actor_for(review: dict) -> str:
@@ -817,7 +832,8 @@ def verify_outputs(kp_dir: str, level: str, *, tts_results_path: Optional[str] =
 # 02B-4: M6/G4 Part 2(文法)の凍結。確定レコード(confirmed_grammar.json)がある文法は、再抽出・再解説せず凍結した解説全文を使う
 # ============================================================
 FILE_GRAMMAR_FROZEN = "confirmed_grammar_frozen.json"
-SCHEMA_GRAMMAR_FROZEN = "eigo_radio_confirmed_grammar_frozen_v1"
+SCHEMA_GRAMMAR_FROZEN = "eigo_radio_confirmed_grammar_frozen_v1"      # 読取互換のみ(新規書込みはv2)
+SCHEMA_GRAMMAR_FROZEN_V2 = "eigo_radio_confirmed_grammar_frozen_v2"   # items[](最大2件)
 _TRANSLATION_RE = re.compile(r"【日本語訳】\s*(.*?)(?=\n\s*【|\Z)", re.S)
 
 
@@ -850,20 +866,43 @@ def grammar_state(study_dir: str) -> Optional[dict]:
     rec = load_record(kp_dir)
     if rec is None or rec.get("state") != STATE_LIVE or not rec.get("grammar"):
         return None
-    level = (rec.get("article") or {}).get("level") or "b1b"
+    level = _rec_level(rec)
     bad = []
     if _jsha({k: v for k, v in side.items() if k != "sidecar_sha256"}) != side.get("sidecar_sha256") or side.get("sidecar_sha256") != rec["grammar"].get("sidecar_sha256"):
         bad.append("confirmed_grammar.json のshaが不一致(文法の確定内容が書換えられた疑い)")
     if side.get("confirmation_id") != rec.get("confirmation_id"):
         bad.append("confirmed_grammar.json の confirmation_id が確定レコードと一致しません")
+    if side.get("schema") == SCHEMA_GRAMMAR_V2 and side.get("level") != level:
+        bad.append(f"confirmed_grammar.json のlevel({side.get('level')!r})が確定レコードのlevel({level!r})と一致しません(別levelのsidecarの混入)")
     if bad:
         raise_integrity(kp_dir, level, [{"candidate_id": None, "field": "grammar", "confirmed": "(自己整合)", "observed": x, "where": FILE_GRAMMAR} for x in bad],
                         "文法の確定内容(sidecar)の整合が崩れています。")
     return {"sidecar": side, "rec": rec, "kp_dir": kp_dir, "level": level}
 
 
-def load_frozen_grammar(study_dir: str) -> Optional[dict]:
-    """凍結済みの解説(confirmed_grammar_frozen.json)。確定レコードが無い/凍結がまだ無い=None。凍結ファイルの自己sha不一致=INTEGRITY。"""
+def _single(items: Optional[list]) -> Optional[dict]:
+    """v1互換API用: 凍結が1件ならそのitem。2件以上は複数対応のAPI(*_items)を使うこと(黙って先頭だけを返さない)。"""
+    if not items:
+        return None
+    if len(items) > 1:
+        raise rv.KpReviewError("確定した文法が複数(2件)あります。複数対応のAPI(load_frozen_grammar_items / freeze_*_items / verify_part2_items)を使ってください")
+    return items[0]
+
+
+def _side_ids(st: dict) -> list:
+    return [it.get("id") for it in st["sidecar"].get("items") or []]
+
+
+def _fz_items_of(fz: dict) -> list:
+    """凍結ファイルのitem列。v2=items[]、v1(トップレベルに単一item)=長さ1として読む(読取互換。書き換えない)。"""
+    if isinstance(fz.get("items"), list):
+        return list(fz["items"])
+    return [fz]
+
+
+def load_frozen_grammar_items(study_dir: str) -> Optional[list]:
+    """凍結済みの解説item列(confirmed_grammar_frozen.json。v2=items[]、v1=長さ1)。確定レコードが無い/凍結がまだ無い=None。
+    自己sha・confirmation_id・各item sha・確定した文法集合との一致(全件揃い・過不足なし)が崩れていればINTEGRITY(G4)。"""
     st = grammar_state(study_dir)
     if st is None:
         return None
@@ -871,107 +910,194 @@ def load_frozen_grammar(study_dir: str) -> Optional[dict]:
     if not os.path.exists(p):
         return None
     fz = _read(p)
-    ids = {it.get("id") for it in st["sidecar"].get("items") or []}
+    items = _fz_items_of(fz)
+    ids = set(_side_ids(st))
     bad = []
     if _jsha({k: v for k, v in fz.items() if k != "file_sha256"}) != fz.get("file_sha256"):
         bad.append("凍結した解説(confirmed_grammar_frozen.json)のshaが不一致(書換えられた疑い)")
-    if fz.get("confirmation_id") != st["rec"].get("confirmation_id") or fz.get("candidate_id") not in ids:
-        bad.append("凍結した解説が確定レコード/確定文法と対応していません")
-    if frozen_sha(fz.get("candidate_id"), fz.get("sentence"), fz.get("explanation_md"), fz.get("translation_ja")) != fz.get("frozen_sha256"):
-        bad.append("凍結した解説の内容shaが不一致")
+    if fz.get("confirmation_id") != st["rec"].get("confirmation_id"):
+        bad.append("凍結した解説が確定レコードと対応していません(confirmation_id不一致)")
+    seen = []
+    for it in items:
+        cid = it.get("candidate_id")
+        if cid not in ids or cid in seen:
+            bad.append(f"凍結した解説に確定した文法にない/重複した項目があります({cid})")
+        seen.append(cid)
+        if frozen_sha(cid, it.get("sentence"), it.get("explanation_md"), it.get("translation_ja")) != it.get("frozen_sha256"):
+            bad.append(f"凍結した解説の内容shaが不一致({cid})")
+    if set(seen) != ids:
+        bad.append(f"凍結した解説が確定した文法集合と一致しません(凍結={sorted(x for x in seen if x)} / 確定={sorted(ids)})")
     if bad:
-        raise_integrity(st["kp_dir"], st["level"], [{"candidate_id": fz.get("candidate_id"), "field": "grammar_explanation", "confirmed": "(凍結値)", "observed": x,
+        raise_integrity(st["kp_dir"], st["level"], [{"candidate_id": None, "field": "grammar_explanation", "confirmed": "(凍結値)", "observed": x,
                                                       "where": FILE_GRAMMAR_FROZEN} for x in bad], "文法解説の凍結値の整合が崩れています(G4)。")
-    return fz
+    return items
 
 
-def _write_frozen(study_dir: str, st: dict, *, candidate_id: str, sentence: str, construct_ja: Optional[str], explanation_md: str, sections: dict,
-                  translation_ja: Optional[str], ref_ja: Optional[str], source: str) -> dict:
-    fz = {"schema": SCHEMA_GRAMMAR_FROZEN, "confirmation_id": st["rec"]["confirmation_id"], "candidate_id": candidate_id, "sentence": sentence,
-          "construct_ja": construct_ja, "explanation_md": explanation_md, "sections": sections, "translation_ja": translation_ja, "ref_ja_at_freeze": ref_ja,
-          "source": source, "frozen_at": rv._now(), "frozen_sha256": frozen_sha(candidate_id, sentence, explanation_md, translation_ja)}
+def load_frozen_grammar(study_dir: str) -> Optional[dict]:
+    """v1互換(単一item)。2件以上の凍結は load_frozen_grammar_items を使う。"""
+    return _single(load_frozen_grammar_items(study_dir))
+
+
+def _write_frozen_items(study_dir: str, st: dict, specs: list) -> list:
+    """凍結値(v2: items[])を全件まとめて1ファイルへ書く(all-or-nothing)。specs=[{candidate_id,sentence,construct_ja,explanation_md,sections,translation_ja,ref_ja,source}]。"""
+    items = [{"candidate_id": s["candidate_id"], "sentence": s["sentence"], "construct_ja": s.get("construct_ja"), "explanation_md": s["explanation_md"],
+              "sections": s.get("sections") or {}, "translation_ja": s.get("translation_ja"), "ref_ja_at_freeze": s.get("ref_ja"), "source": s["source"],
+              "frozen_sha256": frozen_sha(s["candidate_id"], s["sentence"], s["explanation_md"], s.get("translation_ja"))} for s in specs]
+    fz = {"schema": SCHEMA_GRAMMAR_FROZEN_V2, "confirmation_id": st["rec"]["confirmation_id"], "items": items, "frozen_at": rv._now()}
     fz["file_sha256"] = _jsha({k: v for k, v in fz.items() if k != "file_sha256"})
     _write(os.path.join(study_dir, FILE_GRAMMAR_FROZEN), fz)
-    return fz
+    return items
+
+
+def _result_items_norm(result: Optional[dict]) -> list:
+    """Part 2結果(v2=items[] / v1=単一)を [{candidate_id,sentence,construct_ja,explanation_md,sections,translation_ja,ref_ja}] へ。ZERO/結果なし=[]。"""
+    if not result or result.get("status") != "SELECTED":
+        return []
+    raw = result.get("items") if isinstance(result.get("items"), list) else None
+    if raw is None:
+        raw = [result] if result.get("selection") else []
+    out = []
+    for it in raw:
+        sel = it.get("selection") or {}
+        out.append({"candidate_id": sel.get("candidate_id"), "sentence": sel.get("sentence"), "construct_ja": sel.get("construct_ja"), "explanation_md": it.get("explanation_md"),
+                    "sections": it.get("sections") or {}, "translation_ja": it.get("translation_ja"), "ref_ja": it.get("ref_ja")})
+    return out
+
+
+def freeze_part2_result_items(study_dir: str, result: dict) -> Optional[list]:
+    """確定レコードのある文法で、まだ凍結が無ければ現在の(通常の検査を通った)Part 2結果(v2 items[])を全件凍結する(出所=stepB_generated_frozen)。
+    凍結済み=既存を返す(上書きしない)。ZERO/確定レコード無し/確定が0件=None。結果の文法集合が確定した集合と異なればINTEGRITY(G4)。"""
+    st = grammar_state(study_dir)
+    items = _result_items_norm(result)
+    if st is None or not items:
+        return None
+    cur = load_frozen_grammar_items(study_dir)
+    if cur is not None:
+        return cur
+    ids = set(_side_ids(st))
+    got = [i["candidate_id"] for i in items]
+    if set(got) != ids or len(set(got)) != len(got):
+        raise_integrity(st["kp_dir"], st["level"], [{"candidate_id": None, "field": "grammar_id", "confirmed": sorted(ids), "observed": got, "where": "part2_result.json"}],
+                        "Part 2の選定が確定した文法と異なります(G4)。")
+    return _write_frozen_items(study_dir, st, [dict(i, source="stepB_generated_frozen") for i in items])
 
 
 def freeze_part2_result(study_dir: str, result: dict) -> Optional[dict]:
-    """確定レコードのある文法で、まだ凍結が無ければ現在の(通常の検査を通った)Step B結果を凍結する(出所=stepB_generated_frozen)。
-    凍結済み=既存を返す(上書きしない)。ZERO/確定レコード無し=None。"""
+    """v1互換(単一item)。"""
+    return _single(freeze_part2_result_items(study_dir, result))
+
+
+def freeze_from_sidecar_items(study_dir: str, selected_candidates: list) -> Optional[list]:
+    """sidecarに`explanation_status=provided`(フォームで見せた解説全文)があれば、Step Bを呼ばずそれを凍結値にする(出所=form_displayed。全件揃っている場合のみ)。
+    構造が不正なら ISSUE(再確認)。provided無し/選定0件/確定レコード無し=None、凍結済み=既存。選定が確定した文法集合と異なればINTEGRITY。"""
     st = grammar_state(study_dir)
-    if st is None or (result or {}).get("status") != "SELECTED":
+    if st is None:
         return None
-    cur = load_frozen_grammar(study_dir)
+    cur = load_frozen_grammar_items(study_dir)
     if cur is not None:
         return cur
-    sel = result["selection"]
-    ids = {it.get("id") for it in st["sidecar"].get("items") or []}
-    if sel.get("candidate_id") not in ids:
-        raise_integrity(st["kp_dir"], st["level"], [{"candidate_id": sel.get("candidate_id"), "field": "grammar_id", "confirmed": sorted(ids), "observed": sel.get("candidate_id"),
-                                                      "where": "part2_result.json"}], "Part 2の選定が確定した文法と異なります(G4)。")
-    return _write_frozen(study_dir, st, candidate_id=sel["candidate_id"], sentence=sel["sentence"], construct_ja=sel.get("construct_ja"),
-                         explanation_md=result["explanation_md"], sections=result.get("sections") or {}, translation_ja=result.get("translation_ja"),
-                         ref_ja=result.get("ref_ja"), source="stepB_generated_frozen")
+    if not selected_candidates:
+        return None
+    ids = set(_side_ids(st))
+    got = [c["candidate_id"] for c in selected_candidates]
+    if set(got) != ids or len(set(got)) != len(got):
+        raise_integrity(st["kp_dir"], st["level"], [{"candidate_id": None, "field": "grammar_id", "confirmed": sorted(ids), "observed": got, "where": "part2 selection"}],
+                        "Part 2の選定が確定した文法と異なります(G4)。")
+    side_by = {it.get("id"): it for it in st["sidecar"].get("items") or []}
+    if any(side_by[i].get("explanation_status") != "provided" or not (side_by[i].get("explanation_full") or "").strip() for i in got):
+        return None
+    import er120_part2_grammar_production_01 as g
+    specs = []
+    for c in selected_candidates:
+        full = side_by[c["candidate_id"]]["explanation_full"].strip()
+        try:
+            secs = g.split_sections(full)
+        except (g.Part2Error, g.Part2StructureError) as e:
+            raise_issue(st["kp_dir"], st["level"], "フォームで確認した文法解説全文がPart 2の構造(【日本語訳】【仕組み】【意味】)に合わず、そのまま採用できません。", [
+                {"candidate_id": c["candidate_id"], "field": "explanation_full", "confirmed": full[:60], "observed": str(e)[:120], "where": FILE_GRAMMAR}],
+                proposal=["解説全文の構造を修正した上で再確認してください(AIは解説を作り直して差し替えません)"])
+        specs.append({"candidate_id": c["candidate_id"], "sentence": c["sentence"], "construct_ja": c.get("construct_ja"), "explanation_md": full, "sections": secs,
+                      "translation_ja": secs.get("日本語訳"), "ref_ja": None, "source": "form_displayed"})
+    return _write_frozen_items(study_dir, st, specs)
 
 
 def freeze_from_sidecar(study_dir: str, candidate: dict) -> Optional[dict]:
-    """sidecarに`explanation_status=provided`(フォームで見せた解説全文)があれば、Step Bを呼ばずそれを凍結値にする(出所=form_displayed)。
-    構造が不正なら ISSUE(再確認)。provided無し=None、凍結済み=既存。"""
-    st = grammar_state(study_dir)
-    if st is None:
-        return None
-    cur = load_frozen_grammar(study_dir)
-    if cur is not None:
-        return cur
-    side_it = next((it for it in st["sidecar"].get("items") or [] if it.get("id") == candidate["candidate_id"]), None)
-    if side_it is None or side_it.get("explanation_status") != "provided" or not (side_it.get("explanation_full") or "").strip():
-        return None
-    import er120_part2_grammar_production_01 as g
+    """v1互換(単一item)。"""
+    return _single(freeze_from_sidecar_items(study_dir, [candidate]))
+
+
+def _review_shown_sha_diffs(study_dir: str, st: dict) -> list:
+    """確定時にreviewへ記録した『提示した解説のid別sha』(decision.explanation_sha_by_id)が、sidecarの解説shaと一致すること(フォーム提示=確定=公開の一致)。"""
     try:
-        secs = g.split_sections(side_it["explanation_full"].strip())
-    except (g.Part2Error, g.Part2StructureError) as e:
-        raise_issue(st["kp_dir"], st["level"], "フォームで確認した文法解説全文がPart 2の構造(【日本語訳】【仕組み】【意味】)に合わず、そのまま採用できません。", [
-            {"candidate_id": candidate["candidate_id"], "field": "explanation_full", "confirmed": (side_it["explanation_full"] or "")[:60], "observed": str(e)[:120], "where": FILE_GRAMMAR}],
-            proposal=["解説全文の構造を修正した上で再確認してください(AIは解説を作り直して差し替えません)"])
-    return _write_frozen(study_dir, st, candidate_id=candidate["candidate_id"], sentence=candidate["sentence"], construct_ja=candidate.get("construct_ja"),
-                         explanation_md=side_it["explanation_full"].strip(), sections=secs, translation_ja=secs.get("日本語訳"), ref_ja=None, source="form_displayed")
+        import er119_grammar_review_01 as gr
+        review = gr.load_review(study_dir)
+    except (OSError, ValueError):
+        return []
+    shown = ((review or {}).get("decision") or {}).get("explanation_sha_by_id") or {}
+    out = []
+    for it in st["sidecar"].get("items") or []:
+        sha = it.get("explanation_sha256")
+        if sha and shown and shown.get(it.get("id")) not in (None, sha):
+            out.append({"candidate_id": it.get("id"), "field": "explanation_sha256", "confirmed": sha[:16], "observed": str(shown.get(it.get("id")))[:16],
+                        "where": "grammar_human_review.json decision.explanation_sha_by_id"})
+    return out
 
 
-def verify_part2(study_dir: str, result: Optional[dict]) -> None:
-    """G4: Part 2結果(part2_result.json)が確定した文法・凍結した解説全文と一致すること(AND追加・fail-closed)。確定レコード無し=何もしない。
-    凍結がまだ無い(確定直後)場合は文法idだけ照合する(freeze_part2_resultが次の通過点で凍結する)。ZERO(省略/適格なし)は確定した文法と矛盾するのでBLOCK。"""
+def verify_part2_items(study_dir: str, result: Optional[dict]) -> None:
+    """G4: Part 2結果(part2_result.json。v2=items[] / v1=単一)が確定した文法集合・凍結した解説全文と一致すること(AND追加・fail-closed)。確定レコード無し=何もしない。
+    確定した文法が1件以上あるのに結果がZERO/別の集合ならBLOCK。確定が0件(フォームで文法なし)なのに結果が文法を持つ場合もBLOCK。
+    凍結がまだ無い(確定直後)場合は文法idだけ照合する(freeze_part2_result_itemsが次の通過点で凍結する)。"""
     st = grammar_state(study_dir)
     if st is None:
         return
-    fz = load_frozen_grammar(study_dir)
-    ids = {it.get("id") for it in st["sidecar"].get("items") or []}
-    diffs = []
-    if not result or result.get("status") != "SELECTED":
+    ids = set(_side_ids(st))
+    norm = _result_items_norm(result)
+    diffs = _review_shown_sha_diffs(study_dir, st)
+    if not ids:
+        if norm:
+            diffs.append({"candidate_id": None, "field": "grammar", "confirmed": [], "observed": [i["candidate_id"] for i in norm], "where": "part2_result.json(フォームで文法なしを確定済み)"})
+    elif not norm:
         diffs.append({"candidate_id": None, "field": "grammar", "confirmed": sorted(ids), "observed": (result or {}).get("status") or "(Part 2結果なし)", "where": "part2_result.json"})
     else:
-        sel = result.get("selection") or {}
-        if sel.get("candidate_id") not in ids:
-            diffs.append({"candidate_id": sel.get("candidate_id"), "field": "grammar_id", "confirmed": sorted(ids), "observed": sel.get("candidate_id"), "where": "part2_result.json"})
-        if fz is not None:
-            if sel.get("candidate_id") != fz["candidate_id"] or sel.get("sentence") != fz["sentence"]:
-                diffs.append({"candidate_id": sel.get("candidate_id"), "field": "grammar_sentence", "confirmed": fz["sentence"], "observed": sel.get("sentence"), "where": "part2_result.json"})
-            if result.get("explanation_md") != fz["explanation_md"]:
-                diffs.append({"candidate_id": fz["candidate_id"], "field": "explanation_md(解説全文)", "confirmed": fz["explanation_md"][:80], "observed": str(result.get("explanation_md"))[:80],
+        got = [i["candidate_id"] for i in norm]
+        for cid in sorted(ids - set(got)):
+            diffs.append({"candidate_id": cid, "field": "grammar_id", "confirmed": sorted(ids), "observed": f"{cid}が結果にない", "where": "part2_result.json"})
+        for cid in sorted(set(got) - ids):
+            diffs.append({"candidate_id": cid, "field": "grammar_id", "confirmed": sorted(ids), "observed": cid, "where": "part2_result.json"})
+        if len(set(got)) != len(got):
+            diffs.append({"candidate_id": None, "field": "grammar_id", "confirmed": sorted(ids), "observed": got, "where": "part2_result.json(重複)"})
+        fz_by = {f["candidate_id"]: f for f in (load_frozen_grammar_items(study_dir) or [])}
+        for n in norm:
+            fz = fz_by.get(n["candidate_id"])
+            if fz is None:
+                continue
+            if n["sentence"] != fz["sentence"]:
+                diffs.append({"candidate_id": n["candidate_id"], "field": "grammar_sentence", "confirmed": fz["sentence"], "observed": n["sentence"], "where": "part2_result.json"})
+            if n["explanation_md"] != fz["explanation_md"]:
+                diffs.append({"candidate_id": fz["candidate_id"], "field": "explanation_md(解説全文)", "confirmed": fz["explanation_md"][:80], "observed": str(n["explanation_md"])[:80],
                               "where": "part2_result.json"})
-            if fz.get("translation_ja") is not None and result.get("translation_ja") != fz["translation_ja"]:
-                diffs.append({"candidate_id": fz["candidate_id"], "field": "translation_ja(日本語訳)", "confirmed": fz["translation_ja"], "observed": result.get("translation_ja"), "where": "part2_result.json"})
+            if fz.get("translation_ja") is not None and n["translation_ja"] != fz["translation_ja"]:
+                diffs.append({"candidate_id": fz["candidate_id"], "field": "translation_ja(日本語訳)", "confirmed": fz["translation_ja"], "observed": n["translation_ja"], "where": "part2_result.json"})
     if diffs:
         raise_integrity(st["kp_dir"], st["level"], diffs, "Part 2が確定した文法・解説全文と一致しません(G4: 確定後に書換えられた、または別の解説が生成された)。")
 
 
-def guard_grammar(study_dir: str, op: str, *, candidate_id: Optional[str] = None) -> None:
+def verify_part2(study_dir: str, result: Optional[dict]) -> None:
+    """v1互換(同じ検査。単一結果もitems[]もverify_part2_itemsで検査する)。"""
+    verify_part2_items(study_dir, result)
+
+
+def guard_grammar(study_dir: str, op: str, *, candidate_id: Optional[str] = None, candidate_ids: Optional[list] = None) -> None:
     """確定した文法(sidecar)がある間は、選定を書き換え得る操作(reselect/omit/reextract/ng/unng/--regenerate-stage part2_cand_b1b)を拒否する(revoke必須)。
-    確定した文法と同じ候補を選ぶ top1/top2(candidate_idを渡す)は許可する(確定を実際のreviewへ反映する操作で、書換えではない)。"""
+    確定した文法集合と**完全に同じ**候補を選ぶ pick/top1/top2(candidate_ids=確定集合、または確定が1件のときのcandidate_id)は許可する(確定を実際のreviewへ反映する操作で、書換えではない)。
+    確定が0件(フォームで文法なし)の場合、許可されるのは同じ0件(candidate_ids=[])のみ。"""
     st = grammar_state(study_dir)
     if st is None:
         return
-    ids = {it.get("id") for it in st["sidecar"].get("items") or []}
-    if candidate_id is not None and candidate_id in ids:
+    ids = set(_side_ids(st))
+    if candidate_ids is not None and set(candidate_ids) == ids and len(candidate_ids) == len(ids):
+        return
+    if candidate_id is not None and ids == {candidate_id}:
         return
     lv = st["level"]
     raise rv.ConfirmedContentLocked(
@@ -1094,7 +1220,7 @@ def verify_items_against_record(kp_dir: str, items: list, *, which: str = "part1
         b, w = _item_diffs(ri, by_id.get(ri["candidate_id"]), f"accessor:{which}", enforce_gloss=enforce)
         block += b
     if block:
-        level = (rec.get("article") or {}).get("level") or "b1b"
+        level = _rec_level(rec)
         raise_integrity(kp_dir, level, block, f"消費者({which})が受け取る項目が確定レコードと一致しません。")
 
 
@@ -1196,6 +1322,7 @@ def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: st
     cm = _cand_map(cands)
     groups = payload.get("selection") or {}
     ids = _flat_selection_ids(groups)
+    gv = _validate_form_grammar(run, kp_dir, level, groups.get("grammar"))   # 文法の照合(何も書かない。不一致=ISSUE rc=4)。KP/文法のどれも書く前に全て検証する(Opus O-4)
     seen = set()
     diffs = []
     for gname in ("key_phrase", "extra_explanation", "meaning_display"):
@@ -1230,6 +1357,8 @@ def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: st
         unconsumed += [{"candidate_id": i["candidate_id"], "kind": i.get("kind"), "category": 2, "used_form": i.get("term"), "japanese_gloss": i.get("ja_gloss"),
                         "reason": "STD_CATEGORY2_NO_SLOT"} for i in groups.get("extra_explanation") or []]
     with rv.review_lock(kp_dir, rv.KIND_KP, by):
+        # 呼出順(Opus O-4): 検証済み -> KPロック(本ブロック) -> 文法ロック(apply_form_selection内) -> (1)文法review -> (2)sidecar -> (3)KPレコード保存(commit点)
+        grammar_review = _apply_form_grammar_review(gv, by=by, user_ref=user_ref)
         items = build_items(cands, kp_ids, vocab_ids or [])
         prev = load_record(kp_dir)
         rev_no = ((prev or {}).get("revision") or 0) + 1
@@ -1244,31 +1373,129 @@ def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: st
                           comment=payload.get("comment") or "", unconsumed=unconsumed, prev=prev, event="confirmed",
                           confirmation_id="cf_" + hashlib.sha256(raw).hexdigest()[:16])
         rec.pop("grammar", None)
-        grammar = (groups.get("grammar") or [])
-        if grammar:
-            rec["grammar"] = _write_grammar_sidecar(run, rec, grammar, kp_dir)
-        save_record(kp_dir, rec)
+        if gv["study_dir"] is not None:
+            rec["grammar"] = _write_grammar_sidecar(run, rec, gv["items"], kp_dir, study_dir=gv["study_dir"], level=level)   # 0件も記録(文法なしの確定)
+        save_record(kp_dir, rec)   # 確定点(ここまで失敗なら確定レコードは作られない。同じ入力の再送は冪等)
     return {"record": paths_of(kp_dir)["record"], "revision": rec["revision"], "items": [(i["candidate_id"], i["category"], i["used_form"]) for i in items],
-            "unconsumed": [(u["candidate_id"], u["reason"]) for u in unconsumed], "grammar": len(grammar),
+            "unconsumed": [(u["candidate_id"], u["reason"]) for u in unconsumed], "grammar": len(gv["items"]),
+            "grammar_review": grammar_review,
             "next": "制作コマンドを同じまま再実行してください(finalize→後続が進みます)"}
 
 
-def _write_grammar_sidecar(run: str, rec: dict, grammar: list, kp_dir: Optional[str] = None) -> dict:
+def _grammar_next(run: str, level: str) -> str:
+    return (f"py er119_kp_human_review_cli_01.py grammar-pregen --run {run} --level {level}"
+            "(文法解説の事前生成が未完了/失敗の場合。制作コマンドを同じまま再実行しても未生成分だけ作られます)")
+
+
+def _validate_form_grammar(run: str, kp_dir: str, level: str, grammar: Any) -> dict:
+    """フォームの文法(payload selection.grammar[])を、そのlevelの事前生成物(grammar_candidates.json / grammar_explanations.json)と**逐語**照合する(何も書かない。ISSUE記録を除く)。
+    照合: id が現候補docにある / title == construct_ja / explanation_status == provided / explanation_full == explanations[id].explanation_md(バイト一致) /
+          (あれば)explanation_sha256・example が一致 / 件数 <= 2 / 重複なし。不一致は黙って採用・置換せずISSUE(rc=4。修正案=正しい値を提示)。
+    戻り: {"study_dir": str|None, "doc": dict|None, "items": [正規化済みitem]}。study_dir=None は文法のstudy dir自体が無い場合(文法0件のときだけ許す=文法を見せていないフォーム)。"""
     import er119_grammar_review_01 as gr
-    dirs = gr.discover_dirs(run)
+    import er120_part2_grammar_production_01 as g
+    grammar = [] if grammar is None else grammar
+    if not isinstance(grammar, list):
+        raise CliError("payloadの selection.grammar は配列である必要があります")
+    try:
+        dirs = gr.discover_dirs(run, level)
+    except (g.Part2Error, ValueError) as e:
+        raise CliError(f"文法(Part 2)の候補docを確認できません(level={level}): {e}。次の一手: 制作コマンドを同じまま再実行して候補/解説の事前生成を済ませてください") from e
+    if len(dirs) > 1:
+        raise CliError(f"level={level} の文法study dirが複数あります({dirs})。どれか1つにしてください(pathから推定しません)")
     if not dirs:
-        raise CliError("文法(Part 2)の候補/reviewがまだありません(制作を実行して候補を生成してから、文法を含むフォームを送信してください)")
+        if grammar:
+            raise CliError(f"文法(Part 2)の候補/reviewがまだありません(level={level})。次の一手: 制作を実行して候補を生成し、解説を事前生成してから、文法を含むフォームを送信してください")
+        return {"study_dir": None, "doc": None, "items": []}
     sd = dirs[0]
-    doc = {"schema": SCHEMA_GRAMMAR, "confirmation_id": rec["confirmation_id"],
-           "items": [{k: g.get(k) for k in ("id", "title", "explanation_full", "explanation_status", "example")} for g in grammar]}
-    if kp_dir:   # 02B(M6): 文法側(study_dir)から確定レコードを辿る相対path(runごとコピーしても有効)
-        doc["kp_dir_rel"] = os.path.relpath(os.path.abspath(kp_dir), os.path.abspath(sd)).replace(os.sep, "/")
+    doc = gr.load_candidates(sd)
+    ex = None
+    if doc.get("candidates"):
+        try:
+            ex = gr.require_explanations(sd, doc, level=level)   # 事前生成が不完全/失敗/不整合ならデータなしでエラー(フォームに出した解説=確定=公開の前提)
+        except rv.KpReviewError as e:
+            raise CliError(f"文法解説の事前生成が完了していないため、確定を受け付けません: {e}。次の一手: {_grammar_next(run, level)}") from e
+    cand_by = {c["candidate_id"]: c for c in doc.get("candidates") or []}
+    ex_by = {i["candidate_id"]: i for i in (ex or {}).get("items") or []}
+    diffs, proposal, norm, seen = [], [], [], set()
+
+    def d(cid, field, confirmed, observed, where="payload.selection.grammar vs 事前生成物"):
+        diffs.append({"candidate_id": cid, "field": field, "confirmed": confirmed, "observed": observed, "where": where})
+
+    if len(grammar) > GRAMMAR_MAX:
+        d(None, "count", len(grammar), f"{GRAMMAR_MAX}件以内", "payload.selection.grammar")
+        proposal.append(f"文法は最大{GRAMMAR_MAX}件です。フォームで{GRAMMAR_MAX}件以内に選び直して再送信してください")
+    for it in grammar:
+        if not isinstance(it, dict):
+            raise CliError("payloadの selection.grammar の要素はオブジェクトである必要があります")
+        cid, alt = it.get("id"), it.get("candidate_id")
+        if cid and alt and cid != alt:
+            d(cid, "id/candidate_id", cid, alt)
+        cid = cid or alt
+        if cid in seen:
+            d(cid, "duplicate", "重複なし", "同じidが複数")
+            continue
+        seen.add(cid)
+        c, e = cand_by.get(cid), ex_by.get(cid)
+        if c is None:
+            d(cid, "id", "(現在の文法候補docにあるid)", cid)
+            proposal.append(f"id={cid} は現在の文法候補にありません。現在の候補でフォームを作り直して再送信してください(idの対応付け以外の推測はしません)")
+            continue
+        title = it.get("title") if it.get("title") is not None else it.get("name")
+        if title != c.get("construct_ja"):
+            d(cid, "title(文法名)", title, c.get("construct_ja"))
+            proposal.append(f"id={cid}: 文法名を『{c.get('construct_ja')}』に合わせる")
+        if e is None:
+            d(cid, "explanation(事前生成物)", "(事前生成された解説)", "(解説なし。事前生成の対象外=候補が多く表示上限を超えた)")
+            proposal.append(f"id={cid}: 解説が事前生成されていない候補は確定できません。解説のある候補から選んでください")
+        else:
+            if it.get("explanation_status") != "provided":
+                d(cid, "explanation_status", it.get("explanation_status"), "provided(解説全文を見せた)が必要")
+            if it.get("explanation_full") != e["explanation_md"]:
+                d(cid, "explanation_full(解説全文)", str(it.get("explanation_full"))[:80], e["explanation_md"][:80])
+                proposal.append(f"id={cid}: 解説全文を現在の事前生成物(sha={e['explanation_sha256'][:12]})に合わせてフォームを作り直す(AIは解説を書き換えて採用しません)")
+            if it.get("explanation_sha256") is not None and it["explanation_sha256"] != e["explanation_sha256"]:
+                d(cid, "explanation_sha256", it["explanation_sha256"][:16], e["explanation_sha256"][:16])
+        if it.get("example") is not None and it["example"] != c.get("sentence"):
+            d(cid, "example(英文)", it["example"], c.get("sentence"))
+        norm.append({"id": cid, "title": c.get("construct_ja"), "explanation_full": it.get("explanation_full"), "explanation_status": it.get("explanation_status"),
+                     "example": c.get("sentence"), "explanation_sha256": (e or {}).get("explanation_sha256")})
+    if diffs:
+        raise_issue(kp_dir, level, "フォームで確定された文法が、事前生成された文法候補/解説全文と一致しません(件数・id・文法名・解説全文)。黙って採用・置換しません。", diffs,
+                    proposal=proposal or ["現在の文法候補/解説でフォームを作り直して再送信してください"], next_steps=["現在の事前生成物でフォームを作り直して再送信(文法は最大2件・0件も可)"])
+    return {"study_dir": sd, "doc": doc, "items": norm}
+
+
+def _apply_form_grammar_review(gv: dict, *, by: str, user_ref: str) -> Optional[str]:
+    """(KPロック保持中)文法ロックを取って文法reviewへフォーム選択を適用する(0件=同ロック内でomit)。冪等。study dir無し(文法を見せていないフォーム)=何もしない。
+    失敗はCliError(KPの確定レコードはまだ作られていない=何も確定していない)。戻り=文法reviewのstatus。"""
+    if gv["study_dir"] is None:
+        return None
+    import er119_grammar_review_01 as gr
+    import er120_part2_grammar_production_01 as g
+    try:
+        rvw = gr.apply_form_selection(gv["study_dir"], ids=[i["id"] for i in gv["items"]], by=by, user_ref=user_ref, candidates_sha256=gv["doc"]["candidates_sha256"])
+    except (g.Part2Error, g.Part2ReviewError, rv.KpReviewError) as e:
+        raise CliError(f"文法reviewへの適用に失敗しました(確定レコードは作っていません。同じコマンドの再実行は安全です): {type(e).__name__}: {e}") from e
+    return rvw.get("status")
+
+
+def _write_grammar_sidecar(run: str, rec: dict, grammar: list, kp_dir: str, *, study_dir: str, level: str) -> dict:
+    """level別sidecar `<study_dir>/confirmed_grammar.json`(v2: level・explanation_sha_by_id付き。0件=items空で『文法なしの確定』を記録)。
+    再確認(revoke後)の場合は、前の確定の凍結値・sidecarを退避してから書く(confirmation_idが違う凍結値でINTEGRITYにならないように)。
+    study_dirは呼出側がlevel指定で決める(先頭dirへの暗黙決定はしない)。"""
+    rv.archive_if_exists(os.path.join(study_dir, FILE_GRAMMAR_FROZEN), "RECONFIRM_SUPERSEDED")
+    rv.archive_if_exists(os.path.join(study_dir, FILE_GRAMMAR), "RECONFIRM_SUPERSEDED")
+    items = [{k: g.get(k) for k in ("id", "title", "explanation_full", "explanation_status", "example", "explanation_sha256")} for g in grammar]
+    doc = {"schema": SCHEMA_GRAMMAR_V2, "level": level, "confirmation_id": rec["confirmation_id"], "items": items,
+           "explanation_sha_by_id": {i["id"]: i.get("explanation_sha256") for i in items}}
+    doc["kp_dir_rel"] = os.path.relpath(os.path.abspath(kp_dir), os.path.abspath(study_dir)).replace(os.sep, "/")   # 文法側(study_dir)から確定レコードを辿る相対path(runごとコピーしても有効)
     doc["content_sha256"] = _jsha(doc["items"])
     doc["sidecar_sha256"] = _jsha({k: v for k, v in doc.items() if k != "sidecar_sha256"})
-    p = os.path.join(sd, FILE_GRAMMAR)
+    p = os.path.join(study_dir, FILE_GRAMMAR)
     _write(p, doc)
-    return {"path_rel": os.path.relpath(p, run).replace(os.sep, "/"), "sidecar_sha256": doc["sidecar_sha256"], "count": len(grammar),
-            "explanation_source": ["form_displayed" if g.get("explanation_status") == "provided" else "stepB_generated_frozen" for g in grammar]}
+    return {"path_rel": os.path.relpath(p, run).replace(os.sep, "/"), "sidecar_sha256": doc["sidecar_sha256"], "count": len(items), "level": level, "schema": SCHEMA_GRAMMAR_V2,
+            "explanation_source": ["form_displayed" for _ in items]}
 
 
 def cmd_from_review(run: str, level: str, by: str, user_ref: str, *, adopt_existing: bool = False, apply: bool = False) -> dict:

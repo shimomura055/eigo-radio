@@ -105,3 +105,17 @@ DESIGN_01(commit 17385f5f9)にOpus条件Aレビュー(`OPUS_REVIEW_01.md`、M1�
 5. **来歴の据え置き(Z/Y)**: `part2_cand_b1b` の input_sha に抽出signature(model)が入るため、確定済み文法でmodelだけ変えると親sha不一致STOP(かつ`--regenerate-stage`はrevoke必須で拒否=解消不能)になる。確定済み文法かつ候補docの本文sha一致の場合に限り記録済みinput_shaを据え置く(`er120_part2_wiring_01.cand_input_sha`)。
 6. **ISSUEの扱い(Z `_gloss_person_gate`)**: 確定項目のmismatchは修復LLMを呼ばず `FamilyZKpReviewPending`(reason=`confirmed_content_issue`)。
 7. **LR**: 保護spanは追加しない(OPEN-540統一仕様の変更になるため)。重なりは `audit/confirmed_kp_lr_overlap.json` に記録のみ。
+
+---
+## 付録(文法v2追補: GRAMMAR-PREGEN-ALL-LEVELS-01 委任_04。2026-10-27)
+
+承認済み新仕様(文法解説の事前生成・最大2件・0件可)へ確定内容保護を接続した確定事項。契約の正本は`docs/research/GRAMMAR-PREGEN-ALL-LEVELS-01/SCHEMA_CONTRACT_01.md` §4/§5、実装記録は同`IMPLEMENTATION_04.md`。保護のAND(G0〜G4)・`pinned_items`不使用・Prompt/閾値/辞書は無変更。
+
+1. **確定の単位**: ユーザー確定の文法は`{id, title, explanation_full(フォームで見せた全文), explanation_sha256}`の集合(0〜2件)。**0件もsidecar(items空)で記録**し「文法なしを確定した」ことを保護する(ZERO結果以外はINTEGRITY)。
+2. **level別sidecar**: `<study_dir>/confirmed_grammar.json`(schema v2: `level`・`explanation_sha_by_id`)。study dirは`gr.discover_dirs(run, level)`(候補docの`level`と一致確認)で決める。Std(a2)とAdv(b1b)は別の確定レコード・別sidecar・別凍結。`or "b1b"`・`discover_dirs(run)[0]`は撤去(レコードの`article.level`必須)。v1 sidecarは読取互換。
+3. **フォーム確定の文法照合**: payload `selection.grammar[]`を、そのlevelの`grammar_candidates.json`/`grammar_explanations.json`と逐語照合(id∈候補doc / title==construct_ja / explanation_full==explanation_md[バイト一致] / provided / 件数≤2 / 重複なし)。不一致=ISSUE(rc=4、修正案つき、何も書かない)。事前生成が未完了/失敗なら0件送信でも拒否(確定=フォームで見せた解説=公開の前提)。
+4. **呼出順(Opus O-4)と冪等**: 全検証 → KPロック → 文法ロック(`gr.apply_form_selection`。0件=omit) → sidecar → KPレコード保存(**確定点**)。文法review適用後に落ちても同じ入力の再送で文法reviewは不変・レコードが作られる。
+5. **凍結 v2**: `confirmed_grammar_frozen.json`は`items[]`(≤2、全件1ファイル)。出所=`form_displayed`(フォームで見せた全文。Step Bを呼ばない) / `stepB_generated_frozen`(確定後に生成した場合)。確定集合と過不足なく一致しなければINTEGRITY。v1(単一)は長さ1として読取互換。revoke後の再確認では古い凍結・sidecarを`RECONFIRM_SUPERSEDED`へ退避。
+6. **G4(verify)の拡張**: 結果の文法id集合==確定集合(2件・本文出現順は結果側で保証)、各itemの英文・解説全文・訳==凍結値。確定1件以上でZERO/別集合、確定0件で文法が出た場合はINTEGRITY。`decision.explanation_sha_by_id`とsidecar解説shaの不一致もINTEGRITY。
+7. **ガード**: `guard_grammar`は確定集合と**完全一致**する選択(`candidate_ids`)だけ許可。確定2件のうち1件だけを選ぶtop1/pickはLOCKED(revoke必須)。
+8. **残る不具合(wiring側)**: 凍結済み候補でも`require_final`/`finalize_stage`が事前生成物のexplain_signature(model依存)を検査し、model変更でPart2Staleになる(M6の『Prompt/model変更で失効しない』に反する)。test `test_KNOWN_DEFECT_...`が`expectedFailure`で追跡。修正はwiring(`er120_part2_wiring_01`)側。

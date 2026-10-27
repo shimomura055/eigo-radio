@@ -606,7 +606,7 @@ def render_request_md(doc: dict, review: dict, *, run_hint: str, explanations: O
               f"- 教える価値: {t['teaching_value_ja']}", f"- 読み違えやすい点: {t['misread_ja']}", "", "### 解説(学習ページに載る全文)", "", t["explanation_md"], ""]
     if req["n_not_generated"]:
         L += [f"(他{req['n_not_generated']}件・解説未生成: 先頭{g.PREGEN_MAX}件までを提示しています。reselectすると次順位の候補が入れ替わります)", ""]
-    L += ["## 操作(コマンド。`--by` は操作者名。CLIの`--level`/`--ids`は後続委任で配線)", ""]
+    L += ["## 操作(コマンド。`--by` は操作者名。`--level`は必須)", ""]
     lv = (review.get("article_key") or {}).get("level")
     base = f"{CLI} grammar-select --run {run_hint} --level {lv} --candidates-sha {sha} --by <名前>"
     if "pick" in req["choices"]:
@@ -619,7 +619,7 @@ def render_request_md(doc: dict, review: dict, *, run_hint: str, explanations: O
         L.append(f"- 今回は文法解説を出さない(理由必須): `{base} --choice omit --reason <理由>`")
     if "reextract" in req["choices"]:
         L.append(f"- 再抽出(枯渇時のみ・理由必須): `{base} --choice reextract --reason <理由>`")
-    L += [f"- 状況: `{CLI} status --run {run_hint}` / 表示: `{CLI} grammar-show --run {run_hint}`",
+    L += [f"- 状況: `{CLI} status --run {run_hint}` / 表示: `{CLI} grammar-show --run {run_hint} --level {lv}`",
           f"- 不在として進める(明示宣言。このrun・この候補round限り。AI推奨1件のみ採用): `{CLI} declare-absent --runs {run_hint} --reason <理由> --by <名前> [--user-ref <ユーザー発言の参照>]`",
           "", "再開: 上の操作の後、制作コマンドを**同じコマンドのまま**再実行してください(候補抽出・解説生成・supportの再生成は行われません)。"]
     return "\n".join(L) + "\n"
@@ -643,7 +643,8 @@ def _render_request_md_v1(doc: dict, review: dict, *, run_hint: str) -> str:
     if req["n_more"]:
         L += [f"(TOP2の次に控えがあと{req['n_more']}件。reselectすると次順位が新しいTOP1/TOP2になります)", ""]
     L += ["## 操作(コマンド。`--by` は操作者名)", ""]
-    base = f"{CLI} grammar-select --run {run_hint} --candidates-sha {sha} --by <名前>"
+    lv = (review.get("article_key") or {}).get("level")
+    base = f"{CLI} grammar-select --run {run_hint} --level {lv} --candidates-sha {sha} --by <名前>"
     if "top1" in req["choices"]:
         L.append(f"- AI推奨(TOP1)を了承: `{base} --choice top1 --accept-ai`")
         L.append(f"- TOP1を選ぶ: `{base} --choice top1`")
@@ -655,7 +656,7 @@ def _render_request_md_v1(doc: dict, review: dict, *, run_hint: str) -> str:
         L.append(f"- 今回は解説を出さない(理由必須): `{base} --choice omit --reason <理由>`")
     if "reextract" in req["choices"]:
         L.append(f"- 再抽出(枯渇時のみ・理由必須): `{base} --choice reextract --reason <理由>`")
-    L += [f"- 状況: `{CLI} status --run {run_hint}` / 表示: `{CLI} grammar-show --run {run_hint}`",
+    L += [f"- 状況: `{CLI} status --run {run_hint}` / 表示: `{CLI} grammar-show --run {run_hint} --level {lv}`",
           f"- 不在として進める(明示宣言。このrun・この候補round限り): `{CLI} declare-absent --runs {run_hint} --reason <理由> --by <名前> [--user-ref <ユーザー発言の参照>]`",
           "", "再開: 上の操作の後、制作コマンドを**同じコマンドのまま**再実行してください(候補抽出・supportの再生成は行われません)。"]
     return "\n".join(L) + "\n"

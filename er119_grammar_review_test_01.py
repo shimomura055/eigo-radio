@@ -389,25 +389,25 @@ class TestCli(GrammarCase):
         self.assertEqual(rc, 0, err)
         j = json.loads(out)
         self.assertEqual([os.path.normpath(x) for x in j["grammar_pending"]], [os.path.normpath(self.sd)])
-        rc, out, err = self.run_cli(["grammar-show", "--run", self.run_dir])
+        rc, out, err = self.run_cli(["grammar-show", "--run", self.run_dir, "--level", "b1b"])
         self.assertEqual(rc, 0, err)
         self.assertIn("AI推奨 1", out)                                  # v2: 全候補の文法名+解説全文を提示(AI推奨=候補1)
         self.assertIn("学習ページに載る全文", out)
         sha = gr.load_candidates(self.sd)["candidates_sha256"]
-        rc, out, err = self.run_cli(["grammar-select", "--run", self.run_dir, "--choice", "top2", "--candidates-sha", sha, "--by", "t"])   # reason無し
+        rc, out, err = self.run_cli(["grammar-select", "--run", self.run_dir, "--level", "b1b", "--choice", "top2", "--candidates-sha", sha, "--by", "t"])   # reason無し
         self.assertEqual(rc, 2)
         self.assertEqual(gr.load_review(self.sd)["status"], rv.ST_PENDING)                     # 拒否時は状態不変
-        rc, out, err = self.run_cli(["grammar-select", "--run", self.run_dir, "--choice", "top1", "--accept-ai", "--candidates-sha", "0" * 64, "--by", "t"])
+        rc, out, err = self.run_cli(["grammar-select", "--run", self.run_dir, "--level", "b1b", "--choice", "top1", "--accept-ai", "--candidates-sha", "0" * 64, "--by", "t"])
         self.assertEqual(rc, 2)
-        rc, out, err = self.run_cli(["grammar-ng", "--run", self.run_dir, "--rank", "1", "--reason", "x", "--by", "t"])
+        rc, out, err = self.run_cli(["grammar-ng", "--run", self.run_dir, "--level", "b1b", "--rank", "1", "--reason", "x", "--by", "t"])
         self.assertEqual(rc, 0, err)
         self.pregen()                                              # NG後の新候補一覧の解説を事前生成(再実行相当)
         sha = gr.load_candidates(self.sd)["candidates_sha256"]
-        rc, out, err = self.run_cli(["grammar-select", "--run", self.run_dir, "--choice", "top1", "--accept-ai", "--candidates-sha", sha, "--by", "t"])
+        rc, out, err = self.run_cli(["grammar-select", "--run", self.run_dir, "--level", "b1b", "--choice", "top1", "--accept-ai", "--candidates-sha", sha, "--by", "t"])
         self.assertEqual(rc, 0, err)
         self.assertEqual(gr.load_review(self.sd)["status"], rv.ST_REVIEWED)
         self.assertTrue(gr.load_review(self.sd)["accept_ai_default"])
-        rc, out, err = self.run_cli(["grammar-unng", "--run", self.run_dir, "--sentence", PARAS[0].split(". ")[0] + ".", "--reason", "誤NG", "--by", "t"])
+        rc, out, err = self.run_cli(["grammar-unng", "--run", self.run_dir, "--level", "b1b", "--sentence", PARAS[0].split(". ")[0] + ".", "--reason", "誤NG", "--by", "t"])
         self.assertEqual(rc, 0, err)
 
     def test_r7_scoped_and_dated_declarations_are_gone(self):
