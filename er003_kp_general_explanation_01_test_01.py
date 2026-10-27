@@ -115,9 +115,9 @@ def test_A5_validate_phrases_accepts_every_real_fulltext_used_form():
 
 # ============ B: module単体 ============
 def test_B1_build_prompt_takes_only_phrases():
-    assert list(inspect.signature(m.build_prompt).parameters) == ["phrases"]
+    assert list(inspect.signature(m.build_prompt).parameters) == ["phrases", "level"]
     gp = list(inspect.signature(m.generate_general_explanations).parameters)
-    assert gp[0] == "phrases" and set(gp[1:]) <= {"call_fn", "client", "_items_for_isolation"}
+    assert gp[0] == "phrases" and set(gp[1:]) <= {"call_fn", "client", "_items_for_isolation", "level"}
 
 
 def test_B3_wrapper_never_sends_gloss_source_sentence_or_meaning():

@@ -65,6 +65,31 @@ Markdownのみ。表現ごとに次の形式で、前置き・後書きは付け
 """
 PROMPT_TEMPLATE_SHA256 = hashlib.sha256((PROMPT_HEAD + "␟" + PROMPT_BODY).encode("utf-8")).hexdigest()
 
+# ---- Standard(a2)版Head(SLOT-23-CONSUMER-DESIGN-01 委任_04B、ユーザー正式決定2026-10-27 Std②=C案) ----
+# 差分は2点のみ: 学習者像の1文(B1〜B2→A2〜B1)と、難易度指示1項目(やさしい語で書く)。BODY・出力形式・構造検査はAdvと同一(新しい説明方式を追加しない)。
+# 解説本文の言語は日本語のまま(作業仮定A。英語化が必要なら本HEADのPromptのみで切替える構造。英語化は実装しない)。
+LEVEL_B1B = "b1b"
+LEVEL_A2 = "a2"
+LEVELS = (LEVEL_B1B, LEVEL_A2)
+_STD_LEARNER_OLD = "日本語話者の英語学習者(B1〜B2相当)向けに"
+_STD_LEARNER_NEW = "日本語話者の英語学習者(A2〜B1相当)向けに"
+_STD_DIFFICULTY_LINE = "- やさしい語で書き、専門用語・文法用語を使う場合は短く言い換える。解説の観点・項目・分量の考え方は変えない。\n"
+assert PROMPT_HEAD.count(_STD_LEARNER_OLD) == 1
+PROMPT_HEAD_A2 = PROMPT_HEAD.replace(_STD_LEARNER_OLD, _STD_LEARNER_NEW) + _STD_DIFFICULTY_LINE
+PROMPT_TEMPLATE_SHA256_A2 = hashlib.sha256((PROMPT_HEAD_A2 + "␟" + PROMPT_BODY).encode("utf-8")).hexdigest()
+PROMPT_HEADS = {LEVEL_B1B: PROMPT_HEAD, LEVEL_A2: PROMPT_HEAD_A2}
+
+
+def _prompt_sha(level: str) -> str:
+    return PROMPT_TEMPLATE_SHA256 if level == LEVEL_B1B else PROMPT_TEMPLATE_SHA256_A2
+LEVEL_LABELS = {LEVEL_B1B: "Advanced", LEVEL_A2: "Standard"}
+
+
+def _check_level(level: str) -> str:
+    if level not in LEVELS:
+        raise KpGeneralExplanationInputError(f"levelが不正です: {level!r}(許可={LEVELS})")
+    return level
+
 MAX_PHRASES = 5            # Productionは最大3件。旧5件artifactも許容(上限)
 MAX_PHRASE_CHARS = 60
 MAX_PHRASE_WORDS = 10
@@ -137,21 +162,23 @@ def validate_phrases(phrases: list) -> None:
             raise ValueError(f"'#'始まりの表現は入力にできません: {p!r}")
 
 
-def build_prompt(phrases: list) -> str:
-    """引数は英語表現のみ(本文・gloss・引用文を受け取れない)。Trial-04 p1_prompt(arm='alpha')とbyte一致。"""
+def build_prompt(phrases: list, level: str = LEVEL_B1B) -> str:
+    """引数は英語表現のみ(本文・gloss・引用文を受け取れない)。Trial-04 p1_prompt(arm='alpha')とbyte一致(b1b)。"""
+    _check_level(level)
     validate_phrases(phrases)
     items = "\n".join(f"{i}. 英語表現: {k}" for i, k in enumerate(phrases, 1))
-    return PROMPT_HEAD + PROMPT_ENUM_MARKER + items + "\n" + PROMPT_BODY
+    return PROMPT_HEADS[level] + PROMPT_ENUM_MARKER + items + "\n" + PROMPT_BODY
 
 
 _ENUM_LINE_RE = re.compile(r"^(\d+)\. 英語表現: (.*)$")
 
 
-def _variable_part(prompt: str) -> str:
+def _variable_part(prompt: str, level: str = LEVEL_B1B) -> str:
     """Promptの可変部=列挙行の「表現」部分だけ(固定HEAD/BODY・列挙ラベル「N. 英語表現: 」を除く)。"""
-    if not (prompt.startswith(PROMPT_HEAD + PROMPT_ENUM_MARKER) and prompt.endswith("\n" + PROMPT_BODY)):
+    head = PROMPT_HEADS[_check_level(level)]
+    if not (prompt.startswith(head + PROMPT_ENUM_MARKER) and prompt.endswith("\n" + PROMPT_BODY)):
         raise KpIsolationViolation("Promptが固定HEAD/BODYの構造ではありません")
-    enum = prompt[len(PROMPT_HEAD) + len(PROMPT_ENUM_MARKER): -(len(PROMPT_BODY) + 1)]
+    enum = prompt[len(head) + len(PROMPT_ENUM_MARKER): -(len(PROMPT_BODY) + 1)]
     tails = []
     for i, line in enumerate(enum.split("\n"), 1):
         m = _ENUM_LINE_RE.match(line)
@@ -179,13 +206,13 @@ def _collect_strings(obj, out=None) -> list:
     return out
 
 
-def check_prompt_isolation(prompt: str, phrases: list, items: list | None = None) -> None:
+def check_prompt_isolation(prompt: str, phrases: list, items: list | None = None, level: str = LEVEL_B1B) -> None:
     """送信直前のfail-closed検査(Opus実装時必須2)。
     (1) Promptが HEAD+列挙+BODY の決定論再構成と一致、(2) 可変部(列挙部)にCJKが無い、
     (3) itemのあらゆる文字列値(入れ子含む)が可変部に含まれない。表現そのもの(各phraseの部分文字列)は正常として除外。"""
-    if prompt != build_prompt(phrases):
+    if prompt != build_prompt(phrases, level):
         raise KpIsolationViolation("Promptが決定論再構成(HEAD+列挙+BODY)と一致しません")
-    var = _variable_part(prompt)
+    var = _variable_part(prompt, level)
     if _CJK_RE.search(var):
         raise KpIsolationViolation("Promptの可変部(列挙部)に日本語が含まれています")
     if items:
@@ -203,8 +230,11 @@ def check_prompt_isolation(prompt: str, phrases: list, items: list | None = None
 # ------------------------------------------------------------
 # signature(再生成キー): 表現・順序(rank昇順)・Prompt sha・model。gloss/引用文/本文は含めない
 # ------------------------------------------------------------
-def phrases_signature(items: list, *, model: str | None = None) -> str:
-    payload = {"phrases": strict_phrases(items), "prompt_sha256": PROMPT_TEMPLATE_SHA256, "model": model or MODEL}
+def phrases_signature(items: list, *, model: str | None = None, level: str = LEVEL_B1B) -> str:
+    _check_level(level)
+    payload = {"phrases": strict_phrases(items), "prompt_sha256": _prompt_sha(level), "model": model or MODEL}
+    if level != LEVEL_B1B:   # b1bのpayloadは不変(既存Adv成果物をstaleにしない)。a2のみlevelを付与
+        payload["level"] = level
     return hashlib.sha256(json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()
 
 
@@ -274,13 +304,15 @@ def _cost_jpy(model: str, usage: dict):
         return None
 
 
-def generate_general_explanations(phrases: list, *, call_fn=None, client=None, _items_for_isolation: list | None = None) -> dict:
+def generate_general_explanations(phrases: list, *, call_fn=None, client=None, _items_for_isolation: list | None = None,
+                                  level: str = LEVEL_B1B) -> dict:
     """phrases(英語表現のみ)→1 call→構造検査→失敗なら技術retry1回→なお失敗でKpGeneralExplanationError。
     応答modelが期待modelと違えばretryもfallbackもせずSTOP。"""
+    _check_level(level)
     validate_phrases(phrases)
     model = routing.require_model(MODEL_ROUTING_PROCESS, MODEL)
-    prompt = build_prompt(phrases)
-    check_prompt_isolation(prompt, phrases, _items_for_isolation)
+    prompt = build_prompt(phrases, level)
+    check_prompt_isolation(prompt, phrases, _items_for_isolation, level)
     if call_fn is None:
         if client is None:
             import er003_v1_b1_scaffold_01_generate as b1s
@@ -307,7 +339,7 @@ def generate_general_explanations(phrases: list, *, call_fn=None, client=None, _
             continue
         costs = [c["cost_jpy"] for c in calls if c.get("cost_jpy") is not None]
         audit = {"management_id": MANAGEMENT_ID, "process": MODEL_ROUTING_PROCESS, "model": model, "requested_model": model,
-                 "prompt_sha256": hashlib.sha256(prompt.encode("utf-8")).hexdigest(), "prompt_template_sha256": PROMPT_TEMPLATE_SHA256,
+                 "prompt_sha256": hashlib.sha256(prompt.encode("utf-8")).hexdigest(), "prompt_template_sha256": _prompt_sha(level),
                  "input_sha256": hashlib.sha256(json.dumps(list(phrases), ensure_ascii=False).encode("utf-8")).hexdigest(),
                  "phrases": list(phrases), "response_ids": [c["response_id"] for c in calls], "calls": calls,
                  "retried_for_parse": attempt_no == 2, "reused_from_previous_run": False,
@@ -317,39 +349,49 @@ def generate_general_explanations(phrases: list, *, call_fn=None, client=None, _
     raise KpGeneralExplanationError(f"Part 1解説生成が2回(初回+技術retry1回)とも構造検査に失敗しました: {last_err}")
 
 
-def generate_for_kp_items(items: list, *, call_fn=None, client=None) -> dict:
+def generate_for_kp_items(items: list, *, call_fn=None, client=None, level: str = LEVEL_B1B) -> dict:
     """呼出側用wrapper。item dictに触れるのは strict_phrase() だけ(gloss/source_sentence/meaning等は参照しない)。
     戻り値は保存形式(phrases_signature・ranks付き)。"""
     sitems = sorted_items(items)
     phrases = strict_phrases(sitems)
-    res = generate_general_explanations(phrases, call_fn=call_fn, client=client, _items_for_isolation=sitems)
-    return {"schema": SCHEMA_VERSION, "phrases_signature": phrases_signature(sitems), "phrases": phrases,
-            "ranks": [it["rank"] for it in sitems], "items": res["items"], "audit": res["audit"]}
+    res = generate_general_explanations(phrases, call_fn=call_fn, client=client, _items_for_isolation=sitems, level=level)
+    out = {"schema": SCHEMA_VERSION, "phrases_signature": phrases_signature(sitems, level=level), "phrases": phrases,
+           "ranks": [it["rank"] for it in sitems], "items": res["items"], "audit": res["audit"]}
+    if level != LEVEL_B1B:   # b1bの保存docは従来とキー集合も同一。a2 docだけlevelを記録(Advが誤って使わない)
+        out["level"] = level
+    return out
 
 
-def resolve_general_explanations(items: list, cached: dict | None, *, call_fn=None, client=None) -> dict:
+def _doc_level(doc: dict) -> str:
+    return doc.get("level") or LEVEL_B1B
+
+
+def resolve_general_explanations(items: list, cached: dict | None, *, call_fn=None, client=None, level: str = LEVEL_B1B) -> dict:
     """X用のresume resolver: signature一致ならAPI 0で再利用、不一致/無しなら再生成。"""
-    sig = phrases_signature(items)
-    if cached and cached.get("schema") == SCHEMA_VERSION and cached.get("phrases_signature") == sig:
+    sig = phrases_signature(items, level=level)
+    if cached and cached.get("schema") == SCHEMA_VERSION and cached.get("phrases_signature") == sig and _doc_level(cached) == level:
         out = json.loads(json.dumps(cached))
         out["reused_from_previous_run"] = True
         out.setdefault("audit", {})["reused_from_previous_run"] = True
         return out
-    out = generate_for_kp_items(items, call_fn=call_fn, client=client)
+    out = generate_for_kp_items(items, call_fn=call_fn, client=client, level=level)
     out["reused_from_previous_run"] = False
     return out
 
 
-def require_fresh_general_explanations(items: list, doc: dict | None, *, next_command: str, where: str = "") -> None:
+def require_fresh_general_explanations(items: list, doc: dict | None, *, next_command: str, where: str = "", level: str = LEVEL_B1B) -> None:
     """使う側(TTS/assembly/pages/player)の確認(Opus M2)。無い/古いならKpGeneralExplanationStale(次コマンド付き)。"""
     if not doc or doc.get("schema") != SCHEMA_VERSION:
         raise KpGeneralExplanationStale(
             f"KP_PART1_EXPLANATIONS_MISSING{('(' + where + ')') if where else ''}: {EXPLANATIONS_FILENAME}が無い/形式不明 "
             f"(Part 1導入前のrunか未生成)。次の一手: {next_command}")
     try:
-        cur = phrases_signature(items)
+        cur = phrases_signature(items, level=level)
     except KpGeneralExplanationInputError as e:
         raise KpGeneralExplanationStale(f"KP_PART1_INPUT_INVALID{('(' + where + ')') if where else ''}: {e}") from e
+    if _doc_level(doc) != level:
+        raise KpGeneralExplanationStale(
+            f"KP_PART1_EXPLANATIONS_LEVEL_MISMATCH{('(' + where + ')') if where else ''}: 保存doc level={_doc_level(doc)} 期待={level}。次の一手: {next_command}")
     if doc.get("phrases_signature") != cur:
         raise KpGeneralExplanationStale(
             f"KP_PART1_EXPLANATIONS_STALE{('(' + where + ')') if where else ''}: 保存済みsignature={str(doc.get('phrases_signature'))[:12]} "
@@ -361,7 +403,7 @@ def require_fresh_general_explanations(items: list, doc: dict | None, *, next_co
 # ------------------------------------------------------------
 # 組立(決定論・LLMなし)
 # ------------------------------------------------------------
-def assemble_part1(kp_items: list, explanations: dict, translations: dict | None, article_text: str) -> list:
+def assemble_part1(kp_items: list, explanations: dict, translations: dict | None, article_text: str, level: str = LEVEL_B1B) -> list:
     """ユーザー原文§2の並び: 英語表現 / 本文中の意味 / 本文引用英文 / 英文の日本語訳 / 解説。
     - gloss: HR待ち・未評価・空はSTOP。引用英文: 既存正規化で本文に逐語実在しなければSTOP。
     - 訳: translations[rank]が無ければ source_sentence_ja=None・translation_status=PENDING_USER_DECISION(暗黙の空欄にしない)。
@@ -374,7 +416,7 @@ def assemble_part1(kp_items: list, explanations: dict, translations: dict | None
     unev = ga.collect_unevaluated({"items": sitems})
     if unev:
         raise KpGeneralExplanationError(f"KP_PART1_GLOSS_UNEVALUATED: rank={[x.get('rank') for x in unev]}")
-    require_fresh_general_explanations(sitems, explanations, next_command="Part 1を再生成してください", where="assemble")
+    require_fresh_general_explanations(sitems, explanations, next_command="Part 1を再生成してください", where="assemble", level=level)
     by_idx = {r["rank_index"]: r for r in explanations["items"]}
     norm_article = _norm_match(article_text)
     translations = translations or {}
@@ -408,11 +450,11 @@ def render_markdown(rows: list) -> str:
     return "\n".join(L)
 
 
-def write_study_text(dir_path: str, rows: list) -> dict:
+def write_study_text(dir_path: str, rows: list, level: str = LEVEL_B1B) -> dict:
     os.makedirs(dir_path, exist_ok=True)
     jp, mp = f"{dir_path}/{PART1_FILE_STEM}.json", f"{dir_path}/{PART1_FILE_STEM}.md"
     with open(jp, "w", encoding="utf-8", newline="\n") as f:
-        json.dump({"schema": SCHEMA_VERSION, "level": "Advanced", "rows": rows}, f, ensure_ascii=False, indent=2)
+        json.dump({"schema": SCHEMA_VERSION, "level": LEVEL_LABELS[_check_level(level)], "rows": rows}, f, ensure_ascii=False, indent=2)
     with open(mp, "w", encoding="utf-8", newline="\n") as f:
         f.write(render_markdown(rows))
     return {"json": jp, "md": mp}
@@ -497,13 +539,13 @@ def render_html_block(rows: list) -> str:
 # ------------------------------------------------------------
 # Family X 公開ページ(per-article script)用の共通builder(委任_16、API 0)
 # ------------------------------------------------------------
-def study_html_for_audio_dir(audio_dir: str, *, items: "list | None" = None) -> str:
+def study_html_for_audio_dir(audio_dir: str, *, items: "list | None" = None, level: str = LEVEL_B1B) -> str:
     """Xの試聴/公開ページ生成script(例 er019_nws2_final_page_01.py)が1行で呼ぶ共通関数。
     入力=Production runnerのaudio出力dir(`<audio_dir>/b1b/{key_phrases,study_text}`)。保存済みstudy_text(組立時に本文との逐語照合済み)が、
     現在のKP・解説・訳(いずれもsignature最新)・gloss現在値と一致することを確認してから描画する。
     判断記録なし→空文字(従来とバイト同一)。Part 1未生成/古い/不一致→KpGeneralExplanationError(ページを作らない)。"""
     import er003_kp_source_sentence_ja_01 as ja
-    b = f"{audio_dir}/b1b"
+    b = f"{audio_dir}/{_check_level(level)}"
     kp_path = f"{b}/key_phrases/keywords_canonicalized.json"
     try:
         if items is None:   # 従来経路(KP Human Review導入前のrun=KP3件)。itemsを渡す呼出(er120_part2_wiring_01.public_study_html)はvocab5件(part1_items)
@@ -520,7 +562,7 @@ def study_html_for_audio_dir(audio_dir: str, *, items: "list | None" = None) -> 
     except (OSError, ValueError) as e:
         raise KpGeneralExplanationError(f"KP_PART1_PAGE_INPUT_MISSING: {e}(次の一手: --stage study_text の後に --stage assemble/player)") from e
     try:
-        require_fresh_general_explanations(items, ex, next_command="--stage study_text", where="x_page")
+        require_fresh_general_explanations(items, ex, next_command="--stage study_text", where="x_page", level=level)
         ja.require_fresh_translations(items, tr, next_command="--stage study_text", where="x_page")
     except (KpGeneralExplanationStale, ja.KpSourceSentenceJaStale) as e:
         raise KpGeneralExplanationError(str(e)) from e

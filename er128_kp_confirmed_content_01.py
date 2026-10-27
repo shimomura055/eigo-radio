@@ -30,6 +30,9 @@ runnerは load/verify だけを呼ぶ(レコードの書込みは CLI と finali
   py er128_kp_confirmed_content_01.py confirm --adopt-existing --run <run> --level a2 --by <名> --user-ref <path> [--apply]
   py er128_kp_confirmed_content_01.py confirm-revise --run <run> --level b1b --by <名> --user-ref <path> --reason ... --gloss <candidate_id>=<新訳>
   py er128_kp_confirmed_content_01.py revoke --run <run> --level b1b --by <名> --user-ref <path> --reason ...
+  py er128_kp_confirmed_content_01.py reconsume --run <run> --level a2|b1b --by <名> --user-ref <path>
+      (SLOT-23 委任_04B: 確定済みの既存記事を新表示仕様[display_spec=LEARNING_ITEMS_123_V1]へ明示的に移行する。ユーザー選定[①②③の候補ID・区分・件数]は変えない。
+       a2: STD_CATEGORY2_NO_SLOTの②をitemsへ・reviewのstd_part1マークとselection.vocab[=①+②]を更新・確定Redundancy QAは次回runner起動で走る。b1b: record側のみ)
   py er128_kp_confirmed_content_01.py restore --run <run> --level b1b --by <名> --reason ...
 """
 from __future__ import annotations
@@ -75,6 +78,12 @@ ACTOR_USER = "user"
 ACTOR_EVIDENCE = "evidence"               # 02B: runtime evidence用(ユーザー確定ではない)。保護の強度はuserと同じ(英語・訳・区分・文法を守る)が、記録上は明示的に区別する
 ENFORCING_ACTORS = (ACTOR_USER, ACTOR_EVIDENCE)
 ACTOR_AUTO = "auto"                       # 明示の不在宣言によるAUTO。ユーザー確定ではない(再確認要求の対象外。英語/区分は不変検査)
+
+DISPLAY_SPEC_V1 = "LEARNING_ITEMS_123_V1"   # 確定レコードの表示仕様マーク(SLOT-23。新規作成=reviewのstd_part1から導出/継承、既存記事=reconsumeでのみ明示移行)
+KNOWN_DISPLAY_SPECS = (DISPLAY_SPEC_V1,)
+REASON_C3_HIGHLIGHT = "CATEGORY3_HIGHLIGHT"      # display_spec付きの③(本文の下線+短い日本語訳。消費者あり)
+REASON_C3_NO_CONSUMER = "CATEGORY3_NO_CONSUMER"  # 旧(マーク無し)の③
+REASON_C2_NO_SLOT = "STD_CATEGORY2_NO_SLOT"      # 旧(マーク無し)のStd②(Part 1が無かった)。display_spec付きでは0件でなければならない
 
 PROTECTED_ITEM_FIELDS = ("candidate_id", "kind", "category", "slot", "used_form", "display_phrase", "key_phrase", "japanese_gloss")
 ENGLISH_FIELDS = ("used_form", "display_phrase", "key_phrase")
@@ -260,9 +269,20 @@ def build_items(cands: dict, kp_ids: list, vocab_ids: list) -> list:
     return out
 
 
+def _display_spec_for_new(prev: Optional[dict], review: Optional[dict]) -> Optional[str]:
+    """新レコードのdisplay_spec。前レコードがlive(確定中)ならそれを継承(遡及なし。マーク無しはマーク無しのまま)、
+    前レコードが無い/取消済み/reconfirm_requiredなら新規扱いでreviewのstd_part1マークから導出する(マークはnew_reviewだけが発行する)。"""
+    if prev is not None and prev.get("state") == STATE_LIVE:
+        return prev.get("display_spec")
+    return DISPLAY_SPEC_V1 if (review or {}).get("std_part1") else None
+
+
 def _new_record(*, kp_dir: str, review: dict, cands: dict, items: list, actor: str, origin: dict, by: str, attestation: str,
                 user_ref: str, comment: str = "", unconsumed: Optional[list] = None, prev: Optional[dict] = None,
-                event: str = "confirmed", reason: str = "", confirmation_id: Optional[str] = None) -> dict:
+                event: str = "confirmed", reason: str = "", confirmation_id: Optional[str] = None,
+                display_spec: Optional[str] = None) -> dict:
+    """display_spec引数=reconsume専用の明示指定(それ以外はNone=_display_spec_for_newの継承/導出)。レコードへ付与する付与点はここだけで、
+    マーク自体の発行は(reviewの)new_reviewだけ。"""
     ak = review.get("article_key") or {}
     rec = {"schema": SCHEMA, "revision": ((prev or {}).get("revision") or 0) + 1, "state": STATE_LIVE,
            "confirmation_id": confirmation_id or ("cr_" + content_sha256(items)[:16]),
@@ -273,6 +293,9 @@ def _new_record(*, kp_dir: str, review: dict, cands: dict, items: list, actor: s
            "content_sha256": content_sha256(items), "history": list((prev or {}).get("history") or [])}
     if (prev or {}).get("grammar"):
         rec["grammar"] = prev["grammar"]
+    spec = display_spec if display_spec is not None else _display_spec_for_new(prev, review)
+    if spec:   # マーク無しのレコードにはキーを作らない(旧レコードのrecord_sha256・バイトを変えない)
+        rec["display_spec"] = spec
     _append_history(rec, event=event, by=by, reason=reason, user_ref=user_ref)
     return rec
 
@@ -389,13 +412,14 @@ def _artifact_diffs(kp_dir: str, level: str, rec: dict, *, assets_json: Optional
     pth = rv.paths(kp_dir)
     block, warn = [], []
     kp_by = _doc_items_by_id(pth["kp"]) or {}
-    vocab_by = _doc_items_by_id(pth["vocab"]) if level == "b1b" else None
+    vocab_on = level == "b1b" or bool(rec.get("display_spec"))   # Std Part 1(display_spec付きa2)もvocab_confirmed.jsonと突合する
+    vocab_by = _doc_items_by_id(pth["vocab"]) if vocab_on else None
     for ri in rec.get("items") or []:
         if ri["slot"] == "kp":
             b, w = _item_diffs(ri, kp_by.get(ri["candidate_id"]), "keywords_canonicalized.json", enforce_gloss=enforce_gloss)
             block += b
             warn += w
-        if level == "b1b":
+        if vocab_on:
             b, w = _item_diffs(ri, (vocab_by or {}).get(ri["candidate_id"]), "vocab_confirmed.json", enforce_gloss=enforce_gloss)
             block += b
             warn += w
@@ -421,7 +445,55 @@ def _cand_diffs(rec: dict, cands: dict) -> list:
         for f in PROTECTED_ITEM_FIELDS:
             if cur.get(f) != ri.get(f):
                 out.append({"candidate_id": ri["candidate_id"], "field": f, "confirmed": ri.get(f), "observed": cur.get(f), "where": "kp_candidates.json"})
+    if rec.get("display_spec"):   # ③(本文の下線+短い日本語訳)の確定訳も保護する(display_spec付きレコードのみ。遡及なし)
+        for u in rec.get("unconsumed") or []:
+            if u.get("category") != 3:
+                continue
+            c = cm.get(u.get("candidate_id"))
+            if c is None:
+                out.append({"candidate_id": u.get("candidate_id"), "field": "(candidate:category3)", "confirmed": u.get("used_form"), "observed": None, "where": "kp_candidates.json:欠落"})
+            elif ((c.get("item") or {}).get("japanese_gloss")) != u.get("japanese_gloss"):
+                out.append({"candidate_id": u.get("candidate_id"), "field": "japanese_gloss(category3)", "confirmed": u.get("japanese_gloss"),
+                            "observed": (c.get("item") or {}).get("japanese_gloss"), "where": "kp_candidates.json"})
     return out
+
+
+def _display_spec_diffs(rec: dict, level: str, review: dict) -> list:
+    """G1不変条件(SLOT-23 M8): display_spec ⇔ std_part1(a2は厳密一致、b1bはstd_part1付きならdisplay_spec必須)・display_spec付きなら
+    STD_CATEGORY2_NO_SLOT/CATEGORY3_NO_CONSUMERの旧reasonが0件・未知のdisplay_specは拒否。マーク無し(旧run)は何も検査しない。"""
+    out = []
+    spec = rec.get("display_spec")
+    mark = bool(review.get("std_part1"))
+    if spec and spec not in KNOWN_DISPLAY_SPECS:
+        out.append({"candidate_id": None, "field": "display_spec", "confirmed": spec, "observed": f"未知のdisplay_spec(既知={list(KNOWN_DISPLAY_SPECS)})", "where": "confirmed_selection.json"})
+    if level == "a2" and bool(spec) != mark:
+        out.append({"candidate_id": None, "field": "display_spec<=>std_part1", "confirmed": spec, "observed": f"review.std_part1={mark}",
+                    "where": "confirmed_selection.json vs kp_human_review.json(a2はdisplay_specとstd_part1が一致していなければならない。移行は reconsume)"})
+    if level == "b1b" and mark and not spec:
+        out.append({"candidate_id": None, "field": "display_spec<=>std_part1", "confirmed": spec, "observed": f"review.std_part1={mark}",
+                    "where": "confirmed_selection.json vs kp_human_review.json(std_part1付きreviewの確定レコードにdisplay_specが必要)"})
+    if spec:
+        for u in rec.get("unconsumed") or []:
+            if u.get("reason") in (REASON_C2_NO_SLOT, REASON_C3_NO_CONSUMER):
+                out.append({"candidate_id": u.get("candidate_id"), "field": "unconsumed.reason", "confirmed": u.get("reason"),
+                            "observed": "display_spec付きでは旧reason(②はitemsへ、③は" + REASON_C3_HIGHLIGHT + ")", "where": "confirmed_selection.json"})
+    return out
+
+
+def display_spec_of(run: str, level: str) -> Optional[str]:
+    """表示有効化判断用の純関数(委任_04B。flag非経由=protection_enabled()を見ない、書込みなし、load_record直読み)。
+    そのrun・levelの確定レコードのdisplay_spec(取消済み/レコード無し=None)。未知の値はValueError(fail-closed)。"""
+    for d in (f"{run}/{level}/key_phrases", f"{run}/key_phrases/{level}"):
+        rec = load_record(d)
+        if rec is None or rec.get("state") == STATE_REVOKED:
+            continue
+        if ((rec.get("article") or {}).get("level")) not in (None, level):
+            continue
+        spec = rec.get("display_spec")
+        if spec and spec not in KNOWN_DISPLAY_SPECS:
+            raise ValueError(f"未知のdisplay_spec: {spec!r}")
+        return spec or None
+    return None
 
 
 def _grammar_problems(kp_dir: str, level: str, rec: dict) -> list:
@@ -490,6 +562,7 @@ def verify_g1(kp_dir: str, level: str, review: dict, cands: dict, *, assets_json
     if o.get("review_selection_signature") != review.get("selection_signature"):
         diffs.append({"candidate_id": None, "field": "review_selection_signature", "confirmed": o.get("review_selection_signature"),
                       "observed": review.get("selection_signature"), "where": "kp_human_review.json"})
+    diffs += _display_spec_diffs(rec, level, review)
     sel = review.get("selection") or {}
     want = set(rv.sel_ids(sel, "kp")) | set(rv.sel_ids(sel, "vocab"))
     have = {it["candidate_id"] for it in rec.get("items") or []}
@@ -524,8 +597,8 @@ def _note_disabled(kp_dir: str) -> None:
 def _legacy_drift(kp_dir: str, level: str, review: dict, cands: dict, assets_json: Optional[str]) -> None:
     """レコードの無い(機能有効化前に確定した)run: 候補doc値とartifactを read-only で突合し、ずれはWARN+診断ファイルのみ(BLOCKしない。M7)。"""
     sel = review.get("selection") or {}
-    items = build_items(cands, rv.sel_ids(sel, "kp"), rv.sel_ids(sel, "vocab") if level == "b1b" else [])
-    pseudo = {"items": items, "confirmed_by": {"actor": ACTOR_USER}}
+    items = build_items(cands, rv.sel_ids(sel, "kp"), rv.sel_ids(sel, "vocab") if rv.vocab_enabled(level, review) else [])
+    pseudo = {"items": items, "confirmed_by": {"actor": ACTOR_USER}, "display_spec": _display_spec_for_new(None, review)}
     block, warn = _artifact_diffs(kp_dir, level, pseudo, assets_json=assets_json)
     drift = block + warn
     p = paths_of(kp_dir)["legacy"]
@@ -555,7 +628,7 @@ def on_finalize_pre_write(kp_dir: str, review: dict, cands: dict, level: str, *,
     if not fresh:
         return
     sel = review.get("selection") or {}
-    build = build_items(cands, rv.sel_ids(sel, "kp"), rv.sel_ids(sel, "vocab") if level == "b1b" else [])
+    build = build_items(cands, rv.sel_ids(sel, "kp"), rv.sel_ids(sel, "vocab") if rv.vocab_enabled(level, review) else [])
     actor = _actor_for(review)
     sig = review.get("selection_signature")
     p = paths_of(kp_dir)["record"]
@@ -1343,6 +1416,12 @@ def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: st
     if art.get("text_sha256") and art["text_sha256"] != cands.get("text_sha256"):
         raise_issue(kp_dir, level, "フォームの本文shaが現在の候補docと一致しません。", [], next_steps=["フォームを作り直して再送信"])
     cm = _cand_map(cands)
+    review0 = rv.load_review(kp_dir) or {}
+    spec = _display_spec_for_new(load_record(kp_dir), review0)   # display_spec付き=Std②をitemsへ(unconsumedへ落とさない)・③はCATEGORY3_HIGHLIGHT
+    vocab_on = rv.vocab_enabled(level, review0)
+    if level != "b1b" and bool(spec) != vocab_on:
+        raise CliError(f"display_spec={spec!r} とreview.std_part1={bool(review0.get('std_part1'))} が一致しません。既存記事の新表示仕様への移行は "
+                       f"`{_cli(kp_dir, 'reconsume')} --level {level} --by <名> --user-ref <path>`(ユーザー選定は変わりません)")
     groups = payload.get("selection") or {}
     ids = _flat_selection_ids(groups)
     if grammar_pending:
@@ -1375,15 +1454,15 @@ def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: st
                     proposal=["候補docの正式な値(日本語訳を含む)を確認し、フォームを作り直すか、訳の修正を明示して `confirm-revise` で確定してください"],
                     next_steps=["候補docの値でフォームを作り直して再送信(または gloss HR 解消後に再確認)"])
     kp_ids = ids["cat1"]
-    vocab_ids = (ids["cat1"] + ids["cat2"]) if level == "b1b" else None
+    vocab_ids = (ids["cat1"] + ids["cat2"]) if vocab_on else None
     by_rank = {cid: cm[cid]["ai_rank"] for cid in seen}
     # 既存検証(Redundancy/NG/gloss_hr_pending/qa_fail/件数)を全て通す op_select。失敗=何も書かない
     review = rv.op_select(kp_dir, kp_ranks=[by_rank[i] for i in kp_ids], vocab_ranks=([by_rank[i] for i in vocab_ids] if vocab_ids is not None else None), by=by)
     unconsumed = [{"candidate_id": i["candidate_id"], "kind": i.get("kind"), "category": 3, "used_form": i.get("term"), "japanese_gloss": i.get("ja_gloss"),
-                   "reason": "CATEGORY3_NO_CONSUMER"} for i in groups.get("meaning_display") or []]
-    if level != "b1b":
+                   "reason": REASON_C3_HIGHLIGHT if spec else REASON_C3_NO_CONSUMER} for i in groups.get("meaning_display") or []]
+    if level != "b1b" and not spec:
         unconsumed += [{"candidate_id": i["candidate_id"], "kind": i.get("kind"), "category": 2, "used_form": i.get("term"), "japanese_gloss": i.get("ja_gloss"),
-                        "reason": "STD_CATEGORY2_NO_SLOT"} for i in groups.get("extra_explanation") or []]
+                        "reason": REASON_C2_NO_SLOT} for i in groups.get("extra_explanation") or []]
     with rv.review_lock(kp_dir, rv.KIND_KP, by):
         # 呼出順(Opus O-4): 検証済み -> KPロック(本ブロック) -> 文法ロック(apply_form_selection内) -> (1)文法review -> (2)sidecar -> (3)KPレコード保存(commit点)
         grammar_review = None if gv.get("pending") else _apply_form_grammar_review(gv, by=by, user_ref=user_ref)
@@ -1638,9 +1717,9 @@ def cmd_from_review(run: str, level: str, by: str, user_ref: str, *, adopt_exist
         if prev is not None and prev.get("state") == STATE_LIVE and not adopt_existing:
             raise CliError(f"確定レコードは既にあります(revision={prev['revision']})。変更は confirm-revise / revoke")
         sel = review["selection"]
-        items = build_items(cands, rv.sel_ids(sel, "kp"), rv.sel_ids(sel, "vocab") if level == "b1b" else [])
+        items = build_items(cands, rv.sel_ids(sel, "kp"), rv.sel_ids(sel, "vocab") if rv.vocab_enabled(level, review) else [])
         actor = _actor_for(review)
-        pseudo = {"items": items, "confirmed_by": {"actor": ACTOR_USER}}
+        pseudo = {"items": items, "confirmed_by": {"actor": ACTOR_USER}, "display_spec": _display_spec_for_new(prev, review)}
         block, warn = _artifact_diffs(kp_dir, level, pseudo)
         out = {"adopt_existing": adopt_existing, "actor": actor, "items": [(i["candidate_id"], i["category"], i["used_form"], i["japanese_gloss"]) for i in items],
                "artifact_drift": block + warn}
@@ -1695,10 +1774,14 @@ def cmd_revise(run: str, level: str, by: str, user_ref: str, reason: str, gloss:
             raise CliError("確定レコード(live)がありません")
         review, cands = rv.load_review(kp_dir), rv.load_candidates(kp_dir)
         cm = _cand_map(cands)
+        c3 = {u["candidate_id"]: u for u in rec.get("unconsumed") or [] if u.get("category") == 3}   # ③(本文の下線+短い日本語訳)の訳も修正できる(SLOT-23 M10)
         for cid in changes:
-            if cid not in {i["candidate_id"] for i in rec["items"]}:
-                raise CliError(f"candidate_id={cid} は確定レコードにありません")
+            if cid not in {i["candidate_id"] for i in rec["items"]} and cid not in c3:
+                raise CliError(f"candidate_id={cid} は確定レコード(items/③)にありません")
+            if cid not in cm:
+                raise CliError(f"candidate_id={cid} が候補docにありません")
         before = {i["candidate_id"]: i["japanese_gloss"] for i in rec["items"] if i["candidate_id"] in changes}
+        before.update({cid: c3[cid].get("japanese_gloss") for cid in changes if cid in c3})
         for cid, new in changes.items():
             c = cm[cid]
             c["item"]["japanese_gloss"] = new
@@ -1711,9 +1794,13 @@ def cmd_revise(run: str, level: str, by: str, user_ref: str, reason: str, gloss:
         rv._event(review, "confirm_revise", "er128", {"candidate_ids": sorted(changes), "by": by})
         review = rv.save_review(kp_dir, review, expected_revision=review["revision"])
         sel = review["selection"]
-        items = build_items(cands, rv.sel_ids(sel, "kp"), rv.sel_ids(sel, "vocab") if level == "b1b" else [])
+        items = build_items(cands, rv.sel_ids(sel, "kp"), rv.sel_ids(sel, "vocab") if rv.vocab_enabled(level, review) else [])
+        new_unconsumed = copy.deepcopy(rec.get("unconsumed") or [])
+        for u in new_unconsumed:
+            if u.get("category") == 3 and u.get("candidate_id") in changes:
+                u["japanese_gloss"] = changes[u["candidate_id"]]
         new_rec = _new_record(kp_dir=kp_dir, review=review, cands=cands, items=items, actor=(rec.get("confirmed_by") or {}).get("actor") or ACTOR_USER, origin=dict(rec["origin"]), by=by, attestation=f"cli --by {by}",
-                              user_ref=user_ref, comment=rec.get("comment") or "", unconsumed=rec.get("unconsumed"), prev=rec, event="revised", reason=reason,
+                              user_ref=user_ref, comment=rec.get("comment") or "", unconsumed=new_unconsumed, prev=rec, event="revised", reason=reason,
                               confirmation_id=rec["confirmation_id"])
         new_rec["history"][-1]["extra"] = {"gloss_before": before, "gloss_after": changes}
         new_rec["history"][-1]["entry_sha256"] = _entry_sha(new_rec["history"][-1])
@@ -1722,6 +1809,93 @@ def cmd_revise(run: str, level: str, by: str, user_ref: str, reason: str, gloss:
     refinal = _try_refinalize(kp_dir, level)
     return {"revised": sorted(changes), "revision": new_rec["revision"], "archived": archived, "refinalized": refinal,
             "next": "制作コマンドを同じまま再実行してください(派生物は新しい訳から再生成されます)" if not refinal else "再finalize済み。制作コマンドを再実行してください"}
+
+
+def cmd_reconsume(run: str, level: str, by: str, user_ref: str) -> dict:
+    """既存記事の確定内容を新表示仕様(display_spec=LEARNING_ITEMS_123_V1)へ明示的に移行する(SLOT-23 委任_04B。confirm-revise同型のレコード版数+1)。
+    ユーザー選定(①②③の候補ID・区分・件数)は変えない。confirmation_id/originは保持、履歴hash chainは継続、同一入力の再実行は冪等。
+    a2: unconsumedのSTD_CATEGORY2_NO_SLOT(②)をitems(category2, slot=vocab)へ移し、reviewのselection.vocab(=①+②)とstd_part1をreview_lock下で更新、
+        validate_selection(KP⊂vocab・Redundancy pair・NG・Gate)を通す。NGならISSUE(rc=4)で移行しない。確定物(vocab_confirmed.json等)は退避して
+        _try_refinalizeに委ねる(ここでは書かない)。確定集合のRedundancy QA(LLM 1 call)は次回のrunner起動で走る。
+    b1b: record側のみ(display_spec付与・③をCATEGORY3_HIGHLIGHTへ)。items/review/成果物は不変。"""
+    by, user_ref = _need_by(by), _need_user_ref(user_ref)
+    kp_dir = _kp_dir_for(run, level)
+    with rv.review_lock(kp_dir, rv.KIND_KP, by):
+        rec = load_record(kp_dir)
+        if rec is None or rec.get("state") != STATE_LIVE:
+            raise CliError("確定レコード(live)がありません。移行できるのはユーザー確定済みのレコードだけです")
+        probs = _problems_self(rec)
+        if probs:
+            raise CliError("確定レコード自体(hash chain/sha)が壊れています。移行しません: " + "; ".join(probs))
+        review, cands = rv.load_review(kp_dir), rv.load_candidates(kp_dir)
+        if review is None or cands is None:
+            raise CliError("review/候補docがありません")
+        if review["status"] not in rv.FORWARD_STATUSES:
+            raise CliError(f"status={review['status']}: 確定済みreviewからのみ移行できます")
+        if rv.selection_signature(review) != review.get("selection_signature"):
+            raise CliError("reviewの署名が不一致です(手編集の疑い)。移行しません")
+        cm = _cand_map(cands)
+        old_unc = rec.get("unconsumed") or []
+        c2 = [u for u in old_unc if u.get("reason") == REASON_C2_NO_SLOT]
+        c3_old = [u for u in old_unc if u.get("reason") == REASON_C3_NO_CONSUMER]
+        want_unc = [dict(u, reason=REASON_C3_HIGHLIGHT) if u.get("reason") == REASON_C3_NO_CONSUMER else u for u in old_unc if u.get("reason") != REASON_C2_NO_SLOT]
+        sel = review.get("selection") or {}
+        kp_ids = rv.sel_ids(sel, "kp")
+        if level == "a2":
+            c2_ids = [u["candidate_id"] for u in c2]
+            for cid in c2_ids:
+                if cid not in cm:
+                    raise CliError(f"②のcandidate_id={cid} が候補docにありません")
+            new_vocab = list(dict.fromkeys(list(kp_ids) + list(rv.sel_ids(sel, "vocab")) + c2_ids))
+            new_sel = dict(sel, kp=list(kp_ids), vocab=new_vocab)
+            ak = review.get("article_key") or {}
+            errs = rv.validate_selection(cands, new_sel, level=level, accepted_qa_fail=review.get("accepted_qa_fail"),
+                                         ng_entries=rv.ng_entries_of(review, ak.get("family"), ak.get("slug"), level), std_part1=True)
+            if errs:
+                raise_issue(kp_dir, level, "②を加えたStd Part 1の選定が既存の検証に通りません(移行していません。確定内容は変更していません)。",
+                            [{"candidate_id": None, "field": "validate_selection", "confirmed": "(現行確定)", "observed": e, "where": "reconsume"} for e in errs],
+                            proposal=["ユーザー選定は変更できません。重複(Redundancy)等がある場合はユーザー判断が必要です(revoke後の選び直し)"],
+                            next_steps=[f"{_cli(kp_dir, 'status')}", f"{_cli(kp_dir, 'revoke')} --level {level} --by <名> --user-ref <ユーザー発言> --reason ... (選び直す場合)"])
+            items = build_items(cands, kp_ids, new_vocab)
+        else:
+            new_sel = sel
+            items = build_items(cands, kp_ids, rv.sel_ids(sel, "vocab"))
+        already = (rec.get("display_spec") == DISPLAY_SPEC_V1 and not c2 and not c3_old
+                   and (level != "a2" or bool(review.get("std_part1"))) and content_sha256(items) == rec.get("content_sha256"))
+        if already:
+            return {"reconsumed": False, "unchanged": True, "revision": rec["revision"], "display_spec": rec.get("display_spec"),
+                    "note": "既に新表示仕様へ移行済みです(冪等)"}
+        archived = []
+        if level == "a2":
+            review["std_part1"] = True
+            review["selection"] = new_sel
+            vd = dict(review.get("verdicts") or {})
+            for cid in new_vocab:
+                if cid not in kp_ids:
+                    vd[cid] = "SELECTED_VOCAB"
+            review["verdicts"] = vd
+            review["final_qa"] = None   # ①+②の集合に対する確定Redundancy QAを次回起動で必ず走らせる(M-8)
+            rv._event(review, "reconsume", "er128", {"by": by, "user_ref": user_ref, "category2_to_items": [u["candidate_id"] for u in c2],
+                                                     "display_spec": DISPLAY_SPEC_V1})
+            review = rv.save_review(kp_dir, review, expected_revision=review["revision"])   # 署名はsave_reviewが再計算(std_part1を含む)
+            rv.invalidate_gloss_snapshot(kp_dir)
+        new_rec = _new_record(kp_dir=kp_dir, review=review, cands=cands, items=items, actor=(rec.get("confirmed_by") or {}).get("actor") or ACTOR_USER,
+                              origin=dict(rec["origin"]), by=by, attestation=f"cli --by {by}", user_ref=user_ref, comment=rec.get("comment") or "",
+                              unconsumed=want_unc, prev=rec, event="reconsumed", reason="新表示仕様(LEARNING_ITEMS_123_V1)への明示移行(ユーザー選定は不変)",
+                              confirmation_id=rec["confirmation_id"], display_spec=DISPLAY_SPEC_V1)
+        new_rec["history"][-1]["extra"] = {"display_spec": DISPLAY_SPEC_V1, "category2_to_items": [u["candidate_id"] for u in c2],
+                                           "category3_reason_to": REASON_C3_HIGHLIGHT if c3_old else None}
+        new_rec["history"][-1]["entry_sha256"] = _entry_sha(new_rec["history"][-1])
+        save_record(kp_dir, new_rec)
+        if level == "a2":
+            archived = _archive_final_outputs(kp_dir, "RECONSUME_SUPERSEDED")
+    refinal = _try_refinalize(kp_dir, level) if level == "a2" else None
+    return {"reconsumed": True, "level": level, "revision": new_rec["revision"], "display_spec": DISPLAY_SPEC_V1,
+            "category2_moved_to_items": [u["candidate_id"] for u in c2], "category3_reason_changed": [u["candidate_id"] for u in c3_old],
+            "archived": archived, "refinalized": refinal,
+            "next": ("確定集合(①+②)のRedundancy QA(LLM 1 call)は次回のrunner起動(制作コマンドを同じまま再実行)で走り、PASSならvocab_confirmed.jsonがfinalize_kpだけで書かれます。"
+                     "その後Std Part 1(①+②)を生成します。QAがNGならreviewはPENDINGへ戻り、選び直しが必要です(自動では差し替えません)。"
+                     if level == "a2" else "record側のみ更新しました(成果物・review・音声は不変)")}
 
 
 def _archive_final_outputs(kp_dir: str, tag: str) -> list:
@@ -1785,7 +1959,7 @@ def cmd_status(run: str) -> dict:
         rec = load_record(d)
         row = {"kp_dir": d, "level": (review or {}).get("level"), "review_status": (review or {}).get("status"),
                "record": None if rec is None else {"state": rec.get("state"), "revision": rec.get("revision"), "actor": (rec.get("confirmed_by") or {}).get("actor"),
-                                                   "origin": (rec.get("origin") or {}).get("kind"), "items": [(i["candidate_id"], i["category"], i["used_form"]) for i in rec["items"]],
+                                                   "origin": (rec.get("origin") or {}).get("kind"), "display_spec": rec.get("display_spec"), "items": [(i["candidate_id"], i["category"], i["used_form"]) for i in rec["items"]],
                                                    "unconsumed": [(u["candidate_id"], u["reason"]) for u in rec.get("unconsumed") or []],
                                                    "self_problems": _problems_self(rec)},
                "legacy_drift_file": os.path.exists(paths_of(d)["legacy"]), "issue_file": os.path.exists(paths_of(d)["issue_json"])}
@@ -1832,6 +2006,10 @@ def build_parser() -> argparse.ArgumentParser:
     common(p)
     p.add_argument("--reason", default="")
     p.add_argument("--by", default=None)
+    p = sub.add_parser("reconsume")
+    common(p)
+    p.add_argument("--by", default=None)
+    p.add_argument("--user-ref", default="")
     return ap
 
 
@@ -1855,6 +2033,8 @@ def run(argv=None) -> int:
             out = cmd_revise(a.run, a.level, a.by, a.user_ref, a.reason, a.gloss)
         elif a.cmd == "revoke":
             out = cmd_revoke(a.run, a.level, a.by, a.user_ref, a.reason)
+        elif a.cmd == "reconsume":
+            out = cmd_reconsume(a.run, a.level, a.by, a.user_ref)
         else:
             out = cmd_restore(a.run, a.level, a.by, a.reason)
         print(json.dumps(out, ensure_ascii=False, indent=2))

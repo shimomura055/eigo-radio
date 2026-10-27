@@ -498,9 +498,24 @@ def _pairs(cands: dict) -> set:
     return out
 
 
+def vocab_enabled(level: str, review: Optional[dict] = None) -> bool:
+    """Part 1(単語解説=vocab)を扱うか。Advanced(b1b)は常に、Standard(a2)はreviewに`std_part1`マークがあるときだけ(SLOT-23 委任_04B、
+    ユーザー正式決定2026-10-27 Std②=C案・遡及なし)。vocab可否の単一関数(select/auto/最終QA/finalize/消費側検査はすべてここを通る)。"""
+    return level == "b1b" or bool((review or {}).get("std_part1"))
+
+
+def issue_std_part1_mark(review: dict) -> dict:
+    """新規KP reviewへ新表示仕様マーク(std_part1)を付与する唯一の関数(KP reviewのみ。grammarは不変)。a2ではvocab(Std Part 1)を有効にし、
+    b1bではvocabは元々常に有効なので『新表示仕様の記事』という印としてだけ働く(確定レコードのdisplay_specの導出元)。
+    **new_reviewからはまだ呼ばない**(M14: 全6経路のF直前の最後の1commitで接続する。未接続の間は新規reviewにマークは付かず、従来どおり)。"""
+    if review.get("kind", KIND_KP) == KIND_KP:
+        review["std_part1"] = True
+    return review
+
+
 def validate_selection(cands: dict, selection: dict, *, level: str, kind: str = KIND_KP, accepted_qa_fail: Optional[list] = None,
-                       ng_entries: Optional[list] = None, allow_similar_ng: bool = True) -> list:
-    """returns エラー文のlist(空=合格)。select時とfinalize時の両方で呼ぶ。"""
+                       ng_entries: Optional[list] = None, allow_similar_ng: bool = True, std_part1: bool = False) -> list:
+    """returns エラー文のlist(空=合格)。select時とfinalize時の両方で呼ぶ。std_part1=reviewのStdマーク(a2でvocabを許可する)。"""
     errs = []
     cm = _cand_map(cands)
     accepted_qa_fail = set(accepted_qa_fail or [])
@@ -521,11 +536,12 @@ def validate_selection(cands: dict, selection: dict, *, level: str, kind: str = 
         chosen_all += [i for i in ids if i in cm]
     if kind == KIND_KP:
         kp, vocab = sel_ids(selection, "kp"), sel_ids(selection, "vocab")
-        if level == "a2" and vocab:
-            errs.append("vocab(単語解説5件)はAdvanced(b1b)のみです。Standardでは指定できません")
-        if level == "b1b":
+        ven = vocab_enabled(level, {"std_part1": std_part1})
+        if vocab and not ven:
+            errs.append("vocab(単語解説5件)はAdvanced(b1b)またはStd Part 1マーク付きreviewのみです。このreviewでは指定できません(遡及なし)")
+        if ven:
             if not vocab:
-                errs.append("vocab: Advancedでは単語解説(vocab)の選択が必要です(KP3件を含む最大5件)")
+                errs.append("vocab: 単語解説(vocab)の選択が必要です(KP3件を含む最大5件)")
             elif not set(kp) <= set(vocab):
                 errs.append("vocab: KPに選んだ候補をすべて含めてください(KP ⊂ vocab)")
     pairs = _pairs(cands)
@@ -559,7 +575,7 @@ def auto_eligible_now(c: dict, ng_entries: list) -> bool:
 
 
 def auto_select(cands: dict, *, level: str, kind: str = KIND_KP, ng_entries: Optional[list] = None,
-                excluded_ids: Optional[list] = None) -> dict:
+                excluded_ids: Optional[list] = None, std_part1: bool = False) -> dict:
     """決定論のAUTO規則: auto_eligibleかつNG/類似NGでなく、既採用候補とredundancy pairを持たない候補をai_rank順に走査。
     KP=先頭3、vocab(Advのみ)=先頭5(KPを含む)。不足は不足のまま(数合わせなし)。grammar=先頭1。"""
     ng_entries = ng_entries or []
@@ -576,7 +592,7 @@ def auto_select(cands: dict, *, level: str, kind: str = KIND_KP, ng_entries: Opt
     if kind == KIND_GRAMMAR:
         return {"grammar": chosen[:1]}
     kp = chosen[:KP_FINAL_MAX]
-    vocab = chosen[:VOCAB_COUNT_MAX] if level == "b1b" else []
+    vocab = chosen[:VOCAB_COUNT_MAX] if vocab_enabled(level, {"std_part1": std_part1}) else []
     return {"kp": kp, "vocab": vocab}
 
 
@@ -586,9 +602,12 @@ def selection_signature(review: dict) -> str:
         return _g.grammar_selection_signature(review)
     sel = review.get("selection") or {}
     ng = sorted(f"{e['candidate_id']}|{e.get('phrase_key')}" for e in (review.get("ng") or []) if e.get("active", True))
-    return jsha({"kind": review.get("kind", KIND_KP), "text_sha256": review.get("text_sha256"),
-                 "candidates_sha256": review.get("candidates_sha256"),
-                 "selection": {k: sorted(v) for k, v in sel.items()}, "ng": ng, "status": review.get("status")})
+    payload = {"kind": review.get("kind", KIND_KP), "text_sha256": review.get("text_sha256"),
+               "candidates_sha256": review.get("candidates_sha256"),
+               "selection": {k: sorted(v) for k, v in sel.items()}, "ng": ng, "status": review.get("status")}
+    if review.get("std_part1"):   # マーク付きreviewだけ署名に含める(マーク無し=旧署名のまま不変。遡及なし)
+        payload["std_part1"] = True
+    return jsha(payload)
 
 
 # ============================================================
@@ -604,6 +623,9 @@ def new_review(cands: dict, *, kind: str = KIND_KP, article_key: Optional[dict] 
          "last_human_op_at": (prev or {}).get("last_human_op_at"), "mode_used": None, "final_qa": None,
          "published_selection_signature": (prev or {}).get("published_selection_signature"),
          "history": list((prev or {}).get("history") or []), "selection_signature": None}
+    if (prev or {}).get("std_part1") and kind == KIND_KP:   # 既にマーク付きの選び直しround/再生成は継続(新規付与ではない)
+        r["std_part1"] = True
+    # NOTE(M14): ここで issue_std_part1_mark(r) を呼ぶ接続は、全6経路の準備後・F直前の最後の1commitで行う(未接続の間は新規a2 reviewにマークは付かない)。
     r["history"].append({"at": _now(), "event": "candidates_generated", "by": "runner",
                          "detail": {"round": r["round"], "candidates_sha256": r["candidates_sha256"]}})
     return r
@@ -659,17 +681,19 @@ def op_select(kp_dir: str, *, kp_ranks: list, vocab_ranks: Optional[list] = None
         if accept_ai:
             if shown_candidates_sha256 != cands["candidates_sha256"]:
                 raise KpReviewError("--accept-aiは、表示した候補(candidates_sha256)に対してのみ使えます(未表示の候補への了承は拒否)")
-            selection = auto_select(cands, level=level, kind=kind, ng_entries=ng_entries_of({"ng": review_ng}, ak.get("family"), ak.get("slug"), level))
+            selection = auto_select(cands, level=level, kind=kind, ng_entries=ng_entries_of({"ng": review_ng}, ak.get("family"), ak.get("slug"), level),
+                                    std_part1=bool(review.get("std_part1")))
             accepted_qf = list(accept_qa_fail or [])
         else:
             kp_ids = _rank_to_cid(cands, list(kp_ranks or []))
             v_ids = _rank_to_cid(cands, list(vocab_ranks or [])) if vocab_ranks else []
-            if kind == KIND_KP and level == "b1b" and vocab_ranks is None:
-                raise KpReviewError("Advancedでは --vocab(単語解説。KP3件を含む最大5件)の指定が必要です")
+            if kind == KIND_KP and vocab_enabled(level, review) and vocab_ranks is None:
+                raise KpReviewError("このreview(Advanced、またはStd Part 1マーク付き)では --vocab(単語解説。KP3件を含む最大5件)の指定が必要です")
             selection = {"kp": kp_ids, "vocab": v_ids} if kind == KIND_KP else {"grammar": kp_ids}
             accepted_qf = _rank_to_cid(cands, list(accept_qa_fail or []))
         errs = validate_selection(cands, selection, level=level, kind=kind, accepted_qa_fail=accepted_qf,
-                                  ng_entries=ng_entries_of({"ng": review_ng}, ak.get("family"), ak.get("slug"), level))
+                                  ng_entries=ng_entries_of({"ng": review_ng}, ak.get("family"), ak.get("slug"), level),
+                                  std_part1=bool(review.get("std_part1")))
         if errs:
             raise KpReviewError("選択が検証に失敗しました:\n- " + "\n- ".join(errs))
         # 反映
@@ -934,11 +958,11 @@ def _qa_key(sel: dict) -> str:
     return jsha({k: sorted(v) for k, v in sel.items()})
 
 
-def _run_final_qa(cands: dict, selection: dict, level: str, redundancy_fn: Optional[Callable]) -> dict:
+def _run_final_qa(cands: dict, selection: dict, level: str, redundancy_fn: Optional[Callable], std_part1: bool = False) -> dict:
     """確定KP集合(Advはvocab集合も)に対するRedundancy QA。returns {"status","ng_pairs":[(candidate_id_a, candidate_id_b)], "results":{...}}。"""
     res = {"status": "REDUNDANCY_PASS", "ng_pairs": [], "results": {}, "key": _qa_key(selection)}
     sets = [("kp", sel_ids(selection, "kp"))]
-    if level == "b1b" and set(sel_ids(selection, "vocab")) != set(sel_ids(selection, "kp")):
+    if vocab_enabled(level, {"std_part1": std_part1}) and set(sel_ids(selection, "vocab")) != set(sel_ids(selection, "kp")):
         sets.append(("vocab", sel_ids(selection, "vocab")))
     cm = _cand_map(cands)
     for name, ids in sets:
@@ -979,7 +1003,8 @@ def finalize_kp(kp_dir: str, *, level: str, redundancy_fn: Optional[Callable] = 
         ak = review.get("article_key") or {}
         ng_ent = ng_entries_of(review, ak.get("family"), ak.get("slug"), level)
         sel = review.get("selection") or {}
-        errs = validate_selection(cands, sel, level=level, accepted_qa_fail=review.get("accepted_qa_fail"), ng_entries=ng_ent)
+        _sp1 = bool(review.get("std_part1"))
+        errs = validate_selection(cands, sel, level=level, accepted_qa_fail=review.get("accepted_qa_fail"), ng_entries=ng_ent, std_part1=_sp1)
         if errs:
             raise KpReviewInconsistent("finalize: 選択が再検証に失敗しました:\n- " + "\n- ".join(errs))
         # M-8
@@ -990,7 +1015,7 @@ def finalize_kp(kp_dir: str, *, level: str, redundancy_fn: Optional[Callable] = 
             if review["status"] == ST_AUTO:
                 excluded = list((review.get("auto_qa_excluded") or []))
                 for _ in range(AUTO_QA_ADVANCE_MAX + 1):
-                    fq = _run_final_qa(cands, sel, level, redundancy_fn)
+                    fq = _run_final_qa(cands, sel, level, redundancy_fn, _sp1)
                     if fq["status"] == "REDUNDANCY_PASS":
                         break
                     # AUTO: 重複ペアの下位(ai_rankが大きい方)を除外して次候補へ繰り上げ、再判定
@@ -999,7 +1024,7 @@ def finalize_kp(kp_dir: str, *, level: str, redundancy_fn: Optional[Callable] = 
                     excluded += drop
                     review["auto_qa_excluded"] = excluded
                     _event(review, "auto_advance_final_redundancy_ng", "runner", {"excluded": drop})
-                    sel = auto_select(cands, level=level, ng_entries=ng_ent, excluded_ids=excluded)
+                    sel = auto_select(cands, level=level, ng_entries=ng_ent, excluded_ids=excluded, std_part1=_sp1)
                     if not sel_ids(sel, "kp"):
                         raise KpReviewError("AUTO: 確定集合のRedundancy QAで採用可能な候補が尽きました(STOP)")
                 else:
@@ -1007,7 +1032,7 @@ def finalize_kp(kp_dir: str, *, level: str, redundancy_fn: Optional[Callable] = 
                 review["selection"] = sel
                 review["final_qa"] = fq
             else:
-                fq = _run_final_qa(cands, sel, level, redundancy_fn)
+                fq = _run_final_qa(cands, sel, level, redundancy_fn, _sp1)
                 if fq["status"] != "REDUNDANCY_PASS":
                     review.update(status=ST_PENDING, selection={}, final_qa=None, mode_used=None)
                     _event(review, "final_redundancy_ng", "runner", {"pairs": [list(p) for p in fq["ng_pairs"]]})
@@ -1021,7 +1046,7 @@ def finalize_kp(kp_dir: str, *, level: str, redundancy_fn: Optional[Callable] = 
         sig = review["selection_signature"]
         kp_ids, vocab_ids = sel_ids(review["selection"], "kp"), sel_ids(review["selection"], "vocab")
         items = _final_items(cands, kp_ids)
-        vocab_items = _final_items(cands, vocab_ids) if level == "b1b" else []
+        vocab_items = _final_items(cands, vocab_ids) if vocab_enabled(level, review) else []
         for it in items + vocab_items:
             if it["candidate_id"] in set(review.get("accepted_qa_fail") or []):
                 it["human_accepted_qa_fail"] = True
@@ -1029,7 +1054,7 @@ def finalize_kp(kp_dir: str, *, level: str, redundancy_fn: Optional[Callable] = 
         # 旧run扱い(遅延生成しない。M-7)。
         _need = False
         for _p, _k, _adv_only in ((pth["kp"], "kp_selection_signature", False), (pth["vocab"], "kp_selection_signature", True), (pth["final"], "selection_signature", False)):
-            if _adv_only and level != "b1b":
+            if _adv_only and not vocab_enabled(level, review):
                 continue
             _d = _read_json(_p) if os.path.exists(_p) else None
             _need = _need or _d is None or _d.get(_k) != sig
@@ -1041,13 +1066,11 @@ def finalize_kp(kp_dir: str, *, level: str, redundancy_fn: Optional[Callable] = 
             _write_json_atomic(pth["kp"], {"items": items, "overall_status": overall, "kp_selection_signature": sig,
                                            "kp_review_status": review["status"]})
             wrote.append("keywords_canonicalized.json")
-        if level == "b1b":
+        if vocab_enabled(level, review):   # vocab_confirmed.jsonを書くのはfinalize_kpだけ(単一writer。両level共通。旧a2のvocab退避renameは撤去)
             curv = _read_json(pth["vocab"]) if os.path.exists(pth["vocab"]) else None
             if curv is None or curv.get("kp_selection_signature") != sig:
                 _write_json_atomic(pth["vocab"], {"items": vocab_items, "kp_selection_signature": sig, "kp_review_status": review["status"]})
                 wrote.append("vocab_confirmed.json")
-        elif os.path.exists(pth["vocab"]):
-            os.replace(pth["vocab"], pth["vocab"] + ".removed")
         final = {"schema": SCHEMA_FINAL, "level": level, "review_status": review["status"], "selection_signature": sig,
                  "text_sha256": review["text_sha256"], "candidates_sha256": review["candidates_sha256"],
                  "round": review.get("round", 1), "selection": review["selection"],
@@ -1106,7 +1129,8 @@ def require_final_consistent(kp_dir: str, *, level: Optional[str] = None, requir
         raise KpReviewInconsistent(f"KP_REVIEW_SIGNATURE_MISMATCH: kp_human_review.jsonの署名が不一致(手編集の疑い){nxt}")
     if review["candidates_sha256"] != cands["candidates_sha256"] or candidates_sha256(cands) != cands["candidates_sha256"]:
         raise KpReviewInconsistent(f"KP_CANDIDATES_SIGNATURE_MISMATCH: 候補ファイルが改変されています{nxt}")
-    for p in (pth["final"], pth["kp"]) + ((pth["vocab"],) if lv == "b1b" else ()):
+    _ven = vocab_enabled(lv, review)
+    for p in (pth["final"], pth["kp"]) + ((pth["vocab"],) if _ven else ()):
         if not os.path.exists(p):
             raise KpReviewInconsistent(f"KP_FINAL_MISSING: {p}がありません(確定前、または退避済み){nxt}")
     final = _read_json(pth["final"])
@@ -1116,7 +1140,7 @@ def require_final_consistent(kp_dir: str, *, level: Optional[str] = None, requir
     sel = review["selection"]
     if sorted(it.get("candidate_id") for it in kp_doc.get("items") or []) != sorted(sel_ids(sel, "kp")):
         raise KpReviewInconsistent(f"KP_SELECTION_MISMATCH: keywords_canonicalized.jsonの候補がreview.selection.kpと一致しません(旧KPの混入の疑い){nxt}")
-    if lv == "b1b":
+    if _ven:
         vdoc = _read_json(pth["vocab"])
         if sorted(it.get("candidate_id") for it in vdoc.get("items") or []) != sorted(sel_ids(sel, "vocab")):
             raise KpReviewInconsistent(f"KP_VOCAB_MISMATCH: vocab_confirmed.jsonがreview.selection.vocabと一致しません{nxt}")
@@ -1193,7 +1217,7 @@ def verify_selection_matches_outputs(kp_dir: str, *, level: str, tts_results_pat
             if got != want:
                 problems.append(f"TTSのKP英語text {got} が確定KP {want} と一致しません")
     vocab_items = []
-    if level == "b1b":
+    if vocab_enabled(level, review):
         vocab_items = part1_items(kp_dir)
         if study_text_json:
             if not os.path.exists(study_text_json):
@@ -1258,12 +1282,13 @@ def _backfill_summary_line(cands: dict) -> str:
 def render_request_md(cands: dict, review: dict, *, run_hint: str, ng_entries: Optional[list] = None) -> str:
     level = cands["level"]
     ng_entries = ng_entries or []
-    rec = auto_select(cands, level=level, ng_entries=ng_entries)
+    _ven = vocab_enabled(level, review)
+    rec = auto_select(cands, level=level, ng_entries=ng_entries, std_part1=bool(review.get("std_part1")))
     top_kp = {cid for cid in sel_ids(rec, "kp")}
     top_vocab = {cid for cid in sel_ids(rec, "vocab")}
     lines = [f"# KP Human Review 依頼({level}) round {cands.get('round', 1)}", "",
              f"- 状態: {review.get('status')} / candidates_sha256: `{cands['candidates_sha256'][:16]}` / 本文sha: `{cands['text_sha256'][:12]}`",
-             "- あなたの作業: KPに使う最大3件" + ("と、単語解説に使う最大5件(KP3件を含む)" if level == "b1b" else "") + "を選びます。",
+             "- あなたの作業: KPに使う最大3件" + ("と、単語解説に使う最大5件(KP3件を含む)" if _ven else "") + "を選びます。",
              "- 選ばない候補は『NG』にもできます(NGは以後の再生成でも復活しません)。何もしなければ制作は止まったままです(自動確定は明示の不在宣言があるときだけ)。", "",
              "| 番号 | AI推奨 | 英語表現(used_form) | 本文中の意味 | 出典文 | AI理由 | 旗 |", "|---|---|---|---|---|---|---|"]
     bfl = _backfill_summary_line(cands)
@@ -1304,7 +1329,7 @@ def render_request_md(cands: dict, review: dict, *, run_hint: str, ng_entries: O
     lines += ["", "## 操作(コマンド)", "",
               f"- 状況確認: `{p} status --run {run_hint}`",
               f"- AI推奨を了承: `{p} select --run {run_hint} --level {level} --accept-ai --candidates-sha {cands['candidates_sha256']} --by <名前>`",
-              f"- 選択: `{p} select --run {run_hint} --level {level} --kp 1,2,3" + (" --vocab 1,2,3,4,5" if level == "b1b" else "") + " [--ng 6:理由] --by <名前>`",
+              f"- 選択: `{p} select --run {run_hint} --level {level} --kp 1,2,3" + (" --vocab 1,2,3,4,5" if _ven else "") + " [--ng 6:理由] --by <名前>`",
               f"- 選び直し(NG付き): `{p} reselect --run {run_hint} --level {level} --ng 4:理由 --by <名前>`(上限{RESELECT_MAX}回)",
               f"- 不在として進める(明示宣言。このrun・この候補round限り): `{p} declare-absent --runs {run_hint} --reason <理由> --by <名前> [--user-ref <ユーザー発言の参照>]`",
               "", "再開: 上の操作の後、制作コマンドを**同じコマンドのまま**再実行してください(supportの再生成・再選定は行われません)。"]
@@ -1420,7 +1445,7 @@ def ensure_kp_review(kp_dir: str, *, run_dir: str, family: str, slug: str, level
                                      cands_sha=review["candidates_sha256"])
         if decl is not None:
             ng_ent = ng_entries_of(review, family, slug, level)
-            sel = auto_select(cands, level=level, ng_entries=ng_ent)
+            sel = auto_select(cands, level=level, ng_entries=ng_ent, std_part1=bool(review.get("std_part1")))
             if not sel_ids(sel, "kp"):
                 raise KpReviewError("AUTO: 採用可能な候補が0件です(OUTER_RETRY_EXHAUSTED相当のSTOP)。Humanが選ぶか再生成が必要です")
             with review_lock(kp_dir, KIND_KP, "runner"):
