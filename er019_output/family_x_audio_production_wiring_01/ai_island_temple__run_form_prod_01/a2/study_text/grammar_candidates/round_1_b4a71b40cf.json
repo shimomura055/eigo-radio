@@ -1,0 +1,277 @@
+{
+  "schema": "grammar_candidates_v1",
+  "level": "Standard",
+  "label": "The Island Resets! But AI Has “Strategy Notes”",
+  "text_sha256": "6723f1e6aa97236f38215687c17c0c29470785acfacbaf0155f25c3ef45e36f4",
+  "n_paragraphs": 8,
+  "prompt_id": "part2_stepA8",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+  "model": "gpt-6-luna",
+  "extract_signature": "88e63627338528dbcd2a41affe0da93b4ef009e907c927294e47d1d19bba9a2c",
+  "round": 1,
+  "tier_table": [
+    {
+      "para": "P1",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "長い主語では中心となる名詞を押さえ、修飾句の後に現れる主節の動詞を探す。",
+      "front_kind": "",
+      "sentence": "An AI test on an island inside a computer showed how much these “strategy notes” can matter.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P5",
+      "cls": "CMP",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "比較級の比較対象が明示されないときは、文脈から比較の基準を補う。",
+      "front_kind": "",
+      "sentence": "The experienced group did better.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P5",
+      "cls": "CMP",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "比較を表す語句の相手が明示されない場合は、文脈から比較対象を補って読む。",
+      "front_kind": "",
+      "sentence": "Those that had taken a detour were now one step ahead.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P6",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "名詞を修飾する節の中の動詞と主節の動詞を区別し、主語の終わりを見極める。",
+      "front_kind": "",
+      "sentence": "After that, the average number of towers it could build went down.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P7",
+      "cls": "CMP",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "比較級の比較対象が明示されないときは、文脈から比較の基準を補う。",
+      "front_kind": "",
+      "sentence": "The experienced group did better, and removing one memory lowered its score.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
+  "no_feature_paras": [
+    "P2",
+    "P3",
+    "P4",
+    "P8"
+  ],
+  "uncovered_paras": [],
+  "audit": {
+    "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+    "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+    "model": "gpt-6-luna",
+    "requested_model": "gpt-6-luna",
+    "prompt_sha256": "ece20fc640becea903ff328b0ffe107f87391cbdd8565bc7461bb99fb0b4d904",
+    "response_ids": [
+      "resp_093253567d1dcb0e006ae0129bb04087d0ba31525bb8d3108f"
+    ],
+    "calls": [
+      {
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3531,
+          "output_tokens": 5422,
+          "cached_input_tokens": 0,
+          "reasoning_tokens": 3981
+        },
+        "response_id": "resp_093253567d1dcb0e006ae0129bb04087d0ba31525bb8d3108f",
+        "elapsed_sec": 47.53,
+        "cost_jpy": 0.4903
+      }
+    ],
+    "retried_for_parse": false,
+    "total_cost_jpy": 0.4903,
+    "generated_at": "2026-10-27T11:56:10+0900",
+    "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+  },
+  "reselect_count": 0,
+  "reextract_count": 0,
+  "reselect_log": [],
+  "candidates": [
+    {
+      "candidate_id": "gc74d4a5e22",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "CMP",
+      "para": "P5",
+      "sentence": "The experienced group did better.",
+      "front_kind": "",
+      "misread_target": "OMITTED",
+      "misread_quote": "did better",
+      "misread_ja": "何と比べてbetterなのかが文中に示されていないため、比較対象を取り違えたり特定できなかったりすることがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "比較級の比較対象が明示されないときは、文脈から比較の基準を補う。",
+      "construct_ja": "比較対象が明示されない比較表現",
+      "points_ja": [
+        "betterは比較を表すが、この文だけでは比較対象が明示されていない。",
+        "比較対象は前後の文脈で確認する。"
+      ],
+      "context_ja": "研究者は、島での経験があるAIと経験がないAIを比較した。",
+      "prev": "The researchers checked which AIs could build more than two towers.",
+      "next": "Those that had taken a detour were now one step ahead.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        374,
+        407
+      ]
+    },
+    {
+      "candidate_id": "g39ca99d348",
+      "rank": 2,
+      "tier": "T1",
+      "feature_class": "CMP",
+      "para": "P5",
+      "sentence": "Those that had taken a detour were now one step ahead.",
+      "front_kind": "",
+      "misread_target": "OMITTED",
+      "misread_quote": "one step ahead",
+      "misread_ja": "aheadの比較対象が文中に示されていないため、誰より先なのかを特定できないまま読むことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "比較を表す語句の相手が明示されない場合は、文脈から比較対象を補って読む。",
+      "construct_ja": "比較対象が明示されない比較表現",
+      "points_ja": [
+        "one step aheadは比較を表すが、比較対象はこの文中にない。",
+        "Thoseは、前文で述べられた経験のあるグループのうち、寄り道をしたAIを指す。"
+      ],
+      "context_ja": "寄り道をしたAIは、新しい島で塔を建てる課題に取り組んだ。",
+      "prev": "The experienced group did better.",
+      "next": "The researchers also erased a way to “throw rocks to get more blocks” from one AI’s memory.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        408,
+        462
+      ]
+    },
+    {
+      "candidate_id": "g63b2391687",
+      "rank": 3,
+      "tier": "T1",
+      "feature_class": "CMP",
+      "para": "P7",
+      "sentence": "The experienced group did better, and removing one memory lowered its score.",
+      "front_kind": "",
+      "misread_target": "OMITTED",
+      "misread_quote": "did better",
+      "misread_ja": "何と比べてbetterなのかがこの文中に示されていないため、比較対象を取り違えたり特定できなかったりすることがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "比較級の比較対象が明示されないときは、文脈から比較の基準を補う。",
+      "construct_ja": "比較対象が明示されない比較表現",
+      "points_ja": [
+        "betterは比較を表すが、この文だけでは比較対象が明示されていない。",
+        "andの後ろには別の主語removing one memoryと動詞loweredがある。"
+      ],
+      "context_ja": "経験のあるグループの成績がよく、記憶を一つ消すとAIの得点が下がった。",
+      "prev": "Even so, it is too soon to wave a flag and say, “Play and get smarter—proof complete!”",
+      "next": "These two results need to be studied separately.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        87,
+        163
+      ]
+    },
+    {
+      "candidate_id": "g947f997ccd",
+      "rank": 4,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P1",
+      "sentence": "An AI test on an island inside a computer showed how much these “strategy notes” can matter.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "An AI test on an island",
+      "misread_ja": "長い主語の途中にある前置詞句を主節の動詞と結びつけ、主語の範囲や主節の動詞を取り違えることがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "長い主語では中心となる名詞を押さえ、修飾句の後に現れる主節の動詞を探す。",
+      "construct_ja": "長い主語",
+      "points_ja": [
+        "主語の中心はtestで、on an island inside a computerがそれを修飾する。",
+        "主節の動詞はshowed。"
+      ],
+      "context_ja": "コンピューター内の島でのAIのテストが、strategy notesの影響を示した。",
+      "prev": "Notes written down can go into the next hour.",
+      "next": "The AIs sent to the island had no set tasks or rewards.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        214,
+        306
+      ]
+    },
+    {
+      "candidate_id": "gea4eb51247",
+      "rank": 5,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P6",
+      "sentence": "After that, the average number of towers it could build went down.",
+      "front_kind": "",
+      "misread_target": "VERB",
+      "misread_quote": "the average number of towers it could build",
+      "misread_ja": "主語の中にあるit could buildを主節の動詞と取り違え、主節の動詞went downを見落とすことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "名詞を修飾する節の中の動詞と主節の動詞を区別し、主語の終わりを見極める。",
+      "construct_ja": "関係節を含む長い主語",
+      "points_ja": [
+        "it could buildは、towersを修飾する関係節。",
+        "主語の中心はnumberで、主節の動詞はwent down。"
+      ],
+      "context_ja": "AIの記憶から「岩を投げてブロックを増やす方法」を消した後、建てられる塔の平均数が減った。",
+      "prev": "The researchers also erased a way to “throw rocks to get more blocks” from one AI’s memory.",
+      "next": "Its scores on other tasks stayed the same.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        92,
+        158
+      ]
+    }
+  ],
+  "top_ids": [
+    "gc74d4a5e22",
+    "g39ca99d348"
+  ],
+  "n_eligible": 5,
+  "ng": [],
+  "filtered_by_ng": [],
+  "rejected_ids": [],
+  "candidates_sha256": "b4a71b40cf12642cf882ca78d8c6f098995437d5b2623da4bc52d2ed9f021390",
+  "status": "HAS_CANDIDATES",
+  "exhausted": false,
+  "reused_from_previous_run": false
+}

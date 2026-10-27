@@ -1,0 +1,153 @@
+{
+  "schema": "grammar_candidates_v1",
+  "level": "Advanced",
+  "label": "The Island Resets! But AI Has “Strategy Notes”",
+  "text_sha256": "dc291d4af4f581bc01efb56ea1ff66952ade3b328f95388774d1a155904798d5",
+  "n_paragraphs": 8,
+  "prompt_id": "part2_stepA8",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+  "model": "gpt-6-luna",
+  "extract_signature": "b2db2d0c4f13620eec2b4e1f41b08879fe3d4ebe3785c1011833d5dbd970d34d",
+  "round": 1,
+  "tier_table": [
+    {
+      "para": "P4",
+      "cls": "CLEFT",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "what節が主語となり、後ろのbe動詞以降がその内容を述べる形を読む。",
+      "front_kind": "",
+      "sentence": "The island went back to how it was before, but what the AI had discovered was not erased.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P7",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "that節を含む長い主語が続くとき、主語の範囲を確定してから主節の動詞を探す。",
+      "front_kind": "",
+      "sentence": "The fact that the experienced group did better and the fact that removing a particular memory lowered its score need to be looked at separately.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
+  "no_feature_paras": [
+    "P1",
+    "P2",
+    "P3",
+    "P5",
+    "P6",
+    "P8"
+  ],
+  "uncovered_paras": [],
+  "audit": {
+    "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+    "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+    "model": "gpt-6-luna",
+    "requested_model": "gpt-6-luna",
+    "prompt_sha256": "e1214ba1bf8a0033f5ffecbb08d00ba10621b55d792d498fc521cf1947bb107b",
+    "response_ids": [
+      "resp_039a45e41d34561e006ae012dbaec487d0812ba44281372975"
+    ],
+    "calls": [
+      {
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3555,
+          "output_tokens": 5035,
+          "cached_input_tokens": 0,
+          "reasoning_tokens": 4418
+        },
+        "response_id": "resp_039a45e41d34561e006ae012dbaec487d0812ba44281372975",
+        "elapsed_sec": 75.49,
+        "cost_jpy": 0.4597
+      }
+    ],
+    "retried_for_parse": false,
+    "total_cost_jpy": 0.4597,
+    "generated_at": "2026-10-27T11:57:43+0900",
+    "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+  },
+  "reselect_count": 0,
+  "reextract_count": 0,
+  "reselect_log": [],
+  "candidates": [
+    {
+      "candidate_id": "gcc2541c879",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "CLEFT",
+      "para": "P4",
+      "sentence": "The island went back to how it was before, but what the AI had discovered was not erased.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "what the AI had discovered",
+      "misread_ja": "what節全体が主語なのに、had discoveredを主節の動詞と取り、was not erasedとのつながりを取り違えることがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "what節が主語となり、後ろのbe動詞以降がその内容を述べる形を読む。",
+      "construct_ja": "what疑似分裂文",
+      "points_ja": [
+        "what the AI had discovered全体が主語",
+        "was not erasedが主節の述語"
+      ],
+      "context_ja": "島は元に戻った一方で、AIが発見したことは消去されなかったと述べている。",
+      "prev": "In the experiment, the island and the conversation were reset every hour, but the work area where the AI kept notes and programs was carried over.",
+      "next": "So, would that experience help the AI the next time it was called on?",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        201,
+        290
+      ]
+    },
+    {
+      "candidate_id": "g080d9d1a1f",
+      "rank": 2,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P7",
+      "sentence": "The fact that the experienced group did better and the fact that removing a particular memory lowered its score need to be looked at separately.",
+      "front_kind": "",
+      "misread_target": "VERB",
+      "misread_quote": "lowered its score",
+      "misread_ja": "長い主語の中にあるloweredを主節の動詞と取り、主節の動詞needを見落とすことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "that節を含む長い主語が続くとき、主語の範囲を確定してから主節の動詞を探す。",
+      "construct_ja": "that節を含む重い並列主語",
+      "points_ja": [
+        "二つのthe fact節がandで結ばれ、主語を作る",
+        "needが主節の動詞"
+      ],
+      "context_ja": "経験者グループの成績と、特定の記憶を取り除いた後の成績低下は、別々に検討する必要があると述べている。",
+      "prev": "Even so, it is too soon to wave a flag and say, “Play and get smarter—proof complete!”",
+      "next": "These results alone do not show that play itself had an effect.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        87,
+        231
+      ]
+    }
+  ],
+  "top_ids": [
+    "gcc2541c879",
+    "g080d9d1a1f"
+  ],
+  "n_eligible": 2,
+  "ng": [],
+  "filtered_by_ng": [],
+  "rejected_ids": [],
+  "candidates_sha256": "48fda7fcb93dedab711cff1b8573757472970655cbbe1c7ed0a5d0a94db4d163",
+  "status": "HAS_CANDIDATES",
+  "exhausted": false,
+  "reused_from_previous_run": false
+}

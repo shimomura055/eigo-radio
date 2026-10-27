@@ -1,0 +1,2250 @@
+{
+  "planner_version": "chunk_tts_v1_x_paragraph_z_r1_20261025",
+  "level": "a2",
+  "composition": "per_chunk_slowdown_then_pad_0.2s",
+  "style_profile": "fx_20261017",
+  "tts_backend": "speech_metadata_flash_lite",
+  "parents": {
+    "full_story_part1": {
+      "parent_id": "full_story_part1",
+      "family": "X",
+      "planner_version": "chunk_tts_v1_x_paragraph_z_r1_20261025",
+      "chunk_count": 3,
+      "extra_pause_seconds": 0.2,
+      "chunks": [
+        {
+          "chunk_id": "full_story_part1_k1",
+          "index": 1,
+          "words": 57,
+          "boundary_kind": "paragraph",
+          "status": "OK",
+          "voice": "Aoede",
+          "model_ids_measured": null,
+          "style_prefix_sha256": null,
+          "instruction_type": null,
+          "attempt_count": 0,
+          "local_rewrite_recovery": null,
+          "audio_text_deviation": false,
+          "asr_judgement": {
+            "state": "PASS",
+            "reason_code": "primary_pass_approved_equivalence:TIER1_DIFF_ANCHORED",
+            "slot": 1,
+            "script_version": "v0",
+            "role": "FULL_STORY",
+            "lang": "en",
+            "segment_key": "full_story_part1_k1",
+            "audio_sha256": "6c96913c9cfdb0023788f0924d5aedb35cc034a2e8765842677ed841469eb16e",
+            "primary": {
+              "text": "After one hour, the island and conversation start again. The buildings and even words from moments ago are reset. It is a hard world, but there is one way around this. Notes written down can go into the next hour. An AI test on an island inside a computer showed how much these strategy notes can matter.",
+              "passed": true,
+              "label": "NUMERIC_EQUIVALENCE_MATCH",
+              "equivalence_basis": "TIER1_DIFF_ANCHORED",
+              "warning_labels": []
+            },
+            "secondary": {
+              "called": false,
+              "cached": false,
+              "engine": "azure",
+              "text": null,
+              "label": "",
+              "accepted": null,
+              "error": null,
+              "unavailable": false
+            },
+            "value_guard": {
+              "primary": {
+                "kind": "EQUAL",
+                "pairs": [
+                  {
+                    "src": "1",
+                    "hyp": "1",
+                    "verdict": "EQUAL",
+                    "reason": "same_surface"
+                  },
+                  {
+                    "src": "1",
+                    "hyp": "1",
+                    "verdict": "EQUAL",
+                    "reason": "same_surface"
+                  }
+                ],
+                "reasons": [],
+                "warnings": []
+              }
+            },
+            "negation_guard": {
+              "primary": false
+            },
+            "final_gate": {
+              "applied": false,
+              "skipped": "approved_equivalence:TIER1_DIFF_ANCHORED"
+            },
+            "warnings": [],
+            "exclusion_rule": null,
+            "cost": {
+              "azure_calls": 0,
+              "azure_seconds": null,
+              "est_jpy": 0.0
+            },
+            "timing": {
+              "total_ms": 1,
+              "secondary_ms": 0
+            },
+            "technical_stop": null,
+            "length": {
+              "applied": false,
+              "primary_len": null,
+              "secondary_len": null,
+              "max_len": null,
+              "adopted_from": "primary",
+              "adopted_ok": null,
+              "surface_len": null,
+              "primary_ok": null
+            },
+            "adapter": {
+              "layers": [],
+              "azure_real_calls": 0,
+              "cost_guard_triggered": false,
+              "language": "en-US",
+              "segment_id": "full_story_part1_k1",
+              "asr_text_present": true,
+              "cache": {
+                "calls": 3,
+                "hits": 0
+              }
+            }
+          },
+          "reused": false,
+          "cost_jpy": null,
+          "slowdown_applied": true,
+          "slowdown_pct_actual": 5.946,
+          "slowdown_src_duration_s": 20.6,
+          "slowdown_dst_duration_s": 21.825,
+          "post_slowdown_classification": "NUMERIC_EQUIVALENCE_MATCH",
+          "tts_generations_used": 1
+        },
+        {
+          "chunk_id": "full_story_part1_k2",
+          "index": 2,
+          "words": 34,
+          "boundary_kind": "paragraph",
+          "status": "OK",
+          "voice": "Aoede",
+          "model_ids_measured": null,
+          "style_prefix_sha256": null,
+          "instruction_type": null,
+          "attempt_count": 0,
+          "local_rewrite_recovery": {
+            "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+            "segment_id": "full_story_part1_k2",
+            "segment_role_label": "Full Story narration (the article's main narrated body, incl. Point body text)",
+            "canonical_text": "The AIs sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+            "last_asr_text": "The AI sent to the island had no set tasks or rewards, but their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+            "ng_span": {
+              "found": true,
+              "diff_tag": "replace",
+              "canonical_span_with_context": "the ais sent to the",
+              "asr_span_with_context": "the ai sent to the",
+              "canonical_changed_words": [
+                "ais"
+              ],
+              "asr_changed_words": [
+                "ai"
+              ],
+              "context_window_word_indices": [
+                0,
+                5
+              ]
+            },
+            "candidate_gen": {
+              "candidates": [
+                {
+                  "id": "1",
+                  "rewrite_type": "short_phrase_rewrite",
+                  "rewritten_segment": "The AI agents sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                  "changed_span_before": "AIs",
+                  "changed_span_after": "AI agents",
+                  "rationale": "“AI agents” is a natural way to refer to the AIs in this context while avoiding the problematic plural form."
+                },
+                {
+                  "id": "2",
+                  "rewrite_type": "short_phrase_rewrite",
+                  "rewritten_segment": "The AI systems sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                  "changed_span_before": "AIs",
+                  "changed_span_after": "AI systems",
+                  "rationale": "“AI systems” clearly retains the reference to artificial intelligences and sounds natural in narration."
+                },
+                {
+                  "id": "3",
+                  "rewrite_type": "short_phrase_rewrite",
+                  "rewritten_segment": "The AI programs sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                  "changed_span_before": "AIs",
+                  "changed_span_after": "AI programs",
+                  "rationale": "“AI programs” is a concise, idiomatic alternative that preserves the intended meaning."
+                },
+                {
+                  "id": "4",
+                  "rewrite_type": "short_phrase_rewrite",
+                  "rewritten_segment": "The intelligent agents sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                  "changed_span_before": "AIs",
+                  "changed_span_after": "intelligent agents",
+                  "rationale": "“Intelligent agents” is a natural term for AI entities that can explore and learn."
+                },
+                {
+                  "id": "5",
+                  "rewrite_type": "single_word_swap",
+                  "rewritten_segment": "The bots sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                  "changed_span_before": "AIs",
+                  "changed_span_after": "bots",
+                  "rationale": "“Bots” is a concise, conversational substitute for the AI entities in this context."
+                }
+              ],
+              "_raw_model_response_text": "{\"candidates\":[{\"id\":\"1\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The AI agents sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.\",\"changed_span_before\":\"AIs\",\"changed_span_after\":\"AI agents\",\"rationale\":\"“AI agents” is a natural way to refer to the AIs in this context while avoiding the problematic plural form.\"},{\"id\":\"2\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The AI systems sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.\",\"changed_span_before\":\"AIs\",\"changed_span_after\":\"AI systems\",\"rationale\":\"“AI systems” clearly retains the reference to artificial intelligences and sounds natural in narration.\"},{\"id\":\"3\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The AI programs sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.\",\"changed_span_before\":\"AIs\",\"changed_span_after\":\"AI programs\",\"rationale\":\"“AI programs” is a concise, idiomatic alternative that preserves the intended meaning.\"},{\"id\":\"4\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The intelligent agents sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.\",\"changed_span_before\":\"AIs\",\"changed_span_after\":\"intelligent agents\",\"rationale\":\"“Intelligent agents” is a natural term for AI entities that can explore and learn.\"},{\"id\":\"5\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"The bots sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.\",\"changed_span_before\":\"AIs\",\"changed_span_after\":\"bots\",\"rationale\":\"“Bots” is a concise, conversational substitute for the AI entities in this context.\"}]}",
+              "_model_id": "gpt-6-luna",
+              "_response_id": "resp_0376324067729898006ae015a7b25487d0be5eb043fcb30a92",
+              "_prompt": "Segment role: Full Story narration (the article's main narrated body, incl. Point body text)\n\nFull segment (contains the problem span):\n\"The AIs sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.\"\n\nProblem span (a speech recognizer repeatedly mis-transcribes this as ['ai'] instead of ['ais']):\n\"the ais sent to the\"\n\nPropose the candidates as described in the system instructions. Return the JSON object."
+            },
+            "qa": {
+              "evaluations": [
+                {
+                  "candidate_id": "1",
+                  "meaning_preserved": {
+                    "pass": true,
+                    "reason": "“AI agents” naturally describes the AIs acting and exploring in the original."
+                  },
+                  "role_preserved": {
+                    "pass": true,
+                    "reason": "It remains part of the episode’s main narration."
+                  },
+                  "fact_non_contradiction": {
+                    "pass": true,
+                    "reason": "Nothing in the wording conflicts with the original claims."
+                  },
+                  "context_connection": {
+                    "pass": true,
+                    "reason": "The unchanged surrounding sentences connect smoothly with this wording."
+                  },
+                  "natural_english": {
+                    "pass": true,
+                    "reason": "“AI agents sent to the island” is idiomatic in this narration context."
+                  }
+                },
+                {
+                  "candidate_id": "2",
+                  "meaning_preserved": {
+                    "pass": true,
+                    "reason": "“AI systems” preserves the reference to the AIs sent to the island."
+                  },
+                  "role_preserved": {
+                    "pass": true,
+                    "reason": "It remains part of the episode’s main narration."
+                  },
+                  "fact_non_contradiction": {
+                    "pass": true,
+                    "reason": "Nothing in the wording conflicts with the original claims."
+                  },
+                  "context_connection": {
+                    "pass": true,
+                    "reason": "The unchanged surrounding sentences connect smoothly with this wording."
+                  },
+                  "natural_english": {
+                    "pass": true,
+                    "reason": "“AI systems sent to the island” is a natural, common phrase."
+                  }
+                },
+                {
+                  "candidate_id": "3",
+                  "meaning_preserved": {
+                    "pass": false,
+                    "reason": "“AI programs” narrows the original reference to AIs by specifying that they are programs."
+                  },
+                  "role_preserved": {
+                    "pass": true,
+                    "reason": "It remains part of the episode’s main narration."
+                  },
+                  "fact_non_contradiction": {
+                    "pass": true,
+                    "reason": "The narrower description does not directly contradict anything stated."
+                  },
+                  "context_connection": {
+                    "pass": true,
+                    "reason": "The unchanged surrounding sentences still connect smoothly."
+                  },
+                  "natural_english": {
+                    "pass": true,
+                    "reason": "“AI programs sent to the island” is natural English in this context."
+                  }
+                },
+                {
+                  "candidate_id": "4",
+                  "meaning_preserved": {
+                    "pass": false,
+                    "reason": "“Intelligent agents” does not preserve the original’s explicit identification of them as AIs."
+                  },
+                  "role_preserved": {
+                    "pass": true,
+                    "reason": "It remains part of the episode’s main narration."
+                  },
+                  "fact_non_contradiction": {
+                    "pass": true,
+                    "reason": "The wording does not directly contradict anything stated in the original."
+                  },
+                  "context_connection": {
+                    "pass": true,
+                    "reason": "The unchanged surrounding sentences still connect smoothly."
+                  },
+                  "natural_english": {
+                    "pass": true,
+                    "reason": "“Intelligent agents sent to the island” is a natural phrase, including in technical narration."
+                  }
+                },
+                {
+                  "candidate_id": "5",
+                  "meaning_preserved": {
+                    "pass": false,
+                    "reason": "“Bots” is narrower and may imply a different kind of entity than the original’s general reference to AIs."
+                  },
+                  "role_preserved": {
+                    "pass": true,
+                    "reason": "It remains part of the episode’s main narration."
+                  },
+                  "fact_non_contradiction": {
+                    "pass": true,
+                    "reason": "The wording does not directly contradict anything stated in the original."
+                  },
+                  "context_connection": {
+                    "pass": true,
+                    "reason": "The unchanged surrounding sentences still connect smoothly."
+                  },
+                  "natural_english": {
+                    "pass": true,
+                    "reason": "“Bots sent to the island” is idiomatic and natural in spoken narration."
+                  }
+                }
+              ],
+              "_raw_model_response_text": "{\"evaluations\":[{\"candidate_id\":\"1\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“AI agents” naturally describes the AIs acting and exploring in the original.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains part of the episode’s main narration.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"Nothing in the wording conflicts with the original claims.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The unchanged surrounding sentences connect smoothly with this wording.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“AI agents sent to the island” is idiomatic in this narration context.\"}},{\"candidate_id\":\"2\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“AI systems” preserves the reference to the AIs sent to the island.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains part of the episode’s main narration.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"Nothing in the wording conflicts with the original claims.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The unchanged surrounding sentences connect smoothly with this wording.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“AI systems sent to the island” is a natural, common phrase.\"}},{\"candidate_id\":\"3\",\"meaning_preserved\":{\"pass\":false,\"reason\":\"“AI programs” narrows the original reference to AIs by specifying that they are programs.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains part of the episode’s main narration.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"The narrower description does not directly contradict anything stated.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The unchanged surrounding sentences still connect smoothly.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“AI programs sent to the island” is natural English in this context.\"}},{\"candidate_id\":\"4\",\"meaning_preserved\":{\"pass\":false,\"reason\":\"“Intelligent agents” does not preserve the original’s explicit identification of them as AIs.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains part of the episode’s main narration.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"The wording does not directly contradict anything stated in the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The unchanged surrounding sentences still connect smoothly.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Intelligent agents sent to the island” is a natural phrase, including in technical narration.\"}},{\"candidate_id\":\"5\",\"meaning_preserved\":{\"pass\":false,\"reason\":\"“Bots” is narrower and may imply a different kind of entity than the original’s general reference to AIs.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains part of the episode’s main narration.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"The wording does not directly contradict anything stated in the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The unchanged surrounding sentences still connect smoothly.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Bots sent to the island” is idiomatic and natural in spoken narration.\"}}]}",
+              "_model_id": "gpt-6-luna",
+              "_response_id": "resp_002a4183211c3bca006ae015c2333887d0978a74584f7af3f7",
+              "_prompt": "Segment role: Full Story narration (the article's main narrated body, incl. Point body text)\n\nORIGINAL segment:\n\"The AIs sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.\"\n\nCandidates to evaluate:\n- candidate_id='1': \"The AI agents sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.\"\n- candidate_id='2': \"The AI systems sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.\"\n- candidate_id='3': \"The AI programs sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.\"\n- candidate_id='4': \"The intelligent agents sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.\"\n- candidate_id='5': \"The bots sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.\"\n\nEvaluate all 5 gates for every candidate and return the JSON object described in the system instructions."
+            },
+            "candidates": [
+              {
+                "id": "1",
+                "rewrite_type": "short_phrase_rewrite",
+                "rewritten_segment": "The AI agents sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                "changed_span_before": "AIs",
+                "changed_span_after": "AI agents",
+                "rationale": "“AI agents” is a natural way to refer to the AIs in this context while avoiding the problematic plural form.",
+                "qa_llm": {
+                  "candidate_id": "1",
+                  "meaning_preserved": {
+                    "pass": true,
+                    "reason": "“AI agents” naturally describes the AIs acting and exploring in the original."
+                  },
+                  "role_preserved": {
+                    "pass": true,
+                    "reason": "It remains part of the episode’s main narration."
+                  },
+                  "fact_non_contradiction": {
+                    "pass": true,
+                    "reason": "Nothing in the wording conflicts with the original claims."
+                  },
+                  "context_connection": {
+                    "pass": true,
+                    "reason": "The unchanged surrounding sentences connect smoothly with this wording."
+                  },
+                  "natural_english": {
+                    "pass": true,
+                    "reason": "“AI agents sent to the island” is idiomatic in this narration context."
+                  }
+                },
+                "is_full_segment_format_valid": true,
+                "full_segment_check": {
+                  "ok": true,
+                  "reason": "FULL_SEGMENT_OK",
+                  "length_ratio": 1.0331,
+                  "orig_coverage": 0.9706,
+                  "span_check": "SPAN_CONSISTENT"
+                },
+                "locality_check": {
+                  "criterion6_localized_to_problem_span": true,
+                  "criterion6_diff_token_range": [
+                    1,
+                    2
+                  ],
+                  "criterion6_allowed_window": [
+                    0,
+                    5
+                  ],
+                  "criterion7_not_full_rewrite": true,
+                  "unchanged_ratio": 0.9706
+                },
+                "seven_gates": {
+                  "1_meaning_preserved": true,
+                  "2_role_preserved": true,
+                  "3_fact_non_contradiction": true,
+                  "4_context_connection": true,
+                  "5_natural_english_gate": true,
+                  "6_localized_minimal_change": true,
+                  "7_not_full_rewrite": true
+                },
+                "all_seven_gates_pass": true,
+                "sentence_count_check": {
+                  "applicable": false,
+                  "pass": true,
+                  "before": null,
+                  "after": null
+                },
+                "8_sentence_count_unchanged": true,
+                "adoptable": true
+              },
+              {
+                "id": "2",
+                "rewrite_type": "short_phrase_rewrite",
+                "rewritten_segment": "The AI systems sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                "changed_span_before": "AIs",
+                "changed_span_after": "AI systems",
+                "rationale": "“AI systems” clearly retains the reference to artificial intelligences and sounds natural in narration.",
+                "qa_llm": {
+                  "candidate_id": "2",
+                  "meaning_preserved": {
+                    "pass": true,
+                    "reason": "“AI systems” preserves the reference to the AIs sent to the island."
+                  },
+                  "role_preserved": {
+                    "pass": true,
+                    "reason": "It remains part of the episode’s main narration."
+                  },
+                  "fact_non_contradiction": {
+                    "pass": true,
+                    "reason": "Nothing in the wording conflicts with the original claims."
+                  },
+                  "context_connection": {
+                    "pass": true,
+                    "reason": "The unchanged surrounding sentences connect smoothly with this wording."
+                  },
+                  "natural_english": {
+                    "pass": true,
+                    "reason": "“AI systems sent to the island” is a natural, common phrase."
+                  }
+                },
+                "is_full_segment_format_valid": true,
+                "full_segment_check": {
+                  "ok": true,
+                  "reason": "FULL_SEGMENT_OK",
+                  "length_ratio": 1.0387,
+                  "orig_coverage": 0.9706,
+                  "span_check": "SPAN_CONSISTENT"
+                },
+                "locality_check": {
+                  "criterion6_localized_to_problem_span": true,
+                  "criterion6_diff_token_range": [
+                    1,
+                    2
+                  ],
+                  "criterion6_allowed_window": [
+                    0,
+                    5
+                  ],
+                  "criterion7_not_full_rewrite": true,
+                  "unchanged_ratio": 0.9706
+                },
+                "seven_gates": {
+                  "1_meaning_preserved": true,
+                  "2_role_preserved": true,
+                  "3_fact_non_contradiction": true,
+                  "4_context_connection": true,
+                  "5_natural_english_gate": true,
+                  "6_localized_minimal_change": true,
+                  "7_not_full_rewrite": true
+                },
+                "all_seven_gates_pass": true,
+                "sentence_count_check": {
+                  "applicable": false,
+                  "pass": true,
+                  "before": null,
+                  "after": null
+                },
+                "8_sentence_count_unchanged": true,
+                "adoptable": true
+              },
+              {
+                "id": "3",
+                "rewrite_type": "short_phrase_rewrite",
+                "rewritten_segment": "The AI programs sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                "changed_span_before": "AIs",
+                "changed_span_after": "AI programs",
+                "rationale": "“AI programs” is a concise, idiomatic alternative that preserves the intended meaning.",
+                "qa_llm": {
+                  "candidate_id": "3",
+                  "meaning_preserved": {
+                    "pass": false,
+                    "reason": "“AI programs” narrows the original reference to AIs by specifying that they are programs."
+                  },
+                  "role_preserved": {
+                    "pass": true,
+                    "reason": "It remains part of the episode’s main narration."
+                  },
+                  "fact_non_contradiction": {
+                    "pass": true,
+                    "reason": "The narrower description does not directly contradict anything stated."
+                  },
+                  "context_connection": {
+                    "pass": true,
+                    "reason": "The unchanged surrounding sentences still connect smoothly."
+                  },
+                  "natural_english": {
+                    "pass": true,
+                    "reason": "“AI programs sent to the island” is natural English in this context."
+                  }
+                },
+                "is_full_segment_format_valid": true,
+                "full_segment_check": {
+                  "ok": true,
+                  "reason": "FULL_SEGMENT_OK",
+                  "length_ratio": 1.0442,
+                  "orig_coverage": 0.9706,
+                  "span_check": "SPAN_CONSISTENT"
+                },
+                "locality_check": {
+                  "criterion6_localized_to_problem_span": true,
+                  "criterion6_diff_token_range": [
+                    1,
+                    2
+                  ],
+                  "criterion6_allowed_window": [
+                    0,
+                    5
+                  ],
+                  "criterion7_not_full_rewrite": true,
+                  "unchanged_ratio": 0.9706
+                },
+                "seven_gates": {
+                  "1_meaning_preserved": false,
+                  "2_role_preserved": true,
+                  "3_fact_non_contradiction": true,
+                  "4_context_connection": true,
+                  "5_natural_english_gate": true,
+                  "6_localized_minimal_change": true,
+                  "7_not_full_rewrite": true
+                },
+                "all_seven_gates_pass": false,
+                "sentence_count_check": {
+                  "applicable": false,
+                  "pass": true,
+                  "before": null,
+                  "after": null
+                },
+                "8_sentence_count_unchanged": true,
+                "adoptable": false
+              },
+              {
+                "id": "4",
+                "rewrite_type": "short_phrase_rewrite",
+                "rewritten_segment": "The intelligent agents sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                "changed_span_before": "AIs",
+                "changed_span_after": "intelligent agents",
+                "rationale": "“Intelligent agents” is a natural term for AI entities that can explore and learn.",
+                "qa_llm": {
+                  "candidate_id": "4",
+                  "meaning_preserved": {
+                    "pass": false,
+                    "reason": "“Intelligent agents” does not preserve the original’s explicit identification of them as AIs."
+                  },
+                  "role_preserved": {
+                    "pass": true,
+                    "reason": "It remains part of the episode’s main narration."
+                  },
+                  "fact_non_contradiction": {
+                    "pass": true,
+                    "reason": "The wording does not directly contradict anything stated in the original."
+                  },
+                  "context_connection": {
+                    "pass": true,
+                    "reason": "The unchanged surrounding sentences still connect smoothly."
+                  },
+                  "natural_english": {
+                    "pass": true,
+                    "reason": "“Intelligent agents sent to the island” is a natural phrase, including in technical narration."
+                  }
+                },
+                "is_full_segment_format_valid": true,
+                "full_segment_check": {
+                  "ok": true,
+                  "reason": "FULL_SEGMENT_OK",
+                  "length_ratio": 1.0829,
+                  "orig_coverage": 0.9706,
+                  "span_check": "SPAN_CONSISTENT"
+                },
+                "locality_check": {
+                  "criterion6_localized_to_problem_span": true,
+                  "criterion6_diff_token_range": [
+                    1,
+                    2
+                  ],
+                  "criterion6_allowed_window": [
+                    0,
+                    5
+                  ],
+                  "criterion7_not_full_rewrite": true,
+                  "unchanged_ratio": 0.9706
+                },
+                "seven_gates": {
+                  "1_meaning_preserved": false,
+                  "2_role_preserved": true,
+                  "3_fact_non_contradiction": true,
+                  "4_context_connection": true,
+                  "5_natural_english_gate": true,
+                  "6_localized_minimal_change": true,
+                  "7_not_full_rewrite": true
+                },
+                "all_seven_gates_pass": false,
+                "sentence_count_check": {
+                  "applicable": false,
+                  "pass": true,
+                  "before": null,
+                  "after": null
+                },
+                "8_sentence_count_unchanged": true,
+                "adoptable": false
+              },
+              {
+                "id": "5",
+                "rewrite_type": "single_word_swap",
+                "rewritten_segment": "The bots sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                "changed_span_before": "AIs",
+                "changed_span_after": "bots",
+                "rationale": "“Bots” is a concise, conversational substitute for the AI entities in this context.",
+                "qa_llm": {
+                  "candidate_id": "5",
+                  "meaning_preserved": {
+                    "pass": false,
+                    "reason": "“Bots” is narrower and may imply a different kind of entity than the original’s general reference to AIs."
+                  },
+                  "role_preserved": {
+                    "pass": true,
+                    "reason": "It remains part of the episode’s main narration."
+                  },
+                  "fact_non_contradiction": {
+                    "pass": true,
+                    "reason": "The wording does not directly contradict anything stated in the original."
+                  },
+                  "context_connection": {
+                    "pass": true,
+                    "reason": "The unchanged surrounding sentences still connect smoothly."
+                  },
+                  "natural_english": {
+                    "pass": true,
+                    "reason": "“Bots sent to the island” is idiomatic and natural in spoken narration."
+                  }
+                },
+                "is_full_segment_format_valid": true,
+                "full_segment_check": {
+                  "ok": true,
+                  "reason": "FULL_SEGMENT_OK",
+                  "length_ratio": 1.0055,
+                  "orig_coverage": 0.9706,
+                  "span_check": "SPAN_CONSISTENT"
+                },
+                "locality_check": {
+                  "criterion6_localized_to_problem_span": true,
+                  "criterion6_diff_token_range": [
+                    1,
+                    2
+                  ],
+                  "criterion6_allowed_window": [
+                    0,
+                    5
+                  ],
+                  "criterion7_not_full_rewrite": true,
+                  "unchanged_ratio": 0.9706
+                },
+                "seven_gates": {
+                  "1_meaning_preserved": false,
+                  "2_role_preserved": true,
+                  "3_fact_non_contradiction": true,
+                  "4_context_connection": true,
+                  "5_natural_english_gate": true,
+                  "6_localized_minimal_change": true,
+                  "7_not_full_rewrite": true
+                },
+                "all_seven_gates_pass": false,
+                "sentence_count_check": {
+                  "applicable": false,
+                  "pass": true,
+                  "before": null,
+                  "after": null
+                },
+                "8_sentence_count_unchanged": true,
+                "adoptable": false
+              }
+            ],
+            "selection": {
+              "selected": {
+                "id": "1",
+                "rewrite_type": "short_phrase_rewrite",
+                "rewritten_segment": "The AI agents sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                "changed_span_before": "AIs",
+                "changed_span_after": "AI agents",
+                "rationale": "“AI agents” is a natural way to refer to the AIs in this context while avoiding the problematic plural form.",
+                "qa_llm": {
+                  "candidate_id": "1",
+                  "meaning_preserved": {
+                    "pass": true,
+                    "reason": "“AI agents” naturally describes the AIs acting and exploring in the original."
+                  },
+                  "role_preserved": {
+                    "pass": true,
+                    "reason": "It remains part of the episode’s main narration."
+                  },
+                  "fact_non_contradiction": {
+                    "pass": true,
+                    "reason": "Nothing in the wording conflicts with the original claims."
+                  },
+                  "context_connection": {
+                    "pass": true,
+                    "reason": "The unchanged surrounding sentences connect smoothly with this wording."
+                  },
+                  "natural_english": {
+                    "pass": true,
+                    "reason": "“AI agents sent to the island” is idiomatic in this narration context."
+                  }
+                },
+                "is_full_segment_format_valid": true,
+                "full_segment_check": {
+                  "ok": true,
+                  "reason": "FULL_SEGMENT_OK",
+                  "length_ratio": 1.0331,
+                  "orig_coverage": 0.9706,
+                  "span_check": "SPAN_CONSISTENT"
+                },
+                "locality_check": {
+                  "criterion6_localized_to_problem_span": true,
+                  "criterion6_diff_token_range": [
+                    1,
+                    2
+                  ],
+                  "criterion6_allowed_window": [
+                    0,
+                    5
+                  ],
+                  "criterion7_not_full_rewrite": true,
+                  "unchanged_ratio": 0.9706
+                },
+                "seven_gates": {
+                  "1_meaning_preserved": true,
+                  "2_role_preserved": true,
+                  "3_fact_non_contradiction": true,
+                  "4_context_connection": true,
+                  "5_natural_english_gate": true,
+                  "6_localized_minimal_change": true,
+                  "7_not_full_rewrite": true
+                },
+                "all_seven_gates_pass": true,
+                "sentence_count_check": {
+                  "applicable": false,
+                  "pass": true,
+                  "before": null,
+                  "after": null
+                },
+                "8_sentence_count_unchanged": true,
+                "adoptable": true
+              },
+              "status": "SELECTED",
+              "selection_rationale": "全7 Gate PASSの候補は2件(['1', '2'])。unchanged_ratio=0.9706(最小限の変更)が最大の'1'を採用。Natural English Gate理由: “AI agents sent to the island” is idiomatic in this narration context.",
+              "all_passing_candidate_ids": [
+                "1",
+                "2"
+              ]
+            },
+            "retts_result": {
+              "status": "OK",
+              "text": "The AI agents sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+              "language": "en",
+              "path": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_form_prod_01/a2/narration/full_story_part1_k2.wav",
+              "model": "gemini-3.8-flash-lite-tts",
+              "voice": "Aoede",
+              "call_count": 1,
+              "retry_count": 0,
+              "sha256": "2a5d0fc5bbde1c6054829b99c5f5a401f1e89e068394e5ae9cebd1084eda13f6",
+              "duration_seconds": 14.276,
+              "trim_info": {
+                "raw_duration_seconds": 14.276,
+                "raw_leading_silence_seconds": 0.297,
+                "raw_trailing_silence_seconds": 0.275,
+                "trimmed_duration_seconds": 14.276,
+                "leading_margin_retained_seconds": 0.297,
+                "trailing_margin_retained_seconds": 0.275
+              },
+              "clipping_detected": false,
+              "tts_backend": "speech_metadata_flash_lite",
+              "style_prefix": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible.",
+              "asr_verified": true,
+              "asr_text": "The AI agents sent to the island had no set tasks or awards, but their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+              "attempts_log": [
+                {
+                  "attempt": 1,
+                  "status": "OK",
+                  "duration_seconds": 13.48,
+                  "asr_text": "The AI agents sent to the island had no set tasks or rewards, but their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                  "asr_text_length": 187,
+                  "max_len": 247,
+                  "substring_ok": null,
+                  "length_ok": true,
+                  "final_length_ok": true,
+                  "phonetic_verdict": null,
+                  "audio_classification": "NORMALIZED_MATCH",
+                  "connected_speech_info": null,
+                  "reading_resolver_info": null,
+                  "scg_info": null,
+                  "verified": true,
+                  "disfluency_checked": false,
+                  "disfluency_evidence": null,
+                  "repetition_qa_checked": true,
+                  "repetition_qa_evidence": {
+                    "flagged": false,
+                    "duration_seconds": 13.48,
+                    "method_a_ngram": {
+                      "matches": [],
+                      "flagged": false,
+                      "flagged_matches": [],
+                      "word_count": 35,
+                      "canonical_known": true,
+                      "min_words": 3
+                    },
+                    "method_d_spectral_long_lag": {
+                      "top_matches": [
+                        {
+                          "similarity": 0.9927,
+                          "time_a_seconds": 5.35,
+                          "time_b_seconds": 10.47,
+                          "lag_seconds": 5.12,
+                          "run_length_seconds_at_thresh_0.85": 0.01
+                        },
+                        {
+                          "similarity": 0.9925,
+                          "time_a_seconds": 5.35,
+                          "time_b_seconds": 11.53,
+                          "lag_seconds": 6.18,
+                          "run_length_seconds_at_thresh_0.85": 0.02
+                        },
+                        {
+                          "similarity": 0.9901,
+                          "time_a_seconds": 0.06,
+                          "time_b_seconds": 10.47,
+                          "lag_seconds": 10.41,
+                          "run_length_seconds_at_thresh_0.85": 0.01
+                        },
+                        {
+                          "similarity": 0.9897,
+                          "time_a_seconds": 0.26,
+                          "time_b_seconds": 4.5,
+                          "lag_seconds": 4.24
+                        },
+                        {
+                          "similarity": 0.9894,
+                          "time_a_seconds": 0.02,
+                          "time_b_seconds": 5.35,
+                          "lag_seconds": 5.33
+                        }
+                      ],
+                      "best_run_length_seconds": 0.02,
+                      "min_lag_seconds": 1.0,
+                      "sim_threshold": 0.85,
+                      "decision_threshold_seconds": 0.12,
+                      "acoustic_flagged": false,
+                      "local_asr_confirmation": null,
+                      "flagged": false
+                    },
+                    "method_d_prime_spectral_short_lag": {
+                      "run_length_seconds": 0.34,
+                      "time_a": 5.89,
+                      "lag": 1.83,
+                      "similarity_at_start": 0.8338,
+                      "best_run_length_seconds": 0.34,
+                      "lag_range_seconds": [
+                        0.5,
+                        2.0
+                      ],
+                      "sim_threshold": 0.7,
+                      "decision_threshold_seconds": 0.6,
+                      "flagged": false
+                    },
+                    "method_c_v2_window_check": null
+                  },
+                  "asr_prompt_applied": false,
+                  "non_latin_cascade_enabled": false,
+                  "non_latin_cascade_invoked": false,
+                  "style_prefix": {
+                    "len": 177,
+                    "sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
+                    "head200": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible."
+                  },
+                  "cascade_steps": [
+                    {
+                      "step": "primary_1",
+                      "provider": "openai_asr",
+                      "text": "The AI agents sent to the island had no set tasks or rewards, but their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                      "classification": "NORMALIZED_MATCH",
+                      "entity_like_source": []
+                    }
+                  ],
+                  "asr_judgement": {
+                    "state": "PASS_WITH_WARNING",
+                    "reason_code": "primary_pass",
+                    "slot": 4,
+                    "script_version": "v1",
+                    "role": "FULL_STORY",
+                    "lang": "en",
+                    "segment_key": "full_story_part1_k2",
+                    "audio_sha256": "a5e06ef18a547fcdb44196f258f3b6c88366bb7c6a4045ea26b3922fe86a8855",
+                    "primary": {
+                      "text": "The AI agents sent to the island had no set tasks or rewards, but their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                      "passed": true,
+                      "label": "NORMALIZED_MATCH",
+                      "equivalence_basis": null,
+                      "warning_labels": []
+                    },
+                    "secondary": {
+                      "called": false,
+                      "cached": false,
+                      "engine": "azure",
+                      "text": null,
+                      "label": "",
+                      "accepted": null,
+                      "error": null,
+                      "unavailable": false
+                    },
+                    "value_guard": {
+                      "primary": {
+                        "kind": "NO_VALUES",
+                        "pairs": [],
+                        "reasons": [],
+                        "warnings": []
+                      }
+                    },
+                    "negation_guard": {
+                      "primary": false
+                    },
+                    "final_gate": {
+                      "applied": true,
+                      "value_guard": "NO_VALUES",
+                      "negation_diff": false
+                    },
+                    "warnings": [
+                      "LR_REWRITTEN"
+                    ],
+                    "exclusion_rule": null,
+                    "cost": {
+                      "azure_calls": 0,
+                      "azure_seconds": null,
+                      "est_jpy": 0.0
+                    },
+                    "timing": {
+                      "total_ms": 0,
+                      "secondary_ms": 0
+                    },
+                    "technical_stop": null,
+                    "length": {
+                      "applied": true,
+                      "primary_len": 187,
+                      "secondary_len": null,
+                      "max_len": 247,
+                      "adopted_from": "primary",
+                      "adopted_ok": true,
+                      "surface_len": null,
+                      "primary_ok": true
+                    },
+                    "adapter": {
+                      "layers": [],
+                      "azure_real_calls": 0,
+                      "cost_guard_triggered": false,
+                      "language": "en-US",
+                      "segment_id": "full_story_part1_k2",
+                      "asr_text_present": true,
+                      "cache": {
+                        "calls": 8,
+                        "hits": 4
+                      }
+                    }
+                  },
+                  "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_form_prod_01/a2/narration/attempts/full_story_part1_k2_attempt7_customa3c4625e.wav"
+                }
+              ],
+              "audio_classification": "NORMALIZED_MATCH",
+              "connected_speech_info": null,
+              "reading_resolver_info": null,
+              "scg_info": null,
+              "en_pronunciation_resolver_info": {
+                "hints_applied": false,
+                "cache_hits": [],
+                "low_confidence_retry_attempted": false,
+                "low_confidence_retry_improved": false,
+                "research_meta": null
+              },
+              "disfluency_checked": false,
+              "disfluency_evidence": null,
+              "repetition_qa_checked": true,
+              "repetition_qa_evidence": {
+                "flagged": false,
+                "duration_seconds": 13.48,
+                "method_a_ngram": {
+                  "matches": [],
+                  "flagged": false,
+                  "flagged_matches": [],
+                  "word_count": 35,
+                  "canonical_known": true,
+                  "min_words": 3
+                },
+                "method_d_spectral_long_lag": {
+                  "top_matches": [
+                    {
+                      "similarity": 0.9927,
+                      "time_a_seconds": 5.35,
+                      "time_b_seconds": 10.47,
+                      "lag_seconds": 5.12,
+                      "run_length_seconds_at_thresh_0.85": 0.01
+                    },
+                    {
+                      "similarity": 0.9925,
+                      "time_a_seconds": 5.35,
+                      "time_b_seconds": 11.53,
+                      "lag_seconds": 6.18,
+                      "run_length_seconds_at_thresh_0.85": 0.02
+                    },
+                    {
+                      "similarity": 0.9901,
+                      "time_a_seconds": 0.06,
+                      "time_b_seconds": 10.47,
+                      "lag_seconds": 10.41,
+                      "run_length_seconds_at_thresh_0.85": 0.01
+                    },
+                    {
+                      "similarity": 0.9897,
+                      "time_a_seconds": 0.26,
+                      "time_b_seconds": 4.5,
+                      "lag_seconds": 4.24
+                    },
+                    {
+                      "similarity": 0.9894,
+                      "time_a_seconds": 0.02,
+                      "time_b_seconds": 5.35,
+                      "lag_seconds": 5.33
+                    }
+                  ],
+                  "best_run_length_seconds": 0.02,
+                  "min_lag_seconds": 1.0,
+                  "sim_threshold": 0.85,
+                  "decision_threshold_seconds": 0.12,
+                  "acoustic_flagged": false,
+                  "local_asr_confirmation": null,
+                  "flagged": false
+                },
+                "method_d_prime_spectral_short_lag": {
+                  "run_length_seconds": 0.34,
+                  "time_a": 5.89,
+                  "lag": 1.83,
+                  "similarity_at_start": 0.8338,
+                  "best_run_length_seconds": 0.34,
+                  "lag_range_seconds": [
+                    0.5,
+                    2.0
+                  ],
+                  "sim_threshold": 0.7,
+                  "decision_threshold_seconds": 0.6,
+                  "flagged": false
+                },
+                "method_c_v2_window_check": null
+              },
+              "asr_judgement": {
+                "state": "PASS_WITH_WARNING",
+                "reason_code": "secondary_confirmed",
+                "slot": 4,
+                "script_version": "v0",
+                "role": "FULL_STORY",
+                "lang": "en",
+                "segment_key": "full_story_part1_k2",
+                "audio_sha256": "2a5d0fc5bbde1c6054829b99c5f5a401f1e89e068394e5ae9cebd1084eda13f6",
+                "primary": {
+                  "text": "The AI agents sent to the island had no set tasks or awards, but their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                  "passed": false,
+                  "label": "TRUE_CONTENT_MISMATCH",
+                  "equivalence_basis": null,
+                  "warning_labels": []
+                },
+                "secondary": {
+                  "called": true,
+                  "cached": false,
+                  "engine": "azure",
+                  "text": "The AI agents sent to the island had no set tasks or rewards, but their starting settings LED them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                  "label": "NORMALIZED_MATCH",
+                  "accepted": true,
+                  "error": null,
+                  "unavailable": false
+                },
+                "value_guard": {
+                  "primary": {
+                    "kind": "NO_VALUES",
+                    "pairs": [],
+                    "reasons": [],
+                    "warnings": []
+                  },
+                  "secondary": {
+                    "kind": "NO_VALUES",
+                    "pairs": [],
+                    "reasons": [],
+                    "warnings": []
+                  }
+                },
+                "negation_guard": {
+                  "primary": false,
+                  "secondary": false
+                },
+                "final_gate": {
+                  "applied": true,
+                  "target": "secondary",
+                  "value_guard": "NO_VALUES",
+                  "negation_diff": false
+                },
+                "warnings": [
+                  "SECONDARY_CONFIRMED"
+                ],
+                "exclusion_rule": null,
+                "cost": {
+                  "azure_calls": 1,
+                  "azure_seconds": 14.276,
+                  "est_jpy": 0.6667,
+                  "est_jpy_known": true
+                },
+                "timing": {
+                  "total_ms": 5096,
+                  "secondary_ms": 5094
+                },
+                "technical_stop": null,
+                "length": {
+                  "applied": false,
+                  "primary_len": null,
+                  "secondary_len": null,
+                  "max_len": null,
+                  "adopted_from": "primary",
+                  "adopted_ok": null,
+                  "surface_len": null,
+                  "primary_ok": null
+                },
+                "p3_entry": "p3_primary_ng",
+                "adapter": {
+                  "layers": [],
+                  "azure_real_calls": 1,
+                  "cost_guard_triggered": false,
+                  "language": "en-US",
+                  "segment_id": "full_story_part1_k2",
+                  "asr_text_present": true,
+                  "cache": {
+                    "calls": 10,
+                    "hits": 4
+                  }
+                }
+              },
+              "post_slowdown_expected_text_source": "local_rewrite_text",
+              "post_slowdown_cascade": {
+                "invoked": true,
+                "cascade_entered": true,
+                "verified": true,
+                "final_status": "NORMALIZED_MATCH",
+                "steps": [
+                  {
+                    "step": "primary_1",
+                    "provider": "openai_asr",
+                    "text": "The AI agents sent to the island had no set tasks or awards, but their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                    "classification": "TRUE_CONTENT_MISMATCH",
+                    "entity_like_source": []
+                  },
+                  {
+                    "step": "secondary_1",
+                    "provider": "azure",
+                    "text": "The AI agents sent to the island had no set tasks or rewards, but their starting settings LED them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                    "classification": "NORMALIZED_MATCH",
+                    "phrase_list_used": false,
+                    "azure_phrase_list_weight": null,
+                    "azure_phrase_list": [],
+                    "cached": false,
+                    "unified_judge_state": "PASS_WITH_WARNING",
+                    "entity_like_source": []
+                  }
+                ],
+                "semantic_equivalence_info": null,
+                "asr_judgement": {
+                  "state": "PASS_WITH_WARNING",
+                  "reason_code": "secondary_confirmed",
+                  "slot": 4,
+                  "script_version": "v0",
+                  "role": "FULL_STORY",
+                  "lang": "en",
+                  "segment_key": "full_story_part1_k2",
+                  "audio_sha256": "2a5d0fc5bbde1c6054829b99c5f5a401f1e89e068394e5ae9cebd1084eda13f6",
+                  "primary": {
+                    "text": "The AI agents sent to the island had no set tasks or awards, but their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                    "passed": false,
+                    "label": "TRUE_CONTENT_MISMATCH",
+                    "equivalence_basis": null,
+                    "warning_labels": []
+                  },
+                  "secondary": {
+                    "called": true,
+                    "cached": false,
+                    "engine": "azure",
+                    "text": "The AI agents sent to the island had no set tasks or rewards, but their starting settings LED them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                    "label": "NORMALIZED_MATCH",
+                    "accepted": true,
+                    "error": null,
+                    "unavailable": false
+                  },
+                  "value_guard": {
+                    "primary": {
+                      "kind": "NO_VALUES",
+                      "pairs": [],
+                      "reasons": [],
+                      "warnings": []
+                    },
+                    "secondary": {
+                      "kind": "NO_VALUES",
+                      "pairs": [],
+                      "reasons": [],
+                      "warnings": []
+                    }
+                  },
+                  "negation_guard": {
+                    "primary": false,
+                    "secondary": false
+                  },
+                  "final_gate": {
+                    "applied": true,
+                    "target": "secondary",
+                    "value_guard": "NO_VALUES",
+                    "negation_diff": false
+                  },
+                  "warnings": [
+                    "SECONDARY_CONFIRMED"
+                  ],
+                  "exclusion_rule": null,
+                  "cost": {
+                    "azure_calls": 1,
+                    "azure_seconds": 14.276,
+                    "est_jpy": 0.6667,
+                    "est_jpy_known": true
+                  },
+                  "timing": {
+                    "total_ms": 5096,
+                    "secondary_ms": 5094
+                  },
+                  "technical_stop": null,
+                  "length": {
+                    "applied": false,
+                    "primary_len": null,
+                    "secondary_len": null,
+                    "max_len": null,
+                    "adopted_from": "primary",
+                    "adopted_ok": null,
+                    "surface_len": null,
+                    "primary_ok": null
+                  },
+                  "p3_entry": "p3_primary_ng",
+                  "adapter": {
+                    "layers": [],
+                    "azure_real_calls": 1,
+                    "cost_guard_triggered": false,
+                    "language": "en-US",
+                    "segment_id": "full_story_part1_k2",
+                    "asr_text_present": true,
+                    "cache": {
+                      "calls": 10,
+                      "hits": 4
+                    }
+                  }
+                }
+              },
+              "asr_judgement_pre_slowdown": {
+                "state": "PASS_WITH_WARNING",
+                "reason_code": "primary_pass",
+                "slot": 4,
+                "script_version": "v1",
+                "role": "FULL_STORY",
+                "lang": "en",
+                "segment_key": "full_story_part1_k2",
+                "audio_sha256": "a5e06ef18a547fcdb44196f258f3b6c88366bb7c6a4045ea26b3922fe86a8855",
+                "primary": {
+                  "text": "The AI agents sent to the island had no set tasks or rewards, but their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+                  "passed": true,
+                  "label": "NORMALIZED_MATCH",
+                  "equivalence_basis": null,
+                  "warning_labels": []
+                },
+                "secondary": {
+                  "called": false,
+                  "cached": false,
+                  "engine": "azure",
+                  "text": null,
+                  "label": "",
+                  "accepted": null,
+                  "error": null,
+                  "unavailable": false
+                },
+                "value_guard": {
+                  "primary": {
+                    "kind": "NO_VALUES",
+                    "pairs": [],
+                    "reasons": [],
+                    "warnings": []
+                  }
+                },
+                "negation_guard": {
+                  "primary": false
+                },
+                "final_gate": {
+                  "applied": true,
+                  "value_guard": "NO_VALUES",
+                  "negation_diff": false
+                },
+                "warnings": [
+                  "LR_REWRITTEN"
+                ],
+                "exclusion_rule": null,
+                "cost": {
+                  "azure_calls": 0,
+                  "azure_seconds": null,
+                  "est_jpy": 0.0
+                },
+                "timing": {
+                  "total_ms": 0,
+                  "secondary_ms": 0
+                },
+                "technical_stop": null,
+                "length": {
+                  "applied": true,
+                  "primary_len": 187,
+                  "secondary_len": null,
+                  "max_len": 247,
+                  "adopted_from": "primary",
+                  "adopted_ok": true,
+                  "surface_len": null,
+                  "primary_ok": true
+                },
+                "adapter": {
+                  "layers": [],
+                  "azure_real_calls": 0,
+                  "cost_guard_triggered": false,
+                  "language": "en-US",
+                  "segment_id": "full_story_part1_k2",
+                  "asr_text_present": true,
+                  "cache": {
+                    "calls": 8,
+                    "hits": 4
+                  }
+                }
+              },
+              "original_path": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_form_prod_01/a2/narration/full_story_part1_k2_original.wav",
+              "slowdown_applied": true,
+              "slowdown_info": {
+                "slowdown_pct_target": 6.0,
+                "slowdown_pct_actual": 5.903,
+                "src_duration_seconds": 13.48,
+                "dst_duration_seconds": 14.276,
+                "src_path": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_form_prod_01/a2/narration/full_story_part1_k2_original.wav",
+                "dst_path": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_form_prod_01/a2/narration/full_story_part1_k2.wav"
+              },
+              "post_slowdown_asr_text": "The AI agents sent to the island had no set tasks or awards, but their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+              "post_slowdown_classification": "TRUE_CONTENT_MISMATCH",
+              "post_slowdown_semantic_equivalence": null,
+              "post_slowdown_final_classification": "NORMALIZED_MATCH",
+              "post_slowdown_cascade_accepted": true,
+              "fallback_used": false
+            },
+            "status": "RESOLVED_BY_LOCAL_REWRITE"
+          },
+          "audio_text_deviation": false,
+          "asr_judgement": {
+            "state": "PASS_WITH_WARNING",
+            "reason_code": "secondary_confirmed",
+            "slot": 4,
+            "script_version": "v0",
+            "role": "FULL_STORY",
+            "lang": "en",
+            "segment_key": "full_story_part1_k2",
+            "audio_sha256": "2a5d0fc5bbde1c6054829b99c5f5a401f1e89e068394e5ae9cebd1084eda13f6",
+            "primary": {
+              "text": "The AI agents sent to the island had no set tasks or awards, but their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+              "passed": false,
+              "label": "TRUE_CONTENT_MISMATCH",
+              "equivalence_basis": null,
+              "warning_labels": []
+            },
+            "secondary": {
+              "called": true,
+              "cached": false,
+              "engine": "azure",
+              "text": "The AI agents sent to the island had no set tasks or rewards, but their starting settings LED them to be curious, explore, and learn. They had no homework, but they were ready to explore.",
+              "label": "NORMALIZED_MATCH",
+              "accepted": true,
+              "error": null,
+              "unavailable": false
+            },
+            "value_guard": {
+              "primary": {
+                "kind": "NO_VALUES",
+                "pairs": [],
+                "reasons": [],
+                "warnings": []
+              },
+              "secondary": {
+                "kind": "NO_VALUES",
+                "pairs": [],
+                "reasons": [],
+                "warnings": []
+              }
+            },
+            "negation_guard": {
+              "primary": false,
+              "secondary": false
+            },
+            "final_gate": {
+              "applied": true,
+              "target": "secondary",
+              "value_guard": "NO_VALUES",
+              "negation_diff": false
+            },
+            "warnings": [
+              "SECONDARY_CONFIRMED"
+            ],
+            "exclusion_rule": null,
+            "cost": {
+              "azure_calls": 1,
+              "azure_seconds": 14.276,
+              "est_jpy": 0.6667,
+              "est_jpy_known": true
+            },
+            "timing": {
+              "total_ms": 5096,
+              "secondary_ms": 5094
+            },
+            "technical_stop": null,
+            "length": {
+              "applied": false,
+              "primary_len": null,
+              "secondary_len": null,
+              "max_len": null,
+              "adopted_from": "primary",
+              "adopted_ok": null,
+              "surface_len": null,
+              "primary_ok": null
+            },
+            "p3_entry": "p3_primary_ng",
+            "adapter": {
+              "layers": [],
+              "azure_real_calls": 1,
+              "cost_guard_triggered": false,
+              "language": "en-US",
+              "segment_id": "full_story_part1_k2",
+              "asr_text_present": true,
+              "cache": {
+                "calls": 10,
+                "hits": 4
+              }
+            }
+          },
+          "reused": false,
+          "cost_jpy": null,
+          "slowdown_applied": true,
+          "slowdown_pct_actual": 5.903,
+          "slowdown_src_duration_s": 13.48,
+          "slowdown_dst_duration_s": 14.276,
+          "post_slowdown_classification": "NORMALIZED_MATCH",
+          "tts_generations_used": 4
+        },
+        {
+          "chunk_id": "full_story_part1_k3",
+          "index": 3,
+          "words": 55,
+          "boundary_kind": "paragraph",
+          "status": "OK",
+          "voice": "Aoede",
+          "model_ids_measured": null,
+          "style_prefix_sha256": null,
+          "instruction_type": null,
+          "attempt_count": 0,
+          "local_rewrite_recovery": null,
+          "audio_text_deviation": false,
+          "asr_judgement": {
+            "state": "PASS",
+            "reason_code": "primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE",
+            "slot": 1,
+            "script_version": "v0",
+            "role": "FULL_STORY",
+            "lang": "en",
+            "segment_key": "full_story_part1_k3",
+            "audio_sha256": "40c5e9a87c560c1546eaeb23a3cc12858c652b962e26cedb4e6af01614a7db5b",
+            "primary": {
+              "text": "Then one AI made its own obstacle course. It placed eight blocks around a building called the cathedral. Then it jumped across without touching the ground. It made the course and its rules all by itself. It kept itself busy, though nobody had asked it to. The researchers say this is a feature of play.",
+              "passed": true,
+              "label": "NUMERIC_EQUIVALENCE_MATCH",
+              "equivalence_basis": "TIER1_NUMERIC_EQUIVALENCE",
+              "warning_labels": []
+            },
+            "secondary": {
+              "called": false,
+              "cached": false,
+              "engine": "azure",
+              "text": null,
+              "label": "",
+              "accepted": null,
+              "error": null,
+              "unavailable": false
+            },
+            "value_guard": {
+              "primary": {
+                "kind": "EQUAL",
+                "pairs": [
+                  {
+                    "src": "1",
+                    "hyp": "1",
+                    "verdict": "EQUAL",
+                    "reason": "same_surface"
+                  },
+                  {
+                    "src": "8",
+                    "hyp": "8",
+                    "verdict": "EQUAL",
+                    "reason": "same_surface"
+                  }
+                ],
+                "reasons": [],
+                "warnings": []
+              }
+            },
+            "negation_guard": {
+              "primary": false
+            },
+            "final_gate": {
+              "applied": false,
+              "skipped": "approved_equivalence:TIER1_NUMERIC_EQUIVALENCE"
+            },
+            "warnings": [],
+            "exclusion_rule": null,
+            "cost": {
+              "azure_calls": 0,
+              "azure_seconds": null,
+              "est_jpy": 0.0
+            },
+            "timing": {
+              "total_ms": 0,
+              "secondary_ms": 0
+            },
+            "technical_stop": null,
+            "length": {
+              "applied": false,
+              "primary_len": null,
+              "secondary_len": null,
+              "max_len": null,
+              "adopted_from": "primary",
+              "adopted_ok": null,
+              "surface_len": null,
+              "primary_ok": null
+            },
+            "adapter": {
+              "layers": [],
+              "azure_real_calls": 0,
+              "cost_guard_triggered": false,
+              "language": "en-US",
+              "segment_id": "full_story_part1_k3",
+              "asr_text_present": true,
+              "cache": {
+                "calls": 10,
+                "hits": 4
+              }
+            }
+          },
+          "reused": false,
+          "cost_jpy": null,
+          "slowdown_applied": true,
+          "slowdown_pct_actual": 5.923,
+          "slowdown_src_duration_s": 18.69,
+          "slowdown_dst_duration_s": 19.797,
+          "post_slowdown_classification": "NUMERIC_EQUIVALENCE_MATCH",
+          "tts_generations_used": 1
+        }
+      ],
+      "assembly": null
+    },
+    "full_story_part2": {
+      "parent_id": "full_story_part2",
+      "family": "X",
+      "planner_version": "chunk_tts_v1_x_paragraph_z_r1_20261025",
+      "chunk_count": 2,
+      "extra_pause_seconds": 0.2,
+      "chunks": [
+        {
+          "chunk_id": "full_story_part2_k1",
+          "index": 1,
+          "words": 50,
+          "boundary_kind": "paragraph",
+          "status": "OK",
+          "voice": "Aoede",
+          "model_ids_measured": null,
+          "style_prefix_sha256": null,
+          "instruction_type": null,
+          "attempt_count": 0,
+          "local_rewrite_recovery": null,
+          "audio_text_deviation": false,
+          "asr_judgement": {
+            "state": "PASS",
+            "reason_code": "primary_pass",
+            "slot": 1,
+            "script_version": "v0",
+            "role": "FULL_STORY",
+            "lang": "en",
+            "segment_key": "full_story_part2_k1",
+            "audio_sha256": "c03c1f9344f5a420dc7e9869f37c7c9d2fafe2a973af97d07471c21bf8e63d47",
+            "primary": {
+              "text": "But the jumps were not the only thing to watch. In the test, the island and conversation reset every hour, but the work area with the AI's notes and programs carried over to the next hour. The island went back to how it was before, but the AI's discoveries stayed.",
+              "passed": true,
+              "label": "NORMALIZED_MATCH",
+              "equivalence_basis": null,
+              "warning_labels": []
+            },
+            "secondary": {
+              "called": false,
+              "cached": false,
+              "engine": "azure",
+              "text": null,
+              "label": "",
+              "accepted": null,
+              "error": null,
+              "unavailable": false
+            },
+            "value_guard": {
+              "primary": {
+                "kind": "NO_VALUES",
+                "pairs": [],
+                "reasons": [],
+                "warnings": []
+              }
+            },
+            "negation_guard": {
+              "primary": false
+            },
+            "final_gate": {
+              "applied": true,
+              "value_guard": "NO_VALUES",
+              "negation_diff": false
+            },
+            "warnings": [],
+            "exclusion_rule": null,
+            "cost": {
+              "azure_calls": 0,
+              "azure_seconds": null,
+              "est_jpy": 0.0
+            },
+            "timing": {
+              "total_ms": 0,
+              "secondary_ms": 0
+            },
+            "technical_stop": null,
+            "length": {
+              "applied": false,
+              "primary_len": null,
+              "secondary_len": null,
+              "max_len": null,
+              "adopted_from": "primary",
+              "adopted_ok": null,
+              "surface_len": null,
+              "primary_ok": null
+            },
+            "adapter": {
+              "layers": [],
+              "azure_real_calls": 0,
+              "cost_guard_triggered": false,
+              "language": "en-US",
+              "segment_id": "full_story_part2_k1",
+              "asr_text_present": true,
+              "cache": {
+                "calls": 10,
+                "hits": 4
+              }
+            }
+          },
+          "reused": false,
+          "cost_jpy": null,
+          "slowdown_applied": true,
+          "slowdown_pct_actual": 5.918,
+          "slowdown_src_duration_s": 17.36,
+          "slowdown_dst_duration_s": 18.387,
+          "post_slowdown_classification": "NORMALIZED_MATCH",
+          "tts_generations_used": 1
+        },
+        {
+          "chunk_id": "full_story_part2_k2",
+          "index": 2,
+          "words": 86,
+          "boundary_kind": "paragraph",
+          "status": "OK",
+          "voice": "Aoede",
+          "model_ids_measured": null,
+          "style_prefix_sha256": null,
+          "instruction_type": null,
+          "attempt_count": 0,
+          "local_rewrite_recovery": null,
+          "audio_text_deviation": false,
+          "asr_judgement": {
+            "state": "PASS",
+            "reason_code": "primary_pass",
+            "slot": 2,
+            "script_version": "v0",
+            "role": "FULL_STORY",
+            "lang": "en",
+            "segment_key": "full_story_part2_k2",
+            "audio_sha256": "d0f3007be791889cfc2b4f4580db306f8876f22f0dec51cd1e7cf08ec7e768b9",
+            "primary": {
+              "text": "So would this experience help the AI when it was asked to work again? The researchers compared 13 AIs with island experience. They also used 13 AIs with the same setup, but no experience. On a new island, the task was to build as many towers as possible in one hour. Each tower had to be five blocks high. The researchers checked which AIs could build more than two towers. The experienced group did better. Those that had taken a detour were now one step ahead.",
+              "passed": true,
+              "label": "NORMALIZED_MATCH",
+              "equivalence_basis": null,
+              "warning_labels": []
+            },
+            "secondary": {
+              "called": false,
+              "cached": false,
+              "engine": "azure",
+              "text": null,
+              "label": "",
+              "accepted": null,
+              "error": null,
+              "unavailable": false
+            },
+            "value_guard": {
+              "primary": {
+                "kind": "EQUAL",
+                "pairs": [
+                  {
+                    "src": "13",
+                    "hyp": "13",
+                    "verdict": "EQUAL",
+                    "reason": "same_surface"
+                  },
+                  {
+                    "src": "13",
+                    "hyp": "13",
+                    "verdict": "EQUAL",
+                    "reason": "same_surface"
+                  },
+                  {
+                    "src": "1",
+                    "hyp": "1",
+                    "verdict": "EQUAL",
+                    "reason": "same_surface"
+                  },
+                  {
+                    "src": "5",
+                    "hyp": "5",
+                    "verdict": "EQUAL",
+                    "reason": "same_surface"
+                  },
+                  {
+                    "src": "2",
+                    "hyp": "2",
+                    "verdict": "EQUAL",
+                    "reason": "same_surface"
+                  },
+                  {
+                    "src": "1",
+                    "hyp": "1",
+                    "verdict": "EQUAL",
+                    "reason": "same_surface"
+                  }
+                ],
+                "reasons": [],
+                "warnings": []
+              }
+            },
+            "negation_guard": {
+              "primary": false
+            },
+            "final_gate": {
+              "applied": true,
+              "value_guard": "EQUAL",
+              "negation_diff": false
+            },
+            "warnings": [],
+            "exclusion_rule": null,
+            "cost": {
+              "azure_calls": 0,
+              "azure_seconds": null,
+              "est_jpy": 0.0
+            },
+            "timing": {
+              "total_ms": 1,
+              "secondary_ms": 0
+            },
+            "technical_stop": null,
+            "length": {
+              "applied": false,
+              "primary_len": null,
+              "secondary_len": null,
+              "max_len": null,
+              "adopted_from": "primary",
+              "adopted_ok": null,
+              "surface_len": null,
+              "primary_ok": null
+            },
+            "adapter": {
+              "layers": [],
+              "azure_real_calls": 0,
+              "cost_guard_triggered": false,
+              "language": "en-US",
+              "segment_id": "full_story_part2_k2",
+              "asr_text_present": true,
+              "cache": {
+                "calls": 12,
+                "hits": 4
+              }
+            }
+          },
+          "reused": false,
+          "cost_jpy": null,
+          "slowdown_applied": true,
+          "slowdown_pct_actual": 5.964,
+          "slowdown_src_duration_s": 29.11,
+          "slowdown_dst_duration_s": 30.846,
+          "post_slowdown_classification": "NORMALIZED_MATCH",
+          "tts_generations_used": 2
+        }
+      ],
+      "assembly": null
+    },
+    "full_story_part3": {
+      "parent_id": "full_story_part3",
+      "family": "X",
+      "planner_version": "chunk_tts_v1_x_paragraph_z_r1_20261025",
+      "chunk_count": 3,
+      "extra_pause_seconds": 0.2,
+      "chunks": [
+        {
+          "chunk_id": "full_story_part3_k1",
+          "index": 1,
+          "words": 60,
+          "boundary_kind": "paragraph",
+          "status": "OK",
+          "voice": "Aoede",
+          "model_ids_measured": null,
+          "style_prefix_sha256": null,
+          "instruction_type": null,
+          "attempt_count": 0,
+          "local_rewrite_recovery": null,
+          "audio_text_deviation": false,
+          "asr_judgement": {
+            "state": "PASS",
+            "reason_code": "primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE",
+            "slot": 1,
+            "script_version": "v0",
+            "role": "FULL_STORY",
+            "lang": "en",
+            "segment_key": "full_story_part3_k1",
+            "audio_sha256": "f3450b8ed60dd5bde5b4a2977fb46ef688aaad8972e86256f88383ddd91ed26c",
+            "primary": {
+              "text": "The researchers also erased a way to throw rocks to get more blocks from one AI's memory. After that, the average number of towers it could build went down. Its scores on other tasks stayed the same. For this AI, at least, remembering that way helped it build towers. One tip in the strategy notes was worth paying attention to.",
+              "passed": true,
+              "label": "NUMERIC_EQUIVALENCE_MATCH",
+              "equivalence_basis": "TIER1_NUMERIC_EQUIVALENCE",
+              "warning_labels": []
+            },
+            "secondary": {
+              "called": false,
+              "cached": false,
+              "engine": "azure",
+              "text": null,
+              "label": "",
+              "accepted": null,
+              "error": null,
+              "unavailable": false
+            },
+            "value_guard": {
+              "primary": {
+                "kind": "EQUAL",
+                "pairs": [
+                  {
+                    "src": "1",
+                    "hyp": "1",
+                    "verdict": "EQUAL",
+                    "reason": "same_surface"
+                  },
+                  {
+                    "src": "1",
+                    "hyp": "1",
+                    "verdict": "EQUAL",
+                    "reason": "same_surface"
+                  }
+                ],
+                "reasons": [],
+                "warnings": []
+              }
+            },
+            "negation_guard": {
+              "primary": false
+            },
+            "final_gate": {
+              "applied": false,
+              "skipped": "approved_equivalence:TIER1_NUMERIC_EQUIVALENCE"
+            },
+            "warnings": [],
+            "exclusion_rule": null,
+            "cost": {
+              "azure_calls": 0,
+              "azure_seconds": null,
+              "est_jpy": 0.0
+            },
+            "timing": {
+              "total_ms": 0,
+              "secondary_ms": 0
+            },
+            "technical_stop": null,
+            "length": {
+              "applied": false,
+              "primary_len": null,
+              "secondary_len": null,
+              "max_len": null,
+              "adopted_from": "primary",
+              "adopted_ok": null,
+              "surface_len": null,
+              "primary_ok": null
+            },
+            "adapter": {
+              "layers": [],
+              "azure_real_calls": 0,
+              "cost_guard_triggered": false,
+              "language": "en-US",
+              "segment_id": "full_story_part3_k1",
+              "asr_text_present": true,
+              "cache": {
+                "calls": 12,
+                "hits": 4
+              }
+            }
+          },
+          "reused": false,
+          "cost_jpy": null,
+          "slowdown_applied": true,
+          "slowdown_pct_actual": 5.93,
+          "slowdown_src_duration_s": 20.27,
+          "slowdown_dst_duration_s": 21.472,
+          "post_slowdown_classification": "NUMERIC_EQUIVALENCE_MATCH",
+          "tts_generations_used": 1
+        },
+        {
+          "chunk_id": "full_story_part3_k2",
+          "index": 2,
+          "words": 49,
+          "boundary_kind": "paragraph",
+          "status": "OK",
+          "voice": "Aoede",
+          "model_ids_measured": null,
+          "style_prefix_sha256": null,
+          "instruction_type": null,
+          "attempt_count": 0,
+          "local_rewrite_recovery": null,
+          "audio_text_deviation": false,
+          "asr_judgement": {
+            "state": "PASS_WITH_WARNING",
+            "reason_code": "secondary_confirmed",
+            "slot": 1,
+            "script_version": "v0",
+            "role": "FULL_STORY",
+            "lang": "en",
+            "segment_key": "full_story_part3_k2",
+            "audio_sha256": "626a4a472ecb8373bbc405baa351e064f1eac1fbd7f66aaedb3284d6d29ce29e",
+            "primary": {
+              "text": "Even so, it is too soon to wave a flag and say play and get smarter proves complete. The experienced group did better, and removing one memory lowered its score. These two results need to be studied separately. By themselves, they do not show that play itself made a difference.",
+              "passed": false,
+              "label": "TRUE_CONTENT_MISMATCH",
+              "equivalence_basis": null,
+              "warning_labels": []
+            },
+            "secondary": {
+              "called": true,
+              "cached": false,
+              "engine": "azure",
+              "text": "Even so, it is too soon to wave a flag and say play and get smarter. Proof complete. The experienced group did better and removing 1 memory lowered its score. These two results need to be studied separately by themselves. They do not show that play itself made a difference.",
+              "label": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+              "accepted": true,
+              "error": null,
+              "unavailable": false
+            },
+            "value_guard": {
+              "primary": {
+                "kind": "EQUAL",
+                "pairs": [
+                  {
+                    "src": "1",
+                    "hyp": "1",
+                    "verdict": "EQUAL",
+                    "reason": "same_surface"
+                  },
+                  {
+                    "src": "2",
+                    "hyp": "2",
+                    "verdict": "EQUAL",
+                    "reason": "same_surface"
+                  }
+                ],
+                "reasons": [],
+                "warnings": []
+              },
+              "secondary": {
+                "kind": "EQUAL",
+                "pairs": [
+                  {
+                    "src": "1",
+                    "hyp": "1",
+                    "verdict": "EQUAL",
+                    "reason": "same_surface"
+                  },
+                  {
+                    "src": "2",
+                    "hyp": "2",
+                    "verdict": "EQUAL",
+                    "reason": "same_surface"
+                  }
+                ],
+                "reasons": [],
+                "warnings": []
+              }
+            },
+            "negation_guard": {
+              "primary": false,
+              "secondary": false
+            },
+            "final_gate": {
+              "applied": true,
+              "target": "secondary",
+              "value_guard": "EQUAL",
+              "negation_diff": false
+            },
+            "warnings": [
+              "SECONDARY_CONFIRMED"
+            ],
+            "exclusion_rule": null,
+            "cost": {
+              "azure_calls": 1,
+              "azure_seconds": 18.684,
+              "est_jpy": 0.8444,
+              "est_jpy_known": true
+            },
+            "timing": {
+              "total_ms": 7136,
+              "secondary_ms": 7127
+            },
+            "technical_stop": null,
+            "length": {
+              "applied": false,
+              "primary_len": null,
+              "secondary_len": null,
+              "max_len": null,
+              "adopted_from": "primary",
+              "adopted_ok": null,
+              "surface_len": null,
+              "primary_ok": null
+            },
+            "p3_entry": "p3_primary_ng",
+            "orthographic_equivalence": {
+              "applied": true,
+              "version": "er109_orthographic_equivalence_v2_ukus01",
+              "scope": "X",
+              "label": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+              "sites": [
+                {
+                  "site": "secondary",
+                  "text": "Even so, it is too soon to wave a flag and say play and get smarter. Proof complete. The experienced group did better and removing 1 memory lowered its score. These two results need to be studied separately by themselves. They do not show that play itself made a difference.",
+                  "verdict": "PASS",
+                  "warnings": [],
+                  "er109": {
+                    "version": "er109_orthographic_equivalence_v2_ukus01",
+                    "flag_enabled": true,
+                    "stress_mode": "binary_stressed_vs_unstressed",
+                    "equivalent": true,
+                    "verdict": "PASS",
+                    "reason": "all_diff_spans_phoneme_equal",
+                    "rules": [
+                      "number_spoken_form"
+                    ],
+                    "warnings": [],
+                    "contraction_expanded": false,
+                    "spans": [
+                      {
+                        "canon": [
+                          "one"
+                        ],
+                        "asr": [
+                          "1"
+                        ],
+                        "equivalent": true,
+                        "rule": "number_spoken_form",
+                        "why": "phoneme_equal",
+                        "matched_variants": [
+                          "W AH1 N"
+                        ],
+                        "representative_match": true,
+                        "heteronym_guard": true,
+                        "warnings": []
+                      },
+                      {
+                        "canon": [
+                          "2"
+                        ],
+                        "asr": [
+                          "two"
+                        ],
+                        "equivalent": true,
+                        "rule": "number_spoken_form",
+                        "why": "phoneme_equal",
+                        "matched_variants": [
+                          "T UW1"
+                        ],
+                        "representative_match": true,
+                        "heteronym_guard": true,
+                        "warnings": []
+                      }
+                    ]
+                  }
+                }
+              ],
+              "warnings": []
+            },
+            "adapter": {
+              "layers": [],
+              "azure_real_calls": 1,
+              "cost_guard_triggered": false,
+              "language": "en-US",
+              "segment_id": "full_story_part3_k2",
+              "asr_text_present": true,
+              "cache": {
+                "calls": 14,
+                "hits": 4
+              }
+            }
+          },
+          "reused": false,
+          "cost_jpy": null,
+          "slowdown_applied": true,
+          "slowdown_pct_actual": 5.918,
+          "slowdown_src_duration_s": 17.64,
+          "slowdown_dst_duration_s": 18.684,
+          "post_slowdown_classification": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+          "tts_generations_used": 1
+        },
+        {
+          "chunk_id": "full_story_part3_k3",
+          "index": 3,
+          "words": 61,
+          "boundary_kind": "paragraph",
+          "status": "OK",
+          "voice": "Aoede",
+          "model_ids_measured": null,
+          "style_prefix_sha256": null,
+          "instruction_type": null,
+          "attempt_count": 0,
+          "local_rewrite_recovery": null,
+          "audio_text_deviation": false,
+          "asr_judgement": {
+            "state": "PASS",
+            "reason_code": "primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE",
+            "slot": 1,
+            "script_version": "v0",
+            "role": "FULL_STORY",
+            "lang": "en",
+            "segment_key": "full_story_part3_k3",
+            "audio_sha256": "b382e9d4abb1f2256f8adafbac04fc7e939ed4be6be8b73d34d2b8bc0e3360ec",
+            "primary": {
+              "text": "Still, this changes how we think about a detour. A discovery that is not useful now might be a useful card to play next time, if it is saved. If you see an AI jumping around on the island, watch its notes as well as its feet. Its next tower might depend on a discovery written down in just one line.",
+              "passed": true,
+              "label": "NUMERIC_EQUIVALENCE_MATCH",
+              "equivalence_basis": "TIER1_NUMERIC_EQUIVALENCE",
+              "warning_labels": []
+            },
+            "secondary": {
+              "called": false,
+              "cached": false,
+              "engine": "azure",
+              "text": null,
+              "label": "",
+              "accepted": null,
+              "error": null,
+              "unavailable": false
+            },
+            "value_guard": {
+              "primary": {
+                "kind": "EQUAL",
+                "pairs": [
+                  {
+                    "src": "1",
+                    "hyp": "1",
+                    "verdict": "EQUAL",
+                    "reason": "same_surface"
+                  }
+                ],
+                "reasons": [],
+                "warnings": []
+              }
+            },
+            "negation_guard": {
+              "primary": false
+            },
+            "final_gate": {
+              "applied": false,
+              "skipped": "approved_equivalence:TIER1_NUMERIC_EQUIVALENCE"
+            },
+            "warnings": [],
+            "exclusion_rule": null,
+            "cost": {
+              "azure_calls": 0,
+              "azure_seconds": null,
+              "est_jpy": 0.0
+            },
+            "timing": {
+              "total_ms": 0,
+              "secondary_ms": 0
+            },
+            "technical_stop": null,
+            "length": {
+              "applied": false,
+              "primary_len": null,
+              "secondary_len": null,
+              "max_len": null,
+              "adopted_from": "primary",
+              "adopted_ok": null,
+              "surface_len": null,
+              "primary_ok": null
+            },
+            "adapter": {
+              "layers": [],
+              "azure_real_calls": 0,
+              "cost_guard_triggered": false,
+              "language": "en-US",
+              "segment_id": "full_story_part3_k3",
+              "asr_text_present": true,
+              "cache": {
+                "calls": 14,
+                "hits": 4
+              }
+            }
+          },
+          "reused": false,
+          "cost_jpy": null,
+          "slowdown_applied": true,
+          "slowdown_pct_actual": 6.007,
+          "slowdown_src_duration_s": 19.71,
+          "slowdown_dst_duration_s": 20.894,
+          "post_slowdown_classification": "NUMERIC_EQUIVALENCE_MATCH",
+          "tts_generations_used": 1
+        }
+      ],
+      "assembly": null
+    }
+  }
+}

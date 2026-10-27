@@ -1,0 +1,194 @@
+{
+  "schema": "grammar_candidates_v1",
+  "level": "Advanced",
+  "label": "The Island Resets! But AI Has “Strategy Notes”",
+  "text_sha256": "dc291d4af4f581bc01efb56ea1ff66952ade3b328f95388774d1a155904798d5",
+  "n_paragraphs": 8,
+  "prompt_id": "part2_stepA8",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+  "model": "gpt-6-luna",
+  "extract_signature": "b2db2d0c4f13620eec2b4e1f41b08879fe3d4ebe3785c1011833d5dbd970d34d",
+  "round": 1,
+  "tier_table": [
+    {
+      "para": "P4",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "what節が主語になり、その後ろの動詞が主節の述語になると見分ける。",
+      "front_kind": "",
+      "sentence": "The island went back to how it was before, but what the AI had discovered was not erased.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P6",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "長い主語の中にある関係節の動詞と、主節の動詞を区別する。",
+      "front_kind": "",
+      "sentence": "After that, the average number of towers it could build fell.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P7",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "that節を含む二つの名詞句がandで結ばれ、ひとまとまりの複合主語を作ると見分ける。",
+      "front_kind": "",
+      "sentence": "The fact that the experienced group did better and the fact that removing a particular memory lowered its score need to be looked at separately.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
+  "no_feature_paras": [
+    "P1",
+    "P2",
+    "P3",
+    "P5",
+    "P8"
+  ],
+  "uncovered_paras": [],
+  "audit": {
+    "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+    "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+    "model": "gpt-6-luna",
+    "requested_model": "gpt-6-luna",
+    "prompt_sha256": "e1214ba1bf8a0033f5ffecbb08d00ba10621b55d792d498fc521cf1947bb107b",
+    "response_ids": [
+      "resp_08c6c028db54b148006ade82d1cd7487d09b51b1c52c1d4790"
+    ],
+    "calls": [
+      {
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3555,
+          "output_tokens": 3311,
+          "cached_input_tokens": 0,
+          "reasoning_tokens": 2406
+        },
+        "response_id": "resp_08c6c028db54b148006ade82d1cd7487d09b51b1c52c1d4790",
+        "elapsed_sec": 29.49,
+        "cost_jpy": 0.3218
+      }
+    ],
+    "retried_for_parse": false,
+    "total_cost_jpy": 0.3218,
+    "generated_at": "2026-10-26T07:30:06+0900",
+    "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+  },
+  "reselect_count": 0,
+  "reextract_count": 0,
+  "reselect_log": [],
+  "candidates": [
+    {
+      "candidate_id": "gcc2541c879",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P4",
+      "sentence": "The island went back to how it was before, but what the AI had discovered was not erased.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "what the AI had discovered",
+      "misread_ja": "what the AI had discovered全体が主語なのに、埋め込み節内のthe AIを主節の主語と取り違えることがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "what節が主語になり、その後ろの動詞が主節の述語になると見分ける。",
+      "construct_ja": "what節主語",
+      "points_ja": [
+        "what the AI had discovered全体が主語",
+        "was not erasedが主節の述語"
+      ],
+      "context_ja": "島は元の状態に戻った一方で、AIが発見したことは消去されなかったと述べている。",
+      "prev": "In the experiment, the island and the conversation were reset every hour, but the work area where the AI kept notes and programs was carried over.",
+      "next": "So, would that experience help the AI the next time it was called on?",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        201,
+        290
+      ]
+    },
+    {
+      "candidate_id": "gfb83f65a2d",
+      "rank": 2,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P6",
+      "sentence": "After that, the average number of towers it could build fell.",
+      "front_kind": "",
+      "misread_target": "VERB",
+      "misread_quote": "towers it could build",
+      "misread_ja": "it could buildを主節の動詞と取り違え、文の主動詞fellを見落とすことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "長い主語の中にある関係節の動詞と、主節の動詞を区別する。",
+      "construct_ja": "関係節を含む長い主語",
+      "points_ja": [
+        "the average number of towers it could buildが主語",
+        "it could buildはtowersを修飾する関係節で、fellが主節の動詞"
+      ],
+      "context_ja": "AIの記憶から岩を投げてブロックを得る技法の説明を取り除いた後、建てられる塔の平均数が下がったと述べている。",
+      "prev": "The researchers also removed a description of a technique for “throwing rocks to get more blocks” from one AI’s memory.",
+      "next": "Its scores on other tasks did not change.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        120,
+        181
+      ]
+    },
+    {
+      "candidate_id": "g080d9d1a1f",
+      "rank": 3,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P7",
+      "sentence": "The fact that the experienced group did better and the fact that removing a particular memory lowered its score need to be looked at separately.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "and the fact that removing a particular memory",
+      "misread_ja": "二つ目のthe fact that以下も主語の一部なのに、最初のthe fact that以下だけを主語と捉えることがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "that節を含む二つの名詞句がandで結ばれ、ひとまとまりの複合主語を作ると見分ける。",
+      "construct_ja": "that節を含む複合主語",
+      "points_ja": [
+        "二つのthe fact that以下がandで結ばれて主語を作る",
+        "need to be looked at separatelyが主節の述語"
+      ],
+      "context_ja": "経験群の成績と、特定の記憶を取り除いた後の成績低下は、別々に検討する必要があると述べている。",
+      "prev": "Even so, it is too soon to wave a flag and say, “Play and get smarter—proof complete!”",
+      "next": "These results alone do not show that play itself had an effect.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        87,
+        231
+      ]
+    }
+  ],
+  "top_ids": [
+    "gcc2541c879",
+    "gfb83f65a2d"
+  ],
+  "n_eligible": 3,
+  "ng": [],
+  "filtered_by_ng": [],
+  "rejected_ids": [],
+  "candidates_sha256": "c97b6c8f8ad76cd44e5bba221646ab2c4237e485a55a984c5535508b9affaf69",
+  "status": "HAS_CANDIDATES",
+  "exhausted": false,
+  "reused_from_previous_run": false
+}

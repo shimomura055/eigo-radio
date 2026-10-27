@@ -1,0 +1,208 @@
+{
+ "annotated_md_sha256": "584d847370511962bf4defbf11c190dcaf8580ea08d79abedbb799bf53804a33",
+ "core_concept_order": [
+  "C1",
+  "C2",
+  "C3",
+  "C5",
+  "C6",
+  "C7"
+ ],
+ "entries": [
+  {
+   "approved_condition": "実験条件の精度が解釈に関わる数値は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F04",
+    "F10",
+    "F14"
+   ],
+   "concept": "C1",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    2,
+    4,
+    6
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F04",
+    "F10",
+    "F14"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "1時間はセッションと島のリセット間隔、および評価の実施時間を示す実験条件であり、概数化すると条件の精度を損ないます。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "1時間"
+    }
+   ]
+  },
+  {
+   "approved_condition": "行動例の具体的な数量を保ち、事実の精度を損なわない。",
+   "basis_fact_ids": [
+    "F07"
+   ],
+   "concept": "C2",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    3
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F07"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "8個は建造物の周囲に置かれたブロックの実数です。概数化すると行動例の具体的な内容が変わります。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "8個"
+    }
+   ]
+  },
+  {
+   "approved_condition": "標本数など、研究結果の解釈に関わる数値は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F07",
+    "F10",
+    "F11"
+   ],
+   "concept": "C3",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    3,
+    4,
+    5
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F07",
+    "F10",
+    "F11"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "13は実験の各群や主実験のエージェント数を示す正確な標本数であり、概数化は標本規模を変えて伝えます。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "13"
+    }
+   ]
+  },
+  {
+   "approved_condition": "研究の評価設計に関わる数値は厳密値を維持する。",
+   "basis_fact_ids": [
+    "F10"
+   ],
+   "concept": "C5",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    4
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F10"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "4種類は評価対象となった課題の正確な数であり、評価設計を理解するために維持します。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "4種類"
+    }
+   ]
+  },
+  {
+   "approved_condition": "課題条件や評価反復数の精度が意味を持つため、別個の数値を厳密値で保持する。",
+   "basis_fact_ids": [
+    "F11",
+    "F14"
+   ],
+   "concept": "C6",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    5,
+    6
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F11",
+    "F14"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "5は塔の高さを定める課題条件、5回は介入後の評価反復数を示します。別々の指標・条件なので、それぞれ厳密値を維持します。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "5"
+    },
+    {
+     "approx": null,
+     "surface": "5回"
+    }
+   ]
+  },
+  {
+   "approved_condition": "重要な基準値・結果値の精度を保ち、異なるFactや指標を統合しない。",
+   "basis_fact_ids": [
+    "F11",
+    "F14"
+   ],
+   "concept": "C7",
+   "downgrade_reasons": [],
+   "fact_ns": [
+    5,
+    6
+   ],
+   "final_decision": "EXACT_REQUIRED",
+   "kind": "magnitude",
+   "ledger_ids": [
+    "F11",
+    "F14"
+   ],
+   "llm_decision": "EXACT_REQUIRED",
+   "reason": "「2基より多く」は課題の達成基準であり、「2」は介入後の塔の平均数です。異なる指標を混同せず、どちらも厳密値を維持します。",
+   "surfaces": [
+    {
+     "approx": null,
+     "surface": "2基"
+    },
+    {
+     "approx": null,
+     "surface": "2"
+    }
+   ]
+  }
+ ],
+ "judge": {
+  "developer_message_sha256": "8d2618b7cc966affb3567e5ee1354551b92f394462a4786683f8f9a3052a9d3d",
+  "effort": "low",
+  "json_schema_sha256": "12316b4111ad46c094dc6b8ed0a61d54fb16e4167309de44bfa6a688e2b4c0f5",
+  "model_requested": "gpt-6-luna",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_00fd2480418c959c006ade80ea35ac87d0a7dbbfb3aaefc64c",
+  "sec": 8.4,
+  "usage": {
+   "input_tokens": 5355,
+   "output_tokens": 863,
+   "reasoning_tokens": 151
+  },
+  "user_prompt_sha256": "fc5822909532d4aadeae543ca9a43a228bf5bfa27a099f95c610830f93255e24"
+ },
+ "n_approximate_ok": 0,
+ "overlay_sha256": "82313038b19732bb1d9f74fdac61a6cffaf4fa492ce9760d65dab01138b9786a",
+ "requested_effort": "low",
+ "requested_model": "gpt-6-luna",
+ "role_key": "FAMILY_X_B3_CORE_NUMBER_ROUNDING",
+ "schema": "B3_CORE_NUMBER_ROUNDING_OVERLAY_V1",
+ "sidecar_sha256": "106299716f91a80d3980f65c4976f74aa0470188c22eadad06badd64a634851f",
+ "status": "OK",
+ "v8_max_relative_error": "0.10",
+ "violations": []
+}
