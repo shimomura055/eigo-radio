@@ -1,0 +1,11 @@
+# 委任_06(Phase B / B1): 採用take記録`final_adoption`(最小)+resume時LR選定根拠の保存(M-4)。記録追記のみ・既定動作不変・API 0
+
+共通事項=`…_委任_00_COMMON.md`。設計=`docs/research/LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01/INTEGRATION_01.md`(F-2/F-8)+`OPUS_REVIEW_01.md`((b)-2・(b)-7、M-4・M-5、Fable照合)+`W1_ROUTE_WIRING_AND_RECORDS_01.md`(final_adoption案・記録所在表)。成果物=同dir `B1_FINAL_ADOPTION_01.md`。本委任は**実装委任**(指定範囲のProductionコード・test編集可)。SSOT編集不可。
+
+## 範囲(これだけ。Gate判定・retry回数・待機・Fallback Style・LR範囲・ASR判定・Voice/速度・Prompt・TTS呼出は一切変えない)
+1. **`final_adoption`最小記録**(Opus (b)-2): `{depth, ordinal, slot(①②③/①'②'③'), style_mode(=Step.style_mode `er127:467`付近), sent_style_sha, attempt_audio_sha, source}`。`human_approval_superseded`・`lr_applied`・LR本文は**持たせない**。書込み点: (a)`er127.BlockRun.finish`(採用attempt確定時、追記のみ) (b)Z会話ctx policy `er122_fz_ctx_policy_01.py`(採用確定点に同形で追記) (c)KP_EN Store key B hit(`er019_family_x_kp_en_k2_store_01.py:87-99`付近)は`source="store_reuse"`+ENGLISH_LOCK相当のstyle記録 (d)entryコピー経路で消えないこと: Z `build_entry`(`er063:1243-1282`、キー列挙)へ透過コピー追加、X `_generate_or_reuse`(`er019_family_x_audio_production_runner_01.py:1178-1188`、丸コピー)は現状維持で確認、Y相当経路も確認。旧entry(記録なし)は**そのまま**(読取側で導出、再生成しない)。
+2. **M-4 resume時LR根拠保存**: `er020.run_local_rewrite_recovery`が7 Gate結果・理由・変更範囲の監査コピーを再TTS**前**に書く(または`save_lr_text`時点でBlockProgressへ候補・Gate結果・理由・範囲を保存)。既存の再TTS後の書込みは残す(重複可、上書きしない)。resume経路(`er127:666-673`)で復元できることをtestで示す。**LR policy・Gate条件・候補選定・再入禁止は不変**。
+3. test: `er127_tts_block_policy_01_test_01.py`(golden A/B/C byte同一を含む全件)、`er020_tts_retry_local_rewrite_01_test_01.py`、`er122`/`er063`/`er019`の関連test。新規: (a)finishで`final_adoption`がBlockProgress `verified`(depth,ordinal)と整合 (b)Z ctx採用時の記録 (c)Store key B hit時の`source=store_reuse` (d)Z `build_entry`透過 (e)resume後にLR根拠が読める (f)旧entry(記録なし)で例外が出ない。既知失敗(OPEN-543系)は差分なしを示す。
+4. 同時進行の委任_07(新module `er129_lr_display_reflection_01.py`+test)とはファイルが重ならない。er129は作らない。
+5. 成果物`B1_FINAL_ADOPTION_01.md`: 変更点file:line・schema・書込み点表・test件数・未観測(実runでの記録は次回run)。Git: 変更ファイルのみ`git add`、commit「LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 委任_06(B1): final_adoption最小記録+resume時LR根拠保存(記録追記のみ、API 0)」+`Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>`、`git push origin HEAD:main`(競合時`git pull --no-rebase origin main`)。test失敗・競合時はcommitせず報告。
+6. 最終応答: 成果物パス+要約10行(schema/書込み点/test件数/既定動作不変の根拠/未観測/commit)。
