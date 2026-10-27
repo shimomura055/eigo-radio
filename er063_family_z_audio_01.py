@@ -1278,6 +1278,8 @@ def build_entry(spec: ClipSpec, out_path: str, result: dict, *, human_approved: 
     entry["style_actual"] = build_style_actual_record(spec, result)
     if result.get("kp_dual_check") is not None:   # KP3V(additive): KP英語phraseのみ。両Provider PASSの証跡
         entry["kp_dual_check"] = result["kp_dual_check"]
+    if isinstance(result.get("final_adoption"), dict):   # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 委任_06(B1、additive): 採用take記録を透過コピー(無ければ付けない=旧entryと同形)
+        entry["final_adoption"] = result["final_adoption"]
     if isinstance(result.get("dialogue_tts"), dict):   # FZ-CONTEXT-EMOTION-TTS-PRODUCTION-WIRING-01(additive): dialogue文脈・感情付きTTSのpolicy・試行・最終方式の証跡
         entry["dialogue_tts"] = result["dialogue_tts"]
     if os.path.exists(out_path):

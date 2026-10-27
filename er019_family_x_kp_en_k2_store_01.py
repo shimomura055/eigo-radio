@@ -52,6 +52,27 @@ def key_phrase_styled_keys(used_form_tts_safe: str, style_text: str, style_id: s
             _mk("lock", lock_text, KEY_PHRASE_STYLED_PATH_FALLBACK))
 
 
+def _note_store_reuse_adoption(res: dict, *, style_text: str) -> None:
+    """LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 委任_06(B1、記録追記のみ): Master Audio Store再利用(TTS未実行)で採用されたKP英語に
+    `final_adoption{source:"store_reuse"}`を追記する。key B hit=ENGLISH_LOCK音声(style_mode=FALLBACK、sha=ENGLISH_LOCK指示のsha)、
+    key A hit=K2 Style音声(PRIMARY、sha=K2 style sha)。TTS生成で採用された結果(reused!=True)には触れない(er127.BlockRunの記録を保つ)。
+    再利用の可否・Gate・TTS呼出は不変。記録の失敗で採用を止めない。"""
+    try:
+        if not isinstance(res, dict) or res.get("status") != "OK" or res.get("reused") is not True:
+            return
+        is_lock = res.get("fallback_used") is True
+        sty = repro01.KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION if is_lock else style_text
+        res["final_adoption"] = {
+            "depth": 0, "ordinal": None, "slot": None, "style_mode": "FALLBACK" if is_lock else "PRIMARY",
+            "sent_style_sha": hashlib.sha256(sty.encode("utf-8")).hexdigest(),
+            "attempt_audio_sha": er127._file_sha(res.get("path")) if res.get("path") else None,
+            "source": "store_reuse"}
+        if is_lock:
+            res["final_adoption"]["style_name"] = "ENGLISH_LOCK"
+    except Exception:     # noqa: BLE001
+        pass
+
+
 @repro01.review_lock.guarded_generate("en")
 @er127.with_block("L6", fingerprint_params=())
 def _styled_two_stage(text: str, out_path: str, *, style_text: str, key_b, tts_backend: str, _blk=None) -> dict:
@@ -121,4 +142,6 @@ def ensure_key_phrase_english_component_styled(used_form_tts_safe: str, out_path
 
     ra = store.get_or_generate(key_a, out_path, _gen_a,
                                reuse_gate=(kp_vote.KpVoteReuseGate() if kp_vote.vote_enabled() else None))
-    return holder["fb"] if "fb" in holder else ra
+    res = holder["fb"] if "fb" in holder else ra
+    _note_store_reuse_adoption(res, style_text=style_text)
+    return res

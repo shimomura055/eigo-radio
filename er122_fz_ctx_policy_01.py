@@ -387,6 +387,25 @@ class DialogueAttemptPolicy:
             d.update(extra)
         return d
 
+    def _attach_final_adoption(self, result: dict) -> None:
+        """LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 委任_06(B1、記録追記のみ): 採用takeの最小記録`final_adoption`を結果dictへ追記する
+        (er127.BlockRunの記録と同形。Z会話の採用は最後に実行したattempt)。style_mode=PRIMARY(ctx Style採用)/FALLBACK(従来Dialogue Style・minimal)。
+        sent_style_sha=ctx Style採用時のみctx style sha(それ以外は送信Styleがctx styleでないためNone)。Gate判定・回数・待機・採否は不変。
+        記録の失敗で採用を止めない。"""
+        try:
+            import er127_tts_block_policy_01 as er127
+            last = self.st["attempts"][-1] if self.st["attempts"] else None
+            if not last:
+                return
+            eff = last.get("effective_mode") or last.get("mode")
+            result["final_adoption"] = {
+                "depth": 0, "ordinal": int(last["n"]), "slot": er127._slot_label(int(last["n"]), 0),
+                "style_mode": "PRIMARY" if eff == "ctx" else "FALLBACK",
+                "sent_style_sha": self.ctx_style_sha256 if eff == "ctx" else None,
+                "attempt_audio_sha": _sha256_file(self.out_path), "source": "tts_attempt"}
+        except Exception:     # noqa: BLE001
+            pass
+
     def finish(self, result: dict) -> dict:
         """採用はfinish()のみで確定する(Opus R-2)。status OK -> DONE_OK(結果dict+wav shaを保存)。非OK -> 実際に試行した結果ならTERMINAL_NG。
         Review Lockのblock結果(HUMAN_REVIEW_LOCKED、試行0)ではstateを変えない。"""
@@ -396,6 +415,7 @@ class DialogueAttemptPolicy:
         if status == "HUMAN_REVIEW_LOCKED":
             return result
         if status == "OK":
+            self._attach_final_adoption(result)
             self.st["status"] = "DONE_OK"
             self.st["done"] = {"result": _jsonable(result), "wav_sha256": _sha256_file(self.out_path),
                                "saved_at": now_iso(), "final_mode": (self.st["attempts"][-1].get("effective_mode") if self.st["attempts"] else None)}

@@ -822,6 +822,10 @@ def run_local_rewrite_recovery(*, segment_id: str, canonical_text: str, last_asr
         _append_recovery_history(result, out_dir)
         return result
 
+    # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 委任_06(M-4、記録追記のみ): 再TTS**前**にLR選定根拠(候補・7 Gate結果・理由・変更範囲)の
+    # 監査コピーを書く(resume時に根拠が失われない)。既存の再TTS後の書込み(_write_recovery_artifacts)は従来どおり残す(重複可・別file名)。
+    # 候補選定・Gate条件・再TTS呼出・再入禁止は不変。書込失敗でLRを止めない。
+    _write_pre_retts_audit(result, out_dir, retts_fn)
     retts_result = retts_fn(selection["selected"]["rewritten_segment"])
     result["retts_result"] = retts_result
     if retts_result.get("status") == "OK":
@@ -832,6 +836,51 @@ def run_local_rewrite_recovery(*, segment_id: str, canonical_text: str, last_asr
     _write_recovery_artifacts(result, out_dir)
     _append_recovery_history(result, out_dir)
     return result
+
+
+def build_lr_selection_audit(result: dict) -> dict:
+    """委任_06(M-4): `run_local_rewrite_recovery`のresultから、LR選定根拠の監査record(JSON化可能・API 0)を作る純関数。
+    {segment_id, canonical_text, ng_span, selected(id・書換え後文・changed_span・7 Gate結果・理由)、selection_rationale、
+     candidates(全候補のid・書換え後文・changed_span・7 Gate結果・adoptable・理由)}。"""
+    def _cand(c: dict) -> dict:
+        return {"id": c.get("id"), "rewritten_segment": c.get("rewritten_segment"),
+                "changed_span_before": c.get("changed_span_before"), "changed_span_after": c.get("changed_span_after"),
+                "rationale": c.get("rationale"), "seven_gates": c.get("seven_gates"),
+                "all_seven_gates_pass": c.get("all_seven_gates_pass"),
+                "sentence_count_unchanged": c.get("8_sentence_count_unchanged"), "adoptable": c.get("adoptable"),
+                "qa_reasons": {k: (v.get("reason") if isinstance(v, dict) else None)
+                               for k, v in (c.get("qa_llm") or {}).items() if isinstance(v, dict)}}
+    sel = result.get("selection") or {}
+    return {"schema": "lr_selection_audit_v1", "management_id": result.get("management_id"),
+            "segment_id": result.get("segment_id"), "canonical_text": result.get("canonical_text"),
+            "ng_span": result.get("ng_span"),
+            "selected": _cand(sel["selected"]) if sel.get("selected") else None,
+            "selection_rationale": sel.get("selection_rationale"),
+            "candidates": [_cand(c) for c in (result.get("candidates") or [])]}
+
+
+def _write_pre_retts_audit(result: dict, out_dir: str | None, retts_fn) -> None:
+    """委任_06(M-4): 再TTS前の監査コピー。(1) `<out_dir>/lr_selection_audit_<segment>.json`(out_dirがあるとき。既存の
+    `local_rewrite_recovery_<segment>.json`とは別file名=上書きしない) (2) retts_fnが`pre_retts_audit_hook`属性を持てば呼ぶ
+    (er127.lr_recoverがBlockProgressへ保存=resume時に復元)。どちらの失敗もLRを止めない。"""
+    try:
+        audit = json.loads(json.dumps(build_lr_selection_audit(result), ensure_ascii=False, default=str))
+    except Exception:   # noqa: BLE001
+        return
+    if out_dir:
+        try:
+            import os
+            os.makedirs(out_dir, exist_ok=True)
+            with open(f"{out_dir}/lr_selection_audit_{result['segment_id']}.json", "w", encoding="utf-8") as f:
+                json.dump(audit, f, ensure_ascii=False, indent=2)
+        except Exception:   # noqa: BLE001
+            pass
+    hook = getattr(retts_fn, "pre_retts_audit_hook", None)
+    if callable(hook):
+        try:
+            hook(audit)
+        except Exception:   # noqa: BLE001
+            pass
 
 
 def _note_confirmed_kp_overlap(segment_id: str, before: str, after: str) -> None:

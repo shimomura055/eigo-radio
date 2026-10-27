@@ -281,10 +281,24 @@ class BlockProgress:
             for d, b in (disk.get("blocks") or {}).items():
                 if d not in self._touched:
                     self.state["blocks"][d] = b
+        self._carry_record_keys(disk)
         tmp = f"{self.path}.tmp{os.getpid()}"
         with open(tmp, "w", encoding="utf-8") as f:
             json.dump(self.state, f, ensure_ascii=False, indent=2, default=str)
         os.replace(tmp, self.path)
+
+    def _carry_record_keys(self, disk: dict | None) -> None:
+        """委任_06(B1、記録追記のみ): 別instance(LR block=depth1)が同一サイクル内で書いた`final_adoption`・`lr.audit`を、
+        古いin-memoryで上書きして消さない。サイクルが違う(新規サイクル)・DONE済みfileからは持ち越さない。"""
+        if not disk or disk.get("key") != self.key or disk.get("status") != "IN_PROGRESS":
+            return
+        if disk.get("created_epoch") != self.state.get("created_epoch"):
+            return
+        if disk.get("final_adoption") and not self.state.get("final_adoption"):
+            self.state["final_adoption"] = disk["final_adoption"]
+        d_audit = (disk.get("lr") or {}).get("audit")
+        if d_audit and not (self.state.get("lr") or {}).get("audit"):
+            self.state.setdefault("lr", {})["audit"] = d_audit
 
     def _regenerate_approved(self, orig_text: str) -> bool:
         """明示再生成(Lockの REGENERATE_APPROVED 消費)は新規サイクル。`--only-*`の再実行はそれだけでは新規サイクルにしない(Opus M-2)。"""
@@ -359,9 +373,37 @@ class BlockProgress:
         return self.state["lr"]
 
     def save_lr_text(self, rewritten: str) -> None:
+        prev_audit = (self.state.get("lr") or {}).get("audit")
         self.state["lr"] = {"used": True, "text": rewritten, "text_sha": text_sha(rewritten)}
+        if prev_audit:     # 委任_06(M-4): 再TTS前に保存したLR選定根拠を、本文保存で消さない
+            self.state["lr"]["audit"] = prev_audit
         self.state["updated_epoch"] = RUNTIME.clock()
         self._write()
+
+    def save_lr_audit(self, audit: dict) -> None:
+        """委任_06(M-4、記録追記のみ): LR選定根拠(候補・7 Gate結果・理由・変更範囲)を再TTS**前**に保存する。resume時に復元できる。
+        policy・Gate・候補選定・再入禁止は変えない。"""
+        lr = self.state.get("lr") or {"used": False, "text": None, "text_sha": None}
+        lr["audit"] = audit
+        self.state["lr"] = lr
+        self.state["updated_epoch"] = RUNTIME.clock()
+        self._write()
+
+    def save_final_adoption(self, rec: dict) -> None:
+        """委任_06(B1、記録追記のみ): 採用take記録。Gate判定の入力ではない。"""
+        self.state["final_adoption"] = rec
+        self.state["updated_epoch"] = RUNTIME.clock()
+        self._write()
+
+    def final_adoption(self) -> dict | None:
+        """in-memoryまたは同一サイクルのfile(LR block=depth1が書いたもの)の`final_adoption`。無ければNone。"""
+        if self.state.get("final_adoption"):
+            return self.state["final_adoption"]
+        disk = self._read()
+        if (disk and disk.get("key") == self.key and disk.get("created_epoch") == self.state.get("created_epoch")
+                and disk.get("final_adoption")):
+            return disk["final_adoption"]
+        return None
 
     def mark_done(self, final_status: str | None = None) -> None:
         # 委任_04: 書込直前にfileを再読込しblocksをmerge(depth0のfinishがdepth1=LR blockの記録を上書きで消さない)
@@ -379,10 +421,54 @@ class BlockProgress:
                         mine["cooldown"] = b["cooldown"]
             if (disk.get("lr") or {}).get("used") and not self.state["lr"].get("used"):
                 self.state["lr"] = disk["lr"]
+            self._carry_record_keys(disk)
         self.state["status"] = "DONE"
         self.state["final_status"] = final_status
         self.state["updated_epoch"] = RUNTIME.clock()
         self._write()
+
+
+_SLOT_CIRCLED = "①②③④⑤⑥"
+
+
+def _slot_label(ordinal: int, depth: int) -> str:
+    """委任_06(B1): 通算slot表記。元ブロック=①②③、LR後ブロック(depth>=1)=①'②'③'。"""
+    base = _SLOT_CIRCLED[ordinal - 1] if 1 <= ordinal <= len(_SLOT_CIRCLED) else str(ordinal)
+    return base + ("'" if depth >= 1 else "")
+
+
+def _file_sha(path: str) -> str | None:
+    try:
+        h = hashlib.sha256()
+        with open(path, "rb") as f:
+            for chunk in iter(lambda: f.read(1 << 20), b""):
+                h.update(chunk)
+        return h.hexdigest()
+    except OSError:
+        return None
+
+
+def _sha_of_style_record(sp) -> str | None:
+    if isinstance(sp, dict):
+        v = sp.get("sha256")
+        return v if isinstance(v, str) else None
+    if isinstance(sp, str):
+        return hashlib.sha256(sp.encode("utf-8")).hexdigest()
+    return None
+
+
+def _sent_style_sha(result: dict) -> str | None:
+    """採用attemptが実際に送ったStyle prefixのsha256(結果dictのtop-level `style_prefix`、無ければ最後の合格attempt行)。不明はNone。"""
+    sha = _sha_of_style_record(result.get("style_prefix"))
+    if sha:
+        return sha
+    for key in ("fallback_attempts_log", "attempts_log", "standard_attempts_log"):
+        log = result.get(key)
+        if isinstance(log, list):
+            for a in reversed(log):
+                if isinstance(a, dict) and a.get("verified") and a.get("style_prefix") is not None:
+                    return _sha_of_style_record(a.get("style_prefix"))
+    return None
 
 
 @dataclass
@@ -412,6 +498,7 @@ class BlockRun:
         self.last_ng_epoch: float | None = None
         self.tts_started = 0
         self.depth = ctx.depth
+        self._step_modes: dict = {}              # 委任_06(B1): ordinal -> Step.style_mode(final_adoption用。判定には使わない)
         self._open_ordinal: int | None = None    # step済みでdone未呼出のordinal(次のstep/finishで不合格として自動closeする)
         self.lr_outcome: dict | None = None      # lr_recoverが残す {"recovery":..., "block_result":...}(非RESOLVED時もLR blockのTTS行を呼出元が会計へ戻すため)
 
@@ -465,6 +552,7 @@ class BlockRun:
         self.tts_started += 1
         self._open_ordinal = ordinal
         mode = "FALLBACK" if (ordinal == FALLBACK_ORDINAL and prof.third_style not in ("SAME", "NONE")) else "PRIMARY"
+        self._step_modes[ordinal] = mode
         return Step(ordinal, skip=False, style_mode=mode, cooldown=cd, slot=slot, is_last_slot=last)
 
     def done(self, ordinal: int, verified: bool) -> None:
@@ -481,10 +569,47 @@ class BlockRun:
 
     def finish(self, result: dict | None) -> None:
         """leaf正常終了時(OK/STOPPED/ASR_VALIDATION_UNCERTAIN等の戻り値あり)。例外終了(STOP等)では呼ばない=IN_PROGRESSのまま=後でresume可。"""
+        adopted_ordinal = None
         if self._open_ordinal is not None:
-            self.done(self._open_ordinal, (result or {}).get("status") == "OK")
+            _ok = (result or {}).get("status") == "OK"
+            if _ok:
+                adopted_ordinal = self._open_ordinal
+            self.done(self._open_ordinal, _ok)
+        self._record_final_adoption(result, adopted_ordinal)
         if self.depth == 0:
             self.progress.mark_done((result or {}).get("status"))
+
+    def _record_final_adoption(self, result: dict | None, ordinal: int | None) -> None:
+        """委任_06(B1、Opus (b)-2): 採用takeの最小記録`final_adoption`を、BlockProgressとleaf結果dictへ**追記**する(既存キーは不変)。
+        {depth, ordinal, slot(①②③/LR blockは①'②'③'), style_mode(=Step.style_mode), sent_style_sha, attempt_audio_sha, source}。
+        `lr_applied`・`human_approval_superseded`・LR本文は持たせない。観測の失敗で生成を止めない。
+        LR採用時はdepth0のfinish時点で自blockに採用attemptが無い(③をNGで閉じた後)ため、LR block(depth1)が書いた記録を引き継ぐ。"""
+        try:
+            if not isinstance(result, dict) or result.get("status") != "OK":
+                return
+            if result.get("reused") is True:
+                # Master Audio Store再利用(TTS未実行): 採用attemptは無い。ENGLISH_LOCK等のstyleは呼出元(k2 store)が上書きする
+                rec = {"depth": self.depth, "ordinal": None, "slot": None,
+                       "style_mode": "FALLBACK" if result.get("fallback_used") else "PRIMARY",
+                       "sent_style_sha": _sent_style_sha(result), "attempt_audio_sha": _file_sha(self.out_path),
+                       "source": "store_reuse"}
+                self.progress.save_final_adoption(rec)
+                result["final_adoption"] = rec
+                return
+            if ordinal is not None:
+                rec = {"depth": self.depth, "ordinal": ordinal, "slot": _slot_label(ordinal, self.depth),
+                       "style_mode": self._step_modes.get(ordinal, "PRIMARY"),
+                       "sent_style_sha": _sent_style_sha(result), "attempt_audio_sha": _file_sha(self.out_path),
+                       "source": "tts_attempt"}
+                self.progress.save_final_adoption(rec)
+                result["final_adoption"] = rec
+                return
+            if self.depth == 0 and "final_adoption" not in result:
+                inherited = self.progress.final_adoption()
+                if inherited:
+                    result["final_adoption"] = inherited
+        except Exception:     # noqa: BLE001  記録の失敗でTTS・Gate・resumeを止めない
+            pass
 
 
 def open_block(leaf: str, out_path: str, text: str, *, ctx: Optional[BlockCtx] = None, max_attempts: int = BLOCK_ATTEMPTS,
@@ -651,6 +776,13 @@ def lr_recover(blk: BlockRun, *, text: str, out_path: str, last_asr_text: str | 
     lr_ctx = BlockCtx(depth=1, slot_offset=LR_BLOCK_SLOT_OFFSET, total_slots=blk.total_slots, script_version="v1",
                       m1_anchor_text=text, lock_text=text)
 
+    def _lr_audit_hook(audit: dict) -> None:
+        # 委任_06(M-4): LR選定根拠(候補・7 Gate結果・理由・変更範囲)を再TTS**前**にBlockProgressへ保存(resumeで復元)。観測のみ
+        try:
+            blk.progress.save_lr_audit(audit)
+        except Exception:     # noqa: BLE001
+            pass
+
     def _retts(rewritten: str) -> dict:
         blk.progress.save_lr_text(rewritten)
         try:
@@ -661,6 +793,7 @@ def lr_recover(blk: BlockRun, *, text: str, out_path: str, last_asr_text: str | 
         holder["block_result"] = r
         return r
 
+    _retts.pre_retts_audit_hook = _lr_audit_hook
     recovery = None
     stored = blk.progress.lr_state() if blk.progress.resumed else {}
     if stored.get("used") and stored.get("text"):
@@ -670,6 +803,7 @@ def lr_recover(blk: BlockRun, *, text: str, out_path: str, last_asr_text: str | 
         recovery = {"management_id": retry_primitive.MANAGEMENT_ID, "segment_id": segment_id, "canonical_text": text,
                     "last_asr_text": last_asr_text, "selection": {"selected": {"rewritten_segment": rewritten}},
                     "retts_result": r, "resumed_without_llm": True,
+                    **({"lr_selection_audit_restored": stored["audit"]} if stored.get("audit") else {}),
                     "status": "RESOLVED_BY_LOCAL_REWRITE" if r.get("status") == "OK" else "HUMAN_REVIEW_LOCKED_RETTS_FAILED"}
     else:
         try:
