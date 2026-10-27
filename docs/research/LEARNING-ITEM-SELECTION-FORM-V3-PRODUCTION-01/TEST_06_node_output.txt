@@ -1,0 +1,68 @@
+PASS limits constants
+PASS data schema: monkeys_paw b1b
+PASS data: rescued flag shown for pulled free
+PASS data: gate-dropped interferes not present
+PASS data schema: dummy
+PASS index schema + 9 slots + default exists
+PASS index data files exist and valid
+PASS cumulative: (1) max 3
+PASS cumulative: (1)+(2) max 5
+PASS cumulative: total max 12
+PASS total 12 reached blocks (3) for a 13th (synthetic)
+PASS same candidate only one category (switching keeps exactly one)
+PASS deselect always possible, even at limit
+PASS change at limit: (1)->(2) at (1)=3 allowed; (2)->(1) at (1)=3 blocked
+PASS stale choices (term not in candidates) not counted
+PASS grammar independent of phrase/word limits; new spec: presented Top2 only, max 1 (2nd rejected)
+PASS 9-article switching keeps states separate
+PASS same slug different level are different keys
+PASS duplicate index key rejected
+PASS output text matches reference format
+PASS structured output has required keys and is JSON round-trippable
+PASS chatgpt url: contains selection, <=6000, falls back when too long
+PASS dummy output is marked as not a formal article
+PASS no reference placeholder grammar leaked into monkeys_paw data
+PASS equivalence with reference counts/allowed (fuzz 20000)
+PASS v2 data: every candidate has ja_gloss/status/reason_source; placeholder reasons never shown; official only from Production formal path
+PASS v2 data: DEV Trial / replay glosses are provisional (not formal)
+PASS v2 data (legacy 3+5 doc): call1 has no AI reason (explicit), replay placeholder suppressed, call2 reasons present
+PASS glossOf/reasonOf: old data without status is never treated as official; missing is explicit
+PASS send text: contains EN, JA gloss+status, category, grammar full body, comment; AI reason in a separate later section
+PASS send text: official gloss and reason; provisional/missing marked; reasons only in AI section
+PASS structured v2: complete user-confirmed fields; AI reason separated and flagged reference-only
+PASS structured v2: grammar absent (ungenerated) is explicit, not fabricated
+  (max send URL length over all articles, full selection [99999=url null => copy guidance]: 99999 )
+PASS no omission for every article x full selection (3/2/7 + 2 grammar + comment): text always has all; JSON complete
+PASS url: when too long never silently truncates (url null => copy guidance); text-only fallback keeps all fields
+PASS copy text includes JSON with all candidates and is parseable
+PASS v2.1: candidate_id unique + present in every real data file; kind valid; id==candidate_id
+PASS v2.1: structured payload carries candidate_id/kind on selected items, ai_reference, candidates_all; article has sha fields; text has candidate_id lines
+PASS v2.1: null sha stays null (replay / DEV Trial) and is stated, not fabricated
+PASS v2.1: duplicate candidate_id rejected by validateArticle; legacy data (no candidate_id) uses id or null
+  url len data/ai_island_temple__a2__prod.json null(copy) with_json false
+  url len data/ai_island_temple__b1b__prod.json null(copy) with_json false
+  url len data/monkeys_paw__b1b.json 4182 with_json false
+  url len data/redelivery_fee__a2__prod.json 4428 with_json false
+  url len data/redelivery_fee__b1b__prod.json 4248 with_json false
+  url len data/melos__a2__prod.json 4407 with_json false
+  url len data/melos__b1b__prod.json 4311 with_json false
+  url len data/uk_train_speaker_playback__a2__prod.json 4365 with_json false
+  url len data/uk_train_speaker_playback__b1b__prod.json 4427 with_json false
+  url len data/monkeys_paw__b1b__prod.json 4228 with_json false
+PASS v2.1: URL length with 3 selected (informational) never exceeds 6000 or is null (copy guidance)
+PASS newspec: AI island data valid; Top1/Top2 only with rank 1,2 in AI order; 3rd+ not in data; spec presented_ids match
+PASS newspec: presentation sorted by rank even if data order differs; legacy (no rank) keeps array order, Top2 cut
+PASS newspec: initial state is undecided (old form 0-grammar not carried over) and send/copy is blocked; exactly-one or explicit none unblocks
+PASS newspec: old saved state with 2 grammar selected is reset to undecided (not silently trimmed); old 0-selection state stays undecided
+PASS newspec: payload for selected / none / pending; selected has rank+explanation verbatim+sha; none has [] with user_selected_none
+PASS newspec: confirmed KP/KW are locked: payload selection == saved user-confirmed payload verbatim, regardless of saved choices; 10 items 3/2/5
+PASS newspec: article-level exact expectations (user table) for Standard and Advanced
+PASS newspec: validateArticle fail-closed on tampered kp_confirmed / 3 grammar items / wrong presented_ids
+PASS newspec: index.html uses radio (name=gram) + explicit zero option + rank badge + gating; no checkbox for grammar; no 2-select path
+ALL PASS 50
+PASS 7+5: 8 evidence data files exist, cap 12 and cap_by_kind {phrase:7, word:5}, shortfall_detail.cap is 12 (doc value)
+PASS 7+5: kind taken verbatim from candidate doc (candidate_doc), gloss official, reason_ja verbatim for every candidate (call1 included)
+PASS 7+5: legacy 3+5 versions are kept under data/legacy and are not in the index; index has the 8 evidence slots
+PASS 7+5: a full 12-candidate article (7 phrases + 5 words) validates and selection limits (3/5/12) are unchanged
+PASS no-reason candidates: excluded from ai_reference / candidates_all reason fields; no "AI理由なし" text anywhere
+PASS index.html: reason details rendered only when reason exists; no "(なし)"/placeholder markup

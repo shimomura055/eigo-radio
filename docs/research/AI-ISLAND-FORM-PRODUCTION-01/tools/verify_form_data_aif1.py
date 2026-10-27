@@ -31,7 +31,7 @@ for l in ("a2", "b1b"):
     ex = json.load(open(GP % l + "grammar_explanations.json", encoding="utf-8"))
     exb = {i["candidate_id"]: i for i in ex["items"]}
     cb = {c["candidate_id"]: c for c in cand["candidates"]}
-    chk(f"{l} grammar ids == candidate doc ids == explanations ids ({len(f['grammar'])})", [g["id"] for g in f["grammar"]] == [c["candidate_id"] for c in cand["candidates"]] == [i["candidate_id"] for i in ex["items"]])
+    chk(f"{l} grammar ids == candidate doc top_ids (Top1/Top2 only; new spec 2026-10-27) and all in explanations ({len(f['grammar'])})", [g["id"] for g in f["grammar"]] == cand["top_ids"] == [c["candidate_id"] for c in cand["candidates"]][:2] and set(cand["top_ids"]) <= {i["candidate_id"] for i in ex["items"]})
     chk(f"{l} grammar title==construct_ja, body==explanation_md (verbatim), example==sentence, sha==sha256(explanation_md)",
         all(g["title"] == cb[g["id"]]["construct_ja"] and g["body"] == g["explanation_full"] == exb[g["id"]]["explanation_md"] and g["example"] == cb[g["id"]]["sentence"]
             and g["explanation_sha256"] == hashlib.sha256(exb[g["id"]]["explanation_md"].encode("utf-8")).hexdigest() == exb[g["id"]]["explanation_sha256"] for g in f["grammar"]))

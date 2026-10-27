@@ -13,7 +13,7 @@ const dummy = rd('data/ui_check_dummy__dummy.json');
 const idx = rd('data/articles.json');
 const TL = FL.terms(dummy);
 
-t('limits constants', () => { assert.deepStrictEqual(FL.LIMITS, [3, 5, 12]); assert.strictEqual(FL.GRAMMAR_MAX, 2); });
+t('limits constants', () => { assert.deepStrictEqual(FL.LIMITS, [3, 5, 12]); assert.strictEqual(FL.GRAMMAR_MAX, 1); assert.strictEqual(FL.GRAMMAR_TOP_N, 2); });   // 新仕様(2026-10-27): 提示Top2・選択最大1
 t('data schema: monkeys_paw b1b', () => { assert.deepStrictEqual(FL.validateArticle(mp), []); assert.strictEqual(mp.phrases.length, 7); assert.strictEqual(mp.words.length, 4); assert.deepStrictEqual(mp.grammar, []); });
 t('data: rescued flag shown for pulled free', () => { const f = mp.phrases.filter(p => p.flag === 'rescued').map(p => p.term); assert.ok(f.includes('pulled free')); });
 t('data: gate-dropped interferes not present', () => { assert.ok(!FL.terms(mp).some(x => x === 'interferes')); });
@@ -68,14 +68,14 @@ t('stale choices (term not in candidates) not counted', () => {
   assert.deepStrictEqual(FL.counts(st.choices, TL), [0, 0, 0]); assert.ok(FL.allowed(st.choices, TL, TL[0], 1));
 });
 
-t('grammar independent of phrase/word limits and max 2', () => {
-  const st = FL.newState(); const gids = dummy.grammar.map(g => g.id);
+t('grammar independent of phrase/word limits; new spec: presented Top2 only, max 1 (2nd rejected)', () => {
+  const st = FL.newState(); const gids = FL.grammarIds(dummy);
+  assert.deepStrictEqual(gids, ['g1', 'g2']);   // 3件データでも提示は先頭2件のみ
   [0, 1, 2].forEach(i => FL.setChoice(st, TL, TL[i], 1, true));
-  assert.ok(FL.setGrammar(st, gids, 'g1', true)); assert.ok(FL.setGrammar(st, gids, 'g2', true));
-  assert.strictEqual(FL.setGrammar(st, gids, 'g3', true), false);
-  assert.strictEqual(FL.grammarChosen(st.grammar, gids).length, 2);
+  assert.ok(FL.setGrammar(st, gids, 'g1', true)); assert.strictEqual(FL.setGrammar(st, gids, 'g2', true), false);
+  assert.strictEqual(FL.grammarChosen(st.grammar, gids).length, 1);
   assert.deepStrictEqual(FL.counts(st.choices, TL), [3, 0, 0]);   // 文法はフレーズ・単語の累積に影響しない
-  assert.ok(FL.setGrammar(st, gids, 'g1', false)); assert.ok(FL.setGrammar(st, gids, 'g3', true));
+  assert.ok(FL.setGrammar(st, gids, 'g1', false)); assert.ok(FL.setGrammar(st, gids, 'g2', true));
 });
 
 t('9-article switching keeps states separate', () => {
@@ -96,7 +96,7 @@ t('output text matches reference format', () => {
   const st = FL.newState(); const tl = FL.terms(mp);
   FL.setChoice(st, tl, 'accept no responsibility', 1, true); FL.setChoice(st, tl, 'compensation', 2, true); FL.setChoice(st, tl, 'snatch', 3, true); st.comment = 'テスト';
   const txt = FL.buildText(mp, st);
-  assert.ok(txt.startsWith('記事: 猿の手 Advanced\n① Key Phrase (1/3): accept no responsibility\n② 追加解説 (①＋②=2/5): compensation\n③ 本文意味表示 (累計=3/12): snatch\n文法 (0/2): なし\n自由コメント: テスト'));
+  assert.ok(txt.startsWith('記事: 猿の手 Advanced\n① Key Phrase (1/3): accept no responsibility\n② 追加解説 (①＋②=2/5): compensation\n③ 本文意味表示 (累計=3/12): snatch\n文法 (0/1｜AI評価Top 1・Top 2から1件、または適切な候補なしで0件): なし\n自由コメント: テスト'));
 });
 t('structured output has required keys and is JSON round-trippable', () => {
   const st = FL.newState(); const tl = FL.terms(mp); FL.setChoice(st, tl, 'burial', 1, true); st.comment = 'c';
@@ -106,7 +106,7 @@ t('structured output has required keys and is JSON round-trippable', () => {
     candidates_sha256: null, candidates_sha256_source: 'unavailable_dev_trial_doc', source_kp_candidates_path: mp.source_kp_candidates_path });   // 委任_03で追加(additive)
   assert.deepStrictEqual(r.selection.key_phrase.map(x => x.term), ['burial']); assert.strictEqual(r.counts.key_phrase, 1); assert.strictEqual(r.comment, 'c');
   assert.strictEqual(r.generated_at, '2026-10-26T00:00:00Z'); assert.strictEqual(r.production_connected, false);
-  assert.deepStrictEqual(r.limits, { key_phrase: 3, key_phrase_plus_extra: 5, total_highlight: 12, grammar: 2 });
+  assert.deepStrictEqual(r.limits, { key_phrase: 3, key_phrase_plus_extra: 5, total_highlight: 12, grammar: 1, grammar_presented_max: 2 });
 });
 t('chatgpt url: contains selection, <=6000, falls back when too long', () => {
   const st = FL.newState(); const tl = FL.terms(mp); FL.setChoice(st, tl, 'burial', 1, true);
@@ -208,12 +208,12 @@ t('send text: official gloss and reason; provisional/missing marked; reasons onl
 });
 t('structured v2: complete user-confirmed fields; AI reason separated and flagged reference-only', () => {
   const d = rd('data/ui_check_dummy__dummy.json'); const st = FL.newState(); const tl = FL.terms(d); const gids = d.grammar.map(g => g.id);
-  pick(d, st, [[tl[0], 1], [tl[1], 1], [tl[2], 2], [tl[3], 3]]); FL.setGrammar(st, gids, 'g1', true); FL.setGrammar(st, gids, 'g3', true); st.comment = 'C';
+  pick(d, st, [[tl[0], 1], [tl[1], 1], [tl[2], 2], [tl[3], 3]]); FL.setGrammar(st, gids, 'g1', true); assert.strictEqual(FL.setGrammar(st, gids, 'g3', true), false); st.comment = 'C';
   const o = JSON.parse(JSON.stringify(FL.buildStructured(d, st, 'T')));
   assert.strictEqual(o.schema, 'eigo_radio_selection_result_v2'); assert.strictEqual(o.schema_version, 2);
   assert.deepStrictEqual(o.selection.key_phrase.map(x => x.term), [tl[0], tl[1]]); assert.deepStrictEqual(o.selection.extra_explanation.map(x => x.term), [tl[2]]); assert.deepStrictEqual(o.selection.meaning_display.map(x => x.term), [tl[3]]);
   o.selection.key_phrase.concat(o.selection.extra_explanation, o.selection.meaning_display).forEach(x => { ['term', 'category', 'category_label', 'ja_gloss', 'ja_gloss_status'].forEach(k => assert.ok(k in x, k)); assert.ok(!('reason_ja' in x), 'AI reason must not be mixed into confirmed item'); });
-  assert.deepStrictEqual(o.selection.grammar.map(g => g.id), ['g1', 'g3']); o.selection.grammar.forEach(g => { const src = d.grammar.find(z => z.id === g.id); assert.strictEqual(g.explanation_full, src.body); assert.strictEqual(g.explanation_status, 'provided'); assert.strictEqual(g.title, src.title); });
+  assert.deepStrictEqual(o.selection.grammar.map(g => g.id), ['g1']); o.selection.grammar.forEach(g => { const src = d.grammar.find(z => z.id === g.id); assert.strictEqual(g.explanation_full, src.body); assert.strictEqual(g.explanation_status, 'provided'); assert.strictEqual(g.title, src.title); });
   assert.strictEqual(o.comment, 'C'); assert.strictEqual(o.ai_reference.for_reference_only, true); assert.strictEqual(o.ai_reference.items.length, 0);   // ダミーは理由なし→ai_referenceに含めない(委任_05)
   assert.ok(o.user_confirmed_note_ja.includes('変更しない')); assert.ok(!('candidates_all' in o));
   const full = FL.buildStructured(d, st, 'T', { all_candidates: true }); assert.strictEqual(full.candidates_all.length, 12);
@@ -226,15 +226,15 @@ t('structured v2: grammar absent (ungenerated) is explicit, not fabricated', () 
 t('no omission for every article x full selection (3/2/7 + 2 grammar + comment): text always has all; JSON complete', () => {
   let maxLen = 0;
   dataFiles.forEach(f => {
-    const d = rd(f); const tl = FL.terms(d); const st = FL.newState(); const gids = (d.grammar || []).map(g => g.id);
-    tl.forEach((x, i) => FL.setChoice(st, tl, x, i < 3 ? 1 : i < 5 ? 2 : 3, true)); gids.slice(0, 2).forEach(g => FL.setGrammar(st, gids, g, true)); st.comment = '全項目コメント';
+    const d = rd(f); const tl = FL.terms(d); const st = FL.newState(); const gids = FL.grammarIds(d);
+    tl.forEach((x, i) => FL.setChoice(st, tl, x, i < 3 ? 1 : i < 5 ? 2 : 3, true)); gids.slice(0, 1).forEach(g => FL.setGrammar(st, gids, g, true)); st.comment = '全項目コメント';
     const txt = FL.buildText(d, st), o = FL.buildStructured(d, st, 'T', { all_candidates: true });
     const items = d.phrases.concat(d.words);
     tl.forEach((x, i) => {
       const it = items[i], g = FL.glossOf(it), ro = FL.reasonOf(it);
       if (st.choices[x]) { assert.ok(txt.includes('｜' + x + '｜日本語訳: ' + (g.text || '(未生成)') + '【' + g.label + '】'), f + x); if (ro.has) assert.ok(txt.includes(x + '(' + it.candidate_id + '): ' + ro.text), f + 'reason ' + x); }
     });
-    d.grammar.slice(0, 2).forEach(g => assert.ok(txt.includes(g.body) && txt.includes(g.title)));
+    d.grammar.slice(0, 1).forEach(g => assert.ok(txt.includes(g.body) && txt.includes(g.title)));
     assert.ok(txt.includes('自由コメント: 全項目コメント'));
     const sel = o.selection.key_phrase.concat(o.selection.extra_explanation, o.selection.meaning_display);
     assert.strictEqual(sel.length, FL.counts(st.choices, tl).reduce((a, b) => a + b, 0)); assert.strictEqual(o.candidates_all.length, tl.length); assert.strictEqual(o.comment, '全項目コメント');
@@ -267,7 +267,7 @@ t('v2.1: candidate_id unique + present in every real data file; kind valid; id==
   });
 });
 t('v2.1: structured payload carries candidate_id/kind on selected items, ai_reference, candidates_all; article has sha fields; text has candidate_id lines', () => {
-  dataFiles03.forEach(f => {
+  dataFiles03.forEach(f => { if (rd(f).kp_confirmed) return;   // ユーザー確定済み記事は選定不可(ロック)=専用testで検証
     const d = rd(f), all = d.phrases.concat(d.words), tl = FL.terms(d), st = FL.newState();
     all.slice(0, 3).forEach(x => FL.setChoice(st, tl, x.term, 1, true)); FL.setChoice(st, tl, all[3].term, 2, true); FL.setChoice(st, tl, all[4] ? all[4].term : all[5].term, 3, true);
     const j = FL.buildStructured(d, st, 'T', { all_candidates: true });
@@ -306,6 +306,98 @@ t('v2.1: URL length with 3 selected (informational) never exceeds 6000 or is nul
     console.log('  url len', f, r.url ? r.url.length : 'null(copy)', 'with_json', r.with_json);
   });
 });
+
+// ================= AI-ISLAND-FORM-PRODUCTION-01 委任_02: 文法新仕様(Top1/Top2・最大1件・0件可・2件禁止)+確定済みKP/KWロック =================
+const NSLUG = ['a2', 'b1b'];
+const aiD = l => rd('data/ai_island_temple__' + l + '__prod.json');
+const PAY = l => JSON.parse(fs.readFileSync(path.join(ROOT, 'docs', 'research', 'AI-ISLAND-FORM-PRODUCTION-01', 'payloads', 'ai_island_temple__' + l + '__user_confirmed_01.json'), 'utf8'));
+t('newspec: AI island data valid; Top1/Top2 only with rank 1,2 in AI order; 3rd+ not in data; spec presented_ids match', () => {
+  NSLUG.forEach(l => {
+    const d = aiD(l); assert.deepStrictEqual(FL.validateArticle(d), []);
+    assert.strictEqual(d.grammar.length, 2); assert.deepStrictEqual(d.grammar.map(g => g.rank), [1, 2]);
+    assert.deepStrictEqual(FL.grammarPresented(d).map(g => g.display_rank), [1, 2]);
+    assert.deepStrictEqual(d.grammar_spec.presented_ids, d.grammar.map(g => g.candidate_id)); assert.strictEqual(d.grammar_spec.max_select, 1); assert.strictEqual(d.grammar_spec.allow_zero, true);
+    d.grammar.forEach(g => { assert.strictEqual(g.explanation_status, 'provided'); assert.ok(g.explanation_full.length > 100); assert.strictEqual(g.body, g.explanation_full); });
+    assert.strictEqual(d.grammar_spec.hidden_ids.length + 2, l === 'a2' ? 4 : 3);   // 旧4候補/3候補の3位以降は非表示
+  });
+});
+t('newspec: presentation sorted by rank even if data order differs; legacy (no rank) keeps array order, Top2 cut', () => {
+  const d = JSON.parse(JSON.stringify(aiD('a2'))); d.grammar.reverse(); assert.deepStrictEqual(FL.grammarPresented(d).map(g => g.rank), [1, 2]);
+  const d3 = { grammar: [{ id: 'a' }, { id: 'b' }, { id: 'c' }] }; assert.deepStrictEqual(FL.grammarIds(d3), ['a', 'b']);
+  const d4 = { grammar: [{ id: 'z', rank: 3 }, { id: 'y', rank: 1 }, { id: 'x', rank: 2 }] }; assert.deepStrictEqual(FL.grammarIds(d4), ['y', 'x']);
+});
+t('newspec: initial state is undecided (old form 0-grammar not carried over) and send/copy is blocked; exactly-one or explicit none unblocks', () => {
+  NSLUG.forEach(l => {
+    const d = aiD(l), st = FL.newState(), gids = FL.grammarIds(d);
+    assert.strictEqual(FL.grammarDecision(d, st), 'undecided'); assert.strictEqual(FL.grammarBlocked(d, st), true);
+    assert.strictEqual(FL.buildStructured(d, st, 'T').grammar_status, 'pending_reselection');
+    assert.ok(FL.chooseGrammar(st, gids, gids[0])); assert.strictEqual(FL.grammarDecision(d, st), 'selected'); assert.strictEqual(FL.grammarBlocked(d, st), false);
+    assert.ok(FL.chooseGrammar(st, gids, gids[1])); assert.deepStrictEqual(FL.grammarChosen(st.grammar, gids), [gids[1]]);   // ラジオ=置換。常に1件
+    assert.strictEqual(FL.setGrammar(st, gids, gids[0], true), false);                                                         // チェック方式での2件目は拒否
+    assert.ok(FL.chooseGrammarNone(st, gids)); assert.strictEqual(FL.grammarDecision(d, st), 'none'); assert.strictEqual(FL.grammarBlocked(d, st), false);
+    assert.strictEqual(FL.chooseGrammar(st, gids, 'not_presented'), false);
+  });
+  const legacy = rd('data/monkeys_paw__b1b.json'); assert.strictEqual(FL.grammarBlocked(legacy, FL.newState()), false);   // 旧形式(grammar_spec無し・候補0)はブロックしない
+});
+t('newspec: old saved state with 2 grammar selected is reset to undecided (not silently trimmed); old 0-selection state stays undecided', () => {
+  const d = aiD('a2'), gids = FL.grammarIds(d);
+  const st = { choices: { 'carry over': 1 }, grammar: {}, comment: 'x' }; gids.forEach(g => st.grammar[g] = true);
+  assert.strictEqual(FL.normalizeGrammar(st, gids), true); assert.strictEqual(FL.grammarDecision(d, st), 'undecided');
+  const old0 = { choices: {}, grammar: {}, comment: '' }; assert.strictEqual(FL.normalizeGrammar(old0, gids), false); assert.strictEqual(FL.grammarDecision(d, old0), 'undecided');
+});
+t('newspec: payload for selected / none / pending; selected has rank+explanation verbatim+sha; none has [] with user_selected_none', () => {
+  NSLUG.forEach(l => {
+    const d = aiD(l), gids = FL.grammarIds(d), st = FL.newState();
+    FL.chooseGrammar(st, gids, gids[1]); let o = JSON.parse(JSON.stringify(FL.buildStructured(d, st, 'T')));
+    assert.strictEqual(o.grammar_status, 'user_selected_one'); assert.strictEqual(o.selection.grammar.length, 1);
+    const g = o.selection.grammar[0], src = d.grammar[1];
+    assert.strictEqual(g.rank, 2); assert.strictEqual(g.rank_label, 'Top 2'); assert.strictEqual(g.explanation_full, src.explanation_full); assert.strictEqual(g.explanation_sha256, src.explanation_sha256); assert.strictEqual(g.candidate_id, src.candidate_id);
+    assert.strictEqual(o.counts.grammar, 1); assert.strictEqual(o.limits.grammar, 1); assert.strictEqual(o.grammar_decision.state, 'selected'); assert.strictEqual(o.grammar_decision.selected_candidate_id, src.candidate_id);
+    assert.deepStrictEqual(o.grammar_decision.presented.map(x => x.rank), [1, 2]);
+    FL.chooseGrammarNone(st, gids); o = JSON.parse(JSON.stringify(FL.buildStructured(d, st, 'T')));
+    assert.strictEqual(o.grammar_status, 'user_selected_none'); assert.deepStrictEqual(o.selection.grammar, []); assert.strictEqual(o.grammar_decision.state, 'none'); assert.strictEqual(o.grammar_decision.selected_candidate_id, null);
+    const txt = FL.buildText(d, FL.newState()); assert.ok(txt.includes('未決定'));
+  });
+});
+t('newspec: confirmed KP/KW are locked: payload selection == saved user-confirmed payload verbatim, regardless of saved choices; 10 items 3/2/5', () => {
+  NSLUG.forEach(l => {
+    const d = aiD(l), pay = PAY(l), gids = FL.grammarIds(d);
+    const st = FL.newState(); st.choices = { 'carry over': 3, 'obstacle': 1, 'separately': 2 };   // 旧フォームの残骸があっても無視される
+    FL.chooseGrammar(st, gids, gids[0]);
+    const o = JSON.parse(JSON.stringify(FL.buildStructured(d, st, 'T')));
+    ['key_phrase', 'extra_explanation', 'meaning_display'].forEach(k => assert.deepStrictEqual(o.selection[k], pay.selection[k], k));
+    assert.deepStrictEqual(o.counts, { key_phrase: 3, key_phrase_plus_extra: 5, total_highlight: 10, grammar: 1 });
+    assert.strictEqual(o.article.text_sha256, pay.article.text_sha256); assert.strictEqual(o.article.candidates_sha256, pay.article.candidates_sha256);
+    assert.strictEqual(o.kp_confirmed.locked, true); assert.strictEqual(o.kp_confirmed.status, 'USER_CONFIRMED'); assert.strictEqual(o.production_connected, false);
+    o.selection.key_phrase.concat(o.selection.extra_explanation, o.selection.meaning_display).forEach(x => assert.strictEqual(x.ja_gloss_status, 'official'));
+    const txt = FL.buildText(d, st); pay.selection.key_phrase.concat(pay.selection.extra_explanation, pay.selection.meaning_display).forEach(x => assert.ok(txt.includes(x.term + '｜日本語訳: ' + x.ja_gloss + '【正式訳】｜candidate_id: ' + x.candidate_id), x.term));
+    assert.ok(txt.includes('ユーザー確定済み'));
+    const full = FL.buildStructured(d, st, 'T', { all_candidates: true }); assert.strictEqual(full.candidates_all.filter(x => x.category > 0).length, 10);
+  });
+});
+t('newspec: article-level exact expectations (user table) for Standard and Advanced', () => {
+  const exp = { a2: [[1, 'carry over', '持ち越す'], [1, 'take a detour', '寄り道をする'], [1, 'card to play', '使える手'], [2, 'worth paying attention to', '注目する価値がある'], [2, 'obstacle', '障害物'], [3, 'make a difference', '影響を与える'], [3, 'separately', '個別に'], [3, 'feature', '性質'], [3, 'Strategy', '作戦'], [3, 'setup', '設定']],
+    b1b: [[1, 'carry over', '次に持ち越す'], [1, 'call on', '頼む'], [1, 'take a detour', '遠回りをする'], [2, 'card to play', '打てる手'], [2, 'obstacle', '障害物'], [3, 'look at separately', '別々に検討する'], [3, 'exploration', 'いろいろ探ること'], [3, 'technique', 'やり方'], [3, 'overlook', '見過ごす'], [3, 'erase', '消し去る']] };
+  NSLUG.forEach(l => { const got = aiD(l).kp_confirmed.selection.map(r => [r.category, r.term, r.ja_gloss]); assert.deepStrictEqual(got, exp[l]); });
+});
+t('newspec: validateArticle fail-closed on tampered kp_confirmed / 3 grammar items / wrong presented_ids', () => {
+  const base = aiD('a2'), cp = () => JSON.parse(JSON.stringify(base));
+  let d = cp(); d.kp_confirmed.selection[0].ja_gloss = '別の訳'; assert.ok(FL.validateArticle(d).some(e => e.startsWith('kp_confirmed: ja_gloss')));
+  d = cp(); d.kp_confirmed.selection[0].candidate_id = 'p_zzz'; assert.ok(FL.validateArticle(d).some(e => e.includes('候補に無いcandidate_id')));
+  d = cp(); d.kp_confirmed.selection[0].category = 2; assert.ok(FL.validateArticle(d).some(e => e.includes('件数')));
+  d = cp(); d.kp_confirmed.candidates_sha256 = '0'.repeat(64); assert.ok(FL.validateArticle(d).some(e => e.includes('candidates_sha256')));
+  d = cp(); d.kp_confirmed.text_sha256 = '0'.repeat(64); assert.ok(FL.validateArticle(d).some(e => e.includes('text_sha256')));
+  d = cp(); d.grammar.push(Object.assign({}, d.grammar[0], { id: 'gx', rank: 3 })); assert.ok(FL.validateArticle(d).some(e => e.includes('2件を超えて')));
+  d = cp(); d.grammar_spec.presented_ids = ['x', 'y']; assert.ok(FL.validateArticle(d).some(e => e.includes('presented_ids')));
+});
+t('newspec: index.html uses radio (name=gram) + explicit zero option + rank badge + gating; no checkbox for grammar; no 2-select path', () => {
+  const h = fs.readFileSync(path.join(FD, 'index.html'), 'utf8');
+  assert.ok(h.includes('type="radio" name="gram" data-grammar=') && h.includes('data-grammar-none') && h.includes('適切な候補なし（0件）') && h.includes("'Top '+g.display_rank"));
+  assert.ok(!/type="checkbox"[^>]*data-grammar/.test(h)); assert.ok(h.includes('FL.grammarBlocked(D,get())')); assert.ok(h.includes('FL.chooseGrammar(') && h.includes('FL.chooseGrammarNone('));
+  assert.ok(h.includes('conf=!!d.kp_confirmed') && h.includes('確定済み'));
+  assert.ok(!h.includes('gch>=2'));   // 旧上限(2件)の残骸なし
+});
+
 console.log('ALL PASS', n);
 
 // ---- 委任_04: P7/W5' 7+5 配線追従(cap 12・kind別cap 7/5・reason_ja逐語) ----
