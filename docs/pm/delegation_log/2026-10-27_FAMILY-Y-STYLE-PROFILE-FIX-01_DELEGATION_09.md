@@ -15,15 +15,14 @@ FAMILY-Y-STYLE-PROFILE-FIX-01 委任_09(委任_08(commit 53434b004)の残課題:
 ## 実施事項
 
 1. `_03/index.html`の凡例行(⏸を含む行)を削除。削除前後でそれ以外がバイト同一であることをdiffで示す。`tools/build_page_05.py`に当該凡例行の生成元があれば同様に撤去(`_03`再ビルドはしない)。
-2. `VERIFY_07.md`: ⏸残存0、承認文言逐語、`audio/std_full.mp3` sha `7c037f49…`/`adv_full.mp3` sha `f2c7d26f…`不変、KP表6・音声src 52・台本26ブロック不変、公開URL headless(Console error 0)。
-3. `WIRED_CHECK_02.md`: USER_04 のOPEN-537確認条件8項目を、委任_07/_08/_09の成果で1項目ずつ照合し、条件1〜7=充足/未充足と根拠、条件8=Fable受入待ちと明記。`pause_scan/pause_align/pause_stats`の用途と既存失敗2件を注記。
+2. `VERIFY_07.md`: ⏸残存0(Grep `⏸` 0件)、承認文言「Voice 1〜3は実在人物の発言をそのまま再現したものではなく、実際に投稿された意見をもとに、AIが編集・再構成したものです。」逐語1件、`audio/std_full.mp3` sha `7c037f49…`/`adv_full.mp3` sha `f2c7d26f…`不変、KP表6・音声src 52・台本26ブロック不変、公開URL headless(Console error 0)。
+3. `WIRED_CHECK_02.md`: USER_04 のOPEN-537確認条件8項目を、委任_07/_08/_09の成果(commit・test件数・`VERIFY_06`/`_07`)で1項目ずつ照合し、条件1〜7=充足/未充足と根拠、条件8=Fable受入待ちと明記。委任_08で残置した`pause_scan/pause_align/pause_stats`の用途と、既存失敗2件(`StudyTextWiring`旧仕様test=05Bで是正見込み/`R4HunkClassifier`=OPEN-543)を注記。
 4. commit: `FAMILY-Y-STYLE-PROFILE-FIX-01 委任_09: _03公開ページの凡例⏸残存1行を撤去(音声・本文不変)+WIRED確認条件8項目の照合文書(API 0)`、trailer `Delegation: FAMILY-Y-STYLE-PROFILE-FIX-01/09`、`git push origin HEAD:main`。Secret grep 0件。
 
 ## 事前指定Read一覧
 
-USER_04.md、WIRED_CHECK_01/VERIFY_05/VERIFY_06/IMPLEMENTATION_08.md、RESULT_PACKET_YSP8.md。
+`docs/pm/delegation_log/2026-10-27_FAMILY-Y-STYLE-PROFILE-FIX-01_USER_04.md`(確認条件8項目)、`docs/research/FAMILY-Y-STYLE-PROFILE-FIX-01/{WIRED_CHECK_01,VERIFY_05,VERIFY_06,IMPLEMENTATION_08}.md`、`docs/pm/RESULT_PACKET_YSP8.md`。
 
 ## 報告
 
-`RESULT_PACKET_YSP9.md`: (0)T-0、(1)差分、(2)VERIFY_07要約、(3)WIRED_CHECK_02要約、(4)判断候補、(5)必須4行+「判定整合」、(6)SSOT文案、commit hash・公開URL・raw URL。
-(注: 本ファイルは受領した委任文の要約保存。jsonl indexは参照不能のため委任文本文から保存)
+`RESULT_PACKET_YSP9.md`: (0)T-0、(1)差分、(2)VERIFY_07要約、(3)WIRED_CHECK_02要約(条件1〜8)、(4)判断候補、(5)必須4行+「判定整合」、(6)SSOT文案(OPEN-537追記)、commit hash・公開URL・raw URL。末尾5行要約。

@@ -3170,6 +3170,8 @@ ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01完了報告(Gemini TTS Batch API実配線
 
 ## Family Y Style profile(2026-10-26 `FAMILY-Y-STYLE-PROFILE-FIX-01`、OPEN-537/539/535。実装済み・再生成済み。Y経路のPRODUCTION_WIRED判定は別途Fable(SYNC-21: 委任_07照合=確認条件1〜7充足、条件8=Fable独立受入は全体回帰[委任_08後]に判定。まだWIREDとは書かない)。PM-SSOT-SYNC-17で反映)
 
+- **Status更新(2026-10-27、PM-SSOT-SYNC-23): PRODUCTION_WIRED(Fable受入)**。根拠=`docs/research/FAMILY-Y-STYLE-PROFILE-FIX-01/WIRED_CHECK_02.md`条件1〜7充足(条件1/5は`run_style_fix_01`での充足をFable決定(a)で許容、新規テーマ初回runは次のY新規記事で自然確認)・条件7既存失敗2件はOPEN-543管理・条件8=本SSOT反映。上の見出し括弧内「まだWIREDと書かない」は履歴。
+
 - **Style profile**: Y runnerはXの承認profile `fx_20261017`を継承し(`resolve_run_profile`へYの承認profileだけを渡す)、runごとに固定記録する。legacy waiverは作らない(Opus M-2。既存runはrunner起動時に課金前STOP)。commit 3af84a499(配線)、d2d68194d(再生成+OPEN-535実経路evidence)。
 - **fail-closed Gate**: `audit/style_actual_vs_approved.json`。網羅検査はY期待集合`Y_ROLE_COVERAGE`(role×level×segment)と『実際にevaluate_segment_evidenceを実行した集合』の**完全一致**(不足=`Y_STYLE_COVERAGE_EMPTY`、期待外=`Y_STYLE_COVERAGE_UNEXPECTED`)。日本語roleは送信instructionの実測(再利用による自己一致を避ける。`migrate_record`のY経路使用はAST testで禁止)。test=`er121_family_y_style_profile_test_01.py`(37件、横断登録表R-7を含む)。
 - **残る判断事項**: V1(Voice本文へのPD06適用の是非)・S9(Voice 1〜3のStyle評価)は未決(旧`_02`と新版の並べた試聴をユーザー判断項目として提出、UDR管理)。
