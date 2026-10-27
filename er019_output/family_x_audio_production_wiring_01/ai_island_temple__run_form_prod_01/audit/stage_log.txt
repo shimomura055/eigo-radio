@@ -3,3 +3,4 @@ STAGE scaffold 理由: KP確定済み(両level)のKP最終化(kp_selection_final
 STAGE tts 理由: 承認済み本文・確定KP・Adv Part1の音声(segment/KP音声)をStyle/ASR Gate維持で生成する唯一の工程(音声は未生成)。2026-10-27 12:01:31
 STAGE assemble 理由: segment音声を承認済み順序・SE・無音・音量正規化で通しmp3(wav)に組立てAudio Validation Gateを通す(API 0想定、Gate必須工程)。2026-10-27 12:21:11
 STAGE player 理由: 確定<->KP artifact<->TTS<->study_text<->ページの一致検査(G1-G4/verify_selection_matches_outputs)と文法Part2節単位4者一致(API 0)。2026-10-27 12:21:22
+STAGE scaffold(a2のみ) 理由: reconsume後の確定Redundancy QA(①+②,LLM1call)+Std Part1(①3+②2解説+T1訳)生成。約0.3円。2026-10-27 15:28:08

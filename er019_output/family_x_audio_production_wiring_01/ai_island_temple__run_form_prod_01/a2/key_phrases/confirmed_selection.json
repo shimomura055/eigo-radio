@@ -1,6 +1,6 @@
 {
   "schema": "eigo_radio_confirmed_selection_v1",
-  "revision": 2,
+  "revision": 3,
   "state": "live",
   "confirmation_id": "cf_aec83b8cbf53df86",
   "article": {
@@ -17,14 +17,14 @@
     "source_revision": 1,
     "user_ref": "docs/pm/delegation_log/2026-10-27_AI-ISLAND-FORM-PRODUCTION-01_USER_02.md",
     "candidates_sha256": "25a7bce9357cdaaaf58207e179fd187e97f77e0c5f30c4b511ec933bd51d028a",
-    "review_selection_signature": "566e490885d3c3ed02fb96b788345dd1708ad2d188295848c72a1fd3f865c402"
+    "review_selection_signature": "9e8f6e4402da4c49f301d838543a46b6a53257657032c066e06612026d0a06d7"
   },
   "confirmed_by": {
     "actor": "user",
-    "attestation": "form_submit",
-    "by": "user",
-    "user_ref": "docs/pm/delegation_log/2026-10-27_AI-ISLAND-FORM-PRODUCTION-01_USER_02.md",
-    "at": "2026-10-27T11:54:53.848757+09:00"
+    "attestation": "cli --by sonnet-aif6",
+    "by": "sonnet-aif6",
+    "user_ref": "docs/pm/delegation_log/2026-10-27_SLOT-23-CONSUMER-DESIGN-01_USER.md",
+    "at": "2026-10-27T15:26:55.329637+09:00"
   },
   "items": [
     {
@@ -89,6 +89,48 @@
         "ai_reason_ja": "使える選択肢や手段をカードにたとえた表現です。",
         "ai_rank": 4
       }
+    },
+    {
+      "candidate_id": "p_1cf1329364",
+      "kind": "phrase",
+      "category": 2,
+      "slot": "vocab",
+      "used_form": "worth paying attention to",
+      "display_phrase": "worth paying attention to",
+      "key_phrase": "worth paying attention to",
+      "japanese_gloss": "注目する価値がある",
+      "gloss_status": "ALIGNED",
+      "source_sentence_id": "S34",
+      "derived": {
+        "japanese_gloss_tts": "注目する価値がある",
+        "converter_id": "convert_display_gloss_to_tts_text/ba7582e13ba0",
+        "matches_converter": true
+      },
+      "reference": {
+        "ai_reason_ja": "注目する価値があることを自然に示す表現です。",
+        "ai_rank": 5
+      }
+    },
+    {
+      "candidate_id": "p_d17f8079e3",
+      "kind": "word",
+      "category": 2,
+      "slot": "vocab",
+      "used_form": "obstacle",
+      "display_phrase": "obstacle",
+      "key_phrase": "obstacle",
+      "japanese_gloss": "障害物",
+      "gloss_status": "ALIGNED",
+      "source_sentence_id": "S12",
+      "derived": {
+        "japanese_gloss_tts": "障害物",
+        "converter_id": "convert_display_gloss_to_tts_text/ba7582e13ba0",
+        "matches_converter": true
+      },
+      "reference": {
+        "ai_reason_ja": "進行を妨げる障害を表し、比喩的にも使える語。",
+        "ai_rank": 7
+      }
     }
   ],
   "unconsumed": [
@@ -98,7 +140,7 @@
       "category": 3,
       "used_form": "make a difference",
       "japanese_gloss": "影響を与える",
-      "reason": "CATEGORY3_NO_CONSUMER"
+      "reason": "CATEGORY3_HIGHLIGHT"
     },
     {
       "candidate_id": "p_dc8803926c",
@@ -106,7 +148,7 @@
       "category": 3,
       "used_form": "separately",
       "japanese_gloss": "個別に",
-      "reason": "CATEGORY3_NO_CONSUMER"
+      "reason": "CATEGORY3_HIGHLIGHT"
     },
     {
       "candidate_id": "p_4b7615dce5",
@@ -114,7 +156,7 @@
       "category": 3,
       "used_form": "feature",
       "japanese_gloss": "性質",
-      "reason": "CATEGORY3_NO_CONSUMER"
+      "reason": "CATEGORY3_HIGHLIGHT"
     },
     {
       "candidate_id": "p_31e10e6357",
@@ -122,7 +164,7 @@
       "category": 3,
       "used_form": "Strategy",
       "japanese_gloss": "作戦",
-      "reason": "CATEGORY3_NO_CONSUMER"
+      "reason": "CATEGORY3_HIGHLIGHT"
     },
     {
       "candidate_id": "p_80437a44a6",
@@ -130,28 +172,12 @@
       "category": 3,
       "used_form": "setup",
       "japanese_gloss": "設定",
-      "reason": "CATEGORY3_NO_CONSUMER"
-    },
-    {
-      "candidate_id": "p_1cf1329364",
-      "kind": "phrase",
-      "category": 2,
-      "used_form": "worth paying attention to",
-      "japanese_gloss": "注目する価値がある",
-      "reason": "STD_CATEGORY2_NO_SLOT"
-    },
-    {
-      "candidate_id": "p_d17f8079e3",
-      "kind": "word",
-      "category": 2,
-      "used_form": "obstacle",
-      "japanese_gloss": "障害物",
-      "reason": "STD_CATEGORY2_NO_SLOT"
+      "reason": "CATEGORY3_HIGHLIGHT"
     }
   ],
   "comment": "",
   "user_note_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-  "content_sha256": "bec9da85e7add067b76ae8a811bdd24a95da4e21b5589a9b65be077edf3f34c2",
+  "content_sha256": "5c4730b2fe09272f7965096b022f17d87d60b5c94f55e52cdfad1fb7d9a7c809",
   "history": [
     {
       "revision": 1,
@@ -197,6 +223,25 @@
         "after_pending": true
       },
       "entry_sha256": "812cceb7b11d2d09b12597aa05731fa3b71b5d688f48830f74d3a22257d10831"
+    },
+    {
+      "revision": 3,
+      "at": "2026-10-27T15:26:55.329705+09:00",
+      "event": "reconsumed",
+      "by": "sonnet-aif6",
+      "reason": "新表示仕様(LEARNING_ITEMS_123_V1)への明示移行(ユーザー選定は不変)",
+      "user_ref": "docs/pm/delegation_log/2026-10-27_SLOT-23-CONSUMER-DESIGN-01_USER.md",
+      "content_sha256": "5c4730b2fe09272f7965096b022f17d87d60b5c94f55e52cdfad1fb7d9a7c809",
+      "prev_entry_sha256": "812cceb7b11d2d09b12597aa05731fa3b71b5d688f48830f74d3a22257d10831",
+      "entry_sha256": "33bcac629eb060bf6b3a0ed87b1b9dade3c32b979ae80e12833f07d1beb32412",
+      "extra": {
+        "display_spec": "LEARNING_ITEMS_123_V1",
+        "category2_to_items": [
+          "p_1cf1329364",
+          "p_d17f8079e3"
+        ],
+        "category3_reason_to": "CATEGORY3_HIGHLIGHT"
+      }
     }
   ],
   "grammar": {
@@ -208,5 +253,6 @@
     "explanation_source": [],
     "status": "confirmed"
   },
-  "record_sha256": "4dfa78ff9852c973dd845444a9c19b8ed1183a72a044d9359fac4f765e9bb187"
+  "display_spec": "LEARNING_ITEMS_123_V1",
+  "record_sha256": "be429f67c896ded633dd8e9fdc4840f876c525a94b2e3ae3f76c653d581323e6"
 }
