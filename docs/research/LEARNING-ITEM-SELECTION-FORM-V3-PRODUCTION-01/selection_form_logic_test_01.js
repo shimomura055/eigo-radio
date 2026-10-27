@@ -400,7 +400,6 @@ t('newspec: index.html uses radio (name=gram) + explicit zero option + rank badg
   assert.ok(!h.includes('gch>=2'));   // 旧上限(2件)の残骸なし
 });
 
-console.log('ALL PASS', n);
 
 // ---- 委任_04: P7/W5' 7+5 配線追従(cap 12・kind別cap 7/5・reason_ja逐語) ----
 const KP75_FILES = { 'ai_island_temple__a2__prod': 'er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_kp75_ev_01/a2', 'ai_island_temple__b1b__prod': 'er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_kp75_ev_01/b1b', 'uk_train_speaker_playback__a2__prod': 'er019_output/family_x_audio_production_wiring_01/uk_train_speaker_playback__run_kp75_ev_01/a2', 'uk_train_speaker_playback__b1b__prod': 'er019_output/family_x_audio_production_wiring_01/uk_train_speaker_playback__run_kp75_ev_01/b1b', 'redelivery_fee__a2__prod': 'er121_output/family_y_production_01/redelivery_fee/run_kp75_ev_01/key_phrases/a2', 'redelivery_fee__b1b__prod': 'er121_output/family_y_production_01/redelivery_fee/run_kp75_ev_01/key_phrases/b1b', 'melos__a2__prod': 'er026_output/family_z_production_e2e_01/melos/run_kp75_ev_01/key_phrases/a2', 'melos__b1b__prod': 'er026_output/family_z_production_e2e_01/melos/run_kp75_ev_01/key_phrases/b1b' };
@@ -460,3 +459,20 @@ t('index.html: reason details rendered only when reason exists; no "(なし)"/pl
   const h = fs.readFileSync(path.join(FD, 'index.html'), 'utf8');
   assert.ok(/ro\.has\?'<details class="why"/.test(h)); assert.ok(!h.includes('ro.note') && !h.includes("（なし）"));
 });
+// ---- 委任_08: コメント既定語の空扱い統一 / 文法解説末尾=====の除去(COPY_FORMAT_01 §6)
+t('08 comment default words => no comment (m8=0, 「自由コメント：なし」); real comments kept', () => {
+  const st = FL.newState(); FL.setChoice(st, FL.terms(mp), 'burial', 1, true); const o = SO('data/monkeys_paw__b1b.json');
+  ['なし', '特になし', '  特になし ', '無し', '-', 'ー', '－', 'N/A', 'None', '   ', '\n', ''].forEach(c => {
+    st.comment = c; const r = FL.buildReadable(mp, st, o); assert.ok(r.includes('\n自由コメント：なし\n'), JSON.stringify(c)); assert.strictEqual(r.split('-').slice(-2)[0], '0');
+    assert.strictEqual(FL.buildStructured(mp, st, 'T', o).comment, '');
+  });
+  ['なし。', '特になしです', '- 例文を短く', '本当のコメント'].forEach(c => { st.comment = c; const r = FL.buildReadable(mp, st, o); assert.ok(r.includes('自由コメント：' + c.trim() + '\n'), c); assert.notStrictEqual(r.split('-').slice(-2)[0], '0'); });
+});
+t('08 grammar body trailing ===== (even without preceding newline) removed; inner ===== untouched', () => {
+  const d = rd('data/ai_island_temple__b1b__prod.json'); const st = FL.newState(); const g = FL.grammarPresented(d)[0];
+  assert.ok(g.body.endsWith('。====='), 'データ側の前提: Top1は「。=====」で終わる');
+  FL.setGrammar(st, d.grammar.map(x => x.id), g.id, true); const r = FL.buildReadable(d, st, SO('data/ai_island_temple__b1b__prod.json'));
+  assert.ok(!r.includes('====='), 'コピーに=====が残らない'); assert.ok(r.includes('【解説ここまで】'));
+  assert.strictEqual(FL.bodyView('a ===== b。\n'), 'a ===== b。'); assert.strictEqual(FL.bodyView('説明\n====='), '説明'); assert.strictEqual(FL.bodyView('説明。====='), '説明。');
+});
+console.log('ALL PASS', n);

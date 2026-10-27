@@ -11,5 +11,5 @@ Python側(`er128_form_readable_restore_01.py`)は復元結果が `cases/<name>.e
 - `node_structured_batch.js`: expected生成用(`node node_structured_batch.js <form_logic.js> <jobs.json>`)。
 - 再生成: `.venv\Scripts\python.exe er128_form_readable_restore_test_01.py --regen-fixtures`(データ更新時。再生成後は委任_07側のJSも再検証すること)。
 
-契約の注意: 自由コメントは前後をtrimした値が `m8`/本文の対象(先頭末尾の空白は保持されない)。コメントが文字列「なし」だけの場合は区別できないため復元側が拒否する。
+契約の注意: 自由コメントは前後をtrimした値が `m8`/本文の対象(先頭末尾の空白は保持されない)。コメントが既定語(なし等、COPY_FORMAT_01 §6)のみの場合は「コメントなし」(m8=0)として扱う(委任_08で拒否から変更)。
 Windowsのautocrlfで作業ツリーのfixtureがCRLFになる場合があるため、比較は**CRLFをLFへ正規化してから**行う(契約はLF)。

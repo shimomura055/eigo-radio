@@ -308,6 +308,7 @@ class ReadableCopyV3Test(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.proto = _load(_PROTO, "proto06_copy_restore_01")
+        cls.ref = _load(os.path.join(ROOT, "er128_form_readable_restore_01.py"), "er128_form_readable_restore_01")   # 委任_08: 正式な参照実装(コメント既定語/末尾=====の規則を含む)
 
     def test_fixed_fixture_byte_match(self):
         """固定fixture(データJSONと期待文字列をリポジトリに固定)。長文解説(約4,000字)・仮訳・未生成訳・同名文法・複数行コメントでも欠落なし。"""
@@ -345,7 +346,8 @@ class ReadableCopyV3Test(unittest.TestCase):
         for (f, d, st), o in zip(metas, outs):
             stem = os.path.basename(f)[:-5]
             d6 = hashlib.sha256(open(os.path.join(FD, f), "rb").read()).hexdigest()[:6]
-            exp = self.proto.build_readable(stem, d, st, d6=d6)
+            st_ref = dict(st, grammar_zero=True) if not any((st.get("grammar") or {}).values()) else st   # 参照実装は新仕様の文法未決定を拒否するため0件は明示
+            exp = self.ref.build_readable(stem, d, st_ref, d6)
             self.assertEqual(o["readable"], exp, f)
             n_gram += 1 if st["grammar"] else 0
             n_lock += 1 if d.get("kp_confirmed") else 0

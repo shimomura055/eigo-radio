@@ -25,6 +25,7 @@ import subprocess
 import sys
 import tempfile
 import unicodedata
+import unicodedata
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_DATA_DIR = os.path.join(ROOT, "user_test", "selection_form_v3", "data")
@@ -86,16 +87,25 @@ def gloss_status(it: dict) -> str:
     return it.get("ja_gloss_status") or "provisional"
 
 
+BODY_TERM_RE = re.compile(r"\s*=+\s*\Z")   # 委任_08: 直前に改行が無い「。=====」も除去。本文中の=====は触らない(COPY_FORMAT_01 §6)
+COMMENT_NONE_WORDS = ["なし", "特になし", "無し", "特に無し", "ありません", "特にありません", "-", "ー", "―", "—", "n/a", "none"]   # form_logic.js と同一定数
+
+
+def normalize_comment(c) -> str:
+    """委任_08: trim後が空、または既定語(NFKC+小文字で比較)のみなら「コメントなし」=''。form_logic.js normalizeComment と同一。"""
+    t = ("" if c is None else str(c)).strip()
+    return "" if (t == "" or unicodedata.normalize("NFKC", t).lower() in COMMENT_NONE_WORDS) else t
+
+
 def body_view(body: str) -> str:
-    """表示用: 末尾の内部終端行(=====)だけ外す(内容は一字も変えない)。"""
+    """表示用: 末尾の内部終端記号(=====)だけ外す(内容は一字も変えない)。"""
     b = body.replace("\r\n", "\n")
-    return b[:-len(BODY_TERM)] if b.endswith(BODY_TERM) else b.rstrip("\n")
+    return BODY_TERM_RE.sub("", b) if BODY_TERM_RE.search(b) else b.rstrip("\n")
 
 
 def norm_body(s: str) -> str:
     s = s.replace("\r\n", "\n").replace("\r", "\n")
-    if s.endswith(BODY_TERM):
-        s = s[:-len(BODY_TERM)]
+    s = BODY_TERM_RE.sub("", s)
     return "\n".join(x.rstrip() for x in s.split("\n")).strip("\n")
 
 
@@ -128,7 +138,7 @@ def make_code(stem: str, d: dict, d6: str, sel_ids: list, gram: list, comment: s
     t8 = ((d.get("source") or {}).get("text_sha256") or "0" * 8)[:8]
     s10 = sha("v1\n" + "\n".join(f"{c}:{i}" for c, i in sel_ids))[:10]
     g10 = sha("v1\n" + "\n".join(f"{i}:{h}" for i, h in gram))[:10] if gram else "0"
-    com = (comment or "").strip()
+    com = normalize_comment(comment)
     m8 = sha(com)[:8] if com else "0"
     body = f"{CODE_VERSION}-{stem}-{d6}-{c8}-{t8}-{s10}-{g10}-{m8}"
     return body + "-" + sha(body)[:4]
@@ -162,7 +172,7 @@ def build_readable(stem: str, d: dict, st: dict, d6: str, with_preface: bool = F
     for g in gs:
         lines += [f"文法：{g['title']}", MARK_BEGIN, body_view(g.get("body") or ""), MARK_END]
     lines.append("")
-    com = (st.get("comment") or "").strip()
+    com = normalize_comment(st.get("comment"))
     lines.append("自由コメント：" + (com if com else "なし"))
     lines += ["", "照合コード(変更しないでください)：" + make_code(stem, d, d6, sel_ids, [_gram_pair(g) for g in gs], com)]
     text = "\n".join(lines)
@@ -307,9 +317,7 @@ def restore(text: str, data_dir: str = DEFAULT_DATA_DIR, git_lookup=None):
             raise RestoreError(f"記事見出し {ps['hdr']!r} が照合コードのデータ({d['name']}｜{d.get('level_label') or d.get('level')})と一致しません")
     else:
         raise RestoreError(f"記事見出しを『記事：<記事名>｜<レベル>』に分解できません: {ps['hdr']!r}")
-    comment = "\n".join(ps["comment_lines"]).strip()
-    if comment == "なし":
-        comment = ""
+    comment = normalize_comment("\n".join(ps["comment_lines"]))
 
     its = items_of(d)
     order = {id(it): n for n, it in enumerate(its)}

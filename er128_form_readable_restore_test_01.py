@@ -184,6 +184,38 @@ def regen_fixtures():
     with open(os.path.join(FX, "manifest.json"), "w", encoding="utf-8", newline="\n") as f:
         json.dump(manifest, f, ensure_ascii=False, indent=1)
     print(f"fixtures regenerated: {len(cases)} cases, {len(manifest['data'])} data -> {FX}")
+    add_fixtures_08()   # 委任_08追加ケースも再生成に含める(定義は下)
+
+
+def add_fixtures_08():
+    """委任_08: 既存fixtureは触らず(追加のみ)、コメント既定語4ケース+文法解説末尾=====1ケースを足す。"""
+    man = jload(os.path.join(FX, "manifest.json"))
+    names = {c["name"] for c in man["cases"]}
+    d = jload(os.path.join(FX, "data", "fixture_synth__a2.json"))
+    base_ch = {"run out of": 1, "ephemeral": 3}
+    cases = [(f"comment08_{k}", "fixture_synth__a2", {"choices": base_ch, "grammar": {}, "grammar_zero": True, "comment": c})
+             for k, c in (("nashi", "なし"), ("tokuninashi", "特になし"), ("empty_ws", "  \n "), ("real", "本当のコメント"))]
+    b1 = jload(os.path.join(FX, "data", "ai_island_temple__b1b__prod.json"))
+    top1 = [g for g in R.grammar_presented(b1) if g.get("display_rank") == 1][0]
+    assert top1["body"].endswith("。=====")
+    cases.append(("b1b_top1_trailing_term08", "ai_island_temple__b1b__prod", {"choices": {}, "grammar": {top1["id"]: True}, "grammar_zero": False, "comment": ""}))
+    cases = [c for c in cases if c[0] not in names]
+    jobs = [{"data": os.path.join(FX, "data", stem + ".json"), "state": st} for _, stem, st in cases]
+    exp = node_expected(jobs) if jobs else []
+    for (name, stem, st), e in zip(cases, exp):
+        dd = jload(os.path.join(FX, "data", stem + ".json"))
+        d6 = man["data"][stem]
+        text = R.build_readable(stem, dd, st, d6)
+        with open(os.path.join(FX, "cases", name + ".state.json"), "w", encoding="utf-8", newline="\n") as f:
+            json.dump({"stem": stem, "state": st}, f, ensure_ascii=False, indent=1)
+        with open(os.path.join(FX, "cases", name + ".readable.txt"), "w", encoding="utf-8", newline="\n") as f:
+            f.write(text)
+        with open(os.path.join(FX, "cases", name + ".expected_structured.json"), "w", encoding="utf-8", newline="\n") as f:
+            json.dump(e, f, ensure_ascii=False, indent=1)
+        man["cases"].append({"name": name, "stem": stem, "d6": d6, "readable_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(), "code": R.CODE_RE.search(text).group(0)})
+    with open(os.path.join(FX, "manifest.json"), "w", encoding="utf-8", newline="\n") as f:
+        json.dump(man, f, ensure_ascii=False, indent=1)
+    print(f"fixtures added: {len(cases)}")
 
 
 # ---------------------------------------------------------------- tests
@@ -208,6 +240,19 @@ class TestFixtureContract(unittest.TestCase):
                 payload, _ = R.restore(want, dd)
                 exp = jload(os.path.join(FX, "cases", c["name"] + ".expected_structured.json"))
                 self.assertEqual(diff_payload(payload, exp), [])
+
+
+class TestFixture08(unittest.TestCase):
+    def test_comment_cases_and_trailing_term(self):
+        rd = lambda n: load(os.path.join(FX, "cases", n + ".readable.txt")).decode("utf-8").replace("\r\n", "\n")
+        for n in ("comment08_nashi", "comment08_tokuninashi", "comment08_empty_ws"):
+            self.assertEqual(rd(n), rd("comment08_nashi"), n)   # 3表記とも同一バイト(m8=0)
+            self.assertIn("\n自由コメント：なし\n", rd(n))
+        self.assertIn("自由コメント：本当のコメント\n", rd("comment08_real"))
+        self.assertNotEqual(rd("comment08_real").split("-")[-2], "0")
+        t = rd("b1b_top1_trailing_term08")
+        self.assertNotIn("=====", t)
+        self.assertTrue(jload(os.path.join(FX, "cases", "b1b_top1_trailing_term08.state.json"))["state"]["grammar"])
 
 
 @unittest.skipUnless(HAVE_NODE, "node が無い")
@@ -526,11 +571,34 @@ class TestToleratedVariations(_Base):
         if exp:
             self.assertEqual(diff_payload(payload, exp), [])
 
-    def test_comment_literal_nashi_is_refused(self):
-        st = dict(self.st, comment="なし")
-        b = R.build_readable(self.stem, self.d, st, self.d6)
-        with self.assertRaises(R.RestoreError):   # 『コメントなし』と区別できないため確定しない(fail-closed)
-            R.restore(b, LIVE_DATA)
+    def test_comment_default_words_are_no_comment_08(self):
+        """委任_08: 「なし」等の既定語・空白のみ=コメントなし(m8=0)。復元payloadはcomment=''。本当のコメントは保持。"""
+        for c in ("なし", "特になし", "  特になし ", "無し", "-", "ー", "－", "N/A", "None", "   ", "\n", ""):
+            with self.subTest(c=c):
+                st = dict(self.st, comment=c)
+                b = R.build_readable(self.stem, self.d, st, self.d6)
+                self.assertIn("\n自由コメント：なし\n", b)
+                self.assertEqual(b.split("-")[-2], "0", "m8は0")
+                payload, _ = R.restore(b, LIVE_DATA)
+                self.assertEqual(payload["comment"], "")
+        for c in ("なし。", "特になしです", "なしなし", "- 例文を短く", "本当のコメント"):
+            with self.subTest(c=c):
+                b = R.build_readable(self.stem, self.d, dict(self.st, comment=c), self.d6)
+                payload, _ = R.restore(b, LIVE_DATA)
+                self.assertEqual(payload["comment"], c.strip())
+
+    def test_comment_tamper_with_default_word_still_refused_08(self):
+        """既定語への置換でも、実コメント(m8!=0)のコードと食い違えば拒否する(fail-closed維持)。"""
+        b = R.build_readable(self.stem, self.d, dict(self.st, comment="本当のコメント"), self.d6)
+        with self.assertRaises(R.RestoreError):
+            R.restore(b.replace("自由コメント：本当のコメント", "自由コメント：なし"), LIVE_DATA)
+
+    def test_trailing_term_without_newline_is_removed_08(self):
+        """文法解説末尾が「。=====」(直前に改行なし)でもコピーに=====が残らず、本文中の=====は触らない。"""
+        self.assertEqual(R.body_view("説明です。====="), "説明です。")
+        self.assertEqual(R.body_view("説明\n====="), "説明")
+        self.assertEqual(R.body_view("a ===== b。\n"), "a ===== b。")
+        self.assertEqual(R.norm_body("説明です。====="), R.norm_body("説明です。"))
 
 
 class TestDataUpdate(_Base):
@@ -824,6 +892,9 @@ class TestEndToEndRealConfirm(FormHelpers):
 
 
 if __name__ == "__main__":
+    if "--add-fixtures-08" in sys.argv:
+        add_fixtures_08()
+        sys.exit(0)
     if "--regen-fixtures" in sys.argv:
         regen_fixtures()
     else:

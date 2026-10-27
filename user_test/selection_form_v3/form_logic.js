@@ -187,7 +187,7 @@
       user_confirmed_note_ja: 'selection・comment はユーザーが確定した内容(英語表現・日本語訳・区分・文法解説全文)。後続工程で変更しない。ja_gloss_status が official 以外の日本語訳は未確定で、変更が必要なら修正案を提示して再確認を求めること。',
       selection: { key_phrase: sel[0], extra_explanation: sel[1], meaning_display: sel[2], grammar: s.grammar.map(grammarRecord) },
       grammar_status: grammarStatus(d, st),
-      comment: st.comment || '',
+      comment: normalizeComment(st.comment),
       ai_reference: { for_reference_only: true, note_ja: 'AIの選定理由は確認用情報です。ユーザーが確定した英語・日本語訳・解説本文ではありません。', items: refs },
       counts: { key_phrase: s.counts[0], key_phrase_plus_extra: s.counts[0] + s.counts[1], total_highlight: s.counts[0] + s.counts[1] + s.counts[2], grammar: s.grammar.length },
       production_connected: false
@@ -248,9 +248,17 @@
     return h.map(function (x) { return ('00000000' + (x >>> 0).toString(16)).slice(-8); }).join('');
   }
   // 表示用: 解説全文の末尾の内部終端記号「=====」だけ外す(内容は一字も変えない)
+  // 委任_08: 末尾の `\s*=+\s*$`(直前に改行が無い `。=====` も含む)を除去。本文中の=====は触らない(COPY_FORMAT_01 §6)
+  var BODY_TERM_RE = /\s*=+\s*$/;
   function bodyView(body) {
     var b = String(body || '').replace(/\r\n/g, '\n');
-    return b.slice(-BODY_TERM.length) === BODY_TERM ? b.slice(0, -BODY_TERM.length) : b.replace(/\n+$/, '');
+    return BODY_TERM_RE.test(b) ? b.replace(BODY_TERM_RE, '') : b.replace(/\n+$/, '');
+  }
+  // 委任_08: 自由コメントの正規化(COPY_FORMAT_01 §6)。trim後が空、または既定語(NFKC+小文字で比較)のみなら「コメントなし」=''。Python側 normalize_comment と同一定数
+  var COMMENT_NONE_WORDS = ['なし', '特になし', '無し', '特に無し', 'ありません', '特にありません', '-', 'ー', '―', '—', 'n/a', 'none'];
+  function normalizeComment(c) {
+    var t = String(c == null ? '' : c).trim();
+    return (t === '' || COMMENT_NONE_WORDS.indexOf(t.normalize('NFKC').toLowerCase()) >= 0) ? '' : t;
   }
   function glossMark(status) { return status === 'official' ? '' : status === 'provisional' ? '（仮訳・未確定）' : '（日本語訳未生成）'; }
   // 照合コード AIF1-<stem>-<d6>-<c8>-<t8>-<s10>-<g10|0>-<m8|0>-<k4>(COPY_FORMAT_01 §3 / RESTORE_TOOL_SPEC_01)
@@ -283,7 +291,7 @@
     if (!gs.length) L.push('文法：選定なし');
     gs.forEach(function (g) { L.push('文法：' + g.title, MARK_BEGIN, bodyView(g.body), MARK_END); });
     L.push('');
-    var com = (st.comment || '').trim();
+    var com = normalizeComment(st.comment);
     L.push('自由コメント：' + (com || 'なし'));
     L.push('', '照合コード(変更しないでください)：' + makeCode(stem, d6, d, selIds, gs.map(function (g) { return [g.candidate_id || g.id, g.explanation_sha256 || '']; }), com));
     return L.join('\n');
@@ -349,6 +357,6 @@
   }
   return { LIMITS: LIMITS, GRAMMAR_MAX: GRAMMAR_MAX, GRAMMAR_TOP_N: GRAMMAR_TOP_N, grammarPresented: grammarPresented, grammarIds: grammarIds, normalizeGrammar: normalizeGrammar, grammarDecision: grammarDecision, grammarBlocked: grammarBlocked, hasGrammarSpec: hasGrammarSpec, chooseGrammar: chooseGrammar, chooseGrammarNone: chooseGrammarNone, choicesOf: choicesOf, grammarStatus: grammarStatus, SCHEMA: SCHEMA, terms: terms, counts: counts, allowed: allowed, grammarChosen: grammarChosen,
     grammarCanToggle: grammarCanToggle, setChoice: setChoice, setGrammar: setGrammar, newState: newState, stateKey: stateKey, summary: summary,
-    buildText: buildText, buildStructured: buildStructured, buildChatGptUrl: buildChatGptUrl, buildCopyText: buildCopyText, buildReadable: buildReadable, sha256Hex: sha256Hex, makeCode: makeCode, PREFACE: PREFACE, URL_MAX: URL_MAX, bodyView: bodyView, glossOf: glossOf, reasonOf: reasonOf, itemRecord: itemRecord, candIdOf: candIdOf, kindOf: kindOf, shaInfo: shaInfo, grammarRecord: grammarRecord, GLOSS_LABEL: GLOSS_LABEL,
+    buildText: buildText, buildStructured: buildStructured, buildChatGptUrl: buildChatGptUrl, buildCopyText: buildCopyText, buildReadable: buildReadable, normalizeComment: normalizeComment, COMMENT_NONE_WORDS: COMMENT_NONE_WORDS, sha256Hex: sha256Hex, makeCode: makeCode, PREFACE: PREFACE, URL_MAX: URL_MAX, bodyView: bodyView, glossOf: glossOf, reasonOf: reasonOf, itemRecord: itemRecord, candIdOf: candIdOf, kindOf: kindOf, shaInfo: shaInfo, grammarRecord: grammarRecord, GLOSS_LABEL: GLOSS_LABEL,
     validateArticle: validateArticle, validateIndex: validateIndex };
 });

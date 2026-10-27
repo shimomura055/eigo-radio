@@ -120,3 +120,11 @@
 - 文法ブロックに`candidate_id`/shaを出さない理由: 解説全文が文法候補の識別子として十分(同名でも本文は異なる)で、`g10`が補強する。画面・コピーに内部IDを出さない原文§4に従う。
 - 「AI選定理由」節はコピーから外す(原文例示に含まれない。`reason_ja`は確認用情報で、確定内容ではない=DATA_MODEL_02 B。公開データJSONに残る)。
 - 区分見出しの件数表記(例`(3/3)`)は例示に無いため付けない。上限は引き続きフォームが担保。
+
+## 6. 改訂(委任_08、2026-10-27。JS `form_logic.js` と Python `er128_form_readable_restore_01.py` に同時適用・バイト一致)
+- **コメント既定語**: 自由コメントは、trim後が空、またはtrim後を`NFKC`+小文字化した値が次の既定語のいずれか**のみ**なら「コメントなし」として扱う(コピー本文は`自由コメント：なし`、`m8`=`0`、`payload.comment`=`""`)。
+  `COMMENT_NONE_WORDS = なし / 特になし / 無し / 特に無し / ありません / 特にありません / - / ー / ― / — / n/a / none`(JS `COMMENT_NONE_WORDS`・Python `COMMENT_NONE_WORDS`は同一定数、正規化関数=JS `normalizeComment`/Python `normalize_comment`)。
+  既定語を含むだけの実コメント(`なし。`、`- 例文を短く`等)は実コメントとして保持。復元側は同じ関数で正規化するため「コメント欄が『なし』」の復元拒否は廃止(実コメントのコードに対する『なし』への書換えは`m8`不一致で従来どおり拒否=fail-closed維持)。
+- **解説全文の終端記号**: 表示・照合用の正規化は末尾の`\s*=+\s*$`(Pythonは`\s*=+\s*\Z`)を除去する(直前に改行が無い`。=====`も含む)。本文中の`=====`は触らない。対象=JS `bodyView`、Python `body_view`・`norm_body`。
+- 既存fixtureのうち`ai_island_temple__b1b__prod__r1`(Top1が`。=====`終わり)の期待コピーは新規則に更新。追加fixture=`comment08_{nashi,tokuninashi,empty_ws,real}`・`b1b_top1_trailing_term08`。
+- 照合コード構造(`AIF1-…-k4`)・UI上限・fail-closedは不変。
