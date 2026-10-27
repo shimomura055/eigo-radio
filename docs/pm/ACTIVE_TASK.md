@@ -1,11 +1,11 @@
-管理ID: LR-FALLBACK-M3-CROSS-FAMILY-AUDIT-01(Local Rewrite・Fallback・M3 Gateの全Family横断調査と是正。原文=docs/pm/delegation_log/2026-10-27_LR-FALLBACK-M3-CROSS-FAMILY-AUDIT-01_USER.md)
-Status: **2026-10-27 PM-SSOT-SYNC-28でSSOT同期完了(OPEN-565〜567、分類A 4件是正済み[7dab92aba/8fbfae04c]、UD-1〜3ユーザー判断待ち、API 0)**。(旧) Phase 1(読取専用調査・API 0)を4並列委任(W1 LRデータフロー/W2 6経路/W3 M3×LR×HR/W4 全Role横断)。Phase 2=分類A/B/C→Aは是正、B/CはUSER_DECISION_REQUIRED整理
-進行中: 委任_01〜_04(sonnet-worker 4並列、docs/research/LR-FALLBACK-M3-CROSS-FAMILY-AUDIT-01/)
-次: Fable統合→分類A是正(委任_05〜)→検証→Opus条件A/C判定→SSOT/Git→報告(重要度順10項目)
-STOP条件: 未承認仕様のProduction実装禁止(LR後本文自動更新・M3緩和・自動採用条件変更は全て未承認)/AI島原稿・確定内容の変更禁止/有料run禁止(Phase 1)
-UDR-blocking: AI島HR Q1(hr_02)は本案件の結論待ちで据置(ユーザーが本件を上位案件と位置付け)・UDR-MONKEY-1据置
-QDC: 2026-10-27当日 約¥111消費済み。本案件Phase 1=API 0
-前案件: PM-SSOT-SYNC-27(同期完了、SLOT-23/OPEN-545 PRODUCTION_WIRED、OPEN-561 AI島HR待ち)
+管理ID: LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01(LR・Fallback横断仕様の正式採用・Production Wiring。原文=docs/pm/delegation_log/2026-10-28_LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01_USER.md)
+Status: **2026-10-28 ユーザー正式決定受領(APPROVED_FOR_PRODUCTION: UD-1 LR後英文を表示本文へ反映/UD-2 AI島 AI agents・AI systems/UD-3 正常LR・Fallbackのみの停止・HR要求を解除、最終Human報告=LR赤・Fallback濃青・資料限定)。Phase A(設計・調査、API 0)を4並列委任中**
+進行中: 委任_01(49経路×配線照合・記録所在・evidence手段)/委任_02(UD-1本文反映設計+既公開4件遡及計画)/委任_03(UD-3 Gate設計)/委任_04(最終Human報告資料設計)。成果物=docs/research/LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01/
+次: Fable統合→SSOTへユーザー決定を登録(委任_05)→Opus条件Aレビュー→Phase B実装(並列: 本文反映/Gate/報告資料/記録)→test→runtime evidence(保存run再評価+最小有料)→既公開4件是正→Fable受入→SSOT/Git→最終報告(原文§12の10項目)
+STOP条件: 注記の制作本文・TTS・ASR・公開本文・KP表示・Prompt混入禁止/試行回数・待機・Fallback Style・LR範囲・ASR基準・Voice/速度・確定内容保護は不変/品質Gateの弱体化禁止(正常LR/Fallbackのみの停止解除に限定)/A/B/C音声方式の置換禁止/確定内容と衝突する本文変更はSTOP/予算: 設計・Gate・表示はAPI 0、runtime検証は最小・日次1,000円内
+UDR-blocking: 告げ口心臓=ユーザー最終試聴待ち(blockingではない)。UDR-MONKEY-1据置
+QDC: 2026-10-28当日 約20円消費(告げ口心臓Phase 2)。本案件Phase A=API 0
+前案件: LR-FALLBACK-M3-CROSS-FAMILY-AUDIT-01(OPEN-565、SSOT同期済み、UD-1〜3は本案件で決定)/FZ-TELL-TALE-HEART-RESELECT-REMAKE-01(完成版公開・ユーザー最終試聴待ち、commit 2a3248621)
 
 ===== 並行案件 =====
 管理ID: FZ-TELL-TALE-HEART-RESELECT-REMAKE-01(『告げ口心臓』学習項目V3再選定・本文音声再制作・完成版公開。原文=docs/pm/delegation_log/2026-10-27_FZ-TELL-TALE-HEART-RESELECT-REMAKE-01_USER.md)
