@@ -2484,14 +2484,56 @@ _USER_LABEL = {"Welcome (Charon)": "Welcome", "Preview intro (Charon)": "Preview
                "Key phrases intro (Charon)": "Key phrases intro", "Full story intro (Charon)": "Full story intro"}
 
 
-def _user_page_rows(run_dir: str, level: str, rows: list, kp_rows: list, audio_rel_prefix: str, audio_out_dir: str, audience: str = "public") -> list:
+def full_story_display_units(run_dir: str, level: str) -> list:
+    """SLOT-23 委任_04E: ページ(index.html)のFull Story台本として表示されるクリップ台本を、Part別・公開順のDisplayUnit列にして返す。
+    [{"key": "full_story_part<n>", "texts": [クリップ台本...], "joiner": " "}]。timeline.json+tts_generation_results.json(canonical_text)だけを読む
+    (mp3・wavは不要=API 0・副作用0)。`_user_page_rows`が描くscript(row["script"])と同じ式で作り、描画側でも一致をassertする(HL_DISPLAY_UNIT_MISMATCH)。"""
+    tl = _read_json(f"{run_dir}/{level}/assembly/timeline.json")
+    data = _read_json(f"{run_dir}/{level}/audit/tts_generation_results.json")
+    groups: dict = {}
+    for e in tl["timeline"]:
+        m = re.fullmatch(r"full_story_part(\d+)_c\d+", e["part"])
+        if not m:
+            continue
+        cid = part_to_clip_id(e["part"])
+        entry = _lookup_entry(data, cid) if cid else None
+        script = "未取得"
+        if entry:
+            script = entry.get("canonical_text") or FIXED_SHELL_TEXT.get(cid, "未取得")
+        groups.setdefault(int(m.group(1)), []).append(script)
+    return [{"key": f"full_story_part{n}", "texts": t, "joiner": " "} for n, t in sorted(groups.items())]
+
+
+def highlight_block_html(result: dict) -> str:
+    """SLOT-23 委任_04E: levelの台本表の直後に置く『ハイライトの付随ブロック』(CSS+凡例1行+③訳リスト)。台本表(table)・div.script・h2の外。
+    result=er_learning_highlight_01.resolve_highlights()の結果。装飾も③訳も無ければ空文字(従来とバイト同一)。凡例・訳リストは共通部品(英語:/日本語:等を使わない)。"""
+    import er_learning_highlight_01 as hl
+    if not result:
+        return ""
+    decorated = [h for h in result.get("highlights") or [] if h.get("decorate")]
+    meanings = list(result.get("meanings") or [])
+    if not decorated and not meanings:
+        return ""
+    return ("<style>" + hl.HIGHLIGHT_CSS + "</style>" + (hl.legend_html() if decorated else "") + hl.meaning_list_html(meanings))
+
+
+def _user_page_rows(run_dir: str, level: str, rows: list, kp_rows: list, audio_rel_prefix: str, audio_out_dir: str, audience: str = "public",
+                    highlights: dict | None = None) -> list:
     """標準フォーマット(er_user_listening_page_common_01)用の行へ変換する(委任_19)。
     効果音行(Intro/Outro/Notification)は除外、Full Storyのclip(full_story_partN_cK)はPart単位に束ねて再生順のscriptを列挙、
     内部情報(Voice/Style/6%減速等)は載せない。Part束ね用mp3は assembled wav からの無料ローカル切り出し(新規ファイルのみ、既存mp3は不変)。
-    audience(委任_08): "public"(既定)=Chunk境界マーカーなし(従来とバイト同一) / "dev"=Full Storyの実TTS Chunk境界(audit/chunk_plan_<level>.json)にだけ⏸(開発確認用)。"""
+    audience(委任_08): "public"(既定)=Chunk境界マーカーなし(従来とバイト同一) / "dev"=Full Storyの実TTS Chunk境界(audit/chunk_plan_<level>.json)にだけ⏸(開発確認用)。
+    highlights(SLOT-23 委任_04E、既定None=従来とバイト同一): {"result": resolve_highlights結果, "units": full_story_display_units相当}。指定時のみFull Story各クリップの台本を
+    装飾タグで包む(クリップをまたぐ語句は片ごとに同一data-hl)。解決に使った表示台本とここで描く台本が1文字でも違えばFamilyZAudioStop(HL_DISPLAY_UNIT_MISMATCH)。"""
     import soundfile as sf
     import er_user_listening_page_common_01 as uc
     uc.normalize_audience(audience)
+    _hl_mod = _hl_exp = _hl_res = None
+    _hl_seen: set = set()
+    if highlights:
+        import er_learning_highlight_01 as _hl_mod
+        _hl_res = highlights["result"]
+        _hl_exp = {u["key"]: list(u["texts"]) for u in highlights["units"]}
     _plans = uc.load_chunk_plans(f"{run_dir}/{level}/audit/chunk_plan_{level}.json") if audience == uc.AUDIENCE_DEV else {}
     tl = _read_json(f"{run_dir}/{level}/assembly/timeline.json")
     x = sr = None
@@ -2525,7 +2567,13 @@ def _user_page_rows(run_dir: str, level: str, rows: list, kp_rows: list, audio_r
                     if v and v != "-" and v not in voices:
                         voices.append(v)
             out.append({"part": f"Full Story Part {n}" + (f" ({' / '.join(voices)})" if voices else ""), "start": start, "dur": end - start, "src": f"{audio_rel_prefix}{fn}",
-                        "blocks": [uc.script_block(g["script"], uc.chunk_texts_of_plan(_plans.get(g.get("clip_id"))), audience) for g in grp]})
+                        "blocks": [uc.script_block(g["script"], uc.chunk_texts_of_plan(_plans.get(g.get("clip_id"))), audience,
+                                                   highlights=(_hl_mod.highlights_for_text(_hl_res, f"full_story_part{n}", k) if _hl_res else None))
+                                   for k, g in enumerate(grp)]})
+            if _hl_res:
+                _hl_seen.add(f"full_story_part{n}")
+                if _hl_exp.get(f"full_story_part{n}") != [g["script"] for g in grp]:
+                    raise FamilyZAudioStop(f"HL_DISPLAY_UNIT_MISMATCH: full_story_part{n}の表示台本がハイライト解決に使った台本と違います(解決をやり直す)")
             i = j
             continue
         m = re.fullmatch(r"key_phrase_(\d+)", part)
@@ -2553,16 +2601,23 @@ def _user_page_rows(run_dir: str, level: str, rows: list, kp_rows: list, audio_r
         out.append({"part": base, "start": r["start"], "dur": r["dur"], "src": r["file"],
                     "blocks": [uc.script_block(r["script"])]})
         i += 1
+    if _hl_res:
+        _need = {p["unit_key"] for h in _hl_res.get("highlights") or [] if h.get("decorate") for p in h["pieces"]}
+        if _need - _hl_seen:
+            raise FamilyZAudioStop(f"HL_DISPLAY_UNIT_MISSING: ハイライト対象のunit {sorted(_need - _hl_seen)} がページのFull Storyに無い")
     return out
 
 
 def build_pages(run_dir: str, pages_dir: str = PAGES_DIR, reuse_existing_audio: bool = False, *,
                 page_title: str = "走れメロス", audio_file_prefix: str = "Melos", study_html_by_level: dict | None = None,
-                audience: str = "public") -> dict:
+                audience: str = "public", highlights_by_level: dict | None = None) -> dict:
     """user_test/family_z_melos_02/{index,standard,advanced}.html を生成する(静的ファイルのみ)。
     index.html=ユーザー試聴ページ標準フォーマット(Std/Adv 1ページ、通し再生・再生順スクリプト・KP、ASR警告は補助表示。委任_19、
     er_user_listening_page_common_01)。standard.html/advanced.html=Voice/Style付き詳細確認ページ(開発確認用、従来形式)。
-    reuse_existing_audio=True: 既存mp3(per-clip/通し全編)を書き換えず再利用(Part束ね用の新規mp3のみ追加)。"""
+    reuse_existing_audio=True: 既存mp3(per-clip/通し全編)を書き換えず再利用(Part束ね用の新規mp3のみ追加)。
+    highlights_by_level(SLOT-23 委任_04E、既定None=従来とバイト同一): {level: {"result": resolve_highlights結果, "units": full_story_display_units}}。
+    あるlevelのときだけそのlevelのindex節の本文をハイライト(①二重下線/②下線/③下線)し、台本表の直後(study_htmlの先頭)に凡例+③訳リスト+CSSを置く。
+    標準/詳細ページ(standard.html/advanced.html=開発確認用)は対象外。"""
     import er_user_listening_page_common_01 as uc
     uc.normalize_audience(audience)       # 委任_08: 既定public=マーカーなし。devは呼出側の明示指定のみ(index_dev.htmlへ出力し公開用index.htmlを上書きしない)
     os.makedirs(pages_dir, exist_ok=True)
@@ -2588,9 +2643,12 @@ def build_pages(run_dir: str, pages_dir: str = PAGES_DIR, reuse_existing_audio: 
         with open(f"{pages_dir}/{fname}", "w", encoding="utf-8") as f:
             f.write(html_text)
         user_levels.append({"id": "std" if label == "Standard" else "adv", "label": label, "full_src": f"audio_{label.lower()}/{full}", "duration": dur,
-                            "rows": _user_page_rows(run_dir, level, rows, kp_rows, f"audio_{label.lower()}/", audio_dir, audience),
-                            # 学習テキスト(Part 1[Advancedのみ]+Part 2文法[両level、GRAMMAR-PREGEN-ALL-LEVELS-01 委任_03])。levelキー='b1b'/'a2'。未指定/空=従来とバイト同一
-                            **({"study_html": (study_html_by_level or {}).get(level)} if (study_html_by_level or {}).get(level) else {})})
+                            "rows": _user_page_rows(run_dir, level, rows, kp_rows, f"audio_{label.lower()}/", audio_dir, audience,
+                                                    highlights=(highlights_by_level or {}).get(level)),
+                            # 学習テキスト(Part 1[Advanced、およびdisplay_spec付きStandard]+Part 2文法[両level、GRAMMAR-PREGEN-ALL-LEVELS-01 委任_03])。levelキー='b1b'/'a2'。
+                            # 未指定/空=従来とバイト同一。SLOT-23: ハイライトがあるlevelは台本表の直後(=study_htmlの先頭)に凡例+③訳リスト(highlight_block_html)
+                            **({"study_html": _hl_block_for(highlights_by_level, level) + ((study_html_by_level or {}).get(level) or "")}
+                               if (_hl_block_for(highlights_by_level, level) or (study_html_by_level or {}).get(level)) else {})})
         out[label] = {"page": f"{pages_dir}/{fname}", "rows": len(rows), "kp_rows": len(kp_rows), "lint": lint}
     index_html = build_index_html(user_levels, warn_sections, page_title=page_title)
     lint = lint_page_html(index_html)
@@ -2603,6 +2661,11 @@ def build_pages(run_dir: str, pages_dir: str = PAGES_DIR, reuse_existing_audio: 
         f.write(index_html)
     out["index"] = {"page": f"{pages_dir}/{index_name}", "standard_check": chk["overall"], "lint": lint}
     return out
+
+
+def _hl_block_for(highlights_by_level: dict | None, level: str) -> str:
+    e = (highlights_by_level or {}).get(level)
+    return highlight_block_html(e["result"]) if e else ""
 
 
 def _warn_entry_to_clip_id(entry_key: str):

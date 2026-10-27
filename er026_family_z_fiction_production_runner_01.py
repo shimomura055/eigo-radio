@@ -1132,7 +1132,10 @@ E2E_STAGES = ("seed_check", "writer", "std_adjust", "plan", "support", "kp",
 E2E_STAGE_EST_JPY = {"writer": 22.0, "std_adjust": 8.0, "plan": 2.0,
                      "support": 8.0, "kp": 10.0, "tts_b1b": 40.0, "tts_a2": 40.0}
 E2E_TTS_CLIP_EST_JPY = 2.0              # clip単位guard見積り。TTS統一委任_02(Opus R-6): 最悪clip=6TTS+ASR+LR LLM≒2円へ更新(旧1.0=最大4TTS想定)。事後は次clipのguardで検知
-E2E_KP_EXTRA_REGEN_NAMES = ("kp_expl_b1b", "kp_part1_b1b", "kp_part1_ja_b1b")   # 委任_14(Part 1 Vocabulary & Expressions): kp_part1_b1b追加
+ADV_LEVEL = "b1b"                       # Advanced(Part 1[Vocabulary & Expressions]は常に載る)。Part 1系関数の既定level引数以外では使わない(SLOT-23 委任_04E)
+ADV_EXPL_STAGE = f"kp_expl_{ADV_LEVEL}"   # Advanced専用のKP英語解説stage(Standardには無い)
+# 委任_14(Part 1 Vocabulary & Expressions)/SLOT-23 委任_04E(Standardも対象): kp_part1_<lv>/kp_part1_ja_<lv>を両levelで明示再生成できる。DEPENDENTSへは追加しない(既存方針)
+E2E_KP_EXTRA_REGEN_NAMES = (ADV_EXPL_STAGE,) + tuple(f"{stem}_{lv}" for lv in LEVELS for stem in ("kp_part1", "kp_part1_ja"))
 LEGACY_STAGES = ("text", "keyphrase")
 
 
@@ -1534,14 +1537,72 @@ def _assert_kp_review_consistent(ctx, level: str, where: str) -> None:
                              f"(旧KPの混入防止。`--stage kp`を再実行して確定物をinstallする)")
 
 
-def _part1_items_b1b(ctx) -> list:
+def _part1_items(ctx, level: str = ADV_LEVEL) -> list:
     """Part 1(単語解説)の入力の単一アクセサ(M-9)。reviewがあればvocab_confirmed.json(最大5件)が必須(fail-closed)、旧runだけKP(3件)。
-    KP側のrankで他ファイルと結合しない(vocab側の連番rankを使う)。"""
+    KP側のrankで他ファイルと結合しない(vocab側の連番rankを使う)。level=Advanced(既定)/Standard(display_spec付きのみ、SLOT-23)。"""
     khr = _khr()
     try:
-        return khr.part1_items(_kp_src_dir(ctx, "b1b"))
+        return khr.part1_items(_kp_src_dir(ctx, level))
     except khr.KpReviewError as e:
-        raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_ITEMS_NOT_READY: {e}") from e
+        raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_ITEMS_NOT_READY({level}): {e}") from e
+
+
+# ------------------------------------------------------------
+# SLOT-23 委任_04E: 表示仕様(display_spec=LEARNING_ITEMS_123_V1)の判定と、本文ハイライトの解決アダプタ
+# 表示の有効化は確定レコードのdisplay_spec(er128.display_spec_of)だけで決まる(flag・環境変数・引数では切替不可)。無い(旧run)=従来とバイト同一。
+# ------------------------------------------------------------
+def _display_spec(ctx, level: str):
+    cc = _khr()._cc()   # 確定内容保護moduleへの既存の入口(er119._cc)。runnerからer128を直接importしない
+    try:
+        return cc.display_spec_of(ctx.out_dir, level)
+    except ValueError as e:
+        raise FamilyZE2EStop(f"FAMILY_Z_DISPLAY_SPEC_UNKNOWN({level}): {e}") from e
+
+
+def _part1_on(ctx, level: str) -> bool:
+    """このlevelのページにPart 1(Vocabulary & Expressions)が載る対象か。Advancedは常に、Standardはdisplay_spec付き(マーク付き)のときだけ。"""
+    return level == ADV_LEVEL or bool(_display_spec(ctx, level))
+
+
+def _part1_levels(ctx) -> list:
+    return [lv for lv in LEVELS if _part1_on(ctx, lv)]
+
+
+def _highlight_items(ctx, level: str) -> tuple:
+    """(確定レコード, ハイライト対象items[①②③])。確定内容の整合(G1)は呼出側の_assert_kp_review_consistentが先に通している。"""
+    import er_learning_highlight_01 as hl
+    rec = _khr()._cc().load_record(_kp_src_dir(ctx, level))
+    if rec is None:
+        raise FamilyZE2EStop(f"FAMILY_Z_HIGHLIGHT_RECORD_MISSING({level}): display_spec付きのはずの確定レコードがありません")
+    return rec, hl.items_from_record(rec)
+
+
+def _resolve_level_highlights(ctx, level: str):
+    """display_spec付きlevelだけ、Full Story本文のハイライトを解決する(純関数resolve_highlights 1箇所)。無い(旧run)=None。
+    ISSUE(特定不能・部分交差等)はページ生成前にFamilyZE2EStop(原因コード付き)。NOTICEは<level>/audit/highlight_resolve.jsonへ記録する。
+    本文=候補生成に使った本文(canonical_article_text)、表示単位=ページに表示されるクリップ台本(Part別・公開順)。"""
+    if not _display_spec(ctx, level):
+        return None
+    import er_learning_highlight_01 as hl
+    m = _m()
+    rec, items = _highlight_items(ctx, level)
+    cpath = f"{_kp_src_dir(ctx, level)}/kp_candidates.json"
+    if not os.path.exists(cpath):
+        raise FamilyZE2EStop(f"FAMILY_Z_HIGHLIGHT_CANDIDATES_MISSING({level}): {cpath}")
+    cands = m.w62.rj(cpath)
+    want = (rec.get("origin") or {}).get("candidates_sha256")
+    if want and cands.get("candidates_sha256") != want:
+        raise FamilyZE2EStop(f"FAMILY_Z_HIGHLIGHT_CANDIDATES_SHA_MISMATCH({level}): kp_candidates.jsonが確定時の候補docと違います")
+    article = canonical_article_text(m.w62.rd(_level_text_path(ctx, level)))
+    units = m.a63.full_story_display_units(ctx.out_dir, level)
+    res = hl.resolve_highlights(article, cands, items, units)
+    audit = {"level": level, "status": res["status"], "stats": res["stats"], "notices": res["notices"], "issues": res["issues"],
+             "units": [{"key": u["key"], "clips": len(u["texts"])} for u in units]}
+    m.w62.wj(f"{ctx.out_dir}/{level}/audit/highlight_resolve.json", audit)
+    if res["status"] != "OK":
+        raise FamilyZE2EStop("FAMILY_Z_HIGHLIGHT_ISSUE(" + level + "): " + "; ".join(f"{i['code']}:{i.get('candidate_id')}:{i['detail']}" for i in res["issues"])
+                             + f"(ページ生成前STOP。詳細 {ctx.out_dir}/{level}/audit/highlight_resolve.json)")
+    return {"result": res, "units": units, "article": article}
 
 
 # ------------------------------------------------------------
@@ -1698,11 +1759,11 @@ def _part2_final_step(ctx, prov, level: str, p1_items: list = None) -> str:
 
 
 def _part2_pool(ctx, level: str, p1_items: list = None) -> dict:
-    """Part 1訳との食い違い検査用pool。Part 1はAdvanced(b1b)のみ=Standardは空(検査対象なし)。"""
-    if level != "b1b":
+    """Part 1訳との食い違い検査用pool。Part 1が載るlevel(Advanced、およびdisplay_spec付きStandard)のみ。Part 1が無いStandard(旧run)は空(検査対象なし)。"""
+    if not _part1_on(ctx, level):
         return {}
-    p = _part1_ja_path(ctx)
-    return _p2w().part1_ref_ja_pool(p1_items if p1_items is not None else _part1_items_b1b(ctx), _m().w62.rj(p) if os.path.exists(p) else None)
+    p = _part1_ja_path(ctx, level)
+    return _p2w().part1_ref_ja_pool(p1_items if p1_items is not None else _part1_items(ctx, level), _m().w62.rj(p) if os.path.exists(p) else None)
 
 
 def _assert_part2_final(ctx, where: str, *, level: str) -> dict:
@@ -2190,20 +2251,24 @@ def stage_kp(ctx) -> dict:
         r = w62.ensure_stage(prov, "kp_expl_b1b", sig, ex_path, runner_ex, regenerate=ctx.regenerate_stage == "kp_expl_b1b")
     except w62.FamilyZProvenanceMismatchStop as e:
         # 委任_14(Opus実装時必須9): KP表現が変わると、まずkp_expl_b1bが止まり、再生成後にkp_part1_b1bが止まる(2段)。次コマンドを明記する。
-        raise type(e)(f"{e} 次の一手: {_part1_cli_hint(ctx, 'kp_expl_b1b')}を実行し、続けて{_part1_cli_hint(ctx, 'kp_part1_b1b')}を実行する"
+        raise type(e)(f"{e} 次の一手: {_part1_cli_hint(ctx, 'kp_expl_b1b')}を実行し、続けて{_part1_cli_hint(ctx, _part1_stage(ADV_LEVEL))}を実行する"
                       "(KP表現が変わった場合の2段再生成)") from e
     summary["kp_explanations_b1b"] = r["status"]
-    p1_items = _part1_items_b1b(ctx)   # M-9: Part 1の入力=vocab_confirmed.json(最大5件、KP3件を含む)。KP(音声・Adv解説)は3件のまま
-    summary["kp_part1_b1b"] = _stage_kp_part1(ctx, prov, p1_items)
-    summary["kp_part1_ja_b1b"] = _stage_kp_part1_ja(ctx, prov, p1_items)   # 委任_16 T1: 解説とは独立の別stage・別call(引用英文のみ入力)
-    _assemble_study_rows(ctx, p1_items)   # 組立検証(gloss HR/未評価・引用の逐語実在・訳の最新性)+study_text/保存
-    summary["part2_b1b"] = _part2_final_step(ctx, prov, "b1b", p1_items)   # Part 2の確定(文法Human確認 or 明示宣言)からfinalize(LLM 0)。再抽出・Step Bなし。Part 1の訳が参考訳pool
-    summary["part2_a2"] = _part2_final_step(ctx, prov, "a2")               # Standard: Part 1は無い。KP確定後に同様にfinalize
+    # Part 1(Vocabulary & Expressions): Advancedは常に、Standardはdisplay_spec付き(マーク付き)のときだけ(SLOT-23 委任_04E。同一の生成工程をlevel引数で通す)
+    p1_by_level = {}
+    for _plv in _part1_levels(ctx):
+        _items = _part1_items(ctx, _plv)   # M-9: Part 1の入力=vocab_confirmed.json(最大5件、KP3件を含む)。KP(音声・Adv解説)は3件のまま
+        p1_by_level[_plv] = _items
+        summary[_part1_stage(_plv)] = _stage_kp_part1(ctx, prov, _items, _plv)
+        summary[_part1_ja_stage(_plv)] = _stage_kp_part1_ja(ctx, prov, _items, _plv)   # 委任_16 T1: 解説とは独立の別stage・別call(引用英文のみ入力)
+        _assemble_study_rows(ctx, _items, _plv)   # 組立検証(gloss HR/未評価・引用の逐語実在・訳の最新性)+study_text/保存
+    summary["part2_b1b"] = _part2_final_step(ctx, prov, "b1b", p1_by_level[ADV_LEVEL])   # Part 2の確定(文法Human確認 or 明示宣言)からfinalize(LLM 0)。再抽出・Step Bなし。Part 1の訳が参考訳pool
+    summary["part2_a2"] = _part2_final_step(ctx, prov, "a2", p1_by_level.get("a2"))   # Standard: Part 1はマーク付きのときだけ(無ければNone=参考訳poolなし)
     return summary
 
 
 # ------------------------------------------------------------
-# 学習テキスト Part 1「Vocabulary & Expressions」(FAMILY-Z-STUDY-TEXT-TRIAL-01 委任_14、案α、Advancedのみ)
+# 学習テキスト Part 1「Vocabulary & Expressions」(FAMILY-Z-STUDY-TEXT-TRIAL-01 委任_14、案α。Advancedは常に、Standardはdisplay_spec付き[SLOT-23 委任_04E]のみ)
 # 設計: docs/research/FAMILY-Z-STUDY-TEXT-TRIAL-01/PART1_WIRING_DESIGN_01.md §13〜§17。生成=stage_kp(KP確定後・TTS前)、
 # 使う側(load_level_inputs[TTS/Gate/Assembly共有]・stage_pages)で存在と最新性をfail-closed確認(Opus M2)。
 # 訳欄の判断記録が無い間は、生成・保存(study_text/)のみ行いページへは描画しない(M3 (ii)、er003_kp_general_explanation_01.render_html_block)。
@@ -2213,8 +2278,16 @@ def _p1():
     return p1
 
 
-def _part1_path(ctx) -> str:
-    return f"{ctx.out_dir}/key_phrases/b1b/{_p1().EXPLANATIONS_FILENAME}"
+def _part1_stage(level: str) -> str:
+    return f"kp_part1_{level}"
+
+
+def _part1_ja_stage(level: str) -> str:
+    return f"kp_part1_ja_{level}"
+
+
+def _part1_path(ctx, level: str = ADV_LEVEL) -> str:
+    return f"{ctx.out_dir}/key_phrases/{level}/{_p1().EXPLANATIONS_FILENAME}"
 
 
 def _part1_cli_hint(ctx, regen_name: str) -> str:
@@ -2227,15 +2300,16 @@ def _kp_items_b1b(ctx) -> list:
     return sorted(kp["items"], key=lambda x: x["rank"])
 
 
-def _require_part1_fresh(ctx, items: list, where: str) -> dict:
+def _require_part1_fresh(ctx, items: list, where: str, level: str = ADV_LEVEL) -> dict:
     """Opus M2: Part 1を使う側の確認(存在+signature一致)。無い/古いならFamilyZE2EStop(次コマンド付き、TTS/pagesへ進まない)。"""
     p1 = _p1()
-    path = _part1_path(ctx)
+    path = _part1_path(ctx, level)
     doc = _m().w62.rj(path) if os.path.exists(path) else None
+    _expl_hint = f"。KP表現が変わっている場合は先に{_part1_cli_hint(ctx, ADV_EXPL_STAGE)}" if level == ADV_LEVEL else ""   # kp_expl_<Adv>はAdvanced専用の英語解説stage
     try:
         p1.require_fresh_general_explanations(
-            items, doc, where=where,
-            next_command=f"{_part1_cli_hint(ctx, 'kp_part1_b1b')}(Part 1だけ再生成。KP選定・TTSはやり直さない。KP表現が変わっている場合は先に{_part1_cli_hint(ctx, 'kp_expl_b1b')})")
+            items, doc, where=where, level=level,
+            next_command=f"{_part1_cli_hint(ctx, _part1_stage(level))}(Part 1だけ再生成。KP選定・TTSはやり直さない{_expl_hint})")
     except p1.KpGeneralExplanationStale as e:
         raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_NOT_READY: {e}") from e
     return doc
@@ -2246,68 +2320,68 @@ def _p1ja():
     return ja
 
 
-def _part1_ja_path(ctx) -> str:
-    return f"{ctx.out_dir}/key_phrases/b1b/{_p1ja().TRANSLATIONS_FILENAME}"
+def _part1_ja_path(ctx, level: str = ADV_LEVEL) -> str:
+    return f"{ctx.out_dir}/key_phrases/{level}/{_p1ja().TRANSLATIONS_FILENAME}"
 
 
-def _require_part1_ja_fresh(ctx, items: list, where: str) -> dict:
+def _require_part1_ja_fresh(ctx, items: list, where: str, level: str = ADV_LEVEL) -> dict:
     """委任_16 T1: 訳(引用英文の日本語訳)を使う側の確認(存在+signature一致)。無い/古いならFamilyZE2EStop(次コマンド付き)。"""
     ja = _p1ja()
-    path = _part1_ja_path(ctx)
+    path = _part1_ja_path(ctx, level)
     doc = _m().w62.rj(path) if os.path.exists(path) else None
     try:
-        ja.require_fresh_translations(items, doc, where=where, next_command=f"{_part1_cli_hint(ctx, 'kp_part1_ja_b1b')}(訳だけ再生成。KP選定・TTS・解説はやり直さない)")
+        ja.require_fresh_translations(items, doc, where=where, next_command=f"{_part1_cli_hint(ctx, _part1_ja_stage(level))}(訳だけ再生成。KP選定・TTS・解説はやり直さない)")
     except ja.KpSourceSentenceJaStale as e:
         raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_JA_NOT_READY: {e}") from e
     return doc
 
 
-def _assemble_study_rows(ctx, items: list) -> list:
+def _assemble_study_rows(ctx, items: list, level: str = ADV_LEVEL) -> list:
     m = _m()
     p1 = _p1()
-    doc = _require_part1_fresh(ctx, items, "assemble")
-    ja_doc = _require_part1_ja_fresh(ctx, items, "assemble")
-    text = canonical_article_text(m.w62.rd(_level_text_path(ctx, "b1b")))
+    doc = _require_part1_fresh(ctx, items, "assemble", level)
+    ja_doc = _require_part1_ja_fresh(ctx, items, "assemble", level)
+    text = canonical_article_text(m.w62.rd(_level_text_path(ctx, level)))
     try:
-        rows = p1.assemble_part1(items, doc, _p1ja().translations_by_rank(ja_doc), text)
+        rows = p1.assemble_part1(items, doc, _p1ja().translations_by_rank(ja_doc), text, level=level)
     except p1.KpGeneralExplanationError as e:
-        raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_ASSEMBLE_NOT_OK: {e}") from e
-    p1.write_study_text(f"{ctx.out_dir}/study_text", rows)
+        raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_ASSEMBLE_NOT_OK({level}): {e}") from e
+    p1.write_study_text(_part2_dir(ctx, level), rows, level=level)   # Advanced=<out>/study_text(従来どおり)・Standard=<out>/a2/study_text(Advの出力を上書きしない)
     return rows
 
 
-def _stage_kp_part1(ctx, prov, items: list) -> str:
+def _stage_kp_part1(ctx, prov, items: list, level: str = ADV_LEVEL) -> str:
     m = _m()
     st, w62 = m.st, m.w62
     p1 = _p1()
     try:
-        sig = p1.phrases_signature(items)
+        sig = p1.phrases_signature(items, level=level)
     except p1.KpGeneralExplanationInputError as e:
         raise FamilyZE2EStop(f"FAMILY_Z_KP_GENERAL_EXPLANATION_INPUT_INVALID: {e}(Part 1の入力は全文選定KP[fulltext_source_ref+used_form]のみ。TTSへ進まない)") from e
 
     def runner_p1():
-        _guard(ctx, "kp_part1_b1b", 0.5)
+        _guard(ctx, _part1_stage(level), 0.5)
         hook = ctx.hooks.get("part1_call_fn")
         if hook is None and ctx.mode != "real":
             raise FamilyZE2EStop("FAMILY_Z_KP_PART1_NO_HOOK: mock/dry-runではhooks.part1_call_fnが必要(実APIへは出さない)")
         try:
             with ctx.stage_context("kp_part1"):   # 費用ログのstageタグ(real時のみ。Part 1の原価を単独で集計できる)
-                res = p1.generate_for_kp_items(items, call_fn=hook, client=ctx.llm_client)
+                res = p1.generate_for_kp_items(items, call_fn=hook, client=ctx.llm_client, level=level)
         except p1.KpGeneralExplanationError as e:
-            raise FamilyZE2EStop(f"FAMILY_Z_KP_GENERAL_EXPLANATION_NOT_OK: {e}(旧方式fallbackなし・空欄続行なし。TTSへ渡さずSTOP。"
-                                 f"次の一手: 原因確認後に{_part1_cli_hint(ctx, 'kp_part1_b1b')})") from e
+            raise FamilyZE2EStop(f"FAMILY_Z_KP_GENERAL_EXPLANATION_NOT_OK({level}): {e}(旧方式fallbackなし・空欄続行なし。TTSへ渡さずSTOP。"
+                                 f"次の一手: 原因確認後に{_part1_cli_hint(ctx, _part1_stage(level))})") from e
         a = res["audit"]
         return st.dumps(res), {"model": a["model"], "prompt_sha256": a["prompt_sha256"], "total_cost_jpy": a["total_cost_jpy"],
                                "retried_for_parse": a["retried_for_parse"], "response_ids": a["response_ids"]}
 
     try:
-        r = w62.ensure_stage(prov, "kp_part1_b1b", sig, _part1_path(ctx), runner_p1, regenerate=ctx.regenerate_stage == "kp_part1_b1b")
+        r = w62.ensure_stage(prov, _part1_stage(level), sig, _part1_path(ctx, level), runner_p1, regenerate=ctx.regenerate_stage == _part1_stage(level))
     except w62.FamilyZProvenanceMismatchStop as e:
-        raise type(e)(f"{e} 次の一手: {_part1_cli_hint(ctx, 'kp_part1_b1b')}(KP表現・順序・Prompt・modelが変わった場合は明示再生成。自動再生成しない)") from e
+        raise type(e)(f"{e} 次の一手: {_part1_cli_hint(ctx, _part1_stage(level))}(KP表現・順序・Prompt・modelが変わった場合は明示再生成。自動再生成しない)") from e
     return r["status"]
 
 
-def _stage_kp_part1_ja(ctx, prov, items: list) -> str:
+def _stage_kp_part1_ja(ctx, prov, items: list, level: str = ADV_LEVEL) -> str:
     """委任_16 T1: 引用英文のみを入力に日本語訳を1 callで生成(解説stageとは独立)。signature=引用英文+Prompt sha+model。"""
     m = _m()
     st, w62 = m.st, m.w62
@@ -2318,25 +2392,25 @@ def _stage_kp_part1_ja(ctx, prov, items: list) -> str:
         raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_JA_INPUT_INVALID: {e}(訳の入力は本文引用英文のみ。TTSへ進まない)") from e
 
     def runner_ja():
-        _guard(ctx, "kp_part1_ja_b1b", 0.3)
+        _guard(ctx, _part1_ja_stage(level), 0.3)
         hook = ctx.hooks.get("part1_ja_call_fn")
         if hook is None and ctx.mode != "real":
             raise FamilyZE2EStop("FAMILY_Z_KP_PART1_JA_NO_HOOK: mock/dry-runではhooks.part1_ja_call_fnが必要(実APIへは出さない)")
-        text = canonical_article_text(w62.rd(_level_text_path(ctx, "b1b")))
+        text = canonical_article_text(w62.rd(_level_text_path(ctx, level)))
         try:
             with ctx.stage_context("kp_part1_ja"):   # 費用ログのstageタグ(訳の原価を単独で集計できる)
                 res = ja.generate_for_kp_items(items, call_fn=hook, client=ctx.llm_client, article_text=text)
         except (ja.KpSourceSentenceJaError, ja.KpSourceSentenceJaInputError) as e:
-            raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_JA_NOT_OK: {e}(旧方式fallbackなし・空欄続行なし。TTSへ渡さずSTOP。"
-                                 f"次の一手: 原因確認後に{_part1_cli_hint(ctx, 'kp_part1_ja_b1b')})") from e
+            raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_JA_NOT_OK({level}): {e}(旧方式fallbackなし・空欄続行なし。TTSへ渡さずSTOP。"
+                                 f"次の一手: 原因確認後に{_part1_cli_hint(ctx, _part1_ja_stage(level))})") from e
         a = res["audit"]
         return st.dumps(res), {"model": a["model"], "prompt_sha256": a["prompt_sha256"], "total_cost_jpy": a["total_cost_jpy"],
                                "retried_for_parse": a["retried_for_parse"], "response_ids": a["response_ids"]}
 
     try:
-        r = w62.ensure_stage(prov, "kp_part1_ja_b1b", sig, _part1_ja_path(ctx), runner_ja, regenerate=ctx.regenerate_stage == "kp_part1_ja_b1b")
+        r = w62.ensure_stage(prov, _part1_ja_stage(level), sig, _part1_ja_path(ctx, level), runner_ja, regenerate=ctx.regenerate_stage == _part1_ja_stage(level))
     except w62.FamilyZProvenanceMismatchStop as e:
-        raise type(e)(f"{e} 次の一手: {_part1_cli_hint(ctx, 'kp_part1_ja_b1b')}(引用英文・Prompt・modelが変わった場合は明示再生成。自動再生成しない)") from e
+        raise type(e)(f"{e} 次の一手: {_part1_cli_hint(ctx, _part1_ja_stage(level))}(引用英文・Prompt・modelが変わった場合は明示再生成。自動再生成しない)") from e
     return r["status"]
 
 
@@ -2366,12 +2440,14 @@ def load_level_inputs(ctx, level: str, *, for_tts: bool = False) -> dict:
         raise FamilyZE2EStop(f"FAMILY_Z_SRC_CONTRACT_MISSING({level}): KP成果物に{_srcz.LABEL}が未付与 "
                              f"(kp stageを再実行するか--regenerate-stage kp_{level})")
     items = sorted(kp["items"], key=lambda x: x["rank"])
-    if level == "b1b":
+    if _part1_on(ctx, level):
         # 委任_14(Opus M2): Part 1(Vocabulary & Expressions)の存在と最新性を、TTS/Gate/Assemblyの共有入口でfail-closed確認する
         # (Part 1導入前に始まったrunの再開・--regenerate-stage kp_b1b後の再生成忘れで、Part 1なしの音声/古い解説を作らない)。
-        _p1_items = _part1_items_b1b(ctx)   # M-9: Part 1の入力はvocab(最大5件)。KP側rankで結合しない
-        _require_part1_fresh(ctx, _p1_items, "load_level_inputs(b1b)")
-        _require_part1_ja_fresh(ctx, _p1_items, "load_level_inputs(b1b)")   # 委任_16 T1: 訳も同様にfail-closed確認
+        # SLOT-23 委任_04E: display_spec付きStandard(a2)でも同型に確認する(kp_general_explanations.jsonの存在とsignature一致)。
+        _p1_items = _part1_items(ctx, level)   # M-9: Part 1の入力はvocab(最大5件)。KP側rankで結合しない
+        _require_part1_fresh(ctx, _p1_items, f"load_level_inputs({level})", level)
+        _require_part1_ja_fresh(ctx, _p1_items, f"load_level_inputs({level})", level)   # 委任_16 T1: 訳も同様にfail-closed確認
+    if level == "b1b":
         _assert_part2_final(ctx, "load_level_inputs(b1b)", level="b1b")   # Part 2(文法): 確定・結果の存在と最新性(M-2)。未確定=rc=4待機、古い/不整合=STOP
     kp_items = [{"rank": it["rank"], "used_form": it["used_form"], "japanese_gloss": it.get("japanese_gloss", ""),
                  "display_phrase": it["display_phrase"]} for it in items]
@@ -2477,18 +2553,32 @@ def stage_pages(ctx) -> dict:
     cfg = STORY_REGISTRY[ctx.story_key]
     # 委任_14: Part 1(Opus M2で存在・最新性をfail-closed確認)。study_text/は毎回再組立して保存(gloss更新・本文更新に追従)。
     # ページへの描画は、訳欄(T1/T2)のユーザー判断記録が存在するときのみ(M3 (ii))。無い間は従来とバイト同一(study_html未指定)。
-    _assert_kp_review_consistent(ctx, "b1b", "stage_pages")
+    _assert_kp_review_consistent(ctx, ADV_LEVEL, "stage_pages")
     _assert_kp_review_consistent(ctx, "a2", "stage_pages")
-    rows = _assemble_study_rows(ctx, _part1_items_b1b(ctx))
-    try:
-        study_html = _p1().render_html_block(rows)
-    except _p1().KpGeneralExplanationError as e:
-        raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_RENDER_NOT_OK: {e}") from e
-    _p2res = _assert_part2_final(ctx, "stage_pages", level="b1b")   # Part 2(文法)の存在・最新性・確定との一致(Advanced)
+    # SLOT-23 委任_04E: display_spec付きlevelだけ、Full Story本文のハイライトを解決する。特定不能(ISSUE)はページ生成前にSTOP(API 0・副作用はaudit記録のみ)。
+    hl_by_level = {}
+    for _lv in LEVELS:
+        _hr = _resolve_level_highlights(ctx, _lv)
+        if _hr:
+            hl_by_level[_lv] = {"result": _hr["result"], "units": _hr["units"]}
+    p1_html = {}
+    for _lv in _part1_levels(ctx):   # Advanced(常に)+display_spec付きStandard
+        rows = _assemble_study_rows(ctx, _part1_items(ctx, _lv), _lv)
+        try:
+            p1_html[_lv] = _p1().render_html_block(rows)
+        except _p1().KpGeneralExplanationError as e:
+            raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_RENDER_NOT_OK({_lv}): {e}") from e
+        if not p1_html[_lv] and (_lv != ADV_LEVEL or _display_spec(ctx, _lv)):
+            # M11: 訳欄の判断記録が無いとrender_html_blockは空文字を返し黙って欠落する。display_spec付きlevelではPart 1が必須=STOP
+            raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_RENDER_NOT_OK({_lv}): display_spec付きのlevelですがPart 1を描画できません"
+                                 f"(訳欄の判断記録 {_p1().TRANSLATION_DECISION_RECORD} が無い)。黙って欠落させない")
+    _p2res = _assert_part2_final(ctx, "stage_pages", level=ADV_LEVEL)   # Part 2(文法)の存在・最新性・確定との一致(Advanced)
     _p2res_std = _assert_part2_final(ctx, "stage_pages", level="a2")   # Standard(文法はページ専用=pages/page_verifyだけで確認する)
-    study_html = _p2w().compose_page_html(study_html, _p2res)   # R-1/R-2: Part 1ブロック直後にPart 2(共通builder1つ)
-    study_html_std = _p2w().compose_page_html("", _p2res_std)   # 同じ共通builder・同じテンプレート(Standardに載せるのはPart 2だけ)
-    extra = {"study_html_by_level": {"b1b": study_html, "a2": study_html_std}}
+    study_html = _p2w().compose_page_html(p1_html.get(ADV_LEVEL, ""), _p2res)   # R-1/R-2: Part 1ブロック直後にPart 2(共通builder1つ)
+    study_html_std = _p2w().compose_page_html(p1_html.get("a2", ""), _p2res_std)   # 同じ共通builder。Standardは display_spec付きのときだけPart 1が先(Part 1→Part 2)
+    extra = {"study_html_by_level": {ADV_LEVEL: study_html, "a2": study_html_std}}
+    if hl_by_level:
+        extra["highlights_by_level"] = hl_by_level   # 無い(旧run)=キー自体を渡さない=従来とバイト同一
     return _m().a63.build_pages(ctx.out_dir, ctx.pages_dir, page_title=cfg["page_title_ja"],
                                 audio_file_prefix=cfg["audio_file_prefix"], **extra)
 
@@ -2520,6 +2610,34 @@ def evaluate_page_verify(res: dict) -> list:
     return problems
 
 
+def _verify_learning_items(ctx) -> dict:
+    """SLOT-23 委任_04E: index.htmlのlevel節ごとに (1) Part 1(Vocabulary & Expressions)がちょうど1個(vocab対象level=Advancedで描画有効、およびdisplay_spec付きlevel。
+    それ以外は0個) (2) display_spec付きlevelはG3ハイライト検査(er128_kp_highlight_01.verify_highlights: 網羅・区分・本文不変・③訳・public混入)。違反=FamilyZE2EStop。
+    確定内容保護のkill switch(既定ON、er128の単一読取関数)がOFFのときはG3だけスキップしてdisabled markerを残す(M10)。"""
+    import er_user_listening_page_common_01 as cp
+    import er128_kp_highlight_01 as g3
+    with open(f"{ctx.pages_dir}/index.html", encoding="utf-8") as f:
+        idx_html = f.read()
+    out = {}
+    for lv in LEVELS:
+        section = cp.level_section_html(idx_html, PAGE_SECTION_IDS[lv])
+        spec = _display_spec(ctx, lv)
+        required = bool(spec) or (lv == ADV_LEVEL and _p1().study_text_render_enabled())
+        n1 = section.count("<h3>Vocabulary &amp; Expressions</h3>")
+        if n1 != (1 if required else 0):
+            raise FamilyZE2EStop(f"FAMILY_Z_PART1_BLOCK_COUNT({lv}): index.htmlの{PAGE_SECTION_IDS[lv]}の節のPart 1ブロックが{n1}個です"
+                                 f"(期待{1 if required else 0}個。vocab対象levelは0個・2個ともSTOP)")
+        rec = {"section": PAGE_SECTION_IDS[lv], "display_spec": spec, "part1_blocks": n1}
+        if spec:
+            hr = _resolve_level_highlights(ctx, lv)
+            v = g3.verify_highlights(section, {"result": hr["result"], "script_texts": [t for u in hr["units"] for t in u["texts"]], "audience": "public"})
+            rec["g3"] = {"status": v["status"], "disabled_marker": v["disabled_marker"], "counts": v["counts"], "problems": v["problems"]}
+            if v["status"] == "FAIL":
+                raise FamilyZE2EStop(f"FAMILY_Z_HIGHLIGHT_G3_FAIL({lv}): " + "; ".join(f"{p['code']}:{p['candidate_id']}:{p['detail']}" for p in v["problems"][:8]))
+        out[lv] = rec
+    return out
+
+
 def stage_page_verify(ctx) -> dict:
     import functools
     import http.server
@@ -2543,13 +2661,14 @@ def stage_page_verify(ctx) -> dict:
     for lv, page in (("a2", "standard.html"), ("b1b", "advanced.html")):
         idx = f"{ctx.pages_dir}/index.html"
         has_vocab_on_page = False
-        if lv == "b1b" and os.path.exists(idx):
+        if _part1_on(ctx, lv) and os.path.exists(idx):   # SLOT-23: Part 1が載るlevel(Advanced、display_spec付きStandard)のindex節だけで検出する
+            import er_user_listening_page_common_01 as _cp
             with open(idx, encoding="utf-8") as _f:
-                has_vocab_on_page = "Vocabulary &amp; Expressions" in _f.read()
+                has_vocab_on_page = "Vocabulary &amp; Expressions" in _cp.level_section_html(_f.read(), PAGE_SECTION_IDS[lv])
         try:
             sel_report[lv] = khr.verify_selection_matches_outputs(
                 _kp_src_dir(ctx, lv), level=lv, tts_results_path=f"{ctx.out_dir}/{lv}/audit/tts_generation_results.json",
-                study_text_json=(f"{ctx.out_dir}/study_text/{_p1().PART1_FILE_STEM}.json" if lv == "b1b" else None),
+                study_text_json=(f"{_part2_dir(ctx, lv)}/{_p1().PART1_FILE_STEM}.json" if _part1_on(ctx, lv) else None),
                 page_paths=[f"{ctx.pages_dir}/{page}"], vocab_page_paths=([idx] if has_vocab_on_page else None), require_src_contract=True)
         except khr.KpReviewInconsistent as e:
             raise FamilyZE2EStop(f"FAMILY_Z_KP_SELECTION_OUTPUT_MISMATCH({lv}): {e}") from e
@@ -2557,6 +2676,7 @@ def stage_page_verify(ctx) -> dict:
     _assert_part2_final(ctx, "stage_page_verify", level="b1b")
     _assert_part2_final(ctx, "stage_page_verify", level="a2")
     res["part2_verified"] = _verify_part2_outputs(ctx)   # R-3: 確定 <-> part2_result.json <-> md <-> ページの各levelの節(節単位の4者一致)
+    res["learning_items_verified"] = _verify_learning_items(ctx)   # SLOT-23: Part 1ちょうど1個(vocab対象level)+G3ハイライト検査(display_spec付きlevel)
     _m().w62.wj(f"{ctx.out_dir}/page_verify_local.json", res)
     problems = evaluate_page_verify(res)
     if std["overall"] != "PASS":
@@ -2628,7 +2748,7 @@ _STAGE_PLAN_INFO = {
     "std_adjust": ("Std調整 (FAMILY_Z_STD_ADJUST、段落不一致はWARNのみ・再生成/STOPしない)", ["writer/std.md"], "writer/std.md"),
     "plan": ("分割選択+話者判定 (FAMILY_Z_STORY_SPLIT / FAMILY_Z_DIALOGUE_ATTRIBUTION)", ["segment_plan_{b1b,a2}.json", "speaker_table.md"], "segment_plan_a2.json"),
     "support": ("Preview/Comment (gpt-6-luna support)", ["support/{b1b,a2}_support.json"], "support/a2_support.json"),
-    "kp": ("Key Phrase選定+Adv英語解説+Part 1 Vocabulary & Expressions解説+引用英文の日本語訳 (support model)", ["key_phrases/", "{b1b,a2}/key_phrases/keywords_canonicalized.json", "key_phrases/b1b/kp_general_explanations.json", "key_phrases/b1b/kp_source_sentence_ja.json", "study_text/"], "key_phrases/b1b/kp_explanations.json"),
+    "kp": ("Key Phrase選定+Adv英語解説+Part 1 Vocabulary & Expressions解説+引用英文の日本語訳[Standardはdisplay_spec付きのみ] (support model)", ["key_phrases/", "{b1b,a2}/key_phrases/keywords_canonicalized.json", "key_phrases/{b1b,a2}/kp_general_explanations.json", "key_phrases/{b1b,a2}/kp_source_sentence_ja.json", "study_text/", "a2/study_text/"], "key_phrases/b1b/kp_explanations.json"),
     "tts_b1b": ("TTS flash-lite + ASR Primary/Secondary + LR(必要時)", ["b1b/narration/", "b1b/audit/tts_generation_results.json"], "b1b/audit/tts_generation_results.json"),
     "tts_a2": ("TTS flash-lite + ASR Primary/Secondary + LR(必要時)", ["a2/narration/", "a2/audit/tts_generation_results.json"], "a2/audit/tts_generation_results.json"),
     "provision_shell": ("API 0 (既存共有shell資産の読取コピー)", ["{b1b,a2}/narration/*shell"], "-"),
