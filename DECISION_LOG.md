@@ -22655,3 +22655,13 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 照合: `er119_kp_human_review_cli_01.py confirm --from-readable`でdry-run→本確定(両level rc=0、rev1)。候補集合sha・本文sha・選定hash一致、文法g10=0。確定物=run_reselect_01/key_phrases/{a2,b1b}/confirmed_selection.json(+{a2/,}study_text/confirmed_grammar.json count=0)。文法0件=ユーザー確定(UDR D-1解決)。
 - 受入結果: runner 1起動rc=0(kp,tts_b1b,tts_a2,provision_shell,gate,assemble,pages,page_verify)。完成ページ=ユーザー確定①②③と逐語一致(ハイライトlk1太字+二重下線/lk2太字+下線/lk3下線のみ、色・サイズinherit、背景なし)、文法ZERO文言のみ。Style actual gate/速度v2/Chunk/ASR全PASS(PASS_WITH_WARNING 0)、Local Rewrite採用0、本文=run_sf_prod_02固定正本無変更。Adv kp2_enのSecondary一過性障害はretry内で検証済み採用。詳細=docs/research/FZ-TELL-TALE-HEART-RESELECT-REMAKE-01/ACCEPTANCE_PHASE2_01.md。
 - 状態: **Production完成(技術Gate PASS)、ユーザー最終試聴待ち(PASS未取得)**。完成版=https://shimomura055.github.io/eigo-radio/user_test/family_z_tell_tale_heart_reselect_01/index.html。既存公開dir未変更。実費累計約24.81円/Cap150円。CURRENT_SPEC変更なし。commit=メッセージ冒頭『FZ-TELL-TALE-HEART-RESELECT-REMAKE-01 委任_03』。
+
+### 2026-10-28 LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 ユーザー正式決定(APPROVED_FOR_PRODUCTION)
+- 根拠: ユーザー原文=`docs/pm/delegation_log/2026-10-28_LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01_USER.md`(§1〜§12)。Status=`APPROVED_FOR_PRODUCTION`、到達目標=PRODUCTION_WIRED(現状は未配線)。前提=OPEN-565監査+是正4件(7dab92aba/8fbfae04c)。
+- 決定(§3): UD-1=LR後の英文を最終表示本文にも反映し、最終表示本文・TTS入力・ASR正解原稿を一致させる(LR前後英文・変更箇所・理由・対象音声区間を記録、確定KP/KW/文法・日本語訳・Fact・原作保持要件を保護、干渉時はSTOP/USER_DECISION_REQUIRED)。LR正常発動のみではHRへ移行しない。
+- 決定(§4): UD-2=AI島Std `AIs`→`AI agents`/Adv `AIs`→`AI systems`、既存LR後音声使用・再TTSなし・該当箇所のみ、最終Human報告で変更前後を赤色表示。
+- 決定(§5): UD-3=承認済みStyle照合維持/Fallback・LR検出と記録は維持しつつ正常なFallback・LR発動のみを理由とする組立停止・HR要求は解除。未承認・不明Style/許可外Fallback方式/Style記録欠落・不一致/ASR NG等の音声品質NG/LRによる意味・Fact・確定内容・原作保持違反/本文と音声の不一致/技術的・安全上のSTOPは従来どおり停止(品質検査を弱める許可ではない)。X M3・Y Style Gate・Z等他Family相当経路も整合確認。
+- 決定(§2・§6): 最終Human報告用資料のみで、LR変更箇所=赤、Fallback対象テキスト全体と注記=濃い青、重複時は両方表示・実行履歴と最終採用音声を区別・不採用試行のFallbackを最終採用Styleと誤表示しない。TTS/ASR/制作スクリプト/公開本文/KP・KW・文法表示/Style Promptへの混入禁止。
+- 決定(§7): TTS試行回数・待機・Fallback Style・LR範囲・ASR基準・Voice/速度・確定内容保護は不変。49経路対応表と実配線を照合しDangling Referenceを残さない。
+- 決定(§8): 既公開4件(X英単語ガチャAdv/Zメロス Adv/Z猿の手Std/X AI島Std・Adv)はLR関連不一致のみ必要十分に修正、一律作り直し禁止、記事単位承認。§9: 告げ口心臓は独立進行。
+- 進行予定: Phase A設計 → Opus独立レビュー(条件A) → Phase B実装 → 受入12条件(原文§10)・Fable独立受入。Status=APPROVED_FOR_PRODUCTION・未配線(PRODUCTION_WIREDと呼ばない)。実装・検証の結果は別途追記。
