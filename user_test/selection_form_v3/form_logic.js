@@ -208,19 +208,92 @@
     }
     return o;
   }
-  var PREFACE = '以下の選定内容を整理し、必要な修正指示と実装範囲を確認してください。Claude Code向け指示案を作成してください。正式Productionへの未承認変更は禁止します。\n\n';
+  // ======== 送信・コピー v3(委任_07、2026-10-27ユーザー正式決定USER_03 §B、設計=HANDOFF_DESIGN_01/COPY_FORMAT_01) ========
+  // 人間可読の選定結果+照合コード1行を送る。JSON・candidate_id一覧・SHA全文はコピーに出さない(照合コード+公開データJSONから復元できる)。
+  // 旧仕様(JSON同梱・buildText)は技術情報付きコピー(buildCopyText)と buildText に残置(既定非表示の補助)。
+  var PREFACE = '以下はeigo-radioの学習項目選定結果です。内容(英語・日本語訳・区分・文法解説・自由コメント・照合コード)を一切変更・要約・翻訳せず、' +
+    '下の「選定結果」をそのままコードブロックで返してください。修正してほしい点があればコードブロックの外に書いてください。\n\n▼選定結果\n';
   var URL_MAX = 6000;
-  // ChatGPT送信URL。長すぎる場合はJSONを外し、それでも長ければ url=null(=コピー誘導)
-  function buildChatGptUrl(d, st, now) {
-    var text = PREFACE + buildText(d, st);
-    var withJson = text + '\n\n```json\n' + JSON.stringify(buildStructured(d, st, now)) + '\n```';
-    var base = 'https://chatgpt.com/?q=';
-    var u1 = base + encodeURIComponent(withJson);
-    if (u1.length <= URL_MAX) return { url: u1, with_json: true };
-    var u2 = base + encodeURIComponent(text);
-    if (u2.length <= URL_MAX) return { url: u2, with_json: false };
-    return { url: null, with_json: false };
+  var MARK_BEGIN = '【解説全文】', MARK_END = '【解説ここまで】', BODY_TERM = '\n=====';
+  var CAT_HEAD = { 1: '① Key Phrase', 2: '② 追加解説', 3: '③ 本文意味表示' };
+
+  // 純JS SHA-256(同期。外部ライブラリなし。照合コードの算出用。Python hashlib.sha256 とバイト一致)
+  var K256 = [0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da, 0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2];
+  function utf8Bytes(str) {
+    if (typeof TextEncoder !== 'undefined') return new TextEncoder().encode(str);
+    var u = unescape(encodeURIComponent(str)), a = new Uint8Array(u.length); for (var i = 0; i < u.length; i++) a[i] = u.charCodeAt(i); return a;
   }
+  function sha256Hex(input) {
+    var m = typeof input === 'string' ? utf8Bytes(input) : input, l = m.length;
+    var nb = ((l + 9 + 63) >> 6) << 6, b = new Uint8Array(nb); b.set(m); b[l] = 0x80;
+    var hi = Math.floor(l / 0x20000000), lo = (l << 3) >>> 0;
+    b[nb - 8] = hi >>> 24; b[nb - 7] = (hi >>> 16) & 255; b[nb - 6] = (hi >>> 8) & 255; b[nb - 5] = hi & 255;
+    b[nb - 4] = lo >>> 24; b[nb - 3] = (lo >>> 16) & 255; b[nb - 2] = (lo >>> 8) & 255; b[nb - 1] = lo & 255;
+    var h = [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19], w = new Array(64);
+    function rr(x, n) { return (x >>> n) | (x << (32 - n)); }
+    for (var o = 0; o < nb; o += 64) {
+      for (var t = 0; t < 16; t++) w[t] = (b[o + 4 * t] << 24) | (b[o + 4 * t + 1] << 16) | (b[o + 4 * t + 2] << 8) | b[o + 4 * t + 3];
+      for (t = 16; t < 64; t++) { var s0 = rr(w[t - 15], 7) ^ rr(w[t - 15], 18) ^ (w[t - 15] >>> 3), s1 = rr(w[t - 2], 17) ^ rr(w[t - 2], 19) ^ (w[t - 2] >>> 10); w[t] = (w[t - 16] + s0 + w[t - 7] + s1) | 0; }
+      var a = h[0], bb = h[1], c = h[2], dd = h[3], e = h[4], f = h[5], g = h[6], hh = h[7];
+      for (t = 0; t < 64; t++) {
+        var S1 = rr(e, 6) ^ rr(e, 11) ^ rr(e, 25), ch = (e & f) ^ (~e & g), t1 = (hh + S1 + ch + K256[t] + w[t]) | 0;
+        var S0 = rr(a, 2) ^ rr(a, 13) ^ rr(a, 22), mj = (a & bb) ^ (a & c) ^ (bb & c), t2 = (S0 + mj) | 0;
+        hh = g; g = f; f = e; e = (dd + t1) | 0; dd = c; c = bb; bb = a; a = (t1 + t2) | 0;
+      }
+      h[0] = (h[0] + a) | 0; h[1] = (h[1] + bb) | 0; h[2] = (h[2] + c) | 0; h[3] = (h[3] + dd) | 0; h[4] = (h[4] + e) | 0; h[5] = (h[5] + f) | 0; h[6] = (h[6] + g) | 0; h[7] = (h[7] + hh) | 0;
+    }
+    return h.map(function (x) { return ('00000000' + (x >>> 0).toString(16)).slice(-8); }).join('');
+  }
+  // 表示用: 解説全文の末尾の内部終端記号「=====」だけ外す(内容は一字も変えない)
+  function bodyView(body) {
+    var b = String(body || '').replace(/\r\n/g, '\n');
+    return b.slice(-BODY_TERM.length) === BODY_TERM ? b.slice(0, -BODY_TERM.length) : b.replace(/\n+$/, '');
+  }
+  function glossMark(status) { return status === 'official' ? '' : status === 'provisional' ? '（仮訳・未確定）' : '（日本語訳未生成）'; }
+  // 照合コード AIF1-<stem>-<d6>-<c8>-<t8>-<s10>-<g10|0>-<m8|0>-<k4>(COPY_FORMAT_01 §3 / RESTORE_TOOL_SPEC_01)
+  function makeCode(stem, d6, d, selIds, gram, comment) {
+    var c8 = (d.candidates_sha256 || '00000000').slice(0, 8), t8 = ((d.source || {}).text_sha256 || '00000000').slice(0, 8);
+    var s10 = sha256Hex('v1\n' + selIds.map(function (x) { return x[0] + ':' + x[1]; }).join('\n')).slice(0, 10);
+    var g10 = gram.length ? sha256Hex('v1\n' + gram.map(function (x) { return x[0] + ':' + x[1]; }).join('\n')).slice(0, 10) : '0';
+    var m8 = comment ? sha256Hex(comment).slice(0, 8) : '0';
+    var body = 'AIF1-' + stem + '-' + d6 + '-' + c8 + '-' + t8 + '-' + s10 + '-' + g10 + '-' + m8;
+    return body + '-' + sha256Hex(body).slice(0, 4);
+  }
+  // opts.stem(データJSONのファイル名、拡張子なし) / opts.file_sha256(fetchした生バイト列のsha256 hex)。無ければ d.__stem / d.__file_sha256
+  function buildReadable(d, st, opts) {
+    opts = opts || {};
+    var stem = opts.stem || d.__stem, fsha = opts.file_sha256 || d.__file_sha256;
+    if (!stem) throw new Error('buildReadable: stem(データファイル名)が不明です');
+    var d6 = fsha ? String(fsha).slice(0, 6) : '000000';
+    var ch = choicesOf(d, st), its = allItems(d), L = ['記事：' + d.name + '｜' + (d.level_label || d.level || ''), ''], selIds = [];
+    [1, 2, 3].forEach(function (cat) {
+      L.push(CAT_HEAD[cat]);
+      var got = its.filter(function (it) { return ch[it.term] === cat; });
+      got.forEach(function (it) {
+        var g = glossOf(it);
+        L.push('- ' + it.term + '：' + (g.text || '(未生成)') + glossMark(g.status)); selIds.push([cat, candIdOf(it)]);
+      });
+      if (!got.length) L.push('（選択なし）');
+      L.push('');
+    });
+    var gs = summary(d, st).grammar;
+    if (!gs.length) L.push('文法：選定なし');
+    gs.forEach(function (g) { L.push('文法：' + g.title, MARK_BEGIN, bodyView(g.body), MARK_END); });
+    L.push('');
+    var com = (st.comment || '').trim();
+    L.push('自由コメント：' + (com || 'なし'));
+    L.push('', '照合コード(変更しないでください)：' + makeCode(stem, d6, d, selIds, gs.map(function (g) { return [g.candidate_id || g.id, g.explanation_sha256 || '']; }), com));
+    return L.join('\n');
+  }
+  // 「ChatGPTへ送信」: 送信文(PREFACE+人間可読)は常にクリップボードへ。URL(?q=)が閾値内なら本文入りURL、超過なら url=null(=chatgpt.comを開いて貼付案内。エラー扱いにしない)
+  function buildChatGptUrl(d, st, now, opts) {
+    var text = PREFACE + buildReadable(d, st, opts), url = 'https://chatgpt.com/?q=' + encodeURIComponent(text);
+    return { text: text, url: url.length <= URL_MAX ? url : null, url_length: url.length, mode: url.length <= URL_MAX ? 'url' : 'paste' };
+  }
+  // 技術情報付きコピー(補助・既定非表示): 従来の人間可読要約+JSON(candidates_all付き)。er128 confirm --from-form へ直接渡せる逃げ道
   function buildCopyText(d, st, now) {
     return buildText(d, st) + '\n\n```json\n' + JSON.stringify(buildStructured(d, st, now, { all_candidates: true }), null, 1) + '\n```';
   }
@@ -276,6 +349,6 @@
   }
   return { LIMITS: LIMITS, GRAMMAR_MAX: GRAMMAR_MAX, GRAMMAR_TOP_N: GRAMMAR_TOP_N, grammarPresented: grammarPresented, grammarIds: grammarIds, normalizeGrammar: normalizeGrammar, grammarDecision: grammarDecision, grammarBlocked: grammarBlocked, hasGrammarSpec: hasGrammarSpec, chooseGrammar: chooseGrammar, chooseGrammarNone: chooseGrammarNone, choicesOf: choicesOf, grammarStatus: grammarStatus, SCHEMA: SCHEMA, terms: terms, counts: counts, allowed: allowed, grammarChosen: grammarChosen,
     grammarCanToggle: grammarCanToggle, setChoice: setChoice, setGrammar: setGrammar, newState: newState, stateKey: stateKey, summary: summary,
-    buildText: buildText, buildStructured: buildStructured, buildChatGptUrl: buildChatGptUrl, buildCopyText: buildCopyText, glossOf: glossOf, reasonOf: reasonOf, itemRecord: itemRecord, candIdOf: candIdOf, kindOf: kindOf, shaInfo: shaInfo, grammarRecord: grammarRecord, GLOSS_LABEL: GLOSS_LABEL,
+    buildText: buildText, buildStructured: buildStructured, buildChatGptUrl: buildChatGptUrl, buildCopyText: buildCopyText, buildReadable: buildReadable, sha256Hex: sha256Hex, makeCode: makeCode, PREFACE: PREFACE, URL_MAX: URL_MAX, bodyView: bodyView, glossOf: glossOf, reasonOf: reasonOf, itemRecord: itemRecord, candIdOf: candIdOf, kindOf: kindOf, shaInfo: shaInfo, grammarRecord: grammarRecord, GLOSS_LABEL: GLOSS_LABEL,
     validateArticle: validateArticle, validateIndex: validateIndex };
 });

@@ -1,5 +1,8 @@
 # SEND_CHECK_02 送信データ検証(委任_02、2026-10-27)
 
+> **【旧仕様】委任_07(2026-10-27)で送信形式を人間可読+照合コード1行へ変更したため、本ファイルのJSON同梱・URL降格順・candidate_id行を含む送信文に関する記述は旧仕様の測定記録です。現行の測定は`SEND_CHECK_04.md`。**
+
+
 ## 1. 欠落なし検証(node test `no omission for every article x full selection`)
 全データ(7件+ダミー)で、可能な限り選択(①3/②2/③残り、文法最大2、自由コメント)した状態で、`buildText`に**各選択語の「区分|英語|日本語訳【状態】」・文法タイトルと解説全文・自由コメント・AI理由(確認用節)**が全て含まれ、`buildStructured`のselection件数が選択数と一致し、`candidates_all`が全候補数と一致することをassert。実DOM(headless Chrome)でも、選択→送信URLのデコード文に区分|英語|日本語訳【正式訳】・コメント・AI理由節(確定内容節の後ろ)が入ることを確認(`browser_check_02_local_output.txt`)。ダミー記事の文法は選択した解説全文が送信文に入る。
 

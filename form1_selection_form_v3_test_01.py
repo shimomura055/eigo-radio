@@ -257,5 +257,180 @@ class SelectionFormV3Test(unittest.TestCase):
         self.assertIn('ja_r["display_gloss"] = item["japanese_gloss"]', s)
 
 
+# ================= 委任_07: 人間可読コピー+照合コード(COPY_FORMAT_01)・送信/コピー動作(静的)・復元tool往復 =================
+import importlib.util
+import random
+import tempfile
+import re
+
+_PROTO = os.path.join(RD, "proto06_copy_restore_01.py")
+_FX = os.path.join(RD, "fixtures_07")
+
+
+def _load(path, name):
+    spec = importlib.util.spec_from_file_location(name, path)
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
+
+
+def _node_dump(states):
+    node = shutil.which("node")
+    with tempfile.TemporaryDirectory() as td:
+        sp = os.path.join(td, "states.json")
+        with open(sp, "w", encoding="utf-8") as f:
+            json.dump(states, f, ensure_ascii=False)
+        r = subprocess.run([node, os.path.join(RD, "readable_dump_07.js"), sp], capture_output=True, encoding="utf-8", cwd=ROOT)
+    assert r.returncode == 0, r.stderr[-2000:]
+    return json.loads(r.stdout)
+
+
+def _live_files():
+    idx = _j(os.path.join(FD, "data", "articles.json"))
+    return [a["data"] for a in idx["articles"] if a.get("data")]
+
+
+def _rand_state(proto, d, rnd, with_gram):
+    st = proto.random_state(d, rnd, with_gram=False)
+    pres = sorted(d.get("grammar") or [], key=lambda g: (g.get("rank") is None, g.get("rank") or 0))[:2]
+    st["grammar"] = {}
+    if with_gram and pres:
+        st["grammar"][rnd.choice(pres)["id"]] = True
+    st["grammar_zero"] = False
+    if d.get("kp_confirmed"):   # ロック記事: フォームは保存状態でなく確定内容を採用する
+        st["choices"] = {r["term"]: r["category"] for r in d["kp_confirmed"]["selection"]}
+    return st
+
+
+class ReadableCopyV3Test(unittest.TestCase):
+    """node(フォーム実装)の出力が、設計試作(Python)の人間可読形式・照合コードとバイト一致し、復元で欠落なく往復できる。"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.proto = _load(_PROTO, "proto06_copy_restore_01")
+
+    def test_fixed_fixture_byte_match(self):
+        """固定fixture(データJSONと期待文字列をリポジトリに固定)。長文解説(約4,000字)・仮訳・未生成訳・同名文法・複数行コメントでも欠落なし。"""
+        st = _j(os.path.join(_FX, "mini_state.json"))
+        with tempfile.TemporaryDirectory() as td:   # git checkoutの改行変換(CRLF)に依存しないよう、fixtureをLFへ正規化したコピーで実行する(d6はLFバイト基準で固定)
+            fp = os.path.join(td, "mini_article.json")
+            with open(os.path.join(_FX, "mini_article.json"), "rb") as f:
+                raw = f.read().replace(b"\r\n", b"\n")
+            with open(fp, "wb") as f:
+                f.write(raw)
+            out = _node_dump([{"file": fp, "st": st}])[0]
+        with open(os.path.join(_FX, "mini_expected_readable.txt"), encoding="utf-8", newline="") as f:
+            exp = f.read().replace("\r\n", "\n")
+        self.assertEqual(out["readable"], exp)
+        d = _j(os.path.join(_FX, "mini_article.json"))
+        body = d["grammar"][0]["body"][:-len("\n=====")]
+        self.assertIn("【解説全文】\n" + body + "\n【解説ここまで】", out["readable"])   # 解説全文が一字も欠けない(終端記号=====のみ除外)
+        self.assertNotIn("=====", out["readable"])
+        self.assertTrue(re.search(r"照合コード\(変更しないでください\)：AIF1-mini_article-[0-9a-f]{6}-aaaa1111-1234abcd-[0-9a-f]{10}-[0-9a-f]{10}-[0-9a-f]{8}-[0-9a-f]{4}$", out["readable"]))
+        self.assertTrue(out["send"]["text"].startswith("以下はeigo-radioの学習項目選定結果です。"))
+        self.assertTrue(out["send"]["text"].endswith(exp))
+
+    def test_node_python_byte_match_all_live_data(self):
+        """全公開データ×乱択状態: node出力==Python試作出力(照合コードを含むバイト一致)。0/1件文法・ロック記事を含む。"""
+        rnd = random.Random(20261027)
+        states, metas = [], []
+        for f in _live_files():
+            d = _j(os.path.join(FD, f))
+            for trial in range(8):
+                st = _rand_state(self.proto, d, rnd, with_gram=(trial % 2 == 1))
+                states.append({"file": f, "st": st})
+                metas.append((f, d, st))
+        outs = _node_dump(states)
+        n_gram = n_lock = 0
+        for (f, d, st), o in zip(metas, outs):
+            stem = os.path.basename(f)[:-5]
+            d6 = hashlib.sha256(open(os.path.join(FD, f), "rb").read()).hexdigest()[:6]
+            exp = self.proto.build_readable(stem, d, st, d6=d6)
+            self.assertEqual(o["readable"], exp, f)
+            n_gram += 1 if st["grammar"] else 0
+            n_lock += 1 if d.get("kp_confirmed") else 0
+        self.assertGreaterEqual(len(outs), 64)
+        self.assertGreater(n_gram, 0)
+        self.assertGreater(n_lock, 0)
+
+    def test_restore_roundtrip_matches_buildStructured_and_detects_tamper(self):
+        """nodeのコピー全文 -> 復元(試作) -> payload == フォーム既存buildStructured(selection/article/comment)。改変は全てfail-closed。"""
+        rnd = random.Random(7)
+        states, metas = [], []
+        for f in _live_files():
+            d = _j(os.path.join(FD, f))
+            for trial in range(4):
+                st = _rand_state(self.proto, d, rnd, with_gram=(trial % 2 == 1))
+                states.append({"file": f, "st": st})
+                metas.append((f, d, st))
+        outs = _node_dump(states)
+        data_dir = os.path.join(FD, "data")
+        ok = 0
+        for (f, d, st), o in zip(metas, outs):
+            if d.get("candidates_sha256") is None:
+                continue   # DEV Trial doc(候補集合shaなし)はer128が拒否する現行仕様。復元自体は別途
+            payload, _ = self.proto.restore(o["readable"], data_dir)
+            st_ = json.loads(json.dumps(o["structured"]))
+            for g_ in st_["selection"]["grammar"]:   # フォームは表示順位(rank/rank_label)も併記するが、er128 cmd_from_formは読まない(照合の対象外)
+                g_.pop("rank", None)
+                g_.pop("rank_label", None)
+            diffs = self.proto.compare(payload, {"structured": st_})
+            self.assertEqual(diffs, [], f)
+            ok += 1
+        self.assertGreaterEqual(ok, 24)
+        # 改変検出(AI島 Advanced + 文法1件): どれも RestoreError
+        f = "data/ai_island_temple__b1b__prod.json"
+        d = _j(os.path.join(FD, f))
+        st = _rand_state(self.proto, d, random.Random(3), with_gram=True)
+        if not st["grammar"]:
+            st["grammar"][d["grammar"][0]["id"]] = True
+        st["comment"] = "文法の例文を短く"
+        txt = _node_dump([{"file": f, "st": st}])[0]["readable"]
+        self.proto.restore(txt, data_dir)   # 無改変は復元できる
+        lines = txt.split("\n")
+        item_i = next(i for i, ln in enumerate(lines) if ln.startswith("- "))
+        tampers = {
+            "項目行欠落": "\n".join(lines[:item_i] + lines[item_i + 1:]),
+            "日本語訳の意訳": txt.replace(lines[item_i], lines[item_i][:-1] + "る", 1),
+            "解説の末尾切れ": txt.replace("【解説ここまで】", "", 1),
+            "解説の一部改変": txt.replace("**", "", 1),
+            "コメント改変": txt.replace("文法の例文を短く", "文法の例文を長く"),
+            "照合コード欠落": txt[: txt.index("照合コード")],
+            "照合コード1字改変": txt[:-1] + ("0" if txt[-1] != "0" else "1"),
+        }
+        for name, bad in tampers.items():
+            with self.assertRaises(self.proto.RestoreError, msg=name):
+                self.proto.restore(bad, data_dir)
+
+    def test_er128_restore_module_if_present(self):
+        """委任_07R の復元module(er128_form_readable_restore_01.py)が存在する場合、同じフォーム出力を復元でき、試作とpayloadが一致する。未存在ならskip。"""
+        p = os.path.join(ROOT, "er128_form_readable_restore_01.py")
+        if not os.path.exists(p):
+            self.skipTest("er128_form_readable_restore_01.py 未配置")
+        mod = _load(p, "er128_form_readable_restore_01")
+        f = "data/ai_island_temple__a2__prod.json"
+        d = _j(os.path.join(FD, f))
+        st = _rand_state(self.proto, d, random.Random(11), with_gram=False)
+        o = _node_dump([{"file": f, "st": st}])[0]
+        pl, _ = mod.restore(o["readable"], os.path.join(FD, "data"), None)
+        p0, _ = self.proto.restore(o["readable"], os.path.join(FD, "data"))
+        for k in ("article", "selection", "comment"):
+            self.assertEqual(pl[k], p0[k], k)
+
+    def test_send_buttons_static_contract(self):
+        """index.html: 送信=常にコピー後にwindow.open(同一クリック処理内)、URL閾値超は chatgpt.com を開き案内、コピー=JSON無し、技術情報はdetails内、上限ロジック不変。"""
+        h = open(os.path.join(FD, "index.html"), encoding="utf-8").read()
+        js = open(os.path.join(FD, "form_logic.js"), encoding="utf-8").read()
+        self.assertIn("buildReadable", h)
+        self.assertIn("<details", h)
+        self.assertIn("技術情報付きでコピー", h)
+        self.assertIn('id="copyTech"', h)
+        self.assertLess(h.index("clipboard.writeText"), h.index("window.open(target"))   # writeTextをwindow.openより先に開始
+        self.assertIn("'https://chatgpt.com/'", h)                                         # URL超過時は q なしで開く
+        self.assertNotIn("Claude Code向け指示案", js)
+        self.assertIn("var LIMITS = [3, 5, 12];", js)
+        self.assertEqual(h.count("fetch("), 2)
+
+
 if __name__ == "__main__":
     unittest.main()

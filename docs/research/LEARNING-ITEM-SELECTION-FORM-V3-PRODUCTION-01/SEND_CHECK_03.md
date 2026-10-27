@@ -1,4 +1,7 @@
 # SEND_CHECK_03 candidate_id/kind/candidates_sha256追加による送信データ長の影響(委任_03、2026-10-27、API 0)
+
+> **【旧仕様】委任_07(2026-10-27)で送信形式を人間可読+照合コード1行へ変更したため、本ファイルのJSON同梱・URL降格順・candidate_id行を含む送信文に関する記述は旧仕様の測定記録です。現行の測定は`SEND_CHECK_04.md`。**
+
 測定: ①×3選択(各記事の先頭3候補)で `buildChatGptUrl`/`buildStructured`/`buildCopyText` を旧(HEAD=委任_02版)と新で比較(node、実データ7件)。
 
 | 記事 | URL長 旧→新 | URLにJSON同梱 | URL増加 | コピー全文 旧→新 |

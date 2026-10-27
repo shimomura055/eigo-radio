@@ -6,6 +6,7 @@ const ROOT = path.resolve(__dirname, '..', '..', '..');
 const FD = path.join(ROOT, 'user_test', 'selection_form_v3');
 const FL = require(path.join(FD, 'form_logic.js'));
 const rd = p => JSON.parse(fs.readFileSync(path.join(FD, p), 'utf8'));
+const SO = f => ({ stem: path.basename(f, '.json') });   // 委任_07: 照合コードのstem(データファイル名)
 let n = 0; const t = (name, fn) => { fn(); n++; console.log('PASS', name); };
 
 const mp = rd('data/monkeys_paw__b1b.json');
@@ -108,12 +109,13 @@ t('structured output has required keys and is JSON round-trippable', () => {
   assert.strictEqual(r.generated_at, '2026-10-26T00:00:00Z'); assert.strictEqual(r.production_connected, false);
   assert.deepStrictEqual(r.limits, { key_phrase: 3, key_phrase_plus_extra: 5, total_highlight: 12, grammar: 1, grammar_presented_max: 2 });
 });
-t('chatgpt url: contains selection, <=6000, falls back when too long', () => {
+t('chatgpt url (v3, 委任_07): readable text + 照合コード, <=6000 => url, over => url null (paste guidance, not an error)', () => {
   const st = FL.newState(); const tl = FL.terms(mp); FL.setChoice(st, tl, 'burial', 1, true);
-  const r = FL.buildChatGptUrl(mp, st, 'T'); assert.ok(r.url && r.url.length <= 6000 && r.url.startsWith('https://chatgpt.com/?q='));
-  const msg = decodeURIComponent(r.url.slice('https://chatgpt.com/?q='.length)); assert.ok(msg.includes('① Key Phrase (1/3): burial')); assert.ok(r.with_json ? msg.includes('"selection"') : msg.includes('candidate_id: '));   // 委任_03: candidate_id追加でJSON同梱がURL上限を超える場合はテキストのみ(テキストにcandidate_id/kind/sha行あり)
-  st.comment = 'あ'.repeat(3000); const r2 = FL.buildChatGptUrl(mp, st, 'T'); assert.strictEqual(r2.url, null);   // 長文はコピー誘導
-  st.comment = 'あ'.repeat(330); const r3 = FL.buildChatGptUrl(mp, st, 'T'); if (r3.url) assert.ok(r3.url.length <= 6000);
+  const r = FL.buildChatGptUrl(mp, st, 'T', SO('data/monkeys_paw__b1b.json')); assert.ok(r.url && r.url.length <= 6000 && r.url.startsWith('https://chatgpt.com/?q=')); assert.strictEqual(r.mode, 'url');
+  const msg = decodeURIComponent(r.url.slice('https://chatgpt.com/?q='.length)); assert.strictEqual(msg, r.text); assert.ok(msg.includes('- burial：')); assert.ok(!msg.includes('"selection"') && !msg.includes('candidate_id') && !msg.includes('```json'));   // JSON同梱は廃止
+  assert.ok(msg.startsWith(FL.PREFACE)); assert.ok(!msg.includes('Claude Code向け指示案'));
+  st.comment = 'あ'.repeat(3000); const r2 = FL.buildChatGptUrl(mp, st, 'T', SO('data/monkeys_paw__b1b.json')); assert.strictEqual(r2.url, null); assert.strictEqual(r2.mode, 'paste'); assert.ok(r2.text.includes('あ'.repeat(3000)));   // 長文は貼付案内(textは全文)
+  st.comment = 'あ'.repeat(330); const r3 = FL.buildChatGptUrl(mp, st, 'T', SO('data/monkeys_paw__b1b.json')); if (r3.url) assert.ok(r3.url.length <= 6000);
 });
 t('dummy output is marked as not a formal article', () => {
   const st = FL.newState(); assert.ok(FL.buildText(dummy, st).includes('正式記事ではない'));
@@ -238,16 +240,16 @@ t('no omission for every article x full selection (3/2/7 + 2 grammar + comment):
     assert.ok(txt.includes('自由コメント: 全項目コメント'));
     const sel = o.selection.key_phrase.concat(o.selection.extra_explanation, o.selection.meaning_display);
     assert.strictEqual(sel.length, FL.counts(st.choices, tl).reduce((a, b) => a + b, 0)); assert.strictEqual(o.candidates_all.length, tl.length); assert.strictEqual(o.comment, '全項目コメント');
-    const u = FL.buildChatGptUrl(d, st, 'T'); maxLen = Math.max(maxLen, u.url ? u.url.length : 99999);
-    if (u.url) { const m = decodeURIComponent(u.url.slice('https://chatgpt.com/?q='.length)); assert.ok(m.includes('全項目コメント') && m.includes('日本語訳: ')); assert.ok(u.url.length <= 6000); }
+    const u = FL.buildChatGptUrl(d, st, 'T', SO(f)); maxLen = Math.max(maxLen, u.url ? u.url.length : 99999);
+    if (u.url) { const m = decodeURIComponent(u.url.slice('https://chatgpt.com/?q='.length)); assert.ok(m.includes('全項目コメント') && m.includes('照合コード(変更しないでください)：AIF1-')); assert.ok(u.url.length <= 6000); }
   });
   console.log('  (max send URL length over all articles, full selection [99999=url null => copy guidance]:', maxLen, ')');
 });
-t('url: when too long never silently truncates (url null => copy guidance); text-only fallback keeps all fields', () => {
+t('url: when too long never silently truncates (url null => paste guidance with full text); url mode keeps all selected items', () => {
   const d = mpp; const tl = FL.terms(d); const st = FL.newState(); pick(d, st, [[tl[0], 1], [tl[1], 1], [tl[2], 1], [tl[3], 2], [tl[4], 2]]);
-  const r = FL.buildChatGptUrl(d, st, 'T');
-  if (r.url) { const m = decodeURIComponent(r.url.slice('https://chatgpt.com/?q='.length)); [tl[0], tl[1], tl[2], tl[3], tl[4]].forEach(x => assert.ok(m.includes(x))); assert.ok(m.includes('【AI選定理由')); }
-  st.comment = 'あ'.repeat(2500); assert.strictEqual(FL.buildChatGptUrl(d, st, 'T').url, null);
+  const r = FL.buildChatGptUrl(d, st, 'T', SO('data/melos__a2__prod.json'));
+  [tl[0], tl[1], tl[2], tl[3], tl[4]].forEach(x => assert.ok(r.text.includes('- ' + x + '：'))); if (r.url) assert.strictEqual(decodeURIComponent(r.url.slice('https://chatgpt.com/?q='.length)), r.text);
+  st.comment = 'あ'.repeat(2500); const r2 = FL.buildChatGptUrl(d, st, 'T', SO('data/melos__a2__prod.json')); assert.strictEqual(r2.url, null); assert.ok(r2.text.includes('あ'.repeat(2500)));
 });
 t('copy text includes JSON with all candidates and is parseable', () => {
   const d = mpp; const st = FL.newState(); pick(d, st, [[d.phrases[0].term, 1]]);
@@ -302,8 +304,8 @@ t('v2.1: duplicate candidate_id rejected by validateArticle; legacy data (no can
 t('v2.1: URL length with 3 selected (informational) never exceeds 6000 or is null (copy guidance)', () => {
   dataFiles03.forEach(f => {
     const d = rd(f), tl = FL.terms(d), st = FL.newState(); tl.slice(0, 3).forEach(x => FL.setChoice(st, tl, x, 1, true));
-    const r = FL.buildChatGptUrl(d, st, 'T'); assert.ok(r.url === null || r.url.length <= 6000);
-    console.log('  url len', f, r.url ? r.url.length : 'null(copy)', 'with_json', r.with_json);
+    const r = FL.buildChatGptUrl(d, st, 'T', SO(f)); assert.ok(r.url === null || r.url.length <= 6000);
+    console.log('  url len', f, r.url ? r.url.length : 'null(paste)', 'mode', r.mode);
   });
 });
 
