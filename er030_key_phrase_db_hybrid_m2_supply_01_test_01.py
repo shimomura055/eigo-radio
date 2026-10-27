@@ -482,8 +482,8 @@ class ScaffoldOnlyKpTests(unittest.TestCase):
         with mock.patch.object(_kpw, "run_kp_with_review", side_effect=lambda **k: (calls.append(k), self._kp_result())[1]), \
                 mock.patch.object(self.runner, "run_family_x_a2_scaffold") as ma2, \
                 mock.patch.object(self.runner, "run_family_x_b1_scaffold") as mb1, \
-                mock.patch.object(self.runner, "generate_part1_for_b1b", return_value={"status": "OK"}), \
-                mock.patch.object(self.runner, "generate_part1_ja_for_b1b", return_value={"status": "OK"}):   # 委任_14: Part 1は本testの関心(KP-only scaffold)と直交。別testで検証
+                mock.patch.object(self.runner, "generate_part1", return_value={"status": "OK"}), \
+                mock.patch.object(self.runner, "generate_part1_ja", return_value={"status": "OK"}):   # 委任_14: Part 1は本testの関心(KP-only scaffold)と直交。別testで検証
             res = self.runner.run_theme_scaffold(None, self.SRC_DIR, self.out, ["a2", "b1b"], scaffold_only="kp",
                                                  budget_check=budget_notes.append)
         ma2.assert_not_called()

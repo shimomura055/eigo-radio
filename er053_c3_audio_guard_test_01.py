@@ -281,8 +281,8 @@ class MainStageTests(Base):
             mock.patch.object(runner, "run_family_x_b1_scaffold", lambda c, p, d: {}),
             mock.patch.object(runner, "run_family_x_a2_scaffold", lambda c, p, d: {}),
             # 委任_14: 学習テキスト Part 1(scaffoldの生成・後段入口のM2確認)は本test(RF/三者sha照合)の関心と直交。別testで検証
-            mock.patch.object(runner, "generate_part1_for_b1b", lambda *a, **k: {"status": "OK"}),
-            mock.patch.object(runner, "generate_part1_ja_for_b1b", lambda *a, **k: {"status": "OK"}),   # 委任_16: T1訳工程も同様に直交
+            mock.patch.object(runner, "generate_part1", lambda *a, **k: {"status": "OK"}),
+            mock.patch.object(runner, "generate_part1_ja", lambda *a, **k: {"status": "OK"}),   # 委任_16: T1訳工程も同様に直交
             mock.patch.object(runner, "_require_part1_fresh_x", lambda *a, **k: {}),
             mock.patch.object(runner, "_require_part2_fresh_x", lambda *a, **k: {}),
             mock.patch.object(runner, "_require_part1_ja_fresh_x", lambda *a, **k: {}),
@@ -338,7 +338,7 @@ class MainStageTests(Base):
     def _fake_player(self, *a, **k):   # 委任_03: playerのPart 2照合(R-3)が実ファイルを読むため、最小のplayer.htmlを書く
         path = os.path.join(self.out, "player.html")
         with open(path, "w", encoding="utf-8") as f:
-            f.write("<html></html>")
+            f.write("<html><h2>Advanced(B1)</h2><h2>Standard(A2)</h2></body></html>")   # R-3の節単位検査(player_level_section)が両level見出しを要求
         return path
 
     def _drive_all(self):

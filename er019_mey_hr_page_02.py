@@ -3,6 +3,7 @@
 er019_mey_page_02.py派生。Lock操作は一切しない(判断材料の表示のみ)。出力: user_test/middle_east_yemen_saudi_e2e_02/hr_comment_2/{index.html, audio/*}
 PM_GOVERNANCE 14-7の4要素(疑い/確認箇所/機械判定結果/判断で何が確定するか)を記載。file:/// を含めない。"""
 from __future__ import annotations
+import er019_x_page_guard_01  # noqa: F401  SLOT-23 委任_04C: display_spec付き(新表示仕様)のrunならSTOP(旧per-article scriptは遡及なし。新規記事は er019_family_x_listening_page_01.py)
 import difflib, glob, html, json, os, shutil, subprocess
 import imageio_ffmpeg
 import soundfile as sf

@@ -3,6 +3,7 @@
 er019_pp_page_01.py の level_block/seg_html を流用し、開発者向け情報(Style sha等)を除いたユーザー向けUI(Standard/Advanced切替)にする。
 入力はProduction runner --stage assemble の正式出力のみ。出力: user_test/<slug>_e2e_01/{index.html, audio/*.mp3}"""
 from __future__ import annotations
+import er019_x_page_guard_01  # noqa: F401  SLOT-23 委任_04C: display_spec付き(新表示仕様)のrunならSTOP(旧per-article scriptは遡及なし。新規記事は er019_family_x_listening_page_01.py)
 import argparse, os, re
 import glob, soundfile as sf
 import er019_pp_page_01 as pp

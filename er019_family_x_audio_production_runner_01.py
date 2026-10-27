@@ -412,19 +412,47 @@ def _kp_already_generated(kp_dir: str) -> list[str]:
 
 
 # ------------------------------------------------------------
-# 学習テキスト Part 1「Vocabulary & Expressions」(FAMILY-Z-STUDY-TEXT-TRIAL-01 委任_14、案α、Advanced=b1bのみ)
-# 設計: docs/research/FAMILY-Z-STUDY-TEXT-TRIAL-01/PART1_WIRING_DESIGN_01.md §13〜§17。共通module=er003_kp_general_explanation_01。
-# 生成点=run_theme_scaffoldのb1b KP PASS後(+`--stage study_text`で単独再実行)。Opus M1: 失敗はKP失敗と分離した専用marker
+# 学習テキスト Part 1「Vocabulary & Expressions」(FAMILY-Z-STUDY-TEXT-TRIAL-01 委任_14、案α、Advanced=b1b)
+# SLOT-23 委任_04C(ユーザー正式決定2026-10-27、Std②=C案・遡及なし): Part 1は`level`引数化。対象level=Advanced(b1b)は常に、Standard(a2)は
+# 確定レコードに`display_spec`(マーク付き)があるrunだけ(`part1_levels`)。マーク無しの旧a2 run=従来どおりPart 1なし(バイト同一)。
+# 設計: docs/research/FAMILY-Z-STUDY-TEXT-TRIAL-01/PART1_WIRING_DESIGN_01.md §13〜§17 + docs/research/SLOT-23-CONSUMER-DESIGN-01/DESIGN_03.md §A。共通module=er003_kp_general_explanation_01。
+# 生成点=run_theme_scaffoldの当該level KP PASS後(+`--stage study_text`で単独再実行)。Opus M1: 失敗はKP失敗と分離した専用marker
 # (kp_part1_failed.json)+rc=3、案内は`--stage study_text`(scaffold再実行=support/KP再生成を案内しない)。
 # Opus M2: tts/assemble/player入口で存在と最新性(signature)をfail-closed確認。
 # 訳欄(T1/T2)の判断記録が無い間は、生成・保存のみでplayer.htmlへも描画しない(M3 (ii))。
 # ------------------------------------------------------------
 KP_PART1_FAILED_MARKER = "kp_part1_failed.json"
+PART1_ALWAYS_LEVEL = "b1b"   # Part 1が常に対象のlevel(Advanced)。Standardはdisplay_spec付き(マーク付き)runだけ(DESIGN_03 §A、遡及なし)
 
 
 def _part1_gen():
     import er003_kp_general_explanation_01 as p1
     return p1
+
+
+def _er128():
+    """確定内容保護の共通核(er128)。runnerからer128を直接importしない既存方針(Zの`_khr()._cc()`と同じ入口=er119._cc。er128_*のisolation test対象)。"""
+    return _khr()._cc()
+
+
+def _g3():
+    """本文ハイライトのG3検査module(er128_kp_highlight_01)。文頭/関数内の`import er128_*`を避ける遅延accessor(er128系のisolation testの方針に合わせる。検査自体は弱めない)。"""
+    import importlib
+    return importlib.import_module("er128_kp_highlight_01")
+
+
+def x_display_spec(out_dir: str, level: str):
+    """表示有効化判断(SLOT-23、flag非経由=er128.display_spec_of)。確定レコードに`display_spec`があればその値、無ければNone(=旧run・従来描画)。"""
+    return _er128().display_spec_of(out_dir, level)
+
+
+def part1_enabled(out_dir: str, level: str) -> bool:
+    """このlevelがPart 1(vocab)の対象か。Advanced(b1b)=常に / Standard(a2)=display_spec付き(マーク付き)runだけ(遡及なし)。"""
+    return level == PART1_ALWAYS_LEVEL or bool(x_display_spec(out_dir, level))
+
+
+def part1_levels(out_dir: str, levels: list) -> list:
+    return [lv for lv in levels if part1_enabled(out_dir, lv)]
 
 
 def _part1_explanations_path(out_dir: str, level: str = "b1b") -> str:
@@ -433,13 +461,13 @@ def _part1_explanations_path(out_dir: str, level: str = "b1b") -> str:
 
 def _part1_failed_markers(out_dir: str, levels: list) -> list:
     return [f"{out_dir}/{lv}/key_phrases/{KP_PART1_FAILED_MARKER}" for lv in levels
-            if lv == "b1b" and os.path.exists(f"{out_dir}/{lv}/key_phrases/{KP_PART1_FAILED_MARKER}")]
+            if os.path.exists(f"{out_dir}/{lv}/key_phrases/{KP_PART1_FAILED_MARKER}")]
 
 
-def part1_next_command(source_dir: str) -> str:
+def part1_next_command(source_dir: str, level: str = "b1b") -> str:
     parts = os.path.normpath(source_dir).replace("\\", "/").split("/")
     slug, run = (parts[-2], parts[-1]) if len(parts) >= 2 else ("<slug>", "<run>")
-    return (f"`--slug {slug} --run {run} --level b1b --stage study_text`(Part 1だけ再生成。support生成・KP選定をやり直す"
+    return (f"`--slug {slug} --run {run} --level {level} --stage study_text`(Part 1だけ再生成。support生成・KP選定をやり直す"
             "scaffold再実行は費用と別KPを生むため行わない)")
 
 
@@ -458,13 +486,13 @@ def _slug_of(source_dir: str) -> str:
     return parts[-2] if len(parts) >= 2 else "unknown"
 
 
-def _part1_kp_items(out_dir: str) -> list:
+def _part1_kp_items(out_dir: str, level: str = "b1b") -> list:
     """Part 1(単語解説)の入力の単一アクセサ(KP Human Review M-9)。KP Human Reviewのreviewがあるrunはvocab_confirmed.json
     (最大5件、KP3件を含む)が必須(fail-closed)、reviewが無い旧runだけ従来のkeywords_canonicalized.json(3件)。
     未確定/不整合はKpReviewNotConfirmed/KpReviewInconsistent(いずれもRuntimeError)で止める。"""
     khr = _khr()
-    kp_dir = f"{out_dir}/b1b/key_phrases"
-    khr.require_final_consistent(kp_dir, level="b1b")
+    kp_dir = f"{out_dir}/{level}/key_phrases"
+    khr.require_final_consistent(kp_dir, level=level)
     return khr.part1_items(kp_dir)
 
 
@@ -477,15 +505,15 @@ def _part1_ja_path(out_dir: str, level: str = "b1b") -> str:
     return f"{out_dir}/{level}/key_phrases/{_part1_ja_gen().TRANSLATIONS_FILENAME}"
 
 
-def generate_part1_ja_for_b1b(client, source_dir: str, out_dir: str, *, call_fn=None, budget_check=None) -> dict:
+def generate_part1_ja(client, source_dir: str, out_dir: str, *, level: str = "b1b", call_fn=None, budget_check=None) -> dict:
     """委任_16 T1: 本文引用英文だけを入力に日本語訳を1 callで生成・保存する(解説とは独立。signature一致ならAPI 0で再利用、
     不一致なら自動再生成)。失敗(技術retry1回後も構造NG・入力不正・本文に逐語実在しない引用・model不一致)は
-    kp_part1_failed.jsonへ status=KP_PART1_JA_FAILED(...) を書き返す。解説artifactには触れない。"""
+    kp_part1_failed.jsonへ status=KP_PART1_JA_FAILED(...) を書き返す。解説artifactには触れない。level別dir(`{out_dir}/{level}/key_phrases`)に保存。"""
     ja = _part1_ja_gen()
-    kp_dir = f"{out_dir}/b1b/key_phrases"
+    kp_dir = f"{out_dir}/{level}/key_phrases"
     marker = f"{kp_dir}/{KP_PART1_FAILED_MARKER}"
-    path = _part1_ja_path(out_dir)
-    items = _part1_kp_items(out_dir)
+    path = _part1_ja_path(out_dir, level)
+    items = _part1_kp_items(out_dir, level)
     cached = None
     if os.path.exists(path):
         with open(path, encoding="utf-8") as f:
@@ -496,11 +524,11 @@ def generate_part1_ja_for_b1b(client, source_dir: str, out_dir: str, *, call_fn=
     try:
         with cl.logging_context(_parts[-2] if len(_parts) >= 2 else "part1", "kp_part1_ja"):   # 費用ログのstageタグ(訳の原価を単独で集計できる)
             doc = ja.resolve_translations(items, cached, call_fn=call_fn, client=client,
-                                          article_text=load_text(f"{source_dir}/b1b/article.md"))
+                                          article_text=load_text(f"{source_dir}/{level}/article.md"))
     except (ja.KpSourceSentenceJaError, ja.KpSourceSentenceJaInputError) as exc:
         os.makedirs(kp_dir, exist_ok=True)
         status = f"KP_PART1_JA_FAILED({type(exc).__name__})"
-        save_json(marker, {"status": status, "reason": str(exc), "next_command": part1_next_command(source_dir)})
+        save_json(marker, {"status": status, "reason": str(exc), "next_command": part1_next_command(source_dir, level)})
         return {"status": status, "reason": str(exc)}
     if not doc.get("reused_from_previous_run"):
         save_json(path, doc)
@@ -508,31 +536,31 @@ def generate_part1_ja_for_b1b(client, source_dir: str, out_dir: str, *, call_fn=
             "total_cost_jpy": (doc.get("audit") or {}).get("total_cost_jpy")}
 
 
-def _require_part1_ja_fresh_x(source_dir: str, out_dir: str, where: str) -> dict:
+def _require_part1_ja_fresh_x(source_dir: str, out_dir: str, where: str, level: str = "b1b") -> dict:
     """委任_16 T1: 訳の存在と最新性(tts/assemble/player入口)。無い/古いならRuntimeError(STOP、次コマンド付き)。"""
     ja = _part1_ja_gen()
-    items = _part1_kp_items(out_dir)
-    path = _part1_ja_path(out_dir)
+    items = _part1_kp_items(out_dir, level)
+    path = _part1_ja_path(out_dir, level)
     doc = None
     if os.path.exists(path):
         with open(path, encoding="utf-8") as f:
             doc = json.load(f)
     try:
-        ja.require_fresh_translations(items, doc, where=where, next_command=part1_next_command(source_dir))
+        ja.require_fresh_translations(items, doc, where=where, next_command=part1_next_command(source_dir, level))
     except ja.KpSourceSentenceJaStale as exc:
         raise RuntimeError(f"[STOP][Part 1] KP_PART1_JA_NOT_READY: {exc}") from exc
     return doc
 
 
-def generate_part1_for_b1b(client, source_dir: str, out_dir: str, *, call_fn=None, budget_check=None) -> dict:
-    """b1bのPart 1解説を生成・保存する(signature一致ならAPI 0で再利用、不一致なら自動再生成=Xの`kp_expl`系と同型)。
+def generate_part1(client, source_dir: str, out_dir: str, *, level: str = "b1b", call_fn=None, budget_check=None) -> dict:
+    """指定levelのPart 1解説を生成・保存する(signature一致ならAPI 0で再利用、不一致なら自動再生成=Xの`kp_expl`系と同型)。
     失敗(技術retry1回後も構造NG・入力不正・model不一致)は専用marker kp_part1_failed.jsonを書き status=KP_PART1_FAILED(...)を返す。
-    成功したらmarkerを削除する。例外(budget等)は握りつぶさない。"""
+    成功したらmarkerを削除する。例外(budget等)は握りつぶさない。level別dirに保存(b1b/a2相互独立)。"""
     p1 = _part1_gen()
-    kp_dir = f"{out_dir}/b1b/key_phrases"
+    kp_dir = f"{out_dir}/{level}/key_phrases"
     marker = f"{kp_dir}/{KP_PART1_FAILED_MARKER}"
-    path = _part1_explanations_path(out_dir)
-    items = _part1_kp_items(out_dir)
+    path = _part1_explanations_path(out_dir, level)
+    items = _part1_kp_items(out_dir, level)
     cached = None
     if os.path.exists(path):
         with open(path, encoding="utf-8") as f:
@@ -542,11 +570,11 @@ def generate_part1_for_b1b(client, source_dir: str, out_dir: str, *, call_fn=Non
     _parts = os.path.normpath(source_dir).replace("\\", "/").split("/")
     try:
         with cl.logging_context(_parts[-2] if len(_parts) >= 2 else "part1", "kp_part1"):   # 費用ログのstageタグ(Part 1の原価を単独で集計できる)
-            doc = p1.resolve_general_explanations(items, cached, call_fn=call_fn, client=client)
+            doc = p1.resolve_general_explanations(items, cached, call_fn=call_fn, client=client, level=level)
     except (p1.KpGeneralExplanationError, p1.KpGeneralExplanationInputError) as exc:
         os.makedirs(kp_dir, exist_ok=True)
         status = f"KP_PART1_FAILED({type(exc).__name__})"
-        save_json(marker, {"status": status, "reason": str(exc), "next_command": part1_next_command(source_dir)})
+        save_json(marker, {"status": status, "reason": str(exc), "next_command": part1_next_command(source_dir, level)})
         return {"status": status, "reason": str(exc)}
     if not doc.get("reused_from_previous_run"):   # 再利用時は保存済みファイルを書き換えない(生成時のaudit/response_idsを保つ)
         save_json(path, doc)
@@ -556,13 +584,13 @@ def generate_part1_for_b1b(client, source_dir: str, out_dir: str, *, call_fn=Non
             "total_cost_jpy": (doc.get("audit") or {}).get("total_cost_jpy")}
 
 
-def generate_part1_all_for_b1b(client, source_dir: str, out_dir: str, *, call_fn=None, ja_call_fn=None, budget_check=None) -> dict:
+def generate_part1_all(client, source_dir: str, out_dir: str, *, level: str = "b1b", call_fn=None, ja_call_fn=None, budget_check=None) -> dict:
     """Part 1の生成点(解説1 call + 訳1 call、独立)。解説がOKのときだけ訳へ進む(解説失敗=TTS前STOP)。どちらかの失敗は
     kp_part1_failed.json+status。戻り値statusはOKまたは失敗status、explanation/translationに各結果。"""
-    r1 = generate_part1_for_b1b(client, source_dir, out_dir, call_fn=call_fn, budget_check=budget_check)
+    r1 = generate_part1(client, source_dir, out_dir, level=level, call_fn=call_fn, budget_check=budget_check)
     if r1["status"] != "OK":
         return r1
-    r2 = generate_part1_ja_for_b1b(client, source_dir, out_dir, call_fn=ja_call_fn, budget_check=budget_check)
+    r2 = generate_part1_ja(client, source_dir, out_dir, level=level, call_fn=ja_call_fn, budget_check=budget_check)
     if r2["status"] != "OK":
         return r2
     costs = [x for x in (r1.get("total_cost_jpy"), r2.get("total_cost_jpy")) if x is not None]
@@ -570,54 +598,54 @@ def generate_part1_all_for_b1b(client, source_dir: str, out_dir: str, *, call_fn
             "total_cost_jpy": round(sum(costs), 4) if costs else None}
 
 
-def assemble_part1_for_b1b(source_dir: str, out_dir: str) -> list:
+def assemble_part1_x(source_dir: str, out_dir: str, *, level: str = "b1b") -> list:
     """Part 1の組立(決定論)+study_text/保存。存在・最新性(Opus M2)・gloss HR/未評価・引用の逐語実在・訳(T1)の最新性をSTOPで確認する。"""
     p1 = _part1_gen()
-    items = _part1_kp_items(out_dir)
-    doc = _require_part1_fresh_x(source_dir, out_dir, "assemble")
-    ja_doc = _require_part1_ja_fresh_x(source_dir, out_dir, "assemble")
+    items = _part1_kp_items(out_dir, level)
+    doc = _require_part1_fresh_x(source_dir, out_dir, "assemble", level)
+    ja_doc = _require_part1_ja_fresh_x(source_dir, out_dir, "assemble", level)
     try:
-        rows = p1.assemble_part1(items, doc, _part1_ja_gen().translations_by_rank(ja_doc), load_text(f"{source_dir}/b1b/article.md"))
+        rows = p1.assemble_part1(items, doc, _part1_ja_gen().translations_by_rank(ja_doc), load_text(f"{source_dir}/{level}/article.md"), level=level)
     except p1.KpGeneralExplanationError as exc:
         raise RuntimeError(f"[STOP][Part 1] 組立NG: {exc}") from exc
-    p1.write_study_text(f"{out_dir}/b1b/study_text", rows)
+    p1.write_study_text(f"{out_dir}/{level}/study_text", rows, level=level)
     return rows
 
 
-def _require_part1_fresh_x(source_dir: str, out_dir: str, where: str) -> dict:
+def _require_part1_fresh_x(source_dir: str, out_dir: str, where: str, level: str = "b1b") -> dict:
     """Opus M2: tts/assemble/player入口の確認(存在+signature一致)。無い/古いならRuntimeError(STOP、次コマンド付き)。"""
     p1 = _part1_gen()
-    items = _part1_kp_items(out_dir)
-    path = _part1_explanations_path(out_dir)
+    items = _part1_kp_items(out_dir, level)
+    path = _part1_explanations_path(out_dir, level)
     doc = None
     if os.path.exists(path):
         with open(path, encoding="utf-8") as f:
             doc = json.load(f)
     try:
-        p1.require_fresh_general_explanations(items, doc, where=where, next_command=part1_next_command(source_dir))
+        p1.require_fresh_general_explanations(items, doc, where=where, next_command=part1_next_command(source_dir, level), level=level)
     except p1.KpGeneralExplanationStale as exc:
         raise RuntimeError(f"[STOP][Part 1] KP_PART1_NOT_READY: {exc}") from exc
     return doc
 
 
-def run_study_text_stage(client, source_dir: str, out_dir: str, *, call_fn=None, ja_call_fn=None, budget_check=None) -> dict:
+def run_study_text_stage(client, source_dir: str, out_dir: str, *, level: str = "b1b", call_fn=None, ja_call_fn=None, budget_check=None) -> dict:
     """`--stage study_text`: 既存keywords_canonicalized.jsonからPart 1だけを(再)生成する(KP再選定・support再生成なし)。
     Opus M1の事前確認: KP stage成功済み(kp_stage_failed.jsonなし・KP成果物あり)。成功でkp_part1_failed.jsonを削除、study_text/を保存。"""
-    kpf = _kp_stage_failed_markers(out_dir, ["b1b"])
+    kpf = _kp_stage_failed_markers(out_dir, [level])
     if kpf:
         raise RuntimeError(f"[STOP][Part 1] KP_STAGE_FAILED markerあり(旧attemptのKPを使わない): {kpf}")
-    _part1_kp_items(out_dir)   # KP成果物なし/空はSTOP
-    r = generate_part1_all_for_b1b(client, source_dir, out_dir, call_fn=call_fn, ja_call_fn=ja_call_fn, budget_check=budget_check)
+    _part1_kp_items(out_dir, level)   # KP成果物なし/空はSTOP
+    r = generate_part1_all(client, source_dir, out_dir, level=level, call_fn=call_fn, ja_call_fn=ja_call_fn, budget_check=budget_check)
     if r["status"] != "OK":
         return r
-    assemble_part1_for_b1b(source_dir, out_dir)
+    assemble_part1_x(source_dir, out_dir, level=level)
     return r
 
 
-def part1_study_html_for_player(source_dir: str, out_dir: str) -> str:
+def part1_study_html_for_player(source_dir: str, out_dir: str, level: str = "b1b") -> str:
     """player.html用のstudy block。M2確認+study_text/保存は常に行い、描画は訳欄の判断記録がある場合のみ(無ければ空文字)。"""
     p1 = _part1_gen()
-    rows = assemble_part1_for_b1b(source_dir, out_dir)
+    rows = assemble_part1_x(source_dir, out_dir, level=level)
     try:
         return p1.render_html_block(rows)
     except p1.KpGeneralExplanationError as exc:
@@ -655,12 +683,12 @@ def part2_next_command(source_dir: str, level: str = "b1b") -> str:
 
 
 def _part2_pool_x(out_dir: str, level: str):
-    """Part 1訳との食い違い検査用pool。Part 1はAdvanced(b1b)のみ=Standardは空(検査対象なし)。"""
-    if level != "b1b":
+    """Part 1訳との食い違い検査用pool。Part 1対象level(Advanced、およびマーク付きStandard)のみ。マーク無しStandardは空(検査対象なし)。"""
+    if not part1_enabled(out_dir, level):
         return {}
     p2w = _p2w()
-    items = _part1_kp_items(out_dir)
-    jp = _part1_ja_path(out_dir)
+    items = _part1_kp_items(out_dir, level)
+    jp = _part1_ja_path(out_dir, level)
     return p2w.part1_ref_ja_pool(items, load_json(jp) if os.path.exists(jp) else None)
 
 
@@ -900,25 +928,25 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
         if _p2_pending is not None:
             result[level]["part2_pending"] = _p2_pending   # 文法のHuman確認待ち: Part 1・TTS等の有料の後続へ進まない(KPと1回にまとめてmainがrc=4)
             print(f"[FAMILY-X-AUDIO-SCAFFOLD] {level}: 待機中: 文法(Part 2)のHuman確認待ち(依頼書: {_p2_pending.get('request_md')})")
-        elif _fail is None and level == "b1b":
-            # 委任_14: 学習テキスト Part 1(Advancedのみ)。KP PASS後・TTS前。失敗はKP失敗と分離した専用marker+part1_stage_status(Opus M1)。
-            _p1r = generate_part1_all_for_b1b(client, source_dir, out_dir, call_fn=part1_call_fn, ja_call_fn=part1_ja_call_fn, budget_check=budget_check)
+        elif _fail is None and part1_enabled(out_dir, level):
+            # 委任_14: 学習テキスト Part 1(Advanced、およびSLOT-23のマーク付きStandard)。KP PASS後・TTS前。失敗はKP失敗と分離した専用marker+part1_stage_status(Opus M1)。
+            _p1r = generate_part1_all(client, source_dir, out_dir, level=level, call_fn=part1_call_fn, ja_call_fn=part1_ja_call_fn, budget_check=budget_check)
             result[level]["part1"] = _p1r
             if _p1r["status"] != "OK":
                 _part1_fail = _p1r["status"]
                 result[level]["part1_stage_status"] = _part1_fail
                 print(f"[FAMILY-X-AUDIO-SCAFFOLD][STOP] {level}: {_part1_fail}: {_p1r.get('reason')}"
-                      f"(KPは確定済み。TTS前に停止。次の一手: {part1_next_command(source_dir)})")
+                      f"(KPは確定済み。TTS前に停止。次の一手: {part1_next_command(source_dir, level)})")
             else:
                 try:   # 組立+study_text/保存。gloss HR/未評価はHR経路(既存)で扱うため、ここでは保留にして止めない
-                    assemble_part1_for_b1b(source_dir, out_dir)
+                    assemble_part1_x(source_dir, out_dir, level=level)
                     result[level]["study_text"] = "saved"
                 except RuntimeError as exc:
                     result[level]["study_text"] = f"deferred: {exc}"
                 if _p2c is not None:   # Part 2: 確定済みの文法reviewからfinalize(LLM 0・再抽出なし)。Part 1の訳が参考訳pool
                     _part2_fail = _scaffold_part2_final(client, source_dir, out_dir, level, result, budget_check, "KP・Part 1は確定済み")
         elif _fail is None and _p2c is not None:
-            # Standard(a2): Part 1は無い。KP確定後に文法をfinalize(LLM 0)。TTSの前提にはしない(文法はページ専用)
+            # マーク無しStandard(a2、遡及なし): Part 1は無い。KP確定後に文法をfinalize(LLM 0)。TTSの前提にはしない(文法はページ専用)
             _part2_fail = _scaffold_part2_final(client, source_dir, out_dir, level, result, budget_check, "KPは確定済み")
         if budget_check is not None:
             budget_check(f"after scaffold {level}")
@@ -2985,6 +3013,124 @@ def _row_info_family_x(label: str, level: str, parts: dict, support: dict, narra
     return {"text": "(共有固定segment、記事固有scriptなし)", "voice": None, "audio": None, "sfx": False}
 
 
+# ============================================================
+# SLOT-23 委任_04C: 学習項目①②③の本文ハイライト(Family X配線。設計=docs/research/SLOT-23-CONSUMER-DESIGN-01/DESIGN_03.md §B/§C、契約=CONTRACT_03.md)
+# 表示有効化=確定レコードのdisplay_spec(er128.display_spec_of、flag非経由)が真のrun・levelだけ。無い=従来描画(バイト同一)。
+# 解決は共通 er_learning_highlight_01.resolve_highlights 1箇所、描画は共通 render_script_html 1箇所。特定不能(ISSUE)はページ生成前にSTOP(fail-closed)。
+# 表示範囲(DisplayUnit)=ページに表示される本文単位すべて: Full Story Part 1-3 + In One Line(Fable決定。Full Story外の「In one line」節にのみ出現する語句もISSUEにしない)。
+# ============================================================
+HIGHLIGHT_X_UNIT_KEYS = ("full_story_part1", "full_story_part2", "full_story_part3", "in_one_line")
+# ハイライトを出すplayer(display_spec付きrun)だけが使うCSS=PLAYER_STANDARD_CSS + 共通HIGHLIGHT_CSS(単一定数)。PLAYER_STANDARD_CSS本体(共有module audio_review_player)は不変
+# =マーク無しrun・他Familyのplayerのバイト同一を保つ。
+import er_learning_highlight_01 as _hl_const
+PLAYER_CSS_WITH_HIGHLIGHT = player_common.PLAYER_STANDARD_CSS + "\n" + _hl_const.HIGHLIGHT_CSS
+
+
+class HighlightStop(RuntimeError):
+    """ハイライト解決のISSUE(fail-closed)。ページを作らない。args[0]に原因コードを含む。"""
+
+
+def x_display_units(parts: dict) -> list:
+    """Xの表示単位列(表示順)。parts.json の part1-3 + in_one_line(あれば)。texts=段落/節の本文そのまま(player/公開ページがscriptとして出す文字列)。"""
+    units = [{"key": f"full_story_part{i}", "texts": [parts[f"part{i}"]], "joiner": " "} for i in (1, 2, 3)]
+    if (parts.get("in_one_line") or "").strip():
+        units.append({"key": "in_one_line", "texts": [parts["in_one_line"]], "joiner": " "})
+    return units
+
+
+def x_source_dir_of(out_dir: str) -> str:
+    """候補生成に使った本文のあるsource_dir(entry_point.jsonに記録。`{source_dir}/{level}/article.md`=候補生成の入力本文。`<run>/<lv>/article.md`決め打ち禁止=M1)。"""
+    ep = f"{out_dir}/entry_point.json"
+    if not os.path.exists(ep):
+        raise HighlightStop(f"X_HIGHLIGHT_SOURCE_DIR_UNKNOWN: {ep}がありません(本文の取得元が不明)")
+    sd = load_json(ep).get("source_dir")
+    if not sd:
+        raise HighlightStop(f"X_HIGHLIGHT_SOURCE_DIR_UNKNOWN: {ep}にsource_dirがありません")
+    return sd
+
+
+def resolve_x_highlights(out_dir: str, level: str, *, source_dir: str | None = None, lr_rebound: bool = False):
+    """display_spec付きのrun・levelだけ解決して返す。display_spec無し=None(従来描画)。ISSUE=HighlightStop(原因コード付き。部分適用・黙って落とすことはしない)。
+    入力: article_text=`{source_dir}/{level}/article.md`(text_sha256一致必須=HL_TEXT_SHA_MISMATCH)、候補doc=`{out_dir}/{level}/key_phrases/kp_candidates.json`、
+    items=`items_from_record(確定レコード)`、DisplayUnit=x_display_units(parts.json)。"""
+    if not x_display_spec(out_dir, level):
+        return None
+    import er_learning_highlight_01 as hl
+    kp_dir = f"{out_dir}/{level}/key_phrases"
+    rec = _er128().load_record(kp_dir)
+    if rec is None:
+        raise HighlightStop(f"X_HIGHLIGHT_RECORD_MISSING: {kp_dir}の確定レコードがありません")
+    cands_path = f"{kp_dir}/kp_candidates.json"
+    if not os.path.exists(cands_path):
+        raise HighlightStop(f"X_HIGHLIGHT_CANDIDATES_MISSING: {cands_path}がありません")
+    sd = source_dir or x_source_dir_of(out_dir)
+    article_text = load_text(f"{sd}/{level}/article.md")
+    parts = load_json(f"{out_dir}/{level}/parts.json")
+    res = hl.resolve_highlights(article_text, load_json(cands_path), hl.items_from_record(rec), x_display_units(parts), lr_rebound=lr_rebound)
+    if res["status"] != "OK":
+        view = hl.contract_view(res)
+        codes = [f"{i['code']}(A班名={a['code']}):{i.get('candidate_id')}" for i, a in zip(view["issues"], res["issues"])]
+        raise HighlightStop(f"X_HIGHLIGHT_UNRESOLVED({level}): {'; '.join(codes)}。ページ・playerを作りません(部分適用なし)。"
+                            "原因を確認してください(本文のLocal Rewrite後の語句消失・候補docと本文の不一致 等)。")
+    return res
+
+
+def x_script_cell_html(text: str, unit_key: str, result: dict, *, chunk_texts=None, audience: str = "public") -> str:
+    """ハイライトありrunのplayer用script cell(HTMLエスケープ+装飾+当該Part直後の③訳リスト)。devの⏸は装飾の外(共通render_script_html)。"""
+    import er_learning_highlight_01 as hl
+    import er_user_listening_page_common_01 as _uc
+    hls = hl.highlights_for_text(result, unit_key, 0)
+    bpos = _uc._chunk_boundary_positions(text, chunk_texts) if (audience == _uc.AUDIENCE_DEV and chunk_texts) else []
+    return hl.render_script_html(text, hls, bpos, " " + _uc._CHUNK_MARKER_HTML) + hl.meaning_list_html(hl.meanings_for_unit(result, unit_key))
+
+
+PART1_HEADING_MARK = "<h3>Vocabulary &amp; Expressions</h3>"
+
+
+def validate_part1_block_count(section_html: str, level: str, *, where: str = "") -> int:
+    """Part 1ブロックの積極検出(SLOT-23 M11、DESIGN_03 §A-4)。vocab対象level(Advanced、およびマーク付きStandard)では当該level節にPart 1が**ちょうど1個**
+    (0個=判断記録なし等で黙って欠落、2個=重複、いずれもSTOP)。判断記録(T1/T2)が無いと0個になる。戻り値=個数。"""
+    n = section_html.count(PART1_HEADING_MARK)
+    if n != 1:
+        raise RuntimeError(f"[STOP][Part 1] X_PART1_BLOCK_COUNT({level}{(' ' + where) if where else ''}): 学習テキスト Part 1のブロックが{n}個です(ちょうど1個のはず)。"
+                           "0個=訳欄の判断記録なし・生成漏れ、2個=重複。ページ・playerを作りません。")
+    return n
+
+
+def verify_x_level_page(section_html: str, level: str, result: dict | None, out_dir: str, *, audience: str = "public", script_texts=None) -> None:
+    """player/公開ページの当該level節の検査(display_spec付きrunだけ。無い=何もしない=従来どおり)。
+    (1) G3: 装飾・③訳・本文不変・public混入(er128_kp_highlight_01.verify_highlights、kill switch時はSKIPPED_DISABLED) (2) Part 1がちょうど1個。違反=RuntimeError(STOP)。"""
+    if not x_display_spec(out_dir, level):
+        return
+    if result is not None:
+        g = _g3().verify_highlights(section_html, {"result": result, "audience": audience, "script_texts": script_texts})
+        if g["status"] == "FAIL":
+            raise RuntimeError(f"[STOP][Highlight] X_HIGHLIGHT_G3_FAIL({level}): " + "; ".join(f"{p['code']}:{p.get('candidate_id')}:{p['detail']}" for p in g["problems"][:8]))
+    validate_part1_block_count(section_html, level)
+
+
+def resolve_x_highlights_for_levels(out_dir: str, levels: list, *, source_dir: str | None = None) -> dict:
+    """{level: resolve_x_highlights結果|None}(両level分)。assemble済み(status=OK)かつ`levels`に含まれるlevelだけ解決し、他はNone。ISSUE=HighlightStop。"""
+    out = {}
+    for lv in ("b1b", "a2"):
+        asm = f"{out_dir}/{lv}/run_summary_assemble.json"
+        ok = lv in levels and os.path.exists(asm) and load_json(asm).get("status") == "OK"
+        out[lv] = resolve_x_highlights(out_dir, lv, source_dir=source_dir) if ok else None
+    return out
+
+
+def verify_x_player(out_dir: str, player_path: str, levels: list, hl_by_level: dict, *, audience: str = "public") -> None:
+    """生成済みplayerの、display_spec付きlevel節のG3+Part 1ちょうど1個の検査(マーク無しlevelは何もしない)。違反=RuntimeError/ValueError(呼出側がSTOP)。"""
+    text = None
+    for lv in levels:
+        if not x_display_spec(out_dir, lv):
+            continue
+        if text is None:
+            with open(player_path, encoding="utf-8") as f:
+                text = f.read()
+        verify_x_level_page(player_level_section(text, lv), lv, hl_by_level.get(lv), out_dir, audience=audience)
+
+
 # 既存player_common.SEEK_SCRIPTは単一id("episode_audio")固定のため、
 # 1ページにAdvanced/Standard 2レベル分のepisode音声を並べる本player
 # (既存player_common利用側の慣例id"episode_audio_b1b"/"episode_audio_a2"、
@@ -3014,8 +3160,10 @@ def _add_seek_target(table_html: str, target_id: str) -> str:
         '<button class="seek" data-sec="', f'<button class="seek" data-target="{target_id}" data-sec="')
 
 
-def _build_level_table(level_dir: str, level: str, japanese_title: str | None = None, audience: str = "public") -> str:
-    """audience(委任_08): "public"(既定)=従来とバイト同一(マーカーなし) / "dev"=Full Story本文に実TTS Chunk境界(audit/chunk_plan_<level>.json)の⏸(開発確認用)。"""
+def _build_level_table(level_dir: str, level: str, japanese_title: str | None = None, audience: str = "public", highlights: dict | None = None) -> str:
+    """audience(委任_08): "public"(既定)=従来とバイト同一(マーカーなし) / "dev"=Full Story本文に実TTS Chunk境界(audit/chunk_plan_<level>.json)の⏸(開発確認用)。
+    highlights(SLOT-23): resolve_x_highlightsの結果。None=従来とバイト同一(未escapeのscript文字列)。指定時のみFull Story/In One Lineのscript cellを
+    escape+装飾+当該Part直後の③訳リストに切替(M13)、表の前に凡例1行、表示範囲外の③訳は表の後に置く。"""
     import er_user_listening_page_common_01 as _uc
     _uc.normalize_audience(audience)
     _plans = _uc.load_chunk_plans(f"{level_dir}/audit/chunk_plan_{level}.json") if audience == _uc.AUDIENCE_DEV else {}
@@ -3054,7 +3202,11 @@ def _build_level_table(level_dir: str, level: str, japanese_title: str | None = 
         info = _row_info_family_x(label, level, parts, support, narration_dir, kp_by_rank, japanese_title,
                                    kp_explanations_by_rank=kp_explanations_by_rank)
         _m_fs = _re_only_segments.match(r"Full Story Part ([123])", label)
-        if _m_fs and audience == _uc.AUDIENCE_DEV and _uc.chunk_texts_of_plan(_plans.get(f"full_story_part{_m_fs.group(1)}")):
+        _hl_unit = f"full_story_part{_m_fs.group(1)}" if _m_fs else ("in_one_line" if label.startswith("In One Line") else None)
+        if highlights is not None and _hl_unit is not None:
+            _cts = _uc.chunk_texts_of_plan(_plans.get(_hl_unit)) if (_m_fs and audience == _uc.AUDIENCE_DEV) else None
+            info = dict(info, text=x_script_cell_html(info["text"], _hl_unit, highlights, chunk_texts=_cts, audience=audience))
+        elif _m_fs and audience == _uc.AUDIENCE_DEV and _uc.chunk_texts_of_plan(_plans.get(f"full_story_part{_m_fs.group(1)}")):
             info = dict(info, text=_uc.script_html_with_chunk_markers(info["text"], _uc.chunk_texts_of_plan(_plans[f"full_story_part{_m_fs.group(1)}"])))
         sec = entry["start_seconds"]
         voice_disp = info["voice"] or ("SFX" if info["sfx"] else "—")
@@ -3065,6 +3217,10 @@ def _build_level_table(level_dir: str, level: str, japanese_title: str | None = 
         else:
             audio_html = player_common.render_single_audio_html(abs_url(info["audio"]))
         rows.append(player_common.render_timeline_row(sec, label, voice_disp, info["text"], audio_html, missing=False))
+    if highlights is not None:
+        import er_learning_highlight_01 as _hl
+        _legend = _hl.legend_html() if highlights.get("stats", {}).get("decorated") else ""
+        return _legend + player_common.render_timeline_table(rows) + _hl.meaning_list_html(_hl.meanings_for_unit(highlights, None))
     return player_common.render_timeline_table(rows)
 
 
@@ -3084,17 +3240,24 @@ def player_level_section(player_html: str, level: str) -> str:
 
 
 def build_player_html(theme_out_dir: str, theme_id: str, japanese_title: str | None, study_html: str = "", study_html_a2: str = "",
-                      audience: str = "public") -> str:
-    """audience(委任_08): "public"(既定)=Chunk境界マーカーなし(従来とバイト同一) / "dev"=開発確認用(player_dev.htmlへ出力。player.htmlを上書きしない)。"""
+                      audience: str = "public", highlights_by_level: dict | None = None) -> str:
+    """audience(委任_08): "public"(既定)=Chunk境界マーカーなし(従来とバイト同一) / "dev"=開発確認用(player_dev.htmlへ出力。player.htmlを上書きしない)。
+    highlights_by_level(SLOT-23): {level: resolve_x_highlights結果|None}。省略(None)=assemble済みlevelごとにresolve_x_highlightsで自動解決
+    (display_spec無しのrun=全levelNone=従来とバイト同一)。ISSUEはHighlightStop(playerを作らない)。"""
     import er_user_listening_page_common_01 as _uc
     _uc.normalize_audience(audience)
     abs_url = player_common.abs_file_url
     b1b_summary = _load_assemble_summary(f"{theme_out_dir}/b1b/run_summary_assemble.json")
     a2_summary = _load_assemble_summary(f"{theme_out_dir}/a2/run_summary_assemble.json")
 
+    _hres = dict(highlights_by_level) if highlights_by_level is not None else {}
+    if highlights_by_level is None:   # SLOT-23: display_spec付きrun・assemble済みlevelだけ解決(無い=None=従来描画)
+        for _lvh, _sm in (("b1b", b1b_summary), ("a2", a2_summary)):
+            _hres[_lvh] = resolve_x_highlights(theme_out_dir, _lvh) if _sm.get("status") == "OK" else None
+
     b1b_audio_html = f'<h2>Advanced(B1)</h2><p style="color:#b00">status={b1b_summary.get("status")}</p>'
     if b1b_summary.get("status") == "OK":
-        b1b_table = _add_seek_target(_build_level_table(f"{theme_out_dir}/b1b", "b1b", audience=audience), "episode_audio_b1b")
+        b1b_table = _add_seek_target(_build_level_table(f"{theme_out_dir}/b1b", "b1b", audience=audience, highlights=_hres.get("b1b")), "episode_audio_b1b")
         b1b_audio_html = (f'<h2>Advanced(B1)</h2>'
                            f'<audio id="episode_audio_b1b" class="main" controls preload="none" '
                            f'src="{abs_url(b1b_summary["out_path"])}"></audio>'
@@ -3105,7 +3268,7 @@ def build_player_html(theme_out_dir: str, theme_id: str, japanese_title: str | N
     a2_audio_html = f'<h2>Standard(A2)</h2><p style="color:#b00">status={a2_summary.get("status")}</p>'
     if a2_summary.get("status") == "OK":
         a2_table = _add_seek_target(
-            _build_level_table(f"{theme_out_dir}/a2", "a2", japanese_title, audience=audience), "episode_audio_a2")
+            _build_level_table(f"{theme_out_dir}/a2", "a2", japanese_title, audience=audience, highlights=_hres.get("a2")), "episode_audio_a2")
         a2_audio_html = (f'<h2>Standard(A2)</h2>'
                           f'<audio id="episode_audio_a2" class="main" controls preload="none" '
                           f'src="{abs_url(a2_summary["out_path"])}"></audio>'
@@ -3123,7 +3286,7 @@ def build_player_html(theme_out_dir: str, theme_id: str, japanese_title: str | N
 <html lang="en"><head><meta charset="utf-8">
 <title>{MANAGEMENT_ID} player({theme_id})</title>
 <style>
-{player_common.PLAYER_STANDARD_CSS}
+{PLAYER_CSS_WITH_HIGHLIGHT if any(_hres.get(_k) is not None for _k in ("b1b", "a2")) else player_common.PLAYER_STANDARD_CSS}
 </style>
 <script>
 {_TWO_LEVEL_SEEK_SCRIPT}
@@ -3553,7 +3716,7 @@ def main() -> None:
                     _epd["part1_stage_status"] = _p1_fail
                     save_json(_ep, _epd)
                 print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {_p1_fail}: 学習テキスト Part 1の生成に失敗(KPは確定済み・TTS前に停止)。"
-                      f"次の一手: {part1_next_command(source_dir)}。scaffold stageの再実行はしないでください(support/KPが再生成され費用・別KPになります)。")
+                      f"次の一手: {part1_next_command(source_dir, next(iter(_p1_fail)))}。scaffold stageの再実行はしないでください(support/KPが再生成され費用・別KPになります)。")
                 sys.exit(3)
             _p2_fail = {lv: (scaffold_result.get(lv) or {}).get("part2_stage_status") for lv in levels
                         if (scaffold_result.get(lv) or {}).get("part2_stage_status")}
@@ -3622,19 +3785,19 @@ def main() -> None:
             if _p2_pend_now:   # 文法のHuman確認待ち: Part 1(有料)へ進まず待機(rc=4)
                 print(_kpw().pending_banner(_p2_pend_now, restart_command="py " + " ".join(sys.argv), run_dir=out_dir))
                 sys.exit(_khr().EXIT_CODE_PENDING)
-            if "b1b" in levels:
+            for _lv1 in part1_levels(out_dir, levels):   # SLOT-23: Advanced、およびマーク付きStandard(マーク無しa2=従来どおりPart 1なし)
                 try:
                     with cl.logging_context(args.slug, "kp_part1"):
-                        _p1r = run_study_text_stage(client, source_dir, out_dir,
+                        _p1r = run_study_text_stage(client, source_dir, out_dir, level=_lv1,
                                                     budget_check=lambda note: assert_budget_ok(out_dir, args.budget_jpy, note))
                 except RuntimeError as exc:
                     print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
                     sys.exit(3)
-                assert_budget_ok(out_dir, args.budget_jpy, "after study_text")
+                assert_budget_ok(out_dir, args.budget_jpy, f"after study_text {_lv1}")
                 if _p1r["status"] != "OK":
-                    print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {_p1r['status']}: {_p1r.get('reason')}。次の一手: 原因確認後に{part1_next_command(source_dir)}を再実行。")
+                    print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {_p1r['status']}: {_p1r.get('reason')}。次の一手: 原因確認後に{part1_next_command(source_dir, _lv1)}を再実行。")
                     sys.exit(3)
-                print(f"[FAMILY-X-AUDIO-RUNNER] study_text OK: {_p1r}")
+                print(f"[FAMILY-X-AUDIO-RUNNER] study_text ({_lv1}) OK: {_p1r}")
             for _lv in levels:
                 _p2f = run_part2_final_x(client, source_dir, out_dir, level=_lv, budget_check=lambda note: assert_budget_ok(out_dir, args.budget_jpy, note))
                 assert_budget_ok(out_dir, args.budget_jpy, f"after study_text part2 {_lv}")
@@ -3657,18 +3820,21 @@ def main() -> None:
                 sys.exit(3)
             _p1f = _part1_failed_markers(out_dir, levels)
             if _p1f:
+                _p1f_lv = next(lv for lv in levels if f"{out_dir}/{lv}/key_phrases/{KP_PART1_FAILED_MARKER}" in _p1f)
                 print(f"[FAMILY-X-AUDIO-RUNNER][STOP] KP_PART1_FAILED markerあり(Part 1未生成のままTTSへ進まない): {_p1f}。"
-                      f"次の一手: {part1_next_command(source_dir)}")
+                      f"次の一手: {part1_next_command(source_dir, _p1f_lv)}")
                 sys.exit(3)
-        if args.stage in ("tts", "assemble", "player", "all") and "b1b" in levels:
+        if args.stage in ("tts", "assemble", "player", "all") and part1_levels(out_dir, levels):
             # 委任_14 Opus M2: Part 1(Vocabulary & Expressions)の存在と最新性を、後段の入口でfail-closed確認する
-            # (Part 1導入前のrun再開・KP変更後の再生成忘れでPart 1なし/古い解説のまま進めない)。
+            # (Part 1導入前のrun再開・KP変更後の再生成忘れでPart 1なし/古い解説のまま進めない)。SLOT-23: マーク付きStandardも対象。
             try:
-                _require_part1_fresh_x(source_dir, out_dir, f"--stage {args.stage}")
-                _require_part1_ja_fresh_x(source_dir, out_dir, f"--stage {args.stage}")
+                for _lv1 in part1_levels(out_dir, levels):
+                    _require_part1_fresh_x(source_dir, out_dir, f"--stage {args.stage}", _lv1)
+                    _require_part1_ja_fresh_x(source_dir, out_dir, f"--stage {args.stage}", _lv1)
             except RuntimeError as exc:
                 print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
                 sys.exit(3)
+        if args.stage in ("tts", "assemble", "player", "all") and "b1b" in levels:
             # Part 2(文法)も同様に、存在・最新性・確定との一致をfail-closed確認(M-2)。未確定=rc=4待機、無い/古い=STOP rc=3
             # (tts/assemble入口はAdvancedのみ=従来どおり。Standardの文法はページ専用で音声の前提にしない。Standardはplayer入口で確認する)
             try:
@@ -3724,14 +3890,15 @@ def main() -> None:
         if args.stage in ("player", "all"):
             _study_html = ""
             _study_html_a2 = ""
-            _part1_html = ""
+            _part1_htmls = {}   # level -> Part 1 block(SLOT-23: Advanced、およびマーク付きStandard。訳欄の判断記録が無い間は空文字=従来とバイト同一)
             _p2_results = {}   # level -> Part 2結果(両levelの文法。player入口で存在・最新性・確定との一致を確認)
-            if "b1b" in levels:   # 委任_14: Part 1 study block(Advancedのみ。訳欄の判断記録が無い間は空文字=従来とバイト同一)
+            for _lv1 in part1_levels(out_dir, levels):   # 委任_14: Part 1 study block
                 try:
-                    _part1_html = part1_study_html_for_player(source_dir, out_dir)
+                    _part1_htmls[_lv1] = part1_study_html_for_player(source_dir, out_dir, level=_lv1)
                 except RuntimeError as exc:
                     print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
                     sys.exit(3)
+            _part1_html = _part1_htmls.get("b1b", "")
             for _lv in levels:
                 # Part 2(文法): Advancedは Part 1ブロック直後、Standardは a2節に同じテンプレートで連結(R-1/R-2: 共通builder compose_page_html 1つだけ)
                 try:
@@ -3745,9 +3912,20 @@ def main() -> None:
             if "b1b" in _p2_results:
                 _study_html = _p2w().compose_page_html(_part1_html, _p2_results["b1b"])
             if "a2" in _p2_results:
-                _study_html_a2 = _p2w().compose_page_html("", _p2_results["a2"])   # Part 1はAdvancedのみ
+                _study_html_a2 = _p2w().compose_page_html(_part1_htmls.get("a2", ""), _p2_results["a2"])   # Part 1: マーク付きStandardのみ(遡及なし)。Part 1→Part 2の順
+            # SLOT-23: 本文ハイライト(display_spec付きrun・levelだけ。無い=None=従来バイト同一)。解決不能(ISSUE)はplayer生成前にSTOP(fail-closed)
+            try:
+                _hl_by_level = resolve_x_highlights_for_levels(out_dir, levels, source_dir=source_dir)
+            except (HighlightStop, ValueError) as exc:
+                print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
+                sys.exit(3)
             player_path = build_player_html(out_dir, args.slug, japanese_title, study_html=_study_html, study_html_a2=_study_html_a2,
-                                           audience=getattr(args, "page_audience", "public"))
+                                           audience=getattr(args, "page_audience", "public"), highlights_by_level=_hl_by_level)
+            try:   # 表示有効(display_spec付き)levelのG3(装飾・③訳・本文不変・public混入)+Part 1ちょうど1個。マーク無しlevelは何もしない
+                verify_x_player(out_dir, player_path, levels, _hl_by_level, audience=getattr(args, "page_audience", "public"))
+            except (RuntimeError, ValueError) as exc:
+                print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
+                sys.exit(3)
             if _p2_results:   # R-3: 確定 <-> part2_result.json <-> study_text/*.md <-> player.html の**当該levelの節**の一致(節単位。不一致=STOP)
                 with open(player_path, encoding="utf-8") as _pf:
                     _player_text = _pf.read()
@@ -3768,9 +3946,9 @@ def main() -> None:
                 try:
                     _khr().verify_selection_matches_outputs(
                         f"{out_dir}/{_lv}/key_phrases", level=_lv, tts_results_path=(_tts if os.path.exists(_tts) else None),
-                        study_text_json=(f"{out_dir}/b1b/study_text/{_part1_gen().PART1_FILE_STEM}.json" if _lv == "b1b" else None),
+                        study_text_json=(f"{out_dir}/{_lv}/study_text/{_part1_gen().PART1_FILE_STEM}.json" if _lv in _part1_htmls else None),
                         page_paths=([player_path] if _asm_ok else None),
-                        vocab_page_paths=([player_path] if (_lv == "b1b" and _part1_html) else None))
+                        vocab_page_paths=([player_path] if _part1_htmls.get(_lv) else None))
                 except _khr().KpReviewInconsistent as exc:
                     print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
                     sys.exit(3)

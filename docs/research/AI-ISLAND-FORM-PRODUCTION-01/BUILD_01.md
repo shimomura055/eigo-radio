@@ -14,3 +14,6 @@ T-0: 委任文を `docs/pm/delegation_log/2026-10-27_AI-ISLAND-FORM-PRODUCTION-0
 起動間隔は全て150秒以上(stage_log.txt)。同一run 5分3回起動なし。stop_scope_check rc=0(各有料前)。
 **停止点**: Style Gate(承認済み安全規則)により、ユーザー承認なしには組立不可。HRパケット: `user_test/family_x_ai_island_form_01/hr_01.html`。
 準備済み(承認後にAPI 0で実行): `tools/build_aif3_listening_page_01.py`(最終試聴ページ builder、共通`render_standard_page`+`public_study_html`、③/Std②注記入り)。
+
+---
+**【SLOT-23 委任_04C 注記(2026-10-27)】** 本書の `tools/build_aif3_listening_page_01.py` は、新規の標準builder `er019_family_x_listening_page_01.py`(本文ハイライト①②③・Std Part 1・`check_page`/G3/Part 2四者一致を必須化、AI島固有文言[SLUG固定・「後続反映予定」]を除去)へ昇格した。旧ファイルは標準builderを呼ぶだけの薄いwrapperに置換済み(音声ファイル名は `<slug>_<level>.mp3` に変更)。AI島の再ビルド・公開はHR承認後の別委任(今回未実施)。

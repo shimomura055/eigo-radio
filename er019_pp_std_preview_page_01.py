@@ -2,6 +2,7 @@
 """FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01 委任_05: Standard試聴ページ(Fallback使用箇所の違和感確認用)。API 0。
 er019_pp_std_preview_01.pyが出力したmp3とmanifest(marks)を使うだけ。技術情報(ASR・Gate・Style等)は載せない。"""
 import html, json, os
+import er019_x_page_guard_01  # noqa: F401  SLOT-23 委任_04C: display_spec付き(新表示仕様)のrunならSTOP(旧per-article scriptは遡及なし。新規記事は er019_family_x_listening_page_01.py)
 ROOT = os.path.dirname(os.path.abspath(__file__))
 esc = html.escape
 A2 = os.path.join(ROOT, "er019_output", "family_x_audio_production_wiring_01", "paycheck_personality__run_pp_01", "a2")

@@ -3,6 +3,7 @@
 er071_coffee_m2p0_n01_page_04.py派生(既存Family X試聴ページ方式)。出力: user_test/paycheck_personality_e2e_01/{index.html, audio/*.mp3}
 Production runner --stage assemble の正式出力(Audio Validation Gate / M3 PASS)のみを入力にする。file:/// を含めない。"""
 from __future__ import annotations
+import er019_x_page_guard_01  # noqa: F401  SLOT-23 委任_04C: display_spec付き(新表示仕様)のrunならSTOP(旧per-article scriptは遡及なし。新規記事は er019_family_x_listening_page_01.py)
 import html, json, os, re, subprocess
 import imageio_ffmpeg
 import soundfile as sf

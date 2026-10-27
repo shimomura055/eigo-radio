@@ -3,6 +3,7 @@
 Trial専用・Production非接続。R2版ページ(user_test/coffee_fxpw_e2e_01)は読み取りのみで不変。
 入力: S3出力dir(er019_coffee_s3_support_regen_01.py の成果物)。出力: <out-dir>/index.html + audio/*.mp3 。file:/// を含めない。"""
 from __future__ import annotations
+import er019_x_page_guard_01  # noqa: F401  SLOT-23 委任_04C: display_spec付き(新表示仕様)のrunならSTOP(旧per-article scriptは遡及なし。新規記事は er019_family_x_listening_page_01.py)
 import argparse, html, json, os, re, subprocess
 import imageio_ffmpeg
 import soundfile as sf

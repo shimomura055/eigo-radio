@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 """FAMILY-X-NEWS-2ARTICLES-E2E-02 (er019_pp_final_page_02.py派生。slug引数化): 最終試聴ページ(正式完成候補・ユーザー試聴待ち)生成(有料APIなし)。
 er019_pp_page_01.py の level_block/seg_html を流用し、開発者向け情報(Style sha等)を除いたユーザー向けUI(Standard/Advanced切替)にする。
-入力はProduction runner --stage assemble の正式出力のみ。出力: user_test/<slug>_e2e_02/{index.html, audio/*.mp3}"""
+入力はProduction runner --stage assemble の正式出力のみ。出力: user_test/<slug>_e2e_02/{index.html, audio/*.mp3}
+SLOT-23 委任_04C(2026-10-27): 本scriptは旧表示仕様(Advancedのみ Part 1・本文ハイライトなし)の既存記事・遡及なし用。新規記事の正式入口は
+`py er019_family_x_listening_page_01.py --slug <slug> --run-name <run> --web <出力dir>`(本文ハイライト①②③・Std Part 1・check_page/G3必須)。
+確定レコードに`display_spec`(新表示仕様のマーク)があるrunを本scriptで処理しようとすると、`er019_x_page_guard_01`(import)がSTOPする(黙って旧形式ページを作らない)。"""
 from __future__ import annotations
+import er019_x_page_guard_01  # noqa: F401  SLOT-23 委任_04C: display_spec付き(新表示仕様)のrunならSTOP(旧per-article scriptは遡及なし。新規記事は er019_family_x_listening_page_01.py)
 import argparse, os, re
 import glob, soundfile as sf
 import er019_pp_page_01 as pp
@@ -67,7 +71,7 @@ def main():
     std_extra = ""
     # 委任_16: 学習テキスト Part 1(Vocabulary & Expressions、Advancedのみ)。共通builder1呼出。判断記録なし→空文字、未生成/古い→STOP(ページを作らない)
     import er003_kp_general_explanation_01 as p1
-    study_html = p1.study_html_for_audio_dir(pp.RUN)
+    study_html = p1.study_html_for_audio_dir(pp.RUN, level="b1b")   # SLOT-23: level引数化(Advancedのみ=従来どおり。Std Part 1・本文ハイライトは標準builder側)
     pw = []
     for lvl, lab in (("a2", "Standard"), ("b1b", "Advanced")):
         pth = os.path.join(pp.RUN, lvl, "audit", "pass_with_warning_listening_list.json")

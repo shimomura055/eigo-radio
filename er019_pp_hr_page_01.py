@@ -3,6 +3,7 @@
 er019_mey_hr_page_02.py派生。Lock/承認操作は一切しない(判断材料の表示のみ)。出力: user_test/paycheck_personality_e2e_01/hr_full_story_part2/{index.html, audio/*}
 file:/// を含めない。正式試聴ページではない(Human Review用)。"""
 from __future__ import annotations
+import er019_x_page_guard_01  # noqa: F401  SLOT-23 委任_04C: display_spec付き(新表示仕様)のrunならSTOP(旧per-article scriptは遡及なし。新規記事は er019_family_x_listening_page_01.py)
 import html, json, os, re, subprocess, difflib
 import imageio_ffmpeg
 import soundfile as sf
