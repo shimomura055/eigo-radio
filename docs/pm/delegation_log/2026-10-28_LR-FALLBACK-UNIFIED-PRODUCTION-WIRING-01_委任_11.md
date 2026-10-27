@@ -22,3 +22,8 @@
 ## Git
 変更ファイルのみ`git add`、**1 commit**「LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 委任_11(B-wire): 統合配線(parity Gate・M3/Y/Z分類核・overlay・Z注記撤去・B6)+撤去(API 0)」+`Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>`、`git push origin HEAD:main`。test失敗・競合・偽BLOCK>0ならcommitせずFableへ報告。
 最終応答: 成果物パス+要約12行(配線点file:line/撤去一覧/test件数/差分監査結果/告げ口心臓判定/混入0/commit)。
+
+## 追記(Fable、委任_09完了後)
+- er129 test `test_u8_no_production_module_imports_er129`は設計上の利用者(er130/er131/er132+配線先のGate/pages module)をallowlistへ更新する(「公開ページ生成器・TTS・ASR・KP表示・Promptがer129/er131をimportしない」という意図は維持し、allowlistを明示列挙)。
+- check_page(public)への混入検知(`er131.check_page_fhr_contamination`)の配線は、Z公開ページ注記撤去(F-9)と同じcommitで入れる(先に入れると猿の手Stdの既存注記で即NG)。既存公開`user_test/family_z_monkeys_paw_01/standard.html`は本commitでは再生成しない(候補ページは委任_12)ので、check_pageは**新規生成ページにのみ**適用されることを確認し、既存公開HTMLの一括検査はB7/B8で扱う。
+- 最終Human報告の運用: E2E_STAGESに入れない。runner完了後の手順(CLI 1行)を成果物に記載。
