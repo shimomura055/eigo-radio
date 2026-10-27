@@ -523,10 +523,13 @@
 - **次工程をブロックするUDR(更新)**: UD-1/UD-2/UD-3は解決済みのためブロックから外す(AI島のOPEN-561はUD-2決定済み→本案件で処理)。UDR-MONKEY-1は据置、告げ口心臓の最終試聴待ちは従来どおり。
 
 ### 2026-10-28 PM-SSOT-SYNC-30 追記(ユーザー正式決定_02。既存行は書き換えず追記。ユーザー原文=`docs/pm/delegation_log/2026-10-28_LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01_USER_02.md`)
-- **判断済み(a) 告げ口心臓Narrator Voice変更(原文§2、管理ID=FZ-TELL-TALE-HEART-NARRATOR-VOICE-01)**: Narrator Aoede→Schedar(男性Voice第2候補)、Standard/Advanced両方、本作品限定、Family Z共通Voiceルール化しない。英文は書き換えない(Voice変更のみ)。既存完成版を利用し必要なNarrator音声の差替えと品質検証を実施。Status=APPROVED_FOR_PRODUCTION(配線中、PRODUCTION_WIRED未達)。
+- **判断済み(a) 告げ口心臓Narrator Voice変更(原文§2、管理ID=FZ-TELL-TALE-HEART-NARRATOR-VOICE-01)**: Narrator Aoede→Schedar(男性Voice第2候補)、Standard/Advanced両方、本作品限定、Family Z共通Voiceルール化しない。英文は書き換えない(Voice変更のみ)。既存完成版を利用し必要なNarrator音声の差替えと品質検証を実施。Status=APPROVED_FOR_PRODUCTION(配線中、PRODUCTION_WIRED未達)。 →2026-10-28修正: Fenrir(Schedar不採用、警官役とVoice重複、原文`…_FZ-TELL-TALE-HEART-NARRATOR-VOICE-01_USER_02.md` §1、PRODUCTION_WIRED)
 - **判断済み(b) 「報告資料」の定義と表示仕様(原文§3・§4、管理ID=LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01改定)**: 「報告資料」=現在の試聴・確認フォーム(全Family・全レベル共通)。エンドユーザー向けアプリの表示仕様は今回未決定。表示仕様=①Chunk境界に`⏸`(実際の分割記録に基づく。境界以外に表示しない。Chunk分割方法・語数・追加ポーズ等の既存仕様は不変) ②LR変更箇所を赤、変更前後の英文と適用範囲 ③Fallback適用テキスト全体を濃い青、適用Style名注記と適用範囲。英語・日本語とも全Role対象。LRとFallbackが同一区間の場合は双方の内容・範囲を識別可能に表示。表示に必要なのは「何が発動したか/何が変わったか/どこに適用されたか」の3点。制作本文・TTS入力に装飾・注記を加えない。
 - **受入条件(原文§7、逐語)**: 1.「告げ口心臓」Standard/AdvancedのNarratorがSchedarになっている。2.必須音声品質検査をPASSしている。3.全Family・全レベルの報告資料で、実際のChunk境界に`⏸`が表示される。4.LR変更箇所・変更前後の英文が赤色で確認できる。5.Fallback適用範囲全体とStyle名が濃い青色で確認できる。6.正式Production経路、再生成・再開経路で表示仕様が維持される。7.必須Regression・実runtime evidence・CURRENT_SPEC/DECISION_LOG/OPEN_ITEMS/Git反映が完了している。未確認のFamily・Levelが残る場合は内容を明示し、確認できないものをPRODUCTION_WIREDとしない。
 - **次工程をブロックするUDR**: 本決定による新規ブロックなし(告げ口心臓の公開差替えはユーザー試聴後)。
 
 ### 2026-10-28 PM-REPORTING-RULES-01 追記(既存行は書き換えず追記)
 - **判断済み 報告・表示運用ルール(原文_02 §2・§3、管理ID=PM-REPORTING-RULES-01)**: 中間報告なし・作業ログ非表示・タスク単位完了報告1件・例外のみ即時・内部証拠/品質管理は省略しない。正本=PM_GOVERNANCE 12-14。再質問しない。
+
+### 2026-10-28 PM-SSOT-SYNC-31 追記
+- **次工程をブロックするUDR(追記)**: 告げ口心臓 Fenrir版 最終試聴(ユーザー、候補ページ`user_test/family_z_tell_tale_heart_fenrir_01/`)。試聴PASS前に公開差替えしない。

@@ -22675,3 +22675,8 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 ### 2026-10-28 PM-REPORTING-RULES-01 報告・表示運用ルール(ユーザー正式決定、既存行は書き換えず追記)
 - 原文=`docs/pm/delegation_log/2026-10-28_FZ-TELL-TALE-HEART-NARRATOR-VOICE-01_USER_02.md` §2・§3。正本=`docs/pm/PM_GOVERNANCE.md` 12-14(旧12-2〜12-12・9-8-1へ「12-14が優先」注記)。
 - 決定: ①作業中の詳細ログ(ツール実行・編集逐次・委任文・Worker経過・テスト詳細)をユーザー向けに出さない ②中間報告なし ③タスク単位で完了報告1件(混在・他タスク付記・別タスク待ちまとめ禁止、並列可) ④例外のみ即時(重大品質/安全・予算超過見込み・仕様/Scope判断・明示STOP・自律解決不能Blocker) ⑤内部証拠・品質管理は省略しない。最終報告=結論・品質結果・Production Wiring Status・QCD・必要なユーザー判断。既存STOP・承認・Gate・即時報告義務は弱めない。未回答再掲は完了報告内判断欄に限定(Fable整理)。表示抑制: ツール呼出自動表示はClaude側から抑制不可(`docs/research/PM-REPORTING-RULES-01/REPORTING_RULES_REFLECTION_01.md`)。
+
+### 2026-10-28 FZ-TELL-TALE-HEART-NARRATOR-VOICE-01 Narrator Fenrir版 修正決定・PRODUCTION_WIRED(PM-SSOT-SYNC-31、既存行は書き換えず追記)
+- 修正決定(ユーザー、原文=`docs/pm/delegation_log/2026-10-28_FZ-TELL-TALE-HEART-NARRATOR-VOICE-01_USER_02.md` §1): 告げ口心臓Narrator=Fenrir(Schedar不採用、警官役とVoice重複)。警官・老人Voice不変、本作品限定、Z共通仕様不変。
+- 実装: `er062_family_z_structure_01.py` `STORY_NARRATOR_VOICE_PINS`+`narrator_voice_for()`(本文narration clipのみ、既定Aoede不変)。test: voice_assignment 16件+registry 23件PASS。正式runner `run_voice_fenrir_01`(1起動)、ASR/Style/速度Gate通過、Chunk計画・本文不変、page_verify全再生OK、LR 0、新規Fallback 0。候補ページ=`user_test/family_z_tell_tale_heart_fenrir_01/`(公開差替えなし)。
+- Fable受入(2026-10-28): 目的適合・未承認機能なし・失敗終了なし。**Status=PRODUCTION_WIRED**。完成版はユーザー最終試聴待ち(試聴PASSではない)。実費: Fenrir版¥10.23+Schedar途中停止分約¥8〜10=合算約¥20(Cap¥60内)。commit 8faf3bd58。軽微発見=OPEN-572(attempt JSON voiceラベル)。OPEN-570/503へ追記済み。
