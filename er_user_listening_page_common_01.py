@@ -20,6 +20,8 @@ from html.parser import HTMLParser
 
 esc = _html.escape
 
+from er_learning_highlight_01 import HIGHLIGHT_CSS, meaning_list_html, legend_html   # noqa: E402,F401  SLOT-23: 本文ハイライト共通部品(再export。CSS本体へは連結しない=既存ページのバイト不変)
+
 CSS = ("<style>body{font-family:sans-serif;max-width:1100px;margin:1em auto;padding:0 1em;line-height:1.5}"
        "table{border-collapse:collapse;width:100%;margin-bottom:1.5em}th,td{border:1px solid #ccc;padding:6px;vertical-align:top;text-align:left}"
        "td.play{min-width:340px}td.play audio,audio{width:100%}.sec{color:#666;font-size:.85em}"
@@ -120,10 +122,33 @@ def script_html_with_chunk_markers(text: str, chunk_texts, warnings: list | None
     return "".join(pieces)
 
 
-def script_block(text: str, chunk_texts=None, audience: str = AUDIENCE_PUBLIC, warnings: list | None = None) -> str:
-    """台本1ブロック。既定(audience=public・chunk_texts未指定)は従来とバイト同一。
-    audience="dev" かつ chunk_texts(実Chunk plan由来)が2個以上のときだけ、chunk境界に ⏸ を差し込む。publicではchunk_textsを渡されてもマーカーを出さない。"""
+def _chunk_boundary_positions(text: str, chunk_texts, warnings: list | None = None) -> list:
+    """script_html_with_chunk_markers と同一の境界位置決定(chunk iの直後、i<最終)。ハイライト併合描画用(位置のみ返す)。"""
+    chunks = list(chunk_texts or [])
+    if len(chunks) < 2:
+        return []
+    out, cursor = [], 0
+    for i, ch in enumerate(chunks[:-1]):
+        pos = _find_chunk(text, ch, cursor)
+        if pos is None:
+            if warnings is not None:
+                warnings.append(f"CHUNK_TEXT_NOT_FOUND_IN_SCRIPT: boundary {i + 1}/{len(chunks) - 1}")
+            continue
+        out.append(pos[1])
+        cursor = pos[1]
+    return out
+
+
+def script_block(text: str, chunk_texts=None, audience: str = AUDIENCE_PUBLIC, warnings: list | None = None, highlights=None) -> str:
+    """台本1ブロック。既定(audience=public・chunk_texts未指定・highlights=None)は従来とバイト同一。
+    audience="dev" かつ chunk_texts(実Chunk plan由来)が2個以上のときだけ、chunk境界に ⏸ を差し込む。publicではchunk_textsを渡されてもマーカーを出さない。
+    highlights(SLOT-23、任意): [{"kind":1|2|3,"start","end","candidate_id"[, "surface"]}]。指定時のみ本文を装飾タグで包む(挿入順序: ハイライト→devマーカー、
+    マーカーは常に装飾の外)。None/[]は従来経路そのまま(バイト同一)。"""
     normalize_audience(audience)
+    if highlights:
+        import er_learning_highlight_01 as _hl
+        bpos = _chunk_boundary_positions(text or "", chunk_texts, warnings) if (audience == AUDIENCE_DEV and chunk_texts) else []
+        return "<div class='script'>" + _hl.render_script_html(text or "", highlights, bpos, " " + _CHUNK_MARKER_HTML) + "</div>"
     if audience == AUDIENCE_DEV and chunk_texts:
         return "<div class='script'>" + script_html_with_chunk_markers(text, chunk_texts, warnings) + "</div>"
     return "<div class='script'>" + esc(text or "") + "</div>"
