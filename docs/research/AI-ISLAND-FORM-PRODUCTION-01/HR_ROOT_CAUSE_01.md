@@ -8,7 +8,7 @@
 ## 1. 元原稿
 - Std: "The AIs sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore."
 - Adv: "The AIs sent to the island had no specific tasks or rewards. But their initial settings guided them to be curious, explore, and learn. They had no homework, but they were in exploration mode."(article.mdでは `to “be curious, explore, and learn.”` と引用符あり。TTS入力では引用符除去)
-- 場所: Full Story 第1部 `full_story_part1_k2`(2段落目)、Role=FULL_STORY、Level=a2/b1b。Std `canonical_text`=Adv同様に上記(`tts_generation_results.json` segments.full_story_part1_k2.canonical_text)。
+- 場所: Full Story 第1部 `full_story_part1_k2`(2段落目)、Role=FULL_STORY、Level=a2/b1b。出典=`tts_generation_results.json` segments.full_story_part1_k2.canonical_text(Std/Advとも上記と一致)。
 - ユーザー確認済み本文との一致: `er019_output/ai_island_temple/run_ai_01/{a2,b1b}/article.md` のLF正規化SHA-256 = `confirmed_selection.json` の `article.text_sha256`(a2 `76f80f62…2376599`、b1b `00f14092…ca324`)に**一致**。rawバイトSHAは `scaffold_article_sha256.json`(a2 `90c66293…`、b1b `a2951b9b…`)= `ARTICLE_EN_{STD,ADV}_01.md` と一致。→ 本文は確認済み版のまま。
 - ユーザーが「Advanced末尾に `AI agents` はあるが `AI systems` は無い」と見た件: Adv article.md 20行目「AI agents with island experience did better…」は別の文の本文。`AI systems` は**本文のどこにも無く、音声用の言い換え語**(本文Std/Advとも k2 段落は「AIs」)。
 
