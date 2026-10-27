@@ -1,0 +1,158 @@
+[
+  {
+    "level": "a2",
+    "gate": "G1",
+    "case": "baseline(改変なし)",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "a2",
+    "gate": "G1",
+    "case": "kp英語(used_form)を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_830d138c70.used_form 確定=`draw a line` 観測=`draw a line XX`。詳細=er128_output/evidence_01/y/run_kcp2b_ev_y_01/key_phrase",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_830d138c70.used_form 確定=`draw a line` 観測=`draw a line XX`。詳細=er128_output/evidence_01/y/run_kcp2b_ev_y_01/key_phrases/a2\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_kp_confirmed_content_01.py restore"
+  },
+  {
+    "level": "a2",
+    "gate": "G1",
+    "case": "kp日本語訳(japanese_gloss)を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_830d138c70.japanese_gloss 確定=`線を引く` 観測=`線を引く改変`。詳細=er128_output/evidence_01/y/run_kcp2b_ev_y_01/key_phrases/a2\\confi",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_830d138c70.japanese_gloss 確定=`線を引く` 観測=`線を引く改変`。詳細=er128_output/evidence_01/y/run_kcp2b_ev_y_01/key_phrases/a2\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_kp_confirmed_content_01.py restore --run C:\\"
+  },
+  {
+    "level": "a2",
+    "gate": "G1",
+    "case": "category(KP→対象外/説明語)変更(review選定を書換え+署名再計算)",
+    "result": "BLOCK(KpReviewInconsistent)",
+    "message": "KP_FINAL_SIGNATURE_MISMATCH: kp_selection_final.jsonがreviewと不一致(次の一手: 制作コマンドを再実行して確定させる/ er119_kp_human_review_cli_01.py status --run <run>)"
+  },
+  {
+    "level": "a2",
+    "gate": "G1",
+    "case": "assets copy(Y/Z)の日本語訳を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_830d138c70.japanese_gloss 確定=`線を引く` 観測=`線を引く改変`。詳細=er128_output/evidence_01/y/run_kcp2b_ev_y_01/key_phrases/a2\\confi",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_830d138c70.japanese_gloss 確定=`線を引く` 観測=`線を引く改変`。詳細=er128_output/evidence_01/y/run_kcp2b_ev_y_01/key_phrases/a2\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_kp_confirmed_content_01.py restore --run C:\\"
+  },
+  {
+    "level": "a2",
+    "gate": "G2",
+    "case": "baseline",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "a2",
+    "gate": "G2",
+    "case": "TTS recordの英語を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_830d138c70.used_form(TTS英語) 確定=`draw a line` 観測=`draw a line XX`。詳細=er128_output/evidence",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_830d138c70.used_form(TTS英語) 確定=`draw a line` 観測=`draw a line XX`。詳細=er128_output/evidence_01/y/run_kcp2b_ev_y_01/key_phrases/a2\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_"
+  },
+  {
+    "level": "a2",
+    "gate": "G2",
+    "case": "TTS recordの日本語(japanese_meaning)を別訳へ",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_830d138c70.japanese_meaning(TTS日本語。派生物契約: 確定訳の決定論変換でなければならない) 確定=`線を引く` 観測=`別の訳`。詳細=er128",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_830d138c70.japanese_meaning(TTS日本語。派生物契約: 確定訳の決定論変換でなければならない) 確定=`線を引く` 観測=`別の訳`。詳細=er128_output/evidence_01/y/run_kcp2b_ev_y_01/key_phrases/a2\\confirmed_content_issue.json。次の一手: 原因がパイプライン側"
+  },
+  {
+    "level": "a2",
+    "gate": "G3",
+    "case": "baseline(ページに確定訳が出ている)",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "a2",
+    "gate": "G3",
+    "case": "ページの日本語訳を別訳へ",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_830d138c70.japanese_gloss(ページ表示) 確定=`線を引く` 観測=`(ページに表示されていない)`。詳細=er128_output/evidence_0",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_830d138c70.japanese_gloss(ページ表示) 確定=`線を引く` 観測=`(ページに表示されていない)`。詳細=er128_output/evidence_01/y/run_kcp2b_ev_y_01/key_phrases/a2\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_kp",
+    "replaced_occurrences": 3
+  },
+  {
+    "level": "a2",
+    "gate": "G1",
+    "case": "全復元後のbaseline(改変の復元確認)",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "baseline(改変なし)",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "kp英語(used_form)を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_e5e22acc25.used_form 確定=`draw the line` 観測=`draw the line XX`。詳細=er128_output/evidence_01/y/run_kcp2b_ev_y_01/key_p",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_e5e22acc25.used_form 確定=`draw the line` 観測=`draw the line XX`。詳細=er128_output/evidence_01/y/run_kcp2b_ev_y_01/key_phrases/b1b\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_kp_confirmed_content_01.py r"
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "kp日本語訳(japanese_gloss)を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_e5e22acc25.japanese_gloss 確定=`線を引く` 観測=`線を引く改変`。詳細=er128_output/evidence_01/y/run_kcp2b_ev_y_01/key_phrases/b1b\\con",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_e5e22acc25.japanese_gloss 確定=`線を引く` 観測=`線を引く改変`。詳細=er128_output/evidence_01/y/run_kcp2b_ev_y_01/key_phrases/b1b\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_kp_confirmed_content_01.py restore --run C"
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "vocab日本語訳(Part 1入力)を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_e5e22acc25.japanese_gloss 確定=`線を引く` 観測=`線を引く改変`。詳細=er128_output/evidence_01/y/run_kcp2b_ev_y_01/key_phrases/b1b\\con",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_e5e22acc25.japanese_gloss 確定=`線を引く` 観測=`線を引く改変`。詳細=er128_output/evidence_01/y/run_kcp2b_ev_y_01/key_phrases/b1b\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_kp_confirmed_content_01.py restore --run C"
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "category(KP→対象外/説明語)変更(review選定を書換え+署名再計算)",
+    "result": "BLOCK(KpReviewInconsistent)",
+    "message": "KP_FINAL_SIGNATURE_MISMATCH: kp_selection_final.jsonがreviewと不一致(次の一手: 制作コマンドを再実行して確定させる/ er119_kp_human_review_cli_01.py status --run <run>)"
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "assets copy(Y/Z)の日本語訳を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_e5e22acc25.japanese_gloss 確定=`線を引く` 観測=`線を引く改変`。詳細=er128_output/evidence_01/y/run_kcp2b_ev_y_01/key_phrases/b1b\\con",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_e5e22acc25.japanese_gloss 確定=`線を引く` 観測=`線を引く改変`。詳細=er128_output/evidence_01/y/run_kcp2b_ev_y_01/key_phrases/b1b\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_kp_confirmed_content_01.py restore --run C"
+  },
+  {
+    "level": "b1b",
+    "gate": "G2",
+    "case": "baseline",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "b1b",
+    "gate": "G2",
+    "case": "TTS recordの英語を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_e5e22acc25.used_form(TTS英語) 確定=`draw the line` 観測=`draw the line XX`。詳細=er128_output/evi",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_e5e22acc25.used_form(TTS英語) 確定=`draw the line` 観測=`draw the line XX`。詳細=er128_output/evidence_01/y/run_kcp2b_ev_y_01/key_phrases/b1b\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py "
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "全復元後のbaseline(改変の復元確認)",
+    "result": "PASS(止まらない)"
+  }
+]

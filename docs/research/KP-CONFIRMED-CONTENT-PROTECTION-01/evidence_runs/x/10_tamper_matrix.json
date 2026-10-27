@@ -1,0 +1,188 @@
+[
+  {
+    "level": "a2",
+    "gate": "G1",
+    "case": "baseline(改変なし)",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "a2",
+    "gate": "G1",
+    "case": "kp英語(used_form)を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_54acb1c633.used_form 確定=`reach a record high` 観測=`reach a record high XX`。詳細=er128_output/evidence_01/x/part2_hr_evi",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_54acb1c633.used_form 確定=`reach a record high` 観測=`reach a record high XX`。詳細=er128_output/evidence_01/x/part2_hr_evidence_01__run_r1/a2/key_phrases\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_kp_conf"
+  },
+  {
+    "level": "a2",
+    "gate": "G1",
+    "case": "kp日本語訳(japanese_gloss)を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_54acb1c633.japanese_gloss 確定=`過去最高に達する` 観測=`過去最高に達する改変`。詳細=er128_output/evidence_01/x/part2_hr_evidence_01__run_r1/a",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_54acb1c633.japanese_gloss 確定=`過去最高に達する` 観測=`過去最高に達する改変`。詳細=er128_output/evidence_01/x/part2_hr_evidence_01__run_r1/a2/key_phrases\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_kp_confirmed_content_01.p"
+  },
+  {
+    "level": "a2",
+    "gate": "G1",
+    "case": "category(KP→対象外/説明語)変更(review選定を書換え+署名再計算)",
+    "result": "BLOCK(KpReviewInconsistent)",
+    "message": "KP_FINAL_SIGNATURE_MISMATCH: kp_selection_final.jsonがreviewと不一致(次の一手: 制作コマンドを再実行して確定させる/ er119_kp_human_review_cli_01.py status --run <run>)"
+  },
+  {
+    "level": "a2",
+    "gate": "G2",
+    "case": "baseline",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "a2",
+    "gate": "G2",
+    "case": "TTS recordの英語を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_54acb1c633.used_form(TTS英語) 確定=`reach a record high` 観測=`reach a record high XX`。詳細=er128",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_54acb1c633.used_form(TTS英語) 確定=`reach a record high` 観測=`reach a record high XX`。詳細=er128_output/evidence_01/x/part2_hr_evidence_01__run_r1/a2/key_phrases\\confirmed_content_issue.json。次の一手:"
+  },
+  {
+    "level": "a2",
+    "gate": "G2",
+    "case": "TTS recordの日本語(japanese_meaning)を別訳へ",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_54acb1c633.japanese_meaning(TTS日本語。派生物契約: 確定訳の決定論変換でなければならない) 確定=`過去最高に達する` 観測=`別の訳`。詳細=e",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_54acb1c633.japanese_meaning(TTS日本語。派生物契約: 確定訳の決定論変換でなければならない) 確定=`過去最高に達する` 観測=`別の訳`。詳細=er128_output/evidence_01/x/part2_hr_evidence_01__run_r1/a2/key_phrases\\confirmed_content_issue.json。次"
+  },
+  {
+    "level": "a2",
+    "gate": "G3",
+    "case": "baseline(ページに確定訳が出ている)",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "a2",
+    "gate": "G3",
+    "case": "ページの日本語訳を別訳へ",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_54acb1c633.japanese_gloss(ページ表示) 確定=`過去最高に達する` 観測=`(ページに表示されていない)`。詳細=er128_output/eviden",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_54acb1c633.japanese_gloss(ページ表示) 確定=`過去最高に達する` 観測=`(ページに表示されていない)`。詳細=er128_output/evidence_01/x/part2_hr_evidence_01__run_r1/a2/key_phrases\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更",
+    "replaced_occurrences": 1
+  },
+  {
+    "level": "a2",
+    "gate": "G1",
+    "case": "全復元後のbaseline(改変の復元確認)",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "baseline(改変なし)",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "kp英語(used_form)を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_4d289b01c7.used_form 確定=`futures price` 観測=`futures price XX`。詳細=er128_output/evidence_01/x/part2_hr_evidence_01__r",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_4d289b01c7.used_form 確定=`futures price` 観測=`futures price XX`。詳細=er128_output/evidence_01/x/part2_hr_evidence_01__run_r1/b1b/key_phrases\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_kp_confirmed_cont"
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "kp日本語訳(japanese_gloss)を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_4d289b01c7.japanese_gloss 確定=`先物価格` 観測=`先物価格改変`。詳細=er128_output/evidence_01/x/part2_hr_evidence_01__run_r1/b1b/key_",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_4d289b01c7.japanese_gloss 確定=`先物価格` 観測=`先物価格改変`。詳細=er128_output/evidence_01/x/part2_hr_evidence_01__run_r1/b1b/key_phrases\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_kp_confirmed_content_01.py rest"
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "vocab日本語訳(Part 1入力)を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_4d289b01c7.japanese_gloss 確定=`先物価格` 観測=`先物価格改変`。詳細=er128_output/evidence_01/x/part2_hr_evidence_01__run_r1/b1b/key_",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_4d289b01c7.japanese_gloss 確定=`先物価格` 観測=`先物価格改変`。詳細=er128_output/evidence_01/x/part2_hr_evidence_01__run_r1/b1b/key_phrases\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更なら: py er128_kp_confirmed_content_01.py rest"
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "category(KP→対象外/説明語)変更(review選定を書換え+署名再計算)",
+    "result": "BLOCK(KpReviewInconsistent)",
+    "message": "KP_FINAL_SIGNATURE_MISMATCH: kp_selection_final.jsonがreviewと不一致(次の一手: 制作コマンドを再実行して確定させる/ er119_kp_human_review_cli_01.py status --run <run>)"
+  },
+  {
+    "level": "b1b",
+    "gate": "G2",
+    "case": "baseline",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "b1b",
+    "gate": "G2",
+    "case": "TTS recordの英語を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_4d289b01c7.used_form(TTS英語) 確定=`futures price` 観測=`futures price XX`。詳細=er128_output/evi",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_4d289b01c7.used_form(TTS英語) 確定=`futures price` 観測=`futures price XX`。詳細=er128_output/evidence_01/x/part2_hr_evidence_01__run_r1/b1b/key_phrases\\confirmed_content_issue.json。次の一手: 原因がパイプライン"
+  },
+  {
+    "level": "b1b",
+    "gate": "G3",
+    "case": "baseline(Part 1が描画)",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "b1b",
+    "gate": "G3",
+    "case": "Part 1行(meaning_in_text_ja)を別訳へ",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_4d289b01c7.japanese_gloss(Part 1行 meaning_in_text_ja) 確定=`先物価格` 観測=`別の訳`。詳細=er128_output",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_4d289b01c7.japanese_gloss(Part 1行 meaning_in_text_ja) 確定=`先物価格` 観測=`別の訳`。詳細=er128_output/evidence_01/x/part2_hr_evidence_01__run_r1/b1b/key_phrases\\confirmed_content_issue.json。次の一手: 原因がパイ"
+  },
+  {
+    "level": "b1b",
+    "gate": "G4",
+    "case": "baseline",
+    "result": "PASS(止まらない)"
+  },
+  {
+    "level": "b1b",
+    "gate": "G4",
+    "case": "文法の解説全文(explanation_md)を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): Part 2が確定した文法・解説全文と一致しません(G4: 確定後に書換えられた、または別の解説が生成された)。 g064ddb76fb.explanation_md(解説全文) 確定=`【日本語訳】\nコーヒーは苦くても、私たちの推理は明快であってほしい。\n\n【文法・構文の仕組み】\n「want＋目的語＋to不定",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): Part 2が確定した文法・解説全文と一致しません(G4: 確定後に書換えられた、または別の解説が生成された)。 g064ddb76fb.explanation_md(解説全文) 確定=`【日本語訳】\nコーヒーは苦くても、私たちの推理は明快であってほしい。\n\n【文法・構文の仕組み】\n「want＋目的語＋to不定詞」の形です。「our detect` 観測=`【日本語訳】\nコーヒーは苦くても、私たちの推理は明快であってほしい。\n\n【文法・構文の仕組み】\n「want＋目的語＋to不定詞」の形です。「our de"
+  },
+  {
+    "level": "b1b",
+    "gate": "G4",
+    "case": "文法の日本語訳(translation_ja)を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): Part 2が確定した文法・解説全文と一致しません(G4: 確定後に書換えられた、または別の解説が生成された)。 g064ddb76fb.translation_ja(日本語訳) 確定=`コーヒーは苦くても、私たちの推理は明快であってほしい。` 観測=`別の訳`。詳細=er128_output\\evidence",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): Part 2が確定した文法・解説全文と一致しません(G4: 確定後に書換えられた、または別の解説が生成された)。 g064ddb76fb.translation_ja(日本語訳) 確定=`コーヒーは苦くても、私たちの推理は明快であってほしい。` 観測=`別の訳`。詳細=er128_output\\evidence_01\\x\\part2_hr_evidence_01__run_r1\\b1b\\key_phrases\\confirmed_content_issue.json。次の一手: 原因がパイプライン側の変更な"
+  },
+  {
+    "level": "b1b",
+    "gate": "G4",
+    "case": "文法の選定文を書換え",
+    "result": "BLOCK(INTEGRITY rc=3)",
+    "class": "ConfirmedContentIntegrityViolation",
+    "message": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): Part 2が確定した文法・解説全文と一致しません(G4: 確定後に書換えられた、または別の解説が生成された)。 g064ddb76fb.grammar_sentence 確定=`Coffee may be bitter, but we want our detective work to be clear.`",
+    "diff": "CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): Part 2が確定した文法・解説全文と一致しません(G4: 確定後に書換えられた、または別の解説が生成された)。 g064ddb76fb.grammar_sentence 確定=`Coffee may be bitter, but we want our detective work to be clear.` 観測=`Coffee may be bitter, but we want our detective work to be clear. X`。詳細=er128_output\\evidence_0"
+  },
+  {
+    "level": "b1b",
+    "gate": "G1",
+    "case": "全復元後のbaseline(改変の復元確認)",
+    "result": "PASS(止まらない)"
+  }
+]

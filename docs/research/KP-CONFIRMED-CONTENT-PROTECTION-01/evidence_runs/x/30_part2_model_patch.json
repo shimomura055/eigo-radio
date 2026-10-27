@@ -1,0 +1,24 @@
+{
+  "family": "x",
+  "study_dir": "er128_output/evidence_01/x/part2_hr_evidence_01__run_r1/b1b/study_text",
+  "MODEL_actual": "gpt-6-luna",
+  "MODEL_patched_to": "some-other-model-id-for-evidence",
+  "frozen": {
+    "source": "stepB_generated_frozen",
+    "candidate_id": "g064ddb76fb",
+    "token": "frozen:a77260c1f0478ee5",
+    "explanation_md_sha16": "a77260c1f0478ee52a605d98680380e74b1c279ecadf5fa955ae69e0f1130be8"
+  },
+  "baseline_explain_signature": "06ecd3d360cd9247c06d34232e3fff3b39a1a1abea2d9260019d2461b2f53ac6",
+  "control_without_freeze": "Part2Stale(model変更でextract/explain signatureは失効する): Part 2が現在の本文・Prompt・modelと一致しません(古い)。次の一手: x",
+  "patched": {
+    "require_final": "PASS",
+    "candidate_stage_state": "READY",
+    "candidate_stage_generated": false,
+    "finalize_reused": true,
+    "explanation_unchanged": true,
+    "extract_calls": 0,
+    "explain_calls": 0
+  },
+  "control_protection_off": "再抽出に進んだ(止まった例外=ModelContractViolation: process 'STUDY_TEXT_GRAMMAR_EXTRACT' はApproved Model 'gpt-6-luna' を使用する契約ですが、'some-other-model-id-fo)。extract_calls=0"
+}
