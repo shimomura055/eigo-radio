@@ -18,7 +18,7 @@
 |---|---|---|
 | **本変更起因** | **0** | 初回の約50件は上記legacy再現で解消。残りに本変更で新たに生じた失敗なし |
 | 既知(HEADでも失敗=既存OPEN-543系の静的/golden/隔離群) | 24 | er019_x_std_chunk_opus R4Hunk、er020 RegressionCorpus、er053_c2/er053_family_x_factlock、er054_z_story_pool、er064_kp_int ProductionUnchanged、er105/er108/er110×3/er112_trial01・06/er119_isolation/er119_grammar_review×2/er109_wiring_golden×3/er109_xz_isolation×2(静的scan・golden・隔離系が中心。個別原因は未精査、HEAD相当でも失敗することのみ確認)、er119_z_wiring `test_part1_items_follow_vocab_confirmed_five`、er003 ZPart1Tests `test_kp_expression_change…` |
-| 作業ツリー依存(commit後に再確認) | 3 | er112_kp_gm_trial_03 `test_no_production_edit`、er124_kp_phrase_word{,5}_trial `test_production_files_not_modified_vs_head`(『productionファイルのHEAD差分が空』を見るtest。本commitでproduction file(er026 runner等)がdirtyの間のみ失敗)→commit後に再実行(§下) |
+| 作業ツリー依存(commit後に再確認) | 3 | er112_kp_gm_trial_03 `test_no_production_edit`、er124_kp_phrase_word{,5}_trial `test_production_files_not_modified_vs_head`(『productionファイルのHEAD差分が空』を見るtest。本commitでproduction file(er026 runner等)がdirtyの間のみ失敗)→commit 1684e19f5後に再実行しPASS確認済み |
 | 並列実行時の共有state競合(単独実行PASS) | 9 | er117_z_chunk_wiring ZGateAndAssemblyTests×5、er120 ZPart2Integration×4(`unittest er117… er120… er003…`の逐次実行で68件中、既存の1件を除きPASS) |
 | 環境/fixture | 2 | `er003_test_bad.FixtureTests.test_case_0`(実ファイルの無いdiscovery id)、`er003_test_kp_gloss_alignment_stop_paths.T3StopPaths.setUpClass`(HEADでも`KP_REVIEW_PENDING: Standard`で失敗する既存事象。本変更前後で同一) |
 genai/faster_whisper等の未導入起因: 今回の失敗には該当なし。
