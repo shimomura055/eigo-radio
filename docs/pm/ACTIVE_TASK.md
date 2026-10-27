@@ -4,6 +4,7 @@ Status: **2026-10-28 ユーザー正式決定受領(APPROVED_FOR_PRODUCTION: UD-
 次: Fable統合→SSOTへユーザー決定を登録(委任_05)→Opus条件Aレビュー→Phase B実装(並列: 本文反映/Gate/報告資料/記録)→test→runtime evidence(保存run再評価+最小有料)→既公開4件是正→Fable受入→SSOT/Git→最終報告(原文§12の10項目)
 STOP条件: 注記の制作本文・TTS・ASR・公開本文・KP表示・Prompt混入禁止/試行回数・待機・Fallback Style・LR範囲・ASR基準・Voice/速度・確定内容保護は不変/品質Gateの弱体化禁止(正常LR/Fallbackのみの停止解除に限定)/A/B/C音声方式の置換禁止/確定内容と衝突する本文変更はSTOP/予算: 設計・Gate・表示はAPI 0、runtime検証は最小・日次1,000円内
 UDR-blocking: 告げ口心臓=ユーザー最終試聴待ち(blockingではない)。UDR-MONKEY-1据置
+報告運用(2026-10-28ユーザー決定 PM-REPORTING-RULES-01): 中間報告なし・ツール/委任/worker経過の表示なし・タスク単位で完了報告1件・例外(重大品質/安全・予算超過見込み・ユーザー判断事項・明示STOP・重大Blocker)のみ即時。Voice案件=Schedar→Fenrirへ修正(USER_02)
 QDC: 2026-10-28当日 約20円消費(告げ口心臓Phase 2)。本案件Phase A=API 0
 前案件: LR-FALLBACK-M3-CROSS-FAMILY-AUDIT-01(OPEN-565、SSOT同期済み、UD-1〜3は本案件で決定)/FZ-TELL-TALE-HEART-RESELECT-REMAKE-01(完成版公開・ユーザー最終試聴待ち、commit 2a3248621)
 
