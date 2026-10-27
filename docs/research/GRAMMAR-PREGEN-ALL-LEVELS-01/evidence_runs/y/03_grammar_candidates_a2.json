@@ -1,0 +1,192 @@
+{
+  "schema": "grammar_candidates_v1",
+  "level": "Standard",
+  "label": "Package Redelivery: Different Voices",
+  "text_sha256": "c415df6b554bcaa07cc058b30312e6cff62f9845563dc0aba861b99771aef007",
+  "n_paragraphs": 5,
+  "prompt_id": "part2_stepA8",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+  "model": "gpt-6-luna",
+  "extract_signature": "110f4dd0db521e48dc2ec000c1028fcea153e9fa23753afde5849f05d5de6d63",
+  "round": 1,
+  "tier_table": [
+    {
+      "para": "P4",
+      "cls": "CMP",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "as以下に比較対象だけが示される場合、何と何を比べているかを補って読む。",
+      "front_kind": "",
+      "sentence": "Honestly, I think it’s wrong that I pay the same fee as people who are always away and ask for redelivery.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P5",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "長い動名詞句が主語のときは、その句の終わりを見極めて主節の動詞を探す。",
+      "front_kind": "",
+      "sentence": "But making the person who gets the package pay will not fix late deliveries or the way people are told when packages will arrive.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P5",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "疑問文でも、助動詞の後ろに長い動名詞句主語が入り、その後に主節の動詞が続く形を見分ける。",
+      "front_kind": "",
+      "sentence": "Can charging the person who gets the package fix that problem?",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
+  "no_feature_paras": [
+    "P1",
+    "P2",
+    "P3"
+  ],
+  "uncovered_paras": [],
+  "audit": {
+    "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+    "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+    "model": "gpt-6-luna",
+    "requested_model": "gpt-6-luna",
+    "prompt_sha256": "bd808126136b20d9749d566bf7505abb58b9a206549b34410ac09f8091f613cf",
+    "response_ids": [
+      "resp_004a09a790408618006ae014283d3487d0b416c640ba82b064"
+    ],
+    "calls": [
+      {
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3754,
+          "output_tokens": 4019,
+          "cached_input_tokens": 0,
+          "reasoning_tokens": 3073
+        },
+        "response_id": "resp_004a09a790408618006ae014283d3487d0b416c640ba82b064",
+        "elapsed_sec": 52.73,
+        "cost_jpy": 0.3816
+      }
+    ],
+    "retried_for_parse": false,
+    "total_cost_jpy": 0.3816,
+    "generated_at": "2026-10-27T12:02:52+0900",
+    "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+  },
+  "reselect_count": 0,
+  "reextract_count": 0,
+  "reselect_log": [],
+  "candidates": [
+    {
+      "candidate_id": "g31f4b39e68",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "CMP",
+      "para": "P4",
+      "sentence": "Honestly, I think it’s wrong that I pay the same fee as people who are always away and ask for redelivery.",
+      "front_kind": "",
+      "misread_target": "OMITTED",
+      "misread_quote": "as people who are always away",
+      "misread_ja": "「同じ料金」と「いつも不在の人」をそのまま比べているように捉え、人々が払う料金との比較関係を補えないことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "as以下に比較対象だけが示される場合、何と何を比べているかを補って読む。",
+      "construct_ja": "比較表現の比較基準の省略",
+      "points_ja": [
+        "as people ... は、人々そのものではなく人々が払う料金との比較を表す。",
+        "people who ... の後ろには、whoを主語とする述語が2つ並ぶ。"
+      ],
+      "context_ja": "話者は、自分が再配達を頼む人々と同じ料金を払うことについて述べている。",
+      "prev": "Still, I take the time to think about how to get my packages.",
+      "next": "Redelivery takes up the delivery worker’s time, so charging for it is fine.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        493,
+        599
+      ]
+    },
+    {
+      "candidate_id": "g5b0e3d12cb",
+      "rank": 2,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P5",
+      "sentence": "But making the person who gets the package pay will not fix late deliveries or the way people are told when packages will arrive.",
+      "front_kind": "",
+      "misread_target": "VERB",
+      "misread_quote": "making the person who gets the package pay",
+      "misread_ja": "長い主語の中にある pay を主節の動詞と取り違え、主節の動詞 will not fix を見落とすことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "長い動名詞句が主語のときは、その句の終わりを見極めて主節の動詞を探す。",
+      "construct_ja": "長い動名詞句主語",
+      "points_ja": [
+        "主語は making から pay までで、the person who gets the package が pay の目的語にあたる。",
+        "主節の動詞は will not fix。"
+      ],
+      "context_ja": "本文は、荷物を受け取る人に料金を払わせても、遅配や到着予定の伝え方は改善しないと述べている。",
+      "prev": "For people who can choose how to get packages, a redelivery fee can be a sign that encourages them to make an effort.",
+      "next": "People who get packages cannot change the delivery cost.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        220,
+        349
+      ]
+    },
+    {
+      "candidate_id": "ge2e7f8aded",
+      "rank": 3,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P5",
+      "sentence": "Can charging the person who gets the package fix that problem?",
+      "front_kind": "",
+      "misread_target": "VERB",
+      "misread_quote": "charging the person who gets the package fix",
+      "misread_ja": "疑問文の主語が長いため、主語内の charging を主節の動詞と捉え、fix を主節の動詞として見つけにくいことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "疑問文でも、助動詞の後ろに長い動名詞句主語が入り、その後に主節の動詞が続く形を見分ける。",
+      "construct_ja": "長い動名詞句主語を含む疑問文",
+      "points_ja": [
+        "主語は charging から package まで。",
+        "助動詞 Can に対応する主節の動詞は fix。"
+      ],
+      "context_ja": "本文の最後で、荷物を受け取る人への課金が問題を解決できるかを問いかけている。",
+      "prev": "Did you know when it would arrive?",
+      "next": "",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        595,
+        657
+      ]
+    }
+  ],
+  "top_ids": [
+    "g31f4b39e68",
+    "g5b0e3d12cb"
+  ],
+  "n_eligible": 3,
+  "ng": [],
+  "filtered_by_ng": [],
+  "rejected_ids": [],
+  "candidates_sha256": "87b1bf34ba3289c0d9d6f950e5db20943aa1b849bfa2f42a8da52ebcfa920e6d",
+  "status": "HAS_CANDIDATES",
+  "exhausted": false,
+  "reused_from_previous_run": false
+}

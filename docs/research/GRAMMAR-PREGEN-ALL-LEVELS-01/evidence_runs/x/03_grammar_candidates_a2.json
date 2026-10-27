@@ -1,0 +1,112 @@
+{
+  "schema": "grammar_candidates_v1",
+  "level": "Standard",
+  "label": "The Coffee Price Rise Case: Turn Back the Clock on the Price Tag!",
+  "text_sha256": "d9904b3554d5ee5e26ccea526e26088d986c51f4759d6e373bce410e58130ef2",
+  "n_paragraphs": 9,
+  "prompt_id": "part2_stepA8",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+  "model": "gpt-6-luna",
+  "extract_signature": "6ca26bfd16ddd0c14e07fa33000610e1f89f69757cb1d1bbde9b3dae63eaf460",
+  "round": 1,
+  "tier_table": [
+    {
+      "para": "P2",
+      "cls": "CMP",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "比較表現では、何と何が比べられているかを文脈から補う。",
+      "front_kind": "",
+      "sentence": "That was compared with the same month a year earlier.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
+  "no_feature_paras": [
+    "P1",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7",
+    "P8",
+    "P9"
+  ],
+  "uncovered_paras": [],
+  "audit": {
+    "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+    "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+    "model": "gpt-6-luna",
+    "requested_model": "gpt-6-luna",
+    "prompt_sha256": "3267f4b90d97cc4a9c0898580fa56bfbb7cb17a4c6d15d3cf1c5e53a0ffeec02",
+    "response_ids": [
+      "resp_03838b1e9dc836ac006ae018ca633487d0aecdf36d2b204ba7"
+    ],
+    "calls": [
+      {
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3540,
+          "output_tokens": 2430,
+          "cached_input_tokens": 0,
+          "reasoning_tokens": 2089
+        },
+        "response_id": "resp_03838b1e9dc836ac006ae018ca633487d0aecdf36d2b204ba7",
+        "elapsed_sec": 23.12,
+        "cost_jpy": 0.251
+      }
+    ],
+    "retried_for_parse": false,
+    "total_cost_jpy": 0.251,
+    "generated_at": "2026-10-27T12:22:09+0900",
+    "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+  },
+  "reselect_count": 0,
+  "reextract_count": 0,
+  "reselect_log": [],
+  "candidates": [
+    {
+      "candidate_id": "gddf816bb8f",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "CMP",
+      "para": "P2",
+      "sentence": "That was compared with the same month a year earlier.",
+      "front_kind": "",
+      "misread_target": "OMITTED",
+      "misread_quote": "compared with the same month a year earlier",
+      "misread_ja": "比較対象を補わず、41%という上昇率そのものを前年同月と比べたと読んでしまう。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "比較表現では、何と何が比べられているかを文脈から補う。",
+      "construct_ja": "比較対象が明示されない比較表現",
+      "points_ja": [
+        "前年同月と比べられているのはコーヒーの価格。",
+        "Thatは直前の価格上昇の説明を指す。"
+      ],
+      "context_ja": "政府の数値に基づく報告では、米国の挽いたコーヒーの平均価格が41%上昇したと述べられている。",
+      "prev": "price of ground coffee rose 41%.",
+      "next": "This is about ground coffee, not a cup in a café.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        90,
+        143
+      ]
+    }
+  ],
+  "top_ids": [
+    "gddf816bb8f"
+  ],
+  "n_eligible": 1,
+  "ng": [],
+  "filtered_by_ng": [],
+  "rejected_ids": [],
+  "candidates_sha256": "2c43cfc83dbbbc8b113553373f1e535ab93a5cb36b34b5000085207a23f6b06d",
+  "status": "HAS_CANDIDATES",
+  "exhausted": false,
+  "reused_from_previous_run": false
+}
