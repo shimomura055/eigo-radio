@@ -1,0 +1,58 @@
+ROUNDTRIP: ok=66 fail=0 (data 11件 x 6乱択[文法あり/なし交互]。復元payloadと既存buildStructuredのarticle/selection/commentが完全一致)
+新形式の文字数 / URLエンコード長(PREFACE込み。現行6000字閾値) / 参考: 現行buildTextのURL長:
+  ai_island_temple__a2__prod.json: 文法なし url 2383-2496 / 文法1件あり url 6334-7189 (現行方式 7758-12637)
+  ai_island_temple__b1b__prod.json: 文法なし url 2420-2533 / 文法1件あり url 6053-6155 (現行方式 7686-11544)
+  melos__a2__prod.json: 文法なし url 2599-2712 / 文法1件あり url --- (現行方式 7140-7246)
+  melos__b1b__prod.json: 文法なし url 2610-2723 / 文法1件あり url --- (現行方式 7634-7740)
+  monkeys_paw__b1b.json: 文法なし url 3610-3723 / 文法1件あり url --- (現行方式 7785-7891)
+  monkeys_paw__b1b__prod.json: 文法なし url 3125-3238 / 文法1件あり url --- (現行方式 5765-5871)
+  redelivery_fee__a2__prod.json: 文法なし url 2530-2643 / 文法1件あり url --- (現行方式 7002-7108)
+  redelivery_fee__b1b__prod.json: 文法なし url 2643-2756 / 文法1件あり url --- (現行方式 7838-7944)
+  ui_check_dummy__dummy.json: 文法なし url 3183-3183 / 文法1件あり url 4239-4239 (現行方式 6884-7943)
+  uk_train_speaker_playback__a2__prod.json: 文法なし url 2644-2746 / 文法1件あり url --- (現行方式 6992-7087)
+  uk_train_speaker_playback__b1b__prod.json: 文法なし url 2869-2982 / 文法1件あり url --- (現行方式 9453-9559)
+改変検出(すべて fail-closed=RestoreError になること):
+  [detected] 訳を書換え(ChatGPT意訳): 日本語訳が候補データと一致しません: 'make a difference' 貼付='影響を与えること' / 正='影響を与える'(黙って置換しません)
+  [detected] 項目を1つ落とす: 選択内容(項目・区分)が照合コードと一致しません。送信途中で変更された可能性があります。フォームから再コピーしてください
+  [detected] 区分を入替え(①→②): 選択内容(項目・区分)が照合コードと一致しません。送信途中で変更された可能性があります。フォームから再コピーしてください
+  [detected] 文法解説を省略: 文法「比較対象が省略された比較表現」の解説全文が候補データと一致しません(省略・改変の疑い)
+  [detected] 文法解説の一部改変: 文法「比較対象が省略された比較表現」の解説全文が候補データと一致しません(省略・改変の疑い)
+  [detected] 文法解説の末尾切れ: 文法「比較対象が省略された比較表現」の【解説ここまで】がありません(解説が途中で切れています)
+  [detected] コメント改変: 自由コメントが照合コードと一致しません
+  [detected] 照合コード欠落: 照合コードが見つかりません(コピー全文を貼り付けてください)
+  [detected] 照合コード1字改変: 照合コードが壊れています(チェック不一致)
+許容する揺れ(復元でき、既存buildStructuredと一致すること):
+  [OK] ChatGPTのコードブロック+前置き
+  [OK] 半角コロン(項目行・コメント行のみ)
+  [OK] 箇条書き記号の揺れ(・)
+  [OK] 行末空白・CRLF
+  [OK] 先頭大文字化(term) notes=["term正規化一致: 'Make a difference'->'make a difference'"]
+data更新(選定後に文法候補が変更された):
+  [履歴なし] fail-closed: 選定時のデータ版(915481)が現在のデータと異なり、履歴にも見つかりません。フォームから選び直してください
+  [履歴あり] 復元OK diff=0 notes=['data版を履歴から復元(d6=915481)']
+ALL_TAMPER_DETECTED=True
+記事：AIの仮想の島｜Standard
+
+① Key Phrase
+- carry over：持ち越す
+- take a detour：寄り道をする
+- card to play：使える手
+
+② 追加解説
+- worth paying attention to：注目する価値がある
+- obstacle：障害物
+
+③ 本文意味表示
+- make a difference：影響を与える
+- separately：個別に
+- feature：性質
+- Strategy：作戦
+- setup：設定
+
+文法：選定なし
+
+自由コメント：なし
+
+照合コード(変更しないでください)：AIF1-ai_island_temple__a2__prod-915481-25a7bce9-76f80f62-ccce40d25f-0-0-9cd3
+
+(例示: ユーザー例にあって実データ候補に無い語: [])
