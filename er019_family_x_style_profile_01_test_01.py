@@ -420,6 +420,16 @@ class M3GateTests(unittest.TestCase):
             self.assertEqual([b["segment"] for b in g["blocked"]], ["full_story_part2"])
             self.assertIn(reason, g["blocked"][0]["violations"])
 
+    def test_lr_adoption_blocks_even_when_fallback_used_false_open564(self):
+        """委任_05 OPEN-564: LR採用attemptが①'/②'(fallback_used=False)でも、LOCAL_REWRITE_RECOVERYでM3はBLOCKのまま(Gate緩和ではない)。
+        STD_FALLBACK_USED_OR_UNKNOWNは付かない(記録の正確化のみ)。"""
+        for lvl in ("b1b", "a2"):
+            g = sp.m3_assembly_gate("coffee_p8", lvl, _results(lvl, full_story_part2=lambda e: e.update(fallback_used=False, local_rewrite_recovery={"status": "RESOLVED_BY_LOCAL_REWRITE"})))
+            self.assertEqual(g["status"], "BLOCK")
+            v = g["blocked"][0]["violations"]
+            self.assertIn("LOCAL_REWRITE_RECOVERY", v)
+            self.assertNotIn("STD_FALLBACK_USED_OR_UNKNOWN", v)
+
     def test_missing_segment_record_blocks(self):
         res = _results("b1b")
         del res["segments"]["full_story_part3"]

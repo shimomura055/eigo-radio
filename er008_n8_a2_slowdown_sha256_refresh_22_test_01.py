@@ -73,5 +73,31 @@ class ApplyA2SlowdownPostprocessSha256Tests(unittest.TestCase):
         self.assertIsNone(updated["sha256"])
 
 
+class SlowdownJudgeLrRewrittenWarningTests(ApplyA2SlowdownPostprocessSha256Tests):
+    """委任_05 F2(CURRENT_SPEC.md:2925): Std L4経路でLR採用(書換え後の文)のattemptは、減速後の最終judgeにも必ずLR_REWRITTEN警告が付く。
+    判定結果(PASS/NG)は不変、警告付与のみ。LRなしは警告なし(従来どおり)。"""
+
+    def _run(self, **kw):
+        result = {"status": "OK", "sha256": self.pre_sha256, "duration_seconds": 10.0, "text": "some text"}
+        with mock.patch.object(tg.a2_slowdown, "apply_a2_slowdown", side_effect=self._fake_apply_a2_slowdown),              mock.patch.object(tg.routing, "transcribe", return_value=("some text", None)):
+            return tg.apply_a2_slowdown_postprocess(self.name, self.tmp_dir, "some text", result, **kw)
+
+    def test_lr_block_attempt_final_judgement_has_lr_rewritten_warning(self):
+        out = self._run(lock_text="original script text")        # LR block内: 送信文(書換え後)!=Lock key(元原稿)
+        self.assertEqual(out["status"], "OK")                     # 判定結果は不変(PASS)
+        j = out["asr_judgement"]
+        self.assertIn("LR_REWRITTEN", j["warnings"])
+        self.assertEqual(j["state"], "PASS_WITH_WARNING")
+
+    def test_no_lr_has_no_lr_rewritten_warning(self):
+        out = self._run()
+        self.assertEqual(out["status"], "OK")
+        self.assertNotIn("LR_REWRITTEN", (out["asr_judgement"] or {}).get("warnings") or [])
+
+    def test_unified_judge_default_script_version_is_v0(self):
+        import inspect
+        self.assertEqual(inspect.signature(tg._post_slowdown_unified_judge).parameters["script_version"].default, "v0")
+
+
 if __name__ == "__main__":
     unittest.main()

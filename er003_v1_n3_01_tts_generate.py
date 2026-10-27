@@ -122,7 +122,8 @@ A2_SLOWDOWN_TARGET_SEGMENTS = (
 def _post_slowdown_unified_judge(result: dict, tts_input_text: str, asr_text: str, out_path: str,
                                  segment_id: str, is_last_slot: bool, log_human_review: bool = False,
                                  lock_canonical_text: str | None = None, expected_text_source: str | None = None,
-                                 m1_anchor_text: str | None = None, slot: int | None = None) -> dict:
+                                 m1_anchor_text: str | None = None, slot: int | None = None,
+                                 script_version: str = "v0") -> dict:
     """AUW 委任_05(J7): 6%減速後のwavを**統一judge(EN adapter)**で判定する。旧実装は直接
     `en_validator.classify_asr_match`+homophone+UNCERTAIN限定の共有Cascadeだった。
 
@@ -145,10 +146,10 @@ def _post_slowdown_unified_judge(result: dict, tts_input_text: str, asr_text: st
         detail = secondary_asr.evaluate_attempt_with_cascade_detail(
             tts_input_text, asr_text, [], out_path, language="en-US", ledger_phrases=ledger_phrases,
             cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED, segment_id=segment_id,
-            attempt_ctx=({"slot": (slot if slot is not None else 1), "script_version": "v0", "is_last_slot": bool(is_last_slot),
+            attempt_ctx=({"slot": (slot if slot is not None else 1), "script_version": script_version, "is_last_slot": bool(is_last_slot),
                           # 委任_03(Opus_H条件1、OF-179): LR採用時のみ元原稿をM1 anchorに(元segment開始時刻で凍結)。LRなしは従来どおり。
                           "m1_anchor_text": m1_anchor_text} if m1_anchor_text
-                         else {"slot": (slot if slot is not None else 1), "script_version": "v0", "is_last_slot": bool(is_last_slot)}))
+                         else {"slot": (slot if slot is not None else 1), "script_version": script_version, "is_last_slot": bool(is_last_slot)}))
     except RuntimeError as exc:
         if "init_logger" in str(exc) or "[STOP]" in str(exc):
             raise  # 設定不備(cost logger未初期化/単価未登録)は握りつぶさない
@@ -219,11 +220,13 @@ def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text:
     # 再TTSに実際に送った文にする(単一参照点=retry_primitive.resolve_expected_text_after_local_rewrite)。LRなし/未採用は従来どおり。
     # Lock key(finalize_a2_slowdown_final_ng/record_outcome)は元の原稿のまま(下記)。
     _lock_text = tts_input_text  # Lock key/HR承認key=元の原稿(下記で再代入する前に保持)
+    _lr_block = False            # 委任_05 F2: 統一LR block内のattempt(lock_textが明示された書換え後の送信)か
     if lock_text is not None and lock_text != tts_input_text:
         # TTS-RETRY-FALLBACK-LR-UNIFICATION-XYZ-01 委任_02(M-6(c)): LR block内のattemptはattempt dictに`local_rewrite_recovery`がまだ無い。
         # 期待text=そのattemptの送信文(書換え後)、Lock key/HRQ lock_canonical_text/M1 anchor=元原稿を呼出元(BlockCtx)から明示的に受け取る。
         _lock_text = lock_text
         _expected_source = "local_rewrite_text"
+        _lr_block = True
     else:
         tts_input_text, _expected_source = retry_primitive.resolve_expected_text_after_local_rewrite(result, tts_input_text)
     result["post_slowdown_expected_text_source"] = _expected_source
@@ -249,7 +252,10 @@ def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text:
                                           log_human_review=log_human_review, lock_canonical_text=_lock_text,
                                           expected_text_source=_expected_source,
                                           m1_anchor_text=(_lock_text if _expected_source == "local_rewrite_text" else None),
-                                          slot=slot)
+                                          slot=slot,
+                                          # 委任_05 F2(CURRENT_SPEC.md:2925「PASSなら必ずLR_REWRITTEN警告」): LR採用(書換え後の文で生成)のattemptは
+                                          # 減速後の最終judgeもv1で通す。判定(PASS/NG)は不変、警告付与のみ。LRなし・旧外側ループ(A/B/C scope外、golden byte同一)はv0=従来どおり。
+                                          script_version=("v1" if _lr_block else "v0"))
     _steps = detail.get("steps") or []
     _primary_label = (_steps[0].get("classification") if _steps else None) or "ASR_VALIDATION_UNCERTAIN"
     _cls = detail.get("classification")

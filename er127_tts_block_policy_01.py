@@ -256,6 +256,7 @@ class BlockProgress:
             self.path = f"{level_dir}/audit/tts_block_progress/{segment_id}.json"
         self.state = None
         self.resumed = False
+        self._touched: set = set()   # このinstanceが書いたdepth(_writeはそれ以外のdepthをfileの最新で保つ。委任_05 F1)
         self._resume_n = {}        # depth -> 前processで開始済みのordinal数(consumed判定)
         self._load_or_new(orig_text)
 
@@ -273,6 +274,13 @@ class BlockProgress:
         if not self.path:
             return
         os.makedirs(os.path.dirname(self.path), exist_ok=True)
+        # 委任_05 F1: 別instance(depth1=LR block等)がfileへ書いた他depthのblock記録を、depth別にmergeして保全する
+        # (自分が触れたdepthは自分のin-memoryが正。触れていないdepthはfileの最新を採用=古いin-memoryで上書きしない)。
+        disk = self._read()
+        if disk and disk.get("key") == self.key and isinstance(self.state.get("blocks"), dict):
+            for d, b in (disk.get("blocks") or {}).items():
+                if d not in self._touched:
+                    self.state["blocks"][d] = b
         tmp = f"{self.path}.tmp{os.getpid()}"
         with open(tmp, "w", encoding="utf-8") as f:
             json.dump(self.state, f, ensure_ascii=False, indent=2, default=str)
@@ -311,6 +319,7 @@ class BlockProgress:
 
     # ---- block state
     def _block(self, depth: int) -> dict:
+        self._touched.add(str(depth))
         return self.state["blocks"].setdefault(str(depth), {"n_started": 0, "attempts": {}, "cooldown": None})
 
     def consumed(self, depth: int, ordinal: int) -> bool:
@@ -633,6 +642,10 @@ def lr_recover(blk: BlockRun, *, text: str, out_path: str, last_asr_text: str | 
         return None
     if not _layout_ok(out_path):
         return None
+    if blk._open_ordinal is not None:
+        # 委任_05 F1: ③がstep済みでdone未呼出のままLRへ入る実経路。LR前に③をNGで閉じる(後続finishで③がverified:trueに化けない。
+        # 判定・待機・消費済み判定は不変=③はNGだったから呼ばれている)。
+        blk.done(blk._open_ordinal, False)
     theme_id, level, segment_id = review_lock.derive_segment_key(out_path)
     holder: dict = {}
     lr_ctx = BlockCtx(depth=1, slot_offset=LR_BLOCK_SLOT_OFFSET, total_slots=blk.total_slots, script_version="v1",

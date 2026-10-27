@@ -429,6 +429,53 @@ class BlockRunTests(unittest.TestCase):
         b_next = self.open()
         self.assertFalse(b_next.progress.resumed)
 
+    def test_real_lr_path_third_open_then_lr_block_then_finish_keeps_records(self):
+        """委任_05 F1: 実LR経路(③がstep済み・未closeのままlr_recover→LR block depth1→finish)。
+        ③はverified:false、LR block(blocks["1"])の①'記録がfileに残る。resume判定(消費済み=3)は不変。"""
+        import er011_human_review_lock_01 as review_lock
+        b0 = self.open()
+        b0.step(1); b0.done(1, False)
+        b0.step(2); b0.done(2, False)
+        b0.step(3)                                              # ③未close(実経路: judgeの結果はfinish/lr_recoverで確定)
+
+        class FakeRetry:
+            MANAGEMENT_ID = "FAKE"
+
+            @staticmethod
+            def run_local_rewrite_recovery(*, segment_id, canonical_text, last_asr_text, retts_fn, out_dir, client=None):
+                r = retts_fn("hello rewritten")
+                return {"status": "RESOLVED_BY_LOCAL_REWRITE", "retts_result": r, "selection": {"selected": {"rewritten_segment": "hello rewritten"}}}
+
+        def block_call(rewritten, ctx):
+            b1 = blk.open_block("L1", self.out, rewritten, fingerprint={"style": "s"}, ctx=ctx)
+            b1.step(1)
+            b1.done(1, True)
+            b1.finish({"status": "OK"})
+            return {"status": "OK"}
+
+        with mock.patch.object(review_lock, "_ACTIVE_GUARDED_OUT_PATHS", {self.out}):
+            res = blk.lr_recover(b0, text="hello", out_path=self.out, last_asr_text="x", block_call=block_call,
+                                 merge=lambda a, r: dict(a), last_attempt=None, retry_primitive=FakeRetry)
+        self.assertEqual(res["status"], "OK")
+        b0.finish(res)
+        after = json.load(open(b0.progress.path, encoding="utf-8"))
+        self.assertEqual(sorted(after["blocks"]), ["0", "1"])
+        self.assertFalse(after["blocks"]["0"]["attempts"]["3"]["verified"])        # NGだった③がverified:trueに化けない
+        self.assertTrue(after["blocks"]["1"]["attempts"]["1"]["verified"])         # ①'記録が残る
+        self.assertEqual(after["status"], "DONE")
+        self.assertEqual(after["blocks"]["0"]["n_started"], 3)
+
+    def test_write_keeps_other_depth_block_when_not_touched(self):
+        """委任_05 F1: depth0 instanceのfinish_attempt(_write)が、別instanceのdepth1記録を消さない。"""
+        b0 = self.open()
+        b0.step(1)
+        b1 = self.open(text="r", ctx=blk.BlockCtx(depth=1, slot_offset=3, total_slots=6, script_version="v1", m1_anchor_text="hello", lock_text="hello"))
+        b1.step(1); b1.done(1, True)
+        b0.done(1, False)
+        after = json.load(open(b0.progress.path, encoding="utf-8"))
+        self.assertEqual(sorted(after["blocks"]), ["0", "1"])
+        self.assertTrue(after["blocks"]["1"]["attempts"]["1"]["verified"])
+
     def test_mark_done_resume_judgement_unchanged_when_in_progress_not_marked(self):
         """mark_doneしなければ(STOP等の例外終了)IN_PROGRESSのまま=resume可(従来どおり)。"""
         b0 = self.open()
@@ -907,6 +954,17 @@ class LrAndHrqTests(Base):
         for leaf in LR_LEAVES:
             s = self.go(leaf, [F.NG, F.NG, F.NG, F.PASS])
             self.assertEqual(len(s.hr), 0)
+
+    def test_lr_success_fallback_used_follows_adopted_attempt_open564(self):
+        """委任_05 OPEN-564: LR成功時のfallback_usedは採用attempt種別に従う(①'/②'採用=False、③'採用=True)。local_rewrite_recoveryは常に付く。"""
+        s = self.go("L3", [F.NG, F.NG, F.NG, F.PASS])                       # LR block ①'で採用
+        self.assertEqual(s.status, "OK")
+        self.assertTrue(s.r.get("local_rewrite_recovery"))
+        self.assertIs(s.r["fallback_used"], False)
+        s = self.go("L3", [F.NG, F.NG, F.NG, F.NG, F.NG, F.PASS])           # LR block ③'で採用
+        self.assertEqual(s.status, "OK")
+        self.assertTrue(s.r.get("local_rewrite_recovery"))
+        self.assertIs(s.r["fallback_used"], True)
 
     def test_lr_reentry_is_structurally_forbidden(self):
         import er011_human_review_lock_01 as review_lock

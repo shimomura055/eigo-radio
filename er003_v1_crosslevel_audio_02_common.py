@@ -474,7 +474,9 @@ def _generate_english_segment_unified(blk, text: str, out_path: str, expected_su
             blk_std = res.get("standard_attempts_log") if res.get("fallback_used") else res.get("attempts_log")
             blk_fb = res.get("fallback_attempts_log") if res.get("fallback_used") else []
             res["local_rewrite_recovery"] = recovery
-            res["fallback_used"] = True
+            # 委任_05 OPEN-564: LR block結果の実際の採用attempt種別に従う(③'採用=True、①'/②'採用=False)。無条件Trueだと
+            # Std側だけ記録が非対称になる。M3/Y gateは別途local_rewrite_recoveryでBLOCKする(Gate条件は不変=LR採用は常にBLOCK)。
+            res["fallback_used"] = bool(res.get("fallback_used"))
             res["standard_attempts_log"] = er127.merge_logs(std_log, blk_std)
             res["attempts_log"] = res["standard_attempts_log"]
             res["fallback_attempts_log"] = er127.merge_logs(fallback_attempts, blk_fb)
