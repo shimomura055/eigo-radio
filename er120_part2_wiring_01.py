@@ -509,16 +509,22 @@ def compose_page_html(part1_html: str, result: dict) -> str:
     return g.compose_study_html(part1_html, result)
 
 
+def _part1_enabled(audio_dir: str, level: str) -> bool:
+    """Part 1(単語解説)を載せるか(D-F1是正)。Advanced(b1b)=常に / Standard(a2)=確定レコードにdisplay_spec(新表示仕様=Std Part 1=①+②)がある記事だけ
+    (er128.display_spec_of=flag非経由・書込なし。display_spec無しのa2=従来どおりPart 1なし=遡及なし)。X runnerのpart1_enabledと同一規則。"""
+    return level == "b1b" or bool(_cc().display_spec_of(audio_dir, level))
+
+
 def public_study_html(audio_dir: str, article_text: str, *, level: str, next_command: str = "--stage study_text") -> str:
     """X公開ページ/試聴ページ生成scriptが呼ぶ共通関数(R-2)。入力=Production runnerのaudio出力dir(`<audio_dir>/<level>/...`)と確定済みの本文(article.md全文)。
-    **levelは必須**(両levelのブロックが揃うことは呼出側が両levelで呼んで検査する)。b1b: Part 1(vocab_confirmed.json)+Part 2 / a2: Part 2のみ(Part 1はAdvのみ)。
+    **levelは必須**(両levelのブロックが揃うことは呼出側が両levelで呼んで検査する)。b1b: Part 1(vocab_confirmed.json)+Part 2 / a2: display_spec付きはPart 1(①+②)+Part 2、無しはPart 2のみ(遡及なし)。
     未確定=Part2NotConfirmed(待機)、無い/古い=Part2Stale / KpGeneralExplanationError(ページを作らない)。"""
     g.level_name(level)
     b = f"{audio_dir}/{level}"
     paragraphs, label = g.paragraphs_from_article_md(article_text), label_for(article_text)
-    if level == "b1b":
+    if _part1_enabled(audio_dir, level):
         import er003_kp_general_explanation_01 as p1
-        items = _cc().load_verified_items(f"{b}/key_phrases", level="b1b", which="part1")   # 確定内容保護の単一アクセサ(G1を通し、Part 1入力が確定レコードと一致することを確認してから返す)
+        items = _cc().load_verified_items(f"{b}/key_phrases", level=level, which="part1")   # 確定内容保護の単一アクセサ(G1を通し、Part 1入力が確定レコードと一致することを確認してから返す)
         ja_path = f"{b}/key_phrases/kp_source_sentence_ja.json"
         ja_doc = g.load_json(ja_path) if os.path.exists(ja_path) else None
         pool = part1_ref_ja_pool(items, ja_doc)
@@ -526,8 +532,8 @@ def public_study_html(audio_dir: str, article_text: str, *, level: str, next_com
         items, pool = None, {}
     # Part 2の確定(待機/STOPの理由が先に分かる)→Part 1の描画の順。どちらかが欠けたらページを作らない
     result = require_final(f"{b}/study_text", paragraphs, label, level=level, next_command=next_command, where=f"x_page_{level}", ref_ja_pool=pool)
-    if level == "b1b":
-        part1_html = p1.study_html_for_audio_dir(audio_dir, items=items)
+    if items is not None:
+        part1_html = p1.study_html_for_audio_dir(audio_dir, items=items, level=level)
     else:
         part1_html = ""
     return compose_page_html(part1_html, result)
