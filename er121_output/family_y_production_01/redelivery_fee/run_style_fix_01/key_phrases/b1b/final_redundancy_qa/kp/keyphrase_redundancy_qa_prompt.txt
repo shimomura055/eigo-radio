@@ -1,0 +1,58 @@
+以下は、同じ記事から選ばれた3件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。3件から作れる全てのペア(3組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず3組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+What if it cost money to have a package delivered again when you were not home at the time it arrived? Charging for redelivery means the person receiving the package pays a fee on top of the usual shipping cost. How should we decide whether to charge a fee or reduce redeliveries in another way? Let’s hear from three people with different lives and points of view.
+
+First to speak is a delivery driver who visits homes every day and delivers packages. When I leave a notice saying nobody was home and head off, I feel a little down, too. But then I go to the next house. I really would like to see fewer redeliveries, and they are hard on us, too. Even so, I can’t just say that customers should pay the cost. I think it makes more sense to cover the cost through the overall fee for carrying packages than to charge each customer who wasn’t home for the cost of that redelivery. To do that, I want the company to think about whether free shipping for online orders should stay as it is. If they review shipping fees, I want them to review how the fees are set, too, so that the money really reaches the people who deliver the packages.
+
+Next is someone who receives packages and is often away from home because both she and her husband work. Having to pay for redelivery just doesn’t sit right with me. My husband and I are both away at work, so for packages where we can choose a delivery time, we choose a day and time when we know we’ll be home. But once, I chose a morning time slot and the package didn’t come. I went out to take care of an errand, and when I got back, there was a missed-delivery notice. There are also many packages where you can’t choose a time, and you don’t know beforehand when they’ll arrive. Before charging us, I want them to first do something about arriving at the time we chose and telling us when the package will arrive. The delivery workers must have a hard time because there aren’t enough of them, and I guess it can’t be helped. But I can’t accept having to pay for that. Am I wrong to feel this way?
+
+Lastly, a person who chooses to pick up packages at a locker or another place and takes steps to avoid redelivery. I try to pick up packages at a delivery office or locker so I don’t cause trouble with redelivery. It’s convenient to pick them up when it suits me, but for some items, I can’t choose a locker. And even when I ask for a package to be sent to a delivery office, it may arrive late, so I sometimes end up receiving it in person after all. Still, I take the trouble to think about how to receive my packages, so honestly, I think it’s wrong that I pay the same fee as people who are always away and ask for redelivery. Redelivery takes up the delivery worker’s time, so it’s fine to charge for it. I’d be happy if the first redelivery were free, and people who are repeatedly away had to pay. But maybe that’s just my point of view, since the delivery office is nearby and I can choose how to receive my packages.
+
+A missed-delivery notice was left at the home of someone who had chosen a morning time slot, too. For people who can choose how to receive packages, a redelivery fee can be a signal that encourages them to make an effort. But having the person receiving the package pay won’t change late deliveries or how arrival times are shared. The person receiving the package can’t change how much shipping costs or how much of it goes to the people who deliver the packages, either. When you couldn’t be home and had a problem, could you choose how to receive your package? Did you know when it would arrive? Is that a problem that can be changed by charging the person receiving the package?
+
+【Key Phrase 3件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "sit right with someone",
+    "japanese_gloss": "人にとって納得がいく",
+    "source_sentence": "Having to pay for redelivery just doesn't sit right with me"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "take the trouble",
+    "japanese_gloss": "わざわざ手間をかける",
+    "source_sentence": "Still, I take the trouble to think about how to receive my packages, so honestly, I think it's wrong that I pay the same fee as people who are always away and ask for redelivery"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "on top of",
+    "japanese_gloss": "～に加えて",
+    "source_sentence": "Charging for redelivery means the person receiving the package pays a fee on top of the usual shipping cost"
+  }
+]

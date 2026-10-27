@@ -287,15 +287,15 @@
     ]
   },
   "preview": {
-    "state": "HUMAN_REVIEW_REQUIRED",
+    "state": "RESOLVED",
     "canonical_text_sha256": "dc4068f8cedad801e1c834848590a73759214cf16f1c9d278452e16a1d1afb08",
     "language": "ja",
     "theme_id": "run_style_fix_01",
     "level": "a2",
     "segment_id": "preview",
-    "updated_at": "2026-10-26T20:55:43",
-    "reason": "最終status=STOPPED。標準経路2回+fallback経路1回(合計上限3回)とも不合格",
-    "final_status": "STOPPED",
+    "updated_at": "2026-10-27T09:03:59",
+    "reason": "個別Human Approval(2026-10-27T09:03:59、FAMILY-Y-STYLE-PROFILE-FIX-01)。ユーザーがpreview take 1を試聴し採用を承認。原文=docs/pm/delegation_log/2026-10-27_FAMILY-Y-STYLE-PROFILE-FIX-01_USER_03.md。この1segment・1takeへの個別承認のみ。",
+    "final_status": "HUMAN_APPROVED",
     "wav_path": "er121_output/family_y_production_01/redelivery_fee/run_style_fix_01/a2/narration/preview.wav",
     "cumulative_tts_attempts": 3,
     "cumulative_asr_calls": 3,
@@ -599,7 +599,11 @@
         },
         "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_style_fix_01/a2/narration/attempts/preview_attempt2_custom06ec49ff.wav"
       }
-    ]
+    ],
+    "prior_state": "HUMAN_REVIEW_REQUIRED",
+    "prior_final_status": "STOPPED",
+    "adopted_attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_style_fix_01/a2/narration/attempts\\preview_attempt1_custom06ec49ff.wav",
+    "adopted_audio_sha256": "ac3f74670b039bfb36c52b799f86690a5654b6cc55951a98720d1c49b47c2f3a"
   },
   "comment_1": {
     "state": "RESOLVED",
@@ -1492,40 +1496,110 @@
     ]
   },
   "y_voice_1": {
-    "state": "HUMAN_REVIEW_REQUIRED",
+    "state": "RESOLVED",
     "canonical_text_sha256": "6d001e5b8be189d69eb40454fcc0c1641ef170f21556ded2ae0f4fc7e8d03c39",
     "language": "en",
     "theme_id": "run_style_fix_01",
     "level": "a2",
     "segment_id": "y_voice_1",
-    "updated_at": "2026-10-26T21:00:44",
-    "reason": "最終status=STOPPED。ブロック(標準経路2回+fallback経路1回、合計上限3回)とも不合格",
-    "final_status": "STOPPED",
+    "updated_at": "2026-10-26T21:38:56",
+    "reason": "status=OKで確定しました。",
+    "final_status": "OK",
     "wav_path": "er121_output/family_y_production_01/redelivery_fee/run_style_fix_01/a2/narration/y_voice_1.wav",
-    "cumulative_tts_attempts": 3,
-    "cumulative_asr_calls": 3,
+    "cumulative_tts_attempts": 4,
+    "cumulative_asr_calls": 4,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
         "attempt": 1,
         "status": "OK",
-        "duration_seconds": 39.2,
-        "asr_text": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewer re-deliveries. They are hard on us too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who is not home for their re-delivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
-        "asr_text_length": 614,
+        "duration_seconds": 37.92,
+        "asr_text": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+        "asr_text_length": 616,
         "max_len": 676,
         "substring_ok": null,
         "length_ok": true,
         "final_length_ok": true,
         "phonetic_verdict": null,
-        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "audio_classification": "NUMERIC_EQUIVALENCE_MATCH",
         "connected_speech_info": null,
         "reading_resolver_info": null,
         "scg_info": null,
-        "verified": false,
+        "verified": true,
         "disfluency_checked": false,
         "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": false,
+          "duration_seconds": 37.92,
+          "method_a_ngram": {
+            "matches": [],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 121,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.9983,
+                "time_a_seconds": 7.28,
+                "time_b_seconds": 24.74,
+                "lag_seconds": 17.46,
+                "run_length_seconds_at_thresh_0.85": 0.09
+              },
+              {
+                "similarity": 0.9974,
+                "time_a_seconds": 0.07,
+                "time_b_seconds": 37.72,
+                "lag_seconds": 37.65,
+                "run_length_seconds_at_thresh_0.85": 0.04
+              },
+              {
+                "similarity": 0.9973,
+                "time_a_seconds": 0.06,
+                "time_b_seconds": 24.73,
+                "lag_seconds": 24.67,
+                "run_length_seconds_at_thresh_0.85": 0.02
+              },
+              {
+                "similarity": 0.9972,
+                "time_a_seconds": 7.28,
+                "time_b_seconds": 25.02,
+                "lag_seconds": 17.74
+              },
+              {
+                "similarity": 0.997,
+                "time_a_seconds": 0.05,
+                "time_b_seconds": 19.96,
+                "lag_seconds": 19.91
+              }
+            ],
+            "best_run_length_seconds": 0.09,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.35,
+            "time_a": 0.96,
+            "lag": 0.5,
+            "similarity_at_start": 0.857,
+            "best_run_length_seconds": 0.35,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": false
+          },
+          "method_c_v2_window_check": null
+        },
         "asr_prompt_applied": false,
         "non_latin_cascade_enabled": false,
         "non_latin_cascade_invoked": false,
@@ -1538,46 +1612,34 @@
           {
             "step": "primary_1",
             "provider": "openai_asr",
-            "text": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewer re-deliveries. They are hard on us too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who is not home for their re-delivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
-            "classification": "ASR_VALIDATION_UNCERTAIN",
-            "entity_like_source": []
-          },
-          {
-            "step": "secondary_1",
-            "provider": "azure",
-            "text": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house.I really want fewer redeliveries. They are hard on us, too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who is not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is.If it changes delivery fees, I wanted to look at how it sets them too. Then the money can really reach the people who deliver packages.",
-            "classification": "TRUE_CONTENT_MISMATCH",
-            "phrase_list_used": false,
-            "azure_phrase_list_weight": null,
-            "azure_phrase_list": [],
-            "cached": false,
-            "unified_judge_state": "NG_BOTH",
+            "text": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+            "classification": "NUMERIC_EQUIVALENCE_MATCH",
             "entity_like_source": []
           }
         ],
         "asr_judgement": {
-          "state": "NG_BOTH",
-          "reason_code": "secondary_not_accepted",
+          "state": "PASS",
+          "reason_code": "primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE",
           "slot": 1,
           "script_version": "v0",
           "role": "FULL_STORY",
           "lang": "en",
           "segment_key": "y_voice_1",
-          "audio_sha256": "6ed0591e868a84c3b61575a67cbf8cc7181f734e40cdb7f3ee5787ffed462e62",
+          "audio_sha256": "dad91b718110b701c7090bacf80058daacd5e9aa965ba22d08eaefad437b309e",
           "primary": {
-            "text": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewer re-deliveries. They are hard on us too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who is not home for their re-delivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
-            "passed": false,
-            "label": "ASR_VALIDATION_UNCERTAIN",
-            "equivalence_basis": null,
+            "text": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+            "passed": true,
+            "label": "NUMERIC_EQUIVALENCE_MATCH",
+            "equivalence_basis": "TIER1_NUMERIC_EQUIVALENCE",
             "warning_labels": []
           },
           "secondary": {
-            "called": true,
+            "called": false,
             "cached": false,
             "engine": "azure",
-            "text": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house.I really want fewer redeliveries. They are hard on us, too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who is not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is.If it changes delivery fees, I wanted to look at how it sets them too. Then the money can really reach the people who deliver packages.",
-            "label": "TRUE_CONTENT_MISMATCH",
-            "accepted": false,
+            "text": null,
+            "label": "",
+            "accepted": null,
             "error": null,
             "unavailable": false
           },
@@ -1594,225 +1656,51 @@
               ],
               "reasons": [],
               "warnings": []
-            },
-            "secondary": {
-              "kind": "EQUAL",
-              "pairs": [
-                {
-                  "src": "1",
-                  "hyp": "1",
-                  "verdict": "EQUAL",
-                  "reason": "same_surface"
-                }
-              ],
-              "reasons": [],
-              "warnings": []
             }
           },
           "negation_guard": {
-            "primary": false,
-            "secondary": false
+            "primary": false
           },
           "final_gate": {
-            "applied": false
+            "applied": false,
+            "skipped": "approved_equivalence:TIER1_NUMERIC_EQUIVALENCE"
           },
           "warnings": [],
           "exclusion_rule": null,
           "cost": {
-            "azure_calls": 1,
-            "azure_seconds": 39.2,
-            "est_jpy": 1.7778,
-            "est_jpy_known": true
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
           },
           "timing": {
-            "total_ms": 17741,
-            "secondary_ms": 17720
+            "total_ms": 1,
+            "secondary_ms": 0
           },
           "technical_stop": null,
           "length": {
             "applied": true,
-            "primary_len": 614,
-            "secondary_len": 610,
+            "primary_len": 616,
+            "secondary_len": null,
             "max_len": 676,
             "adopted_from": "primary",
             "adopted_ok": true,
-            "surface_len": 479,
+            "surface_len": null,
             "primary_ok": true
-          },
-          "p3_entry": "p3_primary_ng",
-          "pronunciation_alarm_eval": {
-            "accepted": false,
-            "reason": "NO_ENTITY_DIFF",
-            "detail": {}
           },
           "adapter": {
             "layers": [],
-            "azure_real_calls": 1,
+            "azure_real_calls": 0,
             "cost_guard_triggered": false,
             "language": "en-US",
             "segment_id": "y_voice_1",
             "asr_text_present": true,
             "cache": {
-              "calls": 5,
+              "calls": 0,
               "hits": 0
             }
           }
         },
-        "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_style_fix_01/a2/narration/attempts/y_voice_1_attempt1_customa3c4625e.wav"
-      },
-      {
-        "attempt": 2,
-        "status": "OK",
-        "duration_seconds": 35.87,
-        "asr_text": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewer re-deliveries. They are hard on us too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who is not home for their re-delivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
-        "asr_text_length": 614,
-        "max_len": 676,
-        "substring_ok": null,
-        "length_ok": true,
-        "final_length_ok": true,
-        "phonetic_verdict": null,
-        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
-        "connected_speech_info": null,
-        "reading_resolver_info": null,
-        "scg_info": null,
-        "verified": false,
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "asr_prompt_applied": false,
-        "non_latin_cascade_enabled": false,
-        "non_latin_cascade_invoked": false,
-        "style_prefix": {
-          "len": 177,
-          "sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
-          "head200": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible."
-        },
-        "cascade_steps": [
-          {
-            "step": "primary_1",
-            "provider": "openai_asr",
-            "text": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewer re-deliveries. They are hard on us too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who is not home for their re-delivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
-            "classification": "ASR_VALIDATION_UNCERTAIN",
-            "entity_like_source": []
-          },
-          {
-            "step": "secondary_1",
-            "provider": "azure",
-            "text": "When I leave a note saying no one was home, I feel a little sad too. But then I go to the next house. I really want fewer redeliveries. They are hard on us too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who is not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is if it changes delivery fees.I wanted to look at how it sets them too. Then the money can really reach the people who deliver packages.",
-            "classification": "TRUE_CONTENT_MISMATCH",
-            "phrase_list_used": false,
-            "azure_phrase_list_weight": null,
-            "azure_phrase_list": [],
-            "cached": false,
-            "unified_judge_state": "NG_BOTH",
-            "entity_like_source": []
-          }
-        ],
-        "asr_judgement": {
-          "state": "NG_BOTH",
-          "reason_code": "secondary_not_accepted",
-          "slot": 2,
-          "script_version": "v0",
-          "role": "FULL_STORY",
-          "lang": "en",
-          "segment_key": "y_voice_1",
-          "audio_sha256": "42777ba821c552287588d95fe635971fb6db660a5b336ac27c413480c8f05d57",
-          "primary": {
-            "text": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewer re-deliveries. They are hard on us too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who is not home for their re-delivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
-            "passed": false,
-            "label": "ASR_VALIDATION_UNCERTAIN",
-            "equivalence_basis": null,
-            "warning_labels": []
-          },
-          "secondary": {
-            "called": true,
-            "cached": false,
-            "engine": "azure",
-            "text": "When I leave a note saying no one was home, I feel a little sad too. But then I go to the next house. I really want fewer redeliveries. They are hard on us too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who is not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is if it changes delivery fees.I wanted to look at how it sets them too. Then the money can really reach the people who deliver packages.",
-            "label": "TRUE_CONTENT_MISMATCH",
-            "accepted": false,
-            "error": null,
-            "unavailable": false
-          },
-          "value_guard": {
-            "primary": {
-              "kind": "EQUAL",
-              "pairs": [
-                {
-                  "src": "1",
-                  "hyp": "1",
-                  "verdict": "EQUAL",
-                  "reason": "same_surface"
-                }
-              ],
-              "reasons": [],
-              "warnings": []
-            },
-            "secondary": {
-              "kind": "EQUAL",
-              "pairs": [
-                {
-                  "src": "1",
-                  "hyp": "1",
-                  "verdict": "EQUAL",
-                  "reason": "same_surface"
-                }
-              ],
-              "reasons": [],
-              "warnings": []
-            }
-          },
-          "negation_guard": {
-            "primary": false,
-            "secondary": false
-          },
-          "final_gate": {
-            "applied": false
-          },
-          "warnings": [],
-          "exclusion_rule": null,
-          "cost": {
-            "azure_calls": 1,
-            "azure_seconds": 35.87,
-            "est_jpy": 1.6,
-            "est_jpy_known": true
-          },
-          "timing": {
-            "total_ms": 15600,
-            "secondary_ms": 15567
-          },
-          "technical_stop": null,
-          "length": {
-            "applied": true,
-            "primary_len": 614,
-            "secondary_len": 609,
-            "max_len": 676,
-            "adopted_from": "primary",
-            "adopted_ok": true,
-            "surface_len": 479,
-            "primary_ok": true
-          },
-          "p3_entry": "p3_primary_ng",
-          "pronunciation_alarm_eval": {
-            "accepted": false,
-            "reason": "NO_ENTITY_DIFF",
-            "detail": {}
-          },
-          "adapter": {
-            "layers": [],
-            "azure_real_calls": 1,
-            "cost_guard_triggered": false,
-            "language": "en-US",
-            "segment_id": "y_voice_1",
-            "asr_text_present": true,
-            "cache": {
-              "calls": 7,
-              "hits": 0
-            }
-          }
-        },
-        "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_style_fix_01/a2/narration/attempts/y_voice_1_attempt2_customa3c4625e.wav"
+        "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_style_fix_01/a2/narration/attempts/y_voice_1_attempt4_customa3c4625e.wav"
       }
     ]
   },

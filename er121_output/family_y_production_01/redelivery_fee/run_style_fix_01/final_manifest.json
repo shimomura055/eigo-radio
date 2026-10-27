@@ -1,0 +1,250 @@
+{
+  "management_id": "FAMILY-Y-PRODUCTION-LAUNCH-01",
+  "slug": "redelivery_fee",
+  "run": "run_style_fix_01",
+  "mode": "real",
+  "entry_status": "FAMILY_Y_PRODUCTION",
+  "page": "er121_output/family_y_production_01/redelivery_fee/run_style_fix_01/pages/index.html",
+  "assembled": {
+    "b1b": "er121_output/family_y_production_01/redelivery_fee/run_style_fix_01/b1b/assembled\\Family_Y_REDELIVERY_FEE_B1.wav",
+    "a2": "er121_output/family_y_production_01/redelivery_fee/run_style_fix_01/a2/assembled\\Family_Y_REDELIVERY_FEE_A2.wav"
+  },
+  "ja_article": "er121_output/family_y_production_01/redelivery_fee/run_style_fix_01/text/article_ja.md",
+  "closing_record": {
+    "source": "fixed_user_approved",
+    "general_method_used": false,
+    "slug": "redelivery_fee",
+    "approval_ref": "docs/pm/delegation_log/2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER.md §2-3 (案B「料金は何を動かせるか」を当該記事のみ個別正式採用)",
+    "text_sha256": "26745165e33be3ea5cf4548f365c6d145862d94ad0201cc69695c0a954800e71",
+    "registry_sha256": "1af776887262d9253cc07ca5945176bdb146ba8c8afaa5491fe83c6c04299ceb",
+    "theme_package_sha256": "f0d0af367950735bb0264162d3cb45e3ef330759d8077e9d6f9bb5c3dadf0288",
+    "voice_r0_sha256": "566ebd97d7ba1c81dcaa64305c8e5f02228a44cf1b5aa64f5f0105b1e5498a89",
+    "generation_sha256": "26745165e33be3ea5cf4548f365c6d145862d94ad0201cc69695c0a954800e71",
+    "final_sha256": "26745165e33be3ea5cf4548f365c6d145862d94ad0201cc69695c0a954800e71",
+    "rewritten": false,
+    "gate": {
+      "status": "PASS",
+      "n_judgements": 1,
+      "rewritten": false,
+      "source": "judged_this_run"
+    },
+    "model_id": null,
+    "routing_key": null,
+    "prompt_sha256": null,
+    "note": "案B固定注入。Prompt 02による一般化生成は使っていない(受入条件3は別記事の一般化経路evidenceで担保)",
+    "entry": {
+      "module": "er121_family_y_text_core_01.py",
+      "status": "FAMILY_Y_PRODUCTION",
+      "module_sha256": "e0a6bf10b352c13e37298ccb0d216d739f319b4653653da3402f23e38ffae2aa"
+    }
+  },
+  "stage_entries": {
+    "text": {
+      "routing_key": null,
+      "requested_model": null,
+      "actual_model_id": null,
+      "response_id": null,
+      "prompt_sha256": null,
+      "cost_jpy": null,
+      "input_sha256": "2f1185e17edf5b63b974a6461c0cc3d99d268c1c6a12b9dd0f9597c396ec983f",
+      "output_sha256": "c9c4a9d5215328e1f5a056e0763e866af77ebdf977bf9b473c0c68963f3877ba",
+      "routes": {
+        "voice_generate": {
+          "routing_key": null,
+          "model_id": null,
+          "expected_model": null,
+          "effort": null,
+          "prompt_sha256": null
+        },
+        "lead": {
+          "routing_key": null,
+          "model_id": null,
+          "expected_model": null,
+          "effort": null,
+          "prompt_sha256": null
+        },
+        "intros": {
+          "routing_key": null,
+          "model_id": null,
+          "expected_model": null,
+          "effort": null,
+          "prompt_sha256": null
+        },
+        "closing": {
+          "routing_key": null,
+          "model_id": null,
+          "expected_model": null,
+          "effort": null,
+          "prompt_sha256": null
+        }
+      }
+    },
+    "translate_b1b": {
+      "routing_key": "FAMILY_Y_TRANSLATE_ADV",
+      "requested_model": "gpt-6-luna",
+      "actual_model_id": "gpt-6-luna",
+      "response_id": "resp_0eebc271a9c9f691006added96269487d0977ed3827ec64d1c",
+      "prompt_sha256": null,
+      "cost_jpy": 0.243,
+      "input_sha256": "383ffcc6e06d443aead75c70c84fbd01a5269b9d167bd04b34f70e5974e10b5b",
+      "output_sha256": "df8655a7ca8ec493d40acd7781ee56126b5b087cc39d857e3aed59f7430c2a2b"
+    },
+    "translate_a2": {
+      "routing_key": "FAMILY_Y_TRANSLATE_STD",
+      "requested_model": "gpt-6-luna",
+      "actual_model_id": "gpt-6-luna",
+      "response_id": "resp_07bcecfc75cc9639006addedac5d3887d0b46e3b341964b626",
+      "prompt_sha256": null,
+      "cost_jpy": 0.2231,
+      "input_sha256": "d64332911fe2f948082f75ba0f83afa45153fc490391b360cc71297516c98cee",
+      "output_sha256": "6feea3e9f5c4619079887e6a610861c3fb273c71873f0064874fbac3f0df9e89"
+    },
+    "support_b1b": {
+      "routing_key": "B1_SUPPORT",
+      "requested_model": "gpt-6-luna",
+      "actual_model_id": null,
+      "response_id": null,
+      "prompt_sha256": null,
+      "cost_jpy": null,
+      "input_sha256": "5091767a73ccfad005a2ddf549ca91e48002353e2b42400715c67501f5182df3",
+      "output_sha256": "d4adcf71b2220e9b0abd1d99fe5f014a900116b18a3946c3f6126d7ae6daa012"
+    },
+    "support_a2": {
+      "routing_key": "A2_SUPPORT",
+      "requested_model": "gpt-6-luna",
+      "actual_model_id": null,
+      "response_id": null,
+      "prompt_sha256": null,
+      "cost_jpy": null,
+      "input_sha256": "ec8fa4ee84aac07c132965afaf42384deb9050859c883aa06fa2a30782b8e7d9",
+      "output_sha256": "dd8a9fa78481fd0ea69946ff53029fafab7ecbc8b75313d195df172a781d5034"
+    },
+    "kp_b1b": {
+      "routing_key": null,
+      "requested_model": null,
+      "actual_model_id": null,
+      "response_id": null,
+      "prompt_sha256": null,
+      "cost_jpy": null,
+      "input_sha256": "3f8281b832001c3d4b7c60774820a8a40fb1429221a723e7bac9f9d0fd9200d8",
+      "output_sha256": "8a5674a2331adb30eacc2394782b55d0c2e97e8f1032dbe10c8d75d17415b3b3"
+    },
+    "kp_a2": {
+      "routing_key": null,
+      "requested_model": null,
+      "actual_model_id": null,
+      "response_id": null,
+      "prompt_sha256": null,
+      "cost_jpy": null,
+      "input_sha256": "361e7fda2d6ae5a0aa0d18177e082cd8c699105f3e78d728491d374212553fad",
+      "output_sha256": "2ce9cc7785b226fbd43abb10f4251b6b59b0db78e6bf93cfdd94c0595caac0a3"
+    },
+    "kp_expl_b1b": {
+      "routing_key": null,
+      "requested_model": null,
+      "actual_model_id": null,
+      "response_id": null,
+      "prompt_sha256": null,
+      "cost_jpy": null,
+      "input_sha256": "62b5040b34d7d1002363751c1826122893e4571c0820c3e649438d5a3e770b44",
+      "output_sha256": "417b061459f51328143b766ba3a2afc5b64c3e28797828eff558ab0821fdcba6"
+    },
+    "tts_b1b": {
+      "routing_key": null,
+      "requested_model": null,
+      "actual_model_id": null,
+      "response_id": null,
+      "prompt_sha256": null,
+      "cost_jpy": null,
+      "input_sha256": "3c7e1280a2b0c9d33197a6e632b4346d29ec6b6eb7cf8f17025c552ab7118df3",
+      "output_sha256": "6acf9a96c4cd0b11ab1aeab02c7121510b7db0604f304ebca10bc6af0392a1ec",
+      "models_used": {
+        "gemini-3.8-flash-lite-tts": 18,
+        "gpt-4o-mini-transcribe": 18,
+        "azure-speech-stt": 3
+      },
+      "models_used_scope": "費用ログのstageタグ単位の集計(同じタグを共有するunit[translate/support/kp系]は同じ値)"
+    },
+    "tts_a2": {
+      "routing_key": null,
+      "requested_model": null,
+      "actual_model_id": null,
+      "response_id": null,
+      "prompt_sha256": null,
+      "cost_jpy": null,
+      "input_sha256": "f2fbee547581c6d894c845286f9b190a9c25d51d1b40ee8c3360d16cee853f96",
+      "output_sha256": "9926dd5593cd2cd93de68b718ef5586067064695c756526412db4387aad289f0",
+      "models_used": {
+        "gemini-3.8-flash-lite-tts": 26,
+        "gpt-4o-mini-transcribe": 34,
+        "azure-speech-stt": 12
+      },
+      "models_used_scope": "費用ログのstageタグ単位の集計(同じタグを共有するunit[translate/support/kp系]は同じ値)"
+    },
+    "kp_part1_b1b": {
+      "routing_key": null,
+      "requested_model": null,
+      "actual_model_id": "gpt-6-luna",
+      "response_id": null,
+      "prompt_sha256": "086bb354a49078aa7ca2060ed2b9587871403e7ab1936be4dac7aff8cb8edaa0",
+      "cost_jpy": null,
+      "input_sha256": "05b70f49471432bf2d4697411fb4548167e9a499f72728291f3f06e50506eb32",
+      "output_sha256": "14341c44107217c2ac240c88c898763aac34137d112e4c6589940c14faf9c105"
+    },
+    "kp_part1_ja_b1b": {
+      "routing_key": null,
+      "requested_model": null,
+      "actual_model_id": "gpt-6-luna",
+      "response_id": null,
+      "prompt_sha256": "c11b9dc73f75d9c483f7c63a0a19e57de532dcea3eadfcbafc7378404a2bd974",
+      "cost_jpy": null,
+      "input_sha256": "1fa0414cb2fb5c900e7d3f92ee6ae0b8de473041bc89f7f2d9f2649fee86f271",
+      "output_sha256": "39be5409d8118c51d991ab0fcd76520babc303e4afc37fbc4ef2914a733b71f8"
+    },
+    "part2_cand_b1b": {
+      "routing_key": null,
+      "requested_model": null,
+      "actual_model_id": null,
+      "response_id": null,
+      "prompt_sha256": null,
+      "cost_jpy": null,
+      "input_sha256": "331dfc76bc2d3884fee273796ec9dee7eab4956fa52be896097478bc4d27cc3d",
+      "output_sha256": "be8d7bc3c9396edbd844938a3468caf6460bce96302ee40b65aaf9cc04468152"
+    },
+    "part2_b1b": {
+      "routing_key": null,
+      "requested_model": null,
+      "actual_model_id": null,
+      "response_id": null,
+      "prompt_sha256": null,
+      "cost_jpy": null,
+      "input_sha256": "ea182a8b5c8366351229f911757ed406f455505d61b623e2f48c60e73bea2ccd",
+      "output_sha256": "e47c1332ee385ae7eb2a87107304cee94df47e484744aea07729965e1a4cdfe0"
+    }
+  },
+  "study_text_slots": {
+    "part1_vocabulary_expressions": "接続済み(委任_06。Advancedのみ・5件[vocab_confirmed.json]・kp stage内で生成・使う側入口でfail-closed)",
+    "part2_grammar": "接続済み(委任_06。Advancedのみ・KP候補生成と同じ待機点の前に候補抽出・KPと1つのreview_request.md/rc=4・確定後Step B)"
+  },
+  "chunk_tts": "applied_X_method",
+  "core_numeric_v4_j2": "not_applicable_Y",
+  "support_segments": {
+    "b1b": [
+      "preview",
+      "comment_1",
+      "comment_3"
+    ],
+    "a2": [
+      "preview",
+      "comment_1",
+      "comment_2",
+      "comment_3"
+    ]
+  },
+  "removed_by_spec": {
+    "b1b": {
+      "comment_2": "2026-10-26 FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01(ユーザー正式承認: Family Y Advanced Comment 2削除)"
+    }
+  },
+  "spent_jpy": 32.0908
+}
