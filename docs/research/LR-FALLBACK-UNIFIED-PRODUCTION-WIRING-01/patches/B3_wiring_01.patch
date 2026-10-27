@@ -1,0 +1,279 @@
+diff --git a/er019_family_x_audio_production_runner_01.py b/er019_family_x_audio_production_runner_01.py
+index 5c35225ea..66a2fc957 100644
+--- a/er019_family_x_audio_production_runner_01.py
++++ b/er019_family_x_audio_production_runner_01.py
+@@ -2576,6 +2576,12 @@ def stage_assemble_family_x_b1(theme_out_dir: str, theme_id: str, source_dir: st
+     # M2(c): Style profile Gate・共有Gateより前に、chunk親集約entry(status・親wav・human_approved_chunks)を再構築する
+     # (STOPPED chunkの人間承認後は、親entry/親wavが古いまま・無いままになるため。generate後の承認→再assembleで親も通る)。
+     _chunk_parent_refresh_x(out_dir)
++    # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): 三者一致Gate(表示=TTS入力=ASR正解)。不一致・位置不能・overlay未適用=技術STOP(HRキューへ入れない)。M3/Style Gateより前。
++    import er132_lr_overlay_pages_01 as _er132
++    _lr_blocked = _er132.assemble_gate_summary(theme_out_dir, "b1b", not_rendered_clip_ids=_er132.X_NOT_RENDERED_CLIP_IDS)
++    if _lr_blocked is not None:
++        save_json(f"{out_dir}/run_summary_assemble.json", _lr_blocked)
++        return _lr_blocked
+     style_blocked = _style_profile_gate_blocked_summary(theme_out_dir, out_dir, "b1b")
+     if style_blocked is not None:
+         save_json(f"{out_dir}/run_summary_assemble.json", style_blocked)
+@@ -2830,6 +2836,12 @@ def stage_assemble_family_x_a2(theme_out_dir: str, theme_id: str, source_dir: st
+     if std_chunk_blocked is not None:
+         save_json(f"{out_dir}/run_summary_assemble.json", std_chunk_blocked)
+         return std_chunk_blocked
++    # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): 三者一致Gate(b1と同じ。M3/Style Gateより前)。
++    import er132_lr_overlay_pages_01 as _er132
++    _lr_blocked = _er132.assemble_gate_summary(theme_out_dir, "a2", not_rendered_clip_ids=_er132.X_NOT_RENDERED_CLIP_IDS)
++    if _lr_blocked is not None:
++        save_json(f"{out_dir}/run_summary_assemble.json", _lr_blocked)
++        return _lr_blocked
+     style_blocked = _style_profile_gate_blocked_summary(theme_out_dir, out_dir, "a2")
+     if style_blocked is not None:
+         save_json(f"{out_dir}/run_summary_assemble.json", style_blocked)
+@@ -3066,7 +3078,11 @@ def resolve_x_highlights(out_dir: str, level: str, *, source_dir: str | None = N
+     sd = source_dir or x_source_dir_of(out_dir)
+     article_text = load_text(f"{sd}/{level}/article.md")
+     parts = load_json(f"{out_dir}/{level}/parts.json")
+-    res = hl.resolve_highlights(article_text, load_json(cands_path), hl.items_from_record(rec), x_display_units(parts), lr_rebound=lr_rebound)
++    # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): ハイライトはLR後の表示本文(overlay)で解決する(描画と同じ文字列。LR無し=同一objectでlr_rebound不変)。
++    import er132_lr_overlay_pages_01 as _er132
++    _parts_disp, _ = _er132.overlay_level_dir_units(f"{out_dir}/{level}", parts)
++    lr_rebound = lr_rebound or (_parts_disp is not parts)
++    res = hl.resolve_highlights(article_text, load_json(cands_path), hl.items_from_record(rec), x_display_units(_parts_disp), lr_rebound=lr_rebound)
+     if res["status"] != "OK":
+         view = hl.contract_view(res)
+         codes = [f"{i['code']}(A班名={a['code']}):{i.get('candidate_id')}" for i, a in zip(view["issues"], res["issues"])]
+@@ -3179,6 +3195,9 @@ def _build_level_table(level_dir: str, level: str, japanese_title: str | None =
+     kp_by_rank = {item["rank"]: item for item in kp["items"]}
+     abs_url = player_common.abs_file_url
+     support = load_json(f"{level_dir}/{'b1_support_texts.json' if level == 'b1b' else 'a2_support_texts.json'}")
++    # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): 表示本文へLR後の英文を反映(派生overlay。parts.json/support原本は不変。LR無し=同一objectでbyte同一)。
++    import er132_lr_overlay_pages_01 as _er132
++    parts, support = _er132.overlay_level_dir_units(level_dir, parts, support)
+     # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W4): Advanced(b1b)の
+     # player行に英語解説(explanation_en)textを表示するため、
+     # tts_generation_results.jsonのkey_phrases[rank]["explanation"]を読む
+diff --git a/er019_family_x_listening_page_01.py b/er019_family_x_listening_page_01.py
+index 0e080ad22..3534958b8 100644
+--- a/er019_family_x_listening_page_01.py
++++ b/er019_family_x_listening_page_01.py
+@@ -79,6 +79,9 @@ def level_data(R, uc, hl, run, source_dir, level, key, label, ja_title, slug, hr
+     timeline = rj(f"{base}/audit/timeline.json")
+     parts = rj(f"{base}/parts.json")
+     support = rj(f"{base}/{'b1_support_texts.json' if level == 'b1b' else 'a2_support_texts.json'}")
++    # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): 公開ページの表示本文へLR後の英文を反映(派生overlay)。
++    import er132_lr_overlay_pages_01 as _er132
++    parts, support = _er132.overlay_level_dir_units(base, parts, support)
+     kp = rj(f"{base}/key_phrases/keywords_canonicalized.json")
+     kp_by_rank = {i["rank"]: i for i in kp["items"]}
+     expl = {}
+@@ -118,13 +121,14 @@ def level_data(R, uc, hl, run, source_dir, level, key, label, ja_title, slug, hr
+ 
+ 
+ def build_page(slug: str, run_name: str, web: str, *, run_root: str = RUN_ROOT_DEFAULT, source_root: str = SOURCE_ROOT_DEFAULT,
+-               ja_title: str | None = None, intro_note: str = "", levels=LEVEL_SPECS) -> dict:
++               ja_title: str | None = None, intro_note: str = "", levels=LEVEL_SPECS, audience: str = "public") -> dict:
+     """ページを生成して `<web>/index.html` に書く。いずれかの必須検査が落ちたら PageStop(index.htmlは書かない)。戻り値=検査結果の要約。"""
+     import er019_family_x_audio_production_runner_01 as R
+     import er120_part2_wiring_01 as p2w
+     import er_learning_highlight_01 as hl
+     import er_user_listening_page_common_01 as uc
+ 
++    uc.normalize_audience(audience)   # # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): audience(既定public)。public=事後試聴リストにLR行(LR_REWRITTEN)を出さない(M-7、最終Human報告へ移す)
+     run = f"{run_root}/{slug}__{run_name}"
+     source_dir = f"{source_root}/{slug}/{run_name}"
+     web_aud = os.path.join(web, "audio")
+@@ -160,9 +164,10 @@ def build_page(slug: str, run_name: str, web: str, *, run_root: str = RUN_ROOT_D
+     for level, _lid, lab in levels:
+         pp_ = f"{run}/{level}/audit/pass_with_warning_listening_list.json"
+         lst = rj(pp_) if os.path.exists(pp_) else {"count": 0, "entries": []}
++        _ents = [e for e in lst.get("entries", []) if not (audience == uc.AUDIENCE_PUBLIC and "LR_REWRITTEN" in (e.get("warning_labels") or []))]
+         items = "".join(f"<li>{esc(e.get('segment_id', ''))} / 期待={esc(str(e.get('canonical_text')))} / 一次ASR={esc(str(e.get('primary_text')))} / "
+-                        f"二次ASR={esc(str(e.get('secondary_text')))} / {esc(','.join(e.get('warning_labels') or []))}</li>" for e in lst.get("entries", []))
+-        pw.append(f"<h3>{lab}: 事後試聴リスト(PASS_WITH_WARNING) {lst.get('count', 0)}件</h3><ul>{items}</ul>")
++                        f"二次ASR={esc(str(e.get('secondary_text')))} / {esc(','.join(e.get('warning_labels') or []))}</li>" for e in _ents)
++        pw.append(f"<h3>{lab}: 事後試聴リスト(PASS_WITH_WARNING) {len(_ents) if audience == uc.AUDIENCE_PUBLIC else lst.get('count', 0)}件</h3><ul>{items}</ul>")
+     aux_html = "".join(aux) + "<h2 id='pww'>事後試聴リスト(PASS_WITH_WARNING、非ブロッキング)</h2>" + "".join(pw)
+     title = f"{ja_title or slug} 試聴ページ"
+     intro = ("<div class='note'><b>状態: 完成版・ユーザー試聴待ち</b>(試聴PASSは未取得です)。上のリンクでレベルを切り替えられます。"
+@@ -175,7 +180,7 @@ def build_page(slug: str, run_name: str, web: str, *, run_root: str = RUN_ROOT_D
+ 
+     # ---- 必須検査(出力前) ----
+     summary = {"slug": slug, "run": run_name, "marked_levels": marked, "vocab_levels": vocab_levels, "notices": {}}
+-    cp = uc.check_page(page, levels=tuple(lab for _l, _i, lab in levels), audience="public")
++    cp = uc.check_page(page, levels=tuple(lab for _l, _i, lab in levels), audience=audience)
+     if cp["overall"] != "PASS":
+         raise PageStop("X_PAGE_CHECK_PAGE_FAIL: " + "; ".join(f"{k}:{v['detail']}" for k, v in cp["checks"].items() if not v["ok"])[:600])
+     g3 = R._g3()   # er128系を直接importしない(runnerの遅延accessor)
+diff --git a/er026_family_z_fiction_production_runner_01.py b/er026_family_z_fiction_production_runner_01.py
+index 73071f066..8f8e9ca1b 100644
+--- a/er026_family_z_fiction_production_runner_01.py
++++ b/er026_family_z_fiction_production_runner_01.py
+@@ -2548,6 +2548,8 @@ def stage_assemble(ctx) -> dict:
+     res = {}
+     for lv in LEVELS:
+         inp = load_level_inputs(ctx, lv)
++        import er132_lr_overlay_pages_01 as _er132   # # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): 三者一致Gate(assemble入口)。不一致=FamilyZLRDisplayConsistencyStop(技術STOP、HRへ入れない)
++        _er132.z_assemble_gate(ctx.out_dir, lv, m.a63.FamilyZLRDisplayConsistencyStop)
+         tl = m.a63.run_assembly(ctx.out_dir, lv, inp["story_clips"], inp["kp_items"], story_key=ctx.slug,
+                                 kp_third="explanation" if lv == "b1b" else "japanese", chunk_plans=inp["chunk_plans"])
+         res[lv] = {"duration_seconds": round(tl["duration_seconds"], 2), "wav": tl["wav"],
+diff --git a/er063_family_z_audio_01.py b/er063_family_z_audio_01.py
+index 39fd09bda..50a1d40b7 100644
+--- a/er063_family_z_audio_01.py
++++ b/er063_family_z_audio_01.py
+@@ -94,6 +94,10 @@ class FamilyZAudioStop(RuntimeError):
+     """fail-closedでSTOPする全例外の基底。"""
+ 
+ 
++class FamilyZLRDisplayConsistencyStop(FamilyZAudioStop):
++    """# LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): 表示本文・TTS入力・ASR正解の不一致/位置特定不能/overlay未適用(技術STOP。Human Reviewへは入れない)。"""
++
++
+ class FamilyZSlowdownGateStop(FamilyZAudioStop):
+     """M1: Std英語Story clipに6%減速証跡が無い。"""
+ 
+@@ -2428,6 +2432,8 @@ def build_page_rows(run_dir: str, level: str, audio_rel_prefix: str, audio_out_d
+     戻り値=(rows, kp_rows, full_mp3_name, duration)。テキスト未取得のsegmentは『未取得』と明記(推測補完なし)。
+     write_audio=False(委任_19): 既存mp3を再利用し一切書き換えない(存在しなければFamilyZAudioStop)。"""
+     import soundfile as sf
++    import er132_lr_overlay_pages_01 as _er132   # # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): Z表示本文へLR後の英文を反映(派生overlay、LR無し=同一object)
++    _lr = _er132.level_ledger(run_dir, level)
+     level_dir = f"{run_dir}/{level}"
+     tl = _read_json(f"{level_dir}/assembly/timeline.json")
+     data = _read_json(f"{level_dir}/audit/tts_generation_results.json")
+@@ -2456,16 +2462,13 @@ def build_page_rows(run_dir: str, level: str, audio_rel_prefix: str, audio_out_d
+         if entry:
+             row["voice"] = entry.get("voice", "-")
+             row["style"] = (entry.get("style") or {}).get("instruction_label", "-")
+-            row["script"] = entry.get("canonical_text") or FIXED_SHELL_TEXT.get(cid, "未取得")
++            row["script"] = _er132.display_text_of_clip(_lr, cid, entry["canonical_text"]) if entry.get("canonical_text") else FIXED_SHELL_TEXT.get(cid, "未取得")
+             if entry.get("slowdown_applied"):
+                 _tempo = (entry.get("speed_profile") or {}).get("tempo")
+                 _label = "約6%高速化" if (_tempo or 0) > 1.0 else "6%減速"
+                 row["notes"].append(f"{_label}適用(比 {entry.get('slowdown_ratio')})" if entry.get("slowdown_ratio") else f"{_label}適用")
+-            if entry.get("audio_text_deviation"):
+-                row["notes"].append("Local Rewrite採用(音声は原稿から変更: " + entry["audio_text_deviation"].get("diff_summary", "") + ")")
+-            for _dc in (entry.get("chunk_tts") or {}).get("deviation_chunks") or []:   # I7: chunkのLocal Rewrite注記も親行に出す
+-                _dv = ((data.get("segments") or {}).get(_dc) or {}).get("audio_text_deviation") or {}
+-                row["notes"].append(f"Local Rewrite採用({_dc}: 音声は原稿から変更: " + _dv.get("diff_summary", "") + ")")
++            # # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): LR/Fallback由来の注記(旧「LR採用」注記)は公開ページから撤去(原文§2。最終Human報告資料へ移す、F-9/M-7)。
++            # `Voice:`/`Style:`/TTS方式の表示と減速注記(上のslowdown_applied)は維持(er063_family_z_page_verify_01の検査対象)。
+         if part.startswith("key_phrase_"):
+             n = part.split("_")[-1]
+             kp = (data.get("key_phrases") or {}).get(n) or {}
+@@ -2491,6 +2494,8 @@ def full_story_display_units(run_dir: str, level: str) -> list:
+     tl = _read_json(f"{run_dir}/{level}/assembly/timeline.json")
+     data = _read_json(f"{run_dir}/{level}/audit/tts_generation_results.json")
+     groups: dict = {}
++    import er132_lr_overlay_pages_01 as _er132   # # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): _user_page_rowsが描くscript(row["script"])と同じoverlay後の本文で表示unitを作る
++    _lr = _er132.level_ledger(run_dir, level)
+     for e in tl["timeline"]:
+         m = re.fullmatch(r"full_story_part(\d+)_c\d+", e["part"])
+         if not m:
+@@ -2499,7 +2504,7 @@ def full_story_display_units(run_dir: str, level: str) -> list:
+         entry = _lookup_entry(data, cid) if cid else None
+         script = "未取得"
+         if entry:
+-            script = entry.get("canonical_text") or FIXED_SHELL_TEXT.get(cid, "未取得")
++            script = _er132.display_text_of_clip(_lr, cid, entry["canonical_text"]) if entry.get("canonical_text") else FIXED_SHELL_TEXT.get(cid, "未取得")
+         groups.setdefault(int(m.group(1)), []).append(script)
+     return [{"key": f"full_story_part{n}", "texts": t, "joiner": " "} for n, t in sorted(groups.items())]
+ 
+diff --git a/er117_z_chunk_wiring_test_01.py b/er117_z_chunk_wiring_test_01.py
+index 5feb64447..738f86947 100644
+--- a/er117_z_chunk_wiring_test_01.py
++++ b/er117_z_chunk_wiring_test_01.py
+@@ -418,13 +418,13 @@ class ZGateAndAssemblyTests(unittest.TestCase):
+         seq = tl["timeline"]
+         idx = [i for i, e in enumerate(seq) if e["part"] == "full_story_part2_c1"][0]
+         self.assertEqual(seq[idx + 1]["part"], "_silence_0.5")
+-        # ページ行: 親行はvoice/styleが「-」でなく、chunkのLocal Rewrite注記が親行に出る
++        # ページ行: 親行はvoice/styleが「-」でない。LR/Fallback由来の注記は公開ページ行へ出さない(LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3、原文§2。旧I7を置換)
+         rows, _, _, _ = z.build_page_rows(self.run, "b1b", "x/", f"{self.tmp}/aud")
+         row = [r for r in rows if r["clip_id"] == "full_story_part2_c1"][0]
+         self.assertNotEqual(row["voice"], "-")
+         self.assertNotEqual(row["style"], "-")
+         self.assertTrue(row["script"].startswith("Alpha"))
+-        self.assertTrue(any("full_story_part2_c1_k2" in n and "Local Rewrite" in n for n in row["notes"]))
++        self.assertFalse(any("Local Rewrite" in n for n in row["notes"]))
+ 
+     def test_assembly_stops_if_parent_wav_not_raw_concat_and_without_chunk_plans_uses_legacy_path(self):
+         plan, kp = self._prepare()
+diff --git a/er121_family_y_audio_01.py b/er121_family_y_audio_01.py
+index 6ad897c1b..d6e5d2749 100644
+--- a/er121_family_y_audio_01.py
++++ b/er121_family_y_audio_01.py
+@@ -1188,6 +1188,12 @@ def assemble_level(theme_out_dir: str, level: str, *, style_profile: str, slug:
+     reconcile_hr_approvals_for_request(out_dir, level, style_profile)   # OPEN-535: chunk親の再構築・共有Gateより前に不一致の旧HR承認を退避
+     if level in ys.CHUNK_TTS_Y_LEVELS:      # Style Gate・共有Gateより前に、chunk親集約entry(status・親wav・human_approved_chunks)を再構築する(人間承認後の再assembleで親も通る)
+         _refresh_y_chunk_parents_on_disk(out_dir, level)
++    # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): 三者一致Gate(表示=TTS入力=ASR正解)。不一致・位置不能・overlay未適用=技術STOP(HRキューへ入れない)。Style Gateより前。
++    import er132_lr_overlay_pages_01 as _er132
++    _lr_blocked = _er132.assemble_gate_summary(theme_out_dir, level)
++    if _lr_blocked is not None:
++        save_json(f"{out_dir}/run_summary_assemble.json", _lr_blocked)
++        return _lr_blocked
+     gate = y_style_gate(theme_out_dir, level, style_profile)
+     if gate["status"] != "PASS":
+         s = {"status": "BLOCKED_STYLE_PROFILE_GATE", "gate": gate}
+@@ -1428,11 +1434,15 @@ def _y_level_text(theme_out_dir: str, level: str) -> str:
+         return f.read()
+ 
+ 
+-def y_highlight_display_units(theme_out_dir: str, level: str) -> list:
++def y_highlight_display_units(theme_out_dir: str, level: str, overlay: bool = True) -> list:
+     """Yページに表示される本文ブロック(Full Storyの8 segment)を公開順(ys.Y_SEGMENT_IDS)に並べたDisplayUnit列。key=segment ID、texts=[segment本文]。
+     本文は translate/<level>.md の split_y_article(parts.json の segments と同一の導出=prepare_inputs)。TTS前(parts.json生成前)でも解決できる。"""
+     segs = ys.split_y_article(_y_level_text(theme_out_dir, level))["segments"]
+-    return [{"key": sid, "texts": [segs[sid]], "joiner": " "} for sid in ys.Y_SEGMENT_IDS if sid in segs]
++    units = [{"key": sid, "texts": [segs[sid]], "joiner": " "} for sid in ys.Y_SEGMENT_IDS if sid in segs]
++    if not overlay:
++        return units
++    import er132_lr_overlay_pages_01 as _er132   # # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): LR後の表示本文(派生overlay)。LR無し=同一object
++    return _er132.overlay_highlight_units(_er132.level_ledger(theme_out_dir, level), units)
+ 
+ 
+ def y_highlight_article_text(theme_out_dir: str, level: str) -> str:
+@@ -1452,7 +1462,9 @@ def resolve_y_highlights(theme_out_dir: str, level: str) -> dict | None:
+     kp_dir = f"{theme_out_dir}/key_phrases/{level}"
+     rec = cc.load_record(kp_dir)
+     cands = load_json(f"{kp_dir}/kp_candidates.json")
+-    res = hl.resolve_highlights(y_highlight_article_text(theme_out_dir, level), cands, hl.items_from_record(rec), y_highlight_display_units(theme_out_dir, level))
++    _units = y_highlight_display_units(theme_out_dir, level)
++    res = hl.resolve_highlights(y_highlight_article_text(theme_out_dir, level), cands, hl.items_from_record(rec), _units,
++                                lr_rebound=(_units != y_highlight_display_units(theme_out_dir, level, overlay=False)))   # LR後本文で解決(LR無し=従来どおりFalse)
+     res["level"] = level
+     return res
+ 
+@@ -1495,6 +1507,9 @@ def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: s
+     parts = load_json(f"{base}/parts.json")
+     res = load_json(f"{base}/audit/tts_generation_results.json")
+     support = load_json(f"{base}/support_texts.json")
++    import er132_lr_overlay_pages_01 as _er132   # # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): ページ描画の表示本文へLR後の英文を反映(派生overlay、LR無し=同一object)
++    _lr = _er132.level_ledger(theme_out_dir, level)
++    parts, support = _er132.overlay_level_units(_lr, parts, support)
+     kp_items = sorted(load_json(f"{base}/key_phrases/keywords_canonicalized.json")["items"], key=lambda it: it["rank"])
+     expl = res.get("key_phrase_explanations_text") or {}
+     label_to_sid = {v: k for k, v in ys.PAGE_LABEL.items()}
+@@ -1522,7 +1537,7 @@ def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: s
+             if ja_paragraphs is not None:
+                 blocks.append("<details><summary>日本語の元原稿</summary><div class='ja'>" + cp.esc(ja_paragraphs.get(sid, "")) + "</div></details>")
+         elif pl.startswith("topic intro"):
+-            blocks.append(_script(res["segments"]["topic_intro"].get("canonical_text")))
++            blocks.append(_script(_er132.display_text_of_clip(_lr, "topic_intro", res["segments"]["topic_intro"].get("canonical_text") or "")))
+         elif pl.startswith("japanese title"):
+             blocks.append(_script(res["segments"]["japanese_title"].get("canonical_text") or res["segments"]["japanese_title"].get("text")))
+         elif pl == "preview":
+diff --git a/er_user_listening_page_common_01.py b/er_user_listening_page_common_01.py
+index eae0b5309..445f3fa15 100644
+--- a/er_user_listening_page_common_01.py
++++ b/er_user_listening_page_common_01.py
+@@ -357,6 +357,9 @@ def check_page(html_text: str, base_dir: str | None = None, levels=("Standard",
+     put("no_A2_B1_label", not re.search(r"\(A2\)|\(B1\)|B1B", visible))
+     if audience == AUDIENCE_PUBLIC:
+         put("no_chunk_marker_in_public", count_chunk_markers(html_text) == 0, f"markers={count_chunk_markers(html_text)}")
++        import er132_lr_overlay_pages_01 as _lr132   # # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): 公開ページにLR/Fallback注記・fhr- class・LR_REWRITTEN等を出さない(原文§2・§10-9)
++        _leak = _lr132.public_leak_hits(html_text)
++        put("no_lr_fallback_note_in_public", not _leak, f"hits={_leak}")
+     # C7 音声実在
+     if base_dir:
+         miss = [n.attrs.get("src") for n in flat if n.tag == "audio" and n.attrs.get("src")
