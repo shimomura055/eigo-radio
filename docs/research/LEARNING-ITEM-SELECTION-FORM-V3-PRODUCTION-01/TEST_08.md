@@ -14,3 +14,4 @@
 - 既存fixtureの更新1件(契約変更の必然): `ai_island_temple__b1b__prod__r1.readable.txt`は旧規則の期待コピーに`=====`が残っていたため新規則へ更新(manifestのsha/codeも更新)。他は不変。
 - 変更したtest: 旧`test_comment_literal_nashi_is_refused`(「なし」を拒否)は新仕様と矛盾するため撤去し、`test_comment_default_words_are_no_comment_08`/`test_comment_tamper_with_default_word_still_refused_08`(実コメントのコードに対する「なし」への書換えは従来どおり拒否)に置換。
 - `form1_selection_form_v3_test_01.py`: 旧試作proto06との比較を正式参照実装へ変更(旧試作は`=====`を残す旧規則のため)。
+| 6 | headless 公開URL(https://shimomura055.github.io/eigo-radio/user_test/selection_form_v3/ 、commit ead898c90反映後) `browser_check_08.mjs` | pass=32 fail=0、Console error 0。AI島b1b Top1選択時のコピーに`=====`なし・`。\n【解説ここまで】`で終端(`browser_check_08_public_output.txt`) |

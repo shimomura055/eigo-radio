@@ -1,0 +1,33 @@
+PASS undecided grammar blocks copy: no clipboard write, guidance shown :: 文法が未決定です。Top 1・Top 2のどちらかを1件選ぶか、「適切な候補なし
+PASS A. copy (AI島Std locked, grammar none): human-readable text with header/sections/grammar none/free comment/code line :: 記事：AIの仮想の島｜Standard /  / ① Key Phrase / - carry over：持ち越す
+PASS A. copy text has no JSON / candidate_id / kind / SHA full / AI reason
+PASS A. copy shows clear success message in OK style :: 選定結果をコピーしました。 [okmsg]
+PASS A. code d6 == SHA-256 of the data file bytes the browser fetched (WebCrypto cross-check of pure-JS sha) :: 6a014b vs 6a014b
+PASS A. confirmed 10 items shown locked (UI unchanged) :: 10
+PASS A. real clipboard content == copied text (readText; CRLF-normalized by OS clipboard) :: len 385
+PASS A. selection state unchanged by copy
+PASS B. send: clipboard write starts before window.open (same click) :: write,open
+PASS B. send: text = PREFACE(verbatim-return request) + readable + code; no "Claude Code向け指示案" :: 以下はeigo-radioの学習項目選定結果です。内容(英語
+PASS B. send within threshold: opens chatgpt.com/?q= with the full text (<=6000 chars) :: url len 2446
+PASS B. send within threshold: normal-style message (copied + opened) :: 選定結果をコピーし、ChatGPTを開きました。入力欄に内容が入っていればそのまま送信、空ならCtr
+PASS C. copy (Adv, grammar Top1): grammar title + 【解説全文】<verbatim body>【解説ここまで】 without omission :: body chars 450
+PASS C. copy: multi-line free comment preserved, code line last
+PASS C. send within threshold: q= URL carries full text :: url 5382
+PASS D. over-threshold (long comment): opens chatgpt.com without q, text with the full comment copied, paste guidance in OK style :: 選定結果をコピーしました（内容が長いため貼り付け方式です）。開いたChatGPTの入力欄にCtrl+V / ⌘V で貼り付けて送信してくださ
+PASS E. clipboard failure: guidance + manual-copy textarea shows the full text; selection state preserved :: 自動コピーできませんでした。下の枠のテキストを手動でコピーしてください（選定内容
+PASS E. clipboard failure on send still opens ChatGPT (q= when within threshold) :: https://chatgpt.com/?q=%E4%BB%
+PASS F. 技術情報付きコピー is inside collapsed <details> (hidden by default) :: {"open":false,"vis":false}
+PASS F. technical copy keeps legacy JSON (candidates_all, candidate_id) for er128 confirm --from-form fallback :: len 10329
+PASS G. limits unchanged: 4th cat1 disabled (<=3) :: ok,ok,ok,disabled
+PASS G. limits unchanged: cat1+cat2 <=5 :: ok,ok,disabled
+PASS G. limits unchanged: total 12 selectable :: ok,ok,ok,ok,ok,ok,ok
+PASS G. 12 selected items all appear as "- 英語：訳" lines (no omission), code line present :: items 12
+PASS no console errors/exceptions
+PASS C. (委任_08) AI島b1b Top1 data ends with 。===== but copy text has no ===== :: data tail "。====="
+PASS C. (委任_08) copy text ends at 【解説ここまで】 right after the explanation, then comment
+PASS D. (委任_08) comment 特になし => 自由コメント：なし and m8=0 :: back__b1b__prod-71a7c0-1dd307cf-4bd94d78-ee703cf4d9-0-0-0dc1
+PASS D. (委任_08) comment なし => 自由コメント：なし and m8=0 :: back__b1b__prod-71a7c0-1dd307cf-4bd94d78-ee703cf4d9-0-0-0dc1
+PASS D. (委任_08) comment whitespace => 自由コメント：なし and m8=0 :: back__b1b__prod-71a7c0-1dd307cf-4bd94d78-ee703cf4d9-0-0-0dc1
+PASS D. (委任_08) real comment kept, m8 != 0
+PASS console error 0 (all checks)
+SUMMARY pass=32 fail=0
