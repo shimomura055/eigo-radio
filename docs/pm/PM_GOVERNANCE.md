@@ -4347,3 +4347,5 @@ Family Z runner(er026/er062/er063)に次を実装済み(課金0のmock/dry-run�
   役割は不変)。詳細は`DECISION_LOG.md`同管理ID委任_02エントリ参照。
 
 **禁止Git操作の違反記録(2026-10-27追記、PM-SSOT-SYNC-18)**: FAMILY-Z-STYLE-ACTUAL-GATE-01 委任_01が並列稼働中に`git stash`/`git stash pop`を実行(自己申告、stash残0)。検証=commit喪失なし・コード巻き戻りなし(`docs/research/PM-SSOT-SYNC-18/GIT_INTEGRITY_01.md`、OPEN-555)。上記『並列稼働中のgit stash禁止』は不変。委任文の禁止事項に`stash`を明記して再発防止(継続)。
+
+**違反記録・規律逸脱の追記(2026-10-27、PM-SSOT-SYNC-20)**: (1) PM-SSOT-SYNC-19 agentが`git pull --rebase`を試行(dirty treeで失敗、履歴書換えなし)=禁止操作の試行。(2) GRAMMAR-PREGEN-ALL-LEVELS-01 委任_01 agentが`git add -f docs/pm/RESULT_PACKET_GPG1.md`(gitignore対象の強制追加、`-f`禁止)=違反。PM-SSOT-SYNC-20で`git rm --cached`により追跡解除(ローカルファイルは残置)。(3) KP-CONFIRMED-CONTENT-PROTECTION-01 委任_02B agentがコピーrunで同一run 300秒内に3回起動しRESTART_STORMを自発動(費用0、STOP未解除)=起動規律違反。同委任で、evidence目的に不要なFull Story TTS再生成¥7.39を実行=費用規律の反省(有料stage実行前に『そのstageがevidenceに必要か』を1行記録する)。(4) 再発防止として`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`固定ブロックに『git add -f/pull --rebase禁止の再掲』『同一run起動間隔150秒・5分3回禁止』『有料stage前のevidence必要性1行記録』を追記。

@@ -61,6 +61,8 @@ T-3は費用上限[Cap]を伴う委任のみ)。T-0は委任文標準の検証�
 [Cap]=暴走防止Guardrail(自動STOP閾値ではない)の明示であり、本文言も
 `DELEGATION_READ_EFFICIENCY_BLOCK.md`側が正本。
 
+**固定ブロック追記(2026-10-27、PM-SSOT-SYNC-20、PM_GOVERNANCE違反記録の再発防止)**: (1)禁止Git操作の再掲: `git add -f`(gitignore対象の強制追加)・`git pull --rebase`・`git stash`・`amend`・`-A`は禁止(許可は`git rm --cached <path>`の追跡解除のみ)。(2)同一runの起動間隔は150秒以上、5分に3回起動しない(RESTART_STORM自発動防止)。(3)有料stageを実行する前に『そのstageがevidenceに必要か』を1行記録する(不要なFull Story TTS再生成の防止)。(4)Family別stage名の注意: X/Y/Zのrunner `--stages`一覧は各runner `--help`で確認し、`provision_shell`はZ専用(Y runnerには存在しない)。
+
 ## ユーザー指示(原文)
 
 (該当する場合、ユーザーの承認・指示原文をそのまま引用する。)
