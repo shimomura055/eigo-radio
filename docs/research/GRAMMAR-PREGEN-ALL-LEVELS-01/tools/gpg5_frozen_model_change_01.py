@@ -30,7 +30,11 @@ def main():
         sd = xr._part2_study_dir(out, a.level)
         pool = xr._part2_pool_x(out, a.level)
     else:
-        raise SystemExit("family y は個別に呼ぶ")
+        import er121_family_y_runner_01 as yr
+        ctx = yr.YContext(slug=a.slug, run=a.run, mode="real", theme_package_path=None, reuse_manifest_path=None)   # 委任_05C: Y branch(read-only。API 0)
+        paragraphs, label = yr._part2_inputs(ctx, a.level)
+        sd = yr._part2_dir(ctx, a.level)
+        pool = yr._part2_pool(ctx, a.level)
     fz = cc.load_frozen_grammar(sd)
     out = {"study_dir": sd, "frozen": bool(fz), "model_before": g.MODEL, "frozen_ids": [f.get("candidate_id") for f in (fz or [])] if isinstance(fz, list) else (fz or {}).get("candidate_id")}
     r0 = p2w.require_final(sd, paragraphs, label, level=a.level, next_command="x", ref_ja_pool=pool)

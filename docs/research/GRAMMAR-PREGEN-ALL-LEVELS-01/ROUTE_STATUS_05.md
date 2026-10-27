@@ -8,3 +8,9 @@
 | Z Std(a2) | 対象外(旧run互換KP) | EVIDENCE取得(候補0->ZERO->「構文なし」1ブロック、page_verify OK) | 未実施 | 0件経路の主証跡。Z Std非0はruntime未観測(Zは候補最大1) |
 | Z Adv(b1b) | EVIDENCE取得(G1 PASS/frozen/kp_selection_verified) | EVIDENCE取得(候補1->採用・finalize LLM0・page_verify part2 OK・model変更耐性PASS) | 未実施 | |
 | X 0件(Std/Adv) | AI島参照 | 参照: `ai_island_temple__run_form_prod_01`(d05729316)で Std/Adv ともREVIEWED 0件・ZERO確認。本委任ではAIF3のM3 Style Gate STOP(別件)は未関与 | AI島側 | 参照のみ |
+
+## 委任_05C 更新(Y経路。上表のY2行を置換)
+| 経路 | KCP | GPG | フォームv3経路 | 備考 |
+|---|---|---|---|---|
+| Y Std(a2) | EVIDENCE取得(G1 PASS・G2/G3 kp_selection_verified ok・確定selection同一・frozen) | EVIDENCE取得(Top1/Top2提示・Top1採用・2件拒否(05)・finalize LLM0・ページ文法ブロック1/page_verify OK・model変更耐性PASS) | 未実施(別委任) | Fable許可のSTOP解除1回・起動1回 |
+| Y Adv(b1b) | EVIDENCE取得(同上) | EVIDENCE取得(**Top2非Top1採用がページまで到達**・finalize LLM0・Part 1直後Part 2・model変更耐性PASS) | 未実施(別委任) | 同上 |
