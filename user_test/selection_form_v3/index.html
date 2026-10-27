@@ -25,7 +25,8 @@ function status(m){$('status').textContent=m}
 function render(){
   var d=D, st=get();
   var src=$('srcnote');
-  if(d&&d.source&&d.source.note_ja){src.hidden=false;src.textContent=d.source.note_ja+(d.shortfall_note_ja?'　［候補数: '+d.shortfall_note_ja+'］':'')}else{src.hidden=true}
+  var dw=(d&&d.data_warnings||[]).map(function(w){return '【データ警告】'+(w.message_ja||w.code)}).join('　');
+  if(d&&((d.source&&d.source.note_ja)||dw)){src.hidden=false;src.textContent=((d.source&&d.source.note_ja)||'')+(d.shortfall_note_ja?'　［候補数: '+d.shortfall_note_ja+'］':'')+(dw?'　'+dw:'')}else{src.hidden=true}
   if(!d){
     $('stats').innerHTML='';$('candidates').innerHTML='<p class="muted">この記事枠の候補は未登録です。</p>';
     $('grammarCount').textContent='';$('grammars').innerHTML='';$('grammarNotice').hidden=true;$('comment').value=st.comment||'';return;
@@ -43,7 +44,7 @@ function render(){
       var tip=[g.text,it.excerpt].filter(Boolean).join('｜');
       html+='<div class="item"><div class="lab"><label'+(tip?' title="'+esc(tip)+'"':'')+'>'+esc(term)+'</label>'+(it.flag?' <span class="flag" title="'+esc(it.flag_note_ja||it.flag)+'">'+esc(it.flag_note_ja||it.flag)+'</span>':'')+
         '<div class="ja"><span class="gl gl-'+g.status+'">'+esc(g.label)+'</span> '+(g.text?'<span class="jatext">'+esc(g.text)+'</span>':'<span class="muted">（日本語訳は未生成です。仮訳は表示しません）</span>')+'</div>'+
-        '<details class="why" data-why="'+esc(term)+'"'+(openWhy[skey()+'|'+term]?' open':'')+'><summary>AI理由・確認用'+(ro.has?'':'（なし）')+'</summary><div class="whybody">'+(ro.has?esc(ro.text):esc(ro.note))+'<br><span class="muted">※確認用情報です。確定内容（英語・日本語訳・解説）ではありません。</span></div></details></div>';
+        (ro.has?'<details class="why" data-why="'+esc(term)+'"'+(openWhy[skey()+'|'+term]?' open':'')+'><summary>AI理由・確認用</summary><div class="whybody">'+esc(ro.text)+'<br><span class="muted">※確認用情報です。確定内容（英語・日本語訳・解説）ではありません。</span></div></details>':'')+'</div>';
       for(var cat=1;cat<=3;cat++){var ok=FL.allowed(st.choices,tl,term,cat);
         html+='<div class="pick '+(now===cat?'chosen':!ok?'locked':'')+'"><input aria-label="'+esc(term)+' 区分'+cat+'" type="checkbox" data-term="'+esc(term)+'" data-cat="'+cat+'" '+(now===cat?'checked':'')+' '+(!ok?'disabled':'')+'></div>'}
       html+='</div>'});

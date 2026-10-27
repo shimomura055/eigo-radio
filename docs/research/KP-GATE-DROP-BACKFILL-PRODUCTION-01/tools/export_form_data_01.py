@@ -111,6 +111,27 @@ def reason_info(c: dict) -> tuple:
     return "", "none_not_generated"
 
 
+P7W5_PROMPT_IDS = ("kp_prompt_p7", "kp_prompt_w5p")
+
+
+def is_p7w5_doc(doc: dict) -> bool:
+    """候補docが正式7+5(P7/W5')世代か。doc.prompt_ids(call1/call2)または候補単位のprompt_idがP7/W5'を示す場合のみTrue。
+    旧Prompt 2 doc(prompt_idsなし/kp_prompt_2等)はFalse(理由欠落を警告しない。フォームは理由欄を出さないだけ)。"""
+    ids = list((doc.get("prompt_ids") or {}).values()) + [c.get("prompt_id") for c in (doc.get("candidates") or [])]
+    return any(i in P7W5_PROMPT_IDS for i in ids if i)
+
+
+def reason_missing_warning(doc: dict, entries: list):
+    """7+5 docで`reason_ja`が欠落する候補があれば`data_warnings`用dictを返す。正常扱いしない(2026-10-27ユーザー決定§4)。該当なしはNone。"""
+    if not is_p7w5_doc(doc):
+        return None
+    miss = [e["candidate_id"] for e in entries if not e.get("reason_ja")]
+    if not miss:
+        return None
+    return {"code": "reason_missing_in_p7w5", "count": len(miss), "candidate_ids": miss,
+            "message_ja": "正式7+5方式の候補にAI理由の欠落が" + str(len(miss)) + "件あります(欠落は正常状態ではありません。該当候補は理由欄を非表示にしています)"}
+
+
 def entry(c: dict, source_kind: str = "PRODUCTION_FORMAL_PATH") -> dict:
     fl = c.get("flags") or {}
     rj, rsrc = reason_info(c)
@@ -185,6 +206,9 @@ def convert(doc: dict, *, slug: str, level: str, name: str, family: str, run: st
         "shortfall": bool(doc.get("shortfall")), "shortfall_detail": sd_out, "shortfall_note_ja": shortfall_note_ja(doc),
         "grammar": grammar or [],
     }
+    w = reason_missing_warning(doc, es)
+    if w:
+        out["data_warnings"] = [w]
     over = [e for e in es if e["kind"] == "phrase"][cbk.get("phrase", 7):] + [e for e in es if e["kind"] == "word"][cbk.get("word", 5):]
     if over:                                   # フォームの枠(フレーズ7/単語5)を超える候補は表示せず別枠に保持(情報は失わない)
         out["overflow"] = over

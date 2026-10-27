@@ -48,11 +48,6 @@
   // 日本語訳=候補doc既存の japanese_gloss(ページ表示・P8-KP音声の元と同一項目)。AI再生成はしない。status: official|provisional|missing
   var GLOSS_LABEL = { official: '正式訳', provisional: '仮訳・未確定', missing: '日本語訳未生成' };
   var CAT_LABEL = { 1: '①Key Phrase', 2: '②追加解説', 3: '③本文意味表示' };
-  var REASON_NONE = {
-    none_call1_has_no_reason: 'AI理由なし(最初の候補生成は選定理由を出さない仕様)',
-    none_placeholder_not_real: 'AI理由なし(試験用の仮文言のため非表示)',
-    none_not_generated: 'AI理由は未生成'
-  };
   function glossOf(it) {
     var text = (it.ja_gloss !== undefined ? it.ja_gloss : it.meaning_ja) || '';
     var st = it.ja_gloss_status || (text ? 'provisional' : 'missing');   // status無しの旧データは正式扱いしない
@@ -61,9 +56,9 @@
   }
   function reasonOf(it) {
     var r = (it.reason_ja || '').trim();
-    var src = it.reason_source || (r ? 'ai_unknown' : 'none_not_generated');
-    if (r) return { text: r, source: src, has: true, note: '' };
-    return { text: '', source: src, has: false, note: REASON_NONE[src] || 'AI理由は未生成' };
+    // 理由が実際に存在する候補だけ has=true。存在しない候補は理由欄を描画せず、送信にも含めない(2026-10-27ユーザー決定§4。理由欠落を示す文言は出さない)
+    if (r) return { text: r, source: it.reason_source || 'ai_unknown', has: true };
+    return { text: '', source: '', has: false };
   }
   function allItems(d) { return (d.phrases || []).concat(d.words || []); }
   function findItem(d, term) { return allItems(d).filter(function (x) { return x.term === term; })[0] || { term: term }; }
@@ -116,7 +111,8 @@
     lines.push('', '【AI選定理由(確認用情報。ユーザーが確定した英語・日本語訳・解説本文とは別。確定内容ではありません)】');
     var nr = 0;
     s.groups.forEach(function (grp) { grp.forEach(function (term) {
-      var ro = reasonOf(findItem(d, term)); nr++; var it0 = findItem(d, term); lines.push('・' + term + '(' + (candIdOf(it0) || 'candidate_idなし') + '): ' + (ro.has ? ro.text : '(' + ro.note + ')'));
+      nr++; var it0 = findItem(d, term), ro = reasonOf(it0);
+      if (ro.has) lines.push('・' + term + '(' + (candIdOf(it0) || 'candidate_idなし') + '): ' + ro.text);   // 理由が無い候補の行は出さない
     }); });
     if (!nr) lines.push('(選択なし)');
     t += lines.join('\n');
@@ -128,7 +124,7 @@
   function buildStructured(d, st, now, opts) {
     var s = summary(d, st);
     var sel = [1, 2, 3].map(function (cat) { return s.groups[cat - 1].map(function (t) { return itemRecord(findItem(d, t), cat); }); });
-    var refs = []; s.groups.forEach(function (grp) { grp.forEach(function (t) { var ro = reasonOf(findItem(d, t)); refs.push({ candidate_id: candIdOf(findItem(d, t)), term: t, reason_ja: ro.text, reason_source: ro.source }); }); });
+    var refs = []; s.groups.forEach(function (grp) { grp.forEach(function (t) { var ro = reasonOf(findItem(d, t)); if (ro.has) refs.push({ candidate_id: candIdOf(findItem(d, t)), term: t, reason_ja: ro.text, reason_source: ro.source }); }); });   // 理由がある候補のみ(空文字・「なし」文言は送らない)
     var o = {
       schema: SCHEMA, schema_version: 2, schema_minor: 1, generated_at: now || new Date().toISOString(),
       article: { slug: d.slug, level: d.level, level_label: d.level_label || '', name: d.name, text_sha256: (d.source || {}).text_sha256 || null,
@@ -146,7 +142,9 @@
     if (opts && opts.all_candidates) {
       o.candidates_all = allItems(d).map(function (it) {
         var g = glossOf(it), ro = reasonOf(it), cat = (st.choices || {})[it.term] || 0;
-        return { candidate_id: candIdOf(it), kind: kindOf(it), term: it.term, category: cat, ja_gloss: g.text, ja_gloss_status: g.status, reason_ja: ro.text, reason_source: ro.source, reason_for_reference_only: true };
+        var rec = { candidate_id: candIdOf(it), kind: kindOf(it), term: it.term, category: cat, ja_gloss: g.text, ja_gloss_status: g.status };
+        if (ro.has) { rec.reason_ja = ro.text; rec.reason_source = ro.source; rec.reason_for_reference_only = true; }
+        return rec;
       });
     }
     return o;

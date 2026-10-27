@@ -185,6 +185,33 @@ class SelectionFormV3Test(unittest.TestCase):
         self.assertNotIn("上限8件", out["shortfall_note_ja"])
         self.assertEqual(xf.reason_info({"reason_ja": "理由", "origin": "call1"}), ("理由", "ai_call1"))       # P7ではcall1にも理由
 
+    def test_reason_missing_warning_only_for_p7w5_docs(self):
+        """委任_05(ユーザー決定2026-10-27 §4): 7+5 docで理由欠落は`data_warnings`、旧Prompt 2 docは警告なし(理由欄非表示のみ)。"""
+        xf = self._xf()
+        mk = lambda cid, rj: {"candidate_id": cid, "selection_phrase": cid, "used_form": cid, "japanese_gloss": "訳", "source_sentence": "s", "origin": "call1", "kind": "phrase", "reason_ja": rj, "ai_rank": 1}
+        kw = dict(slug="s", level="a2", name="n", family="X", run="r", source_kind="PRODUCTION_FORMAL_PATH", note_ja="")
+        p7 = xf.convert(dict(candidates=[mk("p_1", "理由"), mk("p_2", "")], backfill={}, prompt_ids={"call1": "kp_prompt_p7", "call2": "kp_prompt_w5p"}), **kw)
+        self.assertEqual(len(p7["data_warnings"]), 1)
+        self.assertEqual((p7["data_warnings"][0]["code"], p7["data_warnings"][0]["candidate_ids"]), ("reason_missing_in_p7w5", ["p_2"]))
+        ok = xf.convert(dict(candidates=[mk("p_1", "理由")], backfill={}, prompt_ids={"call1": "kp_prompt_p7"}), **kw)
+        self.assertNotIn("data_warnings", ok)
+        old = xf.convert(dict(candidates=[mk("p_1", ""), mk("p_2", "理由")], backfill={}), **kw)       # prompt_idsなし=旧Prompt 2 doc
+        self.assertNotIn("data_warnings", old)
+        old2 = xf.convert(dict(candidates=[mk("p_1", "")], backfill={}, prompt_ids={"call1": "kp_prompt_2"}), **kw)
+        self.assertNotIn("data_warnings", old2)
+        for f in __import__("glob").glob(os.path.join(FD, "data", "*__prod.json")):          # 配線済み7+5 evidence docは全候補に理由あり=警告なし
+            if "monkeys" not in f:
+                self.assertNotIn("data_warnings", _j(f), f)
+
+    def test_form_html_hides_reason_pane_without_reason(self):
+        with open(os.path.join(FD, "index.html"), encoding="utf-8") as f:
+            h = f.read()
+        with open(os.path.join(FD, "form_logic.js"), encoding="utf-8") as f:
+            j = f.read()
+        for bad in ("AI理由なし", "ro.note", "（なし）", "REASON_NONE", "none_call1_has_no_reason"):
+            self.assertFalse(bad in h + j, bad)
+        self.assertIn("data_warnings", h)
+
     def test_kp75_form_data_cap12_kind_cap_and_reason_verbatim(self):
         import glob
         n = 0

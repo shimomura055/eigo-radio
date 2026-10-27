@@ -90,3 +90,11 @@
 - 記事枠: 9記事枠(参照HTML順)は不変。7+5 evidenceは`_prod`スラッグ枠(9枠に数えない)に置く。`articles.json`は`melos_prod`にb1b、`uk_train_speaker_playback_prod`にa2/b1bを追加(計+3枠)。9枠を超えて退避した7+5版は無い。
 - 旧3+5版5件は`data/legacy/`へ移動(articles.jsonから参照しない。testで保持を確認)。猿の手(`monkeys_paw__b1b`/`__prod`)は7+5 evidence docが無いため不変(前者DEV Trial-02、後者replay=いずれも`provisional`)。
 - 日本語訳(`ja_gloss`)・AI理由(`reason_ja`)は候補docの値を逐語(AI再生成なし)。8件とも`ja_gloss_status=official`、全候補に`reason_ja`あり。
+
+## 委任_05追補(2026-10-27、ユーザー正式決定【全面修正版】§4への追従。UI仕様変更ではない)
+
+- 理由欄の表示規則: 候補の`reason_ja`が空(未設定・空白のみ)の場合、フォームは理由欄(折りたたみ「AI理由・確認用」)自体を描画しない。「AI理由なし」「(なし)」等の文言は一切表示・送信しない。理由がある候補は従来どおり表示。
+- 送信payload: `ai_reference.items[]`は理由がある候補のみ。`candidates_all[]`の`reason_ja`/`reason_source`/`reason_for_reference_only`も理由がある候補のみ付与。テキスト版「AI選定理由」節は理由がある候補の行のみ(節見出しは維持)。
+- `reason_source`の`none_*`値はデータ側の内部区分として残る(旧doc互換)が、フォームは表示に使わない。
+- `data_warnings[]`(article docの任意項目): `{code, count, candidate_ids[], message_ja}`。エクスポータは候補doc(`prompt_ids`のcall1/call2が`kp_prompt_p7`/`kp_prompt_w5p`、または候補単位`prompt_id`がP7/W5')を7+5世代と判定し、`reason_ja`欠落候補があれば`code=reason_missing_in_p7w5`を記録する(正常扱いしない)。フォームは出所注記(`#srcnote`)に「【データ警告】…」を表示する。旧Prompt 2 doc(`prompt_ids`なし等)は警告なし(理由欄非表示のみ)。
+- 実データ確認: 配線済み7+5 evidence 8 docは全候補に理由があり`data_warnings`なし。`data/legacy/`・DEV Trial・ダミーは旧世代/非Production扱いで警告なし。

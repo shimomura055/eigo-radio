@@ -175,7 +175,7 @@ t('glossOf/reasonOf: old data without status is never treated as official; missi
   assert.strictEqual(FL.glossOf({ term: 'a', ja_gloss: '', ja_gloss_status: 'official' }).status, 'missing');
   assert.strictEqual(FL.glossOf({ term: 'a' }).label, '日本語訳未生成');
   assert.strictEqual(FL.glossOf({ term: 'a', ja_gloss: '訳', ja_gloss_status: 'official' }).label, '正式訳');
-  assert.strictEqual(FL.reasonOf({ term: 'a' }).has, false); assert.strictEqual(FL.reasonOf({ term: 'a', reason_ja: '理由' }).has, true);
+  assert.strictEqual(FL.reasonOf({ term: 'a' }).has, false); assert.ok(!('note' in FL.reasonOf({ term: 'a' }))); assert.strictEqual(FL.reasonOf({ term: 'a', reason_ja: '理由' }).has, true);
 });
 
 const mpp = rd('data/melos__a2__prod.json');
@@ -200,7 +200,7 @@ t('send text: official gloss and reason; provisional/missing marked; reasons onl
   assert.ok(!conf.includes(call2.reason_ja), 'reason must not be in the confirmed section');
   assert.ok(ai.includes(call2.term + '(' + call2.candidate_id + '): ' + call2.reason_ja)); assert.ok(ai.includes(call1.term + '(' + call1.candidate_id + '): ' + call1.reason_ja));   // 委任_03: 行末にcandidate_id。委任_04: 7+5ではcall1にも理由がある
   const lg = rd('data/legacy/melos__a2__prod.json'), lc1 = lg.phrases.find(x => x.origin === 'call1'), st4 = FL.newState(); pick(lg, st4, [[lc1.term, 1]]);
-  assert.ok(FL.buildText(lg, st4).includes(lc1.term + '(' + lc1.candidate_id + '): (AI理由なし'));   // 旧3+5 docのcall1は理由なし
+  const lt = FL.buildText(lg, st4); assert.ok(!lt.includes('AI理由なし') && !lt.includes(lc1.candidate_id + '):'), 'no-reason candidate has no line / no placeholder text');   // 旧3+5 docのcall1は理由なし=行ごと出さない(委任_05)
   const mp1 = rd('data/monkeys_paw__b1b.json'); const st2 = FL.newState(); pick(mp1, st2, [['burial', 1]]);
   const t2 = FL.buildText(mp1, st2); assert.ok(t2.includes('【仮訳・未確定】') && t2.includes('黙って確定・変更しないこと'));
   const miss = { slug: 'x', level: 'a2', name: 'X', phrases: [{ id: 'a', term: 'foo bar' }], words: [], grammar: [] }; const st3 = FL.newState(); pick(miss, st3, [['foo bar', 1]]);
@@ -214,7 +214,7 @@ t('structured v2: complete user-confirmed fields; AI reason separated and flagge
   assert.deepStrictEqual(o.selection.key_phrase.map(x => x.term), [tl[0], tl[1]]); assert.deepStrictEqual(o.selection.extra_explanation.map(x => x.term), [tl[2]]); assert.deepStrictEqual(o.selection.meaning_display.map(x => x.term), [tl[3]]);
   o.selection.key_phrase.concat(o.selection.extra_explanation, o.selection.meaning_display).forEach(x => { ['term', 'category', 'category_label', 'ja_gloss', 'ja_gloss_status'].forEach(k => assert.ok(k in x, k)); assert.ok(!('reason_ja' in x), 'AI reason must not be mixed into confirmed item'); });
   assert.deepStrictEqual(o.selection.grammar.map(g => g.id), ['g1', 'g3']); o.selection.grammar.forEach(g => { const src = d.grammar.find(z => z.id === g.id); assert.strictEqual(g.explanation_full, src.body); assert.strictEqual(g.explanation_status, 'provided'); assert.strictEqual(g.title, src.title); });
-  assert.strictEqual(o.comment, 'C'); assert.strictEqual(o.ai_reference.for_reference_only, true); assert.strictEqual(o.ai_reference.items.length, 4);
+  assert.strictEqual(o.comment, 'C'); assert.strictEqual(o.ai_reference.for_reference_only, true); assert.strictEqual(o.ai_reference.items.length, 0);   // ダミーは理由なし→ai_referenceに含めない(委任_05)
   assert.ok(o.user_confirmed_note_ja.includes('変更しない')); assert.ok(!('candidates_all' in o));
   const full = FL.buildStructured(d, st, 'T', { all_candidates: true }); assert.strictEqual(full.candidates_all.length, 12);
   assert.strictEqual(full.candidates_all.filter(x => x.category > 0).length, 4);
@@ -276,7 +276,8 @@ t('v2.1: structured payload carries candidate_id/kind on selected items, ai_refe
     ['key_phrase', 'extra_explanation', 'meaning_display'].forEach(k => j.selection[k].forEach(it => {
       ns++; const o = all.filter(x => x.term === it.term)[0]; assert.strictEqual(it.candidate_id, o.candidate_id); assert.strictEqual(it.kind, o.kind); }));
     assert.strictEqual(ns, 5);
-    assert.strictEqual(j.ai_reference.items.length, 5); j.ai_reference.items.forEach(it => assert.ok(it.candidate_id));
+    const nWithReason = ['key_phrase', 'extra_explanation', 'meaning_display'].reduce((a, k) => a + j.selection[k].filter(it => (all.filter(x => x.term === it.term)[0].reason_ja || '').trim()).length, 0);
+    assert.strictEqual(j.ai_reference.items.length, nWithReason); j.ai_reference.items.forEach(it => assert.ok(it.candidate_id && it.reason_ja));   // 委任_05: 理由がある候補のみ
     j.candidates_all.forEach((it, i) => { assert.strictEqual(it.candidate_id, all[i].candidate_id); assert.strictEqual(it.kind, all[i].kind); });
     assert.ok('candidates_sha256' in j.article && j.article.candidates_sha256_source && 'source_kp_candidates_path' in j.article);
     assert.strictEqual(j.article.candidates_sha256, d.candidates_sha256);
@@ -346,4 +347,22 @@ t('7+5: a full 12-candidate article (7 phrases + 5 words) validates and selectio
   for (let i = 0; i < 3; i++) assert.ok(FL.setChoice(st, tl, tl[i], 1, true)); assert.ok(!FL.setChoice(st, tl, tl[3], 1, true));
   for (let i = 3; i < 5; i++) assert.ok(FL.setChoice(st, tl, tl[i], 2, true)); assert.ok(!FL.setChoice(st, tl, tl[5], 2, true));
   for (let i = 5; i < 12; i++) assert.ok(FL.setChoice(st, tl, tl[i], 3, true));
+});
+
+// ---- 委任_05: 理由が実在しない候補は理由欄を出さず、送信にも含めない(ユーザー決定2026-10-27 §4) ----
+t('no-reason candidates: excluded from ai_reference / candidates_all reason fields; no "AI理由なし" text anywhere', () => {
+  const lg = rd('data/legacy/melos__a2__prod.json'); const all = lg.phrases.concat(lg.words);
+  const c1 = all.find(x => x.origin === 'call1' && !x.reason_ja), c2 = all.find(x => x.origin === 'call2' && x.reason_ja);
+  const st = FL.newState(); pick(lg, st, [[c1.term, 1], [c2.term, 2]]);
+  const o = JSON.parse(JSON.stringify(FL.buildStructured(lg, st, 'T', { all_candidates: true })));
+  assert.deepStrictEqual(o.ai_reference.items.map(x => x.candidate_id), [c2.candidate_id]);
+  o.ai_reference.items.forEach(x => assert.ok(x.reason_ja && x.reason_source));
+  const rec1 = o.candidates_all.find(x => x.candidate_id === c1.candidate_id); assert.ok(!('reason_ja' in rec1) && !('reason_source' in rec1));
+  const js = JSON.stringify(o); assert.ok(!js.includes('AI理由なし') && !js.includes('なし)')); assert.ok(!FL.buildText(lg, st).includes('AI理由なし'));
+  const none = rd('data/ui_check_dummy__dummy.json'); const st2 = FL.newState(); pick(none, st2, [[FL.terms(none)[0], 1]]);
+  assert.deepStrictEqual(FL.buildStructured(none, st2, 'T').ai_reference.items, []);
+});
+t('index.html: reason details rendered only when reason exists; no "(なし)"/placeholder markup', () => {
+  const h = fs.readFileSync(path.join(FD, 'index.html'), 'utf8');
+  assert.ok(/ro\.has\?'<details class="why"/.test(h)); assert.ok(!h.includes('ro.note') && !h.includes("（なし）"));
 });
