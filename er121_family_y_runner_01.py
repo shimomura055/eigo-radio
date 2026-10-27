@@ -8,8 +8,8 @@ Zのstage framework(er026_family_z_fiction_production_runner_01)と同型の骨�
 - KP Human Review: 最初から er119_kp_wiring_01.run_kp_with_review 経由(Human確認 or 明示の不在宣言まで rc=4 で待機。有料の後続工程へ進まない)。
 - 実modelの記録: 各stageの来歴entryに routing_key / requested_model / actual_model_id / response_id / prompt_sha256 / cost を残す(closing_recordはtext stage)。
 - mode: dry-run(副作用0・API 0)/ mock(偽client・偽TTS。実APIへ出ない)/ real(承認予算内のみ。本委任では起動しない)。
-- Part 1(Vocabulary & Expressions)・Part 2(Grammar & Sentence Structure)は委任_06でX/Zと同形に接続済み(Advancedのみ。kp stage内でKP/文法のHR待機点を共有し、
-  使う側[tts_b1b/gate/assemble/pages/page_verify]の入口でfail-closed確認。共通核はer119/er120/er003_kp_*を呼ぶだけで再実装しない)。接続状態は study_text_slots.json に記録する。
+- Part 1(Vocabulary & Expressions)・Part 2(Grammar & Sentence Structure)は委任_06でX/Zと同形に接続済み(Part 1はAdvancedのみ・Part 2は両level[Std/Adv]。kp stage内でKP/文法のHR待機点を共有し、
+  使う側[tts_b1b/gate/assemble=Advancedの文法、pages/page_verify=両levelの文法]の入口でfail-closed確認。共通核はer119/er120/er003_kp_*を呼ぶだけで再実装しない)。接続状態は study_text_slots.json に記録する。
 - 隔離: 本ファイルはYの新入口。X/Zのruntime・既存Prompt・閾値・辞書は無変更。中核数値v4/J2はY非適用。Chunk TTSはX方式を正式採用(委任_04、USER_02 ①。分割判定はaudio層の audit/chunk_tts_decision.json)。
 """
 from __future__ import annotations
@@ -314,7 +314,7 @@ def stage_seed_check(ctx) -> dict:
 
 
 STUDY_TEXT_SLOTS = {"part1_vocabulary_expressions": "接続済み(委任_06。Advancedのみ・5件[vocab_confirmed.json]・kp stage内で生成・使う側入口でfail-closed)",
-                    "part2_grammar": "接続済み(委任_06。Advancedのみ・KP候補生成と同じ待機点の前に候補抽出・KPと1つのreview_request.md/rc=4・確定後Step B)"}
+                    "part2_grammar": "接続済み(委任_06→GRAMMAR-PREGEN-ALL-LEVELS-01 委任_03で両level化。Advanced+Standard・KP候補生成と同じ待機点の前に候補抽出+全候補の解説の事前生成・KPと1つのreview_request.md/rc=4・確定後はfinalize[LLM 0]・Standardはページ専用)"}
 CHUNK_TTS_MANIFEST = "applied_X_method"      # 委任_04/OT-44(b): X方式Chunk TTSをYへ正式採用(分割の有無は各levelの audit/chunk_tts_decision.json。1段落segmentは分割0)
 PART1_STAGE, PART1_JA_STAGE = "kp_part1_b1b", "kp_part1_ja_b1b"
 # Part 2(文法)の来歴stage名(level別。er120_part2_wiring_01.stage_namesと同一。cand=候補抽出+解説の事前生成 / final=finalize[LLM 0])
@@ -583,6 +583,26 @@ def _kp_review_step(ctx, lv, text) -> dict:
         raise YE2EStop(f"FAMILY_Y_KP_REVIEW_STOP({lv}): {e}") from e
 
 
+def _rebind_kp_on_confirmation(ctx, prov, lv: str, text: str, kr: dict, input_sha: str):
+    """KCP3所見D1: 自動採用runへ後からユーザー確定(フォーム/HR)を入れて KP review署名が変わっても、`kp_<lv>` 来歴の親sha不一致STOPにしない(API 0で再バインド)。
+    条件(すべて満たすときだけ): 明示 --regenerate-stage kp_<lv> ではない / 確定レコードがユーザー確定(live) / 旧署名で再計算した入力shaが記録済みentryと一致(=本文は不変) /
+    現在のKP assetsが新しい確定と一致(内容が変わっていれば再バインドせず従来どおりSTOP・再生成)。付け替えは entry['rebinds'] に履歴。TTS等の子孫はstale化しない。"""
+    name = f"kp_{lv}"
+    if ctx.regenerate_stage == name:
+        return None
+    entry = prov.stage_entry(name)
+    if entry is None or entry["input_sha256"] == input_sha or not entry.get("kp_selection_signature"):
+        return None
+    if _khr()._cc().live_user_record(_kp_src_dir(ctx, lv)) is None:
+        return None
+    try:
+        _assert_kp_review_consistent(ctx, lv, "stage_kp_rebind_check")
+    except (YE2EStop, YKpReviewPending):
+        return None
+    return _m().w62.rebind_confirmation_input(prov, name, expected_old_input_sha=_sha(f"{text}|{entry['kp_selection_signature']}"), new_input_sha=input_sha,
+                                              new_signature=kr["signature"], new_status=kr.get("status"))
+
+
 def stage_kp(ctx) -> dict:
     prov = _prov(ctx)
     st = _m().st
@@ -606,6 +626,7 @@ def stage_kp(ctx) -> dict:
         if kr.get("state") == "FAILED":
             raise YE2EStop(f"FAMILY_Y_KP_NOT_PASSED({lv}): status={review_res.get('status')}(自動採用しない)")
         input_sha = _sha(f"{text}|{kr['signature']}")
+        _rebind_kp_on_confirmation(ctx, prov, lv, text, kr, input_sha)     # D1: 確定(ユーザー)による署名変化だけならAPI 0で来歴を付け替える
 
         def runner(lv=lv, review_res=review_res):
             canon = (review_res.get("canonicalization") or {}).get("status")
@@ -657,7 +678,7 @@ def stage_kp(ctx) -> dict:
 
 
 # ------------------------------------------------------------
-# 学習テキスト Part 1「Vocabulary & Expressions」/ Part 2「Grammar & Sentence Structure」(Advancedのみ。X/Zと同形・共通核を呼ぶだけ)
+# 学習テキスト Part 1「Vocabulary & Expressions」(Advancedのみ)/ Part 2「Grammar & Sentence Structure」(Std+Adv両level。X/Zと同形・共通核を呼ぶだけ)
 # 共通核: er003_kp_general_explanation_01(Part 1解説)/er003_kp_source_sentence_ja_01(引用英文の訳)/er120_part2_wiring_01(Part 2)/er119(KP/文法HR)。
 # 使う側(tts_b1b/gate/assemble/pages/page_verify)で存在・最新性・確定との一致をfail-closed確認する(_assert_study_ready)。
 # ------------------------------------------------------------

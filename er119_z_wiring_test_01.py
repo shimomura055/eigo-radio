@@ -141,6 +141,66 @@ class TestZWait(ZBase):
             self.assertEqual(rv.load_review(self.src[lv])["status"], rv.ST_REVIEWED)
 
 
+class TestZConfirmationRebindD1(ZBase):
+    """KCP3所見D1(GRAMMAR-PREGEN-ALL-LEVELS-01 委任_03): 自動採用runへ後からユーザー確定を入れてKP review署名が変わっても、kp_<lv>来歴の親sha不一致STOPにならず
+    API 0で再バインドされる(TTS等の子孫はstale化しない)。本文が変わった場合は従来どおりSTOP。"""
+
+    def _auto(self):
+        self.declare()
+        _quiet(r.run_stage, self.ctx, "kp")
+
+    def _auto_ranks(self, lv):
+        fin = jl(f"{self.src[lv]}/kp_selection_final.json")
+        return fin
+
+    def test_user_confirmation_after_auto_adoption_rebinds_without_stop_or_api(self):
+        self._auto()
+        prov0 = r._prov(self.ctx)
+        e0 = dict(prov0.stage_entry("kp_b1b"))
+        n_calls = (self.kp_calls(), self.extract_calls(), self.explain_calls())
+        rev = rv.load_review(self.src["b1b"])
+        self.assertEqual(rev["status"], rv.ST_AUTO)
+        # 自動採用と同じ集合をHumanが後から確定する(フォーム/HRの確定相当)。署名が変わる
+        doc = rv.load_candidates(self.src["b1b"])
+        rank_of = {c["candidate_id"]: c["ai_rank"] for c in doc["candidates"]}
+        sel = rev["selection"]
+        rv.op_select(self.src["b1b"], kp_ranks=[rank_of[i] for i in sel["kp"]], vocab_ranks=[rank_of[i] for i in sel["vocab"]], by="human")
+        self.assertEqual(rv.load_review(self.src["b1b"])["status"], rv.ST_REVIEWED)
+        _quiet(r.run_stage, self.ctx, "kp")        # 以前は kp_b1b の親sha不一致STOP
+        e1 = r._prov(self.ctx).stage_entry("kp_b1b")
+        self.assertNotEqual(e1["input_sha256"], e0["input_sha256"])
+        self.assertEqual(e1["output_sha256"], e0["output_sha256"])                      # 出力は不変(再生成していない)
+        self.assertEqual(len(e1["rebinds"]), 1)
+        self.assertEqual(e1["rebinds"][0]["reason"], "confirmation_signature_changed")
+        self.assertEqual(e1["rebinds"][0]["api_calls"], 0)
+        self.assertEqual((self.kp_calls(), self.extract_calls(), self.explain_calls()), n_calls)   # API 0
+        self.assertNotIn("kp_b1b", r._prov(self.ctx).data["downstream_stale"])
+        for d in ("tts_b1b", "kp_expl_b1b"):
+            self.assertNotIn(d, r._prov(self.ctx).data["downstream_stale"])             # 子孫はstale化しない(TTS再生成コストに波及しない)
+        _quiet(r.run_stage, self.ctx, "kp")        # 再実行もAPI 0・再バインド履歴は増えない
+        self.assertEqual(len(r._prov(self.ctx).stage_entry("kp_b1b")["rebinds"]), 1)
+
+    def test_text_change_still_stops_and_helper_refuses_other_input_changes(self):
+        self._auto()
+        w62 = r._m().w62
+        prov = r._prov(self.ctx)
+        entry = prov.stage_entry("kp_b1b")
+        # 旧署名で再計算した入力shaがentryと一致しない(=署名以外の入力が変わった)場合は付け替えない
+        self.assertIsNone(w62.rebind_confirmation_input(prov, "kp_b1b", expected_old_input_sha="0" * 64, new_input_sha="1" * 64, new_signature="s"))
+        self.assertEqual(prov.stage_entry("kp_b1b")["input_sha256"], entry["input_sha256"])
+        # staleなstageは付け替えない
+        prov.data["downstream_stale"].append("kp_b1b")
+        self.assertIsNone(w62.rebind_confirmation_input(prov, "kp_b1b", expected_old_input_sha=entry["input_sha256"], new_input_sha="1" * 64, new_signature="s"))
+        prov.data["downstream_stale"].remove("kp_b1b")
+        # 本文を変えると従来どおり親sha不一致STOP
+        p = r._level_text_path(self.ctx, "b1b")
+        with open(p, "a", encoding="utf-8") as f:
+            f.write("\n\nA changed paragraph appears.\n")
+        with self.assertRaises(Exception) as cm:
+            _quiet(r.run_stage, self.ctx, "kp")
+        self.assertNotIn("rebinds", r._prov(self.ctx).stage_entry("kp_b1b") or {})
+
+
 class TestZSignatureAndConsumers(ZBase):
     def _auto(self):
         self.declare()

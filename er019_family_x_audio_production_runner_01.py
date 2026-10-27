@@ -626,7 +626,7 @@ def part1_study_html_for_player(source_dir: str, out_dir: str) -> str:
 
 # ------------------------------------------------------------
 # 学習テキスト Part 2「Grammar & Sentence Structure」(PART2-GRAMMAR-PRODUCTION-WIRING-01 委任_03 / KP-GRAMMAR-HUMAN-REVIEW-PRODUCTION-01 委任_03、
-# ユーザーAPPROVED_FOR_PRODUCTION 2026-10-25、Advanced=b1bのみ・Standardには出さない)。設計: docs/research/PART2-GRAMMAR-PRODUCTION-WIRING-01/DESIGN_02.md §3〜§4
+# ユーザーAPPROVED_FOR_PRODUCTION 2026-10-25。GRAMMAR-PREGEN-ALL-LEVELS-01 委任_03で両level[Std=a2/Adv=b1b]化: 全候補の解説は候補抽出直後に事前生成、finalizeはLLM 0)。設計: docs/research/PART2-GRAMMAR-PRODUCTION-WIRING-01/DESIGN_02.md §3〜§4
 # 候補抽出(Step A'')=本文確定直後・KP候補生成(同一待機点)の前 / 確定(Human確認 or 明示宣言)後にStep B(再抽出なし)=Part 1(T1訳)の後。
 # 失敗は part2_failed.json + rc=3(案内は`--stage study_text`の1つだけ。scaffold再実行=support/KP再生成を案内しない)。待機はKPと1回にまとめてrc=4。
 # ------------------------------------------------------------

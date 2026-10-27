@@ -690,6 +690,31 @@ def _now():
     return dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
 
 
+def rebind_confirmation_input(prov: Provenance, name: str, *, expected_old_input_sha: str, new_input_sha: str, new_signature: str, new_status=None):
+    """KCP3所見D1(GRAMMAR-PREGEN-ALL-LEVELS-01 委任_03): 自動採用(UNREVIEWED_AUTO_ADOPTED)runへ後からユーザー確定を入れると、KP review署名が変わり
+    `kp_<lv>` 来歴の親sha(input_sha)が不一致になる。**署名の変化だけが原因**(旧署名で再計算した入力shaが記録済みentryと一致=本文などの他の入力は不変)のとき、
+    entryの入力shaと署名を **API 0** で新しい値へ付け替える(出力ファイルは不変=output_sha256そのまま。子孫のstale化なし=TTS等の再生成なし)。
+    呼出側が『確定レコードがユーザー確定(live)』かつ『現在のKP assetsが新しい確定と一致』を確認してから呼ぶこと。条件外(entryなし/stale/本文変化)は何もせずNone
+    (従来どおり ensure_stage が親sha不一致でSTOP)。付け替えは entry['rebinds'] に履歴を残す(元の入力sha・署名・理由)。"""
+    entry = prov.stage_entry(name)
+    if entry is None or entry.get("input_sha256") == new_input_sha:
+        return None
+    if name in prov.data["downstream_stale"]:
+        return None
+    old_sig = entry.get("kp_selection_signature")
+    if not old_sig or entry["input_sha256"] != expected_old_input_sha:
+        return None
+    ev = {"at": _now(), "reason": "confirmation_signature_changed", "from_input_sha256": entry["input_sha256"], "from_signature": old_sig,
+          "to_signature": new_signature, "api_calls": 0}
+    new_entry = dict(entry, input_sha256=new_input_sha, kp_selection_signature=new_signature)
+    if new_status:
+        new_entry["kp_review_status"] = new_status
+    new_entry["rebinds"] = list(entry.get("rebinds") or []) + [ev]
+    prov.set_entry(name, new_entry)
+    prov.save()
+    return ev
+
+
 def ensure_stage(prov: Provenance, name: str, input_sha: str, out_path: str, runner, *, regenerate: bool = False) -> dict:
     """resume/regenerate制御の中核。
     - 出力+entryがあり input_sha/output_shaが一致 -> 再利用(reused)。

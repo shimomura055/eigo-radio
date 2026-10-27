@@ -629,6 +629,35 @@ class StudyTextWiring(unittest.TestCase):
         self.assertEqual((res2["kp"][r.PART1_STAGE], res2["kp"][r.PART1_JA_STAGE], res2["kp"][r.PART2_FINAL_STAGE], res2["kp"][r.PART2_STAGES["a2"]["final"]]),
                          ("reused", "reused", "reused", "reused"))
 
+    def test_d1_user_confirmation_after_auto_adoption_rebinds_kp_provenance_without_stop_or_api(self):
+        """KCP3所見D1: 自動採用runへ後からユーザー確定を入れても kp_<lv> 来歴の親sha不一致STOPにならず、API 0で再バインド(子孫staleなし)。"""
+        import er119_kp_human_review_01 as rv
+        ctx = _ctx(self.root)
+        self._upto_support(ctx)
+        _declare(ctx)
+        with _quiet():
+            r.run_stages(ctx, ["kp"])
+        prov0 = json.load(open(f"{ctx.out_dir}/provenance.json", encoding="utf-8"))
+        e0 = dict(prov0["downstream_stages"]["kp_b1b"])
+        src = r._kp_src_dir(ctx, "b1b")
+        rev = rv.load_review(src)
+        self.assertEqual(rev["status"], rv.ST_AUTO)
+        doc = rv.load_candidates(src)
+        rank_of = {c["candidate_id"]: c["ai_rank"] for c in doc["candidates"]}
+        rv.op_select(src, kp_ranks=[rank_of[i] for i in rev["selection"]["kp"]], vocab_ranks=[rank_of[i] for i in rev["selection"]["vocab"]], by="human")
+        before = _calls(ctx)
+        with _quiet():
+            r.run_stages(ctx, ["kp"])                                              # 以前は kp_b1b の親sha不一致STOP
+        self.assertEqual(_calls(ctx), before, "再バインドでAPI境界を通った")
+        prov1 = json.load(open(f"{ctx.out_dir}/provenance.json", encoding="utf-8"))
+        e1 = prov1["downstream_stages"]["kp_b1b"]
+        self.assertNotEqual(e1["input_sha256"], e0["input_sha256"])
+        self.assertEqual(e1["output_sha256"], e0["output_sha256"])
+        self.assertEqual([x["api_calls"] for x in e1["rebinds"]], [0])
+        self.assertEqual([x for x in prov1["downstream_stale"] if x.startswith(("tts_", "kp_expl", "kp_part1"))], [])   # TTS等の子孫はstale化しない
+        # 明示regenerate指定時は付け替えない(従来の経路)
+        self.assertNotIn("rebinds", prov1["downstream_stages"].get("kp_a2", {}))
+
     def test_no_hr_declaration_auto_adopts_grammar_and_records_it(self):
         ctx = _ctx(self.root)
         self._upto_support(ctx)
@@ -680,7 +709,35 @@ class StudyTextWiring(unittest.TestCase):
             r.run_stages(ctx, ["kp", "tts_b1b", "tts_a2", "gate", "assemble", "pages", "page_verify"])
         rev = json.load(open(f"{self._grammar_dir(ctx)}/grammar_human_review.json", encoding="utf-8"))
         self.assertEqual(rev["status"], "NO_CANDIDATE_UNREVIEWED")                         # 適格0件=待たずに確定(REVIEWEDにしない)
-        self.assertIn(g.ZERO_P2, _html(ctx).replace("&#x27;", "'"))
+        self.assertEqual(_html(ctx).replace("&#x27;", "'").count(g.ZERO_P2), 2)             # 0件確定は両levelの節に固定文面(Std+Adv)
+        rev_std = json.load(open(f"{self._grammar_dir(ctx, 'a2')}/grammar_human_review.json", encoding="utf-8"))
+        self.assertEqual(rev_std["status"], "NO_CANDIDATE_UNREVIEWED")
+
+    def test_two_items_adopted_in_standard_render_in_one_block_and_pass_section_verification(self):
+        """O-4: Standardで2件採用(pick<=2)が節内の1ブロックに本文出現順で載り、節単位の4者一致検査(page_verify)を通る。"""
+        import er119_grammar_review_01 as gr
+        ctx = _ctx(self.root)
+        self._upto_support(ctx)
+        with self.assertRaises(r.YKpReviewPending):
+            with _quiet():
+                r.run_stages(ctx, ["kp"])
+        sd_std = self._grammar_dir(ctx, "a2")
+        doc = gr.load_candidates(sd_std)
+        self.assertGreaterEqual(len(doc["candidates"]), 2)
+        gr.op_decide(sd_std, choice="pick", ids=[doc["candidates"][1]["candidate_id"], doc["candidates"][0]["candidate_id"]], reason="2件採用(test)",
+                     candidates_sha256=doc["candidates_sha256"], by="test-human")
+        self._decide_grammar(ctx)
+        _declare(ctx)
+        with _quiet():
+            r.run_stages(ctx, ["kp", "tts_b1b", "tts_a2", "gate", "assemble", "pages", "page_verify"])
+        res = json.load(open(f"{sd_std}/part2_result.json", encoding="utf-8"))
+        import er120_part2_grammar_production_01 as g
+        items = g.result_items(res)
+        self.assertEqual(len(items), 2)
+        paras = [int(str(i["selection"]["para"]).lstrip("P")) for i in items]
+        self.assertEqual(paras, sorted(paras))
+        v = json.load(open(f"{ctx.out_dir}/page_verify_local.json", encoding="utf-8"))
+        self.assertEqual((v["part2_verified"]["a2"]["part2_blocks"], v["part2_verified"]["b1b"]["part2_blocks"]), (1, 1))
 
     def test_consumer_entrances_fail_closed_when_part1_or_part2_missing(self):
         ctx = _ctx(self.root)
@@ -795,6 +852,20 @@ class StudyTextStructureMatchWithXZ(unittest.TestCase):
         for must in ("p2w.candidate_stage", "p2w.finalize_stage", "p2w.require_final", "p2w.verify_outputs", "compose_page_html", "p2w.part1_ref_ja_pool",
                      "p1.generate_for_kp_items", "ja.generate_for_kp_items", "p1.assemble_part1", "p1.write_study_text", "render_html_block", "khr.part1_items"):
             self.assertIn(must, y_norm, must)
+
+    def test_stage_names_match_the_shared_core_for_both_levels(self):
+        """YのPART2_STAGES(level別 cand/expl/final)は共通核 er120_part2_wiring_01.stage_names と一致(Zも同じ)。UNIT_NAMESに cand/final が両levelある。"""
+        import er120_part2_wiring_01 as p2w
+        import er026_family_z_fiction_production_runner_01 as z
+        for lv in ("b1b", "a2"):
+            self.assertEqual(r.PART2_STAGES[lv], p2w.stage_names(lv))
+            self.assertEqual(z.PART2_STAGES[lv], p2w.stage_names(lv))
+            self.assertIn(p2w.stage_names(lv)["cand"], r.UNIT_NAMES)
+            self.assertIn(p2w.stage_names(lv)["final"], r.UNIT_NAMES)
+        # 文法のstageは葉(TTS等への依存辺を張らない)
+        for lv in ("b1b", "a2"):
+            self.assertNotIn(p2w.stage_names(lv)["cand"], sum([v for k, v in r.DEPENDENTS.items() if k.startswith("tts_")], []))
+            self.assertEqual(r.DEPENDENTS.get(p2w.stage_names(lv)["final"]), None)
 
     def test_consumer_entrances_call_assert_study_ready(self):
         src = open(os.path.join(ROOT, "er121_family_y_runner_01.py"), encoding="utf-8").read()

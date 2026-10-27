@@ -591,7 +591,8 @@ def test_P4_public_api_signatures():
 
 
 def test_P5_defaults_are_the_approved_values():
-    assert m.MODEL == routing.SUPPORT_MODEL == "gpt-6-luna" and m.TOP_N == 2 and m.LEVEL == "Advanced"
+    assert m.MODEL == routing.SUPPORT_MODEL == "gpt-6-luna" and m.TOP_N == 2
+    assert m.LEVELS == {"b1b": "Advanced", "a2": "Standard"}      # 全level化(GRAMMAR-PREGEN-ALL-LEVELS-01): Advanced固定のLEVELではなく、levelは必須引数(LEVELS)
 
 
 @needs_trial

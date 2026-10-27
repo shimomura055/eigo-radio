@@ -1546,8 +1546,8 @@ def _part1_items_b1b(ctx) -> list:
 
 # ------------------------------------------------------------
 # Part 2「Grammar & Sentence Structure」(PART2-GRAMMAR-PRODUCTION-WIRING-01 委任_03 / KP-GRAMMAR-HUMAN-REVIEW-PRODUCTION-01 委任_03、
-# ユーザーAPPROVED_FOR_PRODUCTION 2026-10-25。Advanced=b1bのみ・Standardページには出さない)
-# stage: part2_cand_b1b(候補抽出Step A''。KP候補生成と同じ待機点の前) → [文法Human確認 or 明示の不在宣言] → part2_b1b(確定後のStep B。再抽出なし)
+# ユーザーAPPROVED_FOR_PRODUCTION 2026-10-25。GRAMMAR-PREGEN-ALL-LEVELS-01 委任_03で両level[Std=a2/Adv=b1b]化)
+# stage(各level): part2_cand_<lv>(候補抽出Step A''+全候補の解説の事前生成。KP候補生成と同じ待機点の前) → [文法Human確認 or 明示の不在宣言] → part2_<lv>(確定後のfinalize、LLM 0・再抽出なし)
 # 使う側(load_level_inputs[TTS/Gate/Assembly共有]・stage_pages・stage_page_verify)で存在と最新性・確定との一致をfail-closed確認する。
 # 設計: docs/research/PART2-GRAMMAR-PRODUCTION-WIRING-01/DESIGN_02.md §3〜§4
 # ------------------------------------------------------------
@@ -2052,6 +2052,26 @@ def _kp_review_step(ctx, lv: str, text: str) -> dict:
         raise FamilyZE2EStop(f"FAMILY_Z_KP_REVIEW_STOP({lv}): {e}") from e
 
 
+def _rebind_kp_on_confirmation(ctx, prov, lv: str, text: str, kr: dict, input_sha: str):
+    """KCP3所見D1: 自動採用runへ後からユーザー確定(フォーム/HR)を入れて KP review署名が変わっても、`kp_<lv>` 来歴の親sha不一致STOPにしない(API 0で再バインド)。
+    条件(すべて満たすときだけ): 明示 --regenerate-stage kp_<lv> ではない / 確定レコードがユーザー確定(live) / 旧署名で再計算した入力shaが記録済みentryと一致(=本文は不変) /
+    現在のKP assetsが新しい確定と一致(内容が変わっていれば再バインドせず従来どおりSTOP・再生成)。付け替えは entry['rebinds'] に履歴。TTS等の子孫はstale化しない。"""
+    name = f"kp_{lv}"
+    if ctx.regenerate_stage == name:
+        return None
+    entry = prov.stage_entry(name)
+    if entry is None or entry["input_sha256"] == input_sha or not entry.get("kp_selection_signature"):
+        return None
+    if _khr()._cc().live_user_record(_kp_src_dir(ctx, lv)) is None:
+        return None
+    try:
+        _assert_kp_review_consistent(ctx, lv, "stage_kp_rebind_check")
+    except (FamilyZE2EStop, FamilyZKpReviewPending):
+        return None
+    return _m().w62.rebind_confirmation_input(prov, name, expected_old_input_sha=_sha(f"{text}|{entry['kp_selection_signature']}"), new_input_sha=input_sha,
+                                              new_signature=kr["signature"], new_status=kr.get("status"))
+
+
 def stage_kp(ctx) -> dict:
     m = _m()
     st, w62 = m.st, m.w62
@@ -2084,6 +2104,7 @@ def stage_kp(ctx) -> dict:
             if kr.get("state") == "FAILED":
                 raise FamilyZE2EStop(f"FAMILY_Z_KP_NOT_PASSED({lv}): status={review_res.get('status')} canonicalization=False(自動採用しない)")
             input_sha = _sha(f"{text}|{kr['signature']}")   # M-3(a): Human確定(選択集合)が変わったらstage入力が変わる
+            _rebind_kp_on_confirmation(ctx, prov, lv, text, kr, input_sha)   # D1: 確定(ユーザー)による署名変化だけならAPI 0で来歴を付け替える
 
         def runner(lv=lv, text=text, review_res=review_res):
             if review_res is None:
