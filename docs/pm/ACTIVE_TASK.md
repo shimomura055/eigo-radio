@@ -1,6 +1,6 @@
 管理ID: LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01(LR・Fallback横断仕様の正式採用・Production Wiring。原文=docs/pm/delegation_log/2026-10-28_LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01_USER.md)
-Status: **2026-10-28 ユーザー正式決定受領(APPROVED_FOR_PRODUCTION: UD-1 LR後英文を表示本文へ反映/UD-2 AI島 AI agents・AI systems/UD-3 正常LR・Fallbackのみの停止・HR要求を解除、最終Human報告=LR赤・Fallback濃青・資料限定)。Phase A(設計・調査、API 0)を4並列委任中**
-進行中: 委任_01(49経路×配線照合・記録所在・evidence手段)/委任_02(UD-1本文反映設計+既公開4件遡及計画)/委任_03(UD-3 Gate設計)/委任_04(最終Human報告資料設計)。成果物=docs/research/LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01/
+Status: **2026-10-28 ユーザー正式決定受領(APPROVED_FOR_PRODUCTION: UD-1 LR後英文を表示本文へ反映/UD-2 AI島 AI agents・AI systems/UD-3 正常LR・Fallbackのみの停止・HR要求を解除、最終Human報告=LR赤・Fallback濃青・資料限定)。Phase A完了(W1-W4+INTEGRATION_01)→Opus条件A完了(OPUS_REVIEW_01、M-1〜M-10全採用)→Phase B進行中: 委任_06(B1 final_adoption+M-4)/委任_07(B0/B2 er129台帳)並列実行中。次波=委任_08(B4分類核+差分監査)/09(B5報告生成器)/10(B3 overlay・parity Gate準備)→統合配線commit(1 commit: parity Gate・M3/Y/Z切替・overlay・Z注記撤去・B6)→B7既公開是正→B8 evidence→SSOT/受入**
+進行中: 委任_06/07(Phase B wave1)。完了: 委任_01〜05、Opusレビュー。成果物=docs/research/LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01/
 次: Fable統合→SSOTへユーザー決定を登録(委任_05)→Opus条件Aレビュー→Phase B実装(並列: 本文反映/Gate/報告資料/記録)→test→runtime evidence(保存run再評価+最小有料)→既公開4件是正→Fable受入→SSOT/Git→最終報告(原文§12の10項目)
 STOP条件: 注記の制作本文・TTS・ASR・公開本文・KP表示・Prompt混入禁止/試行回数・待機・Fallback Style・LR範囲・ASR基準・Voice/速度・確定内容保護は不変/品質Gateの弱体化禁止(正常LR/Fallbackのみの停止解除に限定)/A/B/C音声方式の置換禁止/確定内容と衝突する本文変更はSTOP/予算: 設計・Gate・表示はAPI 0、runtime検証は最小・日次1,000円内
 UDR-blocking: 告げ口心臓=ユーザー最終試聴待ち(blockingではない)。UDR-MONKEY-1据置
