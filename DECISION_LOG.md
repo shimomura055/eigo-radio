@@ -22647,3 +22647,11 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 ### 2026-10-27 PM-SSOT-SYNC-28 FZ-TELL-TALE-HEART-RESELECT-REMAKE-01 第1報
 - 固定正本=run_sf_prod_02(Adv e11b84dd…/Std b94c7305…)、新run `run_reselect_01`でV3学習項目候補生成(KP/KW Std9/Adv9、文法0件)・V3フォーム公開。本文TTSは選定後(runner入口がKP確定前提)。実費累計約4.87円/Cap150円(委任_01=4.08円、委任_02の生応答probe=0.79円)。
 - 文法0件=正常動作(Trial-08方式どおり、LLMが`features:[]`を返した、parser/Validator/上限/NG/事前生成/フォームは正常、不具合なし、修正・再送不要)。判断候補D-1(0件確定、Fable推奨)・D-2(Z/物語文向け抽出Prompt対象定義新設=新仕様、推奨見送り)。軽微=OPEN-568。ユーザー選定待ち。根拠=docs/research/FZ-TELL-TALE-HEART-RESELECT-REMAKE-01/{FIXATION_01,BUDGET_PLAN_01,BUDGET_LOG_01,AUDIO_PHASE1_01,GRAMMAR_ZERO_INVESTIGATION_01}.md。
+
+### 2026-10-28 FZ-TELL-TALE-HEART-RESELECT-REMAKE-01 委任_03 ユーザー選定確定・Phase 2完成版受入(API 0、runner実費19.94円)
+- ユーザー正式選定(逐語、原文=docs/pm/delegation_log/2026-10-28_FZ-TELL-TALE-HEART-RESELECT-REMAKE-01_USER_03.md §1、自由コメントなし):
+  - Standard ①make one's blood turn cold=人をぞっとさせる/raise one's voice=声を大きくする/groan=うめく、②rush at someone=人に向かって突進する/go on talking=話し続ける、③pulse=脈、文法=選定なし(0件確定)。照合コード`AIF1-the_tell_tale_heart__a2__prod-e185f7-196a84f8-66da3226-06a9638dd1-0-0-871f`
+  - Advanced ①sharpen someone's senses=人の感覚を研ぎ澄ます/mock=ばかにする/hideous=ひどく気味の悪い、②blood went cold=恐怖で血の気が引く/never stir=少しも身じろぎしない、③Not a mark=跡ひとつない/motionless=じっと動かない/fastening=留め具/shriek=甲高い叫び声、文法=選定なし(0件確定)。照合コード`AIF1-the_tell_tale_heart__b1b__prod-e26b4f-41261214-0c71c2f0-752cfc9227-0-0-2519`
+- 照合: `er119_kp_human_review_cli_01.py confirm --from-readable`でdry-run→本確定(両level rc=0、rev1)。候補集合sha・本文sha・選定hash一致、文法g10=0。確定物=run_reselect_01/key_phrases/{a2,b1b}/confirmed_selection.json(+{a2/,}study_text/confirmed_grammar.json count=0)。文法0件=ユーザー確定(UDR D-1解決)。
+- 受入結果: runner 1起動rc=0(kp,tts_b1b,tts_a2,provision_shell,gate,assemble,pages,page_verify)。完成ページ=ユーザー確定①②③と逐語一致(ハイライトlk1太字+二重下線/lk2太字+下線/lk3下線のみ、色・サイズinherit、背景なし)、文法ZERO文言のみ。Style actual gate/速度v2/Chunk/ASR全PASS(PASS_WITH_WARNING 0)、Local Rewrite採用0、本文=run_sf_prod_02固定正本無変更。Adv kp2_enのSecondary一過性障害はretry内で検証済み採用。詳細=docs/research/FZ-TELL-TALE-HEART-RESELECT-REMAKE-01/ACCEPTANCE_PHASE2_01.md。
+- 状態: **Production完成(技術Gate PASS)、ユーザー最終試聴待ち(PASS未取得)**。完成版=https://shimomura055.github.io/eigo-radio/user_test/family_z_tell_tale_heart_reselect_01/index.html。既存公開dir未変更。実費累計約24.81円/Cap150円。CURRENT_SPEC変更なし。commit=メッセージ冒頭『FZ-TELL-TALE-HEART-RESELECT-REMAKE-01 委任_03』。

@@ -1,0 +1,633 @@
+{
+ "schema": "fz_dialogue_ctx_attempt_state_v1",
+ "clips": {
+  "full_story_part1_c3": {
+   "clip_id": "full_story_part1_c3",
+   "canonical_text_sha256": "b8ed6e0deca2e3e38801c2fa8ad17e4dac85fa1c4b1e49d4aa734e429b2f4b01",
+   "policy": "fz_ctx_v1",
+   "ctx_style_sha256": "3d938d9f4e1b6e28e47e5cf42518f76fb74736a4ef88d28f1e72e1bfc1cb0881",
+   "status": "DONE_OK",
+   "n_started": 1,
+   "attempts": [
+    {
+     "n": 1,
+     "mode": "ctx",
+     "started_epoch": 1793137870.912125,
+     "started_at": "2026-10-28T06:51:10",
+     "finished": true,
+     "verified": true,
+     "counted": true,
+     "rows": 1,
+     "finished_epoch": 1793137876.2799404,
+     "finished_at": "2026-10-28T06:51:16",
+     "technical_failure": false,
+     "instruction_type": "english_style_prefix_wide_margin",
+     "effective_mode": "ctx",
+     "log_rows": [
+      {
+       "attempt": 1,
+       "status": "OK",
+       "asr_text": "Who is in here?",
+       "asr_judgement": {
+        "state": "PASS",
+        "reason_code": "primary_pass",
+        "slot": 1,
+        "script_version": "v0",
+        "role": "FULL_STORY",
+        "lang": "en",
+        "segment_key": "full_story_part1_c3",
+        "audio_sha256": "cba03ac7a42f6c321fcb3bc095d40348a3fb3cbc8ef7c474b57bbc32226eaca1",
+        "primary": {
+         "text": "Who is in here?",
+         "passed": true,
+         "label": "NORMALIZED_MATCH",
+         "equivalence_basis": null,
+         "warning_labels": []
+        },
+        "secondary": {
+         "called": false,
+         "cached": false,
+         "engine": "azure",
+         "text": null,
+         "label": "",
+         "accepted": null,
+         "error": null,
+         "unavailable": false
+        },
+        "value_guard": {
+         "primary": {
+          "kind": "NO_VALUES",
+          "pairs": [],
+          "reasons": [],
+          "warnings": []
+         }
+        },
+        "negation_guard": {
+         "primary": false
+        },
+        "final_gate": {
+         "applied": true,
+         "value_guard": "NO_VALUES",
+         "negation_diff": false
+        },
+        "warnings": [],
+        "exclusion_rule": null,
+        "cost": {
+         "azure_calls": 0,
+         "azure_seconds": null,
+         "est_jpy": 0.0
+        },
+        "timing": {
+         "total_ms": 0,
+         "secondary_ms": 0
+        },
+        "technical_stop": null,
+        "length": {
+         "applied": true,
+         "primary_len": 15,
+         "secondary_len": null,
+         "max_len": 32,
+         "adopted_from": "primary",
+         "adopted_ok": true,
+         "surface_len": null,
+         "primary_ok": true
+        },
+        "adapter": {
+         "layers": [],
+         "azure_real_calls": 0,
+         "cost_guard_triggered": false,
+         "language": "en-US",
+         "segment_id": "full_story_part1_c3",
+         "asr_text_present": true,
+         "cache": {
+          "calls": 6,
+          "hits": 0
+         }
+        }
+       },
+       "instruction_type": "english_style_prefix_wide_margin",
+       "audio_classification": "NORMALIZED_MATCH",
+       "connected_speech_info": null,
+       "length_ok": true,
+       "final_length_ok": true,
+       "verified": true,
+       "trim_info": {
+        "raw_duration_seconds": 1.571,
+        "raw_leading_silence_seconds": 0.28,
+        "raw_trailing_silence_seconds": 0.38,
+        "trimmed_duration_seconds": 1.541,
+        "leading_margin_retained_seconds": 0.28,
+        "trailing_margin_retained_seconds": 0.35
+       },
+       "disfluency_checked": false,
+       "disfluency_evidence": null,
+       "repetition_qa_checked": true,
+       "repetition_qa_evidence": {
+        "flagged": false,
+        "duration_seconds": 1.541,
+        "method_a_ngram": {
+         "matches": [],
+         "flagged": false,
+         "flagged_matches": [],
+         "word_count": 4,
+         "canonical_known": true,
+         "min_words": 3
+        },
+        "method_d_spectral_long_lag": {
+         "top_matches": [
+          {
+           "similarity": 0.9191,
+           "time_a_seconds": 0.19,
+           "time_b_seconds": 1.37,
+           "lag_seconds": 1.18,
+           "run_length_seconds_at_thresh_0.85": 0.01
+          },
+          {
+           "similarity": 0.8866,
+           "time_a_seconds": 0.19,
+           "time_b_seconds": 1.4,
+           "lag_seconds": 1.21,
+           "run_length_seconds_at_thresh_0.85": 0.01
+          },
+          {
+           "similarity": 0.8865,
+           "time_a_seconds": 0.2,
+           "time_b_seconds": 1.39,
+           "lag_seconds": 1.19,
+           "run_length_seconds_at_thresh_0.85": 0.01
+          },
+          {
+           "similarity": 0.8602,
+           "time_a_seconds": 0.2,
+           "time_b_seconds": 1.49,
+           "lag_seconds": 1.29
+          },
+          {
+           "similarity": 0.7973,
+           "time_a_seconds": 0.11,
+           "time_b_seconds": 1.14,
+           "lag_seconds": 1.03
+          }
+         ],
+         "best_run_length_seconds": 0.01,
+         "min_lag_seconds": 1.0,
+         "sim_threshold": 0.85,
+         "decision_threshold_seconds": 0.12,
+         "acoustic_flagged": false,
+         "local_asr_confirmation": null,
+         "flagged": false
+        },
+        "method_d_prime_spectral_short_lag": {
+         "run_length_seconds": 0.23,
+         "time_a": 0.27,
+         "lag": 0.62,
+         "similarity_at_start": 0.7669,
+         "best_run_length_seconds": 0.23,
+         "lag_range_seconds": [
+          0.5,
+          2.0
+         ],
+         "sim_threshold": 0.7,
+         "decision_threshold_seconds": 0.6,
+         "flagged": false
+        },
+        "method_c_v2_window_check": null
+       },
+       "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_reselect_01/a2/narration/attempts/full_story_part1_c3_attempt1_englishstyleprefixwidemargin.wav",
+       "tts_mode": "ctx",
+       "overall_attempt_n": 1,
+       "dialogue_tts_policy": "fz_ctx_v1",
+       "style_prefix": {
+        "len": 3308,
+        "sha256": "3d938d9f4e1b6e28e47e5cf42518f76fb74736a4ef88d28f1e72e1bfc1cb0881",
+        "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
+       }
+      }
+     ]
+    }
+   ],
+   "cooldown": null,
+   "done": {
+    "result": {
+     "status": "OK",
+     "text": "\"Who is in here?\"",
+     "path": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_reselect_01/a2/narration/full_story_part1_c3.wav",
+     "voice": "Algieba",
+     "asr_verified": true,
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "FULL_STORY",
+      "lang": "en",
+      "segment_key": "full_story_part1_c3",
+      "audio_sha256": "cba03ac7a42f6c321fcb3bc095d40348a3fb3cbc8ef7c474b57bbc32226eaca1",
+      "primary": {
+       "text": "Who is in here?",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 15,
+       "secondary_len": null,
+       "max_len": 32,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "full_story_part1_c3",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 6,
+        "hits": 0
+       }
+      }
+     },
+     "asr_text": "Who is in here?",
+     "attempts_log": [
+      {
+       "attempt": 1,
+       "status": "OK",
+       "asr_text": "Who is in here?",
+       "asr_judgement": {
+        "state": "PASS",
+        "reason_code": "primary_pass",
+        "slot": 1,
+        "script_version": "v0",
+        "role": "FULL_STORY",
+        "lang": "en",
+        "segment_key": "full_story_part1_c3",
+        "audio_sha256": "cba03ac7a42f6c321fcb3bc095d40348a3fb3cbc8ef7c474b57bbc32226eaca1",
+        "primary": {
+         "text": "Who is in here?",
+         "passed": true,
+         "label": "NORMALIZED_MATCH",
+         "equivalence_basis": null,
+         "warning_labels": []
+        },
+        "secondary": {
+         "called": false,
+         "cached": false,
+         "engine": "azure",
+         "text": null,
+         "label": "",
+         "accepted": null,
+         "error": null,
+         "unavailable": false
+        },
+        "value_guard": {
+         "primary": {
+          "kind": "NO_VALUES",
+          "pairs": [],
+          "reasons": [],
+          "warnings": []
+         }
+        },
+        "negation_guard": {
+         "primary": false
+        },
+        "final_gate": {
+         "applied": true,
+         "value_guard": "NO_VALUES",
+         "negation_diff": false
+        },
+        "warnings": [],
+        "exclusion_rule": null,
+        "cost": {
+         "azure_calls": 0,
+         "azure_seconds": null,
+         "est_jpy": 0.0
+        },
+        "timing": {
+         "total_ms": 0,
+         "secondary_ms": 0
+        },
+        "technical_stop": null,
+        "length": {
+         "applied": true,
+         "primary_len": 15,
+         "secondary_len": null,
+         "max_len": 32,
+         "adopted_from": "primary",
+         "adopted_ok": true,
+         "surface_len": null,
+         "primary_ok": true
+        },
+        "adapter": {
+         "layers": [],
+         "azure_real_calls": 0,
+         "cost_guard_triggered": false,
+         "language": "en-US",
+         "segment_id": "full_story_part1_c3",
+         "asr_text_present": true,
+         "cache": {
+          "calls": 6,
+          "hits": 0
+         }
+        }
+       },
+       "instruction_type": "english_style_prefix_wide_margin",
+       "audio_classification": "NORMALIZED_MATCH",
+       "connected_speech_info": null,
+       "length_ok": true,
+       "final_length_ok": true,
+       "verified": true,
+       "trim_info": {
+        "raw_duration_seconds": 1.571,
+        "raw_leading_silence_seconds": 0.28,
+        "raw_trailing_silence_seconds": 0.38,
+        "trimmed_duration_seconds": 1.541,
+        "leading_margin_retained_seconds": 0.28,
+        "trailing_margin_retained_seconds": 0.35
+       },
+       "disfluency_checked": false,
+       "disfluency_evidence": null,
+       "repetition_qa_checked": true,
+       "repetition_qa_evidence": {
+        "flagged": false,
+        "duration_seconds": 1.541,
+        "method_a_ngram": {
+         "matches": [],
+         "flagged": false,
+         "flagged_matches": [],
+         "word_count": 4,
+         "canonical_known": true,
+         "min_words": 3
+        },
+        "method_d_spectral_long_lag": {
+         "top_matches": [
+          {
+           "similarity": 0.9191,
+           "time_a_seconds": 0.19,
+           "time_b_seconds": 1.37,
+           "lag_seconds": 1.18,
+           "run_length_seconds_at_thresh_0.85": 0.01
+          },
+          {
+           "similarity": 0.8866,
+           "time_a_seconds": 0.19,
+           "time_b_seconds": 1.4,
+           "lag_seconds": 1.21,
+           "run_length_seconds_at_thresh_0.85": 0.01
+          },
+          {
+           "similarity": 0.8865,
+           "time_a_seconds": 0.2,
+           "time_b_seconds": 1.39,
+           "lag_seconds": 1.19,
+           "run_length_seconds_at_thresh_0.85": 0.01
+          },
+          {
+           "similarity": 0.8602,
+           "time_a_seconds": 0.2,
+           "time_b_seconds": 1.49,
+           "lag_seconds": 1.29
+          },
+          {
+           "similarity": 0.7973,
+           "time_a_seconds": 0.11,
+           "time_b_seconds": 1.14,
+           "lag_seconds": 1.03
+          }
+         ],
+         "best_run_length_seconds": 0.01,
+         "min_lag_seconds": 1.0,
+         "sim_threshold": 0.85,
+         "decision_threshold_seconds": 0.12,
+         "acoustic_flagged": false,
+         "local_asr_confirmation": null,
+         "flagged": false
+        },
+        "method_d_prime_spectral_short_lag": {
+         "run_length_seconds": 0.23,
+         "time_a": 0.27,
+         "lag": 0.62,
+         "similarity_at_start": 0.7669,
+         "best_run_length_seconds": 0.23,
+         "lag_range_seconds": [
+          0.5,
+          2.0
+         ],
+         "sim_threshold": 0.7,
+         "decision_threshold_seconds": 0.6,
+         "flagged": false
+        },
+        "method_c_v2_window_check": null
+       },
+       "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_reselect_01/a2/narration/attempts/full_story_part1_c3_attempt1_englishstyleprefixwidemargin.wav",
+       "tts_mode": "ctx",
+       "overall_attempt_n": 1,
+       "dialogue_tts_policy": "fz_ctx_v1",
+       "style_prefix": {
+        "len": 3308,
+        "sha256": "3d938d9f4e1b6e28e47e5cf42518f76fb74736a4ef88d28f1e72e1bfc1cb0881",
+        "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
+       }
+      }
+     ],
+     "instruction_type": "english_style_prefix_wide_margin",
+     "trim_info": {
+      "raw_duration_seconds": 1.571,
+      "raw_leading_silence_seconds": 0.28,
+      "raw_trailing_silence_seconds": 0.38,
+      "trimmed_duration_seconds": 1.541,
+      "leading_margin_retained_seconds": 0.28,
+      "trailing_margin_retained_seconds": 0.35
+     },
+     "safety_margin_seconds": 0.35,
+     "clipping_detected": false,
+     "audio_classification": "NORMALIZED_MATCH",
+     "connected_speech_info": null,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": true,
+     "repetition_qa_evidence": {
+      "flagged": false,
+      "duration_seconds": 1.541,
+      "method_a_ngram": {
+       "matches": [],
+       "flagged": false,
+       "flagged_matches": [],
+       "word_count": 4,
+       "canonical_known": true,
+       "min_words": 3
+      },
+      "method_d_spectral_long_lag": {
+       "top_matches": [
+        {
+         "similarity": 0.9191,
+         "time_a_seconds": 0.19,
+         "time_b_seconds": 1.37,
+         "lag_seconds": 1.18,
+         "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+         "similarity": 0.8866,
+         "time_a_seconds": 0.19,
+         "time_b_seconds": 1.4,
+         "lag_seconds": 1.21,
+         "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+         "similarity": 0.8865,
+         "time_a_seconds": 0.2,
+         "time_b_seconds": 1.39,
+         "lag_seconds": 1.19,
+         "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+         "similarity": 0.8602,
+         "time_a_seconds": 0.2,
+         "time_b_seconds": 1.49,
+         "lag_seconds": 1.29
+        },
+        {
+         "similarity": 0.7973,
+         "time_a_seconds": 0.11,
+         "time_b_seconds": 1.14,
+         "lag_seconds": 1.03
+        }
+       ],
+       "best_run_length_seconds": 0.01,
+       "min_lag_seconds": 1.0,
+       "sim_threshold": 0.85,
+       "decision_threshold_seconds": 0.12,
+       "acoustic_flagged": false,
+       "local_asr_confirmation": null,
+       "flagged": false
+      },
+      "method_d_prime_spectral_short_lag": {
+       "run_length_seconds": 0.23,
+       "time_a": 0.27,
+       "lag": 0.62,
+       "similarity_at_start": 0.7669,
+       "best_run_length_seconds": 0.23,
+       "lag_range_seconds": [
+        0.5,
+        2.0
+       ],
+       "sim_threshold": 0.7,
+       "decision_threshold_seconds": 0.6,
+       "flagged": false
+      },
+      "method_c_v2_window_check": null
+     },
+     "dialogue_tts": {
+      "policy": "fz_ctx_v1",
+      "final_mode": "ctx",
+      "final_attempt_n": 1,
+      "n_started": 1,
+      "decision": "new:no_state",
+      "resumed_from_process_state": false,
+      "n_started_at_open": 0,
+      "ctx_style_sha256": "3d938d9f4e1b6e28e47e5cf42518f76fb74736a4ef88d28f1e72e1bfc1cb0881",
+      "attempts": [
+       {
+        "n": 1,
+        "mode": "ctx",
+        "effective_mode": "ctx",
+        "verified": true,
+        "started_at": "2026-10-28T06:51:10",
+        "finished_at": "2026-10-28T06:51:16",
+        "rows": 1,
+        "technical_failure": false,
+        "counted": true
+       }
+      ],
+      "cooldown": null,
+      "cycle": 1,
+      "history": [],
+      "context_input_sha256": "b20ac131b6a87f2d141913fc932d8c26b8c8c413e29c5321406262c5bb253a57",
+      "note_status": "ACCEPTED",
+      "speaker_display_source": "attr_roster_text",
+      "emotion_prompt_sha256": "da4402b7133c913f842f6d2297ac981b338bfa79de462e727b43fd8896778a7e",
+      "terminal_before_fallback": false,
+      "leakage": {
+       "observation_only": true,
+       "leakage_any_attempt": false,
+       "leakage_final": false,
+       "needs_listen_any_attempt": false,
+       "per_attempt": [
+        {
+         "flagged": false,
+         "needs_listen": false,
+         "extra_tokens": [],
+         "extra_runs": [],
+         "max_extra_run": 0,
+         "context_only_hits": [],
+         "asr_words": 4,
+         "target_words": 4
+        }
+       ],
+       "final": {
+        "flagged": false,
+        "needs_listen": false,
+        "extra_tokens": [],
+        "extra_runs": [],
+        "max_extra_run": 0,
+        "context_only_hits": [],
+        "asr_words": 4,
+        "target_words": 4
+       }
+      }
+     }
+    },
+    "wav_sha256": "cba03ac7a42f6c321fcb3bc095d40348a3fb3cbc8ef7c474b57bbc32226eaca1",
+    "saved_at": "2026-10-28T06:51:16",
+    "final_mode": "ctx"
+   },
+   "history": [],
+   "created_at": "2026-10-28T06:51:10",
+   "cycle": 1,
+   "updated_at": "2026-10-28T06:51:16"
+  }
+ }
+}

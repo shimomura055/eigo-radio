@@ -506,3 +506,7 @@
 - **告げ口心臓 D-1 文法0件の確定(OPEN-503、分類D)**: 決めること=文法候補0件(正常動作、Trial-08方式どおり、不具合なし)のまま進めるか。Fable推奨=0件確定。根拠=`docs/research/FZ-TELL-TALE-HEART-RESELECT-REMAKE-01/GRAMMAR_ZERO_INVESTIGATION_01.md`。
 - **告げ口心臓 D-2 Z/物語文向け文法抽出Prompt対象定義の新設(OPEN-503、分類D、新仕様)**: Trial+Opus条件A要。Fable推奨=見送り。
 - **次工程をブロックするUDR(追記)**: UD-2(AI島完成=OPEN-561のHR承認待ち)、D-1(告げ口心臓の文法確定→本文音声制作)。UDR-MONKEY-1は据置。UD-1/UD-3は仕様判断(AI島以外の新規実装をブロック、既存公開は現状維持)。
+
+### 2026-10-28 FZ-TELL-TALE-HEART-RESELECT-REMAKE-01 委任_03 追記(既存行は書き換えず追記)
+- **告げ口心臓 D-1 文法0件の確定: 判断済み(2026-10-28)**。ユーザー原文=docs/pm/delegation_log/2026-10-28_FZ-TELL-TALE-HEART-RESELECT-REMAKE-01_USER_03.md §1(両level『文法:選定なし(0件確定)』)。D-2(Z向け文法抽出Prompt新設)はFable推奨=見送りのまま、ユーザー指示なし。
+- **次工程をブロックするUDR(更新)**: 上記SYNC-28追記のD-1(告げ口心臓の文法確定→本文音声制作)は解決済みのためブロックから外す。代わりに待ち事項: **告げ口心臓 完成版ユーザー最終試聴**(Production完成・Gate PASS、PASS未取得。ページ=https://shimomura055.github.io/eigo-radio/user_test/family_z_tell_tale_heart_reselect_01/index.html、OPEN-503)。後続工程は止めない(他案件への影響なし)。UD-2/UDR-MONKEY-1は据置、UD-1/UD-3は従来どおり(本案件はLR採用0でUD-1不発動)。
