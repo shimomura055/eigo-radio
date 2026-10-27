@@ -1,0 +1,392 @@
+{
+  "story_key": "melos",
+  "seed_sha256": "f4a85f5ceb9a1d7cd511872644391dddd8e2f61516e2f09e08da9ddeeb42c761",
+  "chain": [
+    {
+      "stage": "r0",
+      "input_sha256": "f4a85f5ceb9a1d7cd511872644391dddd8e2f61516e2f09e08da9ddeeb42c761",
+      "output_sha256": "795651ca4a0f5abd2b4ba0d35943295aa2843bba68ab2dbc53289ef2785350f3",
+      "generated_at": "2026-10-12T08:31:10+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R0",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_0c56ee57ca7fc3e1006acc9aa546ac87d0b6f48ba98168eaa4",
+      "attempts": 1,
+      "cost_jpy": 1.9338,
+      "prompt_sha256": "a94fd4f5b34cfdbee6c723c436f4b2dcb943ea1a7c132d647c36682c3dde9bfd",
+      "input_tokens": 983,
+      "output_tokens": 1012,
+      "reasoning_tokens": 516,
+      "conversion_substitutions": [
+        "simple third-person English at about 300[–-]350 words",
+        "while simplifying the language and minor details for A2 learners"
+      ],
+      "guardrails": {
+        "word_count": 377
+      }
+    },
+    {
+      "stage": "r1",
+      "input_sha256": "795651ca4a0f5abd2b4ba0d35943295aa2843bba68ab2dbc53289ef2785350f3",
+      "output_sha256": "eb40dc08403c64a45754c8cde1d78ecade0ef29658dc5b0d0a14b51b1db2b041",
+      "generated_at": "2026-10-12T08:31:52+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R1",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_071fa1c5eef6255d006acc9ace94e887d0a61303852964a21e",
+      "attempts": 1,
+      "cost_jpy": 3.1939,
+      "prompt_sha256": "1324e49619d3b03bfb0ab3ae70d2be931e3c67f1d206d996dd5ed869fc089568",
+      "input_tokens": 571,
+      "output_tokens": 1882,
+      "reasoning_tokens": 1382,
+      "guardrails": {
+        "word_count": 382
+      }
+    },
+    {
+      "stage": "r2",
+      "input_sha256": "eb40dc08403c64a45754c8cde1d78ecade0ef29658dc5b0d0a14b51b1db2b041",
+      "output_sha256": "2a79a472a1d6301c43898d3187e0f23863d59753646d33cfa4224c59ffa03f18",
+      "generated_at": "2026-10-12T08:32:25+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R2",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_0064d0eb24796cc7006acc9af8a14c87d0b5f6c467cd3ea450",
+      "attempts": 1,
+      "cost_jpy": 2.0496,
+      "prompt_sha256": "c26e5bac8edba73eef097bb0856965cc30361ac14543fc70e2cc4626e2a933d5",
+      "input_tokens": 575,
+      "output_tokens": 1166,
+      "reasoning_tokens": 658,
+      "guardrails": {
+        "word_count": 387,
+        "warnings": [],
+        "failures": []
+      }
+    },
+    {
+      "stage": "std_adjust",
+      "input_sha256": "2a79a472a1d6301c43898d3187e0f23863d59753646d33cfa4224c59ffa03f18",
+      "output_sha256": "6a47e9d774fced82cbc00f594b3fa69f5ee746f71b6fd96ffc672a8496ca6569",
+      "generated_at": "2026-10-12T08:34:20+00:00",
+      "routing_key": "FAMILY_Z_STD_ADJUST",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_0ba6c75d95b58b06006acc9b1a25f087d0a272e36295ea9fba",
+      "attempts": 1,
+      "cost_jpy": 8.639,
+      "prompt_sha256": "61178075385b0d6527ef6fe3e0c65796905ffc8456ad791015c220b0a6019f55",
+      "input_tokens": 1257,
+      "output_tokens": 5148,
+      "reasoning_tokens": 4629,
+      "guardrails": {
+        "std_words": 408,
+        "adv_words": 387,
+        "ratio": 1.0543,
+        "identical_sentence_ratio": 0.0,
+        "avg_sentence_len_std": 8.87,
+        "avg_sentence_len_adv": 6.79,
+        "paragraph_count_std": 29,
+        "paragraph_count_adv": 29,
+        "std_adv_paragraph_count_match": true,
+        "warnings": [
+          "STD_AVG_SENT_LEN_NOT_SHORTER:8.87 vs adv 6.79x0.85 (soft gate)"
+        ],
+        "failures": []
+      }
+    }
+  ],
+  "downstream_stale": [],
+  "downstream_stages": {
+    "plan_b1b": {
+      "stage": "plan_b1b",
+      "input_sha256": "3f48b23fc474f14b186cbf4e39b7c409e2861b002180f01114e50a736050941a",
+      "output_sha256": "01c92a67e8ee206e84e86e77a24a7d2f5cb6f4525d930f7c2461f1e6b4dc0ea8",
+      "generated_at": "2026-10-12T08:34:36+00:00",
+      "routing_keys": [
+        "FAMILY_Z_STORY_SPLIT",
+        "FAMILY_Z_DIALOGUE_ATTRIBUTION"
+      ],
+      "cost_jpy": 0.1261
+    },
+    "plan_a2": {
+      "stage": "plan_a2",
+      "input_sha256": "95f3126879afbe1ddb5fc4abdb774e77a8aefa434561ee3cd479a4ad82e56449",
+      "output_sha256": "fb957bb31da7de259db5177e34bf4f5c72d643f49f138db22789fcb856314bfd",
+      "generated_at": "2026-10-12T08:34:41+00:00",
+      "routing_keys": [
+        "FAMILY_Z_STORY_SPLIT",
+        "FAMILY_Z_DIALOGUE_ATTRIBUTION"
+      ],
+      "cost_jpy": 0.0441
+    },
+    "support_b1b": {
+      "stage": "support_b1b",
+      "input_sha256": "d420be81648d85268bd7afe0e88dbb720ab0b04c91b04d81657b2e2ab768989b",
+      "output_sha256": "90ee5296523dab91a86d351ebdc7c42df20416845f18a6f0fe4cf908018dbbf0",
+      "generated_at": "2026-10-12T08:35:03+00:00"
+    },
+    "support_a2": {
+      "stage": "support_a2",
+      "input_sha256": "b1099644ac4b3dac18f314aa8855d9fb47d48a62fd29b738d9251a79007cef61",
+      "output_sha256": "bcf7da8a696cbcfd533bfb00f016ed3626b9c4a03caf49808ea57c5a627626ad",
+      "generated_at": "2026-10-19T02:31:28+00:00"
+    },
+    "kp_b1b": {
+      "stage": "kp_b1b",
+      "input_sha256": "01328578259097bfbc8696c48397b138706dbd16f887722ecc4b8c700584ac7a",
+      "output_sha256": "29bc0e14e3ada59db6147d2ab50f98f8c017d54e58527ac82d9c26ae8b5ff39e",
+      "generated_at": "2026-10-25T14:25:19+00:00",
+      "kp_review_status": "REVIEWED",
+      "kp_selection_signature": "7d93c69d9015a01034e13c777db6f25f44f1f24948ff9e6d66c042ef5dad9cbe"
+    },
+    "kp_a2": {
+      "stage": "kp_a2",
+      "input_sha256": "7e5dc175c65b16e9a49b6bdf79aba33519c79bafe5bd4877d1bde969322c90fb",
+      "output_sha256": "ad26d99d93b83acfe5910762b77e92777775ca875adee67dab51db32c331e28d",
+      "generated_at": "2026-10-27T03:58:27+00:00",
+      "kp_review_status": "REVIEWED",
+      "kp_selection_signature": "c63b6917b0ae200439b8f9a1932e17d588cb76f8c5e39034876d1e96b04f3ca2"
+    },
+    "kp_expl_b1b": {
+      "stage": "kp_expl_b1b",
+      "input_sha256": "f20a914d8fb94bc274e974c4dcd4e2bbac19855dbfac41d696dbeb7297dd4656",
+      "output_sha256": "0fcb62f79f4bb6ece3f1e47894cfeb53cad279b0c7bfc2cbb3b3b350b18f60d7",
+      "generated_at": "2026-10-25T14:28:15+00:00"
+    },
+    "part2_cand_b1b": {
+      "stage": "part2_cand_b1b",
+      "input_sha256": "3500c554afb009623277e539585f1ec2bfe059b82261a358d164152bf14e5c8b",
+      "output_sha256": "b024dff185021fa267c8677c79116ca57f4e53f7fbae2d7b8edd86dfabd92ec4",
+      "generated_at": "2026-10-25T14:40:48+00:00",
+      "label": "The Three-Day Promise"
+    },
+    "kp_part1_b1b": {
+      "stage": "kp_part1_b1b",
+      "input_sha256": "7000448f0c2eb5e03c6fb29714b1e59b041ec21d949b86155afeb6b2335d4c39",
+      "output_sha256": "345ec6e9472a52799672516f232e3f8424baed075f8144224c21b74b359e1617",
+      "generated_at": "2026-10-25T12:26:28+00:00",
+      "model": "gpt-6-luna",
+      "prompt_sha256": "dad398fb8da1369e163d517bcd3005721f18d6301b05c8f20a1ea87c0b458b1f",
+      "total_cost_jpy": 0.1145,
+      "retried_for_parse": false,
+      "response_ids": [
+        "resp_05f743087788812d006addf56705d887d09ea6a9bfd0eae408"
+      ]
+    },
+    "kp_part1_ja_b1b": {
+      "stage": "kp_part1_ja_b1b",
+      "input_sha256": "193c2066f9e2480685a7e085dc9113ba9cb56007fbe4ba5e18f75db1204c5812",
+      "output_sha256": "27edc7882ffb66acf34c0470d4b7026da280cb5f918e452201be35d3f4e1e867",
+      "generated_at": "2026-10-25T12:26:31+00:00",
+      "model": "gpt-6-luna",
+      "prompt_sha256": "1a889834041c4d9fb55e039c0b7c36b7851581ce9652d147a8ac01563d2ae6ef",
+      "total_cost_jpy": 0.0193,
+      "retried_for_parse": false,
+      "response_ids": [
+        "resp_0cfa594371746325006addf574a55887d090c328bfa6de561b"
+      ]
+    },
+    "part2_b1b": {
+      "stage": "part2_b1b",
+      "input_sha256": "ec06d74db834be59a9ef49d01beae5cbb7ff1e4684c6f3f0806380ceee0c3da9",
+      "output_sha256": "d4abea0680f2c97c286ced570b9ff88fffaae7249ee1e2eb5a4beafaed0122c3",
+      "generated_at": "2026-10-27T04:04:01+00:00",
+      "part2_status": "SELECTED",
+      "review_status": "REVIEWED",
+      "grammar_selection_signature": "21358d92c4b280c5eb31830b6add984305c6af1acf35c6196df493d2128e062d"
+    },
+    "part2_cand_a2": {
+      "stage": "part2_cand_a2",
+      "input_sha256": "03b2868ada4760faa0e6fa2faf2489f9c3481b29f7a34d6c63f134282a8024d0",
+      "output_sha256": "373db1ea94755cc71224f14dcb60849c83152f7f12b711767627eb80cad223b7",
+      "generated_at": "2026-10-27T03:53:00+00:00",
+      "label": "The Three-Day Promise"
+    },
+    "part2_a2": {
+      "stage": "part2_a2",
+      "input_sha256": "7ec8cc581e56fdf11c4f987472fc9d5a94eb2a917337be50721ca13f8d079337",
+      "output_sha256": "f8101e70e87399821d66b206c653dc439750d24f3867557553ec356fbb857f1e",
+      "generated_at": "2026-10-27T04:04:01+00:00",
+      "part2_status": "ZERO",
+      "review_status": "NO_CANDIDATE_UNREVIEWED",
+      "grammar_selection_signature": "68d4e362116e57a59c35d9b9022f8de7b139ea86ef91520b69e1f6049ad6f5e9"
+    }
+  },
+  "regenerations": [
+    {
+      "stage": "support_a2",
+      "replaced_at": "2026-10-12T09:22:07+00:00",
+      "old": {
+        "stage": "support_a2",
+        "input_sha256": "4cd664ba23de90e499813555fd00ea0396c247b7dc4f32aa8a3ace0e93a3e729",
+        "output_sha256": "113222ce2095d5350a4a44677f06bc85acfd4f19e5807ff94e1f1c5b1667ecfa",
+        "generated_at": "2026-10-12T08:36:20+00:00"
+      }
+    },
+    {
+      "stage": "kp_expl_b1b",
+      "replaced_at": "2026-10-17T10:27:15+00:00",
+      "old": {
+        "stage": "kp_expl_b1b",
+        "input_sha256": "6de29d2e1ece19cf3e7033cfc21f1a26b6a7f4498d72588c673bf1747b9938ac",
+        "output_sha256": "12c2b7ff5b64abfb15423eaf360fcc3b83a1aeedcfc565c44d17db7e31f5e7b5",
+        "generated_at": "2026-10-12T08:46:36+00:00"
+      }
+    },
+    {
+      "stage": "support_a2",
+      "replaced_at": "2026-10-19T02:31:28+00:00",
+      "old": {
+        "stage": "support_a2",
+        "input_sha256": "4cd664ba23de90e499813555fd00ea0396c247b7dc4f32aa8a3ace0e93a3e729",
+        "output_sha256": "4ff00745b09a9571d2766c072cf29cb66010f243cf20a2eeff89e6e600c3e975",
+        "generated_at": "2026-10-12T09:22:07+00:00"
+      }
+    },
+    {
+      "stage": "kp_a2",
+      "replaced_at": "2026-10-19T02:31:33+00:00",
+      "old": {
+        "stage": "kp_a2",
+        "input_sha256": "efba2a233a8a8100b10d615ca56da69d350681a9dfc3dff7a2f352649ffb091c",
+        "output_sha256": "02cba75796738983f0b72d8fd026d93192fe510daa7ecb6df53f32e1a7f27924",
+        "generated_at": "2026-10-12T08:46:32+00:00"
+      }
+    },
+    {
+      "stage": "kp_b1b",
+      "replaced_at": "2026-10-25T12:18:56+00:00",
+      "old": {
+        "stage": "kp_b1b",
+        "input_sha256": "03b3787d1c4eae4f508c2140de3864effae9c46debc2f133a42c4cb1917c0981",
+        "output_sha256": "6c840941da867206ecee971976d1936f24ec1ba7c0739222d591cbf50371c537",
+        "generated_at": "2026-10-12T08:38:01+00:00"
+      }
+    },
+    {
+      "stage": "kp_b1b",
+      "replaced_at": "2026-10-25T12:23:26+00:00",
+      "old": {
+        "stage": "kp_b1b",
+        "input_sha256": "8c366761904ce204c67a67ae07321e283ce8530ca4ce7c1e597a62eda4a0ce4d",
+        "output_sha256": "e6defdc842ba7e08c7deede97745d63cdb14766640cd225f166eb4ba4602520e",
+        "generated_at": "2026-10-25T12:18:56+00:00",
+        "kp_review_status": "REVIEWED",
+        "kp_selection_signature": "29f8d160bc0ce6dcf4ae3bf18c6e3828a1b9d6ccae7b8e0b46b340807ab052bd"
+      }
+    },
+    {
+      "stage": "kp_expl_b1b",
+      "replaced_at": "2026-10-25T12:26:14+00:00",
+      "old": {
+        "stage": "kp_expl_b1b",
+        "input_sha256": "95e75a461375ad81f3334fd62b45501bb07ccad1200d7c43182e9b83aaaffadf",
+        "output_sha256": "e1eb9f5c1cb3e18a84be3c7cef320ed4cdeac114712235c736004c33cf6dbf89",
+        "generated_at": "2026-10-17T10:27:15+00:00"
+      }
+    },
+    {
+      "stage": "kp_b1b",
+      "replaced_at": "2026-10-25T14:25:19+00:00",
+      "old": {
+        "stage": "kp_b1b",
+        "input_sha256": "8c366761904ce204c67a67ae07321e283ce8530ca4ce7c1e597a62eda4a0ce4d",
+        "output_sha256": "3098a9e5799088a20d8e7ba5f5c370c0355bb7fba023ceecebdc0ee7c158e232",
+        "generated_at": "2026-10-25T12:23:26+00:00",
+        "kp_review_status": "REVIEWED",
+        "kp_selection_signature": "29f8d160bc0ce6dcf4ae3bf18c6e3828a1b9d6ccae7b8e0b46b340807ab052bd"
+      }
+    },
+    {
+      "stage": "kp_expl_b1b",
+      "replaced_at": "2026-10-25T14:28:15+00:00",
+      "old": {
+        "stage": "kp_expl_b1b",
+        "input_sha256": "f20a914d8fb94bc274e974c4dcd4e2bbac19855dbfac41d696dbeb7297dd4656",
+        "output_sha256": "9ae24cb647f1018907a0109bbe03fa30413604fdf9a26096114fa57199d3293c",
+        "generated_at": "2026-10-25T12:26:14+00:00"
+      }
+    },
+    {
+      "stage": "part2_cand_b1b",
+      "replaced_at": "2026-10-25T14:37:11+00:00",
+      "old": {
+        "stage": "part2_cand_b1b",
+        "input_sha256": "3500c554afb009623277e539585f1ec2bfe059b82261a358d164152bf14e5c8b",
+        "output_sha256": "b024dff185021fa267c8677c79116ca57f4e53f7fbae2d7b8edd86dfabd92ec4",
+        "generated_at": "2026-10-25T12:14:34+00:00",
+        "label": "The Three-Day Promise"
+      }
+    },
+    {
+      "stage": "part2_cand_b1b",
+      "replaced_at": "2026-10-25T14:40:48+00:00",
+      "old": {
+        "stage": "part2_cand_b1b",
+        "input_sha256": "3500c554afb009623277e539585f1ec2bfe059b82261a358d164152bf14e5c8b",
+        "output_sha256": "b024dff185021fa267c8677c79116ca57f4e53f7fbae2d7b8edd86dfabd92ec4",
+        "generated_at": "2026-10-25T14:37:11+00:00",
+        "label": "The Three-Day Promise"
+      }
+    },
+    {
+      "stage": "part2_b1b",
+      "replaced_at": "2026-10-25T14:43:43+00:00",
+      "old": {
+        "stage": "part2_b1b",
+        "input_sha256": "2de8fb28399e6d32e796d74ecb20ee36ce612811ba3bbab22701e0eda4877f3c",
+        "output_sha256": "cdd4844403e545df694daa8c6978bdaecbabd16ae105b81295a9b011e9a85bd3",
+        "generated_at": "2026-10-25T12:26:31+00:00",
+        "part2_status": "ZERO",
+        "review_status": "REVIEWED",
+        "grammar_selection_signature": "1f43f81fd58c3a99d42fd6ce06a77a1a1fb0ffabd7fefbc4e5d35e0af4d5a7c3"
+      }
+    },
+    {
+      "stage": "kp_a2",
+      "replaced_at": "2026-10-27T03:58:27+00:00",
+      "old": {
+        "stage": "kp_a2",
+        "input_sha256": "efba2a233a8a8100b10d615ca56da69d350681a9dfc3dff7a2f352649ffb091c",
+        "output_sha256": "3a5361065044013458ff754d15c592e0396b24f9ed39ca50494eb1202e856607",
+        "generated_at": "2026-10-12T08:46:32+00:00",
+        "person_gloss_repairs": [
+          {
+            "rank": 2,
+            "reason": "人称不整合: 英語KP『in someone's place』は不定の人称(someone's)だが、日本語意味『あなたの代わりに』が具体的な人称語(あなた)を含む。不定の人称は日本語でも不定のまま(『誰かの』『人の』、再帰のone's等は『自分の』)表す",
+            "old_gloss": "あなたの代わりに",
+            "new_gloss": "誰かの代わりに",
+            "new_status": "ALIGNED",
+            "version": "ER-003-KP-GLOSS-PERSON-ALIGN-01",
+            "alignment_status": "ALIGN_PASS",
+            "cost_jpy": 0.0557
+          }
+        ],
+        "person_gloss_repaired_at": "2026-10-19T02:31:33+00:00"
+      }
+    },
+    {
+      "stage": "part2_b1b",
+      "replaced_at": "2026-10-27T04:04:01+00:00",
+      "old": {
+        "stage": "part2_b1b",
+        "input_sha256": "7d51261ecda83692604b6bf7f2a71e35dfa7e67cb86332ba2dc094f43a17fae0",
+        "output_sha256": "1700be2e638f3ab3ae814bcb7e49de0e53f31ecc2278845d142afcd8c7361cfd",
+        "generated_at": "2026-10-25T14:43:43+00:00",
+        "part2_status": "SELECTED",
+        "review_status": "REVIEWED",
+        "grammar_selection_signature": "5826d24a99712917e5025edc8e393989b153d272cb10c7dcc534feac8c418c26"
+      }
+    }
+  ],
+  "audio_text_deviations": [],
+  "reference_only": {},
+  "adv_final_sha256": "2a79a472a1d6301c43898d3187e0f23863d59753646d33cfa4224c59ffa03f18",
+  "std_sha256": "6a47e9d774fced82cbc00f594b3fa69f5ee746f71b6fd96ffc672a8496ca6569"
+}

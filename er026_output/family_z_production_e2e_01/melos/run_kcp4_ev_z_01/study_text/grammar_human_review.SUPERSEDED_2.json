@@ -1,0 +1,123 @@
+{
+  "schema": "grammar_human_review_v1",
+  "kind": "grammar",
+  "level": "Advanced",
+  "text_sha256": "03b3787d1c4eae4f508c2140de3864effae9c46debc2f133a42c4cb1917c0981",
+  "candidates_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "round": 2,
+  "status": "REEXTRACT_REQUESTED",
+  "revision": 3,
+  "article_key": {
+    "family": "z",
+    "slug": "melos",
+    "level": "b1b"
+  },
+  "mode_declaration": null,
+  "selection": {},
+  "accept_ai_default": false,
+  "accepted_candidates_sha256": null,
+  "verdicts": {},
+  "ng": [
+    {
+      "candidate_id": "g50e12a388f",
+      "para": "P11",
+      "sentence": "Melos struck the man holding it with his walking stick and ran uphill, their shouts following him.",
+      "span": [
+        60,
+        158
+      ],
+      "feature_class": "POSTMOD",
+      "tier": "T1",
+      "reason": "evidence R3: TOP1は前置詞句の係り先が不明確で教材として不適と判断(HRあり操作検証)",
+      "by": "Fable-evidence-operator",
+      "source": "human_reselect",
+      "at": "2026-10-25T21:17:55+0900",
+      "sentence_key": "melos struck the man holding it with his walking stick and ran uphill, their shouts following him."
+    }
+  ],
+  "reselect_count": 1,
+  "reextract_count": 0,
+  "decision": {
+    "choice": "reextract",
+    "candidates_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "reason": "evidence R3: 候補枯渇のため本文から再抽出(Step A'' 1回・上限検証)",
+    "by": "Fable-evidence-operator",
+    "accept_ai": false
+  },
+  "last_human_op_at": "2026-10-25T21:18:03.063218+09:00",
+  "history": [
+    {
+      "at": "2026-10-25T21:14:34.001805+09:00",
+      "event": "candidates_generated",
+      "by": "runner",
+      "detail": {
+        "round": 1,
+        "candidates_sha256": "0dbb681f2f1ae2036b734af8f42d343d193c9cb4841495e3960859dd451b8d69",
+        "status": "PENDING_REVIEW"
+      }
+    },
+    {
+      "at": "2026-10-25T21:17:55.164117+09:00",
+      "event": "reselect",
+      "by": "runner",
+      "detail": {
+        "round": 2,
+        "candidates_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "status": "RESELECT_EXHAUSTED"
+      }
+    },
+    {
+      "at": "2026-10-25T21:17:55.164144+09:00",
+      "event": "reselect",
+      "by": "Fable-evidence-operator",
+      "detail": {
+        "reason": "evidence R3: TOP1は前置詞句の係り先が不明確で教材として不適と判断(HRあり操作検証)",
+        "from_candidates_sha256": "0dbb681f2f1ae2036b734af8f42d343d193c9cb4841495e3960859dd451b8d69",
+        "round": 2,
+        "rejected": [
+          {
+            "at": "2026-10-25T21:17:55+0900",
+            "event": "reselect",
+            "by": "Fable-evidence-operator",
+            "reason": "evidence R3: TOP1は前置詞句の係り先が不明確で教材として不適と判断(HRあり操作検証)",
+            "kind": "next_rank",
+            "rejected": [
+              {
+                "candidate_id": "g50e12a388f",
+                "para": "P11",
+                "sentence": "Melos struck the man holding it with his walking stick and ran uphill, their shouts following him.",
+                "feature_class": "POSTMOD",
+                "tier": "T1",
+                "rank": 1,
+                "teaching_value_ja": "前置詞句は直前の名詞だけでなく、文の動詞に係る可能性も検討する。",
+                "tier_table_row": {
+                  "para": "P11",
+                  "cls": "POSTMOD",
+                  "tier": "T1",
+                  "eligible": true,
+                  "why_not": [],
+                  "tv": "HIGH",
+                  "tv_ja": "前置詞句は直前の名詞だけでなく、文の動詞に係る可能性も検討する。",
+                  "front_kind": "",
+                  "sentence": "Melos struck the man holding it with his walking stick and ran uphill, their shouts following him.",
+                  "single_span_ok": true,
+                  "cross_para_flag": null
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-10-25T21:18:03.063238+09:00",
+      "event": "reextract",
+      "by": "Fable-evidence-operator",
+      "detail": {
+        "reason": "evidence R3: 候補枯渇のため本文から再抽出(Step A'' 1回・上限検証)",
+        "candidates_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      }
+    }
+  ],
+  "selection_signature": null
+}

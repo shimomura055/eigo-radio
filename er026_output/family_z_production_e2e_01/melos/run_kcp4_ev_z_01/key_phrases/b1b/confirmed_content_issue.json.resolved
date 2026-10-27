@@ -1,0 +1,27 @@
+{
+  "kind": "CONFIRMED_CONTENT_ISSUE",
+  "at": "2026-10-27T12:46:09.527785+09:00",
+  "summary": "フォームで確定された文法が、事前生成された文法候補/解説全文と一致しません(件数・id・文法名・解説全文)。黙って採用・置換しません。",
+  "diffs": [
+    {
+      "candidate_id": "g50e12a388f",
+      "field": "explanation_status",
+      "confirmed": "missing",
+      "observed": "provided(解説全文を見せた)が必要",
+      "where": "payload.selection.grammar vs 事前生成物"
+    },
+    {
+      "candidate_id": "g50e12a388f",
+      "field": "explanation_full(解説全文)",
+      "confirmed": "None",
+      "observed": "【日本語訳】\nメロスは、ナイフを持っていた男を自分の杖で打ち、彼らの叫び声を背に受けながら丘を駆け上がった。\n\n【文法・構文の仕組み】\n`the man hol",
+      "where": "payload.selection.grammar vs 事前生成物"
+    }
+  ],
+  "next": [
+    "現在の事前生成物でフォームを作り直して再送信(文法はTop1/Top2から1件・0件も可。2件同時選択は不可)"
+  ],
+  "proposal": [
+    "id=g50e12a388f: 解説全文を現在の事前生成物(sha=7f6b24f9d198)に合わせてフォームを作り直す(AIは解説を書き換えて採用しません)"
+  ]
+}

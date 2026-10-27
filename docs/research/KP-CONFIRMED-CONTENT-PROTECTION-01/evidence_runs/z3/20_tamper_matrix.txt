@@ -1,0 +1,25 @@
+a2 G1 | baseline(改変なし) => PASS(止まらない)
+a2 G1 | kp英語(used_form)を書換え => BLOCK(INTEGRITY rc=3) | CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_37c58c930b.used_form 確定=`pull someon
+a2 G1 | kp日本語訳(japanese_gloss)を書換え => BLOCK(INTEGRITY rc=3) | CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_37c58c930b.japanese_gloss 確定=`人を水中に引
+a2 G1 | category(KP→対象外/説明語)変更(review選定を書換え+署名再計算) => BLOCK(KpReviewInconsistent)
+a2 G2 | baseline => PASS(止まらない)
+a2 G2 | TTS recordの英語を書換え => BLOCK(INTEGRITY rc=3) | CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_37c58c930
+a2 G2 | TTS recordの日本語(japanese_meaning)を別訳へ => BLOCK(INTEGRITY rc=3) | CONFIRMED_CONTENT_INTEGRITY_VIOLATION(a2): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_37c58c930
+a2 G3 | baseline(ページに確定訳が出ている) => PASS(止まらない)
+a2 G3 | ページの日本語訳を別訳へ => PASS(止まらない)
+a2 G1 | 全復元後のbaseline(改変の復元確認) => PASS(止まらない)
+b1b G1 | baseline(改変なし) => PASS(止まらない)
+b1b G1 | kp英語(used_form)を書換え => BLOCK(INTEGRITY rc=3) | CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_37c58c930b.used_form 確定=`pull someo
+b1b G1 | kp日本語訳(japanese_gloss)を書換え => BLOCK(INTEGRITY rc=3) | CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_37c58c930b.japanese_gloss 確定=`誰かを水中
+b1b G1 | vocab日本語訳(Part 1入力)を書換え => BLOCK(INTEGRITY rc=3) | CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_37c58c930b.japanese_gloss 確定=`誰かを水中
+b1b G1 | category(KP→対象外/説明語)変更(review選定を書換え+署名再計算) => BLOCK(KpReviewInconsistent)
+b1b G1 | assets copy(Y/Z)の日本語訳を書換え => BLOCK(INTEGRITY rc=3) | CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と成果物(artifact)が一致しません(確定後に書換えられた)。 p_37c58c930b.japanese_gloss 確定=`誰かを水中
+b1b G2 | baseline => PASS(止まらない)
+b1b G2 | TTS recordの英語を書換え => BLOCK(INTEGRITY rc=3) | CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_37c58c93
+b1b G3 | baseline(Part 1が描画) => PASS(止まらない)
+b1b G3 | Part 1行(meaning_in_text_ja)を別訳へ => BLOCK(INTEGRITY rc=3) | CONFIRMED_CONTENT_INTEGRITY_VIOLATION(b1b): 確定内容と音声/ページ/Part 1の出力が一致しません(G2/G3: 確定後に書換えられた、または別訳が表示/読み上げられた)。 p_37c58c93
+b1b G4 | baseline => PASS(止まらない)
+b1b G4 | 文法の解説全文(explanation_md)を書換え => PASS(止まらない)
+b1b G4 | 文法の日本語訳(translation_ja)を書換え => PASS(止まらない)
+b1b G4 | 文法の選定文を書換え => PASS(止まらない)
+b1b G1 | 全復元後のbaseline(改変の復元確認) => PASS(止まらない)

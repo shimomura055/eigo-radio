@@ -1,0 +1,147 @@
+{
+  "schema": "grammar_candidates_v1",
+  "level": "Advanced",
+  "label": "The Three-Day Promise",
+  "text_sha256": "03b3787d1c4eae4f508c2140de3864effae9c46debc2f133a42c4cb1917c0981",
+  "n_paragraphs": 29,
+  "prompt_id": "part2_stepA8",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+  "model": "gpt-6-luna",
+  "extract_signature": "f1a95ad1387e3d70bf8c01e670afdeeb392ada883a43135267dbf96725dd38e9",
+  "round": 1,
+  "tier_table": [
+    {
+      "para": "P7",
+      "cls": "OTHER",
+      "tier": null,
+      "eligible": false,
+      "why_not": [
+        "no_materials",
+        "class=OTHER"
+      ],
+      "tv": "HIGH",
+      "tv_ja": "間接疑問では疑問詞の後を主語＋動詞の語順にする。",
+      "front_kind": "",
+      "sentence": "He wanted to remember exactly how it sounded.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P11",
+      "cls": "POSTMOD",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "前置詞句は直前の名詞だけでなく、文の動詞に係る可能性も検討する。",
+      "front_kind": "",
+      "sentence": "Melos struck the man holding it with his walking stick and ran uphill, their shouts following him.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
+  "no_feature_paras": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P8",
+    "P9",
+    "P10",
+    "P12",
+    "P13",
+    "P14",
+    "P15",
+    "P16",
+    "P17",
+    "P18",
+    "P19",
+    "P20",
+    "P21",
+    "P22",
+    "P23",
+    "P24",
+    "P25",
+    "P26",
+    "P27",
+    "P28",
+    "P29"
+  ],
+  "uncovered_paras": [],
+  "audit": {
+    "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+    "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+    "model": "gpt-6-luna",
+    "requested_model": "gpt-6-luna",
+    "prompt_sha256": "560073ba36045b75cac711cca2aefe638cd86e74dc37976b469b52c349268134",
+    "response_ids": [
+      "resp_014c334e88c587c3006addf282efd487d092db77574fee930f"
+    ],
+    "calls": [
+      {
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3554,
+          "output_tokens": 3229,
+          "cached_input_tokens": 0,
+          "reasoning_tokens": 2607
+        },
+        "response_id": "resp_014c334e88c587c3006addf282efd487d092db77574fee930f",
+        "elapsed_sec": 39.32,
+        "cost_jpy": 0.3152
+      }
+    ],
+    "retried_for_parse": false,
+    "total_cost_jpy": 0.3152,
+    "generated_at": "2026-10-25T21:14:33+0900",
+    "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+  },
+  "reselect_count": 0,
+  "reextract_count": 0,
+  "reselect_log": [],
+  "candidates": [
+    {
+      "candidate_id": "g50e12a388f",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "POSTMOD",
+      "para": "P11",
+      "sentence": "Melos struck the man holding it with his walking stick and ran uphill, their shouts following him.",
+      "front_kind": "",
+      "misread_target": "MODIFIEE",
+      "misread_quote": "with his walking stick",
+      "misread_ja": "with his walking stickを直前のthe man holding itに結び付け、男が杖でナイフを持っていたと読んでしまう。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "前置詞句は直前の名詞だけでなく、文の動詞に係る可能性も検討する。",
+      "construct_ja": "前置詞句の係り先の曖昧さ",
+      "points_ja": [
+        "with his walking stickはstruckに係る読みと、the man holding itに係る読みがある。",
+        "and ranの主語はMelosである。"
+      ],
+      "context_ja": "Melosはナイフを持つ男を杖で打ち、坂を駆け上がる。",
+      "prev": "A knife flashed.",
+      "next": "By afternoon, every step hurt.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        60,
+        158
+      ]
+    }
+  ],
+  "top_ids": [
+    "g50e12a388f"
+  ],
+  "n_eligible": 1,
+  "ng": [],
+  "filtered_by_ng": [],
+  "rejected_ids": [],
+  "candidates_sha256": "0dbb681f2f1ae2036b734af8f42d343d193c9cb4841495e3960859dd451b8d69",
+  "status": "HAS_CANDIDATES",
+  "exhausted": false,
+  "reused_from_previous_run": false
+}
