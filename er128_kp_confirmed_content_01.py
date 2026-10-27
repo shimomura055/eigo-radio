@@ -18,10 +18,14 @@ runnerは load/verify だけを呼ぶ(レコードの書込みは CLI と finali
 使い方:
   py er128_kp_confirmed_content_01.py status --run <run>
   py er128_kp_confirmed_content_01.py confirm --from-form <payload.json> --run <run> --level b1b --by <名> --user-ref <delegation_log path>
-      (文法: payload の selection.grammar[] [最大2件・0件可]を、そのlevelの事前生成物[grammar_candidates.json / grammar_explanations.json]と逐語照合する。
+      (文法: payload の selection.grammar[] [原則1件・0件可・2件同時選択禁止。提示はTop1/Top2のみ]を、そのlevelの事前生成物[grammar_candidates.json / grammar_explanations.json]と逐語照合する。
        不一致=ISSUE[rc=4・修正案つき・何も書かない]。事前生成が未完了なら grammar-pregen を案内して拒否。0件は文法reviewをomitで確定[文法なしの確定も記録]。
        呼出順: 全検証 -> KPロック -> 文法ロック[gr.apply_form_selection] -> level別sidecar -> KPレコード保存[確定点]。同じ入力の再送は冪等。
        設計: docs/research/GRAMMAR-PREGEN-ALL-LEVELS-01/SCHEMA_CONTRACT_01.md §4/§5、IMPLEMENTATION_04.md)
+  py er128_kp_confirmed_content_01.py confirm --from-form <payload.json> --grammar-pending --run <run> --level b1b --by <名> --user-ref <path>
+      (KP先行確定: KP/KWだけを確定・保護し、文法は選定待ち[sidecar status=pending=0件確定ではない]のまま。payloadのgrammar[]は使わず無視を記録する)
+  py er128_kp_confirmed_content_01.py confirm --grammar-from-form <payload.json> --run <run> --level b1b --by <名> --user-ref <path>
+      (後から文法だけを確定。KPレコードの保護項目は不変。Top1/Top2のpresented_ids・解説全文逐語一致・1件以下。0件はomit。冪等)
   py er128_kp_confirmed_content_01.py confirm --from-review --run <run> --level a2 --by <名> --user-ref <path>
   py er128_kp_confirmed_content_01.py confirm --adopt-existing --run <run> --level a2 --by <名> --user-ref <path> [--apply]
   py er128_kp_confirmed_content_01.py confirm-revise --run <run> --level b1b --by <名> --user-ref <path> --reason ... --gloss <candidate_id>=<新訳>
@@ -52,7 +56,8 @@ _log = logging.getLogger("er128_kp_confirmed_content")
 SCHEMA = "eigo_radio_confirmed_selection_v1"
 SCHEMA_GRAMMAR = "eigo_radio_confirmed_grammar_v1"
 SCHEMA_GRAMMAR_V2 = "eigo_radio_confirmed_grammar_v2"   # level別sidecar(level・explanation_sha_by_id付き。新規書込みはv2、v1は読取互換)
-GRAMMAR_MAX = 2                                         # 文法の確定上限(er120.GRAMMAR_MAXと同値。突合test)
+GRAMMAR_MAX = 1                                         # 文法の確定上限(er120.GRAMMAR_MAXと同値。突合test。2026-10-27ユーザー正式決定: 原則1件・0件可・2件同時選択禁止。旧2=撤去)
+GRAMMAR_PENDING = "pending"                             # 文法の選定待ち(KPだけ先行確定。0件確定とは別。grammar_state=None=文法の保護なし)
 VALID_LEVELS = ("a2", "b1b")
 FLAG_NAME = "EIGO_KP_CONFIRMED_PROTECTION"
 FILE_RECORD = "confirmed_selection.json"
@@ -423,6 +428,8 @@ def _grammar_problems(kp_dir: str, level: str, rec: dict) -> list:
     g = rec.get("grammar")
     if not g:
         return []
+    if not g.get("path_rel"):   # 文法選定待ち(pending)でsidecar無し(文法のstudy dirがまだ無い)
+        return [] if g.get("status") == GRAMMAR_PENDING else ["rec.grammarにpath_relがありません"]
     out = []
     run = _run_dir_of(kp_dir)
     p = os.path.join(run, g["path_rel"])
@@ -663,7 +670,7 @@ def _source_sentence_of(c: Optional[dict]) -> Optional[str]:
 def _grammar_sentences(kp_dir: str, rec: dict) -> list:
     """確定レコードに文法(sidecar)があれば [(grammar candidate_id, 選定文)]。候補docが読めなければ []。"""
     g = rec.get("grammar")
-    if not g:
+    if not g or not g.get("path_rel") or g.get("status") == GRAMMAR_PENDING:
         return []
     try:
         import er119_grammar_review_01 as gr
@@ -833,7 +840,7 @@ def verify_outputs(kp_dir: str, level: str, *, tts_results_path: Optional[str] =
 # ============================================================
 FILE_GRAMMAR_FROZEN = "confirmed_grammar_frozen.json"
 SCHEMA_GRAMMAR_FROZEN = "eigo_radio_confirmed_grammar_frozen_v1"      # 読取互換のみ(新規書込みはv2)
-SCHEMA_GRAMMAR_FROZEN_V2 = "eigo_radio_confirmed_grammar_frozen_v2"   # items[](最大2件)
+SCHEMA_GRAMMAR_FROZEN_V2 = "eigo_radio_confirmed_grammar_frozen_v2"   # items[](最大1件=GRAMMAR_MAX。v2形式は維持)
 _TRANSLATION_RE = re.compile(r"【日本語訳】\s*(.*?)(?=\n\s*【|\Z)", re.S)
 
 
@@ -860,11 +867,11 @@ def grammar_state(study_dir: str) -> Optional[dict]:
         return None
     side = _read(sp)
     rel = side.get("kp_dir_rel")
-    if not rel:
+    if not rel or side.get("status") == GRAMMAR_PENDING:   # 選定待ち(pending)は『文法の確定』ではない=保護しない(0件確定と区別)
         return None
     kp_dir = os.path.normpath(os.path.join(study_dir, rel))
     rec = load_record(kp_dir)
-    if rec is None or rec.get("state") != STATE_LIVE or not rec.get("grammar"):
+    if rec is None or rec.get("state") != STATE_LIVE or not rec.get("grammar") or rec["grammar"].get("status") == GRAMMAR_PENDING:
         return None
     level = _rec_level(rec)
     bad = []
@@ -881,7 +888,7 @@ def grammar_state(study_dir: str) -> Optional[dict]:
 
 
 def _single(items: Optional[list]) -> Optional[dict]:
-    """v1互換API用: 凍結が1件ならそのitem。2件以上は複数対応のAPI(*_items)を使うこと(黙って先頭だけを返さない)。"""
+    """v1互換API用: 凍結が1件ならそのitem。2件以上(旧仕様の凍結)は複数対応のAPI(*_items)で読む(黙って先頭だけを返さない)。新仕様の新規確定は1件以下。"""
     if not items:
         return None
     if len(items) > 1:
@@ -1294,7 +1301,23 @@ def _flat_selection_ids(groups: dict) -> dict:
             "cat3": [i.get("candidate_id") for i in groups.get("meaning_display") or []]}
 
 
-def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: str, *, actor: str = ACTOR_USER) -> dict:
+def _pending_study_dir(run: str, level: str) -> Optional[str]:
+    """pendingモード用: そのlevelの文法study dir(候補docがあるときだけ。無ければNone=sidecarは作らずrecordの印だけ)。曖昧(複数)はエラー。"""
+    import er119_grammar_review_01 as gr
+    import er120_part2_grammar_production_01 as g
+    try:
+        dirs = gr.discover_dirs(run, level)
+    except (g.Part2Error, ValueError) as e:
+        raise CliError(f"文法(Part 2)のstudy dirを確認できません(level={level}): {e}") from e
+    if len(dirs) > 1:
+        raise CliError(f"level={level} の文法study dirが複数あります({dirs})。どれか1つにしてください(pathから推定しません)")
+    return dirs[0] if dirs else None
+
+
+def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: str, *, actor: str = ACTOR_USER, grammar_pending: bool = False) -> dict:
+    """grammar_pending=True(KP先行確定モード): KP/KW(区分①②③)だけを確定・保護する。文法は『選定待ち』のまま=0件として確定しない
+    (文法reviewは触らない。sidecarはstatus=pendingで作る/無ければrecordの印だけ。payloadのgrammar[]は使わず、無視した件数を出力に残す)。
+    後から `cmd_grammar_from_form` で文法だけを確定する。"""
     if actor not in ENFORCING_ACTORS:
         raise CliError(f"--actor は user|evidence のみ(指定: {actor!r})")
     by, user_ref = _need_by(by), _need_user_ref(user_ref)
@@ -1322,7 +1345,12 @@ def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: st
     cm = _cand_map(cands)
     groups = payload.get("selection") or {}
     ids = _flat_selection_ids(groups)
-    gv = _validate_form_grammar(run, kp_dir, level, groups.get("grammar"))   # 文法の照合(何も書かない。不一致=ISSUE rc=4)。KP/文法のどれも書く前に全て検証する(Opus O-4)
+    if grammar_pending:
+        gp = groups.get("grammar")
+        gv = {"study_dir": _pending_study_dir(run, level), "doc": None, "items": [], "presented_ids": [], "pending": True,
+              "ignored": len(gp) if isinstance(gp, list) else 0}
+    else:
+        gv = _validate_form_grammar(run, kp_dir, level, groups.get("grammar"))   # 文法の照合(何も書かない。不一致=ISSUE rc=4)。KP/文法のどれも書く前に全て検証する(Opus O-4)
     seen = set()
     diffs = []
     for gname in ("key_phrase", "extra_explanation", "meaning_display"):
@@ -1358,7 +1386,7 @@ def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: st
                         "reason": "STD_CATEGORY2_NO_SLOT"} for i in groups.get("extra_explanation") or []]
     with rv.review_lock(kp_dir, rv.KIND_KP, by):
         # 呼出順(Opus O-4): 検証済み -> KPロック(本ブロック) -> 文法ロック(apply_form_selection内) -> (1)文法review -> (2)sidecar -> (3)KPレコード保存(commit点)
-        grammar_review = _apply_form_grammar_review(gv, by=by, user_ref=user_ref)
+        grammar_review = None if gv.get("pending") else _apply_form_grammar_review(gv, by=by, user_ref=user_ref)
         items = build_items(cands, kp_ids, vocab_ids or [])
         prev = load_record(kp_dir)
         rev_no = ((prev or {}).get("revision") or 0) + 1
@@ -1373,13 +1401,19 @@ def cmd_from_form(run: str, level: str, payload_path: str, by: str, user_ref: st
                           comment=payload.get("comment") or "", unconsumed=unconsumed, prev=prev, event="confirmed",
                           confirmation_id="cf_" + hashlib.sha256(raw).hexdigest()[:16])
         rec.pop("grammar", None)
-        if gv["study_dir"] is not None:
-            rec["grammar"] = _write_grammar_sidecar(run, rec, gv["items"], kp_dir, study_dir=gv["study_dir"], level=level)   # 0件も記録(文法なしの確定)
+        if gv.get("pending"):
+            rec["grammar"] = _pending_grammar_mark(run, rec, kp_dir, study_dir=gv["study_dir"], level=level, ignored=gv["ignored"])
+            _append_history_note(rec, "grammar_pending", by, user_ref, {"grammar_payload_ignored": gv["ignored"]})
+        elif gv["study_dir"] is not None:
+            rec["grammar"] = _write_grammar_sidecar(run, rec, gv["items"], kp_dir, study_dir=gv["study_dir"], level=level, presented_ids=gv.get("presented_ids"))   # 0件も記録(文法なしの確定)
         save_record(kp_dir, rec)   # 確定点(ここまで失敗なら確定レコードは作られない。同じ入力の再送は冪等)
     return {"record": paths_of(kp_dir)["record"], "revision": rec["revision"], "items": [(i["candidate_id"], i["category"], i["used_form"]) for i in items],
             "unconsumed": [(u["candidate_id"], u["reason"]) for u in unconsumed], "grammar": len(gv["items"]),
             "grammar_review": grammar_review,
-            "next": "制作コマンドを同じまま再実行してください(finalize→後続が進みます)"}
+            "grammar_status": GRAMMAR_PENDING if gv.get("pending") else "confirmed",
+            "grammar_payload_ignored": gv.get("ignored", 0),
+            "next": ("KP/KWを確定しました。文法は選定待ちです(0件確定ではありません)。文法の選定後に `confirm --grammar-from-form <payload>` で文法だけを確定してください"
+                     if gv.get("pending") else "制作コマンドを同じまま再実行してください(finalize→後続が進みます)")}
 
 
 def _grammar_next(run: str, level: str) -> str:
@@ -1390,7 +1424,7 @@ def _grammar_next(run: str, level: str) -> str:
 def _validate_form_grammar(run: str, kp_dir: str, level: str, grammar: Any) -> dict:
     """フォームの文法(payload selection.grammar[])を、そのlevelの事前生成物(grammar_candidates.json / grammar_explanations.json)と**逐語**照合する(何も書かない。ISSUE記録を除く)。
     照合: id が現候補docにある / title == construct_ja / explanation_status == provided / explanation_full == explanations[id].explanation_md(バイト一致) /
-          (あれば)explanation_sha256・example が一致 / 件数 <= 2 / 重複なし。不一致は黙って採用・置換せずISSUE(rc=4。修正案=正しい値を提示)。
+          (あれば)explanation_sha256・example が一致 / 件数 <= 1(GRAMMAR_MAX。2件同時選択は禁止) / idがTop1/Top2の提示範囲(presented_ids)内 / 重複なし。不一致は黙って採用・置換せずISSUE(rc=4。修正案=正しい値を提示)。
     戻り: {"study_dir": str|None, "doc": dict|None, "items": [正規化済みitem]}。study_dir=None は文法のstudy dir自体が無い場合(文法0件のときだけ許す=文法を見せていないフォーム)。"""
     import er119_grammar_review_01 as gr
     import er120_part2_grammar_production_01 as g
@@ -1416,6 +1450,7 @@ def _validate_form_grammar(run: str, kp_dir: str, level: str, grammar: Any) -> d
         except rv.KpReviewError as e:
             raise CliError(f"文法解説の事前生成が完了していないため、確定を受け付けません: {e}。次の一手: {_grammar_next(run, level)}") from e
     cand_by = {c["candidate_id"]: c for c in doc.get("candidates") or []}
+    presented_ids = [c["candidate_id"] for c in (doc.get("candidates") or [])[:g.PREGEN_MAX]]   # 提示=Trial-08順位のTop1/Top2のみ(rank順)
     ex_by = {i["candidate_id"]: i for i in (ex or {}).get("items") or []}
     diffs, proposal, norm, seen = [], [], [], set()
 
@@ -1424,7 +1459,7 @@ def _validate_form_grammar(run: str, kp_dir: str, level: str, grammar: Any) -> d
 
     if len(grammar) > GRAMMAR_MAX:
         d(None, "count", len(grammar), f"{GRAMMAR_MAX}件以内", "payload.selection.grammar")
-        proposal.append(f"文法は最大{GRAMMAR_MAX}件です。フォームで{GRAMMAR_MAX}件以内に選び直して再送信してください")
+        proposal.append(f"文法は{GRAMMAR_MAX}件だけ選べます(2件同時選択は禁止。適切な候補が無ければ0件)。フォームで{GRAMMAR_MAX}件以内に選び直して再送信してください")
     for it in grammar:
         if not isinstance(it, dict):
             raise CliError("payloadの selection.grammar の要素はオブジェクトである必要があります")
@@ -1441,12 +1476,16 @@ def _validate_form_grammar(run: str, kp_dir: str, level: str, grammar: Any) -> d
             d(cid, "id", "(現在の文法候補docにあるid)", cid)
             proposal.append(f"id={cid} は現在の文法候補にありません。現在の候補でフォームを作り直して再送信してください(idの対応付け以外の推測はしません)")
             continue
+        if cid not in presented_ids:
+            d(cid, "id(提示範囲)", cid, f"Top1/Top2のみ提示: {presented_ids}")
+            proposal.append(f"id={cid} はTop1/Top2(提示範囲 {presented_ids})にありません。現在の提示候補でフォームを作り直して再送信してください")
+            continue
         title = it.get("title") if it.get("title") is not None else it.get("name")
         if title != c.get("construct_ja"):
             d(cid, "title(文法名)", title, c.get("construct_ja"))
             proposal.append(f"id={cid}: 文法名を『{c.get('construct_ja')}』に合わせる")
         if e is None:
-            d(cid, "explanation(事前生成物)", "(事前生成された解説)", "(解説なし。事前生成の対象外=候補が多く表示上限を超えた)")
+            d(cid, "explanation(事前生成物)", "(事前生成された解説)", "(解説なし。事前生成の対象外=Top1/Top2以外)")
             proposal.append(f"id={cid}: 解説が事前生成されていない候補は確定できません。解説のある候補から選んでください")
         else:
             if it.get("explanation_status") != "provided":
@@ -1462,8 +1501,8 @@ def _validate_form_grammar(run: str, kp_dir: str, level: str, grammar: Any) -> d
                      "example": c.get("sentence"), "explanation_sha256": (e or {}).get("explanation_sha256")})
     if diffs:
         raise_issue(kp_dir, level, "フォームで確定された文法が、事前生成された文法候補/解説全文と一致しません(件数・id・文法名・解説全文)。黙って採用・置換しません。", diffs,
-                    proposal=proposal or ["現在の文法候補/解説でフォームを作り直して再送信してください"], next_steps=["現在の事前生成物でフォームを作り直して再送信(文法は最大2件・0件も可)"])
-    return {"study_dir": sd, "doc": doc, "items": norm}
+                    proposal=proposal or ["現在の文法候補/解説でフォームを作り直して再送信してください"], next_steps=["現在の事前生成物でフォームを作り直して再送信(文法はTop1/Top2から1件・0件も可。2件同時選択は不可)"])
+    return {"study_dir": sd, "doc": doc, "items": norm, "presented_ids": presented_ids}
 
 
 def _apply_form_grammar_review(gv: dict, *, by: str, user_ref: str) -> Optional[str]:
@@ -1480,15 +1519,25 @@ def _apply_form_grammar_review(gv: dict, *, by: str, user_ref: str) -> Optional[
     return rvw.get("status")
 
 
-def _write_grammar_sidecar(run: str, rec: dict, grammar: list, kp_dir: str, *, study_dir: str, level: str) -> dict:
+def _archive_prior_grammar_files(study_dir: str) -> None:
+    """再確認(revoke後)/旧仕様の確定の上書き前に、前の凍結値・sidecarを退避する。pending sidecar(選定待ちの印。文法の確定ではない)は退避せず上書きする。"""
+    rv.archive_if_exists(os.path.join(study_dir, FILE_GRAMMAR_FROZEN), "RECONFIRM_SUPERSEDED")
+    sp = os.path.join(study_dir, FILE_GRAMMAR)
+    if os.path.exists(sp) and (_read(sp).get("status") != GRAMMAR_PENDING):
+        rv.archive_if_exists(sp, "RECONFIRM_SUPERSEDED")
+
+
+def _write_grammar_sidecar(run: str, rec: dict, grammar: list, kp_dir: str, *, study_dir: str, level: str, presented_ids: Optional[list] = None,
+                           pending: bool = False, from_pending: bool = False) -> dict:
     """level別sidecar `<study_dir>/confirmed_grammar.json`(v2: level・explanation_sha_by_id付き。0件=items空で『文法なしの確定』を記録)。
     再確認(revoke後)の場合は、前の確定の凍結値・sidecarを退避してから書く(confirmation_idが違う凍結値でINTEGRITYにならないように)。
     study_dirは呼出側がlevel指定で決める(先頭dirへの暗黙決定はしない)。"""
-    rv.archive_if_exists(os.path.join(study_dir, FILE_GRAMMAR_FROZEN), "RECONFIRM_SUPERSEDED")
-    rv.archive_if_exists(os.path.join(study_dir, FILE_GRAMMAR), "RECONFIRM_SUPERSEDED")
+    _archive_prior_grammar_files(study_dir)
     items = [{k: g.get(k) for k in ("id", "title", "explanation_full", "explanation_status", "example", "explanation_sha256")} for g in grammar]
-    doc = {"schema": SCHEMA_GRAMMAR_V2, "level": level, "confirmation_id": rec["confirmation_id"], "items": items,
-           "explanation_sha_by_id": {i["id"]: i.get("explanation_sha256") for i in items}}
+    doc = {"schema": SCHEMA_GRAMMAR_V2, "level": level, "status": GRAMMAR_PENDING if pending else "confirmed", "confirmation_id": rec["confirmation_id"], "items": items,
+           "explanation_sha_by_id": {i["id"]: i.get("explanation_sha256") for i in items}, "presented_ids": list(presented_ids or []), "max_select": GRAMMAR_MAX}
+    if from_pending:
+        doc["confirmed_after_pending"] = True
     doc["kp_dir_rel"] = os.path.relpath(os.path.abspath(kp_dir), os.path.abspath(study_dir)).replace(os.sep, "/")   # 文法側(study_dir)から確定レコードを辿る相対path(runごとコピーしても有効)
     doc["content_sha256"] = _jsha(doc["items"])
     doc["sidecar_sha256"] = _jsha({k: v for k, v in doc.items() if k != "sidecar_sha256"})
@@ -1496,6 +1545,86 @@ def _write_grammar_sidecar(run: str, rec: dict, grammar: list, kp_dir: str, *, s
     _write(p, doc)
     return {"path_rel": os.path.relpath(p, run).replace(os.sep, "/"), "sidecar_sha256": doc["sidecar_sha256"], "count": len(items), "level": level, "schema": SCHEMA_GRAMMAR_V2,
             "explanation_source": ["form_displayed" for _ in items]}
+
+
+def _append_history_note(rec: dict, event: str, by: str, user_ref: str, extra: Optional[dict] = None) -> None:
+    """履歴チェーンへ追記(revisionは呼出側が決める。保護項目content_sha256は変えない)。"""
+    _append_history(rec, event=event, by=by, user_ref=user_ref, extra=extra)
+
+
+def _pending_grammar_mark(run: str, rec: dict, kp_dir: str, *, study_dir: Optional[str], level: str, ignored: int) -> dict:
+    """rec["grammar"]の『選定待ち』印。study dirがあればstatus=pendingのsidecarも作る(0件確定と区別。既存の確定sidecarは退避)。
+    grammar_state()はpendingでNone=文法の保護なし・guard_grammarは効かない(選び直し可)。"""
+    if study_dir is not None:
+        info = _write_grammar_sidecar(run, rec, [], kp_dir, study_dir=study_dir, level=level, pending=True)
+    else:
+        info = {"path_rel": None, "sidecar_sha256": None, "count": 0, "level": level, "schema": SCHEMA_GRAMMAR_V2}
+    info.update(status=GRAMMAR_PENDING, pending_since=rv._now(), reason="grammar_reselection_pending(新仕様 Top1/Top2・1件選択の選定待ち。0件確定ではない)", payload_grammar_ignored=ignored)
+    return info
+
+
+def cmd_grammar_from_form(run: str, level: str, payload_path: str, by: str, user_ref: str) -> dict:
+    """KP先行確定済み(grammar pending)のレコードへ、文法だけを後から確定する。KPの保護項目(items/content_sha256/confirmation_id)は不変。
+    検証(何も書かない前に全て): payloadのlevel/候補shaがKP確定と矛盾しない・文法はTop1/Top2のpresented_idsの1件以下・解説全文が事前生成物と逐語一致。
+    0件はomit(zero_reason=form_submission_no_grammar。『適切な候補なし』をユーザーが選んだ確定)。冪等: 既に同じ文法で確定済みなら変更しない。
+    別の文法で確定済みは拒否(確定後不変。変更はrevoke)。"""
+    by, user_ref = _need_by(by), _need_user_ref(user_ref)
+    kp_dir = _kp_dir_for(run, level)
+    with open(payload_path, "rb") as f:
+        raw = f.read()
+    payload = json.loads(raw.decode("utf-8"))
+    if payload.get("schema_version") != 2:
+        raise CliError(f"schema_version=2 のフォーム送信データのみ受け付けます(受信={payload.get('schema_version')!r})")
+    rec = load_record(kp_dir)
+    if rec is None or rec.get("state") != STATE_LIVE or (rec.get("confirmed_by") or {}).get("actor") not in ENFORCING_ACTORS:
+        raise CliError("文法を後から確定できるKP確定レコード(live)がありません。先に `confirm --from-form <payload> --grammar-pending` でKP/KWを確定してください")
+    art = payload.get("article") or {}
+    if art.get("level") not in (None, level):
+        raise CliError(f"payloadのlevel={art.get('level')!r} と --level={level!r} が異なります")
+    cands = rv.load_candidates(kp_dir)
+    if art.get("candidates_sha256") and art["candidates_sha256"] != cands["candidates_sha256"]:
+        raise CliError("payloadの候補集合sha256が現在のKP候補docと一致しません(別の候補集合のフォーム)。KP区分は確定済みで変更できません")
+    groups = payload.get("selection") or {}
+    got = {"cat1": [i.get("candidate_id") for i in groups.get("key_phrase") or []], "cat2": [i.get("candidate_id") for i in groups.get("extra_explanation") or []],
+           "cat3": [i.get("candidate_id") for i in groups.get("meaning_display") or []]}
+    _all = list(rec["items"]) + list(rec.get("unconsumed") or [])
+    have = {f"cat{n}": [i["candidate_id"] for i in _all if i.get("category") == n] for n in (1, 2, 3)}
+    for k in ("cat1", "cat2", "cat3"):
+        if got[k] and sorted(got[k]) != sorted(have[k]):
+            raise CliError(f"payloadのKP/KW区分({k})が確定済みレコードと異なります(payload={sorted(got[k])} / 確定={sorted(have[k])})。KP/KWは確定済みで変更できません(文法のみを送るか、同じKP/KWを含めてください)")
+    gmark = rec.get("grammar") or {}
+    if not gmark:
+        raise CliError("このレコードは文法選定待ち(pending)ではありません。文法を含めたKP確定は `confirm --from-form` を使ってください")
+    if gmark.get("status") != GRAMMAR_PENDING:
+        # 既に文法確定済み: 同じ内容なら冪等、違えば拒否(確定後不変)
+        gv0 = _validate_form_grammar(run, kp_dir, level, groups.get("grammar"))
+        side = _read(os.path.join(run, gmark["path_rel"])) if gmark.get("path_rel") else {"items": []}
+        if sorted(i.get("id") for i in side.get("items") or []) == sorted(i["id"] for i in gv0["items"]):
+            return {"record": paths_of(kp_dir)["record"], "revision": rec["revision"], "grammar": len(gv0["items"]), "grammar_status": "confirmed", "unchanged": True,
+                    "next": "既に同じ文法で確定済みです(変更なし)"}
+        raise CliError("文法は既に別の内容で確定済みです。確定後は変更できません(変更は revoke → 選び直し)")
+    gv = _validate_form_grammar(run, kp_dir, level, groups.get("grammar"))   # 文法の照合(何も書かない。不一致=ISSUE rc=4)
+    if gv["study_dir"] is None:
+        raise CliError(f"文法の候補/解説がまだ生成されていません(level={level})。次の一手: 制作を実行して候補を生成し、Top1/Top2の解説を事前生成してからフォームを送信してください")
+    with rv.review_lock(kp_dir, rv.KIND_KP, by):
+        rec = load_record(kp_dir)
+        if (rec.get("grammar") or {}).get("status") != GRAMMAR_PENDING:
+            raise CliError("文法選定待ちの状態が変わりました。再実行してください")
+        grammar_review = _apply_form_grammar_review(gv, by=by, user_ref=user_ref)
+        os.makedirs(paths_of(kp_dir)["source_dir"], exist_ok=True)
+        rev_no = rec["revision"] + 1
+        sp = os.path.join(paths_of(kp_dir)["source_dir"], f"rev{rev_no}_grammar_payload.json")
+        with open(sp, "wb") as f:
+            f.write(raw)
+        rec["revision"] = rev_no
+        rec["grammar"] = _write_grammar_sidecar(run, rec, gv["items"], kp_dir, study_dir=gv["study_dir"], level=level, presented_ids=gv.get("presented_ids"), from_pending=True)
+        rec["grammar"]["status"] = "confirmed"
+        _append_history_note(rec, "grammar_confirmed", by, user_ref, {"grammar_ids": [i["id"] for i in gv["items"]], "presented_ids": gv.get("presented_ids"),
+                                                                      "grammar_payload_sha256": hashlib.sha256(raw).hexdigest(), "after_pending": True})
+        save_record(kp_dir, rec)
+    return {"record": paths_of(kp_dir)["record"], "revision": rec["revision"], "grammar": len(gv["items"]), "grammar_ids": [i["id"] for i in gv["items"]],
+            "grammar_status": "confirmed", "grammar_review": grammar_review, "unchanged": False,
+            "next": "制作コマンドを同じまま再実行してください(文法finalize→後続が進みます)"}
 
 
 def cmd_from_review(run: str, level: str, by: str, user_ref: str, *, adopt_existing: bool = False, apply: bool = False) -> dict:
@@ -1678,9 +1807,12 @@ def build_parser() -> argparse.ArgumentParser:
     common(p)
     g = p.add_mutually_exclusive_group(required=True)
     g.add_argument("--from-form", default=None)
+    g.add_argument("--grammar-from-form", default=None, help="KP先行確定済み(--grammar-pending)のレコードへ文法だけを後から確定する(KPは不変・冪等)")
     g.add_argument("--from-review", action="store_true")
     g.add_argument("--adopt-existing", action="store_true")
     p.add_argument("--apply", action="store_true", help="--adopt-existing: 差分提示のみ(既定)ではなく適用する")
+    p.add_argument("--grammar-pending", action="store_true",
+                   help="--from-form のみ。KP/KWだけを確定し、文法は選定待ち(0件確定ではない)のままにする。payloadのgrammar[]は使わない")
     p.add_argument("--actor", default="user", choices=("user", "evidence"),
                    help="--from-form のみ。evidence=runtime evidence用(ユーザー確定ではないと記録に明記。保護の強度はuserと同じ)")
     p.add_argument("--by", default=None)
@@ -1709,8 +1841,12 @@ def run(argv=None) -> int:
         if a.cmd == "status":
             out = cmd_status(a.run)
         elif a.cmd == "confirm":
-            if a.from_form:
-                out = cmd_from_form(a.run, a.level, a.from_form, a.by, a.user_ref, actor=a.actor)
+            if a.grammar_pending and not a.from_form:
+                raise CliError("--grammar-pending は --from-form と一緒に指定してください")
+            if a.grammar_from_form:
+                out = cmd_grammar_from_form(a.run, a.level, a.grammar_from_form, a.by, a.user_ref)
+            elif a.from_form:
+                out = cmd_from_form(a.run, a.level, a.from_form, a.by, a.user_ref, actor=a.actor, grammar_pending=a.grammar_pending)
             elif a.from_review:
                 out = cmd_from_review(a.run, a.level, a.by, a.user_ref)
             else:

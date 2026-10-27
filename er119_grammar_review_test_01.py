@@ -382,6 +382,21 @@ class TestCli(GrammarCase):
                 rc = e.code
         return rc, out.getvalue(), err.getvalue()
 
+    def test_two_ids_pick_and_all_candidates_flag_are_refused_by_cli(self):
+        self.ensure()
+        self.pregen()
+        sha = gr.load_candidates(self.sd)["candidates_sha256"]
+        ids = [c["candidate_id"] for c in gr.load_candidates(self.sd)["candidates"]]
+        rc, out, err = self.run_cli(["grammar-select", "--run", self.run_dir, "--level", "b1b", "--choice", "pick", "--ids", f"{ids[0]},{ids[1]}",
+                                     "--candidates-sha", sha, "--reason", "2件", "--by", "t"])
+        self.assertEqual(rc, 2)                                                                   # 2件同時選択は禁止
+        self.assertEqual(gr.load_review(self.sd)["status"], rv.ST_PENDING)
+        rc, out, err = self.run_cli(["grammar-select", "--run", self.run_dir, "--level", "b1b", "--choice", "pick", "--ids", ids[2],
+                                     "--candidates-sha", sha, "--reason", "3位", "--by", "t"])
+        self.assertEqual(rc, 2)                                                                   # Top1/Top2以外は選べない
+        with self.assertRaises(SystemExit):                                                       # 旧 --all-candidates は撤去(argparseが拒否)
+            cli.run(["grammar-pregen", "--run", self.run_dir, "--level", "b1b", "--all-candidates"])
+
     def test_status_show_select_ng_unng_and_refusals(self):
         self.ensure()
         self.pregen()                                              # v2: 解説の事前生成が済んでから提示・選択できる
@@ -391,7 +406,9 @@ class TestCli(GrammarCase):
         self.assertEqual([os.path.normpath(x) for x in j["grammar_pending"]], [os.path.normpath(self.sd)])
         rc, out, err = self.run_cli(["grammar-show", "--run", self.run_dir, "--level", "b1b"])
         self.assertEqual(rc, 0, err)
-        self.assertIn("AI推奨 1", out)                                  # v2: 全候補の文法名+解説全文を提示(AI推奨=候補1)
+        self.assertIn("AI推奨(Top1)", out)                              # v2: Top1/Top2の文法名+解説全文を順位順に提示
+        self.assertIn("Top2:", out)
+        self.assertIn("他1件は非表示", out)                               # 3位以降は非表示(件数のみ)
         self.assertIn("学習ページに載る全文", out)
         sha = gr.load_candidates(self.sd)["candidates_sha256"]
         rc, out, err = self.run_cli(["grammar-select", "--run", self.run_dir, "--level", "b1b", "--choice", "top2", "--candidates-sha", sha, "--by", "t"])   # reason無し

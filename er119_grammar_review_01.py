@@ -8,10 +8,10 @@ Part 2「Grammar & Sentence Structure」のHuman Review(er119共通核に kind="
     不在宣言  = rv.read_mode_declaration(単一読取点。dict形はer120.normalize_modeが受ける形)。環境変数/引数/hooksからautoにならない
     status    = REVIEWED / UNREVIEWED_AUTO_ADOPTED / NO_CANDIDATE_UNREVIEWED だけが下流を進める。
                 PENDING_REVIEW / RESELECT_EXHAUSTED / REEXTRACT_REQUESTED / RESELECTION_REQUESTED / STALE は下流fail-closed
-- LLM呼出は注入関数のみ(Step A'' の抽出とreextractのみ)。Step B(解説)は er120_part2_wiring_01.pregen_stage だけが呼ぶ(全候補の事前生成)。CLI操作(Human)はAPI 0。
+- LLM呼出は注入関数のみ(Step A'' の抽出とreextractのみ)。Step B(解説)は er120_part2_wiring_01.pregen_stage だけが呼ぶ(Top1/Top2の2候補分の事前生成)。CLI操作(Human)はAPI 0。
 - ファイル(study_dir): grammar_candidates.json / grammar_explanations.json(事前生成物) / grammar_human_review.json / grammar_human_review.lock / grammar_human_review_request.md /
   grammar_translation_issue.json・grammar_translation_ack.json(Part 1訳との食い違いISSUEとユーザー了承)
-- GRAMMAR-PREGEN-ALL-LEVELS-01 委任_02: levelは全APIの必須引数('b1b'=Advanced / 'a2'=Standard)。`b1b`の暗黙既定値(旧モジュール定数)は撤去。review v2は最大2件選択・0件可
+- GRAMMAR-PREGEN-ALL-LEVELS-01 委任_02: levelは全APIの必須引数('b1b'=Advanced / 'a2'=Standard)。`b1b`の暗黙既定値(旧モジュール定数)は撤去。review v2は最大1件選択(2026-10-27改訂: 旧2件=撤去)・0件可・提示はTop1/Top2のみ
   (契約=docs/research/GRAMMAR-PREGEN-ALL-LEVELS-01/SCHEMA_CONTRACT_01.md)。v1 reviewは読取互換(確定済みv1は書換えない)。
 """
 from __future__ import annotations
@@ -120,7 +120,7 @@ def _replace_review(study_dir: str, new_review: dict, old: Optional[dict]) -> di
 
 
 def _finalized_record(doc: dict, sel: dict, *, review: dict, decision: Optional[dict], by: str) -> dict:
-    """確定record。review(置換元)がv1ならv1形(単一選定。確定済みv1の進行中run用)、v2ならv2形(最大2件)。"""
+    """確定record。review(置換元)がv1ならv1形(単一選定。確定済みv1の進行中run用)、v2ならv2形(最大1件)。"""
     if review.get("schema") == g.SCHEMA_REVIEW:
         sel1 = dict(sel, candidate=(sel["selected"][0] if sel.get("selected") else sel.get("candidate")))
         rec = g.finalize_review_record(doc, sel1, decision=decision, by=by, prior_history=review.get("history"))
@@ -173,7 +173,7 @@ def _rebind_grammar_text(study_dir: str, state: dict, doc: dict, review: dict, p
 
 
 # ============================================================
-# 事前生成物との接続: 検証 / 依頼書(全候補の文法名+解説全文) / stale表示
+# 事前生成物との接続: 検証 / 依頼書(Top1/Top2の文法名+解説全文) / stale表示
 # ============================================================
 def explanations_state(study_dir: str, doc: dict, *, level: str) -> tuple:
     """(ready: bool, ex|None, reason)。事前生成物が完全で整合していればready。例外を出さない判定用(依頼書を書くか否か等)。"""
@@ -192,7 +192,7 @@ def require_explanations(study_dir: str, doc: dict, *, level: str) -> dict:
     if failed and str(failed.get("stage", "")).startswith("part2_expl"):
         raise rv.KpReviewError(f"文法解説の事前生成が失敗しています(part2_failed.json: {failed.get('error')})。制作を同じコマンドで再実行して未生成分を作ってください")
     try:
-        return g.validate_explanations(ex, doc, level=level, next_command="制作コマンドを同じまま再実行(未生成の文法解説だけを事前生成します。auto採用/確定済みrunで全候補を見て選び直す場合は pregen_stage(all_candidates=True) を明示して実行)")
+        return g.validate_explanations(ex, doc, level=level, next_command="制作コマンドを同じまま再実行(未生成の文法解説だけを事前生成します。提示はTop1/Top2のみ)")
     except g.Part2Stale as e:
         raise rv.KpReviewError(str(e)) from e
 
@@ -368,9 +368,9 @@ def _decision_dict(doc: dict, ex: Optional[dict], *, choice: str, candidates_sha
 
 def op_decide(study_dir: str, *, choice: str, candidates_sha256: str, reason: str = "", by: str, accept_ai: bool = False,
               ids: Optional[list] = None, channel: str = "cli") -> dict:
-    """Humanの決定。choice=pick(ids 1〜2件・0件はomit) / top1|top2(単件ショートカット) / omit / reselect(API 0で次順位の新候補一覧、NGを共有registryへ) /
+    """Humanの決定。choice=pick(ids 1件。2件は拒否・0件はomit) / top1|top2(単件ショートカット) / omit / reselect(API 0で次順位の新候補一覧、NGを共有registryへ) /
     reextract(枯渇時のみ。次回起動でStep A'' 1 call)。AI推奨(TOP1のみ)以外のpick・top2/reselect/omit/reextractはreason必須(er120が検証)。candidates_sha256が現docと違えばstale拒否。
-    v2のreviewでは、解説の事前生成が完了・整合していることを必須とし(全候補の解説を見て決める要件。未完了ならデータなしでエラー)、提示した解説のid別shaを記録する。
+    v2のreviewでは、解説の事前生成が完了・整合していることを必須とし(提示するTop1/Top2の解説を見て決める要件。未完了ならデータなしでエラー)、提示した解説のid別shaを記録する。
     確定済み(AUTO含む)からの事後Reviewも可(downstreamはselection_signatureで再finalizeを要求する)。"""
     _need_by(by)
     with rv.review_lock(study_dir, KIND, by):
@@ -381,7 +381,7 @@ def op_decide(study_dir: str, *, choice: str, candidates_sha256: str, reason: st
         if choice == "pick" and not v2:
             raise rv.KpReviewError("このreviewはv1(単一選定)です。制作を再実行してv2へ移行するか、top1/top2/omitで選んでください")
         if choice in ("pick", "top1", "top2", "omit") and v2 and doc.get("candidates"):
-            ex = require_explanations(study_dir, doc, level=level)    # 全候補の解説が揃ってから決める
+            ex = require_explanations(study_dir, doc, level=level)    # Top1/Top2の解説が揃ってから決める
         else:
             ex = None
         decision = _decision_dict(doc, ex, choice=choice, candidates_sha256=candidates_sha256, reason=reason, by=by, accept_ai=accept_ai, ids=ids, channel=channel)
@@ -446,7 +446,7 @@ def apply_form_selection(study_dir: str, *, ids: list, by: str, user_ref: str = 
         if len(want_ids) != len(set(ids)) or len(ids) != len(set(ids)):
             raise g.Part2ReviewError(f"フォームの文法idが候補docにない/重複しています: {ids}")
         if len(ids) > g.GRAMMAR_MAX:
-            raise g.Part2ReviewError(f"文法は最大{g.GRAMMAR_MAX}件です: {len(ids)}")
+            raise g.Part2ReviewError(f"文法は{g.GRAMMAR_MAX}件だけ選べます(2件同時選択は禁止。0件は省略=omit): {len(ids)}件")
         zero = not ids
         if zero and not doc.get("candidates") and not doc.get("exhausted"):
             return review        # 候補0件=既にNO_CANDIDATE_UNREVIEWEDで確定(何もしない=冪等)
@@ -574,7 +574,7 @@ def op_accept_translation_diff(study_dir: str, *, ids: list, by: str, user_ref: 
 # 提示(依頼書)・状態一覧
 # ============================================================
 def render_request_md(doc: dict, review: dict, *, run_hint: str, explanations: Optional[dict] = None, study_dir: Optional[str] = None) -> str:
-    """v2: 全候補(<=PREGEN_MAX)の『文法名+解説全文』を載せる(8件超は『他N件・解説未生成』)。解説(事前生成物)が無い/不整合ならデータを出さずエラー(grammar-showのfail-closed)。
+    """v2: Top1/Top2(<=PREGEN_MAX=2)の『文法名+解説全文』を順位順に載せる(3位以降は非表示・件数のみ『他N件』)。解説(事前生成物)が無い/不整合ならデータを出さずエラー(grammar-showのfail-closed)。
     explanations か study_dir(事前生成物を読んで検証)のどちらかを渡す。v1 reviewは従来の2件枠(読取互換)。"""
     if review.get("schema") == g.SCHEMA_REVIEW:
         return _render_request_md_v1(doc, review, run_hint=run_hint)
@@ -595,24 +595,24 @@ def render_request_md(doc: dict, review: dict, *, run_hint: str, explanations: O
     sha = doc["candidates_sha256"]
     L = [f"# Part 2 文法解説 Human Review 依頼({doc['level']}) round {doc.get('round', 1)}", "",
          f"- 状態: {review.get('status')} / candidates_sha256: `{sha[:16]}` / 本文sha: `{doc['text_sha256'][:12]}` / 再選定 {req['reselect_count']}/{g.MAX_RESELECT}回・再抽出 {req['reextract_count']}/{g.MAX_REEXTRACT}回",
-         f"- あなたの作業: 下の全候補の文法名と解説を読み、学習に載せる文法を**最大{g.GRAMMAR_MAX}件**選びます(0件も可。AI推奨=候補1)。何もしなければ制作は止まったままです(自動確定は明示の不在宣言があるときだけで、その場合はAI推奨1件のみ)。", ""]
+         f"- あなたの作業: 下のTop1・Top2(AI評価順位・最大2件)の文法名と解説を読み、学習に載せる文法を**{g.GRAMMAR_MAX}件だけ**選びます(適切なものが無ければ0件=omit。2件同時選択は不可。AI推奨=Top1)。何もしなければ制作は止まったままです(自動確定は明示の不在宣言があるときだけで、その場合はAI推奨1件のみ)。", ""]
     if req["exhausted"]:
         L += ["- **全候補をNGにして尽きました**。選べる操作: " + " / ".join(req["choices"]) + "(omit=今回は解説を出さない、reextract=本文から候補を再抽出[Step A'' 1 call・上限1回])", ""]
     elif not req["candidates"]:
         L += ["- 適格な候補がありません(待たずに0件で確定します)。", ""]
     for t in req["candidates"]:
-        mark = "AI推奨" if t["candidate_id"] == req["ai_recommended"] else "候補"
-        L += [f"## {mark} {t['rank']}: {t['title']} [{t['tier']} / {t['feature_class']}] 段落{t['para']}  (id: `{t['candidate_id']}`)", "", f"> {t['sentence']}", "",
+        mark = "AI推奨(Top1)" if t["candidate_id"] == req["ai_recommended"] else "Top2"
+        L += [f"## {mark}: {t['title']} [{t['tier']} / {t['feature_class']}] 段落{t['para']}  (評価順位{t['rank']} / id: `{t['candidate_id']}`)", "", f"> {t['sentence']}", "",
               f"- 教える価値: {t['teaching_value_ja']}", f"- 読み違えやすい点: {t['misread_ja']}", "", "### 解説(学習ページに載る全文)", "", t["explanation_md"], ""]
     if req["n_not_generated"]:
-        L += [f"(他{req['n_not_generated']}件・解説未生成: 先頭{g.PREGEN_MAX}件までを提示しています。reselectすると次順位の候補が入れ替わります)", ""]
+        L += [f"(他{req['n_not_generated']}件は非表示: AI評価のTop1/Top2(先頭{g.PREGEN_MAX}件)だけを提示しています。reselectすると提示中の候補をNGにして次順位が新しいTop1/Top2になります)", ""]
     L += ["## 操作(コマンド。`--by` は操作者名。`--level`は必須)", ""]
     lv = (review.get("article_key") or {}).get("level")
     base = f"{CLI} grammar-select --run {run_hint} --level {lv} --candidates-sha {sha} --by <名前>"
     if "pick" in req["choices"]:
         top = req["ai_recommended"]
         L.append(f"- AI推奨(候補1)だけを選ぶ(了承): `{base} --choice pick --ids {top} --accept-ai`")
-        L.append(f"- 1〜{g.GRAMMAR_MAX}件を選ぶ(AI推奨のみ以外は理由必須): `{base} --choice pick --ids <id>[,<id>] --reason <理由>`")
+        L.append(f"- {g.GRAMMAR_MAX}件を選ぶ(Top1以外は理由必須。2件同時選択は不可): `{base} --choice pick --ids <id> --reason <理由>`")
     if "reselect" in req["choices"]:
         L.append(f"- 選び直し(提示中の候補をNGにして次順位へ。理由必須・上限あり): `{base} --choice reselect --reason <理由>`")
     if "omit" in req["choices"]:

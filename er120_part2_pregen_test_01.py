@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """GRAMMAR-PREGEN-ALL-LEVELS-01 委任_02(F-8核): 文法解説の事前生成(全level共通の核)のtest。全てmock・API 0(実client生成はblock)。
 対象: pregen stage / Step B呼出点の単一化 / legacy_postselect限定とINTEGRITY / Part 1訳との食い違いISSUEと了承 / level必須(b1bの暗黙既定値の撤去) /
-      review v2(最大2件・0件可・クリック順非依存・冪等) / result v2(本文出現順・1件はv1とバイト同一) / 8件超表示 / 失敗再開 / Prompt sha不変 / 既定の待機(rc=4)維持 /
+      review v2(2026-10-27文法選定仕様: Top1/Top2のみ提示・原則1件・0件可・2件禁止・冪等) / result v2(1件はv1とバイト同一) / 3位以降は非表示・事前生成しない / 失敗再開 / Prompt sha不変 / 既定の待機(rc=4)維持 /
       節単位4者一致 / フォーム用データのfail-closed。
 テスト計画: docs/research/GRAMMAR-PREGEN-ALL-LEVELS-01/TEST_PLAN_02.md
 """
@@ -119,7 +119,8 @@ class T1_DefaultWait(PCase):
         with self.assertRaises(rv.KpReviewError):                                          # 解説の事前生成なしでは決められない
             self.decide("top1")
         pre = self.pregen()
-        self.assertEqual((len(pre["generated"]), self.xp.n, pre["confirmed"]), (3, 3, False))
+        self.assertEqual((len(pre["generated"]), self.xp.n, pre["confirmed"]), (2, 2, False))    # Top1/Top2の2候補分だけ(3位は生成しない)
+        self.assertEqual(len(pre["skipped_over_cap"]), 1)
         self.assertEqual(gr.load_review(self.sd)["status"], rv.ST_PENDING)                  # 自動確定しない
         with self.assertRaises(p2w.Part2NotConfirmed):                                     # 使う側は待機(rc=4)
             self.req()
@@ -127,8 +128,11 @@ class T1_DefaultWait(PCase):
             self.final()
         self.assertFalse(os.path.exists(p2w.RESULT_PATH(self.sd)))
         txt = open(gr.paths(self.sd)["request"], encoding="utf-8").read()
-        for c in gr.load_candidates(self.sd)["candidates"]:                                # 全候補の文法名+解説全文
+        cs = gr.load_candidates(self.sd)["candidates"]
+        for c in cs[:2]:                                                                   # Top1/Top2の文法名+解説全文
             self.assertIn(c["construct_ja"], txt)
+        self.assertNotIn(cs[2]["construct_ja"], txt)                                       # 3位以降は非表示
+        self.assertIn("他1件は非表示", txt)
         self.assertIn("これはmockの日本語訳です", txt)
         self.assertNotIn("古い/未完成", txt)
 
@@ -136,21 +140,21 @@ class T1_DefaultWait(PCase):
 class T2_StepBSingleCallSite(PCase):
     def test_step_b_only_from_pregen_and_counts_are_fixed(self):
         self.prepare()
-        self.assertEqual(self.xp.n, 3)
+        self.assertEqual(self.xp.n, 2)
         self.pregen()                                                                       # 再実行=API 0
-        self.assertEqual(self.xp.n, 3)
+        self.assertEqual(self.xp.n, 2)
         self.decide("pick", ids=[self.ids()[0]], accept_ai=True)
         out = self.final()
         self.req()
         self.final()
-        self.assertEqual((self.xp.n, out["path"]), (3, "v2"))                              # finalize/require/再finalizeはLLM 0
+        self.assertEqual((self.xp.n, out["path"]), (2, "v2"))                              # finalize/require/再finalizeはLLM 0
         self.assertEqual(set(self.callers), {"pregen_explanations"})
         # 候補が変わっても(reselect)既存の同一候補は再生成しない: 確定前の別run
         sd2 = os.path.join(self.tmp, "run2", "b1b", "study_text")
         self.ensure(sd=sd2, run_dir=os.path.join(self.tmp, "run2"))
         n0 = self.xp.n
         self.pregen(sd=sd2)
-        self.assertEqual(self.xp.n, n0 + 3)                                                 # 別studyは別途3(共有キャッシュは持たない)
+        self.assertEqual(self.xp.n, n0 + 2)                                                 # 別studyは別途2(Top1/Top2。共有キャッシュは持たない)
 
     def test_static_single_call_site_and_finalize_has_no_llm_parameters(self):
         src = open(os.path.join(ROOT, "er120_part2_grammar_production_01.py"), encoding="utf-8").read()
@@ -270,14 +274,14 @@ class T5_TranslationIssue(PCase):
         self.assertEqual(g.translation_issues(self.final()["result"], None), [])
 
     def test_another_candidate_resolves_the_issue(self):
-        c = self._auto_ready()
+        self.prepare()                                                                      # 未確定+Top1/Top2の解説を事前生成済み
+        ids = self.ids()
+        c = gr.load_candidates(self.sd)["candidates"][0]
         pool = {c["sentence"]: "Part 1の別の訳です。"}
+        self.decide("pick", ids=[ids[0]], accept_ai=True)
         with self.assertRaises(p2w.Part2NotConfirmed):
             self.final(ref_ja_pool=pool)
-        with self.assertRaises(rv.KpReviewError):                                           # auto採用はTOP1のみ生成: 全候補の解説なしでは選び直せない
-            self.decide("pick", ids=[self.ids()[1]])
-        self.pregen(all_candidates=True)                                                    # 明示opt-in(有料)で全候補を事前生成
-        rec = self.decide("pick", ids=[self.ids()[1]])                                      # 事後Review: 別候補を選ぶ
+        rec = self.decide("pick", ids=[ids[1]])                                             # 事後Review: Top2(解説済み)を選び直す
         out = self.final(ref_ja_pool=pool)
         self.assertEqual((out["path"], out["result"]["items"][0]["selection"]["candidate_id"]), ("v2", rec["selection"]["candidate_ids"][0]))
 
@@ -345,8 +349,10 @@ class T8_ReviewV2(PCase):
         ids = self.ids()
         with self.assertRaises(g.Part2ReviewError):                                         # 理由なし(AI推奨のみ以外)
             self.decide("pick", ids=[ids[1]], reason="")
-        with self.assertRaises(g.Part2ReviewError):                                         # 3件
-            self.decide("pick", ids=ids)
+        with self.assertRaises(g.Part2ReviewError):                                         # 2件同時選択は禁止(Top1+Top2でも)
+            self.decide("pick", ids=ids[:2], reason="2件")
+        with self.assertRaises(g.Part2ReviewError):                                         # Top1/Top2以外(3位)は提示していない=選べない
+            self.decide("pick", ids=[ids[2]], reason="3位")
         with self.assertRaises(g.Part2ReviewError):                                         # 重複
             self.decide("pick", ids=[ids[0], ids[0]])
         with self.assertRaises(g.Part2ReviewError):                                         # 候補外
@@ -356,19 +362,18 @@ class T8_ReviewV2(PCase):
         self.assertEqual(gr.load_review(self.sd)["status"], rv.ST_PENDING)                  # 拒否時は状態不変
         rec = self.decide("pick", ids=[ids[0]], reason="", accept_ai=True)                  # AI推奨のみ=理由不要
         self.assertEqual((rec["schema"], rec["status"], rec["selection"]["choice"], rec["selection"]["candidate_ids"]), (g.SCHEMA_REVIEW_V2, rv.ST_REVIEWED, "pick", [ids[0]]))
-        self.assertEqual(set(rec["decision"]["explanation_sha_by_id"]), set(ids))            # 提示した全解説のid別sha
-        self.assertEqual(rec["verdicts"], {ids[0]: "SELECTED", ids[1]: "NOT_SELECTED", ids[2]: "NOT_SELECTED"})
+        self.assertEqual(set(rec["decision"]["explanation_sha_by_id"]), set(ids[:2]))        # 提示したTop1/Top2の解説のid別sha
+        self.assertEqual(rec["verdicts"], {ids[0]: "SELECTED", ids[1]: "NOT_SELECTED"})
 
-    def test_click_order_does_not_change_selection_items_sha_or_signature(self):
+    def test_same_single_pick_gives_same_signature_and_result_across_runs(self):
         sd2 = os.path.join(self.tmp, "run2", "b1b", "study_text")
         for sd, run in ((self.sd, self.run_dir), (sd2, os.path.join(self.tmp, "run2"))):
             self.ensure(sd=sd, run_dir=run)
             self.pregen(sd=sd)
         ids = self.ids()
-        a = self.decide("pick", ids=[ids[2], ids[0]], reason="2件")
-        b = self.decide("pick", sd=sd2, ids=[ids[0], ids[2]], reason="2件")
-        self.assertEqual(a["selection"]["candidate_ids"], b["selection"]["candidate_ids"])
-        self.assertEqual(a["selection"]["candidate_ids"], [ids[0], ids[2]])                  # 本文出現順(P1,P3)
+        a = self.decide("pick", ids=[ids[1]], reason="Top2")
+        b = self.decide("pick", sd=sd2, ids=[ids[1]], reason="Top2")
+        self.assertEqual(a["selection"]["candidate_ids"], [ids[1]])
         self.assertEqual(a["selection_signature"], b["selection_signature"])
         ra, rb = self.final()["result"], self.final(sd=sd2)["result"]
         strip = lambda r: {k: v for k, v in r.items() if k not in ("generated_at", "audit", "reused_from_previous_run")}   # noqa: E731
@@ -378,7 +383,9 @@ class T8_ReviewV2(PCase):
         self.prepare()
         ids = self.ids()
         with self.assertRaises(g.Part2ReviewError):
-            gr.apply_form_selection(self.sd, ids=ids, by="u", user_ref="ref")               # 3件
+            gr.apply_form_selection(self.sd, ids=ids[:2], by="u", user_ref="ref")           # 2件同時選択は禁止
+        with self.assertRaises(g.Part2ReviewError):
+            gr.apply_form_selection(self.sd, ids=[ids[2]], by="u", user_ref="ref")          # Top1/Top2以外は選べない
         with self.assertRaises(g.Part2ReviewError):
             gr.apply_form_selection(self.sd, ids=["gxxxx"], by="u", user_ref="ref")
         with self.assertRaises(g.Part2ReviewError):
@@ -391,11 +398,11 @@ class T8_ReviewV2(PCase):
         self.assertEqual((out["result"]["status"], out["result"]["zero_reason"], out["result"]["items"]), ("ZERO", "form_submission_no_grammar", []))
         self.assertIn(g.ZERO_P2, g.render_markdown(out["result"]))
         self.req()
-        r1 = gr.apply_form_selection(self.sd, ids=[ids[2], ids[1]], by="u", user_ref="ref")   # 事後の選び直し(保護なし環境): pick 2件
-        self.assertEqual(r1["selection"]["candidate_ids"], [ids[1], ids[2]])
+        r1 = gr.apply_form_selection(self.sd, ids=[ids[1]], by="u", user_ref="ref")         # 事後の選び直し(保護なし環境): pick 1件(Top2)
+        self.assertEqual(r1["selection"]["candidate_ids"], [ids[1]])
         self.assertEqual(r1["decision"]["channel"], "form")
-        self.assertEqual(gr.apply_form_selection(self.sd, ids=[ids[1], ids[2]], by="u", user_ref="ref")["revision"], r1["revision"])
-        self.assertEqual([i["selection"]["candidate_id"] for i in self.final()["result"]["items"]], [ids[1], ids[2]])
+        self.assertEqual(gr.apply_form_selection(self.sd, ids=[ids[1]], by="u", user_ref="ref")["revision"], r1["revision"])
+        self.assertEqual([i["selection"]["candidate_id"] for i in self.final()["result"]["items"]], [ids[1]])
         self.req()
 
     def test_form_selection_requires_complete_pregen(self):
@@ -434,35 +441,30 @@ class T8_ReviewV2(PCase):
         self.assertEqual(rec["status"], rv.ST_PENDING)
         self.assertIn("古い/未完成", open(gr.paths(self.sd)["request"], encoding="utf-8").read())   # 古い依頼書を残さない
         n0 = self.xp.n
-        pre = self.pregen()                                                                    # 残った候補は再利用(新規生成0)
-        self.assertEqual((self.xp.n, len(pre["generated"])), (n0, 0))
+        pre = self.pregen()                                                                    # 新しいTop1(旧3位)の1件だけ生成(旧Top1/Top2はNG)
+        self.assertEqual((self.xp.n, len(pre["generated"])), (n0 + 1, 1))
         self.assertEqual(len(gr.load_explanations(self.sd)["items"]), 1)                       # NG済み候補の解説は捨てる
         self.assertNotIn("古い/未完成", open(gr.paths(self.sd)["request"], encoding="utf-8").read())
         self.decide("pick", ids=self.ids(), accept_ai=True)                                     # 新しいTOP1だけ
 
 
 class T9_ResultV2(PCase):
-    def test_two_items_in_text_order_and_one_item_is_byte_identical_to_v1_rendering(self):
+    def test_two_item_pick_is_rejected_and_one_item_is_byte_identical_to_v1_rendering(self):
         self.prepare()
-        ids = self.ids()                                                                      # rank順: P1(CLEFT), P2(SPEC), P3(INV)
-        self.decide("pick", ids=[ids[2], ids[0]], reason="2件")
-        res = self.final()["result"]
-        self.assertEqual([i["selection"]["candidate_id"] for i in res["items"]], [ids[0], ids[2]])
-        md = g.render_markdown(res)
-        self.assertEqual(md.count("## 対象となる本文英文"), 2)
-        self.assertLess(md.index("The old man walked"), md.index("Never had she seen"))
-        h = g.render_html_block(res, include_css=False)
-        self.assertEqual((h.count("<section class='study'>"), h.count("<h3>Grammar &amp; Sentence Structure</h3>"), h.count("<div class='study-item'>")), (1, 1, 2))
-        self.assertEqual(g.count_grammar_blocks(h), 1)
-        self.req()
+        ids = self.ids()                                                                      # rank順: P1(CLEFT), P2(SPEC), P3(INV)。提示=P1,P2のみ
+        with self.assertRaises(g.Part2ReviewError):                                           # 2件同時選択は禁止
+            self.decide("pick", ids=[ids[1], ids[0]], reason="2件")
+        self.assertEqual(gr.load_review(self.sd)["status"], rv.ST_PENDING)
         # 1件: v1形のresultとバイト同一
         self.decide("pick", ids=[ids[0]], accept_ai=True)
         one = self.final()["result"]
+        self.assertEqual(len(one["items"]), 1)
         it = one["items"][0]
         v1 = {"schema": g.SCHEMA_RESULT, "status": "SELECTED", "selection": it["selection"], "sections": it["sections"], "translation_ja": it["translation_ja"]}
         self.assertEqual(g.render_markdown(v1), g.render_markdown(one))
         self.assertEqual(g.render_html_block(v1), g.render_html_block(one))
         self.assertEqual(g.result_items(v1)[0]["selection"], it["selection"])                  # v1は書換えず正規化して読む
+        self.req()
 
     def test_decision_explanation_sha_binds_the_displayed_explanation(self):
         self.prepare()
@@ -498,21 +500,31 @@ class T9_ResultV2(PCase):
 
 
 class T10_CapAndFailure(PCase):
-    def test_more_than_pregen_max_candidates_are_capped_and_displayed_as_not_generated(self):
+    def test_only_top2_are_pregenerated_presented_and_selectable(self):
         paras = [f"Sentence number {i} was written here today." for i in range(1, 11)]
         self.ensure(paras=paras, ex=Ctr(many_extract(10)))
         pre = self.pregen()
-        self.assertEqual((len(pre["generated"]), self.xp.n, len(pre["skipped_over_cap"])), (g.PREGEN_MAX, 8, 2))
+        self.assertEqual((len(pre["generated"]), self.xp.n, len(pre["skipped_over_cap"])), (g.PREGEN_MAX, 2, 8))   # Top1/Top2のみ課金(3位以降は生成しない)
+        self.assertEqual((g.PREGEN_MAX, g.GRAMMAR_MAX, g.TOP_N), (2, 1, 2))
         txt = open(gr.paths(self.sd)["request"], encoding="utf-8").read()
-        self.assertIn("他2件・解説未生成", txt)
+        self.assertIn("他8件は非表示", txt)
         b = p2w.form_grammar_bundle(self.sd, level="b1b")
-        self.assertEqual((len(b["items"]), b["n_not_generated"], b["grammar_status"]), (8, 2, "candidates_available"))
-        self.assertEqual([i["ai_recommended"] for i in b["items"]], [True] + [False] * 7)
-        ninth = self.ids()[8]
-        with self.assertRaises(g.Part2ReviewError):                                         # 解説を見ていない候補は選べない
-            self.decide("pick", ids=[ninth])
-        with self.assertRaises(g.Part2ReviewError):
-            gr.apply_form_selection(self.sd, ids=[self.ids()[0], ninth], by="u", user_ref="r") if False else self.decide("pick", ids=[ninth, self.ids()[0]])
+        self.assertEqual((len(b["items"]), b["n_not_generated"], b["grammar_status"]), (2, 8, "candidates_available"))
+        self.assertEqual([i["ai_recommended"] for i in b["items"]], [True, False])
+        self.assertEqual([i["rank"] for i in b["items"]], [1, 2])
+        third = self.ids()[2]
+        with self.assertRaises(g.Part2ReviewError):                                         # 提示していない候補は選べない
+            self.decide("pick", ids=[third])
+        with self.assertRaises(g.Part2ReviewError):                                         # Top1+Top2の2件同時も不可
+            self.decide("pick", ids=[self.ids()[0], self.ids()[1]])
+        self.assertEqual(gr.load_review(self.sd)["status"], rv.ST_PENDING)
+
+    def test_one_candidate_presents_one_and_zero_candidates_presents_none_without_padding(self):
+        paras = ["Sentence number 1 was written here today."]
+        self.ensure(paras=paras, ex=Ctr(many_extract(1)))
+        pre = self.pregen()
+        self.assertEqual((len(pre["generated"]), self.xp.n, pre["skipped_over_cap"]), (1, 1, []))   # 数合わせの追加はしない
+        self.assertEqual(len(p2w.form_grammar_bundle(self.sd, level="b1b")["items"]), 1)
 
     def test_failure_keeps_done_items_blocks_hr_and_form_and_resumes_only_missing(self):
         n = {"i": 0}
@@ -537,11 +549,11 @@ class T10_CapAndFailure(PCase):
         with self.assertRaises(rv.KpReviewError):
             self.decide("top1")
         ok = Ctr(mk.mock_explain_call_fn)
-        pre = self.pregen(xp=ok)                                                             # 再開: 未生成の2件だけ
-        self.assertEqual((len(pre["generated"]), len(pre["reused"]), ok.n), (2, 1, 2))
+        pre = self.pregen(xp=ok)                                                             # 再開: 未生成の1件だけ(Top1/Top2のうち失敗分)
+        self.assertEqual((len(pre["generated"]), len(pre["reused"]), ok.n), (1, 1, 1))
         self.assertFalse(os.path.exists(fp))
         self.assertTrue(os.path.exists(fp.replace(".json", ".resolved.json")))
-        self.assertEqual(len(p2w.form_grammar_items(self.sd, level="b1b")), 3)
+        self.assertEqual(len(p2w.form_grammar_items(self.sd, level="b1b")), 2)
 
     def test_budget_stop_before_api_keeps_partial_and_never_writes_incomplete_form_data(self):
         self.ensure()
@@ -579,7 +591,8 @@ class T14_FormData(PCase):
         self.prepare()
         b = p2w.form_grammar_bundle(self.sd, level="b1b")
         ex = {i["candidate_id"]: i for i in gr.load_explanations(self.sd)["items"]}
-        self.assertEqual((b["grammar_status"], b["n_not_generated"], b["level"]), ("candidates_available", 0, "b1b"))
+        self.assertEqual((b["grammar_status"], b["n_not_generated"], b["level"]), ("candidates_available", 1, "b1b"))
+        self.assertEqual(len(b["items"]), 2)                                                # Top1/Top2のみ
         for it in b["items"]:
             e = ex[it["candidate_id"]]
             self.assertEqual((it["id"], it["title"], it["explanation_full"], it["explanation_status"], it["explanation_sha256"], it["level"]),
@@ -601,7 +614,7 @@ class T18_StandardLevelAndSectionCheck(PCase):
         paras2 = ["The short story begins here. It was a calm night.", "It was in March that the plan changed. People cheered.", "Nothing else happened that day."]
         r = self.prepare(level="a2", paras=paras2)
         self.assertEqual((r["doc"]["level"], r["review"]["level"], r["review"]["article_key"]["level"]), ("Standard", "Standard", "a2"))
-        self.assertEqual(self.xp.n, len(r["doc"]["candidates"]))
+        self.assertEqual(self.xp.n, min(g.PREGEN_MAX, len(r["doc"]["candidates"])))
         self.decide("pick", sd=self.sd_a2, ids=[self.ids(self.sd_a2)[0]], accept_ai=True)
         out = self.final(level="a2", paras=paras2)
         self.assertEqual((out["path"], out["result"]["level"]), ("v2", "Standard"))
@@ -695,7 +708,7 @@ class T19_PublicBuilderAndKcpCompat(PCase):
         return {"candidate_id": cid, "sentence": c["sentence"], "construct_ja": c["construct_ja"], "explanation_md": md.strip(), "sections": {}, "translation_ja": tr,
                 "ref_ja_at_freeze": None, "source": "form_displayed", "frozen_sha256": g.frozen_sha_of(cid, c["sentence"], md.strip(), tr)}
 
-    def test_frozen_value_wins_over_pregen_and_kcp_v1_is_limited_to_one_item_fail_closed(self):
+    def test_frozen_value_wins_over_pregen_and_two_item_pick_is_rejected(self):
         self.prepare()
         ids = self.ids()
         self.decide("pick", ids=[ids[0]], accept_ai=True)
@@ -715,20 +728,18 @@ class T19_PublicBuilderAndKcpCompat(PCase):
         gr._atomic_json(p2w.RESULT_PATH(self.sd), bad)
         with self.assertRaises(g.Part2Stale):
             self.req()
-        # KCPがv1(単一)のままで2件選定=fail-closed(KCP複数item化は委任_04)
-        self.decide("pick", ids=[ids[0], ids[2]], reason="2件")
-        with self.assertRaises(g.Part2Stale) as cm:
-            self.final()
-        self.assertIn("複数", str(cm.exception))
+        # 2件選定は(KCPの版に関係なく)reviewの段階で拒否される(2026-10-27文法選定仕様)
+        with self.assertRaises(g.Part2ReviewError):
+            self.decide("pick", ids=[ids[0], ids[1]], reason="2件")
 
     def test_kcp_v2_items_api_is_used_when_available(self):
         self.prepare()
         ids = self.ids()
-        self.decide("pick", ids=[ids[2], ids[0]], reason="2件")
-        stub = self._stub([self._frozen_for(ids[0]), self._frozen_for(ids[2])], v2=True)
+        self.decide("pick", ids=[ids[1]], reason="Top2")
+        stub = self._stub([self._frozen_for(ids[1])], v2=True)
         res = self.final()["result"]
-        self.assertEqual([i["translation_source"] for i in res["items"]], ["frozen", "frozen"])
-        self.assertEqual([i["selection"]["candidate_id"] for i in res["items"]], [ids[0], ids[2]])
+        self.assertEqual([i["translation_source"] for i in res["items"]], ["frozen"])
+        self.assertEqual([i["selection"]["candidate_id"] for i in res["items"]], [ids[1]])
         self.req()
         self.assertTrue(stub.verified)
 

@@ -9,7 +9,8 @@ grammar[]は正式Part 2候補が無い限り空(仮データを入れない)。
 実行: .venv\\Scripts\\python.exe docs\\research\\KP-GATE-DROP-BACKFILL-PRODUCTION-01\\tools\\export_form_data_01.py
         --cand <kp_candidates.json> --slug <slug> --level <a2|b1b> --name <表示名> --family <X|Y|Z> --out <out.json>
         [--grammar <grammar_candidates.json>] [--source-kind PRODUCTION_FORMAL_PATH|REPLAY_FROZEN_INITIAL_REAL_BACKFILL] [--run <run名>] [--note-ja <注記>]
-        [--grammar-study-dir <study_dir>]   (Production: 文法のstudy dirから form_grammar_bundle(level) を直接読む。事前生成が不完全/失敗/sha不整合ならデータを出さずエラー[rc=4]。
+        [--grammar-study-dir <study_dir>]   (Production: 文法のstudy dirから form_grammar_bundle(level) を直接読む。提示=AI評価Top1/Top2の最大2件(rank順)・
+                                             grammar_max_select=1・grammar_presented_ids・grammar_candidates_sha256/grammar_text_sha256を出力する。事前生成が不完全/失敗/sha不整合ならデータを出さずエラー[rc=4]。
                                              --grammar-bundle[保存済みbundle json]とは同時に指定できない)
 """
 from __future__ import annotations
@@ -24,6 +25,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.d
 LEVEL_LABEL = {"a2": "Standard", "b1b": "Advanced"}
 DEFAULT_CAP = 12                                   # 2026-10-27 P7/W5'配線(KP_CANDIDATE_MAX 8->12)。docに記録が無い場合の既定
 DEFAULT_CAP_BY_KIND = {"phrase": 7, "word": 5}
+GRAMMAR_PRESENT_MAX = 2        # 文法選定仕様(2026-10-27ユーザー正式決定): AI評価Top1/Top2の最大2件のみ提示(rank順)
+GRAMMAR_MAX_SELECT = 1         # ユーザーは原則1件選択・0件可・2件同時選択禁止(フォームUI/Validatorはこの値を読む)
 
 
 def cap_info(doc: dict) -> tuple:
@@ -190,6 +193,11 @@ def grammar_from_bundle(bundle: dict | None) -> tuple:
     戻り値: (entries, grammar_status|None)。bundle無しは([], None)=従来どおり『要生成』扱い。解説本文が空のitemは捏造せず例外(fail-closed)。"""
     if not bundle:
         return [], None
+    if len(bundle.get("items") or []) > GRAMMAR_PRESENT_MAX:
+        raise ValueError(f"grammar bundle has {len(bundle['items'])} items (> Top1/Top2 present max {GRAMMAR_PRESENT_MAX}); 3rd+ candidates must not be presented")
+    ranks = [it.get("rank") for it in bundle.get("items") or []]
+    if ranks != sorted(ranks):
+        raise ValueError(f"grammar bundle items are not in rank order: {ranks}")
     out = []
     for it in bundle.get("items") or []:
         full = (it.get("explanation_full") or "").strip()
@@ -200,6 +208,15 @@ def grammar_from_bundle(bundle: dict | None) -> tuple:
                     "level": it.get("level"), "rank": it.get("rank"), "ai_recommended": bool(it.get("ai_recommended")), "para": it.get("para"),
                     "feature_class": it.get("feature_class")})
     return out, bundle.get("grammar_status")
+
+
+def grammar_meta_from_study_dir(study_dir: str, level: str) -> dict:
+    """文法候補doc(grammar_candidates.json)の candidates_sha256 / text_sha256(読むだけ。levelはdocのlevel欄と一致を確認)。"""
+    with open(os.path.join(study_dir, "grammar_candidates.json"), encoding="utf-8") as f:
+        d = json.load(f)
+    if d.get("level") != LEVEL_LABEL.get(level):
+        raise ValueError(f"grammar_candidates.json level {d.get('level')!r} != {LEVEL_LABEL.get(level)!r}")
+    return {"candidates_sha256": d.get("candidates_sha256"), "text_sha256": d.get("text_sha256")}
 
 
 def grammar_bundle_from_study_dir(study_dir: str, level: str) -> dict:
@@ -213,7 +230,8 @@ def grammar_bundle_from_study_dir(study_dir: str, level: str) -> dict:
 
 
 def convert(doc: dict, *, slug: str, level: str, name: str, family: str, run: str, source_kind: str, note_ja: str, text_sha256: str | None = None,
-            grammar: list | None = None, cand_path: str | None = None, grammar_status: str | None = None, grammar_source: dict | None = None) -> dict:
+            grammar: list | None = None, cand_path: str | None = None, grammar_status: str | None = None, grammar_source: dict | None = None,
+            grammar_meta: dict | None = None) -> dict:
     cands = sorted(doc.get("candidates") or [], key=lambda c: c.get("ai_rank") or 99)
     es = [entry(c, source_kind) for c in cands]
     bf = doc.get("backfill") or {}
@@ -236,7 +254,12 @@ def convert(doc: dict, *, slug: str, level: str, name: str, family: str, run: st
                      "dropped_by_stage": bf.get("dropped_by_stage") or {}},
         "shortfall": bool(doc.get("shortfall")), "shortfall_detail": sd_out, "shortfall_note_ja": shortfall_note_ja(doc),
         "grammar": grammar or [],
+        "grammar_max_select": GRAMMAR_MAX_SELECT, "grammar_present_max": GRAMMAR_PRESENT_MAX,
+        "grammar_presented_ids": [g["id"] for g in (grammar or [])],
     }
+    if grammar_meta:                              # 文法候補docのsha(KCPの照合・AI島Std/Advの確認に使う。文法側のsha=KP候補docのcandidates_sha256とは別)
+        out["grammar_candidates_sha256"] = grammar_meta.get("candidates_sha256")
+        out["grammar_text_sha256"] = grammar_meta.get("text_sha256")
     w = reason_missing_warning(doc, es)
     if w:
         out["data_warnings"] = [w]
@@ -273,7 +296,7 @@ def main(argv=None) -> int:
     a = ap.parse_args(argv)
     with open(a.cand, encoding="utf-8") as f:
         doc = json.load(f)
-    gram, gstatus, gsrc = [], None, None
+    gram, gstatus, gsrc, gmeta = [], None, None, None
     if a.grammar_study_dir and a.grammar_bundle:
         raise SystemExit("--grammar-study-dir と --grammar-bundle は同時に指定できません(出所を1つにしてください)")
     if a.grammar_study_dir:
@@ -285,6 +308,7 @@ def main(argv=None) -> int:
                              ensure_ascii=False), file=sys.stderr)
             return 4
         gram, gstatus = grammar_from_bundle(bundle)
+        gmeta = grammar_meta_from_study_dir(a.grammar_study_dir, a.level)
         if a.grammar_source_json:
             with open(a.grammar_source_json, encoding="utf-8") as f:
                 gsrc = json.load(f)
@@ -298,7 +322,7 @@ def main(argv=None) -> int:
             with open(a.grammar_source_json, encoding="utf-8") as f:
                 gsrc = json.load(f)
     out = convert(doc, slug=a.slug, level=a.level, name=a.name, family=a.family, run=a.run or os.path.dirname(a.cand), source_kind=a.source_kind,
-                  note_ja=a.note_ja, text_sha256=a.text_sha256, cand_path=a.cand, grammar=gram, grammar_status=gstatus, grammar_source=gsrc)
+                  note_ja=a.note_ja, text_sha256=a.text_sha256, cand_path=a.cand, grammar=gram, grammar_status=gstatus, grammar_source=gsrc, grammar_meta=gmeta)
     with open(a.out, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
     print(json.dumps({"out": a.out, "phrases": len(out["phrases"]), "words": len(out["words"]), "grammar": len(out["grammar"]), "shortfall_note_ja": out["shortfall_note_ja"]}, ensure_ascii=False))

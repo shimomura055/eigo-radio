@@ -45,8 +45,8 @@ SCHEMA_RESULT_V2 = "part2_grammar_v2"
 SCHEMA_REVIEW_V2 = "grammar_human_review_v2"
 SCHEMA_EXPLANATIONS = "grammar_explanations_v1"
 EXPLANATIONS_FILENAME = "grammar_explanations.json"
-PREGEN_MAX = 8                           # 事前生成する候補数の上限(実測最大4)。超過分はskipped_over_capに記録
-GRAMMAR_MAX = 2                          # ユーザー選択の上限(文法は独立枠で最大2件・0件も可)
+PREGEN_MAX = 2                           # 提示=事前生成の対象数(文法選定仕様変更 2026-10-27: Trial-08順位のTop1/Top2のみ。旧8)。3位以降は生成せずskipped_over_capに記録
+GRAMMAR_MAX = 1                          # ユーザー選択の上限(原則1件・0件可・2件同時選択禁止。旧2=撤去。2026-10-27ユーザー正式決定)
 SCHEMA_CANDIDATES = "grammar_candidates_v1"
 SCHEMA_RESULT = "part2_grammar_v1"
 CANDIDATES_FILENAME = "grammar_candidates.json"
@@ -54,7 +54,7 @@ RESULT_FILENAME = "part2_result.json"
 PART2_FILE_STEM = "part2_grammar_sentence_structure"
 MAXOUT_EXTRACT = 13000                   # Trial-07/08のMAXOUT_A
 MAXOUT_EXPLAIN = 6000                    # Trial-07のMAXOUT_B
-TOP_N = 2                                # HR: TOP1/TOP2(ユーザー正式決定)
+TOP_N = 2                                # 提示上限(HR/フォーム/事前生成): TOP1/TOP2(ユーザー正式決定)。選択上限ではない(選択=GRAMMAR_MAX=1)
 
 # ------------------------------------------------------------
 # Prompt(Trial逐語。sha固定。byte一致をtestで固定)
@@ -1435,7 +1435,7 @@ def render_html_block(result: dict, *, include_css: bool = True) -> str:
     if result.get("status") != "SELECTED":
         parts.append(f"<div class='study-item'><p>{html.escape(ZERO_P2, quote=False)}</p></div>")
     else:
-        for it in result_items(result):   # item(<=2)ごとに<div class='study-item'>。<section>と<h3>は1つ
+        for it in result_items(result):   # itemごと(新規確定は<=1。旧2件結果の読取互換)に<div class='study-item'>。<section>と<h3>は1つ
             s, sec = it["selection"], it["sections"]
             dl = [f"<dt>対象となる本文英文</dt><dd>{html.escape(s['sentence'], quote=False)}</dd>"]
             for h in EXPLANATION_HEADINGS:
@@ -1454,7 +1454,7 @@ def compose_study_html(part1_html: str, result: dict) -> str:
 
 # ============================================================
 # GRAMMAR-PREGEN-ALL-LEVELS-01 委任_02(2026-10-27): 全level共通の事前生成核 + v2 schema(契約=docs/research/GRAMMAR-PREGEN-ALL-LEVELS-01/SCHEMA_CONTRACT_01.md)
-# ユーザー正式決定(APPROVED_FOR_PRODUCTION): 候補抽出(Step A'')の直後に全候補(<=PREGEN_MAX)のStep Bを事前生成し、解説全文を見て最大2件(0件可)を選ぶ。
+# ユーザー正式決定(APPROVED_FOR_PRODUCTION): 候補抽出(Step A'')の直後にTop1/Top2(=PREGEN_MAX件)のStep Bだけを事前生成し、Top1/Top2の解説全文を見て原則1件(0件可・2件禁止)を選ぶ(2026-10-27改訂: 旧=全候補<=8・最大2件)。
 # 確定後のfinalizeはLLM 0 call(事前生成物/凍結値から決定論で組立)。Prompt(STEPA/STEPB本文・sha)・eligible7・Trial-08 Tier・TOP_Nの意味は無変更。
 # Step Bの呼出点は pregen_explanations の1か所だけ(Opus O-3: 二重生成防止)。
 # ============================================================
@@ -1617,7 +1617,7 @@ def explanation_sha_by_id(ex: dict | None, ids) -> dict:
     return {i: have[i] for i in ids if i in have}
 
 
-# ---- 選定 v2(最大2件・0件可。top1/top2は単件ショートカット) -------------------------------------
+# ---- 選定 v2(Top1/Top2提示・原則1件・0件可・2件禁止。top1/top2は単件ショートカット) -------------------------------------
 def _pick_ids(doc: dict, review: dict) -> list:
     ch = review.get("choice")
     cands = doc.get("candidates") or []
@@ -1626,16 +1626,16 @@ def _pick_ids(doc: dict, review: dict) -> list:
     else:
         raise Part2ReviewError(f"pick以外はここでは扱いません: {ch!r}")
     if not ids or len(ids) > GRAMMAR_MAX or len(set(ids)) != len(ids):
-        raise Part2ReviewError(f"pickの件数は1〜{GRAMMAR_MAX}件(重複なし)です: {ids}")
+        raise Part2ReviewError(f"文法は{GRAMMAR_MAX}件だけ選べます(2件同時選択は禁止。0件はomit): {ids}")
     shown = {c["candidate_id"] for c in cands[:PREGEN_MAX]}
     bad = [i for i in ids if i not in shown]
     if bad:
-        raise Part2ReviewError(f"選べるのは提示された候補(先頭{PREGEN_MAX}件)だけです: {bad}")
+        raise Part2ReviewError(f"選べるのは提示されたTop1/Top2(先頭{PREGEN_MAX}件)だけです: {bad}")
     return ids
 
 
 def select_from_candidates_v2(doc: dict, review: dict | None, mode) -> dict:
-    """v1のselect_from_candidatesの複数選定版。choice=pick(candidate_ids 1〜2件)を追加し、top1/top2/omit/reselect/reextract・exhausted・ZERO・auto(TOP1のみ)・wait は
+    """v1のselect_from_candidatesの複数選定版。choice=pick(candidate_ids 1件。2件はPart2ReviewError)を追加し、top1/top2/omit/reselect/reextract・exhausted・ZERO・auto(TOP1のみ)・wait は
     v1と同一規則(v1関数へ委譲)。戻り値は v1 と同形 + "selected": [候補...](本文出現順。ZERO/待機は[])。"""
     if review is not None and review.get("choice") == "pick":
         if doc.get("exhausted") or not (doc.get("candidates") or []):
@@ -1658,8 +1658,8 @@ def select_from_candidates_v2(doc: dict, review: dict | None, mode) -> dict:
 
 
 def review_request_v2(doc: dict, ex: dict) -> dict:
-    """er119共通核(kind="grammar")へ渡す提示内容(v2): 全候補(<=PREGEN_MAX)の文法名+解説全文。exは検証済み(validate_explanations)の事前生成物。
-    8件を超えた分は n_not_generated として件数だけ示す(解説は生成していない)。AI推奨=rank1。"""
+    """er119共通核(kind="grammar")へ渡す提示内容(v2): Top1/Top2(<=PREGEN_MAX=2)の文法名+解説全文(順位順)。exは検証済み(validate_explanations)の事前生成物。
+    3位以降は n_not_generated として件数だけ示す(非表示・解説は生成していない)。AI推奨=rank1。"""
     cands = doc["candidates"]
     shown = cands[:PREGEN_MAX]
     by_ex = {it["candidate_id"]: it for it in ex.get("items") or []}
@@ -1925,6 +1925,8 @@ def _require_fresh_part2_v2(result: dict | None, paragraphs: list, label: str, *
     if result.get("status") != "SELECTED":
         raise Part2Stale(f"{w}Part 2のstatusが確定(選定)と一致しません: {result.get('status')}。次の一手: {nxt}")
     items = result.get("items") or []
+    if len(items) > GRAMMAR_MAX:
+        raise Part2Stale(f"{w}Part 2の結果の文法が{len(items)}件です(文法選定仕様 2026-10-27: 最大{GRAMMAR_MAX}件。旧2件結果は再選定が必要)。次の一手: {nxt}")
     if len(items) != len(cands):
         raise Part2Stale(f"{w}Part 2の結果の件数({len(items)})が確定({len(cands)}件)と一致しません。次の一手: {nxt}")
     shas = (grammar_review.get("decision") or {}).get("explanation_sha_by_id") or {}

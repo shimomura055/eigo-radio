@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """GRAMMAR-PREGEN-ALL-LEVELS-01 委任_04(F-5/F-6): 確定内容保護(er128)への文法v2接続のtest。全てmock・API 0(実client生成はblock)。
-対象: cmd_from_formの文法照合(id/title/解説全文バイト一致/件数<=2/重複・不一致=ISSUE rc=4で何も書かない)・0件=omit+文法なしの確定記録・2件の確定と凍結items[]・
+対象: cmd_from_formの文法照合(id/title/解説全文バイト一致/件数<=1[2026-10-27文法選定仕様: 2件同時選択禁止]/Top1・Top2の提示範囲/重複・不一致=ISSUE rc=4で何も書かない)・0件=omit+文法なしの確定記録・1件の確定と凍結items[]・
       level別sidecar(Std/Adv)・level不一致fail-closed・事前生成不完全/失敗のfail-closed・呼出順(検証->KPロック->文法review->sidecar->KPレコード)と冪等・
-      v1(sidecar/凍結)読取互換・G4(2件・ZERO矛盾・id集合)・guard_grammar複数id・revoke後の再確認で古い凍結を退避・b1b既定値/discover_dirs(run)[0]の撤去。
+      v1(sidecar/凍結)読取互換・G4(ZERO矛盾・id集合)・guard_grammar・revoke後の再確認で古い凍結を退避・b1b既定値/discover_dirs(run)[0]の撤去。
 設計: docs/research/GRAMMAR-PREGEN-ALL-LEVELS-01/{SCHEMA_CONTRACT_01,IMPLEMENTATION_04}.md。"""
 from __future__ import annotations
 
@@ -83,57 +83,57 @@ class GBase(FormHelpers):
         return p2w.finalize_stage(self.sdir(level), level=level, paragraphs=PARAS, label=LABEL, **kw)
 
 
-class T1_TwoGrammar(GBase):
-    def test_two_grammar_confirm_writes_v2_sidecar_review_and_record(self):
+class T1_OneGrammar(GBase):
+    def test_one_grammar_confirm_writes_v2_sidecar_review_and_record(self):
         with Env(self.tmp) as env:
             self.prep_grammar()
             self._gen(env)
-            gm = self.gram(pick=(2, 0))                                         # クリック順(AI推奨が後)を逆にしても本文出現順へ正規化
+            gm = self.gram(pick=(1,))                                           # Top2を1件選ぶ
             out = self.form(env, gm)
-            self.assertEqual(out["grammar"], 2)
+            self.assertEqual(out["grammar"], 1)
             rec = self.rec()
-            self.assertEqual((rec["grammar"]["count"], rec["grammar"]["level"], rec["grammar"]["schema"]), (2, "b1b", cc.SCHEMA_GRAMMAR_V2))
+            self.assertEqual((rec["grammar"]["count"], rec["grammar"]["level"], rec["grammar"]["schema"]), (1, "b1b", cc.SCHEMA_GRAMMAR_V2))
             side = jl(os.path.join(self.sd, cc.FILE_GRAMMAR))
             self.assertEqual((side["schema"], side["level"], side["confirmation_id"]), (cc.SCHEMA_GRAMMAR_V2, "b1b", rec["confirmation_id"]))
             self.assertEqual([i["id"] for i in side["items"]], [x["id"] for x in gm])
             self.assertEqual(side["explanation_sha_by_id"], {i["id"]: i["explanation_sha256"] for i in side["items"]})
             self.assertTrue(all(i["explanation_status"] == "provided" and i["explanation_sha256"] for i in side["items"]))
             self.assertEqual(rec["grammar"]["sidecar_sha256"], side["sidecar_sha256"])
+            top2 = [c["candidate_id"] for c in gr.load_candidates(self.sd)["candidates"][:2]]
+            self.assertEqual((side["status"], side["presented_ids"], side["max_select"]), ("confirmed", top2, 1))     # 提示=Top1/Top2・選択上限1
             review = gr.load_review(self.sd)
             self.assertEqual((review["status"], review["selection"]["choice"], review["decision"]["channel"]), (rv.ST_REVIEWED, "pick", "form"))
             self.assertEqual(sorted(review["selection"]["candidate_ids"]), sorted(x["id"] for x in gm))
-            self.assertEqual(len(review["selection"]["candidate_ids"]), 2)
-            self.assertEqual(set(review["decision"]["explanation_sha_by_id"]) >= {x["id"] for x in gm}, True)
+            self.assertEqual(len(review["selection"]["candidate_ids"]), 1)
+            self.assertEqual(set(review["decision"]["explanation_sha_by_id"]), set(top2))
             st = cc.grammar_state(self.sd)
             self.assertEqual(sorted(cc._side_ids(st)), sorted(x["id"] for x in gm))
             self.assertEqual(st["level"], "b1b")
 
-    def test_finalize_freezes_two_items_without_step_b_and_g4_binds_both(self):
+    def test_finalize_freezes_the_item_without_step_b_and_g4_binds_it(self):
         with Env(self.tmp) as env:
             self.prep_grammar()
             n_before = self.xp.n
-            self.form(env, self.gram(pick=(0, 1)))
+            self.form(env, self.gram(pick=(0,)))
             out = self.finalize()
             self.assertEqual(self.xp.n, n_before)                                # 確定後にStep Bは呼ばれない(事前生成物=フォームで見せた解説を使う)
             res = out["result"]
-            self.assertEqual((res["schema"], res["status"], len(res["items"])), (g.SCHEMA_RESULT_V2, "SELECTED", 2))
+            self.assertEqual((res["schema"], res["status"], len(res["items"])), (g.SCHEMA_RESULT_V2, "SELECTED", 1))
             fzj = jl(os.path.join(self.sd, cc.FILE_GRAMMAR_FROZEN))
-            self.assertEqual((fzj["schema"], len(fzj["items"])), (cc.SCHEMA_GRAMMAR_FROZEN_V2, 2))
+            self.assertEqual((fzj["schema"], len(fzj["items"])), (cc.SCHEMA_GRAMMAR_FROZEN_V2, 1))
             self.assertTrue(all(i["source"] == "form_displayed" for i in fzj["items"]))
             self.assertEqual(sorted(i["candidate_id"] for i in fzj["items"]), sorted(i["selection"]["candidate_id"] for i in res["items"]))
             self.assertEqual([f["frozen_sha256"] for f in cc.load_frozen_grammar_items(self.sd)], [i["frozen_sha256"] for i in fzj["items"]])
             cc.verify_part2_items(self.sd, res)                                  # G4 PASS
-            with self.assertRaises(rv.KpReviewError):                            # v1単一APIは2件で黙って先頭を返さない
-                cc.load_frozen_grammar(self.sd)
-            # 改変の検出(2件のどちらでも)
-            for k in (0, 1):
-                bad = json.loads(json.dumps(res))
-                bad["items"][k]["explanation_md"] += "\n(改変)"
-                with self.assertRaises(rv.ConfirmedContentIntegrityViolation):
-                    cc.verify_part2_items(self.sd, bad)
+            self.assertEqual(cc.load_frozen_grammar(self.sd)["candidate_id"], res["items"][0]["selection"]["candidate_id"])   # v1単一API(1件なら返す)
+            # 改変の検出
+            bad = json.loads(json.dumps(res))
+            bad["items"][0]["explanation_md"] += "\n(改変)"
+            with self.assertRaises(rv.ConfirmedContentIntegrityViolation):
+                cc.verify_part2_items(self.sd, bad)
             one = json.loads(json.dumps(res))
-            one["items"] = one["items"][:1]
-            with self.assertRaises(rv.ConfirmedContentIntegrityViolation):       # 確定2件が結果1件に減った
+            one["items"] = []
+            with self.assertRaises(rv.ConfirmedContentIntegrityViolation):       # 確定1件が結果0件に減った
                 cc.verify_part2_items(self.sd, one)
             zero = {"status": "ZERO", "items": []}
             with self.assertRaises(rv.ConfirmedContentIntegrityViolation):       # 確定した文法とZEROの矛盾
@@ -143,7 +143,7 @@ class T1_TwoGrammar(GBase):
             with self.assertRaises(rv.ConfirmedContentIntegrityViolation):
                 cc.verify_part2_items(self.sd, sw)
             # 凍結ファイルの書換え
-            fzj["items"][1]["explanation_md"] = "書換え"
+            fzj["items"][0]["explanation_md"] = "書換え"
             jd(os.path.join(self.sd, cc.FILE_GRAMMAR_FROZEN), fzj)
             with self.assertRaises(rv.ConfirmedContentIntegrityViolation):
                 cc.load_frozen_grammar_items(self.sd)
@@ -151,14 +151,14 @@ class T1_TwoGrammar(GBase):
     def test_second_finalize_is_pure_reuse_and_wiring_uses_the_four_functions(self):
         with Env(self.tmp) as env:
             self.prep_grammar()
-            self.form(env, self.gram(pick=(0, 1)))
+            self.form(env, self.gram(pick=(0,)))
             for fn in ("load_frozen_grammar_items", "freeze_from_sidecar_items", "freeze_part2_result_items", "verify_part2_items"):
                 self.assertTrue(callable(getattr(cc, fn)), fn)
             self.finalize()
             before = rd(os.path.join(self.sd, cc.FILE_GRAMMAR_FROZEN))
             self.finalize()
             self.assertEqual(rd(os.path.join(self.sd, cc.FILE_GRAMMAR_FROZEN)), before)   # 凍結は上書きされない
-            self.assertEqual(self.xp.n, 3)
+            self.assertEqual(self.xp.n, 2)                                       # 事前生成はTop1/Top2の2回だけ
 
 
 class T2_ZeroGrammar(GBase):
@@ -242,8 +242,14 @@ class T3_IssueOnMismatch(GBase):
         gm[0]["id"] = "g_unknown"
         self._issue(gm, "id")
 
-    def test_more_than_two_is_issue(self):
-        self._issue(self.gram(pick=(0, 1, 2)), "count")
+    def test_two_grammar_is_issue_simultaneous_selection_forbidden(self):
+        doc = self._issue(self.gram(pick=(0, 1)), "count")                        # Top1+Top2の2件同時選択は禁止
+        self.assertTrue(any("1件" in x for x in doc["proposal"]), doc["proposal"])
+
+    def test_third_ranked_candidate_is_not_presented_so_it_is_issue(self):
+        third = gr.load_candidates(self.sd)["candidates"][2]
+        item = {"id": third["candidate_id"], "title": third["construct_ja"], "explanation_full": "【日本語訳】\nx", "explanation_status": "provided", "example": third["sentence"]}
+        self._issue([item], "id(提示範囲)")
 
     def test_duplicate_id_is_issue(self):
         gm = self.gram(pick=(0,))
@@ -339,7 +345,7 @@ class T5_OrderAndIdempotency(GBase):
         with Env(self.tmp) as env:
             self.prep_grammar()
             self._gen(env)
-            gm = self.gram(pick=(0, 1))
+            gm = self.gram(pick=(0,))
             with mock.patch.object(cc, "_validate_form_grammar", side_effect=lambda *a, **k: (order.append("validate"), orig_validate(*a, **k))[1]), \
                     mock.patch.object(rv, "op_select", side_effect=lambda *a, **k: (order.append("kp_select"), orig_sel(*a, **k))[1]), \
                     mock.patch.object(gr, "apply_form_selection", side_effect=lambda *a, **k: (order.append("grammar_review"), orig_apply(*a, **k))[1]), \
@@ -352,7 +358,7 @@ class T5_OrderAndIdempotency(GBase):
         with Env(self.tmp) as env:
             self.prep_grammar()
             self._gen(env)
-            gm = self.gram(pick=(0, 1))
+            gm = self.gram(pick=(0,))
             with mock.patch.object(cc, "save_record", side_effect=RuntimeError("simulated crash before commit")):
                 with self.assertRaises(RuntimeError):
                     self.form(env, gm)
@@ -360,10 +366,10 @@ class T5_OrderAndIdempotency(GBase):
             rev1 = gr.load_review(self.sd)["revision"]
             self.assertEqual(gr.load_review(self.sd)["status"], rv.ST_REVIEWED)
             out = self.form(env, gm)                                               # 同じ入力の再送
-            self.assertEqual(out["grammar"], 2)
+            self.assertEqual(out["grammar"], 1)
             self.assertEqual(gr.load_review(self.sd)["revision"], rev1)           # 文法reviewは変更されない(冪等)
             self.assertIsNotNone(self.rec())
-            self.assertEqual(self.rec()["grammar"]["count"], 2)
+            self.assertEqual(self.rec()["grammar"]["count"], 1)
 
     def test_grammar_apply_failure_writes_no_record(self):
         with Env(self.tmp) as env:
@@ -392,8 +398,8 @@ class T6_Levels(GBase):
             self.prep_grammar("b1b")
             self.prep_grammar("a2")
             adv_before = gr.load_review(self.sd)["revision"]
-            out = self.form(env, self.gram("a2", pick=(0, 1)), level="a2", cat1=(1, 2, 3), cat2=())
-            self.assertEqual(out["grammar"], 2)
+            out = self.form(env, self.gram("a2", pick=(0,)), level="a2", cat1=(1, 2, 3), cat2=())
+            self.assertEqual(out["grammar"], 1)
             rec = cc.load_record(self.kp_dir_a2)
             self.assertEqual((rec["grammar"]["level"], rec["grammar"]["path_rel"]), ("a2", "a2/study_text/confirmed_grammar.json"))
             self.assertEqual(jl(os.path.join(self.sd_a2, cc.FILE_GRAMMAR))["level"], "a2")
@@ -403,7 +409,7 @@ class T6_Levels(GBase):
             st = cc.grammar_state(self.sd_a2)
             self.assertEqual(st["level"], "a2")
             res = self.finalize("a2")["result"]
-            self.assertEqual(len(res["items"]), 2)
+            self.assertEqual(len(res["items"]), 1)
             cc.verify_part2_items(self.sd_a2, res)
 
     def test_sidecar_of_other_level_is_integrity(self):
@@ -496,14 +502,14 @@ class T7b_MalformedAndRebind(GBase):
     def test_text_change_rebind_checks_every_confirmed_grammar_sentence(self):
         with Env(self.tmp) as env:
             self.prep_grammar()
-            self.form(env, self.gram(pick=(0, 1)))
+            self.form(env, self.gram(pick=(0,)))
             from er119_test_support_01 import ARTICLE
             new_text = ARTICLE + "\n\nAn extra closing paragraph is appended here."
             msg = cc.stale_or_rebind(self.kp_dir, new_text, "f" * 64)
             self.assertIsNotNone(msg)
             self.assertNotEqual(msg, "REBOUND")                                          # 確定した文法の英文が新本文に無い=黙って再バインドしない
             diffs = jl(cc.paths_of(self.kp_dir)["issue_json"])["diffs"]
-            self.assertEqual(sorted(d["candidate_id"] for d in diffs if d["field"] == "grammar.sentence"), sorted(x["id"] for x in self.gram(pick=(0, 1))))
+            self.assertEqual(sorted(d["candidate_id"] for d in diffs if d["field"] == "grammar.sentence"), sorted(x["id"] for x in self.gram(pick=(0,))))
             self.assertEqual(self.rec()["state"], cc.STATE_LIVE)                         # 確定内容は変更しない
 
 
@@ -517,15 +523,15 @@ class T8_Reconfirm(GBase):
             self.assertIsNotNone(cc.load_frozen_grammar_items(self.sd))
             cc.cmd_revoke(self.run_dir, "b1b", "human", self.uref, "選び直す")
             self.assertIsNone(cc.grammar_state(self.sd))                              # 取消後は保護なし
-            out = self.form(env, self.gram(pick=(1, 2)))
-            self.assertEqual(out["grammar"], 2)
+            out = self.form(env, self.gram(pick=(1,)))
+            self.assertEqual(out["grammar"], 1)
             self.assertNotEqual(self.rec()["confirmation_id"], old_conf)
             fzs = [f for f in os.listdir(self.sd) if f.startswith("confirmed_grammar_frozen")]
             self.assertTrue(any("RECONFIRM_SUPERSEDED" in f for f in fzs), fzs)       # 古い凍結は退避(INTEGRITY化しない)
             self.assertNotIn(cc.FILE_GRAMMAR_FROZEN, fzs)
             res = self.finalize()["result"]
             self.assertEqual(sorted(i["selection"]["candidate_id"] for i in res["items"]),
-                             sorted(x["id"] for x in self.gram(pick=(1, 2))))
+                             sorted(x["id"] for x in self.gram(pick=(1,))))
             cc.verify_part2_items(self.sd, res)
 
 
@@ -533,29 +539,30 @@ class T9_GuardGrammar(GBase):
     def test_guard_requires_the_exact_confirmed_set(self):
         with Env(self.tmp) as env:
             self.prep_grammar()
-            gm = self.gram(pick=(0, 1))
+            gm = self.gram(pick=(0,))
             self.form(env, gm)
             ids = [x["id"] for x in gm]
             cc.guard_grammar(self.sd, "x", candidate_ids=ids)                          # 同じ集合=許可
-            cc.guard_grammar(self.sd, "x", candidate_ids=list(reversed(ids)))
-            for bad in ([ids[0]], [ids[0], "g_other"], [], ids + ["g_other"]):
+            cc.guard_grammar(self.sd, "x", candidate_id=ids[0])                        # 確定1件と同じtop1=許可
+            for bad in (["g_other"], [ids[0], "g_other"], [], ids + ["g_other"]):
                 with self.assertRaises(rv.ConfirmedContentLocked):
                     cc.guard_grammar(self.sd, "x", candidate_ids=bad)
-            with self.assertRaises(rv.ConfirmedContentLocked):                         # 確定2件のうち1件だけを選ぶtop1は書換え
-                cc.guard_grammar(self.sd, "x", candidate_id=ids[0])
+            with self.assertRaises(rv.ConfirmedContentLocked):                         # 別の1件を選ぶのは書換え
+                cc.guard_grammar(self.sd, "x", candidate_id="g_other")
             with self.assertRaises(rv.ConfirmedContentLocked):
                 cc.guard_grammar(self.sd, "reselect")
 
     def test_decide_same_set_is_allowed_other_is_locked(self):
         with Env(self.tmp) as env:
             self.prep_grammar()
-            gm = self.gram(pick=(0, 1))
+            gm = self.gram(pick=(0,))
             self.form(env, gm)
             sha = gr.load_candidates(self.sd)["candidates_sha256"]
             ids = [x["id"] for x in gm]
+            other = [c["candidate_id"] for c in gr.load_candidates(self.sd)["candidates"][:2] if c["candidate_id"] not in ids]
             gr.op_decide(self.sd, choice="pick", ids=ids, candidates_sha256=sha, reason="確定の反映", by="human")
             with self.assertRaises(rv.ConfirmedContentLocked):
-                gr.op_decide(self.sd, choice="pick", ids=ids[:1], candidates_sha256=sha, reason="x", by="human")
+                gr.op_decide(self.sd, choice="pick", ids=other, candidates_sha256=sha, reason="x", by="human")
             with self.assertRaises(rv.ConfirmedContentLocked):
                 gr.op_decide(self.sd, choice="omit", reason="x", candidates_sha256=sha, by="human")
 
@@ -595,10 +602,14 @@ class T11_Cli(GBase):
         self.assertIn("(Standard)", out)
         self.assertNotIn("(Advanced)", out)
         ids = [c["candidate_id"] for c in gr.load_candidates(self.sd_a2)["candidates"]]
-        rc, out, err = self.run_cli(["grammar-select", "--run", self.run_dir, "--level", "a2", "--choice", "pick", "--ids", f"{ids[2]},{ids[0]}", "--reason", "2件選ぶ",
+        rc, out, err = self.run_cli(["grammar-select", "--run", self.run_dir, "--level", "a2", "--choice", "pick", "--ids", f"{ids[1]},{ids[0]}", "--reason", "2件選ぶ",
+                                     "--candidates-sha", self.sha("a2"), "--by", "t"])
+        self.assertEqual(rc, 2)                                                           # 2件同時選択は禁止(状態不変)
+        self.assertEqual(gr.load_review(self.sd_a2)["status"], rv.ST_PENDING)
+        rc, out, err = self.run_cli(["grammar-select", "--run", self.run_dir, "--level", "a2", "--choice", "pick", "--ids", ids[1], "--reason", "Top2を選ぶ",
                                      "--candidates-sha", self.sha("a2"), "--by", "t"])
         self.assertEqual(rc, 0, err)
-        self.assertEqual(sorted(gr.load_review(self.sd_a2)["selection"]["candidate_ids"]), sorted([ids[0], ids[2]]))
+        self.assertEqual(gr.load_review(self.sd_a2)["selection"]["candidate_ids"], [ids[1]])
         self.assertEqual(gr.load_review(self.sd)["status"], rv.ST_PENDING)              # Advは触られない
 
     def test_pick_requires_ids_and_ids_only_for_pick(self):
@@ -649,16 +660,16 @@ class T11_Cli(GBase):
             rc, out, err = self.run_cli(["grammar-pregen", "--run", self.run_dir, "--level", "b1b"])
             self.assertEqual(rc, 0, err)
             res = json.loads(out)
-            self.assertEqual((len(res["generated"]), res["reused"], res["confirmed"]), (3, [], False))
+            self.assertEqual((len(res["generated"]), res["reused"], res["confirmed"]), (2, [], False))   # Top1/Top2の2件だけ
             self.assertIn("grammar-show", res["next"])
-            self.assertEqual(mk.CALLS.count("explain"), 3)
+            self.assertEqual(mk.CALLS.count("explain"), 2)
             rc, out, err = self.run_cli(["grammar-pregen", "--run", self.run_dir, "--level", "b1b"])
             self.assertEqual(rc, 0, err)
-            self.assertEqual((json.loads(out)["generated"], len(json.loads(out)["reused"])), ([], 3))
-            self.assertEqual(mk.CALLS.count("explain"), 3)                                 # 再実行はAPI 0
+            self.assertEqual((json.loads(out)["generated"], len(json.loads(out)["reused"])), ([], 2))
+            self.assertEqual(mk.CALLS.count("explain"), 2)                                 # 再実行はAPI 0
         p2w.form_grammar_bundle(self.sd, level="b1b")                                     # 事前生成が揃えばフォームデータも出る
 
-    def test_pregen_all_candidates_is_explicit_opt_in_for_auto_adopted_run(self):
+    def test_pregen_all_candidates_flag_is_removed_and_auto_adopted_run_pregens_selected_only(self):
         self.prep_grammar(pregen=False)
         rv.add_declaration(run_dirs=[self.run_dir], by="t", reason="r")
         gr.ensure_grammar_review(self.sd, level="b1b", run_dir=self.run_dir, family="x", slug="coffee", paragraphs=PARAS, label=LABEL, extract_call_fn=mk.mock_extract_call_fn)
@@ -668,8 +679,8 @@ class T11_Cli(GBase):
             rc, out, err = self.run_cli(["grammar-pregen", "--run", self.run_dir, "--level", "b1b"])
             self.assertEqual((rc, mk.CALLS.count("explain"), json.loads(out)["confirmed"]), (0, 1, True))   # 既定=選定済み(TOP1)のみ
             rc, out, err = self.run_cli(["grammar-pregen", "--run", self.run_dir, "--level", "b1b", "--all-candidates"])
-            self.assertEqual((rc, mk.CALLS.count("explain")), (0, 3))                       # 明示opt-inで残りの候補
-            self.assertIn("grammar-show", json.loads(out)["next"])
+            self.assertEqual(rc, 2)                                                         # 旧 --all-candidates(全候補opt-in)は撤去: argparseが拒否
+            self.assertEqual(mk.CALLS.count("explain"), 1)                                 # 追加の課金なし
 
     def test_pregen_refuses_under_stop_and_ids_without_core_support(self):
         self.prep_grammar(pregen=False)
@@ -725,11 +736,15 @@ class T13_Exporter(GBase):
         for e, b in zip(doc["grammar"], bundle["items"]):
             self.assertEqual((e["candidate_id"], e["title"], e["body"], e["explanation_full"], e["explanation_sha256"], e["level"], e["explanation_status"]),
                              (b["candidate_id"], b["title"], b["explanation_full"], b["explanation_full"], b["explanation_sha256"], "Standard", "provided"))
-        self.assertEqual([e["ai_recommended"] for e in doc["grammar"]], [True, False, False])
+        self.assertEqual([e["ai_recommended"] for e in doc["grammar"]], [True, False])           # Top1/Top2のみ
+        self.assertEqual([e["rank"] for e in doc["grammar"]], [1, 2])
+        gd = gr.load_candidates(self.sd_a2)
+        self.assertEqual((doc["grammar_max_select"], doc["grammar_present_max"], doc["grammar_presented_ids"]), (1, 2, [c["candidate_id"] for c in gd["candidates"][:2]]))
+        self.assertEqual((doc["grammar_candidates_sha256"], doc["grammar_text_sha256"]), (gd["candidates_sha256"], gd["text_sha256"]))   # AI島Std/Advの照合用
         # フォーム確定側(cmd_from_form)と同じ契約: exporterが出したgrammar[]のid/title/explanation_fullでそのまま照合を通る
         with Env(self.tmp) as env:
-            gm = [{k: e[k] for k in ("id", "title", "explanation_full", "explanation_status", "example")} for e in doc["grammar"][:2]]
-            self.assertEqual(self.form(env, gm, level="a2", cat1=(1, 2, 3), cat2=())["grammar"], 2)
+            gm = [{k: e[k] for k in ("id", "title", "explanation_full", "explanation_status", "example")} for e in doc["grammar"][:1]]
+            self.assertEqual(self.form(env, gm, level="a2", cat1=(1, 2, 3), cat2=())["grammar"], 1)
 
     def test_incomplete_pregen_writes_nothing_and_returns_4(self):
         self.prep_grammar("b1b", pregen=False)
@@ -787,7 +802,7 @@ class T10_Static(unittest.TestCase):
             self.assertIn("level", m.group(1))
 
     def test_grammar_max_matches_core_and_four_contract_functions_exist(self):
-        self.assertEqual(cc.GRAMMAR_MAX, g.GRAMMAR_MAX)
+        self.assertEqual((cc.GRAMMAR_MAX, g.GRAMMAR_MAX, g.PREGEN_MAX, g.TOP_N), (1, 1, 2, 2))
         for fn in ("load_frozen_grammar_items", "freeze_from_sidecar_items", "freeze_part2_result_items", "verify_part2_items"):
             self.assertTrue(inspect.isfunction(getattr(cc, fn)))
         self.assertEqual(list(inspect.signature(cc.freeze_from_sidecar_items).parameters), ["study_dir", "selected_candidates"])
