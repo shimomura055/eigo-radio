@@ -27,3 +27,11 @@
 - er129 test `test_u8_no_production_module_imports_er129`は設計上の利用者(er130/er131/er132+配線先のGate/pages module)をallowlistへ更新する(「公開ページ生成器・TTS・ASR・KP表示・Promptがer129/er131をimportしない」という意図は維持し、allowlistを明示列挙)。
 - check_page(public)への混入検知(`er131.check_page_fhr_contamination`)の配線は、Z公開ページ注記撤去(F-9)と同じcommitで入れる(先に入れると猿の手Stdの既存注記で即NG)。既存公開`user_test/family_z_monkeys_paw_01/standard.html`は本commitでは再生成しない(候補ページは委任_12)ので、check_pageは**新規生成ページにのみ**適用されることを確認し、既存公開HTMLの一括検査はB7/B8で扱う。
 - 最終Human報告の運用: E2E_STAGESに入れない。runner完了後の手順(CLI 1行)を成果物に記載。
+
+## 改定(Fable、2026-10-28 ユーザー原文_02 `…_USER_02.md` §3・§4・§5・§7。APPROVED_FOR_PRODUCTION)
+**「報告資料」=現在の試聴・確認フォーム(`user_test/`配下の試聴ページ)**と定義された(全Family・全レベル共通。将来のエンドユーザー向けアプリ表示は未決定)。したがって本委任の配線内容4・5を次のとおり置換し、`final_human_report/`(er131)は「試聴ページ内の表示部品」として再利用する(別dirの独立資料は補助扱い。重複生成は不要、同一描画部品を使う)。
+- **4'(置換)**: Z公開(試聴)ページのLR/Fallback由来の旧注記(`er063:2464-2468`)は、新しい共通表示部品(下記)に**置き換える**(撤去して終わりにしない)。
+- **5'(置換)**: X試聴ページの事後試聴リストLR行は非表示にせず、共通表示部品(赤)で表示する。audience区分による出し分けはしない。
+- **新規6'**: 全Family(X/Y/Z+A/B/C等の既存Familyの試聴ページ)・全レベルの試聴ページに、er129 ledger由来の共通表示部品(er131の描画関数を部品化して流用)を配線: (①)**Chunk境界 `⏸`**=実際の分割記録(X chunk plan/Y chunk/Z `segment_plan`・`chunk_tts_evidence`)に基づき、本文表示の実際の境界位置にのみ表示(Chunk分割方法・語数・追加ポーズは不変。chunk記録がないrun/Familyは表示なし)。(②)LR=変更箇所を赤(変更前・変更後の英文、適用範囲)。(③)Fallback=適用テキスト全体を濃青+Style名注記+適用範囲。英語・日本語の全Role対象。LR+Fallback重複は双方識別可能。表示は「何が発動したか/何が変わったか/どこに適用されたか」の3点。制作本文・TTS入力・ASR正解・Style Promptには一切混入しない(混入検知testの対象から試聴ページHTMLは外し、TTS入力・ASR・Prompt・KP学習用表示・study_textに限定する)。
+- 受入(原文_02 §7-3〜6): 全Family・全レベルの試聴ページで⏸/赤/青が実際の記録と一致、正式経路・再生成・再開経路で維持(`pages`stage再実行で同一結果)。確認できないFamily/Levelは「未確認」と明記しPRODUCTION_WIREDにしない。
+- 既存公開ページの再生成は本commitでは行わず(pages stage再実行はB7/B8で記事単位に実施)、新規生成経路の配線とtest(保存run読取で描画)まで。
