@@ -111,6 +111,7 @@ class TestXRunnerMain75(xw.XMainBase):
         self.tts.assert_not_called()
         _invariants(self, doc)
         rv.op_select(self.kp_dir, kp_ranks=[1, 2, 3], vocab_ranks=None, by="human")
+        xw._decide_grammar_a2(self.out)    # 全level化: Standardの文法(Part 2)も同じ待機点で確認する
         rc, out = self.main("scaffold")
         self.assertIsNone(rc)
         self.assertEqual(rv.require_final_consistent(self.kp_dir, level="a2")["status"], rv.ST_REVIEWED)

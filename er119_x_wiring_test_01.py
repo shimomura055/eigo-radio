@@ -37,6 +37,13 @@ def _setup():
     return work, src, out
 
 
+def _decide_grammar_a2(out_dir: str, by: str = "human"):
+    """Standard(a2)の文法(Part 2)を『AI推奨1位を採用』で確定する(KP選定と同じ待機点。GRAMMAR-PREGEN-ALL-LEVELS-01 委任_03)。"""
+    import er119_grammar_review_01 as gr
+    sd = f"{out_dir}/a2/study_text"
+    return gr.op_decide(sd, choice="top1", accept_ai=True, candidates_sha256=gr.load_candidates(sd)["candidates_sha256"], by=by)
+
+
 class XMainBase(unittest.TestCase):
     def setUp(self):
         self._cwd = os.getcwd()
@@ -47,6 +54,15 @@ class XMainBase(unittest.TestCase):
         self.env = Env(self.out)
         self.env.__enter__()
         self.addCleanup(self.env.__exit__)
+        # GRAMMAR-PREGEN-ALL-LEVELS-01 委任_03: 文法(Part 2)は両level(Standard=a2も)で本文確定後に必ず走る。共有NG storeをtmpへ隔離し、Step A''/Step Bのclient経路をAPI 0のmockへ置換する
+        import er120_part2_grammar_production_01 as _g2
+        import er120_part2_mock_01 as _pm
+        _store = tempfile.mkdtemp()
+        self.addCleanup(lambda: __import__("shutil").rmtree(_store, ignore_errors=True))
+        for _p in (mock.patch.object(rv, "STORE_ROOT", os.path.join(_store, "store")),
+                   mock.patch.object(_g2, "_resolve_call_fn", lambda call_fn, client, model, max_out: call_fn or _pm.factory(client, model, max_out))):
+            _p.start()
+            self.addCleanup(_p.stop)
         self.tts, self.asm, self.scaf = mock.Mock(), mock.Mock(), mock.Mock(return_value={})
         self.kp_dir = f"{self.out}/a2/key_phrases"
 
@@ -102,6 +118,7 @@ class TestXWaitAndResume(XMainBase):
     def test_select_then_rerun_finalizes_and_proceeds(self):
         self.main("scaffold")
         rv.op_select(self.kp_dir, kp_ranks=[1, 2, 3], vocab_ranks=None, by="human")
+        _decide_grammar_a2(self.out)   # 全level化: Standardの文法(Part 2)も同じ待機点で確認する
         n = self.env.total_llm_calls()
         rc, out = self.main("scaffold")
         self.assertIsNone(rc)

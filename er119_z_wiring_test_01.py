@@ -82,7 +82,7 @@ class TestZWait(ZBase):
         with self.assertRaises(r.FamilyZKpReviewPending) as cm:
             _quiet(r.run_stage, self.ctx, "kp")
         self.assertEqual(sorted(p["level"] for p in cm.exception.pending if p.get("kind") != "grammar"), ["a2", "b1b"])   # 両レベルの候補を先に作ってからまとめて1回待機
-        self.assertEqual([p["kind"] for p in cm.exception.pending if p.get("kind") == "grammar"], ["grammar"])        # 委任_03: 文法(Part 2)も同じ1回の待機に載る
+        self.assertEqual([p["kind"] for p in cm.exception.pending if p.get("kind") == "grammar"], ["grammar", "grammar"])   # 全level化(委任_03): 文法(Part 2)はAdv/Stdの2件が同じ1回の待機に載る
         for lv in ("b1b", "a2"):
             self.assertEqual(rv.load_review(self.src[lv])["status"], rv.ST_PENDING)
             self.assertTrue(os.path.exists(rv.paths(self.src[lv])["request"]))
@@ -93,7 +93,9 @@ class TestZWait(ZBase):
         self.assertEqual(self.kp_calls(), 2)
         # 有料の後続(Adv解説・Part 1・TTS)のmock API呼出は0: kp stage開始後に増えたcallは候補生成(kp)だけ
         after = [json.loads(l)["kind"] for l in rd(self.ctx.mock_api.path).splitlines()][n_before:]
-        self.assertEqual(set(after), {"kp", "part2_extract"}, after)   # 委任_03: 文法の候補抽出(Step A'')も確認前に1回走る。Step B(解説)は走らない
+        # 全level化(GRAMMAR-PREGEN-ALL-LEVELS-01): 文法の候補抽出(Step A'')と全候補の解説の事前生成(Step B)が待機の前に両levelで走る(確認時に解説全文を見せるため)
+        self.assertEqual(set(after), {"kp", "part2_extract", "part2_explain"}, after)
+        self.assertEqual(after.count("part2_extract"), 2)
 
     def test_rerun_while_pending_makes_no_new_generation_call(self):
         with self.assertRaises(r.FamilyZKpReviewPending):
@@ -126,13 +128,15 @@ class TestZWait(ZBase):
         for lv in ("b1b", "a2"):
             rv.op_select(self.src[lv], kp_ranks=[1, 2, 3], vocab_ranks=([1, 2, 3, 4, 5] if lv == "b1b" else None), by="human")
         import er119_grammar_review_01 as gr   # 委任_03: 文法(Part 2)の確認も同じ待機点
-        sd = r._part2_dir(self.ctx)
-        self.assertEqual(self.explain_calls(), 0)
-        gr.op_decide(sd, choice="top1", accept_ai=True, candidates_sha256=gr.load_candidates(sd)["candidates_sha256"], by="human")
+        n_expl = self.explain_calls()
+        self.assertGreater(n_expl, 0)                # 事前生成は待機の前に済んでいる(両level分)
+        for glv in ("b1b", "a2"):
+            sd = r._part2_dir(self.ctx, glv)
+            gr.op_decide(sd, choice="top1", accept_ai=True, candidates_sha256=gr.load_candidates(sd)["candidates_sha256"], by="human")
         _quiet(r.run_stage, self.ctx, "kp")
         self.assertEqual(self.kp_calls(), 2)
-        self.assertEqual(self.extract_calls(), 1)    # 再開でStep A''を呼び直さない
-        self.assertEqual(self.explain_calls(), 1)    # 確定後のStep Bだけ1 call
+        self.assertEqual(self.extract_calls(), 2)    # 再開でStep A''を呼び直さない(両levelで1回ずつ)
+        self.assertEqual(self.explain_calls(), n_expl)   # 確定後のfinalizeはLLM 0(事前生成の再利用)
         for lv in ("b1b", "a2"):
             self.assertEqual(rv.load_review(self.src[lv])["status"], rv.ST_REVIEWED)
 

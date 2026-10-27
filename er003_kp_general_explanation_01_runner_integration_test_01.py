@@ -27,12 +27,17 @@ import er120_part2_grammar_production_01 as _g2  # noqa: E402
 import er120_part2_mock_01 as _pm  # noqa: E402
 
 
-def isolate_part2(test):
-    """委任_03: Part 2(文法)が本文確定後に必ず走るため、(1)共有NG storeをtmpへ隔離 (2)Step A''/Step Bのclient経路をAPI 0のmockへ置換する。"""
+def isolate_part2(test, *, check_translation=False):
+    """委任_03: Part 2(文法)が本文確定後に必ず走るため、(1)共有NG storeをtmpへ隔離 (2)Step A''/Step Bのclient経路をAPI 0のmockへ置換する。
+    check_translation=False(既定): Part 1訳とmock Step B訳の食い違い検査(Opus O-1)を無効化する。mock訳は必ずPart 1訳と異なるため、Part 1の統合testが
+    Part 1以外の理由(待機rc=4)で止まらないようにするだけで、検査自体は er120_part2_wiring_integration_test_01 が実経路(了承まで含む)で通す(True)。"""
     d = tempfile.mkdtemp()
     test.addCleanup(shutil.rmtree, d, True)
-    for p in (mock.patch.object(_rv, "STORE_ROOT", os.path.join(d, "store")),
-              mock.patch.object(_g2, "_resolve_call_fn", lambda call_fn, client, model, max_out: call_fn or _pm.factory(client, model, max_out))):
+    patches = [mock.patch.object(_rv, "STORE_ROOT", os.path.join(d, "store")),
+               mock.patch.object(_g2, "_resolve_call_fn", lambda call_fn, client, model, max_out: call_fn or _pm.factory(client, model, max_out))]
+    if not check_translation:
+        patches.append(mock.patch.object(_g2, "translation_issues", lambda *a, **k: []))
+    for p in patches:
         p.start()
         test.addCleanup(p.stop)
 
@@ -240,51 +245,61 @@ class ZPart1Tests(Tmp, unittest.TestCase):
         rest = [s for s in zr.E2E_STAGES if s not in self.PRE and s != "page_verify"]
         quiet(zr.run_stages, ctx, rest)
         index = open(f"{ctx.pages_dir}/index.html", encoding="utf-8").read()
-        # 委任_03: Part 1の判断記録がなければPart 1ブロックは出ない(従来どおり)。Part 2(文法。承認済み)のブロックだけがAdvancedに載る
-        self.assertEqual(index.count("<section class='study'>"), 1)
-        self.assertIn("Grammar &amp; Sentence Structure", index)
+        # Part 1の判断記録がなければPart 1ブロックは出ない(従来どおり)。Part 2(文法。承認済み)のブロックが両level(Advanced+Standard)の節に載る(GRAMMAR-PREGEN-ALL-LEVELS-01 委任_03)
+        self.assertEqual(index.count("<section class='study'>"), 2)
+        self.assertEqual(index.count("Grammar &amp; Sentence Structure"), 2)
         self.assertNotIn("Vocabulary", index)
         # Part 1の判断記録なし=『Part 2だけを渡して直接buildしたもの』とバイト同一
-        p2 = zr._p2w().compose_page_html("", zr._assert_part2_final(ctx, "test"))
+        p2 = zr._p2w().compose_page_html("", zr._assert_part2_final(ctx, "test", level="b1b"))
+        p2_std = zr._p2w().compose_page_html("", zr._assert_part2_final(ctx, "test", level="a2"))
         a63.build_pages(ctx.out_dir, ctx.pages_dir, page_title=zr.STORY_REGISTRY[ctx.story_key]["page_title_ja"],
-                        audio_file_prefix=zr.STORY_REGISTRY[ctx.story_key]["audio_file_prefix"], reuse_existing_audio=True, study_html=p2)
+                        audio_file_prefix=zr.STORY_REGISTRY[ctx.story_key]["audio_file_prefix"], reuse_existing_audio=True,
+                        study_html_by_level={"b1b": p2, "a2": p2_std})
         self.assertEqual(index, open(f"{ctx.pages_dir}/index.html", encoding="utf-8").read())
         # study_text/は保存されている(生成・保存まで行う)
         self.assertTrue(os.path.exists(f"{ctx.out_dir}/study_text/part1_vocabulary_expressions.md"))
 
-    def test_pages_render_advanced_only_study_block_after_decision_and_pass_standard_check(self):
+    def test_pages_render_part1_in_advanced_only_and_part2_in_both_after_decision_and_pass_standard_check(self):
         decision_record(self, "T2")
         ctx = self._ctx_through_kp()
         rest = [s for s in zr.E2E_STAGES if s not in self.PRE and s != "page_verify"]
         quiet(zr.run_stages, ctx, rest)          # build_pages内でlint+標準適合checkがPASSしなければFamilyZAudioStop
         index = open(f"{ctx.pages_dir}/index.html", encoding="utf-8").read()
-        self.assertEqual(index.count("<section class='study'>"), 2)   # Part 1 + Part 2(委任_03)
-        adv_pos, study_pos = index.index("id='adv'"), index.index("<section class='study'>")
-        self.assertGreater(study_pos, adv_pos)                                  # Advanced節の中
-        self.assertNotIn("class='study'", open(f"{ctx.pages_dir}/standard.html", encoding="utf-8").read())
+        self.assertEqual(index.count("<section class='study'>"), 3)   # Advanced: Part 1 + Part 2 / Standard: Part 2(全level化)
         import er_user_listening_page_common_01 as uc
+        adv_sec, std_sec = uc.level_section_html(index, "adv"), uc.level_section_html(index, "std")
+        self.assertEqual(adv_sec.count("<section class='study'>"), 2)           # Part 1はAdvanced節だけ
+        self.assertIn("Vocabulary &amp; Expressions", adv_sec)
+        self.assertEqual(std_sec.count("<section class='study'>"), 1)           # Standardは Part 2だけ
+        self.assertNotIn("Vocabulary", std_sec)
+        self.assertNotIn("class='study'", open(f"{ctx.pages_dir}/standard.html", encoding="utf-8").read())   # 開発確認用の個別ページには出さない
         self.assertEqual(uc.check_page(index, base_dir=ctx.pages_dir)["overall"], "PASS")
         for pat in ("日本語訳",):
-            self.assertNotIn(pat, index.split("<section class='study'>")[1].split("</section>")[0])   # T2=訳欄なし
+            self.assertNotIn(pat, adv_sec.split("<section class='study'>")[1].split("</section>")[0])   # T2=訳欄なし
 
     def test_stage_pages_does_not_pass_study_html_without_decision_record(self):
         no_decision_record(self)
         ctx = self._ctx_through_kp()
         with mock.patch.object(a63, "build_pages", return_value={}) as bp:
             zr.stage_pages(ctx)
-        self.assertIn("Grammar &amp; Sentence Structure", bp.call_args.kwargs["study_html"])   # 委任_03: Part 2(承認済み)は常に渡る
-        self.assertNotIn("Vocabulary", bp.call_args.kwargs["study_html"])                        # Part 1は判断記録なし=渡らない
+        by_lv = bp.call_args.kwargs["study_html_by_level"]
+        self.assertIn("Grammar &amp; Sentence Structure", by_lv["b1b"])   # 委任_03: Part 2(承認済み)は常に渡る(両level)
+        self.assertIn("Grammar &amp; Sentence Structure", by_lv["a2"])
+        self.assertNotIn("Vocabulary", by_lv["b1b"])                        # Part 1は判断記録なし=渡らない
         decision_record(self, "T2")
         with mock.patch.object(a63, "build_pages", return_value={}) as bp:
             zr.stage_pages(ctx)
-        self.assertIn("Vocabulary &amp; Expressions", bp.call_args.kwargs["study_html"])
+        by_lv = bp.call_args.kwargs["study_html_by_level"]
+        self.assertIn("Vocabulary &amp; Expressions", by_lv["b1b"])
+        self.assertNotIn("Vocabulary", by_lv["a2"])                         # Part 1はAdvancedのみ
 
     def test_t1_pages_render_five_items_with_translation(self):
         ctx = self._ctx_through_kp()     # 実record(T1)のまま
         rest = [s for s in zr.E2E_STAGES if s not in self.PRE and s != "page_verify"]
         quiet(zr.run_stages, ctx, rest)
         index = open(f"{ctx.pages_dir}/index.html", encoding="utf-8").read()
-        blk = index.split("<section class='study'>")[1].split("</section>")[0]
+        import er_user_listening_page_common_01 as uc
+        blk = uc.level_section_html(index, "adv").split("<section class='study'>")[1].split("</section>")[0]   # Part 1ブロック(Advanced節の先頭のstudy section)
         for lab in ("本文中の意味", "本文の英文", "日本語訳", "解説"):
             self.assertEqual(blk.count(f"<dt>{lab}</dt>"), 5, lab)   # KP Human Review: 5件
         self.assertIn("mock日本語訳", blk)

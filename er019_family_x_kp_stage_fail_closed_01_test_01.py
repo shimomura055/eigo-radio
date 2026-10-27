@@ -21,7 +21,7 @@ import er003_v1_n3_01_scaffold_generate as sc
 import er019_family_x_audio_production_runner_01 as runner
 import er119_kp_wiring_01 as _kpw
 
-ARTICLE = "P1.\n\nP2.\n\nP3.\n\nP4.\n"
+ARTICLE = "# T\n\nP1.\n\nP2.\n\nP3.\n\nP4.\n"   # Part 2(文法)は両levelで走るため、実記事と同じく先頭に `# ` タイトル行がある
 PASS = {"selection": {"status": "KEY_WORDS_STRUCTURE_PASS"}, "canonicalization": {"status": "CANONICALIZATION_PASS"},
         "m2_fallback_events": []}
 INVALID = {"selection": {"status": "KEY_WORDS_STRUCTURE_PASS"}, "canonicalization": {"status": "CANONICALIZATION_INVALID"},
@@ -113,6 +113,16 @@ class DownstreamNotRunTests(unittest.TestCase):
     def setUp(self):
         self._cwd = os.getcwd()
         self.addCleanup(os.chdir, self._cwd)
+        # 文法(Part 2)は両level(Standard=a2も)で本文確定後に必ず走る: 共有NG storeをtmpへ隔離し、Step A''/Step Bのclient経路をAPI 0のmockへ置換する
+        import er119_kp_human_review_01 as _rv
+        import er120_part2_grammar_production_01 as _g2
+        import er120_part2_mock_01 as _pm
+        _d = tempfile.mkdtemp()
+        self.addCleanup(lambda: __import__("shutil").rmtree(_d, ignore_errors=True))
+        for _p in (mock.patch.object(_rv, "STORE_ROOT", os.path.join(_d, "store")),
+                   mock.patch.object(_g2, "_resolve_call_fn", lambda call_fn, client, model, max_out: call_fn or _pm.factory(client, model, max_out))):
+            _p.start()
+            self.addCleanup(_p.stop)
 
     def _main(self, work, out, stage, kp=None, extra=()):
         os.chdir(work)

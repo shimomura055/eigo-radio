@@ -1551,7 +1551,10 @@ def _part1_items_b1b(ctx) -> list:
 # 使う側(load_level_inputs[TTS/Gate/Assembly共有]・stage_pages・stage_page_verify)で存在と最新性・確定との一致をfail-closed確認する。
 # 設計: docs/research/PART2-GRAMMAR-PRODUCTION-WIRING-01/DESIGN_02.md §3〜§4
 # ------------------------------------------------------------
-PART2_CAND_STAGE, PART2_FINAL_STAGE = "part2_cand_b1b", "part2_b1b"
+# Part 2(文法)の来歴stage名(level別。er120_part2_wiring_01.stage_namesと同一。cand=候補抽出+解説の事前生成 / final=finalize[LLM 0])
+PART2_STAGES = {lv: {"cand": f"part2_cand_{lv}", "expl": f"part2_expl_{lv}", "final": f"part2_{lv}"} for lv in ("b1b", "a2")}
+PART2_CAND_STAGE, PART2_FINAL_STAGE = PART2_STAGES["b1b"]["cand"], PART2_STAGES["b1b"]["final"]   # Advancedの名前(既存の参照用。Standardは PART2_STAGES["a2"])
+PAGE_SECTION_IDS = {"b1b": "adv", "a2": "std"}   # index.htmlのlevel節id(er063.build_pagesのuser_levels)
 
 
 def _p2w():
@@ -1559,19 +1562,26 @@ def _p2w():
     return p2w
 
 
-def _part2_dir(ctx) -> str:
-    return f"{ctx.out_dir}/study_text"
+def _part2_dir(ctx, level: str = "b1b") -> str:
+    """level別のstudy dir(単一関数 er120_part2_wiring_01.study_dir_for)。Advanced=<out>/study_text(既存)・Standard=<out>/a2/study_text。"""
+    return _p2w().study_dir_for("z", ctx.out_dir, level)
 
 
-def _part2_inputs(ctx):
-    """(段落list, label)。段落=canonical_article_text(b1b)の空行区切り(er120 docstring: melos r2で29段落一致)、label=作品名(topic_title)。"""
-    text = canonical_article_text(_m().w62.rd(_level_text_path(ctx, "b1b")))
+def _part2_inputs(ctx, level: str):
+    """(段落list, label)。段落=canonical_article_text(当該level)の空行区切り(er120 docstring: melos r2で29段落一致)、label=作品名(topic_title。両level共通)。"""
+    text = canonical_article_text(_m().w62.rd(_level_text_path(ctx, level)))
     return text.split("\n\n"), STORY_REGISTRY[ctx.story_key]["topic_title"]
 
 
-def _part2_next(ctx, regen: str = PART2_FINAL_STAGE) -> str:
-    return (f"{_part1_cli_hint(ctx, regen)}(Part 2だけ再finalize。本文・KP・TTSはやり直さない。再抽出はしない)。"
-            f"未確定なら `py er119_kp_human_review_cli_01.py grammar-select --run {ctx.out_dir} ...` で決めてから `--stage kp` を同じまま再実行")
+def _part2_next(ctx, level: str, regen: str = None) -> str:
+    regen = regen or PART2_STAGES[level]["final"]
+    return (f"{_part1_cli_hint(ctx, regen)}(Part 2({level})だけ再finalize。本文・KP・TTSはやり直さない。再抽出はしない)。"
+            f"未確定なら `py er119_kp_human_review_cli_01.py grammar-select --run {ctx.out_dir} --level {level} ...` で決めてから `--stage kp` を同じまま再実行")
+
+
+def _part2_resume_next(ctx, level: str) -> str:
+    """候補抽出/解説の事前生成の失敗時の次の一手: `--stage kp` を同じまま再実行(候補と生成済みの解説は再利用=未生成分だけ生成。再抽出・regenerateは案内しない)。"""
+    return (f"`--stage kp` を同じまま再実行(Part 2({level})の候補と生成済みの解説は再利用し、未生成分だけを生成します。--regenerate-stage は使わない)")
 
 
 def _stage_precheck(prov, name: str, input_sha: str, force: bool) -> None:
@@ -1593,120 +1603,153 @@ def _part2_hook(ctx, key: str):
     return hook
 
 
-def _part2_cand_step(ctx, prov) -> dict:
-    """候補抽出(または保存済みの再利用)→Human確認/明示宣言/適格0件の即確定の評価。KP候補生成と同じ待機点の前に呼ぶ。
-    returns er119_grammar_review_01.ensure_grammar_review の戻り値({"state":"READY"|"PENDING",...})。失敗は part2_failed.json + FamilyZE2EStop。"""
+def _part2_cand_step(ctx, prov, level: str) -> dict:
+    """候補抽出(または保存済みの再利用)→全候補の解説の事前生成(Step Bの唯一の呼出点=pregen_stage。resumeは未生成分のみ)→Human確認/明示宣言/適格0件の即確定の評価。
+    KP候補生成と同じ待機点の前に呼ぶ(両level)。失敗は part2_failed.json + FamilyZE2EStop(確定済み文法のrevoke前の --regenerate-stage 拒否は記録を書かない)。"""
     p2w = _p2w()
     g = p2w.g
     w62 = _m().w62
-    paragraphs, label = _part2_inputs(ctx)
-    sd = _part2_dir(ctx)
-    force = ctx.regenerate_stage == PART2_CAND_STAGE
-    cand_sha = p2w.cand_input_sha(sd, paragraphs, label, prov.stage_entry(PART2_CAND_STAGE))   # 確定済みの文法はmodel/Prompt変更で再抽出しない(来歴の入力shaを据え置く)
-    _stage_precheck(prov, PART2_CAND_STAGE, cand_sha, force)
+    names = PART2_STAGES[level]
+    paragraphs, label = _part2_inputs(ctx, level)
+    sd = _part2_dir(ctx, level)
+    force = ctx.regenerate_stage == names["cand"]
+    cand_sha = p2w.cand_input_sha(sd, paragraphs, label, prov.stage_entry(names["cand"]))   # 確定済みの文法はmodel/Prompt変更で再抽出しない(来歴の入力shaを据え置く)
+    _stage_precheck(prov, names["cand"], cand_sha, force)
     hook = _part2_hook(ctx, "part2_extract_call_fn")
     try:
-        with ctx.stage_context("part2_cand"):
-            res = p2w.candidate_stage(sd, run_dir=ctx.out_dir, family="z", slug=ctx.slug, paragraphs=paragraphs, label=label, run_hint=ctx.out_dir,
+        with ctx.stage_context(f"part2_cand_{level}"):
+            res = p2w.candidate_stage(sd, level=level, run_dir=ctx.out_dir, family="z", slug=ctx.slug, paragraphs=paragraphs, label=label, run_hint=ctx.out_dir,
                                       extract_call_fn=hook, client=ctx.llm_client, budget_guard=lambda stage, est: _guard(ctx, f"part2_{stage}", est),
                                       force_extract=force)
     except (g.Part2Error, g.Part2InputError) as e:
-        g.write_failed_record(sd, e, next_command=_part2_next(ctx, PART2_CAND_STAGE), stage=PART2_CAND_STAGE)
-        raise FamilyZE2EStop(f"FAMILY_Z_PART2_NOT_OK({PART2_CAND_STAGE}): {e}(候補抽出に失敗。TTSへ渡さずSTOP。記録={sd}/{g.FAILED_FILENAME}。"
-                             f"次の一手: {_part2_next(ctx, PART2_CAND_STAGE)})") from e
-    w62.ensure_stage(prov, PART2_CAND_STAGE, cand_sha, f"{sd}/part2_cand_stage.json",
-                     lambda: (p2w.cand_marker(sd, paragraphs, label), {"label": label}), regenerate=force)
-    return res
+        # D4: 拒否された --regenerate-stage(確定済み文法のrevoke前)は part2_failed.json を書かない(失敗ではなく操作の拒否)。次の一手は同じregenerateの繰り返しにしない
+        refused = _regenerate_refused(e)
+        if not refused:
+            g.write_failed_record(sd, e, next_command=_part2_resume_next(ctx, level), stage=names["cand"])
+        raise FamilyZE2EStop(f"FAMILY_Z_PART2_NOT_OK({names['cand']}): {e}(候補抽出に失敗。TTSへ渡さずSTOP。"
+                             f"次の一手: {_regenerate_refused_hint(ctx, level) if refused else _part2_resume_next(ctx, level)})") from e
+    w62.ensure_stage(prov, names["cand"], cand_sha, f"{sd}/part2_cand_stage.json",
+                     lambda: (p2w.cand_marker(sd, paragraphs, label, level=level), {"label": label}), regenerate=force)
+    pre_hook = _part2_hook(ctx, "part2_explain_call_fn")
+    try:
+        with ctx.stage_context(f"part2_expl_{level}"):
+            pre = p2w.pregen_stage(sd, level=level, next_command=_part2_resume_next(ctx, level), run_hint=ctx.out_dir, explain_call_fn=pre_hook,
+                                   client=ctx.llm_client, budget_guard=lambda stage, est: _guard(ctx, f"part2_{stage}", est))   # 失敗記録(part2_failed.json)はpregen_stageが書く
+    except (g.Part2Error, g.Part2InputError) as e:
+        raise FamilyZE2EStop(f"FAMILY_Z_PART2_NOT_OK({names['expl']}): {e}(解説の事前生成に失敗。TTSへ渡さずSTOP。記録={sd}/{g.FAILED_FILENAME}。"
+                             f"次の一手: {_part2_resume_next(ctx, level)})") from e
+    return dict(res, pregen=pre)
 
 
-def _part2_final_step(ctx, prov, p1_items: list) -> str:
-    """確定済みの文法reviewから Step B(再抽出なし)。part2_b1bのinput_sha=sha(text_sha|label|文法の確定selection_signature)。
-    確定が事後に変わると親sha不一致でSTOPし、`--regenerate-stage part2_b1b`(再finalize)を要求する。"""
+def _regenerate_refused(e) -> bool:
+    """確定済み文法のrevoke前の --regenerate-stage / 再選定系の拒否(確定内容保護のguard由来)かどうか。"""
+    return "CONFIRMED_CONTENT_LOCKED" in str(e)
+
+
+def _regenerate_refused_hint(ctx, level: str) -> str:
+    return (f"確定済みの文法(Part 2 {level})は --regenerate-stage では変えられません。内容を変えるときは先に "
+            f"`py er128_kp_confirmed_content_01.py revoke --run {ctx.out_dir} --level {level} ...`(確定の取消し)を実行してください。変えないなら何もせず `--stage kp` を再実行")
+
+
+def _part2_final_step(ctx, prov, level: str, p1_items: list = None) -> str:
+    """確定済みの文法reviewから finalize(**LLM 0 call**・再抽出なし・Step Bなし)。part2_<level>のinput_sha=sha(text_sha|label|文法の確定selection_signature)。
+    確定が事後に変わると親sha不一致でSTOPし、`--regenerate-stage part2_<level>`(再finalize)を要求する。"""
     p2w = _p2w()
     g = p2w.g
     w62 = _m().w62
-    paragraphs, label = _part2_inputs(ctx)
-    sd = _part2_dir(ctx)
+    names = PART2_STAGES[level]
+    paragraphs, label = _part2_inputs(ctx, level)
+    sd = _part2_dir(ctx, level)
     doc, review, _res = p2w.load_state(sd)
     if doc is None or review is None:
-        raise FamilyZE2EStop("FAMILY_Z_PART2_NOT_READY: 文法の候補/reviewがありません(part2_cand_b1bが未実行)")
+        raise FamilyZE2EStop(f"FAMILY_Z_PART2_NOT_READY: 文法の候補/reviewがありません({names['cand']}が未実行)")
     if review["status"] not in _khr().FORWARD_STATUSES_BY_KIND["grammar"]:
-        raise FamilyZKpReviewPending(f"{_khr().PENDING_MARKER} Part 2(文法)のHuman確認待ち: status={review['status']}", [p2w.gr.pending_summary(sd, review)])
-    ja_doc = _m().w62.rj(_part1_ja_path(ctx)) if os.path.exists(_part1_ja_path(ctx)) else None
-    pool = p2w.part1_ref_ja_pool(p1_items, ja_doc)
+        raise FamilyZKpReviewPending(f"{_khr().PENDING_MARKER} Part 2(文法 {level})のHuman確認待ち: status={review['status']}", [p2w.gr.pending_summary(sd, review)])
+    pool = _part2_pool(ctx, level, p1_items)
     input_sha = g.final_stage_input_sha(paragraphs, label, review)
-    force = ctx.regenerate_stage == PART2_FINAL_STAGE
+    force = ctx.regenerate_stage == names["final"]
     try:
-        _stage_precheck(prov, PART2_FINAL_STAGE, input_sha, force)
+        _stage_precheck(prov, names["final"], input_sha, force)
     except w62.FamilyZProvenanceMismatchStop as e:
-        raise type(e)(f"{e} 次の一手: {_part2_next(ctx)}") from e
-    hook = _part2_hook(ctx, "part2_explain_call_fn")
+        raise type(e)(f"{e} 次の一手: {_part2_next(ctx, level)}") from e
 
     def runner():
         try:
-            with ctx.stage_context("part2_final"):
-                out = p2w.finalize_stage(sd, paragraphs=paragraphs, label=label, ref_ja_pool=pool, explain_call_fn=hook, client=ctx.llm_client,
-                                         budget_guard=lambda stage, est: _guard(ctx, f"part2_{stage}", est), write=False)
+            with ctx.stage_context(f"part2_final_{level}"):
+                out = p2w.finalize_stage(sd, level=level, paragraphs=paragraphs, label=label, ref_ja_pool=pool, write=False)
         except g.Part2PendingReview as e:
-            raise FamilyZKpReviewPending(f"{_khr().PENDING_MARKER} Part 2(文法)のHuman確認待ち: {e.status}", [p2w.gr.pending_summary(sd, review)]) from e
+            raise FamilyZKpReviewPending(f"{_khr().PENDING_MARKER} Part 2(文法 {level})のHuman確認待ち: {e.status}", [p2w.gr.pending_summary(sd, review)]) from e
+        except p2w.Part2NotConfirmed as e:   # Part 1訳との食い違いISSUE(失敗ではなく待機)
+            raise FamilyZKpReviewPending(str(e), e.pending) from e
         except (g.Part2Error, g.Part2InputError) as e:
-            g.write_failed_record(sd, e, next_command=_part2_next(ctx), stage=PART2_FINAL_STAGE)
-            raise FamilyZE2EStop(f"FAMILY_Z_PART2_NOT_OK({PART2_FINAL_STAGE}): {e}(解説生成に失敗。TTSへ渡さずSTOP。記録={sd}/{g.FAILED_FILENAME}。"
-                                 f"次の一手: {_part2_next(ctx)})") from e
+            g.write_failed_record(sd, e, next_command=_part2_next(ctx, level), stage=names["final"])
+            raise FamilyZE2EStop(f"FAMILY_Z_PART2_NOT_OK({names['final']}): {e}(finalizeに失敗。TTSへ渡さずSTOP。記録={sd}/{g.FAILED_FILENAME}。"
+                                 f"次の一手: {_part2_next(ctx, level)})") from e
         res = out["result"]
         p2w.write_md(sd, res)
         return json.dumps(res, ensure_ascii=False, indent=2), {"part2_status": res.get("status"), "review_status": review["status"],
                                                                 "grammar_selection_signature": review["selection_signature"]}
 
-    r = w62.ensure_stage(prov, PART2_FINAL_STAGE, input_sha, f"{sd}/{g.RESULT_FILENAME}", runner, regenerate=force)
+    r = w62.ensure_stage(prov, names["final"], input_sha, f"{sd}/{g.RESULT_FILENAME}", runner, regenerate=force)
     fp = f"{sd}/{g.FAILED_FILENAME}"
     if os.path.exists(fp):
         os.replace(fp, fp.replace(".json", ".resolved.json"))   # 成功したら失敗記録は解決済みへ退避(削除しない)
     return r["status"]
 
 
-def _part2_pool(ctx) -> dict:
+def _part2_pool(ctx, level: str, p1_items: list = None) -> dict:
+    """Part 1訳との食い違い検査用pool。Part 1はAdvanced(b1b)のみ=Standardは空(検査対象なし)。"""
+    if level != "b1b":
+        return {}
     p = _part1_ja_path(ctx)
-    return _p2w().part1_ref_ja_pool(_part1_items_b1b(ctx), _m().w62.rj(p) if os.path.exists(p) else None)
+    return _p2w().part1_ref_ja_pool(p1_items if p1_items is not None else _part1_items_b1b(ctx), _m().w62.rj(p) if os.path.exists(p) else None)
 
 
-def _assert_part2_final(ctx, where: str) -> dict:
-    """Part 2を使う側の入口(M-2): 無い/古い/確定不一致=FamilyZE2EStop、文法のHuman確認待ち=FamilyZKpReviewPending(rc=4)。resultを返す。"""
+def _assert_part2_final(ctx, where: str, *, level: str) -> dict:
+    """Part 2を使う側の入口(M-2): 無い/古い/確定不一致=FamilyZE2EStop、文法のHuman確認待ち=FamilyZKpReviewPending(rc=4)。resultを返す。
+    Standardの文法はページ専用=呼ぶのはstage_pages/stage_page_verifyだけ(TTS/Gate/Assemblyの共有入口load_level_inputs(a2)には付けない)。"""
     p2w = _p2w()
     g = p2w.g
-    paragraphs, label = _part2_inputs(ctx)
+    paragraphs, label = _part2_inputs(ctx, level)
     try:
-        return p2w.require_final(_part2_dir(ctx), paragraphs, label, next_command=_part2_next(ctx), where=where, ref_ja_pool=_part2_pool(ctx))
+        return p2w.require_final(_part2_dir(ctx, level), paragraphs, label, level=level, next_command=_part2_next(ctx, level), where=where,
+                                 ref_ja_pool=_part2_pool(ctx, level))
     except p2w.Part2NotConfirmed as e:
         raise FamilyZKpReviewPending(str(e), e.pending) from e
     except (g.Part2Error, g.Part2InputError) as e:
-        raise FamilyZE2EStop(f"FAMILY_Z_PART2_NOT_READY({where}): {e}") from e
+        raise FamilyZE2EStop(f"FAMILY_Z_PART2_NOT_READY({where}, {level}): {e}") from e
 
 
 def _verify_part2_outputs(ctx) -> dict:
-    """R-3: 確定 <-> part2_result.json <-> study_text/*.md <-> 試聴ページ(index.html。build_pagesはstudy_htmlをAdvancedの節にだけ載せる)を照合。
-    Standardには出ていないこと(開発確認用のstandard.html/advanced.htmlにも出ない・index.htmlに1回だけ)も確認する。"""
+    """R-3: 両levelについて 確定 <-> part2_result.json <-> study_text/*.md <-> 試聴ページ(index.html)の**当該levelの節** を照合(節単位の4者一致、kind="grammar")。
+    各節に文法ブロックがちょうど1個(取り違え・欠落・重複はfail-closed)。開発確認用の個別ページ(standard.html/advanced.html)には出ていないこと(文法はindex.htmlの各節にだけ)も確認する。"""
+    import er_user_listening_page_common_01 as cp
     p2w = _p2w()
     g = p2w.g
-    paragraphs, label = _part2_inputs(ctx)
     idx = f"{ctx.pages_dir}/index.html"
     with open(idx, encoding="utf-8") as f:
         idx_html = f.read()
-    try:
-        p2w.verify_outputs(_part2_dir(ctx), paragraphs, label, next_command=_part2_next(ctx), where="stage_page_verify", ref_ja_pool=_part2_pool(ctx),
-                           md_path=f"{_part2_dir(ctx)}/{g.PART2_FILE_STEM}.md", html_text=idx_html)
-    except (g.Part2Error, g.Part2InputError) as e:
-        raise FamilyZE2EStop(f"FAMILY_Z_PART2_OUTPUT_MISMATCH: {e}") from e
+    out = {"index_page": "OK"}
+    for lv in ("b1b", "a2"):
+        paragraphs, label = _part2_inputs(ctx, lv)
+        section = cp.level_section_html(idx_html, PAGE_SECTION_IDS[lv])
+        try:
+            p2w.verify_outputs(_part2_dir(ctx, lv), paragraphs, label, level=lv, next_command=_part2_next(ctx, lv), where=f"stage_page_verify({lv})",
+                               ref_ja_pool=_part2_pool(ctx, lv), md_path=f"{_part2_dir(ctx, lv)}/{g.PART2_FILE_STEM}.md", html_text=section)
+        except (g.Part2Error, g.Part2InputError) as e:
+            raise FamilyZE2EStop(f"FAMILY_Z_PART2_OUTPUT_MISMATCH({lv}): {e}") from e
+        n2 = g.count_grammar_blocks(section)
+        if n2 != 1:
+            raise FamilyZE2EStop(f"FAMILY_Z_PART2_OUTPUT_MISMATCH({lv}): index.htmlの{PAGE_SECTION_IDS[lv]}の節のPart 2ブロックが{n2}個です(ちょうど1個のはず)")
+        out[lv] = {"section": PAGE_SECTION_IDS[lv], "part2_blocks": n2}
     marker = "Grammar &amp; Sentence Structure"
-    if idx_html.count(marker) != 1:
-        raise FamilyZE2EStop(f"FAMILY_Z_PART2_OUTPUT_MISMATCH: index.htmlのPart 2ブロックが{idx_html.count(marker)}個です(Advancedの節に1個だけのはず)")
     for fn in ("standard.html", "advanced.html"):
         p = f"{ctx.pages_dir}/{fn}"
         if os.path.exists(p):
             with open(p, encoding="utf-8") as f:
                 if marker in f.read():
-                    raise FamilyZE2EStop(f"FAMILY_Z_PART2_ON_STANDARD_PAGE: {fn}にPart 2が載っています(Part 2は試聴ページ index.html のAdvancedの節だけ)")
-    return {"index_page": "OK", "blocks_in_index": 1, "standard_page_has_part2": False}
+                    raise FamilyZE2EStop(f"FAMILY_Z_PART2_ON_DEV_DETAIL_PAGE: {fn}にPart 2が載っています(文法は試聴ページ index.html の各levelの節だけ)")
+    return out
 
 
 def _kp_fn_for_ctx(ctx):
@@ -2017,11 +2060,14 @@ def stage_kp(ctx) -> dict:
     prov = _prov(ctx)
     summary = {}
     pending = []
-    # Part 2(文法): 候補抽出(Step A'')をKP候補生成と同じ待機点の前に実行する(未確定ならKPのpendingと1回にまとめて待機)。resumeはAPI 0。
-    _p2c = _part2_cand_step(ctx, prov)
-    summary["part2_cand_b1b"] = {"state": _p2c["state"], "status": _p2c["review"]["status"], "generated": _p2c["generated"]}
-    if _p2c["state"] == "PENDING":
-        pending.append(_p2c["pending"])
+    # Part 2(文法): 両level(Advanced=b1b / Standard=a2)で 候補抽出(Step A'')→全候補の解説の事前生成 を、KP候補生成と同じ待機点の前に実行する
+    # (未確定ならKPのpendingと1回にまとめて待機)。resumeはAPI 0(生成済みの解説は再利用、未生成分のみ生成)。
+    for _plv in ("b1b", "a2"):
+        _p2c = _part2_cand_step(ctx, prov, _plv)
+        summary[PART2_STAGES[_plv]["cand"]] = {"state": _p2c["state"], "status": _p2c["review"]["status"], "generated": _p2c["generated"],
+                                               "pregen_generated": _p2c["pregen"]["generated"], "pregen_reused": _p2c["pregen"]["reused"]}
+        if _p2c["state"] == "PENDING":
+            pending.append(_p2c["pending"])
     for lv in ("b1b", "a2"):
         text = canonical_article_text(w62.rd(_level_text_path(ctx, lv)))
         # KP Human Review(2026-10-25、ユーザーAPPROVED_FOR_PRODUCTION): 候補(最大8)生成→Human確認/明示の不在宣言→finalize。両レベルの候補を
@@ -2130,7 +2176,8 @@ def stage_kp(ctx) -> dict:
     summary["kp_part1_b1b"] = _stage_kp_part1(ctx, prov, p1_items)
     summary["kp_part1_ja_b1b"] = _stage_kp_part1_ja(ctx, prov, p1_items)   # 委任_16 T1: 解説とは独立の別stage・別call(引用英文のみ入力)
     _assemble_study_rows(ctx, p1_items)   # 組立検証(gloss HR/未評価・引用の逐語実在・訳の最新性)+study_text/保存
-    summary["part2_b1b"] = _part2_final_step(ctx, prov, p1_items)   # Part 2の確定(文法Human確認 or 明示宣言)からStep B。再抽出なし。Part 1の訳が参考訳pool
+    summary["part2_b1b"] = _part2_final_step(ctx, prov, "b1b", p1_items)   # Part 2の確定(文法Human確認 or 明示宣言)からfinalize(LLM 0)。再抽出・Step Bなし。Part 1の訳が参考訳pool
+    summary["part2_a2"] = _part2_final_step(ctx, prov, "a2")               # Standard: Part 1は無い。KP確定後に同様にfinalize
     return summary
 
 
@@ -2304,7 +2351,7 @@ def load_level_inputs(ctx, level: str, *, for_tts: bool = False) -> dict:
         _p1_items = _part1_items_b1b(ctx)   # M-9: Part 1の入力はvocab(最大5件)。KP側rankで結合しない
         _require_part1_fresh(ctx, _p1_items, "load_level_inputs(b1b)")
         _require_part1_ja_fresh(ctx, _p1_items, "load_level_inputs(b1b)")   # 委任_16 T1: 訳も同様にfail-closed確認
-        _assert_part2_final(ctx, "load_level_inputs(b1b)")   # Part 2(文法): 確定・結果の存在と最新性(M-2)。未確定=rc=4待機、古い/不整合=STOP
+        _assert_part2_final(ctx, "load_level_inputs(b1b)", level="b1b")   # Part 2(文法): 確定・結果の存在と最新性(M-2)。未確定=rc=4待機、古い/不整合=STOP
     kp_items = [{"rank": it["rank"], "used_form": it["used_form"], "japanese_gloss": it.get("japanese_gloss", ""),
                  "display_phrase": it["display_phrase"]} for it in items]
     expl = None
@@ -2416,9 +2463,11 @@ def stage_pages(ctx) -> dict:
         study_html = _p1().render_html_block(rows)
     except _p1().KpGeneralExplanationError as e:
         raise FamilyZE2EStop(f"FAMILY_Z_KP_PART1_RENDER_NOT_OK: {e}") from e
-    _p2res = _assert_part2_final(ctx, "stage_pages")   # Part 2(文法)の存在・最新性・確定との一致
-    study_html = _p2w().compose_page_html(study_html, _p2res)   # R-1/R-2: Part 1ブロック直後にPart 2(共通builder1つ)。build_pagesはAdvancedにだけ載せる
-    extra = {"study_html": study_html}
+    _p2res = _assert_part2_final(ctx, "stage_pages", level="b1b")   # Part 2(文法)の存在・最新性・確定との一致(Advanced)
+    _p2res_std = _assert_part2_final(ctx, "stage_pages", level="a2")   # Standard(文法はページ専用=pages/page_verifyだけで確認する)
+    study_html = _p2w().compose_page_html(study_html, _p2res)   # R-1/R-2: Part 1ブロック直後にPart 2(共通builder1つ)
+    study_html_std = _p2w().compose_page_html("", _p2res_std)   # 同じ共通builder・同じテンプレート(Standardに載せるのはPart 2だけ)
+    extra = {"study_html_by_level": {"b1b": study_html, "a2": study_html_std}}
     return _m().a63.build_pages(ctx.out_dir, ctx.pages_dir, page_title=cfg["page_title_ja"],
                                 audio_file_prefix=cfg["audio_file_prefix"], **extra)
 
@@ -2484,7 +2533,9 @@ def stage_page_verify(ctx) -> dict:
         except khr.KpReviewInconsistent as e:
             raise FamilyZE2EStop(f"FAMILY_Z_KP_SELECTION_OUTPUT_MISMATCH({lv}): {e}") from e
     res["kp_selection_verified"] = sel_report
-    res["part2_verified"] = _verify_part2_outputs(ctx)   # R-3: 確定 <-> part2_result.json <-> md <-> ページ(Advancedのみ)
+    _assert_part2_final(ctx, "stage_page_verify", level="b1b")
+    _assert_part2_final(ctx, "stage_page_verify", level="a2")
+    res["part2_verified"] = _verify_part2_outputs(ctx)   # R-3: 確定 <-> part2_result.json <-> md <-> ページの各levelの節(節単位の4者一致)
     _m().w62.wj(f"{ctx.out_dir}/page_verify_local.json", res)
     problems = evaluate_page_verify(res)
     if std["overall"] != "PASS":

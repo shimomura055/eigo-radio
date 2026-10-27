@@ -75,6 +75,17 @@ def render_standard_page(title: str, levels: list, intro_html: str = "", aux_htm
     return pg
 
 
+def level_section_html(page_html: str, level_id: str) -> str:
+    """ページ全体から**当該levelの節**(`<h2 id='<level_id>'>`から次のlevel節の`<h2 id=`または補助情報/script/body末尾の手前まで)を切り出す。
+    GRAMMAR-PREGEN-ALL-LEVELS-01: 文法ブロックの節単位4者一致検査(wiring.verify_outputs の html_text)用。節が無い・重複はValueError(fail-closed)。"""
+    head = f"<h2 id='{level_id}'>"
+    if page_html.count(head) != 1:
+        raise ValueError(f"levelの節 {head} がページに{page_html.count(head)}個あります(ちょうど1個のはず)")
+    start = page_html.index(head)
+    ends = [i for i in (page_html.find("<h2 id='", start + len(head)), page_html.find("<script", start), page_html.find("</body>", start)) if i >= 0]
+    return page_html[start:min(ends)]
+
+
 # ============================================================
 # 標準適合check(Regression / page_verify共通)
 # ============================================================

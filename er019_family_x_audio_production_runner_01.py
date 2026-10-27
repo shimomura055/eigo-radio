@@ -635,77 +635,104 @@ def _p2w():
     return p2w
 
 
-def _part2_study_dir(out_dir: str) -> str:
-    return f"{out_dir}/b1b/study_text"
+def _part2_study_dir(out_dir: str, level: str) -> str:
+    return _p2w().study_dir_for("x", out_dir, level)
 
 
-def _part2_inputs_x(source_dir: str):
+def _part2_inputs_x(source_dir: str, level: str):
     p2w = _p2w()
-    article = load_text(f"{source_dir}/b1b/article.md")
+    article = load_text(f"{source_dir}/{level}/article.md")
     return p2w.g.paragraphs_from_article_md(article), p2w.label_for(article)
 
 
-def part2_next_command(source_dir: str) -> str:
+def part2_next_command(source_dir: str, level: str = "b1b") -> str:
+    """Part 2だけの再実行コマンド案内(level別。`--level <b1b|a2> --stage study_text`)。"""
+    _p2w().g.level_name(level)
     parts = os.path.normpath(source_dir).replace("\\", "/").split("/")
     slug, run = (parts[-2], parts[-1]) if len(parts) >= 2 else ("<slug>", "<run>")
-    return (f"`--slug {slug} --run {run} --level b1b --stage study_text`(Part 2だけ再実行。support生成・KP選定・Step A''の再抽出をやり直さない。"
+    return (f"`--slug {slug} --run {run} --level {level} --stage study_text`(Part 2だけ再実行。support生成・KP選定・Step A''の再抽出をやり直さない。"
             "未確定なら `py er119_kp_human_review_cli_01.py grammar-select --run <out_dir> ...` で決めてから)")
 
 
-def run_part2_candidates_x(client, source_dir: str, out_dir: str, *, extract_call_fn=None, budget_check=None) -> dict:
-    """候補抽出(または保存済みの再利用=API 0)+待機/自動確定の評価。失敗はpart2_failed.json。
-    returns {"status":"OK","state":"READY"|"PENDING","pending":{...}|None,...} | {"status":"PART2_STAGE_FAILED(...)","reason":...}"""
+def _part2_pool_x(out_dir: str, level: str):
+    """Part 1訳との食い違い検査用pool。Part 1はAdvanced(b1b)のみ=Standardは空(検査対象なし)。"""
+    if level != "b1b":
+        return {}
     p2w = _p2w()
-    g = p2w.g
-    paragraphs, label = _part2_inputs_x(source_dir)
-    sd = _part2_study_dir(out_dir)
-    slug = _slug_of(source_dir)
-    try:
-        with cl.logging_context(slug, "part2_cand"):
-            res = p2w.candidate_stage(sd, run_dir=out_dir, family="x", slug=slug, paragraphs=paragraphs, label=label, run_hint=out_dir,
-                                      extract_call_fn=extract_call_fn, client=client,
-                                      budget_guard=(lambda stage, est: budget_check(f"part2 {stage}")) if budget_check else None)
-    except (g.Part2Error, g.Part2InputError) as exc:
-        g.write_failed_record(sd, exc, next_command=part2_next_command(source_dir), stage="part2_cand")
-        return {"status": "PART2_STAGE_FAILED(part2_cand)", "reason": str(exc)}
-    return {"status": "OK", **res}
-
-
-def run_part2_final_x(client, source_dir: str, out_dir: str, *, explain_call_fn=None, budget_check=None) -> dict:
-    """確定済みの文法reviewからStep B(再抽出なし)。Part 1(T1訳)確定後に呼ぶ(訳が参考訳pool)。"""
-    p2w = _p2w()
-    g = p2w.g
-    paragraphs, label = _part2_inputs_x(source_dir)
-    sd = _part2_study_dir(out_dir)
-    slug = _slug_of(source_dir)
     items = _part1_kp_items(out_dir)
     jp = _part1_ja_path(out_dir)
-    pool = p2w.part1_ref_ja_pool(items, load_json(jp) if os.path.exists(jp) else None)
+    return p2w.part1_ref_ja_pool(items, load_json(jp) if os.path.exists(jp) else None)
+
+
+SCAFFOLD_RESUME_COMMAND = ("同じ `--stage scaffold` コマンドを再実行(この時点ではsupport/KPは未発注のため再生成にならない。"
+                           "候補と生成済みの解説は再利用し、未生成分だけ生成する。--regenerate系は使わない)")
+
+
+def run_part2_candidates_x(client, source_dir: str, out_dir: str, *, level: str, extract_call_fn=None, explain_call_fn=None, budget_check=None,
+                           next_command: str | None = None) -> dict:
+    """候補抽出(または保存済みの再利用=API 0)+全候補の解説事前生成(Step Bの唯一の呼出点=pregen_stage。resumeは未生成分のみ)+待機/自動確定の評価。
+    失敗はpart2_failed.json。returns {"status":"OK","state":"READY"|"PENDING","pending":{...}|None,...} | {"status":"PART2_STAGE_FAILED(...)","reason":...}"""
+    p2w = _p2w()
+    g = p2w.g
+    paragraphs, label = _part2_inputs_x(source_dir, level)
+    sd = _part2_study_dir(out_dir, level)
+    slug = _slug_of(source_dir)
+    names = p2w.stage_names(level)
+    guard = (lambda stage, est: budget_check(f"part2 {stage}")) if budget_check else None
+    nxt = next_command or part2_next_command(source_dir, level)
     try:
-        with cl.logging_context(slug, "part2_final"):
-            out = p2w.finalize_stage(sd, paragraphs=paragraphs, label=label, ref_ja_pool=pool, explain_call_fn=explain_call_fn, client=client,
-                                     budget_guard=(lambda stage, est: budget_check(f"part2 {stage}")) if budget_check else None)
+        with cl.logging_context(slug, f"part2_cand_{level}"):
+            res = p2w.candidate_stage(sd, level=level, run_dir=out_dir, family="x", slug=slug, paragraphs=paragraphs, label=label, run_hint=out_dir,
+                                      extract_call_fn=extract_call_fn, client=client, budget_guard=guard)
+    except (g.Part2Error, g.Part2InputError) as exc:
+        refused = "CONFIRMED_CONTENT_LOCKED" in str(exc)
+        if not refused:   # D4: 確定済み文法の --regenerate-stage 拒否(revoke前)は失敗記録を書かない。次の一手はrevoke案内
+            g.write_failed_record(sd, exc, next_command=nxt, stage=names["cand"])
+        return {"status": f"PART2_STAGE_FAILED({names['cand']})", "reason": str(exc),
+                "next_command": (f"確定済みの文法(Part 2 {level})は変えられません。変える場合は先に `py er128_kp_confirmed_content_01.py revoke --run {out_dir} --level {level} ...` "
+                                 "(確定の取消し)を実行。変えないなら何もしない" if refused else nxt)}
+    try:
+        with cl.logging_context(slug, f"part2_expl_{level}"):
+            pre = p2w.pregen_stage(sd, level=level, next_command=nxt, run_hint=out_dir,
+                                   explain_call_fn=explain_call_fn, client=client, budget_guard=guard)   # 失敗記録(part2_failed.json)はpregen_stageが書く
+    except (g.Part2Error, g.Part2InputError) as exc:
+        return {"status": f"PART2_STAGE_FAILED({names['expl']})", "reason": str(exc), "next_command": nxt}
+    return {"status": "OK", **res, "pregen": pre}
+
+
+def run_part2_final_x(client, source_dir: str, out_dir: str, *, level: str, budget_check=None) -> dict:
+    """確定済みの文法reviewからfinalize(**LLM 0 call**。解説は事前生成物/凍結値。再抽出もStep Bもしない)。Advancedは Part 1(T1訳)確定後に呼ぶ(訳が参考訳pool)。"""
+    p2w = _p2w()
+    g = p2w.g
+    paragraphs, label = _part2_inputs_x(source_dir, level)
+    sd = _part2_study_dir(out_dir, level)
+    pool = _part2_pool_x(out_dir, level)
+    names = p2w.stage_names(level)
+    try:
+        out = p2w.finalize_stage(sd, level=level, paragraphs=paragraphs, label=label, ref_ja_pool=pool)
     except g.Part2PendingReview as e:
         return {"status": "PART2_PENDING", "review_status": e.status}
+    except p2w.Part2NotConfirmed as exc:   # Part 1訳との食い違いISSUE(失敗ではなく待機=rc=4。解消=別の文法を選ぶ/ユーザー了承)
+        pend = dict(p2w.gr.pending_summary(sd, p2w.gr.load_review(sd)), translation_issue=str(exc))
+        return {"status": "PART2_TRANSLATION_ISSUE", "review_status": "TRANSLATION_ISSUE", "pending": pend, "reason": str(exc)}
     except (g.Part2Error, g.Part2InputError) as exc:
-        g.write_failed_record(sd, exc, next_command=part2_next_command(source_dir), stage="part2_final")
-        return {"status": "PART2_STAGE_FAILED(part2_final)", "reason": str(exc)}
+        g.write_failed_record(sd, exc, next_command=part2_next_command(source_dir, level), stage=names["final"])
+        return {"status": f"PART2_STAGE_FAILED({names['final']})", "reason": str(exc)}
     fp = f"{sd}/{g.FAILED_FILENAME}"
     if os.path.exists(fp):
         os.replace(fp, fp.replace(".json", ".resolved.json"))   # 成功したら失敗記録は解決済みへ退避(削除しない)
     return {"status": "OK", "part2_status": out["status"], "reused": out["reused"]}
 
 
-def _require_part2_fresh_x(source_dir: str, out_dir: str, where: str) -> dict:
+def _require_part2_fresh_x(source_dir: str, out_dir: str, where: str, *, level: str) -> dict:
     """M-2: tts/assemble/player入口と公開ページbuilderの確認(存在+最新性+確定との一致)。未確定=Part2NotConfirmed(rc=4)、無い/古い=RuntimeError(STOP rc=3)。"""
     p2w = _p2w()
     g = p2w.g
-    paragraphs, label = _part2_inputs_x(source_dir)
-    items = _part1_kp_items(out_dir)
-    jp = _part1_ja_path(out_dir)
-    pool = p2w.part1_ref_ja_pool(items, load_json(jp) if os.path.exists(jp) else None)
+    paragraphs, label = _part2_inputs_x(source_dir, level)
+    pool = _part2_pool_x(out_dir, level)
     try:
-        return p2w.require_final(_part2_study_dir(out_dir), paragraphs, label, next_command=part2_next_command(source_dir), where=where, ref_ja_pool=pool)
+        return p2w.require_final(_part2_study_dir(out_dir, level), paragraphs, label, level=level, next_command=part2_next_command(source_dir, level),
+                                 where=where, ref_ja_pool=pool)
     except p2w.Part2NotConfirmed:
         raise
     except (g.Part2Error, g.Part2InputError) as exc:
@@ -713,8 +740,25 @@ def _require_part2_fresh_x(source_dir: str, out_dir: str, where: str) -> dict:
 
 
 def _part2_failed_markers(out_dir: str, levels: list) -> list:
-    return [f"{_part2_study_dir(out_dir)}/{_p2w().g.FAILED_FILENAME}" for lv in levels
-            if lv == "b1b" and os.path.exists(f"{_part2_study_dir(out_dir)}/{_p2w().g.FAILED_FILENAME}")]
+    g = _p2w().g
+    return [f"{_part2_study_dir(out_dir, lv)}/{g.FAILED_FILENAME}" for lv in levels
+            if os.path.exists(f"{_part2_study_dir(out_dir, lv)}/{g.FAILED_FILENAME}")]
+
+
+def _scaffold_part2_final(client, source_dir: str, out_dir: str, level: str, result: dict, budget_check, done_note: str):
+    """scaffold内のPart 2 finalize(LLM 0)。失敗=stage statusを返す(None=OK/待機)。Part 1訳との食い違いISSUEは失敗ではなく待機(result[level]['part2_pending']へ。rc=4)。"""
+    _p2f = run_part2_final_x(client, source_dir, out_dir, level=level, budget_check=budget_check)
+    result[level]["part2"] = _p2f
+    if _p2f["status"] == "OK":
+        return None
+    if _p2f["status"] == "PART2_TRANSLATION_ISSUE":
+        result[level]["part2_pending"] = _p2f["pending"]
+        print(f"[FAMILY-X-AUDIO-SCAFFOLD] {level}: 待機中: 文法(Part 2)の訳がPart 1の訳と食い違っています(ユーザー確認待ち): {_p2f.get('reason')}")
+        return None
+    result[level]["part2_stage_status"] = _p2f["status"]
+    print(f"[FAMILY-X-AUDIO-SCAFFOLD][STOP] {level}: {_p2f['status']}: {_p2f.get('reason')}"
+          f"({done_note}。TTS前に停止。次の一手: {part2_next_command(source_dir, level)})")
+    return _p2f["status"]
 
 
 def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
@@ -757,12 +801,13 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
         # Part 2(文法): 候補抽出を本文確定直後・KP候補生成(同一待機点)の前に実行する。失敗はsupport/KPを発注する前に止める(再開でsupport再生成なし)。
         # `--scaffold-only kp`(KPだけの再実行)では実行しない(tts前の入口検査が`--stage study_text`を案内する)。resumeは保存済み候補でAPI 0。
         _p2c = None
-        if level == "b1b" and scaffold_only is None:
-            _p2c = run_part2_candidates_x(client, source_dir, out_dir, extract_call_fn=part2_extract_call_fn, budget_check=budget_check)
+        if scaffold_only is None:   # 両level(Standard=a2もAdvanced=b1bも)で候補抽出+解説の事前生成を行う
+            _p2c = run_part2_candidates_x(client, source_dir, out_dir, level=level, extract_call_fn=part2_extract_call_fn,
+                                          explain_call_fn=part2_explain_call_fn, budget_check=budget_check, next_command=SCAFFOLD_RESUME_COMMAND)
             if _p2c["status"] != "OK":
-                result[level] = {"parts": parts, "part2_stage_status": _p2c["status"], "part2_reason": _p2c.get("reason")}
+                result[level] = {"parts": parts, "part2_stage_status": _p2c["status"], "part2_reason": _p2c.get("reason"), "part2_next_command": _p2c.get("next_command")}
                 print(f"[FAMILY-X-AUDIO-SCAFFOLD][STOP] {level}: {_p2c['status']}: {_p2c.get('reason')}"
-                      f"(support/KPは未発注。次の一手: {part2_next_command(source_dir)})")
+                      f"(support/KPは未発注。次の一手: {_p2c.get('next_command')})")
                 break
         _p2_pending = _p2c["pending"] if (_p2c is not None and _p2c["state"] == "PENDING") else None
         # KP Human Review M-4: review/候補ファイルが有効(本文shaが一致)なら、rc=4待機後の再開で有料のsupportを再生成しない
@@ -870,14 +915,11 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
                     result[level]["study_text"] = "saved"
                 except RuntimeError as exc:
                     result[level]["study_text"] = f"deferred: {exc}"
-                if _p2c is not None:   # Part 2: 確定済みの文法reviewからStep B(再抽出なし)。Part 1の訳が参考訳pool
-                    _p2f = run_part2_final_x(client, source_dir, out_dir, explain_call_fn=part2_explain_call_fn, budget_check=budget_check)
-                    result[level]["part2"] = _p2f
-                    if _p2f["status"] != "OK":
-                        _part2_fail = _p2f["status"]
-                        result[level]["part2_stage_status"] = _part2_fail
-                        print(f"[FAMILY-X-AUDIO-SCAFFOLD][STOP] {level}: {_part2_fail}: {_p2f.get('reason')}"
-                              f"(KP・Part 1は確定済み。TTS前に停止。次の一手: {part2_next_command(source_dir)})")
+                if _p2c is not None:   # Part 2: 確定済みの文法reviewからfinalize(LLM 0・再抽出なし)。Part 1の訳が参考訳pool
+                    _part2_fail = _scaffold_part2_final(client, source_dir, out_dir, level, result, budget_check, "KP・Part 1は確定済み")
+        elif _fail is None and _p2c is not None:
+            # Standard(a2): Part 1は無い。KP確定後に文法をfinalize(LLM 0)。TTSの前提にはしない(文法はページ専用)
+            _part2_fail = _scaffold_part2_final(client, source_dir, out_dir, level, result, budget_check, "KPは確定済み")
         if budget_check is not None:
             budget_check(f"after scaffold {level}")
         if _fail is not None or _part1_fail is not None or _part2_fail is not None:
@@ -3019,7 +3061,22 @@ def _build_level_table(level_dir: str, level: str, japanese_title: str | None = 
     return player_common.render_timeline_table(rows)
 
 
-def build_player_html(theme_out_dir: str, theme_id: str, japanese_title: str | None, study_html: str = "") -> str:
+PLAYER_LEVEL_HEADINGS = {"b1b": "<h2>Advanced(B1)</h2>", "a2": "<h2>Standard(A2)</h2>"}
+
+
+def player_level_section(player_html: str, level: str) -> str:
+    """player.htmlから**当該levelの節**を切り出す(節単位の4者一致検査用)。Advanced=`<h2>Advanced(B1)</h2>`〜`<h2>Standard(A2)</h2>`の手前 /
+    Standard=`<h2>Standard(A2)</h2>`〜後続の事後試聴リスト(`<h3>Advanced(B1)</h3>`)の手前。見出しが無い/重複はValueError(fail-closed)。"""
+    head = PLAYER_LEVEL_HEADINGS[level]
+    if player_html.count(head) != 1:
+        raise ValueError(f"player.htmlのlevel見出し {head} が{player_html.count(head)}個あります(ちょうど1個のはず)")
+    start = player_html.index(head)
+    other = PLAYER_LEVEL_HEADINGS["a2" if level == "b1b" else "b1b"]
+    ends = [i for i in (player_html.find(other, start + len(head)), player_html.find("<h3>Advanced(B1)</h3>", start), player_html.find("</body>", start)) if i >= 0]
+    return player_html[start:min(ends)]
+
+
+def build_player_html(theme_out_dir: str, theme_id: str, japanese_title: str | None, study_html: str = "", study_html_a2: str = "") -> str:
     abs_url = player_common.abs_file_url
     b1b_summary = _load_assemble_summary(f"{theme_out_dir}/b1b/run_summary_assemble.json")
     a2_summary = _load_assemble_summary(f"{theme_out_dir}/a2/run_summary_assemble.json")
@@ -3065,7 +3122,7 @@ def build_player_html(theme_out_dir: str, theme_id: str, japanese_title: str | N
 <p class="note">Family X(Entertainment News)音声構造Stage 3a runtime。
 Comment1→本文1→Comment2→本文2→Comment3→本文3→Comment4→In One Line(Point構造なし)。</p>
 {b1b_audio_html}{study_html}
-{a2_audio_html}
+{a2_audio_html}{study_html_a2}
 {pww_sections_html}
 </body></html>
 """
@@ -3493,7 +3550,8 @@ def main() -> None:
                     _epd["part2_stage_status"] = _p2_fail
                     save_json(_ep, _epd)
                 print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {_p2_fail}: 学習テキスト Part 2(文法)の生成に失敗(TTS前に停止)。"
-                      f"次の一手: {part2_next_command(source_dir)}。scaffold stageの再実行はしないでください(support/KPが再生成され費用・別KPになります)。")
+                      f"次の一手: {(scaffold_result.get(next(iter(_p2_fail))) or {}).get('part2_next_command') or part2_next_command(source_dir, next(iter(_p2_fail)))}。"
+                      "support/KPの発注後に止まった場合はscaffold stageの再実行はしないでください(support/KPが再生成され費用・別KPになります)。")
                 sys.exit(3)
             _kp_pending = {lv: (scaffold_result.get(lv) or {}).get("kp_review_pending") for lv in levels
                            if (scaffold_result.get(lv) or {}).get("kp_review_state") == "PENDING"}
@@ -3522,14 +3580,15 @@ def main() -> None:
                 save_json(entry_point_path, entry_point)
 
         _p2_pend_now = []
-        if args.stage == "study_text" and "b1b" in levels:
-            # Part 2: 候補抽出はKP成功を前提にしない(KPの確定待ち/KP markerがあっても抽出・待機の評価は行う)。resumeはAPI 0。
-            _p2c_now = run_part2_candidates_x(client, source_dir, out_dir, budget_check=lambda note: assert_budget_ok(out_dir, args.budget_jpy, note))
-            if _p2c_now["status"] != "OK":
-                print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {_p2c_now['status']}: {_p2c_now.get('reason')}。次の一手: {part2_next_command(source_dir)}")
-                sys.exit(3)
-            if _p2c_now["state"] == "PENDING":
-                _p2_pend_now = [_p2c_now["pending"]]
+        if args.stage == "study_text":
+            # Part 2: 候補抽出+解説の事前生成は両level(--levelで選ばれたもの)で行う。KP成功を前提にしない(KPの確定待ち/KP markerがあっても抽出・待機の評価は行う)。resumeはAPI 0。
+            for _lv in levels:
+                _p2c_now = run_part2_candidates_x(client, source_dir, out_dir, level=_lv, budget_check=lambda note: assert_budget_ok(out_dir, args.budget_jpy, note))
+                if _p2c_now["status"] != "OK":
+                    print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {_p2c_now['status']}: {_p2c_now.get('reason')}。次の一手: {_p2c_now.get('next_command') or part2_next_command(source_dir, _lv)}")
+                    sys.exit(3)
+                if _p2c_now["state"] == "PENDING":
+                    _p2_pend_now.append(_p2c_now["pending"])
         if args.stage in ("study_text", "tts", "assemble", "player", "all"):
             # KP Human Review: 全consumerの入口で確定物の整合を確認する(未確定=待機rc=4 / 不整合・旧KP混入=STOP rc=3)。review無しの旧runは従来どおり。
             for _lv in levels:
@@ -3543,35 +3602,39 @@ def main() -> None:
                     print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
                     sys.exit(3)
         if args.stage == "study_text":
-            # 委任_14 Opus M1: Part 1だけを(再)生成する単独stage(KP再選定・support再生成なし。API=Part 1の1 call以内)。Advanced(b1b)のみ。
-            if "b1b" not in levels:
-                parser.error("--stage study_textはAdvanced(b1b)のみ対象です(--level b1bまたはboth)。")
+            # 委任_14 Opus M1: study_textだけを(再)生成する単独stage(KP再選定・support再生成なし)。Part 1(API=1 call以内)はAdvanced(b1b)のみ、
+            # Part 2(文法)は両level(Standard=a2もAdvanced=b1bも。解説は候補抽出stageで事前生成済み=finalizeはLLM 0)。
             if _p2_pend_now:   # 文法のHuman確認待ち: Part 1(有料)へ進まず待機(rc=4)
                 print(_kpw().pending_banner(_p2_pend_now, restart_command="py " + " ".join(sys.argv), run_dir=out_dir))
                 sys.exit(_khr().EXIT_CODE_PENDING)
-            try:
-                with cl.logging_context(args.slug, "kp_part1"):
-                    _p1r = run_study_text_stage(client, source_dir, out_dir,
-                                                budget_check=lambda note: assert_budget_ok(out_dir, args.budget_jpy, note))
-            except RuntimeError as exc:
-                print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
-                sys.exit(3)
-            assert_budget_ok(out_dir, args.budget_jpy, "after study_text")
-            if _p1r["status"] != "OK":
-                print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {_p1r['status']}: {_p1r.get('reason')}。次の一手: 原因確認後に{part1_next_command(source_dir)}を再実行。")
-                sys.exit(3)
-            print(f"[FAMILY-X-AUDIO-RUNNER] study_text OK: {_p1r}")
-            _p2f = run_part2_final_x(client, source_dir, out_dir, budget_check=lambda note: assert_budget_ok(out_dir, args.budget_jpy, note))
-            assert_budget_ok(out_dir, args.budget_jpy, "after study_text part2")
-            if _p2f["status"] != "OK":
-                print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {_p2f['status']}: {_p2f.get('reason')}。次の一手: {part2_next_command(source_dir)}")
-                sys.exit(3)
-            print(f"[FAMILY-X-AUDIO-RUNNER] study_text Part 2 OK: {_p2f}")
+            if "b1b" in levels:
+                try:
+                    with cl.logging_context(args.slug, "kp_part1"):
+                        _p1r = run_study_text_stage(client, source_dir, out_dir,
+                                                    budget_check=lambda note: assert_budget_ok(out_dir, args.budget_jpy, note))
+                except RuntimeError as exc:
+                    print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
+                    sys.exit(3)
+                assert_budget_ok(out_dir, args.budget_jpy, "after study_text")
+                if _p1r["status"] != "OK":
+                    print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {_p1r['status']}: {_p1r.get('reason')}。次の一手: 原因確認後に{part1_next_command(source_dir)}を再実行。")
+                    sys.exit(3)
+                print(f"[FAMILY-X-AUDIO-RUNNER] study_text OK: {_p1r}")
+            for _lv in levels:
+                _p2f = run_part2_final_x(client, source_dir, out_dir, level=_lv, budget_check=lambda note: assert_budget_ok(out_dir, args.budget_jpy, note))
+                assert_budget_ok(out_dir, args.budget_jpy, f"after study_text part2 {_lv}")
+                if _p2f["status"] == "PART2_TRANSLATION_ISSUE":   # 失敗ではなく待機(rc=4)
+                    print(_kpw().pending_banner([_p2f["pending"]], restart_command="py " + " ".join(sys.argv), run_dir=out_dir) + f"\n  詳細: {_p2f.get('reason')}")
+                    sys.exit(_khr().EXIT_CODE_PENDING)
+                if _p2f["status"] != "OK":
+                    print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {_p2f['status']}: {_p2f.get('reason')}。次の一手: {part2_next_command(source_dir, _lv)}")
+                    sys.exit(3)
+                print(f"[FAMILY-X-AUDIO-RUNNER] study_text Part 2 ({_lv}) OK: {_p2f}")
 
         if args.stage in ("tts", "assemble", "all"):
             _p2f_markers = _part2_failed_markers(out_dir, levels)
             if _p2f_markers:
-                print(f"[FAMILY-X-AUDIO-RUNNER][STOP] PART2_FAILED markerあり(Part 2未生成のままTTSへ進まない): {_p2f_markers}。次の一手: {part2_next_command(source_dir)}")
+                print(f"[FAMILY-X-AUDIO-RUNNER][STOP] PART2_FAILED markerあり(Part 2未生成のままTTSへ進まない): {_p2f_markers}。次の一手: {part2_next_command(source_dir, 'b1b' if 'b1b' in levels else levels[0])}")
                 sys.exit(3)
             _kpf = _kp_stage_failed_markers(out_dir, levels)
             if _kpf:
@@ -3592,8 +3655,9 @@ def main() -> None:
                 print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
                 sys.exit(3)
             # Part 2(文法)も同様に、存在・最新性・確定との一致をfail-closed確認(M-2)。未確定=rc=4待機、無い/古い=STOP rc=3
+            # (tts/assemble入口はAdvancedのみ=従来どおり。Standardの文法はページ専用で音声の前提にしない。Standardはplayer入口で確認する)
             try:
-                _require_part2_fresh_x(source_dir, out_dir, f"--stage {args.stage}")
+                _require_part2_fresh_x(source_dir, out_dir, f"--stage {args.stage}", level="b1b")
             except _p2w().Part2NotConfirmed as exc:
                 print(_kpw().pending_banner(exc.pending, restart_command="py " + " ".join(sys.argv), run_dir=out_dir) + f"\n  詳細: {exc}")
                 sys.exit(_khr().EXIT_CODE_PENDING)
@@ -3644,36 +3708,41 @@ def main() -> None:
 
         if args.stage in ("player", "all"):
             _study_html = ""
+            _study_html_a2 = ""
             _part1_html = ""
-            _p2_result = None
+            _p2_results = {}   # level -> Part 2結果(両levelの文法。player入口で存在・最新性・確定との一致を確認)
             if "b1b" in levels:   # 委任_14: Part 1 study block(Advancedのみ。訳欄の判断記録が無い間は空文字=従来とバイト同一)
                 try:
                     _part1_html = part1_study_html_for_player(source_dir, out_dir)
                 except RuntimeError as exc:
                     print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
                     sys.exit(3)
-                # Part 2(文法): Part 1ブロック直後に連結(R-1/R-2: 共通builder compose_page_html 1つだけ。Standard=a2には載せない)
+            for _lv in levels:
+                # Part 2(文法): Advancedは Part 1ブロック直後、Standardは a2節に同じテンプレートで連結(R-1/R-2: 共通builder compose_page_html 1つだけ)
                 try:
-                    _p2_result = _require_part2_fresh_x(source_dir, out_dir, "player")
+                    _p2_results[_lv] = _require_part2_fresh_x(source_dir, out_dir, "player", level=_lv)
                 except _p2w().Part2NotConfirmed as exc:
                     print(_kpw().pending_banner(exc.pending, restart_command="py " + " ".join(sys.argv), run_dir=out_dir) + f"\n  詳細: {exc}")
                     sys.exit(_khr().EXIT_CODE_PENDING)
                 except RuntimeError as exc:
                     print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
                     sys.exit(3)
-                _study_html = _p2w().compose_page_html(_part1_html, _p2_result)
-            player_path = (build_player_html(out_dir, args.slug, japanese_title, study_html=_study_html) if _study_html
-                           else build_player_html(out_dir, args.slug, japanese_title))
-            if _p2_result is not None:   # R-3: 確定 <-> part2_result.json <-> study_text/*.md <-> player.html の一致(不一致=STOP)
-                try:
-                    _pp, _plabel = _part2_inputs_x(source_dir)
-                    with open(player_path, encoding="utf-8") as _pf:
-                        _player_text = _pf.read()
-                    _p2w().verify_outputs(_part2_study_dir(out_dir), _pp, _plabel, next_command=part2_next_command(source_dir), where="player",
-                                          md_path=f"{_part2_study_dir(out_dir)}/{_p2w().g.PART2_FILE_STEM}.md", html_text=_player_text)
-                except (_p2w().g.Part2Error, _p2w().g.Part2InputError) as exc:
-                    print(f"[FAMILY-X-AUDIO-RUNNER][STOP] PART2_OUTPUT_MISMATCH: {exc}")
-                    sys.exit(3)
+            if "b1b" in _p2_results:
+                _study_html = _p2w().compose_page_html(_part1_html, _p2_results["b1b"])
+            if "a2" in _p2_results:
+                _study_html_a2 = _p2w().compose_page_html("", _p2_results["a2"])   # Part 1はAdvancedのみ
+            player_path = build_player_html(out_dir, args.slug, japanese_title, study_html=_study_html, study_html_a2=_study_html_a2)
+            if _p2_results:   # R-3: 確定 <-> part2_result.json <-> study_text/*.md <-> player.html の**当該levelの節**の一致(節単位。不一致=STOP)
+                with open(player_path, encoding="utf-8") as _pf:
+                    _player_text = _pf.read()
+                for _lv in _p2_results:
+                    try:
+                        _pp, _plabel = _part2_inputs_x(source_dir, _lv)
+                        _p2w().verify_outputs(_part2_study_dir(out_dir, _lv), _pp, _plabel, level=_lv, next_command=part2_next_command(source_dir, _lv), where=f"player({_lv})",
+                                              md_path=f"{_part2_study_dir(out_dir, _lv)}/{_p2w().g.PART2_FILE_STEM}.md", html_text=player_level_section(_player_text, _lv))
+                    except (_p2w().g.Part2Error, _p2w().g.Part2InputError, ValueError) as exc:
+                        print(f"[FAMILY-X-AUDIO-RUNNER][STOP] PART2_OUTPUT_MISMATCH({_lv}): {exc}")
+                        sys.exit(3)
             print(f"[FAMILY-X-AUDIO-RUNNER] player.html: {os.path.abspath(player_path)}")
             # 検証5(KP Human Review): 選定結果=実際に音声化・公開された内容(確定JSON<->KP artifact<->TTS結果<->study_text<->ページ)。不一致=STOP。
             for _lv in levels:
