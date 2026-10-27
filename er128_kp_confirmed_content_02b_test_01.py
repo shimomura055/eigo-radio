@@ -368,11 +368,9 @@ class TestM6Part2Frozen(zw.ZBase):
         self._rf(paragraphs, label, pool)   # 作り直した結果もfrozen検査を通る
         self.assertEqual((self.extract_calls(), self.explain_calls()), self.base_calls)
 
-    @unittest.expectedFailure
-    def test_KNOWN_DEFECT_frozen_part2_must_survive_model_change_with_pregen_explanations(self):
-        """承認済みM6(確定した文法は Prompt/model 変更で失効しない)の要件。現状は er120_part2_wiring_01.require_final / finalize_stage が、凍結済みの候補でも
-        事前生成物(grammar_explanations.json)のexplain_signature(model依存)を検査してPart2Staleにする不具合(wiring側=委任_03/核の所有)。修正されたら
-        『unexpected success』になるので、このexpectedFailureを外して通常testにすること。保護OFFの対照は別test。"""
+    def test_frozen_part2_survives_model_change_with_pregen_explanations(self):
+        """承認済みM6(確定した文法は Prompt/model 変更で失効しない)。事前生成物(grammar_explanations.json)が残っていても、凍結済み/確定後に使われない候補の
+        explain_signature(model依存)ではPart2Staleにならない(委任_05B/GPG4是正。wiringの_ex_excluding_frozen)。保護OFFの対照は別test。"""
         self._kp_to_part2_done()
         _quiet(zr.run_stage, self.ctx, "kp")
         paragraphs, label = self._inputs()

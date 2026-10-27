@@ -42,10 +42,10 @@ def _accept_translation_issue(study_dir, by="human"):
 
 
 def _decide_pick(study_dir, ids_idx, by="human"):
-    """pick(1〜2件。候補のrank順の位置を指定)。2件採用経路(O-4)用。"""
+    """pick(候補のrank順の位置を指定)。1件採用(Top1/Top2のどちらか)と、2件指定の拒否(文法選定仕様 2026-10-27: 原則1件・2件同時選択禁止)の両用。"""
     doc = gr.load_candidates(study_dir)
     ids = [doc["candidates"][i]["candidate_id"] for i in ids_idx]
-    return gr.op_decide(study_dir, choice="pick", ids=ids, reason="2件採用(test)", candidates_sha256=doc["candidates_sha256"], by=by)
+    return gr.op_decide(study_dir, choice="pick", ids=ids, reason="pick(test)", candidates_sha256=doc["candidates_sha256"], by=by)
 
 
 # ============================================================
@@ -234,26 +234,26 @@ class ZPart2Integration(zw.ZBase):
         self.assertEqual(index.count(g2.ZERO_P2.replace("&", "&amp;")), 2)   # 両levelの節に固定文面
         r._verify_part2_outputs(self.ctx)                   # 0件確定も節単位検査を通る
 
-    def test_two_items_adopted_render_in_text_order_in_one_level(self):
-        """O-4: 2件採用(pick<=2)が節に載り、節単位検査を通る(1件目=本文出現順の先頭)。"""
+    def test_one_item_picked_from_top2_renders_one_block_and_two_picks_are_rejected(self):
+        """文法選定仕様(2026-10-27): 2件同時選択は拒否され(状態は待機のまま)、Top2の1件採用が節に1ブロック載り節単位検査を通る。"""
         self._pend()
         self._select_kp()
         sd_b, sd_s = r._part2_dir(self.ctx, "b1b"), r._part2_dir(self.ctx, "a2")
-        _decide_pick(sd_b, [1, 0])          # 逆順で指定しても本文出現順で描画される
+        with self.assertRaises(g2.Part2ReviewError):          # 旧『2件採用』は拒否
+            _decide_pick(sd_b, [1, 0])
+        self.assertIn(gr.load_review(sd_b)["status"], rv.GRAMMAR_WAIT_STATUSES)   # 拒否は確定に影響しない(待機のまま)
+        _decide_pick(sd_b, [1])             # Top2を1件だけ選ぶ
         _decide_top1(sd_s)
         zw._quiet(r.run_stage, self.ctx, "kp")
         self._run_rest()
         res = jl(f"{sd_b}/{g2.RESULT_FILENAME}")
         items = g2.result_items(res)
-        self.assertEqual(len(items), 2)
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]["selection"]["candidate_id"], gr.load_candidates(sd_b)["candidates"][1]["candidate_id"])
         index = rd(f"{self.ctx.pages_dir}/index.html")
         sec_adv, _ = self._sections(index)
-        self.assertEqual(sec_adv.count("Grammar &amp; Sentence Structure"), 1)     # 節内ブロックは1個(中に2件)
-        paras = [int(str(i["selection"]["para"]).lstrip("P")) for i in items]
-        self.assertEqual(paras, sorted(paras))                                      # 結果のitemsは本文出現順(描画も同じ順)
-        for i in items:
-            self.assertIn(i["selection"]["sentence"].split(",")[0].replace("&", "&amp;").replace("'", "&#x27;")[:12], sec_adv.replace("&#x27;", "&#x27;"))
-        r._verify_part2_outputs(self.ctx)
+        self.assertEqual(sec_adv.count("Grammar &amp; Sentence Structure"), 1)
+        self.assertIn(items[0]["selection"]["sentence"].split(",")[0].replace("&", "&amp;").replace("'", "&#x27;")[:12], sec_adv)
         self.assertEqual(r._verify_part2_outputs(self.ctx)["b1b"]["part2_blocks"], 1)
 
     def test_declared_absence_auto_adopts_top1_and_is_labelled_unreviewed(self):
@@ -465,14 +465,16 @@ class XPart2Integration(unittest.TestCase):
         self.assertEqual(page.count(zero), 2)                                   # 0件確定は両levelの節に固定文面
         self.assertEqual(xr.player_level_section(page, "a2").count(zero), 1)
 
-    def test_two_items_adopted_in_standard_render_in_one_block_and_pass_section_verification(self):
+    def test_one_item_picked_in_standard_renders_in_one_block_and_two_picks_are_rejected(self):
         ri.decision_record(self, "T2")
-        self._both_to_confirmed(decide_a2=lambda sd: _decide_pick(sd, [1, 0]))
+        def decide_a2(sd):
+            with self.assertRaises(g2.Part2ReviewError):      # Std側でも2件同時選択は拒否(旧『2件採用』)
+                _decide_pick(sd, [1, 0])
+            return _decide_pick(sd, [1])
+        self._both_to_confirmed(decide_a2=decide_a2)
         res = json.loads(rd(f"{self.sd_a2}/{g2.RESULT_FILENAME}"))
         items = g2.result_items(res)
-        self.assertEqual(len(items), 2)
-        paras = [int(str(i["selection"]["para"]).lstrip("P")) for i in items]
-        self.assertEqual(paras, sorted(paras))                                   # 本文出現順
+        self.assertEqual(len(items), 1)
         with mock.patch.object(xr, "derive_japanese_title", lambda sd: {"japanese_title": "T", "source": "test"}):
             rc, tts, asm, log = self._main("player", client=ri.FakeClient(), level="both")
         self.assertIsNone(rc, log)

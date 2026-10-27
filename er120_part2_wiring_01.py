@@ -128,14 +128,13 @@ def _resolve_failed_record(study_dir: str) -> None:
 
 
 def pregen_stage(study_dir: str, *, level: str, next_command: str, run_hint: Optional[str] = None, explain_call_fn: Optional[Callable] = None, client=None,
-                 budget_guard: Optional[Callable] = None, all_candidates: bool = False) -> dict:
-    """候補ごとに解説を事前生成(直列・PREGEN_MAX=8・signature一致で再利用=API 0・原子的更新)。失敗=part2_failed.json(stage=part2_expl_<level>)+例外(STOP rc=3。
+                 budget_guard: Optional[Callable] = None) -> dict:
+    """候補ごとに解説を事前生成(直列・PREGEN_MAX=2=Top1/Top2のみ・signature一致で再利用=API 0・原子的更新)。失敗=part2_failed.json(stage=part2_expl_<level>)+例外(STOP rc=3。
     成功分は保持され、再開は未生成分のみ)。**不完全なまま待機(rc=4)/フォームへ進まない**。
-    - 未確定のreview: 全候補(先頭PREGEN_MAX件)。source=pregen(ユーザー提示対象)
+    - 未確定のreview: 全候補(Top1/Top2=先頭PREGEN_MAX件)。source=pregen(ユーザー提示対象)
     - 確定済みのreview(v1進行中run・auto採用[TOP1のみ]・確定済み): 選定済みidだけ。source=stepB_generated(ユーザー未閲覧)。凍結値のある候補は生成しない
     - 候補0件・選定0件でも空の事前生成物を書く(「事前生成を通った」印。v2成果物があるのに無い場合はINTEGRITY)
-    - all_candidates=True(明示opt-in。有料): 確定済み(auto採用・v1確定)のrunでも全候補(<=PREGEN_MAX)の解説を生成する。確定後に人がHuman Reviewで選び直す(事後Review)ために
-      全候補の解説を見る必要があるとき用(auto採用はTOP1のみ生成しているため)。確定内容(凍結値)は変更しない"""
+    """
     doc, review = gr.load_candidates(study_dir), gr.load_review(study_dir)
     if doc is None or review is None:
         raise g.Part2Stale("文法の候補/reviewがありません(候補抽出stageが未実行)")
@@ -143,7 +142,7 @@ def pregen_stage(study_dir: str, *, level: str, next_command: str, run_hint: Opt
     ex0 = gr.load_explanations(study_dir)
     confirmed = review["status"] in rv.FORWARD_STATUSES_BY_KIND[rv.KIND_GRAMMAR]
     ids, source = None, "pregen"
-    if confirmed and not all_candidates:
+    if confirmed:
         source = "stepB_generated"
         ids = _selected_ids_of(review)
         fz = _frozen_loaded(study_dir) or []
@@ -158,7 +157,7 @@ def pregen_stage(study_dir: str, *, level: str, next_command: str, run_hint: Opt
     strip = lambda e: {k: v for k, v in (e or {}).items() if k != "written_at"}   # noqa: E731
     if strip(ex) != strip(ex0):
         g.write_explanations(study_dir, ex)
-    ok_ids = ids if (confirmed and not all_candidates) else None
+    ok_ids = ids if confirmed else None
     g.validate_explanations(ex, doc, level=level, next_command=next_command, ids=ok_ids)
     _resolve_failed_record(study_dir)
     if not confirmed:
@@ -190,6 +189,24 @@ def _frozen_loaded(study_dir: str) -> Optional[list]:
     if fz is None:
         return None
     return list(fz["items"]) if isinstance(fz, dict) and isinstance(fz.get("items"), list) else [fz]
+
+
+def _ex_excluding_frozen(ex: Optional[dict], frozen: Optional[list], review: Optional[dict] = None) -> Optional[dict]:
+    """M6(確定した文法はmodel/Prompt変更で失効しない): 凍結(確定)済みの候補の事前生成物itemは explain_signature(model依存)の検査対象から外す
+    (凍結候補の正は frozen:<sha>=g.require_fresh_part2 / build_result_v2 側)。凍結(=ユーザー確定)がある場合は、確定後は使われない非選択候補(Top2等)の
+    提示用itemも同様に対象外(確定後にmodelが変わっても、使われないitemのsignatureでStaleにしない)。
+    元のexplanations_sha256(書換え検知)は先に全itemで検証し、除外後の集合に対して再計算した値で置き換える。凍結が無ければexをそのまま返す(挙動不変=保護OFF対照)。"""
+    fz_ids = {f.get("candidate_id") for f in frozen or [] if isinstance(f, dict)}
+    if not ex or not fz_ids or ex.get("schema") != g.SCHEMA_EXPLANATIONS:
+        return ex
+    items = ex.get("items") or []
+    if ex.get("explanations_sha256") != g.explanations_digest(items):
+        raise g.Part2Stale("文法解説の事前生成物のexplanations_sha256が一致しません(書換えの疑い)")
+    sel_ids = set(_selected_ids_of(review)) if review else set()
+    kept = [i for i in items if i.get("candidate_id") not in fz_ids and (not sel_ids or i.get("candidate_id") in sel_ids)]
+    if len(kept) == len(items):
+        return ex
+    return dict(ex, items=kept, explanations_sha256=g.explanations_digest(kept))
 
 
 def _frozen_for_selected(study_dir: str, selected: list) -> Optional[list]:
@@ -313,7 +330,7 @@ def finalize_stage(study_dir: str, *, level: str, paragraphs: list, label: str, 
         selected = g.order_by_text(sel0.get("selected") or [])
         fz = _frozen_for_selected(study_dir, selected) if sel0.get("status") == "SELECTED" else None
         if ex is not None:
-            g.validate_explanations(ex, doc, level=level, next_command="解説の事前生成stageを実行してください", require_complete=False)
+            g.validate_explanations(_ex_excluding_frozen(ex, fz, review), doc, level=level, next_command="解説の事前生成stageを実行してください", require_complete=False)
         out2 = g.finalize_part2_v2(paragraphs, label, level=level, candidates_doc=doc, review=dec, mode=mode, explanations=ex, cached_result=cached_result,
                                    frozen_items=fz, prior_history=None, record_schema=review.get("schema"))
         rec = out2["review_record"]
@@ -403,9 +420,9 @@ def require_final(study_dir: str, paragraphs: list, label: str, *, level: str, n
     ex = gr.load_explanations(study_dir)
     if review is not None:
         _check_integrity(study_dir, review, result, ex)
-    if ex is not None and doc is not None:
-        g.validate_explanations(ex, doc, level=level, next_command=next_command, require_complete=False)
     fz = _frozen_loaded(study_dir)
+    if ex is not None and doc is not None:
+        g.validate_explanations(_ex_excluding_frozen(ex, fz, review), doc, level=level, next_command=next_command, require_complete=False)
     g.require_fresh_part2(result, paragraphs, label, next_command=next_command, where=where, candidates_doc=doc, grammar_review=review, frozen=fz, explanations=ex)
     _check_translation(study_dir, result, ref_ja_pool, level=level, frozen=fz)
     _cc_verify_and_freeze(study_dir, result, frozen=fz, freeze=True)
