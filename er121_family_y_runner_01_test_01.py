@@ -700,7 +700,7 @@ class StudyTextWiring(unittest.TestCase):
         with _quiet():
             res2 = r.run_stages(ctx, ["kp"])
         self.assertEqual(_calls(ctx), before, "再開(resume)でAPI境界を通った")
-        self.assertEqual((res2["kp"][r.PART1_STAGE], res2["kp"][r.PART1_JA_STAGE], res2["kp"][r.PART2_FINAL_STAGE], res2["kp"][r.PART2_STAGES["a2"]["final"]]),
+        self.assertEqual((res2["kp"][r.PART1_STAGES["b1b"]["gen"]], res2["kp"][r.PART1_STAGES["b1b"]["ja"]], res2["kp"][r.PART2_FINAL_STAGE], res2["kp"][r.PART2_STAGES["a2"]["final"]]),
                          ("reused", "reused", "reused", "reused"))
 
     def test_d1_user_confirmation_after_auto_adoption_rebinds_kp_provenance_without_stop_or_api(self):
@@ -788,7 +788,8 @@ class StudyTextWiring(unittest.TestCase):
         self.assertEqual(rev_std["status"], "NO_CANDIDATE_UNREVIEWED")
 
     def test_two_items_adopted_in_standard_render_in_one_block_and_pass_section_verification(self):
-        """O-4: Standardで2件採用(pick<=2)が節内の1ブロックに本文出現順で載り、節単位の4者一致検査(page_verify)を通る。"""
+        """O-4(OPEN-543の新仕様へ更新: 文法は1levelあたり0〜1件[GRAMMAR_MAX=1]): Standardで2件選択は拒否され、1件採用が節内の1ブロックに載り、節単位の4者一致検査(page_verify)を通る。"""
+        import er120_part2_grammar_production_01 as g0
         import er119_grammar_review_01 as gr
         ctx = _ctx(self.root)
         self._upto_support(ctx)
@@ -798,7 +799,10 @@ class StudyTextWiring(unittest.TestCase):
         sd_std = self._grammar_dir(ctx, "a2")
         doc = gr.load_candidates(sd_std)
         self.assertGreaterEqual(len(doc["candidates"]), 2)
-        gr.op_decide(sd_std, choice="pick", ids=[doc["candidates"][1]["candidate_id"], doc["candidates"][0]["candidate_id"]], reason="2件採用(test)",
+        with self.assertRaises(g0.Part2ReviewError):      # 2件選択は禁止(新仕様: 最大1件)
+            gr.op_decide(sd_std, choice="pick", ids=[doc["candidates"][1]["candidate_id"], doc["candidates"][0]["candidate_id"]], reason="2件採用(test)",
+                         candidates_sha256=doc["candidates_sha256"], by="test-human")
+        gr.op_decide(sd_std, choice="pick", ids=[doc["candidates"][1]["candidate_id"]], reason="1件採用(test)",
                      candidates_sha256=doc["candidates_sha256"], by="test-human")
         self._decide_grammar(ctx)
         _declare(ctx)
@@ -807,9 +811,7 @@ class StudyTextWiring(unittest.TestCase):
         res = json.load(open(f"{sd_std}/part2_result.json", encoding="utf-8"))
         import er120_part2_grammar_production_01 as g
         items = g.result_items(res)
-        self.assertEqual(len(items), 2)
-        paras = [int(str(i["selection"]["para"]).lstrip("P")) for i in items]
-        self.assertEqual(paras, sorted(paras))
+        self.assertEqual(len(items), 1)
         v = json.load(open(f"{ctx.out_dir}/page_verify_local.json", encoding="utf-8"))
         self.assertEqual((v["part2_verified"]["a2"]["part2_blocks"], v["part2_verified"]["b1b"]["part2_blocks"]), (1, 1))
 
@@ -877,7 +879,7 @@ class StudyTextWiring(unittest.TestCase):
         self.assertIn("part2_cand_a2", prov["downstream_stale"])                     # Standardの文法候補・finalも葉としてstale(TTS等への新しい依存辺なし)
 
     def test_study_units_are_regenerate_choices(self):
-        for u in (r.PART1_STAGE, r.PART1_JA_STAGE, r.PART2_CAND_STAGE, r.PART2_FINAL_STAGE, "part2_cand_a2", "part2_a2"):
+        for u in (*[r.PART1_STAGES[lv][k] for lv in ("b1b", "a2") for k in ("gen", "ja")], r.PART2_CAND_STAGE, r.PART2_FINAL_STAGE, "part2_cand_a2", "part2_a2"):
             self.assertIn(u, r.UNIT_NAMES)
             r.build_parser().parse_args(["--regenerate-stage", u])
 
@@ -887,6 +889,7 @@ class StudyTextStructureMatchWithXZ(unittest.TestCase):
 
     ZFUNCS = ("_part2_cand_step", "_part2_final_step", "_part2_pool", "_assert_part2_final", "_verify_part2_outputs", "_stage_kp_part1", "_stage_kp_part1_ja",
               "_assemble_study_rows", "_require_part1_fresh", "_require_part1_ja_fresh", "_part1_items_b1b", "_stage_precheck")
+    Y_RENAMED = {"_part1_items_b1b": "_part1_items"}     # SLOT-23 委任_04D: Y側はlevel引数化した _part1_items(ctx, level)。Z(er026)は従来名のまま
     ALLOWED_Z_ONLY = {
         "m._m": "Y-DIFF-MODULE-ALIAS(Zのm=_m()の別名参照。Yは_m()を直接呼ぶ)",
         "m.w62.rj": "Y-DIFF-MODULE-ALIAS", "_m().w62.rj": "Y-DIFF-MODULE-ALIAS",
@@ -916,7 +919,7 @@ class StudyTextStructureMatchWithXZ(unittest.TestCase):
 
     def test_common_core_calls_match_z(self):
         z = self._callees("er026_family_z_fiction_production_runner_01.py", set(self.ZFUNCS))
-        y_funcs = {n for n in self.ZFUNCS} | {"stage_pages", "stage_kp", "_assert_study_ready"}
+        y_funcs = {n for n in self.ZFUNCS} | set(self.Y_RENAMED.values()) | {"stage_pages", "stage_kp", "_assert_study_ready", "_assert_std_study_ready"}
         y = self._callees("er121_family_y_runner_01.py", y_funcs)
         core = {n for n in z if n.split(".")[0] in ("p2w", "g", "p1", "ja", "khr", "gr", "_p1", "_p2w", "_p1ja", "_khr") or n.startswith(("p2w.", "g.", "p1.", "ja.", "_p1().", "_p2w().", "_p1ja().", "_khr()."))}
         core = {n.replace("_p2w().", "p2w.").replace("_p1().", "p1.").replace("_p1ja().", "ja.").replace("_khr().", "khr.") for n in core}

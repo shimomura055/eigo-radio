@@ -128,8 +128,25 @@ def mock_kp_fn(text, kp_dir, article_id, source_level, process=None, n_max=8, **
     if len(spans) < 3:
         raise AssertionError(f"mock KP: 本文に実在する候補が{len(spans)}件しかない")
     os.makedirs(kp_dir, exist_ok=True)
-    items = [{"rank": i, "source_span": s, "source_sentence": s, "display_phrase": s, "key_phrase": s, "used_form": s,
-              "japanese_gloss": f"意味{i}", "fulltext_source_ref": "fulltext_exact_v1"} for i, s in enumerate(spans, 1)]
+    # 実候補docと同形(SLOT-23 委任_04D): source_sentence=その語句を含む本文の文そのもの・source_sentence_id=本文の文番号(ハイライトの文特定に使う)。
+    # 文が見つからない語句(textに無い=ありえない)は従来どおり語句そのもの+IDなし。
+    import er_learning_highlight_01 as _hl
+    units = _hl.split_sentence_units(text)
+
+    def _sent(s):
+        for k, u in enumerate(units, 1):
+            if s in u["raw_text"]:
+                return f"S{k}", u["raw_text"]
+        return None, s
+
+    items = []
+    for i, s in enumerate(spans, 1):
+        sid, sent = _sent(s)
+        it = {"rank": i, "source_span": s, "source_sentence": sent, "display_phrase": s, "key_phrase": s, "used_form": s,
+              "japanese_gloss": f"意味{i}", "fulltext_source_ref": "fulltext_exact_v1"}
+        if sid:
+            it["source_sentence_id"] = sid
+        items.append(it)
     doc = {"items": items, "overall_status": "CANONICALIZATION_PASS", "article_id": article_id, "canonicalization_version": "mock", "source_level": source_level}
     with open(f"{kp_dir}/keywords_canonicalized.json", "w", encoding="utf-8") as f:
         json.dump(doc, f, ensure_ascii=False, indent=2)

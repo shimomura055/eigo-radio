@@ -1418,9 +1418,57 @@ def _script(text):
     return cp.script_block(text or "")
 
 
-def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: str, ja_paragraphs: list | None = None, audience: str = "public") -> dict:
+# ------------------------------------------------------------
+# SLOT-23 本文ハイライト(委任_04D。ユーザー正式決定 2026-10-27 APPROVED_FOR_PRODUCTION)
+# 表示有効化=確定レコードのdisplay_spec(flag非経由)。マーク無しの旧run=highlights_result=None=従来とバイト同一。
+# 解決は共通 er_learning_highlight_01.resolve_highlights 1箇所(再実装しない)。ISSUEはページ生成前にSTOP(fail-closed)。
+# ------------------------------------------------------------
+def _y_level_text(theme_out_dir: str, level: str) -> str:
+    with open(f"{theme_out_dir}/translate/{level}.md", encoding="utf-8") as f:
+        return f.read()
+
+
+def y_highlight_display_units(theme_out_dir: str, level: str) -> list:
+    """Yページに表示される本文ブロック(Full Storyの8 segment)を公開順(ys.Y_SEGMENT_IDS)に並べたDisplayUnit列。key=segment ID、texts=[segment本文]。
+    本文は translate/<level>.md の split_y_article(parts.json の segments と同一の導出=prepare_inputs)。TTS前(parts.json生成前)でも解決できる。"""
+    segs = ys.split_y_article(_y_level_text(theme_out_dir, level))["segments"]
+    return [{"key": sid, "texts": [segs[sid]], "joiner": " "} for sid in ys.Y_SEGMENT_IDS if sid in segs]
+
+
+def y_highlight_article_text(theme_out_dir: str, level: str) -> str:
+    """Yの候補生成(KP review)に使った本文 = ys.canonical_body(translate/<level>.md)(runner._kp_review_stepの入力と同一)。"""
+    return ys.canonical_body(_y_level_text(theme_out_dir, level))
+
+
+def resolve_y_highlights(theme_out_dir: str, level: str) -> dict | None:
+    """display_spec付きの確定レコードがあるlevelだけ解決して返す(無い=None=従来描画)。
+    返り値は er_learning_highlight_01.resolve_highlights の結果dict(status OK|ISSUE)+ "level"。呼出側がISSUEならSTOP。
+    DisplayUnit/本文/候補doc/項目は呼出側で改変しない(単一入口)。"""
+    import er119_kp_human_review_01 as khr
+    import er_learning_highlight_01 as hl
+    cc = khr._cc()      # 確定内容保護(er128)へは er119 の単一入口経由(Family側が er128 を直接importしない既存規約)
+    if not cc.display_spec_of(theme_out_dir, level):
+        return None
+    kp_dir = f"{theme_out_dir}/key_phrases/{level}"
+    rec = cc.load_record(kp_dir)
+    cands = load_json(f"{kp_dir}/kp_candidates.json")
+    res = hl.resolve_highlights(y_highlight_article_text(theme_out_dir, level), cands, hl.items_from_record(rec), y_highlight_display_units(theme_out_dir, level))
+    res["level"] = level
+    return res
+
+
+def highlight_meaning_html(results: dict) -> dict:
+    """{level: ③訳リストHTML or ""}(level節末・table外に置く。③が無ければ空)。"""
+    import er_learning_highlight_01 as hl
+    return {lv: hl.meaning_list_html([{"used_form": m["used_form"], "japanese_gloss": m["japanese_gloss"]} for m in (res.get("meanings") or [])])
+            for lv, res in (results or {}).items() if res}
+
+
+def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: str, ja_paragraphs: list | None = None, audience: str = "public",
+                    highlights_result: dict | None = None) -> dict:
     """assembled wav+timeline から、再生順の全スクリプト表の行を作る(mp3化込み)。行ラベルに内部ID・Voice名を出さない。
-    audience="public"(既定)=台本にChunk境界マーカーを出さない。"dev"=開発用試聴ページ向け。実TTS Chunk境界(audit/chunk_plan_<level>.json)にだけ⏸を出す(ASRポーズは使わない)。"""
+    audience="public"(既定)=台本にChunk境界マーカーを出さない。"dev"=開発用試聴ページ向け。実TTS Chunk境界(audit/chunk_plan_<level>.json)にだけ⏸を出す(ASRポーズは使わない)。
+    highlights_result(SLOT-23): resolve_y_highlights の結果。None/該当なし=従来とバイト同一。指定時のみFull Story本文を①②③の装飾で包む(⏸は装飾の外)。"""
     import imageio_ffmpeg
     import soundfile as sf
     import subprocess
@@ -1464,7 +1512,13 @@ def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: s
         if part in label_to_sid:
             sid = label_to_sid[part]
             blocks.append(_tts_unit_badge(level, decision, sid))                  # R1: TTS生成単位(分割の有無・追加0.2秒の有無)
-            blocks.append(cp.script_block(parts["segments"][sid], cp.chunk_texts_of_plan(chunk_plans.get(sid)), audience))      # ⏸=実Chunk境界のみ(dev限定)
+            hl_list = None
+            if highlights_result:
+                import er_learning_highlight_01 as hl
+                hl_list = hl.highlights_for_text(highlights_result, sid, 0) or None
+                if hl_list and parts["segments"][sid] != next(u["texts"][0] for u in y_highlight_display_units(theme_out_dir, level) if u["key"] == sid):
+                    raise YAudioStop(f"FAMILY_Y_HIGHLIGHT_TEXT_MISMATCH({level}, {sid}): parts.jsonの本文がハイライト解決に使った本文(translate/{level}.md)と一致しません。装飾位置がずれるため描画しません")
+            blocks.append(cp.script_block(parts["segments"][sid], cp.chunk_texts_of_plan(chunk_plans.get(sid)), audience, highlights=hl_list))      # ⏸=実Chunk境界のみ(dev限定)
             if ja_paragraphs is not None:
                 blocks.append("<details><summary>日本語の元原稿</summary><div class='ja'>" + cp.esc(ja_paragraphs.get(sid, "")) + "</div></details>")
         elif pl.startswith("topic intro"):
@@ -1494,12 +1548,20 @@ def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: s
             "full_src": f"{audio_rel}/{full}", "duration": x.shape[0] / sr, "rows": rows}
 
 
-def render_y_page(title: str, levels: list, aux_html: str = "", *, show_notice: bool = True, audience: str = "public") -> str:
+def render_y_page(title: str, levels: list, aux_html: str = "", *, show_notice: bool = True, audience: str = "public", highlight: bool = False) -> str:
     """限定共有ページ(noindex)。注意書きは本文外(冒頭のintro_html)。X/Zページには出さない(共通builderの既定は不変)。
     show_notice=False: 実投稿に基づかない記事(ys.theme_package_is_post_based=False)では出典主張の注意書きを出さない(stage_pagesが判定して渡す)。
-    audience: "public"(既定)=Chunk境界マーカーなし / "dev"=凡例に開発用1行(マーカー本体は build_page_rows(audience=...) が台本へ差し込む)。"""
+    audience: "public"(既定)=Chunk境界マーカーなし / "dev"=凡例に開発用1行(マーカー本体は build_page_rows(audience=...) が台本へ差し込む)。
+    highlight(SLOT-23): True=本文ハイライトの凡例1行(ページ冒頭)+HIGHLIGHT_CSSを足す。False(既定)=従来とバイト同一。"""
     import er_user_listening_page_common_01 as cp
     cp.normalize_audience(audience)
     legend = page_legend_html({lv["id"]: lv.get("chunk_decision") for lv in levels}, audience)
-    html_text = cp.render_standard_page(title, levels, intro_html=(ys.notice_html() if show_notice else "") + legend, aux_html=aux_html)
-    return html_text.replace("<meta charset='utf-8'>", "<meta charset='utf-8'>" + NOINDEX_META, 1)
+    hl_legend = ""
+    if highlight:
+        import er_learning_highlight_01 as hl
+        hl_legend = hl.legend_html()
+    html_text = cp.render_standard_page(title, levels, intro_html=(ys.notice_html() if show_notice else "") + legend + hl_legend, aux_html=aux_html)
+    html_text = html_text.replace("<meta charset='utf-8'>", "<meta charset='utf-8'>" + NOINDEX_META, 1)
+    if highlight:
+        html_text = html_text.replace("</head>", f"<style>{hl.HIGHLIGHT_CSS}</style></head>", 1)
+    return html_text
