@@ -1,3 +1,4 @@
+> 【失効】本書はDESIGN_03.mdに置換された(Opus条件A所見反映)。参照しないこと。
 # DESIGN_02 学習項目①②③の表示仕様(DESIGN_01を置換する正本)
 ユーザー正式決定(2026-10-27、`APPROVED_FOR_PRODUCTION`、到達目標`PRODUCTION_WIRED`、X/Y/Z×Std/Adv全6経路)を反映。read-only設計(コード編集0・API 0)。到達上限=DESIGN_READY(Opus条件Aレビュー→実装)。
 DESIGN_01の(a)案A/B/C選択・(b)`<mark>`方式・(f)G3「chunk境界を跨がない」「文内に2回=BLOCK」は本書で**撤回**(理由は各節に明記)。USER_DECISION_DRAFT_01(Q1-Q3)は決定済みのため失効。

@@ -1,3 +1,4 @@
+> 【失効】本書はIMPL_PLAN_03.mdに置換された。参照しないこと。
 # IMPL_PLAN_02 実装分割計画(Opus条件Aレビュー後に着手。read-only設計、API 0)
 設計正本=`DESIGN_02.md`、矛盾一覧=`SPEC_CONFLICT_02.md`、費用=`COST_02.md`。優先順位 Q>D>C≫開発費用。独立作業は並列化(PM_GOVERNANCE 8-X)。
 
