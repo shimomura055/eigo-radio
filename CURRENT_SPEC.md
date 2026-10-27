@@ -2037,9 +2037,12 @@ champion_trial_results.json`を参照。 |
 - 補完(Gate除外時のみ): 種類別quota(フレーズ枠/単語枠ごと)。上限未満docでE=0なら不発動。補完は1回限り、初回合格候補は保持し入れ替えない、救済済みは非計上。補完用Promptは種類別。resumeはAPI 0・sha不変。旧3+5のHR待ちdocは作り直さない(D6)。
 - 設計判断D1〜D6: R0 flagなし/Adv AUTO vocab5は現行維持/not_single_word Gate/W5'補足=原文逐語/補完Prompt種類別/旧HR待ち候補作り直さない。Prompt 2/2-V本文は残置(pin test、復帰はgit revert)。AUTO選定での単語組入れは新仕様のため導入しない。
 - 撤去: `BACKFILL_MAX_CALL_ITEMS`、単一cap room計算、外側retry独立tuple、`KP_CANDIDATE_MAX=8`。HR依頼書・フォームexportは`[:7]/[:5]`(12件)対応。フォーム`cap`表示既定8→12はOPEN-545 委任_04で是正中。
+- **フォーム連携(PM-SSOT-SYNC-21、FORM委任_04/_05)**: 選定フォームv3のKP/KW候補は7+5合計**cap 12**、各候補のAI選定理由欄はユーザー向け画面では非表示(`reason_ja`は内部保持)。文法枠は上記文法選定節(Top1/Top2・1件選択)に従う(旧『独立枠・最大2件』は置換)。
 - 未観測: フレーズ補完のreal発火(OPEN-549で追跡)。evidence=`docs/research/KP-PHRASE7-WORD5-PRODUCTION-01/{EVIDENCE_01,COST_01,IMPLEMENTATION_01,REMOVAL_RESULT_01,DESIGN_02,OPUS_REVIEW_01}.md`、実費¥15.84、量産単価+約¥0.5/記事セット。
 
 **【2026-10-27準備中(PM-SSOT-SYNC-19、OPEN-556)】KP確定内容保護(KP-CONFIRMED-CONTENT-PROTECTION-01)** — 第1段IMPLEMENTED(委任_02A、246093175: `er128_kp_confirmed_content_01.py`、確定レコード`confirmed_selection.json`正本、G0/G1、AI操作ガード、flag `EIGO_KP_CONFIRMED_PROTECTION`既定ON)。第2段+Family別evidence(委任_02B)進行中。正式な仕様節は02B完了後のSSOT同期(SYNC-20)で新設する。
+
+**【SYNC-21: 正式節は本ファイル末尾『KP確定内容保護(KP-CONFIRMED-CONTENT-PROTECTION-01)』節に新設済み】**
 
 ### Key Phrase 音声構造(Standard/Advanced 共通骨格)— Status: `PRODUCTION_WIRED`(2026-09-29、Fable Gate 3=Meta run_03。`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§E2E Meta run_03、runtime evidence: Advanced KP全5rankで`explanation.voice="Aoede"`・Variant B文言・`phrase_repeat`が`english`と同一sha256、Standard全5rankで`japanese_meaning.style_prefix`=J3文言。W4/W5で配線済み)
 
@@ -2096,6 +2099,7 @@ WIRING-01`) | 2026-09-29 |
 ### KP Human Review・文法Human Review・Part 2「Grammar & Sentence Structure」・Trial-08選定方式 — Family別Status(2026-10-25 Fable受入、OPEN-518/519)
 
 - **【2026-10-27ユーザー正式決定【全面修正版】により更新・PM-SSOT-SYNC-20】Part 2文法解説は『Advancedのみ』『英文1つ選択→解説後生成』を旧仕様として履歴化。新仕様=全6経路(X/Y/Z×Std/Adv)で候補全件の解説を事前生成(grammar_explanations.json)→HR/フォームで文法名+解説全文を提示→最大2件確定→finalize(LLM 0)→公開(Adv=Part 1直後、Std=Stdの節に文法ブロック。Part 1はAdv限定のまま)。実装中=GRAMMAR-PREGEN-ALL-LEVELS-01(OPEN-559、DESIGN_READY→Opus条件Aレビュー中)、到達目標PRODUCTION_WIRED。確定内容保護の正式節は KCP 委任_03 evidence後(SYNC-21)。本行以降の『Advancedのみ』『Part 2…1つ』記述は旧仕様。原文=docs/pm/delegation_log/2026-10-27_GRAMMAR-PREGEN-ALL-LEVELS-01_USER.md。**
+- **【2026-10-27ユーザー正式決定(AI-ISLAND USER_02)により文法選定仕様を再変更・PM-SSOT-SYNC-21、`APPROVED_FOR_PRODUCTION`、全Family共通X/Y/Z×Std/Adv】** 文法選定=**AI評価Top1/Top2の最大2件のみ提示(順位順)**、文法名+解説全文を選定前に表示、ユーザーは**原則1件選択・0件可・2件同時選択禁止**、確定後不変、**事前生成はTop2のみ**(費用削減。Trial-08選定方式・品質仕様は不変)。**旧『文法は独立枠で最大2件選定可(フォームv3仕様)』『候補全件の解説を事前生成→最大2件確定』は本決定で置換(旧仕様として履歴化)**。影響範囲=フォームUI/schema/Validator/HR/確定保存/finalize/公開/retry系/test。実装=GRAMMAR-PREGEN-ALL-LEVELS-01 委任_05A(核≤1化・Top2のみ・grammar-pending)進行中(OPEN-559)、到達目標PRODUCTION_WIRED(全6経路)。現状実装(委任_02〜_04: e2785c11a/c3b83a3e0/dafd60693)は旧仕様寄りでIMPLEMENTED(配線)止まり。
 
 - **Status**: 4機能とも X=`PRODUCTION_WIRED`・Z=`PRODUCTION_WIRED`(正式runner経由のruntime evidence: X=R1[HRあり完走]/R2[HRなし継続]、Z=R3[HRあり完走]/R4[HRなし完走]。証跡=`docs/research/KP-GRAMMAR-HUMAN-REVIEW-PRODUCTION-01/EVIDENCE_01.md`§11)。Y=委任_06でY runnerへ接続済み・文法HRありの実走は未(OPEN-484/520)。 **【2026-10-26 委任_09 Y実走の事実】** Y E-1 run_01: Part 2(Advanced、auto_top1、T1/CMP)・Trial-08選定・Part 1がページに表示されpage_verify OK(part1_blocks=1/part2_blocks=1)。KP HR・文法HRは『HRなし』(UNREVIEWED_AUTO_ADOPTED)経路のみ実走、HRあり経路のY実走は未。PRODUCTION_WIRED判定はFable。証跡=`docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/EVIDENCE_03.md`。 **Fable受入 2026-10-26 委任_10:** Y Part 2文法解説・Trial-08選定=PRODUCTION_WIRED(Y)(Part 2 stageはcommit d2bbce56c[2026-10-25 21:57:59]後の21:59:41候補生成〜22:04:35確定で実走、Part 2関連file[er120_part2_wiring_01.py/er119_grammar_review_01.py]はd2bbce56c以降HEADまで差分0、残差分はrunner説明文/manifest注記/KP verifyのcanonical_text対応のみで本run後のpage_verify[06:45、HEAD上]で描画確認済み)。KP HR・文法HR=PRODUCTION_WIRED(限定: HRなし宣言経路のみY実走。HRあり経路は共通核er119でZ R3実証済み、Y個別の実走は次のY新規記事で確認)。OPEN-517 F1+F2(Y)=配線済み・runtime未確認(r5計測のみ・最終Gate適用行0。次のY正式runの初回JA判定で再tally、実害なし追跡)。E3/E4(Y)=発火0・追跡。 証跡=docs/research/FAMILY-Y-PRODUCTION-LAUNCH-01/EVIDENCE_03.md、docs/pm/RESULT_PACKET_YPL10.md。APPROVED_FOR_PRODUCTION新規宣言なし。
 - 運用(既存記述の要点・重複追記なし): 既定=Human Review待機(rc=4)。HRなしでの継続は明示宣言(`declared_by`+`user_ref`)のみで自動確定し、期限付き不在宣言は不採用。Part 2は~~Advancedのみ・Part 1直後~~(旧仕様、2026-10-27置換: 上記注記参照)。Z=`--regenerate-stage kp_<lv>`は再finalize(再選定なし)、選び直しはCLI `reselect`。
@@ -3163,8 +3167,22 @@ ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01完了報告(Gemini TTS Batch API実配線
 - **限定事項: 解消(2026-10-27、PM-SSOT-SYNC-18、Fable受入=PRODUCTION_WIRED)**。委任_04〜06(6e7fa7cf5/5db9e40bc/88b1a5173)で(a)(b)是正済み、実経路でHRQ 1行を確認。以下は解消前の記述(履歴):  (a)JA終端NGのHRQ行登録が判定器のslot書込に依存(実経路で欠落するか確認中)、(b)`BlockProgress.mark_done`がLR block(depth 1)の監査記録を上書き(resume正当性に影響なし)。未観測: X FamilyのSTOP(offline testのみ)・Yのchunk経路(構造的不発火)・Zセリフ終端Std版・X-Adv-5/Z-Std-3/Z-Adv-7。
 - **旧記述の扱い**: 本ファイル内の旧『600秒cooldown』『attempt3の直前のみ10分』『LR後1回』『総試行3回(2+1)』『Adv技術エラー時のみStyle切替』等の記述は「履歴(2026-10-26統一前)」と明示(上記注記)。X/Y/Z正式経路では本節が正。2026-09-26の「TTS retry: 10分cool-down+Local Rewrite」承認は、A/B/C(Legacy)と過去runの解釈用に残置。
 
-## Family Y Style profile(2026-10-26 `FAMILY-Y-STYLE-PROFILE-FIX-01`、OPEN-537/539/535。実装済み・再生成済み。Y経路のPRODUCTION_WIRED判定は別途Fable。PM-SSOT-SYNC-17で反映)
+## Family Y Style profile(2026-10-26 `FAMILY-Y-STYLE-PROFILE-FIX-01`、OPEN-537/539/535。実装済み・再生成済み。Y経路のPRODUCTION_WIRED判定は別途Fable(SYNC-21: 委任_07照合=確認条件1〜7充足、条件8=Fable独立受入は全体回帰[委任_08後]に判定。まだWIREDとは書かない)。PM-SSOT-SYNC-17で反映)
 
 - **Style profile**: Y runnerはXの承認profile `fx_20261017`を継承し(`resolve_run_profile`へYの承認profileだけを渡す)、runごとに固定記録する。legacy waiverは作らない(Opus M-2。既存runはrunner起動時に課金前STOP)。commit 3af84a499(配線)、d2d68194d(再生成+OPEN-535実経路evidence)。
 - **fail-closed Gate**: `audit/style_actual_vs_approved.json`。網羅検査はY期待集合`Y_ROLE_COVERAGE`(role×level×segment)と『実際にevaluate_segment_evidenceを実行した集合』の**完全一致**(不足=`Y_STYLE_COVERAGE_EMPTY`、期待外=`Y_STYLE_COVERAGE_UNEXPECTED`)。日本語roleは送信instructionの実測(再利用による自己一致を避ける。`migrate_record`のY経路使用はAST testで禁止)。test=`er121_family_y_style_profile_test_01.py`(37件、横断登録表R-7を含む)。
 - **残る判断事項**: V1(Voice本文へのPD06適用の是非)・S9(Voice 1〜3のStyle評価)は未決(旧`_02`と新版の並べた試聴をユーザー判断項目として提出、UDR管理)。
+
+## Family Y 再配達記事Closeout・Voice説明文・開発用Chunk境界マーカー(2026-10-27ユーザー正式決定USER_04、PM-SSOT-SYNC-21。原文=`docs/pm/delegation_log/2026-10-27_FAMILY-Y-STYLE-PROFILE-FIX-01_USER_04.md`)
+
+- **再配達記事 `_03`**: Std/Adv最終試聴PASS・正式承認(音声sha std_full `7c037f49…`/adv_full `f2c7d26f…`。本文・KP・学習内容承認。表示修正に伴う再生成・再試聴は不要)。OPEN-539 CLOSED。
+- **Voice説明文(`APPROVED_FOR_PRODUCTION`)**: 正式文言=「Voice 1〜3は実在人物の発言をそのまま再現したものではなく、実際に投稿された意見をもとに、AIが編集・再構成したものです。」Family Y共通、将来アプリ表示でも同一文言。**実際の投稿意見に基づく記事のみ適用**(根拠のない出典主張を生成しない)。旧文言は正式Productionテンプレート・公開ページ生成から撤去し整合確認する。
+- **開発用Chunk境界マーカー(`APPROVED_FOR_PRODUCTION`・開発用限定、既定public=エンドユーザー向けには出さない)**: 実際のTTS Chunk分割境界のみ`⏸`(秒数・タイムスタンプ・説明文なし)。ASR等で検出した通常の音声ポーズは表示しない。**開発段階のユーザー確認用表示に限定**し、量産時のエンドユーザー向けスクリプト・公開コンテンツ・将来アプリには表示しない。X/Y/Z共通。実際のChunk分割・追加ポーズ長・音声生成仕様は不変。技術的ポーズ表示(`⏸0.70s@0:39.0`等)は`_03`で撤去済み(945b07a28、音声sha不変)。
+- **実装状況**: `_03`表示修正済み(ポーズ表示19箇所撤去・説明文差替え)。Yページbuilder側の正式Production反映と整合確認は委任_08進行中(YSP)。Style継承のWIRED判定はOPEN-537(条件8は全体回帰後)。
+
+## KP確定内容保護(KP-CONFIRMED-CONTENT-PROTECTION-01。2026-10-27ユーザー正式決定④、全6経路`APPROVED_FOR_PRODUCTION`。Status=`IMPLEMENTED`+`EVIDENCE_COLLECTED`(X/Z Adv/Y)、**PRODUCTION_WIREDではない**。PM-SSOT-SYNC-21、OPEN-556)
+
+- **目的**: ユーザーが選んだKP・日本語訳・文法解説等が後工程の再生成で黙って変わる/失われることを防ぐ。
+- **実装(`er128_kp_confirmed_content_01.py`、commit 246093175/02B/12aede6f7)**: 確定レコード`confirmed_selection.json`が正本。G0〜G4(各段の保護検査: G0=確定後のKP書換え検知、G2=phrase_repeat検査[委任_03で3行追加]、G3=公開ページ照合[Stdはany-of、所見D3=低優先・残]等)、AI操作ガード(flag `EIGO_KP_CONFIRMED_PROTECTION`既定ON)、legacy drift検知、M2-b・M6・M8(Opus条件A M1〜M9全件採用)。
+- **evidence状況(委任_03、6経路)**: X Std/Adv・Y Std/Adv(現行runner世代コピー。gate通過後はHR Lock起因で別理由停止)・Z Adv=実runnerで『確定→下流→改変BLOCK』を実測。Z Std=関数レベル+改変STOPのみ(現行仕様のStd runなし、次回Z記事で採取)。
+- **未了**: 文法新仕様(Top1/Top2、上記文法選定節)接続後に全6経路でPRODUCTION_WIRED判定。既存test失敗(OPEN-543)は別管理。

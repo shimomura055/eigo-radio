@@ -493,3 +493,7 @@
 
 ### 2026-10-27 PM-SSOT-SYNC-18 追記(既存行は書き換えず追記)
 - **UDR-MONKEY-1 猿の手Std公開版c10差替え(OPEN-551、分類D=真に新しい判断)**: 決めること=公開mp3(301.8秒)の128.6〜133.4秒(4.7秒)にStyle落ち(PD06落ち)fallback clip `full_story_part1_c10`が含まれる件の扱い。案A=現状維持/案B=当該clipのみ再生成(約¥1〜2)→再組立→公開更新(**Fable推奨B**)/案C=ユーザーが聴取して人間承認。根拠=`docs/research/PM-OPEN-548-551-INVESTIGATION-01/OPEN551_Z_STYLE_CHECK_01.md`・OPEN_ITEMS OPEN-551追記。
+
+### 2026-10-27 PM-SSOT-SYNC-21 追記(既存行は書き換えず追記)
+- **UDR-AIIS-GRAM-1 AI島文法Top1/Top2選定(Std/Adv、OPEN-561/559、USER_DECISION_REQUIRED=ユーザーが選ぶ実作業)**: 決めること=AI島Std/Advそれぞれで、AI評価Top1/Top2(文法名+解説全文)から原則1件を選ぶ(0件可・2件同時選択不可)。提示=AI-ISLAND委任_02(フォーム新仕様化)後。KP/KW各10件は既にUSER_CONFIRMED(USER_02)。
+- **OPEN-526のUDR(HR候補選択+案A/B/C)=解消**: ユーザーのV3フォーム選定(USER_02)で置換、OPEN-526 CLOSED。上の『現在UDR-blocking: OPEN-526』は本追記で解消済み。UDR-MONKEY-1(OPEN-551)は据置。UDR-YRF-1(OPEN-539)はUSER_04でユーザー最終試聴PASS・承認=解消。
