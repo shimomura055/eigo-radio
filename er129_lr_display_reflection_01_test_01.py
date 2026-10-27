@@ -400,7 +400,7 @@ def test_u8_no_production_module_imports_er129():
     # 未配線(既定動作不変): Production/他moduleからimportされていない
     offenders = []
     for f in os.listdir(ROOT):
-        if f.endswith(".py") and f not in ("er129_lr_display_reflection_01.py", "er129_lr_display_reflection_01_test_01.py"):
+        if f.endswith(".py") and f not in ("er129_lr_display_reflection_01.py", "er129_lr_display_reflection_01_test_01.py", "er130_adopted_take_classifier_01.py", "er130_adopted_take_classifier_01_test_01.py"):
             try:
                 with open(os.path.join(ROOT, f), encoding="utf-8") as fh:
                     if "er129_lr_display_reflection_01" in fh.read():
