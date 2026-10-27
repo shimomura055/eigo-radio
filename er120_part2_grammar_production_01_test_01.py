@@ -215,7 +215,7 @@ F_SPEC = _feat("P3", PARAS[2], "SPEC", mq="impossible")
 
 def _doc(*feats, paras=PARAS, label="Test Story"):
     parsed = m.parse_candidates(_stepa_json(*feats), paras)
-    return m.build_candidates_doc(parsed, paras, label)
+    return m.build_candidates_doc(parsed, paras, label, level="b1b")
 
 
 def test_C1_tier_order_inv_after_non_inv():
@@ -302,7 +302,7 @@ def test_C9_reselect_is_api_free_and_cumulative_and_exhausts():
     assert d3["status"] == "NO_CANDIDATE" and d3["exhausted"] is True and d3["rejected_ids"] == ids
     # 再抽出時にrejected_idsを渡すと同じ候補は戻らない
     parsed = m.parse_candidates(_stepa_json(F_INV, F_CLEFT, F_SPEC), PARAS)
-    d4 = m.build_candidates_doc(parsed, PARAS, "x", rejected_ids=tuple(ids[:2]))
+    d4 = m.build_candidates_doc(parsed, PARAS, "x", rejected_ids=tuple(ids[:2]), level="b1b")
     assert [c["candidate_id"] for c in d4["candidates"]] == [ids[2]]
 
 
@@ -336,7 +336,7 @@ def _run(routed_, **kw):
     xp = kw.pop("xp", LLM(STEPB_OK))
     tr = kw.pop("tr", LLM(TR_OK))        # M-1: T1訳callは廃止。run_part2に渡さず、呼ばれないこと(n==0)をassertする
     kw.setdefault("mode", AUTO)
-    r = m.run_part2(PARAS, "Test Story", extract_call_fn=ex, explain_call_fn=xp, **kw)
+    r = m.run_part2(PARAS, "Test Story", extract_call_fn=ex, explain_call_fn=xp, **kw, level="b1b")
     return r, ex, xp, tr
 
 
@@ -369,7 +369,7 @@ def test_D3_body_change_regenerates_but_label_same(routed):
     paras2 = PARAS[:3] + ["Nothing else happened on that day."]
     ex, xp, tr = LLM(_stepa_json(F_INV, F_CLEFT, F_SPEC)), LLM(STEPB_OK), LLM(TR_OK)
     r2 = m.run_part2(paras2, "Test Story", mode=AUTO, cached_candidates=r1["candidates"], cached_result=r1["result"],
-                     extract_call_fn=ex, explain_call_fn=xp)
+                     extract_call_fn=ex, explain_call_fn=xp, level="b1b")
     assert ex.n == 1                                                                                    # 本文shaが違えば再抽出
     with pytest.raises(m.Part2Stale):
         m.require_fresh_part2(r1["result"], paras2, "Test Story", next_command="cmd", candidates_doc=r1["candidates"], grammar_review=r1["review_record"])
@@ -380,7 +380,7 @@ def test_D4_human_choice_changes_selection_and_regenerates_explanation_only(rout
     d = r1["candidates"]
     ex, xp, tr = LLM("unused"), LLM(STEPB_OK), LLM(TR_OK)
     r2 = m.run_part2(PARAS, "Test Story", mode="wait", review={"choice": "top2", "candidates_sha256": d["candidates_sha256"], "reason": "r"},
-                     cached_candidates=d, cached_result=r1["result"], extract_call_fn=ex, explain_call_fn=xp)
+                     cached_candidates=d, cached_result=r1["result"], extract_call_fn=ex, explain_call_fn=xp, level="b1b")
     assert ex.n == 0 and tr.n == 0 and xp.n == 1                                                         # 候補は再利用・TOP2の解説のみ新規
     assert r2["result"]["selection"]["rank"] == 2 and r2["result"]["selection"]["source"] == "human_top2"
 
@@ -511,7 +511,7 @@ def test_E5_write_and_load_artifacts(routed, tmp_path):
     out = m.write_artifacts(str(tmp_path / "study_text"), r["candidates"], r["result"])
     assert os.path.basename(out["candidates"]) == "grammar_candidates.json" and os.path.basename(out["result"]) == "part2_result.json"
     again = m.run_part2(PARAS, "Test Story", mode=AUTO, cached_candidates=m.load_json(out["candidates"]), cached_result=m.load_json(out["result"]),
-                        extract_call_fn=LLM("x"), explain_call_fn=LLM("x"))
+                        extract_call_fn=LLM("x"), explain_call_fn=LLM("x"), level="b1b")
     assert again["result"]["reused_from_previous_run"] is True
     assert open(out["md"], encoding="utf-8").read() == m.render_markdown(r["result"])
 
@@ -537,7 +537,7 @@ def test_E8_input_validation_before_any_call(routed):
     ex = LLM("x")
     for bad in ([], [""], "text", None):
         with pytest.raises(m.Part2InputError):
-            m.run_part2(bad, "L", extract_call_fn=ex)
+            m.run_part2(bad, "L", extract_call_fn=ex, level="b1b")
     with pytest.raises(m.Part2InputError):
         m.stepa_prompt(PARAS, "multi\nline")
     assert ex.n == 0
@@ -555,7 +555,7 @@ def test_P1_routing_is_registered_and_model_mismatch_is_fail_closed():
     def wrong_model(prompt):
         return _stepa_json(F_CLEFT), "some-other-model", {"input_tokens": 1, "output_tokens": 1, "cached_input_tokens": 0}, "r1"
     with pytest.raises(m.Part2Error):
-        m.extract_candidates(PARAS, "x", call_fn=wrong_model)
+        m.extract_candidates(PARAS, "x", call_fn=wrong_model, level="b1b")
 
 
 def test_P2_module_does_not_reference_trial_assets():
@@ -571,7 +571,8 @@ def test_P3_only_wiring_and_review_modules_import_the_module():
     配線module(er120_part2_wiring_01/_mock_01)だけ。X/Z runnerはwiring module経由(直接importしない)。"""
     me = os.path.basename(__file__)
     allowed = {"er119_grammar_review_01.py", "er119_kp_human_review_01.py", "er119_kp_human_review_cli_01.py",
-               "er120_part2_wiring_01.py", "er120_part2_mock_01.py"}
+               "er120_part2_wiring_01.py", "er120_part2_mock_01.py",
+               "er128_kp_confirmed_content_01.py"}   # KCP(確定内容保護)M6がfreeze_from_sidecarでPart 2の構造検査(split_sections)を遅延importする。GRAMMAR-PREGEN-ALL-LEVELS-01 委任_02で許可リストへ追加(KCP 02B導入時から失敗していた既存の取りこぼし)
     offenders = []
     for f in glob.glob(os.path.join(HERE, "*.py")):
         b = os.path.basename(f)
@@ -615,7 +616,7 @@ F2_CLEFT = _feat("P2", PARAS2[1], "CLEFT")
 
 def _doc2(*feats, ng=(), paras=PARAS2):
     parsed = m.parse_candidates(_stepa_json(*feats), paras)
-    return m.build_candidates_doc(parsed, paras, "Test Story", ng=ng)
+    return m.build_candidates_doc(parsed, paras, "Test Story", ng=ng, level="b1b")
 
 
 def _decision(doc, ch, reason="理由あり", **kw):
@@ -626,7 +627,7 @@ def _human(r_or_doc, ch, *, paras=PARAS, xp=None, **kw):
     """Human確定を適用してrun_part2(候補は再利用=Step A'' 0 call)。"""
     d = r_or_doc["candidates"] if "review_record" in r_or_doc else r_or_doc
     return m.run_part2(paras, "Test Story", review=_decision(d, ch, **kw), cached_candidates=d, extract_call_fn=LLM("must-not-be-called"),
-                       explain_call_fn=xp or LLM(STEPB_OK))
+                       explain_call_fn=xp or LLM(STEPB_OK), level="b1b")
 
 
 # ---- M-1: 訳の出所はTrial-07どおり ----
@@ -675,7 +676,7 @@ def test_M2_post_review_top2_rejects_old_auto_result_at_every_entrance(routed):
     assert r1["review_record"]["status"] == "UNREVIEWED_AUTO_ADOPTED"
     _fresh(r1)
     r2 = m.run_part2(PARAS, "Test Story", review=_decision(r1["candidates"], "top2"), cached_candidates=r1["candidates"], extract_call_fn=LLM("x"),
-                     explain_call_fn=LLM(STEPB_OK), prior_history=r1["review_record"]["history"])
+                     explain_call_fn=LLM(STEPB_OK), prior_history=r1["review_record"]["history"], level="b1b")
     assert r2["review_record"]["status"] == "REVIEWED" and r2["result"]["selection"]["source"] == "human_top2"
     _fresh(r2)
     for where in ("tts", "assemble", "load_level_inputs", "stage_pages", "stage_page_verify", "player"):
@@ -761,15 +762,15 @@ def test_M4_stage_input_shas_and_refinalize_without_extraction(routed, tmp_path)
     assert c0 == m.cand_stage_input_sha(PARAS, "Test Story") and c0 != m.cand_stage_input_sha(PARAS, "Other") and c0 != m.cand_stage_input_sha(PARAS2, "Test Story")
     f0 = m.final_stage_input_sha(PARAS, "Test Story", r1["review_record"])
     xp = LLM(STEPB_OK)
-    r2 = m.finalize_part2(PARAS, "Test Story", candidates_doc=r1["candidates"], review=_decision(r1["candidates"], "top2"), explain_call_fn=xp)
+    r2 = m.finalize_part2(PARAS, "Test Story", candidates_doc=r1["candidates"], review=_decision(r1["candidates"], "top2"), explain_call_fn=xp, level="b1b")
     assert xp.n == 1 and f0 != m.final_stage_input_sha(PARAS, "Test Story", r2["review_record"])             # 確定が変わるとinput_shaが変わる
     with pytest.raises(m.Part2Stale):                                                                      # 保存済み候補が無い/古い=再抽出せずStale(API 0)
-        m.finalize_part2(PARAS, "Test Story", candidates_doc=None, mode=AUTO)
+        m.finalize_part2(PARAS, "Test Story", candidates_doc=None, mode=AUTO, level="b1b")
     with pytest.raises(m.Part2Stale):
-        m.finalize_part2(PARAS2, "Test Story", candidates_doc=r1["candidates"], mode=AUTO)
+        m.finalize_part2(PARAS2, "Test Story", candidates_doc=r1["candidates"], mode=AUTO, level="b1b")
     xp2 = LLM(STEPB_OK)                                                                                    # PENDING: 専用例外で抜け、出力ファイルを作らない。失敗(Part2Error)ではない
     with pytest.raises(m.Part2PendingReview) as ei:
-        m.finalize_part2(PARAS, "Test Story", candidates_doc=r1["candidates"], mode="wait", explain_call_fn=xp2)
+        m.finalize_part2(PARAS, "Test Story", candidates_doc=r1["candidates"], mode="wait", explain_call_fn=xp2, level="b1b")
     assert ei.value.status == "PENDING_REVIEW" and ei.value.review_request["kind"] == "grammar" and xp2.n == 0
     assert not issubclass(m.Part2PendingReview, m.Part2Error) and list(tmp_path.iterdir()) == []
 
@@ -809,7 +810,7 @@ def test_M5_exhaustion_never_auto_zero_and_human_rejected_all():
         assert s["status"] == "RESELECT_EXHAUSTED" and s["review_status"] is None
     rq = m.review_request(d)
     assert rq["exhausted"] is True and rq["choices"] == ["omit", "reextract"] and rq["auto_default"] is None
-    r = m.run_part2(PARAS2, "Test Story", mode=AUTO, cached_candidates=d, extract_call_fn=LLM("x"))
+    r = m.run_part2(PARAS2, "Test Story", mode=AUTO, cached_candidates=d, extract_call_fn=LLM("x"), level="b1b")
     assert r["status"] == "RESELECT_EXHAUSTED" and r["result"] is None and r["review_record"] is None
     z = _human(d, "omit", paras=PARAS2, reason="全候補を却下済みのため省略")
     assert z["status"] == "ZERO" and z["result"]["zero_reason"] == "human_rejected_all" and z["review_record"]["status"] == "REVIEWED"
@@ -908,14 +909,14 @@ def test_M6_zero_is_never_reviewed_and_auto_never_counted_as_reviewed(routed):
 # ---- M-7(module側): 失敗後の再開で有料callをやり直さない ----
 def test_M7_resume_after_stepB_failure_does_not_reextract(routed, tmp_path):
     ex = LLM(_stepa_json(F_INV, F_CLEFT, F_SPEC))
-    doc = m.resolve_candidates(PARAS, "Test Story", None, call_fn=ex)                                      # 抽出stage(1 call)
+    doc = m.resolve_candidates(PARAS, "Test Story", None, call_fn=ex, level="b1b")                                      # 抽出stage(1 call)
     with pytest.raises(m.Part2Error) as ei:
-        m.finalize_part2(PARAS, "Test Story", candidates_doc=doc, mode=AUTO, explain_call_fn=LLM("garbage", fail_first=99))
+        m.finalize_part2(PARAS, "Test Story", candidates_doc=doc, mode=AUTO, explain_call_fn=LLM("garbage", fail_first=99), level="b1b")
     p = m.write_failed_record(str(tmp_path / "study_text"), ei.value, next_command="py er019_x.py --stage study_text", stage="part2")
     rec = json.load(open(p, encoding="utf-8"))
     assert rec["next_command"].endswith("--stage study_text") and rec["error_type"] == "Part2Error" and os.path.basename(p) == "part2_failed.json"
     xp = LLM(STEPB_OK)
-    r = m.finalize_part2(PARAS, "Test Story", candidates_doc=doc, mode=AUTO, explain_call_fn=xp)           # 再開
+    r = m.finalize_part2(PARAS, "Test Story", candidates_doc=doc, mode=AUTO, explain_call_fn=xp, level="b1b")           # 再開
     assert ex.n == 1 and xp.n == 1 and r["status"] == "SELECTED"                                           # Step A''は再実行されない
 
 

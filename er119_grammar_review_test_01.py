@@ -50,15 +50,23 @@ class GrammarCase(sup.KpTestCase):
         self.addCleanup(p.stop)
 
     def ensure(self, run_dir=None, sd=None, slug="coffee", ex=None, **kw):
-        return gr.ensure_grammar_review(sd or self.sd, run_dir=run_dir or self.run_dir, family="x", slug=slug, paragraphs=PARAS, label=LABEL,
+        return gr.ensure_grammar_review(sd or self.sd, level="b1b", run_dir=run_dir or self.run_dir, family="x", slug=slug, paragraphs=PARAS, label=LABEL,
                                         extract_call_fn=ex or self.ex, **kw)
+
+    def pregen(self, sd=None):
+        """GRAMMAR-PREGEN-ALL-LEVELS-01: Step Bの唯一の呼出点(事前生成stage)。未確定=全候補、確定済み=選定済みidだけ。再実行はAPI 0。"""
+        return p2w.pregen_stage(sd or self.sd, level="b1b", next_command="x", explain_call_fn=self.xp)
 
     def decide(self, choice, reason="理由あり", by="tester", sha=None, **kw):
         doc = gr.load_candidates(self.sd)
+        if choice in ("top1", "top2", "omit", "pick") and doc["candidates"] and gr.load_review(self.sd)["schema"] == g.SCHEMA_REVIEW_V2:
+            self.pregen()                     # 全候補の解説を見てから決める(v2)
         return gr.op_decide(self.sd, choice=choice, candidates_sha256=sha or doc["candidates_sha256"], reason=reason, by=by, **kw)
 
     def final(self, **kw):
-        return p2w.finalize_stage(self.sd, paragraphs=PARAS, label=LABEL, explain_call_fn=self.xp, **kw)
+        if gr.load_review(self.sd)["status"] in rv.FORWARD_STATUSES_BY_KIND["grammar"]:
+            self.pregen()                     # 確定済み=選定済みidだけ(未生成のときのみ。済みならAPI 0)。finalize自体はLLM 0
+        return p2w.finalize_stage(self.sd, level="b1b", paragraphs=PARAS, label=LABEL, **kw)
 
     def declare(self, rounds=(1,), by="tester", user_ref=""):
         return rv.add_declaration(run_dirs=[self.run_dir], by=by, reason="test", rounds=list(rounds), user_ref=user_ref, source="declare_absent_cli")
@@ -140,7 +148,7 @@ class TestNoCandidateAndExhausted(GrammarCase):
         s = g.summarize_review_statuses([r["review"]])
         self.assertEqual((s["reviewed"], s["no_candidate_unreviewed"]), (0, 1))
         self.assertIn(g.ZERO_P2, g.render_markdown(out["result"]))                    # 0件固定文面ZERO_P2
-        p2w.require_final(self.sd, PARAS, LABEL, next_command="x")
+        p2w.require_final(self.sd, PARAS, LABEL, level="b1b", next_command="x")
 
     def _exhaust_by_ng(self):
         self.ensure()
@@ -162,14 +170,14 @@ class TestNoCandidateAndExhausted(GrammarCase):
         self.assertEqual((rec["status"], rec["selection"]["zero_reason"]), (rv.ST_REVIEWED, "human_rejected_all"))
         out = self.final()
         self.assertEqual(out["result"]["zero_reason"], "human_rejected_all")
-        p2w.require_final(self.sd, PARAS, LABEL, next_command="x")
+        p2w.require_final(self.sd, PARAS, LABEL, level="b1b", next_command="x")
 
     def test_reextract_calls_step_a_once_and_ng_are_not_resurrected(self):
         self._exhaust_by_ng()
         rec = self.decide("reextract")
         self.assertEqual(rec["status"], rv.ST_REEXTRACT_REQUESTED)
         with self.assertRaises(p2w.Part2NotConfirmed):                                                       # 再抽出待ちは下流fail-closed
-            p2w.require_final(self.sd, PARAS, LABEL, next_command="x")
+            p2w.require_final(self.sd, PARAS, LABEL, level="b1b", next_command="x")
         n0 = self.ex.n
         r = self.ensure()                                                                                    # 次回起動: Step A'' 1 call
         self.assertEqual(self.ex.n, n0 + 1)
@@ -194,12 +202,12 @@ class TestHumanOps(GrammarCase):
         with self.assertRaises(rv.KpReviewError):
             self.decide("top1", by="")
         rec = self.decide("top2")
-        self.assertEqual((rec["status"], rec["selection"]["choice"]), (rv.ST_REVIEWED, "top2"))
+        self.assertEqual((rec["status"], rec["selection"]["choice"], rec["decision"]["choice"]), (rv.ST_REVIEWED, "pick", "top2"))   # v2: 選択はpickに正規化、入力のtop2はdecisionに記録
         self.assertEqual(rec["verdicts"][g.candidate_id("P1", PARAS[0].split(". ")[0] + ".")], "NOT_SELECTED")
         out = self.final()
         self.assertEqual(out["result"]["selection"]["source"], "human_top2")
-        res = p2w.require_final(self.sd, PARAS, LABEL, next_command="x")
-        self.assertEqual(res["selection"]["candidate_id"], rec["selection"]["candidate_id"])
+        res = p2w.require_final(self.sd, PARAS, LABEL, level="b1b", next_command="x")
+        self.assertEqual([i["selection"]["candidate_id"] for i in res["items"]], rec["selection"]["candidate_ids"])   # v2結果はitems[]
 
     def test_post_hoc_review_makes_old_result_stale_and_stage_sha_changes(self):
         self.ensure()
@@ -211,10 +219,10 @@ class TestHumanOps(GrammarCase):
         r2 = gr.load_review(self.sd)
         self.assertNotEqual(g.final_stage_input_sha(PARAS, LABEL, r2), sha1)                   # Z part2_b1bのinput_sha: 確定が変わると変わる
         with self.assertRaises(g.Part2Stale):                                                  # 旧結果(top1)は拒否
-            p2w.require_final(self.sd, PARAS, LABEL, next_command="x")
+            p2w.require_final(self.sd, PARAS, LABEL, level="b1b", next_command="x")
         self.final()                                                                           # 再finalize(Step A''なし)
         self.assertEqual(self.ex.n, 1)
-        p2w.require_final(self.sd, PARAS, LABEL, next_command="x")
+        p2w.require_final(self.sd, PARAS, LABEL, level="b1b", next_command="x")
 
     def test_reselect_registers_ng_in_shared_registry_and_copy_run_inherits(self):
         self.ensure()
@@ -301,7 +309,7 @@ class TestSignatureAndConsumers(GrammarCase):
             r["status"] = st
             gr._atomic_json(gr.paths(self.sd)["review"], r)
             with self.assertRaises(g.Part2Stale):
-                p2w.require_final(self.sd, PARAS, LABEL, next_command="x")
+                p2w.require_final(self.sd, PARAS, LABEL, level="b1b", next_command="x")
             with self.assertRaises(g.Part2PendingReview):
                 self.final()
         self.assertEqual(set(rv.FORWARD_STATUSES_BY_KIND["grammar"]), set(g.ALLOWED_REVIEW_STATUSES))
@@ -311,17 +319,17 @@ class TestSignatureAndConsumers(GrammarCase):
         self.decide("top1", accept_ai=True)
         self.final()
         r = gr.load_review(self.sd)
-        r["selection"]["candidate_id"] = "gxxxx"
+        r["selection"]["candidate_ids"] = ["gxxxx"]
         gr._atomic_json(gr.paths(self.sd)["review"], r)
         with self.assertRaises(g.Part2Stale):
-            p2w.require_final(self.sd, PARAS, LABEL, next_command="x")
+            p2w.require_final(self.sd, PARAS, LABEL, level="b1b", next_command="x")
 
     def test_missing_artifacts_fail_closed(self):
         with self.assertRaises(g.Part2Stale):
-            p2w.require_final(self.sd, PARAS, LABEL, next_command="x")
+            p2w.require_final(self.sd, PARAS, LABEL, level="b1b", next_command="x")
         self.ensure()
         with self.assertRaises(p2w.Part2NotConfirmed):
-            p2w.require_final(self.sd, PARAS, LABEL, next_command="x")
+            p2w.require_final(self.sd, PARAS, LABEL, level="b1b", next_command="x")
 
     def test_inconsistent_candidates_without_review_is_refused(self):
         self.ensure()
@@ -336,9 +344,9 @@ class TestSignatureAndConsumers(GrammarCase):
         res = out["result"]
         md = os.path.join(self.sd, f"{g.PART2_FILE_STEM}.md")
         html_ok = p2w.compose_page_html("<section class='study'>P1</section>", res)
-        p2w.verify_outputs(self.sd, PARAS, LABEL, next_command="x", md_path=md, html_text=html_ok)
+        p2w.verify_outputs(self.sd, PARAS, LABEL, level="b1b", next_command="x", md_path=md, html_text=html_ok)
         with self.assertRaises(g.Part2Stale):
-            p2w.verify_outputs(self.sd, PARAS, LABEL, next_command="x", md_path=md, html_text="<html>none</html>")
+            p2w.verify_outputs(self.sd, PARAS, LABEL, level="b1b", next_command="x", md_path=md, html_text="<html>none</html>")
         self.assertIn("<style>", p2w.compose_page_html("", res))                               # Part 1が空ならCSSを含める(R-1)
         self.assertNotIn("<style>", p2w.compose_page_html("<section>x</section>", res))
 
@@ -376,13 +384,15 @@ class TestCli(GrammarCase):
 
     def test_status_show_select_ng_unng_and_refusals(self):
         self.ensure()
+        self.pregen()                                              # v2: 解説の事前生成が済んでから提示・選択できる
         rc, out, err = self.run_cli(["status", "--run", self.run_dir])
         self.assertEqual(rc, 0, err)
         j = json.loads(out)
         self.assertEqual([os.path.normpath(x) for x in j["grammar_pending"]], [os.path.normpath(self.sd)])
         rc, out, err = self.run_cli(["grammar-show", "--run", self.run_dir])
         self.assertEqual(rc, 0, err)
-        self.assertIn("AI推奨(TOP1)", out)
+        self.assertIn("AI推奨 1", out)                                  # v2: 全候補の文法名+解説全文を提示(AI推奨=候補1)
+        self.assertIn("学習ページに載る全文", out)
         sha = gr.load_candidates(self.sd)["candidates_sha256"]
         rc, out, err = self.run_cli(["grammar-select", "--run", self.run_dir, "--choice", "top2", "--candidates-sha", sha, "--by", "t"])   # reason無し
         self.assertEqual(rc, 2)
@@ -391,6 +401,7 @@ class TestCli(GrammarCase):
         self.assertEqual(rc, 2)
         rc, out, err = self.run_cli(["grammar-ng", "--run", self.run_dir, "--rank", "1", "--reason", "x", "--by", "t"])
         self.assertEqual(rc, 0, err)
+        self.pregen()                                              # NG後の新候補一覧の解説を事前生成(再実行相当)
         sha = gr.load_candidates(self.sd)["candidates_sha256"]
         rc, out, err = self.run_cli(["grammar-select", "--run", self.run_dir, "--choice", "top1", "--accept-ai", "--candidates-sha", sha, "--by", "t"])
         self.assertEqual(rc, 0, err)

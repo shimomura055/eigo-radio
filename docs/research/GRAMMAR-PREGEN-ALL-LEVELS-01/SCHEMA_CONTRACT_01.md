@@ -82,7 +82,10 @@ Status: **CONTRACT_FIXED**(文書先行。実装=`er120_part2_grammar_production
   "frozen_at", "file_sha256" }
 ```
 - 各itemの`frozen_sha256`式は現行`frozen_sha_of(candidate_id, sentence, explanation_md, translation_ja)`と同一。v1(トップレベルに単一item)は`items`長1として読取互換。
-- `er120_part2_wiring_01`は凍結を **list[item]** として扱う。現行er128(v1)しか無い間は、1件のみ従来関数で、2件以上は`Part2Stale`(KCP v2未対応のためfail-closed)。KCP v2(`load_frozen_grammar_items`等)が実装されたら、wiringは`getattr`で自動的にそちらを使う(契約名: `load_frozen_grammar_items(study_dir)->list|None`)。
+- `er120_part2_wiring_01`は凍結を **list[item]** として扱う。現行er128(v1)しか無い間は、1件のみ従来関数で、2件以上は`Part2Stale`(KCP v2未対応のためfail-closed)。KCP v2が実装されたら、wiringは`getattr`で自動的にそちらを使う。
+- **KCP v2が実装すべき関数名(委任_04。追補)**: `load_frozen_grammar_items(study_dir) -> list[item]|None`(確定レコード無し/凍結なし=None) / `freeze_from_sidecar_items(study_dir, selected_candidates) -> list[item]|None`(sidecarの`explanation_status=provided`全文を凍結。Step Bを呼ばない) /
+  `freeze_part2_result_items(study_dir, result)`(通常検査を通ったv2結果の凍結。出所=stepB_generated_frozen) / `verify_part2_items(study_dir, result)`(G4: v2結果が確定した文法集合・凍結解説全文と一致。ZEROと確定の矛盾はINTEGRITY)。
+  wiringは4関数を`getattr`で個別に検出する(`load_frozen_grammar_items`が無ければv1経路)。v2結果(`items[]`)をv1関数へ渡す場合は単件viewにする(2件以上はfail-closed)。
 
 ## 5. `form_grammar_items`(フォームexporter / KCP from-form向け。API 0の純関数)
 `er120_part2_wiring_01.form_grammar_items(study_dir, *, level)` / `form_grammar_bundle(study_dir, *, level)`。事前生成が不完全・`part2_failed.json`あり・explanations不整合なら**データを出さずエラー**(`candidates_available`扱いにしない)。
@@ -100,6 +103,14 @@ item   = { "id": "g…"(=candidate_id。DATA_MODEL_02の既存キー), "candidat
 - 事前生成物は`ref_ja=None`。Adv(Part 1あり)では、選定文がPart 1訳pool一致で、`pool訳 != 結果の【日本語訳】`(凍結の有無に関係なく)なら **ISSUE(rc=4、`Part2NotConfirmed`)**。`require_fresh_part2`(v2)は`ref_ja_pool`を署名照合に使わない。
 - 解消手段(2つ): (a) 別候補を選ぶ/省略する(`omit`/`pick`)、(b) ユーザーが了承して現状のまま進める(`gr.op_accept_translation_diff(study_dir, ids, by, user_ref, reason)`。`--user-ref`必須、`grammar_translation_ack.json`へ記録、再送は冪等)。CLI配線は後続委任。
 - Std(Part 1なし)はpool空のためISSUEなし。
+- ISSUEは `grammar_translation_issue.json`(差分と解消手段)に記録。了承は `grammar_translation_ack.json`(Step B訳とPart 1訳のshaに結びつく=Part 1訳が変われば了承は効かない)。
+
+## 8. 補足(実装で確定した細部)
+- `pregen_stage(study_dir, *, level, next_command, ..., all_candidates=False)`: 未確定=全候補(source=pregen) / 確定済み(auto採用・v1確定)=選定済みidだけ(source=stepB_generated。凍結値のある候補は生成しない)。`all_candidates=True`(明示opt-in・有料)は、auto採用済みrunで全候補の解説を見て選び直す事後Reviewのため。
+- 事前生成物のsourceは「生成時点」を表す(pregen=確定前=ユーザー提示対象 / stepB_generated=確定後=ユーザー未閲覧)。結果itemの`translation_source`は pregen|stepB_generated|frozen。
+- `decision.explanation_sha_by_id`: 凍結なしの選定itemは、結果の`explanation_sha256`がこのshaと一致すること(確定=提示=公開)。凍結ありのitemは`frozen:<sha>`が正。
+- `gr.discover_dirs(run, level=None)`: level未指定は全levelの列挙のみ(status表示用。b1b,a2の順)。選択・sidecar書込みには必ずlevelを指定する(未指定の`[0]`は禁止)。
+- v1の確定済みreview(`grammar_human_review_v1`)+結果なし(進行中run)はreviewをv1のまま保ち、finalizeはv2結果+v1署名で突合する。未確定のv1 reviewは`ensure_grammar_review`がv2へ置換(履歴引継ぎ)。
 
 ## 7. 公開API(委任_03/04が参照する関数名)
 `er120_part2_grammar_production_01`: `LEVELS`, `level_name`, `PREGEN_MAX`, `GRAMMAR_MAX`, `pregen_explanations`, `validate_explanations`, `explanations_complete`, `select_from_candidates_v2`, `review_request_v2`, `finalize_review_record_v2`, `finalize_part2_v2`, `result_items`, `require_fresh_part2`(v1/v2自動判別), `verify_selection_matches_outputs`, `translation_issues`。
