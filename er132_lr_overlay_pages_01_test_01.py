@@ -374,7 +374,7 @@ def test_public_page_scan_flags_exactly_the_known_publication_mismatches():
 
 # ============================================================ patch(適用可能性・内容)
 def test_patch_applies_cleanly_to_head_index():
-    r = subprocess.run(["git", "apply", "--cached", "--check", PATCH], cwd=ROOT, capture_output=True, text=True)
+    r = subprocess.run(["git", "apply", "--cached", "--check", "--ignore-whitespace", PATCH], cwd=ROOT, capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
 
 
@@ -392,7 +392,7 @@ def patched_dir():
         for f in PATCH_FILES:
             blob = subprocess.run(["git", "show", f":{f}"], cwd=ROOT, capture_output=True, check=True).stdout
             open(os.path.join(d, f), "wb").write(blob)
-        r = subprocess.run(["git", "apply", "--unsafe-paths", "--directory=.", PATCH], cwd=d, capture_output=True, text=True)
+        r = subprocess.run(["git", "apply", "--ignore-whitespace", "--unsafe-paths", "--directory=.", PATCH], cwd=d, capture_output=True, text=True)
         assert r.returncode == 0, r.stderr
         yield d
     finally:

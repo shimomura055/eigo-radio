@@ -4,7 +4,7 @@
 
 ## 0. 結論
 1. 新module `er132_lr_overlay_pages_01.py`(新規1ファイル。**既存moduleへの追加0**)に、overlay・三者一致Gate・公開物混入検知を実装。どの既存コードからもimportされない(未配線)。stdlibのみをtop importし、er129/er020/er128は遅延import。
-2. 既存4module+共通ページ+Z runnerへの変更は**patchのみ**: `docs/research/LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01/patches/B3_wiring_01.patch`(`git diff`形式、7ファイル(既存module6+旧仕様test1)・+67/-18、現HEAD(e56c9a04f)に対し`git apply --check`/`git apply --cached --check`とも通る)。適用は統合配線commit(別委任)。
+2. 既存4module+共通ページ+Z runnerへの変更は**patchのみ**: `docs/research/LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01/patches/B3_wiring_01.patch`(`git diff`形式、7ファイル(既存module6+旧仕様test1)・+67/-18、現HEAD(e56c9a04f)に対し`git apply --check`/`git apply --cached --check`とも通る)。適用は統合配線commit(別委任)。**適用手順**: このrepoは`core.autocrlf=true`のため、checkout後のpatchファイルがCRLFになると素の`git apply`は失敗する(実測)。`git show <commit>:docs/research/LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01/patches/B3_wiring_01.patch | git apply`(blobのLFをそのまま適用)または`git apply --ignore-whitespace <patchファイル>`を使う(両方とも`--check`確認済み)。
 3. test `er132_lr_overlay_pages_01_test_01.py` 52件PASS(約19秒、合成+実データ。実データ不在時はskip)。patchは一時dirのHEADコピーに適用して内容・compile・check_page挙動をtestで固定(作業ツリーの既存moduleは無編集)。
 4. 既定動作不変: er132は未import(ASTで全`*.py`を走査するtestで固定)。patchを適用しても、LR 0のrunではoverlayが入力と**同一object**を返し(byte同一)、Gateは未配線呼出でも通る(新たな停止を作らない)。
 
