@@ -110,3 +110,5 @@ model: sonnet
 - STOPセンチネル(`STOP`/`STOP_ALL`)を削除・回避しない(解除はFable/ユーザーのみ)。
 - プロセス終了は自分が起動したPIDのみ(`docs/pm/PM_GOVERNANCE.md` 26-6)。`taskkill //IM python.exe`等のイメージ名・一括killは禁止(並行agentのprocessを巻き込む)。background起動時はPIDを記録し、待機は`sleep`/pollingで行う。判別できない場合は終了せずFableへ報告。
 - Z完成段(再実行時の段指定): `--stages provision_shell,gate,assemble,pages,page_verify`を**1起動**で指定する(provision_shell欠落でgateがrc=2→再起動するとRESTART_STORMを自行発動する。OPEN-480、2026-10-23)。
+
+- 報告運用(2026-10-28、正本=`docs/pm/PM_GOVERNANCE.md` 12-14): 本ファイルの報告(最終応答・RESULT_PACKET)はFable向けでありユーザー向けではない(ユーザー提示はFableが行う)。ユーザーへ直接中間報告・進捗連絡をしない。内部証拠・RESULT_PACKETの項目は省略しない。

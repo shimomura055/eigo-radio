@@ -22671,3 +22671,7 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - 決定(§2): Family Z「告げ口心臓」のみNarrator Aoede→Schedar(Std/Adv)。Z共通ルール化しない、英文不変、既存完成版再利用(管理ID=FZ-TELL-TALE-HEART-NARRATOR-VOICE-01)。
 - 決定(§3・§4): 「報告資料」=現在の試聴・確認フォーム(全Family・全レベル共通、アプリ表示は未決定)。表示=Chunk境界`⏸`(実分割記録、既存分割仕様不変)/LR赤(前後英文・範囲)/Fallback濃青(Style名・範囲)、全Role(英日)、重複識別、制作本文・TTS入力へ混入しない。受入7条件=原文§7。
 - Phase B進捗: 委任_06(d3775dae7)/07(e56c9a04f)/08(de9d53085)/09(ef20eb878)完了、Opus条件A完了(OPUS_REVIEW_01)、統合配線commit前。
+
+### 2026-10-28 PM-REPORTING-RULES-01 報告・表示運用ルール(ユーザー正式決定、既存行は書き換えず追記)
+- 原文=`docs/pm/delegation_log/2026-10-28_FZ-TELL-TALE-HEART-NARRATOR-VOICE-01_USER_02.md` §2・§3。正本=`docs/pm/PM_GOVERNANCE.md` 12-14(旧12-2〜12-12・9-8-1へ「12-14が優先」注記)。
+- 決定: ①作業中の詳細ログ(ツール実行・編集逐次・委任文・Worker経過・テスト詳細)をユーザー向けに出さない ②中間報告なし ③タスク単位で完了報告1件(混在・他タスク付記・別タスク待ちまとめ禁止、並列可) ④例外のみ即時(重大品質/安全・予算超過見込み・仕様/Scope判断・明示STOP・自律解決不能Blocker) ⑤内部証拠・品質管理は省略しない。最終報告=結論・品質結果・Production Wiring Status・QCD・必要なユーザー判断。既存STOP・承認・Gate・即時報告義務は弱めない。未回答再掲は完了報告内判断欄に限定(Fable整理)。表示抑制: ツール呼出自動表示はClaude側から抑制不可(`docs/research/PM-REPORTING-RULES-01/REPORTING_RULES_REFLECTION_01.md`)。
