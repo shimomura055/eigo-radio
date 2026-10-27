@@ -3014,7 +3014,11 @@ def _add_seek_target(table_html: str, target_id: str) -> str:
         '<button class="seek" data-sec="', f'<button class="seek" data-target="{target_id}" data-sec="')
 
 
-def _build_level_table(level_dir: str, level: str, japanese_title: str | None = None) -> str:
+def _build_level_table(level_dir: str, level: str, japanese_title: str | None = None, audience: str = "public") -> str:
+    """audience(委任_08): "public"(既定)=従来とバイト同一(マーカーなし) / "dev"=Full Story本文に実TTS Chunk境界(audit/chunk_plan_<level>.json)の⏸(開発確認用)。"""
+    import er_user_listening_page_common_01 as _uc
+    _uc.normalize_audience(audience)
+    _plans = _uc.load_chunk_plans(f"{level_dir}/audit/chunk_plan_{level}.json") if audience == _uc.AUDIENCE_DEV else {}
     assemble_summary = load_json(f"{level_dir}/run_summary_assemble.json")
     if assemble_summary.get("status") != "OK":
         return f"<p style='color:#b00'>Assembly未完了(status={assemble_summary.get('status')})。table省略。</p>"
@@ -3049,6 +3053,9 @@ def _build_level_table(level_dir: str, level: str, japanese_title: str | None = 
             continue
         info = _row_info_family_x(label, level, parts, support, narration_dir, kp_by_rank, japanese_title,
                                    kp_explanations_by_rank=kp_explanations_by_rank)
+        _m_fs = _re_only_segments.match(r"Full Story Part ([123])", label)
+        if _m_fs and audience == _uc.AUDIENCE_DEV and _uc.chunk_texts_of_plan(_plans.get(f"full_story_part{_m_fs.group(1)}")):
+            info = dict(info, text=_uc.script_html_with_chunk_markers(info["text"], _uc.chunk_texts_of_plan(_plans[f"full_story_part{_m_fs.group(1)}"])))
         sec = entry["start_seconds"]
         voice_disp = info["voice"] or ("SFX" if info["sfx"] else "—")
         if info["sfx"] or not info["audio"]:
@@ -3076,14 +3083,18 @@ def player_level_section(player_html: str, level: str) -> str:
     return player_html[start:min(ends)]
 
 
-def build_player_html(theme_out_dir: str, theme_id: str, japanese_title: str | None, study_html: str = "", study_html_a2: str = "") -> str:
+def build_player_html(theme_out_dir: str, theme_id: str, japanese_title: str | None, study_html: str = "", study_html_a2: str = "",
+                      audience: str = "public") -> str:
+    """audience(委任_08): "public"(既定)=Chunk境界マーカーなし(従来とバイト同一) / "dev"=開発確認用(player_dev.htmlへ出力。player.htmlを上書きしない)。"""
+    import er_user_listening_page_common_01 as _uc
+    _uc.normalize_audience(audience)
     abs_url = player_common.abs_file_url
     b1b_summary = _load_assemble_summary(f"{theme_out_dir}/b1b/run_summary_assemble.json")
     a2_summary = _load_assemble_summary(f"{theme_out_dir}/a2/run_summary_assemble.json")
 
     b1b_audio_html = f'<h2>Advanced(B1)</h2><p style="color:#b00">status={b1b_summary.get("status")}</p>'
     if b1b_summary.get("status") == "OK":
-        b1b_table = _add_seek_target(_build_level_table(f"{theme_out_dir}/b1b", "b1b"), "episode_audio_b1b")
+        b1b_table = _add_seek_target(_build_level_table(f"{theme_out_dir}/b1b", "b1b", audience=audience), "episode_audio_b1b")
         b1b_audio_html = (f'<h2>Advanced(B1)</h2>'
                            f'<audio id="episode_audio_b1b" class="main" controls preload="none" '
                            f'src="{abs_url(b1b_summary["out_path"])}"></audio>'
@@ -3094,7 +3105,7 @@ def build_player_html(theme_out_dir: str, theme_id: str, japanese_title: str | N
     a2_audio_html = f'<h2>Standard(A2)</h2><p style="color:#b00">status={a2_summary.get("status")}</p>'
     if a2_summary.get("status") == "OK":
         a2_table = _add_seek_target(
-            _build_level_table(f"{theme_out_dir}/a2", "a2", japanese_title), "episode_audio_a2")
+            _build_level_table(f"{theme_out_dir}/a2", "a2", japanese_title, audience=audience), "episode_audio_a2")
         a2_audio_html = (f'<h2>Standard(A2)</h2>'
                           f'<audio id="episode_audio_a2" class="main" controls preload="none" '
                           f'src="{abs_url(a2_summary["out_path"])}"></audio>'
@@ -3126,7 +3137,9 @@ Comment1→本文1→Comment2→本文2→Comment3→本文3→Comment4→In One
 {pww_sections_html}
 </body></html>
 """
-    out_path = f"{theme_out_dir}/player.html"
+    out_path = f"{theme_out_dir}/player.html" if audience == _uc.AUDIENCE_PUBLIC else f"{theme_out_dir}/player_dev.html"
+    if audience == _uc.AUDIENCE_PUBLIC and _uc.count_chunk_markers(html):
+        raise RuntimeError("FAMILY_X_PUBLIC_PLAYER_HAS_CHUNK_MARKER: 公開用playerに開発用Chunk境界マーカーがあります(出力しない)")
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(html)
     return out_path
@@ -3144,6 +3157,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--level", default="both", choices=("a2", "b1b", "both"))
     parser.add_argument("--stage", default="plan",
                          choices=("plan", "scaffold", "study_text", "tts", "assemble", "player", "all"))
+    parser.add_argument("--page-audience", default="public", choices=("public", "dev"),
+                         help="player stageの表示対象(委任_08)。public(既定)=Chunk境界マーカーなしのplayer.html。dev=開発確認用player_dev.htmlのみ実TTS Chunk境界に⏸を表示。")
     parser.add_argument("--dry-run", action="store_true",
                          help="API呼び出しを一切行わずplanのみ出力する(--stage plan相当を強制)。")
     parser.add_argument("--out-dir", default=None,
@@ -3731,7 +3746,8 @@ def main() -> None:
                 _study_html = _p2w().compose_page_html(_part1_html, _p2_results["b1b"])
             if "a2" in _p2_results:
                 _study_html_a2 = _p2w().compose_page_html("", _p2_results["a2"])   # Part 1はAdvancedのみ
-            player_path = build_player_html(out_dir, args.slug, japanese_title, study_html=_study_html, study_html_a2=_study_html_a2)
+            player_path = build_player_html(out_dir, args.slug, japanese_title, study_html=_study_html, study_html_a2=_study_html_a2,
+                                           audience=getattr(args, "page_audience", "public"))
             if _p2_results:   # R-3: 確定 <-> part2_result.json <-> study_text/*.md <-> player.html の**当該levelの節**の一致(節単位。不一致=STOP)
                 with open(player_path, encoding="utf-8") as _pf:
                     _player_text = _pf.read()

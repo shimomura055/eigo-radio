@@ -37,7 +37,95 @@ _JS = ("<script>document.querySelectorAll('button.playall').forEach(b=>b.onclick
        "a.currentTime=parseFloat(b.dataset.t);a.play();});</script>")
 
 
-def script_block(text: str) -> str:
+# ============================================================
+# 開発用Chunk境界マーカー(FAMILY-Y-STYLE-PROFILE-FIX-01 委任_08、ユーザー正式決定2026-10-27 §1-C。X/Y/Z共通の表示機構)
+#   - 実TTS Chunk分割境界(chunk i と i+1 の間)にだけ ⏸ を1個置く。秒数・説明・title属性なし。ASR/音声解析のポーズは使わない・表示しない。
+#   - audience="public"(既定)はマーカーなし(従来とバイト同一)。"dev"(開発用試聴ページ)でのみマーカーを出す。env/設定dict/起動scriptでの暗黙ONはしない
+#     (呼出側が引数で明示指定する)。表示専用で音声・Chunk分割・ポーズ長・TTSは一切変更しない(API 0)。
+# ============================================================
+AUDIENCE_PUBLIC, AUDIENCE_DEV = "public", "dev"
+AUDIENCES = (AUDIENCE_PUBLIC, AUDIENCE_DEV)
+CHUNK_MARKER_CHAR = "⏸"            # U+23F8(HTMLでは &#9208;)
+CHUNK_MARKER_ENTITY = "&#9208;"
+CHUNK_MARKER_CLASS = "chunk-mark"
+_CHUNK_MARKER_HTML = f"<span class='{CHUNK_MARKER_CLASS}'>{CHUNK_MARKER_ENTITY}</span>"
+
+
+def normalize_audience(audience) -> str:
+    """audience引数の検証(fail-closed)。None不可・未知値はValueError(暗黙にdevへ倒さない)。"""
+    if audience not in AUDIENCES:
+        raise ValueError(f"audience は {AUDIENCES} のいずれか(指定={audience!r})")
+    return audience
+
+
+def count_chunk_markers(text: str) -> int:
+    """HTML/テキスト中のChunk境界マーカー(U+23F8 または &#9208;/&#x23f8;)の個数。公開物検査・test用。"""
+    t = text or ""
+    return t.count(CHUNK_MARKER_CHAR) + len(re.findall(r"&#(?:9208|x23f8);", t, re.I))
+
+
+def count_boundary_marker_spans(text: str) -> int:
+    """台本中の境界マーカー本体(<span class='chunk-mark'>)の個数。凡例の記号(開発用ページ冒頭の1行)は含まない。dev出力が実Chunk境界数と一致するかの検査用。"""
+    return (text or "").count(f"class='{CHUNK_MARKER_CLASS}'")
+
+
+def chunk_texts_of_plan(plan) -> list:
+    """chunk planから境界を持つchunk本文のlist(chunked=Falseまたはchunk<2なら空=境界なし)。"""
+    if not plan or not plan.get("chunked"):
+        return []
+    texts = [c.get("text") or "" for c in plan.get("chunks") or []]
+    return texts if len(texts) >= 2 else []
+
+
+def load_chunk_plans(path: str) -> dict:
+    """audit/chunk_plan_<level>.json の plans({親id: plan})。ファイルが無い/壊れていれば{}(境界情報なし=マーカーなし)。"""
+    try:
+        with open(path, encoding="utf-8") as f:
+            return (json.load(f) or {}).get("plans") or {}
+    except (OSError, ValueError):
+        return {}
+
+
+def _find_chunk(text: str, chunk: str, cursor: int):
+    """text[cursor:] 内の chunk の (start,end)。完全一致を優先し、無ければ空白差だけを許容した一致。見つからなければNone(推定位置は出さない)。"""
+    c = (chunk or "").strip()
+    if not c:
+        return None
+    i = text.find(c, cursor)
+    if i >= 0:
+        return i, i + len(c)
+    pat = r"\s+".join(re.escape(w) for w in c.split())
+    m = re.compile(pat).search(text, cursor)
+    return (m.start(), m.end()) if m else None
+
+
+def script_html_with_chunk_markers(text: str, chunk_texts, warnings: list | None = None) -> str:
+    """台本textをHTMLエスケープし、実Chunk境界(chunk i の直後、i<最終)に ⏸ を1個ずつ差し込んだHTML断片を返す。
+    chunk本文が台本に見つからない境界は表示しない(推定位置は出さない)。warningsがあれば理由を追記する。"""
+    text = text or ""
+    chunks = list(chunk_texts or [])
+    if len(chunks) < 2:
+        return esc(text)
+    pieces, cursor, last = [], 0, 0
+    for i, ch in enumerate(chunks[:-1]):
+        pos = _find_chunk(text, ch, cursor)
+        if pos is None:
+            if warnings is not None:
+                warnings.append(f"CHUNK_TEXT_NOT_FOUND_IN_SCRIPT: boundary {i + 1}/{len(chunks) - 1}")
+            continue
+        pieces.append(esc(text[last:pos[1]]))
+        pieces.append(" " + _CHUNK_MARKER_HTML)
+        last = cursor = pos[1]
+    pieces.append(esc(text[last:]))
+    return "".join(pieces)
+
+
+def script_block(text: str, chunk_texts=None, audience: str = AUDIENCE_PUBLIC, warnings: list | None = None) -> str:
+    """台本1ブロック。既定(audience=public・chunk_texts未指定)は従来とバイト同一。
+    audience="dev" かつ chunk_texts(実Chunk plan由来)が2個以上のときだけ、chunk境界に ⏸ を差し込む。publicではchunk_textsを渡されてもマーカーを出さない。"""
+    normalize_audience(audience)
+    if audience == AUDIENCE_DEV and chunk_texts:
+        return "<div class='script'>" + script_html_with_chunk_markers(text, chunk_texts, warnings) + "</div>"
     return "<div class='script'>" + esc(text or "") + "</div>"
 
 
@@ -149,9 +237,11 @@ def _norm(s: str) -> str:
     return re.sub(r"\s+", " ", s or "").strip()
 
 
-def check_page(html_text: str, base_dir: str | None = None, levels=("Standard", "Advanced")) -> dict:
+def check_page(html_text: str, base_dir: str | None = None, levels=("Standard", "Advanced"), audience: str = AUDIENCE_PUBLIC) -> dict:
     """ユーザー試聴ページ標準適合check。戻り値={'overall':'PASS'|'FAIL','checks':{name:{ok,detail}},'levels':{...}}。
-    levels=この頁に必須のレベル節(1レベル単独頁なら ('Standard',))。base_dir指定時は音声ファイル実在も確認。"""
+    levels=この頁に必須のレベル節(1レベル単独頁なら ('Standard',))。base_dir指定時は音声ファイル実在も確認。
+    audience="public"(既定)のページに開発用Chunk境界マーカー(⏸/&#9208;)があればNG(公開物へのマーカー混入防止、委任_08)。"dev"は検査しない。"""
+    normalize_audience(audience)
     t = _Tree()
     t.feed(html_text)
     flat = t.flat
@@ -240,6 +330,8 @@ def check_page(html_text: str, base_dir: str | None = None, levels=("Standard", 
     visible = re.sub(r"<[^>]+>", " ", html_text)
     put("no_file_scheme", not ("file:///" in html_text or "C:\\" in html_text or "C:/" in html_text))
     put("no_A2_B1_label", not re.search(r"\(A2\)|\(B1\)|B1B", visible))
+    if audience == AUDIENCE_PUBLIC:
+        put("no_chunk_marker_in_public", count_chunk_markers(html_text) == 0, f"markers={count_chunk_markers(html_text)}")
     # C7 音声実在
     if base_dir:
         miss = [n.attrs.get("src") for n in flat if n.tag == "audio" and n.attrs.get("src")

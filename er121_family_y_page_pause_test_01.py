@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01 委任_03: 試聴ページ(TTS分割/追加0.2秒の明示・実測停止の重畳・Voice 1候補表)の表示helperのtest。API 0・表示専用。"""
+"""FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01 委任_03: 試聴ページ(TTS分割/追加0.2秒の明示・Voice 1候補表の停止統計)の表示helperのtest。API 0・表示専用。
+FAMILY-Y-STYLE-PROFILE-FIX-01 委任_08: 台本への実測ポーズ⏸重畳は撤去(ASR/音声解析ポーズは表示しない)。台本の⏸=実Chunk境界のみ・開発用限定=er_page_audience_marker_test_01.py。"""
 import os
 import unittest
 
@@ -40,16 +41,16 @@ class PauseScanTest(unittest.TestCase):
         self.assertAlmostEqual(st["max_ms"], 1500, delta=30)
         al = ya.pause_align(ya.pause_scan(x, SR), text)
         self.assertEqual(len(al), 1)
-        self.assertTrue(al[0]["at_punctuation"])          # 句読点直後を優先して割当
-        html = ya._script_with_pauses(text, al)
-        self.assertIn("&#9208;1.50s@", html)
-        self.assertIn("three,", html)
+        self.assertTrue(al[0]["at_punctuation"])          # 句読点直後を優先して割当(Voice 1候補表の停止統計用の解析。台本には重畳しない)
 
-    def test_below_mark_threshold_not_shown(self):
-        text = "a b c d e f g h"
-        al = ya.pause_align(ya.pause_scan(_sig([(1.0, 1), (0.5, 0), (1.0, 1)]), SR), text)
-        self.assertEqual(len(al), 1)
-        self.assertNotIn("&#9208;", ya._script_with_pauses(text, al))      # 500ms < 700ms
+    def test_asr_pause_is_never_rendered_into_script(self):
+        """実測ポーズ(1.5秒)があっても、台本ブロック(公開/開発とも)にポーズ由来の⏸は出ない(境界=実Chunk planのみ)。"""
+        import er_user_listening_page_common_01 as cp
+        text = "one two three, four five six seven eight nine ten"
+        self.assertEqual(ya.pause_align(ya.pause_scan(_sig([(1.0, 1), (1.5, 0), (3.0, 1)]), SR), text)[0]["dur_ms"] // 100, 15)
+        for aud in ("public", "dev"):
+            self.assertEqual(cp.count_chunk_markers(cp.script_block(text, None, aud)), 0)
+        self.assertFalse(hasattr(ya, "PAUSE_MARK_MIN_MS"))
 
 
 class BadgeTest(unittest.TestCase):
@@ -78,6 +79,9 @@ class BadgeTest(unittest.TestCase):
         lg = ya.page_legend_html(dec)
         self.assertIn("TTSの実分割: <b>なし", lg)
         self.assertIn("追加0.2秒ポーズ: <b>なし", lg)
+        self.assertNotIn("&#9208;", lg)                     # 公開(既定)の凡例にマーカー/見本は無い
+        self.assertNotIn("実測", lg)
+        self.assertIn("&#9208;=TTS Chunk分割境界(開発確認用)", ya.page_legend_html(dec, "dev"))     # 開発用のみ1行
 
     def test_candidates_aux_empty_without_candidates(self):
         import tempfile

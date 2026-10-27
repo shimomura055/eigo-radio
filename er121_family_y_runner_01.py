@@ -170,6 +170,7 @@ class YContext:
     mock_api: object = None
     style_profile: str = None                   # resolve_style_profile()が設定(課金前)。None=未解決=stageはSTOP(fail-closed)
     style_profile_source: str = None
+    page_audience: str = "public"               # pages stageの表示対象。"public"(既定)=Chunk境界マーカーなし / "dev"=開発用ページ(index_dev.html)のみ⏸を表示(CLI --page-audience で明示指定。委任_08)
 
     def __post_init__(self):
         if self.pages_dir is None:
@@ -1175,8 +1176,24 @@ def stage_assemble(ctx) -> dict:
     return out
 
 
+def _page_notice_applies(ctx) -> bool:
+    """Voice説明文(承認文言)の適用判定: 実投稿に基づく記事か(Theme Packageの全Voiceの経験に非空source_ids)。
+    Theme Packageを読めない場合は判定不能=STOP(黙って説明文を落とさない/根拠なく出さない)。"""
+    if not ctx.theme_package_path or not os.path.exists(ctx.theme_package_path):
+        raise YE2EStop("FAMILY_Y_THEME_PACKAGE_MISSING_FOR_NOTICE: Voice説明文の適用判定(実投稿に基づく記事か)に --theme-package <json> が必要です(pages/page_verifyも同じ指定)")
+    return ys.theme_package_is_post_based(_rj(ctx.theme_package_path))
+
+
+def _page_audience(ctx) -> str:
+    import er_user_listening_page_common_01 as cp
+    return cp.normalize_audience(getattr(ctx, "page_audience", "public"))
+
+
 def stage_pages(ctx) -> dict:
+    import er_user_listening_page_common_01 as cp
     ya = _ya()
+    audience = _page_audience(ctx)                              # 既定public(マーカーなし)。devはCLI --page-audience devの明示指定のみ(env/設定での暗黙ONなし)
+    show_notice = _page_notice_applies(ctx)
     ja_segs = ys.split_y_article(_rd(_ja_path(ctx)))["segments"]
     title = ys.split_y_article(_rd(_ja_path(ctx)))["title"]
     _assert_kp_review_consistent(ctx, "a2", "stage_pages")
@@ -1191,25 +1208,31 @@ def stage_pages(ctx) -> dict:
     study_html_std = _p2w().compose_page_html("", p2res_std)    # 同じ共通builder・同じテンプレート(Standardに載せるのはPart 2だけ。Part 1はAdvancedのみ)
     audio_dir = f"{ctx.pages_dir}/audio"
     os.makedirs(audio_dir, exist_ok=True)
-    levels = [ya.build_page_rows(ctx.out_dir, lv, audio_dir, "audio", ja_paragraphs=ja_segs) for lv in ("a2", "b1b")]     # Standard, Advanced の順
+    levels = [ya.build_page_rows(ctx.out_dir, lv, audio_dir, "audio", ja_paragraphs=ja_segs, audience=audience) for lv in ("a2", "b1b")]     # Standard, Advanced の順
     for lvd in levels:
         html_by_id = {"advanced": study_html, "standard": study_html_std}
         if html_by_id.get(lvd["id"]):
             lvd["study_html"] = html_by_id[lvd["id"]]
-    html_text = ya.render_y_page(title, levels, aux_html=ya.voice1_candidates_aux_html(ctx.out_dir, audio_dir, "audio"))     # 候補が無ければ空(従来と同一)
-    page = f"{ctx.pages_dir}/index.html"
+    html_text = ya.render_y_page(title, levels, aux_html=ya.voice1_candidates_aux_html(ctx.out_dir, audio_dir, "audio"),      # 候補が無ければ空(従来と同一)
+                                 show_notice=show_notice, audience=audience)
+    if audience == cp.AUDIENCE_PUBLIC and cp.count_chunk_markers(html_text):
+        raise YE2EStop(f"FAMILY_Y_PUBLIC_PAGE_HAS_CHUNK_MARKER: 公開用ページに開発用Chunk境界マーカーが{cp.count_chunk_markers(html_text)}件あります(出力しない)")
+    page = f"{ctx.pages_dir}/index.html" if audience == cp.AUDIENCE_PUBLIC else f"{ctx.pages_dir}/index_dev.html"      # devは公開用index.htmlを上書きしない
     with open(page, "w", encoding="utf-8") as f:
         f.write(html_text)
-    return {"page": page, "levels": [lv["id"] for lv in levels]}
+    return {"page": page, "levels": [lv["id"] for lv in levels], "audience": audience, "voice_notice_shown": show_notice,
+            "chunk_markers": cp.count_chunk_markers(html_text)}
 
 
-def evaluate_page_verify(html_text: str, base_dir: str) -> list:
+def evaluate_page_verify(html_text: str, base_dir: str, expect_notice: bool = True) -> list:
+    """公開用(public)ページの検証。開発用Chunk境界マーカーが1件でもあればNG(check_pageのno_chunk_marker_in_public)。
+    expect_notice=False=実投稿に基づかない記事(説明文が無いこと)。"""
     import er_user_listening_page_common_01 as cp
     v = []
-    chk = cp.check_page(html_text, base_dir=base_dir)
+    chk = cp.check_page(html_text, base_dir=base_dir, audience=cp.AUDIENCE_PUBLIC)
     if chk.get("overall") != "PASS":
         v.append(f"STANDARD_PAGE_CHECK_NOT_PASS: {[n for n, x in (chk.get('checks') or {}).items() if not x.get('ok')]}")
-    n = ys.check_y_page_notice(html_text)
+    n = ys.check_y_page_notice(html_text, expect_notice=expect_notice)
     v.extend(n["violations"])
     return v
 
@@ -1231,12 +1254,14 @@ def _verify_kp_selection(ctx, html_text: str) -> dict:
 
 
 def stage_page_verify(ctx) -> dict:
+    if _page_audience(ctx) != "public":
+        raise YE2EStop("FAMILY_Y_PAGE_VERIFY_DEV_PAGE: 開発用ページ(audience=dev, index_dev.html)は公開用の検証・final manifestの対象外です。--page-audienceを指定せず(public)検証してください")
     page = f"{ctx.pages_dir}/index.html"
     if not os.path.exists(page):
         raise YE2EStop(f"FAMILY_Y_PAGE_MISSING: {page}(pages stageを先に実行)")
     with open(page, encoding="utf-8") as f:
         html_text = f.read()
-    viol = evaluate_page_verify(html_text, ctx.pages_dir)
+    viol = evaluate_page_verify(html_text, ctx.pages_dir, expect_notice=_page_notice_applies(ctx))
     _assert_study_ready(ctx, "stage_page_verify")
     _assert_std_part2_ready(ctx, "stage_page_verify")
     rec = {"page": page, "violations": viol, "ok": not viol}
@@ -1472,6 +1497,8 @@ def build_parser():
     p.add_argument("--warn-threshold-jpy", type=float, default=WARN_THRESHOLD_JPY)
     p.add_argument("--ack-warn-threshold", action="store_true")
     p.add_argument("--tts-execution-mode", default="STANDARD", choices=("STANDARD", "BATCH"))
+    p.add_argument("--page-audience", default="public", choices=("public", "dev"),
+                   help="pages stageの表示対象。public(既定)=Chunk境界マーカーなし(公開用index.html)。dev=開発確認用(index_dev.html)のみ実TTS Chunk境界に⏸を表示。page_verifyはpublic専用")
     p.add_argument("--clear-stop", action="store_true")
     p.add_argument("--reason", default=None)
     return p
@@ -1532,6 +1559,7 @@ def main(argv=None):
         else:
             ctx = build_real_context(args)
         ctx.only_segments, ctx.regenerate_stage = ya_only, args.regenerate_stage
+        ctx.page_audience = args.page_audience
         os.makedirs(ctx.out_dir, exist_ok=True)
         _wj(f"{ctx.out_dir}/voice_assignment.json", ys.verify_voice_assignment())
         if args.kp_review == "auto":

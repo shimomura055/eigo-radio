@@ -1227,13 +1227,14 @@ NOINDEX_META = "<meta name=\"robots\" content=\"noindex,nofollow\">"
 
 
 # ============================================================
-# 試聴ページ用: TTS分割/追加0.2秒の明示・実測停止の重畳・Voice 1候補表(表示専用。音声・Gate・採否に使わない。API 0)
-# 2026-10-26 FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01 委任_03(ユーザー原文§4)。位置は台本語への推定(ASRに語時刻が無いため±2〜3語)。
+# 試聴ページ用: TTS分割/追加0.2秒の明示・Voice 1候補表(表示専用。音声・Gate・採否に使わない。API 0)
+# 2026-10-26 FAMILY-Y-FEEDBACK-COMMENT2-PAUSE-01 委任_03(ユーザー原文§4)。
+# 2026-10-27 FAMILY-Y-STYLE-PROFILE-FIX-01 委任_08: 台本上の実測ポーズ重畳表示(旧表示関数・旧しきい値定数・旧スタイル定数)は撤去
+# (ユーザー決定: ASR/音声解析のポーズは表示しない)。台本の⏸は実TTS Chunk境界のみ・開発用(audience="dev")限定=er_user_listening_page_common_01.script_block。
+# pause_scan/pause_align/pause_stats は Voice 1候補表の停止統計(解析表)用に残置(Fable判断(b))。
 # ============================================================
-PAUSE_MARK_MIN_MS = 700                 # 台本上に⏸を出す下限(表示専用)
 PAUSE_SCAN_DBFS, PAUSE_SCAN_MIN_MS, PAUSE_BLIP_MS = -40.0, 150, 120
 PAUSE_MID_CLAUSE_MIN_MS = 500           # Voice 1候補表の『文中停止数』= 句読点外の統合後停止のうち500ms以上
-_PZ_STYLE = "background:#ffe0b2;color:#a30;font-weight:bold;padding:0 3px;border-radius:3px;font-size:.9em"
 _BADGE_STYLE = "display:inline-block;background:#e8f0fe;border:1px solid #9ab;border-radius:3px;padding:1px 6px;font-size:.8em;margin:2px 0"
 
 
@@ -1329,31 +1330,6 @@ def pause_stats(arr, sr, text: str) -> dict:
             "pause_ratio_pct": round(100 * sum(p_["dur_ms"] for p_ in al) / 1000 / tot, 1) if tot else 0.0}
 
 
-def _mmss(sec: float) -> str:
-    return f"{int(sec // 60)}:{sec % 60:04.1f}"
-
-
-def _script_with_pauses(text: str, marks: list) -> str:
-    """台本1ブロック。実測した長い停止(>=PAUSE_MARK_MIN_MS)を該当語の直後に ⏸(長さ@行内の秒)で重ねる。marksは pause_align の結果。"""
-    import html
-    toks = re.split(r"(\s+)", text or "")
-    wpos = {}
-    for i, t in enumerate(toks):
-        if t and not t.isspace():
-            wpos[i] = len(wpos)
-    after = {}
-    for p_ in marks:
-        k = p_.get("word_index")
-        if k is not None and p_["dur_ms"] >= PAUSE_MARK_MIN_MS:
-            after.setdefault(k - 1, []).append(p_)
-    out = []
-    for i, t in enumerate(toks):
-        out.append(html.escape(t))
-        for p_ in after.get(wpos.get(i), []):
-            out.append(f" <span style=\"{_PZ_STYLE}\" title=\"実測の停止(位置は推定)\">&#9208;{p_['dur_ms'] / 1000:.2f}s@{_mmss(p_['start_s'])}</span>")
-    return "<div class='script'>" + "".join(out) + "</div>"
-
-
 def _tts_unit_badge(level: str, decision: dict, sid: str) -> str:
     """R1: segmentごとのTTS生成単位バッジ。分割の有無は chunk_tts_decision.json(実際の判定)から読む。"""
     import html
@@ -1369,17 +1345,18 @@ def _tts_unit_badge(level: str, decision: dict, sid: str) -> str:
     return f"<div><span style=\"{_BADGE_STYLE}\">{html.escape(txt)}</span></div>"
 
 
-def page_legend_html(decisions: dict) -> str:
-    """ページ冒頭の凡例1ブロック(本文外)。実分割の有無はchunk_tts_decision.json(level別)から集計して明示する。"""
+def page_legend_html(decisions: dict, audience: str = "public") -> str:
+    """ページ冒頭の凡例1ブロック(本文外)。実分割の有無はchunk_tts_decision.json(level別)から集計して明示する。
+    ASR/音声解析のポーズ表示の凡例は無い(撤去済み、委任_08)。audience="dev"のときだけ『⏸=TTS Chunk分割境界(開発確認用)』の1行を足す(公開では出さない)。"""
+    import er_user_listening_page_common_01 as cp
+    cp.normalize_audience(audience)
     n_chunked = sum(1 for d in decisions.values() for sg in ((d or {}).get("segments") or {}).values() if sg.get("chunked"))
     split_txt = "なし(全segmentが1段落のため、各segmentを1回のTTSで生成)" if n_chunked == 0 else f"{n_chunked} segmentで分割"
     zero = "なし" if n_chunked == 0 else "分割境界のみあり"
+    dev_line = f"<br>{cp.CHUNK_MARKER_ENTITY}=TTS Chunk分割境界(開発確認用)" if audience == cp.AUDIENCE_DEV else ""
     return ("<div class='note'><b>この試聴ページの見方</b><br>"
             f"TTSの実分割: <b>{split_txt}</b> / 追加0.2秒ポーズ: <b>{zero}</b>(StandardもAdvancedと同じ段落境界分割の対象。段落が1つのsegmentは分割しません)。"
-            "台本の見た目の段落とTTSの実分割は別のものです。<br>"
-            f"<span style=\"{_PZ_STYLE}\">&#9208;1.25s@0:13.7</span> = 完成音声を実測した{PAUSE_MARK_MIN_MS}ms以上の停止(長さ@その行の音声内の時刻)。"
-            "台本上の位置は語への割当てで<b>推定(前後2〜3語の誤差)</b>です。聴いて不自然に感じた時刻と見比べてください。"
-            f"&#9660;(TTS実分割位置)の表示は、分割があるsegmentでのみ出ます({'今回はありません' if n_chunked == 0 else '今回は分割があるsegmentにのみ出ます'})。</div>")
+            f"台本の見た目の段落とTTSの実分割は別のものです。{dev_line}</div>")
 
 
 def voice1_candidates_aux_html(theme_out_dir: str, audio_dir: str, audio_rel: str) -> str:
@@ -1441,14 +1418,17 @@ def _script(text):
     return cp.script_block(text or "")
 
 
-def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: str, ja_paragraphs: list | None = None) -> dict:
-    """assembled wav+timeline から、再生順の全スクリプト表の行を作る(mp3化込み)。行ラベルに内部ID・Voice名を出さない。"""
+def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: str, ja_paragraphs: list | None = None, audience: str = "public") -> dict:
+    """assembled wav+timeline から、再生順の全スクリプト表の行を作る(mp3化込み)。行ラベルに内部ID・Voice名を出さない。
+    audience="public"(既定)=台本にChunk境界マーカーを出さない。"dev"=開発用試聴ページ向け。実TTS Chunk境界(audit/chunk_plan_<level>.json)にだけ⏸を出す(ASRポーズは使わない)。"""
     import imageio_ffmpeg
     import soundfile as sf
     import subprocess
     import er_user_listening_page_common_01 as cp
+    cp.normalize_audience(audience)
     ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
     base = f"{theme_out_dir}/{level}"
+    chunk_plans = cp.load_chunk_plans(f"{base}/audit/chunk_plan_{level}.json") if audience == cp.AUDIENCE_DEV else {}
     wavs = sorted(glob.glob(f"{base}/assembled/*.wav"))
     if len(wavs) != 1:
         raise YAudioStop(f"FAMILY_Y_PAGE_ASSEMBLED_WAV: {level}の組立済み全編wavが1つではありません({wavs})。Gateを回避して通し音声は作りません")
@@ -1484,8 +1464,7 @@ def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: s
         if part in label_to_sid:
             sid = label_to_sid[part]
             blocks.append(_tts_unit_badge(level, decision, sid))                  # R1: TTS生成単位(分割の有無・追加0.2秒の有無)
-            row_arr = x[int(round(s0 * sr)): int(round((s0 + dur) * sr))]
-            blocks.append(_script_with_pauses(parts["segments"][sid], pause_align(pause_scan(row_arr, sr), parts["segments"][sid])))   # R4: 実測停止を台本へ重畳(推定位置)
+            blocks.append(cp.script_block(parts["segments"][sid], cp.chunk_texts_of_plan(chunk_plans.get(sid)), audience))      # ⏸=実Chunk境界のみ(dev限定)
             if ja_paragraphs is not None:
                 blocks.append("<details><summary>日本語の元原稿</summary><div class='ja'>" + cp.esc(ja_paragraphs.get(sid, "")) + "</div></details>")
         elif pl.startswith("topic intro"):
@@ -1515,9 +1494,12 @@ def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: s
             "full_src": f"{audio_rel}/{full}", "duration": x.shape[0] / sr, "rows": rows}
 
 
-def render_y_page(title: str, levels: list, aux_html: str = "") -> str:
-    """限定共有ページ(noindex)。注意書きは本文外(冒頭のintro_html)。X/Zページには出さない(共通builderの既定は不変)。"""
+def render_y_page(title: str, levels: list, aux_html: str = "", *, show_notice: bool = True, audience: str = "public") -> str:
+    """限定共有ページ(noindex)。注意書きは本文外(冒頭のintro_html)。X/Zページには出さない(共通builderの既定は不変)。
+    show_notice=False: 実投稿に基づかない記事(ys.theme_package_is_post_based=False)では出典主張の注意書きを出さない(stage_pagesが判定して渡す)。
+    audience: "public"(既定)=Chunk境界マーカーなし / "dev"=凡例に開発用1行(マーカー本体は build_page_rows(audience=...) が台本へ差し込む)。"""
     import er_user_listening_page_common_01 as cp
-    legend = page_legend_html({lv["id"]: lv.get("chunk_decision") for lv in levels})
-    html_text = cp.render_standard_page(title, levels, intro_html=ys.notice_html() + legend, aux_html=aux_html)
+    cp.normalize_audience(audience)
+    legend = page_legend_html({lv["id"]: lv.get("chunk_decision") for lv in levels}, audience)
+    html_text = cp.render_standard_page(title, levels, intro_html=(ys.notice_html() if show_notice else "") + legend, aux_html=aux_html)
     return html_text.replace("<meta charset='utf-8'>", "<meta charset='utf-8'>" + NOINDEX_META, 1)

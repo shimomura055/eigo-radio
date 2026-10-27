@@ -65,8 +65,8 @@ def _theme(root):
     os.makedirs(root, exist_ok=True)
     p = os.path.join(root, "theme.json")
     with open(p, "w", encoding="utf-8") as f:
-        json.dump({"theme": "mock"}, f)
-    return p
+        json.dump({"theme": "mock", "sheets": {f"voice_{i}": {"experiences": [{"id": f"E{i}", "kind": "O", "source_ids": [f"RV-{i}"], "text_ja": "x"}]} for i in (1, 2, 3)}}, f)
+    return p      # 実投稿に基づく記事(全Voiceの経験に非空source_ids)=Voice説明文が出る。委任_08
 
 
 def _declare(ctx):
@@ -263,6 +263,80 @@ class FullMockRun(unittest.TestCase):
         self.assertLess(html.index(ys.PAGE_NOTICE_CLASS), html.index("<table"))
         self.assertIn('name="robots" content="noindex', html)
         self.assertNotIn("In one line", html)
+        self.assertIn(ys.PAGE_NOTICE_JA, html)                            # 承認文言(実投稿に基づく記事=mock themeは全Voiceにsource_idsあり)
+        self.assertIn("Voice 1〜3は実在人物の発言をそのまま再現したものではなく", html)
+        import er_user_listening_page_common_01 as cp
+        self.assertEqual(cp.count_chunk_markers(html), 0)                  # 公開用(既定)にChunk境界マーカーは出ない
+
+    def test_notice_omitted_when_theme_package_has_no_source_ids(self):
+        """実投稿に基づかない記事(source_ids無し)では出典主張の説明文を出さず、page_verifyも『説明文なし』を正とする。"""
+        orig = self.ctx.theme_package_path
+        alt = os.path.join(self.root, "theme_no_source.json")
+        with open(alt, "w", encoding="utf-8") as f:
+            json.dump({"theme": "mock", "sheets": {f"voice_{i}": {"experiences": [{"id": f"E{i}", "kind": "O", "source_ids": [], "text_ja": "x"}]} for i in (1, 2, 3)}}, f)
+        try:
+            self.ctx.theme_package_path = alt
+            with _quiet():
+                r.stage_pages(self.ctx)
+            html = open(f"{self.out}/pages/index.html", encoding="utf-8").read()
+            self.assertNotIn(ys.PAGE_NOTICE_CLASS, html)
+            self.assertNotIn(ys.PAGE_NOTICE_JA, html)
+            self.assertEqual(r.evaluate_page_verify(html, f"{self.out}/pages", expect_notice=False), [])
+            self.assertTrue(r.evaluate_page_verify(html, f"{self.out}/pages", expect_notice=True))      # 説明文が必要と判定される記事なら欠落はNG
+            self.ctx.theme_package_path = None
+            with self.assertRaises(r.YE2EStop) as e:                       # 判定不能(Theme Package無し)=黙って落とさずSTOP
+                r.stage_pages(self.ctx)
+            self.assertIn("FAMILY_Y_THEME_PACKAGE_MISSING_FOR_NOTICE", str(e.exception))
+        finally:
+            self.ctx.theme_package_path = orig
+            with _quiet():
+                r.stage_pages(self.ctx)                                    # 共有fixtureを元の公開用ページへ戻す
+
+    def test_dev_pages_marker_count_equals_real_chunk_boundaries_and_public_untouched(self):
+        """mock runは全segmentが1段落(実Chunk境界0)のため、audit/chunk_plan_<level>.jsonへ『y_voice_1を2 chunkに分けた』planを一時的に置き、
+        devページの⏸が実plan境界と一致(各level1個=計2個)・公開用は0・公開用index.html非上書きを確認する(置いたplanは元に戻す。音声・TTSは不変)。"""
+        import er_user_listening_page_common_01 as cp
+        pub_before = open(f"{self.out}/pages/index.html", encoding="utf-8").read()
+        saved = {}
+        for lv in ("b1b", "a2"):
+            pp = f"{self.out}/{lv}/audit/chunk_plan_{lv}.json"
+            saved[pp] = open(pp, encoding="utf-8").read() if os.path.exists(pp) else None
+            doc = json.loads(saved[pp]) if saved[pp] else {"plans": {}}
+            text = json.load(open(f"{self.out}/{lv}/parts.json", encoding="utf-8"))["segments"]["y_voice_1"]
+            cut = text.rfind(" ", 0, len(text) // 2)
+            doc.setdefault("plans", {})["y_voice_1"] = {"parent_id": "y_voice_1", "chunked": True,
+                                                         "chunks": [{"chunk_id": "y_voice_1_k1", "index": 1, "text": text[:cut].strip(), "boundary_kind": "paragraph"},
+                                                                    {"chunk_id": "y_voice_1_k2", "index": 2, "text": text[cut:].strip(), "boundary_kind": "paragraph"}]}
+            json.dump(doc, open(pp, "w", encoding="utf-8"), ensure_ascii=False)
+        self.ctx.page_audience = "dev"
+        try:
+            with _quiet():
+                res = r.stage_pages(self.ctx)
+            dev = open(f"{self.out}/pages/index_dev.html", encoding="utf-8").read()
+            self.assertTrue(res["page"].endswith("index_dev.html"))
+            self.assertEqual(cp.count_boundary_marker_spans(dev), 2)                # 実plan境界(各level1)と一致。ASRポーズ由来の⏸は出ない
+            self.assertEqual(cp.count_chunk_markers(dev), 3)                        # +1=開発用ページ冒頭の凡例1行(記号のみ。公開では出ない)
+            self.assertEqual(res["chunk_markers"], 3)
+            self.assertEqual(open(f"{self.out}/pages/index.html", encoding="utf-8").read(), pub_before)    # 公開用index.htmlは上書きされない
+            with self.assertRaises(r.YE2EStop) as e:                       # devページは公開用検証/final manifestの対象外
+                r.stage_page_verify(self.ctx)
+            self.assertIn("FAMILY_Y_PAGE_VERIFY_DEV_PAGE", str(e.exception))
+            self.ctx.page_audience = "public"
+            with _quiet():
+                r.stage_pages(self.ctx)                                         # 同じplanでも公開用(既定)はマーカー0
+            self.assertEqual(cp.count_chunk_markers(open(f"{self.out}/pages/index.html", encoding="utf-8").read()), 0)
+        finally:
+            self.ctx.page_audience = "public"
+            for pp, txt in saved.items():
+                if txt is None:
+                    os.remove(pp)
+                else:
+                    open(pp, "w", encoding="utf-8").write(txt)
+            if os.path.exists(f"{self.out}/pages/index_dev.html"):
+                os.remove(f"{self.out}/pages/index_dev.html")
+            with _quiet():
+                r.stage_pages(self.ctx)
+        self.assertEqual(cp.count_chunk_markers(pub_before), 0)
 
     def test_y_provider_collects_scripts(self):
         import er121_family_y_audio_01 as ya

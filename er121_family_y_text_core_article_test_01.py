@@ -984,17 +984,13 @@ class TestAssembly(unittest.TestCase):
         self.assertTrue(t.startswith("# タイトル\n\n"))
         self.assertEqual(len([x for x in re.split(r"\n\s*\n", t.split("\n\n", 1)[1].strip()) if x]), 5)
 
-    def test_page_notice_is_not_in_article_text_and_matches_dev_when_available(self):
-        notice = "本コンテンツのVoiceは、実在する人々の意見を参考に、AIが編集・構成したものであり、特定の実在人物の発言を再現したものではありません。"
+    def test_page_notice_is_not_in_article_text_and_is_the_approved_wording(self):
+        # 委任_08(ユーザー正式決定2026-10-27 USER_04 §1-B): 承認文言(逐語)。旧文言(「実在する人々の意見を参考に…」)は撤去
+        notice = "Voice 1〜3は実在人物の発言をそのまま再現したものではなく、実際に投稿された意見をもとに、AIが編集・再構成したものです。"
         p = self.parts()
         t = c.render_article_text("タイトル", p["lead"], p["intros"], p["voices"], p["closing"])
         self.assertNotIn(notice, t)                                  # 注意書きはページ側(本文外)。音声にアナウンスを入れない
         self.assertNotIn("AIが編集", t)
-        try:
-            import er110_family_y_redelivery_revision_01 as rev
-            self.assertEqual(rev.PAGE_NOTICE_JA, notice)
-        except ImportError:
-            pass
         try:
             import er121_family_y_structure_01 as ys
             self.assertEqual(ys.PAGE_NOTICE_JA, notice)

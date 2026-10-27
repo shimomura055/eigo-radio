@@ -64,11 +64,13 @@ class TestOpusR1R2R3R5(base.BaseStd):
         self.assertIn("FAMILY_Y_CHUNK_ID_NOT_IN_PLAN", str(e.exception))
         self.assertEqual([c for c in self.api_lines()[before:] if c["kind"] == "tts"], [])
 
-    def test_r5_legend_last_sentence_is_conditional_on_chunk_count(self):
+    def test_r5_legend_split_count_is_conditional_on_chunk_count(self):
+        # 委任_08: 凡例末尾の『▼(TTS実分割位置)…今回はありません』文は撤去(▼は実在しない表示だった)。分割の有無・数は凡例本体で条件付き表示
         none = ya.page_legend_html({"standard": {"segments": {"y_voice_1": {"chunked": False}}}})
-        self.assertIn("今回はありません", none)
+        self.assertIn("TTSの実分割: <b>なし", none)
+        self.assertNotIn("&#9660;", none)
         some = ya.page_legend_html({"standard": {"segments": {"y_voice_2": {"chunked": True}}}})
-        self.assertNotIn("今回はありません", some)
+        self.assertNotIn("TTSの実分割: <b>なし", some)
         self.assertIn("1 segmentで分割", some)
 
 

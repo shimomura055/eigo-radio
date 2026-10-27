@@ -97,7 +97,9 @@ def voice_of_segment(segment_id: str, narrator_voice: str) -> str:
 # ------------------------------------------------------------
 # 公開ページ注意書き(YL-C07、本文外。音声にはアナウンスを入れない)
 # ------------------------------------------------------------
-PAGE_NOTICE_JA = "本コンテンツのVoiceは、実在する人々の意見を参考に、AIが編集・構成したものであり、特定の実在人物の発言を再現したものではありません。"
+# 承認文言(ユーザー正式決定2026-10-27 FAMILY-Y-STYLE-PROFILE-FIX-01 USER_04 §1-B。逐語)。単一ソース。将来のアプリ表示も同一文言をこの定数から参照する。
+# 実投稿に基づく記事(Theme Packageの全Voiceに非空source_idsの経験がある)にだけ表示する(theme_package_is_post_based)。根拠のない出典主張は生成しない。
+PAGE_NOTICE_JA = "Voice 1〜3は実在人物の発言をそのまま再現したものではなく、実際に投稿された意見をもとに、AIが編集・再構成したものです。"
 PAGE_NOTICE_CLASS = "y-ai-notice"
 # 音声(ナレーション)へ混入してはならない語(AI編集アナウンス廃止。単純削除でなくLead再生成で対処する=text core)
 AI_ANNOUNCE_RE = re.compile(r"(実在|公開されている|公開された|ネットなど|組み立てた|組み立て|AI|人工知能|複数の意見をもと|特定の人の話)")
@@ -106,9 +108,33 @@ IOL_RE = re.compile(r"(^|\n)\s*#{1,6}\s*(in one line|ひとこと)|\bIn one line
 
 
 def notice_html() -> str:
-    """試聴ページ冒頭(本文外)の注意書き1ブロック。共通builder(render_standard_page)のintro_htmlへ渡す。X/Zページには出さない。"""
+    """試聴ページ冒頭(本文外)の注意書き1ブロック。共通builder(render_standard_page)のintro_htmlへ渡す。X/Zページには出さない。
+    適用条件(実投稿に基づく記事か)の判定は呼出側が theme_package_is_post_based で行う(本関数は文言の単一ソース)。"""
     import html
     return f"<div class='note {PAGE_NOTICE_CLASS}'>{html.escape(PAGE_NOTICE_JA)}</div>"
+
+
+def theme_package_is_post_based(theme_package) -> bool:
+    """実投稿に基づく記事か(機械判定)。Theme Package(dict)の全Voice枠(Y_VOICE_IDS数)のsheetsが経験(experiences)を持ち、
+    すべての経験に非空のsource_idsがあるときだけTrue。dictでない・sheetsが無い/不足・source_idsが空は False(=注意書きを出さない。根拠のない出典主張を生成しない)。"""
+    if not isinstance(theme_package, dict):
+        return False
+    sheets = theme_package.get("sheets")
+    if not isinstance(sheets, dict) or len(sheets) < len(Y_VOICE_IDS):
+        return False
+    for sh in sheets.values():
+        exps = (sh or {}).get("experiences") if isinstance(sh, dict) else None
+        if not exps or not isinstance(exps, list):
+            return False
+        for x in exps:
+            if not isinstance(x, dict) or not [i for i in (x.get("source_ids") or []) if i]:
+                return False
+    return True
+
+
+def notice_html_for_theme_package(theme_package) -> str:
+    """実投稿に基づく記事(theme_package_is_post_based)ならnotice_html()、それ以外は空文字(注意書きを出さない)。"""
+    return notice_html() if theme_package_is_post_based(theme_package) else ""
 
 
 # ------------------------------------------------------------
@@ -333,16 +359,20 @@ def page_has_notice(html_text: str) -> bool:
     return PAGE_NOTICE_CLASS in (html_text or "") or PAGE_NOTICE_JA in (html_text or "")
 
 
-def check_y_page_notice(html_text: str) -> dict:
-    """Yページ: 注意書きが1回だけ・最初のレベル表(table)より前(=本文外)・noindex。違反はviolationsに列挙。"""
+def check_y_page_notice(html_text: str, expect_notice: bool = True) -> dict:
+    """Yページ: 注意書きが1回だけ・最初のレベル表(table)より前(=本文外)・noindex。違反はviolationsに列挙。
+    expect_notice=False(実投稿に基づかない記事): 注意書きが0件であること(出典主張を出さない)。"""
     t = html_text or ""
     v = []
     n = t.count(PAGE_NOTICE_CLASS)
-    if n != 1:
-        v.append(f"NOTICE_COUNT_NOT_1(={n})")
-    i_notice, i_table = t.find(PAGE_NOTICE_CLASS), t.find("<table")
-    if i_notice < 0 or (i_table >= 0 and i_notice > i_table):
-        v.append("NOTICE_NOT_BEFORE_BODY")
+    if expect_notice:
+        if n != 1:
+            v.append(f"NOTICE_COUNT_NOT_1(={n})")
+        i_notice, i_table = t.find(PAGE_NOTICE_CLASS), t.find("<table")
+        if i_notice < 0 or (i_table >= 0 and i_notice > i_table):
+            v.append("NOTICE_NOT_BEFORE_BODY")
+    elif n != 0 or PAGE_NOTICE_JA in t:
+        v.append(f"NOTICE_PRESENT_BUT_NOT_POST_BASED(={n})")
     if 'name="robots" content="noindex' not in t:
         v.append("NOINDEX_MISSING")
     return {"ok": not v, "violations": v}

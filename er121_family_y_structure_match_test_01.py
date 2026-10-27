@@ -251,12 +251,37 @@ class NoticeDisplay(unittest.TestCase):
         self.assertTrue(ys.page_has_notice(y))
         self.assertIn('name="robots" content="noindex', y)
         self.assertNotIn('name="robots"', plain)
+        self.assertIn("Voice 1〜3は実在人物の発言をそのまま再現したものではなく、実際に投稿された意見をもとに、AIが編集・再構成したものです。", y)   # 承認文言(逐語、委任_08)
+        self.assertNotIn("実在する人々の意見を参考に", y)                 # 旧文言は撤去
+        no = ya.render_y_page("T", lv, show_notice=False)               # 実投稿に基づかない記事=説明文なし(出典主張を生成しない)
+        self.assertFalse(ys.page_has_notice(no))
+        self.assertTrue(ys.check_y_page_notice(no, expect_notice=False)["ok"])
+        self.assertFalse(ys.check_y_page_notice(y, expect_notice=False)["ok"])
+        self.assertFalse(ys.check_y_page_notice(no)["ok"])
+
+    def test_notice_applies_only_to_post_based_theme_package(self):
+        ok = {"sheets": {f"v{i}": {"experiences": [{"id": "E1", "source_ids": ["RV-1"]}, {"id": "O2", "source_ids": ["RV-2", "RV-3"]}]} for i in (1, 2, 3)}}
+        self.assertTrue(ys.theme_package_is_post_based(ok))
+        self.assertIn(ys.PAGE_NOTICE_JA, ys.notice_html_for_theme_package(ok))
+        import copy
+        for mut in (lambda t: t["sheets"]["v2"]["experiences"][0].update(source_ids=[]),
+                    lambda t: t["sheets"]["v3"].update(experiences=[]),
+                    lambda t: t["sheets"].pop("v1"),
+                    lambda t: t.pop("sheets")):
+            bad = copy.deepcopy(ok)
+            mut(bad)
+            self.assertFalse(ys.theme_package_is_post_based(bad))
+            self.assertEqual(ys.notice_html_for_theme_package(bad), "")
+        self.assertFalse(ys.theme_package_is_post_based(None))
+        self.assertFalse(ys.theme_package_is_post_based({"theme": "mock"}))
 
     def test_no_xz_page_in_repo_contains_the_y_notice(self):
         hits = []
         for pat in ("docs/**/*.html", "user_test/**/*.html", "er0*_output/**/index.html", "er1*_output/**/index.html"):
             for p in glob.glob(os.path.join(ROOT, pat), recursive=True):
                 if os.sep + "family_y_production_01" + os.sep in p or "er121_output" in p:
+                    continue
+                if os.sep + "evidence_runs" + os.sep + "y" in p:               # Yのrun evidence(docs/research/**/evidence_runs/y*)はY自身の成果物
                     continue
                 if (os.sep + "user_test" + os.sep + "family_y_") in p:       # Yの限定公開dir(user_test/family_y_*)はY自身の公開物(委任_06で許可リスト化)
                     continue
