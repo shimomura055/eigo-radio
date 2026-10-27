@@ -128,5 +128,85 @@ def main():
     print("wrote", os.path.join(WEB, "hr_01.html"), d1["duration"], d2["duration"])
 
 
+# ============================================================
+# 委任_05(AIF5): hr_02(ユーザー指定8項目セット。真因を先に説明)。API 0。使い方: tools/build_hr_packet_aif3_01.py --v2
+# ============================================================
+def build_v2():
+    std = rj(f"{RUN}/a2/audit/tts_generation_results.json")["segments"][SEG]
+    adv = rj(f"{RUN}/b1b/audit/tts_generation_results.json")["segments"][SEG]
+    # 提示音声はhr_01で書き出し済みのmp3(同一wav由来)を再利用する。
+    hr1 = rj(os.path.join(RUN, "audit", "hr_packet_data_01.json"))
+    for fn in ("hr/std_full_story_part1_k2.mp3", "hr/adv_full_story_part1_k2.mp3"):
+        assert os.path.exists(os.path.join(WEB, fn)) and any(x["audio"] == fn for x in hr1), fn
+    s_post = std["post_slowdown_asr_text"]
+    s_sec = std["post_slowdown_cascade"]["steps"][1]["text"]
+    a_prim = adv["asr_text"]
+    css = ("body{font-family:sans-serif;max-width:920px;margin:1em auto;padding:0 1em;line-height:1.65}.script{background:#f6f6f6;padding:6px;margin:4px 0}"
+           "mark{background:#ffd54f}.sec{color:#555;font-size:.92em}audio{width:100%}h2{border-top:3px solid #336;padding-top:.6em}"
+           "table{border-collapse:collapse;font-size:.92em}td,th{border:1px solid #bbb;padding:3px 6px}.box{border:2px solid #336;padding:6px 12px;background:#eef}")
+
+    def lvl(label, r, fn, tries_html, rewrite_after, extra_diff):
+        canon, spoken = r["canonical_text"], r["text"]
+        h = [f"<h2>{label}: Full Story 第1部の2段落目(1 segment)</h2>"]
+        h.append("<h3>1. 該当する元原稿(ユーザー確認済み本文のまま)</h3>"
+                 f"<div class='script'>{esc(canon)}</div>"
+                 "<p class='sec'>場所=Full Story 第1部(full_story_part1_k2・2段落目、Role=FULL_STORY)。article.mdは確認済み版と一致(本文SHA一致)。本文は一切変更していません。</p>")
+        h.append("<h3>2. 書換え前後の英文(音声に読ませた文だけが変わっています)</h3>"
+                 f"<ul><li>変更前(本文=原稿): <div class='script'>{mark(canon, spoken)}</div></li>"
+                 f"<li>変更後(音声で読んだ文): <div class='script'>{mark(spoken, canon)}</div></li></ul>"
+                 f"<p class='sec'>変更は1語句のみ:「AIs」→「{esc(rewrite_after)}」。数値・否定・固有名詞は無変更。</p>")
+        h.append("<h3>3. 推奨音声(1件)</h3>"
+                 f"<audio controls preload='none' src='{fn}'></audio><p class='sec'>この段落のみ(約{[x['duration'] for x in hr1 if x['audio'] == fn][0]:.1f}秒)。「{esc(rewrite_after)}」と読む音声です。</p>")
+        h.append("<h3>4. 音声認識(ASR)の結果と具体的な不一致箇所</h3>" + tries_html + extra_diff)
+        return "".join(h)
+
+    std_tries = ("<p><b>元原稿「The AIs sent…」で音声を作り直した履歴(標準2回＋代替指示1回=3回)</b></p><table><tr><th>回</th><th>生成直後 OpenAI(一次)</th><th>生成直後 Azure(二次)</th><th>6%減速後 OpenAI</th><th>6%減速後 Azure</th></tr>"
+                 "<tr><td>1</td><td>The <b>AI</b> sent…</td><td>The <b>AIS</b> sent…(救済で通過)</td><td>The <b>AI</b> sent…</td><td>The <b>AI</b> sent…(不一致)</td></tr>"
+                 "<tr><td>2</td><td>The <b>AIs</b> sent…(通過)</td><td>不要</td><td>The <b>AI</b> sent…</td><td>The <b>AI</b> sent…(不一致)</td></tr>"
+                 "<tr><td>3(代替指示)</td><td>The <b>AI</b> sent…</td><td>The <b>AIS</b> sent…(救済で通過)</td><td>The <b>AI</b> sent…</td><td>The <b>AI</b> sent…(不一致)</td></tr></table>"
+                 "<p class='sec'>Standardは音声を6%ゆっくりにする承認済み処理があり、その後の再検証が3回とも「AIs→AI」で不一致でした。</p>"
+                 f"<p><b>採用した音声(AI agents版)の認識:</b></p><ul><li>OpenAI(一次): <div class='script'>{esc(s_post)}</div></li><li>Azure(二次): <div class='script'>{esc(s_sec)}</div></li></ul>")
+    std_diff = ("<p><b>不一致箇所(採用音声):</b> OpenAIは「rewards」を「awards」と認識(1語)。Azureは「rewards」を正しく認識し、二次確認として承認済み規則で通過しています(数値・否定の変化なし)。"
+                "「AI agents」と読ませた箇所自体は両エンジンとも認識できています。</p>")
+    adv_tries = ("<p><b>元原稿「The AIs sent…」で音声を作り直した履歴(標準2回＋代替指示1回=3回、Advancedは減速なし)</b></p><table><tr><th>回</th><th>OpenAI(一次)</th><th>Azure(二次)</th></tr>"
+                 + "".join(f"<tr><td>{i + 1}{'(代替指示)' if i == 2 else ''}</td><td>The <b>AI</b> sent…</td><td>The <b>AI</b> sent…(不一致)</td></tr>" for i in range(3)) + "</table>"
+                 f"<p><b>採用した音声(AI systems版)の認識:</b></p><ul><li>OpenAI(一次): <div class='script'>{esc(a_prim)}</div></li><li>Azure(二次): 一次が承認済み規則で通過したため追加の呼び出しなし</li></ul>")
+    adv_diff = ("<p><b>不一致箇所(採用音声):</b> 「settings」→「setting」(複数形のsが1箇所落ちただけ。承認済みの複数形救済[Azure裏付けあり]で通過)。「AI systems」と読ませた箇所は認識できています。</p>")
+
+    top = ("<div class='box'><p><b>先に結論(なぜ今Human Reviewなのか)</b></p><ul>"
+           "<li><b>原稿の変更は本文にはありません。</b>変更したのは「音声に読ませる文」だけで、この1段落の主語「The AIs sent to the island…」の「AIs」を、Standardは「AI agents」、Advancedは「AI systems」に言い換えています。"
+           "ページの本文は確認済みのまま「AIs」です(本文に「AI systems」が見当たらないのは当然で、Advanced末尾の「AI agents」は別の文の本文です)。</li>"
+           "<li><b>起きたこと:</b> 「The AIs sent」の「AIs」を、音声認識(OpenAI・Azure)が毎回「AI」と書き起こし、原稿と合わない扱いになりました。通常の作り直し(3回)でも直らず、承認済みのLocal Rewrite(局所的な言い換え)で通過させました。"
+           "ただし、言い換えで通した音声は、承認済みの安全規則(M3 Style Gate)により「人が確認するまで組み立てない」決まりです(Gateの緩和はしていません)。</li>"
+           "<li><b>音声の品質問題ではありません。</b>音声は正常に読まれ、言い換え語もはっきり認識されています。確認してほしいのは「本文は『AIs』なのに、この段落だけ音声が『AI agents／AI systems』と読むことを許容するか」です。</li>"
+           "<li><b>推定される原因(仮説・未検証):</b> 「AIs sent」は複数形のs(z音)と次の語sent(s音)が続くため、話し言葉ではsが融合して「AI sent」に聞こえやすい。同じ記事の他の「AIs」(13 AIs with…、the AIs could…)は問題なく認識されており、この1か所だけが失敗しています。</li></ul></div>")
+    why = ("<h2>5. 自動処理では解消できなかった理由</h2><ol>"
+           "<li><b>承認済みの救済はすべて評価され、いずれも対象外でした。</b>(a)複数形のTier3救済=二次Azureも「AI」と聞いたため成立せず(二次が裏付けないと救済不可)。(b)固有名詞アラーム受理=「AIs」は固有名詞ではなく対象外(<code>NO_PROPER_NOUN_EVIDENCE</code>)。"
+           "(c)同音異表記救済(er109)=「AIs/AI」は同音異表記ではない。(d)発音台帳・Phrase List=台帳43件に「AI/AIs」は無く、二次ASRのPhrase Listは0件。台帳は固有名詞用で、略語の複数形を原稿不変のまま扱う承認済み手段は現行仕様にありません。</li>"
+           "<li><b>通常の作り直しは上限まで実施済み</b>(標準2回＋代替指示1回＋Local Rewrite1回。Standardは減速後の再検証も3回)。これ以上の再生成は承認操作(approve_regenerate)が必要で、同じ「The AIs sent」で6回中6回失敗しており成功見込みも低い。</li>"
+           "<li><b>M3 Style Gate(<code>LOCAL_REWRITE_RECOVERY</code>)は承認済みの安全規則</b>で、人の承認(<code>record_human_approval</code>)以外に解除手段がありません(Gate緩和はユーザー承認事項)。"
+           "Standardのみ <code>STD_FALLBACK_USED_OR_UNKNOWN</code> も付いていますが、記録の付け方の非対称(OPEN-564)で、無くてもBLOCKは変わりません(模擬確認済み)。</li>"
+           "<li>本文を「AI agents／AI systems」に変更すれば音声と本文が一致しますが、本文の変更はユーザー承認事項です。</li></ol>")
+    ev = ("<h2>6. AIの評価とご確認いただきたい内容</h2><p>AIの評価: 意味・事実は変わっていません。違いは「AIs」→「AI agents／AI systems」の1語句のみで、言い換えは意味保存・事実非矛盾・自然さなどの7つの検査を通過しています。"
+          "AI自身は音声を聞けないため、聞いて違和感がないかの最終確認は耳でお願いします。</p><p><b>聞いて確認してほしい点</b>: (1)「The AI agents sent to the island…」(Standard)／「The AI systems sent to the island…」(Advanced)と自然に読まれているか。"
+          "(2)本文は「The AIs sent…」のままで、この1語だけ音声と異なることを許容できるか。</p>")
+    q = ("<h2>7. 質問(1つ)</h2><p><b>上の2つの音声(Standard・Advanced)で、この段落の「AIs」を「AI agents／AI systems」と読む形でよいですか?</b></p>"
+         "<p class='sec'>回答例:「両方OK」「Standardのみ不可」「Advancedのみ不可」。承認された場合のみ、この1 segmentの承認を記録し、残りの組立・公開へ進みます(追加の音声生成なし)。"
+         "不可の場合の代替(本文を「AI agents／AI systems」に変更する等)は、その場合に別途ご相談します。</p>")
+    page = ("<!DOCTYPE html><html lang='ja'><head><meta charset='utf-8'><title>AIの仮想の島 Human Review(2 segment・原因説明つき)</title><meta name='viewport' content='width=device-width, initial-scale=1'>"
+            f"<style>{css}</style></head><body><h1>AIの仮想の島: Human Review(2 segment)</h1>"
+            "<p>状態: 完成版の組立前に、承認済みの安全規則で停止しています。最終の試聴ページではありません。(hr_01.htmlの説明を、原因調査の結果で置き換えた版です)</p>"
+            + top + lvl("Standard", std, "hr/std_full_story_part1_k2.mp3", std_tries, "AI agents", std_diff)
+            + lvl("Advanced", adv, "hr/adv_full_story_part1_k2.mp3", adv_tries, "AI systems", adv_diff)
+            + why + ev + q + "</body></html>")
+    assert "file:///" not in page and "C:\\" not in page
+    with open(os.path.join(WEB, "hr_02.html"), "w", encoding="utf-8") as f:
+        f.write(page)
+    print("wrote hr_02.html", len(page))
+
+
 if __name__ == "__main__":
-    main()
+    if "--v2" in sys.argv:
+        build_v2()
+    else:
+        main()
