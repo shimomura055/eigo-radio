@@ -1,0 +1,236 @@
+{
+  "schema": "grammar_candidates_v1",
+  "level": "Standard",
+  "label": "The Island Resets! But AI Has “Strategy Notes”",
+  "text_sha256": "6723f1e6aa97236f38215687c17c0c29470785acfacbaf0155f25c3ef45e36f4",
+  "n_paragraphs": 8,
+  "prompt_id": "part2_stepA8",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+  "model": "gpt-6-luna",
+  "extract_signature": "88e63627338528dbcd2a41affe0da93b4ef009e907c927294e47d1d19bba9a2c",
+  "round": 1,
+  "tier_table": [
+    {
+      "para": "P5",
+      "cls": "CMP",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "比較級に比較対象が明示されない場合は、文脈から何を基準にしているかを補う。",
+      "front_kind": "",
+      "sentence": "The experienced group did better.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P5",
+      "cls": "CMP",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "ahead などの比較を含む表現では、比較対象が明示されているかを確認し、なければ文脈から補う。",
+      "front_kind": "",
+      "sentence": "Those that had taken a detour were now one step ahead.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P6",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "長い主語では中心語を見つけ、その中心語に対応する主節の動詞を確認する。",
+      "front_kind": "",
+      "sentence": "After that, the average number of towers it could build went down.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P7",
+      "cls": "CMP",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "比較級に比較対象が明示されない場合は、文脈から何を基準にしているかを補う。",
+      "front_kind": "",
+      "sentence": "The experienced group did better, and removing one memory lowered its score.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
+  "no_feature_paras": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P8"
+  ],
+  "uncovered_paras": [],
+  "audit": {
+    "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+    "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+    "model": "gpt-6-luna",
+    "requested_model": "gpt-6-luna",
+    "prompt_sha256": "ece20fc640becea903ff328b0ffe107f87391cbdd8565bc7461bb99fb0b4d904",
+    "response_ids": [
+      "resp_0022c0c05681bf59006adff993d87487d0bc046793b08ba044"
+    ],
+    "calls": [
+      {
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3531,
+          "output_tokens": 5135,
+          "cached_input_tokens": 3528,
+          "reasoning_tokens": 4025
+        },
+        "response_id": "resp_0022c0c05681bf59006adff993d87487d0bc046793b08ba044",
+        "elapsed_sec": 49.52,
+        "cost_jpy": 0.4165
+      }
+    ],
+    "retried_for_parse": false,
+    "total_cost_jpy": 0.4165,
+    "generated_at": "2026-10-27T10:09:24+0900",
+    "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+  },
+  "reselect_count": 0,
+  "reextract_count": 0,
+  "reselect_log": [],
+  "candidates": [
+    {
+      "candidate_id": "gc74d4a5e22",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "CMP",
+      "para": "P5",
+      "sentence": "The experienced group did better.",
+      "front_kind": "",
+      "misread_target": "OMITTED",
+      "misread_quote": "did better",
+      "misread_ja": "何と比べてよりよかったのかが文中に示されていないため、比較対象を特定できないことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "比較級に比較対象が明示されない場合は、文脈から何を基準にしているかを補う。",
+      "construct_ja": "比較対象が省略された比較表現",
+      "points_ja": [
+        "better の比較対象は文中に明示されていない",
+        "比較対象は文脈から補う"
+      ],
+      "context_ja": "経験のあるAIのグループが、タワーを建てる課題でよりよい成績を示したと述べている。",
+      "prev": "The researchers checked which AIs could build more than two towers.",
+      "next": "Those that had taken a detour were now one step ahead.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        374,
+        407
+      ]
+    },
+    {
+      "candidate_id": "g39ca99d348",
+      "rank": 2,
+      "tier": "T1",
+      "feature_class": "CMP",
+      "para": "P5",
+      "sentence": "Those that had taken a detour were now one step ahead.",
+      "front_kind": "",
+      "misread_target": "OMITTED",
+      "misread_quote": "one step ahead",
+      "misread_ja": "何に対して先行しているのかが文中に示されていないため、比較対象を取り違えることがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "ahead などの比較を含む表現では、比較対象が明示されているかを確認し、なければ文脈から補う。",
+      "construct_ja": "比較対象が省略された比較表現",
+      "points_ja": [
+        "one step ahead は比較を含む表現",
+        "何に対して先行するのかは文中に明示されていない"
+      ],
+      "context_ja": "寄り道をした経験のあるAIが、タワーを建てる課題で一歩先にいたと述べている。",
+      "prev": "The experienced group did better.",
+      "next": "The researchers also erased a way to “throw rocks to get more blocks” from one AI’s memory.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        408,
+        462
+      ]
+    },
+    {
+      "candidate_id": "g63b2391687",
+      "rank": 3,
+      "tier": "T1",
+      "feature_class": "CMP",
+      "para": "P7",
+      "sentence": "The experienced group did better, and removing one memory lowered its score.",
+      "front_kind": "",
+      "misread_target": "OMITTED",
+      "misread_quote": "did better",
+      "misread_ja": "何と比べてよりよかったのかが文中に示されていないため、比較対象を特定できないことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "比較級に比較対象が明示されない場合は、文脈から何を基準にしているかを補う。",
+      "construct_ja": "比較対象が省略された比較表現",
+      "points_ja": [
+        "better の比較対象は文中に明示されていない",
+        "and の後には別の主語 removing one memory が続く"
+      ],
+      "context_ja": "経験のあるグループの成績がよりよく、記憶を一つ消すとAIのスコアが下がったと述べている。",
+      "prev": "Even so, it is too soon to wave a flag and say, “Play and get smarter—proof complete!”",
+      "next": "These two results need to be studied separately.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        87,
+        163
+      ]
+    },
+    {
+      "candidate_id": "gea4eb51247",
+      "rank": 4,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P6",
+      "sentence": "After that, the average number of towers it could build went down.",
+      "front_kind": "",
+      "misread_target": "VERB",
+      "misread_quote": "the average number of towers it could build",
+      "misread_ja": "長い主語の中心語 number を見失い、後続の went down を towers にかかる節の動詞と取り違えることがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "長い主語では中心語を見つけ、その中心語に対応する主節の動詞を確認する。",
+      "construct_ja": "長い主語",
+      "points_ja": [
+        "主語の中心語は number",
+        "主節の動詞は went down"
+      ],
+      "context_ja": "AIの記憶から方法を消した後、そのAIが建てられるタワーの平均数が減ったと述べている。",
+      "prev": "The researchers also erased a way to “throw rocks to get more blocks” from one AI’s memory.",
+      "next": "Its scores on other tasks stayed the same.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        92,
+        158
+      ]
+    }
+  ],
+  "top_ids": [
+    "gc74d4a5e22",
+    "g39ca99d348"
+  ],
+  "n_eligible": 4,
+  "ng": [],
+  "filtered_by_ng": [],
+  "rejected_ids": [],
+  "candidates_sha256": "500665eb1df4f93e1f7df70f9dfa81cf529dbd1e8e1302061701a0ebf2d0b3f6",
+  "status": "HAS_CANDIDATES",
+  "exhausted": false,
+  "reused_from_previous_run": false
+}

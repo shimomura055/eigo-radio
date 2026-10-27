@@ -1,0 +1,25 @@
+PASS a2 candidates_sha256 == source doc
+PASS a2 10 candidates, all ids in source, no extras/missing
+PASS a2 term==used_form, gloss==japanese_gloss, reason==reason_ja, excerpt==source_sentence, rank, kind verbatim
+PASS a2 ja_gloss_status: all official (0 provisional/missing) :: {'official'}
+PASS a2 every candidate excerpt appears in current approved article.md (quote glyph normalized)
+PASS a2 cap 12 / 7+5
+PASS a2 grammar ids == candidate doc ids == explanations ids (4)
+PASS a2 grammar title==construct_ja, body==explanation_md (verbatim), example==sentence, sha==sha256(explanation_md)
+PASS a2 grammar example sentence appears verbatim in approved article.md
+PASS a2 grammar source: text_sha256 equals KP doc text_sha256 (same body)
+PASS a2 explanations ref_ja=None, model=gpt-6-luna, StepB prompt sha recorded
+PASS a2 all explanations source=pregen (presented before selection)
+PASS b1b candidates_sha256 == source doc
+PASS b1b 10 candidates, all ids in source, no extras/missing
+PASS b1b term==used_form, gloss==japanese_gloss, reason==reason_ja, excerpt==source_sentence, rank, kind verbatim
+PASS b1b ja_gloss_status: all official (0 provisional/missing) :: {'official'}
+PASS b1b every candidate excerpt appears in current approved article.md (quote glyph normalized)
+PASS b1b cap 12 / 7+5
+PASS b1b grammar ids == candidate doc ids == explanations ids (3)
+PASS b1b grammar title==construct_ja, body==explanation_md (verbatim), example==sentence, sha==sha256(explanation_md)
+PASS b1b grammar example sentence appears verbatim in approved article.md
+PASS b1b grammar source: text_sha256 equals KP doc text_sha256 (same body)
+PASS b1b explanations ref_ja=None, model=gpt-6-luna, StepB prompt sha recorded
+PASS b1b all explanations source=pregen (presented before selection)
+SUMMARY bad=0

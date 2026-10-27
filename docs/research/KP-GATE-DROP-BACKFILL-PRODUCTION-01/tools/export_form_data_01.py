@@ -181,8 +181,26 @@ def shortfall_note_ja(doc: dict) -> str:
     return "、".join(parts)
 
 
+def grammar_from_bundle(bundle: dict | None) -> tuple:
+    """文法bundle(`er120_part2_wiring_01.form_grammar_bundle`の出力。SCHEMA_CONTRACT_01 §5)を、フォームUIの文法entry(id/title/body/example)へ。
+    契約キー(candidate_id/explanation_full/explanation_status/explanation_sha256/level/rank/ai_recommended/para/feature_class)も逐語で併記する。
+    戻り値: (entries, grammar_status|None)。bundle無しは([], None)=従来どおり『要生成』扱い。解説本文が空のitemは捏造せず例外(fail-closed)。"""
+    if not bundle:
+        return [], None
+    out = []
+    for it in bundle.get("items") or []:
+        full = (it.get("explanation_full") or "").strip()
+        if not full or it.get("explanation_status") != "provided":
+            raise ValueError("grammar bundle item without provided explanation_full: " + str(it.get("id")))
+        out.append({"id": it["id"], "candidate_id": it.get("candidate_id") or it["id"], "title": it["title"], "body": it["explanation_full"], "example": it.get("example") or "",
+                    "explanation_full": it["explanation_full"], "explanation_status": "provided", "explanation_sha256": it.get("explanation_sha256"),
+                    "level": it.get("level"), "rank": it.get("rank"), "ai_recommended": bool(it.get("ai_recommended")), "para": it.get("para"),
+                    "feature_class": it.get("feature_class")})
+    return out, bundle.get("grammar_status")
+
+
 def convert(doc: dict, *, slug: str, level: str, name: str, family: str, run: str, source_kind: str, note_ja: str, text_sha256: str | None = None,
-            grammar: list | None = None, cand_path: str | None = None) -> dict:
+            grammar: list | None = None, cand_path: str | None = None, grammar_status: str | None = None, grammar_source: dict | None = None) -> dict:
     cands = sorted(doc.get("candidates") or [], key=lambda c: c.get("ai_rank") or 99)
     es = [entry(c, source_kind) for c in cands]
     bf = doc.get("backfill") or {}
@@ -213,7 +231,13 @@ def convert(doc: dict, *, slug: str, level: str, name: str, family: str, run: st
     if over:                                   # フォームの枠(フレーズ7/単語5)を超える候補は表示せず別枠に保持(情報は失わない)
         out["overflow"] = over
         out["shortfall_note_ja"] = (out["shortfall_note_ja"] + "、" if out["shortfall_note_ja"] else "") + "枠超過で未表示の候補" + str(len(over)) + "件(overflow)"
-    if not grammar:
+    if grammar_status:
+        out["grammar_status"] = grammar_status
+    if grammar_source:
+        out["grammar_source"] = grammar_source
+    if grammar_status == "no_candidates_found":
+        out["grammar_note_ja"] = "文法候補なし(この本文から文法解説の候補が抽出されませんでした。事前生成は実施済み)"
+    elif not grammar:
         out["grammar_note_ja"] = "候補なし・要生成(この記事のPart 2文法解説候補は未生成です。仮データは入れていません)"
     return out
 
@@ -230,14 +254,26 @@ def main(argv=None) -> int:
     ap.add_argument("--source-kind", default="PRODUCTION_FORMAL_PATH", choices=("PRODUCTION_FORMAL_PATH", "REPLAY_FROZEN_INITIAL_REAL_BACKFILL"))
     ap.add_argument("--note-ja", default="")
     ap.add_argument("--text-sha256", default=None)
+    ap.add_argument("--grammar-bundle", default=None, help="form_grammar_bundle.json(SCHEMA_CONTRACT_01 §5)。文法候補+解説全文をフォームデータへ取り込む")
+    ap.add_argument("--grammar-source-json", default=None, help="文法の出所(summary_<level>.json等)から grammar_source に入れるJSON")
     a = ap.parse_args(argv)
     with open(a.cand, encoding="utf-8") as f:
         doc = json.load(f)
+    gram, gstatus, gsrc = [], None, None
+    if a.grammar_bundle:
+        with open(a.grammar_bundle, encoding="utf-8") as f:
+            bundle = json.load(f)
+        if bundle.get("level") != a.level:
+            raise SystemExit(f"grammar bundle level {bundle.get('level')} != --level {a.level}")
+        gram, gstatus = grammar_from_bundle(bundle)
+        if a.grammar_source_json:
+            with open(a.grammar_source_json, encoding="utf-8") as f:
+                gsrc = json.load(f)
     out = convert(doc, slug=a.slug, level=a.level, name=a.name, family=a.family, run=a.run or os.path.dirname(a.cand), source_kind=a.source_kind,
-                  note_ja=a.note_ja, text_sha256=a.text_sha256, cand_path=a.cand)
+                  note_ja=a.note_ja, text_sha256=a.text_sha256, cand_path=a.cand, grammar=gram, grammar_status=gstatus, grammar_source=gsrc)
     with open(a.out, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
-    print(json.dumps({"out": a.out, "phrases": len(out["phrases"]), "words": len(out["words"]), "shortfall_note_ja": out["shortfall_note_ja"]}, ensure_ascii=False))
+    print(json.dumps({"out": a.out, "phrases": len(out["phrases"]), "words": len(out["words"]), "grammar": len(out["grammar"]), "shortfall_note_ja": out["shortfall_note_ja"]}, ensure_ascii=False))
     return 0
 
 

@@ -76,7 +76,12 @@
   }
   function grammarRecord(g) {
     var full = g.body || '';
-    return { id: g.id, title: g.title, explanation_full: full, explanation_status: full ? 'provided' : 'missing', example: g.example || '' };
+    var r = { id: g.id, title: g.title, explanation_full: full, explanation_status: full ? 'provided' : 'missing', example: g.example || '' };
+    // 事前生成の契約項目(SCHEMA_CONTRACT_01 §5)がデータにある場合のみ併記(後工程の照合用。無い旧データでは従来どおり)
+    if (g.candidate_id) r.candidate_id = g.candidate_id;
+    if (g.explanation_sha256) r.explanation_sha256 = g.explanation_sha256;
+    if (g.level) r.level = g.level;
+    return r;
   }
 
   // 参照HTMLのpayload()と同じ書式(人間可読テキスト)の先頭5ブロック+委任_02の確定内容詳細・AI理由(確認用)
@@ -133,7 +138,7 @@
       limits: { key_phrase: LIMITS[0], key_phrase_plus_extra: LIMITS[1], total_highlight: LIMITS[2], grammar: GRAMMAR_MAX },
       user_confirmed_note_ja: 'selection・comment はユーザーが確定した内容(英語表現・日本語訳・区分・文法解説全文)。後続工程で変更しない。ja_gloss_status が official 以外の日本語訳は未確定で、変更が必要なら修正案を提示して再確認を求めること。',
       selection: { key_phrase: sel[0], extra_explanation: sel[1], meaning_display: sel[2], grammar: s.grammar.map(grammarRecord) },
-      grammar_status: (d.grammar || []).length ? 'candidates_available' : 'no_candidates_ungenerated',
+      grammar_status: (d.grammar || []).length ? 'candidates_available' : (d.grammar_status === 'no_candidates_found' ? 'no_candidates_found' : 'no_candidates_ungenerated'),
       comment: st.comment || '',
       ai_reference: { for_reference_only: true, note_ja: 'AIの選定理由は確認用情報です。ユーザーが確定した英語・日本語訳・解説本文ではありません。', items: refs },
       counts: { key_phrase: s.counts[0], key_phrase_plus_extra: s.counts[0] + s.counts[1], total_highlight: s.counts[0] + s.counts[1] + s.counts[2], grammar: s.grammar.length },
