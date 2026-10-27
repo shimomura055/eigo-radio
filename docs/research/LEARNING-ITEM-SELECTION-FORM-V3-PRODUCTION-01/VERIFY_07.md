@@ -11,7 +11,9 @@
 - 取得したコピー文(`browser_check_07_captured_local.json`)を試作復元・`er128_form_readable_restore_01`で復元: AI島Std/Adv(文法0/1件)とも往復OK(ローカルのCRLF作業ツリーのため一部記事は`d6`差異が出る=下記注)。
 
 ## 公開URL
-(push後に追記)
+https://shimomura055.github.io/eigo-radio/user_test/selection_form_v3/ (commit b62a070cf、Pages反映確認: `form_logic.js`に`buildReadable`、index.html HTTP 200)
+- headless Chrome(公開URL、実DOM) `browser_check_07.mjs`: **pass=25 fail=0**(`browser_check_07_public_output.txt`、console error 0)。ローカルと同一項目。
+- 公開URLで取得したコピー文(`browser_check_07_captured_public.json`、5ケース)を復元: `er128_form_readable_restore_01.restore`(委任_07R)は**5/5復元OK**(AI島Std/Adv×文法0/1件、走れメロス相当12項目含む)。設計試作(`proto06`)は4/5OK、残る1件(CRLF作業ツリーの記事)は試作が`d6`をCRLFのまま計算するための差異で、公開(blob=LF)基準の`d6`を持つ照合コードは本番側tool(LF正規化)で一致する=上記注の実証。
 
 ## ユーザー実操作で確認していただく項目(自動検証の範囲外)
 1. ChatGPTの`?q=`実上限(現行`URL_MAX=6000`字を引き上げられるか。AI島Std/Advの文法入り送信が貼付案内になるか)。
