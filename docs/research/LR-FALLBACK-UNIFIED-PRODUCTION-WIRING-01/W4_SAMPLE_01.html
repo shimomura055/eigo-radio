@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>最終Human報告用資料 表示サンプル(設計W4・保存データからの手作り)</title>
+<!--FINAL_HUMAN_REPORT-->
+<style>
+:root{--lr:#c00000;--fb:#0a2a6b;--ink:#1d2430;--mut:#667085;--line:#d8dde6;--bg:#f6f7f9}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.8 -apple-system,"Segoe UI","Yu Gothic",Meiryo,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:20px} h2{font-size:17px;margin:34px 0 8px;border-bottom:2px solid var(--line);padding-bottom:4px}
+.card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:14px 0}
+.meta{color:var(--mut);font-size:13px}
+table{border-collapse:collapse;width:100%;font-size:13px} th,td{border:1px solid var(--line);padding:4px 8px;text-align:left;vertical-align:top} th{background:#eef1f6}
+/* --- 表示規則(fhr-*はこの資料専用。公開ページ・TTS・ASR・Style Promptには出さない) --- */
+.fhr-chip{display:inline-block;font-size:12px;font-weight:700;border-radius:4px;padding:0 6px;margin-right:6px;border:1px solid}
+.fhr-chip-lr{color:var(--lr);border-color:var(--lr);background:#fff0f0}
+.fhr-chip-fb{color:var(--fb);border-color:var(--fb);background:#eef3ff}
+.fhr-chip-none{color:var(--mut);border-color:var(--line);background:#fafafa}
+.fhr-chip-gap{color:#7a4b00;border-color:#d8a200;background:#fff8e0}
+.fhr-lr-after{color:var(--lr);font-weight:700;text-decoration:underline double}
+.fhr-lr-before{color:var(--lr);text-decoration:line-through}
+.fhr-fb-block{color:var(--fb);border-left:5px solid var(--fb);padding:2px 0 2px 10px;margin:8px 0}
+.fhr-fb-note{color:var(--fb);font-size:13px}
+.fhr-hist{color:#555;font-size:13px;background:#f3f4f6;border-radius:6px;padding:6px 10px;margin:8px 0}
+.fhr-gap{background:#fff8e0;border:1px dashed #d8a200;border-radius:6px;padding:6px 10px;margin:8px 0;font-size:13px;color:#5c3b00}
+.fhr-syn{background:#eef;border:1px dashed #889;border-radius:6px;padding:4px 8px;font-size:12px;margin-bottom:6px}
+.leg span{margin-right:14px}
+</style></head><body><div class="wrap">
+<h1>最終Human報告用資料 表示サンプル(W4)<br><span class="meta">LR=赤 / Fallback=濃い青。TTS・ASR・組立の完了後にだけ作る確認資料の見本です。学習者向けページではありません。音声プレーヤーはPhase Bで付けます(本サンプルは静的)。</span></h1>
+
+<div class="card leg"><b>凡例</b><br>
+<span><span class="fhr-chip fhr-chip-lr">LR</span>Local Rewrite(英文の言い換え)。変更後=<span class="fhr-lr-after">赤・太字・二重下線</span> / 変更前=<span class="fhr-lr-before">赤・取消線</span></span><br>
+<span><span class="fhr-chip fhr-chip-fb">Fallback</span><span style="color:var(--fb)">対象テキスト全体と注記を濃い青</span>(左に青い太線)</span><br>
+<span><span class="fhr-chip fhr-chip-none">発動なし</span>灰色。最終採用に影響しない実行履歴は灰色の枠(色の意味を持たない)</span><br>
+<span><span class="fhr-chip fhr-chip-gap">記録なし</span>保存記録が足りず断定できない項目。推測で埋めず、そのまま明示します</span><br>
+色が見えにくい場合でも、必ず文字ラベル(LR / Fallback / 発動なし / 記録なし)・線の種類で区別できます。開始・終了時刻などの技術情報は表示しません。</div>
+
+<h2>0. 要約表(既公開4件+告げ口心臓。最終採用音声の状態)</h2>
+<table>
+<tr><th>記事 / レベル</th><th>LR(最終採用に反映)</th><th>Fallback(最終採用Styleが変わった)</th><th>備考</th></tr>
+<tr><td>X AI島 Std</td><td><span class="fhr-chip fhr-chip-lr">LR</span>1(AIs→AI agents)</td><td>なし(元ブロック第3回のFallbackは不採用)</td><td>UD-2</td></tr>
+<tr><td>X AI島 Adv</td><td><span class="fhr-chip fhr-chip-lr">LR</span>1(AIs→AI systems)</td><td>なし(元ブロック第3回のFallbackは不採用)</td><td>UD-2</td></tr>
+<tr><td>X 英単語ガチャ Adv</td><td><span class="fhr-chip fhr-chip-lr">LR</span>1(you've→you have)</td><td>なし</td><td>UDR #183(a)個別承認済み</td></tr>
+<tr><td>Z 走れメロス Adv</td><td><span class="fhr-chip fhr-chip-lr">LR</span>1(Melos→He)</td><td>なし</td><td>-</td></tr>
+<tr><td>Z 猿の手 Std</td><td><span class="fhr-chip fhr-chip-lr">LR</span>1(guest→visitor)</td><td><span class="fhr-chip fhr-chip-gap">記録なし</span></td><td>LR後の再生成のStyle記録がない</td></tr>
+<tr><td>Y E-1 宅配再配達料 Std</td><td>LR案あり→人間承認で原文音声を採用(最終音声に反映なし)</td><td><span class="fhr-chip fhr-chip-fb">Fallback</span>1(EN短文Style)</td><td>人間承認</td></tr>
+<tr><td>Y E-1 Adv</td><td>LR案あり→人間承認で原文音声を採用(最終音声に反映なし)</td><td>なし</td><td>人間承認</td></tr>
+<tr><td>Z 告げ口心臓 Std</td><td><span class="fhr-chip fhr-chip-none">発動なし</span></td><td><span class="fhr-chip fhr-chip-none">発動なし</span></td><td>音声単位20件を走査</td></tr>
+<tr><td>Z 告げ口心臓 Adv</td><td><span class="fhr-chip fhr-chip-none">発動なし</span></td><td><span class="fhr-chip fhr-chip-fb">Fallback</span>1(KP2「mock」ENGLISH_LOCK)</td><td>委任文の前提「Fallback 0」と異なる実データ</td></tr>
+</table>
+
+<h2>1. X「AIの仮想の島」Standard(LRのみ。採用されなかったFallbackは青にしない例)</h2>
+<div class="card">
+<div class="meta">run=ai_island_temple__run_form_prod_01 / a2 / 本文 Part 1 の第2chunk(full_story_part1_k2、3chunk中2つめ) / Role=本文(FULL_STORY)</div>
+<p><span class="fhr-chip fhr-chip-lr">LR</span><b>Local Rewrite発動</b>(最終採用音声に反映)</p>
+<p>変更後の英文(最終表示本文・TTS入力・ASR正解原稿で一致):<br>
+The <span class="fhr-lr-after">AI agents</span> sent to the island had no set tasks or rewards. But their starting settings led them to be curious, explore, and learn. They had no homework, but they were ready to explore.</p>
+<p class="meta">変更前: The <span class="fhr-lr-before">AIs</span> sent to the island ... / 変更語句: AIs → AI agents(1箇所のみ)</p>
+<div class="fhr-hist"><b>実行履歴(最終採用とは別)</b><br>
+元の英文ブロック: 第1・2回=通常Style(ASRは「The AI sent」と転写し不一致) → 第3回=EN短文Style(Fallback)を実行。減速後の再検証で不一致 → LRへ。<br>
+LRブロック: 第1回=通常Style → <b>この音声を採用</b>。<br>
+元ブロック第3回のFallbackは採用されていないため、本資料はFallbackとして表示しません。</div>
+<p><span class="fhr-chip fhr-chip-none">Fallback 発動なし(最終採用音声のStyle=通常Style「Speak directly to one listener…」)</span></p>
+<table><tr><th>照合</th><th>結果</th></tr>
+<tr><td>表示本文=TTS入力=ASR正解原稿(LR後)</td><td>一致(UD-1反映後に確認する項目。現状の公開本文はAIsのまま)</td></tr></table>
+</div>
+
+<h2>2. X「AIの仮想の島」Advanced</h2>
+<div class="card">
+<div class="meta">run=ai_island_temple__run_form_prod_01 / b1b / full_story_part1_k2</div>
+<p><span class="fhr-chip fhr-chip-lr">LR</span><b>Local Rewrite発動</b></p>
+<p>The <span class="fhr-lr-after">AI systems</span> sent to the island had no specific tasks or rewards. But their initial settings guided them to be curious, explore, and learn. They had no homework, but they were in exploration mode.</p>
+<p class="meta">変更前: The <span class="fhr-lr-before">AIs</span> sent ... / 変更語句: AIs → AI systems</p>
+<div class="fhr-hist"><b>実行履歴</b>: 元ブロック第1・2回=通常Style、第3回=EN短文Style(minimal_fallback)→不一致→LR。LRブロック第1回=通常Style(採用)。第3回のFallbackは不採用。</div>
+<p><span class="fhr-chip fhr-chip-none">Fallback 発動なし(最終採用=通常Style)</span></p>
+</div>
+
+<h2>3. X「英単語ガチャ」Advanced(LRのみ・ユーザー個別承認済み)</h2>
+<div class="card">
+<div class="meta">run=word_gacha__run_wg_01 / b1b / 本文 Part 3(full_story_part3) / 承認=UDR #183(a)(ユーザー個別承認、OPEN-499)</div>
+<p><span class="fhr-chip fhr-chip-lr">LR</span><b>Local Rewrite発動</b></p>
+<p>…Wanting a reward more than reaching your goal. <span class="fhr-lr-after">If you have felt that way</span>, you may recognize a little of yourself in the urge to chase rare words. …(以下略)</p>
+<p class="meta">変更前: <span class="fhr-lr-before">If you've felt that way</span> / 変更語句: you've → you have</p>
+<div class="fhr-hist"><b>実行履歴</b>: 元ブロック第1〜3回=通常Style(ASR不一致)→LR。LRブロック第1回=通常Style(採用)。Fallback Styleの試行は記録なし(統一仕様の適用前のrun)。</div>
+<p><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+</div>
+
+<h2>4. Z「走れメロス」Advanced(LRのみ)</h2>
+<div class="card">
+<div class="meta">run=melos/run_e2e_04(公開は継承run) / b1b / 本文 Part 3 の第1chunk(full_story_part3_c1)</div>
+<p><span class="fhr-chip fhr-chip-lr">LR</span><b>Local Rewrite発動</b></p>
+<p>…Water dripped from a crack in the rock. <span class="fhr-lr-after">He</span> drank, pushed himself onto his knees, and stood. One step. Another. …</p>
+<p class="meta">変更前: <span class="fhr-lr-before">Melos</span> drank, … / 変更語句: Melos → He(固有名詞が代名詞に変わる=原作保持の観点で人が確認する語句)</p>
+<div class="fhr-hist"><b>実行履歴</b>: 元ブロック標準Style3回(不一致)→LR。LRブロック第1回=標準Style(採用)。</div>
+<p><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+</div>
+
+<h2>5. Z「猿の手」Standard(LR+Fallback記録の食い違い。「記録なし」を明示する例)</h2>
+<div class="card">
+<div class="meta">run=the_monkeys_paw/run_sf_prod_01 / a2 / 本文 Part 1 の第10chunk(full_story_part1_c10)</div>
+<p><span class="fhr-chip fhr-chip-lr">LR</span><b>Local Rewrite発動</b></p>
+<p>…his friend warned. After their <span class="fhr-lr-after">visitor</span> left, Herbert joked,</p>
+<p class="meta">変更前: their <span class="fhr-lr-before">guest</span> left / 変更語句: guest → visitor</p>
+<div class="fhr-hist"><b>実行履歴</b>: 元ブロック標準Style2回(不一致)→第3回=EN短文Style(minimal_fallback、不一致)→LR。</div>
+<div class="fhr-gap"><span class="fhr-chip fhr-chip-gap">記録なし</span>LR後の再生成(最終採用音声)がどのStyleで作られたかの記録が、現在の保存データにありません(attemptファイルは元ブロックの3回分だけで、最終音声のsha256とも一致しない)。
+そのため最終採用音声が「Fallback」か「通常Style」かは断定しません。青は付けません。Phase Bで、LR後attemptのStyleを記録する対応が必要です。</div>
+</div>
+
+<h2>6. Y E-1「宅配 再配達料」Standard(Fallback採用+LR案は人間承認で不採用)</h2>
+<div class="card">
+<div class="meta">run=redelivery_fee/run_01 / a2 / Voice 1(y_voice_1) / 最終採用=ユーザー個別承認(2026-10-26)でattempt5を採用</div>
+<p><span class="fhr-chip fhr-chip-fb">Fallback</span><b class="fhr-fb-note">最終採用音声はFallback Style</b></p>
+<div class="fhr-fb-block">When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. Even so, I can’t simply say customers should pay the cost. …(Voice 1の本文全体=この音声の対象範囲)
+<div class="fhr-fb-note">Style: 英語短文Style(Minimal)=FAMILY_X_ROLE_STYLE_EN_FALLBACK[0] / 通常Style(calm, steady news narration…)から英語短文Style(natural, clear, conversational)へ切替 / 範囲: Voice 1 本文全体(chunkなし) / 採用経路: ユーザー個別承認</div></div>
+<div class="fhr-hist"><b>LR(実行履歴・最終音声には反映なし)</b>: LR案 redeliveries → repeat deliveries が選ばれたが、人間承認で「LR前の原文音声(attempt5)」を採用。最終音声=原文のためLRの赤は付けません。表示本文も原文のまま(不一致なし)。</div>
+</div>
+
+<h2>7. Y E-1 Advanced(LR案は人間承認で不採用・通常Style)</h2>
+<div class="card">
+<div class="meta">run=redelivery_fee/run_01 / b1b / y_voice_1 / ユーザー個別承認でattempt6(通常Style)を採用</div>
+<p><span class="fhr-chip fhr-chip-none">LR 最終音声に反映なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<div class="fhr-hist">LR案 redeliveries → repeat deliveries は人間承認により不採用(原文音声を採用)。最終採用Style=通常Style(english_style_prefix_wide_margin)。</div>
+</div>
+
+<h2>8. Z「告げ口心臓」(LR 0件。Advanced KP2にFallbackが1件ある実データ)</h2>
+<div class="card">
+<div class="meta">run=the_tell_tale_heart/run_reselect_01</div>
+<p>Standard: <span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span>(音声単位20件を走査)</p>
+<p>Advanced: <span class="fhr-chip fhr-chip-none">LR 発動なし</span>(音声単位19件を走査)</p>
+<p><span class="fhr-chip fhr-chip-fb">Fallback</span><b class="fhr-fb-note">Advanced KP2 英語フレーズ</b></p>
+<div class="fhr-fb-block">mock
+<div class="fhr-fb-note">Style: ENGLISH_LOCK / 通常Style(K2「Say the phrase as one single, smoothly connected chunk…」)からENGLISH_LOCK(「…using English pronunciation throughout」)へ切替 / 範囲: Key Phrase 2 英語音声(kp2_en)全体 / 最終音声はENGLISH_LOCK段の第1回(検証済み)</div></div>
+<div class="fhr-hist">実行履歴: 通常Style2回は未検証(Secondary ASR一時障害の技術停止を含む)→ENGLISH_LOCK段で採用。</div>
+<p class="meta">最終wavのsha256と一致するattempt記録(attempt3、instruction sha dcd08dca…)でStyleを確定。run内のStyle実測記録(style_actual)は別のStyle(K2)を指しており、そのまま読むと誤ります(設計書§3-3)。</p>
+</div>
+
+<h2>9. 表示確認用の合成例(実データではありません)</h2>
+<div class="card"><div class="fhr-syn">合成例A: LRとFallbackが同じ音声区間で重なった場合。区間全体=青、変更語句=赤(青の中に赤が入る)。</div>
+<span class="fhr-chip fhr-chip-lr">LR</span><span class="fhr-chip fhr-chip-fb">Fallback</span><b>重複</b>
+<div class="fhr-fb-block">The shop opened early, and every <span class="fhr-lr-after">customer</span> got a free cup.
+<div class="fhr-fb-note">Fallback: 最終採用音声のStyle=英語短文Style(Minimal)。通常Styleから切替。範囲: Part 2 chunk 3(全体)</div></div>
+<p class="meta">LR: 変更前 <span class="fhr-lr-before">guest</span> → 変更後 <span class="fhr-lr-after">customer</span>(LRブロックの採用attemptのStyleがFallbackの場合の表示)。LR前の元ブロックでのFallback試行は「実行履歴」(灰色枠)に分けて表示します。</p></div>
+<div class="card"><div class="fhr-syn">合成例B: 日本語短文Style(Minimal)Fallback。LRなし(日本語はLR対象外)。</div>
+<span class="fhr-chip fhr-chip-fb">Fallback</span><b>日本語音声</b>
+<div class="fhr-fb-block">ここでは、買い物のときに役立つ言い方を3つ紹介します。
+<div class="fhr-fb-note">Style: 日本語短文Style(Minimal) / 通常Style(日本語ナレーションStyle)から切替 / 範囲: 日本語Preview 全体</div></div></div>
+<div class="card"><div class="fhr-syn">合成例C: 保存記録の構造がない既存Family(A/B/C等)。</div>
+<span class="fhr-chip fhr-chip-gap">記録なし</span>この音声の採用attemptとStyle記録が保存データにないため、LR/Fallbackの有無を判定できません(適用不可。音声生成方式は変更しません)。</div>
+</div></body></html>
