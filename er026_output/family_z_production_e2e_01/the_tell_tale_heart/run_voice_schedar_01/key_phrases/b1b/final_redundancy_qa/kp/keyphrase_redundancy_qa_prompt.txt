@@ -1,0 +1,92 @@
+以下は、同じ記事から選ばれた3件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。3件から作れる全てのペア(3組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず3組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+You call me mad. No. Nervous, perhaps, but perfectly sane. My illness sharpened my senses, especially my hearing. I hear everything in heaven and earth. Listen to my calm voice, and judge for yourself.
+
+I loved the old man who shared my home. He had never hurt me; I wanted none of his money. But his eye! Pale blue, covered by a cloudy film—a vulture’s eye. Whenever it turned towards me, my blood went cold. I had to be free of it.
+
+For seven nights, at midnight, I lifted his latch. You should have seen my patience! I eased the door open so slowly he never stirred, then let one thin ray escape my lantern.
+
+The eye was always closed.
+
+So I could do nothing. You understand: I hated the eye, not the man. Each morning I kindly asked how he had slept.
+
+On the eighth night, I nearly laughed at my cleverness. Then my thumb slipped against the lantern’s fastening.
+
+“Who’s there?” he cried.
+
+I stood motionless. For an hour he sat in bed, listening. At last he groaned softly. Not pain—terror. I knew that sound.
+
+I uncovered the lantern. Its narrow beam found the eye.
+
+Wide open.
+
+A low, quick beating reached me, like a watch wrapped in cotton. His heart! Faster it went, and louder. What if a neighbour heard?
+
+I rushed forward. He shrieked once. I dragged him down and pulled the heavy bed over him. Finally, the beating stopped. I checked his pulse. Nothing.
+
+I hid his body beneath three floorboards and fitted them back exactly. Not a mark! You could have searched all night.
+
+At four in the morning, three police officers knocked. A neighbour had heard a shriek.
+
+I welcomed them. A bad dream, I explained; the cry was mine. The old man was away in the country. I showed them every room, then brought chairs into his bedroom. I sat directly above the body. You see how little I feared?
+
+They chatted pleasantly. I smiled.
+
+Then my head began to ache. A ringing filled my ears—but no. That low, quick beating again.
+
+I spoke louder. It grew louder too.
+
+I paced and scraped my chair across the boards. Still they chatted. Still they smiled.
+
+Louder. Louder!
+
+Could you have borne it? They heard! They knew! Their smiles were mocking me. I could bear no more.
+
+“I did it!” I screamed. “Tear up the planks! Here! It is the beating of his hideous heart!”
+
+【Key Phrase 3件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "sharpen someone's senses",
+    "japanese_gloss": "人の感覚を研ぎ澄ます",
+    "source_sentence": "My illness sharpened my senses, especially my hearing"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "mock",
+    "japanese_gloss": "ばかにする",
+    "source_sentence": "Their smiles were mocking me"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "hideous",
+    "japanese_gloss": "ひどく気味の悪い",
+    "source_sentence": "It is the beating of his hideous heart"
+  }
+]

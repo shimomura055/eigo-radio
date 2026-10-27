@@ -97,6 +97,18 @@ STORY_VOICE_PINS = {
         "dionysius": "Charon",
     },
 }
+# 作品限定のNarrator(本文を語る声)Voice pin(FZ-TELL-TALE-HEART-NARRATOR-VOICE-01、2026-10-28ユーザー正式決定APPROVED_FOR_PRODUCTION。Schedar→Fenrirへ修正[警官役Schedarと重複回避。USER_02]、
+# 原文=docs/pm/delegation_log/2026-10-28_LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01_USER_02.md §2 + 2026-10-28_FZ-TELL-TALE-HEART-NARRATOR-VOICE-01_USER_02.md)。Family Z共通Voiceルール化しない(他storyは従来のAoede)。
+# 対象=本文narration clip(speaker=narrator、full_story_*)のみ。intro/preview/comment/KP/JA/Shellの割当(er063 role表)は変更しない。
+STORY_NARRATOR_VOICE_PINS = {
+    "the_tell_tale_heart": "Fenrir",
+}
+
+
+def narrator_voice_for(story_key: str) -> str:
+    return STORY_NARRATOR_VOICE_PINS.get(story_key, FAMILY_Z_NARRATOR_VOICE)
+
+
 STORY_VOICE_PIN_REASON = {
     "melos": "2026-10-21 U:§7 メロス完成版(受入済みpage family_z_melos_02)のVoiceは変更しない",
 }
@@ -136,14 +148,20 @@ def derive_voice_assignment(story_key: str) -> dict:
         final = pins.get(sp, rule[sp])
         rows.append({"speaker": sp, "gender": r["gender"], "order": r["order"], "first_appearance": r["first_appearance"],
                      "rule_voice": rule[sp], "pinned": sp in pins, "voice": final})
-    return {"story_key": story_key, "status": FAMILY_Z_VOICE_STATUS, "narrator_voice": FAMILY_Z_NARRATOR_VOICE,
-            "pool": {k: list(v) for k, v in FAMILY_Z_DIALOGUE_VOICE_POOL.items()},
-            "pin_reason": STORY_VOICE_PIN_REASON.get(story_key) if pins else None, "speakers": rows}
+    rec = {"story_key": story_key, "status": FAMILY_Z_VOICE_STATUS, "narrator_voice": narrator_voice_for(story_key),
+           "pool": {k: list(v) for k, v in FAMILY_Z_DIALOGUE_VOICE_POOL.items()},
+           "pin_reason": STORY_VOICE_PIN_REASON.get(story_key) if pins else None, "speakers": rows}
+    if story_key in STORY_NARRATOR_VOICE_PINS:   # 作品限定pinの作品だけ追記(他storyの記録はバイト不変)
+        rec["narrator_voice_pin"] = {"voice": STORY_NARRATOR_VOICE_PINS[story_key], "default_narrator_voice": FAMILY_Z_NARRATOR_VOICE,
+                                     "status": "APPROVED_FOR_PRODUCTION(2026-10-28ユーザー正式決定、本作品限定、Family Z共通ルール化しない)",
+                                     "source": "docs/pm/delegation_log/2026-10-28_LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01_USER_02.md §2",
+                                     "scope": "本文narration clip(speaker=narrator、full_story_*)のみ。intro/preview/comment/KP/JA/ShellのVoiceは変更しない"}
+    return rec
 
 
 def derive_dialogue_voice_tts_names(story_key: str) -> dict:
     """STORY_SPEAKER_CONFIG[story]["dialogue_voice_tts_names"] の導出(narrator + roster全員。値None=未割当は残さない)。"""
-    names = {"narrator": FAMILY_Z_NARRATOR_VOICE}
+    names = {"narrator": narrator_voice_for(story_key)}
     for row in derive_voice_assignment(story_key)["speakers"]:
         names[row["speaker"]] = row["voice"]
     return names

@@ -140,7 +140,7 @@ class SeedFilesTest(unittest.TestCase):
 class VoiceAndSpeakerTest(unittest.TestCase):
     def test_voice_assignment_follows_deterministic_rule(self):
         names = st.STORY_SPEAKER_CONFIG[KEY]["dialogue_voice_tts_names"]
-        self.assertEqual(names, {"narrator": "Aoede", "old_man": "Algieba", "officer": "Schedar"})
+        self.assertEqual(names, {"narrator": "Fenrir", "old_man": "Algieba", "officer": "Schedar"})
         self.assertEqual(r.STORY_REGISTRY[KEY]["voice_tts_names_plan"], names)
         asg = st.derive_voice_assignment(KEY)
         self.assertTrue(all(not row["pinned"] for row in asg["speakers"]))   # pin(個別例外)なし

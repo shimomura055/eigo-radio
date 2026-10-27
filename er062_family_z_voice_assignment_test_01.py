@@ -107,6 +107,25 @@ class VoiceAssignmentFileTest(unittest.TestCase):
             self.assertEqual(json.load(open(p, encoding="utf-8")), rec)
 
 
+class NarratorVoicePinTest(unittest.TestCase):
+    """FZ-TELL-TALE-HEART-NARRATOR-VOICE-01: 作品限定のNarrator pin(告げ口心臓のみSchedar。他storyはAoede=不変)。"""
+    def test_only_tell_tale_heart_pinned(self):
+        import er062_family_z_structure_01 as st
+        self.assertEqual(st.STORY_NARRATOR_VOICE_PINS, {"the_tell_tale_heart": "Fenrir"})
+        for k in st.STORY_VOICE_ROSTER:
+            exp = "Fenrir" if k == "the_tell_tale_heart" else "Aoede"
+            self.assertEqual(st.derive_dialogue_voice_tts_names(k)["narrator"], exp, k)
+            rec = st.derive_voice_assignment(k)
+            self.assertEqual(rec["narrator_voice"], exp, k)
+            self.assertEqual("narrator_voice_pin" in rec, k == "the_tell_tale_heart", k)
+        self.assertEqual(st.FAMILY_Z_NARRATOR_VOICE, "Aoede")   # 共通既定は不変
+
+    def test_old_man_voice_unchanged(self):
+        import er062_family_z_structure_01 as st
+        n = st.derive_dialogue_voice_tts_names("the_tell_tale_heart")
+        self.assertEqual((n["old_man"], n["officer"]), ("Algieba", "Schedar"))
+
+
 class StoreKeyTest(unittest.TestCase):
     def test_store_key_includes_voice(self):
         import er006_master_audio_store_01 as ms
