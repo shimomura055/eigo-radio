@@ -150,7 +150,11 @@ def test_koro_kanji_variant_confirmed_by_reading_candidates():
     try:
         r = ja_secondary.evaluate_attempt_ja_with_cascade_detail(canon, asr_text, "dummy.wav", cascade_enabled=True)
         assert r["verified"] is True
-        assert r["final_status"] == ja_secondary.ORTHOGRAPHIC_VARIANT_CONFIRMED
+        # 不変条件(委任_02A-0、R-10): 「頃↔ころ」はPASSであり、根拠は読み(形態素解析の読み候補照合)に限る。
+        # 後続のVariant Layer(Candidate D-2、`CURRENT_SPEC.md:2259` APPROVED_FOR_PRODUCTION)がPrimary単独で
+        # PHONETIC_MATCHへ引き上げるため、確定ラベルは2系統のどちらでも正当(いずれも読み根拠・Human Review不要)。
+        assert r["final_status"] in (ja_secondary.ORTHOGRAPHIC_VARIANT_CONFIRMED, "PHONETIC_MATCH")
+        assert r["classification"].should_pass is True
         assert r["human_review_required"] is False
     finally:
         routing._transcribe_openai_mini = orig_openai
@@ -237,9 +241,18 @@ def test_single_engine_repetition_does_not_confirm_orthographic_variant():
     p4.get_full_text_via_azure_stt_continuous = lambda *a, **k: (azure_text, None)
     try:
         r = ja_secondary.evaluate_attempt_ja_with_cascade_detail(canon, openai_text, "dummy.wav", cascade_enabled=True)
-        assert r["verified"] is False
+        # 不変条件(委任_02A-0、R-10): 単一エンジン(OpenAI)の繰り返しでORTHOGRAPHIC_VARIANT_CONFIRMED(2エンジン確認ラベル)を
+        # 出さない。かつ無関係な内容を返すAzure転写は、PASS根拠として採用されない。
+        # 現行Productionでは、Primary転写が辞書読み一致のみの差(頃↔ころ)ならVariant Layer(Candidate D-2、
+        # `CURRENT_SPEC.md:2259`)がPrimary単独でPHONETIC_MATCH PASSにするため verified=True になり得る(読み根拠であり
+        # 繰り返しではない)。その場合もSecondary(Azure)の無関係転写は一切の合否根拠にならない(cascade_invoked=False)。
         assert r["final_status"] != ja_secondary.ORTHOGRAPHIC_VARIANT_CONFIRMED
-        assert r["human_review_required"] is True
+        if r["verified"]:
+            assert r["final_status"] == "PHONETIC_MATCH"
+            assert r["cascade_invoked"] is False
+            assert r["human_review_required"] is False
+        else:
+            assert r["human_review_required"] is True
     finally:
         routing._transcribe_openai_mini = orig_openai
         p4.get_full_text_via_azure_stt_continuous = orig_azure

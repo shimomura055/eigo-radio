@@ -38,7 +38,11 @@ PRODUCTION_SCOPE_IMPORTERS = {
 # PM-REGRESSION-ISOLATION-HYGIENE-01 委任_01: DEV/Trial-only, not production-reachable(具体ファイル名のみ。glob・接頭辞での拡張禁止)。
 # Trial harness(X/Z限定の実生成と同じscopeをかぶせて再利用する隔離DEV runner)。Productionから参照されないことは下のtestで確認する。
 #   er113_fx_paragraph_chunk_trial_01.py = FX-PARAGRAPH-CHUNK-TTS-TRIAL-01 / er114_fz_narration_chunk_trial_02.py = FZ-NARRATION-CHUNK-TTS-TRIAL-01
-DEV_TRIAL_SCOPE_SCRIPTS = {"er113_fx_paragraph_chunk_trial_01.py", "er114_fz_narration_chunk_trial_02.py"}
+DEV_TRIAL_SCOPE_SCRIPTS = {"er113_fx_paragraph_chunk_trial_01.py", "er114_fz_narration_chunk_trial_02.py",
+                           # 委任_02A-0(R-10、JA-ASR-V2-BETA-PRODUCTION-WIRING-01): 本testの固定リスト更新漏れ(HEAD失敗)の是正。
+                           # いずれもDEV/Trial専用(Productionからimportされない=下のoutside検査で固定)。Z/Y Trial harness・Trial用fake。
+                           "er118_fz_full_episode_trial_01.py", "er118_fz_dialogue_context_tts_trial_01.py",
+                           "er121_e1_slowed_asr_recheck_01.py", "er122_fz_ctx_fakes_01.py"}
 # OPEN-479: 共有leaf er012_b だけは scope module の「読取関数」importを許可(er109純関数・scope入口呼出は引き続き禁止)
 ABC_SCOPE_READER_ALLOWED = {"er012_b_family_voices_production_01.py": SCOPE_MOD}
 # 絶対にer109/scope moduleをimportしてはならないA/B/C系Production(共有leafは除く: leaf自体はadapter経由で間接的に効くがimportしない)

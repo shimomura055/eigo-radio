@@ -688,9 +688,17 @@ def test_local_rewrite_retts_passes_script_version_v1_and_pww_lr_rewritten(tmp_p
 
 def test_hr_lock_module_unchanged_and_stop_retrying_branches_recorded_only():
     import subprocess
-    out = subprocess.run(["git", "diff", "--name-only", "961d5b360", "--", "er011_human_review_lock_01.py"],
+    # 委任_02A-0(R-10): 基準commitを更新。961d5b360以降の差分は承認済み変更6e7fa7cf5(TTS-RETRY-FALLBACK-LR-UNIFICATION委任_04、
+    # コメント追記のみ)だけであり、それ以降は無変更。さらに「コード(非コメント行)が961d5b360と同一」を不変条件として固定する。
+    out = subprocess.run(["git", "diff", "--name-only", "6e7fa7cf5", "--", "er011_human_review_lock_01.py"],
                          capture_output=True, text=True, cwd=ROOT).stdout
-    assert out.strip() == ""                                                 # HR Lock module(er011)は無変更を維持
+    assert out.strip() == ""                                                 # HR Lock module(er011)は6e7fa7cf5以降無変更を維持
+
+    def _code_lines(text):
+        return [ln.rstrip() for ln in text.splitlines() if ln.strip() and not ln.lstrip().startswith("#")]
+    base = subprocess.run(["git", "show", "961d5b360:er011_human_review_lock_01.py"], capture_output=True, cwd=ROOT).stdout.decode("utf-8")
+    cur = open(os.path.join(ROOT, "er011_human_review_lock_01.py"), encoding="utf-8").read()
+    assert _code_lines(base) == _code_lines(cur)                             # 961d5b360からコード(非コメント行)は同一=HR Lockの挙動は不変
     d = sec.evaluate_attempt_with_cascade_detail(CANON, WRONG, [], "nofile.wav", cascade_enabled=True, attempt_ctx={"is_last_slot": True})
     assert d["stop_retrying"] is False                                        # `if stop_retrying:`分岐は到達不能(削除は委任_07判断)
     left = 0
