@@ -1,0 +1,15 @@
+# 委任_02(Phase 2): 確定選定に基づく音声再制作(Family X正式経路)=Advancedは即時着手、StandardはRedundancy再選定の確定後。候補ページ+報告資料(⏸/赤/青)。公開`_02`は上書きしない
+
+管理ID: FX-MOON-SHRINKING-RESELECT-REMAKE-01(Fable→sonnet-worker、2026-10-28)。ユーザー原文=`…_FX-MOON-SHRINKING-RESELECT-REMAKE-01_USER.md` §3〜§6(必読)、選定原文=`…_USER_02.md`。Phase 1成果=`docs/research/FX-MOON-SHRINKING-RESELECT-REMAKE-01/{FIXATION_01,BUDGET_PLAN_01,BUDGET_LOG_01}.md`、RESULT_PACKET_FXMS1。共通Charter=`CLAUDE.md`冒頭、実行層規則=`.claude/agents/sonnet-worker.md`。成果物=同dir `AUDIO_PHASE2_01.md`、報告=`docs/pm/RESULT_PACKET_FXMS2.md`(原文§6第2回の項目順)。
+
+## 起点(Fable実施済み)
+- run=`er019_output/family_x_audio_production_wiring_01/moon_shrinking__run_reselect_01`(source=`er019_output/moon_shrinking/run_reselect_01`、本文正本run_ms_03と一致)。
+- **Advanced(b1b)**: 照合PASS→確定済み(rev1: `b1b/key_phrases/confirmed_selection.json`、`b1b/study_text/confirmed_grammar.json`=疑似分裂文1件、`b1b/audit/confirmed_selection.json`)。
+- **Standard(a2)**: 照合PASSだが確定時に既存Redundancy QA validator(`er119_kp_human_review_01.py:567`、候補3「hold heat in」と候補5「insulation」が意味・用法重複ペア)で拒否(rc=2)。**ユーザーへ再選定(どちらか一方)を依頼中。確定までStd音声へ進まない**(AIが差し替えない)。転記file=`docs/research/FX-MOON-SHRINKING-RESELECT-REMAKE-01/user_selection_01/paste_a2.txt`(確定時はFableが再実行)。
+
+## 作業
+1. **Advanced先行(有料、見積先行)**: Family X正式runner(`er019_family_x_audio_production_runner_01.py`、AI島/Coffeeの先例と同じ: scaffold(KP確定後の残り: Part1/解説/文法finalize)→tts(b1b)→assemble→player/pages)。`--pages-dir`相当で新dir `user_test/family_x_moon_shrinking_reselect_01/`(公開`family_x_moon_shrinking_02`は不変)。既存資産(本文・Fact/Ledger・固定Shell・Preview/Comment support・再利用可能音声[run_ms_03/_02の同一canonical_text・同一Style・同一Voiceのclip]=reuse keyで自動再利用)を活用。統一TTS retry/Fallback/LR・ASR・M3 Style Gate・速度仕様は現行どおり。**LR採用があれば**UD-1配線(LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01、統合配線commit進行中)の状況を確認: 配線済みなら表示本文overlay+三者一致Gateが自動適用、未配線なら当該segmentを完成扱いにせず報告。Fallback採用は記録。Cap: 本委任¥60(Std/Adv合算。先例: run_chunk級で level当たり¥10〜20)。
+2. **Standard**: Fableから「a2確定済み」の連絡(SendMessage)を受けてから同手順で着手。連絡前にa2の有料工程を起動しない。
+3. **報告資料(⏸/赤/青)**: ユーザー決定(USER_02 of LR案件 §4)=試聴ページに実際のChunk境界⏸・LR赤・Fallback濃青。統合配線commit(委任_11)がorigin/mainに入っていれば`pages`段で自動反映されるので、着手時と完了時に`git log origin/main --oneline -5`で確認。未配線で完了した場合は、配線commit後に`pages`段のみ再実行(API 0)して反映し、その旨を成果物に記録。発動していないものを表示しない(LR/Fallback 0なら表示なし)。
+4. 検証: 確定①②③/文法1件と完成ページの逐語一致(SLOT-23ハイライト: ①太字+二重下線/②太字+下線/③下線)、本文=TTS入力=ASR正解(sha/文照合)、ASR全PASS・警告件数、M3 Gate結果、速度、page_verify、公開dir不変(byte)。X固有: Preview/Comment/in_one_line/topic_introも網羅。
+5. 報告(RESULT_PACKET_FXMS2、第2回項目順): Std/Adv完成版試聴URL/品質検査結果/Fable受入待ち・Wiring状況(共通機能はPRODUCTION_WIRED済みのものを再実装せず適用確認)/実費(cost_log)/ユーザー最終試聴待ちの明示。SSOTは編集しない。Git: run記録(先例と同範囲)+候補ページ+成果物のみ`git add`(`git add -A`禁止)、commit「FX-MOON-SHRINKING-RESELECT-REMAKE-01 委任_02: 確定選定に基づく音声再制作(Adv[/Std])・候補ページ(実費¥N)」+`Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>`、`git push origin HEAD:main`(競合時`git pull --no-rebase origin main`)。Python=`.venv\Scripts\python.exe`。同時進行worker(統合配線=er019 runner/listening page等を編集中、告げ口心臓Voice修正=er063/er003_v1_n3)のファイルは編集しない。runner起動前に`git pull`し最新コードで起動。
