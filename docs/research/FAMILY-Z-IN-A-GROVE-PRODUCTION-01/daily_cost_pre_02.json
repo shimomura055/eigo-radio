@@ -1,0 +1,77 @@
+{
+  "date_jst": "2026-10-28",
+  "log": {
+    "total_jpy": 131.11,
+    "by_provider_jpy": {
+      "openai": 12.73,
+      "gemini": 70.36,
+      "gemini_batch": 7.32,
+      "openai_asr": 19.49,
+      "azure": 21.21
+    },
+    "top_run_dirs_jpy": [
+      [
+        "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_voice_fenrir_01",
+        35.08
+      ],
+      [
+        "er019_output/family_x_audio_production_wiring_01/moon_shrinking__run_reselect_01",
+        20.78
+      ],
+      [
+        "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_reselect_01",
+        15.86
+      ],
+      [
+        "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_voice_schedar_01",
+        10.35
+      ],
+      [
+        "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_b8_y_adv_4b",
+        9.89
+      ],
+      [
+        "er009_output/regression_test_14",
+        6.53
+      ],
+      [
+        "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_b8_y_std_4c",
+        6.53
+      ],
+      [
+        "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_b8_y_std_4b",
+        6.37
+      ],
+      [
+        "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_std_5",
+        1.89
+      ],
+      [
+        "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_adv_16",
+        1.73
+      ]
+    ],
+    "records": 738,
+    "files_scanned": 1289,
+    "unpriced": {},
+    "excluded_synthetic": {
+      "records": 0,
+      "jpy": 0.0,
+      "note": "usage_source=SYNTHETIC_DRYRUN_STUB/STUB等のdry-run合成行。実費から除外(別枠表示)"
+    }
+  },
+  "ledger": {
+    "total_jpy": 0.0,
+    "rows": 0
+  },
+  "adopted_jpy": 131.11,
+  "adopted_rule": "max(log, ledger)",
+  "uncaptured_kinds": [
+    "run dir外・ログ外課金",
+    "Batch未完了",
+    "単価未登録(unpriced)",
+    "推定値(ledger側)",
+    "Claude Code自体の利用料(別項目)"
+  ],
+  "assumption": "input_tokensはcachedを含めた全入力として標準単価で換算(cached割引は考慮しない=やや過大側)"
+}

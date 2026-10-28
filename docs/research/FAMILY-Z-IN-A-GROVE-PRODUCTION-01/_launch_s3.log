@@ -1,0 +1,22 @@
+{
+ "stop": false,
+ "applicable": [],
+ "notices": [
+  {
+   "path": "C:/Users/tensh/eigo-radio/docs/pm/delegation_log/2026-10-12_FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01_STOP_NOTICE.md",
+   "applies": false,
+   "rule": "a_status_inactive"
+  }
+ ]
+}
+[GLOSS-ALIGN] 実効flag=ON (source=default, EIGO_KP_GLOSS_ALIGNMENT=None)
+[E2E] stage=kp mode=real ...
+[KP_REVIEW_PENDING] Human Review待ちです: 文法(Part 2) + KP(失敗ではありません。有料の後続工程には進みません)。
+  - 文法(Part 2): 依頼書 er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/a2/study_text/grammar_human_review_request.md
+  - level=b1b: 依頼書 er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/key_phrases/b1b/kp_human_review_request.md
+  - level=a2: 依頼書 er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/key_phrases/a2/kp_human_review_request.md
+  まとめ(統合依頼書): er026_output/family_z_production_e2e_01/in_a_grove/run_sf_prod_01/review_request.md
+  次の一手: 依頼書の表を見て `py er119_kp_human_review_cli_01.py select ...`(KP)/`grammar-select ...`(文法)で決める(または明示の `declare-absent`)。
+  再開コマンド(同じコマンドを1つだけ再実行): py er026_family_z_fiction_production_runner_01.py --story in_a_grove --run run_sf_prod_01 --mode real --approved-budget-jpy 70 --tts-execution-mode STANDARD --stages kp
+  注意: 直近5分以内に同じrunを3回起動するとRESTART_STORM保護で自動停止します(select/reselect後は数分あけて再開)。
+RC=4
