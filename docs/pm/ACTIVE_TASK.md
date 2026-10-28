@@ -1,4 +1,4 @@
-【固定ヘッダ(2026-10-28 PC再起動後、再掲済み)】再開手順: (1)本ファイル→(2)docs/pm/PM_BRIEF.md。Worker稼働中: (I)委任_01Aのみ。全commitはorigin/main c9003a666(JA-ASR-FALSE-NG-ROOT-FIX-02 委任_03)までpush済み。
+【固定ヘッダ(2026-10-28 PC再起動後、再掲済み)】再開手順: (1)本ファイル→(2)docs/pm/PM_BRIEF.md。Worker稼働中: (I)委任_01A・(M)委任_01a/01b/01c(並行)。全commitはorigin/main c9003a666(JA-ASR-FALSE-NG-ROOT-FIX-02 委任_03)までpush済み。
 管理ID(並行): (A)FX-MOON-SHRINKING-RESELECT-REMAKE-01=Std日本語題のASR 3回NGで組立停止、ユーザー判断待ち(a)承認済み音声再利用/(b)再生成/(c)題変更。Adv候補ページ完成(user_test/family_x_moon_shrinking_reselect_01、Advのみ)。run累計¥20.78/Cap¥60。回答後: 承認済み音声再利用注入(sha照合・記録)→a2 assemble→both player→listening page→検証→第2回報告(RESULT_PACKET_FXMS2)。※auto mode分類器が「承認記録注入指示」のSendMessageを拒否した経緯あり=ユーザー回答を得てから委任文(delegation_log)で指示する。
 (B)FZ-TELL-TALE-HEART-NARRATOR-VOICE-01=完了・PRODUCTION_WIRED(送信Voice修正)+ユーザー最終試聴待ち(fenrir_01)。公開差替えは試聴PASS後。
 (C)LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01=完了・PRODUCTION_WIRED(X/Y/Z Std/Adv)。既公開差替え3件(UDR #198-#200)はユーザー承認待ち。残件OPEN-573〜577。
@@ -12,6 +12,7 @@
 (J)PM-OPEN-581-TRIAGE-46-01=OPEN-581起点46件(36未登録+10トリガー不明)の重大度A/B/C精査。委任_01B=完了(A=0/B=10/C=36、Close提案24・継続管理21・軽微是正1、成果物=docs/research/PM-OPEN-581-TRIAGE-46-01/TRIAGE_01.md、報告=docs/pm/RESULT_PACKET_OT1.md、API 0・SSOT編集なし)→Fable確認→委任_02B。 【委任_02B=SSOT反映・軽微是正完了(Close24/B10 trigger/OPEN-581 Closeout/UDR#14注記/DECISION_LOG/T13 test修正PASS、API 0、報告=docs/pm/RESULT_PACKET_OT2.md、Fable受入待ち)】
 (K)FX-AI-ISLAND-FINAL-PUBLISH-01=完了・ACCEPTED(記事単位APPROVED_FOR_PRODUCTION・公開済み)。URL=https://shimomura055.github.io/eigo-radio/user_test/family_x_ai_island_form_01/index.html、commit 9a2fb4b52/b9748a991。
 (L)NUANCE-EXPLANATION-LOSS-INVESTIGATION-01=完了・ACCEPTED。新OPEN-586/UDR #211起票・ユーザー判断待ち(Part 3処遇)。
+(M)FAMILY-Y-DEBATE-SOURCE-DEEP-RESEARCH-01=ユーザー2026-10-29: Family Y Debate/Discussion情報源の拡張Deep Research(海外積極探索、国固有除外、商用◎/○のみ推奨、実在意見とAI構成案の区別、調査のみ・API 0)。委任_01a(海外英語圏)/01b(欧州・アジア・市民討論)/01c(国内)並行→委任_02統合→Fable評価。原文=delegation_log/2026-10-29_FAMILY-Y-DEBATE-SOURCE-DEEP-RESEARCH-01_USER.md
 
 **(F)受入条件表(2026-10-28 A1、ユーザー原文`docs/pm/delegation_log/2026-10-28_JA-ASR-FALSE-NG-ROOT-FIX-02_USER.md` §3・§6から逐語抜粋。各受入で更新。未達行が残る間は『完了』『一区切り』『進行中なし』を使わない)**
 | 条件 | 達成/部分/未達 | 担当手段 |
