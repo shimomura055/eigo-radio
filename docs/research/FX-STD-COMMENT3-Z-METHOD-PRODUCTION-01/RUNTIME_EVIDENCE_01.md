@@ -36,3 +36,6 @@
 
 ## 5. 費用内訳
 初回経路evidence ¥0.32 + C3再生成 ¥0.05 + TTS/ASR ¥0.25 = **¥0.62**(上限¥30、AI島run累計 36.94→37.24 JPY)。
+
+## 6. Pages反映後の実測(2026-10-28 12:53 UTC、push 664443842/1502e25ca後)
+URL=https://shimomura055.github.io/eigo-radio/user_test/family_x_ai_island_form_01_candidate_b7_01/ 。HTTP200、配信bytesのsha256(先頭16桁)が`git show HEAD:`のblobと全件一致: index.html `743d6fd06a0cb947`(git blob。作業ツリーのCRLF差のみ)、audio/std_18.mp3 `6323e844…`(新comment_3)、audio/ai_island_temple_standard.mp3 `24d6a78b…`(新通し)、Adv側(ai_island_temple_advanced.mp3 `bafe5938…`/adv_00 `fd00cf85…`/adv_21 `089a7f3c…`)とStd未変更クリップ(std_00 `4d21cc91…`)は更新前と同一。配信直後に旧版が返った(別workerのpush連続によるPages deploy cancel/queueで約12分遅延)が、最終的に新版へ切替わったことを確認。
