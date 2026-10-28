@@ -57,3 +57,4 @@
 - 費用: 本委任の増分=run累計 35.0809−10.2258=¥24.86(1回目¥8.04+2回目≈¥14.7+3回目≈¥2.1)。Cap¥40内。
 - 新規registry/Gate変更なし。`voice_acceptance_check_01.py`は読取専用(Z `run_audio_gate`へ未接続、Gate判定不変)、test 6件OK。
 - 環境汚染(記録のみ・未修正): 共有`human_review_queue`の`x/a2/kp1_en` HUMAN_REVIEW_REQUIRED(2026-10-28 09:18)が`er063_family_z_audio_01_test_01.test_preview_comment_kp_styles`をclean環境以外で失敗させる。分類=実害なし(試験のみ、Production影響なし)・別件。
+- GitHub Pages実測(push後、デプロイ反映に約8分): index/standard/advanced 200。`a2_p1.mp3`/`b1b_p2.mp3`/`TellTaleHeart_a2_full.mp3`/`TellTaleHeart_b1b_full.mp3`のremote sha=local sha(先頭16桁一致: 7fe41f16…/e959c591…/14e0ddcf…/f961f92d…)。反映前は旧版(166c47b6…)を配信=CDN/デプロイ遅延で、反映後に一致。
