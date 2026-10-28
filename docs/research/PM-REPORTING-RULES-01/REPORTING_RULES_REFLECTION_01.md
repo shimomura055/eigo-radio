@@ -24,3 +24,13 @@
 - `~/.claude/settings.json`: permissions.defaultMode/model/autoUpdatesChannel/themeのみ。表示抑制系の設定なし。`.claude/settings.local.json`: permissions.allowのみ。
 - `claude --help`: ツール呼出表示を隠すオプションは確認できず。`-p/--print`(非対話)は最終応答のみ出力するが、対話セッション(`claude --agent sandwich-pm`)の運用を変えるため採用提案はしない。
 - 結論: 対話TUIが自動表示するツール呼出(`Write(...)`等)はClaude Code実行環境の仕様で、Claude側(モデル出力)からは抑制不可。設定変更の提案: なし(該当設定を確認できないため)。Claude側が制御できる範囲(委任文・Worker経過・テストログ・進捗文をメッセージ本文へ出さない)は12-14で規定済み。Ctrl+O等の表示切替はユーザー側UI操作。※公式docsの最新設定は未参照のため、将来設定が追加された場合は再確認。
+
+## USER_02 表示抑制の原因・対策・残る制約(2026-10-28)
+
+| 項目 | 内容 |
+|---|---|
+| 原因 | `Write(...)`/`Read(...)`/検索/委任文の表示はClaude Code本体(harness)がメインセッションの全ツール呼出を描画するもの。Claude側の文章ではなくルールで消せない。Worker(subagent)内部の呼出はメイン端末に出ない。Fable運用側の原因=長文をWriteで書く・Agent promptへ長文直書き・進行中narration |
+| 対策(ユーザー設定) | `~/.claude/settings.json`に`viewMode:"focus"`+`tui:"fullscreen"`追加済(次回起動から: ツール呼出1行要約・編集diffstat・Bash出力非表示。セッション中は`/focus`切替)。`verbose`は既定false(変更不要) |
+| 対策(Fable運用) | 長文fileはBash heredocまたはWorker作成/Agent promptは短く(詳細は委任fileへ)/進行中narrationなし/Read全文表示を避けgrep・偏った範囲読み(CLAUDE.md・sandwich-pm.md・PM_GOVERNANCE 12-14-2へ反映) |
+| 残る制約 | hookの`suppressOutput`はツール呼出行に効果なし。focus適用前の既存セッションは従来表示。ツール呼出の1行要約自体は消えない |
+| 復帰手順 | `~/.claude/settings.json`から`viewMode`と`tui`の2キーを削除(旧設定backup=`settings.json.bak_20261028`) |
