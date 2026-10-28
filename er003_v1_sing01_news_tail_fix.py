@@ -28,6 +28,7 @@ import er003_b1_p3u_audio as p3u
 import er003_b1_p4_audio as p4
 import er003_b1_p4c_audio as p4c
 import er003_b1_p9a_audio as p9a
+import er002_gemini_client as gclient  # 委任_03: 記録voice=実送信voice(effective_voice)
 import er003_audio_tts_asr_safety as safety
 import er003_v1_repro01_main_generate as repro01
 import er006_asr_provider_routing_01 as routing
@@ -320,7 +321,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
         # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する。
         _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, instruction_type, {
             "loop_attempt_index": attempt, "max_attempts": max_attempts, "language": "en",
-            "model": flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend), "voice": p9a.VOICE_NAME,
+            "model": flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend), "voice": gclient.effective_voice(p9a.VOICE_NAME),
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(), "tts_backend": tts_backend,
             "asr_text": asr_text, "audio_classification": cls.classification,
             "length_ok": length_ok, "final_length_ok": final_len_ok, "verified": verified,
@@ -359,7 +360,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                     # generate_english_component_minimal_instruction内部の
                     # 別文字列が使われている(本関数の可視範囲外、既存の
                     # instruction_typeフィールドで判別可能)。
-                    "voice": p9a.VOICE_NAME,
+                    "voice": gclient.effective_voice(p9a.VOICE_NAME),
                     "tts_model_id": flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend),
                     "style_prefix": (_sp_top if _sp_top is not None else
                                      (standard_style_prefix if style_prefix_override else "<default:ENGLISH_STYLE_PREFIX>"))}
@@ -394,7 +395,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                     # top-level昇格はstatus=OKの戻り値のみに適用されており、
                     # 不合格系(false rejection分析に最も必要)には無かった。
                     "semantic_equivalence_info": getattr(cls, "semantic_equivalence_info", None),
-                    "voice": p9a.VOICE_NAME,
+                    "voice": gclient.effective_voice(p9a.VOICE_NAME),
                     "tts_model_id": flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend),
                     "style_prefix": (_sp_top if _sp_top is not None else
                                      (standard_style_prefix if style_prefix_override else "<default:ENGLISH_STYLE_PREFIX>"))}

@@ -30,6 +30,7 @@ import numpy as np
 import er002_common as common
 import er003_a2_article as a2
 import er003_b1_p9a_audio as p9a
+import er002_gemini_client as gclient  # 委任_03: 記録voice=実送信voice(effective_voice)
 import er003_v1_a2_audio_02_generate as audio02
 import er003_v1_repro01_main_generate as repro01
 import er006_asr_provider_routing_01 as routing
@@ -257,7 +258,7 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
             "loop_attempt_index": attempt, "max_attempts": max_attempts, "language": "en",
             # FAMILY-X-PAYCHECK-PERSONALITY-PRODUCTION-E2E-01 委任_04: sidecarのmodel/
             # tts_backend記録是正(既定backendでは従来とバイト同一)。
-            **_fallback_sidecar_model_fields(tts_backend), "voice": p9a.VOICE_NAME,
+            **_fallback_sidecar_model_fields(tts_backend), "voice": gclient.effective_voice(p9a.VOICE_NAME),
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(),
             "asr_text": asr_text, "audio_classification": cls.classification,
             "length_ok": outcome["length_ok"], "final_length_ok": outcome.get("final_length_ok"), "verified": verified,
@@ -406,7 +407,7 @@ def _generate_english_segment_unified(blk, text: str, out_path: str, expected_su
                                    "instruction_label": r.get("instruction_label")})
         _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, "minimal_fallback", {
             "loop_attempt_index": ordinal, "max_attempts": max_attempts, "language": "en",
-            **_fallback_sidecar_model_fields(tts_backend), "voice": p9a.VOICE_NAME,
+            **_fallback_sidecar_model_fields(tts_backend), "voice": gclient.effective_voice(p9a.VOICE_NAME),
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(),
             "asr_text": asr_text, "audio_classification": cls.classification,
             "length_ok": outcome["length_ok"], "final_length_ok": outcome.get("final_length_ok"), "verified": verified,

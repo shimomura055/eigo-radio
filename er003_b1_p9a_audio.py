@@ -285,7 +285,7 @@ def generate_narration_snippet(text: str, language: str, out_path: str,
         actual_model_name = flw.resolve_actual_model_name(model_name, tts_backend)
     return {
         "status": "OK", "text": text, "language": language, "path": out_path,
-        "model": actual_model_name, "voice": VOICE_NAME, "call_count": 1 + retries, "retry_count": retries,
+        "model": actual_model_name, "voice": gclient.effective_voice(VOICE_NAME), "call_count": 1 + retries, "retry_count": retries,
         "sha256": sha256_file(out_path), "duration_seconds": round(len(trimmed) / common.SAMPLE_RATE, 4),
         "trim_info": trim_info, "clipping_detected": metrics["clipping_detected"], "tts_backend": tts_backend,
         # TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B、2026-09-28):

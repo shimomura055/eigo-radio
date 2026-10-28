@@ -27,6 +27,7 @@ import er003_b1_p3u_audio as p3u
 import er003_b1_p4c_audio as p4c
 import er003_b1_p8a_audio as p8a
 import er003_b1_p9a_audio as p9a
+import er002_gemini_client as gclient  # 委任_03: 記録voice=実送信voice(effective_voice)
 import er006_asr_provider_routing_01 as routing
 import er006_batch_tts_wiring_01 as batch_wiring
 import er006_preprod_hardening_01_validation as audio_validation
@@ -454,7 +455,7 @@ def generate_narration_snippet_verified_strict(
             "custom_" + hashlib.md5(style_prefix_override.encode("utf-8")).hexdigest()[:8])
         _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, _route_label, {
             "loop_attempt_index": attempt, "max_attempts": max_attempts, "language": language,
-            "model": actual_model_name, "voice": p9a.VOICE_NAME, "tts_backend": tts_backend,
+            "model": actual_model_name, "voice": gclient.effective_voice(p9a.VOICE_NAME), "tts_backend": tts_backend,
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(),
             "instruction_text": style_prefix_override,
             "asr_text": asr_text, "audio_classification": audio_classification,
@@ -653,7 +654,7 @@ def generate_english_component_minimal_instruction(
     metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
     return {
         "status": "OK", "text": text, "path": out_path, "model": actual_model_name,
-        "voice": p9a.VOICE_NAME, "call_count": 1 + retries, "retry_count": retries,
+        "voice": gclient.effective_voice(p9a.VOICE_NAME), "call_count": 1 + retries, "retry_count": retries,
         "sha256": p8a.sha256_file(out_path), "duration_seconds": round(len(trimmed) / common.SAMPLE_RATE, 4),
         "trim_info": trim_info, "clipping_detected": metrics["clipping_detected"],
         # OPEN-277(委任_04A): 固定ラベル"minimal (not ENGLISH_STYLE_PREFIX)"は実Promptを

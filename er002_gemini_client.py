@@ -14,6 +14,8 @@
 # PCMの正規化(ピーク基準)はer002_common._call_tts_with_retry側で
 # 一律に行うため、ここでは生のPCMをそのまま返す。
 
+import contextlib
+import contextvars
 import os
 
 from dotenv import load_dotenv
@@ -30,7 +32,35 @@ def make_client() -> genai.Client:
     return genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 
+# FZ-TELL-TALE-HEART-NARRATOR-VOICE-01 委任_03: Z Narrator Voice(narrator_voice_for(story))を共有leafの送信Voiceへ届ける。
+# 共有leaf(news_tail_fix/n3/crosslevel/repro01/p9a)は既定Narrator Voice(DEFAULT_LEAF_VOICE=p9a.VOICE_NAME="Aoede")を固定で使い、
+# ClipSpec.voiceを受け取らなかった(Z narratorが常にAoedeで送信されていた真因)。voice_override()スコープ内でのみ、
+# 「既定Narrator Voice(Aoede)で送ろうとした呼出」を指定Voiceへ置換する。スコープ外・他Voice(Charon/Algieba等)は不変
+# (X/A/B/C既存呼出=スコープを張らないので従来どおり)。retry/fallback/LR再TTS/resume/Batchは全て同一スコープ内で同じ置換を受ける。
+DEFAULT_LEAF_VOICE = "Aoede"
+_VOICE_OVERRIDE = contextvars.ContextVar("gemini_tts_voice_override", default=None)
+
+
+@contextlib.contextmanager
+def voice_override(voice_name):
+    """Z narrator生成の間だけ有効。voice_name=None/空/既定と同じなら実質no-op。"""
+    token = _VOICE_OVERRIDE.set(voice_name or None)
+    try:
+        yield
+    finally:
+        _VOICE_OVERRIDE.reset(token)
+
+
+def effective_voice(voice_name: str) -> str:
+    """API送信直前(speech_config構築)と記録(attempt JSON等)の双方が使う単一の決定関数。"""
+    ov = _VOICE_OVERRIDE.get()
+    if ov and voice_name == DEFAULT_LEAF_VOICE:
+        return ov
+    return voice_name
+
+
 def build_speech_config(voice_name: str) -> types.SpeechConfig:
+    voice_name = effective_voice(voice_name)
     return types.SpeechConfig(
         language_code=common.LANGUAGE_CODE,
         voice_config=types.VoiceConfig(

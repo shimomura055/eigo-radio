@@ -660,6 +660,12 @@ def with_block(leaf: str, *, fingerprint_params: tuple = (), z_policy: Optional[
                 for name in fingerprint_params:
                     v = allargs.get(name)
                     fp[name] = hashlib.sha256(v.encode("utf-8")).hexdigest()[:16] if isinstance(v, str) else v
+                # FZ-TELL-TALE-HEART-NARRATOR-VOICE-01 委任_03: Narrator Voice override scope内(Z narratorが既定Aoede以外を指定)のときだけ
+                # voiceをfingerprintへ入れる(別Voiceの旧progress[DONE]をresumeで再利用しない)。override無し/Aoede=従来のfingerprint(key不変)。
+                import er002_gemini_client as _gc
+                _ev = _gc.effective_voice(_gc.DEFAULT_LEAF_VOICE)
+                if _ev != _gc.DEFAULT_LEAF_VOICE:
+                    fp["voice"] = _ev
                 blk = open_block(leaf, out_path, text, ctx=tts_block, max_attempts=int(allargs.get("max_attempts") or BLOCK_ATTEMPTS),
                                  fingerprint=fp, z_dialogue_policy=(z_policy(allargs) if z_policy else None))
             if blk is None:

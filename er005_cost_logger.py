@@ -170,6 +170,14 @@ def _patch_gemini() -> None:
         response_modalities = getattr(config, "response_modalities", None) if config else None
         is_audio = bool(response_modalities and "AUDIO" in response_modalities)
         api = "models.generate_content(TTS)" if is_audio else "models.generate_content(text)"
+        # FZ-TELL-TALE-HEART-NARRATOR-VOICE-01 委任_03: SDK境界(実request config)のVoice名を独立記録する(Voice変更の受入で
+        # 「API送信パラメータの記録」をattempt JSON(leafの自己記録)と別系統で持つ。additive・text呼出には付与しない)。
+        sent_voice = None
+        if is_audio:
+            try:
+                sent_voice = config.speech_config.voice_config.prebuilt_voice_config.voice_name
+            except Exception:
+                sent_voice = None
         attempt = _next_attempt("gemini", api)
         t0 = time.time()
         try:
@@ -189,6 +197,7 @@ def _patch_gemini() -> None:
             # (text呼び出し[QA/Writer等]には付与しない、既存スキーマ後方互換)。
             if is_audio:
                 fail_entry["tts_execution_mode"] = "STANDARD"
+                fail_entry["tts_voice_sent"] = sent_voice
             record(fail_entry)
             raise
         usage = _gemini_usage_to_dict(getattr(response, "usage_metadata", None))
@@ -212,6 +221,7 @@ def _patch_gemini() -> None:
         }
         if is_audio:
             success_entry["tts_execution_mode"] = "STANDARD"
+            success_entry["tts_voice_sent"] = sent_voice
         record(success_entry)
         return response
 

@@ -151,13 +151,15 @@ class StdTtsTests(_Base):
         self.assertTrue(e["slowdown_applied"])
         self.assertEqual(e["slowdown_info"]["dst_duration_seconds"], 1.06)
         z.provision_shell_assets(self.run, "a2", kp_count=1)
-        with mock.patch("er003_v1_n3_01_assemble.verify_episode_audio_validation_gate"):
+        # 委任_11(B-wire): このtestの対象はM1(Std減速Gate)。mockのLR結果は実leaf形(final_adoption・文単位で一意な書換え位置)を持たないため、
+        # UD-3の採用take分類核(LR/Fallbackイベントclip)は台帳を作れない扱い(旧判定のまま)にして減速Gateだけを検証する。分類核は別test(er130/er132/er063 style gate)で検証。
+        with mock.patch("er003_v1_n3_01_assemble.verify_episode_audio_validation_gate"),                 mock.patch("er130_adopted_take_classifier_01.event_ledger_clips", return_value=None):
             res = z.run_audio_gate(self.run, "a2", plan, zt.SHELL, article_text="a")
         self.assertTrue(res["m1_slowdown"][K2]["ok"])
         shutil.rmtree(self.run)                                                              # LR出力に減速が掛かっていない場合
         plan, kp, g, out = self.tts(gens=StripGens(strip_slowdown={K2}, lr={K2}))
         z.provision_shell_assets(self.run, "a2", kp_count=1)
-        with mock.patch("er003_v1_n3_01_assemble.verify_episode_audio_validation_gate"):
+        with mock.patch("er003_v1_n3_01_assemble.verify_episode_audio_validation_gate"),                 mock.patch("er130_adopted_take_classifier_01.event_ledger_clips", return_value=None):
             with self.assertRaises(z.FamilyZSlowdownGateStop):
                 z.run_audio_gate(self.run, "a2", plan, zt.SHELL, article_text="a")
 
@@ -293,7 +295,14 @@ class AdvInvarianceGoldenTests(unittest.TestCase):
                 self.assertGreater(len(clip["text"].split()), 100)
             for cid, key in g_a["reuse_keys"].items():
                 if cid not in chunked:
-                    self.assertEqual(n_a["reuse_keys"][cid], key, f"{run} {cid}")
+                    got_key = dict(n_a["reuse_keys"][cid])
+                    # FZ-TELL-TALE-HEART-NARRATOR-VOICE-01: 凍結golden(2026-10-24頃)以後に告げ口心臓のNarrator VoiceがAoede->Fenrirへ正式変更された。
+                    # narratorのvoiceだけは現行 narrator_voice_for(story) と一致することを確認し、それ以外のkey成分は凍結値と一致させる。
+                    if "tell_tale" in run and got_key.get("voice") == "Fenrir" and key.get("voice") == "Aoede":
+                        import er062_family_z_structure_01 as _s62
+                        self.assertEqual(_s62.narrator_voice_for("the_tell_tale_heart"), "Fenrir")
+                        got_key["voice"] = key["voice"]
+                    self.assertEqual(got_key, key, f"{run} {cid}")
             self.assertEqual(n_a["story_clips"], g_a["story_clips"])
 
 

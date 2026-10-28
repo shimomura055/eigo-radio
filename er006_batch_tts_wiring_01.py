@@ -265,6 +265,7 @@ def make_batch_tts_call_fn(model_name: str, voice_name: str, client=None, output
     aoede.py/er003_v1_sing01_voice01_generate.py/er003_v1_n3_01_tts_
     generate.py。
     """
+    voice_name = gclient.effective_voice(voice_name)   # 委任_03: Z Narrator Voice(送信・telemetry記録とも同一値)
     mode = resolve_tts_execution_mode()
     if mode == TTS_EXECUTION_MODE_STANDARD:
         return _make_standard_tts_call_fn(model_name, voice_name, client=client)

@@ -182,6 +182,7 @@ def make_speech_metadata_call_fn(model_name: str, voice_name: str, client=None,
     import er002_gemini_client as gclient
     from google.genai import types
 
+    voice_name = gclient.effective_voice(voice_name)   # 委任_03: Z Narrator Voice(送信値)
     client = client or gclient.make_client()
 
     def tts_call_fn(payload) -> bytes:
@@ -247,6 +248,7 @@ def make_speech_metadata_batch_call_fn(model_name: str, voice_name: str, client=
     import er006_batch_tts_wiring_01 as batch_wiring
     from google.genai import types
 
+    voice_name = gclient.effective_voice(voice_name)   # 委任_03: Z Narrator Voice(送信値・batch telemetry記録値)
     client = client or gclient.make_client()
     _poll = poll_interval_seconds if poll_interval_seconds is not None else batch_wiring.DEFAULT_POLL_INTERVAL_SECONDS
     _timeout = timeout_seconds if timeout_seconds is not None else batch_wiring.DEFAULT_TIMEOUT_SECONDS

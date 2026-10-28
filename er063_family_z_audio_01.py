@@ -1011,6 +1011,14 @@ def real_generators() -> dict:
         return retry_primitive.connected_speech_enabled_for(spec.clip_id)
 
     def narrator(spec, out_path):
+        # FZ-TELL-TALE-HEART-NARRATOR-VOICE-01 委任_03(不具合修正): 共有leafは既定Narrator Voice(Aoede)固定でspec.voiceを受けなかった
+        # (Z narratorは常にAoede送信=Fenrir指定が未反映だった真因)。生成呼出全体(retry/fallback/LR/減速後再検証/Batch)をspec.voiceの
+        # override scopeで包み、leafの既定Voice送信を指定Narrator Voiceへ置換する。Aoede narrator(Melos等)はno-op。Style/回数/ASR/速度は不変。
+        import er002_gemini_client as _gclient
+        with _gclient.voice_override(spec.voice):
+            return _narrator_inner(spec, out_path)
+
+    def _narrator_inner(spec, out_path):
         text = _norm_for_tts(spec)
         style = style_text_for(spec)
         if spec.level == "b1b":
