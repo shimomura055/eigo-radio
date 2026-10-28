@@ -533,3 +533,4 @@
 
 ### 2026-10-28 PM-SSOT-SYNC-31 追記
 - **次工程をブロックするUDR(追記)**: 告げ口心臓 Fenrir版 最終試聴(ユーザー、候補ページ`user_test/family_z_tell_tale_heart_fenrir_01/`)。試聴PASS前に公開差替えしない。
+- 2026-10-28 撤回: 告げ口心臓 Fenrir版のPRODUCTION_WIRED判定(SYNC-31)は撤回(ユーザー試聴でAoedeのまま=USER_03)。再修正後に再受入。最終試聴待ちは継続。
