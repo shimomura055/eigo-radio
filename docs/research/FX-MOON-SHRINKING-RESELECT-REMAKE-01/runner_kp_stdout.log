@@ -1,0 +1,13 @@
+[GLOSS-ALIGN] 実効flag=ON (source=default, EIGO_KP_GLOSS_ALIGNMENT=None)
+[FAMILY-X-AUDIO-SCAFFOLD] a2: key phrase status=KP_REVIEW_PENDING
+[FAMILY-X-AUDIO-SCAFFOLD] a2: 待機中: Human確認待ち(依頼書: er019_output/family_x_audio_production_wiring_01/moon_shrinking__run_reselect_01/a2/key_phrases/kp_human_review_request.md)
+[FAMILY-X-AUDIO-SCAFFOLD] b1b: key phrase status=KP_REVIEW_PENDING
+[FAMILY-X-AUDIO-SCAFFOLD] b1b: 待機中: Human確認待ち(依頼書: er019_output/family_x_audio_production_wiring_01/moon_shrinking__run_reselect_01/b1b/key_phrases/kp_human_review_request.md)
+[FAMILY-X-AUDIO-RUNNER][cost] so far=3.93 JPY by_provider={'openai': 3.93} (after scaffold)
+[KP_REVIEW_PENDING] Human Review待ちです: KP(失敗ではありません。有料の後続工程には進みません)。
+  - level=a2: 依頼書 er019_output/family_x_audio_production_wiring_01/moon_shrinking__run_reselect_01/a2/key_phrases/kp_human_review_request.md
+  - level=b1b: 依頼書 er019_output/family_x_audio_production_wiring_01/moon_shrinking__run_reselect_01/b1b/key_phrases/kp_human_review_request.md
+  まとめ(統合依頼書): er019_output/family_x_audio_production_wiring_01/moon_shrinking__run_reselect_01/review_request.md
+  次の一手: 依頼書の表を見て `py er119_kp_human_review_cli_01.py select ...`(KP)/`grammar-select ...`(文法)で決める(または明示の `declare-absent`)。
+  再開コマンド(同じコマンドを1つだけ再実行): py er019_family_x_audio_production_runner_01.py --slug moon_shrinking --run run_reselect_01 --level both --stage scaffold --scaffold-only kp --budget-jpy 15
+  注意: 直近5分以内に同じrunを3回起動するとRESTART_STORM保護で自動停止します(select/reselect後は数分あけて再開)。

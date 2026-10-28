@@ -1,0 +1,293 @@
+{
+  "schema": "grammar_candidates_v1",
+  "level": "Standard",
+  "label": "More Than 8,900 Wrinkles on the Moon! The Secret of Its Hidden “Rock Coat”",
+  "text_sha256": "c56cc8f2d39f5fe6ac1aae8a103c8fbec39cf91022812e71ae2b964386d365ee",
+  "n_paragraphs": 9,
+  "prompt_id": "part2_stepA8",
+  "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c",
+  "model": "gpt-6-luna",
+  "extract_signature": "f8a4e41b24e0be79d5c1d71f7e9943320105b03b21049ac5530c7cbcb491fd1c",
+  "round": 1,
+  "tier_table": [
+    {
+      "para": "P5",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "長い主語では中心語を先に捉え、修飾語句を経て主動詞を探す。",
+      "front_kind": "",
+      "sentence": "On the other hand, models of the Moon’s cooling over all its history predict much more shrinking.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P6",
+      "cls": "CLEFT",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "Whatで始まる節が主語となり、isの後にその内容を示す語句が続く形を読む。",
+      "front_kind": "",
+      "sentence": "What matters is how well it holds heat in.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P7",
+      "cls": "HEAVY",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "thatが省略された節の中でも、長い主語の中心語を捉えて動詞との関係を確かめる。",
+      "front_kind": "",
+      "sentence": "The team thinks a thick layer of rock with many gaps may have worked like insulation.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P7",
+      "cls": "SPEC",
+      "tier": null,
+      "eligible": false,
+      "why_not": [
+        "mid_cond"
+      ],
+      "tv": "HIGH",
+      "tv_ja": "make it＋形容詞＋to不定詞では、itが形式目的語で、形容詞が目的語の補語になると捉える。",
+      "front_kind": "",
+      "sentence": "This rock layer may have made it harder for heat inside the Moon to get out.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P9",
+      "cls": "INV",
+      "tier": "T2",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "Thenなどの副詞句の後で動詞が主語より先に置かれる倒置を見分ける。",
+      "front_kind": "",
+      "sentence": "Then came the warmth of its coat—not how it feels to wear, but how well it holds heat in.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    },
+    {
+      "para": "P9",
+      "cls": "CMP",
+      "tier": "T1",
+      "eligible": true,
+      "why_not": [],
+      "tv": "HIGH",
+      "tv_ja": "more ... than ...では、than節が比較の基準として何を示すかを補って読む。",
+      "front_kind": "",
+      "sentence": "There is more to the Moon’s way of dressing than you can see.",
+      "single_span_ok": true,
+      "cross_para_flag": null
+    }
+  ],
+  "no_feature_paras": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P8"
+  ],
+  "uncovered_paras": [],
+  "audit": {
+    "management_id": "PART2-GRAMMAR-PRODUCTION-WIRING-01",
+    "process": "STUDY_TEXT_GRAMMAR_EXTRACT",
+    "model": "gpt-6-luna",
+    "requested_model": "gpt-6-luna",
+    "prompt_sha256": "e76b7ff50ab60e98d385993c0c8f3ae195b45e2c72f269a6463195a335947318",
+    "response_ids": [
+      "resp_0de73bd083961547006ae13d0458e087d0a6fec06e35588a88"
+    ],
+    "calls": [
+      {
+        "attempt": 1,
+        "response_model": "gpt-6-luna",
+        "usage": {
+          "input_tokens": 3598,
+          "output_tokens": 5754,
+          "cached_input_tokens": 0,
+          "reasoning_tokens": 4092
+        },
+        "response_id": "resp_0de73bd083961547006ae13d0458e087d0a6fec06e35588a88",
+        "elapsed_sec": 61.29,
+        "cost_jpy": 0.5179
+      }
+    ],
+    "retried_for_parse": false,
+    "total_cost_jpy": 0.5179,
+    "generated_at": "2026-10-28T09:09:37+0900",
+    "prompt_template_sha256": "51912fe1e2428c347c09969f2f3e8831c73782d5669921e6508c15de8855e15c"
+  },
+  "reselect_count": 0,
+  "reextract_count": 0,
+  "reselect_log": [],
+  "candidates": [
+    {
+      "candidate_id": "gfd3885578b",
+      "rank": 1,
+      "tier": "T1",
+      "feature_class": "CLEFT",
+      "para": "P6",
+      "sentence": "What matters is how well it holds heat in.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "What matters",
+      "misread_ja": "What mattersを疑問文の一部のように取り、文全体の主語として読まないことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "Whatで始まる節が主語となり、isの後にその内容を示す語句が続く形を読む。",
+      "construct_ja": "疑似分裂文",
+      "points_ja": [
+        "What mattersが主語に当たる節",
+        "isの後で「重要なのは何か」を示す"
+      ],
+      "context_ja": "月の岩石層について、重さではなく熱をどれだけ閉じ込めるかが重要だと述べている。",
+      "prev": "But its weight is not what matters.",
+      "next": "The team thinks a thick layer of rock with many gaps may have worked like insulation.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        217,
+        259
+      ]
+    },
+    {
+      "candidate_id": "g9713f5a27c",
+      "rank": 2,
+      "tier": "T1",
+      "feature_class": "CMP",
+      "para": "P9",
+      "sentence": "There is more to the Moon’s way of dressing than you can see.",
+      "front_kind": "",
+      "misread_target": "OMITTED",
+      "misread_quote": "than you can see",
+      "misread_ja": "than以下を単に「あなたが見られるもの」と読むだけでなく、何が比較されているのかを補わないと文の比較関係を取り違えうる。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "more ... than ...では、than節が比較の基準として何を示すかを補って読む。",
+      "construct_ja": "比較基準を含むmore ... than ...構文",
+      "points_ja": [
+        "moreは月の「装い」に関する事柄の多さを表す",
+        "than節は見える範囲を比較の基準としている"
+      ],
+      "context_ja": "月の表面からは見えない岩石層の働きにも目を向けるよう促している。",
+      "prev": "Next time you look up at the Moon, imagine the “rock coat” beneath its round shape, too.",
+      "next": "",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        306,
+        367
+      ]
+    },
+    {
+      "candidate_id": "gdc94f1a61f",
+      "rank": 3,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P5",
+      "sentence": "On the other hand, models of the Moon’s cooling over all its history predict much more shrinking.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "models of the Moon’s cooling over all its history",
+      "misread_ja": "長い主語の中心語modelsを見失い、coolingやhistoryを主語と取ってしまうことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "長い主語では中心語を先に捉え、修飾語句を経て主動詞を探す。",
+      "construct_ja": "長い主語",
+      "points_ja": [
+        "主語の中心語はmodels",
+        "主動詞predictは主語句の後にある"
+      ],
+      "context_ja": "月の冷却をめぐるモデルは、その歴史全体でさらに大きな縮小を予測している。",
+      "prev": "This is not the full amount of shrinking from its birth to today.",
+      "next": "Does that mean the models are very wrong?",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        0,
+        97
+      ]
+    },
+    {
+      "candidate_id": "g6fa5abdcee",
+      "rank": 4,
+      "tier": "T1",
+      "feature_class": "HEAVY",
+      "para": "P7",
+      "sentence": "The team thinks a thick layer of rock with many gaps may have worked like insulation.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "a thick layer of rock with many gaps",
+      "misread_ja": "埋め込まれた節の長い主語の中心語layerを見失い、gapsを主語と取ってしまうことがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "thatが省略された節の中でも、長い主語の中心語を捉えて動詞との関係を確かめる。",
+      "construct_ja": "埋め込み節の長い主語",
+      "points_ja": [
+        "a thick layerが節内の主語",
+        "may have workedがその主語に続く動詞句"
+      ],
+      "context_ja": "チームは、すき間の多い厚い岩石層が断熱材のように働いた可能性を考えている。",
+      "prev": "What matters is how well it holds heat in.",
+      "next": "Insulation in a house keeps heat from getting out.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        0,
+        85
+      ]
+    },
+    {
+      "candidate_id": "g4d97aa67d5",
+      "rank": 5,
+      "tier": "T2",
+      "feature_class": "INV",
+      "para": "P9",
+      "sentence": "Then came the warmth of its coat—not how it feels to wear, but how well it holds heat in.",
+      "front_kind": "",
+      "misread_target": "SUBJECT",
+      "misread_quote": "Then came",
+      "misread_ja": "Thenを主語と見たり、cameの後に続くthe warmth of its coatを主語と捉え損ねたりすることがある。",
+      "omitted_words": "",
+      "teaching_value": "HIGH",
+      "teaching_value_ja": "Thenなどの副詞句の後で動詞が主語より先に置かれる倒置を見分ける。",
+      "construct_ja": "副詞句に続く主語・動詞の倒置",
+      "points_ja": [
+        "Thenの後にcameが置かれている",
+        "the warmth of its coatが主語"
+      ],
+      "context_ja": "月の岩石層が着心地ではなく、熱を保つ働きの点で話題にされている。",
+      "prev": "Counting cliffs on the Moon led to questions about its inner heat.",
+      "next": "The wrinkles were an important clue to how the Moon cooled.",
+      "cross_para_flag": null,
+      "single_span_ok": true,
+      "span": [
+        67,
+        156
+      ]
+    }
+  ],
+  "top_ids": [
+    "gfd3885578b",
+    "g9713f5a27c"
+  ],
+  "n_eligible": 5,
+  "ng": [],
+  "filtered_by_ng": [],
+  "rejected_ids": [],
+  "candidates_sha256": "b6e0b8756cfb1a1d110d00febefba9846e6c7231ceebce7a8d67c02c493486c6",
+  "status": "HAS_CANDIDATES",
+  "exhausted": false,
+  "reused_from_previous_run": false
+}

@@ -1,0 +1,118 @@
+{
+  "runner": "er019_family_x_entertainment_production_runner_01.py",
+  "management_id": "NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01",
+  "runner_sha256": "9ee7383e708d32099cdbb539a986376c490cdc96df6543ea943275cda460e129",
+  "b3_module_sha256": "71f4c436170008d418fdf07a1384ab875b8306217f4cfb1a1b10bea132664025",
+  "ja_writer_module_sha256": "acc6b53ecb1fc57bac3eee98de3a975be60906302315de481c8851f61ede4e84",
+  "annotation_contract_module_sha256": "5f4c725e0b332e028b8285389532dedc28e067f29caf6c63863b0be4f0017885",
+  "annotation_producer_module_sha256": "630d5a3dabdbcb6ad10e1726b908970fa032ed4c88b3b8a6eb0d627247994d79",
+  "risk_flagger_module_sha256": "ed3555c9da56ed651892858bdddef3624dd375bf9f0035bc1e10996604784810",
+  "review_queue_module_sha256": "ebe746f11181888ed286f05db17d40141c60aa6fca0b163f47fcd60c0aa3f7ed",
+  "core_number_rounding_module_sha256": "de1fb8eb11c05e694eab76624126dbcede81c92dd71b898327b247b16576cf82",
+  "args": {
+    "theme": "月は少しずつ縮んでいる?という身近な疑問を入口に、月の表面に残る「ローベート・スカープ(しわのような断層の崖)」の研究を紹介する。ナゾロジー(2026年10月24日掲載、https://nazology.kusuguru.co.jp/archives/203095 )が紹介した論文 Watters, Banks, Nypaver, Robinson \"Thrust Faulting and the Late-stage Contraction of the Moon\"(The Planetary Science Journal 第7巻10号、2026年10月、DOI: 10.3847/PSJ/ae9eae、https://doi.org/10.3847/psj/ae9eae )を一次情報とし、記事と論文で食い違う箇所は論文を優先する。事実として整理する要点: 月を回る探査機LRO(ルナー・リコネサンス・オービター)のカメラ画像から、月面に8900本を超える断層の崖(長さ1km超は約5470本)を地図にしたこと。崖の長さから月の表面積の縮みは約0.0048〜0.0053%、これを半径に直すと約42〜46m(推定値)で、これは月の誕生以来の全期間ではなく、後期(ここ数億年)に断層として表れた縮みであること。仮に崖ができ始めたのが約4億年前で一定の速さで縮んだなら、縮む速さは100万年あたり最大で約11cm(約8億年前からなら約6cm)という「仮定つきの見積もり」であること。月の冷え方のモデルが予想する縮み(少なくとも約750m〜約1.1km)よりずっと小さく、その理由(砕けた岩の厚い層が断熱材のように働いた可能性、硬い岩盤が断層を抑えていた可能性)はまだ決着していないこと。一部の崖は今も動き、月震の原因になっている可能性があること(断定しない)。誤解を避けるため、月が急速に縮んでいる、近いうちに目に見えて変わる、人が気づくほど縮んでいる、地球から見える月の大きさや見た目が変わる、月が崩壊する、といった表現・ニュアンスは使わない。縮みは「何億年ものあいだのごくわずかな量」であり、推定には前提があって不確実性が残ることを必ず明示する。専門用語は身近な言葉に置きかえ、月の「しわ」「しなびたリンゴ」のような身近なイメージと、「月が縮んでいたことと、予想より縮みが少なかったことの意外性」を活かして楽しく紹介する。記事を英訳するのではなく、一次情報の事実だけに基づく読み物にする。実験結果・数値・研究者の発言を創作しない。",
+    "slug": "moon_shrinking",
+    "out_dir": "er019_output/moon_shrinking/run_ms_03",
+    "source_note": "ナゾロジー 2026-10-24 https://nazology.kusuguru.co.jp/archives/203095 ; Watters et al. 2026 PSJ 7(10) 239 https://doi.org/10.3847/psj/ae9eae ; FX-CORE-NUMERIC-RETENTION-TRIAL-01 委任_07(Production Wiring正式runtime検証、中核数値保持v4+J2)",
+    "run_label": "run_ms_03",
+    "budget_jpy": 100.0,
+    "stage": "all",
+    "regenerate_stage": null,
+    "stop_after": "standard"
+  },
+  "timestamp": "2026-10-25T11:56:22",
+  "risk_flagger": {
+    "b1b": {
+      "status": "OK",
+      "reason": null,
+      "rf_run_id": "rf20261025T030040Z-9a3b",
+      "article_sha256": "3fb35041e03e04c77ffd771034c32ad09193bccc833e81fdf03bf726d648624b",
+      "ledger_sha256": "4cf2e882cefda46103e2281e6e80a88f29bb7d7589e778abf366cafa91a450ac",
+      "splitter_version": "en_split_v1",
+      "timestamp": "2026-10-25T03:00:40+00:00",
+      "producer": "deterministic_v2",
+      "run_label": "run_ms_03",
+      "issue_count": 3,
+      "conditions": [
+        {
+          "model_key": "luna",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 2,
+          "cost_jpy": 0.203952
+        },
+        {
+          "model_key": "luna",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 2,
+          "cost_jpy": 0.224032
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.233584
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.239344
+        }
+      ]
+    },
+    "a2": {
+      "status": "OK",
+      "reason": null,
+      "rf_run_id": "rf20261025T030152Z-f605",
+      "article_sha256": "6d388285febe5a766d4c02d19e573772fdfddbbec6185997274f92af5afff0bd",
+      "ledger_sha256": "4cf2e882cefda46103e2281e6e80a88f29bb7d7589e778abf366cafa91a450ac",
+      "splitter_version": "en_split_v1",
+      "timestamp": "2026-10-25T03:01:52+00:00",
+      "producer": "deterministic_v2",
+      "run_label": "run_ms_03",
+      "issue_count": 3,
+      "conditions": [
+        {
+          "model_key": "luna",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 3,
+          "cost_jpy": 0.231728
+        },
+        {
+          "model_key": "luna",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.181088
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.242704
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.248464
+        }
+      ]
+    }
+  }
+}

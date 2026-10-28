@@ -1,0 +1,125 @@
+以下は、同じ記事から選ばれた12件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。12件から作れる全てのペア(66組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず66組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# More Than 8,900 Wrinkles on the Moon! The Secret of the “Rock Coat” Hidden Beneath Them
+
+Even the Moon has wrinkles. And the research team counted more than 8,900 of them. The Moon looks smooth in the night sky, but up close it seems to have quite a lot of “wrinkles.” But there’s no need for beauty serum. These wrinkles offer clues to how the Moon shrank and to its surprising way of “dressing.”
+
+The team used camera images from the lunar probe LRO. They searched for cliffs on the Moon’s surface and marked them on a map. A wrinkle is a cliff with one steep side and one gentler side. These cliffs are thought to show where solid rock was squeezed together, with one side pushed up over the other. They are a record of a huge “shoving match” carved into the Moon’s surface.
+
+Using this map to work out how much the Moon has shrunk, the team estimated that its radius had become about 42 to 46 meters smaller. By reading the wrinkles on its surface, scientists are investigating how a huge object in space has shrunk. Taking the Moon’s measurements is quite a detailed job.
+
+But if you’re thinking, “Has the Moon shrunk only that much since it was formed?” hold on a moment. What we are looking at is shrinkage in the later part of the Moon’s history, left by relatively recent faults. This is not the total amount of shrinkage from its birth to today.
+
+On the other hand, models that calculate the Moon’s cooling over its entire history predict much greater shrinkage. Does that mean the calculations are way off? It is too soon to say. The periods being compared and the ways they were studied are different. These aren’t figures measured under the same conditions.
+
+Still, the difference is puzzling. One possible explanation is a layer of broken rock. In a way, it is a “rock coat” the Moon has put on. Just hearing that might make your shoulders ache, but what matters is not its weight; it is how well it keeps heat in.
+
+The research team suggests that a thick layer of rock full of gaps may have worked like insulation. Just as insulation in a house keeps heat from escaping, this layer may have made it harder for heat inside the Moon to escape. As a result, the Moon may have cooled and shrunk more slowly.
+
+In other words, the Moon may have kept warm in its rock coat. But it is too soon to end the mystery by saying, “The coat is the culprit!” For now, it is just one possible explanation for the difference.
+
+Counting cliffs on the Moon led to its inner heat, and then to the coat’s warmth—not how it feels to wear, but how well it keeps heat in. The wrinkles were an important clue to how the Moon cooled. Next time you look up at the Moon, imagine the “rock coat” beneath its round shape, too. The Moon’s way of dressing has more to it than meets the eye.
+
+## In one line
+Researchers mapped more than 8,900 lunar cliffs and estimated that the Moon shrank by 42 to 46 meters in a later period of its history. This is not the Moon’s total shrinkage since formation, and a thick, porous rock layer may have slowed cooling, offering one possible explanation for the larger model predictions.
+
+【Key Phrase 12件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "way off",
+    "japanese_gloss": "大きく外れている",
+    "source_sentence": "Does that mean the calculations are way off"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "under the same conditions",
+    "japanese_gloss": "条件をそろえて",
+    "source_sentence": "These aren't figures measured under the same conditions"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "keeps heat from escaping",
+    "japanese_gloss": "熱が逃げないようにする",
+    "source_sentence": "Just as insulation in a house keeps heat from escaping, this layer may have made it harder for heat inside the Moon to escape"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "total amount of shrinkage",
+    "japanese_gloss": "縮んだ量の合計",
+    "source_sentence": "This is not the total amount of shrinkage from its birth to today"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "over its entire history",
+    "japanese_gloss": "始まりから終わりまでずっと",
+    "source_sentence": "On the other hand, models that calculate the Moon's cooling over its entire history predict much greater shrinkage"
+  },
+  {
+    "rank": 6,
+    "key_phrase": "relatively recent faults",
+    "japanese_gloss": "比較的新しい断層",
+    "source_sentence": "What we are looking at is shrinkage in the later part of the Moon's history, left by relatively recent faults"
+  },
+  {
+    "rank": 7,
+    "key_phrase": "One possible explanation",
+    "japanese_gloss": "考えられる説明の一つ",
+    "source_sentence": "One possible explanation is a layer of broken rock"
+  },
+  {
+    "rank": 8,
+    "key_phrase": "porous",
+    "japanese_gloss": "小さな穴やすき間が多い",
+    "source_sentence": "This is not the Moon's total shrinkage since formation, and a thick, porous rock layer may have slowed cooling, offering one possible explanation for the larger model predictions"
+  },
+  {
+    "rank": 9,
+    "key_phrase": "insulation",
+    "japanese_gloss": "熱を逃がしにくくするもの",
+    "source_sentence": "The research team suggests that a thick layer of rock full of gaps may have worked like insulation"
+  },
+  {
+    "rank": 10,
+    "key_phrase": "culprit",
+    "japanese_gloss": "原因",
+    "source_sentence": "But it is too soon to end the mystery by saying, \"The coat is the culprit"
+  },
+  {
+    "rank": 11,
+    "key_phrase": "radius",
+    "japanese_gloss": "中心から外側までの長さ",
+    "source_sentence": "Using this map to work out how much the Moon has shrunk, the team estimated that its radius had become about 42 to 46 meters smaller"
+  },
+  {
+    "rank": 12,
+    "key_phrase": "puzzling",
+    "japanese_gloss": "理解しにくい",
+    "source_sentence": "Still, the difference is puzzling"
+  }
+]
