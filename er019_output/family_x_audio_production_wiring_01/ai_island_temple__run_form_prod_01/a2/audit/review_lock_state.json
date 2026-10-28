@@ -774,56 +774,35 @@
   },
   "comment_3": {
     "state": "RESOLVED",
-    "canonical_text_sha256": "82564a0c14f2b225acb1667ab825e069a73e058fe2c409ecabd1f853874768a1",
+    "canonical_text_sha256": "76c5b168a73dbcc75404a9e5a3cc6a2b5411a99981826e0aeb0a4b9ec0f5e58f",
     "language": "ja",
     "theme_id": "ai_island_temple__run_form_prod_01",
     "level": "a2",
     "segment_id": "comment_3",
-    "updated_at": "2026-10-27T12:04:01",
+    "updated_at": "2026-10-28T21:34:08",
     "reason": "status=OKで確定しました。",
     "final_status": "OK",
     "wav_path": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_form_prod_01/a2/narration/comment_3.wav",
-    "cumulative_tts_attempts": 2,
-    "cumulative_asr_calls": 2,
+    "cumulative_tts_attempts": 1,
+    "cumulative_asr_calls": 1,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
         "attempt": 1,
         "status": "OK",
-        "duration_seconds": 17.16,
-        "asr_text": "島は毎時間元に戻れますが、AIのメモは残り、島で経験したAIは、新しい課題で良い結果を出しました。続いて、経験やメモがAIの次の行動にどうつながるのかに注目してください。",
-        "asr_text_length": 85,
-        "max_len": 124,
+        "duration_seconds": 14.43,
+        "asr_text": "島は毎時間リセットされても、メモに残した経験は次の課題に役立ちました。 では、学んだ方法を一つ消されたAIでも、その経験は役立つのでしょうか。",
+        "asr_text_length": 71,
+        "max_len": 110,
         "substring_ok": null,
         "length_ok": true,
         "final_length_ok": true,
         "phonetic_verdict": null,
-        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "audio_classification": "NORMALIZED_MATCH",
         "connected_speech_info": null,
         "reading_resolver_info": null,
-        "scg_info": {
-          "scg_applied": true,
-          "scg_result": "NG",
-          "exclusion_reason": null,
-          "primary_text": "島は毎時間元に戻れますが、AIのメモは残り、島で経験したAIは、新しい課題で良い結果を出しました。続いて、経験やメモがAIの次の行動にどうつながるのかに注目してください。",
-          "unified_judge_state": "NG_BOTH",
-          "unified_reason_code": "secondary_not_accepted",
-          "service": "Azure Speech STT (continuous recognition, no Phrase List)",
-          "azure_region": "japanwest",
-          "speech_sdk_version": "1.50.0",
-          "language": "ja-JP",
-          "phrase_list": false,
-          "audio_seconds": 17.16,
-          "est_cost_jpy": 0.8,
-          "wall_seconds": 6.56,
-          "timestamp": "2026-10-27T12:03:56",
-          "secondary_transcript": "島は毎時間元に戻れますが、 AIのメモは残り島で経験したAIは新しい課題で良い結果を出しました。続いて、経験やメモがAIの次の行動にどうつながるのかに注目してください。",
-          "error": null,
-          "secondary_classification": "TRUE_CONTENT_MISMATCH",
-          "judgement_reason": "統一judge(secondary_not_accepted): Secondary(Azure) label='TRUE_CONTENT_MISMATCH'",
-          "scg_info_source": "AUW_unified_judge"
-        },
-        "verified": false,
+        "scg_info": null,
+        "verified": true,
         "disfluency_checked": false,
         "disfluency_evidence": null,
         "repetition_qa_checked": false,
@@ -834,78 +813,76 @@
         "style_prefix": null,
         "cascade_steps": null,
         "asr_judgement": {
-          "state": "NG_BOTH",
-          "reason_code": "secondary_not_accepted",
+          "state": "PASS",
+          "reason_code": "primary_pass",
           "slot": 1,
           "script_version": "v0",
           "role": null,
           "lang": "ja",
           "segment_key": "",
-          "audio_sha256": "b262c7ba312a4cdf54f246caadee7bd0482fc97a6f0de4c02325b0a274bc17d5",
+          "audio_sha256": "b337a98aa94866a75d51f95d99a2fe3ddc9bb471ed32a86401705de75cd13cff",
           "primary": {
-            "text": "島は毎時間元に戻れますが、AIのメモは残り、島で経験したAIは、新しい課題で良い結果を出しました。続いて、経験やメモがAIの次の行動にどうつながるのかに注目してください。",
-            "passed": false,
-            "label": "TRUE_CONTENT_MISMATCH",
+            "text": "島は毎時間リセットされても、メモに残した経験は次の課題に役立ちました。 では、学んだ方法を一つ消されたAIでも、その経験は役立つのでしょうか。",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
             "equivalence_basis": null,
             "warning_labels": []
           },
           "secondary": {
-            "called": true,
+            "called": false,
             "cached": false,
             "engine": "azure",
-            "text": "島は毎時間元に戻れますが、 AIのメモは残り島で経験したAIは新しい課題で良い結果を出しました。続いて、経験やメモがAIの次の行動にどうつながるのかに注目してください。",
-            "label": "TRUE_CONTENT_MISMATCH",
-            "accepted": false,
+            "text": null,
+            "label": "",
+            "accepted": null,
             "error": null,
-            "unavailable": false,
-            "provenance_complete": true,
-            "model_id": "azure-speech-stt"
+            "unavailable": false
           },
           "value_guard": {
             "primary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            },
-            "secondary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "一つ",
+                  "hyp": "一つ",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
               "reasons": [],
               "warnings": []
             }
           },
           "negation_guard": {
-            "primary": false,
-            "secondary": false
+            "primary": false
           },
           "final_gate": {
-            "applied": false
+            "applied": true,
+            "value_guard": "EQUAL",
+            "negation_diff": false
           },
           "warnings": [],
           "exclusion_rule": null,
           "cost": {
-            "azure_calls": 1,
-            "azure_seconds": 17.16,
-            "est_jpy": 0.8,
-            "est_jpy_known": true
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
           },
           "timing": {
-            "total_ms": 6571,
-            "secondary_ms": 6556
+            "total_ms": 0,
+            "secondary_ms": 0
           },
           "technical_stop": null,
           "length": {
             "applied": true,
-            "primary_len": 85,
-            "secondary_len": 84,
-            "max_len": 124,
+            "primary_len": 71,
+            "secondary_len": null,
+            "max_len": 110,
             "adopted_from": "primary",
             "adopted_ok": true,
-            "surface_len": 79,
+            "surface_len": null,
             "primary_ok": true
           },
-          "p3_entry": "p3_primary_ng",
           "r5": {
             "version": "r5_v1",
             "measurement_error": null,
@@ -936,150 +913,10 @@
                 "provider": "openai_asr",
                 "model": "gpt-4o-mini-transcribe"
               },
-              "secondary": {
-                "provider": "azure",
-                "model_id": "azure-speech-stt"
-              }
-            }
-          },
-          "canonical_text": "島は毎時間元に戻りますが、AIのメモは残り、島で経験したAIは新しい課題でよい結果を出しました。続いて、経験やメモがAIの次の行動にどうつながるのかに注目してください。",
-          "adapter": {
-            "layers": [],
-            "azure_real_calls": 1,
-            "cost_guard_triggered": false,
-            "language": "ja-JP",
-            "asr_text_present": true,
-            "cache": {
-              "calls": 2,
-              "hits": 0
-            }
-          }
-        },
-        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_form_prod_01/a2/narration/attempts/comment_3_attempt1_custom06ec49ff.wav"
-      },
-      {
-        "attempt": 2,
-        "status": "OK",
-        "duration_seconds": 17.96,
-        "asr_text": "島は毎時間元に戻りますが、AIのメモは残り、島で経験したAIは新しい課題で良い結果を出しました。続いて、経験やメモがAIの次の行動にどうつながるのかに注目してください。",
-        "asr_text_length": 84,
-        "max_len": 124,
-        "substring_ok": null,
-        "length_ok": true,
-        "final_length_ok": true,
-        "phonetic_verdict": null,
-        "audio_classification": "PHONETIC_MATCH",
-        "connected_speech_info": null,
-        "reading_resolver_info": null,
-        "scg_info": null,
-        "verified": true,
-        "disfluency_checked": false,
-        "disfluency_evidence": null,
-        "repetition_qa_checked": false,
-        "repetition_qa_evidence": null,
-        "asr_prompt_applied": false,
-        "non_latin_cascade_enabled": false,
-        "non_latin_cascade_invoked": null,
-        "style_prefix": null,
-        "cascade_steps": null,
-        "asr_judgement": {
-          "state": "PASS",
-          "reason_code": "primary_pass",
-          "slot": 2,
-          "script_version": "v0",
-          "role": null,
-          "lang": "ja",
-          "segment_key": "",
-          "audio_sha256": "fabf3b84ca877d978ce6847913e127f3311e2b915516fbab8babba9bd113b50b",
-          "primary": {
-            "text": "島は毎時間元に戻りますが、AIのメモは残り、島で経験したAIは新しい課題で良い結果を出しました。続いて、経験やメモがAIの次の行動にどうつながるのかに注目してください。",
-            "passed": true,
-            "label": "PHONETIC_MATCH",
-            "equivalence_basis": "READING_MATCH",
-            "warning_labels": []
-          },
-          "secondary": {
-            "called": false,
-            "cached": false,
-            "engine": "azure",
-            "text": null,
-            "label": "",
-            "accepted": null,
-            "error": null,
-            "unavailable": false
-          },
-          "value_guard": {
-            "primary": {
-              "kind": "NO_VALUES",
-              "pairs": [],
-              "reasons": [],
-              "warnings": []
-            }
-          },
-          "negation_guard": {
-            "primary": false
-          },
-          "final_gate": {
-            "applied": true,
-            "value_guard": "NO_VALUES",
-            "negation_diff": false
-          },
-          "warnings": [],
-          "exclusion_rule": null,
-          "cost": {
-            "azure_calls": 0,
-            "azure_seconds": null,
-            "est_jpy": 0.0
-          },
-          "timing": {
-            "total_ms": 0,
-            "secondary_ms": 0
-          },
-          "technical_stop": null,
-          "length": {
-            "applied": true,
-            "primary_len": 84,
-            "secondary_len": null,
-            "max_len": 124,
-            "adopted_from": "primary",
-            "adopted_ok": true,
-            "surface_len": null,
-            "primary_ok": true
-          },
-          "r5": {
-            "version": "r5_v1",
-            "measurement_error": null,
-            "f1": {
-              "rollback_const_READING_MATCH_FINAL_GATE": true,
-              "reading_match_primary_pass": true,
-              "final_gate_rejected": false,
-              "demoted_p3": false,
-              "would_have_passed_before_f1": false,
-              "reason_code": null,
-              "pair_reasons": []
-            },
-            "f2": {
-              "enabled": true,
-              "fired": false,
-              "fallback": null,
-              "replaced": null,
-              "canon_before": null,
-              "canon_after": null,
-              "text_before": null,
-              "text_after": null,
-              "state_after": null
-            },
-            "o524_part_of_larger_pairs": 0,
-            "o523_weak_kana_diff_pairs": 0,
-            "models": {
-              "primary": {
-                "provider": "openai_asr",
-                "model": "gpt-4o-mini-transcribe"
-              },
               "secondary": null
             }
           },
-          "canonical_text": "島は毎時間元に戻りますが、AIのメモは残り、島で経験したAIは新しい課題でよい結果を出しました。続いて、経験やメモがAIの次の行動にどうつながるのかに注目してください。",
+          "canonical_text": "島は毎時間リセットされても、メモに残した経験は次の課題に役立ちました。では、学んだ方法を一つ消されたAIでも、その経験は役立つのでしょうか。",
           "adapter": {
             "layers": [],
             "azure_real_calls": 0,
@@ -1087,12 +924,12 @@
             "language": "ja-JP",
             "asr_text_present": true,
             "cache": {
-              "calls": 2,
+              "calls": 0,
               "hits": 0
             }
           }
         },
-        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_form_prod_01/a2/narration/attempts/comment_3_attempt2_custom06ec49ff.wav"
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_form_prod_01/a2/narration/attempts/comment_3_attempt3_custom06ec49ff.wav"
       }
     ]
   },

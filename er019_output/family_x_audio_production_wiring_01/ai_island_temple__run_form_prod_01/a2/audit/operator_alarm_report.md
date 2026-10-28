@@ -9,7 +9,7 @@
 注: 日本語音声の固有名詞読みはこのアラーム方針の対象外です(従来の検証・Human Reviewのまま)。
 
 ### 実体表(固有名詞と認識した根拠。受理判定用。発音の根拠[Ledger/Perplexity調査]とは別)
-- 実体表: 2件(うち証拠として使用可 0件) / NER call=1 / model=gpt-6-luna / table_sha256=80ebb77055d7
+- 実体表: 2件(うち証拠として使用可 0件) / NER call=0 / model=gpt-6-luna / table_sha256=80ebb77055d7
 - 実体表 other_named/weak: 1件
 - 実体表 work_title/weak: 1件
 - 証拠にならなかった語(weak/一般語等): The Island Resets!, the Cathedral
