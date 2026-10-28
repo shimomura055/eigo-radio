@@ -1,0 +1,185 @@
+[
+ {
+  "id": "probe_overlap_synonym",
+  "target": "ai_island_std",
+  "candidate": {
+   "expression": "pass on",
+   "focus": "情報や経験を次の期間・次の人に引き継ぐ意味",
+   "quote_en": "the work area with the AI’s notes and programs carried over to the next hour",
+   "explanation_ja": "pass on は「次に渡す」、carry over は「持ち越す」です。どちらも前の時間の内容が次の時間に残ることを表しますが、pass on は人から人へ渡す場面で、carry over は期間をまたいで残る場面でよく使います。ここでは作業エリアが次の1時間に残ることを述べています。"
+  },
+  "stage1": {
+   "verdict": "pass",
+   "matched": []
+  },
+  "stage2": {
+   "per_item": [
+    {
+     "item": "carry over",
+     "same_focus": true,
+     "note": "期間をまたいで内容が残る用法を説明しており、焦点が重なる"
+    },
+    {
+     "item": "take a detour",
+     "same_focus": false,
+     "note": "寄り道をする意味・用法は扱っていない"
+    },
+    {
+     "item": "card to play",
+     "same_focus": false,
+     "note": "使える手という意味・用法は扱っていない"
+    },
+    {
+     "item": "worth paying attention to",
+     "same_focus": false,
+     "note": "注目する価値を表す用法は扱っていない"
+    },
+    {
+     "item": "obstacle",
+     "same_focus": false,
+     "note": "障害物の意味・用法は扱っていない"
+    }
+   ],
+   "verdict": "fail",
+   "reason": "候補は「carry over」との違いを述べながら、期間をまたいで内容が残る用法も説明しています。この点が選定済みの「carry over」の焦点と重なります。"
+  },
+  "usage": {
+   "tag": "probe_probe_overlap_synonym_judge",
+   "model_requested": "gpt-6-luna",
+   "model_actual": "gpt-6-luna",
+   "response_id": "resp_0094ae6b505a36c6006ae282dd818c87d089acf39de15e19dc",
+   "status": "completed",
+   "elapsed_sec": 5.7,
+   "prompt_sha256": "7539eceebf7d0ab501c375c625ff7340e288168934299e7d4d6ee468f92b01c1",
+   "input_tokens": 652,
+   "cached_input_tokens": 0,
+   "output_tokens": 538,
+   "reasoning_tokens": 282,
+   "max_output_tokens": 5000,
+   "cost_usd": 0.000334,
+   "cost_jpy": 0.0535
+  }
+ },
+ {
+  "id": "probe_overlap_same_idiom_other_form",
+  "target": "tth_std",
+  "candidate": {
+   "expression": "chill someone to the bone",
+   "focus": "恐怖で体の芯が冷えるような強い衝撃を表す比喩",
+   "quote_en": "That vulture’s eye made my blood turn cold.",
+   "explanation_ja": "この文は、目を見て語り手が強い恐怖を感じたことを、血が冷たくなるという体感の比喩で表しています。chill someone to the bone も同じ種類の比喩で、ぞっとする恐怖を表します。どちらも寒さを恐怖の強さにたとえる点が共通です。"
+  },
+  "stage1": {
+   "verdict": "pass",
+   "matched": []
+  },
+  "stage2": {
+   "per_item": [
+    {
+     "item": "make one's blood turn cold",
+     "same_focus": true,
+     "note": "どちらも寒さの比喩で、強い恐怖やぞっとする感覚を表す。"
+    },
+    {
+     "item": "raise one's voice",
+     "same_focus": false,
+     "note": "声を大きくする用法が焦点ではない。"
+    },
+    {
+     "item": "groan",
+     "same_focus": false,
+     "note": "うめき声を表す語の用法が焦点ではない。"
+    },
+    {
+     "item": "rush at someone",
+     "same_focus": false,
+     "note": "人に向かって突進する動作が焦点ではない。"
+    },
+    {
+     "item": "go on talking",
+     "same_focus": false,
+     "note": "話し続ける用法が焦点ではない。"
+    }
+   ],
+   "verdict": "fail",
+   "reason": "候補は、make one's blood turn cold と同じく、寒さの比喩によって強い恐怖やぞっとする感覚を表す点を解説しており、学習上の焦点が重複しています。"
+  },
+  "usage": {
+   "tag": "probe_probe_overlap_same_idiom_other_form_judge",
+   "model_requested": "gpt-6-luna",
+   "model_actual": "gpt-6-luna",
+   "response_id": "resp_02787ebac399c87f006ae282e34ff087d094e5aa095f289c29",
+   "status": "completed",
+   "elapsed_sec": 4.8,
+   "prompt_sha256": "70d348435cf724922074a44253ae8754c1c9069b0b29e53638e03c44bae4b1d2",
+   "input_tokens": 687,
+   "cached_input_tokens": 0,
+   "output_tokens": 352,
+   "reasoning_tokens": 51,
+   "max_output_tokens": 5000,
+   "cost_usd": 0.000245,
+   "cost_jpy": 0.0392
+  }
+ },
+ {
+  "id": "probe_non_overlap",
+  "target": "ai_island_std",
+  "candidate": {
+   "expression": "at least",
+   "focus": "主張の範囲を限定し一般化を避ける at least",
+   "quote_en": "For this AI, at least, remembering that way helped it build towers.",
+   "explanation_ja": "ここでの at least は数の下限ではなく、このAIについて言える範囲に主張を限る表現です。他のAIにも当てはまるとは言っていません。"
+  },
+  "stage1": {
+   "verdict": "pass",
+   "matched": []
+  },
+  "stage2": {
+   "per_item": [
+    {
+     "item": "carry over",
+     "same_focus": false,
+     "note": "持ち越す意味・用法が焦点ではありません"
+    },
+    {
+     "item": "take a detour",
+     "same_focus": false,
+     "note": "寄り道をする意味・用法が焦点ではありません"
+    },
+    {
+     "item": "card to play",
+     "same_focus": false,
+     "note": "使える手という意味が焦点ではありません"
+    },
+    {
+     "item": "worth paying attention to",
+     "same_focus": false,
+     "note": "注目する価値があるという意味が焦点ではありません"
+    },
+    {
+     "item": "obstacle",
+     "same_focus": false,
+     "note": "障害物という語義が焦点ではありません"
+    }
+   ],
+   "verdict": "pass",
+   "reason": "候補の焦点は、at least を使って主張の範囲をこのAIに限定することです。選定済みの表現・単語はいずれも異なる意味や用法が学習対象です。"
+  },
+  "usage": {
+   "tag": "probe_probe_non_overlap_judge",
+   "model_requested": "gpt-6-luna",
+   "model_actual": "gpt-6-luna",
+   "response_id": "resp_00bf8fb14149dfd3006ae282e7e38887d0b943f86550d59a43",
+   "status": "completed",
+   "elapsed_sec": 2.8,
+   "prompt_sha256": "bd552187702609e1e8e4d0107026693a0ab8aec96b2525a97200f8c03ef9d39b",
+   "input_tokens": 602,
+   "cached_input_tokens": 0,
+   "output_tokens": 274,
+   "reasoning_tokens": 29,
+   "max_output_tokens": 5000,
+   "cost_usd": 0.000197,
+   "cost_jpy": 0.0316
+  }
+ }
+]

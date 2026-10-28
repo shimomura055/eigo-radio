@@ -1,0 +1,119 @@
+{
+ "control_trivial": {
+  "target": "control_trivial",
+  "version": "v1",
+  "family": "-",
+  "article": "synthetic_control",
+  "level": "Standard",
+  "kp_word_basis": {
+   "status": "synthetic",
+   "source_path": "(診断用の人工テキスト。実記事ではない。0件が出せるかの確認用)",
+   "items": [
+    "wake up",
+    "by the window",
+    "take the bus",
+    "meet",
+    "homework"
+   ]
+  },
+  "prompt_sha": "0c872c4832feb511f125194476c216315be88fc6a4987f3eaf6c83849f0433e0",
+  "gen_usage": {
+   "tag": "v1_control_trivial_gen",
+   "model_requested": "gpt-6-luna",
+   "model_actual": "gpt-6-luna",
+   "response_id": "resp_028a3511e16c2143006ae28283135c87d095bd65139fd22115",
+   "status": "completed",
+   "elapsed_sec": 9.8,
+   "prompt_sha256": "40f6ba0628c21838bed678349dca827de644f51737e7f09f75a8e046aee9cd4c",
+   "input_tokens": 1519,
+   "cached_input_tokens": 0,
+   "output_tokens": 938,
+   "reasoning_tokens": 516,
+   "max_output_tokens": 9000,
+   "cost_usd": 0.000621,
+   "cost_jpy": 0.0993
+  },
+  "gen_raw": "{\n  \"rejected_candidates\": [\n    {\n      \"expression\": \"some tea\",\n      \"focus\": \"someが飲み物の量を特定しないこと\",\n      \"reason\": \"low_value\",\n      \"note\": \"この文では量が不明という基本的な意味にとどまる\"\n    },\n    {\n      \"expression\": \"made toast\",\n      \"focus\": \"make toastがトーストを用意することを表す\",\n      \"reason\": \"low_value\",\n      \"note\": \"よくある組み合わせの紹介が中心になる\"\n    }\n  ],\n  \"candidate\": {\n    \"expression\": \"stood vs stood up\",\n    \"focus\": \"stoodは立った状態、stood upは立ち上がる動作を表す\",\n    \"quote_en\": \"The bus was full, so she stood.\",\n    \"quote_ja\": \"バスは満員だったので、彼女は立っていた。\",\n    \"explanation_ja\": \"この文の stood は、満員のバスの中で「立った状態でいた」という意味です。stood up なら、座った状態などから「立ち上がった」という動作に焦点が移ります。たとえば、バスで席を譲るために立ち上がった場面なら stood up が自然ですが、この文では乗車中に立っていたことを表しています。\",\n    \"differs_from_kp_word_ja\": \"解説の中心は stood と stood up の動作・状態の違いで、選定済み表現の意味とは異なります。\",\n    \"learning_value_self_rating\": \"mid\",\n    \"learning_value_reason_ja\": \"stoodとstood upを混同しやすく、状態と動作の違いを知ると場面を正確に表せます。\"\n  },\n  \"no_candidate_reason_ja\": null\n}",
+  "rejected_candidates": [
+   {
+    "expression": "some tea",
+    "focus": "someが飲み物の量を特定しないこと",
+    "reason": "low_value",
+    "note": "この文では量が不明という基本的な意味にとどまる"
+   },
+   {
+    "expression": "made toast",
+    "focus": "make toastがトーストを用意することを表す",
+    "reason": "low_value",
+    "note": "よくある組み合わせの紹介が中心になる"
+   }
+  ],
+  "no_candidate_reason": null,
+  "candidate_raw": {
+   "expression": "stood vs stood up",
+   "focus": "stoodは立った状態、stood upは立ち上がる動作を表す",
+   "quote_en": "The bus was full, so she stood.",
+   "quote_ja": "バスは満員だったので、彼女は立っていた。",
+   "explanation_ja": "この文の stood は、満員のバスの中で「立った状態でいた」という意味です。stood up なら、座った状態などから「立ち上がった」という動作に焦点が移ります。たとえば、バスで席を譲るために立ち上がった場面なら stood up が自然ですが、この文では乗車中に立っていたことを表しています。",
+   "differs_from_kp_word_ja": "解説の中心は stood と stood up の動作・状態の違いで、選定済み表現の意味とは異なります。",
+   "learning_value_self_rating": "mid",
+   "learning_value_reason_ja": "stoodとstood upを混同しやすく、状態と動作の違いを知ると場面を正確に表せます。"
+  },
+  "quote_verbatim": true,
+  "explanation_len": 148,
+  "stage1_structural": {
+   "verdict": "pass",
+   "matched": []
+  },
+  "judge_usage": {
+   "tag": "v1_control_trivial_judge",
+   "model_requested": "gpt-6-luna",
+   "model_actual": "gpt-6-luna",
+   "response_id": "resp_0ef83ef683e3e6cb006ae2828cbe8487d085a1c44ad3327be3",
+   "status": "completed",
+   "elapsed_sec": 3.9,
+   "prompt_sha256": "c9fbb1a63980b7a315834eb69f44c13fc0011112807aa2903e44b4da55594e83",
+   "input_tokens": 645,
+   "cached_input_tokens": 0,
+   "output_tokens": 309,
+   "reasoning_tokens": 48,
+   "max_output_tokens": 5000,
+   "cost_usd": 0.000219,
+   "cost_jpy": 0.035
+  },
+  "judge_raw": "{\n  \"per_item\": [\n    {\"item\": \"wake up\", \"same_focus\": false, \"note\": \"目を覚ます意味・用法が焦点ではありません\"},\n    {\"item\": \"by the window\", \"same_focus\": false, \"note\": \"窓のそばを表す位置が焦点ではありません\"},\n    {\"item\": \"take the bus\", \"same_focus\": false, \"note\": \"バスに乗ることではなく、立っていた状態と立ち上がる動作の違いが焦点です\"},\n    {\"item\": \"meet\", \"same_focus\": false, \"note\": \"人に会う意味・用法が焦点ではありません\"},\n    {\"item\": \"homework\", \"same_focus\": false, \"note\": \"宿題を表す語義が焦点ではありません\"}\n  ],\n  \"verdict\": \"pass\",\n  \"reason\": \"候補の焦点は stood と stood up の意味の違いです。選定済みのKey Phrase・Wordはいずれも別の意味・用法を扱っているため、学習上の焦点は重複しません。\"\n}",
+  "stage2_llm": {
+   "verdict": "pass",
+   "reason": "候補の焦点は stood と stood up の意味の違いです。選定済みのKey Phrase・Wordはいずれも別の意味・用法を扱っているため、学習上の焦点は重複しません。",
+   "per_item": [
+    {
+     "item": "wake up",
+     "same_focus": false,
+     "note": "目を覚ます意味・用法が焦点ではありません"
+    },
+    {
+     "item": "by the window",
+     "same_focus": false,
+     "note": "窓のそばを表す位置が焦点ではありません"
+    },
+    {
+     "item": "take the bus",
+     "same_focus": false,
+     "note": "バスに乗ることではなく、立っていた状態と立ち上がる動作の違いが焦点です"
+    },
+    {
+     "item": "meet",
+     "same_focus": false,
+     "note": "人に会う意味・用法が焦点ではありません"
+    },
+    {
+     "item": "homework",
+     "same_focus": false,
+     "note": "宿題を表す語義が焦点ではありません"
+    }
+   ],
+   "model": "gpt-6-luna"
+  },
+  "final_overlap_verdict": "pass"
+ }
+}

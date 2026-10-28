@@ -1,0 +1,1900 @@
+{
+ "schema_note": "各要素は WIRING_DESIGN_01.md §3 の nuance_candidate_v1 に準拠。candidate は overlap_check.verdict==pass のときのみ非null、fail時は candidate=null・no_candidate_reason='overlap_ng' とし破棄前の候補は trial_extra.rejected_candidate_audit に保存(§3規則)。追加キーは trial_extra(§3に無い試験用情報)のみ。",
+ "prompt_v1_sha": "0c872c4832feb511f125194476c216315be88fc6a4987f3eaf6c83849f0433e0",
+ "prompt_v2_sha": "9d0e0a06da02082b4ede4e0f2e09ae8609979c3641bf6a3acc49c1d1ea66da35",
+ "judge_prompt_sha": "bb3d84ee351adf5dfbb1c1c1fe4198d477088eba081b5f24cf3fc13ec85e4c4f",
+ "model": "gpt-6-luna",
+ "total_cost_jpy": 3.1921,
+ "runs": {
+  "v1": [
+   {
+    "schema": "nuance_candidate_v1",
+    "family": "X",
+    "article_id": "ai_island_temple",
+    "level": "standard",
+    "generated_at": "2026-10-29T08:21:55+09:00",
+    "candidate": {
+     "expression": "at least",
+     "focus": "「少なくとも」ではなく、主張の範囲を限定する使い方",
+     "explanation_ja": "ここでの at least は、数の下限を示す「少なくとも」ではなく、「このAIについて言える範囲では」と主張を限定する表現です。たとえば at least three towers なら「少なくとも3つの塔」で数の話になります。ここでは、結果をすべてのAIに一般化せず、このAIに限った説明だと示しています。",
+     "quote_en": "For this AI, at least, remembering that way helped it build towers.",
+     "quote_ja": "少なくともこのAIについては、その方法を覚えていたことが塔を建てる助けになりました。",
+     "overlap_check": {
+      "verdict": "pass",
+      "stage1_structural": {
+       "verdict": "pass",
+       "matched": []
+      },
+      "stage2_llm": {
+       "verdict": "pass",
+       "reason": "候補は at least が主張の適用範囲を限定する用法を解説しており、選定済みの表現が扱う語義・用法とは重複しません。",
+       "model": "gpt-6-luna"
+      },
+      "reason": "候補は at least が主張の適用範囲を限定する用法を解説しており、選定済みの表現が扱う語義・用法とは重複しません。",
+      "against": [
+       {
+        "item": "carry over",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "「持ち越す」と、主張の範囲を限定する用法は焦点が異なる。"
+       },
+       {
+        "item": "take a detour",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "「寄り道をする」と、主張の範囲を限定する用法は焦点が異なる。"
+       },
+       {
+        "item": "card to play",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "「使える手」と、主張の範囲を限定する用法は焦点が異なる。"
+       },
+       {
+        "item": "worth paying attention to",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "「注目する価値がある」と、主張の範囲を限定する用法は焦点が異なる。"
+       },
+       {
+        "item": "obstacle",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "「障害物」と、主張の範囲を限定する用法は焦点が異なる。"
+       }
+      ]
+     }
+    },
+    "no_candidate_reason": null,
+    "kp_word_basis": {
+     "status": "confirmed",
+     "items": [
+      "carry over",
+      "take a detour",
+      "card to play",
+      "worth paying attention to",
+      "obstacle"
+     ],
+     "source_path": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_form_prod_01/a2/audit/confirmed_selection.json"
+    },
+    "model": "gpt-6-luna",
+    "prompt_sha": "0c872c4832feb511f125194476c216315be88fc6a4987f3eaf6c83849f0433e0",
+    "usage": {
+     "input_tokens": 2641,
+     "output_tokens": 992,
+     "cost_jpy": 0.1216
+    },
+    "trial_extra": {
+     "target_key": "ai_island_std",
+     "version": "v1",
+     "rejected_candidates": [],
+     "worker_value_assessment": {
+      "rating": "高",
+      "note": "「少なくとも」を下限と取る日本語訳の落とし穴。文脈(一般化を避ける)が明確。"
+     },
+     "quote_verbatim": true,
+     "explanation_len": 155,
+     "model_self_rating": "high",
+     "differs_from_kp_word_ja": "既出表現の語義ではなく、at least が主張の適用範囲を狭める働きに焦点を当てています。",
+     "learning_value_reason_ja": "at least をいつも数の「少なくとも」と捉える誤解を避け、説明の限定にも気づけるようになります。",
+     "criteria_check": null
+    }
+   },
+   {
+    "schema": "nuance_candidate_v1",
+    "family": "X",
+    "article_id": "ai_island_temple",
+    "level": "advanced",
+    "generated_at": "2026-10-29T08:21:55+09:00",
+    "candidate": {
+     "expression": "At least for this AI",
+     "focus": "主張の範囲を限定し、一般化を避ける言い方",
+     "explanation_ja": "「at least」はここでは「少なくとも」で、主張の適用範囲をこのAIに限定し、ほかのAIにも同じ効果があるとは言っていません。「For this AI, ...」だけでも対象は示せますが、「At least」を加えると、確認できた範囲に慎重にとどめる響きが出ます。一例だけで結果を述べるときなど、一般化を避けるのに使えます。",
+     "quote_en": "At least for this AI, remembering that technique helped it build towers.",
+     "quote_ja": "少なくともこのAIについては、そのテクニックを覚えていたことが、塔を建てる助けになりました。",
+     "overlap_check": {
+      "verdict": "pass",
+      "stage1_structural": {
+       "verdict": "pass",
+       "matched": []
+      },
+      "stage2_llm": {
+       "verdict": "pass",
+       "reason": "候補は「少なくとも」によって主張の適用範囲を限定し、一般化を避ける用法を解説しています。選定済みのKey Phrase・Wordはいずれも別の語義・用法が焦点です。",
+       "model": "gpt-6-luna"
+      },
+      "reason": "候補は「少なくとも」によって主張の適用範囲を限定し、一般化を避ける用法を解説しています。選定済みのKey Phrase・Wordはいずれも別の語義・用法が焦点です。",
+      "against": [
+       {
+        "item": "carry over",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "次に持ち越す意味を扱っており、主張の適用範囲を限定する焦点とは別です。"
+       },
+       {
+        "item": "call on",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "頼むという意味を扱っており、一般化を避ける表現とは別です。"
+       },
+       {
+        "item": "take a detour",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "遠回りをする意味を扱っており、主張の範囲を限定する焦点とは別です。"
+       },
+       {
+        "item": "card to play",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "打てる手という意味を扱っており、候補の学習焦点とは別です。"
+       },
+       {
+        "item": "obstacle",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "障害物という意味を扱っており、候補の学習焦点とは別です。"
+       }
+      ]
+     }
+    },
+    "no_candidate_reason": null,
+    "kp_word_basis": {
+     "status": "confirmed",
+     "items": [
+      "carry over",
+      "call on",
+      "take a detour",
+      "card to play",
+      "obstacle"
+     ],
+     "source_path": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_form_prod_01/b1b/audit/confirmed_selection.json"
+    },
+    "model": "gpt-6-luna",
+    "prompt_sha": "0c872c4832feb511f125194476c216315be88fc6a4987f3eaf6c83849f0433e0",
+    "usage": {
+     "input_tokens": 2693,
+     "output_tokens": 1428,
+     "cost_jpy": 0.1573
+    },
+    "trial_extra": {
+     "target_key": "ai_island_adv",
+     "version": "v1",
+     "rejected_candidates": [
+      {
+       "expression": "wave a flag",
+       "focus": "比喩表現が結論への慎重さをどう表すか",
+       "reason": "low_value",
+       "note": "この文脈では慣用的な比喩の意味を知ることが中心になり、使い分けの学習価値は限定的。"
+      }
+     ],
+     "worker_value_assessment": {
+      "rating": "高",
+      "note": "同上。For this AI だけでも足りるが At least を足す含みの差まで述べる。"
+     },
+     "quote_verbatim": true,
+     "explanation_len": 164,
+     "model_self_rating": "high",
+     "differs_from_kp_word_ja": "持ち越しや依頼などの語義ではなく、主張の確かさと適用範囲を限定する表現が焦点です。",
+     "learning_value_reason_ja": "実験結果や自分の経験を英語で述べる際、証拠の範囲を超えて一般化しない言い方を学べます。",
+     "criteria_check": null
+    }
+   },
+   {
+    "schema": "nuance_candidate_v1",
+    "family": "X",
+    "article_id": "paycheck_personality",
+    "level": "standard",
+    "generated_at": "2026-10-29T08:21:55+09:00",
+    "candidate": {
+     "expression": "may have affected",
+     "focus": "mayが、原因を断定せず可能性にとどめる語感",
+     "explanation_ja": "ここでの may は「〜したかもしれない」と可能性を示し、別の要因が実際に影響したと断定していません。時間を追ったデータで関連が見つかっても、原因までは確定できないという慎重な姿勢を表します。たとえば “Something else did affect both.” なら、別の要因が両方に影響したと事実として述べるため、確信の度合いが大きく異なります。",
+     "quote_en": "Something else may have affected both.",
+     "quote_ja": "何か別のものが、その両方に影響した可能性もあります。",
+     "overlap_check": {
+      "verdict": "pass",
+      "stage1_structural": {
+       "verdict": "pass",
+       "matched": []
+      },
+      "stage2_llm": {
+       "verdict": "pass",
+       "reason": "候補の中心はmayが可能性を示し、原因を断定しない用法です。選定済みの各表現とは学習上の焦点が異なります。",
+       "model": "gpt-6-luna"
+      },
+      "reason": "候補の中心はmayが可能性を示し、原因を断定しない用法です。選定済みの各表現とは学習上の焦点が異なります。",
+      "against": [
+       {
+        "item": "conscientiousness",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "性格特性ではなく、mayによる可能性の示し方が焦点。"
+       },
+       {
+        "item": "weak link",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "関連の強さではなく、原因を断定しない表現が焦点。"
+       },
+       {
+        "item": "come first",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "出来事の先後ではなく、mayが示す可能性が焦点。"
+       },
+       {
+        "item": "none other than",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "人物の特定ではなく、原因を断定しない語感が焦点。"
+       },
+       {
+        "item": "pay raise",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "昇給ではなく、mayによる可能性の示し方が焦点。"
+       }
+      ]
+     }
+    },
+    "no_candidate_reason": null,
+    "kp_word_basis": {
+     "status": "confirmed",
+     "items": [
+      "conscientiousness",
+      "weak link",
+      "come first",
+      "none other than",
+      "pay raise"
+     ],
+     "source_path": "user_test/paycheck_personality_e2e_02/index.html (公開済みKey Phrase行。HR form導入前の公開確定KP。confirmed_selection.json無し)"
+    },
+    "model": "gpt-6-luna",
+    "prompt_sha": "0c872c4832feb511f125194476c216315be88fc6a4987f3eaf6c83849f0433e0",
+    "usage": {
+     "input_tokens": 2593,
+     "output_tokens": 1305,
+     "cost_jpy": 0.1459
+    },
+    "trial_extra": {
+     "target_key": "paycheck_std",
+     "version": "v1",
+     "rejected_candidates": [
+      {
+       "expression": "the arrow does not point only one way",
+       "focus": "矢印の比喩で、影響が双方向であることを表す",
+       "reason": "not_nuance",
+       "note": "主に研究結果の内容を説明する比喩で、表現の使い分けとしての学習価値は低い"
+      }
+     ],
+     "worker_value_assessment": {
+      "rating": "中",
+      "note": "may の可能性/断定の差。B1既習の基礎寄りだが本文の因果慎重論と結びつく。"
+     },
+     "quote_verbatim": true,
+     "explanation_len": 178,
+     "model_self_rating": "high",
+     "differs_from_kp_word_ja": "既出項目の意味ではなく、助動詞 may が示す確信度と断定の避け方を扱っています。",
+     "learning_value_reason_ja": "研究やニュースの説明で、可能性と確定した事実を読み分ける助けになります。",
+     "criteria_check": null
+    }
+   },
+   {
+    "schema": "nuance_candidate_v1",
+    "family": "X",
+    "article_id": "paycheck_personality",
+    "level": "advanced",
+    "generated_at": "2026-10-29T08:21:55+09:00",
+    "candidate": {
+     "expression": "don’t have to vs mustn’t",
+     "focus": "「必要がない」と「してはいけない」の意味の違い",
+     "explanation_ja": "この文の “don’t have to” は「〜する必要はない」で、選択肢を示す表現です。「そうしてはいけない」と禁止する意味ではありません。禁止なら “mustn’t” が近く、たとえば “You mustn’t end the story that way.” は「そのように話を締めてはいけない」と強く制止します。ここでは結論を押しつけず、別の見方を促しています。",
+     "quote_en": "So when you look back on your income or the way you work, you don’t have to end the story with “That’s just my personality.”",
+     "quote_ja": "だから、自分の収入や働き方を振り返るとき、「それが自分の性格だから」と結論づける必要はありません。",
+     "overlap_check": {
+      "verdict": "pass",
+      "stage1_structural": {
+       "verdict": "pass",
+       "matched": []
+      },
+      "stage2_llm": {
+       "verdict": "pass",
+       "reason": "候補は「必要がない」と「してはいけない」の意味の違いを解説しています。選定済みのKey Phrase・Wordはいずれも別の語義や用法が焦点です。",
+       "model": "gpt-6-luna"
+      },
+      "reason": "候補は「必要がない」と「してはいけない」の意味の違いを解説しています。選定済みのKey Phrase・Wordはいずれも別の語義や用法が焦点です。",
+      "against": [
+       {
+        "item": "conscientiousness",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "仕事での慎重さや責任感を表す語で、必要・禁止の区別とは別の焦点です。"
+       },
+       {
+        "item": "come first",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "何かが他より先に起こることを表し、必要・禁止の区別とは別の焦点です。"
+       },
+       {
+        "item": "weakly linked to higher income",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "収入との弱い関連を表し、必要・禁止の区別とは別の焦点です。"
+       },
+       {
+        "item": "in the spotlight",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "注目を集めている状態を表し、必要・禁止の区別とは別の焦点です。"
+       },
+       {
+        "item": "hold on",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "短時間待つことを表し、必要・禁止の区別とは別の焦点です。"
+       }
+      ]
+     }
+    },
+    "no_candidate_reason": null,
+    "kp_word_basis": {
+     "status": "confirmed",
+     "items": [
+      "conscientiousness",
+      "come first",
+      "weakly linked to higher income",
+      "in the spotlight",
+      "hold on"
+     ],
+     "source_path": "user_test/paycheck_personality_e2e_02/index.html (公開済みKey Phrase行。HR form導入前の公開確定KP。confirmed_selection.json無し)"
+    },
+    "model": "gpt-6-luna",
+    "prompt_sha": "0c872c4832feb511f125194476c216315be88fc6a4987f3eaf6c83849f0433e0",
+    "usage": {
+     "input_tokens": 2624,
+     "output_tokens": 1971,
+     "cost_jpy": 0.1996
+    },
+    "trial_extra": {
+     "target_key": "paycheck_adv",
+     "version": "v1",
+     "rejected_candidates": [],
+     "worker_value_assessment": {
+      "rating": "低",
+      "note": "don't have to vs mustn't はA2既習の基礎対比。Advanced学習者には価値が薄い(Trial-01のFable評価=基礎語の品詞比較不可と同型)。"
+     },
+     "quote_verbatim": true,
+     "explanation_len": 185,
+     "model_self_rating": "high",
+     "differs_from_kp_word_ja": "選定済み表現の意味や語感ではなく、必要がないことと禁止の違いを扱っています。",
+     "learning_value_reason_ja": "“don’t have to” を禁止と取り違えやすく、日常的にもよく使う区別だからです。",
+     "criteria_check": null
+    }
+   },
+   {
+    "schema": "nuance_candidate_v1",
+    "family": "Z",
+    "article_id": "the_tell_tale_heart",
+    "level": "standard",
+    "generated_at": "2026-10-29T08:21:55+09:00",
+    "candidate": {
+     "expression": "You should have seen ...",
+     "focus": "過去の場面を強調して語る表現で、助言ではない",
+     "explanation_ja": "ここでの“You should have seen ...”は「見るべきだった」という助言や義務ではなく、「見ていたら驚いたでしょう」「どれほどすごかったか想像して」という強調です。たとえば“You should have seen the crowd!”なら、群衆を見るよう勧めているのではなく、その多さを印象的に伝えます。この語り手は、自分の忍耐を誇る調子で使っています。",
+     "quote_en": "You should have seen my patience—he never even moved!",
+     "quote_ja": "私の忍耐強さを見てほしかったものだ。彼は少しも動かなかった！",
+     "overlap_check": {
+      "verdict": "pass",
+      "stage1_structural": {
+       "verdict": "pass",
+       "matched": []
+      },
+      "stage2_llm": {
+       "verdict": "pass",
+       "reason": "候補の焦点は“You should have seen ...”を助言ではなく、過去の場面を強調して語る表現として説明することです。選定済みのKey Phrase・Wordはいずれも別の語義・用法を扱っています。",
+       "model": "gpt-6-luna"
+      },
+      "reason": "候補の焦点は“You should have seen ...”を助言ではなく、過去の場面を強調して語る表現として説明することです。選定済みのKey Phrase・Wordはいずれも別の語義・用法を扱っています。",
+      "against": [
+       {
+        "item": "make one's blood turn cold",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "ぞっとさせる表現が焦点であり、過去の場面を強調する表現とは異なる。"
+       },
+       {
+        "item": "raise one's voice",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "声を大きくする用法が焦点であり、候補の表現とは異なる。"
+       },
+       {
+        "item": "groan",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "うめくという動作が焦点であり、候補の表現とは異なる。"
+       },
+       {
+        "item": "rush at someone",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "人に向かって突進する動作が焦点であり、候補の表現とは異なる。"
+       },
+       {
+        "item": "go on talking",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "話し続ける用法が焦点であり、候補の表現とは異なる。"
+       }
+      ]
+     }
+    },
+    "no_candidate_reason": null,
+    "kp_word_basis": {
+     "status": "confirmed",
+     "items": [
+      "make one's blood turn cold",
+      "raise one's voice",
+      "groan",
+      "rush at someone",
+      "go on talking"
+     ],
+     "source_path": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_voice_fenrir_01/a2/audit/confirmed_selection.json"
+    },
+    "model": "gpt-6-luna",
+    "prompt_sha": "0c872c4832feb511f125194476c216315be88fc6a4987f3eaf6c83849f0433e0",
+    "usage": {
+     "input_tokens": 2717,
+     "output_tokens": 1300,
+     "cost_jpy": 0.1475
+    },
+    "trial_extra": {
+     "target_key": "tth_std",
+     "version": "v1",
+     "rejected_candidates": [
+      {
+       "expression": "not him",
+       "focus": "not A, but Bの対比による意味の強調",
+       "reason": "too_basic",
+       "note": "否定と対比の基本的な読み取りにとどまるため。"
+      }
+     ],
+     "worker_value_assessment": {
+      "rating": "高",
+      "note": "You should have seen ... を『見るべきだった』と誤読しやすい。誇張表現として語感が明確。"
+     },
+     "quote_verbatim": true,
+     "explanation_len": 188,
+     "model_self_rating": "high",
+     "differs_from_kp_word_ja": "選定済み表現の意味を言い換えるのではなく、should have seenが助言ではなく過去の様子を強調する用法を扱っています。",
+     "learning_value_reason_ja": "shouldを「〜すべき」とだけ覚えると誤解しやすく、会話でよく使われる強調表現として役立ちます。",
+     "criteria_check": null
+    }
+   },
+   {
+    "schema": "nuance_candidate_v1",
+    "family": "Z",
+    "article_id": "the_tell_tale_heart",
+    "level": "advanced",
+    "generated_at": "2026-10-29T08:21:55+09:00",
+    "candidate": {
+     "expression": "perhaps",
+     "focus": "神経質さを控えめに認め、正気だと強く主張する対照",
+     "explanation_ja": "perhaps はここでは、神経質であることを控えめに認める響きがあります。一方、後半の perfectly sane は強い断言です。たとえば “I’m nervous” なら本人がはっきり認める言い方ですが、perhaps を添えることで、語り手は不安定さを少し認めながら「狂ってはいない」と主張しています。",
+     "quote_en": "Nervous, perhaps, but perfectly sane.",
+     "quote_ja": "神経質なのかもしれない。だが、完全に正気だ。",
+     "overlap_check": {
+      "verdict": "pass",
+      "stage1_structural": {
+       "verdict": "pass",
+       "matched": []
+      },
+      "stage2_llm": {
+       "verdict": "pass",
+       "reason": "候補はperhapsによる控えめな認め方と、後半の強い断言との対照が焦点です。選定済みのKey Phrase・Wordはいずれも異なる語義・用法を扱っています。",
+       "model": "gpt-6-luna"
+      },
+      "reason": "候補はperhapsによる控えめな認め方と、後半の強い断言との対照が焦点です。選定済みのKey Phrase・Wordはいずれも異なる語義・用法を扱っています。",
+      "against": [
+       {
+        "item": "sharpen someone's senses",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "感覚を研ぎ澄ます用法が焦点で、別の内容です。"
+       },
+       {
+        "item": "mock",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "ばかにする意味が焦点で、別の内容です。"
+       },
+       {
+        "item": "hideous",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "ひどく気味の悪いという意味が焦点で、別の内容です。"
+       },
+       {
+        "item": "blood went cold",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "恐怖で血の気が引く表現が焦点で、別の内容です。"
+       },
+       {
+        "item": "never stir",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "少しも身じろぎしない意味が焦点で、別の内容です。"
+       }
+      ]
+     }
+    },
+    "no_candidate_reason": null,
+    "kp_word_basis": {
+     "status": "confirmed",
+     "items": [
+      "sharpen someone's senses",
+      "mock",
+      "hideous",
+      "blood went cold",
+      "never stir"
+     ],
+     "source_path": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_voice_fenrir_01/b1b/audit/confirmed_selection.json"
+    },
+    "model": "gpt-6-luna",
+    "prompt_sha": "0c872c4832feb511f125194476c216315be88fc6a4987f3eaf6c83849f0433e0",
+    "usage": {
+     "input_tokens": 2678,
+     "output_tokens": 2074,
+     "cost_jpy": 0.2087
+    },
+    "trial_extra": {
+     "target_key": "tth_adv",
+     "version": "v1",
+     "rejected_candidates": [
+      {
+       "expression": "What if a neighbour heard?",
+       "focus": "What if が示す、起こりうる事態への不安",
+       "reason": "low_value",
+       "note": "仮定の形による懸念の表現としては基本的で、選定候補より学習価値が低い。"
+      }
+     ],
+     "worker_value_assessment": {
+      "rating": "中",
+      "note": "perhaps の控えめな認めと perfectly sane の断言の対照。語は基礎的だが対照の読みが本文固有で物語解釈寄り。"
+     },
+     "quote_verbatim": true,
+     "explanation_len": 156,
+     "model_self_rating": "mid",
+     "differs_from_kp_word_ja": "既出項目は感覚や恐怖などの語義を扱いますが、ここでは perhaps が示す控えめな態度と、後半の断言との対照を扱います。",
+     "learning_value_reason_ja": "perhaps が単なる確率表現にとどまらず、話し手の認め方を和らげることを文脈から学べます。",
+     "criteria_check": null
+    }
+   },
+   {
+    "schema": "nuance_candidate_v1",
+    "family": "Y",
+    "article_id": "redelivery_fee",
+    "level": "standard",
+    "generated_at": "2026-10-29T08:21:55+09:00",
+    "candidate": {
+     "expression": "doesn’t feel right to me",
+     "focus": "断定を避け、自分の感覚として不公平さを伝える",
+     "explanation_ja": "feel right to me は、正しいかどうかを客観的に断定するより、「自分にはしっくりこない」という感覚を伝えます。この人は再配達料を「間違った制度だ」と言い切るのではなく、自分には不公平に感じると述べています。just はここでは、その感覚を率直に表す響きを添えています。",
+     "quote_en": "Having to pay for a redelivery just doesn’t feel right to me.",
+     "quote_ja": "再配達にお金を払わなければならないのは、どうも納得できない気がします。",
+     "overlap_check": {
+      "verdict": "pass",
+      "stage1_structural": {
+       "verdict": "pass",
+       "matched": []
+      },
+      "stage2_llm": {
+       "verdict": "pass",
+       "reason": "候補は、客観的な断定を避けて自分には不公平に感じると伝える表現の解説です。選定済みのKey Phrase・Wordはいずれも異なる意味や用法を扱っており、学習上の焦点は重複していません。",
+       "model": "gpt-6-luna"
+      },
+      "reason": "候補は、客観的な断定を避けて自分には不公平に感じると伝える表現の解説です。選定済みのKey Phrase・Wordはいずれも異なる意味や用法を扱っており、学習上の焦点は重複していません。",
+      "against": [
+       {
+        "item": "end up getting it",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "結局受け取ることを表す表現で、感覚や不公平さの伝え方とは焦点が異なる"
+       },
+       {
+        "item": "can't be helped",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "仕方がないという意味で、自分の感覚として不公平さを伝える焦点とは異なる"
+       },
+       {
+        "item": "make an effort",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "努力することを表す表現で、候補の焦点とは異なる"
+       },
+       {
+        "item": "in person",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "直接行うことを表す語句で、候補の焦点とは異なる"
+       },
+       {
+        "item": "encourage（本文中の形: encourages）",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "促すことを表す語で、候補の焦点とは異なる"
+       }
+      ]
+     }
+    },
+    "no_candidate_reason": null,
+    "kp_word_basis": {
+     "status": "confirmed",
+     "items": [
+      "end up getting it",
+      "can't be helped",
+      "make an effort",
+      "in person",
+      "encourage"
+     ],
+     "source_path": "er121_output/family_y_production_01/redelivery_fee/run_gpg5_y_01_s23f/a2/audit/confirmed_selection.json"
+    },
+    "model": "gpt-6-luna",
+    "prompt_sha": "0c872c4832feb511f125194476c216315be88fc6a4987f3eaf6c83849f0433e0",
+    "usage": {
+     "input_tokens": 2843,
+     "output_tokens": 1720,
+     "cost_jpy": 0.1831
+    },
+    "trial_extra": {
+     "target_key": "y_redelivery_std",
+     "version": "v1",
+     "rejected_candidates": [
+      {
+       "expression": "can't be helped",
+       "focus": "事情を受け入れ、「仕方がない」と述べる表現",
+       "reason": "kp_word_overlap",
+       "note": "選定済みのKey Phraseと実質的に同じです。"
+      },
+      {
+       "expression": "simply say",
+       "focus": "「ただそう言うだけ」という簡潔さの含み",
+       "reason": "too_basic",
+       "note": "この文脈での差は小さく、単語の意味を知れば十分です。"
+      }
+     ],
+     "worker_value_assessment": {
+      "rating": "中",
+      "note": "feel right to me の主観化。語義説明に近くKP型イディオムの補足に寄る(Adv側KPは sit right)。"
+     },
+     "quote_verbatim": true,
+     "explanation_len": 141,
+     "model_self_rating": "high",
+     "differs_from_kp_word_ja": "選定済みのKey Phrase・Wordは別の語句や意味が焦点で、ここでは意見を個人的な感覚として表す言い方を扱っています。",
+     "learning_value_reason_ja": "「間違いだ」と強く断定する表現との違いを知ると、意見の強さを調整しやすくなります。",
+     "criteria_check": null
+    }
+   },
+   {
+    "schema": "nuance_candidate_v1",
+    "family": "Y",
+    "article_id": "redelivery_fee",
+    "level": "advanced",
+    "generated_at": "2026-10-29T08:21:55+09:00",
+    "candidate": {
+     "expression": "I’d be happy if ...",
+     "focus": "希望を直接要求せず、控えめに伝える言い方",
+     "explanation_ja": "ここでの “I’d be happy if ...” は、文字どおり「そうなら幸せ」というより、「そうしてもらえたらありがたい」という控えめな希望です。“I want the first redelivery to be free.” と言うと、希望をより直接的に述べる印象になります。提案や要望をやわらかく伝えたいときに使えます。",
+     "quote_en": "I’d be happy if the first redelivery were free, and people who are repeatedly away had to pay.",
+     "quote_ja": "最初の再配達は無料で、何度も不在にする人には支払ってもらえるなら、私はありがたいです。",
+     "overlap_check": {
+      "verdict": "pass",
+      "stage1_structural": {
+       "verdict": "pass",
+       "matched": []
+      },
+      "stage2_llm": {
+       "verdict": "pass",
+       "reason": "候補の焦点は、希望を直接要求せずに控えめに伝える言い方です。選定済みのKey Phrase・Wordはいずれも異なる意味・用法を扱っているため、重複しません。",
+       "model": "gpt-6-luna"
+      },
+      "reason": "候補の焦点は、希望を直接要求せずに控えめに伝える言い方です。選定済みのKey Phrase・Wordはいずれも異なる意味・用法を扱っているため、重複しません。",
+      "against": [
+       {
+        "item": "doesn't sit right with someone",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "しっくりこないという感覚を表す表現で、控えめな希望の伝え方とは焦点が異なる"
+       },
+       {
+        "item": "take the trouble to",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "わざわざ何かをすることを表し、希望を控えめに伝える用法とは異なる"
+       },
+       {
+        "item": "end up receiving",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "結局受け取るという結果を表し、希望の伝え方とは焦点が異なる"
+       },
+       {
+        "item": "beforehand",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "前もってという時間を表す語で、控えめな希望の表現とは異なる"
+       },
+       {
+        "item": "repeatedly",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "何度もという頻度を表す語で、控えめな希望の表現とは異なる"
+       }
+      ]
+     }
+    },
+    "no_candidate_reason": null,
+    "kp_word_basis": {
+     "status": "confirmed",
+     "items": [
+      "doesn't sit right with someone",
+      "take the trouble to",
+      "end up receiving",
+      "beforehand",
+      "repeatedly"
+     ],
+     "source_path": "er121_output/family_y_production_01/redelivery_fee/run_gpg5_y_01_s23f/b1b/audit/confirmed_selection.json"
+    },
+    "model": "gpt-6-luna",
+    "prompt_sha": "0c872c4832feb511f125194476c216315be88fc6a4987f3eaf6c83849f0433e0",
+    "usage": {
+     "input_tokens": 2909,
+     "output_tokens": 1288,
+     "cost_jpy": 0.1496
+    },
+    "trial_extra": {
+     "target_key": "y_redelivery_adv",
+     "version": "v1",
+     "rejected_candidates": [
+      {
+       "expression": "I guess it can't be helped",
+       "focus": "納得しきれない気持ちを残しつつ、仕方ないと受け止める語感",
+       "reason": "low_value",
+       "note": "文脈に沿った語感はあるが、今回選ぶ表現より使い分けの学習価値が低い"
+      }
+     ],
+     "worker_value_assessment": {
+      "rating": "中",
+      "note": "I'd be happy if ... の控えめな要望。仮定法の仕組み(文法コーナー領域)に隣接。"
+     },
+     "quote_verbatim": true,
+     "explanation_len": 166,
+     "model_self_rating": "high",
+     "differs_from_kp_word_ja": "選定済み表現の「わざわざする」「結局〜になる」などの意味ではなく、希望の伝え方の強さが焦点です。",
+     "learning_value_reason_ja": "日本語の「うれしい」に直訳すると見落としやすい、要望をやわらげる働きを実例で学べます。",
+     "criteria_check": null
+    }
+   },
+   {
+    "schema": "nuance_candidate_v1",
+    "family": "-",
+    "article_id": "synthetic_control",
+    "level": "standard",
+    "generated_at": "2026-10-29T08:21:55+09:00",
+    "candidate": {
+     "expression": "stood vs stood up",
+     "focus": "stoodは立った状態、stood upは立ち上がる動作を表す",
+     "explanation_ja": "この文の stood は、満員のバスの中で「立った状態でいた」という意味です。stood up なら、座った状態などから「立ち上がった」という動作に焦点が移ります。たとえば、バスで席を譲るために立ち上がった場面なら stood up が自然ですが、この文では乗車中に立っていたことを表しています。",
+     "quote_en": "The bus was full, so she stood.",
+     "quote_ja": "バスは満員だったので、彼女は立っていた。",
+     "overlap_check": {
+      "verdict": "pass",
+      "stage1_structural": {
+       "verdict": "pass",
+       "matched": []
+      },
+      "stage2_llm": {
+       "verdict": "pass",
+       "reason": "候補の焦点は stood と stood up の意味の違いです。選定済みのKey Phrase・Wordはいずれも別の意味・用法を扱っているため、学習上の焦点は重複しません。",
+       "model": "gpt-6-luna"
+      },
+      "reason": "候補の焦点は stood と stood up の意味の違いです。選定済みのKey Phrase・Wordはいずれも別の意味・用法を扱っているため、学習上の焦点は重複しません。",
+      "against": [
+       {
+        "item": "wake up",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "目を覚ます意味・用法が焦点ではありません"
+       },
+       {
+        "item": "by the window",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "窓のそばを表す位置が焦点ではありません"
+       },
+       {
+        "item": "take the bus",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "バスに乗ることではなく、立っていた状態と立ち上がる動作の違いが焦点です"
+       },
+       {
+        "item": "meet",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "人に会う意味・用法が焦点ではありません"
+       },
+       {
+        "item": "homework",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "宿題を表す語義が焦点ではありません"
+       }
+      ]
+     }
+    },
+    "no_candidate_reason": null,
+    "kp_word_basis": {
+     "status": "synthetic",
+     "items": [
+      "wake up",
+      "by the window",
+      "take the bus",
+      "meet",
+      "homework"
+     ],
+     "source_path": "(診断用の人工テキスト。実記事ではない。0件が出せるかの確認用)"
+    },
+    "model": "gpt-6-luna",
+    "prompt_sha": "0c872c4832feb511f125194476c216315be88fc6a4987f3eaf6c83849f0433e0",
+    "usage": {
+     "input_tokens": 2164,
+     "output_tokens": 1247,
+     "cost_jpy": 0.1343
+    },
+    "trial_extra": {
+     "target_key": "control_trivial",
+     "version": "v1",
+     "rejected_candidates": [
+      {
+       "expression": "some tea",
+       "focus": "someが飲み物の量を特定しないこと",
+       "reason": "low_value",
+       "note": "この文では量が不明という基本的な意味にとどまる"
+      },
+      {
+       "expression": "made toast",
+       "focus": "make toastがトーストを用意することを表す",
+       "reason": "low_value",
+       "note": "よくある組み合わせの紹介が中心になる"
+      }
+     ],
+     "worker_value_assessment": {
+      "rating": "低",
+      "note": "人工の平易文で stood vs stood up を強制選定=0件が出せない証拠。"
+     },
+     "quote_verbatim": true,
+     "explanation_len": 148,
+     "model_self_rating": "mid",
+     "differs_from_kp_word_ja": "解説の中心は stood と stood up の動作・状態の違いで、選定済み表現の意味とは異なります。",
+     "learning_value_reason_ja": "stoodとstood upを混同しやすく、状態と動作の違いを知ると場面を正確に表せます。",
+     "criteria_check": null
+    }
+   }
+  ],
+  "v2": [
+   {
+    "schema": "nuance_candidate_v1",
+    "family": "X",
+    "article_id": "ai_island_temple",
+    "level": "standard",
+    "generated_at": "2026-10-29T08:21:55+09:00",
+    "candidate": null,
+    "no_candidate_reason": "候補はありますが、基本的な表現の説明にとどまるか、この文章固有の比喩に限られます。4条件を明確に満たす解説対象はありません。",
+    "kp_word_basis": {
+     "status": "confirmed",
+     "items": [
+      "carry over",
+      "take a detour",
+      "card to play",
+      "worth paying attention to",
+      "obstacle"
+     ],
+     "source_path": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_form_prod_01/a2/audit/confirmed_selection.json"
+    },
+    "model": "gpt-6-luna",
+    "prompt_sha": "9d0e0a06da02082b4ede4e0f2e09ae8609979c3641bf6a3acc49c1d1ea66da35",
+    "usage": {
+     "input_tokens": 2473,
+     "output_tokens": 1007,
+     "cost_jpy": 0.1201
+    },
+    "trial_extra": {
+     "target_key": "ai_island_std",
+     "version": "v2",
+     "rejected_candidates": [
+      {
+       "expression": "at least",
+       "focus": "結論の適用範囲を一つのAIに限定する含み",
+       "reason": "too_basic",
+       "note": "基本的な限定表現で、辞書や入門教材で十分に扱われる。"
+      },
+      {
+       "expression": "Even so vs Still",
+       "focus": "注意点を加えるときの譲歩のつなぎ方",
+       "reason": "too_basic",
+       "note": "基本的な接続表現の対比にとどまる。"
+      },
+      {
+       "expression": "too soon to wave a flag",
+       "focus": "成功を宣言するにはまだ早いという比喩的な言い方",
+       "reason": "low_value",
+       "note": "この文脈での比喩は分かるが、一般的な使い分けとして学ぶ価値は限定的。"
+      },
+      {
+       "expression": "by themselves",
+       "focus": "二つの結果だけでは結論を裏づけないという限定",
+       "reason": "low_value",
+       "note": "文脈上の論理は重要だが、表現自体のニュアンス解説としては学習価値が弱い。"
+      }
+     ],
+     "worker_value_assessment": {
+      "rating": "誤り(見逃し)",
+      "note": "0件。ただし同記事Advでは at least を選定。at least は v1 で高価値だったため too_basic 判定は過剰抑制(Std/Adv不整合)。"
+     }
+    }
+   },
+   {
+    "schema": "nuance_candidate_v1",
+    "family": "X",
+    "article_id": "ai_island_temple",
+    "level": "advanced",
+    "generated_at": "2026-10-29T08:21:55+09:00",
+    "candidate": {
+     "expression": "at least for this AI",
+     "focus": "at leastが一般化を避け、結論の適用範囲を絞る働き",
+     "explanation_ja": "ここでの at least は、単に「最低限」を示すのではなく、結論を「このAIについて言える範囲」に限定しています。たとえば「この方法はAIに役立つ」と一般化するのではなく、実験で確かめられた一例にとどめる慎重な言い方です。「少なくとも」と訳せても、何の範囲を限定しているのかを見落とすと、結論を広く受け取りすぎることがあります。",
+     "quote_en": "At least for this AI, remembering that technique helped it build towers.",
+     "quote_ja": "少なくともこのAIについては、そのテクニックを覚えていたことが塔を作る助けになった。",
+     "overlap_check": {
+      "verdict": "pass",
+      "stage1_structural": {
+       "verdict": "pass",
+       "matched": []
+      },
+      "stage2_llm": {
+       "verdict": "pass",
+       "reason": "候補の焦点は at least が結論の適用範囲を限定する働きであり、選定済み項目の意味・用法とは重複しません。",
+       "model": "gpt-6-luna"
+      },
+      "reason": "候補の焦点は at least が結論の適用範囲を限定する働きであり、選定済み項目の意味・用法とは重複しません。",
+      "against": [
+       {
+        "item": "carry over",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "次に持ち越す用法が焦点であり、結論の適用範囲を限定する働きとは別。"
+       },
+       {
+        "item": "call on",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "頼むという用法が焦点であり、適用範囲の限定とは別。"
+       },
+       {
+        "item": "take a detour",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "遠回りをするという意味が焦点であり、適用範囲の限定とは別。"
+       },
+       {
+        "item": "card to play",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "打てる手という意味が焦点であり、適用範囲の限定とは別。"
+       },
+       {
+        "item": "obstacle",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "障害物という語義が焦点であり、適用範囲の限定とは別。"
+       }
+      ]
+     }
+    },
+    "no_candidate_reason": null,
+    "kp_word_basis": {
+     "status": "confirmed",
+     "items": [
+      "carry over",
+      "call on",
+      "take a detour",
+      "card to play",
+      "obstacle"
+     ],
+     "source_path": "er019_output/family_x_audio_production_wiring_01/ai_island_temple__run_form_prod_01/b1b/audit/confirmed_selection.json"
+    },
+    "model": "gpt-6-luna",
+    "prompt_sha": "9d0e0a06da02082b4ede4e0f2e09ae8609979c3641bf6a3acc49c1d1ea66da35",
+    "usage": {
+     "input_tokens": 3190,
+     "output_tokens": 1525,
+     "cost_jpy": 0.1731
+    },
+    "trial_extra": {
+     "target_key": "ai_island_adv",
+     "version": "v2",
+     "rejected_candidates": [
+      {
+       "expression": "pretty tough",
+       "focus": "prettyが「かなり」を表す程度副詞として使われるときの強さ",
+       "reason": "too_basic",
+       "note": "prettyの程度を表す用法の説明にとどまる。"
+      },
+      {
+       "expression": "even so",
+       "focus": "先行する内容を認めつつ、別の見方を示すつなぎ方",
+       "reason": "too_basic",
+       "note": "基本的な接続表現の説明になりやすい。"
+      },
+      {
+       "expression": "one step ahead",
+       "focus": "実際の一歩ではなく、先行した状態を表す比喩",
+       "reason": "low_value",
+       "note": "文脈に即した語義説明が中心になる。"
+      }
+     ],
+     "worker_value_assessment": {
+      "rating": "高",
+      "note": "v1と同表現。4条件の根拠(criteria_check)が具体的。"
+     },
+     "quote_verbatim": true,
+     "explanation_len": 166,
+     "model_self_rating": "high",
+     "differs_from_kp_word_ja": "選定済み表現の語義や使い分けではなく、at leastが結論の適用範囲を限定する働きを扱っています。",
+     "learning_value_reason_ja": "実験結果を述べる文章で、結論を過度に一般化しないための限定表現を読み取る力につながります。",
+     "criteria_check": {
+      "context_specific": "記憶の効果を述べた直後に置かれ、このAIの結果だけから一般論を導かない含みがあります。",
+      "jp_pitfall": "「少なくとも」という訳だけで最低条件の意味に取ると、結論の範囲を限定する働きを見落としやすいです。",
+      "level_fit": "基本文法の対比ではなく、既知の表現が議論の確実さや範囲をどう調整するかを学べます。"
+     }
+    }
+   },
+   {
+    "schema": "nuance_candidate_v1",
+    "family": "X",
+    "article_id": "paycheck_personality",
+    "level": "standard",
+    "generated_at": "2026-10-29T08:21:55+09:00",
+    "candidate": null,
+    "no_candidate_reason": "overlap_ng",
+    "kp_word_basis": {
+     "status": "confirmed",
+     "items": [
+      "conscientiousness",
+      "weak link",
+      "come first",
+      "none other than",
+      "pay raise"
+     ],
+     "source_path": "user_test/paycheck_personality_e2e_02/index.html (公開済みKey Phrase行。HR form導入前の公開確定KP。confirmed_selection.json無し)"
+    },
+    "model": "gpt-6-luna",
+    "prompt_sha": "9d0e0a06da02082b4ede4e0f2e09ae8609979c3641bf6a3acc49c1d1ea66da35",
+    "usage": {
+     "input_tokens": 3098,
+     "output_tokens": 2800,
+     "cost_jpy": 0.2736
+    },
+    "trial_extra": {
+     "target_key": "paycheck_std",
+     "version": "v2",
+     "rejected_candidates": [
+      {
+       "expression": "“Coming first” and “being the cause” are two different things.",
+       "focus": "出来事の順序と原因を区別する表現",
+       "reason": "kp_word_overlap",
+       "note": "「come first」の意味を扱う内容と実質的に重なるため。"
+      },
+      {
+       "expression": "The arrow does not point only one way.",
+       "focus": "関係が双方向であることを表す比喩",
+       "reason": "low_value",
+       "note": "この場面の比喩としては理解しやすく、独立した使い分けの学習価値は弱いため。"
+      },
+      {
+       "expression": "It was a different contest altogether.",
+       "focus": "比較の仕方が根本的に違うという印象",
+       "reason": "low_value",
+       "note": "文脈上の言い換えとしては分かりやすく、語の選択による差を深く学ぶ価値は弱いため。"
+      }
+     ],
+     "worker_value_assessment": {
+      "rating": "中〜高",
+      "note": "be linked to=関連≠因果の語感。ただしKP『weak link』と語・論点が近接し、段1構造検査がfail→破棄(境界事例)。"
+     },
+     "quote_verbatim": true,
+     "explanation_len": 184,
+     "model_self_rating": "high",
+     "differs_from_kp_word_ja": "選定済みの「weak link」が関連の強さを扱うのに対し、ここでは関連を原因と取り違えないための表現の含みを扱います。",
+     "learning_value_reason_ja": "「関連がある」と「原因である」を区別する力は、研究やニュースの英文を正確に読むうえで役立ちます。",
+     "criteria_check": {
+      "context_specific": "この研究結果では収入と性格の関連を述べ、因果関係は証明できないという注意につながっています。",
+      "jp_pitfall": "「関連している」や「結びついている」を、原因と結果が確定した意味に受け取りやすい点に注意できます。",
+      "level_fit": "基礎文法の対比ではなく、研究結果を読む際に重要な表現の慎重さをA2〜B1でも学べます。"
+     },
+     "rejected_candidate_audit": {
+      "expression": "was linked to",
+      "focus": "研究結果で関連を示し、原因までは断定しない表現",
+      "explanation_ja": "研究結果の「be linked to」は、二つの事柄に関連が見られたことを述べますが、それだけで「一方がもう一方を起こした」とは言いません。本文も続けて、収入が性格を変えたとは証明できないと注意しています。原因まで述べる caused とは意味の強さが異なります。日本語の「結びついている」も原因を連想させることがあるため、ここでは「関連があった」と読むのが安全です。",
+      "quote_en": "Their study found that, within the same person, higher income was linked to greater conscientiousness later on.",
+      "quote_ja": "その研究では、同じ人の中で、収入が高くなった後に、より高い誠実性が見られることに関連があると分かりました。",
+      "overlap_check": {
+       "verdict": "fail",
+       "stage1_structural": {
+        "verdict": "fail",
+        "matched": [
+         {
+          "candidate_part": "was linked to",
+          "kp": "weak link",
+          "shared": [
+           "link"
+          ]
+         }
+        ]
+       },
+       "stage2_llm": {
+        "verdict": "pass",
+        "reason": "候補は関連があっても因果までは示さない点を説明しています。「weak link」は関連の弱さを表すため、学習上の焦点は異なります。",
+        "model": "gpt-6-luna"
+       },
+       "reason": "構造検査fail: [{'candidate_part': 'was linked to', 'kp': 'weak link', 'shared': ['link']}]",
+       "against": [
+        {
+         "item": "conscientiousness",
+         "kind": "kp|word",
+         "same_focus": false,
+         "note": "性格特性の意味が焦点で、関連と因果の区別とは異なる"
+        },
+        {
+         "item": "weak link",
+         "kind": "kp|word",
+         "same_focus": false,
+         "note": "関連の弱さが焦点で、因果関係を断定しない用法とは異なる"
+        },
+        {
+         "item": "come first",
+         "kind": "kp|word",
+         "same_focus": false,
+         "note": "出来事の順序が焦点で、関連の表現とは異なる"
+        },
+        {
+         "item": "none other than",
+         "kind": "kp|word",
+         "same_focus": false,
+         "note": "人物を強調する表現が焦点で、関連の表現とは異なる"
+        },
+        {
+         "item": "pay raise",
+         "kind": "kp|word",
+         "same_focus": false,
+         "note": "昇給の意味が焦点で、関連の表現とは異なる"
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "schema": "nuance_candidate_v1",
+    "family": "X",
+    "article_id": "paycheck_personality",
+    "level": "advanced",
+    "generated_at": "2026-10-29T08:21:55+09:00",
+    "candidate": null,
+    "no_candidate_reason": "候補表現はありますが、基礎的な語法の説明か、記事内容の理解にとどまります。4条件を明確に満たすニュアンス解説はありません。",
+    "kp_word_basis": {
+     "status": "confirmed",
+     "items": [
+      "conscientiousness",
+      "come first",
+      "weakly linked to higher income",
+      "in the spotlight",
+      "hold on"
+     ],
+     "source_path": "user_test/paycheck_personality_e2e_02/index.html (公開済みKey Phrase行。HR form導入前の公開確定KP。confirmed_selection.json無し)"
+    },
+    "model": "gpt-6-luna",
+    "prompt_sha": "9d0e0a06da02082b4ede4e0f2e09ae8609979c3641bf6a3acc49c1d1ea66da35",
+    "usage": {
+     "input_tokens": 2434,
+     "output_tokens": 1215,
+     "cost_jpy": 0.1361
+    },
+    "trial_extra": {
+     "target_key": "paycheck_adv",
+     "version": "v2",
+     "rejected_candidates": [
+      {
+       "expression": "may have affected both",
+       "focus": "mayが因果関係を断定せず可能性にとどめる点",
+       "reason": "too_basic",
+       "note": "助動詞mayの基本的な確信度の説明にとどまる。"
+      },
+      {
+       "expression": "a single snapshot / a series of photos",
+       "focus": "一時点の測定と経時的な測定を写真にたとえる表現",
+       "reason": "low_value",
+       "note": "本文の研究方法を理解する助けにはなるが、語感の差としての学習価値は限定的。"
+      },
+      {
+       "expression": "none other than you",
+       "focus": "注目の対象が読者本人だと強調する表現",
+       "reason": "low_value",
+       "note": "文脈上の強調は分かりやすく、辞書的な説明を超える差が乏しい。"
+      },
+      {
+       "expression": "the arrow doesn’t point just one way",
+       "focus": "関係が一方向ではないことを矢印で示す比喩",
+       "reason": "not_nuance",
+       "note": "中心は研究結果の内容理解であり、表現選択の微妙な含みではない。"
+      }
+     ],
+     "worker_value_assessment": {
+      "rating": "妥当(0件)",
+      "note": "v1の低価値候補を回避。残る候補(may have affected 等)は基礎的/記事理解寄りという判断は妥当。"
+     }
+    }
+   },
+   {
+    "schema": "nuance_candidate_v1",
+    "family": "Z",
+    "article_id": "the_tell_tale_heart",
+    "level": "standard",
+    "generated_at": "2026-10-29T08:21:55+09:00",
+    "candidate": {
+     "expression": "You should have seen my patience",
+     "focus": "「見ておくべきだった」ではなく、すごさを誇張して伝える言い方",
+     "explanation_ja": "ここでの You should have seen ... は、過去の義務や後悔を述べるというより、「実際に見ていたら、そのすごさが分かったのに」という誇張を込めた言い方です。単に I was very patient と言うより、聞き手にその場面を想像させ、自分の辛抱強さを印象的に語ります。should have をいつも「〜すべきだった」と訳すと、この語感を取り逃がします。",
+     "quote_en": "You should have seen my patience—he never even moved!",
+     "quote_ja": "私の辛抱強さときたら、見ていたら驚いたはずだよ—彼は少しも動かなかったんだから！",
+     "overlap_check": {
+      "verdict": "pass",
+      "stage1_structural": {
+       "verdict": "pass",
+       "matched": []
+      },
+      "stage2_llm": {
+       "verdict": "pass",
+       "reason": "候補は You should have seen ... が、実際に見ていたら分かったはずだという誇張を込めて聞き手に場面を想像させる用法を解説しています。選定済みの各表現の語義・用法とは重複しません。",
+       "model": "gpt-6-luna"
+      },
+      "reason": "候補は You should have seen ... が、実際に見ていたら分かったはずだという誇張を込めて聞き手に場面を想像させる用法を解説しています。選定済みの各表現の語義・用法とは重複しません。",
+      "against": [
+       {
+        "item": "make one's blood turn cold",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "人をぞっとさせる表現で、誇張を込めて辛抱強さを語る用法とは別です。"
+       },
+       {
+        "item": "raise one's voice",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "声を大きくする表現で、候補の語用上の焦点とは異なります。"
+       },
+       {
+        "item": "groan",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "うめく動作を表す語で、候補の語用上の焦点とは異なります。"
+       },
+       {
+        "item": "rush at someone",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "人に向かって突進する動作で、候補の語用上の焦点とは異なります。"
+       },
+       {
+        "item": "go on talking",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "話し続ける用法で、候補の語用上の焦点とは異なります。"
+       }
+      ]
+     }
+    },
+    "no_candidate_reason": null,
+    "kp_word_basis": {
+     "status": "confirmed",
+     "items": [
+      "make one's blood turn cold",
+      "raise one's voice",
+      "groan",
+      "rush at someone",
+      "go on talking"
+     ],
+     "source_path": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_voice_fenrir_01/a2/audit/confirmed_selection.json"
+    },
+    "model": "gpt-6-luna",
+    "prompt_sha": "9d0e0a06da02082b4ede4e0f2e09ae8609979c3641bf6a3acc49c1d1ea66da35",
+    "usage": {
+     "input_tokens": 3220,
+     "output_tokens": 2479,
+     "cost_jpy": 0.2498
+    },
+    "trial_extra": {
+     "target_key": "tth_std",
+     "version": "v2",
+     "rejected_candidates": [
+      {
+       "expression": "in the country",
+       "focus": "「田舎にいる」と「外国にいる」の意味の取り違え",
+       "reason": "low_value",
+       "note": "文脈から田舎を指すと分かり、辞書で確認できる語義の違いにとどまる。"
+      },
+      {
+       "expression": "what if a neighbour heard?",
+       "focus": "「もし隣人に聞かれたら」という不安を表す問い",
+       "reason": "too_basic",
+       "note": "what if の基本的な用法の説明になりやすい。"
+      },
+      {
+       "expression": "Could you bear that?",
+       "focus": "相手に耐えられるか尋ねる形で、苦痛を強調する",
+       "reason": "low_value",
+       "note": "この場面の効果は分かりやすく、語義の説明を超える差を示しにくい。"
+      }
+     ],
+     "worker_value_assessment": {
+      "rating": "高",
+      "note": "v1と同表現。should have の『義務』誤読の落とし穴を明記。"
+     },
+     "quote_verbatim": true,
+     "explanation_len": 190,
+     "model_self_rating": "high",
+     "differs_from_kp_word_ja": "選定済みの表現の語義や使い分けではなく、聞き手に向けた誇張表現の語感を扱っています。",
+     "learning_value_reason_ja": "should have の訳を一つに固定せず、話し手が聞き手に場面を想像させる働きまで理解できます。",
+     "criteria_check": {
+      "context_specific": "七晩も老人の様子をうかがったことを、話し手が「見ていたら驚いただろう」と誇張して語る場面です。",
+      "jp_pitfall": "should have を「〜すべきだった」という義務・後悔だけで捉え、ここでの誇張や聞き手への呼びかけを見落としがちです。",
+      "level_fit": "基礎文法の対比ではなく、会話で使われる表現の含みを学べるため、A2〜B1の学習者にも有用です。"
+     }
+    }
+   },
+   {
+    "schema": "nuance_candidate_v1",
+    "family": "Z",
+    "article_id": "the_tell_tale_heart",
+    "level": "advanced",
+    "generated_at": "2026-10-29T08:21:55+09:00",
+    "candidate": null,
+    "no_candidate_reason": "候補になりそうな表現はありますが、語義が基礎的な範囲にとどまるか、文法・構文の説明が中心になります。指定された条件をすべて満たすものはありません。",
+    "kp_word_basis": {
+     "status": "confirmed",
+     "items": [
+      "sharpen someone's senses",
+      "mock",
+      "hideous",
+      "blood went cold",
+      "never stir"
+     ],
+     "source_path": "er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_voice_fenrir_01/b1b/audit/confirmed_selection.json"
+    },
+    "model": "gpt-6-luna",
+    "prompt_sha": "9d0e0a06da02082b4ede4e0f2e09ae8609979c3641bf6a3acc49c1d1ea66da35",
+    "usage": {
+     "input_tokens": 2491,
+     "output_tokens": 1191,
+     "cost_jpy": 0.1351
+    },
+    "trial_extra": {
+     "target_key": "tth_adv",
+     "version": "v2",
+     "rejected_candidates": [
+      {
+       "expression": "in the country",
+       "focus": "「国」ではなく「田舎」を指す文脈上の意味",
+       "reason": "too_basic",
+       "note": "countryのこの意味は辞書や基礎的な語彙解説で確認できる。"
+      },
+      {
+       "expression": "You should have seen my patience!",
+       "focus": "実際に見るべきだったという意味ではなく、自慢を強める言い方",
+       "reason": "grammar_structure",
+       "note": "焦点がshould haveの構文的な解釈に寄る。"
+      },
+      {
+       "expression": "Could you have borne it?",
+       "focus": "相手に実際の返答を求めるのでなく、苦痛への共感を促す問い",
+       "reason": "grammar_structure",
+       "note": "could haveの構文説明と切り分けにくい。"
+      }
+     ],
+     "worker_value_assessment": {
+      "rating": "妥当(やや惜しい)",
+      "note": "0件。v1候補(perhaps)は中程度だったので、0件は許容範囲。Std側は You should have seen を選んだのにAdvでは grammar_structure として外す不整合あり。"
+     }
+    }
+   },
+   {
+    "schema": "nuance_candidate_v1",
+    "family": "Y",
+    "article_id": "redelivery_fee",
+    "level": "standard",
+    "generated_at": "2026-10-29T08:21:55+09:00",
+    "candidate": {
+     "expression": "Am I wrong to feel this way?",
+     "focus": "意見をやわらげ、相手に妥当性を尋ねる語感",
+     "explanation_ja": "ここでは、直前の「配達員は大変だと分かるが、料金を払うのは受け入れられない」という意見を撤回するのではなく、自分の感じ方が無理のないものか相手に確かめています。たとえば “I’m wrong, aren’t I?” なら「私は間違っているよね」と、間違いを前提にする響きがあります。一方、この質問は答えを開いたままにし、意見を少しやわらげます。",
+     "quote_en": "Am I wrong to feel this way?",
+     "quote_ja": "こんなふうに感じる私は間違っているのでしょうか？",
+     "overlap_check": {
+      "verdict": "pass",
+      "stage1_structural": {
+       "verdict": "pass",
+       "matched": []
+      },
+      "stage2_llm": {
+       "verdict": "pass",
+       "reason": "候補は、自分の感じ方が妥当かを尋ねることで意見をやわらげる語感が中心です。選定済みの5件はいずれも異なる語義・用法を扱っています。",
+       "model": "gpt-6-luna"
+      },
+      "reason": "候補は、自分の感じ方が妥当かを尋ねることで意見をやわらげる語感が中心です。選定済みの5件はいずれも異なる語義・用法を扱っています。",
+      "against": [
+       {
+        "item": "end up getting it",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "結局受け取るという結果を表す表現で、意見の妥当性を尋ねる語感とは別の焦点です。"
+       },
+       {
+        "item": "can't be helped",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "避けられないことを表す表現で、意見をやわらげて相手に尋ねる用法とは別の焦点です。"
+       },
+       {
+        "item": "make an effort",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "努力することを表す表現で、候補の焦点とは別です。"
+       },
+       {
+        "item": "in person",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "直接会う・行うことを表す表現で、候補の焦点とは別です。"
+       },
+       {
+        "item": "encourage(本文中の形: encourages)",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "促すことを表す語で、候補の焦点とは別です。"
+       }
+      ]
+     }
+    },
+    "no_candidate_reason": null,
+    "kp_word_basis": {
+     "status": "confirmed",
+     "items": [
+      "end up getting it",
+      "can't be helped",
+      "make an effort",
+      "in person",
+      "encourage"
+     ],
+     "source_path": "er121_output/family_y_production_01/redelivery_fee/run_gpg5_y_01_s23f/a2/audit/confirmed_selection.json"
+    },
+    "model": "gpt-6-luna",
+    "prompt_sha": "9d0e0a06da02082b4ede4e0f2e09ae8609979c3641bf6a3acc49c1d1ea66da35",
+    "usage": {
+     "input_tokens": 3357,
+     "output_tokens": 2109,
+     "cost_jpy": 0.2224
+    },
+    "trial_extra": {
+     "target_key": "y_redelivery_std",
+     "version": "v2",
+     "rejected_candidates": [
+      {
+       "expression": "I guess it can’t be helped",
+       "focus": "控えめな受け止め方と「仕方がない」の表現",
+       "reason": "kp_word_overlap",
+       "note": "中心となる「can’t be helped」が選定済みKey Phraseと重なるため。"
+      }
+     ],
+     "worker_value_assessment": {
+      "rating": "中",
+      "note": "Am I wrong to feel this way? の意見をやわらげる含み。会話上の含みで文法ではないが価値は中程度。"
+     },
+     "quote_verbatim": true,
+     "explanation_len": 172,
+     "model_self_rating": "high",
+     "differs_from_kp_word_ja": "選定済み表現の意味や使い分けではなく、意見の妥当性を尋ねる質問が会話で与える印象を扱っています。",
+     "learning_value_reason_ja": "意見を控えめに伝える英語の言い方と、日本語の直訳から生じやすい印象のずれを学べます。",
+     "criteria_check": {
+      "context_specific": "料金への反対を述べたあと、自分の感じ方が妥当かを尋ねる形で意見をやわらげています。",
+      "jp_pitfall": "直訳だけだと、相手に「間違いかどうか」の判定を求める強い質問と受け取りやすいですが、ここでは理解や確認を求める響きがあります。",
+      "level_fit": "疑問文の文法ではなく、意見を述べる際の会話上の含みを学べるため、A2〜B1の学習者にも有用です。"
+     }
+    }
+   },
+   {
+    "schema": "nuance_candidate_v1",
+    "family": "Y",
+    "article_id": "redelivery_fee",
+    "level": "advanced",
+    "generated_at": "2026-10-29T08:21:55+09:00",
+    "candidate": {
+     "expression": "I guess it can’t be helped",
+     "focus": "仕方ないという諦めを示しつつ、賛成とは限らない語感",
+     "explanation_ja": "ここでの “I guess it can’t be helped” は、人手不足を「仕方ない」としぶしぶ認める響きです。問題をよいことだと評価したり、何でも受け入れたりしているわけではありません。続く “But I can’t accept …” と対比され、配達員の苦労には理解を示しながら、再配達料を受け取る側に負担させることには反対だと伝わります。",
+     "quote_en": "The delivery workers must have a hard time because there aren’t enough of them, and I guess it can’t be helped. But I can’t accept having to pay for that.",
+     "quote_ja": "配達員は人手不足で大変でしょうし、仕方ないのだろうと思います。でも、そのために料金を払わなければならないのは受け入れられません。",
+     "overlap_check": {
+      "verdict": "pass",
+      "stage1_structural": {
+       "verdict": "pass",
+       "matched": []
+      },
+      "stage2_llm": {
+       "verdict": "pass",
+       "reason": "候補は「仕方ない」としぶしぶ認めつつ、必ずしも賛成ではないという語感を説明しています。選定済みの表現はいずれも別の語義・用法が焦点です。",
+       "model": "gpt-6-luna"
+      },
+      "reason": "候補は「仕方ない」としぶしぶ認めつつ、必ずしも賛成ではないという語感を説明しています。選定済みの表現はいずれも別の語義・用法が焦点です。",
+      "against": [
+       {
+        "item": "doesn't sit right with someone",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "しっくりこない感覚ではなく、仕方ないと認めつつ賛成とは限らない語感が焦点。"
+       },
+       {
+        "item": "take the trouble to",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "わざわざ何かをすることではなく、諦めを含む受け止め方が焦点。"
+       },
+       {
+        "item": "end up receiving",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "最終的に受け取ることではなく、仕方ないという認識と賛否の違いが焦点。"
+       },
+       {
+        "item": "beforehand",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "時間的に前もって行うことではなく、諦めを含む語感が焦点。"
+       },
+       {
+        "item": "repeatedly",
+        "kind": "kp|word",
+        "same_focus": false,
+        "note": "何度も繰り返すことではなく、仕方ないという受け止め方が焦点。"
+       }
+      ]
+     }
+    },
+    "no_candidate_reason": null,
+    "kp_word_basis": {
+     "status": "confirmed",
+     "items": [
+      "doesn't sit right with someone",
+      "take the trouble to",
+      "end up receiving",
+      "beforehand",
+      "repeatedly"
+     ],
+     "source_path": "er121_output/family_y_production_01/redelivery_fee/run_gpg5_y_01_s23f/b1b/audit/confirmed_selection.json"
+    },
+    "model": "gpt-6-luna",
+    "prompt_sha": "9d0e0a06da02082b4ede4e0f2e09ae8609979c3641bf6a3acc49c1d1ea66da35",
+    "usage": {
+     "input_tokens": 3437,
+     "output_tokens": 2055,
+     "cost_jpy": 0.2194
+    },
+    "trial_extra": {
+     "target_key": "y_redelivery_adv",
+     "version": "v2",
+     "rejected_candidates": [
+      {
+       "expression": "on top of",
+       "focus": "通常の送料に追加される費用を表す語感",
+       "reason": "too_basic",
+       "note": "「〜に加えて」という基本的な意味の説明にとどまる。"
+      },
+      {
+       "expression": "must have a hard time",
+       "focus": "相手の状況についての推量の強さ",
+       "reason": "grammar_structure",
+       "note": "主な焦点が助動詞による推量の仕組みになる。"
+      },
+      {
+       "expression": "Am I wrong to feel this way?",
+       "focus": "自分の感じ方が妥当かを相手に尋ねる言い方",
+       "reason": "low_value",
+       "note": "この場面では話者の気持ちの解釈が中心になり、語句の選択による差を十分に扱いにくい。"
+      }
+     ],
+     "worker_value_assessment": {
+      "rating": "中〜高",
+      "note": "I guess it can't be helped の『諦め≠賛成』。ただしこの句は同記事StdのKP。Adv内ではKP/Wordと非重複だが『KP級の定型句』である点に注意。"
+     },
+     "quote_verbatim": true,
+     "explanation_len": 177,
+     "model_self_rating": "high",
+     "differs_from_kp_word_ja": "選定済み表現の意味や類義語ではなく、不可避だと認める言い方と、そのことへの賛成との違いが焦点です。",
+     "learning_value_reason_ja": "訳語だけでは見落としやすい「諦めて認めること」と「賛成すること」の違いを、発言の流れに沿って学べます。",
+     "criteria_check": {
+      "context_specific": "話者は人手不足を避けがたいと認めますが、その費用負担には同意していません。",
+      "jp_pitfall": "「仕方ない」を全面的な同意や、話題を終わらせる表現として受け取りやすい点に注意が必要です。",
+      "level_fit": "句全体の諦めの含みと文脈での働きは、基礎文法の対比ではなくB1〜B2で学ぶ価値があります。"
+     }
+    }
+   },
+   {
+    "schema": "nuance_candidate_v1",
+    "family": "-",
+    "article_id": "synthetic_control",
+    "level": "standard",
+    "generated_at": "2026-10-29T08:21:55+09:00",
+    "candidate": null,
+    "no_candidate_reason": "本文の表現には文脈に沿った読み取りが必要なものもありますが、辞書的な意味や基本的な語の理解を超える学習価値の高いニュアンスは見当たりません。",
+    "kp_word_basis": {
+     "status": "synthetic",
+     "items": [
+      "wake up",
+      "by the window",
+      "take the bus",
+      "meet",
+      "homework"
+     ],
+     "source_path": "(診断用の人工テキスト。実記事ではない。0件が出せるかの確認用)"
+    },
+    "model": "gpt-6-luna",
+    "prompt_sha": "9d0e0a06da02082b4ede4e0f2e09ae8609979c3641bf6a3acc49c1d1ea66da35",
+    "usage": {
+     "input_tokens": 2002,
+     "output_tokens": 732,
+     "cost_jpy": 0.0906
+    },
+    "trial_extra": {
+     "target_key": "control_trivial",
+     "version": "v2",
+     "rejected_candidates": [
+      {
+       "expression": "stood",
+       "focus": "バスの中で「立っていた」ことを表し、「立ち上がった」とは限らない",
+       "reason": "too_basic",
+       "note": "文脈から分かる基本的な動詞の意味の区別です。"
+      },
+      {
+       "expression": "full",
+       "focus": "バスに空きがない状態を表す語感",
+       "reason": "too_basic",
+       "note": "基本語の語義説明にとどまります。"
+      }
+     ],
+     "worker_value_assessment": {
+      "rating": "妥当(0件)",
+      "note": "人工の平易文で0件を返せた=『0件を選べる』ことの確認。"
+     }
+    }
+   }
+  ]
+ },
+ "judge_probe": [
+  {
+   "id": "probe_overlap_synonym",
+   "target": "ai_island_std",
+   "candidate": {
+    "expression": "pass on",
+    "focus": "情報や経験を次の期間・次の人に引き継ぐ意味",
+    "quote_en": "the work area with the AI’s notes and programs carried over to the next hour",
+    "explanation_ja": "pass on は「次に渡す」、carry over は「持ち越す」です。どちらも前の時間の内容が次の時間に残ることを表しますが、pass on は人から人へ渡す場面で、carry over は期間をまたいで残る場面でよく使います。ここでは作業エリアが次の1時間に残ることを述べています。"
+   },
+   "stage1": {
+    "verdict": "pass",
+    "matched": []
+   },
+   "stage2": {
+    "per_item": [
+     {
+      "item": "carry over",
+      "same_focus": true,
+      "note": "期間をまたいで内容が残る用法を説明しており、焦点が重なる"
+     },
+     {
+      "item": "take a detour",
+      "same_focus": false,
+      "note": "寄り道をする意味・用法は扱っていない"
+     },
+     {
+      "item": "card to play",
+      "same_focus": false,
+      "note": "使える手という意味・用法は扱っていない"
+     },
+     {
+      "item": "worth paying attention to",
+      "same_focus": false,
+      "note": "注目する価値を表す用法は扱っていない"
+     },
+     {
+      "item": "obstacle",
+      "same_focus": false,
+      "note": "障害物の意味・用法は扱っていない"
+     }
+    ],
+    "verdict": "fail",
+    "reason": "候補は「carry over」との違いを述べながら、期間をまたいで内容が残る用法も説明しています。この点が選定済みの「carry over」の焦点と重なります。"
+   },
+   "usage": {
+    "tag": "probe_probe_overlap_synonym_judge",
+    "model_requested": "gpt-6-luna",
+    "model_actual": "gpt-6-luna",
+    "response_id": "resp_0094ae6b505a36c6006ae282dd818c87d089acf39de15e19dc",
+    "status": "completed",
+    "elapsed_sec": 5.7,
+    "prompt_sha256": "7539eceebf7d0ab501c375c625ff7340e288168934299e7d4d6ee468f92b01c1",
+    "input_tokens": 652,
+    "cached_input_tokens": 0,
+    "output_tokens": 538,
+    "reasoning_tokens": 282,
+    "max_output_tokens": 5000,
+    "cost_usd": 0.000334,
+    "cost_jpy": 0.0535
+   }
+  },
+  {
+   "id": "probe_overlap_same_idiom_other_form",
+   "target": "tth_std",
+   "candidate": {
+    "expression": "chill someone to the bone",
+    "focus": "恐怖で体の芯が冷えるような強い衝撃を表す比喩",
+    "quote_en": "That vulture’s eye made my blood turn cold.",
+    "explanation_ja": "この文は、目を見て語り手が強い恐怖を感じたことを、血が冷たくなるという体感の比喩で表しています。chill someone to the bone も同じ種類の比喩で、ぞっとする恐怖を表します。どちらも寒さを恐怖の強さにたとえる点が共通です。"
+   },
+   "stage1": {
+    "verdict": "pass",
+    "matched": []
+   },
+   "stage2": {
+    "per_item": [
+     {
+      "item": "make one's blood turn cold",
+      "same_focus": true,
+      "note": "どちらも寒さの比喩で、強い恐怖やぞっとする感覚を表す。"
+     },
+     {
+      "item": "raise one's voice",
+      "same_focus": false,
+      "note": "声を大きくする用法が焦点ではない。"
+     },
+     {
+      "item": "groan",
+      "same_focus": false,
+      "note": "うめき声を表す語の用法が焦点ではない。"
+     },
+     {
+      "item": "rush at someone",
+      "same_focus": false,
+      "note": "人に向かって突進する動作が焦点ではない。"
+     },
+     {
+      "item": "go on talking",
+      "same_focus": false,
+      "note": "話し続ける用法が焦点ではない。"
+     }
+    ],
+    "verdict": "fail",
+    "reason": "候補は、make one's blood turn cold と同じく、寒さの比喩によって強い恐怖やぞっとする感覚を表す点を解説しており、学習上の焦点が重複しています。"
+   },
+   "usage": {
+    "tag": "probe_probe_overlap_same_idiom_other_form_judge",
+    "model_requested": "gpt-6-luna",
+    "model_actual": "gpt-6-luna",
+    "response_id": "resp_02787ebac399c87f006ae282e34ff087d094e5aa095f289c29",
+    "status": "completed",
+    "elapsed_sec": 4.8,
+    "prompt_sha256": "70d348435cf724922074a44253ae8754c1c9069b0b29e53638e03c44bae4b1d2",
+    "input_tokens": 687,
+    "cached_input_tokens": 0,
+    "output_tokens": 352,
+    "reasoning_tokens": 51,
+    "max_output_tokens": 5000,
+    "cost_usd": 0.000245,
+    "cost_jpy": 0.0392
+   }
+  },
+  {
+   "id": "probe_non_overlap",
+   "target": "ai_island_std",
+   "candidate": {
+    "expression": "at least",
+    "focus": "主張の範囲を限定し一般化を避ける at least",
+    "quote_en": "For this AI, at least, remembering that way helped it build towers.",
+    "explanation_ja": "ここでの at least は数の下限ではなく、このAIについて言える範囲に主張を限る表現です。他のAIにも当てはまるとは言っていません。"
+   },
+   "stage1": {
+    "verdict": "pass",
+    "matched": []
+   },
+   "stage2": {
+    "per_item": [
+     {
+      "item": "carry over",
+      "same_focus": false,
+      "note": "持ち越す意味・用法が焦点ではありません"
+     },
+     {
+      "item": "take a detour",
+      "same_focus": false,
+      "note": "寄り道をする意味・用法が焦点ではありません"
+     },
+     {
+      "item": "card to play",
+      "same_focus": false,
+      "note": "使える手という意味が焦点ではありません"
+     },
+     {
+      "item": "worth paying attention to",
+      "same_focus": false,
+      "note": "注目する価値があるという意味が焦点ではありません"
+     },
+     {
+      "item": "obstacle",
+      "same_focus": false,
+      "note": "障害物という語義が焦点ではありません"
+     }
+    ],
+    "verdict": "pass",
+    "reason": "候補の焦点は、at least を使って主張の範囲をこのAIに限定することです。選定済みの表現・単語はいずれも異なる意味や用法が学習対象です。"
+   },
+   "usage": {
+    "tag": "probe_probe_non_overlap_judge",
+    "model_requested": "gpt-6-luna",
+    "model_actual": "gpt-6-luna",
+    "response_id": "resp_00bf8fb14149dfd3006ae282e7e38887d0b943f86550d59a43",
+    "status": "completed",
+    "elapsed_sec": 2.8,
+    "prompt_sha256": "bd552187702609e1e8e4d0107026693a0ab8aec96b2525a97200f8c03ef9d39b",
+    "input_tokens": 602,
+    "cached_input_tokens": 0,
+    "output_tokens": 274,
+    "reasoning_tokens": 29,
+    "max_output_tokens": 5000,
+    "cost_usd": 0.000197,
+    "cost_jpy": 0.0316
+   }
+  }
+ ]
+}
