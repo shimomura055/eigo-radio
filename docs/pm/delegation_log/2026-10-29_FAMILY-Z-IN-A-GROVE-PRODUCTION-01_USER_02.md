@@ -1,0 +1,47 @@
+# ユーザー選定原文(逐語、2026-10-29受領。選定フォームV3のreadable出力)
+<<<USER>>>
+記事：藪の中(In a Grove)｜Standard
+
+① Key Phrase
+- on silent feet：足音を立てずに
+- constable：警官
+- drown：溺れる
+
+② 追加解説
+（選択なし）
+
+③ 本文意味表示
+- through a medium：霊媒を通して
+- sink into the darkness：死の闇へ沈んでいく
+- dagger：短剣
+- bandit：盗賊
+
+文法：選定なし
+
+自由コメント：なし
+
+照合コード(変更しないでください)：AIF1-in_a_grove__a2__prod-4f0853-f48b5251-8ec5e76f-b4cfdee09f-0-0-7603
+
+記事：藪の中(In a Grove)｜Advanced
+
+① Key Phrase
+- cold contempt：冷ややかな軽蔑
+- on soft feet：忍び足で
+- medium：霊媒師
+
+② 追加解説
+- sink for ever：永遠の眠りにつく
+- constable：警官
+
+③ 本文意味表示
+- The thicket fell silent：茂みが静まり返る
+- trampled：踏みつけられた
+- veiled：ベールで覆われた
+- seize：ぐっとつかむ
+
+文法：選定なし
+
+自由コメント：なし
+
+照合コード(変更しないでください)：AIF1-in_a_grove__b1b__prod-333804-941647eb-ee543393-cd7ad21e57-0-0-3f4d
+<<<END>>>
