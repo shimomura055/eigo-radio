@@ -1,0 +1,1359 @@
+{
+  "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+  "segment_id": "in_one_line",
+  "segment_role_label": "In One Line (the closing one-line summary of the episode)",
+  "canonical_text": "Falling coffee bean prices may take at least 9 months to affect US shop prices.",
+  "last_asr_text": "Falling coffee bean prices may take at least nine months to market U.S. shop prices.",
+  "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "9 months to affect us shop prices",
+    "asr_span_with_context": "9 months to market u s shop prices",
+    "canonical_changed_words": [
+      "affect",
+      "us"
+    ],
+    "asr_changed_words": [
+      "market",
+      "u",
+      "s"
+    ],
+    "context_window_word_indices": [
+      8,
+      15
+    ]
+  },
+  "candidate_gen": {
+    "candidates": [
+      {
+        "id": "1",
+        "rewrite_type": "single_word_swap",
+        "rewritten_segment": "Falling coffee bean prices may take at least 9 months to influence US shop prices.",
+        "changed_span_before": "9 months to affect US shop prices",
+        "changed_span_after": "9 months to influence US shop prices",
+        "rationale": "Swaps only “affect” for the natural equivalent “influence,” preserving the meaning."
+      },
+      {
+        "id": "2",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Falling coffee bean prices may take at least 9 months for US shop prices to respond.",
+        "changed_span_before": "9 months to affect US shop prices",
+        "changed_span_after": "9 months for US shop prices to respond",
+        "rationale": "Recasts the phrase naturally while keeping the delay and the effect on US shop prices."
+      },
+      {
+        "id": "3",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Falling coffee bean prices may take at least 9 months for the impact to show up in US shop prices.",
+        "changed_span_before": "9 months to affect US shop prices",
+        "changed_span_after": "9 months for the impact to show up in US shop prices",
+        "rationale": "Expresses that the effect of falling bean prices may take time to appear in shop prices."
+      },
+      {
+        "id": "4",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Falling coffee bean prices may take at least 9 months for the change to be reflected in prices at US shops.",
+        "changed_span_before": "9 months to affect US shop prices",
+        "changed_span_after": "9 months for the change to be reflected in prices at US shops",
+        "rationale": "Uses a conversational phrasing for the same delayed effect on prices at US shops."
+      },
+      {
+        "id": "5",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Falling coffee bean prices may take at least 9 months for US shop prices to feel the effect.",
+        "changed_span_before": "9 months to affect US shop prices",
+        "changed_span_after": "9 months for US shop prices to feel the effect",
+        "rationale": "Keeps the original meaning and timing while phrasing the effect idiomatically."
+      }
+    ],
+    "_raw_model_response_text": "{\"candidates\":[{\"id\":\"1\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"Falling coffee bean prices may take at least 9 months to influence US shop prices.\",\"changed_span_before\":\"9 months to affect US shop prices\",\"changed_span_after\":\"9 months to influence US shop prices\",\"rationale\":\"Swaps only “affect” for the natural equivalent “influence,” preserving the meaning.\"},{\"id\":\"2\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Falling coffee bean prices may take at least 9 months for US shop prices to respond.\",\"changed_span_before\":\"9 months to affect US shop prices\",\"changed_span_after\":\"9 months for US shop prices to respond\",\"rationale\":\"Recasts the phrase naturally while keeping the delay and the effect on US shop prices.\"},{\"id\":\"3\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Falling coffee bean prices may take at least 9 months for the impact to show up in US shop prices.\",\"changed_span_before\":\"9 months to affect US shop prices\",\"changed_span_after\":\"9 months for the impact to show up in US shop prices\",\"rationale\":\"Expresses that the effect of falling bean prices may take time to appear in shop prices.\"},{\"id\":\"4\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Falling coffee bean prices may take at least 9 months for the change to be reflected in prices at US shops.\",\"changed_span_before\":\"9 months to affect US shop prices\",\"changed_span_after\":\"9 months for the change to be reflected in prices at US shops\",\"rationale\":\"Uses a conversational phrasing for the same delayed effect on prices at US shops.\"},{\"id\":\"5\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Falling coffee bean prices may take at least 9 months for US shop prices to feel the effect.\",\"changed_span_before\":\"9 months to affect US shop prices\",\"changed_span_after\":\"9 months for US shop prices to feel the effect\",\"rationale\":\"Keeps the original meaning and timing while phrasing the effect idiomatically.\"}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_0a1eda3e4b8d0fb6006ae154d15c9c87d0b72b9e3ddbd5e26a",
+    "_prompt": "Segment role: In One Line (the closing one-line summary of the episode)\n\nFull segment (contains the problem span):\n\"Falling coffee bean prices may take at least 9 months to affect US shop prices.\"\n\nProblem span (a speech recognizer repeatedly mis-transcribes this as ['market', 'u', 's'] instead of ['affect', 'us']):\n\"9 months to affect us shop prices\"\n\nPropose the candidates as described in the system instructions. Return the JSON object."
+  },
+  "qa": {
+    "evaluations": [
+      {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Influence” preserves the original claim that falling coffee bean prices may affect US shop prices after at least 9 months."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a concise, one-line summary suitable for the episode’s closing."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It retains the original timing and possible effect without adding or contradicting a claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence works as a self-contained closing line."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural and idiomatic spoken paraphrase."
+        }
+      },
+      {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "Shop prices responding conveys the same possible delayed effect of falling coffee bean prices."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a concise, one-line summary suitable for the episode’s closing."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It preserves the original minimum timeframe and does not conflict with the original claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence is understandable as a self-contained closing line."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "The construction “Falling coffee bean prices may take ... for US shop prices to respond” is awkward; a speaker would more naturally say “It may take ... for US shop prices to respond.”"
+        }
+      },
+      {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "The impact showing up in shop prices preserves the original delayed-effect claim."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a one-sentence summary that can serve as the episode’s closing line."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It retains the original timeframe and makes no contradictory claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence can stand alone as a closing line."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "The “prices may take ... for the impact to show up” construction sounds awkward in spoken English; “It may take ... for the impact to show up” would be more idiomatic."
+        }
+      },
+      {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "The change being reflected in prices at US shops conveys the same possible delayed effect."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a concise, one-line summary suitable for the episode’s closing."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It preserves the stated timeframe and does not contradict the original claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it works as a standalone closing line."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "The construction “Falling coffee bean prices may take ... for the change to be reflected” is awkward, and the passive wording makes it sound stilted for spoken narration."
+        }
+      },
+      {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "Shop prices feeling the effect conveys the original idea that falling bean prices may eventually affect them."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a one-line summary suitable for closing the episode."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It retains the original timeframe and does not introduce a conflicting claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence is self-contained."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "The wording is awkward because “Falling coffee bean prices may take ... for US shop prices to feel the effect” uses an unnatural construction; “It may take ... for shop prices to feel the effect” is more idiomatic."
+        }
+      }
+    ],
+    "_raw_model_response_text": "{\"evaluations\":[{\"candidate_id\":\"1\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Influence” preserves the original claim that falling coffee bean prices may affect US shop prices after at least 9 months.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a concise, one-line summary suitable for the episode’s closing.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It retains the original timing and possible effect without adding or contradicting a claim.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence works as a self-contained closing line.\"},\"natural_english\":{\"pass\":true,\"reason\":\"This is a natural and idiomatic spoken paraphrase.\"}},{\"candidate_id\":\"2\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"Shop prices responding conveys the same possible delayed effect of falling coffee bean prices.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a concise, one-line summary suitable for the episode’s closing.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It preserves the original minimum timeframe and does not conflict with the original claim.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence is understandable as a self-contained closing line.\"},\"natural_english\":{\"pass\":false,\"reason\":\"The construction “Falling coffee bean prices may take ... for US shop prices to respond” is awkward; a speaker would more naturally say “It may take ... for US shop prices to respond.”\"}},{\"candidate_id\":\"3\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"The impact showing up in shop prices preserves the original delayed-effect claim.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a one-sentence summary that can serve as the episode’s closing line.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It retains the original timeframe and makes no contradictory claim.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence can stand alone as a closing line.\"},\"natural_english\":{\"pass\":false,\"reason\":\"The “prices may take ... for the impact to show up” construction sounds awkward in spoken English; “It may take ... for the impact to show up” would be more idiomatic.\"}},{\"candidate_id\":\"4\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"The change being reflected in prices at US shops conveys the same possible delayed effect.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a concise, one-line summary suitable for the episode’s closing.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It preserves the stated timeframe and does not contradict the original claim.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and it works as a standalone closing line.\"},\"natural_english\":{\"pass\":false,\"reason\":\"The construction “Falling coffee bean prices may take ... for the change to be reflected” is awkward, and the passive wording makes it sound stilted for spoken narration.\"}},{\"candidate_id\":\"5\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"Shop prices feeling the effect conveys the original idea that falling bean prices may eventually affect them.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a one-line summary suitable for closing the episode.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It retains the original timeframe and does not introduce a conflicting claim.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence is self-contained.\"},\"natural_english\":{\"pass\":false,\"reason\":\"The wording is awkward because “Falling coffee bean prices may take ... for US shop prices to feel the effect” uses an unnatural construction; “It may take ... for shop prices to feel the effect” is more idiomatic.\"}}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_09116880c42e9342006ae154df058487d0b5226e5830313279",
+    "_prompt": "Segment role: In One Line (the closing one-line summary of the episode)\n\nORIGINAL segment:\n\"Falling coffee bean prices may take at least 9 months to affect US shop prices.\"\n\nCandidates to evaluate:\n- candidate_id='1': \"Falling coffee bean prices may take at least 9 months to influence US shop prices.\"\n- candidate_id='2': \"Falling coffee bean prices may take at least 9 months for US shop prices to respond.\"\n- candidate_id='3': \"Falling coffee bean prices may take at least 9 months for the impact to show up in US shop prices.\"\n- candidate_id='4': \"Falling coffee bean prices may take at least 9 months for the change to be reflected in prices at US shops.\"\n- candidate_id='5': \"Falling coffee bean prices may take at least 9 months for US shop prices to feel the effect.\"\n\nEvaluate all 5 gates for every candidate and return the JSON object described in the system instructions."
+  },
+  "candidates": [
+    {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Falling coffee bean prices may take at least 9 months to influence US shop prices.",
+      "changed_span_before": "9 months to affect US shop prices",
+      "changed_span_after": "9 months to influence US shop prices",
+      "rationale": "Swaps only “affect” for the natural equivalent “influence,” preserving the meaning.",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Influence” preserves the original claim that falling coffee bean prices may affect US shop prices after at least 9 months."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a concise, one-line summary suitable for the episode’s closing."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It retains the original timing and possible effect without adding or contradicting a claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence works as a self-contained closing line."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural and idiomatic spoken paraphrase."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.038,
+        "orig_coverage": 0.9286,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          11,
+          12
+        ],
+        "criterion6_allowed_window": [
+          8,
+          15
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9286
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_check": {
+        "applicable": true,
+        "pass": true,
+        "before": 1,
+        "after": 1
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": true
+    },
+    {
+      "id": "2",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Falling coffee bean prices may take at least 9 months for US shop prices to respond.",
+      "changed_span_before": "9 months to affect US shop prices",
+      "changed_span_after": "9 months for US shop prices to respond",
+      "rationale": "Recasts the phrase naturally while keeping the delay and the effect on US shop prices.",
+      "qa_llm": {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "Shop prices responding conveys the same possible delayed effect of falling coffee bean prices."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a concise, one-line summary suitable for the episode’s closing."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It preserves the original minimum timeframe and does not conflict with the original claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence is understandable as a self-contained closing line."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "The construction “Falling coffee bean prices may take ... for US shop prices to respond” is awkward; a speaker would more naturally say “It may take ... for US shop prices to respond.”"
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0633,
+        "orig_coverage": 0.8571,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          10,
+          15
+        ],
+        "criterion6_allowed_window": [
+          8,
+          15
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.8571
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_check": {
+        "applicable": true,
+        "pass": true,
+        "before": 1,
+        "after": 1
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": false
+    },
+    {
+      "id": "3",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Falling coffee bean prices may take at least 9 months for the impact to show up in US shop prices.",
+      "changed_span_before": "9 months to affect US shop prices",
+      "changed_span_after": "9 months for the impact to show up in US shop prices",
+      "rationale": "Expresses that the effect of falling bean prices may take time to appear in shop prices.",
+      "qa_llm": {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "The impact showing up in shop prices preserves the original delayed-effect claim."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a one-sentence summary that can serve as the episode’s closing line."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It retains the original timeframe and makes no contradictory claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence can stand alone as a closing line."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "The “prices may take ... for the impact to show up” construction sounds awkward in spoken English; “It may take ... for the impact to show up” would be more idiomatic."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.2405,
+        "orig_coverage": 0.9286,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          10,
+          12
+        ],
+        "criterion6_allowed_window": [
+          8,
+          15
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9286
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_check": {
+        "applicable": true,
+        "pass": true,
+        "before": 1,
+        "after": 1
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": false
+    },
+    {
+      "id": "4",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Falling coffee bean prices may take at least 9 months for the change to be reflected in prices at US shops.",
+      "changed_span_before": "9 months to affect US shop prices",
+      "changed_span_after": "9 months for the change to be reflected in prices at US shops",
+      "rationale": "Uses a conversational phrasing for the same delayed effect on prices at US shops.",
+      "qa_llm": {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "The change being reflected in prices at US shops conveys the same possible delayed effect."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a concise, one-line summary suitable for the episode’s closing."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It preserves the stated timeframe and does not contradict the original claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it works as a standalone closing line."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "The construction “Falling coffee bean prices may take ... for the change to be reflected” is awkward, and the passive wording makes it sound stilted for spoken narration."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.3544,
+        "orig_coverage": 0.7857,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          10,
+          15
+        ],
+        "criterion6_allowed_window": [
+          8,
+          15
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.7857
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_check": {
+        "applicable": true,
+        "pass": true,
+        "before": 1,
+        "after": 1
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": false
+    },
+    {
+      "id": "5",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Falling coffee bean prices may take at least 9 months for US shop prices to feel the effect.",
+      "changed_span_before": "9 months to affect US shop prices",
+      "changed_span_after": "9 months for US shop prices to feel the effect",
+      "rationale": "Keeps the original meaning and timing while phrasing the effect idiomatically.",
+      "qa_llm": {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "Shop prices feeling the effect conveys the original idea that falling bean prices may eventually affect them."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a one-line summary suitable for closing the episode."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It retains the original timeframe and does not introduce a conflicting claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence is self-contained."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "The wording is awkward because “Falling coffee bean prices may take ... for US shop prices to feel the effect” uses an unnatural construction; “It may take ... for shop prices to feel the effect” is more idiomatic."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.1646,
+        "orig_coverage": 0.8571,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          10,
+          15
+        ],
+        "criterion6_allowed_window": [
+          8,
+          15
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.8571
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_check": {
+        "applicable": true,
+        "pass": true,
+        "before": 1,
+        "after": 1
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": false
+    }
+  ],
+  "selection": {
+    "selected": {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Falling coffee bean prices may take at least 9 months to influence US shop prices.",
+      "changed_span_before": "9 months to affect US shop prices",
+      "changed_span_after": "9 months to influence US shop prices",
+      "rationale": "Swaps only “affect” for the natural equivalent “influence,” preserving the meaning.",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Influence” preserves the original claim that falling coffee bean prices may affect US shop prices after at least 9 months."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a concise, one-line summary suitable for the episode’s closing."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It retains the original timing and possible effect without adding or contradicting a claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence works as a self-contained closing line."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural and idiomatic spoken paraphrase."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.038,
+        "orig_coverage": 0.9286,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          11,
+          12
+        ],
+        "criterion6_allowed_window": [
+          8,
+          15
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9286
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_check": {
+        "applicable": true,
+        "pass": true,
+        "before": 1,
+        "after": 1
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": true
+    },
+    "status": "SELECTED",
+    "selection_rationale": "全7 Gate PASSの候補は1件(['1'])。unchanged_ratio=0.9286(最小限の変更)が最大の'1'を採用。Natural English Gate理由: This is a natural and idiomatic spoken paraphrase.",
+    "all_passing_candidate_ids": [
+      "1"
+    ]
+  },
+  "retts_result": {
+    "status": "STOPPED",
+    "text": "Falling coffee bean prices may take at least 9 months to influence US shop prices.",
+    "path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_std_5/a2/narration/in_one_line.wav",
+    "model": "gemini-3.8-flash-lite-tts",
+    "voice": "Aoede",
+    "call_count": 1,
+    "retry_count": 0,
+    "sha256": "2b4e09ff59dc6133f5d31edcb2544f6f304b4efb3296b281f9a57d0d378ac79b",
+    "duration_seconds": 5.4,
+    "trim_info": {
+      "raw_duration_seconds": 5.4,
+      "raw_leading_silence_seconds": 0.3,
+      "raw_trailing_silence_seconds": 0.18,
+      "trimmed_duration_seconds": 5.4,
+      "leading_margin_retained_seconds": 0.3,
+      "trailing_margin_retained_seconds": 0.18
+    },
+    "clipping_detected": false,
+    "instruction": "FAMILY_X_ROLE_STYLE_EN_FALLBACK[0] (len=30)",
+    "instruction_label": "FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]",
+    "style_prefix": {
+      "len": 30,
+      "sha256": "dba23e664f387c6641f9dd003cf4571f78af87613c68536ddbb5f1e52cad964b",
+      "head200": "natural, clear, conversational"
+    },
+    "tts_backend": "speech_metadata_flash_lite",
+    "en_pronunciation_resolver_info": {
+      "hints_applied": false,
+      "cache_hits": [],
+      "low_confidence_retry_attempted": false,
+      "low_confidence_retry_improved": false,
+      "research_meta": null
+    },
+    "reason": "ブロック(標準経路2回+fallback経路1回、合計上限3回)とも不合格",
+    "standard_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 6.23,
+        "asr_text": "Falling coffee bean prices may take at least nine months to influence U.S. shop prices.",
+        "asr_text_length": 87,
+        "max_len": 142,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 266,
+          "sha256": "10e21170b1b13b9f577f1642a987511eaa68eed7334aeb6807ecc2fb4f01b860",
+          "head200": "concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.\nSpeak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversatio"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Falling coffee bean prices may take at least nine months to influence U.S. shop prices.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "primary_pass",
+          "slot": 4,
+          "script_version": "v1",
+          "role": "IN_ONE_LINE",
+          "lang": "en",
+          "segment_key": "in_one_line",
+          "audio_sha256": "2a8d1a129389cce499f7bbff8caec0fdfa44e51d1b922163045166bacc0da058",
+          "primary": {
+            "text": "Falling coffee bean prices may take at least nine months to influence U.S. shop prices.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "9",
+                  "hyp": "9",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "EQUAL",
+            "negation_diff": false
+          },
+          "warnings": [
+            "LR_REWRITTEN"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 87,
+            "secondary_len": null,
+            "max_len": 142,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "in_one_line",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          },
+          "forced_ng_by_driver": true
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_std_5/a2/narration/attempts/in_one_line_attempt4_custom78daa961.wav"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "duration_seconds": 5.71,
+        "asr_text": "Falling coffee bean prices may take at least nine months to influence U.S. shop prices.",
+        "asr_text_length": 87,
+        "max_len": 142,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 16,
+          "transcript": "Falling  coffee  bean  prices  may  take  at  least  nine  months  to  influence  U .S.  shop  prices.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 266,
+          "sha256": "10e21170b1b13b9f577f1642a987511eaa68eed7334aeb6807ecc2fb4f01b860",
+          "head200": "concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.\nSpeak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversatio"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Falling coffee bean prices may take at least nine months to influence U.S. shop prices.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "primary_pass",
+          "slot": 5,
+          "script_version": "v1",
+          "role": "IN_ONE_LINE",
+          "lang": "en",
+          "segment_key": "in_one_line",
+          "audio_sha256": "c36a7729bcf3bac0831c6bf9fcc47a00b2b00b3809bf278838536e08ad8e771a",
+          "primary": {
+            "text": "Falling coffee bean prices may take at least nine months to influence U.S. shop prices.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "9",
+                  "hyp": "9",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "EQUAL",
+            "negation_diff": false
+          },
+          "warnings": [
+            "LR_REWRITTEN"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 87,
+            "secondary_len": null,
+            "max_len": 142,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "in_one_line",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_std_5/a2/narration/attempts/in_one_line_attempt5_custom78daa961.wav",
+        "post_slowdown_ng": true,
+        "post_slowdown_reason": "post-process(6%減速)後の音声がASR再検証で不一致: classification=NORMALIZED_MATCH",
+        "post_slowdown_asr_text": "Falling coffee bean prices may take at least nine months to influence U.S. shop prices."
+      }
+    ],
+    "attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 6.23,
+        "asr_text": "Falling coffee bean prices may take at least nine months to influence U.S. shop prices.",
+        "asr_text_length": 87,
+        "max_len": 142,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 266,
+          "sha256": "10e21170b1b13b9f577f1642a987511eaa68eed7334aeb6807ecc2fb4f01b860",
+          "head200": "concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.\nSpeak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversatio"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Falling coffee bean prices may take at least nine months to influence U.S. shop prices.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "primary_pass",
+          "slot": 4,
+          "script_version": "v1",
+          "role": "IN_ONE_LINE",
+          "lang": "en",
+          "segment_key": "in_one_line",
+          "audio_sha256": "2a8d1a129389cce499f7bbff8caec0fdfa44e51d1b922163045166bacc0da058",
+          "primary": {
+            "text": "Falling coffee bean prices may take at least nine months to influence U.S. shop prices.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "9",
+                  "hyp": "9",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "EQUAL",
+            "negation_diff": false
+          },
+          "warnings": [
+            "LR_REWRITTEN"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 87,
+            "secondary_len": null,
+            "max_len": 142,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "in_one_line",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          },
+          "forced_ng_by_driver": true
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_std_5/a2/narration/attempts/in_one_line_attempt4_custom78daa961.wav"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "duration_seconds": 5.71,
+        "asr_text": "Falling coffee bean prices may take at least nine months to influence U.S. shop prices.",
+        "asr_text_length": 87,
+        "max_len": 142,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 16,
+          "transcript": "Falling  coffee  bean  prices  may  take  at  least  nine  months  to  influence  U .S.  shop  prices.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 266,
+          "sha256": "10e21170b1b13b9f577f1642a987511eaa68eed7334aeb6807ecc2fb4f01b860",
+          "head200": "concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.\nSpeak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversatio"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Falling coffee bean prices may take at least nine months to influence U.S. shop prices.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "primary_pass",
+          "slot": 5,
+          "script_version": "v1",
+          "role": "IN_ONE_LINE",
+          "lang": "en",
+          "segment_key": "in_one_line",
+          "audio_sha256": "c36a7729bcf3bac0831c6bf9fcc47a00b2b00b3809bf278838536e08ad8e771a",
+          "primary": {
+            "text": "Falling coffee bean prices may take at least nine months to influence U.S. shop prices.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "9",
+                  "hyp": "9",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "EQUAL",
+            "negation_diff": false
+          },
+          "warnings": [
+            "LR_REWRITTEN"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 87,
+            "secondary_len": null,
+            "max_len": 142,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "in_one_line",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_std_5/a2/narration/attempts/in_one_line_attempt5_custom78daa961.wav",
+        "post_slowdown_ng": true,
+        "post_slowdown_reason": "post-process(6%減速)後の音声がASR再検証で不一致: classification=NORMALIZED_MATCH",
+        "post_slowdown_asr_text": "Falling coffee bean prices may take at least nine months to influence U.S. shop prices."
+      }
+    ],
+    "fallback_attempts_log": [
+      {
+        "attempt": 3,
+        "status": "OK",
+        "asr_text": "Falling coffee bean prices may take at least nine months to influence U.S. shop prices.",
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "en_pronunciation_resolver_info": {
+          "hints_applied": false,
+          "cache_hits": [],
+          "low_confidence_retry_attempted": false,
+          "low_confidence_retry_improved": false,
+          "research_meta": null
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Falling coffee bean prices may take at least nine months to influence U.S. shop prices.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_forced",
+            "provider": "azure",
+            "text": "Falling coffee bean prices may take at least nine months to influence US shop prices.",
+            "classification": "NUMERIC_EQUIVALENCE_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS_WITH_WARNING",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "force_secondary_agreed",
+          "slot": 6,
+          "script_version": "v1",
+          "role": "IN_ONE_LINE",
+          "lang": "en",
+          "segment_key": "in_one_line",
+          "audio_sha256": "2b4e09ff59dc6133f5d31edcb2544f6f304b4efb3296b281f9a57d0d378ac79b",
+          "primary": {
+            "text": "Falling coffee bean prices may take at least nine months to influence U.S. shop prices.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Falling coffee bean prices may take at least nine months to influence US shop prices.",
+            "label": "NUMERIC_EQUIVALENCE_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "9",
+                  "hyp": "9",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "9",
+                  "hyp": "9",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "EQUAL",
+            "negation_diff": false
+          },
+          "warnings": [
+            "LR_REWRITTEN"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 5.4,
+            "est_jpy": 0.2667,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 1550,
+            "secondary_ms": 1549
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 87,
+            "secondary_len": 85,
+            "max_len": 142,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 70,
+            "primary_ok": true
+          },
+          "p3_entry": "force_secondary",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "in_one_line",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 4,
+              "hits": 0
+            }
+          },
+          "forced_ng_by_driver": true
+        },
+        "style_prefix": {
+          "len": 30,
+          "sha256": "dba23e664f387c6641f9dd003cf4571f78af87613c68536ddbb5f1e52cad964b",
+          "head200": "natural, clear, conversational"
+        },
+        "instruction_label": "FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]",
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_std_5/a2/narration/attempts/in_one_line_attempt7_minimalfallback.wav"
+      }
+    ],
+    "cooldown_events": [
+      {
+        "cooldown_requested_seconds": 180.0,
+        "cooldown_actual_seconds": 179.991,
+        "cooldown_started_at": "2026-10-28T10:50:56",
+        "cooldown_ended_at": "2026-10-28T10:53:56",
+        "attempt_before_cooldown": 5,
+        "attempt_after_cooldown": 6,
+        "total_elapsed_since_ref_seconds": 180.0,
+        "resumed": false
+      }
+    ],
+    "fallback_used": true,
+    "fallback_en_pronunciation_resolver_info": {
+      "hints_applied": false,
+      "cache_hits": [],
+      "low_confidence_retry_attempted": false,
+      "low_confidence_retry_improved": false,
+      "research_meta": null
+    }
+  },
+  "status": "HUMAN_REVIEW_LOCKED_RETTS_FAILED"
+}

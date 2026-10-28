@@ -1,0 +1,1083 @@
+{
+ "management_id": "LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01",
+ "case": "B8-Z-Adv-4",
+ "family": "Z",
+ "level": "b1b",
+ "scenario": "E-S2a(U-06)",
+ "leaf": "L1",
+ "policy": "EN_LR_ADV",
+ "segments": [
+  "topic_intro_en"
+ ],
+ "run_dir": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_b8_z_adv_4",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {
+   "*": [
+    1,
+    2,
+    3
+   ]
+  },
+  "sub": {
+   "*": [
+    3
+   ]
+  },
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [
+  {
+   "kind": "judge_ng",
+   "clip": "topic_intro_en",
+   "slot": 1,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "topic_intro_en",
+   "slot": 2,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "transcript_substitution",
+   "clip": "topic_intro_en",
+   "slot": 3,
+   "before": "Today's topic is The Monkey's Paw.",
+   "after": "Today's market is The Monkey's Paw."
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "topic_intro_en",
+   "slot": 3,
+   "judge_kind": "en"
+  }
+ ],
+ "injected_override_count": 4,
+ "started_at": "2026-10-28T10:27:43",
+ "ended_at": "2026-10-28T10:31:29",
+ "wall_seconds": 225.8,
+ "pid": 22188,
+ "exception": null,
+ "tts_attempts": [
+  {
+   "clip": "topic_intro_en",
+   "t": 4.91,
+   "voice": "Charon",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "d16e099cb4f6",
+   "style_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "style_chars": 96,
+   "text_head": "Today's topic is The Monkey's Paw.",
+   "text_sha": "33f159fa7e5b",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "topic_intro_en",
+   "t": 8.64,
+   "voice": "Charon",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "d16e099cb4f6",
+   "style_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "style_chars": 96,
+   "text_head": "Today's topic is The Monkey's Paw.",
+   "text_sha": "33f159fa7e5b",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "topic_intro_en",
+   "t": 190.9,
+   "voice": "Charon",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "dba23e664f38",
+   "style_head": "natural, clear, conversational",
+   "style_chars": 30,
+   "text_head": "Today's topic is The Monkey's Paw.",
+   "text_sha": "33f159fa7e5b",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "topic_intro_en",
+   "t": 222.81,
+   "voice": "Charon",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "d16e099cb4f6",
+   "style_head": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+   "style_chars": 96,
+   "text_head": "Today's subject is The Monkey's Paw.",
+   "text_sha": "ca8ba3e67f18",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 4,
+ "tts_api_calls": 4,
+ "judges": [
+  {
+   "clip": "topic_intro_en",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "EXACT_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Today's topic is The Monkey's Paw."
+  },
+  {
+   "clip": "topic_intro_en",
+   "kind": "en",
+   "slot": 2,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "EXACT_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Today's topic is The Monkey's Paw."
+  },
+  {
+   "clip": "topic_intro_en",
+   "kind": "en",
+   "slot": 3,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": true,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Today's market is The Monkey's Paw."
+  },
+  {
+   "clip": "topic_intro_en",
+   "kind": "en",
+   "slot": 4,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "EXACT_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v1",
+   "forced_ng": false,
+   "asr_text_head": "Today's subject is The Monkey's Paw."
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [
+  {
+   "label": "topic_intro_en",
+   "requested_seconds": 180.0,
+   "actual_seconds": 179.993,
+   "started_at": "2026-10-28T10:27:54",
+   "ended_at": "2026-10-28T10:30:54",
+   "resumed": false,
+   "attempt_before": 2,
+   "attempt_after": 3,
+   "total_elapsed_since_ref_seconds": 180.001,
+   "wall_start_epoch": 1793150874.7419245
+  }
+ ],
+ "cooldown_count": 1,
+ "sleep_total_seconds": 180.0,
+ "stop_checks": {
+  "cooldown": 36,
+  "attempt": 4,
+  "other": 0
+ },
+ "lr_calls": [
+  {
+   "segment_id": "topic_intro_en",
+   "depth": 0,
+   "status": "RESOLVED_BY_LOCAL_REWRITE",
+   "ng_span_found": true,
+   "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "today s topic is the monkey",
+    "asr_span_with_context": "today s market is the monkey",
+    "canonical_changed_words": [
+     "topic"
+    ],
+    "asr_changed_words": [
+     "market"
+    ],
+    "context_window_word_indices": [
+     0,
+     6
+    ]
+   },
+   "model": null,
+   "rewritten_text": "Today's subject is The Monkey's Paw.",
+   "elapsed_s": 30.31,
+   "last_asr_text": "Today's market is The Monkey's Paw."
+  }
+ ],
+ "lr_count": 1,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [
+  "COOLDOWN_BEFORE_BLOCK_ATTEMPT",
+  "LOCAL_REWRITE_RECOVERY",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "topic_intro_en": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "33f159fa7e5bc366739c5888e50ea008be333ea2b3f3a6e832ffa2ac7f0ea996",
+   "language": "en",
+   "theme_id": "run_tru_ev_b8_z_adv_4",
+   "level": "b1b",
+   "segment_id": "topic_intro_en",
+   "updated_at": "2026-10-28T10:31:29",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_b8_z_adv_4/b1b/narration/topic_intro_en.wav",
+   "cumulative_tts_attempts": 4,
+   "cumulative_asr_calls": 4,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "asr_text": "Today's topic is The Monkey's Paw.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "TOPIC_INTRO",
+      "lang": "en",
+      "segment_key": "topic_intro_en",
+      "audio_sha256": "7993dfc4e321b1cd6309f9d010eaafbf429dac821d74217f066f77009a18d692",
+      "primary": {
+       "text": "Today's topic is The Monkey's Paw.",
+       "passed": true,
+       "label": "EXACT_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 34,
+       "secondary_len": null,
+       "max_len": 49,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "topic_intro_en",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "instruction_type": "english_style_prefix",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "semantic_equivalence": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": false,
+     "trim_info": {
+      "raw_duration_seconds": 2.88,
+      "raw_leading_silence_seconds": 0.3,
+      "raw_trailing_silence_seconds": 0.34,
+      "trimmed_duration_seconds": 2.88,
+      "leading_margin_retained_seconds": 0.3,
+      "trailing_margin_retained_seconds": 0.34
+     },
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_b8_z_adv_4/b1b/narration/attempts/topic_intro_en_attempt1_englishstyleprefix.wav"
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "asr_text": "Today's topic is The Monkey's Paw.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 2,
+      "script_version": "v0",
+      "role": "TOPIC_INTRO",
+      "lang": "en",
+      "segment_key": "topic_intro_en",
+      "audio_sha256": "3b5eaf0021684571f5ffc0cfbd6b45e43c1dd0a5c5248f19d5ba61fd45ef92ba",
+      "primary": {
+       "text": "Today's topic is The Monkey's Paw.",
+       "passed": true,
+       "label": "EXACT_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 34,
+       "secondary_len": null,
+       "max_len": 49,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "topic_intro_en",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "instruction_type": "english_style_prefix",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "semantic_equivalence": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": false,
+     "trim_info": {
+      "raw_duration_seconds": 2.92,
+      "raw_leading_silence_seconds": 0.28,
+      "raw_trailing_silence_seconds": 0.32,
+      "trimmed_duration_seconds": 2.92,
+      "leading_margin_retained_seconds": 0.28,
+      "trailing_margin_retained_seconds": 0.32
+     },
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_b8_z_adv_4/b1b/narration/attempts/topic_intro_en_attempt2_englishstyleprefix.wav"
+    },
+    {
+     "attempt": 3,
+     "status": "OK",
+     "asr_text": "Today's market is The Monkey's Paw.",
+     "asr_judgement": {
+      "state": "PASS_WITH_WARNING",
+      "reason_code": "secondary_confirmed",
+      "slot": 3,
+      "script_version": "v0",
+      "role": "TOPIC_INTRO",
+      "lang": "en",
+      "segment_key": "topic_intro_en",
+      "audio_sha256": "f75593c2cc99dc595b94e30e3eccb2b7ac8a83c6b1363a2f70d84d3e6dd48179",
+      "primary": {
+       "text": "Today's market is The Monkey's Paw.",
+       "passed": false,
+       "label": "TRUE_CONTENT_MISMATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": true,
+       "cached": false,
+       "engine": "azure",
+       "text": "Today's topic is the monkey's paw.",
+       "label": "NORMALIZED_MATCH",
+       "accepted": true,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       },
+       "secondary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false,
+       "secondary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "target": "secondary",
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [
+       "SECONDARY_CONFIRMED"
+      ],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 1,
+       "azure_seconds": 3.04,
+       "est_jpy": 0.1778,
+       "est_jpy_known": true
+      },
+      "timing": {
+       "total_ms": 1428,
+       "secondary_ms": 1427
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 35,
+       "secondary_len": 34,
+       "max_len": 49,
+       "adopted_from": "secondary",
+       "adopted_ok": true,
+       "surface_len": 26,
+       "primary_ok": true
+      },
+      "p3_entry": "p3_primary_ng",
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 1,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "topic_intro_en",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 2,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "instruction_type": "minimal_fallback",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "semantic_equivalence": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": false,
+     "trim_info": {
+      "raw_duration_seconds": 3.04,
+      "raw_leading_silence_seconds": 0.32,
+      "raw_trailing_silence_seconds": 0.32,
+      "trimmed_duration_seconds": 3.04,
+      "leading_margin_retained_seconds": 0.32,
+      "trailing_margin_retained_seconds": 0.32
+     },
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_b8_z_adv_4/b1b/narration/attempts/topic_intro_en_attempt3_minimalfallback.wav"
+    },
+    {
+     "attempt": 1,
+     "status": "OK",
+     "asr_text": "Today's subject is The Monkey's Paw.",
+     "asr_judgement": {
+      "state": "PASS_WITH_WARNING",
+      "reason_code": "primary_pass",
+      "slot": 4,
+      "script_version": "v1",
+      "role": "TOPIC_INTRO",
+      "lang": "en",
+      "segment_key": "topic_intro_en",
+      "audio_sha256": "9efaad752ae7b60adec9ce7bff7a3919cad650c95a0a34f59f1f9e13228e3e90",
+      "primary": {
+       "text": "Today's subject is The Monkey's Paw.",
+       "passed": true,
+       "label": "EXACT_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [
+       "LR_REWRITTEN"
+      ],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 36,
+       "secondary_len": null,
+       "max_len": 51,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "topic_intro_en",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 2,
+        "hits": 0
+       }
+      }
+     },
+     "instruction_type": "english_style_prefix",
+     "audio_classification": "EXACT_MATCH",
+     "connected_speech_info": null,
+     "semantic_equivalence": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": true,
+     "trim_info": {
+      "raw_duration_seconds": 3.16,
+      "raw_leading_silence_seconds": 0.24,
+      "raw_trailing_silence_seconds": 0.44,
+      "trimmed_duration_seconds": 3.07,
+      "leading_margin_retained_seconds": 0.24,
+      "trailing_margin_retained_seconds": 0.35
+     },
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_b8_z_adv_4/b1b/narration/attempts/topic_intro_en_attempt4_englishstyleprefix.wav"
+    }
+   ]
+  }
+ },
+ "block_progress": {
+  "topic_intro_en.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "1f7f8c45c7e91bcd3ef95069",
+   "segment_id": "topic_intro_en",
+   "fingerprint": {
+    "leaf": "L1",
+    "style_prefix_override": "d16e099cb4f6fd7f",
+    "tts_backend": "7b7d9d14787b08f6",
+    "enable_pronunciation_resolver": true,
+    "policy": "EN_LR_ADV"
+   },
+   "status": "DONE",
+   "created_epoch": 1793150868.7382045,
+   "updated_epoch": 1793151089.5668218,
+   "blocks": {
+    "0": {
+     "n_started": 3,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793150868.7484944,
+       "finished_epoch": 1793150872.4850826,
+       "verified": false
+      },
+      "2": {
+       "started_epoch": 1793150872.4935637,
+       "finished_epoch": 1793150874.7341921,
+       "verified": false
+      },
+      "3": {
+       "started_epoch": 1793151054.7446597,
+       "finished_epoch": 1793151059.2378395,
+       "verified": false
+      }
+     },
+     "cooldown": {
+      "before_ordinal": 3,
+      "cooldown_started_at": "2026-10-28T10:27:54",
+      "cooldown_ended_at": "2026-10-28T10:30:54",
+      "cooldown_actual_seconds": 179.993,
+      "total_elapsed_since_ref_seconds": 180.001,
+      "resumed": false
+     }
+    },
+    "1": {
+     "n_started": 1,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793151086.6649556,
+       "finished_epoch": 1793151089.5373821,
+       "verified": true
+      }
+     },
+     "cooldown": null
+    }
+   },
+   "lr": {
+    "used": true,
+    "text": "Today's subject is The Monkey's Paw.",
+    "text_sha": "ca8ba3e67f18c6b4411ec4052aa209296568a2ac723ebb054144591a752bde0d",
+    "audit": {
+     "schema": "lr_selection_audit_v1",
+     "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+     "segment_id": "topic_intro_en",
+     "canonical_text": "Today's topic is The Monkey's Paw.",
+     "ng_span": {
+      "found": true,
+      "diff_tag": "replace",
+      "canonical_span_with_context": "today s topic is the monkey",
+      "asr_span_with_context": "today s market is the monkey",
+      "canonical_changed_words": [
+       "topic"
+      ],
+      "asr_changed_words": [
+       "market"
+      ],
+      "context_window_word_indices": [
+       0,
+       6
+      ]
+     },
+     "selected": {
+      "id": "1",
+      "rewritten_segment": "Today's subject is The Monkey's Paw.",
+      "changed_span_before": "topic",
+      "changed_span_after": "subject",
+      "rationale": "Replaces the misheard word with a natural synonym while keeping the topic-introduction structure.",
+      "seven_gates": {
+       "1_meaning_preserved": true,
+       "2_role_preserved": true,
+       "3_fact_non_contradiction": true,
+       "4_context_connection": true,
+       "5_natural_english_gate": true,
+       "6_localized_minimal_change": true,
+       "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_unchanged": true,
+      "adoptable": true,
+      "qa_reasons": {
+       "meaning_preserved": "“Subject” preserves the meaning that The Monkey’s Paw is today’s topic.",
+       "role_preserved": "It remains a short announcement of today’s topic.",
+       "fact_non_contradiction": "It introduces no claim that conflicts with the original.",
+       "context_connection": "With no surrounding context provided, it works as a standalone topic introduction.",
+       "natural_english": "“Today’s subject is…” is a natural, commonly used spoken introduction."
+      }
+     },
+     "selection_rationale": "全7 Gate PASSの候補は3件(['1', '2', '3'])。unchanged_ratio=0.8333(最小限の変更)が最大の'1'を採用。Natural English Gate理由: “Today’s subject is…” is a natural, commonly used spoken introduction.",
+     "candidates": [
+      {
+       "id": "1",
+       "rewritten_segment": "Today's subject is The Monkey's Paw.",
+       "changed_span_before": "topic",
+       "changed_span_after": "subject",
+       "rationale": "Replaces the misheard word with a natural synonym while keeping the topic-introduction structure.",
+       "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+       },
+       "all_seven_gates_pass": true,
+       "sentence_count_unchanged": true,
+       "adoptable": true,
+       "qa_reasons": {
+        "meaning_preserved": "“Subject” preserves the meaning that The Monkey’s Paw is today’s topic.",
+        "role_preserved": "It remains a short announcement of today’s topic.",
+        "fact_non_contradiction": "It introduces no claim that conflicts with the original.",
+        "context_connection": "With no surrounding context provided, it works as a standalone topic introduction.",
+        "natural_english": "“Today’s subject is…” is a natural, commonly used spoken introduction."
+       }
+      },
+      {
+       "id": "2",
+       "rewritten_segment": "Today's focus is The Monkey's Paw.",
+       "changed_span_before": "topic",
+       "changed_span_after": "focus",
+       "rationale": "A concise, idiomatic way to announce the subject of today's episode.",
+       "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+       },
+       "all_seven_gates_pass": true,
+       "sentence_count_unchanged": true,
+       "adoptable": true,
+       "qa_reasons": {
+        "meaning_preserved": "“Focus” conveys that The Monkey’s Paw is the topic being covered today.",
+        "role_preserved": "It remains a short announcement of today’s topic.",
+        "fact_non_contradiction": "It introduces no claim that conflicts with the original.",
+        "context_connection": "With no surrounding context provided, it works as a standalone topic introduction.",
+        "natural_english": "“Today’s focus is…” is a natural, commonly used way to introduce a topic."
+       }
+      },
+      {
+       "id": "3",
+       "rewritten_segment": "Today's theme is The Monkey's Paw.",
+       "changed_span_before": "topic",
+       "changed_span_after": "theme",
+       "rationale": "Uses a natural alternative for introducing the subject of the segment.",
+       "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+       },
+       "all_seven_gates_pass": true,
+       "sentence_count_unchanged": true,
+       "adoptable": true,
+       "qa_reasons": {
+        "meaning_preserved": "In this introductory context, “theme” conveys the subject of today’s episode.",
+        "role_preserved": "It remains a short announcement of what the episode is about.",
+        "fact_non_contradiction": "It introduces no claim that conflicts with the original.",
+        "context_connection": "With no surrounding context provided, it works as a standalone topic introduction.",
+        "natural_english": "“Today’s theme is…” is a natural expression for announcing an episode’s subject."
+       }
+      },
+      {
+       "id": "4",
+       "rewritten_segment": "Today we're discussing The Monkey's Paw.",
+       "changed_span_before": "Today's topic is",
+       "changed_span_after": "Today we're discussing",
+       "rationale": "Rephrases the introduction naturally without changing what today's segment is about.",
+       "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": false
+       },
+       "all_seven_gates_pass": false,
+       "sentence_count_unchanged": true,
+       "adoptable": false,
+       "qa_reasons": {
+        "meaning_preserved": "It preserves the meaning that The Monkey’s Paw is what the episode covers today.",
+        "role_preserved": "It announces the topic in a brief introductory line.",
+        "fact_non_contradiction": "It introduces no claim that conflicts with the original.",
+        "context_connection": "With no surrounding context provided, it works as a standalone topic introduction.",
+        "natural_english": "“Today we’re discussing…” is natural, conversational spoken English."
+       }
+      },
+      {
+       "id": "5",
+       "rewritten_segment": "Today we'll talk about The Monkey's Paw.",
+       "changed_span_before": "Today's topic is",
+       "changed_span_after": "Today we'll talk about",
+       "rationale": "Uses a natural spoken introduction that clearly announces today's subject.",
+       "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": false
+       },
+       "all_seven_gates_pass": false,
+       "sentence_count_unchanged": true,
+       "adoptable": false,
+       "qa_reasons": {
+        "meaning_preserved": "It preserves the meaning that The Monkey’s Paw is what the episode will cover today.",
+        "role_preserved": "It announces the topic in a brief introductory line.",
+        "fact_non_contradiction": "It introduces no claim that conflicts with the original.",
+        "context_connection": "With no surrounding context provided, it works as a standalone topic introduction.",
+        "natural_english": "“Today we’ll talk about…” is a natural, conversational spoken introduction."
+       }
+      }
+     ]
+    }
+   },
+   "final_adoption": {
+    "depth": 1,
+    "ordinal": 1,
+    "slot": "①'",
+    "style_mode": "PRIMARY",
+    "sent_style_sha": "d16e099cb4f6fd7f87826e48f636c143c31f3c7ad4aaeea13dd3c9ae4a3f724b",
+    "attempt_audio_sha": "9efaad752ae7b60adec9ce7bff7a3919cad650c95a0a34f59f1f9e13228e3e90",
+    "source": "tts_attempt"
+   },
+   "final_status": "OK"
+  }
+ },
+ "results_segments": {
+  "topic_intro_en": {
+   "status": "OK",
+   "voice": "Charon",
+   "asr_text": "Today's subject is The Monkey's Paw.",
+   "canonical_text": "Today's topic is The Monkey's Paw.",
+   "slowdown_applied": null,
+   "cooldown_events": [
+    {
+     "cooldown_requested_seconds": 180.0,
+     "cooldown_actual_seconds": 179.993,
+     "cooldown_started_at": "2026-10-28T10:27:54",
+     "cooldown_ended_at": "2026-10-28T10:30:54",
+     "attempt_before_cooldown": 2,
+     "attempt_after_cooldown": 3,
+     "total_elapsed_since_ref_seconds": 180.001,
+     "resumed": false
+    }
+   ],
+   "path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_b8_z_adv_4/b1b/narration/topic_intro_en.wav",
+   "audio_text_deviation": {
+    "clip_id": "topic_intro_en",
+    "canonical_text_before_local_rewrite": "Today's topic is The Monkey's Paw.",
+    "audio_text_after": "Today's subject is The Monkey's Paw.",
+    "diff_summary": "replace: 'topic' -> 'subject'"
+   }
+  }
+ },
+ "results_key_phrases": {},
+ "attempt_sidecars": [
+  {
+   "file": "topic_intro_en_attempt1_englishstyleprefix.json",
+   "segment_id": "topic_intro_en",
+   "attempt_number": 1,
+   "route": "english_style_prefix",
+   "saved_at": "2026-10-28T10:27:52",
+   "loop_attempt_index": 1,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Charon",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Today's topic is The Monkey's Paw.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "topic_intro_en_attempt2_englishstyleprefix.json",
+   "segment_id": "topic_intro_en",
+   "attempt_number": 2,
+   "route": "english_style_prefix",
+   "saved_at": "2026-10-28T10:27:54",
+   "loop_attempt_index": 2,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Charon",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Today's topic is The Monkey's Paw.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "topic_intro_en_attempt3_minimalfallback.json",
+   "segment_id": "topic_intro_en",
+   "attempt_number": 3,
+   "route": "minimal_fallback",
+   "saved_at": "2026-10-28T10:30:59",
+   "loop_attempt_index": 3,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Charon",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Today's market is The Monkey's Paw.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "topic_intro_en_attempt4_englishstyleprefix.json",
+   "segment_id": "topic_intro_en",
+   "attempt_number": 4,
+   "route": "english_style_prefix",
+   "saved_at": "2026-10-28T10:31:29",
+   "loop_attempt_index": 1,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Charon",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": true,
+   "audio_classification": "EXACT_MATCH",
+   "asr_text": "Today's subject is The Monkey's Paw.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 0.657,
+  "by_provider": {
+   "openai": 0.17,
+   "gemini": 0.29,
+   "openai_asr": 0.06,
+   "azure": 0.14
+  }
+ },
+ "gate_observation": {
+  "m2_complete": {
+   "checked": 1,
+   "path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_b8_z_adv_4/b1b/audit/tts_generation_results.json",
+   "audio_text_deviations": [
+    {
+     "clip_id": "topic_intro_en",
+     "canonical_text_before_local_rewrite": "Today's topic is The Monkey's Paw.",
+     "audio_text_after": "Today's subject is The Monkey's Paw.",
+     "diff_summary": "replace: 'topic' -> 'subject'",
+     "local_rewrite_revalidation_verdict": "NOT_REQUIRED"
+    }
+   ]
+  },
+  "audio_gate": {
+   "BLOCK": "FamilyZStyleActualGateStop: Style実測照合Gate BLOCK(b1b): ADV_EN_COMMENT:*=Z_STYLE_COVERAGE_EMPTY; ADV_EN_PREVIEW:*=Z_STYLE_COVERAGE_EMPTY; KP_EN:*=Z_STYLE_COVERAGE_EMPTY; NARRATOR_FULL_STORY_ADV:*=Z_STYLE_COVERAGE_EMPTY; KP_THIRD:*=Z_STYLE_COVERAGE_EMPTY (照合表=er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_b8_z_adv_4/b1b/audit/style_actual_vs_approved.json。Style落ちfallback等は人間承認[human_approved_segments.json]が必"
+  }
+ },
+ "resumed_run": false
+}

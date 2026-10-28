@@ -1,0 +1,863 @@
+{
+  "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+  "segment_id": "comment_1",
+  "segment_role_label": "Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)",
+  "canonical_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+  "last_asr_text": "Listen for how the news about bean prices market with the prices people see in shops.",
+  "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "about bean prices compares with the prices",
+    "asr_span_with_context": "about bean prices market with the prices",
+    "canonical_changed_words": [
+      "compares"
+    ],
+    "asr_changed_words": [
+      "market"
+    ],
+    "context_window_word_indices": [
+      5,
+      12
+    ]
+  },
+  "candidate_gen": {
+    "candidates": [
+      {
+        "id": "1",
+        "rewrite_type": "single_word_swap",
+        "rewritten_segment": "Listen for how the news about bean prices corresponds with the prices people see in shops.",
+        "changed_span_before": "compares",
+        "changed_span_after": "corresponds",
+        "rationale": "A minimal, natural verb swap that preserves the sense of comparing the reported and shop prices."
+      },
+      {
+        "id": "2",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Listen for how the news about bean prices lines up with the prices people see in shops.",
+        "changed_span_before": "about bean prices compares with the prices",
+        "changed_span_after": "about bean prices lines up with the prices",
+        "rationale": "“Lines up with” naturally conveys how the reported prices relate to the shop prices."
+      },
+      {
+        "id": "3",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Listen for how the news about bean prices matches the prices people see in shops.",
+        "changed_span_before": "about bean prices compares with the prices",
+        "changed_span_after": "about bean prices matches the prices",
+        "rationale": "A concise, idiomatic way to express whether the news and shop prices agree."
+      },
+      {
+        "id": "4",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Listen for how the news about bean prices stacks up against the prices people see in shops.",
+        "changed_span_before": "about bean prices compares with the prices",
+        "changed_span_after": "about bean prices stacks up against the prices",
+        "rationale": "A conversational phrase that preserves the comparison between the reported and shop prices."
+      },
+      {
+        "id": "5",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Listen for how the news about bean prices is consistent with the prices people see in shops.",
+        "changed_span_before": "about bean prices compares with the prices",
+        "changed_span_after": "about bean prices is consistent with the prices",
+        "rationale": "Naturally frames the comparison as whether the news agrees with prices seen in shops."
+      }
+    ],
+    "_raw_model_response_text": "{\"candidates\":[{\"id\":\"1\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"Listen for how the news about bean prices corresponds with the prices people see in shops.\",\"changed_span_before\":\"compares\",\"changed_span_after\":\"corresponds\",\"rationale\":\"A minimal, natural verb swap that preserves the sense of comparing the reported and shop prices.\"},{\"id\":\"2\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Listen for how the news about bean prices lines up with the prices people see in shops.\",\"changed_span_before\":\"about bean prices compares with the prices\",\"changed_span_after\":\"about bean prices lines up with the prices\",\"rationale\":\"“Lines up with” naturally conveys how the reported prices relate to the shop prices.\"},{\"id\":\"3\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Listen for how the news about bean prices matches the prices people see in shops.\",\"changed_span_before\":\"about bean prices compares with the prices\",\"changed_span_after\":\"about bean prices matches the prices\",\"rationale\":\"A concise, idiomatic way to express whether the news and shop prices agree.\"},{\"id\":\"4\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Listen for how the news about bean prices stacks up against the prices people see in shops.\",\"changed_span_before\":\"about bean prices compares with the prices\",\"changed_span_after\":\"about bean prices stacks up against the prices\",\"rationale\":\"A conversational phrase that preserves the comparison between the reported and shop prices.\"},{\"id\":\"5\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Listen for how the news about bean prices is consistent with the prices people see in shops.\",\"changed_span_before\":\"about bean prices compares with the prices\",\"changed_span_after\":\"about bean prices is consistent with the prices\",\"rationale\":\"Naturally frames the comparison as whether the news agrees with prices seen in shops.\"}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_06d12ca9810de30d006ae15059740487d09e8b7ef2257087e4",
+    "_prompt": "Segment role: Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)\n\nFull segment (contains the problem span):\n\"Listen for how the news about bean prices compares with the prices people see in shops.\"\n\nProblem span (a speech recognizer repeatedly mis-transcribes this as ['market'] instead of ['compares']):\n\"about bean prices compares with the prices\"\n\nPropose the candidates as described in the system instructions. Return the JSON object."
+  },
+  "qa": {
+    "evaluations": [
+      {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Corresponds with” suggests that the news agrees or aligns with the shop prices, rather than neutrally comparing them."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a brief listening prompt about the bean-price story."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It adds no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains a self-contained prompt."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "“The news ... corresponds with the prices” sounds stiff and unnatural in this spoken prompt."
+        }
+      },
+      {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Lines up with” implies that the reported prices agree with shop prices, rather than simply comparing them."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a brief listening prompt about the bean-price story."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It adds no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains a self-contained prompt."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Lines up with” is a common, natural spoken expression here."
+        }
+      },
+      {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Matches” implies that the news and shop prices are the same or agree, a stronger claim than comparing them."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a brief listening prompt about the bean-price story."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It adds no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains a self-contained prompt."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Matches” is natural and commonly used in this kind of spoken sentence."
+        }
+      },
+      {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Stacks up against” retains the idea of comparing the reported bean prices with shop prices."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a brief listening prompt about the bean-price story."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It adds no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains a self-contained prompt."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Stacks up against” is an idiomatic spoken way to introduce a comparison."
+        }
+      },
+      {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Is consistent with” implies agreement between the news and shop prices, rather than simply comparing them."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a brief listening prompt about the bean-price story."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It adds no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains a self-contained prompt."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "The construction sounds overly formal and stilted as a spoken listening prompt."
+        }
+      }
+    ],
+    "_raw_model_response_text": "{\"evaluations\":[{\"candidate_id\":\"1\",\"meaning_preserved\":{\"pass\":false,\"reason\":\"“Corresponds with” suggests that the news agrees or aligns with the shop prices, rather than neutrally comparing them.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a brief listening prompt about the bean-price story.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It adds no claim that conflicts with the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence remains a self-contained prompt.\"},\"natural_english\":{\"pass\":false,\"reason\":\"“The news ... corresponds with the prices” sounds stiff and unnatural in this spoken prompt.\"}},{\"candidate_id\":\"2\",\"meaning_preserved\":{\"pass\":false,\"reason\":\"“Lines up with” implies that the reported prices agree with shop prices, rather than simply comparing them.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a brief listening prompt about the bean-price story.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It adds no claim that conflicts with the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence remains a self-contained prompt.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Lines up with” is a common, natural spoken expression here.\"}},{\"candidate_id\":\"3\",\"meaning_preserved\":{\"pass\":false,\"reason\":\"“Matches” implies that the news and shop prices are the same or agree, a stronger claim than comparing them.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a brief listening prompt about the bean-price story.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It adds no claim that conflicts with the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence remains a self-contained prompt.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Matches” is natural and commonly used in this kind of spoken sentence.\"}},{\"candidate_id\":\"4\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Stacks up against” retains the idea of comparing the reported bean prices with shop prices.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a brief listening prompt about the bean-price story.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It adds no claim that conflicts with the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence remains a self-contained prompt.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Stacks up against” is an idiomatic spoken way to introduce a comparison.\"}},{\"candidate_id\":\"5\",\"meaning_preserved\":{\"pass\":false,\"reason\":\"“Is consistent with” implies agreement between the news and shop prices, rather than simply comparing them.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a brief listening prompt about the bean-price story.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It adds no claim that conflicts with the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence remains a self-contained prompt.\"},\"natural_english\":{\"pass\":false,\"reason\":\"The construction sounds overly formal and stilted as a spoken listening prompt.\"}}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_0035f18ad60e80a1006ae1506dd9e487d0b27339736beb3ed6",
+    "_prompt": "Segment role: Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)\n\nORIGINAL segment:\n\"Listen for how the news about bean prices compares with the prices people see in shops.\"\n\nCandidates to evaluate:\n- candidate_id='1': \"Listen for how the news about bean prices corresponds with the prices people see in shops.\"\n- candidate_id='2': \"Listen for how the news about bean prices lines up with the prices people see in shops.\"\n- candidate_id='3': \"Listen for how the news about bean prices matches the prices people see in shops.\"\n- candidate_id='4': \"Listen for how the news about bean prices stacks up against the prices people see in shops.\"\n- candidate_id='5': \"Listen for how the news about bean prices is consistent with the prices people see in shops.\"\n\nEvaluate all 5 gates for every candidate and return the JSON object described in the system instructions."
+  },
+  "candidates": [
+    {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Listen for how the news about bean prices corresponds with the prices people see in shops.",
+      "changed_span_before": "compares",
+      "changed_span_after": "corresponds",
+      "rationale": "A minimal, natural verb swap that preserves the sense of comparing the reported and shop prices.",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Corresponds with” suggests that the news agrees or aligns with the shop prices, rather than neutrally comparing them."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a brief listening prompt about the bean-price story."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It adds no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains a self-contained prompt."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "“The news ... corresponds with the prices” sounds stiff and unnatural in this spoken prompt."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0345,
+        "orig_coverage": 0.9375,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          8,
+          9
+        ],
+        "criterion6_allowed_window": [
+          5,
+          12
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9375
+      },
+      "seven_gates": {
+        "1_meaning_preserved": false,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": false
+    },
+    {
+      "id": "2",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Listen for how the news about bean prices lines up with the prices people see in shops.",
+      "changed_span_before": "about bean prices compares with the prices",
+      "changed_span_after": "about bean prices lines up with the prices",
+      "rationale": "“Lines up with” naturally conveys how the reported prices relate to the shop prices.",
+      "qa_llm": {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Lines up with” implies that the reported prices agree with shop prices, rather than simply comparing them."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a brief listening prompt about the bean-price story."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It adds no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains a self-contained prompt."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Lines up with” is a common, natural spoken expression here."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0,
+        "orig_coverage": 0.9375,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          8,
+          9
+        ],
+        "criterion6_allowed_window": [
+          5,
+          12
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9375
+      },
+      "seven_gates": {
+        "1_meaning_preserved": false,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": false
+    },
+    {
+      "id": "3",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Listen for how the news about bean prices matches the prices people see in shops.",
+      "changed_span_before": "about bean prices compares with the prices",
+      "changed_span_after": "about bean prices matches the prices",
+      "rationale": "A concise, idiomatic way to express whether the news and shop prices agree.",
+      "qa_llm": {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Matches” implies that the news and shop prices are the same or agree, a stronger claim than comparing them."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a brief listening prompt about the bean-price story."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It adds no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains a self-contained prompt."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Matches” is natural and commonly used in this kind of spoken sentence."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 0.931,
+        "orig_coverage": 0.875,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          8,
+          10
+        ],
+        "criterion6_allowed_window": [
+          5,
+          12
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.875
+      },
+      "seven_gates": {
+        "1_meaning_preserved": false,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": false
+    },
+    {
+      "id": "4",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Listen for how the news about bean prices stacks up against the prices people see in shops.",
+      "changed_span_before": "about bean prices compares with the prices",
+      "changed_span_after": "about bean prices stacks up against the prices",
+      "rationale": "A conversational phrase that preserves the comparison between the reported and shop prices.",
+      "qa_llm": {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Stacks up against” retains the idea of comparing the reported bean prices with shop prices."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a brief listening prompt about the bean-price story."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It adds no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains a self-contained prompt."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Stacks up against” is an idiomatic spoken way to introduce a comparison."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.046,
+        "orig_coverage": 0.875,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          8,
+          10
+        ],
+        "criterion6_allowed_window": [
+          5,
+          12
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.875
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": true
+    },
+    {
+      "id": "5",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Listen for how the news about bean prices is consistent with the prices people see in shops.",
+      "changed_span_before": "about bean prices compares with the prices",
+      "changed_span_after": "about bean prices is consistent with the prices",
+      "rationale": "Naturally frames the comparison as whether the news agrees with prices seen in shops.",
+      "qa_llm": {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Is consistent with” implies agreement between the news and shop prices, rather than simply comparing them."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a brief listening prompt about the bean-price story."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It adds no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains a self-contained prompt."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "The construction sounds overly formal and stilted as a spoken listening prompt."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0575,
+        "orig_coverage": 0.9375,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          8,
+          9
+        ],
+        "criterion6_allowed_window": [
+          5,
+          12
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9375
+      },
+      "seven_gates": {
+        "1_meaning_preserved": false,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": false
+    }
+  ],
+  "selection": {
+    "selected": {
+      "id": "4",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Listen for how the news about bean prices stacks up against the prices people see in shops.",
+      "changed_span_before": "about bean prices compares with the prices",
+      "changed_span_after": "about bean prices stacks up against the prices",
+      "rationale": "A conversational phrase that preserves the comparison between the reported and shop prices.",
+      "qa_llm": {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Stacks up against” retains the idea of comparing the reported bean prices with shop prices."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a brief listening prompt about the bean-price story."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It adds no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains a self-contained prompt."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Stacks up against” is an idiomatic spoken way to introduce a comparison."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.046,
+        "orig_coverage": 0.875,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          8,
+          10
+        ],
+        "criterion6_allowed_window": [
+          5,
+          12
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.875
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": true
+    },
+    "status": "SELECTED",
+    "selection_rationale": "全7 Gate PASSの候補は1件(['4'])。unchanged_ratio=0.875(最小限の変更)が最大の'4'を採用。Natural English Gate理由: “Stacks up against” is an idiomatic spoken way to introduce a comparison.",
+    "all_passing_candidate_ids": [
+      "4"
+    ]
+  },
+  "retts_result": {
+    "status": "OK",
+    "text": "Listen for how the news about bean prices stacks up against the prices people see in shops.",
+    "path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_adv_2/b1b/narration/comment_1.wav",
+    "voice": "Charon",
+    "asr_judgement": {
+      "state": "PASS_WITH_WARNING",
+      "reason_code": "primary_pass",
+      "slot": 4,
+      "script_version": "v1",
+      "role": "COMMENT",
+      "lang": "en",
+      "segment_key": "comment_1",
+      "audio_sha256": "0cf0f5d4233bd666678877465679e7fb27fe1403f8d7c32b61a9ad33b3cb8d51",
+      "primary": {
+        "text": "Listen for how the news about bean prices stacks up against the prices people see in shops.",
+        "passed": true,
+        "label": "EXACT_MATCH",
+        "equivalence_basis": null,
+        "warning_labels": []
+      },
+      "secondary": {
+        "called": false,
+        "cached": false,
+        "engine": "azure",
+        "text": null,
+        "label": "",
+        "accepted": null,
+        "error": null,
+        "unavailable": false
+      },
+      "value_guard": {
+        "primary": {
+          "kind": "NO_VALUES",
+          "pairs": [],
+          "reasons": [],
+          "warnings": []
+        }
+      },
+      "negation_guard": {
+        "primary": false
+      },
+      "final_gate": {
+        "applied": true,
+        "value_guard": "NO_VALUES",
+        "negation_diff": false
+      },
+      "warnings": [
+        "LR_REWRITTEN"
+      ],
+      "exclusion_rule": null,
+      "cost": {
+        "azure_calls": 0,
+        "azure_seconds": null,
+        "est_jpy": 0.0
+      },
+      "timing": {
+        "total_ms": 0,
+        "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+        "applied": true,
+        "primary_len": 91,
+        "secondary_len": null,
+        "max_len": 106,
+        "adopted_from": "primary",
+        "adopted_ok": true,
+        "surface_len": null,
+        "primary_ok": true
+      },
+      "adapter": {
+        "layers": [],
+        "azure_real_calls": 0,
+        "cost_guard_triggered": false,
+        "language": "en-US",
+        "segment_id": "comment_1",
+        "asr_text_present": true,
+        "cache": {
+          "calls": 2,
+          "hits": 0
+        }
+      }
+    },
+    "asr_verified": true,
+    "asr_text": "Listen for how the news about bean prices stacks up against the prices people see in shops.",
+    "attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "Listen for how the news about bean prices stacks up against the prices people see in shops.",
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "primary_pass",
+          "slot": 4,
+          "script_version": "v1",
+          "role": "COMMENT",
+          "lang": "en",
+          "segment_key": "comment_1",
+          "audio_sha256": "0cf0f5d4233bd666678877465679e7fb27fe1403f8d7c32b61a9ad33b3cb8d51",
+          "primary": {
+            "text": "Listen for how the news about bean prices stacks up against the prices people see in shops.",
+            "passed": true,
+            "label": "EXACT_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [
+            "LR_REWRITTEN"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 91,
+            "secondary_len": null,
+            "max_len": 106,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "comment_1",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "instruction_type": "english_style_prefix",
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "semantic_equivalence": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "verified": true,
+        "trim_info": {
+          "raw_duration_seconds": 5.44,
+          "raw_leading_silence_seconds": 0.22,
+          "raw_trailing_silence_seconds": 0.36,
+          "trimmed_duration_seconds": 5.43,
+          "leading_margin_retained_seconds": 0.22,
+          "trailing_margin_retained_seconds": 0.35
+        },
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 17,
+          "transcript": "Listen  for  how  the  news  about  bean  prices  stacks  up  against  the  prices  people  see  in  shops.",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_adv_2/b1b/narration/attempts/comment_1_attempt4_englishstyleprefix.wav"
+      }
+    ],
+    "instruction_type": "english_style_prefix",
+    "trim_info": {
+      "raw_duration_seconds": 5.44,
+      "raw_leading_silence_seconds": 0.22,
+      "raw_trailing_silence_seconds": 0.36,
+      "trimmed_duration_seconds": 5.43,
+      "leading_margin_retained_seconds": 0.22,
+      "trailing_margin_retained_seconds": 0.35
+    },
+    "clipping_detected": false,
+    "audio_classification": "EXACT_MATCH",
+    "connected_speech_info": null,
+    "disfluency_checked": true,
+    "disfluency_evidence": {
+      "flagged": false,
+      "repeats": [],
+      "word_count": 17,
+      "transcript": "Listen  for  how  the  news  about  bean  prices  stacks  up  against  the  prices  people  see  in  shops.",
+      "method": "faster_whisper_small_local_verbatim"
+    },
+    "en_pronunciation_resolver_info": {
+      "hints_applied": false,
+      "cache_hits": [],
+      "low_confidence_retry_attempted": false,
+      "low_confidence_retry_improved": false,
+      "research_meta": null
+    },
+    "cooldown_events": [],
+    "tts_backend": "speech_metadata_flash_lite",
+    "model": "gemini-3.8-flash-lite-tts",
+    "style_prefix": "calm, conversational",
+    "tts_model_id": "gemini-3.8-flash-lite-tts",
+    "fallback_used": false,
+    "final_adoption": {
+      "depth": 1,
+      "ordinal": 1,
+      "slot": "①'",
+      "style_mode": "PRIMARY",
+      "sent_style_sha": "57c3fda67c1d3976c675970d15409ede1b393ab8c8627678cef22f8f71faf53f",
+      "attempt_audio_sha": "0cf0f5d4233bd666678877465679e7fb27fe1403f8d7c32b61a9ad33b3cb8d51",
+      "source": "tts_attempt"
+    }
+  },
+  "status": "RESOLVED_BY_LOCAL_REWRITE"
+}

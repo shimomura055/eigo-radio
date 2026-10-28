@@ -1,0 +1,181 @@
+{
+  "schema": "lr_selection_audit_v1",
+  "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+  "segment_id": "topic_intro",
+  "canonical_text": "Today's topic is Package Redelivery. Different Voices.",
+  "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "today s topic is package redelivery",
+    "asr_span_with_context": "today s market is package redelivery",
+    "canonical_changed_words": [
+      "topic"
+    ],
+    "asr_changed_words": [
+      "market"
+    ],
+    "context_window_word_indices": [
+      0,
+      6
+    ]
+  },
+  "selected": {
+    "id": "1",
+    "rewritten_segment": "Today's subject is Package Redelivery. Different Voices.",
+    "changed_span_before": "topic",
+    "changed_span_after": "subject",
+    "rationale": "A natural, concise substitute that keeps the topic-introduction meaning.",
+    "seven_gates": {
+      "1_meaning_preserved": true,
+      "2_role_preserved": true,
+      "3_fact_non_contradiction": true,
+      "4_context_connection": true,
+      "5_natural_english_gate": true,
+      "6_localized_minimal_change": true,
+      "7_not_full_rewrite": true
+    },
+    "all_seven_gates_pass": true,
+    "sentence_count_unchanged": true,
+    "adoptable": true,
+    "qa_reasons": {
+      "meaning_preserved": "“Subject” preserves the meaning of “topic.”",
+      "role_preserved": "It still announces the topic of the episode.",
+      "fact_non_contradiction": "It introduces no conflicting facts.",
+      "context_connection": "No surrounding context was provided, and it retains the original structure.",
+      "natural_english": "“Today's subject is…” is a natural way to introduce a topic."
+    }
+  },
+  "selection_rationale": "全7 Gate PASSの候補は4件(['1', '2', '3', '5'])。unchanged_ratio=0.8571(最小限の変更)が最大の'1'を採用。Natural English Gate理由: “Today's subject is…” is a natural way to introduce a topic.",
+  "candidates": [
+    {
+      "id": "1",
+      "rewritten_segment": "Today's subject is Package Redelivery. Different Voices.",
+      "changed_span_before": "topic",
+      "changed_span_after": "subject",
+      "rationale": "A natural, concise substitute that keeps the topic-introduction meaning.",
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_unchanged": true,
+      "adoptable": true,
+      "qa_reasons": {
+        "meaning_preserved": "“Subject” preserves the meaning of “topic.”",
+        "role_preserved": "It still announces the topic of the episode.",
+        "fact_non_contradiction": "It introduces no conflicting facts.",
+        "context_connection": "No surrounding context was provided, and it retains the original structure.",
+        "natural_english": "“Today's subject is…” is a natural way to introduce a topic."
+      }
+    },
+    {
+      "id": "2",
+      "rewritten_segment": "Today's theme is Package Redelivery. Different Voices.",
+      "changed_span_before": "topic",
+      "changed_span_after": "theme",
+      "rationale": "A familiar spoken-English alternative that preserves the introductory role.",
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_unchanged": true,
+      "adoptable": true,
+      "qa_reasons": {
+        "meaning_preserved": "“Theme” is a natural equivalent for the episode's topic here.",
+        "role_preserved": "It still announces the topic of the episode.",
+        "fact_non_contradiction": "It introduces no conflicting facts.",
+        "context_connection": "No surrounding context was provided, and it retains the original structure.",
+        "natural_english": "“Today's theme is…” is a natural spoken introduction."
+      }
+    },
+    {
+      "id": "3",
+      "rewritten_segment": "Today's focus is Package Redelivery. Different Voices.",
+      "changed_span_before": "topic",
+      "changed_span_after": "focus",
+      "rationale": "A natural one-word replacement that retains the meaning.",
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_unchanged": true,
+      "adoptable": true,
+      "qa_reasons": {
+        "meaning_preserved": "“Focus” conveys what the episode is centered on, matching the topic announcement.",
+        "role_preserved": "It still announces the topic of the episode.",
+        "fact_non_contradiction": "It introduces no conflicting facts.",
+        "context_connection": "No surrounding context was provided, and it retains the original structure.",
+        "natural_english": "“Today's focus is…” is a common, natural spoken expression."
+      }
+    },
+    {
+      "id": "4",
+      "rewritten_segment": "Today, we're discussing Package Redelivery. Different Voices.",
+      "changed_span_before": "Today's topic is",
+      "changed_span_after": "Today, we're discussing",
+      "rationale": "A conversational way to announce what the episode is about today.",
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": false
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_unchanged": true,
+      "adoptable": false,
+      "qa_reasons": {
+        "meaning_preserved": "It communicates that Package Redelivery is the subject of today's episode.",
+        "role_preserved": "It still serves as a brief introduction to today's topic.",
+        "fact_non_contradiction": "It introduces no claim that conflicts with the original.",
+        "context_connection": "No surrounding context was provided, and the added sentence retains the original follow-on phrase.",
+        "natural_english": "“Today, we're discussing…” is natural spoken narration."
+      }
+    },
+    {
+      "id": "5",
+      "rewritten_segment": "Today's conversation is about Package Redelivery. Different Voices.",
+      "changed_span_before": "Today's topic is",
+      "changed_span_after": "Today's conversation is about",
+      "rationale": "A natural spoken introduction that preserves the original information.",
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_unchanged": true,
+      "adoptable": true,
+      "qa_reasons": {
+        "meaning_preserved": "It says the episode's subject is Package Redelivery, preserving the original meaning.",
+        "role_preserved": "It still introduces the episode's topic.",
+        "fact_non_contradiction": "It introduces no claim that conflicts with the original.",
+        "context_connection": "No surrounding context was provided, and it retains the original follow-on phrase.",
+        "natural_english": "“Today's conversation is about…” is a natural spoken introduction."
+      }
+    }
+  ]
+}

@@ -1,0 +1,184 @@
+{
+  "schema": "lr_selection_audit_v1",
+  "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+  "segment_id": "in_one_line",
+  "canonical_text": "Falling coffee bean prices may take at least 9 months to affect US shop prices.",
+  "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "9 months to affect us shop prices",
+    "asr_span_with_context": "9 months to market u s shop prices",
+    "canonical_changed_words": [
+      "affect",
+      "us"
+    ],
+    "asr_changed_words": [
+      "market",
+      "u",
+      "s"
+    ],
+    "context_window_word_indices": [
+      8,
+      15
+    ]
+  },
+  "selected": {
+    "id": "1",
+    "rewritten_segment": "Falling coffee bean prices may take at least 9 months to influence US shop prices.",
+    "changed_span_before": "9 months to affect US shop prices",
+    "changed_span_after": "9 months to influence US shop prices",
+    "rationale": "Swaps only “affect” for the natural equivalent “influence,” preserving the meaning.",
+    "seven_gates": {
+      "1_meaning_preserved": true,
+      "2_role_preserved": true,
+      "3_fact_non_contradiction": true,
+      "4_context_connection": true,
+      "5_natural_english_gate": true,
+      "6_localized_minimal_change": true,
+      "7_not_full_rewrite": true
+    },
+    "all_seven_gates_pass": true,
+    "sentence_count_unchanged": true,
+    "adoptable": true,
+    "qa_reasons": {
+      "meaning_preserved": "“Influence” preserves the original claim that falling coffee bean prices may affect US shop prices after at least 9 months.",
+      "role_preserved": "It remains a concise, one-line summary suitable for the episode’s closing.",
+      "fact_non_contradiction": "It retains the original timing and possible effect without adding or contradicting a claim.",
+      "context_connection": "No surrounding context was provided, and the sentence works as a self-contained closing line.",
+      "natural_english": "This is a natural and idiomatic spoken paraphrase."
+    }
+  },
+  "selection_rationale": "全7 Gate PASSの候補は1件(['1'])。unchanged_ratio=0.9286(最小限の変更)が最大の'1'を採用。Natural English Gate理由: This is a natural and idiomatic spoken paraphrase.",
+  "candidates": [
+    {
+      "id": "1",
+      "rewritten_segment": "Falling coffee bean prices may take at least 9 months to influence US shop prices.",
+      "changed_span_before": "9 months to affect US shop prices",
+      "changed_span_after": "9 months to influence US shop prices",
+      "rationale": "Swaps only “affect” for the natural equivalent “influence,” preserving the meaning.",
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_unchanged": true,
+      "adoptable": true,
+      "qa_reasons": {
+        "meaning_preserved": "“Influence” preserves the original claim that falling coffee bean prices may affect US shop prices after at least 9 months.",
+        "role_preserved": "It remains a concise, one-line summary suitable for the episode’s closing.",
+        "fact_non_contradiction": "It retains the original timing and possible effect without adding or contradicting a claim.",
+        "context_connection": "No surrounding context was provided, and the sentence works as a self-contained closing line.",
+        "natural_english": "This is a natural and idiomatic spoken paraphrase."
+      }
+    },
+    {
+      "id": "2",
+      "rewritten_segment": "Falling coffee bean prices may take at least 9 months for US shop prices to respond.",
+      "changed_span_before": "9 months to affect US shop prices",
+      "changed_span_after": "9 months for US shop prices to respond",
+      "rationale": "Recasts the phrase naturally while keeping the delay and the effect on US shop prices.",
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_unchanged": true,
+      "adoptable": false,
+      "qa_reasons": {
+        "meaning_preserved": "Shop prices responding conveys the same possible delayed effect of falling coffee bean prices.",
+        "role_preserved": "It remains a concise, one-line summary suitable for the episode’s closing.",
+        "fact_non_contradiction": "It preserves the original minimum timeframe and does not conflict with the original claim.",
+        "context_connection": "No surrounding context was provided, and the sentence is understandable as a self-contained closing line.",
+        "natural_english": "The construction “Falling coffee bean prices may take ... for US shop prices to respond” is awkward; a speaker would more naturally say “It may take ... for US shop prices to respond.”"
+      }
+    },
+    {
+      "id": "3",
+      "rewritten_segment": "Falling coffee bean prices may take at least 9 months for the impact to show up in US shop prices.",
+      "changed_span_before": "9 months to affect US shop prices",
+      "changed_span_after": "9 months for the impact to show up in US shop prices",
+      "rationale": "Expresses that the effect of falling bean prices may take time to appear in shop prices.",
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_unchanged": true,
+      "adoptable": false,
+      "qa_reasons": {
+        "meaning_preserved": "The impact showing up in shop prices preserves the original delayed-effect claim.",
+        "role_preserved": "It remains a one-sentence summary that can serve as the episode’s closing line.",
+        "fact_non_contradiction": "It retains the original timeframe and makes no contradictory claim.",
+        "context_connection": "No surrounding context was provided, and the sentence can stand alone as a closing line.",
+        "natural_english": "The “prices may take ... for the impact to show up” construction sounds awkward in spoken English; “It may take ... for the impact to show up” would be more idiomatic."
+      }
+    },
+    {
+      "id": "4",
+      "rewritten_segment": "Falling coffee bean prices may take at least 9 months for the change to be reflected in prices at US shops.",
+      "changed_span_before": "9 months to affect US shop prices",
+      "changed_span_after": "9 months for the change to be reflected in prices at US shops",
+      "rationale": "Uses a conversational phrasing for the same delayed effect on prices at US shops.",
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_unchanged": true,
+      "adoptable": false,
+      "qa_reasons": {
+        "meaning_preserved": "The change being reflected in prices at US shops conveys the same possible delayed effect.",
+        "role_preserved": "It remains a concise, one-line summary suitable for the episode’s closing.",
+        "fact_non_contradiction": "It preserves the stated timeframe and does not contradict the original claim.",
+        "context_connection": "No surrounding context was provided, and it works as a standalone closing line.",
+        "natural_english": "The construction “Falling coffee bean prices may take ... for the change to be reflected” is awkward, and the passive wording makes it sound stilted for spoken narration."
+      }
+    },
+    {
+      "id": "5",
+      "rewritten_segment": "Falling coffee bean prices may take at least 9 months for US shop prices to feel the effect.",
+      "changed_span_before": "9 months to affect US shop prices",
+      "changed_span_after": "9 months for US shop prices to feel the effect",
+      "rationale": "Keeps the original meaning and timing while phrasing the effect idiomatically.",
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_unchanged": true,
+      "adoptable": false,
+      "qa_reasons": {
+        "meaning_preserved": "Shop prices feeling the effect conveys the original idea that falling bean prices may eventually affect them.",
+        "role_preserved": "It remains a one-line summary suitable for closing the episode.",
+        "fact_non_contradiction": "It retains the original timeframe and does not introduce a conflicting claim.",
+        "context_connection": "No surrounding context was provided, and the sentence is self-contained.",
+        "natural_english": "The wording is awkward because “Falling coffee bean prices may take ... for US shop prices to feel the effect” uses an unnatural construction; “It may take ... for shop prices to feel the effect” is more idiomatic."
+      }
+    }
+  ]
+}

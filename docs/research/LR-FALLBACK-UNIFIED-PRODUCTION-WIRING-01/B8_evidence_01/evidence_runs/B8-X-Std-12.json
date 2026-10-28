@@ -1,0 +1,800 @@
+{
+ "management_id": "LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01",
+ "case": "B8-X-Std-12",
+ "family": "X",
+ "level": "a2",
+ "scenario": "E-C1(Opus4-c a)",
+ "leaf": "L4",
+ "policy": "EN_LR_STD",
+ "segments": [
+  "full_story_part1_k1"
+ ],
+ "run_dir": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_std_12",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {},
+  "sub": {},
+  "post_ng": {
+   "*": [
+    1
+   ]
+  },
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [
+  {
+   "kind": "post_slowdown_ng",
+   "clip": "full_story_part1_k1",
+   "slot": 1
+  }
+ ],
+ "injected_override_count": 1,
+ "started_at": "2026-10-28T10:54:03",
+ "ended_at": "2026-10-28T10:54:31",
+ "wall_seconds": 28.6,
+ "pid": 30236,
+ "exception": null,
+ "tts_attempts": [
+  {
+   "clip": "full_story_part1_k1",
+   "t": 3.72,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "3a680861e4d9",
+   "style_head": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while",
+   "style_chars": 177,
+   "text_head": "Beans cost less now! When you hear that, your wallet pumps its fist. You already",
+   "text_sha": "36a66b37fef6",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "full_story_part1_k1",
+   "t": 14.53,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "3a680861e4d9",
+   "style_head": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while",
+   "style_chars": 177,
+   "text_head": "Beans cost less now! When you hear that, your wallet pumps its fist. You already",
+   "text_sha": "36a66b37fef6",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 2,
+ "tts_api_calls": 2,
+ "judges": [
+  {
+   "clip": "full_story_part1_k1",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "Beans cost less now. When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less too"
+  },
+  {
+   "clip": "full_story_part1_k1",
+   "kind": "en",
+   "slot": 2,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "Beans cost less now. When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less too"
+  }
+ ],
+ "post_slowdown_judges": [
+  {
+   "clip": "full_story_part1_k1",
+   "slot": 1,
+   "verified_real": true,
+   "forced_ng": true
+  },
+  {
+   "clip": "full_story_part1_k1",
+   "slot": 2,
+   "verified_real": true,
+   "forced_ng": false
+  }
+ ],
+ "cooldown_events": [],
+ "cooldown_count": 0,
+ "sleep_total_seconds": 0.0,
+ "stop_checks": {
+  "cooldown": 0,
+  "attempt": 2,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [
+  "PROCEED"
+ ],
+ "lock_state": {
+  "full_story_part1_k1": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "36a66b37fef6d8161a9deb9e7f31871496fce0dcc2c0a2dbb2b4d4b43130ee74",
+   "language": "en",
+   "theme_id": "coffee_prices__run_tru_ev_b8_x_std_12",
+   "level": "a2",
+   "segment_id": "full_story_part1_k1",
+   "updated_at": "2026-10-28T10:54:31",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_std_12/a2/narration/full_story_part1_k1.wav",
+   "cumulative_tts_attempts": 2,
+   "cumulative_asr_calls": 2,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 16.96,
+     "asr_text": "Beans cost less now. When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less too. But a shop's price may not change right away. When a price tag makes you ask, haven't you heard the news?, it feels like there is a delay.",
+     "asr_text_length": 260,
+     "max_len": 321,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "NORMALIZED_MATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": false,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": true,
+     "repetition_qa_evidence": {
+      "flagged": false,
+      "duration_seconds": 16.96,
+      "method_a_ngram": {
+       "matches": [],
+       "flagged": false,
+       "flagged_matches": [],
+       "word_count": 50,
+       "canonical_known": true,
+       "min_words": 3
+      },
+      "method_d_spectral_long_lag": {
+       "top_matches": [
+        {
+         "similarity": 0.9968,
+         "time_a_seconds": 12.48,
+         "time_b_seconds": 14.12,
+         "lag_seconds": 1.64,
+         "run_length_seconds_at_thresh_0.85": 0.08
+        },
+        {
+         "similarity": 0.9885,
+         "time_a_seconds": 0.05,
+         "time_b_seconds": 14.8,
+         "lag_seconds": 14.75,
+         "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+         "similarity": 0.9875,
+         "time_a_seconds": 1.98,
+         "time_b_seconds": 11.74,
+         "lag_seconds": 9.76,
+         "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+         "similarity": 0.9867,
+         "time_a_seconds": 0.17,
+         "time_b_seconds": 3.03,
+         "lag_seconds": 2.86
+        },
+        {
+         "similarity": 0.9861,
+         "time_a_seconds": 6.97,
+         "time_b_seconds": 14.79,
+         "lag_seconds": 7.82
+        }
+       ],
+       "best_run_length_seconds": 0.08,
+       "min_lag_seconds": 1.0,
+       "sim_threshold": 0.85,
+       "decision_threshold_seconds": 0.12,
+       "acoustic_flagged": false,
+       "local_asr_confirmation": null,
+       "flagged": false
+      },
+      "method_d_prime_spectral_short_lag": {
+       "run_length_seconds": 0.25,
+       "time_a": 3.41,
+       "lag": 1.97,
+       "similarity_at_start": 0.7348,
+       "best_run_length_seconds": 0.25,
+       "lag_range_seconds": [
+        0.5,
+        2.0
+       ],
+       "sim_threshold": 0.7,
+       "decision_threshold_seconds": 0.6,
+       "flagged": false
+      },
+      "method_c_v2_window_check": null
+     },
+     "asr_prompt_applied": false,
+     "non_latin_cascade_enabled": false,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 177,
+      "sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
+      "head200": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible."
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "Beans cost less now. When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less too. But a shop's price may not change right away. When a price tag makes you ask, haven't you heard the news?, it feels like there is a delay.",
+       "classification": "NORMALIZED_MATCH",
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "FULL_STORY",
+      "lang": "en",
+      "segment_key": "full_story_part1_k1",
+      "audio_sha256": "ee1f60b67309f3a8ecc23e7220eb2c590420cc9921f1c6e063808f482fc3b47d",
+      "primary": {
+       "text": "Beans cost less now. When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less too. But a shop's price may not change right away. When a price tag makes you ask, haven't you heard the news?, it feels like there is a delay.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 260,
+       "secondary_len": null,
+       "max_len": 321,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "full_story_part1_k1",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      }
+     },
+     "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_std_12/a2/narration/attempts/full_story_part1_k1_attempt1_customa3c4625e.wav",
+     "post_slowdown_ng": true,
+     "post_slowdown_reason": "post-process(6%減速)後の音声がASR再検証で不一致: classification=NORMALIZED_MATCH",
+     "post_slowdown_asr_text": "Beans cost less now. When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less, too. But a shop's price may not change right away. When a price tag makes you ask, Haven't you heard the news?, it feels like there is a delay."
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "duration_seconds": 16.91,
+     "asr_text": "Beans cost less now. When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less too. But a shop's price may not change right away. When a price tag makes you ask, haven't you heard the news? It feels like there is a delay.",
+     "asr_text_length": 259,
+     "max_len": 321,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "NORMALIZED_MATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": true,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": true,
+     "repetition_qa_evidence": {
+      "flagged": false,
+      "duration_seconds": 16.91,
+      "method_a_ngram": {
+       "matches": [],
+       "flagged": false,
+       "flagged_matches": [],
+       "word_count": 50,
+       "canonical_known": true,
+       "min_words": 3
+      },
+      "method_d_spectral_long_lag": {
+       "top_matches": [
+        {
+         "similarity": 0.9948,
+         "time_a_seconds": 0.05,
+         "time_b_seconds": 11.78,
+         "lag_seconds": 11.73,
+         "run_length_seconds_at_thresh_0.85": 0.08
+        },
+        {
+         "similarity": 0.9944,
+         "time_a_seconds": 0.03,
+         "time_b_seconds": 11.57,
+         "lag_seconds": 11.54,
+         "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+         "similarity": 0.9943,
+         "time_a_seconds": 0.07,
+         "time_b_seconds": 2.22,
+         "lag_seconds": 2.15,
+         "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+         "similarity": 0.9943,
+         "time_a_seconds": 5.44,
+         "time_b_seconds": 11.71,
+         "lag_seconds": 6.27
+        },
+        {
+         "similarity": 0.9935,
+         "time_a_seconds": 0.07,
+         "time_b_seconds": 5.24,
+         "lag_seconds": 5.17
+        }
+       ],
+       "best_run_length_seconds": 0.08,
+       "min_lag_seconds": 1.0,
+       "sim_threshold": 0.85,
+       "decision_threshold_seconds": 0.12,
+       "acoustic_flagged": false,
+       "local_asr_confirmation": null,
+       "flagged": false
+      },
+      "method_d_prime_spectral_short_lag": {
+       "run_length_seconds": 0.22,
+       "time_a": 14.37,
+       "lag": 1.78,
+       "similarity_at_start": 0.8054,
+       "best_run_length_seconds": 0.22,
+       "lag_range_seconds": [
+        0.5,
+        2.0
+       ],
+       "sim_threshold": 0.7,
+       "decision_threshold_seconds": 0.6,
+       "flagged": false
+      },
+      "method_c_v2_window_check": null
+     },
+     "asr_prompt_applied": false,
+     "non_latin_cascade_enabled": false,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 177,
+      "sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
+      "head200": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible."
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "Beans cost less now. When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less too. But a shop's price may not change right away. When a price tag makes you ask, haven't you heard the news? It feels like there is a delay.",
+       "classification": "NORMALIZED_MATCH",
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 2,
+      "script_version": "v0",
+      "role": "FULL_STORY",
+      "lang": "en",
+      "segment_key": "full_story_part1_k1",
+      "audio_sha256": "d17572bfb2cc2ba14b3d4fda9668c0a6bda25701e5d1aadfffbb2a540a8a2c91",
+      "primary": {
+       "text": "Beans cost less now. When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less too. But a shop's price may not change right away. When a price tag makes you ask, haven't you heard the news? It feels like there is a delay.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 259,
+       "secondary_len": null,
+       "max_len": 321,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "full_story_part1_k1",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      }
+     },
+     "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_std_12/a2/narration/attempts/full_story_part1_k1_attempt3_customa3c4625e.wav"
+    }
+   ]
+  }
+ },
+ "block_progress": {
+  "full_story_part1_k1.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "f42237d0fffa557db66bfcfc",
+   "segment_id": "full_story_part1_k1",
+   "fingerprint": {
+    "leaf": "L3",
+    "style_prefix_override": "3a680861e4d9d1bc",
+    "tts_backend": "7b7d9d14787b08f6",
+    "policy": "EN_LR_STD"
+   },
+   "status": "DONE",
+   "created_epoch": 1793152446.7674792,
+   "updated_epoch": 1793152471.6162522,
+   "blocks": {
+    "0": {
+     "n_started": 2,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793152446.770045,
+       "finished_epoch": 1793152457.5690112,
+       "verified": false
+      },
+      "2": {
+       "started_epoch": 1793152457.5763683,
+       "finished_epoch": 1793152471.5936875,
+       "verified": true
+      }
+     },
+     "cooldown": null
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_adoption": {
+    "depth": 0,
+    "ordinal": 2,
+    "slot": "②",
+    "style_mode": "PRIMARY",
+    "sent_style_sha": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
+    "attempt_audio_sha": "b14d5d32d7599e04a8c43e654bb2c62c267460c8913ff593842b33be050c0a16",
+    "source": "tts_attempt"
+   },
+   "final_status": "OK"
+  }
+ },
+ "results_segments": {
+  "full_story_part1_k1": {
+   "status": "OK",
+   "fallback_used": false,
+   "voice": "Aoede",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_prefix": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news cl",
+   "asr_verified": true,
+   "asr_text": "Beans cost less now. When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less, too. But a shop's price may not change right away. When a price tag makes you ask, haven't you heard the news? It feels like there is a delay.",
+   "canonical_text": "“Beans cost less now!” When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less, too. But a shop’s price may not change right away. When a price tag makes you ask, “Haven’t you heard the news?”, it feels like there is a delay.",
+   "slowdown_applied": true,
+   "path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_std_12/a2/narration/full_story_part1_k1.wav",
+   "style_prefix_sha": "3a680861e4d9",
+   "attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "Beans cost less now. When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less too. But a shop's price may not change right away. When a price tag makes you ask, haven't you heard the news?, it feels like there is a delay.",
+     "audio_classification": "NORMALIZED_MATCH",
+     "disfluency_checked": false,
+     "post_slowdown_ng": true
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "verified": true,
+     "asr_text": "Beans cost less now. When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less too. But a shop's price may not change right away. When a price tag makes you ask, haven't you heard the news? It feels like there is a delay.",
+     "audio_classification": "NORMALIZED_MATCH",
+     "disfluency_checked": false
+    }
+   ]
+  }
+ },
+ "results_key_phrases": {},
+ "attempt_sidecars": [
+  {
+   "file": "full_story_part1_k1_attempt1_customa3c4625e.json",
+   "segment_id": "full_story_part1_k1",
+   "attempt_number": 1,
+   "route": "custom_a3c4625e",
+   "saved_at": "2026-10-28T10:54:16",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while",
+   "instruction_sha": "3a680861e4d9",
+   "instruction_chars": 177,
+   "verified": true,
+   "audio_classification": "NORMALIZED_MATCH",
+   "asr_text": "Beans cost less now. When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less too. But a shop's price may not change right away. When a price tag makes you ask, haven't you heard the news?, it feels like there is a delay.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "full_story_part1_k1_attempt2_postslowdown.json",
+   "segment_id": "full_story_part1_k1",
+   "attempt_number": 2,
+   "route": "post_slowdown",
+   "saved_at": "2026-10-28T10:54:17",
+   "loop_attempt_index": null,
+   "max_attempts": null,
+   "model": null,
+   "voice": null,
+   "tts_backend": null,
+   "tts_execution_mode": null,
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": null,
+   "asr_text": null,
+   "disfluency_checked": null,
+   "cascade_providers": [],
+   "slowdown": {
+    "post_slowdown_asr_text": "Beans cost less now. When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less, too. But a shop's price may not change right away. When a price tag makes you ask, Haven't you heard the news?, it feels like there is a delay.",
+    "post_slowdown_classification": "NORMALIZED_MATCH"
+   }
+  },
+  {
+   "file": "full_story_part1_k1_attempt3_customa3c4625e.json",
+   "segment_id": "full_story_part1_k1",
+   "attempt_number": 3,
+   "route": "custom_a3c4625e",
+   "saved_at": "2026-10-28T10:54:27",
+   "loop_attempt_index": 2,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while",
+   "instruction_sha": "3a680861e4d9",
+   "instruction_chars": 177,
+   "verified": true,
+   "audio_classification": "NORMALIZED_MATCH",
+   "asr_text": "Beans cost less now. When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less too. But a shop's price may not change right away. When a price tag makes you ask, haven't you heard the news? It feels like there is a delay.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "full_story_part1_k1_attempt4_postslowdown.json",
+   "segment_id": "full_story_part1_k1",
+   "attempt_number": 4,
+   "route": "post_slowdown",
+   "saved_at": "2026-10-28T10:54:31",
+   "loop_attempt_index": null,
+   "max_attempts": null,
+   "model": null,
+   "voice": null,
+   "tts_backend": null,
+   "tts_execution_mode": null,
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": true,
+   "audio_classification": null,
+   "asr_text": null,
+   "disfluency_checked": null,
+   "cascade_providers": [],
+   "slowdown": {
+    "post_slowdown_asr_text": "Beans cost less now. When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less, too. But a shop's price may not change right away. When a price tag makes you ask, haven't you heard the news? It feels like there is a delay.",
+    "post_slowdown_classification": "NORMALIZED_MATCH"
+   }
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 1.193,
+  "by_provider": {
+   "openai": 0.03,
+   "gemini": 0.83,
+   "openai_asr": 0.34
+  }
+ },
+ "gate_observation": {
+  "status_all": "BLOCK",
+  "my_segment_blocked": [],
+  "my_segment_warnings": [],
+  "note": "m3_assembly_gate(承認済みprofile)を実resultsへ適用。全体statusは未生成segmentのNO_SEGMENT_RECORDを含むため my_* のみ参照",
+  "std_chunk_slowdown_gate": {
+   "status": "BLOCKED_STD_CHUNK_SLOWDOWN_GATE",
+   "blocked": [
+    {
+     "segment": "full_story_part1_k2",
+     "violations": [
+      "STD_CHUNK_MISSING_MANDATORY_A2_SLOWDOWN"
+     ]
+    },
+    {
+     "segment": "full_story_part1_k3",
+     "violations": [
+      "STD_CHUNK_MISSING_MANDATORY_A2_SLOWDOWN"
+     ]
+    },
+    {
+     "segment": "full_story_part2_k1",
+     "violations": [
+      "STD_CHUNK_MISSING_MANDATORY_A2_SLOWDOWN"
+     ]
+    },
+    {
+     "segment": "full_story_part2_k2",
+     "violations": [
+      "STD_CHUNK_MISSING_MANDATORY_A2_SLOWDOWN"
+     ]
+    },
+    {
+     "segment": "full_story_part2_k3",
+     "violations": [
+      "STD_CHUNK_MISSING_MANDATORY_A2_SLOWDOWN"
+     ]
+    },
+    {
+     "segment": "full_story_part2_k4",
+     "violations": [
+      "STD_CHUNK_MISSING_MANDATORY_A2_SLOWDOWN"
+     ]
+    },
+    {
+     "segment": "full_story_part3_k1",
+     "violations": [
+      "STD_CHUNK_MISSING_MANDATORY_A2_SLOWDOWN"
+     ]
+    },
+    {
+     "segment": "full_story_part3_k2",
+     "violations": [
+      "STD_CHUNK_MISSING_MANDATORY_A2_SLOWDOWN"
+     ]
+    },
+    {
+     "segment": "full_story_part3_k3",
+     "violations": [
+      "STD_CHUNK_MISSING_MANDATORY_A2_SLOWDOWN"
+     ]
+    }
+   ],
+   "reason": "Std本文chunkに6%減速(chunk単位)の証跡がありません。本runnerはこのGateを回避しません。"
+  }
+ },
+ "resumed_run": false
+}

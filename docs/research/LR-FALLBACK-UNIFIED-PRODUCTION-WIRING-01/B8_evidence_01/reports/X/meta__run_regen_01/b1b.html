@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>最終Human報告用資料 b8 Advanced</title>
+<!--FINAL_HUMAN_REPORT-->
+<style>:root{--lr:#c00000;--fb:#0a2a6b;--ink:#1d2430;--mut:#667085;--line:#d8dde6;--bg:#f6f7f9}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.8 -apple-system,"Segoe UI","Yu Gothic",Meiryo,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:20px} h2{font-size:17px;margin:34px 0 8px;border-bottom:2px solid var(--line);padding-bottom:4px}
+.card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:14px 0}
+.meta{color:var(--mut);font-size:13px}
+table{border-collapse:collapse;width:100%;font-size:13px} th,td{border:1px solid var(--line);padding:4px 8px;text-align:left;vertical-align:top} th{background:#eef1f6}
+.fhr-chip{display:inline-block;font-size:12px;font-weight:700;border-radius:4px;padding:0 6px;margin-right:6px;border:1px solid}
+.fhr-chip-lr{color:var(--lr);border-color:var(--lr);background:#fff0f0}
+.fhr-chip-fb{color:var(--fb);border-color:var(--fb);background:#eef3ff}
+.fhr-chip-none{color:var(--mut);border-color:var(--line);background:#fafafa}
+.fhr-chip-gap{color:#7a4b00;border-color:#d8a200;background:#fff8e0}
+.fhr-lr-after{color:var(--lr);font-weight:700;text-decoration:underline double}
+.fhr-lr-before{color:var(--lr);text-decoration:line-through}
+.fhr-fb-block{color:var(--fb);border-left:5px solid var(--fb);padding:2px 0 2px 10px;margin:8px 0}
+.fhr-fb-note{color:var(--fb);font-size:13px}
+.fhr-hist{color:#555;font-size:13px;background:#f3f4f6;border-radius:6px;padding:6px 10px;margin:8px 0}
+.fhr-gap{background:#fff8e0;border:1px dashed #d8a200;border-radius:6px;padding:6px 10px;margin:8px 0;font-size:13px;color:#5c3b00}
+.fhr-warnband{background:#fff8e0;border:2px solid #d8a200;border-radius:6px;padding:8px 12px;margin:12px 0;font-weight:700;color:#5c3b00}
+</style></head><body><div class="wrap">
+<h1>最終Human報告用資料: b8 / Advanced<br><span class="meta">Family X / run=meta__run_regen_01 / 作成日 2026-10-28。TTS・ASR・組立の完了後にだけ作る確認資料です。学習者向けページではなく、この資料の注記は読み上げ対象ではありません。</span></h1>
+<div class="card"><b>凡例</b><br><span class="fhr-chip fhr-chip-lr">LR</span>Local Rewrite(英文の言い換え)。変更後=<span class="fhr-lr-after">赤・太字・二重下線</span> / 変更前=<span class="fhr-lr-before">赤・取消線</span><br><span class="fhr-chip fhr-chip-fb">Fallback</span><span style="color:var(--fb)">対象テキスト全体と注記を濃い青</span>(左に青い太線)<br><span class="fhr-chip fhr-chip-none">発動なし</span>灰色。最終採用に影響しない実行履歴は灰色の枠(色の意味を持たない)<br><span class="fhr-chip fhr-chip-gap">記録なし</span>保存記録が足りず断定できない項目。推測で埋めずそのまま明示します<br>色が見えにくい場合も、文字ラベル(LR / Fallback / 発動なし / 記録なし)で区別できます。時刻・cooldown・pathは表示しません。</div>
+<div class="fhr-warnband">記録なし/採用なしの音声単位が5件あります。該当カードの「記録なし」を確認してください(推測では埋めていません)。</div>
+<h2>0. 要約表(音声単位 25 件 / LR 1 件 / Fallback 0 件 / TTS未実行 0 件)</h2><table><tr><th>Role</th><th>単位数</th><th>LR</th><th>Fallback</th><th>記録なし</th><th>対象外(固定)</th><th>TTS未実行</th></tr>
+<tr><td>トピック紹介</td><td>1</td><td>発動なし</td><td>発動なし</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>Preview</td><td>1</td><td>発動なし</td><td>発動なし</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>コメント</td><td>4</td><td>発動なし</td><td>発動なし</td><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>本文</td><td>3</td><td>発動なし</td><td>発動なし</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>in_one_line</td><td>1</td><td>1</td><td>発動なし</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>Key Phrase英語</td><td>5</td><td>発動なし</td><td>発動なし</td><td>2</td><td>0</td><td>0</td></tr>
+<tr><td>Key Phrase英語解説</td><td>5</td><td>発動なし</td><td>発動なし</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>phrase_repeat</td><td>5</td><td>発動なし</td><td>発動なし</td><td>2</td><td>0</td><td>0</td></tr>
+</table>
+<h2>1. 音声単位ごとの確認(Advanced)</h2>
+<div class="card">
+<div class="meta">トピック紹介 / topic_intro</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p>Today&#x27;s topic is A Human Joined an AI Phone Call. The Problem Was the “Cast Change” Notice.</p>
+</div>
+<div class="card">
+<div class="meta">Preview / preview</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p>Meta tested phone calls made through Muse, and the test raised questions about how a new AI service should be tested. Listen to find out what made this test a concern and why the way a service is tested matters.</p>
+</div>
+<div class="card">
+<div class="meta">コメント / comment_1</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p>Listen for the question the story raises about whether people know who is on the other end of these calls.</p>
+</div>
+<div class="card">
+<div class="meta">コメント / comment_2</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-gap">採用なし(終端NG)</span></p>
+<p>Some Muse calls were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?</p>
+</div>
+<div class="card">
+<div class="meta">コメント / comment_3</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p>Some Muse calls involved human workers, but people on the other end were not properly told. Listen for what the story says about making that handoff clear.</p>
+</div>
+<div class="card">
+<div class="meta">コメント / comment_4</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p>This story was not only about who handled the calls. It was also about what people should be told when a person takes over. Now, let’s bring the main idea together.</p>
+</div>
+<div class="card">
+<div class="meta">本文 / full_story_part1</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p>I was impressed: “AI can even make phone calls. The future is here!” But the person handling the request on the other end of the line was human. Wait—what a sudden change of genre, from science fiction to a workplace drama. Still, the heart of this story is not “So it was a human after all!” It is whether people were properly told about the change in who was taking part.
+
+Meta was testing some calls made through Muse in which trained contract workers made the calls and completed the conversations with the other person. They tested a setup where Muse handed the work over to a human agent. Not all calls were handled by humans. It’s too soon to put up a caption saying, “Actually, it was all done by people!”</p>
+</div>
+<div class="card">
+<div class="meta">本文 / full_story_part2</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p>But one important notice was missing from this test. The vice president of Meta’s Superintelligence Labs division admitted in an internal post that starting a test in which contract workers made calls without proper disclosure was a “mistake.” The vice president also said that Meta had rolled back its human concierge feature for now.
+
+Let’s check the breaking-news caption once more. What they pulled back was the human concierge feature. They did not stop all calls through Muse. Canceling an entire show and pausing one segment are two different things.
+
+So, is it bad in itself to bring in a human helper? There may be times when handing things to a person helps move the conversation forward. But there is a big difference between telling someone, “A person will take over from here,” and quietly changing the cast backstage. In a movie, you might clap and say, “Ah, so that’s who it is!” when a mysterious person is revealed. But you may not want a surprise reveal in a conversation you are part of.</p>
+</div>
+<div class="card">
+<div class="meta">本文 / full_story_part3</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p>Some people may choose their words or feel differently when they think they are talking to AI than when they know they are talking to a person. Even if the request is handled without a problem, that does not mean the disclosure issue can be brushed aside with “it all worked out in the end.” That was exactly the point Meta itself admitted it had got wrong.
+
+Convenience matters. But for some people, knowing who they are talking to matters just as much. If AI hands the baton to a person, that one line saying so is part of the service, too. The person taking over does not have to be a secret guest.</p>
+</div>
+<div class="card">
+<div class="meta">in_one_line / in_one_line</div>
+<p><span class="fhr-chip fhr-chip-lr">LR</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p><b>Local Rewrite発動(最終採用音声に反映)</b><br>変更後の英文(最終表示本文・TTS入力・ASR正解原稿で一致):<br>Meta admitted it was a mistake to have contractors <span class="fhr-lr-after">manage</span> some Muse calls without telling the people they called.</p>
+<p class="meta">変更前: Meta admitted it was a mistake to have contractors <span class="fhr-lr-before">handle</span> some Muse calls without telling the people they called.</p>
+<p class="meta">変更語句: handle → manage(1箇所)。理由: Swaps in a natural verb while keeping the summary’s meaning and structure.</p>
+<div class="fhr-hist"><b>実行履歴(最終採用とは別。色の意味なし)</b><br>LR前の元ブロックの試行は不採用。最終採用音声はLR後ブロックの採用take。</div>
+<table><tr><th>照合</th><th>結果</th></tr><tr><td>表示本文=TTS入力=ASR正解原稿</td><td>PASS_NORMALIZED</td></tr><tr><td>確定内容との重なり(T1/T2/T3)</td><td>SKIPPED/SKIPPED/PASS</td></tr></table>
+</div>
+<div class="card">
+<div class="meta">Key Phrase英語 / kp1_en</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-gap">Fallback 記録なし</span></p>
+<p>human concierge feature</p>
+<div class="fhr-gap"><span class="fhr-chip fhr-chip-gap">記録なし</span>最終採用音声のStyle(Fallbackか通常Styleか)を保存記録から確定できません。断定しません。</div>
+</div>
+<div class="card">
+<div class="meta">Key Phrase英語解説 / kp1_explanation</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p>a feature that lets users get help from a real person</p>
+</div>
+<div class="card">
+<div class="meta">phrase_repeat / kp1_phrase_repeat</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-gap">Fallback 記録なし</span></p>
+<p>human concierge feature</p>
+<div class="fhr-gap"><span class="fhr-chip fhr-chip-gap">記録なし</span>最終採用音声のStyle(Fallbackか通常Styleか)を保存記録から確定できません。断定しません。</div>
+</div>
+<div class="card">
+<div class="meta">Key Phrase英語 / kp2_en</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p>roll back</p>
+</div>
+<div class="card">
+<div class="meta">Key Phrase英語解説 / kp2_explanation</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p>to reverse a change or stop using something that was recently introduced</p>
+</div>
+<div class="card">
+<div class="meta">phrase_repeat / kp2_phrase_repeat</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p>roll back</p>
+</div>
+<div class="card">
+<div class="meta">Key Phrase英語 / kp3_en</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p>brush aside</p>
+</div>
+<div class="card">
+<div class="meta">Key Phrase英語解説 / kp3_explanation</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p>to treat something as unimportant and avoid dealing with it</p>
+</div>
+<div class="card">
+<div class="meta">phrase_repeat / kp3_phrase_repeat</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p>brush aside</p>
+</div>
+<div class="card">
+<div class="meta">Key Phrase英語 / kp4_en</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-gap">Fallback 記録なし</span></p>
+<p>take over</p>
+<div class="fhr-gap"><span class="fhr-chip fhr-chip-gap">記録なし</span>最終採用音声のStyle(Fallbackか通常Styleか)を保存記録から確定できません。断定しません。</div>
+</div>
+<div class="card">
+<div class="meta">Key Phrase英語解説 / kp4_explanation</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p>to begin doing a job or taking responsibility from someone else</p>
+</div>
+<div class="card">
+<div class="meta">phrase_repeat / kp4_phrase_repeat</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-gap">Fallback 記録なし</span></p>
+<p>take over</p>
+<div class="fhr-gap"><span class="fhr-chip fhr-chip-gap">記録なし</span>最終採用音声のStyle(Fallbackか通常Styleか)を保存記録から確定できません。断定しません。</div>
+</div>
+<div class="card">
+<div class="meta">Key Phrase英語 / kp5_en</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p>work out</p>
+</div>
+<div class="card">
+<div class="meta">Key Phrase英語解説 / kp5_explanation</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p>to end successfully or have a good result</p>
+</div>
+<div class="card">
+<div class="meta">phrase_repeat / kp5_phrase_repeat</div>
+<p><span class="fhr-chip fhr-chip-none">LR 発動なし</span><span class="fhr-chip fhr-chip-none">Fallback 発動なし</span></p>
+<p>work out</p>
+</div>
+<p class="meta">この資料は学習者向けページ・TTS入力・ASR正解原稿・Style Promptには使用しません。KP/文法の学習用表示は転載していません。</p>
+</div></body></html>

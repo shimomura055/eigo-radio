@@ -1,0 +1,724 @@
+{
+ "management_id": "LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01",
+ "case": "B8-X-Adv-14b",
+ "family": "X",
+ "level": "b1b",
+ "scenario": "E-S1(Opus4-c b: Voice=Charon・再実行)",
+ "leaf": "L1",
+ "policy": "EN_LR_ADV",
+ "segments": [
+  "preview"
+ ],
+ "run_dir": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_adv_14b",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {
+   "*": [
+    1,
+    2
+   ]
+  },
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [
+  {
+   "kind": "judge_ng",
+   "clip": "preview",
+   "slot": 1,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "preview",
+   "slot": 2,
+   "judge_kind": "en"
+  }
+ ],
+ "injected_override_count": 2,
+ "started_at": "2026-10-28T10:35:06",
+ "ended_at": "2026-10-28T10:38:29",
+ "wall_seconds": 203.0,
+ "pid": 32616,
+ "exception": null,
+ "tts_attempts": [
+  {
+   "clip": "preview",
+   "t": 3.14,
+   "voice": "Charon",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "8862317ff766",
+   "style_head": "calm, composed news anchor; steady and unhurried, clear and natural.",
+   "style_chars": 68,
+   "text_head": "Coffee prices can change for several reasons, and the news can be hard to make s",
+   "text_sha": "dd3c78acbcdc",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "preview",
+   "t": 7.11,
+   "voice": "Charon",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "8862317ff766",
+   "style_head": "calm, composed news anchor; steady and unhurried, clear and natural.",
+   "style_chars": 68,
+   "text_head": "Coffee prices can change for several reasons, and the news can be hard to make s",
+   "text_sha": "dd3c78acbcdc",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "preview",
+   "t": 191.42,
+   "voice": "Charon",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "dba23e664f38",
+   "style_head": "natural, clear, conversational",
+   "style_chars": 30,
+   "text_head": "Coffee prices can change for several reasons, and the news can be hard to make s",
+   "text_sha": "dd3c78acbcdc",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 3,
+ "tts_api_calls": 3,
+ "judges": [
+  {
+   "clip": "preview",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "EXACT_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Coffee prices can change for several reasons, and the news can be hard to make sense of. In this episode, we'll look at "
+  },
+  {
+   "clip": "preview",
+   "kind": "en",
+   "slot": 2,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Coffee prices can change for several reasons, and the news can be hard to make sense of. In this episode, we'll look at "
+  },
+  {
+   "clip": "preview",
+   "kind": "en",
+   "slot": 3,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "EXACT_MATCH",
+   "force_secondary": true,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "Coffee prices can change for several reasons, and the news can be hard to make sense of. In this episode, we'll look at "
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [
+  {
+   "label": "preview",
+   "requested_seconds": 180.0,
+   "actual_seconds": 179.99,
+   "started_at": "2026-10-28T10:35:18",
+   "ended_at": "2026-10-28T10:38:18",
+   "resumed": false,
+   "attempt_before": 2,
+   "attempt_after": 3,
+   "total_elapsed_since_ref_seconds": 180.001,
+   "wall_start_epoch": 1793151318.081854
+  }
+ ],
+ "cooldown_count": 1,
+ "sleep_total_seconds": 180.0,
+ "stop_checks": {
+  "cooldown": 36,
+  "attempt": 3,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [
+  "COOLDOWN_BEFORE_BLOCK_ATTEMPT",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "preview": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "dd3c78acbcdc689c1cf0efcebe037bf9f2b34ca7620821d2ea1e9cd9aa8c18f1",
+   "language": "en",
+   "theme_id": "coffee_prices__run_tru_ev_b8_x_adv_14b",
+   "level": "b1b",
+   "segment_id": "preview",
+   "updated_at": "2026-10-28T10:38:29",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_adv_14b/b1b/narration/preview.wav",
+   "cumulative_tts_attempts": 3,
+   "cumulative_asr_calls": 3,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "asr_text": "Coffee prices can change for several reasons, and the news can be hard to make sense of. In this episode, we'll look at what is behind the latest coffee price story and what the news can tell us.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "PREVIEW",
+      "lang": "en",
+      "segment_key": "preview",
+      "audio_sha256": "539e89c0de9cc9fc65818e66ef6038e9555db7641967333764de1c225ce17bae",
+      "primary": {
+       "text": "Coffee prices can change for several reasons, and the news can be hard to make sense of. In this episode, we'll look at what is behind the latest coffee price story and what the news can tell us.",
+       "passed": true,
+       "label": "EXACT_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 195,
+       "secondary_len": null,
+       "max_len": 210,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "preview",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "instruction_type": "english_style_prefix",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "semantic_equivalence": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": false,
+     "trim_info": {
+      "raw_duration_seconds": 12.6,
+      "raw_leading_silence_seconds": 0.32,
+      "raw_trailing_silence_seconds": 0.36,
+      "trimmed_duration_seconds": 12.59,
+      "leading_margin_retained_seconds": 0.32,
+      "trailing_margin_retained_seconds": 0.35
+     },
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_adv_14b/b1b/narration/attempts/preview_attempt1_englishstyleprefix.wav"
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "asr_text": "Coffee prices can change for several reasons, and the news can be hard to make sense of. In this episode, we'll look at what is behind the latest coffee price story, and what the news can tell us.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 2,
+      "script_version": "v0",
+      "role": "PREVIEW",
+      "lang": "en",
+      "segment_key": "preview",
+      "audio_sha256": "c3e1d324842f6b1df70a05f97090b621f168878a94ab38dbcb6a3d4fd9a640a8",
+      "primary": {
+       "text": "Coffee prices can change for several reasons, and the news can be hard to make sense of. In this episode, we'll look at what is behind the latest coffee price story, and what the news can tell us.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 196,
+       "secondary_len": null,
+       "max_len": 210,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "preview",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "instruction_type": "english_style_prefix",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "semantic_equivalence": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": false,
+     "trim_info": {
+      "raw_duration_seconds": 12.56,
+      "raw_leading_silence_seconds": 0.24,
+      "raw_trailing_silence_seconds": 0.28,
+      "trimmed_duration_seconds": 12.56,
+      "leading_margin_retained_seconds": 0.24,
+      "trailing_margin_retained_seconds": 0.28
+     },
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_adv_14b/b1b/narration/attempts/preview_attempt2_englishstyleprefix.wav"
+    },
+    {
+     "attempt": 3,
+     "status": "OK",
+     "asr_text": "Coffee prices can change for several reasons, and the news can be hard to make sense of. In this episode, we'll look at what is behind the latest coffee price story and what the news can tell us.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "force_secondary_agreed",
+      "slot": 3,
+      "script_version": "v0",
+      "role": "PREVIEW",
+      "lang": "en",
+      "segment_key": "preview",
+      "audio_sha256": "9c779ba321b5c9d8e86dc03757aa3e1ff693da3b68017781652cd5186a9dc799",
+      "primary": {
+       "text": "Coffee prices can change for several reasons, and the news can be hard to make sense of. In this episode, we'll look at what is behind the latest coffee price story and what the news can tell us.",
+       "passed": true,
+       "label": "EXACT_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": true,
+       "cached": false,
+       "engine": "azure",
+       "text": "Coffee prices can change for several reasons, and the news can be hard to make sense of. In this episode, we'll look at what is behind the latest coffee price story and what the news can tell us.",
+       "label": "EXACT_MATCH",
+       "accepted": true,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       },
+       "secondary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false,
+       "secondary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "target": "secondary",
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 1,
+       "azure_seconds": 11.17,
+       "est_jpy": 0.5333,
+       "est_jpy_known": true
+      },
+      "timing": {
+       "total_ms": 3544,
+       "secondary_ms": 3542
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 195,
+       "secondary_len": 195,
+       "max_len": 210,
+       "adopted_from": "secondary",
+       "adopted_ok": true,
+       "surface_len": 153,
+       "primary_ok": true
+      },
+      "p3_entry": "force_secondary",
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 1,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "preview",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 2,
+        "hits": 0
+       }
+      }
+     },
+     "instruction_type": "minimal_fallback",
+     "audio_classification": "EXACT_MATCH",
+     "connected_speech_info": null,
+     "semantic_equivalence": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": true,
+     "trim_info": {
+      "raw_duration_seconds": 11.24,
+      "raw_leading_silence_seconds": 0.24,
+      "raw_trailing_silence_seconds": 0.42,
+      "trimmed_duration_seconds": 11.17,
+      "leading_margin_retained_seconds": 0.24,
+      "trailing_margin_retained_seconds": 0.35
+     },
+     "disfluency_checked": true,
+     "disfluency_evidence": {
+      "flagged": false,
+      "repeats": [],
+      "word_count": 38,
+      "transcript": "Coffee  prices  can  change  for  several  reasons,  and  the  news  can  be  hard  to  make  sense  of.  In  this  episode,  we'll  look  at  what  is  behind  the  latest  coffee  price  story,  and  what  the  news  can  tell  us.",
+      "method": "faster_whisper_small_local_verbatim"
+     },
+     "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_adv_14b/b1b/narration/attempts/preview_attempt3_minimalfallback.wav"
+    }
+   ]
+  }
+ },
+ "block_progress": {
+  "preview.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "a808bd48ce491f7747c987f7",
+   "segment_id": "preview",
+   "fingerprint": {
+    "leaf": "L1",
+    "style_prefix_override": "8862317ff76693ff",
+    "tts_backend": "7b7d9d14787b08f6",
+    "enable_pronunciation_resolver": true,
+    "policy": "EN_LR_ADV"
+   },
+   "status": "DONE",
+   "created_epoch": 1793151309.796768,
+   "updated_epoch": 1793151509.6043077,
+   "blocks": {
+    "0": {
+     "n_started": 3,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793151309.799943,
+       "finished_epoch": 1793151313.7687244,
+       "verified": false
+      },
+      "2": {
+       "started_epoch": 1793151313.7764406,
+       "finished_epoch": 1793151318.0715835,
+       "verified": false
+      },
+      "3": {
+       "started_epoch": 1793151498.0813708,
+       "finished_epoch": 1793151509.5778182,
+       "verified": true
+      }
+     },
+     "cooldown": {
+      "before_ordinal": 3,
+      "cooldown_started_at": "2026-10-28T10:35:18",
+      "cooldown_ended_at": "2026-10-28T10:38:18",
+      "cooldown_actual_seconds": 179.99,
+      "total_elapsed_since_ref_seconds": 180.001,
+      "resumed": false
+     }
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_adoption": {
+    "depth": 0,
+    "ordinal": 3,
+    "slot": "③",
+    "style_mode": "FALLBACK",
+    "sent_style_sha": "dba23e664f387c6641f9dd003cf4571f78af87613c68536ddbb5f1e52cad964b",
+    "attempt_audio_sha": "9c779ba321b5c9d8e86dc03757aa3e1ff693da3b68017781652cd5186a9dc799",
+    "source": "tts_attempt"
+   },
+   "final_status": "OK"
+  }
+ },
+ "results_segments": {
+  "preview": {
+   "status": "OK",
+   "fallback_used": true,
+   "instruction_type": "minimal_fallback",
+   "voice": "Charon",
+   "model": "gemini-3.8-flash-lite-tts",
+   "tts_model_id": "gemini-3.8-flash-lite-tts",
+   "style_prefix": "natural, clear, conversational",
+   "asr_verified": true,
+   "asr_text": "Coffee prices can change for several reasons, and the news can be hard to make sense of. In this episode, we'll look at what is behind the latest coffee price story and what the news can tell us.",
+   "canonical_text": "Coffee prices can change for several reasons, and the news can be hard to make sense of. In this episode, we’ll look at what is behind the latest coffee price story and what the news can tell us.",
+   "cooldown_events": [
+    {
+     "cooldown_requested_seconds": 180.0,
+     "cooldown_actual_seconds": 179.99,
+     "cooldown_started_at": "2026-10-28T10:35:18",
+     "cooldown_ended_at": "2026-10-28T10:38:18",
+     "attempt_before_cooldown": 2,
+     "attempt_after_cooldown": 3,
+     "total_elapsed_since_ref_seconds": 180.001,
+     "resumed": false
+    }
+   ],
+   "path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_adv_14b/b1b/narration/preview.wav",
+   "style_prefix_sha": "dba23e664f38",
+   "attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": false,
+     "instruction_type": "english_style_prefix",
+     "asr_text": "Coffee prices can change for several reasons, and the news can be hard to make sense of. In this episode, we'll look at what is behind the latest coffee price story and what the news can tell us.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "verified": false,
+     "instruction_type": "english_style_prefix",
+     "asr_text": "Coffee prices can change for several reasons, and the news can be hard to make sense of. In this episode, we'll look at what is behind the latest coffee price story, and what the news can tell us.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 3,
+     "status": "OK",
+     "verified": true,
+     "instruction_type": "minimal_fallback",
+     "asr_text": "Coffee prices can change for several reasons, and the news can be hard to make sense of. In this episode, we'll look at what is behind the latest coffee price story and what the news can tell us.",
+     "audio_classification": "EXACT_MATCH",
+     "disfluency_checked": true
+    }
+   ]
+  }
+ },
+ "results_key_phrases": {},
+ "attempt_sidecars": [
+  {
+   "file": "preview_attempt1_englishstyleprefix.json",
+   "segment_id": "preview",
+   "attempt_number": 1,
+   "route": "english_style_prefix",
+   "saved_at": "2026-10-28T10:35:13",
+   "loop_attempt_index": 1,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Charon",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Coffee prices can change for several reasons, and the news can be hard to make sense of. In this episode, we'll look at what is behind the latest coffee price story and what the news can tell us.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "preview_attempt2_englishstyleprefix.json",
+   "segment_id": "preview",
+   "attempt_number": 2,
+   "route": "english_style_prefix",
+   "saved_at": "2026-10-28T10:35:18",
+   "loop_attempt_index": 2,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Charon",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Coffee prices can change for several reasons, and the news can be hard to make sense of. In this episode, we'll look at what is behind the latest coffee price story, and what the news can tell us.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "preview_attempt3_minimalfallback.json",
+   "segment_id": "preview",
+   "attempt_number": 3,
+   "route": "minimal_fallback",
+   "saved_at": "2026-10-28T10:38:29",
+   "loop_attempt_index": 3,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Charon",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": true,
+   "audio_classification": "EXACT_MATCH",
+   "asr_text": "Coffee prices can change for several reasons, and the news can be hard to make sense of. In this episode, we'll look at what is behind the latest coffee price story and what the news can tell us.",
+   "disfluency_checked": true,
+   "cascade_providers": [],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 1.59,
+  "by_provider": {
+   "openai": 0.03,
+   "gemini": 0.88,
+   "openai_asr": 0.18,
+   "azure": 0.5
+  }
+ },
+ "gate_observation": {
+  "status_all": "BLOCK",
+  "my_segment_blocked": [
+   {
+    "segment": "preview",
+    "violations": [
+     "FINAL_STYLE_SHA_MISMATCH_NO_HINT",
+     "PREVIEW_STYLE_PREFIX_NOT_E1_PREFIXED",
+     "PREVIEW_MINIMAL_FALLBACK"
+    ]
+   }
+  ],
+  "my_segment_warnings": [],
+  "note": "m3_assembly_gate(承認済みprofile)を実resultsへ適用。全体statusは未生成segmentのNO_SEGMENT_RECORDを含むため my_* のみ参照"
+ },
+ "resumed_run": false
+}

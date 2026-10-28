@@ -1,0 +1,1199 @@
+{
+ "management_id": "LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01",
+ "case": "B8-Y-Std-4c",
+ "family": "Y",
+ "level": "a2",
+ "scenario": "E-S1+YGate",
+ "leaf": "L4",
+ "policy": "EN_LR_STD",
+ "segments": [
+  "y_voice_1"
+ ],
+ "run_dir": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_b8_y_std_4c",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {
+   "*": [
+    1,
+    2
+   ]
+  },
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [
+  {
+   "kind": "judge_ng",
+   "clip": "y_voice_1",
+   "slot": 1,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "y_voice_1",
+   "slot": 2,
+   "judge_kind": "en"
+  }
+ ],
+ "injected_override_count": 2,
+ "started_at": "2026-10-28T11:09:26",
+ "ended_at": "2026-10-28T11:14:14",
+ "wall_seconds": 288.7,
+ "pid": 28204,
+ "exception": null,
+ "tts_attempts": [
+  {
+   "clip": "y_voice_1",
+   "t": 5.05,
+   "voice": "Puck",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "3a680861e4d9",
+   "style_head": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while",
+   "style_chars": 177,
+   "text_head": "When I leave a note saying no one was home, I feel a little sad, too. But then I",
+   "text_sha": "6d001e5b8be1",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "y_voice_1",
+   "t": 13.42,
+   "voice": "Puck",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "3a680861e4d9",
+   "style_head": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while",
+   "style_chars": 177,
+   "text_head": "When I leave a note saying no one was home, I feel a little sad, too. But then I",
+   "text_sha": "6d001e5b8be1",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "y_voice_1",
+   "t": 202.04,
+   "voice": "Puck",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "dba23e664f38",
+   "style_head": "natural, clear, conversational",
+   "style_chars": 30,
+   "text_head": "When I leave a note saying no one was home, I feel a little sad, too. But then I",
+   "text_sha": "6d001e5b8be1",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "y_voice_1",
+   "t": 261.56,
+   "voice": "Puck",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "3a680861e4d9",
+   "style_head": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while",
+   "style_chars": 177,
+   "text_head": "When I leave a note saying no one was home, I feel a little sad, too. But then I",
+   "text_sha": "e181255cff1f",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 4,
+ "tts_api_calls": 4,
+ "judges": [
+  {
+   "clip": "y_voice_1",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NUMERIC_EQUIVALENCE_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want few"
+  },
+  {
+   "clip": "y_voice_1",
+   "kind": "en",
+   "slot": 2,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "HIGH_SIMILARITY_SAFE",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "When I leave a note saying no one was home, I feel a little sad too. But then I go to the next house. I really want fewe"
+  },
+  {
+   "clip": "y_voice_1",
+   "kind": "en",
+   "slot": 3,
+   "ok_real": false,
+   "stop_real": false,
+   "cls_real": "TRUE_CONTENT_MISMATCH",
+   "force_secondary": true,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewe"
+  },
+  {
+   "clip": "y_voice_1",
+   "kind": "en",
+   "slot": 4,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v1",
+   "forced_ng": false,
+   "asr_text_head": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewe"
+  }
+ ],
+ "post_slowdown_judges": [
+  {
+   "clip": "y_voice_1",
+   "slot": 4,
+   "verified_real": true,
+   "forced_ng": false
+  }
+ ],
+ "cooldown_events": [
+  {
+   "label": "y_voice_1",
+   "requested_seconds": 180.0,
+   "actual_seconds": 179.987,
+   "started_at": "2026-10-28T11:09:48",
+   "ended_at": "2026-10-28T11:12:48",
+   "resumed": false,
+   "attempt_before": 2,
+   "attempt_after": 3,
+   "total_elapsed_since_ref_seconds": 180.0,
+   "wall_start_epoch": 1793153388.2199419
+  }
+ ],
+ "cooldown_count": 1,
+ "sleep_total_seconds": 180.0,
+ "stop_checks": {
+  "cooldown": 36,
+  "attempt": 4,
+  "other": 0
+ },
+ "lr_calls": [
+  {
+   "segment_id": "y_voice_1",
+   "depth": 0,
+   "status": "RESOLVED_BY_LOCAL_REWRITE",
+   "ng_span_found": true,
+   "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "us too even so i can t",
+    "asr_span_with_context": "us too even though i can t",
+    "canonical_changed_words": [
+     "so"
+    ],
+    "asr_changed_words": [
+     "though"
+    ],
+    "context_window_word_indices": [
+     33,
+     40
+    ]
+   },
+   "model": null,
+   "rewritten_text": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. But I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+   "elapsed_s": 62.1,
+   "last_asr_text": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewer redeliveries. They are hard on us too, even though I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages."
+  }
+ ],
+ "lr_count": 1,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [
+  "COOLDOWN_BEFORE_BLOCK_ATTEMPT",
+  "LOCAL_REWRITE_RECOVERY",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "y_voice_1": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "6d001e5b8be189d69eb40454fcc0c1641ef170f21556ded2ae0f4fc7e8d03c39",
+   "language": "en",
+   "theme_id": "run_tru_ev_b8_y_std_4c",
+   "level": "a2",
+   "segment_id": "y_voice_1",
+   "updated_at": "2026-10-28T11:14:14",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_b8_y_std_4c/a2/narration/y_voice_1.wav",
+   "cumulative_tts_attempts": 4,
+   "cumulative_asr_calls": 4,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 37.64,
+     "asr_text": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+     "asr_text_length": 616,
+     "max_len": 676,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": false,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": false,
+     "non_latin_cascade_enabled": false,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 177,
+      "sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
+      "head200": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible."
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+       "classification": "NUMERIC_EQUIVALENCE_MATCH",
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "FULL_STORY",
+      "lang": "en",
+      "segment_key": "y_voice_1",
+      "audio_sha256": "d099988328d92d01e5c2a4ae1008b6dcd3bf7bb4fb9e5c3b64254e9b06d5b1de",
+      "primary": {
+       "text": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+       "passed": true,
+       "label": "NUMERIC_EQUIVALENCE_MATCH",
+       "equivalence_basis": "TIER1_NUMERIC_EQUIVALENCE",
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+         {
+          "src": "1",
+          "hyp": "1",
+          "verdict": "EQUAL",
+          "reason": "same_surface"
+         }
+        ],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": false,
+       "skipped": "approved_equivalence:TIER1_NUMERIC_EQUIVALENCE"
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 1,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 616,
+       "secondary_len": null,
+       "max_len": 676,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "y_voice_1",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_b8_y_std_4c/a2/narration/attempts/y_voice_1_attempt1_customa3c4625e.wav"
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "duration_seconds": 37.57,
+     "asr_text": "When I leave a note saying no one was home, I feel a little sad too. But then I go to the next house. I really want fewer redeliveries. They are hard on us too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who is not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
+     "asr_text_length": 612,
+     "max_len": 676,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": false,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": false,
+     "non_latin_cascade_enabled": false,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 177,
+      "sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
+      "head200": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible."
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "When I leave a note saying no one was home, I feel a little sad too. But then I go to the next house. I really want fewer redeliveries. They are hard on us too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who is not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
+       "classification": "HIGH_SIMILARITY_SAFE",
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 2,
+      "script_version": "v0",
+      "role": "FULL_STORY",
+      "lang": "en",
+      "segment_key": "y_voice_1",
+      "audio_sha256": "b27d2ec0104f206f90705c43a7b754cdef4a28dd6b53cd0bd649b3dff75e5b52",
+      "primary": {
+       "text": "When I leave a note saying no one was home, I feel a little sad too. But then I go to the next house. I really want fewer redeliveries. They are hard on us too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who is not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
+       "passed": true,
+       "label": "HIGH_SIMILARITY_SAFE",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+         {
+          "src": "1",
+          "hyp": "1",
+          "verdict": "EQUAL",
+          "reason": "same_surface"
+         }
+        ],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "EQUAL",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 2,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 612,
+       "secondary_len": null,
+       "max_len": 676,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "y_voice_1",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_b8_y_std_4c/a2/narration/attempts/y_voice_1_attempt2_customa3c4625e.wav"
+    },
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 37.28,
+     "asr_text": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewer redeliveries. They are hard on us too. But I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
+     "asr_text_length": 608,
+     "max_len": 671,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "NORMALIZED_MATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": true,
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": true,
+     "repetition_qa_evidence": {
+      "flagged": false,
+      "duration_seconds": 37.28,
+      "method_a_ngram": {
+       "matches": [],
+       "flagged": false,
+       "flagged_matches": [],
+       "word_count": 120,
+       "canonical_known": true,
+       "min_words": 3
+      },
+      "method_d_spectral_long_lag": {
+       "top_matches": [
+        {
+         "similarity": 0.9925,
+         "time_a_seconds": 14.67,
+         "time_b_seconds": 33.88,
+         "lag_seconds": 19.21,
+         "run_length_seconds_at_thresh_0.85": 0.04
+        },
+        {
+         "similarity": 0.9922,
+         "time_a_seconds": 7.01,
+         "time_b_seconds": 15.85,
+         "lag_seconds": 8.84,
+         "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+         "similarity": 0.9912,
+         "time_a_seconds": 7.01,
+         "time_b_seconds": 15.69,
+         "lag_seconds": 8.68,
+         "run_length_seconds_at_thresh_0.85": 0.05
+        },
+        {
+         "similarity": 0.9909,
+         "time_a_seconds": 13.58,
+         "time_b_seconds": 22.88,
+         "lag_seconds": 9.3
+        },
+        {
+         "similarity": 0.9908,
+         "time_a_seconds": 14.63,
+         "time_b_seconds": 19.04,
+         "lag_seconds": 4.41
+        }
+       ],
+       "best_run_length_seconds": 0.05,
+       "min_lag_seconds": 1.0,
+       "sim_threshold": 0.85,
+       "decision_threshold_seconds": 0.12,
+       "acoustic_flagged": false,
+       "local_asr_confirmation": null,
+       "flagged": false
+      },
+      "method_d_prime_spectral_short_lag": {
+       "run_length_seconds": 0.55,
+       "time_a": 0.66,
+       "lag": 0.71,
+       "similarity_at_start": 0.7323,
+       "best_run_length_seconds": 0.55,
+       "lag_range_seconds": [
+        0.5,
+        2.0
+       ],
+       "sim_threshold": 0.7,
+       "decision_threshold_seconds": 0.6,
+       "flagged": false
+      },
+      "method_c_v2_window_check": null
+     },
+     "asr_prompt_applied": false,
+     "non_latin_cascade_enabled": false,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 177,
+      "sha256": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
+      "head200": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news clear and credible."
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewer redeliveries. They are hard on us too. But I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
+       "classification": "NORMALIZED_MATCH",
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS_WITH_WARNING",
+      "reason_code": "primary_pass",
+      "slot": 4,
+      "script_version": "v1",
+      "role": "FULL_STORY",
+      "lang": "en",
+      "segment_key": "y_voice_1",
+      "audio_sha256": "1cedffee81a704170f20bf27cc3df22cef3a73aaf333c7da186d7f5786d1ea27",
+      "primary": {
+       "text": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewer redeliveries. They are hard on us too. But I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+         {
+          "src": "1",
+          "hyp": "1",
+          "verdict": "EQUAL",
+          "reason": "same_surface"
+         }
+        ],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "EQUAL",
+       "negation_diff": false
+      },
+      "warnings": [
+       "LR_REWRITTEN"
+      ],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 1,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 608,
+       "secondary_len": null,
+       "max_len": 671,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "y_voice_1",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 2,
+        "hits": 0
+       }
+      }
+     },
+     "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_b8_y_std_4c/a2/narration/attempts/y_voice_1_attempt4_customa3c4625e.wav"
+    }
+   ]
+  }
+ },
+ "block_progress": {
+  "y_voice_1.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "d270a754c9d974b4b3b1df17",
+   "segment_id": "y_voice_1",
+   "fingerprint": {
+    "leaf": "L3",
+    "style_prefix_override": "3a680861e4d9d1bc",
+    "tts_backend": "7b7d9d14787b08f6",
+    "policy": "EN_LR_STD"
+   },
+   "status": "DONE",
+   "created_epoch": 1793153371.2161875,
+   "updated_epoch": 1793153654.7029822,
+   "blocks": {
+    "0": {
+     "n_started": 3,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793153371.2233212,
+       "finished_epoch": 1793153379.583424,
+       "verified": false
+      },
+      "2": {
+       "started_epoch": 1793153379.5915384,
+       "finished_epoch": 1793153388.2064397,
+       "verified": false
+      },
+      "3": {
+       "started_epoch": 1793153568.2160988,
+       "finished_epoch": 1793153592.5884178,
+       "verified": false
+      }
+     },
+     "cooldown": {
+      "before_ordinal": 3,
+      "cooldown_started_at": "2026-10-28T11:09:48",
+      "cooldown_ended_at": "2026-10-28T11:12:48",
+      "cooldown_actual_seconds": 179.987,
+      "total_elapsed_since_ref_seconds": 180.0,
+      "resumed": false
+     }
+    },
+    "1": {
+     "n_started": 1,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793153627.7418702,
+       "finished_epoch": 1793153654.6707118,
+       "verified": true
+      }
+     },
+     "cooldown": null
+    }
+   },
+   "lr": {
+    "used": true,
+    "text": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. But I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+    "text_sha": "e181255cff1feef8a200c813f477bc3417b3c2b8a8fe230f5833541747edc1a5",
+    "audit": {
+     "schema": "lr_selection_audit_v1",
+     "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+     "segment_id": "y_voice_1",
+     "canonical_text": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+     "ng_span": {
+      "found": true,
+      "diff_tag": "replace",
+      "canonical_span_with_context": "us too even so i can t",
+      "asr_span_with_context": "us too even though i can t",
+      "canonical_changed_words": [
+       "so"
+      ],
+      "asr_changed_words": [
+       "though"
+      ],
+      "context_window_word_indices": [
+       33,
+       40
+      ]
+     },
+     "selected": {
+      "id": "1",
+      "rewritten_segment": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. But I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+      "changed_span_before": "Even so,",
+      "changed_span_after": "But",
+      "rationale": "A concise, natural contrast that avoids the troublesome wording.",
+      "seven_gates": {
+       "1_meaning_preserved": true,
+       "2_role_preserved": true,
+       "3_fact_non_contradiction": true,
+       "4_context_connection": true,
+       "5_natural_english_gate": true,
+       "6_localized_minimal_change": true,
+       "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_unchanged": true,
+      "adoptable": true,
+      "qa_reasons": {
+       "meaning_preserved": "“But” preserves the contrast in “Even so.”",
+       "role_preserved": "It remains part of the main narrated story.",
+       "fact_non_contradiction": "It adds no facts or claims that conflict with the original or context.",
+       "context_connection": "The contrast connects naturally to the preceding point about redeliveries being hard on the workers.",
+       "natural_english": "“But” is natural and common in this spoken narration."
+      }
+     },
+     "selection_rationale": "全7 Gate PASSの候補は4件(['1', '2', '3', '5'])。unchanged_ratio=0.9833(最小限の変更)が最大の'1'を採用。Natural English Gate理由: “But” is natural and common in this spoken narration.",
+     "candidates": [
+      {
+       "id": "1",
+       "rewritten_segment": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. But I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+       "changed_span_before": "Even so,",
+       "changed_span_after": "But",
+       "rationale": "A concise, natural contrast that avoids the troublesome wording.",
+       "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+       },
+       "all_seven_gates_pass": true,
+       "sentence_count_unchanged": true,
+       "adoptable": true,
+       "qa_reasons": {
+        "meaning_preserved": "“But” preserves the contrast in “Even so.”",
+        "role_preserved": "It remains part of the main narrated story.",
+        "fact_non_contradiction": "It adds no facts or claims that conflict with the original or context.",
+        "context_connection": "The contrast connects naturally to the preceding point about redeliveries being hard on the workers.",
+        "natural_english": "“But” is natural and common in this spoken narration."
+       }
+      },
+      {
+       "id": "2",
+       "rewritten_segment": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. Still, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+       "changed_span_before": "Even so,",
+       "changed_span_after": "Still,",
+       "rationale": "“Still” naturally signals that the speaker’s conclusion contrasts with the previous point.",
+       "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+       },
+       "all_seven_gates_pass": true,
+       "sentence_count_unchanged": true,
+       "adoptable": true,
+       "qa_reasons": {
+        "meaning_preserved": "“Still” preserves the concessive meaning of “Even so.”",
+        "role_preserved": "It remains part of the main narrated story.",
+        "fact_non_contradiction": "It adds no facts or claims that conflict with the original or context.",
+        "context_connection": "The contrast connects naturally to the preceding point about redeliveries being hard on the workers.",
+        "natural_english": "“Still” is natural and common in this spoken narration."
+       }
+      },
+      {
+       "id": "3",
+       "rewritten_segment": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. Yet I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+       "changed_span_before": "Even so,",
+       "changed_span_after": "Yet",
+       "rationale": "“Yet” keeps the contrast and fits smoothly before the speaker’s conclusion.",
+       "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+       },
+       "all_seven_gates_pass": true,
+       "sentence_count_unchanged": true,
+       "adoptable": true,
+       "qa_reasons": {
+        "meaning_preserved": "“Yet” preserves the contrast expressed by “Even so.”",
+        "role_preserved": "It remains part of the main narrated story.",
+        "fact_non_contradiction": "It adds no facts or claims that conflict with the original or context.",
+        "context_connection": "The contrast connects naturally to the preceding point about redeliveries being hard on the workers.",
+        "natural_english": "“Yet” is idiomatic here, though slightly more formal than “But” or “Still.”"
+       }
+      },
+      {
+       "id": "4",
+       "rewritten_segment": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. Nevertheless, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+       "changed_span_before": "Even so,",
+       "changed_span_after": "Nevertheless,",
+       "rationale": "This slightly more formal connective preserves the concessive contrast.",
+       "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+       },
+       "all_seven_gates_pass": false,
+       "sentence_count_unchanged": true,
+       "adoptable": false,
+       "qa_reasons": {
+        "meaning_preserved": "“Nevertheless” preserves the concessive meaning of “Even so.”",
+        "role_preserved": "It remains part of the main narrated story.",
+        "fact_non_contradiction": "It adds no facts or claims that conflict with the original or context.",
+        "context_connection": "The contrast connects logically to the preceding point about redeliveries being hard on the workers.",
+        "natural_english": "“Nevertheless” sounds overly formal and stilted for this conversational spoken narration."
+       }
+      },
+      {
+       "id": "5",
+       "rewritten_segment": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. That said, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+       "changed_span_before": "Even so,",
+       "changed_span_after": "That said,",
+       "rationale": "A conversational transition that naturally introduces the speaker’s qualification.",
+       "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+       },
+       "all_seven_gates_pass": true,
+       "sentence_count_unchanged": true,
+       "adoptable": true,
+       "qa_reasons": {
+        "meaning_preserved": "“That said” preserves the concessive meaning of “Even so.”",
+        "role_preserved": "It remains part of the main narrated story.",
+        "fact_non_contradiction": "It adds no facts or claims that conflict with the original or context.",
+        "context_connection": "The phrase naturally acknowledges the preceding point before introducing the speaker’s qualification.",
+        "natural_english": "“That said” is idiomatic and common in spoken narration."
+       }
+      }
+     ]
+    }
+   },
+   "final_adoption": {
+    "depth": 1,
+    "ordinal": 1,
+    "slot": "①'",
+    "style_mode": "PRIMARY",
+    "sent_style_sha": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
+    "attempt_audio_sha": "47f374f8ac4097c242c64a5ccc79c369f91e783f53039af93da229968e73c5ca",
+    "source": "tts_attempt"
+   },
+   "final_status": "OK"
+  }
+ },
+ "results_segments": {
+  "y_voice_1": {
+   "status": "OK",
+   "fallback_used": false,
+   "voice": "Puck",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_prefix": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while keeping the news cl",
+   "asr_verified": true,
+   "asr_text": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewer redeliveries. They are hard on us too, but I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
+   "canonical_text": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. Even so, I can’t simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+   "slowdown_applied": true,
+   "local_rewrite_recovery": {
+    "status": "RESOLVED_BY_LOCAL_REWRITE",
+    "segment_id": "y_voice_1"
+   },
+   "cooldown_events": [
+    {
+     "cooldown_requested_seconds": 180.0,
+     "cooldown_actual_seconds": 179.987,
+     "cooldown_started_at": "2026-10-28T11:09:48",
+     "cooldown_ended_at": "2026-10-28T11:12:48",
+     "attempt_before_cooldown": 2,
+     "attempt_after_cooldown": 3,
+     "total_elapsed_since_ref_seconds": 180.0,
+     "resumed": false
+    }
+   ],
+   "path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_b8_y_std_4c/a2/narration/y_voice_1.wav",
+   "style_prefix_sha": "3a680861e4d9",
+   "attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "When I leave a note saying no one was home, I feel a little sad too. But then I go to the next house. I really want fewer redeliveries. They are hard on us too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who is not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": true,
+     "asr_text": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewer redeliveries. They are hard on us too. But I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
+     "audio_classification": "NORMALIZED_MATCH",
+     "disfluency_checked": false
+    }
+   ],
+   "standard_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "When I leave a note saying no one was home, I feel a little sad too. But then I go to the next house. I really want fewer redeliveries. They are hard on us too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who is not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    },
+    {
+     "attempt": 1,
+     "status": "OK",
+     "verified": true,
+     "asr_text": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewer redeliveries. They are hard on us too. But I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
+     "audio_classification": "NORMALIZED_MATCH",
+     "disfluency_checked": false
+    }
+   ],
+   "fallback_attempts_log": [
+    {
+     "attempt": 3,
+     "status": "OK",
+     "verified": false,
+     "asr_text": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewer redeliveries. They are hard on us too, even though I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "disfluency_checked": false
+    }
+   ]
+  }
+ },
+ "results_key_phrases": {},
+ "attempt_sidecars": [
+  {
+   "file": "y_voice_1_attempt1_customa3c4625e.json",
+   "segment_id": "y_voice_1",
+   "attempt_number": 1,
+   "route": "custom_a3c4625e",
+   "saved_at": "2026-10-28T11:09:39",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Puck",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while",
+   "instruction_sha": "3a680861e4d9",
+   "instruction_chars": 177,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "When I leave a note saying no one was home, I feel a little sad, too. But then I go to the next house. I really want fewer redeliveries. They are hard on us, too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them, too. Then the money can really reach the people who deliver packages.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NUMERIC_EQUIVALENCE_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "y_voice_1_attempt2_customa3c4625e.json",
+   "segment_id": "y_voice_1",
+   "attempt_number": 2,
+   "route": "custom_a3c4625e",
+   "saved_at": "2026-10-28T11:09:48",
+   "loop_attempt_index": 2,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Puck",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while",
+   "instruction_sha": "3a680861e4d9",
+   "instruction_chars": 177,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "When I leave a note saying no one was home, I feel a little sad too. But then I go to the next house. I really want fewer redeliveries. They are hard on us too. Even so, I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who is not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "HIGH_SIMILARITY_SAFE"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "y_voice_1_attempt3_minimalfallback.json",
+   "segment_id": "y_voice_1",
+   "attempt_number": 3,
+   "route": "minimal_fallback",
+   "saved_at": "2026-10-28T11:13:12",
+   "loop_attempt_index": 3,
+   "max_attempts": 3,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Puck",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewer redeliveries. They are hard on us too, even though I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "y_voice_1_attempt4_customa3c4625e.json",
+   "segment_id": "y_voice_1",
+   "attempt_number": 4,
+   "route": "custom_a3c4625e",
+   "saved_at": "2026-10-28T11:14:12",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Puck",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, like a favorite morning radio host, while",
+   "instruction_sha": "3a680861e4d9",
+   "instruction_chars": 177,
+   "verified": true,
+   "audio_classification": "NORMALIZED_MATCH",
+   "asr_text": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewer redeliveries. They are hard on us too. But I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "y_voice_1_attempt5_postslowdown.json",
+   "segment_id": "y_voice_1",
+   "attempt_number": 5,
+   "route": "post_slowdown",
+   "saved_at": "2026-10-28T11:14:14",
+   "loop_attempt_index": null,
+   "max_attempts": null,
+   "model": null,
+   "voice": null,
+   "tts_backend": null,
+   "tts_execution_mode": null,
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": true,
+   "audio_classification": null,
+   "asr_text": null,
+   "disfluency_checked": null,
+   "cascade_providers": [],
+   "slowdown": {
+    "post_slowdown_asr_text": "When I leave a note saying no one was home, I feel a little sad too, but then I go to the next house. I really want fewer redeliveries. They are hard on us too, but I can't simply say customers should pay the cost. I think the cost should be part of the general fee for carrying packages. That makes more sense than charging each person who was not home for their redelivery. I want the company to think about whether free delivery for online orders should stay as it is. If it changes delivery fees, I want it to look at how it sets them too. Then the money can really reach the people who deliver packages.",
+    "post_slowdown_classification": "NORMALIZED_MATCH"
+   }
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 6.532,
+  "by_provider": {
+   "openai": 0.34,
+   "gemini": 3.63,
+   "openai_asr": 0.93,
+   "azure": 1.63
+  }
+ },
+ "gate_observation": {
+  "status": "BLOCK",
+  "y_profile_blocked": [],
+  "my_segment_checks": [
+   {
+    "segment": "y_voice_1",
+    "violations": []
+   }
+  ],
+  "my_segment_blocked": [],
+  "x_gate_blocked_mine": [],
+  "note": "Gateは全Y本文segmentを対象にするため、未生成segmentのNO_SEGMENT_RECORDは本evidenceの対象外(my_*のみ参照)"
+ },
+ "resumed_run": false
+}

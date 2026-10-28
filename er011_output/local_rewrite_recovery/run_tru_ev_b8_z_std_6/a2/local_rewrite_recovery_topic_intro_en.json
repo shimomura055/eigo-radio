@@ -1,0 +1,872 @@
+{
+  "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+  "segment_id": "topic_intro_en",
+  "segment_role_label": "Topic intro (a short line announcing today's topic)",
+  "canonical_text": "Today's topic is The Monkey's Paw.",
+  "last_asr_text": "Today's market is The Monkey's Paw.",
+  "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "today s topic is the monkey",
+    "asr_span_with_context": "today s market is the monkey",
+    "canonical_changed_words": [
+      "topic"
+    ],
+    "asr_changed_words": [
+      "market"
+    ],
+    "context_window_word_indices": [
+      0,
+      6
+    ]
+  },
+  "candidate_gen": {
+    "candidates": [
+      {
+        "id": "1",
+        "rewrite_type": "single_word_swap",
+        "rewritten_segment": "Today's subject is The Monkey's Paw.",
+        "changed_span_before": "topic",
+        "changed_span_after": "subject",
+        "rationale": "A natural one-word replacement that keeps the announcement’s meaning."
+      },
+      {
+        "id": "2",
+        "rewrite_type": "single_word_swap",
+        "rewritten_segment": "Today's focus is The Monkey's Paw.",
+        "changed_span_before": "topic",
+        "changed_span_after": "focus",
+        "rationale": "A concise, idiomatic way to announce what the episode is about."
+      },
+      {
+        "id": "3",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Today, we're discussing The Monkey's Paw.",
+        "changed_span_before": "Today's topic is",
+        "changed_span_after": "Today, we're discussing",
+        "rationale": "A natural spoken topic introduction with the same meaning."
+      },
+      {
+        "id": "4",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Today, we're talking about The Monkey's Paw.",
+        "changed_span_before": "Today's topic is",
+        "changed_span_after": "Today, we're talking about",
+        "rationale": "A conversational way to introduce the subject without changing the topic."
+      },
+      {
+        "id": "5",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Our subject today is The Monkey's Paw.",
+        "changed_span_before": "Today's topic is",
+        "changed_span_after": "Our subject today is",
+        "rationale": "A clear, natural topic-intro phrasing that preserves the original meaning."
+      }
+    ],
+    "_raw_model_response_text": "{\"candidates\":[{\"id\":\"1\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"Today's subject is The Monkey's Paw.\",\"changed_span_before\":\"topic\",\"changed_span_after\":\"subject\",\"rationale\":\"A natural one-word replacement that keeps the announcement’s meaning.\"},{\"id\":\"2\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"Today's focus is The Monkey's Paw.\",\"changed_span_before\":\"topic\",\"changed_span_after\":\"focus\",\"rationale\":\"A concise, idiomatic way to announce what the episode is about.\"},{\"id\":\"3\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Today, we're discussing The Monkey's Paw.\",\"changed_span_before\":\"Today's topic is\",\"changed_span_after\":\"Today, we're discussing\",\"rationale\":\"A natural spoken topic introduction with the same meaning.\"},{\"id\":\"4\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Today, we're talking about The Monkey's Paw.\",\"changed_span_before\":\"Today's topic is\",\"changed_span_after\":\"Today, we're talking about\",\"rationale\":\"A conversational way to introduce the subject without changing the topic.\"},{\"id\":\"5\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Our subject today is The Monkey's Paw.\",\"changed_span_before\":\"Today's topic is\",\"changed_span_after\":\"Our subject today is\",\"rationale\":\"A clear, natural topic-intro phrasing that preserves the original meaning.\"}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_058f90203c8fd05f006ae151242aa487d085142bb79f7d585c",
+    "_prompt": "Segment role: Topic intro (a short line announcing today's topic)\n\nFull segment (contains the problem span):\n\"Today's topic is The Monkey's Paw.\"\n\nProblem span (a speech recognizer repeatedly mis-transcribes this as ['market'] instead of ['topic']):\n\"today s topic is the monkey\"\n\nPropose the candidates as described in the system instructions. Return the JSON object."
+  },
+  "qa": {
+    "evaluations": [
+      {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It announces The Monkey's Paw as today's topic."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short topic introduction."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no conflicting claims."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it works as a standalone introduction."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural, commonly used way to introduce a topic."
+        }
+      },
+      {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It identifies The Monkey's Paw as the topic for today."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short topic introduction."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no conflicting claims."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it works as a standalone introduction."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural, commonly used way to introduce a topic."
+        }
+      },
+      {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It announces that The Monkey's Paw is what will be discussed today."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short topic introduction."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claims that conflict with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it works as a standalone introduction."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural spoken way to introduce what the episode will discuss."
+        }
+      },
+      {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It announces that The Monkey's Paw is what will be discussed today."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short topic introduction."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claims that conflict with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it works as a standalone introduction."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural, conversational way to introduce a topic."
+        }
+      },
+      {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It identifies The Monkey's Paw as today's subject."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short topic introduction."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no conflicting claims."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it works as a standalone introduction."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural and idiomatic way to introduce a topic."
+        }
+      }
+    ],
+    "_raw_model_response_text": "{\"evaluations\":[{\"candidate_id\":\"1\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It announces The Monkey's Paw as today's topic.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a short topic introduction.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no conflicting claims.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and it works as a standalone introduction.\"},\"natural_english\":{\"pass\":true,\"reason\":\"This is a natural, commonly used way to introduce a topic.\"}},{\"candidate_id\":\"2\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It identifies The Monkey's Paw as the topic for today.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a short topic introduction.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no conflicting claims.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and it works as a standalone introduction.\"},\"natural_english\":{\"pass\":true,\"reason\":\"This is a natural, commonly used way to introduce a topic.\"}},{\"candidate_id\":\"3\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It announces that The Monkey's Paw is what will be discussed today.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a short topic introduction.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no claims that conflict with the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and it works as a standalone introduction.\"},\"natural_english\":{\"pass\":true,\"reason\":\"This is a natural spoken way to introduce what the episode will discuss.\"}},{\"candidate_id\":\"4\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It announces that The Monkey's Paw is what will be discussed today.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a short topic introduction.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no claims that conflict with the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and it works as a standalone introduction.\"},\"natural_english\":{\"pass\":true,\"reason\":\"This is a natural, conversational way to introduce a topic.\"}},{\"candidate_id\":\"5\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It identifies The Monkey's Paw as today's subject.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a short topic introduction.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no conflicting claims.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and it works as a standalone introduction.\"},\"natural_english\":{\"pass\":true,\"reason\":\"This is a natural and idiomatic way to introduce a topic.\"}}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_012385f81f91235a006ae15131119487d0a31fc70b48db427c",
+    "_prompt": "Segment role: Topic intro (a short line announcing today's topic)\n\nORIGINAL segment:\n\"Today's topic is The Monkey's Paw.\"\n\nCandidates to evaluate:\n- candidate_id='1': \"Today's subject is The Monkey's Paw.\"\n- candidate_id='2': \"Today's focus is The Monkey's Paw.\"\n- candidate_id='3': \"Today, we're discussing The Monkey's Paw.\"\n- candidate_id='4': \"Today, we're talking about The Monkey's Paw.\"\n- candidate_id='5': \"Our subject today is The Monkey's Paw.\"\n\nEvaluate all 5 gates for every candidate and return the JSON object described in the system instructions."
+  },
+  "candidates": [
+    {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Today's subject is The Monkey's Paw.",
+      "changed_span_before": "topic",
+      "changed_span_after": "subject",
+      "rationale": "A natural one-word replacement that keeps the announcement’s meaning.",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It announces The Monkey's Paw as today's topic."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short topic introduction."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no conflicting claims."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it works as a standalone introduction."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural, commonly used way to introduce a topic."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0588,
+        "orig_coverage": 0.8333,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          2,
+          3
+        ],
+        "criterion6_allowed_window": [
+          0,
+          6
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.8333
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": true
+    },
+    {
+      "id": "2",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Today's focus is The Monkey's Paw.",
+      "changed_span_before": "topic",
+      "changed_span_after": "focus",
+      "rationale": "A concise, idiomatic way to announce what the episode is about.",
+      "qa_llm": {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It identifies The Monkey's Paw as the topic for today."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short topic introduction."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no conflicting claims."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it works as a standalone introduction."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural, commonly used way to introduce a topic."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0,
+        "orig_coverage": 0.8333,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          2,
+          3
+        ],
+        "criterion6_allowed_window": [
+          0,
+          6
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.8333
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": true
+    },
+    {
+      "id": "3",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Today, we're discussing The Monkey's Paw.",
+      "changed_span_before": "Today's topic is",
+      "changed_span_after": "Today, we're discussing",
+      "rationale": "A natural spoken topic introduction with the same meaning.",
+      "qa_llm": {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It announces that The Monkey's Paw is what will be discussed today."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short topic introduction."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claims that conflict with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it works as a standalone introduction."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural spoken way to introduce what the episode will discuss."
+        }
+      },
+      "is_full_segment_format_valid": false,
+      "full_segment_check": {
+        "ok": false,
+        "reason": "LOW_ORIGINAL_COVERAGE_OVER_MODIFIED_OR_UNRELATED",
+        "length_ratio": 1.2059,
+        "orig_coverage": 0.5
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          1,
+          4
+        ],
+        "criterion6_allowed_window": [
+          0,
+          6
+        ],
+        "criterion7_not_full_rewrite": false,
+        "unchanged_ratio": 0.5
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": false
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": false
+    },
+    {
+      "id": "4",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Today, we're talking about The Monkey's Paw.",
+      "changed_span_before": "Today's topic is",
+      "changed_span_after": "Today, we're talking about",
+      "rationale": "A conversational way to introduce the subject without changing the topic.",
+      "qa_llm": {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It announces that The Monkey's Paw is what will be discussed today."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short topic introduction."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claims that conflict with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it works as a standalone introduction."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural, conversational way to introduce a topic."
+        }
+      },
+      "is_full_segment_format_valid": false,
+      "full_segment_check": {
+        "ok": false,
+        "reason": "LOW_ORIGINAL_COVERAGE_OVER_MODIFIED_OR_UNRELATED",
+        "length_ratio": 1.2941,
+        "orig_coverage": 0.5
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          1,
+          4
+        ],
+        "criterion6_allowed_window": [
+          0,
+          6
+        ],
+        "criterion7_not_full_rewrite": false,
+        "unchanged_ratio": 0.5
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": false
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": false
+    },
+    {
+      "id": "5",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Our subject today is The Monkey's Paw.",
+      "changed_span_before": "Today's topic is",
+      "changed_span_after": "Our subject today is",
+      "rationale": "A clear, natural topic-intro phrasing that preserves the original meaning.",
+      "qa_llm": {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It identifies The Monkey's Paw as today's subject."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short topic introduction."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no conflicting claims."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it works as a standalone introduction."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural and idiomatic way to introduce a topic."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.1176,
+        "orig_coverage": 0.6667,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          0,
+          3
+        ],
+        "criterion6_allowed_window": [
+          0,
+          6
+        ],
+        "criterion7_not_full_rewrite": false,
+        "unchanged_ratio": 0.6667
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": false
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": false
+    }
+  ],
+  "selection": {
+    "selected": {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Today's subject is The Monkey's Paw.",
+      "changed_span_before": "topic",
+      "changed_span_after": "subject",
+      "rationale": "A natural one-word replacement that keeps the announcement’s meaning.",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It announces The Monkey's Paw as today's topic."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short topic introduction."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no conflicting claims."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it works as a standalone introduction."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural, commonly used way to introduce a topic."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0588,
+        "orig_coverage": 0.8333,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          2,
+          3
+        ],
+        "criterion6_allowed_window": [
+          0,
+          6
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.8333
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": true
+    },
+    "status": "SELECTED",
+    "selection_rationale": "全7 Gate PASSの候補は2件(['1', '2'])。unchanged_ratio=0.8333(最小限の変更)が最大の'1'を採用。Natural English Gate理由: This is a natural, commonly used way to introduce a topic.",
+    "all_passing_candidate_ids": [
+      "1",
+      "2"
+    ]
+  },
+  "retts_result": {
+    "status": "OK",
+    "text": "Today's subject is The Monkey's Paw.",
+    "language": "en",
+    "path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_b8_z_std_6/a2/narration/topic_intro_en.wav",
+    "model": "gemini-3.8-flash-lite-tts",
+    "voice": "Aoede",
+    "call_count": 1,
+    "retry_count": 0,
+    "sha256": "3e4f3a9e5f54f8c42a0ea1023980666bfa770e90ed0e0578fcc9f1049a3fad11",
+    "duration_seconds": 3.0,
+    "trim_info": {
+      "raw_duration_seconds": 3.0,
+      "raw_leading_silence_seconds": 0.22,
+      "raw_trailing_silence_seconds": 0.32,
+      "trimmed_duration_seconds": 3.0,
+      "leading_margin_retained_seconds": 0.22,
+      "trailing_margin_retained_seconds": 0.32
+    },
+    "clipping_detected": false,
+    "tts_backend": "speech_metadata_flash_lite",
+    "style_prefix": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.",
+    "asr_verified": true,
+    "asr_text": "Today's subject is The Monkey's Paw.",
+    "attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 3.0,
+        "asr_text": "Today's subject is The Monkey's Paw.",
+        "asr_text_length": 36,
+        "max_len": 66,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 96,
+          "sha256": "d16e099cb4f6fd7f87826e48f636c143c31f3c7ad4aaeea13dd3c9ae4a3f724b",
+          "head200": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic."
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Today's subject is The Monkey's Paw.",
+            "classification": "EXACT_MATCH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "primary_pass",
+          "slot": 4,
+          "script_version": "v1",
+          "role": "TOPIC_INTRO",
+          "lang": "en",
+          "segment_key": "topic_intro_en",
+          "audio_sha256": "3e4f3a9e5f54f8c42a0ea1023980666bfa770e90ed0e0578fcc9f1049a3fad11",
+          "primary": {
+            "text": "Today's subject is The Monkey's Paw.",
+            "passed": true,
+            "label": "EXACT_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [
+            "LR_REWRITTEN"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 36,
+            "secondary_len": null,
+            "max_len": 66,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "topic_intro_en",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_b8_z_std_6/a2/narration/attempts/topic_intro_en_attempt4_custom60a24f1e.wav"
+      }
+    ],
+    "audio_classification": "EXACT_MATCH",
+    "connected_speech_info": null,
+    "reading_resolver_info": null,
+    "scg_info": null,
+    "en_pronunciation_resolver_info": {
+      "hints_applied": false,
+      "cache_hits": [],
+      "low_confidence_retry_attempted": false,
+      "low_confidence_retry_improved": false,
+      "research_meta": null
+    },
+    "disfluency_checked": false,
+    "disfluency_evidence": null,
+    "repetition_qa_checked": false,
+    "repetition_qa_evidence": null,
+    "asr_judgement": {
+      "state": "PASS_WITH_WARNING",
+      "reason_code": "primary_pass",
+      "slot": 4,
+      "script_version": "v1",
+      "role": "TOPIC_INTRO",
+      "lang": "en",
+      "segment_key": "topic_intro_en",
+      "audio_sha256": "3e4f3a9e5f54f8c42a0ea1023980666bfa770e90ed0e0578fcc9f1049a3fad11",
+      "primary": {
+        "text": "Today's subject is The Monkey's Paw.",
+        "passed": true,
+        "label": "EXACT_MATCH",
+        "equivalence_basis": null,
+        "warning_labels": []
+      },
+      "secondary": {
+        "called": false,
+        "cached": false,
+        "engine": "azure",
+        "text": null,
+        "label": "",
+        "accepted": null,
+        "error": null,
+        "unavailable": false
+      },
+      "value_guard": {
+        "primary": {
+          "kind": "NO_VALUES",
+          "pairs": [],
+          "reasons": [],
+          "warnings": []
+        }
+      },
+      "negation_guard": {
+        "primary": false
+      },
+      "final_gate": {
+        "applied": true,
+        "value_guard": "NO_VALUES",
+        "negation_diff": false
+      },
+      "warnings": [
+        "LR_REWRITTEN"
+      ],
+      "exclusion_rule": null,
+      "cost": {
+        "azure_calls": 0,
+        "azure_seconds": null,
+        "est_jpy": 0.0
+      },
+      "timing": {
+        "total_ms": 0,
+        "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+        "applied": true,
+        "primary_len": 36,
+        "secondary_len": null,
+        "max_len": 66,
+        "adopted_from": "primary",
+        "adopted_ok": true,
+        "surface_len": null,
+        "primary_ok": true
+      },
+      "adapter": {
+        "layers": [],
+        "azure_real_calls": 0,
+        "cost_guard_triggered": false,
+        "language": "en-US",
+        "segment_id": "topic_intro_en",
+        "asr_text_present": true,
+        "cache": {
+          "calls": 2,
+          "hits": 0
+        }
+      }
+    },
+    "fallback_used": false,
+    "final_adoption": {
+      "depth": 1,
+      "ordinal": 1,
+      "slot": "①'",
+      "style_mode": "PRIMARY",
+      "sent_style_sha": "d16e099cb4f6fd7f87826e48f636c143c31f3c7ad4aaeea13dd3c9ae4a3f724b",
+      "attempt_audio_sha": "3e4f3a9e5f54f8c42a0ea1023980666bfa770e90ed0e0578fcc9f1049a3fad11",
+      "source": "tts_attempt"
+    }
+  },
+  "status": "RESOLVED_BY_LOCAL_REWRITE"
+}

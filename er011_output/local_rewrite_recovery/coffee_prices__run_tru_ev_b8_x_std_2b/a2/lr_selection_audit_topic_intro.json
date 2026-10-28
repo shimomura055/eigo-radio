@@ -1,0 +1,181 @@
+{
+  "schema": "lr_selection_audit_v1",
+  "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+  "segment_id": "topic_intro",
+  "canonical_text": "Today's topic is Coffee Bean Prices Fall.",
+  "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "today s topic is coffee bean",
+    "asr_span_with_context": "today s market is coffee bean",
+    "canonical_changed_words": [
+      "topic"
+    ],
+    "asr_changed_words": [
+      "market"
+    ],
+    "context_window_word_indices": [
+      0,
+      6
+    ]
+  },
+  "selected": {
+    "id": "1",
+    "rewritten_segment": "Today's subject is Coffee Bean Prices Fall.",
+    "changed_span_before": "topic",
+    "changed_span_after": "subject",
+    "rationale": "Uses a natural synonym for the announced subject while retaining the headline-style topic wording.",
+    "seven_gates": {
+      "1_meaning_preserved": true,
+      "2_role_preserved": true,
+      "3_fact_non_contradiction": true,
+      "4_context_connection": true,
+      "5_natural_english_gate": true,
+      "6_localized_minimal_change": true,
+      "7_not_full_rewrite": true
+    },
+    "all_seven_gates_pass": true,
+    "sentence_count_unchanged": true,
+    "adoptable": true,
+    "qa_reasons": {
+      "meaning_preserved": "“Subject” preserves the meaning of “topic.”",
+      "role_preserved": "It still announces the subject of today’s episode.",
+      "fact_non_contradiction": "It does not contradict the original.",
+      "context_connection": "No surrounding context was provided, and it works as a standalone intro.",
+      "natural_english": "“Today’s subject is…” is a common spoken introduction."
+    }
+  },
+  "selection_rationale": "全7 Gate PASSの候補は3件(['1', '2', '3'])。unchanged_ratio=0.8571(最小限の変更)が最大の'1'を採用。Natural English Gate理由: “Today’s subject is…” is a common spoken introduction.",
+  "candidates": [
+    {
+      "id": "1",
+      "rewritten_segment": "Today's subject is Coffee Bean Prices Fall.",
+      "changed_span_before": "topic",
+      "changed_span_after": "subject",
+      "rationale": "Uses a natural synonym for the announced subject while retaining the headline-style topic wording.",
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_unchanged": true,
+      "adoptable": true,
+      "qa_reasons": {
+        "meaning_preserved": "“Subject” preserves the meaning of “topic.”",
+        "role_preserved": "It still announces the subject of today’s episode.",
+        "fact_non_contradiction": "It does not contradict the original.",
+        "context_connection": "No surrounding context was provided, and it works as a standalone intro.",
+        "natural_english": "“Today’s subject is…” is a common spoken introduction."
+      }
+    },
+    {
+      "id": "2",
+      "rewritten_segment": "Today's focus: Coffee Bean Prices Fall.",
+      "changed_span_before": "topic is",
+      "changed_span_after": "focus:",
+      "rationale": "A concise, idiomatic topic-intro format that preserves the original headline.",
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_unchanged": true,
+      "adoptable": true,
+      "qa_reasons": {
+        "meaning_preserved": "It identifies the same topic as today’s focus.",
+        "role_preserved": "It functions as a short topic introduction.",
+        "fact_non_contradiction": "It does not contradict the original.",
+        "context_connection": "No surrounding context was provided, and it works as a standalone intro.",
+        "natural_english": "“Today’s focus:” is a natural, commonly used spoken-intro phrasing."
+      }
+    },
+    {
+      "id": "3",
+      "rewritten_segment": "Today's subject: Coffee Bean Prices Fall.",
+      "changed_span_before": "topic is",
+      "changed_span_after": "subject:",
+      "rationale": "Clearly announces the subject and keeps the original topic unchanged.",
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_unchanged": true,
+      "adoptable": true,
+      "qa_reasons": {
+        "meaning_preserved": "“Subject” preserves the meaning of “topic.”",
+        "role_preserved": "It still announces the subject of today’s episode.",
+        "fact_non_contradiction": "It does not contradict the original.",
+        "context_connection": "No surrounding context was provided, and it works as a standalone intro.",
+        "natural_english": "“Today’s subject:” is a natural, commonly used introduction."
+      }
+    },
+    {
+      "id": "4",
+      "rewritten_segment": "Today's story: Coffee Bean Prices Fall.",
+      "changed_span_before": "Today's topic is Coffee Bean",
+      "changed_span_after": "Today's story: Coffee Bean",
+      "rationale": "A natural spoken introduction to the story expressed by the headline.",
+      "seven_gates": {
+        "1_meaning_preserved": false,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_unchanged": true,
+      "adoptable": false,
+      "qa_reasons": {
+        "meaning_preserved": "Calling it a “story” changes the framing from announcing a topic to announcing a story.",
+        "role_preserved": "It still serves as a short introduction to today’s content.",
+        "fact_non_contradiction": "It does not contradict anything in the original.",
+        "context_connection": "No surrounding context was provided, and it works as a standalone intro.",
+        "natural_english": "“Today’s story:” is a natural spoken introduction."
+      }
+    },
+    {
+      "id": "5",
+      "rewritten_segment": "Today: Coffee Bean Prices Fall.",
+      "changed_span_before": "Today's topic is Coffee Bean",
+      "changed_span_after": "Today: Coffee Bean",
+      "rationale": "A brief, natural headline-style announcement of today's topic.",
+      "seven_gates": {
+        "1_meaning_preserved": false,
+        "2_role_preserved": false,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": false
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_unchanged": true,
+      "adoptable": false,
+      "qa_reasons": {
+        "meaning_preserved": "It omits the explicit idea that this is the topic of the episode and can read as a news headline or claim about today.",
+        "role_preserved": "It does not clearly announce the topic; it reads more like a headline label.",
+        "fact_non_contradiction": "It does not contradict anything in the original.",
+        "context_connection": "No surrounding context was provided, and it can stand alone as a label.",
+        "natural_english": "As spoken narration, “Today:” followed by a headline sounds like a label rather than a natural topic introduction."
+      }
+    }
+  ]
+}

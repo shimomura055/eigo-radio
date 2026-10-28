@@ -1,0 +1,553 @@
+{
+  "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+  "segment_id": "topic_intro",
+  "segment_role_label": "Topic intro (a short line announcing today's topic)",
+  "canonical_text": "Today's topic is Coffee Bean Prices Fall. Are Price Tags Still on a Journey?.",
+  "last_asr_text": "Today's market is coffee bean prices fall. Are price tags still on a journey?",
+  "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "today s topic is coffee bean",
+    "asr_span_with_context": "today s market is coffee bean",
+    "canonical_changed_words": [
+      "topic"
+    ],
+    "asr_changed_words": [
+      "market"
+    ],
+    "context_window_word_indices": [
+      0,
+      6
+    ]
+  },
+  "candidate_gen": {
+    "candidates": [
+      {
+        "id": "1",
+        "rewrite_type": "single_word_swap",
+        "rewritten_segment": "Today's subject is Coffee Bean Prices Fall. Are Price Tags Still on a Journey?.",
+        "changed_span_before": "topic",
+        "changed_span_after": "subject",
+        "rationale": "A natural one-word substitute that keeps the original topic announcement."
+      },
+      {
+        "id": "2",
+        "rewrite_type": "single_word_swap",
+        "rewritten_segment": "Today's focus is Coffee Bean Prices Fall. Are Price Tags Still on a Journey?.",
+        "changed_span_before": "topic",
+        "changed_span_after": "focus",
+        "rationale": "Keeps the original announcement structure while avoiding the troublesome word."
+      },
+      {
+        "id": "3",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Today, we're discussing falling coffee bean prices. Are Price Tags Still on a Journey?.",
+        "changed_span_before": "Today's topic is Coffee Bean Prices Fall",
+        "changed_span_after": "Today, we're discussing falling coffee bean prices",
+        "rationale": "A conversational intro that preserves the subject of the headline."
+      },
+      {
+        "id": "4",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Today, we're talking about falling coffee bean prices. Are Price Tags Still on a Journey?.",
+        "changed_span_before": "Today's topic is Coffee Bean Prices Fall",
+        "changed_span_after": "Today, we're talking about falling coffee bean prices",
+        "rationale": "Uses an idiomatic spoken phrase to introduce the same subject."
+      },
+      {
+        "id": "5",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Today, we'll look at falling coffee bean prices. Are Price Tags Still on a Journey?.",
+        "changed_span_before": "Today's topic is Coffee Bean Prices Fall",
+        "changed_span_after": "Today, we'll look at falling coffee bean prices",
+        "rationale": "A concise, natural topic-intro phrasing that retains the original meaning."
+      }
+    ],
+    "_raw_model_response_text": "{\"candidates\":[{\"id\":\"1\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"Today's subject is Coffee Bean Prices Fall. Are Price Tags Still on a Journey?.\",\"changed_span_before\":\"topic\",\"changed_span_after\":\"subject\",\"rationale\":\"A natural one-word substitute that keeps the original topic announcement.\"},{\"id\":\"2\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"Today's focus is Coffee Bean Prices Fall. Are Price Tags Still on a Journey?.\",\"changed_span_before\":\"topic\",\"changed_span_after\":\"focus\",\"rationale\":\"Keeps the original announcement structure while avoiding the troublesome word.\"},{\"id\":\"3\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Today, we're discussing falling coffee bean prices. Are Price Tags Still on a Journey?.\",\"changed_span_before\":\"Today's topic is Coffee Bean Prices Fall\",\"changed_span_after\":\"Today, we're discussing falling coffee bean prices\",\"rationale\":\"A conversational intro that preserves the subject of the headline.\"},{\"id\":\"4\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Today, we're talking about falling coffee bean prices. Are Price Tags Still on a Journey?.\",\"changed_span_before\":\"Today's topic is Coffee Bean Prices Fall\",\"changed_span_after\":\"Today, we're talking about falling coffee bean prices\",\"rationale\":\"Uses an idiomatic spoken phrase to introduce the same subject.\"},{\"id\":\"5\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Today, we'll look at falling coffee bean prices. Are Price Tags Still on a Journey?.\",\"changed_span_before\":\"Today's topic is Coffee Bean Prices Fall\",\"changed_span_after\":\"Today, we'll look at falling coffee bean prices\",\"rationale\":\"A concise, natural topic-intro phrasing that retains the original meaning.\"}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_0ae1256fc2bbd950006ae150568a5c87d0b4f357ebf051d609",
+    "_prompt": "Segment role: Topic intro (a short line announcing today's topic)\n\nFull segment (contains the problem span):\n\"Today's topic is Coffee Bean Prices Fall. Are Price Tags Still on a Journey?.\"\n\nProblem span (a speech recognizer repeatedly mis-transcribes this as ['market'] instead of ['topic']):\n\"today s topic is coffee bean\"\n\nPropose the candidates as described in the system instructions. Return the JSON object."
+  },
+  "qa": {
+    "evaluations": [
+      {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It retains the same announced topic and question."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still introduces the episode's topic."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not contradict the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the line stands as a topic intro."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "“Today's subject is Coffee Bean Prices Fall” is awkward; the headline does not fit naturally after “subject is.”"
+        }
+      },
+      {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It retains the same announced topic and question."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still introduces the episode's topic."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not contradict the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the line stands as a topic intro."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "“Today's focus is Coffee Bean Prices Fall” sounds awkward because the headline does not fit naturally after “focus is.”"
+        }
+      },
+      {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Falling coffee bean prices” restates the topic, and the question is retained."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still announces what the episode will discuss."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not contradict the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the line works as a topic intro."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Today, we're discussing falling coffee bean prices” is natural spoken English."
+        }
+      },
+      {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Falling coffee bean prices” restates the topic, and the question is retained."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still announces what the episode will discuss."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not contradict the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the line works as a topic intro."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Today, we're talking about falling coffee bean prices” is natural spoken English."
+        }
+      },
+      {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It announces falling coffee bean prices as the topic and retains the original question."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still introduces the episode's topic."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not contradict the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the line works as a topic intro."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Today, we'll look at falling coffee bean prices” is natural spoken English."
+        }
+      }
+    ],
+    "_raw_model_response_text": "{\"evaluations\":[{\"candidate_id\":\"1\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It retains the same announced topic and question.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still introduces the episode's topic.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not contradict the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the line stands as a topic intro.\"},\"natural_english\":{\"pass\":false,\"reason\":\"“Today's subject is Coffee Bean Prices Fall” is awkward; the headline does not fit naturally after “subject is.”\"}},{\"candidate_id\":\"2\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It retains the same announced topic and question.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still introduces the episode's topic.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not contradict the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the line stands as a topic intro.\"},\"natural_english\":{\"pass\":false,\"reason\":\"“Today's focus is Coffee Bean Prices Fall” sounds awkward because the headline does not fit naturally after “focus is.”\"}},{\"candidate_id\":\"3\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Falling coffee bean prices” restates the topic, and the question is retained.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still announces what the episode will discuss.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not contradict the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the line works as a topic intro.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Today, we're discussing falling coffee bean prices” is natural spoken English.\"}},{\"candidate_id\":\"4\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Falling coffee bean prices” restates the topic, and the question is retained.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still announces what the episode will discuss.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not contradict the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the line works as a topic intro.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Today, we're talking about falling coffee bean prices” is natural spoken English.\"}},{\"candidate_id\":\"5\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It announces falling coffee bean prices as the topic and retains the original question.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still introduces the episode's topic.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not contradict the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the line works as a topic intro.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Today, we'll look at falling coffee bean prices” is natural spoken English.\"}}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_00a8f640fcdc6b55006ae15070598c87d0b36c6efbef483e71",
+    "_prompt": "Segment role: Topic intro (a short line announcing today's topic)\n\nORIGINAL segment:\n\"Today's topic is Coffee Bean Prices Fall. Are Price Tags Still on a Journey?.\"\n\nCandidates to evaluate:\n- candidate_id='1': \"Today's subject is Coffee Bean Prices Fall. Are Price Tags Still on a Journey?.\"\n- candidate_id='2': \"Today's focus is Coffee Bean Prices Fall. Are Price Tags Still on a Journey?.\"\n- candidate_id='3': \"Today, we're discussing falling coffee bean prices. Are Price Tags Still on a Journey?.\"\n- candidate_id='4': \"Today, we're talking about falling coffee bean prices. Are Price Tags Still on a Journey?.\"\n- candidate_id='5': \"Today, we'll look at falling coffee bean prices. Are Price Tags Still on a Journey?.\"\n\nEvaluate all 5 gates for every candidate and return the JSON object described in the system instructions."
+  },
+  "candidates": [
+    {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Today's subject is Coffee Bean Prices Fall. Are Price Tags Still on a Journey?.",
+      "changed_span_before": "topic",
+      "changed_span_after": "subject",
+      "rationale": "A natural one-word substitute that keeps the original topic announcement.",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It retains the same announced topic and question."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still introduces the episode's topic."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not contradict the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the line stands as a topic intro."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "“Today's subject is Coffee Bean Prices Fall” is awkward; the headline does not fit naturally after “subject is.”"
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.026,
+        "orig_coverage": 0.9286,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          2,
+          3
+        ],
+        "criterion6_allowed_window": [
+          0,
+          6
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9286
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": false
+    },
+    {
+      "id": "2",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Today's focus is Coffee Bean Prices Fall. Are Price Tags Still on a Journey?.",
+      "changed_span_before": "topic",
+      "changed_span_after": "focus",
+      "rationale": "Keeps the original announcement structure while avoiding the troublesome word.",
+      "qa_llm": {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It retains the same announced topic and question."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still introduces the episode's topic."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not contradict the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the line stands as a topic intro."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "“Today's focus is Coffee Bean Prices Fall” sounds awkward because the headline does not fit naturally after “focus is.”"
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0,
+        "orig_coverage": 0.9286,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          2,
+          3
+        ],
+        "criterion6_allowed_window": [
+          0,
+          6
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9286
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": false
+    },
+    {
+      "id": "3",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Today, we're discussing falling coffee bean prices. Are Price Tags Still on a Journey?.",
+      "changed_span_before": "Today's topic is Coffee Bean Prices Fall",
+      "changed_span_after": "Today, we're discussing falling coffee bean prices",
+      "rationale": "A conversational intro that preserves the subject of the headline.",
+      "qa_llm": {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Falling coffee bean prices” restates the topic, and the question is retained."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still announces what the episode will discuss."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not contradict the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the line works as a topic intro."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Today, we're discussing falling coffee bean prices” is natural spoken English."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.1299,
+        "orig_coverage": 0.7143,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": false,
+        "criterion6_diff_token_range": [
+          1,
+          8
+        ],
+        "criterion6_allowed_window": [
+          0,
+          6
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.7143
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": false,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": false
+    },
+    {
+      "id": "4",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Today, we're talking about falling coffee bean prices. Are Price Tags Still on a Journey?.",
+      "changed_span_before": "Today's topic is Coffee Bean Prices Fall",
+      "changed_span_after": "Today, we're talking about falling coffee bean prices",
+      "rationale": "Uses an idiomatic spoken phrase to introduce the same subject.",
+      "qa_llm": {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Falling coffee bean prices” restates the topic, and the question is retained."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still announces what the episode will discuss."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not contradict the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the line works as a topic intro."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Today, we're talking about falling coffee bean prices” is natural spoken English."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.1688,
+        "orig_coverage": 0.7143,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": false,
+        "criterion6_diff_token_range": [
+          1,
+          8
+        ],
+        "criterion6_allowed_window": [
+          0,
+          6
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.7143
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": false,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": false
+    },
+    {
+      "id": "5",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Today, we'll look at falling coffee bean prices. Are Price Tags Still on a Journey?.",
+      "changed_span_before": "Today's topic is Coffee Bean Prices Fall",
+      "changed_span_after": "Today, we'll look at falling coffee bean prices",
+      "rationale": "A concise, natural topic-intro phrasing that retains the original meaning.",
+      "qa_llm": {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It announces falling coffee bean prices as the topic and retains the original question."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still introduces the episode's topic."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not contradict the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the line works as a topic intro."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Today, we'll look at falling coffee bean prices” is natural spoken English."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0909,
+        "orig_coverage": 0.7143,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": false,
+        "criterion6_diff_token_range": [
+          1,
+          8
+        ],
+        "criterion6_allowed_window": [
+          0,
+          6
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.7143
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": false,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": false
+    }
+  ],
+  "selection": {
+    "selected": null,
+    "status": "NO_CANDIDATE_PASSED_ALL_SEVEN_GATES",
+    "selection_rationale": "全候補が7 Gateのいずれかで不合格だったため、採用候補なし。"
+  },
+  "retts_result": null,
+  "status": "HUMAN_REVIEW_LOCKED_NO_CANDIDATE_PASSED_QA"
+}

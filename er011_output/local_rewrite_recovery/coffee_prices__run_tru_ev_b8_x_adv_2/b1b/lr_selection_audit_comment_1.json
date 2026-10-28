@@ -1,0 +1,181 @@
+{
+  "schema": "lr_selection_audit_v1",
+  "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+  "segment_id": "comment_1",
+  "canonical_text": "Listen for how the news about bean prices compares with the prices people see in shops.",
+  "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "about bean prices compares with the prices",
+    "asr_span_with_context": "about bean prices market with the prices",
+    "canonical_changed_words": [
+      "compares"
+    ],
+    "asr_changed_words": [
+      "market"
+    ],
+    "context_window_word_indices": [
+      5,
+      12
+    ]
+  },
+  "selected": {
+    "id": "4",
+    "rewritten_segment": "Listen for how the news about bean prices stacks up against the prices people see in shops.",
+    "changed_span_before": "about bean prices compares with the prices",
+    "changed_span_after": "about bean prices stacks up against the prices",
+    "rationale": "A conversational phrase that preserves the comparison between the reported and shop prices.",
+    "seven_gates": {
+      "1_meaning_preserved": true,
+      "2_role_preserved": true,
+      "3_fact_non_contradiction": true,
+      "4_context_connection": true,
+      "5_natural_english_gate": true,
+      "6_localized_minimal_change": true,
+      "7_not_full_rewrite": true
+    },
+    "all_seven_gates_pass": true,
+    "sentence_count_unchanged": true,
+    "adoptable": true,
+    "qa_reasons": {
+      "meaning_preserved": "“Stacks up against” retains the idea of comparing the reported bean prices with shop prices.",
+      "role_preserved": "It remains a brief listening prompt about the bean-price story.",
+      "fact_non_contradiction": "It adds no claim that conflicts with the original.",
+      "context_connection": "No surrounding context was provided, and the sentence remains a self-contained prompt.",
+      "natural_english": "“Stacks up against” is an idiomatic spoken way to introduce a comparison."
+    }
+  },
+  "selection_rationale": "全7 Gate PASSの候補は1件(['4'])。unchanged_ratio=0.875(最小限の変更)が最大の'4'を採用。Natural English Gate理由: “Stacks up against” is an idiomatic spoken way to introduce a comparison.",
+  "candidates": [
+    {
+      "id": "1",
+      "rewritten_segment": "Listen for how the news about bean prices corresponds with the prices people see in shops.",
+      "changed_span_before": "compares",
+      "changed_span_after": "corresponds",
+      "rationale": "A minimal, natural verb swap that preserves the sense of comparing the reported and shop prices.",
+      "seven_gates": {
+        "1_meaning_preserved": false,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_unchanged": true,
+      "adoptable": false,
+      "qa_reasons": {
+        "meaning_preserved": "“Corresponds with” suggests that the news agrees or aligns with the shop prices, rather than neutrally comparing them.",
+        "role_preserved": "It remains a brief listening prompt about the bean-price story.",
+        "fact_non_contradiction": "It adds no claim that conflicts with the original.",
+        "context_connection": "No surrounding context was provided, and the sentence remains a self-contained prompt.",
+        "natural_english": "“The news ... corresponds with the prices” sounds stiff and unnatural in this spoken prompt."
+      }
+    },
+    {
+      "id": "2",
+      "rewritten_segment": "Listen for how the news about bean prices lines up with the prices people see in shops.",
+      "changed_span_before": "about bean prices compares with the prices",
+      "changed_span_after": "about bean prices lines up with the prices",
+      "rationale": "“Lines up with” naturally conveys how the reported prices relate to the shop prices.",
+      "seven_gates": {
+        "1_meaning_preserved": false,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_unchanged": true,
+      "adoptable": false,
+      "qa_reasons": {
+        "meaning_preserved": "“Lines up with” implies that the reported prices agree with shop prices, rather than simply comparing them.",
+        "role_preserved": "It remains a brief listening prompt about the bean-price story.",
+        "fact_non_contradiction": "It adds no claim that conflicts with the original.",
+        "context_connection": "No surrounding context was provided, and the sentence remains a self-contained prompt.",
+        "natural_english": "“Lines up with” is a common, natural spoken expression here."
+      }
+    },
+    {
+      "id": "3",
+      "rewritten_segment": "Listen for how the news about bean prices matches the prices people see in shops.",
+      "changed_span_before": "about bean prices compares with the prices",
+      "changed_span_after": "about bean prices matches the prices",
+      "rationale": "A concise, idiomatic way to express whether the news and shop prices agree.",
+      "seven_gates": {
+        "1_meaning_preserved": false,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_unchanged": true,
+      "adoptable": false,
+      "qa_reasons": {
+        "meaning_preserved": "“Matches” implies that the news and shop prices are the same or agree, a stronger claim than comparing them.",
+        "role_preserved": "It remains a brief listening prompt about the bean-price story.",
+        "fact_non_contradiction": "It adds no claim that conflicts with the original.",
+        "context_connection": "No surrounding context was provided, and the sentence remains a self-contained prompt.",
+        "natural_english": "“Matches” is natural and commonly used in this kind of spoken sentence."
+      }
+    },
+    {
+      "id": "4",
+      "rewritten_segment": "Listen for how the news about bean prices stacks up against the prices people see in shops.",
+      "changed_span_before": "about bean prices compares with the prices",
+      "changed_span_after": "about bean prices stacks up against the prices",
+      "rationale": "A conversational phrase that preserves the comparison between the reported and shop prices.",
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_unchanged": true,
+      "adoptable": true,
+      "qa_reasons": {
+        "meaning_preserved": "“Stacks up against” retains the idea of comparing the reported bean prices with shop prices.",
+        "role_preserved": "It remains a brief listening prompt about the bean-price story.",
+        "fact_non_contradiction": "It adds no claim that conflicts with the original.",
+        "context_connection": "No surrounding context was provided, and the sentence remains a self-contained prompt.",
+        "natural_english": "“Stacks up against” is an idiomatic spoken way to introduce a comparison."
+      }
+    },
+    {
+      "id": "5",
+      "rewritten_segment": "Listen for how the news about bean prices is consistent with the prices people see in shops.",
+      "changed_span_before": "about bean prices compares with the prices",
+      "changed_span_after": "about bean prices is consistent with the prices",
+      "rationale": "Naturally frames the comparison as whether the news agrees with prices seen in shops.",
+      "seven_gates": {
+        "1_meaning_preserved": false,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_unchanged": true,
+      "adoptable": false,
+      "qa_reasons": {
+        "meaning_preserved": "“Is consistent with” implies agreement between the news and shop prices, rather than simply comparing them.",
+        "role_preserved": "It remains a brief listening prompt about the bean-price story.",
+        "fact_non_contradiction": "It adds no claim that conflicts with the original.",
+        "context_connection": "No surrounding context was provided, and the sentence remains a self-contained prompt.",
+        "natural_english": "The construction sounds overly formal and stilted as a spoken listening prompt."
+      }
+    }
+  ]
+}

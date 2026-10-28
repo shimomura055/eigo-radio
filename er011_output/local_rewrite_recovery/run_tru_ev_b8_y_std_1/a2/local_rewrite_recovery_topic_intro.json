@@ -1,0 +1,1300 @@
+{
+  "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+  "segment_id": "topic_intro",
+  "segment_role_label": "Topic intro (a short line announcing today's topic)",
+  "canonical_text": "Today's topic is Package Redelivery. Different Voices.",
+  "last_asr_text": "Today's market is package redelivery. Different voices.",
+  "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "today s topic is package redelivery",
+    "asr_span_with_context": "today s market is package redelivery",
+    "canonical_changed_words": [
+      "topic"
+    ],
+    "asr_changed_words": [
+      "market"
+    ],
+    "context_window_word_indices": [
+      0,
+      6
+    ]
+  },
+  "candidate_gen": {
+    "candidates": [
+      {
+        "id": "1",
+        "rewrite_type": "single_word_swap",
+        "rewritten_segment": "Today's subject is Package Redelivery. Different Voices.",
+        "changed_span_before": "topic",
+        "changed_span_after": "subject",
+        "rationale": "A natural, concise substitute that keeps the topic-introduction meaning."
+      },
+      {
+        "id": "2",
+        "rewrite_type": "single_word_swap",
+        "rewritten_segment": "Today's theme is Package Redelivery. Different Voices.",
+        "changed_span_before": "topic",
+        "changed_span_after": "theme",
+        "rationale": "A familiar spoken-English alternative that preserves the introductory role."
+      },
+      {
+        "id": "3",
+        "rewrite_type": "single_word_swap",
+        "rewritten_segment": "Today's focus is Package Redelivery. Different Voices.",
+        "changed_span_before": "topic",
+        "changed_span_after": "focus",
+        "rationale": "A natural one-word replacement that retains the meaning."
+      },
+      {
+        "id": "4",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Today, we're discussing Package Redelivery. Different Voices.",
+        "changed_span_before": "Today's topic is",
+        "changed_span_after": "Today, we're discussing",
+        "rationale": "A conversational way to announce what the episode is about today."
+      },
+      {
+        "id": "5",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Today's conversation is about Package Redelivery. Different Voices.",
+        "changed_span_before": "Today's topic is",
+        "changed_span_after": "Today's conversation is about",
+        "rationale": "A natural spoken introduction that preserves the original information."
+      }
+    ],
+    "_raw_model_response_text": "{\"candidates\":[{\"id\":\"1\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"Today's subject is Package Redelivery. Different Voices.\",\"changed_span_before\":\"topic\",\"changed_span_after\":\"subject\",\"rationale\":\"A natural, concise substitute that keeps the topic-introduction meaning.\"},{\"id\":\"2\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"Today's theme is Package Redelivery. Different Voices.\",\"changed_span_before\":\"topic\",\"changed_span_after\":\"theme\",\"rationale\":\"A familiar spoken-English alternative that preserves the introductory role.\"},{\"id\":\"3\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"Today's focus is Package Redelivery. Different Voices.\",\"changed_span_before\":\"topic\",\"changed_span_after\":\"focus\",\"rationale\":\"A natural one-word replacement that retains the meaning.\"},{\"id\":\"4\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Today, we're discussing Package Redelivery. Different Voices.\",\"changed_span_before\":\"Today's topic is\",\"changed_span_after\":\"Today, we're discussing\",\"rationale\":\"A conversational way to announce what the episode is about today.\"},{\"id\":\"5\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Today's conversation is about Package Redelivery. Different Voices.\",\"changed_span_before\":\"Today's topic is\",\"changed_span_after\":\"Today's conversation is about\",\"rationale\":\"A natural spoken introduction that preserves the original information.\"}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_08a94fbfdd62d5cd006ae1559142e487d083e6b712d375188a",
+    "_prompt": "Segment role: Topic intro (a short line announcing today's topic)\n\nFull segment (contains the problem span):\n\"Today's topic is Package Redelivery. Different Voices.\"\n\nProblem span (a speech recognizer repeatedly mis-transcribes this as ['market'] instead of ['topic']):\n\"today s topic is package redelivery\"\n\nPropose the candidates as described in the system instructions. Return the JSON object."
+  },
+  "qa": {
+    "evaluations": [
+      {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Subject” preserves the meaning of “topic.”"
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still announces the topic of the episode."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no conflicting facts."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it retains the original structure."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Today's subject is…” is a natural way to introduce a topic."
+        }
+      },
+      {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Theme” is a natural equivalent for the episode's topic here."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still announces the topic of the episode."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no conflicting facts."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it retains the original structure."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Today's theme is…” is a natural spoken introduction."
+        }
+      },
+      {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Focus” conveys what the episode is centered on, matching the topic announcement."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still announces the topic of the episode."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no conflicting facts."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it retains the original structure."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Today's focus is…” is a common, natural spoken expression."
+        }
+      },
+      {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It communicates that Package Redelivery is the subject of today's episode."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still serves as a brief introduction to today's topic."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the added sentence retains the original follow-on phrase."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Today, we're discussing…” is natural spoken narration."
+        }
+      },
+      {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It says the episode's subject is Package Redelivery, preserving the original meaning."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still introduces the episode's topic."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it retains the original follow-on phrase."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Today's conversation is about…” is a natural spoken introduction."
+        }
+      }
+    ],
+    "_raw_model_response_text": "{\"evaluations\":[{\"candidate_id\":\"1\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Subject” preserves the meaning of “topic.”\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still announces the topic of the episode.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no conflicting facts.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and it retains the original structure.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Today's subject is…” is a natural way to introduce a topic.\"}},{\"candidate_id\":\"2\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Theme” is a natural equivalent for the episode's topic here.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still announces the topic of the episode.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no conflicting facts.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and it retains the original structure.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Today's theme is…” is a natural spoken introduction.\"}},{\"candidate_id\":\"3\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Focus” conveys what the episode is centered on, matching the topic announcement.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still announces the topic of the episode.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no conflicting facts.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and it retains the original structure.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Today's focus is…” is a common, natural spoken expression.\"}},{\"candidate_id\":\"4\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It communicates that Package Redelivery is the subject of today's episode.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still serves as a brief introduction to today's topic.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no claim that conflicts with the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the added sentence retains the original follow-on phrase.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Today, we're discussing…” is natural spoken narration.\"}},{\"candidate_id\":\"5\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It says the episode's subject is Package Redelivery, preserving the original meaning.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still introduces the episode's topic.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no claim that conflicts with the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and it retains the original follow-on phrase.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Today's conversation is about…” is a natural spoken introduction.\"}}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_0449ec008df0bf83006ae155a2366c87d0885694c767a739ba",
+    "_prompt": "Segment role: Topic intro (a short line announcing today's topic)\n\nORIGINAL segment:\n\"Today's topic is Package Redelivery. Different Voices.\"\n\nCandidates to evaluate:\n- candidate_id='1': \"Today's subject is Package Redelivery. Different Voices.\"\n- candidate_id='2': \"Today's theme is Package Redelivery. Different Voices.\"\n- candidate_id='3': \"Today's focus is Package Redelivery. Different Voices.\"\n- candidate_id='4': \"Today, we're discussing Package Redelivery. Different Voices.\"\n- candidate_id='5': \"Today's conversation is about Package Redelivery. Different Voices.\"\n\nEvaluate all 5 gates for every candidate and return the JSON object described in the system instructions."
+  },
+  "candidates": [
+    {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Today's subject is Package Redelivery. Different Voices.",
+      "changed_span_before": "topic",
+      "changed_span_after": "subject",
+      "rationale": "A natural, concise substitute that keeps the topic-introduction meaning.",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Subject” preserves the meaning of “topic.”"
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still announces the topic of the episode."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no conflicting facts."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it retains the original structure."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Today's subject is…” is a natural way to introduce a topic."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.037,
+        "orig_coverage": 0.8571,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          2,
+          3
+        ],
+        "criterion6_allowed_window": [
+          0,
+          6
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.8571
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": true
+    },
+    {
+      "id": "2",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Today's theme is Package Redelivery. Different Voices.",
+      "changed_span_before": "topic",
+      "changed_span_after": "theme",
+      "rationale": "A familiar spoken-English alternative that preserves the introductory role.",
+      "qa_llm": {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Theme” is a natural equivalent for the episode's topic here."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still announces the topic of the episode."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no conflicting facts."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it retains the original structure."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Today's theme is…” is a natural spoken introduction."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0,
+        "orig_coverage": 0.8571,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          2,
+          3
+        ],
+        "criterion6_allowed_window": [
+          0,
+          6
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.8571
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": true
+    },
+    {
+      "id": "3",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Today's focus is Package Redelivery. Different Voices.",
+      "changed_span_before": "topic",
+      "changed_span_after": "focus",
+      "rationale": "A natural one-word replacement that retains the meaning.",
+      "qa_llm": {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Focus” conveys what the episode is centered on, matching the topic announcement."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still announces the topic of the episode."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no conflicting facts."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it retains the original structure."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Today's focus is…” is a common, natural spoken expression."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0,
+        "orig_coverage": 0.8571,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          2,
+          3
+        ],
+        "criterion6_allowed_window": [
+          0,
+          6
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.8571
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": true
+    },
+    {
+      "id": "4",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Today, we're discussing Package Redelivery. Different Voices.",
+      "changed_span_before": "Today's topic is",
+      "changed_span_after": "Today, we're discussing",
+      "rationale": "A conversational way to announce what the episode is about today.",
+      "qa_llm": {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It communicates that Package Redelivery is the subject of today's episode."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still serves as a brief introduction to today's topic."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the added sentence retains the original follow-on phrase."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Today, we're discussing…” is natural spoken narration."
+        }
+      },
+      "is_full_segment_format_valid": false,
+      "full_segment_check": {
+        "ok": false,
+        "reason": "LOW_ORIGINAL_COVERAGE_OVER_MODIFIED_OR_UNRELATED",
+        "length_ratio": 1.1296,
+        "orig_coverage": 0.5714
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          1,
+          4
+        ],
+        "criterion6_allowed_window": [
+          0,
+          6
+        ],
+        "criterion7_not_full_rewrite": false,
+        "unchanged_ratio": 0.5714
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": false
+      },
+      "all_seven_gates_pass": false,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": false
+    },
+    {
+      "id": "5",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Today's conversation is about Package Redelivery. Different Voices.",
+      "changed_span_before": "Today's topic is",
+      "changed_span_after": "Today's conversation is about",
+      "rationale": "A natural spoken introduction that preserves the original information.",
+      "qa_llm": {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It says the episode's subject is Package Redelivery, preserving the original meaning."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still introduces the episode's topic."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it retains the original follow-on phrase."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Today's conversation is about…” is a natural spoken introduction."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.2407,
+        "orig_coverage": 0.8571,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          2,
+          4
+        ],
+        "criterion6_allowed_window": [
+          0,
+          6
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.8571
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": true
+    }
+  ],
+  "selection": {
+    "selected": {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Today's subject is Package Redelivery. Different Voices.",
+      "changed_span_before": "topic",
+      "changed_span_after": "subject",
+      "rationale": "A natural, concise substitute that keeps the topic-introduction meaning.",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Subject” preserves the meaning of “topic.”"
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still announces the topic of the episode."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no conflicting facts."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and it retains the original structure."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Today's subject is…” is a natural way to introduce a topic."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.037,
+        "orig_coverage": 0.8571,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          2,
+          3
+        ],
+        "criterion6_allowed_window": [
+          0,
+          6
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.8571
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_check": {
+        "applicable": false,
+        "pass": true,
+        "before": null,
+        "after": null
+      },
+      "8_sentence_count_unchanged": true,
+      "adoptable": true
+    },
+    "status": "SELECTED",
+    "selection_rationale": "全7 Gate PASSの候補は4件(['1', '2', '3', '5'])。unchanged_ratio=0.8571(最小限の変更)が最大の'1'を採用。Natural English Gate理由: “Today's subject is…” is a natural way to introduce a topic.",
+    "all_passing_candidate_ids": [
+      "1",
+      "2",
+      "3",
+      "5"
+    ]
+  },
+  "retts_result": {
+    "status": "STOPPED",
+    "text": "Today's subject is Package Redelivery. Different Voices.",
+    "path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_b8_y_std_1/a2/narration/topic_intro.wav",
+    "model": "gemini-3.8-flash-lite-tts",
+    "voice": "Aoede",
+    "call_count": 1,
+    "retry_count": 0,
+    "sha256": "e668e606066853bb9ce9b5a69550531d7c4ab4a52b8c9296645e22e6c6f40ff4",
+    "duration_seconds": 4.76,
+    "trim_info": {
+      "raw_duration_seconds": 4.76,
+      "raw_leading_silence_seconds": 0.26,
+      "raw_trailing_silence_seconds": 0.32,
+      "trimmed_duration_seconds": 4.76,
+      "leading_margin_retained_seconds": 0.26,
+      "trailing_margin_retained_seconds": 0.32
+    },
+    "clipping_detected": false,
+    "instruction": "FAMILY_X_ROLE_STYLE_EN_FALLBACK[0] (len=30)",
+    "instruction_label": "FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]",
+    "style_prefix": {
+      "len": 30,
+      "sha256": "dba23e664f387c6641f9dd003cf4571f78af87613c68536ddbb5f1e52cad964b",
+      "head200": "natural, clear, conversational"
+    },
+    "tts_backend": "speech_metadata_flash_lite",
+    "en_pronunciation_resolver_info": {
+      "hints_applied": false,
+      "cache_hits": [],
+      "low_confidence_retry_attempted": false,
+      "low_confidence_retry_improved": false,
+      "research_meta": null
+    },
+    "reason": "ブロック(標準経路2回+fallback経路1回、合計上限3回)とも不合格",
+    "standard_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 4.41,
+        "asr_text": "Today's subject is Package Redelivery, different voices.",
+        "asr_text_length": 56,
+        "max_len": 86,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 96,
+          "sha256": "d16e099cb4f6fd7f87826e48f636c143c31f3c7ad4aaeea13dd3c9ae4a3f724b",
+          "head200": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic."
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Today's subject is Package Redelivery, different voices.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "primary_pass",
+          "slot": 4,
+          "script_version": "v1",
+          "role": "TOPIC_INTRO",
+          "lang": "en",
+          "segment_key": "topic_intro",
+          "audio_sha256": "c007f22acfb7682a903de875e46357b05e8b7f52e226e6930344c41d05be32d9",
+          "primary": {
+            "text": "Today's subject is Package Redelivery, different voices.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [
+            "LR_REWRITTEN"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 56,
+            "secondary_len": null,
+            "max_len": 86,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "topic_intro",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          },
+          "forced_ng_by_driver": true
+        },
+        "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_b8_y_std_1/a2/narration/attempts/topic_intro_attempt4_custom60a24f1e.wav"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "duration_seconds": 4.2,
+        "asr_text": "Today's subject is package redelivery. Different voices.",
+        "asr_text_length": 56,
+        "max_len": 86,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 96,
+          "sha256": "d16e099cb4f6fd7f87826e48f636c143c31f3c7ad4aaeea13dd3c9ae4a3f724b",
+          "head200": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic."
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Today's subject is package redelivery. Different voices.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "primary_pass",
+          "slot": 5,
+          "script_version": "v1",
+          "role": "TOPIC_INTRO",
+          "lang": "en",
+          "segment_key": "topic_intro",
+          "audio_sha256": "4e1d09d00ad82df80da5edf63449e16059747ca70d6b55abc40091a404d5d824",
+          "primary": {
+            "text": "Today's subject is package redelivery. Different voices.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [
+            "LR_REWRITTEN"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 56,
+            "secondary_len": null,
+            "max_len": 86,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "topic_intro",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          },
+          "forced_ng_by_driver": true
+        },
+        "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_b8_y_std_1/a2/narration/attempts/topic_intro_attempt5_custom60a24f1e.wav"
+      }
+    ],
+    "attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 4.41,
+        "asr_text": "Today's subject is Package Redelivery, different voices.",
+        "asr_text_length": 56,
+        "max_len": 86,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 96,
+          "sha256": "d16e099cb4f6fd7f87826e48f636c143c31f3c7ad4aaeea13dd3c9ae4a3f724b",
+          "head200": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic."
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Today's subject is Package Redelivery, different voices.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "primary_pass",
+          "slot": 4,
+          "script_version": "v1",
+          "role": "TOPIC_INTRO",
+          "lang": "en",
+          "segment_key": "topic_intro",
+          "audio_sha256": "c007f22acfb7682a903de875e46357b05e8b7f52e226e6930344c41d05be32d9",
+          "primary": {
+            "text": "Today's subject is Package Redelivery, different voices.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [
+            "LR_REWRITTEN"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 56,
+            "secondary_len": null,
+            "max_len": 86,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "topic_intro",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          },
+          "forced_ng_by_driver": true
+        },
+        "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_b8_y_std_1/a2/narration/attempts/topic_intro_attempt4_custom60a24f1e.wav"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "duration_seconds": 4.2,
+        "asr_text": "Today's subject is package redelivery. Different voices.",
+        "asr_text_length": 56,
+        "max_len": 86,
+        "substring_ok": null,
+        "length_ok": true,
+        "final_length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 96,
+          "sha256": "d16e099cb4f6fd7f87826e48f636c143c31f3c7ad4aaeea13dd3c9ae4a3f724b",
+          "head200": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic."
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Today's subject is package redelivery. Different voices.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "primary_pass",
+          "slot": 5,
+          "script_version": "v1",
+          "role": "TOPIC_INTRO",
+          "lang": "en",
+          "segment_key": "topic_intro",
+          "audio_sha256": "4e1d09d00ad82df80da5edf63449e16059747ca70d6b55abc40091a404d5d824",
+          "primary": {
+            "text": "Today's subject is package redelivery. Different voices.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [
+            "LR_REWRITTEN"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 56,
+            "secondary_len": null,
+            "max_len": 86,
+            "adopted_from": "primary",
+            "adopted_ok": true,
+            "surface_len": null,
+            "primary_ok": true
+          },
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "topic_intro",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          },
+          "forced_ng_by_driver": true
+        },
+        "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_b8_y_std_1/a2/narration/attempts/topic_intro_attempt5_custom60a24f1e.wav"
+      }
+    ],
+    "fallback_attempts_log": [
+      {
+        "attempt": 3,
+        "status": "OK",
+        "asr_text": "Today's subject is package redelivery. Different voices.",
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "en_pronunciation_resolver_info": {
+          "hints_applied": false,
+          "cache_hits": [],
+          "low_confidence_retry_attempted": false,
+          "low_confidence_retry_improved": false,
+          "research_meta": null
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Today's subject is package redelivery. Different voices.",
+            "classification": "NORMALIZED_MATCH",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_forced",
+            "provider": "azure",
+            "text": "Today's subject is package redelivery. Different voices.",
+            "classification": "NORMALIZED_MATCH",
+            "phrase_list_used": false,
+            "azure_phrase_list_weight": null,
+            "azure_phrase_list": [],
+            "cached": false,
+            "unified_judge_state": "PASS_WITH_WARNING",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "force_secondary_agreed",
+          "slot": 6,
+          "script_version": "v1",
+          "role": "TOPIC_INTRO",
+          "lang": "en",
+          "segment_key": "topic_intro",
+          "audio_sha256": "e668e606066853bb9ce9b5a69550531d7c4ab4a52b8c9296645e22e6c6f40ff4",
+          "primary": {
+            "text": "Today's subject is package redelivery. Different voices.",
+            "passed": true,
+            "label": "NORMALIZED_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Today's subject is package redelivery. Different voices.",
+            "label": "NORMALIZED_MATCH",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [
+            "LR_REWRITTEN"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 4.76,
+            "est_jpy": 0.2222,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 1090,
+            "secondary_ms": 1090
+          },
+          "technical_stop": null,
+          "length": {
+            "applied": true,
+            "primary_len": 56,
+            "secondary_len": 56,
+            "max_len": 86,
+            "adopted_from": "secondary",
+            "adopted_ok": true,
+            "surface_len": 47,
+            "primary_ok": true
+          },
+          "p3_entry": "force_secondary",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "topic_intro",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 4,
+              "hits": 0
+            }
+          },
+          "forced_ng_by_driver": true
+        },
+        "style_prefix": {
+          "len": 30,
+          "sha256": "dba23e664f387c6641f9dd003cf4571f78af87613c68536ddbb5f1e52cad964b",
+          "head200": "natural, clear, conversational"
+        },
+        "instruction_label": "FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]",
+        "attempt_audio_path": "er121_output/family_y_production_01/redelivery_fee/run_tru_ev_b8_y_std_1/a2/narration/attempts/topic_intro_attempt6_minimalfallback.wav"
+      }
+    ],
+    "cooldown_events": [
+      {
+        "cooldown_requested_seconds": 180.0,
+        "cooldown_actual_seconds": 179.989,
+        "cooldown_started_at": "2026-10-28T10:53:55",
+        "cooldown_ended_at": "2026-10-28T10:56:55",
+        "attempt_before_cooldown": 5,
+        "attempt_after_cooldown": 6,
+        "total_elapsed_since_ref_seconds": 180.001,
+        "resumed": false
+      }
+    ],
+    "fallback_used": true,
+    "fallback_en_pronunciation_resolver_info": {
+      "hints_applied": false,
+      "cache_hits": [],
+      "low_confidence_retry_attempted": false,
+      "low_confidence_retry_improved": false,
+      "research_meta": null
+    }
+  },
+  "status": "HUMAN_REVIEW_LOCKED_RETTS_FAILED"
+}

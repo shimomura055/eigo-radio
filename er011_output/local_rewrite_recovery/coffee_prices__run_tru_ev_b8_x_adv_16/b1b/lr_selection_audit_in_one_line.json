@@ -1,0 +1,184 @@
+{
+  "schema": "lr_selection_audit_v1",
+  "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+  "segment_id": "in_one_line",
+  "canonical_text": "Falling coffee bean prices may take at least 9 months to affect US retail prices.",
+  "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "9 months to affect us retail prices",
+    "asr_span_with_context": "9 months to market u s retail prices",
+    "canonical_changed_words": [
+      "affect",
+      "us"
+    ],
+    "asr_changed_words": [
+      "market",
+      "u",
+      "s"
+    ],
+    "context_window_word_indices": [
+      8,
+      15
+    ]
+  },
+  "selected": {
+    "id": "1",
+    "rewritten_segment": "Falling coffee bean prices may take at least 9 months to influence US retail prices.",
+    "changed_span_before": "affect",
+    "changed_span_after": "influence",
+    "rationale": "“Influence” is a natural, direct synonym that preserves the meaning while avoiding the problematic wording.",
+    "seven_gates": {
+      "1_meaning_preserved": true,
+      "2_role_preserved": true,
+      "3_fact_non_contradiction": true,
+      "4_context_connection": true,
+      "5_natural_english_gate": true,
+      "6_localized_minimal_change": true,
+      "7_not_full_rewrite": true
+    },
+    "all_seven_gates_pass": true,
+    "sentence_count_unchanged": true,
+    "adoptable": true,
+    "qa_reasons": {
+      "meaning_preserved": "“Influence” preserves the claim that lower coffee bean prices may affect retail prices after at least nine months.",
+      "role_preserved": "It remains a concise, one-line summary of the episode.",
+      "fact_non_contradiction": "It introduces no claim that conflicts with the original.",
+      "context_connection": "As a standalone summary, it connects naturally; no surrounding context was provided.",
+      "natural_english": "This is idiomatic and natural spoken English."
+    }
+  },
+  "selection_rationale": "全7 Gate PASSの候補は5件(['1', '2', '3', '4', '5'])。unchanged_ratio=0.9286(最小限の変更)が最大の'1'を採用。Natural English Gate理由: This is idiomatic and natural spoken English.",
+  "candidates": [
+    {
+      "id": "1",
+      "rewritten_segment": "Falling coffee bean prices may take at least 9 months to influence US retail prices.",
+      "changed_span_before": "affect",
+      "changed_span_after": "influence",
+      "rationale": "“Influence” is a natural, direct synonym that preserves the meaning while avoiding the problematic wording.",
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_unchanged": true,
+      "adoptable": true,
+      "qa_reasons": {
+        "meaning_preserved": "“Influence” preserves the claim that lower coffee bean prices may affect retail prices after at least nine months.",
+        "role_preserved": "It remains a concise, one-line summary of the episode.",
+        "fact_non_contradiction": "It introduces no claim that conflicts with the original.",
+        "context_connection": "As a standalone summary, it connects naturally; no surrounding context was provided.",
+        "natural_english": "This is idiomatic and natural spoken English."
+      }
+    },
+    {
+      "id": "2",
+      "rewritten_segment": "Falling coffee bean prices may take at least 9 months to have an effect on US retail prices.",
+      "changed_span_before": "to affect US retail prices",
+      "changed_span_after": "to have an effect on US retail prices",
+      "rationale": "This keeps the original meaning and sounds natural in a spoken summary.",
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_unchanged": true,
+      "adoptable": true,
+      "qa_reasons": {
+        "meaning_preserved": "“Have an effect on” conveys the same potential impact and timing.",
+        "role_preserved": "It remains a one-line summary.",
+        "fact_non_contradiction": "It adds no conflicting information.",
+        "context_connection": "It works naturally as a standalone closing summary; no surrounding context was provided.",
+        "natural_english": "The wording is natural, though slightly more wordy than the original."
+      }
+    },
+    {
+      "id": "3",
+      "rewritten_segment": "Falling coffee bean prices may take at least 9 months to show up in US retail prices.",
+      "changed_span_before": "to affect US retail prices",
+      "changed_span_after": "to show up in US retail prices",
+      "rationale": "“Show up in” naturally describes a delayed change becoming apparent in retail prices.",
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_unchanged": true,
+      "adoptable": true,
+      "qa_reasons": {
+        "meaning_preserved": "“Show up in” conveys that falling bean prices may become apparent in retail prices after at least nine months.",
+        "role_preserved": "It remains a concise, one-line summary.",
+        "fact_non_contradiction": "It does not conflict with the original claim.",
+        "context_connection": "It reads naturally as a standalone summary; no surrounding context was provided.",
+        "natural_english": "“Show up in prices” is a common, idiomatic expression."
+      }
+    },
+    {
+      "id": "4",
+      "rewritten_segment": "Falling coffee bean prices may take at least 9 months to filter through to US retail prices.",
+      "changed_span_before": "to affect US retail prices",
+      "changed_span_after": "to filter through to US retail prices",
+      "rationale": "“Filter through to” is idiomatic for a price change passing along to retail prices.",
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_unchanged": true,
+      "adoptable": true,
+      "qa_reasons": {
+        "meaning_preserved": "“Filter through to” preserves the idea that lower bean prices may eventually affect retail prices, with the stated minimum delay.",
+        "role_preserved": "It remains a concise, one-line summary.",
+        "fact_non_contradiction": "It adds no claim that contradicts the original.",
+        "context_connection": "It works naturally as a standalone summary; no surrounding context was provided.",
+        "natural_english": "“Filter through to prices” is idiomatic in this economic context."
+      }
+    },
+    {
+      "id": "5",
+      "rewritten_segment": "Falling coffee bean prices may take at least 9 months to be reflected in US retail prices.",
+      "changed_span_before": "to affect US retail prices",
+      "changed_span_after": "to be reflected in US retail prices",
+      "rationale": "This conveys that the effect of lower bean prices may take time to appear in retail prices.",
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true,
+      "sentence_count_unchanged": true,
+      "adoptable": true,
+      "qa_reasons": {
+        "meaning_preserved": "“Be reflected in” conveys that falling bean prices may eventually be evident in retail prices after at least nine months.",
+        "role_preserved": "It remains a concise, one-line summary.",
+        "fact_non_contradiction": "It does not conflict with the original claim.",
+        "context_connection": "It reads naturally as a standalone closing summary; no surrounding context was provided.",
+        "natural_english": "“Be reflected in retail prices” is a common, natural phrase."
+      }
+    }
+  ]
+}

@@ -1,0 +1,711 @@
+{
+ "management_id": "LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01",
+ "case": "B8-X-Std-8",
+ "family": "X",
+ "level": "a2",
+ "scenario": "E-S4",
+ "leaf": "L6",
+ "policy": "KP_EN",
+ "segments": [
+  "kp1_en"
+ ],
+ "run_dir": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_std_8",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {
+   "*": [
+    1,
+    2
+   ]
+  },
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [
+  {
+   "kind": "judge_ng",
+   "clip": "kp1_en",
+   "slot": 1,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "kp1_en",
+   "slot": 2,
+   "judge_kind": "en"
+  }
+ ],
+ "injected_override_count": 2,
+ "started_at": "2026-10-28T10:34:57",
+ "ended_at": "2026-10-28T10:38:15",
+ "wall_seconds": 197.5,
+ "pid": 30672,
+ "exception": null,
+ "tts_attempts": [
+  {
+   "clip": "kp1_en",
+   "t": 2.14,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "9d905cfe6c04",
+   "style_head": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pit",
+   "style_chars": 332,
+   "text_head": "pump one's fist",
+   "text_sha": "90f0c1d198a1",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "kp1_en",
+   "t": 8.98,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "9d905cfe6c04",
+   "style_head": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pit",
+   "style_chars": 332,
+   "text_head": "pump one's fist",
+   "text_sha": "90f0c1d198a1",
+   "backend": "speech_metadata_flash_lite"
+  },
+  {
+   "clip": "kp1_en",
+   "t": 192.23,
+   "voice": "Aoede",
+   "model_requested": "gemini-2.5-pro-preview-tts",
+   "model": "gemini-3.8-flash-lite-tts",
+   "style_sha": "dcd08dcae5b0",
+   "style_head": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not",
+   "style_chars": 1246,
+   "text_head": "pump one's fist",
+   "text_sha": "90f0c1d198a1",
+   "backend": "speech_metadata_flash_lite"
+  }
+ ],
+ "tts_attempts_count": 3,
+ "tts_api_calls": 3,
+ "judges": [
+  {
+   "clip": "kp1_en",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "TRUE_CONTENT_MISMATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Pump one fist."
+  },
+  {
+   "clip": "kp1_en",
+   "kind": "en",
+   "slot": 2,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "Pump one's fist."
+  },
+  {
+   "clip": "kp1_en",
+   "kind": "en",
+   "slot": 3,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "Pump one's fist."
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [
+  {
+   "label": "kp1_en",
+   "requested_seconds": 180.0,
+   "actual_seconds": 179.986,
+   "started_at": "2026-10-28T10:35:10",
+   "ended_at": "2026-10-28T10:38:10",
+   "resumed": false,
+   "attempt_before": 2,
+   "attempt_after": 3,
+   "total_elapsed_since_ref_seconds": 180.001,
+   "wall_start_epoch": 1793151310.0799377
+  }
+ ],
+ "cooldown_count": 1,
+ "sleep_total_seconds": 180.0,
+ "stop_checks": {
+  "cooldown": 36,
+  "attempt": 3,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [
+  "COOLDOWN_BEFORE_BLOCK_ATTEMPT",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "kp1_en": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "90f0c1d198a1904d4d36dd860ee868cc8df83b270f8fe17d17f2e1b355facd06",
+   "language": "en",
+   "theme_id": "coffee_prices__run_tru_ev_b8_x_std_8",
+   "level": "a2",
+   "segment_id": "kp1_en",
+   "updated_at": "2026-10-28T10:38:15",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_std_8/a2/narration/kp1_en.wav",
+   "cumulative_tts_attempts": 3,
+   "cumulative_asr_calls": 3,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "duration_seconds": 1.6,
+     "asr_text": "Pump one's fist.",
+     "asr_text_length": 16,
+     "max_len": 25,
+     "substring_ok": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "phonetic_verdict": null,
+     "audio_classification": "NORMALIZED_MATCH",
+     "connected_speech_info": null,
+     "reading_resolver_info": null,
+     "scg_info": null,
+     "verified": true,
+     "disfluency_checked": true,
+     "disfluency_evidence": {
+      "flagged": false,
+      "repeats": [],
+      "word_count": 3,
+      "transcript": "Pump  One's  Fist",
+      "method": "faster_whisper_small_local_verbatim"
+     },
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "asr_prompt_applied": true,
+     "non_latin_cascade_enabled": true,
+     "non_latin_cascade_invoked": false,
+     "style_prefix": {
+      "len": 1246,
+      "sha256": "dcd08dcae5b0ce13fd35da0980d4cf021e0b2c0a33db0cec6c8377444b3bbf30",
+      "head200": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not add explanations, examples, introductions, or any other com"
+     },
+     "cascade_steps": [
+      {
+       "step": "primary_1",
+       "provider": "openai_asr",
+       "text": "Pump one's fist.",
+       "classification": "NORMALIZED_MATCH",
+       "entity_like_source": []
+      },
+      {
+       "step": "secondary_vote",
+       "provider": "azure",
+       "text": "Pump 1's fist.",
+       "classification": "TRUE_CONTENT_MISMATCH",
+       "phrase_list_used": false,
+       "azure_phrase_list_weight": null,
+       "azure_phrase_list": [],
+       "cached": false,
+       "unified_judge_state": "PASS",
+       "vote_required": true,
+       "entity_like_source": []
+      }
+     ],
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "dual_agreed",
+      "slot": 3,
+      "script_version": "v0",
+      "role": null,
+      "lang": "en",
+      "segment_key": "",
+      "audio_sha256": "87d9784ed8cfeaaaf3a047981502899aab0ccce2ca6da17e2f47fe730c7823a6",
+      "primary": {
+       "text": "Pump one's fist.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": true,
+       "cached": false,
+       "engine": "azure",
+       "text": "Pump 1's fist.",
+       "label": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+       "accepted": true,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       },
+       "secondary": {
+        "kind": "DIFF",
+        "pairs": [
+         {
+          "src": null,
+          "hyp": "1",
+          "verdict": "DIFF",
+          "reason": "hyp_drop(b)"
+         }
+        ],
+        "reasons": [
+         "DIFF:hyp_drop(b):None->'1'"
+        ],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false,
+       "secondary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "target": "secondary",
+       "value_guard": "DIFF",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 1,
+       "azure_seconds": 1.6,
+       "est_jpy": 0.0889,
+       "est_jpy_known": true
+      },
+      "timing": {
+       "total_ms": 583,
+       "secondary_ms": 582
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 16,
+       "secondary_len": 14,
+       "max_len": 25,
+       "adopted_from": "secondary",
+       "adopted_ok": true,
+       "surface_len": 10,
+       "primary_ok": true
+      },
+      "vote": {
+       "version": "kp_vote_check_v1",
+       "guard_lifted": true,
+       "guard_lifted_version": "kp_vote_guard_lifted_v1",
+       "observed_protected_diff": {
+        "primary": false,
+        "secondary": true,
+        "whisper": false
+       },
+       "required": true,
+       "state": "PASS_DUAL",
+       "reason": "dual_agreed",
+       "row": "P+S",
+       "pass_count": 2,
+       "tiebreak_enabled": true,
+       "primary": {
+        "provider": "openai",
+        "text": "Pump one's fist.",
+        "pass": true,
+        "available": true,
+        "label": "NORMALIZED_MATCH",
+        "observed_protected_diff": false,
+        "rescued": false,
+        "error": null,
+        "technical_failure": false,
+        "note": null,
+        "rescue_layers": []
+       },
+       "secondary": {
+        "provider": "azure",
+        "text": "Pump 1's fist.",
+        "pass": true,
+        "available": true,
+        "label": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+        "observed_protected_diff": true,
+        "rescued": false,
+        "error": null,
+        "technical_failure": false,
+        "note": "secondary_accepted",
+        "rescue_layers": [],
+        "ortho_applied": true,
+        "ortho_warnings": []
+       },
+       "secondary_called": true,
+       "whisper": null,
+       "whisper_called": false,
+       "whisper_model": null,
+       "ortho_layer_version": "er109_orthographic_equivalence_v2_ukus01",
+       "ortho_scope": "X",
+       "primary_not_pass_reason": null,
+       "primary_rescued_by_secondary": false
+      },
+      "p3_entry": "vote_required",
+      "orthographic_equivalence": {
+       "applied": true,
+       "version": "er109_orthographic_equivalence_v2_ukus01",
+       "scope": "X",
+       "label": "ORTHOGRAPHIC_EQUIVALENT_MATCH",
+       "sites": [
+        {
+         "site": "secondary",
+         "text": "Pump 1's fist.",
+         "verdict": "PASS",
+         "warnings": [],
+         "er109": {
+          "version": "er109_orthographic_equivalence_v2_ukus01",
+          "flag_enabled": true,
+          "stress_mode": "binary_stressed_vs_unstressed",
+          "equivalent": true,
+          "verdict": "PASS",
+          "reason": "all_diff_spans_phoneme_equal",
+          "rules": [
+           "number_spoken_form"
+          ],
+          "warnings": [],
+          "contraction_expanded": false,
+          "spans": [
+           {
+            "canon": [
+             "one's"
+            ],
+            "asr": [
+             "1's"
+            ],
+            "equivalent": true,
+            "rule": "number_spoken_form",
+            "why": "phoneme_equal",
+            "matched_variants": [
+             "W AH1 N Z"
+            ],
+            "representative_match": true,
+            "heteronym_guard": true,
+            "warnings": []
+           }
+          ]
+         }
+        }
+       ],
+       "warnings": []
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 1,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": null,
+       "asr_text_present": true,
+       "cache": {
+        "calls": 6,
+        "hits": 0
+       }
+      }
+     },
+     "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_std_8/a2/narration/attempts/kp1_en_attempt3_custom31eb2f72.wav"
+    }
+   ]
+  }
+ },
+ "block_progress": {
+  "kp1_en.json": {
+   "schema": "tts_block_progress_v1",
+   "key": "f32c769bd86ccbf4bc4ad009",
+   "segment_id": "kp1_en",
+   "fingerprint": {
+    "leaf": "L6",
+    "policy": "KP_EN"
+   },
+   "status": "DONE",
+   "created_epoch": 1793151299.9836595,
+   "updated_epoch": 1793151495.3400142,
+   "blocks": {
+    "0": {
+     "n_started": 3,
+     "attempts": {
+      "1": {
+       "started_epoch": 1793151299.9876053,
+       "finished_epoch": 1793151306.8140745,
+       "verified": false
+      },
+      "2": {
+       "started_epoch": 1793151306.824773,
+       "finished_epoch": 1793151310.065665,
+       "verified": false
+      },
+      "3": {
+       "started_epoch": 1793151490.0755384,
+       "finished_epoch": 1793151495.313853,
+       "verified": true
+      }
+     },
+     "cooldown": {
+      "before_ordinal": 3,
+      "cooldown_started_at": "2026-10-28T10:35:10",
+      "cooldown_ended_at": "2026-10-28T10:38:10",
+      "cooldown_actual_seconds": 179.986,
+      "total_elapsed_since_ref_seconds": 180.001,
+      "resumed": false
+     }
+    }
+   },
+   "lr": {
+    "used": false,
+    "text": null,
+    "text_sha": null
+   },
+   "final_adoption": {
+    "depth": 0,
+    "ordinal": 3,
+    "slot": "③",
+    "style_mode": "FALLBACK",
+    "sent_style_sha": "dcd08dcae5b0ce13fd35da0980d4cf021e0b2c0a33db0cec6c8377444b3bbf30",
+    "attempt_audio_sha": "87d9784ed8cfeaaaf3a047981502899aab0ccce2ca6da17e2f47fe730c7823a6",
+    "source": "tts_attempt"
+   },
+   "final_status": "OK"
+  }
+ },
+ "results_segments": {},
+ "results_key_phrases": {
+  "1": {
+   "english": {
+    "status": "OK",
+    "fallback_used": true,
+    "voice": "Aoede",
+    "model": "gemini-3.8-flash-lite-tts",
+    "style_prefix": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not add explanations, e",
+    "asr_verified": true,
+    "asr_text": "Pump one's fist.",
+    "canonical_text": "pump one's fist",
+    "path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_b8_x_std_8/a2/narration/kp1_en.wav",
+    "style_prefix_sha": "dcd08dcae5b0",
+    "attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "verified": true,
+      "asr_text": "Pump one's fist.",
+      "audio_classification": "NORMALIZED_MATCH",
+      "disfluency_checked": true
+     }
+    ],
+    "fallback_attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "verified": false,
+      "asr_text": "Pump one fist.",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "disfluency_checked": false
+     },
+     {
+      "attempt": 2,
+      "status": "OK",
+      "verified": false,
+      "asr_text": "Pump one's fist.",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "disfluency_checked": false
+     }
+    ],
+    "minimal_attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "verified": false,
+      "asr_text": "Pump one fist.",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "disfluency_checked": false
+     },
+     {
+      "attempt": 2,
+      "status": "OK",
+      "verified": false,
+      "asr_text": "Pump one's fist.",
+      "audio_classification": "TRUE_CONTENT_MISMATCH",
+      "disfluency_checked": false
+     }
+    ],
+    "english_lock_attempts_log": [
+     {
+      "attempt": 1,
+      "status": "OK",
+      "verified": true,
+      "asr_text": "Pump one's fist.",
+      "audio_classification": "NORMALIZED_MATCH",
+      "disfluency_checked": true
+     }
+    ]
+   }
+  }
+ },
+ "attempt_sidecars": [
+  {
+   "file": "kp1_en_attempt1_custom60ebc452.json",
+   "segment_id": "kp1_en",
+   "attempt_number": 1,
+   "route": "custom_60ebc452",
+   "saved_at": "2026-10-28T10:35:06",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pit",
+   "instruction_sha": "9d905cfe6c04",
+   "instruction_chars": 332,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Pump one fist.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "TRUE_CONTENT_MISMATCH"
+    ],
+    [
+     "secondary_vote",
+     "azure",
+     "TRUE_CONTENT_MISMATCH"
+    ],
+    [
+     "whisper_vote",
+     "faster_whisper",
+     "NORMALIZED_MATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "kp1_en_attempt2_custom60ebc452.json",
+   "segment_id": "kp1_en",
+   "attempt_number": 2,
+   "route": "custom_60ebc452",
+   "saved_at": "2026-10-28T10:35:10",
+   "loop_attempt_index": 2,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pit",
+   "instruction_sha": "9d905cfe6c04",
+   "instruction_chars": 332,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "Pump one's fist.",
+   "disfluency_checked": false,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ],
+    [
+     "secondary_vote",
+     "azure",
+     "TRUE_CONTENT_MISMATCH"
+    ]
+   ],
+   "slowdown": {}
+  },
+  {
+   "file": "kp1_en_attempt3_custom31eb2f72.json",
+   "segment_id": "kp1_en",
+   "attempt_number": 3,
+   "route": "custom_31eb2f72",
+   "saved_at": "2026-10-28T10:38:15",
+   "loop_attempt_index": 1,
+   "max_attempts": 2,
+   "model": "gemini-3.8-flash-lite-tts",
+   "voice": "Aoede",
+   "tts_backend": "speech_metadata_flash_lite",
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not",
+   "instruction_sha": "dcd08dcae5b0",
+   "instruction_chars": 1246,
+   "verified": true,
+   "audio_classification": "NORMALIZED_MATCH",
+   "asr_text": "Pump one's fist.",
+   "disfluency_checked": true,
+   "cascade_providers": [
+    [
+     "primary_1",
+     "openai_asr",
+     "NORMALIZED_MATCH"
+    ],
+    [
+     "secondary_vote",
+     "azure",
+     "TRUE_CONTENT_MISMATCH"
+    ]
+   ],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 0.38,
+  "by_provider": {
+   "gemini": 0.12,
+   "openai_asr": 0.05,
+   "azure": 0.21
+  }
+ },
+ "gate_observation": {
+  "status_all": "BLOCK",
+  "my_segment_blocked": [
+   {
+    "segment": "kp1_japanese_meaning",
+    "violations": [
+     "NO_SEGMENT_RECORD"
+    ]
+   }
+  ],
+  "my_segment_warnings": [
+   {
+    "segment": "kp1_english",
+    "warning": "KP_EN_ENGLISH_LOCK_FALLBACK_AUDIO_NOT_K2"
+   }
+  ],
+  "note": "m3_assembly_gate(承認済みprofile)を実resultsへ適用。全体statusは未生成segmentのNO_SEGMENT_RECORDを含むため my_* のみ参照"
+ },
+ "resumed_run": false
+}
