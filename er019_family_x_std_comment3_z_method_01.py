@@ -32,6 +32,8 @@ MIN_EXCERPT_WORDS = 8          # これ未満(情報が薄い)は渡さずPart1+
 CONCLUSION_MARKER_RE = re.compile(
     r"\b(even so|still,|in short|overall|in conclusion|in other words|in the end|after all|too soon|"
     r"do(?:es)? not show|proof|however|as a result|this means|that means|for now|in fact)\b", re.I)
+# Opus R-2: 文頭の So/Thus/Therefore/Still(カンマ無し含む)は結論・留保の導入として扱う
+SENTENCE_START_CONCLUSION_RE = re.compile(r"^[\"“‘]?(?:so|thus|therefore|still)\b", re.I)
 # 結果文の目印(数値・比較・結果動詞・因果/結論動詞・否定的結果)。該当文の手前で打ち切る。
 RESULT_SENTENCE_RE = re.compile(
     r"\b(found|finds?|showed|shows?|shown|turned out|revealed?|rose|rises?|fell|falls?|dropped|drops?|"
@@ -40,6 +42,8 @@ RESULT_SENTENCE_RE = re.compile(
     r"averages?|scores?|scored|results?|resulted|led to|caused?|because|due to|suggests?|suggested|"
     r"thinks?|believes?|concluded|explains?|reasons?|improved?|worsened|solved|proved?|"
     r"stayed the same|no longer|(?:had|has|have|did|does|do|was|were|is|are) not|never|"
+    r"[A-Za-z]+n[’'`]t|(?:will|would|could|can|may|might|should|must|shall) not|cannot|"   # Opus M-1: 否定の短縮形・助動詞+not・cannot
+    r"worked|failed|succeeded|won|lost|approved|rejected|ruled|decided|agreed|chose|most|none|"   # Opus R-2: 結果・決定を表す語(7記事表でfallback増を確認のうえ採用)
     r"twice|double|triple|half|dozen|hundreds?|thousands?|millions?|billions?|"
     r"two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\b|\d|%", re.I)
 _SENT_SPLIT_RE = re.compile(r"(?<=[.!?”\"’])\s+(?=[\"“‘]?[A-Z0-9])")
@@ -86,7 +90,7 @@ def build_part3_excerpt(part3: str) -> dict:
         if len(passed) >= MAX_EXCERPT_SENTENCES:
             cut_reason, cut_sentence = "MAX_SENTENCES", s
             break
-        if CONCLUSION_MARKER_RE.search(s):
+        if CONCLUSION_MARKER_RE.search(s) or SENTENCE_START_CONCLUSION_RE.search(s):
             cut_reason, cut_sentence = "CONCLUSION_MARKER", s
             break
         if RESULT_SENTENCE_RE.search(s):
@@ -167,6 +171,19 @@ def _terms_en(text: str) -> set[str]:
     return {w.lower() for w in re.findall(r"[A-Za-z][A-Za-z\-]{3,}", text)}
 
 
+_JA_SENT_SPLIT_RE = re.compile(r"(?<=[。！？!?])")
+_JA_QUESTION_END_RE = re.compile(r"(?:か|でしょう|ですか|ますか)?[。]?\s*[？?]\s*[」』）)]*$|か[。！!]?\s*[」』）)]*$")
+
+
+def _ja_sentences(text: str) -> list[str]:
+    return [x.strip() for x in _JA_SENT_SPLIT_RE.split(text) if x.strip()]
+
+
+def _is_question_sentence(sent: str) -> bool:
+    """文末が疑問(か。/か?/?)の文。決定論(Opus R-1)。"""
+    return bool(_JA_QUESTION_END_RE.search(sent))
+
+
 def comment3_spoiler_lint(comment_text: str, *, part1: str, part2: str, excerpt: str, withheld_text: str) -> list[dict]:
     """生成されたComment 3の事後検査。blocking違反のlistを返す(空=合格)。
     WITHHELD_NUMBER: 渡さなかったPart 3部分にだけ現れる数値(Part1/2/excerptに無い数値)がCommentにある
@@ -182,7 +199,9 @@ def comment3_spoiler_lint(comment_text: str, *, part1: str, part2: str, excerpt:
     leaked_t = sorted((_terms_en(withheld_text) - _terms_en(visible)) & _terms_en(comment_text))
     if leaked_t:
         v.append({"code": "WITHHELD_TERM", "detail": leaked_t})
-    hit = [w for w in JA_CONCLUSION_WORDS if w in comment_text]
+    # Opus R-1: 結論語は『疑問文の中』では違反としない(役割どおりの後半への問い「結局、何が分かったのでしょうか」等の誤検出除去)。
+    hit = sorted({w for sent in _ja_sentences(comment_text) if not _is_question_sentence(sent)
+                  for w in JA_CONCLUSION_WORDS if w in sent})
     if hit:
         v.append({"code": "CONCLUSION_WORD", "detail": hit})
     m = STRUCT_LABEL_RE.search(comment_text)
@@ -191,17 +210,44 @@ def comment3_spoiler_lint(comment_text: str, *, part1: str, part2: str, excerpt:
     return v
 
 
+def _ja_4grams(text: str) -> set[str]:
+    t = re.sub(r"[\s。、！？!?「」『』（）()・,.]", "", text)
+    return {t[i:i + 4] for i in range(len(t) - 3)}
+
+
+def compute_c2_c3_overlap_notes(c2_text: str | None, c3_text: str | None) -> dict:
+    """Opus R-5: C2とC3は役割文を共用するため、日本語4-gram相互一致を非blockingで記録する(Gateにしない・raiseしない・retryしない)。"""
+    if not isinstance(c2_text, str) or not isinstance(c3_text, str):
+        return {"note": "非blocking参考値。C2/C3の一方が無いため未計算", "count": None, "samples": []}
+    common = sorted(_ja_4grams(c2_text) & _ja_4grams(c3_text))
+    return {"note": "非blocking参考値(日本語4-gram一致、Gateではない)。内容の重複はFableが受入時に目視で確認する",
+            "count": len(common), "samples": common[:8]}
+
+
+def _attempt_entry(i: int, mode: str, ctx: str, r: dict) -> dict:
+    """Opus M-5: 各attemptの生成文(却下文を含む)・response_id・model・prompt sha・J2適用有無を記録する。"""
+    prompt = r.get("prompt") or ""
+    ok_att = [a for a in (r.get("attempts") or []) if a.get("status") == "OK"]
+    last_ok = ok_att[-1] if ok_att else {}
+    return {"attempt": i + 1, "mode": mode, "context_sha256": _sha(ctx), "status": r.get("status"),
+            "text": r.get("text"), "prompt_sha256": _sha(prompt) if prompt else None,
+            "response_id": last_ok.get("response_id"), "model": last_ok.get("model"),
+            "j2_range_normalized": bool(r.get("j2_range_normalized", False)),
+            "j2_raw_text_sha256": r.get("j2_raw_text_sha256")}
+
+
 def run_comment3_z_method(run_support, parts: dict) -> dict:
-    """Comment 3生成の唯一の入口(委任_02でProduction `run_family_x_a2_scaffold`のComment 3行から呼ぶ)。
+    """Comment 3生成の唯一の入口(Production `run_family_x_a2_scaffold`の初回生成と`--regenerate-support comment_3`が共通で呼ぶ)。
     run_support(role, context)->`a2gen.run_support_text`互換dict(status/text/prompt/attempts)。ProductionではJ2適用済みの
     `_a2_run_support_text_j2`をclient/model束縛で渡す。本関数はAPIを直接呼ばない。
-    流れ: excerpt構築 → 生成 → lint → 違反なら1回retry(同一入力) → なお違反ならPart1+Part2のみで生成(excerptが既に空なら省略) → lint。
-    戻り値は`run_support_text`互換dict+`comment3_z_audit`。最終lint不合格時はstatus=COMMENT3_SPOILER_LINT_FAILED・text=None(下流は停止/HR)。"""
+    流れ: excerpt構築 -> 生成 -> lint -> 違反なら1回retry(同一入力) -> なお違反ならPart1+Part2のみで生成(excerptが既に空なら省略) -> lint。
+    戻り値は`run_support_text`互換dict+`comment3_z_audit`。最終lint不合格時はstatus=COMMENT3_SPOILER_LINT_FAILED・text=None(下流は停止)。"""
     info = build_part3_excerpt(parts["part3"])
     mode0 = "PART12_ONLY_NO_SAFE_EXCERPT" if info["fallback_no_excerpt"] else "Z_EXCERPT"
     audit = {
         "method_version": COMMENT3_Z_METHOD_VERSION, "role_const": "er003_v1_iran01_a2_generate.COMMENT_2_ROLE",
         "role_sha256": COMMENT3_Z_ROLE_SHA256,
+        "parts_sha256": {k: _sha(parts[k]) for k in ("part1", "part2", "part3")},
         "excerpt": {k: info[k] for k in ("fallback_no_excerpt", "cut_reason", "paragraph_count", "sentence_count",
                                          "passed_sentence_count", "passed_paragraph_indices", "passed_word_count",
                                          "passed_excerpt_sha256", "withheld_sentence_count", "part3_sha256")},
@@ -216,10 +262,10 @@ def run_comment3_z_method(run_support, parts: dict) -> dict:
     for i, (exc, wh, ctx, mode) in enumerate(plans):
         r = run_support(COMMENT3_Z_ROLE, ctx)
         last = r
-        entry = {"attempt": i + 1, "mode": mode, "context_sha256": _sha(ctx), "status": r.get("status")}
+        entry = _attempt_entry(i, mode, ctx, r)
         audit["attempts"].append(entry)
         if r.get("status") != "OK" or not isinstance(r.get("text"), str):
-            audit["final_status"] = r.get("status")   # 技術失敗(run_support_text自身が2回retry済み)は既存の失敗扱いに委ねる
+            audit["final_status"] = r.get("status")   # 技術失敗(run_support_text自身が2回retry済み)はそのまま返す(呼び出し側がfail-closed)
             r["comment3_z_audit"] = audit
             return r
         viol = comment3_spoiler_lint(r["text"], part1=parts["part1"], part2=parts["part2"], excerpt=exc, withheld_text=wh)
@@ -235,3 +281,22 @@ def run_comment3_z_method(run_support, parts: dict) -> dict:
     out["status"] = "COMMENT3_SPOILER_LINT_FAILED"
     out["comment3_z_audit"] = audit
     return out
+
+
+SUPPORT_KEYS = ("preview", "comment_1", "comment_2", "comment_3", "comment_4")
+
+
+def merge_regenerated_comment3(prior_texts: dict, c3_result: dict) -> dict:
+    """Opus M-3: 既存a2_support_texts.jsonのcomment_3だけを差し替えた新しいdictを返す。comment_3以外の4キーのsha不変をassertする。
+    c3_resultがOKで無い場合はValueError(呼び出し側は何も書かない)。"""
+    if c3_result.get("status") != "OK" or not isinstance(c3_result.get("text"), str) or not c3_result["text"].strip():
+        raise ValueError(f"comment_3再生成が非OK({c3_result.get('status')})のため差し替えません")
+    for k in SUPPORT_KEYS:
+        if not isinstance(prior_texts.get(k), str) or not prior_texts[k].strip():
+            raise ValueError(f"既存supportの{k}が空/欠落のため差し替えできません")
+    new = dict(prior_texts)
+    new["comment_3"] = c3_result["text"]
+    before = {k: _sha(prior_texts[k]) for k in SUPPORT_KEYS if k != "comment_3"}
+    after = {k: _sha(new[k]) for k in SUPPORT_KEYS if k != "comment_3"}
+    assert before == after, "comment_3以外のsupportキーのshaが変化しました"
+    return new

@@ -589,8 +589,9 @@ class V5ConstantTests(unittest.TestCase):
                       "「続いて」より「最後に」を使ってください。", c4)
         if os.path.exists(C4_TRIAL_MD):
             self.assertEqual(re.search(r"```\n(.*?)\n```", open(C4_TRIAL_MD, encoding="utf-8").read(), re.S).group(1), c4)
-        # 他Role(Comment 3等)は不変
-        self.assertNotIn("最後に", plan.FAMILY_X_A2_COMMENT_3_ROLE)
+        # 他Role(旧Comment 3専用役割文はFX-STD-COMMENT3-Z-METHOD-PRODUCTION-01で撤去済み。C3=a2gen.COMMENT_2_ROLE[Z方式])は『最後に』を含まない
+        import er003_v1_iran01_a2_generate as _a2gen_c3
+        self.assertNotIn("最後に", _a2gen_c3.COMMENT_2_ROLE)
 
 
 class V5ResolveTests(unittest.TestCase):

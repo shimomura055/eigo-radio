@@ -209,7 +209,6 @@ class RegressionPinsTest(unittest.TestCase):
         "C1": "905dfba75ce7cbb8c4dfec5f3b41e988f06b1d445dca82bacee56ef74bab4309",
         "C2": "0268c9f1deac5ce7619a6bfd7e5ea12b8d39a87c3eb915d2266703b6b86c1d22",
         "PREVIEW": "903665be871c5c7f380e73611bc188d96cf6b7e3fb24422b9db673e7938807ae",
-        "X_A2_C3_LEGACY": "e245ef6e36276a7c1df19668e52574151f9f488225407d26953f742d18ad7e16",
         "X_A2_C4": "22feebde438ad5ec70d6a3ce19e067bc0c5fa3890de3fc600b5c6477278a3663",
         "X_B1_C3": "c766e4443051797c19ad3f64e812c41d9b75d81c2f4a3451457c01b52c0b0b02",
         "X_B1_C4": "505f4e80fba94ec5fcce1f38d0199cb61bd6794c45f484c632a4833055b651b0",
@@ -221,7 +220,7 @@ class RegressionPinsTest(unittest.TestCase):
 
     def test_role_constants_sha_pinned(self):
         cur = {"C1": a2gen.COMMENT_1_ROLE, "C2": a2gen.COMMENT_2_ROLE, "PREVIEW": a2gen.PREVIEW_ROLE,
-               "X_A2_C3_LEGACY": plan.FAMILY_X_A2_COMMENT_3_ROLE, "X_A2_C4": plan.FAMILY_X_A2_COMMENT_4_ROLE,
+               "X_A2_C4": plan.FAMILY_X_A2_COMMENT_4_ROLE,
                "X_B1_C3": plan.FAMILY_X_B1_COMMENT_3_ROLE, "X_B1_C4": plan.FAMILY_X_B1_COMMENT_4_ROLE}
         for k, v in cur.items():
             with self.subTest(k=k):
@@ -262,21 +261,285 @@ class RegressionPinsTest(unittest.TestCase):
             with self.subTest(k=k):
                 self.assertEqual(sha(calls[i]), self.PINS[k])
 
-    def test_unwired_state_guard_comment3_still_legacy(self):
-        """委任_01の状態ピン: runnerは新moduleを参照せず、Comment 3は従来(X役割文・Part1+Part2)。委任_02の配線時にこのtestを意図的に反転する。"""
+    def test_wired_comment3_uses_z_role_and_fallback_context(self):
+        """配線後(委任_02、旧unwiredピンの反転): Comment 3はZ役割文(COMMENT_2_ROLE)。fake partsはPart3が短くfallback=Part1+Part2のみ。"""
         calls = self._run_scaffold()
-        self.assertTrue(calls[2].startswith(plan.FAMILY_X_A2_COMMENT_3_ROLE))
+        self.assertTrue(calls[2].startswith(a2gen.COMMENT_2_ROLE))
         self.assertNotIn("P3 text", calls[2])
-        src = open("er019_family_x_audio_production_runner_01.py", encoding="utf-8").read()
-        self.assertNotIn("comment3_z_method", src)
-        self.assertNotIn("er019_family_x_std_comment3", src)
+        self.assertNotIn("【これから聞く本文(後半)】", calls[2])
+        self.assertIn("【すでに聞いた本文(前半)】\nP1 text.\n\nP2 text.", calls[2])
+
+    def test_legacy_c3_role_removed_from_repo_source(self):
+        """Opus R-4: 旧FAMILY_X_A2_COMMENT_3_ROLEは撤去済み。runner/planのソースが参照しない。"""
+        for f in ("er019_family_x_audio_production_runner_01.py", "er019_family_x_audio_plan_01.py"):
+            src = open(f, encoding="utf-8").read()
+            self.assertNotIn("plan.FAMILY_X_A2_COMMENT_3_ROLE", src)
+            self.assertNotIn("FAMILY_X_A2_COMMENT_3_ROLE =", src)
+        self.assertFalse(hasattr(plan, "FAMILY_X_A2_COMMENT_3_ROLE"))
 
     def test_no_other_module_imports_new_module(self):
+        """配線後: importしてよいのはX Std runner(と本test)だけ。Y/Z/X Advancedのモジュールは参照しない。"""
         for p in glob.glob("*.py"):
-            if p.startswith("er019_family_x_std_comment3_z_method_01"):
+            if p.startswith("er019_family_x_std_comment3_z_method_01") or p == "er019_family_x_audio_production_runner_01.py":
                 continue
             with self.subTest(p=p):
                 self.assertNotIn("er019_family_x_std_comment3_z_method_01", open(p, encoding="utf-8", errors="ignore").read())
+
+
+# ===== 委任_02: Opus M/R反映 =====
+LONG_P3 = "The team also removed one tool from the first group. It was a small change. People talked about it for days."
+
+
+def long_parts():
+    return {"part1": "P1 text.", "part2": "P2 text.", "part3": LONG_P3 + "\n\nAfter that, the number went down by 5 percent."}
+
+
+class M1R2Test(unittest.TestCase):
+    def test_negative_contractions_and_modal_not_cut(self):
+        for sent in ("It didn’t work.", "It wasn't clear to anyone.", "Experts say the plan will not help.",
+                     "They cannot say why.", "It can’t be fixed.", "That won’t change.", "They couldn’t finish."):
+            with self.subTest(sent=sent):
+                self.assertTrue(c3z.RESULT_SENTENCE_RE.search(sent))
+                info = c3z.build_part3_excerpt("People talked about it for many days in the town hall. " + sent)
+                self.assertNotIn(sent, info["excerpt"])
+
+    def test_r2_vocab_and_sentence_start(self):
+        for sent in ("The plan failed.", "Most groups agreed.", "The vote was lost."):
+            self.assertTrue(c3z.RESULT_SENTENCE_RE.search(sent), sent)
+        for sent in ("So the Moon may have cooled.", "Still the work went on.", "Thus we begin.", "Therefore it matters."):
+            self.assertTrue(c3z.SENTENCE_START_CONCLUSION_RE.search(sent), sent)
+        self.assertFalse(c3z.SENTENCE_START_CONCLUSION_RE.search("Soon the work began."))
+
+    def test_seven_article_fallback_count_within_limit(self):
+        base = "er019_output/family_x_audio_production_wiring_01/"
+        arts = ["ai_island_temple__run_form_prod_01", "coffee_prices__run_m2p0_n01_01", "moon_shrinking__run_ms_03",
+                "small_bag__run_kpq_02", "uk_train_speaker_playback__run_nws_02", "tesla_spacex_merger_talks__run_nws_01",
+                "paycheck_personality__run_pp_02"]
+        fb = 0
+        for a in arts:
+            pth = base + a + "/a2/parts.json"
+            if not os.path.exists(pth):
+                self.skipTest("run dir missing: " + a)
+            fb += c3z.build_part3_excerpt(json.load(open(pth, encoding="utf-8"))["part3"])["fallback_no_excerpt"]
+        self.assertLessEqual(fb, 4)   # Opus R-2: 4/7超なら語を絞る/ユーザー進言
+
+
+class R1QuestionTest(unittest.TestCase):
+    def lint(self, t):
+        return c3z.comment3_spoiler_lint(t, part1="a", part2="b", excerpt="", withheld_text="")
+
+    def test_question_sentences_with_conclusion_words_pass(self):
+        for t in ("では、最終的に塔作りの結果はどう変わるのでしょうか。", "結局、何が分かったのでしょうか。",
+                  "これで証明できるのでしょうか？", "実験を行いました。では、結局どうなったのでしょうか"):
+            with self.subTest(t=t):
+                self.assertEqual(self.lint(t), [])
+
+    def test_declarative_conclusion_words_still_blocked(self):
+        for t in ("結局、AIは塔を作りました。", "結論は明らかです。", "実験で証明されました。では、どうなるでしょうか。"):
+            with self.subTest(t=t):
+                self.assertIn("CONCLUSION_WORD", [v["code"] for v in self.lint(t)])
+
+
+class AuditM5Test(unittest.TestCase):
+    def test_every_attempt_records_text_ids_hashes_and_parts_sha(self):
+        n = {"i": 0}
+
+        def f(role, ctx):
+            n["i"] += 1
+            return {"status": "OK", "text": BAD if n["i"] < 3 else CLEAN, "prompt": "PROMPT%d" % n["i"],
+                    "attempts": [{"status": "OK", "model": "mdl", "response_id": "resp%d" % n["i"]}],
+                    "j2_range_normalized": n["i"] == 1}
+        parts = long_parts()
+        r = c3z.run_comment3_z_method(f, parts)
+        a = r["comment3_z_audit"]
+        self.assertEqual(r["status"], "OK")
+        self.assertEqual(len(a["attempts"]), 3)
+        self.assertEqual([e["text"] for e in a["attempts"]], [BAD, BAD, CLEAN])
+        self.assertEqual([e["response_id"] for e in a["attempts"]], ["resp1", "resp2", "resp3"])
+        self.assertEqual(a["attempts"][0]["model"], "mdl")
+        self.assertEqual(a["attempts"][0]["prompt_sha256"], sha("PROMPT1"))
+        self.assertTrue(a["attempts"][0]["j2_range_normalized"])
+        self.assertFalse(a["attempts"][1]["j2_range_normalized"])
+        self.assertEqual(a["parts_sha256"], {k: sha(parts[k]) for k in ("part1", "part2", "part3")})
+        self.assertEqual(a["method_version"], c3z.COMMENT3_Z_METHOD_VERSION)
+
+    def test_excerpt_case_is_z_excerpt_and_excludes_result_sentence(self):
+        f = FakeSupport([CLEAN])
+        r = c3z.run_comment3_z_method(f, long_parts())
+        self.assertEqual(r["comment3_z_audit"]["mode"], "Z_EXCERPT")
+        ctx = f.calls[0][1]
+        self.assertIn("【これから聞く本文(後半)】\nThe team also removed one tool", ctx)
+        self.assertNotIn("went down", ctx)
+        self.assertEqual(len(f.calls), 1)
+
+    def test_overlap_note_non_blocking(self):
+        n = c3z.compute_c2_c3_overlap_notes("塔を作るAIの数が変わりました。", "塔を作るAIの数を調べます。")
+        self.assertGreaterEqual(n["count"], 1)
+        self.assertIsNone(c3z.compute_c2_c3_overlap_notes(None, "x")["count"])
+
+
+class MergeRegenTest(unittest.TestCase):
+    PRIOR = {"preview": "p", "comment_1": "c1", "comment_2": "c2", "comment_3": "old", "comment_4": "c4"}
+
+    def test_merge_replaces_only_comment3(self):
+        new = c3z.merge_regenerated_comment3(self.PRIOR, {"status": "OK", "text": "new"})
+        self.assertEqual(new["comment_3"], "new")
+        for k in ("preview", "comment_1", "comment_2", "comment_4"):
+            self.assertEqual(new[k], self.PRIOR[k])
+
+    def test_merge_refuses_non_ok_and_null_other_keys(self):
+        with self.assertRaises(ValueError):
+            c3z.merge_regenerated_comment3(self.PRIOR, {"status": "COMMENT3_SPOILER_LINT_FAILED", "text": None})
+        with self.assertRaises(ValueError):
+            c3z.merge_regenerated_comment3(dict(self.PRIOR, comment_1=None), {"status": "OK", "text": "n"})
+
+
+def _fake_client(texts, calls):
+    class R:
+        def __init__(s, t):
+            s.output_text = t
+            s.model = "m"
+            s.id = "id%d" % len(calls)
+
+    class Client:
+        class responses:
+            @staticmethod
+            def create(**kw):
+                calls.append(kw["input"][1]["content"])
+                return R(texts[min(len(calls) - 1, len(texts) - 1)])
+    return Client
+
+
+class WiredScaffoldTest(unittest.TestCase):
+    PARTS = {"title": "T", "in_one_line": "OL.", "part1": "P1 text.", "part2": "P2 text.",
+             "part3": LONG_P3 + "\n\nAfter that, the number went down by 5 percent."}
+
+    def _scaffold(self, texts):
+        calls = []
+        with tempfile.TemporaryDirectory() as d, mock.patch.object(runner, "_a2_support_model", return_value="m"), \
+                contextlib.redirect_stdout(io.StringIO()):
+            res = runner.run_family_x_a2_scaffold(_fake_client(texts, calls), self.PARTS, d)
+            files = {"texts": os.path.exists(f"{d}/a2_support_texts.json"), "audit": os.path.exists(f"{d}/audit/a2_support_generation.json")}
+            audit = json.load(open(f"{d}/audit/a2_support_generation.json", encoding="utf-8"))
+        return res, calls, files, audit
+
+    def test_normal_run_has_five_llm_calls_and_excerpt_in_c3(self):
+        res, calls, files, audit = self._scaffold(["テスト文です。"])
+        self.assertEqual(len(calls), 5)
+        self.assertTrue(calls[2].startswith(a2gen.COMMENT_2_ROLE))
+        self.assertIn("【これから聞く本文(後半)】\nThe team also removed one tool", calls[2])
+        self.assertNotIn("went down", calls[2])
+        self.assertTrue(files["texts"])
+        self.assertEqual(audit["comment_3"]["comment3_z_audit"]["method_version"], c3z.COMMENT3_Z_METHOD_VERSION)
+        self.assertIn("c2_c3_overlap_note", audit["comment_3"]["comment3_z_audit"])
+
+    def test_j2_applied_to_comment3(self):
+        res, calls, files, audit = self._scaffold(["6〜8件です。"])
+        self.assertEqual(res["comment_3"]["text"], "6から8件です。")
+        self.assertTrue(res["comment_3"]["j2_range_normalized"])
+
+    def test_comment3_failure_stops_before_c4_preview_and_writes_no_null_texts(self):
+        res, calls, files, audit = self._scaffold(["結論として、塗りました。"] * 20)
+        self.assertEqual(len(calls), 2 + 3)   # C1, C2, C3x3(lint) -> C4/Previewは呼ばない
+        self.assertEqual(res["comment_3"]["status"], "COMMENT3_SPOILER_LINT_FAILED")
+        self.assertNotIn("comment_4", res)
+        self.assertFalse(files["texts"])
+        self.assertTrue(files["audit"])
+        self.assertEqual(len(audit["comment_3"]["comment3_z_audit"]["attempts"]), 3)
+        self.assertIsNone(audit["comment_3"]["text"])
+        self.assertTrue(audit["comment_3"]["rejected_text"])
+
+
+class StopAndTtsGuardTest(unittest.TestCase):
+    def test_theme_scaffold_marks_support_stage_failed_and_skips_kp(self):
+        with tempfile.TemporaryDirectory() as d:
+            src, out = f"{d}/src", f"{d}/out"
+            os.makedirs(f"{src}/a2")
+            art = "# T\n\nP1 text sentence one.\n\nP2 text sentence two.\n\nP3 text sentence three.\n\n## In one line\nOL."
+            open(f"{src}/a2/article.md", "w", encoding="utf-8").write(art)
+            fake_support = {"comment_1": {"status": "OK", "text": "a"}, "comment_2": {"status": "OK", "text": "b"},
+                            "comment_3": {"status": "COMMENT3_SPOILER_LINT_FAILED", "text": None}}
+            kp = mock.Mock()
+            kp.return_value.review_resume_valid.return_value = False
+            kp.return_value.run_kp_with_review.side_effect = AssertionError("KPは呼ばれてはならない")
+            with mock.patch.object(runner, "run_family_x_a2_scaffold", return_value=fake_support), \
+                    mock.patch.object(runner, "record_scaffold_article_sha"), \
+                    mock.patch.object(runner, "run_part2_candidates_x", return_value={"status": "OK", "state": "NONE", "pending": None}), \
+                    mock.patch.object(runner, "_kpw", kp), contextlib.redirect_stdout(io.StringIO()):
+                res = runner.run_theme_scaffold(object(), src, out, ["a2"])
+            self.assertIn("SUPPORT_STAGE_FAILED", res["a2"]["support_stage_status"])
+            self.assertTrue(os.path.exists(f"{out}/a2/{runner.SUPPORT_STAGE_FAILED_MARKER}"))
+            self.assertEqual(res["a2"]["comment3_method"], c3z.COMMENT3_Z_METHOD_VERSION)
+
+    def test_main_exits_rc3_on_support_stage_status(self):
+        src = open("er019_family_x_audio_production_runner_01.py", encoding="utf-8").read()
+        i = src.index('_sup_fail = {lv')
+        self.assertIn("sys.exit(3)", src[i:i + 1400])
+        self.assertIn('support_stage_status', src[i:i + 400])
+
+    def test_tts_entry_rejects_null_support_before_paid_tts(self):
+        src = open("er019_family_x_audio_production_runner_01.py", encoding="utf-8").read()
+        i = src.index('support = load_json(f"{out_dir}/a2_support_texts.json")')
+        j = src.index("shared_narration_raw_a2 =", i)
+        seg = src[i:j]
+        self.assertIn("_bad_support", seg)
+        self.assertIn("SUPPORT_STAGE_FAILED_MARKER", seg)
+        self.assertIn("raise RuntimeError", seg)
+
+
+class RegenerateSupportTest(unittest.TestCase):
+    def _setup(self, d):
+        src, out = f"{d}/src", f"{d}/out"
+        os.makedirs(f"{src}/a2")
+        os.makedirs(f"{out}/a2/audit")
+        art = "# T\n\nP1 text sentence one.\n\nP2 text sentence two.\n\n" + LONG_P3 + " After that, the number went down by 5 percent.\n\n## In one line\nOL."
+        open(f"{src}/a2/article.md", "w", encoding="utf-8").write(art)
+        prior = {"preview": "pv", "comment_1": "c1", "comment_2": "c2old", "comment_3": "old3", "comment_4": "c4"}
+        json.dump(prior, open(f"{out}/a2/a2_support_texts.json", "w", encoding="utf-8"), ensure_ascii=False)
+        audit0 = {"preview": {"status": "OK", "text": "pv"}, "comment_1": {"status": "OK"}, "comment_2": {"status": "OK"},
+                  "comment_3": {"status": "OK", "text": "old3"}, "comment_4": {"status": "OK"}}
+        json.dump(audit0, open(f"{out}/a2/audit/a2_support_generation.json", "w", encoding="utf-8"))
+        return src, out, prior, audit0
+
+    def test_regenerates_only_comment3_and_merges_audit(self):
+        with tempfile.TemporaryDirectory() as d:
+            src, out, prior, audit0 = self._setup(d)
+            calls = []
+            with mock.patch.object(runner, "_a2_support_model", return_value="m"), contextlib.redirect_stdout(io.StringIO()):
+                r = runner.run_regenerate_support_comment3(_fake_client(["塔を作る話です。では、どうなるのでしょうか。"], calls), src, out)
+            self.assertEqual(r["status"], "OK")
+            self.assertEqual(len(calls), 1)
+            self.assertTrue(calls[0].startswith(a2gen.COMMENT_2_ROLE))
+            self.assertIn("【これから聞く本文(後半)】\nThe team also removed one tool", calls[0])
+            self.assertNotIn("went down", calls[0])
+            new = json.load(open(f"{out}/a2/a2_support_texts.json", encoding="utf-8"))
+            self.assertNotEqual(new["comment_3"], "old3")
+            for k in ("preview", "comment_1", "comment_2", "comment_4"):
+                self.assertEqual(sha(new[k]), sha(prior[k]))
+            aud = json.load(open(f"{out}/a2/audit/a2_support_generation.json", encoding="utf-8"))
+            for k in ("preview", "comment_1", "comment_2", "comment_4"):
+                self.assertEqual(aud[k], audit0[k])   # 元のauditを保持
+            self.assertEqual(aud["comment_3_history"], [audit0["comment_3"]])
+            self.assertEqual(aud["comment_3"]["comment3_z_audit"]["regenerated_by"], "--regenerate-support comment_3")
+            self.assertTrue(os.path.exists(f"{out}/a2/a2_support_texts.before_c3_regen.json"))
+            # KP / study_text / parts は触らない
+            self.assertEqual(sorted(os.listdir(f"{out}/a2")), ["a2_support_texts.before_c3_regen.json", "a2_support_texts.json", "audit"])
+
+    def test_failure_leaves_texts_unchanged_and_sets_marker(self):
+        with tempfile.TemporaryDirectory() as d:
+            src, out, prior, audit0 = self._setup(d)
+            calls = []
+            with mock.patch.object(runner, "_a2_support_model", return_value="m"), contextlib.redirect_stdout(io.StringIO()):
+                r = runner.run_regenerate_support_comment3(_fake_client(["結論として、塗りました。"], calls), src, out)
+            self.assertEqual(r["status"], "COMMENT3_SPOILER_LINT_FAILED")
+            self.assertEqual(json.load(open(f"{out}/a2/a2_support_texts.json", encoding="utf-8")), prior)
+            self.assertEqual(json.load(open(f"{out}/a2/audit/a2_support_generation.json", encoding="utf-8")), audit0)
+            self.assertTrue(os.path.exists(f"{out}/a2/{runner.SUPPORT_STAGE_FAILED_MARKER}"))
+
+    def test_first_path_and_regen_path_share_one_helper(self):
+        src = open("er019_family_x_audio_production_runner_01.py", encoding="utf-8").read()
+        self.assertEqual(src.count("_a2_comment3_z(client"), 3)   # def + scaffold + regenerate
+        self.assertEqual(src.count("c3z.run_comment3_z_method("), 1)   # 呼出はhelper内の1か所のみ
 
 
 if __name__ == "__main__":

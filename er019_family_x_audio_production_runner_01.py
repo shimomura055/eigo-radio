@@ -44,6 +44,7 @@ import er078_secondary_run_scope_01 as secondary_run_scope  # AUW 委任_05
 import er003_v1_b1_scaffold_01_generate as b1s
 import er003_v1_crosslevel_audio_02_common as crosslevel_common
 import er003_v1_iran01_a2_generate as a2gen
+import er019_family_x_std_comment3_z_method_01 as c3z  # FX-STD-COMMENT3-Z-METHOD-PRODUCTION-01: X Std Comment 3 Z方式(2026-10-28ユーザー正式決定)
 import er003_v1_n3_01_assemble as asm
 import er003_v1_n3_01_scaffold_generate as sc
 import er003_v1_n3_01_tts_generate as n3_tts
@@ -328,6 +329,13 @@ def _a2_run_support_text_j2(client, role, context, *, model):
     return r
 
 
+def _a2_comment3_z(client, parts: dict) -> dict:
+    """Opus M-3: X Std Comment 3 Z方式の唯一のhelper。初回生成(run_family_x_a2_scaffold)と`--regenerate-support comment_3`が共通で呼ぶ。
+    J2(`_a2_run_support_text_j2`)とsupport model(`_a2_support_model()`)を束縛して`c3z.run_comment3_z_method`へ渡す。"""
+    return c3z.run_comment3_z_method(
+        lambda role, ctx: _a2_run_support_text_j2(client, role, ctx, model=_a2_support_model()), parts)
+
+
 def run_family_x_a2_scaffold(client, parts: dict, out_dir: str) -> dict:
     """A2(Japanese)Preview/Comment1-4を生成する(単一Voice、a2genの
     Comment1/2/PreviewをそのままJapanese出力で流用)。"""
@@ -339,9 +347,17 @@ def run_family_x_a2_scaffold(client, parts: dict, out_dir: str) -> dict:
     c2_context = f"【すでに聞いた本文(本文1)】\n{parts['part1']}\n\n【これから聞く本文(本文2)】\n{parts['part2']}"
     c2 = _a2_run_support_text_j2(client, a2gen.COMMENT_2_ROLE, c2_context, model=_a2_support_model())
 
-    print(f"[FAMILY-X-AUDIO-SCAFFOLD] A2 Comment 3生成開始({out_dir})...")
-    c3_context = f"【本文1】\n{parts['part1']}\n\n【本文2】\n{parts['part2']}"
-    c3 = _a2_run_support_text_j2(client, plan.FAMILY_X_A2_COMMENT_3_ROLE, c3_context, model=_a2_support_model())
+    print(f"[FAMILY-X-AUDIO-SCAFFOLD] A2 Comment 3生成開始(Z方式 {c3z.COMMENT3_Z_METHOD_VERSION}、{out_dir})...")
+    c3 = _a2_comment3_z(client, parts)
+    c3.setdefault("comment3_z_audit", {})["c2_c3_overlap_note"] = c3z.compute_c2_c3_overlap_notes(c2.get("text"), c3.get("text"))   # R-5: 非blocking
+    if c3.get("status") != "OK" or not isinstance(c3.get("text"), str):
+        # Opus M-2: C3が非OKなら下流(C4/Preview=有料LLM)を呼ばず、null入りa2_support_texts.jsonも書かない(却下文・監査はaudit/側のみ)。
+        # 停止の実体(marker・rc=3・KP/Part 1/2を実行しない)はrun_theme_scaffold/main()側。
+        partial = {"comment_1": c1, "comment_2": c2, "comment_3": c3}
+        os.makedirs(f"{out_dir}/audit", exist_ok=True)
+        save_json(f"{out_dir}/audit/a2_support_generation.json", partial)
+        print(f"[FAMILY-X-AUDIO-SCAFFOLD][STOP] A2 Comment 3が{c3.get('status')}のためComment 4/Previewを生成せず停止します(a2_support_texts.jsonは書きません)。")
+        return partial
 
     print(f"[FAMILY-X-AUDIO-SCAFFOLD] A2 Comment 4生成開始({out_dir})...")
     c4_context = f"【本文1】\n{parts['part1']}\n\n【本文2】\n{parts['part2']}\n\n【本文3】\n{parts['part3']}"
@@ -359,6 +375,97 @@ def run_family_x_a2_scaffold(client, parts: dict, out_dir: str) -> dict:
     save_json(f"{out_dir}/a2_support_texts.json", {k: v.get("text") for k, v in results.items()})
     save_json(f"{out_dir}/audit/a2_support_generation.json", results)
     return results
+
+
+SUPPORT_STAGE_FAILED_MARKER = "support_stage_failed.json"
+
+
+def _sha_text(t: str) -> str:
+    return hashlib.sha256(t.encode("utf-8")).hexdigest()
+
+
+def run_regenerate_support_comment3(client, source_dir: str, out_dir: str, *, level: str = "a2", budget_check=None) -> dict:
+    """Opus M-3: 既存a2_support_texts.jsonのcomment_3だけをZ方式で再生成する正式経路(`--regenerate-support comment_3`)。
+    初回生成と同一helper`_a2_comment3_z`を使う。comment_3以外の4キーのshaが書込み前後で一致することをassertし、KP・Part 2・study_textには触れない。
+    audit/a2_support_generation.jsonは上書きせず、元のC1/C2/C4/Previewのaudit記録を保持したままcomment_3だけ差し替え(旧comment_3はcomment_3_history)。
+    入力partsは公開本文に合わせる(Opus R-6): source記事から分割したpartsへ、LR台帳のoverlay(er132)を適用したもの。
+    非OK時はa2_support_texts.jsonを書かず、markerを置く。"""
+    level_out_dir = f"{out_dir}/{level}"
+    sp = _support_texts_path(level, level_out_dir)
+    if not os.path.exists(sp):
+        raise RuntimeError(f"[STOP][regenerate-support] {sp}がありません。再生成の前提となる既存supportがありません。")
+    with open(sp, encoding="utf-8") as f:
+        prior = json.load(f)
+    article_text = load_text(f"{source_dir}/{level}/article.md")
+    base_parts = plan.split_family_x_article_text_v2(article_text)
+    if base_parts.get("status") != "OK":
+        raise RuntimeError(f"[STOP][regenerate-support] {source_dir}/{level}/article.mdを3分割できません")
+    import er132_lr_overlay_pages_01 as _e132
+    pub_parts, _ = _e132.overlay_level_dir_units(level_out_dir, base_parts)
+    keys3 = ("part1", "part2", "part3")
+    parts_in = {k: pub_parts[k] for k in keys3}
+    print(f"[FAMILY-X-AUDIO-SCAFFOLD] A2 Comment 3だけをZ方式で再生成します({level_out_dir})...")
+    c3 = _a2_comment3_z(client, parts_in)
+    ev = c3.setdefault("comment3_z_audit", {})
+    ev["regenerated_by"] = "--regenerate-support comment_3"
+    ev["input_parts_source"] = {"article_md": f"{source_dir}/{level}/article.md",
+                                "lr_overlay_applied": any(base_parts[k] != parts_in[k] for k in keys3),
+                                "base_parts_sha256": {k: _sha_text(base_parts[k]) for k in keys3},
+                                "input_parts_sha256": {k: _sha_text(parts_in[k]) for k in keys3}}
+    ev["c2_c3_overlap_note"] = c3z.compute_c2_c3_overlap_notes(prior.get("comment_2"), c3.get("text"))
+    audit_path = f"{level_out_dir}/audit/a2_support_generation.json"
+    os.makedirs(f"{level_out_dir}/audit", exist_ok=True)
+    audit_old = {}
+    if os.path.exists(audit_path):
+        with open(audit_path, encoding="utf-8") as f:
+            audit_old = json.load(f)
+    marker = f"{level_out_dir}/{SUPPORT_STAGE_FAILED_MARKER}"
+    try:
+        new_texts = c3z.merge_regenerated_comment3(prior, c3)
+    except ValueError as exc:
+        # 非OK: texts不変。却下文・監査は別ファイルへ(元auditも不変)。
+        save_json(f"{level_out_dir}/audit/a2_comment3_regeneration_failed.json", c3)
+        save_json(marker, {"status": f"SUPPORT_STAGE_FAILED({c3.get('status')})", "level": level, "reason": str(exc),
+                           "next_command": "--stage scaffold --level a2 --regenerate-support comment_3 を再実行"})
+        return {"status": c3.get("status") or "FAILED", "reason": str(exc)}
+    # 書込み前に旧版を退避(一度だけ)。
+    bak_t = f"{level_out_dir}/a2_support_texts.before_c3_regen.json"
+    if not os.path.exists(bak_t):
+        save_json(bak_t, prior)
+    bak_a = f"{level_out_dir}/audit/a2_support_generation.before_c3_regen.json"
+    if audit_old and not os.path.exists(bak_a):
+        save_json(bak_a, audit_old)
+    audit_new = dict(audit_old)
+    hist = list(audit_new.get("comment_3_history") or [])
+    if audit_old.get("comment_3"):
+        hist.append(audit_old["comment_3"])
+    audit_new["comment_3_history"] = hist
+    audit_new["comment_3"] = c3
+    save_json(sp, new_texts)
+    save_json(audit_path, audit_new)
+    if os.path.exists(marker):
+        os.remove(marker)
+    for k in ("preview", "comment_1", "comment_2", "comment_4"):   # 書込み後に再確認
+        assert _sha_text(new_texts[k]) == _sha_text(prior[k])
+    if budget_check is not None:
+        budget_check("after regenerate-support comment_3")
+    return {"status": "OK", "comment_3": c3["text"], "other_keys_sha_unchanged": True}
+
+
+def _comment3_method_of(level_out_dir: str, *, fresh: bool):
+    """summary用: 今回生成したsupportはZ方式version。再利用(resume/--scaffold-only kp)は保存済みaudit/a2_support_generation.jsonの
+    comment_3.comment3_z_audit.method_versionを読む。無ければNone+WARN(旧仕様のsupport。hard STOPにしない=Opus R-3)。"""
+    if fresh:
+        return c3z.COMMENT3_Z_METHOD_VERSION
+    try:
+        with open(f"{level_out_dir}/audit/a2_support_generation.json", encoding="utf-8") as f:
+            v = ((json.load(f).get("comment_3") or {}).get("comment3_z_audit") or {}).get("method_version")
+    except (OSError, ValueError):
+        v = None
+    if v is None:
+        print(f"[FAMILY-X-AUDIO-SCAFFOLD][WARN] {level_out_dir}: 再利用するsupportのComment 3は旧仕様(comment3_z_audit.method_versionなし)です。"
+              "必要なら `--stage scaffold --level a2 --regenerate-support comment_3` でComment 3だけZ方式へ作り直せます。")
+    return v
 
 
 def _support_texts_path(level: str, level_out_dir: str) -> str:
@@ -866,6 +973,21 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
         else:
             support = run_family_x_a2_scaffold(client, parts, level_out_dir)
 
+        # Opus M-2: A2 Comment 3がfail-closed(非OK)ならKP(有料)・Part 1/2のfinalizeへ進まず、専用markerとsupport_stage_statusを残して停止する。
+        _sup_marker = f"{level_out_dir}/{SUPPORT_STAGE_FAILED_MARKER}"
+        if level != "b1b" and support and (support.get("comment_3") or {}).get("status") not in (None, "OK"):
+            _c3s = support["comment_3"].get("status")
+            save_json(_sup_marker, {"status": f"SUPPORT_STAGE_FAILED({_c3s})", "level": level, "comment_3_status": _c3s,
+                                    "next_command": f"--stage scaffold を再実行(KP未実施のため support を再生成します)"})
+            result[level] = {"parts": parts, "support": {k: v.get("status") for k, v in support.items()},
+                             "support_stage_status": f"SUPPORT_STAGE_FAILED({_c3s})",
+                             "comment3_method": c3z.COMMENT3_Z_METHOD_VERSION}
+            print(f"[FAMILY-X-AUDIO-SCAFFOLD][STOP] {level}: SUPPORT_STAGE_FAILED({_c3s})(KP/Part 1/Part 2/TTSは実行しない。"
+                  "次の一手: 同じ--stage scaffoldコマンドを再実行[KP未実施なのでsupportから再生成されます])")
+            break
+        elif os.path.exists(_sup_marker) and support:
+            os.remove(_sup_marker)   # 成功時はmarkerを削除(KP markerと同型)
+
         # (下は変更なし: kp_dir定義は上へ移動済み)
         article_id = f"FAMILY_X_AUDIO_{os.path.basename(out_dir)}_{level}"
         kp_process = "B1_SUPPORT" if level == "b1b" else "A2_SUPPORT"
@@ -904,6 +1026,8 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
 
         result[level] = {"parts": parts, "support": {k: v.get("status") for k, v in support.items()},
                           "key_phrases_status": kp_status, "kp_backend_used": kp_backend_used}
+        if level != "b1b":   # Opus M-5/R-3: Comment 3の方式versionをlevel別summaryへ記録(再利用時は保存済みauditのversion有無=WARN)
+            result[level]["comment3_method"] = _comment3_method_of(level_out_dir, fresh=bool(support))
         if _kr:
             result[level]["kp_review"] = {k: _kr.get(k) for k in ("state", "status", "signature", "round")}
         # KGCPW(OF-KGCPW-04/11/16): gloss再整合は無条件。KP段のtop-level status(kp_run_status)と
@@ -2009,6 +2133,14 @@ def generate_family_x_a2_segments(
 
     parts = load_json(f"{out_dir}/parts.json")
     support = load_json(f"{out_dir}/a2_support_texts.json")
+    _bad_support = [k for k in ("preview", "comment_1", "comment_2", "comment_3", "comment_4")
+                    if not isinstance(support.get(k), str) or not support[k].strip()]
+    if os.path.exists(f"{out_dir}/{SUPPORT_STAGE_FAILED_MARKER}"):
+        raise RuntimeError(f"[STOP] A2 support stageが失敗markerを残しています({out_dir}/{SUPPORT_STAGE_FAILED_MARKER})。有料TTSの前に停止しました。"
+                           "`--stage scaffold`(初回)または`--regenerate-support comment_3`で作り直してください。")
+    if _bad_support:   # Opus M-2(d): 有料TTSの前に、null/空のsupport文面を止める(b1bは対象外=記録のみ)
+        raise RuntimeError(f"[STOP] A2 supportの文面が空/欠落です({_bad_support})。有料TTSの前に停止しました。"
+                           "`--stage scaffold`(初回)または`--regenerate-support comment_3`で文面を作り直してください。")
     kp_path = f"{out_dir}/key_phrases/keywords_canonicalized.json"
     # generate_family_x_b1_segments()と同じ理由(Key Phrase構造Gate STOP時に
     # keywords_canonicalized.jsonが存在しないケースへの防御、Gate自体は
@@ -3400,6 +3532,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     # 例: --only-segments preview,comment_1,comment_4 / kp1_explanation,kp2_explanation。
     # tts stage専用(assemble/all/playerとの併用は拒否)。対象外はstatus=SKIPPED_NOT_SELECTEDとして記録され、
     # Audio Validation GateがAssemblyを止める。
+    parser.add_argument("--regenerate-support", default=None, choices=("comment_3",),
+                         help="comment_3: 既存a2_support_texts.jsonのComment 3だけをZ方式で再生成する(Opus M-3)。--stage scaffold --level a2専用。"
+                              "他4キー(preview/comment_1/2/4)・KP・Part 2・study_textは不変(shaをassert)。TTSは続けて--stage tts --only-segments comment_3。")
     parser.add_argument("--only-segments", default=None,
                          help="カンマ区切りのsegment名(例: preview,comment_1 / kp1_explanation)。tts stage専用。")
     return parser
@@ -3633,6 +3768,9 @@ def main() -> None:
 
     if args.scaffold_only is not None and args.stage != "scaffold":
         parser.error("--scaffold-onlyは--stage scaffoldでのみ使えます。")
+    if args.regenerate_support is not None and (args.stage != "scaffold" or args.level != "a2" or args.scaffold_only is not None
+                                                or args.dry_run):
+        parser.error("--regenerate-supportは--stage scaffold --level a2(--dry-run/--scaffold-onlyなし)でのみ使えます。")
     if args.kp_review == "auto" and not (args.kp_review_by and args.kp_review_reason):
         parser.error("--kp-review auto には --kp-review-by と --kp-review-reason が必要です(自動確定は明示宣言のみ)。")
     source_dir = f"er019_output/{args.slug}/{args.run}"
@@ -3707,12 +3845,34 @@ def main() -> None:
                 print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {exc}")
                 sys.exit(3)
 
+        if args.regenerate_support == "comment_3":
+            with cl.logging_context(args.slug, "scaffold"):
+                _rg = run_regenerate_support_comment3(
+                    client, source_dir, out_dir, budget_check=lambda note: assert_budget_ok(out_dir, args.budget_jpy, note))
+            assert_budget_ok(out_dir, args.budget_jpy, "after regenerate-support comment_3")
+            if _rg["status"] != "OK":
+                print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {_rg['status']}: Comment 3再生成に失敗(a2_support_texts.jsonは変更していません)。")
+                sys.exit(3)
+            print("[FAMILY-X-AUDIO-RUNNER] Comment 3再生成OK。次: --stage tts --level a2 --only-segments comment_3")
+            return
         if args.stage in ("scaffold", "all"):
             with cl.logging_context(args.slug, "scaffold"):
                 scaffold_result = run_theme_scaffold(
                     client, source_dir, out_dir, levels, scaffold_only=args.scaffold_only,
                     budget_check=lambda note: assert_budget_ok(out_dir, args.budget_jpy, note))
             assert_budget_ok(out_dir, args.budget_jpy, "after scaffold")
+            _sup_fail = {lv: (scaffold_result.get(lv) or {}).get("support_stage_status") for lv in levels
+                         if (scaffold_result.get(lv) or {}).get("support_stage_status")}
+            if _sup_fail:   # Opus M-2(c): Comment 3 fail-closed。rc=3、entry_pointへ記録、KP/Part/TTSへ進まない
+                _ep = f"{out_dir}/entry_point.json"
+                if os.path.exists(_ep):
+                    with open(_ep, encoding="utf-8") as f:
+                        _epd = json.load(f)
+                    _epd["support_stage_status"] = _sup_fail
+                    save_json(_ep, _epd)
+                print(f"[FAMILY-X-AUDIO-RUNNER][STOP] {_sup_fail}: A2 Comment 3(Z方式)が先取りlint等でfail-closed。KP/Part 1/2/TTSは未実行。"
+                      "次の一手: 同じ--stage scaffoldコマンドを再実行(KP未実施なのでsupportから再生成されます。却下文はaudit/a2_support_generation.json)。")
+                sys.exit(3)
             _kp_fail = {lv: (scaffold_result.get(lv) or {}).get("kp_stage_status") for lv in levels
                         if (scaffold_result.get(lv) or {}).get("kp_stage_status")}
             if _kp_fail:   # fail-closed(KPMP-03 委任_03): rc=3。entry_pointへStatus記録、後段(tts/assemble/player)へ進まない

@@ -206,17 +206,7 @@ FAMILY_X_B1_COMMENT_4_ROLE = """あなたはPodcastのナビゲーターです�
 制作内部の構造ラベルを含めないでください。リスナーは番組の内部構成を意識しません。"""
 
 # A2(日本語Comment、Standard/単一Voice)
-FAMILY_X_A2_COMMENT_3_ROLE = """あなたはPodcastのナビゲーターです。リスナーは本文の第1部・第2部を
-すでに聞き終わり、これから本文の第3部を聞きます。その間に流す、
-Comment 3(役割: Mid-story Recovery + Bridge to Part 3)を日本語で
-書いてください。
-
-役割: ここまでの内容の核心を短く整理し、第3部で何を聞けばよいかを示します。
-第3部の結論を先に言ってはいけません。新しいFactを追加しないでください。
-易しい日本語で2〜3文にしてください。
-
-【重要・出力への制約】出力する文章自体に"Part 1"・"Part 2"・"Part 3"・"Full Story"のような
-制作内部の構造ラベルを含めないでください。リスナーは番組の内部構成を意識しません。"""
+# (旧FAMILY_X_A2_COMMENT_3_ROLEは2026-10-28 FX-STD-COMMENT3-Z-METHOD-PRODUCTION-01で撤去。Comment 3=X Std Z方式module。履歴=DECISION_LOG)
 
 FAMILY_X_A2_COMMENT_4_ROLE = """あなたはPodcastのナビゲーターです。リスナーは本文の第3部を含む
 本文全体をすでに聞き終わり、これからIn One Line(結びのまとめ、英語)を

@@ -271,14 +271,14 @@ class CommentRoleWordingTests(unittest.TestCase):
 
     def test_family_x_comment_roles_do_not_mention_point(self):
         for role_text in (plan.FAMILY_X_B1_COMMENT_3_ROLE, plan.FAMILY_X_B1_COMMENT_4_ROLE,
-                           plan.FAMILY_X_A2_COMMENT_3_ROLE, plan.FAMILY_X_A2_COMMENT_4_ROLE):
+                           plan.FAMILY_X_A2_COMMENT_4_ROLE):
             with self.subTest(role_text=role_text[:30]):
                 self.assertNotIn("Point", role_text)
                 self.assertNotIn("ポイント", role_text)
 
     def test_family_x_comment_roles_forbid_internal_labels_in_output(self):
         for role_text in (plan.FAMILY_X_B1_COMMENT_3_ROLE, plan.FAMILY_X_B1_COMMENT_4_ROLE,
-                           plan.FAMILY_X_A2_COMMENT_3_ROLE, plan.FAMILY_X_A2_COMMENT_4_ROLE):
+                           plan.FAMILY_X_A2_COMMENT_4_ROLE):
             self.assertIn("制作内部の構造ラベル", role_text)
 
     def test_detector_itself_would_catch_point_wording(self):
