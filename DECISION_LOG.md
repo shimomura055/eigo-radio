@@ -22690,3 +22690,7 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 ### 2026-10-28 LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 委任_16 ユーザー承認: 既公開2件差替え・AI島完成版提出(API 0)
 
 - ユーザー原文=`docs/pm/delegation_log/2026-10-28_LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01_USER_03.md`。決定: (1)Word Gacha Adv・猿の手Stdの候補版差替え正式公開(APPROVED_FOR_PRODUCTION、目標PRODUCTION_WIRED)=実施済み(commit 0bff5a518)。(2)AI島Std/Adv=LR後英文を正式本文へ反映し完成版を提出。正式公開はユーザー最終試聴承認後(提出は承認ではない)。(3)既存LR後音声を再利用、TTS再生成なし。理由=表示本文・TTS入力・ASR正解原稿の三者一致回復(Q優先、API 0)。
+
+### 2026-10-28 FX-MOON-SHRINKING-RESELECT-REMAKE-01 委任_03/04 日本語題ASR NG再発の調査結果・R4/R3是正(既存行は書き換えず追記)
+- **調査結果(委任_03、Production変更0)**: 月Std日本語題の3回NG再発の真因=R1(Task B 2026-10-25で特定済み・解決策未採用)。F1+F2/E3/E4は仕様どおり非発動で誤NG救済機能なし。今回6音声+ms_03 3音声を現行判定器へ再注入しても全て同NG。調査書=`docs/research/FX-MOON-SHRINKING-RESELECT-REMAKE-01/JA_TITLE_ASR_RECURRENCE_01.md`。v2読み規則/βのProduction採否はUDR(ユーザー判断待ち)。
+- **不具合是正(委任_04、11-8、承認済み仕様`CURRENT_SPEC.md:2931`との乖離)**: R4=`_secondary_accept`が値等価層を通さない点、R3=桁区切り(8,900↔8900)が値等価triggerに入らない点を是正(`er007_ja_secondary_asr_01.py`、新受理クラス・閾値・flag・Family拡大なし、rollback定数`JA_SECONDARY_VALUE_EQUIVALENCE_ENABLED`既定True)。API 0評価=1,184対×3モード、負例(n1/extra_neg)の新規誤PASSは凍結負例3件のみで、いずれも既存Primary値等価層が是正前から受理済みの対(Secondaryが同等になっただけ)。月題への効果なし。詳細=OPEN-515追記・新規OPEN。

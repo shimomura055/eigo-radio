@@ -417,6 +417,7 @@ def _apply_variant_layer_voicing_upgrade(canonical_text: str, asr_text: Optional
 # 後方互換: cascade_enabled=False は従来どおり classify_ja_asr_match の結果そのまま(統一judgeを通らない)。
 # SCG費用式(SCG_AZURE_USD_PER_HOUR/SCG_JPY_PER_USD)・SCG_MIN_SIMILARITY・SCG_FINAL_STATUS・JA_SCG_ENABLED緊急停止は不変。
 import hashlib as _hashlib
+import re as _re
 import unicodedata as _ud
 
 import er078_asr_unified_judge_01 as unified_judge_mod
@@ -508,13 +509,35 @@ def _ja_value_form(text: str) -> Optional[str]:
     return "".join(out)
 
 
+# OPEN-515 R-6(FX-MOON-SHRINKING-RESELECT-REMAKE-01 委任_04、承認済み仕様`CURRENT_SPEC.md:2931`との乖離是正):
+# 値等価層を(1)Secondary受理(`_secondary_accept`)にも適用し、(2)桁区切り(8,900↔8900)を値等価の範囲で扱う。
+# rollbackは本定数のみ(既定True。env/flag/引数からは変更不可)。Falseで本是正前の挙動(Secondary=文字一致のみ、桁区切りは対象外)。
+JA_SECONDARY_VALUE_EQUIVALENCE_ENABLED = True
+_DIGIT_GROUP_COMMA_RE = _re.compile(r"\d,\d{3}(?!\d)")
+
+
+def _digit_group_comma_only_diff(canonical_text: str, cls: "javal.ClassificationResultJA") -> bool:
+    """桁区切りカンマ(8,900)の有無だけが差の候補か(値等価層のtrigger専用。受理判定は呼出側の値形一致で行う)。
+    条件: 原稿(NFKC後)に`数字,3桁`があり、content_diffsに『,』のみのdelete/insertが含まれる。"""
+    if not JA_SECONDARY_VALUE_EQUIVALENCE_ENABLED:
+        return False
+    if not _DIGIT_GROUP_COMMA_RE.search(_ud.normalize("NFKC", canonical_text or "")):
+        return False
+    for d in (getattr(cls.protected, "content_diffs", None) or []):
+        if {d.get("canonical"), d.get("asr")} == {",", ""} or {d.get("canonical"), d.get("asr")} == {",", None}:
+            return True
+    return False
+
+
 def _numeric_value_equivalence(canonical_text: str, asr_text: Optional[str], cls: "javal.ClassificationResultJA"):
     """DESIGN_01 §5-2: 表記ではなく値と単位で比較(三十人=30人、百円=100円 等)。
     条件(全て必須): Primaryが数字不一致でTRUE_CONTENT_MISMATCH、否定不一致なし、値ガードがEQUAL(DIFF/AMBIGUOUS/UNKNOWNは対象外)、
     かつ数値表記を値トークンへ置換した両文が(normalize_ja後)完全一致。残りに1文字でも差があれば対象外(既存判定のまま)。"""
     if asr_text is None or cls.classification != "TRUE_CONTENT_MISMATCH":
         return None
-    if not cls.protected.number_mismatches or cls.protected.negation_mismatches:
+    if cls.protected.negation_mismatches:
+        return None
+    if not cls.protected.number_mismatches and not _digit_group_comma_only_diff(canonical_text, cls):
         return None
     vg = value_guard_mod.value_guard(canonical_text, asr_text, "ja")
     if vg.kind != value_guard_mod.EQUAL:
@@ -649,6 +672,13 @@ def evaluate_attempt_ja_with_cascade_detail(
         captured["cls_s"] = cls_s
         if cls_s.classification in SCG_PASS_CLASSIFICATIONS:
             return True, cls_s.classification
+        if JA_SECONDARY_VALUE_EQUIVALENCE_ENABLED:
+            # R4是正: Primaryと同じ値等価層(`_numeric_value_equivalence`)をSecondary転写にも適用(CURRENT_SPEC.md:2931)。
+            eq_s = _numeric_value_equivalence(canon, stext, cls_s)
+            if eq_s is not None:
+                captured["cls_s"] = eq_s
+                captured["secondary_value_equivalence"] = True
+                return True, eq_s.classification
         cls_s2 = _apply_variant_layer_voicing_upgrade(canon, stext, cls_s)
         if primary_orth_ok and _orthographic_reading_confirmed(cls_s2):
             # ER-008 Part G/H: 異なる2エンジン(OpenAI Primary#1 / Azure Secondary#1)がともに「辞書上の正当な読み候補にcanonical読みを
@@ -751,7 +781,8 @@ def evaluate_attempt_ja_with_cascade_detail(
     if _ce_casc:
         audit["candidate_e_cascade_return"] = {"diffs": _ce_casc,
                                                "note": "OPEN-333 E4: Candidate Eが残したcascade_eligible差分(カタカナ/略語・濁点のみ差)を即PASSにせずCascade(Azure再確認)へ戻した(読取専用記録、判定不変)"}
-    audit["adapter"] = {"layers": (["numeric_value_equivalence"] if eq_cls is not None else []),
+    audit["adapter"] = {"layers": (["numeric_value_equivalence"] if eq_cls is not None else [])
+                        + (["secondary_numeric_value_equivalence"] if captured.get("secondary_value_equivalence") else []),
                         "azure_real_calls": 1 if sec.get("called") else 0, "cost_guard_triggered": state["cost_guard"],
                         "language": "ja-JP", "asr_text_present": primary_asr_text is not None,
                         "cache": {"calls": cache.calls, "hits": cache.hits}}

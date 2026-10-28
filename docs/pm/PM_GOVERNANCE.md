@@ -2583,6 +2583,8 @@ OPEN-233 Trialで有効だった改善ループを、今後の通常ルールと
 
 **停止根拠の明示**: 不具合・乖離・判断候補を「修正せず報告する」場合は、報告に停止根拠を1行で書く(11節STOP条件、11-1 STOP(1)〜(5)、11-6維持する境界、27-3 Dのfile:lineのいずれか)。委任文の禁止事項・D-1等の文言、「HR削減にならない」等のQCD所見、OPEN台帳のラベルは、それだけでは停止根拠にならない。委任文の修正範囲は、範囲外=「受理面・閾値・方式の新設/拡大」、範囲内=「承認済み仕様・設計原則との矛盾の是正とそのRegression・検証」の語で書く(`DELEGATION_STANDARD_TEMPLATE.md`)。受入側の照合手順は`sandwich-pm.md`手順4-2。
 
+**ASR NG/Gate STOPでUDRを出す前の過去対策確認(2026-10-28、FX-MOON-SHRINKING-RESELECT-REMAKE-01 委任_04、ユーザー原文`docs/pm/delegation_log/2026-10-28_FX-MOON-SHRINKING-RESELECT-REMAKE-01_USER_04.md` §5。必要十分な既存規則の運用明確化で、新Gate・新検査ではない)**: ASR NG/Gate STOPでUDRを出す前に、(i)同一canonical文の過去NG(`er011_output/attempt_history.jsonl`をGrep)、(ii)同種問題の既存OPEN/対策の採用状況、(iii)当該runでの対策発動記録(r5/`candidate_e_*`等)を確認し、報告に『過去対策の採用状況』を1行添える。
+
 **Voice/Style/話者/モデル変更のFable受入手順(2026-10-28、PM-SSOT-SYNC-32、FZ-TELL-TALE-HEART-NARRATOR-VOICE-01 委任_03の漏れ分析より。Gate追加ではなく受入手順)**: 受入は(i)SDK境界の送信記録(cost_log `tts_voice_sent`等) (ii)実音声の客観指標(f0等) (iii)計画・記録値(results/reuse_key) の3点一致を必須とする。矛盾する観測(例: attempt JSONのvoice≠計画)を「ラベル」等と解釈して受入する場合は、その値が送信に関与しないことをfile:lineで追跡した記録を必須とする(追えなければ受入不可)。runner Gateへの機械照合接続(`voice_acceptance_check`)は未実施であり、実施はユーザー判断事項。根拠=`docs/research/FZ-TELL-TALE-HEART-NARRATOR-VOICE-01/VOICE_DEFECT_FIX_01.md` §5。
 
 ## 12. 報告単位管理ルール(Reporting Unit Rule): 即時報告・未回答フル再掲・Next Action提示
