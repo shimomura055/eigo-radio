@@ -41,3 +41,13 @@ M-2: 新層で救済したPASSは必ず専用warning codeを`warning_labels`へ�
 
 ## 6. 禁止
 Production code(er0XX_*.py)編集、TTS/Azure呼出、再転写の再実行、socket guard迂回、Family A/B/C wav使用。
+
+## 7. 補遺(実装確定事項。eval_unified_03.py の結果を見る前に追記。規則の意味は§1〜§6から変えない)
+1. R-1(差分span内の漢字1字ごとのC2逆方向検査)は L1 のv2発音救済に加え、**βの発音同一経路にも適用**(βは凍結ファイル `b_light_proto_02.py` のため、β成立後に `JA_PRON_EQUIVALENT` を含む場合は同関数で事後検査しブロック)。R-1 ON/OFF は全表で併記する(主=R-1 ON[事前登録どおり]、比較=R-1 OFF[Opusの『4/6』想定に対応])。
+2. E4(`candidate_e_cascade_diffs`)非空も全新層不適用(§2のとおり保守側)。件数をauditに残す。
+3. 矛盾判定 `contradicts()` の実装: 否定差→矛盾。値atom位置をmaskした残りの正規化文が原稿と一致→矛盾なし。不一致で発音(v2 pron_hira)も不一致→矛盾(content_span)。発音一致でも C2/R-1/不規則読み原稿でブロックされるなら矛盾。値run: 欠落→矛盾、整数として解釈でき原稿値と異なり `explain_garble` で説明不能→矛盾。単独判定で非NGのdrawは矛盾判定の対象外(定義により矛盾なし)。
+4. 再試行発火の長さ除外は正規化文字数比 0.8〜1.25 の外。ホワイトリストは理由コードの前方一致。
+5. 『HR』区分=再試行発火後に「非NGdrawが1本以上かつ矛盾drawが1本以上」の早期HR(PASSにしない)。再試行後に非NGdrawが0本、または再試行不可(理由外・Secondary無し・N=1)は『NG』(既存のregenerate/HR Lock経路)。NGのうち U2.hr_candidate(Phase 2の機械条件)に該当するものは『HR候補』として別掲する(PASS/NGを変えない)。
+6. 組合せ平均: draw集合 k 本(6音声は4〜5本、拡張wav・N3は5本)から、N=1は first のみ k通り、N=2は first×追加1本(k(k-1)通り)、N=3は first×追加2本(k·C(k-1,2)通り)を等重みで数える。保存順(first=記録済み、追加=記録順)は参考列。
+7. run単位(参考): 同一runのattempt1,2,3を順に、記録順consensusで判定し最初にPASS系になったattemptで完走、HR区分でその時点でHR、全NGなら未完走とする。
+8. 負例側の誤PASS: 真値NEGのN3 clipは scenario real(Secondary=保存Azure転写)と S_canon(Secondary=原稿=最悪露出)の両方を報告。再試行起因誤PASS=同一first drawでN=1がNG、N=2/3のconsensusがPASS系になった組合せ。
