@@ -174,7 +174,7 @@ class DisplayUnitsAndRowsTest(TmpMixin, unittest.TestCase):
             user_rows(run, "a2", rows_of(run, "a2", CLIPS), f"{tmp}/o", highlights=h)
         self.assertIn("HL_DISPLAY_UNIT_MISMATCH", str(cm.exception))
 
-    def test_dev_chunk_marker_outside_decoration_and_public_has_none(self):
+    def test_chunk_marker_outside_decoration_in_every_audience(self):
         tmp = self.new_tmp()
         run = make_run(tmp, "a2", CLIPS)
         plan = {"plans": {"full_story_part1_c1": {"chunked": True, "chunks": [{"text": "The knight rode far. He carried"}, {"text": "over the gift of kindness to a village."}]}}}
@@ -187,8 +187,8 @@ class DisplayUnitsAndRowsTest(TmpMixin, unittest.TestCase):
         dev_html = "".join(b for x in dev for b in x["blocks"])
         pub_html = "".join(b for x in pub for b in x["blocks"])
         self.assertEqual(cp.count_chunk_markers(dev_html), 1)
-        self.assertEqual(cp.count_chunk_markers(pub_html), 0)
-        self.assertNotIn("chunk-mark", pub_html)
+        self.assertEqual(cp.count_chunk_markers(pub_html), 1)       # 委任_11: 試聴ページは全audienceで実Chunk境界に⏸(旧「publicは0」を置換)
+        self.assertEqual(pub_html, dev_html)
         # ⏸はハイライト要素の外(装飾タグの内側にマーカー本体がない)
         for m in re.finditer(r'<strong class="lk\d"[^>]*>(.*?)</strong>', dev_html):
             self.assertNotIn("chunk-mark", m.group(1))
@@ -654,7 +654,11 @@ class GoldenLegacyRunTest(TmpMixin, unittest.TestCase):
     def _hashes(self, out):
         def sha(fn):
             with open(os.path.join(out, fn), "rb") as fh:
-                return hashlib.sha256(fh.read()).hexdigest()
+                b = fh.read()
+            # 委任_11: 試聴ページは実Chunk境界に⏸を表示する(新仕様)。⏸(区切り空白+span)以外は変更前とバイト同一であることを固定する
+            b = b.replace(b" <span class='chunk-mark'>&#9208;</span>", b"")
+            b = re.sub(rb"<p class='rpt-legend'[^>]*>.*?</p>", b"", b)   # ⏸/赤/青があるページだけに入る凡例1行も新仕様の追加分
+            return hashlib.sha256(b).hexdigest()
         return {f: sha(f) for f in sorted(os.listdir(out)) if f.endswith(".html")}
 
     def test_legacy_run_pages_are_byte_identical_to_pre_change(self):
@@ -705,7 +709,11 @@ class RealRunHighlightEndToEndTest(TmpMixin, unittest.TestCase):
         chk = cp.check_page(self.html, base_dir=self.pub)
         self.assertEqual(chk["overall"], "PASS", {k: v for k, v in chk["checks"].items() if not v["ok"]})
         self.assertEqual(a63.lint_page_html(self.html), {"file_scheme": False, "level_label_leak": False, "kp_label_leak": False})
-        self.assertEqual(cp.count_chunk_markers(self.html), 0)
+        expected = 0                                                   # 委任_11: ⏸は実Chunk境界(chunk plan記録)の数だけ。それ以外の位置には出さない
+        for lv in ("a2", "b1b"):
+            for p in cp.load_chunk_plans(f"{RUN_KCP4}/{lv}/audit/chunk_plan_{lv}.json").values():
+                expected += max(len(cp.chunk_texts_of_plan(p)) - 1, 0)
+        self.assertEqual(cp.count_boundary_marker_spans(self.html), expected)
         self.assertIsNone(re.search(r"<(?:strong|span)[^>]*\btitle=", self.html))
         self.assertIsNone(BANNED.search(re.sub(r"<[^>]+>", " ", self.html)))
 
@@ -714,7 +722,7 @@ class RealRunHighlightEndToEndTest(TmpMixin, unittest.TestCase):
         for lv, sid in (("a2", "std"), ("b1b", "adv")):
             sec = cp.level_section_html(self.html, sid)
             with mock.patch("er128_kp_confirmed_content_01.protection_enabled", return_value=True):
-                v = g3.verify_highlights(sec, {"result": self.hl[lv]["result"], "script_texts": [t for u in self.hl[lv]["units"] for t in u["texts"]], "audience": "public"})
+                v = g3.verify_highlights(sec, {"result": self.hl[lv]["result"], "script_texts": [t for u in self.hl[lv]["units"] for t in u["texts"]], "audience": "dev"})   # 委任_11: 試聴ページは⏸を持つ
             self.assertEqual((v["status"], v["problems"]), ("PASS", []), lv)
 
     def test_std_has_three_kinds_and_meaning_list_and_adv_has_no_meaning_list_when_no_cat3(self):

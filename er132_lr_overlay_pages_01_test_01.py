@@ -137,11 +137,17 @@ def test_public_leak_hits_clean_text_and_none():
 
 
 # ============================================================ 未配線の確認(Production/既存moduleからimportされない)
+# 委任_11(B-wire): 設計上の配線先(三者一致Gate=X/Y/Z assemble入口、overlay=ページ描画)だけを許可する
+ER132_ALLOWED_USERS = ("er019_family_x_audio_production_runner_01.py", "er019_family_x_listening_page_01.py", "er121_family_y_audio_01.py",
+                       "er063_family_z_audio_01.py", "er026_family_z_fiction_production_runner_01.py",
+                       "er133_report_marks_01_test_01.py", "er130_gate_wiring_mock_e2e_01_test_01.py")   # 後2つ=配線後のtest(importはtest内)
+
+
 def test_er132_is_not_imported_by_any_existing_module():
     offenders = []
     for p in glob.glob(os.path.join(ROOT, "*.py")):
         n = os.path.basename(p)
-        if n.startswith("er132_"):
+        if n.startswith("er132_") or n in ER132_ALLOWED_USERS:
             continue
         try:
             tree = ast.parse(open(p, encoding="utf-8").read())
@@ -372,126 +378,80 @@ def test_public_page_scan_flags_exactly_the_known_publication_mismatches():
         assert "note_local_rewrite" in flagged[k]                       # 検出器が実在の混入(Z公開ページのLR注記)を捕捉できる
 
 
-# ============================================================ patch(適用可能性・内容)
-def test_patch_applies_cleanly_to_head_index():
-    r = subprocess.run(["git", "apply", "--cached", "--check", "--ignore-whitespace", PATCH], cwd=ROOT, capture_output=True, text=True)
-    assert r.returncode == 0, r.stderr
+# ============================================================ 配線(委任_11 B-wire: B3 patchを適用済みの作業ツリー)
+def _src(f):
+    return open(os.path.join(ROOT, f), encoding="utf-8").read()
 
 
-def test_patch_touches_only_the_designated_existing_files_and_never_er129_er127_er020_er122():
-    text = open(PATCH, encoding="utf-8").read()
-    files = re.findall(r"^diff --git a/(\S+) b/", text, flags=re.M)
-    assert sorted(files) == sorted(PATCH_FILES)
-    assert not any(re.match(r"er(127|020|122|129|130|131)_", f) for f in files)
-
-
-@pytest.fixture(scope="module")
-def patched_dir():
-    d = tempfile.mkdtemp(prefix="er132_patch_")
-    try:
-        for f in PATCH_FILES:
-            blob = subprocess.run(["git", "show", f":{f}"], cwd=ROOT, capture_output=True, check=True).stdout
-            open(os.path.join(d, f), "wb").write(blob)
-        r = subprocess.run(["git", "apply", "--ignore-whitespace", "--unsafe-paths", "--directory=.", PATCH], cwd=d, capture_output=True, text=True)
-        assert r.returncode == 0, r.stderr
-        yield d
-    finally:
-        shutil.rmtree(d, ignore_errors=True)
-
-
-def _read(d, f):
-    return open(os.path.join(d, f), encoding="utf-8").read()
-
-
-def test_patched_sources_compile(patched_dir):
-    for f in PATCH_FILES:
-        compile(_read(patched_dir, f), f, "exec")
-
-
-def test_patch_z_removes_lr_note_but_keeps_voice_style_and_tts_mode_display(patched_dir):
-    z = _read(patched_dir, "er063_family_z_audio_01.py")
-    assert "Local Rewrite採用" not in z                                # LR由来注記を撤去(旧2か所)
-    assert "Voice: {_esc(r['voice'])} / Style: {_esc(r['style'])}" in z      # Voice:表示は維持
-    assert "TTS方式" in z
-    assert 'row["notes"].append(f"{_label}適用' in z                    # 減速注記は維持(LR/Fallback由来ではない)
-    assert "FamilyZLRDisplayConsistencyStop(FamilyZAudioStop)" in z
-    pv = open(os.path.join(ROOT, "er063_family_z_page_verify_01.py"), encoding="utf-8").read()
-    assert 'text.count("Voice:")' in pv and '"TTS方式" in text' in pv       # 検査が見る文字列がpatch後も出力される(偽NGにならない)
-    # 撤去前は注記が旧2か所にあった(HEAD index)ことの確認(撤去漏れ・残置grep)
-    head = subprocess.run(["git", "show", "HEAD:er063_family_z_audio_01.py"], cwd=ROOT, capture_output=True, text=True, encoding="utf-8").stdout
-    assert head.count("Local Rewrite採用") == 2
-
-
-def test_patch_x_listening_page_hides_lr_rows_for_public_only(patched_dir):
-    t = _read(patched_dir, "er019_family_x_listening_page_01.py")
-    assert 'audience: str = "public"' in t
-    assert 'audience == uc.AUDIENCE_PUBLIC and "LR_REWRITTEN" in (e.get("warning_labels") or [])' in t
-    assert "audience=audience)" in t                                   # check_pageへ渡すaudienceが固定"public"でなくなる(HR audienceは従来どおり)
-    assert t.count('audience="public"') == 1                           # build_pageの引数既定値のみ(旧: check_page固定2か所のうち1か所を引数化、g3は固定のまま)
-
-
-def _load_patched_common(d):
-    spec = importlib.util.spec_from_file_location("uc_patched_b3", os.path.join(d, "er_user_listening_page_common_01.py"))
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod
-
-
-def test_patch_check_page_public_flags_forbidden_words_and_hr_audience_not_affected(patched_dir):
-    page_path = os.path.join(ROOT, "user_test", "family_x_word_gacha_01", "index.html")
-    if not os.path.exists(page_path):
-        pytest.skip("page absent")
-    html = open(page_path, encoding="utf-8").read()
-    uc_old = importlib.import_module("er_user_listening_page_common_01")
-    uc_new = _load_patched_common(patched_dir)
-    levels = ("Standard", "Advanced")
-    base_old = uc_old.check_page(html, levels=levels, audience="public")
-    base_new = uc_new.check_page(html, levels=levels, audience="public")
-    assert "no_lr_fallback_note_in_public" in base_new["checks"] and base_new["checks"]["no_lr_fallback_note_in_public"]["ok"]
-    assert {k: v for k, v in base_new["checks"].items() if k != "no_lr_fallback_note_in_public"} == base_old["checks"]   # 既存検査は不変
-    for bad in ("<span class='fhr-lr'>x</span>", "<p>LR_REWRITTEN</p>", "<p>Local Rewrite採用(音声は原稿から変更)</p>", "<p>ENGLISH_LOCK</p>"):
-        res = uc_new.check_page(html.replace("</body>", bad + "</body>"), levels=levels, audience="public")
-        assert res["overall"] == "FAIL" and not res["checks"]["no_lr_fallback_note_in_public"]["ok"], bad
-    dev = uc_new.check_page(html.replace("</body>", "<p>LR_REWRITTEN</p></body>"), levels=levels, audience="dev")
-    assert "no_lr_fallback_note_in_public" not in dev["checks"]      # dev/HR audienceは従来どおり(検査しない)
-
-
-def test_patch_wires_gate_before_style_gates_and_overlay_at_each_render_site(patched_dir):
-    xr = _read(patched_dir, "er019_family_x_audio_production_runner_01.py")
+def test_wired_sources_compile_and_gate_runs_before_style_gates_and_overlay_at_each_render_site():
+    for f in ("er019_family_x_audio_production_runner_01.py", "er019_family_x_listening_page_01.py", "er121_family_y_audio_01.py",
+              "er063_family_z_audio_01.py", "er026_family_z_fiction_production_runner_01.py", "er_user_listening_page_common_01.py"):
+        compile(_src(f), f, "exec")
+    xr = _src("er019_family_x_audio_production_runner_01.py")
     for lv in ("b1b", "a2"):
         i = xr.index(f'_er132.assemble_gate_summary(theme_out_dir, "{lv}", not_rendered_clip_ids=_er132.X_NOT_RENDERED_CLIP_IDS)')
         j = xr.index(f'_style_profile_gate_blocked_summary(theme_out_dir, out_dir, "{lv}")', i)
         assert i < j                                                      # 三者一致Gate→M3/Style Gateの順(W2 §5-3)
     assert "_er132.overlay_level_dir_units(level_dir, parts, support)" in xr and "lr_rebound = lr_rebound or (_parts_disp is not parts)" in xr
-    y = _read(patched_dir, "er121_family_y_audio_01.py")
+    y = _src("er121_family_y_audio_01.py")
     assert y.index("_er132.assemble_gate_summary(theme_out_dir, level)") < y.index("gate = y_style_gate(theme_out_dir, level, style_profile)")
     assert "overlay_highlight_units" in y and 'display_text_of_clip(_lr, "topic_intro"' in y
-    z = _read(patched_dir, "er063_family_z_audio_01.py")
+    z = _src("er063_family_z_audio_01.py")
     assert z.count("display_text_of_clip(_lr, cid") == 2                  # build_page_rows と full_story_display_units(2式を同じoverlayに揃える)
-    zr = _read(patched_dir, "er026_family_z_fiction_production_runner_01.py")
+    zr = _src("er026_family_z_fiction_production_runner_01.py")
     assert zr.index("_er132.z_assemble_gate(") < zr.index("m.a63.run_assembly(ctx.out_dir, lv, inp[\"story_clips\"]")
+    xl = _src("er019_family_x_listening_page_01.py")
+    assert 'display_text_of_clip(_lr, "topic_intro", info["text"])' in xl     # X topic_introは表示=採用音声(Fable補足(2))
 
 
-def test_patch_does_not_change_ttrs_policy_or_gates_constants(patched_dir):
-    """TTS試行回数・待機・Fallback Style・LR範囲・ASR基準に関わる定数/呼出をpatchが触っていない(追加行にそれらの語が無い)。"""
-    text = open(PATCH, encoding="utf-8").read()
-    added = [l[1:] for l in text.splitlines() if l.startswith("+") and not l.startswith("+++")]
-    for l in added:
-        assert not re.search(r"BLOCK_ATTEMPTS|FALLBACK_ORDINAL|sleep\(|180|PROFILES|asr_threshold|tts_voice|speed", l), l
+def test_wired_z_old_lr_notes_replaced_by_report_marks_and_voice_style_kept():
+    z = _src("er063_family_z_audio_01.py")
+    assert "Local Rewrite採用" not in z                                # 旧「LR採用」注記2か所(row["notes"])は撤去
+    assert 'row["marks"] = _rm.marks_for(' in z and 'row["chunk_texts"]' in z   # 共通表示部品(LR赤・Fallback濃青・⏸)へ置換
+    assert "Voice: {_esc(r['voice'])} / Style: {_esc(r['style'])}" in z      # Voice:表示は維持
+    assert "TTS方式" in z and 'row["notes"].append(f"{_label}適用' in z      # TTS方式・減速注記は維持
+    assert "FamilyZLRDisplayConsistencyStop(FamilyZAudioStop)" in z
+    pv = _src("er063_family_z_page_verify_01.py")
+    assert 'text.count("Voice:")' in pv and '"TTS方式" in text' in pv       # page_verifyが見る文字列は変わらず出力される(偽NGにならない)
+
+
+def test_wired_x_listing_page_shows_lr_rows_in_red_not_hidden_and_has_no_audience_split():
+    t = _src("er019_family_x_listening_page_01.py")
+    assert "audience: str" not in t and "AUDIENCE_PUBLIC" not in t           # build_pageにaudience引数なし=出し分けしない(ユーザー原文_02 §4)
+    assert "LR_REWRITTEN" in t and "color:#c00000" in t                       # 事後試聴リストのLR行は非表示にせず赤で表示
+    assert "_rm.marks_for(" in t and "uc.script_block(info[\"text\"], _cts, highlights=hls or None, marks=_mk)" in t
+
+
+def test_check_page_public_no_longer_forbids_report_marks_and_has_no_html_leak_check():
+    import er_user_listening_page_common_01 as uc
+    page_path = os.path.join(ROOT, "user_test", "family_x_word_gacha_01", "index.html")
+    if not os.path.exists(page_path):
+        pytest.skip("page absent")
+    html = open(page_path, encoding="utf-8").read()
+    levels = ("Standard", "Advanced")
+    res = uc.check_page(html, levels=levels, audience="public")
+    assert "no_lr_fallback_note_in_public" not in res["checks"] and "no_chunk_marker_in_public" not in res["checks"]
+    marked = html.replace("</body>", "<p><span class='rpt-lr'>x</span> <span class='chunk-mark'>&#9208;</span></p></body>")
+    assert uc.check_page(marked, levels=levels, audience="public")["overall"] == res["overall"]   # 試聴ページHTMLへの⏸/赤/青は混入扱いにしない(Fable補足(1))
 
 
 XSTD_TOPIC = "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_tru_ev_x_std_2"
 
 
-def test_x_topic_intro_lr_is_fail_closed_because_x_page_does_not_render_entry_text():
-    """Xのページはtopic_intro/japanese_titleをテンプレート表示する(entry.canonical_textを描かない)。LR採用があればoverlayを届ける経路が無いので停止(見逃さない)。"""
+def test_x_topic_intro_lr_is_connected_to_clip_overlay_and_japanese_title_is_recorded_not_rendered():
+    """Fable補足(2): Xのページが`Today's topic is {title}.`として表示するtopic_introのLRは、表示源をclip overlayへ接続(表示=採用音声)。
+    表示しない`japanese_title`は三者一致の対象外として`not_rendered`に記録(STOPしない)。"""
     _need(XSTD_TOPIC)
     r = os.path.join(ROOT, XSTD_TOPIC)
+    ledger = m.level_ledger(r, "a2")
+    parts = json.load(open(os.path.join(r, "a2", "parts.json"), encoding="utf-8"))
+    tmpl = f"Today's topic is {parts['title']}."
+    shown = m.display_text_of_clip(ledger, "topic_intro", tmpl)
+    assert shown != tmpl and "Today's subject is" in shown                   # LR後の英文(採用音声)を表示
     rendered = m.rendered_display_units(r, "a2")
-    assert m.evaluate_text_parity(r, "a2", rendered_display=rendered)["status"] == "OK"            # 台帳上は三者一致PASS(topic→subject)
-    res = m.evaluate_text_parity(r, "a2", rendered_display=rendered, not_rendered_clip_ids=m.X_NOT_RENDERED_CLIP_IDS)
-    assert res["status"] == m.STATUS_DISPLAY_CONSISTENCY and res["problems"][0]["code"] == "DISPLAY_SOURCE_NOT_RENDERED"
-    summ = m.assemble_gate_summary(r, "a2", not_rendered_clip_ids=m.X_NOT_RENDERED_CLIP_IDS)
-    assert summ["status"] == "BLOCKED_LR_DISPLAY_CONSISTENCY" and summ["hr_queue"] is False
-    # 通常のX run(topic_intro LRなし)は影響を受けない
-    assert m.assemble_gate_summary(os.path.join(ROOT, AI), "a2", not_rendered_clip_ids=m.X_NOT_RENDERED_CLIP_IDS) is None
+    assert m.evaluate_text_parity(r, "a2", rendered_display=rendered, not_rendered_clip_ids=m.X_NOT_RENDERED_CLIP_IDS)["status"] == "OK"
+    assert m.assemble_gate_summary(r, "a2", not_rendered_clip_ids=m.X_NOT_RENDERED_CLIP_IDS) is None
+    assert m.X_NOT_RENDERED_CLIP_IDS == ("japanese_title",)
+    # japanese_titleにLRがあっても停止せずnot_renderedへ記録される(合成)
+    res = m.evaluate_text_parity(r, "a2", rendered_display=rendered, not_rendered_clip_ids=("topic_intro",))
+    assert res["status"] == "OK" and [x["clip_id"] for x in res["not_rendered"]] == ["topic_intro"]

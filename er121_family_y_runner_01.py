@@ -1281,8 +1281,7 @@ def stage_pages(ctx) -> dict:
             lvd["study_html"] = pre + (html_by_id.get(lvd["id"]) or "")
     html_text = ya.render_y_page(title, levels, aux_html=ya.voice1_candidates_aux_html(ctx.out_dir, audio_dir, "audio"),      # 候補が無ければ空(従来と同一)
                                  show_notice=show_notice, audience=audience, highlight=bool(hl_results))
-    if audience == cp.AUDIENCE_PUBLIC and cp.count_chunk_markers(html_text):
-        raise YE2EStop(f"FAMILY_Y_PUBLIC_PAGE_HAS_CHUNK_MARKER: 公開用ページに開発用Chunk境界マーカーが{cp.count_chunk_markers(html_text)}件あります(出力しない)")
+    # 委任_11(ユーザー原文_02 §3・§4): 試聴ページ(報告資料)は実Chunk境界の⏸・LR赤・Fallback濃青を持つのが正。旧「public=⏸ 0件」STOP(FAMILY_Y_PUBLIC_PAGE_HAS_CHUNK_MARKER)は撤去
     page = f"{ctx.pages_dir}/index.html" if audience == cp.AUDIENCE_PUBLIC else f"{ctx.pages_dir}/index_dev.html"      # devは公開用index.htmlを上書きしない
     with open(page, "w", encoding="utf-8") as f:
         f.write(html_text)
@@ -1340,7 +1339,7 @@ def _verify_highlights_on_page(ctx, html_text: str) -> dict:
         if res["status"] != "OK":
             raise YE2EStop(f"FAMILY_Y_HIGHLIGHT_ISSUE({lv}, stage_page_verify): " + "; ".join(f"{i['code']}[{i.get('candidate_id')}]" for i in res["issues"]))
         texts = [u["texts"][0] for u in ya.y_highlight_display_units(ctx.out_dir, lv)]
-        v = g3.verify_highlights(section, {"result": res, "script_texts": texts, "audience": "public"})
+        v = g3.verify_highlights(section, {"result": res, "script_texts": texts, "audience": "dev"})   # 委任_11: 試聴ページは⏸を持つ(G3のpublic混入検査はマーカー無しページ用)
         if v["status"] == "FAIL":
             raise YE2EStop(f"FAMILY_Y_HIGHLIGHT_G3_FAILED({lv}): " + "; ".join(f"{p['code']}[{p.get('candidate_id')}] {p['detail']}" for p in v["problems"]))
         out[lv] = {"status": v["status"], "counts": v["counts"], "disabled_marker": v["disabled_marker"], "notices": [n["code"] for n in res.get("notices") or []]}

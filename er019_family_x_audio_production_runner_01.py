@@ -2470,7 +2470,7 @@ def _style_profile_gate_blocked_summary(theme_out_dir: str, out_dir: str, level:
     results = load_json(results_path) if os.path.exists(results_path) else {}
     approvals_path = asm.human_approval_path(out_dir)
     approvals = load_json(approvals_path) if os.path.exists(approvals_path) else {}
-    gate = style_profile_mod.m3_assembly_gate(profile_id, level, results, approvals)
+    gate = style_profile_mod.m3_assembly_gate(profile_id, level, results, approvals, level_dir=out_dir)   # B-wire(UD-3): 採用take分類核(正常LR/Fallback=警告、異常=BLOCK)
     save_json(f"{out_dir}/audit/style_profile_gate.json", gate)
     # 非ブロッキングwarning(例: KP英語がK2でなく承認済み4回構成のENGLISH_LOCK fallbackで生成された)は
     # 最終報告で見落とされないようstdoutへ列挙する(Gate判定は変えない)。
@@ -2576,6 +2576,12 @@ def stage_assemble_family_x_b1(theme_out_dir: str, theme_id: str, source_dir: st
     # M2(c): Style profile Gate・共有Gateより前に、chunk親集約entry(status・親wav・human_approved_chunks)を再構築する
     # (STOPPED chunkの人間承認後は、親entry/親wavが古いまま・無いままになるため。generate後の承認→再assembleで親も通る)。
     _chunk_parent_refresh_x(out_dir)
+    # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): 三者一致Gate(表示=TTS入力=ASR正解)。不一致・位置不能・overlay未適用=技術STOP(HRキューへ入れない)。M3/Style Gateより前。
+    import er132_lr_overlay_pages_01 as _er132
+    _lr_blocked = _er132.assemble_gate_summary(theme_out_dir, "b1b", not_rendered_clip_ids=_er132.X_NOT_RENDERED_CLIP_IDS)
+    if _lr_blocked is not None:
+        save_json(f"{out_dir}/run_summary_assemble.json", _lr_blocked)
+        return _lr_blocked
     style_blocked = _style_profile_gate_blocked_summary(theme_out_dir, out_dir, "b1b")
     if style_blocked is not None:
         save_json(f"{out_dir}/run_summary_assemble.json", style_blocked)
@@ -2830,6 +2836,12 @@ def stage_assemble_family_x_a2(theme_out_dir: str, theme_id: str, source_dir: st
     if std_chunk_blocked is not None:
         save_json(f"{out_dir}/run_summary_assemble.json", std_chunk_blocked)
         return std_chunk_blocked
+    # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): 三者一致Gate(b1と同じ。M3/Style Gateより前)。
+    import er132_lr_overlay_pages_01 as _er132
+    _lr_blocked = _er132.assemble_gate_summary(theme_out_dir, "a2", not_rendered_clip_ids=_er132.X_NOT_RENDERED_CLIP_IDS)
+    if _lr_blocked is not None:
+        save_json(f"{out_dir}/run_summary_assemble.json", _lr_blocked)
+        return _lr_blocked
     style_blocked = _style_profile_gate_blocked_summary(theme_out_dir, out_dir, "a2")
     if style_blocked is not None:
         save_json(f"{out_dir}/run_summary_assemble.json", style_blocked)
@@ -3066,7 +3078,11 @@ def resolve_x_highlights(out_dir: str, level: str, *, source_dir: str | None = N
     sd = source_dir or x_source_dir_of(out_dir)
     article_text = load_text(f"{sd}/{level}/article.md")
     parts = load_json(f"{out_dir}/{level}/parts.json")
-    res = hl.resolve_highlights(article_text, load_json(cands_path), hl.items_from_record(rec), x_display_units(parts), lr_rebound=lr_rebound)
+    # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): ハイライトはLR後の表示本文(overlay)で解決する(描画と同じ文字列。LR無し=同一objectでlr_rebound不変)。
+    import er132_lr_overlay_pages_01 as _er132
+    _parts_disp, _ = _er132.overlay_level_dir_units(f"{out_dir}/{level}", parts)
+    lr_rebound = lr_rebound or (_parts_disp is not parts)
+    res = hl.resolve_highlights(article_text, load_json(cands_path), hl.items_from_record(rec), x_display_units(_parts_disp), lr_rebound=lr_rebound)
     if res["status"] != "OK":
         view = hl.contract_view(res)
         codes = [f"{i['code']}(A班名={a['code']}):{i.get('candidate_id')}" for i, a in zip(view["issues"], res["issues"])]
@@ -3179,6 +3195,9 @@ def _build_level_table(level_dir: str, level: str, japanese_title: str | None = 
     kp_by_rank = {item["rank"]: item for item in kp["items"]}
     abs_url = player_common.abs_file_url
     support = load_json(f"{level_dir}/{'b1_support_texts.json' if level == 'b1b' else 'a2_support_texts.json'}")
+    # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): 表示本文へLR後の英文を反映(派生overlay。parts.json/support原本は不変。LR無し=同一objectでbyte同一)。
+    import er132_lr_overlay_pages_01 as _er132
+    parts, support = _er132.overlay_level_dir_units(level_dir, parts, support)
     # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W4): Advanced(b1b)の
     # player行に英語解説(explanation_en)textを表示するため、
     # tts_generation_results.jsonのkey_phrases[rank]["explanation"]を読む

@@ -219,14 +219,14 @@ def evaluate_text_parity(run_dir: str, level: str, *, rendered_display: dict | N
     problems[], confirmed[], record_mismatch[], checked[]}。
     rendered_display=ページが実際に描画する表示unit(`rendered_display_units`相当、unit_key→本文)。**None(=overlay未配線の呼出)は、LR採用clipがあれば常に異常側**
     (DISPLAY_NOT_OVERLAID)=配線後に初めて通る設計(INTEGRATION F-5)。LR 0のrunは表示unitが不要なのでNone・{}どちらでもOK。
-    not_rendered_clip_ids=そのFamilyのページが`entry.canonical_text`を描画しないclip(X: `topic_intro`/`japanese_title`はテンプレート表示)。これらにLR採用があると
-    ページ表示にoverlayを届ける経路が無いため`DISPLAY_SOURCE_NOT_RENDERED`で停止する(見逃さない=fail-closed)。"""
+    not_rendered_clip_ids=そのFamilyのページが表示しないclip(X: `japanese_title`はページのja_title引数表示でentryのtextを描かない)。LR採用があっても三者一致の対象外とし、
+    結果の`not_rendered`へ記録する(委任_11 Fable補足(2))。X `topic_intro`はページが`Today's topic is ...`として表示するので、ページ側をclip overlayへ接続して通常のparity対象にする。"""
     e129 = _e129()
     ld = level_dir or level_dir_of(run_dir, level)
     ledger = ledger if ledger is not None else level_ledger(run_dir, level, results_path=results_path, level_dir=ld)
     rp = results_path or os.path.join(ld, "audit", "tts_generation_results.json")
     entries = {sid: e for sid, e, _ in e129._iter_entries(e129._jl(rp) or {})} if os.path.exists(rp) else {}
-    problems, confirmed, record, checked = [], [], [], []
+    problems, confirmed, record, checked, not_rendered = [], [], [], [], []
     for clip in ledger.get("clips") or []:
         v, cid = clip.get("verdict"), clip.get("clip_id")
         if v == e129.V_NO_LR:
@@ -242,8 +242,9 @@ def evaluate_text_parity(run_dir: str, level: str, *, rendered_display: dict | N
         elif v == e129.V_PASS:
             key = unit_key(clip)
             if cid in set(not_rendered_clip_ids or ()):
-                problems.append({"clip_id": cid, "code": "DISPLAY_SOURCE_NOT_RENDERED",
-                                 "detail": "このFamilyのページは当該clipのentry.canonical_textを描画しない(テンプレート表示)ため、LR後の英文を表示へ反映できません"})
+                # 委任_11(Fable補足(2)): ページが当該clipのテキストを表示していない=三者一致の対象外。STOPせず台帳結果へ`not_rendered`として記録する
+                # (表示しているのに接続できない場合だけfail-closed。表示するclipはページ側をclip overlayへ接続済み=この分岐に来ない)
+                not_rendered.append({"clip_id": cid, "note": "ページはこのclipのテキストを表示しないため三者一致の対象外(not_rendered)"})
                 continue
             if rendered_display is None or key not in rendered_display:
                 problems.append({"clip_id": cid, "code": "DISPLAY_NOT_OVERLAID",
@@ -265,7 +266,8 @@ def evaluate_text_parity(run_dir: str, level: str, *, rendered_display: dict | N
         status = STATUS_DISPLAY_CONSISTENCY
     elif confirmed:
         status = STATUS_CONFIRMED_INTERFERENCE
-    return {"status": status, "problems": problems, "confirmed": confirmed, "record_mismatch": record, "checked": checked, "run_dir": run_dir, "level": level}
+    return {"status": status, "problems": problems, "confirmed": confirmed, "record_mismatch": record, "checked": checked, "not_rendered": not_rendered,
+            "run_dir": run_dir, "level": level}
 
 
 def assert_text_parity(run_dir: str, level: str, *, rendered_display: dict | None = None, ledger: dict | None = None, results_path: str | None = None,
@@ -336,7 +338,7 @@ def overlay_highlight_units(ledger: dict | None, units: list) -> list:
     return out if changed else units
 
 
-X_NOT_RENDERED_CLIP_IDS = ("topic_intro", "japanese_title")   # Xのページはテンプレート表示(`Today's topic is {title}.`・日本語title)でentry.canonical_textを描かない
+X_NOT_RENDERED_CLIP_IDS = ("japanese_title",)   # Xのページは日本語titleをja_title引数で表示しentryのtextを描かない(三者一致の対象外、not_renderedとして記録)。topic_introはページ側をclip overlayへ接続済み
 
 
 def assemble_gate_summary(run_dir: str, level: str, *, not_rendered_clip_ids=()) -> dict | None:

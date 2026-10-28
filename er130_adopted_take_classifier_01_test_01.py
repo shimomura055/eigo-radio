@@ -161,11 +161,15 @@ def test_12_allowlist_drift():
 
 
 # ---- 13 未配線の固定(Production codeから参照されない。A/B/C runnerも含む)
+# 委任_11(B-wire): 設計上の利用者(Gate 3か所=X M3/Y gate/Z style gate)だけを許可し、TTS leaf・ASR・KP表示・Style Prompt・公開ページ生成器は直接importしない
+ER130_ALLOWED_USERS = ("er019_family_x_style_profile_01.py", "er121_family_y_audio_01.py", "er063_family_z_audio_01.py")
+
+
 def test_13_not_imported_by_production():
     root = os.path.dirname(c.__file__)
     for f in glob.glob(os.path.join(root, "*.py")):
         b = os.path.basename(f)
-        if b.startswith("er130_") or b.startswith("er129_") or "_test" in b:
+        if b.startswith("er130_") or b.startswith("er129_") or "_test" in b or b in ER130_ALLOWED_USERS:
             continue
         txt = open(f, encoding="utf-8", errors="ignore").read()
         assert not re.search(r"\ber130_adopted_take_classifier_01\b", txt), b

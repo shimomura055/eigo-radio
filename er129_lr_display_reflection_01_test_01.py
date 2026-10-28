@@ -396,11 +396,20 @@ def test_u7_run_dir_is_not_modified_by_ledger_derivation():
     assert snap() == before
 
 
+# 委任_11(B-wire): 設計上の利用者を明示列挙する(allowlist)。意図=「公開ページ生成器・TTS入力生成・ASR・KP表示・Style Promptがer129/er131を直接importしない」。
+#  - er130(分類核)/er131(最終Human報告資料)/er132(overlay・三者一致Gate)/er133(試聴ページ共通表示部品)=er129 ledgerの利用者
+#  - er063_family_z_audio_01=B6(Z `style_actual`の採用attempt同定をer129.resolve_adopted_take へ置換、Opus M-8)で遅延importする唯一の既存module(TTS入力・Style Promptは変更しない)
+U8_ALLOWED_USERS = ("er129_lr_display_reflection_01.py", "er129_lr_display_reflection_01_test_01.py", "er130_adopted_take_classifier_01.py",
+                    "er130_adopted_take_classifier_01_test_01.py", "er131_final_human_report_01.py", "er131_final_human_report_01_test_01.py",
+                    "er132_lr_overlay_pages_01.py", "er132_lr_overlay_pages_01_test_01.py", "er133_report_marks_01.py", "er133_report_marks_01_test_01.py",
+                    "er130_gate_wiring_mock_e2e_01_test_01.py", "er063_family_z_audio_01.py")
+
+
 def test_u8_no_production_module_imports_er129():
-    # 未配線(既定動作不変): Production/他moduleからimportされていない
+    # 許可リスト(U8_ALLOWED_USERS)以外のmoduleからimportされていない(TTS/ASR/KP表示/Style Prompt/公開ページ生成器は直接importしない)
     offenders = []
     for f in os.listdir(ROOT):
-        if f.endswith(".py") and f not in ("er129_lr_display_reflection_01.py", "er129_lr_display_reflection_01_test_01.py", "er130_adopted_take_classifier_01.py", "er130_adopted_take_classifier_01_test_01.py"):
+        if f.endswith(".py") and f not in U8_ALLOWED_USERS:
             try:
                 with open(os.path.join(ROOT, f), encoding="utf-8") as fh:
                     if "er129_lr_display_reflection_01" in fh.read():

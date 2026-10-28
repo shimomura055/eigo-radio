@@ -682,7 +682,7 @@ def _gate_targets(profile_id: str, level: str, results: dict) -> list[tuple[str,
     return targets
 
 
-def m3_assembly_gate(profile_id: str, level: str, results: dict, approvals: dict | None = None) -> dict:
+def m3_assembly_gate(profile_id: str, level: str, results: dict, approvals: dict | None = None, level_dir: str | None = None) -> dict:
     """profile対象role各segmentについて:
       - style_profile.style_base_sha256 == そのroleの原文sha
       - FULL_STORY(Adv): style_prefix が原文で始まる / instruction_type != minimal_fallback
@@ -691,10 +691,15 @@ def m3_assembly_gate(profile_id: str, level: str, results: dict, approvals: dict
       - KP_EXPLANATION_EN: status OK
       - M4のFinal Style判定(英語role、hintあり/なし)
     を満たさない場合、record_human_approval(人間承認、canonical text sha一致)が無ければBLOCK。
-    profile==default なら何もしない(PASS)。"""
+    profile==default なら何もしない(PASS)。
+    LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B-wire(UD-3): `level_dir`を渡すと、イベントclip(LR・Fallback証跡あり)に限り、LR/Fallback/採用Style由来の旧違反
+    (er130.X_REPLACED)を採用take分類核(er130.classify_adopted_take)の判定へ置換する。正常なLR/Fallbackは非ブロッキングwarning(LR_APPLIED/FALLBACK_APPLIED、
+    HR・組立停止を要求しない)、異常(未承認Style/記録欠落/不一致/ASR NG/parity不一致等)は従来どおりBLOCK。level_dir無し・台帳を作れない場合は旧判定のまま。"""
     if profile_id == PROFILE_DEFAULT:
         return {"status": "PASS", "profile_id": profile_id, "checked": [], "blocked": [], "human_approved": []}
     checked, blocked, human_approved, warnings = [], [], [], []
+    import er130_adopted_take_classifier_01 as _c130   # B-wire(UD-3): 採用take分類核(遅延import)
+    _ledger_clips = _c130.event_ledger_clips(level_dir) if level_dir else None
     for name, role, entry in _gate_targets(profile_id, level, results):
         violations = []
         if entry is None:
@@ -741,6 +746,12 @@ def m3_assembly_gate(profile_id: str, level: str, results: dict, approvals: dict
                     violations.append("PREVIEW_MINIMAL_FALLBACK")
             if entry.get("local_rewrite_recovery"):
                 violations.append("LOCAL_REWRITE_RECOVERY")
+            if _ledger_clips is not None:   # B-wire(UD-3): イベントclipだけ分類核へ置換(正常LR/Fallback=警告、異常=従来どおりBLOCK)
+                _ov = _c130.override_violations(name, entry, level, violations, _ledger_clips, replaced=_c130.X_REPLACED,
+                                                role_style_prefix_ok=True if (ev.get("pass") and ev.get("final_style_record")) else None)
+                violations = _ov["violations"]
+                for _w in _ov["warnings"]:
+                    warnings.append({"segment": name, "warning": _w["kind"], "detail": {k: v for k, v in _w.items() if k not in ("kind", "clip_id")}})
         checked.append(name)
         if violations:
             if entry is not None and _approved(approvals, name, entry):

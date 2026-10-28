@@ -230,7 +230,7 @@ class Render(unittest.TestCase):
         with self.assertRaises(AssertionError):
             cp.script_block("alpha beta", highlights=[{"kind": 1, "start": 0, "end": 6, "candidate_id": "a"}, {"kind": 3, "start": 5, "end": 8, "candidate_id": "b"}])
 
-    def test_dev_marker_outside_decoration_and_public_has_none(self):
+    def test_marker_outside_decoration_in_every_audience(self):
         text = "First paragraph here.\n\nSecond paragraph here."
         chunks = ["First paragraph here.", "Second paragraph here."]
         s, e = text.index("here."), text.index("Second") + len("Second")      # ハイライトがChunk境界を跨ぐ
@@ -240,8 +240,8 @@ class Render(unittest.TestCase):
         self.assertIn("</strong> <span class='chunk-mark'>&#9208;</span><strong class=\"lk2\" data-hl=\"x\">", dev)   # マーカーは装飾の外
         self.assertEqual(hl.strip_decoration(dev), cp.script_block(text, chunks, "dev"))
         pub = cp.script_block(text, chunks, "public", highlights=hs)
-        for bad in ("⏸", "&#9208;", "chunk-mark"):
-            self.assertNotIn(bad, pub)
+        self.assertEqual(pub, dev)                                    # 委任_11(ユーザー原文_02 §4): 試聴ページは全audienceで実Chunk境界に⏸(旧「publicはマーカーなし」を置換)
+        self.assertEqual(cp.script_block(text, None, "public", highlights=hs).count("chunk-mark"), 0)   # chunk記録がなければ表示なし
 
     def test_meaning_and_legend(self):
         m = hl.meaning_list_html([{"used_form": "make a difference", "japanese_gloss": "影響を与える"}])

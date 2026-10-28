@@ -418,13 +418,13 @@ class ZGateAndAssemblyTests(unittest.TestCase):
         seq = tl["timeline"]
         idx = [i for i, e in enumerate(seq) if e["part"] == "full_story_part2_c1"][0]
         self.assertEqual(seq[idx + 1]["part"], "_silence_0.5")
-        # ページ行: 親行はvoice/styleが「-」でなく、chunkのLocal Rewrite注記が親行に出る
+        # ページ行: 親行はvoice/styleが「-」でない。LR/Fallback由来の注記は公開ページ行へ出さない(LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3、原文§2。旧I7を置換)
         rows, _, _, _ = z.build_page_rows(self.run, "b1b", "x/", f"{self.tmp}/aud")
         row = [r for r in rows if r["clip_id"] == "full_story_part2_c1"][0]
         self.assertNotEqual(row["voice"], "-")
         self.assertNotEqual(row["style"], "-")
         self.assertTrue(row["script"].startswith("Alpha"))
-        self.assertTrue(any("full_story_part2_c1_k2" in n and "Local Rewrite" in n for n in row["notes"]))
+        self.assertFalse(any("Local Rewrite" in n for n in row["notes"]))
 
     def test_assembly_stops_if_parent_wav_not_raw_concat_and_without_chunk_plans_uses_legacy_path(self):
         plan, kp = self._prepare()

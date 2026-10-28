@@ -79,6 +79,13 @@ def level_data(R, uc, hl, run, source_dir, level, key, label, ja_title, slug, hr
     timeline = rj(f"{base}/audit/timeline.json")
     parts = rj(f"{base}/parts.json")
     support = rj(f"{base}/{'b1_support_texts.json' if level == 'b1b' else 'a2_support_texts.json'}")
+    # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): 公開ページの表示本文へLR後の英文を反映(派生overlay)。
+    import er132_lr_overlay_pages_01 as _er132
+    parts, support = _er132.overlay_level_dir_units(base, parts, support)
+    _lr = _er132.level_ledger(run, level, level_dir=base)
+    import er133_report_marks_01 as _rm   # 委任_11(ユーザー原文_02 §4): 試聴ページの⏸(実Chunk境界)・LR赤・Fallback濃青の共通表示部品
+    _events = _rm.load_events(run, level, level_dir=base)
+    _plans = uc.load_chunk_plans(f"{base}/audit/chunk_plan_{level}.json")
     kp = rj(f"{base}/key_phrases/keywords_canonicalized.json")
     kp_by_rank = {i["rank"]: i for i in kp["items"]}
     expl = {}
@@ -94,12 +101,19 @@ def level_data(R, uc, hl, run, source_dir, level, key, label, ja_title, slug, hr
         fn = f"{key}_{len(rows):02d}.mp3"
         jobs.append((x[int(round(s * sr)): int(round((s + dur) * sr))], sr, fn, "96k"))
         info = R._row_info_family_x(part, level, parts, support, f"{base}/narration", kp_by_rank, ja_title, kp_explanations_by_rank=expl or None)
+        if part.startswith("Topic intro"):   # 委任_11(Fable補足(2)): ページが表示するtopic_introのLR後の英文を採用音声と一致させる(表示=採用音声)
+            info = dict(info, text=_er132.display_text_of_clip(_lr, "topic_intro", info["text"]))
         if part.startswith("Key Phrase "):
             it = kp_by_rank[int(part.split(" ")[-1])]
+            _rk = it["rank"]
             if level == "b1b":
-                blocks = [uc.kp_block(["英語", "英語での解説"], [it["used_form"], expl[it["rank"]]["explanation"]])]
+                _cells = [it["used_form"], expl[_rk]["explanation"]]
+                _cm = {0: _rm.marks_for(_events, _cells[0], ids=(f"kp{_rk}_en",), whole=True), 1: _rm.marks_for(_events, _cells[1], ids=(f"kp{_rk}_explanation",), whole=True)}
+                blocks = [uc.kp_block(["英語", "英語での解説"], _cells, {i: m for i, m in _cm.items() if m}, _rm.notes_of(_cm.values()))]
             else:
-                blocks = [uc.kp_block(["英語", "日本語の意味"], [it["used_form"], it["japanese_gloss"]])]
+                _cells = [it["used_form"], it["japanese_gloss"]]
+                _cm = {0: _rm.marks_for(_events, _cells[0], ids=(f"kp{_rk}_en",), whole=True), 1: _rm.marks_for(_events, _cells[1], ids=(f"kp{_rk}_japanese_meaning",), whole=True)}
+                blocks = [uc.kp_block(["英語", "日本語の意味"], _cells, {i: m for i, m in _cm.items() if m}, _rm.notes_of(_cm.values()))]
         elif info["sfx"]:
             blocks = ["<span class='sec'>効果音・音楽(読み上げなし)</span>"]
         elif info["voice"] is None or info["text"].startswith("(共有固定"):
@@ -107,7 +121,11 @@ def level_data(R, uc, hl, run, source_dir, level, key, label, ja_title, slug, hr
         else:
             uk = _unit_key(part)
             hls = hl.highlights_for_text(hres, uk, 0) if (hres is not None and uk) else None
-            blocks = [uc.script_block(info["text"], highlights=hls or None)]
+            _fs = re.match(r"full_story_part\d+$", uk or "")
+            _clip_ids = () if _fs else tuple(os.path.splitext(os.path.basename(p))[0] for p in ([info["audio"]] if isinstance(info.get("audio"), str) else list(info.get("audio") or ())))
+            _mk = _rm.marks_for(_events, info["text"], ids=_clip_ids, block=uk if _fs else None, whole=not _fs)
+            _cts = uc.chunk_texts_of_plan(_plans.get(uk)) if _fs else None   # ⏸=実TTS Chunk境界(chunk planの記録位置)にだけ
+            blocks = [uc.script_block(info["text"], _cts, highlights=hls or None, marks=_mk)]
             script_texts.append(info["text"])
             if hres is not None and uk:
                 ml = hl.meaning_list_html(hl.meanings_for_unit(hres, uk))   # ③の訳リスト(当該Partの台本セル直後、div.script/table/h2の外)
@@ -160,7 +178,9 @@ def build_page(slug: str, run_name: str, web: str, *, run_root: str = RUN_ROOT_D
     for level, _lid, lab in levels:
         pp_ = f"{run}/{level}/audit/pass_with_warning_listening_list.json"
         lst = rj(pp_) if os.path.exists(pp_) else {"count": 0, "entries": []}
-        items = "".join(f"<li>{esc(e.get('segment_id', ''))} / 期待={esc(str(e.get('canonical_text')))} / 一次ASR={esc(str(e.get('primary_text')))} / "
+        # 委任_11(ユーザー原文_02 §4): LR行は非表示にせず共通表示部品の赤で表示する(audience区分による出し分けはしない)
+        items = "".join(("<li style='color:#c00000'>" if "LR_REWRITTEN" in (e.get("warning_labels") or []) else "<li>")
+                        + f"{esc(e.get('segment_id', ''))} / 期待={esc(str(e.get('canonical_text')))} / 一次ASR={esc(str(e.get('primary_text')))} / "
                         f"二次ASR={esc(str(e.get('secondary_text')))} / {esc(','.join(e.get('warning_labels') or []))}</li>" for e in lst.get("entries", []))
         pw.append(f"<h3>{lab}: 事後試聴リスト(PASS_WITH_WARNING) {lst.get('count', 0)}件</h3><ul>{items}</ul>")
     aux_html = "".join(aux) + "<h2 id='pww'>事後試聴リスト(PASS_WITH_WARNING、非ブロッキング)</h2>" + "".join(pw)
@@ -169,13 +189,16 @@ def build_page(slug: str, run_name: str, web: str, *, run_root: str = RUN_ROOT_D
              + (("<br>" + esc(intro_note)) if intro_note else "") + "</div>")
     if marked:
         intro += hl.legend_html()
+    import er133_report_marks_01 as _rm
+    if any(("chunk-mark" in b or "rpt-" in b) for _lv in lv_out for _r in _lv["rows"] for b in _r["blocks"]):   # ⏸/赤/青が1つでもあるページだけ凡例1行
+        intro += _rm.legend_html()
     page = uc.render_standard_page(title, lv_out, intro_html=intro, aux_html=aux_html)
     if marked:   # ハイライトを出すページだけHIGHLIGHT_CSSを足す(マーク無しページ=従来とバイト同一)
         page = page.replace("</head>", f"<style>{hl.HIGHLIGHT_CSS}</style></head>", 1)
 
     # ---- 必須検査(出力前) ----
     summary = {"slug": slug, "run": run_name, "marked_levels": marked, "vocab_levels": vocab_levels, "notices": {}}
-    cp = uc.check_page(page, levels=tuple(lab for _l, _i, lab in levels), audience="public")
+    cp = uc.check_page(page, levels=tuple(lab for _l, _i, lab in levels))
     if cp["overall"] != "PASS":
         raise PageStop("X_PAGE_CHECK_PAGE_FAIL: " + "; ".join(f"{k}:{v['detail']}" for k, v in cp["checks"].items() if not v["ok"])[:600])
     g3 = R._g3()   # er128系を直接importしない(runnerの遅延accessor)
@@ -183,7 +206,7 @@ def build_page(slug: str, run_name: str, web: str, *, run_root: str = RUN_ROOT_D
         section = uc.level_section_html(page, lid)
         hres = hres_by_level[level]
         if hres is not None:
-            g = g3.verify_highlights(section, {"result": hres, "audience": "public", "script_texts": info[level]["script_texts"]})
+            g = g3.verify_highlights(section, {"result": hres, "audience": "dev", "script_texts": info[level]["script_texts"]})
             if g["status"] == "FAIL":
                 raise PageStop(f"X_PAGE_G3_FAIL({level}): " + "; ".join(f"{p['code']}:{p.get('candidate_id')}:{p['detail']}" for p in g["problems"][:8]))
             summary["notices"][level] = [n["code"] for n in hres.get("notices", [])]

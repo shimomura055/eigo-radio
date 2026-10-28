@@ -186,8 +186,8 @@ def test_layer1_er131_imports_only_stdlib_and_er129():
 def test_layer1_no_other_module_imports_er131():
     offenders = []
     for p in glob.glob(os.path.join(ROOT, "*.py")):
-        if os.path.basename(p).startswith("er131_final_human_report_01"):
-            continue
+        if os.path.basename(p).startswith("er131_final_human_report_01") or os.path.basename(p) in ("er133_report_marks_01.py", "er133_report_marks_01_test_01.py"):
+            continue   # 委任_11: er133(試聴ページ共通表示部品)はer131のcard生成(_card/_spans_html)を部品として流用する唯一の利用者
         try:
             if "er131_final_human_report_01" in _imports(p):
                 offenders.append(os.path.basename(p))

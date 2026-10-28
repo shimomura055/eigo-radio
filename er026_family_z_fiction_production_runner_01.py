@@ -2548,6 +2548,8 @@ def stage_assemble(ctx) -> dict:
     res = {}
     for lv in LEVELS:
         inp = load_level_inputs(ctx, lv)
+        import er132_lr_overlay_pages_01 as _er132   # # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): 三者一致Gate(assemble入口)。不一致=FamilyZLRDisplayConsistencyStop(技術STOP、HRへ入れない)
+        _er132.z_assemble_gate(ctx.out_dir, lv, m.a63.FamilyZLRDisplayConsistencyStop)
         tl = m.a63.run_assembly(ctx.out_dir, lv, inp["story_clips"], inp["kp_items"], story_key=ctx.slug,
                                 kp_third="explanation" if lv == "b1b" else "japanese", chunk_plans=inp["chunk_plans"])
         res[lv] = {"duration_seconds": round(tl["duration_seconds"], 2), "wav": tl["wav"],
@@ -2636,7 +2638,7 @@ def _verify_learning_items(ctx) -> dict:
         rec = {"section": PAGE_SECTION_IDS[lv], "display_spec": spec, "part1_blocks": n1}
         if spec:
             hr = _resolve_level_highlights(ctx, lv)
-            v = g3.verify_highlights(section, {"result": hr["result"], "script_texts": [t for u in hr["units"] for t in u["texts"]], "audience": "public"})
+            v = g3.verify_highlights(section, {"result": hr["result"], "script_texts": [t for u in hr["units"] for t in u["texts"]], "audience": "dev"})   # 委任_11: 試聴ページは⏸を持つ(G3のpublic混入検査はマーカー無しページ用)
             rec["g3"] = {"status": v["status"], "disabled_marker": v["disabled_marker"], "counts": v["counts"], "problems": v["problems"]}
             if v["status"] == "FAIL":
                 raise FamilyZE2EStop(f"FAMILY_Z_HIGHLIGHT_G3_FAIL({lv}): " + "; ".join(f"{p['code']}:{p['candidate_id']}:{p['detail']}" for p in v["problems"][:8]))

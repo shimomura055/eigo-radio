@@ -316,16 +316,16 @@ class FullMockRun(unittest.TestCase):
             dev = open(f"{self.out}/pages/index_dev.html", encoding="utf-8").read()
             self.assertTrue(res["page"].endswith("index_dev.html"))
             self.assertEqual(cp.count_boundary_marker_spans(dev), 2)                # 実plan境界(各level1)と一致。ASRポーズ由来の⏸は出ない
-            self.assertEqual(cp.count_chunk_markers(dev), 3)                        # +1=開発用ページ冒頭の凡例1行(記号のみ。公開では出ない)
-            self.assertEqual(res["chunk_markers"], 3)
+            self.assertEqual(cp.count_chunk_markers(dev), 4)                        # +2=開発用ページ冒頭の凡例(開発確認用の1行+委任_11の報告表示凡例1行。記号のみ)
+            self.assertEqual(res["chunk_markers"], 4)
             self.assertEqual(open(f"{self.out}/pages/index.html", encoding="utf-8").read(), pub_before)    # 公開用index.htmlは上書きされない
             with self.assertRaises(r.YE2EStop) as e:                       # devページは公開用検証/final manifestの対象外
                 r.stage_page_verify(self.ctx)
             self.assertIn("FAMILY_Y_PAGE_VERIFY_DEV_PAGE", str(e.exception))
             self.ctx.page_audience = "public"
             with _quiet():
-                r.stage_pages(self.ctx)                                         # 同じplanでも公開用(既定)はマーカー0
-            self.assertEqual(cp.count_chunk_markers(open(f"{self.out}/pages/index.html", encoding="utf-8").read()), 0)
+                r.stage_pages(self.ctx)                                         # 委任_11: 試聴ページはaudience無関係に実Chunk境界を⏸表示する
+            self.assertEqual(cp.count_boundary_marker_spans(open(f"{self.out}/pages/index.html", encoding="utf-8").read()), 2)
         finally:
             self.ctx.page_audience = "public"
             for pp, txt in saved.items():
@@ -337,7 +337,7 @@ class FullMockRun(unittest.TestCase):
                 os.remove(f"{self.out}/pages/index_dev.html")
             with _quiet():
                 r.stage_pages(self.ctx)
-        self.assertEqual(cp.count_chunk_markers(pub_before), 0)
+        self.assertEqual(cp.count_boundary_marker_spans(pub_before), 0)    # plan注入前の公開ページは境界0
 
     def test_y_provider_collects_scripts(self):
         import er121_family_y_audio_01 as ya

@@ -224,11 +224,9 @@ class MarkedPipeline(unittest.TestCase):
         with self.assertRaises(r.YE2EStop) as e:
             r._verify_highlights_on_page(self.ctx, bad)
         self.assertIn("G3HL_EXTRA", str(e.exception))
-        # public混入(⏸)
-        bad = page.replace(sec, sec + cp._CHUNK_MARKER_HTML)
-        with self.assertRaises(r.YE2EStop) as e:
-            r._verify_highlights_on_page(self.ctx, bad)
-        self.assertIn("G3HL_PUBLIC_MARKER", str(e.exception))
+        # 委任_11: 試聴ページ(報告資料)は⏸を持つのが正。旧「public混入(⏸)=G3HL_PUBLIC_MARKER」STOPは試聴ページ検証から外れた(audience="dev"で検証)
+        with_marker = page.replace(sec, sec + cp._CHUNK_MARKER_HTML)
+        self.assertEqual(r._verify_highlights_on_page(self.ctx, with_marker)["a2"]["status"], "PASS")
         # 正常は通る
         self.assertEqual(r._verify_highlights_on_page(self.ctx, page)["a2"]["status"], "PASS")
 
@@ -323,7 +321,8 @@ class MarkedPipeline(unittest.TestCase):
             with _quiet():
                 r.stage_pages(self.ctx)
             dev = _page(self.ctx, "index_dev.html")
-            self.assertEqual(cp.count_boundary_marker_spans(dev), 2)                # 実plan境界(各level1)
+            self.assertEqual(cp.count_boundary_marker_spans(dev), 2)                # 実plan境界(各level1)。凡例の記号は境界spanに数えない
+            self.assertEqual(cp.count_boundary_marker_spans(_page(self.ctx, "index_dev.html")), cp.count_boundary_marker_spans(dev))
             self.assertEqual(len(re.findall(r'<(?:strong|span) class="lk[123]"[^>]*>[^<]*(?:⏸|chunk-mark)[^<]*</(?:strong|span)>', dev)), 0)      # ⏸は装飾の外
             for lv in r.LEVELS:                                                      # devでも装飾は各候補ちょうど1出現(片に分かれても同一data-hl)
                 self.assertEqual(len(set(_hl_ids(_sec(dev, lv)))), 5)

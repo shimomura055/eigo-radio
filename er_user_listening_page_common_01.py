@@ -139,25 +139,80 @@ def _chunk_boundary_positions(text: str, chunk_texts, warnings: list | None = No
     return out
 
 
-def script_block(text: str, chunk_texts=None, audience: str = AUDIENCE_PUBLIC, warnings: list | None = None, highlights=None) -> str:
-    """台本1ブロック。既定(audience=public・chunk_texts未指定・highlights=None)は従来とバイト同一。
-    audience="dev" かつ chunk_texts(実Chunk plan由来)が2個以上のときだけ、chunk境界に ⏸ を差し込む。publicではchunk_textsを渡されてもマーカーを出さない。
-    highlights(SLOT-23、任意): [{"kind":1|2|3,"start","end","candidate_id"[, "surface"]}]。指定時のみ本文を装飾タグで包む(挿入順序: ハイライト→devマーカー、
-    マーカーは常に装飾の外)。None/[]は従来経路そのまま(バイト同一)。"""
+def render_marked_script(text: str, highlights, boundary_positions, marker_html: str, red=None, blue=None) -> str:
+    """台本textをHTMLエスケープし、highlight(SLOT-23)・Chunk境界マーカー・報告表示の赤(LR変更箇所)/濃い青(Fallback適用範囲)を重ねて描く(委任_11、ユーザー原文_02 §4)。
+    テキスト自体は変えない(装飾はspanのみ。textContentは装飾なしと同一)。マーカーは常にhighlightの外。赤/青は各segment内側に置く(highlight要素と交差させない)。
+    red/blue=[(start,end)]のtext上の文字範囲。redもblueも無い場合はer_learning_highlight_01.render_script_htmlと同一出力。"""
+    text = text or ""
+    red, blue = list(red or []), list(blue or [])
+    import er_learning_highlight_01 as _hl
+    if not red and not blue:
+        return _hl.render_script_html(text, highlights, boundary_positions, marker_html)
+    hls = sorted(highlights or [], key=lambda x: (x["start"], x["end"]))
+    for h in hls:
+        assert 0 <= h["start"] < h["end"] <= len(text), f"highlight範囲不正: {h}"
+    bset = {b for b in (boundary_positions or []) if 0 <= b <= len(text)}
+    cuts = sorted({0, len(text)} | bset | {h["start"] for h in hls} | {h["end"] for h in hls}
+                  | {x for s, e_ in red + blue for x in (s, e_) if 0 <= x <= len(text)})
+    out: list = []
+    open_hl = None
+    LR = "color:#c00000;font-weight:700;text-decoration:underline"
+    FB = "color:#0a2a6b;font-weight:600"
+    for a, b in zip(cuts, cuts[1:]):
+        hl = next((h for h in hls if h["start"] <= a and b <= h["end"]), None)
+        if hl is not open_hl:
+            if open_hl is not None:
+                out.append(f"</{_hl.KIND_TAG[open_hl['kind']]}>")
+            if hl is not None:
+                out.append(_hl.open_tag(hl["kind"], hl["candidate_id"]))
+            open_hl = hl
+        seg = esc(text[a:b])
+        if any(s <= a and b <= e_ for s, e_ in red):
+            seg = f"<span class='rpt-lr' style='{LR}'>{seg}</span>"
+        if any(s <= a and b <= e_ for s, e_ in blue):
+            seg = f"<span class='rpt-fb' style='{FB}'>{seg}</span>"
+        out.append(seg)
+        if b in bset and marker_html:
+            if open_hl is not None:
+                out.append(f"</{_hl.KIND_TAG[open_hl['kind']]}>")
+                open_hl = None
+            out.append(marker_html)
+    if open_hl is not None:
+        out.append(f"</{_hl.KIND_TAG[open_hl['kind']]}>")
+    if 0 in bset and marker_html:
+        out.insert(0, marker_html)
+    return "".join(out)
+
+
+def script_block(text: str, chunk_texts=None, audience: str = AUDIENCE_PUBLIC, warnings: list | None = None, highlights=None, marks: dict | None = None) -> str:
+    """台本1ブロック。既定(chunk_texts未指定・highlights=None・marks=None)は従来とバイト同一。
+    委任_11(ユーザー原文_02 §4、2026-10-28): 試聴・確認フォーム(報告資料)は全audienceで、chunk_texts(実Chunk plan由来)が2個以上のとき、chunk境界に ⏸ を差し込む
+    (旧「publicはマーカーなし」規則は撤去。audienceは出力先の区分(dev=index_dev.html等)としてだけ残る)。
+    highlights(SLOT-23、任意): [{"kind":1|2|3,"start","end","candidate_id"[, "surface"]}]。指定時のみ本文を装飾タグで包む(挿入順序: ハイライト→マーカー、
+    マーカーは常に装飾の外)。None/[]は従来経路そのまま(バイト同一)。
+    marks(er133_report_marks_01.build_marks): {"red":[(s,e)],"blue":[(s,e)],"notes_html":str}。指定時のみ変更箇所(赤)・Fallback適用範囲(濃い青)を重ね、注記は
+    `div.script`の外の兄弟として後ろに付ける(G3の台本textContent検査・check_pageのscript検査に影響しない)。"""
     normalize_audience(audience)
+    if marks and (marks.get("red") or marks.get("blue")):
+        bpos = _chunk_boundary_positions(text or "", chunk_texts, warnings) if chunk_texts else []
+        return "<div class='script'>" + render_marked_script(text or "", highlights, bpos, " " + _CHUNK_MARKER_HTML, marks.get("red"), marks.get("blue")) + "</div>" + marks.get("notes_html", "")
     if highlights:
         import er_learning_highlight_01 as _hl
-        bpos = _chunk_boundary_positions(text or "", chunk_texts, warnings) if (audience == AUDIENCE_DEV and chunk_texts) else []
-        return "<div class='script'>" + _hl.render_script_html(text or "", highlights, bpos, " " + _CHUNK_MARKER_HTML) + "</div>"
-    if audience == AUDIENCE_DEV and chunk_texts:
-        return "<div class='script'>" + script_html_with_chunk_markers(text, chunk_texts, warnings) + "</div>"
-    return "<div class='script'>" + esc(text or "") + "</div>"
+        bpos = _chunk_boundary_positions(text or "", chunk_texts, warnings) if chunk_texts else []
+        return "<div class='script'>" + _hl.render_script_html(text or "", highlights, bpos, " " + _CHUNK_MARKER_HTML) + "</div>" + (marks or {}).get("notes_html", "")
+    if chunk_texts:
+        return "<div class='script'>" + script_html_with_chunk_markers(text, chunk_texts, warnings) + "</div>" + (marks or {}).get("notes_html", "")
+    return "<div class='script'>" + esc(text or "") + "</div>" + (marks or {}).get("notes_html", "")
 
 
-def kp_block(headers, cells) -> str:
-    """headers/cells=同長のlist(例: ['英語','日本語の意味'] / [en, ja])。"""
+def kp_block(headers, cells, cell_marks=None, notes_html: str = "") -> str:
+    """headers/cells=同長のlist(例: ['英語','日本語の意味'] / [en, ja])。
+    cell_marks(委任_11、任意): {cell index: er133 marks}。指定セルだけ赤/濃い青を重ねる(textContent不変)。notes_htmlはtableの外(後ろ)に付く。未指定=従来とバイト同一。"""
+    def _cell(i, c):
+        m = (cell_marks or {}).get(i)
+        return render_marked_script(c, None, [], "", m.get("red"), m.get("blue")) if m and (m.get("red") or m.get("blue")) else esc(c)
     return ("<table class='kp'><tr>" + "".join(f"<th>{esc(h)}</th>" for h in headers) + "</tr><tr>"
-            + "".join(f"<td>{esc(c)}</td>" for c in cells) + "</tr></table>")
+            + "".join(f"<td>{_cell(i, c)}</td>" for i, c in enumerate(cells)) + "</tr></table>" + notes_html)
 
 
 def render_standard_page(title: str, levels: list, intro_html: str = "", aux_html: str = "") -> str:
@@ -355,8 +410,8 @@ def check_page(html_text: str, base_dir: str | None = None, levels=("Standard", 
     visible = re.sub(r"<[^>]+>", " ", html_text)
     put("no_file_scheme", not ("file:///" in html_text or "C:\\" in html_text or "C:/" in html_text))
     put("no_A2_B1_label", not re.search(r"\(A2\)|\(B1\)|B1B", visible))
-    if audience == AUDIENCE_PUBLIC:
-        put("no_chunk_marker_in_public", count_chunk_markers(html_text) == 0, f"markers={count_chunk_markers(html_text)}")
+    # 委任_11(ユーザー原文_02 §3・§4): 試聴ページ(=報告資料)は⏸/LR赤/Fallback濃青の表示を持つのが正。旧「public=⏸ 0件」検査(no_chunk_marker_in_public)と
+    # 委任_10 B3のpublic混入検知(no_lr_fallback_note_in_public)は撤去(混入検知はTTS入力・ASR正解・Style Prompt・KP学習用表示・study_textに限定=er132.public_leak_hits)。
     # C7 音声実在
     if base_dir:
         miss = [n.attrs.get("src") for n in flat if n.tag == "audio" and n.attrs.get("src")

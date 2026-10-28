@@ -390,8 +390,12 @@ class DialogueTests(_Base):
 
     def test_dialogue_fallback_to_default_is_not_style_drop(self):
         plan = self.stage("a2")
-        self.edit_entry("a2", "full_story_part1_c2", lambda e: e["style"].update({"fallback_used": True}))
-        self.assertEqual(self.gate("a2", plan)["status"], "PASS")
+        # 実leaf形: Dialogueが従来方式(既定Dialogue Style)へ切替わった記録=dialogue_tts.final_mode(UD-3の採用take分類核が直接記録から確定する)
+        self.edit_entry("a2", "full_story_part1_c2", lambda e: (e["style"].update({"fallback_used": True}),
+                                                                 e.update({"dialogue_tts": {"policy": "ctx", "final_mode": "legacy_fallback", "final_attempt_n": 3}})))
+        r = self.gate("a2", plan)
+        self.assertEqual(r["status"], "PASS")
+        self.assertIn("FALLBACK_APPLIED", {w.get("warning") for w in r["warnings"]})        # 正常Fallbackは非ブロッキング警告(HR・停止を要求しない)
 
     def test_dialogue_measured_value_must_equal_default(self):
         plan = self.stage("a2")

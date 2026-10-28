@@ -889,7 +889,10 @@ def y_style_gate(theme_out_dir: str, level: str, style_profile: str) -> dict:
     results = load_json(f"{out_dir}/audit/tts_generation_results.json")
     approvals_path = asm.human_approval_path(out_dir)
     approvals = load_json(approvals_path) if os.path.exists(approvals_path) else {}
-    gate = sp.m3_assembly_gate(style_profile, level, results, approvals)
+    gate = sp.m3_assembly_gate(style_profile, level, results, approvals, level_dir=out_dir)   # B-wire(UD-3): イベントclipは採用take分類核(正常LR/Fallback=警告、異常=BLOCK)
+    import er130_adopted_take_classifier_01 as _c130
+    _ledger_clips = _c130.event_ledger_clips(out_dir)
+    _lrfb_warnings = list(gate.get("warnings") or [])
     blocked = [b for b in gate["blocked"] if not (b["segment"] in _X_ONLY_SEGMENTS and b["violations"] == ["NO_SEGMENT_RECORD"])]
     extra, rows = [], []
     segs = results.get("segments") or {}
@@ -927,6 +930,11 @@ def y_style_gate(theme_out_dir: str, level: str, style_profile: str) -> dict:
                     viol.append("STD_FALLBACK_USED_OR_UNKNOWN")
                 if entry.get("local_rewrite_recovery"):
                     viol.append("LOCAL_REWRITE_RECOVERY")
+                if _ledger_clips is not None:   # B-wire(UD-3): Y本文もX共通の分類核へ(旧Y本文の重複実装を置換。イベントclipのみ、他は旧判定)
+                    _ov = _c130.override_violations(name, entry, level, viol, _ledger_clips, replaced=_c130.X_REPLACED,
+                                                    role_style_prefix_ok=True if (ev.get("pass") and ev.get("final_style_record") and prefix_ok is not False) else None)
+                    viol = _ov["violations"]
+                    _lrfb_warnings.extend({"segment": name, "warning": w["kind"]} for w in _ov["warnings"])
                 fin = ev.get("final_style_record") or {}
                 rows.append(_y_row(level, "FULL_STORY", name, entry, prof, ev, "final_style_record(送信style実測)", fin.get("sha256"),
                                    not viol, {"parent_segment": sid, "adv_prefix_startswith_approved": prefix_ok,
@@ -967,6 +975,10 @@ def y_style_gate(theme_out_dir: str, level: str, style_profile: str) -> dict:
                 pref_ok = (isinstance(spx, str) and spx.startswith(o["text"])) if role == sp.ROLE_PREVIEW else None
                 rows.append(_y_row(level, role, name, entry, o, ev, "final_style_record(送信style実測)", fin.get("sha256"),
                                    ev["pass"] and pref_ok is not False, {"style_prefix_len": fin.get("len")}))
+        if _ledger_clips is not None and viol:   # B-wire(UD-3): 日本語roleの実測不一致もイベントclipは分類核へ
+            _ov = _c130.override_violations(name, entry, level, viol, _ledger_clips, replaced=_c130.X_REPLACED)
+            viol = _ov["violations"]
+            _lrfb_warnings.extend({"segment": name, "warning": w["kind"]} for w in _ov["warnings"])
         if viol:
             extra.append({"segment": name, "violations": viol})
     expected = y_expected_coverage(level)
@@ -983,6 +995,7 @@ def y_style_gate(theme_out_dir: str, level: str, style_profile: str) -> dict:
     res = {"status": "BLOCK" if (blocked or extra_blocked) else "PASS", "level": level, "profile_id": style_profile,
            "x_gate_blocked_after_filter": blocked, "y_profile_blocked": [],
            "y_body_checks": extra, "y_body_blocked": extra_blocked, "coverage": coverage,
+           "lr_fallback_warnings": _lrfb_warnings,   # B-wire(UD-3): 正常LR/Fallbackの非ブロッキング警告(LR_APPLIED/FALLBACK_APPLIED)
            "x_gate": {k: gate.get(k) for k in ("status", "checked", "human_approved", "warnings")}}
     save_json(f"{out_dir}/audit/y_style_profile_gate.json", res)
     rec = sp.read_record(theme_out_dir)
@@ -1188,6 +1201,12 @@ def assemble_level(theme_out_dir: str, level: str, *, style_profile: str, slug: 
     reconcile_hr_approvals_for_request(out_dir, level, style_profile)   # OPEN-535: chunk親の再構築・共有Gateより前に不一致の旧HR承認を退避
     if level in ys.CHUNK_TTS_Y_LEVELS:      # Style Gate・共有Gateより前に、chunk親集約entry(status・親wav・human_approved_chunks)を再構築する(人間承認後の再assembleで親も通る)
         _refresh_y_chunk_parents_on_disk(out_dir, level)
+    # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): 三者一致Gate(表示=TTS入力=ASR正解)。不一致・位置不能・overlay未適用=技術STOP(HRキューへ入れない)。Style Gateより前。
+    import er132_lr_overlay_pages_01 as _er132
+    _lr_blocked = _er132.assemble_gate_summary(theme_out_dir, level)
+    if _lr_blocked is not None:
+        save_json(f"{out_dir}/run_summary_assemble.json", _lr_blocked)
+        return _lr_blocked
     gate = y_style_gate(theme_out_dir, level, style_profile)
     if gate["status"] != "PASS":
         s = {"status": "BLOCKED_STYLE_PROFILE_GATE", "gate": gate}
@@ -1428,11 +1447,15 @@ def _y_level_text(theme_out_dir: str, level: str) -> str:
         return f.read()
 
 
-def y_highlight_display_units(theme_out_dir: str, level: str) -> list:
+def y_highlight_display_units(theme_out_dir: str, level: str, overlay: bool = True) -> list:
     """Yページに表示される本文ブロック(Full Storyの8 segment)を公開順(ys.Y_SEGMENT_IDS)に並べたDisplayUnit列。key=segment ID、texts=[segment本文]。
     本文は translate/<level>.md の split_y_article(parts.json の segments と同一の導出=prepare_inputs)。TTS前(parts.json生成前)でも解決できる。"""
     segs = ys.split_y_article(_y_level_text(theme_out_dir, level))["segments"]
-    return [{"key": sid, "texts": [segs[sid]], "joiner": " "} for sid in ys.Y_SEGMENT_IDS if sid in segs]
+    units = [{"key": sid, "texts": [segs[sid]], "joiner": " "} for sid in ys.Y_SEGMENT_IDS if sid in segs]
+    if not overlay:
+        return units
+    import er132_lr_overlay_pages_01 as _er132   # # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): LR後の表示本文(派生overlay)。LR無し=同一object
+    return _er132.overlay_highlight_units(_er132.level_ledger(theme_out_dir, level), units)
 
 
 def y_highlight_article_text(theme_out_dir: str, level: str) -> str:
@@ -1452,7 +1475,9 @@ def resolve_y_highlights(theme_out_dir: str, level: str) -> dict | None:
     kp_dir = f"{theme_out_dir}/key_phrases/{level}"
     rec = cc.load_record(kp_dir)
     cands = load_json(f"{kp_dir}/kp_candidates.json")
-    res = hl.resolve_highlights(y_highlight_article_text(theme_out_dir, level), cands, hl.items_from_record(rec), y_highlight_display_units(theme_out_dir, level))
+    _units = y_highlight_display_units(theme_out_dir, level)
+    res = hl.resolve_highlights(y_highlight_article_text(theme_out_dir, level), cands, hl.items_from_record(rec), _units,
+                                lr_rebound=(_units != y_highlight_display_units(theme_out_dir, level, overlay=False)))   # LR後本文で解決(LR無し=従来どおりFalse)
     res["level"] = level
     return res
 
@@ -1467,7 +1492,7 @@ def highlight_meaning_html(results: dict) -> dict:
 def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: str, ja_paragraphs: list | None = None, audience: str = "public",
                     highlights_result: dict | None = None) -> dict:
     """assembled wav+timeline から、再生順の全スクリプト表の行を作る(mp3化込み)。行ラベルに内部ID・Voice名を出さない。
-    audience="public"(既定)=台本にChunk境界マーカーを出さない。"dev"=開発用試聴ページ向け。実TTS Chunk境界(audit/chunk_plan_<level>.json)にだけ⏸を出す(ASRポーズは使わない)。
+    audience(委任_11: 出力ファイルの選択のみ。public/devとも)=実TTS Chunk境界(audit/chunk_plan_<level>.json)にだけ⏸を出す(ASRポーズは使わない)。
     highlights_result(SLOT-23): resolve_y_highlights の結果。None/該当なし=従来とバイト同一。指定時のみFull Story本文を①②③の装飾で包む(⏸は装飾の外)。"""
     import imageio_ffmpeg
     import soundfile as sf
@@ -1476,7 +1501,7 @@ def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: s
     cp.normalize_audience(audience)
     ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
     base = f"{theme_out_dir}/{level}"
-    chunk_plans = cp.load_chunk_plans(f"{base}/audit/chunk_plan_{level}.json") if audience == cp.AUDIENCE_DEV else {}
+    chunk_plans = cp.load_chunk_plans(f"{base}/audit/chunk_plan_{level}.json")   # 委任_11: ⏸は全試聴ページ(報告資料)で実Chunk境界(plan記録)にだけ表示(旧dev限定を撤去)
     wavs = sorted(glob.glob(f"{base}/assembled/*.wav"))
     if len(wavs) != 1:
         raise YAudioStop(f"FAMILY_Y_PAGE_ASSEMBLED_WAV: {level}の組立済み全編wavが1つではありません({wavs})。Gateを回避して通し音声は作りません")
@@ -1495,6 +1520,14 @@ def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: s
     parts = load_json(f"{base}/parts.json")
     res = load_json(f"{base}/audit/tts_generation_results.json")
     support = load_json(f"{base}/support_texts.json")
+    import er132_lr_overlay_pages_01 as _er132   # # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): ページ描画の表示本文へLR後の英文を反映(派生overlay、LR無し=同一object)
+    _lr = _er132.level_ledger(theme_out_dir, level)
+    parts, support = _er132.overlay_level_units(_lr, parts, support)
+    import er133_report_marks_01 as _rm   # 委任_11(ユーザー原文_02 §4): ⏸(実Chunk境界)・LR赤・Fallback濃青の共通表示部品
+    _events = _rm.load_events(theme_out_dir, level)
+
+    def _script_m(text, *ids):
+        return cp.script_block(text or "", marks=_rm.marks_for(_events, text or "", ids=ids, whole=True))
     kp_items = sorted(load_json(f"{base}/key_phrases/keywords_canonicalized.json")["items"], key=lambda it: it["rank"])
     expl = res.get("key_phrase_explanations_text") or {}
     label_to_sid = {v: k for k, v in ys.PAGE_LABEL.items()}
@@ -1518,17 +1551,18 @@ def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: s
                 hl_list = hl.highlights_for_text(highlights_result, sid, 0) or None
                 if hl_list and parts["segments"][sid] != next(u["texts"][0] for u in y_highlight_display_units(theme_out_dir, level) if u["key"] == sid):
                     raise YAudioStop(f"FAMILY_Y_HIGHLIGHT_TEXT_MISMATCH({level}, {sid}): parts.jsonの本文がハイライト解決に使った本文(translate/{level}.md)と一致しません。装飾位置がずれるため描画しません")
-            blocks.append(cp.script_block(parts["segments"][sid], cp.chunk_texts_of_plan(chunk_plans.get(sid)), audience, highlights=hl_list))      # ⏸=実Chunk境界のみ(dev限定)
+            blocks.append(cp.script_block(parts["segments"][sid], cp.chunk_texts_of_plan(chunk_plans.get(sid)), audience, highlights=hl_list,
+                                          marks=_rm.marks_for(_events, parts["segments"][sid], block=sid)))      # ⏸=実Chunk境界のみ / LR赤 / Fallback濃青
             if ja_paragraphs is not None:
                 blocks.append("<details><summary>日本語の元原稿</summary><div class='ja'>" + cp.esc(ja_paragraphs.get(sid, "")) + "</div></details>")
         elif pl.startswith("topic intro"):
-            blocks.append(_script(res["segments"]["topic_intro"].get("canonical_text")))
+            blocks.append(_script_m(_er132.display_text_of_clip(_lr, "topic_intro", res["segments"]["topic_intro"].get("canonical_text") or ""), "topic_intro"))
         elif pl.startswith("japanese title"):
-            blocks.append(_script(res["segments"]["japanese_title"].get("canonical_text") or res["segments"]["japanese_title"].get("text")))
+            blocks.append(_script_m(res["segments"]["japanese_title"].get("canonical_text") or res["segments"]["japanese_title"].get("text"), "japanese_title"))
         elif pl == "preview":
-            blocks.append(_script(support["preview"]))
+            blocks.append(_script_m(support["preview"], "preview"))
         elif re.match(r"comment (\d)$", pl):
-            blocks.append(_script(support["comment_" + re.match(r"comment (\d)$", pl).group(1)]))
+            blocks.append(_script_m(support["comment_" + re.match(r"comment (\d)$", pl).group(1)], "comment_" + re.match(r"comment (\d)$", pl).group(1)))
         elif re.match(r"key phrase (\d)$", pl):
             r = int(re.match(r"key phrase (\d)$", pl).group(1))
             it = kp_items[r - 1]
@@ -1536,11 +1570,14 @@ def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: s
             if level == "a2":
                 # KP-CONFIRMED-CONTENT-PROTECTION-01 02B M2-b: 表示は確定した表示用japanese_gloss(TTS用canonical_textは表示しない。TTS入力は不変)
                 ja = it.get("japanese_gloss") or k["japanese_meaning"].get("canonical_text") or ""
-                blocks.append(cp.kp_block(["英語", "日本語の意味"], [it["used_form"], ja]))
+                _cm = {0: _rm.marks_for(_events, it["used_form"], ids=(f"kp{it['rank']}_en",), whole=True), 1: _rm.marks_for(_events, ja, ids=(f"kp{it['rank']}_japanese_meaning",), whole=True)}
+                blocks.append(cp.kp_block(["英語", "日本語の意味"], [it["used_form"], ja], {i: m for i, m in _cm.items() if m}, _rm.notes_of(_cm.values())))
             else:
                 ex = (expl.get("items") or {})
                 row = ex.get(str(it["rank"])) or ex.get(it["rank"]) or {}
-                blocks.append(cp.kp_block(["Key Phrase", "英語での解説"], [it["used_form"], k["explanation"].get("explanation_text") or row.get("english_explanation") or ""]))
+                _ex = k["explanation"].get("explanation_text") or row.get("english_explanation") or ""
+                _cm = {0: _rm.marks_for(_events, it["used_form"], ids=(f"kp{it['rank']}_en",), whole=True), 1: _rm.marks_for(_events, _ex, ids=(f"kp{it['rank']}_explanation",), whole=True)}
+                blocks.append(cp.kp_block(["Key Phrase", "英語での解説"], [it["used_form"], _ex], {i: m for i, m in _cm.items() if m}, _rm.notes_of(_cm.values())))
         else:
             blocks.append("<span class='sec'>(定型音声)</span>")
         rows.append({"part": part, "start": s0, "dur": dur, "src": f"{audio_rel}/{fn}", "blocks": blocks})
@@ -1560,7 +1597,9 @@ def render_y_page(title: str, levels: list, aux_html: str = "", *, show_notice: 
     if highlight:
         import er_learning_highlight_01 as hl
         hl_legend = hl.legend_html()
-    html_text = cp.render_standard_page(title, levels, intro_html=(ys.notice_html() if show_notice else "") + legend + hl_legend, aux_html=aux_html)
+    import er133_report_marks_01 as _rm
+    rpt_legend = _rm.legend_html() if any(("chunk-mark" in b or "rpt-" in b) for lv in levels for r in lv["rows"] for b in r["blocks"]) else ""   # ⏸/赤/青があるページだけ凡例1行(委任_11)
+    html_text = cp.render_standard_page(title, levels, intro_html=(ys.notice_html() if show_notice else "") + legend + hl_legend + rpt_legend, aux_html=aux_html)
     html_text = html_text.replace("<meta charset='utf-8'>", "<meta charset='utf-8'>" + NOINDEX_META, 1)
     if highlight:
         html_text = html_text.replace("</head>", f"<style>{hl.HIGHLIGHT_CSS}</style></head>", 1)

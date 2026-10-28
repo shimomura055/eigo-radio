@@ -94,6 +94,10 @@ class FamilyZAudioStop(RuntimeError):
     """fail-closedでSTOPする全例外の基底。"""
 
 
+class FamilyZLRDisplayConsistencyStop(FamilyZAudioStop):
+    """# LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): 表示本文・TTS入力・ASR正解の不一致/位置特定不能/overlay未適用(技術STOP。Human Reviewへは入れない)。"""
+
+
 class FamilyZSlowdownGateStop(FamilyZAudioStop):
     """M1: Std英語Story clipに6%減速証跡が無い。"""
 
@@ -2003,25 +2007,61 @@ def z_expected_style(role_key: str):
     return {"text": spec["text"], "sha256": _STYLE_SHA256[spec["style_label"]], "label": spec["style_label"]}
 
 
+def _adopted_take_for_style_actual(spec: ClipSpec, result: dict):
+    """B6(LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B-wire、Opus M-8): 採用attemptの同定をer129.resolve_adopted_take(final_adoption優先・旧記録導出・KP_EN命名逆転対応)に一本化する。
+    解決できない(UNKNOWN/RECORD_MISMATCH/NOT_ADOPTED/例外)場合はNone(呼出側は従来のheuristicを使い、その旨を記録する)。"""
+    try:
+        import er129_lr_display_reflection_01 as _e129
+        pseudo = dict(result)
+        pseudo.setdefault("segment_id", spec.clip_id)
+        pseudo.setdefault("role_style_key", spec.role_key)
+        take = _e129.resolve_adopted_take(pseudo, None, None, seg_id=spec.clip_id, lr_adopted=bool(pseudo.get("local_rewrite_recovery")))
+        if take and take.get("status") == "OK":
+            return take
+    except Exception:   # noqa: BLE001 - 同定できない=旧heuristicへ(記録に残す)
+        return None
+    return None
+
+
 def build_style_actual_record(spec: ClipSpec, result: dict) -> dict:
     """leaf戻り値から『実際に送ったStyle prefix』の実測記録を作る(API 0・新規計算のみ)。
-    優先: (1)採用attempt(fallback段→標準段の順で最後にstyle記録を持つattempt) (2)top-level style_prefix。(1)がある場合top-levelは副次記録に留める
+    優先: (1)採用attempt(B6: er129.resolve_adopted_take=final_adoption/旧記録導出で同定したStyle shaのattempt。解決できない旧記録のみ従来heuristic=
+    fallback段→標準段の順で最後にstyle記録を持つattempt) (2)top-level style_prefix。(1)がある場合top-levelは副次記録に留める
     (統一flowで採用attemptが後段fallbackでもtop-levelが旧段のままの場合に、fallbackのStyle落ちを見逃さないため)。
     どちらも実体(sha)が取れなければ kind='unmeasured'(意図値の自己記録で『一致』とは扱わない=Opus M-4)。"""
     result = result if isinstance(result, dict) else {}
     std_key = "standard_attempts_log" if result.get("standard_attempts_log") else "attempts_log"
     att_obs, att_meta = None, {}
-    for phase, key in (("fallback", "fallback_attempts_log"), ("standard", std_key)):
-        logs = result.get(key)
-        if not isinstance(logs, list):
-            continue
-        for a in reversed(logs):
-            obs = _style_obs_from(a.get("style_prefix")) if isinstance(a, dict) else None
-            if obs:
-                att_obs, att_meta = obs, {"phase": phase, "attempt": a.get("attempt"), "instruction_type": a.get("instruction_type")}
+    ident = None
+    take = _adopted_take_for_style_actual(spec, result)
+    if take is not None and take.get("style_sha"):
+        # 採用takeのStyle shaに一致するattempt記録(len/head200付き)を探す(複数あれば最後)。無ければsha単体の観測(len/head200なし)
+        for phase, key in (("standard", std_key), ("fallback", "fallback_attempts_log"), ("english_lock", "english_lock_attempts_log")):
+            for a in reversed(result.get(key) or []):
+                obs = _style_obs_from(a.get("style_prefix")) if isinstance(a, dict) else None
+                if obs and obs["sha256"] == take["style_sha"]:
+                    att_obs, att_meta = obs, {"phase": phase, "attempt": a.get("attempt"), "instruction_type": a.get("instruction_type")}
+                    break
+            if att_obs:
                 break
-        if att_obs:
-            break
+        if not att_obs:
+            att_obs = {"sha256": take["style_sha"], "len": None, "head200": None, "form": "adopted_take"}
+            att_meta = {"phase": "fallback" if take.get("style_mode") == "FALLBACK" else "standard", "attempt": take.get("ordinal"),
+                        "instruction_type": "minimal_fallback" if take.get("kind") in ("FALLBACK_MINIMAL_EN", "FALLBACK_MINIMAL_JA") else None}
+        ident = "resolve_adopted_take:" + str(take.get("how"))
+    else:
+        for phase, key in (("fallback", "fallback_attempts_log"), ("standard", std_key)):
+            logs = result.get(key)
+            if not isinstance(logs, list):
+                continue
+            for a in reversed(logs):
+                obs = _style_obs_from(a.get("style_prefix")) if isinstance(a, dict) else None
+                if obs:
+                    att_obs, att_meta = obs, {"phase": phase, "attempt": a.get("attempt"), "instruction_type": a.get("instruction_type")}
+                    break
+            if att_obs:
+                break
+        ident = "legacy_heuristic(" + ("take_style_sha_absent" if take is not None else "take_unresolved") + ")"
     top_obs = _style_obs_from(result.get("style_prefix"))
     primary, source = (att_obs, "adopted_attempt.style_prefix") if att_obs else ((top_obs, "result.style_prefix") if top_obs else (None, None))
     exp = z_expected_style(spec.role_key)
@@ -2032,6 +2072,7 @@ def build_style_actual_record(spec: ClipSpec, result: dict) -> dict:
            "hint_applied": bool((result.get("en_pronunciation_resolver_info") or {}).get("hints_applied")),
            "adopted_phase": att_meta.get("phase"), "adopted_instruction_type": att_meta.get("instruction_type") or result.get("instruction_type"),
            "result_fallback_used": bool(result.get("fallback_used")),
+           "adopted_identification": ident,
            "expected_sha256": (exp or {}).get("sha256")}
     if exp is not None and source == "result.style_prefix" and isinstance(result.get("style_prefix"), str):
         # 全文が見えるときだけ、承認原文で始まるか(hint追記の判定)を全長で記録する。recordのみの場合は記録しない(gateはhead200で判定)。
@@ -2083,7 +2124,7 @@ def _z_approval_names(spec: ClipSpec) -> list:
     return names
 
 
-def _z_row_for_clip(spec: ClipSpec, entry: dict | None, strict_run: bool, approvals: dict, default_dialogue_sha: str) -> dict:
+def _z_row_for_clip(spec: ClipSpec, entry: dict | None, strict_run: bool, approvals: dict, default_dialogue_sha: str, ledger_clips: dict | None = None) -> dict:
     role = spec.role_key
     exp = z_expected_style(role)
     row = {"level": spec.level, "role": role, "segment": spec.clip_id, "kind": spec.kind,
@@ -2097,6 +2138,7 @@ def _z_row_for_clip(spec: ClipSpec, entry: dict | None, strict_run: bool, approv
         row["check"] = "entry_missing"
         return row
     rec = entry.get("style_actual")
+    rec_present = isinstance(rec, dict)   # B-wire: Style実測記録のあるclip(導入後run・記録済みclip)だけ分類核へ置換。記録なし=過去run(遡及しない)=従来どおり警告のみ(strictなら従来BLOCK)
     if not isinstance(rec, dict):
         # 記録なし: 過去run=警告のみ(attemptsから導出できる範囲を参考情報として添える・BLOCKしない) / 導入後run=BLOCK
         att = None
@@ -2147,7 +2189,16 @@ def _z_row_for_clip(spec: ClipSpec, entry: dict | None, strict_run: bool, approv
                 if not (exact or hint_ok):
                     row["violations"].append("Z_STYLE_ACTUAL_MISMATCH")
             if fb_phase and row["violations"]:
-                row["violations"].append("Z_STYLE_FALLBACK_ADOPTED")      # Style落ちfallback採用: 人間承認必須(承認Styleのまま送られたfallbackは違反にしない)
+                row["violations"].append("Z_STYLE_FALLBACK_ADOPTED")      # 記録のみ併記(判定は下の分類核置換が担う。ledgerを作れない場合の旧判定=承認必須のまま)
+    if ledger_clips is not None and rec_present:
+        # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B-wire(UD-3): イベントclip(LR・Fallback証跡あり)のStyle由来違反(Z_STYLE_ACTUAL_MISMATCH/Z_STYLE_FALLBACK_ADOPTED)は
+        # 採用take分類核へ置換。正常なFallback/LR=PASS_WITH_WARNING(HR・停止を要求しない)、異常/記録欠落/未承認Style等=従来どおりBLOCK。
+        import er130_adopted_take_classifier_01 as _c130
+        _ov = _c130.override_violations(spec.clip_id, entry, spec.level, row["violations"], ledger_clips, replaced=_c130.Z_REPLACED)
+        if _ov["applied"]:
+            row["violations"] = _ov["violations"]
+            row["lr_fallback_class"] = {"verdict": _ov["classification"]["verdict"], "reasons": _ov["classification"]["reasons"]}
+            row["lr_fallback_warnings"] = _ov["warnings"]
     if row["violations"]:
         for nm in _z_approval_names(spec):
             if _xs._approved(approvals, nm, entry):
@@ -2171,6 +2222,8 @@ def z_style_actual_gate(run_dir: str, level: str, plan: list, entries: dict) -> 
     rows, blocked, warnings = [], [], []
     for b in _z_role_table_drift():
         blocked.append({"segment": "(table)", "violations": [b["reason"]], "detail": b["detail"]})
+    import er130_adopted_take_classifier_01 as _c130
+    _ledger_clips = _c130.event_ledger_clips(level_dir)   # B-wire(UD-3): イベントclipの分類核置換用(導出できなければNone=旧判定のまま)
     any_recorded = any(isinstance((entries.get(s.clip_id) or {}).get("style_actual"), dict) for s in plan)
     coverage_enforced = strict_run or any_recorded
     plan_roles = {}
@@ -2179,8 +2232,10 @@ def z_style_actual_gate(run_dir: str, level: str, plan: list, entries: dict) -> 
         if spec.role_key not in cov:
             blocked.append({"segment": f"{spec.role_key}:{spec.clip_id}", "violations": ["Z_STYLE_COVERAGE_UNEXPECTED"]})
             continue
-        row = _z_row_for_clip(spec, entries.get(spec.clip_id), strict_run, approvals, default_dialogue_sha)
+        row = _z_row_for_clip(spec, entries.get(spec.clip_id), strict_run, approvals, default_dialogue_sha, _ledger_clips)
         rows.append(row)
+        for _w in row.get("lr_fallback_warnings") or []:   # 正常LR/Fallback=非ブロッキング警告(LR_APPLIED/FALLBACK_APPLIED)
+            warnings.append({"segment": spec.clip_id, "role": spec.role_key, "warning": _w["kind"]})
         if row["violations"] and not row["human_approved"]:
             blocked.append({"segment": spec.clip_id, "role": spec.role_key, "violations": row["violations"]})
         elif row["check"] == "legacy_unrecorded":
@@ -2385,6 +2440,7 @@ def build_listening_page_html(level_label: str, rows: list, kp_rows: list, full_
                               tts_mode: str = "Standard同期(TTS_EXECUTION_MODE=STANDARD)",
                               warn_section_html: str = "", page_title: str = "走れメロス") -> str:
     """rows=[{part,start,dur,file,voice,style,script,notes[]}]。level_labelは'Standard'/'Advanced'のみ。"""
+    import er_user_listening_page_common_01 as _uc
     trs = []
     for i, r in enumerate(rows):
         notes = "".join(f"<div class='note'>{_esc(n)}</div>" for n in r.get("notes", []))
@@ -2393,7 +2449,7 @@ def build_listening_page_html(level_label: str, rows: list, kp_rows: list, full_
             f"<button class='jump' data-t='{r['start']}'>全編の位置へ</button></td>"
             f"<td class='play'><audio controls preload='none' src='{_esc(r['file'])}'></audio></td>"
             f"<td class='txt'><div class='voice'>Voice: {_esc(r['voice'])} / Style: {_esc(r['style'])}</div>{notes}"
-            f"<div class='script'>{_esc(r['script'])}</div></td></tr>")
+            f"{_uc.script_block(r['script'], r.get('chunk_texts'), marks=r.get('marks'))}</td></tr>")
     kp = "".join(f"<table class='kp'><tr><td>{_esc(a)}</td><td>{_esc(b)}</td></tr></table>" for a, b in kp_rows)
     return (f"<!doctype html><html lang='ja'><head><meta charset='utf-8'><title>{page_title} {level_label} 試聴</title>"
             "<style>body{font-family:sans-serif;max-width:1180px;margin:1em auto;padding:0 1em;line-height:1.5}"
@@ -2438,7 +2494,13 @@ def build_page_rows(run_dir: str, level: str, audio_rel_prefix: str, audio_out_d
     戻り値=(rows, kp_rows, full_mp3_name, duration)。テキスト未取得のsegmentは『未取得』と明記(推測補完なし)。
     write_audio=False(委任_19): 既存mp3を再利用し一切書き換えない(存在しなければFamilyZAudioStop)。"""
     import soundfile as sf
+    import er132_lr_overlay_pages_01 as _er132   # # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): Z表示本文へLR後の英文を反映(派生overlay、LR無し=同一object)
+    _lr = _er132.level_ledger(run_dir, level)
     level_dir = f"{run_dir}/{level}"
+    import er133_report_marks_01 as _rm   # 委任_11(ユーザー原文_02 §4): ⏸(実Chunk境界)・LR赤・Fallback濃青の共通表示部品(旧「LR採用」注記2か所の置換)
+    import er_user_listening_page_common_01 as _uc
+    _events = _rm.load_events(run_dir, level)
+    _plans = _uc.load_chunk_plans(f"{level_dir}/audit/chunk_plan_{level}.json")
     tl = _read_json(f"{level_dir}/assembly/timeline.json")
     data = _read_json(f"{level_dir}/audit/tts_generation_results.json")
     x, sr = sf.read(tl["wav"], dtype="float32")
@@ -2466,16 +2528,15 @@ def build_page_rows(run_dir: str, level: str, audio_rel_prefix: str, audio_out_d
         if entry:
             row["voice"] = entry.get("voice", "-")
             row["style"] = (entry.get("style") or {}).get("instruction_label", "-")
-            row["script"] = entry.get("canonical_text") or FIXED_SHELL_TEXT.get(cid, "未取得")
+            row["script"] = _er132.display_text_of_clip(_lr, cid, entry["canonical_text"]) if entry.get("canonical_text") else FIXED_SHELL_TEXT.get(cid, "未取得")
             if entry.get("slowdown_applied"):
                 _tempo = (entry.get("speed_profile") or {}).get("tempo")
                 _label = "約6%高速化" if (_tempo or 0) > 1.0 else "6%減速"
                 row["notes"].append(f"{_label}適用(比 {entry.get('slowdown_ratio')})" if entry.get("slowdown_ratio") else f"{_label}適用")
-            if entry.get("audio_text_deviation"):
-                row["notes"].append("Local Rewrite採用(音声は原稿から変更: " + entry["audio_text_deviation"].get("diff_summary", "") + ")")
-            for _dc in (entry.get("chunk_tts") or {}).get("deviation_chunks") or []:   # I7: chunkのLocal Rewrite注記も親行に出す
-                _dv = ((data.get("segments") or {}).get(_dc) or {}).get("audio_text_deviation") or {}
-                row["notes"].append(f"Local Rewrite採用({_dc}: 音声は原稿から変更: " + _dv.get("diff_summary", "") + ")")
+            # 委任_11: 旧LR注記2か所(row["notes"]のLR採用文)は、共通表示部品(LR赤・Fallback濃青・⏸)へ置換した
+            # (row["marks"]/row["chunk_texts"]。`Voice:`/`Style:`/TTS方式と減速注記は維持=er063_family_z_page_verify_01の検査対象)。
+            row["marks"] = _rm.marks_for(_events, row["script"], block=cid)
+            row["chunk_texts"] = _uc.chunk_texts_of_plan(_plans.get(cid))
         if part.startswith("key_phrase_"):
             n = part.split("_")[-1]
             kp = (data.get("key_phrases") or {}).get(n) or {}
@@ -2483,6 +2544,7 @@ def build_page_rows(run_dir: str, level: str, audio_rel_prefix: str, audio_out_d
             ja = (kp.get("japanese_meaning") or kp.get("explanation") or {}).get("canonical_text", "未取得")
             kp_rows.append((en, ja))
             row["script"] = f"{en} / {ja}"
+            row["marks"] = _rm.marks_for(_events, row["script"], ids=(f"kp{n}_en", f"kp{n}_japanese_meaning", f"kp{n}_explanation"))
             row["voice"] = "Aoede(KP) / Charon(番号)"
             row["style"] = "K2 / P7" if kp.get("explanation") else "K2 / P8-KP"   # KP英語=K2、第2要素=Adv英語解説P7 / Std日本語意味P8-KP(委任_15)
         rows.append(row)
@@ -2501,6 +2563,8 @@ def full_story_display_units(run_dir: str, level: str) -> list:
     tl = _read_json(f"{run_dir}/{level}/assembly/timeline.json")
     data = _read_json(f"{run_dir}/{level}/audit/tts_generation_results.json")
     groups: dict = {}
+    import er132_lr_overlay_pages_01 as _er132   # # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B3(UD-1): _user_page_rowsが描くscript(row["script"])と同じoverlay後の本文で表示unitを作る
+    _lr = _er132.level_ledger(run_dir, level)
     for e in tl["timeline"]:
         m = re.fullmatch(r"full_story_part(\d+)_c\d+", e["part"])
         if not m:
@@ -2509,7 +2573,7 @@ def full_story_display_units(run_dir: str, level: str) -> list:
         entry = _lookup_entry(data, cid) if cid else None
         script = "未取得"
         if entry:
-            script = entry.get("canonical_text") or FIXED_SHELL_TEXT.get(cid, "未取得")
+            script = _er132.display_text_of_clip(_lr, cid, entry["canonical_text"]) if entry.get("canonical_text") else FIXED_SHELL_TEXT.get(cid, "未取得")
         groups.setdefault(int(m.group(1)), []).append(script)
     return [{"key": f"full_story_part{n}", "texts": t, "joiner": " "} for n, t in sorted(groups.items())]
 
@@ -2544,7 +2608,9 @@ def _user_page_rows(run_dir: str, level: str, rows: list, kp_rows: list, audio_r
         import er_learning_highlight_01 as _hl_mod
         _hl_res = highlights["result"]
         _hl_exp = {u["key"]: list(u["texts"]) for u in highlights["units"]}
-    _plans = uc.load_chunk_plans(f"{run_dir}/{level}/audit/chunk_plan_{level}.json") if audience == uc.AUDIENCE_DEV else {}
+    _plans = uc.load_chunk_plans(f"{run_dir}/{level}/audit/chunk_plan_{level}.json")   # 委任_11: ⏸は全試聴ページ(報告資料)で実Chunk境界(plan記録)にだけ表示(旧dev限定を撤去)
+    import er133_report_marks_01 as _rm   # 委任_11(ユーザー原文_02 §4): ⏸・LR赤・Fallback濃青の共通表示部品(er129 ledger由来。旧「LR採用」注記の置換)
+    _events = _rm.load_events(run_dir, level)
     tl = _read_json(f"{run_dir}/{level}/assembly/timeline.json")
     x = sr = None
     kw = {}
@@ -2578,7 +2644,8 @@ def _user_page_rows(run_dir: str, level: str, rows: list, kp_rows: list, audio_r
                         voices.append(v)
             out.append({"part": f"Full Story Part {n}" + (f" ({' / '.join(voices)})" if voices else ""), "start": start, "dur": end - start, "src": f"{audio_rel_prefix}{fn}",
                         "blocks": [uc.script_block(g["script"], uc.chunk_texts_of_plan(_plans.get(g.get("clip_id"))), audience,
-                                                   highlights=(_hl_mod.highlights_for_text(_hl_res, f"full_story_part{n}", k) if _hl_res else None))
+                                                   highlights=(_hl_mod.highlights_for_text(_hl_res, f"full_story_part{n}", k) if _hl_res else None),
+                                                   marks=_rm.marks_for(_events, g["script"], block=g.get("clip_id")))
                                    for k, g in enumerate(grp)]})
             if _hl_res:
                 _hl_seen.add(f"full_story_part{n}")
@@ -2595,13 +2662,18 @@ def _user_page_rows(run_dir: str, level: str, rows: list, kp_rows: list, audio_r
                 expl = (kp.get("explanation") or {}).get("canonical_text", "未取得")
                 gloss = (kw.get(n) or {}).get("japanese_gloss") or ""
                 heads, cells = (["英語", "日本語の意味", "英語での説明"], [en, gloss, expl]) if gloss else (["英語", "英語での説明"], [en, expl])
+                _cm = {0: _rm.marks_for(_events, en, ids=(f"kp{n}_en",), whole=True), len(cells) - 1: _rm.marks_for(_events, expl, ids=(f"kp{n}_explanation",), whole=True)}
+                if gloss:
+                    _cm[1] = _rm.marks_for(_events, gloss, ids=(f"kp{n}_japanese_meaning",), whole=True)
             else:
                 # KP-CONFIRMED-CONTENT-PROTECTION-01 02B M2-b: Stdページの「日本語の意味」はユーザーが確定した表示用japanese_gloss
                 # (CURRENT_SPEC:458-469 表示用/TTS用分離)。TTS用canonical_text(「～」→「なになに」等)は表示しない。TTS入力は不変。
                 ja = (kw.get(n) or {}).get("japanese_gloss") or (kp.get("japanese_meaning") or {}).get("canonical_text", "未取得")
                 heads, cells = ["英語", "日本語の意味"], [en, ja]
+                _cm = {0: _rm.marks_for(_events, en, ids=(f"kp{n}_en",), whole=True), 1: _rm.marks_for(_events, ja, ids=(f"kp{n}_japanese_meaning",), whole=True)}
+            _cm = {i: m for i, m in _cm.items() if m}
             out.append({"part": f"Key Phrase {n}", "start": r["start"], "dur": r["dur"], "src": r["file"],
-                        "blocks": [uc.kp_block(heads, cells)]})
+                        "blocks": [uc.kp_block(heads, cells, _cm, _rm.notes_of(_cm.values()))]})
             i += 1
             continue
         base = _USER_LABEL.get(part, part)
@@ -2609,7 +2681,7 @@ def _user_page_rows(run_dir: str, level: str, rows: list, kp_rows: list, audio_r
         if voice and voice != "-" and "(" not in base:   # Gate 7 (h): 使用voice名はラベルに併記(scriptには入れない)
             base = f"{base} ({voice})"
         out.append({"part": base, "start": r["start"], "dur": r["dur"], "src": r["file"],
-                    "blocks": [uc.script_block(r["script"])]})
+                    "blocks": [uc.script_block(r["script"], marks=_rm.marks_for(_events, r["script"], ids=(r.get("clip_id"),) if r.get("clip_id") else (), whole=True))]})
         i += 1
     if _hl_res:
         _need = {p["unit_key"] for h in _hl_res.get("highlights") or [] if h.get("decorate") for p in h["pieces"]}
@@ -2703,6 +2775,9 @@ def build_index_html(user_levels: list, warn_sections=None, page_title: str = "�
     intro = ("<div class='note'>各レベルの「全編を通し再生」ボタンで冒頭から最後まで通して聴けます。下の表は再生順のスクリプトで、"
              "「全編のこの位置へ」で通し再生をその位置から再生します。冒頭・区切り・末尾の音楽/通知音は読み上げなし(通し再生には含まれます)。"
              "TTS方式: Standard同期(TTS_EXECUTION_MODE=STANDARD)。</div>")
+    import er133_report_marks_01 as _rm
+    if any(("chunk-mark" in b or "rpt-" in b) for lv in user_levels for r in lv["rows"] for b in r["blocks"]):   # ⏸/赤/青があるページだけ凡例1行(委任_11)
+        intro += _rm.legend_html()
     return uc.render_standard_page(f"{page_title} 試聴(Standard / Advanced)", user_levels, intro_html=intro, aux_html=aux)
 
 

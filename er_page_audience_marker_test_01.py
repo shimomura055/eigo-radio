@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """FAMILY-Y-STYLE-PROFILE-FIX-01 委任_08: 開発用Chunk境界マーカー(audience=dev|public、X/Y/Z共通の表示機構)のtest。API 0・表示専用。
-ユーザー正式決定2026-10-27(USER_04 §1-C): 実TTS Chunk分割境界のみ⏸、ASR/音声解析ポーズは表示しない、公開物にはマーカーを出さない。"""
+ユーザー正式決定2026-10-27(USER_04 §1-C): 実TTS Chunk分割境界のみ⏸、ASR/音声解析ポーズは表示しない。
+旧「公開物(public)にはマーカーを出さない」規則は、ユーザー原文_02(2026-10-28、LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 委任_11)で置換された:
+試聴・確認フォーム(報告資料)は全Family・全レベルで、実際のChunk分割位置に⏸を表示する(audience区分による出し分けはしない)。"""
 import glob
 import json
 import os
@@ -16,11 +18,15 @@ CHUNKS3 = ["First paragraph here.", "Second paragraph here.", "Third paragraph h
 
 
 class MarkerCore(unittest.TestCase):
-    def test_default_is_public_and_byte_identical_to_legacy(self):
+    def test_default_without_chunk_plan_is_byte_identical_and_markers_follow_the_chunk_plan_for_all_audiences(self):
         legacy = "<div class='script'>" + cp.esc(SCRIPT) + "</div>"
-        self.assertEqual(cp.script_block(SCRIPT), legacy)
-        self.assertEqual(cp.script_block(SCRIPT, CHUNKS3), legacy)                     # chunk情報を渡されても既定publicはマーカーなし
-        self.assertEqual(cp.script_block(SCRIPT, CHUNKS3, "public"), legacy)
+        self.assertEqual(cp.script_block(SCRIPT), legacy)                              # chunk記録のないclip・Familyは表示なし(従来とバイト同一)
+        self.assertEqual(cp.script_block(SCRIPT, None, "public"), legacy)
+        self.assertEqual(cp.script_block(SCRIPT, [], "public"), legacy)
+        shown = cp.script_block(SCRIPT, CHUNKS3)                                       # 委任_11: 既定(public)でも実Chunk境界に⏸(境界2か所)
+        self.assertEqual(cp.count_chunk_markers(shown), 2)
+        self.assertEqual(shown, cp.script_block(SCRIPT, CHUNKS3, "public"))
+        self.assertEqual(shown, cp.script_block(SCRIPT, CHUNKS3, "dev"))               # audience区分による出し分けはしない
         self.assertEqual(cp.AUDIENCE_PUBLIC, "public")
 
     def test_dev_marker_count_equals_real_chunk_boundaries(self):
@@ -78,15 +84,15 @@ class PublicGuard(unittest.TestCase):
                "rows": [{"part": "Full Story Part 1", "start": 0.0, "dur": 1.0, "src": "a.mp3", "blocks": [block]}]}]
         return cp.render_standard_page("T", lv)
 
-    def test_check_page_fails_public_page_with_marker_but_not_dev(self):
-        dev_block = cp.script_block(SCRIPT, CHUNKS3, "dev")
-        pub = cp.check_page(self._page(dev_block), levels=("Standard",))                # 既定=public
-        self.assertFalse(pub["checks"]["no_chunk_marker_in_public"]["ok"])
-        self.assertEqual(pub["overall"], "FAIL")
-        dev = cp.check_page(self._page(dev_block), levels=("Standard",), audience="dev")
-        self.assertNotIn("no_chunk_marker_in_public", dev["checks"])
-        clean = cp.check_page(self._page(cp.script_block(SCRIPT, CHUNKS3)), levels=("Standard",))
-        self.assertTrue(clean["checks"]["no_chunk_marker_in_public"]["ok"])
+    def test_check_page_accepts_report_marks_in_every_audience(self):
+        """委任_11: 試聴ページの⏸/赤/青は混入ではなく正規の表示。旧no_chunk_marker_in_public検査は撤去(混入検知はTTS入力・ASR正解・Style Prompt・KP学習用表示・study_text限定)。"""
+        marked = cp.script_block(SCRIPT, CHUNKS3)
+        for aud in ("public", "dev"):
+            res = cp.check_page(self._page(marked), levels=("Standard",), audience=aud)
+            self.assertNotIn("no_chunk_marker_in_public", res["checks"], aud)
+            self.assertNotIn("no_lr_fallback_note_in_public", res["checks"], aud)
+        clean = cp.check_page(self._page(cp.script_block(SCRIPT)), levels=("Standard",))
+        self.assertEqual(clean["overall"], cp.check_page(self._page(marked), levels=("Standard",))["overall"])
 
     def test_published_artifacts_have_no_marker(self):
         """量産スクリプト(parts.json/study_text/article)にマーカー0件(表示専用機構がデータ側に漏れない)。新builderの公開用pagesは FullMockRun.test_page_rows_... と dev/public比較testで検査。旧run出力のpages/index.htmlは旧builder生成物(旧実測ポーズ表示)で対象外。
@@ -148,8 +154,8 @@ class ZWiring(unittest.TestCase):
                     {"part": "full_story_part1_c2", "clip_id": "full_story_part1_c2", "start": 1.0, "dur": 1.0, "file": "b.mp3", "voice": "Charon", "script": "Single para."}]
             pub = z._user_page_rows(run, "b1b", rows, [], "a/", outdir)
             dev = z._user_page_rows(run, "b1b", rows, [], "a/", outdir, "dev")
-            self.assertEqual(cp.count_chunk_markers("".join(b for r in pub for b in r["blocks"])), 0)
-            self.assertEqual(cp.count_chunk_markers("".join(b for r in dev for b in r["blocks"])), 2)     # 3 chunk=境界2。単一段落clipは0
+            for rows_ in (pub, dev):                                                                       # 委任_11: audience区分なしで実chunk境界(3 chunk=境界2)に⏸。単一段落clipは0
+                self.assertEqual(cp.count_chunk_markers("".join(b for r in rows_ for b in r["blocks"])), 2)
 
 
 if __name__ == "__main__":

@@ -428,3 +428,60 @@ def _classify(clip: dict, policy: Any, allowlist: dict, ctx: dict) -> Classifica
                          "reason": (lr or {}).get("reason")})
     return Classification(verdict=PASS_WITH_WARNING if any(w["kind"] in ("FALLBACK_APPLIED", "LR_APPLIED") for w in warnings) else PASS,
                           reasons=[], warnings=warnings, notes=notes)
+
+
+# ----------------------------------------------------------------------------- Gate配線用の入口(B-wire、委任_11)
+# X M3 / Y style gate / Z style gate が共通で呼ぶ。旧Gateの「LR/Fallback/採用Style由来の違反コード」は、イベントclip(LR・Fallback証跡あり)に限り
+# 分類核の判定へ置換する。その他の旧違反(記録欠落・status NG・Store key等=維持項目)・イベントでないclip・台帳を作れない場合は旧判定のまま(fail-closed)。
+X_REPLACED = frozenset({
+    "LOCAL_REWRITE_RECOVERY", "ADV_MINIMAL_FALLBACK", "STD_FALLBACK_USED_OR_UNKNOWN", "JA_FALLBACK_USED_OR_UNKNOWN",
+    "KP_JA_MEANING_FALLBACK_USED_OR_UNKNOWN", "PREVIEW_MINIMAL_FALLBACK", "ADV_STYLE_PREFIX_NOT_PROFILE_PREFIXED",
+    "PREVIEW_STYLE_PREFIX_NOT_E1_PREFIXED", "FINAL_STYLE_SHA_MISMATCH_NO_HINT", "FINAL_STYLE_HEAD200_MISMATCH_WITH_HINT",
+    "FINAL_STYLE_RECORD_MISSING", "JA_STYLE_ACTUAL_MISMATCH", "JA_STYLE_ACTUAL_UNMEASURED"})
+Z_REPLACED = frozenset({"Z_STYLE_ACTUAL_MISMATCH", "Z_STYLE_FALLBACK_ADOPTED"})
+
+
+def gate_name_to_clip_id(name: str) -> str:
+    """X/Y gate名(kpN_english)をledger clip id(kpN_en)へ。"""
+    import re
+    m = re.fullmatch(r"kp(\d+)_english", name or "")
+    return f"kp{m.group(1)}_en" if m else (name or "")
+
+
+def event_ledger_clips(level_dir: str) -> dict | None:
+    """`<level_dir>/audit/tts_generation_results.json`から台帳(イベントclipのみ)を導出して{clip_id: clip}を返す。導出できない(例外)場合はNone
+    (呼出側は旧判定のまま=fail-closed)。run dirは読むだけ。"""
+    import os
+    try:
+        ld = level_dir.rstrip("/\\")
+        led = er129.build_lr_ledger(os.path.dirname(ld), os.path.basename(ld), level_dir=ld, only_events=True)
+        return {c["clip_id"]: c for c in led["clips"]}
+    except Exception:   # noqa: BLE001 - 台帳を作れない=置換しない(旧判定=BLOCK側のまま)
+        return None
+
+
+def override_violations(seg_id: str, entry: dict, level: str, violations: list, ledger_clips: dict | None, *, replaced: frozenset,
+                        allowlist: dict | None = None, role_style_prefix_ok: bool | None = None) -> dict:
+    """旧Gateの違反listのうち`replaced`(LR/Fallback/採用Style由来)を、イベントclipに限り分類核の判定へ置換する。
+    戻り値: {violations: 新違反list, warnings: [構造化warning(LR_APPLIED/FALLBACK_APPLIED…)], classification: Classification|None, applied: bool}。
+    - ledger_clipsがNone/対象clipがイベントでない/entryが無い=旧違反のまま(applied=False)。
+    - 分類核がBLOCK=旧違反を全て残し、分類核の理由コードを追加(旧BLOCKを緩めない)。PASS系=replaced違反だけを除去し警告のみ記録(維持項目は残る)。"""
+    cid = gate_name_to_clip_id(seg_id)
+    clip = (ledger_clips or {}).get(cid)
+    if clip is None or not isinstance(entry, dict):
+        return {"violations": list(violations), "warnings": [], "classification": None, "applied": False}
+    try:
+        allow = allowlist if allowlist is not None else build_allowlist()
+        take = clip.get("adopted_take") if isinstance(clip.get("adopted_take"), dict) else None
+        pol = policy_for_clip(cid, entry, level)
+        ctx = ctx_from_entry(entry, take=take, role_style_prefix_ok=role_style_prefix_ok)
+        cls = classify_adopted_take(clip, pol, allow, ctx)
+    except Exception as e:   # noqa: BLE001 - fail-closed
+        cls = _block(["CLASSIFIER_EXCEPTION"], notes=[f"{type(e).__name__}: {str(e)[:200]}"])
+    if cls["verdict"] == BLOCK:
+        # 異常=従来どおりBLOCK: 旧違反は残したまま(旧コードの説明を失わない)、分類核の理由コードを追加する
+        new = list(violations) + list(cls["reasons"])
+    else:
+        new = [v for v in violations if v not in replaced]     # 正常なLR/Fallback: 置換対象の旧違反だけを除去(他の旧違反=維持項目は残る)
+    return {"violations": list(dict.fromkeys(new)), "warnings": list(cls["warnings"]) if cls["verdict"] != BLOCK else [],
+            "classification": cls, "applied": True}
