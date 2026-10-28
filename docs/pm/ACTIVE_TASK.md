@@ -1,4 +1,4 @@
-【固定ヘッダ(2026-10-28 PC再起動後、再掲済み)】再開手順: (1)本ファイル→(2)docs/pm/PM_BRIEF.md。Worker稼働中なし。全commitはorigin/main c9003a666(JA-ASR-FALSE-NG-ROOT-FIX-02 委任_03)までpush済み。
+【固定ヘッダ(2026-10-28 PC再起動後、再掲済み)】再開手順: (1)本ファイル→(2)docs/pm/PM_BRIEF.md。Worker稼働中: (I)委任_01A・(J)委任_01B(並行)。全commitはorigin/main c9003a666(JA-ASR-FALSE-NG-ROOT-FIX-02 委任_03)までpush済み。
 管理ID(並行): (A)FX-MOON-SHRINKING-RESELECT-REMAKE-01=Std日本語題のASR 3回NGで組立停止、ユーザー判断待ち(a)承認済み音声再利用/(b)再生成/(c)題変更。Adv候補ページ完成(user_test/family_x_moon_shrinking_reselect_01、Advのみ)。run累計¥20.78/Cap¥60。回答後: 承認済み音声再利用注入(sha照合・記録)→a2 assemble→both player→listening page→検証→第2回報告(RESULT_PACKET_FXMS2)。※auto mode分類器が「承認記録注入指示」のSendMessageを拒否した経緯あり=ユーザー回答を得てから委任文(delegation_log)で指示する。
 (B)FZ-TELL-TALE-HEART-NARRATOR-VOICE-01=完了・PRODUCTION_WIRED(送信Voice修正)+ユーザー最終試聴待ち(fenrir_01)。公開差替えは試聴PASS後。
 (C)LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01=完了・PRODUCTION_WIRED(X/Y/Z Std/Adv)。既公開差替え3件(UDR #198-#200)はユーザー承認待ち。残件OPEN-573〜577。
@@ -8,6 +8,8 @@
 (G)FX-STD-COMMENT3-Z-METHOD-PRODUCTION-01=委任_02完了・Fable受入待ち(WIRED_PENDING_FABLE)。前Trial(FX-AI-ISLAND-COMMENT-Z-METHOD-TRIAL-01)はユーザー正式採用(2026-10-28、Z方式)→Opus条件A反映(M-1〜M-5/R-1〜R-7)→X Std Comment 3をProduction配線(commit 84a61fba7)→AI島Std Comment 3のみ再制作(実費0.62円、候補ページStd側更新・Adv byte同一)。AI島Std=ユーザー最終試聴の再提出待ち(未公開)、Adv=承認済み。OPEN-582。詳細=docs/pm/RESULT_PACKET_FXC3P2.md。
 (H)FAMILY-Z-IN-A-GROVE-PRODUCTION-01=委任_06完了: STORM解除済・kp rc=4・Std/Advフォーム公開(200実測、?a=in_a_grove__a2/__b1b)。KP/文法ユーザー選定待ち(文法Std/Adv共0件)。累計約¥38.6/70 (RESUME_06.md)
 (FYDR)FAMILY-Y-SOURCE-DEEP-RESEARCH-01=委任_03完了・Status=**USER_DECISION_REQUIRED**(UDR #208書面照会/#209限定共有ページ非公開化/#210次回テーマ選定)。公的意見源(PDL1.0)確認→国内5テーマ確定(T1′最推奨、海外0)→`SOURCE_REGISTRY_01.md`正式版→SSOT反映(OPEN-583〜585)。API 0・Production変更0。結果=`docs/pm/RESULT_PACKET_FYDR3.md`、成果物=`docs/research/FAMILY-Y-SOURCE-DEEP-RESEARCH-01/`。
+(I)JA-ASR-V2-BETA-PRODUCTION-WIRING-01=ユーザー正式決定2026-10-29(v2+β APPROVED_FOR_PRODUCTION、R-1 OFF、ASR再試行・超→こえ不採用、量産時PASS_W非ブロッキング、HUMAN_APPROVED維持)。委任_01A=配線設計(API 0)→Opus条件A→委任_02A実装。原文=delegation_log/2026-10-29_JA-ASR-V2-BETA-PRODUCTION-WIRING-01_USER.md
+(J)PM-OPEN-581-TRIAGE-46-01=OPEN-581起点46件(36未登録+10トリガー不明)の重大度A/B/C精査。委任_01B=分類・根拠(API 0、SSOT編集なし)→Fable確認→委任_02B。
 
 **(F)受入条件表(2026-10-28 A1、ユーザー原文`docs/pm/delegation_log/2026-10-28_JA-ASR-FALSE-NG-ROOT-FIX-02_USER.md` §3・§6から逐語抜粋。各受入で更新。未達行が残る間は『完了』『一区切り』『進行中なし』を使わない)**
 | 条件 | 達成/部分/未達 | 担当手段 |
