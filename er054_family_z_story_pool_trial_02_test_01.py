@@ -146,13 +146,14 @@ class T(unittest.TestCase):
         self.assertEqual(out["final_status_after_interpret"], "REVIEW_REQUIRED")
 
     def test_real_refused_without_budget(self):
+        env = dict(os.environ, PYTHONUTF8="1")  # 子processのstdout/stderrをUTF-8に固定(cp932文字化け回避、OPEN-268)
         for fn in ("er054_family_z_story_pool_quality_eval_trial_01.py", "er054_family_z_story_pool_rights_interpret_trial_01.py"):
             p = subprocess.run([sys.executable, os.path.join(HERE, fn), "--mode", "real"], capture_output=True, text=True,
-                               encoding="utf-8", errors="replace", cwd=HERE)
+                               encoding="utf-8", errors="replace", cwd=HERE, env=env)
             self.assertNotEqual(p.returncode, 0)
             self.assertIn("STOP", p.stderr + p.stdout)
             p = subprocess.run([sys.executable, os.path.join(HERE, fn), "--mode", "dry-run", "--models", "gpt-6-astra"],
-                               capture_output=True, text=True, encoding="utf-8", errors="replace", cwd=HERE)
+                               capture_output=True, text=True, encoding="utf-8", errors="replace", cwd=HERE, env=env)
             self.assertNotEqual(p.returncode, 0)
             self.assertIn("許可モデル外", p.stderr + p.stdout)
 

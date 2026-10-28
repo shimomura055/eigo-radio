@@ -29,7 +29,7 @@
 | 11 | 恒久策 D-11(Trial実施可否と予算) | **UDR**(統一フロー設計判断D-1..D-11) | いいえ | `docs/pm/delegation_log/2026-10-11_FAMILY-X-EN-ASR-CONFIRM-RETRY-REDESIGN-01_01.md` L22(TARGET_FLOW_DESIGN_01.md)。OPEN_ITEMS該当行なし |
 | 12 | JA数字(三日間/3日間、漢数字表記ゆれ) | **UDR** | いいえ(TTS再生成の浪費は発生) | OPEN-319(L822)、OPEN-287(L790) |
 | 13 | He drank(Local Rewriteの原稿不一致) | **判断済み**(ユーザー決定③=原作保持Validator撤廃、gate修正実装済み) | いいえ | DECISION_LOG「FAMILY-Z-MELOS...委任_12B/12C/12D」委任_12D(1) |
-| 14 | Melos Voice承認(Algieba暫定) | **判断保留**(2026-10-13、依存事項待ち・判断時期延期。#23) | いいえ(判断保留) | OPEN-306(L809) |
+| 14 | Melos Voice承認(Algieba暫定) | **判断保留**(2026-10-13、依存事項待ち・判断時期延期。#23) | いいえ(判断保留) | OPEN-306(L809)**【2026-10-29 PM-OPEN-581-TRIAGE-46-01追記: #23で判断済み(2026-10-21、Melos Std/Adv試聴PASS・完成版run_e2e_06)。本行の『判断保留』は陳腐化、根拠=docs/research/PM-OPEN-581-TRIAGE-46-01/TRIAGE_01.md T37】** |
 | 15 | Dialogue clip TTSモデル不一致(gemini-2.5-pro-preview-tts) | **UDR**(実測済み、モデル統一の要否) | いいえ | OPEN-307(L810) |
 | 16 | Budget guardがrun単位で旧run累計を見ない | **Deferred**(回避策=`--approved-budget-jpy`を残枠へ) | いいえ | OPEN-315(L818) |
 | 17 | Comment3共通化(Z所有、Adv/Std共通、到着・結末を含めない規則) | **判断済み**(Fable判断、ユーザー再質問なし) | いいえ | DECISION_LOG「委任_12D(2)Comment3規則」 |

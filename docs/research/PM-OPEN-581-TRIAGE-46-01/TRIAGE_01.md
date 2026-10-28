@@ -85,3 +85,13 @@
 1. SSOT整合: Close提案24件の注記追記、見出し陳腐化の訂正、UDR #14の注記更新、OPEN-581自身のClose。新規Gate・検査は追加しない(原文§4-4)。
 2. B10件は『継続管理+再提示trigger』をOPEN行に追記(T08/T15/T23はOPEN-515へ統合)。
 3. 管理漏れを理由に46件分の新規開発タスクは作らない(原文§4-3)。軽微是正はT13のみ(任意)。
+
+## 5. Fable受入後の処置結果(委任_02B、2026-10-29、API 0)
+- Fable受入: A=0を受入。T27のみ条件付き(D6二重Azure呼出の現存確認)。
+- **T27(OPEN-291)=Close**: D6二重呼出は現存しない。`er078_asr_unified_judge_01.py:522,674-684`(SecondaryCacheで同一wavのSecondaryは1回、`cached`記録)、`er078_asr_unified_ja_wiring_test_01.py:281-284`(3回呼出でaz.calls==1・cache.hits==2)、`er078_asr_unified_en_wiring_test_01.py:167-172`(非ラテン層とjudgeで同一wavのAzure呼出1回、実行1 passed)。JA wiring testは環境にpykakasiがなく収集不可のため静的照合とEN test実行で確認。
+- **Close 24件を実施**(OPEN_ITEMS.mdの各行末に`[2026-10-29 PM-OPEN-581-TRIAGE-46-01: CLOSED(...)]`を追記、本文は不変): T01,02,03,05,06,09,14,17,19,21,26,27,28,29,30,32,34,36,37,38,41,44,45,46。T19は注記に『新Trial候補採用時はその委任で本番条件再生成を確認』を残した。T37は加えてUDR #14に陳腐化注記。
+- **B 10件(T08,12,15,16,22,23,24,25,31,43)**: 『次の条件』列の再提示triggerを各行へ追記。T08/T15/T23は双方(各行とOPEN-515)に統合を追記。
+- **継続管理C 11件**: 再提示条件が未記載のT04,T07,T10,T11,T20,T33,T42へtrigger追記。記載済みのT18,T39,T40は重複させず変更なし。T35(OPEN-561)は並行Worker(K)が追記中のため触れず(進行中案件で管理漏れではない)。
+- **T13(OPEN-268)=軽微是正済み**: `er054_family_z_story_pool_trial_02_test_01.py::test_real_refused_without_budget`のsubprocess2箇所へ`env=dict(os.environ, PYTHONUTF8="1")`を渡した(Trial専用test、Productionコード不変)。環境変数なしで`1 passed`。
+- **OPEN-581自身**: 行末にCloseout追記(Status=CLOSED)。
+- DECISION_LOG 2026-10-29エントリ追記済み。UDR #144は変更せず、Fable報告でリマインド。
