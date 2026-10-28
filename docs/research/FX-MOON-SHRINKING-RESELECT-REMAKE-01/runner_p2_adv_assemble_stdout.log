@@ -1,0 +1,8 @@
+[GLOSS-ALIGN] 実効flag=ON (source=default, EIGO_KP_GLOSS_ALIGNMENT=None)
+[KP_REVIEW_PENDING] Human Review待ちです: KP(失敗ではありません。有料の後続工程には進みません)。
+  - level=b1b: 依頼書 er019_output/family_x_audio_production_wiring_01/moon_shrinking__run_reselect_01/b1b/key_phrases/kp_human_review_request.md
+  まとめ(統合依頼書): er019_output/family_x_audio_production_wiring_01/moon_shrinking__run_reselect_01/review_request.md
+  次の一手: 依頼書の表を見て `py er119_kp_human_review_cli_01.py select ...`(KP)/`grammar-select ...`(文法)で決める(または明示の `declare-absent`)。
+  再開コマンド(同じコマンドを1つだけ再実行): py er019_family_x_audio_production_runner_01.py --slug moon_shrinking --run run_reselect_01 --level b1b --stage assemble --budget-jpy 65
+  注意: 直近5分以内に同じrunを3回起動するとRESTART_STORM保護で自動停止します(select/reselect後は数分あけて再開)。
+  詳細: KP_REVIEW_NOT_CONFIRMED: status=PENDING_REVIEW。Human確認(select)か明示の不在宣言が必要です(次の一手: 制作コマンドを再実行して確定させる/ er119_kp_human_review_cli_01.py status --run <run>)
