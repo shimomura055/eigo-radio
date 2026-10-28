@@ -1,0 +1,19 @@
+# 委任_03: Fenrir版でNarratorがAoedeのままの不具合=真因調査→修正→再生成→実音声での証拠検証→候補ページ更新(有料最小、Cap¥40)
+
+管理ID: FZ-TELL-TALE-HEART-NARRATOR-VOICE-01(Fable→sonnet-worker、2026-10-28)。ユーザー原文(全文必読)=`docs/pm/delegation_log/2026-10-28_FZ-TELL-TALE-HEART-NARRATOR-VOICE-01_USER_03.md`。前回成果=`docs/research/FZ-TELL-TALE-HEART-NARRATOR-VOICE-01/VOICE_CHANGE_01.md`(commit 8faf3bd58)、run=`er026_output/family_z_production_e2e_01/the_tell_tale_heart/run_voice_fenrir_01`。共通Charter=`CLAUDE.md`冒頭、実行層規則=`.claude/agents/sonnet-worker.md`。成果物=同dir `VOICE_DEFECT_FIX_01.md`、報告=`docs/pm/RESULT_PACKET_FZTTV2.md`(原文§3の6項目順)。
+
+## Fableが既に観測した事実(起点。前回受入でFableが見落とした信号を含む)
+- `run_voice_fenrir_01/{a2,b1b}/narration/attempts/full_story_*_attempt1_*.json`の`"voice"`は**Aoede**。前回Fableはこれを「leaf定数のラベル(`er003_v1_n3_01_tts_generate.py:859` `p9a.VOICE_NAME`)で実送信を反映しない」と解釈したが、実際には**これが実送信Voiceだった可能性が高い**(ユーザー試聴でAoedeのまま)。
+- `tts_generation_results.json`の`voice`/`reuse_key.voice`=Fenrir、`chunk_plan`にFenrir記載=**計画・記録上の値であり、API送信値の証拠ではない**。
+- narrator wavのshaはrun_reselect_01と異なる(=再生成はされた。ただしVoiceが同じAoedeでもTTSは非決定的なので差分は証拠にならない)。
+- Z narration chunkは`ClipSpec(..., voice=voice)`(`er063:611,617`)→X共有leaf(`er003_v1_n3_01_tts_generate.generate_with_a2_slowdown_outer_loop`等)へ渡る。leafがGemini `speech_config`のvoice名を`p9a.VOICE_NAME`(=Aoede定数)から取り、`spec.voice`を使っていない可能性(未確認=本委任で確定)。Z既定Narrator=Aoede=X定数だったため、これまで不可視だった構造的欠陥の疑い。dialogue(old_man=Algieba)は別経路で正しいVoiceになっている可能性(こちらも実音声で確認)。
+
+## 作業
+1. **真因確定(API 0)**: Z narration chunk→leaf→Gemini requestのVoice名の流れをfile:lineで追跡し、送信Voiceの決定点を特定。APIリクエストのログ(`raw_usage_log`/attempt JSON/`cost_log`/leafのrequest記録)に送信voiceが残るか確認。dialogue経路・KP経路・JA経路の送信Voice決定点も同様に表にする(他story・他Familyへの影響範囲: Z全story narrator、X narratorの`VOICE_NAME`、Y)。
+2. **実音声の証拠(API 0)**: Fenrir版narrator wavとAoede版(run_reselect_01)、Algieba dialogue wav、および既知Fenrir音声(Y男性Voice Trial `docs/research/FAMILY-Y-VOICE1-MALE7-TRIAL-01/`の保存sampleやer_outputの既存Fenrir生成物)の**基本周波数(f0)中央値・分布**を`.venv`のlibrosa/numpy等で計測して比較(男声Fenrir≒低f0、Aoede≒高f0)。計測scriptとCSVを成果物dirへ。これを「実際の音声がどのVoiceか」の証拠とする(sha差・記録値は証拠にしない)。
+3. **修正(承認範囲内の不具合修正、11-8)**: 送信Voiceを`ClipSpec.voice`(Z: `narrator_voice_for(story)`由来)で決定するよう最小修正(leafの既定`VOICE_NAME`はX/A/B/Cの既存呼出で不変=未指定時は従来どおり。retry/fallback/LR再TTS/減速後再検証/resumeの全attemptで同じVoiceが使われること)。**Style/Prompt/回数/待機/ASR/速度は変えない**。test: (a)Z narrator spec voice=FenrirがGemini request voice名へ到達する(request builderを捕捉するmock) (b)X/A/B/C呼出はVOICE_NAME不変 (c)retry/fallback/resume経路でも同じ (d)attempt JSONの`voice`が実送信値を記録する(OPEN-572の是正を兼ねる)。既存回帰(er003_v1_n3/er063/er019/er127)。
+4. **再生成(有料、見積先行、Cap¥40)**: `run_voice_fenrir_01`のnarrator clipのみ再生成(`--only-clips`等の承認済み手段で、再利用keyの扱いを確認: 旧Aoede音声が「Fenrir」keyで再利用されないよう、誤記録entryを退避[上書きではなく`audit/legacy_voice_mislabel/`へ]してから実行)。runner 1起動で`tts_b1b,tts_a2,provision_shell,gate,assemble,pages,page_verify`、`--pages-dir user_test/family_z_tell_tale_heart_fenrir_01`(候補ページを更新。公開`_reselect_01`は不変)。ASR/Style/速度/Chunk/三者一致の既存検査PASS。
+5. **検証証拠**: (a)送信voice=Fenrirのrequest記録(全narrator attempt、Std/Adv) (b)再生成wavのf0がFenrir帯、dialogueがAlgieba帯、再利用clipは不変sha (c)公開候補ページの`<audio src>`が新wav(sha)を参照、GitHub Pages上で200・再生OK (d)retry/fallback/resume: mockで同一Voice維持。他story(メロス等)の既存公開音声は再生成しない(影響範囲の記録のみ)。
+6. **受入判定の漏れ分析**(原文末尾): 前回のworker検証(records・test)とFable受入(attempt voice=Aoedeを「ラベル」と解釈)のどこで誤ったかを事実で列挙し、再発防止=「Voice/Style変更の受入は(i)API送信パラメータの記録 (ii)実音声の客観指標(f0等) (iii)記録値、の3点一致を必須にする」等の必要十分な対策案(Gate追加の要否はFable判断用に案として、実装は本委任ではtest/記録の範囲まで)。
+7. SSOTは編集しない(Fableが同期)。Git: 変更ファイル(コード・test・run記録・候補ページ・成果物)のみ`git add`、commit「FZ-TELL-TALE-HEART-NARRATOR-VOICE-01 委任_03: Narrator Voice未反映の真因修正(送信Voice決定点)・Fenrir再生成・実音声f0証拠(実費¥N)」+`Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>`、`git push origin HEAD:main`(競合時`git pull --no-rebase origin main`)。同時進行の統合配線worker(er129〜er132、er019/er063/er121の配線patch適用中)との競合に注意: `er063`/`er003_v1_n3_01_tts_generate`を編集する前に`git pull`し、編集はファイル単位で一括保存、commit前に再度pull→test。
+8. 最終応答(Fable向け): 原文§3の6項目+影響範囲表+受入漏れ分析+commit。
