@@ -1,0 +1,29 @@
+# The Thicket
+
+“This morning, I found a body in the bushes,” the woodcutter said. “He had one stab wound in his chest. His blood had dried. No sword or bow, sir, just rope under a cedar and a comb. The broken bamboo showed a fight.”
+
+“I saw them yesterday at noon,” the monk said. “The man carried weapons, and his wife rode beside him with her face covered.”
+
+“I caught Tajomaru, the famous bandit,” the constable said. “He had Takehiro’s bow. Find the wife, and she’ll tell you what he did.”
+
+“Takehiro was my daughter’s husband, a kind samurai,” the old woman said. “Masago is nineteen. Please find her before I go home without news.”
+
+“I killed him, but listen before calling me a coward,” Tajomaru said. “The wind lifted her veil, and I wanted her. I led him into the bushes with promises of buried treasure. There, I tied him to the cedar. She fought with her dagger, but I forced her to have sex with me.
+
+“She grabbed my arm and said one of us must die. She would leave with the man who lived. I untied him, and we fought fairly with swords. He lasted twenty-three strokes, but nobody else had reached twenty. When he fell, she’d disappeared. I took his weapons and went away.”
+
+“After the bandit left, I crawled towards my husband,” Masago said at the temple. “He was still tied to the tree. I asked him to die with me. His cold eyes looked down on me, his own wife.
+
+“The dagger was in my hand. His lips moved, telling me to kill him. I stabbed him because I couldn’t bear those eyes.
+
+“I tried drowning myself later, but I couldn’t even do that. Where can I go from here?”
+
+“I heard the bandit trying to comfort her,” Takehiro’s spirit said through a medium. “My wife asked him to take her anywhere. Then she pointed at me and said, ‘You must kill him.’
+
+“He pushed her away and asked me to decide. Should he let her live, or should she die? I almost forgave him for that, but she ran away. He cut one rope, then left.
+
+“I stood up beside the cedar and picked up her small dagger. She had dropped it there. Then I pushed it into my chest.
+
+“The bushes around me became silent. Then someone came towards me with slow, quiet steps. A hand I couldn’t see quietly pulled the dagger from my chest.
+
+“Then I sank into darkness and stayed there for ever.”
