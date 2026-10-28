@@ -5,13 +5,15 @@
 **利用規約未確認のサイトを利用可能とは断定しない。** 規約判定の根拠は`TERMS_REVIEW_01.md`(02A)・`PUBLIC_SOURCES_CHECK_01.md`(03)・`terms_evidence/`。判定が食い違う場合は、新しい確認日のものを優先する。
 ユーザー決定の記録(2026-10-28): ①発言小町=当面素材源から除外(ライセンス確認・利用許諾がない限り利用しない、過去素材も再利用しない)、②Reddit=公式Data API申請は当面見送り・継続的な自動収集の対象外(将来の利用可能性の記録は可)、③その他の調査結果は情報源候補として本レジストリに記録(登録≠継続利用承認)。
 
+**取得運用注記(2026-10-29、FAMILY-Y-DEBATE-SOURCE-DEEP-RESEARCH-01 委任_02。新Gateではなく既存の取得規則[§3の2項「低負荷取得」]の明記)**: 今後の情報収集は**robots.txt・Crawl-delayを遵守し、手動閲覧相当の単発取得のみ**で行う。robots.txtが`Disallow: /`等で取得を拒む配下のページ(規約ページを含む)は取得せず、規約が読めないものは「未確認」とする(回避しない)。AI botを名指しで拒否するrobots・`ai-train=no`等の意思表示は尊重し、そのサイトの本文は評価・素材に使わない。Cloudflare等のbot遮断は回避しない。取得の逸脱があった場合は隠さず記録する(2026-10-29の自己申告=Kialo規約ページ3件・Lemmy.world `Crawl-delay: 60`違反。詳細は`docs/research/FAMILY-Y-DEBATE-SOURCE-DEEP-RESEARCH-01/FINAL_REPORT_01.md` §D-2)。Debate/Discussion拡張調査の追加登録は本書§5。
+
 ## 0. 区分の凡例(混同しない)
 
 | 区分 | 意味 | 例 |
 |---|---|---|
 | ユーザー決定による除外 | ユーザーが決定した除外・対象外(再判定しない) | 発言小町(決定①)、Reddit(決定②) |
 | 規約上の禁止 | 規約・ポリシーが想定用途(実投稿を読み取りAI原稿の参考にし商用提供)と抵触、または許諾が必要 | 02A: 知恵袋・5ch・Guardian・Mumsnet。03: 東京都・横浜市(許可要) |
-| 未確認 | 規約・許諾を確認できず判断できない(最終5テーマの根拠にしない) | 02A: 増田、Hacker News。03: 内閣府・他府省、国民生活センター相談事例 |
+| 未確認 | 規約・許諾を確認できず判断できない(最終5テーマの根拠にしない) | 02A: 増田。03: 内閣府・他府省、国民生活センター相談事例。(Hacker Newsは2026-10-29に「除外」へ更新。§5-3) |
 | 条件付き利用可能 | 条件を守れば用途に適う(条件は02A参照) | 02A: ガルちゃん、ママスタ、note(補助)、Stack Exchange(補助)。03: e-Govパブリック・コメント+厚労省・こども家庭庁(PDL1.0、補助) |
 | アクセス不能 | 技術的に本文を取得できない(会員壁・ログイン壁・bot遮断・サービス終了)。**規約の評価ではない** | X/Threads、OpenWork、教えてgoo ほか |
 | 低優先度 | 禁止でもアクセス不能でもなく、品質や適合性が低いため優先度が低い | OKWAVE、価格.com、Togetter ほか |
@@ -184,7 +186,7 @@
 
 | 優先(01B) | サイト | 区分 | 確認状況の根拠 |
 |---|---|---|---|
-| 1 | Hacker News | **未確認**(02A)。YC規約がスクレイピング・データマイニング・商用派生物作成を禁止、公式API(Firebase・Algolia)の利用条件文書を取得できず | 01B `hn_1〜9`。02A §2-7 |
+| 1 | Hacker News | **除外**(2026-10-29更新。旧=未確認[02A]。YC規約のCommercial Use・scraping/data mining・derivative works禁止を逐語確認、§5-3)。旧記述: YC規約がスクレイピング・データマイニング・商用派生物作成を禁止、公式API(Firebase・Algolia)の利用条件文書を取得できず | 01B `hn_1〜9`。02A §2-7 |
 | 2 | The Guardian コメント欄 | **規約上の禁止**(02A。機械学習・データ解析・商用は事前の書面承認が必要、Open Platformは商用鍵[有料]) | 01B `guardian_1`。02A §2-8 |
 | 3 | Mumsnet | **規約上の禁止**(02A。1.c/1.e/1.a。人手の閲覧のみ条件付き) | 01B `mumsnet_1〜3`。02A §2-9 |
 | 4 | Reddit | **ユーザー決定による対象外**(決定②) | 01B `reddit_1〜2`、`reddit_json_blocked` |
@@ -200,7 +202,7 @@
 
 | サイト | 1 URL | 2〜3 特徴・意見の種類 | 4 3 Voice適性 | 5 日本関連 | 7 取得方法・制約 | 8 規約・プライバシー | 9 確認状況 | 10 推奨 |
 |---|---|---|---|---|---|---|---|---|
-| Hacker News | https://news.ycombinator.com/ | 1スレッド数十〜数百件の長文一人称。介護・少子化・年金・SNS規制・観光公害。IT職・男性・米国に偏る。スパム・自社宣伝が混在 | ○(立場は割れるが利害が似る) | 中〜高(共通社会問題) | Algolia公開API(`hn.algolia.com/api/v1/items/<id>`)。robots Crawl-delay 30。礼儀的に2秒間隔 | YC規約がscraping/data mining・商用派生物作成を禁止。API利用条件文書は未取得 | **02A=未確認**(2026-10-28) | 書面確認までProduction根拠にしない。保留 |
+| Hacker News | https://news.ycombinator.com/ | 1スレッド数十〜数百件の長文一人称。介護・少子化・年金・SNS規制・観光公害。IT職・男性・米国に偏る。スパム・自社宣伝が混在 | ○(立場は割れるが利害が似る) | 中〜高(共通社会問題) | Algolia公開API(`hn.algolia.com/api/v1/items/<id>`)。robots Crawl-delay 30。礼儀的に2秒間隔 | YC規約がscraping/data mining・商用派生物作成を禁止。API利用条件文書は未取得 | **除外**(2026-10-29更新。旧=02A未確認)。根拠=YC利用規約 https://www.ycombinator.com/legal/ Commercial Use「you agree not to display, distribute, license … create derivative works from … for any commercial purposes」、Site Content「you will not engage in or use any data mining, robots, scraping or similar data gathering or extraction methods」。公式API(GitHub README)に商用許諾の記載なし(`LANE_A_OVERSEAS_EN_01.md` §2-2) | 利用しない(書面確認が得られない限り) |
 | The Guardian | https://www.theguardian.com/ | 記事コメント(日付・推奨数)。英国読者中心。日本比較は低頻度(約100記事中1本) | △ | 低〜中 | 公開discussion API(キー不要)。ただし規約は商用・AI・解析を禁止 | machine learning/AI/データ解析/商用を事前書面承認なしに禁止。robotsより規約優先と明記 | **02A=利用不可** | 利用しない(商用ライセンス契約が前提) |
 | Mumsnet | https://www.mumsnet.com/talk | 家族・介護・同居の相談。生活事情が具体。女性・英国中産層。プライバシー配慮必須 | ○(助言型で立場は中程度) | 中(嫁姑・介護は近い) | 通常HTML GET可(`/talk/`) | 1.c/1.e/1.a(コピー・AI/テキストマイニング・複製禁止) | **02A=利用不可** | 利用しない |
 | Reddit | https://www.reddit.com/ | 日本在住外国人の一次情報 | △(同調が多く立場が少ない) | 中(在日外国人視点) | robots全面Disallow、JSON 403、429 | AI学習・商用再利用を制限 | **ユーザー決定②で対象外**。将来の利用可能性: 公式Data API/研究申請(再判定せず) | 利用しない |
@@ -228,3 +230,81 @@
 | 10 | `DOMESTIC_SOURCES_01.md`・`OVERSEAS_SOURCES_01.md`・`TERMS_REVIEW_01.md`・`PUBLIC_SOURCES_CHECK_01.md`・`THEME_FINAL_01.md` | 本レジストリを入口にし、詳細は各文書 | 調査結果の入口 |
 
 **使い方(次回制作時)**: (1)テーマの根拠にするサイトを§1/§2で引き、区分が「条件付き利用可能」以上であることを確認する。(2)そのサイトの条件(§1-2の7〜10項目)を満たす取得・使い方にする。(3)規約・robotsを制作時点で再確認し、確認日を記録する。(4)新しい収集方式(自動収集の定常運用、AI入力を含む)をProductionに組み込む場合は、ユーザー承認(`APPROVED_FOR_PRODUCTION`)が先。(5)運営照会の結果(UDR)で区分が変わった場合は本レジストリの該当行を更新する。
+
+
+## 5. Debate/Discussion拡張調査による追加登録(2026-10-29、FAMILY-Y-DEBATE-SOURCE-DEEP-RESEARCH-01 委任_02)
+
+ユーザー原文=`docs/pm/delegation_log/2026-10-29_FAMILY-Y-DEBATE-SOURCE-DEEP-RESEARCH-01_USER.md`。詳細=`docs/research/FAMILY-Y-DEBATE-SOURCE-DEEP-RESEARCH-01/{FINAL_REPORT_01,LANE_A_OVERSEAS_EN_01,LANE_B_EUROPE_ASIA_CIVIC_01,LANE_C_DOMESTIC_01,CLOSE_READING_02}.md`。API(LLM)0・費用0・Production変更0。
+**§5の登録も「情報源候補としての記録」であり、Production継続利用の承認ではない(登録≠継続利用承認)。新サイト・新収集方式のProduction採用はユーザー判断待ち(UDR起票済み)。** 本節の商用Statusは原文§3の◎/○/除外/未確認で、◎=ライセンス/規約が商用・翻案を明示許諾、○=明確な禁止・許諾必須が確認されない(法的保証ではない)。**「利用可能(無条件)はゼロ」は維持**(◎でも出典表示の方式が未設計で、AI入力の個別明文は無い)。既登録の判定(§1〜§4)は、HN(ユーザー指示で除外へ更新)を除き変更しない。確認日は全て2026-10-29。
+
+### 5-1 追加登録一覧(◎7・○5。Family Y適性◎は0)
+
+| 国内/海外 | サイト | 商用 | Family Y適性 | Persona | 根拠 |
+|---|---|---|---|---|---|
+| 海外 | UK議会 請願サイト+Hansard | ◎ | △ | 中 | Lane b |
+| 海外 | 仏 Grand Débat National 公開データ | ◎ | ○ | 中(精読で据え置き) | Lane b、`CLOSE_READING_02.md` |
+| 海外 | Polis オープンデータ | ◎ | △ | 低(精読で据え置き) | Lane b、`CLOSE_READING_02.md` |
+| 海外 | EA Forum | ◎ | △ | △ | Lane a |
+| 海外 | Climate Assembly UK | ◎ | △ | 低(未精読) | Lane b |
+| 海外 | Global Voices | ◎ | △ | 中(記事選別が前提) | Lane b |
+| 海外 | Tildes | ○ | ○ | △〜○ | Lane a |
+| 海外 | Lemmy(lemmy.world) | ○ | ○(スレッド依存) | ○(断片) | Lane a |
+| 海外 | Parlia | ○ | △ | 低 | Lane a |
+| 国内 | 国会会議録(NDL) | ○ | △(テーマ単位で○) | △ | Lane c |
+| 国内 | 厚労省 審議会議事録(D-10の新コンテンツ種別) | ◎ | △ | 低 | Lane c |
+| 国内 | 気候市民会議さっぽろ2020 報告書(環境省掲載) | ○(要注意) | ○ | △ | Lane c |
+
+### 5-2 登録の詳細(§2の10項目。規約逐語はLane表に準拠。詳細な条項・URLは`FINAL_REPORT_01.md` §A)
+
+#### X-1 UK議会 請願サイト+Hansard(◎)
+1. https://petition.parliament.uk/ 、https://hansard.parliament.uk/ 。2. 請願者の主張+政府回答+議員の多様な発言が1議題に集まる公的記録(Westminster Hall請願討論)。3. 議員の演説(親・教員・NSPCC・自由主義者)と請願本文、生徒の声の伝聞。4. △(議題は◎級、発言者が議員で評論家化)。5. 高(子どものSNS、学校週4日。論点は普遍、英国制度の説明部分は使わない)。6. 海外のDebate系で規約最良。7. 請願JSON(`petitions/<id>.json`)+Hansard HTML各1回(0.1〜0.5MB)。Cloudflareの一時遮断あり(回避せず)。8. OGL v3.0/Open Parliament Licence v3.0(複製・翻案・商用を明示許諾)。第三者権利と動画音声は対象外。出典表示が条件。9. ◎(2026-10-29)。AI入力の個別明文なし。10. 論点・対立軸の発掘と議員(親)の体験談の型の参照。逐語転載せず、実名の議員を人物化しない。Personaは体験談系と組合せ。
+
+#### X-2 仏 Grand Débat National 公開データ(◎)
+1. https://www.data.gouv.fr/datasets/donnees-ouvertes-du-grand-debat-national 。2. 2019年の市民討論の自由記述(設問ごとCSV)。3. 環境転換の負担(通勤・暖房・断熱)に関する生活者の短文回答。4. ○(3軸は車テーマで確認、人物は断片: 638件中3要素以上18件=2.8%)。5. 中〜高(車依存・暖房費は日本の地方と共通。仏の税・行政の回答は国固有で除外)。6. Debate系の中で人物素材が最も取れる。7. HTTP Range・設問単位で取得(ファイル64MB〜1.2GB)。static.data.gouv.frのrobotsは資源ファイルを制限しない。8. Licence Ouverte 2.0(複製・再配布・翻案・商用利用を明示、出典表示義務)。自由記述に個人情報が混ざる可能性。9. ◎(2026-10-29)。AI入力の個別明文なし。10. 設問を絞り(行動を変える条件・代替手段の条件・自由記述)3要素以上の回答を選別。断片を束ねて別人格化し、郵便番号・参照IDは取り込まない。出典表示「Données ouvertes du Grand Débat National(data.gouv.fr)」。
+
+#### X-3 Polis オープンデータ(◎)
+1. https://github.com/compdemocracy/openData 。2. 市民の一文に賛否を付ける熟議ツールのデータ配布(CSV)。3. 匿名の短文(中央値106字)と賛成/反対数。4. △(論点・拮抗文の発掘に強く、Personaは低: 自発的自己開示0.9%)。5. 自家用車・ライドシェア・UBI・住宅など。台湾・オーストリア・NZ等の制度は国固有だが論点は普遍。6. 論点発掘用の補助。7. `comments.csv`単発GET(5KB〜1.3MB)。8. README「All Polis data is licensed CC By 4.0」。帰属表示の定型文あり。参加者の一文の権利は参加者に残りうる。Seattle・football concussionsは出所不明で対象外。9. ◎(データに限る、2026-10-29)。10. 論点・賛否分布の参照のみ。人物の素材にしない。
+
+#### X-4 EA Forum(◎)
+1. https://forum.effectivealtruism.org/ 。2. 効果的利他主義コミュニティの投稿とコメント。3. 子を持つ決断、育児と仕事復帰、気候と出産など個人の決断記と分析的コメント。4. △(コメント投稿者が分析者)。5. 中(EA内輪の前提が強く説明コストが高い)。6. 会話系で唯一CC BYが明示。7. HTML内RSCペイロード解析。`Crawl-Delay: 2`。8. 利用規約Addendum 2.2「CC BY 4.0」、2.1「Adapted Material for any purposes」。EVF一般Termsの自動取得条項は未読。9. ◎(2026-10-29)。10. Lemmyの「なんとかなる」スレッドと対比する計画型の決断記の参照。帰属表示が必要。
+
+#### X-5 Climate Assembly UK(◎)
+1. https://www.climateassembly.uk/ 。2. 英国の市民会議の報告書・資料。3. 気候と生活(移動・食・暖房・消費)の支持割合等。4. △(未精読。個人の声は未確認)。5. 中(生活側の論点は普遍)。6. 補助。7. 案内ページのみ確認。8. OGL v3.0(動画・画像は対象外)。9. ◎(2026-10-29)。10. 報告書本文の精読が済むまで補助止まり。
+
+#### X-6 Global Voices(◎)
+1. https://globalvoices.org/ 。2. 世界のボランティア翻訳者による報道・解説(60言語)。3. 実名の当事者の経験引用を含む記事。4. △(討論ではなく報道)。5. 低〜中(記事単位で選別。確認した2本は地域固有寄り)。6. 補助。7. RSS・記事HTML。robots Crawl-delay 10。8. Attribution policy「Creative Commons Attribution-Only license」「Adapt … for any purpose, even commercially」。第三者画像・動画・埋込は別許諾。9. ◎(2026-10-29)。10. 普遍的な記事を選別し、当事者の経験の型のみ参照(実名は使わない)。
+
+#### X-7 Tildes(○)
+1. https://tildes.net/ 。2. 非営利運営の小規模会員制コミュニティ。3. 長文の自己開示つき議論(SNS禁止、プライバシー、人生相談)。4. ○(SNS禁止で3軸確認)。5. 中〜高。6. 海外会話型の優先。7. 単純HTML。robotsは情報用途のスクレイピングを歓迎(合理的な速度)する旨を冒頭に記載。8. 利用規約「You retain copyright and ownership …」「non-exclusive license to store, display and distribute」。AI/スクレイピング/商用の禁止条項なし。**AI利用の明示許諾なし・投稿者の著作権は個別**。robots冒頭「Tildes data is not a resource to be mined and sold.」。9. ○(2026-10-29)。10. 親・当事者の自己開示コメントの参照。逐語転載せず、投稿者(ハンドル名)を特定しない。
+
+#### X-8 Lemmy(lemmy.world)(○)
+1. https://lemmy.world/ (公開JSON API)。2. フェデレーション型掲示板。3. 100〜300件規模の議論、親の実体験の断片。4. ○(スレッド依存。2テーマで3軸確認)。5. 高(子を持つ条件、SNS禁止、UBI)。6. 海外会話型。7. 公開API・`Crawl-delay: 60`(1スレッド約3呼出=3分以上)。コメント一覧0.3〜2.2MB/スレッド。8. 規約にAI・スクレイピング・商用・著作権許諾の条項なし。**AI利用の明示許諾なし・投稿者の著作権は個別**。フェデレーション先は別規約。9. ○(2026-10-29)。**既登録§2-1のLemmy行(低優先度)の判定は変更しない**(旧調査は一般雑談中心で、今回はニュース連動・価値観スレッドの通読による別観点)。10. 通読による選別が必須(見出し・コメント数だけでは3軸を判定できない)。罵倒語の除外前処理が必要。
+
+#### X-9 Parlia(○)
+1. https://www.parlia.com/ 。2. For/Against/Mixedの論点整理サイト(715トピック)。3. 学生エッセイ形式の短文。4. △(Persona低)。5. 中(UK/US色)。6. 論点整理の補助。7. 単純HTML、robots `Allow: /`。8. 利用規約(2026-06)「You own what you post … license to display, distribute, and store」「You may link to and quote Parlia pages freely with attribution.」。AI/スクレイピング/商用の禁止条項なし。9. ○(2026-10-29)。10. 論点・価値観分布の参照のみ。
+
+#### X-10 国会会議録検索システム(NDL)(○)
+1. https://kokkai.ndl.go.jp/ (公式API https://kokkai.ndl.go.jp/api.html)。2. 国会の議事録(参考人質疑・公聴会を含む)。3. 参考人は大学教授・団体代表が中心。当事者参考人を含む会議のみ一人称の肉声が取れる。4. △(例: 2024-05-21参院厚労委=当事者1名[障がい児の親]+支援者+研究者で3軸、○)。5. 高(少子化・両立支援・AI・年金)。6. 国内Debate系の中核。7. 公式API(JSON、手続不要)。多重リクエストを避け間隔を置く。8. API利用条件§4「発言の著作権は個々の発言者に帰属、原則許諾が必要」と「情報解析等は許諾不要」が併記=解釈依存。DBはNDLコンテンツ利用規約(公共データ利用規約準拠)。9. ○(2026-10-29)。NDLへの確認が望ましい。10. 論点・立場のみ参照し逐語利用しない。実名の参考人は別人格化する。
+
+#### X-11 厚生労働省 審議会議事録(◎。既登録D-10の新コンテンツ種別)
+1. https://www.mhlw.go.jp/stf/shingi/ 。2. 労使公益の三者構成による審議会の議事録。3. 団体代表の発言(個人の生活背景は出ない)。4. △(Persona低。制度説明化しやすい)。5. 高(労働時間・両立支援・年金)。6. 補助(論点・対立軸の公的記録)。7. 1URL取得。robotsは議事録パスを制限しない。8. PDL1.0(「複製、公衆送信、翻訳・変形等の翻案等、自由に利用できます」)。第三者権利は別。9. Lane cは◎と判定。**D-10の既判定(条件付き利用可能・AI入力の個別明文なし)は変更しない**。10. 論点・対立軸の裏取りに限る。Personaの主材料にしない。
+
+#### X-12 気候市民会議さっぽろ2020 報告書(○・要注意)
+1. https://www.env.go.jp/council/06earth/y0620-3b/900425001.pdf (環境省council資料として掲載)。2. 無作為抽出の札幌市民20人の市民会議の報告書。3. 参加者の感想の一人称の発言(匿名・年代のみ)。4. ○(実発言3系統: 生活水準を守る派/次世代のため不便を受け入れる派/何をすればいいか分からない派)。5. 高(脱炭素の「痛み」の許容度は普遍。札幌の施策名は不要)。6. 国内で3軸+肉声が確認できた数少ない例。7. PDF1URL(2.5MB)。8. 環境省サイトは「PDL1.0が適用」。ただし本PDFは実行委員会(北大等)作成で権利・転載条件の記載なし。PDL1.0が第三者作成物に及ぶか未確認。世田谷版は区規約で無断二次利用禁止=除外(掲載元の規約次第)。9. ○(要注意、2026-10-29)。実行委員会への確認が望ましい。10. 価値観の割れ方の参照。生活の具体は報告書に無く、別素材で補う。
+
+### 5-3 既登録の更新・追記(2026-10-29)
+
+| 項目 | 内容 |
+|---|---|
+| Hacker News(§2-1・§2-2・§0) | **未確認→除外**に更新(Fable指示)。YC規約のCommercial Use・scraping/data mining・derivative works禁止を逐語確認(Lane a)。 |
+| The Conversation | **未確認**(CC BY-ND 4.0。NDにより記事の翻案配布が禁止され、想定用途が翻案に当たらないと断定できないため、○にせず推奨から外す。Lane bは○と判定していた)。規約: https://theconversation.com/global/republishing-guidelines 。 |
+| 厚労省(D-10) | 審議会議事録を新コンテンツ種別として併記(X-11)。D-10の判定は変更しない。 |
+| Quora(§2-1の「アクセス不能」) | 日本語版 jp.quora.com もCloudflare 403。robots冒頭に「AIモデルの学習等への利用を契約許諾なしに禁止する」意思表示あり(Lane c)。判定は変更しない(未確認のまま)。 |
+| Yahoo!ニュースコメント(D-9) | Lane cが「02A準用で規約上の除外寄り(robotsがClaudeBot等を全面拒否)」への更新を**提案**。D-9の判定は本委任では変更しない(提案としてのみ記録)。 |
+| Lemmy(§2-1) | 既登録は低優先度のまま(X-8参照)。 |
+| 新たに除外/未確認と判定した主な源 | `FINAL_REPORT_01.md` §D-1参照(除外21: Kialo・Intelligence Squared・Substack・NYT・Pew・AgingCare・AllSides・IDEA・gutefrage・Naver 知識iN・Straits Times・Carers UK・Perspective Daily・NADE・アゴラ・朝日新聞・STORYS.JP・加古川Decidim・世田谷区報告書ほか。未確認・アクセス不能・終了 約40〜46)。 |
+
+### 5-4 運用上の注意(§3への追記)
+1. §5の◎/○源には**「AI入力・AI生成」の個別明文がない**(翻案・商用の包含解釈)。ただし、CC BY・OGL・Licence Ouverte・PDL1.0は複製・翻案・商用を明示許諾する点で、掲示板型の「何も禁じない」型(Tildes・Lemmy・ガルちゃん・ママスタ)より規約面の根拠が強い。
+2. 出典表示(CC BY/OGL/Licence Ouverte/PDL1.0)を音声ラジオでどう満たすかは新規の設計論点(UDR起票済み)。
+3. ◎のDebate系源は人物の具体性が薄い(Family Y適性◎は0)。Persona素材は体験談系との組合せが前提。組合せの商用Statusは最も弱い足に従う(`FINAL_REPORT_01.md` §C-4)。

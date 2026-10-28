@@ -22735,3 +22735,10 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - AI島Std/Adv=ACCEPTED(記事単位APPROVED_FOR_PRODUCTION→公開済み、commit 9a2fb4b52/b9748a991、live byte一致)。
 - ニュアンス調査=ACCEPTED。『ニュアンス解説』はProductionに存在したことがなくTrial-01〜04のPart 3のみ、Trial-05以降は判断記録なく範囲外化(PM登録漏れ)。廃止承認も採用承認もない。新OPEN-586・UDR #211(ユーザー判断待ち、AI島とは独立)。
 - 根拠=docs/research/NUANCE-EXPLANATION-LOSS-INVESTIGATION-01/INVESTIGATION_01.md、docs/research/FX-STD-COMMENT3-Z-METHOD-PRODUCTION-01/RUNTIME_EVIDENCE_01.md。
+
+## FAMILY-Y-DEBATE-SOURCE-DEEP-RESEARCH-01 委任_02: Debate/Discussion情報源の拡張調査 統合(2026-10-29)
+- 記録: 海外・国内のDebate/Discussion系を約76〜80件評価(Lane a/b/c並行+委任_02で統合・限定精読)。推奨(◎/○)12=◎7・○5、Family Y適性◎は0、3軸確認済みテーマ8件(生活者の肉声で3軸5件)。**候補登録のみで、新サイト・新収集方式・CC BY出典表示方式・組合せ方式のProduction採用はユーザー判断待ち**(登録≠継続利用承認=ユーザー決定③を維持)。API(LLM)0・費用0円・Production変更0。
+- 限定精読の結論: Grand Débat(Licence Ouverte 2.0)は3要素以上の自己開示が638件中18件(2.8%)で人物の具体性は『中』据え置き、Polis(CC BY 4.0)は自発的自己開示0.9%で『低』据え置き。Debate系◎単独は3 Voiceの一人称原稿に不足し、体験談系との組合せが前提。
+- Fable受入所見の反映: The Conversation(CC BY-ND 4.0)は○でなく未確認として推奨から外す。Hacker Newsは未確認→除外(YC規約逐語)。「何も禁じない」型(Tildes・Lemmy)は○のままAI利用の明示許諾なし・投稿者著作権は個別を注意事項に明記。取得手順の逸脱(Kialo規約ページ3件・Lemmy.world `Crawl-delay: 60`違反)を記録し、取得規則『robots/Crawl-delay遵守・手動相当の単発取得のみ』を`SOURCE_REGISTRY_01.md`冒頭へ明記(新Gateではなく既存規則の明記)。
+- 新規OPEN-587(USER_DECISION_REQUIRED)・UDR #212(オープンライセンス源の採用可否+出典表示方式)・#213(組合せ方式)・#214(任意: Ask a Manager照会)を起票。既登録の判定は、HN除外更新を除き変更せず(Lemmy=低優先度のまま、厚労省D-10=条件付きのまま)。
+- 根拠=`docs/research/FAMILY-Y-DEBATE-SOURCE-DEEP-RESEARCH-01/{FINAL_REPORT_01,CLOSE_READING_02,LANE_A_OVERSEAS_EN_01,LANE_B_EUROPE_ASIA_CIVIC_01,LANE_C_DOMESTIC_01}.md`、`docs/research/FAMILY-Y-SOURCE-DEEP-RESEARCH-01/SOURCE_REGISTRY_01.md` §5、`docs/pm/RESULT_PACKET_FYD2.md`。
