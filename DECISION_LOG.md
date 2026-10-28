@@ -22699,3 +22699,10 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - **結論(`docs/research/JA-ASR-FALSE-NG-ROOT-FIX-02/PM_AUDIT_01.md`)**: 2026-10-26「一区切り」は案件目的(正常な月題の誤NG救済)未達の状態での表現であったと事後認定。主因=M1受入単位のずれ(個別対策F1+F2/E3/E4の受入を案件の受入として扱った)/M2保留(v2・β・P-1「推奨現状維持・R-5実測後」)が管理終点化(R-5はR1を測らず指標不適合、再提示期限なし)/M3完了語彙の混用(Wiring完了と案件Closeの混用)。
 - **再発防止**: 新Gate・新報告工程なし。A1〜A7は既存規則(sandwich-pm 4-2、Closeout項目32、27-3、C-18)の適用単位・手順の明確化として`PM_GOVERNANCE.md`項目32末尾・:2586直後・27-3へ各1〜2文反映、案件の受入条件表を`ACTIVE_TASK.md`(F)行へ設置。A8(横展開点検)は本委任で実施=`PM_AUDIT_02_CROSSCHECK.md`。
 - **判断**: Fable受入済み(ユーザー課題A指示=既存ルールで防げるものは新Gate増設せず運用是正、に整合)。判断候補Dなし。UDR #201〜203は既登録のため再登録せず備考のみ更新。
+
+### 2026-10-28 JA-ASR-FALSE-NG-ROOT-FIX-02 委任_01B〜03 日本語ASR誤NG根本解決 Phase 1〜3の経緯・Opus条件A採否・機械判定上限(追記のみ、Production変更0)
+- **経緯**: Phase 1(委任_01B、API 0)=現行/v2/β/P-1の統一再評価で6音声の決定対はM4(v2+β)でPASS_W 4/6・clean 0/6。Phase 2(委任_02B、実費約¥1.2〜1.6)=統合proto(L1〜L4)+N3再転写120呼出。Opus条件Aレビュー(`docs/research/JA-ASR-FALSE-NG-ROOT-FIX-02/OPUS_REVIEW_01.md`)=条件付きGO。Phase 3(委任_03、実費約¥1.3〜1.9)=M-1〜M-7/R-1〜R-7を全採用して再実装・再評価。事前登録(`PREREGISTERED_03.md`+補遺)は有料draw/評価の前にcommit。
+- **Opus条件A採否(Fable)**: M-1〜M-7全採用、R-1〜R-7採用(R-5の『どおり/通り』修正は別ID=OPEN-579)。(ii)best-of-NはNO-GO→M-3『矛盾なし合意』、(v-c)辞書追加はNO-GO→M-5別表方式、(iv)新『条件付きPASS』状態は作らない(既存HR Lock/個別採用)。
+- **結論(`EVAL_UNIFIED_03.md`)**: 安全条件を保った機械判定の上限は、R-1(漢字1字ごとのC2検査)OFFで6音声中4/6(新方式PASS_W、試聴必須、clean 0/6)+残2本(ms_03 a1=NG、reselect a3=NG/合意N=3で早期HR)。R-1 ON(主設定)では0/6。ASR再試行(合意規則)は6本へ新規PASS 0、N3負例の再試行起因誤PASS 0(分母小、clip単位95%上限20.6%)。best-of-Nは釣る(Phase 2の『5〜6/6』は取り下げ)。負例増分は事前登録どおりの全数でR-1 ON=1/OFF=8(T1 6+T2 2)、OTHER 0、回帰0。
+- **Status**: Fable最終判定=USER_DECISION_REQUIRED見込み(VALIDATEDにしない)。ユーザー判断事項=UDR #204〜#207(D-1 ASR再試行[承認済み仕様変更]/D-2 非標準読み受理/D-3 新方式PASS_Wの試聴要否/D-4 HUMAN_APPROVEDの数え方)+R-1採否。Production配線なし。CURRENT_SPEC変更なし。新規OPEN-579〜581。
+
