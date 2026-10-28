@@ -427,12 +427,34 @@ def find_tokens(text: str, tokens: tuple = FHR_TOKENS) -> list:
     return [t for t in tokens if t in (text or "")]
 
 
+_RPT_NOTES_OPEN = re.compile(r"<div class=['\"]rpt-notes['\"][^>]*>")
+
+
+def strip_listening_page_notes(page_html: str) -> str:
+    """試聴ページ(er133、USER_02 §4)の注記ブロック`<div class='rpt-notes'>…</div>`(入れ子divを含む)を取り除く。
+    試聴ページは報告資料として赤/濃青の⏸・span・注記(「Local Rewrite 適用」「Fallback 適用」「切替元Style:」等)を`div.script`の外に表示するのが承認済み仕様。"""
+    out, pos = [], 0
+    while True:
+        m = _RPT_NOTES_OPEN.search(page_html, pos)
+        if not m:
+            out.append(page_html[pos:])
+            break
+        out.append(page_html[pos:m.start()])
+        depth, i = 1, m.end()
+        for t in re.finditer(r"<(/?)div\b[^>]*>", page_html[m.end():]):
+            depth += -1 if t.group(1) else 1
+            i = m.end() + t.end()
+            if depth == 0:
+                break
+        pos = i
+    return "".join(out)
+
+
 def check_page_fhr_contamination(page_html: str) -> list:
-    """`check_page(public)`へ追加する検査の仕様実装(配線は統合commit): 公開pageに色定義ペア・FHR語が含まれたらNG。"""
-    hits = find_tokens(page_html)
-    if "#c00000" in page_html and "#0a2a6b" in page_html:
-        hits.append("fhr_color_pair(#c00000+#0a2a6b)")
-    return hits
+    """公開pageに最終Human報告専用の語(class接頭辞`fhr-`・マーカー・内部コード・注記文言・Style名)が含まれたらNG。
+    委任_15(B10) D5: 旧規則`fhr_color_pair`(赤#c00000+濃青#0a2a6b の併存=NG)は撤去。試聴ページのLR(赤)/Fallback(濃青)表示(USER_02 §4)と矛盾するため。
+    試聴ページ注記ブロック`div.rpt-notes`内の注記文言は表示仕様として許容し、それ以外(本文・他領域)への注記文言・専用語の混入は従来どおりNG。"""
+    return find_tokens(strip_listening_page_notes(page_html))
 
 
 _TTS_TEXT_KEYS = {"text", "canonical_text", "audio_text_after", "tts_input", "expected_text", "asr_expected", "instruction_text", "text_before",

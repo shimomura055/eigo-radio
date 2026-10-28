@@ -67,7 +67,10 @@ def build_allowlist() -> dict:
     すべてleaf定数のimportから導出(コピーしない)。"""
     c = _leaf_constants()
     fb = {
-        er129.KIND_MINIMAL_EN: frozenset({sha256_text(c["er033"].FAMILY_X_ROLE_STYLE_EN_FALLBACK[0])}),
+        # 委任_15(B10) D1: KP解説③(er019 `_kp_explanation_unified`、X/Y/Z共通の単一関数 er019_family_x_audio_production_runner_01.py:1316)が現に送る既存Production Style
+        # `repro01.MINIMAL_INSTRUCTION_PREFIX`(er003_v1_repro01_main_generate.py:566)の登録漏れ是正。新Styleの採用ではない(同定数をimportしてsha導出、コピーなし)
+        er129.KIND_MINIMAL_EN: frozenset({sha256_text(c["er033"].FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]),
+                                          sha256_text(c["repro01"].MINIMAL_INSTRUCTION_PREFIX)}),
         er129.KIND_MINIMAL_JA: frozenset({sha256_text(c["n3"]._A2_JA_MINIMAL_INSTRUCTION_PREFIX)}),
         er129.KIND_ENGLISH_LOCK: frozenset({sha256_text(c["repro01"].KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION)}),
         er129.KIND_LEGACY_DIALOGUE: frozenset({sha256_text(c["p9a"].ENGLISH_STYLE_PREFIX)}),
@@ -227,6 +230,11 @@ def adopted_asr_state(entry: dict) -> tuple:
     aj = entry.get("asr_judgement")
     if isinstance(aj, dict) and aj.get("state"):
         return aj["state"], "asr_judgement"
+    # 委任_15(B10) D6: Master Audio Store再利用時はrunner(er019 `_mark_asr_judgement_inherited`)が`asr_judgement`を`asr_judgement_inherited`へ改名する。
+    # 元の判定(state付き)が残っている場合に限りそれを採用ASR判定として読む(stateなし・記録欠落は従来どおり(None, None)=ASR_RECORD_MISSING)
+    ij = entry.get("asr_judgement_inherited")
+    if isinstance(ij, dict) and ij.get("state"):
+        return ij["state"], "asr_judgement_inherited"
     if entry.get("z_adoption") == "adopted" and entry.get("status") in (None, "OK"):
         return "PASS", "z_adoption"
     if entry.get("status") == "OK":
@@ -252,6 +260,20 @@ def lr_gate_facts(entry: dict) -> Any:
     return None
 
 
+def dialogue_legacy_fallback_direct(entry: dict, take: dict | None) -> bool:
+    """委任_15(B10) D2: Z会話ctx→legacy_fallback(③、policy fz_ctx_v1)の採用が`dialogue_tts`の直接記録で確定しているか。
+    final_mode=="legacy_fallback"・policy!="legacy"・final_attempt_n==採用take ordinal・そのattemptが mode=legacy_fallback かつ verified=True のとき True
+    (送信Styleは既定Dialogue Style=allowlist LEGACY_DIALOGUE。final_adoptionはsent_style_shaを持たないため、この記録がkind確定の直接証跡)。"""
+    dt = (entry or {}).get("dialogue_tts")
+    if not isinstance(dt, dict) or dt.get("final_mode") != "legacy_fallback" or str(dt.get("policy") or "").lower() == "legacy":
+        return False
+    n = dt.get("final_attempt_n")
+    if n is None or not isinstance(take, dict) or take.get("ordinal") != n:
+        return False
+    return any(isinstance(a, dict) and a.get("n") == n and a.get("mode") == "legacy_fallback" and a.get("verified") is True
+               for a in dt.get("attempts") or [])
+
+
 def ctx_from_entry(entry: dict, *, take: dict | None = None, human_approved: bool | None = None, role_style_prefix_ok: bool | None = None) -> dict:
     """entryからctxを組み立てる補助(呼出側gateが渡す値の標準形)。
       asr_state/asr_source、lr_gates_ok、extra_approved_shas(Z ctx Style・entryのrole base sha)、role_style_prefix_ok(既存evaluate_segment_evidence=hint追記時のhead一致)。"""
@@ -264,6 +286,7 @@ def ctx_from_entry(entry: dict, *, take: dict | None = None, human_approved: boo
     if isinstance(sp, dict) and sp.get("expected_base_sha256"):
         extra.add(sp["expected_base_sha256"])
     return {"asr_state": st, "asr_source": src, "lr_gates_ok": lr_gate_facts(entry), "extra_approved_shas": extra,
+            "dialogue_legacy_direct": dialogue_legacy_fallback_direct(entry, take),
             "role_style_prefix_ok": role_style_prefix_ok, "adopted_instruction_text": adopted_instruction_text(entry, take),
             "human_approved": bool(entry.get(er129.er020.HUMAN_APPROVAL_SUPERSEDES_LR_AUDIO_FLAG) or entry.get("adopted_attempt_audio_path"))
             if human_approved is None else human_approved}
@@ -336,6 +359,8 @@ def _classify(clip: dict, policy: Any, allowlist: dict, ctx: dict) -> Classifica
                         reasons.append("STYLE_NOT_APPROVED_OR_UNKNOWN")
                 elif how in _DIRECT_KIND_RECORD_HOWS:
                     pass
+                elif kind == er129.KIND_LEGACY_DIALOGUE and ctx.get("dialogue_legacy_direct") is True:
+                    notes.append("STYLE_BY_DIALOGUE_TTS_RECORD(final_mode=legacy_fallback, attempt verified; default Dialogue Style)")
                 elif kind == er129.KIND_MINIMAL_JA and any(str(n) == "route=minimal_fallback" for n in (take.get("notes") or [])):
                     # JA短文Fallbackはleaf(`_generate_a2_japanese_minimal_instruction`)が単一定数のみで送り、attemptにはroute名だけ残す(sha非保存)。
                     # route名がStyle識別の直接記録(W3 B-3)。EN短文は別Styleが存在し得るためshaを要求する
@@ -439,6 +464,9 @@ X_REPLACED = frozenset({
     "PREVIEW_STYLE_PREFIX_NOT_E1_PREFIXED", "FINAL_STYLE_SHA_MISMATCH_NO_HINT", "FINAL_STYLE_HEAD200_MISMATCH_WITH_HINT",
     "FINAL_STYLE_RECORD_MISSING", "JA_STYLE_ACTUAL_MISMATCH", "JA_STYLE_ACTUAL_UNMEASURED"})
 Z_REPLACED = frozenset({"Z_STYLE_ACTUAL_MISMATCH", "Z_STYLE_FALLBACK_ADOPTED"})
+# 委任_15(B10) D2: Z会話のStyle実測(style_actual、leafが送信prefixを返さないためctx shaによる推定)は、採用がlegacy_fallbackの正常Fallbackのときは実際の送信Styleと
+# 食い違うのが正常(実測=ctx sha、実送信=既定Dialogue Style)。分類核が正常Fallback(PASS系)と判定した場合に限り置換する(異常=BLOCKなら旧違反のまま)
+Z_REPLACED_WHEN_FALLBACK = frozenset({"Z_DIALOGUE_STYLE_ACTUAL_MISMATCH"})
 
 
 def gate_name_to_clip_id(name: str) -> str:
@@ -461,7 +489,8 @@ def event_ledger_clips(level_dir: str) -> dict | None:
 
 
 def override_violations(seg_id: str, entry: dict, level: str, violations: list, ledger_clips: dict | None, *, replaced: frozenset,
-                        allowlist: dict | None = None, role_style_prefix_ok: bool | None = None) -> dict:
+                        allowlist: dict | None = None, role_style_prefix_ok: bool | None = None,
+                        replaced_when_fallback: frozenset = frozenset()) -> dict:
     """旧Gateの違反listのうち`replaced`(LR/Fallback/採用Style由来)を、イベントclipに限り分類核の判定へ置換する。
     戻り値: {violations: 新違反list, warnings: [構造化warning(LR_APPLIED/FALLBACK_APPLIED…)], classification: Classification|None, applied: bool}。
     - ledger_clipsがNone/対象clipがイベントでない/entryが無い=旧違反のまま(applied=False)。
@@ -482,6 +511,7 @@ def override_violations(seg_id: str, entry: dict, level: str, violations: list, 
         # 異常=従来どおりBLOCK: 旧違反は残したまま(旧コードの説明を失わない)、分類核の理由コードを追加する
         new = list(violations) + list(cls["reasons"])
     else:
-        new = [v for v in violations if v not in replaced]     # 正常なLR/Fallback: 置換対象の旧違反だけを除去(他の旧違反=維持項目は残る)
+        is_fb = isinstance(take, dict) and take.get("kind") in er129.FALLBACK_KINDS
+        new = [v for v in violations if v not in replaced and not (is_fb and v in replaced_when_fallback)]     # 正常なLR/Fallback: 置換対象の旧違反だけを除去(他の旧違反=維持項目は残る)
     return {"violations": list(dict.fromkeys(new)), "warnings": list(cls["warnings"]) if cls["verdict"] != BLOCK else [],
             "classification": cls, "applied": True}

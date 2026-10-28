@@ -1,0 +1,669 @@
+{
+ "management_id": "LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01",
+ "case": "B10-Z-Std-2",
+ "family": "Z",
+ "level": "a2",
+ "scenario": "E-S1(L8 ctx)",
+ "leaf": "L8",
+ "policy": "Z_DLG_CTX",
+ "segments": [
+  "full_story_part1_c13"
+ ],
+ "run_dir": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_b10_z_std_2",
+ "tts_execution_mode": "STANDARD",
+ "tts_backend": "speech_metadata_flash_lite",
+ "style_profile": "fx_20261017",
+ "injection_plan": {
+  "ng": {
+   "*": [
+    1,
+    2
+   ]
+  },
+  "sub": {},
+  "post_ng": {},
+  "dq": {},
+  "ja_ng": {}
+ },
+ "injected_overrides": [
+  {
+   "kind": "judge_ng",
+   "clip": "full_story_part1_c13",
+   "slot": 1,
+   "judge_kind": "en"
+  },
+  {
+   "kind": "judge_ng",
+   "clip": "full_story_part1_c13",
+   "slot": 2,
+   "judge_kind": "en"
+  }
+ ],
+ "injected_override_count": 2,
+ "started_at": "2026-10-28T11:36:56",
+ "ended_at": "2026-10-28T11:40:23",
+ "wall_seconds": 207.5,
+ "pid": 824,
+ "exception": null,
+ "tts_attempts": [],
+ "tts_attempts_count": 0,
+ "tts_api_calls": 3,
+ "judges": [
+  {
+   "clip": "full_story_part1_c13",
+   "kind": "en",
+   "slot": 1,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "I wish to have two hundred pounds."
+  },
+  {
+   "clip": "full_story_part1_c13",
+   "kind": "en",
+   "slot": 2,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": false,
+   "script_version": "v0",
+   "forced_ng": true,
+   "asr_text_head": "I wish to have two hundred pounds."
+  },
+  {
+   "clip": "full_story_part1_c13",
+   "kind": "en",
+   "slot": 3,
+   "ok_real": true,
+   "stop_real": false,
+   "cls_real": "NORMALIZED_MATCH",
+   "force_secondary": false,
+   "is_last_slot": true,
+   "script_version": "v0",
+   "forced_ng": false,
+   "asr_text_head": "I wish to have two hundred pounds."
+  }
+ ],
+ "post_slowdown_judges": [],
+ "cooldown_events": [
+  {
+   "label": "full_story_part1_c13",
+   "requested_seconds": 180.0,
+   "actual_seconds": 179.983,
+   "started_at": "2026-10-28T11:37:14",
+   "ended_at": "2026-10-28T11:40:14",
+   "resumed": false,
+   "attempt_before": null,
+   "attempt_after": null,
+   "total_elapsed_since_ref_seconds": 180.001,
+   "wall_start_epoch": 1793155034.9042504
+  }
+ ],
+ "cooldown_count": 1,
+ "sleep_total_seconds": 0.0,
+ "stop_checks": {
+  "cooldown": 0,
+  "attempt": 0,
+  "other": 0
+ },
+ "lr_calls": [],
+ "lr_count": 0,
+ "hrq_rows": 0,
+ "hrq_detail": [],
+ "attempt_history_actions": [
+  "CTX_COOLDOWN_BEFORE_FALLBACK",
+  "PROCEED"
+ ],
+ "lock_state": {
+  "full_story_part1_c13": {
+   "state": "RESOLVED",
+   "canonical_text_sha256": "faabb0bc81db468ced6c7a6ab4a62e9cce984c9f871146ff981e8bcb33c3d873",
+   "language": "en",
+   "theme_id": "run_tru_ev_b10_z_std_2",
+   "level": "a2",
+   "segment_id": "full_story_part1_c13",
+   "updated_at": "2026-10-28T11:40:23",
+   "reason": "status=OKで確定しました。",
+   "final_status": "OK",
+   "wav_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_b10_z_std_2/a2/narration/full_story_part1_c13.wav",
+   "cumulative_tts_attempts": 3,
+   "cumulative_asr_calls": 3,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "asr_text": "I wish to have two hundred pounds.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": "FULL_STORY",
+      "lang": "en",
+      "segment_key": "full_story_part1_c13",
+      "audio_sha256": "0255775ee94b362ccbf519abaabf8122f27cba0ed48ca259801cc41560eff148",
+      "primary": {
+       "text": "I wish to have two hundred pounds.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+         {
+          "src": "200",
+          "hyp": "200",
+          "verdict": "EQUAL",
+          "reason": "same_surface"
+         }
+        ],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "EQUAL",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 34,
+       "secondary_len": null,
+       "max_len": 49,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "full_story_part1_c13",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "instruction_type": "english_style_prefix_wide_margin",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": false,
+     "trim_info": {
+      "raw_duration_seconds": 4.651,
+      "raw_leading_silence_seconds": 0.26,
+      "raw_trailing_silence_seconds": 0.24,
+      "trimmed_duration_seconds": 4.651,
+      "leading_margin_retained_seconds": 0.26,
+      "trailing_margin_retained_seconds": 0.24
+     },
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_b10_z_std_2/a2/narration/attempts/full_story_part1_c13_attempt1_englishstyleprefixwidemargin.wav",
+     "tts_mode": "ctx",
+     "overall_attempt_n": 1,
+     "dialogue_tts_policy": "fz_ctx_v1",
+     "style_prefix": {
+      "len": 3563,
+      "sha256": "8bb579716b9d0b6869a0337be6b8efdaed60454e83aa15711133f125e39a90f0",
+      "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
+     }
+    },
+    {
+     "attempt": 2,
+     "status": "OK",
+     "asr_text": "I wish to have two hundred pounds.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 2,
+      "script_version": "v0",
+      "role": "FULL_STORY",
+      "lang": "en",
+      "segment_key": "full_story_part1_c13",
+      "audio_sha256": "72acc9268f12e69fd5263303884ab2f0ad928d0e1a643f40d8dcbb5edde02759",
+      "primary": {
+       "text": "I wish to have two hundred pounds.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+         {
+          "src": "200",
+          "hyp": "200",
+          "verdict": "EQUAL",
+          "reason": "same_surface"
+         }
+        ],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "EQUAL",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 34,
+       "secondary_len": null,
+       "max_len": 49,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "full_story_part1_c13",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      },
+      "forced_ng_by_driver": true
+     },
+     "instruction_type": "english_style_prefix_wide_margin",
+     "audio_classification": "TRUE_CONTENT_MISMATCH",
+     "connected_speech_info": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": false,
+     "trim_info": {
+      "raw_duration_seconds": 3.251,
+      "raw_leading_silence_seconds": 0.28,
+      "raw_trailing_silence_seconds": 0.28,
+      "trimmed_duration_seconds": 3.251,
+      "leading_margin_retained_seconds": 0.28,
+      "trailing_margin_retained_seconds": 0.28
+     },
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": false,
+     "repetition_qa_evidence": null,
+     "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_b10_z_std_2/a2/narration/attempts/full_story_part1_c13_attempt2_englishstyleprefixwidemargin.wav",
+     "tts_mode": "ctx",
+     "overall_attempt_n": 2,
+     "dialogue_tts_policy": "fz_ctx_v1",
+     "style_prefix": {
+      "len": 3563,
+      "sha256": "8bb579716b9d0b6869a0337be6b8efdaed60454e83aa15711133f125e39a90f0",
+      "head200": "TTS the following complete story in natural, engaging English.\n\nSpeak directly to one interested listener rather than announcing to a large crowd.\n\nCreate a natural emotional arc that follows the mean"
+     }
+    },
+    {
+     "attempt": 3,
+     "status": "OK",
+     "asr_text": "I wish to have two hundred pounds.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 3,
+      "script_version": "v0",
+      "role": "FULL_STORY",
+      "lang": "en",
+      "segment_key": "full_story_part1_c13",
+      "audio_sha256": "c32e31e75ebdbcc75d1a852216ef2936d3e2b85b19835234d1204b4df6650588",
+      "primary": {
+       "text": "I wish to have two hundred pounds.",
+       "passed": true,
+       "label": "NORMALIZED_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+         {
+          "src": "200",
+          "hyp": "200",
+          "verdict": "EQUAL",
+          "reason": "same_surface"
+         }
+        ],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "EQUAL",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "length": {
+       "applied": true,
+       "primary_len": 34,
+       "secondary_len": null,
+       "max_len": 49,
+       "adopted_from": "primary",
+       "adopted_ok": true,
+       "surface_len": null,
+       "primary_ok": true
+      },
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": "full_story_part1_c13",
+       "asr_text_present": true,
+       "cache": {
+        "calls": 0,
+        "hits": 0
+       }
+      }
+     },
+     "instruction_type": "english_style_prefix_wide_margin",
+     "audio_classification": "NORMALIZED_MATCH",
+     "connected_speech_info": null,
+     "length_ok": true,
+     "final_length_ok": true,
+     "verified": true,
+     "trim_info": {
+      "raw_duration_seconds": 3.051,
+      "raw_leading_silence_seconds": 0.28,
+      "raw_trailing_silence_seconds": 0.28,
+      "trimmed_duration_seconds": 3.051,
+      "leading_margin_retained_seconds": 0.28,
+      "trailing_margin_retained_seconds": 0.28
+     },
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": true,
+     "repetition_qa_evidence": {
+      "flagged": false,
+      "duration_seconds": 3.051,
+      "method_a_ngram": {
+       "matches": [],
+       "flagged": false,
+       "flagged_matches": [],
+       "word_count": 6,
+       "canonical_known": true,
+       "min_words": 3
+      },
+      "method_d_spectral_long_lag": {
+       "top_matches": [
+        {
+         "similarity": 0.9549,
+         "time_a_seconds": 0.43,
+         "time_b_seconds": 2.12,
+         "lag_seconds": 1.69,
+         "run_length_seconds_at_thresh_0.85": 0.03
+        },
+        {
+         "similarity": 0.9293,
+         "time_a_seconds": 0.17,
+         "time_b_seconds": 2.19,
+         "lag_seconds": 2.02,
+         "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+         "similarity": 0.918,
+         "time_a_seconds": 0.32,
+         "time_b_seconds": 2.33,
+         "lag_seconds": 2.01,
+         "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+         "similarity": 0.9176,
+         "time_a_seconds": 0.64,
+         "time_b_seconds": 1.64,
+         "lag_seconds": 1.0
+        },
+        {
+         "similarity": 0.9138,
+         "time_a_seconds": 0.49,
+         "time_b_seconds": 1.99,
+         "lag_seconds": 1.5
+        }
+       ],
+       "best_run_length_seconds": 0.03,
+       "min_lag_seconds": 1.0,
+       "sim_threshold": 0.85,
+       "decision_threshold_seconds": 0.12,
+       "acoustic_flagged": false,
+       "local_asr_confirmation": null,
+       "flagged": false
+      },
+      "method_d_prime_spectral_short_lag": {
+       "run_length_seconds": 0.23,
+       "time_a": 0.98,
+       "lag": 1.25,
+       "similarity_at_start": 0.715,
+       "best_run_length_seconds": 0.23,
+       "lag_range_seconds": [
+        0.5,
+        2.0
+       ],
+       "sim_threshold": 0.7,
+       "decision_threshold_seconds": 0.6,
+       "flagged": false
+      },
+      "method_c_v2_window_check": null
+     },
+     "attempt_audio_path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_b10_z_std_2/a2/narration/attempts/full_story_part1_c13_attempt3_englishstyleprefixwidemargin.wav",
+     "tts_mode": "legacy_fallback",
+     "overall_attempt_n": 3,
+     "dialogue_tts_policy": "fz_ctx_v1"
+    }
+   ]
+  }
+ },
+ "block_progress": {},
+ "results_segments": {
+  "full_story_part1_c13": {
+   "status": "OK",
+   "voice": "Schedar",
+   "asr_text": "I wish to have two hundred pounds.",
+   "canonical_text": "\"I wish to have two hundred pounds.\"",
+   "slowdown_applied": null,
+   "cooldown_events": [],
+   "path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_b10_z_std_2/a2/narration/full_story_part1_c13.wav",
+   "audio_text_deviation": null
+  }
+ },
+ "results_key_phrases": {},
+ "attempt_sidecars": [
+  {
+   "file": "full_story_part1_c13_attempt1_englishstyleprefixwidemargin.json",
+   "segment_id": "full_story_part1_c13",
+   "attempt_number": 1,
+   "route": "english_style_prefix_wide_margin",
+   "saved_at": "2026-10-28T11:37:09",
+   "loop_attempt_index": 1,
+   "max_attempts": 3,
+   "model": "gemini-2.5-pro-preview-tts",
+   "voice": "Schedar",
+   "tts_backend": null,
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "I wish to have two hundred pounds.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "full_story_part1_c13_attempt2_englishstyleprefixwidemargin.json",
+   "segment_id": "full_story_part1_c13",
+   "attempt_number": 2,
+   "route": "english_style_prefix_wide_margin",
+   "saved_at": "2026-10-28T11:37:14",
+   "loop_attempt_index": 2,
+   "max_attempts": 3,
+   "model": "gemini-2.5-pro-preview-tts",
+   "voice": "Schedar",
+   "tts_backend": null,
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": false,
+   "audio_classification": "TRUE_CONTENT_MISMATCH",
+   "asr_text": "I wish to have two hundred pounds.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  },
+  {
+   "file": "full_story_part1_c13_attempt3_englishstyleprefixwidemargin.json",
+   "segment_id": "full_story_part1_c13",
+   "attempt_number": 3,
+   "route": "english_style_prefix_wide_margin",
+   "saved_at": "2026-10-28T11:40:23",
+   "loop_attempt_index": 3,
+   "max_attempts": 3,
+   "model": "gemini-2.5-pro-preview-tts",
+   "voice": "Schedar",
+   "tts_backend": null,
+   "tts_execution_mode": "STANDARD",
+   "instruction_head": "",
+   "instruction_sha": "e3b0c44298fc",
+   "instruction_chars": 0,
+   "verified": true,
+   "audio_classification": "NORMALIZED_MATCH",
+   "asr_text": "I wish to have two hundred pounds.",
+   "disfluency_checked": false,
+   "cascade_providers": [],
+   "slowdown": {}
+  }
+ ],
+ "asr_routing": {
+  "primary": {
+   "en": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   },
+   "ja": {
+    "provider": "openai_asr",
+    "model": "gpt-4o-mini-transcribe"
+   }
+  }
+ },
+ "cost": {
+  "jpy": 1.287,
+  "by_provider": {
+   "openai": 0.03,
+   "gemini": 1.21,
+   "openai_asr": 0.05
+  }
+ },
+ "gate_observation": {
+  "m2_complete": {
+   "checked": 1,
+   "path": "er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_b10_z_std_2/a2/audit/tts_generation_results.json",
+   "audio_text_deviations": []
+  },
+  "audio_gate": {
+   "BLOCK": "FamilyZStyleActualGateStop: Style実測照合Gate BLOCK(a2): JAPANESE_TITLE:*=Z_STYLE_COVERAGE_EMPTY; KP_EN:*=Z_STYLE_COVERAGE_EMPTY; NARRATOR_FULL_STORY_STD:*=Z_STYLE_COVERAGE_EMPTY; STD_JA_COMMENT:*=Z_STYLE_COVERAGE_EMPTY; STD_JA_PREVIEW:*=Z_STYLE_COVERAGE_EMPTY; TOPIC_INTRO_EN:*=Z_STYLE_COVERAGE_EMPTY; KP_THIRD:*=Z_STYLE_COVERAGE_EMPTY (照合表=er026_output/family_z_production_e2e_01/the_monkeys_paw/run_tru_ev_b10_z_std_2/a2/audit/st"
+  }
+ },
+ "resumed_run": false
+}

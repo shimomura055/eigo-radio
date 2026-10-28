@@ -682,8 +682,18 @@ def _lr_info(entry: dict, canonical_text: str) -> dict | None:
                 if str(c.get("id")) == str(cid) or c.get("rewritten_segment") == sel.get("rewritten_segment"):
                     rat = c.get("rationale")
                     break
+        if not rat:
+            # 委任_15(B10) D4: resume形(LR LLM再実行なし)はBlockProgressから復元した選定根拠`lr_selection_audit_restored`(er127.lr_recover)にだけ理由が残る
+            ra = rec.get("lr_selection_audit_restored")
+            rsel = (ra.get("selected") or {}) if isinstance(ra, dict) else {}
+            rrat = rsel.get("rationale")
+            if rrat and (rsel.get("rewritten_segment") in (None, sel.get("rewritten_segment"))):
+                reason, rsrc = rrat, "local_rewrite_recovery.lr_selection_audit_restored"
+                rat = None
         if rat:
             reason, rsrc = rat, "local_rewrite_recovery"
+        elif reason:
+            pass
         elif rec.get("resumed_without_llm") or "rewritten_segment" in sel:
             reason, rsrc = None, "resumed(rationale unavailable)"
     else:

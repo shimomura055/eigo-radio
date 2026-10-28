@@ -2194,7 +2194,8 @@ def _z_row_for_clip(spec: ClipSpec, entry: dict | None, strict_run: bool, approv
         # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B-wire(UD-3): イベントclip(LR・Fallback証跡あり)のStyle由来違反(Z_STYLE_ACTUAL_MISMATCH/Z_STYLE_FALLBACK_ADOPTED)は
         # 採用take分類核へ置換。正常なFallback/LR=PASS_WITH_WARNING(HR・停止を要求しない)、異常/記録欠落/未承認Style等=従来どおりBLOCK。
         import er130_adopted_take_classifier_01 as _c130
-        _ov = _c130.override_violations(spec.clip_id, entry, spec.level, row["violations"], ledger_clips, replaced=_c130.Z_REPLACED)
+        _ov = _c130.override_violations(spec.clip_id, entry, spec.level, row["violations"], ledger_clips, replaced=_c130.Z_REPLACED,
+                                         replaced_when_fallback=_c130.Z_REPLACED_WHEN_FALLBACK)
         if _ov["applied"]:
             row["violations"] = _ov["violations"]
             row["lr_fallback_class"] = {"verdict": _ov["classification"]["verdict"], "reasons": _ov["classification"]["reasons"]}

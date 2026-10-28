@@ -142,7 +142,8 @@ def test_12_allowlist_drift():
     import er019_family_x_style_profile_01 as xsp
     import er033_tts_flash_lite_family_x_styles_01 as er033
     sh = c.sha256_text
-    assert AL["fallback"][m129.KIND_MINIMAL_EN] == {sh(er033.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0])} == {EN_MIN}
+    assert AL["fallback"][m129.KIND_MINIMAL_EN] == {sh(er033.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]), sh(repro01.MINIMAL_INSTRUCTION_PREFIX)}   # B10 D1: KP解説③の既存Production Styleを追加登録
+    assert EN_MIN in AL["fallback"][m129.KIND_MINIMAL_EN]
     assert AL["fallback"][m129.KIND_MINIMAL_JA] == {sh(n3._A2_JA_MINIMAL_INSTRUCTION_PREFIX)}
     assert AL["fallback"][m129.KIND_ENGLISH_LOCK] == {sh(repro01.KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION)} == {LOCK}   # er129定数とも一致
     assert AL["fallback"][m129.KIND_LEGACY_DIALOGUE] == {sh(p9a.ENGLISH_STYLE_PREFIX)}
@@ -276,3 +277,83 @@ def test_real_run_is_not_modified():
     a = snap()
     _real(TTH, "kp2_en", "b1b")
     assert snap() == a
+
+
+# ---- 委任_15(B10) D1: KP解説③(既存Production Style repro01.MINIMAL_INSTRUCTION_PREFIX)の登録
+KP_MIN = hashlib.sha256(__import__("er003_v1_repro01_main_generate").MINIMAL_INSTRUCTION_PREFIX.encode("utf-8")).hexdigest()
+
+
+def test_b10_d1_kp_expl_fallback_sha_in_allowlist_and_passes():
+    import er019_family_x_audio_production_runner_01 as r19
+    import inspect
+    assert KP_MIN.startswith("b66d3a74")
+    assert KP_MIN in AL["fallback"][m129.KIND_MINIMAL_EN]
+    assert "repro01.MINIMAL_INSTRUCTION_PREFIX" in inspect.getsource(r19._kp_explanation_unified)    # leafが現に送るStyleと同一定数(X/Y/Z共通の単一関数)
+    r = run(clip(take(m129.KIND_MINIMAL_EN, KP_MIN, 3)), "KP_EXPL")
+    assert r.verdict == c.PASS_WITH_WARNING and r.warnings[0]["kind"] == "FALLBACK_APPLIED", r
+
+
+def test_b10_d1_unapproved_and_slot_still_block():
+    assert "STYLE_NOT_APPROVED_OR_UNKNOWN" in run(clip(take(m129.KIND_MINIMAL_EN, "f" * 64, 3)), "KP_EXPL").reasons
+    assert "FALLBACK_SLOT_INCONSISTENT" in run(clip(take(m129.KIND_MINIMAL_EN, KP_MIN, 2)), "KP_EXPL").reasons
+    assert "STYLE_RECORD_MISSING" in run(clip(take(m129.KIND_MINIMAL_EN, None, 3)), "KP_EXPL").reasons
+
+
+# ---- 委任_15(B10) D2: Z会話ctx→legacy_fallback(final_adoptionはsent_style_shaを持たない)
+def _dt(final_mode="legacy_fallback", policy="fz_ctx_v1", n=3, verified=True, mode="legacy_fallback"):
+    return {"policy": policy, "final_mode": final_mode, "final_attempt_n": n,
+            "attempts": [{"n": 1, "mode": "ctx", "verified": False}, {"n": 2, "mode": "ctx", "verified": False}, {"n": n, "mode": mode, "verified": verified}]}
+
+
+def test_b10_d2_z_dialogue_legacy_fallback_direct_record_passes():
+    t = take(m129.KIND_LEGACY_DIALOGUE, None, 3)
+    ctx = c.ctx_from_entry({"dialogue_tts": _dt(), "status": "OK", "asr_judgement": {"state": "PASS"}}, take=t)
+    assert ctx["dialogue_legacy_direct"] is True
+    r = run(clip(t), "Z_DLG_CTX", ctx)
+    assert r.verdict == c.PASS_WITH_WARNING and r.warnings[0]["kind"] == "FALLBACK_APPLIED", r
+
+
+@pytest.mark.parametrize("dt", [None, _dt(final_mode="ctx"), _dt(n=2), _dt(verified=False), _dt(mode="ctx"), _dt(policy="legacy")])
+def test_b10_d2_abnormal_dialogue_record_still_blocks(dt):
+    t = take(m129.KIND_LEGACY_DIALOGUE, None, 3)
+    ctx = c.ctx_from_entry({"dialogue_tts": dt, "status": "OK", "asr_judgement": {"state": "PASS"}} if dt else {"status": "OK", "asr_judgement": {"state": "PASS"}}, take=t)
+    assert ctx["dialogue_legacy_direct"] is False
+    assert "STYLE_RECORD_MISSING" in run(clip(t), "Z_DLG_CTX", ctx).reasons
+
+
+def test_b10_d2_override_drops_dialogue_mismatch_only_for_normal_fallback():
+    t = take(m129.KIND_LEGACY_DIALOGUE, None, 3)
+    entry = {"dialogue_tts": _dt(), "status": "OK", "asr_judgement": {"state": "PASS"}}
+    ov = c.override_violations("full_story_part1", entry, "a2", ["Z_DIALOGUE_STYLE_ACTUAL_MISMATCH"], {"full_story_part1": clip(t)},
+                               replaced=c.Z_REPLACED, replaced_when_fallback=c.Z_REPLACED_WHEN_FALLBACK)
+    assert ov["violations"] == [] and ov["warnings"][0]["kind"] == "FALLBACK_APPLIED"
+    # 記録欠落(dialogue_ttsなし)=BLOCK、旧違反も残る
+    ov = c.override_violations("full_story_part1", {"dialogue_tts": _dt(verified=False), "status": "OK", "asr_judgement": {"state": "PASS"}}, "a2", ["Z_DIALOGUE_STYLE_ACTUAL_MISMATCH"],
+                               {"full_story_part1": clip(t)}, replaced=c.Z_REPLACED, replaced_when_fallback=c.Z_REPLACED_WHEN_FALLBACK)
+    assert "Z_DIALOGUE_STYLE_ACTUAL_MISMATCH" in ov["violations"] and "STYLE_RECORD_MISSING" in ov["violations"]
+    # 通常(非Fallback)takeに付いたmismatchは置換されない
+    ov = c.override_violations("full_story_part1", entry, "a2", ["Z_DIALOGUE_STYLE_ACTUAL_MISMATCH"], {"full_story_part1": clip(take())},
+                               replaced=c.Z_REPLACED, replaced_when_fallback=c.Z_REPLACED_WHEN_FALLBACK)
+    assert "Z_DIALOGUE_STYLE_ACTUAL_MISMATCH" in ov["violations"]
+
+
+def test_b10_d2_z_gate_uses_replaced_when_fallback():
+    import inspect
+    import er063_family_z_audio_01 as z
+    assert "replaced_when_fallback=_c130.Z_REPLACED_WHEN_FALLBACK" in inspect.getsource(z._z_row_for_clip)
+
+
+# ---- 委任_15(B10) D6: Master Audio Store再利用(asr_judgement_inherited)
+def test_b10_d6_store_reuse_inherited_asr_state():
+    base = {"status": "OK"}
+    assert c.adopted_asr_state({**base, "asr_judgement_inherited": {"state": "PASS_WITH_WARNING"}}) == ("PASS_WITH_WARNING", "asr_judgement_inherited")
+    assert c.adopted_asr_state({**base, "asr_judgement": {"state": "PASS"}, "asr_judgement_inherited": {"state": "FAIL"}}) == ("PASS", "asr_judgement")
+    assert c.adopted_asr_state({**base, "asr_judgement_inherited": {}}) == (None, None)       # stateなし=従来どおり記録欠落
+    assert c.adopted_asr_state({**base, "asr_judgement_inherited": "PASS"}) == (None, None)
+    t = take(source="store_reuse", sha=None, how="store_reuse")
+    ctx = c.ctx_from_entry({"asr_judgement_inherited": {"state": "PASS"}}, take=t)
+    assert run(clip(t), "KP_EN", ctx).verdict in (c.PASS, c.PASS_WITH_WARNING)
+    ctx0 = c.ctx_from_entry({}, take=t)
+    assert "ASR_RECORD_MISSING" in run(clip(t), "KP_EN", ctx0).reasons
+    ctxn = c.ctx_from_entry({"asr_judgement_inherited": {"state": "FAIL"}}, take=t)
+    assert "ADOPTED_TAKE_ASR_NOT_PASS" in run(clip(t), "KP_EN", ctxn).reasons

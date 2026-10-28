@@ -180,6 +180,22 @@ def test_u3b_resume_form_rewritten_segment_only(tmp_path):
     assert "LR_REASON_UNAVAILABLE" in c["warnings"] and c["lr"]["source"].startswith("resumed")
 
 
+def test_b10_d4_resume_form_reads_restored_selection_audit(tmp_path):
+    # 委任_15(B10) D4: resume形でもBlockProgressから復元した選定根拠(lr_selection_audit_restored.selected.rationale)をLR理由として読む
+    rec = {"status": "RESOLVED_BY_LOCAL_REWRITE", "resumed_without_llm": True, "selection": {"selected": {"rewritten_segment": REWR}},
+           "lr_selection_audit_restored": {"selected": {"rewritten_segment": REWR, "rationale": "restored natural"}}}
+    e = {"status": "OK", "text": REWR, "canonical_text": CANON, "canonical_text_before_local_rewrite": CANON, "local_rewrite_recovery": rec}
+    run, lv = _mk_level(tmp_path, {"seg": e}, {"part1": PARTS["part1"]})
+    c = m.build_lr_ledger(run, lv)["clips"][0]
+    assert c["lr"]["reason"] == "restored natural" and "LR_REASON_UNAVAILABLE" not in c["warnings"]
+    # 復元根拠が別の書換え文のもの(不一致)は採用しない(記録なし表示のまま)
+    rec2 = dict(rec, lr_selection_audit_restored={"selected": {"rewritten_segment": "other text", "rationale": "x"}})
+    e2 = dict(e, local_rewrite_recovery=rec2)
+    run2, lv2 = _mk_level(tmp_path / "b", {"seg": e2}, {"part1": PARTS["part1"]})
+    c2 = m.build_lr_ledger(run2, lv2)["clips"][0]
+    assert c2["lr"]["reason"] is None and "LR_REASON_UNAVAILABLE" in c2["warnings"]
+
+
 def test_u3c_human_approval_restores_original_no_overlay(tmp_path):
     e = _x_entry(canonical=CANON, tts_text=CANON, rewritten=REWR, extra={m.er020.HUMAN_APPROVAL_SUPERSEDES_LR_AUDIO_FLAG: True,
                                                                          "adopted_attempt_audio_path": "nonexistent/a_attempt5.wav"})

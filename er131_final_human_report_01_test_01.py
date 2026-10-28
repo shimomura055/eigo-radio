@@ -279,7 +279,21 @@ def test_layer4_generated_report_would_fail_public_check_and_style_tokens_absent
 def test_layer5_check_spec_detects_each_token():
     for t in m.FHR_TOKENS:
         assert m.check_page_fhr_contamination(f"<p>{t}</p>")
-    assert m.check_page_fhr_contamination("<style>a{color:#c00000}b{color:#0a2a6b}</style>")
+    # 委任_15(B10) D5: 旧規則fhr_color_pair(赤+濃青の併存=NG)は撤去(試聴ページの赤/濃青表示=USER_02 §4と矛盾するため)
+    assert m.check_page_fhr_contamination("<style>a{color:#c00000}b{color:#0a2a6b}</style>") == []
+
+
+def test_b10_d5_listening_page_marks_pass_but_stray_notes_and_tokens_block():
+    import er133_report_marks_01 as m133
+    page = ("<html><body><div class='script'>Hello <span class='rpt-lr' style='color:#c00000'>x</span> <span class='rpt-fb' style='color:#0a2a6b'>y</span></div>"
+            "<div class='rpt-notes'><div class='rpt-note rpt-note-fb' style='color:#0a2a6b'><b>Fallback 適用</b><br>適用Style: 英語短文Style(Minimal) / 切替元Style: ROLE</div>"
+            "<div class='rpt-note rpt-note-lr'>Local Rewrite発動(最終採用音声に反映)</div></div><p>tail</p></body></html>")
+    assert m.check_page_fhr_contamination(page) == []
+    assert m.check_page_fhr_contamination(page.replace("<p>tail</p>", "<p>切替元Style: ROLE</p>")) == ["切替元Style:"]
+    assert m.check_page_fhr_contamination(page.replace("Hello", "LR_APPLIED Hello"))
+    assert m.check_page_fhr_contamination(page.replace("<p>tail</p>", "<p class='fhr-card'>t</p>"))
+    assert m.check_page_fhr_contamination("<!--FINAL_HUMAN_REPORT-->" + page)
+    assert m133.CLASS_NOTES == "rpt-notes"            # 除外対象classはer133の定数と同一
 
 
 # ------------------------------------------------------------------ 保存run: 期待値は実測(委任文・W4 §3-3・B2 §3-5)
