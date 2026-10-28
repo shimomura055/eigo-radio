@@ -9,7 +9,9 @@
 (H)FAMILY-Z-IN-A-GROVE-PRODUCTION-01=委任_06完了: STORM解除済・kp rc=4・Std/Advフォーム公開(200実測、?a=in_a_grove__a2/__b1b)。KP/文法ユーザー選定待ち(文法Std/Adv共0件)。累計約¥38.6/70 (RESUME_06.md)
 (FYDR)FAMILY-Y-SOURCE-DEEP-RESEARCH-01=委任_03完了・Status=**USER_DECISION_REQUIRED**(UDR #208書面照会/#209限定共有ページ非公開化/#210次回テーマ選定)。公的意見源(PDL1.0)確認→国内5テーマ確定(T1′最推奨、海外0)→`SOURCE_REGISTRY_01.md`正式版→SSOT反映(OPEN-583〜585)。API 0・Production変更0。結果=`docs/pm/RESULT_PACKET_FYDR3.md`、成果物=`docs/research/FAMILY-Y-SOURCE-DEEP-RESEARCH-01/`。
 (I)JA-ASR-V2-BETA-PRODUCTION-WIRING-01=ユーザー正式決定2026-10-29(v2+β APPROVED_FOR_PRODUCTION、R-1 OFF、ASR再試行・超→こえ不採用、量産時PASS_W非ブロッキング、HUMAN_APPROVED維持)。委任_01A=配線設計(API 0)→Opus条件A→委任_02A実装。原文=delegation_log/2026-10-29_JA-ASR-V2-BETA-PRODUCTION-WIRING-01_USER.md
-(J)PM-OPEN-581-TRIAGE-46-01=OPEN-581起点46件(36未登録+10トリガー不明)の重大度A/B/C精査。委任_01B=完了(A=0/B=10/C=36、Close提案24・継続管理21・軽微是正1、成果物=docs/research/PM-OPEN-581-TRIAGE-46-01/TRIAGE_01.md、報告=docs/pm/RESULT_PACKET_OT1.md、API 0・SSOT編集なし)→Fable確認→委任_02B。
+(J)PM-OPEN-581-TRIAGE-46-01=OPEN-581起点46件(36未登録+10トリガー不明)の重大度A/B/C精査。委任_01B=完了(A=0/B=10/C=36、Close提案24・継続管理21・軽微是正1、成果物=docs/research/PM-OPEN-581-TRIAGE-46-01/TRIAGE_01.md、報告=docs/pm/RESULT_PACKET_OT1.md、API 0・SSOT編集なし)→Fable確認→委任_02B。 【委任_02B=SSOT反映・軽微是正完了(Close24/B10 trigger/OPEN-581 Closeout/UDR#14注記/DECISION_LOG/T13 test修正PASS、API 0、報告=docs/pm/RESULT_PACKET_OT2.md、Fable受入待ち)】
+(K)FX-AI-ISLAND-FINAL-PUBLISH-01=ユーザー2026-10-29: AI島Std/Adv最終試聴PASS・記事単位APPROVED_FOR_PRODUCTION。委任_01=正式公開・検証・SSOT/Git(API 0)。原文=delegation_log/2026-10-29_FX-AI-ISLAND-FINAL-PUBLISH-01_USER.md。【委任_01完了: 正式公開済み(commit 9a2fb4b52)、live全asset 200・byte一致、SSOT反映、報告=docs/pm/RESULT_PACKET_FXAP1.md、Fable確認待ち】
+(L)NUANCE-EXPLANATION-LOSS-INVESTIGATION-01=ユーザー2026-10-29: 「ニュアンス解説」がいつ・なぜ消えたかの原因調査(API 0、調査のみ)。委任_01。
 
 **(F)受入条件表(2026-10-28 A1、ユーザー原文`docs/pm/delegation_log/2026-10-28_JA-ASR-FALSE-NG-ROOT-FIX-02_USER.md` §3・§6から逐語抜粋。各受入で更新。未達行が残る間は『完了』『一区切り』『進行中なし』を使わない)**
 | 条件 | 達成/部分/未達 | 担当手段 |
