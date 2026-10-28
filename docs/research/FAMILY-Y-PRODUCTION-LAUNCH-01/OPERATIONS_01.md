@@ -17,6 +17,8 @@
 
 ## 1. 立上げ手順(推奨順)
 
+> 【2026-10-28追記・参照のみ】新しいTheme Packageを作る前に、素材の情報源が`docs/research/FAMILY-Y-SOURCE-DEEP-RESEARCH-01/SOURCE_REGISTRY_01.md`で「条件付き利用可能」以上であることと、その条件(逐語転載なし・低負荷・個人情報を取り込まない等)を確認する。登録は継続利用の承認ではなく、新しい収集方式のProduction採用はユーザー承認が必要。小町・知恵袋由来の素材を含む既存Package(redelivery_fee)の再実行は凍結を提案中(OPEN_ITEMS参照)。
+
 1. **STOP確認**: `py tools/stop_scope_check_01.py --managed-id FAMILY-Y-PRODUCTION-LAUNCH-01 --run-dir er121_output/family_y_production_01/<slug>/<run> --out <json>`。rc=3なら新規API呼出をせず停止して報告。
 2. **dry-run**(副作用0・API 0): `py er121_family_y_runner_01.py --slug <slug> --run <run> --theme-package <theme.json>`(既定mode=dry-run)。routing登録・Voice割当・Theme Package・text core接続状態を表示。
 3. **mock**(偽client・偽TTS。実APIへ出ない): `--mode mock`。出力は `<run>_mock/`。KPは`rc=4`で止まる(下記4)。
