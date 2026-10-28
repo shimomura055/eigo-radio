@@ -534,3 +534,4 @@
 ### 2026-10-28 PM-SSOT-SYNC-31 追記
 - **次工程をブロックするUDR(追記)**: 告げ口心臓 Fenrir版 最終試聴(ユーザー、候補ページ`user_test/family_z_tell_tale_heart_fenrir_01/`)。試聴PASS前に公開差替えしない。
 - 2026-10-28 撤回: 告げ口心臓 Fenrir版のPRODUCTION_WIRED判定(SYNC-31)は撤回(ユーザー試聴でAoedeのまま=USER_03)。再修正後に再受入。最終試聴待ちは継続。
+- 2026-10-28 PM-SSOT-SYNC-32 追記: 告げ口心臓 Fenrir版 最終試聴は**修正版で試聴待ち(候補ページURL同じ=`user_test/family_z_tell_tale_heart_fenrir_01/`)**。前回試聴で指摘されたAoedeのままの不具合は修正・再生成済み(送信Voice・実音声f0の3点一致を確認、OPEN-570、`docs/research/FZ-TELL-TALE-HEART-NARRATOR-VOICE-01/VOICE_DEFECT_FIX_01.md`)。試聴PASS前に公開差替えしない。
