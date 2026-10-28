@@ -14,6 +14,7 @@
 (L)NUANCE-EXPLANATION-LOSS-INVESTIGATION-01=完了・ACCEPTED。新OPEN-586/UDR #211起票・ユーザー判断待ち(Part 3処遇)。
 (M)FAMILY-Y-DEBATE-SOURCE-DEEP-RESEARCH-01=ユーザー2026-10-29: Family Y Debate/Discussion情報源の拡張Deep Research(海外積極探索、国固有除外、商用◎/○のみ推奨、実在意見とAI構成案の区別、調査のみ・API 0)。委任_01a(海外英語圏)/01b(欧州・アジア・市民討論)/01c(国内)並行→委任_02統合→Fable評価。原文=delegation_log/2026-10-29_FAMILY-Y-DEBATE-SOURCE-DEEP-RESEARCH-01_USER.md
 (N)FX-PAYCHECK-PERSONALITY-FINAL-PUBLISH-01=ユーザー2026-10-29: Paycheck Personality Std/Adv最終試聴PASS・記事単位公開承認(UDR #144回答)。委任_01=正式公開・検証・SSOT/Git(API 0)。公開・検証完了(e2e_02、live 52/52)、commit待ち/報告=RESULT_PACKET_FXPP1。
+(O)NUANCE-EXPLANATION-PRODUCTION-WIRING-01=ユーザー2026-10-29: ニュアンス解説をX/Y/Z全レベル共通で正式採用(APPROVED_FOR_PRODUCTION、最大1件・KP/Wordとの主題重複NG・HR採否・不採用/0件はコーナー非表示・文法0件も非表示・retry/fallback/resume整合)。到達目標=PRODUCTION_WIRED。委任_01a=調査・設計/01b=Prompt品質Trial(並行)→Opus条件A→委任_02実装。原文=delegation_log/2026-10-29_NUANCE-EXPLANATION-PRODUCTION-WIRING-01_USER.md
 
 **(F)受入条件表(2026-10-28 A1、ユーザー原文`docs/pm/delegation_log/2026-10-28_JA-ASR-FALSE-NG-ROOT-FIX-02_USER.md` §3・§6から逐語抜粋。各受入で更新。未達行が残る間は『完了』『一区切り』『進行中なし』を使わない)**
 | 条件 | 達成/部分/未達 | 担当手段 |
