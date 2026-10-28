@@ -356,12 +356,15 @@ def test_overlay_output_itself_never_contains_forbidden_words_on_real_runs():
             assert m.public_leak_hits(s) == []
 
 
+_UNPUBLISHED_CANDIDATE_SUFFIXES = ("_fenrir_01", "_reselect_01")   # B9: 未公開の声候補ページ(告げ口心臓。ENGLISH_LOCK Fallback表示は正常)は公開済み走査の対象外
+
+
 def _published_pages():
     out = []
     for p in glob.glob(os.path.join(ROOT, "user_test", "*", "*.html")):
         n = os.path.basename(p)
         d = os.path.basename(os.path.dirname(p))
-        if n in ("index.html", "standard.html", "advanced.html") and not d.startswith(("hr_",)) and "/hr_" not in p.replace("\\", "/") and "_candidate_" not in p:   # B7: 候補ページ(`*_candidate_*`)は公開前確認用(LR/Fallback注記は仕様どおり出る)なので公開済みの走査対象外
+        if n in ("index.html", "standard.html", "advanced.html") and not d.startswith(("hr_",)) and "/hr_" not in p.replace("\\", "/") and "_candidate_" not in p and not d.endswith(_UNPUBLISHED_CANDIDATE_SUFFIXES):   # B7: 候補ページ(`*_candidate_*`)は公開前確認用(LR/Fallback注記は仕様どおり出る)なので公開済みの走査対象外
             out.append(p)
     return sorted(out)
 
@@ -482,3 +485,23 @@ def test_chunk_texts_overlaid_no_lr_is_identical_to_plan_texts():
     assert m.chunk_texts_overlaid({"clips": []}, plan) == uc.chunk_texts_of_plan(plan)
     assert m.chunk_texts_overlaid(None, plan) == uc.chunk_texts_of_plan(plan)
     assert m.chunk_texts_overlaid(None, {"chunked": False, "chunks": []}) == []
+
+
+# ============================================================ B9是正: Z側(er063)も⏸用chunk本文へoverlayを適用(Xと同型の欠落の解消)
+def test_z_sources_apply_chunk_texts_overlaid_at_both_render_sites_and_no_raw_plan_texts_remain():
+    z = _src("er063_family_z_audio_01.py")
+    assert z.count("chunk_texts_overlaid(") == 2                       # build_page_rows と _user_page_rows(Full Storyの⏸)
+    assert "uc.chunk_texts_of_plan(" not in z and "_uc.chunk_texts_of_plan(" not in z   # 生planを直接⏸へ渡す旧式は撤去
+
+
+def test_z_chunk_marker_count_equals_plan_boundaries_with_lr_and_unchanged_without_lr():
+    import er_user_listening_page_common_01 as uc
+    k1, k2, k3 = "Day one. The island was quiet.", BEFORE, "The end of the story."
+    plan = _plan(("p_k1", k1), ("p_k2", k2), ("p_k3", k3))
+    # Zのclip単位表示(chunk_id=LR採用clip_id): LRあり=⏸数がplan境界数(2)、LRなし=従来と同一
+    led = {"clips": [_clip("p_k2", BEFORE, AFTER, "parts.json:part1")]}
+    disp = " ".join([k1, m.display_text_of_clip(led, "p_k2", k2), k3])
+    assert len(uc._chunk_boundary_positions(disp, m.chunk_texts_overlaid(led, plan))) == 2
+    disp0 = " ".join([k1, k2, k3])
+    assert m.chunk_texts_overlaid({"clips": []}, plan) == uc.chunk_texts_of_plan(plan)
+    assert len(uc._chunk_boundary_positions(disp0, m.chunk_texts_overlaid({"clips": []}, plan))) == 2

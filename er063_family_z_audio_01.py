@@ -2536,7 +2536,7 @@ def build_page_rows(run_dir: str, level: str, audio_rel_prefix: str, audio_out_d
             # 委任_11: 旧LR注記2か所(row["notes"]のLR採用文)は、共通表示部品(LR赤・Fallback濃青・⏸)へ置換した
             # (row["marks"]/row["chunk_texts"]。`Voice:`/`Style:`/TTS方式と減速注記は維持=er063_family_z_page_verify_01の検査対象)。
             row["marks"] = _rm.marks_for(_events, row["script"], block=cid)
-            row["chunk_texts"] = _uc.chunk_texts_of_plan(_plans.get(cid))
+            row["chunk_texts"] = _er132.chunk_texts_overlaid(_lr, _plans.get(cid))   # B9: LR後の表示本文と同じoverlayで⏸位置を決める
         if part.startswith("key_phrase_"):
             n = part.split("_")[-1]
             kp = (data.get("key_phrases") or {}).get(n) or {}
@@ -2608,6 +2608,8 @@ def _user_page_rows(run_dir: str, level: str, rows: list, kp_rows: list, audio_r
         import er_learning_highlight_01 as _hl_mod
         _hl_res = highlights["result"]
         _hl_exp = {u["key"]: list(u["texts"]) for u in highlights["units"]}
+    import er132_lr_overlay_pages_01 as _er132b   # B9: ⏸用chunk本文をLR overlay後へ揃える
+    _lr2 = _er132b.level_ledger(run_dir, level)
     _plans = uc.load_chunk_plans(f"{run_dir}/{level}/audit/chunk_plan_{level}.json")   # 委任_11: ⏸は全試聴ページ(報告資料)で実Chunk境界(plan記録)にだけ表示(旧dev限定を撤去)
     import er133_report_marks_01 as _rm   # 委任_11(ユーザー原文_02 §4): ⏸・LR赤・Fallback濃青の共通表示部品(er129 ledger由来。旧「LR採用」注記の置換)
     _events = _rm.load_events(run_dir, level)
@@ -2643,7 +2645,7 @@ def _user_page_rows(run_dir: str, level: str, rows: list, kp_rows: list, audio_r
                     if v and v != "-" and v not in voices:
                         voices.append(v)
             out.append({"part": f"Full Story Part {n}" + (f" ({' / '.join(voices)})" if voices else ""), "start": start, "dur": end - start, "src": f"{audio_rel_prefix}{fn}",
-                        "blocks": [uc.script_block(g["script"], uc.chunk_texts_of_plan(_plans.get(g.get("clip_id"))), audience,
+                        "blocks": [uc.script_block(g["script"], _er132b.chunk_texts_overlaid(_lr2, _plans.get(g.get("clip_id"))), audience,
                                                    highlights=(_hl_mod.highlights_for_text(_hl_res, f"full_story_part{n}", k) if _hl_res else None),
                                                    marks=_rm.marks_for(_events, g["script"], block=g.get("clip_id")))
                                    for k, g in enumerate(grp)]})
