@@ -1,0 +1,5 @@
+# 委任_01 FX-AI-ISLAND-FINAL-PUBLISH-01(2026-10-29、Fable→Sonnet。要旨保存)
+目的: AI島Std(Comment 3 Z方式適用版)/Adv(既承認完成版)を既存の承認済み公開手順で正式公開・検証・SSOT/Git反映(API 0、再生成なし)。
+手順: 0.原文/委任保存・stop check・ACTIVE_TASK(K)行追加 / 1.公開手順特定(CURRENT_SPEC Grep、OPEN-432等の前例、PM_GOVERNANCE、OPEN-561/582、UDR #200) / 2.候補ページ user_test/family_x_ai_island_form_01_candidate_b7_01/ のsha256記録と試聴物の同一性突合(Std C3 audit passed_excerpt_sha256 c0326dc1…/resp_0907239a…、Adv byte同一) / 3.正式公開 / 4.検証(全asset HTTP200、Content-Length>0、解説表示、Std Comment3本文=「島は毎時間リセットされても、メモに残した経験は次の課題に役立ちました。では、学んだ方法を一つ消されたAIでも、その経験は役立つのでしょうか。」) / 5.公開commit直前に docs/pm/RESULT_PACKET_NUX1.md 1行目確認(`AI島重大欠落=あり`なら停止報告、無し/なし/未特定なら続行) / 6.SSOT(OPEN-561/582追記、DECISION_LOG 1エントリ、UDR該当行追記、CURRENT_SPEC台帳あれば1行、ACTIVE_TASK) / 7.PUBLISH_EVIDENCE_01.md / 8.commit(明示add)・push origin HEAD:main(FF)・Pages反映待ち最大15分。
+範囲: 承認済み公開手順の実行・検証・記録のみ。再生成/変更/Prompt変更/新Gate/Family A,B,C/自動配信機構は範囲外。公開手順が未定義/矛盾なら判断候補としてfile:line付で報告。
+報告: docs/pm/RESULT_PACKET_FXAP1.md(整合/未承認機能/成果物と目的適合/撤去残置/判断候補/費用0/commit、末尾に判定整合行)。最終回答は短く。
