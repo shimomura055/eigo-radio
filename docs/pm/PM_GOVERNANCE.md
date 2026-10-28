@@ -2893,6 +2893,14 @@ Trialあり・未採用/C. 本当に新規)を必ず行い、分類結果(A/B/C)
 7. **別タスク管理**: 別管理IDのタスクは完了報告も別々に行う(例: Voice変更と本ルール整備)。優先順位Q＞D＞C≫開発費用を維持し、不要な待機・再生成・逐次処理を避ける。
 8. **Workerの最終応答**: sonnet-worker/haiku-worker等の最終応答はFable向けでありユーザー向けではない。ユーザーへの提示はFableが本節に従い行う。
 
+### 12-14-2. 端末表示抑制(USER_02、2026-10-28、PM-REPORTING-RULES-01)
+
+12-14を弱めない。STOP・承認・Gate・内部証拠の規定は不変。詳細表=`docs/research/PM-REPORTING-RULES-01/REPORTING_RULES_REFLECTION_01.md`「USER_02」節。
+
+1. 端末の`Write(...)`/`Read(...)`/検索/委任文表示はClaude Code本体がメインセッションの全ツール呼出を描画するもので、ルールでは消せない(Worker内部の呼出はメイン端末に出ない)。
+2. ユーザー側設定: `~/.claude/settings.json`に`viewMode:"focus"`+`tui:"fullscreen"`(次回起動から有効、セッション中は`/focus`切替)。
+3. Fable運用: 長文file(委任文・成果物)はWriteでなくBash heredocまたはWorker作成/Agent promptは短く(詳細は委任fileへ)/進行中narrationなし/Read全文表示を避けgrep・偏った範囲読み。
+
 ## 13. 新規記事テーマ選定ルール
 
 **管理ID: PM-CLOSEOUT-CONSOLIDATION-70(2026-09-10、ユーザー正式決定、恒久ルール)**
