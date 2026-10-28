@@ -1,0 +1,18 @@
+[GLOSS-ALIGN] 実効flag=ON (source=default, EIGO_KP_GLOSS_ALIGNMENT=None)
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 3987, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 3901, in main
+    stage_assemble_family_x_a2(out_dir, args.slug, source_dir=source_dir)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 2849, in stage_assemble_family_x_a2
+    sources = load_family_x_a2_sources(theme_out_dir, source_dir=source_dir)
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 2627, in load_family_x_a2_sources
+    asm.verify_episode_audio_validation_gate(out_dir, "A2", article_text=article_text)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er003_v1_n3_01_assemble.py", line 512, in verify_episode_audio_validation_gate
+    raise RuntimeError(
+    ...<7 lines>...
+        "適用してから再度assemblyを実行してください。")
+RuntimeError: EPISODE_BLOCKED_BY_AUDIO_VALIDATION: A2のepisode assemblyを中止しました。以下のsegmentが今回のrunでVALIDATED/HUMAN_APPROVED状態ではありません、または必須post-processのevidenceがありません: ['japanese_title=STOPPED']。未検証・stale・STOPPEDの音声、または6% slowdown等の必須post-processを経ていない音声をそのまま完成扱いにすることは許可されていません(ER-008-AUDIO-VALIDATION-GATE-AND-EVIDENCE-MAJOR-AUDIT-05、ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19)。該当segmentを再生成するか、post-processを適用してから再度assemblyを実行してください。

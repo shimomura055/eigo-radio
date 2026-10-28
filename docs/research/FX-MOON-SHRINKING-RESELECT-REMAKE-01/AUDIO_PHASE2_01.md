@@ -14,3 +14,9 @@ run=`er019_output/family_x_audio_production_wiring_01/moon_shrinking__run_resele
 - 注: 11:03頃、別workerのgit stash/popでrun直下`entry_point.json`が一時的に旧内容(levels=[b1b],stage=assemble)へ戻った。a2側のKP/文法confirmed・tts_block_progress・results・raw_usage_logは健在(確認済み)、a2 TTSプロセスは継続し正常完了、assemble/playerは各段で再書込み。実害なし。
 ## 費用
 累計(Phase1含む)¥20.78(openai 6.93/gemini 0.96/gemini_batch 7.15/openai_asr 3.84/azure 1.90)。本委任分≒¥15.5。Cap¥60内。
+
+## 追記(2026-10-28 後半): er130 D6修正(commit 369e89972)後の再開結果
+- pull後 a2 assemble を再実行 → 前回のM3 Gate(ASR_RECORD_MISSING)は解消(この停止ではない)。**別の停止**: `EPISODE_BLOCKED_BY_AUDIO_VALIDATION: japanese_title=STOPPED`(`er003_v1_n3_01_assemble.py:512`、runner:2627 load_family_x_a2_sources)。
+- 原因: Std日本語題「月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密」が**TTS3回(standard2+fallback1)すべてASR NG**(`a2/audit/tts_block_progress/japanese_title.json` final_status=STOPPED、attempt1: Azure `TRUE_CONTENT_MISMATCH`/`NG_BOTH secondary_not_accepted`、primary・secondary とも題の読み不一致)。run_ms_03でも同題は3 attempt NG→**ユーザー個別承認**(USER_06、attempt2のみ、`run_ms_03/a2/audit/fxnr10_user_approval_record.json`: adopted_audio_sha256=f0c4b415…6865、canonical_text_sha256=b02b1f60…bad16、scope="this single segment / attempt 2 only; NOT a general ASR-check exemption")。今回は同題・同一canonical文だが**新しい音声**でありその承認は引き継げない(承認スコープ拡張になるため私は適用していない)。
+- 選択肢(Fable判断): (a)ユーザー承認済み既存音声(sha f0c4b415…)を新runのjapanese_titleへ再利用する(同一text・同一audio shaなので承認スコープ内。runner既存の人間承認経路`record_human_approval`相当の注入が必要=Fable指示下で実施)。費用0。推奨。 (b)題のみ再生成(¥1〜3/回)。同題はms_03でも3回NGで通過見込み低、通っても新規ASR PASS前提。 (c)題文変更は本文/題の変更でありユーザー承認事項(不可)。
+- 現状: Std assemble/ページ未完(Gate迂回なし)。Adv完成ページ(Advのみ)はcommit 186f0f3d1のまま。費用追加0(累計¥20.78)。
