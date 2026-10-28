@@ -541,3 +541,7 @@
 - #198(**新規・未回答・分類D・記事単位承認**、OPEN-569/499): **Word Gacha Adv 公開差替え**。決めること=既公開を是正候補(`user_test/family_x_word_gacha_01_candidate_b7_01/`、you've→you have、LR赤1)へ差替えるか。Fable推奨=差替え(本文/音声乖離の是正のみ、必要十分)。ブロック=公開差替えのみ(他工程非blocking)。
 - #199(**新規・未回答・分類D・記事単位承認**、OPEN-569/577): **猿の手Std 公開差替え**。決めること=既公開を是正候補(`user_test/family_z_monkeys_paw_01_candidate_b7_01/`、guest→visitor、旧「Local Rewrite採用」注記撤去)へ差替えるか。Fable推奨=差替え。ブロック=公開差替えのみ。
 - #200(**新規・未回答・分類D・記事単位承認**、OPEN-569/561): **AI島 UD-2適用版の初公開**。決めること=UD-2(Std `AI agents`/Adv `AI systems`)適用候補(`user_test/family_x_ai_island_form_01_candidate_b7_01/`、Std/Adv LR赤各1、⏸各5)を初公開するか(OPEN-573のscan hit確認を含む)。Fable推奨=ユーザー試聴後に判断。ブロック=AI島の公開のみ。
+
+### 2026-10-28 FZ-TELL-TALE-HEART-NARRATOR-VOICE-01 委任_04 追記(既存行は書き換えず追記)
+- **判断済み**: 告げ口心臓 Fenrir版 最終試聴=PASS・記事正式承認(原文=`docs/pm/delegation_log/2026-10-28_FZ-TELL-TALE-HEART-NARRATOR-VOICE-01_USER_04.md`)。公開反映済み(`user_test/family_z_tell_tale_heart_reselect_01/`、OPEN-570)。上記『次工程をブロックするUDR(告げ口心臓 Fenrir版 最終試聴)』は解決済み、ブロックから外す。
+- **判断済み**: Voice検証ツールの自動Gate接続=今回行わない(Fable受入手順での実送信Voice照合を維持)。再質問しない。

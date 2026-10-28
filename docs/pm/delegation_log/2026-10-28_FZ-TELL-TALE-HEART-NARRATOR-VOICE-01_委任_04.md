@@ -1,0 +1,2 @@
+# 委任_04 要点(最終Closeout、API 0)
+管理ID FZ-TELL-TALE-HEART-NARRATOR-VOICE-01。原文=USER_04。(1)候補`user_test/family_z_tell_tale_heart_fenrir_01`を正式公開版`..._reselect_01`へ反映し(a)mp3 sha(b)voice_acceptance_check(c)f0(d)page_verify(e)Pages実測(f)旧Aoede退避/履歴を確認 (2)SSOT(CURRENT_SPEC/DECISION_LOG/OPEN_ITEMS/UDR)を正式承認・公開反映済み・PRODUCTION_WIREDへ更新、ユーザー決定2件明記(Voice検証ツール自動Gate追加なし/誤完了判定再発防止は既存受入規則参照) (3)全test再実行、commit(末尾「(API 0)」)+push (4)報告=docs/pm/RESULT_PACKET_FZTTV3.md。並行workerの月記事ASR判定コード(er011*/er007*/er078*)には触れない。
