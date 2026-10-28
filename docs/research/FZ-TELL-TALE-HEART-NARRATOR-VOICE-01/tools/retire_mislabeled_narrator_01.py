@@ -3,13 +3,17 @@ audit/legacy_voice_mislabel/<level>/ へ退避(上書き・削除しない)。re
 dialogue(old_man=Algieba)・topic_intro等の他clipは対象外。API 0。"""
 import json, os, shutil, hashlib, sys
 RUN = sys.argv[1]
+LEVELS = sys.argv[2].split(",") if len(sys.argv) > 2 else ["a2", "b1b"]
+SUB = sys.argv[3] if len(sys.argv) > 3 else "legacy_voice_mislabel"   # 2回目退避は別subdir(上書き回避)
 NARR = ["full_story_part1_c1", "full_story_part1_c2", "full_story_part1_c4", "full_story_part2_c1", "full_story_part2_c1_k1",
         "full_story_part2_c1_k2", "full_story_part3_c1", "full_story_part3_c1_k1", "full_story_part3_c1_k2"]
+if len(sys.argv) > 4:
+    NARR = sys.argv[4].split(",")   # 対象clip限定(部分再生成用)
 manifest = []
 def sha(p):
     return hashlib.sha256(open(p, "rb").read()).hexdigest()
-for lv in ("a2", "b1b"):
-    dst = f"{RUN}/{lv}/audit/legacy_voice_mislabel"
+for lv in LEVELS:
+    dst = f"{RUN}/{lv}/audit/{SUB}"
     os.makedirs(f"{dst}/narration/attempts", exist_ok=True)
     os.makedirs(f"{dst}/tts_block_progress", exist_ok=True)
     rp = f"{RUN}/{lv}/audit/tts_generation_results.json"
@@ -32,5 +36,5 @@ for lv in ("a2", "b1b"):
         if os.path.exists(pf):
             shutil.move(pf, f"{dst}/tts_block_progress/{cid}.json")
     json.dump(d, open(rp, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
-json.dump(manifest, open(f"{RUN}/a2/audit/legacy_voice_mislabel/MANIFEST.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+json.dump(manifest, open(f"{RUN}/{LEVELS[0]}/audit/{SUB}/MANIFEST.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 print(len(manifest), "items retired")

@@ -1,6 +1,6 @@
 # FZ-TELL-TALE-HEART-NARRATOR-VOICE-01 委任_03 不具合調査・修正(2026-10-28)
 
-状態: **修正完了・部分再生成済み(b1b全narrator+a2先頭2clip)。再生成run=予算guard(WARN_THRESHOLD)で途中停止。残りa2 5clip+後段(provision_shell/gate/assemble/pages/page_verify)は未実行=Fable判断待ち。** 候補ページは旧(Aoede版)のまま。
+状態: **修正・再生成・検証完了(候補ページ更新済み、公開`_reselect_01`不変、ユーザー最終試聴PASSは未取得)。** 下記「6. 最終検証」参照。
 
 ## 1. 真因(API 0、file:line)
 - `er063_family_z_audio_01.py` real_generators `narrator()`(修正前L1017-1027)は`spec.voice`を一切使わず、共有leaf(`news_tail_fix.generate_news_narration_wide_margin` / `n3_tts.generate_a2_segment_with_slowdown`)へ呼出。
@@ -47,3 +47,13 @@
 2. 矛盾する観測(attempt JSONのvoice≠計画)を「ラベル」と解釈して受入する場合は、該当値の送信への関与をfile:lineで追った記録を必須とする(追えない=受入不可)。
 3. testはSDK境界(`client.models.generate_content`に渡るconfig)を捕捉する形に統一(本委任のtestを雛形に。`ClipSpec`に入った=送信されたの推定をtestで置換しない)。
 4. 実装(本委任で完了): attempt JSONのvoice=`effective_voice`(送信と同一関数)、cost_logの独立記録、block progress fingerprintへのvoice。Gate追加(例: 受入時に`tts_voice_sent`集計と計画voiceを機械照合する`voice_acceptance_check`)は案のみ=Fable判断。
+
+## 6. 最終検証(Fable判断による続行、起動3回目まで: 1回目=予算guard停止、2回目=b1b再生成+a2残り+後段、3回目=a2 part1_c1/c2のみ再生成[tts_voice_sent導入前だったため]+後段)
+- 3点一致(`voice_acceptance_check_01.py`、`evidence/voice_acceptance_check_final_01.txt`): Std/Adv 各7 narrator clip全て 計画voice=Fenrir・SDK境界送信`tts_voice_sent`=Fenrir・attempt JSON voice=Fenrir → **RESULT: ALL_MATCH**(b1b part3_c1_k1は送信2件、全てFenrir)。減速後処理の`*_postslowdown.json`はTTS送信でない記録のためvoice欄なしが仕様(checker対象外)。
+- f0(`evidence/f0_pooled_final_01.csv`, pooled voiced frames、p10/p25/中央値): Aoede版 Std 144.1/156.9/177.8、Adv 142.9/158.4/177.8; 旧mislabel Std 141.6/155.3/172.0、Adv 142.9/160.0/179.8(=Aoede帯と同一); **新Std 121.2/136.8/164.9、新Adv 118.5/140.4/168.4、ページmp3(Std p1-3) 119.4/136.8/166.7**(Aoede版ページ141.6/155.3/175.8)。低音側(p10/p25)がAoedeより約20Hz低くFenrir参照(103.9/114.1)方向。f0は単独でFenrir断定せず、上記送信記録と合わせた3点で判断。
+- dialogue(old_man=Algieba): 非narrator40 wavのsha(`evidence/non_narrator_sha_before.txt`)を`sha256sum -c`で照合 → 全件一致(dialogue part1_c3/Charon shell/KP/JA/preview/comment不変、再TTSなし)。
+- ページ: 候補ページ`user_test/family_z_tell_tale_heart_fenrir_01`はpagesステージで再生成(mp3はassemble後の10:25:42更新、`page_verify_local.json`: index 35/Standard 25/Advanced 26 plays_ok・plays_failed空・http>=400なし・console error 0)。`<audio src>`はmp3でrun wavとsha直接比較不可のため、ページmp3のf0(上記)が新narrator帯であることで新音声参照を確認。公開`user_test/family_z_tell_tale_heart_reselect_01`はgit差分なし。
+- 退避(削除・上書きなし): `{a2,b1b}/audit/legacy_voice_mislabel/`(mislabel旧)、`.../b1b_regen1_no_tts_voice_sent/`・`.../a2_regen1_no_tts_voice_sent/`(送信記録導入前の再生成分。Fenrirだがtts_voice_sent無し)。
+- 費用: 本委任の増分=run累計 35.0809−10.2258=¥24.86(1回目¥8.04+2回目≈¥14.7+3回目≈¥2.1)。Cap¥40内。
+- 新規registry/Gate変更なし。`voice_acceptance_check_01.py`は読取専用(Z `run_audio_gate`へ未接続、Gate判定不変)、test 6件OK。
+- 環境汚染(記録のみ・未修正): 共有`human_review_queue`の`x/a2/kp1_en` HUMAN_REVIEW_REQUIRED(2026-10-28 09:18)が`er063_family_z_audio_01_test_01.test_preview_comment_kp_styles`をclean環境以外で失敗させる。分類=実害なし(試験のみ、Production影響なし)・別件。
