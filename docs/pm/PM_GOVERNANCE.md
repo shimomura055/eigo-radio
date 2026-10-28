@@ -615,6 +615,9 @@ PM-CLOSEOUT-CONSOLIDATION-59)。
     目的達成度(達成/部分達成/未達)を明記する。受入記録の「目的要件との
     一致/不一致」(`sandwich-pm.md`手順4-2)およびRESULT_PACKET(3)は
     本区別の記載場所であり、新Gate・新報告工程ではない。
+    (2026-10-28追記、JA-ASR-FALSE-NG-ROOT-FIX-02 課題A、A1/A2、既存規則の適用単位の明確化であり新Gateではない:
+    案件[管理ID]の受入条件表[ユーザー原文から逐語抜粋]を最初の受入時に`ACTIVE_TASK.md`へ置き、各受入で達成/部分/未達を更新する。
+    未達行が残る間は『完了』『一区切り』『進行中なし』を使わず、対策名[APPLIED/WIRED等]を主語に書く。)
 33. **共通仕様のX/Y/Z配線Status確認**(2026-10-25ユーザー決定、
     `FAMILY-Y-PRODUCTION-LAUNCH-01`追加指示§3[`docs/pm/delegation_log/
     2026-10-25_FAMILY-Y-PRODUCTION-LAUNCH-01_USER_02.md`]。28節[Cross-Family
@@ -2585,6 +2588,8 @@ OPEN-233 Trialで有効だった改善ループを、今後の通常ルールと
 
 **ASR NG/Gate STOPでUDRを出す前の過去対策確認(2026-10-28、FX-MOON-SHRINKING-RESELECT-REMAKE-01 委任_04、ユーザー原文`docs/pm/delegation_log/2026-10-28_FX-MOON-SHRINKING-RESELECT-REMAKE-01_USER_04.md` §5。必要十分な既存規則の運用明確化で、新Gate・新検査ではない)**: ASR NG/Gate STOPでUDRを出す前に、(i)同一canonical文の過去NG(`er011_output/attempt_history.jsonl`をGrep)、(ii)同種問題の既存OPEN/対策の採用状況、(iii)当該runでの対策発動記録(r5/`candidate_e_*`等)を確認し、報告に『過去対策の採用状況』を1行添える。
 
+**保留の置き方と約束事項の台帳化(2026-10-28、JA-ASR-FALSE-NG-ROOT-FIX-02 課題A、A4/A6。既存規則の運用明確化で新Gateではない)**: 保留(推奨現状維持・R-x実測後再提示等)を置く場合は、保留理由→再提示の計測指標→期限を1行で書き、指標が当該原因を測ることをfile:lineで確認する(A4)。報告で約束した後続評価はOPEN/ACTIVE_TASKにID付きで置く(A6)。
+
 **Voice/Style/話者/モデル変更のFable受入手順(2026-10-28、PM-SSOT-SYNC-32、FZ-TELL-TALE-HEART-NARRATOR-VOICE-01 委任_03の漏れ分析より。Gate追加ではなく受入手順)**: 受入は(i)SDK境界の送信記録(cost_log `tts_voice_sent`等) (ii)実音声の客観指標(f0等) (iii)計画・記録値(results/reuse_key) の3点一致を必須とする。矛盾する観測(例: attempt JSONのvoice≠計画)を「ラベル」等と解釈して受入する場合は、その値が送信に関与しないことをfile:lineで追跡した記録を必須とする(追えなければ受入不可)。runner Gateへの機械照合接続(`voice_acceptance_check`)は未実施であり、実施はユーザー判断事項。根拠=`docs/research/FZ-TELL-TALE-HEART-NARRATOR-VOICE-01/VOICE_DEFECT_FIX_01.md` §5。
 
 ## 12. 報告単位管理ルール(Reporting Unit Rule): 即時報告・未回答フル再掲・Next Action提示
@@ -3604,6 +3609,7 @@ Family Z runner(er026/er062/er063)に次を実装済み(課金0のmock/dry-run�
 - 1件が技術部分と判断部分を含むときは分解し、技術部分はB、判断部分のみD。
 - **Open Itemに存在することだけを理由にUDRを発行しない**。Blocking=いいえはUDRにせずDeferred(12-13(10-12)(4))。
 - Sonnetが挙げた候補は`判断候補`と表記する。`USER_DECISION_REQUIRED`の語を付けるのはFableだけ。Fableは受入時に同じ仕分けを行う。
+- DECISION_LOGで判断候補Dと書いた項目は、受入時にREGISTER登録を確認し、未登録なら受入前に登録する(2026-10-28 A3、C-18の運用明確化であり新Gateではない)。
 
 ### 27-4. P3 ユーザー提示前チェック
 判断事項・成果物をユーザーへ提示する前に確認する: 現在の依頼との直接の関係/今判断しなければ進めない理由/過去の判断との重複/開発側で解決できない理由/ユーザーが理解するために必要な説明。管理IDやOPEN番号の列挙だけで判断を求めない。ユーザーが依頼していないOpen Itemの棚卸し・関連の薄い判断事項の追加提示は禁止。

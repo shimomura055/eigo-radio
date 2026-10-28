@@ -22694,3 +22694,8 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 ### 2026-10-28 FX-MOON-SHRINKING-RESELECT-REMAKE-01 委任_03/04 日本語題ASR NG再発の調査結果・R4/R3是正(既存行は書き換えず追記)
 - **調査結果(委任_03、Production変更0)**: 月Std日本語題の3回NG再発の真因=R1(Task B 2026-10-25で特定済み・解決策未採用)。F1+F2/E3/E4は仕様どおり非発動で誤NG救済機能なし。今回6音声+ms_03 3音声を現行判定器へ再注入しても全て同NG。調査書=`docs/research/FX-MOON-SHRINKING-RESELECT-REMAKE-01/JA_TITLE_ASR_RECURRENCE_01.md`。v2読み規則/βのProduction採否はUDR(ユーザー判断待ち)。
 - **不具合是正(委任_04、11-8、承認済み仕様`CURRENT_SPEC.md:2931`との乖離)**: R4=`_secondary_accept`が値等価層を通さない点、R3=桁区切り(8,900↔8900)が値等価triggerに入らない点を是正(`er007_ja_secondary_asr_01.py`、新受理クラス・閾値・flag・Family拡大なし、rollback定数`JA_SECONDARY_VALUE_EQUIVALENCE_ENABLED`既定True)。API 0評価=1,184対×3モード、負例(n1/extra_neg)の新規誤PASSは凍結負例3件のみで、いずれも既存Primary値等価層が是正前から受理済みの対(Secondaryが同等になっただけ)。月題への効果なし。詳細=OPEN-515追記・新規OPEN。
+
+### 2026-10-28 JA-ASR-FALSE-NG-ROOT-FIX-02 委任_01A/02A 課題A結論・再発防止のSSOT反映(追記のみ、新Gateなし)
+- **結論(`docs/research/JA-ASR-FALSE-NG-ROOT-FIX-02/PM_AUDIT_01.md`)**: 2026-10-26「一区切り」は案件目的(正常な月題の誤NG救済)未達の状態での表現であったと事後認定。主因=M1受入単位のずれ(個別対策F1+F2/E3/E4の受入を案件の受入として扱った)/M2保留(v2・β・P-1「推奨現状維持・R-5実測後」)が管理終点化(R-5はR1を測らず指標不適合、再提示期限なし)/M3完了語彙の混用(Wiring完了と案件Closeの混用)。
+- **再発防止**: 新Gate・新報告工程なし。A1〜A7は既存規則(sandwich-pm 4-2、Closeout項目32、27-3、C-18)の適用単位・手順の明確化として`PM_GOVERNANCE.md`項目32末尾・:2586直後・27-3へ各1〜2文反映、案件の受入条件表を`ACTIVE_TASK.md`(F)行へ設置。A8(横展開点検)は本委任で実施=`PM_AUDIT_02_CROSSCHECK.md`。
+- **判断**: Fable受入済み(ユーザー課題A指示=既存ルールで防げるものは新Gate増設せず運用是正、に整合)。判断候補Dなし。UDR #201〜203は既登録のため再登録せず備考のみ更新。
