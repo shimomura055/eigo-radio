@@ -144,6 +144,21 @@ def display_text_of_clip(ledger: dict | None, clip_id: str, text: str) -> str:
     return overlay_text(ledger, text, clip_id=clip_id)
 
 
+def chunk_texts_overlaid(ledger: dict | None, plan: dict | None) -> list:
+    """⏸(実Chunk境界)の位置決定に使うchunk本文を、表示本文と同じoverlay(LR後の英文)へ揃えて返す(B7是正、2026-10-28)。
+    chunk planのtextはTTS入力前の原文のままなので、LRが入ったchunk(例: `AIs`→`AI agents`)は表示本文(overlay後)に見つからず、その境界の⏸が欠落した。
+    chunk_idがLR採用clipと一致するchunkだけ`display_text_of_clip`を通す(plan・parts・run dirは不変)。LR 0=`er_user_listening_page_common_01.chunk_texts_of_plan`と同一。"""
+    import er_user_listening_page_common_01 as _uc
+    texts = _uc.chunk_texts_of_plan(plan)
+    if not texts or not (ledger or {}).get("clips"):
+        return texts
+    out = []
+    for c, t in zip(plan.get("chunks") or [], texts):
+        cid = c.get("chunk_id")
+        out.append(display_text_of_clip(ledger, cid, t) if cid else t)
+    return out
+
+
 def _copy_with(d: dict, path: list, value: str) -> dict:
     out = dict(d)
     if len(path) == 1:

@@ -661,6 +661,7 @@ class AbcGoldenTests(unittest.TestCase):
                                  "er019_family_x_fx_20261016_wiring_01_test_01.py",
                                  "er096_kp_dual_runtime_evidence_01.py",       # 履歴script(旧KPDUAL evidence driver。Productionではない)
                                  "er104_kp_vote_wiring_test_01.py",
+                                 "er127_final_adoption_b1_test_01.py",         # FINAL-ADOPTION B1(委任_06): K2 storeを読むtest
                                  "er127_tts_block_policy_01_test_01.py"])    # TTS統一委任_02: K2 storeのL6 leaf test           # KP3V: 本件のtest(K2 siteのvote flag転送確認)
 
     def test_master_audio_store_module_unchanged_contract(self):
@@ -711,7 +712,9 @@ class AbcGoldenTests(unittest.TestCase):
                                          # attempts_logへ戻す(KP英語Store entryは読まない・書込みは自分のresult dictのみ)。
                                          "er003_v1_crosslevel_audio_02_common.py",
                                          # 同: er127.lr_unresolved_rowsがLR blockの戻り値(標準leafのresult)のfallback_usedを読んで実TTS行を振り分ける(KP英語Store entryは読まない)。
-                                         "er127_tts_block_policy_01.py"}, readers)
+                                         "er127_tts_block_policy_01.py",
+                                         # LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01 B2/B5(委任_08/09): LR/Fallback台帳(er129)と最終Human報告(er131)は完了runのresultを読む読取専用module(KP英語Store entryは読まない)
+                                         "er129_lr_display_reflection_01.py", "er131_final_human_report_01.py"}, readers)
 
 
 # ============================================================

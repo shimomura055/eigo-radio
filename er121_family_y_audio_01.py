@@ -1551,7 +1551,7 @@ def build_page_rows(theme_out_dir: str, level: str, audio_dir: str, audio_rel: s
                 hl_list = hl.highlights_for_text(highlights_result, sid, 0) or None
                 if hl_list and parts["segments"][sid] != next(u["texts"][0] for u in y_highlight_display_units(theme_out_dir, level) if u["key"] == sid):
                     raise YAudioStop(f"FAMILY_Y_HIGHLIGHT_TEXT_MISMATCH({level}, {sid}): parts.jsonの本文がハイライト解決に使った本文(translate/{level}.md)と一致しません。装飾位置がずれるため描画しません")
-            blocks.append(cp.script_block(parts["segments"][sid], cp.chunk_texts_of_plan(chunk_plans.get(sid)), audience, highlights=hl_list,
+            blocks.append(cp.script_block(parts["segments"][sid], _er132.chunk_texts_overlaid(_lr, chunk_plans.get(sid)), audience, highlights=hl_list,
                                           marks=_rm.marks_for(_events, parts["segments"][sid], block=sid)))      # ⏸=実Chunk境界のみ / LR赤 / Fallback濃青
             if ja_paragraphs is not None:
                 blocks.append("<details><summary>日本語の元原稿</summary><div class='ja'>" + cp.esc(ja_paragraphs.get(sid, "")) + "</div></details>")

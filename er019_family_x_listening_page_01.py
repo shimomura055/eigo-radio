@@ -124,7 +124,7 @@ def level_data(R, uc, hl, run, source_dir, level, key, label, ja_title, slug, hr
             _fs = re.match(r"full_story_part\d+$", uk or "")
             _clip_ids = () if _fs else tuple(os.path.splitext(os.path.basename(p))[0] for p in ([info["audio"]] if isinstance(info.get("audio"), str) else list(info.get("audio") or ())))
             _mk = _rm.marks_for(_events, info["text"], ids=_clip_ids, block=uk if _fs else None, whole=not _fs)
-            _cts = uc.chunk_texts_of_plan(_plans.get(uk)) if _fs else None   # ⏸=実TTS Chunk境界(chunk planの記録位置)にだけ
+            _cts = _er132.chunk_texts_overlaid(_lr, _plans.get(uk)) if _fs else None   # ⏸=実TTS Chunk境界(chunk planの記録位置)にだけ
             blocks = [uc.script_block(info["text"], _cts, highlights=hls or None, marks=_mk)]
             script_texts.append(info["text"])
             if hres is not None and uk:

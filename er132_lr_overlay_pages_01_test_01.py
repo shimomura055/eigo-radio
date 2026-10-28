@@ -361,7 +361,7 @@ def _published_pages():
     for p in glob.glob(os.path.join(ROOT, "user_test", "*", "*.html")):
         n = os.path.basename(p)
         d = os.path.basename(os.path.dirname(p))
-        if n in ("index.html", "standard.html", "advanced.html") and not d.startswith(("hr_",)) and "/hr_" not in p.replace("\\", "/"):
+        if n in ("index.html", "standard.html", "advanced.html") and not d.startswith(("hr_",)) and "/hr_" not in p.replace("\\", "/") and "_candidate_" not in p:   # B7: 候補ページ(`*_candidate_*`)は公開前確認用(LR/Fallback注記は仕様どおり出る)なので公開済みの走査対象外
             out.append(p)
     return sorted(out)
 
@@ -455,3 +455,30 @@ def test_x_topic_intro_lr_is_connected_to_clip_overlay_and_japanese_title_is_rec
     # japanese_titleにLRがあっても停止せずnot_renderedへ記録される(合成)
     res = m.evaluate_text_parity(r, "a2", rendered_display=rendered, not_rendered_clip_ids=("topic_intro",))
     assert res["status"] == "OK" and [x["clip_id"] for x in res["not_rendered"]] == ["topic_intro"]
+
+
+# ============================================================ B7是正: LRを含むchunkでも⏸が欠落しない(chunk本文を表示本文と同じoverlayへ揃える)
+def _plan(*chunks):
+    return {"chunked": True, "chunks": [{"chunk_id": cid, "text": t} for cid, t in chunks]}
+
+
+def test_chunk_texts_overlaid_keeps_boundary_after_lr_chunk():
+    import er_user_listening_page_common_01 as uc
+    k1, k2, k3 = "Day one. The island was quiet.", BEFORE, "The end of the story."
+    display_before = " ".join([k1, k2, k3])
+    led = {"clips": [_clip("p_k2", BEFORE, AFTER, "parts.json:part1")]}
+    display = m.overlay_text(led, display_before, source="parts.json:part1")
+    plan = _plan(("p_k1", k1), ("p_k2", k2), ("p_k3", k3))
+    # 修正前の挙動(plan本文をそのまま使う)は、LR chunkの直後の境界が見つからず⏸が1個欠落する
+    assert len(uc._chunk_boundary_positions(display, uc.chunk_texts_of_plan(plan))) == 1
+    texts = m.chunk_texts_overlaid(led, plan)
+    assert texts[1] == AFTER and texts[0] == k1 and texts[2] == k3
+    assert len(uc._chunk_boundary_positions(display, texts)) == 2   # 実chunk境界2個ぶん全部
+
+
+def test_chunk_texts_overlaid_no_lr_is_identical_to_plan_texts():
+    import er_user_listening_page_common_01 as uc
+    plan = _plan(("p_k1", "A one."), ("p_k2", "B two."))
+    assert m.chunk_texts_overlaid({"clips": []}, plan) == uc.chunk_texts_of_plan(plan)
+    assert m.chunk_texts_overlaid(None, plan) == uc.chunk_texts_of_plan(plan)
+    assert m.chunk_texts_overlaid(None, {"chunked": False, "chunks": []}) == []

@@ -402,7 +402,8 @@ def test_u7_run_dir_is_not_modified_by_ledger_derivation():
 U8_ALLOWED_USERS = ("er129_lr_display_reflection_01.py", "er129_lr_display_reflection_01_test_01.py", "er130_adopted_take_classifier_01.py",
                     "er130_adopted_take_classifier_01_test_01.py", "er131_final_human_report_01.py", "er131_final_human_report_01_test_01.py",
                     "er132_lr_overlay_pages_01.py", "er132_lr_overlay_pages_01_test_01.py", "er133_report_marks_01.py", "er133_report_marks_01_test_01.py",
-                    "er130_gate_wiring_mock_e2e_01_test_01.py", "er063_family_z_audio_01.py")
+                    "er130_gate_wiring_mock_e2e_01_test_01.py", "er063_family_z_audio_01.py",
+                    "er019_family_x_fx_20261016_wiring_01_test_01.py")   # B7: fallback_used reader allowlist(読取専用module名の列挙)
 
 
 def test_u8_no_production_module_imports_er129():

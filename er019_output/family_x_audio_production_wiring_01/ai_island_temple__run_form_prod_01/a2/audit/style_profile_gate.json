@@ -1,5 +1,5 @@
 {
-  "status": "BLOCK",
+  "status": "PASS",
   "profile_id": "fx_20261017",
   "level": "a2",
   "checked": [
@@ -23,15 +23,26 @@
     "comment_3",
     "comment_4"
   ],
-  "blocked": [
+  "blocked": [],
+  "human_approved": [],
+  "warnings": [
     {
       "segment": "full_story_part1_k2",
-      "violations": [
-        "STD_FALLBACK_USED_OR_UNKNOWN",
-        "LOCAL_REWRITE_RECOVERY"
-      ]
+      "warning": "LR_APPLIED",
+      "detail": {
+        "changed_spans": [
+          {
+            "before": "AIs",
+            "after": "AI agents",
+            "kind": "replace",
+            "anchor_left": "the",
+            "anchor_right": "sent to the",
+            "display_token_index": 58,
+            "display_state": "BEFORE"
+          }
+        ],
+        "reason": "“AI agents” is a natural way to refer to the AIs in this context while avoiding the problematic plural form."
+      }
     }
-  ],
-  "human_approved": [],
-  "warnings": []
+  ]
 }

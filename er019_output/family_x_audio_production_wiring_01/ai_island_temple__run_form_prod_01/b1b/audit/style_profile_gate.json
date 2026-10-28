@@ -1,5 +1,5 @@
 {
-  "status": "BLOCK",
+  "status": "PASS",
   "profile_id": "fx_20261017",
   "level": "b1b",
   "checked": [
@@ -19,14 +19,26 @@
     "kp3_explanation",
     "preview"
   ],
-  "blocked": [
+  "blocked": [],
+  "human_approved": [],
+  "warnings": [
     {
       "segment": "full_story_part1_k2",
-      "violations": [
-        "LOCAL_REWRITE_RECOVERY"
-      ]
+      "warning": "LR_APPLIED",
+      "detail": {
+        "changed_spans": [
+          {
+            "before": "AIs",
+            "after": "AI systems",
+            "kind": "replace",
+            "anchor_left": "the",
+            "anchor_right": "sent to the",
+            "display_token_index": 67,
+            "display_state": "BEFORE"
+          }
+        ],
+        "reason": "“AI systems” preserves the plural reference while avoiding the problematic wording."
+      }
     }
-  ],
-  "human_approved": [],
-  "warnings": []
+  ]
 }
