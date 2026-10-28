@@ -22728,3 +22728,9 @@ Family X/ZともにFable判定 `PRODUCTION_WIRED` を受領。
 - **処置**: Close 24件(OPEN-224,229,233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01,238,248,264,269,274,279,285,290,291,293,294,297,353,537,565,306,308,388,474,497,503)は見出しの陳腐化・解決済み・ユーザー判断済み・吸収済みのためOPEN行末へ追記でClose。OPEN-291(T27)は、D6二重Azure呼出がSecondaryCache共有で現存しないことをコード・testで確認しClose。B継続管理10件(OPEN-263,267,272,273,286,287,288,289,331,432)と継続管理C(再提示条件未記載分)に再提示triggerを追記、OPEN-263/272/287(JA ASR)はOPEN-515へ統合。軽微是正1件(OPEN-268=Trial専用testへPYTHONUTF8=1、Production不変)。UDR #14は#23で判断済みの旨を注記(#144 Paycheck試聴は7日超の回答待ちとしてFable報告でリマインド)。
 - **方針**: 新Gate・新検査なし、46件分の新規開発タスクは作らず既存規則(OPEN行追記)で管理(ユーザー原文§4-3・§4-4)。新規ユーザー判断なし。OPEN-581=Closeout。
 - 根拠=`docs/research/PM-OPEN-581-TRIAGE-46-01/TRIAGE_01.md`(§5に最終処置)。
+
+## FX-AI-ISLAND-FINAL-PUBLISH-01 兼 FX-STD-COMMENT3-Z-METHOD-PRODUCTION-01 兼 NUANCE-EXPLANATION-LOSS-INVESTIGATION-01: Fable受入記録(2026-10-29)
+- OPEN-582(X Std Comment 3 Z方式)=Fable受入でPRODUCTION_WIRED(両経路runtime evidence・fail-closed test・旧ROLE撤去・ユーザー最終試聴PASS)。
+- AI島Std/Adv=ACCEPTED(記事単位APPROVED_FOR_PRODUCTION→公開済み、commit 9a2fb4b52/b9748a991、live byte一致)。
+- ニュアンス調査=ACCEPTED。『ニュアンス解説』はProductionに存在したことがなくTrial-01〜04のPart 3のみ、Trial-05以降は判断記録なく範囲外化(PM登録漏れ)。廃止承認も採用承認もない。新OPEN-586・UDR #211(ユーザー判断待ち、AI島とは独立)。
+- 根拠=docs/research/NUANCE-EXPLANATION-LOSS-INVESTIGATION-01/INVESTIGATION_01.md、docs/research/FX-STD-COMMENT3-Z-METHOD-PRODUCTION-01/RUNTIME_EVIDENCE_01.md。
