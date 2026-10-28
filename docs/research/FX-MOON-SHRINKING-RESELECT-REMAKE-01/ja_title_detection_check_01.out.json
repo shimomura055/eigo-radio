@@ -1,0 +1,92 @@
+[
+ {
+  "case": "正例: 原稿どおり(表層一致)",
+  "primary": "月のしわ、8,900本超！その奥に潜む「岩の上着」の秘密",
+  "state": "PASS",
+  "reason": "primary_pass",
+  "passed": true,
+  "expected_pass": true,
+  "as_expected": true
+ },
+ {
+  "case": "正例: 桁区切りなし+かな/カタカナ表記差",
+  "primary": "月のシワ8900本超。その奥に潜む岩の上着の秘密",
+  "state": "NG_SECONDARY_UNAVAILABLE",
+  "reason": "secondary_unavailable",
+  "passed": false,
+  "expected_pass": true,
+  "as_expected": false
+ },
+ {
+  "case": "正例: 数詞を漢数字表記(八千九百)",
+  "primary": "月のしわ、八千九百本超。その奥に潜む岩の上着の秘密",
+  "state": "PASS",
+  "reason": "primary_pass",
+  "passed": true,
+  "expected_pass": true,
+  "as_expected": true
+ },
+ {
+  "case": "負例: しわ→すわ(N3-07型。Candidate E3で遮断済みの型)",
+  "primary": "月のすわ、8,900本超。その奥に潜む岩の上着の秘密",
+  "state": "NG_SECONDARY_UNAVAILABLE",
+  "reason": "secondary_unavailable",
+  "passed": false,
+  "expected_pass": false,
+  "as_expected": true
+ },
+ {
+  "case": "負例: 値10倍(89,000)",
+  "primary": "月のしわ、89,000本超。その奥に潜む岩の上着の秘密",
+  "state": "NG_PROTECTED",
+  "reason": "p1_value_diff",
+  "passed": false,
+  "expected_pass": false,
+  "as_expected": true
+ },
+ {
+  "case": "負例: 値違い(8,000)",
+  "primary": "月のしわ、8,000本超。その奥に潜む岩の上着の秘密",
+  "state": "NG_PROTECTED",
+  "reason": "p1_value_diff",
+  "passed": false,
+  "expected_pass": false,
+  "as_expected": true
+ },
+ {
+  "case": "負例: 値違い(八千百)",
+  "primary": "月のしわ、八千百本超。その奥に潜む岩の上着の秘密",
+  "state": "NG_PROTECTED",
+  "reason": "p1_value_diff",
+  "passed": false,
+  "expected_pass": false,
+  "as_expected": true
+ },
+ {
+  "case": "負例: 岩→石",
+  "primary": "月のしわ、8,900本超。その奥に潜む石の上着の秘密",
+  "state": "NG_SECONDARY_UNAVAILABLE",
+  "reason": "secondary_unavailable",
+  "passed": false,
+  "expected_pass": false,
+  "as_expected": true
+ },
+ {
+  "case": "負例: 語脱落(上着)",
+  "primary": "月のしわ、8,900本超。その奥に潜む岩の秘密",
+  "state": "NG_SECONDARY_UNAVAILABLE",
+  "reason": "secondary_unavailable",
+  "passed": false,
+  "expected_pass": false,
+  "as_expected": true
+ },
+ {
+  "case": "今回a2型(月の詩は+八千九百): 現行Production",
+  "primary": "月の詩は八千九百本超。その奥に潜む岩の上着の秘密",
+  "state": "NG_SECONDARY_UNAVAILABLE",
+  "reason": "secondary_unavailable",
+  "passed": false,
+  "expected_pass": null,
+  "as_expected": null
+ }
+]

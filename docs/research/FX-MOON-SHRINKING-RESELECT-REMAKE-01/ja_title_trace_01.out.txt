@@ -1,0 +1,34 @@
+canon_norm: 月のしわ8,900本超その奥に潜む岩の上着の秘密
+--- cur_a1_P | 月野氏は8,900本超。その奥に潜む岩の上着の秘密
+   TRUE_CONTENT_MISMATCH 0.875 固有名詞・略語・濁点ゆれ以外の内容に差がある(内容誤りの可能性): [{'type': 'replace', 'canonical': 'のしわ', 'asr': '野氏は', 'entity_like': False, 'phonetic_uncertain': False, 'cascade_eligible': 
+   number_mismatches: [] | candidate_e_rejections: None | cascade_diffs: None
+   content_diffs: [('のしわ', '野氏は', False)]
+   E span reading variant match ('のしわ', '野氏は') = False
+--- cur_a2_P | 月の詩は八千九百本超。その奥に潜む岩の上着の秘密
+   TRUE_CONTENT_MISMATCH 0.723 数字/否定の不一致を検出: numbers=[('8900', '')] negation=[]
+   number_mismatches: [('8900', '')] | candidate_e_rejections: None | cascade_diffs: None
+   content_diffs: []
+--- cur_a3_P | スギノ市は、八千九百本超、その奥に潜む岩の上着の秘密。
+   TRUE_CONTENT_MISMATCH 0.625 数字/否定の不一致を検出: numbers=[('8900', '')] negation=[]
+   number_mismatches: [('8900', '')] | candidate_e_rejections: None | cascade_diffs: None
+   content_diffs: []
+--- cur_a1_Azure | 月の詩は8900本ちょ。その奥に潜む岩の上着の秘密。
+   TRUE_CONTENT_MISMATCH 0.833 固有名詞・略語・濁点ゆれ以外の内容に差がある(内容誤りの可能性): [{'type': 'replace', 'canonical': 'しわ', 'asr': '詩は', 'entity_like': False, 'phonetic_uncertain': False, 'cascade_eligible': Fa
+   number_mismatches: [] | candidate_e_rejections: None | cascade_diffs: None
+   content_diffs: [('しわ', '詩は', False), (',', '', False), ('超', 'ちょ', False)]
+   E span reading variant match ('しわ', '詩は') = False
+   E span reading variant match (',', '') = False
+   E span reading variant match ('超', 'ちょ') = False
+--- cur_a2_Azure | 月の詩は8900本ちょうその奥に潜む岩の上着の秘密。
+   TRUE_CONTENT_MISMATCH 0.816 固有名詞・略語・濁点ゆれ以外の内容に差がある(内容誤りの可能性): [{'type': 'replace', 'canonical': 'しわ', 'asr': '詩は', 'entity_like': False, 'phonetic_uncertain': False, 'cascade_eligible': Fa
+   number_mismatches: [] | candidate_e_rejections: None | cascade_diffs: None
+   content_diffs: [('しわ', '詩は', False), (',', '', False)]
+   E span reading variant match ('しわ', '詩は') = False
+   E span reading variant match (',', '') = False
+--- cur_a3_Azure | Sukino氏は8900本超。その奥に潜む岩の上着の秘密。
+   TRUE_CONTENT_MISMATCH 0.745 固有名詞・略語・濁点ゆれ以外の内容に差がある(内容誤りの可能性): [{'type': 'replace', 'canonical': '月のしわ', 'asr': 'sukino氏は', 'entity_like': False, 'phonetic_uncertain': False, 'cascade_eligi
+   number_mismatches: [] | candidate_e_rejections: None | cascade_diffs: None
+   content_diffs: [('月のしわ', 'sukino氏は', False), (',', '', False)]
+   E span reading variant match ('月のしわ', 'sukino氏は') = False
+   E span reading variant match (',', '') = False
+span-level probe (E reading engine): しわ vs 詩は = False | しわ vs 詩わ(助詞の発音わに揃えた仮想形) = True
