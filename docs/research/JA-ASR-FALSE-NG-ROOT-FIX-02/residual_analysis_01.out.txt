@@ -1,0 +1,31 @@
+== 1. OpenAI転写の変動(同一wav・複数draw)  [stored=当時記録 / redraw=後日の再転写] ==
+ run_ms_03 a1: draws=4 distinct=3 値EQUAL=2/4 v2 Primary単独PASS_W=0/4  stored値EQUAL=False
+ run_ms_03 a2: draws=4 distinct=2 値EQUAL=1/4 v2 Primary単独PASS_W=1/4  stored値EQUAL=True
+ run_ms_03 a3: draws=4 distinct=4 値EQUAL=2/4 v2 Primary単独PASS_W=1/4  stored値EQUAL=False
+ run_reselect_01 a1: draws=5 distinct=5 値EQUAL=5/5 v2 Primary単独PASS_W=3/5  stored値EQUAL=True
+ run_reselect_01 a2: draws=5 distinct=3 値EQUAL=1/5 v2 Primary単独PASS_W=1/5  stored値EQUAL=True
+ run_reselect_01 a3: draws=5 distinct=5 値EQUAL=2/5 v2 Primary単独PASS_W=1/5  stored値EQUAL=True
+ 合計(6音声): draws=27 値EQUAL=13 (48%) v2 Primary単独PASS_W=7 (26%)
+ 再ASR12転写(reselect 3wav x 4 draw): 値EQUAL=5/12 異なる転写=10/12; wav別distinct=[4, 2, 4]
+ Azure: reselect 3wavで『当時記録』と『再ASR』が完全一致=3/3 (Azure変動0/3)。ms_03 a2は当時記録とPhase3再転写が一致。
+
+== 2. 6音声のローカルWhisper(第三証人・参考。Production不使用)をPrimary代わりに置いた場合 ==
+ run_ms_03 a1 whisper-medium: 値EQUAL=True v2 Primary単独=NG M0 Primary単独=NG | 月の詩は8,900本超え、その奥に潜む岩の上着の秘密。
+ run_ms_03 a1 whisper-small: 値EQUAL=True v2 Primary単独=NG M0 Primary単独=NG | 月の詩は8900本語へ その奥に潜む岩の上着の秘密
+ run_ms_03 a2 whisper-medium: 値EQUAL=True v2 Primary単独=PASS_W M0 Primary単独=NG | 月の死は8,900本超、その奥に潜む岩の上着の秘密
+ run_ms_03 a2 whisper-small: 値EQUAL=True v2 Primary単独=NG M0 Primary単独=NG | 月の種は8900本長、その奥に潜む岩の上着の秘密。
+ run_ms_03 a3 whisper-medium: 値EQUAL=True v2 Primary単独=NG M0 Primary単独=NG | 月のしは8,900本帳その奥に潜む岩の上着の秘密
+ run_ms_03 a3 whisper-small: 値EQUAL=False v2 Primary単独=NG M0 Primary単独=NG | 月の種は8900ポンチョ、 その奥に潜む岩の上着の秘密。
+ run_reselect_01 a1 whisper-medium: 値EQUAL=True v2 Primary単独=NG M0 Primary単独=NG | 月の死は8,900本帳その奥に潜む岩の上着の秘密
+ run_reselect_01 a1 whisper-small: 値EQUAL=True v2 Primary単独=NG M0 Primary単独=NG | 月の死は8900本長 その奥に潜む岩の上着の秘密
+ run_reselect_01 a2 whisper-medium: 値EQUAL=True v2 Primary単独=NG M0 Primary単独=NG | 月の死は8,900本蝶、その奥に潜む岩の上着の秘密。
+ run_reselect_01 a2 whisper-small: 値EQUAL=True v2 Primary単独=NG M0 Primary単独=NG | 月の死は8900本長、その奥に潜む岩の上着の秘密。
+ run_reselect_01 a3 whisper-medium: 値EQUAL=False v2 Primary単独=NG M0 Primary単独=NG | 月の死は8,900ポンチョウ。その奥に潜む岩の上着の秘密。
+ run_reselect_01 a3 whisper-small: 値EQUAL=False v2 Primary単独=NG M0 Primary単独=NG | 月の詩は8900ポンチョ、その奥に潜む岩の上着の秘密。
+
+== 3. 残NG音声の what-if(方式ではなく診断。『何が最後の障害か』の特定) ==
+ ms_03 a1 値正OpenAI draw『月野詩は8,900本超え。その奥に潜む岩の上着の秘密。』×Azure『月野市は8900本越え。その奥に潜む岩の上着の秘密。』 実判定 M0/M1/M4=NG(secondary_not_accepted)/NG(secondary_not_accepted)/NG(secondary_not_accepted) || what-if(超え→超, 越え→超) M0/M1/M4=NG/PASS_W/PASS_W
+ ms_03 a1 値正OpenAI draw『月野詩は8,900本超え。その奥に潜む岩の上着の秘密。』×Azure『月野市は8900本越え。その奥に潜む岩の上着の秘密。』 実判定 M0/M1/M4=NG(secondary_not_accepted)/NG(secondary_not_accepted)/NG(secondary_not_accepted) || what-if(超え→超, 越え→超) M0/M1/M4=NG/PASS_W/PASS_W
+   (超の読み候補[Production辞書]=['ちょう'] / 超え=['こえ'])
+ reselect a3: OpenAI全draw=['スギノ市は、八千九百本超、そ', '杉の市は、8000坪のその奥', '月野市は、八千九百本超。その', '月の死は、発生900本超。そ', '月野氏は、発生900本超。そ'] Azure=Sukino氏は8900本超
+   → 『スギノ/杉の/Sukino』=Production2エンジン中の stored OpenAI と Azure が一致(同じ誤認識方向)。ローカルWhisper small/medium は『月の詩は/死は』=しわ互換。

@@ -4,4 +4,5 @@
 (C)LR-FALLBACK-UNIFIED-PRODUCTION-WIRING-01=完了・PRODUCTION_WIRED(X/Y/Z Std/Adv)。既公開差替え3件(UDR #198-#200)はユーザー承認待ち。残件OPEN-573〜577。
 (D)PM-REPORTING-RULES-01=完了(settings focus/fullscreen・CLAUDE.md 12-14-2)。再起動後は端末表示がfocus+全画面に変わる。
 (E)告げ口心臓 reselect_01=ユーザー最終試聴待ち(Aoede版)。
+(F)JA-ASR-FALSE-NG-ROOT-FIX-02=日本語ASR『月のしわ』誤NG根本解決(課題A=委任_01A PM管理不備調査/課題B=委任_01B Phase1: 既存方式の統一再評価+残NG原因+設計案、API 0)。Phase1完了(RESULT_PACKET_JAFIX2B)。Status未付与(6音声clean PASS 0/6・M4でPASS_W 4/6、VALIDATED不可)。次=Fable判断→Opus条件Aレビュー→委任_02。Production配線禁止・v2/β/P-1採用はユーザー判断。
 STOP条件: Production採用はユーザーのみ/公開差替えは記事単位承認/承認記録注入はユーザー回答後/予算 日次1,000円。
